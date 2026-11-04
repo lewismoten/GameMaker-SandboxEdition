@@ -15,7 +15,7 @@
 // Catalog DOS downloads use the built ZIP; other downloads are built in the browser when the visitor presses Download. Which games
 // have the button is the caller's choice (export/downloadable.ts for the catalog's).
 import './download.css';
-import { download, h, modal, toast } from '../core/ui';
+import { download, h, modal, notice, toast } from '../core/ui';
 import { plainError } from '../core/plainError';
 import { downloaded } from '../../achievements';
 import { icon } from './homeIcons';
@@ -131,8 +131,21 @@ export function downloadButton(title: string, open: () => unknown): HTMLElement 
   );
 }
 
+/** A download is being chosen or built: a second tap (a double tap, a click while it builds) does nothing instead of starting another file. */
+let downloading = false;
+
 /** The chooser, then the download. */
 export async function chooseDownload(game: DownloadGame): Promise<void> {
+  if (downloading) return;
+  downloading = true;
+  try {
+    await choose(game);
+  } finally {
+    downloading = false;
+  }
+}
+
+async function choose(game: DownloadGame): Promise<void> {
   const zipUrl = !game.project && game.entry?.pack?.endsWith('.zip') ? `./${game.entry.path}${game.entry.pack}` : undefined;
   const choices = CHOICES.filter((c) => c.kind !== 'files' || game.project);
   const picked = await modal<{ kind: DownloadKind; alt: boolean }>(`Download ${game.title}`, (close) => {
@@ -284,6 +297,9 @@ const NAMES: Record<DownloadKind, string> = {
   files: 'game files',
 };
 
+/** Closes the "Building…" notice once the build is over (saved or failed). */
+let closeBuilding: (() => void) | undefined;
+
 async function build(game: DownloadGame, kind: DownloadKind, alt: boolean): Promise<void> {
   try {
     if (kind === 'dos' && !game.project && game.entry?.pack?.endsWith('.zip')) {
@@ -303,7 +319,7 @@ async function build(game: DownloadGame, kind: DownloadKind, alt: boolean): Prom
       save('web-player.html', await fetchWebPlayer(), 'text/html', 'Put it beside Game-Maker game folders on a web host.');
       return downloaded('web');
     }
-    toast(`Building the ${kind === 'web' && alt ? 'web app' : NAMES[kind]} of ${game.title}…`);
+    closeBuilding = notice(`Building the ${kind === 'web' && alt ? 'web app' : NAMES[kind]} of ${game.title}…`);
     const saved = await game.files();
     // the author's version lettered on the menu picture, when they asked: not in their own backup (project/composeFiles.ts)
     const files =
@@ -375,11 +391,14 @@ async function build(game: DownloadGame, kind: DownloadKind, alt: boolean): Prom
     // the web player counts as a web download (achievements' export-web)
     downloaded(kind === 'player' ? 'web' : kind);
   } catch (e) {
+    closeBuilding?.();
     toast(plainError(e), 'error');
   }
 }
 
 function save(name: string, data: Uint8Array | string, type: string, next: string): void {
   download(name, data, type);
+  closeBuilding?.();
+  closeBuilding = undefined;
   toast(`Saved ${name}. ${next}`);
 }

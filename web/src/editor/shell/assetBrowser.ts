@@ -11,6 +11,7 @@ import { fileThumb, KIND_ICON } from '../widgets/thumbs';
 import { PLAYABLE, playButton, stopThumbPlayback } from '../widgets/thumbPlayButton';
 import { diskStatus, floppyFor, openOptimize } from '../disk/diskCard';
 import { assetSearch } from './assetSearch';
+import { SHORT_KIND_LABELS } from './assetShortNames';
 import { companionPatches } from '../../dosPlayer/playerRecord';
 import { companionOrigin, originText } from '../../dosPlayer/playerOrigin';
 import { parsePalette, type Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
@@ -48,7 +49,7 @@ export function assetBrowser(host: BrowserHost): { el: HTMLElement; dispose(): v
   const { project, kind } = host;
   const commands = assetCommands(project, host.open);
   const title = kind ? KIND_LABELS[kind] : 'Game assets';
-  const count = h('p', { class: 'meta', role: 'status', 'aria-live': 'polite' });
+  const count = h('p', { class: 'meta asset-count', role: 'status', 'aria-live': 'polite' });
   const grid = h('div', { class: 'asset-grid', role: 'region', tabindex: 0, 'aria-label': kind ? `${title} files` : 'Asset categories' });
   const searchSlot = h('div', { class: 'asset-search-slot' });
   const el = h(
@@ -233,10 +234,16 @@ export function assetBrowser(host: BrowserHost): { el: HTMLElement; dispose(): v
             'button',
             { type: 'button', class: 'asset-card asset-category', 'data-category': k, onclick: () => host.category(k) },
             preview(representative(files, k), k),
-            h('strong', null, KIND_LABELS[k]),
+            // on a phone the short name shows and the count line goes; screen readers still get both in full
+            h(
+              'strong',
+              null,
+              h('span', { class: 'name-full' }, KIND_LABELS[k]),
+              h('span', { class: 'name-short', 'aria-hidden': 'true' }, SHORT_KIND_LABELS[k]),
+            ),
             h(
               'small',
-              null,
+              { class: 'asset-card-count' },
               files.length ? `${files.length.toLocaleString()} ${files.length === 1 ? 'file' : 'files'} · ${sizeText(project, files)}` : 'None yet',
             ),
           );
@@ -278,6 +285,7 @@ export function assetBrowser(host: BrowserHost): { el: HTMLElement; dispose(): v
     },
   });
   searchSlot.append(search.el);
+  el.querySelector('.asset-heading')?.append(search.button);
   const off = project.onChange(() => {
     if (frame) return;
     frame = requestAnimationFrame(() => {

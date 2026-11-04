@@ -17,6 +17,7 @@ const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 const sizes = [
   ['ipad-1024x768', 1024, 768],
   ['iphone-390x844', 390, 844],
+  ['iphone-375x812', 375, 812],
 ] as const;
 
 interface State {

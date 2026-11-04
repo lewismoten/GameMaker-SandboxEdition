@@ -1,10 +1,11 @@
-// Touch audit of one editor route at four touch sizes (iPad 1024x768 and 1366x1024, iPhone 390x844
-// and 844x390, light; the 1024 and 390 portrait ones also dark): visible controls under 44 px, page
+// Touch audit of one editor route at six touch sizes (iPad 1024x768 and 1366x1024, iPhone 390x844, 375x812
+// and 844x390, Android 360x740, light; the 1024, 390 and 375 portrait ones also dark): visible controls under 44 px, page
 // overflow past the device width (exit 1), axe violations and a screenshot each. Starts its own Vite (never 5173) via perfLib.
 // Usage: npm run editor:touch -- <route> [--out dir] [--tag name] [--wait selector] [--click 'sel;sel'] [--port 5291] [--dist dir] [--url u]
 import { mkdirSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { arg, launch, target } from './perfLib';
+import { forceTheme } from './forceTheme';
 
 const route = process.argv[2]?.startsWith('--') ? undefined : process.argv[2];
 if (!route) throw new Error('Give a route, e.g. "/#/p/look:blaster/bus2.map".');
@@ -18,6 +19,8 @@ const sizes = [
   ['ipad-1024x768', 1024, 768],
   ['ipad-1366x1024', 1366, 1024],
   ['iphone-390x844', 390, 844],
+  ['iphone-375x812', 375, 812],
+  ['android-360x740', 360, 740],
   ['iphone-844x390', 844, 390],
 ] as const;
 
@@ -27,8 +30,9 @@ const browser = await launch();
 try {
   for (const [name, width, height] of sizes)
     for (const scheme of ['light', 'dark'] as const) {
-      if (scheme === 'dark' && name !== 'iphone-390x844' && name !== 'ipad-1024x768') continue;
+      if (scheme === 'dark' && name !== 'iphone-390x844' && name !== 'iphone-375x812' && name !== 'ipad-1024x768') continue;
       const ctx = await browser.newContext({ viewport: { width, height }, hasTouch: true, isMobile: true, deviceScaleFactor: 1, colorScheme: scheme });
+      await forceTheme(ctx, scheme);
       const page = await ctx.newPage();
       await page.goto(srv.base + route);
       if (wait) await page.waitForSelector(wait, { timeout: 90000 }).catch(() => undefined);

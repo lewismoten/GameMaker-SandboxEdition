@@ -14,7 +14,7 @@ import { chromium, type Page } from 'playwright-core';
 import { createServer } from 'vite';
 import { CHAPTERS } from '../src/tour/chapters/index';
 
-const SIZES = [1440, 390];
+const SIZES = [1440, 390, 375];
 const SCHEMES = ['light', 'dark'] as const;
 
 /** A free port from 5190 up, never 5173. */
