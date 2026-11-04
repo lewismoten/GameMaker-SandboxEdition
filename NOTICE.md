@@ -98,10 +98,6 @@ game folder opens in the browser unchanged.
   Codex made no new levels, art, music or story text for the games. The entries below that say
   "OpenAI Codex (GPT-6)" are part of the same work.
 
-- **The Year 2000 pocket phone trinket** (`games/year2000/src/trinkets/pocketPhone.ts`): its
-  original printable shape and registration were implemented with **GPT-5.6 Terra** through
-  **OpenAI Codex**, directed by Lewis Moten.
-
 - **The npm engine package** (`web/packages/engine/`): extracted and documented with
   **OpenAI Codex (GPT-6)** through Visual Studio Code, directed by Lewis, from this fork's
   existing TypeScript web engine.

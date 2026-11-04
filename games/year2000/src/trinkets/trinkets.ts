@@ -3,8 +3,6 @@ import { meshFieldTrinket, type FieldTrinket, type FieldTrinketInput } from '@le
 import type { TrinketToolDef } from '@lewismoten/gamemaker-sandbox-tools/mesh/trinketTool';
 import { wrongNumberDie } from './die';
 import { sparkyDog } from './sparky';
-import { quarterToken } from './token';
-import { pocketPhone } from './pocketPhone';
 
 export interface Year2000Trinket extends TrinketToolDef {
   input: () => FieldTrinketInput;
@@ -17,28 +15,10 @@ export const TRINKETS: Year2000Trinket[] = [
     id: 'sparky',
     title: 'Sparky 3000',
     blurb: "Dex's chrome robot dog, antenna wagging, with the cover of the science report still in his mouth.",
-    height: 35,
+    height: 42,
     maxWidth: 60,
     cell: 0.6,
     input: sparkyDog,
-  },
-  {
-    id: 'quarter',
-    title: 'Teleport-A-Phone quarter',
-    blurb: 'Only 25 cents a call. A plastic one, so it will not work in a booth.',
-    height: 4,
-    maxWidth: 40,
-    cell: 0.5,
-    input: quarterToken,
-  },
-  {
-    id: 'pocket-phone',
-    title: 'Teleport-A-Phone',
-    blurb: 'A pocket phone from the future: dial 2000, drop in a quarter and hope it sends you somewhere useful.',
-    height: 14,
-    maxWidth: 80,
-    cell: 0.5,
-    input: pocketPhone,
   },
   {
     id: 'wrong-number-die',
