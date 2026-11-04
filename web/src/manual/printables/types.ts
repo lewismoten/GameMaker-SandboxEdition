@@ -284,8 +284,6 @@ export interface PostcardGrilleItem extends ItemBase {
   /** Across the picture side, and the line under it. */
   heading: string;
   caption: string;
-  /** The address lines on the message side's stamp corner. */
-  address?: string[];
   /** The message: rows of words (a multiple of three across), one word to a cell. */
   rows: string[][];
   border: import('./postcardMath').Border;

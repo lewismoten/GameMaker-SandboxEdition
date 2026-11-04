@@ -130,7 +130,6 @@ const item = {
   note: 'Lay the card over the postcard to read the way through',
   heading: 'GREETINGS FROM THE TRI-COUNTY FAIR',
   caption: 'The Corn Maze',
-  address: ['To: Doc Leo', 'P.O. Box 000'],
   rows: built.words,
   border: built.border,
   grille: GRILLE,

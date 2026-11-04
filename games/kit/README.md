@@ -108,6 +108,7 @@ Making the files:
   room (`web/src/library/sandNote.ts`); keep it out of manuals, hint books and site pages.
 - `tinHeart.ts` — the tin heart, a small riveted heart that ticks, as a 20x20 block in any game's palette, with a
   glint across its frames and a soft tick-tock on the PC speaker; `looksLikeTinHeart` knows the block in any palette.
+- `postcardGrille.ts` / `postcardGrilleLaser.ts` — the postcard and grille decoder (`web/src/manual/printables/postcardMath.ts`): the generator draws a postcard's border pictures and writes its words so exactly one placement of the grille reads a game's answer, the others that match their marks read decoys, and every other cell is whole postcard sentences (a game's own script, e.g. `games/teddy2/tools/postcard.ts`, holds its words and splices the item into printables.json); the laser script writes the grille's front and back SVGs (`npx vite-node ../games/kit/postcardGrilleLaser.ts <id> <outdir>`)
 - `tinHearts.ts` / `tinHeartDisk.ts` — the tin heart hunt: writes web/src/tinHearts/hearts.json from each about.json
   `"tinHeart"`, finds a heart on a disk, and checks it is there and found when touched (recipe: `TIN-HEARTS.md`).
 - `cameos.ts` — Mystery Robot Joe, Watt, Will and Teenage Lewie drawn by their own games and recolored into

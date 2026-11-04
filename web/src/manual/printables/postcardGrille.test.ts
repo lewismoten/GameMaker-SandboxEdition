@@ -35,8 +35,7 @@ describe('postcard and grille', () => {
     // the holes are distinct cells and the eight ways to lay the grille read differently
     expect(new Set(g.holes.map((h) => h.join())).size).toBe(g.holes.length);
     const views = new Set<string>();
-    for (const flip of [false, true])
-      for (let rot = 0; rot < 4; rot++) views.add(g.holes.map((h) => turn(g, h, rot, flip).join()).join(';'));
+    for (const flip of [false, true]) for (let rot = 0; rot < 4; rot++) views.add(g.holes.map((h) => turn(g, h, rot, flip).join()).join(';'));
     expect(views.size).toBe(8);
 
     const all = places(g, R, C);

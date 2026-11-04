@@ -6,20 +6,26 @@
 import './codeWheelSpot.css';
 import { h, clear } from '../../editor/core/ui';
 import { loadCatalog } from '../../project/files';
-import type { CodeSheetItem, CodeWheelItem } from '../../manual/printables/types';
+import type { CodeSheetItem, CodeWheelItem, PostcardGrilleItem } from '../../manual/printables/types';
 
-type Decoder = CodeWheelItem | CodeSheetItem;
+type Decoder = CodeWheelItem | CodeSheetItem | PostcardGrilleItem;
 
 /** The code wheels and code sheets in game `saveId`'s box (a catalog game's is `game:<id>`). */
 async function wheelsOf(saveId: string | undefined): Promise<Decoder[]> {
   const id = saveId?.startsWith('game:') ? saveId.slice('game:'.length) : undefined;
   if (!id) return [];
   const entry = (await loadCatalog().catch(() => [])).find((g) => g.id === id);
-  return (entry?.original?.printables?.items ?? []).filter((i): i is Decoder => i.kind === 'codewheel' || i.kind === 'codesheet');
+  return (entry?.original?.printables?.items ?? []).filter(
+    (i): i is Decoder => i.kind === 'codewheel' || i.kind === 'codesheet' || i.kind === 'postcardgrille',
+  );
 }
 
 /** The decoder's live view (a wheel to turn, a card to read) and its small picture on the desk. */
 async function views(it: Decoder): Promise<{ live: (scene: number) => HTMLElement; picture: () => Element }> {
+  if (it.kind === 'postcardgrille') {
+    const m = await import('../../manual/printables/postcardGrille');
+    return { live: (scene) => m.postcardGrilleLive(it, scene), picture: () => m.postcardGrillePicture(it) };
+  }
   if (it.kind === 'codesheet') {
     const m = await import('../../manual/printables/codeSheet');
     return { live: (scene) => m.codeSheetLive(it, scene), picture: () => m.codeSheetPicture(it) };
@@ -39,7 +45,7 @@ function open(live: HTMLElement, it: Decoder, onClose: () => void): void {
     { class: 'desk-overlay cw-desk-overlay', role: 'dialog', 'aria-modal': 'true', 'aria-label': it.title },
     h('button', { class: 'close', onclick: close }, 'Close (Esc)'),
     holder,
-    h('p', { class: 'hint' }, `Back to the game: Esc or click outside the ${it.kind === 'codesheet' ? 'card' : 'wheel'}`),
+    h('p', { class: 'hint' }, `Back to the game: Esc or click outside the ${it.kind === 'codewheel' ? 'wheel' : 'card'}`),
   );
   // its keys turn the wheel, not the game, which listens on the window
   overlay.addEventListener('keydown', (e) => {
@@ -50,7 +56,7 @@ function open(live: HTMLElement, it: Decoder, onClose: () => void): void {
   overlay.addEventListener('click', (e) => e.target === overlay && close());
   document.body.append(overlay);
   // the small disc, ready for the arrow keys; on a card, its first square
-  holder.querySelector<HTMLElement | SVGElement>('.cw-inner, .cs-grid td')?.focus();
+  holder.querySelector<HTMLElement | SVGElement>('.cw-inner, .cs-grid td, .pg-grille')?.focus();
 }
 
 export function codeWheelSpot(refocus: () => void): { el: HTMLElement; game(saveId?: string): void; scene(n: number): void } {
@@ -66,7 +72,7 @@ export function codeWheelSpot(refocus: () => void): { el: HTMLElement; game(save
     if (!it) return;
     const v = await views(it);
     if (mine !== playing) return;
-    const what = it.kind === 'codesheet' ? 'code sheet' : 'code wheel';
+    const what = it.kind === 'codesheet' ? 'code sheet' : it.kind === 'postcardgrille' ? 'postcard and grille' : 'code wheel';
     el.setAttribute('aria-label', `${it.title}: a puzzle here. Open the ${what}`);
     el.title = `A puzzle here: click for the ${what}`;
     const at = scene;
@@ -75,7 +81,7 @@ export function codeWheelSpot(refocus: () => void): { el: HTMLElement; game(save
       open(v.live(at), it, refocus);
     };
     el.append(
-      it.kind === 'codesheet' ? h('span', { class: 'cs-spot-pic' }, v.picture()) : v.picture(),
+      it.kind === 'codewheel' ? v.picture() : h('span', { class: 'cs-spot-pic' }, v.picture()),
       h('span', { class: 'cw-spot-tag', 'aria-hidden': 'true' }, `Puzzle! Click for the ${what}`),
     );
   };

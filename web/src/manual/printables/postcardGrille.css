@@ -1,0 +1,157 @@
+/* a game's postcard and grille (postcardGrille.ts): a 6 x 4 inch card, true size when printed, scaled on screen */
+.pg-card {
+  position: relative;
+  container-type: inline-size;
+  width: 6in;
+  max-width: 100%;
+  aspect-ratio: 6 / 4;
+  background: #f6ecd0;
+  color: #26325f;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
+}
+
+.pg-svg,
+.pg-svg > svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.pg-message > .pg-svg {
+  position: absolute;
+  inset: 0;
+}
+
+/* the words sit in a grid of 0.55 inch squares inside the border (0.525 in at the sides, 0.625 in above and below) */
+.pg-words {
+  position: absolute;
+  left: 8.75%;
+  top: 15.625%;
+  width: 82.5%;
+  height: 68.75%;
+  display: grid;
+}
+
+.pg-word {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  font-family: 'Segoe Print', 'Bradley Hand', 'Marker Felt', 'Comic Sans MS', cursive;
+  font-size: max(8px, 2cqw);
+  white-space: nowrap;
+  color: #26325f;
+}
+
+.pg-seen {
+  font-weight: 700;
+}
+
+.pg-grille {
+  position: absolute;
+  cursor: grab;
+  touch-action: none;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.45));
+}
+
+.pg-grille:focus-visible {
+  outline: 3px solid #ffbf2f;
+  outline-offset: 2px;
+}
+
+.pg-live {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.pg-stage {
+  flex: 1 1 320px;
+  min-width: 0;
+  max-width: 6in;
+}
+
+.pg-stage .pg-card {
+  width: 100%;
+}
+
+.pg-pad {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.pg-btn {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 4px 10px;
+  font: inherit;
+  cursor: pointer;
+}
+
+.pg-reads {
+  margin: 8px 0 0;
+  font-weight: 700;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* printed: both sides of the card on one letter sheet, the grille's faces on the next */
+.pp-pg-sheet {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25in;
+  padding: 0.5in;
+  background: #fff;
+  color: #111;
+  font-family: Georgia, serif;
+}
+
+.pg-cap {
+  margin: 0;
+  font-size: 0.14in;
+  align-self: flex-start;
+}
+
+.pg-title {
+  margin: 0;
+  font-size: 0.28in;
+}
+
+.pg-faces {
+  display: flex;
+  gap: 0.3in;
+}
+
+.pg-faces figure {
+  margin: 0;
+  text-align: center;
+  font-size: 0.14in;
+}
+
+.pg-grille-print {
+  width: 2.4in;
+  height: 2.4in;
+}
+
+.pg-howto {
+  font-size: 0.15in;
+  line-height: 1.4;
+  max-width: 6in;
+}
+
+.pg-thumb {
+  width: 100%;
+}
