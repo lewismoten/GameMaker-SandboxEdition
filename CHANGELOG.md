@@ -75,6 +75,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Fixed
 
+- Watch Your Step, level 2: walking up to the edge of the pool no longer costs a life before you can jump. Only falling in does, and a jump across now picks up all three coins.
 - The Loofah game's title and cover now show the friendly golden bath monster from its levels, with googly eyes and a wide smile, instead of the little horns (version 1.5).
 - Choosing the Starters tab twice in a quick keyboard burst no longer shows a second "How do I…?" list.
 - The Clown Club is spelled with C's everywhere: the first Teddy game's level files were named with K's (now club.map, club.pal and the rest), and so were the picture sources of its two sequels. Teddy is now 1.3.

@@ -12,7 +12,7 @@
   },
   {
    "scene": 3,
-   "keys": "AU0ozQNNCTkCuRM5ArkwTS3NAzkCuQBNGc0DTQ=="
+   "keys": "AU0ozQNNETkCuRM5ArkwTS3NAzkCuQBNGc0DTQ=="
   },
   {
    "scene": 4,
@@ -35,7 +35,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 8802,
+  "frames": 8828,
   "chapters": [
    {
     "title": "Opening",
@@ -59,18 +59,18 @@
    },
    {
     "title": "Level 3: The Safe Way",
-    "frame": 4635,
-    "time": 77249.99999999959
+    "frame": 4661,
+    "time": 77683.33333333305
    },
    {
     "title": "Ending",
-    "frame": 5521,
-    "time": 92016.66666667056
+    "frame": 5547,
+    "time": 92450.00000000402
    },
    {
     "title": "Credits",
-    "frame": 7728,
-    "time": 128800.0000000146
+    "frame": 7754,
+    "time": 129233.33333334806
    }
   ]
  }

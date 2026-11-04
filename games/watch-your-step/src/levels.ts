@@ -85,7 +85,7 @@ function spikes(book: Book, signs: Record<SignName, Sign>): StarterMap {
 function pool(book: Book, signs: Record<SignName, Sign>): StarterMap {
   const g = base(24, 21);
   g.fill(13, GROUND, 3, 2, ' ');
-  g.row(8, 13, 15, 'c');
+  g.row(7, 13, 15, 'c');
   scenery(
     g,
     [

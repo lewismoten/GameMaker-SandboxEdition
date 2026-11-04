@@ -47,7 +47,6 @@ export async function spikes(bot: StarterBot): Promise<void> {
 
 /** 2. The Pool: fall in once, see the room start again, then jump across. */
 export async function pool(bot: StarterBot): Promise<void> {
-  const score = bot.sim.ci.score;
   const lives = bot.sim.ci.lives;
   const deaths = bot.sim.deaths;
   await must(bot, bot.walk(11, 'the pool'), 'to the pool');
@@ -60,6 +59,8 @@ export async function pool(bot: StarterBot): Promise<void> {
   if (bot.sim.ci.hitpts !== 50) throw new Error(`hit points should be back to 50, not ${bot.sim.ci.hitpts}`);
   if (Math.abs(bot.px.x - 60) > 24) throw new Error(`back at x ${bot.px.x}, not at the way in`);
   bot.say(`fell in the pool: lives ${lives} -> ${bot.sim.ci.lives}, back at x ${bot.px.x} with ${bot.sim.ci.hitpts} hit points`);
+  // counted from here: walking in, his head can brush the first coin over the pool before he falls, and the score keeps it
+  const score = bot.sim.ci.score;
   await must(bot, bot.walk(12, 'the pool'), 'to the pool again');
   await must(bot, bot.jump('right', 17), 'across the pool');
   coins(bot, score, 3, 'level 2 coins');
