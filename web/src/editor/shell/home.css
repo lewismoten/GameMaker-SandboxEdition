@@ -344,6 +344,13 @@
   display: none;
 }
 
+/* a Starters group's line about itself, after its name (one row of the grid, so the line has room) */
+.lib-sub-tag {
+  font-weight: 400;
+  letter-spacing: normal;
+  text-transform: none;
+}
+
 /* a maker's game count, after the name */
 .lib-sub-count {
   font-weight: 400;

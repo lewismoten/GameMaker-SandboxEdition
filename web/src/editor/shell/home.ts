@@ -207,7 +207,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     setTimeout(() => (live.textContent = text), 50);
   };
   const packer = tilePacker(tiles);
-  const pack = () => packer.pack(isByMaker(current), !!search.value.trim(), current === 'imported');
+  const pack = () => packer.pack(isByMaker(current), !!search.value.trim(), current === 'imported' || current === 'starter');
   const packWatch = new ResizeObserver(() => pack());
   packWatch.observe(tiles);
   atEnd(() => packWatch.disconnect()); // or it holds this page for good
@@ -337,7 +337,10 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     removeAllBtn.hidden = c !== 'imported' || !lib.own(c).length;
     // the Starters' "How do I…?" questions, loaded when that tab is first shown
     howDoI.hidden = c !== 'starter';
-    if (c === 'starter' && !howDoI.firstChild) void import('./howDoIIndex').then((m) => howDoI.append(m.howDoIIndex({ compact: true })));
+    if (c === 'starter' && !howDoI.firstChild && !howDoI.dataset.loading) {
+      howDoI.dataset.loading = '1'; // choosing the tab again before the index is in must not add a second one
+      void import('./howDoIIndex').then((m) => howDoI.append(m.howDoIIndex({ compact: true })));
+    }
     ratingBox.hidden = c !== 'imported' || !lib.own(c).length;
     newGameBtn.hidden = c === 'community';
     communityBtn.hidden = c !== 'community';

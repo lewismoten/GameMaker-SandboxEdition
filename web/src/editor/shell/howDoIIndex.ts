@@ -6,6 +6,7 @@ import './howDoI.css';
 import { h, toast } from '../core/ui';
 import type { CatalogEntry } from '../../project/files';
 import { filterQuestions, levelTitle, loadQuestions, type Question } from '../../project/howDoI';
+import { starterGroupOf } from '../../project/starter';
 import { playHref, seeHref } from './howDoIGo';
 
 /** The two buttons for one question, with names that say which question they are for. */
@@ -61,11 +62,12 @@ export function howDoIIndex(opts: { compact?: boolean } = {}): HTMLElement {
           ...found.map((q) => {
             const entry = entries.get(q.game)!;
             const lv = levelTitle(entry, q.level);
+            const group = starterGroupOf(q.game);
             return h(
               'li',
               null,
               h('span', { class: 'hdi-q' }, q.q),
-              h('span', { class: 'hdi-where' }, `${q.gameTitle}, level ${q.level}${lv ? `: ${lv}` : ''}`),
+              h('span', { class: 'hdi-where' }, `${group ? `${group}: ` : ''}${q.gameTitle}, level ${q.level}${lv ? `: ${lv}` : ''}`),
               questionButtons(entry, q),
             );
           }),

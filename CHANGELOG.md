@@ -11,6 +11,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Added
 
+- The Starters tab groups its games the way the Bizarre tab groups its songs, each group with a heading and a line about it (The Basics today), and the "How do I…?" list says which group a question's game is in.
 - The 1994 Owner's Guide on the desk lists six small sample games from the sample disk (First Steps, Keys and Doors, Meet the Monsters, Room to Room, Coins and Score, Watch Your Step), one idea each, and says how to open one in the designers.
 - Kit, the hero of the Starter games, joins the Cast page with a new Starters section. Kit also moves more in the four Starters: arms up on the way into a jump and out as he comes down, a glance around while he stands, and a shovel dig, a star toss and a cheer in the character file for a game to play.
 - A "How do I…?" list on the Starters tab and in the Guide: search a question ("How do I make a door that needs a key?"), then choose Play this level, which starts the game at that level, or See how it's made, which opens its map in the read-only editor at the right spot with a button for the manual's "How this level is made" page. The Guide's new "How do I…?" section and its Try it boxes use the same buttons. A new Starter adds its questions with a `howDoI` list in its manual.json.
@@ -63,6 +64,8 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Fixed
 
+- The Loofah game's title and cover now show the friendly golden bath monster from its levels, with googly eyes and a wide smile, instead of the little horns (version 1.5).
+- Choosing the Starters tab twice in a quick keyboard burst no longer shows a second "How do I…?" list.
 - The Clown Club is spelled with C's everywhere: the first Teddy game's level files were named with K's (now club.map, club.pal and the rest), and so were the picture sources of its two sequels. Teddy is now 1.3.
 - Gwinn's patio in the sand castle game warns of slobbery tennis balls (1.4), the Bard credits picture in the camel game ends "squeezes through." (1.4), one soil block in a Maximus world is a different variant (1.6), and Doc Leo's black-light poster has a flatter, gentler frown.
 - The editor's file list no longer jumps when you click a file: scrolled far down (the Slide shows group, say), each click used to slide the list by a few lines, so you had to scroll again after every click. It now stays where you left it.
