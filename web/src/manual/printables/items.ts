@@ -14,6 +14,7 @@ import { worldMap, worldMapScreen } from './worldMap';
 import { levelMaps } from './levelMaps';
 import { codeWheelLive } from './codeWheel';
 import { codeSheetLive } from './codeSheet';
+import { postcardGrilleLive } from './postcardGrille';
 import { briefStoryZineItem } from '../zine/briefStoryZine';
 
 const ICONS: Record<PrintableItem['kind'], string> = {
@@ -30,6 +31,7 @@ const ICONS: Record<PrintableItem['kind'], string> = {
   prints: '🖐️',
   codewheel: '🎡',
   codesheet: '🟥',
+  postcardgrille: '💌',
 };
 
 export function boxItems(ctx: PrintContext): BoxItem[] {
@@ -45,7 +47,14 @@ export function boxItems(ctx: PrintContext): BoxItem[] {
     first: it.kind === 'hintbook' ? () => hintBookCover(ctx, it) : undefined,
     screen: it.kind === 'starchart' ? foldOut : undefined,
     // a code wheel turns and a code sheet lights its squares on screen; their sheets (render) are for printing
-    live: it.kind === 'codewheel' ? () => Promise.resolve(codeWheelLive(it)) : it.kind === 'codesheet' ? () => Promise.resolve(codeSheetLive(it)) : undefined,
+    live:
+      it.kind === 'codewheel'
+        ? () => Promise.resolve(codeWheelLive(it))
+        : it.kind === 'codesheet'
+          ? () => Promise.resolve(codeSheetLive(it))
+          : it.kind === 'postcardgrille'
+            ? () => Promise.resolve(postcardGrilleLive(it))
+            : undefined,
     redFilm: it.kind === 'hintbook',
     glass: it.kind === 'spyglass' || it.kind === 'prints',
     epub:

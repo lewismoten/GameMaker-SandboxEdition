@@ -10,6 +10,7 @@ import { printsSheets, spyglassSheets } from './sleuthPrints';
 import { hintBookCover } from './hintCover';
 import { codeWheelSheets } from './codeWheel';
 import { codeSheetSheets } from './codeSheet';
+import { postcardGrilleSheets } from './postcardGrille';
 import type {
   ChartItem,
   HintBookItem,
@@ -414,6 +415,8 @@ export function renderItem(ctx: PrintContext, it: PrintableItem): Promise<Sheet[
       return codeWheelSheets(it);
     case 'codesheet':
       return codeSheetSheets(it);
+    case 'postcardgrille':
+      return postcardGrilleSheets(it);
   }
 }
 
