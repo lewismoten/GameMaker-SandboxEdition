@@ -130,7 +130,11 @@ export function readOnlyBar(project: Project): HTMLElement | null {
     'div',
     { class: 'released-bar', role: 'region', 'aria-label': 'Read-only' },
     h('strong', { class: 'released-tag' }, playOnly ? 'Look only' : 'Read-only'),
-    h('span', { class: 'released-text' }, playOnly ? `${title} is its author’s shareware: play it and look inside.` : `${title} as released.`),
+    h(
+      'span',
+      { class: 'released-text' },
+      playOnly ? `${title} is its author’s shareware: play it and look inside.` : [h('span', { class: 'released-title' }, `${title} `), 'as released.'],
+    ),
     playOnly
       ? h('button', { onclick: () => void showNotice(r.entry) }, 'Notice')
       : h(
