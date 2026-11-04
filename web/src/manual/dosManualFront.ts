@@ -155,7 +155,19 @@ export function frontPages(shots: GameShot[]): BookletPage[] {
       <p>Each game keeps its own top ten. A game that makes the list is recorded as it was
       played, in <code>DATA1.REC</code> through <code>DATA10.REC</code>. If nobody touches the
       title menu for 30 seconds, the game plays its demo: a recording its designer made with the
-      Integrator.</p>`,
+      Integrator.</p>
+      <h3>Six small sample games</h3>
+      <p>The sample disk holds six short games, each with one idea. Play them in this order:</p>
+      <table>
+        <tr><td><b>First Steps</b></td><td>Walking, jumping and reaching the exit.</td></tr>
+        <tr><td><b>Keys and Doors</b></td><td>Picking up a key and opening the door it fits.</td></tr>
+        <tr><td><b>Meet the Monsters</b></td><td>Foes that patrol, chase and shoot, and how to get past them.</td></tr>
+        <tr><td><b>Room to Room</b></td><td>Doors and stairs that join one map to the next.</td></tr>
+        <tr><td><b>Coins and Score</b></td><td>Treasure, points and the counters on your status line.</td></tr>
+        <tr><td><b>Watch Your Step</b></td><td>Hazards, hit points and lives.</td></tr>
+      </table>
+      <p>To see how one is made, pick it with <b>Design</b> instead of <b>Play</b> and open its
+      maps in the Map Maker. Copy it first if you mean to change it.</p>`,
     ),
   ];
 }
