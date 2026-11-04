@@ -1,0 +1,14 @@
+// Writes games/watch-your-step/walkthrough.json: the bot plays the whole game on the built disk
+// (one key segment a level, and one more for level 2 after the fall), and games/kit/walkthrough.ts
+// checks the run on the real engine (title, three levels, the ending).
+//   cd web && npx vite-node ../games/watch-your-step/tools/walkthrough.ts
+import { writeSimWalkthrough } from '../../kit/walkthrough';
+import { SEED, play } from './play';
+
+const { sim } = await play(SEED);
+const titles: Record<number, string> = {
+  2: 'Level 1: Spikes',
+  3: 'Level 2: The Pool',
+  4: 'Level 3: The Safe Way',
+};
+await writeSimWalkthrough('watch-your-step', sim, SEED, titles);
