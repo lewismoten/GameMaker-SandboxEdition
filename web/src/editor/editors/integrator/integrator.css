@@ -244,13 +244,16 @@
 
 /* Touch: the board's buttons, fields, menus and the side lists are 44 px. */
 @media (hover: none) and (pointer: coarse) {
-  .grator button,
-  .grator select,
-  .grator summary,
-  .grator input:not([type='checkbox'], [type='radio'], [type='range']) {
+  html .grator-side button,
+  html .grator-side select,
+  html .grator-side input:not([type='checkbox'], [type='radio'], [type='range']),
+  html .grator button,
+  html .grator select,
+  html .grator summary,
+  html .grator input:not([type='checkbox'], [type='radio'], [type='range']) {
     min-height: 44px;
   }
-  .grator button {
+  html .grator button {
     min-width: 44px;
   }
 }
