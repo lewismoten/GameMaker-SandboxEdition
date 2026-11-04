@@ -54,15 +54,32 @@ describe('loadLaserKits', () => {
 
   it('reads game `id`’s manifest', async () => {
     const asked: string[] = [];
-    vi.stubGlobal('fetch', (u: string) => (asked.push(u), u.includes('stage-box') ? Promise.resolve({ ok: false } as Response) : reply(nickel)));
+    vi.stubGlobal(
+      'fetch',
+      (u: string) => (asked.push(u), u.includes('box/') || u.includes('patch/') ? Promise.resolve({ ok: false } as Response) : reply(nickel)),
+    );
     const kits = await loadLaserKits('realm');
-    expect(asked).toEqual(['./laser/realm/manifest.json', './laser/realm/stage-box/manifest.json']);
+    expect(asked).toEqual(['./laser/realm/manifest.json', './laser/realm/stage-box/manifest.json', './laser/realm/patch/manifest.json']);
     expect(kits).toHaveLength(1);
+  });
+
+  it('lists a game\u2019s embroidered patch as a patch kit with its size and picture width', async () => {
+    const patch = {
+      id: 'embroidery-patch',
+      diameter: 88,
+      pictureMm: 92,
+      material: { thickness: 2.4 },
+      kit: { title: 'Embroidered patch', summary: 'A patch.', previews: [{ file: 'preview.png', alt: 'P' }], downloads: [{ file: 'p.dst', label: 'DST' }] },
+    };
+    vi.stubGlobal('fetch', (u: string) => (u.includes('patch/') ? reply(patch) : Promise.resolve({ ok: false } as Response)));
+    const kits = await loadLaserKits('maximus');
+    expect(kits).toHaveLength(1);
+    expect(kits[0]).toMatchObject({ kind: 'patch', coin: 88, pictureMm: 92, thickness: 2.4, base: './laser/maximus/patch/' });
   });
 
   it('lists the nickel and the stage box together, the box with its own folder as base', async () => {
     const box = { kit: { title: 'Stage Box', summary: 'A box.', previews: [{ file: 'a.png', alt: 'A' }], downloads: [{ file: 'a.svg', label: 'A' }] } };
-    vi.stubGlobal('fetch', (u: string) => reply(u.includes('stage-box') ? box : nickel));
+    vi.stubGlobal('fetch', (u: string) => (u.includes('patch/') ? Promise.resolve({ ok: false } as Response) : reply(u.includes('stage-box') ? box : nickel)));
     const kits = await loadLaserKits('sleuth');
     expect(kits.map((k) => k.title)).toEqual(['Wooden nickel', 'Stage Box']);
     expect(kits[1]?.base).toBe('./laser/sleuth/stage-box/');
