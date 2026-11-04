@@ -190,7 +190,7 @@ One infrared beam carries live voice and touch-tone digits, half duplex.
   counts closures after SW3 closes (debounce about 1 ms for pulses and 15 ms for off-normal, so a fast printed dial with no governor
   still counts); when SW3 opens the count is the digit. 10 pulses are 0, more than 10 are ignored.
 - **CLEAR** is the PIC's reset button (MCLR): it restarts the phone and clears the number.
-- **Volume.** Fixed: R20 (47 k) against the speaker amplifier's own 50 k input. To change it, change R20.
+- **Volume.** The side thumbwheel RV1 (100 k) is a divider after R20 (33 k): the amplifier input sees the wiper. At the top of its range the level is within about 0.3 dB of the old fixed R20 (47 k) against the amplifier's own 50 k input (an estimate from the divider alone; the source impedance upstream was not measured). The wheel also scales the tone path through R16 a little. 65 parts become 66 with RV1; one extra part, about $1 to $2 each (price not confirmed: no retailer page was read).
 - **Clock.** One 3.579545 MHz crystal runs the CM8870; the PIC (XT mode) takes the clock from the CM8870's OSC2 through a 100 nF
   capacitor (C12). The PIC runs at 894,886 instructions per second; the tone loop is exactly 24 cycles.
 
@@ -270,7 +270,7 @@ soldered from the back. Electrolytic capacitors: the square pad is +, and the + 
 9. IR LED and photodiode last (leads bent 90 degrees so they face the top edge). Point two phones at each other a hand's length apart and dial: the digit
    appears on both. Hold TALK and speak: expect quiet, noisy voice on the other. Tune by ear.
 
-Likely first things to adjust: R18 and R19 (receive gain), R20 (speaker level), R16 and R12 and R15 (modulation depth), R9 (IR bias), the brightness
+Likely first things to adjust: R18 and R19 (receive gain), R20 and RV1 (speaker level), R16 and R12 and R15 (modulation depth), R9 (IR bias), the brightness
 register in the firmware.
 
 ## Programming the PIC (an Arduino Nano and ZEPPP)
