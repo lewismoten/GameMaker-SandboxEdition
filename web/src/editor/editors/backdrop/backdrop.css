@@ -95,7 +95,9 @@
   .bkd-layout button,
   .bkd-layout select,
   .bkd-layout summary,
-  .bkd-layout input:not([type='checkbox'], [type='radio'], [type='range']) {
+  .bkd-layout input:not([type='checkbox'], [type='radio'], [type='range']),
+  .bkd-fields input:not([type='checkbox'], [type='radio'], [type='range']),
+  .bkd-fields select {
     min-height: 44px;
   }
   .bkd-fields input[type='number'] {
