@@ -8,7 +8,7 @@ import type { PartsFile } from './phoneData';
 const dir = new URL('../../../../../games/year2000/phone/', import.meta.url);
 const read = (p: string) => JSON.parse(readFileSync(new URL(p, dir), 'utf8'));
 const file = read('viewer/parts.json') as PartsFile;
-const bbox = (id: string) => file.parts.find((p) => p.id === id)!.bbox;
+const bbox = (id: string) => file.parts.filter((p) => p.id === id).pop()!.bbox; // the last row of an id: the shell's BT1 box comes after the board's leads
 
 describe('the Junior Lab case', () => {
   it('is one full-width body from the pod to the chin', () => {
@@ -42,7 +42,8 @@ describe('the Junior Lab case', () => {
   });
   it('has the dial module as six printed parts plus the bought switches and screw', () => {
     const ids = file.parts.map((p) => p.id);
-    for (const id of ['dial-plate', 'dial-cam', 'dial-spring', 'dial-base', 'dial-stop', 'dial-bushing', 'SW2-dial', 'SW3-dial', 'dial-screw']) expect(ids, id).toContain(id);
+    for (const id of ['dial-plate', 'dial-cam', 'dial-spring', 'dial-base', 'dial-stop', 'dial-bushing', 'SW2-dial', 'SW3-dial', 'dial-screw'])
+      expect(ids, id).toContain(id);
     expect(ids).not.toContain('dial-post');
   });
 });
