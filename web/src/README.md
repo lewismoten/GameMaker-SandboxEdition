@@ -49,7 +49,7 @@ front (the magazine, the desk, the level check's explorer, the engine…), walki
   name, in one place. [`pageToc.ts`](pageToc.ts): "On this page" beside a reading page (the Mac,
   Windows and Linux pages, the cast, credits and achievements), or a row of its section links
   before the first section on a narrower window.
-- [`offline.ts`](offline.ts) registers [`siteWorker.ts`](siteWorker.ts), the site's service worker.
+- [`offline.ts`](offline.ts) registers [`siteWorker.ts`](siteWorker.ts), the site's service worker. A new version waits in [`offline/updateState.ts`](offline/updateState.ts): the notice is held on play pages and fades after about 15 s, and Settings keeps "New version ready".
   [`prefetch.ts`](prefetch.ts) fetches what a visitor is likely to open next once the page settles.
 - [`phoneScreen.ts`](phoneScreen.ts): whether the screen is a phone's (touch, its shorter side 500
   pixels or less) and how it is held, for the achievements and the documents' default view.

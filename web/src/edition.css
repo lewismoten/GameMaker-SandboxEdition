@@ -312,3 +312,8 @@
     display: block;
   }
 }
+
+/* the Settings menu's "New version ready" item exists only while an update waits */
+.topbar .topbar-menu > [hidden] {
+  display: none;
+}

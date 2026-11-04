@@ -5,6 +5,7 @@ import { h, toast } from './editor/core/ui';
 import { themeItem } from './theme';
 import { wholeTourItem } from './tour/tourButton';
 import { pageLife } from './pageLife';
+import { watchPendingUpdate } from './offline/updateState';
 
 const SOURCE_URL = 'https://github.com/lewismoten/GameMaker-SandboxEdition';
 
@@ -30,9 +31,33 @@ const openSound = () => void import('./soundSettings/soundDialog').then((m) => m
 
 const icon = (s: string) => h('span', { 'aria-hidden': 'true' }, s);
 
+/** "New version ready": there while an update waits (even after Later or the notice fading), and hidden otherwise. */
+function updateItem(attrs: Record<string, string>): HTMLElement {
+  let reload: (() => void) | undefined;
+  const item = h(
+    'button',
+    {
+      ...attrs,
+      type: 'button',
+      hidden: true,
+      class: 'update-item',
+      title: 'A new version of Game-Maker is waiting: reload to use it',
+      onclick: () => reload?.(),
+    },
+    icon('⟳'),
+    ' New version ready',
+  );
+  watchPendingUpdate((r) => {
+    reload = r;
+    item.hidden = !r;
+  });
+  return item;
+}
+
 /** The settings in their order, each given `attrs` (the ⚙ menu's role and tabindex). */
 export function settingsItems(attrs: Record<string, string> = {}): HTMLElement[] {
   return [
+    updateItem(attrs),
     h(
       'button',
       { ...attrs, type: 'button', onclick: openOffline, title: 'Download the whole site to play and make games with no connection' },
@@ -83,7 +108,11 @@ export function settingsMenu(): HTMLElement {
   const wrap = h('div', { class: 'topbar-settings hide-narrow' }, gear, menu);
 
   const isOpen = () => !menu.hidden;
-  const focusItem = (i: number) => items[(i + items.length) % items.length].focus();
+  const shown = () => items.filter((i) => !i.hidden);
+  const focusItem = (i: number) => {
+    const list = shown();
+    list[(i + list.length) % list.length].focus();
+  };
   const open = (at: number) => {
     menu.hidden = false;
     gear.setAttribute('aria-expanded', 'true');
@@ -104,7 +133,7 @@ export function settingsMenu(): HTMLElement {
     }
   });
   menu.addEventListener('keydown', (e) => {
-    const i = items.indexOf(document.activeElement as HTMLElement);
+    const i = shown().indexOf(document.activeElement as HTMLElement);
     const to = { ArrowDown: i + 1, ArrowUp: i - 1, Home: 0, End: -1 }[e.key];
     if (to !== undefined) {
       e.preventDefault();
