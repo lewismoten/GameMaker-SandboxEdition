@@ -528,10 +528,7 @@ export function coverRgb(t: number): Uint8Array {
     const by = gy - 5;
     const BL = 60;
     const BW = 4.5;
-    const along = (u: number, v: number): [number, number] => [
-      bx + Math.cos(ang) * u - Math.sin(ang) * v,
-      by + Math.sin(ang) * u + Math.cos(ang) * v,
-    ];
+    const along = (u: number, v: number): [number, number] => [bx + Math.cos(ang) * u - Math.sin(ang) * v, by + Math.sin(ang) * u + Math.cos(ang) * v];
     for (let u = 0; u <= BL; u += 0.5) {
       // a rounded tip: the half width follows a quarter circle over the last 6 pixels
       const tip = BL - u < 6 ? Math.sqrt(Math.max(0, 1 - ((6 - (BL - u)) / 6) ** 2)) : 1;

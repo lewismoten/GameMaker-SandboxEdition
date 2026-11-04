@@ -130,7 +130,8 @@ function umbrellaManFli(): Uint8Array {
     p.rect(hx - 4 - (lift ? 2 : 0), hy, 26 + (lift ? 2 : 0), 3, c('black', 0));
     if (lift > 3) {
       // the arm bends up from the shoulder to the brim
-      for (let k = 0; k <= 12; k++) p.rect(x + 10 - Math.round(Math.sin((k / 12) * Math.PI) * 6), 110 - Math.round(k * ((110 - hy - 2) / 12)), 3, 3, c('black', 1));
+      for (let k = 0; k <= 12; k++)
+        p.rect(x + 10 - Math.round(Math.sin((k / 12) * Math.PI) * 6), 110 - Math.round(k * ((110 - hy - 2) / 12)), 3, 3, c('black', 1));
       p.rect(hx - 6, hy - 1, 4, 4, c('paper', 5));
     }
     // the umbrella, furled, dripping

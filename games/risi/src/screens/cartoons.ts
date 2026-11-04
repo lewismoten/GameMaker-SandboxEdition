@@ -93,7 +93,9 @@ function dog(p: Pixels, pal: Pal, cx: number, cy: number, s: number, asleep: boo
     p.line(ex - 2, ey, ex, ey + 1, c('ink', 0)).line(ex, ey + 1, ex + 2, ey, c('ink', 0));
     p.line(ex + o(7) - 2, ey, ex + o(7), ey + 1, c('ink', 0)).line(ex + o(7), ey + 1, ex + o(7) + 2, ey, c('ink', 0));
   } else {
-    p.set(ex, ey, c('ink', 0)).set(ex, ey - 1, c('ink', 0)).set(ex + o(7), ey, c('ink', 0));
+    p.set(ex, ey, c('ink', 0))
+      .set(ex, ey - 1, c('ink', 0))
+      .set(ex + o(7), ey, c('ink', 0));
     p.rect(cx - o(34), cy + o(2), Math.max(2, o(3)), Math.max(1, o(3)), c('red', 2));
   }
 }
