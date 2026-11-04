@@ -473,7 +473,7 @@ export function gameActions(game: HomeGame, nav: HomeNav, refresh: () => Promise
     const link = (href: string, label: string, primary = false) =>
       h(
         'a',
-        { class: `button with-ico${primary ? ' primary' : ''}`, href, target: '_blank', rel: 'noopener noreferrer' },
+        { class: `button with-ico${primary ? ' primary sc-play' : ''}`, href, target: '_blank', rel: 'noopener noreferrer' },
         svgIcon(primary ? 'play' : 'link'),
         label,
       );
@@ -487,14 +487,14 @@ export function gameActions(game: HomeGame, nav: HomeNav, refresh: () => Promise
     if (entry.sourceUrl) actions.push(link(entry.sourceUrl, 'Source & credits'));
     return actions;
   }
-  const play = (href: string) => h('a', { class: 'button primary with-ico', href, 'aria-label': `Play ${game.title}` }, svgIcon('play'), 'Play');
+  const play = (href: string) => h('a', { class: 'button primary with-ico sc-play', href, 'aria-label': `Play ${game.title}` }, svgIcon('play'), 'Play');
   const keys = h('button', { class: 'with-ico', title: 'What each key does in this game', onclick: () => openKeys(game) }, svgIcon('keys'), 'Keys');
   const e = game.entry;
   if (game.project) {
     const p = game.project;
     return [
       h('button', { class: 'primary with-ico', onclick: () => nav.openProject(p.id) }, svgIcon('edit'), 'Open'),
-      h('a', { class: 'button with-ico', href: `./play.html?project=${encodeURIComponent(p.id)}` }, svgIcon('play'), 'Play'),
+      h('a', { class: 'button with-ico sc-play', href: `./play.html?project=${encodeURIComponent(p.id)}` }, svgIcon('play'), 'Play'),
       keys,
       projectDownloadButton(p.id, game.title),
       moreMenu(...projectMenuItems(p, refresh)),

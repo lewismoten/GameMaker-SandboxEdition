@@ -199,6 +199,12 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     );
   };
 
+  // a polite live region: choosing a game says so once, for screen readers
+  const live = h('p', { class: 'vh', role: 'status', 'aria-live': 'polite' });
+  const announce = (text: string) => {
+    live.textContent = '';
+    setTimeout(() => (live.textContent = text), 50);
+  };
   const packer = tilePacker(tiles);
   const pack = () => packer.pack(isByMaker(current), !!search.value.trim(), current === 'imported');
   const packWatch = new ResizeObserver(() => pack());
@@ -222,7 +228,8 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     const r = top.el.getBoundingClientRect();
     if (r.top < 0 || r.top > innerHeight * 0.5)
       top.el.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
-    top.el.querySelector<HTMLElement>('.sc-title')?.focus({ preventScroll: true });
+    top.focusPlay();
+    announce(`${game.title} featured`);
   };
 
   /** The games a collection can feature: its finished ones (all of yours). */
@@ -292,7 +299,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     );
   };
   // Arrow keys move between the tiles (Tab stops once per tile); Home and End go to the ends.
-  tileArrowKeys(tiles);
+  tileArrowKeys(tiles, () => CATEGORIES.find((c) => c.id === current)?.name ?? '');
 
   catNav.addEventListener('keydown', (e) => {
     const step = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1, Home: -99, End: 99 }[e.key];
@@ -378,6 +385,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
         h('div', { class: 'lib-bar' }, catNav, h('div', { class: 'lib-find' }, search, newGameBtn, communityBtn)),
         h('div', { class: 'lib-about' }, libTitle, libLead, sortBox, ratingBox, removeAllBtn, start.howBtn),
         tiles,
+        live,
       ),
       start.section(),
     ),
