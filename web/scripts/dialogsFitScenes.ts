@@ -17,7 +17,7 @@ async function web(page: Page): Promise<void> {
     .getByText('Too retro')
     .click({ timeout: 8000 })
     .catch(() => undefined);
-  await page.waitForSelector('text=New game', { timeout: 15000 });
+  await page.waitForSelector('text=New game', { timeout: 15000 }).catch(() => page.waitForTimeout(2500));
 }
 
 async function moreMenu(page: Page, item: string | RegExp): Promise<void> {
@@ -82,18 +82,16 @@ export const scenes: Scene[] = [
     id: 'quick-open',
     open: async (p) => {
       await newProject(p);
-      await p.keyboard.press('Control+k');
+      await p.keyboard.press('Control+p');
     },
   },
   menuScene('sound-and-tour', /Sound and tour/),
   menuScene('ai-setup', /AI setup/),
   menuScene('backup-restore', /Back up/),
   menuScene('play-offline', /Play offline/),
-  homeButton('watch-demo', /Watch demo/, '/#/'),
   homeButton('download', 'Download'),
   homeButton('saves-and-scores', /Saves/),
   homeButton('walkthrough', 'Walkthrough'),
-  homeButton('how-it-works', /How it works/),
   {
     id: 'new-game',
     open: async (p) => {

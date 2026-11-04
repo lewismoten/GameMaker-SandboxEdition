@@ -123,6 +123,7 @@ try {
           await page.reload();
           await scene.open(page);
           await page.addStyleTag({ content: '.ach-toasts, .toasts { display: none !important; }' }); // toasts are not part of a dialog
+          await page.waitForSelector('dialog[open], [role="dialog"]', { timeout: 4000 }).catch(() => undefined);
           await page.waitForTimeout(scene.settle ?? 400);
           await assertTheme(page, theme);
           m = await measure(page);
@@ -136,6 +137,11 @@ try {
           if (quick) console.log(`${scene.id}: ${m.problems[0]}`);
         }
         const hard = m.problems.filter((x) => !x.includes('[allowed list]'));
+        // landscape is advice: a dialog that cannot be reached on a landscape phone (its button is hidden there) is not counted
+        if (!portrait && hard.some((x) => x.startsWith('could not open'))) {
+          res.cells.push('n/a');
+          continue;
+        }
         const bad = hard.length > 0;
         const fails = bad && (portrait || landscapeFails);
         if (fails) failures++;

@@ -12,8 +12,14 @@
     margin: -2px 0 8px;
   }
 
+  /* the actions stay in view when a short screen makes the rest scroll (a landscape phone) */
   dialog.modal .buttons {
-    margin-top: 10px;
+    position: sticky;
+    bottom: -12px;
+    margin: 10px -14px -12px;
+    padding: 8px 14px;
+    background: var(--panel);
+    border-top: 1px solid var(--border);
   }
 
   /* a dialog with one long list: head and actions fixed, the list scrolls (data-list-area marks it) */
@@ -85,5 +91,34 @@
 
   .opening-preview figcaption {
     display: none;
+  }
+}
+
+/* AI setup: the two providers side by side (their names say what they are), a smaller privacy note. */
+@media (max-width: 600px), (max-height: 500px) {
+  .ai-setup {
+    gap: 5px;
+  }
+
+  dialog.modal[open]:has(.ai-setup) {
+    max-height: calc(100dvh - 16px);
+  }
+
+  .ai-providers {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  dialog.modal .ai-provider small {
+    display: none;
+  }
+
+  .ai-privacy {
+    padding: 4px 8px;
+    font-size: 12px;
+    line-height: 1.3;
+  }
+
+  dialog.modal:has(.ai-setup) .ai-field {
+    gap: 2px;
   }
 }
