@@ -24,7 +24,7 @@ const taken = () => `A tin heart, ticking like it means it. ${chickenWords().tit
 /** Is the clock heart found now (taken in the room, or added in EGG.EXE)? */
 const clockHeartFound = (): boolean => deskHeartStates().find((s) => s.id === CLOCK_HEART)?.found ?? false;
 
-export interface ClockHeart {
+interface ClockHeart {
   /** The chicken popped out: counts the pop, and true when the heart comes out this time. */
   popped(): boolean;
   /** Shows the heart: on the wall clock, or (where it isn't drawn) beside the monitor. */

@@ -44,7 +44,7 @@ interface Tool {
 }
 
 /** The designers, in Design-bar order (each was its own .EXE). */
-export const TOOLS: Tool[] = [
+const TOOLS: Tool[] = [
   { exe: 'PALCHOS.EXE', title: 'PALETTE DESIGNER', kinds: ['pal'], question: 'Enter the Palette name: ' },
   { exe: 'BLOCEDIT.EXE', title: 'BLOCK DESIGNER', kinds: ['bbl', 'mbl', 'cbl'], question: 'Choose a Block Set: ' },
   { exe: 'MONEDIT.EXE', title: 'MONSTER MAKER', kinds: ['mon'], question: 'Enter name of monster set to load: ' },

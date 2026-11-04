@@ -8,7 +8,7 @@ const GAP_MM = 30;
 
 type Placed = Pick<Part, 'group' | 'side' | 'stack' | 'bbox'>;
 
-export interface Stack {
+interface Stack {
   key: string;
   /** Lowest and highest height of the stack's parts (mm). */
   lo: number;

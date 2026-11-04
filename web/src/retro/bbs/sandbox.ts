@@ -43,7 +43,7 @@ import { rsdLine } from './rsdLine';
 import { signup } from './signup';
 import { signupAccounts } from './signupAccounts';
 
-export const BBS_NAME = 'THE -= S A N D B O X =- BBS';
+const BBS_NAME = 'THE -= S A N D B O X =- BBS';
 export const PHONE = '1-412-555-SAND';
 
 export async function runSandbox(t: Term, h: RetroHost): Promise<void> {

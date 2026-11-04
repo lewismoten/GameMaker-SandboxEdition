@@ -9,7 +9,7 @@ import { FlagError, ITEMS } from './flagsItems';
 import { FLAGS_HELP, FLAGS_TITLE } from './flagsText';
 import { makeBak, parseBak, readBak, restoreBak, writeBak, BAK_NAME } from './flagsBackup';
 
-export type FlagsCmd =
+type FlagsCmd =
   | { kind: 'list' }
   | { kind: 'help' }
   | { kind: 'backup' }

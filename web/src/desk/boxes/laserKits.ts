@@ -3,14 +3,14 @@
 // manifest with a `kit` entry in the same shape). The shelf (trinketShelf.ts, laserKitList.ts) lists whatever this
 // returns, so a new kit needs no UI code. A secret game has no manifest, so none is listed.
 
-export interface LaserPreview {
+interface LaserPreview {
   /** A PNG next to the manifest. */
   file: string;
   /** What the picture shows ("Front of the nickel"). */
   alt: string;
 }
 
-export interface LaserDownload {
+interface LaserDownload {
   /** A file next to the manifest, or `../name` for one shared by every game (the checklist). */
   file: string;
   /** What the file is for, in words ("The 12-nickel sheet: first pass"). */
@@ -18,7 +18,7 @@ export interface LaserDownload {
 }
 
 /** A flat part on a sheet, in millimeters from the sheet's top left (the Stage Box's manifest lists them). */
-export interface LaserPart {
+interface LaserPart {
   name: string;
   x: number;
   y: number;
@@ -55,7 +55,7 @@ export interface LaserKit {
 }
 
 /** Where game `id`'s laser files are served. */
-export const laserBase = (id: string): string => `./laser/${id}/`;
+const laserBase = (id: string): string => `./laser/${id}/`;
 
 const str = (v: unknown): v is string => typeof v === 'string' && v.length > 0;
 const list = <T>(v: unknown, ok: (x: Record<string, unknown>) => T | null): T[] =>

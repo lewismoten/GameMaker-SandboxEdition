@@ -6,7 +6,7 @@ import type { Feelie } from './feelies';
 import type { LaserKit } from './laserKits';
 import { trinketMesh } from './trinketData';
 
-export type ViewMaker = (canvas: HTMLCanvasElement) => TrinketView | undefined;
+type ViewMaker = (canvas: HTMLCanvasElement) => TrinketView | undefined;
 
 const images = new Map<string, Promise<HTMLImageElement>>();
 /** A picture the site serves, decoded once. */

@@ -161,7 +161,7 @@ type BoxSides = Record<keyof BoxFaces, HTMLCanvasElement>;
  * `w` x `h` inches of the desk's layout (PPI to the inch), drawn `scale` times finer, fresh from
  * the printer: no shelf wear and no store's price sticker.
  */
-export interface PrintSize {
+interface PrintSize {
   w: number;
   h: number;
   scale: number;

@@ -7,7 +7,7 @@ import { ITEMS, type FixItem } from './roomFixItems';
 
 const TITLE = 'ROOMFIX 1.0  Puts the desk room back the way it started';
 
-export const ROOMFIX_HELP = [
+const ROOMFIX_HELP = [
   'ROOMFIX [what...] [/FULL]      ROOMFIX alone only shows the list.',
   "  /SAFE  Locks Teddy's toy safe again, as if never opened.",
   '         Coins spent and treats bought are kept.',

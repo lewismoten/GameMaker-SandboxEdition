@@ -7,7 +7,7 @@ import { hasPhone } from './phone/phoneData';
 import { loadLaserKits, type LaserKit } from './laserKits';
 
 /** The game whose box also holds the phone kit, shown in 3D with its own views (phone/phoneViewer.ts). */
-export const PHONE_GAME = 'year2000';
+const PHONE_GAME = 'year2000';
 export const PHONE_TITLE = 'The Phone of the Future (kit)';
 
 export type Feelie =

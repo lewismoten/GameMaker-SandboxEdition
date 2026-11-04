@@ -17,7 +17,7 @@ import { account, filePoints, restoreAccount } from '../bbs/ratio';
 /** The hint line's rate (desk/room/phone/hintBill.ts, which the DOS page may not load: flags.test.ts checks it). */
 export const HINT_CENTS_PER_MINUTE = 199;
 
-export interface FlagItem {
+interface FlagItem {
   id: string;
   /** What it is, in a few words (the help's list). */
   label: string;

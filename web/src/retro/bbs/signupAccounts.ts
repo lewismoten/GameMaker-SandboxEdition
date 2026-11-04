@@ -1,6 +1,6 @@
 // The BBSes' local callback-verified handles; only fictional 555-01xx home lines are kept.
 export type SignupBoard = 'sandbox' | 'sofa';
-export interface SignupAccount {
+interface SignupAccount {
   board: SignupBoard;
   handle: string;
   phone: string;

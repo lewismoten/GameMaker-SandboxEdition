@@ -6,7 +6,7 @@
 type Box = [x0: number, y0: number, x1: number, y1: number];
 
 /** Where the lettering is and a mask over it (1 lettering, 0 not), in the shape titleMask() gives. */
-export interface InkMask {
+interface InkMask {
   x: number;
   y: number;
   w: number;

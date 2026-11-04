@@ -9,7 +9,7 @@ import type { TrinketView } from './trinketGl';
 const TURN = 0.3;
 const reduced = () => typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-export interface Turntable {
+interface Turntable {
   canvas: HTMLCanvasElement;
   /** Says 3D isn't available, in the canvas's place, when the browser has no WebGL. */
   status: HTMLElement;
