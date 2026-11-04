@@ -36,6 +36,8 @@ import { firstStepsState, notePlayed } from './firstSteps';
 import type { FirstStepsPanel } from './firstStepsPanel';
 import { readOnlyBar } from './released';
 import { saveNote } from './saveNote';
+import { crumbs } from './crumbs';
+import { restoreScroll, savedScroll, stampEntry, watchScroll } from './scrollMemory';
 import { assistantHost, setAssistantHost, type AssistantHost } from '../../assistant/hostSlot';
 import type { RunOptions } from '@lewismoten/gamemaker-sandbox-engine/engine/game';
 
@@ -122,6 +124,7 @@ export class Workspace implements AssistantHost {
   private sidebar = h('nav', { class: 'sidebar', 'aria-label': 'Game files' });
   private main = h('main', { class: 'editor', 'aria-label': 'Editor' });
   private current?: string;
+  private readonly unwatchScroll: () => void;
   private assetView?: { kind?: FileKind; tab: OverviewTab };
   private assetReturn?: { kind?: FileKind; tab: OverviewTab };
   private cleanup?: () => void;
@@ -137,6 +140,7 @@ export class Workspace implements AssistantHost {
 
   constructor(root: HTMLElement, project: Project, file?: string) {
     this.project = project;
+    this.unwatchScroll = watchScroll(this.main);
     this.bar = readOnlyBar(project);
     this.saved = project.readOnly ? undefined : saveNote(project);
     clear(root, h('div', { class: 'workspace' }, this.sidebar, this.main));
@@ -292,6 +296,7 @@ export class Workspace implements AssistantHost {
 
   dispose(): void {
     this.disposed = true;
+    this.unwatchScroll();
     this.saved?.dispose();
     this.firstSteps?.dispose();
     this.cleanup?.();
@@ -612,6 +617,7 @@ export class Workspace implements AssistantHost {
     this.assetView = { kind, tab };
     this.sidebar.classList.remove('open');
     this.main.classList.add('asset-editor');
+    const left = savedScroll();
     this.main.scrollTop = 0;
     window.scrollTo(0, 0);
     const at = currentRoute();
@@ -624,6 +630,8 @@ export class Workspace implements AssistantHost {
       else history.replaceState(null, '', href);
     }
     document.title = `${kind ? `${KIND_LABELS[kind]} · ` : tab !== 'files' ? `${TAB_TITLES[tab]} · ` : ''}${this.project.name} · ${SHORT}`;
+    // Back to a page of the Overview lands where it was left
+    const shown = stampEntry();
     this.renderSidebar();
     const slot = h('div', { role: 'status' }, 'Opening the overview…');
     clear(this.main, this.bar, slot);
@@ -650,6 +658,7 @@ export class Workspace implements AssistantHost {
         });
         slot.replaceWith(page.el);
         this.cleanup = () => page.dispose();
+        if (shown) restoreScroll(this.main, left);
       })
       .catch((error: unknown) => {
         if (slot.isConnected) clear(slot, h('p', { class: 'hint' }, `The overview could not open: ${(error as Error).message}`));
@@ -658,6 +667,8 @@ export class Workspace implements AssistantHost {
 
   open(file: string): void {
     const fromAssets = !!this.assetView;
+    const prev = this.current;
+    const left = savedScroll();
     this.assetView = this.assetReturn = undefined;
     this.main.classList.remove('asset-editor');
     this.cleanup?.();
@@ -680,6 +691,10 @@ export class Workspace implements AssistantHost {
       else history.replaceState(null, '', next);
     }
     setHashParams({ play: undefined });
+    // the entry remembers which file opened this one (Back to it is offered above the title)
+    const stamp = stampEntry(!fromAssets && prev && prev !== file ? prev : undefined);
+    const from = stamp ? stamp.from : !fromAssets && prev && prev !== file ? prev : undefined;
+    if (stamp) restoreScroll(this.main, left);
     // the tab names the open file first (phones show little of a tab's title)
     document.title = `${file} · ${this.project.name} · ${SHORT}`;
     this.renderSidebar();
@@ -689,6 +704,12 @@ export class Workspace implements AssistantHost {
     clear(
       this.main,
       this.bar,
+      crumbs(file, {
+        overview: () => this.openAssets(),
+        category: () => this.openAssets(kindOf(file)),
+        from: from && this.project.files.has(from) ? from : undefined,
+        back: () => history.back(),
+      }),
       h(
         'div',
         { class: 'row', style: 'justify-content:space-between;align-items:center;margin-bottom:8px' },

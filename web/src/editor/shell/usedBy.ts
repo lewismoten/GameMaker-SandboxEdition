@@ -21,7 +21,11 @@ export function usedByLine(project: Project, file: string): HTMLElement {
   // so the line stays one line and the editor below keeps its room
   const uses = [...scenes, ...scripts];
   const link = (u: (typeof uses)[number]) =>
-    h('button', { class: 'used-by-link', title: `Open ${u.file}`, onclick: () => openInEditor(project, u.file) }, u.text);
+    h(
+      'button',
+      { class: 'used-by-link', title: `Open ${u.file}`, onclick: () => openInEditor(project, u.file, u.scene === undefined ? {} : { scene: u.scene }) },
+      u.text,
+    );
   const show = (all: boolean) => {
     const shown = all || uses.length <= SHOWN + 1 ? uses : uses.slice(0, SHOWN);
     line.replaceChildren('Used by ');
