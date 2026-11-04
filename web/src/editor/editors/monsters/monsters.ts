@@ -108,6 +108,19 @@ registerEditor(['mon'], (host, project, file) => {
     save();
   }
 
+  // New monster: a copy of the picked one in the first unused slot, picked in turn, so a new kind starts from a working one
+  // (animation, strength, movement) instead of an unused slot's leftovers. Undo takes it back.
+  const newBtn = h('button', { title: 'Copy this monster into the first unused slot and pick the copy', onclick: () => newMonster() }, '＋ New monster');
+  function newMonster(): void {
+    const free = mons.findIndex((m, i) => !m.used && i !== current);
+    if (free < 0) return;
+    mons[free] = structuredClone(mons[current]);
+    current = free;
+    anim = 0;
+    edit(() => undefined);
+    render();
+  }
+
   // Undo: each change records the state before it (changes less than half a second apart, like a drag, are one step).
   const history = new History<Uint8Array>();
   let base = serializeMonsters(mons);
@@ -350,7 +363,7 @@ registerEditor(['mon'], (host, project, file) => {
         { class: 'hint' },
         'Pick a monster, then set its animation, strength and movement. Place monsters on maps with the map editor, or let blocks and character sequences give birth to them.',
       ),
-      h('div', { class: 'toolbar' }, undoBtn, redoBtn),
+      h('div', { class: 'toolbar' }, newBtn, undoBtn, redoBtn),
       badges.el,
       fileField(
         project,
