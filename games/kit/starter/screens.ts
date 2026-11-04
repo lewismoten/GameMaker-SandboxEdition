@@ -10,6 +10,9 @@ import { scaleBlit } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 import { centered, outlined, text, textWidth } from '@lewismoten/gamemaker-sandbox-tools/kit/pcText';
 import type { Book } from './book';
 import type { Pal } from './palette';
+import { backdrop, frameOf, lookOf, type GroupStyle } from './titleStyles';
+
+export type { GroupStyle } from './titleStyles';
 
 export const W = 320;
 export const H = 200;
@@ -80,17 +83,30 @@ function bigKey(p: Pixels, pal: Pal, x: number, y: number): void {
 /**
  * The title picture: the name over a sunny scene with the hero and a door. `prize` is what floats
  * between them: a straight row of coins at head height (the hero ready to hop) or a key at his waist (walking).
+ * `groupStyle` is the look of the Starter's group (titleStyles.ts); meadow, The Basics', is the default.
  */
-export function titlePicture(pal: Pal, book: Book, hero: Pixels, door: Pixels, name: string, tagline: string, prize: 'coins' | 'key' = 'coins'): Pixels {
-  const p = scene(pal, book, 160);
-  lettering(p, pal, 14, name, name.length > 11 ? 2 : 3);
+export function titlePicture(
+  pal: Pal,
+  book: Book,
+  hero: Pixels,
+  door: Pixels,
+  name: string,
+  tagline: string,
+  prize: 'coins' | 'key' = 'coins',
+  groupStyle: GroupStyle = 'meadow',
+): Pixels {
+  const look = groupStyle === 'meadow' ? undefined : lookOf(pal, groupStyle);
+  const p = groupStyle === 'meadow' ? scene(pal, book, 160) : backdrop(pal, groupStyle);
+  const size = name.length > 11 ? 2 : 3;
+  if (look) outlined(p, Math.round((W - textWidth(name, size)) / 2), 14, name, look.fill, look.outline, size, look.shadow);
+  else lettering(p, pal, 14, name, size);
   const ribbon = textWidth(tagline) + 20;
   const rx = Math.round((W - ribbon) / 2);
-  bevel(p, rx, 50, ribbon, 14, pal.r('parch'), 3, 2);
-  text(p, rx + 10, 54, tagline, pal.c('ink', 0));
+  bevel(p, rx, 50, ribbon, 14, pal.r(look?.ribbon ?? 'parch'), 3, 2);
+  text(p, rx + 10, 54, tagline, look?.ribbonText ?? pal.c('ink', 0));
   if (prize === 'coins') {
     // a shadow on the grass, and the hero a little off it
-    p.rect(44, 158, 32, 3, pal.c('grass', 1));
+    p.rect(44, 158, 32, 3, look?.floorShadow ?? pal.c('grass', 1));
     scaleBlit(p, hero, 40, 160 - 80 - 4, 2);
     for (let i = 0; i < 4; i++) coin(p, pal, 124 + i * 26, 76);
   } else {
@@ -98,6 +114,7 @@ export function titlePicture(pal: Pal, book: Book, hero: Pixels, door: Pixels, n
     bigKey(p, pal, 130, 118);
   }
   standing(p, door, 236, 160, 2);
+  if (groupStyle !== 'meadow') frameOf(p, pal, groupStyle);
   return p;
 }
 
