@@ -1,15 +1,15 @@
 {
-  "pitch": "It's Teddy's birthday and nobody says so: run Doc Leo's errands across every place from the first two adventures, and MEANWHILE... play as Gwinn and Doc Leo planning his surprise, and drive THE\u00a0CHEZ.",
+  "pitch": "It's Teddy's birthday and nobody says so: run Doc Leo's errands across every place from the first two adventures, and MEANWHILE... play as Gwinn and Doc Leo planning his surprise, and drive THE CHEZ.",
   "keys": {
-    "Up": "Hop (THE\u00a0CHEZ: bump)",
-    "Space": "WOOF! (Gwinn: BOOF! Doc Leo: SQUAWK! THE\u00a0CHEZ: HONK!)",
-    "Down": "Dig (Gwinn digs BIG)",
-    "F": "Fetch",
-    "S": "Sniff",
     "1": "High five, push a button (Gwinn: chew; Doc Leo: balloon dog)",
     "2": "Sit pretty",
     "3": "Spin (Gwinn: zoomies)",
     "4": "Play dead, hold (Gwinn: flop; Doc Leo: pratfall)",
+    "Up": "Hop (THE CHEZ: bump)",
+    "Space": "WOOF! (Gwinn: BOOF! Doc Leo: SQUAWK! THE CHEZ: HONK!)",
+    "Down": "Dig (Gwinn digs BIG)",
+    "F": "Fetch",
+    "S": "Sniff",
     "Q": "Hop up and to the left",
     "E": "Hop up and to the right"
   },
@@ -52,7 +52,7 @@
     },
     {
       "text": "HONK!",
-      "sub": "THE\u00a0CHEZ",
+      "sub": "THE CHEZ",
       "shape": "cut",
       "color": "#d9381e",
       "ink": "#ffffff",
@@ -71,7 +71,11 @@
       "sprite": {
         "blocks": "balloon.mbl",
         "pal": "balloon.pal",
-        "grid": [[40]]
+        "grid": [
+          [
+            40
+          ]
+        ]
       }
     },
     {
@@ -83,7 +87,11 @@
       "sprite": {
         "blocks": "hill.mbl",
         "pal": "hill.pal",
-        "grid": [[58]]
+        "grid": [
+          [
+            58
+          ]
+        ]
       }
     },
     {
@@ -95,7 +103,11 @@
       "sprite": {
         "blocks": "funhouse.mbl",
         "pal": "funhouse.pal",
-        "grid": [[46]]
+        "grid": [
+          [
+            46
+          ]
+        ]
       }
     },
     {
@@ -107,7 +119,11 @@
       "sprite": {
         "blocks": "maple.mbl",
         "pal": "maple.pal",
-        "grid": [[44]]
+        "grid": [
+          [
+            44
+          ]
+        ]
       }
     },
     {
@@ -119,7 +135,11 @@
       "sprite": {
         "blocks": "maple.bbl",
         "pal": "maple.pal",
-        "grid": [[16]]
+        "grid": [
+          [
+            16
+          ]
+        ]
       }
     },
     {
@@ -131,7 +151,11 @@
       "sprite": {
         "blocks": "meadow.bbl",
         "pal": "meadow.pal",
-        "grid": [[68]],
+        "grid": [
+          [
+            68
+          ]
+        ],
         "under": 27
       }
     },
@@ -144,7 +168,11 @@
       "sprite": {
         "blocks": "dig.bbl",
         "pal": "dig.pal",
-        "grid": [[61]],
+        "grid": [
+          [
+            61
+          ]
+        ],
         "under": 19
       }
     },
@@ -159,7 +187,7 @@
   "news": [
     {
       "head": "Teddy's back for the big one",
-      "html": "<p>The Teddy trilogy ends with its biggest adventure yet: <b>Teddy's Little Biggest Adventure</b>. Seventeen stops, a dream run, every place and friend from the first two games, and four heroes: Teddy, Gwinn, Doc Leo (at last!) and THE\u00a0CHEZ, which you get to drive. Mind the charge.</p>"
+      "html": "<p>The Teddy trilogy ends with its biggest adventure yet: <b>Teddy's Little Biggest Adventure</b>. Seventeen stops, a dream run, every place and friend from the first two games, and four heroes: Teddy, Gwinn, Doc Leo (at last!) and THE CHEZ, which you get to drive. Mind the charge.</p>"
     },
     {
       "head": "Since last issue: Best Behaved?",
@@ -167,7 +195,7 @@
     },
     {
       "head": "Around the Sandbox: From a snow shovel to here",
-      "html": "<p>Two years ago this company was the family 286, a snow shovel and a box of GAME-MAKER. Since then: a future, a smart home, a virus, a galaxy, a sandbox, a big town, a theater, a library, a snowstorm, a render, a kingdom, a fair, and now a birthday. Teddy still sleeps on the modem cable. Gwinn still sits about halfway. Doc Leo still leaves the spotlight on, and THE\u00a0CHEZ is still charging. Thank you for reading.</p>"
+      "html": "<p>Two years ago this company was the family 286, a snow shovel and a box of GAME-MAKER. Since then: a future, a smart home, a virus, a galaxy, a sandbox, a big town, a theater, a library, a snowstorm, a render, a kingdom, a fair, and now a birthday. Teddy still sleeps on the modem cable. Gwinn still sits about halfway. Doc Leo still leaves the spotlight on, and THE CHEZ is still charging. Thank you for reading.</p>"
     },
     {
       "head": "In the workshop: Your turn",
@@ -218,7 +246,7 @@
           "y": 31,
           "w": 16,
           "h": 10,
-          "caption": "THE\u00a0CHEZ on Maple Street"
+          "caption": "THE CHEZ on Maple Street"
         },
         {
           "map": "invite.map",
@@ -239,12 +267,30 @@
       "name": "TEDDY",
       "role": "GUEST OF HONOR",
       "fields": [
-        ["Breed", "Pembroke Welsh Corgi"],
-        ["Color", "Red-gold, white blaze"],
-        ["Ears", "Two, always up"],
-        ["Tricks", "All of them"],
-        ["Age", "One more than last year"],
-        ["Party", "Big Top, Lookout Hill"]
+        [
+          "Breed",
+          "Pembroke Welsh Corgi"
+        ],
+        [
+          "Color",
+          "Red-gold, white blaze"
+        ],
+        [
+          "Ears",
+          "Two, always up"
+        ],
+        [
+          "Tricks",
+          "All of them"
+        ],
+        [
+          "Age",
+          "One more than last year"
+        ],
+        [
+          "Party",
+          "Big Top, Lookout Hill"
+        ]
       ],
       "color": "#7a3fb8",
       "ink": "#ffffff",
@@ -269,6 +315,152 @@
       "promised": true,
       "heading": "THE CLOWN CLUB FACE DIAL · JOIN A FACE",
       "center": "CLUB",
+      "emblem": "nose",
+      "fills": {
+        "Teddy": [
+          "............",
+          ".aa.amma.aa.",
+          ".aaa....aaa.",
+          ".aaaammaaaa.",
+          ".a..ammma.a.",
+          ".aaaammmmaa.",
+          "..mmm..mmm..",
+          "..mm....mm..",
+          "...m.pp.m...",
+          "...m.pp.m...",
+          "............",
+          ".....pp....."
+        ],
+        "Gwinn": [
+          ".n.nn.n.....",
+          "..n.n.n.n...",
+          "..nn...nn.n.",
+          ".nnnnnnnnnn.",
+          ".nn..nn..nn.",
+          ".nnnnnnnnnn.",
+          "..nnn..nnn..",
+          "..nn....nn..",
+          "...n.rr.n...",
+          "...nn..nn...",
+          "....rrrr....",
+          "............"
+        ],
+        "Doc Leo": [
+          ".....YY.....",
+          "............",
+          "....b..b....",
+          "...bb..bb...",
+          "............",
+          ".wwwwwwwwww.",
+          ".w..wwww..w.",
+          ".wwwwwwwwww.",
+          "..ppRRRRpp..",
+          "..wwwRRwww..",
+          "...w....w...",
+          "............"
+        ],
+        "Juggles": [
+          "o.g.b..u.r.o",
+          ".r.y.gg.b.u.",
+          ".oooooooooo.",
+          ".oo.wwww.oo.",
+          ".o.wwwwww.o.",
+          ".owwwwwwwwo.",
+          "..o......o..",
+          "..ppRRRRpp..",
+          "...wwwwww...",
+          "...w....w...",
+          "....rrrr....",
+          "............"
+        ],
+        "Honker": [
+          ".....rr.....",
+          "..rrr..rrr..",
+          "..rrr..rrr..",
+          "............",
+          "..ssssssss..",
+          ".ssssssssss.",
+          ".s..ssss..s.",
+          ".ssssssssss.",
+          ".s........s.",
+          "............",
+          "...ssssss...",
+          "............"
+        ],
+        "Pratfall": [
+          "............",
+          "............",
+          "...bbbbbb...",
+          "............",
+          ".ssssssssss.",
+          ".s...ss...s.",
+          ".s.c.ss.c.s.",
+          ".s...ss...s.",
+          ".ssssssssss.",
+          "..s..rr..s..",
+          "...ssssss...",
+          "............"
+        ],
+        "Crier": [
+          "............",
+          ".....GG.....",
+          ".....GG.....",
+          "............",
+          "............",
+          ".ssssssssss.",
+          ".s..ssss..s.",
+          ".ssssrrssss.",
+          ".ss.ssss.ss.",
+          ".s........s.",
+          "..w.w..w.w..",
+          "...w.ww.w..."
+        ],
+        "Goose": [
+          ".....ff.....",
+          "..fff..fff..",
+          ".ffff..ffff.",
+          ".ff..ff..ff.",
+          ".f.f.ff.f.f.",
+          ".f.ffffff.f.",
+          ".f.f....f.f.",
+          "....fOOf....",
+          "..ffOOOOff..",
+          "..fffOOfff..",
+          "...ffOOff...",
+          "............"
+        ],
+        "Poodle": [
+          ".....pp.....",
+          "...pp..pp...",
+          "..p..pp..p..",
+          ".pp.pppp.pp.",
+          "..pppppppp..",
+          "..p..pp..p..",
+          "..pppppppp..",
+          "..ww....ww..",
+          "...w.ww.w...",
+          "...w.rr.w...",
+          ".pp......pp.",
+          "....pppp...."
+        ]
+      },
+      "fillColors": {
+        "r": "#e0262b",
+        "p": "#f58fb8",
+        "y": "#ffd23a",
+        "o": "#f28a1e",
+        "g": "#35ad55",
+        "b": "#2f6fd6",
+        "u": "#8a52c8",
+        "c": "#bfe6ff",
+        "w": "#ffffff",
+        "s": "#f4c9a0",
+        "a": "#e39a4c",
+        "m": "#fff4dc",
+        "n": "#9a7048",
+        "d": "#6a3f1e",
+        "f": "#e6e9ee"
+      },
       "split": true,
       "outer": [
         "Teddy",
@@ -630,11 +822,11 @@
           "hints": [
             {
               "q": "Who am I playing?",
-              "a": "The card before each stop says. Teddy runs the errands; MEANWHILE... stops are Gwinn or Doc Leo; on the road you drive THE\u00a0CHEZ."
+              "a": "The card before each stop says. Teddy runs the errands; MEANWHILE... stops are Gwinn or Doc Leo; on the road you drive THE CHEZ."
             },
             {
               "q": "I fetched the errand. Now what?",
-              "a": "Bring it to Doc Leo at THE\u00a0CHEZ at the end of the stop. The car door opens for it."
+              "a": "Bring it to Doc Leo at THE CHEZ at the end of the stop. The car door opens for it."
             },
             {
               "q": "A button does nothing.",
@@ -784,7 +976,10 @@
               "q": "I can't get past the ball.",
               "a": "You don't have to get past anything: the run ends by itself when the paw prints in the sky fill in. Hop when the ball is about a dog's length away, and hold Up for a higher hop."
             },
-            { "q": "A branch keeps bumping me.", "a": "Play dead (hold 4) as it comes, and keep holding until it has gone over." }
+            {
+              "q": "A branch keeps bumping me.",
+              "a": "Play dead (hold 4) as it comes, and keep holding until it has gone over."
+            }
           ]
         },
         {
@@ -864,5 +1059,13 @@
       ]
     }
   ],
-  "worldMap": { "regions": [[4, 19, 20]] }
+  "worldMap": {
+    "regions": [
+      [
+        4,
+        19,
+        20
+      ]
+    ]
+  }
 }
