@@ -30,6 +30,7 @@
     "verify:changed": "node ../scripts/verify-changed.mjs",
     "heavy": "node ../scripts/heavy.mjs",
     "editor:touch": "vite-node scripts/editorTouch.ts",
+    "check:dialogs": "vite-node scripts/dialogsFit.ts",
     "theme:recheck": "vite-node scripts/themeRecheck.ts",
     "check:gestures": "vite-node scripts/touchGestures.ts",
     "check:audio-unlock": "vite-node scripts/audioUnlock.ts",
