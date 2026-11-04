@@ -72,7 +72,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
   const atEnd = (f: () => void) => (life.aborted ? f() : life.addEventListener('abort', f, { once: true }));
   const catNav = h('div', { class: 'lib-cats', role: 'tablist', 'aria-label': 'Game collections' });
   const libTitle = h('h2', { id: 'lib-title' });
-  const howDoI = h('div', { class: 'lib-how', hidden: true });
+  const howDoI = h('div', { class: 'lib-hdi', hidden: true });
   // the collection in a line (cut short with … if it must be); More shows all of it
   const libLeadText = h('span', { class: 'lib-lead-text' });
   const leadMore = h(

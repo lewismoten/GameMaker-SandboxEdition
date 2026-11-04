@@ -35,7 +35,7 @@ interface ManualWithQuestions {
   howDoI?: HowDoIEntry[];
 }
 
-const manualOf = (e: Pick<CatalogEntry, 'original'>): ManualWithQuestions | undefined => e.original?.manual as ManualWithQuestions | undefined;
+const manualOf = (e: Pick<CatalogEntry, 'original'>): ManualWithQuestions | undefined => e.original?.manual;
 
 /** The page heading every level has beside its description. */
 export const LESSON_HEAD = 'How this level is made';

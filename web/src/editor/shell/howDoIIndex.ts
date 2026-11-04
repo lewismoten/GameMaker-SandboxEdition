@@ -47,8 +47,8 @@ export function howDoIIndex(opts: { compact?: boolean } = {}): HTMLElement {
   const count = h('span', { class: 'hdi-count', role: 'status' });
   const list = h('ul', { class: 'hdi-list' });
   const root = h(
-    'section',
-    { class: `hdi${opts.compact ? ' compact' : ''}`, 'aria-labelledby': `${search.id}-label` },
+    'div',
+    { class: `hdi${opts.compact ? ' compact' : ''}`, role: 'region', 'aria-labelledby': `${search.id}-label` },
     h('div', { class: 'hdi-head' }, h('label', { id: `${search.id}-label`, for: search.id }, 'How do I…?'), search, count),
     list,
   );

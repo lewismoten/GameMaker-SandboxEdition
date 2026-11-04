@@ -64,23 +64,27 @@
 }
 /* the Starters tab: a short list that scrolls, so the game tiles stay on the screen */
 .hdi.compact .hdi-list {
-  max-height: 6.5em;
+  max-height: 11em;
   overflow-y: auto;
 }
-.lib-how {
+.lib-hdi {
+  flex: none; /* the library is a flex column that can shrink its children (home.css) */
   margin: 0 0 4px;
 }
-.lib-how .hdi {
+.lib-hdi .hdi {
   margin: 0;
 }
 @media (max-width: 600px) {
+  .lib-hdi {
+    margin-top: 18px; /* clear of How it works, which wraps under the line about the collection */
+  }
   .hdi-list li {
     grid-template-columns: minmax(0, 1fr);
     grid-template-areas: 'q' 'where' 'go';
     gap: 2px;
   }
   .hdi.compact .hdi-list {
-    max-height: 9em;
+    max-height: 10em;
   }
 }
 
