@@ -120,13 +120,10 @@
     },
     "microphone": {
       "ref": "MK1",
-      "center": [
-        36.83,
-        166.37
-      ],
       "diameter": 9.7,
       "height": 6.5,
-      "faces": "front, bottom end (mouth end)",
+      "in_shell": true,
+      "faces": "front, in the shell's mouthpiece past the bottom end (grille holes in the front cover)",
       "solder_pads": [
         [
           34.29,
@@ -136,7 +133,8 @@
           39.37,
           166.37
         ]
-      ]
+      ],
+      "note": "the electret capsule is NOT on the board: a printed collar under the front cover's grille grips it. Two short wires (a twisted pair) run from the pads, through the wire slot in the shell and across the battery bay, to the capsule (+ is pad 1, the bias side, marked + on the silkscreen)"
     },
     "buttons": {
       "TALK": {
@@ -308,9 +306,10 @@
     "max_part_height": 13.0,
     "battery_holder": {
       "ref": "BT1",
+      "outside_board": true,
       "body_center": [
         36.83,
-        88.9
+        205.26
       ],
       "body": [
         53.0,
@@ -327,21 +326,21 @@
           152.4
         ]
       ],
-      "note": "a 4 x AAA holder with wire leads (Pololu 1145 size), held 6.3 mm off the back behind the dial (the shell leaves 1 mm over the tallest parts under it); its 6 in leads are shortened and soldered to the two pads (red to +)"
+      "note": "a 4 x AAA holder with wire leads (Pololu 1145 size), lying flat in the shell's battery bay past the bottom end of the board; its 6 in leads are shortened and soldered to the two pads (red to +)"
     },
-    "volume_trimmer": {
+    "volume_wheel": {
       "ref": "RV1",
       "center": [
-        66.04,
+        70.16,
         121.92
       ],
-      "optional": true,
       "body": [
-        9.5,
-        9.5
+        10.0,
+        8.0
       ],
       "height": 4.9,
-      "note": "optional: fit instead of R20 and R21; needs a screwdriver hole in the shell's back"
+      "wheel_diameter": 10.0,
+      "note": "side thumbwheel pot: its wheel stands 1.5 mm past the board edge, through a slot in the tray's side wall"
     },
     "power_switch": {
       "ref": "SW1",
@@ -369,7 +368,7 @@
       "height": 4.6
     },
     "tallest_parts": [
-      "BT1 13 mm, held 6.3 mm off the board (behind the dial)",
+      "BT1 13 mm (outside the board, in the battery bay)",
       "C21 220 uF electrolytic 11 mm",
       "ICs 4 mm",
       "MCP1702 TO-92 4.6 mm"

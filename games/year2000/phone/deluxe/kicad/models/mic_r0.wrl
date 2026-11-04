@@ -1,2 +1,5 @@
 #VRML V2.0 utf8
-Transform { translation 0.000 0.000 3.750 rotation 1 0 0 1.5707963 children Shape { appearance Appearance { material Material { diffuseColor 0.78 0.78 0.80 } } geometry Cylinder { radius 4.850 height 6.500 } } }
+Transform { translation -2.540 0.000 -1.500  children Shape { appearance Appearance { material Material { diffuseColor 0.85 0.12 0.10 } } geometry Box { size 0.800 0.800 3.800 } } }
+Transform { translation 2.540 0.000 -1.500  children Shape { appearance Appearance { material Material { diffuseColor 0.08 0.08 0.09 } } geometry Box { size 0.800 0.800 3.800 } } }
+Transform { translation -2.540 -3.000 -2.900  children Shape { appearance Appearance { material Material { diffuseColor 0.85 0.12 0.10 } } geometry Box { size 1.000 6.000 1.000 } } }
+Transform { translation 2.540 -3.000 -2.900  children Shape { appearance Appearance { material Material { diffuseColor 0.08 0.08 0.09 } } geometry Box { size 1.000 6.000 1.000 } } }
