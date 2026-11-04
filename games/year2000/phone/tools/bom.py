@@ -45,7 +45,7 @@ MPN = {
 GEN = {
     "R": ("1/4 W 5% carbon film resistor, {v} (axial)", "Futurlec 1/4 W pack of 10, $0.10 per value", f"checked {D}: Futurlec resistor page, all seven values listed in stock"),
     "C0": ("Ceramic capacitor {v} (radial, 5.08 mm leads; 50 V)", "Futurlec C100UC (0.1 uF 50 V) $0.10", f"checked {D}: Futurlec price for 100 nF; 1 uF not priced"),
-    "CE": ("Radial electrolytic {v} (16 V or more; 2.5 mm lead spacing)", "Futurlec C010U16E (10 uF 16 V) $0.05; C100U25E (100 uF 25 V) $0.08", f"checked {D}: Futurlec prices read"),
+    "CE": ("Radial electrolytic {v} (16 V or more; 2.5 mm lead spacing)", "Futurlec C010U16E (10 uF 16 V) $0.05; C100U25E (100 uF 25 V) $0.08", f"checked {D}: Futurlec prices read (1 uF not priced; same family as the 10 uF)"),
 }
 
 

@@ -327,7 +327,7 @@
           152.4
         ]
       ],
-      "note": "a 4 x AAA holder with wire leads (Pololu 1145 size), stuck to the back behind the dial; its 6 in leads are shortened and soldered to the two pads (red to +)"
+      "note": "a 4 x AAA holder with wire leads (Pololu 1145 size), held 6.3 mm off the back behind the dial (the shell leaves 1 mm over the tallest parts under it); its 6 in leads are shortened and soldered to the two pads (red to +)"
     },
     "volume_trimmer": {
       "ref": "RV1",
@@ -369,7 +369,7 @@
       "height": 4.6
     },
     "tallest_parts": [
-      "BT1 13 mm (behind the dial)",
+      "BT1 13 mm, held 6.3 mm off the board (behind the dial)",
       "C21 220 uF electrolytic 11 mm",
       "ICs 4 mm",
       "MCP1702 TO-92 4.6 mm"

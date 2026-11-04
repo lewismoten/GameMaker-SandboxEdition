@@ -3,6 +3,7 @@
 // switches, the tallest parts and the battery holder are). Units mm; x = board x, y = height (front +), z = board y (down).
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { leadsFrom, type Lead } from './clearance';
 
 export interface Variant {
   id: 'cheap' | 'deluxe';
@@ -23,6 +24,9 @@ export interface Variant {
   backMax: number;
   /** The battery holder's envelope in viewer coordinates, and whether it sits past the board's edge (the handle). */
   bt: { x0: number; x1: number; z0: number; z1: number; y0: number; y1: number; handle: boolean };
+  /** Part bodies (boxes) on each face, and the lead stubs the opposite parts' pads leave on each (clearance.ts). */
+  bodies: { id: string; side: string; bbox: number[] }[];
+  leads: Lead[];
   windows: { x: number; z: number; w: number; h: number; what: string }[];
 }
 
@@ -82,6 +86,8 @@ export function loadVariant(id: 'cheap' | 'deluxe', dir: string): Variant {
     frontMax: Math.max(...rest.filter((p) => p.side === 'front').map((p) => p.bbox[4])),
     backMax: -Math.min(...rest.filter((p) => p.side === 'back').map((p) => p.bbox[1])),
     bt: { x0: bt[0], x1: bt[3], z0: bt[2], z1: bt[5], y0: bt[1], y1: bt[4], handle },
+    bodies: rest.map((p) => ({ id: p.id, side: p.side, bbox: p.bbox })),
+    leads: leadsFrom(rd('kicad/placement.json') as never),
     windows: [win(spots.codes.parts, 'parts list QR'), win(spots.codes.site, 'site QR'), win(spots.dex, 'Dex Dynamo')],
   };
 }
