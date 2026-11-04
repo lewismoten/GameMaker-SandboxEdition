@@ -392,7 +392,7 @@ game folder opens in the browser unchanged.
     is **under copyright** (today MGM's), not licensed by this project.
   - _Paper Airplane_ (`cd/sharware/paperair`), by Matt Bell: its title picture `GMTITLE.GIF`
     is **The Nazgûl** by **Ted Nasmith** (gouache, first published in the 1990 Tolkien
-    Calendar; [tednasmith.com](https://www.tednasmith.com/?p=214)), scanned with the title
+    Calendar; [tednasmith.com](https://www.tednasmith.com/tolkien/the-nazgul/)), scanned with the title
     lettered over it. `OPENPAP.GIF`, a falcon turning into an F-16, may be **Jody Sjogren**'s
     _Metamorphosis II: Falconfyre_ (1986;
     [Wright State University](https://wright.libraryhost.com/repositories/2/top_containers/6194)),
