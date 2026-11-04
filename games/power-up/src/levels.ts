@@ -44,7 +44,7 @@ export const GROUND = 10;
 export const LEDGE_ROW = GROUND - 5;
 export const LEDGE_FROM = 14;
 export const LEDGE_TO = 24;
-/** Level 2: the canyon's columns (the ladder stands in its first). */
+/** Level 2: the canyon's columns (two steps stand in its first columns). */
 export const GAP_FROM = 31;
 export const GAP_TO = 37;
 export const CANYON_FLOOR = 14;
@@ -86,11 +86,12 @@ function highLedge(book: Book, signs: Record<SignName, Sign>): StarterMap {
   return m;
 }
 
-/** Level 2: a canyon seven blocks wide with a ladder up its near wall; the sneakers wait at the far left. 52 blocks wide. */
+/** Level 2: a canyon seven blocks wide with two steps up its near wall; the sneakers wait at the far left. 52 blocks wide. */
 function wideGap(book: Book, signs: Record<SignName, Sign>): StarterMap {
   const g = base(52, 18, 47);
   g.fill(GAP_FROM, GROUND, GAP_TO - GAP_FROM + 1, CANYON_FLOOR - GROUND, ' ');
-  g.col(GAP_FROM, GROUND - 1, CANYON_FLOOR - 1, 'H');
+  // two steps up the near wall: a jump of three blocks or less climbs out
+  g.col(GAP_FROM, CANYON_FLOOR - 2, CANYON_FLOOR - 1, 'D').put(GAP_FROM + 1, CANYON_FLOOR - 1, 'D');
   scenery(
     g,
     [

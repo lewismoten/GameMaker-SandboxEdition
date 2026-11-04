@@ -37,11 +37,8 @@ export function buildPowerHero(cb: Book): Character {
   S[PLAIN.jump] = copy(S[POWER.highJump]);
   S[PLAIN.right] = copy(S[POWER.fastRight]);
   S[PLAIN.left] = copy(S[POWER.fastLeft]);
-  // the powers are the same sequences with bigger numbers, and the arms-up pose in the air
-  S[POWER.highJump].frames.forEach((f, i) => {
-    if (f.y < 0) f.y = -HIGH_PUSH;
-    if (i < 2) f.pic1 = cb.n('cheer2.top');
-  });
+  // the powers are the same sequences with bigger numbers
+  for (const f of S[POWER.highJump].frames) if (f.y < 0) f.y = -HIGH_PUSH;
   for (const [n, sign] of [
     [POWER.fastRight, 1],
     [POWER.fastLeft, -1],

@@ -63,11 +63,10 @@ export async function wideGap(bot: StarterBot): Promise<void> {
   if (bot.sim.deaths !== 0) throw new Error('the canyon should not hurt');
   await must(bot, bot.wait(LOOK), 'looking up from the canyon');
   bot.say(`an ordinary jump fell short into the canyon at tick ${bot.sim.ticks}`);
-  // the ladder on the near wall is the way out
-  await must(bot, bot.walk(GAP_FROM, 'the ladder'), 'to the ladder');
-  await must(bot, bot.climb('up', GROUND - 1, 'up the ladder'), 'up the ladder');
+  // two steps on the near wall are the way out: walking at them, he hops up each
+  await must(bot, bot.walk(GAP_FROM - 2, 'out of the canyon'), 'out of the canyon');
+  if (bot.px.y !== ON_GROUND) throw new Error(`the steps should lead out of the canyon; hero at y ${bot.px.y}`);
   // the sneakers are back the way he came: a pair, left foot first
-  await must(bot, bot.walk(GAP_FROM - 2, 'off the ladder'), 'off the ladder');
   await must(bot, bot.walk(2, 'the sneakers'), 'to the sneakers');
   if (counter(bot, POWER.fastRight) !== SNEAKER_STRIDES || counter(bot, POWER.fastLeft) !== SNEAKER_STRIDES) {
     throw new Error(`each sneaker should give ${SNEAKER_STRIDES} strides; got ${counter(bot, POWER.fastRight)} and ${counter(bot, POWER.fastLeft)}`);
