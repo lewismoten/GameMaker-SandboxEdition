@@ -1,0 +1,72 @@
+{
+ "version": 1,
+ "game": "beat-the-clock",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU0UzTVNWs2nAU0ozQNNHM0oSw=="
+  },
+  {
+   "scene": 2,
+   "keys": "Ak20Ac0DTQrNA00="
+  },
+  {
+   "scene": 3,
+   "keys": "AU08zStNHs1cTRzNNE0ZzQNNLc0DTQ=="
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: Beat the Clock"
+  },
+  {
+   "scene": 2,
+   "title": "Level 1: Beat the Clock"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: Round and Round"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 10434,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 896,
+    "time": 14933.333333333148
+   },
+   {
+    "title": "Level 1: Beat the Clock",
+    "frame": 2125,
+    "time": 35416.66666666724
+   },
+   {
+    "title": "Level 2: Round and Round",
+    "frame": 5459,
+    "time": 90983.33333333692
+   },
+   {
+    "title": "Ending",
+    "frame": 7149,
+    "time": 119150.00000001179
+   },
+   {
+    "title": "Credits",
+    "frame": 9360,
+    "time": 156000.00000000076
+   }
+  ]
+ }
+}
