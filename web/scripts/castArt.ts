@@ -81,6 +81,7 @@ const CAST_ART: Record<string, Source> = {
       [79, 81],
     ],
   },
+  kit: { game: 'first-steps', chr: 'hero.chr', cbl: 'hero.cbl', pal: 'steps.pal' },
   lewie: { game: 'snowbound', chr: 'kid.chr', cbl: 'kid.cbl', pal: 'noon.pal' },
   will: { game: 'sweats', chr: 'poet.chr', cbl: 'poet.cbl', pal: 'hive.pal' },
   watt: { game: 'logic', chr: 'watt.chr', cbl: 'watt.cbl', pal: 'watt.pal' },

@@ -19,6 +19,10 @@ export const SEQ = {
   leftA: 11,
   upW: 12,
   downS: 13,
+  /** Animations the character file carries for a game to play (no key of their own): digging, tossing a star and cheering. */
+  dig: 14,
+  throw: 15,
+  cheer: 16,
 } as const;
 
 /** Keys (scan code << 8 | ASCII). */
