@@ -62,6 +62,7 @@
   html .file-more-menu > button,
   html .hint-toggle,
   html .file-field-choose,
+  html .file-field-edit,
   html .asset-menu button,
   html .asset-search input[type='search'],
   html .ovc-play,
@@ -73,5 +74,34 @@
     flex: none;
     min-width: 44px;
     min-height: 44px;
+  }
+}
+
+/* Shared by every editor: the Undo and Redo pair, checkboxes (a 28 px box inside a 44 px label row)
+   and the dev-only log toggle (its inline 24 px size is beaten with !important). */
+@media (hover: none) and (pointer: coarse) {
+  html .editor .toolbar > button,
+  html .editor .undo-btn,
+  html .editor .redo-btn {
+    box-sizing: border-box;
+    min-height: 44px;
+  }
+  html .editor input[type='checkbox'],
+  html .editor input[type='radio'] {
+    width: 28px;
+    height: 28px;
+    margin: 8px;
+  }
+  html .editor label:has(> input[type='checkbox'], > input[type='radio']) {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+  html button.dev-log-toggle {
+    width: 44px !important;
+    height: 44px !important;
+    left: 0 !important;
+    bottom: 0 !important;
+    line-height: 44px !important;
   }
 }
