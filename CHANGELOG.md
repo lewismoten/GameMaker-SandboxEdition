@@ -56,6 +56,8 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Fixed
 
+- The Clown Club is spelled with C's everywhere: the first Teddy game's level files were named with K's (now club.map, club.pal and the rest), and so were the picture sources of its two sequels. Teddy is now 1.3.
+- Gwinn's patio in the sand castle game warns of slobbery tennis balls (1.4), the Bard credits picture in the camel game ends "squeezes through." (1.4), one soil block in a Maximus world is a different variant (1.6), and Doc Leo's black-light poster has a flatter, gentler frown.
 - The editor's file list no longer jumps when you click a file: scrolled far down (the Slide shows group, say), each click used to slide the list by a few lines, so you had to scroll again after every click. It now stays where you left it.
 - Music editor: a song's tracks and instruments take their preset's family color (a Classic piano is red-orange, bass green) instead of every Classic sound showing the same cyan, and two tracks of one family get different shades.
 - The home page's games list works by keyboard: it is one Tab stop, the arrows, Home and End move between games, and Enter or a click on a game features it and moves focus to its Play button, so a second Enter plays. Each game says its collection and place ("3 of 18"), picking one is announced, and the focus ring on games and on Play no longer looks like the blue button style.
