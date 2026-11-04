@@ -59,6 +59,8 @@ for (const x of [X0, X1]) for (const s of [-1, 1]) add(roundCone3(x, 6.4 * s, 2,
 for (const s of [-1, 1]) for (const z of [4.5, 8.5, 11.5]) add(roundBox3(XM, 7 * s, z, 11, 0.8, z === 11.5 ? 1 : 1.2, 0.5), WOOD);
 for (const x of [X0, X1]) add(roundBox3(x, 0, 6, 1, 6.5, 4.5, 0.5), WOOD);
 add(roundBox3(XM, 0, 3, 10, 6.5, 1.3, 0.5), WOOD);
+// Join the hay to the trough floor with a substantial hidden core.
+add(roundCone3(XM, 0, 3.5, 2, XM, 0, 8, 2), HAY);
 add(ellipsoid3(XM, 0, 9.5, 9.4, 5.2, 4.2), HAY);
 for (const [dx, dy] of [
   [-4, 1],
@@ -74,5 +76,4 @@ export const thirdGoatAtManger = (): FieldTrinketInput => ({
   colorAt: GOAT_AT_MANGER.colorAt,
   box: { min: [-23, -13, -0.5], max: [49, 13, 48] },
   bodyCell: 0.5,
-  palette: [GOAT, CREAM, HORN, HAY, WOOD, HOOF, INK],
 });
