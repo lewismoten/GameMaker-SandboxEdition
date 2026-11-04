@@ -49,5 +49,13 @@ export function deskShelf(desk: HTMLElement, on: ShelfActions): { fill(games: Ca
     const el = scene?.querySelector('.game-shelf');
     if (el) desk.querySelector('.news-clipping')?.after(el);
   }
-  return { fill, dispose: () => shelf?.dispose() };
+  return {
+    fill,
+    dispose: () => {
+      // a shelf still being drawn is let go as soon as it is done (its picture addresses would never be released)
+      shelfFill++;
+      shelf?.dispose();
+      shelf = undefined;
+    },
+  };
 }
