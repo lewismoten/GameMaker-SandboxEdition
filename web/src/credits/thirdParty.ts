@@ -160,7 +160,7 @@ export const PIECE_GROUPS: PieceGroup[] = [
         license: 'Format description (RFC 2083)',
         by: 'Thomas Boutell and the PNG Development Group',
         what: 'The pictures the Assistant shows an AI tool (web/src/assistant/png.ts), written for this project from the specification; the browser’s own compression packs them.',
-        url: 'https://www.rfc-editor.org/rfc/rfc2083',
+        url: 'https://www.rfc-editor.org/info/rfc2083/',
       },
     ],
   },
@@ -321,7 +321,7 @@ export const PIECE_GROUPS: PieceGroup[] = [
         license: 'Under copyright, not licensed by this project',
         by: 'Ted Nasmith, first published in the 1990 Tolkien Calendar',
         what: 'The painting behind the title of Matt Bell’s Paper Airplane (GMTITLE.GIF).',
-        url: 'https://www.tednasmith.com/?p=214',
+        url: 'https://www.tednasmith.com/tolkien/the-nazgul/',
       },
       {
         name: 'Falcon turning into an F-16',

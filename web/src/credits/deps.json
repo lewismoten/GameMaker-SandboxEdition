@@ -679,7 +679,7 @@
         "vite-node"
       ],
       "author": "egoist",
-      "repo": "https://github.com/egoist/cac"
+      "repo": "https://github.com/cacjs/cac"
     },
     {
       "name": "cacheable",
@@ -823,7 +823,7 @@
         "@modelcontextprotocol/sdk"
       ],
       "author": "TJ Holowaychuk",
-      "repo": "https://github.com/visionmedia/node-cookie-signature"
+      "repo": "https://github.com/tj/node-cookie-signature"
     },
     {
       "name": "cors",
@@ -875,7 +875,7 @@
         "eslint"
       ],
       "author": "Thorsten Lorenz",
-      "repo": "http://github.com/thlorenz/deep-is"
+      "repo": "https://github.com/thlorenz/deep-is"
     },
     {
       "name": "depd",
@@ -983,7 +983,7 @@
         "@modelcontextprotocol/sdk"
       ],
       "author": "Jordan Harband",
-      "repo": "https://github.com/ljharb/es-object-atoms"
+      "repo": "https://github.com/es-shims/es-object-atoms"
     },
     {
       "name": "esbuild",
@@ -1118,7 +1118,7 @@
       "usedBy": [
         "eslint"
       ],
-      "repo": "http://github.com/estools/estraverse"
+      "repo": "https://github.com/estools/estraverse"
     },
     {
       "name": "estree-walker",
@@ -1141,7 +1141,7 @@
       "usedBy": [
         "eslint"
       ],
-      "repo": "http://github.com/estools/esutils"
+      "repo": "https://github.com/estools/esutils"
     },
     {
       "name": "etag",
@@ -1609,7 +1609,7 @@
         "eslint"
       ],
       "author": "Jon Schlinkert",
-      "repo": "https://github.com/jonschlinkert/is-extglob"
+      "repo": "https://github.com/micromatch/is-extglob"
     },
     {
       "name": "is-glob",
@@ -2472,7 +2472,7 @@
         "typescript-eslint"
       ],
       "author": "JoshuaKGoldberg",
-      "repo": "https://github.com/JoshuaKGoldberg/ts-api-utils"
+      "repo": "https://github.com/typescript-eslint/ts-api-utils"
     },
     {
       "name": "type-check",
@@ -2552,7 +2552,7 @@
         "eslint"
       ],
       "author": "Gary Court",
-      "repo": "http://github.com/garycourt/uri-js"
+      "repo": "https://github.com/garycourt/uri-js"
     },
     {
       "name": "vary",
@@ -2607,7 +2607,7 @@
         "eslint"
       ],
       "author": "Isaac Z. Schlueter",
-      "repo": "https://github.com/isaacs/node-which"
+      "repo": "https://github.com/npm/node-which"
     },
     {
       "name": "why-is-node-running",
@@ -2643,7 +2643,7 @@
         "@modelcontextprotocol/sdk"
       ],
       "author": "Isaac Z. Schlueter",
-      "repo": "https://github.com/npm/wrappy"
+      "repo": "https://github.com/isaacs/wrappy"
     },
     {
       "name": "ws",
