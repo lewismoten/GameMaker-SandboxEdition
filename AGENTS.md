@@ -56,6 +56,8 @@ npm run check:games -- --game <id> --quick         # one game, without the repro
 npm run walk:auto -- <folder|.zip> [--budget ms] [--game NAME.GAM] [--out w.json] [--basic-keys]  # the editor's walkthrough bot on any game; a table per scene; exits 1 if it didn't win; --basic-keys: arrows, Space and Enter only
 npm run check:keys [-- id ...]                     # keyboard accessibility: each walkthrough's share of arrows/Space/Enter presses, its diagonals and other keys; suggestions
 npm run editor:touch -- <route> [--out dir]       # touch audit of one editor route at iPad and iPhone sizes: controls under 44 px, overflow, axe, screenshots
+npm run check:gestures -- [--route r] [--out dir]  # map editor touch gestures (pinch, pan, paint, stray stroke, long-press) with real touch events at iPad and iPhone sizes; PASS/FAIL per step; exits 1 on a FAIL
+npm run check:audio-unlock -- [--engines webkit,chromium] [--page desk,home]  # desk makes its AudioContext outside input handlers and it runs after the first tap; headless WebKit is not iOS proof
 npm run replay:log -- <log.jsonl> [--session id] [--out dir]  # replay a game the dev interaction log (the 🐵 switch) recorded, headless; checks each snapshot; PNG frames with --out; exits 1 on divergence
 npm run badges:similar                             # advisory: achievement badges that look alike in gray or to color-blind eyes; HTML report in .for-lewis/research/badges-similar/
 npm run release:draft -- <pages|engine|archives|tools>  # a draft Unreleased body from the commits since that target's last tag (prints; never writes)

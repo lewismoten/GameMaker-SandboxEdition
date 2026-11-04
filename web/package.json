@@ -23,6 +23,8 @@
     "release:cut": "vite-node scripts/release/cut.ts",
     "release:check": "vite-node scripts/release/check.ts",
     "editor:touch": "vite-node scripts/editorTouch.ts",
+    "check:gestures": "vite-node scripts/touchGestures.ts",
+    "check:audio-unlock": "vite-node scripts/audioUnlock.ts",
     "editor:shots": "vite-node scripts/editorShots.ts",
     "smoke:engines": "vite-node scripts/smokeEngines.ts",
     "perf:check": "vite-node scripts/perfCheck.ts",
