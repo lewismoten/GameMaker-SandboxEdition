@@ -33,3 +33,14 @@ describe('heldText and resizedText', () => {
     expect(resizedText(640, 480, 320, 200, 'stretched')).toBe('The picture was 640×480; DOS pictures here are 320×200, so it was stretched.');
   });
 });
+
+describe('manyResizedText', () => {
+  it('names every odd picture, up to four', async () => {
+    const { manyResizedText } = await import('./limitNote');
+    const o = (name: string) => ({ name, w: 10, h: 10 });
+    expect(manyResizedText([], 64, 64, 'fitted')).toBe('');
+    expect(manyResizedText([o('a.png')], 64, 64, 'fitted')).toContain('The picture was 10×10');
+    expect(manyResizedText([o('a.png'), o('b.png')], 64, 64, 'fitted')).toBe('2 pictures were not 64×64, so they were fitted: a.png 10×10, b.png 10×10.');
+    expect(manyResizedText(['a', 'b', 'c', 'd', 'e', 'f'].map(o), 64, 64, 'fitted')).toMatch(/6 pictures.*d 10×10, and 2 more\.$/);
+  });
+});

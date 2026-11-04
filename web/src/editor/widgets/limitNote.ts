@@ -35,3 +35,12 @@ export function heldText(asked: number, kept: number, what: string, range: strin
 export function resizedText(fromW: number, fromH: number, toW: number, toH: number, how: string): string {
   return fromW === toW && fromH === toH ? '' : `The picture was ${fromW}×${fromH}; DOS pictures here are ${toW}×${toH}, so it was ${how}.`;
 }
+
+/** Names pictures of other sizes that were fitted into the DOS size: the one sentence for one, a short list (up to 4 named) for several. */
+export function manyResizedText(odd: { name: string; w: number; h: number }[], toW: number, toH: number, how: string): string {
+  if (!odd.length) return '';
+  if (odd.length === 1) return resizedText(odd[0].w, odd[0].h, toW, toH, how);
+  const shown = odd.slice(0, 4).map((o) => `${o.name} ${o.w}×${o.h}`);
+  const more = odd.length > 4 ? `, and ${odd.length - 4} more` : '';
+  return `${odd.length} pictures were not ${toW}×${toH}, so they were ${how}: ${shown.join(', ')}${more}.`;
+}

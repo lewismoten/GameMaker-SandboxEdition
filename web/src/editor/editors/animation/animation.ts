@@ -11,8 +11,9 @@ import { viewState } from '../../../urlState';
 import { h, clear, download, pickFiles, toast } from '../../core/ui';
 import { paintIndexed } from '../../core/draw';
 import { pickFile } from '../../widgets/filePicker';
-import { heldText, resizedText } from '../../widgets/limitNote';
+import { heldText, manyResizedText } from '../../widgets/limitNote';
 import { fitToPane } from '../../core/fitPane';
+import { windowUndoKeys } from '../../core/windowUndoKeys';
 import { decodeFrames, remap, rgbaOf } from '../../tools/convert';
 import { decodeGif, isGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
 import { decodeFliFrames, encodeFliFrames, fitPicture, type FliFrame, type FliFrames } from '@lewismoten/gamemaker-sandbox-engine/formats/fliFrames';
@@ -293,7 +294,7 @@ function framesView(host: HTMLElement, project: Project, file: string): () => vo
       toast('That picture could not be read.', 'error');
     }
     insert(added);
-    if (odd.length) toast(resizedText(odd[0][0], odd[0][1], anim.width, anim.height, 'fitted into the frame'));
+    if (odd.length) toast(manyResizedText(odd, anim.width, anim.height, 'fitted into the frame'));
   };
 
   const exportFrame = async () =>
@@ -453,7 +454,12 @@ function framesView(host: HTMLElement, project: Project, file: string): () => vo
   fitToPane(monitor);
   render();
   if (urlFrame === undefined) play();
-  return () => pause();
+  const offKeys = windowUndoKeys(
+    host,
+    () => history(undo, redo),
+    () => history(redo, undo),
+  );
+  return () => (pause(), offKeys());
 }
 
 // Two ways to work on an .FLI: its frames, or the scene the animation maker draws it from
