@@ -127,7 +127,7 @@ Making the files:
   (the red-capped hero's blocks and character: walk, Space jump, ladder climb), `monsters.ts` (gumdrop, buzzer and
   shelly), `grid.ts` + `map.ts` (a level painted on a `Grid`, then `StarterMap` rows of text: what each letter means is
   at its top; `.sign()` stamps a sign), `screens.ts` (title, menu, paper, cards, ending pictures), `text.ts` (`wrap`
-  to 30 columns), `sounds.ts`, `ids.ts` (sequences, keys, monsters, sounds) and `bot.ts` (`StarterBot`: walk, jump,
+  to 30 columns), `locks.ts` (`addLockBlocks`: a silver key, and one-block locked doors that spend a counter, for games about keys), `sounds.ts`, `ids.ts` (sequences, keys, monsters, sounds) and `bot.ts` (`StarterBot`: walk, jump,
   climb with arrows and Space only). A game adds its songs, words, levels and route.
 - `carlCameo.ts` — Carl the fly (A Fly Named Carl) as a guest in another game, drawn in the host game's palette.
 - `road3d.ts` — a road that comes at you, the pseudo-3D one-screen scene of year2000's Cloud Lane and blaster's data

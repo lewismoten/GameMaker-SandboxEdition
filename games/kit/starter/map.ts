@@ -5,6 +5,7 @@
 //   H ladder       c coin      k key      ^ spikes   b bush     f flower    ( ) a cloud
 //   s S the entrance (top, bottom): you start in it    e E the exit door (top, bottom)
 //   g gumdrop      z buzzer    n shelly   X sky you can't walk through
+//   (locks.ts) K silver key   L gold gate, l its arch   M silver gate, m its arch
 //
 // Signs are stamped on top with sign(): the board's top-left block, the words' name.
 // Around the level the world is 100x100 blocks: the sky and the ground carry on past its
@@ -36,6 +37,11 @@ const LEGEND: Record<string, string> = {
   e: 'doorTop',
   E: 'doorBottom',
   X: 'edge',
+  K: 'keySilver',
+  L: 'gate',
+  l: 'gateTop',
+  M: 'gateSilver',
+  m: 'gateTopSilver',
   g: 'sky',
   z: 'sky',
   n: 'sky',
