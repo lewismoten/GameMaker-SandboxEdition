@@ -65,7 +65,7 @@ export function libraryCards(lib: HomeLibrary, c: Category, ratingFilter: Return
               'h3',
               { class: `lib-sub${sec.games.length === 1 ? ' lib-sub-one' : ''}`, id: `lib-sub-${n}`, dataset: { group: String(n) } },
               sec.name,
-              sec.tag ? h('span', { class: 'lib-sub-tag' }, ` · ${sec.tag}`) : null,
+              c === 'starter' && sec.tag ? h('span', { class: 'lib-sub-tag' }, ` · ${sec.tag}`) : null,
               sec.count ? h('span', { class: 'lib-sub-count' }, ` · ${sec.count} game${sec.count === 1 ? '' : 's'}`) : null,
             ),
             ...sec.games.map((x) => {

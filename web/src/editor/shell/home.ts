@@ -337,7 +337,10 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     removeAllBtn.hidden = c !== 'imported' || !lib.own(c).length;
     // the Starters' "How do I…?" questions, loaded when that tab is first shown
     howDoI.hidden = c !== 'starter';
-    if (c === 'starter' && !howDoI.firstChild) void import('./howDoIIndex').then((m) => howDoI.append(m.howDoIIndex({ compact: true })));
+    if (c === 'starter' && !howDoI.firstChild && !howDoI.dataset.loading) {
+      howDoI.dataset.loading = '1'; // choosing the tab again before the index is in must not add a second one
+      void import('./howDoIIndex').then((m) => howDoI.append(m.howDoIIndex({ compact: true })));
+    }
     ratingBox.hidden = c !== 'imported' || !lib.own(c).length;
     newGameBtn.hidden = c === 'community';
     communityBtn.hidden = c !== 'community';
