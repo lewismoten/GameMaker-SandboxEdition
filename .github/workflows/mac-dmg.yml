@@ -38,7 +38,12 @@ jobs:
           pattern: game-frames-*
           path: games/.render-cache
           merge-multiple: true
+      # the downloads need the game disks only: no plastic trinkets or laser nickels (the site's files)
       - run: npm ci
+        env:
+          GM_SKIP_FIELD_TRINKETS: '1'
+          GM_SKIP_PIXEL_TRINKETS: '1'
+          GM_SKIP_LASER_NICKELS: '1'
       - run: npx vite-node scripts/macDmg.ts --all --zip --out ../dist/mac
       - name: Attach to the release
         env:
