@@ -1,0 +1,64 @@
+{
+  "version": 1,
+  "game": "power-up",
+  "rand": {
+    "seed": 1,
+    "per": "scene"
+  },
+  "segments": [
+    {
+      "scene": 2,
+      "keys": "AU1GzQM5ArlATVXNA00KzStLX8sDOQK5AE0KzQ5N"
+    },
+    {
+      "scene": 3,
+      "keys": "AU08zQM5ArkATUbNK0sXOQK5FMsHS4cByytNRs0DOQK5AE0ZzQlN"
+    }
+  ],
+  "chapters": [
+    {
+      "scene": 2,
+      "title": "Level 1: The High Ledge"
+    },
+    {
+      "scene": 3,
+      "title": "Level 2: The Wide Gap"
+    }
+  ],
+  "timeline": {
+    "fps": 60,
+    "frames": 9239,
+    "chapters": [
+      {
+        "title": "Opening",
+        "frame": 0,
+        "time": 0
+      },
+      {
+        "title": "Story",
+        "frame": 922,
+        "time": 15366.666666666466
+      },
+      {
+        "title": "Level 1: The High Ledge",
+        "frame": 2151,
+        "time": 35850.00000000051
+      },
+      {
+        "title": "Level 2: The Wide Gap",
+        "frame": 3852,
+        "time": 64199.999999996384
+      },
+      {
+        "title": "Ending",
+        "frame": 5957,
+        "time": 99283.33333333934
+      },
+      {
+        "title": "Credits",
+        "frame": 8165,
+        "time": 136083.33333334568
+      }
+    ]
+  }
+}
