@@ -6,12 +6,12 @@
 // brings the 1.8 MB of parts with it).
 import './phoneViewer.css';
 import { h } from '../../../editor/core/ui';
-import { loadPhone, type Part, type ViewFilter } from './phoneData';
+import { loadPhone, phoneSize, VARIANTS, type Part, type PhoneSet, type PhoneVariant, type ViewFilter } from './phoneData';
 import { createPhoneView, type PhoneView } from './phoneGl';
 
 const REPO = 'https://github.com/lewismoten/GameMaker-SandboxEdition/blob/master/games/year2000/phone/';
 const TURN = 0.3;
-const FIRST = { yaw: 0.6, pitch: -0.25 };
+const FIRST = { yaw: Math.PI + 0.6, pitch: -0.25 };
 const reduced = () => typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 type Mode = 'assembled' | 'exploded' | 'electronics' | 'bare';
@@ -21,6 +21,14 @@ const MODES: { mode: Mode; label: string; filter: ViewFilter; explode: number; w
   { mode: 'electronics', label: 'Electronics', filter: 'electronics', explode: 0, what: 'the board and its parts, no shell' },
   { mode: 'bare', label: 'Bare board', filter: 'bare', explode: 0, what: 'just the circuit board, with its silkscreen art' },
 ];
+
+/** The two builds, named the way Dex would (the full names are on the boards' silkscreen and in the repository). */
+const BUILDS: Record<PhoneVariant, { button: string; title: string }> = {
+  cheap: { button: 'No. 2 Junior Lab', title: 'Science Project No. 2: The Pocket Telephone, Junior Lab Edition (parts from any hobby shop)' },
+  deluxe: { button: 'No. 1 Deluxe', title: 'Science Project No. 1: The Pocket Telephone (Deluxe Model)' },
+};
+const inches = (mm: number) => (mm / 25.4).toFixed(2);
+const mmText = (mm: number) => mm.toFixed(0);
 
 export interface PhoneViewer {
   canvas: HTMLCanvasElement;
@@ -43,6 +51,8 @@ export function createPhoneViewer(): PhoneViewer {
   let last = 0;
   let opened = 0;
   let mode: Mode = 'assembled';
+  let variant: PhoneVariant = 'cheap';
+  const sets: Partial<Record<PhoneVariant, PhoneSet>> = {};
   let tween: { from: number; to: number; start: number } | undefined;
 
   const canvas = h('canvas', { class: 'trk-canvas phone-canvas', tabindex: 0, role: 'img' });
@@ -53,10 +63,18 @@ export function createPhoneViewer(): PhoneViewer {
   const buttons = MODES.map((m) =>
     h('button', { class: 'trk-btn', type: 'button', 'aria-pressed': String(m.mode === mode), onclick: () => choose(m.mode) }, m.label),
   );
+  const buildButtons = VARIANTS.map((v) =>
+    h('button', { class: 'trk-btn', type: 'button', 'aria-pressed': String(v === variant), onclick: () => chooseBuild(v) }, BUILDS[v].button),
+  );
+  const buildTitle = h('strong', { class: 'trk-title phone-build' });
+  const sizeNote = h('p', { class: 'phone-size', role: 'status' });
   const info = h(
     'div',
     { class: 'trk-info phone-info', hidden: '' },
     h('strong', { class: 'trk-title' }, 'The Phone of the Future (kit)'),
+    h('div', { class: 'trk-mode', role: 'group', 'aria-label': 'Which build to show, both drawn at the same scale' }, ...buildButtons),
+    buildTitle,
+    sizeNote,
     h(
       'span',
       { class: 'trk-blurb' },
@@ -102,12 +120,43 @@ export function createPhoneViewer(): PhoneViewer {
 
   function describe() {
     const m = MODES.find((x) => x.mode === mode)!;
+    buildTitle.textContent = BUILDS[variant].title;
+    if (parts.length) {
+      const [w, hh, d] = phoneSize(parts);
+      const b = sets[variant]?.meta?.board;
+      sizeNote.textContent = `With its shell: ${mmText(w)} × ${mmText(hh)} × ${mmText(d)} mm (${inches(w)} × ${inches(hh)} × ${inches(d)} in)${b ? `; the circuit board is ${b.width} × ${b.height} mm (${inches(b.width)} × ${inches(b.height)} in)` : ''}. Both builds are drawn at the same scale.`;
+    }
     const groups = new Set(parts.map((p) => p.group)).size;
     say.textContent = `${m.label}: ${m.what}. ${parts.length} parts in ${groups} groups.`;
     canvas.setAttribute(
       'aria-label',
       `The Phone of the Future kit, a 3D model. ${m.label}: ${m.what}. Drag to turn, scroll to zoom, shift-drag to pan, arrow keys to turn, Home to put it back.`,
     );
+  }
+  function chooseBuild(next: PhoneVariant) {
+    const set = sets[next];
+    if (!set || next === variant) return;
+    variant = next;
+    buildButtons.forEach((b, i) => b.setAttribute('aria-pressed', String(VARIANTS[i] === next)));
+    parts = set.parts;
+    mount();
+    describe();
+    wake();
+  }
+  /** (Re)builds the GL view for the current build, keeping the turn, zoom and explosion. */
+  function mount() {
+    const keep = view && { yaw: view.yaw, pitch: view.pitch, zoom: view.zoom, panX: view.panX, panY: view.panY, filter: view.filter, explode: view.explode };
+    view?.dispose();
+    const other = sets[VARIANTS.find((v) => v !== variant)!]?.parts ?? [];
+    view = createPhoneView(canvas, parts, other);
+    if (!view) throw new Error('no WebGL');
+    const m = MODES.find((x) => x.mode === mode)!;
+    if (keep) Object.assign(view, keep);
+    else {
+      view.filter = m.filter;
+      view.explode = m.explode;
+    }
+    slider.value = String(Math.round(view.explode * 100));
   }
   function choose(next: Mode) {
     mode = next;
@@ -191,7 +240,7 @@ export function createPhoneViewer(): PhoneViewer {
       view.panX += dx / 2;
       view.panY += dy / 2;
       wake();
-    } else if (e.shiftKey || e.buttons === 4 || view.zoom > 1.6) {
+    } else if (e.shiftKey || e.buttons === 4) {
       view.panX += dx;
       view.panY += dy;
       wake();
@@ -229,15 +278,11 @@ export function createPhoneViewer(): PhoneViewer {
       const mine = ++opened;
       canvas.classList.add('loading');
       try {
-        parts = await loadPhone();
+        const loaded = await Promise.all(VARIANTS.map((v) => loadPhone(v)));
         if (mine !== opened) return;
-        view?.dispose();
-        view = createPhoneView(canvas, parts);
-        if (!view) throw new Error('no WebGL');
-        const m = MODES.find((x) => x.mode === mode)!;
-        view.filter = m.filter;
-        view.explode = m.explode;
-        slider.value = String(m.explode * 100);
+        VARIANTS.forEach((v, i) => (sets[v] = loaded[i]));
+        parts = sets[variant]!.parts;
+        mount();
         spinning = !reduced();
         status.hidden = true;
         canvas.hidden = false;

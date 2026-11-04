@@ -468,9 +468,14 @@
   container-type: inline-size;
   position: relative;
   display: grid;
-  grid-template-columns: auto auto 1fr auto;
+  /* the badge at the top left, a row of lights over the control strip, the drive cage at the right */
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-areas:
+    'badge leds drives'
+    'badge strip drives';
+  grid-template-rows: auto 1fr;
   align-items: center;
-  gap: 18px;
+  gap: 8px 14px;
   width: 100%;
   min-height: 112px;
   margin-top: 12px;
@@ -513,18 +518,21 @@
   opacity: 0.55;
 }
 
-.case-buttons {
+/* the control strip: MHz display, TURBO, RESET, then POWER with the key lock beside it */
+.case-strip {
+  grid-area: strip;
   display: flex;
-  gap: 12px;
-  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  align-items: flex-end;
+  align-self: start;
 }
 
-/* a button with its name printed on the case under it */
-.case-buttons label,
-.case-buttons .keylock-label,
-.leds label.case-label {
+/* a button with its name printed on the case above it */
+.case-strip label,
+.case-strip .keylock-label {
   display: flex;
-  flex-direction: column;
+  flex-direction: column-reverse;
   align-items: center;
   gap: 4px;
   font:
@@ -534,38 +542,110 @@
   color: #5a5240;
 }
 
-/* the key lock: a chrome ring round the lock's cylinder, its key slot turned to unlocked */
+/* the key lock (pc/caseFace.ts): an open padlock, the chrome ring with its red-marked island, a closed padlock */
 .keylock {
-  position: relative;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, #fbfbf7, #b9b6ad 45%, #6f6c64 80%, #d8d5cc);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  color: #5a5240;
+}
+
+/* the open padlock above the left of the lock, the closed one above the right */
+.lock-icons {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.keylock-svg {
+  width: 26px;
+  height: 26px;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.35));
+}
+
+.keylock .lock-icon {
+  width: 8px;
+  height: 10px;
+}
+
+/* the brand badge at the top left: a sand castle picture over one big word, 38 mm square */
+.brand-badge {
+  --mm: 0.2cqw;
+  grid-area: badge;
+  align-self: start;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: calc(1.2 * var(--mm));
+  width: calc(38 * var(--mm));
+  height: calc(38 * var(--mm));
+  padding: calc(2.4 * var(--mm));
+  border: 1px solid #3a342a;
+  border-radius: 2px;
+  background: #1b2b3b;
   box-shadow:
-    0 1px 0 #fff,
-    0 2px 3px rgba(0, 0, 0, 0.35);
+    inset 0 0 0 calc(1.1 * var(--mm)) #c9a54a,
+    0 1px 0 #fff8;
+  color: #f3e3a8;
+  overflow: hidden;
 }
 
-.keylock::before {
-  content: '';
-  position: absolute;
-  inset: 4px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 40% 35%, #e9e6dc, #9c988c 70%, #7a766b);
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.45);
-}
-
-.keylock::after {
-  content: '';
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 2px;
-  height: 8px;
-  margin: -4px 0 0 -1px;
+.badge-art {
+  width: 100%;
+  flex: 1;
+  min-height: 0;
   border-radius: 1px;
-  background: #2b2924;
-  transform: rotate(-30deg);
+}
+
+.brand-badge b {
+  font:
+    800 max(calc(5.4 * var(--mm)), 7px) / 1 system-ui,
+    sans-serif;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+/* POWER, TURBO and H.D.D. in a row above the strip: a small light with its name beside it */
+.led-row {
+  grid-area: leds;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  align-self: end;
+  font:
+    700 8px/1 system-ui,
+    sans-serif;
+  font-style: italic;
+  letter-spacing: 0.08em;
+  color: #5a5240;
+}
+
+.led-row > span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.led-row .led {
+  margin-right: 0;
+  width: 9px;
+  height: 5px;
+  border-radius: 1px;
+}
+
+/* TURBO and RESET are the same round button */
+.case button.case-btn.round {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, #fbf8ee, #d3cbb3);
+}
+
+.case button.case-btn.round::before {
+  inset: -2px;
 }
 
 .case button.case-btn {
@@ -587,36 +667,12 @@
   cursor: pointer;
 }
 
-/* the reset button: small and set back, so it is not pressed by mistake */
-.case button.case-btn.reset {
-  width: 18px;
-  height: 14px;
-  margin: 4px 0;
-}
-
 .case button.case-btn:active,
 .case button.case-btn[aria-pressed='true'] {
   transform: translateY(2px);
   box-shadow:
     inset 0 1px 0 #fff,
     0 1px 0 var(--plastic-edge);
-}
-
-.leds .speed {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-}
-
-.leds {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  font:
-    600 8px/1 system-ui,
-    sans-serif;
-  letter-spacing: 0.05em;
-  color: #5a5240;
 }
 
 .led {
@@ -689,13 +745,38 @@
   filter: drop-shadow(0 0 2px rgba(255, 50, 30, 0.9)) drop-shadow(0 0 5px rgba(255, 40, 20, 0.5));
 }
 
-/* two 5.25" half-height bays side by side (146 x 41.3 mm), everything inside sized in mm from one factor */
+/* the drive cage, one stack of bays that touch (no gaps), 247.6 x 123.9 mm: the CD-ROM and the 3.5"
+   floppy bay (101.6 x 25.4 mm) side by side at the top, so their tops line up, then two blank 5.25"
+   covers (146 x 41.3 mm each) under the CD-ROM and a blank plate under the floppy. Everything is
+   sized in mm from one factor. */
 .drives {
   --mm: 0.2cqw; /* of the case's width: the bays scale with the case (1.5px at its widest) */
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+  grid-area: drives;
+  display: grid;
+  grid-template-columns: calc(146 * var(--mm)) calc(101.6 * var(--mm));
+  grid-template-rows: calc(25.4 * var(--mm)) calc(15.9 * var(--mm)) calc(41.3 * var(--mm)) calc(41.3 * var(--mm));
   justify-self: end;
+  align-self: start;
+}
+
+.drives > .cdrom {
+  grid-area: 1 / 1 / 3 / 2;
+}
+
+.drives > .fdd {
+  grid-area: 1 / 2 / 2 / 3;
+}
+
+.drives > .blank:nth-of-type(3) {
+  grid-area: 3 / 1;
+}
+
+.drives > .blank:nth-of-type(4) {
+  grid-area: 4 / 1;
+}
+
+.drives > .filler {
+  grid-area: 2 / 2 / 5 / 3;
 }
 
 .drive {
@@ -775,10 +856,6 @@
   inset: -2px 0;
 }
 
-.case button.case-btn.reset::before {
-  inset: -5px -3px;
-}
-
 .monitor .enlarge::before {
   inset: -4px -2px;
 }
@@ -792,60 +869,39 @@
   width: calc(15 * var(--mm));
   height: calc(4.5 * var(--mm));
 }
-
-/* the 3.5" floppy on its adapter: a face 101.6 mm wide and 25.4 mm tall centered in the bay's plate,
-   the disk slot (93 mm) across its top, then the light at lower left and the round eject button
-   at lower right */
-.drive.fdd .screw {
-  position: absolute;
-  width: calc(2.6 * var(--mm));
-  height: calc(2.6 * var(--mm));
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 35%, #d8d0b8, #8f8770);
-  box-shadow: inset 0 0 0 0.5px #6f6855;
-}
-
-.drive.fdd .screw.tl {
-  left: calc(4 * var(--mm));
-  top: calc(3 * var(--mm));
-}
-
-.drive.fdd .screw.tr {
-  right: calc(4 * var(--mm));
-  top: calc(3 * var(--mm));
-}
-
-.drive.fdd .screw.bl {
-  left: calc(4 * var(--mm));
-  bottom: calc(3 * var(--mm));
-}
-
-.drive.fdd .screw.br {
-  right: calc(4 * var(--mm));
-  bottom: calc(3 * var(--mm));
-}
-
-.drive.fdd .face {
-  position: absolute;
-  left: calc(22.2 * var(--mm));
-  top: calc(7.95 * var(--mm));
+/* the 3.5" floppy in its own 101.6 x 25.4 mm bay, laid flat like the drive in the 1990s photo: the slot
+   with its spring-door flap across the top over a stepped recess, the light and maker's name at the
+   lower left, the rectangular eject push-button at the lower right */
+.drive.fdd {
   width: calc(101.6 * var(--mm));
   height: calc(25.4 * var(--mm));
-  border-radius: 1px;
-  background: linear-gradient(#ebe4cf, #d6cfb7);
+  background: linear-gradient(#e9e2cd, #d4ccb3);
   box-shadow:
-    inset 0 1px 0 #fffb,
-    inset 0 -1px 0 #a89f86,
-    0 0 0 1px #a99f86;
+    inset 0 0 0 calc(1 * var(--mm)) #efe8d4,
+    inset 0 0 0 calc(1.4 * var(--mm)) #b4ab92,
+    0 1px 0 #fff8;
+}
+
+.drive.fdd .well {
+  position: absolute;
+  left: calc(4 * var(--mm));
+  right: calc(4 * var(--mm));
+  top: calc(3.2 * var(--mm));
+  height: calc(14 * var(--mm));
+  background: linear-gradient(#bfb69c, #d9d1ba 60%);
+  box-shadow: inset 0 1px 2px #0005;
+  /* the stepped notch at the lower left, where the disk goes in */
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 22% 100%, 22% 62%, 0 62%);
 }
 
 .drive.fdd .slot {
   position: absolute;
-  left: calc(4.3 * var(--mm));
-  top: calc(4 * var(--mm));
+  left: calc(4 * var(--mm));
+  top: calc(5.4 * var(--mm));
   width: calc(93 * var(--mm));
   height: calc(3.6 * var(--mm));
   border-radius: 1px;
+  z-index: 1;
   background: #15130f;
   box-shadow: inset 0 2px 2px #000;
   overflow: hidden;
@@ -853,68 +909,97 @@
 
 .drive.fdd .flap {
   position: absolute;
-  inset: 1px 2px 1px;
+  inset: 1px 2px 1px 2px;
   border-radius: 1px;
   background: linear-gradient(#3d3a32, #24221d);
   transition: transform 0.2s;
-  transform-origin: top;
+  transform-origin: left;
 }
 
-/* a disk in the drive: the flap is pushed in, showing the disk's edge */
+/* a disk in the drive: the flap is pushed in and the disk's edge sticks out of the slot */
 .drive.fdd[data-disk] .flap {
   transform: scaleY(0.25);
 }
 
-.drive.fdd[data-disk] .slot {
-  background: linear-gradient(transparent 55%, var(--disk-color, #222) 55%);
+.drive.fdd[data-disk]::after {
+  content: '';
+  position: absolute;
+  left: calc(9 * var(--mm));
+  top: calc(-2.2 * var(--mm));
+  width: calc(83 * var(--mm));
+  height: calc(4.5 * var(--mm));
+  border-radius: 1px 1px 0 0;
+  background: linear-gradient(#0004, transparent 40%), var(--disk-color, #222);
+  box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
+  pointer-events: none;
 }
 
 .drive.fdd .drive-led {
   position: absolute;
-  left: calc(9 * var(--mm));
-  top: calc(15.5 * var(--mm));
-  width: calc(4 * var(--mm));
-  height: calc(2 * var(--mm));
+  left: calc(5 * var(--mm));
+  bottom: calc(3.4 * var(--mm));
+  width: calc(4.4 * var(--mm));
+  height: calc(2.4 * var(--mm));
+  border-radius: 0.5px;
+  background: #2b3b27;
+  box-shadow: inset 0 0 0 1px #0004;
 }
 
-.drive.fdd .eject-btn.round {
+.drive.fdd .brand-print {
   position: absolute;
-  right: calc(9 * var(--mm));
-  top: calc(13.5 * var(--mm));
-  width: calc(10 * var(--mm));
-  height: calc(5 * var(--mm));
-  border-radius: 999px;
+  left: calc(11 * var(--mm));
+  bottom: calc(3.2 * var(--mm));
+  font:
+    800 max(calc(3 * var(--mm)), 5.5px) / 1 system-ui,
+    sans-serif;
+  letter-spacing: 0.06em;
+  color: #8c8470;
+  text-shadow: 0 1px 0 #fff9;
+}
+
+.drive.fdd .eject-btn.flat {
+  position: absolute;
+  right: calc(7 * var(--mm));
+  bottom: calc(2.6 * var(--mm));
+  width: calc(11 * var(--mm));
+  height: calc(5.5 * var(--mm));
+  border-radius: 1px;
   transition:
     transform 0.08s,
     box-shadow 0.08s;
 }
 
-.drive.fdd .eject-btn.round::before {
+.drive.fdd .eject-btn.flat::before {
   inset: -10px -8px;
 }
 
 /* pressed in: the button sinks into the face until the disk is out */
-.drive.fdd .eject-btn.round:active,
-.drive.fdd .eject-btn.round.pushed {
-  transform: translateY(1px) scale(0.93);
+.drive.fdd .eject-btn.flat:active,
+.drive.fdd .eject-btn.flat.pushed {
+  transform: translateY(1px) scale(0.95);
   box-shadow: inset 0 1px 2px #0006;
   background: linear-gradient(#c8bfa5, #ddd5bd);
 }
 
 .drive.fdd .bay-label {
   position: absolute;
-  left: calc(-18 * var(--mm));
-  top: calc(10 * var(--mm));
+  left: calc(46 * var(--mm));
+  bottom: calc(3.2 * var(--mm));
   font-size: 7px;
 }
 
-.drive.fdd .capacity {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: calc(2 * var(--mm));
-  text-align: center;
-  font-size: 6px;
+/* the empty 5.25" bays under the CD-ROM and the plate beside them: case-colored covers, inset with a seam */
+.drive.blank {
+  background: linear-gradient(#e0d8c0, #d2c9af);
+  box-shadow:
+    inset 0 0 0 calc(1.6 * var(--mm)) #d9d1b9,
+    inset 0 0 0 calc(2 * var(--mm)) #a99f86,
+    inset 0 -1px 0 #9d947b;
+}
+
+.drive.blank.filler {
+  width: auto;
+  height: auto;
 }
 
 /* CD-ROM: fills its bay; the tray's seam across the top (130 mm wide), controls under it */
@@ -940,7 +1025,7 @@
   padding: 0 8px;
   box-sizing: border-box;
   border-radius: 1px;
-  background: linear-gradient(#d9d1ba, #c3bba1);
+  background: linear-gradient(#f9f9f6, #e4e4df);
   box-shadow:
     inset 0 1px 0 #f4efe0,
     inset 0 -1px 0 #8f8770,
@@ -1569,22 +1654,33 @@
 }
 
 @media (max-width: 560px) {
+  /* the badge and the lights side by side, the strip under them, the drive cage under that */
   .case {
-    grid-template-columns: 1fr 1fr;
-  }
-  /* the speed display and its turbo button go under the lights together */
-  .leds {
-    flex-wrap: wrap;
-    row-gap: 8px;
-    min-width: 0;
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas:
+      'badge leds'
+      'strip strip'
+      'drives drives';
+    grid-template-rows: auto;
   }
   .drives {
-    grid-column: 1 / -1;
     justify-self: center;
-    flex-direction: row;
-    /* both bays still side by side: the mm shrinks with the screen (390px: 0.9px, 131px a bay) */
+    /* the whole cage still fits: the mm shrinks with the screen (390px: 0.9px, 223px across) */
     --mm: calc((100vw - 120px) / 300);
   }
+  .brand-badge {
+    --mm: calc((100vw - 120px) / 150);
+  }
+}
+
+/* the CD-ROM's faceplate is bright, near white: a slightly different plastic from the beige case */
+.drive.cdrom {
+  border-color: #b4b4ac;
+  background: linear-gradient(#fcfcfa, #ecece7);
+  box-shadow:
+    inset 0 1px 0 #fff,
+    0 1px 0 #fff8,
+    inset 0 -1px 0 #bdbdb4;
 }
 
 .drive.cdrom[data-disk] {

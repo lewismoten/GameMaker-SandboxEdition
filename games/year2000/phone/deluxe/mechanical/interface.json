@@ -1,0 +1,386 @@
+{
+  "about": "THE PHONE OF THE FUTURE board, rev C. Untested design. Units mm; origin top-left seen from the front; +x right, +y down.",
+  "board": {
+    "width": 73.66,
+    "height": 175.26,
+    "thickness": 1.6,
+    "corner_radius": 4.0,
+    "outline": "rounded rectangle, corner radius 4 mm",
+    "mounting_holes": [
+      {
+        "x": 3.81,
+        "y": 3.81,
+        "drill": 3.2,
+        "keepout_diameter": 7.2
+      },
+      {
+        "x": 69.85,
+        "y": 3.81,
+        "drill": 3.2,
+        "keepout_diameter": 7.2
+      },
+      {
+        "x": 3.81,
+        "y": 171.45,
+        "drill": 3.2,
+        "keepout_diameter": 7.2
+      },
+      {
+        "x": 69.85,
+        "y": 171.45,
+        "drill": 3.2,
+        "keepout_diameter": 7.2
+      }
+    ]
+  },
+  "front": {
+    "note": "Everything the user sees or touches is on the front. Solder tails of the front parts stick out of the back.",
+    "antenna_end": "top edge (y = 0)",
+    "ir_led": {
+      "ref": "D2",
+      "center": [
+        16.51,
+        6.35
+      ],
+      "dome_points": [
+        0,
+        -1
+      ],
+      "dome_diameter": 5.0,
+      "axis_height_above_board": 3.5,
+      "note": "5 mm LED with leads bent 90 degrees, dome beyond the top edge; pin 1 (square pad) is the cathode"
+    },
+    "ir_receiver": {
+      "ref": "D1",
+      "center": [
+        57.15,
+        6.35
+      ],
+      "faces": [
+        0,
+        -1
+      ],
+      "body": [
+        5.4,
+        4.3
+      ],
+      "axis_height_above_board": 3.0,
+      "note": "BPW34-style photodiode bent to face the top edge; its package needs a clear IR window about 6 x 5 mm"
+    },
+    "display": {
+      "refs": [
+        "DS1",
+        "DS2"
+      ],
+      "centers": [
+        [
+          20.32,
+          22.86
+        ],
+        [
+          53.34,
+          22.86
+        ]
+      ],
+      "module_body": [
+        30.0,
+        14.0
+      ],
+      "module_height": 7.2,
+      "digit_height": 9.2,
+      "window_rect": {
+        "x": 5.32,
+        "y": 15.86,
+        "w": 63.02,
+        "h": 14.0
+      },
+      "note": "two 3641AS-style 4-digit modules side by side (30 x 14 x 7.2 mm, pin rows 10.16 mm apart), checked against the GNQ-3641 datasheet"
+    },
+    "speaker": {
+      "ref": "LS1",
+      "center": [
+        36.83,
+        46.99
+      ],
+      "diameter": 28.0,
+      "thickness": 4.0,
+      "faces": "front (grille holes over the cone)",
+      "front_clear_zone_radius": 13.5,
+      "solder_pads": [
+        [
+          64.77,
+          63.5
+        ],
+        [
+          64.77,
+          68.58
+        ]
+      ],
+      "note": "the speaker is glued over the clear zone; the board under it carries only silkscreen on the front, two short wires reach the pads"
+    },
+    "microphone": {
+      "ref": "MK1",
+      "center": [
+        36.83,
+        166.37
+      ],
+      "diameter": 9.7,
+      "height": 6.5,
+      "faces": "front, bottom end (mouth end)",
+      "solder_pads": [
+        [
+          34.29,
+          166.37
+        ],
+        [
+          39.37,
+          166.37
+        ]
+      ]
+    },
+    "buttons": {
+      "TALK": {
+        "ref": "SW4",
+        "center": [
+          15.24,
+          152.4
+        ],
+        "body": [
+          6.0,
+          6.0
+        ],
+        "height_above_board": 4.3,
+        "stem_diameter": 3.5,
+        "cap_travel": 0.25
+      },
+      "CLEAR": {
+        "ref": "SW5",
+        "center": [
+          58.42,
+          152.4
+        ],
+        "body": [
+          6.0,
+          6.0
+        ],
+        "height_above_board": 4.3,
+        "stem_diameter": 3.5,
+        "cap_travel": 0.25,
+        "note": "also the hang-up button: it resets the PIC and clears the display"
+      }
+    }
+  },
+  "dial": {
+    "center": [
+      36.83,
+      88.9
+    ],
+    "radius": 24.0,
+    "front_clear_zone_radius": 25.5,
+    "number_ring_radius": 17.5,
+    "suggested_finger_hole_diameter": 8.5,
+    "rotation_to_dial": "clockwise from the digit to the finger stop",
+    "finger_stop_angle_cw_from_top_deg": 120,
+    "degrees_per_digit_of_travel": 30,
+    "digit_positions": [
+      {
+        "digit": "1",
+        "angle_cw_from_top_deg": 60,
+        "x": 51.99,
+        "y": 80.15
+      },
+      {
+        "digit": "2",
+        "angle_cw_from_top_deg": 30,
+        "x": 45.58,
+        "y": 73.74
+      },
+      {
+        "digit": "3",
+        "angle_cw_from_top_deg": 0,
+        "x": 36.83,
+        "y": 71.4
+      },
+      {
+        "digit": "4",
+        "angle_cw_from_top_deg": 330,
+        "x": 28.08,
+        "y": 73.74
+      },
+      {
+        "digit": "5",
+        "angle_cw_from_top_deg": 300,
+        "x": 21.67,
+        "y": 80.15
+      },
+      {
+        "digit": "6",
+        "angle_cw_from_top_deg": 270,
+        "x": 19.33,
+        "y": 88.9
+      },
+      {
+        "digit": "7",
+        "angle_cw_from_top_deg": 240,
+        "x": 21.67,
+        "y": 97.65
+      },
+      {
+        "digit": "8",
+        "angle_cw_from_top_deg": 210,
+        "x": 28.08,
+        "y": 104.06
+      },
+      {
+        "digit": "9",
+        "angle_cw_from_top_deg": 180,
+        "x": 36.83,
+        "y": 106.4
+      },
+      {
+        "digit": "0",
+        "angle_cw_from_top_deg": 150,
+        "x": 45.58,
+        "y": 104.06
+      }
+    ],
+    "note": "digits are silkscreened at the hole centers (cw angle from the top). Digit n travels 30 degrees x (n+1) back to the stop... 1 is 60 degrees from the stop, 0 is 330 degrees. Pulse switch closes once per digit step on the return; off-normal is closed while the dial is off rest.",
+    "microswitches": {
+      "pulse": {
+        "ref": "SW2",
+        "center": [
+          29.21,
+          83.82
+        ],
+        "pads": [
+          [
+            26.67,
+            83.82
+          ],
+          [
+            31.75,
+            83.82
+          ]
+        ],
+        "body": [
+          12.8,
+          6.5
+        ],
+        "height_above_board": 10.2,
+        "lever_direction_toward_dial_center": [
+          0.832,
+          0.555
+        ],
+        "closes_on": "each cam tooth during the return stroke (10 teeth for 10 pulses max)"
+      },
+      "off_normal": {
+        "ref": "SW3",
+        "center": [
+          44.45,
+          93.98
+        ],
+        "pads": [
+          [
+            41.91,
+            93.98
+          ],
+          [
+            46.99,
+            93.98
+          ]
+        ],
+        "body": [
+          12.8,
+          6.5
+        ],
+        "height_above_board": 10.2,
+        "lever_direction_toward_dial_center": [
+          -0.832,
+          -0.555
+        ],
+        "closes_on": "held closed whenever the dial is off its rest position"
+      }
+    },
+    "keep_clear": "inside the dial radius the front carries only silkscreen and the two microswitches (no pads, vias or front copper tracks): the dial can sit about 11 mm above the board"
+  },
+  "back": {
+    "note": "Electronics and the battery holder are on the back. Back parts are mirrored footprints.",
+    "max_part_height": 13.0,
+    "battery_holder": {
+      "ref": "BT1",
+      "body_center": [
+        36.83,
+        88.9
+      ],
+      "body": [
+        53.0,
+        50.0
+      ],
+      "height": 13.0,
+      "lead_pads": [
+        [
+          41.91,
+          152.4
+        ],
+        [
+          31.75,
+          152.4
+        ]
+      ],
+      "note": "a 4 x AAA holder with wire leads (Pololu 1145 size), held 6.3 mm off the back behind the dial (the shell leaves 1 mm over the tallest parts under it); its 6 in leads are shortened and soldered to the two pads (red to +)"
+    },
+    "volume_trimmer": {
+      "ref": "RV1",
+      "center": [
+        66.04,
+        121.92
+      ],
+      "optional": true,
+      "body": [
+        9.5,
+        9.5
+      ],
+      "height": 4.9,
+      "note": "optional: fit instead of R20 and R21; needs a screwdriver hole in the shell's back"
+    },
+    "power_switch": {
+      "ref": "SW1",
+      "center": [
+        66.04,
+        108.0
+      ],
+      "handle_direction": [
+        1,
+        0
+      ],
+      "body": [
+        10.0,
+        6.0
+      ],
+      "height": 6.0,
+      "note": "slide switch near the right edge; the shell needs a slot there"
+    },
+    "regulator": {
+      "ref": "U6",
+      "center": [
+        43.18,
+        143.51
+      ],
+      "height": 4.6
+    },
+    "tallest_parts": [
+      "BT1 13 mm, held 6.3 mm off the board (behind the dial)",
+      "C21 220 uF electrolytic 11 mm",
+      "ICs 4 mm",
+      "MCP1702 TO-92 4.6 mm"
+    ]
+  },
+  "silkscreen": {
+    "front_title": "THE PHONE OF THE FUTURE near the top, orbit rings and rays around the dial and speaker, a YEAR 2000 badge at the bottom left",
+    "labels": [
+      "TALK",
+      "CLEAR",
+      "MIC"
+    ]
+  }
+}

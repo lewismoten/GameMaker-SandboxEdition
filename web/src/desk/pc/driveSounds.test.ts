@@ -49,15 +49,29 @@ describe('the bays', () => {
   const mm = (sel: string, prop: string) =>
     Number(new RegExp(`${sel.replace(/[.]/g, '\\.')} \\{[^}]*?${prop}: calc\\(([\\d.]+) \\* var\\(--mm\\)\\)`).exec(css)?.[1]);
 
-  it('are 146 x 41.3 mm, one factor for both drives', () => {
+  it('the CD-ROM bay is 146 x 41.3 mm', () => {
     expect(mm('.drive', 'width')).toBe(146);
     expect(mm('.drive', 'height')).toBe(41.3);
   });
 
-  it('seat the 3.5 inch face (101.6 mm, slot 93 mm) centered in the bay; the CD tray is 130 mm', () => {
-    expect(mm('.drive.fdd .face', 'width')).toBe(101.6);
-    expect(mm('.drive.fdd .face', 'left')).toBeCloseTo((146 - 101.6) / 2, 1);
+  it('the floppy has its own 3.5 inch bay, 101.6 x 25.4 mm, laid flat with a 93 mm slot; the CD tray is 130 mm', () => {
+    expect(mm('.drive.fdd', 'width')).toBe(101.6);
+    expect(mm('.drive.fdd', 'height')).toBe(25.4);
     expect(mm('.drive.fdd .slot', 'width')).toBe(93);
     expect(mm('.drive.cdrom .tray-slot', 'width')).toBe(130);
+  });
+
+  it('the cage is one stack: three 5.25 inch bays (123.9 mm) beside the floppy bay and its plate, with no gap', () => {
+    expect(css).toMatch(/\.drives \{[^}]*grid-template-columns: calc\(146 \* var\(--mm\)\) calc\(101\.6 \* var\(--mm\)\)/);
+    expect(css).toMatch(
+      /grid-template-rows: calc\(25\.4 \* var\(--mm\)\) calc\(15\.9 \* var\(--mm\)\) calc\(41\.3 \* var\(--mm\)\) calc\(41\.3 \* var\(--mm\)\)/,
+    );
+    expect(25.4 + 15.9 + 41.3 + 41.3).toBeCloseTo(3 * 41.3, 5);
+    expect(css).not.toMatch(/\.drives \{[^}]*\bgap:/);
+  });
+
+  it('the brand badge is 38 mm square', () => {
+    expect(mm('.brand-badge', 'width')).toBe(38);
+    expect(mm('.brand-badge', 'height')).toBe(38);
   });
 });

@@ -3,6 +3,7 @@
 // own in games/<id>/printables.json (see README.md in this folder for the full guide).
 
 import type { PrintsItem, SpyglassItem } from './sleuthTypes';
+import type { BalloonCubeItem } from './balloonCubeTypes';
 
 /** Extras every game gets, made from its catalog entry, manual and disk files. */
 export type GeneratedKind =
@@ -316,7 +317,17 @@ export interface PostcardGrilleItem extends ItemBase {
   puzzles?: { scenes: number[]; ask: string; place: import('./postcardMath').Place; answer?: string }[];
 }
 
+/**
+ * A school science report in a character's hand (dexReport.ts): a cover and twenty pages of pencil on lined and
+ * graph paper, with sketches, taped-in photos, a teacher's red pen and a grade sticker. Its text is in
+ * dexReportPages*.ts; the item only names it for the box.
+ */
+export interface DexReportItem extends ItemBase {
+  kind: 'dexreport';
+}
+
 export type PrintableItem =
+  | DexReportItem
   | SpyglassItem
   | PrintsItem
   | MapItem
@@ -330,7 +341,8 @@ export type PrintableItem =
   | RecipeItem
   | CodeWheelItem
   | CodeSheetItem
-  | PostcardGrilleItem;
+  | PostcardGrilleItem
+  | BalloonCubeItem;
 
 /** A sticker on the sticker sheet. */
 export interface StickerSpec {

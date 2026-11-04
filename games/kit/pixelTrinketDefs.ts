@@ -54,10 +54,6 @@ GAMES.carl = [
   hero('carl', 'carl', 'aux', 'Carl', 'The fly in the room, and he is winning.', 'carl'),
   mon('aux', 26, 'carl', 'aux', 'frog', 'Frog', 'A frog who shares the room with Carl.'),
 ];
-GAMES.goat = [
-  hero('goat', 'goat', 'caravan', 'The third goat', 'The goat nobody painted.', 'goat'),
-  mon('caravan', 2, 'goat', 'caravan', 'sheep', 'Sheep', 'A sheep from the shepherds’ fold.'),
-];
 GAMES.loaf = [
   hero('loaf', 'loaf', 'baskets', 'Loaf #13', 'The loaf nobody picked, rolling out of the basket.', 'loaf'),
   mon('baskets', 1, 'loaf', 'baskets', 'fish', 'Fish', 'The fish that came with the loaves.'),

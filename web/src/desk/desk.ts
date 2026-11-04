@@ -9,7 +9,7 @@ import './pc/crtOff.css';
 import { clear, toast } from '../editor/core/ui';
 import { loadDisks, type Disk } from '../retro/dos/disks';
 import { openDiskBox, type DiskAction } from './disks/diskBox';
-import { openTray } from './pc/caseParts';
+import { closeTray, openTray, trayState } from './pc/caseParts';
 // the room, the box and the PC as drawn (with the box's gmBox.css ribbon)
 import { deskScene, drawBoxTiles } from './deskScene';
 import { onCatalogChanged } from '../project/catalogWatch';
@@ -32,6 +32,7 @@ import { restoreDesk } from './deskRestore';
 import { wallTrophies } from './wallTrophies';
 import { deskTour } from './deskTour';
 import { beginDesk, endDesk } from './lifetime';
+import { ejectRefusal } from './ejectRule';
 
 // What is opened or read on the desk loads when it first is: the manuals and the catalog (the
 // boxes' insides, deskGmBox.ts and deskShelf.ts).
@@ -161,9 +162,11 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
 
   function eject(): void {
     const computer = pc.computer;
-    // a utility like PLAYHACK carries on with the drive empty (retro/diskSwap.ts)
-    if (computer?.busy && !computer.diskSwappable) {
-      toast('The drive light is on — quit the running program first.');
+    // the button is mechanical: it works any time but while A:'s light is really on. A game
+    // already loaded plays on; a later read of A: gets "Not ready reading drive A" (ejectRule.ts)
+    const refusal = ejectRefusal(floppy.isBusy());
+    if (refusal) {
+      toast(refusal);
       return;
     }
     computer?.eject();
@@ -242,7 +245,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   async function startGameMaker(): Promise<void> {
     const computer = await pc.load();
     if (!computer.cdInserted) {
-      await openTray(cd);
+      await openTray(cd, 1000);
       computer.insertCd();
       cd.setDisc('Game-Maker SE 3.0');
       desk.querySelector('.gm-box')?.classList.add('cd-in');
@@ -253,6 +256,10 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
 
   /** The CD-ROM's eject button: out comes the tray (and the Game-Maker CD, back to its box). */
   async function ejectCd(): Promise<void> {
+    // the tray is out: this press pushes it back in; a press while it closes does nothing
+    const tray = trayState(cd);
+    if (tray === 'closing') return;
+    if (tray !== 'closed') return closeTray(cd);
     const computer = pc.computer;
     if (computer?.busy && computer.cdInserted) {
       toast('The CD-ROM is in use — quit the running program first.');

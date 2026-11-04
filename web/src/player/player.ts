@@ -1,6 +1,7 @@
 // A self-contained game player: canvas, input and audio around runGame().
 import './player.css';
 import { hardwareSetup } from './hardwareSetup';
+import { dosHardwareSetup } from './dosConfig/dosSetup';
 import { Machine, GameAborted } from '@lewismoten/gamemaker-sandbox-engine/engine/machine';
 import type { AudioEngine } from '@lewismoten/gamemaker-sandbox-engine/audio/engine';
 import { Keyboard } from '@lewismoten/gamemaker-sandbox-engine/input/keyboard';
@@ -52,6 +53,8 @@ interface PlayerOptions extends RunOptions {
   hardwareId?: string;
   /** CONFIG.BAT: open setup even when settings are already saved or bypassed. */
   configure?: boolean;
+  /** The 1994 PC (the desk, dos.html): setup is PLAYGAME's DOS Configure screen on the monitor, not the web dialog. */
+  dosSetup?: boolean;
 }
 
 export interface PlayerHandle {
@@ -175,7 +178,9 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
   const setup =
     opts.preview || opts.playback || opts.record
       ? undefined
-      : hardwareSetup(container, opts.hardwareId ?? opts.saveId ?? `${gamFile.toLowerCase()}:${opts.title ?? ''}`, machine.audio);
+      : opts.dosSetup
+        ? dosHardwareSetup(machine, opts.hardwareId ?? opts.saveId ?? `${gamFile.toLowerCase()}:${opts.title ?? ''}`)
+        : hardwareSetup(container, opts.hardwareId ?? opts.saveId ?? `${gamFile.toLowerCase()}:${opts.title ?? ''}`, machine.audio);
   let finish = () => {};
   let unhide: (() => void) | undefined;
   const done = new Promise<void>((resolve) => {
@@ -197,7 +202,7 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
     const begin = async () => {
       if (started || stopped) return;
       started = true;
-      setup?.controls.remove();
+      setup?.controls?.remove();
       start.remove();
       // the way back stays while playing, small, beside Keys (Esc's menu and Quit also lead there)
       if (back && !opts.preview && !opts.noKeysButton) {

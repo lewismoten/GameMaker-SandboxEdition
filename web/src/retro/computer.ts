@@ -421,6 +421,7 @@ export class Computer extends ComputerFolders {
               title,
               notice,
               configure,
+              dosSetup: true, // PLAYGAME's own Configure screen (player/dosConfig/), not the web dialog
               hardwareId: projectId ? `project:${projectId}` : saveId,
               player,
               autoStart: true,

@@ -7,6 +7,7 @@ import { redCode, redSketch } from './redFilm';
 import { paginate } from './paginate';
 import { fitSheet } from './fitSheet';
 import { printsSheets, spyglassSheets } from './sleuthPrints';
+import { balloonCubeSheets } from './balloonCube';
 import { hintBookCover } from './hintCover';
 import { codeWheelSheets } from './codeWheel';
 import { codeSheetSheets } from './codeSheet';
@@ -415,8 +416,12 @@ export function renderItem(ctx: PrintContext, it: PrintableItem): Promise<Sheet[
       return codeWheelSheets(it);
     case 'codesheet':
       return codeSheetSheets(it);
+    case 'ballooncube':
+      return balloonCubeSheets(it);
     case 'postcardgrille':
       return postcardGrilleSheets(it);
+    case 'dexreport':
+      return import('./dexReport').then((m) => m.dexReportSheets(it));
   }
 }
 
