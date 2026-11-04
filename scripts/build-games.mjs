@@ -244,8 +244,9 @@ const fieldTrinketGames = [
   ['snowbound', 'Snowbound'],
   ['blaster', 'Blaster'],
 ];
+// GM_SKIP_FIELD_TRINKETS=1 leaves them out (the Mac, Windows and Linux download jobs only need the disks).
 const trinkets = Promise.all(
-  fieldTrinketGames
+  (process.env.GM_SKIP_FIELD_TRINKETS ? [] : fieldTrinketGames)
     .filter(([id]) => ids.includes(id) && (!only.length || only.includes(id)))
     .map(async ([id, name]) => {
       const started = Date.now();
