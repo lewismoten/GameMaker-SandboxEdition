@@ -27,29 +27,29 @@ export interface ShellPart {
   place: (u: number, v: number, w: number) => V3;
 }
 
-const WALL = 2.4;
-const FIT = 0.3;
-const FLOOR = 2.4;
-const LIP = 2.2;
-const CELL_D = 10.5;
-const CELL_PITCH = 10.9;
-const BOX_WALL = 1.2;
-const SLK = 1.0; // room around the holder on every side of the bay
-const HOLD_GAP = 3.0; // between the bay near wall and the holder: the leads come down here
-const CUP_R = (9.7 + 0.4) / 2 + 1.6; // the microphone collar outer radius
+export const WALL = 2.4;
+export const FIT = 0.3;
+export const FLOOR = 2.4;
+export const LIP = 2.2;
+export const CELL_D = 10.5;
+export const CELL_PITCH = 10.9;
+export const BOX_WALL = 1.2;
+export const SLK = 1.0; // room around the holder on every side of the bay
+export const HOLD_GAP = 3.0; // between the bay near wall and the holder: the leads come down here
+export const CUP_R = (9.7 + 0.4) / 2 + 1.6; // the microphone collar outer radius
 
-const rect = (x0: number, z0: number, x1: number, z1: number, r = 1.5): D2 => roundRect2((x1 - x0) / 2, (z1 - z0) / 2, r, (x0 + x1) / 2, (z0 + z1) / 2);
-const cyl = (cx: number, cz: number, r: number, w0: number, w1: number): D3 => extrude(circle2(r, cx, cz), w0, w1);
-const boxAround = (x0: number, z0: number, x1: number, z1: number, w1: number, pad = 1): ShellPart['box'] => ({
+export const rect = (x0: number, z0: number, x1: number, z1: number, r = 1.5): D2 => roundRect2((x1 - x0) / 2, (z1 - z0) / 2, r, (x0 + x1) / 2, (z0 + z1) / 2);
+export const cyl = (cx: number, cz: number, r: number, w0: number, w1: number): D3 => extrude(circle2(r, cx, cz), w0, w1);
+export const boxAround = (x0: number, z0: number, x1: number, z1: number, w1: number, pad = 1): ShellPart['box'] => ({
   min: [x0 - pad, z0 - pad, -1],
   max: [x1 + pad, z1 + pad, w1 + 1],
 });
-const slabW = (d2: D2, w0: number, w1: number): D3 => extrude(d2, w0, w1);
-const ceil05 = (v: number) => Math.ceil(v * 2) / 2;
-const SLACK = MIN_GAP + 0.05;
+export const slabW = (d2: D2, w0: number, w1: number): D3 => extrude(d2, w0, w1);
+export const ceil05 = (v: number) => Math.ceil(v * 2) / 2;
+export const SLACK = MIN_GAP + 0.05;
 
 /** Wall notches (full height) around the bodies of one face that overhang the board's outline, SLACK mm bigger on every side. */
-function notchesFor(v: Variant, face: 'front' | 'back'): D3[] {
+export function notchesFor(v: Variant, face: 'front' | 'back'): D3[] {
   return v.bodies
     .filter((b) => b.side === face && b.id !== 'RV1' && (b.bbox[0] < 0 || b.bbox[3] > v.W || b.bbox[2] < 0 || b.bbox[5] > v.H))
     .map((b) =>
@@ -63,7 +63,7 @@ function notchesFor(v: Variant, face: 'front' | 'back'): D3[] {
 
 /** Largest radius of a disc at (x, z) that keeps SLACK mm from every part body and lead stub on one face, for a printed part
  *  that spans heights y0..y1 (viewer coordinates). A horizontal test only, so a little more careful than the 3D one. */
-function roomAt(v: Variant, face: 'front' | 'back', x: number, z: number, y0: number, y1: number, skip: string[] = []): number {
+export function roomAt(v: Variant, face: 'front' | 'back', x: number, z: number, y0: number, y1: number, skip: string[] = []): number {
   const lo = Math.min(y0, y1) - SLACK;
   const hi = Math.max(y0, y1) + SLACK;
   let r = Infinity;
