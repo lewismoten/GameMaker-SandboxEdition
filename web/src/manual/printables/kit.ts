@@ -7,7 +7,7 @@ import type { ShotFrame } from '../../gfx/shotFrame';
 import { builtHeroPath, heroOf } from '../../gfx/levelPicture';
 import type { CatalogEntry } from '../../project/files';
 import type { MapPanel, PrintablesFile, Portrait, SpriteArt } from './types';
-import { fetchGameFile } from '../../project/files';
+import { peekGameFile } from '../../project/files';
 import { parseCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { BACKBL, BLEN, CHARBL, MONBL, TRANSPARENT, parseBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { parsePalette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
@@ -117,7 +117,7 @@ export function fictionalNote(): HTMLElement {
 export { splitTitle } from '../../project/gameTitle';
 
 async function fetchFile(entry: CatalogEntry, name: string): Promise<Uint8Array | undefined> {
-  return fetchGameFile(entry, name); // fetched once, shared
+  return peekGameFile(entry, name); // fetched once, shared
 }
 
 /** The hero as he stands in his first character sequence: top and bottom block, 20 x 40. */

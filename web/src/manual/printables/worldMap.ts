@@ -11,7 +11,7 @@
 import './paper.css'; // first: this piece's own styles build on the paper's
 import './worldMap.css';
 import { h } from '../../editor/core/ui';
-import { GameFiles, fetchGameFile, type CatalogEntry } from '../../project/files';
+import { GameFiles, peekGameFile, type CatalogEntry } from '../../project/files';
 import { ENDTYPE, NOSCENE, STARTTYPE, parseGame, type Game, type Point } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { parseBackdrop, parseSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
 import { arrival, graphOf } from '../../editor/editors/integrator/layoutCells';
@@ -63,7 +63,7 @@ function wrapNames(names: string[]): string[] {
 /** The game and just the files its cards need (maps, blocks, palettes, title and end screens). */
 async function loadWorld(entry: CatalogEntry): Promise<{ game: Game; files: GameFiles } | undefined> {
   if (!entry.gam) return undefined;
-  const gam = await fetchGameFile(entry, entry.gam);
+  const gam = await peekGameFile(entry, entry.gam);
   if (!gam) return undefined;
   const game = parseGame(gam);
   const files = new GameFiles();
@@ -77,7 +77,7 @@ async function loadWorld(entry: CatalogEntry): Promise<{ game: Game; files: Game
     Promise.all(
       [...names].map(async (n) => {
         if (files.has(n)) return;
-        const b = await fetchGameFile(entry, n).catch(() => undefined);
+        const b = await peekGameFile(entry, n).catch(() => undefined);
         if (b) files.set(n, b);
       }),
     );
