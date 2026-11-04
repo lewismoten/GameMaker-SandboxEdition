@@ -8,6 +8,7 @@
 import type { Delta } from '@lewismoten/gamemaker-sandbox-tools/delta';
 import { GameFiles } from './files';
 import type { Companion } from './companion';
+import { recoverRecord, type Damage } from './recover';
 
 const DB_NAME = 'gamemaker-web';
 const DB_VERSION = 1;
@@ -83,14 +84,39 @@ function request<T>(store: string, mode: IDBTransactionMode, run: (s: IDBObjectS
 
 /** Project summaries without their files. getAll() still loads the files, then drops them. */
 export async function listProjects(): Promise<Omit<ProjectRecord, 'files'>[]> {
-  const all = await request<ProjectRecord[]>(PROJECTS, 'readonly', (s) => s.getAll());
+  const all = (await request<ProjectRecord[]>(PROJECTS, 'readonly', (s) => s.getAll())).filter((r) => r && typeof r === 'object' && typeof r.id === 'string');
   return all.map(({ files: _files, ...rest }) => rest).sort((a, b) => b.updated - a.updated);
 }
 
-export async function loadProject(id: string): Promise<{ record: ProjectRecord; files: GameFiles } | undefined> {
-  const record = await request<ProjectRecord | undefined>(PROJECTS, 'readonly', (s) => s.get(id));
-  if (!record) return undefined;
-  return { record, files: new GameFiles(Object.entries(record.files)) };
+/** Suffix of the id a damaged project's untouched copy is kept under (recover.ts). */
+export const DAMAGED_SUFFIX = '~damaged';
+
+/**
+ * A stored project with every intact file. A damaged piece (recover.ts) is left out and listed
+ * in `damage`; the record as it was stored is first kept whole under `<id>~damaged`, so
+ * nothing the person might still want is overwritten by the next autosave.
+ */
+export async function loadProject(id: string): Promise<{ record: ProjectRecord; files: GameFiles; damage: Damage[] } | undefined> {
+  const raw = await request<unknown>(PROJECTS, 'readonly', (s) => s.get(id));
+  if (raw === undefined || raw === null) return undefined;
+  const { record, files, damage } = recoverRecord(id, raw);
+  if (damage.length && !id.endsWith(DAMAGED_SUFFIX)) await keepDamagedCopy(id, raw, record.name);
+  return { record, files, damage };
+}
+
+// Stores the project exactly as it was found, once; failing to is not a reason to stop the open.
+async function keepDamagedCopy(id: string, raw: unknown, name: string): Promise<void> {
+  try {
+    const copyId = id + DAMAGED_SUFFIX;
+    if ((await request<unknown>(PROJECTS, 'readonly', (s) => s.get(copyId))) !== undefined) return;
+    const copy =
+      typeof raw === 'object' && raw
+        ? { ...(raw), id: copyId, name: `${name} (damaged copy)` }
+        : { id: copyId, name: `${name} (damaged copy)`, gam: '', updated: Date.now(), files: {} };
+    await request(PROJECTS, 'readwrite', (s) => s.put(copy));
+  } catch {
+    /* the notice still tells what is broken */
+  }
 }
 
 /**
