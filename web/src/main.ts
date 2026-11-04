@@ -7,6 +7,7 @@ import './editor/shell/editor.css';
 import { h, clear } from './editor/core/ui';
 import type { Workspace } from './editor/shell/workspace';
 import { watchForUpdates } from './devReload';
+import { watchErrors } from './errorNotice/watch';
 import { registerServiceWorker } from './offline';
 import { EDITION, FORK_NOTE, PRODUCT, SHORT } from './edition';
 import './edition.css';
@@ -412,6 +413,7 @@ const onHand = () => {
 };
 for (const t of HANDS) addEventListener(t, onHand, { capture: true, passive: true });
 
+watchErrors();
 watchForUpdates();
 // dev server on localhost only: the opt-in interaction log (its switch is in the corner)
 if (import.meta.env.DEV) void import('./devLog/interactionLog').then((m) => m.startInteractionLog());

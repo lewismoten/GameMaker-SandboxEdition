@@ -8,6 +8,7 @@
 import { mountPlayer } from './player/player';
 import { unlock } from '@lewismoten/gamemaker-sandbox-engine/audio/context';
 import { watchForUpdates } from './devReload';
+import { watchErrors } from './errorNotice/watch';
 import { GameFiles, loadCatalogList, withDetails, type CatalogEntry } from './project/files';
 import { streamHostedGame } from './project/streamGame';
 import { loadProject, loadSaveData, writeSaveFile } from './project/storage';
@@ -202,4 +203,5 @@ void main();
 
 registerServiceWorker();
 
+watchErrors();
 watchForUpdates();
