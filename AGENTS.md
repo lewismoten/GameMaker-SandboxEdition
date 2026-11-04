@@ -185,7 +185,9 @@ preserve what was there.
 
 - **Secret games:**
   - A game whose `about.json` has `"secret": true` must never be named, counted, linked or
-    hinted at outside its own folder. That includes commit messages and screenshots.
+    hinted at in anything a player sees: the site, the desk, other games, manuals, downloads
+    lists, tours and screenshots. Code, commit messages and history may name it; a developer
+    reading the repository is allowed to find it.
   - Test browsers should start with no felt eggs found, so its box never shows.
 - **Privacy:**
   - No real addresses or license plates. The car's plate THE CHEZ is fine.
