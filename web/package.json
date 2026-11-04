@@ -31,6 +31,7 @@
     "perf:trace": "vite-node scripts/perfTrace.ts",
     "perf:memory": "vite-node scripts/perfMemory.ts",
     "perf:tasks": "vite-node scripts/perfTasks.ts",
+    "verify:perf": "vite-node scripts/verifyPerf.ts --",
     "disk:diff": "vite-node scripts/diskDiff.ts --",
     "dosbox": "vite-node scripts/dosbox.ts",
     "domains:check": "vite-node scripts/domainsCheck.ts",

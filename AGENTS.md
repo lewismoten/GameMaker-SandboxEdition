@@ -59,6 +59,7 @@ npm run editor:touch -- <route> [--out dir]       # touch audit of one editor ro
 npm run check:gestures -- [--route r] [--out dir]  # map editor touch gestures (pinch, pan, paint, stray stroke, long-press) with real touch events at iPad and iPhone sizes; PASS/FAIL per step; exits 1 on a FAIL
 npm run check:audio-unlock -- [--engines webkit,chromium] [--page desk,home]  # desk makes its AudioContext outside input handlers and it runs after the first tap; headless WebKit is not iOS proof
 npm run replay:log -- <log.jsonl> [--session id] [--out dir]  # replay a game the dev interaction log (the 🐵 switch) recorded, headless; checks each snapshot; PNG frames with --out; exits 1 on divergence
+npm run verify:perf                            # performance budgets (bytes, requests, INP at 4x) on a scratch production build, about 70 s; --update rewrites web/scripts/perfBudgets.json on purpose
 npm run badges:similar                             # advisory: achievement badges that look alike in gray or to color-blind eyes; HTML report in .for-lewis/research/badges-similar/
 npm run release:draft -- <pages|engine|archives|tools>  # a draft Unreleased body from the commits since that target's last tag (prints; never writes)
 npm run release:cut -- <target> <version>          # Unreleased becomes a dated version; sets a package's version
