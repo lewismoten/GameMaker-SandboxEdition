@@ -64,6 +64,27 @@ describe('peekGameFile', () => {
     await peekGameFile(entry, 'x.gam', './d/'); // 26 MB was past the budget: d's was dropped
     expect(fetchMock).toHaveBeenCalledTimes(3);
   });
+
+  it('returns each file byte for byte as it was zipped (what the readers moved off fetchGameFile get)', async () => {
+    const stored: Record<string, Uint8Array> = {
+      'x.gam': new Uint8Array([9, 8, 7, 6]),
+      'x.bkd': new Uint8Array(Array.from({ length: 300 }, (_, i) => i % 251)),
+    };
+    const zip = await createZip([
+      { name: 'x.gam', data: stored['x.gam'] },
+      { name: 'x.bkd', data: stored['x.bkd'] },
+      { name: 'x.exe', data: new Uint8Array(160_598).fill(7) },
+    ]);
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(() => Promise.resolve(new Response(zip as unknown as BodyInit))),
+    );
+    for (const n of Object.keys(stored)) {
+      const peeked = await peekGameFile(entry, n, './f/');
+      expect(peeked).toBeDefined();
+      expect([...peeked!]).toEqual([...stored[n]]);
+    }
+  });
 });
 
 describe('findZipFile', () => {

@@ -11,7 +11,7 @@ import './paper.css'; // first: this piece's own styles build on the paper's
 import './levelMaps.css';
 import { h } from '../../editor/core/ui';
 import { paintIndexed } from '../../editor/core/draw';
-import { GameFiles, fetchGameFile, type CatalogEntry } from '../../project/files';
+import { GameFiles, peekGameFile, type CatalogEntry } from '../../project/files';
 import { parseGame, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { scenePixels } from '../../gfx/levelPicture';
 import { sheet, type PrintContext, type Sheet } from './kit';
@@ -53,7 +53,7 @@ const COURSE_AREA = { w: AREA.w, h: AREA.h - CAPTION - 2 };
 /** The game and every level's files (palette, map, blocks, monsters). */
 export async function loadLevels(entry: CatalogEntry): Promise<{ game: Game; files: GameFiles } | undefined> {
   if (!entry.gam) return undefined;
-  const gam = await fetchGameFile(entry, entry.gam);
+  const gam = await peekGameFile(entry, entry.gam);
   if (!gam) return undefined;
   const game = parseGame(gam);
   const files = new GameFiles();
@@ -61,7 +61,7 @@ export async function loadLevels(entry: CatalogEntry): Promise<{ game: Game; fil
   for (const s of game.scenes) if (s.gametype === 10) for (const k of [0, 1, 2, 3, 4]) if (s.files[k]) want.add(s.files[k].toLowerCase());
   await Promise.all(
     [...want].map(async (n) => {
-      const b = await fetchGameFile(entry, n).catch(() => undefined);
+      const b = await peekGameFile(entry, n).catch(() => undefined);
       if (b) files.set(n, b);
     }),
   );

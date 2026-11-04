@@ -4,7 +4,7 @@
 // level as the game draws it, or its title screen), and the cover's two colors (the box's,
 // else the scene's own). printables.json's hint book can name the hero and the scene
 // instead (HintCover); anything it can't find falls back to the automatic pick.
-import { GameFiles, fetchGameFile, type CatalogEntry } from '../../project/files';
+import { GameFiles, peekGameFile, type CatalogEntry } from '../../project/files';
 import { parseGame, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { TRANSPARENT } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { decodeGif, isGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
@@ -27,7 +27,7 @@ interface CoverArt {
 const lower = (s: string | undefined) => (s ?? '').toLowerCase();
 
 async function filesFor(entry: CatalogEntry, names: string[]): Promise<GameFiles> {
-  const bytes = await Promise.all(names.map((n) => fetchGameFile(entry, n)));
+  const bytes = await Promise.all(names.map((n) => peekGameFile(entry, n)));
   return new GameFiles(names.flatMap((n, i) => (bytes[i] ? [[n, bytes[i]] as [string, Uint8Array]] : [])));
 }
 
@@ -77,7 +77,7 @@ async function heroArt(entry: CatalogEntry, spec: HeroSpec | undefined): Promise
 export async function gameHero(entry: CatalogEntry): Promise<CoverArt['hero']> {
   let game: Game | undefined;
   try {
-    const gamB = entry.gam ? await fetchGameFile(entry, entry.gam) : undefined;
+    const gamB = entry.gam ? await peekGameFile(entry, entry.gam) : undefined;
     game = gamB ? parseGame(gamB) : undefined;
   } catch {
     game = undefined;
@@ -87,7 +87,7 @@ export async function gameHero(entry: CatalogEntry): Promise<CoverArt['hero']> {
 
 /** A picture file of the game's (a GIF), drawn whole. */
 async function pictureFile(entry: CatalogEntry, name: string): Promise<HTMLCanvasElement | undefined> {
-  const bytes = await fetchGameFile(entry, name);
+  const bytes = await peekGameFile(entry, name);
   if (!bytes || !isGif(bytes)) return undefined;
   const img = decodeGif(bytes);
   const c = document.createElement('canvas');
@@ -155,7 +155,7 @@ export function coverArt(entry: CatalogEntry, cover: HintCover = {}): Promise<Co
   let hit = cache.get(key);
   if (!hit) {
     hit = (async () => {
-      const gamB = entry.gam ? await fetchGameFile(entry, entry.gam) : undefined;
+      const gamB = entry.gam ? await peekGameFile(entry, entry.gam) : undefined;
       const game = gamB ? parseGame(gamB) : undefined;
       const [hero, scene] = await Promise.all([
         heroArt(entry, heroSpec(entry, game, cover.hero)).catch(() => undefined),

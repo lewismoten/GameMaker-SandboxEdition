@@ -33,6 +33,7 @@
     "check:keys": "npm run check:keys -w gamemaker-web --",
     "replay:log": "npm run replay:log -w gamemaker-web --",
     "domains:check": "npm run domains:check -w gamemaker-web --",
+    "dead:code": "npm run dead:code -w gamemaker-web --",
     "badges:similar": "npm run badges:similar -w gamemaker-web --"
   },
   "engines": {

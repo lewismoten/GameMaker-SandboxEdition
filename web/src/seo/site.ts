@@ -43,6 +43,10 @@ export const ROUTES = {
     title: `Credits · ${PRODUCT}`,
     description: `Who and what made ${PRODUCT}: RSD and the Stone family, the CD games’ authors, the software and third-party pieces, the AI tools and the people, and who made what in The Bard of Bizarre’s games.`,
   },
+  privacy: {
+    title: `Privacy · ${PRODUCT}`,
+    description: `What ${PRODUCT} keeps in your browser, how to clear it, and what is sent and when. No tracking, no cookies, no analytics.`,
+  },
   magazine: {
     title: `TURBO BUTTON magazine · ${PRODUCT}`,
     description:
