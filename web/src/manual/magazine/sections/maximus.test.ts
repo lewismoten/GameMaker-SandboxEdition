@@ -2,7 +2,7 @@
 // games/maximus/disk with the file formats, and each limit the article prints is the one the
 // formats (and PLAYGAME) use.
 import { ISSUES } from '../masthead';
-import { readdirSync, readFileSync, statSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { BACKBL, CHARBL, MONBL, parseBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
@@ -14,12 +14,14 @@ import { parseSoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/soun
 import { COUNTS, MAXIMUS, SCENE_CAP, SCENE_RECORD, TEXT_READ } from './maximus';
 
 const disk = join(__dirname, '../../../../../games/maximus/disk');
-const files = readdirSync(disk);
+// The built disk is git-ignored output (npm ci builds it); without it these tests are skipped.
+const hasDisk = existsSync(disk);
+const files = hasDisk ? readdirSync(disk) : [];
 const read = (f: string) => new Uint8Array(readFileSync(join(disk, f)));
 const ext = (e: string) => files.filter((f) => f.endsWith(`.${e}`));
-const game = parseGame(read('maximus.gam'));
+const game = hasDisk ? parseGame(read('maximus.gam')) : (undefined as never);
 
-describe('the Maximus feature', async () => {
+describe.skipIf(!hasDisk)('the Maximus feature', async () => {
   const pages = await MAXIMUS.pages({ games: [], game: () => undefined, mag: ISSUES[2] });
   const text = JSON.stringify(pages);
 

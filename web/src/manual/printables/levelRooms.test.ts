@@ -3,6 +3,7 @@
 // when nobody walks around in them; a way that only looks like it goes round laid out in one
 // piece; empty sides trimmed to one block. Checked on small made-up maps and on the real disks.
 import { describe, expect, it } from 'vitest';
+import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { emptyBlock } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { ADVTYPE, ENDTYPE, STARTTYPE, type Game, type Scene } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
@@ -177,8 +178,12 @@ describe('trimming a crop', () => {
   });
 });
 
-describe('on the real disks', () => {
-  const games = join(__dirname, '../../../../games');
+const games = join(__dirname, '../../../../games');
+// The built disks are git-ignored output (npm ci builds them); with one missing, these are skipped.
+const DISKS = ['logic', 'maximus', 'realm', 'sleuth', 'teddy', 'teddy2', 'year2000'];
+const hasDisks = DISKS.every((id) => existsSync(join(games, id, 'disk')));
+
+describe.skipIf(!hasDisks)('on the real disks', () => {
   const load = (id: string) => {
     const d = readDisk(join(games, id, 'disk'))!;
     return {
