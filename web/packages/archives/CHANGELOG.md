@@ -17,7 +17,5 @@ The first release: portable game discovery, ZIP and SFX extraction, and ZIP crea
 - Imports keep the player's build and author bytes, and a DOS download writes a 3.00 player back.
 - A game's displayed title comes from `gameTitle` everywhere outside DOS.
 
-
-
 [Unreleased]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/archives-v3.2.0...HEAD
 [3.2.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/releases/tag/archives-v3.2.0
