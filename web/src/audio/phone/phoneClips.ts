@@ -100,15 +100,20 @@ export function castOf(text: string): string | undefined {
  * The clips that say `piece` (a caption piece: whole sentences of `whole`, a line as `say` was handed it),
  * in order; undefined when any sentence has no clip, so the caller can speak it instead.
  */
-export function clipsFor(piece: string, whole: string): ClipPath[] | undefined {
+/** The clips for a caption piece, one group per sentence (a sentence clip, or the parts of a time or bill splice); undefined when any is missing. */
+export function clipGroupsFor(piece: string, whole: string): ClipPath[][] | undefined {
   const cast = castOf(whole);
   if (!cast) return undefined;
-  const out: ClipPath[] = [];
+  const out: ClipPath[][] = [];
   for (const s of sentences(piece)) {
     const part = bySentence.get(`${cast}|${s}`);
     const found = part ? [path(part)] : (timeClips(s) ?? billClips(s));
     if (!found) return undefined;
-    out.push(...found);
+    out.push(found);
   }
   return out;
+}
+
+export function clipsFor(piece: string, whole: string): ClipPath[] | undefined {
+  return clipGroupsFor(piece, whole)?.flat();
 }
