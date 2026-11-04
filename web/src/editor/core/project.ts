@@ -8,6 +8,7 @@ import { decodeGif, isGif } from '@lewismoten/gamemaker-sandbox-engine/formats/g
 import { debounce } from './ui';
 import { isSolidPalette, mostReadable } from './readablePalette';
 import { emptyCompanion, getSection, renameInCompanion, setMenuVersion, setSection, type Companion } from '../../project/companion';
+import { setAbout, type AboutGame } from '../../project/aboutGame';
 import { editedFile, unlockAchievement } from '../../achievements';
 import { MEMORY_SECTIONS, refuse, type ReadOnlyGuard } from './readOnly';
 
@@ -159,6 +160,14 @@ export class Project {
     if (this.readOnly) refuse(this, 'version');
     this.companion ??= emptyCompanion();
     setMenuVersion(this.companion, version, show);
+    this.persist();
+  }
+
+  /** "About this game" (project/aboutGame.ts): editor-only, so the game's files are not touched. */
+  setAbout(about: AboutGame): void {
+    if (this.readOnly) refuse(this, 'about');
+    this.companion ??= emptyCompanion();
+    setAbout(this.companion, about);
     this.persist();
   }
 

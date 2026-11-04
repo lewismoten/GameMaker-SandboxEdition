@@ -6,7 +6,15 @@ import { DIZ_LINES, DIZ_WIDTH, asciiOnly, fileIdDiz, fileIdDizLines, readFileIdD
 describe('About this game in the companion', () => {
   it('keeps the fields through a save and load, and drops empty ones', () => {
     const c = emptyCompanion();
-    setAbout(c, { title: ' Moon Jump ', author: 'Doc Leo', year: '', credits: [{ role: 'Music', name: 'Pat' }, { role: 'x', name: ' ' }] });
+    setAbout(c, {
+      title: ' Moon Jump ',
+      author: 'Doc Leo',
+      year: '',
+      credits: [
+        { role: 'Music', name: 'Pat' },
+        { role: 'x', name: ' ' },
+      ],
+    });
     const back = parseCompanion(serializeCompanion(c));
     expect(aboutOf(back)).toEqual({ title: 'Moon Jump', author: 'Doc Leo', credits: [{ role: 'Music', name: 'Pat' }] });
     expect(isEmptyCompanion(back)).toBe(false);
