@@ -236,6 +236,8 @@ export class Machine {
   keyPoll?: (polls: number) => number[];
   /** Demo playback: a key-reading screen ended; returns recorded keys it must have taken. */
   keyPollEnd?: () => number[];
+  /** Demo playback: one GetKey poll by a screen (tick-counted recordings); returns the recorded keys now due. */
+  keyPollOnce?: () => number[];
 
   /** Clears keyboard input (while (GetKey(1)) GetKey(0)). */
   flushKeys(): void {
