@@ -29,7 +29,7 @@ export function addRing(book: Book, timed: Timed[], base: string, pics: Pixels[]
   return names;
 }
 
-/** Wooden planks, laid along the way Neka walks. */
+/** Wooden planks, laid along the way Nova walks. */
 export function plankTile(pal: Pal): Pixels {
   const { c } = pal;
   const p = new Pixels(20, 20, c('wood', 2));
@@ -67,7 +67,7 @@ export function addExit(book: Book, pal: Pal, ground: Pixels): void {
   book.add('exitBottom', q.crop(0, 20, 20, 20));
 }
 
-/** A sign standing on `ground`: its board is solid (Neka walks round it), its posts are not. */
+/** A sign standing on `ground`: its board is solid (Nova walks round it), its posts are not. */
 export function addSignOn(book: Book, pal: Pal, ground: Pixels, name: string, text: string, w: number, h: number): Sign {
   const scratch = new Book('bbl');
   const sign = addSign(scratch, pal, name, text, w, h);

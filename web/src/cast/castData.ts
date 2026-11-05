@@ -651,8 +651,8 @@ const HELPERS: { id: string; name: string; role: string; hi: string; look: strin
     game: 'breakable-walls',
   },
   {
-    id: 'neka',
-    name: 'Neka',
+    id: 'nova',
+    name: 'Nova',
     role: 'A green alien explorer, in a gold beanie',
     hi: 'Greetings from far away. Where do we dig?',
     look: 'green skin, teal hair, a gold beanie and a purple hoodie',

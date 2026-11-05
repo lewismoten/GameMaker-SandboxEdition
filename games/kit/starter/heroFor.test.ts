@@ -35,7 +35,7 @@ describe('heroFor', () => {
     expect(Math.max(...counts) - Math.min(...counts)).toBeLessThanOrEqual(1);
   });
   it('leaves no other helper in the text of a game another one leads', () => {
-    const names = ['Kit', 'Mia', 'Lena', 'Mara', 'Lian', 'Yana', 'Neka', 'Rima', 'Lami'];
+    const names = ['Kit', 'Mia', 'Lena', 'Mara', 'Lian', 'Yana', 'Nova', 'Rima', 'Lami'];
     for (const s of starters) {
       const mine = heroFor(s.id);
       const text = readFileSync(join(G, s.id, 'about.json'), 'utf8') + readFileSync(join(G, s.id, 'manual.json'), 'utf8');

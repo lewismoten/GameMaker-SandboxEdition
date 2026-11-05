@@ -5,7 +5,7 @@
 //   2. Key and Door: a spike to walk into and spikes to jump over, a ladder up to a key, and the locked door it opens.
 //   3. All Together: the spikes, a gumdrop, a wall, a key and a door in one room.
 //
-// Every room is closed in by hedges you can see, so Neka is never stopped by something she can't.
+// Every room is closed in by hedges you can see, so Nova is never stopped by something she can't.
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';

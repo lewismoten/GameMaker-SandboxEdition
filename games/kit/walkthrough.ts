@@ -40,7 +40,11 @@ interface ReplayResult {
 }
 
 /** Runs a walkthrough to its end on the real engine (in Node, nothing drawn). */
-export async function replay(id: string, walk: Walkthrough, opts: { maxMinutes?: number; log?: boolean; clips?: boolean; onFrame?: (screen: { pixels: Uint8Array; palette: Uint8Array }, scene: number) => void } = {}): Promise<ReplayResult> {
+export async function replay(
+  id: string,
+  walk: Walkthrough,
+  opts: { maxMinutes?: number; log?: boolean; clips?: boolean; onFrame?: (screen: { pixels: Uint8Array; palette: Uint8Array }, scene: number) => void } = {},
+): Promise<ReplayResult> {
   const files = diskFiles(id);
   const gam = [...files.names()].find((n) => n.endsWith('.gam'))!;
   const run = new WalkRun(headlessCanvas(), files, gam, walk);
