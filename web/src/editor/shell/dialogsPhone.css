@@ -94,6 +94,32 @@
   }
 }
 
+/* "New game" on a landscape phone: the three starts stay in view at the bottom while the fields above scroll. */
+@media (max-height: 500px) {
+  dialog.modal .start-choices {
+    position: sticky;
+    bottom: -12px;
+    margin: 0 -14px -12px;
+    padding: 8px 14px;
+    background: var(--panel);
+    border-top: 1px solid var(--border);
+  }
+
+  /* one row of three short cards (the descriptions stay as tooltips), so the fields keep the room */
+  dialog.modal .start-choices {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  dialog.modal .start-choice small {
+    display: none;
+  }
+
+  dialog.modal .start-describe {
+    grid-column: auto;
+  }
+}
+
 /* AI setup: the two providers side by side (their names say what they are), a smaller privacy note. */
 @media (max-width: 600px), (max-height: 500px) {
   .ai-setup {
