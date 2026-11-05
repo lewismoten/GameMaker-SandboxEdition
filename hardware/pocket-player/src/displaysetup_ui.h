@@ -1,9 +1,8 @@
 // The 2.8 inch board's display setup and its saving (the pure parts are in displaysetup.h and setupflow.h). Included by
 // main.cpp, inside its POCKET_CYD28 block, so it uses main.cpp's tft, touch and settings statics (not stand-alone).
-//   Three steps, no reading: (1) the word TAP three times, each copy flipped differently, tap the one that reads right (that
-//   settles the picture's flip and the touch wiring); (2) four bar sets, tap the one that goes red green blue white black;
-//   (3) the 3-tap calibration. BOOT held 1.5 s steps the driver and restarts into step 1 (for a picture that is garbage);
-//   a short BOOT turns the picture to the next hardware turn (a way through with no touch).
+//   Four steps (setupflow.h), each with two controls that need no touch map: the BOOT button does the step's action (flip,
+//   rotate, orient, cycle the colors) and a tap anywhere on the glass is OK; then the 3-tap calibration. BOOT held 1.5 s
+//   steps the driver and restarts into step 1 (for a picture that is garbage).
 //   Saved per chip: NVS (namespace "pocket": panel, turn, cal, setup, sstep, full, swapk) and, when a card is in, the file
 //   /pocket/boards/<chip id>.cfg, so a card moved between boards carries every board's setup. The card is read only when
 //   NVS has never held a setup for this chip.
@@ -13,6 +12,7 @@
 #include <math.h>
 #include "displaysetup.h"
 #include "setupdraw.h"
+#include "softgfx.h"
 
 static bool runCalibration();
 
@@ -21,6 +21,7 @@ static uint8_t dsState = 0;  // 0 never set up, 1 begun (a display change is not
 static bool dsFull = false;  // the 3-tap calibration was done after the last display change
 static uint8_t dsStep = 0;  // the step a restart resumes at (displaysetup.h Step)
 static bool dsSwapKnown = false;
+static sf::Flow dsLive;  // the setup in progress (S st prints it)
 static bool dsInjOn = false, dsBootReq = false, dsSkipReq = false, dsOpenReq = false;
 static tc::Raw dsInjPt = {0, 0};
 
@@ -32,6 +33,7 @@ static ds::Record dsRecord() {
   ds::Record r;
   r.panel = panelType;
   r.turn = turnIdx;
+  r.soft = softIdx;
   r.cal = XPT2046::cal();
   r.full = dsFull ? 1 : 0;
   return r;
@@ -89,6 +91,7 @@ static void dsNvsWrite(const ds::Record& r, uint8_t state) {
   if (!p.begin("pocket", false)) return;
   p.putUChar("panel", r.panel);
   p.putUChar("turn", r.turn);
+  p.putUChar("soft", r.soft);
   p.putBytes("cal", &r.cal, sizeof r.cal);
   p.putUChar("setup", state);
   p.putUChar("full", r.full);
@@ -105,6 +108,7 @@ static void dsBoot() {
     if (pf.begin("pocket", true)) {
       panelType = pf.getUChar("panel", PANEL_ILI9341);
       turnIdx = pf.getUChar("turn", 0);
+      softIdx = pf.getUChar("soft", 0);
       dsState = pf.getUChar("setup", 0);
       hasSetup = pf.isKey("setup");
       dsStep = pf.getUChar("sstep", 0);
@@ -118,6 +122,7 @@ static void dsBoot() {
     if (dsCardRead(r)) {
       panelType = r.panel;
       turnIdx = r.turn;
+      softIdx = r.soft;
       dsState = 3;
       dsFull = r.full != 0;
       dsSwapKnown = true;
@@ -128,14 +133,15 @@ static void dsBoot() {
   }
   if (panelType >= PANEL_TYPES) panelType = PANEL_ILI9341;
   if (turnIdx >= TURNS) turnIdx = 0;
-  if (dsStep > ds::STEP_CALIBRATE) dsStep = 0;
+  if (softIdx > 2) softIdx = 0;
+  if (dsStep != ds::STEP_CALIBRATE) dsStep = 0;  // only the calibration resumes; the four steps start again
 }
 // A display change that is not yet confirmed with OK: the next start comes back to setup. `geometry`: the touch no longer
 // matches the picture (a turn or another driver), so the calibration is marked not valid (its axes' order is kept).
 static void dsMarkBegun(bool geometry) {
   dsState = 1;
   Preferences p;
-  if (p.begin("pocket", false)) { p.putUChar("setup", 1); p.putUChar("panel", panelType); p.putUChar("turn", turnIdx); p.end(); }
+  if (p.begin("pocket", false)) { p.putUChar("setup", 1); p.putUChar("panel", panelType); p.putUChar("turn", turnIdx); p.putUChar("soft", softIdx); p.end(); }
   if (geometry) {
     tc::Cal c = XPT2046::cal();
     c.valid = 0;
@@ -173,7 +179,7 @@ static void dsPrintState() {
   bool wasUp = sdUp;
   bool has = dsCardHas(), good = has && dsCardRead(r);
   (void)wasUp;
-  Serial.printf("SETUP chip=%s state=%d step=%d panel=%d turn=%d swap=%d u=%d..%d v=%d..%d valid=%d full=%d swapk=%d nvs=%d,%d,%d card=%s", dsChip, dsState, dsStep, panelType,
+  Serial.printf("SETUP chip=%s state=%d step=%d live=%d,%d,%d,%d soft=%d panel=%d turn=%d swap=%d u=%d..%d v=%d..%d valid=%d full=%d swapk=%d nvs=%d,%d,%d card=%s", dsChip, dsState, dsStep, dsLive.step + 1, dsLive.u, dsLive.soft, dsLive.color, softIdx, panelType,
                 turnIdx, c.swap, c.u0, c.u1, c.v0, c.v1, c.valid, dsFull, dsSwapKnown, np, nt, ns, !has ? "none" : good ? "ok" : "bad");
   if (good) Serial.printf(" card_panel=%d card_turn=%d card_swap=%d card_u=%d..%d card_v=%d..%d card_full=%d", r.panel, r.turn, r.cal.swap, r.cal.u0, r.cal.u1, r.cal.v0, r.cal.v1, r.full);
   Serial.println();
@@ -188,7 +194,7 @@ static void dsSerial(const char* line) {  // "S ..."
   else if (!strncmp(line, "S open", 6)) dsOpenReq = true;
   else if (!strncmp(line, "S forget nvs", 12)) {
     Preferences p;
-    if (p.begin("pocket", false)) { for (const char* k : {"setup", "sstep", "full", "swapk", "panel", "turn", "cal"}) p.remove(k); p.end(); }
+    if (p.begin("pocket", false)) { for (const char* k : {"setup", "sstep", "full", "swapk", "panel", "turn", "soft", "cal"}) p.remove(k); p.end(); }
     Serial.println("SETUP nvs forgotten (restart to see the first start: step 1, ILI driver, first turn)");
   } else if (!strncmp(line, "S forget card", 13)) { dsCardForget(); Serial.println("SETUP card file removed"); }
 }
@@ -214,20 +220,31 @@ static bool dsInjTake(tc::Raw& out) {
 
 
 // ---- drawing: setupdraw.h (the same code the host shots use) ----
-// Every screen starts by clearing the panel's whole memory (the native 240 x 320 turn), then the current turn: a clear that
-// covers only the current turn's canvas left an old target behind where the two don't overlap.
-static void clearAll() {
-  tft.setRotation(0);
-  tft.fillScreen(C_BLACK);
-  tft.setRotation(turnRotation(turnIdx));
-  tft.fillScreen(C_BLACK);
+// What the panel does for the saved setup: the rotation (old setups: the glass's landscape turns; new ones: a portrait turn,
+// and the picture is turned in software, softgfx.h) and the software mode.
+static void applyDisplay() {
+  tftHw.setRotation(sf::rotationFor(turnIdx, softIdx));
+  tft.setMode(softIdx);
 }
-static void dsDrawOrient(int round, int pips) { clearAll(); sf::drawOrient(tft, round, pips); }
-static void dsDrawColors() { clearAll(); sf::drawColors(tft); }
+// Clears the panel's whole memory (any turn), then leaves the saved setup in place: a target or a step's picture is never
+// left behind where two turns don't overlap. The calibration screens call this first.
+static void clearAll() {
+  tft.setMode(0);
+  tftHw.setRotation(0);
+  tftHw.fillScreen(C_BLACK);
+  applyDisplay();
+}
+// One step of the setup drawn for the flow's turn: the portrait turn of its mirror bits, the software mode from step 3 on.
+static void dsDraw(const sf::Flow& f) {
+  tftHw.setRotation(f.rotation());
+  tft.setMode(f.softMode());
+  sf::drawStep(tft, f.step);
+}
 
 // ---- the flow ----
-enum { EV_TAP, EV_TURN, EV_MODE, EV_SKIP };
-// Waits for a tap (its median raw reading), the BOOT button (short: next turn, held 1.5 s: the driver) or a serial command.
+enum { EV_TAP, EV_BOOT, EV_MODE, EV_SKIP };
+// Waits for a tap anywhere (OK; its median raw reading), the BOOT button (short: the step's action, held 1.5 s: the driver) or
+// a serial command.
 static int dsWait(tc::Raw& out) {
   int xs[40], ys[40], n = 0;
   uint32_t bootT = 0, liftBy = millis() + 800;
@@ -241,14 +258,14 @@ static int dsWait(tc::Raw& out) {
     uint32_t now = millis();
     if (dsInjTake(out)) return EV_TAP;
     if (dsSkipReq) { dsSkipReq = false; return EV_SKIP; }
-    if (dsBootReq) { dsBootReq = false; return EV_TURN; }
+    if (dsBootReq) { dsBootReq = false; return EV_BOOT; }
     if (digitalRead(0) == LOW) {
       if (!bootT) bootT = now ? now : 1;
       if (now - bootT >= 1500) return EV_MODE;
     } else if (bootT) {
       bool real = now - bootT > 30;
       bootT = 0;
-      if (real) return EV_TURN;
+      if (real) return EV_BOOT;
     }
     pollTouch(now);
     if (pts.n > 0 && n < 40 && gt.fresh) { xs[n] = gt.rawX[0]; ys[n] = gt.rawY[0]; n++; }
@@ -267,7 +284,7 @@ static int dsWait(tc::Raw& out) {
 // BOOT held: the other driver, then a restart into step 1 (the picture may be garbage, so nothing on it is needed).
 static void dsDriverRestart() {
   panelType = ds::nextDriver(panelType);
-  dsSetStep(ds::STEP_ORIENT);
+  dsSetStep(ds::STEP_FLIP);
   dsMarkBegun(true);
   saveSettings();
   Serial.printf("setup: driver -> panel %d, restarting into step 1\n", panelType);
@@ -275,92 +292,40 @@ static void dsDriverRestart() {
   delay(700);
   ESP.restart();
 }
-// A short BOOT: the next hardware turn (a way through with no touch); the rounds start again.
-static void dsTurnNext() {
-  turnIdx = (turnIdx + 1) % TURNS;
-  tft.setRotation(turnRotation(turnIdx));
+// The four steps. Returns false when the setup was ended (S skip); true when the user said OK on step 4 and the display
+// settings (turn, software turn, color mode) are applied and marked begun, ready for the calibration.
+static bool dsFourSteps() {
+  sf::Flow f;
+  if (softIdx) { f.u = turnIdx & 3; f.soft = softIdx; }  // a setup made with this flow: start from it
+  f.color = (panelType >> 1) & 3;
+  for (;;) {
+    dsLive = f;
+    if (f.step == sf::COLORS) tftHw.applyColors(f.panelBits(panelType), f.rotation());  // live, no restart
+    dsDraw(f);
+    Serial.printf("setup: step %d (turn %d, soft %d, colors %d)\n", f.step + 1, f.u, f.soft, f.color);
+    tc::Raw r = {0, 0};
+    int ev = dsWait(r);
+    if (ev == EV_MODE) dsDriverRestart();
+    if (ev == EV_SKIP) return false;
+    if (ev == EV_BOOT) { f.boot(); continue; }
+    Serial.printf("setup: OK on step %d (tap raw %d,%d)\n", f.step + 1, r.x, r.y);
+    if (!f.ok()) break;
+  }
+  panelType = (uint8_t)f.panelBits(panelType);
+  turnIdx = f.u & 3;
+  softIdx = f.soft;
+  dsLive = f;
+  dsSetStep(ds::STEP_CALIBRATE);
   dsMarkBegun(true);
-}
-// Step 1. Returns false when the setup was ended (S skip), true when the flip and the touch wiring are settled.
-static bool dsOrientStep() {
-  sf::Solver sv;
-  int round = 0;
-  for (;;) {
-    dsDrawOrient(round, round + 1);
-    tc::Raw r = {0, 0};
-    int ev = dsWait(r);
-    if (ev == EV_MODE) dsDriverRestart();
-    if (ev == EV_SKIP) return false;
-    if (ev == EV_TURN) { dsTurnNext(); sv.reset(); round = 0; continue; }
-    int quad = sf::rawQuad(r.x, r.y);
-    sv.tap(round, quad);
-    Serial.printf("setup: step 1 round %d raw %d,%d quarter %d, %d pairs left\n", round + 1, r.x, r.y, quad, sv.count());
-    if (sv.count() == 0) { sv.reset(); round = 0; continue; }  // taps that fit no wiring: start again
-    if (++round < sf::ROUNDS) continue;
-    int flip = sv.flip(), wiring = sv.wiring();
-    turnIdx = (uint8_t)sf::turnFor(turnIdx, flip);
-    tft.setRotation(turnRotation(turnIdx));
-    dsMarkBegun(false);
-    dsSwapKnown = true;
-    dsNvsU8("swapk", 1);
-    XPT2046::setCal(sf::roughCal(wiring));
-    dsFull = false;
-    dsNvsU8("full", 0);
-    Serial.printf("setup: orientation flip=%d wiring=%d -> turn %d\n", flip, wiring, turnIdx);
-    // check: the first layout again, upright now; the box that reads right is the top left one. Anything else: start over.
-    dsDrawOrient(0, sf::ROUNDS);
-    tc::Raw v = {0, 0};
-    int ev2 = dsWait(v);
-    if (ev2 == EV_MODE) dsDriverRestart();
-    if (ev2 == EV_SKIP) return false;
-    if (ev2 == EV_TAP) {
-      int vx, vy;
-      XPT2046::toScreen(v.x, v.y, vx, vy);
-      if (vx < sf::CELL_W && vy < sf::CELL_H) { dsSetStep(ds::STEP_COLORS); return true; }
-    }
-    Serial.println("setup: check failed, starting step 1 again");
-    sv.reset();
-    round = 0;
-    continue;
-  }
-}
-// Step 2. Returns false when the setup was ended; a changed color mode restarts the board into step 3 and does not return.
-static bool dsColorStep() {
-  for (;;) {
-    dsDrawColors();
-    tc::Raw r = {0, 0};
-    int ev = dsWait(r);
-    if (ev == EV_MODE) dsDriverRestart();
-    if (ev == EV_SKIP) return false;
-    if (ev != EV_TAP) continue;
-    int x, y;
-    XPT2046::toScreen(r.x, r.y, x, y);
-    int k = sf::setAt(x, y);
-    Serial.printf("setup: step 2 tap %d,%d -> set %d\n", x, y, k);
-    if (k < 0) continue;
-    uint8_t bits = sf::panelBitsFor(k);
-    panelType ^= bits;
-    dsSetStep(ds::STEP_CALIBRATE);
-    dsMarkBegun(false);
-    if (bits) {  // inversion and the color order are chosen before the panel starts
-      Serial.printf("setup: colors -> panel %d, restarting into step 3\n", panelType);
-      message("Restarting", "(colors)");
-      delay(700);
-      ESP.restart();
-    }
-    return true;
-  }
+  applyDisplay();
+  Serial.printf("setup: display panel %d turn %d soft %d\n", panelType, turnIdx, softIdx);
+  return true;
 }
 // Runs the setup; returns when it ended (the 3-tap calibration and saving are done). The caller redraws.
 static void runDisplaySetup() {
-  int step = dsStep;
-  tft.setRotation(turnRotation(turnIdx));
-  Serial.printf("setup: open (chip %s, step %d)\n", dsChip, step + 1);
-  if (step == ds::STEP_ORIENT) {
-    if (!dsOrientStep()) { dsSave(); return; }
-    step = ds::STEP_COLORS;
-  }
-  if (step == ds::STEP_COLORS && !dsColorStep()) { dsSave(); return; }
+  Serial.printf("setup: open (chip %s, step %d)\n", dsChip, dsStep + 1);
+  if (dsStep != ds::STEP_CALIBRATE && !dsFourSteps()) { applyDisplay(); dsSave(); return; }
   if (runCalibration()) dsCalDone();
   dsSave();
+  applyDisplay();
 }

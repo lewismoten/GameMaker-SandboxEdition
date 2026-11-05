@@ -76,7 +76,21 @@ class LGFX : public lgfx::LGFX_Device {
     else { pi_.config(c); setPanel(&pi_); }
   }
 
+  // Changes the colors on the running panel (bits 2 inverted, 4 red/blue swapped; the driver bit stays as started) and sets the
+  // rotation again, which writes MADCTL with the new color order: the setup's colors step cycles the modes with no restart.
+  void applyColors(int t, int rotation) {
+    if (t & 1) recolor(ps_, t); else recolor(pi_, t);
+    setRotation(rotation);
+  }
+
  private:
+  template <class P> void recolor(P& p, int t) {
+    auto c = p.config();
+    c.invert = (t & 2) != 0;
+    c.rgb_order = (t & 4) != 0;
+    p.config(c);
+    p.setInvert(c.invert);
+  }
   template <class P> void cfg(P& p, bool inv) {
     p.setBus(&bus_);
     auto c = p.config();
