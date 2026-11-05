@@ -11,6 +11,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Added
 
+- Two achievements for the Starters: Show and tell (played every Starter) and Honor roll (played every Starter to its ending). They count apart from the Sandbox games.
 - The Pocket Player plays the games' PC speaker sounds (pickups, hurt, kills, jumps and the other effects each game sets), timed like the original, with a Sound setting for off, low, medium and high. Sound Blaster clips and music are not on the board yet.
 - Colors That Work, a Starter for the Telling a Story group: two levels about colors everyone can tell apart. In the first, a plate that stings and a plate that is safe differ only by red against green, and a second picture on the level card shows how that can look to a player who sees red and green alike. In the second, spikes look like spikes and the safe path is light and striped, so it reads in any color.
 

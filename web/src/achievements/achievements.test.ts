@@ -240,6 +240,17 @@ describe('derived totals', () => {
     expect(goalTargets(catalog, 'walkthroughs')).toEqual(['a', 'c']);
   });
 
+  it('counts the Starters apart from the Sandbox games, played and finished', () => {
+    const list = [
+      ...catalog,
+      { id: 's1', original: {}, company: 'Sandbox Software', series: 'starter' },
+      { id: 's2', original: {}, series: 'starter' },
+    ] as never[];
+    expect(goalTargets(list, 'starters')).toEqual(['s1', 's2']);
+    expect(goalTargets(list, 'startersDone')).toEqual(['s1', 's2']);
+    expect(goalTargets(list, 'sandbox')).toEqual(['a', 'b']);
+  });
+
   it('counts every listed Teddy game, so a new one in the catalog raises the total', () => {
     const teddies = [
       { id: 'teddy', original: {}, company: 'Sandbox Software' },
