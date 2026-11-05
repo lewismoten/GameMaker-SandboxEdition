@@ -55,6 +55,7 @@ export const CAST_GAMES = {
   'who-wins': ['Who Wins?', 'starter'],
   'breakable-walls': ['Smash It', 'starter'],
   'boss-hits': ['Big Bug', 'starter'],
+  popups: ['Score Popups', 'starter'],
   'short-lived': ['Here Today', 'starter'],
   'three-tokens': ['Three Tokens', 'starter'],
   'many-rooms': ['Rooms on One Map', 'starter'],
@@ -163,6 +164,7 @@ const LISTED: CastMember[] = [
       { game: 'three-tokens', as: 'collects purple tokens until a gate will take its price, and then walks out through the gate' },
       { game: 'many-rooms', as: 'steps through doors into rooms that are all corners of one big map' },
       { game: 'things-that-grow', as: 'watches a nest hatch birds, then steps on another nest to make it stop' },
+      { game: 'popups', as: 'touches coins that pay 100, 200 and 500 and watches each number rise and blink away' },
     ],
   },
   {
