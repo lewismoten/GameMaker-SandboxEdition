@@ -29,7 +29,7 @@ import { buildLevels } from './src/levels';
 import { song } from './src/song';
 import { titlePicture } from './src/title';
 import { viewPicture } from './src/views';
-import { simulatePalette } from '../kit/colorVision';
+import { simulatePalette } from '@lewismoten/gamemaker-sandbox-engine/gfx/colorVision';
 import { CREDITS, HOWTO, LOST, STORY, WON } from './src/text';
 
 const here = dirname(fileURLToPath(import.meta.url));

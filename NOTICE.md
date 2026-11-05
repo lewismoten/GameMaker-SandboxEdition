@@ -201,14 +201,6 @@ game folder opens in the browser unchanged.
 - **MD5** (`web/packages/archives/src/player/md5.ts`) is written from the algorithm's description in RFC 1321
   (R. Rivest, MIT Laboratory for Computer Science and RSA Data Security, Inc., 1992), only to tell
   the CD's `XFERPLAY.EXE` from other files before patching it; no RSA reference code is used.
-- **Color-vision simulation matrices** (`games/kit/colorVision.ts`; the Starter `games/colors/`): the
-  protanopia, deuteranopia and tritanopia 3x3 matrices (severity 1.0) are the published numbers of
-  Gustavo M. Machado, Manuel M. Oliveira and Leandro A. F. Fernandes, "A Physiologically-based Model
-  for Simulation of Color Vision Deficiency", IEEE Transactions on Visualization and Computer Graphics
-  15(6), 2009. They are applied to linear RGB as the paper describes; the rest of the file (delta E, a
-  whole-palette conversion) is this project's own code. The simulation only draws the second picture on
-  the game's level cards and runs its check; no game ships the matrices. The code was written by Claude
-  Sonnet 5.5, an AI model made by Anthropic, under Lewis Moten's direction.
 - **Research: the whole Game-Maker Archive, ideas only.** A second survey read every Game-Maker
   game in the Internet Archive's Game-Maker Archive collection, 271 games in all, with this
   project's own file readers (no program from them was run). Its techniques are described,
@@ -669,18 +661,19 @@ formats from their published descriptions and from Game-Maker's own source.
   Accessibility Guidelines (WCAG) 2, and its flashing check follows WCAG 2's **three flashes a
   second** threshold (success criterion 2.3.1). All are used as published; no code of theirs is
   included.
-- **The palette editor's Color vision check** (`web/src/editor/editors/palette/colorVision.ts`)
-  simulates protanopia, deuteranopia and tritanopia with the severity-1.0 matrices published
-  by **Gustavo M. Machado, Manuel M. Oliveira and Leandro A. F. Fernandes**, "A
-  Physiologically-based Model for Simulation of Color Vision Deficiency" (IEEE Transactions
-  on Visualization and Computer Graphics 15(6), 2009), applied in linear RGB. Its grayscale is
-  the WCAG 2 relative luminance above, and it measures how alike two colors look with the
-  CIE's **CIELAB** color space and 1976 color difference (ΔE), using the sRGB standard's
-  (IEC 61966-2-1) transfer curve. All are published formulas and numbers; no code of theirs
-  is included.
-- **The badge look-alike check** (`web/scripts/badgeSimilarMetrics.ts`, `npm run badges:similar`) uses
-  the same Machado, Oliveira and Fernandes (2009) severity-1.0 matrices in linear RGB, with
-  Rec. 601 luma for grayscale and achromatopsia. Published numbers only; no code of theirs is included.
+- **Color-vision simulation matrices** (`web/packages/engine/src/gfx/colorVision.ts`, the one copy; used by
+  the palette editor's Color vision check in `web/src/editor/editors/palette/colorVision.ts`, by the badge
+  look-alike check in `web/scripts/badgeSimilarMetrics.ts` (`npm run badges:similar`), and by the Starter
+  `games/colors/` in `build.ts`, `tools/colorCheck.ts` and `tools/shots.ts`): protanopia, deuteranopia and
+  tritanopia are simulated with the severity-1.0 matrices published by **Gustavo M. Machado, Manuel M.
+  Oliveira and Leandro A. F. Fernandes**, "A Physiologically-based Model for Simulation of Color Vision
+  Deficiency" (IEEE Transactions on Visualization and Computer Graphics 15(6), 2009), applied in linear
+  RGB as the paper describes. The palette editor's grayscale is the WCAG 2 relative luminance above and
+  the badge check's is Rec. 601 luma; the editor and `games/colors/` measure how alike two colors look with
+  the CIE's **CIELAB** color space and 1976 color difference (ΔE), using the sRGB standard's (IEC 61966-2-1)
+  transfer curve. All are published formulas and numbers; no code of theirs is included. The simulation
+  only draws pictures and runs checks; no game ships the matrices. The shared module was written by Claude
+  Sonnet 5.5, an AI model made by Anthropic, under Lewis Moten's direction.
 - **The sound effect makers** (`web/src/audio/sfxSynth.ts`, `sfxPresets.ts` and
   `web/src/editor/tools/speakerFx.ts`) follow the idea of **sfxr**, Tomas Pettersson's
   ("DrPetter") 2007 sound effect generator: a few sliders for pitch, slide, vibrato and an

@@ -257,6 +257,11 @@
       "gamemaker-source": "./src/formats/voc.ts",
       "import": "./dist/formats/voc.js"
     },
+    "./gfx/colorVision": {
+      "types": "./dist/types/gfx/colorVision.d.ts",
+      "gamemaker-source": "./src/gfx/colorVision.ts",
+      "import": "./dist/gfx/colorVision.js"
+    },
     "./gfx/cp437Glyphs": {
       "types": "./dist/types/gfx/cp437Glyphs.d.ts",
       "gamemaker-source": "./src/gfx/cp437Glyphs.ts",
