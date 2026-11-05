@@ -6,7 +6,7 @@
   "year": 1994,
   "price": "Free",
   "version": "1.0",
-  "blurb": "Two short levels with a number that counts down. In the first, a big digit on a brick building counts 9 to 0 and the door under it opens at 0, so you may go. In the second, two digits count 99 to 00 and the floor is a trapdoor that opens at 00, so you drop out onto a soft mat whether you like it or not. A digit here is a row of blocks that turn into the next number after a second. Signs say how. Play it, then open it in Game-Maker and change how long the count lasts.",
+  "blurb": "Two short levels with a number that counts down. In the first, a big digit on a brick building counts 9 to 0 and the door under it opens at 0. In the second, two digits count 99 to 00 and the floor is a trapdoor that opens at 00, dropping you onto a soft mat. A digit here is a row of blocks that each turn into the next number after a time. Signs say how. Play it, then open it in Game-Maker and change how long the count lasts.",
   "exe": "COUNT.EXE",
   "dosName": "COUNTDWN",
   "sound": "sb",

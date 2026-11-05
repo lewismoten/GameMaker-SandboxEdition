@@ -6,7 +6,7 @@
   "year": 1994,
   "price": "Free",
   "version": "1.0",
-  "blurb": "Two short levels about many rooms on one map. A map is much bigger than the screen, so four rooms in four corners of it can be four scenes that load the same map file, each landing the hero in a different cell with scrolling off. A door is a link that lands in another cell, even one that is not next door. In the second level every door into the hub lands on the same cell. Signs in the rooms say how. Play it, then open it in Game-Maker and move where a door lands.",
+  "blurb": "Two short levels about many rooms on one map. A map is much bigger than the screen, so four rooms in four corners of it can be four scenes that load the same map file, each landing the hero in a different cell with scrolling off. A door is a link that can land in any cell, even one that is not next door. Signs in the rooms say how. Play it, then open it in Game-Maker and move where a door lands.",
   "exe": "ONEMAP.EXE",
   "dosName": "ONEMAP",
   "sound": "sb",

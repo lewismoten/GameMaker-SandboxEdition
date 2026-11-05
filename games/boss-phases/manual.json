@@ -77,7 +77,7 @@
     },
     {
       "head": "Make it yours",
-      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>In <b>phase.mon</b>, give monster 6 the orange pictures too: the bug turns hurried after one hit instead of two.</li><li>Change a monster&rsquo;s <b>Movement</b> speeds and watch the bug in the tunnel.</li><li>Swap the pictures of monsters 11 and 13, and the tiny one comes before the orange one.</li><li>Untick <b>Solid</b> on a bug picture and walk through it.</li><li>Make the star&rsquo;s <b>Power</b> lower than 150 and see that a star no longer hurts it.</li></ul><p>The home page&rsquo;s <b>Starters</b> tab has more small games like this one.</p>"
+      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>In <b>phase.mon</b>, give monster 6 the orange pictures too: the bug turns hurried after one hit instead of two.</li><li>Change a monster&rsquo;s <b>Movement</b> speeds and watch the bug in the tunnel.</li><li>Swap the pictures of monsters 11 and 13, and the tiny one comes before the orange one.</li><li>Uncheck <b>Solid</b> on a bug picture and walk through it.</li><li>Make the star&rsquo;s <b>Power</b> lower than 150 and see that a star no longer hurts it.</li></ul><p>The home page&rsquo;s <b>Starters</b> tab has more small games like this one.</p>"
     }
   ]
 }
