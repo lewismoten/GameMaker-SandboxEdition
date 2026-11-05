@@ -44,6 +44,7 @@
     }
   },
   "counters": {
+    "20": "Keys: not used here, but a copy can add them.",
     "22": "Tokens carried: a token adds one, a gate takes its price (3 or 5)."
   },
   "sounds": {
