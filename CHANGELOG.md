@@ -202,6 +202,8 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Fixed
 
+- Pick It Up, level 2: the spikes were a solid strip in the ground that stung Kit every moment he stood on top of it. They now stand at his height and sting once when touched, so there is a run-up and a jump over them.
+
 - Round and Round: the little car no longer disappears for a quarter of each lap at the top of the loop. The engine draws a monster only when the block it is in is not the screen's top row (as DOS did), so the track and the car's path moved down one block. The game is version 1.1.
 - The Level check's slower-hands play no longer stays silent when its bot finds no way through a level: it says slower hands were not checked, suggests playing it unhurried, and, where the hero can tap jump again in the air, that chained air taps need each press within about the jump's air time.
 - While the PC screen has the keyboard, a small line by the screen says "Shift+Tab leaves the screen" (on the desk and on the DOS page). A command the PC types after booting (the modem, say) no longer pulls focus back to the screen if you have moved on, so closing the mug returns to the mug.

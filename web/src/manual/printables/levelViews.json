@@ -32,7 +32,7 @@
   "health-and-hearts": {"hash":"cd78031a3f9bbe8f","maps":{"one.map|hearts.bbl":[0,14,61,10],"three.map|hearts.bbl":[0,7,71,20],"two.map|hearts.bbl":[0,14,61,10]}},
   "home-keys": {"hash":"bbbc19a70a17c523","maps":{"one.map|hk.bbl":[0,6,83,23],"three.map|hk.bbl":[0,6,87,24],"two.map|hk.bbl":[0,8,81,23]}},
   "horizon": {"hash":"010ae37cc1448d28","maps":{"one.map|hz1.bbl":[10,10,16,10],"two.map|hz2.bbl":[10,10,16,10]}},
-  "inventory": {"hash":"d4129653005ac9f6","maps":{"one.map|inv.bbl":[0,6,68,21],"two.map|inv.bbl":[0,8,74,19]}},
+  "inventory": {"hash":"f4174be3cdbba055","maps":{"one.map|inv.bbl":[0,6,68,21],"two.map|inv.bbl":[0,8,74,19]}},
   "jump-boots": {"hash":"2cd726eace0b93e2","maps":{"one.map|boots.bbl":[0,0,78,41],"two.map|boots.bbl":[0,8,88,25]}},
   "keys-and-doors": {"hash":"2186bfa66cfb8d82","maps":{"one.map|keys.bbl":[0,0,67,27],"three.map|keys.bbl":[0,1,69,26],"two.map|keys.bbl":[0,1,67,26]}},
   "kit-moves": {"hash":"00988367f59b25e1","maps":{"one.map|km.bbl":[0,0,67,31],"two.map|km.bbl":[0,15,91,10]}},
