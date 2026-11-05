@@ -55,6 +55,25 @@ export function noWayOut(d: SceneData, game: Game): Finding[] {
   ];
 }
 
+/**
+ * The first scene still named "UnTitled". PLAYGAME shows only scene 0's name (as the game's name
+ * on its menu, GameMenu in PLAYGAME.C); the other scenes' names appear only in the editor, so they
+ * are not flagged. (DOS's own Clear() writes "UnTitled" and then blanks it, so a new scene is blank.)
+ */
+export function untitledGame(d: SceneData, game: Game): Finding[] {
+  if (d.scene !== 0 || !/^untitled\s*\d*$/i.test(game.scenes[0]?.desc.trim() ?? '')) return [];
+  return [
+    {
+      check: 'untitled',
+      severity: 'info',
+      title: `The game's menu calls it “${game.scenes[0].desc.trim()}”`,
+      detail:
+        'Players see the first scene’s name as the game’s name at the top of the menu. Give it the name you want on the box. (Other scenes’ names show only in the editor, so UnTitled there is harmless.)',
+      where: { scene: 0 },
+    },
+  ];
+}
+
 /** A level with no song, or a song DOS won't play. */
 export function music(d: SceneData, game: Game, files: FileSource): Finding[] {
   const song = game.scenes[d.scene]?.files[8];

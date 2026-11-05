@@ -431,6 +431,12 @@ export const CHECKS = {
     why: 'A level with no song, or one DOS won’t play, is silent. Quiet can set a mood; players may take it for a problem.',
     guide: C('Polish that players notice'),
   },
+  untitled: {
+    name: 'Game name on the menu',
+    why: 'The first scene’s name is the game’s name on its menu. “UnTitled” there is the first thing a player reads.',
+    taste: true,
+    guide: C('Polish that players notice'),
+  },
   flashing: {
     name: 'Flashing',
     why: 'Light and dark swapping more than three times a second over much of the screen can bring on seizures in some players.',
