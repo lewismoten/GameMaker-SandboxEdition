@@ -120,8 +120,11 @@ export function addColorBlocks(book: Book, pal: Pal): void {
   });
   fruit('grapes', (p) => {
     const dots = [
-      [6, 7], [10, 7], [14, 7],
-      [8, 11], [12, 11],
+      [6, 7],
+      [10, 7],
+      [14, 7],
+      [8, 11],
+      [12, 11],
       [10, 15],
     ];
     for (const [x, y] of dots) p.disc(x, y, 3.5, ink);
@@ -130,7 +133,14 @@ export function addColorBlocks(book: Book, pal: Pal): void {
   });
   fruit('orange', (p) => {
     p.disc(10, 12, 7, ink).disc(10, 12, 6, c('sw-ORANGE', 0)).disc(8, 10, 1.7, c('orange', 4));
-    for (const [x, y] of [[8, 13], [12, 11], [10, 15], [13, 14], [7, 10]]) p.set(x, y, c('orange', 1));
+    for (const [x, y] of [
+      [8, 13],
+      [12, 11],
+      [10, 15],
+      [13, 14],
+      [7, 10],
+    ])
+      p.set(x, y, c('orange', 1));
     p.set(10, 6, c('green', 1)).rect(10, 4, 4, 2, c('green', 2));
   });
 
@@ -142,7 +152,24 @@ export function addColorBlocks(book: Book, pal: Pal): void {
       p.disc(10, 6, 4.5, ink).disc(10, 6, 3.5, petal).rect(6, 7, 9, 4, ink).rect(7, 7, 7, 3, petal);
       p.set(7, 11, ink).set(10, 11, ink).set(13, 11, ink);
     } else {
-      const arms: [number, number][] = shape === 'star' ? [[0, -5], [5, 0], [0, 5], [-5, 0], [3, -3], [3, 3], [-3, 3], [-3, -3]] : [[0, -4], [4, 0], [0, 4], [-4, 0]];
+      const arms: [number, number][] =
+        shape === 'star'
+          ? [
+              [0, -5],
+              [5, 0],
+              [0, 5],
+              [-5, 0],
+              [3, -3],
+              [3, 3],
+              [-3, 3],
+              [-3, -3],
+            ]
+          : [
+              [0, -4],
+              [4, 0],
+              [0, 4],
+              [-4, 0],
+            ];
       for (const [dx, dy] of arms) p.disc(10 + dx, 7 + dy, 3.4, ink);
       for (const [dx, dy] of arms) p.disc(10 + dx, 7 + dy, 2.6, petal);
       p.disc(10, 7, 3, heart).set(9, 6, light);

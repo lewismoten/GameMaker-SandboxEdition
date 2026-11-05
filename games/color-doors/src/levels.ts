@@ -98,7 +98,13 @@ function gallery(book: Book, signs: Record<string, Sign>): Level {
   g.put(GALLERY_END, 8, 'e').put(GALLERY_END, 9, 'E');
   for (const x of [53, 66]) g.put(x, GROUND - 1, 'b');
   for (const x of [8, 45, 78]) g.put(x, GROUND - 1, 'f');
-  for (const [x, y] of [[8, 2], [38, 1], [58, 2], [84, 1]]) g.put(x, y, '(').put(x + 1, y, ')');
+  for (const [x, y] of [
+    [8, 2],
+    [38, 1],
+    [58, 2],
+    [84, 1],
+  ])
+    g.put(x, y, '(').put(x + 1, y, ')');
   const m = new StarterMap(book, g.rows());
   const onGround = (s: Sign) => GROUND - 1 - s.board.length;
   // the wall the swatches hang on
@@ -115,7 +121,10 @@ function gallery(book: Book, signs: Record<string, Sign>): Level {
   m.sign(LIGHT_X + 2, onGround(signs.light), signs.light);
   // the table and its fruit
   for (let i = 0; i < 5; i++) m.set(TABLE_X + i, GROUND - 3, 'tableTop');
-  m.set(TABLE_X, GROUND - 2, 'tableLeg').set(TABLE_X, GROUND - 1, 'tableLeg').set(TABLE_X + 4, GROUND - 2, 'tableLeg').set(TABLE_X + 4, GROUND - 1, 'tableLeg');
+  m.set(TABLE_X, GROUND - 2, 'tableLeg')
+    .set(TABLE_X, GROUND - 1, 'tableLeg')
+    .set(TABLE_X + 4, GROUND - 2, 'tableLeg')
+    .set(TABLE_X + 4, GROUND - 1, 'tableLeg');
   ['apple', 'banana', 'lime', 'grapes', 'orange'].forEach((f, i) => m.set(TABLE_X + i, GROUND - 4, f));
   m.sign(TABLE_X + 6, onGround(signs.fruit), signs.fruit);
   // the garden bed

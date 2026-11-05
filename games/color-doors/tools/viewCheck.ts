@@ -25,7 +25,8 @@ for (const v of VIEWS) {
   const together: string[] = [];
   for (let i = 0; i < SWATCHES.length; i++)
     for (let j = i + 1; j < SWATCHES.length; j++)
-      if (deltaEBytes(rgb(p, pal.c(`sw-${SWATCHES[i].word}`, 0)), rgb(p, pal.c(`sw-${SWATCHES[j].word}`, 0))) < 12) together.push(`${SWATCHES[i].word}/${SWATCHES[j].word}`);
+      if (deltaEBytes(rgb(p, pal.c(`sw-${SWATCHES[i].word}`, 0)), rgb(p, pal.c(`sw-${SWATCHES[j].word}`, 0))) < 12)
+        together.push(`${SWATCHES[i].word}/${SWATCHES[j].word}`);
   const ok = r >= 7;
   if (!ok) bad++;
   console.log(`${ok ? 'ok  ' : 'FAIL'} ${v.name.padEnd(22)} sign text contrast ${r.toFixed(1)}:1; swatches that look alike: ${together.join(' ') || 'none'}`);

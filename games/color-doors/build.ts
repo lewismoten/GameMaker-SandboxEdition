@@ -34,7 +34,6 @@ import { song } from './src/song';
 import { titlePicture } from './src/title';
 import { CREDITS, HOWTO, LOST, STORY, WON } from './src/text';
 
-
 const here = dirname(fileURLToPath(import.meta.url));
 const disk = new Disk(join(here, 'disk'));
 
