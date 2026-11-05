@@ -907,7 +907,7 @@ registerEditor(['map'], (host, project, file) => {
         const at = viewport.at();
         markers.addExit({ x: Math.min(MLEN - 1, Math.floor(at.x)), y: Math.min(MWID - 1, Math.floor(at.y)) });
         placingExit = true;
-        toast('Tap the map where the exit goes, or drag the gold marker.');
+        toast('Tap the map where the exit goes, or drag the gold marker. Esc cancels.');
       },
     },
     '＋',
@@ -1455,6 +1455,7 @@ registerEditor(['map'], (host, project, file) => {
       return;
     }
     if (e.altKey) return;
+    if (e.key === 'Escape' && placingExit) return ((placingExit = false), toast('Exit placing cancelled.'), e.preventDefault());
     if (e.key === 'Escape' && tools.cancel()) return e.preventDefault();
     if (e.key === 'Enter' && tools.finishPolygon()) {
       e.preventDefault();
