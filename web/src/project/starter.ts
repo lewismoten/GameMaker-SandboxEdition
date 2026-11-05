@@ -52,7 +52,7 @@ export const STARTER_GROUPS: { name: string; tag: string; games: string[] }[] = 
   },
   { name: 'Wiring and Puzzles', tag: 'Counters that think.', games: ['switches', 'three-tokens', 'and-gate', 'secret-doors'] },
   { name: 'Bigger Worlds', tag: 'More than one screen.', games: ['scroll', 'many-rooms', 'blocks-budget'] },
-    {
+  {
     name: 'Showcase Tricks',
     tag: 'How the big games do their big moments.',
     // a parallax starter (id `parallax`, being built) goes between 'scripted' and 'horizon'

@@ -146,7 +146,14 @@ function breeze(p: Pixels, pal: Pal): void {
   ];
   for (const [x, y, col] of leaves) {
     const tilt = rand() < 0.5 ? 1 : -1;
-    for (let k = -4; k <= 4; k++) p.rect(x + k, y + Math.round((k * tilt) / 2) - Math.round(2 - Math.abs(k) / 2), 1, 1 + Math.round(3 - Math.abs(k) / 1.5), c(col, col === 'green' ? 3 : 4));
+    for (let k = -4; k <= 4; k++)
+      p.rect(
+        x + k,
+        y + Math.round((k * tilt) / 2) - Math.round(2 - Math.abs(k) / 2),
+        1,
+        1 + Math.round(3 - Math.abs(k) / 1.5),
+        c(col, col === 'green' ? 3 : 4),
+      );
     p.line(x - 5, y - Math.round((5 * tilt) / 2), x + 5, y + Math.round((5 * tilt) / 2), c(col, 1));
   }
   // the water: a blue band whose top edge waves, with a white crest
@@ -156,8 +163,7 @@ function breeze(p: Pixels, pal: Pal): void {
     p.set(x, top, c('white', 3));
     p.set(x, top + 1, c('blue', 4));
   }
-  for (let y = GROUND + 12; y < H; y += 10)
-    for (let x = ((y / 10) % 2) * 12; x < W; x += 24) p.rect(x, y, 8, 1, c('blue', 4));
+  for (let y = GROUND + 12; y < H; y += 10) for (let x = ((y / 10) % 2) * 12; x < W; x += 24) p.rect(x, y, 8, 1, c('blue', 4));
   p.rect(0, GROUND + 32, W, H - GROUND - 32, c('blue', 2));
 }
 
@@ -184,7 +190,9 @@ function dressing(p: Pixels, pal: Pal): void {
     if (i % 2 === 0) {
       const col = scarf[i / 2];
       const len = 24 + i * 3;
-      p.rect(x - 4, 106, 14, len, c(col, 3)).rect(x - 4, 106, 3, len, c(col, 4)).rect(x - 4, 106 + Math.round(len / 2), 14, 3, c('white', 3));
+      p.rect(x - 4, 106, 14, len, c(col, 3))
+        .rect(x - 4, 106, 3, len, c(col, 4))
+        .rect(x - 4, 106 + Math.round(len / 2), 14, 3, c('white', 3));
       for (let f = 0; f < 14; f += 3) p.rect(x - 4 + f, 106 + len, 2, 3, c(col, 2));
     }
   }
