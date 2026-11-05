@@ -13,11 +13,36 @@ const C = 10;
 const B = 14;
 const PIPS: Record<number, [number, number][]> = {
   1: [[M, C]],
-  2: [[L, T], [R, B]],
-  3: [[L, T], [M, C], [R, B]],
-  4: [[L, T], [R, T], [L, B], [R, B]],
-  5: [[L, T], [R, T], [M, C], [L, B], [R, B]],
-  6: [[L, T], [R, T], [L, C], [R, C], [L, B], [R, B]],
+  2: [
+    [L, T],
+    [R, B],
+  ],
+  3: [
+    [L, T],
+    [M, C],
+    [R, B],
+  ],
+  4: [
+    [L, T],
+    [R, T],
+    [L, B],
+    [R, B],
+  ],
+  5: [
+    [L, T],
+    [R, T],
+    [M, C],
+    [L, B],
+    [R, B],
+  ],
+  6: [
+    [L, T],
+    [R, T],
+    [L, C],
+    [R, C],
+    [L, B],
+    [R, B],
+  ],
 };
 
 /** The face showing `n` (1 to 6). `stopped` colors the rim by odd or even. */

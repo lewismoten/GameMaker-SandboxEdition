@@ -11,6 +11,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Added
 
+- Roll the Dice, a Starter for the Wiring and Puzzles group: a die is a ring of six blocks that each turn into the next after a few ticks, and a touch turns the face showing into a still copy of itself and hands over a key, gold for an odd face and silver for an even one. Two doors wait ahead, so the face picks the door. The game has no random number: the tick decides the roll.
 - The Pocket Player (a small touch-screen board flashed from the site) now has a game picker and plays 30 of the Starters, with a round touch pad that works by finger or stylus, Space and Enter buttons only when a game uses them, and a settings screen (left or right hand, stylus mode, pad size, palm rejection). Starters with monsters, and sound, come later.
 
 - The Clown Club Face Dial in Teddy's Little Biggest Adventure box now has line-art clown faces (a corgi, a shaggy pup, Doc Leo in his fedora, a curly-haired clown, and the rest) instead of 12 by 12 pixel pictures, so each half-face is easy to read on the big and small discs. The pixel faces stay for the game's own screens, and the code each face shows is unchanged.

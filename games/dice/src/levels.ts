@@ -97,7 +97,10 @@ function rollTheDice(pal: Pal): Level {
   const g = new Grid(WIDTH, 15);
   g.row(GROUND, 0, WIDTH - 1, 'G').fill(0, GROUND + 1, WIDTH, 4, 'D');
   g.col(0, 0, 9, 'X').col(WIDTH - 1, 0, 9, 'X');
-  g.put(3, 8, 's').put(3, 9, 'S').put(WIDTH - 4, 8, 'e').put(WIDTH - 4, 9, 'E');
+  g.put(3, 8, 's')
+    .put(3, 9, 'S')
+    .put(WIDTH - 4, 8, 'e')
+    .put(WIDTH - 4, 9, 'E');
   // the wall: brick between the two doors and over them, the way over blocked
   g.col(WALL_X, 0, 2, 'B').col(WALL_X, LEDGE, 7, 'B');
   // the ledge and its ladder, up to the silver door
