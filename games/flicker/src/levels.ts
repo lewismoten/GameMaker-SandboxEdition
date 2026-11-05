@@ -86,8 +86,10 @@ function torchHall(): Level {
   const { c } = pal;
   book.add('sconce', sconce(pal, bg), { grav: PULL.down });
   const win = new Pixels(20, 40, bg);
-  win.rect(4, 6, 12, 34, c('stone', 2)).rect(6, 8, 8, 32, c('sky', 5)).disc(10, 14, 4, c('sky', 5)).rect(6, 8, 8, 6, c('sky', 5));
-  win.rect(9, 8, 2, 32, c('stone', 2)).rect(6, 22, 8, 2, c('stone', 2)).rect(2, 38, 16, 2, c('stone', 3));
+  // an arched slit: a stone frame round a lit opening with a round top, no bars across it
+  win.rect(4, 8, 12, 32, c('stone', 2)).disc(10, 12, 6, c('stone', 2));
+  win.rect(7, 10, 6, 30, c('sky', 5)).disc(10, 12, 3, c('sky', 5));
+  win.rect(2, 38, 16, 2, c('stone', 3));
   book.add('window.top', win.crop(0, 0, 20, 20), { grav: PULL.down });
   book.add('window.bot', win.crop(0, 20, 20, 20), { grav: PULL.down });
   addRing(
