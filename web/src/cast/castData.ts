@@ -50,6 +50,7 @@ export const CAST_GAMES = {
   'who-wins': ['Who Wins?', 'starter'],
   'breakable-walls': ['Smash It', 'starter'],
   'boss-hits': ['Big Bug', 'starter'],
+  'short-lived': ['Here Today', 'starter'],
   carl: ['A Fly Named Carl', 'bizarre'],
   goat: ['Third Goat from the Left', 'bizarre'],
   loaf: ['Loaf #13 (Left in the Basket)', 'bizarre'],
@@ -145,6 +146,7 @@ const LISTED: CastMember[] = [
       { game: 'your-first-game', as: 'puts it all together: a jump, coins, a gumdrop, spikes, a key and a door' },
       { game: 'breakable-walls', as: 'bumps crates to rubble and catches spinning gems' },
       { game: 'boss-hits', as: 'throws five stars at a cheerful bug that blocks a narrow way' },
+      { game: 'short-lived', as: 'waits for a bubble to pop and a sleepy gumdrop to wake up' },
     ],
   },
   {
