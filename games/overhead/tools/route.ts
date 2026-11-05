@@ -137,7 +137,7 @@ export async function roads(bot: StarterBot): Promise<void> {
   const [meadow, woods, village, pond, shop] = ['meadow', 'woods', 'village', 'pond', 'shop'].map(area);
   await must(bot, bot.wait(LOOK), 'looking at the meadow');
   // north off the meadow's edge: a link lands him in the middle of the woods
-  await through(bot, bot.climb('up', meadow.rt, 'the north edge'), 'north edge');
+  await through(bot, bot.climb('up', meadow.rt + 1, 'the north edge'), 'north edge');
   landed(bot, woods, 'north into the woods');
   await must(bot, bot.wait(LOOK), 'looking at the woods');
   // the woods' three coins, in a row to the west of the road
@@ -159,7 +159,7 @@ export async function roads(bot: StarterBot): Promise<void> {
   await must(bot, bot.wait(BEAT), 'a beat');
   await must(bot, bot.walk(pond.rl + 8, 'back to the road'), 'west');
   // north off the pond's edge into the village
-  await through(bot, bot.climb('up', pond.rt, 'the north edge'), 'pond north edge');
+  await through(bot, bot.climb('up', pond.rt + 1, 'the north edge'), 'pond north edge');
   landed(bot, village, 'north into the village');
   await must(bot, bot.wait(LOOK), 'looking at the village');
   // the house's wall is solid: walk into it, then go and use its door

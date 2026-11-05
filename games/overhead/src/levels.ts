@@ -90,10 +90,13 @@ export const AREAS: Area[] = [
 }));
 export const area = (id: string): Area => AREAS.find((a) => a.id === id)!;
 
-/** The cells of an edge a road runs off: two blocks wide, in the middle of the side. */
+/**
+ * The cells a road is left by: two blocks wide, in the middle of its side. A screen that does not scroll never lets the hero onto
+ * its top row or left column (chkscrnbounds, PLAYGAME.C), so the north and west links sit one block in; the east and south are the edge.
+ */
 export type Side = 'N' | 'E' | 'S' | 'W';
 export function edgeCells(a: Area, side: Side): Spot[] {
-  const [x, y] = { N: [7, 0], E: [15, 4], S: [7, 9], W: [0, 4] }[side];
+  const [x, y] = { N: [7, 1], E: [15, 4], S: [7, 9], W: [1, 4] }[side];
   return side === 'N' || side === 'S' ? [at(a.rl + x, a.rt + y), at(a.rl + x + 1, a.rt + y)] : [at(a.rl + x, a.rt + y), at(a.rl + x, a.rt + y + 1)];
 }
 /** The village door and the shop's two doors, in world blocks. */
