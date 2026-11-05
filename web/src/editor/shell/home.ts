@@ -29,6 +29,7 @@ import { batchOf } from './importBatch';
 import { lastUsed } from '../../project/projectUse';
 import { NOTES_CHANGED } from '../../imported/gameNotes';
 import { ratingFilterBox, savedRatingFilter } from './homeRatings';
+import { levelFilterBox, savedLevel } from './homeLevel';
 import { doneFilterBox, loadFinished, savedDoneFilter } from './homeDone';
 import { loadGrades } from '../../achievements/courseGrades';
 import { currentRoute, formatHash, setHashParams, type ParamValue } from '../../urlState';
@@ -191,6 +192,11 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
   let doneFilter = savedDoneFilter();
   const doneBox = doneFilterBox(doneFilter, (f) => {
     doneFilter = f;
+    void select(current);
+  });
+  let level = savedLevel();
+  const levelBox = levelFilterBox(level, (n) => {
+    level = n;
     void select(current);
   });
   let current: Category = savedCategory() ?? FIRST_CATEGORY;
@@ -424,6 +430,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     }
     ratingBox.hidden = c !== 'imported' || !lib.own(c).length;
     doneBox.hidden = c !== 'starter';
+    levelBox.hidden = c !== 'starter';
     transcriptBtn.hidden = c !== 'starter';
     const finished = c === 'starter' ? await loadFinished() : new Set<string>();
     if (current !== c) return; // another collection was chosen while the record loaded
@@ -439,7 +446,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
         browse: (to) => void select(to, true).then(() => document.getElementById(`lib-tab-${to}`)?.focus()),
         newGame: () => void homeImport().then((m) => m.newGame(nav)),
       },
-      { finished, filter: doneFilter, grades: c === 'starter' ? loadGrades() : {} },
+      { finished, filter: doneFilter, grades: c === 'starter' ? loadGrades() : {}, level },
     );
     // The import target stays first, including after sorting or filtering the games.
     if (isOwn(c)) {
@@ -481,7 +488,21 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
         'section',
         { id: 'library', class: 'library', 'aria-labelledby': 'lib-title' },
         h('div', { class: 'lib-bar' }, catNav, h('div', { class: 'lib-find' }, search, newGameBtn, communityBtn)),
-        h('div', { class: 'lib-about' }, libTitle, libLead, sortBox, ratingBox, doneBox, transcriptBtn, historyBtn, recentBtn, removeAllBtn, start.howBtn),
+        h(
+          'div',
+          { class: 'lib-about' },
+          libTitle,
+          libLead,
+          sortBox,
+          ratingBox,
+          doneBox,
+          levelBox,
+          transcriptBtn,
+          historyBtn,
+          recentBtn,
+          removeAllBtn,
+          start.howBtn,
+        ),
         howDoI,
         tiles,
         live,

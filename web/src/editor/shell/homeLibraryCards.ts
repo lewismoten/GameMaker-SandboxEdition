@@ -7,6 +7,7 @@ import { byCollection } from '../../project/bizarre';
 import { byStarterGroup } from '../../project/starter';
 import { isCeremony } from '../../project/ceremonies';
 import type { Grades } from '../../project/grades';
+import { levelShown, levelShowsCeremony } from './homeLevel';
 import { graduationCards, readyCeremonies, readyStrip } from './homeGraduations';
 import { allNotes, ratingOf } from '../../imported/gameNotes';
 import { groupByRating, ratingName, starsText } from '../../imported/ratings';
@@ -32,9 +33,10 @@ export function libraryCards(
   c: Category,
   ratingFilter: ReturnType<typeof savedRatingFilter>,
   on: CardActions,
-  starters: { finished: ReadonlySet<string>; filter: DoneFilter; grades?: Grades } = { finished: new Set(), filter: 'all' },
+  starters: { finished: ReadonlySet<string>; filter: DoneFilter; grades?: Grades; level?: number } = { finished: new Set(), filter: 'all' },
 ): HTMLElement[] {
   const grades = starters.grades ?? {};
+  const level = starters.level ?? 0;
   const isDone = (g: HomeGame) => starters.finished.has(g.entry?.id ?? '');
   const notes = allNotes();
   let cards: HTMLElement[];
@@ -60,7 +62,7 @@ export function libraryCards(
         ? byStarterGroup(
             lib
               .gamesOf(c)
-              .filter((g) => !isCeremony(g.entry?.id ?? ''))
+              .filter((g) => !isCeremony(g.entry?.id ?? '') && levelShown(level, g.entry?.id ?? ''))
               .map((g) => ({ id: g.entry?.id ?? '', title: g.title, g })),
           ).map((sec) => ({
             ...sec,
@@ -93,7 +95,7 @@ export function libraryCards(
     const graduations =
       c === 'starter' && (starters.filter === 'all' || starters.filter === 'grad')
         ? graduationCards(
-            lib.gamesOf(c).filter((g) => isCeremony(g.entry?.id ?? '')),
+            lib.gamesOf(c).filter((g) => isCeremony(g.entry?.id ?? '') && levelShowsCeremony(level, g.entry?.id ?? '')),
             starters.finished,
             grades,
             tile,
@@ -104,7 +106,7 @@ export function libraryCards(
       c === 'starter' && (starters.filter === 'all' || starters.filter === 'grad')
         ? readyStrip(
             readyCeremonies(
-              lib.gamesOf(c).filter((g) => isCeremony(g.entry?.id ?? '')),
+              lib.gamesOf(c).filter((g) => isCeremony(g.entry?.id ?? '') && levelShowsCeremony(level, g.entry?.id ?? '')),
               starters.finished,
               grades,
             ),
@@ -134,13 +136,15 @@ export function libraryCards(
   }
   if (!cards.length)
     cards = [
-      c === 'starter' && starters.filter !== 'all'
+      c === 'starter' && (starters.filter !== 'all' || level)
         ? h(
             'p',
             { class: 'meta' },
-            starters.filter === 'done'
-              ? 'No Starter is done yet. Pick All Starters under Show to see them all.'
-              : 'Every Starter is done. Pick All Starters under Show to see them all.',
+            level && starters.filter === 'all'
+              ? 'Nothing is in this Level yet. Pick All levels to see every Starter.'
+              : starters.filter === 'done'
+                ? 'No Starter is done yet. Pick All Starters under Show to see them all.'
+                : 'Every Starter is done. Pick All Starters under Show to see them all.',
           )
         : emptyCollection(lib, c, ratingFilter, on),
     ];
