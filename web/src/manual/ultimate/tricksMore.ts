@@ -50,4 +50,8 @@ export const MORE_TRICKS = `<h2>A flock that holds its shape</h2>
   the set for that one scene, with the blocks the hill never shows (the houses, the mall, the
   arcade) drawn over as snowbanks, birches and distance boards. Every block it shares with the
   other levels keeps its number, so the sled and the snow behave the same. Any scene can load
-  its own set this way (Chapter 2).</p>`;
+  its own set this way (Chapter 2).</p>
+  <p>The same trick keeps keys apart. Counters carry from level to level, so a spare gold key is
+  still in the pocket two levels later. A level whose doors must not take it gets keys and doors
+  on another special counter, in a copy of the set made for that level.</p>
+  ${onCd('SPECCNTR')}`;
