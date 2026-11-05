@@ -96,6 +96,7 @@ export const CAST_GAMES = {
   'very-far': ['Walking Very Far', 'starter'],
   shore: ['Waves on the Shore', 'starter'],
   twinkle: ['Twinkle, Twinkle', 'starter'],
+  flicker: ['Flicker and Flow', 'starter'],
   'things-that-grow': ['Seeds and Nests', 'starter'],
   dialog: ['Everybody Talks', 'starter'],
   parallax: ['Parallax', 'starter'],
@@ -257,6 +258,7 @@ const LISTED: CastMember[] = [
       { game: 'diagonal-wrap', as: 'follows a road down the map and out of the bottom, then round the map three times on a tilted one' },
       { game: 'shore', as: 'crosses a pier over a sea that turns itself, then walks a beach where the waves run up the sand and back' },
       { game: 'twinkle', as: 'walks a night meadow under stars that blink all at once, then under stars that twinkle in no step' },
+      { game: 'flicker', as: 'walks a castle hall of pulsing and flickering torches and waving flags, a cliff beside a waterfall, and a hill with a fire and its sparks' },
     ],
   },
   {
