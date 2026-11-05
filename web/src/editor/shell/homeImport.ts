@@ -117,7 +117,7 @@ export async function newGame(nav: HomeNav): Promise<void> {
 type Imported = ReadGame;
 
 /** The CD shareware game these files are, if any (matched by the .gam file's CRC-32). */
-async function sharewareMatch(files: GameFiles): Promise<CatalogEntry | undefined> {
+export async function sharewareMatch(files: GameFiles): Promise<CatalogEntry | undefined> {
   const shareware = await sharewareByCrc();
   if (!shareware.size) return undefined;
   const { crc32 } = await import('@lewismoten/gamemaker-sandbox-archives/zip');
@@ -225,7 +225,7 @@ async function importChosen(report: ScanReport, given: ScanFile[], onAdded?: () 
   const records = removedGames();
   const chosen = await chooseGames(
     report,
-    (g) => (sharewareOf(g) ? 'shareware: play it from the Shareware tab' : undefined),
+    (g) => (sharewareOf(g) ? 'shareware: play it from the CD tab' : undefined),
     new GameReader(given),
     (g) => {
       const was = removedMatch(fingerprintOf(g), records);

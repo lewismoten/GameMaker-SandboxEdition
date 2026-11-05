@@ -144,7 +144,7 @@ const families = () =>
         null,
         'The games from the original Game-Maker CD and the BBSes of the 90s. Gameware are the free samples that came with Game-Maker, yours to open and borrow from; shareware are other people’s games, played exactly as they released them. None of this cast is in them: they were here first.',
       ),
-      h('span', { class: 'cast-fam-links' }, h('a', { href: tabHref('gameware') }, 'Gameware →'), ' ', h('a', { href: tabHref('shareware') }, 'Shareware →')),
+      h('span', { class: 'cast-fam-links' }, h('a', { href: tabHref('cd') }, 'Browse the CD →')),
     ),
   );
 

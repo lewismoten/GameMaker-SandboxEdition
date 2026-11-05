@@ -50,7 +50,15 @@ export function libraryCards(lib: HomeLibrary, c: Category, ratingFilter: Return
               games: [...sec.games].sort((a, b) => a.g.title.localeCompare(b.g.title, undefined, { numeric: true, sensitivity: 'base' })),
             }))
           : isByMaker(c)
-            ? byMaker(lib.gamesOf(c)).map((m) => ({ name: m.name, count: m.games.length, games: m.games.map((g) => ({ g })) }))
+            ? // Gameware first, then Shareware, each by maker; the tag tells which
+              (['gameware', 'shareware'] as const).flatMap((kind) =>
+                byMaker(lib.gamesOf(c).filter((g) => g.kind === kind)).map((m) => ({
+                  name: m.name,
+                  tag: kind === 'gameware' ? 'Gameware' : 'Shareware',
+                  count: m.games.length,
+                  games: m.games.map((g) => ({ g })),
+                })),
+              )
             : c === 'imported' && lib.sort === 'rating'
               ? groupByRating(rated, (g) => ratingOf(g.project!.id, notes)).map((grp) => ({
                   name: grp.rating ? `${starsText(grp.rating)} ${ratingName(grp.rating)}` : 'Unrated',
@@ -65,7 +73,7 @@ export function libraryCards(lib: HomeLibrary, c: Category, ratingFilter: Return
               'h3',
               { class: `lib-sub${sec.games.length === 1 ? ' lib-sub-one' : ''}`, id: `lib-sub-${n}`, dataset: { group: String(n) } },
               sec.name,
-              c === 'starter' && sec.tag ? h('span', { class: 'lib-sub-tag' }, ` · ${sec.tag}`) : null,
+              (c === 'starter' || c === 'cd') && sec.tag ? h('span', { class: 'lib-sub-tag' }, ` · ${sec.tag}`) : null,
               sec.count ? h('span', { class: 'lib-sub-count' }, ` · ${sec.count} game${sec.count === 1 ? '' : 's'}`) : null,
             ),
             ...sec.games.map((x) => {
@@ -93,7 +101,7 @@ function emptyCollection(lib: HomeLibrary, c: Category, ratingFilter: ReturnType
           'div',
           { class: 'toolbar' },
           h('button', { class: 'primary', type: 'button', onclick: () => on.newGame() }, '+ Make a new game'),
-          h('button', { type: 'button', onclick: () => on.browse('gameware') }, 'Browse Gameware'),
+          h('button', { type: 'button', onclick: () => on.browse('cd') }, 'Browse the CD'),
           h('button', { type: 'button', onclick: () => on.browse('sandbox') }, 'Browse Sandbox'),
         ),
       )

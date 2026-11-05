@@ -21,7 +21,7 @@ import type { HomeGame } from './homeCards';
 import { categoryOf, homeLibrary, isByMaker, isOwn, SORT_KEY, type MySort } from './homeLibrary';
 import { showcase } from './homeShowcase';
 import { icon } from './homeIcons';
-import { CATEGORIES, CATEGORY_KEY, FIRST_CATEGORY, pickFeatured, savedCategory, type Category } from './homeCategories';
+import { CATEGORIES, CATEGORY_KEY, FIRST_CATEGORY, oldCategory, pickFeatured, savedCategory, type Category } from './homeCategories';
 import { batchOf } from './importBatch';
 import { lastUsed } from '../../project/projectUse';
 import { NOTES_CHANGED } from '../../imported/gameNotes';
@@ -315,7 +315,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
   /** Shows a collection; remembered when the visitor picked it. */
   const select = async (c: Category, picked = false) => {
     // a Bizarre tab remembered from a catalog that had one: its games are with the shareware now
-    if (c === 'bizarre' && !hasBizarreTab(lib.catalog)) c = 'shareware';
+    if (c === 'bizarre' && !hasBizarreTab(lib.catalog)) c = 'cd';
     const changed = c !== current;
     current = c;
     // another collection chosen: one of its games is featured at the top (an empty one keeps the game shown)
@@ -424,7 +424,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
   }
   // the collection in the address (#/?tab=sandbox) comes back, before a game is featured from it
   const { tab, q } = currentRoute().params;
-  const tabbed = CATEGORIES.find((c) => c.id === tab)?.id;
+  const tabbed = CATEGORIES.find((c) => c.id === oldCategory(tab))?.id;
   if (tabbed) current = tabbed;
   // a link to a game shows it, in its own collection
   const chosen = lib.findGame(hashKey());

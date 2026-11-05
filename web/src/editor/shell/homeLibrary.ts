@@ -30,11 +30,12 @@ type Projects = Awaited<ReturnType<typeof listProjects>>;
 /** Your own collections: My games and Imported. */
 export const isOwn = (c: Category) => c === 'mine' || c === 'imported';
 
-/** Gameware and Shareware: their games under who made them (homeAuthors.ts). */
-export const isByMaker = (c: Category) => c === 'gameware' || c === 'shareware';
+/** The CD (Gameware, then Shareware): its games under who made them (homeAuthors.ts). */
+export const isByMaker = (c: Category) => c === 'cd';
 
 /** The collection a game is listed in. */
-export const categoryOf = (g: HomeGame): Category => (g.project && isImported(g.project.id) ? 'imported' : g.kind);
+export const categoryOf = (g: HomeGame): Category =>
+  g.project && isImported(g.project.id) ? 'imported' : g.kind === 'gameware' || g.kind === 'shareware' ? 'cd' : g.kind;
 
 export function homeLibrary() {
   // one HomeGame per game for the page's life, so files load once
@@ -77,7 +78,9 @@ export function homeLibrary() {
           ? sorted()
               .filter((p) => isImported(p.id) === (c === 'imported'))
               .map(lib.mine)
-          : lib.entriesOf(c).map((e) => remember(catalogGame(e, c as GameKind))),
+          : c === 'cd'
+            ? [...lib.entriesOf(c)].map((e) => remember(catalogGame(e, e.kind === 'shareware' ? 'shareware' : 'gameware')))
+            : lib.entriesOf(c).map((e) => remember(catalogGame(e, c as GameKind))),
     findGame: (key: string): HomeGame | undefined => {
       for (const c of CATEGORIES) {
         const g = lib.gamesOf(c.id).find((x) => x.key === key);
@@ -95,19 +98,19 @@ export function homeLibrary() {
     },
   };
   const gameware = () => lib.catalog.filter((g) => g.kind !== 'shareware' && !g.original);
+  const shareware = () =>
+    lib.catalog.filter((g) => g.kind === 'shareware' && !isSandboxGame(g) && !isStarterGame(g) && g.gam && !(isBizarreGame(g) && hasBizarreTab(lib.catalog)));
   const entriesIn = (c: Category): CatalogEntry[] => {
     const { catalog } = lib;
-    return c === 'gameware'
-      ? gameware()
+    return c === 'cd'
+      ? [...gameware(), ...shareware()]
       : c === 'starter'
         ? catalog.filter((g) => isStarterGame(g) && g.gam)
         : c === 'sandbox'
           ? catalog.filter((g) => isSandboxGame(g) && g.gam)
-          : c === 'shareware'
-            ? catalog.filter((g) => g.kind === 'shareware' && !isSandboxGame(g) && !isStarterGame(g) && g.gam && !(isBizarreGame(g) && hasBizarreTab(catalog)))
-            : c === 'bizarre' && hasBizarreTab(catalog)
-              ? byCollection(catalog.filter((g) => isBizarreGame(g) && g.gam)).flatMap((s) => s.games)
-              : [];
+          : c === 'bizarre' && hasBizarreTab(catalog)
+            ? byCollection(catalog.filter((g) => isBizarreGame(g) && g.gam)).flatMap((s) => s.games)
+            : [];
   };
   const sorted = () =>
     lib.sort === 'walk'
