@@ -5,16 +5,7 @@
 import { INSTRUMENTS } from '@lewismoten/gamemaker-sandbox-tools/kit/music';
 import { join, tune, v } from '@lewismoten/gamemaker-sandbox-tools/kit/tune';
 
-const MELODY = join(
-  'E5 h, G5 q, E5 q',
-  'D5 h, C5 h',
-  'E5 q, G5 q, A5 h',
-  'G5 w',
-  'A5 h, G5 q, E5 q',
-  'F5 h, E5 h',
-  'D5 q, E5 q, F5 q, D5 q',
-  'C5 w',
-);
+const MELODY = join('E5 h, G5 q, E5 q', 'D5 h, C5 h', 'E5 q, G5 q, A5 h', 'G5 w', 'A5 h, G5 q, E5 q', 'F5 h, E5 h', 'D5 q, E5 q, F5 q, D5 q', 'C5 w');
 
 /** One bar of each chord: its three notes for the arpeggio, and its root and fifth for the bass. */
 const CHORDS = {

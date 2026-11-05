@@ -16,12 +16,37 @@ export const SCENE = { end: 1, solid: 2, dither: 3, hop: 4, hover: 5 } as const;
 export function buildGame(levels: { solid: Level; dither: Level; hop: Level; hover: Level }): Game {
   const game = newGame(TITLE);
   const [title, end] = game.scenes;
-  title.files = ['title.lst', 'shadows.cmf', 'menu.gif', 'shadows.cmf', 'story.lst', 'shadows.cmf', 'howto.lst', 'credits.lst', 'scores.gif', 'loadgame.gif', 'savegame.gif', 'demo.rec', ...new Array(8).fill('')];
+  title.files = [
+    'title.lst',
+    'shadows.cmf',
+    'menu.gif',
+    'shadows.cmf',
+    'story.lst',
+    'shadows.cmf',
+    'howto.lst',
+    'credits.lst',
+    'scores.gif',
+    'loadgame.gif',
+    'savegame.gif',
+    'demo.rec',
+    ...new Array(8).fill(''),
+  ];
   end.desc = 'The End';
   end.files = ['won.lst', 'shadows.cmf', 'lost.lst', 'shadows.cmf', ...new Array(16).fill('')];
 
   const blank = () => Array.from({ length: MAXSCENELINKS }, () => ({ toScene: NOSCENE, from: { x: 0, y: 0 }, to: { x: 0, y: 0 } }));
-  const scene = (desc: string, level: Level, bbl: string, mbl: string, cbl: string, card: string, x: number, y: number, to: number, toCell: [number, number]) => {
+  const scene = (
+    desc: string,
+    level: Level,
+    bbl: string,
+    mbl: string,
+    cbl: string,
+    card: string,
+    x: number,
+    y: number,
+    to: number,
+    toCell: [number, number],
+  ) => {
     const s = emptyScene(ADVTYPE);
     s.desc = desc.slice(0, 19);
     s.pos = { x, y };

@@ -84,9 +84,29 @@ const text = (base: string, heading: string, body: string) => {
   disk.put(`${base}.lst`, serializeSlideList([{ name: `${base}.gif`, pause: 0 }, { name: `${base}.txt` }]));
 };
 const pic = (book: Book, name: string) => book.pics.get(name)!;
-disk.put('title.gif', gif(titlePicture(pal, heroPicture(assets.dither.hero, 'stand.top', 'stand'), pic(assets.dither.critters, 'pip0'), pic(assets.dither.critters, 'bee0'), pic(assets.dither.critters, 'shade1'), TITLE, 'A STARTER GAME'), pal));
+disk.put(
+  'title.gif',
+  gif(
+    titlePicture(
+      pal,
+      heroPicture(assets.dither.hero, 'stand.top', 'stand'),
+      pic(assets.dither.critters, 'pip0'),
+      pic(assets.dither.critters, 'bee0'),
+      pic(assets.dither.critters, 'shade1'),
+      TITLE,
+      'A STARTER GAME',
+    ),
+    pal,
+  ),
+);
 disk.put(STARTER_STING, starterStingFli());
-disk.put('title.lst', serializeSlideList([{ name: STARTER_STING, pause: 0 }, { name: 'title.gif', pause: 12 }]));
+disk.put(
+  'title.lst',
+  serializeSlideList([
+    { name: STARTER_STING, pause: 0 },
+    { name: 'title.gif', pause: 12 },
+  ]),
+);
 disk.put('menu.gif', gif(menuPicture(pal, scenery, hero, TITLE), pal));
 disk.put('scores.gif', gif(scoresPicture(pal, scenery, 'SHADOW WATCHERS'), pal));
 disk.put('loadgame.gif', gif(slotsPicture(pal, scenery, 'LOAD GAME'), pal));

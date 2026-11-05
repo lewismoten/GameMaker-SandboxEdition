@@ -49,7 +49,9 @@ export function addYardBlocks(book: Book, pal: Pal): void {
   book.add('doorwayTopW', onWall(pal, book.pics.get('doorwayTop')!), air);
   GROUNDS.forEach((g, i) => {
     // the lane's top two rows are the wall's foot: a dark line where the ground meets the stone
-    const lane = ground(pal, g, 40 + i).rect(0, 0, 20, 1, c('stone', 1)).rect(0, 1, 20, 1, c('stone', 2));
+    const lane = ground(pal, g, 40 + i)
+      .rect(0, 0, 20, 1, c('stone', 1))
+      .rect(0, 1, 20, 1, c('stone', 2));
     book.add(`lane.${g}`, lane, air);
     book.add(`floor.${g}`, ground(pal, g, 40 + i), { solid: SOLID });
     // a door's foot stands in the lane: the same door with the lane's ground around it (the other blocks' sky is the wall's stone)
@@ -57,6 +59,10 @@ export function addYardBlocks(book: Book, pal: Pal): void {
       ['doorBottom', 'doorBottom'],
       ['doorwayBottom', 'doorwayBottom'],
     ] as const)
-      book.add(`${name}.${g}`, new Pixels(20, 20).blit(book.pics.get(from)!, 0, 0).map((x, y, col) => (col === skyOf(pal) ? lane.get(x, y) : col)), air);
+      book.add(
+        `${name}.${g}`,
+        new Pixels(20, 20).blit(book.pics.get(from)!, 0, 0).map((x, y, col) => (col === skyOf(pal) ? lane.get(x, y) : col)),
+        air,
+      );
   });
 }

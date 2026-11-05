@@ -11,26 +11,35 @@ import { renderRegion } from '@lewismoten/gamemaker-sandbox-tools/kit/levelPictu
 import { ORIGIN } from '../../kit/starter/map';
 import { buildAssets } from '../src/assets';
 import { buildCritters } from '../src/critters';
-import { buildLevels } from '../src/levels';
+import { LANE, buildLevels } from '../src/levels';
 
 const out = process.argv[2] ?? join(tmpdir(), 'shadows-preview');
 mkdirSync(out, { recursive: true });
 const { pal, yardSolid, yardDither, hop, hover } = buildLevels();
 const assets = buildAssets(pal);
 const rooms = [
-  { name: 'yard-solid', level: yardSolid, a: assets.solid, kitX: 14 },
-  { name: 'yard-dither', level: yardDither, a: assets.dither, kitX: 14 },
-  { name: 'hop', level: hop, a: assets.dither, kitX: 16 },
-  { name: 'hover', level: hover, a: assets.dither, kitX: 16 },
+  { name: 'yard-solid', level: yardSolid, a: assets.solid },
+  { name: 'yard-dither', level: yardDither, a: assets.dither },
+  { name: 'hop', level: hop, a: assets.dither },
+  { name: 'hover', level: hover, a: assets.dither },
 ];
-for (const r of rooms) {
+/** A 16x10 block view (the size of the game screen) of a room, from level column `col`, with Kit standing at `kitX`. */
+export function view(r: (typeof rooms)[number], col: number, kitX: number, pose = 'stand') {
   const bbl = r.level.book.finish();
   const hero = r.a.hero.finish();
-  const kit = ['stand.top', 'walk1'].map((n, i) => ({ pixels: hero[r.a.hero.n(n)].pixels, x: (ORIGIN + r.kitX) * 20, y: (ORIGIN + 7 + i) * 20 }));
+  const kit = [
+    { pixels: hero[r.a.hero.n('stand.top')].pixels, x: ORIGIN + kitX, y: ORIGIN + LANE - 1 },
+    { pixels: hero[r.a.hero.n(pose)].pixels, x: ORIGIN + kitX, y: ORIGIN + LANE },
+  ];
   const mons = buildCritters(r.a.critters);
-  const pic = renderRegion(r.level.map.done(), bbl, r.a.critters.finish(), mons, ORIGIN, ORIGIN + 2, r.level.map.width, 11, kit.map((k) => ({ ...k, x: k.x - ORIGIN * 20, y: k.y - (ORIGIN + 2) * 20 })));
-  writePng(join(out, `room-${r.name}.png`), pic, pal.pal, 2);
+  return renderRegion(r.level.map.done(), bbl, r.a.critters.finish(), mons, ORIGIN + col, ORIGIN + 1, 16, 10, kit);
+}
+for (const r of rooms) {
+  const bbl = r.level.book.finish();
   writePng(join(out, `blocks-${r.name}.png`), blockSheet(bbl.slice(0, r.level.book.index.size), 14, 0), pal.pal, 2);
+  const w = r.level.map.width;
+  for (let col = 0, k = 0; col < w - 8; col += 16, k++)
+    writePng(join(out, `view-${r.name}-${k}.png`), view(r, col, Math.min(col + 8, w - 2), 'walk1'), pal.pal, 3);
 }
 const disk = new URL('../disk/', import.meta.url);
 try {

@@ -7,6 +7,7 @@
 //                  dithered shadows. The map is the same; only the pictures differ.
 //   2  The Hop     three pips hop on the spot: no shadow, a shadow that never changes, a shadow that shrinks and grows.
 //   3  The Hover   two bees: a shadow in a block of its own right under the bee, and one a good way down.
+import { MLEN, type GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { ORIGIN, StarterMap } from '../../kit/starter/map';
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
@@ -60,6 +61,22 @@ function bookFor(pal: Pal, signs: Record<string, [string, number, number]>): { b
   return { book, signs: out };
 }
 
+/** A StarterMap whose end walls carry on past the room's edges, so the screen never shows sky beside them. */
+class Courtyard extends StarterMap {
+  constructor(
+    private readonly bricks: Book,
+    rows: string[],
+  ) {
+    super(bricks, rows);
+  }
+  done(): GameMap {
+    const map = super.done();
+    const brick = this.bricks.n('brick');
+    for (let y = ORIGIN + WALL_TOP; y < MLEN; y++) for (let x = 0; x < MLEN; x++) if (x < ORIGIN || x >= ORIGIN + this.width) map.blocks[y * MLEN + x] = brick;
+    return map;
+  }
+}
+
 /** The courtyard: sky and clouds above the wall, doors in the end walls, the lane and the floor, in these grounds. */
 function courtyard(book: Book, width: number, grounds: { ground: Ground; x: number }[], exit: number): StarterMap {
   const g = new Grid(width, H);
@@ -72,7 +89,7 @@ function courtyard(book: Book, width: number, grounds: { ground: Ground; x: numb
     [33, 0],
   ])
     g.put(x, y, '(').put(x + 1, y, ')');
-  const m = new StarterMap(book, g.rows());
+  const m = new Courtyard(book, g.rows());
   for (let x = 1; x < width - 1; x++) {
     m.set(x, WALL_TOP, 'wallCap');
     for (let y = WALL_TOP + 1; y < LANE; y++) m.set(x, y, 'wall');

@@ -68,16 +68,29 @@ export function beeBody(pal: Pal, down: number, wingsUp: boolean): Pixels {
   return outline(p, c('ink', 0), { transparent: T });
 }
 
+/** Hop picture `k` of a pip with no shadow, a shadow that never changes, or one that shrinks. `mark` paints the shadow in that color (for the manual). */
+export function hopPicture(pal: Pal, kind: 'none' | 'same' | 'shrink', k: number, mark?: number): Pixels {
+  const body = pipBody(pal, HOP_LIFT[k], k === 0);
+  if (kind === 'none') return body;
+  return kind === 'same' ? withShadow(body, 'solid', pal, HOP_SAME, mark) : withShadow(body, 'dither', pal, HOP_SHRINK[k], mark);
+}
+
+/** Bob picture `k` of the bee's shadow block. */
+export const shadePicture = (pal: Pal, k: number, mark?: number): Pixels => shadowLayer('dither', mark ?? pal.c('ink', 1), BOB_SHADOW[k]);
+
 /** The monsters' pictures (.MBL). `walker` is how the level's pip walks: with a solid shadow or a dithered one (levels 2 and 3 use their own shadows). */
 export function buildCritterBlocks(pal: Pal, walker: Shade): Book {
   const book = new Book('mbl');
   const rules = { solid: 0, hp: 0 };
   for (const k of [0, 1]) book.add(`pip${k}`, withShadow(pipBody(pal, 0, k === 1), walker, pal, 7), rules);
-  HOP_LIFT.forEach((lift, k) => book.add(`hopNone${k}`, withShadow(pipBody(pal, lift, k === 0), 'none', pal, 0), rules));
-  HOP_LIFT.forEach((lift, k) => book.add(`hopSame${k}`, withShadow(pipBody(pal, lift, k === 0), 'solid', pal, HOP_SAME), rules));
-  HOP_LIFT.forEach((lift, k) => book.add(`hopShrink${k}`, withShadow(pipBody(pal, lift, k === 0), 'dither', pal, HOP_SHRINK[k]), rules));
+  for (const [name, kind] of [
+    ['hopNone', 'none'],
+    ['hopSame', 'same'],
+    ['hopShrink', 'shrink'],
+  ] as const)
+    HOP_LIFT.forEach((_lift, k) => book.add(`${name}${k}`, hopPicture(pal, kind, k), rules));
   BOB_DOWN.forEach((d, k) => book.add(`bee${k}`, beeBody(pal, d, k % 2 === 0), rules));
-  BOB_SHADOW.forEach((rx, k) => book.add(`shade${k}`, shadowLayer('dither', pal.c('ink', 1), rx), rules));
+  BOB_SHADOW.forEach((_rx, k) => book.add(`shade${k}`, shadePicture(pal, k), rules));
   return book;
 }
 

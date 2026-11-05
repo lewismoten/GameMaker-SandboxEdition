@@ -42,10 +42,10 @@ export const SIGNS = {
 
 /** The card before each room: its name and a line. */
 export const CARDS = {
-  solid: ['The Yard: Solid', 'One dark color, painted under every foot.'],
-  dither: ['The Yard: Dithered', 'The same yard. Every other pixel is left clear.'],
-  hop: ['The Hop', 'Shadows get smaller when something goes up.'],
-  hover: ['The Hover', 'Two blocks tall: a bee, and its shadow.'],
+  solid: ['The Yard: Solid', 'One dark color under each foot.'],
+  dither: ['The Yard: Dithered', 'Same yard. Half the pixels clear.'],
+  hop: ['The Hop', 'A shadow shrinks as things rise.'],
+  hover: ['The Hover', 'Two blocks tall: bee and shadow.'],
 } as const;
 
 export const STORY = wrap(`
