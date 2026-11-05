@@ -1,0 +1,64 @@
+{
+ "version": 1,
+ "game": "things-that-grow",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU0ZzStNLc0rTR7NNU1BzQNN"
+  },
+  {
+   "scene": 3,
+   "keys": "AU0ZzStNI80DTTfNK00ezfoCTSjNA00="
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: A Nest"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: Empty Nest"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 9383,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 896,
+    "time": 14933.333333333148
+   },
+   {
+    "title": "Level 1: A Nest",
+    "frame": 2125,
+    "time": 35416.66666666724
+   },
+   {
+    "title": "Level 2: Empty Nest",
+    "frame": 3572,
+    "time": 59533.333333330396
+   },
+   {
+    "title": "Ending",
+    "frame": 6100,
+    "time": 101666.66666667337
+   },
+   {
+    "title": "Credits",
+    "frame": 8309,
+    "time": 138483.3333333443
+   }
+  ]
+ }
+}
