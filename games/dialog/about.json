@@ -5,7 +5,7 @@
   "series": "starter",
   "year": 1994,
   "price": "Free",
-  "version": "1.0",
+  "version": "1.1",
   "blurb": "Two short rooms about talk with more than one voice. Walk into a friend and one picture comes up with everyone in it, a speech bubble for each turn and a name over each, and the words fit the bubbles. Level 1 is a talk of two; level 2 is a group of four across two cards. Signs in the levels say how. Play it, then open it in Game-Maker and change who says what.",
   "exe": "TALKS.EXE",
   "dosName": "EVRYTALK",

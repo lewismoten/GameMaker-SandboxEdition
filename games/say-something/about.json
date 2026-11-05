@@ -5,7 +5,7 @@
   "series": "starter",
   "year": 1994,
   "price": "Free",
-  "version": "1.0",
+  "version": "1.1",
   "blurb": "Two short rooms about putting words in a game. Signs are boards with words drawn on them, and three friends talk when Kit walks into them: a picture with a speech bubble, then a page of words, then you are back in the room. Signs in the levels say how. Play it, then open it in Game-Maker and change what they say.",
   "exe": "SAY.EXE",
   "dosName": "SAYSOMTH",
