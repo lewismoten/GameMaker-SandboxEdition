@@ -56,7 +56,13 @@ levels.forEach((l, i) => {
 disk.put('frame.lst', serializeSlideList([{ name: 'frame.gif', pause: 3 }]));
 disk.put('cartoon.lst', serializeSlideList([{ name: 'cartoon.gif', pause: 3 }]));
 disk.put('short2.gif', gif(postcardPicture(pal, book, cheer, 'THE SECOND PICTURE', 'OF A LIST'), pal));
-disk.put('short.lst', serializeSlideList([{ name: 'short.gif', pause: 3 }, { name: 'short2.gif', pause: 3 }]));
+disk.put(
+  'short.lst',
+  serializeSlideList([
+    { name: 'short.gif', pause: 3 },
+    { name: 'short2.gif', pause: 3 },
+  ]),
+);
 // what level 1 shows after it (slot 10): a postcard; level 2's slot 10 is the cartoon itself
 disk.put('post1.gif', gif(postcardPicture(pal, book, cheer, 'A PICTURE AFTER', 'COMES UP AS YOU LEAVE'), pal));
 disk.put('post1.lst', serializeSlideList([{ name: 'post1.gif', pause: 4 }]));
@@ -84,7 +90,7 @@ disk.put('savegame.gif', gif(slotsPicture(pal, book, 'SAVE GAME'), pal));
 text('story', 'PICTURES & CARTOONS', STORY);
 text('howto', 'HOW TO PLAY', HOWTO);
 text('credits', 'CREDITS', CREDITS);
-disk.put('wonpic.gif', gif(endPicture(pal, book, cheer, 'THAT\'S A WRAP!', 'THREE ROOMS, ONE CARTOON', 'won'), pal));
+disk.put('wonpic.gif', gif(endPicture(pal, book, cheer, "THAT'S A WRAP!", 'THREE ROOMS, ONE CARTOON', 'won'), pal));
 disk.put('won.gif', gif(paper(pal, book, 'ALL SAID'), pal));
 disk.put('won.txt', WON);
 disk.put('won.lst', serializeSlideList([{ name: 'wonpic.gif', pause: 6 }, { name: 'won.gif', pause: 0 }, { name: 'won.txt' }]));

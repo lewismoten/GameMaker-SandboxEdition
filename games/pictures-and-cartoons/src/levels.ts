@@ -28,24 +28,21 @@ export interface Level {
 export const GROUND = 10;
 const WIDTH = 46;
 
-/** Each level's signs: [x of the board's left block, words]. The boards are 5 blocks wide and 3 high. */
+/** Each level's signs: [x of the board's left block, words]. The boards are 4 blocks wide and 3 high. */
 const SIGNS: Record<string, [number, string][]> = {
   frame: [
-    [5, 'A PICTURE CAME UP BEFORE THIS LEVEL'],
-    [12, "IT IS THIS SCENE'S INTRO PICTURE"],
-    [19, 'A PICTURE IS 320 BY 200 PIXELS'],
+    [6, 'A PICTURE CAME UP BEFORE THIS LEVEL'],
+    [15, 'ITS SCENE HOLDS THE INTRO PICTURE, A 320 BY 200 GIF'],
     [27, 'THE DOOR SHOWS ANOTHER AFTER THE LEVEL'],
   ],
   cartoon: [
-    [5, 'A CARTOON IS AN FLI FILE'],
-    [12, 'IT PLAYS LIKE A PICTURE THAT MOVES'],
-    [19, 'THE EXIT SLOT PLAYS IT WHEN YOU LEAVE'],
+    [6, 'A CARTOON IS AN FLI FILE THAT MOVES'],
+    [15, 'THE EXIT SLOT PLAYS IT WHEN YOU LEAVE'],
     [27, 'WALK THROUGH THE DOOR TO WATCH IT'],
   ],
   short: [
-    [5, 'A LIST SHOWS FILES ONE AFTER ANOTHER'],
-    [12, 'THIS LEVEL OPENED WITH TWO PICTURES'],
-    [19, 'A CARTOON PLAYS TO ITS LAST FRAME'],
+    [6, 'A LIST SHOWS TWO PICTURES, ONE AFTER ANOTHER'],
+    [15, 'A CARTOON PLAYS TO ITS LAST FRAME'],
     [27, 'SO KEEP IT SHORT, OR CUT IT INTO CLIPS'],
   ],
 };
@@ -57,7 +54,8 @@ function buildBlocks(pal: Pal): { book: Book; signs: Map<string, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
   const signs = new Map<string, Sign>();
-  for (const [file, list] of Object.entries(SIGNS)) list.forEach(([, words], i) => signs.set(`${file}${i}`, addSign(book, pal, `${file}${i}.sign`, words, 5, 3)));
+  for (const [file, list] of Object.entries(SIGNS))
+    list.forEach(([, words], i) => signs.set(`${file}${i}`, addSign(book, pal, `${file}${i}.sign`, words, 4, 3)));
   signs.set('exit', addSign(book, pal, 'exit.sign', 'EXIT →', 3));
   return { book, signs };
 }
@@ -77,10 +75,11 @@ function base(exitX: number): Grid {
 /** A level's room: nine coins between the signs, clouds, bushes and flowers, and its signs. */
 function room(book: Book, signs: Map<string, Sign>, file: string, exitX: number, clouds: [number, number][], bushes: number[], flowers: number[]): StarterMap {
   const g = base(exitX);
-  for (const x of [10, 11, 17, 18, 24, 25, 26, 33, 34]) g.put(x, 9, 'c');
+  const spots = [11, 12, 13, 20, 21, 22, 23, 33, 34];
   for (const [x, y] of clouds) g.put(x, y, '(').put(x + 1, y, ')');
-  for (const x of bushes) g.put(x, GROUND - 1, 'b');
-  for (const x of flowers) g.put(x, GROUND - 1, 'f');
+  for (const x of bushes.filter((b) => !spots.includes(b))) g.put(x, GROUND - 1, 'b');
+  for (const x of flowers.filter((f) => !spots.includes(f))) g.put(x, GROUND - 1, 'f');
+  for (const x of spots) g.put(x, GROUND - 1, 'c');
   const m = new StarterMap(book, g.rows());
   SIGNS[file].forEach(([x], i) => m.sign(x, onGround(signs.get(`${file}${i}`)!), signs.get(`${file}${i}`)!));
   m.sign(EXIT_AT, onGround(signs.get('exit')!), signs.get('exit')!);
@@ -96,7 +95,20 @@ export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
       file: 'frame',
       title: 'A Picture First',
       hint: 'THIS PICTURE IS A GIF FILE',
-      map: room(book, signs, 'frame', 42, [[6, 2], [16, 1], [30, 3], [38, 1]], [13, 22, 31, 40], [14, 21, 36, 41]),
+      map: room(
+        book,
+        signs,
+        'frame',
+        42,
+        [
+          [6, 2],
+          [16, 1],
+          [30, 3],
+          [38, 1],
+        ],
+        [14, 24, 31, 40],
+        [10, 19, 36, 41],
+      ),
       before: 'frame.lst',
       after: 'post1.lst',
     },
@@ -104,7 +116,20 @@ export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
       file: 'cartoon',
       title: 'A Cartoon Between',
       hint: 'A CARTOON PLAYS AFTER THIS ONE',
-      map: room(book, signs, 'cartoon', 42, [[7, 1], [20, 2], [33, 1], [39, 3]], [14, 23, 32, 40], [13, 20, 30, 41]),
+      map: room(
+        book,
+        signs,
+        'cartoon',
+        42,
+        [
+          [7, 1],
+          [20, 2],
+          [33, 1],
+          [39, 3],
+        ],
+        [14, 25, 32, 40],
+        [10, 19, 36, 41],
+      ),
       before: 'cartoon.lst',
       after: 'bloom.fli',
     },
@@ -112,7 +137,20 @@ export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
       file: 'short',
       title: 'Keep It Short',
       hint: 'A CARTOON PLAYS TO THE END',
-      map: room(book, signs, 'short', 42, [[8, 2], [18, 1], [29, 2], [37, 3]], [13, 22, 32, 40], [15, 21, 35, 41]),
+      map: room(
+        book,
+        signs,
+        'short',
+        42,
+        [
+          [8, 2],
+          [18, 1],
+          [29, 2],
+          [37, 3],
+        ],
+        [14, 25, 32, 40],
+        [10, 19, 36, 41],
+      ),
       before: 'short.lst',
       after: '',
     },

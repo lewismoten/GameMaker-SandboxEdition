@@ -3,10 +3,11 @@
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { scaleBlit } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 import { bevel } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
-import { centered } from '@lewismoten/gamemaker-sandbox-tools/kit/pcText';
+import { centered, text, textWidth } from '@lewismoten/gamemaker-sandbox-tools/kit/pcText';
 import type { Book } from '../../kit/starter/book';
 import type { Pal } from '../../kit/starter/palette';
 import { scene, titlePicture as kitTitle } from '../../kit/starter/screens';
+import { lookOf } from '../../kit/starter/titleStyles';
 
 const CLEAR = 255;
 
@@ -46,21 +47,26 @@ export function titlePicture(pal: Pal, book: Book, hero: Pixels, name: string, t
   const p = kitTitle(pal, book, hero, easel(pal), name, tagline, 'coins', 'stage');
   // the kit puts a row of coins in the middle; a framed picture covers them
   const x = 112;
-  const y = 68;
-  p.rect(x - 8, y - 8, 112 + 16, 56 + 16, pal.c('red', 1));
-  frame(p, pal, x, y, 112, 56);
-  miniLandscape(p, pal, x, y, 112, 56);
+  const y = 71;
+  frame(p, pal, x, y, 112, 52, 3);
+  miniLandscape(p, pal, x, y, 112, 52);
+  // the ribbon again, in case the frame came near it
+  const look = lookOf(pal, 'stage');
+  const ribbon = textWidth(tagline) + 20;
+  const rx = Math.round((p.w - ribbon) / 2);
+  bevel(p, rx, 50, ribbon, 14, pal.r(look.ribbon), 3, 2);
+  text(p, rx + 10, 54, tagline, look.ribbonText);
   return p;
 }
 
 /** The postcard shown after level 1: a painted landscape in a gold frame, a line under it, and Kit cheering below. */
 export function postcardPicture(pal: Pal, book: Book, cheer: Pixels, head: string, line: string): Pixels {
   const p = scene(pal, book, 160, 61);
-  bevel(p, 70, 10, 180, 108, pal.r('parch'), 3, 2);
-  frame(p, pal, 84, 22, 152, 62);
-  miniLandscape(p, pal, 84, 22, 152, 62);
-  centered(p, 92, head, pal.c('ink', 0), 1);
-  centered(p, 104, line, pal.c('wood', 1));
+  bevel(p, 56, 4, 208, 74, pal.r('parch'), 3, 2);
+  frame(p, pal, 100, 14, 120, 34, 3);
+  miniLandscape(p, pal, 100, 14, 120, 34);
+  centered(p, 56, head, pal.c('ink', 0), 1);
+  centered(p, 66, line, pal.c('wood', 1));
   scaleBlit(p, cheer, 140, 160 - 80, 2);
   return p;
 }

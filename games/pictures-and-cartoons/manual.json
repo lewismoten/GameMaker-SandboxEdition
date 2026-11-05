@@ -5,7 +5,7 @@
       "id": "before",
       "q": "How do I show a picture before a level?",
       "scene": 2,
-      "x": 5,
+      "x": 6,
       "y": 6,
       "level": 1
     },
@@ -21,7 +21,7 @@
       "id": "cartoon",
       "q": "How do I play a cartoon between two levels?",
       "scene": 3,
-      "x": 5,
+      "x": 6,
       "y": 6,
       "level": 2
     },
@@ -29,7 +29,7 @@
       "id": "list",
       "q": "How do I show several pictures one after another?",
       "scene": 4,
-      "x": 5,
+      "x": 6,
       "y": 6,
       "level": 3
     },
@@ -49,15 +49,15 @@
     },
     {
       "head": "Level 1: A Picture First",
-      "html": "<h1>Level 1: A Picture First</h1><p>A picture came up before this level: its card, with the level's name. Four signs stand along the way. <b>A PICTURE CAME UP BEFORE THIS LEVEL</b> and <b>IT IS THIS SCENE'S INTRO PICTURE</b> say what it was. <b>A PICTURE IS 320 BY 200 PIXELS</b> says how big every picture is. <b>THE DOOR SHOWS ANOTHER AFTER THE LEVEL</b> points ahead.</p><p>Take the nine coins, worth ten points each, and walk through the door. A second picture comes up, a painting in a gold frame with Kit cheering under it, and then the next level begins. Press any key to skip a picture, or wait a few seconds.</p>"
+      "html": "<h1>Level 1: A Picture First</h1><p>A picture came up before this level: its card, with the level's name. Three signs stand along the way. <b>A PICTURE CAME UP BEFORE THIS LEVEL</b> says what it was. <b>ITS SCENE HOLDS THE INTRO PICTURE, A 320 BY 200 GIF</b> says where it lives and how big every picture is. <b>THE DOOR SHOWS ANOTHER AFTER THE LEVEL</b> points ahead.</p><p>Take the nine coins, worth ten points each, and walk through the door. A second picture comes up, a painting in a gold frame with Kit cheering under it, and then the next level begins. Press any key to skip a picture, or wait a few seconds.</p>"
     },
     {
       "head": "How this level is made",
-      "html": "<h1>How level 1 is made</h1><ul><li><b>The picture before.</b> Open <b>pics.gam</b> in the scenes editor and pick the <b>A Picture First</b> scene. Its file list has two slots at the bottom: <b>Level intro graphic</b> and <b>Level exit graphic</b>. The intro slot holds <b>frame.lst</b>. The player shows it before the level, every time the level starts. If Kit loses a life and the level starts again, it shows again. (Nothing here can hurt him, so you will not see that.)</li><li><b>The picture itself.</b> <b>frame.lst</b> is a slide list: a text file with one picture per line and how many seconds to wait. It names <b>frame.gif</b>, a 320 by 200 GIF drawn like any other picture.</li><li><b>The picture after.</b> The exit slot holds <b>post1.lst</b>, which shows <b>post1.gif</b>. The player shows it when Kit leaves the scene through a link, before the next scene begins. It is not shown when he loses a life. It is shown for every link out of the scene, not only the door.</li><li><b>The signs.</b> Each is a few ordinary blocks with words drawn into them, as in the Say Something Starter. Look at <b>frame0.sign</b> in <b>pics.bbl</b>.</li></ul>"
+      "html": "<h1>How level 1 is made</h1><ul><li><b>The picture before.</b> Open <b>pics.gam</b> in the scenes editor and pick the <b>A Picture First</b> scene. Its file list has two slots at the bottom: <b>Level intro graphic</b> and <b>Level exit graphic</b>. The intro slot holds <b>frame.lst</b>. The player shows it before the level, every time the level starts. If Kit loses a life and the level starts again, it shows again. (Nothing here can hurt him, so you will not see that.)</li><li><b>The picture itself.</b> <b>frame.lst</b> is a slide list: a text file with one picture per line and how many seconds to wait. It names <b>frame.gif</b>, a 320 by 200 GIF drawn like any other picture.</li><li><b>The picture after.</b> The exit slot holds <b>post1.lst</b>, which shows <b>post1.gif</b>. The player shows it when Kit leaves the scene through a link, before the next scene begins. It is not shown when he loses a life. It is shown for every link out of the scene, not only the door.</li><li><b>The signs.</b> Each is a few ordinary blocks with words drawn into them, as in the Say Something Starter. Look at <b>sign.frame0.sign.00</b> and its neighbors in <b>pics.bbl</b>.</li></ul>"
     },
     {
       "head": "Level 2: A Cartoon Between",
-      "html": "<h1>Level 2: A Cartoon Between</h1><p>Four signs again. <b>A CARTOON IS AN FLI FILE</b> and <b>IT PLAYS LIKE A PICTURE THAT MOVES</b> say what to expect. <b>THE EXIT SLOT PLAYS IT WHEN YOU LEAVE</b> says where it lives, and <b>WALK THROUGH THE DOOR TO WATCH IT</b> is the invitation.</p><p>Take the nine coins and go through the door. A seed sits on a mound, the sun comes up, a stalk grows with two leaves, a daisy opens, and Kit cheers. It plays for about three and a half seconds, and then level 3 begins.</p>"
+      "html": "<h1>Level 2: A Cartoon Between</h1><p>Three signs. <b>A CARTOON IS AN FLI FILE THAT MOVES</b> says what to expect. <b>THE EXIT SLOT PLAYS IT WHEN YOU LEAVE</b> says where it lives, and <b>WALK THROUGH THE DOOR TO WATCH IT</b> is the invitation.</p><p>Take the nine coins and go through the door. A seed sits on a mound, the sun comes up, a stalk grows with two leaves, a daisy opens, and Kit cheers. It plays for about three and a half seconds, and then level 3 begins.</p>"
     },
     {
       "head": "How this level is made",
@@ -65,7 +65,7 @@
     },
     {
       "head": "Level 3: Keep It Short",
-      "html": "<h1>Level 3: Keep It Short</h1><p>Two pictures came up before this level, one after the other. <b>A LIST SHOWS FILES ONE AFTER ANOTHER</b> and <b>THIS LEVEL OPENED WITH TWO PICTURES</b> say so. <b>A CARTOON PLAYS TO ITS LAST FRAME</b> and <b>SO KEEP IT SHORT, OR CUT IT INTO CLIPS</b> say what a cartoon can't do.</p><p>Take the nine coins and go through the door to the ending.</p>"
+      "html": "<h1>Level 3: Keep It Short</h1><p>Two pictures came up before this level, one after the other. <b>A LIST SHOWS TWO PICTURES, ONE AFTER ANOTHER</b> says so. <b>A CARTOON PLAYS TO ITS LAST FRAME</b> and <b>SO KEEP IT SHORT, OR CUT IT INTO CLIPS</b> say what a cartoon can't do.</p><p>Take the nine coins and go through the door to the ending.</p>"
     },
     {
       "head": "How this level is made",

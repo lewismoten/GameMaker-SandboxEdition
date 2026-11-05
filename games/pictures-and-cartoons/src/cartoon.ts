@@ -43,9 +43,17 @@ function sun(p: Pixels, pal: Pal, f: number, rise: number): void {
   const { c } = pal;
   for (let i = 0; i < 8; i++) {
     const a = (i * Math.PI) / 4 + ((f >> 1) % 2 ? Math.PI / 8 : 0);
-    p.line(Math.round(cx + Math.cos(a) * 18), Math.round(cy + Math.sin(a) * 18), Math.round(cx + Math.cos(a) * 27), Math.round(cy + Math.sin(a) * 27), c('gold', 3));
+    p.line(
+      Math.round(cx + Math.cos(a) * 18),
+      Math.round(cy + Math.sin(a) * 18),
+      Math.round(cx + Math.cos(a) * 27),
+      Math.round(cy + Math.sin(a) * 27),
+      c('gold', 3),
+    );
   }
-  p.disc(cx, cy, 14, c('gold', 1)).disc(cx, cy, 12, c('gold', 3)).disc(cx - 2, cy - 2, 7, c('gold', 4));
+  p.disc(cx, cy, 14, c('gold', 1))
+    .disc(cx, cy, 12, c('gold', 3))
+    .disc(cx - 2, cy - 2, 7, c('gold', 4));
 }
 
 function daisy(p: Pixels, pal: Pal, x: number, y: number, open: number): void {
@@ -77,8 +85,14 @@ function plant(p: Pixels, pal: Pal, f: number): void {
   p.disc(FX, GROUND - 1, 9, c('dirt', 3));
   p.rect(FX - 1, GROUND - h, 3, h, c('green', 2)).rect(FX + 1, GROUND - h, 1, h, c('green', 1));
   // two leaves, each a pair of discs, once the stalk is tall enough
-  if (h > 24) p.disc(FX - 9, GROUND - 24, 5, c('green', 3)).disc(FX - 5, GROUND - 22, 4, c('green', 3)).line(FX, GROUND - 20, FX - 8, GROUND - 24, c('green', 1));
-  if (h > 44) p.disc(FX + 9, GROUND - 44, 5, c('green', 3)).disc(FX + 5, GROUND - 42, 4, c('green', 3)).line(FX, GROUND - 40, FX + 8, GROUND - 44, c('green', 1));
+  if (h > 24)
+    p.disc(FX - 9, GROUND - 24, 5, c('green', 3))
+      .disc(FX - 5, GROUND - 22, 4, c('green', 3))
+      .line(FX, GROUND - 20, FX - 8, GROUND - 24, c('green', 1));
+  if (h > 44)
+    p.disc(FX + 9, GROUND - 44, 5, c('green', 3))
+      .disc(FX + 5, GROUND - 42, 4, c('green', 3))
+      .line(FX, GROUND - 40, FX + 8, GROUND - 44, c('green', 1));
   const open = f < BLOOM_AT ? 0 : Math.min(1, (f - BLOOM_AT + 1) / 5);
   daisy(p, pal, FX, GROUND - h - (open > 0 ? 8 : 2), open);
 }

@@ -33,7 +33,8 @@ function coins(bot: StarterBot, from: number, n: number, what: string): void {
 async function room(bot: StarterBot, name: string): Promise<void> {
   const score = bot.sim.ci.score;
   await must(bot, bot.walk(19, 'the first boards'), `${name}: along the boards`);
-  await must(bot, bot.walk(33, 'the coins'), `${name}: on to the last board`);
+  await must(bot, bot.walk(36, 'the coins'), `${name}: on to the last board`);
+  await must(bot, bot.wait(120), 'the score counting up'); // the score rises a little at a time
   coins(bot, score, 9, `${name} before the door`);
   await leave(bot, bot.walk(43, 'the door'), `${name}: the door`);
 }
