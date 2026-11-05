@@ -18,9 +18,9 @@ export function titlePicture(pal: Pal, book: Book, mb: Book, hero: Pixels, door:
   text(p, rx + 10, 54, tagline, pal.c('ink', 0));
   const put = (pic: Pixels, x: number, y: number, scale: number) => scaleBlit(p, pic, x, y, scale);
   // the hero walks to the door; Puff flies after, two wing beats behind
-  put(hero, 120, 160 - 80, 2);
-  put(mb.pics.get('puff0')!, 70, 160 - 90, 3);
-  put(mb.pics.get('puff1')!, 40, 160 - 60, 2);
+  put(hero, 180, 160 - 80, 2);
+  put(mb.pics.get('puff0')!, 106, 160 - 84, 3);
+  put(mb.pics.get('puff1')!, 52, 160 - 56, 2);
   scaleBlit(p, door, 268, 160 - 80, 2);
   return p;
 }
