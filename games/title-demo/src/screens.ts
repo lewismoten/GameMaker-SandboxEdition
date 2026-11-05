@@ -81,7 +81,7 @@ export function slotsList(pal: Pal, book: Book, rows: [string, string][], lit: n
     const y = 34 + i * 11;
     if (lit.includes(i)) p.rect(28, y - 2, 266, 11, c('gold', 4));
     text(p, 30, y, slot, c('ink', 0));
-    text(p, 204, y, file, lit.includes(i) ? c('red', 1) : c('wood', 1));
+    text(p, 196, y, file, lit.includes(i) ? c('red', 1) : c('wood', 1));
   });
   return p;
 }

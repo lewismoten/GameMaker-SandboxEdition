@@ -80,8 +80,8 @@ const SLOTS: [string, string][] = [
   ['Game instructions', 'HOWTO.LST'],
   ['Beginning credits', 'CREDITS.LST'],
   ['High score backdrop', 'SCORES.GIF'],
-  ['Load game background', 'LOAD.GIF'],
-  ['Save game background', 'SAVE.GIF'],
+  ['Load game background', 'LOADGAME.GIF'],
+  ['Save game background', 'SAVEGAME.GIF'],
   ['Demo recording', 'DEMO.REC'],
 ];
 /** The slots picture, with the rows in `lit` marked and a line or two under it. */
@@ -130,8 +130,8 @@ disk.put(
 );
 disk.put('menu.gif', gif(menuPicture(pal, book, hero, TITLE), pal));
 disk.put('scores.gif', gif(scoresPicture(pal, book, 'BEST VIEWERS'), pal));
-disk.put('load.gif', gif(slotsPicture(pal, book, 'LOAD GAME'), pal));
-disk.put('save.gif', gif(slotsPicture(pal, book, 'SAVE GAME'), pal));
+disk.put('loadgame.gif', gif(slotsPicture(pal, book, 'LOAD GAME'), pal));
+disk.put('savegame.gif', gif(slotsPicture(pal, book, 'SAVE GAME'), pal));
 text('story', 'MAKE A TITLE', STORY);
 text('howto', 'HOW TO PLAY', HOWTO);
 text('credits', 'CREDITS', CREDITS);
