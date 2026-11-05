@@ -28,7 +28,8 @@ const WORDS: Record<SignName, { text: string; w: number; h: number }> = {
   arc: { text: 'THE COINS CURVE UP AND RIGHT. NO DIAGONAL KEY NEEDED', w: 4, h: 4 },
   higher: { text: 'SPACE, THEN HOLD RIGHT. THAT IS THE SAME CURVE', w: 4, h: 4 },
   shelves: { text: 'EXTRA COINS UP HIGH. E LEAPS UP AND RIGHT, Q UP AND LEFT', w: 4, h: 4 },
-  old: { text: 'OLD KEYBOARDS HAD 7 AND 9 ON THE NUMBER PAD FOR THIS', w: 4, h: 4 },
+  // nine lines of at most 8 letters (a 9-letter line touches the frame), "7 AND 9" and "Q AND E" kept whole
+  old: { text: 'THE OLD NUMBER PAD KEYS 7 AND 9 MOVED ON A SLANT. Q AND E HERE, IF YOU LIKE', w: 4, h: 5 },
 };
 
 function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
