@@ -24,7 +24,7 @@ import { cardPicture, endPicture, gif, menuPicture, paper, scoresPicture, slotsP
 import { buildSounds } from '../kit/starter/sounds';
 import { demoRecording } from './src/demo';
 import { TITLE, buildGame } from './src/game';
-import { buildTopHero, buildTopHeroBlocks, topPicture } from './src/topHero';
+import { buildTopHero, buildTopHeroBlocks } from './src/topHero';
 import { buildLevels } from './src/levels';
 import { song } from './src/song';
 import { CREDITS, HOWTO, LOST, STORY, WON } from './src/text';
@@ -83,7 +83,7 @@ disk.put('savegame.gif', gif(slotsPicture(pal, starter, 'SAVE GAME'), pal));
 text('story', 'AROUND THE MAP', STORY);
 text('howto', 'HOW TO PLAY', HOWTO);
 text('credits', 'CREDITS', CREDITS);
-disk.put('wonpic.gif', gif(endPicture(pal, starter, cheer, 'ROUND AND ROUND!', 'THE MAP WRAPS', 'won'), pal));
+disk.put('wonpic.gif', gif(endPicture(pal, starter, cheer, 'WRAPPED!', 'THE MAP WRAPS', 'won'), pal));
 disk.put('won.gif', gif(paper(pal, starter, 'ALL DONE'), pal));
 disk.put('won.txt', WON);
 disk.put('won.lst', serializeSlideList([{ name: 'wonpic.gif', pause: 6 }, { name: 'won.gif', pause: 0 }, { name: 'won.txt' }]));

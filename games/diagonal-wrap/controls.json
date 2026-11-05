@@ -8,10 +8,6 @@
       "short": "Walk right",
       "long": "Walk right."
     },
-    "57": {
-      "short": "Not used",
-      "long": "Not used in this game; the arrows do all the walking."
-    },
     "72": {
       "short": "Walk up",
       "long": "Walk up."
@@ -37,7 +33,8 @@
       "long": "Same as the Down arrow."
     }
   },
-  "counters": {
-    "20": "Keys: not used here, but a copy can add them."
+  "sounds": {
+    "10": "Getting hurt",
+    "11": "Falling over"
   }
 }

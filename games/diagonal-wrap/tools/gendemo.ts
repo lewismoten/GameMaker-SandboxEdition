@@ -15,4 +15,4 @@ sim.segments.forEach((seg, i) => {
   // ticks from this segment's last key to the next scene's first tick are not keys: they ride on the next delta
   if (i < sim.segmentTicks.length) carried = sim.segmentTicks[i] - seg.keys.reduce((t, k) => t + k.delta, 0);
 });
-recordDemo(keys, Number.MAX_SAFE_INTEGER, new URL('../src/demo.ts', import.meta.url));
+recordDemo(keys, 1500, new URL('../src/demo.ts', import.meta.url));

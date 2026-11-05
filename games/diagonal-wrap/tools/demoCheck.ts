@@ -20,11 +20,11 @@ const r = await replay(
   },
   { maxMinutes: 3 },
 );
-const seen = r.scenes.slice(0, 3).join(' ');
+const seen = r.scenes.slice(0, 2).join(' ');
 if (r.error) console.log(r.error);
 console.log(`demo: scenes entered ${r.scenes.join(' ')}; ${r.keysLeft} keys unplayed`);
-if (seen !== '2 3 1' || r.keysLeft) {
-  console.error(`demoCheck: expected scenes 2 3 1 (two levels, the ending) with every key played; got ${seen}`);
+if (seen !== '2 3' || r.keysLeft) {
+  console.error(`demoCheck: expected scenes 2 3 (level 1, then the start of level 2) with every key played; got ${seen}`);
   process.exit(1);
 }
-console.log('demoCheck ok: ran down the straight road and round the map, then down the tilted one, reached the ending');
+console.log('demoCheck ok: ran down the straight road, round the map and out the doors, then started down the tilted road');

@@ -70,6 +70,9 @@ export async function drive(bot: StarterBot, c: Course, run: Run, toU: number, w
   return undefined;
 }
 
+/** The bottom-edge crossings so far (read afresh, since the run changes as the bot walks). */
+const edgesNow = (run: Run): number => run.edges.bottom;
+
 async function pause(bot: StarterBot, run: Run, ticks: number): Promise<Result> {
   for (let i = 0; i < ticks; i++) {
     const r = await step(bot, run);
@@ -143,10 +146,10 @@ export async function tilted(bot: StarterBot): Promise<void> {
   if (run.edges.bottom !== 1) throw new Error(`one bottom edge so far, not ${run.edges.bottom}`);
   await must(bot, pause(bot, run, LOOK), 'reading');
   await must(bot, drive(bot, c, run, 238, 'the lap 3 sign'), 'lap 3');
-  if (run.edges.bottom !== 2) throw new Error(`two bottom edges so far, not ${run.edges.bottom}`);
+  if (edgesNow(run) !== 2) throw new Error(`two bottom edges so far, not ${run.edges.bottom}`);
   await must(bot, pause(bot, run, LOOK), 'reading');
   await must(bot, drive(bot, c, run, 283, 'the last coin'), 'the last stretch');
-  if (run.edges.bottom !== 3) throw new Error(`he should have crossed the bottom edge three times, not ${run.edges.bottom}`);
+  if (edgesNow(run) !== 3) throw new Error(`he should have crossed the bottom edge three times, not ${run.edges.bottom}`);
   if (run.edges.right !== 1) throw new Error(`he should have crossed the right edge once, not ${run.edges.right}`);
   await must(bot, pause(bot, run, LOOK), 'reading');
   const got = (bot.sim.ci.score - score) / COIN;
