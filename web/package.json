@@ -19,6 +19,7 @@
     "agent:usage": "vite-node scripts/agentUsage.ts --",
     "roundtrip": "vite-node scripts/roundTrip.ts",
     "fuzz:files": "vite-node scripts/fuzzFiles.ts --",
+    "check:same-bytes": "vite-node scripts/sameBytes.ts --",
     "check:keys": "vite-node ../games/kit/keyAccess.ts --",
     "dast": "vite-node ../games/kit/dast.ts --",
     "replay:log": "vite-node scripts/replayLog.ts",
