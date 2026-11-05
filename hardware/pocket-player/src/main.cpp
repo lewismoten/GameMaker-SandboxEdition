@@ -560,6 +560,55 @@ static void message(const char* a, const char* b = nullptr) {
   if (b) { tft.setCursor(20, 150); tft.print(b); }
 }
 
+// ---- serial self-test ----------------------------------------------------------------------------
+// "T <index> <ticks>" or "T all <ticks>" on Serial (115200), accepted only on the game list: loads each
+// game the way a tap does, runs it with no input (drawing too), prints one "ST" line, then returns to the list.
+
+static void selfTestOne(int g, int ticks) {
+  bool ok = startGame(g);
+  for (int i = 0; ok && i < ticks; i++) {
+    world.tick();
+    world.nsnd = 0;
+    if (assets.palChanged) { refreshPalette(); last.valid = false; }
+    drawFrame(false);
+    if ((i & 15) == 0) delay(1);  // let the watchdog and idle task breathe
+  }
+  Serial.printf("ST id=%s ok=%d free=%u largest=%u min=%u stack=%u\n", games[g].id, ok ? 1 : 0, (unsigned)ESP.getFreeHeap(),
+                (unsigned)heap_caps_get_largest_free_block(MALLOC_CAP_8BIT), (unsigned)ESP.getMinFreeHeap(),
+                (unsigned)uxTaskGetStackHighWaterMark(nullptr));
+  spk::stop();
+  world.releaseAll();
+}
+
+static void serialCommand(const char* cmd) {
+  char what[16];
+  int ticks = 0;
+  if (sscanf(cmd, "T %15s %d", what, &ticks) != 2 || ticks < 0) return;
+  if (!strcmp(what, "all")) {
+    for (int g = 0; g < ngames; g++) selfTestOne(g, ticks);
+    Serial.printf("ST done n=%d\n", ngames);
+  } else {
+    int g = atoi(what);
+    if (g < 0 || g >= ngames) { Serial.println("ST error index"); return; }
+    selfTestOne(g, ticks);
+    Serial.println("ST done n=1");
+  }
+  enterPicker();
+}
+
+static void pollSerial() {
+  static char buf[40];
+  static int n = 0;
+  while (Serial.available()) {
+    char c = (char)Serial.read();
+    if (c == '\n' || c == '\r') {
+      buf[n] = 0;
+      n = 0;
+      if (buf[0] == 'T') serialCommand(buf);
+    } else if (n < (int)sizeof buf - 1) buf[n++] = c;
+  }
+}
+
 void setup() {
   Serial.begin(115200);
   tft.init();
@@ -604,6 +653,8 @@ void loop() {
   int tx, ty;
 
   if (mode == PICKER) {
+    pollSerial();
+    if (mode != PICKER) return;
     if (freshTap(tx, ty)) {
       int pages = (ngames + ROWS - 1) / ROWS;
       if (ty >= 276) {
