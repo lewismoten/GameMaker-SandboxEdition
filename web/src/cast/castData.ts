@@ -84,6 +84,7 @@ export const CAST_GAMES = {
   parallax: ['Parallax', 'starter'],
   horizon: ['To the Horizon', 'starter'],
   beltway: ['Round and Round', 'starter'],
+  'corner-view': ['Corner View', 'starter'],
   momentum: ['Slide and Drift', 'starter'],
   'jump-boots': ['Boots and Jet Pack', 'starter'],
   'diagonal-wrap': ['Diagonal Wrap', 'starter'],

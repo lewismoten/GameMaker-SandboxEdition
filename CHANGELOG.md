@@ -11,6 +11,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Added
 
+- Corner View, a Starter for the Showcase Tricks group: two rooms drawn as if seen from one corner, a floor of diamonds with cubes and a stair of towers, all painted as one picture cut into square blocks, so the hero walks the squares, goes round a diagonal wall in square steps and is never drawn behind a tower.
 - The Pocket Player now runs monsters, tick for tick like the web player (paths, chasing, wandering, births, shots, solid monsters and monster against monster), so the Starters about foes and bosses play on it too.
 - The Pocket Player (a small touch-screen board flashed from the site) now has a game picker and plays 30 of the Starters, with a round touch pad that works by finger or stylus, Space and Enter buttons only when a game uses them, and a settings screen (left or right hand, stylus mode, pad size, palm rejection). Sound comes later.
 - Roll the Dice, a Starter for the Wiring and Puzzles group: a die is a ring of six blocks that each turn into the next after a few ticks, and a touch turns the face showing into a still copy of itself and hands over a key, gold for an odd face and silver for an even one. Two doors wait ahead, so the face picks the door. The game has no random number: the tick decides the roll.

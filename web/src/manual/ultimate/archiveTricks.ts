@@ -191,6 +191,13 @@ export const ARCHIVE_TRICKS = `<h2>More from the archive</h2>
     leap, 240 pixels in a tick, onto the horizon, so nothing is ever seen arriving from the side.
     Two more spawners give birth to the lane dashes every 8 ticks, forever.</li>
   </ul>
+  <h2>A room seen from a corner</h2>
+  <p>An isometric room needs no new engine. Paint a floor of diamonds 20 pixels wide and 10 high
+  (it repeats every 20 pixels, so every plain floor cell is the same block), draw cubes as a
+  diamond top with two darker sides, and cut the picture into blocks. The hero still walks the
+  square grid and is drawn over everything: he cannot walk the drawn diagonals or go behind a
+  tower, and a tower taller than one block is solid in every block its picture covers.</p>
+  ${onCd('CORNER')}
   <h2>Choices you walk into</h2>
   <p>A menu doesn’t have to be a menu. Start the game in a small room with two or three doors,
   each a link to a different scene, and label the floor in front of each: the player picks by
