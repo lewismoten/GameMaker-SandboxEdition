@@ -35,8 +35,8 @@ const listOnly = args.includes('--list');
 const cardRoot = opt('--out')[0];
 const series = opt('--series')[0] ?? (cardRoot ? 'any' : 'starter');
 const outDir = cardRoot ? `${cardRoot}/pocket/` : '../hardware/pocket-player/data/';
-/** Games the card leaves out until their walkthrough is re-recorded (the host check cannot reach their ending). */
-const CARD_HOLD: Record<string, string> = { teddy: 'walkthrough needs re-recording', teddy2: 'walkthrough needs re-recording' };
+/** Games the card leaves out (id: reason); none now. */
+const CARD_HOLD: Record<string, string> = {};
 const MAX_LINKS = 16;
 const MAX_LEVELS = 12;
 /** Games whose host check fails or that the board cannot show right; each with the reason. */
