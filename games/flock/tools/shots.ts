@@ -36,7 +36,7 @@ const empty = (level: number) => {
   return m;
 };
 const region = (map: ReturnType<typeof empty>, col: number, w: number, extra: Sprite[]) =>
-  renderRegion(map, bbl, mbl, set, ORIGIN + col, ORIGIN + 4, w, 8, extra);
+  renderRegion(map, bbl, mbl, set, ORIGIN + col, ORIGIN + 1, w, 11, extra);
 const save = (name: string, pic: ReturnType<typeof region>) => writePng(join(out, name), pic, pal.pal, 3);
 
 /** The five birds with their wings up or down, `names[i]` being the i-th from the left; `shift[i]` moves a bird right by that many blocks. */
