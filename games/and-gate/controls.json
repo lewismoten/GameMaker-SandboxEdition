@@ -49,6 +49,7 @@
     "11": "Falling over (nothing here does)"
   },
   "counters": {
-    "20": "Keys: not used here, but a copy can add them."
+    "20": "Keys: not used here, but a copy can add them.",
+    "22": "Lights carried: the lit lamp drops one, and the gate takes it."
   }
 }
