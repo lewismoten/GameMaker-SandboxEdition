@@ -29,6 +29,7 @@ import { lastUsed } from '../../project/projectUse';
 import { NOTES_CHANGED } from '../../imported/gameNotes';
 import { ratingFilterBox, savedRatingFilter } from './homeRatings';
 import { doneFilterBox, loadFinished, savedDoneFilter } from './homeDone';
+import { loadGrades } from '../../achievements/courseGrades';
 import { currentRoute, formatHash, setHashParams, type ParamValue } from '../../urlState';
 import { libraryCards } from './homeLibraryCards';
 import { tilePacker } from './homeTilePack';
@@ -139,6 +140,12 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     'button',
     { type: 'button', class: 'lib-remove-all', hidden: true, onclick: () => void import('./importHistoryDialog').then((m) => m.showImportHistory()) },
     'Import history…',
+  );
+  // the Starters' transcript (grades by course) and honors, one dialog with two tabs (transcriptDialog.ts)
+  const transcriptBtn = h(
+    'button',
+    { type: 'button', class: 'lib-remove-all', hidden: true, onclick: () => void import('./transcriptDialog').then((m) => m.showTranscript()) },
+    'Transcript',
   );
   const recentBtn = h(
     'button',
@@ -415,6 +422,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     }
     ratingBox.hidden = c !== 'imported' || !lib.own(c).length;
     doneBox.hidden = c !== 'starter';
+    transcriptBtn.hidden = c !== 'starter';
     const finished = c === 'starter' ? await loadFinished() : new Set<string>();
     if (current !== c) return; // another collection was chosen while the record loaded
     newGameBtn.hidden = c === 'community';
@@ -429,7 +437,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
         browse: (to) => void select(to, true).then(() => document.getElementById(`lib-tab-${to}`)?.focus()),
         newGame: () => void homeImport().then((m) => m.newGame(nav)),
       },
-      { finished, filter: doneFilter },
+      { finished, filter: doneFilter, grades: c === 'starter' ? loadGrades() : {} },
     );
     // The import target stays first, including after sorting or filtering the games.
     if (isOwn(c)) {
@@ -471,7 +479,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
         'section',
         { id: 'library', class: 'library', 'aria-labelledby': 'lib-title' },
         h('div', { class: 'lib-bar' }, catNav, h('div', { class: 'lib-find' }, search, newGameBtn, communityBtn)),
-        h('div', { class: 'lib-about' }, libTitle, libLead, sortBox, ratingBox, doneBox, historyBtn, recentBtn, removeAllBtn, start.howBtn),
+        h('div', { class: 'lib-about' }, libTitle, libLead, sortBox, ratingBox, doneBox, transcriptBtn, historyBtn, recentBtn, removeAllBtn, start.howBtn),
         howDoI,
         tiles,
         live,

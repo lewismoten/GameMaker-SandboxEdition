@@ -1,0 +1,129 @@
+/* The Transcript dialog: tabs, the course tables and the honors grid. */
+.tr-dialog {
+  min-width: min(560px, 100%);
+}
+.tr-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+.tr-tab {
+  min-height: 32px;
+  padding: 4px 14px;
+  border: 1px solid transparent;
+  border-bottom: 0;
+  border-radius: 6px 6px 0 0;
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  cursor: pointer;
+}
+.tr-tab[aria-selected='true'] {
+  border-color: var(--border);
+  background: var(--panel, transparent);
+  color: var(--text);
+  font-weight: 700;
+}
+.tr-panel {
+  max-height: 60vh;
+  overflow-y: auto;
+}
+.tr-overall {
+  margin: 0 0 8px;
+  font-size: 16px;
+}
+.tr-stage {
+  margin-bottom: 10px;
+}
+.tr-stage h3 {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 0;
+  padding: 3px 0;
+  border-bottom: 2px solid var(--border);
+  font-size: 14px;
+}
+.tr-gpa {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+.tr-stage table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.tr-stage th,
+.tr-stage td {
+  padding: 2px 4px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  font-weight: 400;
+}
+.tr-num {
+  width: 1%;
+  white-space: nowrap;
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  font-size: 12px;
+}
+.tr-grade {
+  width: 1%;
+  text-align: right !important;
+  font-weight: 700 !important;
+  font-variant-numeric: tabular-nums;
+}
+.cert-name {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.cert-name input {
+  min-height: 28px;
+  width: 16em;
+  max-width: 100%;
+}
+.cert-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 10px;
+}
+.cert {
+  margin: 0;
+}
+.cert-canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+.cert figcaption {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  margin-top: 4px;
+  font-size: 13px;
+  font-weight: 600;
+}
+.cert figcaption small {
+  flex-basis: 100%;
+  color: var(--muted);
+  font-weight: 400;
+}
+.cert figcaption button {
+  min-height: 28px;
+}
+.cert.locked .cert-lock {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 4 / 3;
+  border: 2px dashed var(--border);
+  border-radius: 4px;
+  background: repeating-linear-gradient(135deg, transparent 0 10px, var(--border) 10px 11px);
+  font-size: 34px;
+  filter: grayscale(1);
+}

@@ -1,13 +1,15 @@
 // The Starters tab's "done" marks: a check pill over the thumbnail of each Starter played to its
 // ending (the achievements record's 'finished' set, which the web player, play.html, the desk and
 // the DOS page all fill when the Game Won scene shows), a count in each group heading, and a
-// "Show" picker (All, Not done yet, Done) remembered in this browser.
+// "Show" picker (All, Not done yet, Done, Graduations) remembered in this browser. A Starter not done yet but
+// started shows its letter grade (project/grades.ts) in the same pill, in place of "Done".
 import { h } from '../core/ui';
 import { loadAchievements } from '../../achievements/store';
+import type { Grade } from '../../project/grades';
 
-export type DoneFilter = 'all' | 'todo' | 'done';
+export type DoneFilter = 'all' | 'todo' | 'done' | 'grad';
 export const DONE_FILTER_KEY = 'gm-starter-done-filter';
-const FILTERS: DoneFilter[] = ['all', 'todo', 'done'];
+const FILTERS: DoneFilter[] = ['all', 'todo', 'done', 'grad'];
 
 export function savedDoneFilter(): DoneFilter {
   try {
@@ -23,15 +25,15 @@ export async function loadFinished(): Promise<Set<string>> {
   return new Set((await loadAchievements().catch(() => undefined))?.sets.finished ?? []);
 }
 
-/** Whether a game shows under the filter. */
-export const doneShown = (f: DoneFilter, done: boolean): boolean => f === 'all' || (f === 'done') === done;
+/** Whether an ordinary Starter shows under the filter (the Graduations filter shows none of them). */
+export const doneShown = (f: DoneFilter, done: boolean): boolean => f === 'all' || (f !== 'grad' && (f === 'done') === done);
 
 /** "3 of 7 done" for a group heading. */
 export const doneCount = (done: number, total: number): string => `${done} of ${total} done`;
 
 /** The "Show" picker; `onChange` hears the new filter, already remembered. */
 export function doneFilterBox(now: DoneFilter, onChange: (f: DoneFilter) => void): HTMLLabelElement {
-  const names: Record<DoneFilter, string> = { all: 'All Starters', todo: 'Not done yet', done: 'Done' };
+  const names: Record<DoneFilter, string> = { all: 'All Starters', todo: 'Not done yet', done: 'Done', grad: 'Graduations' };
   return h(
     'label',
     { class: 'lib-sort lib-done' },
@@ -54,8 +56,26 @@ export function doneFilterBox(now: DoneFilter, onChange: (f: DoneFilter) => void
   );
 }
 
-/** Puts the done mark over a Starter's picture, and says "Completed" to screen readers. */
-export function doneTile(tile: HTMLElement): void {
+/** The pill's words for a Starter: "Done" when finished, else its letter grade when it was started, else nothing. */
+export function pillText(done: boolean, grade: Grade | undefined): string | undefined {
+  return done ? 'Done' : grade;
+}
+
+/** Puts the done mark (or, with a `grade`, the letter grade of a Starter started but not finished) over a Starter's picture, and says it to screen readers. */
+export function doneTile(tile: HTMLElement, grade?: Grade): void {
+  if (grade) {
+    tile
+      .querySelector('.tile-shot')
+      ?.append(
+        h(
+          'span',
+          { class: 'tile-done tile-grade', title: `Grade ${grade}` },
+          h('span', { 'aria-hidden': 'true' }, grade),
+          h('span', { class: 'sr-only' }, `Grade ${grade}`),
+        ),
+      );
+    return;
+  }
   const check = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
   check.setAttribute('viewBox', '0 0 16 16');
   check.setAttribute('width', '14');
