@@ -1,5 +1,5 @@
 // What hangs on the desk's wall once it is earned: the felt eggs found in the Sandbox games, the
-// tin heart hunt's trophy and the score trophies. Each loads on its own and shows nothing at all
+// tin heart hunt's trophy, the score trophies and the framed certificate from the graduations. Each loads on its own and shows nothing at all
 // until there is something to show; the call returns what takes them down again.
 export function wallTrophies(desk: HTMLElement): () => void {
   // the felt eggs found in the Sandbox games (nothing at all until the first one)
@@ -44,7 +44,19 @@ export function wallTrophies(desk: HTMLElement): () => void {
       else desk.querySelector('.desk-scene')?.append(el);
     });
   });
+  // the framed certificate above the wall phone, once a graduation is finished (nothing at all until then)
+  let unDiploma: (() => void) | undefined;
+  void import('./diploma/diplomaSpot').then(({ diplomaFrame }) => {
+    if (!desk.isConnected) return;
+    unDiploma = diplomaFrame((el) => {
+      // after the score trophies and the safe when you Tab along the room
+      const after = desk.querySelector('.kn-safe') ?? desk.querySelector('.score-trophies') ?? desk.querySelector('.news-clipping');
+      if (after) after.after(el);
+      else desk.querySelector('.desk-scene')?.append(el);
+    });
+  });
   return () => {
+    unDiploma?.();
     unEggs?.();
     unTrophy?.();
     unScores?.();
