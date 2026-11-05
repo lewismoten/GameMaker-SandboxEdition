@@ -221,9 +221,9 @@ function quickHealth(e: Pick<CdCatalogEntry, 'gam' | 'files' | 'sizes' | 'path'>
 }
 
 /** What a game's box reads from its .gam (levels, screenshot captions), so the desk's shelf fetches none. */
-function boxGameOf(e: Pick<CdCatalogEntry, 'gam' | 'path' | 'original'>, files: ReadonlyMap<string, string>): BoxGame | undefined {
+function boxGameOf(e: Pick<CdCatalogEntry, 'gam' | 'path' | 'original' | 'series'>, files: ReadonlyMap<string, string>): BoxGame | undefined {
   const at = e.gam && files.get(`${e.path}${e.gam}`);
-  if (!e.original?.box || !at) return undefined;
+  if (!e.original?.box || !at || e.series === 'starter') return undefined; // a Starter has no retail box on the desk (hasRetailBox)
   try {
     return boxGame(parseGame(new Uint8Array(readFileSync(at))), e.original.box.shots);
   } catch {

@@ -12,11 +12,12 @@ import { openBox } from './printables/viewer';
 import type { PickerGame } from './printables/gamePicker';
 import { boxItems } from './printables/items';
 import { shotCache, type PrintContext } from './printables/kit';
+import { hasRetailBox } from '../project/starter';
 
 /** The games whose boxes the Game picker lists: the shelf's (desk/boxes/shelf.ts), in its order, with no secret game that isn't listed. */
 async function shelfGames(): Promise<PickerGame[]> {
   const list = await loadGameList().catch(() => [] as CatalogEntry[]);
-  return list.filter((g) => g.original?.box && g.original.manual).map((g) => ({ id: g.id, title: g.title }));
+  return list.filter((g) => hasRetailBox(g) && g.original?.manual).map((g) => ({ id: g.id, title: g.title }));
 }
 
 /**
