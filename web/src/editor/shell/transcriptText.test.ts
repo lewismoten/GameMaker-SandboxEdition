@@ -27,11 +27,11 @@ describe('certificate text', () => {
     expect(cleanName('x'.repeat(40))).toHaveLength(NAME_MAX);
   });
   it('is awarded to a Game Maker when there is no name', () => {
-    const t = certificateText(CEREMONIES[0]!, '', '2026-11-05');
+    const t = certificateText(CEREMONIES[0], '', '2026-11-05');
     expect(t.title).toBe('Honors in First Steps');
     expect(t.to).toBe('a Game Maker');
     expect(t.date).toBe('November 5, 2026');
-    expect(certificateText(CEREMONIES[0]!, 'Kit', undefined).to).toBe('Kit');
+    expect(certificateText(CEREMONIES[0], 'Kit', undefined).to).toBe('Kit');
   });
   it('the diploma has its own title and no stage skills line', () => {
     const t = certificateText(DIPLOMA, 'Kit', undefined);
