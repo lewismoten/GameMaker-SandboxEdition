@@ -41,7 +41,7 @@ export const STARTER_GROUPS: { name: string; tag: string; games: string[] }[] = 
     tag: 'Ice, water, gravity and wind that act on you.',
     games: ['slippery-and-bouncy', 'gravity-on-gravity-off', 'swim', 'gusts'],
   },
-  { name: 'Changing Your Hero', tag: 'New keys, new heroes, new vehicles.', games: ['kit-moves', 'home-keys', 'choose-hero', 'take-the-wheel'] },
+  { name: 'Changing Your Hero', tag: 'New keys, new heroes, new vehicles.', games: ['kit-moves', 'home-keys', 'duck', 'choose-hero', 'take-the-wheel'] },
   {
     name: 'Foes and Bosses',
     tag: 'Foes that think, and ones that take a few hits.',
