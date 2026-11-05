@@ -1,0 +1,46 @@
+{
+  "title": "Slide and Drift",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.0",
+  "blurb": "Two short levels about momentum. Every step Kit takes adds to his speed instead of moving him, so he gets faster while a key is held and glides on after he lets go. A wall stops him at once. In the second level, a hop made at speed carries across gaps a standing hop cannot. Nothing here hurts. Signs explain each idea, and every level has a page on how it is made.",
+  "exe": "SLIDE.EXE",
+  "dosName": "SLIDE",
+  "sound": "sb",
+  "label": {
+    "background": "#fff3d6",
+    "band": "#b5471f",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "2 short levels",
+    "hours": 1,
+    "background": "#b5471f",
+    "accent": "#ffd23f",
+    "ink": "#ffffff",
+    "tagline": "Let go, and keep going.",
+    "back": "A small explorer in a teal beanie has two levels to cross, and every step adds to his speed. Hold a key and he gets faster, let go and he glides on, press the other way and he slows. In the second level a run-up carries a hop across wide gaps. Signs say what each level shows, and the manual says how each is made.",
+    "features": [
+      "Signs in the levels explain each idea",
+      "Momentum is one setting on a sequence in the character file",
+      "Made to be copied and taken apart"
+    ],
+    "shots": [
+      [
+        "one.map",
+        30,
+        0
+      ],
+      [
+        "two.map",
+        38,
+        1
+      ]
+    ],
+    "rating": "Everyone"
+  }
+}
