@@ -73,7 +73,8 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
   /** When this page is replaced (or at once, if another render already replaced it while this one was loading). */
   const atEnd = (f: () => void) => (life.aborted ? f() : life.addEventListener('abort', f, { once: true }));
   const catNav = h('div', { class: 'lib-cats', role: 'tablist', 'aria-label': 'Game collections' });
-  const libTitle = h('h2', { id: 'lib-title' });
+  // hidden until a category names it (an empty heading is a screen-reader and axe finding while the page draws)
+  const libTitle = h('h2', { id: 'lib-title', hidden: true });
   const howDoI = h('div', { class: 'lib-hdi', hidden: true });
   // the collection in a line (cut short with … if it must be); More shows all of it
   const libLeadText = h('span', { class: 'lib-lead-text' });
@@ -388,6 +389,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     tiles.setAttribute('aria-labelledby', `lib-tab-${c}`);
     const info = CATEGORIES.find((x) => x.id === c)!;
     libTitle.textContent = info.name;
+    libTitle.hidden = false;
     showLead(false);
     sortBox.hidden = !isOwn(c) || lib.own(c).length < 2;
     removeAllBtn.hidden = c !== 'imported' || !lib.own(c).length;
