@@ -61,13 +61,12 @@ async function fiveHits(bot: StarterBot, first: number, what: string): Promise<v
     const score = bot.sim.ci.score;
     await throwStar(bot, `at ${what}, hit ${hit}`);
     const now = stageOf(bot, first);
-    const want = hit < HITS ? first + hit : POOF;
+    // the fifth hit leaves the puff, and it is gone (18 ticks) by the time the throw has been watched
+    const want = hit < HITS ? first + hit : undefined;
     if (now !== want) throw new Error(`${what}: after hit ${hit} the bug should be stage ${want} but is ${now}`);
     if (bot.sim.ci.score - score !== HIT_SCORE) throw new Error(`${what}: hit ${hit} should score ${HIT_SCORE}; score ${score} -> ${bot.sim.ci.score}`);
     if (alive(bot, STAR)) throw new Error(`${what}: a star is still flying after hit ${hit}`);
   }
-  // the puff fades by itself and the way is open
-  await must(bot, bot.wait(40), 'the puff');
   if (stageOf(bot, first) !== undefined) throw new Error(`${what}: the bug is still there after five hits`);
 }
 
@@ -75,16 +74,17 @@ async function fiveHits(bot: StarterBot, first: number, what: string): Promise<v
 export async function fiveHitsLevel(bot: StarterBot): Promise<void> {
   const score = bot.sim.ci.score;
   await must(bot, bot.walk(10, 'the signs'), 'to the signs');
-  await must(bot, bot.walk(20, 'the tunnel'), 'to the tunnel');
+  await must(bot, bot.walk(23, 'the tunnel'), 'to the tunnel');
   // the sign says touching only stings: walk into it for a moment (it is solid, so Kit stops in front of it)
   const hp = bot.sim.ci.hitpts;
+  const before = bot.sim.ci.score;
   bot.sim.press(SCAN.right);
-  await must(bot, bot.wait(40), 'walking into the bug');
+  await must(bot, bot.wait(20), 'walking into the bug');
   bot.sim.release(SCAN.right);
   const lost = hp - bot.sim.ci.hitpts;
   bot.say(`walked into the bug: hit points ${hp} -> ${bot.sim.ci.hitpts}`);
   if (lost < STING) throw new Error(`walking into the bug should sting (at least ${STING}); hit points ${hp} -> ${bot.sim.ci.hitpts}`);
-  if (stageOf(bot, PLAIN) !== PLAIN || bot.sim.ci.score !== score) throw new Error('a touch must not count as a hit');
+  if (stageOf(bot, PLAIN) !== PLAIN || bot.sim.ci.score !== before) throw new Error('a touch must not count as a hit');
   // step back (turning to face it again), and throw
   await must(bot, bot.walk(18, 'a step back'), 'a step back');
   await must(bot, bot.walk(21, 'facing it'), 'facing the bug');
@@ -105,5 +105,5 @@ export async function countTheLights(bot: StarterBot): Promise<void> {
   await leave(bot, bot.walk(44, 'the exit'), 'the exit');
 }
 
-const TUNNEL_END = BUG_X[1] + 5;
+const TUNNEL_END = BUG_X[1] + 7;
 export { ORIGIN };

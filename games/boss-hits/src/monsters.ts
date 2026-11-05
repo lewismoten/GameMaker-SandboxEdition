@@ -29,7 +29,7 @@ export const LAMPED = PLAIN + HITS;
 export const POOF = LAMPED + HITS;
 
 /** What the bug takes off Kit's hit points when he walks into it. */
-export const STING = 5;
+export const STING = 1;
 /** Pixels a star flies a tick, and how many ticks it flies: the range is the product, about 6 blocks. */
 export const STAR_SPEED = 4;
 export const STAR_LIFE = 30;

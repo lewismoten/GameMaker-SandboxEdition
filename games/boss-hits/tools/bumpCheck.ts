@@ -1,6 +1,6 @@
 // What the manual says about touching, checked on the built game (the bot plays level 1 first, so this starts in level 2):
-// walking into Big Bug stops Kit in front of it, stings him (never more than the bug's 5 hit points a touch could
-// ever add up to a life), does not count as a hit, and the bug is still all five lights.
+// walking into Big Bug stops Kit in front of it, stings him a little (1 hit point a moment), costs no life in 3 seconds, does not count
+// as a hit, and leaves the bug on all five lights.
 //   cd web && npx vite-node ../games/boss-hits/tools/bumpCheck.ts
 import { SCAN } from '../../kit/starter/ids';
 import { LAMPED, STING } from '../src/monsters';

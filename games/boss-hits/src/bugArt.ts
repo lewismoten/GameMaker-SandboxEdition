@@ -39,8 +39,8 @@ export function drawBug(pal: Pal, frame: 0 | 1, lit?: number): Pixels {
   } else {
     // a dark lamp for each of the five, a bright one for each hit still to come
     LIGHTS.forEach(([x, y], i) => {
-      p.rect(x, y, 2, 2, c('ink', 0));
-      if (i < lit) p.rect(x, y, 2, 2, c('gold', 4)).set(x, y, c('white', 3));
+      p.rect(x, y, 2, 2, i < lit ? c('gold', 5) : c('ink', 0));
+      if (i < lit) p.set(x, y, c('white', 3));
     });
   }
   // the head, a round gold face on the left, with big eyes and a smile

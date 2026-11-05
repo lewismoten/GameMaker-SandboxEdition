@@ -58,7 +58,7 @@ Open the game in Game-Maker and find the monsters on the Monsters tab. Each one 
 export const LOST = wrap(`
 |OOPS!
 
-Big Bug stings a little when you walk into it, and ten stings is too many.
+Big Bug stings a little every moment you lean on it, and the stings add up.
 
 Try again: stand back, face it and press Enter.
 `);

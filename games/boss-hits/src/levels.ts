@@ -78,7 +78,7 @@ function wall(g: Grid, tunnel: readonly [number, number]): void {
 function fiveHits(book: Book, signs: Record<SignName, Sign>): StarterMap {
   const g = base(46, 42);
   wall(g, TUNNELS[0]);
-  g.row(9, 14, 15, 'c').row(9, 18, 19, 'c').row(9, 32, 35, 'c');
+  g.row(9, 16, 19, 'c').row(9, 32, 35, 'c');
   scenery(
     g,
     [
@@ -87,7 +87,7 @@ function fiveHits(book: Book, signs: Record<SignName, Sign>): StarterMap {
       [33, 2],
       [39, 4],
     ],
-    [9, 17, 36],
+    [9, 21, 36],
     [11, 31, 40],
   );
   const m = new StarterMap(book, g.rows());
@@ -102,7 +102,7 @@ function fiveHits(book: Book, signs: Record<SignName, Sign>): StarterMap {
 function countTheLights(book: Book, signs: Record<SignName, Sign>): StarterMap {
   const g = base(46, 43);
   wall(g, TUNNELS[1]);
-  g.row(9, 12, 14, 'c').row(9, 20, 21, 'c').row(9, 39, 40, 'c');
+  g.row(9, 12, 14, 'c').row(9, 20, 21, 'c').put(38, 9, 'c').put(40, 9, 'c');
   scenery(
     g,
     [

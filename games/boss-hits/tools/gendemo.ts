@@ -5,6 +5,6 @@ import { recordDemo } from '../../kit/demoRecord';
 import { play } from './play';
 
 /** Ticks of the first level the demo shows. */
-const LENGTH = 460;
+const LENGTH = 1000;
 const { sim } = await play(undefined, 1);
 recordDemo(sim.segments[0].keys, LENGTH, new URL('../src/demo.ts', import.meta.url));
