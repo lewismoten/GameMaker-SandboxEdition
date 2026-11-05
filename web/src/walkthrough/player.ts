@@ -7,7 +7,7 @@
 // (media/mediaFocus.ts).
 import './walkthrough.css';
 import { download, h, modal, toast } from '../editor/core/ui';
-import { fetchSiteFile, type CatalogEntry, type GameFiles } from '../project/files';
+import { fetchSiteFile, withDetails, type CatalogEntry, type GameFiles } from '../project/files';
 import { SITE_URL } from '../seo/site';
 import { TICK_RATE } from '@lewismoten/gamemaker-sandbox-engine/audio/cmfPlayer';
 import { clock, WALKTHROUGH_FPS, youtubeText, type Walkthrough } from './format';
@@ -135,7 +135,7 @@ async function watch(
   }
   const gam = entry.gam;
   // a catalog game's own DOS player look (an original game's player.json) unless a project's was handed in
-  player ??= catalogPatches(entry);
+  player ??= catalogPatches(await withDetails(entry).catch(() => entry));
   const tl = walk.timeline;
   const total = tl.frames;
   /** Played to the end: the game's, or where a bot's walkthrough that stopped partway stops. */

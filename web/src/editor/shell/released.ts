@@ -50,13 +50,13 @@ export async function openReleased(catalogId: string, host: HTMLElement, file?: 
   if (!entry?.gam) return undefined;
   const original = await loadHostedGame(entry, './', (done, total) => (status.textContent = `Opening ${entry.title}: ${done} of ${total} files…`));
   // its DOS player look (an original game's player.json) shows in the integrator's DOS player panel and its Play
-  const { catalogCompanion } = await import('../../dosPlayer/catalogPatches');
+  const { catalogCompanionOf } = await import('../../dosPlayer/catalogPatches');
   const project = Project.fromFiles(
     new GameFiles(original.entries().map(([n, b]) => [n, b.slice()])),
     entry.title,
     lookId(entry.id),
     // …and the boards its author arranged its scenes into (games/<id>/integrator.json)
-    await (await import('../editors/integrator/shippedBoards')).withShippedBoards(catalogCompanion(entry, entry.gam), entry.id, entry.gam),
+    await (await import('../editors/integrator/shippedBoards')).withShippedBoards(await catalogCompanionOf(entry, entry.gam), entry.id, entry.gam),
   );
   project.gam = entry.gam;
   const r: Released = { entry, original };

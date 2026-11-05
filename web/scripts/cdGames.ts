@@ -423,6 +423,23 @@ export function slimCatalog(catalog: CdCatalogEntry[]): CdCatalogEntry[] {
 }
 
 /**
+ * games/catalog.json: slimCatalog, and each Starter down to what the home page and dos.html
+ * read at load (id, title, DOS files and sizes, its pictures' flags, the manual's title). Its
+ * blurb, label and box art go to games/details/<id>.json (withDetails), as do every original
+ * game's controls and player look, so forty or more Starters do not weigh down every page that loads the catalog.
+ */
+export function pageCatalog(catalog: CdCatalogEntry[]): CdCatalogEntry[] {
+  return slimCatalog(catalog).map((e) => {
+    if (!e.details) return e;
+    // every original game: its controls and player look (only a copy, a play or a walkthrough reads them)
+    const { controls: _controls, player: _player, ...rest } = e;
+    if (e.series !== 'starter') return rest;
+    const { blurb: _blurb, original, ...lean } = rest;
+    return { ...lean, ...(original ? { original: { sound: original.sound, ...(original.manual ? { manual: original.manual } : {}) } } : {}) };
+  });
+}
+
+/**
  * What the shelf, the disk box and the home page draw an original game with: its label, box and
  * sound card, the manual's title (pages: [] until withDetails fills them in) and the hero from
  * its paper (the disk label's portrait). The rest is in games/details/<id>.json.
@@ -453,9 +470,27 @@ export function indexCatalog(catalog: CdCatalogEntry[]): CdCatalogEntry[] {
 }
 
 /** An entry's games/details/<id>.json, or undefined when it has nothing slimCatalog leaves out. */
-function catalogDetails(e: CdCatalogEntry): { notice?: string; original?: OriginalExtras } | undefined {
-  const original = e.original && (e.original.manual || e.original.printables) ? { manual: e.original.manual, printables: e.original.printables } : undefined;
-  return e.notice || original ? { notice: e.notice, original } : undefined;
+function catalogDetails(e: CdCatalogEntry): Details | undefined {
+  const o = e.original;
+  const original = o && (o.manual || o.printables) ? { manual: o.manual, printables: o.printables } : undefined;
+  const more = { ...(e.controls ? { controls: e.controls } : {}), ...(e.player ? { player: e.player } : {}) };
+  if (e.series !== 'starter') return e.notice || original || e.controls || e.player ? { notice: e.notice, original, ...more } : undefined;
+  // a Starter's catalog.json entry also lacks these (pageCatalog)
+  return {
+    notice: e.notice,
+    original: { ...original, label: o?.label, box: o?.box },
+    ...(e.blurb ? { blurb: e.blurb } : {}),
+    ...more,
+  };
+}
+
+/** A games/details/<id>.json. */
+interface Details {
+  notice?: string;
+  original?: OriginalExtras;
+  blurb?: string;
+  controls?: unknown;
+  player?: unknown;
 }
 
 /** Every playable game on the CD and in ../games but the secret ones (what games/index.json lists, and every page, sitemap and picture the build makes). */
@@ -534,7 +569,7 @@ export function cdGames(cdRoot: string): Plugin {
           res.end(
             JSON.stringify(
               url.endsWith('catalog.json')
-                ? slimCatalog(catalog)
+                ? pageCatalog(catalog)
                 : extra
                   ? secret.filter((e) => (get().gates.get(e.id) ?? 1) === Number(extra[1]))
                   : indexCatalog(catalog),
@@ -635,7 +670,7 @@ export function cdGames(cdRoot: string): Plugin {
       const secret = (gate: number) => behind(get(), gate).map(known);
       // Catalogs keep precomputed previews and health; game data lives only in each ZIP.
       this.emitFile({ type: 'asset', fileName: 'games/index.json', source: JSON.stringify(indexCatalog(catalog).map((e) => ({ ...e, gz: true }))) });
-      this.emitFile({ type: 'asset', fileName: 'games/catalog.json', source: JSON.stringify(slimCatalog(catalog).map((e) => ({ ...e, gz: true }))) });
+      this.emitFile({ type: 'asset', fileName: 'games/catalog.json', source: JSON.stringify(pageCatalog(catalog).map((e) => ({ ...e, gz: true }))) });
       for (const e of catalog) {
         const details = catalogDetails(e);
         if (details) this.emitFile({ type: 'asset', fileName: `games/details/${e.id}.json`, source: JSON.stringify(details) });
