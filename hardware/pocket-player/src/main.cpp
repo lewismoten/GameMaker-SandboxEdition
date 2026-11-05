@@ -1151,6 +1151,8 @@ static void pollSerial() {
       n = 0;
       if (buf[0] == 'S') {
         bannerChanged(banner::set(!strncmp(buf, "S off", 5) ? "" : buf + 2));
+      } else if (buf[0] == 'I' && buf[1] == 'D') {
+        bannerChanged(banner::setId(!strncmp(buf, "ID off", 6) ? "" : buf + 3));
       } else if (buf[0] == 'V') traceOn = buf[2] == '1';
       else if (buf[0] == 'I') {
         int x, y;
@@ -1218,7 +1220,7 @@ void loop() {
     pollSerial();
     if (mode != before) return;  // a G started a game
   }
-  if (banner::st.on && ((pts.n > 0 && !injOn) || now - banner::st.seen > banner::IDLE_MS)) bannerChanged(banner::set(""));  // Lewis takes over, or the agent is gone
+  if (banner::shown() && ((pts.n > 0 && !injOn) || now - banner::st.seen > banner::IDLE_MS)) { bool a = banner::set(""), b = banner::setId(""); bannerChanged(a || b); }  // Lewis takes over, or the agent is gone
 
   if (mode == PICKER) {
     if (freshTap(tx, ty)) {
