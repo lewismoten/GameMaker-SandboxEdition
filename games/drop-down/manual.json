@@ -27,15 +27,7 @@
     },
     {
       "id": "breaks",
-      "q": "How do I make a block break in two hits, cracked first?",
-      "scene": 2,
-      "x": 34,
-      "y": 19,
-      "level": 1
-    },
-    {
-      "id": "hit",
-      "q": "How do I make a block break only when the hero hits it?",
+      "q": "How do I make a block break only when the hero hits it, cracking first?",
       "scene": 2,
       "x": 34,
       "y": 19,
