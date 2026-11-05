@@ -32,7 +32,7 @@ export const STARTER_GROUPS: { name: string; tag: string; games: string[] }[] = 
   },
   { name: 'Wiring and Puzzles', tag: 'Counters that think.', games: ['three-tokens'] },
   { name: 'Bigger Worlds', tag: 'More than one screen.', games: ['scroll', 'many-rooms'] },
-  { name: 'Showcase Tricks', tag: 'How the big games do their big moments.', games: [] },
+  { name: 'Showcase Tricks', tag: 'How the big games do their big moments.', games: ['dialog'] },
 ];
 
 /** The order the Starters are meant to be played in, easiest first: the groups' games in order (games/<id>); a starter not listed goes after these, A to Z. */

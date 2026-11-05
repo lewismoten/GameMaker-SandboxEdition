@@ -60,6 +60,7 @@ export const CAST_GAMES = {
   'three-tokens': ['Three Tokens', 'starter'],
   'many-rooms': ['Rooms on One Map', 'starter'],
   'things-that-grow': ['Seeds and Nests', 'starter'],
+  dialog: ['Everybody Talks', 'starter'],
   carl: ['A Fly Named Carl', 'bizarre'],
   goat: ['Third Goat from the Left', 'bizarre'],
   loaf: ['Loaf #13 (Left in the Basket)', 'bizarre'],
@@ -165,6 +166,7 @@ const LISTED: CastMember[] = [
       { game: 'many-rooms', as: 'steps through doors into rooms that are all corners of one big map' },
       { game: 'things-that-grow', as: 'watches a nest hatch birds, then steps on another nest to make it stop' },
       { game: 'popups', as: 'touches coins that pay 100, 200 and 500 and watches each number rise and blink away' },
+      { game: 'dialog', as: 'talks with Pip, and then joins a group of friends who all talk at once' },
     ],
   },
   {
