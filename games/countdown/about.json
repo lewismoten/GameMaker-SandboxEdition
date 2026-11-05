@@ -34,5 +34,10 @@
       ["two.map", 0, 1]
     ],
     "rating": "Everyone"
-  }
+  },
+  "acceptedFindings": [
+    "flashing s3 Block 146 flashes light and dark about 0.0 times a second over 126 blocks of one screen, from (9, 19)",
+    "waits s2 Timed block 86 stays shut for 8.9 s at a time",
+    "waits s3 Timed block 146 stays shut for 97.9 s at a time"
+  ]
 }
