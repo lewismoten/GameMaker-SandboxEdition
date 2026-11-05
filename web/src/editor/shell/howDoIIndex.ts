@@ -1,16 +1,16 @@
 // The "How do I…?" index: a searchable list of the questions the Starters answer, each with
-// Play this level and See how it's made (howDoIGo.ts). It is on the Starters tab (compact) and
-// in the Guide (full), and fills itself from the games' manuals (project/howDoI.ts), so a new
+// Play this level and See how it's made (howDoIGo.ts). On the Starters tab it is one button that
+// opens it in a dialog (compact); in the Guide it is the full list on the page. It fills itself from the games' manuals (project/howDoI.ts), so a new
 // Starter shows up by listing its questions. The Guide's Try it boxes (tryIt.ts) use the same buttons.
 import './howDoI.css';
-import { h, toast } from '../core/ui';
+import { h, modal, toast } from '../core/ui';
 import type { CatalogEntry } from '../../project/files';
 import { filterQuestions, levelTitle, loadQuestions, type Question } from '../../project/howDoI';
 import { starterGroupOf } from '../../project/starter';
 import { playHref, seeHref } from './howDoIGo';
 
 /** The two buttons for one question, with names that say which question they are for. */
-export function questionButtons(entry: CatalogEntry, q: Question): HTMLElement {
+export function questionButtons(entry: CatalogEntry, q: Question, onGo?: () => void): HTMLElement {
   const go = (label: string, href: (e: CatalogEntry, q: Question) => Promise<string | undefined>, primary = false) => {
     const b = h(
       'button',
@@ -22,7 +22,7 @@ export function questionButtons(entry: CatalogEntry, q: Question): HTMLElement {
           b.disabled = true;
           b.textContent = 'Opening…';
           void href(entry, q)
-            .then((to) => (to ? (location.hash = to) : toast('That level could not be opened.')))
+            .then((to) => (to ? ((location.hash = to), onGo?.()) : toast('That level could not be opened.')))
             .catch(() => toast('That level could not be opened.'))
             .finally(() => {
               b.disabled = false;
@@ -37,48 +37,31 @@ export function questionButtons(entry: CatalogEntry, q: Question): HTMLElement {
   return h('span', { class: 'hdi-actions' }, go('Play this level', playHref, true), go('See how it’s made', seeHref));
 }
 
-/** How many questions the Starters tab shows before "Show all"; a search shows every match. */
-const FIRST = 3;
-
-/** Moves focus to the game grid's one Tab stop (the tile last used, else the first), skipping the questions. */
-function focusGames(): void {
-  const tiles = document.querySelectorAll<HTMLElement>('#lib-panel .game-tile:not([hidden]) .tile-select, #lib-panel .lib-drop-pick');
-  (Array.from(tiles).find((el) => el.tabIndex === 0) ?? tiles[0])?.focus();
-}
-
-/** The index: `compact` keeps it to a search box and a few questions, a button for the rest, and a Skip link (the Starters tab). */
-export function howDoIIndex(opts: { compact?: boolean } = {}): HTMLElement {
+/** The index itself: a labelled search box, a live count and the list (every question, or the matches). */
+function indexBody(id: string, dialog: boolean, onGo?: () => void): { root: HTMLElement; search: HTMLInputElement } {
   const search = h('input', {
     type: 'search',
-    id: `hdi-search-${opts.compact ? 'tab' : 'guide'}`,
+    id: `hdi-search-${id}`,
     placeholder: 'Search, such as “key” or “ladder”',
     autocomplete: 'off',
   });
-  const count = h('span', { class: 'hdi-count', role: 'status' });
-  const list = h('ul', { class: 'hdi-list' });
-  const more = h('button', { type: 'button', class: 'hdi-more', 'aria-expanded': 'false' });
-  let all = !opts.compact;
-  const skip = opts.compact ? h('button', { type: 'button', class: 'hdi-skip', onclick: focusGames }, 'Skip to the games') : undefined;
+  const count = h('span', { class: 'hdi-count', role: 'status', 'aria-live': 'polite' });
+  const list = h('ul', { class: 'hdi-list', ...(dialog ? { tabindex: '0', 'aria-label': 'Matching questions' } : {}) });
   const root = h(
     'div',
-    { class: `hdi${opts.compact ? ' compact' : ''}`, role: 'region', 'aria-labelledby': `${search.id}-label` },
-    skip,
-    h('div', { class: 'hdi-head' }, h('label', { id: `${search.id}-label`, for: search.id }, 'How do I…?'), search, count),
+    { class: `hdi${dialog ? ' hdi-dlg' : ''}`, ...(dialog ? {} : { role: 'region', 'aria-labelledby': `${search.id}-label` }) },
+    h('div', { class: 'hdi-head' }, h('label', { id: `${search.id}-label`, for: search.id }, 'Search the questions'), search, count),
     list,
-    opts.compact ? more : undefined,
   );
   void loadQuestions().then(
     ({ entries, questions }) => {
       const show = () => {
         const found = filterQuestions(questions, search.value);
-        const searching = !!search.value.trim();
-        const shown = all || searching ? found : found.slice(0, FIRST);
-        more.hidden = searching || found.length <= FIRST;
-        more.textContent = all ? 'Show fewer questions' : `Show all ${found.length} questions`;
-        more.setAttribute('aria-expanded', String(all));
-        count.textContent = search.value.trim() ? `${found.length} of ${questions.length}` : `${questions.length} questions`;
+        count.textContent = search.value.trim()
+          ? `${found.length} of ${questions.length} questions`
+          : `${questions.length} questions; scroll the list for more`;
         list.replaceChildren(
-          ...shown.map((q) => {
+          ...found.map((q) => {
             const entry = entries.get(q.game)!;
             const lv = levelTitle(entry, q.level);
             const group = starterGroupOf(q.game);
@@ -87,20 +70,30 @@ export function howDoIIndex(opts: { compact?: boolean } = {}): HTMLElement {
               null,
               h('span', { class: 'hdi-q' }, q.q),
               h('span', { class: 'hdi-where' }, `${group ? `${group}: ` : ''}${q.gameTitle}, level ${q.level}${lv ? `: ${lv}` : ''}`),
-              questionButtons(entry, q),
+              questionButtons(entry, q, onGo),
             );
           }),
         );
         if (!found.length) list.append(h('li', { class: 'hdi-none' }, 'No question matches. Try one word, such as “door”.'));
       };
-      more.addEventListener('click', () => {
-        all = !all;
-        show();
-      });
       search.addEventListener('input', show);
       show();
     },
     () => root.replaceChildren(h('p', { class: 'hint' }, 'The questions could not be loaded.')),
   );
-  return root;
+  return { root, search };
+}
+
+/** The index: `compact` is one button that opens it in a dialog (the Starters tab); otherwise the full list (the Guide). */
+export function howDoIIndex(opts: { compact?: boolean } = {}): HTMLElement {
+  if (!opts.compact) return indexBody('guide', false).root;
+  const button = h('button', { type: 'button', class: 'hdi-open', 'aria-haspopup': 'dialog' }, 'How do I…?');
+  button.addEventListener('click', () => {
+    void modal<void>('How do I…?', (close) => {
+      const { root, search } = indexBody('dialog', true, () => close(undefined));
+      requestAnimationFrame(() => search.focus());
+      return root;
+    }).then(() => button.focus());
+  });
+  return button;
 }
