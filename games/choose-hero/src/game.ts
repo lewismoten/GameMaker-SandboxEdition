@@ -28,12 +28,15 @@ export function buildGame(levels: Level[]): Game {
   end.desc = 'The End';
   end.files = ['won.lst', 'pick.cmf', 'lost.lst', 'pick.cmf', ...new Array(16).fill('')];
 
-  // scene 2 is the room, scenes 3 and 4 the same climb with a different character file each
+  // scene 2 is the room, scenes 3 and 4 the same climb with a different character file each, scene 5 the road with none
   const scenes: { level: Level; title: string; chr: string; to: number[] }[] = [
     { level: levels[0], title: levels[0].title, chr: 'fast', to: [3, 4] },
     { level: levels[1], title: 'Climb: Fast Feet', chr: 'fast', to: [1] },
-    { level: levels[1], title: 'Climb: Big Hops', chr: 'hops', to: [1] },
+    { level: levels[1], title: 'Climb: Big Hops', chr: 'hops', to: [5] },
+    // scene 5 names NO character file: PLAYGAME keeps the one the last scene loaded
+    { level: levels[2], title: levels[2].title, chr: '', to: [1] },
   ];
+  scenes[1].to = [5];
   scenes.forEach((sc, i) => {
     const l = sc.level;
     const scene = emptyScene(ADVTYPE);
@@ -45,8 +48,8 @@ export function buildGame(levels: Level[]): Game {
       'pick.bbl',
       'pick.mon',
       'pick.mbl',
-      `${sc.chr}.chr`,
-      `${sc.chr}.cbl`,
+      sc.chr ? `${sc.chr}.chr` : '',
+      sc.chr ? `${sc.chr}.cbl` : '',
       'pick.snd',
       'pick.cmf',
       `${l.file}.lst`,
@@ -57,7 +60,8 @@ export function buildGame(levels: Level[]): Game {
     // each door goes to its own scene; the climb's start is the same place for both
     sc.to.forEach((target, n) => {
       const [fx, fy] = l.map.exits[n].from;
-      const dest = target === 1 ? { x: 0, y: 0 } : { x: levels[1].map.start[0], y: levels[1].map.start[1] };
+      const next = target === 5 ? levels[2] : levels[1];
+      const dest = target === 1 ? { x: 0, y: 0 } : { x: next.map.start[0], y: next.map.start[1] };
       scene.links[n] = { toScene: target, from: { x: fx, y: fy }, to: dest };
     });
     game.scenes.push(scene);

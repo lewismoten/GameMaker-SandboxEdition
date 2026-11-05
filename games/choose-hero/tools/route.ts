@@ -2,11 +2,14 @@
 // level by level, taking every coin the chosen hero can reach. The checks here fail unless each hero does
 // what its sign says:
 //   level 1: read the signs, walk into the left door (Fast Feet) or the right one (Big Hops)
+//   level 3: the scene names no character file, so the hero is still the one picked (the jump push proves it); both finish
 //   level 2: Fast Feet takes both steps and passes under the high coins; Big Hops skips the first step with one hop and
 //            takes the high coins; either walks to the exit
 import type { Result, StarterBot } from '../../kit/starter/bot';
 import { ORIGIN } from '../../kit/starter/map';
-import { L1, L2 } from '../src/levels';
+import { BIG_PUSH, FAST_PUSH } from '../src/hero';
+import { SEQ } from '../../kit/starter/ids';
+import { L1, L2, L3 } from '../src/levels';
 
 export type Hero = 'fast' | 'big';
 
@@ -99,5 +102,24 @@ export function theClimb(hero: Hero) {
     const coins = L2.low.length + (hero === 'big' ? L2.high.length : 0);
     score(bot, from, 10 * coins, 'level 2');
     await leave(bot, bot.walk(L2.exit, 'the exit'), 'the exit');
+  };
+}
+
+/** 3. The Open Road: this scene lists no character file, so the engine keeps the hero of the last scene. */
+export function openRoad(hero: Hero) {
+  return async (bot: StarterBot): Promise<void> => {
+    const from = bot.sim.ci.score;
+    const push = -bot.sim.w.chr.sequences[SEQ.jump].frames[0].y;
+    const want = hero === 'big' ? BIG_PUSH : FAST_PUSH;
+    if (push !== want) throw new Error(`The road should keep ${hero}'s jump (push ${want}); the hero here has push ${push}`);
+    bot.say(`the road kept the ${hero} hero (jump push ${push})`);
+    await must(bot, bot.walk(7, 'the first sign'), 'to the sign');
+    await must(bot, bot.wait(LOOK), 'reading the sign');
+    await must(bot, bot.walk(L3.coins[1][0], 'the second coin'), 'to the coins');
+    await must(bot, bot.walk(L3.hill.cols[0] + 2, 'the hill'), 'up the hill');
+    await must(bot, bot.walk(L3.coins[3][0], 'the hilltop coins'), 'along the hilltop');
+    await must(bot, bot.walk(L3.coins[5][0], 'the last coin'), 'to the last coin');
+    score(bot, from, 10 * L3.coins.length, 'level 3');
+    await leave(bot, bot.walk(L3.exit, 'the exit'), 'the exit');
   };
 }

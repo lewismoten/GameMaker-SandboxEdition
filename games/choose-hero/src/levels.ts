@@ -1,10 +1,12 @@
-// WHO TO BE?'s two levels. Each is painted on a Grid (a block a character, see games/kit/starter/map.ts
+// WHO TO BE?'s three levels. Each is painted on a Grid (a block a character, see games/kit/starter/map.ts
 // for what the letters mean), then given its signs and coins. No new blocks: what is new is in the scenes
 // (game.ts): a scene lists the character file it loads, so two doors can lead to the same level with two heroes.
 //
 //   1. Two Doors:     a small room. The left door goes to the climb with FAST FEET, the right door to the same climb with BIG HOPS.
 //   2. The Same Climb: two steps up to a plateau, then a drop and the exit door. Every hero can take the steps; only
 //                    BIG HOPS can hop from the ground to the plateau, and only BIG HOPS can reach the high coins.
+//   3. The Open Road: a short road with one hill and its scene sets NO character file: the hero you picked
+//                    last is still the hero. Nothing on it needs a particular hero; every one can finish it.
 // Every edge is a hedge or a wall you can see, so nobody is stopped by something they can't.
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
@@ -13,7 +15,7 @@ import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
 import { addSign, type Sign } from '../../kit/starter/sign';
 
-export type SignName = 'pick' | 'fast' | 'big' | 'steps' | 'hop' | 'high' | 'exit';
+export type SignName = 'pick' | 'fast' | 'big' | 'steps' | 'hop' | 'high' | 'exit' | 'carry';
 
 /** The signs' words and sizes. */
 const WORDS: Record<SignName, { text: string; w: number; h: number }> = {
@@ -23,6 +25,7 @@ const WORDS: Record<SignName, { text: string; w: number; h: number }> = {
   steps: { text: 'STEPS UP. EVERY HERO CAN TAKE THEM', w: 4, h: 4 },
   hop: { text: 'BIG HOPS CAN SKIP A STEP. FAST FEET TAKES THEM ALL', w: 4, h: 4 },
   high: { text: 'HIGH COINS NEED BIG HOPS. TRY THE OTHER DOOR', w: 4, h: 4 },
+  carry: { text: 'NO HERO IS SET HERE: YOU ARE STILL THE ONE YOU PICKED', w: 4, h: 4 },
   exit: { text: 'EXIT →', w: 3, h: 1 },
 };
 
@@ -79,6 +82,23 @@ export const L2 = {
     [23, 6],
     [25, 6],
     [27, 6],
+  ],
+} as const;
+
+/** Level 3: the ground row, the width, the hill's columns and height, the exit column and the coins. */
+export const L3 = {
+  ground: 14,
+  width: 46,
+  step: { cols: [14, 16], height: 2 },
+  hill: { cols: [17, 24], height: 3 },
+  exit: 41,
+  coins: [
+    [11, 12],
+    [13, 12],
+    [19, 9],
+    [22, 9],
+    [29, 12],
+    [34, 12],
   ],
 } as const;
 
@@ -148,6 +168,37 @@ function theClimb(book: Book, signs: Record<SignName, Sign>): StarterMap {
   return m;
 }
 
+/** Level 3: a road with one hill; its scene loads no character file. */
+function openRoad(book: Book, signs: Record<SignName, Sign>): StarterMap {
+  const G = L3.ground;
+  const rows = G + 3;
+  const g = new Grid(L3.width, rows);
+  g.row(G, 0, L3.width - 1, 'G').fill(0, G + 1, L3.width, rows - G - 1, 'D');
+  g.col(0, 0, G - 1, 'X').col(L3.width - 1, 0, G - 1, 'X');
+  for (const s of [L3.step, L3.hill]) {
+    const [a, b] = s.cols;
+    g.fill(a, G - s.height + 1, b - a + 1, s.height, 'D').row(G - s.height, a, b, 'G');
+  }
+  g.put(3, G - 2, 's').put(3, G - 1, 'S');
+  g.put(L3.exit, G - 2, 'e').put(L3.exit, G - 1, 'E');
+  for (const [x, y] of L3.coins) g.put(x, y, 'c');
+  scenery(
+    g,
+    G,
+    [
+      [6, 3],
+      [26, 2],
+      [38, 4],
+    ],
+    [2, 27, 32],
+    [8, 30, 36],
+  );
+  const m = new StarterMap(book, g.rows());
+  m.sign(6, onGround(G, signs.carry), signs.carry);
+  m.sign(37, onGround(G, signs.exit), signs.exit);
+  return m;
+}
+
 /** The levels in order. */
 export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
   const pal = buildStarterPalette();
@@ -155,6 +206,7 @@ export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
   const levels: Level[] = [
     { file: 'doors', title: 'Two Doors', hint: 'Pick a hero.', map: twoDoors(book, signs) },
     { file: 'climb', title: 'The Same Climb', hint: 'Up the steps, or all at once.', map: theClimb(book, signs) },
+    { file: 'road', title: 'The Open Road', hint: 'Nobody is picked here.', map: openRoad(book, signs) },
   ];
   return { book, pal, levels };
 }

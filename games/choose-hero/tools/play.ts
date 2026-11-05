@@ -2,15 +2,15 @@
 // walkthrough.ts and gendemo.ts run it). Nothing in this game hurts, so it must not lose a life.
 // `hero` is the door it picks: Fast Feet (left) or Big Hops (right).
 import { StarterBot } from '../../kit/starter/bot';
-import { theClimb, twoDoors, type Hero } from './route';
+import { openRoad, theClimb, twoDoors, type Hero } from './route';
 import { GameSim } from './sim';
 
 export const SEED = 1;
 
-export async function play(seed = SEED, hero: Hero = 'big', upTo = 2): Promise<{ sim: GameSim; bot: StarterBot }> {
+export async function play(seed = SEED, hero: Hero = 'big', upTo = 3): Promise<{ sim: GameSim; bot: StarterBot }> {
   const sim = new GameSim(undefined, seed);
   const bot = new StarterBot(sim);
-  const levels = [twoDoors(hero), theClimb(hero)];
+  const levels = [twoDoors(hero), theClimb(hero), openRoad(hero)];
   for (const level of levels.slice(0, upTo)) {
     try {
       await level(bot);

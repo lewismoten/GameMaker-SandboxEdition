@@ -48,12 +48,20 @@
       "x": 3,
       "y": 15,
       "level": 2
+    },
+    {
+      "id": "keep",
+      "q": "How do I keep the hero I picked in a later scene?",
+      "scene": 5,
+      "x": 3,
+      "y": 12,
+      "level": 3
     }
   ],
   "pages": [
     {
       "head": "Welcome",
-      "html": "<h1>Welcome</h1><p><b>Who Do You Want to Be?</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has two short levels and takes a few minutes to finish.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each thing in the levels is made.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. <kbd>Space</kbd> jumps. <kbd>F2</kbd> shows your lives, hit points and score. Walk into a door to go through it.</p><p>Play it twice, once through each door. Nothing in this game can hurt you.</p>"
+      "html": "<h1>Welcome</h1><p><b>Who Do You Want to Be?</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has three short levels and takes a few minutes to finish.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each thing in the levels is made.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. <kbd>Space</kbd> jumps. <kbd>F2</kbd> shows your lives, hit points and score. Walk into a door to go through it.</p><p>Play it twice, once through each door. Nothing in this game can hurt you.</p>"
     },
     {
       "head": "Level 1: Two Doors",
@@ -72,12 +80,20 @@
       "html": "<h1>How level 2 is made</h1><ul><li><b>One map, two scenes.</b> In <b>pick.gam</b> there are two scenes that load <b>climb.map</b>, one called Climb: Fast Feet and one called Climb: Big Hops. The only difference between them is two slots in the scene's file list: the <b>character</b> and its <b>character blocks</b> (<b>fast.chr</b> and <b>fast.cbl</b>, or <b>hops.chr</b> and <b>hops.cbl</b>).</li><li><b>What makes Big Hops different.</b> Open <b>hops.chr</b> in the Character tab. The Space sequence starts with a bigger push upward (17, not 12), and each walking frame moves the hero 3 pixels instead of Fast Feet's 6. The pictures are the same ones with a purple hoodie.</li><li><b>Sized by the map.</b> Fast Feet jumps a little over three blocks, so each step is only one or two blocks higher than the last. Big Hops jumps six, which clears the first step and, from the plateau, reaches the coins that hang high above it.</li><li><b>The exit.</b> Both climb scenes link their door to the <b>The End</b> scene in <b>pick.gam</b>.</li></ul>"
     },
     {
+      "head": "Level 3: The Open Road",
+      "html": "<h1>Level 3: The Open Road</h1><p>After the climb comes a short road with one hill. <b>NO HERO IS SET HERE: YOU ARE STILL THE ONE YOU PICKED</b> stands at the start. Walk, hop the hill and take the coins to the exit door. Fast Feet gets there sooner and Big Hops takes the hill in a bounce, but nobody is stopped: nothing on the road needs a particular hero.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 3 is made</h1><ul><li><b>One blank slot.</b> Open <b>pick.gam</b> in the Scenes tab and select <b>The Open Road</b>. Its character and character blocks slots are empty. Every other file is named as usual.</li><li><b>What the engine does with a blank slot.</b> PLAYGAME loads each scene file only if its name is set (<code>code/GM/PLAYGAME.C</code> lines 4252 and 4253: <code>if (Game.FileExists(scnum,5)) ... loadspecany(... &amp;chr)</code>, then the same for slot 6, the character blocks). The test is at <code>code/GM/GRATOR.H</code> line 233: a name that is zero means no file. With nothing to load, the character already in memory is kept, with its sequences and pictures. The web player does the same in <code>web/packages/engine/src/engine/scene.ts</code> lines 156 and 162: <code>chr ? parseCharacter(chr) : prev!.chr</code>.</li><li><b>The link in.</b> Both climb scenes link their door to this scene instead of straight to <b>The End</b>, so it follows whichever hero you picked.</li><li><b>The map.</b> Open <b>road.map</b>: a flat road, a two-block step and a three-block hill, all things that Fast Feet and Big Hops can both walk up. Nothing is hero-only, so nobody gets stuck.</li></ul>"
+    },
+    {
       "head": "What it cannot do",
-      "html": "<h1>What it cannot do</h1><p>These are the engine's limits, so you can plan around them.</p><ul><li><b>It cannot remember who you picked.</b> A scene loads whatever character file it names, and nothing carries the choice from one scene to the next. To have two heroes through the same levels, each level needs a scene for each hero, as the climb has here. A counter can carry a number between scenes, but a scene cannot choose its character file from it.</li><li><b>It cannot change the hero inside a scene.</b> The character file is loaded once, when the scene starts. To change who you are, go through a link to another scene.</li><li><b>One file holds all of a hero's moves.</b> A hero is one file: its sequences, its pictures and its counters. A second hero is a second file, and any move they share has to be made twice.</li><li><b>A door is a link.</b> It cannot be switched on or off, and nothing marks which door is which except what you draw.</li></ul>"
+      "html": "<h1>What it cannot do</h1><p>These are the engine's limits, so you can plan around them.</p><ul><li><b>It cannot choose a hero from what you did.</b> A scene loads the character file it names, or none. A blank slot keeps the last hero, as the road does, but nothing chooses between two files from a counter. To have two heroes through the same level, make a scene for each hero, as the climb has.</li><li><b>A saved game can lose the hero.</b> Loading a save straight into a scene with no character file has no hero to keep. Give any scene you may load into its own character file.</li><li><b>It cannot change the hero inside a scene.</b> The character file is loaded once, when the scene starts. To change who you are, go through a link to another scene.</li><li><b>One file holds all of a hero's moves.</b> A hero is one file: its sequences, its pictures and its counters. A second hero is a second file, and any move they share has to be made twice.</li><li><b>A door is a link.</b> It cannot be switched on or off, and nothing marks which door is which except what you draw.</li></ul>"
     },
     {
       "head": "Make it yours",
-      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>Open <b>hops.chr</b> and make the push on the Space sequence bigger. How high can a hero go before the map's edge stops him?</li><li>Change a scene's character slot to the other hero's file, and play that door again.</li><li>Add a third door to the room, a third scene, and a third character file with your own numbers.</li><li>Draw a new hoodie color in <b>hops.cbl</b>.</li></ul><p>The home page's <b>Starters</b> tab has more small games like this one.</p>"
+      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>Open <b>hops.chr</b> and make the push on the Space sequence bigger. How high can a hero go before the map's edge stops him?</li><li>Change a scene's character slot to the other hero's file, and play that door again.</li><li>Name <b>hops.chr</b> in the road's character slot and see the road stop following your pick.</li><li>Add a third door to the room, a third scene, and a third character file with your own numbers.</li><li>Draw a new hoodie color in <b>hops.cbl</b>.</li></ul><p>The home page's <b>Starters</b> tab has more small games like this one.</p>"
     }
   ]
 }
