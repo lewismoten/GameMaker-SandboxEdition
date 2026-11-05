@@ -62,7 +62,11 @@ export const STARTER_GROUPS: { name: string; tag: string; games: string[] }[] = 
     tag: 'Counters that think.',
     games: ['switches', 'three-tokens', 'and-gate', 'secret-doors', 'show-the-count', 'dice', 'word-lock', 'power-ladder', 'special-counters'],
   },
-  { name: 'Bigger Worlds', tag: 'More than one screen.', games: ['scroll', 'many-rooms', 'overhead', 'diagonal-wrap', 'blocks-budget', 'near-far'] },
+  {
+    name: 'Bigger Worlds',
+    tag: 'More than one screen.',
+    games: ['scroll', 'many-rooms', 'overhead', 'diagonal-wrap', 'blocks-budget', 'near-far', 'town-links'],
+  },
   { name: 'Drawing with Blocks', tag: 'Roads, water and sky, drawn and animated.', games: ['road-tiles'] },
   {
     name: 'Showcase Tricks',
