@@ -49,6 +49,8 @@ function decorate(block: HTMLElement): HTMLElement {
   const texts: Text[] = [];
   for (let n = walker.nextNode(); n; n = walker.nextNode()) if (!n.parentElement?.closest('code, pre')) texts.push(n as Text);
   for (const t of texts) if (t.data.includes('[')) t.replaceWith(...marked(t.data));
+  for (const pre of Array.from(block.querySelectorAll('pre'))) pre.tabIndex = 0;
+  if (block.tagName === 'PRE') block.tabIndex = 0;
   return block;
 }
 
@@ -73,7 +75,7 @@ export function chapterElements(markdown: string, scope: string, offset = 0): HT
     }
     for (const b of s.blocks) {
       const el = decorate(element(b));
-      out.push(el.tagName === 'TABLE' ? h('div', { class: 'pg-scroll', tabindex: '0', role: 'region', 'aria-label': 'Table (scrolls sideways)' }, el) : el);
+      out.push(el.tagName === 'TABLE' ? h('div', { class: 'pg-scroll', tabindex: '0', role: 'group', 'aria-label': 'Table (scrolls sideways)' }, el) : el);
     }
   }
   return out;

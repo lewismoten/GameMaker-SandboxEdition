@@ -11,6 +11,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Added
 
+- The Programmer's Guide to Game-Maker 3.0 is a book in the Library (`#/programmers-guide`): a chapter for each part of the player (memory, the screen, blocks, monsters, sound, timing, file formats and more), why each limit is what it is, a table of every limit, links from each citation to the original source line, and one page to print or save as PDF. The Game-Maker box on the desk also holds its 1994 cousin, Technical Reference and Limits.
 - Dig It now feels like digging: Neka carries a small shovel, soil crumbles in five steps (cracked, split open, half dug, nearly dug, a hole with a heap of crumbs) with a crunch instead of vanishing at once, and the Down arrow scoops with the shovel.
 
 - The sound recorder and sample editor show a time ruler under the waveform: seconds, game ticks, a yellow "may stutter" zone, a red "likely stutters" zone and a line at 64 KB, and the Level check and the Before You Upload list suggest shorter sounds that DOS would load slowly or replay every tick. The times are estimates, and long sounds still record and play in full.

@@ -109,16 +109,16 @@ main.pg-page .pg-mark {
 }
 
 main.pg-page .pg-verify {
-  color: var(--pg-verify, #8a4b00);
-  background: color-mix(in srgb, #f5b041 28%, transparent);
+  color: var(--pg-verify, #5e3300);
+  background: color-mix(in srgb, #f5b041 22%, transparent);
 }
 
 main.pg-page .pg-inference {
-  color: var(--pg-inference, #2c5aa0);
+  color: var(--pg-inference, #1c4585);
 }
 
 main.pg-page .pg-estimate {
-  color: var(--pg-estimate, #5b6b2a);
+  color: var(--pg-estimate, #3f4c18);
 }
 
 main.pg-page .pg-tag {

@@ -87,7 +87,7 @@ A monster beyond the 50th is still alive and still hurts you; it simply is not d
 A path's speed is in dots per tick; there is no limit, but a fast monster can step across a thin wall.
 
 **Power.** Your hero has power 100. A monster weaker than 100 is destroyed when it touches him. When two monsters meet, the stronger one destroys the weaker; two of the same power pass through each other.
-A monster born when another dies (the _becomes_ setting) takes its place, so a short chain of changes can make a creature that grows, flashes, then vanishes.
+A monster born when another dies (the becomes setting) takes its place, so a short chain of changes can make a creature that grows, flashes, then vanishes.
 
 **Lifetime.** A monster can be set to live a fixed number of ticks, to end after its path, or to end when it is hit. A fixed lifetime is exact to the tick.
 
