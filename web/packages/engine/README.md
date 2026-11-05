@@ -57,6 +57,21 @@ play.addEventListener('click', async () => {
 
 `Machine` owns the screen, keyboard and audio. Call `machine.destroy()` when play finishes or the containing page closes. `runGame` accepts `RunOptions` for callbacks, joystick input, playback and the optional DOS player appearance. The game may write saves or high scores into `GameFiles`; use `files.onChange` to persist those bytes. The package targets modern browsers and ES modules.
 
+## Read a game file in Node.js
+
+The format modules need no browser. This reads a `.GAM` file from the original CD (run it from the repository root) and lists its scene titles:
+
+```ts
+import { readFileSync } from 'node:fs';
+import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+
+const game = parseGame(readFileSync('cd/gameware/peach/peach.gam'));
+console.log(`${game.scenes.length} scenes: ${game.scenes.slice(2, 4).map((s) => s.desc).join(' and ')}`);
+// prints: 20 scenes: Grasslands 1 and Grasslands 2
+```
+
+A test (`web/test/readmeExamples.test.ts`) runs this block in Node against the built package and compares what it prints with the `// prints:` line.
+
 ## Native player screens
 
 The package includes the complete DOS player front end. The example above shows
