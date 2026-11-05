@@ -93,6 +93,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Changed
 
+- The Starters no longer have download buttons or ZIP links: not on the game tiles, in the Download chooser, on the downloads page or in the Windows, Mac and Linux release lists. They are simple examples, so they stay to play on the site, edit a copy of, and find on the Sample CD and Sample Disk.
 - Home: the Gameware and Shareware tabs are now one CD tab, Gameware first and then Shareware, each by maker. Old Gameware and Shareware links open it, and every game is still on the desk, in DOS, in Credits and in search.
 - The game list that the home page and the DOS page load is smaller again: each Starter's blurb, label and box art, and every original game's controls and player look, come with it only when the game is opened, so more Starters can be added without slowing those pages.
 - The desk loads less as games are added: each box on the wall shelf is drawn when its slot is near the screen, its spine is a small picture at the size it stands (no separate request per box), and a box standing spine out no longer makes its front under black light.
