@@ -19,11 +19,11 @@ export function titlePicture(pal: Pal, hero: Pixels, door: Pixels, name: string,
   text(p, rx + 10, 54, tagline, look.ribbonText);
   // the eight swatches in a row, then five doors
   SWATCHES.forEach((s, i) => {
-    const x = 40 + i * 30;
-    p.rect(x - 1, 78, 28, 20, pal.c('ink', 0)).rect(x, 79, 26, 18, pal.c(`sw-${s.word}`, 0));
+    const x = 56 + i * 28;
+    p.rect(x - 1, 67, 28, 11, pal.c('ink', 0)).rect(x, 68, 26, 9, pal.c(`sw-${s.word}`, 0));
   });
   p.rect(44, 158, 32, 3, look.floorShadow);
-  scaleBlit(p, hero, 40 - 30, 160 - 80, 2);
+  scaleBlit(p, hero, 10, 160 - 80, 2);
   for (let i = 0; i < 5; i++) scaleBlit(p, door, 100 + i * 44, 160 - 80, 2);
   frameOf(p, pal, 'breeze');
   return p;

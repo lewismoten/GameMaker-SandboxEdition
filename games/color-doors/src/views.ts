@@ -9,7 +9,7 @@ export interface View {
   file: string;
   /** What the door's sign and the level card call it. */
   name: string;
-  /** How its card explains it (a line, about 36 letters at most). */
+  /** How its card explains it (a line, 30 letters at most). */
   line: string;
   /** The scene number the hall's door leads to. */
   scene: number;
@@ -19,9 +19,9 @@ export interface View {
 /** The hall's doors, left to right. Scene 2 is the hall, so the galleries are scenes 3 to 7. */
 export const VIEWS: View[] = [
   { file: 'as.pal', name: 'As you see it', line: 'The colors as drawn.', scene: 3, kind: 'normal' },
-  { file: 'red1.pal', name: 'Red-green, one kind', line: 'Reds look dark. Red and green blur.', scene: 4, kind: 'protan' },
-  { file: 'red2.pal', name: 'Red-green, the other', line: 'Red and green blur, in a new way.', scene: 5, kind: 'deutan' },
-  { file: 'blue.pal', name: 'Blue-yellow', line: 'Blue and green blur. Yellow looks pink.', scene: 6, kind: 'tritan' },
+  { file: 'red1.pal', name: 'Red-green, one kind', line: 'Reds go dark; red, green blur.', scene: 4, kind: 'protan' },
+  { file: 'red2.pal', name: 'Red-green, the other', line: 'Red and green blur together.', scene: 5, kind: 'deutan' },
+  { file: 'blue.pal', name: 'Blue-yellow', line: 'Blue looks green. Yellow, pink.', scene: 6, kind: 'tritan' },
   { file: 'gray.pal', name: 'No color', line: 'Only light and dark.', scene: 7, kind: 'gray' },
 ];
 

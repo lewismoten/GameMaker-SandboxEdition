@@ -109,10 +109,10 @@ export function addColorBlocks(book: Book, pal: Pal): void {
   });
   fruit('banana', (p) => {
     // a crescent: a row of discs along a shallow curve, dark outline first, then the yellow
-    const bend = (t: number) => [2 + t * 16, 5 + 20 * (t - 0.5) * (t - 0.5) * 2] as const;
-    for (let t = 0; t <= 1; t += 0.04) p.disc(bend(t)[0], bend(t)[1] + 4, 3.4, ink);
-    for (let t = 0; t <= 1; t += 0.04) p.disc(bend(t)[0], bend(t)[1] + 4, 2.4, c('sw-YELLOW', 0));
-    p.rect(1, 4, 3, 3, c('wood', 1));
+    const bend = (t: number) => [2 + t * 16, 5 + 8 * (1 - 4 * (t - 0.5) * (t - 0.5))] as const;
+    for (let t = 0; t <= 1; t += 0.04) p.disc(bend(t)[0], bend(t)[1] + 1, 3.4, ink);
+    for (let t = 0; t <= 1; t += 0.04) p.disc(bend(t)[0], bend(t)[1] + 1, 2.4, c('sw-YELLOW', 0));
+    p.rect(1, 2, 3, 3, c('wood', 1));
   });
   fruit('lime', (p) => {
     p.disc(10, 12, 7, ink).disc(10, 12, 6, c('sw-limeGreen', 0)).disc(8, 10, 1.7, c('green', 4));

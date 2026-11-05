@@ -14,7 +14,7 @@ import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
 import { addSign, type Sign } from '../../kit/starter/sign';
-import { SWATCHES, addColorBlocks, swatchBlock, swatchRamps } from './colorBlocks';
+import { SWATCHES, addColorBlocks, swatchBlock, swatchRamps, wallColor } from './colorBlocks';
 import { VIEWS } from './views';
 
 export const GROUND = 10;
@@ -41,9 +41,13 @@ function buildBlocks(pal: Pal): { book: Book; signs: Record<string, Sign> } {
   addStarterBlocks(book, pal);
   addColorBlocks(book, pal);
   const signs: Record<string, Sign> = {};
-  for (const [k, [text, w, h]] of Object.entries(WORDS)) signs[k] = addSign(book, pal, `${k}.sign`, text, w, h);
+  // the boards that hang on the stone wall are drawn with the wall's color around their frames, not sky (the first sign, on the grass, adds the posts)
+  const onWall = { ...pal, c: (n: string, k: number) => (n === 'sky' && k === 3 ? wallColor(pal) : pal.c(n, k)) };
+  const grass = ['same', 'light', 'fruit', 'back'];
+  for (const [k, [text, w, h]] of Object.entries(WORDS).sort((a, b) => Number(grass.includes(b[0])) - Number(grass.includes(a[0]))))
+    signs[k] = addSign(book, grass.includes(k) ? pal : onWall, `${k}.sign`, text, w, h);
   // each swatch's name, on a small board of its own
-  for (const s of SWATCHES) signs[`name${s.word}`] = addSign(book, pal, `${s.word.toLowerCase()}.name`, s.word, 3, 1);
+  for (const s of SWATCHES) signs[`name${s.word}`] = addSign(book, onWall, `${s.word.toLowerCase()}.name`, s.word, 3, 1);
   return { book, signs };
 }
 

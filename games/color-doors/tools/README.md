@@ -1,10 +1,11 @@
-# Both Together: tools
+# Color Doors: tools
 
-- `check.ts`: the bot plays both levels and must win without losing a life. `route.ts` asserts what each sign teaches: in level 1 Kit turns one dial on, a spark runs the wire and dies at the dial that is still off (it never gets past column 17.3) and the lamp stays dark; then he turns the second on, the lamp lights, its light settles at the foot of the post and fills counter 22, and the gate opens. Every jump leaves a block of sky under the lamp, so Kit cannot reach it. Level 2 has three dials, one up a ladder. It then asserts every coin (five, then eight).
-- `walkthrough.ts`, `gendemo.ts`: re-record the walkthrough and the title demo. The demo is the start of level 1: one dial on, the spark dying at the other, then both on.
-- `demoCheck.ts`: plays the built `demo.rec` headless and checks that mistake once (a spark that gets no further than the dial that is off), then the lamp lit with both dials on.
-- `preview.ts`: PNGs of the blocks, the hero, the monsters, each level and every picture. `shots.ts`: PNGs of the lessons for the progress shots.
+- `check.ts`: the bot plays the whole game and must win without losing a life. `route.ts` visits each of the five doors, asserts that it leads to its own scene, that the scene loads the right palette file and the same map file as the others, and that the way back lands one block beside the door Kit used. Then the last door ends the game.
+- `viewCheck.ts`: the sign text keeps a contrast of at least 7 to 1 in all five palettes, and every palette is 768 bytes; it also lists which swatches run together in each view (a report, not a pass or fail). The views are a model, not a measurement of anyone's eyes.
+- `walkthrough.ts`, `gendemo.ts`: re-record the walkthrough and the title demo. The demo is the bot's whole run: all five doors, then the end.
+- `demoCheck.ts`: plays the built `demo.rec` headless and checks it enters scenes `2 3 2 4 2 5 2 6 2 7 2 1`.
+- `preview.ts`: PNGs of the blocks, each room in each view's palette and every picture. `shots.ts`: PNGs of the lessons for the progress shots.
 
 ## Starter rule: show the mistake once
 
-A Starter's demo and walkthrough show what each sign teaches, including the mistake once. Here the mistake is turning on only one of the two dials: the spark dies at the other (level 1).
+A Starter's demo and walkthrough show what each sign teaches, including the mistake once. Here nothing can go wrong; the "mistake" the game shows is the one it is about: a swatch that reads clearly in one room and runs into its neighbor in another (red and green in the red-green rooms), while the name under it does not.
