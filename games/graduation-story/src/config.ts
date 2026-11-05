@@ -19,6 +19,12 @@ export const cfg: Graduation = {
     doc: 'DOC LEO HAS A SCROLL FOR YOU',
     banner: 'STORY AND FINISH',
   },
+  arrive: {
+    title: 'The Plaza',
+    hint: 'Cross the plaza to the theater.',
+    welcome: 'THE THEATER IS AHEAD',
+    nods: ['say', 'pads', 'countdown'],
+  },
   level: { title: 'The Theater', hint: 'Walk down the aisle to the stage.' },
   song: { bpm: 80, lead: 'organ', transpose: -2 },
   text: {
