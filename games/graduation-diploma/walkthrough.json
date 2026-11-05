@@ -1,0 +1,51 @@
+{
+ "version": 1,
+ "game": "graduation-diploma",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU0ezQNNWs0DTVrNA01azQNNMs0DTQ=="
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "The Long Aisle"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 6032,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 913,
+    "time": 15216.666666666471
+   },
+   {
+    "title": "The Long Aisle",
+    "frame": 1661,
+    "time": 27683.333333333918
+   },
+   {
+    "title": "Ending",
+    "frame": 3232,
+    "time": 53866.666666664554
+   },
+   {
+    "title": "Credits",
+    "frame": 4960,
+    "time": 82666.66666666784
+   }
+  ]
+ }
+}

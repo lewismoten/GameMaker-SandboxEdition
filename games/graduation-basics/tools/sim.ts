@@ -1,5 +1,4 @@
-// The headless player (kit/gameSim.ts, PLAYGAME's play loop on a built disk) pointed at
-// FIRST STEPS' disk/, so the bot can play the levels in a row and write the walkthrough.
+// The headless player (kit/gameSim.ts, PLAYGAME's play loop on a built disk) pointed at this game's disk/.
 import { diskSim } from '@lewismoten/gamemaker-sandbox-tools/kit/gameSim';
 
 export const GameSim = diskSim(new URL('../disk', import.meta.url));
