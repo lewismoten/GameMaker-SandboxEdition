@@ -9,6 +9,7 @@ import {
   tickCost,
   TURBO_OFF,
   vocStallMs,
+  vocWontFit,
   type PcCosts,
 } from '@lewismoten/gamemaker-sandbox-engine/engine/slowPc';
 
@@ -118,5 +119,48 @@ describe('Run like a… presets', () => {
     expect(tickCost(k, 0, 160)).toBeLessThan(75);
     expect(tickCost(SPEED_PRESETS['486'], 0, 160)).toBeLessThan(15);
     expect(tickCost(k, 0, 1000)).toBe(tickCost(k, 0, 170)); // at most 170 dirty rectangles
+  });
+
+  describe('IBM PS/1 (286 at 10 MHz, 1 MB, slow disk)', () => {
+    const ps1 = SPEED_PRESETS.ps1;
+
+    it('is slower than the 286 in every cost, and its disk far slower', () => {
+      const k = SPEED_PRESETS['286'];
+      expect(ps1.tickMs).toBeGreaterThan(k.tickMs);
+      expect(ps1.monsterMs).toBeGreaterThan(k.monsterMs);
+      expect(ps1.cellMs ?? 0).toBeGreaterThan(k.cellMs ?? 0);
+      expect(ps1.vocOpenMs ?? 0).toBeGreaterThan((k.vocOpenMs ?? 0) * 2);
+      expect(ps1.vocBytesPerMs ?? 0).toBeLessThan((k.vocBytesPerMs ?? 0) / 2);
+      expect(costsFor('ps1')).toBe(ps1);
+    });
+
+    it("freezes the game for about half a second to read Slow Computers' long pad, a tenth for a short one", () => {
+      expect(vocStallMs(ps1, 59568)).toBeGreaterThan(400);
+      expect(vocStallMs(ps1, 59568)).toBeLessThan(600);
+      expect(vocStallMs(ps1, 2789)).toBeGreaterThan(80);
+      expect(vocStallMs(ps1, 2789)).toBeLessThan(130);
+    });
+
+    it('loses about nine game ticks to the long pad, then carries on', () => {
+      const cpu = new SlowCpu(INT_MS);
+      cpu.spend(vocStallMs(ps1, 59568));
+      let lost = 0;
+      while (cpu.busy()) lost++;
+      expect(Math.round(lost / 8)).toBeGreaterThanOrEqual(7);
+      expect(Math.round(lost / 8)).toBeLessThanOrEqual(9);
+    });
+
+    it('cannot hold a sound bigger than its heap: the read happens, nothing plays', () => {
+      expect(vocWontFit(ps1, 59568)).toBe(false);
+      expect(vocWontFit(ps1, 150_000)).toBe(true);
+      expect(vocWontFit(SPEED_PRESETS['386'], 150_000)).toBe(false);
+      expect(vocWontFit(undefined, 150_000)).toBe(false);
+      expect(vocStallMs(ps1, 150_000)).toBe(ps1.vocOpenMs);
+    });
+
+    it('keeps a quiet room at full speed and loses ticks to a crowd of 15', () => {
+      expect(run(ps1, 0, false).ticks).toBeCloseTo(TICK_RATE / 8, 0);
+      expect(run(ps1, 15, false).ticks).toBeLessThan(TICK_RATE / 8 - 1);
+    });
   });
 });

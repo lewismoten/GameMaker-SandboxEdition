@@ -129,6 +129,15 @@ One game tick is **54.9 ms** (chapter 12). So **one VOC trigger from a hard disk
 
 Causes that I looked for and **ruled out**: DMA bus stealing is only 1-5% of the bus; the 145.67 Hz timer interrupt costs well under 1% of a 286 (below); the music interrupt is a few percent at worst (chapter 12). None of them cuts a sample.
 
+### The player's "IBM PS/1 (286, 1 MB)" setting **[estimate]**
+
+The web player's **Run like a** menu has one machine built from a real one: an IBM PS/1 Model 2011, a 286 at 10 MHz with 1 MB, a small slow hard disk (about 80 ms to find a file, about 150 KB/s after that) and no disk cache. What the source supports, and what the player does with it:
+
+- **Every play re-reads the file** (`SC:204`), and nothing is kept between plays except the buffer. With no cache a repeat costs the whole read again. The player charges the read every time: about 480 ms for a 60 KB sound, about 100 ms for a 3 KB blip. The game stops for that time, the screen holds still and the picture catches up afterward (the loop skips the ticks it missed).
+- **The sound starts when the read ends.** `PlaySbVocFile` stops the old sound first, reads, and only then calls the driver. The player therefore starts the audio after the read time, not at once.
+- **Memory.** PLAYGAME is real mode and cannot use the memory above 640 KB (the 1 MB machine's extra 384 KB), so the second 512 KB makes no difference to it. What matters is what is left of the 640 KB: `new char[vocfilesize]` can fail (`SC:181-190`), and then the function returns FALSE and the sound is silently skipped. The player skips sounds over about 100 KB on this machine. The 100 KB is a guess; the failure is in the source.
+- **Not modeled:** stutter inside a playing sound. The Sound Blaster plays by DMA from the buffer without the CPU, so a slow CPU cannot cut a sample (see the ruled-out list above). The music, driven by the timer interrupt, keeps time while the game is frozen.
+
 ### 10b.5 What a game maker can do (all of it works on DOS too)
 
 - Keep each VOC under 64 KB (and the median under 12 KB: one second at 11 kHz). Prefer 11,111 Hz or 8,000 Hz over 22 kHz when a clip is spoken.

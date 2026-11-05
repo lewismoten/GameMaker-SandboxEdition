@@ -43,7 +43,7 @@ import { parsePalette } from '../formats/palette';
 import { parseSoundSet, type SoundSet } from '../formats/sound';
 import { MAXSCENELINKS, NOSCENE, type Game } from '../formats/game';
 import { TICK_RATE } from '../audio/cmfPlayer';
-import { scrollCost, SlowCpu, tickCost, vocStallMs, type PcCosts } from './slowPc';
+import { scrollCost, SlowCpu, tickCost, vocStallMs, vocWontFit, type PcCosts } from './slowPc';
 import { gainAtLoad, newPlayGain, type PlayGain } from './playGain';
 
 const DEAD = 2;
@@ -73,6 +73,8 @@ export interface Session {
   speed: SpeedSetting;
   /** Milliseconds a voice read still owes the emulated PC (SpeedSetting.slowPc); playscene charges it. */
   vocStall?: number;
+  /** A voice read from the emulated slow disk that has not started yet: the last one asked for, its total wait, the time it is due. */
+  vocLate?: { bytes: Uint8Array; wait: number; due?: number };
   /** RunOptions.gmHelp: Game-Maker's own GMHELP.TXT, which F1 shows first (PLAYGAME.EXE only). */
   gmHelp?: Uint8Array;
   /** RunOptions.player as the screens use it (engine/playerLook.ts); left out, the CD player's look. */
@@ -203,9 +205,17 @@ function attachSound(s: Session, w: World, sounds: SoundSet | undefined): void {
       const digital = sounds.digital[n];
       if (!s.speakerOnly && s.m.audio.soundCardEnabled !== false && digital && digital[0] !== ' ') {
         const bytes = s.m.files.get(`${digital}.voc`);
-        s.m.audio.playVoc(bytes);
-        // the read happens on the game's own thread: an emulated slow PC is frozen for it
-        if (bytes) s.vocStall = (s.vocStall ?? 0) + vocStallMs(s.speed.slowPc, bytes.length);
+        const pc = s.speed.slowPc;
+        const stall = bytes ? vocStallMs(pc, bytes.length) : 0;
+        if (!bytes || !pc || !stall) s.m.audio.playVoc(bytes);
+        else {
+          // the read happens on the game's own thread: an emulated slow PC is frozen for it, and the
+          // sound (which PlaySbVocFile cut off first) only starts when the read is done
+          s.m.audio.stopVoc();
+          s.vocStall = (s.vocStall ?? 0) + stall;
+          if (vocWontFit(pc, bytes.length)) s.vocLate = undefined;
+          else s.vocLate = { bytes, wait: (s.vocLate?.wait ?? 0) + stall };
+        }
       } else s.m.audio.playSpeaker(sounds.freqs[n]);
       return true;
     },
@@ -613,12 +623,20 @@ export async function playScene(s: Session, dosc: number, prev: number, linkIn: 
         s.vocStall = 0;
       }
     }
+    if (s.vocLate) {
+      s.vocLate.due ??= now + s.vocLate.wait;
+      if (now >= s.vocLate.due) {
+        s.m.audio.playVoc(s.vocLate.bytes);
+        s.vocLate = undefined;
+      }
+    }
     renderWorld(m.screen, w);
     s.onFrame?.(w);
     // Development aid for timing checks from the browser console / tests.
     if (import.meta.env?.DEV) (globalThis as { __gm?: unknown }).__gm = { session: s, world: w };
   }
 
+  s.vocLate = undefined;
   m.audio.stopSong();
   m.audio.stopSpeaker();
   await m.fadeAllTo(0, 0, 0);

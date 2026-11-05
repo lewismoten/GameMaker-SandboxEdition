@@ -42,6 +42,12 @@ export interface PcCosts {
   vocOpenMs?: number;
   /** ...and how many bytes a millisecond the disk then delivers. */
   vocBytesPerMs?: number;
+  /**
+   * The largest .voc the far heap still has room for (PlaySbVocFile `new`s the whole file; when that
+   * fails it returns FALSE and the game goes on without the sound). An estimate: 640 KB less DOS,
+   * drivers and PLAYGAME's own data. Left out, any size fits.
+   */
+  vocHeapBytes?: number;
 }
 
 /** A 486DX2-66 with turbo off: about a 286-16. */
@@ -102,9 +108,9 @@ export function scrollCost(pc: PcCosts, strips: number): number {
  * the changed rectangles to the screen; the timer interrupt and the music cost about 1% of
  * a 286 and are left out. Today (no costs) is a fast modern machine.
  */
-export type SpeedChoice = 'today' | '486' | '386' | '286';
+export type SpeedChoice = 'today' | '486' | '386' | '286' | 'ps1';
 
-export const SPEED_CHOICES: readonly SpeedChoice[] = ['today', '486', '386', '286'];
+export const SPEED_CHOICES: readonly SpeedChoice[] = ['today', '486', '386', '286', 'ps1'];
 
 export const SPEED_PRESETS: Record<Exclude<SpeedChoice, 'today'>, PcCosts> = {
   // 286 at 12 MHz, IDE disk about 400 KB/s, 30 ms to open a file; 20 monsters fill a tick
@@ -113,6 +119,12 @@ export const SPEED_PRESETS: Record<Exclude<SpeedChoice, 'today'>, PcCosts> = {
   '386': { tickMs: 9, monsterMs: 0.8, scrollPassMs: 1.5, stripMs: 0.8, cellMs: 0.12, vocOpenMs: 18, vocBytesPerMs: 800 },
   // 486DX2-66, disk about 1.5 MB/s, 12 ms to open
   '486': { tickMs: 4, monsterMs: 0.35, scrollPassMs: 0.7, stripMs: 0.4, cellMs: 0.05, vocOpenMs: 12, vocBytesPerMs: 1500 },
+  // IBM PS/1 Model 2011: a 286 at 10 MHz (the 286-12's CPU costs times 1.2), 1 MB, a small slow hard disk
+  // (about 80 ms to find a file and about 150 KB/s after that), no disk cache, no EMS. PLAYGAME reads a
+  // .voc whole from the disk every time it plays one and keeps nothing between plays, so the cache a
+  // roomier PC might have added never helps here; the extra 384 KB above 640 KB is out of PLAYGAME's reach.
+  // About 100 KB of the far heap is left once DOS, drivers and the game's data have their share.
+  ps1: { tickMs: 24, monsterMs: 2.2, scrollPassMs: 4, stripMs: 2.4, cellMs: 0.3, vocOpenMs: 80, vocBytesPerMs: 150, vocHeapBytes: 100_000 },
 };
 
 /** The costs for a choice; undefined for Today (nothing is charged). */
@@ -123,9 +135,15 @@ export function costsFor(choice: SpeedChoice): PcCosts | undefined {
 /**
  * How long reading a voice of `bytes` freezes the game: open plus transfer. PLAYGAME reads
  * the whole file before the tick goes on, so game time stops; the music, run from the timer
- * interrupt, does not. 0 when the PC has no disk figures (TURBO_OFF) or on Today.
+ * interrupt, does not, and the sound only starts once the read is over (the player waits that long). 0 when the PC has no disk figures (TURBO_OFF) or on Today.
  */
 export function vocStallMs(pc: PcCosts | undefined, bytes: number): number {
+  if (vocWontFit(pc, bytes)) return pc!.vocOpenMs ?? 0; // the file is opened, then the allocation fails
   if (!pc || pc.vocOpenMs === undefined || !pc.vocBytesPerMs) return 0;
   return pc.vocOpenMs + bytes / pc.vocBytesPerMs;
+}
+
+/** True when the far heap cannot hold a .voc of `bytes`: PlaySbVocFile returns FALSE and nothing plays. */
+export function vocWontFit(pc: PcCosts | undefined, bytes: number): boolean {
+  return !!pc && pc.vocHeapBytes !== undefined && bytes > pc.vocHeapBytes;
 }
