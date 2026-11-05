@@ -8,7 +8,6 @@
 // Every ball is harmless: its blocks are not solid and take no hit points.
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { outline } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
-import { blob } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import type { Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { corner, mon } from '@lewismoten/gamemaker-sandbox-tools/kit/actors';
@@ -40,7 +39,7 @@ function ball(pal: Pal): Pixels {
       const dy = y - cy;
       const d = Math.hypot(dx, dy);
       if (d > R) continue;
-      // five wedges turning round the ball's top
+      // six wedges turning round the ball's middle
       const wedge = Math.floor(((Math.atan2(dy, dx) + Math.PI) / (Math.PI * 2)) * 6 + 0.5) % 6;
       const ramp = wedge % 3 === 0 ? 'red' : wedge % 3 === 1 ? 'white' : 'blue';
       const shade = dx + dy < -4 ? 3 : dx + dy > 5 ? 1 : 2;
