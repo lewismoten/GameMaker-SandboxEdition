@@ -12,6 +12,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 ### Added
 
 - A new Starter, Under the Hood (course 617), walks through what the DOS player is made of in three short levels: a row of bytes with the four that spell Play at their real offset, a word that must be the same size as its slot, and backing up first. None of its levels patches anything; its pages link to the Programmer's Guide chapter on patching.
+- The DOS player tab has an experimental Gameplay tab: the character's top speed, gravity's pull and step, how near a monster starts its attack, scroll speed and smoothing, and fade length, written into the DOS export's XFERPLAY.EXE and played the same way on the web. Each is marked Experimental; test a patched game in DOSBox. The Programmer's Guide lists every file offset and the constants left out, with the reason.
 - The DOS player tab has a Patch Lab: a read-only strip with the file offset, the CD's bytes and the new bytes of the setting you are editing, the changed bytes marked in bold and underline.
 - The 1994 BBS's Warez area has PATCHING.ZIP, a plain how-to (PATCHING.TXT) for changing the words of your own game's player: back up first, same length, no credits or registration.
 - The Programmer's Guide has a chapter, "Patching the player": the settings of the DOS player by file offset, how a patch is applied and spotted, and the line it keeps (your own copy, credits left alone).
