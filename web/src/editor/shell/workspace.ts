@@ -645,7 +645,8 @@ export class Workspace implements AssistantHost {
     const shown = stampEntry();
     this.renderSidebar();
     const slot = h('div', { role: 'status' }, 'Opening the overview…');
-    clear(this.main, this.bar, slot);
+    this.bar?.classList.add('released-inline'); // the Overview carries it in its heading
+    clear(this.main, slot);
     void import('./overview')
       .then(({ overview }) => {
         if (this.disposed || !slot.isConnected || !this.assetView) return;
@@ -653,6 +654,7 @@ export class Workspace implements AssistantHost {
           project: this.project,
           tab,
           kind,
+          bar: this.bar,
           all: () => this.openAssets(),
           category: (k) => this.openAssets(k),
           open: (file) => this.open(file),
@@ -712,9 +714,9 @@ export class Workspace implements AssistantHost {
     const body = h('div');
     const isGam = file === this.project.gam;
     const changes = !this.looking;
+    this.bar?.classList.add('released-inline'); // beside the file's title
     clear(
       this.main,
-      this.bar,
       crumbs(file, {
         overview: () => this.openAssets(),
         category: () => this.openAssets(kindOf(file)),
@@ -723,8 +725,9 @@ export class Workspace implements AssistantHost {
       }),
       h(
         'div',
-        { class: 'row', style: 'justify-content:space-between;align-items:center;margin-bottom:8px' },
+        { class: 'row', style: 'justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:8px' },
         h('h1', { class: 'file-title' }, file),
+        this.bar,
         h(
           'div',
           { class: 'toolbar' },
@@ -914,6 +917,7 @@ export class Workspace implements AssistantHost {
     const host = h('div', { class: 'player-host' });
     const game = parseGame(this.project.files.get(this.project.gam)!);
     const where = level ? `${sceneName(game, level.to)} at ${level.at.x},${level.at.y}` : '';
+    this.bar?.classList.remove('released-inline');
     clear(
       this.main,
       this.bar,

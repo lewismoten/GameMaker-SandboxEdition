@@ -31,6 +31,8 @@ interface BrowserHost {
   open: (file: string) => void;
   add: (kind: FileKind) => void;
   /** Search results that live in Overview's other tabs. */
+  /** The Read-only bar of a game opened to look inside, shown inline in the heading. */
+  bar?: HTMLElement | null;
   openControls?: () => void;
   openPlayerField?: (patch: string) => void;
 }
@@ -66,6 +68,7 @@ export function assetBrowser(host: BrowserHost): { el: HTMLElement; dispose(): v
         h('p', { class: 'asset-project' }, project.name),
         count,
       ),
+      host.bar ?? null,
       kind ? null : optimizeEntry(project),
     ),
     searchSlot,
