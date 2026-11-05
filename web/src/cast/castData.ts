@@ -58,6 +58,7 @@ export const CAST_GAMES = {
   'short-lived': ['Here Today', 'starter'],
   'three-tokens': ['Three Tokens', 'starter'],
   'many-rooms': ['Rooms on One Map', 'starter'],
+  'things-that-grow': ['Seeds and Nests', 'starter'],
   carl: ['A Fly Named Carl', 'bizarre'],
   goat: ['Third Goat from the Left', 'bizarre'],
   loaf: ['Loaf #13 (Left in the Basket)', 'bizarre'],
@@ -161,6 +162,7 @@ const LISTED: CastMember[] = [
       { game: 'short-lived', as: 'waits for a bubble to pop and a sleepy gumdrop to wake up' },
       { game: 'three-tokens', as: 'collects purple tokens until a gate will take its price, and then walks out through the gate' },
       { game: 'many-rooms', as: 'steps through doors into rooms that are all corners of one big map' },
+      { game: 'things-that-grow', as: 'watches a nest hatch birds, then steps on another nest to make it stop' },
     ],
   },
   {
