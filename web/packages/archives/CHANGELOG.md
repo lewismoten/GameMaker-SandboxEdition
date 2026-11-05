@@ -9,6 +9,7 @@ The first release: portable game discovery, ZIP and SFX extraction, and ZIP crea
 
 ### Added
 
+- A found game reports the size of its files together (`FoundGame.bytes`).
 - Game discovery and ZIP/SFX extraction, and ZIP creation, with no Node-only code.
 - A dedicated entry for the complete import scanner, with documented and verified scan-and-select APIs.
 - Importing sniffs the contents of FLI, GIF and VOC files, lists each as what it really is, and says when a foreign .FLI is not an animation.

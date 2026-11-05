@@ -32,6 +32,8 @@ export interface FoundGame {
   playerCrcs?: number[];
   /** The files it brings (the .EXEs DOS alone needs are left out). */
   fileCount: number;
+  /** The size of those files together, in bytes. */
+  bytes?: number;
   /** The picked zip it is in (none for loose files), and the paths of the zips inside that one it is in, outermost first. */
   zips: ScanFile[];
   inner: string[];
@@ -258,6 +260,7 @@ export async function scanImport(given: ScanFile[], { signal, onProgress, onStep
         gamCrcs: crcs,
         ...(playerCrcs.length ? { playerCrcs } : {}),
         fileCount: files.length,
+        bytes: files.reduce((sum, f) => sum + f.size, 0),
         zips: zips.slice(0, 1),
         inner,
         paths: files.map((f) => f.path),

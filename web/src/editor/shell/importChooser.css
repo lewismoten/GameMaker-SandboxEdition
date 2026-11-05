@@ -16,6 +16,12 @@ dialog.modal:has(.ic-choose, .ic-work) {
   overflow-wrap: anywhere;
 }
 
+.ic-totals {
+  margin: 0 0 8px;
+  color: var(--muted);
+  font-size: 0.9em;
+}
+
 .ic-summary {
   margin: 0 0 8px;
 }
