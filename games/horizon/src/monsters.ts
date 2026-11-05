@@ -76,7 +76,8 @@ export function monsterSet(mb: Book): Monster[] {
     set[BALL + lane] = mon(
       growPics('ball').map(([name, ticks]) => [mb.n(name), ticks] as [number, number]),
       { power: POWER, thru: 0, end: -1 },
-      roadCorners(steps, 0).map(([x, y, speed, orient]) => corner(x, y, speed, orient)),
+      // facing 4 (left) on the way left, 0 (right) on the way right, so the path does not pace back and forth without turning round
+      roadCorners(steps, 0).map(([x, y, speed], i, all) => corner(x, y, speed, x < (i ? all[i - 1][0] : 0) || (i === 0 && x < 0) ? 4 : 0)),
     );
   }
   return set;

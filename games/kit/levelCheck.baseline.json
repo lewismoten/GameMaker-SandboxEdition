@@ -131,6 +131,9 @@
   "warning shot-prize s2 The hero’s shots destroy prize monster 2 (power 60, shots up to 120)",
   "warning shot-prize s5 The hero’s shots destroy prize monster 2 (power 60, shots up to 120)"
  ],
+ "horizon": [
+  "warning waits s3 Timed block 142 stays shut for 19.2 s at a time"
+ ],
  "loaf": [],
  "logic": [
   "warning births s2 Block 69 gives birth to monster 46 every 0.3 s",
