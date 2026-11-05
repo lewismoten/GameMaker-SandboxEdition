@@ -44,7 +44,7 @@ function selectionRect(s: MapSelection | undefined): Rect | undefined {
 }
 
 function drawOffer(canvas: HTMLCanvasElement, blocks: Uint8Array, rect: Rect, imgs: HTMLCanvasElement[]): void {
-  const s = Math.max(1, Math.min(4, Math.floor(240 / Math.max(rect.w, rect.h))));
+  const s = Math.max(1, Math.min(10, Math.floor(240 / Math.max(rect.w, rect.h))));
   canvas.width = rect.w * s;
   canvas.height = rect.h * s;
   const ctx = canvas.getContext('2d')!;
@@ -94,7 +94,7 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
       blurb.textContent = kindInfo(kind).blurb;
       needs.replaceChildren(missingRoles({ kind, roles, usesHref }));
       const n = checkNeeds(kind, roles);
-      if (monRow) monRow.hidden = !n.ok;
+      if (monRow) monRow.hidden = !n.ok || kind === 'home' || kind === 'shop';
       current = n.ok ? offers(host.blocks(), roles, terrains, kind, seed, r, { monsters: addMonsters ? monsterIds : undefined, bg: host.blockSet() }) : [];
       chosen = Math.min(chosen, 3);
       grid.replaceChildren();
@@ -106,7 +106,7 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
       } else {
         current.forEach((o, i) => {
           const c = h('canvas', { class: 'pixel', 'aria-hidden': 'true' });
-          drawOffer(c, o.blocks!, r, host.images());
+          drawOffer(c, o.blocks!, o.outcome.ok ? o.outcome.result.rect : r, host.images());
           const b = h(
             'button',
             {
@@ -166,7 +166,7 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
     use.addEventListener('click', () => {
       const o = current[chosen];
       if (!o?.blocks) return;
-      host.apply(o.blocks, `${kindInfo(kind).label} layout`, addMonsters && o.outcome.ok ? o.outcome.result : undefined);
+      host.apply(o.blocks, `${kindInfo(kind).label} layout`, addMonsters && kind !== 'home' && kind !== 'shop' && o.outcome.ok ? o.outcome.result : undefined);
       close(undefined);
     });
     const monBox = h('input', { type: 'checkbox', checked: addMonsters, 'aria-label': 'Add monsters' });

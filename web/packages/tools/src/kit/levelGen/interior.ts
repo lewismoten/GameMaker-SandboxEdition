@@ -70,7 +70,7 @@ export function interior(w: number, h: number, r: Stream, kind: 'home' | 'shop',
     f.against(living, 'lamp', 1);
     if (rooms.length === 1) f.against(living, 'bed', 2);
     const near: number[] = [];
-    for (const c of tableCells) for (let yy = -2; yy <= 2; yy++) for (let xx = -2; xx <= 2; xx++) near.push(c + yy * w + xx);
+    for (const c of tableCells) for (let yy = -1; yy <= 1; yy++) for (let xx = -1; xx <= 1; xx++) near.push(c + yy * w + xx);
     f.rug(near.filter((c) => c >= 0 && c < area.cells.length));
     for (const m of rooms) {
       if (m === living) continue;

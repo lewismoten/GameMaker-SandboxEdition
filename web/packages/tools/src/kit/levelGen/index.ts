@@ -35,6 +35,13 @@ export interface GenParams {
 }
 
 /** The smallest side any kind can draw in (each kind has its own minimum, `kindInfo(kind).min`). */
+/** The biggest a building is drawn (blocks); a bigger area gets it in the middle. */
+const MAX_SIZE: Partial<Record<GenKind, { w: number; h: number }>> = {
+  home: { w: 24, h: 16 },
+  shop: { w: 26, h: 14 },
+  castle: { w: 56, h: 40 },
+};
+
 export const MIN_SIDE = 10;
 
 /** What the cells of a result are, for edges: which cells (area-local indexes) belong to a role's terrain. */
@@ -77,9 +84,14 @@ const first = (roles: RoleMap, role: Role): number | undefined => blocksWithRole
 export function generate(roles: RoleMap, params: GenParams): GenOutcome {
   const needs = checkNeeds(params.kind, roles);
   if (!needs.ok) return { ok: false, message: needs.message };
-  const { w, h } = params.rect;
   const min = kindInfo(params.kind).min;
-  if (w < min.w || h < min.h) return { ok: false, message: `That area is small: a ${params.kind} needs at least ${min.w} by ${min.h} blocks.` };
+  if (params.rect.w < min.w || params.rect.h < min.h)
+    return { ok: false, message: `That area is small: a ${params.kind} needs at least ${min.w} by ${min.h} blocks.` };
+  // a building is drawn in the middle of a big area and leaves the rest of the map as it is
+  const cap = MAX_SIZE[params.kind];
+  const w = Math.min(params.rect.w, cap?.w ?? Infinity),
+    h = Math.min(params.rect.h, cap?.h ?? Infinity);
+  const rect: Rect = { x: params.rect.x + ((params.rect.w - w) >> 1), y: params.rect.y + ((params.rect.h - h) >> 1), w, h };
   const r = stream(params.seed);
   const notes = [...needs.skipped];
   const has = (role: Role) => blocksWithRole(roles, role).length > 0;
@@ -173,7 +185,7 @@ export function generate(roles: RoleMap, params: GenParams): GenOutcome {
   return {
     ok: true,
     result: {
-      rect: params.rect,
+      rect,
       blocks,
       kinds: area.cells,
       terrainCells,
