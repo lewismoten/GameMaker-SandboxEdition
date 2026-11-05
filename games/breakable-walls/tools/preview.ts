@@ -11,13 +11,14 @@ import { renderRegion } from '@lewismoten/gamemaker-sandbox-tools/kit/levelPictu
 import { ORIGIN } from '../../kit/starter/map';
 import { buildHeroBlocks, heroPicture } from '../../kit/starter/hero';
 import { buildMonsterBlocks, buildMonsters } from '../../kit/starter/monsters';
+import { finishBlocks } from '../src/breakBlocks';
 import { buildLevels } from '../src/levels';
 
 const out = process.argv[2] ?? join(tmpdir(), 'breakable-walls-preview');
 mkdirSync(out, { recursive: true });
 const { book, pal, levels } = buildLevels();
 const sky = pal.c('sky', 3);
-const bbl = book.finish();
+const bbl = finishBlocks(book);
 writePng(join(out, 'blocks.png'), blockSheet(bbl.slice(0, book.index.size), 12, 0), pal.pal, 3);
 
 const hero = buildHeroBlocks(pal);
