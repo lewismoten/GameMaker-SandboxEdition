@@ -33,6 +33,7 @@ room-to-room|Room to Room|8
 many-rooms|Rooms on One Map|7
 beltway|Round and Round|2
 say-something|Say Something|5
+word-lock|Say the Word|2
 popups|Score Popups|2
 scroll|Scroll or Stay|2
 things-that-grow|Seeds and Nests|2
