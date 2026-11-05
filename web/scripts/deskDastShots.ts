@@ -35,10 +35,10 @@ try {
   // the ids of the games that hold a tin heart, as the hunt itself lists them
   const probe = await (await browser.newContext()).newPage();
   await probe.goto(`${base}/`, { waitUntil: 'load' });
-  const heartIds = (await probe.evaluate(`(async () => {
+  const heartIds = await probe.evaluate<string[]>(`(async () => {
     const m = await import('/src/tinHearts/tinHearts.ts');
     return (await m.huntStates()).map((s) => s.id);
-  })()`)) as string[];
+  })()`);
   await probe.close();
   console.log(`${heartIds.length} hearts in the hunt`);
 
