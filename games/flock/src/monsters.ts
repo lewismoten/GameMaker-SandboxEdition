@@ -1,6 +1,6 @@
 // BIRDS OF A FEATHER's monsters. The kit's gumdrop 0, buzzer 1 and shelly 2 stay in the file (unused), then:
-//   BIRD  a small green bird that flies a path: 14 blocks right, 14 back, at speed 2. Harmless.
-//   QUICK the same bird in gold, on the same path at speed 3, so it pulls away from the green ones.
+//   BIRD  a small green bird that flies a path: 22 blocks right, 22 back, at speed 1. Harmless.
+//   QUICK the same bird in gold, on the same path at speed 2, so it pulls away from the green ones.
 // What the engine does (code/GM/PLAYGAME.C, the monster path): a monster walks its list of corners
 // at the speed written on each one, and every monster of a kind starts its path when the level
 // loads. So five birds of one kind, placed in a shape, keep that shape for as long as they live:
@@ -24,9 +24,9 @@ export const POWER = 110;
 /** Hit points Kit starts with (nothing in this game takes any, but Game-Maker wants a number). */
 export const HERO_HIT_POINTS = 50;
 /** How many blocks a bird flies before it turns back, and its speeds. */
-export const RUN = 14;
-export const SPEED = 2;
-export const QUICK_SPEED = 3;
+export const RUN = 22;
+export const SPEED = 1;
+export const QUICK_SPEED = 2;
 
 const T = 255;
 

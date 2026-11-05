@@ -1,6 +1,6 @@
 {
-  "name": "Game-Maker Pocket Player (First Steps)",
-  "version": "0.2",
+  "name": "Game-Maker Pocket Player (Starter games)",
+  "version": "0.3",
   "new_install_prompt_erase": false,
   "builds": [
     {
@@ -9,7 +9,7 @@
         { "path": "fw/bootloader.bin", "offset": 4096 },
         { "path": "fw/partitions.bin", "offset": 32768 },
         { "path": "fw/firmware.bin", "offset": 65536 },
-        { "path": "fw/littlefs.bin", "offset": 2031616 }
+        { "path": "fw/littlefs.bin", "offset": 1114112 }
       ]
     }
   ]

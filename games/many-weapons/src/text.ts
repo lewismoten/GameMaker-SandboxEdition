@@ -1,4 +1,4 @@
-// Every word THROW IT shows on a text page (30 columns, 16 lines a page).
+// Every word MANY WEAPONS shows on a text page (30 columns, 16 lines a page).
 import { withCreditPage } from '../../kit/license';
 import { wrap } from '../../kit/starter/text';
 import about from '../about.json';

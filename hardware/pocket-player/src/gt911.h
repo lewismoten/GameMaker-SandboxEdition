@@ -10,7 +10,7 @@
 struct GT911 {
   uint8_t addr = 0;
   int n = 0;  // points in the last report
-  int rawX[5], rawY[5];
+  int rawX[5], rawY[5], id[5], size[5];  // size: the contact area the chip reports
 
   bool ping(uint8_t a) {
     Wire.beginTransmission(a);
@@ -58,6 +58,8 @@ struct GT911 {
         for (auto& v : b) v = Wire.read();
         rawX[n] = b[1] | (b[2] << 8);
         rawY[n] = b[3] | (b[4] << 8);
+        id[n] = b[0] & 0x0F;
+        size[n] = b[5] | (b[6] << 8);
         n++;
       }
     }

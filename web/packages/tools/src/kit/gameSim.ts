@@ -109,6 +109,8 @@ export class GameSim {
   private rand = new Rand(0);
   ended: 'won' | 'lost' | undefined;
   deaths = 0;
+  /** The inventory slot the drop picker answers with once (set it before pressing the drop key; -1, the default, is Esc). */
+  dropSlot = -1;
   /**
    * The .VOC clip the Sound Blaster is playing (PlaySbVocFile: a new one cuts it off), with
    * the game clock tick it ends on; a scene's exit or intro picture cuts it too (ShowGraphic).
@@ -202,6 +204,12 @@ export class GameSim {
     // once the game is won there is nothing left to press keys in
     if (this.ended) return;
     this.pending.push(k);
+    this.record(k);
+  }
+
+  /** Writes key `k` into the segment (without playing it in this sim): the drop picker's own keys, which the real engine reads. */
+  private record(k: number): void {
+    if (this.ended) return;
     // a key recorded at tick t is played on the segment's t-th tick: the next one
     const at = this.ticks + 1;
     this.segments[this.segments.length - 1].keys.push({ delta: at - this.lastKeyTick, key: k });
@@ -225,7 +233,22 @@ export class GameSim {
     let dead = false;
     let guard = 0;
     do {
-      if (await moveChars(w, async () => -1)) dead = true;
+      if (
+        await moveChars(w, async () => {
+          const slot = this.dropSlot;
+          this.dropSlot = -1;
+          // the picker's keys as a person would press them: Right to the column, Down to the second row, Enter
+          if (slot >= 0) {
+            const keys = [...new Array(slot % 5).fill(77), ...(slot >= 5 ? [80] : []), 28];
+            for (const k of keys) {
+              this.record(k);
+              this.record(k | 0x80);
+            }
+          }
+          return slot;
+        })
+      )
+        dead = true;
     } while (w.chr.cframe === -1 && !dead && guard++ < 50);
     changeBlocks(w);
     updateCharDrawState(w);

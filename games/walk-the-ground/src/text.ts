@@ -1,4 +1,4 @@
-// Every word UNDER THE SURFACE shows on a text page (30 columns, 16 lines a page).
+// Every word DIG IT shows on a text page (30 columns, 16 lines a page).
 import { withCreditPage } from '../../kit/license';
 import { wrap } from '../../kit/starter/text';
 import about from '../about.json';
@@ -32,7 +32,7 @@ Soil digs when you touch it. Rock does not. Spikes hurt, so keep away from them.
 
 export const CREDITS = withCreditPage(
   wrap(`
-|UNDER THE SURFACE  v${about.version}
+|DIG IT  v${about.version}
 |(c) 1994 Sandbox Software
 
 Design, pixels, beeps and levels by Claude Sonnet 5.5, an AI model made by Anthropic.

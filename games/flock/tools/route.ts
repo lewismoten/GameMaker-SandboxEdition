@@ -68,7 +68,7 @@ export async function oneShape(bot: StarterBot): Promise<void> {
   await must(bot, bot.walk(8, 'the first sign'), 'to the first sign');
   await must(bot, bot.wait(READ), 'reading');
   look('at the first sign');
-  await must(bot, bot.walk(14, 'the second sign'), 'to the second sign');
+  await must(bot, bot.walk(12, 'the second sign'), 'to the second sign');
   await must(bot, bot.wait(READ), 'reading');
   look('at the second sign');
   const moved = Math.abs(birdsAt(bot)[0].x - start[0].x);
@@ -94,7 +94,7 @@ export async function outOfStep(bot: StarterBot): Promise<void> {
   await must(bot, bot.wait(READ), 'reading the first sign');
   await must(bot, bot.walk(8, 'the first sign'), 'to the first sign');
   await must(bot, bot.wait(READ), 'reading');
-  await must(bot, bot.walk(14, 'the second sign'), 'to the second sign');
+  await must(bot, bot.walk(12, 'the second sign'), 'to the second sign');
   await must(bot, bot.wait(READ), 'reading');
   let worst = drift(bot, start);
   if (worst < 20) throw new Error(`level 2: the V should be coming apart by the second sign; ${worst}px`);
