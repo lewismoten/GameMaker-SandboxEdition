@@ -1,8 +1,9 @@
-// GRADUATION: FIRST STEPS' one song, "Up the Aisle": a slow, proud processional in F major for the Sound Blaster (a
+// The graduations' one song, "Up the Aisle": a slow, proud processional in F major for the Sound Blaster (a
 // brass-like lead, a walking bass and a plucked two-beat chord, each its own FM channel), eight bars long. It plays
 // on the title, the menu, the hall and the endings. Note strings are the kit's (kit/tune.ts): a note, an octave and
 // a length (w h q e), as in "E5 q".
 import { INSTRUMENTS } from '@lewismoten/gamemaker-sandbox-tools/kit/music';
+import type { Graduation } from './graduationConfig';
 import { join, tune, v } from '@lewismoten/gamemaker-sandbox-tools/kit/tune';
 
 const MELODY = join(
@@ -27,7 +28,8 @@ const BARS: (keyof typeof CHORDS)[] = ['F', 'B', 'F', 'C', 'F', 'B', 'C', 'F'];
 const pluck = join(...BARS.map((b) => [0, 1, 2, 1].map((i) => `${CHORDS[b].chord[i]} q`).join(', ')));
 const bass = join(...BARS.map((b) => CHORDS[b].bass.map((n) => `${n} h`).join(', ')));
 
-/** The song as a .CMF file. */
-export function song(): Uint8Array {
-  return tune(88, [v(0, INSTRUMENTS.lead, MELODY, 100), v(1, INSTRUMENTS.bass, bass, 90), v(2, INSTRUMENTS.pluck, pluck, 55)]);
+/** The song as a .CMF file, at the game's tempo, in its lead voice and key. */
+export function song(o: Graduation['song'] = { bpm: 88, lead: 'lead', transpose: 0 }): Uint8Array {
+  const t = o.transpose;
+  return tune(o.bpm, [v(0, INSTRUMENTS[o.lead], MELODY, 100, t), v(1, INSTRUMENTS.bass, bass, 90, t), v(2, INSTRUMENTS.pluck, pluck, 55, t)]);
 }

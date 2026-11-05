@@ -1,4 +1,4 @@
-// GRADUATION: FIRST STEPS' one level, "The Aisle": a hall with the helpers of The Basics on the balcony, a red
+// A graduation's one level, "The Aisle": a hall with the stage's helpers on the balcony, a red
 // carpet to walk up, and a stage with a lectern, Doc Leo and the certificate. 48 x 13 blocks: the floor is row 10.
 //   x  2        the doorway you start in
 //   x  4..33    the carpet, with signs; the balcony (rail and front) is above, the helpers leaning on it
@@ -6,15 +6,16 @@
 // Touching the certificate (it lies on the lectern) is the door out: the link to the ending.
 import type { GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { MLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
-import { Book } from '../../kit/starter/book';
-import { addStarterBlocks } from '../../kit/starter/blocks';
-import { Grid } from '../../kit/starter/grid';
-import { buildHeroBlocks } from '../../kit/starter/hero';
-import { StarterMap, ORIGIN } from '../../kit/starter/map';
-import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
-import { addHallRamps, audienceOf } from './cast';
-import { addHallBlocks, type Timed } from './hall';
+import { Book } from './book';
+import { addStarterBlocks } from './blocks';
+import { Grid } from './grid';
+import { buildHeroBlocks } from './hero';
+import { StarterMap, ORIGIN } from './map';
+import { buildStarterPalette, type Pal } from './palette';
+import { addSign, type Sign } from './sign';
+import type { Graduation } from './graduationConfig';
+import { addHallRamps, audienceOf } from './graduationCast';
+import { addHallBlocks, type Timed } from './graduationHall';
 
 export const W = 48;
 export const H = 13;
@@ -31,37 +32,37 @@ export interface Level {
   map: StarterMap;
 }
 
-type SignName = 'start' | 'helpers' | 'cheer' | 'doc' | 'banner';
+export type SignName = 'start' | 'helpers' | 'cheer' | 'doc' | 'banner';
 
 /** The block set, the timed loops and the signs. */
-export function buildBlocks(pal: Pal) {
+export function buildBlocks(pal: Pal, cfg: Graduation) {
   const book = new Book('bbl');
   const timed: Timed[] = [];
   addStarterBlocks(book, pal);
   const heroBlocks = buildHeroBlocks(pal);
   const pic = (n: string) => heroBlocks.pics.get(n)!;
-  const hall = addHallBlocks(book, pal, timed, audienceOf('The Basics'), pic('stand.top'), pic('cheer2.top'), pic('blink.top'));
+  const hall = addHallBlocks(book, pal, timed, audienceOf(...cfg.groups), pic('stand.top'), pic('cheer2.top'), pic('blink.top'), cfg.theme);
   const signs: Record<SignName, Sign> = {
-    start: addSign(book, pal, 'start', 'WALK UP TO THE STAGE', 4, 2),
-    helpers: addSign(book, pal, 'helpers', 'YOUR HELPERS ARE HERE', 4, 2),
-    cheer: addSign(book, pal, 'cheer', 'THEY CHEER FOR YOU', 4, 2),
-    doc: addSign(book, pal, 'doc', 'DOC LEO HAS A SCROLL FOR YOU', 4, 2),
-    banner: addSign(book, pal, 'banner', 'FIRST STEPS', 4, 2),
+    start: addSign(book, pal, 'start', cfg.signs.start, 4, 2),
+    helpers: addSign(book, pal, 'helpers', cfg.signs.helpers, 4, 2),
+    cheer: addSign(book, pal, 'cheer', cfg.signs.cheer, 4, 2),
+    doc: addSign(book, pal, 'doc', cfg.signs.doc, 4, 2),
+    banner: addSign(book, pal, 'banner', cfg.signs.banner, 4, 2),
   };
   return { book, timed, hall, signs };
 }
 
-export function buildPalette(): Pal {
-  return buildStarterPalette(addHallRamps(audienceOf('The Basics')), 'graduation-basics');
+export function buildPalette(cfg: Graduation): Pal {
+  return buildStarterPalette(addHallRamps(audienceOf(...cfg.groups)), cfg.id);
 }
 
-const stamp = (m: StarterMap, s: Sign, x: number, y: number, legs: boolean): void => {
+export const stamp = (m: StarterMap, s: Sign, x: number, y: number, legs: boolean): void => {
   s.board.forEach((row, dy) => row.forEach((name, dx) => m.set(x + dx, y + dy, name)));
   if (legs) m.set(x, y + s.board.length, s.legs[0]).set(x + s.board[0].length - 1, y + s.board.length, s.legs[1]);
 };
 
 /** A map whose finished form carries the hall's walls and boards on past its ends, so the screen never shows outdoors. */
-class HallMap extends StarterMap {
+export class HallMap extends StarterMap {
   constructor(
     private readonly blocks: Book,
     rows: string[],
@@ -84,7 +85,7 @@ class HallMap extends StarterMap {
 }
 
 /** The hall. */
-function aisle(book: Book, signs: Record<SignName, Sign>, hall: ReturnType<typeof buildBlocks>['hall']): StarterMap {
+function aisle(book: Book, signs: Record<SignName, Sign>, hall: ReturnType<typeof buildBlocks>['hall'], theme: Graduation['theme']): StarterMap {
   const g = new Grid(W, H);
   g.put(2, 8, 's').put(2, 9, 'S');
   const m = new HallMap(book, g.rows());
@@ -100,6 +101,9 @@ function aisle(book: Book, signs: Record<SignName, Sign>, hall: ReturnType<typeo
   // the balcony: a rail with a front, and the helpers leaning on it
   for (let x = 2; x < STAGE_FROM - 1; x++) m.set(x, 5, 'rail').set(x, 6, 'riser');
   hall.helpers.forEach((name, i) => m.set(4 + i * 4, 4, name));
+  // the stage's own wall pieces, hung high between the ceiling and the helpers' heads
+  const order = theme.decorOrder ?? [];
+  if (order.length) for (let x = 3, i = 0; x < STAGE_FROM - 1; x += theme.decorEvery ?? 5, i++) m.set(x, 2, `decor.${order[i % order.length]}`);
   // the stage: drapes at each side, a banner, the lectern with the certificate, Doc Leo
   for (let y = 2; y < FLOOR; y++) for (const x of [STAGE_FROM, STAGE_FROM + 1, W - 3, W - 2]) m.set(x, y, 'drape');
   stamp(m, signs.banner, 37, 2, false);
@@ -116,9 +120,9 @@ function aisle(book: Book, signs: Record<SignName, Sign>, hall: ReturnType<typeo
 }
 
 /** The levels in order. */
-export function buildLevels() {
-  const pal = buildPalette();
-  const { book, timed, hall, signs } = buildBlocks(pal);
-  const levels: Level[] = [{ file: 'hall', title: 'The Aisle', hint: 'Walk up to the stage.', map: aisle(book, signs, hall) }];
+export function buildLevels(cfg: Graduation) {
+  const pal = buildPalette(cfg);
+  const { book, timed, hall, signs } = buildBlocks(pal, cfg);
+  const levels: Level[] = [{ file: 'hall', title: cfg.level.title, hint: cfg.level.hint, map: aisle(book, signs, hall, cfg.theme) }];
   return { book, pal, timed, levels };
 }

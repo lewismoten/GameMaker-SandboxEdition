@@ -8,15 +8,15 @@ import type { PaletteBuilder } from '@lewismoten/gamemaker-sandbox-tools/kit/pal
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { STARTER_GROUPS } from '../../../web/src/project/starter';
 import { STARTER_HEROES } from '../../../web/src/project/starterHeroes';
-import { helperPalettes, KIT_LOOK, kitRamp, type Look, type Role } from '../../kit/starter/heroLook';
-import type { Pal } from '../../kit/starter/palette';
+import { helperPalettes, KIT_LOOK, kitRamp, type Look, type Role } from './heroLook';
+import type { Pal } from './palette';
 import { buildLeoBlocks } from '../../tuneup/src/sprites/leo';
 
 const key = (def: readonly [number, readonly number[], readonly number[], ...unknown[]]): string => `${def[1]}|${def[2]}`;
 
-/** The helpers of the stage's Starters, in the order they lead them (Kit, who is the player here, left out). */
-export function audienceOf(group: string): string[] {
-  const games = STARTER_GROUPS.find((g) => g.name === group)?.games ?? [];
+/** The helpers of the stage's Starters (one or more groups), in the order they lead them (Kit, who is the player here, left out). */
+export function audienceOf(...groups: string[]): string[] {
+  const games = groups.flatMap((name) => STARTER_GROUPS.find((g) => g.name === name)?.games ?? []);
   return [...new Set(games.map((id) => STARTER_HEROES[id]).filter((n) => n && n !== 'KIT'))];
 }
 

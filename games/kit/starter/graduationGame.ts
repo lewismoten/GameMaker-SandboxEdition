@@ -1,14 +1,14 @@
-// graduation-basics.gam: scene 0 is the title and menu, scene 1 the endings, then one scene a level.
+// A graduation's .GAM: scene 0 is the title and menu, scene 1 the endings, then one scene a level.
 // A level's scene lists the files it loads in slots (palette, map, blocks, monsters, monster
 // blocks, character, character blocks, sounds, song, card) and links its door to the next scene.
 import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, newGame, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
-import type { Level } from './levels';
+import type { Level } from './graduationLevel';
 
 /** The title of the game, as the .GAM names it (19 characters at most; the screens add FIRST STEPS under it). */
 export const TITLE = 'GRADUATION';
 
-export function buildGame(levels: Level[]): Game {
-  const game = newGame(TITLE);
+export function buildGame(levels: Level[], name = TITLE): Game {
+  const game = newGame(name);
   const [title, end] = game.scenes;
   title.files = [
     'title.lst',

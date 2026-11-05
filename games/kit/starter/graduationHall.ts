@@ -4,9 +4,10 @@
 // times, so the cheering is not in step) and Doc Leo beside the lectern. The wall is the Starters' sky
 // color, so the sign boards (which are drawn on it) sit flush.
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
-import { Book, PULL, SOLID } from '../../kit/starter/book';
-import { skyOf, type Pal } from '../../kit/starter/palette';
-import { helperHead, leoPoses } from './cast';
+import { Book, PULL, SOLID } from './book';
+import { skyOf, type Pal } from './palette';
+import { helperHead, leoPoses } from './graduationCast';
+import type { HallTheme } from './graduationTheme';
 
 /** A block that turns into another after some ticks (the engine's only clock). */
 export interface Timed {
@@ -19,7 +20,7 @@ const air = { grav: PULL.down };
 
 const wallBlock = (pal: Pal): Pixels => new Pixels(20, 20, skyOf(pal));
 
-function carpet(pal: Pal): Pixels {
+export function carpet(pal: Pal): Pixels {
   const { c } = pal;
   const p = new Pixels(20, 20, c('wood', 1));
   p.rect(0, 15, 20, 1, c('wood', 0)).rect(9, 11, 1, 4, c('wood', 0));
@@ -29,7 +30,7 @@ function carpet(pal: Pal): Pixels {
   return p;
 }
 
-function stageFloor(pal: Pal): Pixels {
+export function stageFloor(pal: Pal): Pixels {
   const { c } = pal;
   const p = new Pixels(20, 20, c('wood', 2));
   p.rect(0, 0, 20, 4, c('wood', 4)).rect(0, 3, 20, 1, c('wood', 3));
@@ -39,7 +40,7 @@ function stageFloor(pal: Pal): Pixels {
   return p;
 }
 
-const subfloor = (pal: Pal): Pixels => {
+export const subfloor = (pal: Pal): Pixels => {
   const { c } = pal;
   const p = new Pixels(20, 20, c('wood', 1));
   p.rect(0, 6, 20, 1, c('wood', 0))
@@ -51,27 +52,27 @@ const subfloor = (pal: Pal): Pixels => {
 };
 
 /** Pleated purple drape; `dark` is the heavy one at the hall's ends. */
-function drape(pal: Pal, dark = false): Pixels {
+function drape(pal: Pal, dark = false, ramp = 'purple'): Pixels {
   const { c } = pal;
-  const p = new Pixels(20, 20, c('purple', 2));
+  const p = new Pixels(20, 20, c(ramp, 2));
   const shade = dark ? [0, 1, 1, 0] : [2, 3, 2, 1];
-  for (let x = 0; x < 20; x++) p.rect(x, 0, 1, 20, c('purple', shade[Math.floor(x / 2.5) % 4]));
-  if (dark) p.rect(0, 0, 20, 1, c('purple', 1));
+  for (let x = 0; x < 20; x++) p.rect(x, 0, 1, 20, c(ramp, shade[Math.floor(x / 2.5) % 4]));
+  if (dark) p.rect(0, 0, 20, 1, c(ramp, 1));
   return p;
 }
 
-function valance(pal: Pal): Pixels {
+export function valance(pal: Pal, ramp = 'purple'): Pixels {
   const { c } = pal;
   const p = wallBlock(pal);
-  p.rect(0, 0, 20, 13, c('purple', 2)).rect(0, 0, 20, 2, c('purple', 3));
-  for (let x = 0; x < 20; x += 5) p.rect(x, 2, 1, 11, c('purple', 1));
+  p.rect(0, 0, 20, 13, c(ramp, 2)).rect(0, 0, 20, 2, c(ramp, 3));
+  for (let x = 0; x < 20; x += 5) p.rect(x, 2, 1, 11, c(ramp, 1));
   p.rect(0, 13, 20, 2, c('gold', 3)).rect(0, 13, 20, 1, c('gold', 4));
   for (let x = 1; x < 20; x += 4) p.rect(x, 15, 2, 3, c('gold', 3)).set(x, 17, c('gold', 4));
   return p;
 }
 
 /** Two pennants and a sagging string, in the colors listed. */
-function bunting(pal: Pal, cols: number[]): Pixels {
+export function bunting(pal: Pal, cols: number[]): Pixels {
   const { c } = pal;
   const p = wallBlock(pal);
   p.line(0, 2, 10, 6, c('ink', 1)).line(10, 6, 19, 2, c('ink', 1));
@@ -86,18 +87,18 @@ function bunting(pal: Pal, cols: number[]): Pixels {
 }
 
 /** The balcony rail the helpers lean on, and the wooden front below it. */
-function rail(pal: Pal): Pixels {
+function rail(pal: Pal, w = 'wood'): Pixels {
   const { c } = pal;
-  const p = new Pixels(20, 20, c('wood', 2));
-  p.rect(0, 0, 20, 4, c('wood', 4)).rect(0, 4, 20, 1, c('wood', 1));
-  p.frame(2, 7, 16, 11, c('wood', 1)).rect(3, 8, 14, 1, c('wood', 3));
+  const p = new Pixels(20, 20, c(w, 2));
+  p.rect(0, 0, 20, 4, c(w, 4)).rect(0, 4, 20, 1, c(w, 1));
+  p.frame(2, 7, 16, 11, c(w, 1)).rect(3, 8, 14, 1, c(w, 3));
   return p;
 }
-function riser(pal: Pal): Pixels {
+function riser(pal: Pal, w = 'wood'): Pixels {
   const { c } = pal;
-  const p = new Pixels(20, 20, c('wood', 1));
-  p.rect(0, 0, 20, 2, c('wood', 0)).rect(0, 2, 20, 1, c('gold', 2));
-  p.frame(2, 6, 16, 11, c('wood', 0)).rect(3, 7, 14, 1, c('wood', 2));
+  const p = new Pixels(20, 20, c(w, 1));
+  p.rect(0, 0, 20, 2, c(w, 0)).rect(0, 2, 20, 1, c('gold', 2));
+  p.frame(2, 6, 16, 11, c(w, 0)).rect(3, 7, 14, 1, c(w, 2));
   return p;
 }
 
@@ -136,20 +137,25 @@ export interface Hall {
 }
 
 /** Adds the hall's blocks to `book`; `timed` gets every loop. `kitHead` is the hero's 'stand.top' and `cheerHead` its 'cheer2.top' (head with both hands up). */
-export function addHallBlocks(book: Book, pal: Pal, timed: Timed[], names: string[], stand: Pixels, cheer: Pixels, blink: Pixels): Hall {
-  book.add('carpet', carpet(pal), { solid: SOLID });
-  book.add('stage', stageFloor(pal), { solid: SOLID });
-  book.add('subfloor', subfloor(pal), { solid: SOLID });
-  book.add('drape', drape(pal), air);
-  book.add('curtainEdge', drape(pal, true), { solid: SOLID });
-  book.add('valance', valance(pal), air);
-  book.add('bunting0', bunting(pal, [pal.c('red', 2), pal.c('gold', 4)]), air);
-  book.add('bunting1', bunting(pal, [pal.c('blue', 3), pal.c('pink', 2)]), air);
-  book.add('rail', rail(pal), air);
-  book.add('riser', riser(pal), air);
+export function addHallBlocks(book: Book, pal: Pal, timed: Timed[], names: string[], stand: Pixels, cheer: Pixels, blink: Pixels, theme: HallTheme = {}): Hall {
+  const drapeRamp = theme.drape ?? 'purple';
+  const woodRamp = theme.rail ?? 'wood';
+  book.add('carpet', (theme.floor ?? carpet)(pal), { solid: SOLID });
+  book.add('stage', (theme.stage ?? stageFloor)(pal), { solid: SOLID });
+  book.add('subfloor', (theme.subfloor ?? subfloor)(pal), { solid: SOLID });
+  book.add('drape', drape(pal, false, drapeRamp), air);
+  book.add('curtainEdge', drape(pal, true, drapeRamp), { solid: SOLID });
+  book.add('valance', (theme.valance ?? ((q) => valance(q, drapeRamp)))(pal), air);
+  const flags = theme.bunting?.(pal) ?? [pal.c('red', 2), pal.c('gold', 4), pal.c('blue', 3), pal.c('pink', 2)];
+  book.add('bunting0', bunting(pal, [flags[0], flags[1]]), air);
+  book.add('bunting1', bunting(pal, [flags[2], flags[3]]), air);
+  book.add('rail', rail(pal, woodRamp), air);
+  book.add('riser', riser(pal, woodRamp), air);
   book.add('lecternTop', lecternTop(pal, false), air);
   book.add('scroll', lecternTop(pal, true), { ...air, score: 100, touch: 'lecternTop' });
   book.add('lectern', lecternBase(pal), air);
+  // wall pieces of the stage's own (a hoop, a window, a painting): plain blocks the map hangs above the balcony
+  for (const [name, draw] of Object.entries(theme.decor ?? {})) book.add(`decor.${name}`, draw(pal), air);
 
   // the helpers: head, hands up, and a blink, each ring with its own times
   const wall = skyOf(pal);
