@@ -68,6 +68,7 @@ export const STARTER_GROUPS: { name: string; tag: string; games: string[] }[] = 
     tag: 'How the big games do their big moments.',
     games: ['dialog', 'popups', 'scripted', 'parallax', 'horizon', 'beltway', 'corner-view'],
   },
+  { name: 'Drawing with Blocks', tag: 'Roads, water and sky, drawn and animated.', games: ['shore'] },
 ];
 
 /** The order the Starters are meant to be played in, easiest first: the groups' games in order (games/<id>); a starter not listed goes after these, A to Z. */
