@@ -1,0 +1,42 @@
+{
+  "keys": {
+    "75": {
+      "short": "Walk left",
+      "long": "Walk left. Kit turns to face left."
+    },
+    "77": {
+      "short": "Walk right",
+      "long": "Walk right. Kit turns to face right."
+    },
+    "72": {
+      "short": "Walk up",
+      "long": "Walk up. Kit turns to face away from you."
+    },
+    "80": {
+      "short": "Walk down",
+      "long": "Walk down. Kit turns to face you."
+    },
+    "30": {
+      "short": "Walk left",
+      "long": "Same as the Left arrow."
+    },
+    "32": {
+      "short": "Walk right",
+      "long": "Same as the Right arrow."
+    },
+    "17": {
+      "short": "Walk up",
+      "long": "Same as the Up arrow."
+    },
+    "31": {
+      "short": "Walk down",
+      "long": "Same as the Down arrow."
+    }
+  },
+  "joystick": {},
+  "sounds": {
+    "10": "Getting hurt",
+    "11": "Falling over"
+  },
+  "counters": {}
+}
