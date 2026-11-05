@@ -49,7 +49,7 @@ export const STARTER_GROUPS: { name: string; tag: string; games: string[] }[] = 
   {
     name: 'Foes and Bosses',
     tag: 'Foes that think, and ones that take a few hits.',
-    games: ['boss-hits', 'boss-phases', 'who-wins', 'short-lived', 'follower', 'searchlight', 'scripted'],
+    games: ['boss-hits', 'boss-phases', 'who-wins', 'short-lived', 'follower', 'searchlight', 'flock', 'scripted'],
   },
   { name: 'Telling a Story', tag: 'Words, pictures and sound.', games: ['say-something', 'pictures-and-cartoons', 'sounds-and-music', 'day-night', 'popups'] },
   {
