@@ -4,7 +4,7 @@
 //   LONGSND.VOC  five and a half seconds of bells: about 60 KB (a .VOC must stay under 64 KB)
 // Game-Maker plays a score sound when a block adds to the score, and a coin sound when one adds money.
 // A block cannot name a sound itself, so the short pad adds a point and the long pad adds a coin.
-import { newSoundSet, type SoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
+import { type SoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
 import { osc, sample, type Synth } from '@lewismoten/gamemaker-sandbox-tools/kit/sound';
 import { SND } from '../../kit/starter/ids';
 import { buildSounds } from '../../kit/starter/sounds';
