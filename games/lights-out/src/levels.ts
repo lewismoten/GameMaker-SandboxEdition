@@ -201,7 +201,7 @@ function lay(
       const v = (x + y) % 2;
       if (k === 'tunnel') {
         // dark air that lights when touched: brighter nearer the floor
-        const lit = y >= 6 ? 3 : y >= 4 ? 2 : 1;
+        const lit = y >= 6 ? 4 : y >= 4 ? 3 : 2;
         if (!book.has(`tdark.${lit}`)) {
           book.add(`tdark.${lit}`, air(pal, 0), { ...AIR, touch: `tlit.${lit}` });
           book.add(`tlit.${lit}`, air(pal, lit), AIR);

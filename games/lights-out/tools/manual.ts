@@ -26,11 +26,11 @@ const shades = (prefix: string) =>
     }),
     3,
   );
-/** A ramp as swatches, each 20 pixels square with its number under it. */
-const ramp = (name: string) =>
+/** The three ramps as swatches, each 20 pixels square with its name and number under it. */
+const ramps = () =>
   framesFigure(
     pal,
-    pal.r(name).map((c, k) => ({ pic: new Pixels(20, 20, c), label: `${name} ${k}` })),
+    ['cair', 'crock', 'cfloor'].flatMap((name) => pal.r(name).map((c, k) => ({ pic: new Pixels(20, 20, c), label: `${name} ${k}` }))),
     2,
   );
 const twin = hall.timed.find((t) => /^floor\.3\.\d\.dark$/.test(t.name));
@@ -39,12 +39,12 @@ const figures = {
   airShades: shades('air'),
   rockShades: shades('rock'),
   floorShades: shades('floor'),
-  ramps: ramp('cair') + ramp('crock') + ramp('cfloor'),
+  ramps: ramps(),
   touch: framesFigure(
     tunnel.pal,
     [
-      { pic: pic(tunnel, 'tdark.3'), label: 'tdark.3: touch it' },
-      { pic: pic(tunnel, 'tlit.3'), label: 'tlit.3: lit' },
+      { pic: pic(tunnel, 'tdark.4'), label: 'tdark.4: touch it' },
+      { pic: pic(tunnel, 'tlit.4'), label: 'tlit.4: lit' },
     ],
     4,
   ),
