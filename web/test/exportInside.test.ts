@@ -35,12 +35,25 @@ const ABOUT = {
   credits: [{ role: 'Music', name: 'Pat' }],
 };
 
-async function exportOne(id: string, about?: typeof ABOUT, previews?: boolean) {
-  const { files, gam } = load(id);
-  vi.stubGlobal('fetch', async () => new Response(TEMPLATE));
-  const { html } = await exportSinglePage(files, { title: `Game ${id}`, gam, appBase: 'http://localhost/', about, version: '1.2', previews });
-  return { files, html, gam };
+// Each export is built once and shared by the tests that ask for the same one.
+const exported = new Map<string, Promise<{ files: GameFiles; html: string; gam: string }>>();
+function exportOne(id: string, about?: typeof ABOUT, previews?: boolean) {
+  const key = `${id}|${about ? 'about' : '-'}|${previews}`;
+  let made = exported.get(key);
+  if (!made) {
+    made = (async () => {
+      const { files, gam } = load(id);
+      vi.stubGlobal('fetch', async () => new Response(TEMPLATE));
+      const { html } = await exportSinglePage(files, { title: `Game ${id}`, gam, appBase: 'http://localhost/', about, version: '1.2', previews });
+      return { files, html, gam };
+    })();
+    exported.set(key, made);
+  }
+  return made;
 }
+
+/** Same bytes? Buffer.compare is far quicker than toEqual on tens of KB. */
+const sameBytes = (a: Uint8Array | undefined, b: Uint8Array | undefined) => a !== undefined && b !== undefined && Buffer.compare(a, b) === 0;
 
 describe('Inside this game', () => {
   afterEach(() => vi.unstubAllGlobals());
@@ -61,7 +74,7 @@ describe('Inside this game', () => {
       const got = await gameFromPageHtml(html);
       expect(got).toBeDefined();
       expect(got!.files.names().sort()).toEqual(files.names().sort());
-      for (const n of files.names()) expect(got!.files.get(n), n).toEqual(files.get(n));
+      for (const n of files.names()) expect(sameBytes(got!.files.get(n), files.get(n)), n).toBe(true);
       // the pictures are on the page once: as <img>, not also in the gzip data
       const game = readSinglePage(html)!;
       const gifs = files.names().filter((n) => n.endsWith('.gif'));
@@ -82,7 +95,7 @@ describe('Inside this game', () => {
     expect(html).toMatch(/\(animation preview\)/);
     expect(html).toMatch(/GOAT\.CMF|\.CMF, music/);
     const got = await gameFromPageHtml(html);
-    for (const n of files.names().filter((x) => /\.(fli|voc|cmf)$/.test(x))) expect(got!.files.get(n), n).toEqual(files.get(n));
+    for (const n of files.names().filter((x) => /\.(fli|voc|cmf)$/.test(x))) expect(sameBytes(got!.files.get(n), files.get(n)), n).toBe(true);
   });
 
   it.skipIf(!have('goat'))('with previews off: no animation or sound previews, everything else stays', async () => {
@@ -93,7 +106,7 @@ describe('Inside this game', () => {
     expect(off.html).toContain('application/ld+json');
     expect(off.html.length).toBeLessThan(on.html.length);
     const got = await gameFromPageHtml(off.html);
-    for (const n of off.files.names()) expect(got!.files.get(n), n).toEqual(off.files.get(n));
+    for (const n of off.files.names()) expect(sameBytes(got!.files.get(n), off.files.get(n)), n).toBe(true);
   });
 
   it('the JSON-LD is a valid VideoGame', async () => {
