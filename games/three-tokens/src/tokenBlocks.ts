@@ -27,7 +27,7 @@ function tokenPicture(pal: Pal): Pixels {
   return p;
 }
 
-/** A gate with `n` slots on a stone plate: each slot is a ring that waits for a token. */
+/** A gate with `n` slots on a stone plate: each slot is a narrow purple-rimmed opening that waits for a token. */
 function gatePicture(pal: Pal, n: 3 | 5): Pixels {
   const p = new Pixels(20, 20, skyOf(pal));
   const ink = pal.c('ink', 0);
@@ -55,7 +55,7 @@ function gatePicture(pal: Pal, n: 3 | 5): Pixels {
           [7, 14],
           [13, 14],
         ];
-  for (const [x, y] of at) p.disc(x, y, 2.4, pu[3]).disc(x, y, 1.4, ink);
+  for (const [x, y] of at) p.rect(x - 2, y - 2, 4, 5, pu[3]).rect(x - 1, y - 1, 2, 3, ink);
   return p;
 }
 
