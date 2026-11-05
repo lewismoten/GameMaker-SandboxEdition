@@ -76,6 +76,7 @@ export const CAST_GAMES = {
   'things-that-grow': ['Seeds and Nests', 'starter'],
   dialog: ['Everybody Talks', 'starter'],
   horizon: ['To the Horizon', 'starter'],
+  beltway: ['Round and Round', 'starter'],
   momentum: ['Slide and Drift', 'starter'],
   carl: ['A Fly Named Carl', 'bizarre'],
   goat: ['Third Goat from the Left', 'bizarre'],
@@ -198,6 +199,10 @@ const LISTED: CastMember[] = [
       { game: 'popups', as: 'touches coins that pay 100, 200 and 500 and watches each number rise and blink away' },
       { game: 'dialog', as: 'talks with Pip, and then joins a group of friends who all talk at once' },
       { game: 'horizon', as: 'walks a road to the horizon while beach balls roll out and grow, then waits for a finish arch to open the door' },
+      {
+        game: 'beltway',
+        as: 'rides the bed of a truck while the scenery slides past, then watches a little car drive a loop and waits for three laps to open the door',
+      },
       { game: 'momentum', as: 'glides on after letting go, and runs up to hop wide gaps' },
     ],
   },

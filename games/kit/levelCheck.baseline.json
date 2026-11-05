@@ -1,4 +1,7 @@
 {
+ "beltway": [
+  "warning waits s3 Timed block 98 stays shut for 18.5 s at a time"
+ ],
  "blaster": [
   "warning births s10 Block 31 gives birth to monster 15 every 0.7 s",
   "warning births s10 Block 33 gives birth to monster 14 every 0.7 s",
