@@ -13,6 +13,7 @@ import {
 } from '@lewismoten/gamemaker-sandbox-tools/kit/levelGen';
 import { LASTMON, type Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import type { Character } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { checkLayout, type LayoutCheck } from './verifyOffer';
 import { paintTerrain, pickBlock, type Terrain } from '../tools/autotile';
 
@@ -88,11 +89,11 @@ export function offers(
   kind: GenKind,
   seed: number,
   rect: Rect,
-  extra: { monsters?: number[]; bg?: Block[]; wrap?: boolean } = {},
+  extra: { monsters?: number[]; bg?: Block[]; wrap?: boolean; hero?: Character; difficulty?: number } = {},
 ): Offer[] {
   return [0, 1, 2, 3].map((i) => {
     const s = offerSeed(seed, i);
-    const outcome = generate(roles, { kind, seed: s, rect, monsters: extra.monsters, wrap: extra.wrap });
+    const outcome = generate(roles, { kind, seed: s, rect, monsters: extra.monsters, wrap: extra.wrap, hero: extra.hero, difficulty: extra.difficulty });
     const placed = outcome.ok ? place(blocks, outcome.result, roles, terrains).blocks : undefined;
     return { seed: s, outcome, blocks: placed, check: outcome.ok ? checkLayout(outcome.result, placed!, extra.bg) : undefined };
   });

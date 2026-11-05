@@ -99,3 +99,17 @@
 .gen-dialog .gen-check[hidden] {
   display: none;
 }
+/* The side view's Difficulty: its words and the slider on one line, so the dialog still fits a 360 by 740 phone. */
+.gen-diff:not([hidden]) {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+.gen-diff > span {
+  white-space: nowrap;
+}
+.gen-diff > input {
+  flex: 1 1 auto;
+  min-width: 0;
+}
