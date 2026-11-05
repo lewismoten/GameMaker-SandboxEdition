@@ -92,6 +92,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Changed
 
+- The Starters no longer stand as retail boxes on the desk shelf (or in the box picker or the paper catalog). They live on the Sample CD and the Sample Disk, and on the Starters tab, with Play and "How this level is made".
 - The game list that the home page and the DOS page load is smaller again: each Starter's blurb, label and box art, and every original game's controls and player look, come with it only when the game is opened, so more Starters can be added without slowing those pages.
 - The desk loads less as games are added: each box on the wall shelf is drawn when its slot is near the screen, its spine is a small picture at the size it stands (no separate request per box), and a box standing spine out no longer makes its front under black light.
 - On the Starters tab the "How do I…?" list is one button that opens a dialog with a search box (focused), a count of the matches and the questions, each with Play this level and See how it's made. The list scrolls inside the dialog, with a scrollbar you can see, so the tab no longer loses a third of its height to it and there is no Show all button to miss. Closing the dialog (Esc or Close) puts the keyboard back on the button: 1 Tab stop instead of 14. The Guide's index is unchanged.
