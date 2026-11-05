@@ -40,7 +40,11 @@ export const MORE_TRICKS = `<h2>A flock that holds its shape</h2>
     keep the most useful trick for the top step.</li>
     <li><b>Teach each trick before its lock.</b> A player who has used the whirl once will think
     of it when a lock seems to want a spin.</li>
+    <li><b>A counter makes a ladder too.</b> Give bronze, silver and gold keys the amounts 1, 2 and
+    3 on one counter, and doors the prices 1, 2 and 3. A bigger key opens every cheaper door, and
+    each door takes only its price, so the change stays in the counter.</li>
   </ul>
+  ${onCd('POWERKEY')}
   <h2>A set copied for one level</h2>
   <p>Snowbound’s long sled run needed more blocks than its full 150. The answer was a copy of
   the set for that one scene, with the blocks the hill never shows (the houses, the mall, the

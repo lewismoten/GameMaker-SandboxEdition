@@ -44,6 +44,7 @@
   "parallax": {"hash":"879cee0c6018a262","maps":{"one.map|px1.bbl":[10,10,16,10],"two.map|px2.bbl":[10,10,16,10]}},
   "pictures-and-cartoons": {"hash":"89a21b2473b21703","maps":{"cartoon.map|pics.bbl":[0,14,67,10],"frame.map|pics.bbl":[0,14,67,10],"short.map|pics.bbl":[0,14,67,10]}},
   "popups": {"hash":"31054ef7099455d4","maps":{"one.map|pop.bbl":[0,14,67,10],"two.map|pop.bbl":[0,14,67,10]}},
+  "power-ladder": {"hash":"9f3877363fd1b21c","maps":{"one.map|power.bbl":[0,1,67,26],"three.map|power.bbl":[0,1,67,26],"two.map|power.bbl":[0,1,67,26]}},
   "power-up": {"hash":"e141d6747de5a8d7","maps":{"one.map|power.bbl":[0,1,67,26],"two.map|power.bbl":[0,6,68,25]}},
   "realm": {"hash":"d4caf06e5b425b29","maps":{"barrows.map|barrows.bbl":[11,20,78,71],"flats.map|flats.bbl":[0,27,100,46],"keep.map|keep.bbl":[15,9,70,81],"mines.map|mines.bbl":[6,16,92,72],"pass.map|pass.bbl":[2,5,34,10],"port.map|port.bbl":[0,0,100,100],"town.map|town.bbl":[0,0,100,75],"vaults.map|vaults.bbl":[10,11,79,87],"world.map|world.bbl":[0,3,100,94]}},
   "reckoning": {"hash":"2c4648865307e44f","maps":{"bedroom.map|reckon.bbl":[0,0,81,19],"dash.map|reckon.bbl":[0,0,88,19],"fridge.map|reckon.bbl":[0,0,68,23],"hell.map|reckon.bbl":[0,0,61,20]}},

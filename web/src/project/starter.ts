@@ -60,7 +60,7 @@ export const STARTER_GROUPS: { name: string; tag: string; games: string[] }[] = 
   {
     name: 'Wiring and Puzzles',
     tag: 'Counters that think.',
-    games: ['switches', 'three-tokens', 'and-gate', 'secret-doors', 'show-the-count', 'dice', 'word-lock'],
+    games: ['switches', 'three-tokens', 'and-gate', 'secret-doors', 'show-the-count', 'dice', 'word-lock', 'power-ladder'],
   },
   { name: 'Bigger Worlds', tag: 'More than one screen.', games: ['scroll', 'many-rooms', 'diagonal-wrap', 'blocks-budget'] },
   {
