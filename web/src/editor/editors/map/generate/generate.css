@@ -63,3 +63,19 @@
     width: min(48rem, calc(100vw - 48px));
   }
 }
+.gen-chip {
+  font-weight: 600;
+  padding: 0 6px;
+  border-radius: 8px;
+  border: 2px solid var(--accent, #4a8);
+  color: var(--text);
+}
+.gen-chip.warn {
+  border-style: dashed;
+}
+.gen-check {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  min-height: 24px;
+}

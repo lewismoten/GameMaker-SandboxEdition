@@ -23,7 +23,11 @@ export const KINDS: readonly KindInfo[] = [
     must: ['wall', 'floor'],
     want: [
       { role: 'decoration', use: 'Scattered inside the bigger rooms.', without: 'the rooms are left bare' },
-      { role: 'locked-door', use: 'Shut in a narrow passage on the way to the exit (needs a key block with the same lock number).', without: 'no locked doors' },
+      {
+        role: 'locked-door',
+        use: 'Shut in a narrow passage on the way to the exit (needs a key block with the same lock number).',
+        without: 'no locked doors',
+      },
       { role: 'key', use: 'Placed where it can be reached before its locked door.', without: 'no locked doors' },
       { role: 'treasure', use: 'In corners and dead ends, more of it far from the entry.', without: 'no treasure' },
       { role: 'life', use: 'One heart in a far corner.', without: 'no heart' },
@@ -85,7 +89,11 @@ export function checkNeeds(kind: GenKind, roles: RoleMap): NeedsReport {
   // wants that share an outcome (a lock and its key) are one line
   const lacking2 = items.filter((i) => !i.must && !i.count);
   const skipped = [...new Set(lacking2.map((i) => i.without!))].map(
-    (w) => `No ${lacking2.filter((i) => i.without === w).map((i) => i.label.toLowerCase()).join(' or ')} block: ${w}.`,
+    (w) =>
+      `No ${lacking2
+        .filter((i) => i.without === w)
+        .map((i) => i.label.toLowerCase())
+        .join(' or ')} block: ${w}.`,
   );
   return { kind, items, ok: !lacking.length, message, skipped };
 }

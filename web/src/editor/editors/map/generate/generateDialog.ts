@@ -5,14 +5,17 @@
 import { h, modal } from '../../../core/ui';
 import type { Project } from '../../../core/project';
 import { BLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import type { Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { MLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
-import { KINDS, MIN_SIDE, checkNeeds, kindInfo, type GenKind, type Rect } from '@lewismoten/gamemaker-sandbox-tools/kit/levelGen';
+import { KINDS, MIN_SIDE, checkNeeds, kindInfo, type GenKind, type GenResult, type Rect } from '@lewismoten/gamemaker-sandbox-tools/kit/levelGen';
 import { readRoles } from '../../blocks/blockRoles';
 import { loadBrushes } from '../tools/brushStore';
 import type { Terrain } from '../tools/autotile';
 import type { MapSelection } from '../tools/selection';
 import { missingRoles } from './missingRoles';
-import { WHOLE, offers, type Offer } from './place';
+import { WHOLE, offers, usableMonsters, type Offer } from './place';
+import { NOT_CHECKED } from './verifyOffer';
 import './generate.css';
 
 export interface GenerateHost {
@@ -25,8 +28,11 @@ export interface GenerateHost {
   /** The pictures of the blocks, by number. */
   images: () => HTMLCanvasElement[];
   selection: () => MapSelection | undefined;
-  /** Puts the chosen layout into the map as one undo step. */
-  apply: (blocks: Uint8Array, what: string) => void;
+  /** The block set's blocks (for the reach check) and the scene's monsters (for placing some). */
+  blockSet: () => Block[];
+  monsters: () => Monster[];
+  /** Puts the chosen layout into the map as one undo step; `withMonsters` is the result whose monsters to place too. */
+  apply: (blocks: Uint8Array, what: string, withMonsters?: GenResult) => void;
 }
 
 /** A selection's bounding rectangle kept inside the map. */
@@ -61,6 +67,8 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
   let inSelection = canUseSel;
   let seed = Math.floor(Math.random() * 1e6);
   let chosen = 0;
+  const monsterIds = usableMonsters(host.monsters());
+  let addMonsters = monsterIds.length > 0;
   let current: Offer[] = [];
 
   await modal<void>('Generate a layout', (close) => {
@@ -86,7 +94,7 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
       blurb.textContent = kindInfo(kind).blurb;
       needs.replaceChildren(missingRoles({ kind, roles, usesHref }));
       const n = checkNeeds(kind, roles);
-      current = n.ok ? offers(host.blocks(), roles, terrains, kind, seed, r) : [];
+      current = n.ok ? offers(host.blocks(), roles, terrains, kind, seed, r, { monsters: addMonsters ? monsterIds : undefined, bg: host.blockSet() }) : [];
       chosen = Math.min(chosen, 3);
       grid.replaceChildren();
       buttons.length = 0;
@@ -112,6 +120,7 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
             },
             c,
             h('small', null, `Layout ${i + 1}`),
+            h('small', { class: `gen-chip ${o.check?.verified ? 'ok' : 'warn'}` }, o.check?.verified ? 'Verified' : 'Not proven'),
           );
           buttons.push(b);
           grid.append(b);
@@ -128,8 +137,15 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
       const res = o.outcome.result;
       note.textContent = [
         `Seed ${o.seed}. The hero could start at ${cellText(res.rect, res.entry)} and an exit at ${cellText(res.rect, res.exit)}; nothing is linked for you.`,
+        res.locks.length ? `${res.locks.length} locked door${res.locks.length > 1 ? 's' : ''}, each key reachable first.` : '',
+        res.monsters.length ? `${res.monsters.length} monsters, none near the entry.` : '',
         ...res.notes,
-      ].join(' ');
+        o.check?.verified
+          ? `Verified: every key, treasure and the exit can be reached in order. ${NOT_CHECKED}`
+          : `Not proven: ${o.check?.problems.join(' ')} ${NOT_CHECKED}`,
+      ]
+        .filter(Boolean)
+        .join(' ');
     }
     kindSel.addEventListener('change', () => ((kind = kindSel.value as GenKind), refresh()));
     areaSel.addEventListener('change', () => ((inSelection = areaSel.value === 'sel'), refresh()));
@@ -142,9 +158,14 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
     use.addEventListener('click', () => {
       const o = current[chosen];
       if (!o?.blocks) return;
-      host.apply(o.blocks, `${kindInfo(kind).label} layout`);
+      host.apply(o.blocks, `${kindInfo(kind).label} layout`, addMonsters && o.outcome.ok ? o.outcome.result : undefined);
       close(undefined);
     });
+    const monBox = h('input', { type: 'checkbox', checked: addMonsters, 'aria-label': 'Add monsters' });
+    monBox.addEventListener('change', () => ((addMonsters = monBox.checked), refresh()));
+    const monRow = monsterIds.length
+      ? h('label', { class: 'gen-check' }, monBox, h('span', null, 'Add monsters from this game (the ones already in the area go)'))
+      : null;
     const another = h(
       'button',
       {
@@ -170,6 +191,7 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
       blurb,
       h('div', { class: 'gen-row' }, h('label', { class: 'field' }, h('span', null, 'Seed'), seedIn), another),
       needs,
+      monRow,
       grid,
       note,
       h('div', { class: 'toolbar' }, use, h('button', { type: 'button', onclick: () => close(undefined) }, 'Cancel')),

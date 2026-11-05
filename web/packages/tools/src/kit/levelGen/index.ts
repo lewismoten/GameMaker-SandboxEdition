@@ -83,14 +83,20 @@ export function generate(roles: RoleMap, params: GenParams): GenOutcome {
     ({ area, entry, exit } = f);
   }
   // props: locks and keys (dungeons), treasure, a heart, monsters; each needs its role, else it is skipped
-  const pairs = params.kind === 'dungeon' ? Array.from({ length: MAX_PAIR }, (_, i) => i + 1).filter((p) => blocksWithRole(roles, 'locked-door', p).length && blocksWithRole(roles, 'key', p).length) : [];
+  const pairs =
+    params.kind === 'dungeon'
+      ? Array.from({ length: MAX_PAIR }, (_, i) => i + 1).filter(
+          (p) => blocksWithRole(roles, 'locked-door', p).length && blocksWithRole(roles, 'key', p).length,
+        )
+      : [];
   const props = addProps(area, entry, exit, stream(params.seed ^ 0x9e3779b9), {
     pairs,
     treasure: has('treasure'),
     life: has('life'),
     monsters: params.monsters ?? [],
   });
-  if (params.kind === 'dungeon' && has('locked-door') && !pairs.length) notes.push('The locked door blocks and key blocks share no lock number, so no doors were locked.');
+  if (params.kind === 'dungeon' && has('locked-door') && !pairs.length)
+    notes.push('The locked door blocks and key blocks share no lock number, so no doors were locked.');
   if (params.kind === 'dungeon' && pairs.length && !props.locks.length) notes.push('No narrow passage fit a locked door in this layout.');
   // blocks: the first block of each role, with the other floor blocks scattered for variety
   const pick: Record<number, number[]> = {
@@ -123,7 +129,22 @@ export function generate(roles: RoleMap, params: GenParams): GenOutcome {
   terrainCells.wall = params.kind === 'dungeon' ? cellsOf(WALL) : undefined;
   terrainCells.tree = params.kind === 'forest' ? cellsOf(TREE) : undefined;
   terrainCells.path = cellsOf(PATH).length ? cellsOf(PATH) : undefined;
-  return { ok: true, result: { rect: params.rect, blocks, kinds: area.cells, terrainCells, entry, exit, locks: props.locks, treasure: props.treasure, life: props.life, monsters: props.monsters, notes } };
+  return {
+    ok: true,
+    result: {
+      rect: params.rect,
+      blocks,
+      kinds: area.cells,
+      terrainCells,
+      entry,
+      exit,
+      locks: props.locks,
+      treasure: props.treasure,
+      life: props.life,
+      monsters: props.monsters,
+      notes,
+    },
+  };
 }
 
 /** Whether every open cell of a result can be reached from its entry (a check the generators should always pass). */

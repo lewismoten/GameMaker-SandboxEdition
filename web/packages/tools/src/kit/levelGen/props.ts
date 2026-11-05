@@ -99,12 +99,15 @@ export function addProps(a: Area, entry: number, exit: number, r: Stream, o: Pro
   const locks: LockInfo[] = [];
   const treasure: number[] = [];
   const monsters: Props['monsters'] = [];
-  const space = (list: number[], c: number, gap: number) => list.every((o2) => Math.max(Math.abs((o2 % a.w) - (c % a.w)), Math.abs(((o2 / a.w) | 0) - ((c / a.w) | 0))) >= gap);
+  const space = (list: number[], c: number, gap: number) =>
+    list.every((o2) => Math.max(Math.abs((o2 % a.w) - (c % a.w)), Math.abs(((o2 / a.w) | 0) - ((c / a.w) | 0))) >= gap);
 
   // locked doors: cut cells on the way from the entry to the exit
   if (o.pairs.length) {
     const route = walk(a, entry, exit);
-    const cuts = route.filter((c, i) => i >= 4 && i < route.length - 3 && a.cells[c] === FLOOR && inPassage(a, c) && distances(withShut(a, [c]), entry)[exit] < 0);
+    const cuts = route.filter(
+      (c, i) => i >= 4 && i < route.length - 3 && a.cells[c] === FLOOR && inPassage(a, c) && distances(withShut(a, [c]), entry)[exit] < 0,
+    );
     const n = Math.min(o.pairs.length, 3, cuts.length);
     const chosen: number[] = [];
     for (let j = 0; j < n; j++) chosen.push(cuts[Math.min(cuts.length - 1, Math.floor(((j + 1) * cuts.length) / (n + 1)))]);
@@ -182,7 +185,7 @@ export function proveKeys(a: Area, entry: number, exit: number, locks: LockInfo[
   const byCell = new Map(locks.map((l) => [l.cell, l]));
   const keyAt = new Map(locks.map((l) => [l.key, l.pair]));
   let reached = new Uint8Array(a.cells.length);
-  for (let again = true; again; ) {
+  for (let again = true; again;) {
     again = false;
     reached = new Uint8Array(a.cells.length);
     const stack = [entry];
@@ -190,7 +193,7 @@ export function proveKeys(a: Area, entry: number, exit: number, locks: LockInfo[
     while (stack.length) {
       const c = stack.pop()!;
       const kp = keyAt.get(c);
-      if (kp !== undefined && !have.has(kp)) ((have.add(kp), (again = true)));
+      if (kp !== undefined && !have.has(kp)) (have.add(kp), (again = true));
       const x = c % a.w,
         y = (c / a.w) | 0;
       for (const [dx, dy] of SIDES) {
