@@ -2,6 +2,8 @@
 
 Firmware for the ESP32-3248S035 board (3.5 inch, 480 by 320, ST7796, GT911 capacitive touch). It plays **30 of the Starter games** from the games' real DOS files, packed small into LittleFS (`web/scripts/pocketData.ts`), with a game list, touch controls for fingers and a stylus, a settings screen and a status strip. No sound.
 
+The flashed firmware binaries' third-party notices are in [`web/public/pocket/fw/NOTICES.txt`](../../web/public/pocket/fw/NOTICES.txt). Keep that file with the firmware image set when redistributing it.
+
 The play rules are `src/gmcore.h`, a port of the web engine's character, touch, scroll, block-effect and scene code (itself from `code/GM/PLAYGAME.C`) with no board code in it, so the same file runs in the Mac test. **Monsters, sound, pick up and drop are not ported**: the 17 Starters that have monsters (or monster births), and every Sandbox game, are left out of the list (`npx vite-node scripts/pocketData.ts --list` says why for each).
 
 Files: `src/gmcore.h` (play loop), `src/gmcfg.h` (a game's `.cfg` and the level file loader), `src/controls.h` (touch controls model), `src/gt911.h` (touch chip, up to 5 fingers with ids and sizes), `src/main.cpp` (files, panel, screens, drawing), `host/hosttest.cpp` and `host/controlstest.cpp` (Mac tests).
