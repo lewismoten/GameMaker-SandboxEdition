@@ -45,7 +45,6 @@ function pole(pal: Pal, flag: boolean, hue: string): Pixels {
   if (flag) {
     const f = r(hue);
     p.rect(11, 1, 8, 7, c('ink', 0)).rect(11, 2, 7, 5, f[3]).rect(11, 2, 7, 1, f[4]).rect(11, 6, 7, 1, f[1]);
-    p.disc(14, 4, 1, c('white', 3));
     p.rect(8, 0, 4, 2, c('gold', 4));
   }
   return p;
