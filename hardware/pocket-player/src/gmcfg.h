@@ -2,12 +2,15 @@
 // and loads each level's files through a reader the platform gives (LittleFS on the board, stdio in the
 // Mac test). Lines:
 //   title <text>
-//   level <map> <bbl> <cbl> <chr> <pal> <start x> <start y> <scroll up> <down> <left> <right> <blocks>
+//   level <map> <bbl> <cbl> <chr> <pal> <start x> <start y> <scroll up> <down> <left> <right> <blocks> [<mon> <mbl> <monsters> <monster blocks>]
+//     (the last four only for a level that can have monsters: the .mon records, the monster blocks, how many of each)
 //   link <level> <from x> <from y> <to level, -1 = the game is won> <to x> <to y>
 //   key <scan code> <label>          (the keys the game uses, from controls.json)
 //   ctr <counter> <label>            (counters 20 to 29 the game shows, from controls.json)
-// Every file is packed (see Assets::readz). A map is the 100 x 100 block numbers; a .bbl is cut after the
-// last block the game uses (<blocks> of them, unused ones zero). Files are named by content, so games share them.
+// Every file is packed (see Assets::readz). A map is the 100 x 100 block numbers (and, for a level with monsters,
+// the 100 x 100 monster slot numbers and the 200 placed monsters as monster, x, y); a .bbl is cut after the
+// last block the game uses (<blocks> of them, unused ones zero), a .mon after the last monster and a monster
+// block file after the last picture. Files are named by content, so games share them.
 #pragma once
 #include <stdio.h>
 #include <stdlib.h>
@@ -18,7 +21,7 @@ namespace gm {
 
 constexpr int MAXKEYSET = 12;
 struct KeyInfo { int scan; char label[16]; };
-struct LevelFiles { char map[16], bbl[16], cbl[16], chr[16], pal[16]; int nbl; };
+struct LevelFiles { char map[16], bbl[16], cbl[16], chr[16], pal[16], mon[16], mbl[16]; int nbl, nmon, nmbl; };
 struct Counter { int n; char label[20]; };
 struct Cfg {
   char title[40];
@@ -44,15 +47,21 @@ inline bool parseCfg(const char* text, World& w, Cfg& cfg) {
     if (*p == '\n') p++;
     line[n] = 0;
     int a, b, c, d, e, f, g, h = 0;
-    char m[16], bb[16], cb[16], ch[16], pl[16];
+    char m[16], bb[16], cb[16], ch[16], pl[16], mo[16], mb[16];
+    int nm = 0, nb = 0;
     if (!strncmp(line, "title ", 6)) {
       strncpy(cfg.title, line + 6, sizeof cfg.title - 1);
       cfg.title[sizeof cfg.title - 1] = 0;
-    } else if (sscanf(line, "level %15s %15s %15s %15s %15s %d %d %d %d %d %d %d", m, bb, cb, ch, pl, &a, &b, &c, &d, &e, &f, &g) == 12 &&
-               w.nlevels < MAXLEVELS) {
+    } else if (!strncmp(line, "level ", 6) && w.nlevels < MAXLEVELS &&
+               sscanf(line, "level %15s %15s %15s %15s %15s %d %d %d %d %d %d %d %15s %15s %d %d", m, bb, cb, ch, pl, &a, &b, &c, &d, &e, &f, &g, mo, mb,
+                      &nm, &nb) >= 12) {
       LevelFiles& L = cfg.lv[w.nlevels];
       strcpy(L.map, m); strcpy(L.bbl, bb); strcpy(L.cbl, cb); strcpy(L.chr, ch); strcpy(L.pal, pl);
       L.nbl = g;
+      bool withMons = nm > 0 && nb > 0;
+      strcpy(L.mon, withMons ? mo : ""); strcpy(L.mbl, withMons ? mb : "");
+      L.nmon = withMons ? nm : 0;
+      L.nmbl = withMons ? nb : 0;
       Level& V = w.levels[w.nlevels];
       V.startX = a; V.startY = b;
       V.scrollUp = c; V.scrollDown = d; V.scrollLeft = e; V.scrollRight = f;
@@ -86,15 +95,15 @@ struct Assets {
   const Cfg* cfg = nullptr;
   ReadFile read = nullptr;
   Inflate inflate = nullptr;
-  uint8_t* bbl = nullptr; uint8_t* cbl = nullptr; uint8_t* chr = nullptr;
+  uint8_t* bbl = nullptr; uint8_t* cbl = nullptr; uint8_t* chr = nullptr; uint8_t* mon = nullptr; uint8_t* mbl = nullptr;
   uint8_t pal[768];
   bool palChanged = false;
-  char bblName[16] = "", cblName[16] = "", chrName[16] = "", palName[16] = "";
+  char bblName[16] = "", cblName[16] = "", chrName[16] = "", palName[16] = "", monName[16] = "", mblName[16] = "";
 
   void release() {
-    free(bbl); free(cbl); free(chr);
-    bbl = cbl = chr = nullptr;
-    bblName[0] = cblName[0] = chrName[0] = palName[0] = 0;
+    free(bbl); free(cbl); free(chr); free(mon); free(mbl);
+    bbl = cbl = chr = mon = mbl = nullptr;
+    bblName[0] = cblName[0] = chrName[0] = palName[0] = monName[0] = mblName[0] = 0;
   }
   // A packed file: its length (4 bytes, little endian), then the raw deflate of it.
   uint8_t* readz(const char* name, size_t* n) const {
@@ -120,7 +129,7 @@ struct Assets {
     strcpy(have, want);
     return true;
   }
-  static bool load(void* user, int level, uint8_t* blocks) {
+  static bool load(void* user, int level, uint8_t* blocks, uint8_t* mons, uint8_t* mmBytes, bool* hasMons) {
     Assets& a = *(Assets*)user;
     const LevelFiles& L = a.cfg->lv[level];
     if (!swap(a.bbl, a.bblName, L.bbl, (size_t)L.nbl * BLOCK_BYTES, a) ||
@@ -137,11 +146,26 @@ struct Assets {
       a.palChanged = true;
     }
     a.w->bbl = a.bbl; a.w->cbl = a.cbl; a.w->chr = a.chr; a.w->nbl = L.nbl;
+    bool mons_ = L.nmon > 0;
+    if (mons_) {
+      if (!swap(a.mon, a.monName, L.mon, (size_t)L.nmon * MONSTER_BYTES, a) || !swap(a.mbl, a.mblName, L.mbl, (size_t)L.nmbl * BLOCK_BYTES, a)) return false;
+    } else {
+      free(a.mon); free(a.mbl);
+      a.mon = a.mbl = nullptr;
+      a.monName[0] = a.mblName[0] = 0;
+    }
+    a.w->mon = a.mon; a.w->mbl = a.mbl; a.w->nmon = mons_ ? L.nmon : 0; a.w->nmbl = mons_ ? L.nmbl : 0;
     size_t n = 0;
     uint8_t* m = a.readz(L.map, &n);
     if (!m) return false;
-    bool ok = n == (size_t)MLEN * MWID;
-    if (ok) memcpy(blocks, m, n);
+    size_t cells = (size_t)MLEN * MWID;
+    bool ok = n == cells || (mons_ && n == cells * 2 + LASTMM * 3);
+    if (ok) memcpy(blocks, m, cells);
+    if (ok && mons_ && n > cells) {
+      memcpy(mons, m + cells, cells);
+      memcpy(mmBytes, m + cells * 2, LASTMM * 3);
+      *hasMons = true;
+    }
     free(m);
     return ok;
   }

@@ -116,7 +116,7 @@ async function checkGame(id: string): Promise<string> {
   const total = expected.length;
   const dir = join(work, id);
   execFileSync('mkdir', ['-p', dir]);
-  writeFileSync(join(dir, 'keys.txt'), script.join('\n') + `\nT ${total}\n`);
+  writeFileSync(join(dir, 'keys.txt'), `R ${walk.rand.seed}\n` + script.join('\n') + `\nT ${total}\n`);
   writeFileSync(join(dir, 'expected.txt'), expected.join('\n') + '\n');
   let out: string;
   try {
