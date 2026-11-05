@@ -8,7 +8,7 @@ export const STORY = wrap(`
 
 Does the picture move, or does it stay?
 
-A small explorer in a teal beanie has two levels to cross. The first is one room that fits the screen exactly, and the picture never moves. The second is a long walk, and the picture slides along after him.
+A small explorer in a teal beanie has two levels to cross. The first is one room that fits the screen exactly, and the picture never moves. The second is a long walk, and the picture slides along after them.
 
 Read the signs. Whether a level scrolls is one switch on its scene, and the size of the level has to agree with it.
 

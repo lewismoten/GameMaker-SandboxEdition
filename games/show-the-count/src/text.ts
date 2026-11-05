@@ -8,7 +8,7 @@ export const STORY = wrap(`
 
 Game-Maker keeps a count for you, but it can never print it as a number.
 
-A small explorer in a red beanie finds rows of dark bulbs. Each bulb adds one to her count, and lights up. The lit bulbs are the count, shown as pictures.
+A small explorer in a red beanie finds rows of dark bulbs. Each bulb adds one to their count, and lights up. The lit bulbs are the count, shown as pictures.
 
 Read the signs, then open this game in Game-Maker and add a bulb.
 `);

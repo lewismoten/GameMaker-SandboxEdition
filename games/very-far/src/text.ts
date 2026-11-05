@@ -8,7 +8,7 @@ export const STORY = wrap(`
 
 How do you draw someone walking a long way off? Not by drawing them smaller everywhere: by drawing them tiny.
 
-A small explorer in a blue beanie walks a road up close. Then the same walk, on a distant ridge, where he is only eight pixels tall.
+A small explorer in a blue beanie walks a road up close. Then the same walk, on a distant ridge, where they are only eight pixels tall.
 
 Read the signs. Then open this game in Game-Maker and change how far a step goes.
 `);
@@ -22,7 +22,7 @@ export const HOWTO = wrap(`
 
 Walk to the gate or door at the right of each level.
 
-Up close, Lian is big. Far away he is a few pixels, with smaller steps and a smaller jump.
+Up close, Lian is big. Far away they are a few pixels, with smaller steps and a smaller jump.
 
 |ESC for the menu.
 `);
@@ -45,7 +45,7 @@ export const WON = wrap(`
 
 Three levels, three distances.
 
-A far figure needs only a few pixels and the right colors: dark and orange against pale hills. His steps are drawn small and his character file moves him a few pixels a frame, so the walk looks slow. Big things drawn in front make the distance seem longer.
+A far figure needs only a few pixels and the right colors: dark and orange against pale hills. Their steps are drawn small and their character file moves them a few pixels a frame, so the walk looks slow. Big things drawn in front make the distance seem longer.
 
 Open the game in Game-Maker, load a different character file in a far scene and change how far a step goes.
 `);

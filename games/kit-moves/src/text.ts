@@ -8,7 +8,7 @@ export const STORY = wrap(`
 
 What does a key do while you hold it?
 
-A small explorer in a teal beanie has two short levels to cross. In the first, one key hops and another keeps lifting him for as long as it is held. In the second, a key dashes him to the right, once for each press.
+A small explorer in a teal beanie has two short levels to cross. In the first, one key hops and another keeps lifting them for as long as it is held. In the second, a key dashes them to the right, once for each press.
 
 Read the signs. Every key in Game-Maker starts a sequence of frames, and two settings say what happens when you keep it down: run again, or wait for the next press.
 

@@ -8,7 +8,7 @@ export const STORY = wrap(`
 
 Wind comes and goes.
 
-A small explorer in a purple beanie has two short rooms. In the first, a shaft of air flutters its leaves, and then a gust lifts her up to a ledge. In the second, gusts blow along a tunnel, and windsocks on the hill show them coming.
+A small explorer in a purple beanie has two short rooms. In the first, a shaft of air flutters its leaves, and then a gust lifts them up to a ledge. In the second, gusts blow along a tunnel, and windsocks on the hill show them coming.
 
 Watch for the wind. Then go.
 

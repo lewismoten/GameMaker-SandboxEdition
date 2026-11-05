@@ -23,7 +23,7 @@ const at = (x: number, y: number): Spot => [x + ORIGIN, y + ORIGIN];
 const SIGNS = {
   // the room
   arrows: ['arrows', 'THE ARROWS WALK UP, DOWN, LEFT AND RIGHT', 4, 3, 'floor'],
-  facing: ['facing', 'LAMI TURNS TO FACE THE WAY SHE WALKS', 4, 3, 'floor'],
+  facing: ['facing', 'LAMI TURNS TO FACE THE WAY THEY WALK', 4, 3, 'floor'],
   solid: ['solid', 'FURNITURE IS SOLID. WALK ROUND IT', 4, 3, 'floor'],
   wallsign: ['wallsign', 'SEE A WALL? IT IS A WALL. DOOR →', 4, 3, 'floor'],
   // the roads

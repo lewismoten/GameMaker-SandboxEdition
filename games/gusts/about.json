@@ -7,7 +7,7 @@
   "year": 1994,
   "price": "Free",
   "version": "1.1",
-  "blurb": "Two short levels where the wind changes over time. In the first, a gust blows up a shaft of air and lifts Mia to a ledge too high to jump to: wait in the shaft and ride it. In the second, gusts blow along a tunnel and push her back, and two little shelters are a place to wait. A gust here is a ring of blocks that pull, changing on a timer. Signs say how. Play it, then open it in Game-Maker and change how long a gust lasts.",
+  "blurb": "Two short levels where the wind changes over time. In the first, a gust blows up a shaft of air and lifts Mia to a ledge too high to jump to: wait in the shaft and ride it. In the second, gusts blow along a tunnel and push them back, and two little shelters are a place to wait. A gust here is a ring of blocks that pull, changing on a timer. Signs say how. Play it, then open it in Game-Maker and change how long a gust lasts.",
   "exe": "GUST.EXE",
   "dosName": "GUSTS",
   "sound": "sb",
@@ -24,7 +24,7 @@
     "accent": "#ffd23f",
     "ink": "#ffffff",
     "tagline": "Watch for the wind.",
-    "back": "A small explorer in a purple beanie has two short rooms where the wind comes and goes. Leaves flutter before a gust lifts her up a shaft. Windsocks show the gusts along a tunnel, and a shelter is a place to wait. Read the signs, then open the game in Game-Maker and change how long a gust lasts.",
+    "back": "A small explorer in a purple beanie has two short rooms where the wind comes and goes. Leaves flutter before a gust lifts them up a shaft. Windsocks show the gusts along a tunnel, and a shelter is a place to wait. Read the signs, then open the game in Game-Maker and change how long a gust lasts.",
     "features": [
       "A shaft of air that flutters, then lifts you to a high ledge",
       "Windsocks that droop, twitch and stream in step with the wind",

@@ -8,7 +8,7 @@ export const STORY = wrap(`
 
 Every game starts with a title.
 
-A small explorer in a blue beanie has two short rooms. In the first he looks at the pictures the title scene is made of, above all the one behind the menu you are reading from now. In the second he finds out how a game plays itself while nobody touches the keys.
+A small explorer in a blue beanie has two short rooms. In the first they look at the pictures the title scene is made of, above all the one behind the menu you are reading from now. In the second they find out how a game plays itself while nobody touches the keys.
 
 Walk, read, and look at the pictures that come up.
 

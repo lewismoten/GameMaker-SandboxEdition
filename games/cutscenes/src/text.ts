@@ -8,7 +8,7 @@ export const STORY = wrap(`
 
 Some scenes are only for watching.
 
-A small explorer in a green beanie has two short rooms. The first is a scene that shows a picture, some words, and then a stage that lets her go by itself. The second is a room of doors, and each door leads to a scene of its own.
+A small explorer in a green beanie has two short rooms. The first is a scene that shows a picture, some words, and then a stage that lets them go by itself. The second is a room of doors, and each door leads to a scene of its own.
 
 Read, wait, and pick a door.
 
@@ -61,7 +61,7 @@ export const TALE_TWO = wrap(`
 
 Mara set out to walk to the hill, and the path went left, and then right, and then left again.
 
-By the time she got there the sun was up and the grass was warm.
+By the time they got there the sun was up and the grass was warm.
 
 It was the longest way round, and the best one.
 `);

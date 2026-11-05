@@ -23,7 +23,7 @@ function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   const signs = {
     one: addSign(book, pal, 'one.sign', 'THIS ROOM IS ONE SCREEN, SO IT DOES NOT SCROLL', 4, 3),
     hedge: addSign(book, pal, 'hedge.sign', 'THE HEDGE KEEPS KIT ON THE SCREEN', 3, 3),
-    follows: addSign(book, pal, 'follows.sign', 'THE VIEW FOLLOWS KIT WHEN HE WALKS', 4, 3),
+    follows: addSign(book, pal, 'follows.sign', 'THE VIEW FOLLOWS KIT WHEN THEY WALK', 4, 3),
     wide: addSign(book, pal, 'wide.sign', 'THIS LEVEL IS 60 BLOCKS WIDE. THE SCREEN SHOWS 16', 4, 3),
     switch: addSign(book, pal, 'switch.sign', 'SCROLLING IS A SWITCH ON EACH SCENE', 4, 3),
     exit: addSign(book, pal, 'exit.sign', 'EXIT →', 3),

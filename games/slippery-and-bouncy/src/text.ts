@@ -8,7 +8,7 @@ export const STORY = wrap(`
 
 Some blocks do more than stand there. They pull.
 
-A small explorer in a teal beanie has three short rooms to cross. Ice drags him along and he slides on. A belt carries him. A spring pad bounces him up, and a fan blows him through a shelf.
+A small explorer in a teal beanie has three short rooms to cross. Ice drags them along and they slide on. A belt carries them. A spring pad bounces them up, and a fan blows them through a shelf.
 
 Read the signs, and keep an eye on the spikes.
 
@@ -47,7 +47,7 @@ export const WON = wrap(`
 
 Three rooms, and now you know how a pull works.
 
-Every block has a gravity setting: which ways it pulls, and the hero is pulled by the block his feet are in. Down is ordinary gravity. Down and right is ice or a belt. Up is wind. A ledge is a block you can only stand on from above.
+Every block has a gravity setting: which ways it pulls, and the hero is pulled by the block their feet are in. Down is ordinary gravity. Down and right is ice or a belt. Up is wind. A ledge is a block you can only stand on from above.
 
 Open the game in Game-Maker and find them on the Blocks tab. Make the wind pull to the left, then play it.
 `);

@@ -30,7 +30,7 @@ function pose(pal: Pal, facing: Facing, step: Step): Pixels {
   if (facing === 'dl') return pose(pal, 'dr', step).flipX();
   if (facing === 'ul') return pose(pal, 'ur', step).flipX();
   const { c, r } = pal;
-  const g = new Pixels(20, 20, T); // drawn with her head at the top; shifted down a row below, to leave room for the outline
+  const g = new Pixels(20, 20, T); // drawn with their head at the top; shifted down a row below, to leave room for the outline
   const skin = kitRamp(pal, 'skin');
   const teal = kitRamp(pal, 'hat');
   const white = r('white');
@@ -56,7 +56,7 @@ function pose(pal: Pal, facing: Facing, step: Step): Pixels {
   // the hoodie: its far side darker, its near side lit, a hem
   g.rect(6, 8, 8, 5, orange[3]).rect(6, 8, 2, 5, orange[2]).rect(12, 8, 2, 5, orange[4]).rect(6, 12, 8, 1, orange[1]);
   if (front) {
-    g.rect(10, 8, 1, 2, white[2]).rect(12, 8, 1, 2, white[2]); // the drawstrings, toward the way she faces
+    g.rect(10, 8, 1, 2, white[2]).rect(12, 8, 1, 2, white[2]); // the drawstrings, toward the way they face
     g.rect(9, 11, 3, 1, orange[2]); // the pocket
   } else {
     g.rect(7, 8, 6, 1, orange[4]).rect(7, 9, 6, 1, orange[3]); // the back of the hood
@@ -66,8 +66,8 @@ function pose(pal: Pal, facing: Facing, step: Step): Pixels {
     g.rect(7, 5, 6, 3, skin[3]).rect(7, 5, 2, 3, hair[1]); // hair behind, the face turned toward the right
     g.set(10, 6, ink).set(12, 6, ink).set(11, 7, ink);
   } else {
-    g.rect(7, 5, 6, 3, hair[1]).rect(7, 5, 6, 1, hair[2]); // the back of her head
-    g.rect(12, 6, 1, 2, skin[2]); // a little of the cheek on the side she is turned to
+    g.rect(7, 5, 6, 3, hair[1]).rect(7, 5, 6, 1, hair[2]); // the back of their head
+    g.rect(12, 6, 1, 2, skin[2]); // a little of the cheek on the side they are turned to
   }
   // the beanie: a dome, a cuff, and a pom-pom toward the facing side
   g.rect(8, 2, 5, 1, teal[3]).rect(7, 3, 7, 1, teal[3]).rect(8, 2, 3, 1, teal[4]);
