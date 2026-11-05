@@ -44,16 +44,17 @@ export const FALL = 8;
 
 const T = 255;
 
-/** A dial: a gray box with a round lamp (red or green) and a lever that points to its side. */
+/** A dial: a gray box with a round lamp (red or green) over a slider whose knob sits at the left when off and at the right when on. */
 function dial(pal: Pal, on: boolean, lit: boolean): Pixels {
   const { c, r } = pal;
   const p = new Pixels(20, 20, T);
   p.rect(2, 3, 16, 14, c('stone', 1)).rect(3, 4, 14, 12, c('stone', 3)).rect(3, 4, 14, 1, c('stone', 4));
   const lamp = r(on ? 'green' : 'red');
-  p.disc(10, 8, 3.6, c('ink', 0)).disc(10, 8, 2.8, lamp[lit ? 4 : 2]).set(9, 7, lamp[lamp.length - 1]);
-  // the lever: down-left when off, up-right when on
-  if (on) p.line(8, 14, 12, 11, c('ink', 0)).line(9, 14, 13, 11, c('ink', 0)).disc(13, 11, 1.4, c('gold', 4));
-  else p.line(12, 14, 8, 11, c('ink', 0)).line(11, 14, 7, 11, c('ink', 0)).disc(7, 11, 1.4, c('hot', 0));
+  p.disc(10, 8, 3.4, c('ink', 0)).disc(10, 8, 2.6, lamp[lit ? 4 : 2]).set(9, 7, lamp[lamp.length - 1]);
+  // the slider: a dark track, with its knob at the left when off and at the right when on
+  p.rect(5, 12, 10, 3, c('ink', 0)).rect(6, 13, 8, 1, c('stone', 0));
+  const kx = on ? 11 : 5;
+  p.rect(kx, 11, 4, 5, c('ink', 0)).rect(kx + 1, 12, 2, 3, on ? c('green', 3) : c('hot', 0));
   return outline(p, c('ink', 0), { transparent: T });
 }
 

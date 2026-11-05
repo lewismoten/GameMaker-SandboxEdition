@@ -7,7 +7,7 @@ import { SEED, play } from './play';
 
 const { sim } = await play(SEED);
 const titles: Record<number, string> = {
-  2: 'Level 1: One Shape',
-  3: 'Level 2: Out of Step',
+  2: 'Level 1: Both Together',
+  3: 'Level 2: All Three',
 };
 await writeSimWalkthrough('and-gate', sim, SEED, titles);

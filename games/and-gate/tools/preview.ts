@@ -12,12 +12,13 @@ import { ORIGIN } from '../../kit/starter/map';
 import { buildHeroBlocks, heroPicture } from '../../kit/starter/hero';
 import { finishMonsterPictures, monsterPictures, monsterSet } from '../src/monsters';
 import { buildLevels } from '../src/levels';
+import { finishBlocks } from '../src/gateBlocks';
 
 const out = process.argv[2] ?? join(tmpdir(), 'and-gate-preview');
 mkdirSync(out, { recursive: true });
 const { book, pal, levels } = buildLevels();
 const sky = pal.c('sky', 3);
-const bbl = book.finish();
+const bbl = finishBlocks(book);
 writePng(join(out, 'blocks.png'), blockSheet(bbl.slice(0, book.index.size), 12, 0), pal.pal, 3);
 
 const hero = buildHeroBlocks(pal);
@@ -45,7 +46,7 @@ writePng(join(out, 'monsters.png'), blockSheet(mbl.slice(0, mb.index.size), 6, s
 
 for (const l of levels) {
   const m = l.map.done();
-  const pic = renderRegion(m, bbl, mbl, monsterSet(mb), ORIGIN, ORIGIN, l.map.width, l.map.height);
+  const pic = renderRegion(m, bbl, mbl, monsterSet(mb, l.route), ORIGIN, ORIGIN, l.map.width, l.map.height);
   writePng(join(out, `${l.file}.png`), pic, pal.pal, 1);
 }
 const disk = new URL('../disk/', import.meta.url);

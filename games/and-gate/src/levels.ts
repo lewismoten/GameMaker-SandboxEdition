@@ -151,7 +151,7 @@ function allThree(book: Book, signs: Record<SignName, Sign>): Omit<Level, 'file'
   // the ledge the wire runs over, with a ladder up to it
   g.row(3, 10, 15, 'G').fill(10, 4, 6, 1, 'D');
   g.col(9, 2, 9, 'H');
-  g.row(2, 11, 12, 'c').row(2, 14, 15, 'c').row(9, 31, 33, 'c');
+  g.row(2, 11, 12, 'c').row(2, 14, 15, 'c').row(9, 30, 31, 'c').row(9, 36, 37, 'c');
   scenery(
     g,
     [
@@ -159,8 +159,8 @@ function allThree(book: Book, signs: Record<SignName, Sign>): Omit<Level, 'file'
       [18, 2],
       [32, 3],
     ],
-    [16, 27, 37],
-    [6, 21, 34],
+    [16, 28, 34],
+    [6, 22, 33],
   );
   const m = new StarterMap(book, g.rows());
   const pts: [number, number][] = [BOX, [8, WIRE], [8, 1], [16, 1], [16, WIRE], [24, WIRE], [24, 2]];

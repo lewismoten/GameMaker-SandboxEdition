@@ -1,11 +1,12 @@
 // The way through the game, as orders for the bot (kit/starter/bot.ts): the keys a person
 // would press, level by level, taking every coin on the way. Each sign's lesson is acted out
-// once: in level 1 Kit reads the signs while the five birds fly right and back, and the V never
-// changes; in level 2 the two gold birds pull away and the V comes apart.
+// once: in level 1 Kit turns one dial on and watches the spark die at the other (the mistake),
+// then turns the second on and the lamp lights; in level 2 three dials, one up a ladder.
 // The checks here fail if anything else happens.
 import type { Result, StarterBot } from '../../kit/starter/bot';
 import { ORIGIN } from '../../kit/starter/map';
-import { BIRD, QUICK } from '../src/monsters';
+import { LIGHTS } from '../src/gateBlocks';
+import { DIAL_OFF, DIAL_ON, FALLING, LAMP, LIGHT, SPARK } from '../src/monsters';
 
 /** Runs an order; anything but carrying on (a scene change, getting stuck) is an error. */
 async function must(bot: StarterBot, r: Promise<Result>, what: string): Promise<void> {
@@ -24,6 +25,15 @@ export function alive(bot: StarterBot, n: number): number {
   return bot.sim.w.mm.filter((m) => m.monnum === n).length;
 }
 
+/** The level block columns (left edges, as fractions) of every spark alive. */
+export function sparksAt(bot: StarterBot): number[] {
+  const out: number[] = [];
+  bot.sim.w.mm.forEach((m, i) => {
+    if (m.monnum === SPARK) out.push(bot.sim.w.mi[i].curx[0] - ORIGIN + bot.sim.w.mi[i].curx[1] / 20);
+  });
+  return out;
+}
+
 /** Every coin is 10 points: a level that should give `n` coins must have. */
 function coins(bot: StarterBot, from: number, n: number, what: string): void {
   const got = (bot.sim.ci.score - from) / 10;
@@ -38,72 +48,97 @@ function coins(bot: StarterBot, from: number, n: number, what: string): void {
 /** A person stopped at a sign for a moment to read it. */
 const READ = 40;
 
-/** The five birds' positions in level pixels (left and top), left to right as they were placed. */
-export function birdsAt(bot: StarterBot): { x: number; y: number }[] {
-  const out: { x: number; y: number }[] = [];
-  bot.sim.w.mm.forEach((m, i) => {
-    if (m.monnum !== BIRD && m.monnum !== QUICK) return;
-    const mi = bot.sim.w.mi[i];
-    out.push({ x: (mi.curx[0] - ORIGIN) * 20 + mi.curx[1], y: (mi.cury[0] - ORIGIN) * 20 + mi.cury[1] });
-  });
-  return out;
+/** Waits (a tick at a time) until `done()` or `max` ticks pass; says what it was waiting for if it never came. */
+async function until(bot: StarterBot, done: () => boolean, max: number, what: string): Promise<void> {
+  for (let i = 0; i < max; i++) {
+    if (done()) return;
+    await must(bot, bot.wait(1), what);
+  }
+  if (!done()) throw new Error(`${what}: never happened in ${max} ticks`);
 }
 
-/** How far the birds are from the shape they started in: the largest change in any bird's offset from the first bird, in pixels. */
-export function drift(bot: StarterBot, start: { x: number; y: number }[]): number {
-  const now = birdsAt(bot);
-  if (now.length !== 5 || start.length !== 5) throw new Error(`expected five birds, found ${now.length}`);
-  return Math.max(...now.map((b, i) => Math.max(Math.abs(b.x - now[0].x - (start[i].x - start[0].x)), Math.abs(b.y - now[0].y - (start[i].y - start[0].y)))));
+/** Jumps up under the dial hanging above the hero (a hop of Space, held for two ticks). */
+async function bump(bot: StarterBot, what: string): Promise<void> {
+  await must(bot, bot.jump(), what);
 }
 
-/** 1. One Shape: the birds fly right and back while Kit reads; the V never changes. */
-export async function oneShape(bot: StarterBot): Promise<void> {
+/** Watches the sparks for as long as it takes one to run out of wire, and returns the furthest one got. */
+async function watchSparks(bot: StarterBot, passed: number, max = 900): Promise<number> {
+  let furthest = 0;
+  let seenPast = false;
+  for (let i = 0; i < max; i++) {
+    await must(bot, bot.wait(1), 'watching a spark');
+    const xs = sparksAt(bot);
+    furthest = Math.max(furthest, ...xs, 0);
+    if (xs.some((x) => x > passed)) seenPast = true;
+    if (seenPast && !xs.some((x) => x > passed)) return furthest;
+  }
+  throw new Error('no spark ran past the first dial');
+}
+
+/** Takes the light at the foot of the post: Kit walks into it; it must have filled the counter. */
+async function takeLight(bot: StarterBot, x: number): Promise<void> {
+  await until(bot, () => alive(bot, LIGHT) === 1, 900, 'waiting for the light to settle');
+  await must(bot, bot.walk(x, 'the light'), 'to the light');
+  if (bot.sim.ci.meter[LIGHTS] < 2) throw new Error(`the light did not fill counter ${LIGHTS}: ${bot.sim.ci.meter[LIGHTS]}`);
+}
+
+/** 1. Both Together: one dial on and the spark dies at the next; then both on and the lamp lights. */
+export async function bothTogether(bot: StarterBot): Promise<void> {
   const score = bot.sim.ci.score;
-  const start = birdsAt(bot);
-  let worst = 0;
-  const look = (what: string) => {
-    worst = Math.max(worst, drift(bot, start));
-    if (worst > 2) throw new Error(`level 1 ${what}: the V should hold; it drifted ${worst}px`);
-  };
-  await must(bot, bot.walk(8, 'the first sign'), 'to the first sign');
+  await must(bot, bot.wait(20), 'the level starts');
+  await must(bot, bot.walk(6, 'the wire sign'), 'to the first sign');
   await must(bot, bot.wait(READ), 'reading');
-  look('at the first sign');
-  await must(bot, bot.walk(14, 'the second sign'), 'to the second sign');
-  await must(bot, bot.wait(READ), 'reading');
-  look('at the second sign');
-  const moved = Math.abs(birdsAt(bot)[0].x - start[0].x);
-  if (moved < 40) throw new Error(`level 1: the birds should be flying; only ${moved}px so far`);
-  bot.say(`The V holds, ${worst}px of drift after the birds flew ${moved}px`);
-  await must(bot, bot.walk(20, 'under the and-gate'), 'under the and-gate');
-  look('under the and-gate');
-  await must(bot, bot.wait(200), 'watching the birds turn');
-  look('after the turn');
-  coins(bot, score, 2, 'level 1 under the and-gate');
-  await must(bot, bot.walk(27, 'over the hill'), 'over the hill');
-  await must(bot, bot.walk(34, 'on'), 'on');
-  look('at the end');
-  coins(bot, score, 6, 'level 1 before the exit');
-  await leave(bot, bot.walk(43, 'the exit'), 'the exit');
-}
-
-/** 2. Out of Step: the gold birds pull away and the V comes apart. */
-export async function outOfStep(bot: StarterBot): Promise<void> {
-  const score = bot.sim.ci.score;
-  const start = birdsAt(bot);
-  if (drift(bot, start) !== 0) throw new Error('level 2: the birds should begin in a V');
-  await must(bot, bot.wait(READ), 'reading the first sign');
-  await must(bot, bot.walk(8, 'the first sign'), 'to the first sign');
-  await must(bot, bot.wait(READ), 'reading');
-  await must(bot, bot.walk(14, 'the second sign'), 'to the second sign');
-  await must(bot, bot.wait(READ), 'reading');
-  let worst = drift(bot, start);
-  if (worst < 20) throw new Error(`level 2: the V should be coming apart by the second sign; ${worst}px`);
+  await must(bot, bot.walk(11.5, 'the first dial'), 'to the first dial');
+  await must(bot, bot.wait(READ), 'reading the dial sign');
+  await bump(bot, 'bumping the first dial');
+  if (alive(bot, DIAL_ON) !== 1 || alive(bot, DIAL_OFF) !== 1) throw new Error('level 1: one dial should be on and one off');
+  // the mistake, once: the spark runs on and dies at the dial that is off
+  await must(bot, bot.walk(16.5, 'the second dial'), 'under the second dial');
+  const furthest = await watchSparks(bot, 13);
+  if (furthest > 17.3) throw new Error(`level 1: a spark got past the dial that is off (${furthest.toFixed(1)})`);
+  if (alive(bot, LAMP) !== 1 || alive(bot, FALLING) + alive(bot, LIGHT) !== 0) throw new Error('level 1: the lamp should still be dark');
+  bot.say(`One dial on: the spark stopped at ${furthest.toFixed(1)}, the lamp stayed dark`);
+  await must(bot, bot.wait(READ), 'reading the sign about both');
+  await bump(bot, 'bumping the second dial');
+  if (alive(bot, DIAL_OFF) !== 0) throw new Error('level 1: both dials should be on');
+  await until(bot, () => alive(bot, LAMP) === 0, 900, 'the spark reaching the lamp');
+  bot.say('Both dials on: the lamp is lit');
   await must(bot, bot.walk(21, 'the coins'), 'to the coins');
-  await must(bot, bot.walk(33, 'across'), 'across');
-  worst = Math.max(worst, drift(bot, start));
-  bot.say(`The V came apart: up to ${worst}px out of shape`);
-  coins(bot, score, 8, 'level 2 before the exit');
-  await leave(bot, bot.walk(43, 'the exit'), 'the exit');
+  await must(bot, bot.walk(24.5, 'under the post'), 'to the post');
+  await takeLight(bot, 23);
+  await must(bot, bot.walk(26, 'the light sign'), 'to the sign');
+  await must(bot, bot.wait(READ), 'reading');
+  await must(bot, bot.walk(33, 'the coins'), 'to the coins');
+  coins(bot, score, 5, 'level 1 before the gate');
+  await leave(bot, bot.walk(36, 'the gate'), 'the gate');
+}
+
+/** 2. All Three: three dials, one up a ladder; every one must be on. */
+export async function allThree(bot: StarterBot): Promise<void> {
+  const score = bot.sim.ci.score;
+  await must(bot, bot.wait(20), 'the level starts');
+  await must(bot, bot.walk(5, 'the first dial'), 'to the first dial');
+  await must(bot, bot.wait(READ), 'reading');
+  await bump(bot, 'bumping the first dial');
+  await must(bot, bot.walk(9, 'the ladder'), 'to the ladder');
+  await must(bot, bot.wait(READ), 'reading the climbing sign');
+  await must(bot, bot.climb('up', 2, 'up the ladder'), 'up the ladder');
+  await must(bot, bot.walk(16.6, 'along the ledge'), 'along the ledge');
+  if (alive(bot, DIAL_ON) !== 2 || alive(bot, DIAL_OFF) !== 1) throw new Error('level 2: two dials should be on, one off');
+  await must(bot, bot.walk(20, 'the third dial'), 'to the third dial');
+  await must(bot, bot.wait(READ), 'reading the sign about staying on');
+  if (alive(bot, LAMP) !== 1) throw new Error('level 2: the lamp should still be dark with a dial off');
+  await bump(bot, 'bumping the third dial');
+  if (alive(bot, DIAL_OFF) !== 0) throw new Error('level 2: all three dials should be on');
+  await until(bot, () => alive(bot, LAMP) === 0, 1500, 'the spark reaching the lamp');
+  await must(bot, bot.walk(23.5, 'under the post'), 'to the post');
+  await takeLight(bot, 24);
+  await must(bot, bot.walk(27, 'the light sign'), 'to the sign');
+  await must(bot, bot.wait(READ), 'reading');
+  await must(bot, bot.walk(36.5, 'the coins'), 'to the coins');
+  coins(bot, score, 8, 'level 2 before the gate');
+  await leave(bot, bot.walk(39, 'the gate'), 'the gate');
 }
 
 export { ORIGIN };
