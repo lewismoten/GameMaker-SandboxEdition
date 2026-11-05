@@ -9,16 +9,7 @@
 import type { Result, StarterBot } from '../../kit/starter/bot';
 import { ORIGIN } from '../../kit/starter/map';
 import { SCAN, SEQ } from '../../kit/starter/ids';
-import {
-  HOUSE_COINS,
-  HOUSE_LANDING,
-  KEY_BLOCK,
-  TOWN_BLOCK,
-  TOWN_LANDING,
-  TOWN_YARD,
-  WORLD_BESIDE,
-  type Spot,
-} from '../src/levels';
+import { HOUSE_COINS, HOUSE_LANDING, KEY_BLOCK, TOWN_BLOCK, TOWN_LANDING, TOWN_YARD, WORLD_BESIDE, type Spot } from '../src/levels';
 
 type Key = 'left' | 'right' | 'up' | 'down';
 
@@ -42,7 +33,6 @@ const COIN = 10;
 
 /** Which sequence the engine is playing (the hero's sequence for a key: SEQ.up, SEQ.down, and so on). */
 const sequenceOf = (bot: StarterBot): number => (bot.sim as unknown as { w: { chr: { cseq: number } } }).w.chr.cseq;
-const SEQ_OF: Record<Key, number> = { left: SEQ.left, right: SEQ.right, up: SEQ.up, down: SEQ.down };
 
 /** Holds `key` until the hero stops moving (a wall), then lets go. Returns where he stopped (level pixels). */
 async function bump(bot: StarterBot, key: Key, what: string): Promise<{ x: number; y: number }> {
@@ -59,25 +49,6 @@ async function bump(bot: StarterBot, key: Key, what: string): Promise<{ x: numbe
   bot.sim.release(SCAN[key]);
   if (still < 6) throw new Error(`${what}: never stopped`);
   return last;
-}
-
-/** Holds `key` for a few ticks and checks the hero is playing that key's walking sequence (his picture faces that way). */
-async function face(bot: StarterBot, key: Key): Promise<void> {
-  const from = bot.px;
-  bot.sim.press(SCAN[key]);
-  await must(bot, bot.wait(12), `facing ${key}`);
-  const seq = sequenceOf(bot);
-  bot.sim.release(SCAN[key]);
-  if (seq !== SEQ_OF[key]) throw new Error(`${key} should play sequence ${SEQ_OF[key]}, not ${seq}`);
-  const p = bot.px;
-  const moved = { left: from.x - p.x, right: p.x - from.x, up: from.y - p.y, down: p.y - from.y }[key];
-  if (moved < 10) throw new Error(`${key} should walk him; he moved ${moved} pixels`);
-  await must(bot, bot.land(), `stopping after ${key}`);
-}
-
-function coins(bot: StarterBot, from: number, n: number, what: string): void {
-  const got = (bot.sim.ci.score - from) / COIN;
-  if (got !== n) throw new Error(`${what}: ${got} of ${n} coins`);
 }
 
 /** After a link: he must be standing on `cell` (his landing cell), in the idle pose. */

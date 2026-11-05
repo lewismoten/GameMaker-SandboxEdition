@@ -72,14 +72,17 @@ export interface Links {
 }
 
 /** The block set, then every sign in it. */
-export function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign>; ground: Ground & { land: import('@lewismoten/gamemaker-sandbox-tools/kit/pixels').Pixels } } {
+export function buildBlocks(pal: Pal): {
+  book: Book;
+  signs: Record<SignName, Sign>;
+  ground: Ground & { land: import('@lewismoten/gamemaker-sandbox-tools/kit/pixels').Pixels };
+} {
   const book = new Book('bbl');
   const over = addOverBlocks(book, pal);
   const { land } = addWorldBlocks(book, pal, over.grass);
   const ground = { ...over, land };
   const signs = {} as Record<SignName, Sign>;
-  for (const [key, [name, words, w, h, on]] of Object.entries(SIGNS))
-    signs[key as SignName] = addGroundSign(book, pal, on, ground[on], name, words, w, h);
+  for (const [key, [name, words, w, h, on]] of Object.entries(SIGNS)) signs[key as SignName] = addGroundSign(book, pal, on, ground[on], name, words, w, h);
   return { book, signs, ground };
 }
 
@@ -149,8 +152,12 @@ const TOWN_LEGEND: Record<string, string> = {
 
 /** A house 3 blocks wide and 2 high with its top left at (x, y): a plain wall, or a door in the middle. */
 function house(g: Grid, x: number, y: number, door: boolean): void {
-  g.put(x, y, 'x').put(x + 1, y, 'y').put(x + 2, y, 'z');
-  g.put(x, y + 1, 'l').put(x + 1, y + 1, door ? 'h' : 'm').put(x + 2, y + 1, 'n');
+  g.put(x, y, 'x')
+    .put(x + 1, y, 'y')
+    .put(x + 2, y, 'z');
+  g.put(x, y + 1, 'l')
+    .put(x + 1, y + 1, door ? 'h' : 'm')
+    .put(x + 2, y + 1, 'n');
 }
 
 /** The town: a ring of trees, a main street from the south gate, a cross street, four plain houses and one with a gated yard. */

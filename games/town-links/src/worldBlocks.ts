@@ -112,7 +112,9 @@ function townTile(pal: Pal, land: Pixels): Pixels {
     [7, 11],
   ];
   homes.forEach(([x, y], i) => {
-    p.rect(x, y, 7, 5, ink).rect(x + 1, y + 1, 5, 2, roof[i % 4][3]).rect(x + 1, y + 3, 5, 1, wall[3]);
+    p.rect(x, y, 7, 5, ink)
+      .rect(x + 1, y + 1, 5, 2, roof[i % 4][3])
+      .rect(x + 1, y + 3, 5, 1, wall[3]);
     p.rect(x + 1, y + 1, 5, 1, roof[i % 4][4]);
   });
   // the flag on a pole
@@ -126,7 +128,9 @@ function worldKey(pal: Pal, land: Pixels): Pixels {
   const g = pal.r('gold');
   const p = land.crop(0, 0, N, N);
   const key = (dx: number, dy: number, lit: number) => {
-    p.disc(4.5 + dx, 5.5 + dy, 3.3, ink).disc(4.5 + dx, 5.5 + dy, 2.4, g[lit]).disc(4.5 + dx, 5.5 + dy, 0.9, ink);
+    p.disc(4.5 + dx, 5.5 + dy, 3.3, ink)
+      .disc(4.5 + dx, 5.5 + dy, 2.4, g[lit])
+      .disc(4.5 + dx, 5.5 + dy, 0.9, ink);
     p.rect(7 + dx, 4 + dy, 9, 3, ink).rect(7 + dx, 5 + dy, 8, 1, g[lit]);
     p.rect(12 + dx, 7 + dy, 2, 3, ink).rect(12 + dx, 7 + dy, 1, 2, g[lit]);
     p.rect(15 + dx, 7 + dy, 2, 2, ink).rect(15 + dx, 7 + dy, 1, 1, g[lit]);
@@ -162,8 +166,7 @@ export function addGroundSign(book: Book, pal: Pal, ground: string, under: Pixel
   return { board: sign.board, legs };
 }
 
-const onto = (pic: Pixels, pal: Pal, under: Pixels): Pixels =>
-  pic.crop(0, 0, pic.w, pic.h).map((x, y, c) => (c === skyOf(pal) ? under.get(x % N, y % N) : c));
+const onto = (pic: Pixels, pal: Pal, under: Pixels): Pixels => pic.crop(0, 0, pic.w, pic.h).map((x, y, c) => (c === skyOf(pal) ? under.get(x % N, y % N) : c));
 
 /** Adds the world's blocks and the gate; returns the plain land block's picture (what world signs stand on). */
 export function addWorldBlocks(book: Book, pal: Pal, townGround: Pixels): { land: Pixels } {
@@ -200,9 +203,10 @@ export function buildTinyHeroBlocks(pal: Pal, big: Book): Book {
             [1, 0],
             [0, 1],
             [1, 1],
-          ])
-            {const c = src.get(x * 2 + dx, y * 2 + dy);
-            if (c !== 255 && (best === 255 || c === pal.c('ink', 0))) best = c;}
+          ]) {
+            const c = src.get(x * 2 + dx, y * 2 + dy);
+            if (c !== 255 && (best === 255 || c === pal.c('ink', 0))) best = c;
+          }
           p.set(5 + x, 8 + y, best);
         }
       book.add(`${f}.${s}`, p);

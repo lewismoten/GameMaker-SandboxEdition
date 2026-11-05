@@ -35,7 +35,9 @@ export function titlePicture(pal: Pal, above: Pixels, tiny: Pixels, name: string
   // 1: the world, a sea round a green country, the town one dot of roofs, Kit tiny
   let x = frame(0, c('blue', 2));
   p.rect(x + 6, py + 6, pw - 12, ph - 12, c('grass', 3)).rect(x + 6, py + ph - 9, pw - 12, 3, c('parch', 3));
-  p.rect(x + 28, py + 12, 7, 4, c('ink', 0)).rect(x + 29, py + 13, 5, 2, c('red', 3)).rect(x + 29, py + 8, 1, 5, c('ink', 0));
+  p.rect(x + 28, py + 12, 7, 4, c('ink', 0))
+    .rect(x + 29, py + 13, 5, 2, c('red', 3))
+    .rect(x + 29, py + 8, 1, 5, c('ink', 0));
   scaleBlit(p, tiny, x + 12, py + 20, 1);
   // 2: the town, streets and bigger roofs
   x = frame(1, c('grass', 3));
@@ -45,12 +47,18 @@ export function titlePicture(pal: Pal, above: Pixels, tiny: Pixels, name: string
     [x + 36, py + 5, 'blue'],
     [x + 36, py + 34, 'orange'],
   ] as const)
-    p.rect(hx, hy, 14, 10, c('ink', 0)).rect(hx + 1, hy + 1, 12, 5, c(ramp, 3)).rect(hx + 1, hy + 6, 12, 3, c('parch', 3)).rect(hx + 6, hy + 6, 3, 4, c('wood', 2));
+    p.rect(hx, hy, 14, 10, c('ink', 0))
+      .rect(hx + 1, hy + 1, 12, 5, c(ramp, 3))
+      .rect(hx + 1, hy + 6, 12, 3, c('parch', 3))
+      .rect(hx + 6, hy + 6, 3, 4, c('wood', 2));
   scaleBlit(p, above, x + 3, py + 18, 1);
   // 3: a room, floor, a bed and a rug, Kit large
   x = frame(2, c('wood', 3));
   for (let yy = 4; yy < ph; yy += 5) p.rect(x, py + yy, pw, 1, c('wood', 2));
-  p.rect(x + 28, py + 12, 20, 18, c('red', 2)).frame(x + 28, py + 12, 20, 18, c('red', 0)).rect(x + 4, py + 5, 10, 22, c('green', 2)).frame(x + 4, py + 5, 10, 22, c('wood', 1));
+  p.rect(x + 28, py + 12, 20, 18, c('red', 2))
+    .frame(x + 28, py + 12, 20, 18, c('red', 0))
+    .rect(x + 4, py + 5, 10, 22, c('green', 2))
+    .frame(x + 4, py + 5, 10, 22, c('wood', 1));
   scaleBlit(p, above, x + 7, py + 2, 2);
   // the arrows between them
   for (const i of [0, 1]) {

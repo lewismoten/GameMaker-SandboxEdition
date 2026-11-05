@@ -31,21 +31,9 @@
       "Made to be copied and taken apart"
     ],
     "shots": [
-      [
-        "world.map",
-        0,
-        0
-      ],
-      [
-        "town.map",
-        8,
-        12
-      ],
-      [
-        "house.map",
-        1,
-        0
-      ]
+      ["world.map", 0, 0],
+      ["town.map", 8, 12],
+      ["house.map", 1, 0]
     ],
     "rating": "Everyone"
   }

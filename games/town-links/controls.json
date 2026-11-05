@@ -38,5 +38,7 @@
     "10": "Getting hurt",
     "11": "Falling over"
   },
-  "counters": {}
+  "counters": {
+    "21": "Keys: two from the world map; the yard gate takes one."
+  }
 }
