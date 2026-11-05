@@ -1,0 +1,47 @@
+{
+  "title": "Looks Like a Wall",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.0",
+  "blurb": "Three short levels about walls that aren't what they look like. A real wall and a picture of a wall can be drawn exactly alike, and only one stops Kit. A touch can turn a block into a second block, and that one into a third, so a wall cracks and then crumbles. A fair secret gets a hint: coins showing in a wall. Signs say how. Play it, then open it in Game-Maker and change a block's setting.",
+  "exe": "SECRET.EXE",
+  "dosName": "LOOKWALL",
+  "sound": "sb",
+  "label": {
+    "background": "#e8ecf5",
+    "band": "#6a4a8a",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "3 short levels",
+    "hours": 1,
+    "background": "#6a4a8a",
+    "accent": "#ffd23f",
+    "ink": "#ffffff",
+    "tagline": "Walk into the wall.",
+    "back": "A small explorer in a teal beanie has three short levels, and brick walls in the way each time. One wall is real and stops him. The next is only a picture of a wall, and he walks through it. A wall can crack when it is touched, and crumble when it is touched again, and a few coins showing in a wall hint at a secret. Read the signs, then open the game in Game-Maker and change a block's setting.",
+    "features": [
+      "Signs in the levels explain each idea",
+      "Solid is a setting of the block, not part of its picture",
+      "A touch can turn a block into another, and that one into a third",
+      "Made to be copied and taken apart"
+    ],
+    "shots": [
+      [
+        "one.map",
+        28,
+        6
+      ],
+      [
+        "three.map",
+        24,
+        6
+      ]
+    ],
+    "rating": "Everyone"
+  }
+}
