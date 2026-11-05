@@ -2,7 +2,7 @@
 // selection), see four real renders from a seed, pick one. The layouts only ever write ordinary cells,
 // as one undo step. The dialog fits a 375 by 812 phone without scrolling: two rows of previews,
 // and the Missing roles panel folds away when everything needed is set.
-import { h, modal } from '../../../core/ui';
+import { h, modal, toast } from '../../../core/ui';
 import type { Project } from '../../../core/project';
 import { BLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
@@ -15,6 +15,7 @@ import { loadBrushes } from '../tools/brushStore';
 import type { Terrain } from '../tools/autotile';
 import type { MapSelection } from '../tools/selection';
 import { missingRoles } from './missingRoles';
+import { makeScenes, planScenes } from './makeScenes';
 import { WHOLE, offers, usableMonsters, type Offer } from './place';
 import { NOT_CHECKED, NOT_CHECKED_SIDE } from './verifyOffer';
 import type { BotRun } from './platformBot';
@@ -38,6 +39,8 @@ export interface GenerateHost {
   wrap?: () => boolean;
   /** The hero's character file and its blocks, and the monster blocks, as the scene names them (a side view is sized to his jump). */
   hero?: { chr: string; cbl?: string; mbl?: string };
+  /** The scene that plays this map (the first one), which the new scenes link to and from; without it nothing can be made. */
+  scene?: number;
   /** Puts the chosen layout into the map as one undo step; `withMonsters` is the result whose monsters to place too. */
   apply: (blocks: Uint8Array, what: string, withMonsters?: GenResult) => void;
 }
@@ -89,6 +92,8 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
   let inSelection = canUseSel;
   let seed = Math.floor(Math.random() * 1e6);
   let chosen = 0;
+  /** The Make these scenes step is showing its question (not undoable, so it asks first). */
+  let asking = false;
   const monsterIds = usableMonsters(host.monsters());
   let addMonsters = monsterIds.length > 0;
   let current: Offer[] = [];
@@ -213,6 +218,7 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
       diffRow.hidden = kind !== 'platform';
       diffText.textContent = `Difficulty: ${difficulty}%`;
       botRun++;
+      asking = false;
       running?.cancel();
       current = n.ok
         ? offers(host.blocks(), roles, terrains, kind, seed, r, {
@@ -247,6 +253,7 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
               'aria-label': offerName(i, chipInfo, o),
               onclick: () => {
                 chosen = i;
+                asking = false;
                 pick();
               },
             },
@@ -274,6 +281,66 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
         return `${asks} Not proven: the reach model says it can be done, but the bot could not follow the route: ${b.why} ${NOT_CHECKED_SIDE}`;
       return `${asks} Verified: reachable by jump math (the hero's own walk and jump read from his character file), and every coin, the key and the heart can be touched.${host.hero ? (b === 'playing' ? ' A bot is playing it now.' : '') : ''} ${NOT_CHECKED_SIDE}`;
     }
+    /** The links box: the proposed doors and sites, and the Make these scenes step (a question first, since scenes are not one Undo). */
+    function linkParts(o: Offer, res: GenResult): HTMLElement[] {
+      const list = h(
+        'ul',
+        { class: 'gen-link-list' },
+        ...res.links.map((l) => h('li', null, `${l.label} at ${cellText(res.rect, l.cell)}: ${LINK_TARGET[l.kind]}`)),
+      );
+      if (host.scene === undefined || host.project.readOnly)
+        return [h('p', { class: 'meta' }, 'Suggestions only: make a scene for each and link the door or site yourself.'), list];
+      const plan = planScenes(host.project.game(), host.scene, res, roles);
+      const skipped = plan.skipped.length ? ` Left out: ${plan.skipped.map((s) => `${s.label} (${s.why})`).join('; ')}.` : '';
+      if (!asking) {
+        const ask = h('button', { type: 'button', disabled: !plan.make.length, onclick: () => ((asking = true), pick()) }, 'Make these scenes…');
+        return [
+          h(
+            'p',
+            { class: 'meta' },
+            `Suggestions: make a scene for each and link the door or site yourself, or have them made for you.${plan.make.length ? '' : skipped}`,
+          ),
+          list,
+          ask,
+        ];
+      }
+      const go = h(
+        'button',
+        { type: 'button', class: 'primary', onclick: () => make(o, res) },
+        `Draw this layout and make ${plan.make.length} scene${plan.make.length === 1 ? '' : 's'}`,
+      );
+      return [
+        h(
+          'p',
+          { class: 'meta', role: 'status' },
+          `This draws the layout (Undo takes it back), then adds ${plan.make.length} scene${plan.make.length === 1 ? '' : 's'} for ${plan.make.map((m) => m.link.label).join(', ')}. Each gets its own map drawn in the same block set, and a link each way: the door leads in, and the way back arrives beside the door. New scenes are not part of Undo; remove them in the Integrator.${skipped}`,
+        ),
+        h('div', { class: 'toolbar' }, go, h('button', { type: 'button', onclick: () => ((asking = false), pick()) }, 'Back')),
+      ];
+    }
+    /** Draws the layout, then makes the scenes and saves the game. */
+    function make(o: Offer, res: GenResult): void {
+      if (!o.blocks || host.scene === undefined) return;
+      host.apply(o.blocks, `${kindInfo(kind).label} layout`, addMonsters && !NO_MONSTERS.has(kind) ? res : undefined);
+      const game = host.project.game();
+      const out = makeScenes({
+        game,
+        hostScene: host.scene,
+        result: res,
+        roles,
+        terrains,
+        bg: host.blockSet(),
+        seed: o.seed,
+        has: (n) => host.project.files.has(n),
+        put: (n, b) => host.project.files.set(n, b),
+      });
+      host.project.saveGame(game);
+      const left = out.skipped.length ? ` Left out ${out.skipped.length}: ${out.skipped.map((s) => `${s.label} (${s.why})`).join('; ')}.` : '';
+      toast(
+        `Layout drawn and ${out.made.length} scene${out.made.length === 1 ? '' : 's'} made (${out.made.map((m) => m.label).join(', ')}). Undo takes back the layout, not the scenes.${left}`,
+      );
+      close(undefined);
+    }
     function pick(): void {
       buttons.forEach((b, i) => b.setAttribute('aria-pressed', String(i === chosen)));
       const o = current[chosen];
@@ -284,11 +351,8 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
       const res = o.outcome.result;
       if (res.links.length) {
         linksBox.hidden = false;
-        linksBox.replaceChildren(
-          h('summary', null, `Links to make (${res.links.length})`),
-          h('p', { class: 'meta' }, 'Suggestions only: make a scene for each and link the door or site yourself.'),
-          h('ul', { class: 'gen-link-list' }, ...res.links.map((l) => h('li', null, `${l.label} at ${cellText(res.rect, l.cell)}: ${LINK_TARGET[l.kind]}`))),
-        );
+        linksBox.replaceChildren(h('summary', null, `Links to make (${res.links.length})`), ...linkParts(o, res));
+        if (asking) linksBox.open = true;
       }
       const furnished = res.furniture.length > 0 || kind === 'home' || kind === 'shop';
       const has = [

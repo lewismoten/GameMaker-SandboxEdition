@@ -1364,6 +1364,7 @@ registerEditor(['map'], (host, project, file) => {
             blockSet: () => bg,
             monsters: () => mons,
             wrap: () => wrapping,
+            scene: set.scenes[0],
             hero: set.chr && project.files.has(set.chr) ? { chr: set.chr, cbl: set.cbl, mbl: mblName } : undefined,
             apply: (blocks, _what, withMonsters) => {
               remember();
