@@ -79,6 +79,7 @@ const sources = {
   'kit/fadeOut': 'kit/fadeOut',
   'kit/fliClips': 'kit/fliClips',
   'kit/fliShrink': 'kit/fliShrink',
+  'kit/levelGrid': 'kit/levelGrid',
   'kit/recordedDemo': 'kit/recordedDemo',
   'kit/hopBot': 'kit/hopBot',
   'kit/align': 'kit/align',
