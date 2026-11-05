@@ -145,7 +145,7 @@ function shortAndLong(pal: Pal): Level {
   m.sign(42, onGround(GROUND, signs.music), signs.music);
   for (const x of PAD_X.short) m.set(x, GROUND - 1, 'pad.short');
   for (const x of PAD_X.long) m.set(x, GROUND - 1, 'pad.long');
-  return { file: 'one', title: 'Short and Long', hint: 'Step on each pad. Listen to the music.', map: m, book, timed: [] };
+  return { file: 'one', title: 'Short and Long', hint: 'Step on each pad. Hear the music.', map: m, book, timed: [] };
 }
 
 /** Level 2: 36 friendly monsters on one screen: 10 gumdrops on the ground, 8 snails on a plank and 18 bees in three rows. */

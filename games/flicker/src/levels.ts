@@ -300,7 +300,7 @@ function fireOnTheHill(): Level {
   }
   m.sign(6, onGround(signs.fire), signs.fire);
   m.sign(30, onGround(signs.sparks), signs.sparks);
-  return { file: 'camp', title: 'The Fire on the Hill', hint: 'A big fire and the sparks it throws.', pal, palFile: 'night.pal', book, timed, map: m, things };
+  return { file: 'camp', title: 'The Fire on the Hill', hint: 'A big fire and its sparks.', pal, palFile: 'night.pal', book, timed, map: m, things };
 }
 
 /** The levels in order. */

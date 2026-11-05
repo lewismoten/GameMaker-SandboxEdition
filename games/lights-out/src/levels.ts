@@ -271,7 +271,7 @@ function lightYourWay(): Level {
   return {
     file: 'tunnel',
     title: 'Light Your Way',
-    hint: 'A tunnel that lights where you touch.',
+    hint: 'Touch the tunnel to light it.',
     pal: built.pal,
     palFile: 'cave.pal',
     book: built.book,

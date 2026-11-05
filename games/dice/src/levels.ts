@@ -125,7 +125,7 @@ function rollTheDice(pal: Pal): Level {
   m.sign(10, onGround(GROUND, signs.touch), signs.touch);
   m.sign(19, onGround(GROUND, signs.even), signs.even);
   m.sign(28, onGround(GROUND, signs.odd), signs.odd);
-  return { file: 'one', title: 'Roll the Dice', hint: 'The face you stop on picks the door.', map: m, book, timed };
+  return { file: 'one', title: 'Roll the Dice', hint: 'Your roll picks the door.', map: m, book, timed };
 }
 
 /** The palette and the levels in order. */
