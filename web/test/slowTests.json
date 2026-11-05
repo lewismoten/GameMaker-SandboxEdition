@@ -8,20 +8,20 @@
     "src/editor/check/fastBirth.test.ts",
     "src/editor/check/regressions.test.ts",
     "src/editor/check/walk/autoWalk.test.ts",
+    "src/editor/check/walk/sceneOutcomeDiagnostics.test.ts",
     "src/engine/playEnd.test.ts",
+    "src/export/exportDosDiz.test.ts",
     "src/export/singlePageFile.test.ts",
+    "src/infiniteMotion.test.ts",
     "src/library/libraryMusic.test.ts",
-    "src/manual/printables/levelSecrets.test.ts",
     "src/manual/printables/levelViews.test.ts",
     "src/retro/text/textScreenRender.test.ts",
     "test/cdBackdrops.test.ts",
-    "test/fliRuns.test.ts",
     "test/gif.test.ts",
     "test/goatTrinket.test.ts",
     "test/integratorLayout.test.ts",
     "test/monsterPathEngine.test.ts",
     "test/music.test.ts",
-    "test/newGameSave.test.ts",
     "test/textfitMore.test.ts",
     "test/versionDisks.integration.test.ts"
   ],
@@ -55,17 +55,11 @@
       "composeBadge Teddy's title ribbon has no sky or cloud between the letters",
       "ink: a solid ribbon behind the lettering shows no picture between or inside the letters of any badge that names its ink"
     ],
-    "src/dosPlayer/applyPatches.test.ts": [
-      "applyPlayerPatches refuses any other file, and every patch that breaks the rules"
-    ],
     "src/dosPlayer/fileExtensions.test.ts": [
       "the player’s extensions patches every copy of each kind, and only those bytes"
     ],
     "src/dosPlayer/gamePlayers.test.ts": [
       "games/<id>/player.json each keeps the rules"
-    ],
-    "src/dosPlayer/playerOrigin.test.ts": [
-      "the imported player record writes a 3.00 player’s own bytes back in the DOS download, byte for byte"
     ],
     "src/editor/check/checks.test.ts": [
       "the level check’s file checks reports a whole game, play included"
@@ -91,6 +85,9 @@
     "src/editor/editors/palette/colorVision.test.ts": [
       "warnings lists touching colors that look alike, and shows where",
       "warnings says nothing about colors that already look alike (texture) or far apart in every view",
+      "warnings finds a monster the color of the scenery it stands in",
+      "warnings finds ramp steps too close to see, and evens them out",
+      "fixes relights one color so the pair parts in every view, as ordinary palette data",
       "fixes offers no fix that would make another level worse"
     ],
     "src/editor/editors/recording/botDemo.test.ts": [
@@ -99,12 +96,24 @@
     ],
     "src/editor/editors/registry.test.ts": [
       "loadEditor gam: loads its editor",
+      "loadEditor pal: loads its editor",
       "loadEditor bbl: loads its editor",
+      "loadEditor mon: loads its editor",
+      "loadEditor chr: loads its editor",
       "loadEditor map: loads its editor",
+      "loadEditor fli: loads its editor",
       "loadEditor cmf: loads its editor",
       "loadEditor rec: loads its editor"
     ],
+    "src/editor/shell/deepIndex.test.ts": [
+      "deep index finds words in files and widens as games arrive",
+      "deep index uses the cache the next time, without reading the game",
+      "deep index still works when the store is broken",
+      "deep index keeps going when one game cannot be read",
+      "deep index a locked secret game never matches, an unlocked one does, even with it cached"
+    ],
     "src/editor/tools/opening/opening.test.ts": [
+      "the classic RSD intro is the CD’s RSDTBOX.FLI, written into the game byte for byte",
       "the classic RSD intro shows the same pictures as TEXTBOX3.FLI (they differ only in a color no pixel of theirs uses)",
       "the opening in a new game animation: madewith.fli 0 in a new TITLE.LST",
       "the opening in a new game animation with a name: madewith.fli 0, presents.fli 0 in a new TITLE.LST",
@@ -126,6 +135,8 @@
       "linuxApp writes scripts the shell accepts, which install, fall back to the browser, and uninstall"
     ],
     "src/export/macApp.test.ts": [
+      "iso9660 writes a volume with Rock Ridge names, modes and links",
+      "udif compresses a disk into chunks and ends with the koly trailer",
       "macApp re-seals the player for the app’s Info.plist and resources",
       "macApp zips the app with the program executable",
       "macApp makes an app codesign verifies"
@@ -137,6 +148,9 @@
       "winApp puts the game, its info, icon and version into the program (x64 and arm64)",
       "winApp zips the program",
       "winIcon makes an .ico file with bitmaps and PNGs"
+    ],
+    "src/firstLoad.test.ts": [
+      "what loads up front desk/desk.ts doesn't bring in the magazine or the level check"
     ],
     "src/formats/delta.test.ts": [
       "version deltas stores a changed block of a big binary file as a few bytes and rebuilds it exactly"
@@ -176,6 +190,10 @@
       "on the real disks prints no planet of Maximus with a slab of bedrock under its floor, only one line of it",
       "on the real disks keeps marks of every level inside its crop"
     ],
+    "src/manual/printables/levelSecrets.test.ts": [
+      "Level Maps keep the secrets lists the blocks the games’ about.json and disks hide (else rerun scripts/levelSecrets.ts), never a secret game",
+      "Level Maps keep the secrets never draws or marks a tin heart, an Easter egg or a felt egg"
+    ],
     "src/manual/printables/levelStates.test.ts": [
       "Depth Perception prints each world once, its near and far planes together, every mark of both kept"
     ],
@@ -190,7 +208,8 @@
       "only real play of a catalog game counts hooks catalog games only, never a game of your own or a download"
     ],
     "src/seo/seoPages.test.ts": [
-      "seoBuild makes each Guide section a page of its own that opens it in the app"
+      "seoBuild makes each Guide section a page of its own that opens it in the app",
+      "seoBuild gives every game page its own title, canonical address, picture with alt text, VideoGame data and one h1"
     ],
     "src/tinHearts/hearts.test.ts": [
       "tin hearts finds maximus's heart on its disk, and the engine reports touching it"
@@ -202,8 +221,13 @@
       "shot frames blaster: each frame is the screen its walkthrough's replay shows then",
       "shot frames year2000: each frame is the screen its walkthrough's replay shows then"
     ],
+    "test/agentGuards.test.mjs": [
+      "heavy waits while the load is over the limit",
+      "heavy waits for a slot when both are held",
+      "hooks each script exits 2 with a reason to block, 0 otherwise and on bad input, and is quick"
+    ],
     "test/bbsGallery.test.ts": [
-      "GIF Gallery files CHEZ.JPG is a 1994 download: 8.3 name, 320x200 or smaller, small"
+      "GIF Gallery files DOGHOUSE.JPG is a 1994 download: 8.3 name, 320x200 or smaller, small"
     ],
     "test/cmfEdit.test.ts": [
       "CMF editing model writes every song on the CD back byte for byte",
@@ -221,6 +245,13 @@
     ],
     "test/exportDos.test.ts": [
       "DOS export names the stand-alone player after the game and keeps its files intact"
+    ],
+    "test/exportInside.test.ts": [
+      "Inside this game sandcast: every file comes back from the page byte for byte",
+      "Inside this game goat: every file comes back from the page byte for byte",
+      "Inside this game previews animations and sounds, and keeps the originals",
+      "Inside this game with previews off: no animation or sound previews, everything else stays",
+      "Inside this game reports how much the page grows per game"
     ],
     "test/fliFrames.test.ts": [
       "fli frames re-encodes every CD animation frame for frame"
@@ -252,6 +283,9 @@
     "test/gameShots.test.ts": [
       "the build's game pictures draws a game its tile and screen pictures"
     ],
+    "test/gmRegistration.test.ts": [
+      "GMCRACK’s answer table lists every question, fitting 80 columns and the screen"
+    ],
     "test/hexStructure.test.ts": [
       "HEXEDIT structure maps .gam values match the parser",
       "HEXEDIT structure maps .map values match the parser",
@@ -259,6 +293,9 @@
       "HEXEDIT structure maps .mbl values match the parser",
       "HEXEDIT structure maps .cbl values match the parser",
       "HEXEDIT structure maps .mon values match the parser"
+    ],
+    "test/jpeg.test.ts": [
+      "JPEG fills a baseline file in top to bottom as it arrives"
     ],
     "test/kitPhoto.test.ts": [
       "games/kit/photo loads every scan the games use"
@@ -293,7 +330,11 @@
       "the dial parts prints dial-cam as one piece with no specks",
       "the dial parts prints dial-spring as one piece with no specks",
       "the dial parts prints dial-base as one piece with no specks",
-      "the dial parts prints dial-stop as one piece with no specks"
+      "the dial parts prints dial-stop as one piece with no specks",
+      "the dial parts prints dial-bushing as one piece with no specks"
+    ],
+    "test/recorderWaits.test.ts": [
+      "demo playback across key-reading screens Linear Volume's own demo plays past its drop screen (it once waited for Enter forever)"
     ],
     "test/sampleEdit.test.ts": [
       "sound groups sorts made-up sounds by their shape"
@@ -301,10 +342,8 @@
     "test/saveLevel.test.ts": [
       "changing a saved game’s level teddy: every level loads at its start, keeping what the hero has",
       "changing a saved game’s level teddy2: every level loads at its start, keeping what the hero has",
-      "changing a saved game’s level snowbound: every level loads at its start, keeping what the hero has",
       "changing a saved game’s level sandcast: every level loads at its start, keeping what the hero has",
-      "changing a saved game’s level year2000: every level loads at its start, keeping what the hero has",
-      "changing a saved game’s level goat: every level loads at its start, keeping what the hero has"
+      "changing a saved game’s level year2000: every level loads at its start, keeping what the hero has"
     ],
     "test/secretGames.test.ts": [
       "the build and secret games lists them only in the secret catalog"
