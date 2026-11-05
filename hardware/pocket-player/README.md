@@ -1,12 +1,31 @@
 # Pocket Player
 
-Firmware for the ESP32-3248S035 board (3.5 inch, 480 by 320, ST7796, GT911 capacitive touch). It plays **69 of the Starter games** from the games' real DOS files, packed small into LittleFS (`web/scripts/pocketData.ts`), with a game list, touch controls for fingers and a stylus, a settings screen and a status strip. It plays each game's **PC speaker sounds** (no Sound Blaster clips or music yet).
+Firmware for two boards: the ESP32-3248S035 (3.5 inch, 480 by 320, ST7796, GT911 capacitive touch) and the smaller ESP32-2432S028 (2.8 inch, 320 by 240, resistive touch; see "The 2.8 inch board" below). The rest of this README describes the first board unless it says otherwise. It plays **69 of the Starter games** from the games' real DOS files, packed small into LittleFS (`web/scripts/pocketData.ts`), with a game list, touch controls for fingers and a stylus, a settings screen and a status strip. It plays each game's **PC speaker sounds** (no Sound Blaster clips or music yet).
 
 The flashed firmware binaries' third-party notices are in [`web/public/pocket/fw/NOTICES.txt`](../../web/public/pocket/fw/NOTICES.txt). Keep that file with the firmware image set when redistributing it.
 
 The play rules are `src/gmcore.h`, a port of the web engine's character, touch, scroll, block-effect and scene code (itself from `code/GM/PLAYGAME.C`) with no board code in it, so the same file runs in the Mac test. Monsters (`src/gmmon.h`, a port of the web engine's `monsters.ts`) are in. **Sound** is queued by the core as events and played by `src/speaker.h` (see Sound below). Not ported: Sound Blaster .VOC clips, FM music, the joystick. The Sandbox games with more than 12 levels or 16 links are left out; the others go on a microSD card (see below) (`npx vite-node scripts/pocketData.ts --list --series any` says why for each).
 
 Files: `src/gmcore.h` (play loop), `src/gmcards.h` (the pictures and text pages between levels, no board code), `src/gmmon.h` (monsters), `src/gmcfg.h` (a game's `.cfg` and the level file loader), `src/controls.h` (touch controls model), `src/pcspeaker.h` (the PC speaker tune player, no board code), `src/speaker.h` (GPIO 26 and the task that drives it), `src/gt911.h` (touch chip, up to 5 fingers with ids and sizes), `src/main.cpp` (files, panel, screens, drawing), `src/btnicon.h` (which picture a key's button shows: the shot or item it throws or uses), `host/hosttest.cpp`, `host/controlstest.cpp`, `host/cardstest.cpp` (Mac tests) and `host/iconsdump.cpp` (lists the picture each button gets; `web/scripts/pocketIconsShot.py` draws them). The controls are drawn into each band of the picture before it is pushed once (`drawControls` in `main.cpp`), so they never blink; a button shows its key's name big and under it the picture or the game's label, wrapped to two lines, shrunk, then cut with "...".
+
+## The 2.8 inch board (ESP32-2432S028, "Cheap Yellow Display")
+
+Two of these were identified on 2026-11-05 (printed "ESP32 2432S028" on the back): both an ESP32-D0WD-V3 (revision 3.1, dual core, 240 MHz), 4 MB flash (manufacturer 5E, device 4016), **no PSRAM**, an XPT2046 resistive touch chip on its own pins (an idle read shows pressure near 0 and the interrupt line high), no I2C touch chip (a scan finds nothing), the display on the HSPI pins and the microSD slot on VSPI. One of them (`/dev/cu.usbserial-120` at the time) had a 64 GB card in it. The display driver is the one thing a read could not settle: the panel's ID registers do not read back cleanly over the board's MISO line, so the firmware has an ILI9341 driver (the usual one), the same with inverted colors, and an ST7789 driver (the "2 USB" revision), and **Settings, Display** steps through them (it restarts). If the picture is garbled or the colors are inverted, hold the BOOT button for 2 seconds on the game list: it does the same step with no touch needed.
+
+Build and flash it (env `cyd-2432s028`; the first board's is `esp32-3248s035`, and each build writes its own folder under `.pio/build/`):
+
+```sh
+npm run heavy -- ~/.platformio/penv/bin/pio run -d hardware/pocket-player -e cyd-2432s028 -t upload --upload-port /dev/cu.usbserial-XXXX
+npm run heavy -- ~/.platformio/penv/bin/pio run -d hardware/pocket-player -e cyd-2432s028 -t uploadfs --upload-port /dev/cu.usbserial-XXXX   # the Starters, once
+```
+
+Everything but the layout is the same program (`-DPOCKET_CYD28` in `platformio.ini` picks the board in `src/board.h`, `src/screen.h`, `src/controls.h` and `src/main.cpp`). The game is drawn at 1x (320 by 200) with a 40 px status strip below it; the controls are drawn over the game at about two thirds of the big board's size, the list shows four games a page, and Settings has two pages (More). The first board's layout is unchanged (`scr::SMALL` is false there). The card, the speaker (GPIO 26) and the RGB LED (kept off) are as on the first board; the card uses the same pins.
+
+**Touch.** `src/xpt2046.h` reads the chip by bit-banging its pins (CLK 25, MOSI 32, MISO 39, CS 33, IRQ 36), so it shares no bus with the display or the card. A touch needs the interrupt line low and a pressure of at least 350 on two reads in a row; it ends after two reads without. `controls.h`'s 60 ms grace (held input) and the 3-tick minimum press sit on top of that, as on the first board. The status strip's last number is the pressure divided by 40.
+
+**Calibrate (under a minute).** The first time, the default mapping is a guess, so: on the game list press the BOOT button once (or Settings, Calibrate). Tap the cross at the top left, the top right, then the bottom left, pressing firmly and lifting. The screen then shows a dot that follows your finger: Done saves it (NVS key `pocket/cal`, it survives a reflash of the program), Redo starts over. The BOOT button cancels at any point. Taps that don't line up (two on one spot, the wrong corner) are refused and you tap again. `src/touchcal.h` works out swapped and flipped axes from the three taps; `host/touchcaltest.cpp` (run by `pocketControlsCheck.ts`) checks all eight wirings and three ranges.
+
+**Not yet checked by a person.** What a finger does (calibration, the pad and buttons, how firm a press has to be), and how the picture and colors look on each panel. Settings, Display is the knob if colors are wrong.
 
 ## Flash it from the browser
 
@@ -48,7 +67,7 @@ On the card: every file is in `/pocket/`. A game's `<file>.cfg` and `<file>.pak`
 
 **Memory (what the board check showed).** A mounted card holds about 33 KB of heap and splits the free blocks, and the heap's one long free stretch is only 110 KB (the rest of the 240 KB is in pieces under 26 KB), so a big level needs care. The firmware (1) mounts the card only while it reads (the Starters play with the heap they always had; with the card in, idle free heap is 241,696 B, largest block 110,580), (2) frees the buffers a new card level replaces, then reads that level's compressed files together with the heap emptiest, unmounts, and inflates from those, (3) loads the map first and the biggest buffers (blocks, monster pictures, hero blocks) before the small ones, and (4) on a card the packer cuts each level's hero blocks after the last one a frame shows (`cbln` lines in the `.cfg`). With that, all 15 card games load and show their cards. The tightest is a Sandbox game whose blocks, monster pictures and hero blocks add up to about 108 KB; a level over about 110 KB of those three could not load, so the packer's levels-and-links limit is not the only one.
 
-Not yet on the card: the games with more than 12 levels or more than 16 links on a level (they need levels read one at a time), Sound Blaster clips and music. The card is read at 20 MHz; a level loads in well under a second.
+The level table is not held in memory: a level's files, start, scroll limits and links are found by reading the game's `.cfg` line by line when the level is entered, so a game can have 128 levels and 24 links on a level (the card build packs seven more Sandbox games this way; logic, realm, sleuth and tuneup stay off until their host checks match the engine). Not yet on the card: Sound Blaster clips and music. The card is read at 20 MHz; a level loads in well under a second.
 
 ## Between levels
 
@@ -150,6 +169,8 @@ npm run heavy -- ~/.platformio/penv/bin/pio run -d hardware/pocket-player -t bui
 ```
 
 Then copy `bootloader.bin`, `partitions.bin`, `firmware.bin` and `littlefs.bin` from `hardware/pocket-player/.pio/build/esp32-3248s035/` into `web/public/pocket/fw/`. The offsets in `web/public/pocket/manifest.json` match `partitions.csv`: bootloader 0x1000, partitions 0x8000, firmware 0x10000, LittleFS 0x110000 (3 MB).
+
+The 3.5 inch board's browser installer (`web/public/pocket/fw/`) is for the first board only; the 2.8 inch board is flashed with `pio` as above.
 
 ## What only a board can tell
 

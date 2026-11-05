@@ -9,6 +9,7 @@
 #include <vector>
 #include <zlib.h>
 #include "gmcfg.h"
+#include "stdiolines.h"
 #include "pcspeaker.h"
 
 using namespace gm;
@@ -98,6 +99,9 @@ int main(int argc, char** argv) {
   cfgText.push_back(0);
   if (!parseCfg((const char*)cfgText.data(), w, cfg)) return 2;
   assets.attach(w, cfg, readFile, inflateRaw);
+  linesDir = dir;
+  assets.lines = &stdioLines;
+  snprintf(assets.cfgName, sizeof assets.cfgName, "%s.cfg", argv[2]);
   struct Ev { int tick, key; };
   std::vector<Ev> evs;
   FILE* f = fopen(argv[3], "r");
