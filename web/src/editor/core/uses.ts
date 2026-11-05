@@ -40,14 +40,12 @@ function slotName(project: Project, scene: number, slot: number): string {
 
 /** Every scene slot that names the file, as readable lines. */
 export function sceneUses(project: Project, file: string): Use[] {
-  return project
-    .usesOf(file)
-    .map((u) => ({
-      file: project.gam,
-      text: `${sceneName(project, u.scene)} · ${slotName(project, u.scene, u.slot).toLowerCase()}`,
-      count: 1,
-      scene: u.scene,
-    }));
+  return project.usesOf(file).map((u) => ({
+    file: project.gam,
+    text: `${sceneName(project, u.scene)} · ${slotName(project, u.scene, u.slot).toLowerCase()}`,
+    count: 1,
+    scene: u.scene,
+  }));
 }
 
 /** Slide shows (.lst) and backdrops (.bkd) that show the file. */

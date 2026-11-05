@@ -111,7 +111,7 @@ async function keepDamagedCopy(id: string, raw: unknown, name: string): Promise<
     if ((await request<unknown>(PROJECTS, 'readonly', (s) => s.get(copyId))) !== undefined) return;
     const copy =
       typeof raw === 'object' && raw
-        ? { ...(raw), id: copyId, name: `${name} (damaged copy)` }
+        ? { ...raw, id: copyId, name: `${name} (damaged copy)` }
         : { id: copyId, name: `${name} (damaged copy)`, gam: '', updated: Date.now(), files: {} };
     await request(PROJECTS, 'readwrite', (s) => s.put(copy));
   } catch {
