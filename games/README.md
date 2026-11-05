@@ -196,6 +196,11 @@ multi-block objects for `kit/align.ts`, which their checks run. The other play-t
 | your-first-game   | `npx vite-node ../games/your-first-game/tools/gendemo.ts`          | re-records the title demo (level 1 played through) into `src/demo.ts` (then rebuild)                                                          |
 | your-first-game   | `npx vite-node ../games/your-first-game/tools/demoCheck.ts`        | plays the title demo on the real engine: eight coins, the gumdrop, the exit                                                                   |
 | your-first-game   | `npx vite-node ../games/your-first-game/tools/preview.ts [dir]`    | PNGs of the blocks, the hero, each level and every picture                                                                                    |
+| pictures-and-cartoons | `npx vite-node ../games/pictures-and-cartoons/tools/check.ts` | the bot walks all three levels with every coin; then picturesCheck: pictures before and after level 1, the cartoon after level 2, a two-picture list before level 3, all 320x200 |
+| pictures-and-cartoons | `npx vite-node ../games/pictures-and-cartoons/tools/picturesCheck.ts` | each scene's intro and exit slots name real files; every GIF and FLI is 320x200; the cartoon plays under 6 seconds |
+| pictures-and-cartoons | `npx vite-node ../games/pictures-and-cartoons/tools/gendemo.ts` | re-records the title demo (level 1, to its door) into `src/demo.ts` (then rebuild) |
+| pictures-and-cartoons | `npx vite-node ../games/pictures-and-cartoons/tools/demoCheck.ts` | plays the title demo on the real engine: level 1 to its door and on to level 2 |
+| pictures-and-cartoons | `npx vite-node ../games/pictures-and-cartoons/tools/preview.ts [dir]` | PNGs of the blocks, the hero, each level, every picture and four frames of the cartoon |
 
 The felt eggs have checks of their own where a game's route never goes near one
 (`depth/tools/egg.ts`, `realm/tools/eggcheck.ts`, `sleuth/tools/check.ts --egg`). The other
