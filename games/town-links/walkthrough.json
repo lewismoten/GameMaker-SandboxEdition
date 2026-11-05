@@ -1,0 +1,109 @@
+{
+ "version": 1,
+ "game": "town-links",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "KU0UzQNI"
+  },
+  {
+   "scene": 3,
+   "keys": "KUgtyANNFM0DSA/IA0gGyChQD9ADSxTLA1A="
+  },
+  {
+   "scene": 2,
+   "keys": "KU0tzQNQD9ALSA/IA0stywNI"
+  },
+  {
+   "scene": 3,
+   "keys": "AUgtyANNFM0DSA/IA0gUyANI"
+  },
+  {
+   "scene": 4,
+   "keys": "KVA="
+  },
+  {
+   "scene": 3,
+   "keys": "KUg="
+  },
+  {
+   "scene": 4,
+   "keys": "AUseywNID8gDUA/QA003zQNII8gDUA/QA00="
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "The world map"
+  },
+  {
+   "scene": 3,
+   "title": "The town"
+  },
+  {
+   "scene": 2,
+   "title": "The world map"
+  },
+  {
+   "scene": 3,
+   "title": "The town"
+  },
+  {
+   "scene": 4,
+   "title": "The house"
+  },
+  {
+   "scene": 3,
+   "title": "The town"
+  },
+  {
+   "scene": 4,
+   "title": "The house"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 9213,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 896,
+    "time": 14933.333333333148
+   },
+   {
+    "title": "The world map",
+    "frame": 2125,
+    "time": 35416.66666666724
+   },
+   {
+    "title": "The town",
+    "frame": 2481,
+    "time": 41349.99999999971
+   },
+   {
+    "title": "The house",
+    "frame": 4667,
+    "time": 77783.33333333308
+   },
+   {
+    "title": "Ending",
+    "frame": 5931,
+    "time": 98850.00000000588
+   },
+   {
+    "title": "Credits",
+    "frame": 8139,
+    "time": 135650.0000000126
+   }
+  ]
+ }
+}

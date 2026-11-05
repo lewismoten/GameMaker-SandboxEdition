@@ -360,6 +360,8 @@ export const SCENES: Chapter = {
   ${onCd('ONEMAP')}
   <p>An overhead map is the same grid with gravity off. Each area of an overworld can be its own scene on one map with scrolling off, and a road off the edge is a link on every block it crosses, landing the hero in the middle of the next area. A door is the same kind of link.</p>
   ${onCd('OVERHEAD')}
+  <p>A world can hold a town and a town can hold a house, each its own scene with its own map file and its own pictures, so a town is one block on the world map and houses are streets wide in the town. Each way in needs a link back whose landing cell is where the hero came from, and the hero keeps his counters from scene to scene, so a key found in one can open a gate in another.</p>
+  ${onCd('TOWNLINK')}
   <h2>Laps round the wrap</h2>
   <p>The map wraps: off the right edge is the left edge, off the bottom is the top. Racing games
   in the archive put the finish line just behind the start, so the only way to reach it is all
@@ -369,6 +371,7 @@ export const SCENES: Chapter = {
   little crooked, one block over every few rows, and it wraps again and again, so a long road
   fits on one map.</p>
   ${onCd('DIAGWRAP', 'BELTWAY')}
+  ${onCd('ROADTILE')}
   <h2>Between scenes</h2>
   <p>Leaving by a link, the game fades out and shows the old scene’s exit picture, if it has
   one, then the new scene’s intro picture, and fades the new scene in. The music stops at the

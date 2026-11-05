@@ -5,7 +5,7 @@
   "series": "starter",
   "year": 1994,
   "price": "Free",
-  "version": "1.0",
+  "version": "1.1",
   "blurb": "Two short levels about going round. A truck's scenery slides past forever, rings of blocks that turn into each other and start over; then a little car drives a loop in the sky, turned a quarter at a time, and lamps count its laps until the barred door opens. Signs in the levels say how. Play it, then open it in Game-Maker and change how fast things go.",
   "exe": "BELTWAY.EXE",
   "dosName": "BELTWAY",
