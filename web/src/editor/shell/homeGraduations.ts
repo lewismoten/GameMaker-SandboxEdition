@@ -118,15 +118,16 @@ export function graduationCards(
   const all = withFinished(grades, finished);
   const out: HTMLElement[] = [];
   for (const c of [...CEREMONIES, DIPLOMA]) {
-    const state = ceremonyState(c, grades, finished);
     const game = games.find((g) => g.entry?.id === c.id);
-    if (game && state.state === 'earned') {
+    if (!game) continue; // left out by the Level filter, or not on this site yet
+    const state = ceremonyState(c, grades, finished);
+    if (state.state === 'earned') {
       const t = tile(game);
       t.dataset.grad = state.state;
       t.querySelector('.tile-select')?.setAttribute('aria-describedby', 'lib-sub-grad');
       out.push(t);
     } else if (state.state === 'locked') out.push(lockedTile(c, state, () => keepGoing(c, state, titles, all)));
-    // open: shown in readyStrip; or the game is not on this site yet: nothing to show
+    // open: shown in readyStrip
   }
   if (!out.length) return out;
   return [
