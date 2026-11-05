@@ -175,7 +175,7 @@ export function designPages(shots: GameShot[]): BookletPage[] {
       an <code>.FLI</code> animation, a <code>.TXT</code> file (30 characters to a line) or a
       <code>.LST</code> list that shows several of them in turn. Each line of a list is a file
       name and the seconds to show it.</p>
-      <p class="see"><i>On the Sample CD:</i> <code>PICTURES</code>, <code>SAYSOMTH</code> and <code>EVRYTALK</code>.</p>`,
+      <p class="see"><i>On the Sample CD:</i> <code>PICTURES</code>, <code>SAYSOMTH</code>, <code>EVRYTALK</code> and <code>CUTSCENE</code>.</p>`,
     ),
     page(
       '3. Designing Games',

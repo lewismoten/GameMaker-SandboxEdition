@@ -66,6 +66,7 @@ export const SHAREWARE: Chapter = {
   <i>Blinky 2</i>’s intro and ending, which share one map).</p>
   <p>The same one-screen room with several doors is a level select, a hub of minigames or a
   music room: each door a link to its own scene, and each scene its own song.</p>
+  ${onCd('CUTSCENE')}
   <h2>Choosing a hero by link</h2>
   <p>Leave a scene’s character slot empty and PLAYGAME keeps the character it already has. So a
   select screen whose links each lead into a copy of the first level with a different character
