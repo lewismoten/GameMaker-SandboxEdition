@@ -8,7 +8,7 @@ export const STORY = wrap(`
 
 The world goes by, and the screen never moves.
 
-A small explorer in a teal beanie walks a path in front of a countryside. Far hills creep, a town goes by faster, and a fence races past. Then the clouds drift at two speeds, and three suns fill in to open a door.
+A small explorer in a teal beanie walks a path in front of a countryside. Far hills creep, a town goes by faster, and a fence races past. Then the clouds drift at two speeds, and three suns light up one by one and open a door.
 
 Read the signs. Then open this game in Game-Maker and change how fast a band goes.
 `);
