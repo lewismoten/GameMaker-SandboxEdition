@@ -135,6 +135,11 @@ multi-block objects for `kit/align.ts`, which their checks run. The other play-t
 | slippery-and-bouncy | `npx vite-node ../games/slippery-and-bouncy/tools/gendemo.ts` | re-records the title demo (all three levels, each slide, ride and lift once) into `src/demo.ts` (then rebuild) |
 | slippery-and-bouncy | `npx vite-node ../games/slippery-and-bouncy/tools/demoCheck.ts` | plays the title demo headless: scenes 2 3 4 1 |
 | slippery-and-bouncy | `npx vite-node ../games/slippery-and-bouncy/tools/preview.ts [dir]` | PNGs of the blocks, the hero, each level and every picture |
+| who-wins | `npx vite-node ../games/who-wins/tools/check.ts` | the bot plays both levels (a wait, a star used up, two pops); no life lost |
+| who-wins | `npx vite-node ../games/who-wins/tools/bumpCheck.ts` | walking through the big one is free; pushing into the pip changes nothing |
+| who-wins | `npx vite-node ../games/who-wins/tools/gendemo.ts` | re-records the title demo into `src/demo.ts` (then rebuild) |
+| who-wins | `npx vite-node ../games/who-wins/tools/demoCheck.ts` | plays the title demo: both pips gone, no star thrown |
+| who-wins | `npx vite-node ../games/who-wins/tools/preview.ts [dir]` | PNGs of the blocks, hero, monsters, levels and pictures |
 | goat              | `npx vite-node ../games/goat/tools/check.ts`                      | the bot eats, gathers wool and screams its way to the manger                                                                                          |
 | goat              | `npx vite-node ../games/goat/tools/gendemo.ts`                    | re-records the title demo into `src/demo.ts` (then rebuild)                                                                                           |
 | mustard           | `npx vite-node ../games/mustard/tools/check.ts`                   | the bot hops the garden, digs to five drops, moves the mountain, rides the breeze                                                                     |

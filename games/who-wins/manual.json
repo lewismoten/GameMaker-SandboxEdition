@@ -1,0 +1,75 @@
+{
+  "title": "Who Wins?",
+  "howDoI": [
+    {
+      "id": "power",
+      "q": "How do I make one monster stronger than another?",
+      "scene": 2,
+      "x": 29,
+      "y": 19,
+      "level": 1
+    },
+    {
+      "id": "pop",
+      "q": "How do I make a monster pop another one by touching it?",
+      "scene": 2,
+      "x": 34,
+      "y": 19,
+      "level": 1
+    },
+    {
+      "id": "solid",
+      "q": "How do I make a monster the hero cannot walk through?",
+      "scene": 2,
+      "x": 34,
+      "y": 19,
+      "level": 1
+    },
+    {
+      "id": "star",
+      "q": "How do I choose how strong a thrown star is?",
+      "scene": 3,
+      "x": 31,
+      "y": 19,
+      "level": 2
+    },
+    {
+      "id": "stopper",
+      "q": "How do I make a monster that a thrown star cannot pop?",
+      "scene": 3,
+      "x": 29,
+      "y": 19,
+      "level": 2
+    }
+  ],
+  "pages": [
+    {
+      "head": "Welcome",
+      "html": "<h1>Welcome</h1><p><b>Who Wins?</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has two short levels and takes a couple of minutes to finish.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each thing in the levels is made.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. <kbd>Space</kbd> jumps. <kbd>Enter</kbd> throws a star. <kbd>F2</kbd> shows your lives, hit points and score. Walk into the door at the end of a level to go on.</p><p>Every monster has a <b>power</b>, one number. When two monsters touch, the one with less power is destroyed. Nothing in this game hurts you.</p>"
+    },
+    {
+      "head": "Level 1: The Big One",
+      "html": "<h1>Level 1: The Big One</h1><p>The <b>THE STRONGER ONE POPS THE WEAKER</b> sign stands in front of a brick wall with a low tunnel through it, and two small mint green gumdrops sit in the tunnel. Walk into one and Kit stops: they are solid. They do not hurt, they just do not move.</p><p>The <b>WAIT FOR THE BIG ONE</b> sign says what to do. A big red gumdrop with a gold crest walks slowly toward the tunnel. When it touches a small one, the small one pops into a sparkle and the big one walks on. Wait until both are gone, then walk through. The big one is friendly: it never hurts Kit and you can walk straight through it.</p><p>There are six coins on the way, worth ten points each.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 1 is made</h1><ul><li><b>Power.</b> Open <b>who.mon</b> in the monsters editor. Every monster has a <b>Power</b>. The mint gumdrop (called the pip) has 110, and the big red one has 180. When two monsters touch, the one with less power is destroyed and the stronger one carries on, so the big one pops each pip it reaches and is not hurt.</li><li><b>Why not 50 and 100?</b> A monster with a Power under 100 is also destroyed when the hero touches it, so Kit would pop it just by walking into it. A Power of 100 or more is safe from the hero, so only another monster can pop it.</li><li><b>A path.</b> The big one walks the path in its <b>Movement</b> settings: nine blocks to the right, then back, at a slow speed. It starts five blocks from the nearest pip and walks slowly, so Kit has time to read the signs. It is <b>Stopped by solid blocks</b>, which is why its path runs through the open tunnel.</li><li><b>Monsters that block.</b> Monsters are not solid unless their picture is. Open <b>who.mbl</b> in the blocks editor: the <b>Solid</b> boxes of <b>pip0</b> and <b>pip1</b> are ticked on every side, which holds the hero back, and they take no hit points. The big one's pictures are not solid and take none either.</li><li><b>The pop.</b> The pip's <b>When destroyed it becomes</b> is the sparkle, so a popped pip twinkles for a moment and is gone.</li><li><b>The tunnel.</b> Open <b>one.map</b> in the map editor. It is two blocks high, the hero's own height, cut through a wall of brick that goes up to the top of the room, so there is no way over the pips.</li><li><b>The signs.</b> Each sign is a few ordinary blocks side by side, with the words drawn in their pictures.</li></ul>"
+    },
+    {
+      "head": "Level 2: Your Star",
+      "html": "<h1>Level 2: Your Star</h1><p>The <b>YOUR STAR BEATS THE SMALL ONES</b> sign says what Kit's star can do. Past it, a big red gumdrop stands in front of a wall, and in the tunnel behind it sit a small mint one and a purple grump.</p><p>Press <kbd>Enter</kbd> from the left of the big one and the star is used up on it: the big one is stronger than the star, and nothing pops. The <b>THE BIG ONE BEATS YOUR STAR. STEP PAST</b> sign says to walk past it, which is easy because it is friendly. Then throw again: the star pops the pip for 50 points. Walk a little closer and throw once more: the star pops the grump.</p><p>There are six coins, two before the big one and four after the tunnel.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 2 is made</h1><ul><li><b>The star's power.</b> Open <b>who.mon</b> in the monsters editor and pick the star. Its <b>Power</b> is 140. The pip has 110 and the grump has 130, so the star beats both. The big one has 180, so the big one beats the star. When a star and a stronger monster touch, only the star is destroyed.</li><li><b>Used up.</b> A monster the hero gives birth to, like a star, is destroyed when it wins as well, and the hero gets the score bonus (50 for the pip and the grump). That is why one star pops one monster.</li><li><b>The big one stands still.</b> It is a second copy of the big one, with no path, so it stays where the map puts it. In level 1 it walks. A monster placed on a map takes its movement from its monster number, so a still and a walking one need two entries in the list.</li><li><b>Friendly and solid.</b> The big one is not solid, so Kit walks through it, and its pictures take no hit points. The grump is solid like the pip, so the tunnel is blocked until both are popped.</li><li><b>Where the throw comes from.</b> The same Throw sequence as <b>Throw It</b>, on <kbd>Enter</kbd> in <b>hero.chr</b>. A star flies the way Kit last walked, and only about six blocks, so stand close to the tunnel.</li><li><b>The exit.</b> The last door links to the <b>The End</b> scene in <b>who.gam</b>, which plays the ending.</li></ul>"
+    },
+    {
+      "head": "What Game-Maker cannot do",
+      "html": "<h1>What Game-Maker cannot do</h1><p>Power is simple, and that is all it is:</p><ul><li>There are no custom rules for a fight. Power is one number, and the stronger monster always wins.</li><li>Two monsters with the same power do not fight. They pass through each other and both carry on.</li><li>A monster cannot take a few hits. Power only decides who is destroyed, and the destroyed one is gone at once. A boss that takes several hits has to count them some other way, for example with a counter.</li><li>The hero has no Power. Touching a monster hurts or does nothing by the monster's picture, and a monster under 100 is destroyed. A weapon like a star carries the hero's strength, because the star is a monster.</li></ul>"
+    },
+    {
+      "head": "Make it yours",
+      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>Change the star's <b>Power</b> to 120 in <b>who.mon</b>. It no longer pops the grump (130), which stays in the way.</li><li>Change it to 200. Now the star beats even the big one, and a star thrown at it pops it for no points.</li><li>Give the pip the same Power as the big one (180). They pass through each other, and the pips stay.</li><li>Change the big one's Power to 120. It still pops the pips (110), but now a star beats it.</li><li>Put a second big one on a path across level 2 and watch what it does to the star.</li></ul><p>The home page's <b>Starters</b> tab has more small games like this one.</p>"
+    }
+  ]
+}
