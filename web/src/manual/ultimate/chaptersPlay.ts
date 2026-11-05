@@ -71,7 +71,7 @@ export const ACTORS: Chapter = {
     <li><b>A voice of his own.</b> Each sequence plays one sound from the scene’s set when it
     starts, so a “talk” key can say a line.</li>
   </ul>
-  ${onCd('KITMOVES', 'HOMEKEYS', 'THROWIT', 'MANYWEAP', 'PICKITUP')}
+  ${onCd('KITMOVES', 'HOMEKEYS', 'KITDUCK', 'THROWIT', 'MANYWEAP', 'PICKITUP')}
   <h2>Facing four ways, and mirroring</h2>
   <p>Chapter 11 says why a hero should face the way he walks. Here is how, in the Character
   Maker’s Sequences tab:</p>

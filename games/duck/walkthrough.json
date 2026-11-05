@@ -1,0 +1,64 @@
+{
+  "version": 1,
+  "game": "duck",
+  "rand": {
+    "seed": 1,
+    "per": "scene"
+  },
+  "segments": [
+    {
+      "scene": 2,
+      "keys": "AU0PzStNFM0rTRfNKk0czQBQDdAATR/NAU0CzQNLAcssTRTNAFAf0ABNKc0DSwHLD00SzQBQFtAATSvNA00RzStN"
+    },
+    {
+      "scene": 3,
+      "keys": "AU0UzStNJs0oTRHNAFAX0ABNK80DTRHNK00NzQlNHM0AUA3QAE0hzQNLA8srTRfNZE0UzQBQHtAATSjNA00KzRRNFDkCuSjNA00="
+    }
+  ],
+  "chapters": [
+    {
+      "scene": 2,
+      "title": "Level 1: Head Height"
+    },
+    {
+      "scene": 3,
+      "title": "Level 2: High or Low"
+    }
+  ],
+  "timeline": {
+    "fps": 60,
+    "frames": 10534,
+    "chapters": [
+      {
+        "title": "Opening",
+        "frame": 0,
+        "time": 0
+      },
+      {
+        "title": "Story",
+        "frame": 913,
+        "time": 15216.666666666471
+      },
+      {
+        "title": "Level 1: Head Height",
+        "frame": 2142,
+        "time": 35700.00000000053
+      },
+      {
+        "title": "Level 2: High or Low",
+        "frame": 4409,
+        "time": 73483.33333333183
+      },
+      {
+        "title": "Ending",
+        "frame": 7249,
+        "time": 120816.66666667894
+      },
+      {
+        "title": "Credits",
+        "frame": 9460,
+        "time": 157666.66666666645
+      }
+    ]
+  }
+}
