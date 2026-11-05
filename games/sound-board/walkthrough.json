@@ -1,0 +1,72 @@
+{
+  "version": 1,
+  "game": "sound-board",
+  "rand": {
+    "seed": 1,
+    "per": "scene"
+  },
+  "segments": [
+    {
+      "scene": 2,
+      "keys": "AU03zRdL"
+    },
+    {
+      "scene": 2,
+      "keys": "C003zRdNGc0XTRnNF00ZzRdNKM0DOQK5L00="
+    },
+    {
+      "scene": 3,
+      "keys": "AU1GzRdNHs0XTSPNF00FzQM5ArkATQ/NBU0KzRdNDc0DTRM5ArkOzR5ND80DTQg5ArkPzR1N"
+    }
+  ],
+  "chapters": [
+    {
+      "scene": 2,
+      "title": "Level 1: The Board"
+    },
+    {
+      "scene": 2,
+      "title": "Level 1: The Board"
+    },
+    {
+      "scene": 3,
+      "title": "Level 2: Sounds Tell You"
+    }
+  ],
+  "timeline": {
+    "fps": 60,
+    "frames": 9086,
+    "chapters": [
+      {
+        "title": "Opening",
+        "frame": 0,
+        "time": 0
+      },
+      {
+        "title": "Story",
+        "frame": 896,
+        "time": 14933.333333333148
+      },
+      {
+        "title": "Level 1: The Board",
+        "frame": 1644,
+        "time": 27400.000000000564
+      },
+      {
+        "title": "Level 2: Sounds Tell You",
+        "frame": 4002,
+        "time": 66699.99999999652
+      },
+      {
+        "title": "Ending",
+        "frame": 5804,
+        "time": 96733.3333333386
+      },
+      {
+        "title": "Credits",
+        "frame": 8012,
+        "time": 133533.33333334717
+      }
+    ]
+  }
+}
