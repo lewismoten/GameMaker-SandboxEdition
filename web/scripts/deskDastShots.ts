@@ -12,7 +12,22 @@ import { assertTheme, forceTheme } from './forceTheme';
 const base = arg('base') ?? 'http://localhost:5191';
 const out = arg('out') ?? 'desk-dast';
 const theme = (arg('theme') ?? 'dark') as 'dark' | 'light';
-const EGG_GAMES = ['blaster', 'brief', 'depth', 'logic', 'maximus', 'realm', 'sandcast', 'sleuth', 'snowbound', 'teddy', 'teddy2', 'teddy3', 'tuneup', 'year2000'];
+const EGG_GAMES = [
+  'blaster',
+  'brief',
+  'depth',
+  'logic',
+  'maximus',
+  'realm',
+  'sandcast',
+  'sleuth',
+  'snowbound',
+  'teddy',
+  'teddy2',
+  'teddy3',
+  'tuneup',
+  'year2000',
+];
 mkdirSync(out, { recursive: true });
 
 const browser = await launch();
