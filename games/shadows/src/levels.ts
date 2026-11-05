@@ -69,7 +69,7 @@ class Courtyard extends StarterMap {
   ) {
     super(bricks, rows);
   }
-  done(): GameMap {
+  override done(): GameMap {
     const map = super.done();
     const brick = this.bricks.n('brick');
     for (let y = ORIGIN + WALL_TOP; y < MLEN; y++) for (let x = 0; x < MLEN; x++) if (x < ORIGIN || x >= ORIGIN + this.width) map.blocks[y * MLEN + x] = brick;

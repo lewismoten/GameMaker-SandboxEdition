@@ -50,7 +50,7 @@ export async function journey(bot: StarterBot): Promise<void> {
   await must(bot, bot.jump('right', HOP.hoppers[2] + 3), 'a jump of his own');
   await through(bot, bot.walk(HOP.exit, `the hop's door`, 3000), 'hop door');
   // the hover
-  if (bot.sim.scene !== 5) throw new Error(`the hop's door should lead to the hover (5), not ${bot.sim.scene}`);
+  if ((bot.sim.scene as number) !== 5) throw new Error(`the hop's door should lead to the hover (5), not ${bot.sim.scene}`);
   for (const x of [HOVER.low, HOVER.high]) {
     await must(bot, bot.walk(x - 1, 'under a bee', 2000), `walking under the bee at ${x}`);
     await must(bot, bot.wait(LOOK * 2), 'watching it hover');
