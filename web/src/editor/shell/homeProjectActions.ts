@@ -76,23 +76,37 @@ async function move(p: ProjectSummary, imported: boolean, refresh: () => Promise
   await refresh();
 }
 
-/** A notice with an Undo button, for a few seconds. */
+/**
+ * A notice with an Undo button, for a few seconds. It waits while the pointer is over it or focus
+ * is in it, and a screen reader hears it (the live region is in the page before its words are).
+ */
 export function undoToast(message: string, undo: () => Promise<void>, ms = UNDO_MS, onExpire?: () => void): void {
   document.querySelector('.home-undo')?.remove();
+  let timer: ReturnType<typeof setTimeout> | undefined;
   const done = () => {
     clearTimeout(timer);
     note.remove();
     onExpire?.();
   };
+  const wait = () => {
+    clearTimeout(timer);
+    timer = setTimeout(done, ms);
+  };
+  const text = h('span', null);
   const note = h(
     'div',
     { class: 'home-undo', role: 'status' },
-    h('span', null, message),
+    text,
     h('button', { type: 'button', onclick: () => void undo().then(done) }, 'Undo'),
     h('button', { type: 'button', class: 'home-undo-close', 'aria-label': 'Dismiss', title: 'Dismiss', onclick: done }, '×'),
   );
-  const timer = setTimeout(done, ms);
+  note.addEventListener('pointerenter', () => clearTimeout(timer));
+  note.addEventListener('pointerleave', () => !note.contains(document.activeElement) && wait());
+  note.addEventListener('focusin', () => clearTimeout(timer));
+  note.addEventListener('focusout', () => !note.matches(':hover') && wait());
+  wait();
   document.body.append(note);
+  setTimeout(() => (text.textContent = message), 50);
 }
 
 /** The items of a game of yours' ⋯ More menu. `onMade`: a duplicate was made (its id). */
