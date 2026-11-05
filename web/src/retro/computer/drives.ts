@@ -49,7 +49,7 @@ export abstract class ComputerDrives {
     readonly monitor: HTMLElement,
     protected opts: ComputerOptions,
   ) {
-    this.textEl = h('canvas', { class: 'crt-text', tabIndex: 0, 'aria-label': 'Computer screen' });
+    this.textEl = h('canvas', { class: 'crt-text', tabIndex: 0, 'aria-label': 'Computer screen. The program reads your keys; Shift+Tab leaves it' });
     this.layer = h('div', { class: 'crt-layer' });
     // .crt-picture: what the tube shows, which the desk curves like the glass
     monitor.append(h('div', { class: 'crt-picture' }, this.textEl, this.layer));

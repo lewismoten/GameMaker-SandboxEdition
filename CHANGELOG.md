@@ -163,6 +163,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Fixed
 
+- On the desk's PC screen and dos.html, a keyboard user is no longer stuck: Shift+Tab leaves the screen (the screen's name says so), and the Sound Boaster note is a labeled region.
 - Choosing a link or button that opens another page now moves keyboard focus to that page's heading, so a screen reader says where you are. Opening the site, Back and Forward, and changes the page makes itself leave focus alone.
 - The Undo notice after deleting a game waits while the pointer is over it or focus is in it, instead of vanishing after 10 seconds, and a screen reader reads it out.
 - Play this level and See how it's made in How do I…? now say where they took you ("Opened the map of First Steps, level 1."), so a screen reader knows the page changed.
