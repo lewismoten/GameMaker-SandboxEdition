@@ -27,10 +27,11 @@
 #pragma once
 #include <stdint.h>
 #include <string.h>
+#include "screen.h"
 
 namespace ctl {
 
-constexpr int W = 480, H = 320;
+constexpr int W = scr::W, H = scr::H;
 constexpr int MAXCONTACT = 5, MAXEXTRA = 12;
 constexpr int HOLD_MS = 165;       // three game ticks at 18.2 Hz
 constexpr int TAP_MS = 300, TAP_PX = 10;
@@ -110,8 +111,26 @@ struct Layout {
   int tileRows;
 };
 
+// Where the chips end and the extra-key tiles begin and step (main.cpp redraws that strip when a tile changes).
+#ifdef POCKET_CYD28
+constexpr int CHIP_BOTTOM = 38, TILE_Y0 = 42, TILE_STEP = 40, TILE_H = 36, TILE_W = 50, TILE_PITCH = 52;
+#else
+constexpr int CHIP_BOTTOM = 56, TILE_Y0 = 62, TILE_STEP = 60, TILE_H = 56, TILE_W = 72, TILE_PITCH = 76;
+#endif
+
 inline Layout makeLayout(const Settings& s, const Need& need) {
   Layout L;
+#ifdef POCKET_CYD28  // 320 x 200 game view with the controls over it (the big layout at about 2/3, 5.6 px per mm)
+  static const int padR[3] = {42, 50, 58}, dead[3] = {12, 17, 24};
+  const int B = scr::VIEW_H - 4;  // controls stay inside the game view
+  int R = padR[s.padSize > 2 ? 1 : s.padSize];
+  L.deadR = dead[s.dead > 2 ? 1 : s.dead];
+  L.pad = {R + 6, B - R - 2, R};
+  L.space = {W - 8 - 24, B - 24 - 4, 24};
+  L.enter = {W - 8 - 24 - 24 - 21 - 8, B - 21 - 6, 21};
+  L.menu = {2, 2, 46, 36};
+  L.keys = {W - 46, 2, W - 2, 36};
+#else
   static const int padR[3] = {64, 76, 90}, dead[3] = {18, 26, 36};
   int R = padR[s.padSize > 2 ? 1 : s.padSize];
   L.deadR = dead[s.dead > 2 ? 1 : s.dead];
@@ -120,6 +139,7 @@ inline Layout makeLayout(const Settings& s, const Need& need) {
   L.enter = {W - 12 - 34 - 34 - 30 - 12, 296 - 30 - 8, 30};
   L.menu = {4, 4, 64, 56};
   L.keys = {W - 68, 4, W - 4, 56};
+#endif
   if (s.lefty) {
     L.pad.cx = W - L.pad.cx;
     L.space.cx = W - L.space.cx;
@@ -130,9 +150,9 @@ inline Layout makeLayout(const Settings& s, const Need& need) {
     int row = i / 6, col = i % 6;
     int inRow = need.nextra - row * 6;
     if (inRow > 6) inRow = 6;
-    int total = inRow * 76 - 4;
-    int x0 = (W - total) / 2 + col * 76;
-    L.tile[i] = {x0, 62 + row * 60, x0 + 72, 62 + row * 60 + 56};
+    int total = inRow * TILE_PITCH - 4;
+    int x0 = (W - total) / 2 + col * TILE_PITCH;
+    L.tile[i] = {x0, TILE_Y0 + row * TILE_STEP, x0 + TILE_W, TILE_Y0 + row * TILE_STEP + TILE_H};
   }
   return L;
 }

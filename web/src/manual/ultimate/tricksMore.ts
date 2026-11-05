@@ -45,6 +45,8 @@ export const MORE_TRICKS = `<h2>A flock that holds its shape</h2>
     each door takes only its price, so the change stays in the counter.</li>
   </ul>
   ${onCd('POWERKEY')}
+  <p>A price can also be paid in coins. Give a coin the Money counter (number 3) and a stall block the same counter with a negative amount: touching it takes the price, and with too few coins nothing happens. The stall turns into a block that hands over the item.</p>
+  ${onCd('SPENDIT')}
   <h2>A set copied for one level</h2>
   <p>Snowbound’s long sled run needed more blocks than its full 150. The answer was a copy of
   the set for that one scene, with the blocks the hill never shows (the houses, the mall, the
