@@ -369,6 +369,7 @@ export const SCENES: Chapter = {
   little crooked, one block over every few rows, and it wraps again and again, so a long road
   fits on one map.</p>
   ${onCd('DIAGWRAP', 'BELTWAY')}
+  ${onCd('ROADTILE')}
   <h2>Between scenes</h2>
   <p>Leaving by a link, the game fades out and shows the old scene’s exit picture, if it has
   one, then the new scene’s intro picture, and fades the new scene in. The music stops at the
