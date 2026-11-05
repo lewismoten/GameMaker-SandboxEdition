@@ -1,16 +1,16 @@
-// Kit seen from above, for level 2 (gravity off): one 20x20 block a pose instead of two, drawn in four facing
-// directions (down, up, right and left) with two walking steps each, in the same teal beanie and orange hoodie.
-// The pictures are this game's second hero.cbl; its character file has Up and Down walk the way a person
-// would, since nothing pulls him (the side-view Up and Down climb a ladder).
+// Kit seen from above, for the Starters with a top-down view (gravity-on-gravity-off, overhead): one 20x20 block a pose
+// instead of two, drawn in four facing directions (down, up, right and left) with two walking steps each, in the same
+// teal beanie and orange hoodie. The pictures are a game's second hero.cbl; its character file has Up and Down walk the
+// way a person would, since nothing pulls him (the side-view Up and Down climb a ladder).
 import { CHARBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { set } from '@lewismoten/gamemaker-sandbox-tools/kit/actors';
 import { outline } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
-import { Book } from '../../kit/starter/book';
-import { KEY, SEQ, SND } from '../../kit/starter/ids';
-import type { Pal } from '../../kit/starter/palette';
+import { Book } from './book';
+import { KEY, SEQ, SND } from './ids';
+import type { Pal } from './palette';
 
 const T = 255;
 /** Pixels a frame while walking (the same as the side view). */
