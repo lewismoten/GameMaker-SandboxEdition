@@ -59,6 +59,7 @@ export default defineConfig(
     files: ['scripts/**'],
     rules: { 'no-console': 'off' },
   },
-  { files: ['**/*.js'], ...tseslint.configs.disableTypeChecked },
+  // plain .js and .mjs scripts are outside the TypeScript project: lint them without type information
+  { files: ['**/*.js', '**/*.mjs'], ...tseslint.configs.disableTypeChecked },
   prettier,
 );
