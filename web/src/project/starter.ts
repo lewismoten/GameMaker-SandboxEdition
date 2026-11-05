@@ -63,12 +63,12 @@ export const STARTER_GROUPS: { name: string; tag: string; games: string[] }[] = 
     games: ['switches', 'three-tokens', 'and-gate', 'secret-doors', 'show-the-count', 'dice', 'word-lock', 'power-ladder', 'special-counters'],
   },
   { name: 'Bigger Worlds', tag: 'More than one screen.', games: ['scroll', 'many-rooms', 'overhead', 'diagonal-wrap', 'blocks-budget', 'near-far'] },
+  { name: 'Drawing with Blocks', tag: 'Roads, water and sky, drawn and animated.', games: ['shore'] },
   {
     name: 'Showcase Tricks',
     tag: 'How the big games do their big moments.',
     games: ['dialog', 'popups', 'scripted', 'parallax', 'horizon', 'beltway', 'corner-view'],
   },
-  { name: 'Drawing with Blocks', tag: 'Roads, water and sky, drawn and animated.', games: ['shore'] },
 ];
 
 /** The order the Starters are meant to be played in, easiest first: the groups' games in order (games/<id>); a starter not listed goes after these, A to Z. */
