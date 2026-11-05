@@ -1,0 +1,43 @@
+{
+  "keys": {
+    "75": {
+      "short": "Walk left",
+      "long": "Walk left."
+    },
+    "77": {
+      "short": "Walk right",
+      "long": "Walk right."
+    },
+    "57": {
+      "short": "Not used",
+      "long": "Not used in this game; the arrows do all the walking."
+    },
+    "72": {
+      "short": "Walk up",
+      "long": "Walk up."
+    },
+    "80": {
+      "short": "Walk down",
+      "long": "Walk down."
+    },
+    "30": {
+      "short": "Walk left",
+      "long": "Same as the Left arrow."
+    },
+    "32": {
+      "short": "Walk right",
+      "long": "Same as the Right arrow."
+    },
+    "17": {
+      "short": "Walk up",
+      "long": "Same as the Up arrow."
+    },
+    "31": {
+      "short": "Walk down",
+      "long": "Same as the Down arrow."
+    }
+  },
+  "counters": {
+    "20": "Keys: not used here, but a copy can add them."
+  }
+}
