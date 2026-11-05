@@ -242,11 +242,11 @@ padpts = [(pl.x + rx, pl.y + ry, pad.d / 2 * (1.42 if pad.square else 1)) for pl
 padpts += [(mx, my, 2.0) for mx, my in MOUNT]
 TAKEN = []          # text boxes already used (board coordinates)
 # Back-side advertising, in the three blank spots of the back (found from the back preview): QR codes and Dex.
-PARTS_URL = "https://github.com/lewismoten/GameMaker-SandboxEdition/tree/master/games/year2000/phone"
-SITE_URL = "https://lewismoten.github.io/GameMaker-SandboxEdition"
+PARTS_URL = "https://github.com/lewismoten/GameMaker-SandboxEdition/tree/develop/games/year2000/phone"
+SITE_URL = "https://lewismoten.github.io/GameMaker-SandboxEdition/"
 URL_LINES = {      # what is printed beside each QR code (1.0 mm letters); together each is the address the QR code holds, without https://
     SITE_URL: ["lewismoten.github.io/", "GameMaker-SandboxEdition"],
-    PARTS_URL: ["github.com/lewismoten/", "GameMaker-SandboxEdition/", "tree/master/games/", "year2000/phone"],
+    PARTS_URL: ["github.com/lewismoten/", "GameMaker-SandboxEdition/", "tree/develop/games/", "year2000/phone"],
 }
 QR_PARTS = (27.5, 44.0, 0.44)      # x, y (top-left, board coordinates), module mm: 41 modules = 18.0 mm
 QR_SITE = (65.0, 47.0, 0.5)        # 33 modules = 16.5 mm
