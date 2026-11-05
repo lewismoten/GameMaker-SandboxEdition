@@ -11,6 +11,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Added
 
+- A Starter, Twinkle, Twinkle, about a sky of stars that twinkle by themselves: a loop of blocks makes a star blink, but one block means one clock, so level 1 shows every star blinking at once and then the fix (six loops with different times, laid so no neighbors match), and level 2 is a night meadow under it
 - The Level check's counter findings say what the whole game supplies: a gate whose counter this scene can't fill now reads, for example, "the gate needs 20; this scene gives 0; Lost Woods and Tail Cave give 4", with each scene's share split into blocks and monsters. It is an info when other scenes cover it and a warning when the whole game falls short; both can be dismissed.
 - On a game opened to look inside, the Read-only note with Edit a copy now sits in the heading row of the Overview and of each file's page instead of a bar of its own, so the Overview fits one screen again
 - The ? Guides menu offers "What’s new" when the tour has steps added since your last visit: Teddy and Gwinn show only those, and "Not now" hides it until something newer comes (the day is kept in this browser only)

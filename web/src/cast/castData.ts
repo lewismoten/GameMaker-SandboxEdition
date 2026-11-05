@@ -89,6 +89,7 @@ export const CAST_GAMES = {
   overhead: ['Overhead', 'starter'],
   'blocks-budget': ['150 Blocks', 'starter'],
   'near-far': ['Near and Far', 'starter'],
+  twinkle: ['Twinkle, Twinkle', 'starter'],
   'things-that-grow': ['Seeds and Nests', 'starter'],
   dialog: ['Everybody Talks', 'starter'],
   parallax: ['Parallax', 'starter'],
@@ -245,6 +246,7 @@ const LISTED: CastMember[] = [
       { game: 'momentum', as: 'glides on after letting go, and runs up to hop wide gaps' },
       { game: 'jump-boots', as: 'taps up a tall cliff like a jet pack, then jumps twice in boots that hold only two jumps' },
       { game: 'diagonal-wrap', as: 'follows a road down the map and out of the bottom, then round the map three times on a tilted one' },
+      { game: 'twinkle', as: 'walks a night meadow under stars that blink all at once, then under stars that twinkle in no step' },
     ],
   },
   {
