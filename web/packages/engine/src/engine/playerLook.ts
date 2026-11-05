@@ -2,10 +2,12 @@
 // the words, the color each screen matches (RGBdata::Match against the palette that is up, as the
 // player does), frames, positions, times and which F-keys work. With no patches every value is
 // the CD player's, so a game plays exactly as before; with them, the web shows what the DOS
-// export's patched .EXE shows. Passed in through RunOptions.player, never global.
+// export's patched .EXE shows. Passed in through RunOptions.player, never global. playTuning
+// reads the experimental gameplay constants (the `play` group) the same way, for World.tune.
 import { matchColor } from '../formats/palette';
 import { PATCHES, type ColorName, type PatchEntry } from '../player/patchTable';
 import { cleanPatches, type PatchValue, type PlayerPatches } from '../player/patchRules';
+import { STOCK_TUNING, type PlayTuning } from './world';
 
 /**
  * An imported game's own player About page (F10), as that player drew it: read-only, since it is
@@ -80,6 +82,16 @@ export function playerLook(patches?: PlayerPatches, about?: PlayerAbout): Player
     fkeyOn: (key) => !BY_ID.has(`table.fkeys.F${key}`) || value(`table.fkeys.F${key}`) !== 'off',
     ...(about ? { about } : {}),
   };
+}
+
+/**
+ * The gameplay constants `look`'s patches give, for World.tune: with none, PLAYGAME.C's own
+ * #defines (STOCK_TUNING), so play is exactly as before.
+ */
+export function playTuning(look: PlayerLook): PlayTuning {
+  const out = {} as PlayTuning;
+  for (const k of Object.keys(STOCK_TUNING) as (keyof PlayTuning)[]) out[k] = look.num(`play.${k}`);
+  return out;
 }
 
 /** The CD player's own look. */

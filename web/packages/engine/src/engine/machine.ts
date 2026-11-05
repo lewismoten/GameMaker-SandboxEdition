@@ -252,6 +252,11 @@ export class Machine {
    * at every step.
    */
   async fadeTo(dest: ArrayLike<number>, steps = 65): Promise<void> {
+    if (steps <= 0) {
+      // a patched player's 0-step fade (play.fadeSteps): FadeTo's loop runs no times, then SetAllPal
+      this.screen.setPalette(dest);
+      return;
+    }
     const from = this.screen.palette.slice();
     const start = this.now();
     const duration = (steps / 70) * 1000;
