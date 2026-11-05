@@ -10,7 +10,7 @@ A room that looks as if it is seen from one corner.
 
 The floor is drawn in diamonds. The cubes have a top and two sides. It looks like 3D.
 
-But it is only pictures, cut into the same square blocks as every other game. Kit walks on the squares.
+But it is only pictures, cut into the same square blocks as every other game. In the first two rooms Kit walks on the squares. In the third, each arrow walks a diagonal of the floor.
 
 Read the signs. Then open this game in Game-Maker and look at the blocks.
 `);
@@ -18,13 +18,14 @@ Read the signs. Then open this game in Game-Maker and look at the blocks.
 export const HOWTO = wrap(`
 |HOW TO PLAY
 
-|ARROWS   walk any of the
-|         four ways
+|ARROWS   walk Kit
 |SPACE    does nothing
 
-There are two rooms. In each, walk to the gold diamond to leave.
+There are three rooms. In each, walk to the gold diamond to leave.
 
 Cubes are walls. Walk round them.
+
+In room 3 every arrow walks a slant: read the signs.
 
 |ESC for the menu.
 `);
@@ -45,11 +46,11 @@ One of the Starters: small games that each show one idea.
 export const WON = wrap(`
 |ROUND THE CORNER!
 
-Two rooms, drawn from a corner.
+Three rooms, drawn from a corner.
 
-A corner view is a picture trick. The floor, the cubes and the stair are one painting, cut into blocks. Each block is a plain square, and Kit stays on the squares: he cannot walk the way the diamonds run.
+A corner view is a picture trick. The floor, the cubes and the stair are one painting, cut into blocks. Each block is a plain square, and in the first two rooms Kit stays on the squares. In the third his arrows are each made to walk a slant, because a walk can move him across and down in every step.
 
-It cannot sort by depth, either. Kit is always drawn on top, so he never walks behind a tower. A tall tower is solid in every block its picture covers.
+It cannot sort by depth, either. Kit is always drawn on top, so he never walks behind a tower. A tall tower is solid in every block its picture covers. His box is still a square, so he slides along a slanted wall in little steps.
 
 Open the game in Game-Maker and look at the Blocks tab: every cube is made of a few blocks.
 `);

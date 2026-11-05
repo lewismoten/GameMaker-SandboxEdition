@@ -177,6 +177,20 @@ makes Ctrl+S save at once). Files are always written in the original binary form
   `#/p/look:<id>`, see `shell/lookId.ts`) is an in-memory project that `core/readOnly.ts` makes
   read-only: every change through `core/project.ts` is refused before it happens and nothing is
   saved, and the refusal offers Edit a copy's flow (shareware stays look-only, with its notice).
+- **Block roles.** The block editor's Uses tab (`editors/blocks/rolesPanel.ts`, stored by `blockRoles.ts` in
+  the companion file's `roles` section, never in the .bbl) marks what a background block is for: wall, door,
+  locked door and key (with a lock number), chair facing south, and so on, several per block. The no-DOM
+  model and `suggestRoles` are in the tools package (`kit/blockRoles.ts`), so a level generator and the
+  games can read them. Guesses from what the block does and its picture show as dashed chips; nothing is
+  added until you tap one or Accept all.
+- **Generate and the role filter.** The map editor's Blocks panel has a Show filter (`map/roleFilter.ts`:
+  only walls, only trees... from the roles above) and a Generate button (`map/generate/`). The dialog
+  (`generateDialog.ts`) offers four real renders of a dungeon or a forest from a seed, for the whole map or
+  the selection; `missingRoles.ts` is its Missing roles panel (what the kind needs, which roles are set, a
+  link to the Uses tab); `place.ts` writes the chosen layout into cells and gives walls, trees and paths
+  edges and corners from the set's terrain brushes. The generators themselves are in the tools package
+  (`kit/levelGen`, no DOM, seeded). A layout is ordinary map cells in one undo step: no new DOS data, and the
+  map is untouched until you pick one.
 - **Block groups.** The block set editor (`editors/blocks/`) and the character editor share block
   groups (`blockGroups.ts`: a picture drawn across several blocks, kept in the companion file), the
   group shown assembled (`groupView.ts`), and live animation previews at the game's tick rate
@@ -292,6 +306,13 @@ makes Ctrl+S save at once). Files are always written in the original binary form
   designer dismissed as meant to look alike, in the companion file on the `.pal`.
   `visionFallback.ts` supplies block artwork using the selected palette when the map is
   empty, then all 256 palette swatches when no suitable artwork is available.
+- **Color help.** `colorHelp/` holds three local preferences (`colorHelpPrefs.ts`, localStorage
+  `gm-color-help`: show color names, warn about look-alike colors for red-green or blue-yellow,
+  preview as others might see it), their small control (`colorHelpControl.ts`), plain color
+  names (`colorNames.ts`), the look-alike pairing over the engine's `gfx/colorVision` (`alike.ts`),
+  the block painters' panel (`blockColorHelp.ts` with `seenPreview.ts`; the palette editor wires
+  its own) and the optional Quick color check (`quickCheck.ts`, screens and suggestions in
+  `quickCheckLogic.ts`), which only suggests settings and keeps no answers.
 - **Color 0.** The palette editor's Backgrounds tab and its color-0 links show live miniatures;
   choosing one opens `editors/palette/colorZeroDialog.ts`:
   each player screen drawn on color 0 (`colorZeroScreens.ts`: the high-score name prompt and

@@ -35,7 +35,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 9823,
+  "frames": 9840,
   "chapters": [
    {
     "title": "Opening",
@@ -44,33 +44,33 @@
    },
    {
     "title": "Story",
-    "frame": 896,
-    "time": 14933.333333333148
+    "frame": 913,
+    "time": 15216.666666666471
    },
    {
     "title": "Level 1: Teach",
-    "frame": 2125,
-    "time": 35416.66666666724
+    "frame": 2142,
+    "time": 35700.00000000053
    },
    {
     "title": "Level 2: Test",
-    "frame": 3595,
-    "time": 59916.666666663674
+    "frame": 3612,
+    "time": 60199.999999996966
    },
    {
     "title": "Level 3: Twist",
-    "frame": 5009,
-    "time": 83483.33333333474
+    "frame": 5026,
+    "time": 83766.66666666816
    },
    {
     "title": "Ending",
-    "frame": 6540,
-    "time": 109000.00000000883
+    "frame": 6557,
+    "time": 109283.33333334225
    },
    {
     "title": "Credits",
-    "frame": 8749,
-    "time": 145816.66666667335
+    "frame": 8766,
+    "time": 146100.00000000652
    }
   ]
  }

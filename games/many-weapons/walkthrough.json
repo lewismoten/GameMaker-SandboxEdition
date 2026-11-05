@@ -27,7 +27,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 11127,
+  "frames": 11144,
   "chapters": [
    {
     "title": "Opening",
@@ -36,28 +36,28 @@
    },
    {
     "title": "Story",
-    "frame": 896,
-    "time": 14933.333333333148
+    "frame": 913,
+    "time": 15216.666666666471
    },
    {
     "title": "Level 1: Empty Hands",
-    "frame": 2125,
-    "time": 35416.66666666724
+    "frame": 2142,
+    "time": 35700.00000000053
    },
    {
     "title": "Level 2: Star or Flame",
-    "frame": 5186,
-    "time": 86433.3333333356
+    "frame": 5203,
+    "time": 86716.66666666901
    },
    {
     "title": "Ending",
-    "frame": 7841,
-    "time": 130683.33333334848
+    "frame": 7858,
+    "time": 130966.6666666819
    },
    {
     "title": "Credits",
-    "frame": 10053,
-    "time": 167549.99999999403
+    "frame": 10070,
+    "time": 167833.3333333272
    }
   ]
  }

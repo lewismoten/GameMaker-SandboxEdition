@@ -28,6 +28,7 @@ import { batchOf } from './importBatch';
 import { lastUsed } from '../../project/projectUse';
 import { NOTES_CHANGED } from '../../imported/gameNotes';
 import { ratingFilterBox, savedRatingFilter } from './homeRatings';
+import { doneFilterBox, loadFinished, savedDoneFilter } from './homeDone';
 import { currentRoute, formatHash, setHashParams, type ParamValue } from '../../urlState';
 import { libraryCards } from './homeLibraryCards';
 import { tilePacker } from './homeTilePack';
@@ -176,6 +177,12 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
   let ratingFilter = savedRatingFilter();
   const ratingBox = ratingFilterBox(ratingFilter, (f) => {
     ratingFilter = f;
+    void select(current);
+  });
+  // Starters narrowed to the ones not played to the ending yet, or the ones that were (homeDone.ts)
+  let doneFilter = savedDoneFilter();
+  const doneBox = doneFilterBox(doneFilter, (f) => {
+    doneFilter = f;
     void select(current);
   });
   let current: Category = savedCategory() ?? FIRST_CATEGORY;
@@ -407,14 +414,23 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
       void import('./howDoIIndex').then((m) => howDoI.append(m.howDoIIndex({ compact: true })));
     }
     ratingBox.hidden = c !== 'imported' || !lib.own(c).length;
+    doneBox.hidden = c !== 'starter';
+    const finished = c === 'starter' ? await loadFinished() : new Set<string>();
+    if (current !== c) return; // another collection was chosen while the record loaded
     newGameBtn.hidden = c === 'community';
     communityBtn.hidden = c !== 'community';
-    const cards = libraryCards(lib, c, ratingFilter, {
-      choose,
-      more: (game, anchor) => void import('./homeTileMenu').then((m) => m.homeTileMenu(anchor, game, refreshProjects)),
-      browse: (to) => void select(to, true).then(() => document.getElementById(`lib-tab-${to}`)?.focus()),
-      newGame: () => void homeImport().then((m) => m.newGame(nav)),
-    });
+    const cards = libraryCards(
+      lib,
+      c,
+      ratingFilter,
+      {
+        choose,
+        more: (game, anchor) => void import('./homeTileMenu').then((m) => m.homeTileMenu(anchor, game, refreshProjects)),
+        browse: (to) => void select(to, true).then(() => document.getElementById(`lib-tab-${to}`)?.focus()),
+        newGame: () => void homeImport().then((m) => m.newGame(nav)),
+      },
+      { finished, filter: doneFilter },
+    );
     // The import target stays first, including after sorting or filtering the games.
     if (isOwn(c)) {
       dropTile.classList.remove('over');
@@ -455,7 +471,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
         'section',
         { id: 'library', class: 'library', 'aria-labelledby': 'lib-title' },
         h('div', { class: 'lib-bar' }, catNav, h('div', { class: 'lib-find' }, search, newGameBtn, communityBtn)),
-        h('div', { class: 'lib-about' }, libTitle, libLead, sortBox, ratingBox, historyBtn, recentBtn, removeAllBtn, start.howBtn),
+        h('div', { class: 'lib-about' }, libTitle, libLead, sortBox, ratingBox, doneBox, historyBtn, recentBtn, removeAllBtn, start.howBtn),
         howDoI,
         tiles,
         live,

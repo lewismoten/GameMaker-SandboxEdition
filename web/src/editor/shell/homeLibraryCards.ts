@@ -11,6 +11,7 @@ import { gameTile, type HomeGame } from './homeCards';
 import type { Category } from './homeCategories';
 import { byMaker } from './homeAuthors';
 import { rateTile, ratingShown, type savedRatingFilter } from './homeRatings';
+import { doneCount, doneShown, doneTile, type DoneFilter } from './homeDone';
 import { isByMaker, isOwn, type HomeLibrary } from './homeLibrary';
 
 interface CardActions {
@@ -23,13 +24,21 @@ interface CardActions {
   newGame(): void;
 }
 
-export function libraryCards(lib: HomeLibrary, c: Category, ratingFilter: ReturnType<typeof savedRatingFilter>, on: CardActions): HTMLElement[] {
+export function libraryCards(
+  lib: HomeLibrary,
+  c: Category,
+  ratingFilter: ReturnType<typeof savedRatingFilter>,
+  on: CardActions,
+  starters: { finished: ReadonlySet<string>; filter: DoneFilter } = { finished: new Set(), filter: 'all' },
+): HTMLElement[] {
+  const isDone = (g: HomeGame) => starters.finished.has(g.entry?.id ?? '');
   const notes = allNotes();
   let cards: HTMLElement[];
   if (!isOwn(c) && c !== 'community' && lib.catalogError) cards = [h('p', { class: 'meta' }, lib.catalogError)];
   else {
     const tile = (g: HomeGame) => {
       const t = gameTile(g, { onSelect: on.choose, onMore: on.more });
+      if (c === 'starter' && isDone(g)) doneTile(t);
       if (c === 'imported' && g.project) {
         rateTile(t, notes[g.project.id]);
         walkTile(t, lib.walkBadges.get(g.project.id));
@@ -41,9 +50,13 @@ export function libraryCards(lib: HomeLibrary, c: Category, ratingFilter: Return
     // the Bard's games under his collections, in the flyer's order, and Gameware and
     // Shareware by who made them (homeAuthors.ts), packed into as few rows as they fit
     // (homeTilePack.ts), each tile telling its group
-    const sections: { name: string; tag?: string; count?: number; games: { g: HomeGame }[] }[] =
+    const sections: { name: string; tag?: string; count?: number; doneText?: string; games: { g: HomeGame }[] }[] =
       c === 'starter'
-        ? byStarterGroup(lib.gamesOf(c).map((g) => ({ id: g.entry?.id ?? '', title: g.title, g })))
+        ? byStarterGroup(lib.gamesOf(c).map((g) => ({ id: g.entry?.id ?? '', title: g.title, g }))).map((sec) => ({
+            ...sec,
+            doneText: doneCount(sec.games.filter((x) => isDone(x.g)).length, sec.games.length),
+            games: sec.games.filter((x) => doneShown(starters.filter, isDone(x.g))),
+          }))
         : c === 'bizarre'
           ? byCollection(lib.gamesOf(c).map((g) => ({ id: g.entry?.id ?? '', g }))).map((sec) => ({
               ...sec,
@@ -66,14 +79,16 @@ export function libraryCards(lib: HomeLibrary, c: Category, ratingFilter: Return
                   games: grp.items.map((g) => ({ g })),
                 }))
               : [];
+    const shownSections = c === 'starter' ? sections.filter((sec) => sec.games.length) : sections;
     cards =
-      sections.length > 1 || c === 'starter'
-        ? sections.flatMap((sec, n) => [
+      shownSections.length > 1 || c === 'starter'
+        ? shownSections.flatMap((sec, n) => [
             h(
               'h3',
               { class: `lib-sub${sec.games.length === 1 ? ' lib-sub-one' : ''}`, id: `lib-sub-${n}`, dataset: { group: String(n) } },
               sec.name,
               (c === 'starter' || c === 'cd') && sec.tag ? h('span', { class: 'lib-sub-tag' }, ` · ${sec.tag}`) : null,
+              c === 'starter' && sec.doneText ? h('span', { class: 'lib-sub-count' }, ` · ${sec.doneText}`) : null,
               sec.count ? h('span', { class: 'lib-sub-count' }, ` · ${sec.count} game${sec.count === 1 ? '' : 's'}`) : null,
             ),
             ...sec.games.map((x) => {
@@ -85,7 +100,18 @@ export function libraryCards(lib: HomeLibrary, c: Category, ratingFilter: Return
           ])
         : (c === 'imported' ? rated : lib.gamesOf(c)).map(tile);
   }
-  if (!cards.length) cards = [emptyCollection(lib, c, ratingFilter, on)];
+  if (!cards.length)
+    cards = [
+      c === 'starter' && starters.filter !== 'all'
+        ? h(
+            'p',
+            { class: 'meta' },
+            starters.filter === 'done'
+              ? 'No Starter is done yet. Pick All Starters under Show to see them all.'
+              : 'Every Starter is done. Pick All Starters under Show to see them all.',
+          )
+        : emptyCollection(lib, c, ratingFilter, on),
+    ];
   return cards;
 }
 

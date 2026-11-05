@@ -40,6 +40,7 @@ import { assetMenu, type AssetAction } from '../../shell/assetMenu';
 import './mapExport.css';
 import './tools/mapTools.css';
 import { playSpot } from './playSpot';
+import { roleFilter } from './roleFilter';
 
 type Mode = 'paint' | 'fill' | 'pick' | 'monster' | 'pan' | 'zoom' | ToolMode;
 const TOOL_MODES = new Set<string>(['line', 'rect', 'select', 'terrain', 'stamp', 'building', 'paste']);
@@ -274,6 +275,7 @@ registerEditor(['map'], (host, project, file) => {
     }),
     'Blocks to paint with',
   );
+  const filter = roleFilter({ project, file: () => bblName, count: () => bg.length, onChange: () => renderPicker() });
   const monPicker = rovingGrid(
     h('div', {
       class: 'block-picker',
@@ -301,33 +303,44 @@ registerEditor(['map'], (host, project, file) => {
     bgImgs = blockImages(bg, chooser.palette);
     monImgs = blockImages(mblk, chooser.palette, true);
     gray = undefined;
-    clear(
-      picker,
-      ...bg.map((b, i) =>
-        h(
-          'button',
-          {
-            class: i === brush ? 'selected' : '',
-            title: blockLabel(project, bblName, i),
-            'aria-label': blockLabel(project, bblName, i),
-            onclick: () => (
-              (brush = i),
-              setMode(['paint', 'line', 'rect', 'fill', 'select'].includes(mode) ? mode : 'paint'),
-              rebuildPickers(),
-              redrawOverlay()
-            ),
-          },
-          blockCanvas(b.pixels, chooser.palette),
-          h('small', null, i),
-        ),
-      ),
-    );
+    filter.refresh();
+    renderPicker();
     rebuildMonsters();
     draw();
   }
 
+  /** The block palette: every block, or only those the role filter shows. */
+  function renderPicker(): void {
+    clear(
+      picker,
+      ...bg.flatMap((b, i) =>
+        filter.shows(i) || i === brush
+          ? [
+              h(
+                'button',
+                {
+                  class: i === brush ? 'selected' : '',
+                  'data-block': String(i),
+                  title: blockLabel(project, bblName, i),
+                  'aria-label': blockLabel(project, bblName, i),
+                  onclick: () => (
+                    (brush = i),
+                    setMode(['paint', 'line', 'rect', 'fill', 'select'].includes(mode) ? mode : 'paint'),
+                    rebuildPickers(),
+                    redrawOverlay()
+                  ),
+                },
+                blockCanvas(b.pixels, chooser.palette),
+                h('small', null, i),
+              ),
+            ]
+          : [],
+      ),
+    );
+  }
+
   function rebuildPickers(): void {
-    [...picker.children].forEach((b, i) => b.classList.toggle('selected', i === brush));
+    [...picker.children].forEach((b) => b.classList.toggle('selected', (b as HTMLElement).dataset.block === String(brush)));
   }
 
   function firstPic(m: Monster | undefined): number {
@@ -1331,7 +1344,34 @@ registerEditor(['map'], (host, project, file) => {
       return true;
     },
   });
-  const blockPanel = h('div', { class: 'stack' }, picker);
+  const generateBtn = h(
+    'button',
+    {
+      type: 'button',
+      title: 'Draw a dungeon or a forest from the blocks marked as walls, floors and trees in the block editor',
+      disabled: !bblName || !project.files.has(bblName),
+      onclick: () =>
+        void import('./generate/generateDialog').then((m) =>
+          m.generateDialog({
+            project,
+            bbl: bblName,
+            blockCount: bg.length,
+            blocks: () => map.blocks,
+            images: () => bgImgs,
+            selection: () => tools.selection,
+            apply: (blocks) => {
+              remember();
+              map.blocks.set(blocks);
+              draw();
+              save();
+              toast('Layout drawn. Undo takes it back in one step.');
+            },
+          }),
+        ),
+    },
+    '✨ Generate…',
+  );
+  const blockPanel = h('div', { class: 'stack' }, filter.el, generateBtn, picker);
   const monsterPanel = h('div', { class: 'stack' }, monPicker, monCount);
   const optionsPanel = h(
     'div',

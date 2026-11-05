@@ -1,64 +1,64 @@
 {
-  "version": 1,
-  "game": "and-gate",
-  "rand": {
-    "seed": 1,
-    "per": "scene"
+ "version": 1,
+ "game": "and-gate",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "FU0PzStNHM0rOQK5P00ZzTU5ArmgAU0WzQNNEs0oSwjLA00PzStNI80DTQ=="
   },
-  "segments": [
-    {
-      "scene": 2,
-      "keys": "FU0PzStNHM0rOQK5P00ZzTU5ArmgAU0WzQNNEs0oSwjLA00PzStNI80DTQ=="
-    },
-    {
-      "scene": 3,
-      "keys": "FU0KzSs5Ark/TRTNK0hFyANNJM0STRHNKzkCubMBTRLNQU0CzQNND80rTTDNA00="
-    }
-  ],
-  "chapters": [
-    {
-      "scene": 2,
-      "title": "Level 1: Both Together"
-    },
-    {
-      "scene": 3,
-      "title": "Level 2: All Three"
-    }
-  ],
-  "timeline": {
-    "fps": 60,
-    "frames": 10780,
-    "chapters": [
-      {
-        "title": "Opening",
-        "frame": 0,
-        "time": 0
-      },
-      {
-        "title": "Story",
-        "frame": 896,
-        "time": 14933.333333333148
-      },
-      {
-        "title": "Level 1: Both Together",
-        "frame": 2125,
-        "time": 35416.66666666724
-      },
-      {
-        "title": "Level 2: All Three",
-        "frame": 4616,
-        "time": 76933.33333333283
-      },
-      {
-        "title": "Ending",
-        "frame": 7495,
-        "time": 124916.66666668013
-      },
-      {
-        "title": "Credits",
-        "frame": 9706,
-        "time": 161766.66666666407
-      }
-    ]
+  {
+   "scene": 3,
+   "keys": "FU0KzSs5Ark/TRTNK0hFyANNJM0STRHNKzkCubMBTRLNQU0CzQNND80rTTDNA00="
   }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: Both Together"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: All Three"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 10797,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 913,
+    "time": 15216.666666666471
+   },
+   {
+    "title": "Level 1: Both Together",
+    "frame": 2142,
+    "time": 35700.00000000053
+   },
+   {
+    "title": "Level 2: All Three",
+    "frame": 4633,
+    "time": 77216.66666666625
+   },
+   {
+    "title": "Ending",
+    "frame": 7512,
+    "time": 125200.00000001355
+   },
+   {
+    "title": "Credits",
+    "frame": 9723,
+    "time": 162049.99999999724
+   }
+  ]
+ }
 }

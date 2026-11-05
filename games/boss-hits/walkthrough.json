@@ -27,7 +27,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 9803,
+  "frames": 9820,
   "chapters": [
    {
     "title": "Opening",
@@ -36,28 +36,28 @@
    },
    {
     "title": "Story",
-    "frame": 896,
-    "time": 14933.333333333148
+    "frame": 913,
+    "time": 15216.666666666471
    },
    {
     "title": "Level 1: Five Hits",
-    "frame": 2125,
-    "time": 35416.66666666724
+    "frame": 2142,
+    "time": 35700.00000000053
    },
    {
     "title": "Level 2: Count the Lights",
-    "frame": 4458,
-    "time": 74299.99999999873
+    "frame": 4475,
+    "time": 74583.33333333215
    },
    {
     "title": "Ending",
-    "frame": 6520,
-    "time": 108666.6666666754
+    "frame": 6537,
+    "time": 108950.00000000882
    },
    {
     "title": "Credits",
-    "frame": 8729,
-    "time": 145483.3333333402
+    "frame": 8746,
+    "time": 145766.66666667338
    }
   ]
  }

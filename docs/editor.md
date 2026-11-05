@@ -182,6 +182,8 @@ edit the same map, including selections, pasted blocks and terrain brushes. Use 
 or the focused map's arrow keys to scroll; on a touch screen, choose **Scroll** before dragging.
 The Wrap preference is remembered and included in preference backups.
 
+The **Show** list above the block palette keeps only the blocks marked as a wall, floor, tree and so on in the block editor's Uses tab. **Generate** draws a dungeon (rooms joined by corridors) or a forest (trees, clearings and a winding path) from those marked blocks: it shows four real previews from a seed, for the whole map or the selection, and nothing changes until you pick one. If a kind needs a block you have not marked, it says which and links to the Uses tab. A layout is ordinary blocks in one undo step; where the block set has a terrain brush for walls, trees or paths, it also gets edges and corners. It proposes where the hero could start and an exit but links nothing.
+
 ## Play Game and Play Level
 
 ![Play Level running LaVale Mall: the game's own level screen and briefing, "4. LaVale Mall, 8:00 PM. One hour to closing."](screenshots/editor/04-play-level.webp)
@@ -200,6 +202,7 @@ then say how it behaves: which sides are solid, which way gravity pulls, whether
 up.
 Shift- or Ctrl-click several blocks to group them and change them together. Flip, rotate,
 shift and _Make an edge set_ save a lot of drawing.
+The **Uses** tab marks what a block is for (wall, door, key, chair facing south...) with chips; the editor suggests some from what the block does, and you tap to keep them. They are saved with the project, never in the game's files.
 
 ## Monsters and their paths
 
@@ -227,6 +230,15 @@ pick a range, then spread a blend between them or make a shade ramp. Two colors 
 as they were in DOS: color 255 is drawn as see-through in monster and character blocks, and
 color 0 is the background of PLAYGAME's menus. The panel below lists the blocks that use each
 color, so you can see what a change will touch.
+
+**Color help** (a small control in the palette editor and in the block, monster and character
+painters) holds three choices, kept only in your browser: show each color's plain name ("dark
+red", "light blue-green") on its swatch and on the selected color's line; warn about colors that
+look alike to some eyes, red and green or blue and yellow, with dashed outlines in the palette and
+a note when two such colors touch in a picture you are painting; and preview the color or picture
+as others might see it, side by side. An optional **Quick color check** (a few "which tile looks
+different?" screens) only suggests which of these to turn on. It is not a medical test and keeps
+no answers.
 
 ## Music
 

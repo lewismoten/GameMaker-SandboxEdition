@@ -12,7 +12,7 @@ import { Book, LEDGE, PULL } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
+import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
 import { addSign, type Sign } from '../../kit/starter/sign';
 import { drawCrate, drawItem } from './itemArt';
 import { FROSTY, TARGET } from './monsters';
@@ -39,6 +39,15 @@ function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   book.add('crate', drawCrate(pal), { solid: LEDGE, grav: PULL.down, touch: 'sky', obj: true });
   book.add('starItem', drawItem(pal, 'star'), { touch: 'sky', obj: true });
   book.add('flameItem', drawItem(pal, 'flame'), { touch: 'sky', obj: true });
+  // spikes: they stand on the ground at Kit's height and sting him once, ten hit points, when he touches them (then they
+  // lie flat). The kit's spikes block is solid and hurts, so a Kit standing on top is stung every tick: not used here.
+  const spikes = book.pics.get('spikes')!;
+  book.add('spikeUp', spikes, { grav: PULL.down, hp: -10, touch: 'spikeFlat' });
+  book.add(
+    'spikeFlat',
+    spikes.map((_x, y, c) => (y < 11 ? skyOf(pal) : c)),
+    { grav: PULL.down },
+  );
   const signs = {} as Record<SignName, Sign>;
   for (const n of Object.keys(WORDS) as SignName[]) signs[n] = addSign(book, pal, `${n}.sign`, WORDS[n].text, WORDS[n].w, WORDS[n].h);
   return { book, signs };
@@ -140,7 +149,6 @@ function yourPick(book: Book, signs: Record<SignName, Sign>): StarterMap {
   const g = base(L2.width, L2.exit);
   // the wall: brick from the top of the room down to a two-block-high tunnel (rows 8 and 9)
   g.fill(L2.wall[0], 0, L2.wall[1] - L2.wall[0] + 1, 8, 'B');
-  g.row(GROUND, L2.spikes[0], L2.spikes[1], '^');
   for (const [x, y] of L2.coins) g.put(x, y, 'c');
   scenery(
     g,
@@ -158,6 +166,7 @@ function yourPick(book: Book, signs: Record<SignName, Sign>): StarterMap {
   m.set(L2.flame, STAND, 'flameItem').set(L2.star, STAND, 'starItem');
   m.sign(16, onGround(GROUND, signs.order), signs.order);
   m.mon(FROSTY, L2.frosty, STAND);
+  for (let x = L2.spikes[0]; x <= L2.spikes[1]; x++) m.set(x, STAND, 'spikeUp');
   m.sign(31, onGround(GROUND, signs.range), signs.range);
   m.mon(TARGET, L2.target, STAND);
   m.sign(46, onGround(GROUND, signs.exit), signs.exit);

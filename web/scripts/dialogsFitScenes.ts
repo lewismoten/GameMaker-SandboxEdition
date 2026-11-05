@@ -96,6 +96,17 @@ export const scenes: Scene[] = [
       await p.keyboard.press('Control+p');
     },
   },
+  {
+    // the map editor's Generate dialog, on a new game's map with no roles set (its Missing roles panel open: the tallest case)
+    id: 'generate-layout',
+    open: async (p) => {
+      await newProject(p);
+      const id = new URL(p.url()).hash.split('/')[2];
+      await p.evaluate((h) => (location.hash = h), `#/p/${id}/mygame.map`);
+      await p.getByRole('button', { name: /Generate/ }).click({ timeout: 15000 });
+      await p.waitForSelector('.gen-dialog', { timeout: 8000 });
+    },
+  },
   menuScene('sound-and-tour', /Sound and tour/),
   menuScene('ai-setup', /AI setup/),
   menuScene('backup-restore', /Back up/),

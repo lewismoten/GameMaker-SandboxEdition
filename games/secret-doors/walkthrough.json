@@ -35,7 +35,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 9324,
+  "frames": 9342,
   "chapters": [
    {
     "title": "Opening",
@@ -44,33 +44,33 @@
    },
    {
     "title": "Story",
-    "frame": 896,
-    "time": 14933.333333333148
+    "frame": 913,
+    "time": 15216.666666666471
    },
    {
     "title": "Level 1: Same Look",
-    "frame": 2125,
-    "time": 35416.66666666724
+    "frame": 2142,
+    "time": 35700.00000000053
    },
    {
     "title": "Level 2: Bump, Then Bump",
-    "frame": 3555,
-    "time": 59249.999999997104
+    "frame": 3572,
+    "time": 59533.333333330396
    },
    {
     "title": "Level 3: Coins in the Wall",
-    "frame": 4814,
-    "time": 80233.3333333338
+    "frame": 4831,
+    "time": 80516.66666666721
    },
    {
     "title": "Ending",
-    "frame": 6042,
-    "time": 100700.00000000642
+    "frame": 6059,
+    "time": 100983.33333333983
    },
    {
     "title": "Credits",
-    "frame": 8250,
-    "time": 137500.00000001153
+    "frame": 8268,
+    "time": 137800.00000001135
    }
   ]
  }

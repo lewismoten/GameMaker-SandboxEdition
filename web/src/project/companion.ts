@@ -19,7 +19,8 @@
 //       "forest.bbl": {
 //         "terrains": [ … ],       // map/tools/autotile.ts
 //         "stamps": [ … ],         // map/tools/stamps.ts
-//         "buildings": [ … ]       // map/tools/building.ts
+//         "buildings": [ … ],      // map/tools/building.ts
+//         "roles": { "4": { "roles": ["wall"] } } // what each block is for (blocks/blockRoles.ts)
 //       },
 //       "town.map": { "wrap": true }, // the map editor's Wrap toggle, per map
 //       "hero.chr": { … }          // any editor may add a section of its own

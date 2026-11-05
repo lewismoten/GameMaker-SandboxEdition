@@ -113,7 +113,7 @@ export function designPages(shots: GameShot[]): BookletPage[] {
       <p>A palette is 256 colors, each mixed from red, green and blue (0 to 63 each). Keep color 0
       black: it is the background of every design screen. Color 15 is the mouse pointer, and
       color 255 is \u201cclear\u201d: monsters and characters show the scenery through it.</p>
-      <p class="see"><i>On the Sample CD</i> (<code>D:\\SAMPLES\\DAYNIGHT</code>), the palette changes in steps for a sunset; in <code>SAMEHOUS</code>, one house is three houses, each door naming its own palette; in <code>COLORS</code>, a plate that stings and a plate that is safe are told apart by shape and brightness, so they read in any color.</p>
+      <p class="see"><i>On the Sample CD</i> (<code>D:\\SAMPLES\\DAYNIGHT</code>), the palette changes in steps for a sunset; in <code>SAMEHOUS</code>, one house is three houses, each door naming its own palette; in <code>COLORS</code>, a plate that stings and a plate that is safe are told apart by shape and brightness, so they read in any color; in <code>COLRDOOR</code>, one room is seen through five doors, each scene giving it its own palette.</p>
       <h3>Block Designer</h3>
       <p>A background set holds 150 blocks, a monster set 100 and a character set 50. Draw with
       the dot, line, box, filled box, circle, disk and fill tools; shift, rotate and flip a block
@@ -127,7 +127,12 @@ export function designPages(shots: GameShot[]): BookletPage[] {
       <div class="note"><strong>Time.</strong> Game time runs at about 18 ticks a second: 1092 ticks
       is a minute, and the longest wait, 9999 ticks, is about nine minutes.</div>
       <p class="see"><i>On the Sample CD:</i> <code>CLOCK</code>, <code>COUNTDWN</code>, <code>WARNFRST</code> and <code>BLOCKBRN</code> (gates that take turns) use time.</p>
-      <p class="see"><i>Stars that twinkle out of step, by loops with different times, are on the Sample CD:</i> <code>TWINKLE</code>.</p>`,
+      <p class="see"><i>A hit, a lamp and a storm sky that stay easy on the eyes are on the Sample CD:</i> <code>FLASHSAF</code>.</p>
+      <p class="see"><i>Stars that twinkle out of step, by loops with different times, are on the Sample CD:</i> <code>TWINKLE</code>.</p>
+      <p class="see"><i>Flames, flags and a waterfall that move in place are on the Sample CD:</i> <code>FLICKER</code>.</p>
+      <p class="see"><i>Light made of paint, in rings of brighter blocks, a trail a touch leaves and a hall a clock lights, is on the Sample CD:</i> <code>LIGHTOUT</code>.</p>
+      <p class="see"><i>Shadows painted into the pictures, solid or dithered, a hop that shrinks one and a bee over a shadow block of its own, are on the Sample CD:</i> <code>SHADOWS</code>.</p>
+      <p class="see"><i>Beams of light and drifting fog painted in dots, so the wall and the hills show through, and lanterns that carry a glow, are on the Sample CD:</i> <code>BEAMS</code>.</p>`,
     ),
     page(
       '3. Designing Games',
@@ -138,14 +143,14 @@ export function designPages(shots: GameShot[]): BookletPage[] {
       counter (arrows, for instance). Set the hero\u2019s hit points, lives and starting
       inventory (up to ten objects). A frame can give birth to a monster: that is how a hero
       shoots.</p>
-      <p class="see"><i>On the Sample CD:</i> <code>THROWIT</code>, <code>MANYWEAP</code>, <code>PICKITUP</code>, <code>KITMOVES</code>, <code>CHOOSE</code>, <code>WHEEL</code>, <code>HEALTH</code>, <code>POWERUP</code>, <code>SLIDE</code>, <code>BOOTS</code>, <code>GRAVITY</code>, <code>SWIM</code> and <code>GUSTS</code>.</p>
+      <p class="see"><i>On the Sample CD:</i> <code>THROWIT</code>, <code>MANYWEAP</code>, <code>PICKITUP</code>, <code>KITMOVES</code>, <code>HOMEKEYS</code>, <code>KITDUCK</code>, <code>CHOOSE</code>, <code>WHEEL</code>, <code>HEALTH</code>, <code>POWERUP</code>, <code>SLIDE</code>, <code>BOOTS</code>, <code>GRAVITY</code>, <code>SWIM</code> and <code>GUSTS</code>.</p>
       <h3>Monster Maker</h3>
       <p>A monster set has up to 64 monsters of up to 20 frames each. Each one moves toward the
       hero, away, at random or along a path you draw; it can attack when the hero comes close,
       pass through walls or be stopped by them, and die when killed, at the end of its path,
       after a time or never. A dying monster can leave another behind, and killing it can add to
       the score.</p>
-      <p class="see"><i>On the Sample CD:</i> <code>MONSTERS</code>, <code>FOLLOWME</code>, <code>FLOCK</code>, <code>SEEN</code>, <code>BIGBUG</code>, <code>PHASES</code>, <code>WHOWINS</code>, <code>HERETODY</code>, <code>SEEDNEST</code> and <code>POPUPS</code>.</p>
+      <p class="see"><i>On the Sample CD:</i> <code>MONSTERS</code>, <code>FOLLOWME</code>, <code>FLOCK</code>, <code>SEEN</code>, <code>BIGBUG</code>, <code>PHASES</code>, <code>GIANT</code>, <code>WHOWINS</code>, <code>HERETODY</code>, <code>SEEDNEST</code> and <code>POPUPS</code>.</p>
       <h3>Map Maker</h3>
       <p>Paint a map with background blocks and place up to 200 monsters on it (up to 50 are
       shown on the screen at once). <b>Z</b> zooms out to see the whole map. You can limit
@@ -165,7 +170,7 @@ export function designPages(shots: GameShot[]): BookletPage[] {
       hit points gained, a monster dies, money gained and spent, a life gained, score up and
       down, and a counter up and down. The Sound Designer also converts <code>.CMF</code> music
       for Game-Maker.</p>
-      <p class="see"><i>On the Sample CD:</i> <code>SOUNDS</code>; <code>OUTLOUD</code> for <code>.VOC</code> voices.</p>
+      <p class="see"><i>On the Sample CD:</i> <code>SOUNDS</code>, <code>SNDBOARD</code>; <code>OUTLOUD</code> for <code>.VOC</code> voices.</p>
       <h3>Integrator</h3>
       <p>Each square on the Integrator\u2019s screen is a scene. The green ones are the title
       screen and the end of the game. Give each scene its palette, map, block sets, monsters,

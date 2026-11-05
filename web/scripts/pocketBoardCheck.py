@@ -10,6 +10,7 @@ Needs the board on the game list. Exits 1 on any failed load, a stack high-water
 """
 import sys, time, argparse
 import serial
+from pocketStatus import show, clear
 
 ap = argparse.ArgumentParser()
 ap.add_argument("port")
@@ -22,22 +23,31 @@ a = ap.parse_args()
 s = serial.Serial(a.port, 115200, timeout=1)
 time.sleep(0.3)
 s.reset_input_buffer()
+show(s, "Board check: starting")
 s.write(f"T {a.index if a.index is not None else 'all'} {a.ticks}{' cards' if a.cards else ''}\n".encode())
 rows, crows, end, bad = [], [], time.time() + a.timeout, False
 done = False
-while time.time() < end and not done:
-    line = s.readline().decode("utf-8", "replace").strip()
-    if line.startswith("ST done"):
-        done = True
-    elif line.startswith("ST error"):
-        print(line); sys.exit(1)
-    elif line.startswith("SC "):
-        crows.append(dict(kv.split("=") for kv in line[3:].split()))
-    elif line.startswith("ST "):
-        rows.append(dict(kv.split("=") for kv in line[3:].split()))
-    elif line:
-        print("  (board)", line)
-s.close()
+try:
+    while time.time() < end and not done:
+        line = s.readline().decode("utf-8", "replace").strip()
+        if line.startswith("ST done"):
+            done = True
+        elif line.startswith("ST error"):
+            print(line); sys.exit(1)
+        elif line.startswith("SC "):
+            crows.append(dict(kv.split("=") for kv in line[3:].split()))
+        elif line.startswith("ST "):
+            rows.append(dict(kv.split("=") for kv in line[3:].split()))
+            show(s, f"Board check: game {len(rows)} {rows[-1]['id']}")
+        elif line:
+            print("  (board)", line)
+finally:
+    try:
+        clear(s)
+        time.sleep(0.2)
+    except Exception:
+        pass
+    s.close()
 print(f"{'game':<16}{'ok':<5}{'free':>8}{'largest':>9}{'minfree':>9}{'stack':>7}")
 for r in rows:
     fail = r["ok"] != "1" or int(r["stack"]) < 1024

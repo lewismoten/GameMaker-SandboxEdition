@@ -39,7 +39,7 @@ const data = serializeBlocks(blocks);
 
 `medianCutRgba` from `images` chooses up to a requested 1–256 eight-bit RGB colors from portable RGBA image buffers. It needs no canvas or DOM; flatten transparency onto the intended background before calling it. The palette is based on pixel colors and their frequency, not unused color-table entries.
 
-Keep drawing and simulation imports in Node build scripts and tests; those entry points reject browser imports. Browser-safe `audio`, `images`, `text`, `colors`, `microFont`, `music/compose`, `image/png`, `kit/tar` and `menu-version` (stamps "v1.0" on a game menu picture) entry points also support the web editor. Playback through the engine and archives packages does not load this toolkit. Generated game data and your own copied assets belong in the consuming project.
+Keep drawing and simulation imports in Node build scripts and tests; those entry points reject browser imports. Browser-safe `audio`, `images`, `text`, `colors`, `microFont`, `music/compose`, `image/png`, `kit/tar`, `kit/blockRoles` and `menu-version` (stamps "v1.0" on a game menu picture) entry points also support the web editor. Playback through the engine and archives packages does not load this toolkit. Generated game data and your own copied assets belong in the consuming project.
 
 ## Fonts, text images, and lighting
 
@@ -147,6 +147,10 @@ The stroke glyphs, implementation provenance and method references are in NOTICE
 
 ### Archives for downloads
 
+`kit/blockRoles` is the block-role vocabulary (wall, door, locked door and key with a lock number, furniture with a facing...), `suggestRoles` (guesses from a block's behavior and picture; it never decides) and `cleanRoles`/`packRoles` for editor companion data; it needs no DOM and changes no game bytes.
+
+`kit/levelGen` draws a dungeon (binary space partition: rooms joined by corridors) or a forest (cellular automata on a tree mask, clearings, a winding path) into a rectangle of a map from the blocks that hold roles. `checkNeeds(kind, roles)` says which roles a kind needs and which it uses when present; `generate(roles, { kind, seed, rect })` returns block numbers, the plain kind of each cell, the cells a terrain brush should give edges to, and a proposed entry and exit (never applied or linked), or a plain message when a needed role is missing; `offerSeed` gives the four seeds of a set of offers; `verifyReach` checks every open cell can be reached from the entry. It needs no DOM, runs in a Worker, and the same seed always gives the same blocks. It writes no game data: the map editor places the cells.
+
 `kit/tar` writes and reads POSIX ustar archives (`createTar`, `createTarGz`, `readTar`). Entries keep
 their Unix mode, so a game folder's programs and scripts unpack executable, and names over 100
 bytes use the header's prefix field. It has no dependencies and runs in Node and browsers
@@ -183,6 +187,20 @@ These Node build helpers complement the browser-safe `images` API.
 `kit/song` builds CMF arrangements from caller-supplied sections; `kit/songFx` adds native
 CMF swells, arpeggios, glides, echoes and rhythm effects. Instrument presets are original
 project data under the MIT License; recordings and complete songs are not included.
+
+### Mumble-speak (nonsense talk as VOC)
+
+`kit/mumble` is a small formant synthesizer that says nonsense, the way a game of 1994 might hum a character's
+talk. A line is a list of syllables `[vowel, fromHz, toHz, seconds, restSeconds?]`. `mumble(line, { rate, gain })`
+returns samples in -1..1, `mumbleVoc(line)` returns an 8-bit mono 11 kHz .VOC, and `syllablesFromText(text, { pitch, speed, seed })`
+turns a line of text into syllables (vowels from its letters, so the same line and seed mumble the same way;
+a question rises, a sentence falls). `MUMBLE_VOICES` has `bright`, `deep` and `small` settings.
+
+```ts
+import { MUMBLE_VOICES, mumbleVoc, syllablesFromText } from '@lewismoten/gamemaker-sandbox-tools/kit/mumble';
+
+const voc = mumbleVoc(syllablesFromText('Welcome to the show!', MUMBLE_VOICES.bright)); // write it as HELLO.VOC
+```
 
 ### Native animations and demos
 

@@ -35,7 +35,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 11882,
+  "frames": 11899,
   "chapters": [
    {
     "title": "Opening",
@@ -44,33 +44,33 @@
    },
    {
     "title": "Story",
-    "frame": 896,
-    "time": 14933.333333333148
+    "frame": 913,
+    "time": 15216.666666666471
    },
    {
     "title": "Level 1: Small Key, Big Door",
-    "frame": 2125,
-    "time": 35416.66666666724
+    "frame": 2142,
+    "time": 35700.00000000053
    },
    {
     "title": "Level 2: One Gold Key",
-    "frame": 4409,
-    "time": 73483.33333333183
+    "frame": 4426,
+    "time": 73766.66666666525
    },
    {
     "title": "Level 3: Keys Add Up",
-    "frame": 6211,
-    "time": 103516.6666666739
+    "frame": 6228,
+    "time": 103800.00000000732
    },
    {
     "title": "Ending",
-    "frame": 8596,
-    "time": 143266.66666667484
+    "frame": 8613,
+    "time": 143550.000000008
    },
    {
     "title": "Credits",
-    "frame": 10808,
-    "time": 180133.33333332004
+    "frame": 10825,
+    "time": 180416.6666666532
    }
   ]
  }

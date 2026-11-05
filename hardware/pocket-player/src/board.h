@@ -22,7 +22,13 @@
 constexpr int PIN_SCLK = 14, PIN_MOSI = 13, PIN_MISO = 12, PIN_CS = 15, PIN_DC = 2, PIN_BL = 21;
 constexpr int PIN_XCLK = 25, PIN_XMOSI = 32, PIN_XMISO = 39, PIN_XCS = 33, PIN_XIRQ = 36;
 constexpr int PIN_LED_R = 4, PIN_LED_G = 16, PIN_LED_B = 17;
-enum PanelType { PANEL_ILI9341 = 0, PANEL_ILI9341_INV = 1, PANEL_ST7789 = 2, PANEL_TYPES = 3 };
+// A display mode is three bits: 1 = ST7789 driver (else ILI9341), 2 = colors inverted, 4 = red and blue swapped (BGR).
+// Lewis's two units showed a rotated, mirrored picture and wrong colors with mode 0, and the panel's ID registers do not
+// read back, so the modes are tried on the board: see the test pattern at boot (main.cpp). Turns 0..3 are landscape rotations
+// 1, 3, 5, 7 (5 and 7 are mirrored).
+enum PanelType { PANEL_ILI9341 = 0, PANEL_TYPES = 8 };
+constexpr int TURNS = 4;
+constexpr int turnRotation(int t) { return 1 + 2 * (t & 3); }
 // microSD (TF) slot on its own SPI bus: rzeldent's esp32-3248S035C.json (https://github.com/rzeldent/platformio-espressif32-sunton)
 // sets TF_CS=5, TF_SPI_SCLK=18, TF_SPI_MISO=19, TF_SPI_MOSI=23.
 constexpr int PIN_SD_CS = 5, PIN_SD_SCLK = 18, PIN_SD_MISO = 19, PIN_SD_MOSI = 23;
@@ -61,18 +67,30 @@ class LGFX : public lgfx::LGFX_Device {
     cfg(ps_, true);
     setPanel(&pi_);
   }
-  // Picks the driver (before init()): ILI9341, ILI9341 with inverted colors, or ST7789 (inverted, as its modules are).
+  // Picks the display mode (before init()): see PanelType.
   void choose(int t) {
-    if (t == PANEL_ST7789) setPanel(&ps_);
-    else {
-      auto c = pi_.config();
-      c.invert = t == PANEL_ILI9341_INV;
-      pi_.config(c);
-      setPanel(&pi_);
-    }
+    auto c = (t & 1) ? ps_.config() : pi_.config();
+    c.invert = (t & 2) != 0;
+    c.rgb_order = (t & 4) != 0;
+    if (t & 1) { ps_.config(c); setPanel(&ps_); }
+    else { pi_.config(c); setPanel(&pi_); }
+  }
+
+  // Changes the colors on the running panel (bits 2 inverted, 4 red/blue swapped; the driver bit stays as started) and sets the
+  // rotation again, which writes MADCTL with the new color order: the setup's colors step cycles the modes with no restart.
+  void applyColors(int t, int rotation) {
+    if (t & 1) recolor(ps_, t); else recolor(pi_, t);
+    setRotation(rotation);
   }
 
  private:
+  template <class P> void recolor(P& p, int t) {
+    auto c = p.config();
+    c.invert = (t & 2) != 0;
+    c.rgb_order = (t & 4) != 0;
+    p.config(c);
+    p.setInvert(c.invert);
+  }
   template <class P> void cfg(P& p, bool inv) {
     p.setBus(&bus_);
     auto c = p.config();

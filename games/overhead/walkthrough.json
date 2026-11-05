@@ -83,7 +83,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 10788,
+  "frames": 10805,
   "chapters": [
    {
     "title": "Opening",
@@ -92,48 +92,48 @@
    },
    {
     "title": "Story",
-    "frame": 896,
-    "time": 14933.333333333148
+    "frame": 913,
+    "time": 15216.666666666471
    },
    {
     "title": "Level 1: The Room",
-    "frame": 2125,
-    "time": 35416.66666666724
+    "frame": 2142,
+    "time": 35700.00000000053
    },
    {
     "title": "Level 2: The Four Roads (the meadow)",
-    "frame": 4141,
-    "time": 69016.66666666386
+    "frame": 4158,
+    "time": 69299.99999999728
    },
    {
     "title": "Level 2: The Four Roads (the woods)",
-    "frame": 4438,
-    "time": 73966.6666666653
+    "frame": 4455,
+    "time": 74249.99999999872
    },
    {
     "title": "Level 2: The Four Roads (the pond)",
-    "frame": 5308,
-    "time": 88466.66666666952
+    "frame": 5325,
+    "time": 88750.00000000294
    },
    {
     "title": "Level 2: The Four Roads (the village)",
-    "frame": 5793,
-    "time": 96550.00000000521
+    "frame": 5810,
+    "time": 96833.33333333863
    },
    {
     "title": "Level 2: The Four Roads (the shop)",
-    "frame": 6278,
-    "time": 104633.3333333409
+    "frame": 6295,
+    "time": 104916.66666667431
    },
    {
     "title": "Ending",
-    "frame": 7503,
-    "time": 125050.0000000135
+    "frame": 7520,
+    "time": 125333.33333334692
    },
    {
     "title": "Credits",
-    "frame": 9714,
-    "time": 161899.99999999732
+    "frame": 9731,
+    "time": 162183.3333333305
    }
   ]
  }

@@ -1136,3 +1136,28 @@ a.button.with-ico {
 .rd-what small {
   color: var(--muted);
 }
+
+/* a Starter played to its ending: a check pill at the bottom right of its picture (homeDone.ts);
+   dark green with white words and a white edge, so it reads over any picture, light or dark */
+.tile-done {
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px 2px 6px;
+  border: 1.5px solid #fff;
+  border-radius: 999px;
+  background: #0b5c2e;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.3;
+  pointer-events: none;
+}
+.lib-done select {
+  padding: 3px 6px;
+  font: inherit;
+  color: var(--text);
+}

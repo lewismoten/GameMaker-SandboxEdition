@@ -35,7 +35,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 9956,
+  "frames": 9973,
   "chapters": [
    {
     "title": "Opening",
@@ -44,28 +44,28 @@
    },
    {
     "title": "Story",
-    "frame": 896,
-    "time": 14933.333333333148
+    "frame": 913,
+    "time": 15216.666666666471
    },
    {
     "title": "Level 1: A Post to Start Over",
-    "frame": 2125,
-    "time": 35416.66666666724
+    "frame": 2142,
+    "time": 35700.00000000053
    },
    {
     "title": "Level 2: Ways Back",
-    "frame": 4936,
-    "time": 82266.66666666772
+    "frame": 4953,
+    "time": 82550.00000000114
    },
    {
     "title": "Ending",
-    "frame": 6672,
-    "time": 111200.00000000947
+    "frame": 6689,
+    "time": 111483.33333334289
    },
    {
     "title": "Credits",
-    "frame": 8882,
-    "time": 148033.33333333873
+    "frame": 8899,
+    "time": 148316.6666666719
    }
   ]
  }

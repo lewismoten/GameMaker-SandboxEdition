@@ -23,7 +23,7 @@ import { cardPicture, endPicture, gif, menuPicture, paper, scoresPicture, slotsP
 import { buildSounds } from '../kit/starter/sounds';
 import { demoRecording } from './src/demo';
 import { TITLE, buildGame } from './src/game';
-import { buildTopHero, buildTopHeroBlocks, topPicture } from './src/topHero';
+import { buildCornerHero, buildCornerHeroBlocks, cornerPicture } from './src/cornerHero';
 import { buildLevels } from './src/levels';
 import { song } from './src/song';
 import { titlePicture } from './src/title';
@@ -39,16 +39,18 @@ const heroBlocks = buildHeroBlocks(pal);
 const monsterBlocks = buildMonsterBlocks(pal);
 const hero = heroPicture(heroBlocks, 'stand.top', 'stand');
 const cheer = heroPicture(heroBlocks, 'cheer.top', 'jump');
-const topBlocks = buildTopHeroBlocks(pal);
-const above = topPicture(topBlocks, 'down.stand');
+const topBlocks = buildCornerHeroBlocks(pal);
+const above = cornerPicture(topBlocks, 'dr.stand');
 
 // the game's shared data: one block set, one palette, one hero, an (empty) set of monsters, one song
 disk.put('cv.pal', serializePalette(pal.pal));
 disk.put('cv.mbl', serializeBlocks(monsterBlocks.finish()));
 disk.put('cv.mon', serializeMonsters(buildMonsters(monsterBlocks)));
-// the hero in both levels: Kit from above, one block, walking in four directions
-disk.put('top.cbl', serializeBlocks(topBlocks.finish()));
-disk.put('top.chr', serializeCharacter(buildTopHero(topBlocks)));
+// the hero: Kit in a corner view, one block a pose, four diagonal facings. Two character files share the pictures:
+// the first two levels' arrows walk the squares; the third level's arrows each walk a diagonal of the floor
+disk.put('kit.cbl', serializeBlocks(topBlocks.finish()));
+disk.put('square.chr', serializeCharacter(buildCornerHero(topBlocks, false)));
+disk.put('diag.chr', serializeCharacter(buildCornerHero(topBlocks, true)));
 disk.put('cv.snd', serializeSoundSet(buildSounds()));
 disk.put('cv.cmf', song());
 

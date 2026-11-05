@@ -13,7 +13,7 @@ export const SOUND_SETS: Chapter = {
   second), and, if you like, the name of a Sound Blaster <code>.VOC</code> file. With a Sound
   Blaster, a slot that names a <code>.VOC</code> plays it; otherwise the speaker tune plays.
   Players without a card hear only the speaker, so fill in both.</p>
-  ${onCd('SOUNDS', 'OUTLOUD')}
+  ${onCd('SOUNDS', 'SNDBOARD', 'OUTLOUD')}
   <h2>A block can’t choose its sound</h2>
   <p>There is no “sound” setting on a block. The first nine slots belong to events, and
   PLAYGAME picks the slot by what the touch did:</p>

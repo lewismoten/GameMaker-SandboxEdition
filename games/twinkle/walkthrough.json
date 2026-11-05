@@ -1,64 +1,64 @@
 {
-  "version": 1,
-  "game": "twinkle",
-  "rand": {
-    "seed": 1,
-    "per": "scene"
+ "version": 1,
+ "game": "twinkle",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "FU0tzYUBTUvNK003zcsBTSjNK00="
   },
-  "segments": [
-    {
-      "scene": 2,
-      "keys": "FU0tzYUBTUvNK003zcsBTSjNK00="
-    },
-    {
-      "scene": 3,
-      "keys": "FU0ZzStNX83LAU1fzStN"
-    }
-  ],
-  "chapters": [
-    {
-      "scene": 2,
-      "title": "Level 1: All at Once"
-    },
-    {
-      "scene": 3,
-      "title": "Level 2: A Night Sky"
-    }
-  ],
-  "timeline": {
-    "fps": 60,
-    "frames": 10717,
-    "chapters": [
-      {
-        "title": "Opening",
-        "frame": 0,
-        "time": 0
-      },
-      {
-        "title": "Story",
-        "frame": 896,
-        "time": 14933.333333333148
-      },
-      {
-        "title": "Level 1: All at Once",
-        "frame": 2125,
-        "time": 35416.66666666724
-      },
-      {
-        "title": "Level 2: A Night Sky",
-        "frame": 4725,
-        "time": 78750.00000000003
-      },
-      {
-        "title": "Ending",
-        "frame": 6952,
-        "time": 115866.6666666775
-      },
-      {
-        "title": "Credits",
-        "frame": 9162,
-        "time": 152700.00000000268
-      }
-    ]
+  {
+   "scene": 3,
+   "keys": "FU0ZzStNX83LAU1fzStN"
   }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: All at Once"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: A Night Sky"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 10734,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 913,
+    "time": 15216.666666666471
+   },
+   {
+    "title": "Level 1: All at Once",
+    "frame": 2142,
+    "time": 35700.00000000053
+   },
+   {
+    "title": "Level 2: A Night Sky",
+    "frame": 4742,
+    "time": 79033.33333333344
+   },
+   {
+    "title": "Ending",
+    "frame": 6969,
+    "time": 116150.00000001091
+   },
+   {
+    "title": "Credits",
+    "frame": 9179,
+    "time": 152983.33333333585
+   }
+  ]
+ }
 }

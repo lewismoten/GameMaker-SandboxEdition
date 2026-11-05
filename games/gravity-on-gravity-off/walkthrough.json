@@ -27,7 +27,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 8771,
+  "frames": 8788,
   "chapters": [
    {
     "title": "Opening",
@@ -36,28 +36,28 @@
    },
    {
     "title": "Story",
-    "frame": 896,
-    "time": 14933.333333333148
+    "frame": 913,
+    "time": 15216.666666666471
    },
    {
     "title": "Level 1: Gravity On",
-    "frame": 2125,
-    "time": 35416.66666666724
+    "frame": 2142,
+    "time": 35700.00000000053
    },
    {
     "title": "Level 2: Gravity Off",
-    "frame": 3661,
-    "time": 61016.666666663514
+    "frame": 3678,
+    "time": 61299.999999996806
    },
    {
     "title": "Ending",
-    "frame": 5490,
-    "time": 91500.00000000374
+    "frame": 5507,
+    "time": 91783.33333333716
    },
    {
     "title": "Credits",
-    "frame": 7697,
-    "time": 128283.33333334778
+    "frame": 7714,
+    "time": 128566.6666666812
    }
   ]
  }

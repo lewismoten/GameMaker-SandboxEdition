@@ -1,64 +1,64 @@
 {
-  "version": 1,
-  "game": "horizon",
-  "rand": {
-    "seed": 1,
-    "per": "scene"
+ "version": 1,
+ "game": "horizon",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "qQNN"
   },
-  "segments": [
-    {
-      "scene": 2,
-      "keys": "qQNN"
-    },
-    {
-      "scene": 3,
-      "keys": "X00UzZQCTQ=="
-    }
-  ],
-  "chapters": [
-    {
-      "scene": 2,
-      "title": "Level 1: Over the Hill"
-    },
-    {
-      "scene": 3,
-      "title": "Level 2: Coming Closer"
-    }
-  ],
-  "timeline": {
-    "fps": 60,
-    "frames": 8377,
-    "chapters": [
-      {
-        "title": "Opening",
-        "frame": 0,
-        "time": 0
-      },
-      {
-        "title": "Story",
-        "frame": 896,
-        "time": 14933.333333333148
-      },
-      {
-        "title": "Level 1: Over the Hill",
-        "frame": 1644,
-        "time": 27400.000000000564
-      },
-      {
-        "title": "Level 2: Coming Closer",
-        "frame": 3459,
-        "time": 57649.99999999734
-      },
-      {
-        "title": "Ending",
-        "frame": 5097,
-        "time": 84950.00000000183
-      },
-      {
-        "title": "Credits",
-        "frame": 7304,
-        "time": 121733.33333334587
-      }
-    ]
+  {
+   "scene": 3,
+   "keys": "X00UzZQCTQ=="
   }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: Over the Hill"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: Coming Closer"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 8394,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 913,
+    "time": 15216.666666666471
+   },
+   {
+    "title": "Level 1: Over the Hill",
+    "frame": 1661,
+    "time": 27683.333333333918
+   },
+   {
+    "title": "Level 2: Coming Closer",
+    "frame": 3476,
+    "time": 57933.33333333063
+   },
+   {
+    "title": "Ending",
+    "frame": 5114,
+    "time": 85233.33333333525
+   },
+   {
+    "title": "Credits",
+    "frame": 7321,
+    "time": 122016.66666667929
+   }
+  ]
+ }
 }

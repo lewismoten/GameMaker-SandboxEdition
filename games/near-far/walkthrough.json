@@ -67,7 +67,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 7920,
+  "frames": 7937,
   "chapters": [
    {
     "title": "Opening",
@@ -76,48 +76,48 @@
    },
    {
     "title": "Story",
-    "frame": 896,
-    "time": 14933.333333333148
+    "frame": 913,
+    "time": 15216.666666666471
    },
    {
     "title": "Level 1: Into the Distance (near)",
-    "frame": 2125,
-    "time": 35416.66666666724
+    "frame": 2142,
+    "time": 35700.00000000053
    },
    {
     "title": "Level 1: Into the Distance (far)",
-    "frame": 2570,
-    "time": 42833.33333333283
+    "frame": 2587,
+    "time": 43116.66666666612
    },
    {
     "title": "Level 1: Into the Distance (near again)",
-    "frame": 2870,
-    "time": 47833.3333333321
+    "frame": 2887,
+    "time": 48116.66666666539
    },
    {
     "title": "Level 2: Past the Cliff (near, before the cliff)",
-    "frame": 3296,
-    "time": 54933.333333331066
+    "frame": 3313,
+    "time": 55216.66666666436
    },
    {
     "title": "Level 2: Past the Cliff (far)",
-    "frame": 4156,
-    "time": 69266.66666666394
+    "frame": 4173,
+    "time": 69549.99999999735
    },
    {
     "title": "Level 2: Past the Cliff (near, past the cliff)",
-    "frame": 4440,
-    "time": 73999.99999999865
+    "frame": 4457,
+    "time": 74283.33333333206
    },
    {
     "title": "Ending",
-    "frame": 4641,
-    "time": 77349.99999999962
+    "frame": 4658,
+    "time": 77633.33333333304
    },
    {
     "title": "Credits",
-    "frame": 6848,
-    "time": 114133.33333334366
+    "frame": 6865,
+    "time": 114416.66666667708
    }
   ]
  }

@@ -67,7 +67,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 9213,
+  "frames": 9230,
   "chapters": [
    {
     "title": "Opening",
@@ -76,33 +76,33 @@
    },
    {
     "title": "Story",
-    "frame": 896,
-    "time": 14933.333333333148
+    "frame": 913,
+    "time": 15216.666666666471
    },
    {
     "title": "The world map",
-    "frame": 2125,
-    "time": 35416.66666666724
+    "frame": 2142,
+    "time": 35700.00000000053
    },
    {
     "title": "The town",
-    "frame": 2481,
-    "time": 41349.99999999971
+    "frame": 2498,
+    "time": 41633.333333333
    },
    {
     "title": "The house",
-    "frame": 4667,
-    "time": 77783.33333333308
+    "frame": 4684,
+    "time": 78066.6666666665
    },
    {
     "title": "Ending",
-    "frame": 5931,
-    "time": 98850.00000000588
+    "frame": 5948,
+    "time": 99133.3333333393
    },
    {
     "title": "Credits",
-    "frame": 8139,
-    "time": 135650.0000000126
+    "frame": 8156,
+    "time": 135933.33333334577
    }
   ]
  }

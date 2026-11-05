@@ -84,6 +84,7 @@ export const LOCAL_KEYS: Record<SectionId, { keys: string[]; prefixes?: string[]
   prefs: {
     keys: [
       'gm-theme',
+      'gm-color-help',
       'gm-ui',
       'gm-read-view',
       'gm-read-size',
@@ -96,6 +97,7 @@ export const LOCAL_KEYS: Record<SectionId, { keys: string[]; prefixes?: string[]
       'gm-ach-hide-unearned',
       'gm-home-category',
       'gm-imported-rating-filter',
+      'gm-starter-done-filter',
       'gm-volume',
       'gm-screen-keys',
       'gm-touch-controls',

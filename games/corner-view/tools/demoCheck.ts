@@ -20,11 +20,11 @@ const r = await replay(
   },
   { maxMinutes: 3 },
 );
-const seen = r.scenes.slice(0, 3).join(' ');
+const seen = r.scenes.slice(0, 4).join(' ');
 if (r.error) console.log(r.error);
 console.log(`demo: scenes entered ${r.scenes.join(' ')}; ${r.keysLeft} keys unplayed`);
-if (seen !== '2 3 1' || r.keysLeft) {
-  console.error(`demoCheck: expected scenes 2 3 1 (two levels, the ending) with every key played; got ${seen}`);
+if (seen !== '2 3 4 1' || r.keysLeft) {
+  console.error(`demoCheck: expected scenes 2 3 4 1 (three levels, the ending) with every key played; got ${seen}`);
   process.exit(1);
 }
-console.log('demoCheck ok: bumped the cube wall and walked round it, bumped the towers and walked round their front, reached the ending');
+console.log('demoCheck ok: bumped the cube wall and walked round it, bumped the towers and walked round their front, walked the diagonals, reached the ending');

@@ -27,7 +27,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 8786,
+  "frames": 8803,
   "chapters": [
    {
     "title": "Opening",
@@ -36,28 +36,28 @@
    },
    {
     "title": "Story",
-    "frame": 896,
-    "time": 14933.333333333148
+    "frame": 913,
+    "time": 15216.666666666471
    },
    {
     "title": "Level 1: A Number Appears",
-    "frame": 1644,
-    "time": 27400.000000000564
+    "frame": 1661,
+    "time": 27683.333333333918
    },
    {
     "title": "Level 2: Its Own Picture",
-    "frame": 3195,
-    "time": 53249.99999999798
+    "frame": 3212,
+    "time": 53533.33333333127
    },
    {
     "title": "Ending",
-    "frame": 5505,
-    "time": 91750.00000000381
+    "frame": 5522,
+    "time": 92033.33333333723
    },
    {
     "title": "Credits",
-    "frame": 7712,
-    "time": 128533.33333334785
+    "frame": 7729,
+    "time": 128816.66666668127
    }
   ]
  }

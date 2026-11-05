@@ -4,7 +4,7 @@
 // (it runs in a Web Worker). It counts the map as drawn: a block a birth block makes, a priced
 // shop chain, a shot that never lands and respawns are out of sight.
 import { BACKBL, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
-import { LASTMON } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
+import { LASTMON } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { blockUse, type SceneData } from '../sceneData';
 

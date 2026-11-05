@@ -27,7 +27,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 7540,
+  "frames": 7557,
   "chapters": [
    {
     "title": "Opening",
@@ -36,28 +36,28 @@
    },
    {
     "title": "Story",
-    "frame": 896,
-    "time": 14933.333333333148
+    "frame": 913,
+    "time": 15216.666666666471
    },
    {
     "title": "Level 1: Walk, Jump, Fall",
-    "frame": 2125,
-    "time": 35416.66666666724
+    "frame": 2142,
+    "time": 35700.00000000053
    },
    {
     "title": "Level 2: Climb and Fall",
-    "frame": 3423,
-    "time": 57049.999999997424
+    "frame": 3440,
+    "time": 57333.33333333072
    },
    {
     "title": "Ending",
-    "frame": 4741,
-    "time": 79016.66666666677
+    "frame": 4758,
+    "time": 79300.00000000019
    },
    {
     "title": "Credits",
-    "frame": 6468,
-    "time": 107800.00000000848
+    "frame": 6485,
+    "time": 108083.3333333419
    }
   ]
  }

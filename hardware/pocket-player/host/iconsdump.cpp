@@ -10,6 +10,7 @@
 #include "btnicon.h"
 #include "controls.h"
 #include "gmcfg.h"
+#include "stdiolines.h"
 
 using namespace gm;
 
@@ -52,6 +53,9 @@ int main(int argc, char** argv) {
   text.push_back(0);
   if (!parseCfg((const char*)text.data(), w, cfg)) return 2;
   assets.attach(w, cfg, readFile, inflateRaw);
+  linesDir = dir;
+  assets.lines = &stdioLines;
+  snprintf(assets.cfgName, sizeof assets.cfgName, "%s.cfg", argv[2]);
   w.begin();
   int ticks = atoi(argv[3]);
   for (int t = 0; t < ticks; t++) w.tick();

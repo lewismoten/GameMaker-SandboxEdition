@@ -15,4 +15,13 @@ const r = spawnSync(exe, { stdio: 'inherit' });
 const calExe = join(mkdtempSync(join(tmpdir(), 'pocket-touchcal-')), 'touchcaltest');
 execFileSync('c++', ['-std=c++17', '-O1', '-Wall', '-I', here + 'src', here + 'host/touchcaltest.cpp', '-o', calExe], { stdio: 'inherit' });
 const c = spawnSync(calExe, { stdio: 'inherit' });
-process.exit((r.status ?? 1) || (c.status ?? 1));
+// the display setup screen's layout, corner-tap touch mapping and saved record (src/displaysetup.h)
+const setupExe = join(mkdtempSync(join(tmpdir(), 'pocket-setup-')), 'setuptest');
+execFileSync('c++', ['-std=c++17', '-O1', '-Wall', '-I', here + 'src', here + 'host/setuptest.cpp', '-o', setupExe], { stdio: 'inherit' });
+const d = spawnSync(setupExe, { stdio: 'inherit' });
+// the setup screens drawn into a frame buffer: four different flips per round, margins, PNG-able shots (host/setupshots.cpp)
+const shotsDir = mkdtempSync(join(tmpdir(), 'pocket-shots-'));
+const shotsExe = join(shotsDir, 'setupshots');
+execFileSync('c++', ['-std=c++17', '-O1', '-Wall', '-I', here + 'src', here + 'host/setupshots.cpp', '-o', shotsExe], { stdio: 'inherit' });
+const e = spawnSync(shotsExe, [shotsDir], { stdio: 'inherit', cwd: here });
+process.exit((r.status ?? 1) || (c.status ?? 1) || (d.status ?? 1) || (e.status ?? 1));

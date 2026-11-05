@@ -11,5 +11,5 @@ const built = buildLevels();
 for (const level of built.levels) assertNoInvisibleWalls({ book: level.book, pal: built.pal, levels: [level] });
 const { sim } = await play();
 console.log(
-  `corner-view: the bot played both levels; ${sim.deaths} lives lost, ${sim.ci.lives} left, score ${sim.ci.score}, ${sim.trail.length} scenes entered`,
+  `corner-view: the bot played all three levels; ${sim.deaths} lives lost, ${sim.ci.lives} left, score ${sim.ci.score}, ${sim.trail.length} scenes entered`,
 );
