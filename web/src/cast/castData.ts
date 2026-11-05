@@ -62,6 +62,7 @@ export const CAST_GAMES = {
   'teach-test-twist': ['Teach, Test, Twist', 'starter'],
   'puzzle-room': ['Wired Room', 'starter'],
   'spend-it': ['Spend It', 'starter'],
+  'kits-shop': ["Kit's Shop", 'starter'],
   'your-first-game': ['Your First Game', 'starter'],
   'who-wins': ['Who Wins?', 'starter'],
   'breakable-walls': ['Smash It', 'starter'],
