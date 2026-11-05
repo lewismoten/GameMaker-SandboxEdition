@@ -34,11 +34,11 @@ const screen = (i: number, col: number, row: number, ...sprites: ReturnType<type
   renderRegion(maps[i], bbl, mbl, set, ORIGIN + col, ORIGIN + row, 16, 10, sprites.flat());
 
 writePng(join(out, 'one-1-bank.png'), screen(0, 0, 2, kit(3, L1.ground - 1)), pal.pal, 3);
-writePng(join(out, 'one-2-in-the-creek.png'), screen(0, 8, 2, kit(L1.creek[0], L1.ground + 1)), pal.pal, 3);
+writePng(join(out, 'one-2-in-the-creek.png'), screen(0, 10, 2, kit(L1.creek[0] + 1, L1.ground + 1)), pal.pal, 3);
 writePng(join(out, 'one-3-on-a-stone.png'), screen(0, 12, 2, kit(L1.stones[1], L1.ground - 1)), pal.pal, 3);
 writePng(join(out, 'two-1-floating.png'), screen(1, 10, 2, kit(20, L2.ground)), pal.pal, 3);
 writePng(join(out, 'three-1-the-bottom.png'), screen(2, 20, 3, kit(L3.pool[1] + 1, L3.floor - 1)), pal.pal, 3);
-writePng(join(out, 'three-2-at-the-top.png'), screen(2, 4, 2, kit(10, L3.top)), pal.pal, 3);
+writePng(join(out, 'three-2-at-the-top.png'), screen(2, 8, 1, kit(16, L3.top)), pal.pal, 3);
 levels.forEach((l, i) =>
   writePng(join(out, `level-${i + 1}.png`), renderRegion(maps[i], bbl, mbl, set, ORIGIN, ORIGIN, l.map.width, l.map.height), pal.pal, 2),
 );

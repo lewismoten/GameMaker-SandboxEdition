@@ -34,5 +34,6 @@
       ["three.map", 12, 3]
     ],
     "rating": "Everyone"
-  }
+  },
+  "acceptedFindings": ["facing s3 The hero climbs side on"]
 }
