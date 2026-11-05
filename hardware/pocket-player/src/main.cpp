@@ -4,6 +4,7 @@
 // status strip. This file is the board: files, the panel, drawing 320x200 at 1.5x, the screens; sound is in speaker.h.
 #include <Arduino.h>
 #include <LittleFS.h>
+#include "gmsmall.h"
 #include <SD.h>
 #include <SPI.h>
 #include <esp_heap_caps.h>
@@ -69,7 +70,37 @@ static bool mountSD();
 static void unmountSD();
 // The card is mounted only while a file is read from it (a mounted card holds about 33 KB of heap and splits the free blocks,
 // which a level that fills the heap cannot spare), so a read of a card file is mount, read, unmount.
+// The Starters' small files are one LittleFS file, small.pak (gmsmall.h); a name it doesn't hold is read as a file of its own.
+static bool smallReadAt(void* user, uint32_t off, void* buf, uint32_t n) {
+  File* f = (File*)user;
+  return f->seek(off) && f->read((uint8_t*)buf, n) == n;
+}
+static bool smallOpen(File& f, gm::SmallPak& pak) {
+  f = LittleFS.open("/small.pak", "r");
+  if (!f) return false;
+  pak.user = &f;
+  pak.readAt = smallReadAt;
+  if (pak.begin()) return true;
+  f.close();
+  return false;
+}
 static uint8_t* readFileIn(fs::FS& fsys, const char* base, const char* name, size_t* n) {
+  if (&fsys == &LittleFS && !base[0]) {
+    File pf;
+    gm::SmallPak pak;
+    uint32_t off, len;
+    if (smallOpen(pf, pak)) {
+      uint8_t* p = nullptr;
+      bool found = pak.find(name, &off, &len);
+      if (found) {
+        p = (uint8_t*)malloc(len + 1);
+        if (p && !smallReadAt(&pf, off, p, len)) { free(p); p = nullptr; }
+        if (p) *n = len;
+      }
+      pf.close();
+      if (found) return p;
+    }
+  }
   char path[48];
   snprintf(path, sizeof path, "%s/%s", base, name);
   bool card = &fsys == &SD, wasUp = sdUp;
@@ -91,8 +122,17 @@ static File cfgFile;
 static bool cfgMounted = false;  // this reader mounted the card (and unmounts it at the end)
 static uint8_t cfgBuf[256];
 static int cfgPos = 0, cfgLen = 0;
+static File smallCfg;  // small.pak, open while a Starter's .cfg is read from it
+static gm::SmallPak smallCfgPak;
+static gm::SmallLines smallCfgLines;
+static bool cfgInPak = false;
 static void* cfgOpen(void*, const char* name) {
   char path[48];
+  cfgInPak = false;
+  if (curFs == &LittleFS && smallOpen(smallCfg, smallCfgPak)) {
+    if (smallCfgLines.open(&smallCfgPak, name)) { cfgInPak = true; return &smallCfg; }
+    smallCfg.close();
+  }
   snprintf(path, sizeof path, "%s/%s", curBase, name);
   cfgMounted = false;
   if (curFs == &SD && !sdUp) {
@@ -109,6 +149,7 @@ static void* cfgOpen(void*, const char* name) {
   return &cfgFile;
 }
 static bool cfgNext(void*, char* line, int cap) {
+  if (cfgInPak) return smallCfgLines.next(line, cap);
   int n = 0;
   for (;;) {
     if (cfgPos >= cfgLen) {
@@ -124,6 +165,7 @@ static bool cfgNext(void*, char* line, int cap) {
   return true;
 }
 static void cfgClose(void*) {
+  if (cfgInPak) { smallCfg.close(); cfgInPak = false; return; }
   cfgFile.close();
   if (cfgMounted) unmountSD();
   cfgMounted = false;

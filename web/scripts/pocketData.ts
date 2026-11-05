@@ -80,6 +80,33 @@ function inPak(bytes: Uint8Array, always = false): string {
   }
   return at;
 }
+/**
+ * LittleFS gives every file a 4 KB block, so the many small files (each game's .cfg, the shared .b .m .p .r .c .o .k .s) are bundled into
+ * small.pak: "GMS1", a count, entries sorted by name (name[32], offset, length), then the data (hardware/pocket-player/src/gmsmall.h).
+ * cards.pak, font.bin and games.txt stay files.
+ */
+function bundleSmallFiles() {
+  const names = readdirSync(outDir)
+    .filter((n) => !['cards.pak', 'font.bin', 'games.txt', 'small.pak'].includes(n))
+    .sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
+  const head = Buffer.alloc(8);
+  head.write('GMS1', 0, 'latin1');
+  head.writeUInt32LE(names.length, 4);
+  const table = Buffer.alloc(names.length * 40);
+  const data: Buffer[] = [];
+  let off = 8 + table.length;
+  names.forEach((n, i) => {
+    if (n.length > 31) throw new Error(`small.pak: name too long: ${n}`);
+    const b = readFileSync(outDir + n);
+    table.write(n, i * 40, 'latin1');
+    table.writeUInt32LE(off, i * 40 + 32);
+    table.writeUInt32LE(b.length, i * 40 + 36);
+    data.push(b);
+    off += b.length;
+    rmSync(outDir + n);
+  });
+  writeFileSync(outDir + 'small.pak', Buffer.concat([head, table, ...data]));
+}
 if (!listOnly) {
   rmSync(outDir, { recursive: true, force: true });
   mkdirSync(outDir, { recursive: true });
@@ -332,7 +359,10 @@ for (const id of ids) {
 if (!listOnly) {
   index.sort((a, b) => (a.id === 'first-steps' ? -1 : b.id === 'first-steps' ? 1 : a.title.localeCompare(b.title)));
   writeFileSync(outDir + 'games.txt', index.map((g) => `${g.id}|${g.title}|${g.levels}${cardRoot ? '|' + g.short : ''}`).join('\n') + '\n');
-  if (!cardRoot) writeFileSync(outDir + 'cards.pak', Buffer.concat(pak));
+  if (!cardRoot) {
+    writeFileSync(outDir + 'cards.pak', Buffer.concat(pak));
+    bundleSmallFiles();
+  }
   const total = (cardRoot ? 0 : pakSize) + [...put.values()].reduce((a, b) => a + b, 0);
   if (Object.keys(leftOut).length) console.log('left out of the cards:', leftOut);
   console.log(`${index.length} games, ${put.size} shared files, ${total} bytes (plus the .cfg files)`);
