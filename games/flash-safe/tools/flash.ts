@@ -1,6 +1,6 @@
 // Flashing check for FLASH SAFE: replays walkthrough.json on the real engine and counts, in every
 // second, the large light changes (WCAG 2.3.1's general flash and red flash tests, on the 320x200
-// frames). Exits 1 above 3 a second. kit/flashCheck.ts is the same for any game.
+// frames). Exits 1 above 3 a second. kit/flashCheckCli.ts is the same for any game.
 //   cd web && npx vite-node ../games/flash-safe/tools/flash.ts
 import { flashOfGame } from '../../kit/flashCheck';
 

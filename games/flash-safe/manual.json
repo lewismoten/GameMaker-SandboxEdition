@@ -3,15 +3,7 @@
   "howDoI": [
     {
       "id": "hit",
-      "q": "How do I show a hit without a flash?",
-      "scene": 2,
-      "x": 27,
-      "y": 19,
-      "level": 1
-    },
-    {
-      "id": "number",
-      "q": "How do I make a number pop up and rise?",
+      "q": "How do I show a hit without a flash, with a number that rises?",
       "scene": 2,
       "x": 27,
       "y": 19,
