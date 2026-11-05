@@ -1,4 +1,4 @@
-// A graduation's one level, "The Aisle": a hall with the stage's helpers on the balcony, a red
+// A graduation's second level (the first is the arrival, graduationArrive.ts), "The Aisle": a hall with the stage's helpers on the balcony, a red
 // carpet to walk up, and a stage with a lectern, Doc Leo and the certificate. 48 x 13 blocks: the floor is row 10.
 //   x  2        the doorway you start in
 //   x  4..33    the carpet, with signs; the balcony (rail and front) is above, the helpers leaning on it
@@ -16,6 +16,7 @@ import { addSign, type Sign } from './sign';
 import type { Graduation } from './graduationConfig';
 import { addHallRamps, audienceOf } from './graduationCast';
 import { addHallBlocks, type Timed } from './graduationHall';
+import { ARRIVE, buildArrival } from './graduationArrive';
 
 export const W = 48;
 export const H = 13;
@@ -30,6 +31,10 @@ export interface Level {
   title: string;
   hint: string;
   map: StarterMap;
+  /** The level's own block set, its timed loops and the file it is saved to (without .bbl): the hall's is grad, the arrival's arrive. */
+  book: Book;
+  timed: Timed[];
+  bbl: string;
 }
 
 export type SignName = 'start' | 'helpers' | 'cheer' | 'doc' | 'banner';
@@ -132,6 +137,10 @@ function aisle(
 export function buildLevels(cfg: Graduation) {
   const pal = buildPalette(cfg);
   const { book, timed, hall, signs } = buildBlocks(pal, cfg);
-  const levels: Level[] = [{ file: 'hall', title: cfg.level.title, hint: cfg.level.hint, map: aisle(book, signs, hall, cfg.theme, cfg.cameos.length) }];
+  const arrival = buildArrival(cfg, pal);
+  const levels: Level[] = [
+    { file: ARRIVE, title: cfg.arrive.title, hint: cfg.arrive.hint, map: arrival.map, book: arrival.book, timed: arrival.timed, bbl: ARRIVE },
+    { file: 'hall', title: cfg.level.title, hint: cfg.level.hint, map: aisle(book, signs, hall, cfg.theme, cfg.cameos.length), book, timed, bbl: 'grad' },
+  ];
   return { book, pal, timed, levels };
 }
