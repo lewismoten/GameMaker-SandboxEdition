@@ -172,11 +172,13 @@ export const BLOCKS: Chapter = {
     <li><b>Conveyor belts and wind:</b> blocks that pull sideways. In The Year 2000! uses
     them to carry the hero along.</li>
     <li><b>Updrafts and geysers:</b> a column of blocks that pulls up.</li>
+    <li><b>Walls and ceilings:</b> blocks that pull left, right or up hold the hero to a wall or a
+    ceiling. Draw him turned to match and give his arrows new moves, and he walks up the wall.</li>
     <li><b>Only the hero feels it.</b> Monsters ignore gravity and go where their movement
     takes them, so a monster walking off a ledge walks on through the air. Keep walkers on paths
     that stay on the ground, and let things that should fall do it with a path that goes down.</li>
   </ul>
-  ${onCd('GRAVITY', 'SWIM', 'DROPDOWN')}
+  ${onCd('GRAVITY', 'SWIM', 'DROPDOWN', 'AROUNDRM')}
   <h2>Animation runs by block number</h2>
   <p>A block can turn into another block after a number of ticks (a tick is 1/18 of a second),
   and that one into the next. A chain that comes back to its start loops: water, torches,
