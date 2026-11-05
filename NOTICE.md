@@ -114,13 +114,13 @@ game folder opens in the browser unchanged.
 - **Fictional hint line** (`web/src/desk/room/phone/hintBill.ts`, `hintLine.ts`): local elapsed-time accounting, backup integration, phone menu and cancellation, achievement, original Teddy dialogue and regression tests implemented with **OpenAI Codex (GPT-6)**, directed by Lewis Moten. The charges are simulated game data; no payment service is used. The per-minute billing paid up front, the automated game-by-game phone tree (`hintTree.ts`, `audio/phone/hintGames.ts`, hints adapted from each game's own hint book) and the Hint Giant script were reworked with **Claude (Sonnet 5.5)**, directed by Lewis Moten.
 - **BBS callback signup** (`web/src/retro/bbs/signup*.ts`): local verified-handle records, simulated incoming modem callbacks, signup flow, tests and playful lines implemented with **OpenAI Codex (GPT-6)**, directed by Lewis Moten. Manual `ATA` answering and `RING` result codes follow the [U.S. Robotics modem command reference](https://ads.usr.com/support/3cxm756/3cxm756-ug/ATCOMS.HTM). This is a behavioral reference; no vendor source, documentation text or modem binaries are bundled.
 - **Final Curtain's paper spyglass and evidence sheet** (`web/src/manual/printables/spyglass.ts`, `fingerprint.ts`, `sleuthPrints.ts`; the stage door in `games/sleuth/`): the black-ink spyglass drawing, the seeded fingerprint patterns and the stage-door puzzle were written by **Claude Sonnet 5.5** (Anthropic), from Lewis Moten's idea. The prints are hidden with the red-film technique the hint book uses (`redFilm.ts`), after Daniel C. Wilson's "red reveal" (danielcwilson.com/blog/2018/02/optical-fun-red-reveal/); no code was copied from it. No third-party artwork or fingerprint data was used.
-- **The Starters** (`games/kit/starter/`; 65 games in the Starters home tab):
+- **The Starters** (`games/kit/starter/`; 66 games in the Starters home tab):
   - **The Basics:** `games/first-steps/`, `games/keys-and-doors/`, `games/meet-the-monsters/`, `games/room-to-room/`, `games/coins-and-score/`, `games/breakable-walls/`, `games/walk-the-ground/`, `games/watch-your-step/`, `games/things-that-grow/`.
   - **Moving and Pushing:** `games/power-up/`, `games/throw-it/`, `games/many-weapons/`, `games/inventory/`, `games/health-and-hearts/`, `games/momentum/`, `games/jump-boots/`.
   - **Worlds That Push Back:** `games/slippery-and-bouncy/`, `games/gravity-on-gravity-off/`, `games/swim/`, `games/gusts/`.
   - **Changing Your Hero:** `games/kit-moves/`, `games/choose-hero/`, `games/take-the-wheel/`.
   - **Foes and Bosses:** `games/boss-hits/`, `games/boss-phases/`, `games/who-wins/`, `games/short-lived/`, `games/follower/`, `games/searchlight/`, `games/flock/`.
-  - **Telling a Story:** `games/say-something/`, `games/pictures-and-cartoons/`, `games/sounds-and-music/`, `games/day-night/`, `games/same-house/`, `games/voice/`, `games/cutscenes/`, `games/title-demo/`.
+  - **Telling a Story:** `games/say-something/`, `games/pictures-and-cartoons/`, `games/sounds-and-music/`, `games/day-night/`, `games/same-house/`, `games/voice/`, `games/cutscenes/`, `games/title-demo/`, `games/colors/`.
   - **Putting It Together:** `games/beat-the-clock/`, `games/countdown/`, `games/warning-first/`, `games/one-more-try/`, `games/teach-test-twist/`, `games/block-brains/`, `games/your-first-game/`.
   - **Wiring and Puzzles:** `games/switches/`, `games/three-tokens/`, `games/and-gate/`, `games/secret-doors/`, `games/show-the-count/`, `games/dice/`, `games/word-lock/`, `games/power-ladder/`.
   - **Bigger Worlds:** `games/scroll/`, `games/many-rooms/`, `games/diagonal-wrap/`, `games/blocks-budget/`, `games/near-far/`.
@@ -201,6 +201,14 @@ game folder opens in the browser unchanged.
 - **MD5** (`web/packages/archives/src/player/md5.ts`) is written from the algorithm's description in RFC 1321
   (R. Rivest, MIT Laboratory for Computer Science and RSA Data Security, Inc., 1992), only to tell
   the CD's `XFERPLAY.EXE` from other files before patching it; no RSA reference code is used.
+- **Color-vision simulation matrices** (`games/kit/colorVision.ts`; the Starter `games/colors/`): the
+  protanopia, deuteranopia and tritanopia 3x3 matrices (severity 1.0) are the published numbers of
+  Gustavo M. Machado, Manuel M. Oliveira and Leandro A. F. Fernandes, "A Physiologically-based Model
+  for Simulation of Color Vision Deficiency", IEEE Transactions on Visualization and Computer Graphics
+  15(6), 2009. They are applied to linear RGB as the paper describes; the rest of the file (delta E, a
+  whole-palette conversion) is this project's own code. The simulation only draws the second picture on
+  the game's level cards and runs its check; no game ships the matrices. The code was written by Claude
+  Sonnet 5.5, an AI model made by Anthropic, under Lewis Moten's direction.
 - **Research: the whole Game-Maker Archive, ideas only.** A second survey read every Game-Maker
   game in the Internet Archive's Game-Maker Archive collection, 271 games in all, with this
   project's own file readers (no program from them was run). Its techniques are described,
