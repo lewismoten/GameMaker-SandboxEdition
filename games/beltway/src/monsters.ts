@@ -30,13 +30,21 @@ const T = 255;
 function car(pal: Pal, frame: number): Pixels {
   const { c } = pal;
   const p = new Pixels(20, 20, T);
-  p.rect(2, 9, 16, 6, c('orange', 2)); // the body
-  p.rect(2, 9, 16, 1, c('orange', 4)); // its top edge
-  p.rect(5, 5, 9, 4, c('orange', 3)); // the cabin
-  p.rect(6, 6, 3, 3, c('sky', 4)).rect(10, 6, 3, 3, c('sky', 4)); // two windows
+  p.rect(2, 10, 16, 5, c('orange', 2)); // the body: a long hood at the right, a short deck at the left
+  p.rect(2, 9, 8, 1, c('orange', 4)).rect(10, 10, 8, 1, c('orange', 4)); // its top edge steps down to the hood
+  // the cabin sits toward the back: an upright rear window and a raked windshield
+  for (const [y, x0, x1] of [
+    [5, 5, 9],
+    [6, 4, 10],
+    [7, 4, 12],
+    [8, 3, 13],
+  ] as const)
+    p.rect(x0, y, x1 - x0 + 1, 1, c('orange', 3));
+  p.rect(5, 6, 3, 3, c('sky', 4)).rect(9, 6, 1, 1, c('sky', 4)).rect(9, 7, 3, 2, c('sky', 4)); // two windows
   p.rect(2, 12, 16, 1, c('white', 3)); // a stripe
-  p.rect(17, 10, 2, 2, c('gold', 4)); // the headlamp at the nose
-  p.rect(1, 10, 1, 2, c('red', 2)); // the tail lamp
+  p.rect(2, 7, 3, 1, c('ink', 0)); // a spoiler
+  p.rect(17, 11, 2, 2, c('gold', 4)); // the headlamp at the nose
+  p.rect(1, 10, 1, 3, c('red', 2)); // the tail lamp
   for (const x of [5, 14]) {
     p.disc(x, 15, 3, c('ink', 0));
     p.set(x + (frame ? 1 : -1), 15 + (frame ? 0 : 0), c('stone', 4)).set(x, frame ? 14 : 16, c('stone', 3));
