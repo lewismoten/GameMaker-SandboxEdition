@@ -11,13 +11,13 @@ import type { Pal } from './palette';
 
 const T = 255;
 
-type Face = 'smile' | 'blink' | 'ouch' | 'cheer' | 'oh' | 'back';
+export type Face = 'smile' | 'blink' | 'ouch' | 'cheer' | 'oh' | 'back' | 'dizzy';
 
 /** One row of a shape, from x0 to x1. */
 const span = (p: Pixels, y: number, x0: number, x1: number, c: number) => p.rect(x0, y, x1 - x0 + 1, 1, c);
 
 /** The hero's head and beanie, 20x20, in side-on three-quarter view (`front` looks at you, or away from you). */
-function head(pal: Pal, face: Face, front = false, look = 0, raised: 'left' | 'right' | 'both' | '' = ''): Pixels {
+export function head(pal: Pal, face: Face, front = false, look = 0, raised: 'left' | 'right' | 'both' | '' = ''): Pixels {
   const { c, r } = pal;
   const p = new Pixels(20, 20, T);
   const skin = kitRamp(pal, 'skin');
@@ -102,6 +102,7 @@ function head(pal: Pal, face: Face, front = false, look = 0, raised: 'left' | 'r
   for (const [x, y] of eyes) {
     if (face === 'oh') p.rect(x, y - 2, 2, 4, ink).set(x + 1, y - 2, c('white', 3));
     else if (face === 'blink') p.rect(x - 1, y + 1, 3, 1, ink);
+    else if (face === 'dizzy') p.rect(x - 1, y, 3, 1, ink).rect(x, y - 1, 1, 3, ink);
     else if (face === 'ouch') p.line(x - 1, y, x + 1, y + 2, ink).line(x - 1, y + 2, x + 1, y, ink);
     else {
       p.rect(x, y - 1, 2, 3, ink);
@@ -113,6 +114,8 @@ function head(pal: Pal, face: Face, front = false, look = 0, raised: 'left' | 'r
   p.set(mx - 4, 15, c('pink', 2)).set(mx + 4, 15, c('pink', 2));
   if (face === 'oh') {
     p.rect(mx, 16, 3, 3, ink).rect(mx + 1, 17, 1, 1, c('red', 2));
+  } else if (face === 'dizzy') {
+    p.rect(mx, 16, 3, 2, ink).rect(mx + 1, 16, 1, 1, c('red', 2));
   } else if (face === 'cheer' || face === 'ouch') {
     p.rect(mx - 1, 16, 4, 2, ink).rect(mx, 17, 2, 1, c('red', 2));
   } else {
@@ -124,10 +127,10 @@ function head(pal: Pal, face: Face, front = false, look = 0, raised: 'left' | 'r
   return p;
 }
 
-type Legs = { back: [number, number]; front: [number, number] };
+export type Legs = { back: [number, number]; front: [number, number] };
 
 /** The hero's body, 20x20, in the pose given; hands in `arms`, legs in `legs`. */
-function body(
+export function body(
   pal: Pal,
   o: {
     arms: 'down' | 'swingA' | 'swingB' | 'out' | 'upA' | 'upB' | 'rest' | 'high' | 'flail' | 'dig0' | 'dig1' | 'windup' | 'release' | 'follow';
@@ -310,17 +313,19 @@ function body(
   return p;
 }
 
+/** A head over a body, outlined together so the outline passes across the neck: [top block, bottom block]. */
+export function outlinedPair(pal: Pal, top: Pixels, bottom: Pixels): readonly [Pixels, Pixels] {
+  const whole = new Pixels(20, 40, T);
+  whole.blit(top, 0, 0, T).blit(bottom, 0, 20, T);
+  const out = outline(whole, pal.c('ink', 0), { transparent: T });
+  return [out.crop(0, 0, 20, 20), out.crop(0, 20, 20, 20)] as const;
+}
+
 /** The hero's character blocks (.CBL), by name, with the outlines drawn on. */
 export function buildHeroBlocks(pal: Pal): Book {
-  const ink = pal.c('ink', 0);
   const book = new Book('cbl');
   // (head, body) pairs are outlined together, so the outline passes across the neck
-  const pair = (top: Pixels, bottom: Pixels) => {
-    const whole = new Pixels(20, 40, T);
-    whole.blit(top, 0, 0, T).blit(bottom, 0, 20, T);
-    const out = outline(whole, ink, { transparent: T });
-    return [out.crop(0, 0, 20, 20), out.crop(0, 20, 20, 20)] as const;
-  };
+  const pair = (top: Pixels, bottom: Pixels) => outlinedPair(pal, top, bottom);
   const stand = body(pal, { arms: 'down', legs: { back: [5, 0], front: [11, 0] } });
   const walk: Legs[] = [
     { back: [3, 0], front: [12, 0] },

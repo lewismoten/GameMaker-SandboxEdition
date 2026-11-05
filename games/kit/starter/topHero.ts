@@ -5,111 +5,19 @@
 import { CHARBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { set } from '@lewismoten/gamemaker-sandbox-tools/kit/actors';
-import { outline } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
-import { blob } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
 import { Book } from './book';
 import { KEY, SEQ, SND } from './ids';
-import { kitRamp } from './heroLook';
+import { slimPose, type Step } from './kitSlim';
 import type { Pal } from './palette';
 
-const T = 255;
 /** Pixels a frame while walking (the same as the side view). */
 const STEP = 4;
 
 export type Facing = 'down' | 'up' | 'right' | 'left';
-/** A step: 0 and 1 are the two strides, 2 is standing. */
-type Step = 0 | 1 | 2;
 
-/** One pose, 20x20: `facing` and `step`. Right is drawn; left is the right mirrored. */
-function pose(pal: Pal, facing: Facing, step: Step): Pixels {
-  if (facing === 'left') return pose(pal, 'right', step).flipX();
-  const { c, r } = pal;
-  const p = new Pixels(20, 20, T);
-  const skin = kitRamp(pal, 'skin');
-  const teal = kitRamp(pal, 'hat');
-  const white = r('white');
-  const hair = kitRamp(pal, 'hair');
-  const orange = kitRamp(pal, 'hood');
-  const ink = c('ink', 0);
-  const side = facing === 'right';
-  const x0 = side ? 9.5 : 10;
-  // shoes first, so the body covers their tops: a foot forward and one back
-  const lift = step === 2 ? [0, 0] : step === 0 ? [0, 1] : [1, 0];
-  if (side) {
-    const fx = step === 2 ? [6, 9] : step === 0 ? [3, 12] : [12, 3];
-    p.rect(fx[0], 16, 4, 2, white[3]).rect(fx[1], 16, 4, 2, white[2]);
-  } else {
-    p.rect(5, 16 + lift[0], 4, 2, white[3]).rect(11, 16 + lift[1], 4, 2, white[3]);
-    p.rect(5, 17 + lift[0], 4, 1, white[1]).rect(11, 17 + lift[1], 4, 1, white[1]);
-  }
-  // the hoodie
-  blob(p, x0, 14, side ? 5.2 : 6.6, 4.2, orange, 0, 4);
-  if (!side) {
-    // arms at his sides, swinging with the stride
-    const sw = step === 2 ? [0, 0] : step === 0 ? [-1, 1] : [1, -1];
-    p.rect(2, 12 + sw[0], 3, 5, orange[2]).rect(15, 12 + sw[1], 3, 5, orange[2]);
-    p.rect(2, 12 + sw[0], 1, 5, orange[3]).rect(17, 12 + sw[1], 1, 5, orange[1]);
-    p.disc(3.5, 17 + sw[0], 1.6, skin[2]).disc(16.5, 17 + sw[1], 1.6, skin[2]);
-    p.rect(8, 13, 4, 1, orange[3]); // the hoodie's front pocket line
-    if (facing === 'down') p.rect(9, 11, 1, 3, white[2]).rect(11, 11, 1, 3, white[2]); // the drawstrings
-  } else {
-    // one arm swinging, seen edge on
-    const a = step === 2 ? 0 : step === 0 ? 3 : -3;
-    p.rect(8 + a, 12, 4, 4, orange[2])
-      .rect(8 + a, 12, 4, 1, orange[3])
-      .disc(10 + a, 16.5, 1.5, skin[2]);
-  }
-  // the head: the hood behind the neck, hair at the back and sides, the round face, then the knit beanie
-  if (facing === 'up') p.rect(5, 11, 10, 3, orange[2]).rect(5, 11, 10, 1, orange[4]);
-  else if (side) p.rect(3, 11, 6, 3, orange[2]).rect(3, 11, 6, 1, orange[4]);
-  else p.rect(5, 12, 10, 2, orange[2]).rect(5, 12, 10, 1, orange[4]);
-  if (facing === 'up') blob(p, 10, 8.5, 6.4, 5.4, hair, 0, 2);
-  else if (side) {
-    blob(p, 7, 8.5, 4, 4.6, hair, 0, 2);
-    blob(p, 11, 8.5, 5.2, 5.2, skin, 0, 3);
-  } else {
-    blob(p, 10, 8.5, 6.4, 5.4, hair, 0, 2);
-    blob(p, 10, 8.8, 6, 5.2, skin, 0, 3);
-  }
-  // the cap tapers up to a slouchy top; the cuff is a ribbed fold flush with the head, with hair peeking out below it
-  const mid = side ? 8 : 10;
-  const rows: [number, number, number][] = [
-    [7, mid - 7, mid + 6],
-    [6, mid - 7, mid + 6],
-    [5, mid - 6, mid + 5],
-    [4, mid - 5, mid + 4],
-    [3, mid - 4, mid + 3],
-  ];
-  for (const [y, x0, x1] of rows) {
-    p.rect(x0, y, x1 - x0 + 1, 1, teal[3])
-      .rect(x0, y, 2, 1, teal[4])
-      .rect(x1 - 1, y, 2, 1, teal[2]);
-  }
-  const cx = mid - 7;
-  const cw = 14;
-  p.rect(cx, 7, cw, 3, teal[3]).rect(cx, 7, cw, 1, teal[4]).rect(cx, 9, cw, 1, teal[1]);
-  for (let x = cx + 1; x < cx + cw; x += 2) p.rect(x, 8, 1, 2, teal[2]);
-  if (facing !== 'up') for (const x of side ? [mid + 3, mid + 5] : [mid - 4, mid - 2, mid + 1, mid + 3]) p.rect(x, 10, 2, 1, hair[2]);
-  const pom = mid;
-  p.disc(pom + 0.5, 3, 2.9, white[3])
-    .set(pom - 2, 5, white[3])
-    .set(pom + 3, 4, white[3])
-    .set(pom + 1, 0, white[3])
-    .set(pom, 2, white[2])
-    .set(pom + 2, 3, white[2])
-    .rect(pom - 1, 5, 4, 1, white[1]);
-  // the face, when it shows
-  if (facing === 'down') {
-    for (const x of [7, 12]) p.rect(x, 10, 2, 2, ink).set(x + 1, 10, white[3]);
-    p.set(5, 12, c('pink', 2)).set(15, 12, c('pink', 2));
-    p.set(8, 13, ink).set(9, 14, ink).set(10, 14, ink).set(11, 13, ink);
-  } else if (side) {
-    p.rect(13, 10, 2, 2, ink).set(14, 10, white[3]);
-    p.set(16, 11, skin[1]).set(11, 13, c('pink', 2)).set(14, 13, ink).set(15, 13, ink);
-  }
-  return outline(p, ink, { transparent: T });
-}
+/** One pose, 20x20: `facing` and `step` (the slim Kit, kitSlim.ts). */
+const pose = (pal: Pal, facing: Facing, step: Step): Pixels => slimPose(pal, facing, step);
 
 /** The four facing directions' pictures, by name: `down.0`, `down.1`, `down.stand` and so on. */
 export function buildTopHeroBlocks(pal: Pal): Book {

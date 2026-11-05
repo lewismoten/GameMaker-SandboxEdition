@@ -24,9 +24,6 @@ export const KIT_LOOK: Look = {
   pants: [5, [70, 76, 100], [214, 222, 238], [138, 148, 176]],
 };
 
-/** Kit with a coral hoodie instead of orange (a choice for the maintainer; the default stays orange). */
-export const KIT_CORAL: Look = { ...KIT_LOOK, hood: [5, [150, 40, 50], [255, 210, 190], [246, 110, 96]] };
-
 const rampName = (role: Role): string => `k${role}`;
 
 /** Adds Kit's five ramps to a palette under construction (buildStarterPalette does this). */
