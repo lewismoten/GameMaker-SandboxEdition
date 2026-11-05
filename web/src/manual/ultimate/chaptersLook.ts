@@ -176,7 +176,7 @@ export const BLOCKS: Chapter = {
     takes them, so a monster walking off a ledge walks on through the air. Keep walkers on paths
     that stay on the ground, and let things that should fall do it with a path that goes down.</li>
   </ul>
-  ${onCd('GRAVITY', 'SWIM')}
+  ${onCd('GRAVITY', 'SWIM', 'DROPDOWN')}
   <h2>Animation runs by block number</h2>
   <p>A block can turn into another block after a number of ticks (a tick is 1/18 of a second),
   and that one into the next. A chain that comes back to its start loops: water, torches,

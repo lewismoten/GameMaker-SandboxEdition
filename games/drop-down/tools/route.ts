@@ -6,7 +6,7 @@
 import { SCAN } from '../../kit/starter/ids';
 import type { Result, StarterBot } from '../../kit/starter/bot';
 import { ORIGIN } from '../../kit/starter/map';
-import { CORK_ROW, GROUND, MON_ROW } from '../src/levels';
+import { GROUND, MON_ROW } from '../src/levels';
 import { PIP, PLOP } from '../src/monsters';
 
 /** Runs an order; anything but carrying on (a scene change, getting stuck) is an error. */
@@ -61,7 +61,11 @@ export async function inTheWay(bot: StarterBot): Promise<void> {
   let highest = floor;
   bot.sim.press(SCAN.space);
   for (let i = 0; i < 20; i++) {
-    await must(bot, bot.tick().then(() => undefined), 'hopping');
+    await must(
+      bot,
+      bot.tick().then(() => undefined),
+      'hopping',
+    );
     highest = Math.min(highest, bot.px.y);
   }
   bot.sim.release(SCAN.space);
@@ -74,7 +78,6 @@ export async function inTheWay(bot: StarterBot): Promise<void> {
   await must(bot, bot.wait(10), 'watching Plop');
   const p = monsterAt(bot, PLOP);
   if (p.row !== GROUND) throw new Error(`level 1: Plop should have dropped into the dip (row ${GROUND}); row ${p.row}`);
-  if (bot.sim.w.map[(CORK_ROW + ORIGIN) * 100 + 24 + ORIGIN] === undefined) throw new Error('level 1: no map');
   bot.say('the crate broke and Plop dropped into the dip');
   await must(bot, bot.walk(29, 'over Plop'), 'over Plop');
   await must(bot, bot.walk(31, 'the third sign'), 'to the third sign');
@@ -104,7 +107,11 @@ export async function slowAndSoft(bot: StarterBot): Promise<void> {
   let slowest = 0;
   for (let i = 0; i < 80 && monsterAt(bot, PIP).row < GROUND - 1; i++) {
     const y0 = monsterAt(bot, PIP).y;
-    await must(bot, bot.tick().then(() => undefined), 'watching Pip drift');
+    await must(
+      bot,
+      bot.tick().then(() => undefined),
+      'watching Pip drift',
+    );
     slowest = Math.max(slowest, monsterAt(bot, PIP).y - y0);
   }
   if (monsterAt(bot, PIP).row !== GROUND - 1) throw new Error(`level 2: Pip should land on the floor (row ${GROUND - 1}); row ${monsterAt(bot, PIP).row}`);

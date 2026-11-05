@@ -17,6 +17,7 @@ walk-the-ground|Dig It|2
 searchlight|Don't Get Seen|2
 dialog|Everybody Talks|4
 follower|Follow Me|2
+drop-down|Drop Down|2
 gravity-on-gravity-off|Gravity On, Gravity Off|2
 gusts|Gusts|2
 health-and-hearts|Health and Hearts|3
