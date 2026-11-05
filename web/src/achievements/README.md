@@ -28,7 +28,8 @@ real-play events; demos, walkthrough playback, bundle exports and editor project
 do not add repeat counts. Quitting does not count as losing.
 
 `badgeArt.ts` / `badgeArt.css` render exact 20×20 game blocks in cards, details and
-unlock notices. `blockArt.json` carries embedded PNGs with provenance. Hidden and
+unlock notices. `blockArt.json` carries embedded PNGs with provenance; badges drawn by hand are added to it directly (and to
+`HAND_DRAWN` in `scripts/achievementArtKeep.ts`) without a `generator` mark, so `scripts/achievementArt.ts` keeps them. Hidden and
 unassigned badges use a neutral question block drawn with the tools package’s micro
 font; no emoji artwork is used by the renderer. Source selections and missing-art
 proposals are in [the artwork inventory](../../../docs/achievement-art.md).
