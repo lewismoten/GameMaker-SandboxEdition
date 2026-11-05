@@ -35,11 +35,12 @@ def set_id(s, i):
     _override[getattr(s, "port", "") or ""] = i
 
 
-def show(s, text):
-    """Sends `S <text>` (ASCII only, cut at 40 characters) over an open pyserial port."""
+def show(s, text, big=False):
+    """Sends `S <text>` (ASCII only, cut at 40 characters) over an open pyserial port; big=True sends `S2 <text>`, the double-size
+    banner for filming (cut at 21 characters on a 320 px board, 34 on 480 px: pocketShowcase.py uses it)."""
     t = "".join(c for c in text if " " <= c < "\x7f")[:LIMIT]
     i = board_id(s)
-    s.write(((f"ID {i}\n" if i else "") + f"S {t}\n").encode())
+    s.write(((f"ID {i}\n" if i else "") + f"{'S2' if big else 'S'} {t}\n").encode())
     s.flush()
 
 

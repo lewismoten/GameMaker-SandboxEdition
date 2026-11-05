@@ -205,6 +205,16 @@ Whether the touch orientation guess is right, whether the pad sizes and dead zon
 
 Display SPI: SCLK 14, MOSI 13, MISO 12, CS 15, DC 2, backlight 27. GT911 (I2C): SDA 33, SCL 32, INT 21, RST 25. XPT2046 shares the display bus: CS 33, IRQ 36. Speaker: GPIO 26 (`src/speaker.h`). Sources are in `src/board.h`, `src/speaker.h` and NOTICE.md.
 
+## Filming the boards
+
+`web/scripts/pocketShowcase.py` runs a 3 to 5 minute demo on boards A, B and C at once, each showing a different screen and a double-size banner of what is being tested (`S2 <text>` on Serial: 20 px bar, 21 characters on 320 px, 34 on 480 px; the slim `S` banner stays the default). Board A runs the firmware self-test game by game, B plays games with made-up fingers on the pad (`I x y`) and goes back to the list through MENU and "Back to list", C loads games from its card and checks their level cards. `L` on the game list prints `L <index> <id> <on card>` for every game (the script uses it).
+
+```sh
+~/.platformio/penv/bin/python web/scripts/pocketShowcase.py --countdown 5 --minutes 4
+```
+
+`--dry-run` prints the plan only. It stops if any board's lock folder is taken, never writes to a card and never touches the saved display setup. Ctrl-C ends it cleanly.
+
 ## Held-input trace
 
 For a live check of the touch path over USB (serial 115200): `V 1` prints every new GT911 report (`R ms n= id= x= y= size=`) and, each game tick, the keys the game holds (`K ms tick= up= down= left= right= space= pad= n=`); `V 0` stops it. `G <index>` starts a game from the list; `I x y` holds a made-up finger at that screen point (no chip involved, so it shows what the controls and the loop do with a steady touch) and `I off` lifts it. `web/scripts/pocketHeldTrace.py <port> <index|-> [x y] [seconds]` runs it and summarizes ticks with Up down, tick gaps, report gaps and zero-point reports; with `-` and no x y it just listens while someone holds the screen.
