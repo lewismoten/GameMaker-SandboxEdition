@@ -291,7 +291,9 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
       if (host.scene === undefined || host.project.readOnly)
         return [h('p', { class: 'meta' }, 'Suggestions only: make a scene for each and link the door or site yourself.'), list];
       const plan = planScenes(host.project.game(), host.scene, res, roles);
-      const skipped = plan.skipped.length ? ` Left out: ${plan.skipped.map((s) => `${s.label} (${s.why})`).join('; ')}.` : '';
+      const skipped = plan.skipped.length
+        ? ` Left out ${plan.skipped.length}: ${plan.skipped[0].label} (${plan.skipped[0].why})${plan.skipped.length > 1 ? ', and more' : ''}.`
+        : '';
       if (!asking) {
         const ask = h('button', { type: 'button', disabled: !plan.make.length, onclick: () => ((asking = true), pick()) }, 'Make these scenes…');
         return [
@@ -313,7 +315,7 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
         h(
           'p',
           { class: 'meta', role: 'status' },
-          `This draws the layout (Undo takes it back), then adds ${plan.make.length} scene${plan.make.length === 1 ? '' : 's'} for ${plan.make.map((m) => m.link.label).join(', ')}. Each gets its own map drawn in the same block set, and a link each way: the door leads in, and the way back arrives beside the door. New scenes are not part of Undo; remove them in the Integrator.${skipped}`,
+          `This draws the layout (Undo takes it back), then adds ${plan.make.length} scene${plan.make.length === 1 ? '' : 's'}, one per door or site, each with a map in the same block set and a link each way (the way back arrives beside the door). Scenes are not part of Undo; remove them in the Integrator.${skipped}`,
         ),
         h('div', { class: 'toolbar' }, go, h('button', { type: 'button', onclick: () => ((asking = false), pick()) }, 'Back')),
       ];
