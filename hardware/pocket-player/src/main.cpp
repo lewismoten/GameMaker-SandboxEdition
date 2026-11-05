@@ -1460,6 +1460,8 @@ static void pollSerial() {
 #ifdef POCKET_CYD28
         dsSerial(buf);
 #endif
+      } else if (buf[0] == 'S' && buf[1] == '2' && buf[2] == ' ') {  // the big banner, for filming
+        bannerChanged(banner::set(!strncmp(buf, "S2 off", 6) ? "" : buf + 3, true));
       } else if (buf[0] == 'S') {
         bannerChanged(banner::set(!strncmp(buf, "S off", 5) ? "" : buf + 2));
       } else if (fwSerial(buf)) {
@@ -1474,6 +1476,9 @@ static void pollSerial() {
         int g = atoi(buf + 2);
         if (g >= 0 && g < ngames && startGame(g)) wasDown = true;
         Serial.printf("G %d %s %s\n", g, g >= 0 && g < ngames ? games[g].id : "?", mode == PLAYING ? "playing" : "failed");
+      } else if (buf[0] == 'L' && mode == PICKER) {  // the game list: "L <index> <id> <on the card 0|1>" per game, then "L done <count>"
+        for (int g = 0; g < ngames; g++) Serial.printf("L %d %s %d\n", g, games[g].id, games[g].sd ? 1 : 0);
+        Serial.printf("L done %d\n", ngames);
       } else if (buf[0] == 'T' && mode == PICKER) serialCommand(buf);
       else if (buf[0] == 'W' && mode == PICKER) serialWrite(buf);
     } else if (n < (int)sizeof buf - 1) buf[n++] = c;
