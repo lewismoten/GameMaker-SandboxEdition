@@ -60,7 +60,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Changed
 
-- On the Starters tab the "How do I…?" list shows its first three questions with a "Show all" button, and a "Skip to the games" button (visible when the keyboard is on it) jumps past it to the game tiles: 14 Tab stops to the games instead of 62.
+- On the Starters tab the "How do I…?" list is one button that opens a dialog with a search box (focused), a count of the matches and the questions, each with Play this level and See how it's made. The list scrolls inside the dialog, with a scrollbar you can see, so the tab no longer loses a third of its height to it and there is no Show all button to miss. Closing the dialog (Esc or Close) puts the keyboard back on the button: 1 Tab stop instead of 14. The Guide's index is unchanged.
 - The Starters tab and its "How do I…?" list show the games in learning order, First Steps first, not A to Z.
 
 - Pictures redrawn after a "what would a child point out?" pass: the sword on I Screamed, She Smirked's title is a fat orange foam sword; the Cleanse Me, O Loofah sponge is a golden, fuzzy, goofy-faced bath monster with no horns; Veni, Vidi, Risi's Rufus is plainly a dog; Tippy in KEEP IT BRIEF!'s The Scissor Situation card sits up crying; and Final Curtain's umbrella man tips his hat.

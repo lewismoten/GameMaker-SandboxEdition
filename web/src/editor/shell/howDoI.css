@@ -1,4 +1,4 @@
-/* The "How do I…?" index (howDoIIndex.ts): on the Starters tab (compact) and in the Guide. */
+/* The "How do I…?" index (howDoIIndex.ts): in a dialog from the Starters tab, and on the page in the Guide. */
 .hdi {
   margin: 0 0 10px;
   padding: 8px 10px;
@@ -9,25 +9,6 @@
 }
 .hdi {
   position: relative;
-}
-/* the Starters tab's Skip link: out of sight until the keyboard is on it, then over the box's corner */
-.hdi-skip {
-  position: absolute;
-  right: 8px;
-  top: -9999px;
-  z-index: 5;
-  padding: 4px 10px;
-  border: 2px solid var(--accent);
-  border-radius: 6px;
-  background: var(--panel);
-  color: var(--accent);
-  font-weight: 600;
-}
-.hdi-skip:focus {
-  top: 6px;
-}
-.hdi-more {
-  margin-top: 6px;
 }
 .hdi-head {
   display: flex;
@@ -84,10 +65,48 @@
   display: block !important;
   color: var(--muted);
 }
-/* the Starters tab: a short list that scrolls, so the game tiles stay on the screen */
-.hdi.compact .hdi-list {
-  max-height: 11em;
-  overflow-y: auto;
+/* the Starters tab's one button opens the index in a dialog; its list scrolls inside the dialog */
+dialog.modal:has(.hdi-dlg) {
+  display: flex;
+  flex-direction: column;
+  width: min(680px, 94vw);
+  max-height: min(86dvh, 720px);
+  overflow: hidden;
+}
+.hdi-dlg {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+}
+.hdi-dlg .hdi-list {
+  flex: 1 1 auto;
+  min-height: 6em;
+  overflow-y: scroll; /* the bar is always there, so it is plain that the list scrolls */
+  /* shadows at the edges that still have more behind them */
+  background:
+    linear-gradient(var(--panel) 30%, transparent) top / 100% 24px no-repeat local,
+    linear-gradient(transparent, var(--panel) 70%) bottom / 100% 24px no-repeat local,
+    linear-gradient(rgba(0, 0, 0, 0.35), transparent) top / 100% 8px no-repeat scroll,
+    linear-gradient(transparent, rgba(0, 0, 0, 0.35)) bottom / 100% 8px no-repeat scroll;
+}
+.hdi-dlg .hdi-list::-webkit-scrollbar {
+  width: 12px;
+}
+.hdi-dlg .hdi-list::-webkit-scrollbar-track {
+  background: var(--border);
+  border-radius: 6px;
+}
+.hdi-dlg .hdi-list::-webkit-scrollbar-thumb {
+  background: var(--accent);
+  border-radius: 6px;
+}
+.hdi-dlg .hdi-list li:first-child {
+  border-top: 0;
 }
 .lib-hdi {
   flex: none; /* the library is a flex column that can shrink its children (home.css) */
@@ -104,9 +123,6 @@
     grid-template-columns: minmax(0, 1fr);
     grid-template-areas: 'q' 'where' 'go';
     gap: 2px;
-  }
-  .hdi.compact .hdi-list {
-    max-height: 10em;
   }
 }
 
