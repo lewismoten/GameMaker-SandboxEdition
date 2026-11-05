@@ -48,7 +48,9 @@ function bird(pal: Pal, pose: 'sit' | 'up' | 'down', blink = false): Pixels {
     p.line(17, 10, 19, 8, c('blue', 1)).line(17, 11, 19, 10, c('blue', 1));
   }
   blob(p, 9, 16 + dy, 4.5, 2, r('white'), 0, 3); // the pale belly
-  p.set(1, 10 + dy, c('orange', 3)).set(2, 10 + dy, c('orange', 3)).set(1, 11 + dy, c('orange', 2)); // the beak
+  p.set(1, 10 + dy, c('orange', 3))
+    .set(2, 10 + dy, c('orange', 3))
+    .set(1, 11 + dy, c('orange', 2)); // the beak
   if (pose === 'up') blob(p, 12, 9, 3, 6, r('blue'), 0, 4);
   if (pose === 'down') blob(p, 12, 17, 6, 2.6, r('blue'), 0, 4);
   if (blink) p.set(4, 9 + dy, c('ink', 0)).set(5, 9 + dy, c('ink', 0));
