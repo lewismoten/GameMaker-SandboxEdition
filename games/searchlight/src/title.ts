@@ -26,7 +26,9 @@ export function titlePicture(pal: Pal, mb: Book, hero: Pixels, door: Pixels, nam
   put(hero, 30, 160 - 80, 2);
   // the lamp and its cone, a block (20 px) each, drawn at twice their size
   const top = 160 - 20 * CONE; // a short cone here (the top piece left out) so the rail clears the ribbon
-  p.rect(96, top - 6, 128, 5, pal.c('stone', 2)).rect(96, top - 6, 128, 1, pal.c('stone', 4)).rect(96, top - 2, 128, 2, pal.c('ink', 0));
+  p.rect(96, top - 6, 128, 5, pal.c('stone', 2))
+    .rect(96, top - 6, 128, 1, pal.c('stone', 4))
+    .rect(96, top - 2, 128, 2, pal.c('ink', 0));
   put(mb.pics.get('lamp1')!, 150, top, 1);
   for (let i = 1; i < CONE; i++) put(mb.pics.get(`cone${i}_0`)!, 150, 160 - 20 * (CONE - i), 1);
   put(door, 268, 160 - 80, 2);

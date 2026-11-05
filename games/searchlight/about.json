@@ -24,11 +24,26 @@
     "ink": "#ffffff",
     "tagline": "Wait for the light to pass.",
     "back": "A small explorer in a teal beanie has two halls to cross, and a lamp hangs over each, walking back and forth on a rail. It cannot look. It cannot chase. It only walks its path, and anyone under it is seen. Dig in, let it pass, then go, and open the game in Game-Maker to change how far it walks.",
-    "features": ["Signs in the levels explain each idea", "A light is a column of monsters on one path", "Made to be copied and taken apart"],
+    "features": [
+      "Signs in the levels explain each idea",
+      "A light is a column of monsters on one path",
+      "Made to be copied and taken apart"
+    ],
     "shots": [
-      ["one.map", 28, 6],
-      ["two.map", 30, 6]
+      [
+        "one.map",
+        28,
+        6
+      ],
+      [
+        "two.map",
+        30,
+        6
+      ]
     ],
     "rating": "Everyone"
-  }
+  },
+  "acceptedFindings": [
+    "density s3 10 enemies on one screen at (30, 10)"
+  ]
 }

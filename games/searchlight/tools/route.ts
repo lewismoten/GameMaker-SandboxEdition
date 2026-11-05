@@ -73,7 +73,10 @@ class Light {
 }
 
 /** The light a person would watch for the stretch of ground from `a` to `b` (pixels): the one whose walk covers it. */
-const lightsOf = (bot: StarterBot, level: number): Light[] => LIGHTS.map((l, sweep) => ({ l, sweep })).filter((x) => x.l.level === level).map((x) => new Light(bot, x.sweep));
+const lightsOf = (bot: StarterBot, level: number): Light[] =>
+  LIGHTS.map((l, sweep) => ({ l, sweep }))
+    .filter((x) => x.l.level === level)
+    .map((x) => new Light(bot, x.sweep));
 
 /** Whether a hop from `from` to `to` (pixels, to the right) is safe to start now against every light: Kit is never within SAFE_GAP of a lamp on the way. */
 function safeNow(lights: Light[], from: number, to: number, fromTrench: boolean): boolean {

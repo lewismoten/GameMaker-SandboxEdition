@@ -1,83 +1,83 @@
 {
-  "title": "Big Bug",
+  "title": "Don't Get Seen",
   "howDoI": [
     {
-      "id": "boss-hits",
-      "q": "How do I make a boss that takes several hits?",
+      "id": "light",
+      "q": "How do I make a light that sweeps back and forth?",
       "scene": 2,
-      "x": 36,
-      "y": 19,
+      "x": 28,
+      "y": 15,
       "level": 1
     },
     {
-      "id": "becomes",
-      "q": "How do I make a monster turn into another when it is hit?",
+      "id": "column",
+      "q": "How do I make a monster that is taller than one block?",
       "scene": 2,
-      "x": 36,
-      "y": 19,
+      "x": 28,
+      "y": 16,
       "level": 1
     },
     {
-      "id": "block-way",
-      "q": "How do I make a monster that blocks a narrow way?",
+      "id": "hurts",
+      "q": "How do I make something that takes hit points when you touch it, but does not block you?",
       "scene": 2,
-      "x": 36,
-      "y": 19,
+      "x": 28,
+      "y": 17,
       "level": 1
     },
     {
-      "id": "sting",
-      "q": "How do I make a monster that hurts my hero when he touches it?",
+      "id": "trench",
+      "q": "How do I make a place a monster never goes?",
       "scene": 2,
-      "x": 36,
-      "y": 19,
+      "x": 31,
+      "y": 20,
       "level": 1
     },
     {
-      "id": "meter",
-      "q": "How do I show how many hits a boss has left?",
+      "id": "speeds",
+      "q": "How do I make two lights that walk at different speeds?",
       "scene": 3,
-      "x": 44,
-      "y": 19,
+      "x": 30,
+      "y": 15,
       "level": 2
     },
     {
-      "id": "puff",
-      "q": "How do I make a monster leave a puff when it is beaten?",
-      "scene": 3,
-      "x": 44,
-      "y": 19,
-      "level": 2
+      "id": "rail",
+      "q": "How do I draw the rail a monster hangs from?",
+      "scene": 2,
+      "x": 28,
+      "y": 14,
+      "level": 1
     }
   ],
   "pages": [
     {
       "head": "Welcome",
-      "html": "<h1>Welcome</h1><p><b>Big Bug</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has two short levels about a boss that takes several hits, and takes a few minutes to finish.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each idea is made.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. <kbd>Space</kbd> jumps. <kbd>Enter</kbd> throws a star the way you last walked. <kbd>F2</kbd> shows your hit points, lives and score. Walk into the door at the end of a level to go on.</p><h2>The one idea</h2><p>Game-Maker has no boss with hit points. A monster is hurt one way: a star kills it. So a boss is a <b>chain</b> of monsters, one for each hit. When a star kills the first, it <b>becomes</b> the second, in the same place. When it kills the last, that becomes a puff. Five monsters in a row make a boss that takes five hits.</p>"
+      "html": "<h1>Welcome</h1><p><b>Don&rsquo;t Get Seen</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has two short levels about a light that cannot look, and takes a few minutes to finish.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each idea is made.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. <kbd>Space</kbd> jumps. <kbd>F2</kbd> shows your hit points, lives and score. Walk into the door at the end of a level to go on.</p><h2>The one idea</h2><p>A monster does not see. A light that sweeps the way is a monster on a <b>path</b>: it walks from one end to the other and back, and anything under it is touched. Kit stays out of its way by standing where the path never goes. In this game that is a trench dug in the ground, under the beam.</p>"
     },
     {
-      "head": "Level 1: Five Hits",
-      "html": "<h1>Level 1: Five Hits</h1><p>The <b>BIG BUG TAKES FIVE HITS</b> sign stands near the start. Big Bug sits in a low tunnel through a brick wall, and there is no room to get past it. One star is not enough. Stand a few steps back, face it and press <kbd>Enter</kbd> five times: after the fifth it puffs away. Each hit scores 20 points.</p><p>Nothing on the bug shows how many hits are left, so you count. The <b>TOUCHING IT ONLY STINGS</b> sign says what happens if you try to push past: it costs Kit a few hit points and counts for nothing. Eight coins are on the way to the door.</p>"
-    },
-    {
-      "head": "How this level is made",
-      "html": "<h1>How level 1 is made</h1><ul><li><b>Five monsters, not one.</b> Open <b>bug.mon</b> in the monsters editor. Monsters 5 to 9 all use the same bug pictures. Each has <b>When destroyed it becomes</b> set to the next one: 5 becomes 6, 6 becomes 7, 7 becomes 8, 8 becomes 9. That is the hit count: the number of monsters in the chain.</li><li><b>The last hit.</b> Monster 9 becomes monster 15, the puff, which has a <b>For a set time</b> of 18 ticks and then goes away on its own. Nothing is left in the tunnel.</li><li><b>Where it sits.</b> The map has only the first one, monster 5, in the tunnel. The others appear in its place as stars land. Open <b>one.map</b> in the map editor.</li><li><b>Stars win, touching loses.</b> Every stage has <b>Power</b> 150. A star has 200, so it wins. A touch from Kit cannot kill anything with Power 100 or more, so only stars count.</li><li><b>It blocks the tunnel.</b> Open <b>bug.mbl</b> in the blocks editor: the bug pictures are <b>Solid</b> on every side and take 1 hit point for each moment you touch them. The tunnel is two blocks high, the hero&rsquo;s own height, with no way over or around.</li><li><b>The score.</b> Each stage&rsquo;s <b>Score when destroyed by a weapon</b> is 20, so five hits make 100.</li><li><b>The star.</b> Kit&rsquo;s Throw sequence gives birth to monster 3. See <b>hero.chr</b> on the characters tab: the same star as in the Throw It Starter.</li></ul>"
-    },
-    {
-      "head": "Level 2: Count the Lights",
-      "html": "<h1>Level 2: Count the Lights</h1><p>The <b>A LIGHT GOES OUT EACH HIT</b> sign comes first. Big Bug is back in a tunnel, and its shell now has five round lights. Throw a star and one goes out. Throw four more and none are left, and the fifth hit makes it poof. The <b>THE LAST ONE MAKES IT POOF</b> sign says what comes next. Seven coins lie along the way.</p>"
+      "head": "Level 1: Wait and Go",
+      "html": "<h1>Level 1: Wait and Go</h1><p>Three signs stand before the light. <b>THE LIGHT JUST WALKS A PATH</b> says what it is: a lamp on a rail, walking back and forth over ten blocks. <b>BEING SEEN COSTS HIT POINTS</b> says what happens if Kit is under it: he loses hit points while any of it touches him, about half of his hundred if he stays. <b>WAIT IN A TRENCH TILL IT PASSES</b> says what to do about it.</p><p>Two trenches are dug under the rail. Drop into the first when the lamp is far away, wait while it walks over, climb out with <kbd>Space</kbd>, and do the same with the second. Five coins lie past the light, on the way to the door.</p>"
     },
     {
       "head": "How this level is made",
-      "html": "<h1>How level 2 is made</h1><ul><li><b>A picture for every count.</b> Open <b>bug.mbl</b> in the blocks editor. <b>lamp5_0</b> and <b>lamp5_1</b> are the bug with all five lights lit and wiggling. <b>lamp4_0</b> has four, and so on down to <b>lamp1_0</b> with one. The lights are only paint.</li><li><b>Each monster shows its own picture.</b> In the monsters editor, monsters 10 to 14 are the same chain as level 1&rsquo;s, but monster 10 uses the five-light pictures, 11 the four-light ones, and so on. A hit turns it into the next monster, and the picture changes with it.</li><li><b>This is the meter.</b> There is no health number or bar to draw: the bug&rsquo;s own picture says how many hits are left. That is the whole trick, and it works for any count.</li><li><b>The same puff.</b> The last stage, monster 14, becomes monster 15 as in level 1.</li><li><b>The map.</b> Open <b>two.map</b>. Only monster 10 is placed, in a tunnel a little farther along.</li></ul>"
+      "html": "<h1>How level 1 is made</h1><ul><li><b>A column of five.</b> Open <b>seen.mon</b> in the monsters editor. Monsters 3 to 7 are one light: the lamp (3) and four pieces of cone (4 to 7). A monster is one block, so a tall light is several, one above the other. All five have the <b>same path</b> (ten blocks right and back) and the <b>same speed</b>, so they stay in a line.</li><li><b>Where they sit.</b> Open <b>one.map</b> in the map editor. The lamp is on the row under the rail and the four cone pieces are the four rows under it. The cone fills the way down to where Kit stands, so he cannot step over it.</li><li><b>Seeing is a hit point cost.</b> Open <b>seen.mbl</b> in the blocks editor: the lamp and cone pictures take 1 hit point from Kit for each moment he touches them. They are not <b>Solid</b>, so he walks into the light instead of stopping at it. Each piece takes 1, and Kit touches two at once, so it adds up quickly.</li><li><b>The rail.</b> The <b>rail</b> block is a plain stone bar in <b>seen.bbl</b>, drawn along the top of the path so the lamp has something to hang from. It does nothing: the path is in the monster, not the rail.</li><li><b>The trench.</b> The <b>trench</b> block is air (it has <b>Gravity</b> down, like sky) painted dark like dug dirt, two blocks deep and two wide, under the rail. The light is only drawn on the rows above the ground, so nothing of it reaches the bottom of the trench.</li><li><b>The warning is the path.</b> The lamp&rsquo;s walk is slow (1 pixel a tick) and its path is as long as the rail you can see, so you can tell where it is going before it gets there.</li></ul>"
+    },
+    {
+      "head": "Level 2: Two Lights",
+      "html": "<h1>Level 2: Two Lights</h1><p>The <b>TWO LIGHTS, TWO SPEEDS</b> sign comes first. The first lamp walks slowly, like level 1&rsquo;s; the second, farther on, walks twice as fast. Each has two trenches of its own, and a patch of grass between them is safe: no light walks there. The <b>GRASS HERE IS SAFE TO REST ON</b> sign stands on it. Five coins lie on the grass and past the second light, before the door.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 2 is made</h1><ul><li><b>Two lights, two sets of monsters.</b> Monsters 8 to 12 are the first light and 13 to 17 the second: a lamp and four pieces of cone each. They have the same pictures, but each light has its own path and speed, so they have their own numbers. That is the only way two lights can walk at different speeds.</li><li><b>Speed.</b> The first light&rsquo;s <b>Movement</b> corners have a speed of 1 and the second&rsquo;s a speed of 2. It is the speed of each corner of the path in the monsters editor.</li><li><b>Where it is safe.</b> A path has two ends, so there is ground nobody walks over: the grass between the lights. Open <b>two.map</b> and find the gap: the first rail ends, and the second one starts four blocks later.</li><li><b>The trenches.</b> Four trenches: two under each rail. Under the first rail the first trench is three blocks in from the lamp&rsquo;s end, so there is time to drop in.</li></ul>"
     },
     {
       "head": "What it cannot do",
-      "html": "<h1>What it cannot do</h1><p>These are the engine&rsquo;s limits, so you can plan around them.</p><ul><li><b>No hit points on a monster.</b> A monster does not have a number that goes down. The count of hits is the number of monsters in the chain, and nothing can read it.</li><li><b>No bar or number on the screen.</b> A monster cannot add to a counter, so nothing like a health bar can follow its hits. Show how many are left with a picture for each count, as level 2 does.</li><li><b>A stage cannot hurt in a different way.</b> Every stage is killed by the same thing, a star. A boss that needs two kinds of shot needs the Showcase Tricks.</li><li><b>Hits cannot be undone.</b> A bug does not heal. Leave the level and come back and it starts again from five.</li><li><b>Only one hit a star.</b> A star is used up by what it hits, so a boss never takes two hits from one throw.</li><li><b>A bug that moves loses its place.</b> A stage becomes the next one where it stands, and its path starts from there. A boss that walks about drifts, so this one sits still.</li></ul>"
+      "html": "<h1>What it cannot do</h1><p>These are the engine&rsquo;s limits, so you can plan around them.</p><ul><li><b>A monster cannot see.</b> Nothing in the engine checks what is between a monster and Kit, so there is no line of sight. A light is a monster that walks a path (or heads toward Kit), and it hurts wherever it is, whether Kit is behind something or not. Hiding is only ever a place its path does not go.</li><li><b>It cannot notice you hiding or leaving.</b> It does not stop, turn or chase because Kit stepped into a trench. A light that reacts to where Kit is would have to be a different kind of monster, such as one that follows him, and it would not know about the trench either.</li><li><b>A monster is one block.</b> A beam is a column of monsters. All of them need the same path and the same speed to stay in line, and each piece has its own picture.</li><li><b>The cone cannot be soft-edged.</b> Monster pictures have no see-through: each pixel is a color or clear. The light is a pale color, not a blend.</li><li><b>Being seen is not once only.</b> A touch takes hit points for every moment it lasts, and Kit appears to be unable to move away while it lasts. A hurt that happens once needs a block that becomes harmless after it, which a monster cannot do.</li></ul>"
     },
     {
       "head": "Make it yours",
-      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>In <b>bug.mon</b>, set monster 9&rsquo;s <b>When destroyed it becomes</b> to the puff and monster 8&rsquo;s to 15 as well: the bug takes four hits.</li><li>Change the chain&rsquo;s <b>Score when destroyed by a weapon</b> and watch the score.</li><li>Give the bug a <b>Movement</b> path of one block and see where it ends up after a hit.</li><li>Untick <b>Solid</b> on a bug picture and walk through it.</li><li>Make the star&rsquo;s <b>Power</b> lower than 150 and see that a star no longer hurts it.</li></ul><p>The home page&rsquo;s <b>Starters</b> tab has more small games like this one.</p>"
+      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>In <b>seen.mon</b>, give monsters 3 to 7 a longer path (all five the same) and see what happens to the trenches.</li><li>Give only the lamp (monster 3) a different speed from its cone and watch the column come apart.</li><li>Untick the pictures&rsquo; hit points in <b>seen.mbl</b> and the light is harmless.</li><li>Dig a third trench in <b>one.map</b> with the <b>trench</b> block, and check you can still climb out of it.</li><li>Move a trench to where the light never reaches and see that it is not needed.</li></ul><p>The home page&rsquo;s <b>Starters</b> tab has more small games like this one.</p>"
     }
   ]
 }

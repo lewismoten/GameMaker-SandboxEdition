@@ -1,6 +1,6 @@
 {
  "version": 1,
- "game": "boss-hits",
+ "game": "searchlight",
  "rand": {
   "seed": 1,
   "per": "scene"
@@ -8,26 +8,26 @@
  "segments": [
   {
    "scene": 2,
-   "keys": "AU0jzQNNQc0DTRTNAEskywNND80DHAOcPBwDnDwcA5w8HAOcPBwDnDxNS80DTQ=="
+   "keys": "AU0jzQNNHs2xAk0OzQBLBDkCuQg5ArkSyzRNH82FAjkCuQBNCM0MTRDNCTkCuQBNCM0MTQrNA008zQNN"
   },
   {
    "scene": 3,
-   "keys": "AU1BzQNNQc0DHAOcPBwDnDwcA5w8HAOcPBwDnDxNPM0DTQ=="
+   "keys": "AU0jzQNNKM0DTRrNrwE5ArkATQjNDE0LzQk5ArkATQjNDE0KzR1NH81xOQK5AE0IzQxNC80JOQK5AE0IzQxND80DTQ/NA00="
   }
  ],
  "chapters": [
   {
    "scene": 2,
-   "title": "Level 1: Five Hits"
+   "title": "Level 1: Wait and Go"
   },
   {
    "scene": 3,
-   "title": "Level 2: Count the Lights"
+   "title": "Level 2: Two Lights"
   }
  ],
  "timeline": {
   "fps": 60,
-  "frames": 9803,
+  "frames": 11302,
   "chapters": [
    {
     "title": "Opening",
@@ -40,24 +40,24 @@
     "time": 14933.333333333148
    },
    {
-    "title": "Level 1: Five Hits",
+    "title": "Level 1: Wait and Go",
     "frame": 2125,
     "time": 35416.66666666724
    },
    {
-    "title": "Level 2: Count the Lights",
-    "frame": 4458,
-    "time": 74299.99999999873
+    "title": "Level 2: Two Lights",
+    "frame": 5526,
+    "time": 92100.00000000391
    },
    {
     "title": "Ending",
-    "frame": 6520,
-    "time": 108666.6666666754
+    "frame": 8016,
+    "time": 133600.0000000138
    },
    {
     "title": "Credits",
-    "frame": 8729,
-    "time": 145483.3333333402
+    "frame": 10228,
+    "time": 170466.666666659
    }
   ]
  }

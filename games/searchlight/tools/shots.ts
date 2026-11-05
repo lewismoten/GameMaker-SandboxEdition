@@ -1,6 +1,6 @@
-// Pictures of the lessons (never on the disk), for the progress shots: Kit and the plain Big Bug, a star
-// in the air, the sting, then level 2's bug with five lights down to one, and the puff.
-//   cd web && npx vite-node ../games/boss-hits/tools/shots.ts <outDir>
+// Pictures of the lessons (never on the disk), for the progress shots: the lamp walking, Kit seen by it,
+// Kit hiding in a trench with the light overhead, and level 2's two lights.
+//   cd web && npx vite-node ../games/searchlight/tools/shots.ts <outDir>
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { writePng } from '@lewismoten/gamemaker-sandbox-tools/kit/png';
@@ -21,16 +21,18 @@ const set = monsterSet(mb);
 const hero = buildHeroBlocks(pal);
 
 type Sprite = { pixels: Uint8Array; x: number; y: number };
-/** Kit standing in column `col` (in the level) in `pose`, as two sprites for renderRegion. */
-const kit = (pose: [string, string], col: number): Sprite[] => {
+/** Kit standing in column `col` (in the level), his feet on row `feet`, in `pose`, as two sprites for renderRegion. */
+const kit = (pose: [string, string], col: number, feet = GROUND - 1): Sprite[] => {
   const h = heroPicture(hero, pose[0], pose[1]);
   return [
-    { pixels: Uint8Array.from(h.px.subarray(0, 400)), x: ORIGIN + col, y: ORIGIN + GROUND - 2 },
-    { pixels: Uint8Array.from(h.px.subarray(400)), x: ORIGIN + col, y: ORIGIN + GROUND - 1 },
+    { pixels: Uint8Array.from(h.px.subarray(0, 400)), x: ORIGIN + col, y: ORIGIN + feet - 1 },
+    { pixels: Uint8Array.from(h.px.subarray(400)), x: ORIGIN + col, y: ORIGIN + feet },
   ];
 };
-/** A monster picture standing in column `col`, on the ground. */
-const thing = (name: string, col: number): Sprite => ({ pixels: Uint8Array.from(mbl[mb.n(name)].pixels), x: ORIGIN + col, y: ORIGIN + GROUND - 1 });
+/** A monster picture in block (col, row). */
+const thing = (name: string, col: number, row: number): Sprite => ({ pixels: Uint8Array.from(mbl[mb.n(name)].pixels), x: ORIGIN + col, y: ORIGIN + row });
+/** A light (lamp, then four pieces of cone) with its lamp at column `col`. */
+const light = (col: number): Sprite[] => [thing('lamp0', col, 5), ...[0, 1, 2, 3].map((i) => thing(`cone${i}_0`, col, 6 + i))];
 /** The level's map with its monsters taken out (the picture adds the ones to show). */
 const empty = (level: number) => {
   const m = levels[level].map.done();
@@ -38,16 +40,13 @@ const empty = (level: number) => {
   return m;
 };
 const region = (map: ReturnType<typeof empty>, col: number, w: number, extra: Sprite[]) =>
-  renderRegion(map, bbl, mbl, set, ORIGIN + col, ORIGIN + 4, w, 8, extra);
+  renderRegion(map, bbl, mbl, set, ORIGIN + col, ORIGIN + 2, w, 12, extra);
 const save = (name: string, pic: ReturnType<typeof region>) => writePng(join(out, name), pic, pal.pal, 3);
 
-// level 1: the plain bug before, mid-throw, and the sting; level 2: the lights going out, hit by hit
-save('1-before.png', region(empty(0), 14, 18, [...kit(['stand.top', 'stand'], 18), thing('bug0', 26)]));
-save('2-throw.png', region(empty(0), 14, 18, [...kit(['cheer.top', 'throw1'], 20), thing('star0', 22), thing('bug0', 26)]));
-save('3-sting.png', region(empty(0), 14, 18, [...kit(['hurt.top', 'hurt'], 24), thing('bug1', 26)]));
-for (let lit = 5; lit >= 1; lit--) {
-  const pose: [string, string] = lit === 5 ? ['stand.top', 'stand'] : ['stand.top', 'throw2'];
-  save(`4-lights-${lit}.png`, region(empty(1), 22, 18, [...kit(pose, 29), thing(`lamp${lit}_0`, 34)]));
-}
-save('5-poof.png', region(empty(1), 22, 18, [...kit(['cheer.top', 'jump'], 29), thing('poof1', 34)]));
+// level 1: the light and Kit before; Kit seen; Kit hiding in the first trench with the light overhead
+save('1-before.png', region(empty(0), 12, 20, [...kit(['stand.top', 'stand'], 16), ...light(21)]));
+save('2-seen.png', region(empty(0), 12, 20, [...kit(['hurt.top', 'hurt'], 20), ...light(21)]));
+save('3-hiding.png', region(empty(0), 12, 20, [...kit(['stand.top', 'stand'], 21, GROUND + 1), ...light(21)]));
+// level 2: both lights
+save('4-two-lights.png', region(empty(1), 18, 30, [...kit(['stand.top', 'stand'], 31), ...light(24), ...light(36)]));
 console.log(`shots in ${out}`);

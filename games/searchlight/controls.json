@@ -35,17 +35,9 @@
     "31": {
       "short": "Climb down",
       "long": "Same as the Down arrow."
-    },
-    "28": {
-      "short": "Throw a star",
-      "long": "Throw a star the way you last walked. It flies only so far."
     }
   },
   "joystick": {
-    "2": {
-      "short": "Throw a star",
-      "long": "Throw a star the way you last walked."
-    },
     "1": {
       "short": "Jump",
       "long": "Jump."
@@ -53,9 +45,8 @@
   },
   "sounds": {
     "9": "The jump",
-    "10": "Getting hurt (nothing here does)",
-    "11": "Falling over (nothing here does)",
-    "13": "The throw"
+    "10": "Getting hurt (being seen by the light)",
+    "11": "Falling over (nothing here does)"
   },
   "counters": {
     "20": "Keys: not used here, but a copy can add them."
