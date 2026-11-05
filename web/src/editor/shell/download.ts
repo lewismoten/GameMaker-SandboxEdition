@@ -121,10 +121,11 @@ const CHOICES: Choice[] = [
 ];
 
 /**
- * Every download but DOS still plays on a web engine (a browser, or the one built into the
+ * Every download but DOS and the Pocket Player still plays on a web engine (a browser, or the one built into the
  * system), so it is not frozen in time the way the DOS files are.
  */
-const ENGINE_CAVEAT = 'All but DOS still need a web engine, so a future system or browser update could break them; DOS, in DOSBox, is the most future-proof.';
+const ENGINE_CAVEAT =
+  'All but DOS and the Pocket Player still need a web engine, so a future system or browser update could break them; DOS, in DOSBox, is the most future-proof.';
 
 /** The Download button: `open` opens the chooser (chooseDownload) for the game. */
 export function downloadButton(title: string, open: () => unknown): HTMLElement {

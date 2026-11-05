@@ -100,6 +100,9 @@ dialog.modal:has(.download-chooser) {
   gap: 4px 8px;
   margin: 8px 0;
 }
+.download-chooser .dl-previews[hidden] {
+  display: none;
+}
 .download-chooser .dl-previews input {
   width: 24px;
   height: 24px;
