@@ -1,0 +1,55 @@
+{
+  "keys": {
+    "17": {
+      "short": "Climb up",
+      "long": "Same as the Up arrow."
+    },
+    "30": {
+      "short": "Walk left",
+      "long": "Same as the Left arrow."
+    },
+    "31": {
+      "short": "Climb down",
+      "long": "Same as the Down arrow."
+    },
+    "32": {
+      "short": "Walk right",
+      "long": "Same as the Right arrow."
+    },
+    "57": {
+      "short": "Jump",
+      "long": "Jump. With a star it is a high jump (4 per star). Steer with Left and Right in the air."
+    },
+    "72": {
+      "short": "Climb up",
+      "long": "Climb up a ladder."
+    },
+    "75": {
+      "short": "Walk left",
+      "long": "Walk left. With the sneakers on, twice as fast."
+    },
+    "77": {
+      "short": "Walk right",
+      "long": "Walk right. With the sneakers on, twice as fast."
+    },
+    "80": {
+      "short": "Climb down",
+      "long": "Climb down a ladder."
+    }
+  },
+  "joystick": {
+    "1": {
+      "short": "Jump",
+      "long": "Jump."
+    }
+  },
+  "sounds": {
+    "9": "The jump",
+    "10": "Getting hurt",
+    "11": "Falling over"
+  },
+  "counters": {
+    "20": "Gold keys: an odd face adds one, the gold door takes one.",
+    "21": "Silver keys: an even face adds one, the silver door takes one."
+  }
+}

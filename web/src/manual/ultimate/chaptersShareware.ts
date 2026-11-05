@@ -221,6 +221,7 @@ export const SHAREWARE: Chapter = {
   block showing the roll, so it can’t be thrown twice. Let the faces add 1 to 6 to a special
   counter, and gates further on that take 4 or 6 make a board game: how far the player gets
   depends on the roll.</p>
+  ${onCd('ROLLDICE')}
   <h2>A friend who follows</h2>
   <p>A monster that moves toward the hero a little slower than his walk, with harmless pictures
   and power 100 or more, trots along behind him. Give it more power than the enemies and it
