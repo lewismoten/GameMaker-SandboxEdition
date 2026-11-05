@@ -5,7 +5,7 @@
 //              and a scene link lands him at the town's south gate.
 //   town.map   the town: 36 x 26 blocks, scrolling, Kit full size, streets and houses 3 blocks wide. The south gate is
 //              a link back to the world (landing beside the town block, not at the world's start); the door of one
-//              house is a link into the house, behind a yard gate that needs the key lying on the world map.
+//              house is a link into the house, behind a yard gate that needs the keys lying on the world map.
 //   house.map  inside that house: 18 x 12 blocks. Its door is a link that lands Kit in the yard, outside the door he
 //              came in by (not at the town gate); its far door is the way out of the game.
 import { Book } from '../../kit/starter/book';
@@ -24,10 +24,10 @@ const at = (x: number, y: number): Spot => [x + ORIGIN, y + ORIGIN];
 /** The words on every sign: [name, text, board width, board height, on 'land', 'grass' or 'floor']. */
 const SIGNS = {
   scale: ['scale', 'A TOWN IS ONE BLOCK. STEP ON IT', 4, 3, 'land'],
-  key: ['key', 'A KEY IS DOWN THERE. TAKE IT', 4, 2, 'land'],
+  key: ['key', 'KEYS ARE DOWN THERE. TAKE THEM', 4, 2, 'land'],
   arrive: ['arrive', 'YOU LAND AT THE GATE, NOT THE START', 4, 2, 'grass'],
   big: ['big', 'HERE A HOUSE IS THREE BLOCKS WIDE', 4, 3, 'grass'],
-  locked: ['locked', 'LOCKED. THE KEY IS ON THE WORLD MAP', 4, 2, 'grass'],
+  locked: ['locked', 'LOCKED. KEYS ARE ON THE WORLD MAP', 4, 2, 'grass'],
   gate: ['gate', 'THIS GATE LEADS TO THE WORLD', 4, 2, 'grass'],
   inside: ['inside', 'WALK OUT AND SEE WHERE YOU LAND', 4, 2, 'floor'],
   exit: ['exit', 'EXIT →', 3, 1, 'floor'],
@@ -105,10 +105,18 @@ function worldLevel(book: Book, s: Record<SignName, Sign>): OverMap {
   const h = WORLD_ROWS.length;
   const w = WORLD_ROWS[0].length;
   const isSea = (x: number, y: number) => x < 0 || y < 0 || x >= w || y >= h || WORLD_ROWS[y][x] === '~';
-  const legend: Record<string, string> = { '~': 'sea', H: 'hill', F: 'forest', t: 'trail', T: 'town', k: 'wkey' };
+  const legend: Record<string, string> = { '~': 'sea', H: 'hill', F: 'forest', T: 'town', k: 'wkey' };
+  const joins = (x: number, y: number) => 'tT'.includes(WORLD_ROWS[y]?.[x] ?? '~');
   const rows = WORLD_ROWS.map((row, y) =>
     [...row]
       .map((ch, x) => {
+        if (ch === 't') {
+          // a trail leads to each trail or the town block next to it
+          const mask = (joins(x, y - 1) ? SEA.N : 0) | (joins(x + 1, y) ? SEA.E : 0) | (joins(x, y + 1) ? SEA.S : 0) | (joins(x - 1, y) ? SEA.W : 0);
+          const ch2 = String.fromCharCode(0x100 + mask);
+          legend[ch2] = `trail.${mask}`;
+          return ch2;
+        }
         if (ch !== '.') return ch;
         const mask = (isSea(x, y - 1) ? SEA.N : 0) | (isSea(x + 1, y) ? SEA.E : 0) | (isSea(x, y + 1) ? SEA.S : 0) | (isSea(x - 1, y) ? SEA.W : 0);
         const ch2 = String.fromCharCode(97 + mask);

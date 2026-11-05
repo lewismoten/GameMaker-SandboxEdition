@@ -3,7 +3,7 @@
 //   world map: the trail to the town block; stepping on it lands him at the town's south gate (not at the town's corner)
 //   town: up the main street to the yard gate, which is locked (the mistake: he bumps it), then back out of the south gate:
 //         the link lands him on the world map just below the town block (not where he started)
-//   world map: the key; back onto the town block, up to the gate (it opens) and in at the house door
+//   world map: the keys; back onto the town block, up to the gate (it opens) and in at the house door
 //   house: out of the door again, to land in the yard just below it (not at the town gate), and in; the three coins; out by
 //         the far door, which ends the game
 import type { Result, StarterBot } from '../../kit/starter/bot';

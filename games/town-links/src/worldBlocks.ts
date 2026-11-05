@@ -14,7 +14,7 @@ import { buildTopHero } from '../../kit/starter/topHero';
 import { skyOf } from '../../kit/starter/palette';
 
 const N = 20;
-/** The counter the key adds to (and the gate takes from). Kit starts with 1: a counter shows one less than it holds. */
+/** The counter the keys add to (and the gate takes from). Kit starts with 1: a counter shows one less than it holds. The keys add 2: a map reloads when you come back to it, so the gate is shut again after the house and needs a second key to leave the yard. */
 export const KEY_COUNTER = KEYS + 1;
 
 /** Shore bits: which neighbors of a land block are sea. */
@@ -84,15 +84,17 @@ function forestTile(pal: Pal, land: Pixels): Pixels {
   return p;
 }
 
-/** A trail: a thin dotted line of tan across the land, from every side to the middle. */
-function trailTile(pal: Pal, land: Pixels): Pixels {
+/** A trail: a thin dotted line of tan from the middle to each side it joins (`mask` uses the SEA bits for N, E, S, W). */
+function trailTile(pal: Pal, land: Pixels, mask: number): Pixels {
   const d = pal.r('parch');
   const p = land.crop(0, 0, N, N);
-  for (let i = 0; i < N; i += 3) {
-    p.rect(i, 9, 2, 2, d[2]);
-    p.rect(9, i, 2, 2, d[2]);
-  }
   p.rect(8, 8, 4, 4, d[2]).rect(9, 9, 2, 2, d[3]);
+  for (let i = 0; i < 9; i += 3) {
+    if (mask & SEA.N) p.rect(9, i, 2, 2, d[2]);
+    if (mask & SEA.S) p.rect(9, 20 - i - 2, 2, 2, d[2]);
+    if (mask & SEA.W) p.rect(i, 9, 2, 2, d[2]);
+    if (mask & SEA.E) p.rect(20 - i - 2, 9, 2, 2, d[2]);
+  }
   return p;
 }
 
@@ -118,15 +120,19 @@ function townTile(pal: Pal, land: Pixels): Pixels {
   return p;
 }
 
-/** A key lying on the land, small enough to look like it belongs on a map. */
+/** Two keys on a ring, lying on the land, small enough to look like they belong on a map. */
 function worldKey(pal: Pal, land: Pixels): Pixels {
   const ink = pal.c('ink', 0);
   const g = pal.r('gold');
   const p = land.crop(0, 0, N, N);
-  p.disc(7.5, 9.5, 4, ink).disc(7.5, 9.5, 3, g[3]).disc(7.5, 9.5, 1.2, ink);
-  p.rect(10, 8, 7, 3, ink).rect(10, 9, 6, 1, g[3]).rect(13, 11, 2, 3, ink).rect(16, 11, 2, 4, ink);
-  p.rect(13, 11, 1, 2, g[3]).rect(16, 11, 1, 3, g[3]);
-  p.set(6, 7, g[5]);
+  const key = (dx: number, dy: number, lit: number) => {
+    p.disc(4.5 + dx, 5.5 + dy, 3.3, ink).disc(4.5 + dx, 5.5 + dy, 2.4, g[lit]).disc(4.5 + dx, 5.5 + dy, 0.9, ink);
+    p.rect(7 + dx, 4 + dy, 9, 3, ink).rect(7 + dx, 5 + dy, 8, 1, g[lit]);
+    p.rect(12 + dx, 7 + dy, 2, 3, ink).rect(12 + dx, 7 + dy, 1, 2, g[lit]);
+    p.rect(15 + dx, 7 + dy, 2, 2, ink).rect(15 + dx, 7 + dy, 1, 1, g[lit]);
+  };
+  key(1, 8, 2);
+  key(0, 1, 3);
   return p;
 }
 
@@ -166,9 +172,9 @@ export function addWorldBlocks(book: Book, pal: Pal, townGround: Pixels): { land
   for (let mask = 0; mask < 16; mask++) book.add(landName(mask), landTile(pal, mask));
   book.add('hill', hillTile(pal, land), { solid: SOLID });
   book.add('forest', forestTile(pal, land), { solid: SOLID });
-  book.add('trail', trailTile(pal, land));
+  for (let mask = 1; mask < 16; mask++) book.add(`trail.${mask}`, trailTile(pal, land, mask));
   book.add('town', townTile(pal, land));
-  book.add('wkey', worldKey(pal, land), { score: 25, effect: KEY_COUNTER, eamt: 1, touch: landName(0) });
+  book.add('wkey', worldKey(pal, land), { score: 25, effect: KEY_COUNTER, eamt: 2, touch: landName(0) });
   book.add('gate', gateTile(pal, townGround), { solid: SOLID, effect: KEY_COUNTER, eamt: -1, touch: 'road' });
   return { land };
 }

@@ -21,7 +21,7 @@ export const HOWTO = wrap(`
 |ARROWS        walk any way
 |SPACE         does nothing
 
-Walk onto the town, through a gate or in at a door to go on. Pick up the key, and the locked gate opens.
+Walk onto the town, through a gate or in at a door to go on. Pick up the keys, and the locked gate opens.
 
 The door in the far wall of the house is the way out of the game.
 
