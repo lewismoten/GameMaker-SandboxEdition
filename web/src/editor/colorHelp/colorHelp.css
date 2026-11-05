@@ -106,4 +106,12 @@
   padding: 12px;
   max-width: 360px;
 }
-.qc-body label.check { display: flex; flex-direction: row; align-items: center; justify-content: flex-start; gap: 8px; text-align: left; min-height: 24px; }
+.qc-body label.check {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  text-align: left;
+  min-height: 24px;
+}
