@@ -93,6 +93,7 @@ export const TRICKS: Chapter = {
   words, and spends none. A gate that should keep what it takes simply leaves out the refund.
   Counter gates are the same rule from Chapter 4: in Teddy’s Little Bigger Adventure a clue
   adds 1 to a special counter, and the car door takes 1 and swings open.</p>
+  ${onCd('WORDLOCK')}
   <h2>Hurts that happen once</h2>
   <p>A block or a strong monster hurts on every tick the hero touches it. Four ways to make it
   sting once:</p>
