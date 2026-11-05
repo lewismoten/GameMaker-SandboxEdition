@@ -1,5 +1,5 @@
-// Pictures of the lessons (never on the disk), for the progress shots: Plop on its crate and dropped into the dip
-// in level 1, and Pip on its two crates and drifted down in level 2.
+// Pictures of the lessons (never on the disk), for the progress shots: Plop on its crate, the hit, the cracked crate
+// and Plop dropped into the dip in level 1, and Pip on its two crates and drifted down in level 2.
 //   cd web && npx vite-node ../games/drop-down/tools/shots.ts <outDir>
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
@@ -53,8 +53,18 @@ const broken = (level: number, x: number, rows: number[]) => {
 };
 const full = (level: number) => levels[level].map.done();
 
-// level 1: Plop on its crate, then Plop in the dip with the rubble; level 2: Pip on two crates, then Pip drifted down through Kit
+/** The map with the crate at (x, row) turned to `name` and the monsters taken out. */
+const crateAs = (level: number, x: number, rows: number[], name: string) => {
+  const m = empty(level);
+  for (const y of rows) m.blocks[(y + ORIGIN) * 100 + x + ORIGIN] = book.n(name);
+  return m;
+};
+const plop = (row: number): Sprite => thing('plop0', 24, row);
+
+// level 1: Plop on its crate; the swing; the burst and the cracked crate; Plop in the dip with the rubble
 save('1-plop-on-crate.png', region(full(0), 16, 18, [...kit(['stand.top', 'stand'], 21)]));
-save('2-plop-in-dip.png', region(broken(0, 24, [CORK_ROW]), 16, 18, [...kit(['stand.top', 'stand'], 22), thing('plop1', 24, GROUND + 1)]));
-save('3-pip-on-crates.png', region(full(1), 8, 18, [...kit(['stand.top', 'stand'], 15)]));
-save('4-pip-drifted-down.png', region(broken(1, 19, [CORK_ROW, CORK_ROW - 1]), 8, 18, [...kit(['stand.top', 'stand'], 21), thing('pip1', 19, GROUND)]));
+save('2-the-hit.png', region(crateAs(0, 24, [CORK_ROW], 'crate'), 16, 18, [...kit(['cheer.top', 'throw1'], 23), plop(GROUND - 1), thing('thud1', 23, GROUND)]));
+save('3-cracked.png', region(crateAs(0, 24, [CORK_ROW], 'cracked'), 16, 18, [...kit(['stand.top', 'stand'], 23), plop(GROUND - 1)]));
+save('4-plop-in-dip.png', region(broken(0, 24, [CORK_ROW]), 16, 18, [...kit(['stand.top', 'stand'], 22), thing('plop1', 24, GROUND + 1)]));
+save('5-pip-on-crates.png', region(full(1), 8, 18, [...kit(['stand.top', 'stand'], 15)]));
+save('6-pip-drifted-down.png', region(broken(1, 19, [CORK_ROW, CORK_ROW - 1]), 8, 18, [...kit(['stand.top', 'stand'], 21), thing('pip1', 19, GROUND)]));

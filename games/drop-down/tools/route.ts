@@ -135,7 +135,8 @@ export async function slowAndSoft(bot: StarterBot): Promise<void> {
   }
   if (monsterAt(bot, PIP).row !== MON_ROW) throw new Error(`level 2: Pip should rest on the last crate (row ${MON_ROW}); row ${monsterAt(bot, PIP).row}`);
   await must(bot, hit(bot, 8), 'the last hit');
-  for (const r of [CORK_ROW, CORK_ROW - 1]) if (cellAt(bot, 19, r) !== 'rubble') throw new Error(`level 2: four hits should break both crates; row ${r} is ${cellAt(bot, 19, r)}`);
+  for (const r of [CORK_ROW, CORK_ROW - 1])
+    if (cellAt(bot, 19, r) !== 'rubble') throw new Error(`level 2: four hits should break both crates; row ${r} is ${cellAt(bot, 19, r)}`);
   const kitX = bot.px.x;
   const startY = monsterAt(bot, PIP).y;
   bot.sim.press(SCAN.right);

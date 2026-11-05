@@ -40,21 +40,22 @@ function crate(pal: Pal): Pixels {
   return p;
 }
 
-/** The crate split by a hit: a dark crack from top to bottom with a gap and two planks knocked out of line, a splinter sticking out each side. */
+/** The crate split by a hit: a wide dark crack running down it on a slant, a few short cracks off it, and a splinter standing out at the edge. */
 function cracked(pal: Pal): Pixels {
   const w = pal.r('wood');
   const p = crate(pal);
-  // the crack, a zigzag from the top edge to the bottom edge, two pixels wide
-  let x = 9;
+  // the main crack: a zigzag from the top edge (x 14) down and to the left to the bottom edge, three pixels wide
+  let x = 14;
   for (let y = 0; y < 20; y++) {
-    if (y % 5 === 2) x += y % 10 === 2 ? -2 : 2;
-    p.set(x, y, w[0]).set(x + 1, y, w[0]);
+    if (y % 4 === 3) x += y % 8 === 3 ? -2 : -1;
+    p.set(x, y, w[0])
+      .set(x + 1, y, w[0])
+      .set(x - 1, y, w[0]);
   }
-  // the right half has slipped down a pixel, so the planks no longer meet
-  for (let y = 19; y >= 1; y--) for (let xx = 12; xx < 20; xx++) p.set(xx, y, p.get(xx, y - 1));
-  p.rect(12, 0, 8, 1, w[0]);
-  // splinters sticking out of the break at the top and the bottom
-  p.set(8, 1, w[4]).set(7, 0, w[4]).set(12, 18, w[4]).set(13, 19, w[4]);
+  // short cracks branching off it
+  p.line(12, 6, 6, 5, w[0]).line(8, 12, 3, 14, w[0]).line(10, 15, 15, 17, w[0]);
+  // a lit splinter standing out of the top edge and one sticking out at the left
+  p.set(15, 0, w[4]).set(16, 1, w[4]).set(1, 9, w[4]).set(0, 8, w[4]);
   return p;
 }
 

@@ -35,20 +35,31 @@
     "31": {
       "short": "Climb down",
       "long": "Same as the Down arrow."
+    },
+    "28": {
+      "short": "Hit",
+      "long": "Hit what is in front of you. Beside a crate, one hit cracks it and a second breaks it."
     }
   },
   "joystick": {
     "1": {
       "short": "Jump",
       "long": "Jump."
+    },
+    "2": {
+      "short": "Hit",
+      "long": "Hit."
     }
   },
   "sounds": {
     "9": "The jump",
     "10": "Getting hurt (nothing here does)",
-    "11": "Falling over (nothing here does)"
+    "11": "Falling over (nothing here does)",
+    "7": "A hit lands (the whack)",
+    "8": "A crate gives way (the crunch)"
   },
   "counters": {
-    "20": "Keys: not used here, but a copy can add them."
+    "20": "Keys: not used here, but a copy can add them.",
+    "21": "Hits: the swing adds one and a crate spends it. Not shown in the game."
   }
 }

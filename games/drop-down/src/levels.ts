@@ -3,12 +3,12 @@
 //
 // Both are a tunnel through a brick mound, three blocks high, with a crate standing in it and a monster
 // sitting on the crate. In level 1 the monster is solid and the roof is low, so Lena can neither pass it nor
-// hop over. Walk into the crate: it turns to rubble, the
-// monster's Movement takes it down, and the tunnel is open. (Lena's own gravity is the
+// hop over. Walking into the crate does nothing. Hit it (Enter, beside it): the first hit cracks it, the second
+// turns it to rubble, the monster's Movement takes it down, and the tunnel is open. (Lena's own gravity is the
 // engine's; a monster has none, see monsters.ts.)
 //   1. In the Way: Plop, a fast faller, and a one-block hole. Plop drops into it in a blink and its back
 //      is level with the floor, so Lena walks over it.
-//   2. Slow and Soft: two crates stacked in the tunnel with Pip on top. Pip is slow (the Speed of its step
+//   2. Slow and Soft: two crates stacked in the tunnel with Pip on top (four hits, the upper crate first). Pip is slow (the Speed of its step
 //      down is small) and soft (its picture is not solid), so after the bump it drifts down two blocks,
 //      through Lena if she walks on. No hole this time.
 // Both rooms are closed in by walls you can see, so Lena is never stopped by something she can't.
@@ -29,10 +29,10 @@ function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   addStarterBlocks(book, pal);
   const signs = {
     gate: addSign(book, pal, 'gate.sign', 'PLOP SITS ON A CRATE AND BLOCKS THE WAY', 4, 4),
-    break: addSign(book, pal, 'break.sign', 'BREAK THE CRATE AND WHAT SITS ON IT FALLS', 4, 4),
+    break: addSign(book, pal, 'break.sign', 'PRESS ENTER BESIDE THE CRATE TO HIT IT. TWO HITS BREAK IT', 4, 4),
     why: addSign(book, pal, 'why.sign', 'MONSTERS HAVE NO GRAVITY. PLOP STEPS DOWN OVER AND OVER', 4, 4),
     slow: addSign(book, pal, 'slow.sign', 'PIP IS THE SAME TRICK, BUT SLOW AND SOFT', 4, 4),
-    wait: addSign(book, pal, 'wait.sign', 'BREAK BOTH CRATES AND WATCH PIP DRIFT DOWN', 4, 4),
+    wait: addSign(book, pal, 'wait.sign', 'HIT BOTH CRATES TWICE AND WATCH PIP DRIFT DOWN', 4, 4),
     speed: addSign(book, pal, 'speed.sign', 'HOW FAST IT FALLS AND IF IT IS SOLID ARE SETTINGS', 4, 4),
     exit: addSign(book, pal, 'exit.sign', 'EXIT →', 3),
   };

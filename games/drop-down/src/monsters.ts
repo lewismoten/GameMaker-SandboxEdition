@@ -108,7 +108,10 @@ function thud(pal: Pal, turned: boolean): Pixels {
         [1, 0],
       ];
   for (const [dx, dy] of dirs) for (let i = 1; i <= (turned ? 4 : 5); i++) p.set(cx + dx * i, cy + dy * i, i < 3 ? gold[4] : gold[3]);
-  p.disc(cx, cy, 2.5, gold[4]).set(cx, cy, white).set(cx - 1, cy, white).set(cx, cy - 1, white);
+  p.disc(cx, cy, 2.5, gold[4])
+    .set(cx, cy, white)
+    .set(cx - 1, cy, white)
+    .set(cx, cy - 1, white);
   return outline(p, pal.c('ink', 0), { transparent: T });
 }
 
