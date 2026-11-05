@@ -30,17 +30,10 @@
       "Made to be copied and taken apart"
     ],
     "shots": [
-      [
-        "one.map",
-        18,
-        6
-      ],
-      [
-        "three.map",
-        30,
-        6
-      ]
+      ["one.map", 18, 6],
+      ["three.map", 30, 6]
     ],
     "rating": "Everyone"
-  }
+  },
+  "acceptedFindings": ["every-tick s3 Block 129 gives 2 points on every tick the hero touches it"]
 }

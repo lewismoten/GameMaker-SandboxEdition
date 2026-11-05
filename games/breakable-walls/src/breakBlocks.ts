@@ -44,23 +44,22 @@ function crate(pal: Pal): Pixels {
   return p;
 }
 
-/** What is left: a few splintered boards on the floor of the square, the rest of it open. */
+/** What is left: chunky wooden chips and a few splinters scattered about the square (it can float where a crate was, so it reads as bits in the air), the rest of it open. */
 function rubble(pal: Pal): Pixels {
   const p = new Pixels(20, 20, skyOf(pal));
   const w = pal.r('wood');
-  const piece = (x: number, y: number, len: number, up: boolean) => {
-    for (let i = 0; i < len; i++) p.rect(x + i, y + (up ? -(i >> 1) : i >> 1), 1, 3, w[3]).set(x + i, y + (up ? -(i >> 1) : i >> 1), w[4]);
+  // a chip: a lit top edge, a body and a dark underside
+  const chip = (x: number, y: number, cw: number, ch: number) => {
+    p.rect(x, y, cw, ch, w[3]).rect(x, y, cw, 1, w[4]).rect(x, y + ch - 1, cw, 1, w[1]);
   };
-  piece(2, 16, 9, true);
-  piece(9, 15, 8, false);
-  piece(5, 13, 7, false);
-  for (const [x, y] of [
-    [1, 18],
-    [14, 18],
-    [8, 18],
-    [17, 17],
-  ] as const)
-    p.rect(x, y, 2, 2, w[1]);
+  chip(2, 14, 7, 4);
+  chip(10, 15, 8, 3);
+  chip(5, 9, 5, 4);
+  chip(12, 9, 4, 3);
+  chip(1, 4, 4, 3);
+  chip(14, 3, 5, 3);
+  chip(8, 3, 3, 2);
+  chip(8, 17, 3, 2);
   return outline(p, pal.c('ink', 0), { transparent: skyOf(pal) });
 }
 
