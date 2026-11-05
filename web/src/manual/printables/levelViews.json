@@ -35,7 +35,7 @@
   "gravity-on-gravity-off": {"hash":"acf700c60c28b3ad","maps":{"one.map|side.bbl":[0,7,61,20],"two.map|top.bbl":[3,4,58,23]}},
   "gusts": {"hash":"07bccbb3d10773aa","maps":{"one.map|one.bbl":[0,0,61,27],"two.map|two.bbl":[0,15,65,10]}},
   "health-and-hearts": {"hash":"cd78031a3f9bbe8f","maps":{"one.map|hearts.bbl":[0,14,61,10],"three.map|hearts.bbl":[0,7,71,20],"two.map|hearts.bbl":[0,14,61,10]}},
-  "home-keys": {"hash":"bbbc19a70a17c523","maps":{"one.map|hk.bbl":[0,6,83,23],"three.map|hk.bbl":[0,6,87,24],"two.map|hk.bbl":[0,8,81,23]}},
+  "home-keys": {"hash":"6b306965f27205dd","maps":{"one.map|hk.bbl":[0,6,83,23],"three.map|hk.bbl":[0,6,87,24],"two.map|hk.bbl":[0,8,81,23]}},
   "horizon": {"hash":"010ae37cc1448d28","maps":{"one.map|hz1.bbl":[10,10,16,10],"two.map|hz2.bbl":[10,10,16,10]}},
   "inventory": {"hash":"f4174be3cdbba055","maps":{"one.map|inv.bbl":[0,6,68,21],"two.map|inv.bbl":[0,8,74,19]}},
   "jump-boots": {"hash":"2cd726eace0b93e2","maps":{"one.map|boots.bbl":[0,0,78,41],"two.map|boots.bbl":[0,8,88,25]}},
