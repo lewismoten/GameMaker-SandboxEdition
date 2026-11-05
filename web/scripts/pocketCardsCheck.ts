@@ -111,10 +111,7 @@ for (const id of ids) {
   });
   if (game.scenes[1]?.files[0]) want.push(...expected(disk, dir, 'w', game.scenes[1].files[0]));
   if (game.scenes[1]?.files[2]) want.push(...expected(disk, dir, 'l', game.scenes[1].files[2]));
-  const got = execFileSync(exe, [dataDir, id], { encoding: 'utf8' })
-    .trim()
-    .split('\n')
-    .filter(Boolean);
+  const got = execFileSync(exe, [dataDir, id], { encoding: 'utf8' }).trim().split('\n').filter(Boolean);
   // the board code lists i*, then x*, then w, l; the engine order above is by level: sort both the same way
   const key = (l: string) => l.split(' ')[1];
   const order = (a: string[]) => [...a].sort((x, y) => key(x).localeCompare(key(y), 'en', { numeric: true }));

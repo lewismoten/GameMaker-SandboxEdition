@@ -4,6 +4,7 @@
 //   title <text>
 //   level <map> <bbl> <cbl> <chr> <pal> <start x> <start y> <scroll up> <down> <left> <right> <blocks> [<mon> <mbl> <monsters> <monster blocks>]
 //     (the last four only for a level that can have monsters: the .mon records, the monster blocks, how many of each)
+//   cbln <level> <n>                 (the level's .cbl holds only hero blocks 0 to n - 1; none: all 50)
 //   snd <level> <file>               (the level's PC speaker tunes: 30 effects of 36 frequencies, 2160 bytes packed; none: no sound)
 //   link <level> <from x> <from y> <to level, -1 = the game is won> <to x> <to y>
 //   key <scan code> <label>          (the keys the game uses, from controls.json)
@@ -22,7 +23,7 @@ namespace gm {
 
 constexpr int MAXKEYSET = 12;
 struct KeyInfo { int scan; char label[16]; };
-struct LevelFiles { char map[16], bbl[16], cbl[16], chr[16], pal[16], mon[16], mbl[16], snd[16]; int nbl, nmon, nmbl; };
+struct LevelFiles { char map[16], bbl[16], cbl[16], chr[16], pal[16], mon[16], mbl[16], snd[16]; int nbl, nmon, nmbl, ncbl; };  // ncbl: hero blocks kept (50, all of them, unless a `cbln` line says fewer)
 struct Counter { int n; char label[20]; };
 struct Cfg {
   char title[40];
@@ -59,6 +60,7 @@ inline bool parseCfg(const char* text, World& w, Cfg& cfg) {
       LevelFiles& L = cfg.lv[w.nlevels];
       strcpy(L.map, m); strcpy(L.bbl, bb); strcpy(L.cbl, cb); strcpy(L.chr, ch); strcpy(L.pal, pl);
       L.nbl = g;
+      L.ncbl = 50;
       bool withMons = nm > 0 && nb > 0;
       L.snd[0] = 0;
       strcpy(L.mon, withMons ? mo : ""); strcpy(L.mbl, withMons ? mb : "");
@@ -68,6 +70,8 @@ inline bool parseCfg(const char* text, World& w, Cfg& cfg) {
       V.startX = a; V.startY = b;
       V.scrollUp = c; V.scrollDown = d; V.scrollLeft = e; V.scrollRight = f;
       w.nlevels++;
+    } else if (!strncmp(line, "cbln ", 5) && sscanf(line, "cbln %d %d", &a, &b) == 2 && a >= 0 && a < w.nlevels && b >= 1 && b <= 50) {
+      cfg.lv[a].ncbl = b;  // the level's .cbl is cut after block b - 1
     } else if (!strncmp(line, "snd ", 4) && sscanf(line, "snd %d %15s", &a, m) == 2 && a >= 0 && a < w.nlevels) {
       strcpy(cfg.lv[a].snd, m);
     } else if (sscanf(line, "link %d %d %d %d %d %d", &a, &b, &c, &d, &e, &f) == 6 && a >= 0 && a < w.nlevels) {
@@ -102,6 +106,7 @@ struct Assets {
   uint8_t* bbl = nullptr; uint8_t* cbl = nullptr; uint8_t* chr = nullptr; uint8_t* mon = nullptr; uint8_t* mbl = nullptr; uint8_t* snd = nullptr;
   uint8_t pal[768];
   bool palChanged = false;
+  void (*beforeLoad)(int level) = nullptr;  // called as a level's files are about to load (the board reads a card's files here)
   char bblName[16] = "", cblName[16] = "", chrName[16] = "", palName[16] = "", monName[16] = "", mblName[16] = "", sndName[16] = "";
 
   void release() {
@@ -135,9 +140,29 @@ struct Assets {
   }
   static bool load(void* user, int level, uint8_t* blocks, uint8_t* mons, uint8_t* mmBytes, bool* hasMons) {
     Assets& a = *(Assets*)user;
+    if (a.beforeLoad) a.beforeLoad(level);
     const LevelFiles& L = a.cfg->lv[level];
+    // The biggest first: the heap's one long free stretch (about 110 KB) must take the blocks, the monster pictures and the hero
+    // blocks; what is left over is in pieces too small for them if the small files go in first.
+    bool mons_ = L.nmon > 0;
+    {  // the map first: its unpacked copy (10 or 20 KB) is gone again before the big buffers need the long free stretch
+      size_t n = 0;
+      uint8_t* m = a.readz(L.map, &n);
+      if (!m) return false;
+      size_t cells = (size_t)MLEN * MWID;
+      bool ok = n == cells || (mons_ && n == cells * 2 + LASTMM * 3);
+      if (ok) memcpy(blocks, m, cells);
+      if (ok && mons_ && n > cells) {
+        memcpy(mons, m + cells, cells);
+        memcpy(mmBytes, m + cells * 2, LASTMM * 3);
+        *hasMons = true;
+      }
+      free(m);
+      if (!ok) return false;
+    }
     if (!swap(a.bbl, a.bblName, L.bbl, (size_t)L.nbl * BLOCK_BYTES, a) ||
-        !swap(a.cbl, a.cblName, L.cbl, 21000, a) ||
+        (mons_ && !swap(a.mbl, a.mblName, L.mbl, (size_t)L.nmbl * BLOCK_BYTES, a)) ||
+        !swap(a.cbl, a.cblName, L.cbl, (size_t)L.ncbl * BLOCK_BYTES, a) ||
         !swap(a.chr, a.chrName, L.chr, 3784, a))
       return false;
     if (strcmp(a.palName, L.pal)) {
@@ -150,9 +175,8 @@ struct Assets {
       a.palChanged = true;
     }
     a.w->bbl = a.bbl; a.w->cbl = a.cbl; a.w->chr = a.chr; a.w->nbl = L.nbl;
-    bool mons_ = L.nmon > 0;
     if (mons_) {
-      if (!swap(a.mon, a.monName, L.mon, (size_t)L.nmon * MONSTER_BYTES, a) || !swap(a.mbl, a.mblName, L.mbl, (size_t)L.nmbl * BLOCK_BYTES, a)) return false;
+      if (!swap(a.mon, a.monName, L.mon, (size_t)L.nmon * MONSTER_BYTES, a)) return false;
     } else {
       free(a.mon); free(a.mbl);
       a.mon = a.mbl = nullptr;
@@ -166,19 +190,7 @@ struct Assets {
       a.w->snd = nullptr;
     }
     a.w->mon = a.mon; a.w->mbl = a.mbl; a.w->nmon = mons_ ? L.nmon : 0; a.w->nmbl = mons_ ? L.nmbl : 0;
-    size_t n = 0;
-    uint8_t* m = a.readz(L.map, &n);
-    if (!m) return false;
-    size_t cells = (size_t)MLEN * MWID;
-    bool ok = n == cells || (mons_ && n == cells * 2 + LASTMM * 3);
-    if (ok) memcpy(blocks, m, cells);
-    if (ok && mons_ && n > cells) {
-      memcpy(mons, m + cells, cells);
-      memcpy(mmBytes, m + cells * 2, LASTMM * 3);
-      *hasMons = true;
-    }
-    free(m);
-    return ok;
+    return true;
   }
   void attach(World& world, const Cfg& c, ReadFile r, Inflate z) {
     w = &world; cfg = &c; read = r; inflate = z;

@@ -153,6 +153,7 @@ for (const id of ids) {
     });
 
     const lines: string[] = [`title ${about.title}`];
+    const cblN: string[] = [];
     play.forEach(({ s }, n) => {
       const to = n === 0 ? game.scenes[0].links[0].to : { x: 0, y: 0 };
       const used = keep.get(s.files[2])!;
@@ -181,8 +182,21 @@ for (const id of ids) {
         monPart = nmbl ? ` ${store(file(f[3]).subarray(0, nmon * MONSTER_SIZE), 'o')} ${store(mbl, 'k')} ${nmon} ${nmbl}` : '';
         if (!nmbl) mapBytes = maps[n].blocks;
       }
+      // On a card the hero blocks are cut after the last one a frame shows (a big level needs the heap's long free stretch).
+      let cblBytes = file(f[6]);
+      if (cardRoot) {
+        let top = 0;
+        for (const q of parseCharacter(file(f[5])).sequences)
+          for (const fr of q.frames) {
+            if (fr.pic1 < 50) top = Math.max(top, fr.pic1 + 1);
+            if (fr.pic2 < 50) top = Math.max(top, fr.pic2 + 1);
+          }
+        top = Math.max(top, 1);
+        cblBytes = cblBytes.subarray(0, top * 420);
+        cblN.push(`cbln ${n} ${top}`);
+      }
       lines.push(
-        `level ${store(mapBytes, 'm')} ${store(bbl, 'b')} ${store(file(f[6]), 'c')} ${store(file(f[5]), 'r')} ${store(file(f[0]), 'p')} ${to.x} ${to.y} ${s.scroll.up} ${s.scroll.down} ${s.scroll.left} ${s.scroll.right} ${nbl}${monPart}`,
+        `level ${store(mapBytes, 'm')} ${store(bbl, 'b')} ${store(cblBytes, 'c')} ${store(file(f[5]), 'r')} ${store(file(f[0]), 'p')} ${to.x} ${to.y} ${s.scroll.up} ${s.scroll.down} ${s.scroll.left} ${s.scroll.right} ${nbl}${monPart}`,
       );
     });
     // The PC speaker tunes (30 effects x 36 frequencies; the .voc names after them are not packed).
@@ -190,6 +204,7 @@ for (const id of ids) {
       const name = s.files[7];
       if (name && dir.some((d) => d.toLowerCase() === name.toLowerCase())) lines.push(`snd ${n} ${store(file(name).subarray(0, LASTSND * NUMFREQ * 2), 's')}`);
     });
+    lines.push(...cblN);
     // The cards between scenes (ShowGraphic's pictures and text pages, in the order the engine shows them).
     const cards = (where: string, name: string | undefined) => {
       if (!name) return;

@@ -46,19 +46,46 @@ constexpr uint16_t C_WHITE = 0xFFFF, C_BLACK = 0, C_YELLOW = 0xFF2A, C_GRAY = 0x
 static fs::FS* curFs = &LittleFS;
 static char curBase[10] = "";
 static char curPak[24] = "/cards.pak";
+static bool sdUp = false;
+static bool mountSD();
+static void unmountSD();
+// The card is mounted only while a file is read from it (a mounted card holds about 33 KB of heap and splits the free blocks,
+// which a level that fills the heap cannot spare), so a read of a card file is mount, read, unmount.
 static uint8_t* readFileIn(fs::FS& fsys, const char* base, const char* name, size_t* n) {
   char path[48];
   snprintf(path, sizeof path, "%s/%s", base, name);
+  bool card = &fsys == &SD, wasUp = sdUp;
+  if (card && !mountSD()) return nullptr;
+  uint8_t* p = nullptr;
   File f = fsys.open(path, "r");
-  if (!f) return nullptr;
-  size_t len = f.size();
-  uint8_t* p = (uint8_t*)malloc(len + 1);
-  if (!p) return nullptr;
-  if (f.read(p, len) != len) { free(p); return nullptr; }
-  *n = len;
+  if (f) {
+    size_t len = f.size();
+    p = (uint8_t*)malloc(len + 1);
+    if (p && f.read(p, len) != len) { free(p); p = nullptr; }
+    if (p) *n = len;
+    f.close();
+  }
+  if (card && !wasUp) unmountSD();
   return p;
 }
-static uint8_t* readFile(const char* name, size_t* n) { return readFileIn(*curFs, curBase, name, n); }
+// A game's .cfg text.
+static bool readCfgText(const char* path, String& out);
+// A card level's compressed files are read together while nothing big is on the heap (see prefetchLevel); readFile hands them out once.
+struct Prefetched { char name[16]; uint8_t* p; size_t n; };
+static Prefetched pre[8];
+static void clearPrefetched() {
+  for (auto& x : pre) { free(x.p); x.p = nullptr; }
+}
+static uint8_t* readFile(const char* name, size_t* n) {
+  for (auto& x : pre)
+    if (x.p && !strcmp(x.name, name)) {
+      uint8_t* p = x.p;
+      x.p = nullptr;
+      *n = x.n;
+      return p;
+    }
+  return readFileIn(*curFs, curBase, name, n);
+}
 // The decompressor's state is about 11 KB: taken from the heap once, since the loop task's whole
 // stack is 8 KB (tinfl_decompress_mem_to_mem puts it on the stack, which overflowed the first time a
 // game loaded) and static memory is full.
@@ -76,7 +103,21 @@ struct GameEntry { char id[28]; char title[40]; int levels; bool sd; char file[1
 constexpr int MAXGAMES = 96;
 static GameEntry games[MAXGAMES];
 static int ngames = 0;
-static bool haveSD = false;
+static bool haveSD = false;  // a card was found at start (it is mounted only while it is read: a mounted card holds about 33 KB of heap)
+static SPIClass sdSpi(VSPI);
+static bool mountSD() {
+  if (sdUp) return true;
+  sdSpi.begin(PIN_SD_SCLK, PIN_SD_MISO, PIN_SD_MOSI, PIN_SD_CS);
+  sdUp = SD.begin(PIN_SD_CS, sdSpi, 20000000);
+  if (!sdUp) sdSpi.end();
+  return sdUp;
+}
+static void unmountSD() {
+  if (!sdUp) return;
+  SD.end();
+  sdSpi.end();
+  sdUp = false;
+}
 
 // Adds the games of a list file (lines id|title|levels, and for the card also |<file>) to the picker.
 static void addGames(fs::FS& fsys, const char* base, bool sd) {
@@ -100,7 +141,7 @@ static void addGames(fs::FS& fsys, const char* base, bool sd) {
       g.levels = atoi(b + 1);
       g.sd = sd;
       if (sd) { strncpy(g.file, c + 1, sizeof g.file - 1); g.file[sizeof g.file - 1] = 0; }
-      else { strncpy(g.file, g.id, sizeof g.file - 1); g.file[sizeof g.file - 1] = 0; }
+      else g.file[0] = 0;
       ngames++;
     }
     if (!e) break;
@@ -112,19 +153,71 @@ static void addGames(fs::FS& fsys, const char* base, bool sd) {
 static void loadGameList() {
   ngames = 0;
   addGames(LittleFS, "", false);
-  if (haveSD) addGames(SD, "/pocket", true);
+  if (haveSD && mountSD()) {
+    addGames(SD, "/pocket", true);
+    unmountSD();
+  }
 }
+static const char* fileOf(const GameEntry& g) { return g.sd ? g.file : g.id; }  // the name of its .cfg (and .pak)
 // Points the file readers at game g.
-static void selectGame(int g) {
+static bool selectGame(int g) {
   if (games[g].sd) {
     curFs = &SD;
     strcpy(curBase, "/pocket");
-    snprintf(curPak, sizeof curPak, "/pocket/%s.pak", games[g].file);
+    snprintf(curPak, sizeof curPak, "/pocket/%s.pak", fileOf(games[g]));
   } else {
     curFs = &LittleFS;
     curBase[0] = 0;
     strcpy(curPak, "/cards.pak");
   }
+  return true;
+}
+// The core is about to load level `level`. For a game on the card: free the buffers that level replaces, mount the card with the
+// heap at its emptiest, read the level's compressed files into small buffers, unmount; the loads then inflate from those. (A card
+// mounted over a full heap, or mounted while the big blocks are placed, leaves no long free stretch for them.)
+static void prefetchLevel(int level) {
+  clearPrefetched();
+  if (curFs != &SD) return;
+  const gm::LevelFiles& L = cfg.lv[level];
+  bool mons = L.nmon > 0;
+  auto drop = [](uint8_t*& slot, char* have, const char* want) {
+    if (slot && strcmp(have, want)) { free(slot); slot = nullptr; have[0] = 0; }
+  };
+  drop(assets.bbl, assets.bblName, L.bbl);
+  drop(assets.cbl, assets.cblName, L.cbl);
+  drop(assets.chr, assets.chrName, L.chr);
+  if (mons) { drop(assets.mon, assets.monName, L.mon); drop(assets.mbl, assets.mblName, L.mbl); }
+  if (L.snd[0]) drop(assets.snd, assets.sndName, L.snd);
+  const char* want[8];
+  int n = 0;
+  if (!assets.bbl) want[n++] = L.bbl;
+  if (!assets.cbl) want[n++] = L.cbl;
+  if (!assets.chr) want[n++] = L.chr;
+  if (strcmp(assets.palName, L.pal)) want[n++] = L.pal;
+  if (mons && !assets.mon) want[n++] = L.mon;
+  if (mons && !assets.mbl) want[n++] = L.mbl;
+  if (L.snd[0] && !assets.snd) want[n++] = L.snd;
+  want[n++] = L.map;
+  if (!mountSD()) return;
+  for (int i = 0; i < n; i++) {
+    size_t len = 0;
+    uint8_t* p = readFileIn(SD, curBase, want[i], &len);
+    if (!p) continue;
+    strncpy(pre[i].name, want[i], sizeof pre[i].name - 1);
+    pre[i].name[sizeof pre[i].name - 1] = 0;
+    pre[i].p = p;
+    pre[i].n = len;
+  }
+  unmountSD();
+}
+static bool readCfgText(const char* path, String& out) {
+  bool card = curFs == &SD, wasUp = sdUp;
+  if (card && !mountSD()) return false;
+  File f = curFs->open(path, "r");
+  bool ok = (bool)f;
+  if (ok) { out = f.readString(); f.close(); }
+  if (card && !wasUp) unmountSD();
+  return ok;
 }
 
 // ---- settings ----------------------------------------------------------------------------------
@@ -711,10 +804,16 @@ static void waitTap(int seconds) {
 }
 // Bytes [off, off + len) of data/cards.pak, where every card picture and text page is.
 static uint8_t* readPak(size_t off, size_t len) {
+  bool card = curFs == &SD, wasUp = sdUp;
+  if (card && !mountSD()) return nullptr;
+  uint8_t* p = nullptr;
   File f = curFs->open(curPak, "r");
-  if (!f || !f.seek(off)) return nullptr;
-  uint8_t* p = (uint8_t*)malloc(len + 1);
-  if (p && f.read(p, len) != len) { free(p); p = nullptr; }
+  if (f && f.seek(off)) {
+    p = (uint8_t*)malloc(len + 1);
+    if (p && f.read(p, len) != len) { free(p); p = nullptr; }
+  }
+  if (f) f.close();
+  if (card && !wasUp) unmountSD();
   return p;
 }
 static uint8_t* fontData = nullptr;  // 95 glyphs of 8 rows (data/font.bin), kept once read
@@ -757,11 +856,11 @@ static void playFli(const gm::Card& c) {
 // pages are written over the picture before them. A card that can't be read is left out (the engine cleared the screen).
 static void showCards(const char* where) {
   char path[48];
-  snprintf(path, sizeof path, "%s/%s.cfg", curBase, games[curGame].file);
-  File f = curFs->open(path, "r");
-  if (!f) return;
-  String text = f.readString();
-  f.close();
+  snprintf(path, sizeof path, "%s/%s.cfg", curBase, fileOf(games[curGame]));
+  bool cardWasUp = sdUp, card = curFs == &SD;
+  if (card) mountSD();  // held while the cards show (the level's buffers are already freed)
+  String text;
+  if (!readCfgText(path, text)) { if (card && !cardWasUp) unmountSD(); return; }
   gm::Card cards[10];
   int n = gm::cardsOf(text.c_str(), where, cards, 10);
   uint8_t* pic = nullptr;
@@ -803,6 +902,7 @@ static void showCards(const char* where) {
     }
   }
   free(pic);
+  if (card && !cardWasUp) unmountSD();
 }
 // FadeAllTo black from what is on screen (the playing level).
 static void fadeLevelOut() {
@@ -828,14 +928,16 @@ static void levelWhere(char* out, char kind, int level) { snprintf(out, 8, "%c%d
 static bool startGame(int g, bool withCards = true) {
   curGame = g;
   char path[48];
-  selectGame(g);
-  snprintf(path, sizeof path, "%s/%s.cfg", curBase, games[g].file);
-  File f = curFs->open(path, "r");
-  if (!f) return false;
-  String text = f.readString();
+  assets.release();  // whatever the last game (or a failed start) left; a card must be mounted with the heap at its emptiest
+  clearPrefetched();
+  if (!selectGame(g)) return false;
+  snprintf(path, sizeof path, "%s/%s.cfg", curBase, fileOf(games[g]));
+  String text;
+  if (!readCfgText(path, text)) return false;
   assets.release();
   if (!gm::parseCfg(text.c_str(), world, cfg)) return false;
   assets.attach(world, cfg, readFile, inflateRaw);
+  assets.beforeLoad = prefetchLevel;
   assets.palName[0] = 0;
   if (withCards) {  // the intro card shows before the level's files load: a card needs a 64 KB block of its own
     char where[8];
@@ -844,7 +946,10 @@ static bool startGame(int g, bool withCards = true) {
     showCards(where);
   }
   world.seed = micros() ^ (millis() << 7);  // the monsters that wander pick differently each play
-  if (!world.begin()) return false;
+  if (!world.begin()) {
+    Serial.printf("SG fail %s: nbl %d nmon %d nmbl %d have bbl%d mbl%d cbl%d chr%d mon%d free %u largest %u\n", games[g].id, cfg.lv[0].nbl, cfg.lv[0].nmon, cfg.lv[0].nmbl, !!assets.bbl, !!assets.mbl, !!assets.cbl, !!assets.chr, !!assets.mon, (unsigned)ESP.getFreeHeap(), (unsigned)heap_caps_get_largest_free_block(MALLOC_CAP_8BIT));
+    return false;
+  }
   world.nsnd = 0;
   spk::stop();
   for (int i = 0; i < 256; i++) {
@@ -878,6 +983,7 @@ static void refreshPalette() {
 
 static void enterPicker() {
   spk::stop();
+  unmountSD();
   mode = PICKER;
   wasDown = true;
   drawPicker();
@@ -957,7 +1063,7 @@ static void serialCommand(const char* cmd) {
 static void serialWrite(const char* cmd) {
   char name[24];
   unsigned long len = 0;
-  if (!haveSD) { Serial.println("ERR no card"); return; }
+  if (!haveSD || !mountSD()) { Serial.println("ERR no card"); return; }
   if (sscanf(cmd, "W %23s %lu", name, &len) != 2 || strchr(name, '/')) { Serial.println("ERR args"); return; }
   SD.mkdir("/pocket");
   char path[40];
@@ -1019,10 +1125,9 @@ void setup() {
     for (;;) delay(1000);
   }
   {  // the microSD slot (TF_CS 5, TF_SPI_SCLK 18, TF_SPI_MISO 19, TF_SPI_MOSI 23 in board.h); no card is no error
-    static SPIClass sdSpi(VSPI);
-    sdSpi.begin(PIN_SD_SCLK, PIN_SD_MISO, PIN_SD_MOSI, PIN_SD_CS);
-    haveSD = SD.begin(PIN_SD_CS, sdSpi, 20000000);
-    Serial.printf("microSD: %s\n", haveSD ? "card mounted" : "no card");
+    haveSD = mountSD();
+    unmountSD();
+    Serial.printf("microSD: %s\n", haveSD ? "card found" : "no card");
   }
   loadSettings();
   spk::setVolume(settings.sound);
