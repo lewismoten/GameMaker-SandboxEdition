@@ -78,6 +78,7 @@ very-far|Walking Very Far|4
 warning-first|Warning First|2
 watch-your-step|Watch Your Step|3
 shore|Waves on the Shore|2
+choose-hero|Who Do You Want to Be?|4
 who-wins|Who Wins?|2
 puzzle-room|Wired Room|2
 your-first-game|Your First Game|3

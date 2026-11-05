@@ -1064,6 +1064,7 @@ static void levelWhere(char* out, char kind, int level) { snprintf(out, 8, "%c%d
 static bool startGame(int g, bool withCards = true) {
   curGame = g;
   assets.release();  // whatever the last game (or a failed start) left; a card must be mounted with the heap at its emptiest
+  assets.heroChr[0] = 0;
   clearPrefetched();
   if (!selectGame(g)) return false;
   snprintf(assets.cfgName, sizeof assets.cfgName, "%s.cfg", fileOf(games[g]));

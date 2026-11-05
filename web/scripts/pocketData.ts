@@ -120,6 +120,9 @@ for (const id of ids) {
     const maps = play.map(({ s }) => parseMap(file(s.files[1])));
     // Per level: the monsters it can have (empty: none, so the board runs it without monsters).
     const monsOf = play.map(() => new Set<number>());
+    // The hero file a level plays with: its own, or (blank slot) the previous level's, as the engine keeps the hero.
+    const heroOf: string[] = [];
+    play.forEach(({ s }, n) => heroOf.push(s.files[5] || heroOf[n - 1] || ''));
     play.forEach(({ s }, n) => {
       const m = maps[n];
       const bl = parseBlocks(file(s.files[2]), 150);
@@ -127,7 +130,7 @@ for (const id of ids) {
       const mons = monsOf[n];
       if (hasMonFiles) {
         for (const p of m.monsters) if (p.monnum < LASTMON) mons.add(p.monnum);
-        for (const q of parseCharacter(file(s.files[5])).sequences) for (const f of q.frames) if (f.pic2 === 100 && f.pic1 < LASTMON) mons.add(f.pic1);
+        for (const q of (heroOf[n] ? parseCharacter(file(heroOf[n])).sequences : [])) for (const f of q.frames) if (f.pic2 === 100 && f.pic1 < LASTMON) mons.add(f.pic1);
       }
       const need = new Set<number>(m.blocks);
       const todo = [...need];
@@ -188,8 +191,10 @@ for (const id of ids) {
         if (!nmbl) mapBytes = maps[n].blocks;
       }
       // On a card the hero blocks are cut after the last one a frame shows (a big level needs the heap's long free stretch).
-      let cblBytes = file(f[6]);
-      if (cardRoot) {
+      // A level with no hero files (a blank character slot) keeps the previous scene's hero, as the engine does: `-` in the .cfg.
+      const noHero = !f[5] || !f[6];
+      let cblBytes = noHero ? new Uint8Array() : file(f[6]);
+      if (cardRoot && !noHero) {
         let top = 0;
         for (const q of parseCharacter(file(f[5])).sequences)
           for (const fr of q.frames) {
@@ -201,7 +206,7 @@ for (const id of ids) {
         cblN.push(`cbln ${n} ${top}`);
       }
       lines.push(
-        `level ${store(mapBytes, 'm')} ${store(bbl, 'b')} ${store(cblBytes, 'c')} ${store(file(f[5]), 'r')} ${store(file(f[0]), 'p')} ${to.x} ${to.y} ${s.scroll.up} ${s.scroll.down} ${s.scroll.left} ${s.scroll.right} ${nbl}${monPart}`,
+        `level ${store(mapBytes, 'm')} ${store(bbl, 'b')} ${noHero ? '-' : store(cblBytes, 'c')} ${noHero ? '-' : store(file(f[5]), 'r')} ${store(file(f[0]), 'p')} ${to.x} ${to.y} ${s.scroll.up} ${s.scroll.down} ${s.scroll.left} ${s.scroll.right} ${nbl}${monPart}`,
       );
     });
     // The PC speaker tunes (30 effects x 36 frequencies; the .voc names after them are not packed).
