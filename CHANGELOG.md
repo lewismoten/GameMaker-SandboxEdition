@@ -11,6 +11,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Added
 
+- The Programmer's Guide to Game-Maker 3.0 is a book in the Library (`#/programmers-guide`): a chapter for each part of the player (memory, the screen, blocks, monsters, sound, timing, file formats and more), why each limit is what it is, a table of every limit, links from each citation to the original source line, and one page to print or save as PDF. The Game-Maker box on the desk also holds its 1994 cousin, Technical Reference and Limits.
 - Dig It now feels like digging: Neka carries a small shovel, soil crumbles in five steps (cracked, split open, half dug, nearly dug, a hole with a heap of crumbs) with a crunch instead of vanishing at once, and the Down arrow scoops with the shovel.
 
 - The Starters tab lists the graduations in their own Graduations section (also a choice in Show): a padlock tile shows what it takes and how far you are, and the game's own tile appears once it is open. A Transcript button opens your grades by course with a GPA for each stage, and an Honors tab draws each honors you have earned as a certificate, with an optional name kept only in this browser and a Save picture button. A Starter you have started but not finished shows its letter grade in the corner, and every Starter's title screen says its course number (COURSE 101).

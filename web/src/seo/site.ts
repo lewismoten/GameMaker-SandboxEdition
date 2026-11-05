@@ -77,6 +77,11 @@ export const ROUTES = {
     description:
       'Download any game for Linux: how to extract and play it, the WebKitGTK package it needs on Debian, Ubuntu, Fedora and Arch, the web browser fallback, adding it to the applications menu, what the program does and how to remove it.',
   },
+  programmersGuide: {
+    title: `The Programmer’s Guide to Game-Maker 3.0 · ${PRODUCT}`,
+    description:
+      'Why each limit of the Game-Maker 3.0 player is what it is: 150 blocks, 64 monsters, 36 sound steps, 20 scene links. A chapter for each part of the engine, with the lines of the original source.',
+  },
   editor: {
     title: `Editor · ${PRODUCT}`,
     description: `Designing a game in ${PRODUCT}, the browser remake of RSD Game-Maker 3.0.`,
