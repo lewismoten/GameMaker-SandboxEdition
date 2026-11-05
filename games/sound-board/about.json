@@ -1,0 +1,47 @@
+{
+  "title": "Sound Board",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.0",
+  "blurb": "Two short rooms about what a sound is. In the first, a row of pads each plays a sound, with a sign and a picture of the sound's notes. Step on every one, even the silent one, then drop through the pit where a short sound cuts off a long one. In the second, a coin, a key, a gate, a jump, a spike and a wrong gate each say what just happened. Play it with the sound up, then open it in Game-Maker and swap a sound's number.",
+  "exe": "SNDBOARD.EXE",
+  "dosName": "SNDBOARD",
+  "sound": "sb",
+  "label": {
+    "background": "#e8f6ff",
+    "band": "#2f6fb0",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "2 short levels",
+    "hours": 1,
+    "background": "#2f6fb0",
+    "accent": "#ffd23f",
+    "ink": "#ffffff",
+    "tagline": "Press a pad. Hear it.",
+    "back": "A small explorer in a teal beanie steps on a row of pads, and each one plays its own sound. Read the signs, look at the pictures of the notes, then open the game in Game-Maker and change which sound a pad plays.",
+    "features": [
+      "A sign and a picture of the notes on every pad",
+      "A sound is a number; a block picks it by what it changes",
+      "A new sound cuts the old one off",
+      "Made to be copied and taken apart"
+    ],
+    "shots": [
+      [
+        "one.map",
+        16,
+        6
+      ],
+      [
+        "two.map",
+        22,
+        6
+      ]
+    ],
+    "rating": "Everyone"
+  }
+}
