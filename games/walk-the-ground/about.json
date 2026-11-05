@@ -30,17 +30,10 @@
       "Made to be copied and taken apart"
     ],
     "shots": [
-      [
-        "one.map",
-        12,
-        1
-      ],
-      [
-        "two.map",
-        5,
-        2
-      ]
+      ["one.map", 12, 1],
+      ["two.map", 5, 2]
     ],
     "rating": "Everyone"
-  }
+  },
+  "acceptedFindings": ["facing s3 The hero climbs side on"]
 }

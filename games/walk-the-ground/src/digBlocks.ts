@@ -23,7 +23,9 @@ function soil(pal: Pal, nugget: boolean): Pixels {
   for (let i = 0; i < 6; i++) {
     const x = 1 + Math.floor(rand() * 16);
     const y = 1 + Math.floor(rand() * 16);
-    p.rect(x, y, 3, 2, d[3]).rect(x, y, 3, 1, d[4]).rect(x, y + 2, 3, 1, d[2]);
+    p.rect(x, y, 3, 2, d[3])
+      .rect(x, y, 3, 1, d[4])
+      .rect(x, y + 2, 3, 1, d[2]);
   }
   // short dashes, like a spade's marks
   for (const [x, y] of [
@@ -40,7 +42,11 @@ function soil(pal: Pal, nugget: boolean): Pixels {
       [3, 5],
       [16, 14],
     ])
-      p.set(x, y, g[5]).set(x - 1, y, g[4]).set(x + 1, y, g[4]).set(x, y - 1, g[4]).set(x, y + 1, g[4]);
+      p.set(x, y, g[5])
+        .set(x - 1, y, g[4])
+        .set(x + 1, y, g[4])
+        .set(x, y - 1, g[4])
+        .set(x, y + 1, g[4]);
   }
   return p;
 }
