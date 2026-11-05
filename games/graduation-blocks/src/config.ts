@@ -19,7 +19,7 @@ export const cfg: Graduation = {
     doc: 'DOC LEO HAS A SCROLL FOR YOU',
     banner: 'BLOCKS & SHOWCASE',
   },
-  level: { title: 'The Gallery', hint: 'Walk through the gallery to the stage.' },
+  level: { title: 'The Gallery', hint: 'Walk to the gallery stage.' },
   song: { bpm: 88, lead: 'strings', transpose: -3 },
   text: {
     story: wrap(`
