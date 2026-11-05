@@ -13,6 +13,7 @@ import { Actor, loadSprites } from './actor';
 import { findTarget, revealer, visible, waitFor } from './findTarget';
 import { menuHandle, overlayHandle, type Opened } from './tourOpen';
 import { barOnTop, steadyRect, offStage, placeBubble, standBy, type Point, type Rect } from './place';
+import { hasClip, loadClipIndex, type ClipIndex } from './voiceIndex';
 import { HOSTS, PROPS, captionOf, cssList, stepMs, voiceUrl, type Chapter, type HostId, type PageAct, type TourStep } from './steps';
 import { TourSound } from './tourSound';
 import { TourRecorder } from './tourRecorder';
@@ -148,7 +149,16 @@ export class Tour {
   }
 
   /** Starts from a click (the sound may start), or from the address (recording mode asks for a click first). */
+  /** Which steps have a recorded clip (voiceIndex.ts); every step is assumed to until it has loaded. */
+  private clips?: ClipIndex;
+
+  /** A step's clip address, or none when the index says there is none. */
+  private clipUrl(chapter: Chapter, step: TourStep): string | undefined {
+    return hasClip(this.clips, chapter.id, step.id) ? voiceUrl(chapter, step) : undefined;
+  }
+
   async start(): Promise<void> {
+    void loadClipIndex().then((index) => (this.clips = index));
     now.tour?.end();
     now.tour = this;
     document.documentElement.classList.toggle('tour-recording', !!this.opts.record);
@@ -286,9 +296,9 @@ export class Tour {
     this.caption.textContent = captionOf(chapter, step);
     // the clip starts with the bubble (after the hosts have walked), never before it
     let voice: Promise<number> = Promise.resolve(0);
-    const speak = () => (voice = this.sound.speak(voiceUrl(chapter, step)));
+    const speak = () => (voice = this.sound.speak(this.clipUrl(chapter, step)));
     // the next steps' clips load while this one plays (a clip that is late stays silent)
-    for (const up of this.flat.slice(this.i + 1, this.i + 3)) this.sound.prefetch(voiceUrl(up.chapter, up.step));
+    for (const up of this.flat.slice(this.i + 1, this.i + 3)) this.sound.prefetch(this.clipUrl(up.chapter, up.step));
     await this.act(chapter, step, target, token, speak);
     if (!this.live(token)) return;
     const said = await voice;
