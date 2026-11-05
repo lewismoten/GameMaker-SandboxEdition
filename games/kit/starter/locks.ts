@@ -22,36 +22,45 @@ export const SILVER_KEYS = KEYS + 1;
 
 export type Ramp = 'gold' | 'white' | 'green';
 
-/** The key's shape in a ramp, with a dark outline so a silver key shows on the sky. */
-export function keyPicture(pal: Pal, ramp: Ramp): Pixels {
+/**
+ * The key's shape in a ramp, with a dark outline so a silver key shows on the sky. `square` gives it a
+ * square bow instead of a round one (a second key a player can tell by shape when the colors look alike).
+ */
+export function keyPicture(pal: Pal, ramp: Ramp, square = false): Pixels {
   const p = new Pixels(20, 20, skyOf(pal));
   const m = pal.r(ramp);
   const hi = m[m.length - 1];
   const ink = pal.c('ink', 0);
   const face = m[ramp === 'gold' ? 4 : 3];
-  p.disc(5.5, 9.5, 5.5, ink).disc(5.5, 9.5, 4.5, face).disc(5.5, 9.5, 2.2, ink).disc(5.5, 9.5, 1.4, skyOf(pal));
+  if (square) p.rect(0, 4, 11, 11, ink).rect(1, 5, 9, 9, face).rect(1, 5, 9, 1, hi).rect(3, 7, 5, 5, ink).rect(4, 8, 3, 3, skyOf(pal));
+  else p.disc(5.5, 9.5, 5.5, ink).disc(5.5, 9.5, 4.5, face).disc(5.5, 9.5, 2.2, ink).disc(5.5, 9.5, 1.4, skyOf(pal));
   p.rect(9, 8, 10, 4, ink).rect(10, 9, 8, 2, face).rect(10, 9, 8, 1, hi);
   p.rect(14, 12, 3, 4, ink).rect(15, 12, 1, 3, face).rect(17, 12, 2, 5, ink).rect(17, 12, 1, 4, face);
-  p.set(3, 7, hi).set(4, 6, hi);
+  if (!square) p.set(3, 7, hi).set(4, 6, hi);
   return p;
 }
 
-/** The gate: a stout door one block high, a padlock and a key hole. */
-export function gatePicture(pal: Pal, body: 'wood' | 'blue', plate: Ramp): Pixels {
+/**
+ * The gate: a stout door one block high, a padlock and a key hole. `studs` swaps the plank lines for rows of
+ * studs and the round key hole for a square one, to match a square-bowed key (see keyPicture).
+ */
+export function gatePicture(pal: Pal, body: 'wood' | 'blue', plate: Ramp, studs = false): Pixels {
   const p = new Pixels(20, 20, skyOf(pal));
   const ink = pal.c('ink', 0);
   const b = pal.r(body);
   const g = pal.r(plate);
   p.rect(0, 0, 20, 20, ink).rect(1, 0, 18, 19, b[1]);
   p.rect(1, 0, 18, 1, b[3]).rect(1, 18, 18, 1, b[0]);
-  for (const x of [5, 13]) p.rect(x, 1, 1, 17, b[0]).rect(x + 1, 1, 1, 17, b[2]);
+  if (studs) for (const y of [2, 8, 14]) for (const x of [2, 15]) p.rect(x, y, 3, 3, b[0]).rect(x, y, 2, 2, b[3]);
+  else for (const x of [5, 13]) p.rect(x, 1, 1, 17, b[0]).rect(x + 1, 1, 1, 17, b[2]);
   // the padlock: a shackle over a plate with a key hole
   p.rect(7, 2, 6, 5, ink).rect(8, 3, 4, 4, b[1]);
   p.rect(5, 7, 10, 9, ink)
     .rect(6, 8, 8, 7, g[3])
     .rect(6, 8, 8, 1, g[g.length - 1])
     .rect(6, 14, 8, 1, g[1]);
-  p.disc(10, 10.5, 1.3, ink).rect(9, 11, 2, 3, ink);
+  if (studs) p.rect(8, 9, 4, 5, ink);
+  else p.disc(10, 10.5, 1.3, ink).rect(9, 11, 2, 3, ink);
   return p;
 }
 
