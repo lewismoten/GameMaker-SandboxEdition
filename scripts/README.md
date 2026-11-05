@@ -31,6 +31,8 @@ backs up the work Git doesn't keep: `.for-lewis`, `.narrate`'s results (not its 
 models), `dosbox-saves`, `.claude/agents` and Claude's memory folder, into one dated archive encrypted
 with AES-256-GCM (passphrase from `BACKUP_PASSPHRASE`, or asked). Restore into an empty folder for a drill.
 
+`already.mjs` (`npm run already -- <words...>`, root) answers "is this already done?" before a brief: for the words given it prints the 10 best matches, with dates, among origin/develop's commits (`git log -i --grep` per word), tracked files (`git grep`, not `code/`, `cd/` or `runtime/`) and `.for-lewis/research/**/*.md` (path, title, headings; found here or in the main checkout). More of your words matched ranks higher, then the newer date. Tests: `web/test/already.test.mjs`.
+
 `heavy.mjs` (`npm run heavy -- <command...>`, root or `web/`) runs a heavy job (a build, full vitest,
 `verify:perf`, `check:games`, a walkthrough recording) in one of 2 shared slots, so agents on one Mac don't
 run them all at once. Slots are lock files in `~/.cache/gamemaker-heavy/` (outside any worktree) holding the
