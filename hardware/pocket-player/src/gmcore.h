@@ -975,21 +975,39 @@ struct World {
       for (int i = 0; i < 6; i++)
         if (L.links[l].fromX == t.bx[i] && L.links[l].fromY == t.by[i]) { taken = l; break; }
     if (dead) {
-      int lv = level;
-      if (lives > 0) lives--;
-      hitpts = -1;
-      enterLevel(lv, prevToX, prevToY);
+      if (hold) { pendKind = 'D'; return 'D'; }
+      commit('D', level, 0, 0);
       return 'D';
     }
     if (taken >= 0) {
       const Link& k = L.links[taken];
       if (k.toLevel < 0) { won = true; return 'W'; }
-      prevToX = k.toX;
-      prevToY = k.toY;
-      enterLevel(k.toLevel, k.toX, k.toY);
+      if (hold) { pendKind = 'L'; pendLevel = k.toLevel; pendX = k.toX; pendY = k.toY; return 'L'; }
+      commit('L', k.toLevel, k.toX, k.toY);
       return 'L';
     }
     return 0;
+  }
+  // The level change a tick found: after a death ('D') the same level again, after a link ('L') the next.
+  // With `hold` set, tick() stops at the change (the old level is still all there to fade out) and the
+  // board calls finish() once it has shown what goes between levels; without it tick() does both.
+  bool hold = false;
+  char pendKind = 0;
+  int pendLevel = 0, pendX = 0, pendY = 0;
+  bool finish() {
+    char k = pendKind;
+    pendKind = 0;
+    return k ? commit(k, k == 'D' ? level : pendLevel, pendX, pendY) : true;
+  }
+  bool commit(char kind, int lv, int x, int y) {
+    if (kind == 'D') {
+      if (lives > 0) lives--;
+      hitpts = -1;
+      return enterLevel(lv, prevToX, prevToY);
+    }
+    prevToX = x;
+    prevToY = y;
+    return enterLevel(lv, x, y);
   }
 
   // ---- drawing (render.ts renderWorld, one row at a time) ------------------------------------

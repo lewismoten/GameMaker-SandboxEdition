@@ -15,6 +15,10 @@ import { parseGame, NOSCENE, MAXSCENELINKS } from '@lewismoten/gamemaker-sandbox
 import { parseMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { parseBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { parseCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { decodeGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
+import { parseSlideList, textLines } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
+import { matchColor } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
+import { FONT8X8 } from '@lewismoten/gamemaker-sandbox-engine/gfx/font8x8';
 import { LASTSND, NUMFREQ } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
 import { LASTMON, LASTSL, MONSTER_SIZE, parseMonsters } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 
@@ -48,7 +52,10 @@ function store(bytes: Uint8Array, ext: string): string {
 if (!listOnly) {
   rmSync(outDir, { recursive: true, force: true });
   mkdirSync(outDir, { recursive: true });
+  // The 8x8 PC font for the text pages: 95 glyphs (' ' to '~') of 8 rows, bit 0 leftmost.
+  writeFileSync(outDir + 'font.bin', FONT8X8.subarray(32 * 8, 127 * 8));
 }
+const leftOut: Record<string, number> = {};
 const ids = readdirSync('../games')
   .filter((i) => existsSync(`../games/${i}/about.json`) && existsSync(`../games/${i}/disk`))
   .filter((i) => {
@@ -150,6 +157,43 @@ for (const id of ids) {
       const name = s.files[7];
       if (name && dir.some((d) => d.toLowerCase() === name.toLowerCase())) lines.push(`snd ${n} ${store(file(name).subarray(0, LASTSND * NUMFREQ * 2), 's')}`);
     });
+    // The cards between scenes (ShowGraphic's pictures and text pages, in the order the engine shows them).
+    const cards = (where: string, name: string | undefined) => {
+      if (!name) return;
+      const find = (n: string) => dir.find((d) => d.toLowerCase() === n.toLowerCase());
+      let cols: Uint8Array | undefined; // the palette of the last picture shown in this list (the engine's `cols`)
+      const one = (fname: string, pause: number | undefined, dflt: number) => {
+        const real = find(fname);
+        const e = fname.split('.').pop()!.toLowerCase();
+        if (!real) return;
+        if (e === 'lst') {
+          for (const x of parseSlideList(file(real))) one(x.name, x.pause ?? 0xffff, 0xffff);
+        } else if (e === 'gif') {
+          const im = decodeGif(file(real));
+          if (im.width !== 320 || im.height !== 200) {
+            const k = `picture ${im.width}x${im.height}`;
+            leftOut[k] = (leftOut[k] ?? 0) + 1;
+            return;
+          }
+          cols = im.palette;
+          const buf = new Uint8Array(768 + 64000);
+          buf.set(im.palette, 0);
+          buf.set(im.pixels, 768);
+          lines.push(`card ${where} g ${store(buf, 'g')} ${pause ?? dflt}`);
+        } else if (e === 'txt') {
+          const text = Buffer.from(textLines(file(real)).join('\n'), 'latin1');
+          const pal = cols ?? new Uint8Array(768);
+          lines.push(`card ${where} t ${store(text, 't')} ${pause ?? 90} ${matchColor(pal, 50, 10, 50)} ${matchColor(pal, 63, 10, 10)}`);
+        } else leftOut[e] = (leftOut[e] ?? 0) + 1; // .fli animations and .bkd backdrops: not shown on the board yet
+      };
+      one(name, undefined, 15);
+    };
+    play.forEach(({ s }, n) => {
+      cards(`i${n}`, s.files[9]);
+      cards(`x${n}`, s.files[10]);
+    });
+    cards('w', game.scenes[1]?.files[0]);
+    cards('l', game.scenes[1]?.files[2]);
     play.forEach(({ s }, n) => {
       let count = 0;
       for (let l = 0; l < MAXSCENELINKS; l++) {
@@ -185,5 +229,6 @@ if (!listOnly) {
   index.sort((a, b) => (a.id === 'first-steps' ? -1 : b.id === 'first-steps' ? 1 : a.title.localeCompare(b.title)));
   writeFileSync(outDir + 'games.txt', index.map((g) => `${g.id}|${g.title}|${g.levels}`).join('\n') + '\n');
   const total = [...put.values()].reduce((a, b) => a + b, 0);
+  if (Object.keys(leftOut).length) console.log('left out of the cards:', leftOut);
   console.log(`${index.length} games, ${put.size} shared files, ${total} bytes (plus the .cfg files)`);
 }
