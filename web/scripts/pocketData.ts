@@ -98,12 +98,13 @@ for (const id of ids) {
       if (hasMonFiles) {
         // what a monster turns into when it dies
         const defs = parseMonsters(file(s.files[3]));
-        for (const k of [...mons]) for (let c = defs[k]; c; ) {
-          const nm = c.newmon;
-          if (nm < 0 || nm >= LASTMON || mons.has(nm)) break;
-          mons.add(nm);
-          c = defs[nm];
-        }
+        for (const k of [...mons])
+          for (let c = defs[k]; c;) {
+            const nm = c.newmon;
+            if (nm < 0 || nm >= LASTMON || mons.has(nm)) break;
+            mons.add(nm);
+            c = defs[nm];
+          }
       }
       const all = keep.get(s.files[2]) ?? new Set<number>();
       for (const b of need) if (b < 150) all.add(b);
