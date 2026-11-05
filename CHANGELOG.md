@@ -11,6 +11,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Added
 
+- On a tablet or phone the First steps list opens folded to its title bar (and folds again when a step opens its editor), so it no longer covers the editors; its buttons are 44 px on touch. After "Add an exit" on the map, tapping the map places the exit there
 - Two achievements for the Starters: Show and tell (played every Starter) and Honor roll (played every Starter to its ending). They count apart from the Sandbox games.
 - The Guide's "How do I…?" page now has its questions as plain text for search engines and readers without scripts, each Starter linked to its play page, and a Starter's page describes it as a small teaching game instead of a shareware release.
 - The Pocket Player plays the games' PC speaker sounds (pickups, hurt, kills, jumps and the other effects each game sets), timed like the original, with a Sound setting for off, low, medium and high. Sound Blaster clips and music are not on the board yet.

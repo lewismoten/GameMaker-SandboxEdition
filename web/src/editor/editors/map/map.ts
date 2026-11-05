@@ -721,6 +721,21 @@ registerEditor(['map'], (host, project, file) => {
     changedCells(cells);
   }
 
+  // Tap to place: after "Add an exit" the next tap on the map puts the exit there (a drag works as before)
+  let placingExit = false;
+  canvas.addEventListener(
+    'pointerdown',
+    (e) => {
+      if (!placingExit) return;
+      placingExit = false;
+      e.stopImmediatePropagation();
+      e.preventDefault();
+      const p = cell(e);
+      markers.moveExit({ x: p.x, y: p.y });
+    },
+    true,
+  );
+
   canvas.addEventListener('pointerdown', (e) => {
     if (mode === 'pan') return;
     if (mode === 'zoom') return;
@@ -891,6 +906,8 @@ registerEditor(['map'], (host, project, file) => {
         if (!showLinks) linksBtn.click();
         const at = viewport.at();
         markers.addExit({ x: Math.min(MLEN - 1, Math.floor(at.x)), y: Math.min(MWID - 1, Math.floor(at.y)) });
+        placingExit = true;
+        toast('Tap the map where the exit goes, or drag the gold marker.');
       },
     },
     '＋',
@@ -1096,6 +1113,7 @@ registerEditor(['map'], (host, project, file) => {
 
   const modeBar = h('div', { class: 'toolbar mt-modes' });
   function setMode(m: Mode): void {
+    placingExit = false;
     mode = m;
     canvas.style.touchAction = 'none';
     clear(
