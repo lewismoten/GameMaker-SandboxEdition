@@ -1,0 +1,38 @@
+{
+  "title": "Kit's Moves",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.0",
+  "blurb": "Two short levels about what a key does while you hold it. Space hops once however long it is held, Up keeps lifting for as long as it is down, and Enter dashes once for each press. Each is a setting on a sequence in the character file, and the levels are built so that you feel the difference. Nothing here hurts. Signs explain each idea, and every level has a page on how it is made.",
+  "exe": "KITMOVES.EXE",
+  "dosName": "KITMOVES",
+  "sound": "sb",
+  "label": {
+    "background": "#fff3d6",
+    "band": "#b5471f",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "2 short levels",
+    "hours": 1,
+    "background": "#b5471f",
+    "accent": "#ffd23f",
+    "ink": "#ffffff",
+    "tagline": "Tap it, or hold it?",
+    "back": "A small explorer in a teal beanie has two levels to cross. One key hops once, however long you hold it, and another keeps lifting him while it is down. In the second, a dash goes once for each press, so a wide gap needs press after press. Signs say what each level shows, and the manual says how each is made.",
+    "features": [
+      "Signs in the levels explain each idea",
+      "A held key can run again, or wait for the next press: it is one setting on a sequence",
+      "Made to be copied and taken apart"
+    ],
+    "shots": [
+      ["one.map", 30, 0],
+      ["two.map", 38, 1]
+    ],
+    "rating": "Everyone"
+  }
+}

@@ -16,6 +16,7 @@
   "gusts": {"hash":"c7176e84bf0ab8b0","maps":{"one.map|one.bbl":[0,0,61,27],"two.map|two.bbl":[0,15,65,10]}},
   "health-and-hearts": {"hash":"b255cc18c8fcbfce","maps":{"one.map|hearts.bbl":[0,14,61,10],"three.map|hearts.bbl":[0,7,71,20],"two.map|hearts.bbl":[0,14,61,10]}},
   "keys-and-doors": {"hash":"492db90343e46bf4","maps":{"one.map|keys.bbl":[0,0,67,27],"three.map|keys.bbl":[0,1,69,26],"two.map|keys.bbl":[0,1,67,26]}},
+  "kit-moves": {"hash":"c280a6bc684968c6","maps":{"one.map|km.bbl":[0,0,67,31],"two.map|km.bbl":[0,15,91,10]}},
   "loaf": {"hash":"9ec63cd8de177d54","maps":{"baskets.map|loaf.bbl":[0,0,90,19],"hill.map|loaf.bbl":[0,0,79,19],"home.map|loaf.bbl":[0,0,86,20],"wicker.map|loaf.bbl":[0,0,46,30]}},
   "logic": {"hash":"465ef9058165c007","maps":{"attic.map|attic.bbl":[0,0,92,55],"garage.map|garage.bbl":[0,0,92,94],"kitchen.map|kitchen.bbl":[0,0,92,35],"living.map|living.bbl":[0,0,92,35]}},
   "loofah": {"hash":"173ad7cde3dbe71a","maps":{"aisle.map|loofah.bbl":[0,0,74,21],"bath.map|loofah.bbl":[0,0,65,21],"home.map|loofah.bbl":[0,0,63,23],"shower.map|loofah.bbl":[0,0,49,20]}},
