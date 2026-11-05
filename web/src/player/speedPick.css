@@ -31,8 +31,16 @@
   cursor: pointer;
 }
 
-@media (max-width: 480px) {
+/* on a phone the menu takes its own row under the other buttons, so nothing overlaps the way back */
+@media (max-width: 600px) {
+  .gm-player .gm-corner {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
   .gm-player .gm-corner .gm-speed {
+    order: 2;
+    flex: 1 0 100%;
+    box-sizing: border-box;
     font-size: 12px;
   }
 }

@@ -44,8 +44,6 @@
     }
   },
   "sounds": {
-    "2": "The long pad: LONGSND.VOC, 5.4 seconds, about 60 KB",
-    "5": "The short pad: BLIP.VOC, a quarter second, about 2.7 KB",
     "9": "The jump",
     "10": "Getting hurt",
     "11": "Falling over"
