@@ -22,6 +22,7 @@ dialog|Everybody Talks|4
 flash-safe|Flash Safe|3
 flicker|Flicker and Flow|3
 follower|Follow Me|2
+graduation-basics|Graduation: First Steps|1
 gravity-on-gravity-off|Gravity On, Gravity Off|2
 gusts|Gusts|2
 health-and-hearts|Health and Hearts|3
