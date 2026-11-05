@@ -40,6 +40,12 @@ export const DOORC = 11;
 export const WATER = 12;
 export const ROOF = 13;
 
+/** Side views (platform): open air, a ladder, spikes (hurt), and a ledge that is solid on top only. */
+export const SKY = 14;
+export const LADDER = 15;
+export const HAZARD = 16;
+export const PLAT = 17;
+
 /** Cells a person or monster cannot stand on. */
 export const closed = (c: number) => c === WALL || c === TREE || c === ROCK || c === FURN || c === WATER || c === ROOF;
 
