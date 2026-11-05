@@ -107,9 +107,38 @@ function colorFills(it: CodeWheelItem, g: SVGElement, name: string, rows: string
   return cover;
 }
 
+let clipSeq = 0;
+
+/**
+ * A line-art face (it.faceArt): all of it, or one half joined at a seam. The box is 48 by 48; its top half stands on
+ * the seam and the bottom half hangs from it, so the halves on neighboring discs join into one face there.
+ */
+function faceArt(it: CodeWheelItem, name: string, x: number, y: number, deg: number, k: number, part: 'whole' | 'top' | 'bottom'): SVGElement | null {
+  const shapes = it.faceArt?.[name];
+  if (!shapes) return null;
+  const g = el('g', { class: part === 'whole' ? 'cw-sym' : 'cw-sym cw-half', transform: `translate(${x.toFixed(2)} ${y.toFixed(2)}) rotate(${deg})` });
+  const inner = el('g', {
+    transform: `translate(${(-24 * k).toFixed(3)} ${(-24 * k).toFixed(3)}) scale(${k.toFixed(4)})`,
+    'stroke-linejoin': 'round',
+    'stroke-linecap': 'round',
+  });
+  if (part !== 'whole') {
+    const id = `cw-cut-${++clipSeq}`;
+    const clip = el('clipPath', { id }, el('rect', { x: '-2', y: part === 'top' ? '-2' : '24', width: '52', height: part === 'top' ? '26' : '26' }));
+    g.append(clip);
+    inner.setAttribute('clip-path', `url(#${id})`);
+  }
+  for (const [d, fill, width, line] of shapes)
+    inner.append(el('path', { d, fill: fill || 'none', stroke: width ? line : 'none', 'stroke-width': String(width), class: 'cw-art' }));
+  g.append(inner);
+  return g;
+}
+
 /** One symbol, upright to the ring (its top toward the rim), `size` tall, centered at radius r and angle deg. */
 function symbol(it: CodeWheelItem, name: string, r: number, deg: number, size: number, cls: string): SVGElement {
   const [x, y] = at(r, deg);
+  const art = faceArt(it, name, x, y, deg, size / 44, 'whole');
+  if (art) return art;
   const g = el('g', { class: cls, transform: `translate(${x.toFixed(2)} ${y.toFixed(2)}) rotate(${deg})` });
   const rows = it.glyphs?.[name];
   if (rows?.length) {
@@ -139,6 +168,9 @@ function halfPic(it: CodeWheelItem, name: string, seam: number, deg: number, hal
   const rows = it.glyphs?.[name];
   if (!rows?.length) return symbol(it, name, part === 'top' ? seam + half / 2 : seam - half / 2, deg, half * 0.8, 'cw-sym');
   const [x, y] = at(seam, deg);
+  const artK = Math.min((2 * half) / 44, (((seam * 2 * Math.PI) / n) * 0.85) / 48);
+  const art = faceArt(it, name, x, y, deg, artK, part);
+  if (art) return art;
   const g = el('g', { class: 'cw-sym cw-half', transform: `translate(${x.toFixed(2)} ${y.toFixed(2)}) rotate(${deg})` });
   const k = Math.ceil(rows.length / 2);
   const cell = Math.min((2 * half) / rows.length, (((seam * 2 * Math.PI) / n) * 0.85) / rows[0].length);

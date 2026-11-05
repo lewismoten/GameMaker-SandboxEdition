@@ -215,6 +215,8 @@ export interface CodeWheelItem extends ItemBase {
   emblem?: 'nose';
   /** Colors for glyphs: a glyph's name and 12 rows of letters over its picture (`fillColors` has the colors; a capital also covers ink). */
   fills?: Record<string, string[]>;
+  /** Line-art faces for glyphs of the same name: shapes in a 48 by 48 box (path, fill color or '', line width (0: none), line color); drawn instead of the pixel rows. */
+  faceArt?: Record<string, [d: string, fill: string, width: number, line: string][]>;
   /** A letter's color, for `fills`. */
   fillColors?: Record<string, string>;
   /** The outer disc's ring, clockwise from the top: letters, words, or glyph names (`glyphs`). */
