@@ -27,4 +27,4 @@ if (seen !== '2 3' || r.keysLeft || r.scenes.includes(1)) {
   console.error(`demoCheck: expected scenes 2 3 with every key played and no ending; got ${seen}`);
   process.exit(1);
 }
-console.log('demoCheck ok: bumped the crates, stood in the stuck coin, no game over');
+console.log('demoCheck ok: bumped the real wall, walked through the picture, cracked the loose wall, no game over');

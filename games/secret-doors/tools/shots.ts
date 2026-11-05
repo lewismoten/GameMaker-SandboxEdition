@@ -1,5 +1,5 @@
-// Pictures of the lessons (never on the disk), for the progress shots: a wall of crates, the rubble
-// after a bump (the top crates stay), the coin that stays a coin, and the spinning gem's four frames.
+// Pictures of the lessons (never on the disk), for the progress shots: a real wall beside a picture
+// of one, the loose wall cracking and crumbling, and the wall with coins showing in it.
 //   cd web && npx vite-node ../games/secret-doors/tools/shots.ts <outDir>
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
@@ -9,13 +9,12 @@ import { buildHeroBlocks, heroPicture } from '../../kit/starter/hero';
 import { ORIGIN } from '../../kit/starter/map';
 import { buildMonsterBlocks, buildMonsters } from '../../kit/starter/monsters';
 import { GROUND, L1, L2, L3, buildLevels } from '../src/levels';
-import { finishBlocks } from '../src/breakBlocks';
 
 const out = process.argv[2];
 if (!out) throw new Error('usage: shots.ts <outDir>');
 mkdirSync(out, { recursive: true });
 const { book, pal, levels } = buildLevels();
-const bbl = finishBlocks(book);
+const bbl = book.finish();
 const mb = buildMonsterBlocks(pal);
 const mbl = mb.finish();
 const set = buildMonsters(mb);
@@ -34,20 +33,23 @@ const region = (map: Map, col: number, w: number, extra: ReturnType<typeof kit> 
   renderRegion(map, bbl, mbl, set, ORIGIN + col, ORIGIN + top, w, h, extra);
 const stand: [string, string] = ['stand.top', 'stand'];
 
-// level 1: the wall, then the rubble after the bump
-const l1 = levels[0].map;
-writePng(join(out, 'smash-1-wall.png'), region(l1.done(), 8, 24, kit(stand, L1.wallA - 2)), pal.pal, 3);
-for (const j of [1, 2]) l1.set(L1.wallA, GROUND - j, 'rubble');
-writePng(join(out, 'smash-2-rubble.png'), region(l1.done(), 8, 24, kit(['cheer.top', 'jump'], L1.wallA + 2)), pal.pal, 3);
+// level 1: the real wall and the picture of a wall, side by side (they look the same), then Kit inside the picture
+const l1 = levels[0].map.done();
+writePng(join(out, 'wall-1-alike.png'), region(l1, 14, 26, kit(stand, L1.real - 2)), pal.pal, 3);
+writePng(join(out, 'wall-2-inside.png'), region(l1, 28, 14, kit(['cheer.top', 'jump'], L1.fake)), pal.pal, 3);
 
-// level 2: the coin that stays a coin, and the ordinary coins past it
-const l2 = levels[1].map.done();
-writePng(join(out, 'coins-1-stuck.png'), region(l2, 6, 26, kit(stand, L2.stuck[0] - 2)), pal.pal, 3);
+// level 2: the loose wall, then the cracked block Kit walks into
+const l2 = levels[1].map;
+writePng(join(out, 'crack-1-loose.png'), region(l2.done(), 12, 14, kit(stand, L2.wallA - 2)), pal.pal, 3);
+for (const j of [1, 2]) l2.set(L2.wallA, GROUND - j, 'cracked');
+writePng(join(out, 'crack-2-cracked.png'), region(l2.done(), 12, 14, kit(stand, L2.wallA - 1)), pal.pal, 3);
+for (const j of [1, 2]) l2.set(L2.wallA, GROUND - j, 'chips');
+writePng(join(out, 'crack-3-chips.png'), region(l2.done(), 12, 14, kit(['cheer.top', 'jump'], L2.wallA + 1)), pal.pal, 3);
 
-// level 3: the gem's four frames, then the row of gems
+// level 3: the wall with coins showing in it
 const l3 = levels[2].map.done();
-writePng(join(out, 'gems-1-row.png'), region(l3, 8, 26, kit(stand, L3.gems[0] - 2)), pal.pal, 3);
+writePng(join(out, 'window-1-coins.png'), region(l3, 24, 16, kit(stand, L3.x - 3)), pal.pal, 3);
 writePng(join(out, 'level-1.png'), renderRegion(levels[0].map.done(), bbl, mbl, set, ORIGIN, ORIGIN, levels[0].map.width, 12), pal.pal, 2);
-writePng(join(out, 'level-2.png'), renderRegion(l2, bbl, mbl, set, ORIGIN, ORIGIN, levels[1].map.width, 12), pal.pal, 2);
+writePng(join(out, 'level-2.png'), renderRegion(levels[1].map.done(), bbl, mbl, set, ORIGIN, ORIGIN, levels[1].map.width, 12), pal.pal, 2);
 writePng(join(out, 'level-3.png'), renderRegion(l3, bbl, mbl, set, ORIGIN, ORIGIN, levels[2].map.width, 12), pal.pal, 2);
 console.log(`shots in ${out}`);

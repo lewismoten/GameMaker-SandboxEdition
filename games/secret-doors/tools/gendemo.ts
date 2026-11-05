@@ -1,7 +1,7 @@
 // Re-records the title screen's demo into src/demo.ts: the bot's own run through levels 1 and 2, one
 // unbroken list of keys (the demo recorder counts game ticks across scene changes, so the second level's
-// keys follow the first's after the ticks between them). It shows each lesson once: a crate
-// bumped into rubble, then the coin that stays a coin and pays again and again.
+// keys follow the first's after the ticks between them). It shows each lesson once: a real
+// wall that stops him, a picture of a wall he walks through, then a wall that cracks and crumbles.
 // Rebuild afterwards.
 //   cd web && npx vite-node ../games/secret-doors/tools/gendemo.ts && npx vite-node ../games/secret-doors/build.ts
 //   cd web && npx vite-node ../games/secret-doors/tools/demoCheck.ts      (plays the recording on the real engine)
