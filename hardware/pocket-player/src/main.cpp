@@ -68,8 +68,49 @@ static uint8_t* readFileIn(fs::FS& fsys, const char* base, const char* name, siz
   if (card && !wasUp) unmountSD();
   return p;
 }
-// A game's .cfg text.
-static bool readCfgText(const char* path, String& out);
+// A game's .cfg is read line by line (a big game's is tens of KB: nothing holds it, and a level's record is found by reading it again).
+static File cfgFile;
+static bool cfgMounted = false;  // this reader mounted the card (and unmounts it at the end)
+static uint8_t cfgBuf[256];
+static int cfgPos = 0, cfgLen = 0;
+static void* cfgOpen(void*, const char* name) {
+  char path[48];
+  snprintf(path, sizeof path, "%s/%s", curBase, name);
+  cfgMounted = false;
+  if (curFs == &SD && !sdUp) {
+    if (!mountSD()) return nullptr;
+    cfgMounted = true;
+  }
+  cfgFile = curFs->open(path, "r");
+  if (!cfgFile) {
+    if (cfgMounted) unmountSD();
+    cfgMounted = false;
+    return nullptr;
+  }
+  cfgPos = cfgLen = 0;
+  return &cfgFile;
+}
+static bool cfgNext(void*, char* line, int cap) {
+  int n = 0;
+  for (;;) {
+    if (cfgPos >= cfgLen) {
+      cfgLen = cfgFile.read(cfgBuf, sizeof cfgBuf);
+      cfgPos = 0;
+      if (cfgLen <= 0) { cfgLen = 0; if (!n) return false; break; }
+    }
+    char c = (char)cfgBuf[cfgPos++];
+    if (c == '\n') break;
+    if (n < cap - 1) line[n++] = c;
+  }
+  line[n] = 0;
+  return true;
+}
+static void cfgClose(void*) {
+  cfgFile.close();
+  if (cfgMounted) unmountSD();
+  cfgMounted = false;
+}
+static const gm::Lines cfgLines = {cfgOpen, cfgNext, cfgClose, nullptr};
 // A card level's compressed files are read together while nothing big is on the heap (see prefetchLevel); readFile hands them out once.
 struct Prefetched { char name[16]; uint8_t* p; size_t n; };
 static Prefetched pre[8];
@@ -178,27 +219,31 @@ static bool selectGame(int g) {
 static void prefetchLevel(int level) {
   clearPrefetched();
   if (curFs != &SD) return;
-  const gm::LevelFiles& L = cfg.lv[level];
+  // A level entered again (after a death) keeps its files; any other level: nothing of the last one stays, its record is read from the
+  // card first, and the card is mounted for that with the heap at its emptiest. (Files the next level shares are read again; that
+  // costs less than a mount over the buffers.)
+  bool same = assets.filesLevel == level && assets.bbl;
+  if (!same) {
+    char keepPal[16];
+    strcpy(keepPal, assets.palName);  // the palette stays (release forgets its name); it is read again only if the level's differs
+    assets.release();
+    strcpy(assets.palName, keepPal);
+  }
+  if (!mountSD()) return;
+  if (!same && !assets.readInfo(level)) { unmountSD(); return; }
+  const gm::LevelFiles& L = assets.files;
   bool mons = L.nmon > 0;
-  auto drop = [](uint8_t*& slot, char* have, const char* want) {
-    if (slot && strcmp(have, want)) { free(slot); slot = nullptr; have[0] = 0; }
-  };
-  drop(assets.bbl, assets.bblName, L.bbl);
-  drop(assets.cbl, assets.cblName, L.cbl);
-  drop(assets.chr, assets.chrName, L.chr);
-  if (mons) { drop(assets.mon, assets.monName, L.mon); drop(assets.mbl, assets.mblName, L.mbl); }
-  if (L.snd[0]) drop(assets.snd, assets.sndName, L.snd);
   const char* want[8];
   int n = 0;
-  if (!assets.bbl) want[n++] = L.bbl;
-  if (!assets.cbl) want[n++] = L.cbl;
-  if (!assets.chr) want[n++] = L.chr;
-  if (strcmp(assets.palName, L.pal)) want[n++] = L.pal;
-  if (mons && !assets.mon) want[n++] = L.mon;
-  if (mons && !assets.mbl) want[n++] = L.mbl;
-  if (L.snd[0] && !assets.snd) want[n++] = L.snd;
+  if (!same) {
+    want[n++] = L.bbl;
+    want[n++] = L.cbl;
+    want[n++] = L.chr;
+    if (strcmp(assets.palName, L.pal)) want[n++] = L.pal;
+    if (mons) { want[n++] = L.mon; want[n++] = L.mbl; }
+    if (L.snd[0]) want[n++] = L.snd;
+  }
   want[n++] = L.map;
-  if (!mountSD()) return;
   for (int i = 0; i < n; i++) {
     size_t len = 0;
     uint8_t* p = readFileIn(SD, curBase, want[i], &len);
@@ -210,16 +255,6 @@ static void prefetchLevel(int level) {
   }
   unmountSD();
 }
-static bool readCfgText(const char* path, String& out) {
-  bool card = curFs == &SD, wasUp = sdUp;
-  if (card && !mountSD()) return false;
-  File f = curFs->open(path, "r");
-  bool ok = (bool)f;
-  if (ok) { out = f.readString(); f.close(); }
-  if (card && !wasUp) unmountSD();
-  return ok;
-}
-
 // ---- settings ----------------------------------------------------------------------------------
 
 static void saveSettings() {
@@ -855,14 +890,10 @@ static void playFli(const gm::Card& c) {
 // ShowGraphic for one scene slot (where: i<level>, x<level>, w, l): the pictures fade in from black, the text
 // pages are written over the picture before them. A card that can't be read is left out (the engine cleared the screen).
 static void showCards(const char* where) {
-  char path[48];
-  snprintf(path, sizeof path, "%s/%s.cfg", curBase, fileOf(games[curGame]));
   bool cardWasUp = sdUp, card = curFs == &SD;
   if (card) mountSD();  // held while the cards show (the level's buffers are already freed)
-  String text;
-  if (!readCfgText(path, text)) { if (card && !cardWasUp) unmountSD(); return; }
   gm::Card cards[10];
-  int n = gm::cardsOf(text.c_str(), where, cards, 10);
+  int n = gm::cardsOfFile(cfgLines, assets.cfgName, where, cards, 10);
   uint8_t* pic = nullptr;
   char picFile[20] = "";
   bool dirty = false;  // text is on the picture
@@ -927,16 +958,13 @@ static void levelWhere(char* out, char kind, int level) { snprintf(out, 8, "%c%d
 
 static bool startGame(int g, bool withCards = true) {
   curGame = g;
-  char path[48];
   assets.release();  // whatever the last game (or a failed start) left; a card must be mounted with the heap at its emptiest
   clearPrefetched();
   if (!selectGame(g)) return false;
-  snprintf(path, sizeof path, "%s/%s.cfg", curBase, fileOf(games[g]));
-  String text;
-  if (!readCfgText(path, text)) return false;
-  assets.release();
-  if (!gm::parseCfg(text.c_str(), world, cfg)) return false;
+  snprintf(assets.cfgName, sizeof assets.cfgName, "%s.cfg", fileOf(games[g]));
+  if (!gm::parseCfgFile(cfgLines, assets.cfgName, world, cfg)) return false;
   assets.attach(world, cfg, readFile, inflateRaw);
+  assets.lines = &cfgLines;
   assets.beforeLoad = prefetchLevel;
   assets.palName[0] = 0;
   if (withCards) {  // the intro card shows before the level's files load: a card needs a 64 KB block of its own
@@ -947,7 +975,7 @@ static bool startGame(int g, bool withCards = true) {
   }
   world.seed = micros() ^ (millis() << 7);  // the monsters that wander pick differently each play
   if (!world.begin()) {
-    Serial.printf("SG fail %s: nbl %d nmon %d nmbl %d have bbl%d mbl%d cbl%d chr%d mon%d free %u largest %u\n", games[g].id, cfg.lv[0].nbl, cfg.lv[0].nmon, cfg.lv[0].nmbl, !!assets.bbl, !!assets.mbl, !!assets.cbl, !!assets.chr, !!assets.mon, (unsigned)ESP.getFreeHeap(), (unsigned)heap_caps_get_largest_free_block(MALLOC_CAP_8BIT));
+    Serial.printf("SG fail %s: nbl %d nmon %d nmbl %d have bbl%d mbl%d cbl%d chr%d mon%d free %u largest %u\n", games[g].id, assets.files.nbl, assets.files.nmon, assets.files.nmbl, !!assets.bbl, !!assets.mbl, !!assets.cbl, !!assets.chr, !!assets.mon, (unsigned)ESP.getFreeHeap(), (unsigned)heap_caps_get_largest_free_block(MALLOC_CAP_8BIT));
     return false;
   }
   world.nsnd = 0;

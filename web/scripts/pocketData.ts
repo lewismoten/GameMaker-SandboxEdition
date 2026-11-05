@@ -37,8 +37,8 @@ const series = opt('--series')[0] ?? (cardRoot ? 'any' : 'starter');
 const outDir = cardRoot ? `${cardRoot}/pocket/` : '../hardware/pocket-player/data/';
 /** Games the card leaves out (id: reason); none now. */
 const CARD_HOLD: Record<string, string> = {};
-const MAX_LINKS = 16;
-const MAX_LEVELS = 12;
+const MAX_LINKS = 24;
+const MAX_LEVELS = 128;
 /** Games whose host check fails or that the board cannot show right; each with the reason. */
 const SKIP: Record<string, string> = {};
 

@@ -26,31 +26,48 @@ constexpr int PAUSE_KEY = 65535;     // wait for a key
 
 struct Card { char kind; char file[20]; int pause; int color, more; };
 
+// One `card` line of `where` (null-terminated, one line): adds the card to out[*n].
+inline void cardLine(const char* line, const char* where, Card* out, int* n) {
+  size_t wl = strlen(where), len = strlen(line);
+  if (len > 8 && len < 80 && !strncmp(line, "card ", 5) && !strncmp(line + 5, where, wl) && line[5 + wl] == ' ') {
+    char kind = 0, file[20];
+    int pause = 0, color = 0, more = 0;
+    if (sscanf(line + 5 + wl, " %c %19s %d %d %d", &kind, file, &pause, &color, &more) >= 3) {
+      Card& c = out[(*n)++];
+      c.kind = kind;
+      strcpy(c.file, file);
+      c.pause = pause;
+      c.color = color;
+      c.more = more;
+    }
+  }
+}
+
 // Collects the cards of `where` from the .cfg text, in order; returns how many (at most `max`).
 inline int cardsOf(const char* cfgText, const char* where, Card* out, int max) {
   int n = 0;
-  size_t wl = strlen(where);
   for (const char* p = cfgText; *p && n < max;) {
     const char* e = strchr(p, '\n');
     size_t len = e ? (size_t)(e - p) : strlen(p);
-    if (len > 8 && len < 80 && !strncmp(p, "card ", 5) && !strncmp(p + 5, where, wl) && p[5 + wl] == ' ') {
-      char line[80];
+    char line[80];
+    if (len < sizeof line) {
       memcpy(line, p, len);
       line[len] = 0;
-      char kind = 0, file[20];
-      int pause = 0, color = 0, more = 0;
-      if (sscanf(line + 5 + wl, " %c %19s %d %d %d", &kind, file, &pause, &color, &more) >= 3) {
-        Card& c = out[n++];
-        c.kind = kind;
-        strcpy(c.file, file);
-        c.pause = pause;
-        c.color = color;
-        c.more = more;
-      }
+      cardLine(line, where, out, &n);
     }
     if (!e) break;
     p = e + 1;
   }
+  return n;
+}
+// The same, reading the .cfg line by line (the board: a big game's .cfg is too large to hold).
+inline int cardsOfFile(const Lines& ln, const char* name, const char* where, Card* out, int max) {
+  void* h = ln.open(ln.user, name);
+  if (!h) return 0;
+  int n = 0;
+  char line[128];
+  while (n < max && ln.next(h, line, sizeof line)) cardLine(line, where, out, &n);
+  ln.close(h);
   return n;
 }
 
