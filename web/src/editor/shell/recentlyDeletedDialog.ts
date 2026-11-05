@@ -62,6 +62,7 @@ export async function showRecentlyDeleted(refresh: () => unknown): Promise<void>
       if (!(await confirmDialog('Empty Recently deleted', 'These games will be gone for good, with their files, notes and checkpoints.', 'Empty now'))) return;
       await emptyDeleted(browserShelf);
       toast('Emptied Recently deleted.');
+      await refresh(); // the page's button hides at once
       await draw();
     };
     void draw();
