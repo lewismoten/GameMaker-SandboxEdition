@@ -233,6 +233,11 @@ multi-block objects for `kit/align.ts`, which their checks run. The other play-t
 | day-night         | `npx vite-node ../games/day-night/tools/gendemo.ts`               | re-records the title demo into `src/demo.ts` (then rebuild)                                                                                           |
 | day-night         | `npx vite-node ../games/day-night/tools/preview.ts [dir]`         | PNGs of the blocks (day and night), the hero, each level in each palette and every picture                                                            |
 | day-night         | `npx vite-node ../games/day-night/tools/shots.ts <dir>`           | pictures of the lessons for the progress shots: the room by day and night, the street at three hours                                                  |
+| gusts             | `npx vite-node ../games/gusts/tools/check.ts`                     | the bot reads the signs and checks every tick that the shaft and each windsock go calm, flutter, gust on time; level 1 it jumps once in the calm shaft, then rides the gust up to the ledge; level 2 it leans into a gust and is pushed back, crosses while it is calm and waits out each gust in a shelter|
+| gusts             | `npx vite-node ../games/gusts/tools/demoCheck.ts`                 | plays the title demo headless: the gust lifts him above the ledge and he lands on it, with nothing lost                                               |
+| gusts             | `npx vite-node ../games/gusts/tools/gendemo.ts`                   | re-records the title demo into `src/demo.ts` (then rebuild)                                                                                           |
+| gusts             | `npx vite-node ../games/gusts/tools/preview.ts [dir]`             | PNGs of the blocks, the hero, each level and every picture                                                                                            |
+| gusts             | `npx vite-node ../games/gusts/tools/shots.ts <dir>`               | pictures of the lessons (never on the disk) for the progress shots                                                                                    |
 
 The felt eggs have checks of their own where a game's route never goes near one
 (`depth/tools/egg.ts`, `realm/tools/eggcheck.ts`, `sleuth/tools/check.ts --egg`). The other
