@@ -1,10 +1,12 @@
 # Pocket Player
 
-Firmware for the ESP32-3248S035 board (3.5 inch, 480 by 320, ST7796, GT911 capacitive touch). It plays **30 of the Starter games** from the games' real DOS files, packed small into LittleFS (`web/scripts/pocketData.ts`), with a game list, touch controls for fingers and a stylus, a settings screen and a status strip. No sound.
+Firmware for the ESP32-3248S035 board (3.5 inch, 480 by 320, ST7796, GT911 capacitive touch). It plays **66 of the Starter games** from the games' real DOS files, packed small into LittleFS (`web/scripts/pocketData.ts`), with a game list, touch controls for fingers and a stylus, a settings screen and a status strip. No sound.
 
-The play rules are `src/gmcore.h`, a port of the web engine's character, touch, scroll, block-effect and scene code (itself from `code/GM/PLAYGAME.C`) with no board code in it, so the same file runs in the Mac test. **Monsters, sound, pick up and drop are not ported**: the 17 Starters that have monsters (or monster births), and every Sandbox game, are left out of the list (`npx vite-node scripts/pocketData.ts --list` says why for each).
+The flashed firmware binaries' third-party notices are in [`web/public/pocket/fw/NOTICES.txt`](../../web/public/pocket/fw/NOTICES.txt). Keep that file with the firmware image set when redistributing it.
 
-Files: `src/gmcore.h` (play loop), `src/gmcfg.h` (a game's `.cfg` and the level file loader), `src/controls.h` (touch controls model), `src/gt911.h` (touch chip, up to 5 fingers with ids and sizes), `src/main.cpp` (files, panel, screens, drawing), `host/hosttest.cpp` and `host/controlstest.cpp` (Mac tests).
+The play rules are `src/gmcore.h`, a port of the web engine's character, touch, scroll, block-effect and scene code (itself from `code/GM/PLAYGAME.C`) with no board code in it, so the same file runs in the Mac test. Monsters (`src/gmmon.h`, a port of the web engine's `monsters.ts`) are in. **Sound is not ported** (pick up and drop are), and every Sandbox game is left out (`npx vite-node scripts/pocketData.ts --list` says why for each).
+
+Files: `src/gmcore.h` (play loop), `src/gmmon.h` (monsters), `src/gmcfg.h` (a game's `.cfg` and the level file loader), `src/controls.h` (touch controls model), `src/gt911.h` (touch chip, up to 5 fingers with ids and sizes), `src/main.cpp` (files, panel, screens, drawing), `host/hosttest.cpp` and `host/controlstest.cpp` (Mac tests).
 
 ## Flash it from the browser
 
@@ -20,11 +22,12 @@ The board shows a list of games, five to a page (Prev, Next, Settings along the 
 2. **First Steps** (first in the list). Walk with your left thumb on the round pad, jump with the right one on the Space circle. Slide a held thumb from the left side of the pad to the right side: the hero should turn around without stopping on the way. Does the pad feel too big, too small, too touchy in the middle? (Settings: Pad size, Pad dead zone.)
 3. **Two fingers.** On Keys and Doors, Beat the Clock or Momentum: hold right on the pad and tap Space with the other thumb. Run and jump.
 4. **A ladder game.** First Steps level 2 (the pad's up and down arrows), Swim, Slippery and Bouncy (up and down are shown only on games that use them).
-5. **A stylus.** Only a *capacitive* stylus works. The GT911 is a capacitive touch chip, so a plain plastic stick or a pen cap registers as nothing (a stylus with a rubber or mesh tip, or a bare fingertip, does). With a stylus, turn on **Stylus (taps latch)** in Settings: a short tap on the right of the pad keeps the hero walking right after you lift, so you can tap Space with the same stylus; a tap in the middle of the pad (or on the other side) stops him. A drag still steers while held.
+5. **A stylus.** Only a _capacitive_ stylus works. The GT911 is a capacitive touch chip, so a plain plastic stick or a pen cap registers as nothing (a stylus with a rubber or mesh tip, or a bare fingertip, does). With a stylus, turn on **Stylus (taps latch)** in Settings: a short tap on the right of the pad keeps the hero walking right after you lift, so you can tap Space with the same stylus; a tap in the middle of the pad (or on the other side) stops him. A drag still steers while held.
 6. **Left-handed.** Settings, Hand: Left. The pad and buttons trade sides.
 7. **Palm rejection.** Settings, Palm rejection: Size (drops contacts the chip reports as big), Size+near (also drops a contact that lands within 70 px of one already held). The thresholds are guesses. The status strip's last number is the contact size of the most recent touch; rest a palm, then a fingertip, and tell me both numbers.
 8. **Health and Hearts, Watch Your Step, Switches** (damage and restarts) and **Countdown, Gusts** (timed blocks).
-9. The status strip: `HP`, `Lives`, `Score`, money and the game's own counters (Keys carried); on the right `lv N fps tick-ms draw-ms size` while Status numbers is on. Does anything stutter? Tell me the fps while the view scrolls.
+9. **Monsters.** The 17 Starters about foes and bosses are in the list now: Meet the Monsters, Throw It (hold the throw key and watch the shot fly), Many Weapons, Boss Hits, Boss Phases, Flock, Follower, Searchlight, Short Lived, Things That Grow, Who Wins, Popups, The Show (Scripted), Horizon, And Gate, Take the Wheel and Your First Game. Does a crowd of monsters slow the picture (the screen redraws whole when more than a few move)? Do solid monsters push the hero the way they do in the browser?
+10. The status strip: `HP`, `Lives`, `Score`, money and the game's own counters (Keys carried); on the right `lv N fps tick-ms draw-ms size` while Status numbers is on. Does anything stutter? Tell me the fps while the view scrolls.
 
 Report: which games feel wrong, any picture glitch, the pad numbers that felt right (size and dead zone), and the palm and fingertip sizes.
 
@@ -58,10 +61,10 @@ Right-handed layout (left-handed mirrors it). 480 by 320 px is about 6.5 px per 
 
 ## Games, memory and size
 
-30 games, all matching the engine tick for tick on the Mac (list below). The 17 Starters left out have monsters (and in two cases monster births): and-gate, boss-hits, boss-phases, flock, follower, horizon, many-weapons, meet-the-monsters, popups, scripted, searchlight, short-lived, take-the-wheel, things-that-grow, throw-it, who-wins, your-first-game. The other Starters, listed in the host check output, are in the game list. No Sandbox game is free of monsters.
+51 games, all matching the engine tick for tick on the Mac (list in the host check output), the ones with monsters included. No Sandbox game is packed.
 
-- Program: 444 KB of the 1 MB partition. Static RAM: 78 KB of 320 KB; a running game holds the 10 KB map, its blocks (up to 63 KB), the hero files (28 KB) and a few KB of the world.
-- Game data: the 30 games take about 210 KB of the 3 MB LittleFS partition. Files are named by content, so the many games that share the hero files and palettes store them once; maps, blocks (cut after the last block the maps use) and hero files are deflated and unpacked with the ROM's miniz.
+- Program: 454 KB of the 1 MB partition. Static RAM: 108 KB of 320 KB (the world now holds 200 monster slots and the monster layer of the map, about 30 KB more); a running game holds the 10 KB map, its blocks (up to 63 KB), the hero files (28 KB), and for a level with monsters the 10 KB monster layer, the monster records and their pictures (the largest level, Take the Wheel, is 114 KB in all).
+- Game data: the 66 games take about 320 KB of the 3 MB LittleFS partition. Files are named by content, so the many games that share the hero files and palettes store them once; maps, blocks (cut after the last block the maps use) and hero files are deflated and unpacked with the ROM's miniz.
 
 ## Check the play loop on the Mac
 

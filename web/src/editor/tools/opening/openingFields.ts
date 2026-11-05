@@ -26,7 +26,7 @@ export function openingFields(initial: { style: OpeningStyle; name: string } = {
       { class: 'opening-row' },
       h(
         'label',
-        { class: 'opening-choice' },
+        { class: 'opening-choice', title: about },
         h('input', { type: 'radio', name: id, value, checked: value === style, onchange: () => (style = value) }),
         h('span', null, h('strong', null, label), h('small', null, about)),
       ),

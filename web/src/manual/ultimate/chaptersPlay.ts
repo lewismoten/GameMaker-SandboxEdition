@@ -186,6 +186,12 @@ export const LOGIC: Chapter = {
   <p>Now set special counter 1 to start at <b>1</b> and play again. Two tokens open the gate.
   It never counted tokens; it only asks whether the counter can pay 3 without going below
   zero.</p>
+  <h2>Showing a count</h2>
+  <p>The engine cannot print a counter as a number, so show it with pictures. Make each pickup
+  <b>Become</b> a lit version of itself instead of the sky, and a row of them is a meter: lit
+  bulbs are the count. Each value needs its own picture, and the bulbs do not read the counter, so
+  keep the gate's price equal to the number of bulbs in the map.</p>
+  ${onCd('SHOWCNT')}
   <h2>Switches and wiring</h2>
   <ul>
     <li><b>A switch</b> is a block that becomes its “on” picture when bumped. Make switches go
@@ -359,8 +365,10 @@ export const SCENES: Chapter = {
   in the archive put the finish line just behind the start, so the only way to reach it is all
   the way round; an endless fall is a shaft that wraps top to bottom with scrolling only down; and
   traffic that drives off one side comes back on the other forever. Put a one-way wall just
-  behind the start, or the player turns round and crosses the finish line at once.</p>
-  ${onCd('BELTWAY')}
+  behind the start, or the player turns round and crosses the finish line at once. Lay a road a
+  little crooked, one block over every few rows, and it wraps again and again, so a long road
+  fits on one map.</p>
+  ${onCd('DIAGWRAP', 'BELTWAY')}
   <h2>Between scenes</h2>
   <p>Leaving by a link, the game fades out and shows the old scene’s exit picture, if it has
   one, then the new scene’s intro picture, and fades the new scene in. The music stops at the

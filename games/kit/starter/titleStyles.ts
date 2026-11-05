@@ -6,8 +6,8 @@ import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { gradient, pool } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
 import type { Pal } from './palette';
 
-/** The group looks: meadow (The Basics), sunset (Game Feel), arena (Foes and Bosses), circuit (Wiring and Puzzles), stage (Telling a Story), workbench (Putting It Together), atlas (Bigger Worlds), neon (Showcase Tricks). */
-export type GroupStyle = 'meadow' | 'sunset' | 'arena' | 'circuit' | 'stage' | 'workbench' | 'atlas' | 'neon';
+/** The group looks: meadow (The Basics), sunset (Moving and Pushing), breeze (Worlds That Push Back), dressing (Changing Your Hero), arena (Foes and Bosses), circuit (Wiring and Puzzles), stage (Telling a Story), workbench (Putting It Together), atlas (Bigger Worlds), neon (Showcase Tricks). */
+export type GroupStyle = 'meadow' | 'sunset' | 'breeze' | 'dressing' | 'arena' | 'circuit' | 'stage' | 'workbench' | 'atlas' | 'neon';
 
 /** Where the hero and door stand on the title. */
 const GROUND = 160;
@@ -28,7 +28,7 @@ export interface Look {
 /** The sky, ground and frame of a non-meadow look, drawn behind the hero and door. */
 export function backdrop(pal: Pal, style: Exclude<GroupStyle, 'meadow'>): Pixels {
   const p = new Pixels(W, H);
-  ({ sunset, arena, circuit, stage, workbench, atlas, neon })[style](p, pal);
+  ({ sunset, breeze, dressing, arena, circuit, stage, workbench, atlas, neon })[style](p, pal);
   return p;
 }
 
@@ -37,6 +37,8 @@ export function lookOf(pal: Pal, style: Exclude<GroupStyle, 'meadow'>): Look {
   const c = pal.c;
   return {
     sunset: { fill: c('gold', 5), outline: c('purple', 0), shadow: c('purple', 1), ribbon: 'parch', ribbonText: c('purple', 0), floorShadow: c('purple', 0) },
+    breeze: { fill: c('white', 3), outline: c('teal', 0), shadow: c('blue', 0), ribbon: 'parch', ribbonText: c('teal', 0), floorShadow: c('blue', 0) },
+    dressing: { fill: c('gold', 5), outline: c('purple', 0), shadow: c('ink', 0), ribbon: 'parch', ribbonText: c('purple', 0), floorShadow: c('wood', 0) },
     arena: { fill: c('gold', 5), outline: c('red', 0), shadow: c('ink', 0), ribbon: 'parch', ribbonText: c('red', 0), floorShadow: c('wood', 0) },
     circuit: { fill: c('gold', 5), outline: c('green', 0), shadow: c('ink', 0), ribbon: 'parch', ribbonText: c('green', 0), floorShadow: c('green', 0) },
     stage: { fill: c('gold', 4), outline: c('red', 0), shadow: c('ink', 0), ribbon: 'parch', ribbonText: c('red', 0), floorShadow: c('wood', 0) },
@@ -55,6 +57,14 @@ export function frameOf(p: Pixels, pal: Pal, style: Exclude<GroupStyle, 'meadow'
   if (style === 'sunset') {
     border(4, c('orange', 3));
     border(1, c('gold', 5), 4);
+    border(1, c('purple', 0), 0);
+  } else if (style === 'breeze') {
+    border(4, c('teal', 2));
+    border(1, c('white', 3), 4);
+    border(1, c('teal', 0), 0);
+  } else if (style === 'dressing') {
+    border(4, c('purple', 2));
+    border(1, c('gold', 4), 4);
     border(1, c('purple', 0), 0);
   } else if (style === 'arena') {
     border(4, c('gold', 3));
@@ -108,6 +118,88 @@ function sunset(p: Pixels, pal: Pal): void {
   p.rect(0, GROUND, W, H - GROUND, c('purple', 0));
   p.rect(0, GROUND, W, 2, c('orange', 2));
   for (let x = 0; x < W; x += 20) p.rect(x, GROUND + 18, 10, 2, c('purple', 1));
+}
+
+/** A windy day: a pale teal sky with streaks of wind, leaves drifting across it, and a wavy blue water line along the bottom. */
+function breeze(p: Pixels, pal: Pal): void {
+  const c = pal.c;
+  gradient(p, 0, 0, W, GROUND + 4, pal.r('teal'), 2, 4);
+  const rand = rng(11);
+  // long curved streaks of wind
+  for (const [x, y, w] of [
+    [16, 40, 90],
+    [150, 28, 110],
+    [200, 78, 100],
+    [30, 92, 80],
+  ])
+    for (let i = 0; i < w; i++) p.set(x + i, y + Math.round(Math.sin(i / 12) * 3), c('white', 3));
+  // leaves, each tilted a little, with a short stem
+  const leaves: [number, number, 'green' | 'gold' | 'orange'][] = [
+    [40, 60, 'green'],
+    [96, 112, 'gold'],
+    [150, 52, 'orange'],
+    [238, 100, 'green'],
+    [280, 44, 'gold'],
+    [60, 130, 'orange'],
+    [200, 130, 'gold'],
+    [300, 120, 'green'],
+  ];
+  for (const [x, y, col] of leaves) {
+    const tilt = rand() < 0.5 ? 1 : -1;
+    for (let k = -4; k <= 4; k++)
+      p.rect(
+        x + k,
+        y + Math.round((k * tilt) / 2) - Math.round(2 - Math.abs(k) / 2),
+        1,
+        1 + Math.round(3 - Math.abs(k) / 1.5),
+        c(col, col === 'green' ? 3 : 4),
+      );
+    p.line(x - 5, y - Math.round((5 * tilt) / 2), x + 5, y + Math.round((5 * tilt) / 2), c(col, 1));
+  }
+  // the water: a blue band whose top edge waves, with a white crest
+  for (let x = 0; x < W; x++) {
+    const top = GROUND + Math.round(Math.sin(x / 9) * 2);
+    p.rect(x, top, 1, H - top, c('blue', 3));
+    p.set(x, top, c('white', 3));
+    p.set(x, top + 1, c('blue', 4));
+  }
+  for (let y = GROUND + 12; y < H; y += 10) for (let x = ((y / 10) % 2) * 12; x < W; x += 24) p.rect(x, y, 8, 1, c('blue', 4));
+  p.rect(0, GROUND + 32, W, H - GROUND - 32, c('blue', 2));
+}
+
+/** A dressing room: a purple wall with faint stripes, a mirror in a gold frame, a short rail of hooks with scarves, and wooden floorboards. */
+function dressing(p: Pixels, pal: Pal): void {
+  const c = pal.c;
+  gradient(p, 0, 0, W, GROUND, pal.r('purple'), 1, 3);
+  for (let x = 0; x < W; x += 24) p.rect(x, 0, 6, GROUND, c('purple', 2));
+  // the mirror: an oval of pale glass in a gold frame, with two glints
+  const mx = 56;
+  const my = 102;
+  for (let y = -38; y <= 38; y++) {
+    const half = Math.round(26 * Math.sqrt(1 - (y * y) / 1444));
+    p.rect(mx - half - 4, my + y, 2 * half + 8, 1, c('gold', 3));
+    p.rect(mx - half, my + y, 2 * half, 1, c('blue', 4));
+  }
+  p.line(mx - 14, my - 22, mx - 6, my - 32, c('white', 3)).line(mx - 18, my - 18, mx - 8, my - 30, c('white', 3));
+  // a rail of hooks across the right side, three with scarves
+  p.rect(106, 94, 124, 5, c('wood', 2)).rect(106, 94, 124, 1, c('wood', 4));
+  const scarf = ['red', 'teal', 'pink'] as const;
+  for (let i = 0; i < 5; i++) {
+    const x = 116 + i * 26;
+    p.rect(x, 99, 2, 5, c('gold', 4)).rect(x, 104, 6, 2, c('gold', 4));
+    if (i % 2 === 0) {
+      const col = scarf[i / 2];
+      const len = 24 + i * 3;
+      p.rect(x - 4, 106, 14, len, c(col, 3))
+        .rect(x - 4, 106, 3, len, c(col, 4))
+        .rect(x - 4, 106 + Math.round(len / 2), 14, 3, c('white', 3));
+      for (let f = 0; f < 14; f += 3) p.rect(x - 4 + f, 106 + len, 2, 3, c(col, 2));
+    }
+  }
+  // wooden floorboards
+  p.rect(0, GROUND, W, H - GROUND, c('wood', 2));
+  for (let y = GROUND; y < H; y += 8) p.rect(0, y, W, 1, c('wood', 1));
+  p.rect(0, GROUND, W, 2, c('wood', 4));
 }
 
 /** A ring with banners: a red wall with gold pennants and a string of bunting, and a sandy floor inside a gold oval. Bright and cheerful. */

@@ -1,0 +1,124 @@
+{
+ "version": 1,
+ "game": "near-far",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU0PzQNN"
+  },
+  {
+   "scene": 3,
+   "keys": "BE0KzQNL"
+  },
+  {
+   "scene": 4,
+   "keys": "BE0PzQNN"
+  },
+  {
+   "scene": 3,
+   "keys": "BE0="
+  },
+  {
+   "scene": 5,
+   "keys": "BE0KzQNNCs0DOQK5AE1GzQNL"
+  },
+  {
+   "scene": 6,
+   "keys": "BEsKywNN"
+  },
+  {
+   "scene": 7,
+   "keys": "BE0KzQNN"
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: Into the Distance (near)"
+  },
+  {
+   "scene": 3,
+   "title": "Level 1: Into the Distance (far)"
+  },
+  {
+   "scene": 4,
+   "title": "Level 1: Into the Distance (near again)"
+  },
+  {
+   "scene": 3,
+   "title": "Level 1: Into the Distance (far)"
+  },
+  {
+   "scene": 5,
+   "title": "Level 2: Past the Cliff (near, before the cliff)"
+  },
+  {
+   "scene": 6,
+   "title": "Level 2: Past the Cliff (far)"
+  },
+  {
+   "scene": 7,
+   "title": "Level 2: Past the Cliff (near, past the cliff)"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 7920,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 896,
+    "time": 14933.333333333148
+   },
+   {
+    "title": "Level 1: Into the Distance (near)",
+    "frame": 2125,
+    "time": 35416.66666666724
+   },
+   {
+    "title": "Level 1: Into the Distance (far)",
+    "frame": 2570,
+    "time": 42833.33333333283
+   },
+   {
+    "title": "Level 1: Into the Distance (near again)",
+    "frame": 2870,
+    "time": 47833.3333333321
+   },
+   {
+    "title": "Level 2: Past the Cliff (near, before the cliff)",
+    "frame": 3296,
+    "time": 54933.333333331066
+   },
+   {
+    "title": "Level 2: Past the Cliff (far)",
+    "frame": 4156,
+    "time": 69266.66666666394
+   },
+   {
+    "title": "Level 2: Past the Cliff (near, past the cliff)",
+    "frame": 4440,
+    "time": 73999.99999999865
+   },
+   {
+    "title": "Ending",
+    "frame": 4641,
+    "time": 77349.99999999962
+   },
+   {
+    "title": "Credits",
+    "frame": 6848,
+    "time": 114133.33333334366
+   }
+  ]
+ }
+}

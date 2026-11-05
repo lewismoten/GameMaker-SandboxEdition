@@ -1,7 +1,7 @@
 // Mac test for the Pocket Player's play loop (src/gmcore.h). It reads the same data files the board
 // gets, replays a key script, and prints the character's state after every tick, so
 // web/scripts/pocketHostCheck.ts can compare it with the real engine.
-//   hosttest <data dir> <game id> <key script>     key script lines: "K <tick> <scan, +128 for a release>"
+//   hosttest <data dir> <game id> <key script>     key script lines: "K <tick> <scan, +128 for a release>", "R <seed>", "T <ticks>"
 // Build: c++ -std=c++17 -O1 -I../src hosttest.cpp -o hosttest
 #include <stdio.h>
 #include <stdlib.h>
@@ -80,13 +80,16 @@ int main(int argc, char** argv) {
     int t, k;
     if (sscanf(line, "K %d %d", &t, &k) == 2) evs.push_back({t, k});
     if (sscanf(line, "T %d", &t) == 1) maxTick = t;
+    unsigned seed;
+    if (sscanf(line, "R %u", &seed) == 1) w.seed = seed;
   }
   fclose(f);
   w.begin();
   size_t e = 0;
   for (int t = 1; t <= maxTick; t++) {
     while (e < evs.size() && evs[e].tick == t) {
-      w.key(evs[e].key & 127, !(evs[e].key & 128));
+      if (evs[e].key >= 256) w.dropSlot = evs[e].key - 256;  // the picker's choice, ahead of the D press
+      else w.key(evs[e].key & 127, !(evs[e].key & 128));
       e++;
     }
     char code = w.tick();

@@ -128,7 +128,7 @@ export async function exportDialog(): Promise<'restore' | undefined> {
           h('button', { type: 'button', onclick: () => setAll(true) }, 'Everything'),
           h('button', { type: 'button', onclick: () => setAll(false) }, 'Nothing'),
         ),
-        h('div', { class: 'backup-scroll' }, h('ul', { class: 'backup-list' }, ...rows)),
+        h('div', { class: 'backup-scroll', 'data-list-area': 'what to back up' }, h('ul', { class: 'backup-list' }, ...rows)),
       ),
       h(
         'div',

@@ -30,8 +30,10 @@ export const PALETTES: Chapter = {
   </ul>
   <p>Try the same trick for seasons (green, gold and white), underwater (everything pushed
   toward blue-green, the brightest colors pulled down), or a haunted version of a level you
-  already built (grays, a sickly green and one red you keep for eyes).</p>
-  ${onCd('DAYNIGHT', 'SAMEHOUS')}
+  already built (grays, a sickly green and one red you keep for eyes). A far plane is the same
+  trick: draw the far scene’s things half the size, and give it a palette with every color mixed
+  part of the way toward a pale sky, so a trail that loads it looks like a step into the distance.</p>
+  ${onCd('DAYNIGHT', 'SAMEHOUS', 'NEARFAR')}
   <h2>Plan in ramps</h2>
   <p>Palette swaps work best when the palette is planned, not grown. Lay it out in
   <i>ramps</i>: short runs of shades of one material, dark to light. Five shades of grass,

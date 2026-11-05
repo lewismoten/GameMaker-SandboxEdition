@@ -1,8 +1,9 @@
 // The Game-Maker play loop for one character on one map, with no Arduino or display code in it, so
 // the same file builds for the board and for the Mac test (host/hosttest.cpp). It is a port of the
 // parts of web/packages/engine/src/engine (character.ts, keys.ts, touch.ts, scroll.ts, scene.ts,
-// render.ts), which themselves follow code/GM/PLAYGAME.C. Only what First Steps uses is ported:
-// no monsters, sounds, pick up / drop, joystick or inventory. Names follow the TypeScript.
+// render.ts, monsters.ts), which themselves follow code/GM/PLAYGAME.C. Monsters are in gmmon.h (the
+// rest of World's member functions). Not ported: sounds and joystick.
+// Names follow the TypeScript.
 // Game ticks run at 18.2 Hz. Data comes from the game's real files: steps.bbl (blocks), hero.cbl
 // (character blocks), hero.chr (sequences) and the .map files.
 #pragma once
@@ -18,7 +19,11 @@ constexpr int MAXGRAV = 11, GRAVSPEED = 1, SCROLLPERMOVE = 6, SCRSPDX = 40, SCRS
 constexpr int SOLTOP = 1, SOLRIG = 2, SOLBOT = 4, SOLLEF = 8;
 constexpr int IDLESEQ = 0, DIESEQ = 1, HURTSEQ = 2, PICKUPSEQ = 3, DROPSEQ = 4;
 constexpr int BLOCK_BYTES = 420, SEQ_BYTES = 185, FRAME_BYTES = 17;
+constexpr int MAXINV = 10;
 constexpr int MAXLINKS = 16, MAXLEVELS = 12;
+constexpr int LASTMM = 200, LASTMON = 64, LASTSL = 20, MAXMARCH = 10, MONSTER_BYTES = 300;
+constexpr int ATTACKX = 8, ATTACKY = 5, CHARPOWER = 100, MAXMONSSHOWN = 50, MONMOVESPEED = 1;
+constexpr int NORMALMOVEMENT = 0, ATTACKMOVEMENT = 1;
 
 inline int u16(const uint8_t* p) { return p[0] | (p[1] << 8); }
 inline int i16(const uint8_t* p) { return (int16_t)(p[0] | (p[1] << 8)); }
@@ -29,8 +34,17 @@ struct Frame { int x, y, orient, pic1, pic2, pause; };
 
 // A block's attribute bytes (after the 400 pixels); see formats/blocks.ts readBlock.
 struct Attr {
-  int solid, scorePts, chHitPt, nextBl, ntime, touchBl, grav, obj, effect, eamt;
+  int solid, scorePts, chHitPt, nextBl, ntime, touchBl, grav, obj, effect, eamt, birthMon, birthTime;
 };
+
+// minfo: one live monster (monsters.ts MonInfo). curx[0]/cury[0] is the map block, [1] the pixel offset.
+struct MonInfo {
+  int fromchar, deltaX, deltaY, curx[2], cury[2], targetX, targetY, offl, offs, curMarch, curPic, orient;
+  int scrX, scrY, dest;
+  uint32_t nextAni, nextMove, birthTime;
+};
+struct MonSlot { uint8_t monnum, curx, cury; };  // mm[]: the monster number of a slot (LASTMON: empty) and where it began
+struct MonDraw { int16_t x, y; uint8_t pic, orient; };  // a monster sprite to draw this frame
 
 struct Touch { int bx[6], by[6], num[6]; };
 
@@ -51,13 +65,18 @@ struct Scroll {
 
 struct KeyEnt { int key, seq, frame; };
 
-typedef bool (*MapLoader)(void* user, int level, uint8_t* blocks /* 10000 block numbers */);
+// Fills the 10000 block numbers; mons (10000 monster slot numbers, LASTMM = none) and mm (LASTMM x 3 bytes)
+// only for a level with monsters (the function returns with *hasMons set).
+typedef bool (*MapLoader)(void* user, int level, uint8_t* blocks, uint8_t* mons, uint8_t* mm, bool* hasMons);
 
 struct World {
   // Assets (not owned).
   const uint8_t* bbl = nullptr;  // 150 x 420
   const uint8_t* cbl = nullptr;  // 50 x 420
   const uint8_t* chr = nullptr;  // hero.chr: 20 sequences of 185 bytes, then x, y, cframe, cseq, inv, meters
+  const uint8_t* mon = nullptr;  // the .mon file: nmon records of 300 bytes
+  const uint8_t* mbl = nullptr;  // monster blocks: nmbl x 420 bytes
+  int nmon = 0, nmbl = 0;
   MapLoader loadMap = nullptr;
   void* loadUser = nullptr;
   Level levels[MAXLEVELS];
@@ -69,6 +88,18 @@ struct World {
   uint8_t map[MLEN * MWID];
   uint8_t blkmap[BACKBL + 1];
   uint32_t nxtchg[BACKBL + 1];
+  // Monsters (monsters.ts, world.ts).
+  bool noMons = true;
+  uint8_t mapMon[MLEN * MWID];  // monster slot per cell
+  MonSlot mm[LASTMM];
+  MonInfo mi[LASTMM];
+  int firstEmptyMM = 0, monsolid = 0, mmSolid = LASTMM;
+  int nblkMon = 0, blkMonBl[BACKBL];
+  uint32_t blkMonNext[BACKBL];
+  uint8_t birthFlag[BACKBL + 1];
+  uint32_t seed = 1, rngA = 1;
+  int ndraw = 0;
+  MonDraw draw[MAXMONSSHOWN];
   uint32_t clock = 1, gclk = 1;
   int mx = 0, my = 0;
   Scroll sc;
@@ -79,6 +110,7 @@ struct World {
   // The character: x[0]/y[0] the map block, x[1]/y[1] the pixel offset in it.
   int cx[2], cy[2], cframe = 0, cseq = 0;
   int8_t seqon[MAXSEQ];
+  int inv[MAXINV];  // carried object blocks; BACKBL = free slot, BACKBL + 1 = not set up yet
   int meter[30];
   int hitpts = -1, lives = -1, score = 0;
   bool update = false, topthere = false, bottomthere = false;
@@ -105,13 +137,16 @@ struct World {
   int seqNorepeat(int s) const { return (int8_t)seqRaw(s)[178]; }
   int seqMomentum(int s) const { return (int8_t)seqRaw(s)[179]; }
 
-  Attr attr(int b) const {
+  Attr attr(int b) const { return attrOf(bbl, nbl, b); }
+  static Attr attrOf(const uint8_t* base, int n, int b) {
     Attr a;
-    if (b < 0 || b >= nbl) {
-      a = {0, 0, 0, b, 0, b, 0, 0, 0, 0};  // the empty block (padBlocks)
+    if (b < 0 || b >= n) {
+      a = {0, 0, 0, b, 0, b, 0, 0, 0, 0, 0, 0};  // the empty block (padBlocks)
       return a;
     }
-    const uint8_t* p = bbl + b * BLOCK_BYTES + 400;
+    const uint8_t* p = base + b * BLOCK_BYTES + 400;
+    a.birthMon = p[0];
+    a.birthTime = i16(p + 1);
     a.solid = p[5];
     a.scorePts = i16(p + 7);
     a.chHitPt = i16(p + 9);
@@ -281,6 +316,55 @@ struct World {
     return 1;
   }
 
+  // checkseq_fortie: turns on/off every sequence tied to `block`.
+  void checkSeqForTie(int block, bool setting) {
+    for (int i = 0; i < MAXSEQ; i++) if (seqBloc(i) == block) seqon[i] = setting;
+  }
+  // really_checktouch for one cell: false when refused (a counter is empty).
+  bool reallyCheckTouch(int x, int y, int bnum) {
+    if (x == MLEN) return true;
+    Attr b = attr(bnum);
+    if (!doBlockTouchChar(b)) return false;
+    if (bnum != b.touchBl && onscrn(x, y)) { map[y * MLEN + x] = (uint8_t)b.touchBl; gen++; }
+    return true;
+  }
+  // PickupBloc: takes the first touched object block whose touch isn't refused into the next free slot.
+  bool pickupBlock() {
+    if (inv[MAXINV - 1] != BACKBL) return false;
+    int spot = 0;
+    while (spot < MAXINV && inv[spot] != BACKBL) spot++;
+    Touch t = getTouch();
+    for (int j = 0; j < 6; j++) {
+      if (t.bx[j] == MLEN || !attr(t.num[j]).obj) continue;
+      if (reallyCheckTouch(t.bx[j], t.by[j], t.num[j])) {
+        inv[spot] = t.num[j];
+        checkSeqForTie(t.num[j], true);
+        return true;
+      }
+    }
+    return false;
+  }
+  // DropBloc: puts the carried block in place `dropSlot` (chosen on the picker; -1 = Esc) at the character's
+  // cell and closes the gap. Returns true when something was dropped.
+  int dropSlot = -1;
+  bool dropBlock() {
+    topthere = false;
+    bottomthere = false;
+    int chosen = dropSlot;
+    dropSlot = -1;
+    bool dropped = false;
+    if (chosen >= 0 && chosen < MAXINV && inv[chosen] != BACKBL) {
+      map[cy[0] * MLEN + cx[0]] = (uint8_t)inv[chosen];
+      gen++;
+      checkSeqForTie(inv[chosen], false);
+      for (int i = chosen; i < MAXINV - 1; i++) inv[i] = inv[i + 1];
+      inv[MAXINV - 1] = BACKBL;
+      dropped = true;
+    }
+    keydn[seqKey(DROPSEQ) >> 8] = 0;
+    return dropped;
+  }
+
   void checkTouch() {
     Touch t = getTouch();
     for (int l = 0; l < 6; l++) {
@@ -408,10 +492,10 @@ struct World {
   }
   void onGround(int s) {
     int gravdir = gravityBlock();
-    if ((s & SOLBOT) && gravy > 0) gravy = 0;
-    if ((s & SOLTOP) && gravy < 0) gravy = 0;
-    if ((s & SOLRIG) && gravx > 0) gravx = 0;
-    if ((s & SOLLEF) && gravx < 0) gravx = 0;
+    if (((monsolid & SOLBOT) || (s & SOLBOT)) && gravy > 0) gravy = 0;
+    if (((monsolid & SOLTOP) || (s & SOLTOP)) && gravy < 0) gravy = 0;
+    if (((monsolid & SOLRIG) || (s & SOLRIG)) && gravx > 0) gravx = 0;
+    if (((monsolid & SOLLEF) || (s & SOLLEF)) && gravx < 0) gravx = 0;
     if (!seqMomentum(cseq)) {
       if (!(gravdir & SOLBOT || gravdir & SOLTOP)) gravy = gravy * 5 / 6;
       if (!(gravdir & SOLLEF || gravdir & SOLRIG)) gravx = gravx * 5 / 6;
@@ -454,7 +538,7 @@ struct World {
       int oldframe = cframe, oldseq = cseq;
       if (cframe == -1) {
         if (meter[cseq] < INF_REPEAT && cseq > 4) meter[cseq]--;
-        if (cseq == DROPSEQ || cseq == PICKUPSEQ) {  // nothing to drop or pick up in First Steps
+        if ((cseq == DROPSEQ && !dropBlock()) || (cseq == PICKUPSEQ && !pickupBlock())) {  // nothing happened: back to idle
           cseq = IDLESEQ;
           keystkptr = 0;
           curkey = 0;
@@ -486,6 +570,10 @@ struct World {
         }
         Frame f = currentFrame();
         nextAni = clock + f.pause;
+        if (f.pic2 == MONBL && !noMons) {  // a frame that fires a monster (a shot, a bomb...)
+          charBirthMon(cx[0], cy[0] + f.y / BLEN - 1, f.pic1);
+          ty = 0;
+        } else {
         curtop = f.pic1;
         curbottom = f.pic2;
         if (seqMomentum(cseq)) {
@@ -499,6 +587,7 @@ struct World {
           ty = f.y;
           if (tx != 0 || ty != 0) { charmoved = true; netx = tx; nety = ty; }
         }
+        }
       } while (currentFrame().pic2 > CHARBL && guard++ < 1000);
       if (cseq != oldseq || cframe != oldframe) update = true;
     }
@@ -506,7 +595,7 @@ struct World {
     tx += gravx;
     ty += gravy;
 
-    if (charmoved || gravmoved || update) {
+    if (charmoved || gravmoved || monsolid || update) {
       int ocx = cx[1], ocy = cy[1], ox = cx[0], oy = cy[0];
       int dtx = tx > MAXGRAV ? MAXGRAV : tx < -MAXGRAV ? -MAXGRAV : tx;
       int dty = ty > MAXGRAV ? MAXGRAV : ty < -MAXGRAV ? -MAXGRAV : ty;
@@ -523,6 +612,15 @@ struct World {
       cy[1] = ocy;
       cx[0] = ox;
       cy[0] = oy;
+
+      // A solid monster pushing from one side (chkMonChr set monsolid) puts the character in the cell next to it.
+      if (!noMons && mmSolid < LASTMM) {
+        const MonInfo& m = mi[mmSolid];
+        if ((monsolid & SOLRIG) && !(monsolid & SOLLEF)) { cx[1] = m.curx[1]; cx[0] = m.curx[0] - 1; tx = 0; }
+        if ((monsolid & SOLLEF) && !(monsolid & SOLRIG)) { cx[1] = m.curx[1]; cx[0] = m.curx[0] + 1; tx = 0; }
+        if ((monsolid & SOLTOP) && !(monsolid & SOLBOT)) { cy[1] = m.cury[1]; cy[0] = m.cury[0] + 1; ty = 0; }
+        if ((monsolid & SOLBOT) && !(monsolid & SOLTOP)) { cy[1] = m.cury[1]; cy[0] = m.cury[0] - 1; ty = 0; }
+      }
 
       cx[1] += tx;
       normalizeChr();
@@ -632,9 +730,14 @@ struct World {
     }
     return amt;
   }
-  // ShiftEverything for the character only (there are no monsters here).
+  // ShiftEverything: the monsters' and the character's screen positions follow the scrolled map.
   bool shiftEverything(int shx, int shy) {
     bool moveChar = false;
+    for (int l = 0; l < LASTMM; l++) {
+      if (mm[l].monnum >= LASTMON || mi[l].scrX == OFFSCRN) continue;
+      mi[l].scrX += shx;
+      mi[l].scrY += shy;
+    }
     if (nexty - oldy == 0 || sgn(shy) == sgn(nexty - oldy)) {
       if (scry != OFFSCRN) scry += shy;
     } else {
@@ -677,12 +780,35 @@ struct World {
     if (moveChar || sc.lsx || sc.lsy) updateCharDrawState();
   }
 
+  // ---- monsters (gmmon.h; monsters.ts) -------------------------------------------------------
+  int random(int n) {  // the walkthrough runtime's mulberry32, floor(next() * n)
+    rngA += 0x6d2b79f5u;
+    uint32_t t = rngA;
+    t = (t ^ (t >> 15)) * (t | 1);
+    t ^= t + (t ^ (t >> 7)) * (t | 61);
+    uint32_t r = t ^ (t >> 14);
+    return (int)(((uint64_t)r * (uint64_t)n) >> 32);
+  }
+  const uint8_t* monAt(int n) const { return n >= 0 && n < nmon && mon ? mon + n * MONSTER_BYTES : nullptr; }
+  void resetMonInfo(int m);
+  int monPicNum(int m) const;
+  int birthMon(int m, int monNum, int x, int y);
+  bool killMon(int m);
+  void blockBirthMonsters();
+  void charBirthMon(int x, int y, int monNum);
+  bool monEndPath(int m, const uint8_t* mo);
+  bool chkMonChr(int m);
+  int doCollision(int m1, int m2, int where);
+  void moveAllMonsters();
+  void buildDrawList();
+
   // ---- scenes (scene.ts, gameSim.ts) --------------------------------------------------------
   void startGame() {
     hitpts = -1;
     lives = -1;
     score = 0;
     for (int& m : meter) m = -1;
+    for (int& v : inv) v = BACKBL + 1;
     clock = 1;
     gclk = 1;
     ticks = 0;
@@ -695,12 +821,23 @@ struct World {
   bool enterLevel(int lv, int sx, int sy) {
     level = lv;
     gen++;
-    if (!loadMap || !loadMap(loadUser, lv, map)) return false;
+    bool hasMons = false;
+    memset(mapMon, LASTMM, sizeof mapMon);
+    for (auto& s : mm) s = {LASTMON, 0, 0};
+    uint8_t mmBytes[LASTMM * 3];
+    if (!loadMap || !loadMap(loadUser, lv, map, mapMon, mmBytes, &hasMons)) return false;
+    noMons = !hasMons;
+    if (hasMons)
+      for (int l = 0; l < LASTMM; l++) mm[l] = {mmBytes[l * 3], mmBytes[l * 3 + 1], mmBytes[l * 3 + 2]};
+    firstEmptyMM = 0; monsolid = 0; mmSolid = LASTMM;
+    rngA = seed;
     // A meter of -20000 marks a sequence the previous character did not define.
+    if (inv[0] == BACKBL + 1) for (int i = 0; i < MAXINV; i++) inv[i] = chr[3714 + i];
     for (int i = 0; i < MAXSEQ; i++) {
       seqon[i] = seqBloc(i) == BACKBL;
       if (meter[i] == -20000) meter[i] = i16(chr + 3724 + i * 2);
     }
+    for (int i = 0; i < MAXINV; i++) for (int q = 0; q < MAXSEQ; q++) if (seqBloc(q) == inv[i]) seqon[q] = true;
     if (meter[0] == -1) {
       for (int i = 0; i < 5; i++) meter[i] = i16(chr + 3724 + i * 2);
       for (int i = 5; i < MAXSEQ; i++) meter[i] = seqKey(i) > 0 ? i16(chr + 3724 + i * 2) : -20000;
@@ -720,12 +857,21 @@ struct World {
     my = sy - SCRNBWID / 2;
     if (mx < 0) mx += MLEN;
     if (my < 0) my += MWID;
+    for (int l = 0; l < LASTMM; l++) {
+      resetMonInfo(l);
+      birthMon(l, mm[l].monnum, mm[l].curx, mm[l].cury);
+      mi[l].fromchar = 0;
+    }
     for (int l = 0; l < BACKBL; l++) {
       blkmap[l] = (uint8_t)l;
       nxtchg[l] = attr(l).ntime > 0 ? clock + attr(l).ntime : 0xffffffffu;
     }
     blkmap[BACKBL] = BACKBL;
     nxtchg[BACKBL] = 0xffffffffu;
+    nblkMon = 0;
+    if (!noMons)
+      for (int l = 0; l < BACKBL; l++)
+        if (attr(l).birthTime > 0) { blkMonBl[nblkMon] = l; blkMonNext[nblkMon++] = clock + attr(l).birthTime; }
     resetKeys();
     int k = seqKey(cseq);
     if (k >= 0 && k < 128) keydn[k] = 1;
@@ -743,7 +889,9 @@ struct World {
     startGame();
     prevToX = levels[0].startX;
     prevToY = levels[0].startY;
-    return enterLevel(0, levels[0].startX, levels[0].startY);
+    bool ok = enterLevel(0, levels[0].startX, levels[0].startY);
+    buildDrawList();
+    return ok;
   }
 
   void key(int scan, bool down) {
@@ -759,11 +907,20 @@ struct World {
   // One game tick (GameSim.tick). Returns 0, 'D' (died and restarted), 'L' (entered the next level)
   // or 'W' (the game is won).
   char tick() {
+    char r = tickInner();
+    buildDrawList();
+    return r;
+  }
+  char tickInner() {
     if (won) return 'W';
     ticks++;
     clock++;
     for (int i = 0; i < 8; i++)
       if (doScroll) drawScroll();
+    if (!noMons) {
+      blockBirthMonsters();
+      moveAllMonsters();
+    }
     if (npending && (!seqGround(cseq) || cframe == 0)) {
       for (int i = 0; i < npending; i++) simKeyPress(pending[i]);
       npending = 0;
@@ -776,6 +933,8 @@ struct World {
     changeBlocks();
     updateCharDrawState();
     doScroll = changeScroll() != 0;
+    monsolid = 0;
+    mmSolid = LASTMM;
     Touch t = getTouch();
     const Level& L = levels[level];
     int taken = -1;
@@ -820,10 +979,14 @@ struct World {
       x += n;
       xx += n;
     }
+    for (int i = 0; i < ndraw; i++) {
+      const MonDraw& d = draw[i];
+      if (d.pic < nmbl && gy >= d.y - sc.lsy && gy < d.y - sc.lsy + BLEN) sprite(out, gy, d.x - sc.lsx, d.y - sc.lsy, d.orient, mbl + d.pic * BLOCK_BYTES);
+    }
     if (scrx > OFFSCRN) {
       int orient = currentFrame().orient;
-      if (curtop < CHARBL) sprite(out, gy, scrx - sc.lsx, scry - BLEN - sc.lsy, orient & 15, curtop);
-      if (curbottom < CHARBL) sprite(out, gy, scrx - sc.lsx, scry - sc.lsy, orient >> 4, curbottom);
+      if (curtop < CHARBL) sprite(out, gy, scrx - sc.lsx, scry - BLEN - sc.lsy, orient & 15, cbl + curtop * BLOCK_BYTES);
+      if (curbottom < CHARBL) sprite(out, gy, scrx - sc.lsx, scry - sc.lsy, orient >> 4, cbl + curbottom * BLOCK_BYTES);
     }
   }
   static int orientIndex(int orient, int x, int y) {
@@ -840,10 +1003,9 @@ struct World {
       default: return y * BLEN + x;
     }
   }
-  void sprite(uint8_t* out, int gy, int sx, int sy, int orient, int blk) const {
+  void sprite(uint8_t* out, int gy, int sx, int sy, int orient, const uint8_t* px) const {
     int wy = gy - sy;
     if (wy < 0 || wy >= BLEN) return;
-    const uint8_t* px = cbl + blk * BLOCK_BYTES;
     for (int wx = 0; wx < BLEN; wx++) {
       int X = sx + wx;
       if (X < 0 || X >= SIZEX) continue;
@@ -854,3 +1016,5 @@ struct World {
 };
 
 }  // namespace gm
+
+#include "gmmon.h"

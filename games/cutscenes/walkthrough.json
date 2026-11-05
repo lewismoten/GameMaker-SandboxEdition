@@ -1,0 +1,106 @@
+{
+ "version": 1,
+ "game": "cutscenes",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU0PzT9NHs1JTSjN"
+  },
+  {
+   "scene": 3,
+   "keys": "AU0ZzT9NFM0DSCfIA00="
+  },
+  {
+   "scene": 4,
+   "keys": ""
+  },
+  {
+   "scene": 3,
+   "keys": "AU1azQNIJ8gDTQ=="
+  },
+  {
+   "scene": 5,
+   "keys": ""
+  },
+  {
+   "scene": 3,
+   "keys": "AU2HAc0DSCfIA00="
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: A Scene That Moves On"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: A Menu Room"
+  },
+  {
+   "scene": 4,
+   "title": "Level 2: A Menu Room (tale one)"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: A Menu Room"
+  },
+  {
+   "scene": 5,
+   "title": "Level 2: A Menu Room (tale two)"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: A Menu Room"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 12771,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 896,
+    "time": 14933.333333333148
+   },
+   {
+    "title": "Level 1: A Scene That Moves On",
+    "frame": 2125,
+    "time": 35416.66666666724
+   },
+   {
+    "title": "Level 2: A Menu Room",
+    "frame": 4329,
+    "time": 72149.99999999811
+   },
+   {
+    "title": "Level 2: A Menu Room (tale one)",
+    "frame": 5201,
+    "time": 86683.33333333567
+   },
+   {
+    "title": "Level 2: A Menu Room (tale two)",
+    "frame": 7268,
+    "time": 121133.3333333457
+   },
+   {
+    "title": "Ending",
+    "frame": 9485,
+    "time": 158083.33333333288
+   },
+   {
+    "title": "Credits",
+    "frame": 11697,
+    "time": 194949.99999997808
+   }
+  ]
+ }
+}

@@ -5,48 +5,48 @@
       "id": "spikes",
       "q": "How do I make a block that hurts when touched?",
       "scene": 2,
-      "x": 14,
-      "y": 9,
+      "x": 24,
+      "y": 19,
       "level": 1
     },
     {
       "id": "hurt-once",
       "q": "How do I make a hazard hurt only once?",
       "scene": 2,
-      "x": 26,
-      "y": 9,
+      "x": 36,
+      "y": 19,
       "level": 1
     },
     {
       "id": "pool",
       "q": "How do I make a pool or a pit that costs a life?",
       "scene": 3,
-      "x": 13,
-      "y": 10,
+      "x": 23,
+      "y": 20,
       "level": 2
     },
     {
       "id": "way-in",
       "q": "How do I choose where my hero starts again after he falls?",
       "scene": 3,
-      "x": 3,
-      "y": 9,
+      "x": 13,
+      "y": 19,
       "level": 2
     },
     {
       "id": "planks",
       "q": "How do I give my hero a safe path over a hazard?",
       "scene": 4,
-      "x": 10,
-      "y": 8,
+      "x": 20,
+      "y": 18,
       "level": 3
     },
     {
       "id": "bridge",
       "q": "How do I put a bridge over a pool?",
       "scene": 4,
-      "x": 21,
-      "y": 10,
+      "x": 31,
+      "y": 20,
       "level": 3
     }
   ],

@@ -20,10 +20,10 @@ import { skyOf, type Pal } from './palette';
 /** The counter a silver key adds to. */
 export const SILVER_KEYS = KEYS + 1;
 
-type Ramp = 'gold' | 'white';
+export type Ramp = 'gold' | 'white' | 'green';
 
 /** The key's shape in a ramp, with a dark outline so a silver key shows on the sky. */
-function keyPicture(pal: Pal, ramp: Ramp): Pixels {
+export function keyPicture(pal: Pal, ramp: Ramp): Pixels {
   const p = new Pixels(20, 20, skyOf(pal));
   const m = pal.r(ramp);
   const hi = m[m.length - 1];

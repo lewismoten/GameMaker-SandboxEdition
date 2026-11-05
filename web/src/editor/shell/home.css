@@ -914,7 +914,7 @@ a.button.with-ico {
   overflow: auto;
 }
 
-.health-report h4 {
+.health-report h3 {
   margin: 14px 0 4px;
 }
 
@@ -1104,4 +1104,12 @@ a.button.with-ico {
   padding: 3px 6px;
   font: inherit;
   color: var(--text);
+}
+
+/* a game the search found by words inside it says where (homeDeepSearch.ts) */
+.tile-hint {
+  display: block;
+  font-size: 0.8em;
+  font-style: italic;
+  overflow-wrap: anywhere;
 }

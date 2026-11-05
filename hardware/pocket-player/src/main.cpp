@@ -261,6 +261,13 @@ static R heroRect() {
 }
 
 static struct { int mx, my, nx, ny, lsx, lsy; uint32_t gen; R hero; bool valid; } last;
+// The screen rectangles of the monsters drawn last frame (a moved or gone monster is drawn over again).
+static R lastMon[gm::MAXMONSSHOWN];
+static int nLastMon = 0;
+static R monRect(const gm::MonDraw& d) {
+  int gx = d.x - world.sc.lsx, gy = d.y - world.sc.lsy;
+  return {gx * 3 / 2 - 2, gy * 3 / 2 - 2, (gx + gm::BLEN) * 3 / 2 + 3, (gy + gm::BLEN) * 3 / 2 + 3};
+}
 static uint8_t lastPad = 0, lastBtn = 0;
 static uint16_t lastTile = 0;
 
@@ -279,6 +286,11 @@ static void drawFrame(bool forceFull) {
   bool full = forceFull || !last.valid || last.mx != world.mx || last.my != world.my || last.nx != s.nx || last.ny != s.ny || last.lsx != s.lsx ||
               last.lsy != s.lsy || last.gen != world.gen;
   R hero = heroRect();
+  R curMon[gm::MAXMONSSHOWN];
+  int nCurMon = world.ndraw;
+  for (int i = 0; i < nCurMon; i++) curMon[i] = monRect(world.draw[i]);
+  // Many moving monsters: one full redraw is cheaper than a rectangle each.
+  if (!full && nCurMon + nLastMon > 6) full = true;
   if (full) {
     drawRegion(0, 0, VIEW_W, VIEW_H);
     drawControls(0, 0, VIEW_W, VIEW_H);
@@ -287,6 +299,11 @@ static void drawFrame(bool forceFull) {
     if (!emptyR(dirty)) {
       drawRegion(dirty.x0, dirty.y0, dirty.x1, dirty.y1);
       drawControls(dirty.x0, dirty.y0, dirty.x1, dirty.y1);
+    }
+    for (int i = 0; i < nCurMon + nLastMon; i++) {
+      const R& r = i < nCurMon ? curMon[i] : lastMon[i - nCurMon];
+      drawRegion(r.x0, r.y0, r.x1, r.y1);
+      drawControls(r.x0, r.y0, r.x1, r.y1);
     }
     // A control whose state changed is drawn again over the game behind it.
     bool padCh = controls.padDirs != lastPad, btnCh = controls.btnDown != lastBtn, tileCh = controls.tileDown != lastTile;
@@ -304,6 +321,8 @@ static void drawFrame(bool forceFull) {
     }
   }
   last = {world.mx, world.my, s.nx, s.ny, s.lsx, s.lsy, world.gen, hero, true};
+  for (int i = 0; i < nCurMon; i++) lastMon[i] = curMon[i];
+  nLastMon = nCurMon;
   lastPad = controls.padDirs;
   lastBtn = controls.btnDown;
   lastTile = controls.tileDown;
@@ -437,6 +456,7 @@ static bool startGame(int g) {
   if (!gm::parseCfg(text.c_str(), world, cfg)) return false;
   assets.attach(world, cfg, readFile, inflateRaw);
   assets.palName[0] = 0;
+  world.seed = micros() ^ (millis() << 7);  // the monsters that wander pick differently each play
   if (!world.begin()) return false;
   for (int i = 0; i < 256; i++) {
     auto v8 = [](uint8_t c) { c &= 63; return (uint8_t)((c << 2) | (c >> 4)); };

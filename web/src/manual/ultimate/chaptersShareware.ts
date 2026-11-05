@@ -66,6 +66,7 @@ export const SHAREWARE: Chapter = {
   <i>Blinky 2</i>’s intro and ending, which share one map).</p>
   <p>The same one-screen room with several doors is a level select, a hub of minigames or a
   music room: each door a link to its own scene, and each scene its own song.</p>
+  ${onCd('CUTSCENE')}
   <h2>Choosing a hero by link</h2>
   <p>Leave a scene’s character slot empty and PLAYGAME keeps the character it already has. So a
   select screen whose links each lead into a copy of the first level with a different character
@@ -106,7 +107,7 @@ export const SHAREWARE: Chapter = {
   (<i>Ninja Tuck</i>), a patrol that slows into each corner by giving each leg its own speed, and a
   crowd of the same creature with slightly different picture times so they never move in step
   (<i>Penguin Pete</i>) all look alive for no extra pictures.</p>
-  ${onCd('CLOCK', 'COUNTDWN')}
+  ${onCd('CLOCK', 'COUNTDWN', 'BLOCKBRN')}
   <h2>Transitions with the palette</h2>
   <p>An animation frame that changes only the palette costs a few hundred bytes, however big the
   picture. Fade a picture in or out, flash it or cycle its colors that way, and the whole
@@ -221,6 +222,7 @@ export const SHAREWARE: Chapter = {
   block showing the roll, so it can’t be thrown twice. Let the faces add 1 to 6 to a special
   counter, and gates further on that take 4 or 6 make a board game: how far the player gets
   depends on the roll.</p>
+  ${onCd('ROLLDICE')}
   <h2>A friend who follows</h2>
   <p>A monster that moves toward the hero a little slower than his walk, with harmless pictures
   and power 100 or more, trots along behind him. Give it more power than the enemies and it

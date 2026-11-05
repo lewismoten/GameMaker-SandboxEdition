@@ -40,7 +40,7 @@ export async function pickOnMap(project: Project, game: Game, scene: number, cur
       close({ x: Math.floor(((e.clientX - r.left) / r.width) * MLEN), y: Math.floor(((e.clientY - r.top) / r.height) * MWID) });
     });
     return [
-      h('div', { style: 'max-height:70vh;overflow:auto' }, canvas),
+      h('div', { style: 'max-height:70vh;overflow:auto', dataset: { listArea: '' } }, canvas),
       label,
       h('div', { class: 'buttons' }, h('button', { onclick: () => close(undefined) }, 'Cancel')),
     ];

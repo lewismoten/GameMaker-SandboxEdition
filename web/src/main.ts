@@ -4,6 +4,7 @@
 // (desk/, retro/, vga/) or today's web (editor/shell, the editors) is imported when it is
 // first shown. The editors themselves load when a game is opened (or the desk's PC opens one).
 import './editor/shell/editor.css';
+import './editor/shell/dialogsPhone.css';
 import { h, clear } from './editor/core/ui';
 import type { Workspace } from './editor/shell/workspace';
 import { watchForUpdates } from './devReload';

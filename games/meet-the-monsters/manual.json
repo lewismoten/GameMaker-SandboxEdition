@@ -5,32 +5,32 @@
       "id": "path",
       "q": "How do I make a monster walk a path?",
       "scene": 2,
-      "x": 14,
-      "y": 9,
+      "x": 24,
+      "y": 19,
       "level": 1
     },
     {
       "id": "hurts",
       "q": "How do I make a monster that hurts when touched?",
       "scene": 2,
-      "x": 33,
-      "y": 9,
+      "x": 43,
+      "y": 19,
       "level": 1
     },
     {
       "id": "pop",
       "q": "How do I make a monster my hero can pop?",
       "scene": 3,
-      "x": 13,
-      "y": 10,
+      "x": 23,
+      "y": 20,
       "level": 2
     },
     {
       "id": "pit",
       "q": "How do I make a monster that can only be reached from above?",
       "scene": 3,
-      "x": 35,
-      "y": 10,
+      "x": 45,
+      "y": 20,
       "level": 2
     }
   ],

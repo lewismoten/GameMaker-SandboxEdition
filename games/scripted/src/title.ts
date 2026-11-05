@@ -1,4 +1,4 @@
-// THE SHOW's own title picture, in the Foes and Bosses look (the kit's arena): a little stage with its
+// THE SHOW's own title picture, in the Showcase Tricks look (the kit's neon): a little stage with its
 // curtains and valance, Pip and Blu on it saying HI to each other, and Kit and the door on either side.
 import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { scaleBlit } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
@@ -9,10 +9,10 @@ import { skyOf, type Pal } from '../../kit/starter/palette';
 import { W } from '../../kit/starter/screens';
 import { backdrop, frameOf, lookOf } from '../../kit/starter/titleStyles';
 
-/** The title in the arena look: the name, a ribbon, then the stage with its actors, Kit and the door. */
+/** The title in the neon look: the name, a ribbon, then the stage with its actors, Kit and the door. */
 export function titlePicture(pal: Pal, mb: Book, book: Book, hero: Pixels, door: Pixels, name: string, tagline: string): Pixels {
-  const look = lookOf(pal, 'arena');
-  const p = backdrop(pal, 'arena');
+  const look = lookOf(pal, 'neon');
+  const p = backdrop(pal, 'neon');
   const s = name.length > 11 ? 2 : 3;
   outlined(p, Math.round((W - textWidth(name, s)) / 2), 14, name, look.fill, look.outline, s, look.shadow);
   const ribbon = textWidth(tagline) + 20;
@@ -34,6 +34,6 @@ export function titlePicture(pal: Pal, mb: Book, book: Book, hero: Pixels, door:
   put(mb.pics.get('pipsays')!, left + 48, 120, 2);
   put(mb.pics.get('blusays')!, right - 48, 120, 2);
   put(door, 288, 160 - 40, 1);
-  frameOf(p, pal, 'arena');
+  frameOf(p, pal, 'neon');
   return p;
 }

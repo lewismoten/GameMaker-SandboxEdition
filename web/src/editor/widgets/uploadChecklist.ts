@@ -208,7 +208,7 @@ export async function uploadChecklist(project: Project): Promise<void> {
       ),
       h(
         'ol',
-        { class: 'upl-list' },
+        { class: 'upl-list', 'data-list-area': 'checklist' },
         ...APPENDIX_B.map((item, i) => {
           const st = itemState(item, findings, played);
           const auto = st.kind === 'clear' && item.full;

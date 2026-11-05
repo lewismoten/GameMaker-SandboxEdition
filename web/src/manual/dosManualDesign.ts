@@ -123,10 +123,10 @@ export function designPages(shots: GameShot[]): BookletPage[] {
       area), whether it is an object to pick up, what it becomes after a time or when touched,
       what it adds to score, hit points, money, lives or a counter, and which monster it gives
       birth to. Drag one block onto another to copy its attributes.</p>
-      <p class="see"><i>On the Sample CD:</i> <code>SLIPPERY</code> (ice and springs), <code>SMASHIT</code> and <code>DIGIT</code> (blocks that break or dig), <code>SWITCHES</code>, <code>THREETOK</code>, <code>ANDGATE</code> and <code>LOOKWALL</code> (counters and secret walls).</p>
+      <p class="see"><i>On the Sample CD:</i> <code>SLIPPERY</code> (ice and springs), <code>SMASHIT</code> and <code>DIGIT</code> (blocks that break or dig), <code>SWITCHES</code>, <code>THREETOK</code>, <code>ANDGATE</code>, <code>SHOWCNT</code> and <code>LOOKWALL</code> (counters and secret walls), <code>ROLLDICE</code> (a die that stops on a touch), <code>WORDLOCK</code> (a lock that takes words and a tray that gives them back) and <code>POWERKEY</code> (keys of different worth, and doors with a price) and <code>SPECCNTR</code> (a key that only fits the door on its own counter).</p>
       <div class="note"><strong>Time.</strong> Game time runs at about 18 ticks a second: 1092 ticks
       is a minute, and the longest wait, 9999 ticks, is about nine minutes.</div>
-      <p class="see"><i>On the Sample CD:</i> <code>CLOCK</code>, <code>COUNTDWN</code> and <code>WARNFRST</code> use time.</p>`,
+      <p class="see"><i>On the Sample CD:</i> <code>CLOCK</code>, <code>COUNTDWN</code>, <code>WARNFRST</code> and <code>BLOCKBRN</code> (gates that take turns) use time.</p>`,
     ),
     page(
       '3. Designing Games',
@@ -149,7 +149,7 @@ export function designPages(shots: GameShot[]): BookletPage[] {
       <p>Paint a map with background blocks and place up to 200 monsters on it (up to 50 are
       shown on the screen at once). <b>Z</b> zooms out to see the whole map. You can limit
       scrolling to part of the map.</p>
-      <p class="see"><i>On the Sample CD:</i> <code>SCROLL</code>, <code>ONEMAP</code>, <code>OVERHEAD</code> (a top-down room and roads joined by their edges), <code>BLK150</code>, <code>PARALLAX</code> and <code>BELTWAY</code> (scenery that slides past), and <code>HORIZON</code>.</p>`,
+      <p class="see"><i>On the Sample CD:</i> <code>SCROLL</code>, <code>ONEMAP</code>, <code>OVERHEAD</code> (a top-down room and roads joined by their edges), <code>BLK150</code>, <code>PARALLAX</code> and <code>BELTWAY</code> (scenery that slides past), <code>DIAGWRAP</code> (a tilted road that wraps), <code>HORIZON</code>, <code>CORNER</code> (a room drawn from a corner) and <code>NEARFAR</code> (a far plane drawn small and pale).</p>`,
     ),
     page(
       '3. Designing Games',
@@ -163,18 +163,18 @@ export function designPages(shots: GameShot[]): BookletPage[] {
       hit points gained, a monster dies, money gained and spent, a life gained, score up and
       down, and a counter up and down. The Sound Designer also converts <code>.CMF</code> music
       for Game-Maker.</p>
-      <p class="see"><i>On the Sample CD:</i> <code>SOUNDS</code>.</p>
+      <p class="see"><i>On the Sample CD:</i> <code>SOUNDS</code>; <code>OUTLOUD</code> for <code>.VOC</code> voices.</p>
       <h3>Integrator</h3>
       <p>Each square on the Integrator\u2019s screen is a scene. The green ones are the title
       screen and the end of the game. Give each scene its palette, map, block sets, monsters,
       character, sounds and music, then draw links between scenes: a link is a door on one map
       that leads to a spot on another.</p>
-      <p class="see"><i>On the Sample CD:</i> <code>ROOMS</code>, <code>FIRSTGAM</code>, <code>TRYAGAIN</code> and <code>SHOW</code>.</p>
+      <p class="see"><i>On the Sample CD:</i> <code>ROOMS</code>, <code>TEACHTWI</code>, <code>FIRSTGAM</code>, <code>TRYAGAIN</code> and <code>SHOW</code>.</p>
       <p>Pictures and words between levels are <i>multimedia displays</i>: a <code>.GIF</code>,
       an <code>.FLI</code> animation, a <code>.TXT</code> file (30 characters to a line) or a
       <code>.LST</code> list that shows several of them in turn. Each line of a list is a file
       name and the seconds to show it.</p>
-      <p class="see"><i>On the Sample CD:</i> <code>PICTURES</code>, <code>SAYSOMTH</code> and <code>EVRYTALK</code>.</p>`,
+      <p class="see"><i>On the Sample CD:</i> <code>PICTURES</code>, <code>SAYSOMTH</code>, <code>EVRYTALK</code>, <code>CUTSCENE</code> and <code>MAKETITL</code>.</p>`,
     ),
     page(
       '3. Designing Games',

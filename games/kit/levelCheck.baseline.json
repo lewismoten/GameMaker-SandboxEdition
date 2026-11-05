@@ -130,6 +130,9 @@
   "warning start-threat s7 Monster 2 starts 3 blocks from where the hero comes in",
   "warning start-threat s7 Monster 20 starts 2 blocks from where the hero comes in"
  ],
+ "dice": [
+  "warning facing s2 The hero climbs side on"
+ ],
  "goat": [
   "warning shot-prize s2 The hero’s shots destroy prize monster 2 (power 60, shots up to 120)",
   "warning shot-prize s5 The hero’s shots destroy prize monster 2 (power 60, shots up to 120)"

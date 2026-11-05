@@ -63,11 +63,39 @@ async function checkGame(id: string): Promise<string> {
   const ev = (sim as any).event.bind(sim) as (k: number) => void;
   const nextAt = () => (ki < segs[seg].length ? at + segs[seg][ki].delta : Infinity);
   at = 0;
+  // A runaway guard: once a segment's keys are all used, the game gets 2000 more ticks to leave it before the run stops.
+  let lastKeyTick = 0;
+  const skip = new Set<number>();
+  const dropKey = sim.w.chr.sequences[4].key >> 8;
   while (tickNo < limit && !sim.ended) {
+    if (ki >= segs[seg].length && tickNo > lastKeyTick + 2000) break;
     while (seg < segs.length && ki < segs[seg].length && nextAt() === sim.ticks + 1) {
       at = nextAt();
-      script.push(`K ${tickNo + 1} ${segs[seg][ki].key}`);
-      ev(segs[seg][ki].key);
+      const key = segs[seg][ki].key;
+      if (skip.has(seg * 1e6 + ki)) {
+        ki++;
+        continue;
+      }
+      lastKeyTick = tickNo + 1;
+      if (key === dropKey) {
+        // The walkthrough holds the drop picker's keys (Right per column, Down for row two, Enter) after D.
+        // The engine here has no picker window: read the slot from them, hand it over, and leave them out.
+        let col = 0,
+          row = 0,
+          j = ki + 1;
+        for (; j < segs[seg].length && segs[seg][j].key !== 28; j++) {
+          if (segs[seg][j].key === 77) col++;
+          if (segs[seg][j].key === 80) row = 1;
+        }
+        if (j < segs[seg].length) {
+          const slot = row * 5 + col;
+          sim.dropSlot = slot;
+          script.push(`K ${tickNo + 1} ${256 + slot}`);
+          for (let q = ki + 1; q <= j + 1 && q < segs[seg].length; q++) skip.add(seg * 1e6 + q);
+        }
+      }
+      script.push(`K ${tickNo + 1} ${key}`);
+      ev(key);
       ki++;
     }
     tickNo++;
@@ -116,7 +144,7 @@ async function checkGame(id: string): Promise<string> {
   const total = expected.length;
   const dir = join(work, id);
   execFileSync('mkdir', ['-p', dir]);
-  writeFileSync(join(dir, 'keys.txt'), script.join('\n') + `\nT ${total}\n`);
+  writeFileSync(join(dir, 'keys.txt'), `R ${walk.rand.seed}\n` + script.join('\n') + `\nT ${total}\n`);
   writeFileSync(join(dir, 'expected.txt'), expected.join('\n') + '\n');
   let out: string;
   try {

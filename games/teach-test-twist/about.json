@@ -1,0 +1,47 @@
+{
+  "title": "Teach, Test, Twist",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.0",
+  "blurb": "Three tiny levels that show how a level is designed. One idea, a gap in the ground, comes three times: first it is taught where nothing can hurt you, then it is tested with a little danger, then it is twisted into something new. Signs name each step, and the manual shows how each level is made. Play it, then use the pattern in your own levels.",
+  "exe": "TEACHTWI.EXE",
+  "dosName": "TEACHTWI",
+  "sound": "sb",
+  "label": {
+    "background": "#e4eeff",
+    "band": "#2b66c8",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "3 tiny levels",
+    "hours": 1,
+    "background": "#2b66c8",
+    "accent": "#ffd23f",
+    "ink": "#ffffff",
+    "tagline": "Teach it. Test it. Twist it.",
+    "back": "A small explorer in a teal beanie crosses three tiny levels, and each one is a step in designing a level. A gap in the ground is taught safely, tested with spikes at the bottom, and then twisted so the key you need is down inside it. Play it to feel the pattern, then use it in your own levels.",
+    "features": [
+      "Teach, test, twist: a pattern for every level you make",
+      "Signs that name each step as you play",
+      "A manual page for how each level is made"
+    ],
+    "shots": [
+      [
+        "one.map",
+        26,
+        1
+      ],
+      [
+        "three.map",
+        24,
+        1
+      ]
+    ],
+    "rating": "Everyone"
+  },
+  "acceptedFindings": []
+}

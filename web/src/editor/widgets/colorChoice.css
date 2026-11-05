@@ -44,14 +44,22 @@
   z-index: 1;
 }
 
+/* a phone shows all 256 at once: twelve to a row at the smallest comfortable target (24 px), no scrolling */
 @media (max-width: 640px) {
+  .color-zoom-body {
+    max-height: none;
+    overflow: visible;
+    padding: 2px;
+  }
+
   .color-zoom {
-    grid-template-columns: repeat(8, 36px);
-    gap: 3px;
+    grid-template-columns: repeat(12, 24px);
+    gap: 2px;
+    justify-content: center;
   }
 
   .color-zoom button {
-    width: 36px;
-    height: 36px;
+    width: 24px;
+    height: 24px;
   }
 }

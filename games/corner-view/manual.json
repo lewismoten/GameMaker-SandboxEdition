@@ -1,0 +1,71 @@
+{
+  "title": "Corner View",
+  "howDoI": [
+    {
+      "id": "corner-room",
+      "q": "How do I draw a room that looks as if it is seen from a corner?",
+      "scene": 2,
+      "x": 13,
+      "y": 12,
+      "level": 1
+    },
+    {
+      "id": "cube-block",
+      "q": "How do I make a cube that has a top and two sides?",
+      "scene": 2,
+      "x": 17,
+      "y": 12,
+      "level": 1
+    },
+    {
+      "id": "diagonal-wall",
+      "q": "How do I make a wall that runs on a slant?",
+      "scene": 2,
+      "x": 12,
+      "y": 16,
+      "level": 1
+    },
+    {
+      "id": "tall-tower",
+      "q": "How do I draw a tower that is taller than one block?",
+      "scene": 3,
+      "x": 19,
+      "y": 12,
+      "level": 2
+    },
+    {
+      "id": "stair-view",
+      "q": "How do I make steps that look as if they climb?",
+      "scene": 3,
+      "x": 21,
+      "y": 16,
+      "level": 2
+    }
+  ],
+  "pages": [
+    {
+      "head": "Welcome",
+      "html": "<h1>Welcome</h1><p><b>Corner View</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has two short rooms, both drawn as if you were looking at them from one corner: a floor of diamonds, cubes with a top and two sides, and a stair of towers. It takes a few minutes to finish.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each idea is made.</p><h2>The keys</h2><p>The four arrows walk Kit. <kbd>Space</kbd> does nothing. Walk onto the gold diamond to go on. Nothing in this game hurts Kit.</p>"
+    },
+    {
+      "head": "Level 1: The Corner Room",
+      "html": "<h1>Level 1: The Corner Room</h1><p>Kit starts on the green diamond in the middle of a room of cubes. The <b>DIAMOND FLOOR, SQUARE GRID</b> sign says what this is: the floor is drawn in diamonds, but the game under it is still squares. The <b>A CUBE IS ONE BLOCK</b> sign points at the cubes: each one is a diamond top and two sides, in a single 20 by 20 block.</p><p>A wall of cubes climbs to the right, like a wall seen from a corner. Walk straight at it and Kit is stopped. The <b>ARROWS WALK STRAIGHT</b> sign says why: there is no diagonal step. He goes up one, right one, up one, right one, round the open top end of the wall, and down to the gold diamond.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 1 is made</h1><ul><li><b>One picture, cut into blocks.</b> The floor, the cubes, the signs' posts and the two diamonds were painted as one 320 by 200 picture and cut into 20 by 20 blocks. Open <b>one.bbl</b> in the blocks editor to see them. The floor's diamonds repeat every 20 pixels, so every plain floor cell comes out as the same block, which is why a whole room needs few blocks.</li><li><b>A cube is one block.</b> A cube is 20 pixels wide and 20 tall: a diamond top, a left side in a darker color and a right side darker still. The cube blocks have <b>Solid sides</b> checked, so Kit cannot walk through them. Their four corners show the floor.</li><li><b>The wall that runs on a slant.</b> Open <b>one.map</b> in the map editor. The wall is cubes in cells that touch only at their corners, one row up and one column right each time. Kit moves a whole block at a time along the squares, so he cannot slip between two cubes that only touch at a corner. He goes up, then right, then up, then right.</li><li><b>The walls round the room.</b> A ring of purple cubes closes the room in, and the whole map outside it is the same cube, so he never stops at something he cannot see.</li><li><b>Kit's place.</b> He starts in the middle of the screen on purpose: the view is fixed, and the game centers it on where he starts. Open <b>cv.gam</b> in the scenes editor: its scroll settings are all off, so the picture stays put.</li><li><b>Kit from above.</b> Open <b>top.chr</b> in the character editor. Every block in this game has <b>Gravity pulls</b> unchecked, and Kit has four facing walks and no jump.</li></ul><p><b>What it cannot do.</b> A corner view is a picture, not a 3D room. The game cannot sort what is in front from what is behind, so Kit is always drawn on top of everything: he cannot walk behind a cube or a tower. And his moves stay square: he cannot walk along the drawn diagonal, only up, down, left and right.</p>"
+    },
+    {
+      "head": "Level 2: Stairs of Towers",
+      "html": "<h1>Level 2: Stairs of Towers</h1><p>Kit starts on the green diamond in the middle again, and the gold diamond is on the far side of a stair of five towers: one, two and three blocks tall, and back down. The <b>TALL TOWERS COVER THE BLOCKS ABOVE THEM</b> sign says what a tall tower is: its picture covers the block above the one it stands on, so that block is solid too.</p><p>Walk left and the stair stops him. Go right past its end, down, along the front and up to the gold diamond. The <b>KIT IS ALWAYS IN FRONT</b> sign is about him: he is drawn over everything, so he never goes behind a tower.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 2 is made</h1><ul><li><b>A tall tower is more than one block.</b> A cube is 20 pixels tall. A tower that rises further is a taller picture: the top diamond sits in the block above the one it stands on. Open <b>two.bbl</b>: the three-block tower is the top, the middle and the bottom blocks of one painting, and each has <b>Solid sides</b> checked. The blocks above a tower's foot are solid too, because the tower's picture is drawn there and Kit should not be able to stand on it.</li><li><b>The stair is only a picture.</b> The towers are one, two and three blocks tall, lined up in a row, so they look like steps. Kit does not climb them: they are walls, and he walks round them.</li><li><b>Kit is in front.</b> The game draws Kit over every block. A game that sorts by depth would draw a tower over him when he walks behind it. Here the picture would have to be changed by hand: each tower would need a second set of blocks, put in place when Kit passes. That is a good next step to try.</li></ul><p><b>What it cannot do.</b> There is no real depth sorting, and Kit cannot walk the drawn diagonals. Everything else here is the same game as level 1.</p>"
+    },
+    {
+      "head": "Make it yours",
+      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>In <b>one.map</b>, move a cube of the wall one block and see where Kit can go.</li><li>Open a cube block in <b>one.bbl</b> and uncheck <b>Solid sides</b>: Kit walks right through the cube, drawn under him.</li><li>Change the colors of a cube's sides in the blocks editor.</li><li>Draw a new cube in a free block and put it in the map.</li></ul><p>The home page&rsquo;s <b>Starters</b> tab has more small games like this one.</p>"
+    }
+  ]
+}

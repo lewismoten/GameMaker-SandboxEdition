@@ -399,3 +399,32 @@
 .km-desc {
   margin: 0 0 6px;
 }
+
+/* a phone: the title and the close button stay, the map and lists scroll in the body; the keyboard shrinks to fit, not sideways */
+@media (max-width: 600px), (max-height: 500px) {
+  .km-dialog[open] {
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100dvh - 16px);
+    overflow: hidden;
+  }
+
+  .km-head {
+    position: static;
+    flex: none;
+  }
+
+  .km-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+  }
+
+  .km-boards {
+    overflow-x: visible;
+  }
+
+  .km-board:first-child {
+    width: 100%;
+  }
+}
