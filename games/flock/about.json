@@ -1,0 +1,46 @@
+{
+  "title": "Birds of a Feather",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.0",
+  "blurb": "Two short levels about a flock. Five birds fly in a V over Kit and keep that shape the whole way, because they share one path and one speed. In the second room two of them are faster, and the V comes apart. Signs in the levels say how. Play it, then open it in Game-Maker and change a bird's speed.",
+  "exe": "FLOCK.EXE",
+  "dosName": "FLOCK",
+  "sound": "sb",
+  "label": {
+    "background": "#e8f6ff",
+    "band": "#2fae9a",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "2 short levels",
+    "hours": 1,
+    "background": "#2fae9a",
+    "accent": "#ffd23f",
+    "ink": "#ffffff",
+    "tagline": "Five birds, one shape.",
+    "back": "A small explorer in a teal beanie crosses two short rooms under a flock of five birds. They fly in a V and hold it, because every bird has the same path and speed. Give two of them more speed and the V comes apart. Play, then open the game in Game-Maker and change a bird's speed.",
+    "features": [
+      "Signs in the levels explain each idea",
+      "Monsters that share a path keep their shape",
+      "Made to be copied and taken apart"
+    ],
+    "shots": [
+      [
+        "one.map",
+        14,
+        4
+      ],
+      [
+        "two.map",
+        14,
+        4
+      ]
+    ],
+    "rating": "Everyone"
+  }
+}
