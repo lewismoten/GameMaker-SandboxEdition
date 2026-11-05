@@ -352,6 +352,8 @@ export const SCENES: Chapter = {
     when he returns, so keep prizes where he only goes once.</li>
   </ul>
   ${onCd('ONEMAP')}
+  <p>An overhead map is the same grid with gravity off. Each area of an overworld can be its own scene on one map with scrolling off, and a road off the edge is a link on every block it crosses, landing the hero in the middle of the next area. A door is the same kind of link.</p>
+  ${onCd('OVERHEAD')}
   <h2>Laps round the wrap</h2>
   <p>The map wraps: off the right edge is the left edge, off the bottom is the top. Racing games
   in the archive put the finish line just behind the start, so the only way to reach it is all
