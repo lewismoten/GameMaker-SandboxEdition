@@ -97,7 +97,8 @@ export async function tapAndHold(bot: StarterBot): Promise<void> {
   await must(bot, bot.walk(L1.cliff - 2, 'the cliff'), 'to the cliff');
   const short = await peak(bot, SCAN.up, 8);
   bot.say(`Up held 8 ticks: highest row ${short.toFixed(1)}`);
-  if (short > feet - 1 || short < L1.cliffTop) throw new Error(`a short Up should lift Kit but not as far as the cliff top; he reached row ${short.toFixed(1)}`);
+  if (short > feet - 1 || short < L1.cliffTop)
+    throw new Error(`a short Up should lift Kit but not as far as the cliff top; he reached row ${short.toFixed(1)}`);
   await must(bot, bot.wait(20), 'a look');
   // Up held: he keeps going until he is above the cliff
   bot.sim.press(SCAN.up);
@@ -128,7 +129,8 @@ async function crossGap(bot: StarterBot, edge: number, presses: number, landing:
   }
   await must(bot, bot.land(), `landing after ${what}`);
   bot.say(`${what}: ${presses} dash(es), landed at column ${col(bot).toFixed(1)}, row ${row(bot).toFixed(1)}`);
-  if (col(bot) < landing || row(bot) > L2.ground - 1 + 0.2) throw new Error(`Kit should have crossed ${what} and stand past column ${landing}; he is at ${col(bot).toFixed(1)}, ${row(bot).toFixed(1)}`);
+  if (col(bot) < landing || row(bot) > L2.ground - 1 + 0.2)
+    throw new Error(`Kit should have crossed ${what} and stand past column ${landing}; he is at ${col(bot).toFixed(1)}, ${row(bot).toFixed(1)}`);
 }
 
 /** 2. Once Per Press: Enter dashes once however long it is held; each press is another dash. */

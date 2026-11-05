@@ -1,64 +1,64 @@
 {
- "version": 1,
- "game": "kit-moves",
- "rand": {
-  "seed": 1,
-  "per": "scene"
- },
- "segments": [
-  {
-   "scene": 2,
-   "keys": "AU0ZzSs5JLkJTQ/NAzkCuQBNEs0DTQXNDk0KzStNHs0rTRnNA0gIyCpIF8gATRTNHk0KzStNI80DTQ=="
+  "version": 1,
+  "game": "kit-moves",
+  "rand": {
+    "seed": 1,
+    "per": "scene"
   },
-  {
-   "scene": 3,
-   "keys": "AU0KzSscHpwKTQnNAzkCuQMcApwTTSbNK00KzQM5ArkDHAKcAxwCnA5NJc0rTQ/NAzkCuQMcApwDHAKcAxwCnAlNKc0DTQ=="
-  }
- ],
- "chapters": [
-  {
-   "scene": 2,
-   "title": "Level 1: Tap and Hold"
-  },
-  {
-   "scene": 3,
-   "title": "Level 2: Once Per Press"
-  }
- ],
- "timeline": {
-  "fps": 60,
-  "frames": 9405,
+  "segments": [
+    {
+      "scene": 2,
+      "keys": "AU0ZzSs5JLkJTQ/NAzkCuQBNEs0DTQXNDk0KzStNHs0rTRnNA0gIyCpIF8gATRTNHk0KzStNI80DTQ=="
+    },
+    {
+      "scene": 3,
+      "keys": "AU0KzSscHpwKTQnNAzkCuQMcApwTTSbNK00KzQM5ArkDHAKcAxwCnA5NJc0rTQ/NAzkCuQMcApwDHAKcAxwCnAlNKc0DTQ=="
+    }
+  ],
   "chapters": [
-   {
-    "title": "Opening",
-    "frame": 0,
-    "time": 0
-   },
-   {
-    "title": "Story",
-    "frame": 896,
-    "time": 14933.333333333148
-   },
-   {
-    "title": "Level 1: Tap and Hold",
-    "frame": 2125,
-    "time": 35416.66666666724
-   },
-   {
-    "title": "Level 2: Once Per Press",
-    "frame": 4310,
-    "time": 71833.33333333135
-   },
-   {
-    "title": "Ending",
-    "frame": 6122,
-    "time": 102033.33333334014
-   },
-   {
-    "title": "Credits",
-    "frame": 8331,
-    "time": 138850.00000001074
-   }
-  ]
- }
+    {
+      "scene": 2,
+      "title": "Level 1: Tap and Hold"
+    },
+    {
+      "scene": 3,
+      "title": "Level 2: Once Per Press"
+    }
+  ],
+  "timeline": {
+    "fps": 60,
+    "frames": 9405,
+    "chapters": [
+      {
+        "title": "Opening",
+        "frame": 0,
+        "time": 0
+      },
+      {
+        "title": "Story",
+        "frame": 896,
+        "time": 14933.333333333148
+      },
+      {
+        "title": "Level 1: Tap and Hold",
+        "frame": 2125,
+        "time": 35416.66666666724
+      },
+      {
+        "title": "Level 2: Once Per Press",
+        "frame": 4310,
+        "time": 71833.33333333135
+      },
+      {
+        "title": "Ending",
+        "frame": 6122,
+        "time": 102033.33333334014
+      },
+      {
+        "title": "Credits",
+        "frame": 8331,
+        "time": 138850.00000001074
+      }
+    ]
+  }
 }
