@@ -72,7 +72,8 @@ export function hostedPlayer(): Plugin {
         if (command !== 'build') return;
         const html = await buildHostedPlayer();
         this.emitFile({ type: 'asset', fileName: 'web-player.html', source: html });
-        this.emitFile({ type: 'asset', fileName: 'player/index.html', source: html });
+        // The copy to try on this site is kept out of search results (it repeats web-player.html, which is the download and stays byte for byte as offered).
+        this.emitFile({ type: 'asset', fileName: 'player/index.html', source: html.replace('<title>', '<meta name="robots" content="noindex" />\n<title>') });
         const index = bundle['games/index.json'];
         const catalog = index?.type === 'asset' ? (JSON.parse(String(index.source)) as CdCatalogEntry[]) : [];
         this.emitFile({ type: 'asset', fileName: 'player/games.json', source: siteGameList(catalog) });

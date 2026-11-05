@@ -97,6 +97,28 @@ describe('seoBuild', () => {
     expect(html).not.toMatch(/name="description" content="[^"]*shareware/);
   });
 
+  it('gives every play page one accurate VideoGame: no invented dates, ratings or reviews, and no secret game anywhere on it', () => {
+    const shell = page('play.html');
+    for (const g of playable) {
+      const html = gamePageHtml(shell, g);
+      const games = jsonLd(html).filter((n) => n['@type'] === 'VideoGame');
+      expect(games, g.id).toHaveLength(1);
+      const v = games[0];
+      expect(v.name).toBe(g.title);
+      expect(v.url).toBe(`${SITE_URL}${gamePage(g.id)}`);
+      // a game made for this project (a Starter too) has an in-story year, not a publication date
+      if (g.original) expect(v.datePublished, g.id).toBeUndefined();
+      else if (g.year) expect(v.datePublished).toBe(String(g.year));
+      for (const key of ['aggregateRating', 'review', 'offers', 'award']) expect(v[key], `${g.id} ${key}`).toBeUndefined();
+      expect(secretHits(html), g.id).toEqual([]);
+    }
+  });
+
+  it('keeps the generic player and the player to try out of search results, not the download', () => {
+    expect(page('play.html')).toMatch(/<meta name="robots" content="noindex" \/>/);
+    for (const g of playable.slice(0, 5)) expect(gamePageHtml(page('play.html'), g)).not.toContain('noindex');
+  });
+
   it('writes the How do I…? questions as readable text, each Starter linked to its play page', () => {
     const section = GUIDE_SECTIONS.find(([id]) => id === 'how-do-i')!;
     const html = guidePageHtml(page('index.html'), section, catalog);

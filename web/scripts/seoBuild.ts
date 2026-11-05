@@ -212,7 +212,8 @@ function playHead(catalog: CdCatalogEntry[]): string {
         }
       })();
     </script>`;
-  return `${HEAD_START}${meta}\n    ${script}\n    ${STYLE}${HEAD_END}`;
+  // the generic player is not a page to find: each game has its own play-<id>.html (this head is swapped out there)
+  return `${HEAD_START}${meta}\n    <meta name="robots" content="noindex" />\n    ${script}\n    ${STYLE}${HEAD_END}`;
 }
 
 function playBody(catalog: CdCatalogEntry[]): string {
