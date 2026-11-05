@@ -40,6 +40,7 @@
     "fuzz:files": "npm run fuzz:files -w gamemaker-web --",
     "check:keys": "npm run check:keys -w gamemaker-web --",
     "check:same-bytes": "npm run check:same-bytes -w gamemaker-web --",
+    "roundtrip": "npm run roundtrip -w gamemaker-web --",
     "dast": "npm run dast -w gamemaker-web --",
     "replay:log": "npm run replay:log -w gamemaker-web --",
     "domains:check": "npm run domains:check -w gamemaker-web --",
