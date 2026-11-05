@@ -1,0 +1,64 @@
+{
+ "version": 1,
+ "game": "short-lived",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU0ZzStNKM0rTRnNzQFNS80DTQ=="
+  },
+  {
+   "scene": 3,
+   "keys": "AU0ZzStNKM0rTSPNugFNVc0DTQ=="
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: A Bubble"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: Wake Up"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 9239,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 896,
+    "time": 14933.333333333148
+   },
+   {
+    "title": "Level 1: A Bubble",
+    "frame": 2125,
+    "time": 35416.66666666724
+   },
+   {
+    "title": "Level 2: Wake Up",
+    "frame": 4073,
+    "time": 67883.3333333302
+   },
+   {
+    "title": "Ending",
+    "frame": 5957,
+    "time": 99283.33333333934
+   },
+   {
+    "title": "Credits",
+    "frame": 8165,
+    "time": 136083.33333334568
+   }
+  ]
+ }
+}
