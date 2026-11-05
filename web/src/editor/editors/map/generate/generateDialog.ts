@@ -1,4 +1,4 @@
-// The map editor's Generate dialog: choose a kind (dungeon or forest) and where (the whole map or the
+// The map editor's Generate dialog: choose a kind (dungeon, castle, forest, home or shop) and where (the whole map or the
 // selection), see four real renders from a seed, pick one. The layouts only ever write ordinary cells,
 // as one undo step. The dialog fits a 375 by 812 phone without scrolling: two rows of previews,
 // and the Missing roles panel folds away when everything needed is set.
@@ -140,15 +140,18 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
       use.disabled = !ok;
       if (!ok || !o.outcome.ok) return void (note.textContent = '');
       const res = o.outcome.result;
+      const furnished = res.furniture.length > 0 || kind === 'home' || kind === 'shop';
       const has = [
+        res.furniture.filter((f) => !f.open).length ? `${res.furniture.filter((f) => !f.open).length} pieces of furniture` : '',
+        res.shopkeeper !== undefined ? `shopkeeper could stand at ${cellText(res.rect, res.shopkeeper)}` : '',
         res.locks.length ? `${res.locks.length} locked door${res.locks.length > 1 ? 's' : ''}` : '',
         res.monsters.length ? `${res.monsters.length} monsters` : '',
       ].filter(Boolean);
       note.textContent = [
-        `Seed ${o.seed}: hero could start at ${cellText(res.rect, res.entry)}, exit at ${cellText(res.rect, res.exit)}; nothing is linked.${has.length ? ` ${has.join(', ')}.` : ''}`,
+        `Seed ${o.seed}: hero could start at ${cellText(res.rect, res.entry)}, ${furnished ? 'door' : 'exit'} at ${cellText(res.rect, res.exit)}; nothing is linked.${has.length ? ` ${has.join(', ')}.` : ''}`,
         ...res.notes,
         o.check?.verified
-          ? `Verified: keys, treasure and exit can be reached in order. ${NOT_CHECKED}`
+          ? `Verified: ${furnished ? 'every open cell and piece of furniture can be reached from the door' : 'keys, treasure and exit can be reached in order'}. ${NOT_CHECKED}`
           : `Not proven: ${o.check?.problems.join(' ')} ${NOT_CHECKED}`,
       ].join(' ');
     }

@@ -3,12 +3,14 @@
 // Generate dialog read this, so what is asked for and what is used never drift apart.
 import { ROLES, blocksWithRole, type Role, type RoleMap } from '../blockRoles';
 
-export type GenKind = 'dungeon' | 'forest';
+export type GenKind = 'dungeon' | 'forest' | 'home' | 'shop' | 'castle';
 
 export interface KindInfo {
   id: GenKind;
   label: string;
   blurb: string;
+  /** The smallest area it can draw in (blocks). */
+  min: { w: number; h: number };
   /** Roles the generator cannot run without. */
   must: Role[];
   /** Roles used when set; without them that part is skipped. */
@@ -18,6 +20,7 @@ export interface KindInfo {
 export const KINDS: readonly KindInfo[] = [
   {
     id: 'dungeon',
+    min: { w: 12, h: 12 },
     label: 'Dungeon',
     blurb: 'Rooms joined by corridors, with the walls drawn round them.',
     must: ['wall', 'floor'],
@@ -35,6 +38,7 @@ export const KINDS: readonly KindInfo[] = [
   },
   {
     id: 'forest',
+    min: { w: 12, h: 12 },
     label: 'Forest',
     blurb: 'Trees with clearings and a winding path through them.',
     must: ['floor', 'tree'],
@@ -44,6 +48,56 @@ export const KINDS: readonly KindInfo[] = [
       { role: 'decoration', use: 'Flowers and bushes in the open.', without: 'no flowers' },
       { role: 'treasure', use: 'In dead ends and nooks among the trees.', without: 'no treasure' },
       { role: 'life', use: 'One heart in a far nook.', without: 'no heart' },
+    ],
+  },
+  {
+    id: 'home',
+    label: 'Home',
+    blurb: 'One to three rooms with a front door; furniture against the walls and chairs facing the table.',
+    min: { w: 12, h: 10 },
+    must: ['wall', 'floor'],
+    want: [
+      { role: 'door', use: 'The front door in the south wall (the entry and exit).', without: 'the front door is plain floor' },
+      { role: 'table', use: 'A table in the living room.', without: 'no table' },
+      { role: 'chair', use: 'Next to the table, facing it (a chair block must say which way it faces).', without: 'no chairs' },
+      { role: 'bed', use: 'Against a wall, front to the room.', without: 'no beds' },
+      { role: 'shelf', use: 'Against walls.', without: 'no shelves' },
+      { role: 'stove', use: 'Against a wall of the living room.', without: 'no stove' },
+      { role: 'rug', use: 'Under and around the table.', without: 'no rugs' },
+      { role: 'lamp', use: 'Against walls.', without: 'no lamps' },
+      { role: 'plant', use: 'In a corner.', without: 'no plants' },
+    ],
+  },
+  {
+    id: 'shop',
+    label: 'Shop',
+    blurb: 'One room: shelves on the back wall, a counter across it, and room for customers by the door.',
+    min: { w: 12, h: 10 },
+    must: ['wall', 'floor'],
+    want: [
+      { role: 'door', use: 'The front door in the south wall (the entry and exit).', without: 'the front door is plain floor' },
+      { role: 'counter', use: 'Across the room, facing the door (the block must face south), with an open end to the shopkeeper.', without: 'no counter' },
+      { role: 'shelf', use: 'Along the back wall and the side walls.', without: 'no shelves' },
+      { role: 'table', use: 'A display table for customers.', without: 'no display table' },
+      { role: 'rug', use: 'Inside the door.', without: 'no rug' },
+      { role: 'lamp', use: 'Against the side walls.', without: 'no lamps' },
+      { role: 'plant', use: 'In a corner.', without: 'no plants' },
+    ],
+  },
+  {
+    id: 'castle',
+    label: 'Castle',
+    blurb: 'An outer wall with corner towers and a gate, a courtyard, and a keep of rooms.',
+    min: { w: 30, h: 24 },
+    must: ['wall', 'floor'],
+    want: [
+      { role: 'door', use: 'In the gate and the keep door.', without: 'the gate and keep door are plain floor' },
+      { role: 'path', use: 'A road from the gate to the keep door.', without: 'no road' },
+      { role: 'decoration', use: 'Scattered in the courtyard and the keep rooms.', without: 'the courtyard is bare' },
+      { role: 'locked-door', use: 'Shut in a narrow passage of the keep (needs a key block with the same lock number).', without: 'no locked doors' },
+      { role: 'key', use: 'Placed where it can be reached before its locked door.', without: 'no locked doors' },
+      { role: 'treasure', use: 'In tower rooms, corners and dead ends of the keep.', without: 'no treasure' },
+      { role: 'life', use: 'One heart in a far corner.', without: 'no heart' },
     ],
   },
 ];
