@@ -10,6 +10,7 @@ embroidery and 3D-printable and laser models.
 
 ### Added
 
+- `kit/levelGrid`: a character grid to paint a level in code (fill, row, column, put) before it becomes rows of text.
 - `image/animatedGif`: a looping animated GIF from indexed frames that each carry their own VGA palette, as an FLI's do.
 - Shared game-building APIs: DOS disk writing, native character and text-screen builders, FLI clipping fades, route checks and the engine-backed simulator, perspective roads, photo processing, level previews, CMF arrangement effects and synthesis pieces.
 - Text-fit audit: `levelCards` and `cardOverflow` find words baked into a Starter level card that run past its parchment box.
