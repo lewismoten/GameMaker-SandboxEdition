@@ -1,11 +1,11 @@
 // The bot's whole game on the built disk, level after level, ending at the last door (check.ts, walkthrough.ts and
 // gendemo.ts run it). Nothing in this game can hurt Kit, so no life may be lost.
 import { StarterBot } from '../../kit/starter/bot';
-import { cornerRoom, towers } from './route';
+import { cornerRoom, diamondFloor, towers } from './route';
 import { GameSim } from './sim';
 
 export const SEED = 1;
-const LEVELS = [cornerRoom, towers];
+const LEVELS = [cornerRoom, towers, diamondFloor];
 
 export async function play(seed = SEED, upTo = LEVELS.length): Promise<{ sim: GameSim; bot: StarterBot }> {
   const sim = new GameSim(undefined, seed);

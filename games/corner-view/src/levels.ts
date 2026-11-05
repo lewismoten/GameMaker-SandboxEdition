@@ -5,6 +5,9 @@
 //
 //   1. The Corner Room: a diagonal wall of cubes. He cannot walk along it, so he goes round it in square steps.
 //   2. Stairs of Towers: towers one, two and three blocks high. A tall tower covers the blocks above it, so those are solid too.
+//   3. The Diamond Floor: a room whose floor is a diamond. Here Kit walks only diagonally: each arrow walks one
+//      diagonal of the drawn floor (cornerHero.ts), so he goes the way the room is laid out. The room's edges are
+//      cubes in steps of two blocks across and one down, the same slope he walks, with dark blocks outside them.
 // Both rooms are closed in by cubes you can see, so Kit is never stopped by something he can't.
 import { newMap, MLEN, type GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
@@ -14,7 +17,7 @@ import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette'
 import { addSign, type Sign } from '../../kit/starter/sign';
 import { cubeShades, floor, pad, tower } from './iso';
 
-export type SignName = 'floor' | 'cube' | 'square' | 'tall' | 'front';
+export type SignName = 'floor' | 'cube' | 'square' | 'tall' | 'front' | 'lean' | 'upright' | 'downleft' | 'zig';
 
 export const COLS = 16;
 export const ROWS = 10;
@@ -23,9 +26,13 @@ const SIGN = { w: 4, h: 3 } as const;
 const WORDS: Record<SignName, string> = {
   floor: 'DIAMOND FLOOR, SQUARE GRID',
   cube: 'A CUBE IS ONE BLOCK: A TOP AND TWO SIDES',
-  square: 'ARROWS WALK STRAIGHT, NEVER DIAGONAL',
+  square: 'ARROWS WALK THE SQUARES, NOT THE DIAMONDS',
   tall: 'TALL TOWERS COVER THE BLOCKS ABOVE THEM',
   front: 'KIT IS ALWAYS IN FRONT, NEVER BEHIND',
+  lean: 'EACH ARROW TAKES THE NEAREST SLANT',
+  upright: 'UP IS UPPER RIGHT. RIGHT IS LOWER RIGHT.',
+  downleft: 'DOWN IS LOWER LEFT. LEFT IS UPPER LEFT.',
+  zig: 'TAP TWO IN TURN FOR A LINE',
 };
 
 /** A tower: the block it stands on (`row` is its lowest) and how many blocks tall its picture is (1, 2 or 3). */
@@ -35,6 +42,8 @@ interface Spec {
   signs: [SignName, number, number][];
   start: [number, number];
   exit: [number, number];
+  /** A room with a floor of its own shape: the blocks it walks on. Outside it, cubes ring it in and dark blocks fill the rest. */
+  room?: boolean[][];
 }
 
 /** The cubes round the room, one block each. */
@@ -46,8 +55,23 @@ for (let y = 1; y < ROWS - 1; y++) ring.push([0, y, 1], [COLS - 1, y, 1]);
 export const EXITS: [number, number][] = [
   [13, 7],
   [2, 5],
+  [12, 5],
 ];
 export const START: [number, number] = [8, 5];
+
+/** Level 3's floor: a diamond whose edges step two blocks across for one down, the slope of the drawn diamonds. [first column, last column] a row. */
+const DIAMOND: Record<number, [number, number]> = { 2: [7, 8], 3: [5, 10], 4: [3, 12], 5: [3, 12], 6: [5, 10], 7: [7, 8] };
+const FLOOR3: boolean[][] = Array.from({ length: ROWS }, (_, y) =>
+  Array.from({ length: COLS }, (_, x) => !!DIAMOND[y] && x >= DIAMOND[y][0] && x <= DIAMOND[y][1]),
+);
+/** The cubes that ring the diamond: every block that touches it (corners too) and is not part of it. */
+const RING3: Tower[] = [];
+FLOOR3.forEach((row, y) =>
+  row.forEach((on, x) => {
+    if (on) return;
+    for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) if (FLOOR3[y + dy]?.[x + dx]) return void RING3.push([x, y, 1]);
+  }),
+);
 /** Level 1: a wall of cubes running up to the right from the floor's edge, like a wall seen from a corner. Its top end is open: Kit goes round there. */
 export const DIAGONAL: Tower[] = [
   [8, 8, 1],
@@ -85,6 +109,18 @@ const SPECS: Spec[] = [
     ],
     start: START,
     exit: EXITS[1],
+  },
+  {
+    towers: RING3,
+    signs: [
+      ['upright', 0, 0],
+      ['downleft', 12, 0],
+      ['lean', 0, 7],
+      ['zig', 12, 7],
+    ],
+    start: START,
+    exit: EXITS[2],
+    room: FLOOR3,
   },
 ];
 
@@ -134,13 +170,20 @@ function build(pal: Pal, file: string, spec: Spec, title: string, hint: string):
   floor(base, pal);
   pad(base, pal, spec.start[0] * 20 + 10, spec.start[1] * 20 + 14, 'green');
   pad(base, pal, spec.exit[0] * 20 + 10, spec.exit[1] * 20 + 14, 'gold');
+  // a room's outside is dark blocks, solid and never reached
+  const dark = pal.c('ink', 1);
+  const inside = (x: number, y: number) => !spec.room || spec.room[y][x];
+  const ringed = new Set(spec.towers.map(([x, y]) => `${x},${y}`));
+  if (spec.room)
+    for (let y = 0; y < ROWS; y++) for (let x = 0; x < COLS; x++) if (!inside(x, y) && !ringed.has(`${x},${y}`)) base.rect(x * 20, y * 20, 20, 20, dark);
   const purple = cubeShades(pal, 'purple');
   const teal = cubeShades(pal, 'teal');
   // painter's order: the lower a tower stands on the screen, the later it is drawn
   const sorted = [...spec.towers].sort((a, b) => a[1] - b[1] || a[0] - b[0]);
   for (const [col, row, tall] of sorted)
-    tower(base, col * 20 + 10, (row + 1) * 20, tall * 20 - 10, ring.some((r) => r[0] === col && r[1] === row) ? purple : teal);
+    tower(base, col * 20 + 10, (row + 1) * 20, tall * 20 - 10, ring.some((r) => r[0] === col && r[1] === row) || spec.room ? purple : teal);
   const solid = new Set<string>();
+  if (spec.room) for (let y = 0; y < ROWS; y++) for (let x = 0; x < COLS; x++) if (!inside(x, y)) solid.add(`${x},${y}`);
   for (const t of spec.towers) for (const [x, y] of cellsOf(t)) solid.add(`${x},${y}`);
 
   const book = new Book('bbl');
@@ -171,10 +214,19 @@ function build(pal: Pal, file: string, spec: Spec, title: string, hint: string):
       );
     };
     s.board.forEach((row, dy) => row.forEach((n, dx) => put(n, col + dx, top + dy)));
+    if (spec.room) continue; // a sign in a dark corner hangs on the wall: no posts
     put(s.legs[0], col, top + SIGN.h);
     put(s.legs[1], col + SIGN.w - 1, top + SIGN.h);
   }
-  const map = new IsoMap(book, cells[0][0]);
+  const map = new IsoMap(
+    book,
+    spec.room
+      ? plain(
+          cellOf(base, 0, 0).map(() => dark),
+          true,
+        )
+      : cells[0][0],
+  );
   cells.forEach((row, y) => row.forEach((n, x) => map.set(x, y, n)));
   map.start = [spec.start[0] + ORIGIN, spec.start[1] + ORIGIN];
   map.exits.push({ from: [spec.exit[0] + ORIGIN, spec.exit[1] + ORIGIN] });
@@ -187,6 +239,7 @@ export function buildLevels(): { pal: Pal; levels: Level[] } {
   const levels = [
     build(pal, 'one', SPECS[0], 'The Corner Room', 'Go round the wall of cubes.'),
     build(pal, 'two', SPECS[1], 'Stairs of Towers', 'Tall things cover what is behind.'),
+    build(pal, 'three', SPECS[2], 'The Diamond Floor', 'Every arrow walks a diagonal.'),
   ];
   return { pal, levels };
 }
