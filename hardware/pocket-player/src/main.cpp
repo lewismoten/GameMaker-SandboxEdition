@@ -785,15 +785,14 @@ static const char* panelName(char* b) {  // "ILI", "ST inv", "ILI inv bgr", ...
   return b;
 }
 #endif
-constexpr int ST_ROWS = scr::SMALL ? 10 : 7;  // the 2.8 inch board's Settings also has Calibrate and Display
+constexpr int ST_ROWS = scr::SMALL ? 9 : 7;  // the 2.8 inch board's Settings also has Calibrate and Display
 static int setPage = 0;
 static void drawSettings() {
   tft.fillScreen(C_BLACK);
   title("Settings");
   struct Row { const char* name; const char* value; };
 #ifdef POCKET_CYD28
-  char pname[16], tname[16];
-  snprintf(tname, sizeof tname, "%d of %d", turnIdx + 1, TURNS);
+  char pname[16];
 #endif
   Row rows[ST_ROWS] = {{"Hand", HAND[settings.lefty]},
                        {scr::SMALL ? "Stylus latch" : "Stylus (taps latch)", ONOFF[settings.stylus]},
@@ -805,8 +804,7 @@ static void drawSettings() {
 #ifdef POCKET_CYD28
                        ,
                        {"Calibrate", "tap 3"},
-                       {"Display", panelName(pname)},
-                       {"Turn", tname}
+                       {"Display", panelName(pname)}
 #endif
   };
   int pages = (ST_ROWS + ST_PER_PAGE - 1) / ST_PER_PAGE;
@@ -1130,6 +1128,7 @@ static void message(const char* a, const char* b = nullptr) {
 // Three taps (touchcal.h) on crosses at the top left, top right and bottom left; the calibration is kept in NVS.
 // Waits for a press and release; returns the median raw reading of the press. false: BOOT pressed or 60 s of nothing.
 static void nextPanel();
+#include "displaysetup_ui.h"
 static bool waitRawTap(tc::Raw& out) {
   uint32_t end = millis() + 60000;
   wasDown = true;
@@ -1142,6 +1141,7 @@ static bool waitRawTap(tc::Raw& out) {
   int xs[40], ys[40], n = 0;
   for (;;) {
     uint32_t now = millis();
+    if (dsInjTake(out)) return true;
     if (digitalRead(0) == LOW || (int32_t)(now - end) >= 0) return false;
     pollTouch(now);
     if (pts.n > 0 && n < 40 && gt.fresh) { xs[n] = gt.rawX[0]; ys[n] = gt.rawY[0]; n++; }
@@ -1170,8 +1170,8 @@ static void say(const char* a, const char* b) {
   tft.setCursor(60, 114);
   tft.print(b);
 }
-// Returns after a good calibration was kept and tried out, or when BOOT / a minute of waiting cancels.
-static void runCalibration() {
+// Returns true after a good calibration was kept and tried out (Done), false when BOOT / a minute of waiting cancels.
+static bool runCalibration() {
   const int M = tc::MARGIN;
   const int tx[3] = {M, scr::W - 1 - M, M}, ty[3] = {M, M, scr::H - 1 - M};
   for (;;) {
@@ -1182,7 +1182,7 @@ static void runCalibration() {
       char l[32];
       snprintf(l, sizeof l, "Tap the cross  %d of 3", i + 1);
       say(l, "(BOOT button cancels)");
-      if (!waitRawTap(r[i])) { enterPicker(); return; }
+      if (!waitRawTap(r[i])) return false;
       Serial.printf("cal tap %d raw %d,%d\n", i + 1, r[i].x, r[i].y);
     }
     tc::Cal c;
@@ -1190,7 +1190,7 @@ static void runCalibration() {
       tft.fillScreen(C_BLACK);
       say("Those taps did not line up.", "Tap anywhere to try again.");
       tc::Raw dummy;
-      if (!waitRawTap(dummy)) { enterPicker(); return; }
+      if (!waitRawTap(dummy)) return false;
       continue;
     }
     XPT2046::setCal(c);
@@ -1205,12 +1205,19 @@ static void runCalibration() {
     for (;;) {
       uint32_t now = millis();
       pollTouch(now);
-      if (digitalRead(0) == LOW || now - idle > 45000) { enterPicker(); return; }
+      tc::Raw ij;
+      if (dsInjTake(ij)) {  // a serial "S tap" (testing): the same as a tap on Redo or Done
+        int sx, sy;
+        XPT2046::toScreen(ij.x, ij.y, sx, sy);
+        if (sy >= 198 && sx >= 214) return true;
+        if (sy >= 198 && sx < 106) break;
+      }
+      if (digitalRead(0) == LOW || now - idle > 45000) return true;  // the calibration is saved already
       if (pts.n > 0) {
         idle = now;
         int x = pts.x[0], y = pts.y[0];
         if (y >= 198 && freshTap(x, y)) {
-          if (x >= 214) { enterPicker(); return; }
+          if (x >= 214) return true;
           if (x < 106) break;
         } else if (y < 198) tft.fillCircle(x, y, 3, C_WHITE);
       } else wasDown = false;
@@ -1218,52 +1225,12 @@ static void runCalibration() {
     }
   }
 }
-// Next display driver (ILI9341, ILI9341 inverted, ST7789), kept in NVS, then a restart.
-static void nextTurn() {
-  turnIdx = (turnIdx + 1) % TURNS;
-  Preferences p;
-  if (p.begin("pocket", false)) { p.putUChar("turn", turnIdx); p.end(); }
-  saveSettings();
-  message("Turned", "restarting");
-  delay(700);
-  ESP.restart();
-}
-// Test pattern at every start of the 2.8 inch board: red top left, green top right, blue bottom left, white corner marks and the
-// words TOP and LEFT. A picture that is upright, not mirrored and has those colors is a right mode. BOOT (short) turns, BOOT (hold) changes the mode.
-static void testPattern() {
-  tft.fillScreen(C_BLACK);
-  tft.fillRect(0, 0, 60, 50, 0xF800);          // red (this call takes plain RGB565)
-  tft.fillRect(scr::W - 60, 0, 60, 50, 0x07E0);  // green
-  tft.fillRect(0, scr::H - 50, 60, 50, 0x001F);  // blue
-  tft.fillRect(scr::W - 60, scr::H - 50, 60, 50, C_WHITE);
-  tft.setTextColor(C_WHITE, C_BLACK);
-  tft.setTextSize(3);
-  tft.setCursor(70, 8);
-  tft.print("TOP");
-  tft.setCursor(70, 100);
-  tft.print("LEFT <-");
-  char nb[16];
-  tft.setTextSize(2);
-  tft.setCursor(70, 150);
-  tft.printf("mode %s", panelName(nb));
-  tft.setCursor(70, 174);
-  tft.printf("turn %d of %d", turnIdx + 1, TURNS);
-  tft.setTextSize(1);
-  tft.setCursor(70, 205);
-  tft.print("BOOT: turn   hold BOOT: mode");
-  uint32_t end = millis() + 5000, down = 0;
-  while ((int32_t)(millis() - end) < 0) {
-    if (digitalRead(0) == LOW) {
-      if (!down) down = millis();
-      if (millis() - down >= 1500) { nextPanel(); return; }
-    } else if (down) { if (millis() - down > 30) nextTurn(); down = 0; }
-    delay(10);
-  }
-}
+// BOOT held (setup screen, or 2 s on the list): the next display mode (driver, inversion, red/blue order), kept in NVS, then a restart.
 static void nextPanel() {
   panelType = (panelType + 1) % PANEL_TYPES;
   Preferences p;
   if (p.begin("pocket", false)) { p.putUChar("panel", panelType); p.end(); }
+  dsMarkBegun(true);
   saveSettings();
   char nb[16];
   message("Display mode", panelName(nb));
@@ -1377,6 +1344,9 @@ static void pollSerial() {
         if (g >= 0 && g < ngames && startGame(g)) wasDown = true;
         Serial.printf("G %d %s %s\n", g, g >= 0 && g < ngames ? games[g].id : "?", mode == PLAYING ? "playing" : "failed");
       } else if (buf[0] == 'T' && mode == PICKER) serialCommand(buf);
+#ifdef POCKET_CYD28
+      else if (buf[0] == 'S') dsSerial(buf);
+#endif
       else if (buf[0] == 'W') serialWrite(buf);
     } else if (n < (int)sizeof buf - 1) buf[n++] = c;
   }
@@ -1387,13 +1357,8 @@ void setup() {
 #ifdef POCKET_CYD28
   for (int pin : {PIN_LED_R, PIN_LED_G, PIN_LED_B}) { pinMode(pin, OUTPUT); digitalWrite(pin, HIGH); }  // the RGB LED is active low
   pinMode(0, INPUT_PULLUP);  // BOOT
-  {
-    Preferences pf;
-    if (pf.begin("pocket", true)) { panelType = pf.getUChar("panel", PANEL_ILI9341); turnIdx = pf.getUChar("turn", 0); pf.end(); }
-    if (panelType >= PANEL_TYPES) panelType = PANEL_ILI9341;
-    if (turnIdx >= TURNS) turnIdx = 0;
-    tft.choose(panelType);
-  }
+  dsBoot();  // chip id, the saved display setup (NVS, else this chip's file on the card)
+  tft.choose(panelType);
 #endif
   tft.init();
 #ifdef POCKET_CYD28
@@ -1404,7 +1369,8 @@ void setup() {
   tft.setBrightness(255);
   tft.setSwapBytes(false);
 #ifdef POCKET_CYD28
-  testPattern();
+  haveGT = gt.probe();
+  if (dsState != 3) runDisplaySetup();  // first start (or one left unfinished): the display setup screen
 #endif
   message("Game-Maker Pocket Player");
   spk::begin();
@@ -1461,21 +1427,25 @@ void loop() {
     pollSerial();
     if (mode != PICKER) return;
 #ifdef POCKET_CYD28
-    {  // BOOT: a short press calibrates the touch, 2 seconds changes the display driver (for a screen that is unreadable or has wrong colors)
+    {  // BOOT: a short press opens the display setup, 2 seconds changes the display mode (for a screen that is unreadable)
       static uint32_t bootT = 0;
       static bool bootActed = false;
       if (digitalRead(0) == LOW) {
         if (!bootT) bootT = now ? now : 1;
         if (!bootActed && now - bootT >= 2000) { bootActed = true; nextPanel(); }
       } else {
-        if (bootT && !bootActed && now - bootT > 30) { bootT = 0; runCalibration(); return; }
+        if (bootT && !bootActed && now - bootT > 30) { bootT = 0; runDisplaySetup(); enterPicker(); return; }
         bootT = 0;
         bootActed = false;
       }
+      if (dsOpenReq) { dsOpenReq = false; runDisplaySetup(); enterPicker(); return; }
     }
 #endif
     if (freshTap(tx, ty)) {
       int pages = (ngames + ROWS - 1) / ROWS;
+#ifdef POCKET_CYD28
+      if (ty < TITLE_H && tx < 208) { runDisplaySetup(); enterPicker(); return; }  // the list's top-left corner: display setup
+#endif
       if (ty >= PK_BTN_Y) {
         if (tx < PK_SPLIT1 && page > 0) { page--; drawPicker(false); }
         else if (tx >= PK_SPLIT1 && tx < PK_SPLIT2 && page + 1 < pages) { page++; drawPicker(false); }
@@ -1520,9 +1490,8 @@ void loop() {
             spk::play(SAMPLE_TUNE);
             break;
 #ifdef POCKET_CYD28
-          case 7: saveSettings(); runCalibration(); drawSettings(); wasDown = true; return;
-          case 8: nextPanel(); return;  // restarts
-          case 9: nextTurn(); return;   // restarts
+          case 7: saveSettings(); if (runCalibration()) dsCalDone(); drawSettings(); wasDown = true; return;
+          case 8: saveSettings(); runDisplaySetup(); drawSettings(); wasDown = true; return;
 #endif
         }
         drawSettings();
