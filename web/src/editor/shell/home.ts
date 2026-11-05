@@ -22,6 +22,7 @@ import { categoryOf, homeLibrary, isByMaker, isOwn, SORT_KEY, type MySort } from
 import { showcase } from './homeShowcase';
 import { icon } from './homeIcons';
 import { CATEGORIES, CATEGORY_KEY, FIRST_CATEGORY, oldCategory, pickFeatured, savedCategory, type Category } from './homeCategories';
+import { importHistory } from '../../imported/importHistory';
 import { batchOf } from './importBatch';
 import { lastUsed } from '../../project/projectUse';
 import { NOTES_CHANGED } from '../../imported/gameNotes';
@@ -130,6 +131,11 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     'button',
     { type: 'button', class: 'lib-remove-all', hidden: true, onclick: () => void import('./importRemove').then((m) => m.removeImported(refreshProjects)) },
     'Remove all imported…',
+  );
+  const historyBtn = h(
+    'button',
+    { type: 'button', class: 'lib-remove-all', hidden: true, onclick: () => void import('./importHistoryDialog').then((m) => m.showImportHistory()) },
+    'Import history…',
   );
   const sortBox = h(
     'label',
@@ -373,6 +379,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     showLead(false);
     sortBox.hidden = !isOwn(c) || lib.own(c).length < 2;
     removeAllBtn.hidden = c !== 'imported' || !lib.own(c).length;
+    historyBtn.hidden = c !== 'imported' || !importHistory().length;
     // the Starters' "How do I…?" questions, loaded when that tab is first shown
     howDoI.hidden = c !== 'starter';
     if (c === 'starter' && !howDoI.firstChild && !howDoI.dataset.loading) {
@@ -428,7 +435,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
         'section',
         { id: 'library', class: 'library', 'aria-labelledby': 'lib-title' },
         h('div', { class: 'lib-bar' }, catNav, h('div', { class: 'lib-find' }, search, newGameBtn, communityBtn)),
-        h('div', { class: 'lib-about' }, libTitle, libLead, sortBox, ratingBox, removeAllBtn, start.howBtn),
+        h('div', { class: 'lib-about' }, libTitle, libLead, sortBox, ratingBox, historyBtn, removeAllBtn, start.howBtn),
         howDoI,
         tiles,
         live,

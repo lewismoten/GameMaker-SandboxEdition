@@ -133,6 +133,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Changed
 
+- The Imported tab has an Import history… button: the last 20 imports (when, from where, how many came in, how many were left out as already held, and which failed and why), kept in this browser, with a Clear history button.
 - Before importing a folder or ZIP of games, the chooser shows the totals (games, files and size) for everything found and for the games you have ticked, and each game's own size next to its file count.
 - The import chooser marks a game you already have ("Already in your games (Name)") and leaves it unticked, so importing the same folder or ZIP twice no longer makes copies unless you tick them.
 - Removing imported games together (all, some ratings, or one import's) now ends with an Undo button that stays for a minute and brings every one of them back, with its ratings and notes.

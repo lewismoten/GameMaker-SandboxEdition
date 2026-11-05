@@ -26,6 +26,7 @@ import { alreadyHave, heldText } from '../../imported/alreadyHave';
 import type { HomeNav } from './home';
 import { playLink, showNotice } from './homeCards';
 import { setImported } from './homeOrigin';
+import { recordImport } from '../../imported/importHistory';
 import { listProjects } from '../../project/storage';
 import { takeCompanion } from '../../project/companion';
 import { takeFileIdDiz } from '../../project/importDiz';
@@ -171,6 +172,12 @@ function removedBefore(r: RemovedGame): string {
   return `Previously removed (${what})`;
 }
 
+/** Where the games came from, for the history: "games.zip", or "games.zip and 2 more places". */
+function sourcesText(games: FoundGame[]): string {
+  const places = [...new Set(games.map((g) => g.from.split(' › ')[0].replace(/\/$/, '') || 'the files picked'))];
+  return places.length > 1 ? `${places[0]} and ${places.length - 1} more ${places.length === 2 ? 'place' : 'places'}` : (places[0] ?? 'the files picked');
+}
+
 /** `missing`: how many files the game's .gam names that were not among those given. */
 async function importFiles(nav: HomeNav, imported: Imported, origin: Origin, missing = 0, panel?: ImportPanel): Promise<void> {
   const { files } = imported;
@@ -199,6 +206,7 @@ async function importFiles(nav: HomeNav, imported: Imported, origin: Origin, mis
   await panel?.step('Opening', 'saving the game, then opening it');
   const { project: p, note, madeGam } = await saveImported(imported);
   noteImport(p.id, origin.source, origin.fingerprint);
+  recordImport({ at: Date.now(), source: origin.source, added: 1, skipped: 0, failed: [] });
   if (madeGam) toast('No .gam file found — a new one was created for these files.');
   if (note) toast(note);
   if (missing) {
@@ -245,6 +253,16 @@ async function importChosen(report: ScanReport, given: ScanFile[], onAdded?: () 
   });
   onAdded?.();
   if (!done && !failed.length) return;
+  // left out as already held: found, same game as one in this browser, and not ticked
+  const taken = new Set(chosen);
+  recordImport({
+    at: Date.now(),
+    source: sourcesText(report.games),
+    added: done,
+    skipped: report.games.filter((g) => !taken.has(g) && alreadyHave(fingerprintOf(g))).length,
+    failed,
+    ...(done + failed.length < chosen.length ? { canceled: true } : {}),
+  });
   const games = (n: number) => `${n} ${n === 1 ? 'game' : 'games'}`;
   const canceled = done + failed.length < chosen.length;
   // what came in, with a way to take it all back out
