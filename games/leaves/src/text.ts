@@ -32,7 +32,7 @@ export const CARDS = {
 export const STORY = wrap(`
 |LEAVES IN THE WIND
 
-Mara takes a walk under the autumn trees on a breezy day.
+Rima takes a walk under the autumn trees on a breezy day.
 
 A leaf in a game is a monster: a few pictures that turn it and a path that carries it down. A tree drops one on a timer. A gust is one clock that every tree keeps.
 
@@ -47,7 +47,7 @@ export const HOWTO = wrap(`
 
 Walk into a door to go to the next room. Read the signs.
 
-Nothing here can hurt Mara.
+Nothing here can hurt Rima.
 
 |ESC for the menu.
 `);

@@ -1,4 +1,4 @@
-// LEAVES IN THE WIND's title picture, in the warm sunset look: the name, a ribbon, Mara on the left, a maple and a birch on
+// LEAVES IN THE WIND's title picture, in the warm sunset look: the name, a ribbon, Rima on the left, a maple and a birch on
 // the right, and leaves of all three kinds tumbling across between them, each in a different frame of its turn.
 import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { scaleBlit } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
@@ -11,7 +11,7 @@ import { leafPicture, TUMBLE } from './leafArt';
 import type { Kind } from './palette';
 import { crownPicture, trunkPicture } from './trees';
 
-/** Where the leaves are drawn: [kind, frame, x, y, scale]. They drift from the trees toward Mara, falling as they go. */
+/** Where the leaves are drawn: [kind, frame, x, y, scale]. They drift from the trees toward Rima, falling as they go. */
 const FLYING: [Kind, number, number, number, number][] = [
   ['maple', 0, 168, 66, 2],
   ['birch', 3, 146, 102, 2],

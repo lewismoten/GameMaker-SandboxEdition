@@ -1,5 +1,5 @@
 // LEAVES IN THE WIND's two rooms, painted on a Grid (games/kit/starter/map.ts has the letters), each 10 blocks tall with
-// its own block set. Mara walks along row 8; row 9 is the grass, with fallen leaves on it. Each room starts at a door on
+// its own block set. Rima walks along row 8; row 9 is the grass, with fallen leaves on it. Each room starts at a door on
 // a little bank two blocks up, and the screen never scrolls up or down: it opens on rows 1 to 10, so all eight rows of
 // sky above the grass, where the leaves fall, stay in view.
 //   1  The Tumble   three maples in a row, each with a sign. A branch block on each gives birth to a leaf every few

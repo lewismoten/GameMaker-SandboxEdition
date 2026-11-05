@@ -290,7 +290,7 @@ const LISTED: CastMember[] = [
       },
       {
         game: 'fireworks',
-        as: 'watches launchers send up rockets that burst at the top, launches one of her own with Enter, then watches a big show over a sleeping town',
+        as: 'watches launchers send up rockets that burst at the top, launches one of their own with Enter, then watches a big show over a sleeping town',
       },
     ],
   },

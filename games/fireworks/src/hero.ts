@@ -1,6 +1,6 @@
-// FIREWORKS' hero: Mara from the kit, with the Throw sequence tied to Enter and a frame in the middle that gives birth
+// FIREWORKS' hero: Nova from the kit, with the Throw sequence tied to Enter and a frame in the middle that gives birth
 // to a rocket (a frame whose second picture is MONBL births monster number "first picture", the way every Game-Maker
-// hero shoots; see code/GM/PLAYGAME.C CharBirthMon). The rocket is the launchers' pink one, born at Mara's head: it
+// hero shoots; see code/GM/PLAYGAME.C CharBirthMon). The rocket is the launchers' pink one, born at Nova's head: it
 // flies its own path up from there and bursts like any other.
 import { MONBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { INF_REPEAT, emptyFrame, type Character } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
@@ -24,7 +24,7 @@ export function buildLauncher(heroBlocks: Parameters<typeof buildHero>[0]): Char
   ch.meter[0] = HERO_HIT_POINTS;
   const s = ch.sequences[SEQ.throw];
   const [windUp, release, follow] = s.frames;
-  // y 0: the rocket is born in the block of Mara's head, a block above the feet
+  // y 0: the rocket is born in the block of Nova's head, a block above the feet
   const birth = { ...emptyFrame(), x: 0, y: 0, pic1: ROCKET, pic2: MONBL, pause: 0 };
   const frames = [windUp, release, birth, follow];
   frames.forEach((f, i) => (s.frames[i] = f));

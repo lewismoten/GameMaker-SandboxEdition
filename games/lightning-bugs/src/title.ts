@@ -1,5 +1,5 @@
 // LIGHTNING BUGS' title picture: the meadow itself, drawn from the first level's blocks (the dusk's bands, the tree line, grass and
-// turf), the name in pale glow over the deep sky, Mara standing in the grass and fireflies at every frame of their blink.
+// turf), the name in pale glow over the deep sky, Yana standing in the grass and fireflies at every frame of their blink.
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { scaleBlit } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 import { bevel } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';

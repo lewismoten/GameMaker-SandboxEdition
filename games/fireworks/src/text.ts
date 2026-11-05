@@ -10,7 +10,7 @@ A night of fireworks, drawn with monsters.
 
 A rocket is a monster on a path up. When its path ends it turns into another monster: a burst. A launcher is a block that makes a new rocket every few seconds.
 
-Mara, in a green beanie, has come to watch. Read the signs, press Enter to launch a rocket, then open this game in Game-Maker and change a burst.
+Nova, in a gold beanie, has come to watch. Read the signs, press Enter to launch a rocket, then open this game in Game-Maker and change a burst.
 `);
 
 export const HOWTO = wrap(`

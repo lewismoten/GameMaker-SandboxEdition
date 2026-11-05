@@ -60,7 +60,7 @@ function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
 
 /**
  * A field `width` blocks wide: ground, hedges at both ends, the exit door at `exitX`, and the entrance on a low mound
- * two blocks up with a step down. The screen starts centered on the hero and only follows her up or down once she is
+ * two blocks up with a step down. The screen starts centered on the hero and only follows them up or down once they are
  * 60 pixels from the middle, so starting two blocks up keeps two more rows of sky in view all the way along.
  */
 function field(width: number, exitX: number): Grid {
