@@ -1,113 +1,62 @@
-// The first-boot setup of the 2.8 inch board with no reading and no hunting, and no board code in it (host/setuptest.cpp
+// The first-boot setup of the 2.8 inch board in four steps, each answered with two controls that need no touch map and no
+// reading: the BOOT button does the step's action and a tap ANYWHERE on the glass is OK. No board code in it (host/setuptest.cpp
 // checks all of it on the Mac).
-//
-// Step 1, which way up: the word TAP is drawn in the four quadrants of the screen, each copy flipped in software (a
-// "label": bit 0 mirrored left to right, bit 1 upside down). The panel shows the whole picture flipped by an unknown label
-// h, so the copy whose label is h reads right, and it sits at quadrant (its own) xor h. The user taps the copy that reads
-// right, three times, each time with the copies shuffled. A tap says only which quarter of the glass was touched in raw
-// touch numbers, and the touch chip's wiring is unknown too (swapped axes, either axis counting down: 8 wirings), so one
-// tap cannot say which copy it was. LAYOUT is three shuffles chosen (host test, and search script in the commit message)
-// so that the three quarters together tell all 32 (flip, wiring) pairs apart: the flip, and the wiring, are both known
-// after the third tap.
-// Step 2, colors: four bar sets, each pre-colored as one of the four color faults (inverted, red and blue swapped, both,
-// neither) would show them, the user taps the set that reads red, green, blue, white, black. The touch is known by then.
-// Step 3 is the 3-tap calibration (touchcal.h).
+//   1 flip      "MIRROR?"  BOOT mirrors the picture left to right until the word reads right
+//   2 rotate    "UP"       BOOT turns the picture half a turn until the arrow points up
+//   3 orient    "LANDSCAPE" BOOT turns the wide picture a quarter turn the other way (the glass is run in its portrait turn
+//               and the picture is turned in software, see softgfx.h, because some glasses ignore the row/column exchange)
+//   4 colors    RED GREEN BLUE  BOOT steps the four color modes (plain, inverted, red/blue swapped, both) until the words
+//               are written in their own colors and the patches are white and black
+// then the 3-tap touch calibration (touchcal.h works out any touch wiring).
+// Steps 1, 2 and 4 draw only inside a 240 x 240 square at the origin, so nothing is clipped in any turn.
 #pragma once
 #include <stdint.h>
-#include "touchcal.h"
 
 namespace sf {
 
-constexpr int ROUNDS = 3, MID = 2000;  // raw touch values 0..4095, the middle of the usable 300..3700
-constexpr int W = 320, H = 240, CELL_W = W / 2, CELL_H = H / 2;  // the four quadrants of the screen (and of the glass), 160 x 120 each
-// Step 1 draws its four boxes inside a 240 x 240 square at the canvas origin, never in the whole 320 x 240: 240 is the glass's
-// short side, so the square is whole on the glass however the picture is turned. The box centers (60 and 180) still fall in
-// the same quadrants as the whole screen's (the middle is 160 across, 120 down), so the tap math below is unchanged.
-constexpr int SQ = 240, BOX = SQ / 2;
+constexpr int SQ = 240;  // the square steps 1, 2 and 4 draw in
+enum Step { FLIP = 0, ROTATE = 1, ORIENT = 2, COLORS = 3, STEPS = 4 };
 
-// The label shown in each quadrant (bit 0 of the quadrant: right, bit 1: bottom) in each round.
-constexpr uint8_t LAYOUT[ROUNDS][4] = {{0, 1, 2, 3}, {0, 2, 3, 1}, {1, 0, 3, 2}};
+// The panel's portrait turns that differ in MADCTL's mirror bits only: bit 0 of u = mirrored left to right (MX), bit 1 = upside
+// down (MY). They are the LovyanGFX rotations 0, 6, 4 and 2, in that order, and they never touch the row/column exchange.
+constexpr uint8_t PORTRAIT_ROT[4] = {0, 6, 4, 2};
+// The hardware rotation for a saved setup: soft 0 is an old setup (turns 1, 3, 5, 7: the glass's own landscape), otherwise the
+// portrait turn of u.
+inline int rotationFor(int u, int soft) { return soft ? PORTRAIT_ROT[u & 3] : 1 + 2 * (u & 3); }
 
-// A touch wiring: bit 2 = the raw x axis carries the screen's y (swapped), bit 1 = the axis that carries the screen's x counts
-// down, bit 0 = the axis that carries y counts down.
-constexpr int WIRINGS = 8, FLIPS = 4, PAIRS = FLIPS * WIRINGS;
-
-// Raw touch to its quarter of the glass as the touch chip sees it: bit 0 raw x high, bit 1 raw y high.
-inline int rawQuad(int rx, int ry) { return (rx >= MID ? 1 : 0) | (ry >= MID ? 2 : 0); }
-// The quarter a tap on glass quadrant p (bit 0 right, bit 1 bottom) reads as, with a wiring.
-inline int rawQuadOf(int p, int wiring) {
-  int sw = wiring >> 2 & 1, fx = wiring >> 1 & 1, fy = wiring & 1;
-  int px = (p & 1) ^ fx, py = (p >> 1) ^ fy;  // the axis that carries x / y, counted from its own end
-  return sw ? (py | px << 1) : (px | py << 1);
-}
-// Where a user who sees the picture flipped by h taps in round r: the glass quadrant of the copy that reads right.
-inline int glassQuad(int r, int h) {
-  for (int q = 0; q < 4; q++) if (LAYOUT[r][q] == h) return q ^ h;
-  return 0;
-}
-// What the touch chip reports for that tap.
-inline int expectedQuad(int r, int h, int wiring) { return rawQuadOf(glassQuad(r, h), wiring); }
-
-// The (flip, wiring) pairs still possible after the taps so far.
-struct Solver {
-  uint32_t alive = 0xFFFFFFFFu;
-  void reset() { alive = 0xFFFFFFFFu; }
-  void tap(int r, int quad) {
-    for (int i = 0; i < PAIRS; i++)
-      if ((alive >> i & 1) && expectedQuad(r, i / WIRINGS, i % WIRINGS) != quad) alive &= ~(1u << i);
+// A setup in progress.
+struct Flow {
+  uint8_t step = FLIP, u = 0, soft = 0, color = 0;  // soft: 0 portrait, 1 and 2 the two quarter turns; color: panel bits 1..2 as 0..3
+  // the BOOT button's action for this step
+  void boot() {
+    if (step == FLIP) u ^= 1;
+    else if (step == ROTATE) u ^= 3;
+    else if (step == ORIENT) soft = soft == 1 ? 2 : 1;
+    else if (step == COLORS) color = (color + 1) & 3;
   }
-  int count() const { int n = 0; for (int i = 0; i < PAIRS; i++) n += alive >> i & 1; return n; }
-  int flip() const { for (int i = 0; i < PAIRS; i++) if (alive >> i & 1) return i / WIRINGS; return 0; }
-  int wiring() const { for (int i = 0; i < PAIRS; i++) if (alive >> i & 1) return i % WIRINGS; return 0; }
+  // OK (a tap anywhere); false after the last step
+  bool ok() {
+    if (step + 1 >= STEPS) return false;
+    step++;
+    if (step == ORIENT && !soft) soft = 1;
+    return true;
+  }
+  // How the picture is turned on the glass in this step: steps 1 and 2 draw in the panel's portrait turn, step 3 on.
+  int softMode() const { return step >= ORIENT ? soft : 0; }
+  int rotation() const { return PORTRAIT_ROT[u & 3]; }
+  // panelType bits for the colors (2 inverted, 4 red/blue swapped) given the driver bit
+  int panelBits(int driver) const { return (driver & 1) | (color << 1); }
 };
 
-// The hardware turns (board.h turnRotation: rotations 1, 3, 5, 7) and the flip each adds to the picture: bit 0 of the turn is
-// the half turn (mirrored both ways), bit 1 the mirror (rotation 5 against 1 clears MADCTL's MX, which turns the picture
-// upside down in landscape; 7 against 1 clears MY, mirrored left to right). Turns combine by xor, as labels do.
-constexpr uint8_t TURN_OF_LABEL[4] = {0, 3, 2, 1};
-inline int turnFor(int turn, int flip) { return (turn ^ TURN_OF_LABEL[flip & 3]) & 3; }
-
-// A rough touch calibration from a wiring (the 3-tap one refines it): usable raw span 450..3650 across the screen.
-inline tc::Cal roughCal(int wiring) {
-  tc::Cal c;
-  bool sw = wiring >> 2 & 1, fx = wiring >> 1 & 1, fy = wiring & 1;
-  c.swap = sw;
-  c.u0 = fx ? 3650 : 450; c.u1 = fx ? 450 : 3650;
-  c.v0 = fy ? 3650 : 450; c.v1 = fy ? 450 : 3650;
-  c.valid = 1;
-  return c;
+// The four glass states of the colors step (what the panel shows for each of the four modes it can be put in), as the
+// color the words RED, GREEN and BLUE come out in when the glass is in mode m but the picture was drawn for mode `want`.
+// Bit 0 of a mode: colors inverted, bit 1: red and blue swapped. Returns the 24 bit color.
+inline uint32_t shownColor(uint32_t drawn, int glassMode, int wantMode) {
+  int diff = glassMode ^ wantMode;
+  uint8_t c[3] = {(uint8_t)(drawn >> 16), (uint8_t)(drawn >> 8), (uint8_t)drawn};
+  if (diff & 1) for (int i = 0; i < 3; i++) c[i] = (uint8_t)(255 - c[i]);
+  if (diff & 2) { uint8_t t = c[0]; c[0] = c[2]; c[2] = t; }
+  return (uint32_t)c[0] << 16 | (uint32_t)c[1] << 8 | c[2];
 }
-
-// ---- the word: 17 x 13 cells, drawn 6 pixels each (85 x 65, centered in its 120 x 120 box): a bar on top, TAP, an up arrow under the T ----
-constexpr int WORD_W = 17, WORD_H = 13, WORD_SCALE = 5;  // 85 x 65 in a 120 x 120 box
-inline const char* wordRow(int y) {
-  static const char* const rows[WORD_H] = {"...###########...", ".................", "#####..###..####.", "..#...#...#.#...#", "..#...#...#.#...#", "..#...#####.####.", "..#...#...#.#....", "..#...#...#.#....", "..#...#...#.#....", ".................", "..#..............", ".###.............", "#####............"};
-  return rows[y];
-}
-// Is cell (x, y) of the word, drawn with label s (mirrored left to right: bit 0, upside down: bit 1), set?
-inline bool wordCell(int s, int x, int y) {
-  if (s & 1) x = WORD_W - 1 - x;
-  if (s & 2) y = WORD_H - 1 - y;
-  return wordRow(y)[x] == '#';
-}
-
-// ---- step 2: bar sets ----
-constexpr int BARS = 5;  // red, green, blue, white, black
-constexpr uint8_t BAR_RGB[BARS][3] = {{255, 0, 0}, {0, 255, 0}, {0, 0, 255}, {255, 255, 255}, {0, 0, 0}};
-constexpr int HEADER_H = 24, SET_W = W / 2, SET_H = (H - HEADER_H) / 2;  // the four sets, 160 x 108
-// A color as the set with label k pre-colors it (bit 0: inverted, bit 1: red and blue swapped).
-inline void faulted(int k, int bar, uint8_t out[3]) {
-  uint8_t c[3] = {BAR_RGB[bar][0], BAR_RGB[bar][1], BAR_RGB[bar][2]};
-  if (k & 1) for (int i = 0; i < 3; i++) c[i] = 255 - c[i];
-  if (k & 2) { uint8_t t = c[0]; c[0] = c[2]; c[2] = t; }
-  for (int i = 0; i < 3; i++) out[i] = c[i];
-}
-// The set under a screen point, or -1.
-inline int setAt(int x, int y) {
-  if (y < HEADER_H || y >= H || x < 0 || x >= W) return -1;
-  return (y - HEADER_H) / SET_H * 2 + x / SET_W;
-}
-// The display-mode bits (displaysetup: 2 inverted, 4 red/blue swapped) to flip when set k is the one that looks right.
-inline uint8_t panelBitsFor(int k) { return (uint8_t)((k & 1 ? 2 : 0) | (k & 2 ? 4 : 0)); }
 
 }  // namespace sf
