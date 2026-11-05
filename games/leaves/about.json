@@ -1,0 +1,40 @@
+{
+  "title": "Leaves in the Wind",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "hero": "MARA",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.0",
+  "blurb": "Autumn leaves, made of monsters. A leaf is a few pictures that turn it and a path that carries it down. Level 1 has three maples side by side: one drops a leaf of one picture straight down, one drops a leaf that spins on eight frames but still goes straight down, and one drops a leaf that rocks and swoops on a zigzag path, slow at each turn, and only that one floats. Level 2 has a maple, an oak and a birch, each dropping its own kind of leaf on its own timers, and a gust that bends every crown at once and blows leaves far across the meadow. Play it, then open it in Game-Maker and change a path.",
+  "exe": "LEAVES.EXE",
+  "dosName": "LEAVES",
+  "sound": "sb",
+  "label": {
+    "background": "#fbeedd",
+    "band": "#b8401c",
+    "ink": "#2a160c",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "2 short levels",
+    "hours": 1,
+    "background": "#b8401c",
+    "accent": "#ffd23f",
+    "ink": "#ffffff",
+    "tagline": "Swoop, glide, swoop.",
+    "back": "A small explorer in a green beanie walks under autumn trees on a breezy day. A leaf here is a monster: eight frames turn it over and a path of corners swoops it from side to side, so it floats instead of dropping. A branch is a block that drops a leaf every few seconds, and a gust is one loop of blocks every tree keeps, so all three bend at once. Read the signs, then open the game in Game-Maker and change a path.",
+    "features": [
+      "Level 1 shows a stiff leaf, a spinning one and one that floats, side by side",
+      "Level 2 has a maple, an oak and a birch, each with its own leaves",
+      "A gust bends every tree at once and blows the leaves far",
+      "Made to be copied and taken apart"
+    ],
+    "shots": [
+      ["tumble.map", 34, 1],
+      ["gust.map", 8, 1]
+    ],
+    "rating": "Everyone"
+  }
+}
