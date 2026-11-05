@@ -19,7 +19,7 @@
 // it measures two flat blocks, not a whole screen, and cannot see animation (a block that blinks has a
 // cue this doesn't count), a sign that names the thing, or where on the screen it stands. checkGames.ts
 // shows the count as an advisory column.
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { deltaEBytes, lab, simulateBytes, type Rgb, type Vision } from '@lewismoten/gamemaker-sandbox-engine/gfx/colorVision';
@@ -173,8 +173,7 @@ export function pairsOf(game: string, d: SceneData): Pair[] {
   pair('lock/lock', locks, locks, true);
   pair('hurt/good', hurt, good, false);
   // plain ground a hero meets as the hazard does: compare with blocks solid alike (a floor) or both passable (a backdrop)
-  for (const h of hurt)
-    for (const p of plain) if ((bl(h).solid === 0) === (bl(p).solid === 0)) add('hurt/floor', name(h), bl(h), name(p), bl(p));
+  for (const h of hurt) for (const p of plain) if ((bl(h).solid === 0) === (bl(p).solid === 0)) add('hurt/floor', name(h), bl(h), name(p), bl(p));
   // monsters: a hurting one against a harmless one
   const mons = new Map<number, number>();
   for (const m of d.mon) {
