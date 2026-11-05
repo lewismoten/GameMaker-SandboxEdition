@@ -34,6 +34,7 @@ export const STARTER_GROUPS: { name: string; tag: string; games: string[] }[] = 
     games: [
       'power-up',
       'throw-it',
+      'many-weapons',
       'health-and-hearts',
       'slippery-and-bouncy',
       'momentum',
@@ -48,7 +49,7 @@ export const STARTER_GROUPS: { name: string; tag: string; games: string[] }[] = 
   {
     name: 'Foes and Bosses',
     tag: 'Foes that think, and ones that take a few hits.',
-    games: ['boss-hits', 'boss-phases', 'who-wins', 'short-lived', 'searchlight'],
+    games: ['boss-hits', 'boss-phases', 'who-wins', 'short-lived', 'follower', 'searchlight'],
   },
   { name: 'Telling a Story', tag: 'Words, pictures and sound.', games: ['say-something', 'pictures-and-cartoons', 'sounds-and-music', 'day-night', 'popups'] },
   {
@@ -57,7 +58,7 @@ export const STARTER_GROUPS: { name: string; tag: string; games: string[] }[] = 
     games: ['beat-the-clock', 'countdown', 'warning-first', 'switches', 'your-first-game'],
   },
   { name: 'Wiring and Puzzles', tag: 'Counters that think.', games: ['three-tokens'] },
-  { name: 'Bigger Worlds', tag: 'More than one screen.', games: ['scroll', 'many-rooms'] },
+  { name: 'Bigger Worlds', tag: 'More than one screen.', games: ['scroll', 'many-rooms', 'blocks-budget'] },
   { name: 'Showcase Tricks', tag: 'How the big games do their big moments.', games: ['dialog'] },
 ];
 
