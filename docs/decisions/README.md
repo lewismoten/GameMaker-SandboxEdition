@@ -9,3 +9,5 @@ them.
 - [The SDKs are three npm workspaces](sdk-workspaces.md)
 - [Match DOS behavior, bugs included](match-dos-bugs.md)
 - [Editor-only data goes in the companion file](companion-file.md)
+- [GitHub Actions only builds and publishes](ci-minutes.md)
+- [Secret games stay out of everything a player sees](secret-games.md)
