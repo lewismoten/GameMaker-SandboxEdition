@@ -27,6 +27,14 @@
     "31": {
       "short": "Duck",
       "long": "Same as the Down arrow."
+    },
+    "72": {
+      "short": "Up",
+      "long": "Climb a ladder. There is none here."
+    },
+    "17": {
+      "short": "Up",
+      "long": "Same as the Up arrow."
     }
   },
   "joystick": {
