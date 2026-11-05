@@ -133,6 +133,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Changed
 
+- The Imported tab has an Import history… button: the last 20 imports (when, from where, how many came in, how many were left out as already held, and which failed and why), kept in this browser, with a Clear history button.
 - Before importing a folder or ZIP of games, the chooser shows the totals (games, files and size) for everything found and for the games you have ticked, and each game's own size next to its file count.
 - The import chooser marks a game you already have ("Already in your games (Name)") and leaves it unticked, so importing the same folder or ZIP twice no longer makes copies unless you tick them.
 - Removing imported games together (all, some ratings, or one import's) now ends with an Undo button that stays for a minute and brings every one of them back, with its ratings and notes.
@@ -164,6 +165,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 ### Fixed
 
 - On the desk's PC screen and dos.html, a keyboard user is no longer stuck: Shift+Tab leaves the screen (the screen's name says so), and the Sound Boaster note is a labeled region.
+- On a phone, the Sort, Show and Remove all imported controls above a long list of imported games no longer sit on top of the first tiles.
 - Choosing a link or button that opens another page now moves keyboard focus to that page's heading, so a screen reader says where you are. Opening the site, Back and Forward, and changes the page makes itself leave focus alone.
 - The Undo notice after deleting a game waits while the pointer is over it or focus is in it, instead of vanishing after 10 seconds, and a screen reader reads it out.
 - Play this level and See how it's made in How do I…? now say where they took you ("Opened the map of First Steps, level 1."), so a screen reader knows the page changed.
