@@ -6,7 +6,7 @@
   "year": 1994,
   "price": "Free",
   "version": "1.0",
-  "blurb": "Two short levels where something warns you before it happens. In the first, three fog vents in the ground rumble before they puff, and a puff stings a little: wait for it to end, then cross. In the second, planks over a pit flicker before they vanish, and come back later: cross while they are solid, and if you fall, a soft mat catches you. A warning here is a block that changes first, and the next block waits a few ticks. Signs say how. Play it, then open it in Game-Maker and change how long a warning lasts.",
+  "blurb": "Two short levels where something warns you before it happens. Three fog vents rumble before they puff, and a puff stings a little: wait for it to end, then cross. Planks over a pit flicker before they vanish and come back later, and a soft mat catches you if you fall. A warning here is a block that changes first. Signs say how. Play it, then open it in Game-Maker and change how long a warning lasts.",
   "exe": "WARN.EXE",
   "dosName": "WARNFRST",
   "sound": "sb",

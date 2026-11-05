@@ -77,7 +77,7 @@
     },
     {
       "head": "Make it yours",
-      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>In <b>seen.mon</b>, give monsters 3 to 7 a longer path (all five the same) and see what happens to the trenches.</li><li>Give only the lamp (monster 3) a different speed from its cone and watch the column come apart.</li><li>Untick the pictures&rsquo; hit points in <b>seen.mbl</b> and the light is harmless.</li><li>Dig a third trench in <b>one.map</b> with the <b>trench</b> block, and check you can still climb out of it.</li><li>Move a trench to where the light never reaches and see that it is not needed.</li></ul><p>The home page&rsquo;s <b>Starters</b> tab has more small games like this one.</p>"
+      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>In <b>seen.mon</b>, give monsters 3 to 7 a longer path (all five the same) and see what happens to the trenches.</li><li>Give only the lamp (monster 3) a different speed from its cone and watch the column come apart.</li><li>Uncheck the pictures&rsquo; hit points in <b>seen.mbl</b> and the light is harmless.</li><li>Dig a third trench in <b>one.map</b> with the <b>trench</b> block, and check you can still climb out of it.</li><li>Move a trench to where the light never reaches and see that it is not needed.</li></ul><p>The home page&rsquo;s <b>Starters</b> tab has more small games like this one.</p>"
     }
   ]
 }

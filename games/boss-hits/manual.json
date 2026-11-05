@@ -77,7 +77,7 @@
     },
     {
       "head": "Make it yours",
-      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>In <b>bug.mon</b>, set monster 9&rsquo;s <b>When destroyed it becomes</b> to the puff and monster 8&rsquo;s to 15 as well: the bug takes four hits.</li><li>Change the chain&rsquo;s <b>Score when destroyed by a weapon</b> and watch the score.</li><li>Give the bug a <b>Movement</b> path of one block and see where it ends up after a hit.</li><li>Untick <b>Solid</b> on a bug picture and walk through it.</li><li>Make the star&rsquo;s <b>Power</b> lower than 150 and see that a star no longer hurts it.</li></ul><p>The home page&rsquo;s <b>Starters</b> tab has more small games like this one.</p>"
+      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>In <b>bug.mon</b>, set monster 9&rsquo;s <b>When destroyed it becomes</b> to the puff and monster 8&rsquo;s to 15 as well: the bug takes four hits.</li><li>Change the chain&rsquo;s <b>Score when destroyed by a weapon</b> and watch the score.</li><li>Give the bug a <b>Movement</b> path of one block and see where it ends up after a hit.</li><li>Uncheck <b>Solid</b> on a bug picture and walk through it.</li><li>Make the star&rsquo;s <b>Power</b> lower than 150 and see that a star no longer hurts it.</li></ul><p>The home page&rsquo;s <b>Starters</b> tab has more small games like this one.</p>"
     }
   ]
 }

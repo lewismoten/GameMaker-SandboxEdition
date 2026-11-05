@@ -69,7 +69,7 @@
     },
     {
       "head": "How this level is made",
-      "html": "<h1>How level 2 is made</h1><ul><li><b>Stopped by a wall.</b> Puff's <b>Stopped by solid blocks</b> box is ticked. When its next step would go into a solid block, Puff stops on that side and goes on moving along the other one, so it slides under the ledge instead of through it.</li><li><b>Blocks that stop it.</b> The ledge is ordinary brick blocks, solid on every side. Puff is checked against the blocks next to it, one step at a time.</li><li><b>No route.</b> There is no setting for finding a way around. Puff only ever aims at where Kit is, so a wall between them just holds it back.</li><li><b>Under the ledge.</b> Open <b>two.map</b> in the map editor. The ledge is one row of brick, with a room two blocks high under it and the left wall closing it in. Puff starts there, and the right end is open so it can come out later.</li><li><b>The exit.</b> The last door links to the <b>The End</b> scene in <b>pup.gam</b>, which plays the ending.</li></ul>"
+      "html": "<h1>How level 2 is made</h1><ul><li><b>Stopped by a wall.</b> Puff's <b>Stopped by solid blocks</b> box is checked. When its next step would go into a solid block, Puff stops on that side and goes on moving along the other one, so it slides under the ledge instead of through it.</li><li><b>Blocks that stop it.</b> The ledge is ordinary brick blocks, solid on every side. Puff is checked against the blocks next to it, one step at a time.</li><li><b>No route.</b> There is no setting for finding a way around. Puff only ever aims at where Kit is, so a wall between them just holds it back.</li><li><b>Under the ledge.</b> Open <b>two.map</b> in the map editor. The ledge is one row of brick, with a room two blocks high under it and the left wall closing it in. Puff starts there, and the right end is open so it can come out later.</li><li><b>The exit.</b> The last door links to the <b>The End</b> scene in <b>pup.gam</b>, which plays the ending.</li></ul>"
     },
     {
       "head": "What it cannot do",
@@ -77,7 +77,7 @@
     },
     {
       "head": "Make it yours",
-      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>Change Puff's <b>Speed (pixels per tick)</b> to 6. It keeps up with Kit now.</li><li>Pick <b>Runs from the character</b> for <b>Movement</b>. Puff flees whenever Kit comes near.</li><li>Untick <b>Stopped by solid blocks</b>. Puff flies straight through the ledge to Kit.</li><li>Put a second Puff on the map with a different speed.</li></ul><p>The home page's <b>Starters</b> tab has more small games like this one.</p>"
+      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>Change Puff's <b>Speed (pixels per tick)</b> to 6. It keeps up with Kit now.</li><li>Pick <b>Runs from the character</b> for <b>Movement</b>. Puff flees whenever Kit comes near.</li><li>Uncheck <b>Stopped by solid blocks</b>. Puff flies straight through the ledge to Kit.</li><li>Put a second Puff on the map with a different speed.</li></ul><p>The home page's <b>Starters</b> tab has more small games like this one.</p>"
     }
   ]
 }

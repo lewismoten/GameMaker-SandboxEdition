@@ -6,7 +6,7 @@
   "year": 1994,
   "price": "Free",
   "version": "1.0",
-  "blurb": "Two short levels where the wind changes over time. In the first, the leaves in a shaft of air flutter, and then a gust blows up and lifts Kit to a ledge too high to jump to: wait in the shaft and ride it. In the second, gusts blow along a tunnel and push him back, windsocks on the hill droop, twitch and stream in step with the wind, and two little shelters are a place to wait. A gust here is a block that pulls, in a ring of blocks that change on a timer, and the windsocks use the same times. Signs say how. Play it, then open it in Game-Maker and change how long a gust lasts.",
+  "blurb": "Two short levels where the wind changes over time. In the first, a gust blows up a shaft of air and lifts Kit to a ledge too high to jump to: wait in the shaft and ride it. In the second, gusts blow along a tunnel and push him back, and two little shelters are a place to wait. A gust here is a ring of blocks that pull, changing on a timer. Signs say how. Play it, then open it in Game-Maker and change how long a gust lasts.",
   "exe": "GUST.EXE",
   "dosName": "GUSTS",
   "sound": "sb",

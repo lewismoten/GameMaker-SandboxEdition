@@ -6,7 +6,7 @@
   "year": 1994,
   "price": "Free",
   "version": "1.0",
-  "blurb": "Two short levels about gates that count. Tokens add to a count, and a gate opens only when the count can pay its price: three tokens for the first, and in the second the gate is the exit itself. Signs in the levels say how. Play it, then open it in Game-Maker and change a price.",
+  "blurb": "Two short levels about gates that count. Tokens add to a counter, and a gate opens only when the counter can pay its price: three tokens for the first, and in the second the gate is the exit itself. Signs in the levels say how. Play it, then open it in Game-Maker and change a price.",
   "exe": "TOKENS.EXE",
   "dosName": "THREETOK",
   "sound": "sb",

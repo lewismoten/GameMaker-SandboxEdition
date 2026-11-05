@@ -6,7 +6,7 @@
   "year": 1994,
   "price": "Free",
   "version": "1.0",
-  "blurb": "Two short levels about the 150 blocks a game gets. A picture bigger than one block is a group of blocks, cut like tiles, and a block used again costs nothing more. In the first level a stone tower is one picture in a handful of blocks, and Kit walks right through it, because a picture is not solid unless its blocks say so. In the second a row of houses is built from a few blocks used again and again, and a brick wall is solid in every place it stands. Signs in the levels say how, and the last one counts the game's blocks. Play it, then open it in Game-Maker and look at the Blocks tab.",
+  "blurb": "Two short levels about the 150 blocks a game gets. A picture bigger than one block is a group of blocks, cut like tiles, and a block used again costs nothing more. A stone tower is one picture that Kit walks right through, and a row of houses is built from a few blocks used again and again. Signs in the levels say how, and the last one counts the game's blocks. Play it, then open it in Game-Maker and look at the Blocks tab.",
   "exe": "BLK150.EXE",
   "dosName": "BLK150",
   "sound": "sb",
