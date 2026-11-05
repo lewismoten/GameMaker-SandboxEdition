@@ -27,4 +27,4 @@ if (seen !== '2 3' || r.keysLeft || r.scenes.includes(1)) {
   console.error(`demoCheck: expected scenes 2 3 with every key played and no ending; got ${seen}`);
   process.exit(1);
 }
-console.log('demoCheck ok: the hop, the lift and the dashes played, no game over');
+console.log('demoCheck ok: the bird hit once, the ducks and the hops played, no game over');

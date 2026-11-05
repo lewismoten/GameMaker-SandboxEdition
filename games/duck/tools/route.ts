@@ -112,7 +112,13 @@ export async function cross(bot: StarterBot, goalX: number, o: { ground: number;
     const r = await bot.tick();
     if (r) throw new Error(`crossing: ${r}`);
     if (hp(bot) < before && o.mistake && mistakes === 0) mistakes = 1;
-    if (process.env.DUCK_DEBUG && hp(bot) < before) console.log(`t${t} hit: kit ${bot.px.x},${bot.px.y} act ${act} ${fl.filter((m) => m.x > me - 60 && m.x < me + 90).map((m) => `${m.id}@${m.x},${m.y}v${m.vx}`).join(' ')}`);
+    if (process.env.DUCK_DEBUG && hp(bot) < before)
+      console.log(
+        `t${t} hit: kit ${bot.px.x},${bot.px.y} act ${act} ${fl
+          .filter((m) => m.x > me - 60 && m.x < me + 90)
+          .map((m) => `${m.id}@${m.x},${m.y}v${m.vx}`)
+          .join(' ')}`,
+      );
   }
   keys();
   await must(bot, bot.land(), 'landing');

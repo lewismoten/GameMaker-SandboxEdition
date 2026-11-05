@@ -144,7 +144,17 @@ function headHeight(book: Book, signs: Record<SignName, Sign>): StarterMap {
   g.put(3, G - 2, 's').put(3, G - 1, 'S');
   g.put(L1.exit, G - 2, 'e').put(L1.exit, G - 1, 'E');
   for (const x of L1.coins) g.put(x, G - 1, 'c');
-  scenery(g, G, [[8, 2], [26, 1], [44, 2]], [7, 12, 54], [10, 56]);
+  scenery(
+    g,
+    G,
+    [
+      [8, 2],
+      [26, 1],
+      [44, 2],
+    ],
+    [7, 12, 54],
+    [10, 56],
+  );
   const m = new StarterMap(book, g.rows());
   awning(m, L1.roof[0], L1.roof[1], L1.roofRow, G);
   // birds fly in the row of Kit's head: his top block is row G-2
@@ -162,7 +172,17 @@ function highOrLow(book: Book, signs: Record<SignName, Sign>): StarterMap {
   g.put(3, G - 2, 's').put(3, G - 1, 'S');
   g.put(L2.exit, G - 2, 'e').put(L2.exit, G - 1, 'E');
   for (const [x, y] of L2.coins) g.put(x, y, 'c');
-  scenery(g, G, [[7, 2], [32, 1], [60, 3]], [10, 40, 70], [12, 42, 72]);
+  scenery(
+    g,
+    G,
+    [
+      [7, 2],
+      [32, 1],
+      [60, 3],
+    ],
+    [10, 40, 70],
+    [12, 42, 72],
+  );
   const m = new StarterMap(book, g.rows());
   awning(m, L2.roof[0], L2.roof[1], L2.roofRow, G);
   awning(m, L2.both.roof[0], L2.both.roof[1], L2.roofRow, G);

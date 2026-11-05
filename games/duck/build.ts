@@ -76,14 +76,14 @@ disk.put(
   ]),
 );
 disk.put('menu.gif', gif(menuPicture(pal, book, hero, TITLE), pal));
-disk.put('scores.gif', gif(scoresPicture(pal, book, 'THE MOVERS'), pal));
+disk.put('scores.gif', gif(scoresPicture(pal, book, 'THE DODGERS'), pal));
 disk.put('loadgame.gif', gif(slotsPicture(pal, book, 'LOAD GAME'), pal));
 disk.put('savegame.gif', gif(slotsPicture(pal, book, 'SAVE GAME'), pal));
-text('story', 'HOLD OR TAP', STORY);
+text('story', 'DUCK AND HOP', STORY);
 text('howto', 'HOW TO PLAY', HOWTO);
 text('credits', 'CREDITS', CREDITS);
-disk.put('wonpic.gif', gif(endPicture(pal, book, cheer, 'WELL MOVED!', 'TWO LEVELS DONE', 'won'), pal));
-disk.put('won.gif', gif(paper(pal, book, 'WELL MOVED'), pal));
+disk.put('wonpic.gif', gif(endPicture(pal, book, cheer, 'WELL DUCKED!', 'TWO LEVELS DONE', 'won'), pal));
+disk.put('won.gif', gif(paper(pal, book, 'WELL DUCKED'), pal));
 disk.put('won.txt', WON);
 disk.put('won.lst', serializeSlideList([{ name: 'wonpic.gif', pause: 6 }, { name: 'won.gif', pause: 0 }, { name: 'won.txt' }]));
 disk.put('lostpic.gif', gif(endPicture(pal, book, heroPicture(heroBlocks, 'hurt.top', 'hurt'), 'OH NO!', 'OUT OF LIVES', 'lost'), pal));
@@ -93,7 +93,7 @@ disk.put('lost.lst', serializeSlideList([{ name: 'lostpic.gif', pause: 5 }, { na
 
 disk.put('demo.rec', demoRecording());
 disk.put('dk.gam', serializeGame(buildGame(levels)));
-disk.put('license.txt', licenseText("Kit Ducks"));
+disk.put('license.txt', licenseText('Kit Ducks'));
 clipEveryList(disk.files);
 disk.write();
 console.log(`${TITLE}: ${book.index.size} blocks, ${heroBlocks.index.size} hero blocks`);

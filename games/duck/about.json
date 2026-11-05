@@ -5,33 +5,33 @@
   "series": "starter",
   "year": 1994,
   "price": "Free",
-  "version": "1.1",
-  "blurb": "Two short levels about what a key does while you hold it. Space hops once however long it is held, Up keeps lifting for as long as it is down, and Enter dashes once for each press. Each is a setting on a sequence in the character file, and the levels are built so that you feel the difference. Nothing here hurts. Signs explain each idea, and every level has a page on how it is made.",
+  "version": "1.0",
+  "blurb": "Two short levels about dodging by ducking. Friendly bluebirds fly back and forth at the height of Kit's head, and Down makes him duck: his crouch has a picture in the bottom block only, so a bird in the row of his head touches nothing. A ball rolling on the ground is another matter, and needs a hop. Signs explain each idea, and every level has a page on how it is made.",
   "exe": "KITDUCK.EXE",
   "dosName": "KITDUCK",
   "sound": "sb",
   "label": {
     "background": "#fff3d6",
-    "band": "#b5471f",
+    "band": "#1d5f8a",
     "ink": "#1a1830",
     "logo": "SANDBOX SOFTWARE"
   },
   "box": {
     "levels": "2 short levels",
     "hours": 1,
-    "background": "#b5471f",
+    "background": "#1d5f8a",
     "accent": "#ffd23f",
     "ink": "#ffffff",
-    "tagline": "Tap it, or hold it?",
-    "back": "A small explorer in a teal beanie has two levels to cross. One key hops once, however long you hold it, and another keeps lifting him while it is down. In the second, a dash goes once for each press, so a wide gap needs press after press. Signs say what each level shows, and the manual says how each is made.",
+    "tagline": "Down, and the bird flies over.",
+    "back": "A small explorer in a teal beanie has two levels to cross. Friendly bluebirds patrol at the height of his head, and a low awning stops him hopping over. Hold Down and he ducks, and the bird passes with nothing to touch. In the second level a ball rolls along the ground, and a duck does not help: it needs a hop. Signs say what each level shows, and the manual says how each is made.",
     "features": [
       "Signs in the levels explain each idea",
-      "A held key can run again, or wait for the next press: it is one setting on a sequence",
+      "A duck is a character frame with no top picture, so a flier at head height has nothing to touch",
       "Made to be copied and taken apart"
     ],
     "shots": [
-      ["one.map", 30, 0],
-      ["two.map", 38, 1]
+      ["one.map", 22, 2],
+      ["two.map", 32, 2]
     ],
     "rating": "Everyone"
   }

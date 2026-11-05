@@ -6,27 +6,29 @@ import about from '../about.json';
 export const STORY = wrap(`
 |KIT DUCKS
 
-What does a key do while you hold it?
+How do you dodge something that is not at your feet?
 
-A small explorer in a teal beanie has two short levels to cross. In the first, one key hops and another keeps lifting him for as long as it is held. In the second, a key dashes him to the right, once for each press.
+A small explorer in a teal beanie has two short levels to cross. Friendly bluebirds fly back and forth at the height of his head, and beach balls roll back and forth along the ground.
 
-Read the signs. Every key in Game-Maker starts a sequence of frames, and two settings say what happens when you keep it down: run again, or wait for the next press.
+Read the signs. Kit is two blocks tall, a head block over a body block. When he ducks, his top block is empty. A bird flying through the row of his head touches nothing, and a ball still finds his feet.
 
-Then open this game in Game-Maker and change one.
+Then open this game in Game-Maker and look at the duck.
 `);
 
 export const HOWTO = wrap(`
 |HOW TO PLAY
 
 |LEFT, RIGHT   walk
-|SPACE         hop, once
-|UP            lift (held)
-|ENTER         dash right
+|SPACE         hop
+|DOWN          duck (held)
+|S             duck, too
 |F2            lives, score
 
 Walk to the door in each level. Take the coins on the way.
 
-Nothing can hurt you here. Try each key held down, and then tapped, and see the difference.
+Hold Down as a bird comes at your head, and let go when it has flown over. A ball on the ground needs a hop instead.
+
+A touch costs a few hit points. Never a life, if you are careful.
 
 |ESC for the menu.
 `);
@@ -45,13 +47,13 @@ One of the Starters: small games that each show one idea.
 );
 
 export const WON = wrap(`
-|WELL MOVED!
+|WELL DUCKED!
 
-Two levels, and now you know what a held key can do.
+Two levels, and now you know how to dodge without moving out of the way.
 
-Each sequence in the character file has a setting: one run for each key press, or run again while the key is down. Space hops once. Up keeps lifting. Enter dashes once, and a second dash needs a second press.
+Kit's duck is a sequence in the character file whose frames have a picture in the bottom block only. The top block is empty, so a bird in the row of his head has nothing to touch. The same duck does not help against a ball, which rolls through the row of his feet.
 
-Open the game in Game-Maker and find them on the Character tab. Turn off the setting on Space, then hold it.
+Open the game in Game-Maker and find the Down key on the Character tab. Give the duck a top picture and watch the birds hit him.
 `);
 
 export const LOST = wrap(`
@@ -59,5 +61,5 @@ export const LOST = wrap(`
 
 Out of lives. That is not meant to happen here.
 
-Try again: tap Space, hold Up and press Enter, and see what each does.
+Try again: hold Down as a bird comes, and hop over a ball with Space.
 `);

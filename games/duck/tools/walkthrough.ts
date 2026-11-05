@@ -7,7 +7,7 @@ import { SEED, play } from './play';
 
 const { sim } = await play(SEED);
 const titles: Record<number, string> = {
-  2: 'Level 1: Tap and Hold',
-  3: 'Level 2: Once Per Press',
+  2: 'Level 1: Head Height',
+  3: 'Level 2: High or Low',
 };
 await writeSimWalkthrough('duck', sim, SEED, titles);

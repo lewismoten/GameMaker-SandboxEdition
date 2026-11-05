@@ -10,15 +10,11 @@
     },
     "57": {
       "short": "Hop",
-      "long": "Hop once. Holding the key does not hop again: it is one hop for each press."
-    },
-    "72": {
-      "short": "Lift",
-      "long": "Lift for as long as the key is held. Let go and Kit falls."
+      "long": "Hop over a ball that rolls along the ground."
     },
     "80": {
-      "short": "Down",
-      "long": "Move down. Nothing here to climb."
+      "short": "Duck",
+      "long": "Duck while the key is held. A bird at head height flies over, and Kit stands up when the key is let go."
     },
     "30": {
       "short": "Walk left",
@@ -28,17 +24,9 @@
       "short": "Walk right",
       "long": "Same as the Right arrow."
     },
-    "17": {
-      "short": "Lift",
-      "long": "Same as the Up arrow."
-    },
     "31": {
-      "short": "Down",
+      "short": "Duck",
       "long": "Same as the Down arrow."
-    },
-    "28": {
-      "short": "Dash",
-      "long": "Dash to the right. One dash for each press: let go and press again for another."
     }
   },
   "joystick": {
@@ -48,7 +36,7 @@
     }
   },
   "sounds": {
-    "9": "The jump",
+    "9": "The hop",
     "10": "Getting hurt",
     "11": "Falling over"
   },
