@@ -59,6 +59,7 @@ things-that-grow|Seeds and Nests|2
 show-the-count|Show the Count|2
 momentum|Slide and Drift|2
 slippery-and-bouncy|Slippery and Bouncy|3
+slow-computers|Slow Computers|3
 breakable-walls|Smash It|3
 sound-board|Sound Board|2
 sounds-and-music|Sounds and Music|3
