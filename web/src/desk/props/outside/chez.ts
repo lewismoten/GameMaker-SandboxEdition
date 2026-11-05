@@ -17,7 +17,7 @@ const HONKS = turns([
 export const chez: OutsideEvent = {
   kind: 'chez',
   id: 'desk-chez',
-  label: 'THE\u00a0CHEZ driving by, Doc Leo at the wheel: honk',
+  label: 'THE\u00a0CHEZ driving by, Doc Leo at the wheel and Teddy at the window: honk',
   when: 'day',
   ms: 11_000,
   start: () => roomSound.whirr(11),
