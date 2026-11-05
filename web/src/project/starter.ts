@@ -25,6 +25,7 @@ export const STARTER_GROUPS: { name: string; tag: string; games: string[] }[] = 
   },
   { name: 'Telling a Story', tag: 'Words, pictures and sound.', games: ['say-something', 'pictures-and-cartoons', 'sounds-and-music'] },
   { name: 'Putting It Together', tag: 'Timing, switches and a whole small game.', games: ['beat-the-clock', 'countdown', 'switches', 'your-first-game'] },
+  { name: 'Bigger Worlds', tag: 'More than one screen.', games: ['scroll'] },
   { name: 'Showcase Tricks', tag: 'How the big games do their big moments.', games: [] },
 ];
 
