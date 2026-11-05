@@ -62,7 +62,7 @@ export const PATCHING_TXT: string[] = [
   '  HEXEDIT.EXE (in C:\\DOS) shows any file byte by byte. Press E to edit,',
   '  F10 to write: it makes a .BAK of its own before it saves. Use overwrite,',
   '  never insert. Insert pushes every later byte along and the program stops',
-  '  starting. DEBUG.COM can do it too, but it will not open a file bigger than',
+  '  starting. The DOS DEBUG program can, but it will not open a file bigger than',
   '  64K, and a player is more than twice that. Use a hex editor.',
   '',
   '  Rather not count bytes? PLAYHACK.EXE (PLAYHACK.ZIP, same W)arez area) has',
