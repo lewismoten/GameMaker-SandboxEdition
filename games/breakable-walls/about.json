@@ -5,7 +5,7 @@
   "series": "starter",
   "year": 1994,
   "price": "Free",
-  "version": "1.0",
+  "version": "1.1",
   "blurb": "Three short levels about blocks that break. Bump a crate and it turns to rubble, and only the crates you touch break. A coin that turns into itself pays again and again, so a coin must become air to pay once. A spinning gem is four blocks in a loop, and each frame has to turn to air too. Signs say how. Play it, then open it in Game-Maker and change what a block becomes.",
   "exe": "SMASH.EXE",
   "dosName": "SMASHIT",

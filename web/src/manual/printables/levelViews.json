@@ -8,7 +8,7 @@
   "blocks-budget": {"hash":"24987f1959c53278","maps":{"one.map|blocks.bbl":[0,14,67,10],"two.map|blocks.bbl":[0,7,81,20]}},
   "boss-hits": {"hash":"72cdc562eaa9c4fd","maps":{"one.map|bug.bbl":[0,14,64,10],"two.map|bug.bbl":[0,14,65,10]}},
   "boss-phases": {"hash":"957be7771fbcc914","maps":{"one.map|phase.bbl":[0,14,63,10],"two.map|phase.bbl":[0,14,65,10]}},
-  "breakable-walls": {"hash":"5df31140545b21a5","maps":{"one.map|sm.bbl":[0,9,69,18],"three.map|sm.bbl":[0,9,73,18],"two.map|sm.bbl":[0,9,73,18]}},
+  "breakable-walls": {"hash":"002f380d0d62a06c","maps":{"one.map|sm.bbl":[0,9,69,18],"three.map|sm.bbl":[0,9,73,18],"two.map|sm.bbl":[0,9,73,18]}},
   "brief": {"hash":"47a44ff2e9b04ad7","maps":{"after.map|after.bbl":[0,0,80,10],"clown.map|clown.bbl":[0,0,80,13],"docks.map|docks.bbl":[0,0,80,10],"future.map|future.bbl":[0,0,80,10],"lab.map|lab.bbl":[0,0,80,10],"library.map|library.bbl":[0,0,48,13],"living.map|living.bbl":[0,0,80,10],"other.map|other.bbl":[0,0,80,34],"yard.map|yard.bbl":[0,0,80,10]}},
   "carl": {"hash":"85bff570c89cb3fe","maps":{"aux.map|house.bbl":[0,0,58,18],"bed.map|house.bbl":[0,0,68,18],"couch.map|house.bbl":[0,0,71,20],"walls.map|house.bbl":[0,0,63,20],"wild.map|yard.bbl":[0,0,84,21],"window.map|yard.bbl":[0,0,84,19]}},
   "choose-hero": {"hash":"4458e09a9ae13a7b","maps":{"climb.map|pick.bbl":[0,9,79,25],"doors.map|pick.bbl":[0,16,57,10],"road.map|pick.bbl":[0,7,67,24]}},

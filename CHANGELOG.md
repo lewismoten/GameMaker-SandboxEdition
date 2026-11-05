@@ -209,6 +209,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Fixed
 
+- Smash It's gems now turn like cut stones, eight frames that narrow to a thin edge and widen again, and a smashed crate plays a crunch.
 - Pick It Up, level 2: the spikes were a solid strip in the ground that stung Kit every moment he stood on top of it. They now stand at his height and sting once when touched, so there is a run-up and a jump over them.
 
 - Round and Round: the little car no longer disappears for a quarter of each lap at the top of the loop. The engine draws a monster only when the block it is in is not the screen's top row (as DOS did), so the track and the car's path moved down one block. The game is version 1.1.

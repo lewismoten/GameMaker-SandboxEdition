@@ -16,8 +16,9 @@ import { Disk } from '../kit/disk';
 import { licenseText } from '../kit/license';
 import { STARTER_STING, starterStingFli } from '../kit/starter/sting';
 import { buildHeroBlocks, heroPicture } from '../kit/starter/hero';
+import { SND } from '../kit/starter/ids';
 import { KEYS } from '../kit/starter/blocks';
-import { finishBlocks } from './src/breakBlocks';
+import { CRUNCH, finishBlocks } from './src/breakBlocks';
 import { buildHero } from '../kit/starter/heroChar';
 import { buildMonsterBlocks, buildMonsters } from '../kit/starter/monsters';
 import { cardPicture, endPicture, gif, menuPicture, paper, scoresPicture, slotsPicture, titlePicture } from '../kit/starter/screens';
@@ -52,7 +53,9 @@ heroChar.meter[KEYS] = INF_REPEAT; // no keys in this game
 heroChar.meter[0] = HERO_HIT_POINTS;
 heroChar.meter[1] = HERO_LIVES;
 disk.put('hero.chr', serializeCharacter(heroChar));
-disk.put('sm.snd', serializeSoundSet(buildSounds()));
+const sounds = buildSounds();
+sounds.freqs[SND.gain] = CRUNCH; // a smashed crate raises a spare counter, which plays sound 7
+disk.put('sm.snd', serializeSoundSet(sounds));
 disk.put('sm.cmf', song());
 
 // each level's map and its card

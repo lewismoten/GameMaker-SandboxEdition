@@ -1,24 +1,31 @@
 // SMASH IT's own blocks, added to the Starter block set after the signs:
 //   crate       a wooden box you cannot walk through (solid on every side). Touch it, from any side, and it
 //               becomes `rubble`. A bump is a touch: the engine does not know which side was hit.
+//               It also adds 1 to a spare counter, which is what makes Game-Maker play the crunch (CRUNCH).
 //   rubble      what a crate leaves: a little pile you can walk through, with nothing to turn into
 //   stuckCoin   a coin whose "becomes" is itself: it pays 2 every tick Kit is touching it and never goes
-//   gem0..gem3  a spinning gem, four blocks in a loop (each turns into the next after a few ticks). Every
+//   gem0..gem7  a spinning gem, eight blocks in a loop (each turns into the next after a few ticks). Every
 //               frame has the same touch: it becomes sky (air) and pays 25. A frame left blank would pay
-//               again, like the stuck coin, so all four are filled in.
+//               again, like the stuck coin, so all eight are filled in.
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { outline } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { speaker } from '@lewismoten/gamemaker-sandbox-tools/kit/sound';
 import { PULL, SOLID, type Book } from '../../kit/starter/book';
 import { skyOf, type Pal } from '../../kit/starter/palette';
+
+/** The spare counter a smashed crate adds one to (counters 20 and up are free; Game-Maker plays sound 7 when one goes up). Nothing shows it. */
+export const CRATE_COUNTER = 21;
+/** The crunch of a crate breaking: a burst of noise, then a low thump. It takes the 'counter goes up' sound, which this game has no other use for (no keys). */
+export const CRUNCH = speaker((i) => (i < 14 ? 160 + ((i * 7919) % 11) * 80 : i < 24 ? 120 - (i - 14) * 6 : 0));
 
 /** Points the stuck coin pays on every tick it is touched. */
 export const STUCK_PAY = 2;
 /** Points one gem pays, once. */
 export const GEM_PAY = 25;
 /** The frames of the spinning gem, and the ticks each lasts (18.2 a second). */
-export const GEM_FRAMES = 4;
-export const GEM_TICKS = 5;
+export const GEM_FRAMES = 8;
+export const GEM_TICKS = 3;
 
 /** A crate: planks in a frame with a cross of braces, brown and plainly breakable, not a wall. */
 function crate(pal: Pal): Pixels {
@@ -86,35 +93,58 @@ function stuckCoin(pal: Pal): Pixels {
   return p;
 }
 
-/** One frame of a spinning gem: `half` is how many pixels wide it is on each side of the middle (the turn). */
-function gem(pal: Pal, half: number): Pixels {
+/** The gem's turn: a cut stone with six faces round it and a flat crown, seen as it rotates about its upright axis. */
+const FACES = 6;
+/** How deep the stone is front to back, against its width (a flat gem narrows to a thin edge at a quarter turn). */
+const DEPTH = 0.3;
+
+/** One frame of a spinning gem: `turn` is the angle (radians) it has rotated about its vertical axis. */
+function gem(pal: Pal, turn: number): Pixels {
   const p = new Pixels(20, 20, skyOf(pal));
   const t = pal.r('purple');
+  const [cs, sn] = [Math.cos(turn), Math.sin(turn)];
+  const amp = Math.hypot(cs, DEPTH * sn); // the silhouette's half width, as a share of the radius
   for (let y = 2; y <= 17; y++) {
-    const rows = y < 8 ? y - 2 : 17 - y;
-    const w = Math.max(1, Math.round(((1 + rows) * half) / 6));
-    p.rect(10 - w, y, 2 * w, 1, t[3]);
-    p.rect(10 - w, y, 1, 1, t[1]).rect(9 + w, y, 1, 1, t[1]);
+    // the girdle (widest row) is at y 8; the crown flares to it from a flat table, the pavilion tapers to a point
+    const radius = y < 8 ? 4.2 + (y - 2) * 0.55 : (7.5 * (18 - y)) / 10;
+    const half = Math.max(0.55, radius * amp);
+    for (let x = 0; x < 20; x++) {
+      const u = (x + 0.5 - 10) / half;
+      if (Math.abs(u) > 1) continue;
+      // the angle round the stone of the point we see on this column, taking the one facing us
+      const delta = Math.atan2(DEPTH * sn, cs);
+      const near = Math.acos(Math.max(-1, Math.min(1, u)));
+      let best = -9;
+      let psi = 0;
+      for (const cand of [delta + near, delta - near]) {
+        const depth = -Math.cos(cand) * sn + DEPTH * Math.sin(cand) * cs;
+        if (depth > best) [best, psi] = [depth, cand];
+      }
+      const face = Math.floor(((((psi / (2 * Math.PI)) * FACES) % FACES) + FACES) % FACES);
+      // light from the upper left front: a face looking toward it is bright, away from it dark
+      const look = ((face + 0.5) / FACES) * 2 * Math.PI - turn - Math.PI / 2;
+      const lit = Math.cos(look + 0.6); // 1 facing the light, -1 away
+      let shade = Math.round(2.3 + lit * 1.6);
+      if (y >= 8) shade -= 1; // the pavilion is a shade darker than the crown
+      if (y === 2) shade = 4; // the flat table catches the light
+      p.set(x, y, t[Math.max(1, Math.min(4, shade))]);
+    }
   }
-  // a bright facet on the left and a dark one on the right, thinner as it turns
-  const f = Math.max(1, half >> 1);
-  p.rect(10 - f - 1, 4, f, 4, t[4]).rect(10, 10, f, 4, t[2]);
-  p.set(10 - half + 1, 7, t[5]);
+  // the girdle line, kept a shade darker
+  for (let x = 0; x < 20; x++) if (p.get(x, 8) === t[3] || p.get(x, 8) === t[4]) p.set(x, 8, t[2]);
   return outline(p, pal.c('ink', 0), { transparent: skyOf(pal) });
 }
-
-const HALFS = [7, 4, 1, 4];
 
 /** Adds the smash blocks to `book` (after addStarterBlocks and the signs). */
 export function addBreakBlocks(book: Book, pal: Pal): void {
   const air = { grav: PULL.down };
   book.add('rubble', rubble(pal), air);
-  book.add('crate', crate(pal), { solid: SOLID, touch: 'rubble' });
+  book.add('crate', crate(pal), { solid: SOLID, effect: CRATE_COUNTER, eamt: 1, touch: 'rubble' });
   book.add('stuckCoin', stuckCoin(pal), { ...air, score: STUCK_PAY, touch: 'stuckCoin' });
-  HALFS.forEach((h, i) => book.add(`gem${i}`, gem(pal, h), { ...air, score: GEM_PAY, touch: 'sky' }));
+  for (let i = 0; i < GEM_FRAMES; i++) book.add(`gem${i}`, gem(pal, (i * 2 * Math.PI) / GEM_FRAMES), { ...air, score: GEM_PAY, touch: 'sky' });
 }
 
-/** The finished blocks: the book's, with the gem's four frames chained into a loop. */
+/** The finished blocks: the book's, with the gem's eight frames chained into a loop. */
 export function finishBlocks(book: Book): Block[] {
   const blocks = book.finish();
   for (let i = 0; i < GEM_FRAMES; i++) {
