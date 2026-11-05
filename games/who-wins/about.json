@@ -24,22 +24,10 @@
     "ink": "#ffffff",
     "tagline": "The stronger one wins.",
     "back": "A small explorer in a teal beanie crosses two short rooms. Two small gumdrops block a tunnel, and a big red one is stronger than they are. Watch who wins, throw a star to find out how strong it is, then open the game in Game-Maker and change a power.",
-    "features": [
-      "Signs in the levels explain each idea",
-      "Every monster has a power, and the stronger one wins",
-      "Made to be copied and taken apart"
-    ],
+    "features": ["Signs in the levels explain each idea", "Every monster has a power, and the stronger one wins", "Made to be copied and taken apart"],
     "shots": [
-      [
-        "one.map",
-        26,
-        6
-      ],
-      [
-        "two.map",
-        26,
-        6
-      ]
+      ["one.map", 26, 6],
+      ["two.map", 26, 6]
     ],
     "rating": "Everyone"
   }

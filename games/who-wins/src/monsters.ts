@@ -118,7 +118,13 @@ function big(pal: Pal, pic: Pixels): Pixels {
     [10, 4],
     [13, 5],
   ] as const) {
-    p.set(x, y, gold[4]).set(x, y - 1, gold[4]).set(x, y - 2, ink).set(x - 1, y - 1, ink).set(x + 1, y - 1, ink).set(x - 1, y, ink).set(x + 1, y, ink);
+    p.set(x, y, gold[4])
+      .set(x, y - 1, gold[4])
+      .set(x, y - 2, ink)
+      .set(x - 1, y - 1, ink)
+      .set(x + 1, y - 1, ink)
+      .set(x - 1, y, ink)
+      .set(x + 1, y, ink);
   }
   p.rect(7, 6, 7, 1, gold[3]);
   return p;
