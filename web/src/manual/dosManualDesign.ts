@@ -149,7 +149,7 @@ export function designPages(shots: GameShot[]): BookletPage[] {
       <p>Paint a map with background blocks and place up to 200 monsters on it (up to 50 are
       shown on the screen at once). <b>Z</b> zooms out to see the whole map. You can limit
       scrolling to part of the map.</p>
-      <p class="see"><i>On the Sample CD:</i> <code>SCROLL</code>, <code>ONEMAP</code>, <code>BLK150</code>, <code>PARALLAX</code> and <code>BELTWAY</code> (scenery that slides past), <code>DIAGWRAP</code> (a tilted road that wraps) and <code>HORIZON</code>.</p>`,
+      <p class="see"><i>On the Sample CD:</i> <code>SCROLL</code>, <code>ONEMAP</code>, <code>BLK150</code>, <code>PARALLAX</code> and <code>BELTWAY</code> (scenery that slides past), <code>DIAGWRAP</code> (a tilted road that wraps), <code>HORIZON</code> and <code>NEARFAR</code> (a far plane drawn small and pale).</p>`,
     ),
     page(
       '3. Designing Games',
