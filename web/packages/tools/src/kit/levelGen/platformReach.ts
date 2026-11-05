@@ -5,7 +5,7 @@
 // is thrown away), and he lands only with his middle over a footing, as PLAYGAME does. It records every
 // cell he touches, so coins and keys can be proven collectable. No DOM.
 import { BLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
-import { HAZARD, LADDER, LOCK, PLAT, WALL, type Area } from './grid';
+import { HAZARD, LADDER, LOCK, PLAT, ROOF, WALL, type Area } from './grid';
 import { ARC_TICKS, Flight, arcVariants, type HeroPhysics } from './jumpModel';
 
 const FREE = 0,
@@ -25,7 +25,7 @@ export function reachFrom(a: Area, p: HeroPhysics, start: number, locksOpen: boo
   const touched = new Uint8Array(w * h),
     stood = new Uint8Array(w * h);
   const cell = (cx: number, cy: number): number => (cx < 0 || cx >= w || cy >= h ? WALL : cy < 0 ? 0xff : a.cells[cy * w + cx]);
-  const solid = (c: number) => c === WALL || (c === LOCK && !locksOpen);
+  const solid = (c: number) => c === WALL || c === ROOF || (c === LOCK && !locksOpen);
   /** What his body is in at (X, py): the cells of the two rows he fills. */
   const body = (X: number, py: number): number => {
     const y0 = Math.floor((py - BLEN) / BLEN),
@@ -54,6 +54,20 @@ export function reachFrom(a: Area, p: HeroPhysics, start: number, locksOpen: boo
   };
   /** Pixels a walking step moves him. */
   const STEP = Math.max(1, Math.round(p.vx));
+  /** Open ground for five cells either way and nothing standing up from it: a jump from here gets nowhere a walk does not. */
+  const plain = (X: number, row: number): boolean => {
+    const c0 = Math.floor((X + BLEN / 2) / BLEN);
+    if (c0 < 6 || c0 > w - 7 || row < 5 || row + 1 >= h) return false;
+    for (let cx = c0 - 5; cx <= c0 + 5; cx++) {
+      const under = cell(cx, row + 1);
+      if (!(solid(under) || under === PLAT)) return false;
+      for (let cy = row - 5; cy <= row; cy++) {
+        const c = cell(cx, cy);
+        if (solid(c) || c === HAZARD || c === LADDER || c === PLAT) return false;
+      }
+    }
+    return true;
+  };
   const nodes = w * BLEN * h;
   const seen = new Uint8Array(nodes);
   const id = (X: number, row: number) => row * w * BLEN + X;
@@ -130,12 +144,12 @@ export function reachFrom(a: Area, p: HeroPhysics, start: number, locksOpen: boo
       if (standable(nx, row)) push(nx, row);
       else for (const v of variants) if (v.kind === 'fall' && v.dir !== 0) fly(nx, py, 'fall', v.dir, v.steerTicks);
     }
-    // jump (and let go of a ladder)
-    for (const v of variants) if (v.kind === 'jump') fly(X, py, 'jump', v.dir, v.steerTicks);
+    // jump (and let go of a ladder), except on a plain stretch of ground with nothing within a jump's reach
+    if (held || !plain(X, row)) for (const v of variants) if (v.kind === 'jump') fly(X, py, 'jump', v.dir, v.steerTicks);
     if (!standable(X, row)) for (const v of variants) if (v.kind === 'fall') fly(X, py, 'fall', v.dir, v.steerTicks);
     // climb: straight up or down a ladder
-    if (held && p.climb && X % BLEN === 0) {
-      const cx = X / BLEN;
+    if (held && p.climb) {
+      const cx = Math.floor((X + BLEN / 2) / BLEN);
       for (const d of [-1, 1]) if (cell(cx, row + d) === LADDER && body(X, (row + d) * BLEN) === FREE) push(X, row + d);
     }
   }

@@ -121,7 +121,7 @@ export interface ArcVariant {
 /** The arcs the reach search tries: a jump or a fall, either way or straight up, steering for different lengths. */
 export function arcVariants(): ArcVariant[] {
   const out: ArcVariant[] = [];
-  const stops = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 24, 28, ARC_TICKS];
+  const stops = [3, 6, 9, 12, 15, 18, 22, ARC_TICKS];
   for (const kind of ['jump', 'fall'] as const)
     for (const dir of [-1, 0, 1] as const) for (const steerTicks of dir ? stops : [0]) out.push({ kind, dir, steerTicks });
   return out;

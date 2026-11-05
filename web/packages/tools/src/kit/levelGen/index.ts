@@ -5,7 +5,7 @@
 // wall and tree edges with the set's terrain brushes (`terrainCells`).
 import { FACINGS, MAX_PAIR, blocksWithRole, type Facing, type Role, type RoleMap } from '../blockRoles';
 import { checkNeeds, kindInfo, type GenKind } from './needs';
-import { DECOR, DOORC, FLOOR, KEY, LIFE, LOCK, PATH, ROCK, ROOF, TREASURE, TREE, WALL, WATER, closed, distances, stream, type Area } from './grid';
+import { DECOR, DOORC, FLOOR, HAZARD, KEY, LADDER, LIFE, LOCK, PATH, PLAT, ROCK, ROOF, SKY, TREASURE, TREE, WALL, WATER, closed, distances, stream, type Area } from './grid';
 import { addProps, proveKeys, type LockInfo } from './props';
 import { dungeon } from './dungeon';
 import { forest } from './forest';
@@ -13,10 +13,17 @@ import { interior } from './interior';
 import { castle } from './castle';
 import { town, type SceneLink } from './town';
 import { overworld } from './overworld';
+import { platform, type PlatformProof } from './platform';
+import { heroPhysics } from './jumpModel';
+import type { Character } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { DIR, type Avail, type Item } from './furnish';
 
 export { type Item as Furniture } from './furnish';
 export { type SceneLink } from './town';
+export { heroPhysics, weaker, type HeroPhysics } from './jumpModel';
+export { capability, type Capability } from './platformCap';
+export { reachFrom } from './platformReach';
+export { type PlatformProof } from './platform';
 
 export { type LockInfo } from './props';
 export { KINDS, checkNeeds, kindInfo, type GenKind, type KindInfo, type NeedItem, type NeedsReport } from './needs';
@@ -37,6 +44,10 @@ export interface GenParams {
   monsters?: number[];
   /** The map wraps over its edges (overworld land then lines up across the seam). */
   wrap?: boolean;
+  /** The hero's character file: a platform layout is sized to his real jump (the other kinds ignore it). */
+  hero?: Character;
+  /** Platform: how much of the hero's most the layout asks of him, in percent (10 to 100; 80 when left out). */
+  difficulty?: number;
 }
 
 /** The smallest side any kind can draw in (each kind has its own minimum, `kindInfo(kind).min`). */
@@ -46,6 +57,7 @@ const MAX_SIZE: Partial<Record<GenKind, { w: number; h: number }>> = {
   shop: { w: 26, h: 14 },
   castle: { w: 56, h: 40 },
   town: { w: 80, h: 56 },
+  platform: { w: 120, h: 24 },
 };
 
 export const MIN_SIDE = 10;
@@ -77,6 +89,8 @@ export interface GenResult {
   shopkeeper?: number;
   /** Doors and sites a person could link to other scenes (towns and overworlds): proposals only, nothing is linked. */
   links: SceneLink[];
+  /** Platform only: what was proven by jump math, the difficulty drawn and what the hero can do (cells). */
+  platform?: { proof: PlatformProof; difficulty: number; can: { rise: number; gap: number }; asked: { rise: number; gap: number } };
   /** What was left out, in plain words. */
   notes: string[];
 }
@@ -106,6 +120,8 @@ export function generate(roles: RoleMap, params: GenParams): GenOutcome {
   let area: Area;
   let entry: number, exit: number;
   const terrainCells: GenResult['terrainCells'] = {};
+  let platformInfo: GenResult['platform'];
+  let own: { locks: GenResult['locks']; treasure: number[]; life?: number; monsters: GenResult['monsters']; doorCells: number[] } | undefined;
   let furniture: GenResult['furniture'] = [];
   let shopkeeper: number | undefined;
   let links: SceneLink[] = [];
@@ -113,7 +129,32 @@ export function generate(roles: RoleMap, params: GenParams): GenOutcome {
     const list = blocksWithRole(roles, role);
     return list.find((n) => roles[n].facing === facing) ?? list.find((n) => !roles[n].facing) ?? list[0];
   };
-  if (params.kind === 'dungeon') {
+  if (params.kind === 'platform') {
+    if (!params.hero) return { ok: false, message: 'A side view needs the hero’s character file, to measure how he jumps.' };
+    const hp = heroPhysics(params.hero);
+    if (!hp.ok) return { ok: false, message: hp.message };
+    const pairs = Array.from({ length: MAX_PAIR }, (_, i) => i + 1).filter(
+      (p) => blocksWithRole(roles, 'locked-door', p).length && blocksWithRole(roles, 'key', p).length,
+    );
+    const pl = platform(w, h, r, {
+      physics: hp.physics,
+      difficulty: Math.max(0.1, Math.min(1, (params.difficulty ?? 80) / 100)),
+      ladder: has('ladder'),
+      hazard: has('hazard'),
+      ledge: has('platform'),
+      cap: has('wall-top'),
+      pairs,
+      treasure: has('treasure'),
+      life: has('life'),
+      monsters: params.monsters ?? [],
+      decorate: has('decoration'),
+    });
+    ({ area, entry, exit } = pl);
+    notes.push(...pl.notes);
+    if (has('locked-door') && !pairs.length) notes.push('The locked door blocks and key blocks share no lock number, so no doors were locked.');
+    platformInfo = { proof: pl.proof, difficulty: pl.difficulty, can: pl.can, asked: pl.asked };
+    own = { locks: pl.locks, treasure: pl.treasure, life: pl.life, monsters: pl.monsters, doorCells: pl.doorCells };
+  } else if (params.kind === 'dungeon') {
     const d = dungeon(w, h, r, has('decoration'));
     ({ area, entry, exit } = d);
   } else if (params.kind === 'castle') {
@@ -153,8 +194,10 @@ export function generate(roles: RoleMap, params: GenParams): GenOutcome {
         )
       : [];
   const furnished = params.kind === 'home' || params.kind === 'shop' || params.kind === 'town' || params.kind === 'overworld';
-  const props = furnished
-    ? { locks: [], treasure: [], life: undefined, monsters: [] }
+  const props = own
+    ? own
+    : furnished
+    ? { locks: [], treasure: [], life: undefined, monsters: [], doorCells: [] as number[] }
     : addProps(area, entry, exit, stream(params.seed ^ 0x9e3779b9), {
         pairs,
         treasure: has('treasure'),
@@ -174,6 +217,10 @@ export function generate(roles: RoleMap, params: GenParams): GenOutcome {
     [DECOR]: blocksWithRole(roles, 'decoration'),
     [DOORC]: blocksWithRole(roles, 'door').slice(0, 1),
     [WATER]: blocksWithRole(roles, 'water').slice(0, 1),
+    [SKY]: blocksWithRole(roles, 'sky').slice(0, 1),
+    [LADDER]: blocksWithRole(roles, 'ladder').slice(0, 1),
+    [HAZARD]: blocksWithRole(roles, 'hazard').slice(0, 1),
+    [PLAT]: blocksWithRole(roles, 'platform').slice(0, 1),
     [ROOF]: blocksWithRole(roles, 'wall-top').length ? blocksWithRole(roles, 'wall-top').slice(0, 1) : blocksWithRole(roles, 'wall').slice(0, 1),
   };
   const floor = first(roles, 'floor')!;
@@ -193,6 +240,7 @@ export function generate(roles: RoleMap, params: GenParams): GenOutcome {
     blocks[l.cell] = blocksWithRole(roles, 'locked-door', l.pair)[0];
     blocks[l.key] = blocksWithRole(roles, 'key', l.pair)[0];
   }
+  if (own) for (const c of own.doorCells) blocks[c] = blocksWithRole(roles, 'locked-door', own.locks[0].pair)[0];
   putBlocks(props.treasure, blocksWithRole(roles, 'treasure').length ? blocksWithRole(roles, 'treasure') : [floor]);
   if (props.life !== undefined) blocks[props.life] = blocksWithRole(roles, 'life')[0];
   for (const f of furniture) blocks[f.cell] = f.block;
@@ -217,6 +265,7 @@ export function generate(roles: RoleMap, params: GenParams): GenOutcome {
       furniture,
       shopkeeper,
       links,
+      platform: platformInfo,
       notes,
     },
   };
@@ -283,9 +332,33 @@ function proveLinks(result: GenResult): boolean {
 export function proveResult(result: GenResult): Proof {
   const a: Area = { w: result.rect.w, h: result.rect.h, cells: result.kinds };
   const pickups = [...result.treasure, ...(result.life === undefined ? [] : [result.life])];
+  if (result.platform) {
+    const p = result.platform.proof;
+    return { reach: p.exit, keysFirst: p.lockHolds, collectable: p.collectable, furnished: true, linked: true };
+  }
   const k = proveKeys(a, result.entry, result.exit, result.locks, pickups);
   const reach = verifyReach(result).ok;
   return { reach, keysFirst: k.strict, collectable: k.ok, furnished: proveFurniture(result), linked: proveLinks(result) };
 }
 
 export const PROP_KINDS = { LOCK, KEY, TREASURE, LIFE };
+
+export interface PlatformParams {
+  /** The block set's roles (needs wall and sky; ladder, platform, hazard, wall-top, treasure, life, a lock and key pair and decoration are used when set). */
+  roles: RoleMap;
+  /** The hero's character file (hero.chr, parsed): his walk, jump and climb size the layout. */
+  hero: Character;
+  /** The same seed always draws the same layout. */
+  seed: number;
+  /** Where in the map to draw: at least 40 by 20 cells (more than 120 by 24 is drawn in the middle). */
+  rect: Rect;
+  /** How much of the hero's most (pit width, step height) it asks, in percent: 10 to 100, 80 when left out. */
+  difficulty?: number;
+  /** Monster numbers to stand on the long stretches. */
+  monsters?: number[];
+}
+
+/** A side view layout for a game's build.ts: `generate` with the platform kind. See the tools README. */
+export function generatePlatform(p: PlatformParams): GenOutcome {
+  return generate(p.roles, { kind: 'platform', seed: p.seed, rect: p.rect, hero: p.hero, difficulty: p.difficulty, monsters: p.monsters });
+}
