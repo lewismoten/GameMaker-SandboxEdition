@@ -1,0 +1,79 @@
+{
+  "title": "Block Brains",
+  "howDoI": [
+    {
+      "id": "ring",
+      "q": "How do I make something change again and again?",
+      "scene": 2,
+      "x": 22,
+      "y": 19,
+      "level": 1
+    },
+    {
+      "id": "turns",
+      "q": "How do I make gates take turns?",
+      "scene": 2,
+      "x": 32,
+      "y": 18,
+      "level": 1
+    },
+    {
+      "id": "lamps",
+      "q": "How do I make a lamp that shows whose turn it is?",
+      "scene": 2,
+      "x": 22,
+      "y": 19,
+      "level": 1
+    },
+    {
+      "id": "open",
+      "q": "How do I make a gate open for a short while?",
+      "scene": 2,
+      "x": 32,
+      "y": 18,
+      "level": 1
+    },
+    {
+      "id": "step",
+      "q": "How do I make two rings run out of step?",
+      "scene": 3,
+      "x": 26,
+      "y": 18,
+      "level": 2
+    },
+    {
+      "id": "together",
+      "q": "How do I make several gates open at the same moment?",
+      "scene": 3,
+      "x": 26,
+      "y": 18,
+      "level": 2
+    }
+  ],
+  "pages": [
+    {
+      "head": "Welcome",
+      "html": "<h1>Welcome</h1><p><b>Block Brains</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has two short levels and nothing in it can cost a life.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each thing in the levels is made.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. <kbd>Space</kbd> jumps. <kbd>F2</kbd> shows your lives, hit points and score.</p><p>Gates stand in a row, and each is open for only a short while. Watch the lamps, then walk through each gate when it is open.</p>"
+    },
+    {
+      "head": "Level: Take Your Turn",
+      "html": "<h1>Take Your Turn</h1><p>Three gates stand in a row, marked with one, two and three tally marks. Only one is open at a time: gate 1 first, then gate 2, then gate 3, then round to gate 1 again. A row of three lamps near the start shows the same turns, in the gates' colors, so the lit lamp is the open gate.</p><p>Walk up to a gate, wait for its lamp, and go through. If you try a gate while it is shut, nothing happens: it is solid. Between the gates there is room to stand and wait for the next turn. If a gate shuts while you are in it, it cannot hurt you, so just walk on.</p><p>There are five coins, worth ten points each.</p>"
+    },
+    {
+      "head": "Level: Out of Step",
+      "html": "<h1>Out of Step</h1><p>Four gates stand in a row: sun, moon, sun, moon. The two <b>sun</b> gates (gold, one tally mark) open together, and shut together. The two <b>moon</b> gates (blue, two tally marks) are open when the sun gates are shut. Two lamps near the start show whose turn it is.</p><p>Go through a sun gate while it is open, wait in the space beyond for the moon gate, go through that, and so on to the exit. There are five coins, worth ten points each.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How the levels are made</h1><ul><li><b>A brain is a ring of blocks.</b> Open <b>one.bbl</b> in the blocks editor and pick <b>gate0.0</b>. Its <b>Next block</b> is <b>gate0.1</b> and its <b>Time</b> is 36 ticks. <b>gate0.1</b> turns into <b>gate0.2</b>, and <b>gate0.2</b> turns back into <b>gate0.0</b>. Only <b>gate0.0</b> is open (nothing solid, bars drawn up). The other two are solid, with the bars down. There are 18.2 ticks in a second.</li><li><b>Where a cell starts is its turn.</b> The map holds <b>gate0.0</b> in the first gate, <b>gate1.2</b> in the second and <b>gate2.1</b> in the third. Each ring is the same length, but the map starts the second gate one block back (shut, then open) and the third two blocks back, so they open one turn after another. Every ring starts when the room loads.</li><li><b>Lamps use the same rings.</b> <b>lamp0</b>, <b>lamp1</b> and <b>lamp2</b> have the same blocks, times and starting places as the gates, so a lamp is lit exactly while its gate is open. A lamp is plain scenery.</li><li><b>A gate is three cells and a plate.</b> The three cells use the same block. The plate on top is gray stone with tally marks, and brick runs up above it, so there is no way over a gate. Kit is two blocks tall, so a gate of three leaves no gap when it is shut.</li><li><b>A hedge closes the room</b> at both ends, so nothing Kit bumps into is invisible.</li><li><b>Out of Step</b> (<b>two.bbl</b>) has two rings of two blocks: <b>sun.gate.0</b> (open) and <b>sun.gate.1</b> (shut), and the same for <b>moon.gate</b>. The map starts the moon gates on their shut block, so they are shut while the sun gates are open. All sun cells use the same block, so they change on the same tick.</li></ul>"
+    },
+    {
+      "head": "What Game-Maker cannot do",
+      "html": "<h1>What Game-Maker cannot do</h1><p>A brain in Game-Maker is a ring of blocks that turn into each other on a timer. Some things you may expect are not there:</p><ul><li>A block cannot see where the hero is. It only follows its own timer, so a gate does not wait for Kit and does not shut early when he is not near.</li><li>Every cell of a kind changes on the same tick. Two sun gates cannot be out of step with each other, because they are the same block. To get two gates out of step, they need different blocks, each with a ring of its own.</li><li>A ring starts when the room loads and nothing Kit does can start, stop or reset it.</li><li>A gate cannot read a lamp, and a lamp cannot read a gate. They match only because both rings have the same length and start in the same place.</li><li>It has no clock you can read. There is no number to show, only what the blocks look like now.</li></ul>"
+    },
+    {
+      "head": "Make it yours",
+      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>In <b>one.bbl</b>, change the Time of every <b>gate0</b>, <b>gate1</b> and <b>gate2</b> block from 36 to 60 for a slower round. Change the lamps' times too, or they will not match.</li><li>Change only <b>gate1.0</b>'s Time (the open one) to 18, and the second gate is open for half as long.</li><li>In <b>two.bbl</b>, set every moon block's Time to 30 and leave the sun's at 45, and the moon gates stop being the sun gates' opposite.</li><li>Draw your own gates and lamps in the blocks editor.</li></ul><p>The home page's <b>Starters</b> tab has more small games like this one.</p>"
+    }
+  ]
+}
