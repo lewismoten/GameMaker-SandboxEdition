@@ -37,7 +37,7 @@ shot('6-in-front.png', 1, kit('dl.0', 5, 8));
 // Kit's four facings, three poses each, on the floor's paper color, enlarged
 const sheet = new Pixels(3 * 20 * 4 + 5 * 4, 20, pal.c('parch', 3));
 ['dr', 'dl', 'ur', 'ul'].forEach((f, i) => ['0', 'stand', '1'].forEach((s, j) => sheet.blit(top.pics.get(`${f}.${s}`)!, i * 64 + j * 20, 0, 255)));
-writePng(join(out, 'kit-four-facings.png'), sheet, pal.pal, 8);
+writePng(join(out, 'kit-four-facings.png'), sheet, pal.pal, 4);
 shot('7-start.png', 2, kit('dr.stand', START[0], START[1]));
 shot('8-up.png', 2, kit('ur.0', 10, 4));
 shot('9-exit.png', 2, kit('dr.stand', 12, 5));

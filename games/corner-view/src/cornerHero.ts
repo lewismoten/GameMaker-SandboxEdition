@@ -1,6 +1,6 @@
 // Kit in a corner view: one 20x20 block a pose, drawn only on the four diagonal facings (down-right, down-left,
 // up-right, up-left), as a person seen from a corner of the room. He is never drawn facing the camera, which
-// would be wider than he is tall in this view. He is about 11 pixels wide and 19 tall, a little under one cube's
+// would be wider than he is tall in this view. He is about 10 pixels wide and 19 tall, a little under one cube's
 // height, in the same teal beanie and orange hoodie as every Kit (colors from games/kit/starter/palette.ts).
 // The pictures are this game's cbl; it has two character files made from them: square (levels 1 and 2: the arrows
 // walk the square grid and he faces the nearest diagonal) and diagonal (level 3: each arrow walks a drawn diagonal).
@@ -9,7 +9,6 @@ import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame } from
 import { set } from '@lewismoten/gamemaker-sandbox-tools/kit/actors';
 import { outline } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
-import { blob } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
 import { Book } from '../../kit/starter/book';
 import { KEY, SEQ, SND } from '../../kit/starter/ids';
 import type { Pal } from '../../kit/starter/palette';
@@ -21,54 +20,61 @@ export type Facing = 'dr' | 'dl' | 'ur' | 'ul';
 /** A step: 0 and 1 are the two strides, 2 is standing. */
 type Step = 0 | 1 | 2;
 
-/** One pose, 20x20. The right-hand facings are drawn; the left-hand ones are those mirrored. */
+/**
+ * One pose, 20x20. The right-hand facings are drawn; the left-hand ones are those mirrored. He is built from plain
+ * rectangles so every part can be moved: a head and beanie of 7 rows (a third of his height), narrower than his
+ * shoulders; one arm forward; the feet stepping along the diagonal he walks.
+ */
 function pose(pal: Pal, facing: Facing, step: Step): Pixels {
   if (facing === 'dl') return pose(pal, 'dr', step).flipX();
   if (facing === 'ul') return pose(pal, 'ur', step).flipX();
   const { c, r } = pal;
-  const p = new Pixels(20, 20, T);
+  const g = new Pixels(20, 20, T); // drawn with his head at the top; shifted down a row below, to leave room for the outline
   const skin = r('skin');
   const teal = r('teal');
   const white = r('white');
   const hair = r('hair');
   const orange = r('orange');
+  const blue = r('blue');
   const ink = c('ink', 0);
   const front = facing === 'dr';
-  // feet: one forward and one back as he strides; the legs are two short dark-blue-free strokes under the hoodie
-  const lift = step === 2 ? [0, 0] : step === 0 ? [0, 1] : [1, 0];
-  const legX = [7, 10];
-  const blue = r('blue');
-  for (let k = 0; k < 2; k++) {
-    const x = legX[k] + (step === 2 ? 0 : (k === 0 ? 1 : -1) * (step === 0 ? 1 : -1));
-    p.rect(x, 14, 3, 3 - lift[k], blue[k === 0 ? 2 : 1]);
-    p.rect(x - 1, 16 - lift[k], 4, 2, k === 0 ? white[3] : white[2]);
-  }
-  // the hoodie, a narrow body
-  blob(p, 9.5, 12.5, 4.2, 3.2, orange, 0, 4);
-  // arms: the far one behind (darker), the near one in front, swinging with the stride
-  const sw = step === 2 ? [0, 0] : step === 0 ? [-1, 1] : [1, -1];
-  p.rect(4, 10 + sw[0], 2, 4, orange[1]).disc(5, 14 + sw[0], 1.1, skin[1]);
-  p.rect(13, 10 + sw[1], 2, 4, orange[2]).disc(14, 14 + sw[1], 1.1, skin[2]);
-  if (front) p.rect(8, 13, 3, 1, orange[3]); // the hoodie's pocket line
-  // the head: hair behind, the face turned toward the right, then the beanie
+  const fwd = step === 0 ? 1 : step === 1 ? -1 : 0; // how far the near leg is ahead of the far one
+  // legs and shoes: the forward foot goes out along the diagonal, the back one trails and lifts
+  const leg = (x: number, ahead: number, near: boolean) => {
+    const lift = ahead < 0 ? 1 : 0;
+    g.rect(x, 13, 3, 3 - lift, blue[near ? 3 : 2]);
+    g.rect(x - 1 + (ahead > 0 ? 2 : ahead < 0 ? -1 : 0), 16 - lift, 4, 2, near ? white[3] : white[2]);
+  };
+  leg(7, -fwd, false);
+  leg(10, fwd, true);
+  // the arms: the far one hangs back, the near one swings forward with the near leg
+  const farY = 9 - (fwd > 0 ? 0 : 0);
+  g.rect(5, farY + (fwd > 0 ? 1 : 0), 1, 4, orange[1]).set(5, farY + 4 + (fwd > 0 ? 1 : 0), skin[1]);
+  const nearUp = fwd < 0 ? 1 : 0;
+  g.rect(14, 9 - nearUp, 1, 4, orange[3]).set(14 + (fwd > 0 ? 1 : 0), 13 - nearUp, skin[2]);
+  // the hoodie: its far side darker, its near side lit, a hem
+  g.rect(6, 8, 8, 5, orange[3]).rect(6, 8, 2, 5, orange[2]).rect(12, 8, 2, 5, orange[4]).rect(6, 12, 8, 1, orange[1]);
   if (front) {
-    blob(p, 7.5, 7.5, 2.6, 2.6, hair, 0, 2);
-    blob(p, 10.5, 7.5, 4.2, 3.2, skin, 0, 3);
+    g.rect(10, 8, 1, 2, white[2]).rect(12, 8, 1, 2, white[2]); // the drawstrings, toward the way he faces
+    g.rect(9, 11, 3, 1, orange[2]); // the pocket
   } else {
-    blob(p, 9.5, 7.5, 4.6, 3.4, hair, 0, 2);
-    blob(p, 13.5, 8, 1.2, 1.6, skin, 0, 3); // his ear, on the side he is turned to
+    g.rect(7, 8, 6, 1, orange[4]).rect(7, 9, 6, 1, orange[3]); // the back of the hood
   }
-  const dome = new Pixels(20, 20, T);
-  blob(dome, 9.5, 4.5, 5.2, 3.4, teal, 0, 4);
-  for (let y = 0; y < 6; y++) for (let x = 0; x < 20; x++) if (dome.get(x, y) !== T) p.set(x, y, dome.get(x, y));
-  p.rect(4, 5, 11, 2, teal[3]).rect(4, 5, 11, 1, teal[4]).rect(4, 6, 11, 1, teal[2]);
-  for (let x = 5; x < 15; x += 2) p.set(x, 5, teal[2]);
-  const pom = front ? 8 : 9;
-  p.disc(pom + 0.5, 1.8, 1.9, teal[1]).disc(pom + 0.5, 1.8, 1.4, white[3]);
+  // the head: 3 rows under the beanie's cuff
   if (front) {
-    p.rect(11, 8, 1, 2, ink).rect(14, 8, 1, 2, ink);
-    p.set(13, 10, c('pink', 2)).set(12, 10, ink);
+    g.rect(7, 5, 6, 3, skin[3]).rect(7, 5, 2, 3, hair[1]); // hair behind, the face turned toward the right
+    g.set(10, 6, ink).set(12, 6, ink).set(11, 7, ink);
+  } else {
+    g.rect(7, 5, 6, 3, hair[1]).rect(7, 5, 6, 1, hair[2]); // the back of his head
+    g.rect(12, 6, 1, 2, skin[2]); // a little of the cheek on the side he is turned to
   }
+  // the beanie: a dome, a cuff, and a pom-pom toward the facing side
+  g.rect(8, 2, 5, 1, teal[3]).rect(7, 3, 7, 1, teal[3]).rect(8, 2, 3, 1, teal[4]);
+  g.rect(6, 4, 8, 1, teal[2]);
+  for (let x = 7; x < 14; x += 2) g.set(x, 4, teal[1]);
+  g.rect(11, 1, 3, 2, white[3]).set(11, 1, white[2]).set(13, 2, white[2]);
+  const p = new Pixels(20, 20, T);
+  p.blit(g, 0, 1, T);
   return outline(p, ink, { transparent: T });
 }
 

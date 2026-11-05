@@ -29,10 +29,10 @@ const WORDS: Record<SignName, string> = {
   square: 'ARROWS WALK THE SQUARES, NOT THE DIAMONDS',
   tall: 'TALL TOWERS COVER THE BLOCKS ABOVE THEM',
   front: 'KIT IS ALWAYS IN FRONT, NEVER BEHIND',
-  lean: 'EACH ARROW TAKES THE DIAGONAL NEAREST IT',
+  lean: 'EACH ARROW TAKES THE NEAREST SLANT',
   upright: 'UP IS UPPER RIGHT. RIGHT IS LOWER RIGHT.',
   downleft: 'DOWN IS LOWER LEFT. LEFT IS UPPER LEFT.',
-  zig: 'FOR STRAIGHT TAP TWO ARROWS BY TURNS',
+  zig: 'TAP TWO IN TURN FOR A LINE',
 };
 
 /** A tower: the block it stands on (`row` is its lowest) and how many blocks tall its picture is (1, 2 or 3). */
@@ -113,9 +113,9 @@ const SPECS: Spec[] = [
   {
     towers: RING3,
     signs: [
-      ['lean', 0, 0],
-      ['upright', 12, 0],
-      ['downleft', 0, 7],
+      ['upright', 0, 0],
+      ['downleft', 12, 0],
+      ['lean', 0, 7],
       ['zig', 12, 7],
     ],
     start: START,
