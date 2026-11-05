@@ -149,7 +149,7 @@ export function designPages(shots: GameShot[]): BookletPage[] {
       <p>Paint a map with background blocks and place up to 200 monsters on it (up to 50 are
       shown on the screen at once). <b>Z</b> zooms out to see the whole map. You can limit
       scrolling to part of the map.</p>
-      <p class="see"><i>On the Sample CD:</i> <code>SCROLL</code>, <code>ONEMAP</code>, <code>BLK150</code> and <code>HORIZON</code>.</p>`,
+      <p class="see"><i>On the Sample CD:</i> <code>SCROLL</code>, <code>ONEMAP</code>, <code>BLK150</code>, <code>HORIZON</code> and <code>BELTWAY</code> (scenery that slides past).</p>`,
     ),
     page(
       '3. Designing Games',
@@ -169,7 +169,7 @@ export function designPages(shots: GameShot[]): BookletPage[] {
       screen and the end of the game. Give each scene its palette, map, block sets, monsters,
       character, sounds and music, then draw links between scenes: a link is a door on one map
       that leads to a spot on another.</p>
-      <p class="see"><i>On the Sample CD:</i> <code>ROOMS</code>, <code>FIRSTGAM</code> and <code>SHOW</code>.</p>
+      <p class="see"><i>On the Sample CD:</i> <code>ROOMS</code>, <code>FIRSTGAM</code>, <code>TRYAGAIN</code> and <code>SHOW</code>.</p>
       <p>Pictures and words between levels are <i>multimedia displays</i>: a <code>.GIF</code>,
       an <code>.FLI</code> animation, a <code>.TXT</code> file (30 characters to a line) or a
       <code>.LST</code> list that shows several of them in turn. Each line of a list is a file
