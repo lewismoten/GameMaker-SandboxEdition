@@ -57,7 +57,7 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
   const terrains = loadBrushes<Terrain>(host.project, host.bbl, 'terrains');
   const sel = selectionRect(host.selection());
   const canUseSel = !!sel && sel.w >= MIN_SIDE && sel.h >= MIN_SIDE;
-  let kind: GenKind = 'dungeon';
+  let kind: GenKind = KINDS.find((k) => checkNeeds(k.id, roles).ok)?.id ?? 'dungeon';
   let inSelection = canUseSel;
   let seed = Math.floor(Math.random() * 1e6);
   let chosen = 0;

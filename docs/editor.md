@@ -182,6 +182,8 @@ edit the same map, including selections, pasted blocks and terrain brushes. Use 
 or the focused map's arrow keys to scroll; on a touch screen, choose **Scroll** before dragging.
 The Wrap preference is remembered and included in preference backups.
 
+The **Show** list above the block palette keeps only the blocks marked as a wall, floor, tree and so on in the block editor's Uses tab. **Generate** draws a dungeon (rooms joined by corridors) or a forest (trees, clearings and a winding path) from those marked blocks: it shows four real previews from a seed, for the whole map or the selection, and nothing changes until you pick one. If a kind needs a block you have not marked, it says which and links to the Uses tab. A layout is ordinary blocks in one undo step; where the block set has a terrain brush for walls, trees or paths, it also gets edges and corners. It proposes where the hero could start and an exit but links nothing.
+
 ## Play Game and Play Level
 
 ![Play Level running LaVale Mall: the game's own level screen and briefing, "4. LaVale Mall, 8:00 PM. One hour to closing."](screenshots/editor/04-play-level.webp)

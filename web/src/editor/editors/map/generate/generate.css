@@ -51,3 +51,9 @@
 .mt-role-filter {
   margin: 0 0 4px;
 }
+/* a landscape phone is short: the four previews go in one row */
+@media (max-height: 500px) {
+  .gen-offers { grid-template-columns: repeat(4, 1fr); }
+  .gen-offer canvas { max-height: 28vh; }
+  .gen-dialog { width: min(48rem, calc(100vw - 48px)); }
+}

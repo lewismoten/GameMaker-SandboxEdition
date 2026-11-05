@@ -19,5 +19,5 @@ export function missingRoles(o: { kind: GenKind; roles: RoleMap; usesHref: strin
   const link = h('a', { href: o.usesHref }, 'Open the block editor’s Uses tab');
   const summary = n.ok ? `${kindInfo(o.kind).label}: every needed role is set` : n.message;
   // open when something needed is missing; a set with every need met folds away to save room on a phone
-  return h('details', { class: 'mt-needs', open: !n.ok }, h('summary', { role: 'status' }, summary), list, h('p', { class: 'meta' }, link));
+  return h('details', { class: 'mt-needs', open: !n.ok }, h('summary', null, summary), list, h('p', { class: 'meta' }, link));
 }
