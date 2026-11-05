@@ -50,7 +50,7 @@ export function towerPicture(pal: Pal): Pixels {
     for (let x = 12 + ((y / 6) % 2) * 5; x < 68; x += 10) {
       const w = Math.min(9, 68 - x);
       p.rect(x, y, w, 5, st[2 + (rand() < 0.4 ? 1 : 0) - (rand() < 0.25 ? 1 : 0)]);
-      p.rect(x, y + 5, w + 1, 1, st[0]);
+      p.rect(x, y + 5, w, 1, st[0]);
     }
   }
   for (let y = 20; y < 30; y += 6) p.rect(12, y + 4, 56, 1, st[1]);

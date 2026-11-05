@@ -5,7 +5,7 @@ import { scaleBlit } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 import { bevel } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
 import { outlined, text, textWidth } from '@lewismoten/gamemaker-sandbox-tools/kit/pcText';
 import type { Book } from '../../kit/starter/book';
-import type { Pal } from '../../kit/starter/palette';
+import { skyOf, type Pal } from '../../kit/starter/palette';
 import { W } from '../../kit/starter/screens';
 import { backdrop, frameOf, lookOf } from '../../kit/starter/titleStyles';
 import { HOUSE } from './pictures';
@@ -29,12 +29,18 @@ export function titlePicture(pal: Pal, book: Book, hero: Pixels, door: Pixels, n
     for (let dy = 0; dy < HOUSE.h; dy++)
       for (let dx = 0; dx < HOUSE.w; dx++) {
         const tile = book.pics.get(`house.${roof}.${dx}${dy}`) ?? book.pics.get(`house.red.${dx}${dy}`);
-        scaleBlit(p, tile!, hx + (i * HOUSE.w + dx) * 20, hy + dy * 20, 1);
+        scaleBlit(
+          p,
+          tile!.map((_x, _y, c) => (c === skyOf(pal) ? 255 : c)),
+          hx + (i * HOUSE.w + dx) * 20,
+          hy + dy * 20,
+          1,
+        );
       }
   }
   p.rect(hx, hy + 40, 160, 3, look.floorShadow);
   const note = '4 HOUSES, 6 BLOCKS';
-  text(p, Math.round((W - textWidth(note)) / 2), 98, note, look.ribbonText);
+  text(p, Math.round((W - textWidth(note)) / 2), 98, note, pal.c('ink', 0));
   scaleBlit(p, hero, 30, 160 - 80, 2);
   scaleBlit(p, door, 250, 160 - 80, 2);
   frameOf(p, pal, 'atlas');

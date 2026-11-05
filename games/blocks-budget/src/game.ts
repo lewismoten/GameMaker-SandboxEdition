@@ -5,7 +5,7 @@ import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, newGame, type Game } from 
 import type { Level } from './levels';
 
 /** The title of the game, as the .GAM names it (19 characters at most). */
-export const TITLE = "150 BLOCKS";
+export const TITLE = '150 BLOCKS';
 
 export function buildGame(levels: Level[]): Game {
   const game = newGame(TITLE);

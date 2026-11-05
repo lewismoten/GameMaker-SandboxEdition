@@ -48,7 +48,7 @@ function buildBlocks(pal: Pal) {
       walk: 'A PICTURE IS NOT SOLID. WALK IN',
       again: 'ONE BLOCK CAN BE USED AGAIN',
       houses: `${HOUSES} HOUSES, ONLY ${houseBlocks} BLOCKS`,
-      same: 'EVERY COPY OF A BLOCK ACTS THE SAME',
+      same: 'EVERY COPY ACTS THE SAME',
       total: '',
       exit: 'EXIT →',
     })[name];
@@ -91,7 +91,17 @@ function scenery(g: Grid, clouds: [number, number][], bushes: number[], flowers:
 function oneBigPicture(b: ReturnType<typeof buildBlocks>): StarterMap {
   const g = base(46, 42);
   g.row(9, 26, 29, 'c').row(7, 31, 32, 'c');
-  scenery(g, [[6, 1], [13, 2], [29, 1], [37, 2]], [33, 40], [31, 35]);
+  scenery(
+    g,
+    [
+      [6, 1],
+      [13, 2],
+      [29, 1],
+      [37, 2],
+    ],
+    [33, 40],
+    [31, 35],
+  );
   const m = new StarterMap(b.book, g.rows());
   m.sign(6, onGround(GROUND, b.signs.many), b.signs.many);
   m.sign(10, onGround(GROUND, b.signs.count), b.signs.count);
@@ -106,7 +116,17 @@ function useItAgain(b: ReturnType<typeof buildBlocks>): StarterMap {
   const g = base(60, 56);
   g.row(7, 18, 21, 'c').row(9, 40, 42, 'c').row(7, 49, 50, 'c');
   g.fill(WALL_X, GROUND - WALL_HEIGHT, 1, WALL_HEIGHT, 'B');
-  scenery(g, [[6, 1], [18, 1], [30, 2], [46, 1]], [34, 54], [33, 55]);
+  scenery(
+    g,
+    [
+      [6, 1],
+      [18, 1],
+      [30, 2],
+      [46, 1],
+    ],
+    [34, 54],
+    [33, 55],
+  );
   const m = new StarterMap(b.book, g.rows());
   m.sign(6, onGround(GROUND, b.signs.again), b.signs.again);
   for (let i = 0; i < HOUSES; i++) {

@@ -48,7 +48,7 @@
   },
   "sounds": {
     "9": "The jump",
-    "10": "Getting hurt",
-    "11": "Falling over"
+    "10": "Getting hurt (nothing here hurts)",
+    "11": "Falling over (nothing here does)"
   }
 }

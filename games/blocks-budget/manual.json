@@ -1,83 +1,75 @@
 {
-  "title": "Rooms on One Map",
+  "title": "150 Blocks",
   "howDoI": [
     {
-      "id": "rooms-one-map",
-      "q": "How do I put several rooms on one map?",
+      "id": "big-picture",
+      "q": "How do I draw a picture bigger than one block?",
       "scene": 2,
-      "x": 18,
+      "x": 30,
       "y": 15,
       "level": 1
     },
     {
-      "id": "never-scroll",
-      "q": "How do I keep the screen on one room?",
+      "id": "walk-through",
+      "q": "How do I make scenery Kit can walk through?",
       "scene": 2,
-      "x": 18,
-      "y": 15,
+      "x": 30,
+      "y": 17,
       "level": 1
     },
     {
-      "id": "door-lands",
-      "q": "How do I make a door that lands somewhere else on the map?",
-      "scene": 2,
-      "x": 23,
-      "y": 15,
-      "level": 1
-    },
-    {
-      "id": "not-next-door",
-      "q": "How do I link to a room that is not next door?",
+      "id": "reuse",
+      "q": "How do I use one block in many places?",
       "scene": 3,
-      "x": 39,
-      "y": 15,
-      "level": 1
+      "x": 26,
+      "y": 18,
+      "level": 2
     },
     {
-      "id": "door-back",
-      "q": "How do I make a door that goes back?",
-      "scene": 4,
-      "x": 12,
-      "y": 25,
-      "level": 1
+      "id": "solid-wall",
+      "q": "How do I make a wall Kit cannot walk through?",
+      "scene": 3,
+      "x": 48,
+      "y": 18,
+      "level": 2
     },
     {
-      "id": "same-cell",
-      "q": "How do I make every door into a room land on the same cell?",
-      "scene": 6,
-      "x": 34,
-      "y": 15,
+      "id": "count",
+      "q": "How do I see how many blocks a game has used?",
+      "scene": 3,
+      "x": 54,
+      "y": 17,
       "level": 2
     }
   ],
   "pages": [
     {
       "head": "Welcome",
-      "html": "<h1>Welcome</h1><p><b>Rooms on One Map</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has two short levels about putting many rooms on one map, and takes a few minutes to finish.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each idea is made.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. <kbd>Space</kbd> jumps. <kbd>F2</kbd> shows your hit points, lives and score. Walk into a door to go through it.</p><h2>The one idea</h2><p>A map is 100 blocks wide and 100 high, and the screen shows only 16 by 10 of them. A scene does not need a map of its own. Several scenes can load the same map file, and each one puts the hero down on a different cell of it. Turn scrolling off, and the screen stays on that cell&rsquo;s room. Each room is a scene, and a door is a link that lands in another cell.</p>"
+      "html": "<h1>Welcome</h1><p><b>150 Blocks</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has two short levels about the 150 blocks a game gets, and takes a few minutes to finish.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each idea is made.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. <kbd>Space</kbd> jumps. <kbd>F2</kbd> shows your lives and score. Walk into the door at the end of a level to go on.</p><h2>The one idea</h2><p>Every picture in a level is made of <b>blocks</b>, 20 by 20 pixels each, and a game has room for 150 of them. A picture bigger than one block is cut up like tiles, and a block can be used in as many places as you like. So the way to draw a lot is to draw a little, and use it again.</p>"
     },
     {
-      "head": "Level 1: Four Rooms",
-      "html": "<h1>Level 1: Four Rooms</h1><p>The <b>FOUR ROOMS ONE MAP</b> sign stands in the red room. It is one of four rooms in a block of two by two, and the brick walls of each are its own color: red, blue, green and gold. The <b>THIS DOOR LANDS IN ANOTHER CELL</b> sign points at the red door, which takes you to the blue room.</p><p>The blue door lands in the green room, which is across the map, not next door (<b>THIS DOOR SKIPS TO THE OTHER SIDE</b>). The green room has two doors: one goes back to blue and one goes on to gold. Try the back door once, then come back and take the other. Eight coins lie along the way, and the gold room&rsquo;s door takes you to level 2.</p>"
-    },
-    {
-      "head": "How this level is made",
-      "html": "<h1>How level 1 is made</h1><ul><li><b>One map file.</b> Open <b>one.map</b> in the map editor. It holds all four rooms: each is a 16 by 10 block cell, with a ceiling and side walls in brick of its own color and ground below. They sit in a block of two by two, with walls between them.</li><li><b>One scene a room.</b> Open the <b>Scenes</b> tab. The red, blue, green and gold rooms are four scenes, and all four load <b>one.map</b> in their map slot.</li><li><b>The landing cell is the screen.</b> Each scene&rsquo;s links land on the middle of its room. PLAYGAME opens the screen 8 blocks left and 5 up from the cell the hero lands on, so the cell sets which room you see.</li><li><b>No scrolling.</b> Each scene&rsquo;s scrolling is set to <b>Never scroll</b> in all four directions, so walking never moves the screen onto the next room. The walls keep you in the room, and they are drawn, not invisible.</li><li><b>A door is a link.</b> Each door is a block with a link on it: <b>From</b> is the door&rsquo;s block here, <b>To</b> is a cell of another scene. The blue door&rsquo;s <b>To</b> is a cell in the green room, in the bottom left corner of the map. Green&rsquo;s back door is a second link, from green to blue.</li><li><b>Fewer files.</b> Four rooms share one block set and one map, so one edit to a wall changes them all.</li></ul>"
-    },
-    {
-      "head": "Level 2: One Landing Cell",
-      "html": "<h1>Level 2: One Landing Cell</h1><p>Level 2 is a strip of three rooms on a second map: a green room to the west, a red hub, and a blue room to the east. The <b>ALL DOORS IN LAND HERE</b> sign points at the hub&rsquo;s doorway. Every door into the hub puts you on that same cell, so the hub always looks the same when you come in.</p><p>Take the hub&rsquo;s three coins and go west. The <b>THE VIEW STARTS WHERE YOU LAND</b> sign says why the screen stays on this room, and the <b>BACK IN THE HUB THE COINS ARE BACK</b> sign tells you what to look for: go back, and they are there again. Your score stays. The <b>KEEP PRIZES WHERE YOU GO ONCE</b> sign in the east room says what to do about it, and the exit takes you to the end.</p>"
+      "head": "Level 1: One Big Picture",
+      "html": "<h1>Level 1: One Big Picture</h1><p>Three signs stand before a stone tower. <b>ONE BIG PICTURE IS MANY BLOCKS</b> says what it is. <b>THIS TOWER TOOK 18 BLOCKS</b> counts them: it is four blocks wide and five high, which is twenty places, but the empty corners are plain sky and use the sky block that was already there. <b>A PICTURE IS NOT SOLID. WALK IN</b> asks Kit to try it, and he walks right in through the door and out the other side.</p><p>Four coins lie past the tower, and two more are up in the air. Jump for those.</p>"
     },
     {
       "head": "How this level is made",
-      "html": "<h1>How level 2 is made</h1><ul><li><b>Same idea, a strip.</b> Open <b>two.map</b>: three rooms side by side, each 16 blocks wide. The screen never scrolls, so it never leaves the room it started on.</li><li><b>Every way in lands on one cell.</b> The hub is entered from the end of level 1, from the west room and from the east room. All three links have the same <b>To</b>: the middle of the hub. In a room that does not scroll, the landing cell sets the view, so link every way in to the same cell and the room never shifts.</li><li><b>The map comes back fresh.</b> Taking a coin changes the map in memory, and a scene loads its map again every time it starts. The hub&rsquo;s coins are back each visit. Your score, hit points and lives are not part of the map, so they stay. Keep prizes where the hero goes only once, or let them come back on purpose.</li><li><b>A free checkpoint.</b> Losing a life starts only the current scene again. Splitting a long stage into scenes on one map saves your place at each split.</li></ul>"
+      "html": "<h1>How level 1 is made</h1><ul><li><b>Cut into tiles.</b> Open <b>blocks.bbl</b> in the blocks editor and find the blocks named <b>tower</b>. The tower was drawn once as one picture, 80 by 100 pixels, then cut into twenty 20 by 20 squares. Each square is a block, and the editor shows them in order.</li><li><b>Laid in the map.</b> Open <b>one.map</b> in the map editor and find the tower: its blocks are set in a rectangle, four across and five down, in the same order they were cut. Put them anywhere in that shape and the picture comes back together.</li><li><b>Empty corners cost nothing.</b> The four squares at the top corners are only sky, so the map uses the plain <b>sky</b> block there. No new block was needed.</li><li><b>Not solid.</b> Every tower block has <b>Gravity</b> down and no <b>Solid</b> sides, like sky, so Kit walks through and falls through. A picture is only a wall if you tick Solid on its blocks.</li><li><b>The count.</b> The sign beside it is a picture too, made of its own blocks. Signs spend blocks as well, so a game with many signs has fewer left for art.</li></ul>"
+    },
+    {
+      "head": "Level 2: Use It Again",
+      "html": "<h1>Level 2: Use It Again</h1><p>The <b>ONE BLOCK CAN BE USED AGAIN</b> sign comes first, then <b>8 HOUSES, ONLY 6 BLOCKS</b>. Eight little houses stand in a row, red roofs and blue roofs taking turns, and they are made from six blocks between them. Past them, <b>EVERY COPY ACTS THE SAME</b> stands before a brick wall. Kit walks into it and stops, then jumps over.</p><p>The last sign counts every block in the game against the 150. Nine coins in all, some of them above the houses and above the sign.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 2 is made</h1><ul><li><b>Six blocks, thirty-two places.</b> A house is two blocks wide and two high, and each has a roof on top and a wall with a window and a door below. The red and the blue house have different roofs but the <b>same walls</b>, so the walls are the same two blocks in both. That makes six blocks: four roof pieces and two wall pieces. Open <b>two.map</b> and see the same names again and again.</li><li><b>Used again.</b> A block costs one of the 150 however many times the map uses it. A thousand copies and one copy cost the same. What takes room is a picture that is different in every place.</li><li><b>Every copy acts the same.</b> The rules of a block (solid, gravity, points) belong to the block, not to the place it is put. The brick wall is the brick block, so every brick of it is solid. A look-alike that Kit could walk through would need to be a block of its own, with its own rules.</li><li><b>The count.</b> Count the blocks in <b>blocks.bbl</b>. The last sign says how many there are.</li></ul>"
     },
     {
       "head": "What it cannot do",
-      "html": "<h1>What it cannot do</h1><p>These are the engine&rsquo;s limits, so you can plan around them.</p><ul><li><b>No more than 100 by 100 blocks.</b> A map is that big and no bigger, so rooms on one map share that space. A room of 16 by 10 blocks, walls included, leaves room for sixty rooms at most.</li><li><b>No room walls from the engine.</b> Nothing stops the hero walking from one room into the next except what you draw. Draw solid walls, and keep the link&rsquo;s landing cell in the middle of the room it belongs to.</li><li><b>The screen is 16 by 10 blocks.</b> A room bigger than that needs scrolling, and then the view can slide past its edge. Keep a room one screen, or turn scrolling on in only some directions.</li><li><b>One link, one direction.</b> A link goes from a block to a cell, and nothing makes a way back. A door that goes back is a second link.</li><li><b>A room cannot keep what you did.</b> The map loads fresh each visit, so a coin you took, or a door you opened, is back as it was. Only the score, hit points, lives and what you carry stay.</li><li><b>A scene links to a block, not a room.</b> There is no &ldquo;room&rdquo; in the file. Rooms are cells you draw and landings you choose.</li></ul>"
+      "html": "<h1>What it cannot do</h1><p>These are the engine&rsquo;s limits, so you can plan around them.</p><ul><li><b>More than 150 blocks.</b> The background set has 150 places and no more. The editor stops you at the end, and a game cannot swap blocks in and out while it runs.</li><li><b>A block cannot be flipped or turned.</b> A mirror image of a block is a second block, drawn by hand. A symmetric picture still needs both halves, unless its halves are the same.</li><li><b>A block cannot act differently in two places.</b> Solid, gravity, points and what it turns into all belong to the block. A tree that is solid at the trunk and not at the leaves needs different blocks.</li><li><b>A picture cannot be larger than the map.</b> A big picture is only ever a group of blocks, and the game has no idea they belong together. Nothing moves them as one.</li><li><b>Blocks are 20 by 20 pixels.</b> There is no other size and no scaling.</li></ul>"
     },
     {
       "head": "Make it yours",
-      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>On the <b>Scenes</b> tab, change where the red door lands. Make it a cell in the gold room and see the view change.</li><li>Change a scene&rsquo;s landing cell by three blocks to the left. The screen follows it, and the room edge slides off.</li><li>Set a scene&rsquo;s right scrolling to <b>Scroll when the character nears the edge</b> and walk toward the wall.</li><li>Link the hub&rsquo;s east door to the west room. Rooms do not have to be in a line.</li><li>Move a coin in the hub, then leave and come back to see it where you put it.</li></ul><p>The home page&rsquo;s <b>Starters</b> tab has more small games like this one.</p>"
+      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>In <b>one.map</b>, swap two of the tower&rsquo;s blocks and see the picture break.</li><li>Tick <b>Solid</b> on one tower block and walk into it.</li><li>Draw a third house color in <b>blocks.bbl</b> by changing only a roof, and see how few blocks it takes.</li><li>Remove the brick wall by painting sky over it, or build a taller one.</li><li>Count the blocks in <b>blocks.bbl</b> before and after you add a sign.</li></ul><p>The home page&rsquo;s <b>Starters</b> tab has more small games like this one.</p>"
     }
   ]
 }

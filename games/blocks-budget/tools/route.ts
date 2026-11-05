@@ -31,8 +31,9 @@ export async function oneBigPicture(bot: StarterBot): Promise<void> {
   await must(bot, bot.walk(TOWER_X - 2, 'the tower'), 'to the tower');
   // the mistake, once: expecting the tower to be a wall. Held right for a moment he is inside it, not stopped
   bot.sim.press(SCAN.right);
-  await must(bot, bot.wait(30), 'into the tower');
+  await must(bot, bot.wait(16), 'into the tower');
   bot.sim.release(SCAN.right);
+  await must(bot, bot.wait(24), 'standing in the tower');
   const inside = bot.px.x;
   if (inside < (TOWER_X + 1) * 20) throw new Error(`the tower stopped Kit at ${inside / 20}`);
   bot.say('inside the tower picture');
@@ -65,9 +66,9 @@ export async function useItAgain(bot: StarterBot): Promise<void> {
   if (bot.px.x >= WALL_X * 20 || bot.px.x < before) throw new Error(`the wall did not stop Kit (${bot.px.x / 20})`);
   bot.say('stopped by the wall');
   await must(bot, bot.walk(WALL_X + 2, 'over the wall'), 'over the wall');
-  await must(bot, bot.walk(43, 'the coins'), 'the coins');
-  coins(bot, score, 6, 'level 2');
+  await must(bot, bot.walk(40, 'the coins'), 'the coins');
+  await must(bot, bot.walk(48, 'the high coins'), 'the high coins');
+  await must(bot, bot.jump('right', 50), 'the high coins jump');
+  coins(bot, score, 9, 'level 2');
   await leave(bot, bot.walk(56, 'the door'), 'the door');
 }
-
-
