@@ -149,6 +149,8 @@ The stroke glyphs, implementation provenance and method references are in NOTICE
 
 `kit/blockRoles` is the block-role vocabulary (wall, door, locked door and key with a lock number, furniture with a facing...), `suggestRoles` (guesses from a block's behavior and picture; it never decides) and `cleanRoles`/`packRoles` for editor companion data; it needs no DOM and changes no game bytes.
 
+`kit/levelGen` draws a dungeon (binary space partition: rooms joined by corridors) or a forest (cellular automata on a tree mask, clearings, a winding path) into a rectangle of a map from the blocks that hold roles. `checkNeeds(kind, roles)` says which roles a kind needs and which it uses when present; `generate(roles, { kind, seed, rect })` returns block numbers, the plain kind of each cell, the cells a terrain brush should give edges to, and a proposed entry and exit (never applied or linked), or a plain message when a needed role is missing; `offerSeed` gives the four seeds of a set of offers; `verifyReach` checks every open cell can be reached from the entry. It needs no DOM, runs in a Worker, and the same seed always gives the same blocks. It writes no game data: the map editor places the cells.
+
 `kit/tar` writes and reads POSIX ustar archives (`createTar`, `createTarGz`, `readTar`). Entries keep
 their Unix mode, so a game folder's programs and scripts unpack executable, and names over 100
 bytes use the header's prefix field. It has no dependencies and runs in Node and browsers

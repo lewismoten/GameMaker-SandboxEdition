@@ -183,6 +183,14 @@ makes Ctrl+S save at once). Files are always written in the original binary form
   model and `suggestRoles` are in the tools package (`kit/blockRoles.ts`), so a level generator and the
   games can read them. Guesses from what the block does and its picture show as dashed chips; nothing is
   added until you tap one or Accept all.
+- **Generate and the role filter.** The map editor's Blocks panel has a Show filter (`map/roleFilter.ts`:
+  only walls, only trees... from the roles above) and a Generate button (`map/generate/`). The dialog
+  (`generateDialog.ts`) offers four real renders of a dungeon or a forest from a seed, for the whole map or
+  the selection; `missingRoles.ts` is its Missing roles panel (what the kind needs, which roles are set, a
+  link to the Uses tab); `place.ts` writes the chosen layout into cells and gives walls, trees and paths
+  edges and corners from the set's terrain brushes. The generators themselves are in the tools package
+  (`kit/levelGen`, no DOM, seeded). A layout is ordinary map cells in one undo step: no new DOS data, and the
+  map is untouched until you pick one.
 - **Block groups.** The block set editor (`editors/blocks/`) and the character editor share block
   groups (`blockGroups.ts`: a picture drawn across several blocks, kept in the companion file), the
   group shown assembled (`groupView.ts`), and live animation previews at the game's tick rate
