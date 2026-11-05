@@ -112,15 +112,19 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
               type: 'button',
               class: 'gen-offer',
               'aria-pressed': String(i === chosen),
-              'aria-label': `Layout ${i + 1}, seed ${o.seed}`,
+              'aria-label': `Layout ${i + 1} ${o.check?.verified ? 'Verified' : 'Not proven'}, seed ${o.seed}`,
               onclick: () => {
                 chosen = i;
                 pick();
               },
             },
             c,
-            h('small', null, `Layout ${i + 1}`),
-            h('small', { class: `gen-chip ${o.check?.verified ? 'ok' : 'warn'}` }, o.check?.verified ? 'Verified' : 'Not proven'),
+            h(
+              'small',
+              { class: 'gen-cap' },
+              `Layout ${i + 1} `,
+              h('span', { class: `gen-chip ${o.check?.verified ? 'ok' : 'warn'}` }, o.check?.verified ? 'Verified' : 'Not proven'),
+            ),
           );
           buttons.push(b);
           grid.append(b);

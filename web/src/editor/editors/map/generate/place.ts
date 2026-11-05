@@ -46,10 +46,10 @@ export function place(blocks: Uint8Array, result: GenResult, roles: RoleMap, ter
   return { blocks: out, changed };
 }
 
-/** Monster numbers a layout may use: in the .mon file, with a picture, and killable by the hero. */
+/** Monster numbers a layout may use: in the .mon file, with a picture. Their movement, strength and danger are the author's; the layout does not judge them. */
 export function usableMonsters(mons: Monster[]): number[] {
   const out: number[] = [];
-  mons.slice(0, LASTMON).forEach((m, n) => m.used && m.pic[0]?.[0] < 100 && m.power < 100 && out.push(n));
+  mons.slice(0, LASTMON).forEach((m, n) => m.used && m.pic[0]?.[0] < 100 && out.push(n));
   return out;
 }
 

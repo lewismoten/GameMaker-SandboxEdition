@@ -29,6 +29,7 @@ try {
   const ctx = await browser.newContext({ viewport: phone ? { width: 390, height: 844 } : { width: 1440, height: 900 } });
   await forceTheme(ctx, theme);
   const page = await ctx.newPage();
+  if (process.argv.includes('--console')) page.on('console', (m) => console.log('PAGE', m.text()));
   await page.goto(`${base}/#/p/${project}/${bbl}?tab=uses`);
   await page.waitForSelector('.blk-roles', { timeout: 60000 });
   await assertTheme(page, theme);
@@ -70,7 +71,7 @@ try {
   await page.locator('dialog .gen-offer').first().click();
   await page.getByRole('button', { name: 'Use this layout' }).click();
   await page.waitForTimeout(800);
-  for (let i = 0; i < 3; i++) await page.getByRole('button', { name: 'Zoom out' }).click();
+  for (let i = 0; i < Number(arg('zoom-out') ?? 3); i++) await page.getByRole('button', { name: 'Zoom out' }).click();
   await page.waitForTimeout(600);
   await shot(`map-${kind}`);
   await axe('map page', 'body');
