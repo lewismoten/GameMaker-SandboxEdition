@@ -475,7 +475,13 @@ dialog.modal .sv-inf {
 @media (max-height: 500px) {
   dialog.modal .sv-nav[data-list-area] {
     flex: 0 0 auto;
+    align-items: center;
     padding-bottom: 4px;
+  }
+
+  .sv-nav-empty {
+    flex: 0 0 auto;
+    white-space: nowrap;
   }
 
   .sv-nav-item {
