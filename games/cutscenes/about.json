@@ -34,5 +34,11 @@
       ["hall.map", 8, 1]
     ],
     "rating": "Everyone"
-  }
+  },
+  "acceptedFindings": [
+    "facing s3 The hero climbs side on",
+    "flashing s2 Block 68 flashes light and dark about 0.1 times a second over 126 blocks of one screen, from (9, 19)",
+    "flashing s4 Block 70 flashes light and dark about 0.3 times a second over 126 blocks of one screen, from (9, 19)",
+    "waits s2 Timed block 68 stays shut for 16.8 s at a time"
+  ]
 }
