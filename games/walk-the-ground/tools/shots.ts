@@ -67,7 +67,7 @@ writePng(
 writePng(join(out, 'one-3-through-the-hill.png'), screen(dug(0, run(L1.rock + 1, 27, G - 2, G - 1)), 18, 1, kit(26, G - 1)), pal.pal, 3);
 const S = L2.surface;
 writePng(join(out, 'two-1-the-trapdoor.png'), screen(maps[1], 5, 1, kit(L2.shaft[0], S - 1)), pal.pal, 3);
-writePng(join(out, 'two-2-sinking.png'), screen(dug(1, run(L2.shaft[0], L2.shaft[1], S, S + 3)), 6, 4, kit(L2.shaft[0], S + 4)), pal.pal, 3);
+writePng(join(out, 'two-2-sinking.png'), screen(dug(1, run(L2.shaft[0], L2.shaft[1], S, S + 4)), 6, 4, kit(L2.shaft[0], S + 4)), pal.pal, 3);
 writePng(join(out, 'two-3-under-the-spikes.png'), screen(dug(1, run(L2.shaft[0], 24, S + 3, S + 4)), 14, 2, kit(22, S + 4)), pal.pal, 3);
 writePng(join(out, 'two-4-the-ladder.png'), screen(dug(1, run(L2.shaft[0], L2.ladder - 1, S + 3, S + 4)), 22, 1, kit(L2.ladder, S + 2)), pal.pal, 3);
 levels.forEach((l, i) =>
