@@ -27,7 +27,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 11302,
+  "frames": 11319,
   "chapters": [
    {
     "title": "Opening",
@@ -36,28 +36,28 @@
    },
    {
     "title": "Story",
-    "frame": 896,
-    "time": 14933.333333333148
+    "frame": 913,
+    "time": 15216.666666666471
    },
    {
     "title": "Level 1: Wait and Go",
-    "frame": 2125,
-    "time": 35416.66666666724
+    "frame": 2142,
+    "time": 35700.00000000053
    },
    {
     "title": "Level 2: Two Lights",
-    "frame": 5526,
-    "time": 92100.00000000391
+    "frame": 5543,
+    "time": 92383.33333333733
    },
    {
     "title": "Ending",
-    "frame": 8016,
-    "time": 133600.0000000138
+    "frame": 8033,
+    "time": 133883.33333334696
    },
    {
     "title": "Credits",
-    "frame": 10228,
-    "time": 170466.666666659
+    "frame": 10245,
+    "time": 170749.99999999217
    }
   ]
  }

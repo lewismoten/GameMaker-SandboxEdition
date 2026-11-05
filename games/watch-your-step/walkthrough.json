@@ -35,7 +35,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 8828,
+  "frames": 8845,
   "chapters": [
    {
     "title": "Opening",
@@ -44,33 +44,33 @@
    },
    {
     "title": "Story",
-    "frame": 896,
-    "time": 14933.333333333148
+    "frame": 913,
+    "time": 15216.666666666471
    },
    {
     "title": "Level 1: Spikes",
-    "frame": 2125,
-    "time": 35416.66666666724
+    "frame": 2142,
+    "time": 35700.00000000053
    },
    {
     "title": "Level 2: The Pool",
-    "frame": 3222,
-    "time": 53699.99999999791
+    "frame": 3239,
+    "time": 53983.333333331204
    },
    {
     "title": "Level 3: The Safe Way",
-    "frame": 4661,
-    "time": 77683.33333333305
+    "frame": 4678,
+    "time": 77966.66666666647
    },
    {
     "title": "Ending",
-    "frame": 5547,
-    "time": 92450.00000000402
+    "frame": 5564,
+    "time": 92733.33333333743
    },
    {
     "title": "Credits",
-    "frame": 7754,
-    "time": 129233.33333334806
+    "frame": 7771,
+    "time": 129516.66666668147
    }
   ]
  }

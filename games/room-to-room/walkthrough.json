@@ -99,7 +99,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 10843,
+  "frames": 10860,
   "chapters": [
    {
     "title": "Opening",
@@ -108,53 +108,53 @@
    },
    {
     "title": "Story",
-    "frame": 896,
-    "time": 14933.333333333148
+    "frame": 913,
+    "time": 15216.666666666471
    },
    {
     "title": "Level 1: Out the Door (the first room)",
-    "frame": 1644,
-    "time": 27400.000000000564
+    "frame": 1661,
+    "time": 27683.333333333918
    },
    {
     "title": "Level 1: Out the Door (the second room)",
-    "frame": 2253,
-    "time": 37550.00000000026
+    "frame": 2270,
+    "time": 37833.333333333554
    },
    {
     "title": "Level 2: There and Back (the hall)",
-    "frame": 2978,
-    "time": 49633.33333333184
+    "frame": 2995,
+    "time": 49916.66666666513
    },
    {
     "title": "Level 2: There and Back (the kitchen)",
-    "frame": 4244,
-    "time": 70733.33333333103
+    "frame": 4261,
+    "time": 71016.66666666445
    },
    {
     "title": "Level 2: There and Back (the bedroom)",
-    "frame": 5309,
-    "time": 88483.3333333362
+    "frame": 5326,
+    "time": 88766.66666666961
    },
    {
     "title": "Level 3: Two Doors (the fork)",
-    "frame": 6948,
-    "time": 115800.00000001081
+    "frame": 6965,
+    "time": 116083.33333334423
    },
    {
     "title": "Level 3: Two Doors (the attic)",
-    "frame": 7481,
-    "time": 124683.33333334673
+    "frame": 7498,
+    "time": 124966.66666668015
    },
    {
     "title": "Ending",
-    "frame": 8038,
-    "time": 133966.66666668025
+    "frame": 8055,
+    "time": 134250.00000001342
    },
    {
     "title": "Credits",
-    "frame": 9769,
-    "time": 162816.66666666346
+    "frame": 9786,
+    "time": 163099.99999999662
    }
   ]
  }

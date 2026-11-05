@@ -27,7 +27,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 12690,
+  "frames": 12707,
   "chapters": [
    {
     "title": "Opening",
@@ -36,28 +36,28 @@
    },
    {
     "title": "Story",
-    "frame": 896,
-    "time": 14933.333333333148
+    "frame": 913,
+    "time": 15216.666666666471
    },
    {
     "title": "Level 1: Nine to Zero",
-    "frame": 2125,
-    "time": 35416.66666666724
+    "frame": 2142,
+    "time": 35700.00000000053
    },
    {
     "title": "Level 2: Ninety-Nine",
-    "frame": 3110,
-    "time": 51833.33333333152
+    "frame": 3127,
+    "time": 52116.66666666481
    },
    {
     "title": "Ending",
-    "frame": 9404,
-    "time": 156733.33333333366
+    "frame": 9421,
+    "time": 157016.66666666683
    },
    {
     "title": "Credits",
-    "frame": 11616,
-    "time": 193599.99999997887
+    "frame": 11633,
+    "time": 193883.33333331204
    }
   ]
  }

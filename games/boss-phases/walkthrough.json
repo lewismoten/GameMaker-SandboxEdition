@@ -1,64 +1,64 @@
 {
-  "version": 1,
-  "game": "boss-phases",
-  "rand": {
-    "seed": 1,
-    "per": "scene"
+ "version": 1,
+ "game": "boss-phases",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU0jzQNNN80DTTLNAEsuywNNEM0/HAOcPBwDnJABHAOcbBwDnDxNRs0DTRnNA00="
   },
-  "segments": [
-    {
-      "scene": 2,
-      "keys": "AU0jzQNNN80DTTLNAEsuywNNEM0/HAOcPBwDnJABHAOcbBwDnDxNRs0DTRnNA00="
-    },
-    {
-      "scene": 3,
-      "keys": "AU1BzQNNGc0/HAOcPBwDnIQBHAOcPBwDnHgcA5w8TUbNA00ezQNN"
-    }
-  ],
-  "chapters": [
-    {
-      "scene": 2,
-      "title": "Level 1: Half Way"
-    },
-    {
-      "scene": 3,
-      "title": "Level 2: A Third Face"
-    }
-  ],
-  "timeline": {
-    "fps": 60,
-    "frames": 10983,
-    "chapters": [
-      {
-        "title": "Opening",
-        "frame": 0,
-        "time": 0
-      },
-      {
-        "title": "Story",
-        "frame": 896,
-        "time": 14933.333333333148
-      },
-      {
-        "title": "Level 1: Half Way",
-        "frame": 2125,
-        "time": 35416.66666666724
-      },
-      {
-        "title": "Level 2: A Third Face",
-        "frame": 4992,
-        "time": 83200.00000000132
-      },
-      {
-        "title": "Ending",
-        "frame": 7697,
-        "time": 128283.33333334778
-      },
-      {
-        "title": "Credits",
-        "frame": 9909,
-        "time": 165149.99999999543
-      }
-    ]
+  {
+   "scene": 3,
+   "keys": "AU1BzQNNGc0/HAOcPBwDnIQBHAOcPBwDnHgcA5w8TUbNA00ezQNN"
   }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: Half Way"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: A Third Face"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 11000,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 913,
+    "time": 15216.666666666471
+   },
+   {
+    "title": "Level 1: Half Way",
+    "frame": 2142,
+    "time": 35700.00000000053
+   },
+   {
+    "title": "Level 2: A Third Face",
+    "frame": 5009,
+    "time": 83483.33333333474
+   },
+   {
+    "title": "Ending",
+    "frame": 7714,
+    "time": 128566.6666666812
+   },
+   {
+    "title": "Credits",
+    "frame": 9926,
+    "time": 165433.3333333286
+   }
+  ]
+ }
 }

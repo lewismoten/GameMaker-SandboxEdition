@@ -27,7 +27,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 9076,
+  "frames": 9093,
   "chapters": [
    {
     "title": "Opening",
@@ -36,28 +36,28 @@
    },
    {
     "title": "Story",
-    "frame": 896,
-    "time": 14933.333333333148
+    "frame": 913,
+    "time": 15216.666666666471
    },
    {
     "title": "Level 1: Light the Meter",
-    "frame": 1644,
-    "time": 27400.000000000564
+    "frame": 1661,
+    "time": 27683.333333333918
    },
    {
     "title": "Level 2: The Full Meter",
-    "frame": 4078,
-    "time": 67966.66666666356
+    "frame": 4095,
+    "time": 68249.99999999697
    },
    {
     "title": "Ending",
-    "frame": 5794,
-    "time": 96566.66666667188
+    "frame": 5811,
+    "time": 96850.0000000053
    },
    {
     "title": "Credits",
-    "frame": 8002,
-    "time": 133366.6666666806
+    "frame": 8019,
+    "time": 133650.00000001377
    }
   ]
  }

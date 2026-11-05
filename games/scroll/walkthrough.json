@@ -27,7 +27,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 7450,
+  "frames": 7467,
   "chapters": [
    {
     "title": "Opening",
@@ -36,28 +36,28 @@
    },
    {
     "title": "Story",
-    "frame": 896,
-    "time": 14933.333333333148
+    "frame": 913,
+    "time": 15216.666666666471
    },
    {
     "title": "Level 1: One Screen",
-    "frame": 2125,
-    "time": 35416.66666666724
+    "frame": 2142,
+    "time": 35700.00000000053
    },
    {
     "title": "Level 2: The View Follows",
-    "frame": 2942,
-    "time": 49033.333333331924
+    "frame": 2959,
+    "time": 49316.666666665216
    },
    {
     "title": "Ending",
-    "frame": 4171,
-    "time": 69516.66666666401
+    "frame": 4188,
+    "time": 69799.99999999742
    },
    {
     "title": "Credits",
-    "frame": 6378,
-    "time": 106300.00000000805
+    "frame": 6395,
+    "time": 106583.33333334146
    }
   ]
  }

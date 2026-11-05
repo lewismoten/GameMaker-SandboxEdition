@@ -27,7 +27,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 9383,
+  "frames": 9400,
   "chapters": [
    {
     "title": "Opening",
@@ -36,28 +36,28 @@
    },
    {
     "title": "Story",
-    "frame": 896,
-    "time": 14933.333333333148
+    "frame": 913,
+    "time": 15216.666666666471
    },
    {
     "title": "Level 1: A Nest",
-    "frame": 2125,
-    "time": 35416.66666666724
+    "frame": 2142,
+    "time": 35700.00000000053
    },
    {
     "title": "Level 2: Empty Nest",
-    "frame": 3572,
-    "time": 59533.333333330396
+    "frame": 3589,
+    "time": 59816.66666666369
    },
    {
     "title": "Ending",
-    "frame": 6100,
-    "time": 101666.66666667337
+    "frame": 6117,
+    "time": 101950.00000000678
    },
    {
     "title": "Credits",
-    "frame": 8309,
-    "time": 138483.3333333443
+    "frame": 8326,
+    "time": 138766.66666667745
    }
   ]
  }

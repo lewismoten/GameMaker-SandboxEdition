@@ -35,7 +35,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 8590,
+  "frames": 8607,
   "chapters": [
    {
     "title": "Opening",
@@ -44,33 +44,33 @@
    },
    {
     "title": "Story",
-    "frame": 896,
-    "time": 14933.333333333148
+    "frame": 913,
+    "time": 15216.666666666471
    },
    {
     "title": "Level 1: Round Corners",
-    "frame": 1644,
-    "time": 27400.000000000564
+    "frame": 1661,
+    "time": 27683.333333333918
    },
    {
     "title": "Level 2: Diagonals",
-    "frame": 2717,
-    "time": 45283.33333333247
+    "frame": 2734,
+    "time": 45566.66666666576
    },
    {
     "title": "Level 3: Road and Ground",
-    "frame": 4025,
-    "time": 67083.33333332997
+    "frame": 4042,
+    "time": 67366.66666666338
    },
    {
     "title": "Ending",
-    "frame": 5309,
-    "time": 88483.3333333362
+    "frame": 5326,
+    "time": 88766.66666666961
    },
    {
     "title": "Credits",
-    "frame": 7516,
-    "time": 125266.66666668023
+    "frame": 7533,
+    "time": 125550.00000001365
    }
   ]
  }

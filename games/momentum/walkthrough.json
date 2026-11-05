@@ -27,7 +27,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 8806,
+  "frames": 8823,
   "chapters": [
    {
     "title": "Opening",
@@ -36,28 +36,28 @@
    },
    {
     "title": "Story",
-    "frame": 896,
-    "time": 14933.333333333148
+    "frame": 913,
+    "time": 15216.666666666471
    },
    {
     "title": "Level 1: Glide",
-    "frame": 2125,
-    "time": 35416.66666666724
+    "frame": 2142,
+    "time": 35700.00000000053
    },
    {
     "title": "Level 2: Run-Up",
-    "frame": 3957,
-    "time": 65949.9999999963
+    "frame": 3974,
+    "time": 66233.33333332972
    },
    {
     "title": "Ending",
-    "frame": 5525,
-    "time": 92083.33333333724
+    "frame": 5542,
+    "time": 92366.66666667066
    },
    {
     "title": "Credits",
-    "frame": 7732,
-    "time": 128866.66666668128
+    "frame": 7749,
+    "time": 129150.0000000147
    }
   ]
  }

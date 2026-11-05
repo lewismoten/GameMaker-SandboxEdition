@@ -1,64 +1,64 @@
 {
-  "version": 1,
-  "game": "switches",
-  "rand": {
-    "seed": 1,
-    "per": "scene"
+ "version": 1,
+ "game": "switches",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU0ozQNNCs0rTTLNA00ozQNNI80DTQ=="
   },
-  "segments": [
-    {
-      "scene": 2,
-      "keys": "AU0ozQNNCs0rTTLNA00ozQNNI80DTQ=="
-    },
-    {
-      "scene": 3,
-      "keys": "AU0tzQNNZM0DTQw5ArkTOQK5ME1GzQNNBc0DSCfIA00jzQNNCM0QTRnNA00ozQNNGc0DTSjNA0sAywNN"
-    }
-  ],
-  "chapters": [
-    {
-      "scene": 2,
-      "title": "Level 1: Pull the Lever"
-    },
-    {
-      "scene": 3,
-      "title": "Level 2: Red and Blue"
-    }
-  ],
-  "timeline": {
-    "fps": 60,
-    "frames": 9160,
-    "chapters": [
-      {
-        "title": "Opening",
-        "frame": 0,
-        "time": 0
-      },
-      {
-        "title": "Story",
-        "frame": 896,
-        "time": 14933.333333333148
-      },
-      {
-        "title": "Level 1: Pull the Lever",
-        "frame": 2125,
-        "time": 35416.66666666724
-      },
-      {
-        "title": "Level 2: Red and Blue",
-        "frame": 3318,
-        "time": 55299.99999999768
-      },
-      {
-        "title": "Ending",
-        "frame": 5878,
-        "time": 97966.66666667229
-      },
-      {
-        "title": "Credits",
-        "frame": 8086,
-        "time": 134766.66666667978
-      }
-    ]
+  {
+   "scene": 3,
+   "keys": "AU0tzQNNZM0DTQw5ArkTOQK5ME1GzQNNBc0DSCfIA00jzQNNCM0QTRnNA00ozQNNGc0DTSjNA0sAywNN"
   }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: Pull the Lever"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: Red and Blue"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 9177,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 913,
+    "time": 15216.666666666471
+   },
+   {
+    "title": "Level 1: Pull the Lever",
+    "frame": 2142,
+    "time": 35700.00000000053
+   },
+   {
+    "title": "Level 2: Red and Blue",
+    "frame": 3335,
+    "time": 55583.33333333097
+   },
+   {
+    "title": "Ending",
+    "frame": 5895,
+    "time": 98250.0000000057
+   },
+   {
+    "title": "Credits",
+    "frame": 8103,
+    "time": 135050.00000001295
+   }
+  ]
+ }
 }

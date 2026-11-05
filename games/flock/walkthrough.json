@@ -27,7 +27,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 8793,
+  "frames": 8810,
   "chapters": [
    {
     "title": "Opening",
@@ -36,28 +36,28 @@
    },
    {
     "title": "Story",
-    "frame": 896,
-    "time": 14933.333333333148
+    "frame": 913,
+    "time": 15216.666666666471
    },
    {
     "title": "Level 1: One Shape",
-    "frame": 2125,
-    "time": 35416.66666666724
+    "frame": 2142,
+    "time": 35700.00000000053
    },
    {
     "title": "Level 2: Out of Step",
-    "frame": 4099,
-    "time": 68316.66666666366
+    "frame": 4116,
+    "time": 68599.99999999708
    },
    {
     "title": "Ending",
-    "frame": 5512,
-    "time": 91866.66666667051
+    "frame": 5529,
+    "time": 92150.00000000393
    },
    {
     "title": "Credits",
-    "frame": 7719,
-    "time": 128650.00000001455
+    "frame": 7736,
+    "time": 128933.33333334797
    }
   ]
  }

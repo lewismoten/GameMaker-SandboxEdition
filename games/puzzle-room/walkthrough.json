@@ -43,7 +43,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 11100,
+  "frames": 11117,
   "chapters": [
    {
     "title": "Opening",
@@ -52,28 +52,28 @@
    },
    {
     "title": "Story",
-    "frame": 896,
-    "time": 14933.333333333148
+    "frame": 913,
+    "time": 15216.666666666471
    },
    {
     "title": "Level 1: Two Levers",
-    "frame": 2125,
-    "time": 35416.66666666724
+    "frame": 2142,
+    "time": 35700.00000000053
    },
    {
     "title": "Level 2: Wired Room",
-    "frame": 4755,
-    "time": 79250.00000000017
+    "frame": 4772,
+    "time": 79533.33333333359
    },
    {
     "title": "Ending",
-    "frame": 7814,
-    "time": 130233.33333334835
+    "frame": 7831,
+    "time": 130516.66666668176
    },
    {
     "title": "Credits",
-    "frame": 10026,
-    "time": 167099.9999999943
+    "frame": 10043,
+    "time": 167383.33333332746
    }
   ]
  }

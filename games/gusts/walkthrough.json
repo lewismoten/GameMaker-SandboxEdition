@@ -1,64 +1,64 @@
 {
-  "version": 1,
-  "game": "gusts",
-  "rand": {
-    "seed": 1,
-    "per": "scene"
+ "version": 1,
+ "game": "gusts",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU0PzTBNGc0wTRnNA00KzSY5ArmPAU0ozQNN"
   },
-  "segments": [
-    {
-      "scene": 2,
-      "keys": "AU0PzTBNGc0wTRnNA00KzSY5ArmPAU0ozQNN"
-    },
-    {
-      "scene": 3,
-      "keys": "AU0PzTBNFM0wTQrNlQFND80VTTLNIE0izQNLBssDTQvNA0sGy54CTS7NA0sGywNNC80DSwbLrgJNOM0DTQ=="
-    }
-  ],
-  "chapters": [
-    {
-      "scene": 2,
-      "title": "Level 1: Wait for the Gust"
-    },
-    {
-      "scene": 3,
-      "title": "Level 2: Windsocks and Shelter"
-    }
-  ],
-  "timeline": {
-    "fps": 60,
-    "frames": 11447,
-    "chapters": [
-      {
-        "title": "Opening",
-        "frame": 0,
-        "time": 0
-      },
-      {
-        "title": "Story",
-        "frame": 896,
-        "time": 14933.333333333148
-      },
-      {
-        "title": "Level 1: Wait for the Gust",
-        "frame": 2125,
-        "time": 35416.66666666724
-      },
-      {
-        "title": "Level 2: Windsocks and Shelter",
-        "frame": 3845,
-        "time": 64083.333333329734
-      },
-      {
-        "title": "Ending",
-        "frame": 8161,
-        "time": 136016.66666667906
-      },
-      {
-        "title": "Credits",
-        "frame": 10373,
-        "time": 172883.33333332426
-      }
-    ]
+  {
+   "scene": 3,
+   "keys": "AU0PzTBNFM0wTQrNlQFND80VTTLNIE0izQNLBssDTQvNA0sGy54CTS7NA0sGywNNC80DSwbLrgJNOM0DTQ=="
   }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: Wait for the Gust"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: Windsocks and Shelter"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 11464,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 913,
+    "time": 15216.666666666471
+   },
+   {
+    "title": "Level 1: Wait for the Gust",
+    "frame": 2142,
+    "time": 35700.00000000053
+   },
+   {
+    "title": "Level 2: Windsocks and Shelter",
+    "frame": 3862,
+    "time": 64366.666666663026
+   },
+   {
+    "title": "Ending",
+    "frame": 8178,
+    "time": 136300.00000001222
+   },
+   {
+    "title": "Credits",
+    "frame": 10390,
+    "time": 173166.66666665743
+   }
+  ]
+ }
 }

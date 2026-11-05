@@ -22,20 +22,20 @@
  "chapters": [
   {
    "scene": 2,
-   "title": "Level 1: Spikes"
+   "title": "Level 1: Hit Points"
   },
   {
    "scene": 3,
-   "title": "Level 2: The Pool"
+   "title": "Level 2: Hearts Heal"
   },
   {
    "scene": 4,
-   "title": "Level 3: The Safe Way"
+   "title": "Level 3: Lives"
   }
  ],
  "timeline": {
   "fps": 60,
-  "frames": 10634,
+  "frames": 10651,
   "chapters": [
    {
     "title": "Opening",
@@ -44,33 +44,33 @@
    },
    {
     "title": "Story",
-    "frame": 896,
-    "time": 14933.333333333148
+    "frame": 913,
+    "time": 15216.666666666471
    },
    {
-    "title": "Level 1: Spikes",
-    "frame": 2125,
-    "time": 35416.66666666724
+    "title": "Level 1: Hit Points",
+    "frame": 2142,
+    "time": 35700.00000000053
    },
    {
-    "title": "Level 2: The Pool",
-    "frame": 3206,
-    "time": 53433.333333331284
+    "title": "Level 2: Hearts Heal",
+    "frame": 3223,
+    "time": 53716.666666664576
    },
    {
-    "title": "Level 3: The Safe Way",
-    "frame": 4570,
-    "time": 76166.66666666594
+    "title": "Level 3: Lives",
+    "frame": 4587,
+    "time": 76449.99999999936
    },
    {
     "title": "Ending",
-    "frame": 7349,
-    "time": 122483.33333334609
+    "frame": 7366,
+    "time": 122766.6666666795
    },
    {
     "title": "Credits",
-    "frame": 9560,
-    "time": 159333.33333333215
+    "frame": 9577,
+    "time": 159616.66666666532
    }
   ]
  }

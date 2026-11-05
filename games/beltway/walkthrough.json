@@ -27,7 +27,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 8616,
+  "frames": 8632,
   "chapters": [
    {
     "title": "Opening",
@@ -36,28 +36,28 @@
    },
    {
     "title": "Story",
-    "frame": 896,
-    "time": 14933.333333333148
+    "frame": 913,
+    "time": 15216.666666666471
    },
    {
     "title": "Level 1: The Road Goes By",
-    "frame": 2125,
-    "time": 35416.66666666724
+    "frame": 2142,
+    "time": 35700.00000000053
    },
    {
     "title": "Level 2: Round the Loop",
-    "frame": 3743,
-    "time": 62383.33333332998
+    "frame": 3760,
+    "time": 62666.666666663274
    },
    {
     "title": "Ending",
-    "frame": 5335,
-    "time": 88916.66666666965
+    "frame": 5351,
+    "time": 89183.3333333364
    },
    {
     "title": "Credits",
-    "frame": 7542,
-    "time": 125700.0000000137
+    "frame": 7558,
+    "time": 125966.66666668044
    }
   ]
  }
