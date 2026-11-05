@@ -2,6 +2,7 @@
 // set, the hero and the monsters look right together. Ramps are looked up by name
 // (pal.c('grass', 3) is the fourth shade of grass), lightest last.
 import { PaletteBuilder } from '@lewismoten/gamemaker-sandbox-tools/kit/palette';
+import { addKitRamps } from './heroLook';
 import { type Pal, wrap } from '@lewismoten/gamemaker-sandbox-tools/kit/palRamps';
 
 export type { Pal } from '@lewismoten/gamemaker-sandbox-tools/kit/palRamps';
@@ -42,6 +43,7 @@ export function buildStarterPalette(extra?: (b: PaletteBuilder) => void): Pal {
   b.ramp('menublue', 2, [20, 20, 140], [40, 40, 252]);
   b.ramp('plum', 2, [120, 20, 110], [200, 40, 200]);
   b.ramp('hot', 1, [252, 40, 40], [252, 40, 40]);
+  addKitRamps(b); // Kit's own ramps (skin, hair, beanie, hoodie, pants): a helper is a palette change in those ranges
   extra?.(b); // a game's own ramps, after the shared ones (so every shared color keeps its index)
   return wrap(b);
 }

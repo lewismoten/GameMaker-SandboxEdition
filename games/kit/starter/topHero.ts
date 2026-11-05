@@ -10,6 +10,7 @@ import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
 import { Book } from './book';
 import { KEY, SEQ, SND } from './ids';
+import { kitRamp } from './heroLook';
 import type { Pal } from './palette';
 
 const T = 255;
@@ -25,11 +26,11 @@ function pose(pal: Pal, facing: Facing, step: Step): Pixels {
   if (facing === 'left') return pose(pal, 'right', step).flipX();
   const { c, r } = pal;
   const p = new Pixels(20, 20, T);
-  const skin = r('skin');
-  const teal = r('teal');
+  const skin = kitRamp(pal, 'skin');
+  const teal = kitRamp(pal, 'hat');
   const white = r('white');
-  const hair = r('hair');
-  const orange = r('orange');
+  const hair = kitRamp(pal, 'hair');
+  const orange = kitRamp(pal, 'hood');
   const ink = c('ink', 0);
   const side = facing === 'right';
   const x0 = side ? 9.5 : 10;
@@ -59,24 +60,45 @@ function pose(pal: Pal, facing: Facing, step: Step): Pixels {
       .rect(8 + a, 12, 4, 1, orange[3])
       .disc(10 + a, 16.5, 1.5, skin[2]);
   }
-  // the head: hair at the back, the round face, then the knit beanie over the top
+  // the head: the hood behind the neck, hair at the back and sides, the round face, then the knit beanie
+  if (facing === 'up') p.rect(5, 11, 10, 3, orange[2]).rect(5, 11, 10, 1, orange[4]);
+  else if (side) p.rect(3, 11, 6, 3, orange[2]).rect(3, 11, 6, 1, orange[4]);
+  else p.rect(5, 12, 10, 2, orange[2]).rect(5, 12, 10, 1, orange[4]);
   if (facing === 'up') blob(p, 10, 8.5, 6.4, 5.4, hair, 0, 2);
   else if (side) {
-    blob(p, 7, 8.5, 3.2, 4.2, hair, 0, 2);
+    blob(p, 7, 8.5, 4, 4.6, hair, 0, 2);
     blob(p, 11, 8.5, 5.2, 5.2, skin, 0, 3);
-  } else blob(p, 10, 8.5, 6, 5.4, skin, 0, 3);
-  const dome = new Pixels(20, 20, T);
-  blob(dome, side ? 9 : 10, 6, side ? 6.4 : 7, 5.2, teal, 0, 4);
-  for (let y = 0; y < 8; y++) for (let x = 0; x < 20; x++) if (dome.get(x, y) !== T) p.set(x, y, dome.get(x, y));
-  const cx = side ? 3 : 3;
-  const cw = side ? 12 : 14;
-  p.rect(cx, 6, cw, 3, teal[3]).rect(cx, 6, cw, 1, teal[4]).rect(cx, 8, cw, 1, teal[2]);
-  for (let x = cx + 1; x < cx + cw; x += 2) p.set(x, 7, teal[2]);
-  const pom = side ? 8 : 10;
-  p.disc(pom + 0.5, 3.5, 3.3, teal[1])
-    .disc(pom + 0.5, 3.5, 2.7, white[3])
-    .set(pom + 2, 5, white[2])
-    .set(pom + 1, 5, white[2]);
+  } else {
+    blob(p, 10, 8.5, 6.4, 5.4, hair, 0, 2);
+    blob(p, 10, 8.8, 6, 5.2, skin, 0, 3);
+  }
+  // the cap tapers up to a slouchy top; the cuff is a ribbed fold flush with the head, with hair peeking out below it
+  const mid = side ? 8 : 10;
+  const rows: [number, number, number][] = [
+    [7, mid - 7, mid + 6],
+    [6, mid - 7, mid + 6],
+    [5, mid - 6, mid + 5],
+    [4, mid - 5, mid + 4],
+    [3, mid - 4, mid + 3],
+  ];
+  for (const [y, x0, x1] of rows) {
+    p.rect(x0, y, x1 - x0 + 1, 1, teal[3])
+      .rect(x0, y, 2, 1, teal[4])
+      .rect(x1 - 1, y, 2, 1, teal[2]);
+  }
+  const cx = mid - 7;
+  const cw = 14;
+  p.rect(cx, 7, cw, 3, teal[3]).rect(cx, 7, cw, 1, teal[4]).rect(cx, 9, cw, 1, teal[1]);
+  for (let x = cx + 1; x < cx + cw; x += 2) p.rect(x, 8, 1, 2, teal[2]);
+  if (facing !== 'up') for (const x of side ? [mid + 3, mid + 5] : [mid - 4, mid - 2, mid + 1, mid + 3]) p.rect(x, 10, 2, 1, hair[2]);
+  const pom = mid;
+  p.disc(pom + 0.5, 3, 2.9, white[3])
+    .set(pom - 2, 5, white[3])
+    .set(pom + 3, 4, white[3])
+    .set(pom + 1, 0, white[3])
+    .set(pom, 2, white[2])
+    .set(pom + 2, 3, white[2])
+    .rect(pom - 1, 5, 4, 1, white[1]);
   // the face, when it shows
   if (facing === 'down') {
     for (const x of [7, 12]) p.rect(x, 10, 2, 2, ink).set(x + 1, 10, white[3]);
