@@ -29,7 +29,7 @@ sim.tick = async () => {
     const sx = (mi.curx[0] - w.mx) * 20 + mi.curx[1] - w.scroll.nx - w.scroll.littleShiftx;
     ys.push(sx >= 0 && sx + 20 <= 320 ? sy : -999);
   });
-  if (ys.length && process.env.VIEW_SHOTS && (stats.get(level)?.n ?? 0) === 60) {
+  if (ys.length && process.env.VIEW_SHOTS && (stats.get(level)?.n ?? 0) === Number(process.env.VIEW_TICK ?? 60)) {
     const screen = new Screen(headlessCanvas());
     const pal = sim.files.get(sim.game.scenes[level].files[0]) ?? w.palette;
     screen.setPalette(pal);
