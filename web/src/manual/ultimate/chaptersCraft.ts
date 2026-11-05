@@ -242,6 +242,8 @@ export const CRAFT: Chapter = {
     of people, isn’t.</li>
   </ul>
   ${onCd('FLASHSAF')}
+  <p>A game also meets slow computers. A long sound freezes a slow PC while it is read from the disk, a crowd of monsters or a screenful of moving blocks can make a round take longer than a tick, and then the hero walks slowly. Keep sounds short and monsters few.</p>
+  ${onCd('SLOWPC')}
   <h2>Charm players remember</h2>
   <p>Players forgive rough art in a game that makes them laugh. What they talk about later is
   rarely the engine work; it is the personality.</p>

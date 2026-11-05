@@ -11,6 +11,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Added
 
+- Run like a 286, 386 or 486: the web player has a small **Run like a** menu (Today is the normal setting) that makes any game run as a slower PC would. A tick that takes too long is skipped, so walking and animation slow down; a sound is read from the disk whole while the game waits, as DOS Game-Maker did, and the music keeps its own time. The numbers are estimates. A new Starter, Slow Computers, has a short pad and a long pad, a crowd of 36 monsters and a sky that moves every tick to try it on.
 - The Starters have eight more explorers beside Kit: Mia, Lena, Mara, Lian, Yana, Neka, Rima and Lami (the last three are aliens), the same character in other colors. Kit leads the first game of each group; the helpers lead the rest in turn, name themselves in the games' text and have their own cards on the Cast page. The slim top-down Kit is narrower, with a bigger head.
 
 - A new Starter, Beams and Fog: light and fog painted in dots. Level 1 is a dark hall with three lamps, a solid beam that hides the bricks, a checkerboard beam that lets them show and one in three densities that fades at its edge. Level 2 is a valley of hills in solid fog and then dithered fog, thicker the farther away, with banks of fog that drift. Level 3 has three floating lanterns with a solid halo, a checkerboard halo and rings of halo. Its pages say how each is made, with the frames enlarged.
