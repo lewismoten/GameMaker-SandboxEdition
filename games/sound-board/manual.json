@@ -34,22 +34,6 @@
       "level": 1
     },
     {
-      "id": "cut-off",
-      "q": "Why does a new sound cut off the old one?",
-      "scene": 2,
-      "x": 50,
-      "y": 17,
-      "level": 1
-    },
-    {
-      "id": "key-sound",
-      "q": "How do I make a key play a sound?",
-      "scene": 3,
-      "x": 32,
-      "y": 19,
-      "level": 2
-    },
-    {
       "id": "gate-sound",
       "q": "How do I make a gate creak when it opens?",
       "scene": 3,
