@@ -173,7 +173,7 @@ These helpers take the consuming game's data and palette.
 `kit/photo` reads a caller-supplied JPEG (`readScan`) and provides resampling, toning,
 quantization, dithering and indexed photo composition. No photographs are included.
 `kit/png` writes synchronous RGB preview PNGs with a checkerboard for transparent pixels
-and builds block sheets. `kit/levelPicture` renders a level region with its placed monsters.
+and builds block sheets. `kit/levelPicture` renders a level region with its placed monsters, and `kit/levelGrid` is a character grid to paint a level in code.
 These Node build helpers complement the browser-safe `images` API.
 
 ### Sound and arrangement helpers
