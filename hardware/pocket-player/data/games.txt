@@ -7,6 +7,7 @@ block-brains|Block Brains|2
 jump-boots|Boots and Jet Pack|2
 and-gate|Both Together|2
 coins-and-score|Coins and Score|3
+colors|Colors That Work|2
 corner-view|Corner View|2
 countdown|Countdown|2
 cutscenes|Cutscenes|4
@@ -63,4 +64,5 @@ warning-first|Warning First|2
 watch-your-step|Watch Your Step|3
 choose-hero|Who Do You Want to Be?|3
 who-wins|Who Wins?|2
+puzzle-room|Wired Room|2
 your-first-game|Your First Game|3
