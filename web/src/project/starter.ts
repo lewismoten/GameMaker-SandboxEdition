@@ -70,6 +70,7 @@ export const STARTER_GROUPS: { name: string; tag: string; games: string[] }[] = 
       'beat-the-clock',
       'countdown',
       'warning-first',
+      'flash-safe',
       'one-more-try',
       'teach-test-twist',
       'block-brains',
