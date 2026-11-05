@@ -5,7 +5,7 @@
   "series": "starter",
   "year": 1994,
   "price": "Free",
-  "version": "1.0",
+  "version": "1.1",
   "blurb": "Three short levels about gravity as a tool. Ice drags Kit along and he slides on after he lets go, a belt carries him down its length, a spring pad bounces him up and a fan's wind lifts him through a ledge. Each level has one spike to learn from. Signs say how. Play it, then open it in Game-Maker and change a pull.",
   "exe": "SLIP.EXE",
   "dosName": "SLIPPERY",

@@ -1,4 +1,4 @@
-// Every word UNDER THE SURFACE shows on a text page (30 columns, 16 lines a page).
+// Every word KIT'S MOVES shows on a text page (30 columns, 16 lines a page).
 import { withCreditPage } from '../../kit/license';
 import { wrap } from '../../kit/starter/text';
 import about from '../about.json';
@@ -33,7 +33,7 @@ Nothing can hurt you here. Try each key held down, and then tapped, and see the 
 
 export const CREDITS = withCreditPage(
   wrap(`
-|UNDER THE SURFACE  v${about.version}
+|KIT'S MOVES  v${about.version}
 |(c) 1994 Sandbox Software
 
 Design, pixels, beeps and levels by Claude Sonnet 5.5, an AI model made by Anthropic.
