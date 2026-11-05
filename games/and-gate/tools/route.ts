@@ -4,6 +4,7 @@
 // then turns the second on and the lamp lights; in level 2 three dials, one up a ladder.
 // The checks here fail if anything else happens.
 import type { Result, StarterBot } from '../../kit/starter/bot';
+import { SCAN } from '../../kit/starter/ids';
 import { ORIGIN } from '../../kit/starter/map';
 import { LIGHTS } from '../src/gateBlocks';
 import { DIAL_OFF, DIAL_ON, FALLING, LAMP, LIGHT, SPARK } from '../src/monsters';
@@ -57,9 +58,22 @@ async function until(bot: StarterBot, done: () => boolean, max: number, what: st
   if (!done()) throw new Error(`${what}: never happened in ${max} ticks`);
 }
 
-/** Jumps up under the dial hanging above the hero (a hop of Space, held for two ticks). */
+/** The highest Kit has jumped so far in this run, as the top of his head in level pixels (the lamp's bottom edge is at 40). */
+let apexTop = Infinity;
+
+/** Jumps up under the dial hanging above the hero (a hop of Space, held for two ticks), noting how high he got. */
 async function bump(bot: StarterBot, what: string): Promise<void> {
-  await must(bot, bot.jump(), what);
+  bot.sim.press(SCAN.space);
+  await must(bot, bot.wait(2), what);
+  bot.sim.release(SCAN.space);
+  for (let i = 0; i < 60; i++) {
+    await must(bot, bot.wait(1), what);
+    apexTop = Math.min(apexTop, bot.px.y - 20);
+  }
+  await must(bot, bot.land(), what);
+  bot.say(`jumped, head at ${apexTop}px`);
+  // the lamp has to be out of reach: even his highest jump leaves a block of sky under it
+  if (apexTop < 60) throw new Error(`${what}: Kit could reach the lamp (head at ${apexTop}px)`);
 }
 
 /** Watches the sparks for as long as it takes one to run out of wire, and returns the furthest one got. */

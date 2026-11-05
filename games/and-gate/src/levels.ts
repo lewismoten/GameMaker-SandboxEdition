@@ -25,15 +25,15 @@ function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   addStarterBlocks(book, pal);
   addGateBlocks(book, pal);
   const signs = {
-    wire: addSign(book, pal, 'wire.sign', 'A SPARK RUNS ALONG THE WIRE', 4, 2),
+    wire: addSign(book, pal, 'wire.sign', 'A SPARK RUNS THE WIRE', 4, 2),
     dial: addSign(book, pal, 'dial.sign', 'JUMP TO BUMP A DIAL ON', 4, 2),
     both: addSign(book, pal, 'both.sign', 'ONE DIAL OFF STOPS THE SPARK', 4, 2),
-    light: addSign(book, pal, 'light.sign', 'THEN THE LIGHT DROPS. TOUCH IT', 4, 2),
+    light: addSign(book, pal, 'light.sign', 'THE LIGHT DROPS. TOUCH IT', 4, 2),
     gate: addSign(book, pal, 'gate.sign', 'THE LIGHT OPENS THIS GATE', 4, 2),
-    three: addSign(book, pal, 'three.sign', 'THREE DIALS. ALL MUST BE ON', 4, 2),
+    three: addSign(book, pal, 'three.sign', 'ALL THREE MUST BE ON', 4, 2),
     climb: addSign(book, pal, 'climb.sign', 'THE WIRE CLIMBS. SO DOES KIT', 4, 2),
-    stay: addSign(book, pal, 'stay.sign', 'A DIAL STAYS ON ONCE BUMPED', 4, 2),
-    light2: addSign(book, pal, 'light2.sign', 'ALL THREE ON? THE LAMP LIGHTS', 4, 2),
+    stay: addSign(book, pal, 'stay.sign', 'A DIAL STAYS ON', 4, 2),
+    light2: addSign(book, pal, 'light2.sign', 'ALL ON? LAMP LIGHTS', 4, 2),
   };
   return { book, signs };
 }

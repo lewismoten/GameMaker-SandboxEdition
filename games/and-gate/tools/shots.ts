@@ -1,5 +1,6 @@
-// Pictures of the lessons (never on the disk), for the progress shots: the V of five birds in level 1, and the
-// V coming apart in level 2.
+// Pictures of the lessons (never on the disk), for the progress shots: level 1 with one dial on and a
+// spark on its way to the one still off, then both on with the lamp lit and its light at the foot of
+// the post; level 2 with three dials, one up on the ledge.
 //   cd web && npx vite-node ../games/and-gate/tools/shots.ts <outDir>
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
@@ -7,17 +8,17 @@ import { writePng } from '@lewismoten/gamemaker-sandbox-tools/kit/png';
 import { renderRegion } from '@lewismoten/gamemaker-sandbox-tools/kit/levelPicture';
 import { buildHeroBlocks, heroPicture } from '../../kit/starter/hero';
 import { ORIGIN } from '../../kit/starter/map';
-import { finishMonsterPictures, monsterPictures, monsterSet } from '../src/monsters';
-import { FLOCK_AT, GROUND, V, buildLevels } from '../src/levels';
+import { finishBlocks } from '../src/gateBlocks';
+import { DIAL_OFF, DIAL_ON, LAMP, LIGHT, SPARK, finishMonsterPictures, monsterPictures, monsterSet } from '../src/monsters';
+import { GROUND, buildLevels } from '../src/levels';
 
 const out = process.argv[2];
 if (!out) throw new Error('usage: shots.ts <outDir>');
 mkdirSync(out, { recursive: true });
 const { book, pal, levels } = buildLevels();
-const bbl = book.finish();
+const bbl = finishBlocks(book);
 const mb = monsterPictures(pal);
 const mbl = finishMonsterPictures(mb);
-const set = monsterSet(mb);
 const hero = buildHeroBlocks(pal);
 
 type Sprite = { pixels: Uint8Array; x: number; y: number };
@@ -29,23 +30,15 @@ const kit = (pose: [string, string], col: number, ground = GROUND): Sprite[] => 
     { pixels: Uint8Array.from(h.px.subarray(400)), x: ORIGIN + col, y: ORIGIN + ground - 1 },
   ];
 };
-/** The level's map with its monsters taken out (the picture adds the ones to show). */
-const empty = (level: number) => {
+/** The level's map with exactly these monsters: [monster number, column, row]. */
+const withMonsters = (level: number, list: [number, number, number][]) => {
   const m = levels[level].map.done();
-  m.monsters = [];
+  m.monsters = list.map(([monnum, x, y]) => ({ monnum, status: 0, xtra: 0, curx: x + ORIGIN, cury: y + ORIGIN, extra: 0 }));
   return m;
 };
-const region = (map: ReturnType<typeof empty>, col: number, w: number, extra: Sprite[]) =>
-  renderRegion(map, bbl, mbl, set, ORIGIN + col, ORIGIN + 1, w, 11, extra);
-const save = (name: string, pic: ReturnType<typeof region>) => writePng(join(out, name), pic, pal.pal, 3);
+const save = (name: string, level: number, map: ReturnType<typeof withMonsters>, col: number, w: number, extra: Sprite[]) =>
+  writePng(join(out, name), renderRegion(map, bbl, mbl, monsterSet(mb, levels[level].route), ORIGIN + col, ORIGIN, w, 12, extra), pal.pal, 3);
 
-/** The five birds with their wings up or down, `names[i]` being the i-th from the left; `shift[i]` moves a bird right by that many blocks. */
-const vee = (names: string[], shift: number[], dx = 0): Sprite[] =>
-  V.map(([x, y], i) => ({ pixels: Uint8Array.from(mbl[mb.n(names[i])].pixels), x: ORIGIN + FLOCK_AT[0] + dx + x + shift[i], y: ORIGIN + FLOCK_AT[1] + y }));
-
-// level 1: the V over Kit, then the V after the birds flew on (still a V); level 2: the gold birds out in front
-const blue = ['bird0', 'bird1', 'bird0', 'bird1', 'bird0'];
-const mixed = ['bird0', 'quick1', 'bird0', 'quick1', 'bird0'];
-save('1-the-v.png', region(empty(0), 8, 24, [...kit(['stand.top', 'stand'], 18), ...vee(blue, [0, 0, 0, 0, 0])]));
-save('2-the-v-flown-on.png', region(empty(0), 8, 24, [...kit(['stand.top', 'stand'], 18), ...vee(blue, [0, 0, 0, 0, 0], 6)]));
-save('3-out-of-step.png', region(empty(1), 8, 24, [...kit(['stand.top', 'stand'], 18), ...vee(mixed, [0, 6, 0, 6, 0])]));
+save('1-one-dial-on.png', 0, withMonsters(0, [[DIAL_ON, 12, 6], [DIAL_OFF, 17, 6], [SPARK, 14, 6], [LAMP, 23, 1]]), 3, 24, kit(['stand.top', 'stand'], 12));
+save('2-both-on-lamp-lit.png', 0, withMonsters(0, [[DIAL_ON, 12, 6], [DIAL_ON, 17, 6], [LIGHT, 23, 9]]), 3, 24, kit(['cheer.top', 'jump'], 21));
+save('3-three-dials.png', 1, withMonsters(1, [[DIAL_ON, 5, 6], [DIAL_OFF, 13, 1], [DIAL_OFF, 20, 6], [LAMP, 24, 1]]), 3, 24, kit(['stand.top', 'stand'], 9));
