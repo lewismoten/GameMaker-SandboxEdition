@@ -181,6 +181,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
   };
   atEnd(() => deep.stop());
   let lastShown = 0;
+  let countTimer: ReturnType<typeof setTimeout> | undefined;
 
   const filterTiles = (fromDeep = false) => {
     const q = search.value.trim().toLowerCase();
@@ -201,6 +202,10 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     // a screen reader hears when the background read added games to the list
     if (fromDeep && shown > lastShown && q) announce(`${shown} ${shown === 1 ? 'game matches' : 'games match'} “${search.value.trim()}”`);
     lastShown = shown;
+    // typing says how many games match, once the typing pauses (the background read speaks for itself above)
+    clearTimeout(countTimer);
+    if (!fromDeep && q && shown)
+      countTimer = setTimeout(() => announce(`${shown} ${shown === 1 ? 'game matches' : 'games match'} “${search.value.trim()}”`), 800);
     // a collection's heading only while one of its games shows
     for (const sub of tiles.querySelectorAll<HTMLElement>('.lib-sub')) {
       let any = false;
