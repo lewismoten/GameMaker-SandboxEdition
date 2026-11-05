@@ -1,7 +1,7 @@
-// Re-records the title screen's demo into src/demo.ts: the bot's own run through levels 1 and 2, one
+// Re-records the title screen's demo into src/demo.ts: the bot's own run through all three levels, one
 // unbroken list of keys (the demo recorder counts game ticks across scene changes, so the second level's
-// keys follow the first's after the ticks between them). It shows each lesson once: Kit leans on the hedge and the picture stays,
-// then the second level's picture follows him.
+// keys follow the first's after the ticks between them). It shows each lesson once: Kit falls into the creek and is carried back, floats in the deep pool,
+// and is lifted to the ledge.
 // Rebuild afterwards.
 //   cd web && npx vite-node ../games/swim/tools/gendemo.ts && npx vite-node ../games/swim/build.ts
 //   cd web && npx vite-node ../games/swim/tools/demoCheck.ts      (plays the recording on the real engine)
@@ -10,7 +10,7 @@ import { play } from './play';
 
 /** Ticks cut from the end of the run: the last walk to the exit door. */
 const END_SHORT = 60;
-const { sim } = await play(undefined, 2);
+const { sim } = await play();
 const keys: { delta: number; key: number }[] = [];
 let carried = 0;
 sim.segments.forEach((seg, i) => {

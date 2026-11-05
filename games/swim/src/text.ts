@@ -6,25 +6,25 @@ import about from '../about.json';
 export const STORY = wrap(`
 |UNDER THE SURFACE
 
-Does the picture move, or does it stay?
+What does water do?
 
-A small explorer in a teal beanie has two levels to cross. The first is one room that fits the screen exactly, and the picture never moves. The second is a long walk, and the picture slides along after him.
+A small explorer in a teal beanie has three pools to cross. In a creek the water pulls him to the left. In a deep pool it holds him up, so he floats. In a tall one it lifts him up and to the left, right up to a ledge.
 
-Read the signs. Whether a level scrolls is one switch on its scene, and the size of the level has to agree with it.
+Read the signs. Water is not a special thing. It is a block with a gravity setting, and the setting says which ways it pulls.
 
-Then open this game in Game-Maker and flip the switch.
+Then open this game in Game-Maker and change one.
 `);
 
 export const HOWTO = wrap(`
 |HOW TO PLAY
 
-|LEFT, RIGHT   walk
+|LEFT, RIGHT   walk, swim
 |SPACE         jump
 |F2            lives, score
 
-Walk to the door at the right of each level. Take the coins on the way.
+Walk to the door in each level. Take the coins on the way.
 
-Nothing here can hurt you. In the first level the picture stays still. In the second it follows you.
+Water is friendly here, and nothing can hurt you. Fall in and see what the water does: some pulls you along, some holds you up, some lifts you.
 
 |ESC for the menu.
 `);
@@ -43,19 +43,19 @@ One of the Starters: small games that each show one idea.
 );
 
 export const WON = wrap(`
-|WELL SEEN!
+|SPLASH!
 
-Two levels, and you know what the camera does.
+Three levels, and now you know what water does.
 
-A scene can scroll or stay. A scene that stays shows the part of the map around the place Kit starts, so the room has to fit one screen, with walls you can see all round it. A scene that scrolls follows Kit, so the level can be as long as you like.
+Every block has a gravity setting: which ways it pulls. The creek pulls left and down. The deep pool pulls up. The tall pool pulls up and left. The top row of each pool has no pull at all, so Kit settles there and can walk out.
 
-Open the game in Game-Maker, click on the scene in the Scenes tab and find the scrolling choices. Turn them on for the first level, make the room bigger and play it.
+Open the game in Game-Maker and find them on the Blocks tab. Make the creek pull right, then play it.
 `);
 
 export const LOST = wrap(`
-|OOPS!
+|SPLASH!
 
 Out of lives. That is not meant to happen here.
 
-Try again: walk right, to the door.
+Try again: step into the water and see which way it pulls.
 `);

@@ -77,17 +77,17 @@ disk.put(
   ]),
 );
 disk.put('menu.gif', gif(menuPicture(pal, book, hero, TITLE), pal));
-disk.put('scores.gif', gif(scoresPicture(pal, book, 'THE WANDERERS'), pal));
+disk.put('scores.gif', gif(scoresPicture(pal, book, 'THE SWIMMERS'), pal));
 disk.put('loadgame.gif', gif(slotsPicture(pal, book, 'LOAD GAME'), pal));
 disk.put('savegame.gif', gif(slotsPicture(pal, book, 'SAVE GAME'), pal));
-text('story', 'THE VIEW', STORY);
+text('story', 'THE WATER', STORY);
 text('howto', 'HOW TO PLAY', HOWTO);
 text('credits', 'CREDITS', CREDITS);
-disk.put('wonpic.gif', gif(endPicture(pal, book, cheer, 'WELL SEEN!', 'SPLASH AND FLOAT', 'won'), pal));
-disk.put('won.gif', gif(paper(pal, book, 'ALL SEEN'), pal));
+disk.put('wonpic.gif', gif(endPicture(pal, book, cheer, 'SPLASH!', 'THREE POOLS DONE', 'won'), pal));
+disk.put('won.gif', gif(paper(pal, book, 'ALL WET'), pal));
 disk.put('won.txt', WON);
 disk.put('won.lst', serializeSlideList([{ name: 'wonpic.gif', pause: 6 }, { name: 'won.gif', pause: 0 }, { name: 'won.txt' }]));
-disk.put('lostpic.gif', gif(endPicture(pal, book, heroPicture(heroBlocks, 'hurt.top', 'hurt'), 'OOPS!', 'THE VIEW MOVES ON', 'lost'), pal));
+disk.put('lostpic.gif', gif(endPicture(pal, book, heroPicture(heroBlocks, 'hurt.top', 'hurt'), 'WHOOPS!', 'THE WATER HOLDS YOU', 'lost'), pal));
 disk.put('lost.gif', gif(paper(pal, book, 'TRY AGAIN'), pal));
 disk.put('lost.txt', LOST);
 disk.put('lost.lst', serializeSlideList([{ name: 'lostpic.gif', pause: 5 }, { name: 'lost.gif', pause: 0 }, { name: 'lost.txt' }]));
