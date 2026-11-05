@@ -319,10 +319,10 @@ export async function packPocketGame(src: PocketSource, store: PocketStore, pak:
   });
   const seen = new Set<string>();
   for (const [scan, v] of Object.entries(src.controls?.keys ?? {}))
-    if (!seen.has(scan)) {
+    if (!seen.has(scan) && /^\d+$/.test(scan) && typeof v?.short === 'string' && v.short.trim()) {
       seen.add(scan);
-      lines.push(`key ${scan} ${v.short}`);
+      lines.push(`key ${scan} ${v.short.replace(/\s+/g, ' ')}`);
     }
-  for (const [n, text] of Object.entries(src.controls?.counters ?? {})) lines.push(`ctr ${n} ${text.split(':')[0].slice(0, 19)}`);
+  for (const [n, text] of Object.entries(src.controls?.counters ?? {})) if (typeof text === 'string') lines.push(`ctr ${n} ${text.split(':')[0].slice(0, 19)}`);
   return { lines, levels: play.length, why: [...new Set(why)], warn, leftOut };
 }

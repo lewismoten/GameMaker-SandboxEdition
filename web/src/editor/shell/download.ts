@@ -10,6 +10,7 @@
 // - Web player: the one page that plays game folders on a web host, with this game's folder
 //   and a games.json (.zip), or the page alone (.html), exportWebPlayer.ts (docs/web-player.md);
 // - DOS: the original Game-Maker files with the stand-alone player (.zip), exportDos.ts;
+// - Pocket Player: the game as one file for the microSD card of the ESP32 board (.gmp), exportPocket.ts;
 // - a game of yours also: its files as they are here (.zip), to keep safe or import again.
 //
 // Catalog DOS downloads use the built ZIP; other downloads are built in the browser when the visitor presses Download. Which games
@@ -22,7 +23,7 @@ import { icon } from './homeIcons';
 import type { CatalogEntry, GameFiles } from '../../project/files';
 import type { Companion } from '../../project/companion';
 import { aboutOf, isAboutEmpty, type AboutGame } from '../../project/aboutGame';
-import { exportPreviewsOf } from '../../project/companion';
+import { exportPreviewsOf, getSection } from '../../project/companion';
 import type { PlayerPatches } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
 import { REPO_URL } from '../../seo/site';
 import { fetchArchive } from '../../project/archiveWait';
@@ -51,7 +52,7 @@ export interface DownloadGame {
   entry?: CatalogEntry;
 }
 
-type DownloadKind = 'windows' | 'mac' | 'linux' | 'web' | 'player' | 'dos' | 'files';
+type DownloadKind = 'windows' | 'mac' | 'linux' | 'web' | 'player' | 'dos' | 'pocket' | 'files';
 
 interface Choice {
   kind: DownloadKind;
@@ -85,6 +86,13 @@ const CHOICES: Choice[] = [
     name: 'DOS',
     format: '.zip',
     line: 'The original Game-Maker files with the stand-alone player, for DOSBox or a real DOS PC. Import the ZIP here to edit a copy.',
+  },
+  {
+    kind: 'pocket',
+    name: 'Pocket Player (microSD)',
+    format: '.gmp',
+    line: 'One file for the Pocket Player on an ESP32 “cheap yellow display” board. Copy it into the pocket folder on the board’s microSD card (FAT32), then restart the board: the game is listed with an SD tag. It plays the PC speaker sounds, not Sound Blaster sounds or music.',
+    details: `${REPO_URL}/blob/master/hardware/pocket-player/README.md#the-microsd-card`,
   },
   { kind: 'files', name: 'Game files', format: '.zip', line: 'Your game’s files just as they are here, to keep a copy safe or import it again.' },
   {
@@ -337,6 +345,13 @@ async function nativeOptions(game: DownloadGame, files: GameFiles, previews?: bo
   };
 }
 
+/** What the keys and counters mean (button labels on the board): a catalog game's controls.json, or yours from the companion. */
+function pocketControls(game: DownloadGame) {
+  const c = game.project ? game.companion?.() : undefined;
+  const v: unknown = game.entry?.controls ?? (c ? getSection<unknown>(c, game.gam, 'controls', undefined) : undefined);
+  return v && typeof v === 'object' ? (v as { keys?: Record<string, { short: string }>; counters?: Record<string, string> }) : undefined;
+}
+
 const NAMES: Record<DownloadKind, string> = {
   windows: 'Windows program',
   mac: 'Mac app',
@@ -344,6 +359,7 @@ const NAMES: Record<DownloadKind, string> = {
   web: 'web page',
   player: 'web player',
   dos: 'DOS game',
+  pocket: 'Pocket Player file',
   files: 'game files',
 };
 
@@ -436,6 +452,12 @@ async function build(game: DownloadGame, kind: DownloadKind, alt: boolean, previ
         ...(await aboutOptions(game)),
       });
       save(name, zip, 'application/zip', `In DOSBox, run ${exe} from the unzipped folder.`);
+    } else if (kind === 'pocket') {
+      const { name, bytes, notes } = await (
+        await import('../../export/exportPocket')
+      ).exportPocket(files, { title: game.title, gam: game.gam, id: game.id, controls: pocketControls(game) });
+      save(name, bytes, 'application/octet-stream', ['Copy it into the pocket folder on the microSD card, then restart the board.', ...notes].join(' '));
+      return; // no achievement of its own
     } else {
       const [{ createZip }, { backupEntries }] = await Promise.all([import('@lewismoten/gamemaker-sandbox-archives/zip'), import('../../project/companion')]);
       const zip = await createZip(backupEntries(files, game.gam, game.companion?.()));
