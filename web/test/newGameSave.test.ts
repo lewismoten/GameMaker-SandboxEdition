@@ -20,7 +20,12 @@ const games = join(__dirname, '..', '..', 'games');
 function disk(id: string) {
   const dir = join(games, id, 'disk');
   const byName = new Map(readdirSync(dir).map((n) => [n.toLowerCase(), join(dir, n)]));
-  const get = (n: string) => (byName.has(n.toLowerCase()) ? new Uint8Array(readFileSync(byName.get(n.toLowerCase())!)) : undefined);
+  const read = new Map<string, Uint8Array | undefined>(); // each file is read from disk once
+  const get = (n: string) => {
+    const k = n.toLowerCase();
+    if (!read.has(k)) read.set(k, byName.has(k) ? new Uint8Array(readFileSync(byName.get(k)!)) : undefined);
+    return read.get(k);
+  };
   const gam = [...byName.keys()].find((n) => n.endsWith('.gam'))!;
   return { files: { get }, gam };
 }
@@ -53,7 +58,7 @@ describe('a new saved game', () => {
       expect(ci.inv).toEqual([...chr.inv.slice(0, ci.inv.length)]);
       // written as F5 writes it: parse and serialize give the same bytes
       const bytes = serializeSave(save);
-      expect(serializeSave(parseSave(bytes))).toEqual(bytes);
+      expect(Buffer.compare(serializeSave(parseSave(bytes)), bytes)).toBe(0);
 
       // F6: loads over the level, then plays a few seconds
       const s = { m: { files }, game, rand: seeded, ci: newCharInfo(), rec: new Recorder(), sndClock: 0 };
