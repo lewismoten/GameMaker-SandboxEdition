@@ -26,7 +26,12 @@ const BARS: (keyof typeof CHORDS)[] = ['G', 'C', 'D', 'G', 'G', 'C', 'D', 'G'];
 
 // the bass knocks on every beat; the chord answers on the off-beat (a rest, then the three notes)
 const bass = join(...BARS.map((b) => [0, 1, 0, 1].map((i) => `${CHORDS[b].bass[i]} q`).join(', ')));
-const chord = join(...BARS.map((b) => `${CHORDS[b].arp.map((n) => `${n} e`).join(', ')}, ${CHORDS[b].arp[1]} e, ${CHORDS[b].arp[2]} e, ${CHORDS[b].arp[0]} e, ${CHORDS[b].arp[1]} e, ${CHORDS[b].arp[2]} e`));
+const chord = join(
+  ...BARS.map(
+    (b) =>
+      `${CHORDS[b].arp.map((n) => `${n} e`).join(', ')}, ${CHORDS[b].arp[1]} e, ${CHORDS[b].arp[2]} e, ${CHORDS[b].arp[0]} e, ${CHORDS[b].arp[1]} e, ${CHORDS[b].arp[2]} e`,
+  ),
+);
 
 /** The song as a .CMF file. */
 export function song(): Uint8Array {

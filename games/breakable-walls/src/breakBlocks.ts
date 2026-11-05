@@ -77,7 +77,11 @@ function stuckCoin(pal: Pal): Pixels {
     [2, 16],
     [18, 15],
   ] as const)
-    p.set(x, y, g[5]).set(x - 1, y, g[4]).set(x + 1, y, g[4]).set(x, y - 1, g[4]).set(x, y + 1, g[4]);
+    p.set(x, y, g[5])
+      .set(x - 1, y, g[4])
+      .set(x + 1, y, g[4])
+      .set(x, y - 1, g[4])
+      .set(x, y + 1, g[4]);
   return p;
 }
 

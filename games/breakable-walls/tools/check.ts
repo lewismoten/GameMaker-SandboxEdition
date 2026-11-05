@@ -8,4 +8,6 @@ import { play } from './play';
 
 assertNoInvisibleWalls(buildLevels());
 const { sim } = await play();
-console.log(`smash it: the bot played all three levels; ${sim.deaths} lives lost, ${sim.ci.lives} left, score ${sim.ci.score}, ${sim.trail.length} scenes entered`);
+console.log(
+  `smash it: the bot played all three levels; ${sim.deaths} lives lost, ${sim.ci.lives} left, score ${sim.ci.score}, ${sim.trail.length} scenes entered`,
+);

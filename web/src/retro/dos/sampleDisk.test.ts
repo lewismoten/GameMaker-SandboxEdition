@@ -36,7 +36,7 @@ describe('the Sample Disk', () => {
 
   it('gives each a different 8.3 folder name', () => {
     const names = folders.map((f) => f.dir);
-    expect(names.slice(0, 8)).toEqual(['FIRSTSTP', 'KEYSDOOR', 'MONSTERS', 'ROOMS', 'COINS', 'HAZARDS', 'POWERUP', 'THROWIT']);
+    expect(names.slice(0, 9)).toEqual(['FIRSTSTP', 'KEYSDOOR', 'MONSTERS', 'ROOMS', 'COINS', 'SMASHIT', 'HAZARDS', 'POWERUP', 'THROWIT']);
     expect(new Set(names).size).toBe(names.length);
     for (const n of names) expect(n).toMatch(/^[A-Z0-9_]{1,8}$/);
   });

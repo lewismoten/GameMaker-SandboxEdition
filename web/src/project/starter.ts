@@ -16,7 +16,7 @@ export const STARTER_GROUPS: { name: string; tag: string; games: string[] }[] = 
   {
     name: 'The Basics',
     tag: 'One idea at a time: moving, doors, monsters, rooms.',
-    games: ['first-steps', 'keys-and-doors', 'meet-the-monsters', 'room-to-room', 'coins-and-score', 'watch-your-step'],
+    games: ['first-steps', 'keys-and-doors', 'meet-the-monsters', 'room-to-room', 'coins-and-score', 'breakable-walls', 'watch-your-step'],
   },
   {
     name: 'Game Feel',

@@ -44,6 +44,7 @@ export const CAST_GAMES = {
   switches: ['Switches', 'starter'],
   'gravity-on-gravity-off': ['Gravity On, Gravity Off', 'starter'],
   'sounds-and-music': ['Sounds and Music', 'starter'],
+  'breakable-walls': ['Smash It', 'starter'],
   carl: ['A Fly Named Carl', 'bizarre'],
   goat: ['Third Goat from the Left', 'bizarre'],
   loaf: ['Loaf #13 (Left in the Basket)', 'bizarre'],
@@ -133,6 +134,7 @@ const LISTED: CastMember[] = [
       { game: 'switches', as: 'pulls a lever to build a bridge' },
       { game: 'gravity-on-gravity-off', as: 'jumps a wall, then walks around it with gravity off' },
       { game: 'sounds-and-music', as: 'listens to a song in every room and a beep for every pickup' },
+      { game: 'breakable-walls', as: 'bumps crates to rubble and catches spinning gems' },
     ],
   },
   {

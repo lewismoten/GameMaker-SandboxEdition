@@ -57,8 +57,8 @@ export async function bumpACrate(bot: StarterBot): Promise<void> {
   expect(bot, L1.wallA, GROUND - 1, 'crate', 'before the bump');
   await must(bot, bot.walk(L1.wallA + 1, 'through the first wall'), 'through the first wall');
   await must(bot, bot.wait(LOOK), 'watching the rubble');
-  expect(bot, L1.wallA, GROUND - 1, 'rubble', 'the crate at Kit\'s feet');
-  expect(bot, L1.wallA, GROUND - 2, 'rubble', 'the crate at Kit\'s head');
+  expect(bot, L1.wallA, GROUND - 1, 'rubble', "the crate at Kit's feet");
+  expect(bot, L1.wallA, GROUND - 2, 'rubble', "the crate at Kit's head");
   expect(bot, L1.wallA, GROUND - 3, 'crate', 'a crate above his head stays');
   expect(bot, L1.wallA, TOP, 'crate', 'the top crate stays');
   await must(bot, bot.walk(L1.wallB - 1, 'the second wall'), 'to the second wall');
