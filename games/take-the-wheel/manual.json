@@ -1,0 +1,83 @@
+{
+  "title": "Take the Wheel",
+  "howDoI": [
+    {
+      "id": "character",
+      "q": "How do I give a level a different character?",
+      "scene": 3,
+      "x": 16,
+      "y": 19,
+      "level": 2
+    },
+    {
+      "id": "nojump",
+      "q": "How do I make a character that cannot jump?",
+      "scene": 3,
+      "x": 21,
+      "y": 19,
+      "level": 2
+    },
+    {
+      "id": "honk",
+      "q": "How do I make a key honk a horn?",
+      "scene": 3,
+      "x": 26,
+      "y": 19,
+      "level": 2
+    },
+    {
+      "id": "flyaway",
+      "q": "How do I make a monster fly away when something hits it?",
+      "scene": 3,
+      "x": 32,
+      "y": 19,
+      "level": 2
+    },
+    {
+      "id": "block",
+      "q": "How do I make a monster that blocks the way?",
+      "scene": 2,
+      "x": 31,
+      "y": 19,
+      "level": 1
+    },
+    {
+      "id": "switch",
+      "q": "How do I change characters in the middle of a game?",
+      "scene": 2,
+      "x": 52,
+      "y": 19,
+      "level": 1
+    }
+  ],
+  "pages": [
+    {
+      "head": "Welcome",
+      "html": "<h1>Welcome</h1><p><b>Take the Wheel</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has two short levels and takes a couple of minutes to finish.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each thing in the levels is made.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk, and in the kart they drive. <kbd>Space</kbd> jumps on foot and honks in the kart. <kbd>F2</kbd> shows your lives, hit points and score. Walk into the kart at the end of level 1, or into the door at the end of level 2, to go on.</p><p>Game-Maker has no vehicle. A kart is a character file like Kit's, with its own pictures, its own speed and its own keys. Nothing here hurts you.</p>"
+    },
+    {
+      "head": "Level 1: Hop In",
+      "html": "<h1>Level 1: Hop In</h1><p>The first sign says <b>ON FOOT, KIT WALKS AND JUMPS</b>. A blue bird sits in the road, and the <b>A BIRD IN THE ROAD. JUMP IT</b> sign comes before it. Press <kbd>Space</kbd> while you walk, and Kit goes over. The bird stays where it is.</p><p>At the end of the road a little blue kart is parked with a pennant over it. The <b>WALK INTO THE KART TO DRIVE IT</b> sign points at it. Walk into it and the next level begins, with Kit in the kart.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 1 is made</h1><ul><li><b>Kit.</b> Open <b>whl.gam</b> and pick level 1's scene. Each scene lists the files it loads. Its character slot names <b>hero.chr</b> and its character pictures <b>hero.cbl</b>, the same Kit as in every Starter.</li><li><b>The bird.</b> Open <b>whl.mon</b> in the monsters editor and pick the bird. It has no path, so it sits and blinks between two pictures. Its picture's <b>Solid</b> boxes are ticked in <b>whl.mbl</b>, so Kit cannot walk through it, and it takes no hit points. Its <b>Power</b> is 150, so touching it does not destroy it either.</li><li><b>The jump.</b> It is <b>hero.chr</b>'s <b>Space</b> sequence: a push upward that gravity then takes back. Three blocks of height clear a bird one block tall.</li><li><b>The kart.</b> It is two map blocks in <b>one.map</b>, a pennant and the kart, made like the door: nothing about them is solid. The link that ends the level starts on the bottom one, at the same spot where a door would be.</li><li><b>The change.</b> Level 1's link goes to level 2's scene. Nothing in the link mentions a character. The next scene's list of files does.</li></ul>"
+    },
+    {
+      "head": "Level 2: Take the Wheel",
+      "html": "<h1>Level 2: Take the Wheel</h1><p>The <b>THE KART IS A NEW CHARACTER FILE</b> sign stands where Kit starts, in the kart now. The next one says <b>FAST, BUT A KART CANNOT JUMP</b>. Press <kbd>Space</kbd> and nothing lifts: it honks. Drive into the first bird, which stops the kart, and the <b>SPACE HONKS. THE BIRD FLIES OFF</b> sign says what to do.</p><p>Press <kbd>Space</kbd>. A ripple of sound flies ahead of the kart. When it reaches the bird, the bird flaps up and away. The <b>ONE HONK CLEARS ONE BIRD</b> sign comes before the second one. Then drive through the door.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 2 is made</h1><ul><li><b>The kart.</b> Level 2's scene names <b>kart.chr</b> and <b>kart.cbl</b> in the character slots, not Kit's. Open <b>kart.chr</b> in the character editor. It is Kit's head over a go-kart, drawn as two blocks, one on top of the other.</li><li><b>Fast.</b> The <b>Right</b> and <b>Left</b> sequences move 8 pixels a frame. Kit's own move 4. The wheels turn because the frames swap between two pictures.</li><li><b>No jump.</b> A jump is a sequence with a push upward. The kart has none, so <kbd>Space</kbd> is free for the horn.</li><li><b>The honk.</b> It is the <b>Throw</b> sequence with <kbd>Space</kbd> as its key and <b>Once per key press</b> on. Its middle frame gives birth to monster 3, the ripple, the way Kit's star is born in Throw It. It flies the way the kart last drove at 4 pixels a tick, lives 25 ticks, about five blocks, and has <b>Power</b> 200.</li><li><b>The bird.</b> When the ripple touches the bird, the weaker one is destroyed. The bird's <b>When destroyed it becomes</b> is monster 5, the bird in flight. That one flaps between two pictures along a path five blocks across and six up, and its <b>Lives</b> is <b>Until the end of its path</b>, so it is gone at the end.</li><li><b>The exit.</b> The door links to the <b>The End</b> scene in <b>whl.gam</b>, which plays the ending.</li></ul>"
+    },
+    {
+      "head": "What Game-Maker cannot do",
+      "html": "<h1>What Game-Maker cannot do</h1><p>A vehicle is only a character, and that has limits:</p><ul><li>It cannot change the character inside a scene. A scene names one character file. To switch, a link takes you to another scene that names the other file, which is why this game has a level for each.</li><li>It cannot keep Kit's walk and add a horn. A different file starts fresh: its hit points, lives and keys are whatever that file says. Here both are set the same.</li><li>It cannot tell a honk which monster to hit. Anything weaker than power 200 in its way is destroyed, in the order it meets them.</li><li>A born monster flies from the character's own spot and the way he last moved. It cannot be aimed up or down.</li></ul>"
+    },
+    {
+      "head": "Make it yours",
+      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>Set the kart's <b>Right</b> sequence to 4 pixels a frame. It drives like Kit walks.</li><li>Make the honk's life 50 ticks. It reaches ten blocks.</li><li>Add a jump sequence to <b>kart.chr</b> on another key, and a bird can be hopped as well as honked.</li><li>Draw a boat or a rocket in <b>kart.cbl</b>, and make a level that names it.</li><li>Give the honk a <b>Score when destroyed by a weapon</b> on the bird, and it pays for each one.</li></ul><p>The home page's <b>Starters</b> tab has more small games like this one.</p>"
+    }
+  ]
+}

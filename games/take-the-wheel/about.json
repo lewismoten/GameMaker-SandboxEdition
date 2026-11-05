@@ -1,0 +1,34 @@
+{
+  "title": "Take the Wheel",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.0",
+  "blurb": "Two short levels about changing who you are. On foot, Kit walks and jumps over a bird in the road, then steps into a little kart. The next level names a different character file: the kart is fast, cannot jump and has a horn. Signs in the levels say how. Play it, then open it in Game-Maker and make your own.",
+  "exe": "WHEEL.EXE",
+  "dosName": "WHEEL",
+  "sound": "sb",
+  "label": {
+    "background": "#e8f6ff",
+    "band": "#e8742a",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "2 short levels",
+    "hours": 1,
+    "background": "#e8742a",
+    "accent": "#ffd23f",
+    "ink": "#1a1830",
+    "tagline": "Hop in and drive.",
+    "back": "A small explorer in a teal beanie jumps a bird, then climbs into a little blue kart. The next level uses a different character file: faster, no jump, and a horn that clears the road. Play it, then open the game in Game-Maker and make your own kart, boat or rocket.",
+    "features": ["Signs in the levels explain each idea", "A level can name a different character file", "Made to be copied and taken apart"],
+    "shots": [
+      ["one.map", 26, 6],
+      ["two.map", 26, 6]
+    ],
+    "rating": "Everyone"
+  }
+}

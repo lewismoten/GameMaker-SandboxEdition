@@ -1,0 +1,64 @@
+{
+  "version": 1,
+  "game": "take-the-wheel",
+  "rand": {
+    "seed": 1,
+    "per": "scene"
+  },
+  "segments": [
+    {
+      "scene": 2,
+      "keys": "AU0ZzStNLc0rTQ3NAzkCuQBNEc0HTQXNA01BzStN"
+    },
+    {
+      "scene": 3,
+      "keys": "AU0NzStNDM0rTQrNK01QzR45A7keTRLNK008zQM5A7lGTQ=="
+    }
+  ],
+  "chapters": [
+    {
+      "scene": 2,
+      "title": "Level 1: Hop In"
+    },
+    {
+      "scene": 3,
+      "title": "Level 2: Take the Wheel"
+    }
+  ],
+  "timeline": {
+    "fps": 60,
+    "frames": 8462,
+    "chapters": [
+      {
+        "title": "Opening",
+        "frame": 0,
+        "time": 0
+      },
+      {
+        "title": "Story",
+        "frame": 896,
+        "time": 14933.333333333148
+      },
+      {
+        "title": "Level 1: Hop In",
+        "frame": 1644,
+        "time": 27400.000000000564
+      },
+      {
+        "title": "Level 2: Take the Wheel",
+        "frame": 3096,
+        "time": 51599.99999999822
+      },
+      {
+        "title": "Ending",
+        "frame": 5182,
+        "time": 86366.66666666891
+      },
+      {
+        "title": "Credits",
+        "frame": 7389,
+        "time": 123150.00000001295
+      }
+    ]
+  }
+}
