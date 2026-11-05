@@ -35,7 +35,8 @@ async function hears(bot: StarterBot, want: number[], what: string, go: () => Pr
   await go();
   await must(bot, bot.wait(LOOK), `listening to ${what}`);
   const got = h.slice(mark).map((x) => x.slot);
-  if (some ? !want.every((n) => got.includes(n)) : got.join() !== want.join()) throw new Error(`${what}: heard sounds ${got.join(', ') || '(none)'}, expected ${want.join(', ')}`);
+  if (some ? !want.every((n) => got.includes(n)) : got.join() !== want.join())
+    throw new Error(`${what}: heard sounds ${got.join(', ') || '(none)'}, expected ${want.join(', ')}`);
   bot.say(`${what}: sound ${want.join(', ')}`);
 }
 
@@ -62,7 +63,8 @@ export async function theBoard(bot: StarterBot): Promise<void> {
   const got = h.slice(mark);
   const long = got.find((g) => g.slot === SLOT.fanfare);
   const short = got.find((g) => g.slot === SLOT.ping && long && g.tick >= long.tick);
-  if (!long || !short || got.some((g) => ![SLOT.fanfare, SLOT.ping, SLOT.jump].includes(g.slot))) throw new Error(`the jump: heard ${got.map((g) => `${g.slot}@${g.tick}`).join(', ')}`);
+  if (!long || !short || got.some((g) => ![SLOT.fanfare, SLOT.ping, SLOT.jump].includes(g.slot)))
+    throw new Error(`the jump: heard ${got.map((g) => `${g.slot}@${g.tick}`).join(', ')}`);
   const gap = short.tick - long.tick;
   const ticksLong = (lengthOf(SLOT.fanfare) / 145.6) * 18.2;
   if (gap >= ticksLong) throw new Error(`the short sound came ${gap} ticks after the long one, which lasts ${ticksLong.toFixed(1)}: nothing was cut off`);

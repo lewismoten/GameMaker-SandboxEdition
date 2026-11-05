@@ -68,7 +68,11 @@ for (const k of Object.values(PADS)) {
 
 const { sim } = await play();
 const played = new Set(sim.heard.map((h) => h.slot));
-const missing = used.map(([, n]) => n).filter((n) => ![SLOT.chime, SLOT.coin, SLOT.quiet, SLOT.fanfare, SLOT.ping, SLOT.nope, SLOT.blip, SLOT.creak, SLOT.jump, SLOT.hurt].includes(n) || !played.has(n));
+const missing = used
+  .map(([, n]) => n)
+  .filter(
+    (n) => ![SLOT.chime, SLOT.coin, SLOT.quiet, SLOT.fanfare, SLOT.ping, SLOT.nope, SLOT.blip, SLOT.creak, SLOT.jump, SLOT.hurt].includes(n) || !played.has(n),
+  );
 if (missing.length) fail(`the bot never heard sounds ${missing.join(', ')}`);
 console.log(
   `sound-board: ${tunes.size} different tunes and one silent; every pad plays its slot; the short sound cuts off the long one; the bot played both levels, ${sim.deaths} lives lost, ${sim.ci.lives} left, ${sim.trail.length} scenes entered, heard sounds ${[...played].sort((a, b) => a - b).join(' ')}`,

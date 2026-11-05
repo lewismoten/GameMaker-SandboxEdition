@@ -47,7 +47,8 @@ const TUNES: Record<number, Uint16Array> = {
   // a creak: a low slow wobble that sags a little
   [SLOT.creak]: speaker((i) => (i < 30 ? 230 - i * 2 + (i % 4 < 2 ? 14 : 0) : 0)),
   [SLOT.jump]: SPEAKER.rise(300, 900),
-  [SLOT.hurt]: speaker((i) => (i < 20 ? (i % 2 ? 170 : 130) * (1 - i / 50) : 0)),
+  // an "ow": one soft slide down, not a buzz
+  [SLOT.hurt]: speaker((i) => (i < 20 ? 500 * (160 / 500) ** (i / 19) : 0)),
 };
 
 /** The tune in slot `n`, or all zeros. */

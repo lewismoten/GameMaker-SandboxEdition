@@ -74,9 +74,11 @@ export function wavePicture(pal: Pal, slot: number, ramp: PadKind['ramp'] | 'red
   tune.forEach((hz, i) => {
     if (hz <= 0) return;
     any = true;
-    const y = 17 - Math.round((Math.log(hz / 100) / Math.log(21)) * 15);
+    const y = 16 - Math.round((Math.log(hz / 100) / Math.log(21)) * 13);
     const x = 1 + (i >> 1);
-    p.set(x, y, m[m.length - 1]).set(x, y + 1, m[3]);
+    p.set(x, y - 1, m[2])
+      .set(x, y, m[m.length - 1])
+      .set(x, y + 1, m[3]);
   });
   if (!any) for (let x = 3; x < 17; x += 4) p.rect(x, 9, 2, 2, m[2]);
   return p;
@@ -102,7 +104,10 @@ function flat(pal: Pal): Pixels {
   const p = new Pixels(20, 20, skyOf(pal));
   const s = pal.r('stone');
   p.rect(0, 16, 20, 4, s[1]).rect(0, 16, 20, 1, s[3]);
-  for (const x of [1, 7, 13]) p.rect(x, 13, 6, 3, s[3]).rect(x, 13, 6, 1, s[4]).rect(x + 4, 13, 2, 3, s[2]);
+  for (const x of [1, 7, 13])
+    p.rect(x, 13, 6, 3, s[3])
+      .rect(x, 13, 6, 1, s[4])
+      .rect(x + 4, 13, 2, 3, s[2]);
   return outline(p, pal.c('ink', 0), { transparent: skyOf(pal) });
 }
 
@@ -115,7 +120,9 @@ function wrongGate(pal: Pal): Pixels {
       [5 + i, 7 + i],
       [13 - i, 7 + i],
     ])
-      p.set(x, y, red[3]).set(x + 1, y, red[3]).set(x, y - 1, red[4]);
+      p.set(x, y, red[3])
+        .set(x + 1, y, red[3])
+        .set(x, y - 1, red[4]);
   }
   return p;
 }

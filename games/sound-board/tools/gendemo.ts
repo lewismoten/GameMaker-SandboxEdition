@@ -1,6 +1,6 @@
-// Re-records the title screen's demo into src/demo.ts: the bot's own whole run through the three levels, one
+// Re-records the title screen's demo into src/demo.ts: the bot's own whole run through the two levels, one
 // unbroken list of keys (the demo recorder counts game ticks across scene changes, so the second level's
-// keys follow the first's after the ticks between them). It shows each lesson once: the room's song, the pickups' sounds including the spike's, and the quiet room. Rebuild afterwards.
+// keys follow the first's after the ticks between them). It shows each lesson once: every pad, the replay door, the cut-off, and the sounds that say what happened. Rebuild afterwards.
 //   cd web && npx vite-node ../games/sound-board/tools/gendemo.ts && npx vite-node ../games/sound-board/build.ts
 //   cd web && npx vite-node ../games/sound-board/tools/demoCheck.ts      (plays the recording on the real engine)
 import { recordDemo } from '../../kit/demoRecord';

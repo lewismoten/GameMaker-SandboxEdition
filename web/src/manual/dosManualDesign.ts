@@ -166,7 +166,7 @@ export function designPages(shots: GameShot[]): BookletPage[] {
       hit points gained, a monster dies, money gained and spent, a life gained, score up and
       down, and a counter up and down. The Sound Designer also converts <code>.CMF</code> music
       for Game-Maker.</p>
-      <p class="see"><i>On the Sample CD:</i> <code>SOUNDS</code>; <code>OUTLOUD</code> for <code>.VOC</code> voices.</p>
+      <p class="see"><i>On the Sample CD:</i> <code>SOUNDS</code>, <code>SNDBOARD</code>; <code>OUTLOUD</code> for <code>.VOC</code> voices.</p>
       <h3>Integrator</h3>
       <p>Each square on the Integrator\u2019s screen is a scene. The green ones are the title
       screen and the end of the game. Give each scene its palette, map, block sets, monsters,

@@ -26,7 +26,7 @@ const SIGNS = {
   coin: ['COIN NO. 2', 3, 2],
   blip: ['BLIP NO. 7', 3, 2],
   quiet: ['SILENT NO. 3 IS EMPTY', 4, 2],
-  chute: ['JUMP UP NO. 4 THEN NO. 5', 3, 2],
+  chute: ['JUMP UP 4 THEN 5', 3, 2],
   exit: ['EXIT →', 3, 1],
   hello2: ['A SOUND SAYS WHAT HAPPENED', 4, 2],
   coin2: ['A COIN PINGS NO. 5', 3, 2],
@@ -42,9 +42,10 @@ export type SignName = keyof typeof SIGNS;
 function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
-  const signs = Object.fromEntries(
-    Object.entries(SIGNS).map(([name, [text, w, h]]) => [name, addSign(book, pal, `${name}.sign`, text, w, h)]),
-  ) as Record<SignName, Sign>;
+  const signs = Object.fromEntries(Object.entries(SIGNS).map(([name, [text, w, h]]) => [name, addSign(book, pal, `${name}.sign`, text, w, h)])) as Record<
+    SignName,
+    Sign
+  >;
   addLockBlocks(book, pal);
   addBoardBlocks(book, pal);
   return { book, signs };
@@ -118,10 +119,10 @@ function board(book: Book, signs: Record<SignName, Sign>): StarterMap {
   for (const [pad, x0, sign, slot] of BOARD.units) {
     m.sign(x0, onGround(GROUND, signs[sign]), signs[sign]);
     m.set(x0 + 1, GROUND - 1, `pad.${pad}`);
-    m.set(x0 + 0, GROUND - 5, `wave.${slot}`);
+    m.set(x0 + 0, GROUND - 4, `wave.${slot}`);
   }
   m.sign(BOARD.chuteSign, onGround(GROUND, signs.chute), signs.chute);
-  m.set(BOARD.chuteSign, GROUND - 5, `wave.${SLOT.fanfare}`).set(BOARD.chuteSign + 2, GROUND - 5, `wave.${SLOT.ping}`);
+  m.set(BOARD.chuteSign, GROUND - 4, `wave.${SLOT.fanfare}`).set(BOARD.chuteSign + 2, GROUND - 4, `wave.${SLOT.ping}`);
   for (let i = 0; i < jump.width; i++) m.set(jump.x + i, jump.long, `pad.${PADS.long.name}`).set(jump.x + i, jump.short, `pad.${PADS.short.name}`);
   m.sign(43, onGround(GROUND, signs.exit), signs.exit);
   return m;
@@ -129,7 +130,7 @@ function board(book: Book, signs: Record<SignName, Sign>): StarterMap {
 
 /** Where level 2's pieces are (x). */
 export const FEEDBACK = {
-  coins: [14, 15],
+  coins: [15, 16],
   key: 22,
   /** The wall with the gate in it (x), and the gate's row. */
   gate: 28,
@@ -165,10 +166,10 @@ function feedback(book: Book, signs: Record<SignName, Sign>): StarterMap {
   const m = new StarterMap(book, g.rows());
   const at = (x: number, s: Sign, wave?: number) => {
     m.sign(x, onGround(GROUND, s), s);
-    if (wave !== undefined) m.set(x + 1, GROUND - 5, `wave.${wave}`);
+    if (wave !== undefined) m.set(x + 1, GROUND - 4, `wave.${wave}`);
   };
   at(6, signs.hello2);
-  at(10, signs.coin2, SLOT.ping);
+  at(11, signs.coin2, SLOT.ping);
   at(18, signs.key, SLOT.blip);
   at(24, signs.gate, SLOT.creak);
   at(30, signs.jump, SLOT.jump);

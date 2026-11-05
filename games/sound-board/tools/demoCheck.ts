@@ -1,5 +1,5 @@
 // Plays the built title demo (disk/demo.rec) on the real engine and checks it shows each lesson once:
-// level 1, level 2, level 3 and then the ending. The recording's keys play as one unbroken list, as the demo
+// level 1, level 1 again (the replay door), level 2 and then the ending. The recording's keys play as one unbroken list, as the demo
 // recorder counts game ticks across scene changes.
 //   cd web && npx vite-node ../games/sound-board/tools/demoCheck.ts
 import { readFileSync } from 'node:fs';
@@ -23,8 +23,8 @@ const r = await replay(
 const seen = r.scenes.slice(0, 4).join(' ');
 if (r.error) console.log(r.error);
 console.log(`demo: scenes entered ${r.scenes.join(' ')}; ${r.keysLeft} keys unplayed`);
-if (seen !== '2 3 4 1' || r.keysLeft) {
-  console.error(`demoCheck: expected scenes 2 3 4 1 (three levels, the ending) with every key played; got ${seen}`);
+if (seen !== '2 2 3 1' || r.keysLeft) {
+  console.error(`demoCheck: expected scenes 2 2 3 1 (level 1, level 1 again by its replay door, level 2, the ending) with every key played; got ${seen}`);
   process.exit(1);
 }
-console.log('demoCheck ok: heard the song, the spike hurt and the heart help, jumped in the quiet room, reached the ending');
+console.log('demoCheck ok: heard the pads, replayed the board, heard the feedback sounds, reached the ending');
