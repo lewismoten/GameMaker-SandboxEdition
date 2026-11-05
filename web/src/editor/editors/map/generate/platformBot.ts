@@ -8,10 +8,7 @@ import { ADVTYPE, emptyScene, newGame } from '@lewismoten/gamemaker-sandbox-engi
 import { BLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { parseCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { newMap, serializeMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
-import type { GenResult } from '@lewismoten/gamemaker-sandbox-tools/kit/levelGen';
-import { heroPhysics, type HeroPhysics } from '@lewismoten/gamemaker-sandbox-tools/kit/levelGen/jumpModel';
-import { LADDER } from '@lewismoten/gamemaker-sandbox-tools/kit/levelGen/grid';
-import { reachFrom, type Step } from '@lewismoten/gamemaker-sandbox-tools/kit/levelGen/platformReach';
+import { LADDER_CELL, heroPhysics, reachFrom, type GenResult, type HeroPhysics, type Step } from '@lewismoten/gamemaker-sandbox-tools/kit/levelGen';
 import { SceneSim, startCharInfo, type FileSource } from '../../../check/sim';
 
 export interface BotJob {
@@ -148,7 +145,7 @@ export async function botPlays(job: BotJob): Promise<BotRun> {
           }
           await rest();
           const at2 = px();
-          const onLadder = area.cells[st.to.row * area.w + Math.floor((st.to.X + BLEN / 2) / BLEN)] === LADDER;
+          const onLadder = area.cells[st.to.row * area.w + Math.floor((st.to.X + BLEN / 2) / BLEN)] === LADDER_CELL;
           if (Math.abs(at2.X - st.to.X) > 12 || Math.abs(at2.Y - st.to.row * BLEN) > (onLadder ? BLEN / 2 : 2))
             throw new Lost(
               `A ${st.kind} from ${st.from.X} px did not land where the model said (${at2.X} px, row ${Math.round(at2.Y / BLEN)} instead of ${st.to.X} px, row ${st.to.row}).`,

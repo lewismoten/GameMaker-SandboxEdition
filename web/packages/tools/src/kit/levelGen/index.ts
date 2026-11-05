@@ -44,7 +44,8 @@ export { type Item as Furniture } from './furnish';
 export { type SceneLink } from './town';
 export { heroPhysics, weaker, type HeroPhysics } from './jumpModel';
 export { capability, type Capability } from './platformCap';
-export { reachFrom } from './platformReach';
+export { reachFrom, type Step } from './platformReach';
+export { LADDER as LADDER_CELL } from './grid';
 export { type PlatformProof } from './platform';
 
 export { type LockInfo } from './props';
