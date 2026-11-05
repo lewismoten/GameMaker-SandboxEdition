@@ -657,3 +657,15 @@ body:has(.rs-reopen:not([hidden])) .dos-foot {
     display: inline-flex;
   }
 }
+
+/* beside the status line, only while the screen has the keyboard */
+.dos-key-hint {
+  display: none;
+  flex: none;
+  margin-left: 8px;
+  color: var(--dos-muted);
+}
+
+body:has(.crt-text:focus) .dos-key-hint {
+  display: block;
+}

@@ -280,8 +280,21 @@ const lineHint = speedHint(() => {
   lineSpeed.select.focus();
 });
 
+// shown only while the screen has the keyboard, beside the status line (the screen's own name says it too)
+const keyHint = h('span', { class: 'dos-key-hint', 'aria-hidden': 'true' }, 'Shift+Tab leaves the screen');
+const footWithHint = footer(
+  [
+    { icon: '⌨️', word: 'Keys', name: 'On-screen keys', content: keypad(crt) },
+    { icon: '🔗', word: 'Links', name: 'Links to this page', content: links },
+  ],
+  status,
+  lineHint,
+);
+footWithHint.append(keyHint);
+
 clear(
   root,
+
   h(
     'div',
     { class: 'dos-page' },
@@ -299,14 +312,7 @@ clear(
       more,
     ),
     stage,
-    footer(
-      [
-        { icon: '⌨️', word: 'Keys', name: 'On-screen keys', content: keypad(crt) },
-        { icon: '🔗', word: 'Links', name: 'Links to this page', content: links },
-      ],
-      status,
-      lineHint,
-    ),
+    footWithHint,
   ),
 );
 

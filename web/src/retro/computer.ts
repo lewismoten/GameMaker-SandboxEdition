@@ -185,9 +185,9 @@ export class Computer extends ComputerFolders {
   }
 
   /** Types a command at the prompt, as if on the keyboard. */
-  typeCommand(cmd: string): boolean {
+  typeCommand(cmd: string, focus = true): boolean {
     if (!this.powered || this.busy) return false;
-    this.focus();
+    if (focus) this.focus();
     this.keys.type(`${cmd}\n`);
     return true;
   }

@@ -225,6 +225,7 @@ export function deskScene(on: DeskActions) {
           wheelSpot.el,
           h('div', { class: 'screen-bezel' }, crt),
           h('span', { class: 'brand' }, 'PIXELMAX 14" SVGA'),
+          h('span', { class: 'screen-hint', 'aria-hidden': 'true' }, 'Shift+Tab leaves the screen'),
           h('span', { class: 'monitor-led' }),
         ),
         h('div', { class: 'monitor-stand' }),
