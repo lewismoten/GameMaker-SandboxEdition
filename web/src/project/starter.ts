@@ -76,7 +76,7 @@ export const STARTER_GROUPS: { name: string; tag: string; games: string[] }[] = 
   {
     name: 'Bigger Worlds',
     tag: 'More than one screen.',
-    games: ['scroll', 'many-rooms', 'overhead', 'diagonal-wrap', 'blocks-budget', 'near-far', 'town-links'],
+    games: ['scroll', 'many-rooms', 'overhead', 'diagonal-wrap', 'blocks-budget', 'near-far', 'very-far', 'town-links'],
   },
   { name: 'Drawing with Blocks', tag: 'Roads, water and sky, drawn and animated.', games: ['road-tiles', 'shore', 'twinkle'] },
   {

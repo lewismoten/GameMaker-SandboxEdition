@@ -11,6 +11,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Added
 
+- A Starter, Walking Very Far, about drawing someone walking a long way off: Kit up close, then the same road as a figure only 8 pixels tall on a pale far ridge, first with the same steps as up close (too quick) and then with small slow steps, and last with a big fence and flowers drawn in front so he looks farther still. It links to Near and Far and Maps Within Maps.
 - A Starter, Twinkle, Twinkle, about a sky of stars that twinkle by themselves: a loop of blocks makes a star blink, but one block means one clock, so level 1 shows every star blinking at once and then the fix (six loops with different times, laid so no neighbors match), and level 2 is a night meadow under it
 - The Level check notes a game whose menu name is still "UnTitled": players see the first scene's name as the game's name. It can be dismissed.
 - The Level check's counter findings say what the whole game supplies: a gate whose counter this scene can't fill now reads, for example, "the gate needs 20; this scene gives 0; Lost Woods and Tail Cave give 4", with each scene's share split into blocks and monsters. It is an info when other scenes cover it and a warning when the whole game falls short; both can be dismissed.
