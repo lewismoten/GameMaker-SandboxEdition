@@ -4,6 +4,7 @@
 - `walkthrough.ts`, `gendemo.ts`: re-record the walkthrough and the title demo. The demo is the start of level 1: Kit walks to the signs while the birds fly out and back.
 - `demoCheck.ts`: plays the built `demo.rec` headless and checks the birds fly on while the V holds its shape.
 - `preview.ts`: PNGs of the blocks, the hero, the monsters, each level and every picture. `shots.ts`: PNGs of the lessons for the progress shots.
+- `viewCheck.ts`: measures the real camera while the bot plays and counts the ticks with all five birds, and with at least one, fully on screen. `VIEW_SHOTS=<dir>` also saves the screen at tick `VIEW_TICK` (default 60).
 
 ## Starter rule: show the mistake once
 
