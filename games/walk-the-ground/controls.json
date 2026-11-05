@@ -49,6 +49,7 @@
     "11": "Falling over"
   },
   "counters": {
-    "20": "Keys: not used here, but a copy can add them."
+    "20": "Keys: not used here, but a copy can add them.",
+    "22": "Dug blocks: two steps of every dig count up, and that plays the crunch."
   }
 }
