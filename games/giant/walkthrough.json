@@ -27,7 +27,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 10216,
+  "frames": 10233,
   "chapters": [
    {
     "title": "Opening",
@@ -36,28 +36,28 @@
    },
    {
     "title": "Story",
-    "frame": 896,
-    "time": 14933.333333333148
+    "frame": 913,
+    "time": 15216.666666666471
    },
    {
     "title": "Level 1: The Giant",
-    "frame": 2125,
-    "time": 35416.66666666724
+    "frame": 2142,
+    "time": 35700.00000000053
    },
    {
     "title": "Level 2: Ouch, Wait",
-    "frame": 4517,
-    "time": 75283.33333333235
+    "frame": 4534,
+    "time": 75566.66666666577
    },
    {
     "title": "Ending",
-    "frame": 6932,
-    "time": 115533.33333334407
+    "frame": 6949,
+    "time": 115816.66666667748
    },
    {
     "title": "Credits",
-    "frame": 9142,
-    "time": 152366.66666666954
+    "frame": 9159,
+    "time": 152650.0000000027
    }
   ]
  }
