@@ -79,7 +79,7 @@ disk.put('menu.gif', gif(menuPicture(pal, book, hero, TITLE), pal));
 disk.put('scores.gif', gif(scoresPicture(pal, book, 'CHAMPIONS'), pal));
 disk.put('loadgame.gif', gif(slotsPicture(pal, book, 'LOAD GAME'), pal));
 disk.put('savegame.gif', gif(slotsPicture(pal, book, 'SAVE GAME'), pal));
-text('story', 'A MOMENT', STORY);
+text('story', 'RISING NUMBERS', STORY);
 text('howto', 'HOW TO PLAY', HOWTO);
 text('credits', 'CREDITS', CREDITS);
 disk.put('wonpic.gif', gif(endPicture(pal, book, cheer, 'NICE ONE!', 'THE NUMBERS RISE', 'won'), pal));

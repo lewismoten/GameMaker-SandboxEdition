@@ -1,4 +1,4 @@
-// UNDER THE SURFACE's one song, "Pan": eight bars of an easy, rolling tune in C major for the Sound
+// KIT'S MOVES's one song, "Pan": eight bars of an easy, rolling tune in C major for the Sound
 // Blaster (a lead that wanders, a walking bass and a plucked chord on the off-beat, each its own FM
 // channel). It plays on the title, the menu, the levels and the endings. Note strings are the kit's
 // (kit/tune.ts): a note, an octave and a length (w h q e), as in "E5 q".

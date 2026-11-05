@@ -5,7 +5,7 @@
   "series": "starter",
   "year": 1994,
   "price": "Free",
-  "version": "1.0",
+  "version": "1.1",
   "blurb": "Two short levels about power. Every monster has one number, and when two meet, the stronger one wins. A big red gumdrop pops the small ones blocking a tunnel by itself, then Kit throws stars and finds out which foes his star can pop and which one is too strong. Signs in the levels say how. Play it, then open it in Game-Maker and change a power.",
   "exe": "WHOWINS.EXE",
   "dosName": "WHOWINS",

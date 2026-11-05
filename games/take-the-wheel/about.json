@@ -5,7 +5,7 @@
   "series": "starter",
   "year": 1994,
   "price": "Free",
-  "version": "1.0",
+  "version": "1.1",
   "blurb": "Two short levels about changing who you are. On foot, Kit walks and jumps over a bird in the road, then steps into a little kart. The next level names a different character file: the kart is fast, cannot jump and has a horn. Signs in the levels say how. Play it, then open it in Game-Maker and make your own.",
   "exe": "WHEEL.EXE",
   "dosName": "WHEEL",
