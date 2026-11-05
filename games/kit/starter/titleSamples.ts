@@ -14,7 +14,7 @@ const { book, pal } = buildLevels();
 const heroBlocks = buildHeroBlocks(pal);
 const hero = heroPicture(heroBlocks, 'stand.top', 'stand');
 const door = heroPicture(book, 'doorTop', 'doorBottom').map((_x, _y, c) => (c === skyOf(pal) ? 255 : c));
-for (const style of ['meadow', 'sunset', 'stage', 'workbench', 'neon'] as GroupStyle[]) {
+for (const style of ['meadow', 'sunset', 'arena', 'stage', 'workbench', 'neon'] as GroupStyle[]) {
   const prize = style === 'neon' || style === 'sunset' ? 'key' : 'coins';
   writePng(join(out, `${style}.png`), titlePicture(pal, book, hero, door, 'SAMPLE GAME', 'A STARTER GAME', prize, style), pal.pal, 3);
 }

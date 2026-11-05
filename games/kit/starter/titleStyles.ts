@@ -6,8 +6,8 @@ import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { gradient, pool } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
 import type { Pal } from './palette';
 
-/** The group looks: meadow (The Basics), sunset (Game Feel), stage (Telling a Story), workbench (Putting It Together), neon (Showcase Tricks). */
-export type GroupStyle = 'meadow' | 'sunset' | 'stage' | 'workbench' | 'neon';
+/** The group looks: meadow (The Basics), sunset (Game Feel), arena (Foes and Bosses), stage (Telling a Story), workbench (Putting It Together), neon (Showcase Tricks). */
+export type GroupStyle = 'meadow' | 'sunset' | 'arena' | 'stage' | 'workbench' | 'neon';
 
 /** Where the hero and door stand on the title. */
 const GROUND = 160;
@@ -28,7 +28,7 @@ export interface Look {
 /** The sky, ground and frame of a non-meadow look, drawn behind the hero and door. */
 export function backdrop(pal: Pal, style: Exclude<GroupStyle, 'meadow'>): Pixels {
   const p = new Pixels(W, H);
-  ({ sunset, stage, workbench, neon })[style](p, pal);
+  ({ sunset, arena, stage, workbench, neon })[style](p, pal);
   return p;
 }
 
@@ -37,6 +37,7 @@ export function lookOf(pal: Pal, style: Exclude<GroupStyle, 'meadow'>): Look {
   const c = pal.c;
   return {
     sunset: { fill: c('gold', 5), outline: c('purple', 0), shadow: c('purple', 1), ribbon: 'parch', ribbonText: c('purple', 0), floorShadow: c('purple', 0) },
+    arena: { fill: c('gold', 5), outline: c('red', 0), shadow: c('ink', 0), ribbon: 'parch', ribbonText: c('red', 0), floorShadow: c('wood', 0) },
     stage: { fill: c('gold', 4), outline: c('red', 0), shadow: c('ink', 0), ribbon: 'parch', ribbonText: c('red', 0), floorShadow: c('wood', 0) },
     workbench: { fill: c('white', 3), outline: c('blue', 0), shadow: c('ink', 0), ribbon: 'parch', ribbonText: c('blue', 0), floorShadow: c('wood', 0) },
     neon: { fill: c('teal', 4), outline: c('purple', 1), shadow: c('pink', 2), ribbon: 'stone', ribbonText: c('white', 3), floorShadow: c('ink', 0) },
@@ -53,6 +54,10 @@ export function frameOf(p: Pixels, pal: Pal, style: Exclude<GroupStyle, 'meadow'
     border(4, c('orange', 3));
     border(1, c('gold', 5), 4);
     border(1, c('purple', 0), 0);
+  } else if (style === 'arena') {
+    border(4, c('gold', 3));
+    border(1, c('gold', 5), 4);
+    border(1, c('red', 0), 0);
   } else if (style === 'stage') {
     border(4, c('wood', 2));
     border(1, c('gold', 4), 4);
@@ -93,6 +98,43 @@ function sunset(p: Pixels, pal: Pal): void {
   p.rect(0, GROUND, W, H - GROUND, c('purple', 0));
   p.rect(0, GROUND, W, 2, c('orange', 2));
   for (let x = 0; x < W; x += 20) p.rect(x, GROUND + 18, 10, 2, c('purple', 1));
+}
+
+/** A ring with banners: a red wall with gold pennants and a string of bunting, and a sandy floor inside a gold oval. Bright and cheerful. */
+function arena(p: Pixels, pal: Pal): void {
+  const c = pal.c;
+  gradient(p, 0, 0, W, GROUND, pal.r('red'), 1, 3);
+  pool(p, 160, 70, 150, 70, pal.r('red'), 3, 4);
+  // bunting: a string sagging between the corners, hung with little gold, white and teal flags
+  const sag = (x: number) => 10 + Math.round(Math.sin((x / W) * Math.PI) * 14);
+  for (let x = 0; x < W; x++) p.set(x, sag(x), c('ink', 0));
+  const flags = ['gold', 'white', 'teal'] as const;
+  for (let x = 8, i = 0; x < W - 6; x += 14, i++) {
+    const col = flags[i % 3];
+    const y = sag(x) + 1;
+    for (let k = 0; k < 8; k++) p.rect(x - Math.floor((8 - k) / 2), y + k, 8 - k, 1, c(col, col === 'white' ? 3 : 4));
+  }
+  // two tall pennant banners with a swallowtail, left and right
+  for (const bx of [26, W - 48]) {
+    p.rect(bx, 40, 22, 62, c('gold', 4))
+      .rect(bx, 40, 22, 4, c('gold', 5))
+      .rect(bx + 9, 44, 4, 56, c('red', 2));
+    for (let k = 0; k < 11; k++) p.rect(bx + k, 102 + k, 1, 1, c('gold', 4)).rect(bx + 21 - k, 102 + k, 1, 1, c('gold', 4));
+    p.rect(bx + 10, 102, 2, 11, c('gold', 4)).rect(bx + 10, 102, 2, 1, c('gold', 4));
+    p.rect(bx - 1, 38, 24, 2, c('wood', 1))
+      .disc(bx - 1, 39, 2, c('gold', 5))
+      .disc(bx + 22, 39, 2, c('gold', 5));
+  }
+  // the sandy floor, with a gold oval drawn on it
+  p.rect(0, GROUND, W, H - GROUND, c('parch', 3));
+  for (let y = GROUND; y < H; y += 6) p.rect(0, y, W, 1, c('parch', 2));
+  for (let a = 0; a < 720; a++) {
+    const t = (a / 720) * Math.PI * 2;
+    const x = Math.round(160 + Math.cos(t) * 138);
+    const y = Math.round(GROUND + 22 + Math.sin(t) * 16);
+    if (y >= GROUND && y < H - 2) p.set(x, y, c('gold', 3)).set(x, y + 1, c('gold', 3));
+  }
+  p.rect(0, GROUND, W, 2, c('red', 0));
 }
 
 /** A theater: red curtains and a fringed valance, a spotlit back wall and a wooden stage. */
