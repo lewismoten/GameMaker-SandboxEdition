@@ -799,6 +799,12 @@ static bool startGame(int g, bool withCards = true) {
   if (!gm::parseCfg(text.c_str(), world, cfg)) return false;
   assets.attach(world, cfg, readFile, inflateRaw);
   assets.palName[0] = 0;
+  if (withCards) {  // the intro card shows before the level's files load: a card needs a 64 KB block of its own
+    char where[8];
+    levelWhere(where, 'i', 0);
+    tft.fillScreen(C_BLACK);
+    showCards(where);
+  }
   world.seed = micros() ^ (millis() << 7);  // the monsters that wander pick differently each play
   if (!world.begin()) return false;
   world.nsnd = 0;
@@ -811,10 +817,6 @@ static bool startGame(int g, bool withCards = true) {
   applyControls();
   world.hold = withCards;  // a level change waits for the fade and the cards (the serial self-test has none)
   if (withCards) {
-    char where[8];
-    levelWhere(where, 'i', 0);
-    tft.fillScreen(C_BLACK);
-    showCards(where);
     fadeLevelIn();
   } else {
     tft.fillScreen(C_BLACK);
@@ -872,6 +874,7 @@ static void selfTestOne(int g, int ticks, bool cards) {
                 (unsigned)uxTaskGetStackHighWaterMark(nullptr));
   if (ok && cards) {
     // Every card of the game, the way play shows them (no waiting, one drawing per fade), with the level still loaded.
+    assets.release();
     cardsDry = true;
     cardsShown = cardsFailed = 0;
     uint32_t t0c = millis();
@@ -1080,6 +1083,7 @@ void loop() {
       int from = world.level;
       bool lost = r == 'D' && world.lives <= 0;
       fadeLevelOut();
+      assets.release();  // the level's big buffers go while a card shows (the next level loads them again); a card needs a 64 KB block
       if (r == 'W') {
         levelWhere(where, 'x', from);
         showCards(where);
