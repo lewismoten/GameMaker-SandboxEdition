@@ -46,7 +46,7 @@ One of the Starters: small games that each show one idea.
 );
 
 export const WON = wrap(`
-|FIVE FOR FIVE!
+|FIVE HITS!
 
 Two levels, two bugs, ten stars that found their mark.
 
