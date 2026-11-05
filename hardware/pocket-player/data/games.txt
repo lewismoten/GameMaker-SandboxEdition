@@ -1,5 +1,6 @@
 first-steps|First Steps|2
 blocks-budget|150 Blocks|2
+beams|Beams and Fog|3
 beat-the-clock|Beat the Clock|2
 boss-hits|Big Bug|2
 flock|Birds of a Feather|2
@@ -16,6 +17,7 @@ day-night|Day and Night|5
 diagonal-wrap|Diagonal Wrap|2
 walk-the-ground|Dig It|2
 searchlight|Don't Get Seen|2
+drop-down|Drop Down|2
 dialog|Everybody Talks|4
 flash-safe|Flash Safe|3
 flicker|Flicker and Flow|3
@@ -26,6 +28,7 @@ health-and-hearts|Health and Hearts|3
 short-lived|Here Today|2
 home-keys|Home Keys|3
 keys-and-doors|Keys and Doors|3
+duck|Kit Ducks|2
 kit-moves|Kit's Moves|2
 kits-shop|Kit's Shop|1
 lights-out|Lights Out|3
