@@ -47,7 +47,7 @@ const BX1 = 270;
 
 /**
  * One card of a talk: everyone along the right edge, and a speech bubble for each turn with the
- * speaker's name lettered at its top and a tail toward them. The words are the .TXT's, written by
+ * speaker's name lettered at its top, in a color the speaker's portrait carries too. The words are the .TXT's, written by
  * PLAYGAME over this picture (see talk.ts), so each bubble is exactly as tall as its rows.
  */
 export function talkCardPicture(pal: Pal, book: Book, hero: Pixels, people: Speaker[], card: Turn[], seed: number): Pixels {
@@ -57,29 +57,27 @@ export function talkCardPicture(pal: Pal, book: Book, hero: Pixels, people: Spea
   people.forEach((who, i) => {
     const pic = who === 'kit' ? hero : talkerPicture(pal, who as TalkerName);
     scaleBlit(p, pic, spot[i].x, spot[i].y, spot[i].s, who === 'kit');
+    p.rect(spot[i].x, spot[i].y + 40 * spot[i].s + 1, 20 * spot[i].s, 2, pal.c(NAME_INK[who][0], 0));
   });
-  const ink = c('ink', 0);
   for (const t of layout(card)) {
     const y0 = TY + t.row * ROW - 4;
     const y1 = TY + (t.row + 1 + t.words.length) * ROW + 2;
     const w = BX1 - BX0 + 1;
-    // the tail first, from the bubble's right edge to the speaker's mouth
-    const sp = spot[people.indexOf(t.who)];
-    const tipX = sp.x - 3;
-    const mouthY = sp.y + 15 * sp.s;
-    const ty = y0 + 6;
-    for (let x = BX1; x <= tipX; x++) {
-      const k = tipX === BX1 ? 1 : (x - BX1) / (tipX - BX1);
-      const mid = Math.round(ty + (mouthY - ty) * k);
-      const half = Math.max(0, Math.round(4 * (1 - k)));
-      p.rect(x, mid - half, 1, 2 * half + 1, c('parch', 4))
-        .set(x, mid - half, ink)
-        .set(x, mid + half, ink);
-    }
-    p.rect(BX0, y0, w, y1 - y0 + 1, c('parch', 4)).frame(BX0, y0, w, y1 - y0 + 1, ink);
-    p.rect(BX1, ty - 3, 1, 7, c('parch', 4));
+    // a short tail on the right edge; who is talking is told by the name and its color,
+    // which the speaker's portrait carries too (a bar at their feet), so no tail crosses the others
     const [ramp, label] = NAME_INK[t.who];
-    text(p, TX, TY + t.row * ROW - 2, label, c(ramp, 0));
+    const tone = c(ramp, 0);
+    const ty = y0 + 5;
+    for (let i = 0; i < 6; i++) {
+      const top = ty + Math.floor(i / 2);
+      const bot = ty + 6 - Math.floor(i / 2);
+      p.rect(BX1 + i, top, 1, bot - top + 1, c('parch', 4))
+        .set(BX1 + i, top, tone)
+        .set(BX1 + i, bot, tone);
+    }
+    p.rect(BX0, y0, w, y1 - y0 + 1, c('parch', 4)).frame(BX0, y0, w, y1 - y0 + 1, tone);
+    p.rect(BX1, ty + 1, 1, 5, c('parch', 4));
+    text(p, TX, TY + t.row * ROW - 2, label, tone);
   }
   return p;
 }

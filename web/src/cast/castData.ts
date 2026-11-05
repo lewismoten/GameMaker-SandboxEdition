@@ -55,6 +55,7 @@ export const CAST_GAMES = {
   'boss-hits': ['Big Bug', 'starter'],
   'short-lived': ['Here Today', 'starter'],
   'three-tokens': ['Three Tokens', 'starter'],
+  dialog: ['Everybody Talks', 'starter'],
   carl: ['A Fly Named Carl', 'bizarre'],
   goat: ['Third Goat from the Left', 'bizarre'],
   loaf: ['Loaf #13 (Left in the Basket)', 'bizarre'],
@@ -155,6 +156,7 @@ const LISTED: CastMember[] = [
       { game: 'boss-hits', as: 'throws five stars at a cheerful bug that blocks a narrow way' },
       { game: 'short-lived', as: 'waits for a bubble to pop and a sleepy gumdrop to wake up' },
       { game: 'three-tokens', as: 'collects purple tokens until a gate will take its price, and then walks out through the gate' },
+      { game: 'dialog', as: 'talks with Pip, and then joins a group of friends who all talk at once' },
     ],
   },
   {
