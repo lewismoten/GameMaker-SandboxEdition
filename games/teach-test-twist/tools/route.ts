@@ -86,7 +86,8 @@ export async function test(bot: StarterBot): Promise<void> {
   await must(bot, bot.walk(AT.two.gap - 1, 'the spiked gap'), 'to the gap');
   await dropIn(bot, AT.two.gap, AT.two.width);
   const lost = hp - bot.sim.ci.hitpts;
-  if (lost < SPIKE_COST || lost % SPIKE_COST !== 0 || lost > SPIKE_COST * AT.two.width) throw new Error(`the spiked gap should cost whole spikes; hit points ${hp} -> ${bot.sim.ci.hitpts}`);
+  if (lost < SPIKE_COST || lost % SPIKE_COST !== 0 || lost > SPIKE_COST * AT.two.width)
+    throw new Error(`the spiked gap should cost whole spikes; hit points ${hp} -> ${bot.sim.ci.hitpts}`);
   bot.say(`hurt by the spikes: hit points ${hp} -> ${bot.sim.ci.hitpts}`);
   await must(bot, bot.walk(AT.two.wide - 5, 'the wider sign'), 'to the wider sign');
   await must(bot, bot.wait(READ), 'reading the sign');
@@ -111,7 +112,7 @@ export async function twist(bot: StarterBot): Promise<void> {
   await dropIn(bot, AT.three.gap, AT.three.width);
   await must(bot, bot.walk(AT.three.wide - 5, 'the run-up'), 'on along the coins');
   await overGap(bot, AT.three.wide, AT.three.wideWidth);
-  await must(bot, bot.walk(AT.three.door - 4, "the locked sign"), 'to the locked sign');
+  await must(bot, bot.walk(AT.three.door - 4, 'the locked sign'), 'to the locked sign');
   await must(bot, bot.wait(READ), 'reading the sign');
   await must(bot, bot.walk(AT.three.door + 1, 'through the door'), 'through the door');
   await must(bot, bot.walk(AT.three.door + 7, 'the coins'), 'the coins');

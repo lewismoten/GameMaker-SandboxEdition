@@ -79,7 +79,6 @@ function lockedWall(g: Grid, x: number): void {
     .put(x, GROUND - 1, 'L');
 }
 
-
 /** A gap in the ground `w` blocks wide from column `x`: two blocks deep, with a grass floor you can see. */
 function gap(g: Grid, x: number, w: number): void {
   g.fill(x, GROUND, w, 2, ' ').row(PIT_FLOOR, x, x + w - 1, 'G');
