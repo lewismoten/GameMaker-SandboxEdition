@@ -54,6 +54,7 @@ front (the magazine, the desk, the level check's explorer, the engine…), walki
 - [`phoneScreen.ts`](phoneScreen.ts): whether the screen is a phone's (touch, its shorter side 500
   pixels or less) and how it is held, for the achievements and the documents' default view.
 - [`keepTogether.ts`](keepTogether.ts): THE CHEZ kept on one line (above).
+- [`routeFocus.ts`](routeFocus.ts): after a link or button opens another page, focus moves to its h1 (never on first load, Back, code-made hash changes, or while a dialog or text box has focus).
   [`seededRandom.ts`](seededRandom.ts): the seeded random numbers (Mulberry32, xorshift32) and
   string hash (FNV-1a) that pictures, songs, maps and walkthroughs use to come out the same every
   time.

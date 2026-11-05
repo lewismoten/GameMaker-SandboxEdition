@@ -16,6 +16,7 @@ import { settingsItems, settingsMenu } from './settingsMenu';
 import { viewSwitch } from './viewSwitch';
 import { tourButton } from './tour/tourButton';
 import { parseHash } from './urlState';
+import { focusNewView, trackPersonInput } from './routeFocus';
 import { noteLibraryContext } from './libraryStart';
 import { parseLinkRequest, type LinkRequest } from './linkIn/protocol';
 import { beginPage } from './pageLife';
@@ -356,7 +357,11 @@ function storageGone(): void {
   );
 }
 
+trackPersonInput();
+let lastHash = location.hash;
 window.addEventListener('hashchange', () => {
+  const from = lastHash;
+  const to = (lastHash = location.hash);
   // a link from one interface to the other (the magazine's, say): #/desk from today's web, or a
   // page of today's web from the desk (the desk itself never changes the hash with a hashchange)
   const [kind] = parseHash(location.hash).path;
@@ -365,7 +370,7 @@ window.addEventListener('hashchange', () => {
     disposeDesk?.();
     disposeDesk = undefined;
     startModern();
-  } else void route();
+  } else void route().then(() => focusNewView(content, from, to));
 });
 
 // Links into today's web (a project #/p/…, a game on the home page #/game/…, the guide
