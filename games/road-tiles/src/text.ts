@@ -40,7 +40,7 @@ One of the Starters: small games that each show one idea.
 );
 
 export const WON = wrap(`
-|AT THE FINISH!
+|THE FINISH!
 
 Three roads, one block set.
 

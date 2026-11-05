@@ -95,7 +95,7 @@ disk.put('savegame.gif', gif(slotsPicture(pal, scenery, 'SAVE GAME'), pal));
 text('story', 'ROAD TILES', STORY);
 text('howto', 'HOW TO PLAY', HOWTO);
 text('credits', 'CREDITS', CREDITS);
-disk.put('wonpic.gif', gif(endPicture(pal, scenery, cheer, 'AT THE FINISH!', 'ROAD TILES', 'won'), pal));
+disk.put('wonpic.gif', gif(endPicture(pal, scenery, cheer, 'THE FINISH!', 'ROAD TILES', 'won'), pal));
 disk.put('won.gif', gif(paper(pal, scenery, 'ALL DONE'), pal));
 disk.put('won.txt', WON);
 disk.put('won.lst', serializeSlideList([{ name: 'wonpic.gif', pause: 6 }, { name: 'won.gif', pause: 0 }, { name: 'won.txt' }]));
