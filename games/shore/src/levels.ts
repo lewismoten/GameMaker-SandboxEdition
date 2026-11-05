@@ -46,7 +46,6 @@ const WORDS = {
   shore2: 'ROUND CORNERS: MORE EDGE BLOCKS, DRAWN ROUND',
   shore3: 'EACH EDGE STARTS AT ITS OWN FRAME, SO WAVES ROLL',
 } as const;
-type SignName = keyof typeof WORDS;
 
 /** The four water blocks (the ring), solid so Kit keeps out; they are all the same loop, one frame apart. */
 function addWater(book: Book, pal: Pal, timed: Timed[]): string[] {
@@ -91,9 +90,10 @@ function openWater(): Level {
   book.add('plank', plank);
   addEntrance(book, pal, plank);
   addExit(book, pal, plank);
-  const signs = Object.fromEntries(
-    (['sea1', 'sea2', 'sea3'] as const).map((k) => [k, addSignOn(book, pal, plank, k, WORDS[k], 4, 4)]),
-  ) as Record<'sea1' | 'sea2' | 'sea3', Sign>;
+  const signs = Object.fromEntries((['sea1', 'sea2', 'sea3'] as const).map((k) => [k, addSignOn(book, pal, plank, k, WORDS[k], 4, 4)])) as Record<
+    'sea1' | 'sea2' | 'sea3',
+    Sign
+  >;
   const c = new Canvas(book);
   // the middle platform ends the first stretch: left of it the sea is one block, right of it four starts
   const mid = 28;
@@ -111,7 +111,14 @@ function openWater(): Level {
   c.sign(signs.sea2, 30, 2);
   c.sign(signs.sea3, 56, 2);
   const exits = doors(c, 62, 4, 7);
-  return { file: 'one', title: 'Open Water', hint: 'One block, four frames, one sea.', book, timed, map: { start: [OX + 3, OY + 7], exits, done: () => c.map } };
+  return {
+    file: 'one',
+    title: 'Open Water',
+    hint: 'One block, four frames, one sea.',
+    book,
+    timed,
+    map: { start: [OX + 3, OY + 7], exits, done: () => c.map },
+  };
 }
 
 /** Is cell (x, y) of level 2 land? An island of sand with a cove cut into its north side and a point sticking out of it. */
@@ -132,15 +139,25 @@ function shoreline(): Level {
   book.add('pebbles', pebbleTile(pal));
   addEntrance(book, pal, sand);
   addExit(book, pal, sand);
-  const signs = Object.fromEntries(
-    (['shore1', 'shore2', 'shore3'] as const).map((k) => [k, addSignOn(book, pal, sand, k, WORDS[k], 4, 4)]),
-  ) as Record<'shore1' | 'shore2' | 'shore3', Sign>;
+  const signs = Object.fromEntries((['shore1', 'shore2', 'shore3'] as const).map((k) => [k, addSignOn(book, pal, sand, k, WORDS[k], 4, 4)])) as Record<
+    'shore1' | 'shore2' | 'shore3',
+    Sign
+  >;
   const c = new Canvas(book);
   c.fillAll((x, y) => sea[(((x + y) % FRAMES) + FRAMES) % FRAMES]);
   // which of the 8 cells round (x, y) are water
   const key = (x: number, y: number): number => {
     const w = (dx: number, dy: number) => !land(x + dx, y + dy);
-    return normalize((w(0, -1) ? N : 0) | (w(1, 0) ? E : 0) | (w(0, 1) ? S : 0) | (w(-1, 0) ? W : 0) | (w(1, -1) ? NE : 0) | (w(1, 1) ? SE : 0) | (w(-1, 1) ? SW : 0) | (w(-1, -1) ? NW : 0));
+    return normalize(
+      (w(0, -1) ? N : 0) |
+        (w(1, 0) ? E : 0) |
+        (w(0, 1) ? S : 0) |
+        (w(-1, 0) ? W : 0) |
+        (w(1, -1) ? NE : 0) |
+        (w(1, 1) ? SE : 0) |
+        (w(-1, 1) ? SW : 0) |
+        (w(-1, -1) ? NW : 0),
+    );
   };
   const made = new Set<number>();
   const pebbleAt = (x: number, y: number) => (x * 7 + y * 13) % 11 === 0;
@@ -165,7 +182,14 @@ function shoreline(): Level {
   c.sign(signs.shore2, 25, 5);
   c.sign(signs.shore3, 34, 5);
   const exits = doors(c, 43, 2, 3).concat(doors(c, 44, 2, 3));
-  return { file: 'two', title: 'The Shoreline', hint: 'Waves run in and out on their own.', book, timed, map: { start: [OX + 4, OY + 10], exits, done: () => c.map } };
+  return {
+    file: 'two',
+    title: 'The Shoreline',
+    hint: 'Waves run in and out on their own.',
+    book,
+    timed,
+    map: { start: [OX + 4, OY + 10], exits, done: () => c.map },
+  };
 }
 
 /** Both levels. */

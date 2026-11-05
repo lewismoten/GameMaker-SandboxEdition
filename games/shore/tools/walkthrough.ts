@@ -1,13 +1,13 @@
-// Writes games/diagonal-wrap/walkthrough.json: the bot plays the whole game on the built disk
+// Writes games/shore/walkthrough.json: the bot plays the whole game on the built disk
 // (one key segment a level), and games/kit/walkthrough.ts
 // checks the run on the real engine (title, two levels, the ending).
-//   cd web && npx vite-node ../games/diagonal-wrap/tools/walkthrough.ts
+//   cd web && npx vite-node ../games/shore/tools/walkthrough.ts
 import { writeSimWalkthrough } from '../../kit/walkthrough';
 import { SEED, play } from './play';
 
 const { sim } = await play(SEED);
 const titles: Record<number, string> = {
-  2: 'Level 1: Gravity On',
-  3: 'Level 2: Gravity Off',
+  2: 'Level 1: Open Water',
+  3: 'Level 2: The Shoreline',
 };
-await writeSimWalkthrough('diagonal-wrap', sim, SEED, titles);
+await writeSimWalkthrough('shore', sim, SEED, titles);

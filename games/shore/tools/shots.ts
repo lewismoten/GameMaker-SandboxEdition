@@ -49,6 +49,14 @@ function strip(frames: Pixels[], zoom: number, name: string): void {
   frames.forEach((f, i) => p.blit(f, 4 + i * 24, 4));
   writePng(join(out, name), p, pal.pal, zoom);
 }
-strip(Array.from({ length: FRAMES }, (_, f) => waterFrame(pal, f)), 6, 'frames-water.png');
-strip(REACH.map((r) => shoreFrame(pal, S, r)), 6, 'frames-shore-edge.png');
+strip(
+  Array.from({ length: FRAMES }, (_, f) => waterFrame(pal, f)),
+  6,
+  'frames-water.png',
+);
+strip(
+  REACH.map((r) => shoreFrame(pal, S, r)),
+  6,
+  'frames-shore-edge.png',
+);
 console.log(`shots in ${out}`);

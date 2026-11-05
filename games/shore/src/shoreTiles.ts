@@ -103,7 +103,9 @@ export function pebbleTile(pal: Pal): Pixels {
     [13, 11],
     [8, 16],
   ] as const) {
-    p.rect(x, y, 3, 2, c('stone', 2)).rect(x, y, 3, 1, c('stone', 3)).set(x + 1, y + 2, c('parch', 0));
+    p.rect(x, y, 3, 2, c('stone', 2))
+      .rect(x, y, 3, 1, c('stone', 3))
+      .set(x + 1, y + 2, c('parch', 0));
   }
   return p;
 }

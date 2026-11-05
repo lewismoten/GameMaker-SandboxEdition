@@ -1,9 +1,9 @@
 // Re-records the title screen's demo into src/demo.ts: the bot's own whole run through the two levels, one
 // unbroken list of keys (the demo recorder counts game ticks across scene changes, so the second level's
-// keys follow the first's after the ticks between them). It shows each lesson once: the hedge that stops him,
-// the road that runs off the bottom of the map and comes in at the top, then the same road tilted, round three times. Rebuild afterwards.
-//   cd web && npx vite-node ../games/diagonal-wrap/tools/gendemo.ts && npx vite-node ../games/diagonal-wrap/build.ts
-//   cd web && npx vite-node ../games/diagonal-wrap/tools/demoCheck.ts      (plays the recording on the real engine)
+// keys follow the first's after the ticks between them). It shows each lesson once: the water that stops him,
+// the sea that turns together and the sea of four starts, then the waves on the beach. Rebuild afterwards.
+//   cd web && npx vite-node ../games/shore/tools/gendemo.ts && npx vite-node ../games/shore/build.ts
+//   cd web && npx vite-node ../games/shore/tools/demoCheck.ts      (plays the recording on the real engine)
 import { recordDemo } from '../../kit/demoRecord';
 import { play } from './play';
 

@@ -116,10 +116,18 @@ export async function shoreline(bot: StarterBot): Promise<void> {
   }
   if (seen.size !== 4) throw new Error(`an edge block should go through its four blocks in 40 ticks, not ${seen.size}`);
   bot.say(`${edge} went through ${seen.size} frames`);
-  await must(bot, hold(bot, 'down', () => here(bot).y >= 10 * 20, 400, 'back to the path'), 'back to the path');
+  await must(
+    bot,
+    hold(bot, 'down', () => here(bot).y >= 10 * 20, 400, 'back to the path'),
+    'back to the path',
+  );
   await must(bot, walkTo(bot, 19, 'under the cove'), 'under the cove');
   await must(bot, bot.wait(LOOK), 'looking at the cove');
   await must(bot, walkTo(bot, 43, 'to the point'), 'to the point');
   await must(bot, bot.wait(LOOK), 'reading');
-  await leave(bot, hold(bot, 'up', () => false, 400, 'up the point'), 'the doors');
+  await leave(
+    bot,
+    hold(bot, 'up', () => false, 400, 'up the point'),
+    'the doors',
+  );
 }
