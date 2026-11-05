@@ -1,0 +1,83 @@
+{
+  "title": "Dig It",
+  "howDoI": [
+    {
+      "id": "soil",
+      "q": "How do I make a block the hero can dig through?",
+      "scene": 2,
+      "x": 22,
+      "y": 8,
+      "level": 1
+    },
+    {
+      "id": "gold",
+      "q": "How do I pay points for digging something up?",
+      "scene": 2,
+      "x": 21,
+      "y": 8,
+      "level": 1
+    },
+    {
+      "id": "rock",
+      "q": "How do I make a block that will not dig?",
+      "scene": 2,
+      "x": 17,
+      "y": 9,
+      "level": 1
+    },
+    {
+      "id": "sink",
+      "q": "How do I make ground that gives way under the hero?",
+      "scene": 3,
+      "x": 12,
+      "y": 7,
+      "level": 2
+    },
+    {
+      "id": "hole",
+      "q": "How do I show the hole a dig leaves behind?",
+      "scene": 3,
+      "x": 16,
+      "y": 10,
+      "level": 2
+    },
+    {
+      "id": "ladder",
+      "q": "How do I climb out of a dug tunnel?",
+      "scene": 3,
+      "x": 30,
+      "y": 9,
+      "level": 2
+    }
+  ],
+  "pages": [
+    {
+      "head": "Welcome",
+      "html": "<h1>Welcome</h1><p><b>Dig It</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has two short levels and takes a few minutes to finish.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each thing in the levels is made.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk, and dig. <kbd>Space</kbd> jumps. <kbd>Up</kbd> and <kbd>Down</kbd> climb a ladder. <kbd>F2</kbd> shows your lives, hit points and score. Walk into the door at the end of a level to go on.</p><p>Walk into the soil on purpose and watch it turn to a tunnel. Spikes are the only thing in this game that hurts.</p>"
+    },
+    {
+      "head": "Level 1: The Tunnel",
+      "html": "<h1>Level 1: The Tunnel</h1><p><b>SOIL TURNS TO A TUNNEL WHEN YOU TOUCH IT. WALK IN</b> is the first sign, <b>ROCK DOES NOT DIG. JUMP, AND DIG OVER IT</b> the second and <b>GOLD FLECKS PAY 10 WHEN YOU DIG THEM UP</b> the third. A rock sits in the foot of the hill, and Kit stops against it. Jump, and the soil over the rock gives way. Tunnel on through the hill, dig up all four gold flecks and walk to the door on the right.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 1 is made</h1><ul><li><b>Digging is a touch setting.</b> Open <b>dg.bbl</b> in the block editor and look at <b>soil</b>. It is solid, and its <b>Touch becomes</b> is set to <b>tunnel</b>. Whenever Kit touches it, the map cell is swapped for the tunnel block. The engine swaps the block first and checks what is solid afterward, so Kit walks straight on as if the soil had never been there.</li><li><b>The tunnel block is what is left.</b> <b>tunnel</b> is not solid and pulls down, like air, but it is drawn as a dark wall so the hole shows. A hole stays a hole.</li><li><b>Rock has no touch setting.</b> <b>rock</b> is solid and turns into nothing, so it never digs. The soil above it does, which is why Kit can go over.</li><li><b>Gold is soil that pays.</b> <b>nugget</b> is the same as soil with a score of 10, so the same touch pays once and then leaves a tunnel. The four nuggets are placed in the hill in <b>one.map</b> on the rows Kit digs.</li><li><b>The hill and the signs.</b> The hill is five rows of soil, stepped in at the top, on ordinary grass. The signs are ordinary blocks with words in their pictures. A scene link joins the door at the right to the next level in <b>dg.gam</b>.</li></ul>"
+    },
+    {
+      "head": "Level 2: Under the Spikes",
+      "html": "<h1>Level 2: Under the Spikes</h1><p><b>SOIL UNDER YOUR FEET GIVES WAY. STEP ON IT TO SINK</b> stands before a patch of soil in the grass. Step onto it, and Kit sinks into the ground. <b>SPIKES HURT. DIG UNDER THEM TO THE LADDER</b> is the second sign. Walk right through the soil, under the lane of spikes on the surface, and climb the ladder at the end. Dig up all five gold flecks and walk to the door.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 2 is made</h1><ul><li><b>Standing is touching.</b> Gravity pushes Kit into the block under his feet on every tick, and the engine counts that as a touch. So a <b>soil</b> floor turns to tunnel under him and he drops to the next one, one block at a time. Open <b>two.map</b> and look at the two soil blocks in the grass at the left.</li><li><b>A floor that does not dig.</b> The tunnel runs on a row of <b>dirt</b>, the packed dark brown block with no touch setting, so Kit stops sinking there. Rock or any other solid block would do the same.</li><li><b>The spikes are above, not in the way.</b> The tunnel is two rows tall, which is Kit's height, so the roof of soil and the spikes over it stay as they were. Only the blocks Kit overlaps are touched.</li><li><b>A ladder in the dark.</b> <b>mineLadder</b> is a ladder block drawn on the tunnel wall, with Gravity set to nothing. Ladders work by having no pull, so Kit climbs with <kbd>Up</kbd>. A plain <b>ladder</b> in the grass above it is drawn on sky.</li><li><b>The exit.</b> A scene link joins the door at the right to the <b>The End</b> scene in <b>dg.gam</b>.</li></ul>"
+    },
+    {
+      "head": "What it cannot do",
+      "html": "<h1>What it cannot do</h1><p>These are the engine's limits, so you can plan around them.</p><ul><li><b>It cannot dig only when you choose to.</b> There is no dig key. A touch is a touch, so soil gives way under Kit's feet as well as in front of him. Keep soil out of the places he must stand, and use dirt, grass or rock for those.</li><li><b>It cannot tell which side was touched.</b> The engine only knows that Kit overlapped the block, so there is no digging down but not sideways.</li><li><b>It cannot dig a block that is off the screen.</b> Only blocks on the screen change when touched (the original redrew them as it went). A ceiling at the very top edge of the view stays solid until the view scrolls, so tunnels that go up are hard. This game goes sideways and down, and climbs out by ladder.</li><li><b>It cannot fill a hole.</b> A dug block stays open until some other block's touch or timer puts something back. There is no refilling by itself.</li><li><b>It cannot make dust, a sound or a shovel swing for free.</b> The block changes, and that is all, unless you draw frames or give the block a sound.</li></ul>"
+    },
+    {
+      "head": "Make it yours",
+      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>Change the <b>rock</b>'s picture to look like soil, and see how it feels to hit one.</li><li>Give the <b>nugget</b> a score of 50.</li><li>Make a new block that turns into <b>soil</b> when touched, and see a dig that fills in again.</li><li>Put a <b>spikes</b> block at the bottom of the shaft and see what the trapdoor does.</li><li>Draw a different picture for the <b>tunnel</b>.</li></ul><p>The home page's <b>Starters</b> tab has more small games like this one.</p>"
+    }
+  ]
+}
