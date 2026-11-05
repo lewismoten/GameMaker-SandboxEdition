@@ -44,7 +44,7 @@ async function watch(bot: StarterBot, done: () => boolean, max: number, what: st
 }
 
 /** A person reading a sign for a while (ticks). */
-const READ = 150;
+const READ = 140;
 
 /** What each of the two actors is on stage as, in order, for the checks. */
 const PLAY = ['pipPeek', 'pipIn', 'pipSays', 'pipListens', 'pipOut', 'bluPeek', 'bluIn', 'bluListens', 'bluSays', 'bluOut', 'pipBubble', 'bluBubble'];

@@ -1,6 +1,6 @@
-// Pictures of the lessons (never on the disk), for the progress shots: the lamp walking, Kit seen by it,
-// Kit hiding in a trench with the light overhead, and level 2's two lights.
-//   cd web && npx vite-node ../games/searchlight/tools/shots.ts <outDir>
+// Pictures of the lessons (never on the disk), for the progress shots: the stage waiting with eyes peeking
+// out of the curtains, the two actors saying HI, the signs, and level 2's cameo waving.
+//   cd web && npx vite-node ../games/scripted/tools/shots.ts <outDir>
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { writePng } from '@lewismoten/gamemaker-sandbox-tools/kit/png';
@@ -8,7 +8,7 @@ import { renderRegion } from '@lewismoten/gamemaker-sandbox-tools/kit/levelPictu
 import { buildHeroBlocks, heroPicture } from '../../kit/starter/hero';
 import { ORIGIN } from '../../kit/starter/map';
 import { finishMonsterPictures, monsterPictures, monsterSet } from '../src/monsters';
-import { GROUND, buildLevels } from '../src/levels';
+import { CAMEO_SPOT, GROUND, STAGE_ONE, STAGE_TWO, buildLevels } from '../src/levels';
 
 const out = process.argv[2];
 if (!out) throw new Error('usage: shots.ts <outDir>');
@@ -31,8 +31,6 @@ const kit = (pose: [string, string], col: number, feet = GROUND - 1): Sprite[] =
 };
 /** A monster picture in block (col, row). */
 const thing = (name: string, col: number, row: number): Sprite => ({ pixels: Uint8Array.from(mbl[mb.n(name)].pixels), x: ORIGIN + col, y: ORIGIN + row });
-/** A light (lamp, then four pieces of cone) with its lamp at column `col`. */
-const light = (col: number): Sprite[] => [thing('lamp0', col, 5), ...[0, 1, 2, 3].map((i) => thing(`cone${i}_0`, col, 6 + i))];
 /** The level's map with its monsters taken out (the picture adds the ones to show). */
 const empty = (level: number) => {
   const m = levels[level].map.done();
@@ -42,11 +40,22 @@ const empty = (level: number) => {
 const region = (map: ReturnType<typeof empty>, col: number, w: number, extra: Sprite[]) =>
   renderRegion(map, bbl, mbl, set, ORIGIN + col, ORIGIN + 2, w, 12, extra);
 const save = (name: string, pic: ReturnType<typeof region>) => writePng(join(out, name), pic, pal.pal, 3);
+const row = GROUND - 1;
 
-// level 1: the light and Kit before; Kit seen; Kit hiding in the first trench with the light overhead
-save('1-before.png', region(empty(0), 12, 20, [...kit(['stand.top', 'stand'], 16), ...light(21)]));
-save('2-seen.png', region(empty(0), 12, 20, [...kit(['hurt.top', 'hurt'], 20), ...light(21)]));
-save('3-hiding.png', region(empty(0), 12, 20, [...kit(['stand.top', 'stand'], 21, GROUND + 1), ...light(21)]));
-// level 2: both lights
-save('4-two-lights.png', region(empty(1), 18, 30, [...kit(['stand.top', 'stand'], 31), ...light(24), ...light(36)]));
+// level 1: the stage waiting (eyes in the curtains); then the actors in, saying HI; then the empty stage after the play
+const s1 = STAGE_ONE;
+save('1-waiting.png', region(empty(0), 8, 24, [...kit(['stand.top', 'stand'], 11), thing('peek0', s1.left, row), thing('peek1', s1.right, row)]));
+save(
+  '2-hello.png',
+  region(empty(0), 8, 24, [
+    ...kit(['stand.top', 'stand'], 14),
+    thing('pipsays', s1.left + 4, row),
+    thing('pipbubble', s1.left + 4, row - 1),
+    thing('blu0', s1.right - 4, row),
+  ]),
+);
+save('3-late.png', region(empty(0), 8, 24, [...kit(['stand.top', 'stand'], 17)]));
+// level 2: the cameo waving in the middle of the stage
+save('4-cameo.png', region(empty(1), 16, 24, [...kit(['stand.top', 'stand'], 21), thing('camsays', CAMEO_SPOT, row), thing('cambubble', CAMEO_SPOT, row - 1)]));
+void STAGE_TWO;
 console.log(`shots in ${out}`);

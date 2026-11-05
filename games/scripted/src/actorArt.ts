@@ -76,8 +76,8 @@ export function drawBubble(pal: Pal, tail: number, edge: number): Pixels {
   const p = new Pixels(20, 20, T);
   p.rect(2, 0, 16, 12, edge).rect(1, 1, 18, 10, edge);
   p.rect(3, 1, 14, 10, c('white', 3)).rect(2, 2, 16, 8, c('white', 3));
-  for (let i = 0; i < 4; i++) p.rect(tail - 1 + i, 12 + i, 4 - i * 2 > 0 ? 4 - i * 2 : 1, 1, edge);
-  p.rect(tail, 12, 2, 1, c('white', 3)).rect(tail, 13, 2, 1, c('white', 3));
+  // the tail: a small stub under the bubble, pointing at the speaker
+  p.rect(tail - 1, 12, 4, 1, edge).rect(tail, 12, 2, 1, c('white', 3)).rect(tail, 13, 2, 1, edge);
   text(p, 2, 2, 'HI', c('ink', 0));
   return p;
 }

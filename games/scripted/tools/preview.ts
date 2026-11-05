@@ -1,6 +1,6 @@
 // Design previews (never on the disk): the block sheet, the hero's poses, the monsters, and
 // each level's whole map and every picture on the built disk, as PNGs in the folder given (default: the system temp dir).
-//   cd web && npx vite-node ../games/searchlight/tools/preview.ts [outDir]
+//   cd web && npx vite-node ../games/scripted/tools/preview.ts [outDir]
 import { mkdirSync, readFileSync, readdirSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';

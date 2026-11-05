@@ -1,13 +1,13 @@
-// Writes games/searchlight/walkthrough.json: the bot plays the whole game on the built disk
+// Writes games/scripted/walkthrough.json: the bot plays the whole game on the built disk
 // (one key segment a level), and games/kit/walkthrough.ts checks the run on the real engine
 // (title, both levels, the ending).
-//   cd web && npx vite-node ../games/searchlight/tools/walkthrough.ts
+//   cd web && npx vite-node ../games/scripted/tools/walkthrough.ts
 import { writeSimWalkthrough } from '../../kit/walkthrough';
 import { SEED, play } from './play';
 
 const { sim } = await play(SEED);
 const titles: Record<number, string> = {
-  2: 'Level 1: Wait and Go',
-  3: 'Level 2: Two Lights',
+  2: 'Level 1: Curtain Up',
+  3: 'Level 2: Say Hello',
 };
-await writeSimWalkthrough('searchlight', sim, SEED, titles);
+await writeSimWalkthrough('scripted', sim, SEED, titles);

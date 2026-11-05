@@ -1,83 +1,83 @@
 {
-  "title": "Don't Get Seen",
+  "title": "The Show",
   "howDoI": [
     {
-      "id": "light",
-      "q": "How do I make a light that sweeps back and forth?",
+      "id": "actor",
+      "q": "How do I make an actor that walks in, says hello and walks off?",
       "scene": 2,
-      "x": 28,
-      "y": 15,
+      "x": 25,
+      "y": 19,
       "level": 1
     },
     {
-      "id": "column",
-      "q": "How do I make a monster that is taller than one block?",
+      "id": "chain",
+      "q": "How do I make one act turn into the next?",
       "scene": 2,
-      "x": 28,
-      "y": 16,
+      "x": 29,
+      "y": 19,
       "level": 1
     },
     {
-      "id": "hurts",
-      "q": "How do I make something that takes hit points when you touch it, but does not block you?",
+      "id": "bubble",
+      "q": "How do I make a speech bubble that shows for a while and goes?",
       "scene": 2,
-      "x": 28,
-      "y": 17,
+      "x": 29,
+      "y": 18,
       "level": 1
     },
     {
-      "id": "trench",
-      "q": "How do I make a place a monster never goes?",
+      "id": "wait",
+      "q": "How do I make a monster that waits, then starts?",
       "scene": 2,
-      "x": 31,
-      "y": 20,
+      "x": 36,
+      "y": 19,
       "level": 1
     },
     {
-      "id": "speeds",
-      "q": "How do I make two lights that walk at different speeds?",
+      "id": "cameo",
+      "q": "How do I make a friend who says hello once and is gone?",
       "scene": 3,
-      "x": 30,
-      "y": 15,
+      "x": 51,
+      "y": 18,
       "level": 2
     },
     {
-      "id": "rail",
-      "q": "How do I draw the rail a monster hangs from?",
+      "id": "encore",
+      "q": "How do I make a door that plays the scene again?",
       "scene": 2,
-      "x": 28,
-      "y": 14,
+      "x": 11,
+      "y": 19,
       "level": 1
     }
   ],
   "pages": [
     {
       "head": "Welcome",
-      "html": "<h1>Welcome</h1><p><b>Don&rsquo;t Get Seen</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has two short levels about a light that cannot look, and takes a few minutes to finish.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each idea is made.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. <kbd>Space</kbd> jumps. <kbd>F2</kbd> shows your hit points, lives and score. Walk into the door at the end of a level to go on.</p><h2>The one idea</h2><p>A monster does not see. A light that sweeps the way is a monster on a <b>path</b>: it walks from one end to the other and back, and anything under it is touched. Kit stays out of its way by standing where the path never goes. In this game that is a trench dug in the ground, under the beam.</p>"
+      "html": "<h1>Welcome</h1><p><b>The Show</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has two short levels about plays made of monsters, and takes a few minutes to finish.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each idea is made.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. <kbd>Space</kbd> jumps. <kbd>F2</kbd> shows your hit points, lives and score. Walk into the door at the end of a level to go on.</p><h2>The one idea</h2><p>A scene in a play is a <b>chain of monsters</b>. Each act is one monster. When its path or its lifetime runs out it <b>becomes</b> the next monster, right where it stands, and that one starts its own path. The last act has nothing to become, so it is gone. The whole thing starts when the level does, and it does not wait for Kit.</p>"
     },
     {
-      "head": "Level 1: Wait and Go",
-      "html": "<h1>Level 1: Wait and Go</h1><p>Three signs stand before the light. <b>THE LIGHT JUST WALKS A PATH</b> says what it is: a lamp on a rail, walking back and forth over ten blocks. <b>BEING SEEN COSTS HIT POINTS</b> says what happens if Kit is under it: he loses hit points while any of it touches him, about half of his hundred if he stays. <b>WAIT IN A TRENCH TILL IT PASSES</b> says what to do about it.</p><p>Two trenches are dug under the rail. Drop into the first when the lamp is far away, wait while it walks over, climb out with <kbd>Space</kbd>, and do the same with the second. Five coins lie past the light, on the way to the door.</p>"
-    },
-    {
-      "head": "How this level is made",
-      "html": "<h1>How level 1 is made</h1><ul><li><b>A column of five.</b> Open <b>seen.mon</b> in the monsters editor. Monsters 3 to 7 are one light: the lamp (3) and four pieces of cone (4 to 7). A monster is one block, so a tall light is several, one above the other. All five have the <b>same path</b> (ten blocks right and back) and the <b>same speed</b>, so they stay in a line.</li><li><b>Where they sit.</b> Open <b>one.map</b> in the map editor. The lamp is on the row under the rail and the four cone pieces are the four rows under it. The cone fills the way down to where Kit stands, so he cannot step over it.</li><li><b>Seeing is a hit point cost.</b> Open <b>seen.mbl</b> in the blocks editor: the lamp and cone pictures take 1 hit point from Kit for each moment he touches them. They are not <b>Solid</b>, so he walks into the light instead of stopping at it. Each piece takes 1, and Kit touches two at once, so it adds up quickly.</li><li><b>The rail.</b> The <b>rail</b> block is a plain stone bar in <b>seen.bbl</b>, drawn along the top of the path so the lamp has something to hang from. It does nothing: the path is in the monster, not the rail.</li><li><b>The trench.</b> The <b>trench</b> block is air (it has <b>Gravity</b> down, like sky) painted dark like dug dirt, two blocks deep and two wide, under the rail. The light is only drawn on the rows above the ground, so nothing of it reaches the bottom of the trench.</li><li><b>The warning is the path.</b> The lamp&rsquo;s walk is slow (1 pixel a tick) and its path is as long as the rail you can see, so you can tell where it is going before it gets there.</li></ul>"
-    },
-    {
-      "head": "Level 2: Two Lights",
-      "html": "<h1>Level 2: Two Lights</h1><p>The <b>TWO LIGHTS, TWO SPEEDS</b> sign comes first. The first lamp walks slowly, like level 1&rsquo;s; the second, farther on, walks twice as fast. Each has two trenches of its own, and a patch of grass between them is safe: no light walks there. The <b>GRASS HERE IS SAFE TO REST ON</b> sign stands on it. Five coins lie on the grass and past the second light, before the door.</p>"
+      "head": "Level 1: Curtain Up",
+      "html": "<h1>Level 1: Curtain Up</h1><p>Two signs stand before the stage. <b>A SCENE IS MONSTERS ON PATHS</b> says what you are about to see, and <b>IT STARTS WHEN THE LEVEL DOES</b> says when. Two friends wait behind the curtains with only their eyes showing. After about four seconds Pip walks in from the left and Blu from the right, Pip says HI, Blu says HI back, and both walk off behind the curtains.</p><p>If you stop to read, the play is over before you get there. That is the lesson: <b>MISSED IT? ENCORE DOOR</b>. The door at the start loads the level again, and the play begins again. Five coins lie past the stage, on the way to the exit.</p>"
     },
     {
       "head": "How this level is made",
-      "html": "<h1>How level 2 is made</h1><ul><li><b>Two lights, two sets of monsters.</b> Monsters 8 to 12 are the first light and 13 to 17 the second: a lamp and four pieces of cone each. They have the same pictures, but each light has its own path and speed, so they have their own numbers. That is the only way two lights can walk at different speeds.</li><li><b>Speed.</b> The first light&rsquo;s <b>Movement</b> corners have a speed of 1 and the second&rsquo;s a speed of 2. It is the speed of each corner of the path in the monsters editor.</li><li><b>Where it is safe.</b> A path has two ends, so there is ground nobody walks over: the grass between the lights. Open <b>two.map</b> and find the gap: the first rail ends, and the second one starts four blocks later.</li><li><b>The trenches.</b> Four trenches: two under each rail. Under the first rail the first trench is three blocks in from the lamp&rsquo;s end, so there is time to drop in.</li></ul>"
+      "html": "<h1>How level 1 is made</h1><ul><li><b>Eight acts.</b> Open <b>show.mon</b> in the monsters editor. Pip is monsters 3 to 7: peeking (3), walking in (4), saying HI (5), listening (6) and walking out (7). Blu is 8 to 12, with the same acts but listening before talking. Each one is a monster with its own picture, path and lifetime.</li><li><b>One becomes the next.</b> Each act has a <b>New monster</b>. Walking in has an <b>End</b> of -1 (dies after its path), so when its four blocks are walked it turns into the next act. Peeking, saying and listening have a lifetime in ticks instead (a tick is 1/18.2 of a second): when it is up, the monster turns into the next. Walking out has no new monster, so it is gone.</li><li><b>Waiting is an act too.</b> The peeking monster (3) is the curtain with eyes in it. It does nothing for 70 ticks, then becomes the walker. That is how the play does not start at once.</li><li><b>The speech bubbles are separate monsters.</b> A monster is one block, so a bubble above an actor is another monster. Open <b>one.map</b>: the bubble waits above the spot where Pip will stop, as a clear picture (17), for exactly as long as the acts before it take, then becomes the bubble (18) for one line and is gone. Blu&rsquo;s (21, then 19) waits one line longer.</li><li><b>Where they sit.</b> In <b>one.map</b> the two peeking monsters are on the curtain blocks, one at each side, on the row Kit walks on. Nothing here is solid, so Kit can walk through the actors.</li><li><b>The encore door.</b> In the scene&rsquo;s links (the Scenes editor), the second link goes from the door at the start to the <i>same</i> scene, at the entrance. Loading a scene starts every monster in it again.</li></ul>"
+    },
+    {
+      "head": "Level 2: Say Hello",
+      "html": "<h1>Level 2: Say Hello</h1><p>A cameo is a short visit by someone who is not in the play. Here a friend in a party hat waits in a doorway to the right of the stage. After about three seconds the friend walks to the middle of the stage, says HI, and walks off behind the curtain. Then there is nobody. <b>A CAMEO SAYS HELLO ONCE</b>, the first sign says, and <b>GONE? IT WILL NOT WAIT</b> says the same thing from the other side.</p><p>Stand in front of the stage and watch it, then take the five coins to the exit. The encore door is at the start here too, in case you walked past.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 2 is made</h1><ul><li><b>Four acts.</b> In <b>show.mon</b> the cameo is monsters 13 to 16: waiting in the doorway (13), walking in (14), saying HI (15) and walking out (16). The walk in is fourteen blocks at a speed of 2, the walk out three blocks, so it ends on the left curtain.</li><li><b>The same chain.</b> Waiting and saying use a lifetime; the two walks have an <b>End</b> of -1 (after path); the last act has no new monster. Nothing is new here except that there is one actor, so the whole scene is one chain.</li><li><b>Its bubble</b> is monsters 22 (waiting) and 20 (showing), placed in <b>two.map</b> above the spot the cameo stops at. The wait is the doorway wait plus the walk in, 60 plus 140 ticks.</li><li><b>Once.</b> Nothing loops. A monster that loops (a path that ends where it starts, and an <b>End</b> that never kills it) would say hello again and again. This one is <b>End -1</b> all the way, so when it has walked out it is gone until the level loads again.</li></ul>"
     },
     {
       "head": "What it cannot do",
-      "html": "<h1>What it cannot do</h1><p>These are the engine&rsquo;s limits, so you can plan around them.</p><ul><li><b>A monster cannot see.</b> Nothing in the engine checks what is between a monster and Kit, so there is no line of sight. A light is a monster that walks a path (or heads toward Kit), and it hurts wherever it is, whether Kit is behind something or not. Hiding is only ever a place its path does not go.</li><li><b>It cannot notice you hiding or leaving.</b> It does not stop, turn or chase because Kit stepped into a trench. A light that reacts to where Kit is would have to be a different kind of monster, such as one that follows him, and it would not know about the trench either.</li><li><b>A monster is one block.</b> A beam is a column of monsters. All of them need the same path and the same speed to stay in line, and each piece has its own picture.</li><li><b>The cone cannot be soft-edged.</b> Monster pictures have no see-through: each pixel is a color or clear. The light is a pale color, not a blend.</li><li><b>Being seen is not once only.</b> A touch takes hit points for every moment it lasts, and Kit appears to be unable to move away while it lasts. A hurt that happens once needs a block that becomes harmless after it, which a monster cannot do.</li></ul>"
+      "html": "<h1>What it cannot do</h1><p>These are the engine&rsquo;s limits, so you can plan around them.</p><ul><li><b>A scene cannot wait for the hero.</b> A monster put on the map is born when the scene loads, and its clock runs from then. Nothing can start it when Kit comes near. The only way to start a play when he arrives is to make him wait a while first, or to use a link to load the scene again.</li><li><b>No scripts.</b> There is no &ldquo;then&rdquo; except a monster becoming another. An actor cannot be told to go to a place, only given a path of up to ten corners from where it is born. An actor that must be at two places at the same moment has to be two monsters timed to match.</li><li><b>Timing is arithmetic.</b> Two actors only stay in step because their paths and lifetimes add up to the same number of ticks. Change one and the others drift. Here a walk of one block at speed 1 takes about 20 ticks.</li><li><b>Speech is a picture.</b> A bubble is a block with words drawn in it, and a monster is one block, so it holds a short word or two. It cannot say something different each time or use Kit&rsquo;s name.</li><li><b>No pausing, no skipping.</b> The player cannot press a key to skip the play or to pause it, and an actor cannot be asked to wait for a key. A scene that reloads (the encore door) starts everything from the beginning.</li></ul>"
     },
     {
       "head": "Make it yours",
-      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>In <b>seen.mon</b>, give monsters 3 to 7 a longer path (all five the same) and see what happens to the trenches.</li><li>Give only the lamp (monster 3) a different speed from its cone and watch the column come apart.</li><li>Untick the pictures&rsquo; hit points in <b>seen.mbl</b> and the light is harmless.</li><li>Dig a third trench in <b>one.map</b> with the <b>trench</b> block, and check you can still climb out of it.</li><li>Move a trench to where the light never reaches and see that it is not needed.</li></ul><p>The home page&rsquo;s <b>Starters</b> tab has more small games like this one.</p>"
+      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>In <b>show.mon</b>, give monster 3 (Pip peeking) a longer lifetime and watch Pip start later than Blu&rsquo;s speech bubble does.</li><li>Change Pip&rsquo;s <b>New monster</b> after walking in (monster 4) to monster 7, and Pip skips the talking.</li><li>Give Blu a new speech by drawing a different picture for monster 19 in <b>show.mbl</b>.</li><li>Make the cameo (14) walk in from further away: change its first corner and also the wait of its bubble (22) so they still meet.</li><li>Put the encore door somewhere else in the scene&rsquo;s links.</li></ul><p>The home page&rsquo;s <b>Starters</b> tab has more small games like this one.</p>"
     }
   ]
 }
