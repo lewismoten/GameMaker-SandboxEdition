@@ -4,6 +4,8 @@
 // status strip. This file is the board: files, the panel, drawing 320x200 at 1.5x, the screens; sound is in speaker.h.
 #include <Arduino.h>
 #include <LittleFS.h>
+#include <SD.h>
+#include <SPI.h>
 #include <esp_heap_caps.h>
 #include <rom/miniz.h>
 #include "board.h"
@@ -39,10 +41,15 @@ constexpr uint16_t C_WHITE = 0xFFFF, C_BLACK = 0, C_YELLOW = 0xFF2A, C_GRAY = 0x
 
 // ---- files -------------------------------------------------------------------------------------
 
-static uint8_t* readFile(const char* name, size_t* n) {
-  char path[40];
-  snprintf(path, sizeof path, "/%s", name);
-  File f = LittleFS.open(path, "r");
+// Where the game being played keeps its files: the Starters are in LittleFS (the root), the games on a microSD
+// card are in /pocket (their files, <file>.cfg and <file>.pak; see "The microSD card" in README.md).
+static fs::FS* curFs = &LittleFS;
+static char curBase[10] = "";
+static char curPak[24] = "/cards.pak";
+static uint8_t* readFileIn(fs::FS& fsys, const char* base, const char* name, size_t* n) {
+  char path[48];
+  snprintf(path, sizeof path, "%s/%s", base, name);
+  File f = fsys.open(path, "r");
   if (!f) return nullptr;
   size_t len = f.size();
   uint8_t* p = (uint8_t*)malloc(len + 1);
@@ -51,6 +58,7 @@ static uint8_t* readFile(const char* name, size_t* n) {
   *n = len;
   return p;
 }
+static uint8_t* readFile(const char* name, size_t* n) { return readFileIn(*curFs, curBase, name, n); }
 // The decompressor's state is about 11 KB: taken from the heap once, since the loop task's whole
 // stack is 8 KB (tinfl_decompress_mem_to_mem puts it on the stack, which overflowed the first time a
 // game loaded) and static memory is full.
@@ -64,15 +72,16 @@ static bool inflateRaw(const uint8_t* src, size_t n, uint8_t* dst, size_t cap) {
   return st == TINFL_STATUS_DONE && out == cap;
 }
 
-struct GameEntry { char id[28]; char title[40]; int levels; };
+struct GameEntry { char id[28]; char title[40]; int levels; bool sd; char file[12]; };  // file: the 8 character name of an SD game's .cfg and .pak
 constexpr int MAXGAMES = 96;
 static GameEntry games[MAXGAMES];
 static int ngames = 0;
+static bool haveSD = false;
 
-static void loadGameList() {
-  ngames = 0;
+// Adds the games of a list file (lines id|title|levels, and for the card also |<file>) to the picker.
+static void addGames(fs::FS& fsys, const char* base, bool sd) {
   size_t n = 0;
-  uint8_t* t = readFile("games.txt", &n);
+  uint8_t* t = readFileIn(fsys, base, "games.txt", &n);
   if (!t) return;
   t[n] = 0;
   char* p = (char*)t;
@@ -82,17 +91,40 @@ static void loadGameList() {
     GameEntry& g = games[ngames];
     char* a = strchr(p, '|');
     char* b = a ? strchr(a + 1, '|') : nullptr;
-    if (a && b) {
+    char* c = b ? strchr(b + 1, '|') : nullptr;
+    if (c) *c = 0;
+    if (a && b && (!sd || c)) {
       *a = 0; *b = 0;
       strncpy(g.id, p, sizeof g.id - 1); g.id[sizeof g.id - 1] = 0;
       strncpy(g.title, a + 1, sizeof g.title - 1); g.title[sizeof g.title - 1] = 0;
       g.levels = atoi(b + 1);
+      g.sd = sd;
+      if (sd) { strncpy(g.file, c + 1, sizeof g.file - 1); g.file[sizeof g.file - 1] = 0; }
+      else { strncpy(g.file, g.id, sizeof g.file - 1); g.file[sizeof g.file - 1] = 0; }
       ngames++;
     }
     if (!e) break;
     p = e + 1;
   }
   free(t);
+}
+// The Starters from LittleFS, then (when a card is in) the games on it. With no card the list is the Starters alone.
+static void loadGameList() {
+  ngames = 0;
+  addGames(LittleFS, "", false);
+  if (haveSD) addGames(SD, "/pocket", true);
+}
+// Points the file readers at game g.
+static void selectGame(int g) {
+  if (games[g].sd) {
+    curFs = &SD;
+    strcpy(curBase, "/pocket");
+    snprintf(curPak, sizeof curPak, "/pocket/%s.pak", games[g].file);
+  } else {
+    curFs = &LittleFS;
+    curBase[0] = 0;
+    strcpy(curPak, "/cards.pak");
+  }
 }
 
 // ---- settings ----------------------------------------------------------------------------------
@@ -542,6 +574,11 @@ static void drawPicker() {
     tft.setTextSize(2);
     tft.setCursor(16, y + 13);
     tft.print(l);
+    if (games[i].sd) {  // a game on the microSD card
+      tft.setTextColor(C_YELLOW, C_DARK);
+      tft.setCursor(440, y + 13);
+      tft.print("SD");
+    }
   }
   button(6, 276, 126, 318, "< Prev");
   button(134, 276, 254, 318, "Next >");
@@ -674,7 +711,7 @@ static void waitTap(int seconds) {
 }
 // Bytes [off, off + len) of data/cards.pak, where every card picture and text page is.
 static uint8_t* readPak(size_t off, size_t len) {
-  File f = LittleFS.open("/cards.pak", "r");
+  File f = curFs->open(curPak, "r");
   if (!f || !f.seek(off)) return nullptr;
   uint8_t* p = (uint8_t*)malloc(len + 1);
   if (p && f.read(p, len) != len) { free(p); p = nullptr; }
@@ -720,8 +757,8 @@ static void playFli(const gm::Card& c) {
 // pages are written over the picture before them. A card that can't be read is left out (the engine cleared the screen).
 static void showCards(const char* where) {
   char path[48];
-  snprintf(path, sizeof path, "/%s.cfg", games[curGame].id);
-  File f = LittleFS.open(path, "r");
+  snprintf(path, sizeof path, "%s/%s.cfg", curBase, games[curGame].file);
+  File f = curFs->open(path, "r");
   if (!f) return;
   String text = f.readString();
   f.close();
@@ -744,7 +781,7 @@ static void showCards(const char* where) {
       fadePalette(black, pic, pic + 768);
       waitTap(c.pause);
     } else if (c.kind == 't' && pic) {
-      if (!fontData) { size_t fn = 0; fontData = readFile("font.bin", &fn); if (fontData && fn < 95 * 8) { free(fontData); fontData = nullptr; } }
+      if (!fontData) { size_t fn = 0; fontData = readFileIn(LittleFS, "", "font.bin", &fn); if (fontData && fn < 95 * 8) { free(fontData); fontData = nullptr; } }
       size_t tn = 0;
       uint8_t* t = gm::readCard(assets, readPak, c.file, &tn);
       if (!t || !fontData) { free(t); cardsFailed++; continue; }
@@ -791,8 +828,9 @@ static void levelWhere(char* out, char kind, int level) { snprintf(out, 8, "%c%d
 static bool startGame(int g, bool withCards = true) {
   curGame = g;
   char path[48];
-  snprintf(path, sizeof path, "/%s.cfg", games[g].id);
-  File f = LittleFS.open(path, "r");
+  selectGame(g);
+  snprintf(path, sizeof path, "%s/%s.cfg", curBase, games[g].file);
+  File f = curFs->open(path, "r");
   if (!f) return false;
   String text = f.readString();
   assets.release();
@@ -913,8 +951,42 @@ static void serialCommand(const char* cmd) {
   enterPicker();
 }
 
+// "W <name> <bytes>" on Serial (list screen only): writes the next <bytes> bytes to /pocket/<name> on the card, 256 at a time, the
+// board answering "GO", then "." after each piece, then "OK" or "ERR ..." (web/scripts/pocketSdWrite.py sends a card's files this
+// way when there is no card reader at hand). Never used in play.
+static void serialWrite(const char* cmd) {
+  char name[24];
+  unsigned long len = 0;
+  if (!haveSD) { Serial.println("ERR no card"); return; }
+  if (sscanf(cmd, "W %23s %lu", name, &len) != 2 || strchr(name, '/')) { Serial.println("ERR args"); return; }
+  SD.mkdir("/pocket");
+  char path[40];
+  snprintf(path, sizeof path, "/pocket/%s", name);
+  SD.remove(path);
+  File f = SD.open(path, FILE_WRITE);
+  if (!f) { Serial.println("ERR open"); return; }
+  Serial.println("GO");
+  uint8_t buf[256];
+  unsigned long got = 0;
+  uint32_t last = millis();
+  while (got < len) {
+    size_t want = len - got < sizeof buf ? len - got : sizeof buf, k = 0;
+    while (k < want && millis() - last < 5000) {
+      int c = Serial.read();
+      if (c < 0) { delay(1); continue; }
+      buf[k++] = (uint8_t)c;
+      last = millis();
+    }
+    if (k < want || f.write(buf, k) != k) { f.close(); Serial.println("ERR write"); return; }
+    got += k;
+    Serial.print('.');
+  }
+  f.close();
+  Serial.println("OK");
+}
+
 static void pollSerial() {
-  static char buf[40];
+  static char buf[48];
   static int n = 0;
   while (Serial.available()) {
     char c = (char)Serial.read();
@@ -922,6 +994,7 @@ static void pollSerial() {
       buf[n] = 0;
       n = 0;
       if (buf[0] == 'T') serialCommand(buf);
+      else if (buf[0] == 'W') serialWrite(buf);
     } else if (n < (int)sizeof buf - 1) buf[n++] = c;
   }
 }
@@ -945,6 +1018,12 @@ void setup() {
     message("LittleFS mount failed");
     for (;;) delay(1000);
   }
+  {  // the microSD slot (TF_CS 5, TF_SPI_SCLK 18, TF_SPI_MISO 19, TF_SPI_MOSI 23 in board.h); no card is no error
+    static SPIClass sdSpi(VSPI);
+    sdSpi.begin(PIN_SD_SCLK, PIN_SD_MISO, PIN_SD_MOSI, PIN_SD_CS);
+    haveSD = SD.begin(PIN_SD_CS, sdSpi, 20000000);
+    Serial.printf("microSD: %s\n", haveSD ? "card mounted" : "no card");
+  }
   loadSettings();
   spk::setVolume(settings.sound);
   loadGameList();
@@ -953,7 +1032,7 @@ void setup() {
     for (;;) delay(1000);
   }
   delay(900);
-  Serial.printf("ready: %d games, heap %u, largest %u\n", ngames, (unsigned)ESP.getFreeHeap(), (unsigned)heap_caps_get_largest_free_block(MALLOC_CAP_8BIT));
+  Serial.printf("ready: %d games (microSD %s), heap %u, largest %u\n", ngames, haveSD ? "in" : "out", (unsigned)ESP.getFreeHeap(), (unsigned)heap_caps_get_largest_free_block(MALLOC_CAP_8BIT));
   enterPicker();
 }
 

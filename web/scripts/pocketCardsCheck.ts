@@ -2,7 +2,7 @@
 // packed game, the pictures and text pages of every scene slot (intro, exit, won, lost) are drawn on the engine's
 // Screen the way ShowGraphic and Display_File do, and the board code's pixels, palette and wait times must match,
 // page by page. FLI animations (left out of the packing) are skipped on both sides. One line per game; exit 1 on a difference.
-//   cd web && npx vite-node scripts/pocketCardsCheck.ts [id ...]
+//   cd web && npx vite-node scripts/pocketCardsCheck.ts [id ...] [--data <dir with <id>.cfg, cards.pak and the files>]
 import { execFileSync } from 'node:child_process';
 import { mkdtempSync, readFileSync, readdirSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -11,11 +11,12 @@ import { Screen } from '@lewismoten/gamemaker-sandbox-engine/gfx/screen';
 import { applyFliFrame, newFliCanvas, parseFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
 import { decodeGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
 import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
-import { parseSlideList, textLines } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
+import { parseBackdrop, parseSlideList, textLines } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
 
 const here = new URL('../../hardware/pocket-player/', import.meta.url).pathname;
+const dataDir = process.argv.includes('--data') ? process.argv[process.argv.indexOf('--data') + 1] : here + 'data';
 const games = new URL('../../games/', import.meta.url).pathname;
-let ids = process.argv.slice(2);
+let ids = process.argv.slice(2).filter((a, i, all) => a !== '--data' && all[i - 1] !== '--data');
 if (!ids.length)
   ids = readFileSync(here + 'data/games.txt', 'utf8')
     .trim()
@@ -48,6 +49,13 @@ function expected(disk: string, dir: string[], where: string, name: string): str
       screen.drawImage(im.pixels, im.width, im.height, 0, 0);
       cols = im.palette;
       out.push(`C ${where} g 0 ${fnv(screen.pixels)} ${fnv(cols)} ${pause ?? dflt}`);
+    } else if (e === 'bkd') {
+      const b = parseBackdrop(file(fname));
+      if (!find(b.gif)) return;
+      const im = decodeGif(file(b.gif));
+      screen.drawImage(im.pixels, im.width, im.height, b.x, b.y);
+      cols = im.palette;
+      out.push(`C ${where} g 0 ${fnv(screen.pixels)} ${fnv(cols)} ${pause ?? 20}`);
     } else if (e === 'fli') {
       // FLI::View on an empty canvas: the board starts from black, and these animations open with a full frame.
       const anim = parseFli(file(fname));
@@ -103,7 +111,7 @@ for (const id of ids) {
   });
   if (game.scenes[1]?.files[0]) want.push(...expected(disk, dir, 'w', game.scenes[1].files[0]));
   if (game.scenes[1]?.files[2]) want.push(...expected(disk, dir, 'l', game.scenes[1].files[2]));
-  const got = execFileSync(exe, [here + 'data', id], { encoding: 'utf8' })
+  const got = execFileSync(exe, [dataDir, id], { encoding: 'utf8' })
     .trim()
     .split('\n')
     .filter(Boolean);

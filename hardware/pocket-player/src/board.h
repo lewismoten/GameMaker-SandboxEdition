@@ -4,6 +4,7 @@
 //   display ST7796 (SPI): SCLK 14, MOSI 13, MISO 12, CS 15, DC 2, RST tied to EN, backlight 27
 //   capacitive touch GT911 (I2C): SDA 33, SCL 32, INT 21, RST 25, address 0x5D or 0x14
 //   resistive touch XPT2046 (shares the display SPI bus): CS 33, IRQ 36
+//   microSD (separate SPI bus): CS 5, SCLK 18, MISO 19, MOSI 23
 // LovyanGFX (c) lovyan03, FreeBSD/BSD-style license (see NOTICE.md).
 #pragma once
 #define LGFX_USE_V1
@@ -12,6 +13,9 @@
 constexpr int PIN_SCLK = 14, PIN_MOSI = 13, PIN_MISO = 12, PIN_CS = 15, PIN_DC = 2, PIN_BL = 27;
 constexpr int PIN_SDA = 33, PIN_SCL = 32, PIN_TINT = 21, PIN_TRST = 25;
 constexpr int PIN_XCS = 33, PIN_XIRQ = 36;
+// microSD (TF) slot on its own SPI bus: rzeldent's esp32-3248S035C.json (https://github.com/rzeldent/platformio-espressif32-sunton)
+// sets TF_CS=5, TF_SPI_SCLK=18, TF_SPI_MISO=19, TF_SPI_MOSI=23.
+constexpr int PIN_SD_CS = 5, PIN_SD_SCLK = 18, PIN_SD_MISO = 19, PIN_SD_MOSI = 23;
 
 class LGFX : public lgfx::LGFX_Device {
   lgfx::Panel_ST7796 panel_;

@@ -7,6 +7,10 @@
 // turns into), a monster block file after the last picture they show; every file is deflated, palettes and the hero files are copied.
 // Run it after rebuilding a game:
 //   cd web && npx vite-node scripts/pocketData.ts [--list] [--series starter|any|<name>] [--only id,id] [--force id,id]
+// With --out <dir> it writes a microSD card instead (see "The microSD card" in the Pocket Player README): <dir>/pocket/ holds
+// every public game that is not a Starter and packs (all series), their files, and per game <file>.cfg and <file>.pak, where <file>
+// is 8 characters of the game id's hash (so no long file names); <dir>/pocket/games.txt lists them as id|title|levels|file.
+//   cd web && npx vite-node scripts/pocketData.ts --out /Volumes/POCKET
 // --list shows each Starter and why it is left out; --force packs a game anyway (for the host check).
 import { createHash } from 'node:crypto';
 import { deflateRawSync } from 'node:zlib';
@@ -17,7 +21,7 @@ import { parseBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks
 import { parseCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { isFli, parseFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
 import { decodeGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
-import { parseSlideList, textLines } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
+import { parseBackdrop, parseSlideList, textLines } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
 import { matchColor } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import { FONT8X8 } from '@lewismoten/gamemaker-sandbox-engine/gfx/font8x8';
 import { LASTSND, NUMFREQ } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
@@ -28,8 +32,11 @@ const opt = (n: string) => (args.includes(n) ? (args[args.indexOf(n) + 1] ?? '')
 const only = opt('--only');
 const forced = new Set(opt('--force'));
 const listOnly = args.includes('--list');
-const series = opt('--series')[0] ?? 'starter';
-const outDir = '../hardware/pocket-player/data/';
+const cardRoot = opt('--out')[0];
+const series = opt('--series')[0] ?? (cardRoot ? 'any' : 'starter');
+const outDir = cardRoot ? `${cardRoot}/pocket/` : '../hardware/pocket-player/data/';
+/** Games the card leaves out until their walkthrough is re-recorded (the host check cannot reach their ending). */
+const CARD_HOLD: Record<string, string> = { teddy: 'walkthrough needs re-recording', teddy2: 'walkthrough needs re-recording' };
 const MAX_LINKS = 16;
 const MAX_LEVELS = 12;
 /** Games whose host check fails or that the board cannot show right; each with the reason. */
@@ -71,7 +78,7 @@ function inPak(bytes: Uint8Array, always = false): string {
 if (!listOnly) {
   rmSync(outDir, { recursive: true, force: true });
   mkdirSync(outDir, { recursive: true });
-  // The 8x8 PC font for the text pages: 95 glyphs (' ' to '~') of 8 rows, bit 0 leftmost.
+  if (!cardRoot) writeFileSync(outDir + 'font.bin', FONT8X8.subarray(32 * 8, 127 * 8)); // the 8x8 PC font for the text pages: 95 glyphs (' ' to '~') of 8 rows, bit 0 leftmost.
   writeFileSync(outDir + 'font.bin', FONT8X8.subarray(32 * 8, 127 * 8));
 }
 const leftOut: Record<string, number> = {};
@@ -79,9 +86,9 @@ const ids = readdirSync('../games')
   .filter((i) => existsSync(`../games/${i}/about.json`) && existsSync(`../games/${i}/disk`))
   .filter((i) => {
     const a = JSON.parse(readFileSync(`../games/${i}/about.json`, 'utf8'));
-    return (series === 'any' || a.series === series) && !a.secret && (!only.length || only.includes(i));
+    return (series === 'any' || a.series === series) && !(cardRoot && a.series === 'starter') && !a.secret && (!only.length || only.includes(i));
   });
-const index: { id: string; title: string; levels: number; bytes: number }[] = [];
+const index: { id: string; title: string; levels: number; bytes: number; short?: string }[] = [];
 
 for (const id of ids) {
   try {
@@ -94,6 +101,13 @@ for (const id of ids) {
     const levelOf = (scene: number) => (scene === 1 ? -1 : play.findIndex((p) => p.i === scene));
     const why: string[] = [];
     if (SKIP[id]) why.push(SKIP[id]);
+    if (cardRoot && CARD_HOLD[id]) why.push(CARD_HOLD[id]);
+    if (cardRoot) {
+      pak.length = 0;
+      pakAt.clear();
+      pakSize = 0;
+    }
+    const short = sha(Buffer.from(id)).slice(0, 7) + 'g';
     if (play.length > MAX_LEVELS) why.push('too many levels');
 
     // Blocks each .bbl must keep: those the maps use, and the ones a touched or timed block turns into.
@@ -199,6 +213,22 @@ for (const id of ids) {
           buf.set(im.palette, 0);
           buf.set(im.pixels, 768);
           lines.push(`card ${where} g ${inPak(buf)} ${pause ?? dflt}`);
+        } else if (e === 'bkd') {
+          // A backdrop is a 320 x 200 window of a bigger GIF, from (x, y): packed as the window itself (outside the GIF: black).
+          const b = parseBackdrop(file(real));
+          const gifName = find(b.gif);
+          if (!gifName) return;
+          const im = decodeGif(file(gifName));
+          const buf = new Uint8Array(768 + 64000);
+          buf.set(im.palette, 0);
+          for (let y = 0; y < 200; y++)
+            for (let x = 0; x < 320; x++) {
+              const ix = x + b.x;
+              const iy = y + b.y;
+              if (ix >= 0 && ix < im.width && iy >= 0 && iy < im.height) buf[768 + y * 320 + x] = im.pixels[iy * im.width + ix];
+            }
+          cols = im.palette;
+          lines.push(`card ${where} g ${inPak(buf)} ${pause ?? 20}`);
         } else if (e === 'txt') {
           const text = Buffer.from(textLines(file(real)).join('\n'), 'latin1');
           const pal = cols ?? new Uint8Array(768);
@@ -232,7 +262,7 @@ for (const id of ids) {
             table.writeUInt32LE(len, i * 8 + 4);
           }
           lines.push(`card ${where} f ${inPak(table)} ${pause ?? 0} ${anim.speed} ${anim.frameCount}`);
-        } else leftOut[e] = (leftOut[e] ?? 0) + 1; // .bkd backdrops
+        } else leftOut[e] = (leftOut[e] ?? 0) + 1;
       };
       one(name, undefined, 15);
     };
@@ -267,17 +297,18 @@ for (const id of ids) {
     const ok = !why.length || forced.has(id);
     console.log(`${id.padEnd(24)} ${ok ? 'pack' : 'left out: ' + [...new Set(why)].join(', ')}`);
     if (listOnly || !ok) continue;
-    writeFileSync(`${outDir}${id}.cfg`, lines.join('\n') + '\n');
-    index.push({ id, title: about.title, levels: play.length, bytes: 0 });
+    writeFileSync(`${outDir}${cardRoot ? short : id}.cfg`, lines.join('\n') + '\n');
+    if (cardRoot) writeFileSync(`${outDir}${short}.pak`, Buffer.concat(pak));
+    index.push({ id, title: about.title, levels: play.length, bytes: 0, short });
   } catch (e) {
     console.log(`${id.padEnd(24)} left out: ${String(e).split('\n')[0].slice(0, 80)}`);
   }
 }
 if (!listOnly) {
   index.sort((a, b) => (a.id === 'first-steps' ? -1 : b.id === 'first-steps' ? 1 : a.title.localeCompare(b.title)));
-  writeFileSync(outDir + 'games.txt', index.map((g) => `${g.id}|${g.title}|${g.levels}`).join('\n') + '\n');
-  writeFileSync(outDir + 'cards.pak', Buffer.concat(pak));
-  const total = pakSize + [...put.values()].reduce((a, b) => a + b, 0);
+  writeFileSync(outDir + 'games.txt', index.map((g) => `${g.id}|${g.title}|${g.levels}${cardRoot ? '|' + g.short : ''}`).join('\n') + '\n');
+  if (!cardRoot) writeFileSync(outDir + 'cards.pak', Buffer.concat(pak));
+  const total = (cardRoot ? 0 : pakSize) + [...put.values()].reduce((a, b) => a + b, 0);
   if (Object.keys(leftOut).length) console.log('left out of the cards:', leftOut);
   console.log(`${index.length} games, ${put.size} shared files, ${total} bytes (plus the .cfg files)`);
 }
