@@ -1,12 +1,14 @@
-// Static pages for two parts of the app that live only at a #/… address, which search engines
-// see as part of the home page: the cast (cast.html, opens #/cast) and the Library
-// (library.html, opens #/library). Each has its own title, description, canonical address, h1
+// Static pages for three parts of the app that live only at a #/… address, which search engines
+// see as part of the home page: the cast (cast.html, opens #/cast), the Library
+// (library.html, opens #/library) and TURBO BUTTON (magazine.html, opens #/magazine). Each has its own title, description, canonical address, h1
 // and plain text with links to the games' play pages; the app replaces it when it starts.
 // scripts/seoBuild.ts wraps and emits them like the Guide's help-<id>.html pages.
 //
 // The text comes only from the public catalog (what the build lists), so a secret game is in
 // none of it: a cast member's "Seen in" leaves out any game the catalog doesn't list.
 import { CAST } from '../src/cast/castData';
+import MAGAZINE from '../src/seo/magazineText.json';
+import type { MagazineText } from '../src/manual/magazine/staticText';
 import { isStarterGame } from '../src/project/starter';
 import { escapeHtml, gamePage, ROUTES } from '../src/seo/site';
 import type { CdCatalogEntry } from './cdGames';
@@ -53,12 +55,45 @@ function libraryHtml(games: CdCatalogEntry[]): string {
       <ul>${boxed.map((g) => `<li>${link(g)}</li>`).join('')}</ul>`;
 }
 
+/**
+ * TURBO BUTTON's words, issue by issue and section by section, as its pages draw them,
+ * verbatim (it is a 1990s magazine in the story). They are read from src/seo/magazineText.json,
+ * which scripts/magazineText.ts writes from the magazine's own sections and a test keeps in step
+ * (the sections import style sheets, which the build's config can't load). Its games are the
+ * public catalog's, so no secret game is in it.
+ */
+function magazineHtml(): string {
+  return (MAGAZINE as MagazineText)
+    .map(({ issue, sections }) => {
+      const body = sections
+        .map(({ title, items }) => {
+          const text = items.map((i) => {
+            const tag = i.tag === 'h3' ? 'h4' : i.tag === 'h4' ? 'h5' : i.tag === 'q' ? 'blockquote' : 'p';
+            return `<${tag}>${escapeHtml(i.text)}</${tag}>`;
+          });
+          return text.length ? `<h3>${escapeHtml(title)}</h3>\n      ${text.join('\n      ')}` : '';
+        })
+        .filter(Boolean)
+        .join('\n      ');
+      return `<h2>${escapeHtml(issue)}</h2>\n      ${body}`;
+    })
+    .join('\n      ');
+}
+
 /** The static pages, from the public catalog's playable games. */
 export function staticPages(catalog: CdCatalogEntry[]): StaticPage[] {
   const games = catalog.filter((g) => g.gam);
   const listed = new Map(games.map((g) => [g.id, g]));
   return [
     { file: 'cast.html', hash: '#/cast', title: ROUTES.cast.title, description: ROUTES.cast.description, h1: 'The cast', html: castHtml(listed) },
+    {
+      file: 'magazine.html',
+      hash: '#/magazine',
+      title: ROUTES.magazine.title,
+      description: ROUTES.magazine.description,
+      h1: 'TURBO BUTTON',
+      html: magazineHtml(),
+    },
     { file: 'library.html', hash: '#/library', title: ROUTES.library.title, description: ROUTES.library.description, h1: 'Library', html: libraryHtml(games) },
   ];
 }
