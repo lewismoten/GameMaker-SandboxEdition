@@ -1,0 +1,39 @@
+{
+  "title": "Day and Night",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.0",
+  "blurb": "Two short levels with one map and two looks. In the first, a house with a lit door: go in and you are back in the same room, but it is night, and the sun is a moon, the windows glow and the stars the day hid are out. In the second, a street with two gates, and the sun sets as you walk through them: day, dusk, night. A scene picks its own palette, so the same pictures show new colors. Signs say how. Play it, then open it in Game-Maker and paint a palette of your own.",
+  "exe": "DAYNGT.EXE",
+  "dosName": "DAYNIGHT",
+  "sound": "sb",
+  "label": {
+    "background": "#fdf0d8",
+    "band": "#2f3a8c",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "2 short levels",
+    "hours": 1,
+    "background": "#2f3a8c",
+    "accent": "#ffd23f",
+    "ink": "#ffffff",
+    "tagline": "Same map, new colors.",
+    "back": "A small explorer in a teal beanie has two short levels and a sky that changes. Go in the door and the same room is lit by the moon. Walk through the gates and the sun sets. Read the signs, then open the game in Game-Maker and paint a palette of your own.",
+    "features": [
+      "The same map by day and by night, with only the palette changed",
+      "A street where the sun sets in three steps, day, dusk and night",
+      "Made to be copied and taken apart"
+    ],
+    "shots": [
+      ["one.map", 22, 1],
+      ["two.map", 0, 1]
+    ],
+    "rating": "Everyone"
+  },
+  "acceptedFindings": []
+}

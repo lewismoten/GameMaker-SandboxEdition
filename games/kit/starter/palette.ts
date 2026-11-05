@@ -33,14 +33,16 @@ const RAMPS: [string, number, RGB, RGB, RGB?][] = [
 /**
  * Every Starter's palette. Index 0 is black (the border and fades use it); the designer
  * colors and the three text colors PLAYGAME writes with (menu blue, plum, hot red) are in too.
+ * A game may add ramps of its own through `extra`; they come last and change no shared index.
  */
-export function buildStarterPalette(): Pal {
+export function buildStarterPalette(extra?: (b: PaletteBuilder) => void): Pal {
   const b = new PaletteBuilder();
   b.designerColors();
   for (const [name, n, from, to, mid] of RAMPS) b.ramp(name, n, from, to, mid);
   b.ramp('menublue', 2, [20, 20, 140], [40, 40, 252]);
   b.ramp('plum', 2, [120, 20, 110], [200, 40, 200]);
   b.ramp('hot', 1, [252, 40, 40], [252, 40, 40]);
+  extra?.(b); // a game's own ramps, after the shared ones (so every shared color keeps its index)
   return wrap(b);
 }
 

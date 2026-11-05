@@ -24,7 +24,7 @@ export const STARTER_GROUPS: { name: string; tag: string; games: string[] }[] = 
     games: ['power-up', 'throw-it', 'health-and-hearts', 'slippery-and-bouncy', 'gravity-on-gravity-off'],
   },
   { name: 'Foes and Bosses', tag: 'Foes that think, and ones that take a few hits.', games: ['boss-hits', 'who-wins'] },
-  { name: 'Telling a Story', tag: 'Words, pictures and sound.', games: ['say-something', 'pictures-and-cartoons', 'sounds-and-music'] },
+  { name: 'Telling a Story', tag: 'Words, pictures and sound.', games: ['say-something', 'pictures-and-cartoons', 'sounds-and-music', 'day-night'] },
   {
     name: 'Putting It Together',
     tag: 'Timing, switches and a whole small game.',
