@@ -7,7 +7,7 @@
   "year": 1994,
   "price": "Free",
   "version": "1.1",
-  "blurb": "Two short levels about digging. Soil is a block that turns into a tunnel block when it is touched, so Neka can walk straight into a hill and out the other side, and soil under her feet gives way and she sinks. A rock does not dig, a gold fleck pays when it is dug, and a lane of spikes on the surface is passed by tunneling under it and climbing a ladder out. Signs explain each idea, and every level has a page on how it is made.",
+  "blurb": "Two short levels about digging. Soil is a block that turns into a tunnel block when it is touched, so Neka can walk straight into a hill and out the other side, and soil under their feet gives way and they sink. A rock does not dig, a gold fleck pays when it is dug, and a lane of spikes on the surface is passed by tunneling under it and climbing a ladder out. Signs explain each idea, and every level has a page on how it is made.",
   "exe": "DIGIT.EXE",
   "dosName": "DIGIT",
   "sound": "sb",
@@ -24,7 +24,7 @@
     "accent": "#ffd23f",
     "ink": "#ffffff",
     "tagline": "What happens when you touch the ground?",
-    "back": "A small explorer in a gold beanie has a hill in her way and a lane of spikes on the surface. Soil turns to a tunnel when it is touched, rock stays, and gold pays when it is dug. Signs say what each level shows, and the manual says how each is made.",
+    "back": "A small explorer in a gold beanie has a hill in their way and a lane of spikes on the surface. Soil turns to a tunnel when it is touched, rock stays, and gold pays when it is dug. Signs say what each level shows, and the manual says how each is made.",
     "features": [
       "Signs in the levels explain each idea",
       "Soil is only a block with a touch setting: when it is touched, it becomes a tunnel",

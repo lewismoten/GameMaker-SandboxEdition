@@ -26,7 +26,7 @@ const figures = {
   kit: framesFigure(
     pal,
     [
-      { pic: hero(assets.plain), label: 'stand, as the Starters draw him' },
+      { pic: hero(assets.plain), label: 'stand, as the Starters draw them' },
       { pic: kit('solid', false), label: 'stand in solid.cbl' },
       { pic: kit('solid', true), label: 'the shadow pixels marked' },
       { pic: kit('dither', false), label: 'stand in dither.cbl' },

@@ -19,8 +19,8 @@ export type SignName = 'glide' | 'faster' | 'turn' | 'exit' | 'run' | 'longer' |
 /** The signs' words and sizes. */
 const WORDS: Record<SignName, { text: string; w: number; h: number }> = {
   glide: { text: 'TAP RIGHT AND LET GO. YANA GLIDES ON', w: 4, h: 4 },
-  faster: { text: 'HOLD IT LONGER AND SHE GOES FASTER', w: 4, h: 4 },
-  turn: { text: 'LET GO AND SHE SLOWS. LEFT TURNS HER AROUND', w: 4, h: 4 },
+  faster: { text: 'HOLD IT LONGER AND THEY GO FASTER', w: 4, h: 4 },
+  turn: { text: 'LET GO AND THEY SLOW. LEFT TURNS THEM AROUND', w: 4, h: 4 },
   exit: { text: 'EXIT →', w: 3, h: 1 },
   run: { text: 'A STANDING HOP GOES NOWHERE. HOLD RIGHT TOO', w: 4, h: 4 },
   longer: { text: 'A WIDER GAP NEEDS A RUN-UP FIRST', w: 4, h: 4 },
@@ -145,7 +145,7 @@ export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
   const pal = buildStarterPalette(undefined, 'momentum');
   const { book, signs } = buildBlocks(pal);
   const levels: Level[] = [
-    { file: 'one', title: 'Glide', hint: 'Tap, and let her coast.', map: glide(book, signs) },
+    { file: 'one', title: 'Glide', hint: 'Tap, and let them coast.', map: glide(book, signs) },
     { file: 'two', title: 'Run-Up', hint: 'Get up to speed, then hop.', map: runUp(book, signs) },
   ];
   return { book, pal, levels };

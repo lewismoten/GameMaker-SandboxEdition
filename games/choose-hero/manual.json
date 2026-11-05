@@ -85,7 +85,7 @@
     },
     {
       "head": "Make it yours",
-      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>Open <b>hops.chr</b> and make the push on the Space sequence bigger. How high can a hero go before the map's edge stops him?</li><li>Change a scene's character slot to the other hero's file, and play that door again.</li><li>Name <b>hops.chr</b> in the road's character slot and see the road stop following your pick.</li><li>Add a third door to the room, a third scene, and a third character file with your own numbers.</li><li>Draw a new hoodie color in <b>hops.cbl</b>.</li></ul><p>The home page's <b>Starters</b> tab has more small games like this one.</p>"
+      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>Open <b>hops.chr</b> and make the push on the Space sequence bigger. How high can a hero go before the map's edge stops them?</li><li>Change a scene's character slot to the other hero's file, and play that door again.</li><li>Name <b>hops.chr</b> in the road's character slot and see the road stop following your pick.</li><li>Add a third door to the room, a third scene, and a third character file with your own numbers.</li><li>Draw a new hoodie color in <b>hops.cbl</b>.</li></ul><p>The home page's <b>Starters</b> tab has more small games like this one.</p>"
     }
   ]
 }

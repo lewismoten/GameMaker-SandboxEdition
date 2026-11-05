@@ -20,11 +20,11 @@ import { buildPalette } from './haze';
 import { addScenery, type Scenery } from './art';
 
 const SIGNS = {
-  closeUp: ['closeUp', 'LIAN IS 40 PIXELS TALL. FAR UP THAT ROAD HE IS SMALL', 4, 3],
+  closeUp: ['closeUp', 'LIAN IS 40 PIXELS TALL. FAR UP THAT ROAD THEY ARE SMALL', 4, 3],
   quick: ['quick', 'TOO FAST. THE SAME STEPS AS UP CLOSE', 4, 2],
-  slow: ['slow', 'SLOW STEPS. HE IS ONLY 8 PIXELS TALL', 4, 3],
-  front: ['front', 'BIG THINGS IN FRONT MAKE HIM FAR AWAY', 4, 3],
-  contrast: ['contrast', 'DARK AND RED ON PALE: HE STAYS CLEAR', 4, 3],
+  slow: ['slow', 'SLOW STEPS. THEY ARE ONLY 8 PIXELS TALL', 4, 3],
+  front: ['front', 'BIG THINGS IN FRONT MAKE THEM FAR AWAY', 4, 3],
+  contrast: ['contrast', 'DARK AND RED ON PALE: THEY STAY CLEAR', 4, 3],
 } as const;
 export type SignName = keyof typeof SIGNS;
 

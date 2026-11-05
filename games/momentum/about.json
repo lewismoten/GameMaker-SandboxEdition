@@ -7,7 +7,7 @@
   "year": 1994,
   "price": "Free",
   "version": "1.1",
-  "blurb": "Two short levels about momentum. Every step Yana takes adds to her speed instead of moving her, so she gets faster while a key is held and glides on after she lets go. A wall stops her at once. In the second level, a hop made at speed carries across gaps a standing hop cannot. Nothing here hurts. Signs explain each idea, and every level has a page on how it is made.",
+  "blurb": "Two short levels about momentum. Every step Yana takes adds to their speed instead of moving them, so they get faster while a key is held and glides on after they let go. A wall stops them at once. In the second level, a hop made at speed carries across gaps a standing hop cannot. Nothing here hurts. Signs explain each idea, and every level has a page on how it is made.",
   "exe": "SLIDE.EXE",
   "dosName": "SLIDE",
   "sound": "sb",
@@ -24,7 +24,7 @@
     "accent": "#ffd23f",
     "ink": "#ffffff",
     "tagline": "Let go, and keep going.",
-    "back": "A small explorer in a pink beanie has two levels to cross, and every step adds to her speed. Hold a key and she gets faster, let go and she glides on, press the other way and she slows. In the second level a run-up carries a hop across wide gaps. Signs say what each level shows, and the manual says how each is made.",
+    "back": "A small explorer in a pink beanie has two levels to cross, and every step adds to their speed. Hold a key and they get faster, let go and they glide on, press the other way and they slow. In the second level a run-up carries a hop across wide gaps. Signs say what each level shows, and the manual says how each is made.",
     "features": [
       "Signs in the levels explain each idea",
       "Momentum is one setting on a sequence in the character file",

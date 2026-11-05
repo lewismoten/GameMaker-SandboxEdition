@@ -8,7 +8,7 @@ export const STORY = wrap(`
 
 What does water do?
 
-A small explorer in a red beanie has three pools to cross. In a creek the water pulls her to the left. In a deep pool it holds her up, so she floats. In a tall one it lifts her up and to the left, right up to a ledge.
+A small explorer in a red beanie has three pools to cross. In a creek the water pulls them to the left. In a deep pool it holds them up, so they float. In a tall one it lifts them up and to the left, right up to a ledge.
 
 Read the signs. Water is not a special thing. It is a block with a gravity setting, and the setting says which ways it pulls.
 

@@ -189,7 +189,7 @@ const LISTED: CastMember[] = [
       height: 40,
       alt: 'Kit, a small cheerful kid in a teal knit beanie with a white pom-pom, an orange hoodie with a pocket and drawstrings, gray pants and white sneakers',
     },
-    bio: 'A small, cheerful explorer in a teal knit beanie with a white pom-pom, an orange hoodie with a pocket and drawstrings, gray pants and white sneakers. Kit walks, jumps, falls, climbs ladders (seen from behind), digs with a little shovel, tosses a star and cheers when a level is done. Seen from above, he walks in four directions. A bump only hurts a little. Kit leads the first Starter of every group and his own three; eight helpers in other colors lead the rest, in the same blocks, so what you learn from one carries to the next.',
+    bio: 'A small, cheerful explorer in a teal knit beanie with a white pom-pom, an orange hoodie with a pocket and drawstrings, gray pants and white sneakers. Kit walks, jumps, falls, climbs ladders (seen from behind), digs with a little shovel, tosses a star and cheers when a level is done. Seen from above, Kit walks in four directions. A bump only hurts a little. Kit leads the first Starter of every group and his own three; eight helpers in other colors lead the rest, in the same blocks, so what you learn from one carries to the next.',
     appears: [
       { game: 'first-steps', as: 'learns to walk, jump and climb' },
       { game: 'keys-and-doors', as: 'finds a silver key for each locked door' },
@@ -199,16 +199,16 @@ const LISTED: CastMember[] = [
       { game: 'watch-your-step', as: 'learns that spikes hurt once and a pool costs a life' },
       { game: 'power-up', as: 'grabs a star for high jumps and sneakers for speed' },
       { game: 'throw-it', as: 'throws a friendly star that pops gumdrops' },
-      { game: 'health-and-hearts', as: 'counts hit points, mends with hearts and keeps an eye on his lives' },
+      { game: 'health-and-hearts', as: 'counts hit points, mends with hearts and keeps an eye on the lives left' },
       { game: 'slippery-and-bouncy', as: 'slides on ice, rides a belt and is blown up by the wind' },
       { game: 'say-something', as: 'reads the signs and talks to Pip, Moss and Dot' },
       { game: 'pictures-and-cartoons', as: 'watches a picture, then a cartoon of a seed growing into a daisy' },
       { game: 'beat-the-clock', as: 'races a bar of light to a gate before it shuts' },
       { game: 'countdown', as: 'waits for a number to reach zero, and then drops through the floor' },
-      { game: 'warning-first', as: 'waits out a rumble and a flicker before he crosses' },
+      { game: 'warning-first', as: 'waits out a rumble and a flicker before crossing' },
       { game: 'flash-safe', as: 'takes a hit with a beep, a face and a number instead of a flash' },
       { game: 'block-brains', as: 'waits at each gate for its lamp, then walks through' },
-      { game: 'gusts', as: 'waits for a gust to lift him, and shelters from the next one' },
+      { game: 'gusts', as: 'waits for a gust to lift the hero, and shelters from the next one' },
       { game: 'switches', as: 'pulls a lever to build a bridge' },
       { game: 'gravity-on-gravity-off', as: 'jumps a wall, then walks around it with gravity off' },
       { game: 'sounds-and-music', as: 'listens to a song in every room and a beep for every pickup' },
@@ -224,8 +224,8 @@ const LISTED: CastMember[] = [
         as: 'walks, jumps and throws with only the arrows, Space and Enter, crosses a gap that looks as if it needs a diagonal, and leaps for extra coins with Q and E',
       },
       { game: 'duck', as: 'ducks under a bluebird that flies at head height, then hops a rolling ball that a duck would not dodge' },
-      { game: 'kit-moves', as: 'hops once however long he holds Space, lifts up a cliff while Up is held and dashes across gaps one press at a time' },
-      { game: 'many-weapons', as: 'fills a pouch with stars, another with flames, and finds that one key throws whichever he has' },
+      { game: 'kit-moves', as: 'hops once however long Space is held, lifts up a cliff while Up is held and dashes across gaps one press at a time' },
+      { game: 'many-weapons', as: 'fills a pouch with stars, another with flames, and finds that one key throws whichever is in the pouch' },
       { game: 'inventory', as: 'packs three crates and puts them down as a stair, then puts a flame down to throw a star' },
       { game: 'swim', as: 'falls in a creek that pulls left, floats in a deep pool and rides a lift up to a ledge' },
       { game: 'teach-test-twist', as: 'jumps a gap, drops into it past spikes, then goes in on purpose for a key' },
@@ -233,12 +233,12 @@ const LISTED: CastMember[] = [
       { game: 'breakable-walls', as: 'bumps crates to rubble and catches spinning gems' },
       { game: 'walk-the-ground', as: 'tunnels through a hill, sinks through a soil trapdoor and climbs a ladder out from under the spikes' },
       { game: 'boss-hits', as: 'throws five stars at a cheerful bug that blocks a narrow way' },
-      { game: 'searchlight', as: 'drops into a trench and waits while a friendly lamp on a rail walks over him' },
+      { game: 'searchlight', as: 'drops into a trench and waits while a friendly lamp on a rail walks over the hero' },
       { game: 'scripted', as: 'stands in front of a little stage and watches two friends act out a play' },
       { game: 'boss-phases', as: 'throws stars at a cheerful bug that turns quicker halfway and shrinks for its last hit' },
       { game: 'giant', as: 'pops a stone giant one part at a time, steps up to reach its head, and waits for a tin robot to stop blinking red' },
       { game: 'short-lived', as: 'waits for a bubble to pop and a sleepy gumdrop to wake up' },
-      { game: 'follower', as: 'walks and jumps with Puff, a winged pup that flies after him and waits under a ledge' },
+      { game: 'follower', as: 'walks and jumps with Puff, a winged pup that flies after the hero and waits under a ledge' },
       { game: 'drop-down', as: 'breaks a crate and watches Plop, a round green friend, drop out of the way' },
       { game: 'flock', as: 'walks and jumps under five birds that fly in a V and keep their shape' },
       { game: 'three-tokens', as: 'collects purple tokens until a gate will take its price, and then walks out through the gate' },
@@ -674,14 +674,6 @@ const HELPERS: { id: string; name: string; role: string; hi: string; look: strin
   },
 ];
 
-/** What Kit does in a game, said of a helper: "he" becomes the name. */
-const said = (as: string, name: string): string =>
-  as
-    .replace(/\bhimself\b/g, 'themself')
-    .replace(/\bhis\b/g, `${name}’s`)
-    .replace(/\bhim\b/g, name)
-    .replace(/\bhe\b/g, name);
-
 /** The cast with Kit's list split by who leads each Starter (starterHeroes.ts), and the helpers after him. */
 function withHelpers(list: CastMember[]): CastMember[] {
   const kit = list.find((m) => m.id === 'kit')!;
@@ -698,7 +690,7 @@ function withHelpers(list: CastMember[]): CastMember[] {
       alt: `${h.name}, a small cheerful kid with ${h.look}, gray pants and white sneakers`,
     },
     bio: `A small, cheerful explorer with ${h.look}, drawn from the very same blocks as Kit, so every key, jump and climb works the same. ${h.name} leads the Starters shown below, and walks, jumps and climbs through them as Kit would.`,
-    appears: mine(h.name.toUpperCase()).map((a) => ({ ...a, as: said(a.as, h.name) })),
+    appears: mine(h.name.toUpperCase()),
   }));
   const at = list.indexOf(kit) + 1;
   return [...list.slice(0, at - 1), { ...kit, appears: mine('KIT') }, ...helpers, ...list.slice(at)];

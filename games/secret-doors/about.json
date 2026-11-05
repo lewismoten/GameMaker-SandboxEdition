@@ -24,7 +24,7 @@
     "accent": "#ffd23f",
     "ink": "#ffffff",
     "tagline": "Walk into the wall.",
-    "back": "A small explorer in a purple beanie has three short levels, and brick walls in the way each time. One wall is real and stops her. The next is only a picture of a wall, and she walks through it. A wall can crack when it is touched, and crumble when it is touched again, and a few coins showing in a wall hint at a secret. Read the signs, then open the game in Game-Maker and change a block's setting.",
+    "back": "A small explorer in a purple beanie has three short levels, and brick walls in the way each time. One wall is real and stops them. The next is only a picture of a wall, and they walk through it. A wall can crack when it is touched, and crumble when it is touched again, and a few coins showing in a wall hint at a secret. Read the signs, then open the game in Game-Maker and change a block's setting.",
     "features": [
       "Signs in the levels explain each idea",
       "Solid is a setting of the block, not part of its picture",

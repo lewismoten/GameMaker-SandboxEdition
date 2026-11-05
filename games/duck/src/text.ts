@@ -8,9 +8,9 @@ export const STORY = wrap(`
 
 How do you dodge something that is not at your feet?
 
-A small explorer in a teal beanie has two short levels to cross. Friendly bluebirds fly back and forth at the height of his head, and beach balls roll back and forth along the ground.
+A small explorer in a teal beanie has two short levels to cross. Friendly bluebirds fly back and forth at the height of their head, and beach balls roll back and forth along the ground.
 
-Read the signs. Kit is two blocks tall, a head block over a body block. When he ducks, his top block is empty. A bird flying through the row of his head touches nothing, and a ball still finds his feet.
+Read the signs. Kit is two blocks tall, a head block over a body block. When they duck, their top block is empty. A bird flying through the row of their head touches nothing, and a ball still finds their feet.
 
 Then open this game in Game-Maker and look at the duck.
 `);
@@ -51,9 +51,9 @@ export const WON = wrap(`
 
 Two levels, and now you know how to dodge without moving out of the way.
 
-Kit's duck is a sequence in the character file whose frames have a picture in the bottom block only. The top block is empty, so a bird in the row of his head has nothing to touch. The same duck does not help against a ball, which rolls through the row of his feet.
+Kit's duck is a sequence in the character file whose frames have a picture in the bottom block only. The top block is empty, so a bird in the row of their head has nothing to touch. The same duck does not help against a ball, which rolls through the row of their feet.
 
-Open the game in Game-Maker and find the Down key on the Character tab. Give the duck a top picture and watch the birds hit him.
+Open the game in Game-Maker and find the Down key on the Character tab. Give the duck a top picture and watch the birds hit them.
 `);
 
 export const LOST = wrap(`

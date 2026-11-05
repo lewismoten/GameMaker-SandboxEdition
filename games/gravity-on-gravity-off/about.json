@@ -7,7 +7,7 @@
   "year": 1994,
   "price": "Free",
   "version": "1.1",
-  "blurb": "The same little place, twice. In level 1 you see it from the side and gravity pulls Rima down: she jumps a wall and walks off a ledge to fall. In level 2 you see it from above with gravity off, and Rima walks any of four ways and goes around the wall. Signs say how. Play it, then open it in Game-Maker and change one block's Gravity.",
+  "blurb": "The same little place, twice. In level 1 you see it from the side and gravity pulls Rima down: they jump a wall and walks off a ledge to fall. In level 2 you see it from above with gravity off, and Rima walks any of four ways and goes around the wall. Signs say how. Play it, then open it in Game-Maker and change one block's Gravity.",
   "exe": "GRAVITY.EXE",
   "dosName": "GRAVITY",
   "sound": "sb",
@@ -24,10 +24,10 @@
     "accent": "#ffd23f",
     "ink": "#ffffff",
     "tagline": "Down, then all around.",
-    "back": "A small explorer in a teal beanie visits the same place twice. First from the side, where gravity pulls her down and a wall is something to jump. Then from above, where nothing pulls her and the arrow keys walk her every way. Read the signs, then open the game in Game-Maker and change the Gravity of a block.",
+    "back": "A small explorer in a teal beanie visits the same place twice. First from the side, where gravity pulls them down and a wall is something to jump. Then from above, where nothing pulls their and the arrow keys walk their every way. Read the signs, then open the game in Game-Maker and change the Gravity of a block.",
     "features": [
       "Level 1 is a side-scroller with gravity; level 2 is the same scene from above with gravity off",
-      "Rima walks in four directions when nothing pulls her down",
+      "Rima walks in four directions when nothing pulls them down",
       "Made to be copied and taken apart"
     ],
     "shots": [

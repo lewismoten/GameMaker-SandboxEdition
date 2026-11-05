@@ -8,7 +8,7 @@ export const STORY = wrap(`
 
 A small explorer in a pink beanie finds a little blue kart parked at the end of the road.
 
-Hop in, and she is a different driver: quicker, with a horn, and no jump at all.
+Hop in, and they are a different driver: quicker, with a horn, and no jump at all.
 
 Read the signs. Then open this game in Game-Maker and make your own.
 `);

@@ -49,7 +49,7 @@ const pages = [
   },
   {
     head: 'How this level is made',
-    html: `<h1>How level 1 is made</h1><ul><li><b>Walk and jump.</b> Open <b>hero.chr</b> in the Character tab. Left, Right, Space and the A and D twins are the Starter hero's own. Each key starts one sequence of frames.</li><li><b>Throw.</b> The Enter sequence has the key set to Enter and <b>One sequence per key stroke</b> on, so a held key throws once. One frame in the middle gives birth to a monster: the star. Its second picture is the monster block marker, and its first picture is the star's number.</li><li><b>The jellies.</b> Open <b>hk.mon</b> in the Monsters tab. A jelly is solid on every side and has power 150, so Kit cannot push through it, and a star's power of 200 beats it. Nothing about it hurts.</li><li><b>The tunnel.</b> Open <b>one.map</b>: a hill of brick with a gap two blocks high, the height of Kit. With no room overhead, he cannot hop over a jelly, so the star is the way through.</li></ul>`,
+    html: `<h1>How level 1 is made</h1><ul><li><b>Walk and jump.</b> Open <b>hero.chr</b> in the Character tab. Left, Right, Space and the A and D twins are the Starter hero's own. Each key starts one sequence of frames.</li><li><b>Throw.</b> The Enter sequence has the key set to Enter and <b>One sequence per key stroke</b> on, so a held key throws once. One frame in the middle gives birth to a monster: the star. Its second picture is the monster block marker, and its first picture is the star's number.</li><li><b>The jellies.</b> Open <b>hk.mon</b> in the Monsters tab. A jelly is solid on every side and has power 150, so Kit cannot push through it, and a star's power of 200 beats it. Nothing about it hurts.</li><li><b>The tunnel.</b> Open <b>one.map</b>: a hill of brick with a gap two blocks high, the height of Kit. With no room overhead, they cannot hop over a jelly, so the star is the way through.</li></ul>`,
   },
   {
     head: 'Level 2: No Diagonal Needed',
@@ -57,7 +57,7 @@ const pages = [
   },
   {
     head: 'How this level is made',
-    html: `<h1>How level 2 is made</h1><ul><li><b>Two keys at once.</b> The jump is a push upward that gravity takes back, so while Kit is in the air the walking keys still work. Nothing in the character file mentions a diagonal.</li><li><b>The gaps.</b> Open <b>two.map</b>: the first gap is ${L2.pits[0][1] - L2.pits[0][0] + 1} blocks wide with ground one block higher past it, the second ${L2.pits[1][1] - L2.pits[1][0] + 1} blocks wide on the flat. A jump carries Kit about four blocks sideways while he walks, so both can be crossed.</li><li><b>The coins</b> follow the arc of the jump, so they show the way.</li></ul>`,
+    html: `<h1>How level 2 is made</h1><ul><li><b>Two keys at once.</b> The jump is a push upward that gravity takes back, so while Kit is in the air the walking keys still work. Nothing in the character file mentions a diagonal.</li><li><b>The gaps.</b> Open <b>two.map</b>: the first gap is ${L2.pits[0][1] - L2.pits[0][0] + 1} blocks wide with ground one block higher past it, the second ${L2.pits[1][1] - L2.pits[1][0] + 1} blocks wide on the flat. A jump carries Kit about four blocks sideways while they walk, so both can be crossed.</li><li><b>The coins</b> follow the arc of the jump, so they show the way.</li></ul>`,
   },
   {
     head: 'Level 3: Leap Shelves',

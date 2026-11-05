@@ -8,7 +8,7 @@ export const STORY = wrap(`
 
 A voice is a file.
 
-A small explorer in a red beanie has three short levels to cross. In the first, a press of Enter makes her say hello. In the second, two loudspeakers talk when she walks into them. In the third, one long line has to finish before the door.
+A small explorer in a red beanie has three short levels to cross. In the first, a press of Enter makes them say hello. In the second, two loudspeakers talk when they walk into them. In the third, one long line has to finish before the door.
 
 Read the signs. A game can play a sound file when something happens, and that is how it talks. The clips here are hums made in code, and a copy of the game can swap in recordings of your own voice.
 

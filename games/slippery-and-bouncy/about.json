@@ -7,7 +7,7 @@
   "year": 1994,
   "price": "Free",
   "version": "1.1",
-  "blurb": "Three short levels about gravity as a tool. Ice drags Kit along and he slides on after he lets go, a belt carries him down its length, a spring pad bounces him up and a fan's wind lifts him through a ledge. Each level has one spike to learn from. Signs say how. Play it, then open it in Game-Maker and change a pull.",
+  "blurb": "Three short levels about gravity as a tool. Ice drags Kit along and they slide on after they let go, a belt carries them down its length, a spring pad bounces them up and a fan's wind lifts them through a ledge. Each level has one spike to learn from. Signs say how. Play it, then open it in Game-Maker and change a pull.",
   "exe": "SLIP.EXE",
   "dosName": "SLIPPERY",
   "sound": "sb",
@@ -24,7 +24,7 @@
     "accent": "#ffd23f",
     "ink": "#ffffff",
     "tagline": "Let the blocks pull.",
-    "back": "A small explorer in a teal beanie has three short levels to cross, and every block in them can pull. Ice drags him and he slides on, a belt carries him, a spring pad bounces him and a fan's wind lifts him up through a ledge. Read the signs, mind the spikes, then open the game in Game-Maker and change a pull.",
+    "back": "A small explorer in a teal beanie has three short levels to cross, and every block in them can pull. Ice drags them and they slide on, a belt carries them, a spring pad bounces them and a fan's wind lifts them up through a ledge. Read the signs, mind the spikes, then open the game in Game-Maker and change a pull.",
     "features": ["Signs in the levels explain each idea", "Ice, a belt, a spring and wind: a block's pull is one setting", "Made to be copied and taken apart"],
     "shots": [
       ["one.map", 14, 3],

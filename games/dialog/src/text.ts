@@ -9,7 +9,7 @@ export const STORY = wrap(`
 
 Two people can talk at once, and so can four.
 
-A small explorer in a teal beanie crosses two short rooms. In the first he talks with Pip. In the second he walks into a group of three friends, and they all talk at once.
+A small explorer in a teal beanie crosses two short rooms. In the first they talk with Pip. In the second they walk into a group of three friends, and they all talk at once.
 
 Each talk is one picture of everyone, with a speech bubble for every turn, and one page of words that fits into the bubbles. Walk up and see.
 

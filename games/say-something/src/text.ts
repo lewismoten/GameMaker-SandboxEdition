@@ -9,7 +9,7 @@ export const STORY = wrap(`
 
 Words can live in a game in three places.
 
-A small explorer in a teal beanie crosses two short rooms. On the way he reads boards, and he walks right into three friends who have something to say.
+A small explorer in a teal beanie crosses two short rooms. On the way they read boards, and they walk right into three friends who have something to say.
 
 A board is a picture of words. A friend is a picture too, and a touch on a friend opens a page of words. Walk up and see.
 

@@ -24,7 +24,7 @@
     "accent": "#ffd23f",
     "ink": "#ffffff",
     "tagline": "Pick a door.",
-    "back": "A small explorer stands between two doors. Behind each is the same climb, but through one he is Fast Feet and through the other he is Big Hops, who jumps six blocks and can reach the high coins. A scene lists the character file it loads, so a door can be a choice. Signs say what each level shows, and the manual says how each is made.",
+    "back": "A small explorer stands between two doors. Behind each is the same climb, but through one they are Fast Feet and through the other they are Big Hops, who jumps six blocks and can reach the high coins. A scene lists the character file it loads, so a door can be a choice. Signs say what each level shows, and the manual says how each is made.",
     "features": [
       "Signs in the levels explain each idea",
       "Each scene names the character file it loads: a door can pick the hero",

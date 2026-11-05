@@ -45,7 +45,7 @@ export function contrastTable(pal: Pal = cavePalette()): Row[] {
     if (!/^stand|^walk|^jump/.test(name)) continue;
     for (const c of pic.px) if (c !== 255) seen.set(c, (seen.get(c) ?? 0) + 1);
   }
-  const colors = [...seen]; // his outline is in: a dark outline reads against bright air as a light fill does against dark air
+  const colors = [...seen]; // their outline is in: a dark outline reads against bright air as a light fill does against dark air
   const total = colors.reduce((n, [, k]) => n + k, 0);
   return [0, 1, 2, 3, 4].map((k) => ({
     shade: k,

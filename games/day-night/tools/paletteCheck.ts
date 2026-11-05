@@ -63,7 +63,7 @@ const kitBody = ratio(rgb(files.night, pal.c('orange', 2)), rgb(files.night, sky
 const kitHat = ratio(rgb(files.night, pal.c('teal', 2)), rgb(files.night, sky));
 const letters = ratio(rgb(files.night, pal.c('ink', 0)), rgb(files.night, pal.c('parch', 3)));
 console.log(
-  `night contrast: Kit's hoodie ${kitBody.toFixed(1)}:1, his beanie ${kitHat.toFixed(1)}:1 against the sky; a sign's letters ${letters.toFixed(1)}:1`,
+  `night contrast: Kit's hoodie ${kitBody.toFixed(1)}:1, their beanie ${kitHat.toFixed(1)}:1 against the sky; a sign's letters ${letters.toFixed(1)}:1`,
 );
 if (kitBody < 2 || kitHat < 2) fail('Kit should stand out from the night sky (2:1 or more)');
 if (letters < 4.5) fail('a sign should be readable at night (4.5:1)');

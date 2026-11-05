@@ -73,7 +73,7 @@
     },
     {
       "head": "What Game-Maker cannot do",
-      "html": "<h1>What Game-Maker cannot do</h1><p>A vehicle is only a character, and that has limits:</p><ul><li>It cannot change the character inside a scene. A scene names one character file. To switch, a link takes you to another scene that names the other file, which is why this game has a level for each.</li><li>It cannot keep Yana's walk and add a horn. A different file starts fresh: its hit points, lives and keys are whatever that file says. Here both are set the same.</li><li>It cannot tell a honk which monster to hit. Anything weaker than power 200 in its way is destroyed, in the order it meets them.</li><li>A born monster flies from the character's own spot and the way she last moved. It cannot be aimed up or down.</li></ul>"
+      "html": "<h1>What Game-Maker cannot do</h1><p>A vehicle is only a character, and that has limits:</p><ul><li>It cannot change the character inside a scene. A scene names one character file. To switch, a link takes you to another scene that names the other file, which is why this game has a level for each.</li><li>It cannot keep Yana's walk and add a horn. A different file starts fresh: its hit points, lives and keys are whatever that file says. Here both are set the same.</li><li>It cannot tell a honk which monster to hit. Anything weaker than power 200 in its way is destroyed, in the order it meets them.</li><li>A born monster flies from the character's own spot and the way they last moved. It cannot be aimed up or down.</li></ul>"
     },
     {
       "head": "Make it yours",

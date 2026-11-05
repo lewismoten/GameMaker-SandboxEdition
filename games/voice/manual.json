@@ -57,7 +57,7 @@
     },
     {
       "head": "Level 1: Say Hello",
-      "html": "<h1>Level 1: Say Hello</h1><p><b>PRESS ENTER AND LENA SAYS HELLO</b> comes first. Press <kbd>Enter</kbd> and Lena throws her arms up and says it. <b>A KEY CAN PLAY A SOUND</b> comes next, then three coins. <b>ENTER AGAIN AND THE VOICE RESTARTS</b> stands before three more coins and the door: press <kbd>Enter</kbd> while Lena is still talking and the hello begins again from the start.</p><p>There are six coins, ten points each.</p>"
+      "html": "<h1>Level 1: Say Hello</h1><p><b>PRESS ENTER AND LENA SAYS HELLO</b> comes first. Press <kbd>Enter</kbd> and Lena throws their arms up and says it. <b>A KEY CAN PLAY A SOUND</b> comes next, then three coins. <b>ENTER AGAIN AND THE VOICE RESTARTS</b> stands before three more coins and the door: press <kbd>Enter</kbd> while Lena is still talking and the hello begins again from the start.</p><p>There are six coins, ten points each.</p>"
     },
     {
       "head": "How this level is made",
@@ -77,7 +77,7 @@
     },
     {
       "head": "How this level is made",
-      "html": "<h1>How level 3 is made</h1><ul><li><b>The speaker.</b> It is the same <b>speaker</b> block as level 2, but this level uses <b>vo3.snd</b>, where sound 7 names <b>BYE.VOC</b> instead. A level picks its sound set, so one block can say different things in different levels.</li><li><b>The cut.</b> When the game goes to another scene it frees the voice that is playing, and the new scene may start another. So the last line of a level has to finish first. Lena walks about three and a half blocks a second, so twenty blocks takes her over five seconds, and the goodbye lasts about two and a half.</li><li><b>Do the sum.</b> Divide the clip's length by how fast the hero moves to know how far the speaker must stand from the door. The Level check does not do this for you.</li></ul>"
+      "html": "<h1>How level 3 is made</h1><ul><li><b>The speaker.</b> It is the same <b>speaker</b> block as level 2, but this level uses <b>vo3.snd</b>, where sound 7 names <b>BYE.VOC</b> instead. A level picks its sound set, so one block can say different things in different levels.</li><li><b>The cut.</b> When the game goes to another scene it frees the voice that is playing, and the new scene may start another. So the last line of a level has to finish first. Lena walks about three and a half blocks a second, so twenty blocks takes them over five seconds, and the goodbye lasts about two and a half.</li><li><b>Do the sum.</b> Divide the clip's length by how fast the hero moves to know how far the speaker must stand from the door. The Level check does not do this for you.</li></ul>"
     },
     {
       "head": "What it cannot do",

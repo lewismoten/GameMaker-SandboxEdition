@@ -11,7 +11,7 @@
     },
     {
       "id": "real",
-      "q": "How do I make a wall that looks just like a secret one but stops her?",
+      "q": "How do I make a wall that looks just like a secret one but stops them?",
       "scene": 2,
       "x": 18,
       "y": 9,
@@ -65,11 +65,11 @@
     },
     {
       "head": "Level 2: Bump, Then Bump",
-      "html": "<h1>Level 2: Bump, Then Bump</h1><p><b>BUMP IT AND IT CRACKS</b> stands before a wall four blocks high. Walk into it: the two bricks at Mia's height become a cracked brick you can walk into, and then a pile of chips. The two above her head stay as an arch. <b>THE CRACK IS A BLOCK TOO. TOUCH IT AGAIN</b> comes next. <b>EACH BLOCK CHANGES ON ITS OWN</b> comes before a wall two bricks thick: each column takes its own touch.</p><p>There are nine coins, ten points each.</p>"
+      "html": "<h1>Level 2: Bump, Then Bump</h1><p><b>BUMP IT AND IT CRACKS</b> stands before a wall four blocks high. Walk into it: the two bricks at Mia's height become a cracked brick you can walk into, and then a pile of chips. The two above their head stay as an arch. <b>THE CRACK IS A BLOCK TOO. TOUCH IT AGAIN</b> comes next. <b>EACH BLOCK CHANGES ON ITS OWN</b> comes before a wall two bricks thick: each column takes its own touch.</p><p>There are nine coins, ten points each.</p>"
     },
     {
       "head": "How this level is made",
-      "html": "<h1>How level 2 is made</h1><ul><li><b>The wall.</b> Open <b>sd.bbl</b> and pick <b>loose</b>. It looks like <b>wall</b> and is solid. On its <b>Touch</b> tab, <b>Becomes block</b> is <b>cracked</b>.</li><li><b>The crack.</b> Pick <b>cracked</b>. It is the brick with a crack across it and it is not solid, so Mia walks into it. Its <b>Becomes block</b> is <b>chips</b>. That is a chain: one touch makes the next block, and touching that makes the one after.</li><li><b>The chips.</b> Pick <b>chips</b>. It has nothing to turn into, so the chain ends here.</li><li><b>Each link needs a touch.</b> Mia presses on a solid wall for a moment, which is a touch, and that changes the block. Then she walks into the cracked block, which is the second touch. A chain does not wait: each link changes as soon as Mia touches that block.</li><li><b>Only what you touch changes.</b> Mia is two blocks tall, so she touches two blocks of the wall. The ones above her head are never touched. Open <b>two.map</b> in the map editor and look at the arch.</li><li><b>The signs and the exit.</b> A scene link joins the door to the next level in <b>sd.gam</b>.</li></ul>"
+      "html": "<h1>How level 2 is made</h1><ul><li><b>The wall.</b> Open <b>sd.bbl</b> and pick <b>loose</b>. It looks like <b>wall</b> and is solid. On its <b>Touch</b> tab, <b>Becomes block</b> is <b>cracked</b>.</li><li><b>The crack.</b> Pick <b>cracked</b>. It is the brick with a crack across it and it is not solid, so Mia walks into it. Its <b>Becomes block</b> is <b>chips</b>. That is a chain: one touch makes the next block, and touching that makes the one after.</li><li><b>The chips.</b> Pick <b>chips</b>. It has nothing to turn into, so the chain ends here.</li><li><b>Each link needs a touch.</b> Mia presses on a solid wall for a moment, which is a touch, and that changes the block. Then they walk into the cracked block, which is the second touch. A chain does not wait: each link changes as soon as Mia touches that block.</li><li><b>Only what you touch changes.</b> Mia is two blocks tall, so they touch two blocks of the wall. The ones above their head are never touched. Open <b>two.map</b> in the map editor and look at the arch.</li><li><b>The signs and the exit.</b> A scene link joins the door to the next level in <b>sd.gam</b>.</li></ul>"
     },
     {
       "head": "Level 3: Coins in the Wall",

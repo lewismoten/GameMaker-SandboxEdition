@@ -8,7 +8,7 @@ export const STORY = wrap(`
 
 A small explorer in a gold beanie has two short levels, and both are about going up.
 
-In the first, a tap of Space in the air lifts her again, so she can tap her way up a tall cliff and fly across a gap, as if she wore a jet pack. In the second, her boots hold only two jumps, and blue bubbles fill them up.
+In the first, a tap of Space in the air lifts them again, so they can tap their way up a tall cliff and fly across a gap, as if they wore a jet pack. In the second, their boots hold only two jumps, and blue bubbles fill them up.
 
 Read the signs. Then open this game in Game-Maker and change how many jumps the boots hold.
 `);
@@ -45,7 +45,7 @@ export const WON = wrap(`
 
 Two levels, and now you know how a jump can be counted.
 
-Neka's jump is a push upward that adds to her speed. In the first level it has no limit, so every tap in the air lifts her again. In the second it has two uses: each tap spends one, and Space does nothing when none are left. A blue bubble adds one back.
+Neka's jump is a push upward that adds to their speed. In the first level it has no limit, so every tap in the air lifts them again. In the second it has two uses: each tap spends one, and Space does nothing when none are left. A blue bubble adds one back.
 
 Open the game in Game-Maker and find the jump on the Character tab. Change its uses, and the pickups' amount on the Blocks tab.
 `);

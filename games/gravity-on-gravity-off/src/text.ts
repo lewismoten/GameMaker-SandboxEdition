@@ -8,9 +8,9 @@ export const STORY = wrap(`
 
 The same little place, twice.
 
-First you see it from the side, and gravity pulls Rima down. She jumps over the wall and falls off the ledge.
+First you see it from the side, and gravity pulls Rima down. They jump over the wall and falls off the ledge.
 
-Then you see it from above. Nothing pulls her, so she walks any way she likes, and goes around the wall instead.
+Then you see it from above. Nothing pulls them, so they walk any way they like, and goes around the wall instead.
 
 Read the signs. Then open this game in Game-Maker and change one setting.
 `);
