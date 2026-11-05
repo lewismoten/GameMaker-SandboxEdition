@@ -1,0 +1,39 @@
+{
+  "title": "Home Keys",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.0",
+  "blurb": "Three short levels about which keys a game really needs. The arrows, Space and Enter walk, jump and throw through the first level, and a sign stands before each one. In the second, a gap looks as if it needs a diagonal key and does not. In the third, Q and E leap up to extra coins, which you can skip. A picture of the keyboard shows where the hands rest, and every key is listed in the instructions. Nothing here hurts.",
+  "exe": "HOMEKEYS.EXE",
+  "dosName": "HOMEKEYS",
+  "sound": "sb",
+  "label": {
+    "background": "#fff3d6",
+    "band": "#b5471f",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "3 short levels",
+    "hours": 1,
+    "background": "#b5471f",
+    "accent": "#ffd23f",
+    "ink": "#ffffff",
+    "tagline": "Which keys do you need?",
+    "back": "A small explorer in a teal beanie has three levels to cross, and a keyboard drawn on the instructions page. Arrows, Space and Enter do the walking, jumping and throwing. A gap that looks as if it needs a diagonal turns out to need only a jump and an arrow. Q and E leap to the extra coins, and the old number pad's 7 and 9 get a page of history.",
+    "features": [
+      "A sign stands before the first place each key is needed",
+      "Every key the game uses is listed, and drawn on a keyboard",
+      "Made to be copied and taken apart"
+    ],
+    "shots": [
+      ["one.map", 28, 0],
+      ["two.map", 10, 1],
+      ["three.map", 16, 2]
+    ],
+    "rating": "Everyone"
+  }
+}

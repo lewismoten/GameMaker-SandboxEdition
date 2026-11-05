@@ -118,7 +118,7 @@ game folder opens in the browser unchanged.
   - **The Basics:** `games/first-steps/`, `games/keys-and-doors/`, `games/meet-the-monsters/`, `games/room-to-room/`, `games/coins-and-score/`, `games/breakable-walls/`, `games/walk-the-ground/`, `games/watch-your-step/`, `games/things-that-grow/`.
   - **Moving and Pushing:** `games/power-up/`, `games/throw-it/`, `games/many-weapons/`, `games/inventory/`, `games/health-and-hearts/`, `games/momentum/`, `games/jump-boots/`.
   - **Worlds That Push Back:** `games/slippery-and-bouncy/`, `games/gravity-on-gravity-off/`, `games/swim/`, `games/gusts/`.
-  - **Changing Your Hero:** `games/kit-moves/`, `games/choose-hero/`, `games/take-the-wheel/`.
+  - **Changing Your Hero:** `games/kit-moves/`, `games/home-keys/`, `games/choose-hero/`, `games/take-the-wheel/`.
   - **Foes and Bosses:** `games/boss-hits/`, `games/boss-phases/`, `games/who-wins/`, `games/short-lived/`, `games/follower/`, `games/searchlight/`, `games/flock/`.
   - **Telling a Story:** `games/say-something/`, `games/pictures-and-cartoons/`, `games/sounds-and-music/`, `games/sound-board/`, `games/day-night/`, `games/same-house/`, `games/voice/`, `games/cutscenes/`, `games/title-demo/`, `games/colors/`.
   - **Putting It Together:** `games/beat-the-clock/`, `games/countdown/`, `games/warning-first/`, `games/one-more-try/`, `games/teach-test-twist/`, `games/block-brains/`, `games/puzzle-room/`, `games/spend-it/`, `games/kits-shop/`, `games/your-first-game/`.
