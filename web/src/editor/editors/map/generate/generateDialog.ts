@@ -18,6 +18,7 @@ import { missingRoles } from './missingRoles';
 import { WHOLE, offers, usableMonsters, type Offer } from './place';
 import { NOT_CHECKED, NOT_CHECKED_SIDE } from './verifyOffer';
 import type { BotRun } from './platformBot';
+import type { RunningBot } from './platformBotClient';
 import './generate.css';
 
 export interface GenerateHost {
@@ -94,6 +95,8 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
   let difficulty = 80;
   const bots = new Map<string, BotState>();
   let botRun = 0;
+  /** The bot playing now, in its worker; stopped when the offers change or the dialog closes. */
+  let running: RunningBot | undefined;
   let hero: Character | undefined;
   try {
     const bytes = host.hero && host.project.files.get(host.hero.chr);
@@ -131,47 +134,58 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
     const use = h('button', { class: 'primary', type: 'button' }, 'Use this layout');
     const buttons: HTMLButtonElement[] = [];
 
-    /** The chip of an offer: for a side view, whether a bot has played it, else the proof the generator holds. */
-    function chipOf(o: Offer): { text: string; ok: boolean; label: string } {
+    /** The chip of an offer: for a side view, whether a bot has played it, else the proof the generator holds; `more` follows the chip's words in the button's name. */
+    function chipOf(o: Offer): { text: string; ok: boolean; more: string } {
       if (kind === 'platform') {
         const b = bots.get(botKey(o, difficulty));
-        if (b && b !== 'playing' && b.won) return { text: 'Bot won', ok: true, label: 'Verified: the bot won' };
-        if (b && b !== 'playing') return { text: 'Not proven', ok: false, label: 'Not proven: the bot could not follow the route' };
-        if (o.check?.verified) return { text: 'Jump math', ok: true, label: 'Verified: reachable by jump math' };
+        if (b && b !== 'playing' && b.won) return { text: 'Bot won', ok: true, more: 'verified on the real engine' };
+        if (b && b !== 'playing') return { text: 'Not proven', ok: false, more: 'the bot could not follow the route' };
+        if (o.check?.verified) return { text: 'Jump math', ok: true, more: 'verified reachable by jump math' };
       }
-      return o.check?.verified ? { text: 'Verified', ok: true, label: 'Verified' } : { text: 'Not proven', ok: false, label: 'Not proven' };
+      return o.check?.verified ? { text: 'Verified', ok: true, more: '' } : { text: 'Not proven', ok: false, more: '' };
     }
+    /** An offer button's name: its visible caption first ("Layout 2 Bot won"), then what the chip means and the seed. */
+    const offerName = (i: number, c: { text: string; more: string }, o: Offer) => `Layout ${i + 1} ${c.text}${c.more ? `, ${c.more}` : ''}, seed ${o.seed}`;
     const chips: HTMLElement[] = [];
     /** A bot plays each side view in turn, one at a time; the chips change as each finishes. */
     async function playBots(token: number): Promise<void> {
       if (kind !== 'platform' || !host.hero) return;
-      const { botPlays } = await import('./platformBot');
+      const { startPlatformBot } = await import('./platformBotClient');
       for (let i = 0; i < current.length; i++) {
         const o = current[i];
         if (token !== botRun) return;
-        if (!o.outcome.ok || !o.blocks || bots.has(botKey(o, difficulty))) continue;
-        bots.set(botKey(o, difficulty), 'playing');
+        const key = botKey(o, difficulty);
+        if (!o.outcome.ok || !o.blocks || bots.has(key)) continue;
+        bots.set(key, 'playing');
         pick();
         await new Promise((res) => setTimeout(res, 0));
         let run: BotRun;
+        let mine: RunningBot | undefined;
         try {
-          run = await botPlays({
+          mine = running = startPlatformBot({
             files: host.project.files,
             names: { bbl: host.bbl, mbl: host.hero.mbl, chr: host.hero.chr, cbl: host.hero.cbl },
             blocks: o.blocks,
             result: o.outcome.result,
           });
+          run = await mine.done;
         } catch (e) {
+          if ((e as Error).name === 'AbortError') {
+            bots.delete(key);
+            return;
+          }
           run = { won: false, why: `The bot could not play it (${(e as Error).message}).`, ticks: 0 };
+        } finally {
+          if (running === mine) running = undefined;
         }
-        bots.set(botKey(o, difficulty), run);
+        bots.set(key, run);
         if (token !== botRun) return;
         const c = chipOf(o);
         const chip = chips[i];
         if (chip) {
           chip.textContent = c.text;
           chip.className = `gen-chip ${c.ok ? 'ok' : 'warn'}`;
-          chip.closest('button')?.setAttribute('aria-label', `Layout ${i + 1} ${c.label}, seed ${o.seed}`);
+          chip.closest('button')?.setAttribute('aria-label', offerName(i, c, o));
         }
         pick();
         await new Promise((res) => setTimeout(res, 0));
@@ -186,6 +200,7 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
       diffRow.hidden = kind !== 'platform';
       diffText.textContent = `Difficulty: ${difficulty}% of the most the hero can jump`;
       botRun++;
+      running?.cancel();
       current = n.ok
         ? offers(host.blocks(), roles, terrains, kind, seed, r, {
             monsters: addMonsters ? monsterIds : undefined,
@@ -216,7 +231,7 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
               type: 'button',
               class: 'gen-offer',
               'aria-pressed': String(i === chosen),
-              'aria-label': `Layout ${i + 1} ${chipInfo.label}, seed ${o.seed}`,
+              'aria-label': offerName(i, chipInfo, o),
               onclick: () => {
                 chosen = i;
                 pick();
@@ -243,7 +258,7 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
       if (b && b !== 'playing' && b.won)
         return `${asks} Verified: a bot played it on the real engine from the entry to the exit${res.locks.length ? ' (through the key and the door)' : ''}. ${NOT_CHECKED_SIDE}`;
       if (b && b !== 'playing')
-        return `${asks} Not proven: the reach model says it can be done, but the bot could not follow the route (${b.why}). ${NOT_CHECKED_SIDE}`;
+        return `${asks} Not proven: the reach model says it can be done, but the bot could not follow the route: ${b.why} ${NOT_CHECKED_SIDE}`;
       return `${asks} Verified: reachable by jump math (the hero's own walk and jump read from his character file), and every coin, the key and the heart can be touched.${host.hero ? (b === 'playing' ? ' A bot is playing it now.' : '') : ''} ${NOT_CHECKED_SIDE}`;
     }
     function pick(): void {
@@ -333,4 +348,5 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
       h('div', { class: 'toolbar' }, use, h('button', { type: 'button', onclick: () => close(undefined) }, 'Cancel')),
     );
   });
+  running?.cancel();
 }
