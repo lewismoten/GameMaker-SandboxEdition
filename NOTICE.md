@@ -821,15 +821,15 @@ frame-dump hook and kept the results. This fork uses two things from it:
 - The finding that ChangeScroll's speed arithmetic overflows a 16-bit `int` in DOS. Our
   `web/packages/engine/src/engine/scroll.ts` wraps the same way.
 
-## The Pocket Player spike (hardware/pocket-player)
+## The Pocket Player (hardware/pocket-player)
 
-A test firmware for the ESP32-3248S035 board, and a dev-only install page (`web/public/pocket/`, not linked from the site). Claude Sonnet 5.5 wrote the firmware and the page.
+A firmware for the ESP32-3248S035 board that plays the Starter games, and a dev-only install page (`web/public/pocket/`, not linked from the site). Claude Sonnet 5.5 wrote the firmware and the page.
 
 - **LovyanGFX** (lovyan03, FreeBSD/BSD-style license) draws to the display; it is compiled into the firmware binaries. Its license text: https://github.com/lovyan03/LovyanGFX/blob/master/license.txt.
 - **Arduino core for the ESP32** (Espressif Systems, LGPL-2.1) and the ESP-IDF parts it contains (Apache-2.0), built with **PlatformIO** (Apache-2.0) and its `espressif32` platform (Apache-2.0).
 - **ESP Web Tools** 10.2.1 (esphome/esp-web-tools, Apache-2.0, Open Home Foundation) is copied, as built, into `web/public/pocket/ewt/` with its license. It bundles **esptool-js** (Espressif, MIT), **@material/web** (Google, Apache-2.0) and **improv-wifi-serial-sdk** (Apache-2.0). Nothing loads from outside the site.
 - The board's pin numbers come from community tables: https://homeding.github.io/boards/esp32/panel-3248S035.htm and https://community.home-assistant.io/t/help-making-esp32-3248s035-work/748332. Only numbers are used.
-- The three game files in `hardware/pocket-player/data/` are First Steps' own level 1 files.
+- The files in `hardware/pocket-player/data/` are the Starter games' own maps, blocks, palettes and hero files, deflated and shared between games. The firmware unpacks them with the raw-deflate decoder in the ESP32's ROM (miniz by Rich Geldreich and others, public domain/MIT, in Espressif's ESP-ROM); the Mac test uses the system zlib and ships nothing.
 
 ## Tools used to build and test
 

@@ -12,7 +12,7 @@ import { parseBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks
 import { vga8 } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import { renderRegion } from '@lewismoten/gamemaker-sandbox-tools/kit/levelPicture';
 
-const d = '../hardware/pocket-player/data/';
+const d = '../games/first-steps/disk/'; // the unpacked files the Pocket Player packs (pocketData.ts)
 const map = parseMap(new Uint8Array(readFileSync(d + 'walk.map')));
 const bbl = parseBlocks(new Uint8Array(readFileSync(d + 'steps.bbl')), 150);
 const pal = new Uint8Array(readFileSync(d + 'steps.pal'));
