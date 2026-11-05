@@ -1,0 +1,53 @@
+/* The Generate dialog: two rows of four previews that fit a phone without scrolling. */
+.gen-dialog {
+  min-width: 0;
+  max-width: 100%;
+}
+.gen-row {
+  display: flex;
+  gap: 8px;
+  align-items: end;
+  flex-wrap: wrap;
+}
+.gen-row .field {
+  flex: 1 1 120px;
+  min-width: 0;
+}
+.gen-offers {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.gen-offer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 4px;
+  min-height: 44px;
+}
+.gen-offer canvas {
+  width: 100%;
+  max-height: min(22vh, 180px);
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+.gen-offer[aria-pressed='true'] {
+  outline: 3px solid var(--accent, #4a8);
+  outline-offset: -1px;
+}
+.gen-note {
+  margin: 0;
+}
+.mt-needs summary {
+  cursor: pointer;
+  min-height: 24px;
+}
+.mt-need-list {
+  margin: 4px 0;
+  padding-left: 0;
+  list-style: none;
+}
+.mt-role-filter {
+  margin: 0 0 4px;
+}

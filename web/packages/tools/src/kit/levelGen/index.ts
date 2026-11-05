@@ -111,4 +111,3 @@ export function verifyReach(result: GenResult): { ok: boolean; open: number; rea
     }
   return { ok: open === reached && open > 0, open, reached };
 }
-

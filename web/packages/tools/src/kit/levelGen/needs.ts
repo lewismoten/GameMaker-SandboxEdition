@@ -71,7 +71,9 @@ export function checkNeeds(kind: GenKind, roles: RoleMap): NeedsReport {
     ...info.want.map((w) => ({ role: w.role, label: roleLabel(w.role), must: false, count: count(w.role), use: w.use, without: w.without })),
   ];
   const lacking = items.filter((i) => i.must && !i.count).map((i) => i.label.toLowerCase());
-  const message = lacking.length ? `Needs ${lacking.map((l) => `a ${l} block`).join(' and ')}. Mark ${lacking.length > 1 ? 'them' : 'one'} in the block editor's Uses tab.` : '';
+  const message = lacking.length
+    ? `Needs ${lacking.map((l) => `a ${l} block`).join(' and ')}. Mark ${lacking.length > 1 ? 'them' : 'one'} in the block editor's Uses tab.`
+    : '';
   const skipped = items.filter((i) => !i.must && !i.count).map((i) => `No ${i.label.toLowerCase()} block: ${i.without}.`);
   return { kind, items, ok: !lacking.length, message, skipped };
 }
