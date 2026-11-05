@@ -11,6 +11,7 @@ embroidery and 3D-printable and laser models.
 ### Added
 
 - `kit/levelGen`: a seeded level generator with no DOM. `generate` draws a dungeon (rooms and corridors) or a forest (trees, clearings, a winding path) from the blocks that hold roles, `checkNeeds` says which roles a kind needs, and `verifyReach` checks every open cell can be reached from the proposed entry.
+- `kit/levelGen` props: locked doors with their keys (each key is reachable before its own lock; `proveResult` checks it again by playing the keys out), treasure and a heart in corners and dead ends, and monster spots from the monster numbers you pass (`GenParams.monsters`, returned as `monsters` with their start cells). Without the roles or monsters a layout is unchanged.
 - `kit/blockRoles`: block roles (wall, door, key, chair with a facing and more) with `suggestRoles`, which guesses them from a block's behavior and picture, and helpers to clean and pack them for an editor's companion data.
 - `kit/mumble`: nonsense talk as a .VOC. `mumble` and `mumbleVoc` voice a list of syllables, `syllablesFromText` turns a line of text into syllables the same way every time, and `MUMBLE_VOICES` has bright, deep and small voices.
 - `kit/levelGrid`: a character grid to paint a level in code (fill, row, column, put) before it becomes rows of text.

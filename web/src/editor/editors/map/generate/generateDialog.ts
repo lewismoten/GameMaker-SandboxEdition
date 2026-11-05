@@ -94,6 +94,7 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
       blurb.textContent = kindInfo(kind).blurb;
       needs.replaceChildren(missingRoles({ kind, roles, usesHref }));
       const n = checkNeeds(kind, roles);
+      if (monRow) monRow.hidden = !n.ok;
       current = n.ok ? offers(host.blocks(), roles, terrains, kind, seed, r, { monsters: addMonsters ? monsterIds : undefined, bg: host.blockSet() }) : [];
       chosen = Math.min(chosen, 3);
       grid.replaceChildren();
@@ -139,17 +140,17 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
       use.disabled = !ok;
       if (!ok || !o.outcome.ok) return void (note.textContent = '');
       const res = o.outcome.result;
+      const has = [
+        res.locks.length ? `${res.locks.length} locked door${res.locks.length > 1 ? 's' : ''}` : '',
+        res.monsters.length ? `${res.monsters.length} monsters` : '',
+      ].filter(Boolean);
       note.textContent = [
-        `Seed ${o.seed}. The hero could start at ${cellText(res.rect, res.entry)} and an exit at ${cellText(res.rect, res.exit)}; nothing is linked for you.`,
-        res.locks.length ? `${res.locks.length} locked door${res.locks.length > 1 ? 's' : ''}, each key reachable first.` : '',
-        res.monsters.length ? `${res.monsters.length} monsters, none near the entry.` : '',
+        `Seed ${o.seed}: hero could start at ${cellText(res.rect, res.entry)}, exit at ${cellText(res.rect, res.exit)}; nothing is linked.${has.length ? ` ${has.join(', ')}.` : ''}`,
         ...res.notes,
         o.check?.verified
-          ? `Verified: every key, treasure and the exit can be reached in order. ${NOT_CHECKED}`
+          ? `Verified: keys, treasure and exit can be reached in order. ${NOT_CHECKED}`
           : `Not proven: ${o.check?.problems.join(' ')} ${NOT_CHECKED}`,
-      ]
-        .filter(Boolean)
-        .join(' ');
+      ].join(' ');
     }
     kindSel.addEventListener('change', () => ((kind = kindSel.value as GenKind), refresh()));
     areaSel.addEventListener('change', () => ((inSelection = areaSel.value === 'sel'), refresh()));
@@ -167,9 +168,7 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
     });
     const monBox = h('input', { type: 'checkbox', checked: addMonsters, 'aria-label': 'Add monsters' });
     monBox.addEventListener('change', () => ((addMonsters = monBox.checked), refresh()));
-    const monRow = monsterIds.length
-      ? h('label', { class: 'gen-check' }, monBox, h('span', null, 'Add monsters from this game (the ones already in the area go)'))
-      : null;
+    const monRow = monsterIds.length ? h('label', { class: 'gen-check' }, monBox, h('span', null, 'Add monsters (replaces those in the area)')) : null;
     const another = h(
       'button',
       {

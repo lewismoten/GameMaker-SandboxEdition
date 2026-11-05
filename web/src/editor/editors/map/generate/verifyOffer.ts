@@ -14,7 +14,7 @@ export interface LayoutCheck {
 }
 
 /** What the chip says it did not look at; shown in the dialog. */
-export const NOT_CHECKED = 'Not played: monsters, jumps, difficulty and fun are not judged, so try it.';
+export const NOT_CHECKED = 'Not played: monsters, jumps and fun are not judged.';
 
 const where = (r: GenResult, i: number) => `(${r.rect.x + (i % r.rect.w)}, ${r.rect.y + Math.floor(i / r.rect.w)})`;
 

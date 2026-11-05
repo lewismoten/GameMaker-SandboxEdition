@@ -67,6 +67,12 @@ try {
     }, scope);
     console.log(`axe ${what} ${theme}${phone ? ' phone' : ''}: ${v.length ? v.join(' | ') : 'clean'}`);
   };
+  const fit = await page.evaluate(() => {
+    const d = document.querySelector('dialog[open]') as HTMLElement;
+    const b = [...d.querySelectorAll('button')].find((x) => x.textContent === 'Use this layout')!.getBoundingClientRect();
+    return `dialog scrolls: ${d.scrollHeight > d.clientHeight + 1}; Use button bottom ${Math.round(b.bottom)} of ${innerHeight}`;
+  });
+  console.log(fit);
   await axe('dialog', 'dialog[open]');
   await page.locator('dialog .gen-offer').first().click();
   await page.getByRole('button', { name: 'Use this layout' }).click();
