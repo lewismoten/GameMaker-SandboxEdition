@@ -77,7 +77,7 @@ export function drawRoad(pal: Pal): Pixels {
   // the tail board at the left: tall planks standing on the deck
   p.rect(0, 80, 20, 100, c('wood', 2)).rect(0, 80, 20, 3, c('wood', 4)).rect(19, 80, 1, 100, c('wood', 0));
   for (let y = 100; y < 180; y += 20) p.rect(0, y, 20, 1, c('wood', 0));
-  // the cab at the right: a teal box with a window, taller than Kit
+  // the cab at the right: a teal box with a window, taller than Mia
   p.rect(260, 80, 60, 100, c('teal', 2));
   p.rect(260, 80, 60, 4, c('teal', 3)).rect(260, 80, 1, 100, c('teal', 3)).rect(260, 176, 60, 4, c('teal', 0));
   p.rect(268, 88, 46, 30, c('ink', 0)).rect(270, 90, 42, 26, c('sky', 3));

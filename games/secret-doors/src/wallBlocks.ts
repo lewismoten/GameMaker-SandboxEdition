@@ -1,9 +1,9 @@
 // LOOKS LIKE A WALL's own blocks, added to the Starter block set after the signs. Every wall here is
 // drawn exactly like the Starter brick, so the picture says nothing about what a wall does:
 //   wall      solid on every side, a real wall
-//   fake      the same picture, solid on no side: Kit walks into it and through it
+//   fake      the same picture, solid on no side: Mia walks into it and through it
 //   loose     the same picture again, solid; touch it and it becomes `cracked`
-//   cracked   the brick with a crack across it, open (Kit passes); touch it and it becomes `chips`
+//   cracked   the brick with a crack across it, open (Mia passes); touch it and it becomes `chips`
 //   chips     a little pile of brick bits on the floor of the square, open, nothing more to turn into
 //   hintCoin  an ordinary coin: it is only here to show through a wall
 import { outline } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';

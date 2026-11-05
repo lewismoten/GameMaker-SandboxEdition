@@ -1,13 +1,13 @@
 // LOOKS LIKE A WALL's three levels. Each is painted on a Grid (a block a character, see
 // games/kit/starter/map.ts for what the letters mean), then given its signs and walls.
 //
-//   1. Same Look: two walls drawn exactly alike. The first is solid (Kit bumps it and jumps over);
-//      the second, four high, is only a picture of a wall: Kit walks into it and through it.
+//   1. Same Look: two walls drawn exactly alike. The first is solid (Mia bumps it and jumps over);
+//      the second, four high, is only a picture of a wall: Mia walks into it and through it.
 //   2. Bump, Then Bump: a wall that cracks when touched and crumbles when touched again. The block
 //      you touch becomes a second block, and that one becomes a third.
 //   3. Coins in the Wall: a wall of fake bricks with coins showing in it. A secret is fair when
 //      the level hints at it.
-// Every room is closed in by hedges you can see, so Kit is never stopped by something he can't.
+// Every room is closed in by hedges you can see, so Mia is never stopped by something he can't.
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
@@ -164,7 +164,7 @@ function coinsInTheWall(book: Book, signs: Record<SignName, Sign>): StarterMap {
 
 /** The levels in order. */
 export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
-  const pal = buildStarterPalette();
+  const pal = buildStarterPalette(undefined, 'secret-doors');
   const { book, signs } = buildBlocks(pal);
   const levels: Level[] = [
     { file: 'one', title: 'Same Look', hint: 'Solid is not a look.', map: sameLook(book, signs) },

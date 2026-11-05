@@ -1,4 +1,4 @@
-// MAPS IN MAPS's own title picture, in the Bigger Worlds look (the kit's atlas): an old map page with Kit from above on a
+// MAPS IN MAPS's own title picture, in the Bigger Worlds look (the kit's atlas): an old map page with Yana from above on a
 // patch of lawn, and three pictures of one trip: world, town and house.
 import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { scaleBlit } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
@@ -8,7 +8,7 @@ import type { Pal } from '../../kit/starter/palette';
 import { W } from '../../kit/starter/screens';
 import { backdrop, frameOf, lookOf } from '../../kit/starter/titleStyles';
 
-/** The title in the atlas look: the name, a ribbon, Kit from above on the lawn, and three pictures of a trip into a house. */
+/** The title in the atlas look: the name, a ribbon, Yana from above on the lawn, and three pictures of a trip into a house. */
 export function titlePicture(pal: Pal, above: Pixels, tiny: Pixels, name: string, tagline: string): Pixels {
   const look = lookOf(pal, 'atlas');
   const p = backdrop(pal, 'atlas');
@@ -18,7 +18,7 @@ export function titlePicture(pal: Pal, above: Pixels, tiny: Pixels, name: string
   const rx = Math.round((W - ribbon) / 2);
   bevel(p, rx, 50, ribbon, 14, pal.r(look.ribbon), 3, 2);
   text(p, rx + 10, 54, tagline, look.ribbonText);
-  // Kit from above on a patch of lawn, big
+  // Yana from above on a patch of lawn, big
   bevel(p, 28, 92, 72, 64, pal.r('grass'), 2, 2);
   scaleBlit(p, above, 44, 106, 2);
   // three pictures of one trip, each a different scale: a world with a tiny town on it, the town's streets, a room
@@ -32,7 +32,7 @@ export function titlePicture(pal: Pal, above: Pixels, tiny: Pixels, name: string
     p.rect(x - 2, py - 2, pw + 4, ph + 4, c('ink', 0)).rect(x, py, pw, ph, base);
     return x;
   };
-  // 1: the world, a sea round a green country, the town one dot of roofs, Kit tiny
+  // 1: the world, a sea round a green country, the town one dot of roofs, Yana tiny
   let x = frame(0, c('blue', 2));
   p.rect(x + 6, py + 6, pw - 12, ph - 12, c('grass', 3)).rect(x + 6, py + ph - 9, pw - 12, 3, c('parch', 3));
   p.rect(x + 28, py + 12, 7, 4, c('ink', 0))
@@ -52,7 +52,7 @@ export function titlePicture(pal: Pal, above: Pixels, tiny: Pixels, name: string
       .rect(hx + 1, hy + 6, 12, 3, c('parch', 3))
       .rect(hx + 6, hy + 6, 3, 4, c('wood', 2));
   scaleBlit(p, above, x + 3, py + 18, 1);
-  // 3: a room, floor, a bed and a rug, Kit large
+  // 3: a room, floor, a bed and a rug, Yana large
   x = frame(2, c('wood', 3));
   for (let yy = 4; yy < ph; yy += 5) p.rect(x, py + yy, pw, 1, c('wood', 2));
   p.rect(x + 28, py + 12, 20, 18, c('red', 2))

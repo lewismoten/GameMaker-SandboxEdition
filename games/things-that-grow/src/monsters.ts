@@ -1,7 +1,7 @@
 // SEEDS AND NESTS's monsters. The kit's gumdrop 0, buzzer 1 and shelly 2 stay in the file (unused), then:
 //   BIRD      a small yellow bird that flutters about over the nest it hatched from. Not solid, harmless,
 //             and it has a lifetime (`end`), so it flies away by itself after a while.
-//   BLUEBIRD  the same bird in blue, for the nest Kit can empty, so a check can tell the two nests apart.
+//   BLUEBIRD  the same bird in blue, for the nest Lami can empty, so a check can tell the two nests apart.
 // What the engine does (code/GM/PLAYBACK.C BlocBirthMon, line ~2691): a background block with a
 // "birth" monster and a "birth time" (ticks, 18.2 a second) gives birth to that monster at its own
 // place every birth time, for as long as the block is within a screen of the hero. The timer is one
@@ -20,9 +20,9 @@ import type { Pal } from '../../kit/starter/palette';
 export const BIRD = 3;
 export const BLUEBIRD = 4;
 
-/** Powers: 100 or more cannot be popped by touching Kit (code/GM/PLAYGAME.C DoCollision); nothing here is thrown. */
+/** Powers: 100 or more cannot be popped by touching Lami (code/GM/PLAYGAME.C DoCollision); nothing here is thrown. */
 export const POWER = 110;
-/** Hit points Kit starts with (nothing in this game takes any, but Game-Maker wants a number). */
+/** Hit points Lami starts with (nothing in this game takes any, but Game-Maker wants a number). */
 export const HERO_HIT_POINTS = 50;
 /** How long a bird stays, in ticks (18.2 a second): level 1's flies off after about 8 seconds, level 2's stay longer so the sky fills. */
 export const BIRD_LIFE = 150;

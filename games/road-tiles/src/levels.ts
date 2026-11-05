@@ -181,7 +181,7 @@ function groundLevel(book: Book, s: Record<SignName, Sign>): RoadMap {
 
 /** The block set, the palette and the three levels. */
 export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
-  const pal = buildStarterPalette();
+  const pal = buildStarterPalette(undefined, 'road-tiles');
   const { book, signs } = buildBlocks(pal);
   const maps = [cornersLevel(book, signs), diagonalsLevel(book, signs), groundLevel(book, signs)];
   const meta = [

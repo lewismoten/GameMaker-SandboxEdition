@@ -1,6 +1,6 @@
 // TO THE HORIZON's two levels. Each is one screen, 16 blocks by 10, that never scrolls: the
 // road is painted in perspective on a 320x200 picture (scene.ts) and cut into blocks, cells
-// that come out alike sharing one block. Kit walks along the bottom row, the road's near edge.
+// that come out alike sharing one block. Lami walks along the bottom row, the road's near edge.
 //
 //   1. Over the Hill: balls roll out from the top of the road and grow as they come. They are
 //      born by spawner blocks off the right edge of the screen, where nobody sees them, one
@@ -8,7 +8,7 @@
 //   2. Coming Closer: no balls. A finish arch stands on the hill and grows in four sizes as the
 //      seconds go by (each block of its picture turns into the next after a time), and when it
 //      arrives the bars across the door lift and the door is open.
-// Both rooms are closed in by hedges you can see, so Kit is never stopped by something he can't.
+// Both rooms are closed in by hedges you can see, so Lami is never stopped by something he can't.
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { spawnChains, type RoadEntry } from '@lewismoten/gamemaker-sandbox-tools/kit/road3d';
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
@@ -170,7 +170,7 @@ export interface Level {
   st: Stage;
 }
 
-/** The scenery's blocks on every cell of the screen, the hedges at both sides, Kit's start and the door. */
+/** The scenery's blocks on every cell of the screen, the hedges at both sides, Lami's start and the door. */
 function paint(st: Stage, g: Grid): StarterMap {
   g.put(START[0], START[1] - 1, 's').put(START[0], START[1], 'S');
   g.put(DOOR_COL, GROUND_ROW - 2, 'e').put(DOOR_COL, GROUND_ROW - 1, 'E');
@@ -239,7 +239,7 @@ export function finishBlocks(st: Pick<Stage, 'book' | 'timed'>): Block[] {
 
 /** The levels in order. */
 export function buildLevels(): { pal: Pal; levels: Level[] } {
-  const pal = buildStarterPalette();
+  const pal = buildStarterPalette(undefined, 'horizon');
   const one = new Stage(pal);
   const two = new Stage(pal);
   const levels: Level[] = [

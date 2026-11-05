@@ -1,4 +1,4 @@
-// BOTH TOGETHER's own title picture: the circuit-board look (Wiring and Puzzles), Kit on the left,
+// BOTH TOGETHER's own title picture: the circuit-board look (Wiring and Puzzles), Lami on the left,
 // two dials and a spark on a copper wire over his head, a lit lamp at its end and the door at the right.
 import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { scaleBlit } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
@@ -9,7 +9,7 @@ import type { Pal } from '../../kit/starter/palette';
 import { W } from '../../kit/starter/screens';
 import { backdrop, frameOf, lookOf } from '../../kit/starter/titleStyles';
 
-/** The title: the name, a ribbon, Kit, a wire with two green dials, a spark and a lit lamp, and the door on a green circuit board. */
+/** The title: the name, a ribbon, Lami, a wire with two green dials, a spark and a lit lamp, and the door on a green circuit board. */
 export function titlePicture(pal: Pal, mb: Book, hero: Pixels, door: Pixels, name: string, tagline: string): Pixels {
   const look = lookOf(pal, 'circuit');
   const p = backdrop(pal, 'circuit');

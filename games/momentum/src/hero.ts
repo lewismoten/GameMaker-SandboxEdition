@@ -1,5 +1,5 @@
 // SLIDE AND DRIFT's hero: the Starter hero (kit/starter/heroChar.ts) with the four walking sequences changed
-// to momentum. A momentum frame does not move Kit; its x is added to his speed, and the speed carries him on.
+// to momentum. A momentum frame does not move Yana; its x is added to his speed, and the speed carries him on.
 //   Left / Right (and A / D)   each step adds a push to his speed. He gets faster the longer the key is held,
 //                              and when it is let go he glides on and slows (the engine takes a sixth off his
 //                              speed every tick once no momentum sequence is running).
@@ -17,7 +17,7 @@ export const HERO_LIVES = 3;
 /** The push a step adds to his speed (pixels a tick), on the first of each four frames; the other three add nothing. */
 export const PUSH = 4;
 
-/** Kit's character file, using the pictures in `cb`. */
+/** Yana's character file, using the pictures in `cb`. */
 export function buildKit(cb: Book): Character {
   const ch = buildHero(cb);
   const S = ch.sequences;

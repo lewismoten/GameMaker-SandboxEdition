@@ -1,12 +1,12 @@
 // THROW IT's two levels. Each is painted on a Grid (a block a character, see
 // games/kit/starter/map.ts for what the letters mean), then given its signs and its monsters.
 //
-//   1. Throw a Star: press Enter and Kit throws a star the way he last walked. A mint green
+//   1. Throw a Star: press Enter and Mia throws a star the way he last walked. A mint green
 //      gumdrop sits waiting for it. Stars fly only so far, so the second gumdrop is far enough
 //      away that the first throw falls short.
 //   2. The Narrow Way: a brick wall with a low tunnel through it, and a grump sitting in the
 //      tunnel with no room to go around. Face it, throw a star, and the way opens.
-// Both rooms are closed in by brick walls you can see, so Kit is never stopped by something he can't.
+// Both rooms are closed in by brick walls you can see, so Mia is never stopped by something he can't.
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
@@ -71,7 +71,7 @@ export const TUNNEL = [22, 29] as const;
 /** Level 1: two mint gumdrops sit still. 46 blocks wide; the ground is row 10. */
 function throwAStar(book: Book, signs: Record<SignName, Sign>): StarterMap {
   const g = base(46, 42);
-  // coins on the walk, one block high: Kit takes them as he goes
+  // coins on the walk, one block high: Mia takes them as he goes
   g.row(9, 18, 19, 'c').row(9, 25, 28, 'c');
   scenery(
     g,
@@ -119,7 +119,7 @@ function narrowWay(book: Book, signs: Record<SignName, Sign>): StarterMap {
 
 /** The levels in order. */
 export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
-  const pal = buildStarterPalette();
+  const pal = buildStarterPalette(undefined, 'throw-it');
   const { book, signs } = buildBlocks(pal);
   const levels: Level[] = [
     { file: 'one', title: 'Throw a Star', hint: 'Press Enter to throw.', map: throwAStar(book, signs) },

@@ -81,7 +81,7 @@ function slopePicture(pal: Pal, band: 0 | 1 | 2): Pixels {
   return p;
 }
 
-/** A grove of pines at a path's end, solid, so nothing that stops Kit is invisible: `cap` is the tops of two pines over the hills behind, the other block is the dark foliage under them. */
+/** A grove of pines at a path's end, solid, so nothing that stops Lian is invisible: `cap` is the tops of two pines over the hills behind, the other block is the dark foliage under them. */
 function grovePicture(pal: Pal, cap: boolean, behind: Pixels): Pixels {
   const g = pal.r('green');
   const p = cap ? behind.crop(0, 0, 20, 20) : new Pixels(20, 20, g[1]);

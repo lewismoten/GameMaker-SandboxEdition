@@ -1,8 +1,8 @@
 // HOME KEYS' monsters. The kit's gumdrop 0, buzzer 1 and shelly 2 stay in the file (unused), then:
-//   STAR     the friendly gold star Kit throws on Enter: power 200, so it beats whatever it touches
+//   STAR     the friendly gold star Mara throws on Enter: power 200, so it beats whatever it touches
 //   TWINKLE  the sparkle a star leaves behind
 //   JELLY    a lime jelly that sits in a tunnel and blocks it: solid on every side, harmless, power 150
-//            (a touch from Kit cannot move it; a star can). A hit scores 20.
+//            (a touch from Mara cannot move it; a star can). A hit scores 20.
 import { SOLBOT, SOLLEF, SOLRIG, SOLTOP, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import type { Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { mon } from '@lewismoten/gamemaker-sandbox-tools/kit/actors';

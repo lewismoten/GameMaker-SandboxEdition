@@ -5,7 +5,7 @@
 //   lamp  window glass and lantern bulbs: dull glass by day, warm light by night
 //   star  one slot that is the sky's own color by day, so a star is there but cannot be seen
 // DUSK.PAL is halfway between, with a sunset sky. NIGHT.PAL darkens and cools every ramp, except
-// Kit's own colors (kept bright so he is easy to follow) and the three text colors and designer
+// Lami's own colors (kept bright so he is easy to follow) and the three text colors and designer
 // colors, which stay as they are so the score line reads the same.
 import type { PaletteBuilder } from '@lewismoten/gamemaker-sandbox-tools/kit/palette';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
@@ -19,8 +19,8 @@ export interface Palettes {
   night: Uint8Array;
 }
 
-/** Ramps Kit is drawn with: dimmed less at night so he stays easy to find. */
-const KIT = new Set(['skin', 'teal', 'hair', 'orange', 'pink', 'white']);
+/** Ramps the hero is drawn with: dimmed less at night so he stays easy to find. */
+const HERO = new Set(['skin', 'teal', 'hair', 'orange', 'pink', 'white', 'kskin', 'khair', 'khat', 'khood', 'kpants']);
 /** Ramps that keep their colors at every hour (the score line and menus use them). */
 const FIXED = new Set(['menublue', 'plum', 'hot']);
 /** Ramps that light up at night instead of darkening. */
@@ -45,7 +45,7 @@ export function buildPalettes(): Palettes {
     b.ramp('orb', 3, [236, 160, 20], [255, 246, 170], [255, 208, 56]);
     b.ramp('lamp', 3, [58, 62, 84], [136, 146, 170], [92, 100, 126]);
     b.ramp('star', 1, [130, 200, 250], [130, 200, 250]);
-  });
+  }, 'day-night');
   const day = Uint8Array.from(pal.pal);
   const dusk = Uint8Array.from(day);
   const night = Uint8Array.from(day);
@@ -77,7 +77,7 @@ export function buildPalettes(): Palettes {
       if (LIT.has(name) && NIGHT_LIGHT[name]) {
         const lit = NIGHT_LIGHT[name];
         n = name === 'gold' ? lerp(nightOf(d, true), d, 0.45) : lit[Math.min(k, lit.length - 1)];
-      } else n = nightOf(d, KIT.has(name), READABLE.has(name), name === 'sky');
+      } else n = nightOf(d, HERO.has(name), READABLE.has(name), name === 'sky');
       put(night, id, n);
       // dusk: halfway, with the sky and the sun/moon warmed to sunset colors
       let m = lerp(d, n, 0.5);

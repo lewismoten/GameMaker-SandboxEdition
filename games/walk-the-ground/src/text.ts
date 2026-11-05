@@ -48,7 +48,7 @@ export const WON = wrap(`
 
 Two levels, and now you know how to dig.
 
-Soil is a block with a touch setting: when it is touched it turns into the tunnel block. The engine changes the block first and checks what is solid afterward, so Kit walks straight on. Rock has no touch setting, so it stays.
+Soil is a block with a touch setting: when it is touched it turns into the tunnel block. The engine changes the block first and checks what is solid afterward, so Neka walks straight on. Rock has no touch setting, so it stays.
 
 Open the game in Game-Maker and find soil on the Blocks tab. Make rock into soil, then play it.
 `);

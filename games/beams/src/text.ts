@@ -41,7 +41,7 @@ export const CARDS = {
 export const STORY = wrap(`
 |BEAMS AND FOG
 
-Kit finds a hall lit by three lamps, and a valley where the hills fade into the distance.
+Lian finds a hall lit by three lamps, and a valley where the hills fade into the distance.
 
 A game has no see-through colors, so light and fog are not drawn as light and fog. They are dots. Paint one pixel in two, and whatever is behind shows through the gaps. Your eye does the rest.
 
@@ -56,7 +56,7 @@ export const HOWTO = wrap(`
 
 Walk into a door to go to the next room. Read the signs.
 
-Nothing here can hurt Kit.
+Nothing here can hurt Lian.
 
 |ESC for the menu.
 `);

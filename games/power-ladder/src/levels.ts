@@ -174,7 +174,7 @@ function keysAddUp(book: Book, signs: Record<SignName, Sign>): StarterMap {
 
 /** The levels in order. */
 export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
-  const pal = buildStarterPalette();
+  const pal = buildStarterPalette(undefined, 'power-ladder');
   const { book, signs } = buildBlocks(pal);
   const levels: Level[] = [
     { file: 'one', title: 'Small Key, Big Door', hint: 'A small key is not enough.', map: smallKeyBigDoor(book, signs) },

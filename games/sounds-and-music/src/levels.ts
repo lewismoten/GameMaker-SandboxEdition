@@ -4,10 +4,10 @@
 //   1. A Song for Every Room: the room's scene names a song, and it plays and repeats. Three signs say
 //      so; the door leads to a room with a different song.
 //   2. Sounds on Pickups: a coin, a money bag, a spike and a heart, each a different counter and so a
-//      different sound. Kit walks into the spike once, on purpose, and the hearts mend him.
+//      different sound. Neka walks into the spike once, on purpose, and the hearts mend him.
 //   3. A Quiet Room: this scene names no song at all. Jumping has a sound of its own, and five coins
 //      in a row show that a new sound cuts off the last.
-// Every room is closed in by hedges you can see, so Kit is never stopped by something he can't.
+// Every room is closed in by hedges you can see, so Neka is never stopped by something he can't.
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
@@ -160,7 +160,7 @@ function quietRoom(book: Book, signs: Record<SignName, Sign>): StarterMap {
 
 /** The levels in order. */
 export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
-  const pal = buildStarterPalette();
+  const pal = buildStarterPalette(undefined, 'sounds-and-music');
   const { book, signs } = buildBlocks(pal);
   const levels: Level[] = [
     { file: 'one', title: 'A Song Per Room', hint: 'Listen: this room has a song.', song: MEADOW, map: songRoom(book, signs) },

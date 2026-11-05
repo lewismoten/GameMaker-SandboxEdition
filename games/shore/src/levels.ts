@@ -6,7 +6,7 @@
 //   2. The Shoreline: sand with water round it. A sand tile that touches water is a loop of frames in which the wave runs
 //      up the sand and back; every shape of shore (straight, round corners, a cove, a point) is its own loop, laid
 //      along the beach from four starts so the waves roll.
-// Water is solid and drawn as water (Kit walks round it; for water he can swim in see Under the Surface).
+// Water is solid and drawn as water (Neka walks round it; for water he can swim in see Under the Surface).
 import { Book, SOLID } from '../../kit/starter/book';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
 import { type Sign } from '../../kit/starter/sign';
@@ -47,7 +47,7 @@ const WORDS = {
   shore3: 'EACH EDGE STARTS AT ITS OWN FRAME, SO WAVES ROLL',
 } as const;
 
-/** The four water blocks (the ring), solid so Kit keeps out; they are all the same loop, one frame apart. */
+/** The four water blocks (the ring), solid so Neka keeps out; they are all the same loop, one frame apart. */
 function addWater(book: Book, pal: Pal, timed: Timed[]): string[] {
   const frames = Array.from({ length: FRAMES }, (_, f) => waterFrame(pal, f));
   return addRing(book, timed, 'sea', frames, new Array(FRAMES).fill(WATER_TICKS), { solid: SOLID });
@@ -82,7 +82,7 @@ function doors(c: Canvas, x: number, y0: number, y1: number): { from: [number, n
 
 /** Level 1: three platforms of planks and two stretches of pier over the sea. */
 function openWater(): Level {
-  const pal = buildStarterPalette();
+  const pal = buildStarterPalette(undefined, 'shore');
   const book = new Book('bbl');
   const timed: Timed[] = [];
   const sea = addWater(book, pal, timed);
@@ -130,7 +130,7 @@ function land(x: number, y: number): boolean {
 
 /** Level 2: the beach. */
 function shoreline(): Level {
-  const pal = buildStarterPalette();
+  const pal = buildStarterPalette(undefined, 'shore');
   const book = new Book('bbl');
   const timed: Timed[] = [];
   const sea = addWater(book, pal, timed);
@@ -195,5 +195,5 @@ function shoreline(): Level {
 /** Both levels. */
 export function buildLevels(): { pal: Pal; levels: Level[] } {
   const levels = [openWater(), shoreline()];
-  return { pal: buildStarterPalette(), levels };
+  return { pal: buildStarterPalette(undefined, 'shore'), levels };
 }

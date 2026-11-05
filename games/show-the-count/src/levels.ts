@@ -1,7 +1,7 @@
 // SHOW THE COUNT's two levels. Each is painted on a Grid (a block a character, see
 // games/kit/starter/map.ts for what the letters mean), then given its signs.
 //
-//   1. Light the Meter: five dark bulbs in a row along a ledge up a ladder. Each one Kit walks
+//   1. Light the Meter: five dark bulbs in a row along a ledge up a ladder. Each one Lena walks
 //      through lights up for good and adds one to his count, so the row of lit bulbs is the count
 //      shown as pictures (the game cannot print a number). A gate on the ground takes five.
 //   2. The Full Meter: six bulbs, three on the ground and three on a ledge, and the level's only
@@ -121,7 +121,7 @@ function fullMeter(book: Book, signs: Record<SignName, Sign>): StarterMap {
 
 /** The levels in order. */
 export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
-  const pal = buildStarterPalette();
+  const pal = buildStarterPalette(undefined, 'show-the-count');
   const { book, signs } = buildBlocks(pal);
   const levels: Level[] = [
     { file: 'one', title: 'Light the Meter', hint: 'Lit bulbs show the count.', map: lightTheMeter(book, signs) },

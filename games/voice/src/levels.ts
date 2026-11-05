@@ -1,13 +1,13 @@
 // OUT LOUD's three levels. Each is painted on a Grid (a block a character, see
 // games/kit/starter/map.ts for what the letters mean), then given its signs and speakers.
 //
-//   1. Say Hello: press Enter and Kit says hello. A key's move can play a sound, and the sound
+//   1. Say Hello: press Enter and Lena says hello. A key's move can play a sound, and the sound
 //      can be a voice file.
 //   2. Two Speakers: walk into a loudspeaker and it talks. The counter that changes decides
 //      the voice: the first speaker's counter goes up, the second's goes down.
 //   3. Let It Finish: one voice is cut off when another starts or the scene changes, so the
 //      speaker stands far enough from the door for the whole line.
-// Every room is closed in by hedges you can see, so Kit is never stopped by something he can't.
+// Every room is closed in by hedges you can see, so Lena is never stopped by something he can't.
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
@@ -23,7 +23,7 @@ function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
   const signs = {
-    enter: addSign(book, pal, 'enter.sign', 'PRESS ENTER AND KIT SAYS HELLO', 4, 3),
+    enter: addSign(book, pal, 'enter.sign', 'PRESS ENTER AND LENA SAYS HELLO', 4, 3),
     key: addSign(book, pal, 'key.sign', 'A KEY CAN PLAY A SOUND', 4, 3),
     again: addSign(book, pal, 'again.sign', 'ENTER AGAIN AND THE VOICE RESTARTS', 4, 3),
     walkin: addSign(book, pal, 'walkin.sign', 'WALK INTO A SPEAKER AND IT TALKS', 4, 3),
@@ -144,7 +144,7 @@ function letItFinish(book: Book, signs: Record<SignName, Sign>): StarterMap {
 
 /** The levels in order. */
 export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
-  const pal = buildStarterPalette();
+  const pal = buildStarterPalette(undefined, 'voice');
   const { book, signs } = buildBlocks(pal);
   const levels: Level[] = [
     { file: 'one', title: 'Say Hello', hint: 'Press Enter.', map: sayHello(book, signs) },

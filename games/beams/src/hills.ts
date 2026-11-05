@@ -15,7 +15,7 @@ export const LAYERS = [0, 1, 2] as const; // 0 is the farthest
 /** The fog's density on each layer: the farther, the thicker. */
 export const FOG: Density[] = [75, 50, 25];
 
-/** The meadow's flat color (the row behind Kit and the doors). */
+/** The meadow's flat color (the row behind Lian and the doors). */
 export const meadow = (pal: Pal): number => pal.c('grass', 3);
 /** The pale color of the fog. */
 const fogColor = (pal: Pal): number => pal.c('white', 3);

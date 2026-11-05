@@ -7,7 +7,7 @@
 //   2. A Demo That Plays Itself: a diagram of DEMO.REC comes up first. Then a hall with a meter of the
 //      1,000 key changes a recording holds, three signs and the door that ends the game.
 //
-// Both rooms are closed in by brick you can see, so Kit is never stopped by something he can't.
+// Both rooms are closed in by brick you can see, so Lian is never stopped by something he can't.
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
@@ -83,7 +83,7 @@ function hall(book: Book, door: number, signs: { x: number; sign: Sign }[], mura
 
 /** The palette, the shared block set and the scenes in order (scene 2 is the first). */
 export function buildLevels(): { pal: Pal; book: Book; scenes: Scene[] } {
-  const pal = buildStarterPalette();
+  const pal = buildStarterPalette(undefined, 'title-demo');
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
   const signs: Record<string, Sign> = {};

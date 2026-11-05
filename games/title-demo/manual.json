@@ -22,7 +22,7 @@
     },
     {
       "head": "Level 2: A Demo That Plays Itself",
-      "html": "<h1>Level 2: A Demo That Plays Itself</h1><p>A card, a list of the title scene's slots with <b>Demo recording</b> marked, and a table of the first records inside this game's own demo. Then another hall: a sign on how to record a demo, a sign on when it plays, a meter of the most a demo can hold, and the last sign on what counts toward that. The door ends the game.</p><p>To see the demo, go back to the menu with <kbd>Esc</kbd> and leave the keyboard alone for half a minute. Kit walks along the first hall by himself, and then the menu comes back.</p>"
+      "html": "<h1>Level 2: A Demo That Plays Itself</h1><p>A card, a list of the title scene's slots with <b>Demo recording</b> marked, and a table of the first records inside this game's own demo. Then another hall: a sign on how to record a demo, a sign on when it plays, a meter of the most a demo can hold, and the last sign on what counts toward that. The door ends the game.</p><p>To see the demo, go back to the menu with <kbd>Esc</kbd> and leave the keyboard alone for half a minute. Lian walks along the first hall by himself, and then the menu comes back.</p>"
     },
     {
       "head": "How this level is made",

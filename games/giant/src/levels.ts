@@ -3,12 +3,12 @@
 //
 //   1. The Giant: a brick wall with a two-block tunnel through it. Rocky, a big stone fellow, is four
 //      monsters (two on top of two) filling the tunnel, with the exit door behind him. A star flies
-//      level with Kit's hand, so from the ground it only meets the bottom two; a one-block step
-//      lets Kit reach the head. Each part pops on one hit, and the way opens when all four are gone.
+//      level with Rima's hand, so from the ground it only meets the bottom two; a one-block step
+//      lets Rima reach the head. Each part pops on one hit, and the way opens when all four are gone.
 //   2. Ouch, Wait: the same kind of wall, with Beep, a tin robot, also four monsters but each takes
 //      two hits. After the first a part blinks red for about two seconds, and a star goes straight
 //      through it; then it is cracked and the second hit pops it.
-// Both rooms are closed in by brick walls you can see, so Kit is never stopped by something he can't.
+// Both rooms are closed in by brick walls you can see, so Rima is never stopped by something he can't.
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
@@ -79,7 +79,7 @@ export const STEP = [
   [18, 20],
 ] as const;
 export const GIANT_X = [24, 24] as const;
-/** The step's top is a block above the ground, so Kit stands with his feet on row STEP_FEET. */
+/** The step's top is a block above the ground, so Rima stands with his feet on row STEP_FEET. */
 export const STEP_FEET = BOTTOM - 1;
 
 /** Paints a wall with a two-block tunnel (rows 8 and 9) across `wall`, and the one-block step in front of it. */
@@ -147,7 +147,7 @@ function ouchWait(book: Book, signs: Record<SignName, Sign>): StarterMap {
 
 /** The levels in order. */
 export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
-  const pal = buildStarterPalette();
+  const pal = buildStarterPalette(undefined, 'giant');
   const { book, signs } = buildBlocks(pal);
   const levels: Level[] = [
     { file: 'one', title: 'The Giant', hint: 'Four parts, one door.', map: theGiant(book, signs) },

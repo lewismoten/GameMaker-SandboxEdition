@@ -47,7 +47,7 @@ export const WON = wrap(`
 
 Three levels, and now you know what water does.
 
-Every block has a gravity setting: which ways it pulls. The creek pulls left and down. The deep pool pulls up. The tall pool pulls up and left. The top row of each pool has no pull at all, so Kit settles there and can walk out.
+Every block has a gravity setting: which ways it pulls. The creek pulls left and down. The deep pool pulls up. The tall pool pulls up and left. The top row of each pool has no pull at all, so Lami settles there and can walk out.
 
 Open the game in Game-Maker and find them on the Blocks tab. Make the creek pull right, then play it.
 `);

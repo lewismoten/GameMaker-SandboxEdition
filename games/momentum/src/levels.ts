@@ -1,12 +1,12 @@
 // SLIDE AND DRIFT's two levels. Each is painted on a Grid (a block a character, see games/kit/starter/map.ts
 // for what the letters mean), then given its signs and coins. No new blocks: what is new is in the hero's
-// character file (hero.ts), whose walking steps add to Kit's speed instead of moving him.
+// character file (hero.ts), whose walking steps add to Yana's speed instead of moving him.
 //
 //   1. Glide: a flat rink. A tap of Right and he glides on; holding makes him faster, and so a longer glide;
 //             Left turns him around. The door is at the end.
 //   2. Run-Up: three gaps, each wider than the last, too wide for a hop from standing. His speed from a run
 //             carries the hop across.
-// Every edge is a hedge or a wall you can see, so Kit is never stopped by something he can't.
+// Every edge is a hedge or a wall you can see, so Yana is never stopped by something he can't.
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
@@ -18,7 +18,7 @@ export type SignName = 'glide' | 'faster' | 'turn' | 'exit' | 'run' | 'longer' |
 
 /** The signs' words and sizes. */
 const WORDS: Record<SignName, { text: string; w: number; h: number }> = {
-  glide: { text: 'TAP RIGHT AND LET GO. KIT GLIDES ON', w: 4, h: 4 },
+  glide: { text: 'TAP RIGHT AND LET GO. YANA GLIDES ON', w: 4, h: 4 },
   faster: { text: 'HOLD IT LONGER AND HE GOES FASTER', w: 4, h: 4 },
   turn: { text: 'LET GO AND HE SLOWS. LEFT TURNS HIM AROUND', w: 4, h: 4 },
   exit: { text: 'EXIT →', w: 3, h: 1 },
@@ -142,7 +142,7 @@ function runUp(book: Book, signs: Record<SignName, Sign>): StarterMap {
 
 /** The levels in order. */
 export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
-  const pal = buildStarterPalette();
+  const pal = buildStarterPalette(undefined, 'momentum');
   const { book, signs } = buildBlocks(pal);
   const levels: Level[] = [
     { file: 'one', title: 'Glide', hint: 'Tap, and let him coast.', map: glide(book, signs) },

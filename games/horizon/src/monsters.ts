@@ -19,9 +19,9 @@ import { HORIZON_ROW, SPAWN_COL, VP } from './view';
 
 /** The ball for each lane (0 left, 1 middle, 2 right) is monster number BALL + lane. */
 export const BALL = 3;
-/** Powers: 100 or more cannot be popped by touching Kit. */
+/** Powers: 100 or more cannot be popped by touching Lami. */
 export const POWER = 110;
-/** Hit points Kit starts with (nothing in this game takes any, but Game-Maker wants a number). */
+/** Hit points Lami starts with (nothing in this game takes any, but Game-Maker wants a number). */
 export const HERO_HIT_POINTS = 50;
 
 const T = 255;

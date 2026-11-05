@@ -1,4 +1,4 @@
-// SAY THE WORD' title picture: the circuit-board look (Wiring and Puzzles), Kit on the left, three
+// SAY THE WORD' title picture: the circuit-board look (Wiring and Puzzles), Lian on the left, three
 // speech bubbles in a row at head height, and the door at the right.
 import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { scaleBlit } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
@@ -9,7 +9,7 @@ import { skyOf, type Pal } from '../../kit/starter/palette';
 import { W } from '../../kit/starter/screens';
 import { backdrop, frameOf, lookOf } from '../../kit/starter/titleStyles';
 
-/** The title: the name, a ribbon, Kit, three words and the door on a green circuit board. */
+/** The title: the name, a ribbon, Lian, three words and the door on a green circuit board. */
 export function titlePicture(pal: Pal, book: Book, hero: Pixels, door: Pixels, name: string, tagline: string): Pixels {
   const look = lookOf(pal, 'circuit');
   const p = backdrop(pal, 'circuit');

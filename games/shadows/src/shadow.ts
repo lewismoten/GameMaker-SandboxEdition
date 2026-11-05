@@ -35,7 +35,7 @@ export function withShadow(body: Pixels, kind: Shade, pal: Pal, rx: number, mark
   return out.blit(body, 0, 0, T);
 }
 
-/** Kit with a shadow: his body made three pixels shorter, so there is room under his feet. Three torso rows come out (rows 4, 7 and 10 of his lower block). */
+/** Mara with a shadow: his body made three pixels shorter, so there is room under his feet. Three torso rows come out (rows 4, 7 and 10 of his lower block). */
 function shorter(p: Pixels): Pixels {
   const out = new Pixels(20, 20, T);
   let to = 0; // (the last three rows stay clear)
@@ -50,7 +50,7 @@ function shorter(p: Pixels): Pixels {
 /** The lower blocks where his feet are on the ground (he stands and walks); the others (jumping, falling) keep no shadow. */
 const GROUNDED = new Set(['stand', 'walk0', 'walk1', 'walk2', 'walk3']);
 
-/** A copy of Kit's character blocks (in the same order, so the same numbers) where standing and walking carry a shadow of `kind`. */
+/** A copy of Mara's character blocks (in the same order, so the same numbers) where standing and walking carry a shadow of `kind`. */
 export function shadowedHero(hero: Book, kind: Shade, pal: Pal, mark?: number): Book {
   const out = new Book('cbl');
   for (const name of hero.index.keys()) {

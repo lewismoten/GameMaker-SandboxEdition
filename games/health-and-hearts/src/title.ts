@@ -1,4 +1,4 @@
-// HEALTH AND HEARTS's own title picture, in the Moving and Pushing look (the kit's sunset): Kit, three hearts
+// HEALTH AND HEARTS's own title picture, in the Moving and Pushing look (the kit's sunset): Lian, three hearts
 // floating in a row and the exit door.
 import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { scaleBlit } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
@@ -9,7 +9,7 @@ import type { Book } from '../../kit/starter/book';
 import { W } from '../../kit/starter/screens';
 import { backdrop, frameOf, lookOf } from '../../kit/starter/titleStyles';
 
-/** The title in the Moving and Pushing look (a sunset): the name, a ribbon, then Kit, three hearts floating and the door. */
+/** The title in the Moving and Pushing look (a sunset): the name, a ribbon, then Lian, three hearts floating and the door. */
 export function titlePicture(pal: Pal, book: Book, hero: Pixels, door: Pixels, name: string, tagline: string): Pixels {
   const look = lookOf(pal, 'sunset');
   const p = backdrop(pal, 'sunset');

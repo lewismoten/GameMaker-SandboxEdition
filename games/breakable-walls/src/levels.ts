@@ -2,12 +2,12 @@
 // games/kit/starter/map.ts for what the letters mean), then given its signs, crates and gems.
 //
 //   1. Bump a Crate: two walls of crates across the path. Walk into one and the crates you touch
-//      turn to rubble; the ones above Kit's head stay, so only what you touch breaks.
-//   2. Coins Pay Once: a coin whose "becomes" is itself pays every tick Kit stands in it and never goes
+//      turn to rubble; the ones above Yana's head stay, so only what you touch breaks.
+//   2. Coins Pay Once: a coin whose "becomes" is itself pays every tick Yana stands in it and never goes
 //      (the mistake), then ordinary coins that become air and pay once, then a crate wall to the exit.
 //   3. Spinning Gems: gems that turn in four frames. Every frame has the same touch, so a gem goes
 //      whichever frame it is caught in. A crate wall hides a stack of them.
-// Every room is closed in by hedges you can see, so Kit is never stopped by something he can't.
+// Every room is closed in by hedges you can see, so Yana is never stopped by something he can't.
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
@@ -153,7 +153,7 @@ function spinningGems(book: Book, signs: Record<SignName, Sign>): StarterMap {
 
 /** The levels in order. */
 export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
-  const pal = buildStarterPalette();
+  const pal = buildStarterPalette(undefined, 'breakable-walls');
   const { book, signs } = buildBlocks(pal);
   const levels: Level[] = [
     { file: 'one', title: 'Bump a Crate', hint: 'A bump is a touch.', map: bumpACrate(book, signs) },

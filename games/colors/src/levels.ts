@@ -117,7 +117,7 @@ function shapeAndBrightness(book: Book, signs: Record<SignName, Sign>): StarterM
 
 /** The levels in order. */
 export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
-  const pal = buildStarterPalette(addColorRamps);
+  const pal = buildStarterPalette(addColorRamps, 'colors');
   const { book, signs } = buildBlocks(pal);
   const levels: Level[] = [
     { file: 'one', title: 'Red and Green', hint: 'Which plate stings? Only a little.', map: redAndGreen(book, signs) },

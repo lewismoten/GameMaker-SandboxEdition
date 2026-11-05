@@ -1,4 +1,4 @@
-// OVERHEAD's own title picture, in the Bigger Worlds look (the kit's atlas): an old map page with Kit from above on a
+// OVERHEAD's own title picture, in the Bigger Worlds look (the kit's atlas): an old map page with Lami from above on a
 // patch of lawn, and a small map of four areas joined in a ring by their roads.
 import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { scaleBlit } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
@@ -8,7 +8,7 @@ import type { Pal } from '../../kit/starter/palette';
 import { W } from '../../kit/starter/screens';
 import { backdrop, frameOf, lookOf } from '../../kit/starter/titleStyles';
 
-/** The title in the atlas look: the name, a ribbon, Kit from above on the lawn, and a ring of four areas on the page. */
+/** The title in the atlas look: the name, a ribbon, Lami from above on the lawn, and a ring of four areas on the page. */
 export function titlePicture(pal: Pal, above: Pixels, name: string, tagline: string): Pixels {
   const look = lookOf(pal, 'atlas');
   const p = backdrop(pal, 'atlas');
@@ -18,7 +18,7 @@ export function titlePicture(pal: Pal, above: Pixels, name: string, tagline: str
   const rx = Math.round((W - ribbon) / 2);
   bevel(p, rx, 50, ribbon, 14, pal.r(look.ribbon), 3, 2);
   text(p, rx + 10, 54, tagline, look.ribbonText);
-  // Kit from above on a patch of lawn, big
+  // Lami from above on a patch of lawn, big
   bevel(p, 28, 92, 72, 64, pal.r('grass'), 2, 2);
   scaleBlit(p, above, 44, 106, 2);
   // the map: four areas in a ring, each its own color, joined by roads

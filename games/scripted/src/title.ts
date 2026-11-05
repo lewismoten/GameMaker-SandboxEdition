@@ -1,5 +1,5 @@
 // THE SHOW's own title picture, in the Showcase Tricks look (the kit's neon): a little stage with its
-// curtains and valance, Pip and Blu on it saying HI to each other, and Kit and the door on either side.
+// curtains and valance, Pip and Blu on it saying HI to each other, and Neka and the door on either side.
 import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { scaleBlit } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 import { bevel } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
@@ -9,7 +9,7 @@ import { skyOf, type Pal } from '../../kit/starter/palette';
 import { W } from '../../kit/starter/screens';
 import { backdrop, frameOf, lookOf } from '../../kit/starter/titleStyles';
 
-/** The title in the neon look: the name, a ribbon, then the stage with its actors, Kit and the door. */
+/** The title in the neon look: the name, a ribbon, then the stage with its actors, Neka and the door. */
 export function titlePicture(pal: Pal, mb: Book, book: Book, hero: Pixels, door: Pixels, name: string, tagline: string): Pixels {
   const look = lookOf(pal, 'neon');
   const p = backdrop(pal, 'neon');

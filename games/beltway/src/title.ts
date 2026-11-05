@@ -1,5 +1,5 @@
 // ROUND AND ROUND's own title picture: the loop track in the sky with the car at four places on it
-// (turned as it goes), the name over the sky, and Kit cheering on the lawn.
+// (turned as it goes), the name over the sky, and Mia cheering on the lawn.
 import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { orientIndex } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { bevel } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';

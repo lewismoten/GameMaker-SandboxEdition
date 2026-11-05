@@ -8,7 +8,7 @@ export const STORY = wrap(`
 
 The same little place, twice.
 
-First you see it from the side, and gravity pulls Kit down. He jumps over the wall and falls off the ledge.
+First you see it from the side, and gravity pulls Rima down. He jumps over the wall and falls off the ledge.
 
 Then you see it from above. Nothing pulls him, so he walks any way he likes, and goes around the wall instead.
 

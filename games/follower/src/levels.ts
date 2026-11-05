@@ -2,12 +2,12 @@
 // games/kit/starter/map.ts for what the letters mean), then given its signs and its monster.
 //
 //   1. Puff Follows: a flat meadow with a small brick hill. Puff, a little winged pup, starts a few
-//      blocks from Kit and flies straight at him whenever he moves. It is slower than Kit, so it
+//      blocks from Lena and flies straight at him whenever he moves. It is slower than Lena, so it
 //      falls behind when he runs and catches up when he stops.
-//   2. Out of Reach: Kit starts on a brick ledge, and Puff starts in the low room under it. Puff
-//      flies straight at Kit, hits the underside of the ledge and stays there, below him, until
+//   2. Out of Reach: Lena starts on a brick ledge, and Puff starts in the low room under it. Puff
+//      flies straight at Lena, hits the underside of the ledge and stays there, below him, until
 //      he steps off the end. It plans no way around.
-// Both rooms are closed in by brick walls you can see, so Kit is never stopped by something he can't.
+// Both rooms are closed in by brick walls you can see, so Lena is never stopped by something he can't.
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
@@ -68,7 +68,7 @@ function scenery(g: Grid, clouds: [number, number][], bushes: number[], flowers:
   for (const x of flowers) g.put(x, GROUND - 1, 'f');
 }
 
-/** Level 1: Puff follows Kit over a small brick hill. 46 blocks wide; the ground is row 10. */
+/** Level 1: Puff follows Lena over a small brick hill. 46 blocks wide; the ground is row 10. */
 function puffFollows(book: Book, signs: Record<SignName, Sign>): StarterMap {
   const g = base(46, 42);
   // the hill: two steps and a top, with coins over it
@@ -93,7 +93,7 @@ function puffFollows(book: Book, signs: Record<SignName, Sign>): StarterMap {
   return m;
 }
 
-/** Level 2: Kit starts on a ledge; Puff is in the room under it. 46 blocks wide. */
+/** Level 2: Lena starts on a ledge; Puff is in the room under it. 46 blocks wide. */
 function outOfReach(book: Book, signs: Record<SignName, Sign>): StarterMap {
   const g = base(46, 42, false);
   g.row(LEDGE, 1, LEDGE_END, 'B');
@@ -125,7 +125,7 @@ function outOfReach(book: Book, signs: Record<SignName, Sign>): StarterMap {
 
 /** The levels in order. */
 export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
-  const pal = buildStarterPalette();
+  const pal = buildStarterPalette(undefined, 'follower');
   const { book, signs } = buildBlocks(pal);
   const levels: Level[] = [
     { file: 'one', title: 'Puff Follows', hint: 'A friend that flies after you.', map: puffFollows(book, signs) },

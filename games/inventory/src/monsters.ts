@@ -1,16 +1,16 @@
 // PICK IT UP's monsters. The kit's gumdrop 0, buzzer 1 and shelly 2 stay in the file (unused), then:
-//   STAR     the friendly gold star Kit throws: born from a frame of the hero's star sequence (hero.ts), it
-//            flies the way Kit last walked until it hits something or its lifetime runs out. Power 120.
+//   STAR     the friendly gold star Mara throws: born from a frame of the hero's star sequence (hero.ts), it
+//            flies the way Mara last walked until it hits something or its lifetime runs out. Power 120.
 //   FLAME    the little orange flame from the flame sequence: the same flight with power 200, but a short life (FLAME_LIFE: two blocks; a star goes six).
 //   TWINKLE  what a star, a flame or a popped monster leaves behind for a moment: a little sparkle
 //   TARGET   a mint green gumdrop sitting still: harmless, not solid, power 110, so a star or a flame pops it
-//   FROSTY   a pale blue gumdrop with a frown that blocks a narrow way: solid on every side so Kit cannot
+//   FROSTY   a pale blue gumdrop with a frown that blocks a narrow way: solid on every side so Mara cannot
 //            pass, harmless to touch, power 150: a star (120) is used up on it, only a flame (200) melts it
 // What the engine does (code/GM/PLAYGAME.C, DoCollision): when two monsters overlap, the one
 // with less power dies and the stronger one lives; but a monster born from the character
 // (fromchar) is used up as well, and the character gets the dead monster's "score bonus". A star
-// born from Kit can never hurt him. Touching a monster whose power is 100 or more does not
-// kill it, so Kit can only get rid of a guard by throwing a star.
+// born from Mara can never hurt him. Touching a monster whose power is 100 or more does not
+// kill it, so Mara can only get rid of a guard by throwing a star.
 import { SOLBOT, SOLLEF, SOLRIG, SOLTOP, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import type { Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { mon } from '@lewismoten/gamemaker-sandbox-tools/kit/actors';
@@ -30,7 +30,7 @@ export const FROSTY = 7;
 /** The powers: a star beats a target but not frost; a flame beats both. */
 export const POWER = { star: 120, flame: 200, target: 110, frosty: 150 } as const;
 
-/** Hit points Kit starts with (nothing in this game takes any, but Game-Maker wants a number). */
+/** Hit points Mara starts with (nothing in this game takes any, but Game-Maker wants a number). */
 export const HERO_HIT_POINTS = 50;
 /** Pixels a star flies a tick, and how many ticks it flies: the range is the product, about 6 blocks. */
 export const STAR_SPEED = 4;
@@ -146,7 +146,7 @@ export function monsterSet(mb: Book): Monster[] {
     [mb.n(`${name}0`), t],
     [mb.n(`${name}1`), t],
   ];
-  // both fly toward where Kit was last walking (towards 1 to 63 is a speed; Game-Maker gives a monster born
+  // both fly toward where Mara was last walking (towards 1 to 63 is a speed; Game-Maker gives a monster born
   // from the character that direction), die when they hit a wall or when their lifetime (end, in ticks) is
   // over, and leave a sparkle either way. Only their power differs.
   set[STAR] = mon(anim('star', 2), { power: POWER.star, thru: 1, towards: STAR_SPEED, end: STAR_LIFE, newmon: TWINKLE });

@@ -1,5 +1,5 @@
 // BOOTS AND JET PACK's heroes: the Starter hero (kit/starter/heroChar.ts) twice.
-//   hero.chr   level 1: Kit as he is. His jump (sequence 9) is a push upward that adds to his speed (momentum),
+//   hero.chr   level 1: Neka as he is. His jump (sequence 9) is a push upward that adds to his speed (momentum),
 //              and its uses are unlimited, so every tap in the air lifts him again: a jet pack.
 //   hero2.chr  level 2: the jump moves to sequence 17, whose meter is 2. Each tap that starts it spends one,
 //              and with none left Space does nothing until a boot charge fills it again.
@@ -20,12 +20,12 @@ export const BOOT_SEQ = 17;
 /** The taps the boots hold at the start of level 2. */
 export const BOOT_TAPS = 2;
 
-/** Level 1's Kit: unlimited jumps. */
+/** Level 1's Neka: unlimited jumps. */
 export function buildKit(cb: Book): Character {
   return buildHero(cb);
 }
 
-/** Level 2's Kit: the jump is sequence 17 with BOOT_TAPS uses, and sequence 9 has no key. */
+/** Level 2's Neka: the jump is sequence 17 with BOOT_TAPS uses, and sequence 9 has no key. */
 export function buildBootKit(cb: Book): Character {
   const ch = buildHero(cb);
   const S = ch.sequences;

@@ -20,7 +20,7 @@ export const HOWTO = wrap(`
 |SPACE         jump
 |F2            lives, score
 
-Tap Space again in the air and Kit rises again. In the second level the boots hold two jumps. A blue bubble adds one.
+Tap Space again in the air and Neka rises again. In the second level the boots hold two jumps. A blue bubble adds one.
 
 Nothing can hurt you here. If you fall into the pit, climb the ladder.
 
@@ -45,7 +45,7 @@ export const WON = wrap(`
 
 Two levels, and now you know how a jump can be counted.
 
-Kit's jump is a push upward that adds to his speed. In the first level it has no limit, so every tap in the air lifts him again. In the second it has two uses: each tap spends one, and Space does nothing when none are left. A blue bubble adds one back.
+Neka's jump is a push upward that adds to his speed. In the first level it has no limit, so every tap in the air lifts him again. In the second it has two uses: each tap spends one, and Space does nothing when none are left. A blue bubble adds one back.
 
 Open the game in Game-Maker and find the jump on the Character tab. Change its uses, and the pickups' amount on the Blocks tab.
 `);

@@ -50,7 +50,7 @@ export const WON = wrap(`
 
 Two levels, three gumdrops, and every star found its mark.
 
-A star is a monster that Kit gives birth to. One frame of his Throw sequence does it, and the star flies off the way he last walked. A star is stronger than a gumdrop, so when they touch, the gumdrop pops.
+A star is a monster that Mia gives birth to. One frame of his Throw sequence does it, and the star flies off the way he last walked. A star is stronger than a gumdrop, so when they touch, the gumdrop pops.
 
 Open the game in Game-Maker and find the Throw sequence on the Characters tab. Change how far a star flies, how fast, or which key throws it, then play your change.
 `);

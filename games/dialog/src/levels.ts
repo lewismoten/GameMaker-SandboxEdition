@@ -157,7 +157,7 @@ function crowd(book: Book, signs: Record<SignName, Sign>): Level {
 
 /** The levels in order. */
 export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
-  const pal = buildStarterPalette();
+  const pal = buildStarterPalette(undefined, 'dialog');
   const { book, signs } = buildBlocks(pal);
   return { book, pal, levels: [twoVoices(book, signs), crowd(book, signs)] };
 }

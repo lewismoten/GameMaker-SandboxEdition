@@ -2,12 +2,12 @@
 // games/kit/starter/map.ts for what the letters mean), then given its wire, its dials and its signs.
 //
 //   1. Both Together: a wire along the sky from a spark box in the left wall, two dials on it, and a
-//      dark lamp high on a post at its end. A spark runs the wire every few seconds. Kit jumps to
+//      dark lamp high on a post at its end. A spark runs the wire every few seconds. Lami jumps to
 //      bump each dial on; only a spark that passes both lights the lamp, and the light slides down
-//      to Kit, who carries it to the gate (the gate is the way out).
+//      to Lami, who carries it to the gate (the gate is the way out).
 //   2. All Three: the same with three dials, and the wire climbs over a ledge, so one dial is
-//      up where Kit must climb to it.
-// Both rooms are closed in by brick walls you can see, so Kit is never stopped by something he can't.
+//      up where Lami must climb to it.
+// Both rooms are closed in by brick walls you can see, so Lami is never stopped by something he can't.
 import { ORIGIN, StarterMap } from '../../kit/starter/map';
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
@@ -31,7 +31,7 @@ function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
     light: addSign(book, pal, 'light.sign', 'THE LIGHT DROPS. TOUCH IT', 4, 2),
     gate: addSign(book, pal, 'gate.sign', 'THE LIGHT OPENS THIS GATE', 4, 2),
     three: addSign(book, pal, 'three.sign', 'ALL THREE MUST BE ON', 4, 2),
-    climb: addSign(book, pal, 'climb.sign', 'THE WIRE CLIMBS. SO DOES KIT', 4, 2),
+    climb: addSign(book, pal, 'climb.sign', 'THE WIRE CLIMBS. SO DOES LAMI', 4, 2),
     stay: addSign(book, pal, 'stay.sign', 'A DIAL STAYS ON', 4, 2),
     light2: addSign(book, pal, 'light2.sign', 'ALL ON? LAMP LIGHTS', 4, 2),
   };
@@ -185,7 +185,7 @@ function allThree(book: Book, signs: Record<SignName, Sign>): Omit<Level, 'file'
 
 /** The levels in order. */
 export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
-  const pal = buildStarterPalette();
+  const pal = buildStarterPalette(undefined, 'and-gate');
   const { book, signs } = buildBlocks(pal);
   const levels: Level[] = [
     { file: 'one', title: 'Both Together', hint: 'Both dials must be on.', ...bothTogether(book, signs) },

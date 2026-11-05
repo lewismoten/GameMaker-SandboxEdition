@@ -2,11 +2,11 @@
 // games/kit/starter/map.ts for what the letters mean), then given its signs and its monsters.
 //
 //   1. A Bubble: a clear bubble sits in a low tunnel through a brick wall and blocks it. It has a
-//      lifetime, so it pops on its own after a while and leaves a sparkle. Kit waits, then walks through.
+//      lifetime, so it pops on its own after a while and leaves a sparkle. Mia waits, then walks through.
 //   2. Wake Up: a sleepy blue gumdrop blocks the tunnel. When its lifetime is up it does not
-//      vanish, it becomes an awake orange one that is not solid and strolls about. Kit waits, then
+//      vanish, it becomes an awake orange one that is not solid and strolls about. Mia waits, then
 //      walks through (and past) it.
-// Both rooms are closed in by brick walls you can see, so Kit is never stopped by something he can't.
+// Both rooms are closed in by brick walls you can see, so Mia is never stopped by something he can't.
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
@@ -123,7 +123,7 @@ function wakeUp(book: Book, signs: Record<SignName, Sign>): StarterMap {
 
 /** The levels in order. */
 export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
-  const pal = buildStarterPalette();
+  const pal = buildStarterPalette(undefined, 'short-lived');
   const { book, signs } = buildBlocks(pal);
   const levels: Level[] = [
     { file: 'one', title: 'A Bubble', hint: 'Some things last only a while.', map: aBubble(book, signs) },

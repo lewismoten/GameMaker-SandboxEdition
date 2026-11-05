@@ -2,7 +2,7 @@
 //   spikeUp   spikes you can walk into: 10 hit points once, then they lie flat
 //   spikeFlat what a spike becomes when touched: harmless (the "touch" rule, as a coin goes)
 //   heart     touch it and 10 hit points come back (a block's "hit points" rule, here above zero); it is gone
-//   oneUp     Kit's own face: touch it and the lives counter goes up by one (effect 1, amount 1); it is gone
+//   oneUp     Lian's own face: touch it and the lives counter goes up by one (effect 1, amount 1); it is gone
 // None is solid, so nothing holds the hero while it hurts or heals.
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { outline } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
@@ -71,7 +71,7 @@ function heart(pal: Pal): Pixels {
   return outline(p, pal.c('ink', 0), { transparent: skyOf(pal) });
 }
 
-/** Kit's face in his teal beanie, a smile and a bit of orange hood: a spare life. */
+/** Lian's face in his teal beanie, a smile and a bit of orange hood: a spare life. */
 function face(pal: Pal): Pixels {
   const p = new Pixels(20, 20, skyOf(pal));
   const t = pal.r('teal');

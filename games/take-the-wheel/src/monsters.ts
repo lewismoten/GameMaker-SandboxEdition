@@ -1,6 +1,6 @@
 // TAKE THE WHEEL's monsters. The kit's gumdrop 0, buzzer 1 and shelly 2 stay in the file (unused), then:
 //   HONK     the ripple of the kart's horn. It is born from a frame of the kart's honk sequence
-//            (kart.ts, the same way Kit's thrown star is born in THROW IT) and flies the way the kart last
+//            (kart.ts, the same way Yana's thrown star is born in THROW IT) and flies the way the kart last
 //            drove, about five blocks. Power 200: it beats every monster it touches.
 //   BIRD     a blue bird sitting in the road. Solid on every side, so a kart that cannot jump
 //            has to stop. Power 150: touching it does nothing to the bird, only a honk (200) does.
@@ -24,7 +24,7 @@ export const HONK = 3;
 export const BIRD = 4;
 export const FLY = 5;
 
-/** Hit points Kit starts with (nothing in this game takes any, but Game-Maker wants a number). */
+/** Hit points Yana starts with (nothing in this game takes any, but Game-Maker wants a number). */
 export const HERO_HIT_POINTS = 50;
 /** Pixels a honk flies a tick, and how many ticks it flies: the range is the product, five blocks. */
 export const HONK_SPEED = 4;

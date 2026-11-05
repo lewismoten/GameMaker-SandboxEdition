@@ -1,6 +1,6 @@
 // The cave's palette: the Starters' palette with three ramps of its own (cave air, rock and floor, each darkest to
 // brightest, so a block can be drawn in five brightness steps) and the sky and dirt ramps made dark to match. Every
-// block, the hero and the signs keep the same color numbers as in every Starter, so Kit and the signs stay as bright as
+// block, the hero and the signs keep the same color numbers as in every Starter, so Mia and the signs stay as bright as
 // ever: they are what must be readable in the dark.
 import type { PaletteBuilder } from '@lewismoten/gamemaker-sandbox-tools/kit/palette';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
@@ -23,10 +23,10 @@ const caveRamps = (b: PaletteBuilder): void => {
 };
 
 /** The Starters' bright palette with the cave's ramps added (the same color numbers as the cave's): for the title, menu and cards. */
-export const brightPalette = (): Pal => buildStarterPalette(caveRamps);
+export const brightPalette = (): Pal => buildStarterPalette(caveRamps, 'lights-out');
 
 export function cavePalette(): Pal {
-  const pal = buildStarterPalette(caveRamps);
+  const pal = buildStarterPalette(caveRamps, 'lights-out');
   // the blank sky block and the dirt below every level are the darkest air and rock, so what lies past a level's edge is dark too
   copy(pal, 'cair', 0, 'sky', 3);
   copy(pal, 'crock', 1, 'dirt', 2);

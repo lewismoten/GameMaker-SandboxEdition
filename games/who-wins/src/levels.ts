@@ -3,11 +3,11 @@
 //
 //   1. The Big One: two small mint gumdrops sit in a low tunnel through a brick wall and block it.
 //      A big red gumdrop (stronger) walks back and forth through the tunnel and pops them by
-//      itself. Kit waits, then walks through.
+//      itself. Lami waits, then walks through.
 //   2. Your Star: the big one stands still in front of the tunnel. A star thrown at it is used up
-//      (it is stronger than the star). Kit steps past the big one, which is friendly, and throws:
+//      (it is stronger than the star). Lami steps past the big one, which is friendly, and throws:
 //      the star (stronger than a mint pip and a purple grump) pops both, one star each.
-// Both rooms are closed in by brick walls you can see, so Kit is never stopped by something he can't.
+// Both rooms are closed in by brick walls you can see, so Lami is never stopped by something he can't.
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
@@ -130,7 +130,7 @@ function yourStar(book: Book, signs: Record<SignName, Sign>): StarterMap {
 
 /** The levels in order. */
 export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
-  const pal = buildStarterPalette();
+  const pal = buildStarterPalette(undefined, 'who-wins');
   const { book, signs } = buildBlocks(pal);
   const levels: Level[] = [
     { file: 'one', title: 'The Big One', hint: 'The stronger one pops the weaker.', map: theBigOne(book, signs) },

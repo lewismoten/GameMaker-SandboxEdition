@@ -1,15 +1,15 @@
-// WALKING VERY FAR's levels, each a scene on a map 10 blocks high and 24 to 40 wide. The view starts with Kit in the
+// WALKING VERY FAR's levels, each a scene on a map 10 blocks high and 24 to 40 wide. The view starts with Lian in the
 // middle of the screen and follows him sideways as he walks (scrolling is on across, off up and down), so a long
-// walk is a long map. The hills repeat every 8 blocks, which is why a map costs so few blocks. Kit walks left to
+// walk is a long map. The hills repeat every 8 blocks, which is why a map costs so few blocks. Lian walks left to
 // right along the ground row and ends at a gate or door that is a link.
 //
-//   Level 1, Up Close: near Kit (two blocks tall) on a road, with the hills far behind him. The ridge on those hills
+//   Level 1, Up Close: near Lian (two blocks tall) on a road, with the hills far behind him. The ridge on those hills
 //     is where he is going.
-//   Level 2, Far Away: the same kind of walk on that ridge, with Kit 8 pixels tall and everything paler. It is two
+//   Level 2, Far Away: the same kind of walk on that ridge, with Lian 8 pixels tall and everything paler. It is two
 //     scenes on two maps. In the first he takes the same steps as up close and zips along like a bug (the mistake).
 //     In the second his steps are small and slow, and he looks far away.
 //   Level 3, Big Things in Front: the ridge again, with a big fence and big flowers along the bottom. They are drawn
-//     as big as the near level's things, so the tiny Kit behind them looks very far.
+//     as big as the near level's things, so the tiny Lian behind them looks very far.
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
@@ -20,7 +20,7 @@ import { buildPalette } from './haze';
 import { addScenery, type Scenery } from './art';
 
 const SIGNS = {
-  closeUp: ['closeUp', 'KIT IS 40 PIXELS TALL. FAR UP THAT ROAD HE IS SMALL', 4, 3],
+  closeUp: ['closeUp', 'LIAN IS 40 PIXELS TALL. FAR UP THAT ROAD HE IS SMALL', 4, 3],
   quick: ['quick', 'TOO FAST. THE SAME STEPS AS UP CLOSE', 4, 2],
   slow: ['slow', 'SLOW STEPS. HE IS ONLY 8 PIXELS TALL', 4, 3],
   front: ['front', 'BIG THINGS IN FRONT MAKE HIM FAR AWAY', 4, 3],
@@ -39,11 +39,11 @@ export interface Room {
   file: string;
   /** The scene's name (19 characters at most). */
   title: string;
-  /** How far away Kit is drawn: `near` is the two-block Kit and the near palette; the others are the tiny Kit with the far palette. */
+  /** How far away Lian is drawn: `near` is the two-block Lian and the near palette; the others are the tiny Lian with the far palette. */
   look: 'near' | 'quick' | 'slow';
-  /** Blocks that take Kit away when touched, by name. */
+  /** Blocks that take Lian away when touched, by name. */
   exits: Record<string, Spot>;
-  /** The cell Kit lands on (his feet). */
+  /** The cell Lian lands on (his feet). */
   landing: Spot;
 }
 
@@ -62,10 +62,10 @@ export interface Card {
   before: string;
 }
 
-/** A map is 10 blocks high; the ground is row 6, so Kit's feet stand on row 5. */
+/** A map is 10 blocks high; the ground is row 6, so Lian's feet stand on row 5. */
 export const FLOOR = 6;
 export const FEET = FLOOR - 1;
-/** The column Kit lands on: the screen starts with him in the middle, so the first 8 blocks are what is behind him. */
+/** The column Lian lands on: the screen starts with him in the middle, so the first 8 blocks are what is behind him. */
 export const LAND_X = 8;
 /** How wide each kind of map is, and the column of its gate or door. */
 export const NEAR_W = 24;
@@ -90,7 +90,7 @@ const sign = (m: StarterMap, x: number, s: Sign, posts?: Scenery['posts']) => {
   if (posts) m.set(x, FEET, posts[0]).set(x + s.board[0].length - 1, FEET, posts[1]);
 };
 
-/** A map that, when finished, paints its scenery on past both ends: StarterMap.done() leaves only sky there, and the view reaches 8 blocks past Kit, who can stand at an end. */
+/** A map that, when finished, paints its scenery on past both ends: StarterMap.done() leaves only sky there, and the view reaches 8 blocks past Lian, who can stand at an end. */
 class Scenic extends StarterMap {
   constructor(
     book: Book,
@@ -198,7 +198,7 @@ export const LINKS: Link[] = [
 
 /** The level cards: one before each level's first scene. */
 export const CARDS: Card[] = [
-  { file: 'card1', n: 1, title: 'Up Close', hint: 'Kit is big here.', before: 'close' },
+  { file: 'card1', n: 1, title: 'Up Close', hint: 'Lian is big here.', before: 'close' },
   { file: 'card2', n: 2, title: 'Far Away', hint: 'The same walk, far off.', before: 'quick' },
   { file: 'card3', n: 3, title: 'Big Things in Front', hint: 'Neighbors set the size.', before: 'front' },
 ];

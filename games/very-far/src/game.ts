@@ -1,7 +1,7 @@
 // veryfar.gam: scene 0 is the title and menu, scene 1 the endings, then one scene a stretch of road (scene 2 is
 // the first, in the order of levels.ts). The scenes differ in the map they load, the palette (the near one loads
-// near.pal, the far ones far.pal) and the character: hero.chr is the two-block Kit, quick.chr and slow.chr are
-// the tiny Kit with big and small steps. The view starts with Kit in
+// near.pal, the far ones far.pal) and the character: hero.chr is the two-block Lian, quick.chr and slow.chr are
+// the tiny Lian with big and small steps. The view starts with Lian in
 // the middle of the screen and scrolls sideways as he walks. A scene lists the files it loads in slots (palette, map,
 // blocks, monsters, monster blocks, character, character blocks, sounds, song, a card before it, a card
 // after it) and carries its links: touch the From block here and you are in the To scene, standing on the To block.
@@ -44,7 +44,7 @@ export function buildGame(rooms: Room[]): Game {
     const scene = emptyScene(ADVTYPE);
     scene.desc = r.title.slice(0, 19);
     scene.pos = { x: 40 + (i % 4) * 80, y: 80 + Math.floor(i / 4) * 80 };
-    // the view follows Kit sideways; it never moves up or down (the maps are 10 blocks high, one screen)
+    // the view follows Lian sideways; it never moves up or down (the maps are 10 blocks high, one screen)
     scene.scroll.up = scene.scroll.down = 0;
     const before = CARDS.find((c) => c.before === r.id);
     scene.files = [

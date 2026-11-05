@@ -2,12 +2,12 @@
 // games/kit/starter/map.ts for what the letters mean), then given its water, signs and coins.
 // Water is only a block whose gravity setting pulls some way (water.ts); none of it hurts.
 //
-//   1. The Creek:    water that pulls LEFT and down. Fall in, and it carries Kit back to the bank he started from.
+//   1. The Creek:    water that pulls LEFT and down. Fall in, and it carries Lami back to the bank he started from.
 //                    Stepping stones cross it.
-//   2. The Float:    a deep pool that pulls UP. Kit drops in, floats to the top row (which has no pull) and swims across.
-//   3. The Lift:     a tall pool that pulls UP and LEFT. Kit steps in at the bottom and is lifted to the ledge on the left,
+//   2. The Float:    a deep pool that pulls UP. Lami drops in, floats to the top row (which has no pull) and swims across.
+//   3. The Lift:     a tall pool that pulls UP and LEFT. Lami steps in at the bottom and is lifted to the ledge on the left,
 //                    where the door is.
-// Every level is closed in by hedges you can see, so Kit is never stopped by something he can't.
+// Every level is closed in by hedges you can see, so Lami is never stopped by something he can't.
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
@@ -23,8 +23,8 @@ const WORDS: Record<SignName, { text: string; w: number; h: number }> = {
   pull: { text: 'THIS WATER PULLS LEFT. FALL IN AND IT CARRIES YOU BACK', w: 4, h: 4 },
   stones: { text: 'NOTHING HERE HURTS. HOP THE STONES TO CROSS', w: 4, h: 4 },
   exit: { text: 'EXIT →', w: 3, h: 1 },
-  float: { text: 'THIS WATER PULLS UP, SO KIT FLOATS', w: 4, h: 3 },
-  top: { text: 'THE TOP ROW HAS NO PULL. KIT SETTLES THERE', w: 4, h: 4 },
+  float: { text: 'THIS WATER PULLS UP, SO LAMI FLOATS', w: 4, h: 3 },
+  top: { text: 'THE TOP ROW HAS NO PULL. LAMI SETTLES THERE', w: 4, h: 4 },
   lift: { text: 'THIS WATER PULLS UP AND LEFT. STEP IN', w: 4, h: 4 },
   ledge: { text: 'THE TOP ROW HAS NO PULL, SO WALK OUT HERE', w: 4, h: 4 },
   back: { text: '← EXIT', w: 3, h: 1 },
@@ -207,7 +207,7 @@ function theLift(book: Book, signs: Record<SignName, Sign>): StarterMap {
 
 /** The levels in order. */
 export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
-  const pal = buildStarterPalette();
+  const pal = buildStarterPalette(undefined, 'swim');
   const { book, signs } = buildBlocks(pal);
   const levels: Level[] = [
     { file: 'one', title: 'The Creek', hint: 'It pulls to the left.', map: theCreek(book, signs) },

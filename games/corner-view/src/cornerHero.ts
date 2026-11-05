@@ -1,7 +1,7 @@
-// Kit in a corner view: one 20x20 block a pose, drawn only on the four diagonal facings (down-right, down-left,
+// Lena in a corner view: one 20x20 block a pose, drawn only on the four diagonal facings (down-right, down-left,
 // up-right, up-left), as a person seen from a corner of the room. He is never drawn facing the camera, which
 // would be wider than he is tall in this view. He is about 10 pixels wide and 19 tall, a little under one cube's
-// height, in the same teal beanie and orange hoodie as every Kit (colors from games/kit/starter/palette.ts).
+// height, in the same teal beanie and orange hoodie as every Lena (colors from games/kit/starter/palette.ts).
 // The pictures are this game's cbl; it has two character files made from them: square (levels 1 and 2: the arrows
 // walk the square grid and he faces the nearest diagonal) and diagonal (level 3: each arrow walks a drawn diagonal).
 import { CHARBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';

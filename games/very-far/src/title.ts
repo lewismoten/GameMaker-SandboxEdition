@@ -1,5 +1,5 @@
 // WALKING VERY FAR's own title picture, in the Bigger Worlds look (the kit's atlas): two little framed views of the
-// same hills on an old map page, one with Kit up close and one with Kit a tiny figure on the path, and an arrow.
+// same hills on an old map page, one with Lian up close and one with Lian a tiny figure on the path, and an arrow.
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { scaleBlit } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 import { bevel } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
@@ -13,7 +13,7 @@ import { tinyPose } from './tinyKit';
 const PW = 116;
 const PH = 70;
 
-/** One view, `PW` x `PH`: the hills, a path along the bottom and Kit on it (big, or a tiny figure). */
+/** One view, `PW` x `PH`: the hills, a path along the bottom and Lian on it (big, or a tiny figure). */
 function view(pal: Pal, hero: Pixels | undefined): Pixels {
   const p = landscapePicture(pal).crop(100, 50, PW, PH);
   p.rect(0, PH - 4, PW, 2, pal.c('parch', 2)).rect(0, PH - 2, PW, 2, pal.c('grass', 2));

@@ -1,4 +1,4 @@
-// COLOR DOORS' title picture: Kit and a row of five doors, each with a bar of swatches over it, under the name.
+// COLOR DOORS' title picture: Lena and a row of five doors, each with a bar of swatches over it, under the name.
 import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { scaleBlit } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 import { bevel } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
@@ -8,7 +8,7 @@ import { W } from '../../kit/starter/screens';
 import { backdrop, frameOf, lookOf } from '../../kit/starter/titleStyles';
 import { SWATCHES } from './colorBlocks';
 
-/** The title: the name, a ribbon, five doors across the floor and a stripe of the eight swatches over them, Kit at the left. */
+/** The title: the name, a ribbon, five doors across the floor and a stripe of the eight swatches over them, Lena at the left. */
 export function titlePicture(pal: Pal, hero: Pixels, door: Pixels, name: string, tagline: string): Pixels {
   const look = lookOf(pal, 'breeze');
   const p = backdrop(pal, 'breeze');

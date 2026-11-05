@@ -23,7 +23,7 @@ function dim(pal: Pal, name: string, n: number, by: number): void {
 
 /** The hall: a dim violet-gray wall, floor bricks and dirt darker. */
 export function hallPalette(): Pal {
-  const pal = buildStarterPalette();
+  const pal = buildStarterPalette(undefined, 'flicker');
   ramp(pal, 'sky', [
     [18, 14, 30],
     [26, 20, 40],
@@ -39,12 +39,12 @@ export function hallPalette(): Pal {
 
 /** The day: the Starters' palette as it is. */
 export function dayPalette(): Pal {
-  return buildStarterPalette();
+  return buildStarterPalette(undefined, 'flicker');
 }
 
 /** The night: a dark blue sky, grass and dirt darker. */
 export function nightPalette(): Pal {
-  const pal = buildStarterPalette();
+  const pal = buildStarterPalette(undefined, 'flicker');
   ramp(pal, 'sky', [
     [8, 10, 40],
     [12, 16, 60],

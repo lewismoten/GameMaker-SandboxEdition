@@ -1,4 +1,4 @@
-// SOUND BOARD's own title picture, in the Telling a Story look (the kit's stage with curtains): Kit,
+// SOUND BOARD's own title picture, in the Telling a Story look (the kit's stage with curtains): Rima,
 // three pads with a picture of each one's sound above it, and the exit door.
 import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { scaleBlit } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
@@ -9,7 +9,7 @@ import type { Book } from '../../kit/starter/book';
 import { W } from '../../kit/starter/screens';
 import { backdrop, frameOf, lookOf } from '../../kit/starter/titleStyles';
 
-/** The title in the Telling a Story look: the name, a ribbon, then Kit, three notes floating and the door. */
+/** The title in the Telling a Story look: the name, a ribbon, then Rima, three notes floating and the door. */
 export function titlePicture(pal: Pal, book: Book, hero: Pixels, door: Pixels, name: string, tagline: string): Pixels {
   const look = lookOf(pal, 'stage');
   const p = backdrop(pal, 'stage');

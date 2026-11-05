@@ -3,12 +3,12 @@
 //
 //   1. Two Levers: two red levers on the path and a pool across it with six dotted planks over it.
 //      Each lever puts 3 on counter 22 and each plank takes 1 off, so one lever builds half the
-//      bridge and both build all of it. The pool is soft: a link at its bottom sends Kit back to the way in.
+//      bridge and both build all of it. The pool is soft: a link at its bottom sends Lian back to the way in.
 //   2. Wired Room: a blue lever on the path, a ladder up to a ledge with a second blue lever and
 //      an odd red lever. A red hatch is in the path (counter 24), then a pool with six blue planks (23).
 //      The blue pair builds the bridge. The red lever puts two on counter 24, and the hatch spends one a cell:
-//      it opens and drops Kit into a hole, where a link sends him back to the way in. No hurt anywhere.
-// Every room is closed in by hedges you can see, so Kit is never stopped by something he can't.
+//      it opens and drops Lian into a hole, where a link sends him back to the way in. No hurt anywhere.
+// Every room is closed in by hedges you can see, so Lian is never stopped by something he can't.
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
@@ -44,7 +44,7 @@ export interface Level {
   /** What the level card says under the title. */
   hint: string;
   map: StarterMap;
-  /** Level blocks where a link sends Kit back to the way in (the bottom of the pool and of the hole). */
+  /** Level blocks where a link sends Lian back to the way in (the bottom of the pool and of the hole). */
   drops: [number, number][];
 }
 
@@ -161,7 +161,7 @@ function wiredRoom(book: Book, signs: Record<SignName, Sign>): { map: StarterMap
 
 /** The levels in order. */
 export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
-  const pal = buildStarterPalette();
+  const pal = buildStarterPalette(undefined, 'puzzle-room');
   const { book, signs } = buildBlocks(pal);
   const one = twoLevers(book, signs);
   const two = wiredRoom(book, signs);

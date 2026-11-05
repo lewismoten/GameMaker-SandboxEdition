@@ -6,7 +6,7 @@
 //   roof    the roof of a house, the top and corners of a tower
 //   cloth   curtains, the sofa and the picture; the lamps and banners of a tower
 // STREET.PAL is the base: the Starters' palette plus the four ramps in plain colors. RED, BLUE and
-// GREEN are three houses. WOOD, ICE and LAVA are three tower rooms. Everything else (Kit, the sky, the
+// GREEN are three houses. WOOD, ICE and LAVA are three tower rooms. Everything else (Mia, the sky, the
 // coins, the brick, the signs, the designer and text colors) is the same slot with the same color in all seven.
 import type { PaletteBuilder } from '@lewismoten/gamemaker-sandbox-tools/kit/palette';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
@@ -204,7 +204,7 @@ export function buildPalettes(): Palettes {
   const pal = buildStarterPalette((b) => {
     builder = b;
     for (const r of RAMPS) b.ramp(r, SHADES, ...LOOKS.street[r]);
-  });
+  }, 'same-house');
   const files = {} as Record<PalName, Uint8Array>;
   for (const name of PAL_NAMES) {
     const bytes = Uint8Array.from(pal.pal);

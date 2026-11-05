@@ -1,16 +1,16 @@
 // THROW IT's monsters. The kit's gumdrop 0, buzzer 1 and shelly 2 stay in the file (unused), then:
-//   STAR     the friendly gold star Kit throws: it is born from a frame of the hero's throw
-//            sequence (hero.ts) and flies the way Kit last walked, until it hits something,
+//   STAR     the friendly gold star Mia throws: it is born from a frame of the hero's throw
+//            sequence (hero.ts) and flies the way Mia last walked, until it hits something,
 //            a wall or its lifetime runs out. Power 200: it beats every monster it touches.
 //   TWINKLE  what a star (or a popped monster) leaves behind for a moment: a little sparkle
 //   TARGET   a mint green gumdrop sitting still: harmless, not solid, power 150, so only a star pops it
 //   GUARD    a purple gumdrop with a frown that blocks a narrow way: solid on every side so
-//            Kit cannot pass, harmless to touch, power 150, so only a star pops it
+//            Mia cannot pass, harmless to touch, power 150, so only a star pops it
 // What the engine does (code/GM/PLAYGAME.C, DoCollision): when two monsters overlap, the one
 // with less power dies and the stronger one lives; but a monster born from the character
 // (fromchar) is used up as well, and the character gets the dead monster's "score bonus". A star
-// born from Kit can never hurt him. Touching a monster whose power is 100 or more does not
-// kill it, so Kit can only get rid of a guard by throwing a star.
+// born from Mia can never hurt him. Touching a monster whose power is 100 or more does not
+// kill it, so Mia can only get rid of a guard by throwing a star.
 import { SOLBOT, SOLLEF, SOLRIG, SOLTOP, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import type { Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { mon } from '@lewismoten/gamemaker-sandbox-tools/kit/actors';
@@ -26,7 +26,7 @@ export const TWINKLE = 4;
 export const TARGET = 5;
 export const GUARD = 6;
 
-/** Hit points Kit starts with (nothing in this game takes any, but Game-Maker wants a number). */
+/** Hit points Mia starts with (nothing in this game takes any, but Game-Maker wants a number). */
 export const HERO_HIT_POINTS = 50;
 /** Pixels a star flies a tick, and how many ticks it flies: the range is the product, about 6 blocks. */
 export const STAR_SPEED = 4;
@@ -129,7 +129,7 @@ export function monsterSet(mb: Book): Monster[] {
     [mb.n(`${name}0`), t],
     [mb.n(`${name}1`), t],
   ];
-  // flies toward where Kit was last walking (towards 1 to 63 is a speed; Game-Maker gives a monster
+  // flies toward where Mia was last walking (towards 1 to 63 is a speed; Game-Maker gives a monster
   // born from the character that direction), dies when it hits a wall or when its lifetime
   // (end, in ticks) is over, and leaves a sparkle either way
   set[STAR] = mon(anim('star', 2), { power: 200, thru: 1, towards: STAR_SPEED, end: STAR_LIFE, newmon: TWINKLE });

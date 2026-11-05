@@ -145,7 +145,7 @@ function twoFriends(book: Book, signs: Record<SignName, Sign>): Level {
 
 /** The levels in order. */
 export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
-  const pal = buildStarterPalette();
+  const pal = buildStarterPalette(undefined, 'say-something');
   const { book, signs } = buildBlocks(pal);
   return { book, pal, levels: [sayHello(book, signs), twoFriends(book, signs)] };
 }

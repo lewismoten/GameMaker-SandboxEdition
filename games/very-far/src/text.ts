@@ -22,7 +22,7 @@ export const HOWTO = wrap(`
 
 Walk to the gate or door at the right of each level.
 
-Up close, Kit is big. Far away he is a few pixels, with smaller steps and a smaller jump.
+Up close, Lian is big. Far away he is a few pixels, with smaller steps and a smaller jump.
 
 |ESC for the menu.
 `);

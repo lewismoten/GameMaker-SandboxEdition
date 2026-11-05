@@ -133,11 +133,11 @@ function gallery(book: Book, signs: Record<string, Sign>): Level {
   return { file: 'gallery', title: 'The Gallery', map: m };
 }
 
-/** The landing cell (world blocks) beside hall door `i`: where the way back from that door puts Kit. */
+/** The landing cell (world blocks) beside hall door `i`: where the way back from that door puts Lena. */
 export const hallLanding = (i: number): [number, number] => [HALL_DOORS[i] + 1 + ORIGIN, GROUND - 1 + ORIGIN];
 
 export function buildLevels(): { book: Book; pal: Pal; hall: Level; gallery: Level } {
-  const pal = buildStarterPalette((b) => swatchRamps(b));
+  const pal = buildStarterPalette((b) => swatchRamps(b), 'color-doors');
   const { book, signs } = buildBlocks(pal);
   return { book, pal, hall: hall(book, signs), gallery: gallery(book, signs) };
 }

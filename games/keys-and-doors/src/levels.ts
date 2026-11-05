@@ -172,7 +172,7 @@ function twoDoors(book: Book, signs: Record<SignName, Sign>): StarterMap {
 
 /** The levels in order. */
 export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
-  const pal = buildStarterPalette();
+  const pal = buildStarterPalette(undefined, 'keys-and-doors');
   const { book, signs } = buildBlocks(pal);
   const levels: Level[] = [
     { file: 'one', title: 'One Key, One Door', hint: 'Some doors are shut at first.', map: oneKey(book, signs) },

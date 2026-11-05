@@ -162,7 +162,7 @@ function oncePerPress(book: Book, signs: Record<SignName, Sign>): StarterMap {
 
 /** The levels in order. */
 export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
-  const pal = buildStarterPalette();
+  const pal = buildStarterPalette(undefined, 'kit-moves');
   const { book, signs } = buildBlocks(pal);
   const levels: Level[] = [
     { file: 'one', title: 'Tap and Hold', hint: 'One hop, or a long lift.', map: tapAndHold(book, signs) },

@@ -2,16 +2,16 @@
 // games/kit/starter/map.ts for what the letters mean), then given its crate, signs and monster.
 //
 // Both are a tunnel through a brick mound, three blocks high, with a crate standing in it and a monster
-// sitting on the crate. In level 1 the monster is solid and the roof is low, so Kit can neither pass it nor
+// sitting on the crate. In level 1 the monster is solid and the roof is low, so Lena can neither pass it nor
 // hop over. Walk into the crate: it turns to rubble, the
-// monster's Movement takes it down, and the tunnel is open. (Kit's own gravity is the
+// monster's Movement takes it down, and the tunnel is open. (Lena's own gravity is the
 // engine's; a monster has none, see monsters.ts.)
 //   1. In the Way: Plop, a fast faller, and a one-block hole. Plop drops into it in a blink and its back
-//      is level with the floor, so Kit walks over it.
+//      is level with the floor, so Lena walks over it.
 //   2. Slow and Soft: two crates stacked in the tunnel with Pip on top. Pip is slow (the Speed of its step
 //      down is small) and soft (its picture is not solid), so after the bump it drifts down two blocks,
-//      through Kit if he walks on. No hole this time.
-// Both rooms are closed in by walls you can see, so Kit is never stopped by something he can't.
+//      through Lena if he walks on. No hole this time.
+// Both rooms are closed in by walls you can see, so Lena is never stopped by something he can't.
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
@@ -96,7 +96,7 @@ function room(book: Book, width: number, r: Room): StarterMap {
 
 /** The levels in order. */
 export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
-  const pal = buildStarterPalette();
+  const pal = buildStarterPalette(undefined, 'drop-down');
   const { book, signs } = buildBlocks(pal);
   const one = room(book, 46, {
     mound: [19, 29],

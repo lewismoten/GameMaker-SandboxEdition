@@ -8,7 +8,7 @@ export const STORY = wrap(`
 
 A map seen from above.
 
-First Kit walks around a room. The walls and the furniture you can see are the ones that stop him.
+First Lami walks around a room. The walls and the furniture you can see are the ones that stop him.
 
 Then he sets out along four roads. Each road runs off the edge of the screen and into the next place, and one house has a door.
 

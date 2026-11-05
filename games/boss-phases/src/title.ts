@@ -1,4 +1,4 @@
-// THREE PHASES' own title picture, in the Foes and Bosses look (the kit's arena): Kit has just thrown a star
+// THREE PHASES' own title picture, in the Foes and Bosses look (the kit's arena): Neka has just thrown a star
 // at Big Bug, who is hurried and orange, with a sparkle and the door beyond.
 import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { scaleBlit } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
@@ -9,7 +9,7 @@ import type { Pal } from '../../kit/starter/palette';
 import { W } from '../../kit/starter/screens';
 import { backdrop, frameOf, lookOf } from '../../kit/starter/titleStyles';
 
-/** The title in the arena look: the name, a ribbon, then Kit in his throw, a star flying, Big Bug and the door. */
+/** The title in the arena look: the name, a ribbon, then Neka in his throw, a star flying, Big Bug and the door. */
 export function titlePicture(pal: Pal, mb: Book, hero: Pixels, door: Pixels, name: string, tagline: string): Pixels {
   const look = lookOf(pal, 'arena');
   const p = backdrop(pal, 'arena');

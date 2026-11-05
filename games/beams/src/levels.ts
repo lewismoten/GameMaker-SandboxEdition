@@ -1,4 +1,4 @@
-// BEAMS AND FOG's three rooms, each 10 blocks tall. Kit walks along row 8; row 9 is the solid floor or ground.
+// BEAMS AND FOG's three rooms, each 10 blocks tall. Lian walks along row 8; row 9 is the solid floor or ground.
 //   1  The Beams   a dark hall, three lamps hung from the ceiling, three beams down to the floor: a solid one (the bricks vanish), a
 //                  checkerboard one (they show) and one in three densities (soft edge). The beam is blocks: twins of the wall and floor.
 //   2  The Fog     valley hills in three layers. The left half is covered in solid fog (flat, paler the farther), the right half in
@@ -16,7 +16,7 @@ import { addHallBlocks, wallPicture } from './hall';
 import { LAYERS, addHillBlocks, hillBlock, hillName, meadow, onHill, type Zone } from './hills';
 import { SIGNS } from './text';
 
-/** The row Kit walks on (the bottom of the doors) and the first solid row. */
+/** The row Lian walks on (the bottom of the doors) and the first solid row. */
 export const BOTTOM = 8;
 const FLOOR = 9;
 const H = 10;
@@ -186,6 +186,6 @@ export function glow(pal: Pal): Level {
 
 /** The whole game's rooms. */
 export function buildLevels(): { pal: Pal; beams: Level; fog: Level; glow: Level } {
-  const pal = buildStarterPalette();
+  const pal = buildStarterPalette(undefined, 'beams');
   return { pal, beams: beams(pal), fog: fog(pal), glow: glow(pal) };
 }

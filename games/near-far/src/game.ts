@@ -1,7 +1,7 @@
 // nearfar.gam: scene 0 is the title and menu, scene 1 the endings, then one scene a plane (scene 2 is the
 // first, in the order of levels.ts). A near scene and a far scene differ in the map they load and in the
 // palette: the far one loads far.pal, the near one near.pal. Scrolling is switched off so the screen stays on
-// the 16 x 10 window around the cell Kit lands on. A scene lists the files it loads in slots (palette, map,
+// the 16 x 10 window around the cell Mara lands on. A scene lists the files it loads in slots (palette, map,
 // blocks, monsters, monster blocks, character, character blocks, sounds, song, a card before it, a card
 // after it) and carries its links: touch the From block here and you are in the To scene, standing on the To block.
 import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, newGame, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';

@@ -32,7 +32,7 @@ export function buildGame(levels: Level[]): Game {
     const scene = emptyScene(ADVTYPE);
     scene.desc = l.title.slice(0, 19);
     scene.pos = { x: 60 + i * 80, y: 110 };
-    // one screen that never scrolls: the picture stays where it is; Kit is the corner view hero: the first two levels walk the squares, the third walks the diagonals
+    // one screen that never scrolls: the picture stays where it is; Lena is the corner view hero: the first two levels walk the squares, the third walks the diagonals
     scene.scroll = { up: 0, down: 0, left: 0, right: 0, style: 0, xtra: new Uint8Array(11) };
     scene.files = [
       'cv.pal',

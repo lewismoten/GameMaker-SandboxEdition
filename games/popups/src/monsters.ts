@@ -1,14 +1,14 @@
 // SCORE POPUPS' monsters. The kit's gumdrop 0, buzzer 1 and shelly 2 stay in the file (unused), then,
 // in pairs (a prize and the number it leaves):
 //   COIN, GEM, BOX     a prize that spins in the air: 100, 200 and 500 points. Its picture block pays
-//                      the points when Kit touches it (Score points, in the blocks editor), and its
+//                      the points when Yana touches it (Score points, in the blocks editor), and its
 //                      power is under 100, so the touch also destroys it: it BECOMES (`newmon`) its popup.
 //   POP100, POP200, POP500   the number: a picture of "100", "200" or "500" that blinks (the picture
 //                      swaps with an empty one), rises two blocks along its path and is gone when the
-//                      path ends (`end` -1). Power 150 and not solid, so Kit walks through it and
+//                      path ends (`end` -1). Power 150 and not solid, so Yana walks through it and
 //                      it pays nothing.
 //   STUCK, STUCKPOP    the mistake: a coin whose number never leaves. It has no path and `end` -2.
-// What the engine does (code/GM/PLAYGAME.C): a monster Kit touches whose power is under 100 (CHARPOWER)
+// What the engine does (code/GM/PLAYGAME.C): a monster Yana touches whose power is under 100 (CHARPOWER)
 // first has its picture block's effects applied (DoBlockTouchChar: the score), then KillMon (line ~3253)
 // turns it into `newmon` at the same place, born that tick (BirthTime). A number is only a picture.
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
@@ -31,9 +31,9 @@ export const STUCKPOP = 10;
 
 /** What each prize pays. */
 export const PAYS = { [COIN]: 100, [GEM]: 200, [BOX]: 500, [STUCK]: 100 } as const;
-/** Hit points Kit starts with (nothing in this game takes any, but Game-Maker wants a number). */
+/** Hit points Yana starts with (nothing in this game takes any, but Game-Maker wants a number). */
 export const HERO_HIT_POINTS = 50;
-/** Prizes are under 100 (touching Kit destroys them); numbers are over (touching Kit does nothing). */
+/** Prizes are under 100 (touching Yana destroys them); numbers are over (touching Yana does nothing). */
 export const PRIZE_POWER = 50;
 export const NUMBER_POWER = 150;
 /** How far a number rises (blocks) and how fast (pixels a tick). */
@@ -136,7 +136,7 @@ export function monsterSet(mb: Book): Monster[] {
     [mb.n('empty'), 3],
   ];
   const up = [corner(0, -RISE, RISE_SPEED)];
-  // a prize: hangs in the air (no path), under 100 so Kit's touch destroys it, and becomes its number
+  // a prize: hangs in the air (no path), under 100 so Yana's touch destroys it, and becomes its number
   set[COIN] = mon(spin('coin'), { power: PRIZE_POWER, thru: 1, newmon: POP100 });
   set[GEM] = mon(spin('gem'), { power: PRIZE_POWER, thru: 1, newmon: POP200 });
   set[BOX] = mon(spin('box'), { power: PRIZE_POWER, thru: 1, newmon: POP500 });

@@ -1,4 +1,4 @@
-// BEAMS AND FOG's title picture: the name over a dark stage, a dithered beam falling on Kit, and a lantern with a checkerboard halo.
+// BEAMS AND FOG's title picture: the name over a dark stage, a dithered beam falling on Lian, and a lantern with a checkerboard halo.
 import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { scaleBlit } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 import { bevel } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
@@ -9,7 +9,7 @@ import { W } from '../../kit/starter/screens';
 import { backdrop, frameOf, lookOf } from '../../kit/starter/titleStyles';
 import { painted } from './light';
 
-/** `hero` is Kit; `critters` holds the lanterns and the puff. A beam of dots falls on Kit; a lantern and a puff of fog float beside him. */
+/** `hero` is Lian; `critters` holds the lanterns and the puff. A beam of dots falls on Lian; a lantern and a puff of fog float beside him. */
 export function titlePicture(pal: Pal, hero: Pixels, critters: Book, name: string, tagline: string): Pixels {
   const look = lookOf(pal, 'stage');
   const p = backdrop(pal, 'stage');
@@ -20,7 +20,7 @@ export function titlePicture(pal: Pal, hero: Pixels, critters: Book, name: strin
   bevel(p, rx, 50, ribbon, 14, pal.r(look.ribbon), 3, 2);
   text(p, rx + 10, 54, tagline, look.ribbonText);
   const ground = 168;
-  // the beam: a trapezoid of dots on the stage, from the top of the picture down to Kit's feet
+  // the beam: a trapezoid of dots on the stage, from the top of the picture down to Lian's feet
   const light = pal.c('gold', 4);
   for (let y = 70; y < ground; y++) {
     const half = 12 + (y - 70) * 0.28;

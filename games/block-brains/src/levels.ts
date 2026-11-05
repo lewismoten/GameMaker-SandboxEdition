@@ -7,12 +7,12 @@
 //      the lit lamp says whose turn it is. Walk through each gate in its turn.
 //   2. Out of Step: two rings of two blocks, the sun's (open, shut) and the moon's (shut, open),
 //      and four gates in a row, sun, moon, sun, moon. Every sun gate opens on the same tick and
-//      every moon gate opens when the sun's shut, so Kit crosses one, waits in the room and
+//      every moon gate opens when the sun's shut, so Mara crosses one, waits in the room and
 //      crosses the next.
 //
-// Every ring starts when the scene loads and nothing Kit does can change one (the manual says
-// so). A block changes with its own timer and cannot see where Kit is. Both rooms end in a
-// visible hedge, so Kit is never stopped by something he can't see.
+// Every ring starts when the scene loads and nothing Mara does can change one (the manual says
+// so). A block changes with its own timer and cannot see where Mara is. Both rooms end in a
+// visible hedge, so Mara is never stopped by something he can't see.
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { Book, PULL, SOLID } from '../../kit/starter/book';
@@ -198,6 +198,6 @@ function outOfStep(pal: Pal): Level {
 
 /** The palette and the levels in order. */
 export function buildLevels(): { pal: Pal; levels: Level[] } {
-  const pal = buildStarterPalette();
+  const pal = buildStarterPalette(undefined, 'block-brains');
   return { pal, levels: [takeYourTurn(pal), outOfStep(pal)] };
 }

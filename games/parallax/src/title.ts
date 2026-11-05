@@ -1,5 +1,5 @@
 // PARALLAX's own title picture: the land of level 1 with its three bands, a sky banner and
-// Kit cheering on the path. The bands are drawn in the same colors the levels use.
+// Rima cheering on the path. The bands are drawn in the same colors the levels use.
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { scaleBlit } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 import { bevel } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';

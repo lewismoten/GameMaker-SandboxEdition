@@ -1,8 +1,8 @@
 // DIG IT's own blocks, added to the Starter block set after the signs:
 //   soil     loose, light brown earth with pebbles. It is solid, and touching it (walking into it, or jumping up into it)
-//            turns it into `tunnel`: the engine applies a touch before it checks what is solid, so Kit walks straight on.
+//            turns it into `tunnel`: the engine applies a touch before it checks what is solid, so Neka walks straight on.
 //   nugget   soil with a gold fleck. It pays 10 when it is dug and then becomes tunnel, like soil.
-//   tunnel   the hole that is left: a dark brown wall behind Kit, nothing solid, with the pull of ordinary air (down)
+//   tunnel   the hole that is left: a dark brown wall behind Neka, nothing solid, with the pull of ordinary air (down)
 //   mineLadder  a ladder on the tunnel's dark wall: the way up out of a dug tunnel
 //   rock     gray stone with cracks. It is solid and has no touch, so it never digs: a hole goes around it.
 // The Starters' own `dirt` (dark, packed) is not diggable either; only `soil` is.

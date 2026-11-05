@@ -1,11 +1,11 @@
 // NEAR AND FAR's levels. Each plane is its own scene: a near scene shows big, clear scenery, and a far scene
-// shows the same kind of land drawn small and loads a paler palette. A trail (a link) takes Kit from one
+// shows the same kind of land drawn small and loads a paler palette. A trail (a link) takes Mara from one
 // to the other; no scene shows both planes at once. A scene shows a 16 x 10 window of its map around the
-// cell Kit lands on (scrolling is off), so a 32 wide map can hold two windows.
+// cell Mara lands on (scrolling is off), so a 32 wide map can hold two windows.
 //
 //   Level 1, Into the Distance: the near plane (a big tree, coins, a trail through a hedge) and the far plane
-//     (small things, coins, a trail back, and the exit). Kit steps into the distance and out again.
-//   Level 2, Past the Cliff: a cliff stands in the way in the near plane. The far plane has no cliff, so Kit
+//     (small things, coins, a trail back, and the exit). Mara steps into the distance and out again.
+//   Level 2, Past the Cliff: a cliff stands in the way in the near plane. The far plane has no cliff, so Mara
 //     goes into the distance, walks past where it is, and steps out near on the other side.
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
@@ -40,9 +40,9 @@ export interface Room {
   title: string;
   /** Which plane it shows; the far plane loads the paler palette. */
   plane: 'near' | 'far';
-  /** Blocks that take Kit away when touched, by name. */
+  /** Blocks that take Mara away when touched, by name. */
   exits: Record<string, Spot>;
-  /** The cell Kit lands on (his feet), which is also the middle of the screen. */
+  /** The cell Mara lands on (his feet), which is also the middle of the screen. */
   landing: Spot;
 }
 
@@ -61,10 +61,10 @@ export interface Card {
   before: string;
 }
 
-/** A window is 16 blocks wide and 10 high; the ground is row 6, so Kit's feet stand on row 5. */
+/** A window is 16 blocks wide and 10 high; the ground is row 6, so Mara's feet stand on row 5. */
 export const FLOOR = 6;
 export const FEET = FLOOR - 1;
-/** The column of a window where Kit lands (its middle). */
+/** The column of a window where Mara lands (its middle). */
 export const LAND_X = 8;
 const at = (x: number, y: number): Spot => [x + ORIGIN, y + ORIGIN];
 const onGround = (s: Sign) => FLOOR - 1 - s.board.length;
@@ -95,7 +95,7 @@ function stamp(m: StarterMap, x: number, y: number, names: string[][]): void {
 }
 const sign = (m: StarterMap, x: number, s: Sign) => m.sign(x, onGround(s), s);
 
-/** A map from a grid, starting where Kit first lands; the far plane's ground and hedges are swapped for its own. */
+/** A map from a grid, starting where Mara first lands; the far plane's ground and hedges are swapped for its own. */
 function built(book: Book, g: Grid, start: Spot, far: boolean): StarterMap {
   const m = new StarterMap(book, g.rows());
   m.start = at(start[0], start[1]);
@@ -106,7 +106,7 @@ function built(book: Book, g: Grid, start: Spot, far: boolean): StarterMap {
     }
   return m;
 }
-/** Clears the entrance the map builder needs (an S) where the scene should just land Kit. */
+/** Clears the entrance the map builder needs (an S) where the scene should just land Mara. */
 const bare = (m: StarterMap, x: number) => m.set(x, FLOOR - 2, 'sky').set(x, FLOOR - 1, 'sky');
 
 const room = (id: string, file: string, title: string, plane: Room['plane'], landing: number, exits: Room['exits']): Room => ({
@@ -243,7 +243,7 @@ export const CARDS: Card[] = [
 
 /** The maps, the scenes in scene order (scene 2 on), and the pal and blocks they share. */
 export function buildLevels(): { book: Book; pal: Pal; levels: MapFile[]; rooms: Room[] } {
-  const pal = buildStarterPalette();
+  const pal = buildStarterPalette(undefined, 'near-far');
   const { book, signs, art } = buildBlocks(pal);
   const one = mapOne(book, signs, art);
   const two = mapTwo(book, signs, art);

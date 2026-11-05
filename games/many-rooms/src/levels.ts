@@ -222,7 +222,7 @@ export const HUB_COINS = { from: 20, to: 22, row: FLOOR - 1 };
 
 /** The maps, the rooms in scene order (scene 2 on), and the pal and blocks they share. */
 export function buildLevels(): { book: Book; pal: Pal; levels: MapFile[]; rooms: Room[] } {
-  const pal = buildStarterPalette();
+  const pal = buildStarterPalette(undefined, 'many-rooms');
   const { book, signs } = buildBlocks(pal);
   const one = mapOne(book, signs);
   const two = mapTwo(book, signs);

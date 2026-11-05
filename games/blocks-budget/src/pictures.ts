@@ -1,6 +1,6 @@
 // 150 BLOCKS' two kinds of picture, both cut into 20 x 20 blocks: a stone tower drawn as one big picture
 // (every block of it different), and a row of little houses made of a handful of blocks used again and
-// again. Both are scenery: Kit walks right through them, because a block is solid only if it is told to be.
+// again. Both are scenery: Lena walks right through them, because a block is solid only if it is told to be.
 import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { speckle } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
 import { Book, PULL } from '../../kit/starter/book';

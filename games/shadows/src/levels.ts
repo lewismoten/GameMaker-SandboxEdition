@@ -1,5 +1,5 @@
 // LITTLE SHADOWS' three rooms, each a courtyard: a stone wall at the back, a strip of ground in front of it (the "lane") that
-// Kit and the critters stand in, and solid ground below. Standing in the lane's bottom edge puts a character's feet low in
+// Mara and the critters stand in, and solid ground below. Standing in the lane's bottom edge puts a character's feet low in
 // the picture, which leaves room under them for a shadow.
 //
 //   1  The Yard    three kinds of ground (sand, grass, dark soil), a walking pip on each. It is ONE map file (yard.map),
@@ -146,7 +146,7 @@ export function hover(pal: Pal): Level {
 
 /** The whole game's rooms (the yard in both looks). */
 export function buildLevels(): { pal: Pal; yardSolid: Level; yardDither: Level; hop: Level; hover: Level } {
-  const pal = buildStarterPalette();
+  const pal = buildStarterPalette(undefined, 'shadows');
   return { pal, yardSolid: yard(pal, 'solid'), yardDither: yard(pal, 'dither'), hop: hop(pal), hover: hover(pal) };
 }
 

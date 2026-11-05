@@ -48,18 +48,18 @@ One of the Starters: small games that each show one idea.
 export const TALE_ONE = wrap(`
 |THE PAPER BOAT
 
-Kit folded a paper boat on the kitchen table and carried it to the garden pond.
+Mara folded a paper boat on the kitchen table and carried it to the garden pond.
 
 It sailed once round the lily pad and came back to the bank, as if it knew the way.
 
-Kit took a bow. The frogs did not clap, but they did not leave, either.
+Mara took a bow. The frogs did not clap, but they did not leave, either.
 `);
 
 /** Tale two's words. */
 export const TALE_TWO = wrap(`
 |THE LONG WAY ROUND
 
-Kit set out to walk to the hill, and the path went left, and then right, and then left again.
+Mara set out to walk to the hill, and the path went left, and then right, and then left again.
 
 By the time he got there the sun was up and the grass was warm.
 

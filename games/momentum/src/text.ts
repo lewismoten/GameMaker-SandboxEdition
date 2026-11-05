@@ -20,7 +20,7 @@ export const HOWTO = wrap(`
 |SPACE         hop
 |F2            lives, score
 
-Hold a key and Kit gets faster. Let go and he glides on, slowing down. Press the other way to turn him around.
+Hold a key and Yana gets faster. Let go and he glides on, slowing down. Press the other way to turn him around.
 
 Nothing can hurt you here. A gap is only two blocks deep, and you can hop out.
 
@@ -45,7 +45,7 @@ export const WON = wrap(`
 
 Two levels, and now you know what momentum does.
 
-A step with the Momentum setting on adds to Kit's speed and does not move him. The speed carries him on, and the game takes a sixth of it away each tick once no such step is running. Hold a key and the speed builds up. A hop made at speed goes a long way.
+A step with the Momentum setting on adds to Yana's speed and does not move him. The speed carries him on, and the game takes a sixth of it away each tick once no such step is running. Hold a key and the speed builds up. A hop made at speed goes a long way.
 
 Open the game in Game-Maker and find the setting on the Character tab. Turn it off for Right and watch him stop dead.
 `);

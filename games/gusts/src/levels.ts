@@ -3,13 +3,13 @@
 //
 //   1. Wait for the Gust: a stone ledge too high to jump to, and a shaft of air beside a stone
 //      slot in the ground. The shaft is calm, then its leaves flutter (the warning), then a gust
-//      blows UP the shaft for a few seconds and lifts Kit to the ledge, then it is calm again.
+//      blows UP the shaft for a few seconds and lifts Mia to the ledge, then it is calm again.
 //   2. Windsocks and Shelter: a long wind tunnel through a hill. Gusts blow LEFT along it and push
-//      Kit back. Windsocks on the hill droop, twitch and stream in step with the wind, and two
+//      Mia back. Windsocks on the hill droop, twitch and stream in step with the wind, and two
 //      little shelters in the tunnel (no wind in them) are somewhere to wait.
 //
 // Every clock starts when the scene loads and nothing the player does can change one (the manual
-// says so). Both rooms end in a visible hedge, so Kit is never stopped by something he can't see,
+// says so). Both rooms end in a visible hedge, so Mia is never stopped by something he can't see,
 // and a tunnel's ends are open.
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { Book, PULL, SOLID as SOLID_ALL } from '../../kit/starter/book';
@@ -201,6 +201,6 @@ function windsocksAndShelter(pal: Pal): Level {
 
 /** The palette and the levels in order. */
 export function buildLevels(): { pal: Pal; levels: Level[] } {
-  const pal = buildStarterPalette();
+  const pal = buildStarterPalette(undefined, 'gusts');
   return { pal, levels: [waitForTheGust(pal), windsocksAndShelter(pal)] };
 }

@@ -1,10 +1,10 @@
 // OVERHEAD's two levels, both drawn from above with gravity off (every block has Gravity "none").
 //
-//   1. The Room: one map (one.map), a room 26 x 14 blocks with scrolling on. Kit faces the way he walks, the walls
+//   1. The Room: one map (one.map), a room 26 x 14 blocks with scrolling on. Lami faces the way he walks, the walls
 //      and furniture you can see are solid, and a door in the right-hand wall takes him on.
 //   2. The Four Roads: one map (world.map) of five 16 x 10 areas, each its own scene with scrolling off, like the
 //      windows of ROOMS ON ONE MAP. Meadow, Woods, Village and Pond are joined in a ring by their map edges: the
-//      road runs off the edge of one area and a scene link (a link on the edge blocks) lands Kit in the middle of the
+//      road runs off the edge of one area and a scene link (a link on the edge blocks) lands Lami in the middle of the
 //      next. The village has a house whose door is a link into a Shop (a fifth area), which has a way back and the
 //      way out of the level.
 import { Book } from '../../kit/starter/book';
@@ -23,11 +23,11 @@ const at = (x: number, y: number): Spot => [x + ORIGIN, y + ORIGIN];
 const SIGNS = {
   // the room
   arrows: ['arrows', 'THE ARROWS WALK UP, DOWN, LEFT AND RIGHT', 4, 3, 'floor'],
-  facing: ['facing', 'KIT TURNS TO FACE THE WAY HE WALKS', 4, 3, 'floor'],
+  facing: ['facing', 'LAMI TURNS TO FACE THE WAY HE WALKS', 4, 3, 'floor'],
   solid: ['solid', 'FURNITURE IS SOLID. WALK ROUND IT', 4, 3, 'floor'],
   wallsign: ['wallsign', 'SEE A WALL? IT IS A WALL. DOOR →', 4, 3, 'floor'],
   // the roads
-  middle: ['middle', 'KIT STARTS IN THE MIDDLE OF A SCREEN', 4, 3, 'grass'],
+  middle: ['middle', 'LAMI STARTS IN THE MIDDLE OF A SCREEN', 4, 3, 'grass'],
   edge: ['edge', 'OFF THE EDGE IS A LINK', 4, 2, 'grass'],
   both: ['both', 'EDGE LINKS GO BOTH WAYS', 4, 2, 'grass'],
   door: ['door', 'A DOOR IS A LINK TOO. WALK IN', 4, 2, 'grass'],
@@ -331,7 +331,7 @@ function worldLevel(book: Book, s: Record<SignName, Sign>): OverMap {
 
 /** The block set, the palette and the two levels. */
 export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
-  const pal = buildStarterPalette();
+  const pal = buildStarterPalette(undefined, 'overhead');
   const { book, signs } = buildBlocks(pal);
   const levels: Level[] = [
     { file: 'one', title: 'The Room', hint: 'Walls you can see.', map: roomLevel(book, signs) },

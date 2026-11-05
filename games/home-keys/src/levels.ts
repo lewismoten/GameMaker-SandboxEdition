@@ -8,7 +8,7 @@
 //                    Space, then hold Right, is all it takes.
 //   3. Leap Shelves: two shelves of coins too high for a jump. E leaps up and right onto one, Q up and left
 //                    onto the other. They are extra: the way to the door is flat.
-// Every edge is a hedge or a wall you can see, so Kit is never stopped by something he can't.
+// Every edge is a hedge or a wall you can see, so Mara is never stopped by something he can't.
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
@@ -129,7 +129,7 @@ function arrowsSpaceEnter(book: Book, signs: Record<SignName, Sign>): StarterMap
   g.put(3, G - 2, 's').put(3, G - 1, 'S');
   // the wall: three blocks high, grass on top
   g.fill(L1.wall[0], L1.wallTop + 1, L1.wall[1] - L1.wall[0] + 1, G - L1.wallTop - 1, 'D').row(L1.wallTop, L1.wall[0], L1.wall[1], 'G');
-  // the hill with a tunnel two blocks high, so Kit cannot hop over a jelly
+  // the hill with a tunnel two blocks high, so Mara cannot hop over a jelly
   const [h0, h1] = L1.hill;
   g.fill(h0, G - 5, h1 - h0 + 1, 3, 'B').row(G - 6, h0, h1, 'G');
   g.put(L1.exit, G - 2, 'e').put(L1.exit, G - 1, 'E');
@@ -216,7 +216,7 @@ function leapShelves(book: Book, signs: Record<SignName, Sign>): StarterMap {
 
 /** The levels in order. */
 export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
-  const pal = buildStarterPalette();
+  const pal = buildStarterPalette(undefined, 'home-keys');
   const { book, signs } = buildBlocks(pal);
   const levels: Level[] = [
     { file: 'one', title: 'Arrows, Space, Enter', hint: 'Walk, jump, throw.', map: arrowsSpaceEnter(book, signs) },

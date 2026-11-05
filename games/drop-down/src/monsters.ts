@@ -1,7 +1,7 @@
 // DROP DOWN's monster. The kit's gumdrop 0, buzzer 1 and shelly 2 stay in the file (unused), then:
 //   PLOP  a plump round green friend with big eyes that blinks. It sits where the map puts it, solid
-//         on every side (Kit cannot walk through it, he can stand on it) and it hurts nobody.
-//   PIP   the same friend in pink, soft (not solid: Kit walks through it) and with a slower step down: it
+//         on every side (Lena cannot walk through it, he can stand on it) and it hurts nobody.
+//   PIP   the same friend in pink, soft (not solid: Lena walks through it) and with a slower step down: it
 //         falls at a tenth of Plop's speed.
 //
 // What the engine does (code/GM/PLAYGAME.C, and the same in web/packages/engine/src/engine/monsters.ts):
@@ -25,9 +25,9 @@ import type { Pal } from '../../kit/starter/palette';
 /** The monster numbers this game adds after the kit's gumdrop 0, buzzer 1 and shelly 2. */
 export const PLOP = 3;
 export const PIP = 4;
-/** Powers: 100 or more cannot be popped by touching Kit. */
+/** Powers: 100 or more cannot be popped by touching Lena. */
 export const POWER = 110;
-/** Hit points Kit starts with (nothing in this game takes any, but Game-Maker wants a number). */
+/** Hit points Lena starts with (nothing in this game takes any, but Game-Maker wants a number). */
 export const HERO_HIT_POINTS = 50;
 /** How fast each one drops, in pixels a tick (the speed of its one path corner). Plop: a block a tick; Pip: ten ticks a block. */
 export const PLOP_SPEED = 20;

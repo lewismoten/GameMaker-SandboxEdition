@@ -1,12 +1,12 @@
 // ONE KEY, MANY WEAPONS' two levels. Each is painted on a Grid (a block a character, see
 // games/kit/starter/map.ts for what the letters mean), then given its signs, pouches (monsters) and gumdrops.
 //
-//   1. Empty Hands: Enter does nothing but shrug until Kit touches a pouch, and a pouch holds two stars.
+//   1. Empty Hands: Enter does nothing but shrug until Lena touches a pouch, and a pouch holds two stars.
 //                   Three mint gumdrops stand in a row, so the third needs the pouch again (it fills up).
 //   2. Star or Flame: a wall with a tunnel, and two frosty grumps in it that a star cannot melt. A flame
 //                   pouch sits up on a ledge. Flames go before stars, and a star is thrown when the flames
 //                   are gone.
-// Both rooms are closed in by brick walls you can see, so Kit is never stopped by something he can't.
+// Both rooms are closed in by brick walls you can see, so Lena is never stopped by something he can't.
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
@@ -158,7 +158,7 @@ function starOrFlame(book: Book, signs: Record<SignName, Sign>): StarterMap {
 
 /** The levels in order. */
 export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
-  const pal = buildStarterPalette();
+  const pal = buildStarterPalette(undefined, 'many-weapons');
   const { book, signs } = buildBlocks(pal);
   const levels: Level[] = [
     { file: 'one', title: 'Empty Hands', hint: 'Touch a pouch for stars.', map: emptyHands(book, signs) },

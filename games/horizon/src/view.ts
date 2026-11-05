@@ -12,7 +12,7 @@ export const VX = 170;
 /** The road's half width at a screen row, where each lane runs, and the lines between the lanes. */
 export const { halfWidth, laneX, dividerX } = roadView(HORIZON, VX, 1.2);
 
-/** The row Kit stands on (the road's near edge) and the column and row he starts in (his feet), a few blocks above it so he drops in. */
+/** The row Lami stands on (the road's near edge) and the column and row he starts in (his feet), a few blocks above it so he drops in. */
 export const GROUND_ROW = 9;
 export const START: [number, number] = [8, 5];
 /** The vanishing point's block: where every ball comes over the hill. */

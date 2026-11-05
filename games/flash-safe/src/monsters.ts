@@ -2,9 +2,9 @@
 //   BURR     a spiky seed ball that hangs in the air. Touching it takes hit points (its picture block's
 //            Hit points), and its power is under 100, so the touch also destroys it: it BECOMES (`newmon`) its number.
 //   POPFIVE  the number "-5": one picture that holds still (it never blinks), rises two blocks along its
-//            path and is gone when the path ends (`end` -1). Power 150, so Kit walks through it, and it pays nothing.
-// What the engine does (code/GM/PLAYGAME.C): a monster Kit touches whose power is under 100 first has its
-// picture block's effects applied (the hit points; losing some starts Kit's own hurt sequence: his ouch
+//            path and is gone when the path ends (`end` -1). Power 150, so Lami walks through it, and it pays nothing.
+// What the engine does (code/GM/PLAYGAME.C): a monster Lami touches whose power is under 100 first has its
+// picture block's effects applied (the hit points; losing some starts Lami's own hurt sequence: his ouch
 // face and a beep), then KillMon turns it into `newmon` at the same place. A number is only a picture.
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import type { Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
@@ -18,7 +18,7 @@ import { THORN_HURT } from './timing';
 /** The monster numbers this game adds after the kit's gumdrop 0, buzzer 1 and shelly 2. */
 export const BURR = 3;
 export const POPFIVE = 4;
-/** A burr is under 100 (touching Kit destroys it); a number is over (touching Kit does nothing). */
+/** A burr is under 100 (touching Lami destroys it); a number is over (touching Lami does nothing). */
 const BURR_POWER = 50;
 const NUMBER_POWER = 150;
 /** How far the number rises (blocks) and how fast (pixels a tick). */

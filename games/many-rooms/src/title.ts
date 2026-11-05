@@ -1,4 +1,4 @@
-// ROOMS ON ONE MAP's own title picture, in the Bigger Worlds look (the kit's atlas): an old map page with Kit
+// ROOMS ON ONE MAP's own title picture, in the Bigger Worlds look (the kit's atlas): an old map page with Rima
 // beside a door, and a small map of four colored rooms with a dotted route from one to the next.
 import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { scaleBlit } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
@@ -8,7 +8,7 @@ import type { Pal } from '../../kit/starter/palette';
 import { W } from '../../kit/starter/screens';
 import { backdrop, frameOf, lookOf } from '../../kit/starter/titleStyles';
 
-/** The title in the atlas look: the name, a ribbon, then Kit by a door, and a map of four rooms pinned on the page. */
+/** The title in the atlas look: the name, a ribbon, then Rima by a door, and a map of four rooms pinned on the page. */
 export function titlePicture(pal: Pal, hero: Pixels, door: Pixels, name: string, tagline: string): Pixels {
   const look = lookOf(pal, 'atlas');
   const p = backdrop(pal, 'atlas');

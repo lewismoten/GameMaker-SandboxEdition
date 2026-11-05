@@ -1,5 +1,5 @@
 // CORNER VIEW's own title picture, in the Showcase Tricks look (the kit's neon): the name over a small room seen
-// from a corner: a patch of diamond floor, a row of cubes and a stair of towers, with Kit from above on the floor.
+// from a corner: a patch of diamond floor, a row of cubes and a stair of towers, with Lena from above on the floor.
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { scaleBlit } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 import { bevel } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
@@ -9,7 +9,7 @@ import { W } from '../../kit/starter/screens';
 import { backdrop, frameOf, lookOf } from '../../kit/starter/titleStyles';
 import { cubeShades, floor, tower } from './iso';
 
-/** The title: the name on two lines, a ribbon, then the little room and Kit. */
+/** The title: the name on two lines, a ribbon, then the little room and Lena. */
 export function titlePicture(pal: Pal, above: Pixels, tagline: string): Pixels {
   const look = lookOf(pal, 'neon');
   const p = backdrop(pal, 'neon');

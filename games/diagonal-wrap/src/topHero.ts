@@ -1,4 +1,4 @@
-// Kit seen from above, for level 2 (gravity off): one 20x20 block a pose instead of two, drawn in four facing
+// Mia seen from above, for level 2 (gravity off): one 20x20 block a pose instead of two, drawn in four facing
 // directions (down, up, right and left) with two walking steps each, in the same teal beanie and orange hoodie.
 // The pictures are this game's second hero.cbl; its character file has Up and Down walk the way a person
 // would, since nothing pulls him (the side-view Up and Down climb a ladder).

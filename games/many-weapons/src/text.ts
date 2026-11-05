@@ -50,7 +50,7 @@ export const WON = wrap(`
 
 Two levels, and one key did all the work.
 
-A weapon is a sequence in Kit's character file. Each one counts its own uses, and Enter starts the first of them that has a use left. A flame comes first in the list, then a star, then a shrug that is never used up. A pouch only adds to a count.
+A weapon is a sequence in Lena's character file. Each one counts its own uses, and Enter starts the first of them that has a use left. A flame comes first in the list, then a star, then a shrug that is never used up. A pouch only adds to a count.
 
 Open the game in Game-Maker and find the three sequences on the Characters tab. Move the star above the flame and see what Enter throws.
 `);

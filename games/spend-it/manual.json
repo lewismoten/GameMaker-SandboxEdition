@@ -61,7 +61,7 @@
     },
     {
       "head": "Make it yours",
-      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>In <b>spendit.bbl</b>, change <b>stall.key.3</b>'s <b>Effect amount</b> to &minus;2. Now two coins buy the key, though the card still says 3.</li><li>Change <b>cash</b>'s <b>Effect amount</b> to 2. Each coin is worth two.</li><li>Copy <b>give.key</b>, set its <b>Effect counter</b> to 1 and make it a heart, and the stall sells a life. (<b>Kit's Shop</b> does this.)</li><li>Take a coin out of level 2's map. The key can no longer be bought there. Put it back.</li></ul><p>The home page's <b>Starters</b> tab has more small games like this one.</p>"
+      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>In <b>spendit.bbl</b>, change <b>stall.key.3</b>'s <b>Effect amount</b> to &minus;2. Now two coins buy the key, though the card still says 3.</li><li>Change <b>cash</b>'s <b>Effect amount</b> to 2. Each coin is worth two.</li><li>Copy <b>give.key</b>, set its <b>Effect counter</b> to 1 and make it a heart, and the stall sells a life. (<b>Yana's Shop</b> does this.)</li><li>Take a coin out of level 2's map. The key can no longer be bought there. Put it back.</li></ul><p>The home page's <b>Starters</b> tab has more small games like this one.</p>"
     }
   ]
 }

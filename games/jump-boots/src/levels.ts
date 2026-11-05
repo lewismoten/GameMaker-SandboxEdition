@@ -1,12 +1,12 @@
 // BOOTS AND JET PACK's two levels. Each is painted on a Grid (a block a character, see
 // games/kit/starter/map.ts for what the letters mean), then given its signs, coins and (level 2) boot charges.
 //
-//   1. Jet Pack: Kit as he is, with an unlimited jump. A tap in the air lifts him again, so tapping keeps him
+//   1. Jet Pack: Neka as he is, with an unlimited jump. A tap in the air lifts him again, so tapping keeps him
 //                rising: up a tall cliff, then across a gap on the top.
-//   2. Double-Jump Boots: the same Kit with only two taps (hero2.chr). Each step is too tall for one jump and
+//   2. Double-Jump Boots: the same Neka with only two taps (hero2.chr). Each step is too tall for one jump and
 //                fine for two; blue bubbles (boot charges, three in a row, one tap each) fill the boots up. A bubble
 //                is used up when touched. A ladder in the pit leads back out for anyone who falls.
-// Every edge is a hedge or a wall you can see, so Kit is never stopped by something he can't.
+// Every edge is a hedge or a wall you can see, so Neka is never stopped by something he can't.
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
@@ -19,7 +19,7 @@ export type SignName = 'rise' | 'fly' | 'exit' | 'two' | 'third' | 'step' | 'gap
 
 /** The signs' words and sizes. */
 const WORDS: Record<SignName, { text: string; w: number; h: number }> = {
-  rise: { text: 'TAP SPACE IN THE AIR AND KIT RISES AGAIN', w: 4, h: 3 },
+  rise: { text: 'TAP SPACE IN THE AIR AND NEKA RISES AGAIN', w: 4, h: 3 },
   fly: { text: 'HOLD RIGHT, KEEP TAPPING, FLY ACROSS', w: 4, h: 3 },
   exit: { text: 'EXIT →', w: 3, h: 1 },
   two: { text: 'THESE BOOTS HOLD TWO JUMPS. EACH TAP USES ONE', w: 4, h: 3 },
@@ -180,7 +180,7 @@ function boots(book: Book, signs: Record<SignName, Sign>): StarterMap {
 
 /** The levels in order. */
 export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
-  const pal = buildStarterPalette();
+  const pal = buildStarterPalette(undefined, 'jump-boots');
   const { book, signs } = buildBlocks(pal);
   const levels: Level[] = [
     { file: 'one', hero: 'hero.chr', title: 'Jet Pack', hint: 'Tap in the air to rise.', map: jetPack(book, signs) },

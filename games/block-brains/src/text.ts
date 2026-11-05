@@ -53,7 +53,7 @@ A brain here is a ring of blocks. Each block turns into the next one after a num
 
 The map starts each gate at a different place in its ring, so gate 1 is open first, gate 2 second and gate 3 third. A lamp has a ring of the same length, so its lit turn is its gate's open turn.
 
-A block cannot see Kit. It only follows its own timer, and every cell of a kind changes on the same tick. That is why both sun gates open together.
+A block cannot see Mara. It only follows its own timer, and every cell of a kind changes on the same tick. That is why both sun gates open together.
 
 Open the game in Game-Maker, pick a gate block in the Blocks tab and look at its Next block and its time. Change a number, then play your change.
 `);

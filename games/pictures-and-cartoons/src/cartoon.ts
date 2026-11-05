@@ -1,5 +1,5 @@
 // BLOOM.FLI, the cartoon that plays between levels 2 and 3: a seed on a mound, the sun comes up,
-// a stalk grows, two leaves and a daisy open, and Kit cheers. 320x200, 40 frames at 6/70 s
+// a stalk grows, two leaves and a daisy open, and Yana cheers. 320x200, 40 frames at 6/70 s
 // (about 3.4 seconds), the Starters' palette, a fade at each end. An FLI is silent, it carries no
 // sound, and PLAYGAME plays all of it before the next key is read (see text.ts).
 import { encodeFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
@@ -97,7 +97,7 @@ function plant(p: Pixels, pal: Pal, f: number): void {
   daisy(p, pal, FX, GROUND - h - (open > 0 ? 8 : 2), open);
 }
 
-/** Kit's pose (top and bottom block names), and where his feet stand, at frame f. */
+/** Yana's pose (top and bottom block names), and where his feet stand, at frame f. */
 function kit(f: number): [[string, string], number, number] {
   const x = 112;
   if (f < CHEER_AT) return [f % 14 > 11 ? ['blink.top', 'stand'] : f % 14 > 6 ? ['look.top', 'stand'] : ['stand.top', 'stand'], x, GROUND];
@@ -110,7 +110,7 @@ let cached: Uint8Array | undefined;
 /** BLOOM.FLI, built once. */
 export function bloomFli(): Uint8Array {
   if (cached) return cached;
-  const pal = buildStarterPalette();
+  const pal = buildStarterPalette(undefined, 'pictures-and-cartoons');
   const hero = buildHeroBlocks(pal);
   const poses = new Map<string, Pixels>();
   const base = backdrop(pal);

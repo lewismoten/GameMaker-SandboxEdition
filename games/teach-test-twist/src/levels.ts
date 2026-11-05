@@ -6,7 +6,7 @@
 //   2. Test: the same gap with spikes at the bottom, and a wider one, so a bad jump costs a little.
 //   3. Twist: the same gap again, but now you want to be in it: the key to the locked door is down there.
 //
-// Every room is closed in by hedges you can see, so Kit is never stopped by something he can't.
+// Every room is closed in by hedges you can see, so Lena is never stopped by something he can't.
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
@@ -173,7 +173,7 @@ function twist(book: Book, s: Record<SignName, Sign>): StarterMap {
 
 /** The palette, the shared blocks and the levels in order. */
 export function buildLevels(): { pal: Pal; book: Book; levels: Level[] } {
-  const pal = buildStarterPalette();
+  const pal = buildStarterPalette(undefined, 'teach-test-twist');
   const { book, signs } = buildBlocks(pal);
   const levels: Level[] = [
     { file: 'one', title: 'Teach', hint: 'A gap. Nothing hurts here.', map: teach(book, signs) },

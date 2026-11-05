@@ -6,7 +6,7 @@
 //   FALLING   7  the light that comes loose when the lamp lights: it slides down the post (power 200)
 //   LIGHT     8  the light at the foot of the post, waiting to be touched (power 200, never dies)
 // What the engine does (code/GM/PLAYGAME.C, DoCollision and the touch test in moveallmons): when
-// two monsters meet, the stronger kills the weaker and equal powers pass through each other. Kit
+// two monsters meet, the stronger kills the weaker and equal powers pass through each other. Lami
 // kills (by touching) only a monster with a power under 100, and only if its "End" is not -2.
 //   - the spark (80) dies on a dial that is off (90) and passes through a dial that is on (80)
 //   - touching a dial that is off kills it, and it "becomes" the dial that is on
@@ -34,7 +34,7 @@ export const FALLING = 7;
 export const LIGHT = 8;
 /** Powers: a spark meets a dial that is off (stronger) and dies, meets one that is on (equal) and passes. */
 export const POWER = { spark: 80, off: 90, on: 80, lamp: 70, light: 200 } as const;
-/** Hit points Kit starts with (nothing in this game takes any, but Game-Maker wants a number). */
+/** Hit points Lami starts with (nothing in this game takes any, but Game-Maker wants a number). */
 export const HERO_HIT_POINTS = 50;
 /** The spark's speed, and the falling light's. */
 export const SPARK_SPEED = 2;

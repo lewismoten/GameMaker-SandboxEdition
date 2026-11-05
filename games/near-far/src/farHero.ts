@@ -1,7 +1,7 @@
-// Kit in the far plane: the same character file, with every frame redrawn half the size. A far scene loads
+// Mara in the far plane: the same character file, with every frame redrawn half the size. A far scene loads
 // far.chr and far.cbl in place of hero.chr and hero.cbl. Each frame's head and body (two 20 x 20 blocks) are
 // put together, shrunk to 10 x 20, and stood in one block on the ground line; the top block is left empty.
-// He still moves, jumps and bumps exactly as the near Kit does (the keys, the speeds and the 2-block hitbox
+// He still moves, jumps and bumps exactly as the near Mara does (the keys, the speeds and the 2-block hitbox
 // are the same), so only the picture is small.
 import { CHARBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import type { Character } from '@lewismoten/gamemaker-sandbox-engine/formats/character';

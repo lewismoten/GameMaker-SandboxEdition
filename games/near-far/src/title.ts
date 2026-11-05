@@ -1,5 +1,5 @@
 // NEAR AND FAR's own title picture, in the Bigger Worlds look (the kit's atlas): two little framed views on an old
-// map page, a near one with a big tree and Kit, and a far one with the same things small and pale, and an arrow.
+// map page, a near one with a big tree and Mara, and a far one with the same things small and pale, and an arrow.
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { scaleBlit } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 import { bevel } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';

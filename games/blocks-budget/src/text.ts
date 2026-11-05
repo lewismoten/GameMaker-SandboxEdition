@@ -20,7 +20,7 @@ export const HOWTO = wrap(`
 |SPACE         jump
 |F2            lives, score
 
-Pictures are not walls. Kit walks through a tower that is only drawn, but a brick wall stops him, so jump over it.
+Pictures are not walls. Lena walks through a tower that is only drawn, but a brick wall stops him, so jump over it.
 
 Coins add to your score. The door at the end of a level takes you on.
 

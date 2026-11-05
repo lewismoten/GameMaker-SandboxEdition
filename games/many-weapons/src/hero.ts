@@ -1,4 +1,4 @@
-// ONE KEY, MANY WEAPONS' hero: Kit from the kit, with three sequences on Enter, in this order:
+// ONE KEY, MANY WEAPONS' hero: Lena from the kit, with three sequences on Enter, in this order:
 //   14  FLAME  throws a flame (a frame in the middle births monster FLAME)  uses left: counter 14
 //   15  STAR   throws a star (a frame in the middle births monster STAR)    uses left: counter 15
 //   17  NONE   a short shrug and a low blip: nothing to throw                 uses left: no limit

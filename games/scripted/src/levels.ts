@@ -3,11 +3,11 @@
 //
 //   1. Curtain Up: two actors wait behind the curtains of a stage near the start. When the level starts
 //      their play begins: each peeks out, walks in, says HI in turn and walks off. Every act is a monster
-//      that BECOMES the next. The show does not wait for Kit; a door at the start (the encore) loads
+//      that BECOMES the next. The show does not wait for Neka; a door at the start (the encore) loads
 //      the level again, which starts the show again.
 //   2. Say Hello: a cameo waits in a doorway, walks to the stage, waves HI once and goes off behind the
 //      curtain. Once it is gone it is gone, until the encore door.
-// Every room is closed in by brick walls you can see, and the actors are not solid, so nothing stops Kit
+// Every room is closed in by brick walls you can see, and the actors are not solid, so nothing stops Neka
 // that he can't see.
 import { SOLID, Book, PULL } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
@@ -53,7 +53,7 @@ export interface Level {
 const onGround = (ground: number, s: Sign) => ground - 1 - s.board.length;
 
 export const GROUND = 10;
-/** Where actors and Kit stand: the row above the ground. */
+/** Where actors and Neka stand: the row above the ground. */
 export const STAND = GROUND - 1;
 
 /** A stage: its left and right curtain columns. The boards run between them; the valance runs across the top. */
@@ -155,7 +155,7 @@ function sayHello(book: Book, signs: Record<SignName, Sign>): StarterMap {
 
 /** The levels in order. */
 export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
-  const pal = buildStarterPalette();
+  const pal = buildStarterPalette(undefined, 'scripted');
   const { book, signs } = buildBlocks(pal);
   const levels: Level[] = [
     { file: 'one', title: 'Curtain Up', hint: 'A play made of acts.', map: curtainUp(book, signs), encore: 1 },

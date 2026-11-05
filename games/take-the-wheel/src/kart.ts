@@ -1,7 +1,7 @@
 // TAKE THE WHEEL's kart: a second character file (KART.CHR). Level 2's scene names it in the character
-// slot, so the same Kit is now a driver. The pictures are Kit's head over a little blue go-kart; the file
-// is made like Kit's, with these differences:
-//   Left / Right   drive, 8 pixels a frame (Kit walks at 4), the wheels turning
+// slot, so the same Yana is now a driver. The pictures are Yana's head over a little blue go-kart; the file
+// is made like Yana's, with these differences:
+//   Left / Right   drive, 8 pixels a frame (Yana walks at 4), the wheels turning
 //   Space          honk: a frame of the sequence gives birth to the HONK ripple (monster 3). A kart
 //                  has no jump sequence, so Space does not push it upward.
 //   no Up / Down   nothing to climb, so those keys do nothing
@@ -17,7 +17,7 @@ import { KEY, SEQ, SND } from '../../kit/starter/ids';
 import type { Pal } from '../../kit/starter/palette';
 import { HERO_HIT_POINTS, HONK } from './monsters';
 
-/** Pixels a frame while driving (Kit on foot: 4). */
+/** Pixels a frame while driving (Yana on foot: 4). */
 export const KART_STEP = 8;
 /** The honk's own sound number (the kit uses 0 to 12). */
 export const SND_HONK = 13;
@@ -25,13 +25,13 @@ export const SND_HONK = 13;
 const MIRROR_BOTH = 0x44;
 const T = 255;
 
-/** The kart under Kit: `turn` rotates the spokes of the wheels. Right-facing; the engine mirrors it for left. */
+/** The kart under Yana: `turn` rotates the spokes of the wheels. Right-facing; the engine mirrors it for left. */
 function kartBody(pal: Pal, hero: Book | undefined, turn: boolean, seatOnly = false): Pixels {
   const { c, r } = pal;
   const ink = c('ink', 0);
   const p = new Pixels(20, 20, T);
   if (hero && !seatOnly) {
-    // Kit's shoulders and arms, from the hero's own body picture (down to the waist), then the kart over his lap
+    // Yana's shoulders and arms, from the hero's own body picture (down to the waist), then the kart over his lap
     p.blit(hero.pics.get('stand')!.crop(0, 0, 20, 20), 0, 0, T);
     for (let y = 9; y < 20; y++) for (let x = 0; x < 20; x++) p.set(x, y, T);
   }
@@ -54,7 +54,7 @@ function kartBody(pal: Pal, hero: Book | undefined, turn: boolean, seatOnly = fa
   return p;
 }
 
-/** The kart's character blocks (.CBL), reusing Kit's heads. */
+/** The kart's character blocks (.CBL), reusing Yana's heads. */
 export function buildKartBlocks(pal: Pal, hero: Book): Book {
   const book = new Book('cbl');
   for (const head of ['stand.top', 'blink.top', 'cheer.top', 'hurt.top']) book.add(head, hero.pics.get(head)!);
@@ -99,7 +99,7 @@ export function buildKart(cb: Book): Character {
   set(S[SEQ.left], drive(-KART_STEP, true), { key: KEY.left, jstkMov: 7 });
   set(S[SEQ.rightD], drive(KART_STEP, false), { key: KEY.d });
   set(S[SEQ.leftA], drive(-KART_STEP, true), { key: KEY.a });
-  // Space: Kit squeezes the horn; the middle frame gives birth to the ripple (a frame whose second
+  // Space: Yana squeezes the horn; the middle frame gives birth to the ripple (a frame whose second
   // picture is MONBL births monster "first picture", the way every Game-Maker hero shoots)
   const birth = { ...emptyFrame(), x: 0, y: 20, pic1: HONK, pic2: MONBL, pause: 0 };
   set(S[SEQ.throw], [f('cheer.top', 'kart1', { pause: 3 }), birth, f('cheer.top', 'kart0', { pause: 8 })], {
