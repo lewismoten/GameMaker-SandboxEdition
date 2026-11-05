@@ -1,6 +1,6 @@
-// Neka with a small shovel: DIG IT's own copy of the hero's character blocks and sequences. She carries the shovel out in
-// front of her when she stands, walks and jumps (blade angled to the ground), so walking into soil is plainly a dig; the
-// Down arrow scoops (blade into the dirt, then lifted with a clump flying) while she pushes down into the soil under her.
+// Neka with a small shovel: DIG IT's own copy of the hero's character blocks and sequences. Neka carries the shovel out in
+// front of them when they stand, walk and jump (blade angled to the ground), so walking into soil is plainly a dig; the
+// Enter key scoops (blade into the dirt, then lifted with a clump flying) while they push down into the soil under them.
 // The kit's heroes (games/kit/starter/hero.ts) are not touched: this reuses their head, body and outline drawing.
 import type { Character } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { emptyFrame } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
@@ -9,11 +9,22 @@ import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { Book } from '../../kit/starter/book';
 import { buildHero, CLIMB_STEP } from '../../kit/starter/heroChar';
 import { body, head, outlinedPair, type Legs } from '../../kit/starter/hero';
-import { KEY, SEQ } from '../../kit/starter/ids';
+import { SEQ } from '../../kit/starter/ids';
 import type { Pal } from '../../kit/starter/palette';
 
+/** Enter (scan code 28, ASCII 13). */
+const KEY_ENTER = 0x1c0d;
 /** Pixels a scoop frame pushes down: the same as a climb step, so a dug hole is walked down at the same pace. */
 const SCOOP_STEP = CLIMB_STEP;
+
+/** Makes the kit's shovel a little bigger: a longer blade and a T handle. */
+function bigger(pal: Pal, p: Pixels): Pixels {
+  const steel = pal.r('stone');
+  const wood = pal.r('wood');
+  p.rect(16, 17, 4, 1, steel[2]).rect(19, 14, 1, 4, steel[1]).rect(15, 14, 1, 3, steel[2]);
+  p.rect(12, 4, 5, 2, wood[3]).rect(12, 4, 5, 1, wood[4]);
+  return p;
+}
 
 /** A clump of dirt in the air at (x, y): three crumbs, so it reads as thrown soil. */
 function clump(pal: Pal, p: Pixels, x: number, y: number, size: 'big' | 'small'): void {
@@ -44,7 +55,7 @@ export function buildDigHeroBlocks(pal: Pal): Book {
     { back: [12, 0], front: [3, 0] },
     { back: [9, 0], front: [7, 2] },
   ];
-  const carry = (legs: Legs | 'tuck') => body(pal, { arms: 'dig0', legs });
+  const carry = (legs: Legs | 'tuck') => bigger(pal, body(pal, { arms: 'dig0', legs }));
   add('stand.top', 'stand', head(pal, 'smile'), carry(stand));
   add('blink.top', 'stand', head(pal, 'blink'), carry(stand));
   add('hurt.top', 'hurt', head(pal, 'ouch'), body(pal, { arms: 'out', legs: { back: [4, 0], front: [12, 0] } }));
@@ -56,9 +67,9 @@ export function buildDigHeroBlocks(pal: Pal): Book {
   add('look.top', 'stand', head(pal, 'smile', false, -1), carry(stand));
   // the scoop: shovel lifted, blade in the dirt with clods flying, then lifted with a clump in the air
   const dig = { back: [3, 0], front: [10, 0] } as Legs;
-  add('stand.top', 'dig0', head(pal, 'smile'), body(pal, { arms: 'dig0', legs: dig }));
-  add('stand.top', 'dig1', head(pal, 'smile'), body(pal, { arms: 'dig1', legs: dig }));
-  const up = body(pal, { arms: 'dig0', legs: dig });
+  add('stand.top', 'dig0', head(pal, 'smile'), bigger(pal, body(pal, { arms: 'dig0', legs: dig })));
+  add('stand.top', 'dig1', head(pal, 'smile'), bigger(pal, body(pal, { arms: 'dig1', legs: dig })));
+  const up = bigger(pal, body(pal, { arms: 'dig0', legs: dig }));
   clump(pal, up, 12, 11, 'big');
   add('stand.top', 'dig2', head(pal, 'smile'), up);
   add('stand.top', 'throw0', head(pal, 'smile'), carry(stand));
@@ -69,10 +80,10 @@ export function buildDigHeroBlocks(pal: Pal): Book {
   return book;
 }
 
-/** The hero's character file: the kit's, with the Down arrow (and the joystick's down) digging instead of climbing. S still climbs down. */
+/** The hero's character file: the kit's, with the Enter key (and joystick button 2) playing the scoop. Down still climbs a ladder. */
 export function buildDigHero(cb: Book): Character {
   const ch = buildHero(cb);
   const f = (bottom: string, y: number, pause: number) => ({ ...emptyFrame(), pic1: cb.n('stand.top'), pic2: cb.n(bottom), y, pause });
-  set(ch.sequences[SEQ.down], [f('dig0', 0, 2), f('dig1', SCOOP_STEP, 2), f('dig1', 0, 2), f('dig2', 0, 3)], { key: KEY.down, jstkMov: 5 });
+  set(ch.sequences[SEQ.dig], [f('dig0', 0, 2), f('dig1', SCOOP_STEP, 2), f('dig1', 0, 2), f('dig2', 0, 3)], { key: KEY_ENTER, jstkBut: 2 });
   return ch;
 }

@@ -20,7 +20,7 @@ export type SignName = 'soil' | 'rock' | 'gold' | 'sink' | 'spikes' | 'exit';
 
 /** The signs' words and sizes. */
 const WORDS: Record<SignName, { text: string; w: number; h: number }> = {
-  soil: { text: 'SOIL TURNS TO A TUNNEL WHEN YOU TOUCH IT. WALK IN', w: 4, h: 4 },
+  soil: { text: 'SOIL CRUMBLES WHEN YOU TOUCH IT. WALK IN, OR PRESS ENTER TO DIG DOWN', w: 4, h: 5 },
   rock: { text: 'ROCK DOES NOT DIG. JUMP, AND DIG OVER IT', w: 4, h: 4 },
   gold: { text: 'GOLD FLECKS PAY 10 WHEN YOU DIG THEM UP', w: 4, h: 4 },
   sink: { text: 'SOIL UNDER YOUR FEET GIVES WAY. STEP ON IT TO SINK', w: 4, h: 4 },

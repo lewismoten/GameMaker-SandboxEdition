@@ -106,7 +106,7 @@
   "twinkle": {"hash":"718a3ba04cf87f5e","maps":{"one.map|one.bbl":[0,15,77,10],"two.map|two.bbl":[0,15,81,10]}},
   "very-far": {"hash":"db51aec779e45b89","maps":{"close.map|veryfar.bbl":[0,10,45,10],"front.map|veryfar.bbl":[0,10,58,10],"quick.map|veryfar.bbl":[0,10,58,10],"slow.map|veryfar.bbl":[0,10,58,10]}},
   "voice": {"hash":"4703e6e6263fe0c9","maps":{"one.map|vo.bbl":[0,14,73,10],"three.map|vo.bbl":[0,14,73,10],"two.map|vo.bbl":[0,14,73,10]}},
-  "walk-the-ground": {"hash":"58d52b6e7d2d89c2","maps":{"one.map|dg.bbl":[0,4,62,23],"two.map|dg.bbl":[0,7,65,22]}},
+  "walk-the-ground": {"hash":"27186fbed32107f4","maps":{"one.map|dg.bbl":[0,4,62,23],"two.map|dg.bbl":[0,7,65,22]}},
   "warning-first": {"hash":"a879bdb7def3bf2b","maps":{"one.map|one.bbl":[0,14,61,10],"two.map|two.bbl":[0,11,54,19]}},
   "watch-your-step": {"hash":"c6e775d627cc3d56","maps":{"one.map|step.bbl":[0,14,61,10],"three.map|step.bbl":[0,7,57,20],"two.map|step.bbl":[0,14,45,10]}},
   "who-wins": {"hash":"49c78897af89e249","maps":{"one.map|who.bbl":[0,14,67,10],"two.map|who.bbl":[0,14,64,10]}},

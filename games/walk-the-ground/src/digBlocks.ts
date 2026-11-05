@@ -1,7 +1,7 @@
 // DIG IT's own blocks, added to the Starter block set after the signs:
 //   soil     loose, light brown earth with pebbles. It is solid, and every tick Neka pushes on it (walking into it, standing
 //            on it, jumping up into it) it breaks up one step along a chain: soil, cracked, split open, half dug, nearly dug, then `dug`
-//            (a hole with a heap of crumbs). The steps are solid, so she is held for five ticks, shovel against the
+//            (a hole with a heap of crumbs). The steps are solid, so they are held for five ticks, shovel against the
 //            dirt, and then walks straight on. A touch chain is the only per-block animation PLAYGAME has: a block timer
 //            would change every copy of the block on the screen at once.
 //   nugget   soil with a gold fleck. It pays 10 on its first touch (once), glints as it cracks and then joins the chain.
@@ -108,13 +108,15 @@ function splitOpen(pal: Pal, nugget: boolean): Pixels {
   const d = pal.r('dirt');
   const t = pal.r('parch');
   const p = cracked(pal, nugget);
-  p.rect(2, 1, 5, 3, t[2]).rect(13, 1, 5, 3, t[2]); // wipe the first crumbs
-  p.rect(9, 8, 3, 5, d[1]).rect(8, 9, 1, 3, d[0]).rect(12, 9, 1, 3, d[0]);
+  p.rect(2, 1, 5, 3, t[2]); // wipe the first crumbs
+  // a wide gap down the middle and a chunk missing from the top right corner
+  p.rect(8, 6, 5, 9, d[1]).rect(7, 7, 1, 7, d[0]).rect(13, 7, 1, 7, d[0]).rect(9, 15, 3, 2, d[1]);
+  p.rect(14, 0, 6, 5, d[1]).rect(13, 1, 1, 4, d[0]).rect(14, 5, 6, 1, d[0]).rect(15, 3, 3, 2, t[2]);
   crack(p, 6, 6, -1, 1, 5, [2], d[0]);
   crack(p, 13, 13, 1, 1, 5, [2], d[0]);
   for (const [x, y] of [
     [2, 0],
-    [15, 1],
+    [4, 14],
   ])
     p.rect(x, y, 2, 2, t[4]).rect(x, y + 1, 2, 1, d[3]);
   return p;

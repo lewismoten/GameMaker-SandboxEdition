@@ -8,6 +8,10 @@
       "short": "Walk right",
       "long": "Walk right."
     },
+    "28": {
+      "short": "Dig down",
+      "long": "Scoop with the shovel, down into the soil under you."
+    },
     "57": {
       "short": "Jump",
       "long": "Jump. Steer with Left and Right while you are in the air."
@@ -17,8 +21,8 @@
       "long": "Climb up a ladder."
     },
     "80": {
-      "short": "Dig down",
-      "long": "Scoop with the shovel, down into the soil under you."
+      "short": "Climb down",
+      "long": "Climb down a ladder."
     },
     "30": {
       "short": "Walk left",
@@ -34,7 +38,7 @@
     },
     "31": {
       "short": "Climb down",
-      "long": "Climb down a ladder."
+      "long": "Same as the Down arrow."
     }
   },
   "joystick": {
