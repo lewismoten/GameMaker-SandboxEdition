@@ -80,6 +80,7 @@ export const CAST_GAMES = {
   horizon: ['To the Horizon', 'starter'],
   beltway: ['Round and Round', 'starter'],
   momentum: ['Slide and Drift', 'starter'],
+  'jump-boots': ['Boots and Jet Pack', 'starter'],
   carl: ['A Fly Named Carl', 'bizarre'],
   goat: ['Third Goat from the Left', 'bizarre'],
   loaf: ['Loaf #13 (Left in the Basket)', 'bizarre'],
@@ -211,6 +212,7 @@ const LISTED: CastMember[] = [
         as: 'rides the bed of a truck while the scenery slides past, then watches a little car drive a loop and waits for three laps to open the door',
       },
       { game: 'momentum', as: 'glides on after letting go, and runs up to hop wide gaps' },
+      { game: 'jump-boots', as: 'taps up a tall cliff like a jet pack, then jumps twice in boots that hold only two jumps' },
     ],
   },
   {

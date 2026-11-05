@@ -40,7 +40,7 @@ export const CRAFT: Chapter = {
     quickly; or, for a shooter, put the shot on the walk frames themselves, so the hero fires
     whenever he moves.</li>
   </ul>
-  ${onCd('SLIDE', 'KITMOVES')}
+  ${onCd('SLIDE', 'BOOTS', 'KITMOVES')}
   <h2>Face the way you walk</h2>
   <p>A hero drawn only from the front, sliding left and right with his legs going, is one of the
   first things a player notices, and often reads as a rushed game. Most heroes look best drawn
