@@ -30,6 +30,7 @@ meet-the-monsters|Meet the Monsters|2
 near-far|Near and Far|6
 special-counters|Not That Key|3
 voice|Out Loud|3
+overhead|Overhead|6
 parallax|Parallax|2
 inventory|Pick It Up|2
 pictures-and-cartoons|Pictures and Cartoons|3
