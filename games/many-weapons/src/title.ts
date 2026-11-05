@@ -1,4 +1,4 @@
-// ONE KEY, MANY WEAPONS' own title picture, in Game Feel's sunset look: the hero has just thrown a
+// ONE KEY, MANY WEAPONS' own title picture, in the Moving and Pushing sunset look: the hero has just thrown a
 // flame (in his hand-turned-orange pose) at a frosty grump, with a star on its way after it, a
 // sparkle and the door beyond.
 import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
