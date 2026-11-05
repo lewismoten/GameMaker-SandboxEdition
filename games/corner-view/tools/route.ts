@@ -105,7 +105,8 @@ export async function diamondFloor(bot: StarterBot): Promise<void> {
     await must(bot, hold(bot, 'down', 5), 'down tap');
   }
   const p = bot.px;
-  if (p.x > home.x - 36 || Math.abs(p.y - home.y) > 6) throw new Error(`two taps in turn should go straight left; he went from ${home.x},${home.y} to ${p.x},${p.y}`);
+  if (p.x > home.x - 36 || Math.abs(p.y - home.y) > 6)
+    throw new Error(`two taps in turn should go straight left; he went from ${home.x},${home.y} to ${p.x},${p.y}`);
   bot.say(`straight left to ${p.x}, ${p.y}`);
   await must(bot, bot.wait(LOOK), 'looking');
   // the mistake, once: Right is lower right, straight into the lower right wall

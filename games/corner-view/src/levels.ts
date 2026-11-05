@@ -61,7 +61,9 @@ export const START: [number, number] = [8, 5];
 
 /** Level 3's floor: a diamond whose edges step two blocks across for one down, the slope of the drawn diamonds. [first column, last column] a row. */
 const DIAMOND: Record<number, [number, number]> = { 2: [7, 8], 3: [5, 10], 4: [3, 12], 5: [3, 12], 6: [5, 10], 7: [7, 8] };
-const FLOOR3: boolean[][] = Array.from({ length: ROWS }, (_, y) => Array.from({ length: COLS }, (_, x) => !!DIAMOND[y] && x >= DIAMOND[y][0] && x <= DIAMOND[y][1]));
+const FLOOR3: boolean[][] = Array.from({ length: ROWS }, (_, y) =>
+  Array.from({ length: COLS }, (_, x) => !!DIAMOND[y] && x >= DIAMOND[y][0] && x <= DIAMOND[y][1]),
+);
 /** The cubes that ring the diamond: every block that touches it (corners too) and is not part of it. */
 const RING3: Tower[] = [];
 FLOOR3.forEach((row, y) =>
@@ -172,7 +174,8 @@ function build(pal: Pal, file: string, spec: Spec, title: string, hint: string):
   const dark = pal.c('ink', 1);
   const inside = (x: number, y: number) => !spec.room || spec.room[y][x];
   const ringed = new Set(spec.towers.map(([x, y]) => `${x},${y}`));
-  if (spec.room) for (let y = 0; y < ROWS; y++) for (let x = 0; x < COLS; x++) if (!inside(x, y) && !ringed.has(`${x},${y}`)) base.rect(x * 20, y * 20, 20, 20, dark);
+  if (spec.room)
+    for (let y = 0; y < ROWS; y++) for (let x = 0; x < COLS; x++) if (!inside(x, y) && !ringed.has(`${x},${y}`)) base.rect(x * 20, y * 20, 20, 20, dark);
   const purple = cubeShades(pal, 'purple');
   const teal = cubeShades(pal, 'teal');
   // painter's order: the lower a tower stands on the screen, the later it is drawn
@@ -215,7 +218,15 @@ function build(pal: Pal, file: string, spec: Spec, title: string, hint: string):
     put(s.legs[0], col, top + SIGN.h);
     put(s.legs[1], col + SIGN.w - 1, top + SIGN.h);
   }
-  const map = new IsoMap(book, spec.room ? plain(cellOf(base, 0, 0).map(() => dark), true) : cells[0][0]);
+  const map = new IsoMap(
+    book,
+    spec.room
+      ? plain(
+          cellOf(base, 0, 0).map(() => dark),
+          true,
+        )
+      : cells[0][0],
+  );
   cells.forEach((row, y) => row.forEach((n, x) => map.set(x, y, n)));
   map.start = [spec.start[0] + ORIGIN, spec.start[1] + ORIGIN];
   map.exits.push({ from: [spec.exit[0] + ORIGIN, spec.exit[1] + ORIGIN] });

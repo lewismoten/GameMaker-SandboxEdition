@@ -129,9 +129,7 @@ export function buildCornerHero(cb: Book, diagonal: boolean): Character {
   const a = STEP.across;
   const d = STEP.down;
   // [dx, dy] of each arrow
-  const move = diagonal
-    ? { up: [a, -d], right: [a, d], down: [-a, d], left: [-a, -d] }
-    : { up: [0, -q], right: [q, 0], down: [0, q], left: [-q, 0] };
+  const move = diagonal ? { up: [a, -d], right: [a, d], down: [-a, d], left: [-a, -d] } : { up: [0, -q], right: [q, 0], down: [0, q], left: [-q, 0] };
   const arrows: [keyof typeof move, number, number, number, number][] = [
     ['right', SEQ.right, SEQ.rightD, KEY.right, KEY.d],
     ['left', SEQ.left, SEQ.leftA, KEY.left, KEY.a],
