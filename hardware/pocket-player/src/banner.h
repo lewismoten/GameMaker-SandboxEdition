@@ -1,4 +1,4 @@
-// The test banner: a slim yellow bar at the top edge of the screen with a small robot and up to 40 characters, so
+// The test banner: a slim yellow bar at the top edge of the screen with a small robot and up to 40 characters (33 on the 320 px board), so
 // whoever holds the board can see an agent is testing it and what it is doing. "S <text>" on Serial shows it, "S off"
 // clears it. It also clears on a real touch (main.cpp) and after 2 minutes with no serial traffic. The bar sits
 // between the MENU and KEYS chips, 12 px tall, and is drawn into the game's bands with the controls (no flicker).
@@ -24,15 +24,17 @@ struct State {
   uint32_t seen = 0;  // millis() of the last serial byte
 };
 inline State st;
+inline int screenW = 480, maxLen = MAXLEN;  // main.cpp sets them for the board: a 320 px screen has room for 33 characters between its chips
+inline void configure(int w, int n) { screenW = w; maxLen = n < MAXLEN ? n : MAXLEN; }
 
 inline int width() { return PAD + ICON_W + PAD + 6 * (int)strlen(st.text) + PAD; }
-inline int left() { return (480 - width()) / 2; }
+inline int left() { return (screenW - width()) / 2; }
 
 // Shows `t` (printable ASCII only, cut at 40); an empty text clears. Returns true when what is on screen changes.
 inline bool set(const char* t) {
   char n[MAXLEN + 1];
   int k = 0;
-  for (; *t && k < MAXLEN; t++)
+  for (; *t && k < maxLen; t++)
     if (*t >= 32 && *t < 127) n[k++] = *t;
   n[k] = 0;
   bool on = k > 0;

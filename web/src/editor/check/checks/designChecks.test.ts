@@ -13,7 +13,7 @@ import { scenesOf, type SceneData } from '../sceneData';
 import { testGame, type TestGame } from '../testGame';
 import { flashing } from './flashing';
 import { changingKeys, keyHabits } from './keyHabits';
-import { fakeExits, music, noWayOut } from './levelExits';
+import { fakeExits, music, noWayOut, untitledGame } from './levelExits';
 import { screenText } from './screenText';
 import { shotPrize } from './shotPrize';
 import { stakes } from './stakes';
@@ -122,6 +122,16 @@ describe('exits, music and flashing', () => {
     const t = testGame(ROWS);
     t.game.scenes[2].links[0] = { ...t.game.scenes[2].links[0], toScene: 0xffff };
     expect(noWayOut(scenesOf(t.game, t)[0], t.game).map((f) => f.severity)).toEqual(['error']);
+  });
+
+  it('notes a game whose menu name is still UnTitled, on scene 0 only', () => {
+    const t = testGame(ROWS);
+    const d = scenesOf(t.game, t)[0];
+    t.game.scenes[0].desc = 'UnTitled';
+    expect(untitledGame({ ...d, scene: 0 }, t.game).map((f) => f.severity)).toEqual(['info']);
+    expect(untitledGame({ ...d, scene: 2 }, t.game)).toEqual([]);
+    t.game.scenes[0].desc = 'Tin Hearts';
+    expect(untitledGame({ ...d, scene: 0 }, t.game)).toEqual([]);
   });
 
   it('notes a level with no song, and warns of a song DOS won’t play', () => {

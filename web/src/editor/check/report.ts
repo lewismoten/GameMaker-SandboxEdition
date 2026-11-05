@@ -25,7 +25,7 @@ import { blankIdle, startValues } from './checks/heroStart';
 import { shotPrize } from './checks/shotPrize';
 import { changingKeys, keyHabits } from './checks/keyHabits';
 import { screenText } from './checks/screenText';
-import { fakeExits, music, noWayOut } from './checks/levelExits';
+import { fakeExits, music, noWayOut, untitledGame } from './checks/levelExits';
 import { hiddenExits } from './checks/hiddenExit';
 import { flashing } from './checks/flashing';
 import { stakes } from './checks/stakes';
@@ -150,6 +150,7 @@ export async function runChecks(files: GameFiles, opt: CheckOptions = {}): Promi
       ...hiddenExits(game, d),
       ...noWayOut(d, game),
       ...music(d, game, files),
+      ...untitledGame(d, game),
       ...flashing(d),
       ...shadowedLinks(game, d),
       ...startsOnLink(game, d, all),
