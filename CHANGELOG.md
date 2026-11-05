@@ -11,6 +11,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Added
 
+- A new Starter, Maps Within Maps: a world map where a whole town is one block and Kit is tiny, the town's streets at a bigger scale, and a house, joined by links that land Kit where he came from, with a locked gate that sends him back to the world for keys.
 - On a game opened to look inside, the Read-only note with Edit a copy now sits in the heading row of the Overview and of each file's page instead of a bar of its own, so the Overview fits one screen again
 - The ? Guides menu offers "What’s new" when the tour has steps added since your last visit: Teddy and Gwinn show only those, and "Not now" hides it until something newer comes (the day is kept in this browser only)
 - An achievement, Learn by looking, for using See how it’s made on a "How do I…?" question to open the map and see how a level is built
