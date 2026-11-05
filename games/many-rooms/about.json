@@ -1,0 +1,36 @@
+{
+  "title": "Rooms on One Map",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.0",
+  "blurb": "Two short levels about many rooms on one map. A map is much bigger than the screen, so four rooms in four corners of it can be four scenes that load the same map file, each landing the hero in a different cell with scrolling off. A door is a link that lands in another cell, even one that is not next door. In the second level every door into the hub lands on the same cell. Signs in the rooms say how. Play it, then open it in Game-Maker and move where a door lands.",
+  "exe": "ONEMAP.EXE",
+  "dosName": "ONEMAP",
+  "sound": "sb",
+  "label": {
+    "background": "#f4e6c4",
+    "band": "#2f8f6a",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "2 short levels",
+    "hours": 1,
+    "background": "#2f8f6a",
+    "accent": "#ffd23f",
+    "ink": "#ffffff",
+    "tagline": "One map, many rooms.",
+    "back": "A small explorer in a teal beanie walks through a red room, a blue room, a green room and a gold room that are really four corners of one big map. A door drops him into another cell, and it need not be next door. Read the signs, then open the game in Game-Maker and move where a door lands.",
+    "features": ["Signs in the rooms explain each idea", "Rooms are cells of one map, and a door lands in another cell", "Made to be copied and taken apart"],
+    "shots": [
+      ["one.map", 0, 0],
+      ["one.map", 16, 10],
+      ["two.map", 16, 0]
+    ],
+    "rating": "Everyone"
+  },
+  "acceptedFindings": []
+}
