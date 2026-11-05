@@ -11,6 +11,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Added
 
+- The DOS player tab has a Patch Lab: a read-only strip with the file offset, the CD's bytes and the new bytes of the setting you are editing, the changed bytes marked in bold and underline.
 - The 1994 BBS's Warez area has PATCHING.ZIP, a plain how-to (PATCHING.TXT) for changing the words of your own game's player: back up first, same length, no credits or registration.
 - The Programmer's Guide has a chapter, "Patching the player": the settings of the DOS player by file offset, how a patch is applied and spotted, and the line it keeps (your own copy, credits left alone).
 - The Programmer's Guide to Game-Maker 3.0 is a book in the Library (`#/programmers-guide`): a chapter for each part of the player (memory, the screen, blocks, monsters, sound, timing, file formats and more), why each limit is what it is, a table of every limit, links from each citation to the original source line, and one page to print or save as PDF. The Game-Maker box on the desk also holds its 1994 cousin, Technical Reference and Limits.
