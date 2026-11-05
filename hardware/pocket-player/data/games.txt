@@ -27,6 +27,7 @@ title-demo|Make a Title|2
 many-weapons|Many Weapons|2
 meet-the-monsters|Meet the Monsters|2
 near-far|Near and Far|6
+special-counters|Not That Key|3
 voice|Out Loud|3
 parallax|Parallax|2
 inventory|Pick It Up|2
