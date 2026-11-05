@@ -10,6 +10,7 @@
 #include <rom/miniz.h>
 #include "board.h"
 #include "controls.h"
+#include "banner.h"
 #include "btnicon.h"
 #include "gmcards.h"
 #include "gmcfg.h"
@@ -525,6 +526,7 @@ static void drawControls() {
   if (controls.keysOpen)
     for (int i = 0; i < nd.nextra; i++)
       if (hitsRect(L.tile[i])) tile(L.tile[i], nd.extra[i], controls.tileDown & (1 << i), icons[2 + i]);
+  if (banner::hits(bandX, bandY, bandW, bandH)) banner::paint(spr, bandX, bandY);  // the test banner, on top
 }
 
 // Draws screen rectangle [X0,X1) x [Y0,Y1) of the 480x300 view: the game's rows at 1.5x, with the controls on top.
@@ -705,6 +707,7 @@ static void drawPicker(bool clear = true) {
   button(6, 276, 126, 318, "< Prev");
   button(134, 276, 254, 318, "Next >");
   button(342, 276, 474, 318, "Settings");
+  banner::paint(tft, 0, 0);
 }
 
 static const char* const HAND[] = {"Right", "Left"};
@@ -742,6 +745,7 @@ static void drawSettings() {
   tft.setTextColor(C_GRAY, C_BLACK);
   tft.setCursor(160, 296);
   tft.print("touch the screen: x,y size shows here");
+  banner::paint(tft, 0, 0);
 }
 static void settingsTouchInfo() {
   tft.fillRect(160, 306, 320, 12, C_BLACK);
@@ -1033,7 +1037,10 @@ static void message(const char* a, const char* b = nullptr) {
 // "T <index> <ticks>" or "T all <ticks>" on Serial (115200), accepted only on the game list: loads each
 // game the way a tap does, runs it with no input (drawing too), prints one "ST" line, then returns to the list.
 
+static void pollSerial();
+
 static void selfTestOne(int g, int ticks, bool cards) {
+  if (Serial.available()) pollSerial();  // a banner line from the script (the new text shows with this game's first frame)
   bool ok = startGame(g, false);
   for (int i = 0; ok && i < ticks; i++) {
     world.tick();
@@ -1120,15 +1127,31 @@ static void serialWrite(const char* cmd) {
   Serial.println("OK");
 }
 
+// The screen after the banner came, changed or went: the list and the settings repaint (they paint it themselves), the
+// game redraws everything in its next frame, and a pause menu repaints over the game.
+static void bannerChanged(bool changed) {
+  if (!changed) return;
+  switch (mode) {
+    case PICKER: drawPicker(false); break;
+    case SETTINGS_SCREEN: drawSettings(); break;
+    case PLAYING: last.valid = false; break;
+    case PAUSED: tft.fillScreen(C_BLACK); last.valid = false; drawFrame(true); drawStrip(); drawPause(); break;
+    default: break;
+  }
+}
+
 static void pollSerial() {
   static char buf[48];
   static int n = 0;
   while (Serial.available()) {
     char c = (char)Serial.read();
+    banner::st.seen = millis();
     if (c == '\n' || c == '\r') {
       buf[n] = 0;
       n = 0;
-      if (buf[0] == 'V') traceOn = buf[2] == '1';
+      if (buf[0] == 'S') {
+        bannerChanged(banner::set(!strncmp(buf, "S off", 5) ? "" : buf + 2));
+      } else if (buf[0] == 'V') traceOn = buf[2] == '1';
       else if (buf[0] == 'I') {
         int x, y;
         injOn = sscanf(buf, "I %d %d", &x, &y) == 2;
@@ -1138,7 +1161,7 @@ static void pollSerial() {
         if (g >= 0 && g < ngames && startGame(g)) wasDown = true;
         Serial.printf("G %d %s %s\n", g, g >= 0 && g < ngames ? games[g].id : "?", mode == PLAYING ? "playing" : "failed");
       } else if (buf[0] == 'T' && mode == PICKER) serialCommand(buf);
-      else if (buf[0] == 'W') serialWrite(buf);
+      else if (buf[0] == 'W' && mode == PICKER) serialWrite(buf);
     } else if (n < (int)sizeof buf - 1) buf[n++] = c;
   }
 }
@@ -1190,10 +1213,14 @@ void loop() {
   uint32_t now = millis();
   pollTouch(now);
   int tx, ty;
+  if (Serial.available()) {
+    Mode before = mode;
+    pollSerial();
+    if (mode != before) return;  // a G started a game
+  }
+  if (banner::st.on && ((pts.n > 0 && !injOn) || now - banner::st.seen > banner::IDLE_MS)) bannerChanged(banner::set(""));  // Lewis takes over, or the agent is gone
 
   if (mode == PICKER) {
-    pollSerial();
-    if (mode != PICKER) return;
     if (freshTap(tx, ty)) {
       int pages = (ngames + ROWS - 1) / ROWS;
       if (ty >= 276) {

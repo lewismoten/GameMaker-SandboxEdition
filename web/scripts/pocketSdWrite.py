@@ -9,6 +9,7 @@ last, then resets the board so it reads the new list. A file already on the card
 """
 import sys, os, time, argparse
 import serial
+from pocketStatus import show, clear
 
 ap = argparse.ArgumentParser()
 ap.add_argument("port")
@@ -17,24 +18,33 @@ a = ap.parse_args()
 s = serial.Serial(a.port, 115200, timeout=5)
 time.sleep(0.3)
 s.reset_input_buffer()
-names = sorted(os.listdir(a.folder), key=lambda n: (n.endswith(".cfg") or n == "games.txt", n))
-total = sum(os.path.getsize(os.path.join(a.folder, n)) for n in names)
-sent, t0 = 0, time.time()
-for i, n in enumerate(names):
-    data = open(os.path.join(a.folder, n), "rb").read()
-    s.write(f"W {n} {len(data)}\n".encode())
-    line = s.readline().decode("utf-8", "replace").strip()
-    if line != "GO":
-        print(f"{n}: board said {line!r}"); sys.exit(1)
-    for k in range(0, len(data), 256):
-        s.write(data[k:k + 256])
-        if s.read(1) != b".":
-            print(f"{n}: no acknowledgement at byte {k}"); sys.exit(1)
-    line = s.readline().decode("utf-8", "replace").strip()
-    if line != "OK":
-        print(f"{n}: board said {line!r}"); sys.exit(1)
-    sent += len(data)
-    if i % 25 == 0:
-        print(f"{i}/{len(names)} files, {sent}/{total} bytes, {int(time.time()-t0)} s", flush=True)
-s.dtr = False; s.rts = True; time.sleep(0.1); s.rts = False  # reset the board
-print(f"done: {len(names)} files, {sent} bytes in {int(time.time()-t0)} s; board resetting")
+show(s, "Writing games to SD")
+try:
+    names = sorted(os.listdir(a.folder), key=lambda n: (n.endswith(".cfg") or n == "games.txt", n))
+    total = sum(os.path.getsize(os.path.join(a.folder, n)) for n in names)
+    sent, t0 = 0, time.time()
+    for i, n in enumerate(names):
+        data = open(os.path.join(a.folder, n), "rb").read()
+        s.write(f"W {n} {len(data)}\n".encode())
+        line = s.readline().decode("utf-8", "replace").strip()
+        if line != "GO":
+            print(f"{n}: board said {line!r}"); sys.exit(1)
+        for k in range(0, len(data), 256):
+            s.write(data[k:k + 256])
+            if s.read(1) != b".":
+                print(f"{n}: no acknowledgement at byte {k}"); sys.exit(1)
+        line = s.readline().decode("utf-8", "replace").strip()
+        if line != "OK":
+            print(f"{n}: board said {line!r}"); sys.exit(1)
+        sent += len(data)
+        if i % 25 == 0:
+            print(f"{i}/{len(names)} files, {sent}/{total} bytes, {int(time.time()-t0)} s", flush=True)
+    clear(s); time.sleep(0.2)
+    s.dtr = False; s.rts = True; time.sleep(0.1); s.rts = False  # reset the board
+    print(f"done: {len(names)} files, {sent} bytes in {int(time.time()-t0)} s; board resetting")
+finally:
+    try:
+        clear(s)
+        time.sleep(0.2)
+    except Exception:
+        pass
