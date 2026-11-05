@@ -10,7 +10,7 @@ import { LASTMON, type Monster } from '@lewismoten/gamemaker-sandbox-engine/form
 import { SOUND_NAMES } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
 import { at, type Finding } from '../findings';
 import { blockUse, type SceneData } from '../sceneData';
-import { vocLimitNote, vocTooBig } from '../../../audio/vocLimit';
+import { TICK_MS, stutterLevel, stutterNote, vocLimitNote, vocTooBig } from '../../../audio/vocLimit';
 import type { FileSource } from '../sim';
 
 /** A sound slot's name as the findings say it. */
@@ -64,6 +64,50 @@ export function bigVocs(d: SceneData, files: FileSource): Finding[] {
       detail: vocLimitNote(`${name.toUpperCase()}.VOC`, bytes.length),
       where: { scene: d.scene, sound: { file: d.names.snd!, n }, file: `${name}.voc` },
     });
+  });
+  return out;
+}
+
+/**
+ * Sounds that may stall play on a slow PC (DOS reads the whole .VOC on the game's thread), and
+ * score or healing blocks that stay put and so replay a sound every tick. Suggestions: the sizes
+ * are estimates, and the check can't see how often a player really touches those blocks or what
+ * disk the game runs from.
+ */
+export function stutterVocs(d: SceneData, files: FileSource): Finding[] {
+  const snd = d.sounds;
+  if (!snd || !d.names.snd) return [];
+  const out: Finding[] = [];
+  const told = new Set<string>();
+  const use = blockUse(d.map);
+  const stays = (n: number) => n < 150 && use[n] > 0 && d.bbl[n].touchBl === n;
+  const sticky = (slot: number) =>
+    slot === 5 ? d.bbl.some((b, n) => b.scorePts > 0 && stays(n)) : slot === 0 && d.bbl.some((b, n) => b.chHitPt > 0 && stays(n));
+  snd.digital.forEach((raw, n) => {
+    const name = raw.trim();
+    if (!name || raw[0] === ' ' || !goodName(name)) return;
+    const bytes = files.get(`${name}.voc`);
+    if (!bytes) return;
+    const where = { scene: d.scene, sound: { file: d.names.snd!, n }, file: `${name}.voc` };
+    const level = stutterLevel(bytes.length);
+    if ((level === 'maybe' || level === 'likely') && !told.has(name.toLowerCase())) {
+      told.add(name.toLowerCase());
+      out.push({
+        check: 'voc-stutter',
+        severity: 'info',
+        title: `${name.toUpperCase()}.VOC (${(bytes.length / 1024).toFixed(1)} KB) ${level === 'likely' ? 'is likely to' : 'may'} stutter on slower PCs`,
+        detail: `${stutterNote(bytes.length)} This is a suggestion from size alone; it can't see the disk or the PC your players have.`,
+        where,
+      });
+    }
+    if (bytes.length > 2000 && sticky(n))
+      out.push({
+        check: 'voc-stutter',
+        severity: 'info',
+        title: `${name.toUpperCase()}.VOC may chop: it plays on a ${n === 5 ? 'score' : 'healing'} block that stays where it is`,
+        detail: `PLAYGAME replays that sound every game tick (${TICK_MS} ms) the hero overlaps the block, stopping the one before it, so a longer sound is cut and restarted about 18 times a second. You could make the block turn into an empty block when touched, or use a short sound for it. The check can't see whether players stand on it for long.`,
+        where,
+      });
   });
   return out;
 }

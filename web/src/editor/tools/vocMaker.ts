@@ -9,6 +9,7 @@ import { validDosName, type Project } from '../core/project';
 import { normalize } from '../../project/files';
 import { VOC_MAX_SAMPLES, vocTooBig } from '../../audio/vocLimit';
 import { recordMeter } from '../widgets/recordMeter';
+import { vocRuler } from '../widgets/vocRuler';
 import { applyEffect as effectAt, EFFECTS, tidy as tidyAt, type Effect } from '../../audio/sampleEdit';
 
 const RATE = 11025;
@@ -109,11 +110,13 @@ function makeVoc(project: Project): Promise<string | undefined> {
     const result = () => applyEffect(raw, effect);
     const wave = h('canvas', { class: 'voc-wave', width: 640, height: 120 });
     const meter = recordMeter(RATE);
+    const ruler = vocRuler(RATE);
     const info = h('p', { class: 'hint' }, 'Press Record and speak; press Stop when you are done.');
     const nameInput = h('input', { type: 'text', value: project.freeName('voice', 'voc'), required: true });
     const refresh = () => {
       const s = result();
       drawWave(wave, s);
+      ruler.set(s.length);
       info.textContent = s.length ? `${(s.length / RATE).toFixed(2)} s · ${s.length.toLocaleString()} bytes at 11 kHz` : info.textContent;
     };
     const setRaw = (s: Float32Array) => {
@@ -182,6 +185,7 @@ function makeVoc(project: Project): Promise<string | undefined> {
       { class: 'stack voc-maker' },
       h('div', { class: 'toolbar' }, recBtn),
       wave,
+      ruler.el,
       meter.el,
       info,
       h(

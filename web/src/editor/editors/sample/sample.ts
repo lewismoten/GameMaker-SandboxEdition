@@ -12,6 +12,7 @@ import { audio } from '../../widgets/mediaShared';
 import { drawWave } from '../../widgets/waveform';
 import { startRecording } from '../../tools/vocMaker';
 import { recordMeter } from '../../widgets/recordMeter';
+import { vocRuler } from '../../widgets/vocRuler';
 import { VOC_MAX_BYTES, VOC_MAX_SAMPLES, vocBytesFor, vocTooBig } from '../../../audio/vocLimit';
 import {
   applyEffect,
@@ -68,6 +69,7 @@ registerEditor(['voc'], (host, project, file) => {
   };
 
   const meter = recordMeter(rate);
+  const ruler = vocRuler(rate);
   const cutToFit = h(
     'button',
     { class: 'voc-fit', title: 'Keep the first part that fits under 64 KB and cut the rest', onclick: () => commit(samples.slice(0, VOC_MAX_SAMPLES)) },
@@ -96,6 +98,7 @@ registerEditor(['voc'], (host, project, file) => {
       : `Cursor at ${secs(cursor)} · nothing selected: tools change the whole sound`;
     undoBtn.disabled = !undo.length;
     redoBtn.disabled = !redo.length;
+    ruler.set(samples.length);
     draw();
   };
 
@@ -310,7 +313,7 @@ registerEditor(['voc'], (host, project, file) => {
       info,
       sizeNote,
       meter.el,
-      h('div', { class: 'voc-edit-scope' }, wave),
+      h('div', { class: 'voc-edit-scope' }, wave, ruler.el),
       h(
         'div',
         { class: 'toolbar voc-edit-transport' },

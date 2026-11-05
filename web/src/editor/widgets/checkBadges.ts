@@ -10,7 +10,7 @@ import { scenesOf } from '../check/sceneData';
 import { blockChecks, counterSources, counters } from '../check/checks/blockChecks';
 import { monsterChecks } from '../check/checks/monsterChecks';
 import { soundChecks } from '../check/checks/gameChecks';
-import { bigVocs } from '../check/checks/missingParts';
+import { bigVocs, stutterVocs } from '../check/checks/missingParts';
 import { guideLink } from './guideLink';
 import { acceptedFindings, openFindings } from '../check/accepted';
 import './checkBadges.css';
@@ -32,7 +32,7 @@ function fileFindings(project: Project, file: string): Finding[] {
     if (!Object.values(d.names).some((n) => n && normalize(n) === name)) continue;
     out.push(...counters(d, gives));
     for (const c of [...blockChecks, ...monsterChecks]) out.push(...c(d));
-    out.push(...soundChecks(d, project.files), ...bigVocs(d, project.files));
+    out.push(...soundChecks(d, project.files), ...bigVocs(d, project.files), ...stutterVocs(d, project.files));
   }
   // the same finding from several scenes once (after leaving out the accepted ones, which are per scene)
   const seen = new Set<string>();

@@ -36,6 +36,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, readBounds } from '@lewismoten/gamemaker-sandbox-tools/kit/textBounds';
 import { pairsOfGame } from './colorCues';
+import { vocCuesOfGame } from './vocCues';
 
 const gamesDir = join(dirname(fileURLToPath(import.meta.url)), '..');
 const webDir = join(gamesDir, '../web');
@@ -279,6 +280,16 @@ const cues = games.flatMap((id) => {
   }
 });
 console.log(`color cues (advisory): ${cues.length ? `hue-alone pairs in ${cues.join(', ')}` : 'none'}`);
+// Advisory, never a failure: sounds that may stall play on a slow PC, or replay on a block touched for several ticks (kit/vocCues.ts; estimates).
+const vocs = games.flatMap((id) => {
+  try {
+    const n = vocCuesOfGame(id).length;
+    return n ? [`${id} ${n}`] : [];
+  } catch {
+    return [];
+  }
+});
+console.log(`voc stutter (advisory): ${vocs.length ? `sounds that may stall slow PCs in ${vocs.join(', ')}` : 'none'}`);
 const failed =
   [...rows.values()].filter((r) => COLS.some((c) => r[c] === 'FAIL')).length +
   (hearts === 'FAIL' ? 1 : 0) +
