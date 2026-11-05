@@ -9,6 +9,7 @@
 #include "board.h"
 #include "controls.h"
 #include "btnicon.h"
+#include "gmcards.h"
 #include "gmcfg.h"
 #include "gt911.h"
 #include "speaker.h"
@@ -613,7 +614,143 @@ static void applyControls() {
   controls.configure(settings, need);
 }
 
-static bool startGame(int g) {
+// ---- between scenes: fades and cards -----------------------------------------------------------
+// What PLAYGAME shows around play (README, "Between levels"): the screen fades out and in (FadeTo: 65 steps
+// over 65/70 s, as many as the panel can draw in that time) and the pictures and text pages of the game's
+// .lst files, drawn at 1.5x like the game. Taps move on wherever the engine waits for a key.
+
+static void setPalette6(const uint8_t* p768) {
+  for (int i = 0; i < 256; i++) {
+    auto v8 = [](uint8_t c) { c &= 63; return (uint8_t)((c << 2) | (c >> 4)); };
+    pal[i] = panel565(v8(p768[i * 3]), v8(p768[i * 3 + 1]), v8(p768[i * 3 + 2]));
+  }
+}
+// A 320 x 200 picture of palette indices over the whole view, through `pal`.
+static void pushPicture(const uint8_t* px) {
+  for (int Ys = 0; Ys < VIEW_H; Ys += BAND) {
+    for (int r = 0; r < BAND; r++) {
+      const uint8_t* src = px + ((Ys + r) * 2 / 3) * gm::PIC_W;
+      uint16_t* o = band + r * VIEW_W;
+      for (int X = 0; X < VIEW_W; X++) *o++ = pal[src[X * 2 / 3]];
+    }
+    tft.pushImage(0, Ys, VIEW_W, BAND, band);
+  }
+}
+// FadeTo from one palette (6 bit values) to another, each step drawn as the picture `px`, or as the playing
+// level when px is null. The clock decides the step, as the engine's does, so a slow panel shows fewer steps.
+static void fadePalette(const uint8_t* from, const uint8_t* to, const uint8_t* px) {
+  uint8_t mid[768];
+  uint32_t start = millis();
+  for (;;) {
+    uint32_t el = millis() - start;
+    int step = el >= (uint32_t)gm::FADE_MS ? gm::FADE_STEPS : (int)(el * gm::FADE_STEPS / gm::FADE_MS);
+    gm::fadeColor(from, to, step, mid);
+    setPalette6(mid);
+    if (px) pushPicture(px);
+    else drawRegion(0, 0, VIEW_W, VIEW_H);
+    if (step >= gm::FADE_STEPS) break;
+  }
+}
+// GetKey / PauseTimeKey: a touch (or the time) moves on. gm::PAUSE_KEY waits for the touch alone.
+static void waitTap(int seconds) {
+  if (seconds <= 0) return;
+  uint32_t end = millis() + (uint32_t)seconds * 1000u;
+  wasDown = true;  // a finger still down from before is not a tap
+  int tx, ty;
+  for (;;) {
+    uint32_t now = millis();
+    pollTouch(now);
+    if (freshTap(tx, ty)) break;
+    if (seconds != gm::PAUSE_KEY && (int32_t)(now - end) >= 0) return;
+    delay(5);
+  }
+  for (uint32_t until = millis() + 400; pts.n > 0 && millis() < until;) {  // let go before the game reads the touch
+    delay(5);
+    pollTouch(millis());
+  }
+  wasDown = true;
+}
+// Bytes [off, off + len) of data/cards.pak, where every card picture and text page is.
+static uint8_t* readPak(size_t off, size_t len) {
+  File f = LittleFS.open("/cards.pak", "r");
+  if (!f || !f.seek(off)) return nullptr;
+  uint8_t* p = (uint8_t*)malloc(len + 1);
+  if (p && f.read(p, len) != len) { free(p); p = nullptr; }
+  return p;
+}
+static uint8_t* fontData = nullptr;  // 95 glyphs of 8 rows (data/font.bin), kept once read
+
+// ShowGraphic for one scene slot (where: i<level>, x<level>, w, l): the pictures fade in from black, the text
+// pages are written over the picture before them. A card that can't be read is left out (the engine cleared the screen).
+static void showCards(const char* where) {
+  char path[48];
+  snprintf(path, sizeof path, "/%s.cfg", games[curGame].id);
+  File f = LittleFS.open(path, "r");
+  if (!f) return;
+  String text = f.readString();
+  f.close();
+  gm::Card cards[10];
+  int n = gm::cardsOf(text.c_str(), where, cards, 10);
+  uint8_t* pic = nullptr;
+  char picFile[20] = "";
+  bool dirty = false;  // text is on the picture
+  uint8_t black[768];
+  memset(black, 0, sizeof black);
+  for (int i = 0; i < n; i++) {
+    const gm::Card& c = cards[i];
+    if (c.kind == 'g') {
+      free(pic);
+      pic = gm::loadPicture(assets, readPak, c.file);
+      dirty = false;
+      if (!pic) { picFile[0] = 0; continue; }
+      strcpy(picFile, c.file);
+      fadePalette(black, pic, pic + 768);
+      waitTap(c.pause);
+    } else if (c.kind == 't' && pic) {
+      if (!fontData) { size_t fn = 0; fontData = readFile("font.bin", &fn); if (fontData && fn < 95 * 8) { free(fontData); fontData = nullptr; } }
+      size_t tn = 0;
+      uint8_t* t = gm::readCard(assets, readPak, c.file, &tn);
+      if (!t || !fontData) { free(t); continue; }
+      int pages = gm::textPageCount(t, tn);
+      for (int pg = 0; pg < pages; pg++) {
+        if (dirty) {  // the picture again, clean (Display_File restores the screen after each page and file)
+          free(pic);
+          pic = gm::loadPicture(assets, readPak, picFile);
+          if (!pic) break;
+        }
+        dirty = true;
+        gm::drawTextPage(pic + 768, fontData, t, tn, pg, c.color, c.more);
+        setPalette6(pic);
+        pushPicture(pic + 768);
+        waitTap(c.pause);
+      }
+      free(t);
+    }
+  }
+  free(pic);
+}
+// FadeAllTo black from what is on screen (the playing level).
+static void fadeLevelOut() {
+  uint8_t black[768];
+  memset(black, 0, sizeof black);
+  fadePalette(assets.pal, black, nullptr);
+  tft.fillScreen(C_BLACK);
+}
+// The level just entered fades in from black, then the controls and strip come on.
+static void fadeLevelIn() {
+  uint8_t black[768];
+  memset(black, 0, sizeof black);
+  tft.fillScreen(C_BLACK);
+  fadePalette(black, assets.pal, nullptr);
+  assets.palChanged = false;
+  setPalette6(assets.pal);
+  last.valid = false;
+  drawFrame(true);
+  drawStrip();
+}
+static void levelWhere(char* out, char kind, int level) { snprintf(out, 8, "%c%d", kind, level); }
+
+static bool startGame(int g, bool withCards = true) {
   curGame = g;
   char path[48];
   snprintf(path, sizeof path, "/%s.cfg", games[g].id);
@@ -634,10 +771,19 @@ static bool startGame(int g) {
   }
   assets.palChanged = false;
   applyControls();
-  tft.fillScreen(C_BLACK);
-  last.valid = false;
-  drawFrame(true);
-  drawStrip();
+  world.hold = withCards;  // a level change waits for the fade and the cards (the serial self-test has none)
+  if (withCards) {
+    char where[8];
+    levelWhere(where, 'i', 0);
+    tft.fillScreen(C_BLACK);
+    showCards(where);
+    fadeLevelIn();
+  } else {
+    tft.fillScreen(C_BLACK);
+    last.valid = false;
+    drawFrame(true);
+    drawStrip();
+  }
   t0 = millis();
   ticksRun = 0;
   mode = PLAYING;
@@ -675,7 +821,7 @@ static void message(const char* a, const char* b = nullptr) {
 // game the way a tap does, runs it with no input (drawing too), prints one "ST" line, then returns to the list.
 
 static void selfTestOne(int g, int ticks) {
-  bool ok = startGame(g);
+  bool ok = startGame(g, false);
   for (int i = 0; ok && i < ticks; i++) {
     world.tick();
     world.nsnd = 0;
@@ -866,12 +1012,39 @@ void loop() {
     ticksRun++;
     ran++;
     if (world.level != lv) oneLevelUp = true;
-    if (r == 'W') {
+    if (r == 'W' || r == 'D' || r == 'L') {
+      // The engine's order: the screen fades out, the scene's exit cards, then (the next level's intro cards and
+      // the fade in | the won or lost cards and back to the list).
+      spk::stop();
       world.releaseAll();
       controls.reset();
-      message("You made it!", "Touch for the list");
-      delay(1200);
-      mode = DONE;
+      char where[8];
+      int from = world.level;
+      bool lost = r == 'D' && world.lives <= 0;
+      fadeLevelOut();
+      if (r == 'W') {
+        levelWhere(where, 'x', from);
+        showCards(where);
+        showCards("w");
+        enterPicker();
+        return;
+      }
+      if (lost) {
+        showCards("l");
+        enterPicker();
+        return;
+      }
+      if (r == 'L') {
+        levelWhere(where, 'x', from);
+        showCards(where);
+      }
+      levelWhere(where, 'i', r == 'D' ? from : world.pendLevel);
+      showCards(where);
+      world.finish();
+      world.buildDrawList();
+      fadeLevelIn();
+      t0 = millis();
+      ticksRun = 0;
       wasDown = true;
       return;
     }
