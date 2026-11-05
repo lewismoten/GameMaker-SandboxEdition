@@ -118,9 +118,6 @@ function blockText(b: Block, out: TextItem[]): void {
     case 'reply':
       for (const t of b.to) add('p', t);
       break;
-    case 'mugs':
-      for (const m of b.mugs) add('li', m.name);
-      break;
     case 'shelf':
       add('p', b.markText);
       for (const i of b.items) add('li', [i.title, i.by].filter(Boolean).join(', '));
@@ -136,6 +133,8 @@ function blockText(b: Block, out: TextItem[]): void {
     case 'jump':
       add('p', b.title);
       break;
+    // the mugs' names are only their pictures' alt text (mugShelf.ts), which is not drawn
+    case 'mugs':
     case 'piece':
     case 'rule':
       break;
