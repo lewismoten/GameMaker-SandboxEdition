@@ -6,6 +6,7 @@ import { deleteProject, listProjects, loadProject, newId, saveProject } from '..
 import { projectDownloadItem } from './projectExport';
 import { forgetOrigin, isImported, originId, rememberOrigin, setImported } from './homeOrigin';
 import { noteRemoval, undoRemoval } from '../../imported/noteMoves';
+import { bringBack, shelve } from './deletedShelf';
 import { forgetUsed } from '../../project/projectUse';
 
 type ProjectSummary = Awaited<ReturnType<typeof listProjects>>[number];
@@ -53,6 +54,7 @@ async function remove(p: ProjectSummary, refresh: () => Promise<void>): Promise<
   if (!stored) return refresh();
   const origin = originId(p.id);
   const imported = isImported(p.id);
+  await shelve(p.id); // kept 7 days (Recently deleted…), whatever the Undo below does
   await deleteProject(p.id);
   forgetOrigin(p.id);
   setImported(p.id, false);
@@ -60,7 +62,8 @@ async function remove(p: ProjectSummary, refresh: () => Promise<void>): Promise<
   // an imported game leaves a record: its fingerprint, rating and note (imported/removedGames.ts)
   if (imported) noteRemoval(p, stored.record.files);
   await refresh();
-  undoToast(`Deleted “${p.name}”.`, async () => {
+  undoToast(`Deleted “${p.name}”. It stays under Recently deleted for 7 days.`, async () => {
+    if (await bringBack(p.id)) return refresh();
     await saveProject(p.id, stored.record.name, stored.record.gam, stored.files, stored.record.companion);
     rememberOrigin(p.id, origin);
     setImported(p.id, imported);

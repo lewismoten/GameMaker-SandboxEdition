@@ -102,7 +102,7 @@ export const GUIDE_SECTIONS: [id: string, title: string, html: string][] = [
     <p>Give each imported game 1 to 5 stars and a note (<b>Your rating and note</b> beside it, or
     <b>Rating and note…</b> under ⋯ More), then show only some ratings or sort by rating. Your notes
     are in the Library too. <b>Remove all imported…</b> removes them all, only some ratings, or
-    one import’s games, and an <b>Undo</b> button stays for a minute to bring them back.</p>
+    one import’s games, and <b>Recently deleted…</b> brings them back for 7 days.</p>
     <h3>Sandbox</h3>
     <p>New games made for this edition in the original formats, so they also play in DOS. Each
     has a <b>Manual</b> to read or print, and <b>Walkthrough</b> plays the whole game from start

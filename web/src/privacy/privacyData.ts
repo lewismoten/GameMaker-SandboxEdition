@@ -21,6 +21,7 @@ export const KEPT: Record<SectionId, string> = {
 export const DATABASES: Record<string, string> = {
   'gamemaker-web': 'your games and saved games',
   'gamemaker-save-backups': 'copies of saved games taken before a change',
+  'gamemaker-recently-deleted': 'games you deleted in the last 7 days, kept so they can be brought back',
   'gamemaker-desk': 'the desk PC’s C: drive',
   'gamemaker-web-player': 'saved games for the player page and games exported for the web',
 };
