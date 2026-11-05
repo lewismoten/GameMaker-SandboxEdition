@@ -10,6 +10,8 @@
       body { font: 16px/1.5 system-ui, sans-serif; max-width: 36rem; margin: 2rem auto; padding: 0 16px; background: #fff; color: #111; }
       @media (prefers-color-scheme: dark) { body { background: #111; color: #eee; } a { color: #8cf; } }
       h1 { font-size: 1.4rem; }
+      /* the vendored button's default blue gives white text 2.6:1; this one gives about 6:1 */
+      esp-web-install-button { --esp-tools-button-color: #0a5a99; }
     </style>
   </head>
   <body>
