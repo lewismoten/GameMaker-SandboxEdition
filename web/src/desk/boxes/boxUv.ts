@@ -76,16 +76,32 @@ async function makeSide(entry: CatalogEntry, faces: BoxFaces, side: Side): Promi
   const [letters, img] = await Promise.all([lettersOf(entry), loadImage(faces[side])]);
   const mask = letters?.[side];
   if (!mask) return undefined;
+  // at the picture's own size: a shelf spine is small (gameBox.ts spineUrl), so is its glow
   const c = document.createElement('canvas');
-  c.width = mask.width;
-  c.height = mask.height;
+  c.width = img.naturalWidth || mask.width;
+  c.height = img.naturalHeight || mask.height;
+  const small = c.height < mask.height;
   const ctx = c.getContext('2d', { willReadFrequently: true });
   const lctx = mask.getContext('2d');
   if (!ctx || !lctx) return undefined;
   ctx.drawImage(img, 0, 0, c.width, c.height);
   const pic = ctx.getImageData(0, 0, c.width, c.height);
-  uvLettering(pic.data, lctx.getImageData(0, 0, c.width, c.height).data);
+  let maskPx = lctx.getImageData(0, 0, mask.width, mask.height);
+  if (small) {
+    // the lettering shrunk the same way
+    const m = document.createElement('canvas');
+    m.width = c.width;
+    m.height = c.height;
+    const mctx = m.getContext('2d', { willReadFrequently: true });
+    if (!mctx) return undefined;
+    mctx.imageSmoothingQuality = 'high';
+    mctx.drawImage(mask, 0, 0, m.width, m.height);
+    maskPx = mctx.getImageData(0, 0, m.width, m.height);
+  }
+  uvLettering(pic.data, maskPx.data);
   ctx.putImageData(pic, 0, 0);
+  // a small side goes in the address itself (no request, nothing to release); a big one is encoded off the main thread
+  if (small) return c.toDataURL('image/webp', 0.9);
   const blob = await new Promise<Blob | null>((done) => c.toBlob(done, 'image/webp', 0.9));
   return blob ? URL.createObjectURL(blob) : undefined;
 }
