@@ -27,12 +27,14 @@ Everything but the layout is the same program (`-DPOCKET_CYD28` in `platformio.i
 
 1. **Mirror.** The word MIRROR? and a big R. BOOT mirrors the picture left to right; when they read right, tap.
 2. **Rotate.** An arrow and UP. BOOT turns the picture half a turn; when the arrow points up, tap.
-3. **Orient.** A wide LANDSCAPE frame on the edge of the 320 by 240 picture. BOOT turns it the other way by a quarter turn; when the frame fills the screen and the word reads right, tap.
+3. **Orient.** A wide LANDSCAPE frame on the edge of the 320 by 240 picture. BOOT tries three ways in turn (a software quarter turn, the other quarter turn, then the glass run 320 by 240 as it is, for a glass wired the other way round, which clears its whole memory when the shape changes); when the frame fills the screen and the word reads right, tap.
 4. **Colors.** RED, GREEN and BLUE written in those colors on black, a white patch and a black one. BOOT steps the four color modes (plain, inverted, red and blue swapped, both) with no restart; when the words have their own colors, tap.
 
 Then the touch calibration (below): three crosses, one at a time, which settle any touch wiring.
 
 If the picture is garbage or blank (the wrong display driver), **hold BOOT for about two seconds**: the board switches to the other driver and restarts into step 1.
+
+**Third way (soft 3).** A photo of board C on the software turn showed the picture 240 columns wide and clipped with stale pixels in the 80 columns the program never cleared, so that glass appears to be 320 by 240 at turn 0 (the row/column exchange then gives it the portrait shape). Step 3 therefore also offers the panel configured 320 by 240 with no software turn (`soft=3` in the record; the same even rotations for the mirror bits). The board and firmware label in the corner is the short form ("C fw 4d8759e") in white at twice the font size.
 
 **Why step 3 turns the picture in software.** Board C (the second 2.8 inch board) drew the 320 by 240 picture as if the panel were portrait: mirrored, clipped at 240 columns and with the bottom of the glass empty, while the program had asked for a landscape turn. The appears-to-be cause: this glass ignores the display chip's row/column exchange (the MV bit of MADCTL, which LovyanGFX sets for every landscape turn), so the hardware can mirror and flip but not turn a quarter. That is inferred from the photos, not read from the chip (the panel's ID registers do not read back). So the setup runs the panel in a portrait turn (the four mirror variants, rotations 0, 6, 4 and 2, which never use the exchange) and turns the picture a quarter in software (`src/softgfx.h`): shapes and text map through a rotation, the status text is drawn glyph by glyph from `src/softfont.h`, and each band of the game picture is transposed before it is pushed. It works on any glass; the 3.5 inch board and a setup saved by the older flow (record without `soft`) keep the hardware landscape turns untouched.
 

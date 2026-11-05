@@ -63,9 +63,10 @@ template <class G> void controls(G& g, int step) {
     say(g, BX + BW + 8, y + 10, 2, WHITE, row == 0 ? "= BOOT button" : "= tap anywhere");
   }
 }
-// The board's letter and firmware (fwid.h), small, in the top left corner of every step (up to 29 characters, 6 px each).
+// The board's letter and firmware (fwid.h, the short form "C fw 4d8759e"), white at twice the font's size in the top left corner of
+// every step: 12 px wide a letter, so 16 characters take 192 px and it stays clear of the step counter at x 200 and up.
 template <class G> void idLine(G& g, const char* id) {
-  if (id && *id) say(g, 6, 4, 1, GRAYC, id);
+  if (id && *id) say(g, 6, 2, 2, WHITE, id);
 }
 template <class G> void counter(G& g, int step, int x) {
   char t[4] = {(char)('1' + step), '/', (char)('0' + STEPS), 0};
@@ -75,7 +76,7 @@ template <class G> void counter(G& g, int step, int x) {
 // Step 1: a word that reads backwards when the picture is mirrored, and a big R that can't be mistaken.
 template <class G> void drawFlip(G& g) {
   g.fillScreen(BLACK);
-  say(g, 6, 22, 4, WHITE, "MIRROR?");
+  say(g, 6, 24, 4, WHITE, "MIRROR?");
   say(g, 24, 66, 9, WHITE, "R");
   say(g, 88, 90, 2, GRAYC, "reads right?");
   say(g, 88, 110, 2, GRAYC, "then tap OK");
@@ -85,10 +86,10 @@ template <class G> void drawFlip(G& g) {
 // Step 2: an arrow and UP; upside down means turn.
 template <class G> void drawRotate(G& g) {
   g.fillScreen(BLACK);
-  g.fillTriangle(70, 12, 28, 62, 112, 62, WHITE);
-  g.fillRect(54, 62, 32, 70, WHITE);
-  say(g, 130, 56, 5, WHITE, "UP");
-  say(g, 126, 112, 2, GRAYC, "arrow up?");
+  g.fillTriangle(70, 22, 28, 72, 112, 72, WHITE);
+  g.fillRect(54, 72, 32, 70, WHITE);
+  say(g, 130, 66, 5, WHITE, "UP");
+  say(g, 126, 122, 2, GRAYC, "arrow up?");
   counter(g, ROTATE, 200);
   controls(g, ROTATE);
 }
@@ -96,20 +97,21 @@ template <class G> void drawRotate(G& g) {
 template <class G> void drawOrient(G& g) {
   g.fillScreen(BLACK);
   for (int i = 0; i < 3; i++) g.drawRect(i, i, 320 - 2 * i, 240 - 2 * i, WHITE);
-  sayCentered(g, 160, 14, 4, WHITE, "LANDSCAPE");
+  sayCentered(g, 160, 24, 4, WHITE, "LANDSCAPE");
   g.fillTriangle(284, 66, 262, 100, 306, 100, WHITE);
   g.fillRect(276, 100, 16, 40, WHITE);
   say(g, 250, 150, 2, WHITE, "UP");
   say(g, 12, 66, 2, GRAYC, "fills the glass?");
   say(g, 12, 90, 2, GRAYC, "reads right?");
+  say(g, 12, 122, 2, YELLOW, "no? press BOOT");
   counter(g, ORIENT, 276);
   controls(g, ORIENT);
 }
 // Step 4: the words in their own colors on black, then a white patch and a black one (outlined).
 template <class G> void drawColors(G& g) {
   g.fillScreen(BLACK);
-  sayCentered(g, 120, 14, 3, REDC, "RED");
-  sayCentered(g, 120, 44, 3, GREENC, "GREEN");
+  sayCentered(g, 120, 22, 3, REDC, "RED");
+  sayCentered(g, 120, 48, 3, GREENC, "GREEN");
   sayCentered(g, 120, 74, 3, BLUEC, "BLUE");
   g.fillRect(8, 102, 108, 46, WHITE);
   g.setTextSize(2);

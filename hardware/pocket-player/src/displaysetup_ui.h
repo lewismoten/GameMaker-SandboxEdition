@@ -133,7 +133,7 @@ static void dsBoot() {
   }
   if (panelType >= PANEL_TYPES) panelType = PANEL_ILI9341;
   if (turnIdx >= TURNS) turnIdx = 0;
-  if (softIdx > 2) softIdx = 0;
+  if (softIdx > 3) softIdx = 0;
   if (dsStep != ds::STEP_CALIBRATE) dsStep = 0;  // only the calibration resumes; the four steps start again
 }
 // A display change that is not yet confirmed with OK: the next start comes back to setup. `geometry`: the touch no longer
@@ -220,27 +220,44 @@ static bool dsInjTake(tc::Raw& out) {
 }
 
 
+// The glass is run 240 x 320 (portrait) or, for a glass wired the other way round (sf::WIDE), 320 x 240. Changing it clears the
+// memory in both shapes first, so nothing of an earlier screen stays in the part the new shape does not reach.
+static bool glassWide = false, glassKnown = false;
+static void setGlass(bool wide, bool force = false) {
+  if (glassKnown && wide == glassWide && !force) return;
+  tftHw.setWide(!wide);
+  tftHw.setRotation(0);
+  tftHw.fillScreen(C_BLACK);
+  tftHw.setWide(wide);
+  tftHw.setRotation(0);
+  tftHw.fillScreen(C_BLACK);
+  glassWide = wide;
+  glassKnown = true;
+}
 // ---- drawing: setupdraw.h (the same code the host shots use) ----
 // What the panel does for the saved setup: the rotation (old setups: the glass's landscape turns; new ones: a portrait turn,
 // and the picture is turned in software, softgfx.h) and the software mode.
 static void applyDisplay() {
+  setGlass(sf::isWide(softIdx));
   tftHw.setRotation(sf::rotationFor(turnIdx, softIdx));
-  tft.setMode(softIdx);
+  tft.setMode(sf::xfMode(softIdx));
 }
 // Clears the panel's whole memory (any turn), then leaves the saved setup in place: a target or a step's picture is never
 // left behind where two turns don't overlap. The calibration screens call this first.
 static void clearAll() {
   tft.setMode(0);
+  setGlass(sf::isWide(softIdx), true);
   tftHw.setRotation(0);
   tftHw.fillScreen(C_BLACK);
   applyDisplay();
 }
 // One step of the setup drawn for the flow's turn: the portrait turn of its mirror bits, the software mode from step 3 on.
 static void dsDraw(const sf::Flow& f) {
+  setGlass(f.wide());
   tftHw.setRotation(f.rotation());
   tft.setMode(f.softMode());
   char id[40];
-  fwLabel(id, sizeof id, false);
+  fwLabel(id, sizeof id, true);
   sf::drawStep(tft, f.step, id);
 }
 

@@ -3,8 +3,9 @@
 // checks all of it on the Mac).
 //   1 flip      "MIRROR?"  BOOT mirrors the picture left to right until the word reads right
 //   2 rotate    "UP"       BOOT turns the picture half a turn until the arrow points up
-//   3 orient    "LANDSCAPE" BOOT turns the wide picture a quarter turn the other way (the glass is run in its portrait turn
-//               and the picture is turned in software, see softgfx.h, because some glasses ignore the row/column exchange)
+//   3 orient    "LANDSCAPE" BOOT tries three ways to land the wide picture: a software quarter turn, the other quarter turn
+//               (the glass is run in its portrait turn and the picture turned, see softgfx.h, because some glasses ignore the
+//               row/column exchange) and the glass run 320 x 240 as it is (a glass wired the other way round)
 //   4 colors    RED GREEN BLUE  BOOT steps the four color modes (plain, inverted, red/blue swapped, both) until the words
 //               are written in their own colors and the patches are white and black
 // then the 3-tap touch calibration (touchcal.h works out any touch wiring).
@@ -23,6 +24,11 @@ constexpr uint8_t PORTRAIT_ROT[4] = {0, 6, 4, 2};
 // The hardware rotation for a saved setup: soft 0 is an old setup (turns 1, 3, 5, 7: the glass's own landscape), otherwise the
 // portrait turn of u.
 inline int rotationFor(int u, int soft) { return soft ? PORTRAIT_ROT[u & 3] : 1 + 2 * (u & 3); }
+// soft 3 is the third way to land the wide picture: no software turn, the glass itself is 320 wide x 240 tall in these mirror
+// turns (some glasses of this model are wired that way round). The other two are the quarter turns; soft 0 an old setup.
+constexpr int WIDE = 3;
+inline int xfMode(int soft) { return soft >= WIDE ? 0 : soft; }
+inline bool isWide(int soft) { return soft == WIDE; }
 
 // A setup in progress.
 struct Flow {
@@ -31,7 +37,7 @@ struct Flow {
   void boot() {
     if (step == FLIP) u ^= 1;
     else if (step == ROTATE) u ^= 3;
-    else if (step == ORIENT) soft = soft == 1 ? 2 : 1;
+    else if (step == ORIENT) soft = soft >= WIDE ? 1 : soft + 1;  // quarter turn, the other, the glass itself, round again
     else if (step == COLORS) color = (color + 1) & 3;
   }
   // OK (a tap anywhere); false after the last step
@@ -42,7 +48,8 @@ struct Flow {
     return true;
   }
   // How the picture is turned on the glass in this step: steps 1 and 2 draw in the panel's portrait turn, step 3 on.
-  int softMode() const { return step >= ORIENT ? soft : 0; }
+  int softMode() const { return step >= ORIENT ? xfMode(soft) : 0; }
+  bool wide() const { return step >= ORIENT && isWide(soft); }  // the glass is run 320 x 240 (see WIDE)
   int rotation() const { return PORTRAIT_ROT[u & 3]; }
   // panelType bits for the colors (2 inverted, 4 red/blue swapped) given the driver bit
   int panelBits(int driver) const { return (driver & 1) | (color << 1); }
