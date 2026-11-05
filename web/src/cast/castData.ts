@@ -76,6 +76,7 @@ export const CAST_GAMES = {
   'blocks-budget': ['150 Blocks', 'starter'],
   'things-that-grow': ['Seeds and Nests', 'starter'],
   dialog: ['Everybody Talks', 'starter'],
+  parallax: ['Parallax', 'starter'],
   horizon: ['To the Horizon', 'starter'],
   beltway: ['Round and Round', 'starter'],
   momentum: ['Slide and Drift', 'starter'],
@@ -200,6 +201,10 @@ const LISTED: CastMember[] = [
       { game: 'take-the-wheel', as: 'jumps a bird on foot, then steps into a little kart that cannot jump and honks the next bird away' },
       { game: 'popups', as: 'touches coins that pay 100, 200 and 500 and watches each number rise and blink away' },
       { game: 'dialog', as: 'talks with Pip, and then joins a group of friends who all talk at once' },
+      {
+        game: 'parallax',
+        as: 'walks a path while the hills, a town and a fence go by at three speeds, then waits under drifting clouds for three suns to fill and open a door',
+      },
       { game: 'horizon', as: 'walks a road to the horizon while beach balls roll out and grow, then waits for a finish arch to open the door' },
       {
         game: 'beltway',

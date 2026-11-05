@@ -36,6 +36,7 @@
   "mustard": {"hash":"c8070684649ea6c6","maps":{"dust.map|mustard.bbl":[0,0,56,24],"mound.map|mustard.bbl":[0,0,81,19],"mountain.map|mustard.bbl":[0,0,74,26],"sky.map|mustard.bbl":[0,0,39,53]}},
   "needle": {"hash":"b46d08a4eb1adff0","maps":{"city.map|city.bbl":[0,0,90,19],"desert.map|desert.bbl":[0,0,94,20],"eye.map|eye.bbl":[0,0,39,53],"tailor.map|tailor.bbl":[0,0,75,25]}},
   "one-more-try": {"hash":"31323ff38921d64f","maps":{"one.map|mt.bbl":[0,13,70,18],"two.map|mt.bbl":[0,8,73,23]}},
+  "parallax": {"hash":"879cee0c6018a262","maps":{"one.map|px1.bbl":[10,10,16,10],"two.map|px2.bbl":[10,10,16,10]}},
   "pictures-and-cartoons": {"hash":"89a21b2473b21703","maps":{"cartoon.map|pics.bbl":[0,14,67,10],"frame.map|pics.bbl":[0,14,67,10],"short.map|pics.bbl":[0,14,67,10]}},
   "popups": {"hash":"31054ef7099455d4","maps":{"one.map|pop.bbl":[0,14,67,10],"two.map|pop.bbl":[0,14,67,10]}},
   "power-up": {"hash":"e141d6747de5a8d7","maps":{"one.map|power.bbl":[0,1,67,26],"two.map|power.bbl":[0,6,68,25]}},
