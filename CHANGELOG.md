@@ -11,6 +11,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Added
 
+- The sound recorder and sample editor show a time ruler under the waveform: seconds, game ticks, a yellow "may stutter" zone, a red "likely stutters" zone and a line at 64 KB, and the Level check and the Before You Upload list suggest shorter sounds that DOS would load slowly or replay every tick. The times are estimates, and long sounds still record and play in full.
 - The Starters have eight more explorers beside Kit: Mia, Lena, Mara, Lian, Yana, Neka, Rima and Lami (the last three are aliens), the same character in other colors. Kit leads the first game of each group; the helpers lead the rest in turn, name themselves in the games' text and have their own cards on the Cast page. The slim top-down Kit is narrower, with a bigger head.
 
 - A new Starter, Beams and Fog: light and fog painted in dots. Level 1 is a dark hall with three lamps, a solid beam that hides the bricks, a checkerboard beam that lets them show and one in three densities that fades at its edge. Level 2 is a valley of hills in solid fog and then dithered fog, thicker the farther away, with banks of fog that drift. Level 3 has three floating lanterns with a solid halo, a checkerboard halo and rings of halo. Its pages say how each is made, with the frames enlarged.

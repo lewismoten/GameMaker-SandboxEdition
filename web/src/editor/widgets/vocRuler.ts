@@ -15,9 +15,9 @@ interface VocRuler {
 
 const LEVEL_TEXT = {
   ok: 'Short enough: should not stall play on a slow PC.',
-  maybe: 'Yellow: may stutter on slower PCs.',
-  likely: 'Red: likely to stutter on slower PCs.',
-  toobig: 'Red, past 64 KB: DOS cannot load a sound this big.',
+  maybe: 'Yellow zone.',
+  likely: 'Red zone.',
+  toobig: 'Red zone, past 64 KB.',
 } as const;
 
 export function vocRuler(rate: number): VocRuler {

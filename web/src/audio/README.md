@@ -24,6 +24,16 @@ sound of 64 KB or more is cut short or fails. The limit used is 65,535 bytes, he
 them: about 5.9 s at 11 kHz. The web engine plays a larger file anyway; the editor only warns
 (the Level check's `voc-size` finding, an import warning) and stops a recording at the limit.
 
+### Stutter estimates
+
+PLAYGAME also reads the whole .VOC from disk on the game's own thread each time a sound plays, so
+a long sound stalls the picture, and a sound replayed every tick (a score or healing block that
+stays put) is cut and restarted. `vocLimit.ts` turns that into estimates, not measurements: a hard
+disk read takes about 30 ms plus 400 KB/s on a 286 and 15 ms plus 1 MB/s on a 486, and one game
+tick is 54.9 ms. So 10,000 bytes (`VOC_MAYBE_BYTES`) is about a tick on a 286 (yellow) and 32,000
+(`VOC_LIKELY_BYTES`) about two (red). `stutterLevel` and `stutterNote` word it; the editor's time
+ruler, the Level check's `voc-stutter` suggestion and `check:games`' advisory line use them.
+
 ## The wall phone's voices (`phone/`)
 
 The 1994 desk's wall phone and the picked-up kitchen extension speak recorded clips
