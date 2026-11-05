@@ -50,7 +50,11 @@ export function buildGame(levels: Level[]): Game {
     const next = levels[i + 1];
     // the door at the far end goes on; the encore door (the first one, by column) loads this same scene again, which starts the show again
     const [encore, door] = [...l.map.exits].sort((a, b) => a.from[0] - b.from[0]);
-    scene.links[0] = { toScene: next ? i + 3 : 1, from: { x: door.from[0], y: door.from[1] }, to: next ? { x: next.map.start[0], y: next.map.start[1] } : { x: 0, y: 0 } };
+    scene.links[0] = {
+      toScene: next ? i + 3 : 1,
+      from: { x: door.from[0], y: door.from[1] },
+      to: next ? { x: next.map.start[0], y: next.map.start[1] } : { x: 0, y: 0 },
+    };
     scene.links[1] = { toScene: i + 2, from: { x: encore.from[0], y: encore.from[1] }, to: { x: l.map.start[0], y: l.map.start[1] } };
     game.scenes.push(scene);
   });

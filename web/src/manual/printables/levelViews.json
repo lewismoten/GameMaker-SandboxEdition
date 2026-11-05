@@ -41,6 +41,7 @@
   "room-to-room": {"hash":"aa767e0d57b091d5","maps":{"attic.map|room.bbl":[0,6,49,21],"bedroom.map|room.bbl":[0,14,44,10],"fork.map|room.bbl":[1,14,50,10],"garden.map|room.bbl":[0,14,49,10],"hall.map|room.bbl":[0,3,57,24],"inside.map|room.bbl":[0,5,51,22],"kitchen.map|room.bbl":[0,14,47,10],"start.map|room.bbl":[0,14,45,10]}},
   "sandcast": {"hash":"1ff6822df19fe25d","maps":{"bbs.map|sandcast.bbl":[0,0,35,20],"burrows.map|sandcast.bbl":[0,0,54,34],"dig.map|sandcast.bbl":[0,0,15,11],"keep.map|sandcast.bbl":[0,0,47,27],"lagoon.map|sandcast.bbl":[0,0,51,34],"moat.map|sandcast.bbl":[0,0,51,36],"patio.map|sandcast.bbl":[0,0,43,25],"sandbox.map|sandbox.bbl":[0,0,61,43]}},
   "say-something": {"hash":"8d5507fde8241cdf","maps":{"chat.map|say.bbl":[0,14,67,10],"hello.map|say.bbl":[0,14,67,10],"pass.map|say.bbl":[6,14,16,10]}},
+  "scripted": {"hash":"96e6c187baca4a58","maps":{"one.map|show.bbl":[1,14,74,10],"two.map|show.bbl":[1,14,82,10]}},
   "scroll": {"hash":"3447401cb3b6c7f0","maps":{"one.map|sc.bbl":[10,10,16,10],"two.map|sc.bbl":[0,14,81,10]}},
   "searchlight": {"hash":"c08cf604ddbefc1b","maps":{"one.map|seen.bbl":[0,5,68,24],"two.map|seen.bbl":[0,14,79,10]}},
   "short-lived": {"hash":"1570c95ef9642d81","maps":{"one.map|here.bbl":[0,14,64,10],"two.map|here.bbl":[0,14,64,10]}},

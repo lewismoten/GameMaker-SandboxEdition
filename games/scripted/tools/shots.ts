@@ -44,7 +44,7 @@ const row = GROUND - 1;
 
 // level 1: the stage waiting (eyes in the curtains); then the actors in, saying HI; then the empty stage after the play
 const s1 = STAGE_ONE;
-save('1-waiting.png', region(empty(0), 8, 24, [...kit(['stand.top', 'stand'], 11), thing('peek0', s1.left, row), thing('peek1', s1.right, row)]));
+save('1-waiting.png', region(empty(0), 8, 24, [...kit(['stand.top', 'stand'], 14), thing('peek0', s1.left, row), thing('peek1', s1.right, row)]));
 save(
   '2-hello.png',
   region(empty(0), 8, 24, [

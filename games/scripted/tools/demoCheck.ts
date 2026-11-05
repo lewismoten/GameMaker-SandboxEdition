@@ -12,7 +12,11 @@ import { GameSim } from './sim';
 const keys = parseRecording(new Uint8Array(readFileSync(new URL('../disk/demo.rec', import.meta.url)))).slice(0, -2); // without the Esc
 const sim = new GameSim(undefined, 1);
 const names = Object.fromEntries(Object.entries(MON).map(([k, v]) => [v, k]));
-const cast = () => sim.w.mm.map((m) => m.monnum).filter((n) => n in names).map((n) => names[n]);
+const cast = () =>
+  sim.w.mm
+    .map((m) => m.monnum)
+    .filter((n) => n in names)
+    .map((n) => names[n]);
 const kitX = () => (sim.pos.x - ORIGIN) * 20 + sim.pos.sx;
 let goes = 1;
 let lateAtStage: string[] | undefined;
@@ -34,7 +38,9 @@ for (const k of keys) {
 }
 for (let i = 0; i < 250; i++) await step(); // the demo waits (the wait before its Esc)
 const play = ['pipIn', 'pipSays', 'pipListens', 'pipOut', 'bluIn', 'bluListens', 'bluSays', 'bluOut', 'pipBubble', 'bluBubble'];
-console.log(`demo: level entered ${goes} times; on the stage when Kit first came: ${lateAtStage?.join(' ') || 'nobody'}; ${atFront} ticks at the front; acts seen on the second go: ${[...seen].length}`);
+console.log(
+  `demo: level entered ${goes} times; on the stage when Kit first came: ${lateAtStage?.join(' ') || 'nobody'}; ${atFront} ticks at the front; acts seen on the second go: ${[...seen].length}`,
+);
 const fail = (m: string) => {
   console.error(`demoCheck: ${m}`);
   process.exit(1);

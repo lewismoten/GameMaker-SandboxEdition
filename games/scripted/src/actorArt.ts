@@ -65,7 +65,13 @@ export function drawBoards(pal: Pal): Pixels {
   const p = new Pixels(20, 20, w[2]);
   p.rect(0, 0, 20, 1, w[4]).rect(0, 1, 20, 1, w[3]);
   p.rect(0, 9, 20, 1, w[1]).rect(9, 2, 1, 7, w[1]).rect(19, 10, 1, 10, w[1]);
-  for (const [x, y] of [[3, 4], [14, 5], [6, 14], [13, 16]]) p.rect(x, y, 3, 1, w[3]);
+  for (const [x, y] of [
+    [3, 4],
+    [14, 5],
+    [6, 14],
+    [13, 16],
+  ])
+    p.rect(x, y, 3, 1, w[3]);
   p.rect(0, 18, 20, 2, w[0]);
   return p;
 }
@@ -77,7 +83,9 @@ export function drawBubble(pal: Pal, tail: number, edge: number): Pixels {
   p.rect(2, 0, 16, 12, edge).rect(1, 1, 18, 10, edge);
   p.rect(3, 1, 14, 10, c('white', 3)).rect(2, 2, 16, 8, c('white', 3));
   // the tail: a small stub under the bubble, pointing at the speaker
-  p.rect(tail - 1, 12, 4, 1, edge).rect(tail, 12, 2, 1, c('white', 3)).rect(tail, 13, 2, 1, edge);
+  p.rect(tail - 1, 12, 4, 1, edge)
+    .rect(tail, 12, 2, 1, c('white', 3))
+    .rect(tail, 13, 2, 1, edge);
   text(p, 2, 2, 'HI', c('ink', 0));
   return p;
 }

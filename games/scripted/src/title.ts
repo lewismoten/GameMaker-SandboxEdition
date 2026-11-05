@@ -32,7 +32,7 @@ export function titlePicture(pal: Pal, mb: Book, book: Book, hero: Pixels, door:
   for (const x of [left, right]) put(curtain, x, 120, 2);
   p.rect(left, 160, right - left + 40, 4, pal.c('wood', 1)).rect(left, 160, right - left + 40, 2, pal.c('wood', 3));
   put(mb.pics.get('pipsays')!, left + 48, 120, 2);
-  put(mb.pics.get('blusays')!, right - 88, 120, 2);
+  put(mb.pics.get('blusays')!, right - 48, 120, 2);
   put(door, 288, 160 - 40, 1);
   frameOf(p, pal, 'arena');
   return p;

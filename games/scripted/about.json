@@ -24,22 +24,10 @@
     "ink": "#ffffff",
     "tagline": "Be there when the curtain moves.",
     "back": "A small explorer in a teal beanie finds a stage in a meadow. Two friends wait behind its curtains, and when the level starts, so does their play: each act is a monster that becomes the next. A cameo says hello once and goes. Nothing waits for the hero, so there is an encore door. Open the game in Game-Maker to change the acts.",
-    "features": [
-      "Signs in the levels explain each idea",
-      "A play is a chain of monsters, each becoming the next",
-      "Made to be copied and taken apart"
-    ],
+    "features": ["Signs in the levels explain each idea", "A play is a chain of monsters, each becoming the next", "Made to be copied and taken apart"],
     "shots": [
-      [
-        "one.map",
-        30,
-        6
-      ],
-      [
-        "two.map",
-        30,
-        6
-      ]
+      ["one.map", 30, 6],
+      ["two.map", 30, 6]
     ],
     "rating": "Everyone"
   }
