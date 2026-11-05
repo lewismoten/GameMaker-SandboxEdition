@@ -11,6 +11,10 @@
 static std::string linesDir;  // set by the test: the data folder
 
 // small.pak (gmsmall.h) of a data folder, read by the same code the board runs; a name it doesn't hold is a file of the folder.
+// A "folder" whose name ends in .gmp is a one-file game (web/src/export/pocketFile.ts): its entries are the files.
+static bool isGmp(const std::string& dir) {
+  return dir.size() > 4 && (dir.compare(dir.size() - 4, 4, ".gmp") == 0 || dir.compare(dir.size() - 4, 4, ".GMP") == 0);
+}
 static bool pakReadAt(void* user, uint32_t off, void* buf, uint32_t n) {
   FILE* f = (FILE*)user;
   return fseek(f, (long)off, SEEK_SET) == 0 && fread(buf, 1, n, f) == n;
@@ -19,7 +23,7 @@ struct HostPak {
   FILE* f = nullptr;
   gm::SmallPak pak;
   bool open(const std::string& dir) {
-    f = fopen((dir + "/small.pak").c_str(), "rb");
+    f = fopen((isGmp(dir) ? dir : dir + "/small.pak").c_str(), "rb");
     if (!f) return false;
     pak.user = f;
     pak.readAt = pakReadAt;
