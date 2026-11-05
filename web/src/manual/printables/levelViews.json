@@ -13,7 +13,7 @@
   "choose-hero": {"hash":"45a139522747ae11","maps":{"climb.map|pick.bbl":[0,9,79,25],"doors.map|pick.bbl":[0,16,57,10],"road.map|pick.bbl":[0,7,67,24]}},
   "coins-and-score": {"hash":"33b8d543d9f19c89","maps":{"one.map|coins.bbl":[0,1,67,26],"three.map|coins.bbl":[0,1,73,26],"two.map|coins.bbl":[0,1,73,26]}},
   "colors": {"hash":"e206249654c5f930","maps":{"one.map|colors.bbl":[0,14,61,10],"two.map|colors.bbl":[0,14,61,10]}},
-  "corner-view": {"hash":"a7243bd289230b47","maps":{"one.map|one.bbl":[3,6,29,17],"three.map|three.bbl":[5,7,25,15],"two.map|two.bbl":[3,6,29,17]}},
+  "corner-view": {"hash":"95aa6360ea8d290d","maps":{"one.map|one.bbl":[3,6,29,17],"three.map|three.bbl":[5,7,25,15],"two.map|two.bbl":[3,6,29,17]}},
   "countdown": {"hash":"1a130cf97b990ff3","maps":{"one.map|one.bbl":[0,14,43,10],"two.map|two.bbl":[0,14,37,21]}},
   "cutscenes": {"hash":"5939545779c805fb","maps":{"hall.map|cuts.bbl":[0,4,61,23],"one.map|cuts.bbl":[0,14,37,21],"tale.map|cuts.bbl":[0,14,37,21]}},
   "day-night": {"hash":"b687084f79ea4d32","maps":{"one.map|one.bbl":[0,14,47,10],"two.map|two.bbl":[0,14,56,10]}},

@@ -30,9 +30,9 @@ const WORDS: Record<SignName, string> = {
   tall: 'TALL TOWERS COVER THE BLOCKS ABOVE THEM',
   front: 'KIT IS ALWAYS IN FRONT, NEVER BEHIND',
   lean: 'EACH ARROW TAKES THE DIAGONAL NEAREST IT',
-  upright: 'UP: UPPER RIGHT. RIGHT: LOWER RIGHT.',
-  downleft: 'DOWN: LOWER LEFT. LEFT: UPPER LEFT.',
-  zig: 'TO GO STRAIGHT, TAP TWO ARROWS IN TURN',
+  upright: 'UP IS UPPER RIGHT. RIGHT IS LOWER RIGHT.',
+  downleft: 'DOWN IS LOWER LEFT. LEFT IS UPPER LEFT.',
+  zig: 'FOR STRAIGHT TAP TWO ARROWS BY TURNS',
 };
 
 /** A tower: the block it stands on (`row` is its lowest) and how many blocks tall its picture is (1, 2 or 3). */

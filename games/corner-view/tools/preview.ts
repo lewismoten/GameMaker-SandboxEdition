@@ -11,7 +11,7 @@ import { renderRegion } from '@lewismoten/gamemaker-sandbox-tools/kit/levelPictu
 import { ORIGIN } from '../../kit/starter/map';
 import { buildMonsterBlocks, buildMonsters } from '../../kit/starter/monsters';
 import { buildLevels } from '../src/levels';
-import { buildTopHeroBlocks } from '../src/topHero';
+import { buildCornerHeroBlocks } from '../src/cornerHero';
 
 const out = process.argv[2] ?? join(tmpdir(), 'corner-view-preview');
 mkdirSync(out, { recursive: true });
@@ -24,12 +24,10 @@ for (const l of levels) {
   writePng(join(out, `${l.file}.png`), pic, pal.pal, 3);
 }
 // Kit from above: four facings, three steps each
-const top = buildTopHeroBlocks(pal);
+const top = buildCornerHeroBlocks(pal);
 const grid = new Pixels(3 * 24 + 4, 4 * 24 + 4, pal.r('parch')[2]);
-['down', 'up', 'right', 'left'].forEach((f, row) =>
-  ['0', 'stand', '1'].forEach((st, col) => grid.blit(top.pics.get(`${f}.${st}`)!, 4 + col * 24, 4 + row * 24, 255)),
-);
-writePng(join(out, 'hero-top.png'), grid, pal.pal, 6);
+['dr', 'dl', 'ur', 'ul'].forEach((f, row) => ['0', 'stand', '1'].forEach((st, col) => grid.blit(top.pics.get(`${f}.${st}`)!, 4 + col * 24, 4 + row * 24, 255)));
+writePng(join(out, 'hero-corner.png'), grid, pal.pal, 6);
 const disk = new URL('../disk/', import.meta.url);
 for (const f of readdirSync(disk).filter((n) => n.endsWith('.gif'))) {
   const g = decodeGif(readFileSync(new URL(f, disk)));
