@@ -1,6 +1,6 @@
 // Re-records the title screen's demo into src/demo.ts: the bot's own run through the first level,
-// bumping the shut door once while the number is still above 0, waiting for the 0, and going
-// in. Then rebuild.
+// walking across the stage to the wall,
+// Then rebuild.
 //   cd web && npx vite-node ../games/cutscenes/tools/gendemo.ts && npx vite-node ../games/cutscenes/build.ts
 import { recordDemo } from '../../kit/demoRecord';
 import { play } from './play';
