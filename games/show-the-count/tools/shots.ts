@@ -34,6 +34,8 @@ const region = (level: number, col: number, row: number, w: number, extra: Sprit
   renderRegion(levels[level].map.done(), bbl, mbl, set, ORIGIN + col, ORIGIN + row, w, 8, extra);
 const save = (name: string, pic: ReturnType<typeof region>) => writePng(join(out, name), pic, pal.pal, 3);
 
-save('1-two-tokens-shut.png', region(0, 8, 4, 22, kit(['stand.top', 'stand'], 26)));
-save('2-third-token.png', region(0, 14, 0, 16, kit(['cheer.top', 'jump'], 22)));
-save('3-five-slot-exit.png', region(1, 26, 4, 18, kit(['stand.top', 'stand'], 38)));
+save('1-dark-meter.png', region(0, 12, 0, 22, kit(['stand.top', 'stand'], 16)));
+for (const x of [20, 22, 24, 26, 28]) levels[0].map.set(x, 2, 'bulbOn');
+save('2-lit-meter.png', region(0, 12, 0, 22, kit(['cheer.top', 'jump'], 29)));
+save('3-five-slot-gate.png', region(0, 20, 4, 16, kit(['stand.top', 'stand'], 29)));
+save('4-six-slot-exit.png', region(1, 28, 4, 18, kit(['stand.top', 'stand'], 39)));
