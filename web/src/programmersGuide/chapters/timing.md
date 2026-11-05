@@ -64,7 +64,7 @@ A "Simulate" player on an 8 MHz 286 with an 8-bit card spent **three quarters of
 
 ### Per monster and per scroll step
 
-The port's authors modeled a 286-16 as: **15 ms** for a tick with only the hero, **1.2 ms per monster** drawn, **2.5 ms** per scroll step plus **1.5 ms per 4-pixel strip** (`web/packages/engine/src/engine/slowPc.ts:33-39`, `TURBO_OFF`). I can reproduce the order of magnitude from the source:
+The port's authors modeled a 286-16 as: **15 ms** for a tick with only the hero, **1.2 ms per monster** drawn, **2.5 ms** per scroll step plus **1.5 ms per 4-pixel strip** (`web/packages/engine/src/engine/slowPc.ts:33-39`, `TURBO_OFF`). The order of magnitude can be reproduced from the source:
 
 | Per monster per tick                                               |            Clocks | Why                        |
 | ------------------------------------------------------------------ | ----------------: | -------------------------- |
@@ -96,7 +96,7 @@ Conclusion: **the timer interrupt and the music together cost about 1% of a 286;
 4. **Digital sound reads** stall one or two ticks per trigger on a hard disk (chapter 10b).
 5. **Tick skipping** is what the player sees: when the loop is late the clock jumps; the hero advances once, so the game looks like it runs at half speed in jerks while monsters, rings and births do not.
 
-The port's slow-PC model says a 286-16 with the **hardware** path "keeps full pace" on a still screen (`slowPc.ts:14-24`), matching the maintainer's own memory of the machine he played on; the recollection of chop is consistent with a different video setting, a crowded screen, or voices.
+The port's slow-PC model says a 286-16 with the **hardware** path "keeps full pace" on a still screen (`slowPc.ts:14-24`), matching one player's memory of that machine; a recollection of chop is consistent with a different video setting, a crowded screen, or voices.
 **[not yet checked in DOSBox]** all of this in DOSBox with `cycles=fixed 4000` (about a 286-12) and the four conditions toggled one at a time.
 
 ## 12.6 Tips
@@ -104,10 +104,10 @@ The port's slow-PC model says a 286-16 with the **hardware** path "keeps full pa
 - On a slow PC the cheapest wins are fewer monsters on screen and no re-triggered voices; the hero's own cost is small.
 - If a level must run on every machine keep 10 or fewer monsters visible and avoid scrolling through a crowded screen.
 - Timing-critical puzzles: use block rings and lifetimes (exact), not hero speed (not exact on a slow PC).
-- A judged rhythm window must be at least 2 ticks (110 ms): input resolution is a tick (probe note, section 1).
+- A judged rhythm window must be at least 2 ticks (110 ms): input resolution is a tick.
 
 ## 12.7 Hazards
 
-- The audio starts before the game clock does at scene start (the probe note, section 0).
-- Function keys pause the game clock but not the music (probe note).
+- The audio starts before the game clock does at scene start.
+- Function keys pause the game clock but not the music.
 - DOS time runs 10 s a day fast while the game is running.

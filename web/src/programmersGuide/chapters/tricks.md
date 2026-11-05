@@ -5,7 +5,7 @@ Tricks marked **[not yet checked in DOSBox]** depend on an inference and need a 
 
 ## Scenes and files
 
-1. **A pass-through scene is a message.** A scene with a black palette, a message screen as its intro and a link out lands the player on the only link: the dialogue/cut-scene primitive. It costs the message's fade (about 1 s each way) and nothing else. (Ch 4, 11; probe 5)
+1. **A pass-through scene is a message.** A scene with a black palette, a message screen as its intro and a link out lands the player on the only link: the dialogue/cut-scene primitive. It costs the message's fade (about 1 s each way) and nothing else. (Ch 4, 11)
 2. **A blank file slot keeps the previous scene's data.** Leave the song, sound or character slot empty and the earlier one stays in memory (`PG:4244-4289`: loads happen only for slots that have a file). Shared sounds without shipping them again; also stale monsters if a `.mon` slot is left blank by mistake. (Ch 4, 13)
 3. **Many scenes on one map make checkpoints.** Each scene is a re-entry with its own link `To` cell; 283 bytes per scene is cheap (ch 4).
 4. **Walk off the edge to teleport.** The hero wraps at 100 (`chkmapbounds`, `PG:3386-3393`) and so do drawing and monster targets. A world with no edges needs no links. Wall the seam if you do not want it. (Ch 4)
@@ -22,7 +22,7 @@ Tricks marked **[not yet checked in DOSBox]** depend on an inference and need a 
 
 ## Monsters
 
-12. **An exact stopwatch.** A monster with `end = n` dies (turns into `newmon`) exactly n ticks after birth (`PG:3157-3160`, probe 3); chain lifetimes with `newmon` for timed stages. (Ch 6)
+12. **An exact stopwatch.** A monster with `end = n` dies (turns into `newmon`) exactly n ticks after birth (`PG:3157-3160`); chain lifetimes with `newmon` for timed stages. (Ch 6)
 13. **Equal power passes through.** Give a shot the same power as the monsters you want it to ignore, a different power for the ones it should kill (`PG:2810`). (Ch 8)
 14. **The monster's frame carries the reward.** The touch applies the _current frame's_ block (`PG:3113-3115`): a monster can be harmless, then pay, then hurt as it animates. (Ch 6, 8)
 15. **An all-clear hero frame is immune**: pixels at 255 never touch (`PicChkTouch`). A "dodge" sequence can be a frame of nothing but 255. (Ch 8)
@@ -33,7 +33,7 @@ Tricks marked **[not yet checked in DOSBox]** depend on an inference and need a 
 
 18. **One key per row.** A fire frame's `y` only picks the row (`PG:2442-2445`); ten sequences on ten keys shoot into ten rows. (Ch 7)
 19. **Ammunition is a sequence counter.** Counters 5-19 are the uses left; blocks refill them (effect = the sequence number); 32,767 is unlimited (`PG:2380-2381`). (Ch 7, 9)
-20. **Upgrades by carrying.** Tie a sequence to an inventory block (`bloc`) and it exists only while the block is carried; list the upgraded sequence before the plain one on the same key and the upgrade wins (probe 4). (Ch 7)
+20. **Upgrades by carrying.** Tie a sequence to an inventory block (`bloc`) and it exists only while the block is carried; list the upgraded sequence before the plain one on the same key and the upgrade wins. (Ch 7)
 21. **Jump arcs from momentum.** `Momentum` sequences add to `gravx`/`gravy`; a gravity block pulls the arc down; the cap is 44 (`PG:3761-3764`). (Ch 5, 7)
 22. **Conveyors and wind** are blocks with `grav` bits. (Ch 5)
 

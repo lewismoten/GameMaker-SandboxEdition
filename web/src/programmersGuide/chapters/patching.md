@@ -16,7 +16,7 @@ Game-Maker 3.0 writes a finished game as a copy of one program, `XFERPLAY.EXE`, 
 
 Both programs are built from one `PLAYGAME.C`. XFERPLAY is compiled with `-DTRANSFER=1` (`XFERPLAY.MAK:36,39`), PLAYGAME without it (ch 16, "PLAYGAME vs XFERPLAY"). The `#ifdef TRANSFER` sites (`PG:589`, `PG:665`, `PG:1092`, `PG:1937`) remove the game picker, the registration handshake with the editors and the designer warnings from the distribution player.
 
-The patch table is written for **XFERPLAY.EXE**: 160,598 bytes, MD5 `fcaf47d50ececa0b59cd22b3fae3cda3`, the file at `cd/gm/xferplay.exe` and the one all 343 stock copies in the archive match. PLAYGAME.EXE (163,130 bytes) holds the same strings and immediates at _different offsets_; its code is 2,532 bytes longer and everything after the first difference has moved. An offset from this chapter must never be applied to PLAYGAME.EXE, to an early 3.00 build (160,784 bytes), or to a 1.0, 2.0 or 2.04 player. They are other programs.
+The patch table is written for **XFERPLAY.EXE**: 160,598 bytes, MD5 `fcaf47d50ececa0b59cd22b3fae3cda3`, the file at `cd/gm/xferplay.exe` and the one all 343 stock copies in the collection match. PLAYGAME.EXE (163,130 bytes) holds the same strings and immediates at _different offsets_; its code is 2,532 bytes longer and everything after the first difference has moved. An offset from this chapter must never be applied to PLAYGAME.EXE, to an early 3.00 build (160,784 bytes), or to a 1.0, 2.0 or 2.04 player. They are other programs.
 
 ## 3. What a patch is
 
@@ -96,7 +96,7 @@ A copy whose size matches but whose bytes do not is `stock: false`, with medium 
 
 ## 7. Two real 1990s examples
 
-The archive of 1990s shareware games (kept outside the repository) shows what authors really did. These are described from the files; no buyer, serial or studio address is repeated.
+A collection of 1990s shareware games shows what authors really did. These are described from the files; no buyer, serial or studio address is repeated.
 
 - **Builder** blanked every menu word, heading and foot line. The 3.00 player it ships differs from stock in nothing but table entries: every changed byte is a setting in section 4, and `readPlayerPatches` explains the whole file. It is the proof that the table matches what authors really edited.
 - **Rodip** renamed its status words ("Score", "Lives" and the like). Again every changed byte is a table setting.
