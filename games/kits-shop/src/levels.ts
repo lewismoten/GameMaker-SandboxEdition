@@ -3,6 +3,7 @@
 //   The street: six coins on the path and two more up a ladder, eight in all, and a sign for the shop.
 //   The shop: a roof and a doorway, three stalls in a row (a gold key for 3, a silver key for 3, a heart for 2),
 //   then two locked gates in a wall, silver and gold, then the exit. Both keys cost 6; all three cost 8, every coin.
+import { SHOP_BOARD, addFront } from './front';
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
@@ -30,6 +31,7 @@ export function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sig
     heart: addSign(book, pal, 'heart', 'A HEART IS AN EXTRA LIFE', 4, 3),
     exit: addSign(book, pal, 'exit', 'EXIT →', 3),
   };
+  addFront(book, pal); // last, so no other block's number moves
   return { book, signs };
 }
 
@@ -78,8 +80,8 @@ function shop(book: Book, signs: Record<SignName, Sign>): StarterMap {
   // the street: six coins on the path, two more up a ladder
   g.row(9, 9, 11, 'c').row(9, 14, 16, 'c');
   g.col(18, 5, 9, 'H').row(6, 19, 22, 'G').row(7, 19, 22, 'D').row(5, 20, 21, 'c');
-  // the shop: a brick roof and a doorway, and a wall with two gates at the far end (silver, then gold)
-  g.fill(24, 0, 27, 4, 'B').fill(24, 4, 1, 4, 'B');
+  // the shop: a front with a roof and an awning (put below), a doorway at x 24, and a wall with two gates at the far end (silver, then gold)
+  g.fill(24, 4, 1, 4, 'B');
   wall(g, 48, GROUND, 'm', 'M', 4);
   wall(g, 50, GROUND, 'l', 'L', 4);
   clouds(g, [
@@ -91,6 +93,11 @@ function shop(book: Book, signs: Record<SignName, Sign>): StarterMap {
   for (const x of [8, 17, 46]) g.put(x, GROUND - 1, 'f');
   const rows = g.rows();
   const m = cash(new StarterMap(book, rows), rows);
+  // the building: a dim brick wall behind the stalls, an awning across the front, the roof's edge, two windows and the SHOP board over the doorway
+  for (let x = 25; x <= 49; x++) for (let y = 4; y < GROUND; y++) if (x !== 48) m.set(x, y, 'backWall');
+  for (let x = 24; x <= 50; x++) m.set(x, 3, x % 2 ? 'stripeB' : 'stripeA').set(x, 2, 'roofCap');
+  for (const x of [32, 36]) m.set(x, 5, 'window');
+  SHOP_BOARD.forEach((name, i) => m.set(24 + i, 1, name));
   for (const [x, item, price] of [
     [30, 'key', 3],
     [34, 'silver', 3],
