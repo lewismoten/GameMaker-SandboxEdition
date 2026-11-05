@@ -37,7 +37,9 @@ export function titlePicture(pal: Pal, above: Pixels, name: string, tagline: str
   for (const [cx, cy, ramp] of areas) {
     const x = mx + cx * (rw + 6);
     const y = my + cy * (rh + 6);
-    p.rect(x, y, rw, rh, c(ramp, 2)).frame(x, y, rw, rh, c(ramp, 0)).rect(x + 1, y + 1, rw - 2, 2, c(ramp, 4));
+    p.rect(x, y, rw, rh, c(ramp, 2))
+      .frame(x, y, rw, rh, c(ramp, 0))
+      .rect(x + 1, y + 1, rw - 2, 2, c(ramp, 4));
   }
   p.rect(mx + rw - 4, my + rh / 2 - 2, 14, 4, road).rect(mx + rw - 4, my + rh + 6 + rh / 2 - 2, 14, 4, road);
   p.rect(mx + rw / 2 - 2, my + rh - 4, 4, 14, road).rect(mx + rw + 6 + rw / 2 - 2, my + rh - 4, 4, 14, road);

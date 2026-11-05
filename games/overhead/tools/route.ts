@@ -112,13 +112,13 @@ export async function room(bot: StarterBot): Promise<void> {
   await must(bot, bot.climb('down', bottom, 'down the near side'), 'down');
   await must(bot, bot.walk(right, 'along under the table'), 'along');
   await must(bot, bot.climb('up', top, 'up the far side'), 'up');
-  coins(bot, score, 4, 'the room\'s coins');
+  coins(bot, score, 4, "the room's coins");
   await must(bot, bot.wait(BEAT), 'a beat');
   // out by the door in the right-hand wall
   await must(bot, bot.climb('down', 7, 'level with the door'), 'down');
   await must(bot, bot.walk(24, 'the door'), 'to the door');
   await through(bot, bot.walk(25, 'through the door'), 'the door');
-  landed(bot, area('meadow'), 'the room\'s door');
+  landed(bot, area('meadow'), "the room's door");
 }
 
 /** Walks to world column `col` and then row `row` (or the other way round), through links if one fires. */

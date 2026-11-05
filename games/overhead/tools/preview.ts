@@ -32,10 +32,16 @@ const mb = buildMonsterBlocks(pal);
 const mbl = mb.finish();
 const set = buildMonsters(mb);
 const kit = (x: number, y: number) => [{ pixels: Uint8Array.from(top.finish()[top.n('down.stand')].pixels), x, y }];
-for (const l of levels) writePng(join(out, `map-${l.file}.png`), renderRegion(l.map.done(), bbl, mbl, set, ORIGIN, ORIGIN, l.map.width, l.map.height), pal.pal, 2);
+for (const l of levels)
+  writePng(join(out, `map-${l.file}.png`), renderRegion(l.map.done(), bbl, mbl, set, ORIGIN, ORIGIN, l.map.width, l.map.height), pal.pal, 2);
 // level 1 around the start, then each area as the screen shows it
 const [sx, sy] = START_ONE;
-writePng(join(out, 'screen-room.png'), renderRegion(levels[0].map.done(), bbl, mbl, set, sx + ORIGIN - 8, sy + ORIGIN - 5, 16, 10, kit(sx + ORIGIN, sy + ORIGIN)), pal.pal, 2);
+writePng(
+  join(out, 'screen-room.png'),
+  renderRegion(levels[0].map.done(), bbl, mbl, set, sx + ORIGIN - 8, sy + ORIGIN - 5, 16, 10, kit(sx + ORIGIN, sy + ORIGIN)),
+  pal.pal,
+  2,
+);
 for (const a of AREAS) {
   const [lx, ly] = a.landing;
   writePng(join(out, `area-${a.id}.png`), renderRegion(levels[1].map.done(), bbl, mbl, set, lx - 8, ly - 5, 16, 10, kit(lx, ly)), pal.pal, 2);

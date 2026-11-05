@@ -180,12 +180,18 @@ const LEGEND_ONE: Record<string, string> = {
 /** Level 1: a room with a bed, a table on a rug, shelves, plants and a door, seen from above. */
 function roomLevel(book: Book, s: Record<SignName, Sign>): OverMap {
   const g = new Grid(ROOM_W, ROOM_H);
-  g.row(0, 0, ROOM_W - 1, '#').row(ROOM_H - 1, 0, ROOM_W - 1, '#').col(0, 0, ROOM_H - 1, '#').col(ROOM_W - 1, 0, ROOM_H - 1, '#');
+  g.row(0, 0, ROOM_W - 1, '#')
+    .row(ROOM_H - 1, 0, ROOM_W - 1, '#')
+    .col(0, 0, ROOM_H - 1, '#')
+    .col(ROOM_W - 1, 0, ROOM_H - 1, '#');
   g.put(2, 2, 'B').put(2, 3, 'b');
   g.row(1, 6, 10, 'H');
   g.put(23, 1, 'P').put(1, 12, 'P').put(23, 12, 'P');
   g.fill(10, 5, 6, 4, '=');
-  g.put(TABLE.x, TABLE.y, 'T').put(TABLE.x + 1, TABLE.y, 't').put(TABLE.x, TABLE.y + 1, 'u').put(TABLE.x + 1, TABLE.y + 1, 'v');
+  g.put(TABLE.x, TABLE.y, 'T')
+    .put(TABLE.x + 1, TABLE.y, 't')
+    .put(TABLE.x, TABLE.y + 1, 'u')
+    .put(TABLE.x + 1, TABLE.y + 1, 'v');
   for (const [x, y] of COINS_ONE) g.put(x, y, 'c');
   g.put(DOOR_ONE[0], DOOR_ONE[1], 'D');
   const m = new OverMap(book, g.rows(), LEGEND_ONE, 'wall');
@@ -222,7 +228,10 @@ const LEGEND_TWO: Record<string, string> = {
 function outdoors(g: Grid, a: Area, sides: Side[]): void {
   const { rl, rt } = a;
   g.fill(rl, rt, AREA_W, AREA_H, '.');
-  g.row(rt, rl, rl + 15, 'T').row(rt + 9, rl, rl + 15, 'T').col(rl, rt, rt + 9, 'T').col(rl + 15, rt, rt + 9, 'T');
+  g.row(rt, rl, rl + 15, 'T')
+    .row(rt + 9, rl, rl + 15, 'T')
+    .col(rl, rt, rt + 9, 'T')
+    .col(rl + 15, rt, rt + 9, 'T');
   g.fill(rl + 7, rt + 4, 2, 2, 'r');
   for (const s of sides) {
     if (s === 'E') g.fill(rl + 8, rt + 4, 8, 2, 'r');
@@ -268,8 +277,12 @@ function worldLevel(book: Book, s: Record<SignName, Sign>): OverMap {
   for (let y = 1; y <= 3; y++) for (let x = 10; x <= 14; x++) if ((x + y * 2) % 3) L('woods', x, y, 'T');
   for (const [x, y] of COINS_TWO.woods) L('woods', x, y, 'c');
   // village: a house, fences, flowers
-  g.put(village.rl + 7, village.rt + 1, 'x').put(village.rl + 8, village.rt + 1, 'y').put(village.rl + 9, village.rt + 1, 'z');
-  g.put(village.rl + 7, village.rt + 2, 'l').put(village.rl + 8, village.rt + 2, 'h').put(village.rl + 9, village.rt + 2, 'n');
+  g.put(village.rl + 7, village.rt + 1, 'x')
+    .put(village.rl + 8, village.rt + 1, 'y')
+    .put(village.rl + 9, village.rt + 1, 'z');
+  g.put(village.rl + 7, village.rt + 2, 'l')
+    .put(village.rl + 8, village.rt + 2, 'h')
+    .put(village.rl + 9, village.rt + 2, 'n');
   g.put(village.rl + 8, village.rt + 3, 'r');
   g.row(village.rt + 7, village.rl + 1, village.rl + 5, 'F').row(village.rt + 2, village.rl + 1, village.rl + 5, 'F');
   for (const [x, y] of [

@@ -79,7 +79,12 @@ export function addOverBlocks(book: Book, pal: Pal): Ground {
     const gold = r('gold');
     const p = new Pixels(N, N, red[2]);
     for (let y = 0; y < N; y += 2) p.rect(0, y, N, 1, red[1]);
-    for (let x = 0; x < N; x += 5) p.set(x, 9, gold[3]).set(x + 1, 10, gold[3]).set(x + 2, 11, gold[3]).set(x + 3, 10, gold[3]).set(x + 4, 9, gold[3]);
+    for (let x = 0; x < N; x += 5)
+      p.set(x, 9, gold[3])
+        .set(x + 1, 10, gold[3])
+        .set(x + 2, 11, gold[3])
+        .set(x + 3, 10, gold[3])
+        .set(x + 4, 9, gold[3]);
     book.add('rug', p);
   }
   {
@@ -150,7 +155,9 @@ export function addOverBlocks(book: Book, pal: Pal): Ground {
       [13, 11, 3.4],
       [10, 12, 3.2],
     ] as const)
-      p.disc(x, y, rad + 0.7, c('green', 0)).disc(x, y, rad, g[2]).disc(x - 1, y - 1, rad - 1.6, g[3]);
+      p.disc(x, y, rad + 0.7, c('green', 0))
+        .disc(x, y, rad, g[2])
+        .disc(x - 1, y - 1, rad - 1.6, g[3]);
     p.set(10, 8, g[5]);
     book.add('plant', p, { solid: SOLID });
   }
@@ -208,7 +215,10 @@ export function addOverBlocks(book: Book, pal: Pal): Ground {
     const p = grass.crop(0, 0, N, N);
     p.rect(0, 7, N, 3, wo[3]).rect(0, 7, N, 1, wo[4]).rect(0, 9, N, 1, wo[1]);
     p.rect(0, 13, N, 3, wo[3]).rect(0, 13, N, 1, wo[4]).rect(0, 15, N, 1, wo[1]);
-    for (const x of [1, 14]) p.rect(x, 4, 4, 14, wo[2]).frame(x, 4, 4, 14, wo[0]).rect(x + 1, 5, 1, 12, wo[4]);
+    for (const x of [1, 14])
+      p.rect(x, 4, 4, 14, wo[2])
+        .frame(x, 4, 4, 14, wo[0])
+        .rect(x + 1, 5, 1, 12, wo[4]);
     book.add('fence', p, { solid: SOLID });
   }
   {
@@ -258,7 +268,9 @@ export function addOverBlocks(book: Book, pal: Pal): Ground {
     q.rect(0, N, 3 * N, N - 1, ink).rect(1, N, 3 * N - 2, N - 2, st[3]);
     for (let y = N + 4; y < 2 * N - 2; y += 5) q.rect(1, y, 3 * N - 2, 1, st[2]);
     for (const x of [6, 46]) {
-      q.rect(x, N + 5, 9, 9, ink).rect(x + 1, N + 6, 7, 7, c('sky', 3)).rect(x + 1, N + 6, 7, 2, c('sky', 5));
+      q.rect(x, N + 5, 9, 9, ink)
+        .rect(x + 1, N + 6, 7, 7, c('sky', 3))
+        .rect(x + 1, N + 6, 7, 2, c('sky', 5));
       q.rect(x + 4, N + 6, 1, 7, ink).rect(x + 1, N + 9, 7, 1, ink);
     }
     cut(book, 'house', q, 3, 2, { solid: SOLID });

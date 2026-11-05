@@ -28,4 +28,6 @@ if (seen !== WANT || r.keysLeft) {
   console.error(`demoCheck: expected scenes ${WANT} (the room, the roads, the ending) with every key played; got ${seen}`);
   process.exit(1);
 }
-console.log('demoCheck ok: walked the room round a table, off the edge of the meadow into the woods and back, east to the pond, into the shop by the house door and out, reached the ending');
+console.log(
+  'demoCheck ok: walked the room round a table, off the edge of the meadow into the woods and back, east to the pond, into the shop by the house door and out, reached the ending',
+);
