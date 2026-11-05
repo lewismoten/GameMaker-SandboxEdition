@@ -1225,18 +1225,8 @@ static bool runCalibration() {
     }
   }
 }
-// BOOT held (setup screen, or 2 s on the list): the next display mode (driver, inversion, red/blue order), kept in NVS, then a restart.
-static void nextPanel() {
-  panelType = (panelType + 1) % PANEL_TYPES;
-  Preferences p;
-  if (p.begin("pocket", false)) { p.putUChar("panel", panelType); p.end(); }
-  dsMarkBegun(true);
-  saveSettings();
-  char nb[16];
-  message("Display mode", panelName(nb));
-  delay(900);
-  ESP.restart();
-}
+// BOOT held (setup screen, or 2 s on the list): the other display driver, then a restart into setup step 1 (displaysetup_ui.h).
+static void nextPanel() { dsDriverRestart(); }
 #endif
 
 static void selfTestOne(int g, int ticks, bool cards) {
