@@ -1,0 +1,42 @@
+{
+  "title": "Graduation: Heroes and Foes",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "ceremony": "graduation-heroes",
+  "hero": "KIT",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.0",
+  "blurb": "A castle hall holds the helpers from Changing Your Hero and Foes and Bosses, and a few friends. Doc Leo is on the dais with your honors.",
+  "exe": "GRADHERO.EXE",
+  "dosName": "GRADHERO",
+  "sound": "sb",
+  "label": {
+    "background": "#f1ece6",
+    "band": "#8a2a36",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "1 short walk",
+    "hours": 1,
+    "background": "#8a2a36",
+    "accent": "#ffd23f",
+    "ink": "#ffffff",
+    "tagline": "You walked the great hall.",
+    "back": "A small explorer in a teal beanie walks the red runner of a castle hall full of friends to a dais, where Doc Leo is holding your honors.",
+    "features": [
+      "The helpers of Heroes and Foes cheer you on",
+      "Doc Leo hands you your honors"
+    ],
+    "shots": [
+      [
+        "hall.map",
+        20,
+        6
+      ]
+    ],
+    "rating": "Everyone"
+  }
+}

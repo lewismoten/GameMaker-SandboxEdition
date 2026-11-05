@@ -41,7 +41,7 @@ export function buildBlocks(pal: Pal, cfg: Graduation) {
   addStarterBlocks(book, pal);
   const heroBlocks = buildHeroBlocks(pal);
   const pic = (n: string) => heroBlocks.pics.get(n)!;
-  const hall = addHallBlocks(book, pal, timed, audienceOf(...cfg.groups), pic('stand.top'), pic('cheer2.top'), pic('blink.top'), cfg.theme);
+  const hall = addHallBlocks(book, pal, timed, audienceOf(...cfg.groups), pic('stand.top'), pic('cheer2.top'), pic('blink.top'), cfg.theme, cfg.cameos);
   const signs: Record<SignName, Sign> = {
     start: addSign(book, pal, 'start', cfg.signs.start, 4, 2),
     helpers: addSign(book, pal, 'helpers', cfg.signs.helpers, 4, 2),
@@ -66,6 +66,7 @@ export class HallMap extends StarterMap {
   constructor(
     private readonly blocks: Book,
     rows: string[],
+    private readonly width = W,
   ) {
     super(blocks, rows);
   }
@@ -76,7 +77,7 @@ export class HallMap extends StarterMap {
     const sub = this.blocks.n('subfloor');
     for (let y = 0; y < MLEN; y++)
       for (let x = 0; x < MLEN; x++) {
-        const inX = x >= ORIGIN && x < ORIGIN + W;
+        const inX = x >= ORIGIN && x < ORIGIN + this.width;
         if (y >= ORIGIN + H) map.blocks[y * MLEN + x] = sub;
         else if (y >= ORIGIN && !inX) map.blocks[y * MLEN + x] = edge;
       }
@@ -85,7 +86,7 @@ export class HallMap extends StarterMap {
 }
 
 /** The hall. */
-function aisle(book: Book, signs: Record<SignName, Sign>, hall: ReturnType<typeof buildBlocks>['hall'], theme: Graduation['theme']): StarterMap {
+function aisle(book: Book, signs: Record<SignName, Sign>, hall: ReturnType<typeof buildBlocks>['hall'], theme: Graduation['theme'], _guests: number): StarterMap {
   const g = new Grid(W, H);
   g.put(2, 8, 's').put(2, 9, 'S');
   const m = new HallMap(book, g.rows());
@@ -101,6 +102,8 @@ function aisle(book: Book, signs: Record<SignName, Sign>, hall: ReturnType<typeo
   // the balcony: a rail with a front, and the helpers leaning on it
   for (let x = 2; x < STAGE_FROM - 1; x++) m.set(x, 5, 'rail').set(x, 6, 'riser');
   hall.helpers.forEach((name, i) => m.set(4 + i * 4, 4, name));
+  // the Cast's guests lean on the rail in the gaps between helpers (a tall one reaches up a row)
+  hall.cameos.forEach((parts, i) => parts.forEach((name, k) => m.set(6 + i * 8, 5 - parts.length + k, name)));
   // the stage's own wall pieces, hung high between the ceiling and the helpers' heads
   const order = theme.decorOrder ?? [];
   if (order.length) for (let x = 3, i = 0; x < STAGE_FROM - 1; x += theme.decorEvery ?? 5, i++) m.set(x, 2, `decor.${order[i % order.length]}`);
@@ -123,6 +126,6 @@ function aisle(book: Book, signs: Record<SignName, Sign>, hall: ReturnType<typeo
 export function buildLevels(cfg: Graduation) {
   const pal = buildPalette(cfg);
   const { book, timed, hall, signs } = buildBlocks(pal, cfg);
-  const levels: Level[] = [{ file: 'hall', title: cfg.level.title, hint: cfg.level.hint, map: aisle(book, signs, hall, cfg.theme) }];
+  const levels: Level[] = [{ file: 'hall', title: cfg.level.title, hint: cfg.level.hint, map: aisle(book, signs, hall, cfg.theme, cfg.cameos.length) }];
   return { book, pal, timed, levels };
 }

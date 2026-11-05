@@ -93,6 +93,18 @@ multi-block objects for `kit/align.ts`, which their checks run. The other play-t
 | graduation-basics      | `npx vite-node ../games/graduation-basics/tools/check.ts`            | the bot walks up the aisle to the lectern and takes the scroll |
 | graduation-basics      | `npx vite-node ../games/graduation-basics/tools/gendemo.ts`          | re-records the title demo into `src/demo.ts` (then rebuild) |
 | graduation-basics      | `npx vite-node ../games/graduation-basics/tools/preview.ts [dir]`    | PNGs of the hall, the blocks and every picture |
+| graduation-moving      | `npx vite-node ../games/graduation-moving/tools/check.ts` | the bot walks up to the lectern and takes the scroll (Moving and Pushing) |
+| graduation-moving      | `npx vite-node ../games/graduation-moving/tools/gendemo.ts` | re-records the title demo into `src/demo.ts` (then rebuild) |
+| graduation-heroes      | `npx vite-node ../games/graduation-heroes/tools/check.ts` | the bot walks up to the lectern and takes the scroll (Heroes and Foes) |
+| graduation-heroes      | `npx vite-node ../games/graduation-heroes/tools/gendemo.ts` | re-records the title demo into `src/demo.ts` (then rebuild) |
+| graduation-story       | `npx vite-node ../games/graduation-story/tools/check.ts` | the bot walks up to the lectern and takes the scroll (Story and Finish) |
+| graduation-story       | `npx vite-node ../games/graduation-story/tools/gendemo.ts` | re-records the title demo into `src/demo.ts` (then rebuild) |
+| graduation-wiring      | `npx vite-node ../games/graduation-wiring/tools/check.ts` | the bot walks up to the lectern and takes the scroll (Wiring and Worlds) |
+| graduation-wiring      | `npx vite-node ../games/graduation-wiring/tools/gendemo.ts` | re-records the title demo into `src/demo.ts` (then rebuild) |
+| graduation-blocks      | `npx vite-node ../games/graduation-blocks/tools/check.ts` | the bot walks up to the lectern and takes the scroll (Blocks and Showcase) |
+| graduation-blocks      | `npx vite-node ../games/graduation-blocks/tools/gendemo.ts` | re-records the title demo into `src/demo.ts` (then rebuild) |
+| graduation-diploma     | `npx vite-node ../games/graduation-diploma/tools/check.ts` | the bot walks up to the lectern and takes the scroll (The Sandbox Diploma) |
+| graduation-diploma     | `npx vite-node ../games/graduation-diploma/tools/gendemo.ts` | re-records the title demo into `src/demo.ts` (then rebuild) |
 | first-steps            | `npx vite-node ../games/first-steps/tools/check.ts`                    | the bot walks both levels: over the wall, up the step, up the ladder, down the drops, through the doors                                                                                                                                                                                                     |
 | first-steps            | `npx vite-node ../games/first-steps/tools/gendemo.ts`                  | re-records the title demo into `src/demo.ts` (then rebuild)                                                                                                                                                                                                                                                 |
 | first-steps            | `npx vite-node ../games/first-steps/tools/preview.ts [dir]`            | PNGs of the blocks, the hero, the monsters, each level and every picture                                                                                                                                                                                                                                    |

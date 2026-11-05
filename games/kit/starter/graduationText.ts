@@ -21,7 +21,7 @@ Your honors are rolled up on the lectern, on the stage. Walk into them.
 export const creditsPage = (title: string, version: string, note: string): string =>
   withCreditPage(
     wrap(`
-|${title}  v${version}
+${title.length + version.length + 4 <= 30 ? `|${title}  v${version}` : `|${title.replace(': ', '\n|')}  v${version}`}
 |(c) 1994 Sandbox Software
 
 Design, pixels, beeps and levels by Claude Sonnet 5.5, an AI model made by Anthropic.

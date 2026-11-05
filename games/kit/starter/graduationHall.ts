@@ -7,6 +7,7 @@ import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { Book, PULL, SOLID } from './book';
 import { skyOf, type Pal } from './palette';
 import { helperHead, leoPoses } from './graduationCast';
+import { cameoFrames, type CameoName } from './graduationCameo';
 import type { HallTheme } from './graduationTheme';
 
 /** A block that turns into another after some ticks (the engine's only clock). */
@@ -134,10 +135,12 @@ export interface Hall {
   helpers: string[];
   leoTop: string;
   leoBottom: string;
+  /** The Cast's guests: each one's block names, top first (the first frame; the rest follow by timers). */
+  cameos: string[][];
 }
 
 /** Adds the hall's blocks to `book`; `timed` gets every loop. `kitHead` is the hero's 'stand.top' and `cheerHead` its 'cheer2.top' (head with both hands up). */
-export function addHallBlocks(book: Book, pal: Pal, timed: Timed[], names: string[], stand: Pixels, cheer: Pixels, blink: Pixels, theme: HallTheme = {}): Hall {
+export function addHallBlocks(book: Book, pal: Pal, timed: Timed[], names: string[], stand: Pixels, cheer: Pixels, blink: Pixels, theme: HallTheme = {}, cameos: CameoName[] = []): Hall {
   const drapeRamp = theme.drape ?? 'purple';
   const woodRamp = theme.rail ?? 'wood';
   book.add('carpet', (theme.floor ?? carpet)(pal), { solid: SOLID });
@@ -185,7 +188,18 @@ export function addHallBlocks(book: Book, pal: Pal, timed: Timed[], names: strin
   book.add('leo.2', onWall(blinkLeo, 0), air);
   timed.push({ name: 'leo.0', next: 'leo.1', ticks: 31 }, { name: 'leo.1', next: 'leo.2', ticks: 17 }, { name: 'leo.2', next: 'leo.0', ticks: 3 });
   book.add('leoLegs', onWall(front, 20), air);
-  return { helpers, leoTop: 'leo.0', leoBottom: 'leoLegs' };
+
+  // the Cast's guests: still ones are plain blocks; a dog moves between two frames
+  const guests = cameos.map((n, i) => {
+    const frames = cameoFrames(pal, n);
+    frames.forEach((parts, f) => parts.forEach((px, k) => book.add(`cameo.${n}.${f}.${k}`, px, air)));
+    if (frames.length > 1) {
+      const a = 30 + ((i * 11) % 19);
+      timed.push({ name: `cameo.${n}.0.0`, next: `cameo.${n}.1.0`, ticks: a }, { name: `cameo.${n}.1.0`, next: `cameo.${n}.0.0`, ticks: 6 + (i % 3) * 2 });
+    }
+    return frames[0].map((_p, k) => `cameo.${n}.0.${k}`);
+  });
+  return { helpers, leoTop: 'leo.0', leoBottom: 'leoLegs', cameos: guests };
 }
 
 /** A level's finished blocks: the book's, with each timed block given its next block and its ticks. */

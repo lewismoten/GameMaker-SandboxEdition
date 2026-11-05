@@ -10,20 +10,28 @@ import { LECTERN } from './graduationLevel';
 
 type Route = (bot: StarterBot) => Promise<void>;
 
-/** The aisle: walk up the carpet past the signs and the helpers to the lectern; the certificate is the door out (to the ending). */
-export const aisle: Route = async (bot) => {
-  for (const [x, what] of [
+/** An aisle walk: along the carpet stop by stop, then into the certificate on the lectern at column `lectern`, which is the door out (to the ending). */
+export const walkAisle =
+  (stops: readonly (readonly [number, string])[], lectern: number): Route =>
+  async (bot) => {
+    for (const [x, what] of stops) {
+      const out = await bot.walk(x, what);
+      if (out) throw new Error(`${what}: ${out}\n${bot.log.slice(-8).join('\n')}`);
+    }
+    const out = await bot.walk(lectern, 'the certificate');
+    if (out !== 'link' && out !== 'end') throw new Error(`the certificate: ${out ?? 'still here'}\n${bot.log.slice(-8).join('\n')}`);
+  };
+
+/** The first five graduations' aisle. */
+export const aisle: Route = walkAisle(
+  [
     [8, 'the first sign'],
     [16, 'under the helpers'],
     [28, 'the last sign'],
     [LECTERN - 2, 'the steps of the stage'],
-  ] as const) {
-    const out = await bot.walk(x, what);
-    if (out) throw new Error(`${what}: ${out}\n${bot.log.slice(-8).join('\n')}`);
-  }
-  const out = await bot.walk(LECTERN, 'the certificate');
-  if (out !== 'link' && out !== 'end') throw new Error(`the certificate: ${out ?? 'still here'}\n${bot.log.slice(-8).join('\n')}`);
-};
+  ],
+  LECTERN,
+);
 
 export const SEED = 1;
 

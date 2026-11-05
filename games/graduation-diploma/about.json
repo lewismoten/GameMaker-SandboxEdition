@@ -1,0 +1,42 @@
+{
+  "title": "The Sandbox Diploma",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "ceremony": "graduation-diploma",
+  "hero": "KIT",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.0",
+  "blurb": "Everyone came: the helpers of every stage, Teddy and Gwinn and friends from all over. Confetti is falling and Doc Leo has your diploma.",
+  "exe": "GRADDIPL.EXE",
+  "dosName": "GRADDIPL",
+  "sound": "sb",
+  "label": {
+    "background": "#fff6d6",
+    "band": "#c8921a",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "1 long walk",
+    "hours": 1,
+    "background": "#c8921a",
+    "accent": "#7a3fc4",
+    "ink": "#ffffff",
+    "tagline": "Game Maker, first class.",
+    "back": "A small explorer in a teal beanie walks a long aisle in a hall full of friends, under confetti, to a stage, where Doc Leo is holding the diploma.",
+    "features": [
+      "Every helper, Teddy and Gwinn and friends cheer you on",
+      "Doc Leo hands you the diploma"
+    ],
+    "shots": [
+      [
+        "hall.map",
+        20,
+        6
+      ]
+    ],
+    "rating": "Everyone"
+  }
+}

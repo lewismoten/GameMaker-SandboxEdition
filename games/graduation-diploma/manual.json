@@ -1,0 +1,55 @@
+{
+  "title": "The Sandbox Diploma",
+  "howDoI": [
+    {
+      "id": "cheer",
+      "q": "How do I make people who cheer, each out of step with the others?",
+      "scene": 2,
+      "x": 4,
+      "y": 4,
+      "level": 1
+    },
+    {
+      "id": "swap",
+      "q": "How do I make several different people from one drawing?",
+      "scene": 2,
+      "x": 8,
+      "y": 4,
+      "level": 1
+    },
+    {
+      "id": "scroll",
+      "q": "How do I make a pickup that ends the level?",
+      "scene": 2,
+      "x": 74,
+      "y": 8,
+      "level": 1
+    }
+  ],
+  "pages": [
+    {
+      "head": "Welcome",
+      "html": "<h1>Welcome</h1><p><b>Graduation: First Steps</b> is a Starter of a different kind. It is a short walk, not a lesson. You have been through The Basics; now the helpers who led those Starters are on the balcony, Doc Leo is on the stage, and your honors are on the lectern.</p><p>It takes about a minute. Play it first, then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. There is nothing to fight and nothing that hurts. Walk into the scroll on the lectern and the game ends with your honors.</p>"
+    },
+    {
+      "head": "Level 1: The Aisle",
+      "html": "<h1>Level 1: The Aisle</h1><p>You start in the doorway at the back of the hall. Four signs along the red carpet say what is going on: <b>WALK UP TO THE STAGE</b>, <b>YOUR HELPERS ARE HERE</b>, <b>THEY CHEER FOR YOU</b> and <b>DOC LEO HAS A SCROLL FOR YOU</b>. Up on the balcony the eight helpers of The Basics wave and blink, each out of step with the others. Doc Leo waits beside the lectern, under the banner.</p><p>Walk up the carpet and onto the stage. The rolled-up scroll on the lectern is worth a hundred points, and touching it takes you to the ending.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How the aisle is made</h1><ul><li><b>The hall.</b> Open <b>hall.map</b> in the map editor. The wall is the plain <b>sky</b> block. The floor is a row of <b>carpet</b> blocks, then <b>stage</b> blocks; two rows of <b>subfloor</b> sit under both. The two ends of the hall are the solid <b>curtainEdge</b> block, so you cannot walk out.</li><li><b>The crowd.</b> Each helper is a ring of three blocks (<b>hall.mia.0</b>, <b>.1</b> and <b>.2</b>, and so on) in <b>grad.bbl</b>: smiling, hands up, then a blink. Open a block in the blocks editor, and on its <b>Animation</b> tab you will see the <b>Next block</b> and the <b>Time</b>. Each helper has different times, so no two cheer together. A crowd that moves in step looks like a machine.</li><li><b>One drawing, many people.</b> All eight are the hero's head, painted again in other skin, hair and beanie colors. In the editor you can do the same by copying a block and recoloring it. The Starters' Cast page lists the helpers.</li><li><b>Doc Leo.</b> Two blocks, one over the other, standing on the stage. His top block is a ring like the helpers' (standing, grinning, blinking).</li><li><b>The scroll.</b> The <b>scroll</b> block is the lectern's top with the scroll on it. Its <b>Score points</b> are 100 and <b>Becomes block</b> is <b>lecternTop</b>, the same lectern without the scroll. A scene link at the lectern joins it to the ending: open <b>grad.gam</b> in the scenes editor and look at the links of The Aisle.</li><li><b>The banner.</b> Four ordinary blocks side by side with the words drawn in them, hung on the wall with no posts. The signs along the carpet are the same, with posts.</li></ul>"
+    },
+    {
+      "head": "What the honors mean",
+      "html": "<h1>What the honors mean</h1><p>A graduation comes after a group of Starters and gives you honors for what they taught. <b>Honors in First Steps</b> is for The Basics:</p><ul><li><b>First Steps</b>: walking, jumping, gravity and ladders.</li><li><b>Keys and Doors</b> and <b>Room to Room</b>: keys, doors and getting from one room to the next.</li><li><b>Meet the Monsters</b> and <b>Watch Your Step</b>: things that move and things that hurt.</li><li><b>Coins and Score</b>: pickups that give points.</li><li><b>Smash It</b> and <b>Dig It</b>: blocks that break and soil that turns into a tunnel.</li><li><b>Seeds and Nests</b>: blocks that hatch things.</li></ul><p>You do not have to finish every one. The graduation opens when you have finished most of them.</p>"
+    },
+    {
+      "head": "What it cannot do",
+      "html": "<h1>What it cannot do</h1><ul><li>A DOS game cannot ask your name, so the honors here do not have one. It says what you did.</li><li>The crowd cheers all the time. A block's animation runs on its own clock; it cannot wait until you walk past.</li><li>A block's loop is the same everywhere it is on the map, so every cell of one helper's block blinks together. Each helper is one cell here, so that does not show.</li></ul>"
+    },
+    {
+      "head": "Make it yours",
+      "html": "<h1>Make it yours</h1><ul><li>Change the words on a sign, or the banner, in the blocks editor.</li><li>Change a helper's <b>Time</b> to make the crowd cheer in step. Does it look better or worse?</li><li>Draw a new person in the <b>hall.mia</b> blocks and put them in the hall.</li><li>Move the lectern, or put a second scroll on the stage.</li></ul><p>The home page's <b>Starters</b> tab has more small games like this one.</p>"
+    }
+  ]
+}
