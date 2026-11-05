@@ -85,7 +85,7 @@ disk.put('savegame.gif', gif(slotsPicture(pal, book, 'SAVE GAME'), pal));
 text('story', 'INSIDE THE PLAYER', STORY);
 text('howto', 'HOW TO PLAY', HOWTO);
 text('credits', 'CREDITS', CREDITS);
-disk.put('wonpic.gif', gif(endPicture(pal, book, cheer, 'ALL THE WAY THROUGH!', 'BACK UP, SAME SIZE, ASK FIRST', 'won'), pal));
+disk.put('wonpic.gif', gif(endPicture(pal, book, cheer, 'ALL THROUGH!', 'BACK UP, SAME SIZE, ASK FIRST', 'won'), pal));
 disk.put('won.gif', gif(paper(pal, book, 'WELL READ'), pal));
 disk.put('won.txt', WON);
 disk.put('won.lst', serializeSlideList([{ name: 'wonpic.gif', pause: 6 }, { name: 'won.gif', pause: 0 }, { name: 'won.txt' }]));
