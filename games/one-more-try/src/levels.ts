@@ -113,7 +113,9 @@ function waysBack(book: Book, signs: Record<SignName, Sign>): StarterMap {
   dig(g, steps.pit, steps.width);
   dig(g, stairs.pit, stairs.width);
   // the coin at the bottom of every pit is the reason to go in
-  g.put(ladder.pit + 1, floor, 'c').put(steps.pit + 1, floor, 'c').put(stairs.pit + 1, floor, 'c');
+  g.put(ladder.pit + 1, floor, 'c')
+    .put(steps.pit + 1, floor, 'c')
+    .put(stairs.pit + 1, floor, 'c');
   // the stairs: two columns of solid dirt, one block taller than the next
   g.col(stairs.tall, floor - 1, floor, 'D').put(stairs.short, floor, 'D');
   scenery(
@@ -144,7 +146,13 @@ export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
   const pal = buildStarterPalette();
   const { book, signs } = buildBlocks(pal);
   const levels: Level[] = [
-    { file: 'one', title: 'A Post to Start Over', hint: 'Fell in? Touch the post.', map: aPostToStartOver(book, signs), posts: [[L1.post, GROUND + DEPTH - 1]] },
+    {
+      file: 'one',
+      title: 'A Post to Start Over',
+      hint: 'Fell in? Touch the post.',
+      map: aPostToStartOver(book, signs),
+      posts: [[L1.post, GROUND + DEPTH - 1]],
+    },
     { file: 'two', title: 'Ways Back', hint: 'Never trap the player.', map: waysBack(book, signs), posts: [] },
   ];
   return { book, pal, levels };

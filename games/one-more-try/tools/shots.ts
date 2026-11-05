@@ -38,13 +38,13 @@ const floor = GROUND + DEPTH - 1;
 // level 1: the pit with its post and coin, then Kit at the bottom looking up
 const l1 = levels[0].map.done();
 writePng(join(out, 'post-1-pit.png'), region(l1, 17, 16, kit(stand, L1.pit - 2)), pal.pal, 3);
-writePng(join(out, 'post-2-inside.png'), region(l1, 20, 12, kit(['cheer.top', 'jump'], L1.pit + 1, floor), 4, 10), pal.pal, 3);
+writePng(join(out, 'post-2-inside.png'), region(l1, 20, 12, kit(['cheer.top', 'jump'], L1.pit + 1, floor), 4, 11), pal.pal, 3);
 
 // level 2: a pit for each way back
 const l2 = levels[1].map.done();
-writePng(join(out, 'back-1-ladder.png'), region(l2, L2.ladder.pit - 2, 8, kit(stand, L2.ladder.pit + 1, floor), 4, 10), pal.pal, 4);
-writePng(join(out, 'back-2-planks.png'), region(l2, L2.steps.pit - 2, 8, kit(stand, L2.steps.pit + 1, floor), 4, 10), pal.pal, 4);
-writePng(join(out, 'back-3-blocks.png'), region(l2, L2.stairs.pit - 2, 8, kit(stand, L2.stairs.pit + 1, floor), 4, 10), pal.pal, 4);
+writePng(join(out, 'back-1-ladder.png'), region(l2, L2.ladder.pit - 2, 8, kit(stand, L2.ladder.pit + 1, floor), 4, 11), pal.pal, 4);
+writePng(join(out, 'back-2-planks.png'), region(l2, L2.steps.pit - 2, 8, kit(stand, L2.steps.pit + 1, floor), 4, 11), pal.pal, 4);
+writePng(join(out, 'back-3-blocks.png'), region(l2, L2.stairs.pit - 2, 8, kit(stand, L2.stairs.pit + 1, floor), 4, 11), pal.pal, 4);
 for (const [i, m] of [l1, l2].entries())
   writePng(join(out, `level-${i + 1}.png`), renderRegion(m, bbl, mbl, set, ORIGIN, ORIGIN, levels[i].map.width, 15), pal.pal, 2);
 console.log(`shots in ${out}`);

@@ -7,6 +7,4 @@ import { play } from './play';
 
 assertNoInvisibleWalls(buildLevels());
 const { sim } = await play();
-console.log(
-  `try again: the bot played both levels; ${sim.deaths} lives lost, ${sim.ci.lives} left, score ${sim.ci.score}, ${sim.trail.length} scenes entered`,
-);
+console.log(`try again: the bot played both levels; ${sim.deaths} lives lost, ${sim.ci.lives} left, score ${sim.ci.score}, ${sim.trail.length} scenes entered`);
