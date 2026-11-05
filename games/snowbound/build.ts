@@ -2,6 +2,7 @@
 //   cd web && npx vite-node ../games/snowbound/build.ts
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { putCoolSign } from '../kit/coolSign';
 import { serializeBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { serializeCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { MAXSCENELINKS, newGame, emptyScene, serializeGame, ADVTYPE, NOSCENE } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
@@ -142,7 +143,14 @@ built.forEach(({ l, m, start }, i) => {
   const map = m.build();
   // Jamie Street, the level after the pines, shows the save sign by the sled's start, in its
   // own copy of the set (JAMIE.BBL: SNOW.BBL is full), in blocks it never shows
-  const set = l.file === 'jamie' ? putSaveSign(hill.finish(), map, noon.pal, start[0] + 3, start[1] - 1) : l.file === 'lavale' ? lot.finish() : bbl;
+  const set =
+    l.file === 'jamie'
+      ? putSaveSign(hill.finish(), map, noon.pal, start[0] + 3, start[1] - 1)
+      : l.file === 'lavale'
+        ? lot.finish()
+        : i === 0
+          ? putCoolSign(bbl, map, pal.pal, start[0] + 2, start[1] - 2)
+          : bbl;
   const bblFile = set === bbl ? 'snow.bbl' : `${l.file}.bbl`;
   if (set !== bbl) disk.put(bblFile, serializeBlocks(set));
   totalMoney += m.money;
@@ -157,7 +165,7 @@ built.forEach(({ l, m, start }, i) => {
   ]);
   cards.push({ name: `card${i + 1}`, map: view, pal, ...l.card });
   if (i === 0) {
-    shot = renderRegion(map, bbl, mb.blocks, mons, 12, 12, 8, 4);
+    shot = renderRegion(map, set, mb.blocks, mons, 12, 12, 8, 4);
     shotPal = pal;
   }
 
