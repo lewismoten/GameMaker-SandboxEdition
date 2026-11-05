@@ -35,7 +35,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 10289,
+  "frames": 10306,
   "chapters": [
    {
     "title": "Opening",
@@ -44,33 +44,33 @@
    },
    {
     "title": "Story",
-    "frame": 896,
-    "time": 14933.333333333148
+    "frame": 913,
+    "time": 15216.666666666471
    },
    {
     "title": "Level 1: The Lantern Cave",
-    "frame": 2125,
-    "time": 35416.66666666724
+    "frame": 2142,
+    "time": 35700.00000000053
    },
    {
     "title": "Level 2: Light Your Way",
-    "frame": 3690,
-    "time": 61499.99999999678
+    "frame": 3707,
+    "time": 61783.33333333007
    },
    {
     "title": "Level 3: The Lights Come On",
-    "frame": 5246,
-    "time": 87433.33333333589
+    "frame": 5263,
+    "time": 87716.6666666693
    },
    {
     "title": "Ending",
-    "frame": 7005,
-    "time": 116750.00000001109
+    "frame": 7022,
+    "time": 117033.3333333445
    },
    {
     "title": "Credits",
-    "frame": 9215,
-    "time": 153583.3333333355
+    "frame": 9232,
+    "time": 153866.66666666867
    }
   ]
  }
