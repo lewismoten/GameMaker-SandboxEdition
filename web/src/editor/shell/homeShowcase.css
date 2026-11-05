@@ -63,7 +63,8 @@
 .sc-demo-btn {
   position: absolute;
   left: 10px;
-  bottom: 10px;
+  /* above the "COURSE 101" a Starter's title picture has at its lower left (games/kit/courseStamp.ts) */
+  bottom: 12%;
   z-index: 3;
   padding: 6px 12px;
   border: 1px solid #ffd400;
@@ -466,7 +467,7 @@
 
   .sc-demo-btn {
     left: 4px;
-    bottom: 4px;
+    bottom: 12%;
     min-width: 26px;
     min-height: 26px;
     padding: 2px 6px;

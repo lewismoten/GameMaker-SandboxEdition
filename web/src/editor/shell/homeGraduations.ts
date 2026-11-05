@@ -34,8 +34,8 @@ function lockedTile(c: Ceremony, state: Extract<CeremonyState, { state: 'locked'
   const pct = Math.round((state.done / state.needed) * 100);
   const select = h(
     'button',
-    { class: 'tile-select', type: 'button', onclick: onOpen, 'aria-label': `${ceremonyTitle(c)}, locked. ${unlockRule(c)} ${state.done} of ${state.needed}.` },
-    h('span', { class: 'tile-title' }, '🔒 ', ceremonyTitle(c)),
+    { class: 'tile-select', type: 'button', onclick: onOpen },
+    h('span', { class: 'tile-title' }, h('span', { 'aria-hidden': 'true' }, '🔒 '), ceremonyTitle(c), h('span', { class: 'sr-only' }, ', locked')),
     h('span', { class: 'tile-meta grad-rule' }, unlockRule(c)),
     h(
       'span',
