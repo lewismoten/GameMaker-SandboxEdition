@@ -2,7 +2,7 @@
 // number is the order it was added, so keep the order tidy: maps, monsters and the hero all
 // find blocks by name through the book. Names for `touch` and `next` are looked up once
 // every block exists (finish()).
-import { BACKBL, CHARBL, SOLBOT, SOLLEF, SOLRIG, SOLTOP, emptyBlock, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { BACKBL, BLOCK_COUNTS, CHARBL, SOLBOT, SOLLEF, SOLRIG, SOLTOP, emptyBlock, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 
 /** Solid on every side. */
@@ -31,6 +31,7 @@ export interface Rules {
   obj?: boolean;
 }
 
+/** How many blocks a Book holds unless asked for more: the Starters' monster sets keep to 50 of the file's 100. */
 const COUNT = { bbl: BACKBL, mbl: 50, cbl: CHARBL } as const;
 
 export class Book {
@@ -39,14 +40,19 @@ export class Book {
   private readonly blocks: Block[];
   private readonly rules: [number, Rules][] = [];
 
-  constructor(private readonly kind: keyof typeof COUNT) {
-    this.blocks = Array.from({ length: COUNT[kind] }, (_, i) => emptyBlock(i, kind !== 'bbl'));
+  /** `size` (at most what the file holds: 150, 100 or 50) is how many blocks the set has room for. */
+  constructor(
+    kind: keyof typeof COUNT,
+    private readonly size: number = COUNT[kind],
+  ) {
+    if (size > BLOCK_COUNTS[kind]) throw new Error(`A .${kind} holds ${BLOCK_COUNTS[kind]} blocks, not ${size}`);
+    this.blocks = Array.from({ length: size }, (_, i) => emptyBlock(i, kind !== 'bbl'));
   }
 
   /** Adds block `name` drawn as `pic`; returns its number. */
   add(name: string, pic: Pixels, r: Rules = {}): number {
     const i = this.index.size;
-    if (i >= COUNT[this.kind]) throw new Error(`Out of blocks (${name})`);
+    if (i >= this.size) throw new Error(`Out of blocks (${name})`);
     if (this.index.has(name)) throw new Error(`Block ${name} twice`);
     this.index.set(name, i);
     this.pics.set(name, pic);
