@@ -61,7 +61,8 @@ game, that game's music and its sound effects:
 | `dos`: DOS Game-Maker                          | `dos.html`                                     | Professor Fiddlesticks, Quest for the Round Tuit (snooty-wiz)                          | Round Tuit's menu         |
 
 Home presses each collection's tab in turn (Imported's ratings, notes, Show and Sort by when it
-has games; the import tile when it has none; what shareware was), and puts the visitor's own
+has games, then its Import history and Recently deleted buttons when they show; the import tile when it has none;
+the Starters tab and its How do I…? button; what shareware was), and puts the visitor's own
 tab, and the collection it remembered, back at the end (the chapter's `keep`). The Guide chapter
 opens the Owner's Guide (a page turned) and The Ultimate Owner's Guide and shuts them again. The
 Settings chapter opens the menu to show each item and shuts it again, and starts nothing
@@ -87,7 +88,7 @@ while a tour plays (`achievements/store.ts`).
 
 The editor's thirteen sub-chapters follow the overview and look inside Ohm Sweet Ohm the same way (read-only,
 in memory, each `always` at its own address, with `go` to its next file): getting around (the
-file list and its filter, Game assets, Used by, Undo, the map's zoom, the Play Level menu, the
+file list and its filter, Game assets with its group headings and each card's used-by line, Used by, Undo, the map's zoom, the Play Level menu, the
 shortcuts and where help is), the map editor (side tabs, the paint, Select, Terrain and Stamp
 tools, grid, wrap, exit and way-in markers, Find and Replace), the block editors (picker, name,
 paint tools, mirror, palette and its preview, behavior tabs, groups, then the character
