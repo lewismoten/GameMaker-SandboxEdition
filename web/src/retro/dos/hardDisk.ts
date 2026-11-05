@@ -76,8 +76,8 @@ export async function hdProject(g: HdGame): Promise<Project> {
   }
   const files = await loadHostedGame(g.catalog!);
   // your copy keeps the game's DOS player look (an original game's player.json), for PLAYHACK and Transfer
-  const { catalogCompanion } = await import('../../dosPlayer/catalogPatches');
-  const p = Project.fromFiles(files, g.title, id, catalogCompanion(g.catalog, g.catalog!.gam));
+  const { catalogCompanionOf } = await import('../../dosPlayer/catalogPatches');
+  const p = Project.fromFiles(files, g.title, id, await catalogCompanionOf(g.catalog, g.catalog!.gam));
   p.gam = g.catalog!.gam!;
   await p.saveNow();
   return p;

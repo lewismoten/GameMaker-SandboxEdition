@@ -28,8 +28,8 @@ export async function load(game: HomeGame): Promise<Loaded | undefined> {
   }
   const e = game.entry;
   if (!e?.gam) return undefined;
-  const [files, { catalogCompanion }] = await Promise.all([game.files(), import('../../dosPlayer/catalogPatches')]);
-  const project = Project.fromFiles(new GameFiles(files.entries().map(([n, b]) => [n, b.slice()])), e.title, lookId(e.id), catalogCompanion(e, e.gam));
+  const [files, { catalogCompanionOf }] = await Promise.all([game.files(), import('../../dosPlayer/catalogPatches')]);
+  const project = Project.fromFiles(new GameFiles(files.entries().map(([n, b]) => [n, b.slice()])), e.title, lookId(e.id), await catalogCompanionOf(e, e.gam));
   project.gam = e.gam;
   makeReadOnly(project, { title: e.title, attempted: (what) => toast(`${e.title} is open to look at only: ${what} was not changed.`) });
   const kept = keepLookOnly(project, e);

@@ -142,9 +142,10 @@ export function loadGameList(base = './games/'): Promise<CatalogEntry[]> {
 /** An entry with its shareware notice, manual and printables (games/details/<id>.json), for one from loadCatalogList. */
 export async function withDetails(entry: CatalogEntry, base = './games/'): Promise<CatalogEntry> {
   if (!entry.details) return entry; // nothing left out, or a full entry
-  const details = await fetchJson<Pick<CatalogEntry, 'notice' | 'original'>>(`${base}details/${entry.id}.json`).catch(() => undefined);
+  const details = await fetchJson<Pick<CatalogEntry, 'notice' | 'original' | 'blurb' | 'controls' | 'player'>>(`${base}details/${entry.id}.json`).catch(() => undefined);
   if (!details) return (await loadCatalog(base)).find((g) => g.id === entry.id) ?? entry;
-  return { ...entry, notice: details.notice, original: entry.original || details.original ? { ...entry.original, ...details.original } : undefined };
+  const { original, ...more } = details; // a Starter's blurb, controls, player look, label and box art too (scripts/cdGames.ts pageCatalog)
+  return { ...entry, ...more, original: entry.original || original ? { ...entry.original, ...original } : undefined };
 }
 
 // Hosted game files fetched this session, shared by everything that asks for the same
