@@ -155,6 +155,7 @@ export const SHAREWARE: Chapter = {
     are, out of respect, and because Game-Maker’s license notice should travel with the player.</li>
     <li><b>Test in DOSBox</b> after every change: the menu, F1, F5, F6, a drop and a high score.</li>
   </ul>
+  ${onCd('UNDRHOOD')}
   <p>A hand edit changes only that one <code>.EXE</code>: the web player and the other downloads
   don’t read it, and every DOS download starts from a fresh copy of the CD’s player. The DOS
   player panel’s changes travel with the game instead. The desk’s <code>HEXEDIT</code> can’t do
