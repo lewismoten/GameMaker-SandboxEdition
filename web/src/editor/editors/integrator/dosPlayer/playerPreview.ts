@@ -26,8 +26,8 @@ import type { PatchScreen } from '@lewismoten/gamemaker-sandbox-engine/player/pa
 import { mulberry32 } from '../../../../seededRandom';
 import type { PreviewDrawn } from './dragItems';
 
-/** The screens a preview can show (every patch's screen but 'all' and 'play'). */
-export type PreviewScreen = Exclude<PatchScreen, 'all' | 'play'>;
+/** The screens a preview can show (every patch's screen but 'all', 'play' and 'gameplay'). */
+export type PreviewScreen = Exclude<PatchScreen, 'all' | 'play' | 'gameplay'>;
 
 const slot = (game: Game, scene: number, i: number) => game.scenes[scene]?.files[i] || undefined;
 

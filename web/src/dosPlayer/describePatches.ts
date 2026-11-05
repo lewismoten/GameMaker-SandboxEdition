@@ -17,6 +17,7 @@ export const SCREEN_NAMES: Record<PatchScreen, string> = {
   missing: 'Missing files',
   about: 'About (F10)',
   play: 'Play',
+  gameplay: 'Gameplay (experimental)',
   all: 'Colors',
 };
 

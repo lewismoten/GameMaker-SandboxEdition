@@ -11,7 +11,7 @@ import { blockBirthMonsters, birthMon, moveAllMonsters, resetMonInfo } from './m
 import { renderWorld, updateCharDrawState } from './render';
 import { changeScroll, drawScroll, initScroll } from './scroll';
 import { showGraphic } from './showGraphic';
-import { STOCK_LOOK, type PlayerLook } from './playerLook';
+import { playTuning, STOCK_LOOK, type PlayerLook } from './playerLook';
 import { getTouchBlocks } from './touch';
 import {
   BACKBL,
@@ -130,7 +130,7 @@ interface LoadedScene {
  * the previous scene loaded into the globals; `prev` stands in for those globals.
  */
 export function loadScene(
-  s: Pick<Session, 'game' | 'rand' | 'onTouched'> & { m: { files: { get(name: string): Uint8Array | undefined } } },
+  s: Pick<Session, 'game' | 'rand' | 'onTouched' | 'look'> & { m: { files: { get(name: string): Uint8Array | undefined } } },
   scnum: number,
   prev?: World,
 ): LoadedScene | string[] {
@@ -154,6 +154,7 @@ export function loadScene(
   if (missing.length) return missing;
 
   const world = createWorld(parseMap(map ?? new Uint8Array(0)), { play: () => false }, s.rand?.());
+  world.tune = playTuning(s.look ?? STOCK_LOOK);
   if (pal) world.palette = parsePalette(pal);
   else if (prev) world.palette = prev.palette;
   world.bg = padBlocks(bbl ? parseBlocks(bbl, NBACK) : prev?.bg.slice(0, NBACK), NBACK);
@@ -419,7 +420,7 @@ export async function playScene(s: Session, dosc: number, prev: number, linkIn: 
   s.colors = w.palette;
 
   renderWorld(m.screen, w);
-  await m.fadeTo(w.palette);
+  await m.fadeTo(w.palette, w.tune.fadeSteps);
   m.keyboard.attach();
   // Arrow chords (↑+← = Home, …) only for keypad keys this character uses.
   const bound = new Set(w.chr.sequences.map((q) => q.key >> 8).filter((k) => k));
@@ -639,7 +640,7 @@ export async function playScene(s: Session, dosc: number, prev: number, linkIn: 
   s.vocLate = undefined;
   m.audio.stopSong();
   m.audio.stopSpeaker();
-  await m.fadeAllTo(0, 0, 0);
+  await m.fadeAllTo(0, 0, 0, w.tune.fadeSteps);
   m.keyboard.detach();
   m.keyboard.chordable = undefined;
   m.keyboard.attach();

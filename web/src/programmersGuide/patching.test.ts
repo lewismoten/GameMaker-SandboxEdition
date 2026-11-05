@@ -19,7 +19,7 @@ const offsetsOf = (e: PatchEntry): number[] => {
 describe('the patching chapter', () => {
   it('states the entry, group and kind counts of the table', () => {
     expect(text).toContain(`${PATCHES.length} entries`);
-    for (const g of ['words', 'colors', 'frames', 'positions', 'times', 'keys']) {
+    for (const g of ['words', 'colors', 'frames', 'positions', 'times', 'keys', 'play']) {
       const n = PATCHES.filter((p) => p.group === g).length;
       expect(text, g).toMatch(new RegExp(`\\| ${g}\\s+\\|\\s+${n} \\|`));
     }
@@ -50,6 +50,37 @@ describe('the patching chapter', () => {
           .map((h) => parseInt(h, 16));
         expect([...exe.subarray(listed[0], listed[0] + want.length)], id).toEqual(want);
       }
+    }
+  });
+
+  it('lists every copy of each gameplay constant, in both players, as the table and the files have them', () => {
+    const rows = [...text.matchAll(/^\| `(play\.\w+)`\s+\| ((?:-?[0-9a-f]+ ?)+)\s*\| ((?:-?[0-9a-f]+ ?)+)\s*\|/gm)];
+    const play = PATCHES.filter((p) => p.group === 'play');
+    expect(rows.map((r) => r[1])).toEqual(play.map((p) => p.id));
+    const pg = join(root, 'cd/gm/playgame.exe');
+    const exes = [exePath, pg].map((f) => (existsSync(f) ? readFileSync(f) : undefined));
+    for (const [, id, xfer, playgame] of rows) {
+      const e = play.find((p) => p.id === id)!;
+      if (e.kind !== 'number') throw new Error(id);
+      const parse = (list: string) =>
+        list
+          .trim()
+          .split(' ')
+          .map((o) => ({ offset: parseInt(o.replace('-', ''), 16), negate: o.startsWith('-') }));
+      const x = parse(xfer);
+      expect(x, id).toEqual(e.fields.map((f) => ({ offset: f.offset, negate: !!f.negate })));
+      const p = parse(playgame);
+      expect(p.length, id).toBe(x.length);
+      // the stock value (or minus it) at each copy, in each file
+      [x, p].forEach((list, n) => {
+        const exe = exes[n];
+        if (!exe) return;
+        list.forEach(({ offset, negate }, i) => {
+          const size = e.fields[i].size;
+          const raw = size === 2 ? exe.readInt16LE(offset) : exe.readInt8(offset);
+          expect(raw, `${id} ${n ? 'PLAYGAME' : 'XFERPLAY'} ${offset.toString(16)}`).toBe(negate ? -e.stock : e.stock);
+        });
+      });
     }
   });
 

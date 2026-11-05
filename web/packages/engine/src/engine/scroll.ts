@@ -8,24 +8,7 @@
 // runs on every 145.6 Hz timer interrupt and moves the view a little each time.
 import { updateCharDrawState } from './render';
 import { inScreenBounds } from './touch';
-import {
-  BLEN,
-  LASTMM,
-  LASTMON,
-  MLEN,
-  MWID,
-  OFFSCRN,
-  SCROLLPERMOVE,
-  SCRSPDX,
-  SCRSPDY,
-  SIZEX,
-  SIZEY,
-  sign,
-  type BresScroll,
-  type Coord,
-  type World,
-  i16,
-} from './world';
+import { BLEN, LASTMM, LASTMON, MLEN, MWID, OFFSCRN, SIZEX, SIZEY, sign, type BresScroll, type Coord, type World, i16 } from './world';
 import { SOLBOT, SOLLEF, SOLRIG, SOLTOP } from '../formats/blocks';
 
 /**
@@ -98,25 +81,25 @@ export function changeScroll(w: World): number {
   // "really (X*MAXSPEED)/MAXX"), then is capped at 28 below.
   if (sc.inMotion & SOLLEF) {
     if (tmx < sc.leftStop) sc.inMotion &= ~SOLLEF;
-    else sc.totalx = dosSpeed(tmx - sc.leftStop, SCRSPDX, sc.maxX - sc.leftStop);
+    else sc.totalx = dosSpeed(tmx - sc.leftStop, w.tune.scrollSpeedX, sc.maxX - sc.leftStop);
   }
   if (sc.inMotion & SOLRIG) {
     if (tmx > sc.rightStop) sc.inMotion &= ~SOLRIG;
-    else sc.totalx = dosSpeed(-tmx + sc.rightStop, SCRSPDX, sc.rightStop - sc.minX, true);
+    else sc.totalx = dosSpeed(-tmx + sc.rightStop, w.tune.scrollSpeedX, sc.rightStop - sc.minX, true);
   }
   if (sc.inMotion & SOLTOP) {
     if (tmy < sc.upStop) sc.inMotion &= ~SOLTOP;
-    else sc.totaly = dosSpeed(tmy - sc.upStop, SCRSPDY, sc.maxY - sc.upStop);
+    else sc.totaly = dosSpeed(tmy - sc.upStop, w.tune.scrollSpeedY, sc.maxY - sc.upStop);
   }
   if (sc.inMotion & SOLBOT) {
     if (tmy > sc.downStop) sc.inMotion &= ~SOLBOT;
-    else sc.totaly = dosSpeed(-tmy + sc.downStop, SCRSPDY, sc.downStop - sc.minY, true);
+    else sc.totaly = dosSpeed(-tmy + sc.downStop, w.tune.scrollSpeedY, sc.downStop - sc.minY, true);
   }
   sc.totalx = Math.max(-28, Math.min(28, sc.totalx));
   sc.totaly = Math.max(-28, Math.min(28, sc.totaly));
   // Spread `totalx` pixels over SCROLLPERMOVE DrawScroll calls (Bresenham style).
-  sc.bx = { dscroll: sc.totalx, ctr: 0, iters: SCROLLPERMOVE };
-  sc.by = { dscroll: sc.totaly, ctr: 0, iters: SCROLLPERMOVE };
+  sc.bx = { dscroll: sc.totalx, ctr: 0, iters: w.tune.scrollSteps };
+  sc.by = { dscroll: sc.totaly, ctr: 0, iters: w.tune.scrollSteps };
   return sc.inMotion;
 }
 

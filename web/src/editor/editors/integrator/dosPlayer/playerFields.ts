@@ -62,8 +62,14 @@ export function fieldMaker(ctx: FieldContext) {
     if (document.activeElement !== input) input.value = String(v);
   };
 
-  const field = (e: { id: string; screen: string; web: boolean }, ...children: (Node | string | null)[]) =>
-    h('div', { class: 'dp-field', dataset: { screen: e.screen, patch: e.id } }, ...children, e.web ? null : h('span', { class: 'dp-dos-only' }, 'DOS only'));
+  const field = (e: { id: string; screen: string; web: boolean; safety?: string }, ...children: (Node | string | null)[]) =>
+    h(
+      'div',
+      { class: 'dp-field', dataset: { screen: e.screen, patch: e.id } },
+      ...children,
+      e.web ? null : h('span', { class: 'dp-dos-only' }, 'DOS only'),
+      e.safety === 'experimental' ? h('span', { class: 'dp-dos-only dp-experimental' }, 'Experimental') : null,
+    );
   const errorOf = (fid: string) => h('p', { class: 'dp-error', id: `${fid}-err`, hidden: true });
   const report = (err: HTMLElement, problem: string | undefined, input?: HTMLElement) => {
     err.hidden = !problem;

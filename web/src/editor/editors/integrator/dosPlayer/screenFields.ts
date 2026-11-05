@@ -10,6 +10,7 @@ import { screenSections, type ScreenSection } from './screenTabs';
 const NOTES: Partial<Record<ScreenSection['group'], string>> = {
   words: 'Each line keeps to its length in the .EXE. Plain letters, digits and punctuation only.',
   keys: 'A key turned off just blanks the screen for a moment and play goes on.',
+  play: 'Experimental: these change how every scene plays. Test the patched game in DOSBox before you share it.',
 };
 
 /** Numbers, with each "… x" next to its "… y" on one row. */
@@ -62,6 +63,7 @@ function sectionFields(screen: PatchScreen, s: ScreenSection, make: FieldMaker):
     case 'colors':
       return s.entries.map((e) => (e.kind === 'rgb' ? make.rgb(e) : make.select(e as PatchEntry & { kind: 'select' })));
     case 'times':
+    case 'play':
       return s.entries.map((e) => make.number(e as NumberPatch));
     case 'keys':
       return s.entries.map((e) => make.fkey(e as PatchEntry & { kind: 'fkey' }));
@@ -81,7 +83,7 @@ export function screenFields(screen: PatchScreen, make: FieldMaker): HTMLElement
         'section',
         { class: 'dp-section' },
         h('h3', null, s.label),
-        NOTES[s.group] ? h('p', { class: 'dp-note' }, NOTES[s.group]) : null,
+        NOTES[s.group] ? h('p', { class: s.group === 'play' ? 'dp-note dp-warn' : 'dp-note', role: s.group === 'play' ? 'note' : null }, NOTES[s.group]) : null,
         ...sectionFields(screen, s, make),
       ),
     ),

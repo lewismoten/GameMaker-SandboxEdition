@@ -33,6 +33,38 @@ export const CHARPOWER = 100;
 // The C's 0xFFFFFFFF ulong "infinite" time for nxtchg[] and BlkMon[].nexttime.
 export const NEVER = 0xffffffff;
 
+/** The gameplay constants a DOS player patch can change (playerLook.ts playTuning); World.tune. */
+export interface PlayTuning {
+  /** MAXGRAV: the character's most pixels a move, either way. */
+  maxSpeed: number;
+  /** MAXGRAV*4: the most momentum gravity blocks build. */
+  gravityCap: number;
+  /** GRAVSPEED: ticks between gravity pulls. */
+  gravityTicks: number;
+  /** ATTACKX, ATTACKY: blocks within which a monster starts its attack path. */
+  attackX: number;
+  attackY: number;
+  /** SCRSPDX, SCRSPDY: the scroll speed at the screen edge. */
+  scrollSpeedX: number;
+  scrollSpeedY: number;
+  /** SCROLLPERMOVE: timer ticks one scroll move is spread over. */
+  scrollSteps: number;
+  /** FadeTo's and FadeAllTo's step count. */
+  fadeSteps: number;
+}
+
+export const STOCK_TUNING: Readonly<PlayTuning> = Object.freeze({
+  maxSpeed: MAXGRAV,
+  gravityCap: MAXGRAV * 4,
+  gravityTicks: GRAVSPEED,
+  attackX: ATTACKX,
+  attackY: ATTACKY,
+  scrollSpeedX: SCRSPDX,
+  scrollSpeedY: SCRSPDY,
+  scrollSteps: SCROLLPERMOVE,
+  fadeSteps: 65,
+});
+
 export interface Coord {
   x: number;
   y: number;
@@ -217,6 +249,8 @@ export interface World {
    * tracking listens here; nothing in play reads it.
    */
   onTouched?: (x: number, y: number, bnum: number) => void;
+  /** The gameplay constants, STOCK_TUNING unless the player's patches change them (playerLook.ts playTuning). */
+  tune: PlayTuning;
 }
 
 export function newCharInfo(): CharInfo {
@@ -372,6 +406,7 @@ export function createWorld(map: GameMap, sound: SoundHooks, rand = Math.random)
     sound,
     rand,
     jstickOn: true,
+    tune: STOCK_TUNING,
   };
 }
 
