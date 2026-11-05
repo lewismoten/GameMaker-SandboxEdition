@@ -12,7 +12,13 @@ export const cfg: Graduation = {
   theme: GALLERY,
   upper: 'BLOCKS & SHOWCASE',
   honors: 'IN BLOCKS & SHOWCASE',
-  signs: { start: 'WALK THROUGH THE GALLERY', helpers: 'HELPERS AND FRIENDS ARE HERE', cheer: 'THEY CHEER FOR YOU', doc: 'DOC LEO HAS A SCROLL FOR YOU', banner: 'BLOCKS & SHOWCASE' },
+  signs: {
+    start: 'WALK THROUGH THE GALLERY',
+    helpers: 'HELPERS AND FRIENDS ARE HERE',
+    cheer: 'THEY CHEER FOR YOU',
+    doc: 'DOC LEO HAS A SCROLL FOR YOU',
+    banner: 'BLOCKS & SHOWCASE',
+  },
   level: { title: 'The Gallery', hint: 'Walk through the gallery to the stage.' },
   song: { bpm: 88, lead: 'strings', transpose: -3 },
   text: {

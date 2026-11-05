@@ -12,7 +12,13 @@ export const cfg: Graduation = {
   theme: LAB,
   upper: 'WIRING & WORLDS',
   honors: 'IN WIRING & WORLDS',
-  signs: { start: 'WALK ACROSS THE LAB', helpers: 'HELPERS AND FRIENDS ARE HERE', cheer: 'THEY CHEER FOR YOU', doc: 'DOC LEO HAS A SCROLL FOR YOU', banner: 'WIRING & WORLDS' },
+  signs: {
+    start: 'WALK ACROSS THE LAB',
+    helpers: 'HELPERS AND FRIENDS ARE HERE',
+    cheer: 'THEY CHEER FOR YOU',
+    doc: 'DOC LEO HAS A SCROLL FOR YOU',
+    banner: 'WIRING & WORLDS',
+  },
   level: { title: 'The Lab', hint: 'Walk across the lab to the stage.' },
   song: { bpm: 92, lead: 'bell', transpose: 7 },
   text: {

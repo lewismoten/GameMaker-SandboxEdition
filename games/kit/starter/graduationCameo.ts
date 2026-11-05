@@ -104,7 +104,8 @@ function blocksOf(pic: Pixels, wall: number): Pixels[] {
 
 /** The chicken's picture has a scene behind it: whatever touches the edge and is not the chicken's yellow, red or wrapped box goes clear. */
 function cutOut(w: number, h: number, px: (RGB | null)[]): void {
-  const keep = (c: RGB): boolean => (c[0] > 200 && c[1] > 130 && c[2] < 160) || (c[0] > 190 && c[1] < 100 && c[2] < 100) || (c[0] > 170 && c[1] > 120 && c[2] > 80 && c[0] - c[2] > 40);
+  const keep = (c: RGB): boolean =>
+    (c[0] > 200 && c[1] > 130 && c[2] < 160) || (c[0] > 190 && c[1] < 100 && c[2] < 100) || (c[0] > 170 && c[1] > 120 && c[2] > 80 && c[0] - c[2] > 40);
   const todo: number[] = [];
   for (let x = 0; x < w; x++) todo.push(x, (h - 1) * w + x);
   for (let y = 0; y < h; y++) todo.push(y * w, y * w + w - 1);

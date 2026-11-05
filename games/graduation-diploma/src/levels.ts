@@ -30,7 +30,11 @@ function confetti(book: Book, pal: Pal, timed: Timed[]): string[] {
   const colors = [c('red', 3), c('gold', 4), c('blue', 3), c('green', 3), c('pink', 2), c('white', 3), c('orange', 3), c('purple', 3)];
   const names: string[] = [];
   for (let chain = 0; chain < 2; chain++) {
-    const bits = Array.from({ length: 6 }, (_, i) => ({ x: (i * 7 + chain * 5) % 18, y: (i * 11 + chain * 6) % 20, c: colors[(i * 3 + chain) % colors.length] }));
+    const bits = Array.from({ length: 6 }, (_, i) => ({
+      x: (i * 7 + chain * 5) % 18,
+      y: (i * 11 + chain * 6) % 20,
+      c: colors[(i * 3 + chain) % colors.length],
+    }));
     for (let f = 0; f < 3; f++) {
       const p = new Pixels(20, 20, skyOf(pal));
       for (const b of bits) p.rect(b.x + (f % 2), (b.y + f * 6) % 19, 2, 2, b.c);
@@ -47,7 +51,11 @@ function confetti(book: Book, pal: Pal, timed: Timed[]): string[] {
 function tinyScroll(pal: Pal): Pixels {
   const { c } = pal;
   const p = new Pixels(20, 20, skyOf(pal));
-  p.rect(3, 12, 14, 5, c('parch', 3)).rect(3, 12, 14, 1, c('parch', 4)).rect(3, 16, 14, 1, c('parch', 1)).rect(1, 13, 2, 3, c('parch', 2)).rect(17, 13, 2, 3, c('parch', 2));
+  p.rect(3, 12, 14, 5, c('parch', 3))
+    .rect(3, 12, 14, 1, c('parch', 4))
+    .rect(3, 16, 14, 1, c('parch', 1))
+    .rect(1, 13, 2, 3, c('parch', 2))
+    .rect(17, 13, 2, 3, c('parch', 2));
   p.rect(5, 12, 3, 5, c('red', 3)).frame(2, 11, 16, 7, c('ink', 1));
   return p;
 }
@@ -98,7 +106,13 @@ export function buildLevels() {
   m.set(LECTERN, 8, 'scroll').set(LECTERN, 9, 'lectern');
   m.set(LECTERN + 2, 8, hall.leoTop).set(LECTERN + 2, 9, hall.leoBottom);
   m.set(LECTERN + 6, 9, 'chez.0').set(LECTERN + 7, 9, 'chez.1');
-  for (const [s, x] of [[signs.start, 5], [signs.helpers, 22], [signs.cheer, 40], [signs.doc, 58]] as const) stamp(m, s, x, FLOOR - 3, true);
+  for (const [s, x] of [
+    [signs.start, 5],
+    [signs.helpers, 22],
+    [signs.cheer, 40],
+    [signs.doc, 58],
+  ] as const)
+    stamp(m, s, x, FLOOR - 3, true);
   m.exits.push({ from: [LECTERN + ORIGIN, 9 + ORIGIN] });
   const levels: Level[] = [{ file: 'hall', title: cfg.level.title, hint: cfg.level.hint, map: m }];
   return { book, pal, timed, levels };

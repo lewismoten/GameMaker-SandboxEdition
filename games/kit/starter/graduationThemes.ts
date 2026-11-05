@@ -67,7 +67,11 @@ export const CASTLE: HallTheme = {
   floor: (pal) => {
     const { c } = pal;
     const p = new Pixels(20, 20, c('stone', 2));
-    p.rect(0, 10, 20, 1, c('stone', 1)).rect(0, 19, 20, 1, c('stone', 1)).rect(9, 11, 1, 8, c('stone', 1)).rect(4, 0, 1, 10, c('stone', 1)).rect(14, 0, 1, 10, c('stone', 1));
+    p.rect(0, 10, 20, 1, c('stone', 1))
+      .rect(0, 19, 20, 1, c('stone', 1))
+      .rect(9, 11, 1, 8, c('stone', 1))
+      .rect(4, 0, 1, 10, c('stone', 1))
+      .rect(14, 0, 1, 10, c('stone', 1));
     p.rect(0, 0, 20, 10, c('red', 2)).rect(0, 0, 20, 1, c('red', 4)).rect(0, 9, 20, 1, c('red', 0));
     p.rect(0, 1, 20, 1, c('gold', 3)).rect(0, 7, 20, 1, c('gold', 3));
     for (const x of [3, 9, 15]) p.rect(x, 3, 2, 3, c('red', 3));
@@ -78,20 +82,31 @@ export const CASTLE: HallTheme = {
     const { c } = pal;
     const p = new Pixels(20, 20, c('stone', 3));
     p.rect(0, 0, 20, 4, c('stone', 4)).rect(0, 4, 20, 1, c('gold', 2)).rect(0, 5, 20, 1, c('gold', 4));
-    p.rect(0, 11, 20, 1, c('stone', 1)).rect(0, 17, 20, 1, c('stone', 1)).rect(9, 6, 1, 5, c('stone', 1)).rect(4, 12, 1, 5, c('stone', 1)).rect(14, 12, 1, 5, c('stone', 1));
+    p.rect(0, 11, 20, 1, c('stone', 1))
+      .rect(0, 17, 20, 1, c('stone', 1))
+      .rect(9, 6, 1, 5, c('stone', 1))
+      .rect(4, 12, 1, 5, c('stone', 1))
+      .rect(14, 12, 1, 5, c('stone', 1));
     return p;
   },
   subfloor: (pal) => {
     const { c } = pal;
     const p = new Pixels(20, 20, c('stone', 1));
-    p.rect(0, 6, 20, 1, c('stone', 0)).rect(0, 13, 20, 1, c('stone', 0)).rect(10, 0, 1, 6, c('stone', 0)).rect(4, 7, 1, 6, c('stone', 0)).rect(15, 14, 1, 6, c('stone', 0));
+    p.rect(0, 6, 20, 1, c('stone', 0))
+      .rect(0, 13, 20, 1, c('stone', 0))
+      .rect(10, 0, 1, 6, c('stone', 0))
+      .rect(4, 7, 1, 6, c('stone', 0))
+      .rect(15, 14, 1, 6, c('stone', 0));
     return p;
   },
   valance: (pal) => {
     const { c } = pal;
     const p = wall(pal);
     p.rect(0, 6, 20, 8, c('stone', 2)).rect(0, 6, 20, 1, c('stone', 4)).rect(0, 13, 20, 1, c('stone', 1));
-    for (const x of [0, 10]) p.rect(x, 1, 6, 5, c('stone', 2)).rect(x, 1, 6, 1, c('stone', 4)).rect(x + 5, 1, 1, 5, c('stone', 1));
+    for (const x of [0, 10])
+      p.rect(x, 1, 6, 5, c('stone', 2))
+        .rect(x, 1, 6, 1, c('stone', 4))
+        .rect(x + 5, 1, 1, 5, c('stone', 1));
     p.rect(8, 8, 1, 5, c('stone', 1));
     return p;
   },
@@ -136,7 +151,12 @@ export const THEATER: HallTheme = {
   floor: (pal) => {
     const { c } = pal;
     const p = new Pixels(20, 20, c('wood', 1));
-    p.rect(0, 0, 20, 20, c('wood', 1)).rect(0, 6, 20, 1, c('wood', 0)).rect(0, 13, 20, 1, c('wood', 0)).rect(7, 0, 1, 6, c('wood', 0)).rect(3, 7, 1, 6, c('wood', 0)).rect(15, 14, 1, 6, c('wood', 0));
+    p.rect(0, 0, 20, 20, c('wood', 1))
+      .rect(0, 6, 20, 1, c('wood', 0))
+      .rect(0, 13, 20, 1, c('wood', 0))
+      .rect(7, 0, 1, 6, c('wood', 0))
+      .rect(3, 7, 1, 6, c('wood', 0))
+      .rect(15, 14, 1, 6, c('wood', 0));
     p.rect(3, 0, 14, 20, c('red', 2)).rect(3, 0, 1, 20, c('gold', 3)).rect(16, 0, 1, 20, c('gold', 3));
     for (const y of [4, 12]) p.rect(8, y, 4, 2, c('red', 3));
     p.rect(0, 0, 20, 1, c('wood', 3));
@@ -163,7 +183,12 @@ export const THEATER: HallTheme = {
       const { c } = pal;
       const p = wall(pal);
       p.disc(10, 10, 8, c('red', 2)).ring(10, 10, 8, c('gold', 3)).ring(10, 10, 7, c('gold', 4));
-      p.draw(5, 5, ['.....#.....', '....###....', '...#####...', '###########', '.#########.', '..#######..', '..#######..', '.####.####.', '.###...###.', '.#.......#.'], { '#': c('gold', 5) });
+      p.draw(
+        5,
+        5,
+        ['.....#.....', '....###....', '...#####...', '###########', '.#########.', '..#######..', '..#######..', '.####.####.', '.###...###.', '.#.......#.'],
+        { '#': c('gold', 5) },
+      );
       return p;
     },
   },
@@ -211,7 +236,11 @@ export const LAB: HallTheme = {
       const { c } = pal;
       const p = wall(pal);
       p.rect(2, 2, 16, 12, c('stone', 2)).frame(2, 2, 16, 12, c('stone', 0)).rect(4, 4, 12, 8, c('ink', 0));
-      p.line(4, 8, 7, 8, c('green', 3)).line(7, 8, 8, 5, c('green', 3)).line(8, 5, 10, 11, c('green', 3)).line(10, 11, 11, 8, c('green', 3)).line(11, 8, 15, 8, c('green', 3));
+      p.line(4, 8, 7, 8, c('green', 3))
+        .line(7, 8, 8, 5, c('green', 3))
+        .line(8, 5, 10, 11, c('green', 3))
+        .line(10, 11, 11, 8, c('green', 3))
+        .line(11, 8, 15, 8, c('green', 3));
       p.rect(8, 14, 4, 2, c('stone', 1)).rect(5, 16, 10, 2, c('stone', 2));
       return p;
     },
@@ -230,7 +259,11 @@ export const LAB: HallTheme = {
       const { c } = pal;
       const p = wall(pal);
       p.rect(2, 2, 16, 14, c('green', 1)).frame(2, 2, 16, 14, c('green', 0));
-      p.line(4, 5, 10, 5, c('gold', 3)).line(10, 5, 10, 12, c('gold', 3)).line(10, 12, 15, 12, c('gold', 3)).line(4, 9, 7, 9, c('gold', 3)).line(13, 4, 13, 8, c('gold', 3));
+      p.line(4, 5, 10, 5, c('gold', 3))
+        .line(10, 5, 10, 12, c('gold', 3))
+        .line(10, 12, 15, 12, c('gold', 3))
+        .line(4, 9, 7, 9, c('gold', 3))
+        .line(13, 4, 13, 8, c('gold', 3));
       p.rect(5, 11, 4, 3, c('ink', 0)).rect(12, 9, 4, 2, c('ink', 0));
       p.set(4, 5, c('red', 3)).set(13, 4, c('green', 4)).set(15, 12, c('gold', 5));
       return p;
@@ -257,13 +290,21 @@ export const GALLERY: HallTheme = {
     const { c } = pal;
     const p = new Pixels(20, 20, c('white', 2));
     p.rect(0, 0, 20, 4, c('white', 3)).rect(0, 4, 20, 1, c('gold', 2)).rect(0, 5, 20, 1, c('gold', 4));
-    p.rect(0, 11, 20, 1, c('stone', 4)).rect(0, 17, 20, 1, c('stone', 4)).rect(9, 6, 1, 5, c('stone', 4)).rect(4, 12, 1, 5, c('stone', 4)).rect(14, 12, 1, 5, c('stone', 4));
+    p.rect(0, 11, 20, 1, c('stone', 4))
+      .rect(0, 17, 20, 1, c('stone', 4))
+      .rect(9, 6, 1, 5, c('stone', 4))
+      .rect(4, 12, 1, 5, c('stone', 4))
+      .rect(14, 12, 1, 5, c('stone', 4));
     return p;
   },
   subfloor: (pal) => {
     const { c } = pal;
     const p = new Pixels(20, 20, c('wood', 2));
-    p.rect(0, 6, 20, 1, c('wood', 1)).rect(0, 13, 20, 1, c('wood', 1)).rect(10, 0, 1, 6, c('wood', 1)).rect(4, 7, 1, 6, c('wood', 1)).rect(15, 14, 1, 6, c('wood', 1));
+    p.rect(0, 6, 20, 1, c('wood', 1))
+      .rect(0, 13, 20, 1, c('wood', 1))
+      .rect(10, 0, 1, 6, c('wood', 1))
+      .rect(4, 7, 1, 6, c('wood', 1))
+      .rect(15, 14, 1, 6, c('wood', 1));
     return p;
   },
   valance: (pal) => {
@@ -297,7 +338,14 @@ export const GALLERY: HallTheme = {
       const { c } = pal;
       const p = wall(pal);
       p.rect(2, 2, 16, 15, c('gold', 3)).rect(3, 3, 14, 13, c('blue', 0)).frame(2, 2, 16, 15, c('gold', 1));
-      for (const [x, y] of [[6, 6], [12, 5], [9, 10], [14, 12], [5, 13]]) p.set(x, y, c('gold', 5)).set(x + 1, y, c('gold', 4));
+      for (const [x, y] of [
+        [6, 6],
+        [12, 5],
+        [9, 10],
+        [14, 12],
+        [5, 13],
+      ])
+        p.set(x, y, c('gold', 5)).set(x + 1, y, c('gold', 4));
       p.disc(13, 9, 2, c('white', 3));
       return p;
     },

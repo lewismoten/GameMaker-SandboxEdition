@@ -12,7 +12,13 @@ export const cfg: Graduation = {
   theme: CASTLE,
   upper: 'HEROES AND FOES',
   honors: 'IN HEROES AND FOES',
-  signs: { start: 'WALK UP THE RUNNER', helpers: 'HELPERS AND FRIENDS ARE HERE', cheer: 'THEY CHEER FOR YOU', doc: 'DOC LEO HAS A SCROLL FOR YOU', banner: 'HEROES AND FOES' },
+  signs: {
+    start: 'WALK UP THE RUNNER',
+    helpers: 'HELPERS AND FRIENDS ARE HERE',
+    cheer: 'THEY CHEER FOR YOU',
+    doc: 'DOC LEO HAS A SCROLL FOR YOU',
+    banner: 'HEROES AND FOES',
+  },
   level: { title: 'The Great Hall', hint: 'Walk up the runner to the dais.' },
   song: { bpm: 84, lead: 'brass', transpose: 5 },
   text: {

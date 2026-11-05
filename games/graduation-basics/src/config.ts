@@ -12,7 +12,13 @@ export const cfg: Graduation = {
   theme: {},
   upper: 'FIRST STEPS',
   honors: 'IN FIRST STEPS',
-  signs: { start: 'WALK UP TO THE STAGE', helpers: 'YOUR HELPERS ARE HERE', cheer: 'THEY CHEER FOR YOU', doc: 'DOC LEO HAS A SCROLL FOR YOU', banner: 'FIRST STEPS' },
+  signs: {
+    start: 'WALK UP TO THE STAGE',
+    helpers: 'YOUR HELPERS ARE HERE',
+    cheer: 'THEY CHEER FOR YOU',
+    doc: 'DOC LEO HAS A SCROLL FOR YOU',
+    banner: 'FIRST STEPS',
+  },
   level: { title: 'The Aisle', hint: 'Walk up to the stage.' },
   song: { bpm: 88, lead: 'lead', transpose: 0 },
   text: {

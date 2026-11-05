@@ -12,7 +12,13 @@ export const cfg: Graduation = {
   theme: GYM,
   upper: 'MOVING & PUSHING',
   honors: 'IN MOVING & PUSHING',
-  signs: { start: 'WALK ACROSS THE COURT', helpers: 'HELPERS AND FRIENDS ARE HERE', cheer: 'THEY CHEER FOR YOU', doc: 'DOC LEO HAS A SCROLL FOR YOU', banner: 'MOVING & PUSHING' },
+  signs: {
+    start: 'WALK ACROSS THE COURT',
+    helpers: 'HELPERS AND FRIENDS ARE HERE',
+    cheer: 'THEY CHEER FOR YOU',
+    doc: 'DOC LEO HAS A SCROLL FOR YOU',
+    banner: 'MOVING & PUSHING',
+  },
   level: { title: 'The Court', hint: 'Walk across the court to the stage.' },
   song: { bpm: 96, lead: 'brass', transpose: 2 },
   text: {

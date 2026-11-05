@@ -36,7 +36,7 @@ export const aisle: Route = walkAisle(
 export const SEED = 1;
 
 /** The game's play loop: the bot plays `routes` in a row on the sim (a GameSim class for the game's disk). */
-export function makePlay<S extends new (a: undefined, seed: number) => never>(GameSim: S, routes: Route[]) {
+export function makePlay<S extends new (files?: undefined, seed?: number) => unknown>(GameSim: S, routes: Route[]) {
   return async function play(seed = SEED, upTo = routes.length): Promise<{ sim: InstanceType<S>; bot: StarterBot }> {
     const sim = new GameSim(undefined, seed) as InstanceType<S>;
     const bot = new StarterBot(sim as never);
@@ -45,18 +45,23 @@ export function makePlay<S extends new (a: undefined, seed: number) => never>(Ga
   };
 }
 
-type Play = (seed?: number, upTo?: number) => Promise<{ sim: { ci: { score: number }; trail: unknown[]; segments: { keys: number[] }[] } }>;
+type Play = (seed?: number, upTo?: number) => Promise<{ sim: unknown }>;
+interface Sim {
+  ci: { score: number };
+  trail: unknown[];
+  segments: { keys: readonly { delta: number; key: number }[] }[];
+}
 
 /** check.ts: no invisible walls, then the bot wins without losing a life. */
 export async function graduationCheck(id: string, built: ReturnType<typeof buildLevels>, play: Play): Promise<void> {
   assertNoInvisibleWalls(built);
-  const { sim } = await play();
+  const sim = (await play()).sim as Sim;
   console.log(`${id}: the bot walked the aisle; score ${sim.ci.score}, ${sim.trail.length} scenes entered`);
 }
 
 /** gendemo.ts: the first stretch of the bot's run, written to `demoFile` (the game's src/demo.ts). */
 export async function graduationDemo(play: Play, demoFile: URL, length = 420): Promise<void> {
-  const { sim } = await play(undefined, 1);
+  const sim = (await play(undefined, 1)).sim as Sim;
   recordDemo(sim.segments[0].keys, length, demoFile);
 }
 

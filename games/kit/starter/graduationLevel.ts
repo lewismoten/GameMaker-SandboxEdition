@@ -66,7 +66,7 @@ export class HallMap extends StarterMap {
   constructor(
     private readonly blocks: Book,
     rows: string[],
-    private readonly width = W,
+    private readonly hallWidth = W,
   ) {
     super(blocks, rows);
   }
@@ -77,7 +77,7 @@ export class HallMap extends StarterMap {
     const sub = this.blocks.n('subfloor');
     for (let y = 0; y < MLEN; y++)
       for (let x = 0; x < MLEN; x++) {
-        const inX = x >= ORIGIN && x < ORIGIN + this.width;
+        const inX = x >= ORIGIN && x < ORIGIN + this.hallWidth;
         if (y >= ORIGIN + H) map.blocks[y * MLEN + x] = sub;
         else if (y >= ORIGIN && !inX) map.blocks[y * MLEN + x] = edge;
       }
@@ -86,7 +86,13 @@ export class HallMap extends StarterMap {
 }
 
 /** The hall. */
-function aisle(book: Book, signs: Record<SignName, Sign>, hall: ReturnType<typeof buildBlocks>['hall'], theme: Graduation['theme'], _guests: number): StarterMap {
+function aisle(
+  book: Book,
+  signs: Record<SignName, Sign>,
+  hall: ReturnType<typeof buildBlocks>['hall'],
+  theme: Graduation['theme'],
+  _guests: number,
+): StarterMap {
   const g = new Grid(W, H);
   g.put(2, 8, 's').put(2, 9, 'S');
   const m = new HallMap(book, g.rows());

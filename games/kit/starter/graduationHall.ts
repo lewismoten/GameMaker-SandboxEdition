@@ -140,7 +140,17 @@ export interface Hall {
 }
 
 /** Adds the hall's blocks to `book`; `timed` gets every loop. `kitHead` is the hero's 'stand.top' and `cheerHead` its 'cheer2.top' (head with both hands up). */
-export function addHallBlocks(book: Book, pal: Pal, timed: Timed[], names: string[], stand: Pixels, cheer: Pixels, blink: Pixels, theme: HallTheme = {}, cameos: CameoName[] = []): Hall {
+export function addHallBlocks(
+  book: Book,
+  pal: Pal,
+  timed: Timed[],
+  names: string[],
+  stand: Pixels,
+  cheer: Pixels,
+  blink: Pixels,
+  theme: HallTheme = {},
+  cameos: CameoName[] = [],
+): Hall {
   const drapeRamp = theme.drape ?? 'purple';
   const woodRamp = theme.rail ?? 'wood';
   book.add('carpet', (theme.floor ?? carpet)(pal), { solid: SOLID });

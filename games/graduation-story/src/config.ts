@@ -12,7 +12,13 @@ export const cfg: Graduation = {
   theme: THEATER,
   upper: 'STORY AND FINISH',
   honors: 'IN STORY AND FINISH',
-  signs: { start: 'WALK DOWN TO THE STAGE', helpers: 'HELPERS AND FRIENDS ARE HERE', cheer: 'THEY CLAP FOR YOU', doc: 'DOC LEO HAS A SCROLL FOR YOU', banner: 'STORY AND FINISH' },
+  signs: {
+    start: 'WALK DOWN TO THE STAGE',
+    helpers: 'HELPERS AND FRIENDS ARE HERE',
+    cheer: 'THEY CLAP FOR YOU',
+    doc: 'DOC LEO HAS A SCROLL FOR YOU',
+    banner: 'STORY AND FINISH',
+  },
   level: { title: 'The Theater', hint: 'Walk down the aisle to the stage.' },
   song: { bpm: 80, lead: 'organ', transpose: -2 },
   text: {
