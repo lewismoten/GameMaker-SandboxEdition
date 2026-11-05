@@ -187,6 +187,10 @@ multi-block objects for `kit/align.ts`, which their checks run. The other play-t
 | sounds-and-music  | `npx vite-node ../games/sounds-and-music/tools/demoCheck.ts`       | plays the title demo on the real engine: three levels, then the ending                                                                                                                    |
 | sounds-and-music  | `npx vite-node ../games/sounds-and-music/tools/preview.ts [dir]`   | PNGs of the blocks, the hero, each level and every picture                                                                                                                                |
 | sounds-and-music  | `npx vite-node ../games/sounds-and-music/tools/songCheck.ts [dir]` | plays both songs through the OPL2 emulator to WAV files and checks length, level and size                                                                                                 |
+| your-first-game   | `npx vite-node ../games/your-first-game/tools/check.ts`            | the bot plays all three levels: the wall, the coins and hill, the gumdrop popped, one spike walked into and the others jumped, the locked door bumped, then opened with the key; no life lost |
+| your-first-game   | `npx vite-node ../games/your-first-game/tools/gendemo.ts`          | re-records the title demo (level 1 played through) into `src/demo.ts` (then rebuild)                                                          |
+| your-first-game   | `npx vite-node ../games/your-first-game/tools/demoCheck.ts`        | plays the title demo on the real engine: eight coins, the gumdrop, the exit                                                                   |
+| your-first-game   | `npx vite-node ../games/your-first-game/tools/preview.ts [dir]`    | PNGs of the blocks, the hero, each level and every picture                                                                                    |
 
 The felt eggs have checks of their own where a game's route never goes near one
 (`depth/tools/egg.ts`, `realm/tools/eggcheck.ts`, `sleuth/tools/check.ts --egg`). The other
