@@ -7,6 +7,7 @@ import { BACKBL, BLEN, type Block } from '@lewismoten/gamemaker-sandbox-engine/f
 import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { at, type Finding } from '../findings';
 import { blockUse, topColors, type SceneData } from '../sceneData';
+import { ledgerFor, type Ledger } from './counterLedger';
 import { mazes } from './mazeCheck';
 import { openFrom } from './sealed';
 
@@ -151,7 +152,7 @@ export function everyTickBlocks(d: SceneData): Finding[] {
  * carry on from scene to scene, so a gate is only called hopeless when nothing anywhere in the
  * game (`gives`: counters any block or monster of any scene adds to) fills its counter.
  */
-export function counters(d: SceneData, gives: Set<number> = new Set()): Finding[] {
+export function counters(d: SceneData, gives: Set<number> = new Set(), ledger?: Ledger): Finding[] {
   const use = blockUse(d.map);
   const out: Finding[] = [];
   const effects = new Set(d.bbl.filter((b, n) => use[n] && (b.effect === 3 || b.effect >= 20)).map((b) => b.effect));
@@ -180,6 +181,22 @@ export function counters(d: SceneData, gives: Set<number> = new Set()): Finding[
         detail: 'Fine if the player chooses a way; a trap if every gate is on the way on.',
         where: { scene: d.scene, map: d.names.map, block: { file: d.names.bbl ?? '', n: gates[0].n }, cells: cellsOf(d, gates[0].n) },
       });
+    // a gate this scene can't fill, in a game that fills the counter elsewhere: say where, and whether it is enough
+    if (ledger && gates.length && gives.has(e)) {
+      const here = ledger.get(e)?.find((r) => r.scene === d.scene);
+      const mine = start + (here ? here.blocks + here.monsters : 0);
+      if (mine < need) {
+        const l = ledgerFor(ledger, e, d.scene, start, need);
+        const enough = l.all >= need;
+        out.push({
+          check: 'counters',
+          severity: enough ? 'info' : 'warning',
+          title: `Counter ${e}: the gate${gates.length > 1 ? 's' : ''} ${l.title}${enough ? '' : ': not enough in the whole game'}`,
+          detail: `${l.detail} ${enough ? 'Fine if the player earns it elsewhere first.' : 'Fine if a pickup is worth more than the map shows.'} The check can’t see what other doors spend, blocks that birth monsters, or whether a monster can be beaten.`,
+          where: { scene: d.scene, map: d.names.map, block: { file: d.names.bbl ?? '', n: gates[0].n }, cells: cellsOf(d, gates[0].n) },
+        });
+      }
+    }
     for (const { b, n } of drains) {
       const ticks = start > 0 ? Math.ceil(start / -b.eamt) : 0;
       out.push({
