@@ -14,13 +14,48 @@ export type TalkerName = 'pip' | 'moss' | 'dot';
 
 /** How each talker is dressed: ramp names for the hat, the smock and the hair. */
 const LOOKS: Record<TalkerName, { hat: string; smock: string; hair: string; beard: boolean }> = {
-  pip: { hat: 'gold', smock: 'purple', hair: 'hair', beard: false },
+  pip: { hat: 'gold', smock: 'gold', hair: 'hair', beard: false }, // drawn by pipPicture; the hat and smock here are unused
   moss: { hat: 'teal', smock: 'blue', hair: 'stone', beard: true },
   dot: { hat: 'pink', smock: 'green', hair: 'orange', beard: false },
 };
 
+/** Pip, 20 wide and 40 high: a bee-striped sweater, round glasses and a headband with two bobbles. No hat, no beard. */
+function pipPicture(pal: Pal): Pixels {
+  const { c, r } = pal;
+  const skin = r('skin');
+  const ink = c('ink', 0);
+  const hair = r('hair');
+  const top = r('gold');
+  const legs = r('ink');
+  const p = new Pixels(20, 40, T);
+  // shoes and legs
+  p.rect(5, 36, 4, 3, c('white', 2)).rect(11, 36, 4, 3, c('white', 2));
+  p.rect(6, 31, 3, 5, legs[2]).rect(11, 31, 3, 5, legs[2]).rect(6, 31, 1, 5, legs[3]);
+  // a short, round sweater with two dark stripes across it
+  blob(p, 10, 26, 6.4, 6.2, top, 0, 4);
+  p.rect(4, 25, 12, 2, c('ink', 1)).rect(4, 29, 12, 2, c('ink', 1));
+  // arms: the left hangs, the right waves
+  p.rect(2, 22, 3, 8, top[3]).rect(2, 22, 1, 8, top[4]).disc(3, 31, 1.8, skin[2]);
+  p.rect(15, 16, 3, 7, top[3]).rect(17, 16, 1, 7, top[1]).disc(16, 15, 1.9, skin[2]).set(15, 14, skin[3]);
+  // short hair, a headband and two bobbles on springs
+  blob(p, 10, 11, 6.4, 3.6, hair, 0, 2);
+  p.rect(4, 8, 12, 2, c('ink', 1));
+  p.rect(6, 4, 1, 4, c('ink', 1)).rect(13, 4, 1, 4, c('ink', 1));
+  p.disc(6, 3, 2, c('gold', 4)).disc(13, 3, 2, c('gold', 4));
+  p.set(5, 2, c('gold', 5)).set(12, 2, c('gold', 5));
+  // the face, with round glasses
+  blob(p, 10, 15, 6.4, 6, skin, 0, 3);
+  p.frame(5, 13, 5, 5, ink).frame(11, 13, 5, 5, ink).rect(10, 15, 1, 1, ink);
+  p.rect(6, 14, 3, 3, c('white', 3)).rect(12, 14, 3, 3, c('white', 3));
+  p.set(7, 15, ink).set(8, 15, ink).set(13, 15, ink).set(14, 15, ink).set(6, 14, c('white', 2));
+  p.set(5, 19, c('pink', 2)).set(15, 19, c('pink', 2));
+  p.set(8, 20, ink).set(9, 21, ink).set(10, 21, ink).set(11, 21, ink).set(12, 20, ink);
+  return outline(p, ink, { transparent: T });
+}
+
 /** One talker, 20 wide and 40 high, on a transparent ground. */
 export function talkerPicture(pal: Pal, who: TalkerName): Pixels {
+  if (who === 'pip') return pipPicture(pal);
   const { c, r } = pal;
   const look = LOOKS[who];
   const hat = r(look.hat);
