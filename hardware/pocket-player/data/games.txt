@@ -6,6 +6,7 @@ flock|Birds of a Feather|2
 jump-boots|Boots and Jet Pack|2
 and-gate|Both Together|2
 coins-and-score|Coins and Score|3
+corner-view|Corner View|2
 countdown|Countdown|2
 cutscenes|Cutscenes|4
 day-night|Day and Night|5
