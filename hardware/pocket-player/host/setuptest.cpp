@@ -76,7 +76,7 @@ int main() {
   tc::Cal c;
   CHECK(!ds::fromTwo({1000, 1000}, {1000, 1000}, W, H, c), "two taps on one spot are refused");
   CHECK(!ds::fromTwo({300, 300}, {2000, 2000}, W, H, c), "a diagonal second tap is refused");
-  CHECK(!ds::fromOne({0, 1000}, tc::Cal(), W, H, c), "a tap at the raw edge is refused");
+  CHECK(!ds::fromOne({1000, 0}, tc::Cal(), W, H, c), "a tap at the raw edge is refused");
   // the record
   ds::Record r, back;
   r.panel = 5;
