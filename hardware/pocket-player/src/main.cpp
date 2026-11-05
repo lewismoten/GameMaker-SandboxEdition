@@ -744,15 +744,22 @@ static const uint8_t SAMPLE_TUNE[72] = {
 static const char* const VOLUME[] = {"Off", "Low", "Medium", "High"};
 static const char* const PALM[] = {"Off", "Size", "Size+near"};
 #ifdef POCKET_CYD28
-static const char* const PANELS[] = {"ILI9341", "ILI inv", "ST7789"};
-static uint8_t panelType = PANEL_ILI9341;
+static uint8_t panelType = PANEL_ILI9341, turnIdx = 0;
+static const char* panelName(char* b) {  // "ILI", "ST inv", "ILI inv bgr", ...
+  snprintf(b, 16, "%s%s%s", (panelType & 1) ? "ST" : "ILI", (panelType & 2) ? " inv" : "", (panelType & 4) ? " bgr" : "");
+  return b;
+}
 #endif
-constexpr int ST_ROWS = scr::SMALL ? 9 : 7;  // the 2.8 inch board's Settings also has Calibrate and Display
+constexpr int ST_ROWS = scr::SMALL ? 10 : 7;  // the 2.8 inch board's Settings also has Calibrate and Display
 static int setPage = 0;
 static void drawSettings() {
   tft.fillScreen(C_BLACK);
   title("Settings");
   struct Row { const char* name; const char* value; };
+#ifdef POCKET_CYD28
+  char pname[16], tname[16];
+  snprintf(tname, sizeof tname, "%d of %d", turnIdx + 1, TURNS);
+#endif
   Row rows[ST_ROWS] = {{"Hand", HAND[settings.lefty]},
                        {scr::SMALL ? "Stylus latch" : "Stylus (taps latch)", ONOFF[settings.stylus]},
                        {"Pad size", SIZE3[settings.padSize]},
@@ -763,7 +770,8 @@ static void drawSettings() {
 #ifdef POCKET_CYD28
                        ,
                        {"Calibrate", "tap 3"},
-                       {"Display", PANELS[panelType]}
+                       {"Display", panelName(pname)},
+                       {"Turn", tname}
 #endif
   };
   int pages = (ST_ROWS + ST_PER_PAGE - 1) / ST_PER_PAGE;
@@ -1093,6 +1101,7 @@ static void message(const char* a, const char* b = nullptr) {
 // ---- the 2.8 inch board: touch calibration and the display driver --------------------------------------
 // Three taps (touchcal.h) on crosses at the top left, top right and bottom left; the calibration is kept in NVS.
 // Waits for a press and release; returns the median raw reading of the press. false: BOOT pressed or 60 s of nothing.
+static void nextPanel();
 static bool waitRawTap(tc::Raw& out) {
   uint32_t end = millis() + 60000;
   wasDown = true;
@@ -1182,12 +1191,54 @@ static void runCalibration() {
   }
 }
 // Next display driver (ILI9341, ILI9341 inverted, ST7789), kept in NVS, then a restart.
+static void nextTurn() {
+  turnIdx = (turnIdx + 1) % TURNS;
+  Preferences p;
+  if (p.begin("pocket", false)) { p.putUChar("turn", turnIdx); p.end(); }
+  saveSettings();
+  message("Turned", "restarting");
+  delay(700);
+  ESP.restart();
+}
+// Test pattern at every start of the 2.8 inch board: red top left, green top right, blue bottom left, white corner marks and the
+// words TOP and LEFT. A picture that is upright, not mirrored and has those colors is a right mode. BOOT (short) turns, BOOT (hold) changes the mode.
+static void testPattern() {
+  tft.fillScreen(C_BLACK);
+  tft.fillRect(0, 0, 60, 50, 0xF800);          // red (this call takes plain RGB565)
+  tft.fillRect(scr::W - 60, 0, 60, 50, 0x07E0);  // green
+  tft.fillRect(0, scr::H - 50, 60, 50, 0x001F);  // blue
+  tft.fillRect(scr::W - 60, scr::H - 50, 60, 50, C_WHITE);
+  tft.setTextColor(C_WHITE, C_BLACK);
+  tft.setTextSize(3);
+  tft.setCursor(70, 8);
+  tft.print("TOP");
+  tft.setCursor(70, 100);
+  tft.print("LEFT <-");
+  char nb[16];
+  tft.setTextSize(2);
+  tft.setCursor(70, 150);
+  tft.printf("mode %s", panelName(nb));
+  tft.setCursor(70, 174);
+  tft.printf("turn %d of %d", turnIdx + 1, TURNS);
+  tft.setTextSize(1);
+  tft.setCursor(70, 205);
+  tft.print("BOOT: turn   hold BOOT: mode");
+  uint32_t end = millis() + 5000, down = 0;
+  while ((int32_t)(millis() - end) < 0) {
+    if (digitalRead(0) == LOW) {
+      if (!down) down = millis();
+      if (millis() - down >= 1500) { nextPanel(); return; }
+    } else if (down) { if (millis() - down > 30) nextTurn(); down = 0; }
+    delay(10);
+  }
+}
 static void nextPanel() {
   panelType = (panelType + 1) % PANEL_TYPES;
   Preferences p;
   if (p.begin("pocket", false)) { p.putUChar("panel", panelType); p.end(); }
   saveSettings();
-  message("Display driver", PANELS[panelType]);
+  char nb[16];
+  message("Display mode", panelName(nb));
   delay(900);
   ESP.restart();
 }
@@ -1310,15 +1361,23 @@ void setup() {
   pinMode(0, INPUT_PULLUP);  // BOOT
   {
     Preferences pf;
-    if (pf.begin("pocket", true)) { panelType = pf.getUChar("panel", PANEL_ILI9341); pf.end(); }
+    if (pf.begin("pocket", true)) { panelType = pf.getUChar("panel", PANEL_ILI9341); turnIdx = pf.getUChar("turn", 0); pf.end(); }
     if (panelType >= PANEL_TYPES) panelType = PANEL_ILI9341;
+    if (turnIdx >= TURNS) turnIdx = 0;
     tft.choose(panelType);
   }
 #endif
   tft.init();
+#ifdef POCKET_CYD28
+  tft.setRotation(turnRotation(turnIdx));
+#else
   tft.setRotation(1);
+#endif
   tft.setBrightness(255);
   tft.setSwapBytes(false);
+#ifdef POCKET_CYD28
+  testPattern();
+#endif
   message("Game-Maker Pocket Player");
   spk::begin();
   haveGT = gt.probe();
@@ -1326,7 +1385,10 @@ void setup() {
 #ifdef POCKET_CYD28
   if (haveGT) snprintf(line, sizeof line, "Touch: XPT2046 (%s)", XPT2046::calibrated() ? "calibrated" : "not calibrated");
   else snprintf(line, sizeof line, "Touch: no XPT2046 found");
-  Serial.printf("display driver %s\n", PANELS[panelType]);
+  {
+    char nb[16];
+    Serial.printf("display mode %s turn %d\n", panelName(nb), turnIdx + 1);
+  }
 #else
   if (haveGT) snprintf(line, sizeof line, "Touch: GT911 at 0x%02X", gt.addr);
   else snprintf(line, sizeof line, "Touch: no GT911 found");
@@ -1432,6 +1494,7 @@ void loop() {
 #ifdef POCKET_CYD28
           case 7: saveSettings(); runCalibration(); drawSettings(); wasDown = true; return;
           case 8: nextPanel(); return;  // restarts
+          case 9: nextTurn(); return;   // restarts
 #endif
         }
         drawSettings();
