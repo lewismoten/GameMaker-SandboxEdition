@@ -22,7 +22,11 @@ export function questionButtons(entry: CatalogEntry, q: Question, onGo?: () => v
           b.disabled = true;
           b.textContent = 'Opening…';
           void href(entry, q)
-            .then((to) => (to ? ((location.hash = to), onGo?.()) : toast('That level could not be opened.')))
+            .then((to) =>
+              to
+                ? ((location.hash = to), onGo?.(), toast(`${primary ? 'Starting' : 'Opened the map of'} ${entry.title}, level ${q.level}.`))
+                : toast('That level could not be opened.'),
+            )
             .catch(() => toast('That level could not be opened.'))
             .finally(() => {
               b.disabled = false;
