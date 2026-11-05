@@ -34,7 +34,6 @@ export function alive(bot: StarterBot, n: number): number {
 const LOOK = 40;
 /** Ticks a thrown weapon lives (monsters.ts) and the sparkle after it, so a throw has finished by then. */
 const THROW_WATCH = 60;
-const col = (bot: StarterBot) => bot.px.x / 20;
 const row = (bot: StarterBot) => bot.px.y / 20;
 const BACKBL = 150;
 /** The pack's things, in order (the block numbers; BACKBL is an empty place). */
