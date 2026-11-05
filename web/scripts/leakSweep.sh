@@ -42,7 +42,8 @@ done
 
 if [ -n "$dist" ] && [ -d "$dist" ]; then
   echo "== build in $dist (skipped: downloads.html, games/extra-N.json and videos/walk-HASH.json, which are loaded only once a secret game is listed, and the secret games' own folders)"
-  skip=(--exclude=downloads.html --exclude='extra-*.json' --exclude='walk-*.json')
+  # assets/bonus-*.js is the egg system's own code (src/eggs/bonus.ts): it names the secret games' ids by design, is on no page and loads only once an egg is found
+  skip=(--exclude=downloads.html --exclude='extra-*.json' --exclude='walk-*.json' --exclude='bonus-*.js')
   for i in "${ids[@]}"; do skip+=("--exclude-dir=$i"); done
   for p in "$pat" '/Users/lewismoten' '\.for-lewis' 'Dowden' 'sk-[A-Za-z0-9]{20,}' 'ghp_[A-Za-z0-9]{20,}'; do
     grep -rIlE "${skip[@]}" "$p" "$dist" >"$tmp" 2>/dev/null
