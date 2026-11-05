@@ -153,6 +153,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Fixed
 
+- A game opened to look at only no longer shows an error notice when an editor tries to change it; the dialog offering a copy is enough.
 - Starters whose story, win or credits cards still carried another starter's words (water, mending, a different title) now speak for their own lesson: Kit's Moves, Slide and Drift, Slippery and Bouncy, Dig It, Take the Wheel, Score Popups and Who Wins?.
 - Watch Your Step, level 2: walking up to the edge of the pool no longer costs a life before you can jump. Only falling in does, and a jump across now picks up all three coins.
 - The Loofah game's title and cover now show the friendly golden bath monster from its levels, with googly eyes and a wide smile, instead of the little horns (version 1.5).

@@ -8,6 +8,14 @@ export function ignorable(message: string): boolean {
   return /ResizeObserver loop|AbortError|Script error\.?$/.test(message);
 }
 
+/**
+ * A look-only game refusing a change (editor/core/readOnly.ts): its own dialog already says what
+ * happened. Matched by name, so this tiny listener imports nothing from the editor.
+ */
+export function refusedChange(reason: unknown): boolean {
+  return reason instanceof Error && reason.name === 'ReadOnlyError';
+}
+
 export function report(info: ErrorInfo): void {
   if (ignorable(info.message)) return;
   void import('./notice').then((m) => m.showError(info));
@@ -19,10 +27,12 @@ export function watchErrors(): void {
   if (started) return;
   started = true;
   addEventListener('error', (e) => {
+    if (refusedChange(e.error)) return;
     const file = e.filename ? e.filename.split('/').pop() : '';
     report({ message: e.message || messageOf(e.error), at: file ? `${file}:${e.lineno}:${e.colno}` : undefined });
   });
   addEventListener('unhandledrejection', (e) => {
+    if (refusedChange(e.reason)) return;
     report({ message: messageOf(e.reason) });
   });
 }
