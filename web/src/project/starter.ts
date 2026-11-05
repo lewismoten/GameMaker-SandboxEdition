@@ -42,6 +42,7 @@ export const STARTER_GROUPS: { name: string; tag: string; games: string[] }[] = 
       'take-the-wheel',
       'gusts',
       'kit-moves',
+      'choose-hero',
     ],
   },
   { name: 'Foes and Bosses', tag: 'Foes that think, and ones that take a few hits.', games: ['boss-hits', 'who-wins', 'short-lived'] },
