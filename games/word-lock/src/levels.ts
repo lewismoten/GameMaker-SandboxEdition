@@ -120,8 +120,8 @@ export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
   const pal = buildStarterPalette();
   const { book, signs } = buildBlocks(pal);
   const levels: Level[] = [
-    { file: 'one', title: 'Pay to Pass', hint: 'A lock takes words. A tray gives them back.', map: payToPass(book, signs) },
-    { file: 'two', title: 'No Tray', hint: 'Without a tray, what a lock takes is gone.', map: noTray(book, signs) },
+    { file: 'one', title: 'Pay to Pass', hint: 'A tray gives words back.', map: payToPass(book, signs) },
+    { file: 'two', title: 'No Tray', hint: 'With no tray, they are gone.', map: noTray(book, signs) },
   ];
   return { book, pal, levels };
 }

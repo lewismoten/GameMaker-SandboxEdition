@@ -1,6 +1,5 @@
-// Pictures of the lessons (never on the disk), for the progress shots: in level 1 Kit stopped at
-// the three-slot gate with two tokens, then the third token on its ledge; in level 2 the five-slot
-// gate that is the exit.
+// Pictures of the lessons (never on the disk), for the progress shots: the lock and the tray behind it
+// in level 1, the empty ground where level 2's first lock took the words, and the exit lock.
 //   cd web && npx vite-node ../games/word-lock/tools/shots.ts <outDir>
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
@@ -35,6 +34,6 @@ const region = (level: number, col: number, row: number, w: number, extra: Sprit
   renderRegion(levels[level].map.done(), bbl, mbl, set, ORIGIN + col, ORIGIN + row, w, 8, extra);
 const save = (name: string, pic: ReturnType<typeof region>) => writePng(join(out, name), pic, pal.pal, 3);
 
-save('1-two-tokens-shut.png', region(0, 8, 4, 22, kit(['stand.top', 'stand'], 26)));
-save('2-third-token.png', region(0, 14, 0, 16, kit(['cheer.top', 'jump'], 22)));
-save('3-five-slot-exit.png', region(1, 26, 4, 18, kit(['stand.top', 'stand'], 38)));
+save('1-lock-and-tray.png', region(0, 14, 4, 16, kit(['stand.top', 'stand'], 20)));
+save('2-no-tray.png', region(1, 14, 4, 16, kit(['stand.top', 'stand'], 20)));
+save('3-exit-lock.png', region(1, 32, 4, 16, kit(['stand.top', 'stand'], 41)));

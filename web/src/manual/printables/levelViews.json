@@ -81,7 +81,7 @@
   "warning-first": {"hash":"d4f9a2095d0da5e8","maps":{"one.map|one.bbl":[0,14,61,10],"two.map|two.bbl":[0,11,54,19]}},
   "watch-your-step": {"hash":"140e30897153fdbb","maps":{"one.map|step.bbl":[0,14,61,10],"three.map|step.bbl":[0,7,57,20],"two.map|step.bbl":[0,14,45,10]}},
   "who-wins": {"hash":"8f117c2aea9a8233","maps":{"one.map|who.bbl":[0,14,67,10],"two.map|who.bbl":[0,14,64,10]}},
-  "word-lock": {"hash":"68f3bce939c2c221","maps":{"one.map|words.bbl":[0,14,69,10],"two.map|words.bbl":[0,1,66,26]}},
+  "word-lock": {"hash":"d7c75f4294664fd7","maps":{"one.map|words.bbl":[0,14,69,10],"two.map|words.bbl":[0,1,66,26]}},
   "year2000": {"hash":"d62d0ceba2d8a664","maps":{"clouds.map|sky.bbl":[0,0,16,10],"dome.map|suburb.bbl":[0,0,59,100],"exchange.map|city.bbl":[0,0,85,34],"mall.map|city.bbl":[0,0,55,39],"moon.map|moon.bbl":[0,0,46,33],"school.map|moon.bbl":[0,0,41,27],"skyway.map|suburb.bbl":[0,0,43,33]}},
   "your-first-game": {"hash":"a20c785a63689541","maps":{"one.map|first.bbl":[0,7,77,20],"three.map|first.bbl":[0,7,71,20],"two.map|first.bbl":[0,0,67,27]}}
 }
