@@ -59,7 +59,8 @@ class Hall extends StarterMap {
   override done(): GameMap {
     const map = super.done();
     const ceiling = this.wood.n('ceiling');
-    for (let y = 0; y < ORIGIN + H; y++) for (let x = 0; x < MLEN; x++) if (y < ORIGIN || x < ORIGIN || x >= ORIGIN + this.width) map.blocks[y * MLEN + x] = ceiling;
+    for (let y = 0; y < ORIGIN + H; y++)
+      for (let x = 0; x < MLEN; x++) if (y < ORIGIN || x < ORIGIN || x >= ORIGIN + this.width) map.blocks[y * MLEN + x] = ceiling;
     return map;
   }
 }
@@ -67,7 +68,10 @@ class Hall extends StarterMap {
 /** The hall: a ceiling, a wall behind, a floor, a doorway at the left (x 3) and a door at `exit`. */
 function hall(book: Book, width: number, exit: number): StarterMap {
   const g = new Grid(width, H);
-  g.put(3, BOTTOM - 1, 's').put(3, BOTTOM, 'S').put(exit, BOTTOM - 1, 'e').put(exit, BOTTOM, 'E');
+  g.put(3, BOTTOM - 1, 's')
+    .put(3, BOTTOM, 'S')
+    .put(exit, BOTTOM - 1, 'e')
+    .put(exit, BOTTOM, 'E');
   const m = new Hall(book, g.rows());
   for (let x = 0; x < width; x++) {
     const edge = x === 0 || x === width - 1;
@@ -135,7 +139,10 @@ export function fog(pal: Pal): Level {
   const g = new Grid(width, H);
   g.col(0, 0, FLOOR - 1, 'X').col(width - 1, 0, FLOOR - 1, 'X');
   for (let x = 0; x < width; x++) g.put(x, FLOOR, 'G');
-  g.put(3, BOTTOM - 1, 's').put(3, BOTTOM, 'S').put(exit, BOTTOM - 1, 'e').put(exit, BOTTOM, 'E');
+  g.put(3, BOTTOM - 1, 's')
+    .put(3, BOTTOM, 'S')
+    .put(exit, BOTTOM - 1, 'e')
+    .put(exit, BOTTOM, 'E');
   const m = new StarterMap(book, g.rows());
   for (let x = 1; x < width - 1; x++) {
     const zone = zoneOf(x);
@@ -182,5 +189,3 @@ export function buildLevels(): { pal: Pal; beams: Level; fog: Level; glow: Level
   const pal = buildStarterPalette();
   return { pal, beams: beams(pal), fog: fog(pal), glow: glow(pal) };
 }
-
-

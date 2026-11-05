@@ -37,7 +37,20 @@ export function buildGame(levels: { beams: Level; fog: Level; glow: Level }): Ga
     const s = emptyScene(ADVTYPE);
     s.desc = desc.slice(0, 19);
     s.pos = { x, y };
-    s.files = ['beams.pal', `${level.file}.map`, `${level.file}.bbl`, 'beams.mon', 'beams.mbl', 'hero.chr', 'hero.cbl', 'beams.snd', 'beams.cmf', `${level.file}.lst`, '', ...new Array(9).fill('')];
+    s.files = [
+      'beams.pal',
+      `${level.file}.map`,
+      `${level.file}.bbl`,
+      'beams.mon',
+      'beams.mbl',
+      'hero.chr',
+      'hero.cbl',
+      'beams.snd',
+      'beams.cmf',
+      `${level.file}.lst`,
+      '',
+      ...new Array(9).fill(''),
+    ];
     s.links = blank();
     s.links[0] = { toScene: to, from: { x: level.exit + ORIGIN, y: BOTTOM + ORIGIN }, to: { x: toCell[0], y: toCell[1] } };
     return s;

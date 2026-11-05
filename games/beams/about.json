@@ -43,5 +43,10 @@
       ]
     ],
     "rating": "Everyone"
-  }
+  },
+  "sameEverySide": [
+    "beams.mon#0",
+    "beams.mon#1",
+    "beams.mon#2"
+  ]
 }

@@ -26,9 +26,7 @@ const wall = wallPicture(pal);
 {
   const p = new Pixels(6 * 20, 3 * 20, 0);
   (['solid', 'dither'] as const).forEach((zone, zi) =>
-    [0, 1, 2].forEach((layer) =>
-      [0, 1, 2].forEach((v) => p.blit(hillBlock(pal, zone, layer, 'ridge', v), (zi * 3 + v) * 20, layer * 20)),
-    ),
+    [0, 1, 2].forEach((layer) => [0, 1, 2].forEach((v) => p.blit(hillBlock(pal, zone, layer, 'ridge', v), (zi * 3 + v) * 20, layer * 20))),
   );
   writePng(join(out, 'fog-compare.png'), p, pal.pal, 5);
 }

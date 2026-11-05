@@ -44,7 +44,9 @@ function hillPicture(pal: Pal, layer: number, kind: 'ridge' | 'fill', v: number)
     const y = Math.max(top(x), top(x + 4)) + 2 + Math.floor(rand() * 7);
     if (y > 14) continue;
     const tree = c('green', 0);
-    p.rect(x + 1, y, 3, 1, tree).rect(x, y + 1, 5, 2, tree).rect(x + 1, y + 3, 3, 1, tree);
+    p.rect(x + 1, y, 3, 1, tree)
+      .rect(x, y + 1, 5, 2, tree)
+      .rect(x + 1, y + 3, 3, 1, tree);
   }
   return p;
 }

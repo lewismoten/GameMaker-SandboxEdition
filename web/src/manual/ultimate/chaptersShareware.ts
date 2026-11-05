@@ -112,6 +112,7 @@ export const SHAREWARE: Chapter = {
   ${onCd('FLICKER')}
   ${onCd('LIGHTOUT')}
   ${onCd('SHADOWS')}
+  ${onCd('BEAMS')}
   <h2>Transitions with the palette</h2>
   <p>An animation frame that changes only the palette costs a few hundred bytes, however big the
   picture. Fade a picture in or out, flash it or cycle its colors that way, and the whole
