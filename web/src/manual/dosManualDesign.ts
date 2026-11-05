@@ -151,7 +151,7 @@ export function designPages(shots: GameShot[]): BookletPage[] {
       shown on the screen at once). <b>Z</b> zooms out to see the whole map. You can limit
       scrolling to part of the map.</p>
       <p class="see"><i>Water that moves, drawn as a loop of blocks, is on the Sample CD:</i> <code>SHORE</code>.</p>
-      <p class="see"><i>On the Sample CD:</i> <code>SCROLL</code>, <code>ONEMAP</code>, <code>OVERHEAD</code> (a top-down room and roads joined by their edges), <code>TOWNLINK</code> (a world map, a town and a house, each its own scene and scale), <code>BLK150</code>, <code>PARALLAX</code> and <code>BELTWAY</code> (scenery that slides past), <code>DIAGWRAP</code> (a tilted road that wraps), <code>HORIZON</code>, <code>ROADTILE</code> (roads drawn from straight, corner, diagonal and bridge blocks), <code>CORNER</code> (a room drawn from a corner) and <code>NEARFAR</code> (a far plane drawn small and pale).</p>`,
+      <p class="see"><i>On the Sample CD:</i> <code>SCROLL</code>, <code>ONEMAP</code>, <code>OVERHEAD</code> (a top-down room and roads joined by their edges), <code>TOWNLINK</code> (a world map, a town and a house, each its own scene and scale), <code>BLK150</code>, <code>PARALLAX</code> and <code>BELTWAY</code> (scenery that slides past), <code>DIAGWRAP</code> (a tilted road that wraps), <code>HORIZON</code>, <code>ROADTILE</code> (roads drawn from straight, corner, diagonal and bridge blocks), <code>CORNER</code> (a room drawn from a corner) <code>NEARFAR</code> (a far plane drawn small and pale) and <code>VERYFAR</code> (a figure only a few pixels tall, with slow steps, walking a long way off).</p>`,
     ),
     page(
       '3. Designing Games',

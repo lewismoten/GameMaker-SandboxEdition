@@ -105,7 +105,9 @@ function grovePicture(pal: Pal, cap: boolean, behind: Pixels): Pixels {
 function postPicture(pal: Pal, x: number, land: Pixels): Pixels {
   const w = pal.r('wood');
   const p = land.crop(0, 100, 20, 20);
-  p.rect(x, 0, 4, 20, w[2]).rect(x, 0, 1, 20, w[4]).rect(x + 3, 0, 1, 20, w[1]);
+  p.rect(x, 0, 4, 20, w[2])
+    .rect(x, 0, 1, 20, w[4])
+    .rect(x + 3, 0, 1, 20, w[1]);
   return p;
 }
 
@@ -132,10 +134,15 @@ export function foregroundPicture(pal: Pal): Pixels {
     p.rect(x - 1, y + 8, 3, 52 - y, g[2]).rect(x - 1, y + 8, 1, 52 - y, g[3]);
     p.rect(x + 2, y + 30, 8, 2, g[2]).disc(x + 10, y + 29, 3, g[3]);
     for (let a = 0; a < 6; a++) p.disc(Math.round(x + 8 * Math.cos((a * Math.PI) / 3)), Math.round(y + 8 * Math.sin((a * Math.PI) / 3)), 5, petal);
-    p.disc(x, y, 5, pal.c('gold', 1)).disc(x, y, 4, pal.c('gold', 2)).disc(x - 1, y - 1, 2, pal.c('gold', 4));
+    p.disc(x, y, 5, pal.c('gold', 1))
+      .disc(x, y, 4, pal.c('gold', 2))
+      .disc(x - 1, y - 1, 2, pal.c('gold', 4));
   }
   // the fence: posts 8 wide, two rails
-  for (let x = 6; x < 160; x += 40) p.rect(x, 22, 8, 38, w[3]).rect(x, 22, 8, 2, w[4]).rect(x + 7, 22, 1, 38, w[1]);
+  for (let x = 6; x < 160; x += 40)
+    p.rect(x, 22, 8, 38, w[3])
+      .rect(x, 22, 8, 2, w[4])
+      .rect(x + 7, 22, 1, 38, w[1]);
   p.rect(0, 30, 160, 5, w[2]).rect(0, 30, 160, 1, w[4]).rect(0, 46, 160, 5, w[2]).rect(0, 46, 160, 1, w[4]);
   return p;
 }

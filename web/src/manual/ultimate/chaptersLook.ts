@@ -36,7 +36,7 @@ export const PALETTES: Chapter = {
   <p>Some players see colors differently, and red and green can look alike to them. Do not let a
   color carry a meaning alone: give danger a pointed shape, give a safe path a light, striped
   pattern, and look at the level with the color taken out. Game-Maker cannot check this for you.</p>
-  ${onCd('DAYNIGHT', 'SAMEHOUS', 'NEARFAR', 'COLORS')}
+  ${onCd('DAYNIGHT', 'SAMEHOUS', 'NEARFAR', 'VERYFAR', 'COLORS')}
   <h2>Plan in ramps</h2>
   <p>Palette swaps work best when the palette is planned, not grown. Lay it out in
   <i>ramps</i>: short runs of shades of one material, dark to light. Five shades of grass,

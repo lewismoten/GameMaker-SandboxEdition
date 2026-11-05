@@ -30,7 +30,17 @@ const POSES: Record<string, string[]> = {
   hurt: [...TOP, 'OOOO', 'OOOO', 'PP.P', 'KK.K'],
 };
 /** Which pose each of the near Kit's bottom blocks becomes (anything else stands). */
-const POSE_OF: Record<string, string> = { jumpup: 'up', jump: 'up', cheer: 'up', fall: 'fall', hurt: 'hurt', walk0: 'walk0', walk1: 'walk1', walk2: 'walk2', walk3: 'walk3' };
+const POSE_OF: Record<string, string> = {
+  jumpup: 'up',
+  jump: 'up',
+  cheer: 'up',
+  fall: 'fall',
+  hurt: 'hurt',
+  walk0: 'walk0',
+  walk1: 'walk1',
+  walk2: 'walk2',
+  walk3: 'walk3',
+};
 
 /** One pose as a 20 x 20 block with Kit centered on the bottom row. */
 export function tinyPose(pal: Pal, name: string): Pixels {

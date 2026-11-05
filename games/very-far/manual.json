@@ -1,83 +1,91 @@
 {
-  "title": "Near and Far",
+  "title": "Walking Very Far",
   "howDoI": [
     {
-      "id": "two-planes",
-      "q": "How do I make a level with a near plane and a far plane?",
+      "id": "tiny-figure",
+      "q": "How do I draw a figure that looks far away?",
+      "scene": 3,
+      "x": 18,
+      "y": 15,
+      "level": 2
+    },
+    {
+      "id": "slow-steps",
+      "q": "How do I make a far figure walk slowly?",
+      "scene": 4,
+      "x": 18,
+      "y": 15,
+      "level": 2
+    },
+    {
+      "id": "small-jump",
+      "q": "How do I make a far figure jump smaller?",
+      "scene": 4,
+      "x": 18,
+      "y": 15,
+      "level": 2
+    },
+    {
+      "id": "pale-hills",
+      "q": "How do I make the hills paler than the figure?",
+      "scene": 4,
+      "x": 22,
+      "y": 15,
+      "level": 2
+    },
+    {
+      "id": "repeat-hills",
+      "q": "How do I draw hills that go on and on?",
       "scene": 2,
       "x": 18,
       "y": 15,
       "level": 1
     },
     {
-      "id": "far-small",
-      "q": "How do I draw the far plane smaller?",
-      "scene": 3,
-      "x": 18,
-      "y": 15,
-      "level": 1
-    },
-    {
-      "id": "far-pale",
-      "q": "How do I make the far plane paler?",
-      "scene": 3,
-      "x": 18,
-      "y": 15,
-      "level": 1
-    },
-    {
-      "id": "step-far",
-      "q": "How do I let the hero step into the distance?",
-      "scene": 2,
-      "x": 24,
-      "y": 15,
-      "level": 1
-    },
-    {
-      "id": "past-wall",
-      "q": "How do I get past a wall by going through the far plane?",
+      "id": "big-front",
+      "q": "How do I make something look farther away with big things in front?",
       "scene": 5,
-      "x": 23,
+      "x": 18,
       "y": 15,
-      "level": 2
-    },
-    {
-      "id": "other-side",
-      "q": "How do I land the hero on the other side of a wall?",
-      "scene": 6,
-      "x": 24,
-      "y": 15,
-      "level": 2
+      "level": 3
     }
   ],
   "pages": [
     {
       "head": "Welcome",
-      "html": "<h1>Welcome</h1><p><b>Near and Far</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has two short levels about a near plane and a far plane, and takes a few minutes to finish.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each idea is made.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. <kbd>Space</kbd> jumps. <kbd>F2</kbd> shows your hit points, lives and score. Walk into a trail to go through it.</p><h2>The one idea</h2><p>Game-Maker has no depth, but a level can have two planes. The near plane is a scene with big, clear scenery. The far plane is another scene: the same kind of land drawn small, with a paler palette. A link takes the hero from one to the other, so stepping into the distance loads the far scene. Only one plane is on screen at a time.</p>"
+      "html": "<h1>Welcome</h1><p><b>Walking Very Far</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has three short levels about drawing someone walking a long way off, and takes a few minutes to finish.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each idea is made.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. <kbd>Space</kbd> jumps. <kbd>F2</kbd> shows your hit points, lives and score. Walk to the door or gate at the end of each level.</p><h2>The one idea</h2><p>A far figure does not need a smaller picture of everything. It needs very few pixels, the right colors, small slow steps and big things near it to measure it against. <b>Near and Far</b> shows a far plane drawn at half size; this game goes much further, to a figure only eight pixels tall. <b>Maps Within Maps</b> shows how a world, a town and a house each get their own scene and scale.</p>"
     },
     {
-      "head": "Level 1: Into the Distance",
-      "html": "<h1>Level 1: Into the Distance</h1><p>The <b>NEAR IS BIG AND CLEAR</b> sign stands by a big tree. The <b>THE TRAIL GOES INTO THE DISTANCE</b> sign points at the gap in the hedge on the right. Take the two coins, then walk into the trail.</p><p>You come out in the far plane. The <b>FAR IS SMALL AND PALE</b> sign says what changed: the tree, the house and even Kit are drawn smaller, and every color is paler. Take the two coins there. The trail on the left (<b>BACK TO NEAR</b>) takes you back to the near plane, and the trail there takes you in again. The door on the right of the far plane takes you on to level 2.</p>"
-    },
-    {
-      "head": "How this level is made",
-      "html": "<h1>How level 1 is made</h1><ul><li><b>Two scenes.</b> Open the <b>Scenes</b> tab. The near plane and the far plane are two scenes that load two maps, <b>near1.map</b> and <b>far1.map</b>. Both are 16 blocks wide, with the ground on the same row.</li><li><b>Small is drawn.</b> The far plane uses its own blocks: a tree, a house and a fence at half the size of the near ones, standing on the same ground line. Nothing shrinks a picture while the game runs. Open the <b>Blocks</b> tab to see them next to the big ones.</li><li><b>Pale is a palette.</b> The far scene loads <b>far.pal</b> in its palette slot and the near scene loads <b>near.pal</b>. They hold the same colors in the same places, and the far one has each color mixed part of the way toward a pale sky blue. So the same block numbers look paler.</li><li><b>A smaller hero.</b> The far scene loads <b>far.chr</b> and <b>far.cbl</b>: the same character with every frame drawn at half size. Its keys, speed and jump are the same.</li><li><b>A trail is a link.</b> The gap in the hedge is a block with a link on it: <b>From</b> is the block here, <b>To</b> is a cell of the far scene. The trail in the far plane is a second link, back to a copy of the near scene (so the level card does not show again).</li></ul>"
-    },
-    {
-      "head": "Level 2: Past the Cliff",
-      "html": "<h1>Level 2: Past the Cliff</h1><p>A cliff stands between you and the exit. Jump at it: it does not move. The <b>A CLIFF IS IN THE WAY. TRY THE TRAIL</b> sign sends you left, to a trail through a hedge. Take the coins on the way if you like.</p><p>The far plane has no cliff: only a small mountain in the distance, behind the <b>NO CLIFF HERE</b> sign. Walk on to the trail on the right (<b>IT COMES OUT PAST THE CLIFF</b>). It puts you in the near plane on the other side of the cliff, where the exit door is.</p>"
+      "head": "Level 1: Up Close",
+      "html": "<h1>Level 1: Up Close</h1><p>Kit is his normal size here: two blocks, 40 pixels tall. The sign says so. Behind him are low hills in pale layers, and a thin road winding up them. Walk to the door on the right.</p><p>In the next level Kit walks along those hills, a very long way off.</p>"
     },
     {
       "head": "How this level is made",
-      "html": "<h1>How level 2 is made</h1><ul><li><b>The cliff.</b> Open <b>near2.map</b>. The cliff is a solid block of rock, drawn six blocks wide and as high as the screen, so it is plainly a wall.</li><li><b>One near map, two windows.</b> <b>near2.map</b> is 32 blocks wide. With scrolling off, a scene shows only the 16 blocks around the cell the hero lands on. The first near scene lands him on the left half, and the last near scene lands him on the right half, past the cliff. They load the same map.</li><li><b>The far plane has no wall.</b> <b>far2.map</b> is a separate map, so it can leave the cliff out. The trail there is a link whose <b>To</b> is a cell on the far side of the cliff in <b>near2.map</b>.</li><li><b>No invisible walls.</b> Everything that stops you is drawn: the cliff, and the hedge at each end.</li></ul>"
+      "html": "<h1>How level 1 is made</h1><ul><li><b>Kit up close.</b> The scene loads <b>hero.chr</b> and <b>hero.cbl</b>, the usual Kit: a head block over a body block, 20 pixels wide.</li><li><b>Hills that repeat.</b> Open <b>close.map</b> and the <b>Blocks</b> tab. The hills are four layers drawn in one picture, 320 pixels wide and 120 high, cut into blocks. The picture repeats every 160 pixels (8 blocks), so the map can be as wide as you like and use the same few blocks. Each layer is paler and smoother than the one in front, and the road is drawn narrower as it climbs.</li><li><b>Distance colors.</b> The hill layers use a ramp of five colors, <b>dist</b>, from a dark green-blue to nearly the sky. In this level they are only colors. In level 2 the palette changes under them.</li><li><b>A long map, a moving view.</b> The map is 24 blocks wide and 10 high. The view starts with Kit in the middle of the screen and follows him sideways. Scrolling is on left and right and off up and down.</li></ul>"
+    },
+    {
+      "head": "Level 2: Far Away",
+      "html": "<h1>Level 2: Far Away</h1><p>The first scene looks the same, but Kit is a tiny figure, only 4 pixels wide and 8 tall, with a white pom-pom. The <b>TOO FAST</b> sign says what is wrong: he takes the same steps as up close, so he zips along like a bug and looks nearby. Walk to the gate on the right (the red flag).</p><p>The gate takes you to the same walk again, with <b>SLOW STEPS</b>: he moves less than half as fast and looks far away. The long path gives you time to look at the pale hills, the road and the little figure.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 2 is made</h1><ul><li><b>A tiny Kit.</b> Open the <b>Character</b> tab and load <b>quick.chr</b>. Every frame is one block that has only a few pixels in it, standing on the bottom row, with the top block empty. Eight tiny poses are drawn by hand: standing, four walking, jumping, falling and hurt. Two scenes share <b>tiny.cbl</b>, the blocks.</li><li><b>Same keys, new frames.</b> The two character files are the usual Kit with every frame swapped, so the keys and the order of the walk are the same.</li><li><b>Slow is a number.</b> A frame says how many pixels it moves and how many ticks it lasts. <b>quick.chr</b> moves 4 pixels a frame, every tick, like the big Kit: about 73 pixels a second. <b>slow.chr</b> moves 3 pixels and waits 2 ticks: about 27 a second. Nothing slows him down while the game runs; the character file says it. His jump is smaller too: a push of 4, not 12.</li><li><b>Pale is a palette.</b> The scenes load <b>far.pal</b>. It is <b>near.pal</b> with the sky, grass, stone, blue, purple and white ramps mixed part of the way toward pale blue. The hills, the sky and the grass are paler; Kit, the signs and the fence keep their own colors, so the figure is dark and orange on pale and stays easy to see.</li><li><b>One block, two maps.</b> <b>quick.map</b> and <b>slow.map</b> are the same path with different signs. The scenes differ only in the character file they load.</li><li><b>Everything that stops you is drawn.</b> The pines at each end are solid blocks. A gate is a block, and the link is on its cell.</li></ul>"
+    },
+    {
+      "head": "Level 3: Big Things in Front",
+      "html": "<h1>Level 3: Big Things in Front</h1><p>The same figure, the same slow walk, and the same pale hills, with a big fence and big flowers drawn along the bottom of the screen. A flower is more than six times as tall as Kit, so he must be far behind it. Two signs say how. Walk to the gate at the end.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 3 is made</h1><ul><li><b>Size comes from neighbors.</b> Nothing about Kit changes from level 2. The only new things are blocks in the rows under the path: a fence with wide posts and two tall flowers, drawn in strong colors that the far palette leaves alone. Next to them the pale hills and the 8 pixel Kit read as far away.</li><li><b>It repeats.</b> The picture under the path is 160 pixels wide, so the map uses it five times with the same few blocks. Open <b>front.map</b> to see the fence and flowers laid in a row.</li><li><b>Lower is nearer.</b> The big things are below the path on the screen and the hills above it, which is how a flat picture says what is close.</li></ul>"
     },
     {
       "head": "What it cannot do",
-      "html": "<h1>What it cannot do</h1><p>These are the engine&rsquo;s limits, so you can plan around them.</p><ul><li><b>No live blur or fade.</b> The engine cannot blur a picture or fade it with distance while the game runs. The far plane is paler because its pictures are drawn that way and its scene loads another palette.</li><li><b>No two planes at once.</b> A scene shows one map. The near and the far plane are never on screen together, so nothing in the far plane can be seen from the near one, and a thing in one can never touch a thing in the other.</li><li><b>No change of size while you walk.</b> The hero does not shrink as he walks away. He changes size only when a link loads the scene with the smaller character.</li><li><b>No memory between planes.</b> A scene loads its map fresh each time, so a coin you took is back when you return. Only the score, hit points and lives stay.</li><li><b>A smaller picture is not a smaller hero.</b> The far Kit is half size to look at, but his box for bumping into things is the same as the near Kit&rsquo;s.</li></ul>"
+      "html": "<h1>What it cannot do</h1><p>These are the engine’s limits, so you can plan around them.</p><ul><li><b>No change of size while you walk.</b> Kit does not shrink as he gets farther. A scene loads one character file, and he is that size for the whole scene. To make him smaller, load the scene with a smaller character.</li><li><b>No slow motion by itself.</b> The engine moves him a whole number of pixels a frame. Slower is fewer pixels or a longer pause, both written in the character file.</li><li><b>No depth.</b> The hills slide along at the same speed as the ground. A scene cannot move its far layers slower than its near ones. (The Starters named <b>PARALLAX</b> and <b>BELTWAY</b> on the Sample CD fake it another way.)</li><li><b>A tiny picture is not a tiny hero.</b> The far Kit is eight pixels tall, but his box for bumping into things is still two blocks tall and one wide, like the near Kit’s. Keep the air above him clear.</li><li><b>Few colors.</b> A scene has 256 colors, and the far palette makes pale ones from the same numbers. You cannot blur or fade a picture while the game runs.</li></ul>"
     },
     {
       "head": "Make it yours",
-      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>On the <b>Scenes</b> tab, change which cell the near trail lands on in the far scene.</li><li>In the palette file the far scene loads, make the haze stronger or weaker.</li><li>Load <b>hero.chr</b> in the far scene in place of <b>far.chr</b> and see the big Kit among the small trees.</li><li>Draw a second far tree in the <b>Blocks</b> tab and put it in <b>far1.map</b>.</li><li>Add a link from the far plane to a new third plane that is paler still.</li></ul><p>The home page&rsquo;s <b>Starters</b> tab has more small games like this one.</p>"
+      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>Open <b>slow.chr</b> and change the x of the walking frames from 3 to 2, or the pause from 2 to 3. He walks even slower.</li><li>Load <b>hero.chr</b> and <b>hero.cbl</b> in a far scene in place of <b>slow.chr</b> and <b>tiny.cbl</b> and see the big Kit among the pale hills.</li><li>In the <b>Blocks</b> tab, edit a tiny pose: give him a different color jacket, and see if he still reads at a glance.</li><li>Make the haze stronger in <b>far.pal</b>.</li><li>Add a third far scene with an even smaller Kit and a thinner road.</li></ul><p>The home page’s <b>Starters</b> tab has more small games like this one: <b>Near and Far</b> for a far plane drawn at half size, and <b>Maps Within Maps</b> for a world, a town and a house.</p>"
     }
   ]
 }
