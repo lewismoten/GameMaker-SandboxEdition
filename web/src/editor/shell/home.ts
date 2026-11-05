@@ -295,7 +295,8 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
    * Sandbox while `c` has none; its Another button picks again from the same collection.
    */
   const feature = (c: Category = current) => {
-    const from = featurable(c).length ? c : FIRST_CATEGORY;
+    // this collection's, else Sandbox's, else any collection that has a game (a removed game must not stay on show)
+    const from = [c, FIRST_CATEGORY, ...CATEGORIES.map((x) => x.id)].find((x) => featurable(x).length) ?? c;
     const pick = pickFeatured(featurable(from), top.game?.key, (g) => !!g.entry?.files.some((f) => f.endsWith('.rec')));
     if (!pick) return;
     top.show(pick, { featured: true, onAnother: () => feature(from) });
@@ -392,8 +393,8 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     removeAllBtn.hidden = c !== 'imported' || !lib.own(c).length;
     historyBtn.hidden = c !== 'imported' || !importHistory().length;
     // games deleted in the last 7 days (deletedShelf.ts) can come back from My games and Imported
-    recentBtn.hidden = true;
-    if (isOwn(c))
+    if (!isOwn(c)) recentBtn.hidden = true;
+    else
       void shelfList()
         .then((l) => (recentBtn.hidden = !isOwn(current) || !l.length))
         .catch(() => undefined);
