@@ -1,13 +1,32 @@
 // The way through the game, as orders for the bot (kit/starter/bot.ts): the keys a person
 // would press, level by level, taking every coin on the way. Each sign's lesson is acted out,
 // the mistake included, once: in level 1 Kit first tries to hop over Plop (the mound's roof stops him),
-// then walks into the crate and Plop drops into the dip; in level 2 he walks into the two crates, stops
+// then walks into the crate (nothing happens: a crate gives way only to a hit), hits it with Enter twice
+// (cracked, then rubble) and Plop drops into the dip; in level 2 he hits the two crates (four hits), stops
 // inside the tunnel and lets soft Pip drift down through him. The checks here fail if anything else happens.
 import { SCAN } from '../../kit/starter/ids';
 import type { Result, StarterBot } from '../../kit/starter/bot';
 import { ORIGIN } from '../../kit/starter/map';
-import { GROUND, MON_ROW } from '../src/levels';
+import { MLEN } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
+import { SCAN_ENTER } from '../src/hero';
+import { CORK_ROW, GROUND, MON_ROW, buildLevels } from '../src/levels';
 import { PIP, PLOP } from '../src/monsters';
+
+const { book } = buildLevels();
+/** The name of the block in level cell (x, row). */
+function cellAt(bot: StarterBot, x: number, row: number): string {
+  const n = bot.sim.w.map[(row + ORIGIN) * MLEN + x + ORIGIN];
+  for (const [name, i] of book.index) if (i === n) return name;
+  return `block ${n}`;
+}
+
+/** One hit: tap Enter, then wait out the swing (a dozen ticks) the way a person watches it land. */
+async function hit(bot: StarterBot, after = 16): Promise<Result> {
+  bot.sim.press(SCAN_ENTER);
+  const a = await bot.wait(3);
+  bot.sim.release(SCAN_ENTER);
+  return a ?? (await bot.wait(after));
+}
 
 /** Runs an order; anything but carrying on (a scene change, getting stuck) is an error. */
 async function must(bot: StarterBot, r: Promise<Result>, what: string): Promise<void> {
@@ -72,9 +91,19 @@ export async function inTheWay(bot: StarterBot): Promise<void> {
   await must(bot, bot.land(), 'landing');
   if (floor - highest > 24) throw new Error(`level 1: the roof should stop Kit hopping (rose ${floor - highest}px)`);
   bot.say(`Kit could not hop over Plop: the roof stopped him after ${floor - highest}px`);
-  // the real way: walk into the crate. It breaks, Plop drops into the dip.
+  // walking into the crate does nothing: it gives way only to a hit
   await must(bot, bot.walk(23, 'the crate'), 'to the crate');
   await must(bot, push(bot, 14), 'bumping the crate');
+  if (cellAt(bot, 24, CORK_ROW) !== 'crate') throw new Error(`level 1: walking into the crate should not break it; it is ${cellAt(bot, 24, CORK_ROW)}`);
+  bot.say('walking into the crate did nothing');
+  await must(bot, bot.wait(READ), 'reading the sign');
+  // the real way: hit it. The first hit cracks it, the second breaks it, and Plop drops into the dip.
+  await must(bot, hit(bot), 'the first hit');
+  if (cellAt(bot, 24, CORK_ROW) !== 'cracked') throw new Error(`level 1: the first hit should crack the crate; it is ${cellAt(bot, 24, CORK_ROW)}`);
+  bot.say('the first hit cracked the crate');
+  await must(bot, bot.wait(8), 'looking at the crack');
+  await must(bot, hit(bot), 'the second hit');
+  if (cellAt(bot, 24, CORK_ROW) !== 'rubble') throw new Error(`level 1: the second hit should break the crate; it is ${cellAt(bot, 24, CORK_ROW)}`);
   await must(bot, bot.wait(10), 'watching Plop');
   const p = monsterAt(bot, PLOP);
   if (p.row !== GROUND) throw new Error(`level 1: Plop should have dropped into the dip (row ${GROUND}); row ${p.row}`);
@@ -95,15 +124,22 @@ export async function slowAndSoft(bot: StarterBot): Promise<void> {
   await must(bot, bot.wait(READ), 'reading');
   await must(bot, bot.walk(10, 'the second sign'), 'to the second sign');
   await must(bot, bot.wait(READ), 'reading');
-  await must(bot, bot.walk(17, 'the tunnel'), 'to the tunnel');
+  await must(bot, bot.walk(18, 'the crates'), 'to the crates');
   const top = monsterAt(bot, PIP).row;
   if (top !== MON_ROW - 1) throw new Error(`level 2: Pip should sit on two crates (row ${MON_ROW - 1}); row ${top}`);
-  // bump the crates, then stand still: Pip is soft, so it drifts down through Kit
-  await must(bot, push(bot, 9), 'bumping the crates');
+  // hit the crates (two hits each); the last hit breaks the lower one with soft Pip on top of it. Pip is soft,
+  // so when Kit walks on into its column, it drifts down through him.
+  for (let n = 1; n <= 3; n++) {
+    await must(bot, hit(bot), `hit ${n}`);
+    await must(bot, bot.wait(6), 'looking');
+  }
+  if (monsterAt(bot, PIP).row !== MON_ROW) throw new Error(`level 2: Pip should rest on the last crate (row ${MON_ROW}); row ${monsterAt(bot, PIP).row}`);
+  await must(bot, hit(bot, 8), 'the last hit');
+  for (const r of [CORK_ROW, CORK_ROW - 1])
+    if (cellAt(bot, 19, r) !== 'rubble') throw new Error(`level 2: four hits should break both crates; row ${r} is ${cellAt(bot, 19, r)}`);
   const kitX = bot.px.x;
   const startY = monsterAt(bot, PIP).y;
-  await must(bot, bot.wait(8), 'watching Pip start');
-  if (monsterAt(bot, PIP).y <= startY) throw new Error('level 2: Pip should be drifting down');
+  bot.sim.press(SCAN.right);
   let slowest = 0;
   for (let i = 0; i < 80 && monsterAt(bot, PIP).row < GROUND - 1; i++) {
     const y0 = monsterAt(bot, PIP).y;
@@ -114,9 +150,11 @@ export async function slowAndSoft(bot: StarterBot): Promise<void> {
     );
     slowest = Math.max(slowest, monsterAt(bot, PIP).y - y0);
   }
+  bot.sim.release(SCAN.right);
+  if (monsterAt(bot, PIP).y <= startY) throw new Error('level 2: Pip should be drifting down');
   if (monsterAt(bot, PIP).row !== GROUND - 1) throw new Error(`level 2: Pip should land on the floor (row ${GROUND - 1}); row ${monsterAt(bot, PIP).row}`);
   if (slowest > 3) throw new Error(`level 2: Pip should drift, not drop (${slowest}px in a tick)`);
-  if (Math.abs(bot.px.x - kitX) > 12) throw new Error(`level 2: soft Pip should not push Kit (${kitX} to ${bot.px.x})`);
+  if (bot.px.x - kitX < 14) throw new Error(`level 2: soft Pip should not stop Kit walking through it (${kitX} to ${bot.px.x})`);
   bot.say(`Pip drifted down through Kit, at most ${slowest}px a tick`);
   await must(bot, bot.walk(26, 'the third sign'), 'to the third sign');
   await must(bot, bot.wait(READ), 'reading');

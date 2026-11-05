@@ -240,7 +240,7 @@ const LISTED: CastMember[] = [
       { game: 'giant', as: 'pops a stone giant one part at a time, steps up to reach its head, and waits for a tin robot to stop blinking red' },
       { game: 'short-lived', as: 'waits for a bubble to pop and a sleepy gumdrop to wake up' },
       { game: 'follower', as: 'walks and jumps with Puff, a winged pup that flies after the hero and waits under a ledge' },
-      { game: 'drop-down', as: 'breaks a crate and watches Plop, a round green friend, drop out of the way' },
+      { game: 'drop-down', as: 'hits a crate and watches Plop, a round green friend, drop out of the way' },
       { game: 'flock', as: 'walks and jumps under five birds that fly in a V and keep their shape' },
       { game: 'three-tokens', as: 'collects purple tokens until a gate will take its price, and then walks out through the gate' },
       { game: 'one-more-try', as: 'falls into a pit too deep to climb out of, and touches a post to start the level over' },

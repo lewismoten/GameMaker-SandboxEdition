@@ -1,64 +1,64 @@
 {
-  "version": 1,
-  "game": "drop-down",
-  "rand": {
-    "seed": 1,
-    "per": "scene"
+ "version": 1,
+ "game": "drop-down",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "KU0UzStNI80rTSjNAzkUuQNNBc0DTQ7NKBwDnBgcA5waTQY5ArkZzQNNCs0rTR7NA00="
   },
-  "segments": [
-    {
-      "scene": 2,
-      "keys": "KU0UzStNI80rTSjNAzkUuQNNBc0DTQ7NCk0ZzQNNCs0rTR7NA00="
-    },
-    {
-      "scene": 3,
-      "keys": "KU0FzStNHs0rTSPNA00JzRNNJM0rTSjNA00PzQNN"
-    }
-  ],
-  "chapters": [
-    {
-      "scene": 2,
-      "title": "Level 1: In the Way"
-    },
-    {
-      "scene": 3,
-      "title": "Level 2: Slow and Soft"
-    }
-  ],
-  "timeline": {
-    "fps": 60,
-    "frames": 8282,
-    "chapters": [
-      {
-        "title": "Opening",
-        "frame": 0,
-        "time": 0
-      },
-      {
-        "title": "Story",
-        "frame": 913,
-        "time": 15216.666666666471
-      },
-      {
-        "title": "Level 1: In the Way",
-        "frame": 1661,
-        "time": 27683.333333333918
-      },
-      {
-        "title": "Level 2: Slow and Soft",
-        "frame": 3374,
-        "time": 56233.33333333088
-      },
-      {
-        "title": "Ending",
-        "frame": 5002,
-        "time": 83366.66666666804
-      },
-      {
-        "title": "Credits",
-        "frame": 7209,
-        "time": 120150.00000001208
-      }
-    ]
+  {
+   "scene": 3,
+   "keys": "KU0FzStNHs0rTSjNAxwDnBYcA5wWHAOcFhwDnAhNCc0ATSHNK00ozQNND80DTQ=="
   }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: In the Way"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: Slow and Soft"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 8816,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 913,
+    "time": 15216.666666666471
+   },
+   {
+    "title": "Level 1: In the Way",
+    "frame": 1661,
+    "time": 27683.333333333918
+   },
+   {
+    "title": "Level 2: Slow and Soft",
+    "frame": 3683,
+    "time": 61383.33333333013
+   },
+   {
+    "title": "Ending",
+    "frame": 5535,
+    "time": 92250.00000000396
+   },
+   {
+    "title": "Credits",
+    "frame": 7742,
+    "time": 129033.333333348
+   }
+  ]
+ }
 }
