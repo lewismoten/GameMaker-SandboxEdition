@@ -1,6 +1,7 @@
 // Mac test for the touch controls model (src/controls.h): scripted touch events go in, the keys it
 // presses come out, and each scenario says what must happen. Prints one line per scenario; exit 1 on a
 // failure. Run by web/scripts/pocketControlsCheck.ts, or: c++ -std=c++17 -I../src controlstest.cpp && ./a.out
+#include <cmath>
 #include <stdio.h>
 #include <string>
 #include <vector>
@@ -235,6 +236,36 @@ int main() {
     for (int i = 0; i < 128; i++) any |= r.held[i];
     check("no key is left down once every finger has lifted", !any, r.log); }
 
+  { // Diagonal sectors: a game that binds diagonal keys gets them from the pad; one that doesn't keeps two arrows.
+    auto at = [](Run& r, int deg) {   // a finger at `deg` degrees (0 right, 90 up) on the pad, 60% of its radius out
+      double a = deg * 3.14159265 / 180;
+      r.touch(1, r.c.L.pad.cx + (int)(r.c.L.pad.r * 0.7 * cos(a)), r.c.L.pad.cy - (int)(r.c.L.pad.r * 0.7 * sin(a)));
+      r.wait(60);
+    };
+    Need carl = needs(true, true, true, true, false, false, {16, 18, 71, 73, 79, 81});
+    needAdd(carl, 44, "Down-left"); needAdd(carl, 46, "Down-right");
+    check("diagonal keys are not tiles", carl.nextra == 0 && carl.diag[0] == 71 && carl.diag[1] == 73 && carl.diag[2] == 79 && carl.diag[3] == 81, std::to_string(carl.nextra));
+    Need qe = needs(true, true, true, true, true, false, {16, 18, 44});   // 44 unlabeled: a tile (Z is not a diagonal without "down")
+    check("Q and E are the up diagonals, a bare Z is no diagonal", qe.diag[0] == 16 && qe.diag[1] == 18 && !qe.diag[2], std::to_string(qe.diag[2]));
+    { Need z = needs(true, true, true, true, true, false); needAdd(z, 44, "Down-left"); needAdd(z, 46, "Chew");
+      check("Z with a down label is the down-left diagonal, C as Chew is a tile", z.diag[2] == 44 && !z.diag[3] && z.nextra == 1, std::to_string(z.nextra)); }
+    struct { int deg, scan; } cases[] = {{45, 73}, {135, 71}, {225, 79}, {315, 81}};
+    for (auto& cs : cases) {
+      Run r(def, carl); at(r, cs.deg);
+      { std::string nm = "Carl: pad at " + std::to_string(cs.deg) + " degrees sends its numpad diagonal alone"; check(nm.c_str(), r.held[cs.scan] && !r.held[S_UP] && !r.held[S_DOWN] && !r.held[S_LEFT] && !r.held[S_RIGHT], r.log); }
+    }
+    { Run r(def, carl); at(r, 20); check("Carl: 20 degrees is still plain right", r.held[S_RIGHT] && !r.held[73] && !r.held[S_UP], r.log); }
+    { Run r(def, carl); at(r, 70); check("Carl: 70 degrees is still plain up", r.held[S_UP] && !r.held[73] && !r.held[S_RIGHT], r.log); }
+    { Run r(def, carl); at(r, 45); r.up(1); r.wait(30);
+      check("Carl: the 60 ms grace holds the diagonal after a dropout", r.held[73], r.log);
+      r.wait(200); check("Carl: the diagonal lets go after the grace", !r.held[73], r.log); }
+    { Run r(def, carl); at(r, 45); at(r, 10); check("Carl: sliding from the diagonal to right swaps keys", r.held[S_RIGHT] && !r.held[73], r.log); }
+    { Run r(def, platformer()); at(r, 45); check("no diagonal keys: up-right is Up and Right together", r.held[S_UP] && r.held[S_RIGHT], r.log); }
+    { Need up = needs(true, true, true, true, true, false, {16, 18});   // Teddy: only up diagonals bound
+      Run r(def, up); at(r, 45); check("Teddy: up-right sends Q/E diagonal (E)", r.held[18] && !r.held[S_UP], r.log);
+      Run r2(def, up); at(r2, 315); check("Teddy: down-right has no diagonal, so Down and Right", r2.held[S_DOWN] && r2.held[S_RIGHT], r2.log); }
+  }
+
   { // Layout: every size, both hands, every key set: targets at least 48 px, inside the game view, none overlapping.
     bool ok = true;
     std::string why;
@@ -243,7 +274,7 @@ int main() {
         for (int ne = 0; ne < 3; ne++) {
           Settings s; s.lefty = lefty; s.padSize = ps;
           Need n = needs(true, true, true, true, true, true);
-          for (int i = 0; i < ne * 3; i++) needAdd(n, 16 + i);  // none, 3, 6 extra keys (more than six go in a second row over the pad: that menu is modal)
+          for (int i = 0; i < ne * 3; i++) needAdd(n, 20 + i);  // none, 3, 6 extra keys (more than six go in a second row over the pad: that menu is modal)
           Layout l = makeLayout(s, n);
           struct D { Disc d; const char* nm; } ds[] = {{l.pad, "pad"}, {l.space, "space"}, {l.enter, "enter"}};
           for (auto& a : ds) {
