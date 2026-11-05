@@ -1,6 +1,6 @@
 // The Starters' sting (STARTER.FLI), about 3 seconds before a Starter's title: grass and dirt blocks
-// drop in and stack into the word STARTER (letters 5 blocks wide and 7 tall, a block apart, so no two
-// letters run together), Kit hops up onto the last letter and cheers, and a sign below reads "A STARTER
+// drop in and stack into the word STARTER (letters 6 blocks wide and 9 tall with two-block strokes, a block apart, so no two
+// letters run together), Kit hops in from the right onto the last letter and cheers, and a sign below reads "A STARTER
 // GAME". The words STARTER GAMES are also lettered in the plain 8x8 font across the top from the first frame. It uses the Starters' own palette and Kit from hero.ts, and
 // it replaces the Sandbox Software sting (games/kit/sandlogo.ts) in the four Starters. No sound: a
 // slide list plays an FLI silently, as with the other sting.
@@ -19,27 +19,27 @@ const W = 320;
 const H = 200;
 /** FLI speed in 1/70 s: 5 is 14 frames a second. */
 const SPEED = 5;
-const FRAMES = 34;
+const FRAMES = 38;
 const FADE = 2;
 const B = 6; // a block is 6x6 pixels
-const GROUND = 150;
-const WORD_X = 14;
-const ROWS = 7;
-const COLS = 5;
-const SIGN_AT = 14;
+const GROUND = 154;
+const WORD_X = 16;
+const ROWS = 9;
+const COLS = 6;
+const SIGN_AT = 15;
 /** Blocks start dropping in fives per frame and fall for FALL frames. */
-const PER_FRAME = 7;
+const PER_FRAME = 16;
 const FALL = 3;
-const HOP_AT = 20;
+const HOP_AT = 18;
 const HOP = 4;
 
-// each letter is 5 blocks wide and 7 tall
+// each letter is 6 blocks wide and 9 tall, strokes two blocks thick so the word reads at 320x200
 const FONT: Record<string, string[]> = {
-  S: ['11111', '10000', '10000', '11111', '00001', '00001', '11111'],
-  T: ['11111', '00100', '00100', '00100', '00100', '00100', '00100'],
-  A: ['01110', '10001', '10001', '11111', '10001', '10001', '10001'],
-  R: ['11110', '10001', '10001', '11110', '10100', '10010', '10001'],
-  E: ['11111', '10000', '10000', '11110', '10000', '10000', '11111'],
+  S: ['011110', '111111', '110000', '111110', '011111', '000011', '000011', '111111', '011110'],
+  T: ['111111', '111111', '001100', '001100', '001100', '001100', '001100', '001100', '001100'],
+  A: ['011110', '111111', '110011', '110011', '111111', '111111', '110011', '110011', '110011'],
+  R: ['111110', '111111', '110011', '110011', '111110', '111100', '110110', '110011', '110011'],
+  E: ['111111', '111111', '110000', '111100', '111100', '110000', '110000', '111111', '111111'],
 };
 
 interface Cell {
@@ -102,12 +102,11 @@ function sign(p: Pixels, pal: Pal): void {
 
 /** Kit's pose (top and bottom block names), left x and feet y at frame f. */
 function kitAt(f: number): [[string, string], number, number] {
-  const start = 270;
+  const start = 330;
   const land = 225;
   const top = GROUND - ROWS * B;
-  if (f < HOP_AT) return [f % 12 > 9 ? ['blink.top', 'stand'] : f % 12 > 5 ? ['look.top', 'stand'] : ['stand.top', 'stand'], start, GROUND];
   if (f < HOP_AT + HOP) {
-    const t = (f - HOP_AT + 1) / HOP;
+    const t = Math.max(0, f - HOP_AT + 1) / HOP;
     const y = GROUND + (top - GROUND) * t - Math.sin(Math.PI * t) * 18;
     const pose: [string, string] = t < 0.45 ? ['up.top', 'jumpup'] : t < 1 ? ['oh.top', 'fall'] : ['stand.top', 'stand'];
     return [pose, Math.round(start + (land - start) * t), Math.round(y)];
@@ -132,17 +131,24 @@ export function starterStingFli(): Uint8Array {
   for (let f = 0; f < FRAMES; f++) {
     const p = new Pixels(W, H);
     p.px.set(base.px);
-    list.forEach((c, i) => {
+    const drop = list.map((c, i) => {
       const t = f - Math.floor(i / PER_FRAME);
-      if (t < 0) return;
       const y = GROUND - (ROWS - c.y) * B;
-      const dy = t >= FALL ? 0 : -Math.round((y + B) * (1 - (t + 1) / FALL) ** 2);
+      return { c, t, y, dy: t >= FALL ? 0 : -Math.round((y + B) * (1 - (t + 1) / FALL) ** 2) };
+    });
+    // a dark outline round every block already in place keeps the word crisp against the sky
+    for (const { c, t, y } of drop) if (t >= FALL) p.rect(WORD_X + c.x * B - 1, y - 1, B + 2, B + 2, pal.c('ink', 0));
+    drop.forEach(({ c, t, y, dy }) => {
+      if (t < 0) return;
       p.blit(blocks[(c.grass ? 1 : 0) + 2 * ((c.x + c.y) % 3)], WORD_X + c.x * B, y + dy);
     });
-    const [[top, bottom], kx, ky] = kitAt(f);
-    const key = `${top}/${bottom}`;
-    if (!poses.has(key)) poses.set(key, heroPicture(hero, top, bottom));
-    scaleBlit(p, poses.get(key)!, kx, ky - 80, 2);
+    // Kit stays out of sight until the word is built, then hops in from the right
+    if (f >= HOP_AT - 1) {
+      const [[top, bottom], kx, ky] = kitAt(f);
+      const key = `${top}/${bottom}`;
+      if (!poses.has(key)) poses.set(key, heroPicture(hero, top, bottom));
+      scaleBlit(p, poses.get(key)!, kx, ky - 80, 2);
+    }
     if (f >= SIGN_AT) sign(p, pal);
     centered(p, 2, 'STARTER GAMES', pal.c('white', 3), 2, pal.c('ink', 0), W / 2, pal.c('ink', 0));
     frames.push(p.px);
