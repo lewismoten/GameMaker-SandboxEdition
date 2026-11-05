@@ -1,38 +1,41 @@
 #!/usr/bin/env python3
-"""Drive the Pocket Player 2.8 setup flow over serial as a pretend user with a chosen picture flip H (0..3) and touch wiring M (0..7).
-usage: flowdrive.py PORT H M FAULT   (FAULT 0..3 = which color fault the pretend panel has: bit0 inverted, bit1 red/blue swapped)
-Needs the board freshly 'S forget nvs' + restart (step 1). Prints the board's lines; the same tables as src/setupflow.h."""
+"""Drive the Pocket Player 2.8 four-step setup over serial as a pretend user (BOOT presses and taps), for a glass that
+needs MIRROR presses of step 1, TURN presses of step 2, ORIENT presses of step 3 and COLORS presses of step 4.
+usage: pocketSetupDrive.py PORT MIRROR TURN ORIENT COLORS [WIRING]   (MIRROR 0/1, TURN 0/1, ORIENT 0/1, COLORS 0..3, WIRING 0..7 of the touch chip, default 5)
+Needs the board freshly 'S forget nvs' + restart (step 1). Run it with the PlatformIO python (has pyserial).
+Each BOOT press is 'S boot' and an OK is 'S tap RX RY' (any position counts); the three calibration taps use raw readings
+made from the wiring the way src/touchcal.h expects (bit 2: axes swapped, bit 1: the x axis counts down, bit 0: the y axis does)."""
 import sys, time, serial
-port, H, M, FAULT = sys.argv[1], int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4])
-LAYOUT = [[0,1,2,3],[0,2,3,1],[1,0,3,2]]
-def raw_quad_of(p, m):
-    sw, fx, fy = m>>2&1, m>>1&1, m&1
-    px, py = (p&1)^fx, (p>>1)^fy
-    return (py|px<<1) if sw else (px|py<<1)
-def raw_xy_quad(rq): return (3300 if rq&1 else 700, 3300 if rq&2 else 700)
-def raw_of_point(x, y, m):  # raw reading of a screen point (after the picture is right), by the pretend wiring
-    sw, fx, fy = m>>2&1, m>>1&1, m&1
-    def ax(v, span, flip):
-        f = (v-24)/(span-1-48); f = min(max(f,0),1)
-        if flip: f = 1-f
-        return int(450+f*3200)
-    a = ax(x, 320, fx); b = ax(y, 240, fy)
-    return (b, a) if sw else (a, b)
+port = sys.argv[1]
+mirror, turn, orient, colors = (int(a) for a in sys.argv[2:6])
+wiring = int(sys.argv[6]) if len(sys.argv) > 6 else 5
 s = serial.Serial(port, 115200, timeout=0.2)
 def pump(t):
-    end = time.time()+t
+    end = time.time() + t
     while time.time() < end:
-        l = s.readline().decode('utf-8','replace').rstrip()
+        l = s.readline().decode('utf-8', 'replace').rstrip()
         if l and ('setup' in l or 'SETUP' in l or 'cal' in l or 'display' in l): print('<', l)
-def send(c, wait=1.0):
-    s.write((c+'\n').encode()); print('>', c); pump(wait)
+def send(c, wait=1.2):
+    s.write((c + '\n').encode()); print('>', c); pump(wait)
+def raw_of(x, y):  # raw reading of a logical screen point (320 x 240) for the pretend wiring, margin 24
+    sw, fx, fy = wiring >> 2 & 1, wiring >> 1 & 1, wiring & 1
+    def ax(v, span, flip):
+        f = min(max((v - 24) / (span - 1 - 48), 0), 1)
+        return int(450 + (1 - f if flip else f) * 3200)
+    a, b = ax(x, 320, fx), ax(y, 240, fy)
+    return (b, a) if sw else (a, b)
 pump(1)
-for r in range(3):
-    q = next(q for q in range(4) if LAYOUT[r][q]==H) ^ H
-    x, y = raw_xy_quad(raw_quad_of(q, M)); send(f'S tap {x} {y}', 1.3)
 send('S st')
-# step 2: tap the set whose fault matches
-cx, cy = (FAULT&1)*160+80, 24+(FAULT>>1)*108+54
-x, y = raw_of_point(cx, cy, M); send(f'S tap {x} {y}', 1.0)
-pump(6)  # a changed color mode restarts the board
-send('S st')
+for _ in range(mirror): send('S boot')
+send('S tap 2000 2000')          # OK step 1
+for _ in range(turn): send('S boot')
+send('S tap 2000 2000')          # OK step 2
+for _ in range(orient): send('S boot')
+send('S tap 2000 2000')          # OK step 3
+for _ in range(colors): send('S boot')
+send('S tap 2000 2000', 2.0)     # OK step 4
+for x, y in ((24, 24), (295, 24), (24, 215)):
+    rx, ry = raw_of(x, y); send(f'S tap {rx} {ry}', 1.5)
+pump(2)
+rx, ry = raw_of(264, 218); send(f'S tap {rx} {ry}', 1.5)  # Done on the calibration's check screen
+send('S st', 2.5)
