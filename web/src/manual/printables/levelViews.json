@@ -1,5 +1,6 @@
 {
   "and-gate": {"hash":"530dcbe8f394fd64","maps":{"one.map|gate.bbl":[0,14,57,10],"two.map|gate.bbl":[0,1,60,26]}},
+  "around-the-room": {"hash":"25705521d6a84082","maps":{"four.map|four.bbl":[0,0,36,57],"one.map|one.bbl":[0,9,61,22],"three.map|three.bbl":[4,5,59,25],"two.map|two.bbl":[0,10,78,48]}},
   "beams": {"hash":"dbaebd48099a210b","maps":{"beams.map|beams.bbl":[0,13,67,10],"fog.map|fog.bbl":[0,13,75,10],"glow.map|glow.bbl":[0,13,65,10]}},
   "beat-the-clock": {"hash":"4e4fc8288cffa6ea","maps":{"one.map|one.bbl":[1,2,65,46],"two.map|two.bbl":[0,2,64,29]}},
   "beltway": {"hash":"87c58f2b56e91787","maps":{"one.map|bw1.bbl":[8,10,16,10],"two.map|bw2.bbl":[8,10,16,10]}},
