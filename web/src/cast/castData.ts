@@ -101,6 +101,7 @@ export const CAST_GAMES = {
   'color-doors': ['Color Doors', 'starter'],
   shadows: ['Little Shadows', 'starter'],
   beams: ['Beams and Fog', 'starter'],
+  'lightning-bugs': ['Lightning Bugs', 'starter'],
   'blocks-budget': ['150 Blocks', 'starter'],
   'near-far': ['Near and Far', 'starter'],
   'very-far': ['Walking Very Far', 'starter'],
@@ -280,6 +281,7 @@ const LISTED: CastMember[] = [
       { game: 'diagonal-wrap', as: 'follows a road down the map and out of the bottom, then round the map three times on a tilted one' },
       { game: 'shore', as: 'crosses a pier over a sea that turns itself, then walks a beach where the waves run up the sand and back' },
       { game: 'twinkle', as: 'walks a night meadow under stars that blink all at once, then under stars that twinkle in no step' },
+      { game: 'lightning-bugs', as: 'walks a meadow at dusk past six fireflies that blink as one, then a meadow of fireflies that each keep their own time' },
       {
         game: 'flicker',
         as: 'walks a castle hall of pulsing and flickering torches and waving flags, a cliff beside a waterfall, and a hill with a fire and its sparks',
