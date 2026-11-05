@@ -20,9 +20,9 @@ export function titlePicture(pal: Pal, heroes: Pixels[], name: string, tagline: 
   text(p, rx + 10, 40, tagline, look.ribbonText);
   // the room: a frame of ground, the inside in sky, and the four heroes on its four sides
   const X0 = 80;
-  const Y0 = 60;
+  const Y0 = 58;
   const RW = 160;
-  const RH = 130;
+  const RH = 116;
   const T = 10;
   bevel(p, X0, Y0, RW, RH, pal.r('grass'), 2, 2);
   p.rect(X0 + T, Y0 + T, RW - 2 * T, RH - 2 * T, pal.c('sky', 3));
