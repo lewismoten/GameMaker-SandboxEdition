@@ -1,0 +1,36 @@
+{
+  "title": "Under the Hood",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "hero": "LIAN",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.0",
+  "blurb": "Three short levels about what the player program is made of. Level 1 walks along a row of bytes and picks up the four at offset 2575B that spell Play. Level 2 tries two words in a four-byte slot: START does not fit, GO and two spaces does. Level 3 is about asking first: make a backup copy, change only your own copy, and leave the credits alone. None of the levels changes a real player; the signs only show the ideas. Play it, then read the Programmer's Guide chapter on patching the player.",
+  "exe": "UNDRHOOD.EXE",
+  "dosName": "UNDRHOOD",
+  "sound": "sb",
+  "label": {
+    "background": "#e6f2ea",
+    "band": "#1f6b3a",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "3 short levels",
+    "hours": 1,
+    "background": "#1f6b3a",
+    "accent": "#a8ffb8",
+    "ink": "#ffffff",
+    "tagline": "A program is a row of bytes.",
+    "back": "A small explorer in a blue beanie walks through a player program, one byte at a time. Pick up the four bytes that spell Play, try two words in a four-byte slot, and learn what to ask before changing anything. Read the signs, then read the Programmer's Guide chapter on patching the player.",
+    "features": ["Signs in the levels explain each idea", "Real offsets and sizes from the DOS player", "Made to be copied and taken apart"],
+    "shots": [
+      ["one.map", 18, 1],
+      ["two.map", 18, 1]
+    ],
+    "rating": "Everyone"
+  },
+  "acceptedFindings": ["facing s3 The hero climbs side on"]
+}
