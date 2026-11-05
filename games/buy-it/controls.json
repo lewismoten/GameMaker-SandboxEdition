@@ -35,10 +35,6 @@
     "31": {
       "short": "Climb down",
       "long": "Same as the Down arrow."
-    },
-    "60": {
-      "short": "Your Money",
-      "long": "Show your status page, with your Money."
     }
   },
   "joystick": {
@@ -48,7 +44,6 @@
     }
   },
   "counters": {
-    "3": "Money: each coin adds one; a stall takes its price (F2 shows it).",
     "20": "Gold keys carried: a stall hands one over; the gold door takes one."
   },
   "sounds": {
