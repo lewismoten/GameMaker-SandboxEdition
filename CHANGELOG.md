@@ -164,6 +164,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Fixed
 
+- On a phone held sideways, New game keeps its three starts (Ready to play, Empty, Describe it) in one row at the bottom, so Ready to play no longer scrolls out of view.
 - On the desk's PC screen and dos.html, a keyboard user is no longer stuck: Shift+Tab leaves the screen (the screen's name says so), and the Sound Boaster note is a labeled region.
 - On a phone, the Sort, Show and Remove all imported controls above a long list of imported games no longer sit on top of the first tiles.
 - Choosing a link or button that opens another page now moves keyboard focus to that page's heading, so a screen reader says where you are. Opening the site, Back and Forward, and changes the page makes itself leave focus alone.
