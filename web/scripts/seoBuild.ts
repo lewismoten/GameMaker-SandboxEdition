@@ -47,7 +47,7 @@ import {
 } from '../src/seo/site';
 import { FORK_NOTE, NOTICE_URL, PRODUCT } from '../src/edition';
 import { magazineJsonLd, siteLinksHtml, websiteJsonLd } from '../src/seo/siteSections';
-import { isStarterGame } from '../src/project/starter';
+import { byStarterGroup, isStarterGame } from '../src/project/starter';
 import { hasBizarreTab, isBizarreGame } from '../src/project/bizarre';
 
 const HEAD_MARK = '<!--SEO:HEAD-->';
@@ -315,7 +315,25 @@ function guideHead([id, title, html]: GuideSection): string {
   return `${HEAD_START}${meta}\n    ${open}\n    ${STYLE}${HEAD_END}`;
 }
 
-function guideBody([id, title, html]: GuideSection): string {
+/** The How do I…? list as plain text for crawlers: each Starter's questions under its group, linked to the Starter's play page (the app swaps in its searchable index). */
+function howDoIList(catalog: CdCatalogEntry[]): string {
+  const starters = playable(catalog).filter((g) => isStarterGame(g) && (g.original?.manual as { howDoI?: { q: string }[] } | undefined)?.howDoI?.length);
+  return byStarterGroup(starters)
+    .map(
+      (grp) =>
+        `<h3>${escapeHtml(grp.name)}</h3>\n` +
+        grp.games
+          .map((g) => {
+            const qs = (g.original!.manual as unknown as { howDoI: { q: string }[] }).howDoI;
+            return `<h4><a href="${pageHref(g)}">${escapeHtml(g.title)}</a></h4>\n<ul>${qs.map((q) => `<li>${escapeHtml(q.q)}</li>`).join('')}</ul>`;
+          })
+          .join('\n'),
+    )
+    .join('\n');
+}
+
+function guideBody([id, title, html]: GuideSection, catalog?: CdCatalogEntry[]): string {
+  if (id === 'how-do-i' && catalog) html = html.replace(/<p>The searchable list shows here once the page has loaded\.<\/p>/, howDoIList(catalog));
   return `${BODY_START}<main class="seo-static">
       <p><a href="./#/help">${escapeHtml(PRODUCT)} Guide</a></p>
       <h1>${escapeHtml(title)}</h1>
@@ -325,9 +343,9 @@ function guideBody([id, title, html]: GuideSection): string {
 }
 
 /** A Guide section's page from index.html (as built, or as served in dev): its own title, tags and text. */
-export function guidePageHtml(indexHtml: string, section: GuideSection): string {
+export function guidePageHtml(indexHtml: string, section: GuideSection, catalog?: CdCatalogEntry[]): string {
   const html = indexHtml.replace(/<title>[^<]*<\/title>/, `<title>${escapeHtml(`${section[1]} · Guide · ${PRODUCT}`)}</title>`);
-  return swapPart(swapPart(html, HEAD_START, HEAD_END, guideHead(section)), BODY_START, BODY_END, guideBody(section));
+  return swapPart(swapPart(html, HEAD_START, HEAD_END, guideHead(section)), BODY_START, BODY_END, guideBody(section, catalog));
 }
 
 /** The Guide section whose page this is (help-<id>.html), if any. */
@@ -562,7 +580,7 @@ export function seoPages(cdRoot: string): Plugin {
       const out = html.replace(HEAD_MARK, play ? playHead(catalog) : indexHead(catalog)).replace(BODY_MARK, play ? playBody(catalog) : indexBody(catalog));
       if (g) return gamePageHtml(out, g);
       const section = !play && pageSection(ctx.path);
-      return section ? guidePageHtml(out, section) : out;
+      return section ? guidePageHtml(out, section, catalog) : out;
     },
     generateBundle: {
       // After Vite has written play.html (with its script and stylesheet links), so each
@@ -573,7 +591,7 @@ export function seoPages(cdRoot: string): Plugin {
         const index = bundle['index.html'];
         if (index?.type === 'asset')
           for (const section of GUIDE_SECTIONS)
-            this.emitFile({ type: 'asset', fileName: guideFile(section[0]), source: guidePageHtml(String(index.source), section) });
+            this.emitFile({ type: 'asset', fileName: guideFile(section[0]), source: guidePageHtml(String(index.source), section, cdCatalog(cdRoot)) });
         const play = bundle['play.html'];
         if (play?.type !== 'asset') return;
         const files = cdFiles(cdRoot);
