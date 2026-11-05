@@ -7,7 +7,7 @@ import { byCollection } from '../../project/bizarre';
 import { byStarterGroup } from '../../project/starter';
 import { isCeremony } from '../../project/ceremonies';
 import type { Grades } from '../../project/grades';
-import { graduationCards } from './homeGraduations';
+import { graduationCards, readyCeremonies, readyStrip } from './homeGraduations';
 import { allNotes, ratingOf } from '../../imported/gameNotes';
 import { groupByRating, ratingName, starsText } from '../../imported/ratings';
 import { gameTile, type HomeGame } from './homeCards';
@@ -100,6 +100,17 @@ export function libraryCards(
             new Map(lib.gamesOf(c).map((g) => [g.entry?.id ?? '', g.title])),
           )
         : [];
+    const ready =
+      c === 'starter' && (starters.filter === 'all' || starters.filter === 'grad')
+        ? readyStrip(
+            readyCeremonies(
+              lib.gamesOf(c).filter((g) => isCeremony(g.entry?.id ?? '')),
+              starters.finished,
+              grades,
+            ),
+            on.choose,
+          )
+        : [];
     cards =
       shownSections.length > 1 || c === 'starter'
         ? shownSections.flatMap((sec, n) => [
@@ -119,7 +130,7 @@ export function libraryCards(
             }),
           ])
         : (c === 'imported' ? rated : lib.gamesOf(c)).map(tile);
-    cards.push(...graduations);
+    cards = [...ready, ...cards, ...graduations];
   }
   if (!cards.length)
     cards = [
