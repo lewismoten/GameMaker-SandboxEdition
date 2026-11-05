@@ -102,6 +102,9 @@ function appShell(bundle: Bundle): string[] {
   return [...new Set(['./', ...pageGraph(bundle, 'index.html', false).filter((f) => f !== 'index.html'), ...icons])];
 }
 
+/** Generated notes for developers (the voice clip lists): in the repository, not on the site or in the offline copy. */
+const DEV_ONLY = /^(tour|phone)\/voice\/README\.md$/;
+
 const TEXT_FILE = /\.(html|js|css|json|svg|txt|xml|webmanifest)$/i;
 
 /**
@@ -119,8 +122,9 @@ function offlineFiles(bundle: Bundle): [string, number, number][] {
   const wanted = (f: string) =>
     !secret.some((dir) => f.startsWith(dir)) &&
     // the web player plays loose game folders from a web server, never from the offline copy; the 3D-print trinkets (several
-    // megabytes of STL and 3MF) download when a box or link asks for one
-    !/^(og\/|og-image\.|robots\.txt$|sitemap\.xml$|llms\.txt$|sw\.js$|index\.html$|web-player\.html$|player\/|trinkets\/|laser\/)/.test(f) &&
+    // megabytes of STL and 3MF) download when a box or link asks for one; pocket/ is the handheld's firmware
+    !/^(og\/|og-image\.|robots\.txt$|sitemap\.xml$|llms\.txt$|sw\.js$|index\.html$|web-player\.html$|player\/|trinkets\/|laser\/|pocket\/)/.test(f) &&
+    !DEV_ONLY.test(f) &&
     (!/^games\/(gameware|shareware|originals)\//.test(f) || /\.(zip|gmpak)$|\/walkthrough\.json\.gz$/.test(f));
   return [...sources]
     .filter(([f]) => wanted(f))
@@ -181,6 +185,7 @@ function noDotfiles(): Plugin {
     },
     closeBundle() {
       if (existsSync(outDir)) sweep(outDir);
+      for (const f of publicTree().filter((p) => DEV_ONLY.test(p))) rmSync(resolve(outDir, f), { force: true });
     },
   };
 }
