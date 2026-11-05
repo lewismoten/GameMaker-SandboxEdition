@@ -50,7 +50,7 @@ const LOOK = 40;
 
 /** After a soft drop: a link took Kit back to the way in, with every life still there. */
 async function softDrop(bot: StarterBot, out: Result, lives: number, what: string): Promise<void> {
-  if (out !== "link") throw new Error(`${what} should drop into the soft hole and link back; got ${out ?? 'nothing'}`);
+  if (out !== 'link') throw new Error(`${what} should drop into the soft hole and link back; got ${out ?? 'nothing'}`);
   await must(bot, bot.wait(LOOK), 'watching the room start again');
   if (bot.sim.ci.lives !== lives) throw new Error(`${what}: lives ${lives} -> ${bot.sim.ci.lives}; a soft drop costs none`);
   if (Math.abs(bot.px.x - 60) > 24) throw new Error(`${what}: back at x ${bot.px.x}, not at the way in`);

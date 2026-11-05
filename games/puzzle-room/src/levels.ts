@@ -117,7 +117,6 @@ function twoLevers(book: Book, signs: Record<SignName, Sign>): { map: StarterMap
   return { map: m, drops: fillPool(m, L1.pool, 'Red') };
 }
 
-
 /** Level 2: a blue lever on the path, a ladder to a ledge (blue lever, odd red lever), a hatch, then a blue pool. 62 blocks wide. */
 function wiredRoom(book: Book, signs: Record<SignName, Sign>): { map: StarterMap; drops: [number, number][] } {
   const g = base(62, 58);
@@ -152,7 +151,9 @@ function wiredRoom(book: Book, signs: Record<SignName, Sign>): { map: StarterMap
   m.set(L2.leverC, LEDGE_ROW, 'leverHatch');
   const holes: [number, number][] = [];
   for (let i = 0; i < HATCH_CELLS; i++) {
-    m.set(L2.hatch + i, GROUND, 'hatch').set(L2.hatch + i, GROUND + 1, 'cave').set(L2.hatch + i, GROUND + 2, 'cave');
+    m.set(L2.hatch + i, GROUND, 'hatch')
+      .set(L2.hatch + i, GROUND + 1, 'cave')
+      .set(L2.hatch + i, GROUND + 2, 'cave');
     holes.push([L2.hatch + i, GROUND + 2]);
   }
   return { map: m, drops: [...fillPool(m, L2.pool, 'Blue'), ...holes] };

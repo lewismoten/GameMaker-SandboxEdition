@@ -1,64 +1,80 @@
 {
-  "version": 1,
-  "game": "switches",
-  "rand": {
-    "seed": 1,
-    "per": "scene"
+ "version": 1,
+ "game": "puzzle-room",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU0ozStNX80DTQ=="
   },
-  "segments": [
-    {
-      "scene": 2,
-      "keys": "AU0ozQNNCs0rTTLNA00ozQNNI80DTQ=="
-    },
-    {
-      "scene": 3,
-      "keys": "AU0tzQNNZM0DTQw5ArkTOQK5ME1GzQNNBc0DSCfIA00jzQNNCM0QTRnNA00ozQNNGc0DTSjNA0sAywNN"
-    }
-  ],
-  "chapters": [
-    {
-      "scene": 2,
-      "title": "Level 1: Pull the Lever"
-    },
-    {
-      "scene": 3,
-      "title": "Level 2: Red and Blue"
-    }
-  ],
-  "timeline": {
-    "fps": 60,
-    "frames": 9160,
-    "chapters": [
-      {
-        "title": "Opening",
-        "frame": 0,
-        "time": 0
-      },
-      {
-        "title": "Story",
-        "frame": 896,
-        "time": 14933.333333333148
-      },
-      {
-        "title": "Level 1: Pull the Lever",
-        "frame": 2125,
-        "time": 35416.66666666724
-      },
-      {
-        "title": "Level 2: Red and Blue",
-        "frame": 3318,
-        "time": 55299.99999999768
-      },
-      {
-        "title": "Ending",
-        "frame": 5878,
-        "time": 97966.66666667229
-      },
-      {
-        "title": "Credits",
-        "frame": 8086,
-        "time": 134766.66666667978
-      }
-    ]
+  {
+   "scene": 2,
+   "keys": "KU0ozQNNBc0DTQXNA0gnyANNGc0rTQjNEE0yzQNNKM0DTQ/NA00="
+  },
+  {
+   "scene": 3,
+   "keys": "AU0jzQNNFM0DTQXNA0gnyANNFM0DTSjNA00IzRBNGc0DTRA5Ark="
+  },
+  {
+   "scene": 3,
+   "keys": "KU0jzQNNFM0DTQXNA0gnyANNFM0DSxLLA1An0ANNZM0DTRTNA00UzQNNKM0DTR7NA00="
   }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: Two Levers"
+  },
+  {
+   "scene": 2,
+   "title": "Level 1: Two Levers"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: Wired Room"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: Wired Room"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 11100,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 896,
+    "time": 14933.333333333148
+   },
+   {
+    "title": "Level 1: Two Levers",
+    "frame": 2125,
+    "time": 35416.66666666724
+   },
+   {
+    "title": "Level 2: Wired Room",
+    "frame": 4755,
+    "time": 79250.00000000017
+   },
+   {
+    "title": "Ending",
+    "frame": 7814,
+    "time": 130233.33333334835
+   },
+   {
+    "title": "Credits",
+    "frame": 10026,
+    "time": 167099.9999999943
+   }
+  ]
+ }
 }

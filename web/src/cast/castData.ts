@@ -59,6 +59,7 @@ export const CAST_GAMES = {
   'gravity-on-gravity-off': ['Gravity On, Gravity Off', 'starter'],
   'sounds-and-music': ['Sounds and Music', 'starter'],
   'teach-test-twist': ['Teach, Test, Twist', 'starter'],
+  'puzzle-room': ['Wired Room', 'starter'],
   'your-first-game': ['Your First Game', 'starter'],
   'who-wins': ['Who Wins?', 'starter'],
   'breakable-walls': ['Smash It', 'starter'],

@@ -13,7 +13,7 @@ import { buildHeroBlocks, heroPicture } from '../../kit/starter/hero';
 import { buildMonsterBlocks, buildMonsters } from '../../kit/starter/monsters';
 import { buildLevels } from '../src/levels';
 
-const out = process.argv[2] ?? join(tmpdir(), 'switches-preview');
+const out = process.argv[2] ?? join(tmpdir(), 'puzzle-room-preview');
 mkdirSync(out, { recursive: true });
 const { book, pal, levels } = buildLevels();
 const sky = pal.c('sky', 3);

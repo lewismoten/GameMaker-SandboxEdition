@@ -1,7 +1,7 @@
 // Re-records the title screen's demo into src/demo.ts: the bot's own run through levels 1 and 2, one
 // unbroken list of keys (the demo recorder counts game ticks across scene changes, so the second level's
 // keys follow the first's after the ticks between them). It shows each lesson once: the lever and the
-// planks it pays for, then the wrong lever (the blue one, with red planks ahead), the fall and the room starting again.
+// planks they pay for, a short bridge (a soft drop), and the red lever and the hatch (another).
 // Rebuild afterwards.
 //   cd web && npx vite-node ../games/puzzle-room/tools/gendemo.ts && npx vite-node ../games/puzzle-room/build.ts
 //   cd web && npx vite-node ../games/puzzle-room/tools/demoCheck.ts      (plays the recording on the real engine)

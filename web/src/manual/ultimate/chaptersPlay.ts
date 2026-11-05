@@ -204,7 +204,7 @@ export const LOGIC: Chapter = {
     (Chapter 2): a door that opens and shuts every few seconds, a level that changes at
     the one-minute mark.</li>
   </ul>
-  ${onCd('SWITCHES')}
+  ${onCd('SWITCHES', 'WIREDRM')}
   <h2>The gate is the exit</h2>
   <p>A “collect them all” level needs no key. Put the level’s only link on the cell of a gate
   that takes exactly as many as the map holds: 70 dots, 10 rings, 25 coins. Each pickup adds 1;

@@ -50,7 +50,8 @@
   },
   "counters": {
     "20": "Keys: not used here, but a copy can add them.",
-    "22": "Red planks paid for: the red lever adds 6, each red dotted plank takes one.",
-    "23": "Blue planks paid for: the blue lever adds 6, each blue dotted plank takes one."
+    "22": "Level 1 planks: each red lever adds 3, each red plank takes one.",
+    "23": "Level 2 planks: each blue lever adds 3, each blue plank takes one.",
+    "24": "Hatch: the red lever adds 2, each hatch square takes one."
   }
 }

@@ -1,6 +1,6 @@
 // Plays the built title demo (disk/demo.rec) on the real engine and checks it shows each lesson once:
-// level 1, level 2 entered, level 2 entered again (the one life lost to the pool), then level 3 (so the
-// second try got across) and no game over. The recording's keys play as one unbroken list, as the demo
+// level 1, level 1 again (the soft drop at the short bridge), level 2, level 2 again (the hatch), so the
+// second try got across, and no game over. The recording's keys play as one unbroken list, as the demo
 // recorder counts game ticks across scene changes.
 //   cd web && npx vite-node ../games/puzzle-room/tools/demoCheck.ts
 import { readFileSync } from 'node:fs';
@@ -21,11 +21,13 @@ const r = await replay(
   },
   { maxMinutes: 4 },
 );
-const seen = r.scenes.slice(0, 3).join(' ');
+const seen = r.scenes.slice(0, 4).join(' ');
 if (r.error) console.log(r.error);
 console.log(`demo: scenes entered ${r.scenes.join(' ')}; ${r.keysLeft} keys unplayed`);
-if (seen !== '2 3 3' || r.keysLeft || r.scenes.includes(1)) {
-  console.error(`demoCheck: expected scenes 2 3 3 with every key played and no ending; got ${seen}`);
+if (seen !== '2 2 3 3' || r.keysLeft || r.scenes.includes(1)) {
+  console.error(`demoCheck: expected scenes 2 2 3 3 with every key played and no ending; got ${seen}`);
   process.exit(1);
 }
-console.log('demoCheck ok: pulled the lever and crossed, fell in at the red planks with only the blue lever pulled, came back, no game over');
+console.log(
+  'demoCheck ok: one lever and a short bridge (a soft drop), both levers and across, then the red lever and a hatch (another soft drop); no game over',
+);
