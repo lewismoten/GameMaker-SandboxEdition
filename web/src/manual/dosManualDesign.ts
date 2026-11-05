@@ -123,7 +123,7 @@ export function designPages(shots: GameShot[]): BookletPage[] {
       area), whether it is an object to pick up, what it becomes after a time or when touched,
       what it adds to score, hit points, money, lives or a counter, and which monster it gives
       birth to. Drag one block onto another to copy its attributes.</p>
-      <p class="see"><i>On the Sample CD:</i> <code>SLIPPERY</code> (ice and springs), <code>SMASHIT</code> and <code>DIGIT</code> (blocks that break or dig), <code>SWITCHES</code>, <code>THREETOK</code> and <code>LOOKWALL</code> (counters and secret walls).</p>
+      <p class="see"><i>On the Sample CD:</i> <code>SLIPPERY</code> (ice and springs), <code>SMASHIT</code> and <code>DIGIT</code> (blocks that break or dig), <code>SWITCHES</code>, <code>THREETOK</code>, <code>ANDGATE</code> and <code>LOOKWALL</code> (counters and secret walls).</p>
       <div class="note"><strong>Time.</strong> Game time runs at about 18 ticks a second: 1092 ticks
       is a minute, and the longest wait, 9999 ticks, is about nine minutes.</div>
       <p class="see"><i>On the Sample CD:</i> <code>CLOCK</code>, <code>COUNTDWN</code> and <code>WARNFRST</code> use time.</p>`,
@@ -149,7 +149,7 @@ export function designPages(shots: GameShot[]): BookletPage[] {
       <p>Paint a map with background blocks and place up to 200 monsters on it (up to 50 are
       shown on the screen at once). <b>Z</b> zooms out to see the whole map. You can limit
       scrolling to part of the map.</p>
-      <p class="see"><i>On the Sample CD:</i> <code>SCROLL</code>, <code>ONEMAP</code> and <code>BLK150</code>.</p>`,
+      <p class="see"><i>On the Sample CD:</i> <code>SCROLL</code>, <code>ONEMAP</code>, <code>BLK150</code> and <code>HORIZON</code>.</p>`,
     ),
     page(
       '3. Designing Games',
