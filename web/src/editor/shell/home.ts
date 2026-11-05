@@ -104,6 +104,8 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     class: 'lib-search',
     placeholder: 'Find a game…',
     'aria-label': 'Find a game',
+    // the deeper search (words inside games) starts reading when the box is first used, never at load
+    onfocus: () => deep.focus(),
     oninput: () => {
       filterTiles();
       keep({ q: search.value.trim() });
@@ -160,14 +162,45 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
   });
   let current: Category = savedCategory() ?? FIRST_CATEGORY;
 
-  const filterTiles = () => {
+  // games found by words inside them (file names, text screens, the blurb…), with where: they join as the background read goes
+  let deepHits = new Map<string, string>();
+  // loaded with the first focus of the search box, so the page's first load carries none of it
+  type Deep = ReturnType<Awaited<typeof import('./homeDeepSearch')>['homeDeepSearch']>;
+  let deepNow: Deep | undefined;
+  const deep = {
+    focus: () =>
+      void import('./homeDeepSearch').then((m) => {
+        deepNow ??= m.homeDeepSearch({
+          games: () => lib.shownCats().flatMap((c) => lib.gamesOf(c.id)),
+          onMore: () => filterTiles(true),
+        });
+        return deepNow.focus();
+      }),
+    find: (q: string) => deepNow?.find(q) ?? new Map<string, string>(),
+    stop: () => deepNow?.stop(),
+  };
+  atEnd(() => deep.stop());
+  let lastShown = 0;
+
+  const filterTiles = (fromDeep = false) => {
     const q = search.value.trim().toLowerCase();
+    deepHits = deep.find(q);
     let shown = 0;
     for (const t of tiles.querySelectorAll<HTMLElement>('.card:not(.lib-drop-tile)')) {
-      const hit = !q || (t.dataset.search ?? '').includes(q);
+      const byName = !q || (t.dataset.search ?? '').includes(q);
+      const found = !byName ? deepHits.get(t.dataset.key ?? '') : undefined;
+      const hit = byName || !!found;
       t.hidden = !hit;
+      const hint = t.querySelector('.tile-hint');
+      if (found) {
+        if (hint) hint.textContent = found;
+        else t.querySelector('.tile-select')?.append(h('span', { class: 'tile-hint meta' }, found));
+      } else hint?.remove();
       if (hit) shown++;
     }
+    // a screen reader hears when the background read added games to the list
+    if (fromDeep && shown > lastShown && q) announce(`${shown} ${shown === 1 ? 'game matches' : 'games match'} “${search.value.trim()}”`);
+    lastShown = shown;
     // a collection's heading only while one of its games shows
     for (const sub of tiles.querySelectorAll<HTMLElement>('.lib-sub')) {
       let any = false;
@@ -182,7 +215,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     const elsewhere = lib
       .shownCats()
       .filter((c) => c.id !== current)
-      .map((c) => ({ c, n: lib.gamesOf(c.id).filter((g) => g.search.includes(q)).length }))
+      .map((c) => ({ c, n: lib.gamesOf(c.id).filter((g) => g.search.includes(q) || deepHits.has(g.key)).length }))
       .filter((x) => x.n);
     tiles.append(
       h(

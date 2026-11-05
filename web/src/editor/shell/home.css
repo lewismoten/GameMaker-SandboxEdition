@@ -1105,3 +1105,11 @@ a.button.with-ico {
   font: inherit;
   color: var(--text);
 }
+
+/* a game the search found by words inside it says where (homeDeepSearch.ts) */
+.tile-hint {
+  display: block;
+  font-size: 0.8em;
+  font-style: italic;
+  overflow-wrap: anywhere;
+}
