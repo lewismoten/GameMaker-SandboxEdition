@@ -6,8 +6,8 @@ import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { gradient, pool } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
 import type { Pal } from './palette';
 
-/** The group looks: meadow (The Basics), sunset (Game Feel), arena (Foes and Bosses), stage (Telling a Story), workbench (Putting It Together), neon (Showcase Tricks). */
-export type GroupStyle = 'meadow' | 'sunset' | 'arena' | 'stage' | 'workbench' | 'neon';
+/** The group looks: meadow (The Basics), sunset (Game Feel), arena (Foes and Bosses), stage (Telling a Story), workbench (Putting It Together), atlas (Bigger Worlds), neon (Showcase Tricks). */
+export type GroupStyle = 'meadow' | 'sunset' | 'arena' | 'stage' | 'workbench' | 'atlas' | 'neon';
 
 /** Where the hero and door stand on the title. */
 const GROUND = 160;
@@ -28,7 +28,7 @@ export interface Look {
 /** The sky, ground and frame of a non-meadow look, drawn behind the hero and door. */
 export function backdrop(pal: Pal, style: Exclude<GroupStyle, 'meadow'>): Pixels {
   const p = new Pixels(W, H);
-  ({ sunset, arena, stage, workbench, neon })[style](p, pal);
+  ({ sunset, arena, stage, workbench, atlas, neon })[style](p, pal);
   return p;
 }
 
@@ -40,6 +40,7 @@ export function lookOf(pal: Pal, style: Exclude<GroupStyle, 'meadow'>): Look {
     arena: { fill: c('gold', 5), outline: c('red', 0), shadow: c('ink', 0), ribbon: 'parch', ribbonText: c('red', 0), floorShadow: c('wood', 0) },
     stage: { fill: c('gold', 4), outline: c('red', 0), shadow: c('ink', 0), ribbon: 'parch', ribbonText: c('red', 0), floorShadow: c('wood', 0) },
     workbench: { fill: c('white', 3), outline: c('blue', 0), shadow: c('ink', 0), ribbon: 'parch', ribbonText: c('blue', 0), floorShadow: c('wood', 0) },
+    atlas: { fill: c('red', 3), outline: c('wood', 0), shadow: c('wood', 2), ribbon: 'wood', ribbonText: c('parch', 5), floorShadow: c('wood', 0) },
     neon: { fill: c('teal', 4), outline: c('purple', 1), shadow: c('pink', 2), ribbon: 'stone', ribbonText: c('white', 3), floorShadow: c('ink', 0) },
   }[style];
 }
@@ -66,6 +67,10 @@ export function frameOf(p: Pixels, pal: Pal, style: Exclude<GroupStyle, 'meadow'
     border(5, c('stone', 3));
     border(1, c('stone', 1), 5);
     border(1, c('stone', 0), 0);
+  } else if (style === 'atlas') {
+    border(4, c('wood', 2));
+    border(1, c('parch', 4), 4);
+    border(1, c('wood', 0), 0);
   } else {
     border(2, c('teal', 3), 2);
     border(1, c('teal', 4), 3);
@@ -191,6 +196,56 @@ function workbench(p: Pixels, pal: Pal): void {
   p.rect(190, GROUND + 14, 100, 20, c('wood', 2))
     .frame(190, GROUND + 14, 100, 20, c('wood', 0))
     .rect(234, GROUND + 22, 12, 4, c('stone', 3));
+}
+
+/** An old atlas: a sheet of parchment ruled in a faint grid, little drawn hills and a compass, over a wooden table. */
+function atlas(p: Pixels, pal: Pal): void {
+  const c = pal.c;
+  gradient(p, 0, 0, W, GROUND, pal.r('parch'), 3, 5);
+  for (let x = 16; x < W; x += 32) p.rect(x, 0, 1, GROUND, c('parch', 3));
+  for (let y = 16; y < GROUND; y += 32) p.rect(0, y, W, 1, c('parch', 3));
+  // hills sketched in ink-brown lines: a peak with a snowy line and a shadow side
+  for (const [x, y, h] of [
+    [106, 150, 18],
+    [210, 150, 14],
+    [296, 150, 20],
+  ]) {
+    p.line(x - h, y, x, y - h, c('wood', 0))
+      .line(x, y - h, x + h, y, c('wood', 0))
+      .line(x - h + 1, y, x, y - h + 1, c('wood', 0))
+      .line(x, y - h + 1, x + h - 1, y, c('wood', 0));
+    for (let i = 1; i < h; i += 3) p.line(x + i, y - h + i, x + Math.min(h, i + 4), y - Math.max(0, h - i - 4), c('wood', 3));
+  }
+  // a compass: a ring, four ticks and a needle (red half and white half) tilted a little
+  const cx = 168;
+  const cy = 128;
+  p.disc(cx, cy, 17, c('parch', 5)).ring(cx, cy, 17, c('wood', 0)).ring(cx, cy, 15, c('wood', 2));
+  for (let i = 0; i < 8; i++) {
+    const a = (i * Math.PI) / 4;
+    p.line(
+      Math.round(cx + Math.cos(a) * 12),
+      Math.round(cy + Math.sin(a) * 12),
+      Math.round(cx + Math.cos(a) * 15),
+      Math.round(cy + Math.sin(a) * 15),
+      c('wood', 0),
+    );
+  }
+  const tilt = (Math.PI * 20) / 180;
+  const pt = (len: number, side = 0) => [
+    Math.round(cx + Math.sin(tilt) * len + Math.cos(tilt) * side),
+    Math.round(cy - Math.cos(tilt) * len + Math.sin(tilt) * side),
+  ];
+  const half = (tip: number[], col: number) => {
+    const [l, r] = [pt(0, -4), pt(0, 4)];
+    for (let t = 0; t <= 8; t++) p.line(tip[0], tip[1], l[0] + Math.round(((r[0] - l[0]) * t) / 8), l[1] + Math.round(((r[1] - l[1]) * t) / 8), col);
+  };
+  half(pt(11), c('red', 2));
+  half(pt(-11), c('stone', 3));
+  p.disc(cx, cy, 2, c('wood', 0));
+  // the table below
+  p.rect(0, GROUND, W, H - GROUND, c('wood', 2));
+  for (let y = GROUND; y < H; y += 8) p.rect(0, y, W, 1, c('wood', 1));
+  p.rect(0, GROUND, W, 2, c('wood', 4));
 }
 
 /** Night and neon: a starry sky with a moon, a lit skyline and a glowing grid floor. */
