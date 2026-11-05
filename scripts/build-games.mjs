@@ -66,7 +66,11 @@ const only = process.argv.flatMap((arg, i) => (process.argv[i - 1] === '--game' 
 const stale = ids.filter(
   (id) =>
     (!only.length || only.includes(id)) &&
-    (process.argv.includes('--force') || process.argv.includes('--force-all') || cached?.keys?.[id] !== keys[id] || !cached?.outputs?.[id] || cached.outputs[id] !== outputs(id)),
+    (process.argv.includes('--force') ||
+      process.argv.includes('--force-all') ||
+      cached?.keys?.[id] !== keys[id] ||
+      !cached?.outputs?.[id] ||
+      cached.outputs[id] !== outputs(id)),
 );
 // slowest first keeps the last workers busy; GM_BUILD_JOBS sets the worker count (CI uses every core, a desk keeps two)
 const slowFirst = ['depth', 'realm', 'blaster', 'maximus'];
