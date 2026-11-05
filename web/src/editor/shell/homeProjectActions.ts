@@ -77,11 +77,12 @@ async function move(p: ProjectSummary, imported: boolean, refresh: () => Promise
 }
 
 /** A notice with an Undo button, for a few seconds. */
-function undoToast(message: string, undo: () => Promise<void>): void {
+export function undoToast(message: string, undo: () => Promise<void>, ms = UNDO_MS, onExpire?: () => void): void {
   document.querySelector('.home-undo')?.remove();
   const done = () => {
     clearTimeout(timer);
     note.remove();
+    onExpire?.();
   };
   const note = h(
     'div',
@@ -90,7 +91,7 @@ function undoToast(message: string, undo: () => Promise<void>): void {
     h('button', { type: 'button', onclick: () => void undo().then(done) }, 'Undo'),
     h('button', { type: 'button', class: 'home-undo-close', 'aria-label': 'Dismiss', title: 'Dismiss', onclick: done }, '×'),
   );
-  const timer = setTimeout(done, UNDO_MS);
+  const timer = setTimeout(done, ms);
   document.body.append(note);
 }
 
