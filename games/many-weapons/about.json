@@ -1,0 +1,34 @@
+{
+  "title": "Throw It",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.0",
+  "blurb": "Two short levels about throwing a star. Press Enter and Kit tosses one the way he last walked: it pops a mint green gumdrop sitting still, falls short if you stand too far away, and clears a grump out of a narrow way. Signs in the levels say how. Play it, then open it in Game-Maker and change the star.",
+  "exe": "THROW.EXE",
+  "dosName": "THROWIT",
+  "sound": "sb",
+  "label": {
+    "background": "#e8f6ff",
+    "band": "#2fae9a",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "2 short levels",
+    "hours": 1,
+    "background": "#2fae9a",
+    "accent": "#ffd23f",
+    "ink": "#ffffff",
+    "tagline": "Aim small, miss small.",
+    "back": "A small explorer in a teal beanie has a pocketful of gold stars and two short levels to cross. A mint green gumdrop sits still, waiting to be popped, and a grump fills a narrow way through a brick wall. Read the signs, press Enter, then open the game in Game-Maker and change the star.",
+    "features": ["Signs in the levels explain each idea", "A star flies the way you last walked, and only so far", "Made to be copied and taken apart"],
+    "shots": [
+      ["one.map", 22, 6],
+      ["two.map", 26, 6]
+    ],
+    "rating": "Everyone"
+  }
+}
