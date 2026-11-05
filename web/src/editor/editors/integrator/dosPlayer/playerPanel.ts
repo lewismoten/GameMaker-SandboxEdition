@@ -26,6 +26,7 @@ import { itemFor, screenItems, type DragItem } from './dragItems';
 import { dragStage } from './dragStage';
 import { aboutFields, aboutLookOf, type AboutView } from './aboutFields';
 import { creditsLink } from './creditsLink';
+import { patchLab } from './patchLab';
 import { companionOrigin } from '../../../../dosPlayer/playerOrigin';
 
 const PREVIEWS: PreviewScreen[] = ['menu', 'hiscores', 'newHiscore', 'status', 'load', 'save', 'drop', 'help', 'text', 'missing', 'about'];
@@ -81,6 +82,13 @@ export function playerPanel(project: Project): HTMLElement {
   );
   const pickRow = h('label', { for: `${id}-screen`, class: 'dp-mini' }, 'Preview', pick);
   const heading = h('p', { class: 'dp-shown' });
+  // the Patch Lab follows the setting last edited (the first menu word at the start)
+  let labId = 'str.menu.play';
+  const lab = patchLab(id);
+  const showLab = () => {
+    const e = patchEntry(labId);
+    if (e) lab.update(e, current(e));
+  };
   const count = h('p', { class: 'dp-count-all', role: 'status' });
   function redraw() {
     const noFile = focused || (stage.picked() === 'menu.noFile' ? 'layout.menu.noFile.x' : '');
@@ -88,6 +96,7 @@ export function playerPanel(project: Project): HTMLElement {
     const drawn = drawPreview(screen, project.files, game, gameName, look, shown, noFile, aboutPage);
     items = screenItems(shown, look, drawn);
     stage.refresh();
+    showLab();
     heading.textContent = `${SCREEN_NAMES[shown]}, as ${shown === 'about' && aboutView === 'web' ? 'Play on the web' : 'the DOS player'} draws it`;
     const n = Object.keys(withoutExtensions(patches)).length;
     const files = Object.keys(patches).length - n;
@@ -285,6 +294,7 @@ export function playerPanel(project: Project): HTMLElement {
   body.addEventListener('focusin', (ev) => {
     const f = (ev.target as HTMLElement).closest<HTMLElement>('.dp-field');
     focused = f?.dataset.patch ?? '';
+    if (focused) labId = focused;
     const s = f?.dataset.screen as PatchScreen | undefined;
     if (s && isPreview(s) && s !== shown) show(s);
     else redraw();
@@ -308,6 +318,6 @@ export function playerPanel(project: Project): HTMLElement {
     ),
     presets,
     h('div', { class: 'dp-tabs-wrap' }, tabs),
-    h('div', { class: 'dp-main' }, body, h('div', { class: 'dp-preview' }, pickRow, heading, stage.stage, stage.controls, count)),
+    h('div', { class: 'dp-main' }, body, h('div', { class: 'dp-preview' }, pickRow, heading, stage.stage, stage.controls, count, lab.el)),
   );
 }

@@ -380,3 +380,80 @@ dialog.modal .dp-preview [hidden] {
   min-height: 24px;
   line-height: 24px;
 }
+
+/* Patch Lab (patchLab.ts): the byte strip for the setting being edited */
+.dp-lab {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 4px 8px 8px;
+  min-width: 0;
+}
+
+.dp-lab summary {
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  min-height: 24px;
+}
+
+.pl-intro,
+.pl-note {
+  margin: 4px 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.pl-scroll {
+  overflow-x: auto;
+  max-width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+
+.pl-table {
+  border-collapse: collapse;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.pl-table th,
+.pl-table td {
+  padding: 3px 8px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  vertical-align: top;
+}
+
+.pl-caption {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+.pl-offset,
+.pl-bytes {
+  font-family: ui-monospace, monospace;
+}
+
+.pl-text {
+  color: var(--muted);
+}
+
+.pl-changed {
+  font-weight: 800;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 2px;
+  background: var(--panel-2);
+  outline: 1px solid var(--accent);
+  border-radius: 2px;
+}
+
+@media (min-width: 761px) {
+  .dp-preview {
+    max-height: calc(100dvh - 24px);
+    overflow-y: auto;
+  }
+}

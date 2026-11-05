@@ -126,6 +126,8 @@ editor: the DOS files never change. **Undo** and **Redo** work here too.
 [The Integrator and the DOS player](#the-integrator-and-the-dos-player). The Integrator's
 **DOS player** button opens this tab.
 
+Beside the preview, the **Patch Lab** strip shows the setting being edited as bytes: the file offset in `XFERPLAY.EXE`, the CD's own bytes and the new ones, with the changed bytes in bold, underlined and boxed (so color is never the only cue). It is read-only and scrolls sideways inside its own box. The Programmer's Guide chapter "Patching the player" explains the bytes.
+
 **Tools** gathers the tools that work on the whole game, one card each, with a picture or what is
 known now and a button that opens it: **Level check** (a picture of the first level, how many levels have
 a saved check and what it found), **Before You Upload** (lines ticked), **Make a walkthrough**

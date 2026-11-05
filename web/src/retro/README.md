@@ -50,6 +50,7 @@ picture; `host.ts` is what programs on it can use.
   add to C: in `deskFiles.ts` and `pcExtras.ts`, which also keeps the serial in PLAYGAME.EXE):
   debugging tools for registration modes, saved games and backups, dressed as 1990s scene
   programs.
+- `hacks/patchingText.ts`: PATCHING.TXT and its FILE_ID.DIZ, the Warez area's text-only PATCHING.ZIP (a release in `bbs/warezArea.ts`). THE BLOCKSMITH's friendly how-to: patch your own game's player, back up first, same length, HEXEDIT or PLAYHACK, credits and registration left alone. Test: `hacks/patchingText.test.ts`.
 - `hacks/flags.ts`, `flagsItems.ts`, `flagsBackup.ts`, `flagsText.ts`, `flagsPlayed.ts` (PLAYED: games counted for badges): FLAGS.EXE in C:\DOS and in
   the BBS's Warez area (FLAGS.ZIP, with a FILE_ID.DIZ and FLAGS.NFO). `FLAGS` lists the PC's
   hard-to-reach browser state (badges, felt eggs, tin hearts, score trophy tiers, the hint line
