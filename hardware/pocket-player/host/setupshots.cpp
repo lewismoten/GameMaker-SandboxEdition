@@ -93,7 +93,7 @@ static void render(Phys& fb, sg::SoftGfx<Phys>& g, int step, int u, int mode) {
   fb.fx = u & 1; fb.fy = u >> 1 & 1;
   g.setMode(mode);
   fb.clear();
-  sf::drawStep(g, step);
+  sf::drawStep(g, step, "Board C fw 1a2b3c4 2026-11-05");
 }
 static int litOutside(const Phys& fb, int step, int mode, int u) {
   // lit pixels (panel pixels back to logical) outside the 240 square for steps 1, 2 and 4

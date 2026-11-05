@@ -1,5 +1,6 @@
 // Mac test for src/setupflow.h, src/softgfx.h's map and src/displaysetup.h: the four steps and what BOOT and OK do in each,
 // the turn each combination gives, the software quarter turns, and the saved record.
+#include "fwid.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include "displaysetup.h"
@@ -10,6 +11,16 @@ static int fails = 0;
 #define CHECK(c, ...) do { if (!(c)) { fails++; printf("FAIL: " __VA_ARGS__); printf("\n"); } } while (0)
 
 int main() {
+  {
+    char b[48];
+    fw::label("C", "1a2b3c4", "2026-11-05", b, sizeof b);
+    CHECK(!strcmp(b, "Board C fw 1a2b3c4 2026-11-05") && strlen(b) <= 29, "the full label: %s", b);
+    fw::label("C", "1a2b3c4", "2026-11-05", b, sizeof b, true);
+    CHECK(!strcmp(b, "C fw 1a2b3c4"), "the short label: %s", b);
+    fw::defaultBoard(0x946B92DF948CULL, b);
+    CHECK(!strcmp(b, "948C"), "default board name from the chip: %s", b);
+    CHECK(fw::validBoard("A") && fw::validBoard("948C") && !fw::validBoard("") && !fw::validBoard("abc") && !fw::validBoard("TOOLONG"), "board names");
+  }
   // ---- BOOT does the step's action, OK moves on ----
   {
     sf::Flow f;

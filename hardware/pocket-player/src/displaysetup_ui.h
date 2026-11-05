@@ -207,6 +207,7 @@ static void dsSerialPoll() {
       buf[n] = 0;
       n = 0;
       if (buf[0] == 'S') dsSerial(buf);
+      else fwSerial(buf);
     } else if (n < (int)sizeof buf - 1) buf[n++] = c;
   }
 }
@@ -238,7 +239,9 @@ static void clearAll() {
 static void dsDraw(const sf::Flow& f) {
   tftHw.setRotation(f.rotation());
   tft.setMode(f.softMode());
-  sf::drawStep(tft, f.step);
+  char id[40];
+  fwLabel(id, sizeof id, false);
+  sf::drawStep(tft, f.step, id);
 }
 
 // ---- the flow ----
@@ -302,7 +305,7 @@ static bool dsFourSteps() {
     dsLive = f;
     if (f.step == sf::COLORS) tftHw.applyColors(f.panelBits(panelType), f.rotation());  // live, no restart
     dsDraw(f);
-    Serial.printf("setup: step %d (turn %d, soft %d, colors %d)\n", f.step + 1, f.u, f.soft, f.color);
+    Serial.printf("setup: step %d (turn %d, soft %d, colors %d) glass rot=%d %dx%d mode=%d\n", f.step + 1, f.u, f.soft, f.color, (int)tftHw.getRotation(), (int)tftHw.width(), (int)tftHw.height(), tft.mode());
     tc::Raw r = {0, 0};
     int ev = dsWait(r);
     if (ev == EV_MODE) dsDriverRestart();

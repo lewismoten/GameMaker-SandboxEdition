@@ -63,6 +63,10 @@ template <class G> void controls(G& g, int step) {
     say(g, BX + BW + 8, y + 10, 2, WHITE, row == 0 ? "= BOOT button" : "= tap anywhere");
   }
 }
+// The board's letter and firmware (fwid.h), small, in the top left corner of every step (up to 29 characters, 6 px each).
+template <class G> void idLine(G& g, const char* id) {
+  if (id && *id) say(g, 6, 4, 1, GRAYC, id);
+}
 template <class G> void counter(G& g, int step, int x) {
   char t[4] = {(char)('1' + step), '/', (char)('0' + STEPS), 0};
   say(g, x, 2, 2, GRAYC, t);
@@ -104,9 +108,9 @@ template <class G> void drawOrient(G& g) {
 // Step 4: the words in their own colors on black, then a white patch and a black one (outlined).
 template <class G> void drawColors(G& g) {
   g.fillScreen(BLACK);
-  sayCentered(g, 120, 4, 3, REDC, "RED");
-  sayCentered(g, 120, 34, 3, GREENC, "GREEN");
-  sayCentered(g, 120, 64, 3, BLUEC, "BLUE");
+  sayCentered(g, 120, 14, 3, REDC, "RED");
+  sayCentered(g, 120, 44, 3, GREENC, "GREEN");
+  sayCentered(g, 120, 74, 3, BLUEC, "BLUE");
   g.fillRect(8, 102, 108, 46, WHITE);
   g.setTextSize(2);
   g.setTextColor(BLACK, WHITE);
@@ -117,11 +121,12 @@ template <class G> void drawColors(G& g) {
   counter(g, COLORS, 200);
   controls(g, COLORS);
 }
-template <class G> void drawStep(G& g, int step) {
+template <class G> void drawStep(G& g, int step, const char* id = "") {
   if (step == FLIP) drawFlip(g);
   else if (step == ROTATE) drawRotate(g);
   else if (step == ORIENT) drawOrient(g);
   else drawColors(g);
+  idLine(g, id);
 }
 
 }  // namespace sf
