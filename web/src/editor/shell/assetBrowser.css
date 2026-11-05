@@ -248,13 +248,44 @@
   }
 }
 
-/* Overview's group headings (assetGroups.ts): each spans the whole row, above its category cards */
+/* Overview's groups (assetGroups.ts): small titled boxes of cards that flow side by side and wrap */
+.asset-grid.asset-groups {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  align-content: flex-start;
+  gap: 10px 18px;
+}
+.asset-group-box {
+  flex: var(--n) 1 calc(var(--n) * 124px);
+  min-width: 0;
+}
 .asset-group {
-  grid-column: 1 / -1;
-  margin: 10px 0 0;
+  margin: 0 0 4px 2px;
   font-size: 14px;
   color: var(--muted);
 }
-.asset-group:first-child {
-  margin-top: 0;
+.asset-group-cards {
+  display: grid;
+  grid-template-columns: repeat(var(--n), minmax(0, 1fr));
+  gap: 10px;
+}
+.asset-groups > .asset-category {
+  flex: 0 0 124px;
+}
+@media (max-width: 640px) {
+  .asset-group-box {
+    flex: 1 1 100%;
+  }
+  .asset-group-cards {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+  }
+  /* two-card groups (Heroes, Monsters) sit side by side */
+  .asset-group-small {
+    flex: 1 1 calc(50% - 10px);
+  }
+  .asset-group-small .asset-group-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
