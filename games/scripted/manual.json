@@ -1,0 +1,83 @@
+{
+  "title": "Don't Get Seen",
+  "howDoI": [
+    {
+      "id": "light",
+      "q": "How do I make a light that sweeps back and forth?",
+      "scene": 2,
+      "x": 28,
+      "y": 15,
+      "level": 1
+    },
+    {
+      "id": "column",
+      "q": "How do I make a monster that is taller than one block?",
+      "scene": 2,
+      "x": 28,
+      "y": 16,
+      "level": 1
+    },
+    {
+      "id": "hurts",
+      "q": "How do I make something that takes hit points when you touch it, but does not block you?",
+      "scene": 2,
+      "x": 28,
+      "y": 17,
+      "level": 1
+    },
+    {
+      "id": "trench",
+      "q": "How do I make a place a monster never goes?",
+      "scene": 2,
+      "x": 31,
+      "y": 20,
+      "level": 1
+    },
+    {
+      "id": "speeds",
+      "q": "How do I make two lights that walk at different speeds?",
+      "scene": 3,
+      "x": 30,
+      "y": 15,
+      "level": 2
+    },
+    {
+      "id": "rail",
+      "q": "How do I draw the rail a monster hangs from?",
+      "scene": 2,
+      "x": 28,
+      "y": 14,
+      "level": 1
+    }
+  ],
+  "pages": [
+    {
+      "head": "Welcome",
+      "html": "<h1>Welcome</h1><p><b>Don&rsquo;t Get Seen</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has two short levels about a light that cannot look, and takes a few minutes to finish.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each idea is made.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. <kbd>Space</kbd> jumps. <kbd>F2</kbd> shows your hit points, lives and score. Walk into the door at the end of a level to go on.</p><h2>The one idea</h2><p>A monster does not see. A light that sweeps the way is a monster on a <b>path</b>: it walks from one end to the other and back, and anything under it is touched. Kit stays out of its way by standing where the path never goes. In this game that is a trench dug in the ground, under the beam.</p>"
+    },
+    {
+      "head": "Level 1: Wait and Go",
+      "html": "<h1>Level 1: Wait and Go</h1><p>Three signs stand before the light. <b>THE LIGHT JUST WALKS A PATH</b> says what it is: a lamp on a rail, walking back and forth over ten blocks. <b>BEING SEEN COSTS HIT POINTS</b> says what happens if Kit is under it: he loses hit points while any of it touches him, about half of his hundred if he stays. <b>WAIT IN A TRENCH TILL IT PASSES</b> says what to do about it.</p><p>Two trenches are dug under the rail. Drop into the first when the lamp is far away, wait while it walks over, climb out with <kbd>Space</kbd>, and do the same with the second. Five coins lie past the light, on the way to the door.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 1 is made</h1><ul><li><b>A column of five.</b> Open <b>seen.mon</b> in the monsters editor. Monsters 3 to 7 are one light: the lamp (3) and four pieces of cone (4 to 7). A monster is one block, so a tall light is several, one above the other. All five have the <b>same path</b> (ten blocks right and back) and the <b>same speed</b>, so they stay in a line.</li><li><b>Where they sit.</b> Open <b>one.map</b> in the map editor. The lamp is on the row under the rail and the four cone pieces are the four rows under it. The cone fills the way down to where Kit stands, so he cannot step over it.</li><li><b>Seeing is a hit point cost.</b> Open <b>seen.mbl</b> in the blocks editor: the lamp and cone pictures take 1 hit point from Kit for each moment he touches them. They are not <b>Solid</b>, so he walks into the light instead of stopping at it. Each piece takes 1, and Kit touches two at once, so it adds up quickly.</li><li><b>The rail.</b> The <b>rail</b> block is a plain stone bar in <b>seen.bbl</b>, drawn along the top of the path so the lamp has something to hang from. It does nothing: the path is in the monster, not the rail.</li><li><b>The trench.</b> The <b>trench</b> block is air (it has <b>Gravity</b> down, like sky) painted dark like dug dirt, two blocks deep and two wide, under the rail. The light is only drawn on the rows above the ground, so nothing of it reaches the bottom of the trench.</li><li><b>The warning is the path.</b> The lamp&rsquo;s walk is slow (1 pixel a tick) and its path is as long as the rail you can see, so you can tell where it is going before it gets there.</li></ul>"
+    },
+    {
+      "head": "Level 2: Two Lights",
+      "html": "<h1>Level 2: Two Lights</h1><p>The <b>TWO LIGHTS, TWO SPEEDS</b> sign comes first. The first lamp walks slowly, like level 1&rsquo;s; the second, farther on, walks twice as fast. Each has two trenches of its own, and a patch of grass between them is safe: no light walks there. The <b>GRASS HERE IS SAFE TO REST ON</b> sign stands on it. Five coins lie on the grass and past the second light, before the door.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 2 is made</h1><ul><li><b>Two lights, two sets of monsters.</b> Monsters 8 to 12 are the first light and 13 to 17 the second: a lamp and four pieces of cone each. They have the same pictures, but each light has its own path and speed, so they have their own numbers. That is the only way two lights can walk at different speeds.</li><li><b>Speed.</b> The first light&rsquo;s <b>Movement</b> corners have a speed of 1 and the second&rsquo;s a speed of 2. It is the speed of each corner of the path in the monsters editor.</li><li><b>Where it is safe.</b> A path has two ends, so there is ground nobody walks over: the grass between the lights. Open <b>two.map</b> and find the gap: the first rail ends, and the second one starts four blocks later.</li><li><b>The trenches.</b> Four trenches: two under each rail. Under the first rail the first trench is three blocks in from the lamp&rsquo;s end, so there is time to drop in.</li></ul>"
+    },
+    {
+      "head": "What it cannot do",
+      "html": "<h1>What it cannot do</h1><p>These are the engine&rsquo;s limits, so you can plan around them.</p><ul><li><b>A monster cannot see.</b> Nothing in the engine checks what is between a monster and Kit, so there is no line of sight. A light is a monster that walks a path (or heads toward Kit), and it hurts wherever it is, whether Kit is behind something or not. Hiding is only ever a place its path does not go.</li><li><b>It cannot notice you hiding or leaving.</b> It does not stop, turn or chase because Kit stepped into a trench. A light that reacts to where Kit is would have to be a different kind of monster, such as one that follows him, and it would not know about the trench either.</li><li><b>A monster is one block.</b> A beam is a column of monsters. All of them need the same path and the same speed to stay in line, and each piece has its own picture.</li><li><b>The cone cannot be soft-edged.</b> Monster pictures have no see-through: each pixel is a color or clear. The light is a pale color, not a blend.</li><li><b>Being seen is not once only.</b> A touch takes hit points for every moment it lasts, and Kit appears to be unable to move away while it lasts. A hurt that happens once needs a block that becomes harmless after it, which a monster cannot do.</li></ul>"
+    },
+    {
+      "head": "Make it yours",
+      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>In <b>seen.mon</b>, give monsters 3 to 7 a longer path (all five the same) and see what happens to the trenches.</li><li>Give only the lamp (monster 3) a different speed from its cone and watch the column come apart.</li><li>Untick the pictures&rsquo; hit points in <b>seen.mbl</b> and the light is harmless.</li><li>Dig a third trench in <b>one.map</b> with the <b>trench</b> block, and check you can still climb out of it.</li><li>Move a trench to where the light never reaches and see that it is not needed.</li></ul><p>The home page&rsquo;s <b>Starters</b> tab has more small games like this one.</p>"
+    }
+  ]
+}
