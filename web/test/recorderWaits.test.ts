@@ -38,4 +38,29 @@ describe('demo playback across key-reading screens', () => {
     expect(r.advanceWait(100000)).toEqual([]);
     expect(r.finishWait()).toEqual([]);
   });
+
+  it('gives the key screen of a tick-counted recording one poll at a time (DropBloc taking Enter)', () => {
+    const r = new Recorder();
+    r.initPlayback(
+      serializeRecording([
+        { delta: 5, key: 32 },
+        { delta: 1, key: 28 },
+      ]),
+    );
+    const keys: number[] = [];
+    for (let i = 0; i < 5; i++) keys.push(...r.doPlayback());
+    expect(keys).toEqual([32]);
+    expect(r.pollOnce()).toEqual([28]);
+    expect(r.pollOnce()).toEqual([]);
+  });
+
+  it("Linear Volume's own demo plays past its drop screen (it once waited for Enter forever)", async () => {
+    const { loadCdGame, runHeadless } = await import('../../games/kit/cdDemos/headless');
+    let ticks = 0;
+    await runHeadless(loadCdGame('gameware', 'volume'), 'volume.gam', {
+      maxTicks: 160,
+      onTick: () => void ticks++,
+    });
+    expect(ticks).toBeGreaterThanOrEqual(160);
+  }, 60000);
 });
