@@ -1,0 +1,64 @@
+{
+  "version": 1,
+  "game": "diagonal-wrap",
+  "rand": {
+    "seed": 1,
+    "per": "scene"
+  },
+  "segments": [
+    {
+      "scene": 2,
+      "keys": "FVAF0ABLEMsoUABNCs3DAdAoUEHQKFCWAdAAUA=="
+    },
+    {
+      "scene": 3,
+      "keys": "FVAF0ChQAE0FzQ9NBc0PTQXND00FzQ9NBc0PTQXND00FzQ9NBc0PTQXND00FzQ9NBc0PTQXNCtAoUAVNBc0PTQXND00FzQ9NBc0PTQXND00FzQ9NBc0PTQXND00FzQ9NBc0PTQXND00FzQ9NBc0PTQXND00FzQ9NBc0PTQXND00FzQ9NBc0PTQXND00FzQ9NBc0PTQXND00FzQ9NBc0PTQXND00FzQ9NBc0PTQXND00FzQ9NBc0PTQXND00FzQ9NBc0K0ChQBU0FzQ9NBc0PTQXND00FzQ9NBc0PTQXND00FzQ9NBc0PTQXND00FzQ9NBc0PTQXND00FzQ9NBc0PTQXND00FzQ9NBc0PTQXND00FzQ9NBc0PTQXND00FzQ9NBc0PTQXND00FzQ9NBc0PTQXND00FzQ9NBc0PTQXND00FzQ9NBc0PTQXNCtAoUAVNBc0PTQXND00FzQ9NBc0PTQXND00FzQ9NBc0PTQXND00FzQ9NBc0PTQXND00FzQ9NBc0PTQXND00FzQrQKFAFTQXND00FzQ9NBc0PTQXND00FzQ=="
+    }
+  ],
+  "chapters": [
+    {
+      "scene": 2,
+      "title": "Level 1: Gravity On"
+    },
+    {
+      "scene": 3,
+      "title": "Level 2: Gravity Off"
+    }
+  ],
+  "timeline": {
+    "fps": 60,
+    "frames": 15477,
+    "chapters": [
+      {
+        "title": "Opening",
+        "frame": 0,
+        "time": 0
+      },
+      {
+        "title": "Story",
+        "frame": 896,
+        "time": 14933.333333333148
+      },
+      {
+        "title": "Level 1: Gravity On",
+        "frame": 2125,
+        "time": 35416.66666666724
+      },
+      {
+        "title": "Level 2: Gravity Off",
+        "frame": 4606,
+        "time": 76766.66666666612
+      },
+      {
+        "title": "Ending",
+        "frame": 12191,
+        "time": 203183.33333330663
+      },
+      {
+        "title": "Credits",
+        "frame": 14403,
+        "time": 240049.99999995183
+      }
+    ]
+  }
+}

@@ -1,0 +1,83 @@
+{
+  "title": "Diagonal Wrap",
+  "howDoI": [
+    {
+      "id": "wrap",
+      "q": "How do I make the map wrap, so my hero comes in at the top when he walks off the bottom?",
+      "scene": 2,
+      "x": 48,
+      "y": 93,
+      "level": 1
+    },
+    {
+      "id": "edge",
+      "q": "How do I show the player where the edge of the map is?",
+      "scene": 2,
+      "x": 48,
+      "y": 0,
+      "level": 1
+    },
+    {
+      "id": "straight",
+      "q": "How do I lay a road straight down the whole map?",
+      "scene": 2,
+      "x": 48,
+      "y": 54,
+      "level": 1
+    },
+    {
+      "id": "tilt",
+      "q": "How do I tilt a road so it wraps more than once?",
+      "scene": 3,
+      "x": 50,
+      "y": 53,
+      "level": 2
+    },
+    {
+      "id": "length",
+      "q": "How do I work out how far a tilted road goes?",
+      "scene": 3,
+      "x": 44,
+      "y": 35,
+      "level": 2
+    },
+    {
+      "id": "side",
+      "q": "How do I let a road leave the right edge and come back on the left?",
+      "scene": 3,
+      "x": 96,
+      "y": 91,
+      "level": 2
+    }
+  ],
+  "pages": [
+    {
+      "head": "Welcome",
+      "html": "<h1>Welcome</h1><p><b>Diagonal Wrap</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has two short levels, and they use the same map. Level 1 lays a road straight down it. Level 2 tilts the road a little, so it goes three times as far. Level 2 takes a few minutes to walk.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each thing in the levels is made.</p><h2>The keys</h2><p>The <kbd>Up</kbd>, <kbd>Down</kbd>, <kbd>Left</kbd> and <kbd>Right</kbd> arrows walk. <kbd>F2</kbd> shows your lives, hit points and score. Walk into the doors at the end of a level to go on.</p><p>Nothing in this game can hurt you, and the hedges keep you on the road.</p>"
+    },
+    {
+      "head": "Level 1: Straight On",
+      "html": "<h1>Level 1: Straight On</h1><p><b>100 BLOCKS TALL</b> stands where you start. The road runs straight down, between two hedges that stop you. <b>THE DASHES ARE THE EDGE OF THE MAP</b> comes just before a dashed white line across the road. Walk across it: you come in at the top of the map, still on the road. <b>BACK IN AT THE TOP</b> stands just after and says the road is 97 blocks. A row of doors ends the level.</p><p>The finish is right next to the start, on the other side of one hedge. The road wrapped once to get you there.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 1 is made</h1><ul><li><b>The map wraps.</b> That is the engine, not a setting. A map is always 100 blocks across and 100 down, and a hero or the view that goes off one edge comes in at the opposite edge. Nothing in this game turns it on.</li><li><b>The road.</b> Open <b>one.map</b> in the map editor. It is a column of <b>path</b> blocks five wide, with two <b>hedge</b> blocks on each side. The hedge is solid, so it stops Kit. The road starts in the middle of the map and runs down 99 rows, past the bottom edge, and on to the top and down again, until it is back beside where it began.</li><li><b>The edge.</b> The blocks <b>seamTop</b> and <b>seamLeft</b> are <b>path</b> with a dashed white line along one side. They sit on the map's first row and first column, wherever the road crosses them. The line is only a picture; the engine marks nothing there.</li><li><b>The end.</b> A row of <b>hedge</b> closes the road behind the start, and a row of <b>exitBottom</b> blocks with <b>exitTop</b> above them closes it at the finish. Each of the five door cells has its own scene link to the next level in <b>dw.gam</b>, so any way Kit walks across the row takes him on.</li><li><b>The signs.</b> They are ordinary blocks with words in their pictures, set on the road.</li></ul>"
+    },
+    {
+      "head": "Level 2: Tilted",
+      "html": "<h1>Level 2: Tilted</h1><p><b>SAME MAP, SAME ROAD, BUT TILTED</b> stands where you start. The road steps one block to the right every three rows. <b>LAP 1 OF 3</b> comes before the first dashed line: you come back in at the top, 33 blocks over from where you left. <b>LAP 2 OF 3</b> comes before the second one, and a little later the road runs off the right edge of the map and comes back on the left. <b>LAP 3 OF 3</b> comes last, before the third dashed line, and says the road is 297 blocks, before the doors.</p><p>The three laps run side by side, a third of the map apart, and never touch. The finish is next to the start again, after three times as much road.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 2 is made</h1><ul><li><b>The same map, the same blocks.</b> Open <b>two.map</b> in the map editor. It uses the same blocks as level 1. Only the place of each row changed: every three rows down, the whole row of road and hedge sits one block further right.</li><li><b>Why three laps.</b> A third of the map is 33 columns and a bit. After one lap down 100 rows the road has stepped right by about 33 blocks, so it comes in at the top in a fresh strip, clear of the first lap. After three laps (300 rows) it has stepped exactly 100 blocks, which is the width of the map, and it is back where it began. That is why the road is three times as long, not four.</li><li><b>The right edge.</b> The map wraps sideways as well. During lap 2 the road passes column 99 and carries on from column 0.</li><li><b>The signs.</b> A sign is a board of blocks and is laid square on the map, not stepped with the road. Each one sits where the road does not step under it.</li><li><b>The doors.</b> Each of the five door cells has a scene link in <b>dw.gam</b>; the last level's links go to the ending.</li></ul>"
+    },
+    {
+      "head": "What it cannot do",
+      "html": "<h1>What it cannot do</h1><p>These are the engine's limits, so you can plan around them.</p><ul><li><b>It cannot change the size of the map.</b> A map is always 100 blocks across and 100 down, so a straight road wraps after 100 rows and nothing else.</li><li><b>It cannot wrap one way only.</b> Both edges wrap and the engine has no switch to turn either off. A map with a visible edge needs a solid wall of your own all round it.</li><li><b>It cannot tell the player where the edge is.</b> The dashed line is only a picture. The engine gives no map position and no lap counter, so any count the player sees comes from signs or blocks you draw.</li><li><b>It cannot draw a diagonal.</b> The map is a grid of blocks, so a tilted road is a staircase. This one steps one block in every three rows, and its hedges are two blocks thick so a step never leaves a gap.</li><li><b>It cannot keep the laps apart for you.</b> Two laps that land on the same cells share them. Plan the tilt so each lap lands in a free lane.</li></ul>"
+    },
+    {
+      "head": "Make it yours",
+      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>Draw the road in <b>one.map</b> crooked: move a few rows one block to the side.</li><li>Move the start in <b>two.map</b> and see where the laps land.</li><li>Change the step from every three rows to every four, and see where the laps land.</li><li>Put a coin where each lap crosses the edge.</li><li>Make the road wider or narrower and move the signs to match.</li></ul><p>The home page's <b>Starters</b> tab has more small games like this one.</p>"
+    }
+  ]
+}

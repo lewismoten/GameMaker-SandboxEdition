@@ -82,6 +82,7 @@ export const CAST_GAMES = {
   beltway: ['Round and Round', 'starter'],
   momentum: ['Slide and Drift', 'starter'],
   'jump-boots': ['Boots and Jet Pack', 'starter'],
+  'diagonal-wrap': ['Diagonal Wrap', 'starter'],
   carl: ['A Fly Named Carl', 'bizarre'],
   goat: ['Third Goat from the Left', 'bizarre'],
   loaf: ['Loaf #13 (Left in the Basket)', 'bizarre'],
@@ -215,6 +216,7 @@ const LISTED: CastMember[] = [
       },
       { game: 'momentum', as: 'glides on after letting go, and runs up to hop wide gaps' },
       { game: 'jump-boots', as: 'taps up a tall cliff like a jet pack, then jumps twice in boots that hold only two jumps' },
+      { game: 'diagonal-wrap', as: 'follows a road down the map and out of the bottom, then round the map three times on a tilted one' },
     ],
   },
   {
