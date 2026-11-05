@@ -195,3 +195,5 @@ its page's controls in `tourData.test.ts` `SOURCES`. A new host is a sprite in
 Sandbox games' own. Check what each control really does before describing it, and play it with `npm run tour:check -- <chapter>` (`scripts/README.md`): it reports each step's control found or missing at 1440 and 390, light and dark, with axe. A page outside
 today's web needs the ? button in its own header (the desk's and the DOS page's have it), and a
 `pageHere` for its address; one outside `index.html` names its `file`.
+
+- `whatsNew.ts`: the steps with a `since` day (steps.ts) newer than the visitor's last visit (localStorage `gm-tour-seen`, this browser only), at most 8, newest first. Data only; no menu entry yet (design: .for-lewis/research/tour/2026-11-05-whats-new.md).

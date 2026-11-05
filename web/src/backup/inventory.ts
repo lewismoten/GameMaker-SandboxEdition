@@ -125,6 +125,7 @@ export const LOCAL_KEYS: Record<SectionId, { keys: string[]; prefixes?: string[]
       'gm-demo-audio',
       'gm-tour-on',
       'gm-tour-sound',
+      'gm-tour-seen',
     ],
     prefixes: ['gm-library-only-'],
   },
