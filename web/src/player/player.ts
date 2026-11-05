@@ -5,7 +5,8 @@ import { dosHardwareSetup } from './dosConfig/dosSetup';
 import { Machine, GameAborted } from '@lewismoten/gamemaker-sandbox-engine/engine/machine';
 import type { AudioEngine } from '@lewismoten/gamemaker-sandbox-engine/audio/engine';
 import { Keyboard } from '@lewismoten/gamemaker-sandbox-engine/input/keyboard';
-import type { Session } from '@lewismoten/gamemaker-sandbox-engine/engine/scene';
+import { speedPick } from './speedPick';
+import type { Session, SpeedSetting } from '@lewismoten/gamemaker-sandbox-engine/engine/scene';
 import { runGame, type RunOptions } from '@lewismoten/gamemaker-sandbox-engine/engine/game';
 import type { GameFiles } from '../project/files';
 import { readGamepad } from '../input/gamepad';
@@ -76,6 +77,8 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
   const devGameLog = import.meta.env.DEV ? import('../devLog/gameLog') : (undefined as never);
   machine.audio.setGame(true); // a game's sound follows the Games setting too
   const piggy = piggyBankHook(opts.saveId);
+  // Run like a… (speedPick.ts): the one object the running game reads every tick
+  const speed: SpeedSetting = opts.speed ?? {};
   if (opts.preview) {
     container.classList.add('gm-preview');
     canvas.setAttribute('role', 'img');
@@ -165,6 +168,7 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
     corner.className = 'gm-corner';
     corner.append(keys);
     container.append(corner);
+    speedPick(corner, speed, canvas);
     unkeys = screenKeys(container, corner, canvas);
   }
 
@@ -229,6 +233,7 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
           onQuit: () => true,
           onFrame: touch ? (w) => touch.setSequences(w.chr.sequences) : undefined,
           ...opts,
+          speed,
           noSoundCard: opts.noSoundCard || hardware?.sound === 'speaker',
           // (dev only) the replay log of games, when the 🐵 switch is on: devLog/gameLog.ts
           ...((hearts || piggy || import.meta.env.DEV) && {

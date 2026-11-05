@@ -29,6 +29,7 @@ import {
   SCRNBWID,
   bgBlock,
   createWorld,
+  mapBlock,
   padBlocks,
   type CharInfo,
   type Coord,
@@ -42,7 +43,7 @@ import { parsePalette } from '../formats/palette';
 import { parseSoundSet, type SoundSet } from '../formats/sound';
 import { MAXSCENELINKS, NOSCENE, type Game } from '../formats/game';
 import { TICK_RATE } from '../audio/cmfPlayer';
-import { scrollCost, SlowCpu, tickCost, type PcCosts } from './slowPc';
+import { scrollCost, SlowCpu, tickCost, vocStallMs, type PcCosts } from './slowPc';
 import { gainAtLoad, newPlayGain, type PlayGain } from './playGain';
 
 const DEAD = 2;
@@ -70,6 +71,8 @@ export interface Session {
   onFrame?: (w: World) => void;
   /** Emulated PC speed; read every tick so it can change while playing. */
   speed: SpeedSetting;
+  /** Milliseconds a voice read still owes the emulated PC (SpeedSetting.slowPc); playscene charges it. */
+  vocStall?: number;
   /** RunOptions.gmHelp: Game-Maker's own GMHELP.TXT, which F1 shows first (PLAYGAME.EXE only). */
   gmHelp?: Uint8Array;
   /** RunOptions.player as the screens use it (engine/playerLook.ts); left out, the CD player's look. */
@@ -198,8 +201,12 @@ function attachSound(s: Session, w: World, sounds: SoundSet | undefined): void {
     play: (n) => {
       if (!sounds || !s.soundOn || n < 0 || n >= LASTSND) return false;
       const digital = sounds.digital[n];
-      if (!s.speakerOnly && s.m.audio.soundCardEnabled !== false && digital && digital[0] !== ' ') s.m.audio.playVoc(s.m.files.get(`${digital}.voc`));
-      else s.m.audio.playSpeaker(sounds.freqs[n]);
+      if (!s.speakerOnly && s.m.audio.soundCardEnabled !== false && digital && digital[0] !== ' ') {
+        const bytes = s.m.files.get(`${digital}.voc`);
+        s.m.audio.playVoc(bytes);
+        // the read happens on the game's own thread: an emulated slow PC is frozen for it
+        if (bytes) s.vocStall = (s.vocStall ?? 0) + vocStallMs(s.speed.slowPc, bytes.length);
+      } else s.m.audio.playSpeaker(sounds.freqs[n]);
       return true;
     },
   };
@@ -425,6 +432,17 @@ export async function playScene(s: Session, dosc: number, prev: number, linkIn: 
     for (let l = 0; l < LASTMM && n < 50; l++) if (w.mm[l].monnum < LASTMON && w.mi[l].scrPos.x !== OFFSCRN) n++; // MaxMonsShown
     return n;
   };
+  // animated cells redrawn this tick: the visible cells whose block kind changed its picture
+  const shownBefore = new Uint8Array(w.blkmap.length);
+  const animatedCells = () => {
+    let n = 0;
+    for (let by = 0; by < SCRNBWID; by++)
+      for (let bx = 0; bx < SCRNBLEN; bx++) {
+        const kind = mapBlock(w, (w.mx + bx) % MLEN, (w.my + by) % MWID);
+        if (kind < shownBefore.length && w.blkmap[kind] !== shownBefore[kind]) n++;
+      }
+    return n;
+  };
   let last = m.now();
   let acc = 0;
   const resync = () => {
@@ -584,8 +602,15 @@ export async function playScene(s: Session, dosc: number, prev: number, linkIn: 
         else if (f !== 7) await funcKey(f);
       }
       if (oldClock < s.timerCounter) {
-        if (pc) cpu.spend(tickCost(pc, monstersOnScreen()));
+        if (pc) {
+          cpu.spend(tickCost(pc, monstersOnScreen()));
+          shownBefore.set(w.blkmap);
+        }
+        s.vocStall = 0;
         await tick();
+        if (pc && pc.cellMs) cpu.spend(tickCost({ ...pc, tickMs: 0, monsterMs: 0 }, 0, animatedCells()));
+        if (pc && s.vocStall) cpu.spend(s.vocStall);
+        s.vocStall = 0;
       }
     }
     renderWorld(m.screen, w);

@@ -1,0 +1,46 @@
+/* "Run like a…" (player/speedPick.ts): a small labeled menu in the player's corner. */
+.gm-player .gm-corner .gm-speed {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 24px;
+  padding: 2px 6px 2px 10px;
+  border: 1px solid #ffd400;
+  border-radius: 6px;
+  background: rgba(0, 0, 128, 0.7);
+  color: #ffd400;
+  font:
+    600 13px system-ui,
+    sans-serif;
+  opacity: 0.75;
+  transition: opacity 0.2s;
+}
+
+.gm-player .gm-corner .gm-speed:hover,
+.gm-player .gm-corner .gm-speed:focus-within {
+  opacity: 1;
+}
+
+.gm-player .gm-corner .gm-speed select {
+  min-height: 24px;
+  border: 0;
+  border-radius: 4px;
+  background: #000080;
+  color: #fff;
+  font: inherit;
+  cursor: pointer;
+}
+
+/* on a phone the menu takes its own row under the other buttons, so nothing overlaps the way back */
+@media (max-width: 600px) {
+  .gm-player .gm-corner {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+  .gm-player .gm-corner .gm-speed {
+    order: 2;
+    flex: 1 0 100%;
+    box-sizing: border-box;
+    font-size: 12px;
+  }
+}

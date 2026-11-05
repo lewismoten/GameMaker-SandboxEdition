@@ -98,7 +98,7 @@ export const STARTER_GROUPS: { name: string; tag: string; games: string[] }[] = 
   {
     name: 'Showcase Tricks',
     tag: 'How the big games do their big moments.',
-    games: ['dialog', 'popups', 'scripted', 'parallax', 'horizon', 'beltway', 'corner-view'],
+    games: ['dialog', 'popups', 'scripted', 'parallax', 'horizon', 'beltway', 'corner-view', 'slow-computers'],
   },
 ];
 
