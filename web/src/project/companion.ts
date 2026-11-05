@@ -21,6 +21,7 @@
 //         "stamps": [ … ],         // map/tools/stamps.ts
 //         "buildings": [ … ]       // map/tools/building.ts
 //       },
+//       "town.map": { "wrap": true }, // the map editor's Wrap toggle, per map
 //       "hero.chr": { … }          // any editor may add a section of its own
 //     }
 //   }
