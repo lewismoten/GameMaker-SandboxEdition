@@ -29,37 +29,35 @@ export const STARTER_GROUPS: { name: string; tag: string; games: string[] }[] = 
     ],
   },
   {
-    name: 'Game Feel',
-    tag: 'How a game moves and pushes back.',
-    games: [
-      'power-up',
-      'throw-it',
-      'many-weapons',
-      'health-and-hearts',
-      'slippery-and-bouncy',
-      'momentum',
-      'gravity-on-gravity-off',
-      'swim',
-      'take-the-wheel',
-      'gusts',
-      'kit-moves',
-      'choose-hero',
-    ],
+    name: 'Moving and Pushing',
+    tag: 'What you can do, and what pushes you around.',
+    games: ['power-up', 'throw-it', 'many-weapons', 'health-and-hearts', 'momentum'],
   },
+  {
+    name: 'Worlds That Push Back',
+    tag: 'Ice, water, gravity and wind that act on you.',
+    games: ['slippery-and-bouncy', 'gravity-on-gravity-off', 'swim', 'gusts'],
+  },
+  { name: 'Changing Your Hero', tag: 'New keys, new heroes, new vehicles.', games: ['kit-moves', 'choose-hero', 'take-the-wheel'] },
   {
     name: 'Foes and Bosses',
     tag: 'Foes that think, and ones that take a few hits.',
-    games: ['boss-hits', 'boss-phases', 'who-wins', 'short-lived', 'follower', 'searchlight', 'flock', 'scripted'],
+    games: ['boss-hits', 'boss-phases', 'who-wins', 'short-lived', 'follower', 'searchlight', 'flock'],
   },
-  { name: 'Telling a Story', tag: 'Words, pictures and sound.', games: ['say-something', 'pictures-and-cartoons', 'sounds-and-music', 'day-night', 'popups'] },
+  { name: 'Telling a Story', tag: 'Words, pictures and sound.', games: ['say-something', 'pictures-and-cartoons', 'sounds-and-music', 'day-night'] },
   {
     name: 'Putting It Together',
-    tag: 'Timing, switches and a whole small game.',
-    games: ['beat-the-clock', 'countdown', 'warning-first', 'switches', 'your-first-game'],
+    tag: 'Timing and a whole small game.',
+    games: ['beat-the-clock', 'countdown', 'warning-first', 'your-first-game'],
   },
-  { name: 'Wiring and Puzzles', tag: 'Counters that think.', games: ['three-tokens', 'and-gate', 'secret-doors'] },
+  { name: 'Wiring and Puzzles', tag: 'Counters that think.', games: ['switches', 'three-tokens', 'and-gate', 'secret-doors'] },
   { name: 'Bigger Worlds', tag: 'More than one screen.', games: ['scroll', 'many-rooms', 'blocks-budget'] },
-  { name: 'Showcase Tricks', tag: 'How the big games do their big moments.', games: ['dialog', 'horizon'] },
+    {
+    name: 'Showcase Tricks',
+    tag: 'How the big games do their big moments.',
+    // a parallax starter (id `parallax`, being built) goes between 'scripted' and 'horizon'
+    games: ['dialog', 'popups', 'scripted', 'horizon'],
+  },
 ];
 
 /** The order the Starters are meant to be played in, easiest first: the groups' games in order (games/<id>); a starter not listed goes after these, A to Z. */

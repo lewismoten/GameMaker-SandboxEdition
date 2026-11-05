@@ -31,7 +31,7 @@ describe('the Starters', () => {
     expect(STARTER_GROUPS[0].name).toBe('The Basics');
     expect(STARTER_ORDER.slice(0, 2)).toEqual(['first-steps', 'keys-and-doors']);
     expect(STARTER_GROUPS.every((g) => g.name && g.tag)).toBe(true);
-    expect(starterGroupOf('power-up')).toBe('Game Feel');
+    expect(starterGroupOf('power-up')).toBe('Moving and Pushing');
     expect(starterGroupOf('nope')).toBeUndefined();
   });
 
@@ -40,7 +40,7 @@ describe('the Starters', () => {
     const got = byStarterGroup([g('zzz'), g('power-up'), g('keys-and-doors'), g('first-steps')]);
     expect(got.map((x) => [x.name, x.games.map((y) => y.id)])).toEqual([
       ['The Basics', ['first-steps', 'keys-and-doors']],
-      ['Game Feel', ['power-up']],
+      ['Moving and Pushing', ['power-up']],
       ['More Starters', ['zzz']],
     ]);
     expect(byStarterGroup([g('first-steps')]).map((x) => x.name)).toEqual(['The Basics']);
