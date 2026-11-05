@@ -27,7 +27,7 @@ function head(pal: Pal, face: Face, front = false, look = 0, raised: 'left' | 'r
   const hood = kitRamp(pal, 'hood');
   // the hood hangs behind the neck, so the head sits in front of it
   if (front) p.rect(3, 16, 14, 4, hood[2]).rect(3, 16, 14, 1, hood[4]);
-  else p.disc(5, 20, 5.2, hood[1]).disc(5, 20.5, 4, hood[2]);
+  else p.rect(3, 18, 11, 2, hood[1]).rect(4, 18, 9, 1, hood[2]);
   // hair behind and at the sides, then the round face a little forward of it
   blob(p, front ? 10 : 6, 12, front ? 8.2 : 5, 6, hair, 0, 2);
   blob(p, front ? 10 : 11, 12, front ? 8.2 : 7.4, 7.6, skin, 0, 3);
@@ -187,14 +187,13 @@ function body(
     p.rect(x0 + 1, 0, w - 2, 3, shirt[4]).rect(x0 + 2, 3, w - 4, 1, shirt[2]);
     p.rect(x0 + 3, 5, w - 6, 1, shirt[2]);
   } else {
-    // the hood rolled behind the neck, a ribbed collar, and two drawstrings that hang with a knot at the end
-    p.rect(x0 - 1, 0, 4, 6, shirt[2])
-      .rect(x0 - 1, 0, 1, 6, shirt[3])
-      .rect(x0 - 1, 0, 4, 1, shirt[4]);
-    p.rect(x0 + 1, 0, w - 2, 2, shirt[4]);
+    // the hood as a darker collar band hugging the neck and shoulders, and two thin drawstrings with small tips
+    p.rect(x0, 0, w, 3, shirt[1])
+      .rect(x0 + 1, 0, w - 2, 1, shirt[2])
+      .rect(x0 + 1, 2, w - 2, 1, shirt[0]);
     p.rect(x0 + 2, 6, w - 3, 5, shirt[2]).rect(x0 + 2, 6, w - 3, 1, shirt[1]);
     p.rect(x0 + 2, 6, 1, 5, shirt[1]);
-    for (const sx of [x0 + 4, x0 + w - 4]) p.rect(sx, 2, 1, 4, white[3]).rect(sx, 5, 2, 2, white[2]);
+    for (const sx of [x0 + 4, x0 + 6]) p.rect(sx, 3, 1, 3, white[3]).set(sx, 6, white[1]);
   }
   // arms
   const sleeve = (x: number, y: number, w2: number, h: number) => p.rect(x, y, w2, h, shirt[2]).rect(x, y, 1, h, shirt[4]);

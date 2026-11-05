@@ -24,6 +24,9 @@ export const KIT_LOOK: Look = {
   pants: [5, [70, 76, 100], [214, 222, 238], [138, 148, 176]],
 };
 
+/** Kit with a coral hoodie instead of orange (a choice for the maintainer; the default stays orange). */
+export const KIT_CORAL: Look = { ...KIT_LOOK, hood: [5, [150, 40, 50], [255, 210, 190], [246, 110, 96]] };
+
 const rampName = (role: Role): string => `k${role}`;
 
 /** Adds Kit's five ramps to a palette under construction (buildStarterPalette does this). */
@@ -115,13 +118,13 @@ const PANTS = {
 export const helperPalettes: Helper[] = [
   {
     name: 'MIA',
-    about: 'fair skin, auburn hair, purple beanie, teal hoodie',
-    look: { skin: SKIN.fair, hair: HAIR.auburn, hat: HAT.purple, hood: HOOD.teal, pants: PANTS.denim },
+    about: 'fair skin, auburn hair, purple beanie, gold hoodie',
+    look: { skin: SKIN.fair, hair: HAIR.auburn, hat: HAT.purple, hood: HOOD.gold, pants: PANTS.denim },
   },
   {
     name: 'LENA',
-    about: 'deep skin, black hair, red beanie, gold hoodie',
-    look: { skin: SKIN.deep, hair: HAIR.black, hat: HAT.red, hood: HOOD.gold, pants: PANTS.charcoal },
+    about: 'deep skin, black hair, red beanie, teal hoodie',
+    look: { skin: SKIN.deep, hair: HAIR.black, hat: HAT.red, hood: HOOD.teal, pants: PANTS.charcoal },
   },
   {
     name: 'MARA',
