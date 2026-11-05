@@ -296,6 +296,11 @@ multi-block objects for `kit/align.ts`, which their checks run. The other play-t
 | color-doors            | `npx vite-node ../games/color-doors/tools/gendemo.ts` | re-records the title demo (the whole run) into `src/demo.ts` (then rebuild) |
 | color-doors            | `npx vite-node ../games/color-doors/tools/demoCheck.ts` | plays the title demo headless: the same scenes as the bot, every key played |
 | color-doors            | `npx vite-node ../games/color-doors/tools/preview.ts [dir]` | PNGs of the blocks, each room in each view and the pictures |
+| shadows                | `npx vite-node ../games/shadows/tools/check.ts` | the bot walks the yard twice (solid shadows, then dithered), watches the hop and the hover, and the last door ends the game (scenes 2 3 4 5); no life lost, no invisible walls |
+| shadows                | `npx vite-node ../games/shadows/tools/gendemo.ts` | re-records the title demo (the whole run) into `src/demo.ts` (then rebuild) |
+| shadows                | `npx vite-node ../games/shadows/tools/demoCheck.ts` | plays the title demo headless: the same scenes as the bot, every key played |
+| shadows                | `npx vite-node ../games/shadows/tools/preview.ts [dir]` | PNGs of the blocks, 16x10 views of each room with Kit in it and the pictures |
+| shadows                | `npx vite-node ../games/shadows/tools/manual.ts` | draws the manual's frame pictures (shadow pixels marked) into `manual.json` |
 | many-rooms             | `npx vite-node ../games/many-rooms/tools/check.ts`                     | the bot goes red, blue, green, back by green's other door, and on to gold, then through the hub twice (the same landing cell, coins back, score kept); every door lands on the middle of a room and no life is lost; no invisible walls |
 | many-rooms             | `npx vite-node ../games/many-rooms/tools/gendemo.ts`                   | re-records the title demo (level 1: two coins and the red door, which lands in the blue room) into `src/demo.ts` (then rebuild) |
 | many-rooms             | `npx vite-node ../games/many-rooms/tools/preview.ts [dir]`             | PNGs of the blocks, both maps whole, each room as the screen shows it, and every picture |
