@@ -6,11 +6,15 @@ import './boxViewer.css';
 import { h } from '../../editor/core/ui';
 import type { CatalogEntry } from '../../project/files';
 import { type BoxFaces } from './gameBox';
+import { copyOf, spineOf } from './boxSpine';
 import { boxIsShown, dropBoxFromAddress, showBoxInAddress, stepBoxInAddress, turnBoxInAddress, viewerPushedEntry, type BoxTurn } from './boxAddress';
 
 /** The box as six faces, sized by the --u custom property (pixels per inch). */
 export function boxModel(faces: BoxFaces): HTMLElement {
-  const face = (name: keyof BoxFaces) => h('div', { class: `bface ${name}` }, h('img', { src: faces[name], alt: '', draggable: false }));
+  // a shelf box's spine is a small canvas (gameBox.ts spineOf), copied so each model has its own
+  const spine = spineOf(faces);
+  const picture = (name: keyof BoxFaces) => (name === 'left' && spine ? copyOf(spine) : h('img', { src: faces[name], alt: '', draggable: false }));
+  const face = (name: keyof BoxFaces) => h('div', { class: `bface ${name}` }, picture(name));
   return h('div', { class: 'box3d' }, face('front'), face('back'), face('left'), face('right'), face('top'), face('bottom'));
 }
 
