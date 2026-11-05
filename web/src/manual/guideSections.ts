@@ -341,6 +341,9 @@ export const GUIDE_SECTIONS: [id: string, title: string, html: string][] = [
     <h3>Bigger pictures</h3>
     <p>One picture can span several blocks, and a road can run away to the horizon.</p>
     <aside class="try-it" data-try="blocks-budget/big-picture horizon/road"><strong>Try it:</strong> 150 Blocks and To the Horizon.</aside>
+    <h3>Near and far</h3>
+    <p>A level can have a near scene and a far one, drawn smaller and paler, with a trail between them.</p>
+    <aside class="try-it" data-try="near-far/two-planes"><strong>Try it:</strong> Near and Far.</aside>
     <h3>Putting a game together</h3>
     <p>Levels join into one game with doors, coins, a hazard and a key.</p>
     <aside class="try-it" data-try="your-first-game/join"><strong>Try it:</strong> Your First Game.</aside>`,

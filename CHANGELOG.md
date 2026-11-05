@@ -11,6 +11,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Added
 
+- Near and Far, a Starter about two planes in one level: a near scene and a far one drawn smaller and paler, with a trail between them, in Bigger Worlds.
 - Say the Word, a Starter about locks that take a count of words and a tray that gives them back, in Wiring and Puzzles.
 - Make a Title, a Starter for the Telling a Story group: the pictures a title is made of, why the menu picture needs a plain board for the game's own words, and how a demo that plays itself is recorded, with the 1,000 key changes it can hold.
 - Stronger Keys, a Starter for the Wiring and Puzzles group: bronze, silver and gold keys add 1, 2 and 3 to one counter, and each door takes its own price, so a stronger key opens every weaker door and the change stays with the player, while small keys can add up to pay for a big door.
