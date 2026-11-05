@@ -32,7 +32,7 @@ function crosses(p: HeroPhysics, gap: number, rise: number, spikes = false): boo
     for (let x = 10; x < 10 + gap; x++) (col(x, FLOOR_ROW), (a.cells[(FLOOR_ROW - 1) * W + x] = HAZARD));
   }
   const goal = 10 + gap + 4 + (FLOOR_ROW - rise - 1) * W;
-  return reachFrom(a, p, 5 + (FLOOR_ROW - 1) * W, true, goal).stood[goal] === 1;
+  return reachFrom(a, p, 5 + (FLOOR_ROW - 1) * W, true, { goal }).stood[goal] === 1;
 }
 
 const cache = new Map<string, Capability>();

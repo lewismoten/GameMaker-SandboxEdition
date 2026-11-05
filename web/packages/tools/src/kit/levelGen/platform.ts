@@ -207,7 +207,8 @@ function attempt(w: number, h: number, r: Stream, o: PlatformOptions, d: number)
   const locks: LockInfo[] = [];
   const doorCells: number[] = [];
   const emptyCell = (c: number) => area.cells[c] === SKY && !taken.has(c);
-  const near = (c: number, list: number[], gap: number) => list.some((o2) => Math.abs((o2 % w) - (c % w)) < gap && Math.abs(((o2 / w) | 0) - ((c / w) | 0)) < 3);
+  const near = (c: number, list: number[], gap: number) =>
+    list.some((o2) => Math.abs((o2 % w) - (c % w)) < gap && Math.abs(((o2 / w) | 0) - ((c / w) | 0)) < 3);
 
   // a locked door in the middle of a long run late in the level, its key on an earlier run
   const pair = o.pairs[0];
@@ -233,7 +234,9 @@ function attempt(w: number, h: number, r: Stream, o: PlatformOptions, d: number)
           locks.push({ cell: cells[cells.length - 1], key: keyCell, pair, order: 0 });
         } else {
           for (const c of cells) area.cells[c] = SKY;
-          notes.push(shut.stood[exit] ? 'A locked door could be jumped over, so none was drawn.' : 'The key could not be reached before its door, so no door was drawn.');
+          notes.push(
+            shut.stood[exit] ? 'A locked door could be jumped over, so none was drawn.' : 'The key could not be reached before its door, so no door was drawn.',
+          );
         }
       }
     }
@@ -282,8 +285,8 @@ function attempt(w: number, h: number, r: Stream, o: PlatformOptions, d: number)
         if (i >= 0) treasure.splice(i, 1);
       }
     }
-    for (const c of treasure) (area.cells[c] = TREASURE, taken.add(c));
-    if (life !== undefined) (area.cells[life] = LIFE, taken.add(life));
+    for (const c of treasure) ((area.cells[c] = TREASURE), taken.add(c));
+    if (life !== undefined) ((area.cells[life] = LIFE), taken.add(life));
   }
   proof.collectable = [...treasure, ...(life === undefined ? [] : [life]), ...locks.map((l) => l.key)].every((c) => reach.touched[c] === 1);
 

@@ -19,6 +19,8 @@ export interface HeroPhysics {
   climb: boolean;
   /** The highest a jump takes him, in pixels (straight up). */
   rise: number;
+  /** The keys (PC scan codes) of his moves, as the character file sets them. A bot presses these. */
+  keys: { right: number; left?: number; jump: number; up?: number; down?: number };
 }
 
 export type PhysicsOutcome = { ok: true; physics: HeroPhysics } | { ok: false; message: string };
@@ -27,9 +29,11 @@ const frameTicks = (pause: number) => Math.max(1, pause);
 
 /** Reads the hero's walk, jump and climb from a character file; a plain message when a side view cannot be made for him. */
 export function heroPhysics(chr: Character): PhysicsOutcome {
-  let walk: { dx: number; ticks: number } | undefined;
-  let jump: { push: number[]; ground: boolean } | undefined;
+  let walk: { dx: number; ticks: number; key: number } | undefined;
+  let jump: { push: number[]; ground: boolean; key: number } | undefined;
   let climb = false;
+  let left: number | undefined, up: number | undefined, down: number | undefined;
+  const scan = (k: number) => k >> 8;
   for (let i = 5; i < MAXSEQ; i++) {
     const s = chr.sequences[i];
     if (!s.key && !s.jstkMov) continue;
@@ -46,13 +50,24 @@ export function heroPhysics(chr: Character): PhysicsOutcome {
         push[t] = (push[t] ?? 0) + f.y;
         t += frameTicks(f.pause);
       }
-      jump = { push, ground: !!s.ground };
-    } else if (!s.momentum && sx > 0 && sy === 0 && !walk) walk = { dx: sx, ticks };
-    else if (!s.momentum && sy < 0 && sx === 0) climb = true;
+      jump = { push, ground: !!s.ground, key: scan(s.key) };
+    } else if (!s.momentum && sx > 0 && sy === 0 && !walk) walk = { dx: sx, ticks, key: scan(s.key) };
+    else if (!s.momentum && sx < 0 && sy === 0 && left === undefined) left = s.key ? scan(s.key) : undefined;
+    else if (!s.momentum && sy < 0 && sx === 0) {
+      climb = true;
+      up ??= s.key ? scan(s.key) : undefined;
+    } else if (!s.momentum && sy > 0 && sx === 0) down ??= s.key ? scan(s.key) : undefined;
   }
   if (!walk) return { ok: false, message: 'The hero has no walking sequence to the right, so there is nothing to measure a side view by.' };
   if (!jump) return { ok: false, message: 'The hero has no jump (a sequence that pushes him up as momentum), so a side view cannot be checked.' };
-  const physics: HeroPhysics = { vx: walk.dx / walk.ticks, push: jump.push, steer: !jump.ground, climb, rise: 0 };
+  const physics: HeroPhysics = {
+    vx: walk.dx / walk.ticks,
+    push: jump.push,
+    steer: !jump.ground,
+    climb,
+    rise: 0,
+    keys: { right: walk.key, left, jump: jump.key, up, down },
+  };
   // the height of a jump straight up
   const a = arcOf(physics, 'jump', 0, 0);
   let y = 0;
@@ -93,6 +108,11 @@ export class Flight {
       dy: Math.max(-MAXGRAV, Math.min(MAXGRAV, this.vy)),
       dx: this.dir && t >= 1 && t <= this.steerTicks && (p.steer || this.kind === 'fall') ? Math.round(this.dir * p.vx) : 0,
     };
+  }
+  /** A block with no gravity under him: his speed fades to 5/6 a tick (engine/character.ts onGround). Returns the pixels moved. */
+  fade(): number {
+    this.vy = Math.trunc((this.vy * 5) / 6);
+    return Math.max(-MAXGRAV, Math.min(MAXGRAV, this.vy));
   }
   bump(): void {
     if (this.vy < 0) this.vy = 0;

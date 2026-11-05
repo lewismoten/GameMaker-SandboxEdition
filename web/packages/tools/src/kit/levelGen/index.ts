@@ -5,7 +5,29 @@
 // wall and tree edges with the set's terrain brushes (`terrainCells`).
 import { FACINGS, MAX_PAIR, blocksWithRole, type Facing, type Role, type RoleMap } from '../blockRoles';
 import { checkNeeds, kindInfo, type GenKind } from './needs';
-import { DECOR, DOORC, FLOOR, HAZARD, KEY, LADDER, LIFE, LOCK, PATH, PLAT, ROCK, ROOF, SKY, TREASURE, TREE, WALL, WATER, closed, distances, stream, type Area } from './grid';
+import {
+  DECOR,
+  DOORC,
+  FLOOR,
+  HAZARD,
+  KEY,
+  LADDER,
+  LIFE,
+  LOCK,
+  PATH,
+  PLAT,
+  ROCK,
+  ROOF,
+  SKY,
+  TREASURE,
+  TREE,
+  WALL,
+  WATER,
+  closed,
+  distances,
+  stream,
+  type Area,
+} from './grid';
 import { addProps, proveKeys, type LockInfo } from './props';
 import { dungeon } from './dungeon';
 import { forest } from './forest';
@@ -197,13 +219,13 @@ export function generate(roles: RoleMap, params: GenParams): GenOutcome {
   const props = own
     ? own
     : furnished
-    ? { locks: [], treasure: [], life: undefined, monsters: [], doorCells: [] as number[] }
-    : addProps(area, entry, exit, stream(params.seed ^ 0x9e3779b9), {
-        pairs,
-        treasure: has('treasure'),
-        life: has('life'),
-        monsters: params.monsters ?? [],
-      });
+      ? { locks: [], treasure: [], life: undefined, monsters: [], doorCells: [] as number[] }
+      : addProps(area, entry, exit, stream(params.seed ^ 0x9e3779b9), {
+          pairs,
+          treasure: has('treasure'),
+          life: has('life'),
+          monsters: params.monsters ?? [],
+        });
   const dungeonish = params.kind === 'dungeon' || params.kind === 'castle';
   if (dungeonish && has('locked-door') && !pairs.length) notes.push('The locked door blocks and key blocks share no lock number, so no doors were locked.');
   if (dungeonish && pairs.length && !props.locks.length) notes.push('No narrow passage fit a locked door in this layout.');

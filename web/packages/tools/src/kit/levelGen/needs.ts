@@ -25,7 +25,11 @@ export const KINDS: readonly KindInfo[] = [
     min: { w: 40, h: 20 },
     must: ['wall', 'sky'],
     want: [
-      { role: 'platform', use: 'Ledges to jump up to, and stepping stones across wide pits (solid on top only).', without: 'stones are made of wall blocks and there are no ledges' },
+      {
+        role: 'platform',
+        use: 'Ledges to jump up to, and stepping stones across wide pits (solid on top only).',
+        without: 'stones are made of wall blocks and there are no ledges',
+      },
       { role: 'ladder', use: 'Beside tall towers the hero cannot jump up (he needs an up key that climbs).', without: 'no towers' },
       { role: 'hazard', use: 'Spikes to jump over, and in the bottom of pits.', without: 'pits are floored with wall and there are no spikes' },
       { role: 'wall-top', use: 'The top row of the ground.', without: 'the ground top uses the wall block' },
