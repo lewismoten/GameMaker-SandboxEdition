@@ -107,6 +107,17 @@ export const scenes: Scene[] = [
       await p.waitForSelector('.gen-dialog', { timeout: 8000 });
     },
   },
+  {
+    id: 'generate-platform',
+    open: async (p) => {
+      await newProject(p);
+      const id = new URL(p.url()).hash.split('/')[2];
+      await p.evaluate((h) => (location.hash = h), `#/p/${id}/mygame.map`);
+      await p.getByRole('button', { name: /Generate/ }).click({ timeout: 15000 });
+      await p.waitForSelector('.gen-dialog', { timeout: 8000 });
+      await p.locator('.gen-dialog select[aria-label="Kind of layout"]').selectOption('platform');
+    },
+  },
   menuScene('sound-and-tour', /Sound and tour/),
   menuScene('ai-setup', /AI setup/),
   menuScene('backup-restore', /Back up/),
