@@ -22,7 +22,7 @@ export const LEVELS: Chapter = {
   half explored, so ask whether it could come back with a twist. Sometimes the answer is no: a
   one-off surprise, a single silly level, a joke told once can be the best moment in a game. The
   last level is a fine place for every idea to come back together.</p>
-  ${onCd('FIRSTSTP')}
+  ${onCd('FIRSTSTP', 'TEACHTWI')}
   <h2>Never trap the player</h2>
   <p>A player should always be able to go on or go back. Getting stuck with no way out but
   <kbd>Esc</kbd> is the one mistake nobody forgives, because the only fix is to start again.</p>

@@ -169,7 +169,7 @@ export function designPages(shots: GameShot[]): BookletPage[] {
       screen and the end of the game. Give each scene its palette, map, block sets, monsters,
       character, sounds and music, then draw links between scenes: a link is a door on one map
       that leads to a spot on another.</p>
-      <p class="see"><i>On the Sample CD:</i> <code>ROOMS</code>, <code>FIRSTGAM</code>, <code>TRYAGAIN</code> and <code>SHOW</code>.</p>
+      <p class="see"><i>On the Sample CD:</i> <code>ROOMS</code>, <code>TEACHTWI</code>, <code>FIRSTGAM</code>, <code>TRYAGAIN</code> and <code>SHOW</code>.</p>
       <p>Pictures and words between levels are <i>multimedia displays</i>: a <code>.GIF</code>,
       an <code>.FLI</code> animation, a <code>.TXT</code> file (30 characters to a line) or a
       <code>.LST</code> list that shows several of them in turn. Each line of a list is a file
