@@ -113,6 +113,7 @@ const STEPS: Record<string, Step> = {
     await go(bot, f + 3, 'to the countdown');
     // the gate opens when the number reaches 0; wait for it if it has not
     for (let i = 0; i < 12 && col(bot) < f + 6; i++) {
+      bot.say(`waiting for zero (${i})`);
       await must(bot, bot.wait(COUNT_TICKS), 'watching the number');
       await must(bot, bot.walk(f + 6, 'under the gate'), 'under the gate');
     }
