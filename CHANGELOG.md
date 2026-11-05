@@ -11,6 +11,8 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Added
 
+- At the 1994 DOS prompt, MENU, PLAYGAME and IMAGE check the word GM.EXE hands them, as the originals did: MENU on its own only says it must be run under Game-Maker, and PLAYGAME and IMAGE clear the screen on the way out unless GM started them.
+- Snowbound, Sandcast and Maximus each have a small new sign near where you start.
 - The DOS player tab has a Patch Lab: a read-only strip with the file offset, the CD's bytes and the new bytes of the setting you are editing, the changed bytes marked in bold and underline.
 - The 1994 BBS's Warez area has PATCHING.ZIP, a plain how-to (PATCHING.TXT) for changing the words of your own game's player: back up first, same length, no credits or registration.
 - The Programmer's Guide has a chapter, "Patching the player": the settings of the DOS player by file offset, how a patch is applied and spotted, and the line it keeps (your own copy, credits left alone).
