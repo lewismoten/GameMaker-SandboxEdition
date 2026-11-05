@@ -39,8 +39,16 @@ export const backKey = (f: Frame): Dir => dirOf([-f.forward[0], -f.forward[1]]);
 /** The room's hero pictures: `f0 f1 fs` facing forward (two strides and standing), `b0 b1 bs` facing back. */
 export function buildRoomHeroBlocks(pal: Pal, f: Frame): Book {
   const book = new Book('cbl');
-  for (const [name, facing] of [['f', 'left'], ['b', 'right']] as const)
-    for (const [i, step] of [['0', 0], ['1', 1], ['s', 2]] as const) book.add(`${name}${i}`, turn(slimPose(pal, facing, step), f.k));
+  for (const [name, facing] of [
+    ['f', 'left'],
+    ['b', 'right'],
+  ] as const)
+    for (const [i, step] of [
+      ['0', 0],
+      ['1', 1],
+      ['s', 2],
+    ] as const)
+      book.add(`${name}${i}`, turn(slimPose(pal, facing, step), f.k));
   return book;
 }
 
@@ -80,15 +88,14 @@ export function buildRoomHero(cb: Book, f: Frame): Character {
     }
   }
   // Space: one push away from the surface, then poses while the block's pull takes it back
-  set(
-    S[SEQ.jump],
-    [
-      frame('f0', { x: f.away[0] * PUSH, y: f.away[1] * PUSH, pause: 2 }),
-      frame('f1', { pause: 2 }),
-      frame('fs', { pause: 2 }),
-    ],
-    { key: KEY.space, sound: SND.jump, norepeat: 1, momentum: 1, jstkMov: 9, jstkBut: 1 },
-  );
+  set(S[SEQ.jump], [frame('f0', { x: f.away[0] * PUSH, y: f.away[1] * PUSH, pause: 2 }), frame('f1', { pause: 2 }), frame('fs', { pause: 2 })], {
+    key: KEY.space,
+    sound: SND.jump,
+    norepeat: 1,
+    momentum: 1,
+    jstkMov: 9,
+    jstkBut: 1,
+  });
   for (const n of [SEQ.dig, SEQ.throw, SEQ.cheer]) set(S[n], [frame('fs')], { key: 0 });
   ch.meter.fill(INF_REPEAT);
   ch.meter[0] = 100;

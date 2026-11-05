@@ -190,7 +190,14 @@ export interface Level {
   frame: Frame;
   book: Book;
   course: Course;
-  map: { start: [number, number]; exits: { from: [number, number] }[]; width: number; height: number; done(): ReturnType<StarterMap['done']>; set(x: number, y: number, name: string): unknown };
+  map: {
+    start: [number, number];
+    exits: { from: [number, number] }[];
+    width: number;
+    height: number;
+    done(): ReturnType<StarterMap['done']>;
+    set(x: number, y: number, name: string): unknown;
+  };
 }
 
 /** The chart of one room: terrain, coins, scenery and doors as level text, then the signs. */
@@ -205,8 +212,8 @@ function roomMap(f: Frame, course: Course, book: Book, signs: Record<string, Sig
     put(u, -2, 'D');
     put(u, -1, 'G');
   }
-  for (const [a, b] of course.trenches) for (let u = a; u <= b; u++) put(u, -1, ' '), put(u, -2, ' ');
-  for (let h = 0; h <= top; h++) put(-1, h, 'X'), put(N, h, 'X');
+  for (const [a, b] of course.trenches) for (let u = a; u <= b; u++) (put(u, -1, ' '), put(u, -2, ' '));
+  for (let h = 0; h <= top; h++) (put(-1, h, 'X'), put(N, h, 'X'));
   for (const [u, n] of course.blocks) for (let h = 0; h < n; h++) put(u, h, 'B');
   for (const [u, ch] of course.scenery) put(u, 0, ch);
   for (const [u, h] of course.coins) put(u, h, 'c');

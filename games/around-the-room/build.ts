@@ -61,7 +61,18 @@ const text = (name: string, heading: string, body: string) => {
   disk.put(`${name}.txt`, body);
   disk.put(`${name}.lst`, serializeSlideList([{ name: `${name}.gif`, pause: 0 }, { name: `${name}.txt` }]));
 };
-disk.put('title.gif', gif(titlePicture(pal, turned.map((b) => b.pics.get('fs')!), TITLE, 'A STARTER GAME'), pal));
+disk.put(
+  'title.gif',
+  gif(
+    titlePicture(
+      pal,
+      turned.map((b) => b.pics.get('fs')!),
+      TITLE,
+      'A STARTER GAME',
+    ),
+    pal,
+  ),
+);
 disk.put(STARTER_STING, starterStingFli('around-the-room'));
 disk.put(
   'title.lst',

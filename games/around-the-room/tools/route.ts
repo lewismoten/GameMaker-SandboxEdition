@@ -120,7 +120,8 @@ export async function playLevel(bot: StarterBot, index: number): Promise<void> {
   }
   await must(bot, settle(bot, l), 'coming down');
   if (top < 2.5) throw new Error(`Space should lift him off the surface over two blocks; he rose ${top.toFixed(2)}`);
-  if (at(bot, l).h !== 0 || Math.abs(at(bot, l).u - u0) > 0.05) throw new Error(`the pull should bring him straight back down to the surface, not to u ${at(bot, l).u} h ${at(bot, l).h}`);
+  if (at(bot, l).h !== 0 || Math.abs(at(bot, l).u - u0) > 0.05)
+    throw new Error(`the pull should bring him straight back down to the surface, not to u ${at(bot, l).u} h ${at(bot, l).h}`);
   bot.say(`jumped ${top.toFixed(1)} blocks off the surface and the pull brought him back`);
   await must(bot, bot.wait(LOOK), 'watching');
 
