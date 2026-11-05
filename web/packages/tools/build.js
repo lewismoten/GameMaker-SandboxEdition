@@ -56,6 +56,7 @@ const sources = {
   'kit/sceneSim': 'kit/sceneSim',
   'kit/shading': 'kit/shading',
   'kit/sound': 'kit/sound',
+  'kit/mumble': 'kit/mumble',
   'kit/textBounds': 'kit/textBounds',
   'kit/tune': 'kit/tune',
   'kit/microText': 'kit/microText',
