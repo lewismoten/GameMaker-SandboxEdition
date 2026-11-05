@@ -4,6 +4,7 @@
 // report the worker can post back (plain data: heat maps as typed arrays, no engine objects).
 import type { GameFiles } from '../../project/files';
 import { blockChecks, counterSources, counters } from './checks/blockChecks';
+import { counterLedger } from './checks/counterLedger';
 import { characterChecks, controls, endingChecks, jumps, mechanics, soundChecks, speedCap, variety } from './checks/gameChecks';
 import { cornerLinks, offMap, shadowedLinks, solidLinks, startsOnLink, wonRoute } from './checks/linkChecks';
 import { bigVocs, missingFiles, missingVocs, outOfRange } from './checks/missingParts';
@@ -127,10 +128,11 @@ export async function runChecks(files: GameFiles, opt: CheckOptions = {}): Promi
   const scenes = opt.scene === undefined ? all : all.filter((s) => s.scene === opt.scene);
   const findings: Finding[] = [];
   const gives = counterSources(all);
+  const ledger = counterLedger(all);
   const same = new Set(opt.sameEverySide);
   findings.push(...colorRoles(scenes, opt.reservations));
   for (const d of scenes) {
-    findings.push(...counters(d, gives));
+    findings.push(...counters(d, gives, ledger));
     for (const c of [...blockChecks, ...monsterChecks, ...solidPushChecks]) findings.push(...c(d));
     findings.push(
       ...startThreat(d, game),
