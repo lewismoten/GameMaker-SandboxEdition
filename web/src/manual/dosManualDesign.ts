@@ -113,6 +113,7 @@ export function designPages(shots: GameShot[]): BookletPage[] {
       <p>A palette is 256 colors, each mixed from red, green and blue (0 to 63 each). Keep color 0
       black: it is the background of every design screen. Color 15 is the mouse pointer, and
       color 255 is \u201cclear\u201d: monsters and characters show the scenery through it.</p>
+      <p class="see"><i>On the Sample CD</i> (<code>D:\\SAMPLES\\DAYNIGHT</code>), the palette changes in steps for a sunset.</p>
       <h3>Block Designer</h3>
       <p>A background set holds 150 blocks, a monster set 100 and a character set 50. Draw with
       the dot, line, box, filled box, circle, disk and fill tools; shift, rotate and flip a block
@@ -122,8 +123,10 @@ export function designPages(shots: GameShot[]): BookletPage[] {
       area), whether it is an object to pick up, what it becomes after a time or when touched,
       what it adds to score, hit points, money, lives or a counter, and which monster it gives
       birth to. Drag one block onto another to copy its attributes.</p>
+      <p class="see"><i>On the Sample CD:</i> <code>SLIPPERY</code> (ice and springs), <code>SMASHIT</code> and <code>DIGIT</code> (blocks that break or dig), <code>SWITCHES</code>, <code>THREETOK</code> and <code>LOOKWALL</code> (counters and secret walls).</p>
       <div class="note"><strong>Time.</strong> Game time runs at about 18 ticks a second: 1092 ticks
-      is a minute, and the longest wait, 9999 ticks, is about nine minutes.</div>`,
+      is a minute, and the longest wait, 9999 ticks, is about nine minutes.</div>
+      <p class="see"><i>On the Sample CD:</i> <code>CLOCK</code>, <code>COUNTDWN</code> and <code>WARNFRST</code> use time.</p>`,
     ),
     page(
       '3. Designing Games',
@@ -134,16 +137,19 @@ export function designPages(shots: GameShot[]): BookletPage[] {
       counter (arrows, for instance). Set the hero\u2019s hit points, lives and starting
       inventory (up to ten objects). A frame can give birth to a monster: that is how a hero
       shoots.</p>
+      <p class="see"><i>On the Sample CD:</i> <code>THROWIT</code>, <code>MANYWEAP</code>, <code>KITMOVES</code>, <code>CHOOSE</code>, <code>WHEEL</code>, <code>HEALTH</code>, <code>POWERUP</code>, <code>SLIDE</code>, <code>GRAVITY</code>, <code>SWIM</code> and <code>GUSTS</code>.</p>
       <h3>Monster Maker</h3>
       <p>A monster set has up to 64 monsters of up to 20 frames each. Each one moves toward the
       hero, away, at random or along a path you draw; it can attack when the hero comes close,
       pass through walls or be stopped by them, and die when killed, at the end of its path,
       after a time or never. A dying monster can leave another behind, and killing it can add to
       the score.</p>
+      <p class="see"><i>On the Sample CD:</i> <code>MONSTERS</code>, <code>FOLLOWME</code>, <code>FLOCK</code>, <code>SEEN</code>, <code>BIGBUG</code>, <code>PHASES</code>, <code>WHOWINS</code>, <code>HERETODY</code>, <code>SEEDNEST</code> and <code>POPUPS</code>.</p>
       <h3>Map Maker</h3>
       <p>Paint a map with background blocks and place up to 200 monsters on it (up to 50 are
       shown on the screen at once). <b>Z</b> zooms out to see the whole map. You can limit
-      scrolling to part of the map.</p>`,
+      scrolling to part of the map.</p>
+      <p class="see"><i>On the Sample CD:</i> <code>SCROLL</code>, <code>ONEMAP</code> and <code>BLK150</code>.</p>`,
     ),
     page(
       '3. Designing Games',
@@ -157,15 +163,18 @@ export function designPages(shots: GameShot[]): BookletPage[] {
       hit points gained, a monster dies, money gained and spent, a life gained, score up and
       down, and a counter up and down. The Sound Designer also converts <code>.CMF</code> music
       for Game-Maker.</p>
+      <p class="see"><i>On the Sample CD:</i> <code>SOUNDS</code>.</p>
       <h3>Integrator</h3>
       <p>Each square on the Integrator\u2019s screen is a scene. The green ones are the title
       screen and the end of the game. Give each scene its palette, map, block sets, monsters,
       character, sounds and music, then draw links between scenes: a link is a door on one map
       that leads to a spot on another.</p>
+      <p class="see"><i>On the Sample CD:</i> <code>ROOMS</code>, <code>FIRSTGAM</code> and <code>SHOW</code>.</p>
       <p>Pictures and words between levels are <i>multimedia displays</i>: a <code>.GIF</code>,
       an <code>.FLI</code> animation, a <code>.TXT</code> file (30 characters to a line) or a
       <code>.LST</code> list that shows several of them in turn. Each line of a list is a file
-      name and the seconds to show it.</p>`,
+      name and the seconds to show it.</p>
+      <p class="see"><i>On the Sample CD:</i> <code>PICTURES</code>, <code>SAYSOMTH</code> and <code>EVRYTALK</code>.</p>`,
     ),
     page(
       '3. Designing Games',

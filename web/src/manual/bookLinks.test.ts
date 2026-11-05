@@ -28,6 +28,35 @@ describe('the Guide’s links', () => {
       }
     }
   });
+
+  it('has Try it boxes whose game/question keys exist in the Starters’ manuals', () => {
+    const games = resolve(here, '../../../games');
+    for (const [id, , html] of GUIDE_SECTIONS) {
+      for (const m of html.matchAll(/data-try="([^"]+)"/g)) {
+        for (const key of m[1].split(/\s+/)) {
+          const [game, q] = key.split('/');
+          const f = join(games, game, 'manual.json');
+          expect(existsSync(f), `${id}: ${key} names a game`).toBe(true);
+          const asked = (JSON.parse(readFileSync(f, 'utf8')).howDoI ?? []) as { id: string }[];
+          expect(
+            asked.some((x) => x.id === q),
+            `${id}: ${key} is a question of ${game}`,
+          ).toBe(true);
+        }
+      }
+    }
+  });
+
+  it('points the Owner’s Guide at Sample CD folders that are games on the CD', () => {
+    const games = resolve(here, '../../../games');
+    const names = new Set(readdirSync(games).flatMap((g) => {
+      const f = join(games, g, 'about.json');
+      return existsSync(f) ? [String(JSON.parse(readFileSync(f, 'utf8')).dosName ?? '')] : [];
+    }));
+    for (const m of src('dosManualDesign.ts').matchAll(/<i>On the Sample CD[\s\S]*?<\/p>/g)) {
+      for (const c of m[0].matchAll(/<code>([A-Z0-9]+)<\/code>/g)) expect(names.has(c[1]), `SAMPLES\\${c[1]}`).toBe(true);
+    }
+  });
 });
 
 describe('the Owner’s Guide', () => {
