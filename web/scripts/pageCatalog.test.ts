@@ -35,5 +35,7 @@ describe('pageCatalog', () => {
     const [e] = pageCatalog([{ ...starter, series: undefined }]);
     expect(e.blurb).toBe('A blurb');
     expect(e.original?.box).toBeDefined();
+    expect(e.controls).toBeUndefined(); // every original game's controls are in its details
+    expect(e.details).toBe(true);
   });
 });

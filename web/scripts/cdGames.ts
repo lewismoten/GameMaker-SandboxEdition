@@ -425,13 +425,16 @@ export function slimCatalog(catalog: CdCatalogEntry[]): CdCatalogEntry[] {
 /**
  * games/catalog.json: slimCatalog, and each Starter down to what the home page and dos.html
  * read at load (id, title, DOS files and sizes, its pictures' flags, the manual's title). Its
- * blurb, controls, player look, label and box art go to games/details/<id>.json (withDetails),
- * so forty or more Starters do not weigh down every page that loads the catalog.
+ * blurb, label and box art go to games/details/<id>.json (withDetails), as do every original
+ * game's controls and player look, so forty or more Starters do not weigh down every page that loads the catalog.
  */
 export function pageCatalog(catalog: CdCatalogEntry[]): CdCatalogEntry[] {
   return slimCatalog(catalog).map((e) => {
-    if (e.series !== 'starter' || !e.details) return e;
-    const { blurb: _blurb, controls: _controls, player: _player, original, ...lean } = e;
+    if (!e.details) return e;
+    // every original game: its controls and player look (only a copy, a play or a walkthrough reads them)
+    const { controls: _controls, player: _player, ...rest } = e;
+    if (e.series !== 'starter') return rest;
+    const { blurb: _blurb, original, ...lean } = rest;
     return { ...lean, ...(original ? { original: { sound: original.sound, ...(original.manual ? { manual: original.manual } : {}) } } : {}) };
   });
 }
@@ -470,14 +473,14 @@ export function indexCatalog(catalog: CdCatalogEntry[]): CdCatalogEntry[] {
 function catalogDetails(e: CdCatalogEntry): Details | undefined {
   const o = e.original;
   const original = o && (o.manual || o.printables) ? { manual: o.manual, printables: o.printables } : undefined;
-  if (e.series !== 'starter') return e.notice || original ? { notice: e.notice, original } : undefined;
+  const more = { ...(e.controls ? { controls: e.controls } : {}), ...(e.player ? { player: e.player } : {}) };
+  if (e.series !== 'starter') return e.notice || original || e.controls || e.player ? { notice: e.notice, original, ...more } : undefined;
   // a Starter's catalog.json entry also lacks these (pageCatalog)
   return {
     notice: e.notice,
     original: { ...original, label: o?.label, box: o?.box },
     ...(e.blurb ? { blurb: e.blurb } : {}),
-    ...(e.controls ? { controls: e.controls } : {}),
-    ...(e.player ? { player: e.player } : {}),
+    ...more,
   };
 }
 
