@@ -49,6 +49,7 @@ const sources = {
   'kit/blockRoles': 'kit/blockRoles',
   'kit/clips': 'kit/clips',
   'kit/gameSim': 'kit/gameSim',
+  'kit/levelGen': 'kit/levelGen/index',
   'kit/music': 'kit/music',
   'kit/palette': 'kit/palette',
   'kit/pcText': 'kit/pcText',
