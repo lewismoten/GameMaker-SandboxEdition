@@ -1359,9 +1359,12 @@ registerEditor(['map'], (host, project, file) => {
             blocks: () => map.blocks,
             images: () => bgImgs,
             selection: () => tools.selection,
-            apply: (blocks) => {
+            blockSet: () => bg,
+            monsters: () => mons,
+            apply: (blocks, _what, withMonsters) => {
               remember();
               map.blocks.set(blocks);
+              if (withMonsters) void import('./generate/place').then((p) => p.placeMonsters(map, withMonsters)).then(() => (draw(), save()));
               draw();
               save();
               toast('Layout drawn. Undo takes it back in one step.');

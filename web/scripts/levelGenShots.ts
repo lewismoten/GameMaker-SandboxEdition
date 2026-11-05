@@ -29,6 +29,7 @@ try {
   const ctx = await browser.newContext({ viewport: phone ? { width: 390, height: 844 } : { width: 1440, height: 900 } });
   await forceTheme(ctx, theme);
   const page = await ctx.newPage();
+  if (process.argv.includes('--console')) page.on('console', (m) => console.log('PAGE', m.text()));
   await page.goto(`${base}/#/p/${project}/${bbl}?tab=uses`);
   await page.waitForSelector('.blk-roles', { timeout: 60000 });
   await assertTheme(page, theme);
@@ -66,11 +67,17 @@ try {
     }, scope);
     console.log(`axe ${what} ${theme}${phone ? ' phone' : ''}: ${v.length ? v.join(' | ') : 'clean'}`);
   };
+  const fit = await page.evaluate(() => {
+    const d = document.querySelector('dialog[open]') as HTMLElement;
+    const b = [...d.querySelectorAll('button')].find((x) => x.textContent === 'Use this layout')!.getBoundingClientRect();
+    return `dialog scrolls: ${d.scrollHeight > d.clientHeight + 1}; Use button bottom ${Math.round(b.bottom)} of ${innerHeight}`;
+  });
+  console.log(fit);
   await axe('dialog', 'dialog[open]');
   await page.locator('dialog .gen-offer').first().click();
   await page.getByRole('button', { name: 'Use this layout' }).click();
   await page.waitForTimeout(800);
-  for (let i = 0; i < 3; i++) await page.getByRole('button', { name: 'Zoom out' }).click();
+  for (let i = 0; i < Number(arg('zoom-out') ?? 3); i++) await page.getByRole('button', { name: 'Zoom out' }).click();
   await page.waitForTimeout(600);
   await shot(`map-${kind}`);
   await axe('map page', 'body');

@@ -1,0 +1,34 @@
+{
+  "title": "Drop Down",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.0",
+  "blurb": "Two short tunnels about a monster that falls. Monsters have no gravity in Game-Maker, so a friend sits on a crate until the crate breaks, then its Movement, a step down walked again and again, takes it down. Plop is solid and drops into a dip fast; Pip is soft and drifts down slowly. Signs say how. Play it, then open it in Game-Maker and change how fast a friend falls.",
+  "exe": "DROPDOWN.EXE",
+  "dosName": "DROPDOWN",
+  "sound": "sb",
+  "label": {
+    "background": "#eaf8e8",
+    "band": "#3aa84a",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "2 short levels",
+    "hours": 1,
+    "background": "#3aa84a",
+    "accent": "#ffd23f",
+    "ink": "#ffffff",
+    "tagline": "Break the crate. Watch it fall.",
+    "back": "A small explorer in a teal beanie crosses two short tunnels. In each a round little friend sits on a crate. Walk into the crate and it breaks, and the friend drops. Plop falls fast and blocks the way; Pip drifts down slowly and is soft to walk through. Play, then open the game in Game-Maker and change how fast a friend falls.",
+    "features": ["Signs in the levels explain each idea", "A monster can fall when the block under it breaks", "Made to be copied and taken apart"],
+    "shots": [
+      ["one.map", 14, 4],
+      ["two.map", 8, 3]
+    ],
+    "rating": "Everyone"
+  }
+}

@@ -21,7 +21,7 @@ describe('needs', () => {
   it('lists skipped wants but still runs', () => {
     const n = checkNeeds('forest', set([4, ['floor']], [5, ['tree']]));
     expect(n.ok).toBe(true);
-    expect(n.skipped).toHaveLength(3);
+    expect(n.skipped).toHaveLength(5);
   });
 });
 
@@ -48,7 +48,7 @@ describe('generate', () => {
   it('skips what has no block', () => {
     const f = run('forest', set([4, ['floor']], [5, ['tree']]), 11);
     expect(new Set(f.blocks)).toEqual(new Set([4, 5]));
-    expect(f.notes).toHaveLength(3);
+    expect(f.notes).toHaveLength(5);
   });
   it('closes dungeon walls at the area edge and fits a small area', () => {
     const r = run('dungeon', dungeonRoles, 9, { x: 10, y: 10, w: 30, h: 20 });

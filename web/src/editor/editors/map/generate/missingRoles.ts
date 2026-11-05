@@ -15,7 +15,25 @@ export function missingRoles(o: { kind: GenKind; roles: RoleMap; usesHref: strin
       ` ${i.must ? 'needed' : 'optional'}: `,
       i.count ? `${i.count} ${i.count === 1 ? 'block' : 'blocks'} set` : i.must ? 'not set yet' : `not set, ${i.without}`,
     );
-  const list = h('ul', { class: 'mt-need-list' }, ...n.items.map(row));
+  // the optional roles share two lines (set, and not set with what is skipped), so the panel stays short on a phone
+  const opt = n.items.filter((i) => !i.must);
+  const have = opt.filter((i) => i.count).map((i) => i.label);
+  const lack = opt.filter((i) => !i.count).map((i) => i.label);
+  const list = h(
+    'ul',
+    { class: 'mt-need-list' },
+    ...n.items.filter((i) => i.must).map(row),
+    have.length ? h('li', { class: 'set' }, h('span', { 'aria-hidden': 'true' }, '✓ '), h('strong', null, 'Optional set: '), have.join(', ')) : null,
+    lack.length
+      ? h(
+          'li',
+          { class: 'missing' },
+          h('span', { 'aria-hidden': 'true' }, '✗ '),
+          h('strong', null, 'Optional, not set: '),
+          `${lack.join(', ')} (those parts are left out)`,
+        )
+      : null,
+  );
   const link = h('a', { href: o.usesHref }, 'Open the block editor’s Uses tab');
   const summary = n.ok ? `${kindInfo(o.kind).label}: every needed role is set` : n.message;
   // open when something needed is missing; a set with every need met folds away to save room on a phone

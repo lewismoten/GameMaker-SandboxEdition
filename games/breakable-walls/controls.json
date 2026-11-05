@@ -49,6 +49,7 @@
     "11": "Falling over"
   },
   "counters": {
-    "20": "Keys: not used here, but a copy can add them."
+    "20": "Keys: not used here, but a copy can add them.",
+    "21": "Crates smashed: each one counts up, and that plays the crunch."
   }
 }
