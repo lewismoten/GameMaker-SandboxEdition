@@ -77,6 +77,8 @@ export async function runFlags(h: RetroHost, args: string[]): Promise<void> {
   const targets = cmd.what === 'ALL' ? ITEMS.filter((i) => i.reset) : ITEMS.filter((i) => i.id === cmd.what);
   const act = (i: (typeof ITEMS)[number]) => (cmd.verb === 'SET' ? i.set : cmd.verb === 'CLEAR' ? i.clear : i.reset);
   const none = targets.find((i) => !act(i));
+  // Bonus games stay unnamed until one is open: before then BONUS answers like any unknown name.
+  if (none?.id === 'BONUS' && (await none.show()) === undefined) return out(`Don't know "${none.id}" - FLAGS /? lists the names. Type FLAGS /? for help.`);
   if (none) return out(`${none.id} can't be ${cmd.verb === 'SET' ? 'set' : cmd.verb === 'CLEAR' ? 'cleared' : 'reset'} here. ${none.elsewhere ?? ''}`.trim());
   if (!parseBak(await readBak())) {
     await writeBak(await makeBak());
