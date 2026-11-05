@@ -430,8 +430,8 @@ dialog.modal .sv-inf {
   z-index: 10;
 }
 
-/* phones: the slot list becomes a row of chips above */
-@media (max-width: 720px) {
+/* phones, and short windows (a phone held sideways): the slot list becomes a row of chips above */
+@media (max-width: 720px), (max-height: 500px) {
   dialog.modal.sv-dialog {
     width: calc(100vw - 16px);
     height: calc(100dvh - 16px);
@@ -468,6 +468,22 @@ dialog.modal .sv-inf {
   }
   .sv-backup-tools {
     width: 100%;
+  }
+}
+
+/* a phone held sideways: the chips keep one short row (dialogsPhone.css makes .sv a column and lets a list area shrink), and the part chosen gets the rest */
+@media (max-height: 500px) {
+  dialog.modal .sv-nav[data-list-area] {
+    flex: 0 0 auto;
+    padding-bottom: 4px;
+  }
+
+  .sv-nav-item {
+    padding-block: 4px;
+  }
+
+  .sv-nav-sub {
+    display: none;
   }
 }
 
