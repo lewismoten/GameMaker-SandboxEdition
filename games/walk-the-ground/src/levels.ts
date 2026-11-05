@@ -100,7 +100,17 @@ function theTunnel(book: Book, signs: Record<SignName, Sign>): StarterMap {
   g.col(0, 0, 9, 'X').col(L1.width - 1, 0, 9, 'X');
   g.put(2, G - 2, 's').put(2, G - 1, 'S');
   g.put(L1.exit, G - 2, 'e').put(L1.exit, G - 1, 'E');
-  scenery(g, G, [[6, 1], [24, 1], [36, 3]], [35, 38], [34, 42]);
+  scenery(
+    g,
+    G,
+    [
+      [6, 1],
+      [24, 1],
+      [36, 3],
+    ],
+    [35, 38],
+    [34, 42],
+  );
   const m = new StarterMap(book, g.rows());
   // the hill: stepped, five blocks tall
   for (let y = 5; y < G; y++) {
@@ -127,7 +137,17 @@ function theSink(book: Book, signs: Record<SignName, Sign>): StarterMap {
   g.put(1, S - 2, 's').put(1, S - 1, 'S');
   g.put(L2.exit, S - 2, 'e').put(L2.exit, S - 1, 'E');
   for (let x = k0; x <= k1; x++) g.put(x, S - 1, '^');
-  scenery(g, S, [[7, 1], [20, 1], [34, 2]], [40, 31], [38, 42]);
+  scenery(
+    g,
+    S,
+    [
+      [7, 1],
+      [20, 1],
+      [34, 2],
+    ],
+    [40, 31],
+    [38, 42],
+  );
   g.put(31, S - 1, 'b');
   const m = new StarterMap(book, g.rows());
   // the mass of soil under the surface; the first two columns' caps are soil too (the trapdoor)
@@ -135,7 +155,7 @@ function theSink(book: Book, signs: Record<SignName, Sign>): StarterMap {
   for (const x of L2.shaft) m.set(x, S, 'soil');
   // the way out: a ladder up from the tunnel's end to a gap in the surface
   for (let y = S + 1; y < L2.floor; y++) m.set(L2.ladder, y, 'mineLadder');
-  m.set(L2.ladder, S, 'ladder');
+  m.set(L2.ladder, S, 'ladder').set(L2.ladder, S - 1, 'ladder');
   for (const [x, y] of L2.nuggets) m.set(x, y, 'nugget');
   m.sign(3, onGround(S, signs.sink), signs.sink);
   m.sign(7, onGround(S, signs.spikes), signs.spikes);

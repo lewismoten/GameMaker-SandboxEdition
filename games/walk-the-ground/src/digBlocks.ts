@@ -14,27 +14,28 @@ import type { Pal } from '../../kit/starter/palette';
 /** Points one nugget pays, once. */
 export const NUGGET_PAY = 10;
 
-/** Loose soil: a warm, speckled brown with a few pale pebbles and little shovel marks, lighter than the packed dirt. */
+/** Loose soil: a pale, sandy tan with a few brown pebbles and little shovel marks, so it reads as lighter and looser than the packed dirt. */
 function soil(pal: Pal, nugget: boolean): Pixels {
+  const t = pal.r('parch');
   const d = pal.r('dirt');
-  const p = speckle(new Pixels(20, 20, d[3]), 0, 0, 20, 20, d, 3, 1, 21, 0.3);
+  const p = speckle(new Pixels(20, 20, t[2]), 0, 0, 20, 20, t, 2, 1, 21, 0.3);
   const rand = rng(31);
   for (let i = 0; i < 6; i++) {
     const x = 1 + Math.floor(rand() * 16);
     const y = 1 + Math.floor(rand() * 16);
-    p.rect(x, y, 3, 2, d[5]).rect(x, y + 1, 3, 1, d[4]);
+    p.rect(x, y, 3, 2, d[3]).rect(x, y, 3, 1, d[4]).rect(x, y + 2, 3, 1, d[2]);
   }
   // short dashes, like a spade's marks
   for (const [x, y] of [
     [3, 16],
     [12, 6],
   ])
-    p.rect(x, y, 4, 1, d[1]);
-  p.rect(0, 0, 20, 1, d[4]);
+    p.rect(x, y, 4, 1, t[1]);
+  p.rect(0, 0, 20, 1, t[4]);
   if (nugget) {
     const g = pal.r('gold');
     const o = pal.r('orange');
-    p.disc(9.5, 10, 4.5, o[1]).disc(9.5, 10, 3.5, g[3]).rect(8, 8, 2, 2, g[5]).rect(11, 12, 1, 1, g[4]);
+    p.disc(9.5, 10, 5, o[0]).disc(9.5, 10, 4, g[3]).rect(8, 8, 2, 2, g[5]).rect(11, 12, 1, 1, g[4]);
     for (const [x, y] of [
       [3, 5],
       [16, 14],

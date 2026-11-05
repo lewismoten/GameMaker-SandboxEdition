@@ -47,7 +47,23 @@ const screen = (map: (typeof maps)[number], col: number, row: number, ...sprites
 
 const G = L1.ground;
 writePng(join(out, 'one-1-the-rock.png'), screen(maps[0], 8, 1, kit(L1.rock - 1, G - 1)), pal.pal, 3);
-writePng(join(out, 'one-2-dug-over-it.png'), screen(dug(0, run(L1.rock, L1.rock + 4, G - 3, G - 2).concat([[L1.rock + 5, G - 1], [L1.rock + 5, G - 2]])), 12, 1, kit(L1.rock + 3, G - 3)), pal.pal, 3);
+writePng(
+  join(out, 'one-2-dug-over-it.png'),
+  screen(
+    dug(
+      0,
+      run(L1.rock, L1.rock + 4, G - 3, G - 2).concat([
+        [L1.rock + 5, G - 1],
+        [L1.rock + 5, G - 2],
+      ]),
+    ),
+    12,
+    1,
+    kit(L1.rock + 3, G - 3),
+  ),
+  pal.pal,
+  3,
+);
 writePng(join(out, 'one-3-through-the-hill.png'), screen(dug(0, run(L1.rock + 1, 27, G - 2, G - 1)), 18, 1, kit(26, G - 1)), pal.pal, 3);
 const S = L2.surface;
 writePng(join(out, 'two-1-the-trapdoor.png'), screen(maps[1], 5, 1, kit(L2.shaft[0], S - 1)), pal.pal, 3);
