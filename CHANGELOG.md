@@ -11,6 +11,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Added
 
+- Slide and Drift, a Starter for the Game Feel group: every step Kit takes adds to his speed instead of moving him (the Momentum setting on a character sequence). In level 1 he gets faster while a key is held, glides on after he lets go and turns around with the other key; in level 2 a hop made at speed carries across three gaps a standing hop cannot. Two levels, with signs and a "How this level is made" page each, and a page on what Game-Maker cannot do (no top speed, no braking key, a fixed rate of slowing).
 - Every game's download ZIP and DOS folder now has a short name of up to 8 letters (KEYSDOOR.ZIP, RECKON.ZIP), so DOS shows it whole instead of as `KEYS-A~1`. The web addresses still use the game's name, and the old ZIP links keep working.
 - A saved game with damaged parts (a cut-short or wrong-type file, a bad notes file, a file its game names that is gone) still opens: every good file loads, a note lists what is broken in plain words with Replace and Drop buttons, and the damaged save is kept whole as a "damaged copy" so nothing is overwritten. A browser that won't open its game storage says so instead of showing a blank page.
 - When something breaks, a small notice offers Copy error details (the message, the build, the page, the browser's name and the screen size) and Dismiss. It copies only when you press it and sends nothing.
