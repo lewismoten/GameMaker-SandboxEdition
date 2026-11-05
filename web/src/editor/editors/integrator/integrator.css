@@ -271,3 +271,10 @@
     min-height: 44px;
   }
 }
+
+/* Touch: the side panel's drag handle is a 10 px bar; its grab area reaches 44 px wide. */
+@media (hover: none) and (pointer: coarse) {
+  .grator-resize::before {
+    inset: 0 -17px;
+  }
+}
