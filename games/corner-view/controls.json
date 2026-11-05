@@ -8,10 +8,6 @@
       "short": "Walk right",
       "long": "Walk right."
     },
-    "57": {
-      "short": "Does nothing",
-      "long": "Nothing uses Space in this game."
-    },
     "72": {
       "short": "Walk up",
       "long": "Walk up the screen."
@@ -37,18 +33,8 @@
       "long": "Same as the Down arrow."
     }
   },
-  "joystick": {
-    "1": {
-      "short": "Does nothing",
-      "long": "Nothing uses the button in this game."
-    }
-  },
   "sounds": {
-    "9": "The jump",
     "10": "Getting hurt",
     "11": "Falling over"
-  },
-  "counters": {
-    "20": "Keys: not used here, but a copy can add them."
   }
 }
