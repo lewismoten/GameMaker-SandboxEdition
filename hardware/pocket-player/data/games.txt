@@ -7,8 +7,9 @@ block-brains|Block Brains|2
 jump-boots|Boots and Jet Pack|2
 and-gate|Both Together|2
 coins-and-score|Coins and Score|3
+color-doors|Color Doors|6
 colors|Colors That Work|2
-corner-view|Corner View|2
+corner-view|Corner View|3
 countdown|Countdown|2
 cutscenes|Cutscenes|4
 day-night|Day and Night|5
@@ -16,14 +17,19 @@ diagonal-wrap|Diagonal Wrap|2
 walk-the-ground|Dig It|2
 searchlight|Don't Get Seen|2
 dialog|Everybody Talks|4
+flash-safe|Flash Safe|3
+flicker|Flicker and Flow|3
 follower|Follow Me|2
 gravity-on-gravity-off|Gravity On, Gravity Off|2
 gusts|Gusts|2
 health-and-hearts|Health and Hearts|3
 short-lived|Here Today|2
+home-keys|Home Keys|3
 keys-and-doors|Keys and Doors|3
 kit-moves|Kit's Moves|2
 kits-shop|Kit's Shop|1
+lights-out|Lights Out|3
+shadows|Little Shadows|4
 secret-doors|Looks Like a Wall|3
 title-demo|Make a Title|2
 many-weapons|Many Weapons|2
@@ -51,12 +57,14 @@ show-the-count|Show the Count|2
 momentum|Slide and Drift|2
 slippery-and-bouncy|Slippery and Bouncy|3
 breakable-walls|Smash It|3
+sound-board|Sound Board|2
 sounds-and-music|Sounds and Music|3
 spend-it|Spend It|2
 power-ladder|Stronger Keys|3
 switches|Switches|2
 take-the-wheel|Take the Wheel|2
 teach-test-twist|Teach, Test, Twist|3
+giant|The Giant|2
 same-house|The Same House|8
 scripted|The Show|2
 boss-phases|Three Phases|2
@@ -70,6 +78,7 @@ very-far|Walking Very Far|4
 warning-first|Warning First|2
 watch-your-step|Watch Your Step|3
 shore|Waves on the Shore|2
+choose-hero|Who Do You Want to Be?|4
 who-wins|Who Wins?|2
 puzzle-room|Wired Room|2
 your-first-game|Your First Game|3

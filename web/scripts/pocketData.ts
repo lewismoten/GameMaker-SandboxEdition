@@ -80,6 +80,33 @@ function inPak(bytes: Uint8Array, always = false): string {
   }
   return at;
 }
+/**
+ * LittleFS gives every file a 4 KB block, so the many small files (each game's .cfg, the shared .b .m .p .r .c .o .k .s) are bundled into
+ * small.pak: "GMS1", a count, entries sorted by name (name[32], offset, length), then the data (hardware/pocket-player/src/gmsmall.h).
+ * cards.pak, font.bin and games.txt stay files.
+ */
+function bundleSmallFiles() {
+  const names = readdirSync(outDir)
+    .filter((n) => !['cards.pak', 'font.bin', 'games.txt', 'small.pak'].includes(n))
+    .sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
+  const head = Buffer.alloc(8);
+  head.write('GMS1', 0, 'latin1');
+  head.writeUInt32LE(names.length, 4);
+  const table = Buffer.alloc(names.length * 40);
+  const data: Buffer[] = [];
+  let off = 8 + table.length;
+  names.forEach((n, i) => {
+    if (n.length > 31) throw new Error(`small.pak: name too long: ${n}`);
+    const b = readFileSync(outDir + n);
+    table.write(n, i * 40, 'latin1');
+    table.writeUInt32LE(off, i * 40 + 32);
+    table.writeUInt32LE(b.length, i * 40 + 36);
+    data.push(b);
+    off += b.length;
+    rmSync(outDir + n);
+  });
+  writeFileSync(outDir + 'small.pak', Buffer.concat([head, table, ...data]));
+}
 if (!listOnly) {
   rmSync(outDir, { recursive: true, force: true });
   mkdirSync(outDir, { recursive: true });
@@ -120,6 +147,9 @@ for (const id of ids) {
     const maps = play.map(({ s }) => parseMap(file(s.files[1])));
     // Per level: the monsters it can have (empty: none, so the board runs it without monsters).
     const monsOf = play.map(() => new Set<number>());
+    // The hero file a level plays with: its own, or (blank slot) the previous level's, as the engine keeps the hero.
+    const heroOf: string[] = [];
+    play.forEach(({ s }, n) => heroOf.push(s.files[5] || heroOf[n - 1] || ''));
     play.forEach(({ s }, n) => {
       const m = maps[n];
       const bl = parseBlocks(file(s.files[2]), 150);
@@ -127,7 +157,7 @@ for (const id of ids) {
       const mons = monsOf[n];
       if (hasMonFiles) {
         for (const p of m.monsters) if (p.monnum < LASTMON) mons.add(p.monnum);
-        for (const q of parseCharacter(file(s.files[5])).sequences) for (const f of q.frames) if (f.pic2 === 100 && f.pic1 < LASTMON) mons.add(f.pic1);
+        for (const q of (heroOf[n] ? parseCharacter(file(heroOf[n])).sequences : [])) for (const f of q.frames) if (f.pic2 === 100 && f.pic1 < LASTMON) mons.add(f.pic1);
       }
       const need = new Set<number>(m.blocks);
       const todo = [...need];
@@ -188,8 +218,10 @@ for (const id of ids) {
         if (!nmbl) mapBytes = maps[n].blocks;
       }
       // On a card the hero blocks are cut after the last one a frame shows (a big level needs the heap's long free stretch).
-      let cblBytes = file(f[6]);
-      if (cardRoot) {
+      // A level with no hero files (a blank character slot) keeps the previous scene's hero, as the engine does: `-` in the .cfg.
+      const noHero = !f[5] || !f[6];
+      let cblBytes = noHero ? new Uint8Array() : file(f[6]);
+      if (cardRoot && !noHero) {
         let top = 0;
         for (const q of parseCharacter(file(f[5])).sequences)
           for (const fr of q.frames) {
@@ -201,7 +233,7 @@ for (const id of ids) {
         cblN.push(`cbln ${n} ${top}`);
       }
       lines.push(
-        `level ${store(mapBytes, 'm')} ${store(bbl, 'b')} ${store(cblBytes, 'c')} ${store(file(f[5]), 'r')} ${store(file(f[0]), 'p')} ${to.x} ${to.y} ${s.scroll.up} ${s.scroll.down} ${s.scroll.left} ${s.scroll.right} ${nbl}${monPart}`,
+        `level ${store(mapBytes, 'm')} ${store(bbl, 'b')} ${noHero ? '-' : store(cblBytes, 'c')} ${noHero ? '-' : store(file(f[5]), 'r')} ${store(file(f[0]), 'p')} ${to.x} ${to.y} ${s.scroll.up} ${s.scroll.down} ${s.scroll.left} ${s.scroll.right} ${nbl}${monPart}`,
       );
     });
     // The PC speaker tunes (30 effects x 36 frequencies; the .voc names after them are not packed).
@@ -327,7 +359,10 @@ for (const id of ids) {
 if (!listOnly) {
   index.sort((a, b) => (a.id === 'first-steps' ? -1 : b.id === 'first-steps' ? 1 : a.title.localeCompare(b.title)));
   writeFileSync(outDir + 'games.txt', index.map((g) => `${g.id}|${g.title}|${g.levels}${cardRoot ? '|' + g.short : ''}`).join('\n') + '\n');
-  if (!cardRoot) writeFileSync(outDir + 'cards.pak', Buffer.concat(pak));
+  if (!cardRoot) {
+    writeFileSync(outDir + 'cards.pak', Buffer.concat(pak));
+    bundleSmallFiles();
+  }
   const total = (cardRoot ? 0 : pakSize) + [...put.values()].reduce((a, b) => a + b, 0);
   if (Object.keys(leftOut).length) console.log('left out of the cards:', leftOut);
   console.log(`${index.length} games, ${put.size} shared files, ${total} bytes (plus the .cfg files)`);

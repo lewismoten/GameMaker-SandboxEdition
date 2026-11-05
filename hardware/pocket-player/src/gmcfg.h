@@ -166,6 +166,8 @@ struct Assets {
   uint8_t pal[768];
   bool palChanged = false;
   void (*beforeLoad)(int level) = nullptr;  // called as a level's files are about to load (the board reads a card's files here)
+  char heroCbl[16] = "", heroChr[16] = "";  // the last hero files a level named (for a level with none)
+  int heroN = 50;
   char bblName[16] = "", cblName[16] = "", chrName[16] = "", palName[16] = "", monName[16] = "", mblName[16] = "", sndName[16] = "";
 
   void release() {
@@ -202,6 +204,11 @@ struct Assets {
     if (filesLevel == level && w->lvlIdx == level) return true;
     filesLevel = -1;
     if (!lines || !readLevelInfo(*lines, cfgName, level, files, w->lvl)) return false;
+    // A `-` for the hero files: the level has none, so the previous level's hero stays (as in the engine): its files are named again here.
+    if (!strcmp(files.cbl, "-") && !strcmp(files.chr, "-")) {
+      if (!heroChr[0]) return false;
+      strcpy(files.cbl, heroCbl); strcpy(files.chr, heroChr); files.ncbl = heroN;
+    } else { strcpy(heroCbl, files.cbl); strcpy(heroChr, files.chr); heroN = files.ncbl; }
     filesLevel = w->lvlIdx = level;
     return true;
   }

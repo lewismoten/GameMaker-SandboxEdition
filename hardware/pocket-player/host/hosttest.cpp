@@ -21,6 +21,7 @@ static Assets assets;
 static std::vector<uint8_t> slurp(const std::string& path) {
   std::vector<uint8_t> v;
   FILE* f = fopen(path.c_str(), "rb");
+  if (!f && pakSlurp(path, v)) return v;
   if (!f) { fprintf(stderr, "cannot open %s\n", path.c_str()); exit(2); }
   uint8_t buf[4096];
   size_t n;
