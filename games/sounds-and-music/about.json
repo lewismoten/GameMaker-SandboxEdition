@@ -1,0 +1,40 @@
+{
+  "title": "Sounds and Music",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.0",
+  "blurb": "Three short levels about what a game sounds like. A room names its own song, and the next room can play a different one, or none. Coins, bags, hearts and spikes each play a sound of their own, and jumping has one too. Signs say how. Play it with the sound up, then open it in Game-Maker and change a song or a beep.",
+  "exe": "SOUNDS.EXE",
+  "dosName": "SOUNDS",
+  "sound": "sb",
+  "label": {
+    "background": "#e8f6ff",
+    "band": "#8a3a7c",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "3 short levels",
+    "hours": 1,
+    "background": "#8a3a7c",
+    "accent": "#ffd23f",
+    "ink": "#ffffff",
+    "tagline": "Turn it up.",
+    "back": "A small explorer in a teal beanie crosses three short rooms: one with a bouncy song, one with a waltz, one that is quiet. Coins, money bags, hearts and spikes each beep differently, and jumping has a beep too. Read the signs, listen, then open the game in Game-Maker and change a song.",
+    "features": [
+      "Signs in the levels explain each idea",
+      "A room names its own song; leave it blank and the room is quiet",
+      "Every pickup and hurt has a sound you can change",
+      "Made to be copied and taken apart"
+    ],
+    "shots": [
+      ["one.map", 16, 6],
+      ["two.map", 22, 6],
+      ["three.map", 22, 6]
+    ],
+    "rating": "Everyone"
+  }
+}

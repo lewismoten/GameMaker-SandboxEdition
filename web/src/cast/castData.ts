@@ -43,6 +43,7 @@ export const CAST_GAMES = {
   'beat-the-clock': ['Beat the Clock', 'starter'],
   switches: ['Switches', 'starter'],
   'gravity-on-gravity-off': ['Gravity On, Gravity Off', 'starter'],
+  'sounds-and-music': ['Sounds and Music', 'starter'],
   carl: ['A Fly Named Carl', 'bizarre'],
   goat: ['Third Goat from the Left', 'bizarre'],
   loaf: ['Loaf #13 (Left in the Basket)', 'bizarre'],
@@ -131,6 +132,7 @@ const LISTED: CastMember[] = [
       { game: 'beat-the-clock', as: 'races a bar of light to a gate before it shuts' },
       { game: 'switches', as: 'pulls a lever to build a bridge' },
       { game: 'gravity-on-gravity-off', as: 'jumps a wall, then walks around it with gravity off' },
+      { game: 'sounds-and-music', as: 'listens to a song in every room and a beep for every pickup' },
     ],
   },
   {
