@@ -42,4 +42,3 @@ export class GameSim extends Base {
     return r;
   }
 }
-export type GameSim = InstanceType<typeof GameSim>;

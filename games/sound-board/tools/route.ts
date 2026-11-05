@@ -63,7 +63,7 @@ export async function theBoard(bot: StarterBot): Promise<void> {
   const got = h.slice(mark);
   const long = got.find((g) => g.slot === SLOT.fanfare);
   const short = got.find((g) => g.slot === SLOT.ping && long && g.tick >= long.tick);
-  if (!long || !short || got.some((g) => ![SLOT.fanfare, SLOT.ping, SLOT.jump].includes(g.slot)))
+  if (!long || !short || got.some((g) => !([SLOT.fanfare, SLOT.ping, SLOT.jump] as number[]).includes(g.slot)))
     throw new Error(`the jump: heard ${got.map((g) => `${g.slot}@${g.tick}`).join(', ')}`);
   const gap = short.tick - long.tick;
   const ticksLong = (lengthOf(SLOT.fanfare) / 145.6) * 18.2;

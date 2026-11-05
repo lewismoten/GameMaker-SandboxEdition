@@ -1,5 +1,6 @@
 // SOUND BOARD's own title picture, in the Telling a Story look (the kit's stage with curtains): Kit,
 // three pads with a picture of each one's sound above it, and the exit door.
+import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { scaleBlit } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 import { bevel } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
 import { outlined, text, textWidth } from '@lewismoten/gamemaker-sandbox-tools/kit/pcText';

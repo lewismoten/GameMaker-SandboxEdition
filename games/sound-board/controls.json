@@ -49,6 +49,8 @@
     "11": "Falling over"
   },
   "counters": {
-    "20": "Keys: not used here, but a copy can add them."
+    "20": "Keys carried: the key in level 2 adds one, and the gate takes one.",
+    "21": "Silver keys: not used here, but a copy can add them.",
+    "22": "The blip pad adds one, so it plays sound 7."
   }
 }
