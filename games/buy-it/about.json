@@ -1,0 +1,35 @@
+{
+  "title": "Buy It",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.0",
+  "blurb": "Two short levels about spending. Coins add to your Money, and a stall sells a gold key for a price: touch it with enough coins and it takes them and hands over the key. With too few, nothing happens. Money carries to the next level, and the Money counter is the one Game-Maker prints as a number (F2). Signs in the levels say how. Play it, then open it in Game-Maker and change a price.",
+  "exe": "BUYIT.EXE",
+  "dosName": "BUYIT",
+  "sound": "sb",
+  "label": {
+    "background": "#e8f6ff",
+    "band": "#c9892a",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "2 short levels",
+    "hours": 1,
+    "background": "#c9892a",
+    "accent": "#ffd23f",
+    "ink": "#ffffff",
+    "tagline": "A key costs three coins.",
+    "back": "A small explorer in a teal beanie gathers coins and visits a stall. A key costs three, and with two the stall does nothing. Pay, and it takes three and keeps the rest of your Money for later. Read the signs, then open the game in Game-Maker and change a price.",
+    "features": ["Signs in the levels explain each idea", "A stall sells a key and says SOLD", "Made to be copied and taken apart"],
+    "shots": [
+      ["one.map", 22, 6],
+      ["two.map", 22, 6]
+    ],
+    "rating": "Everyone"
+  },
+  "acceptedFindings": ["facing s4 The hero climbs side on"]
+}
