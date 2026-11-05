@@ -1,0 +1,64 @@
+{
+ "version": 1,
+ "game": "drop-down",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU0ZzStNKM0rTRTNA00IOQK5P817TQ=="
+  },
+  {
+   "scene": 3,
+   "keys": "KU0ZzStNKM0rTR7NA00NzWhNKM0DTQ=="
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: Puff Follows"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: Out of Reach"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 8859,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 913,
+    "time": 15216.666666666471
+   },
+   {
+    "title": "Level 1: Puff Follows",
+    "frame": 2142,
+    "time": 35700.00000000053
+   },
+   {
+    "title": "Level 2: Out of Reach",
+    "frame": 3829,
+    "time": 63816.666666663106
+   },
+   {
+    "title": "Ending",
+    "frame": 5578,
+    "time": 92966.66666667083
+   },
+   {
+    "title": "Credits",
+    "frame": 7785,
+    "time": 129750.00000001487
+   }
+  ]
+ }
+}
