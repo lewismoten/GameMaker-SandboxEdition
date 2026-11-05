@@ -15,6 +15,7 @@ import { parseGame, NOSCENE, MAXSCENELINKS } from '@lewismoten/gamemaker-sandbox
 import { parseMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { parseBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { parseCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { isFli, parseFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
 import { decodeGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
 import { parseSlideList, textLines } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
 import { matchColor } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
@@ -53,9 +54,9 @@ function store(bytes: Uint8Array, ext: string): string {
 const pak: Buffer[] = [];
 const pakAt = new Map<string, string>();
 let pakSize = 0;
-function inPak(bytes: Uint8Array): string {
+function inPak(bytes: Uint8Array, always = false): string {
   const key = sha(bytes);
-  let at = pakAt.get(key);
+  let at = always ? undefined : pakAt.get(key);
   if (!at) {
     const head = Buffer.alloc(4);
     head.writeUInt32LE(bytes.length);
@@ -202,7 +203,36 @@ for (const id of ids) {
           const text = Buffer.from(textLines(file(real)).join('\n'), 'latin1');
           const pal = cols ?? new Uint8Array(768);
           lines.push(`card ${where} t ${inPak(text)} ${pause ?? 90} ${matchColor(pal, 50, 10, 50)} ${matchColor(pal, 63, 10, 10)}`);
-        } else leftOut[e] = (leftOut[e] ?? 0) + 1; // .fli animations and .bkd backdrops: not shown on the board yet
+        } else if (e === 'fli') {
+          // Each frame is its own pak entry, so the board unpacks one at a time; a table lists their offsets and lengths.
+          const b = file(real);
+          const anim = isFli(b) ? parseFli(b) : undefined;
+          const view = new DataView(b.buffer, b.byteOffset, b.byteLength);
+          const types = new Set<number>();
+          anim?.frames.slice(0, anim.frameCount).forEach((st) => {
+            for (let i = 0, p = st + 16; i < view.getUint16(st + 6, true); i++, p += view.getUint32(p, true)) types.add(view.getUint16(p + 4, true));
+          });
+          if (
+            !anim ||
+            anim.width !== 320 ||
+            anim.height !== 200 ||
+            anim.frames.length < anim.frameCount ||
+            [...types].some((t) => ![11, 12, 13, 15, 16].includes(t))
+          ) {
+            leftOut['fli (unsupported)'] = (leftOut['fli (unsupported)'] ?? 0) + 1;
+            return;
+          }
+          const table = Buffer.alloc(anim.frameCount * 8);
+          for (let i = 0; i < anim.frameCount; i++) {
+            const st = anim.frames[i];
+            const [off, len] = inPak(b.subarray(st, st + view.getUint32(st, true)), true)
+              .split('.')
+              .map(Number);
+            table.writeUInt32LE(off, i * 8);
+            table.writeUInt32LE(len, i * 8 + 4);
+          }
+          lines.push(`card ${where} f ${inPak(table)} ${pause ?? 0} ${anim.speed} ${anim.frameCount}`);
+        } else leftOut[e] = (leftOut[e] ?? 0) + 1; // .bkd backdrops
       };
       one(name, undefined, 15);
     };

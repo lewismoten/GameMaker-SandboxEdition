@@ -3,6 +3,8 @@
 
 Run with PlatformIO's Python (it has pyserial):
   ~/.platformio/penv/bin/python web/scripts/pocketBoardCheck.py /dev/cu.usbserial-XXXX [--ticks 300]
+--cards also loads and draws every card of each game (intro, exit, won, lost pictures, text pages and the FLI), with the
+game loaded and no waiting, and prints a second table: cards shown, failed, ms, free heap, largest block, low-water mark.
 Needs the board on the game list. Exits 1 on any failed load, a stack high-water mark under
 1024 bytes, or no answer. Never run it while someone is using the board.
 """
@@ -13,14 +15,15 @@ ap = argparse.ArgumentParser()
 ap.add_argument("port")
 ap.add_argument("--ticks", type=int, default=300)
 ap.add_argument("--index", help="one game index instead of all")
+ap.add_argument("--cards", action="store_true")
 ap.add_argument("--timeout", type=float, default=600)
 a = ap.parse_args()
 
 s = serial.Serial(a.port, 115200, timeout=1)
 time.sleep(0.3)
 s.reset_input_buffer()
-s.write(f"T {a.index if a.index is not None else 'all'} {a.ticks}\n".encode())
-rows, end, bad = [], time.time() + a.timeout, False
+s.write(f"T {a.index if a.index is not None else 'all'} {a.ticks}{' cards' if a.cards else ''}\n".encode())
+rows, crows, end, bad = [], [], time.time() + a.timeout, False
 done = False
 while time.time() < end and not done:
     line = s.readline().decode("utf-8", "replace").strip()
@@ -28,6 +31,8 @@ while time.time() < end and not done:
         done = True
     elif line.startswith("ST error"):
         print(line); sys.exit(1)
+    elif line.startswith("SC "):
+        crows.append(dict(kv.split("=") for kv in line[3:].split()))
     elif line.startswith("ST "):
         rows.append(dict(kv.split("=") for kv in line[3:].split()))
     elif line:
@@ -38,6 +43,13 @@ for r in rows:
     fail = r["ok"] != "1" or int(r["stack"]) < 1024
     bad |= fail
     print(f"{r['id']:<16}{'yes' if r['ok']=='1' else 'FAIL':<5}{r['free']:>8}{r['largest']:>9}{r['min']:>9}{r['stack']:>7}{'  <-- check' if fail else ''}")
+if crows:
+    print(f"\n{'cards':<16}{'ok':<5}{'shown':>6}{'failed':>7}{'ms':>7}{'free':>8}{'largest':>9}{'minfree':>9}{'stack':>7}")
+    for r in crows:
+        fail = r["ok"] != "1" or int(r["stack"]) < 1024
+        bad |= fail
+        print(f"{r['id']:<16}{'yes' if r['ok']=='1' else 'FAIL':<5}{r['shown']:>6}{r['failed']:>7}{r['ms']:>7}{r['free']:>8}{r['largest']:>9}{r['min']:>9}{r['stack']:>7}{'  <-- check' if fail else ''}")
+    print("lowest heap seen during cards:", min(int(r["min"]) for r in crows))
 if not done:
     print("no 'ST done' line: the board stopped answering (crashed or reset?)"); bad = True
 if not rows:

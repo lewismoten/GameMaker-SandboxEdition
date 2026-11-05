@@ -8,6 +8,7 @@ import { mkdtempSync, readFileSync, readdirSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { Screen } from '@lewismoten/gamemaker-sandbox-engine/gfx/screen';
+import { applyFliFrame, newFliCanvas, parseFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
 import { decodeGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
 import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { parseSlideList, textLines } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
@@ -47,6 +48,14 @@ function expected(disk: string, dir: string[], where: string, name: string): str
       screen.drawImage(im.pixels, im.width, im.height, 0, 0);
       cols = im.palette;
       out.push(`C ${where} g 0 ${fnv(screen.pixels)} ${fnv(cols)} ${pause ?? dflt}`);
+    } else if (e === 'fli') {
+      // FLI::View on an empty canvas: the board starts from black, and these animations open with a full frame.
+      const anim = parseFli(file(fname));
+      const canvas2 = newFliCanvas(anim);
+      for (let i = 0; i < anim.frameCount; i++) {
+        applyFliFrame(anim, i, canvas2);
+        out.push(`C ${where} f ${i} ${fnv(canvas2.pixels)} ${fnv(canvas2.palette)} ${anim.speed}`);
+      }
     } else if (e === 'txt') {
       // Display_File: 16 lines a page (rows 5 to 20), "MORE..." when a seventeenth line comes.
       const saved = screen.snapshot();
