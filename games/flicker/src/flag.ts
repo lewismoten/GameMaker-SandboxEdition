@@ -16,7 +16,9 @@ const DEEP = 11;
 function cloth(pal: Pal, bg: number, k: number): Pixels {
   const { c } = pal;
   const p = new Pixels(40, 20, bg);
-  p.rect(POLE_X, 0, 4, 20, c('wood', 2)).rect(POLE_X, 0, 1, 20, c('wood', 3)).rect(POLE_X + 3, 0, 1, 20, c('wood', 1));
+  p.rect(POLE_X, 0, 4, 20, c('wood', 2))
+    .rect(POLE_X, 0, 1, 20, c('wood', 3))
+    .rect(POLE_X + 3, 0, 1, 20, c('wood', 1));
   for (let x = CLOTH_X; x <= CLOTH_END; x++) {
     const s = (x - CLOTH_X) / (CLOTH_END - CLOTH_X); // 0 at the pole, 1 at the tip
     const wave = (s: number) => 3 * Math.min(1, s * 2.2) * Math.sin(s * 5.6 - (k * Math.PI) / 2);
@@ -43,8 +45,15 @@ export function flagFrames(pal: Pal, bg: number): { a: Pixels[]; b: Pixels[] } {
 /** The pole alone: its top (a gold ball), its middle, and a block of it standing on the floor. */
 export function poleBlocks(pal: Pal, bg: number): { top: Pixels; mid: Pixels } {
   const { c } = pal;
-  const mid = () => new Pixels(20, 20, bg).rect(POLE_X, 0, 4, 20, c('wood', 2)).rect(POLE_X, 0, 1, 20, c('wood', 3)).rect(POLE_X + 3, 0, 1, 20, c('wood', 1));
-  const top = new Pixels(20, 20, bg).rect(POLE_X, 9, 4, 11, c('wood', 2)).rect(POLE_X, 9, 1, 11, c('wood', 3)).rect(POLE_X + 3, 9, 1, 11, c('wood', 1));
+  const mid = () =>
+    new Pixels(20, 20, bg)
+      .rect(POLE_X, 0, 4, 20, c('wood', 2))
+      .rect(POLE_X, 0, 1, 20, c('wood', 3))
+      .rect(POLE_X + 3, 0, 1, 20, c('wood', 1));
+  const top = new Pixels(20, 20, bg)
+    .rect(POLE_X, 9, 4, 11, c('wood', 2))
+    .rect(POLE_X, 9, 1, 11, c('wood', 3))
+    .rect(POLE_X + 3, 9, 1, 11, c('wood', 1));
   top.disc(10, 7, 4, c('gold', 2)).disc(9, 6, 2.4, c('gold', 4)).set(8, 5, c('gold', 5));
   return { top, mid: mid() };
 }

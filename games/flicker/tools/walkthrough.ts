@@ -7,7 +7,8 @@ import { SEED, play } from './play';
 
 const { sim } = await play(SEED);
 const titles: Record<number, string> = {
-  2: 'Level 1: All at Once',
-  3: 'Level 2: A Night Sky',
+  2: 'Level 1: The Torch Hall',
+  3: 'Level 2: The Falls',
+  4: 'Level 3: The Fire on the Hill',
 };
 await writeSimWalkthrough('flicker', sim, SEED, titles);

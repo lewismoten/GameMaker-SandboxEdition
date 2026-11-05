@@ -56,8 +56,16 @@ export function bodyFrame(pal: Pal, col: Col, k: number, step = 5): Pixels {
 /** Shade the sides where the water meets the rock, and brighten the middle (a mist of white at the very edge). */
 function edges(p: Pixels, pal: Pal, col: Col): void {
   const { c } = pal;
-  if (col === 'L') for (let y = 0; y < 20; y++) p.set(0, y, c('blue', 2)).set(1, y, c('blue', 3)).set(2, y, p.get(2, y) === c('sky', 4) ? c('sky', 3) : p.get(2, y));
-  if (col === 'R') for (let y = 0; y < 20; y++) p.set(19, y, c('blue', 2)).set(18, y, c('blue', 3)).set(17, y, p.get(17, y) === c('sky', 4) ? c('sky', 3) : p.get(17, y));
+  if (col === 'L')
+    for (let y = 0; y < 20; y++)
+      p.set(0, y, c('blue', 2))
+        .set(1, y, c('blue', 3))
+        .set(2, y, p.get(2, y) === c('sky', 4) ? c('sky', 3) : p.get(2, y));
+  if (col === 'R')
+    for (let y = 0; y < 20; y++)
+      p.set(19, y, c('blue', 2))
+        .set(18, y, c('blue', 3))
+        .set(17, y, p.get(17, y) === c('sky', 4) ? c('sky', 3) : p.get(17, y));
 }
 
 /** The lip at frame k: sky above a surface that curls over the rock's edge, ripples sliding across it, then the streaks beginning to fall (faster than the body's). */

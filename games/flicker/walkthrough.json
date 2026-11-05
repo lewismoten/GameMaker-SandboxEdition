@@ -1,64 +1,77 @@
 {
-  "version": 1,
-  "game": "twinkle",
-  "rand": {
-    "seed": 1,
-    "per": "scene"
+ "version": 1,
+ "game": "flicker",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "FU0UzStNI82FAU0ezStNKM3fAU0ozStNKM0rTQrNZ00="
   },
-  "segments": [
-    {
-      "scene": 2,
-      "keys": "FU0tzYUBTUvNK003zcsBTSjNK00="
-    },
-    {
-      "scene": 3,
-      "keys": "FU0ZzStNX83LAU1fzStN"
-    }
-  ],
-  "chapters": [
-    {
-      "scene": 2,
-      "title": "Level 1: All at Once"
-    },
-    {
-      "scene": 3,
-      "title": "Level 2: A Night Sky"
-    }
-  ],
-  "timeline": {
-    "fps": 60,
-    "frames": 10717,
-    "chapters": [
-      {
-        "title": "Opening",
-        "frame": 0,
-        "time": 0
-      },
-      {
-        "title": "Story",
-        "frame": 896,
-        "time": 14933.333333333148
-      },
-      {
-        "title": "Level 1: All at Once",
-        "frame": 2125,
-        "time": 35416.66666666724
-      },
-      {
-        "title": "Level 2: A Night Sky",
-        "frame": 4725,
-        "time": 78750.00000000003
-      },
-      {
-        "title": "Ending",
-        "frame": 6952,
-        "time": 115866.6666666775
-      },
-      {
-        "title": "Credits",
-        "frame": 9162,
-        "time": 152700.00000000268
-      }
-    ]
+  {
+   "scene": 3,
+   "keys": "FU0ZzStNN82jAU1fzStNLc0rTQ=="
+  },
+  {
+   "scene": 4,
+   "keys": "FU0ZzStNKM2HAk1QzStN"
   }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: The Torch Hall"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: The Falls"
+  },
+  {
+   "scene": 4,
+   "title": "Level 3: The Fire on the Hill"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 13164,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 896,
+    "time": 14933.333333333148
+   },
+   {
+    "title": "Level 1: The Torch Hall",
+    "frame": 2125,
+    "time": 35416.66666666724
+   },
+   {
+    "title": "Level 2: The Falls",
+    "frame": 5447,
+    "time": 90783.33333333686
+   },
+   {
+    "title": "Level 3: The Fire on the Hill",
+    "frame": 7684,
+    "time": 128066.66666668105
+   },
+   {
+    "title": "Ending",
+    "frame": 9878,
+    "time": 164633.33333332906
+   },
+   {
+    "title": "Credits",
+    "frame": 12090,
+    "time": 201499.99999997427
+   }
+  ]
+ }
 }

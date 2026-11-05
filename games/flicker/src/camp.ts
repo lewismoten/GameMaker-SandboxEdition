@@ -18,30 +18,15 @@ export const FIRE_TICKS = [4, 2, 5, 3];
 /** Where each spark loop's ember is in its four frames (x, y of its top left; null: not lit), and each frame's ticks. */
 export const SPARKS: { path: ([number, number] | null)[]; ticks: number[] }[] = [
   {
-    path: [
-      [7, 15],
-      [9, 9],
-      [8, 3],
-      null,
-    ],
+    path: [[7, 15], [9, 9], [8, 3], null],
     ticks: [3, 4, 3, 11],
   },
   {
-    path: [
-      [12, 16],
-      [11, 10],
-      [13, 4],
-      null,
-    ],
+    path: [[12, 16], [11, 10], [13, 4], null],
     ticks: [5, 3, 4, 7],
   },
   {
-    path: [
-      [10, 12],
-      [8, 6],
-      [10, 1],
-      null,
-    ],
+    path: [[10, 12], [8, 6], [10, 1], null],
     ticks: [4, 5, 2, 13],
   },
 ];
@@ -53,7 +38,9 @@ export function sparkFrame(pal: Pal, bg: number, at: [number, number] | null): P
   if (at) {
     const [x, y] = at;
     p.set(x + 1, y + 3, c('red', 1)).set(x + 1, y + 4, c('red', 0));
-    p.rect(x, y, 3, 3, c('gold', 3)).rect(x + 1, y, 1, 3, c('gold', 4)).set(x + 1, y + 1, c('gold', 5));
+    p.rect(x, y, 3, 3, c('gold', 3))
+      .rect(x + 1, y, 1, 3, c('gold', 4))
+      .set(x + 1, y + 1, c('gold', 5));
   }
   return p;
 }

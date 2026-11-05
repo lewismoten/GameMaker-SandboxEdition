@@ -90,9 +90,27 @@ function torchHall(): Level {
   win.rect(9, 8, 2, 32, c('stone', 2)).rect(6, 22, 8, 2, c('stone', 2)).rect(2, 38, 16, 2, c('stone', 3));
   book.add('window.top', win.crop(0, 0, 20, 20), { grav: PULL.down });
   book.add('window.bot', win.crop(0, 20, 20, 20), { grav: PULL.down });
-  addRing(book, timed, 'pulse', PULSE.map((s) => torchFrame(pal, bg, s)), PULSE_TICKS);
-  addRing(book, timed, 'flameA', FLICKER_A.map((s) => torchFrame(pal, bg, s)), FLICKER_A_TICKS);
-  addRing(book, timed, 'flameB', FLICKER_B.map((s) => torchFrame(pal, bg, s)), FLICKER_B_TICKS);
+  addRing(
+    book,
+    timed,
+    'pulse',
+    PULSE.map((s) => torchFrame(pal, bg, s)),
+    PULSE_TICKS,
+  );
+  addRing(
+    book,
+    timed,
+    'flameA',
+    FLICKER_A.map((s) => torchFrame(pal, bg, s)),
+    FLICKER_A_TICKS,
+  );
+  addRing(
+    book,
+    timed,
+    'flameB',
+    FLICKER_B.map((s) => torchFrame(pal, bg, s)),
+    FLICKER_B_TICKS,
+  );
   const poles = poleBlocks(pal, bg);
   book.add('pole.top', poles.top, { grav: PULL.down });
   book.add('pole.mid', poles.mid, { grav: PULL.down });
@@ -102,7 +120,9 @@ function torchHall(): Level {
 
   const W = 58;
   const g = new Grid(W, 15);
-  g.row(0, 0, W - 1, 'B').row(GROUND, 0, W - 1, 'B').fill(0, GROUND + 1, W, 3, 'D');
+  g.row(0, 0, W - 1, 'B')
+    .row(GROUND, 0, W - 1, 'B')
+    .fill(0, GROUND + 1, W, 3, 'D');
   g.col(0, 0, GROUND - 1, 'B').col(W - 1, 0, GROUND - 1, 'B');
   g.put(3, GROUND - 2, 's').put(3, GROUND - 1, 'S');
   g.put(54, GROUND - 2, 'e').put(54, GROUND - 1, 'E');
@@ -120,7 +140,11 @@ function torchHall(): Level {
   m.sign(41, onGround(signs.flag), signs.flag);
   // two flags: each a pole (top, flag, then the pole down to the floor)
   for (const x of [48, 51]) {
-    m.set(x, 7, 'pole.top').set(x, 8, 'flagA.0').set(x + 1, 8, 'flagB.0').set(x, 9, 'pole.mid').set(x, 10, 'pole.mid');
+    m.set(x, 7, 'pole.top')
+      .set(x, 8, 'flagA.0')
+      .set(x + 1, 8, 'flagB.0')
+      .set(x, 9, 'pole.mid')
+      .set(x, 10, 'pole.mid');
     things.push({ ring: 'flagA', x, y: 8, kind: 'flag' }, { ring: 'flagB', x: x + 1, y: 8, kind: 'flag' });
   }
   return { file: 'hall', title: 'The Torch Hall', hint: 'Torches that pulse, then flicker, and flags.', pal, palFile: 'hall.pal', book, timed, map: m, things };
@@ -151,9 +175,27 @@ function falls(): Level {
   book.add('pool.0', poolBlock(pal, rocks[0], 11), { grav: PULL.down });
   book.add('pool.1', poolBlock(pal, rocks[1], 23), { grav: PULL.down });
   for (const col of COLS) {
-    addRing(book, timed, `fall${col}`, [0, 1, 2, 3].map((k) => bodyFrame(pal, col, k)), BODY_TICKS);
-    addRing(book, timed, `lip${col}`, [0, 1, 2, 3].map((k) => lipFrame(pal, col, k, bg)), LIP_TICKS);
-    addRing(book, timed, `splash${col}`, [0, 1, 2, 3].map((k) => splashFrame(pal, col, k)), SPLASH_TICKS);
+    addRing(
+      book,
+      timed,
+      `fall${col}`,
+      [0, 1, 2, 3].map((k) => bodyFrame(pal, col, k)),
+      BODY_TICKS,
+    );
+    addRing(
+      book,
+      timed,
+      `lip${col}`,
+      [0, 1, 2, 3].map((k) => lipFrame(pal, col, k, bg)),
+      LIP_TICKS,
+    );
+    addRing(
+      book,
+      timed,
+      `splash${col}`,
+      [0, 1, 2, 3].map((k) => splashFrame(pal, col, k)),
+      SPLASH_TICKS,
+    );
   }
 
   const W = 60;
@@ -162,7 +204,11 @@ function falls(): Level {
   g.col(0, 0, GROUND - 1, 'X').col(W - 1, 0, GROUND - 1, 'X');
   g.put(3, GROUND - 2, 's').put(3, GROUND - 1, 'S');
   g.put(56, GROUND - 2, 'e').put(56, GROUND - 1, 'E');
-  g.put(12, GROUND - 1, 'b').put(35, GROUND - 1, 'f').put(53, GROUND - 1, 'b').put(44, 1, '(').put(45, 1, ')');
+  g.put(12, GROUND - 1, 'b')
+    .put(35, GROUND - 1, 'f')
+    .put(53, GROUND - 1, 'b')
+    .put(44, 1, '(')
+    .put(45, 1, ')');
   const m = new StarterMap(book, g.rows());
   const L = 15;
   const R = 31;
@@ -176,7 +222,11 @@ function falls(): Level {
     m.set(F + i, 3, `lip${col}.0`);
     for (let y = 4; y <= 9; y++) m.set(F + i, y, `fall${col}.0`);
     m.set(F + i, 10, `splash${col}.0`);
-    things.push({ ring: `lip${col}`, x: F + i, y: 3, kind: 'lip' }, { ring: `fall${col}`, x: F + i, y: 6, kind: 'fall' }, { ring: `splash${col}`, x: F + i, y: 10, kind: 'splash' });
+    things.push(
+      { ring: `lip${col}`, x: F + i, y: 3, kind: 'lip' },
+      { ring: `fall${col}`, x: F + i, y: 6, kind: 'fall' },
+      { ring: `splash${col}`, x: F + i, y: 10, kind: 'splash' },
+    );
   });
   [18, 19, 20].forEach((x, i) => m.set(x, 10, `pool.${i % 2}`));
   [25, 26, 27].forEach((x, i) => m.set(x, 10, `pool.${(i + 1) % 2}`));
@@ -198,8 +248,24 @@ function fireOnTheHill(): Level {
   book.add('logs.1', pile.crop(20, 0, 20, 20), { grav: PULL.down });
   const fires = FIRE.map((s) => fireFrame(pal, bg, s));
   const quarter = ['tl', 'tr', 'bl', 'br'] as const;
-  quarter.forEach((q, i) => addRing(book, timed, `fire.${q}`, fires.map((f) => f.crop((i % 2) * 20, Math.floor(i / 2) * 20, 20, 20)), FIRE_TICKS));
-  SPARKS.forEach((s, i) => addRing(book, timed, `spark${i}`, s.path.map((at) => sparkFrame(pal, bg, at)), s.ticks));
+  quarter.forEach((q, i) =>
+    addRing(
+      book,
+      timed,
+      `fire.${q}`,
+      fires.map((f) => f.crop((i % 2) * 20, Math.floor(i / 2) * 20, 20, 20)),
+      FIRE_TICKS,
+    ),
+  );
+  SPARKS.forEach((s, i) =>
+    addRing(
+      book,
+      timed,
+      `spark${i}`,
+      s.path.map((at) => sparkFrame(pal, bg, at)),
+      s.ticks,
+    ),
+  );
 
   const W = 46;
   const g = new Grid(W, 15);
@@ -223,8 +289,8 @@ function fireOnTheHill(): Level {
     [cx, top - 4, 0],
     [cx + 1, top - 5, 1],
     [cx - 1, top - 5, 2],
-    [cx, top - 6, 1],
-    [cx + 2, top - 6, 0],
+    [cx, top - 6, 0],
+    [cx + 2, top - 6, 2],
   ];
   for (const [x, y, i] of sparks) {
     m.set(x, y, `spark${i}.0`);

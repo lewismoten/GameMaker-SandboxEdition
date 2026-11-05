@@ -56,10 +56,35 @@ function strip(name: string, n: number, pics: Pixels[], zoom: number): void {
 }
 const hp = levels[0].pal;
 const hb = hp.c('sky', 3);
-strip('frames-torch.png', 0, [...PULSE, ...FLICKER_A, ...FLICKER_B].map((s) => torchFrame(hp, hb, s)), 4);
+strip(
+  'frames-torch.png',
+  0,
+  [...PULSE, ...FLICKER_A, ...FLICKER_B].map((s) => torchFrame(hp, hb, s)),
+  4,
+);
 const fl = flagFrames(hp, hb);
-strip('frames-flag.png', 0, [0, 1, 2, 3].flatMap((k) => [fl.a[k], fl.b[k]]), 4);
-strip('frames-fall.png', 1, ['L', 'M'].flatMap((c) => [0, 1, 2, 3].map((k) => bodyFrame(levels[1].pal, c as 'L' | 'M', k))), 4);
-strip('frames-fire.png', 2, FIRE.map((s) => fireFrame(levels[2].pal, levels[2].pal.c('sky', 3), s)), 3);
-strip('frames-spark.png', 2, SPARKS.flatMap((s) => s.path.map((at) => sparkFrame(levels[2].pal, levels[2].pal.c('sky', 3), at))), 4);
+strip(
+  'frames-flag.png',
+  0,
+  [0, 1, 2, 3].flatMap((k) => [fl.a[k], fl.b[k]]),
+  4,
+);
+strip(
+  'frames-fall.png',
+  1,
+  ['L', 'M'].flatMap((c) => [0, 1, 2, 3].map((k) => bodyFrame(levels[1].pal, c as 'L' | 'M', k))),
+  4,
+);
+strip(
+  'frames-fire.png',
+  2,
+  FIRE.map((s) => fireFrame(levels[2].pal, levels[2].pal.c('sky', 3), s)),
+  3,
+);
+strip(
+  'frames-spark.png',
+  2,
+  SPARKS.flatMap((s) => s.path.map((at) => sparkFrame(levels[2].pal, levels[2].pal.c('sky', 3), at))),
+  4,
+);
 console.log(`shots in ${out}`);
