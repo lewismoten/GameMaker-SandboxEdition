@@ -123,7 +123,7 @@ function waitForTheGust(pal: Pal): Level {
   g.put(30, LEDGE_ROW - 2, 'e').put(30, LEDGE_ROW - 1, 'E');
   g.row(LEDGE_ROW - 1, 22, 25, 'c');
   g.col(LEDGE[1] + 1, 0, LEDGE_ROW, 'X');
-  for (const x of [14, 15]) g.put(x, G - 1, "c");
+  for (const x of [14, 15]) g.put(x, G - 1, 'c');
   scenery(
     g,
     G,
@@ -162,7 +162,10 @@ function windsocksAndShelter(pal: Pal): Level {
   const g = new Grid(WIDTH_TWO, 16);
   g.row(G, 0, WIDTH_TWO - 1, 'G').fill(0, G + 1, WIDTH_TWO, 4, 'D');
   g.col(0, 0, G - 1, 'X').col(WIDTH_TWO - 1, 0, G - 1, 'X');
-  g.put(3, G - 2, 's').put(3, G - 1, 'S').put(41, G - 2, 'e').put(41, G - 1, 'E');
+  g.put(3, G - 2, 's')
+    .put(3, G - 1, 'S')
+    .put(41, G - 2, 'e')
+    .put(41, G - 1, 'E');
   scenery(
     g,
     G,
@@ -179,13 +182,17 @@ function windsocksAndShelter(pal: Pal): Level {
   m.sign(5, onGround(G, signs.socks), signs.socks);
   m.sign(9, onGround(G, signs.shelter), signs.shelter);
   for (let x = TUNNEL[0]; x <= TUNNEL[1]; x++) {
-    m.set(x, G, 'flags').set(x, G - 4, 'roof').set(x, G - 5, 'grass');
+    m.set(x, G, 'flags')
+      .set(x, G - 4, 'roof')
+      .set(x, G - 5, 'grass');
     const hut = HUTS.findIndex((h) => x >= h && x < h + HUT_W);
     if (hut < 0) for (let y = G - 3; y < G; y++) m.set(x, y, ringBlock('side', 'calm'));
     else {
       // a shelter: an awning, a wall with a lantern in the middle, and a rug with a coin at each end
       const mid = x === HUTS[hut] + 1;
-      m.set(x, G - 3, 'awning').set(x, G - 2, mid ? 'lantern' : 'back').set(x, G - 1, mid ? 'rug' : 'rugCoin');
+      m.set(x, G - 3, 'awning')
+        .set(x, G - 2, mid ? 'lantern' : 'back')
+        .set(x, G - 1, mid ? 'rug' : 'rugCoin');
     }
   }
   for (const x of SOCKS) m.set(x, G - 6, 'pole').set(x, G - 7, ringBlock('sock', 'calm'));

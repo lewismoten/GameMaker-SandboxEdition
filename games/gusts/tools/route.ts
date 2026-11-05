@@ -174,7 +174,8 @@ export async function windsocksAndShelter(bot: StarterBot): Promise<void> {
   }
   inOrder(seen, 'the tunnel');
   inOrder(socks, 'the windsocks');
-  if (seen.length !== socks.length || seen.some(([m, t], i) => socks[i][0] !== m || socks[i][1] !== t)) throw new Error('the windsocks were not in step with the wind');
+  if (seen.length !== socks.length || seen.some(([m, t], i) => socks[i][0] !== m || socks[i][1] !== t))
+    throw new Error('the windsocks were not in step with the wind');
   if (bot.sim.ci.hitpts !== hp) throw new Error('the wind cost hit points');
   if (bot.sim.ci.score - score !== 4 * COIN) throw new Error(`level 2 should give 4 coins, not ${(bot.sim.ci.score - score) / COIN}`);
   void inTunnel;

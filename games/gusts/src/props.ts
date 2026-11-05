@@ -11,7 +11,9 @@ export const MOODS: Mood[] = ['calm', 'flutter', 'gust'];
 /** A small leaf: a tilted pair of strokes, light green over dark. */
 function leaf(p: Pixels, pal: Pal, x: number, y: number, tilt: 1 | -1): void {
   const g = pal.r('grass');
-  p.line(x, y, x + 3 * tilt, y - 2, g[4]).line(x, y + 1, x + 3 * tilt, y - 1, g[2]).set(x - tilt, y + 1, g[1]);
+  p.line(x, y, x + 3 * tilt, y - 2, g[4])
+    .line(x, y + 1, x + 3 * tilt, y - 1, g[2])
+    .set(x - tilt, y + 1, g[1]);
 }
 
 /** One long streak of a gust. `dir` 0 is up (the head on top), 1 is left (the head on the left). */

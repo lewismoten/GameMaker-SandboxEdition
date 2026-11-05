@@ -32,7 +32,8 @@ const kit = (col: number, feet: number): Sprite[] => {
 function at(l: Level, kinds: string[], mood: string) {
   // a fresh copy of the level each time, so one picture's changes stay out of the next
   const m = buildLevels().levels[l.file === 'one' ? 0 : 1].map.done();
-  for (const k of kinds) for (let i = 0; i < m.blocks.length; i++) if (m.blocks[i] === l.book.n(ringBlock(k, 'calm'))) m.blocks[i] = l.book.n(ringBlock(k, mood as 'calm'));
+  for (const k of kinds)
+    for (let i = 0; i < m.blocks.length; i++) if (m.blocks[i] === l.book.n(ringBlock(k, 'calm'))) m.blocks[i] = l.book.n(ringBlock(k, mood as 'calm'));
   return m;
 }
 const region = (l: Level, m: ReturnType<typeof at>, col: number, row: number, w: number, h: number, extra: Sprite[]) =>
