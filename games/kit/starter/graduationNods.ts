@@ -6,7 +6,7 @@
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { outline } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 import { SOLID, PULL, type Book, type Rules } from './book';
-import { addLockBlocks, gatePicture, SILVER_KEYS } from './locks';
+import { archPicture, gatePicture, SILVER_KEYS } from './locks';
 import { KEYS } from './blocks';
 import type { StarterMap } from './map';
 import { skyOf, type Pal } from './palette';
@@ -58,7 +58,9 @@ const lined = (c: NodCtx, p: Pixels): Pixels => outline(p, ink(c), { transparent
 const ring = (c: NodCtx, names: string[], ticks: number): void =>
   names.forEach((n, i) => c.timed.push({ name: n, next: names[(i + 1) % names.length], ticks }));
 const locks = (c: NodCtx): void => {
-  if (!c.book.has('gate')) addLockBlocks(c.book, c.pal);
+  if (c.book.has('gate')) return;
+  add(c, 'gateTop', archPicture(c.pal, 'gold'), air);
+  add(c, 'gate', gatePicture(c.pal, 'wood', 'gold'), { solid: SOLID, effect: KEYS, eamt: -1, touch: 'sky' });
 };
 /** A brick wall one block wide down from the sky to a gate's arch, with the gate in the row above the path. */
 const gateWall = (m: StarterMap, x: number, gate: string): void => {
