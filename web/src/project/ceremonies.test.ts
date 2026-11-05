@@ -44,6 +44,14 @@ describe('ceremonies', () => {
     expect(new Set(all).size).toBe(all.length);
     for (const n of all) expect(n >= 101 && n <= 699).toBe(true);
   });
+
+  it('a Starter added later takes the next course number of its stage, so no other course number moves', () => {
+    expect(courseNumber('dialog')).toBe(609);
+    expect(courseNumber('under-the-hood')).toBe(617);
+    expect(['lightning-bugs', 'fireworks', 'leaves'].map(courseNumber)).toEqual([618, 619, 620]);
+    expect(courseGame(620)).toBe('leaves');
+  });
+
   it('needs a B or better in at least three of every four, rounded up', () => {
     for (const c of CEREMONIES) expect(needed(c)).toBe(Math.ceil(stageGames(c).length * 0.75));
     expect(unlockRule(CEREMONIES[0])).toBe(`Get a B or better in ${needed(CEREMONIES[0])} of the ${basics().length} courses.`);
