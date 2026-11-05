@@ -13,6 +13,7 @@
 // Plaques (addPlaque) are the signs of the two flying levels: a board with no posts, on the night sky or the water.
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { outline } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
+import type { PaletteBuilder } from '@lewismoten/gamemaker-sandbox-tools/kit/palette';
 import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
 import { Book, PULL, SOLID } from '../../kit/starter/book';
@@ -22,12 +23,12 @@ import { onGround, rocket } from './shipArt';
 
 const T = 255;
 /** The ramp the night sky is drawn from; give it to buildStarterPalette as the game's own ramp. */
-export const SPACE_RAMP: [number, number, number][] = [
+const SPACE_RAMP: [number, number, number][] = [
   [8, 10, 44],
   [20, 24, 74],
   [44, 50, 112],
 ];
-export const addSpaceRamp = (b: { ramp(name: string, n: number, from: number[], to: number[]): unknown }): void => {
+export const addSpaceRamp = (b: PaletteBuilder): void => {
   b.ramp('space', 3, SPACE_RAMP[0], SPACE_RAMP[2]);
 };
 
@@ -42,7 +43,13 @@ function night(pal: Pal, seed: number): Pixels {
   const x = 2 + Math.floor(rand() * 15);
   const y = 2 + Math.floor(rand() * 15);
   p.set(x, y, pal.c('white', 3));
-  for (const [dx, dy] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) p.set(x + dx, y + dy, pal.c('white', 1));
+  for (const [dx, dy] of [
+    [-1, -1],
+    [1, -1],
+    [-1, 1],
+    [1, 1],
+  ])
+    p.set(x + dx, y + dy, pal.c('white', 1));
   return p;
 }
 
@@ -51,7 +58,12 @@ function moonWall(pal: Pal): Pixels {
   const p = new Pixels(20, 20, s[0]);
   const rand = rng(11);
   for (let i = 0; i < 40; i++) p.set(Math.floor(rand() * 20), Math.floor(rand() * 20), s[i % 3 === 0 ? 2 : 1]);
-  for (const [x, y, r] of [[5, 6, 3], [14, 12, 4], [8, 16, 2]]) p.disc(x, y, r, pal.c('ink', 1)).disc(x + 0.6, y + 0.6, r - 1, s[1]);
+  for (const [x, y, r] of [
+    [5, 6, 3],
+    [14, 12, 4],
+    [8, 16, 2],
+  ])
+    p.disc(x, y, r, pal.c('ink', 1)).disc(x + 0.6, y + 0.6, r - 1, s[1]);
   p.rect(0, 0, 20, 1, s[2]).rect(0, 0, 1, 20, s[1]).rect(19, 0, 1, 20, pal.c('ink', 1)).rect(0, 19, 20, 1, pal.c('ink', 1));
   return p;
 }
@@ -63,7 +75,17 @@ function lump(pal: Pal, v: number): Pixels {
   const s = pal.r('stone');
   blob(rock, 10, 10, v ? 8.4 : 9, v ? 9 : 7.6, s, 1, 4);
   blob(rock, 6, 6, 4, 4, s, 2, 4);
-  for (const [x, y, r] of v ? [[12, 12, 2.4], [7, 13, 1.6]] : [[13, 8, 2.2], [7, 11, 2], [11, 14, 1.2]]) rock.disc(x, y, r, s[0]).disc(x + 0.5, y + 0.5, r - 0.8, s[1]);
+  for (const [x, y, r] of v
+    ? [
+        [12, 12, 2.4],
+        [7, 13, 1.6],
+      ]
+    : [
+        [13, 8, 2.2],
+        [7, 11, 2],
+        [11, 14, 1.2],
+      ])
+    rock.disc(x, y, r, s[0]).disc(x + 0.5, y + 0.5, r - 0.8, s[1]);
   return p.blit(outline(rock, pal.c('ink', 0), { transparent: T }), 0, 0, T);
 }
 
@@ -110,10 +132,10 @@ function water(pal: Pal, phase: number): Pixels {
   const rand = rng(5);
   for (let i = 0; i < 3; i++) {
     const x = Math.floor(rand() * 14) + 1;
-    const y = ((Math.floor(rand() * 20) - phase * 6) % 20 + 20) % 20;
+    const y = (((Math.floor(rand() * 20) - phase * 6) % 20) + 20) % 20;
     p.rect(x, y, 4, 1, pal.c('sky', 4)).rect(x + 1, (y + 1) % 20, 2, 1, b[3]);
   }
-  p.rect(0, ((3 - phase * 6) % 20 + 20) % 20, 20, 1, b[3]);
+  p.rect(0, (((3 - phase * 6) % 20) + 20) % 20, 20, 1, b[3]);
   return p;
 }
 
@@ -222,6 +244,11 @@ export function addPlaque(book: Book, pal: Pal, ground: Pixels, name: string, te
   const sky = pal.c('sky', 3);
   const wanted = new Set(sign.board.flat());
   for (const [n, pic] of scratch.pics)
-    if (wanted.has(n)) book.add(n, pic.crop(0, 0, 20, 20).map((x, y, col) => (col === sky ? ground.get(x, y) : col)), none);
+    if (wanted.has(n))
+      book.add(
+        n,
+        pic.crop(0, 0, 20, 20).map((x, y, col) => (col === sky ? ground.get(x, y) : col)),
+        none,
+      );
   return sign;
 }

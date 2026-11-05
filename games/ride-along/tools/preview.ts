@@ -40,7 +40,9 @@ poses.forEach(([t, b], i) => sheet.blit(heroPicture(hero, t, b), 4 + i * 24, 2, 
 writePng(join(out, 'hero.png'), sheet, pal.pal, 5);
 
 const rides = new Pixels(6 * 24 + 4, 48, pal.c('blue', 2));
-[rocket(pal, true, 0), rocket(pal, true, 1), rocket(pal, false, -1, 5), canoe(pal, 0, false), canoe(pal, 1, true)].forEach((p, i) => rides.blit(p, 4 + i * 24, 4, 255));
+[rocket(pal, true, 0), rocket(pal, true, 1), rocket(pal, false, -1, 5), canoe(pal, 0, false), canoe(pal, 1, true)].forEach((p, i) =>
+  rides.blit(p, 4 + i * 24, 4, 255),
+);
 writePng(join(out, 'vehicles.png'), rides, pal.pal, 6);
 
 const mb = buildMonsterBlocks(pal);

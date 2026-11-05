@@ -1,14 +1,18 @@
-// Pictures of the lessons (never on the disk), for the progress shots: the four bytes of Play and their
-// gate, the two slots of level 2 (START already jammed), the backup gate, and the signs of level 3.
-//   cd web && npx vite-node ../games/under-the-hood/tools/shots.ts <outDir>
+// Pictures of the lessons (never on the disk), for the progress shots: the hero walking up to the parked rocket,
+// the rocket at the start of its shaft, held by the first gate of rocks, caught at the funnel to the bay, and the
+// canoe among the logs.
+//   cd web && npx vite-node ../games/ride-along/tools/shots.ts <outDir>
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { writePng } from '@lewismoten/gamemaker-sandbox-tools/kit/png';
 import { renderRegion } from '@lewismoten/gamemaker-sandbox-tools/kit/levelPicture';
+import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { buildHeroBlocks, heroPicture } from '../../kit/starter/hero';
 import { ORIGIN } from '../../kit/starter/map';
 import { buildMonsterBlocks, buildMonsters } from '../../kit/starter/monsters';
-import { buildLevels, GROUND, LEDGE } from '../src/levels';
+import { buildLevels, ROCK_GATES } from '../src/levels';
+import { finishRide } from '../src/rideBlocks';
+import { canoe, rocket } from '../src/shipArt';
 
 const out = process.argv[2];
 if (!out) throw new Error('usage: shots.ts <outDir>');
@@ -20,31 +24,21 @@ const set = buildMonsters(mb);
 const hero = buildHeroBlocks(pal);
 
 type Sprite = { pixels: Uint8Array; x: number; y: number };
-/** The hero standing in column `col` (in the level) on row `ground`, in `pose`, as two sprites for renderRegion. */
-const kit = (pose: [string, string], col: number, ground = GROUND): Sprite[] => {
-  const h = heroPicture(hero, pose[0], pose[1]);
-  return [
-    { pixels: Uint8Array.from(h.px.subarray(0, 400)), x: ORIGIN + col, y: ORIGIN + ground - 2 },
-    { pixels: Uint8Array.from(h.px.subarray(400)), x: ORIGIN + col, y: ORIGIN + ground - 1 },
-  ];
-};
-const region = (level: number, col: number, row: number, w: number, h: number, extra: Sprite[], edit?: (m: ReturnType<StarterMapDone>) => void) => {
+/** A 20x40 picture standing with its bottom block on level row `row`, in level column `col`, as two sprites for renderRegion. */
+const stand = (p: Pixels, col: number, row: number): Sprite[] => [
+  { pixels: Uint8Array.from(p.px.subarray(0, 400)), x: ORIGIN + col, y: ORIGIN + row - 1 },
+  { pixels: Uint8Array.from(p.px.subarray(400)), x: ORIGIN + col, y: ORIGIN + row },
+];
+const region = (level: number, col: number, row: number, w: number, h: number, extra: Sprite[]) => {
   const l = levels[level];
-  const m = structuredClone(l.map.done());
-  edit?.(m);
-  return renderRegion(m, l.book.finish(), mbl, set, ORIGIN + col, ORIGIN + row, w, h, extra);
+  return renderRegion(l.map.done(), finishRide(l.book), mbl, set, ORIGIN + col, ORIGIN + row, w, h, extra);
 };
-type StarterMapDone = () => ReturnType<(typeof levels)[number]['map']['done']>;
 const save = (name: string, pic: ReturnType<typeof region>) => writePng(join(out, name), pic, pal.pal, 3);
 
-save('1-four-bytes.png', region(0, 14, 2, 16, 9, kit(['stand.top', 'stand'], 19)));
-save('2-play-gate.png', region(0, 25, 2, 16, 9, kit(['stand.top', 'stand'], 31)));
-const jam = levels[1].book.n('jamPlate');
-save(
-  '3-two-slots.png',
-  region(1, 14, 1, 16, 10, kit(['stand.top', 'stand'], 23, LEDGE), (m) => {
-    m.blocks[(GROUND - 1 + ORIGIN) * 100 + 25 + ORIGIN] = jam;
-  }),
-);
-save('4-backup-gate.png', region(2, 3, 2, 16, 9, kit(['stand.top', 'stand'], 9)));
-save('5-ask-first.png', region(2, 20, 2, 18, 9, kit(['stand.top', 'stand'], 26)));
+save('1-the-rocket.png', region(0, 24, 1, 16, 10, stand(heroPicture(hero, 'stand.top', 'stand'), 31, 9)));
+save('2-lift-off.png', region(1, 0, 61, 16, 10, stand(rocket(pal, true, 0), 7, 69)));
+save('3-held-by-rocks.png', region(1, 0, 35, 16, 10, stand(rocket(pal, true, 1), 7, ROCK_GATES[0].y + 2)));
+save('4-steering-round.png', region(1, 0, 33, 16, 10, stand(rocket(pal, true, 0), 4, 40)));
+save('5-the-bay.png', region(1, 0, 0, 16, 10, stand(rocket(pal, true, 1), 7, 8)));
+save('6-the-river.png', region(2, 0, 38, 16, 10, stand(canoe(pal, 1, false), 8, 47)));
+save('7-logs.png', region(2, 0, 21, 16, 10, stand(canoe(pal, 0, true), 4, 29)));

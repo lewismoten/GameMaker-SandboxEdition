@@ -17,7 +17,8 @@ async function must(bot: StarterBot, r: Promise<Result>, what: string): Promise<
 /** The last order of a level: it must take the vehicle through the exit (to the next level or the ending). */
 async function leave(bot: StarterBot, r: Promise<Result>, what: string): Promise<void> {
   const out = await r;
-  if (out !== 'link' && out !== 'end') throw new Error(`${what}: ${out ?? `still here at ${(bot.px.x / 20).toFixed(1)}, ${(bot.px.y / 20).toFixed(1)}`}\n${bot.log.slice(-8).join('\n')}`);
+  if (out !== 'link' && out !== 'end')
+    throw new Error(`${what}: ${out ?? `still here at ${(bot.px.x / 20).toFixed(1)}, ${(bot.px.y / 20).toFixed(1)}`}\n${bot.log.slice(-8).join('\n')}`);
 }
 
 /** A person stopped at a sign for a moment to read it. */
@@ -88,7 +89,8 @@ export async function liftOff(bot: StarterBot): Promise<void> {
   if (space > 12 * SHIP_DRIFT + 8) throw new Error(`level 2: Space should do nothing in a rocket, it rose ${space}px in 12 ticks`);
   const fast = await rise(bot, SCAN.up, 12);
   const slow = await rise(bot, SCAN.down, 12);
-  if (fast < 12 * SHIP_FAST - 8 || slow > 12 * SHIP_SLOW + 8 || slow < 4) throw new Error(`level 2: Up should rise ~${12 * SHIP_FAST}px and Down ~${12 * SHIP_SLOW}px in 12 ticks; got ${fast} and ${slow}`);
+  if (fast < 12 * SHIP_FAST - 8 || slow > 12 * SHIP_SLOW + 8 || slow < 4)
+    throw new Error(`level 2: Up should rise ~${12 * SHIP_FAST}px and Down ~${12 * SHIP_SLOW}px in 12 ticks; got ${fast} and ${slow}`);
   bot.say(`up ${fast}px, down ${slow}px, space ${space}px in 12 ticks`);
   // the mistake: hold still straight into the first gate of rocks. The push goes on, the rock holds the rocket.
   const gate = ROCK_GATES[0].y;
@@ -101,7 +103,8 @@ export async function liftOff(bot: StarterBot): Promise<void> {
     last = bot.px.y;
   }
   await must(bot, bot.wait(30), 'still pushing');
-  if (still < 25 || Math.abs(rowOf(bot) - (gate + 2)) > 0.7) throw new Error(`level 2: a rock should hold the rocket at row ${gate + 2} (row ${rowOf(bot).toFixed(1)}, still ${still})`);
+  if (still < 25 || Math.abs(rowOf(bot) - (gate + 2)) > 0.7)
+    throw new Error(`level 2: a rock should hold the rocket at row ${gate + 2} (row ${rowOf(bot).toFixed(1)}, still ${still})`);
   if (Math.abs(bot.px.x - x0) > 8) throw new Error('level 2: the rocket drifted sideways into the rocks');
   bot.say(`held by the rocks at row ${rowOf(bot).toFixed(1)}`);
   // the fix: steer left into the gap and it is away again
@@ -115,7 +118,8 @@ export async function liftOff(bot: StarterBot): Promise<void> {
   await leave(bot, fly(bot, SHIP_PATH, 0), 'the bay');
   // every star on the way, except the one or two the mistake flew past on the wrong side of the shaft
   stars = (bot.sim.ci.score - 40) / 10;
-  if (stars < STARS.length - 2) throw new Error(`level 2: the bot should catch the stars on its path (${STARS.length - 2} of ${STARS.length} at least), it caught ${stars}`);
+  if (stars < STARS.length - 2)
+    throw new Error(`level 2: the bot should catch the stars on its path (${STARS.length - 2} of ${STARS.length} at least), it caught ${stars}`);
   bot.say(`caught ${stars} of ${STARS.length} stars`);
 }
 

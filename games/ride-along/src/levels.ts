@@ -17,7 +17,7 @@ import { Grid } from '../../kit/starter/grid';
 import { ORIGIN, StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
 import { heroName } from './heroName';
-import { addPlaque, addRideBlocks, addSpaceRamp, finishRide } from './rideBlocks';
+import { addPlaque, addRideBlocks, addSpaceRamp } from './rideBlocks';
 import { addSign, type Sign } from '../../kit/starter/sign';
 
 export interface Level {
@@ -135,12 +135,12 @@ function climbIn(pal: Pal): Level {
 // ---------------------------------------------------------------------------------------------- the flying levels
 /** The shafts' size (blocks): both 16 wide, with side walls on columns 0 and 15. */
 const SHAFT_W = 16;
-export const SHIP_H = 72;
-export const BOAT_H = 64;
+const SHIP_H = 72;
+const BOAT_H = 64;
 
 /** A flying level's start: the vehicle's bottom block is here (level coordinates) and its floor is the row below. */
-export const SHIP_START: [number, number] = [7, 69];
-export const BOAT_START: [number, number] = [7, 61];
+const SHIP_START: [number, number] = [7, 69];
+const BOAT_START: [number, number] = [7, 61];
 
 /** Where a gate of rocks or logs stands (its row) and the gaps in it, as [first, last] open columns. */
 export interface Gate {
@@ -151,7 +151,13 @@ export interface Gate {
 export const ROCK_GATES: Gate[] = [
   { y: 40, gaps: [[2, 5]] },
   { y: 32, gaps: [[9, 12]] },
-  { y: 24, gaps: [[3, 4], [10, 11]] },
+  {
+    y: 24,
+    gaps: [
+      [3, 4],
+      [10, 11],
+    ],
+  },
   { y: 17, gaps: [[7, 9]] },
   { y: 12, gaps: [[10, 14]] },
 ];
@@ -160,7 +166,13 @@ export const LOG_GATES: Gate[] = [
   { y: 46, gaps: [[7, 10]] },
   { y: 38, gaps: [[3, 6]] },
   { y: 30, gaps: [[8, 11]] },
-  { y: 22, gaps: [[4, 5], [10, 11]] },
+  {
+    y: 22,
+    gaps: [
+      [4, 5],
+      [10, 11],
+    ],
+  },
   { y: 14, gaps: [[6, 9]] },
 ];
 
@@ -322,5 +334,3 @@ export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
   const levels = [climbIn(pal), liftOff(pal), downTheRiver(pal)];
   return { book: levels[0].book, pal, levels };
 }
-
-export { finishRide };

@@ -17,9 +17,13 @@ function face(p: Pixels, pal: Pal, cx: number, cy: number): void {
   const skin = kitRamp(pal, 'skin');
   const hat = kitRamp(pal, 'hat');
   p.disc(cx, cy + 0.5, 2.9, skin[2]);
-  p.rect(cx - 3, cy - 3, 6, 2, hat[2]).rect(cx - 2, cy - 4, 4, 1, hat[3]).set(cx, cy - 5, pal.c('gold', 4));
+  p.rect(cx - 3, cy - 3, 6, 2, hat[2])
+    .rect(cx - 2, cy - 4, 4, 1, hat[3])
+    .set(cx, cy - 5, pal.c('gold', 4));
   p.set(cx - 1, cy + 0.5, pal.c('ink', 0)).set(cx + 1, cy + 0.5, pal.c('ink', 0));
-  p.set(cx - 1, cy + 2, pal.c('red', 1)).set(cx, cy + 2.4, pal.c('red', 1)).set(cx + 1, cy + 2, pal.c('red', 1));
+  p.set(cx - 1, cy + 2, pal.c('red', 1))
+    .set(cx, cy + 2.4, pal.c('red', 1))
+    .set(cx + 1, cy + 2, pal.c('red', 1));
 }
 
 /** A short pointed flame under the nozzle: two flickering shapes (`flick` 0 or 1). Short on purpose. */
@@ -89,14 +93,20 @@ export function canoe(pal: Pal, stroke: number, splash: boolean): Pixels {
   body.rect(5, 12, 10, 1, wood[1]).rect(5, 29, 10, 1, wood[1]); // the thwarts
   // the helper: shoulders in the hoodie, a round beanie, a pompom
   body.disc(10, 23, 4.6, hood[2]).disc(10, 22, 3.6, hood[3]);
-  body.disc(10, 20, 3.4, hat[2]).disc(9.4, 19.4, 2.2, hat[3]).rect(9, 19, 2, 2, pal.c("gold", 4));
+  body.disc(10, 20, 3.4, hat[2]).disc(9.4, 19.4, 2.2, hat[3]).rect(9, 19, 2, 2, pal.c('gold', 4));
   body.set(7, 21, skin[2]).set(13, 21, skin[2]);
   // the paddle: a shaft across the hands with a blade at each end, outside the hull
   const tilt = stroke ? 4 : -4;
   body.line(1, 24 + tilt, 18, 24 - tilt, wood[1]).line(1, 25 + tilt, 18, 25 - tilt, wood[2]);
   body.disc(1, 24 + tilt, 1.9, wood[2]).disc(18.5, 24 - tilt, 1.9, wood[2]);
   if (splash) {
-    for (const [x, y] of [[0, 21 + tilt], [2, 27 + tilt], [17, 20 - tilt], [19, 27 - tilt]]) body.set(x, y, pal.c('white', 3));
+    for (const [x, y] of [
+      [0, 21 + tilt],
+      [2, 27 + tilt],
+      [17, 20 - tilt],
+      [19, 27 - tilt],
+    ])
+      body.set(x, y, pal.c('white', 3));
   }
   const out = outline(body, pal.c('ink', 0), { transparent: T });
   // the bow's wake: two short white ripples

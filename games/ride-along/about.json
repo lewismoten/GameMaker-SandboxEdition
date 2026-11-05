@@ -31,5 +31,6 @@
       ["three.map", 0, 40]
     ],
     "rating": "Everyone"
-  }
+  },
+  "acceptedFindings": ["facing s3 The hero faces the same way walking left and right", "facing s4 The hero faces the same way walking left and right"]
 }
