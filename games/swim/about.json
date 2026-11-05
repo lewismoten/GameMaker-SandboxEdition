@@ -3,6 +3,7 @@
   "author": "Claude",
   "company": "Sandbox Software",
   "series": "starter",
+  "hero": "LAMI",
   "year": 1994,
   "price": "Free",
   "version": "1.1",
@@ -23,7 +24,7 @@
     "accent": "#ffd23f",
     "ink": "#ffffff",
     "tagline": "Which way does the water pull?",
-    "back": "A small explorer in a teal beanie has three pools to cross. A creek carries him to the left, a deep pool holds him up so he floats, and a tall one lifts him up and to the left to a ledge. Signs say what each level shows, and the manual says how each is made.",
+    "back": "A small explorer in a red beanie has three pools to cross. A creek carries her to the left, a deep pool holds her up so she floats, and a tall one lifts her up and to the left to a ledge. Signs say what each level shows, and the manual says how each is made.",
     "features": [
       "Signs in the levels explain each idea",
       "Water is only a block with a gravity setting: left, right, up or down",

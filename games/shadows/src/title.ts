@@ -1,4 +1,4 @@
-// LITTLE SHADOWS' title picture: the name over a stage floor, with Kit and a pip each on a dithered shadow, and a bee high up over its own.
+// LITTLE SHADOWS' title picture: the name over a stage floor, with Mara and a pip each on a dithered shadow, and a bee high up over its own.
 import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { scaleBlit } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 import { bevel } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
@@ -7,7 +7,7 @@ import type { Pal } from '../../kit/starter/palette';
 import { W } from '../../kit/starter/screens';
 import { backdrop, frameOf, lookOf } from '../../kit/starter/titleStyles';
 
-/** `hero` is Kit with his dithered shadow; `pip`, `bee` and `shade` are 20x20 critter pictures. Everyone stands on the ground line (y 160) with their shadow just under it. */
+/** `hero` is Mara with her dithered shadow; `pip`, `bee` and `shade` are 20x20 critter pictures. Everyone stands on the ground line (y 160) with their shadow just under it. */
 export function titlePicture(pal: Pal, hero: Pixels, pip: Pixels, bee: Pixels, shade: Pixels, name: string, tagline: string): Pixels {
   const look = lookOf(pal, 'stage');
   const p = backdrop(pal, 'stage');

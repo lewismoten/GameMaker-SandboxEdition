@@ -8,7 +8,7 @@ export const STORY = wrap(`
 
 A game can show a picture before a level, after a level, or both. It can play a little cartoon too.
 
-A small explorer in a teal beanie crosses three short rooms. A picture comes up as each one begins, and as he leaves the first, and between the second and the third a cartoon plays.
+A small explorer in a pink beanie crosses three short rooms. A picture comes up as each one begins, and as she leaves the first, and between the second and the third a cartoon plays.
 
 Read the boards. They say which file each picture is, and where it goes.
 `);

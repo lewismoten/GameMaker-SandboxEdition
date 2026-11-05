@@ -1,5 +1,5 @@
 // DON'T GET SEEN's own title picture, in the Foes and Bosses look (the kit's arena): the lamp hangs from a
-// rail over the ring with its cone of light down to the floor, Kit peeks out of a trench beside it, and
+// rail over the ring with its cone of light down to the floor, Mara peeks out of a trench beside it, and
 // the door waits on the far side.
 import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { scaleBlit } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
@@ -11,7 +11,7 @@ import { W } from '../../kit/starter/screens';
 import { backdrop, frameOf, lookOf } from '../../kit/starter/titleStyles';
 import { CONE } from './lightArt';
 
-/** The title in the arena look: the name, a ribbon, then the lamp and its light, Kit and the door. */
+/** The title in the arena look: the name, a ribbon, then the lamp and its light, Mara and the door. */
 export function titlePicture(pal: Pal, mb: Book, hero: Pixels, door: Pixels, name: string, tagline: string): Pixels {
   const look = lookOf(pal, 'arena');
   const p = backdrop(pal, 'arena');

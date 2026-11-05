@@ -6,9 +6,9 @@ import about from '../about.json';
 export const STORY = wrap(`
 |TAKE THE WHEEL
 
-A small explorer in a teal beanie finds a little blue kart parked at the end of the road.
+A small explorer in a pink beanie finds a little blue kart parked at the end of the road.
 
-Hop in, and he is a different driver: quicker, with a horn, and no jump at all.
+Hop in, and she is a different driver: quicker, with a horn, and no jump at all.
 
 Read the signs. Then open this game in Game-Maker and make your own.
 `);
@@ -47,7 +47,7 @@ export const WON = wrap(`
 
 Two levels, and now you know how a game changes who you are.
 
-Each scene lists a character file. Level 1 names HERO.CHR, so Kit walks and jumps. Level 2 names KART.CHR, so the same Kit drives fast, cannot jump and honks.
+Each scene lists a character file. Level 1 names HERO.CHR, so Yana walks and jumps. Level 2 names KART.CHR, so the same Yana drives fast, cannot jump and honks.
 
 A character cannot change inside a scene. To switch, a link carries you to another scene, which names the other file. Open the game and draw a boat.
 `);

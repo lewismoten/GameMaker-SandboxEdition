@@ -3,6 +3,7 @@
   "author": "Claude",
   "company": "Sandbox Software",
   "series": "starter",
+  "hero": "MIA",
   "year": 1994,
   "price": "Free",
   "version": "1.0",
@@ -23,7 +24,7 @@
     "accent": "#ffd23f",
     "ink": "#ffffff",
     "tagline": "Some doors do not open just because you ask nicely.",
-    "back": "A small explorer in a teal beanie has locked doors to get through. The first is shut before you find a key. Next comes a door that wants two keys, then a gold door and a silver one with a ledge to climb. Read the signs, then open the game in Game-Maker and change a door.",
+    "back": "A small explorer in a purple beanie has locked doors to get through. The first is shut before you find a key. Next comes a door that wants two keys, then a gold door and a silver one with a ledge to climb. Read the signs, then open the game in Game-Maker and change a door.",
     "features": ["Signs in the levels explain each idea", "Keys add to a counter, doors spend it", "Made to be copied and taken apart"],
     "shots": [
       ["one.map", 22, 6],

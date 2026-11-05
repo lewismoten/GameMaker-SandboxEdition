@@ -1,5 +1,5 @@
-// PARALLAX's two levels. Each is one screen, 16 blocks by 10, that never scrolls, and Kit
-// walks along the path at the bottom while bands of the picture slide left behind him.
+// PARALLAX's two levels. Each is one screen, 16 blocks by 10, that never scrolls, and Rima
+// walks along the path at the bottom while bands of the picture slide left behind her.
 //
 //   1. Three Speeds: the far hills, the town and the fence slide past at 0.5, 1 and 4 pixels
 //      a tick. Each band is a row of one block that is a ring of pictures (see view.ts), so
@@ -7,7 +7,7 @@
 //   2. Drifting Clouds: the same trick up in the sky: faint wisps far off and a nearer cloud
 //      drift at 0.25 and 0.5 pixels a tick over the slow hills. Three suns in the sky fill in
 //      one by one, and when the last one fills the bars across the door lift.
-// Both rooms are closed in by hedges you can see, so Kit is never stopped by something he can't.
+// Both rooms are closed in by hedges you can see, so Rima is never stopped by something she can't.
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { Book, PULL, SOLID } from '../../kit/starter/book';
@@ -204,7 +204,7 @@ export interface Level {
   st: Stage;
 }
 
-/** The still scenery on every cell of the screen, the hedges at both sides, Kit's start and the door. */
+/** The still scenery on every cell of the screen, the hedges at both sides, Rima's start and the door. */
 function paint(st: Stage, resting: Partial<Record<number, BandName>>): StarterMap {
   const g = new Grid(WIDTH, ROWS);
   g.put(START[0], START[1] - 1, 's').put(START[0], START[1], 'S');
@@ -272,7 +272,7 @@ export function finishBlocks(st: Pick<Stage, 'book' | 'timed'>): Block[] {
 
 /** The levels in order. */
 export function buildLevels(): { pal: Pal; levels: Level[] } {
-  const pal = buildStarterPalette();
+  const pal = buildStarterPalette(undefined, 'parallax');
   const one = new Stage(pal);
   const two = new Stage(pal);
   const levels: Level[] = [

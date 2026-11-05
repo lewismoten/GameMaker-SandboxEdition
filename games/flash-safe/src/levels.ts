@@ -1,7 +1,7 @@
 // FLASH SAFE's three levels. Each is painted on a Grid (a block a character, see
 // games/kit/starter/map.ts for what the letters mean), then given its signs, its clocks and its burrs.
 //
-//   1. Hit Without a Flash: three burrs hang in the air. Touch one and Kit gets a beep, an ouch
+//   1. Hit Without a Flash: three burrs hang in the air. Touch one and Lami gets a beep, an ouch
 //      face, a little "-5" that rises and fewer hit points: four cues and not one flash. A still
 //      "not this" picture shows the wrong way.
 //   2. Slow and Small: a warning lamp that blinks once a second, a lamp that pulses softly, both
@@ -10,7 +10,7 @@
 //      moment and settles back, with a small bolt that is only there while it is held.
 //
 // Every clock starts when the scene loads and nothing the player does can change one. Every room
-// ends in a visible hedge, so Kit is never stopped by something he can't see.
+// ends in a visible hedge, so Lami is never stopped by something she can't see.
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { Book, PULL } from '../../kit/starter/book';
@@ -309,6 +309,6 @@ function stormHeld(pal: Pal): Level {
 
 /** The palette (the Starters' ramps and the storm sky's) and the levels in order. */
 export function buildLevels(): { pal: Pal; levels: Level[] } {
-  const pal = buildStarterPalette((b) => b.ramp(STORM, 3, [24, 30, 68], [62, 72, 124]));
+  const pal = buildStarterPalette((b) => b.ramp(STORM, 3, [24, 30, 68], [62, 72, 124]), 'flash-safe');
   return { pal, levels: [hitWithoutAFlash(pal), slowAndSmall(pal), stormHeld(pal)] };
 }

@@ -8,7 +8,7 @@ export const STORY = wrap(`
 
 Which weapon does Enter throw?
 
-A small explorer in a teal beanie has two short levels to cross, and a pouch or two to find. A pouch of stars, a pouch of flames, and a frosty grump in a narrow way.
+A small explorer in a red beanie has two short levels to cross, and a pouch or two to find. A pouch of stars, a pouch of flames, and a frosty grump in a narrow way.
 
 Read the signs. Enter is always the same key. What it throws depends on what you are carrying.
 
@@ -50,7 +50,7 @@ export const WON = wrap(`
 
 Two levels, and one key did all the work.
 
-A weapon is a sequence in Kit's character file. Each one counts its own uses, and Enter starts the first of them that has a use left. A flame comes first in the list, then a star, then a shrug that is never used up. A pouch only adds to a count.
+A weapon is a sequence in Lena's character file. Each one counts its own uses, and Enter starts the first of them that has a use left. A flame comes first in the list, then a star, then a shrug that is never used up. A pouch only adds to a count.
 
 Open the game in Game-Maker and find the three sequences on the Characters tab. Move the star above the flame and see what Enter throws.
 `);

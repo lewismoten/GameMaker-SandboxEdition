@@ -116,12 +116,13 @@ function kitAt(f: number): [[string, string], number, number] {
   return [up ? ['cheer2.top', 'cheer'] : ['cheer.top', 'jump'], land, up ? top : top - 4];
 }
 
-let cached: Uint8Array | undefined;
+const cached = new Map<string, Uint8Array>();
 
 /** STARTER.FLI: the sting as an Autodesk Animator FLI (the Starters' palette, delta frames, a fade at each end). */
-export function starterStingFli(): Uint8Array {
-  if (cached) return cached;
-  const pal = buildStarterPalette();
+export function starterStingFli(gameId?: string): Uint8Array {
+  const hit = cached.get(gameId ?? '');
+  if (hit) return hit;
+  const pal = buildStarterPalette(undefined, gameId);
   const hero = buildHeroBlocks(pal);
   const poses = new Map<string, Pixels>();
   const blocks = [0, 1, 2, 3, 4, 5].map((i) => block(pal, i % 2 === 1, 7 + i));
@@ -157,6 +158,7 @@ export function starterStingFli(): Uint8Array {
     const k = f < FADE ? (f + 1) / (FADE + 1) : f >= FRAMES - FADE ? (FRAMES - 1 - f + 0.5) / (FADE + 0.5) : 1;
     return pal.pal.map((v) => Math.round(v * k));
   });
-  cached = encodeFli(frames, pal.pal, { speed: SPEED, palettes, runs: true, noLoopFrame: true });
-  return cached;
+  const fli = encodeFli(frames, pal.pal, { speed: SPEED, palettes, runs: true, noLoopFrame: true });
+  cached.set(gameId ?? '', fli);
+  return fli;
 }

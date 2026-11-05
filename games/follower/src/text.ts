@@ -8,7 +8,7 @@ export const STORY = wrap(`
 
 Some friends tag along.
 
-A small explorer in a teal beanie crosses two short rooms with Puff, a little winged pup, who flies after him.
+A small explorer in a red beanie crosses two short rooms with Puff, a little winged pup, who flies after her.
 
 Read the signs. Run ahead, stop, and watch what Puff does. In the second room, see what a wall does to it.
 
@@ -51,7 +51,7 @@ Two levels, and now you know how a friend follows.
 
 A monster can have its Movement set to chase the character at a speed from 1 to 63. Every tick it aims at where the hero is and moves that way in a straight line. It does not plan a route, so a solid block between you and it simply stops it.
 
-Open the game in Game-Maker and find the Movement setting on the Monsters tab: Chases the character, with a Speed. Make Puff faster than Kit, or pick Runs from the character.
+Open the game in Game-Maker and find the Movement setting on the Monsters tab: Chases the character, with a Speed. Make Puff faster than Lena, or pick Runs from the character.
 `);
 
 export const LOST = wrap(`

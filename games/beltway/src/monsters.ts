@@ -19,9 +19,9 @@ import { CAR_SPEED, LOOP } from './view';
 
 /** The car is monster number CAR. */
 export const CAR = 3;
-/** Powers: 100 or more cannot be popped by touching Kit. */
+/** Powers: 100 or more cannot be popped by touching Mia. */
 export const POWER = 110;
-/** Hit points Kit starts with (nothing in this game takes any, but Game-Maker wants a number). */
+/** Hit points Mia starts with (nothing in this game takes any, but Game-Maker wants a number). */
 export const HERO_HIT_POINTS = 50;
 
 const T = 255;

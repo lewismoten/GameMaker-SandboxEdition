@@ -1,10 +1,10 @@
 // The block set (over.bbl) both levels share: the same grid of 20x20 blocks, drawn as seen from above. Every block has
-// Gravity "none" (Book's default), so nothing pulls the hero; a block is solid only where it has a side that stops him.
+// Gravity "none" (Book's default), so nothing pulls the hero; a block is solid only where it has a side that stops her.
 //
 //   inside: floor, rug, wall, bed (head, foot), table (4 blocks), shelf, plant, counter, door, coin
 //   outside: grass, flower, tree, fence, water, road, the house (roofs, walls, window, door), gcoin
 //
-// Everything he can bump into is drawn like what it is (no solid block looks like open ground), and a sign is an
+// Everything she can bump into is drawn like what it is (no solid block looks like open ground), and a sign is an
 // ordinary block set on whichever floor it stands.
 import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { bevel } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';

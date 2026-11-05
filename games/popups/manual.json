@@ -3,7 +3,7 @@
   "howDoI": [
     {
       "id": "pay",
-      "q": "How do I make a monster pay points when Kit touches it?",
+      "q": "How do I make a monster pay points when Yana touches it?",
       "scene": 2,
       "x": 28,
       "y": 19,
@@ -57,11 +57,11 @@
     },
     {
       "head": "Level 1: A Number Appears",
-      "html": "<h1>Level 1: A Number Appears</h1><p>The first sign says <b>PLAIN COINS JUST VANISH</b>. Walk over the two coins on the ground: each pays 10 points and is gone, and nothing else happens.</p><p>The <b>THESE COINS ARE MONSTERS</b> sign points at three spinning gold coins. Touch one. It pays 100 points, and a blinking <b>100</b> floats up where it was, then goes. The next sign says what you just saw.</p><p>One of the three coins hangs at Kit's head and two stand at his feet. All of them are taken just by walking.</p>"
+      "html": "<h1>Level 1: A Number Appears</h1><p>The first sign says <b>PLAIN COINS JUST VANISH</b>. Walk over the two coins on the ground: each pays 10 points and is gone, and nothing else happens.</p><p>The <b>THESE COINS ARE MONSTERS</b> sign points at three spinning gold coins. Touch one. It pays 100 points, and a blinking <b>100</b> floats up where it was, then goes. The next sign says what you just saw.</p><p>One of the three coins hangs at Yana's head and two stand at her feet. All of them are taken just by walking.</p>"
     },
     {
       "head": "How this level is made",
-      "html": "<h1>How level 1 is made</h1><ul><li><b>A prize that is a monster.</b> Open <b>pop.mon</b> in the monsters editor and pick the coin. It has no path, so it hangs in the air and spins between two pictures. Its <b>Power</b> is 50. A monster under 100 is destroyed when Kit touches it; at 100 or more Kit walks through it and nothing happens.</li><li><b>The points.</b> Open <b>pop.mbl</b> in the blocks editor and pick <b>coin0</b>. Its <b>Score points</b> is 100, and so is <b>coin1</b>'s, so it pays on either frame. The score comes from the picture that is touched. The monster's own <b>Score when destroyed by a weapon</b> is for thrown things and does nothing here.</li><li><b>The number.</b> The coin's <b>When destroyed it becomes</b> is <b>POP100</b>. The new monster is born in the same place, the same tick.</li><li><b>Blinking.</b> <b>POP100</b> shows two pictures one after the other: <b>num100</b> for 4 ticks and <b>empty</b>, a picture with nothing in it, for 3. The eye sees a blink.</li><li><b>Rising and leaving.</b> Its <b>Movement</b> path is one corner, two blocks up at speed 1, and its <b>Lives</b> is <b>Until the end of its path</b>. When it has risen two blocks it is destroyed. Power 150 keeps Kit's touch from doing anything to it.</li><li><b>The map.</b> Open <b>one.map</b>: the three coins are monsters put on the map, and the two plain coins are blocks.</li></ul>"
+      "html": "<h1>How level 1 is made</h1><ul><li><b>A prize that is a monster.</b> Open <b>pop.mon</b> in the monsters editor and pick the coin. It has no path, so it hangs in the air and spins between two pictures. Its <b>Power</b> is 50. A monster under 100 is destroyed when Yana touches it; at 100 or more Yana walks through it and nothing happens.</li><li><b>The points.</b> Open <b>pop.mbl</b> in the blocks editor and pick <b>coin0</b>. Its <b>Score points</b> is 100, and so is <b>coin1</b>'s, so it pays on either frame. The score comes from the picture that is touched. The monster's own <b>Score when destroyed by a weapon</b> is for thrown things and does nothing here.</li><li><b>The number.</b> The coin's <b>When destroyed it becomes</b> is <b>POP100</b>. The new monster is born in the same place, the same tick.</li><li><b>Blinking.</b> <b>POP100</b> shows two pictures one after the other: <b>num100</b> for 4 ticks and <b>empty</b>, a picture with nothing in it, for 3. The eye sees a blink.</li><li><b>Rising and leaving.</b> Its <b>Movement</b> path is one corner, two blocks up at speed 1, and its <b>Lives</b> is <b>Until the end of its path</b>. When it has risen two blocks it is destroyed. Power 150 keeps Yana's touch from doing anything to it.</li><li><b>The map.</b> Open <b>one.map</b>: the three coins are monsters put on the map, and the two plain coins are blocks.</li></ul>"
     },
     {
       "head": "Level 2: Its Own Picture",

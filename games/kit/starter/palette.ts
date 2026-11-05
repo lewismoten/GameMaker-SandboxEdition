@@ -2,6 +2,8 @@
 // set, the hero and the monsters look right together. Ramps are looked up by name
 // (pal.c('grass', 3) is the fourth shade of grass), lightest last.
 import { PaletteBuilder } from '@lewismoten/gamemaker-sandbox-tools/kit/palette';
+import { heroOf, lookOf } from './heroFor';
+import { addKitRamps } from './heroLook';
 import { type Pal, wrap } from '@lewismoten/gamemaker-sandbox-tools/kit/palRamps';
 
 export type { Pal } from '@lewismoten/gamemaker-sandbox-tools/kit/palRamps';
@@ -33,15 +35,16 @@ const RAMPS: [string, number, RGB, RGB, RGB?][] = [
 /**
  * Every Starter's palette. Index 0 is black (the border and fades use it); the designer
  * colors and the three text colors PLAYGAME writes with (menu blue, plum, hot red) are in too.
- * A game may add ramps of its own through `extra`; they come last and change no shared index.
+ * A game's hero (its about.json `hero`, when `gameId` is given) takes Kit's five ramps. A game may add ramps of its own through `extra`; they come last and change no shared index.
  */
-export function buildStarterPalette(extra?: (b: PaletteBuilder) => void): Pal {
+export function buildStarterPalette(extra?: (b: PaletteBuilder) => void, gameId?: string): Pal {
   const b = new PaletteBuilder();
   b.designerColors();
   for (const [name, n, from, to, mid] of RAMPS) b.ramp(name, n, from, to, mid);
   b.ramp('menublue', 2, [20, 20, 140], [40, 40, 252]);
   b.ramp('plum', 2, [120, 20, 110], [200, 40, 200]);
   b.ramp('hot', 1, [252, 40, 40], [252, 40, 40]);
+  addKitRamps(b, gameId ? lookOf(heroOf(gameId)) : undefined); // Kit's own ramps (skin, hair, beanie, hoodie, pants): a helper is a palette change in those ranges
   extra?.(b); // a game's own ramps, after the shared ones (so every shared color keeps its index)
   return wrap(b);
 }

@@ -8,7 +8,7 @@ export const STORY = wrap(`
 
 Some things do not stop the moment you let go.
 
-A small explorer in a teal beanie has two short levels to cross. In the first, every step adds to his speed, so he glides on after you lift your finger. In the second, the speed from a good run carries a hop across a gap.
+A small explorer in a pink beanie has two short levels to cross. In the first, every step adds to her speed, so she glides on after you lift your finger. In the second, the speed from a good run carries a hop across a gap.
 
 Read the signs. Then open this game in Game-Maker and change how hard each step pushes.
 `);
@@ -20,7 +20,7 @@ export const HOWTO = wrap(`
 |SPACE         hop
 |F2            lives, score
 
-Hold a key and Kit gets faster. Let go and he glides on, slowing down. Press the other way to turn him around.
+Hold a key and Yana gets faster. Let go and she glides on, slowing down. Press the other way to turn her around.
 
 Nothing can hurt you here. A gap is only two blocks deep, and you can hop out.
 
@@ -45,9 +45,9 @@ export const WON = wrap(`
 
 Two levels, and now you know what momentum does.
 
-A step with the Momentum setting on adds to Kit's speed and does not move him. The speed carries him on, and the game takes a sixth of it away each tick once no such step is running. Hold a key and the speed builds up. A hop made at speed goes a long way.
+A step with the Momentum setting on adds to Yana's speed and does not move her. The speed carries her on, and the game takes a sixth of it away each tick once no such step is running. Hold a key and the speed builds up. A hop made at speed goes a long way.
 
-Open the game in Game-Maker and find the setting on the Character tab. Turn it off for Right and watch him stop dead.
+Open the game in Game-Maker and find the setting on the Character tab. Turn it off for Right and watch her stop dead.
 `);
 
 export const LOST = wrap(`
@@ -55,5 +55,5 @@ export const LOST = wrap(`
 
 Out of lives. That is not meant to happen here.
 
-Try again: hold Right for a while, let go, and watch him glide.
+Try again: hold Right for a while, let go, and watch her glide.
 `);

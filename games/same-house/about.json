@@ -3,6 +3,7 @@
   "author": "Claude",
   "company": "Sandbox Software",
   "series": "starter",
+  "hero": "MIA",
   "year": 1994,
   "price": "Free",
   "version": "1.0",
@@ -23,7 +24,7 @@
     "accent": "#ffd23f",
     "ink": "#ffffff",
     "tagline": "One house, three looks.",
-    "back": "A small explorer in a teal beanie walks down a street of three houses that look alike. Go in each door: the inside is the same house map, with a new carpet, wallpaper and roof every time. Then try the square, where one tower room is wood, ice or lava. Read the signs, then open the game in Game-Maker and paint a palette of your own.",
+    "back": "A small explorer in a purple beanie walks down a street of three houses that look alike. Go in each door: the inside is the same house map, with a new carpet, wallpaper and roof every time. Then try the square, where one tower room is wood, ice or lava. Read the signs, then open the game in Game-Maker and paint a palette of your own.",
     "features": [
       "One house map in three palettes, with only the colors changed",
       "One tower room map as wood, ice and lava",

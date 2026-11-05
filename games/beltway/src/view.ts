@@ -5,7 +5,7 @@
 /** The screen in blocks. */
 export const COLS = 16;
 export const ROWS = 10;
-/** The row Kit stands on (the truck's deck, the ground) and the column and row he starts in (his feet), a few blocks up so he drops in. */
+/** The row Mia stands on (the truck's deck, the ground) and the column and row she starts in (her feet), a few blocks up so she drops in. */
 export const GROUND_ROW = 9;
 export const START: [number, number] = [6, 5];
 

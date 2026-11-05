@@ -5,7 +5,7 @@
 //   ghostRed, ghostBlue     a plank that is not there yet: it turns solid and takes one off its counter
 //                           when the counter has one to give; with an empty counter the touch is refused
 //   hatch, hatchOpen        a trap door in the path: solid, and the red lever's counter 24 opens it. With 24
-//                           empty it stays shut, so Kit walks over it
+//                           empty it stays shut, so Lian walks over it
 //   poolTop, pool, cave     a soft drop: water that does not hurt, and a hole in the ground. A link at the
 //                           bottom of each sends the hero back to the way in (game.ts)
 // No lever talks to a plank or a hatch: they only share a counter. "Both levers" is just 3 + 3 being the

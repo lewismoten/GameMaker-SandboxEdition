@@ -1,4 +1,4 @@
-// FOLLOW ME's own title picture: the hero cheers on his way to the door while Puff, a little winged pup, flies after him.
+// FOLLOW ME's own title picture: the hero cheers on her way to the door while Puff, a little winged pup, flies after her.
 import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { scaleBlit } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 import { bevel } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';

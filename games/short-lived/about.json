@@ -3,6 +3,7 @@
   "author": "Claude",
   "company": "Sandbox Software",
   "series": "starter",
+  "hero": "MIA",
   "year": 1994,
   "price": "Free",
   "version": "1.0",
@@ -23,7 +24,7 @@
     "accent": "#ffd23f",
     "ink": "#ffffff",
     "tagline": "Some things do not last.",
-    "back": "A small explorer in a teal beanie crosses two short rooms. A bubble blocks a tunnel and pops on its own, and a sleepy gumdrop wakes up and becomes another monster. Wait, watch, then open the game in Game-Maker and change how long they last.",
+    "back": "A small explorer in a purple beanie crosses two short rooms. A bubble blocks a tunnel and pops on its own, and a sleepy gumdrop wakes up and becomes another monster. Wait, watch, then open the game in Game-Maker and change how long they last.",
     "features": [
       "Signs in the levels explain each idea",
       "A monster can last for a set time, then vanish or become another",

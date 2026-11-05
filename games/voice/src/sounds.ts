@@ -7,7 +7,7 @@ import { type SoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/soun
 import { SND } from '../../kit/starter/ids';
 import { buildSounds } from '../../kit/starter/sounds';
 
-/** Sound 13: Kit's hello, played by his Enter move. */
+/** Sound 13: Lena's hello, played by her Enter move. */
 export const SND_HELLO = 13;
 /** Enter, as the character file writes a key: scan code 0x1C, ASCII 13. */
 export const ENTER = 0x1c0d;
@@ -20,7 +20,7 @@ function setWith(names: Partial<Record<number, string>>): SoundSet {
   return set;
 }
 
-/** Level 1: only Kit's hello. Level 2: the up voice and the down voice. Level 3: one long goodbye on the up sound. */
+/** Level 1: only Lena's hello. Level 2: the up voice and the down voice. Level 3: one long goodbye on the up sound. */
 export function voiceSounds(): SoundSet[] {
   return [setWith({}), setWith({ [SND.gain]: 'WELCOME', [SND.use]: 'DEEPER' }), setWith({ [SND.gain]: 'BYE' })];
 }

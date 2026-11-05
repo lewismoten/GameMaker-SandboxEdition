@@ -5,7 +5,7 @@
 //   Rocky, level 1: a round stone fellow with a moss tuft, big brows and a flat, grumpy mouth.
 //   Beep, level 2: a teal tin robot with a bulb on a wire, square eyes and a grille for a mouth.
 // Both come in a plain picture and a "tone": cracked (after a first hit) or red (the hurt blink; Beep's red
-// picture is cracked too, since it blinks after the hit that cracked him).
+// picture is cracked too, since it blinks after the hit that cracked her).
 import { outline } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { bevel, blob } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
@@ -35,7 +35,7 @@ function crack(p: Pixels, pal: Pal, x: number, y: number, steps: number[]): void
   }
 }
 
-/** Rocky at wiggle `frame` (0 or 1): fists and moss sway, and he squints on frame 1. */
+/** Rocky at wiggle `frame` (0 or 1): fists and moss sway, and she squints on frame 1. */
 export function drawGolem(pal: Pal, frame: 0 | 1, tone: Tone): Pixels {
   const { c, r } = pal;
   const p = new Pixels(40, 40, T);

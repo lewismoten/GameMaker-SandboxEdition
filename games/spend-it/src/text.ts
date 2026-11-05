@@ -8,7 +8,7 @@ export const STORY = wrap(`
 
 A key is not free here. It is on sale.
 
-A small explorer in a teal beanie gathers coins and takes them to a stall. The key costs three. Two will not do, and the stall just waits. Pay in full, and it takes the coins, gives the key, and leaves you the change.
+A small explorer in a pink beanie gathers coins and takes them to a stall. The key costs three. Two will not do, and the stall just waits. Pay in full, and it takes the coins, gives the key, and leaves you the change.
 
 Then open this game in Game-Maker and change a price.
 `);

@@ -7,7 +7,7 @@ import type { Book } from '../../kit/starter/book';
 import { buildMonsterBlocks, buildMonsters } from '../../kit/starter/monsters';
 import type { Pal } from '../../kit/starter/palette';
 
-/** Hit points Kit starts with (nothing in this game takes any, but Game-Maker wants a number). */
+/** Hit points Rima starts with (nothing in this game takes any, but Game-Maker wants a number). */
 export const HERO_HIT_POINTS = 50;
 
 /** The monster pictures: the kit's. */

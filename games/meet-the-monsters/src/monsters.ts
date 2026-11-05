@@ -62,7 +62,7 @@ export function finishMonsterPictures(mb: Book): Block[] {
   const blocks = mb.finish();
   for (const n of ['gumdrop0', 'gumdrop1', 'buzzer0', 'buzzer1', 'shelly0', 'shelly1', 'grump0', 'grump1']) {
     const b = blocks[mb.n(n)];
-    b.solid = 0; // the hero passes through: nothing holds him while it hurts
+    b.solid = 0; // the hero passes through: nothing holds her while it hurts
     if (n.startsWith('gumdrop')) b.chHitPt = 0;
     else b.chHitPt = HURT;
   }

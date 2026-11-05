@@ -1,5 +1,5 @@
 // OUT LOUD's own blocks, added to the Starter block set after the signs: a loudspeaker on a
-// post, in two states. Neither is solid, so Kit walks into one and it talks.
+// post, in two states. Neither is solid, so Lena walks into one and it talks.
 //   speaker   a horn with sound waves; its counter goes UP by one when touched (counter 22),
 //             so Game-Maker plays the "a counter went up" sound, which this level's .SND
 //             set names a voice file for. It becomes `hush` when touched.

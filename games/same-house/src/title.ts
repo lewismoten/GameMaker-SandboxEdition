@@ -47,7 +47,7 @@ function door(pal: Pal): Pixels {
   return p;
 }
 
-/** The title: the name, a ribbon, Kit, and the framed row of houses. */
+/** The title: the name, a ribbon, Mia, and the framed row of houses. */
 export function titlePicture(pal: Pal, book: Book, hero: Pixels, name: string, tagline: string): Pixels {
   const p = kitTitle(pal, book, hero, door(pal), name, tagline, 'coins', 'stage');
   for (let i = 0; i < 3; i++) p.frame(FX - 3 + i, FY - 3 + i, FW + 2 * (3 - i), FH + 2 * (3 - i), pal.c('gold', i === 0 ? 0 : i === 2 ? 1 : 3));

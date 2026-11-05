@@ -10,7 +10,7 @@
 // in ticks (18.2 a second) counted from its birth (BirthTime). When it is up, KillMon (line ~3253)
 // either removes it or, if `newmon` names a monster, turns it into that monster at the same place,
 // with that monster's own picture, solidity, path and lifetime. A monster put on the map is born
-// when the scene starts, so its clock starts then, not when Kit arrives.
+// when the scene starts, so its clock starts then, not when Mia arrives.
 import { SOLBOT, SOLLEF, SOLRIG, SOLTOP, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import type { Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { mon, pace } from '@lewismoten/gamemaker-sandbox-tools/kit/actors';
@@ -27,9 +27,9 @@ export const AWAKE = 6;
 /** How many blocks the awake one strolls before it turns. */
 export const STROLL = 3;
 
-/** Powers: 100 or more cannot be popped by touching Kit (code/GM/PLAYGAME.C DoCollision); nothing here is thrown. */
+/** Powers: 100 or more cannot be popped by touching Mia (code/GM/PLAYGAME.C DoCollision); nothing here is thrown. */
 export const POWER = 110;
-/** Hit points Kit starts with (nothing in this game takes any, but Game-Maker wants a number). */
+/** Hit points Mia starts with (nothing in this game takes any, but Game-Maker wants a number). */
 export const HERO_HIT_POINTS = 50;
 /** Lifetimes in ticks (18.2 a second): the bubble in level 1 and the sleeper in level 2. */
 export const BUBBLE_LIFE = 340;

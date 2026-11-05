@@ -8,7 +8,7 @@ export const STORY = wrap(`
 
 The road climbs a hill and goes over the top.
 
-A small explorer in a teal beanie stands on a road that runs away to the horizon. Balls roll out of the hill and grow as they come. Then an arch comes closer, and a toll bar lifts to let you through.
+A small explorer in a red beanie stands on a road that runs away to the horizon. Balls roll out of the hill and grow as they come. Then an arch comes closer, and a toll bar lifts to let you through.
 
 Read the signs. Then open this game in Game-Maker and change when the balls come.
 `);

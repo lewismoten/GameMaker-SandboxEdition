@@ -1,4 +1,4 @@
-// THE GIANT's hero: Kit from the kit, with his Throw sequence tied to Enter. The kit draws the
+// THE GIANT's hero: Rima from the kit, with her Throw sequence tied to Enter. The kit draws the
 // three poses (wind up, release, follow through) and keeps them in the file with no key;
 // this game gives the sequence a key and puts a frame in the middle that gives birth to the
 // star (a frame whose second picture is MONBL births monster number "first picture", the way

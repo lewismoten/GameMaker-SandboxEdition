@@ -1,5 +1,5 @@
 // THE GIANT's monsters. The kit's gumdrop 0, buzzer 1 and shelly 2 stay in the file (unused), then:
-//   STAR      the friendly gold star Kit throws (hero.ts): power 200
+//   STAR      the friendly gold star Rima throws (hero.ts): power 200
 //   TWINKLE   the sparkle a star leaves behind
 //   POOF      the puff a part leaves when its last hit lands
 //   ROCKY     level 1's giant: four parts (top left, top right, bottom left, bottom right), one hit each
@@ -10,8 +10,8 @@
 // the chain. Level 2's chain is fresh -> (hit) -> hurt -> (the timer runs out) -> cracked -> (hit) -> puff.
 // While a part is hurt its power is 200, the same as a star's: a star meeting an equal power does
 // nothing to either, so it flies on through (to whatever stands behind), and the part can't be hurt.
-// Every part is solid on every side and stings a little if Kit walks into it, with power 150 (or 200
-// when hurt): a touch from Kit cannot kill it (100 or more).
+// Every part is solid on every side and stings a little if Rima walks into it, with power 150 (or 200
+// when hurt): a touch from Rima cannot kill it (100 or more).
 import { SOLBOT, SOLLEF, SOLRIG, SOLTOP, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import type { Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { mon } from '@lewismoten/gamemaker-sandbox-tools/kit/actors';
@@ -33,7 +33,7 @@ export const FRESH = ROCKY + 4;
 export const HURT = FRESH + 4;
 export const CRACKED = HURT + 4;
 
-/** What a giant takes off Kit's hit points when he walks into it. */
+/** What a giant takes off Rima's hit points when she walks into it. */
 export const STING = 1;
 /** Pixels a star flies a tick, and how many ticks it flies: the range is the product, about 6 blocks. */
 export const STAR_SPEED = 4;
@@ -116,7 +116,7 @@ export function monsterSet(mb: Book): Monster[] {
     [mb.n(`${name}0`), t],
     [mb.n(`${name}1`), t],
   ];
-  // flies toward where Kit was last walking, and dies when it hits something or when its lifetime (end, in ticks) is over
+  // flies toward where Rima was last walking, and dies when it hits something or when its lifetime (end, in ticks) is over
   set[STAR] = mon(anim('star', 2), { power: 200, thru: 1, towards: STAR_SPEED, end: STAR_LIFE, newmon: TWINKLE });
   set[TWINKLE] = mon(anim('twinkle', 3), { power: 150, thru: 1, end: 9 });
   // the puff swells and is gone in 18 ticks

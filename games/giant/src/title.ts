@@ -1,4 +1,4 @@
-// BIG BUG's own title picture, in the Foes and Bosses look (the kit's arena): Kit has just thrown a star
+// BIG BUG's own title picture, in the Foes and Bosses look (the kit's arena): Rima has just thrown a star
 // at Rocky, a giant made of four monsters, with a sparkle and the door beyond.
 import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { scaleBlit } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
@@ -9,7 +9,7 @@ import type { Pal } from '../../kit/starter/palette';
 import { W } from '../../kit/starter/screens';
 import { backdrop, frameOf, lookOf } from '../../kit/starter/titleStyles';
 
-/** The title in the arena look: the name, a ribbon, then Kit in his throw, a star flying, Rocky in his four parts and the door. */
+/** The title in the arena look: the name, a ribbon, then Rima in her throw, a star flying, Rocky in her four parts and the door. */
 export function titlePicture(pal: Pal, mb: Book, hero: Pixels, door: Pixels, name: string, tagline: string): Pixels {
   const look = lookOf(pal, 'arena');
   const p = backdrop(pal, 'arena');

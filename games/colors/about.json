@@ -3,6 +3,7 @@
   "author": "Claude",
   "company": "Sandbox Software",
   "series": "starter",
+  "hero": "YANA",
   "year": 1994,
   "price": "Free",
   "version": "1.1",
@@ -23,7 +24,7 @@
     "accent": "#ffd23f",
     "ink": "#ffffff",
     "tagline": "Say it with more than color.",
-    "back": "A small explorer in a teal beanie crosses two short levels. In the first, the plate that stings and the plate that is safe are told apart by red and green alone, and some players see those two colors alike. In the second, shape and brightness carry the meaning, so it reads in any color. Play, then open the game in Game-Maker and change a plate.",
+    "back": "A small explorer in a pink beanie crosses two short levels. In the first, the plate that stings and the plate that is safe are told apart by red and green alone, and some players see those two colors alike. In the second, shape and brightness carry the meaning, so it reads in any color. Play, then open the game in Game-Maker and change a plate.",
     "features": ["Signs in the levels explain each idea", "A second picture on each level card shows how it can look to some players", "Made to be copied and taken apart"],
     "shots": [
       ["one.map", 11, 5],

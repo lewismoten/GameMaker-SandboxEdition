@@ -3,6 +3,7 @@
   "author": "Claude",
   "company": "Sandbox Software",
   "series": "starter",
+  "hero": "YANA",
   "year": 1994,
   "price": "Free",
   "version": "1.1",
@@ -23,8 +24,8 @@
     "accent": "#ffd23f",
     "ink": "#ffffff",
     "tagline": "Watch the number rise.",
-    "back": "A small explorer in a teal beanie collects coins that are really monsters. Each one pays, then becomes a blinking number that floats up and goes. Play it, then open the game in Game-Maker and draw your own numbers.",
-    "features": ["Signs in the levels explain each idea", "A monster can become another when Kit touches it", "Made to be copied and taken apart"],
+    "back": "A small explorer in a pink beanie collects coins that are really monsters. Each one pays, then becomes a blinking number that floats up and goes. Play it, then open the game in Game-Maker and draw your own numbers.",
+    "features": ["Signs in the levels explain each idea", "A monster can become another when Yana touches it", "Made to be copied and taken apart"],
     "shots": [
       ["one.map", 26, 6],
       ["two.map", 26, 6]

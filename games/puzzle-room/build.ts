@@ -72,7 +72,7 @@ const text = (base: string, heading: string, body: string) => {
   disk.put(`${base}.lst`, serializeSlideList([{ name: `${base}.gif`, pause: 0 }, { name: `${base}.txt` }]));
 };
 disk.put('title.gif', gif(titlePicture(pal, book, hero, lever, TITLE, 'A STARTER GAME', 'coins', 'workbench'), pal));
-disk.put(STARTER_STING, starterStingFli());
+disk.put(STARTER_STING, starterStingFli('puzzle-room'));
 disk.put(
   'title.lst',
   serializeSlideList([

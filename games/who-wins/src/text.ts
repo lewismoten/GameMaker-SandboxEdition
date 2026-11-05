@@ -8,7 +8,7 @@ export const STORY = wrap(`
 
 When two monsters meet, the stronger one wins.
 
-A small explorer in a teal beanie crosses two short rooms. Two small gumdrops block a tunnel, and a big red one is stronger than they are.
+A small explorer in a red beanie crosses two short rooms. Two small gumdrops block a tunnel, and a big red one is stronger than they are.
 
 Read the signs. Watch who wins, then throw a star and find out how strong it is.
 

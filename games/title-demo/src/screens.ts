@@ -30,7 +30,7 @@ export function miniMenu(p: Pixels, pal: Pal, x: number, y: number, w: number, h
   for (let i = 0; i < 5; i++) p.rect(x + 16, y + 13 + i * 6, 18 + ((i * 7) % 14), 2, c('menublue', 1));
 }
 
-/** The title: the stage look, Kit at the left, a framed copy of the menu picture in the middle, and a small screen at the right. */
+/** The title: the stage look, Lian at the left, a framed copy of the menu picture in the middle, and a small screen at the right. */
 export function titlePicture(pal: Pal, book: Book, hero: Pixels, name: string, tagline: string): Pixels {
   const { c } = pal;
   const tv = new Pixels(20, 40, CLEAR);

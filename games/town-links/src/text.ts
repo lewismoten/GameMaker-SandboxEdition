@@ -8,9 +8,9 @@ export const STORY = wrap(`
 
 A world with a town on it, a town with a house in it.
 
-Kit starts on a map of the whole country, where a town is one block. He steps onto it and the town opens up: streets and houses, and Kit is bigger. A house door opens into a room.
+Yana starts on a map of the whole country, where a town is one block. She steps onto it and the town opens up: streets and houses, and Yana is bigger. A house door opens into a room.
 
-Every way in has a way out, and each way out puts him back by the door he used.
+Every way in has a way out, and each way out puts her back by the door she used.
 
 Read the signs. Then open this game in Game-Maker and look at the links of a scene.
 `);
@@ -46,9 +46,9 @@ export const WON = wrap(`
 
 Three maps, three sizes.
 
-Each scene has its own map file, its own blocks drawn to its own scale, and even its own picture of Kit. A link joins two scenes: the block that fires it, and the cell where you land.
+Each scene has its own map file, its own blocks drawn to its own scale, and even its own picture of Yana. A link joins two scenes: the block that fires it, and the cell where you land.
 
-Make the way back with a link of its own, and land the hero where he came in: beside the town block, outside the house door. Rooms on One Map and Overhead show other kinds of links.
+Make the way back with a link of its own, and land the hero where she came in: beside the town block, outside the house door. Rooms on One Map and Overhead show other kinds of links.
 
 Open the game in Game-Maker and look at the links of a scene.
 `);

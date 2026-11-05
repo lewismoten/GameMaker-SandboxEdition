@@ -3,6 +3,7 @@
   "author": "Claude",
   "company": "Sandbox Software",
   "series": "starter",
+  "hero": "LIAN",
   "year": 1994,
   "price": "Free",
   "version": "1.0",
@@ -23,7 +24,7 @@
     "accent": "#ffd23f",
     "ink": "#ffffff",
     "tagline": "Count your hearts.",
-    "back": "A small explorer in a teal beanie has three short levels to cross and 30 hit points to spend. Spikes take ten, hearts give ten back, and running out costs a life and starts the room again. Read the signs, press F2 to check the numbers, then open the game in Game-Maker and change a heart.",
+    "back": "A small explorer in a blue beanie has three short levels to cross and 30 hit points to spend. Spikes take ten, hearts give ten back, and running out costs a life and starts the room again. Read the signs, press F2 to check the numbers, then open the game in Game-Maker and change a heart.",
     "features": [
       "Signs in the levels explain each idea",
       "Spikes take hit points, hearts give them back, a face adds a life",

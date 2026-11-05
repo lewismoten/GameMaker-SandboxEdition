@@ -51,7 +51,7 @@ export const CARDS = {
 export const STORY = wrap(`
 |LITTLE SHADOWS
 
-Kit finds a courtyard where everything has a shadow, and one where nothing does.
+Mara finds a courtyard where everything has a shadow, and one where nothing does.
 
 A shadow tells you where the ground is, how high something is and how far it is from you. In a game with no see-through colors, a shadow is just more pixels, painted where it will do the most good.
 
@@ -66,7 +66,7 @@ export const HOWTO = wrap(`
 
 Walk into a door to go to the next room. Read the signs on the wall.
 
-Nothing here can hurt Kit. The pips and the bees are friendly.
+Nothing here can hurt Mara. The pips and the bees are friendly.
 
 |ESC for the menu.
 `);

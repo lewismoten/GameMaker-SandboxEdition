@@ -8,7 +8,7 @@ export const STORY = wrap(`
 
 One house can be many houses.
 
-A small explorer in a teal beanie has two short levels. In the first, a street of three houses that look alike: go in each door, and the inside is the same house with a different carpet, wallpaper and roof. In the second, a square with three doors to one tower room that is wood, ice or lava.
+A small explorer in a purple beanie has two short levels. In the first, a street of three houses that look alike: go in each door, and the inside is the same house with a different carpet, wallpaper and roof. In the second, a square with three doors to one tower room that is wood, ice or lava.
 
 Notice what stays the same.
 

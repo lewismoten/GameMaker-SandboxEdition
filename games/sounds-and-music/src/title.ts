@@ -1,4 +1,4 @@
-// SOUNDS AND MUSIC's own title picture, in the Telling a Story look (the kit's stage with curtains): Kit,
+// SOUNDS AND MUSIC's own title picture, in the Telling a Story look (the kit's stage with curtains): Neka,
 // three musical notes floating in a row and the exit door.
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { outline, scaleBlit } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
@@ -27,7 +27,7 @@ function note(pal: Pal, pair: boolean): Pixels {
   return outline(p, ink, { transparent: skyOf(pal) });
 }
 
-/** The title in the Telling a Story look: the name, a ribbon, then Kit, three notes floating and the door. */
+/** The title in the Telling a Story look: the name, a ribbon, then Neka, three notes floating and the door. */
 export function titlePicture(pal: Pal, _book: Book, hero: Pixels, door: Pixels, name: string, tagline: string): Pixels {
   const look = lookOf(pal, 'stage');
   const p = backdrop(pal, 'stage');

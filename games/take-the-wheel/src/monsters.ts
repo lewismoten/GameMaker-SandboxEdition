@@ -1,6 +1,6 @@
 // TAKE THE WHEEL's monsters. The kit's gumdrop 0, buzzer 1 and shelly 2 stay in the file (unused), then:
 //   HONK     the ripple of the kart's horn. It is born from a frame of the kart's honk sequence
-//            (kart.ts, the same way Kit's thrown star is born in THROW IT) and flies the way the kart last
+//            (kart.ts, the same way Yana's thrown star is born in THROW IT) and flies the way the kart last
 //            drove, about five blocks. Power 200: it beats every monster it touches.
 //   BIRD     a blue bird sitting in the road. Solid on every side, so a kart that cannot jump
 //            has to stop. Power 150: touching it does nothing to the bird, only a honk (200) does.
@@ -8,7 +8,7 @@
 //   FLY      the bird flapping up and away along a path, gone when the path ends (`end` -1).
 // What the engine does (code/GM/PLAYGAME.C): when two monsters overlap the one with less power
 // dies and, if it has a `newmon`, turns into that monster in the same place. The character cannot
-// jump unless a sequence on a key pushes him upward, and a kart has no such sequence.
+// jump unless a sequence on a key pushes her upward, and a kart has no such sequence.
 import { SOLBOT, SOLLEF, SOLRIG, SOLTOP, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import type { Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { corner, mon } from '@lewismoten/gamemaker-sandbox-tools/kit/actors';
@@ -24,7 +24,7 @@ export const HONK = 3;
 export const BIRD = 4;
 export const FLY = 5;
 
-/** Hit points Kit starts with (nothing in this game takes any, but Game-Maker wants a number). */
+/** Hit points Yana starts with (nothing in this game takes any, but Game-Maker wants a number). */
 export const HERO_HIT_POINTS = 50;
 /** Pixels a honk flies a tick, and how many ticks it flies: the range is the product, five blocks. */
 export const HONK_SPEED = 4;

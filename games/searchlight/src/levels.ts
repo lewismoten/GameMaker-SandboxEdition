@@ -3,11 +3,11 @@
 //
 //   1. Wait and Go: a light hangs from a rail and walks back and forth over ten blocks of the way. Two
 //      trenches are dug in the ground under it. Being seen (touching the light) costs hit points, so
-//      Kit waits in a trench until the light has walked over him, then goes on.
+//      Mara waits in a trench until the light has walked over her, then goes on.
 //   2. Two Lights: two lights walking at two speeds, each over its own stretch with its own trenches,
 //      and a patch of grass between them to rest on.
 // The light is a path and nothing more: it does not look. Every room is closed in by brick walls you
-// can see, so Kit is never stopped by something he can't.
+// can see, so Mara is never stopped by something she can't.
 import { Book, PULL } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
@@ -64,7 +64,7 @@ export interface Level {
 const onGround = (ground: number, s: Sign) => ground - 1 - s.board.length;
 
 export const GROUND = 10;
-/** Where Kit stands: the row above the ground. */
+/** Where Mara stands: the row above the ground. */
 export const STAND = GROUND - 1;
 /** The row of the rail, and of the lamp under it; the cone fills the rows down to STAND. */
 export const RAIL = 4;
@@ -160,7 +160,7 @@ function twoLights(book: Book, signs: Record<SignName, Sign>): StarterMap {
 
 /** The levels in order. */
 export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
-  const pal = buildStarterPalette();
+  const pal = buildStarterPalette(undefined, 'searchlight');
   const { book, signs } = buildBlocks(pal);
   const levels: Level[] = [
     { file: 'one', title: 'Wait and Go', hint: 'Let the light pass.', map: waitAndGo(book, signs) },

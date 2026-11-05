@@ -42,7 +42,7 @@ function easel(pal: Pal): Pixels {
   return p;
 }
 
-/** The title: the stage look, Kit on the left, a framed picture over the middle, and an easel on the right. */
+/** The title: the stage look, Mara on the left, a framed picture over the middle, and an easel on the right. */
 export function titlePicture(pal: Pal, book: Book, hero: Pixels, name: string, tagline: string): Pixels {
   const p = kitTitle(pal, book, hero, easel(pal), name, tagline, 'coins', 'stage');
   // the kit puts a row of coins in the middle; a framed picture covers them
@@ -59,7 +59,7 @@ export function titlePicture(pal: Pal, book: Book, hero: Pixels, name: string, t
   return p;
 }
 
-/** The postcard shown after level 1: a painted landscape in a gold frame, a line under it, and Kit cheering below. */
+/** The postcard shown after level 1: a painted landscape in a gold frame, a line under it, and Mara cheering below. */
 export function postcardPicture(pal: Pal, book: Book, cheer: Pixels, head: string, line: string): Pixels {
   const p = scene(pal, book, 160, 61);
   bevel(p, 56, 4, 208, 74, pal.r('parch'), 3, 2);

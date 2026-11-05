@@ -120,7 +120,7 @@ function gateIsTheExit(book: Book, signs: Record<SignName, Sign>): StarterMap {
 
 /** The levels in order. */
 export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
-  const pal = buildStarterPalette();
+  const pal = buildStarterPalette(undefined, 'three-tokens');
   const { book, signs } = buildBlocks(pal);
   const levels: Level[] = [
     { file: 'one', title: 'Three for the Gate', hint: 'A gate can ask for three.', map: threeForTheGate(book, signs) },

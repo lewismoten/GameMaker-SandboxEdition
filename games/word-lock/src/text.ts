@@ -8,7 +8,7 @@ export const STORY = wrap(`
 
 Some locks do not want a key. They want you to say the word, and a few of them.
 
-A small explorer in a teal beanie finds speech bubbles lying about. Each bubble adds one word to a count you carry. A lock takes its price from that count, and only opens when you can pay all of it.
+A small explorer in a blue beanie finds speech bubbles lying about. Each bubble adds one word to a count you carry. A lock takes its price from that count, and only opens when you can pay all of it.
 
 A tray beyond a lock can give the words back. Without one, they are gone.
 

@@ -40,7 +40,7 @@ export const MON = {
   camCue: 22,
 } as const;
 
-/** Powers: 100 or more cannot be popped by touching Kit (code/GM/PLAYGAME.C DoCollision); nothing here is thrown. */
+/** Powers: 100 or more cannot be popped by touching Neka (code/GM/PLAYGAME.C DoCollision); nothing here is thrown. */
 export const POWER = 110;
 /** How many blocks each actor walks in and out, and how fast (the engine's speed number). */
 export const WALK = { blocks: 4, speed: 1 } as const;

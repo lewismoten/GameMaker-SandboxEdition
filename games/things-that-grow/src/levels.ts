@@ -2,11 +2,11 @@
 // games/kit/starter/map.ts for what the letters mean), then given its signs and its nests.
 //
 //   1. A Nest: a nest on a brick shelf over the path hatches a yellow bird every few seconds. Each
-//      flutters about and flies off after a while. Kit waits under it and watches.
+//      flutters about and flies off after a while. Lami waits under it and watches.
 //   2. Empty Nest: the shelf nest keeps hatching (it has no touch rule). A second nest lies on the
-//      path and hatches blue birds; Kit steps on it and it becomes an empty nest. The blue ones go
+//      path and hatches blue birds; Lami steps on it and it becomes an empty nest. The blue ones go
 //      when their time is up and no more come, while the yellow ones keep on.
-// Both rooms are closed in by brick walls you can see, so Kit is never stopped by something he can't.
+// Both rooms are closed in by brick walls you can see, so Lami is never stopped by something she can't.
 import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
 import { Book, PULL } from '../../kit/starter/book';
@@ -135,11 +135,11 @@ function aNest(book: Book, signs: Record<SignName, Sign>): StarterMap {
   return m;
 }
 
-/** Where the nest Kit empties lies on the path in level 2. */
+/** Where the nest Lami empties lies on the path in level 2. */
 export const PATH_NEST_X = 31;
 export const SHELF_NEST_X = 16;
 
-/** Level 2: a nest that hatches on and on, and one Kit can stop. 46 blocks wide. */
+/** Level 2: a nest that hatches on and on, and one Lami can stop. 46 blocks wide. */
 function emptyNest(book: Book, signs: Record<SignName, Sign>): StarterMap {
   const g = base(46, 42);
   shelf(g, SHELF_NEST_X);
@@ -166,7 +166,7 @@ function emptyNest(book: Book, signs: Record<SignName, Sign>): StarterMap {
 
 /** The levels in order. */
 export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
-  const pal = buildStarterPalette();
+  const pal = buildStarterPalette(undefined, 'things-that-grow');
   const { book, signs } = buildBlocks(pal);
   const levels: Level[] = [
     { file: 'one', title: 'A Nest', hint: 'A block can hatch a monster.', map: aNest(book, signs) },

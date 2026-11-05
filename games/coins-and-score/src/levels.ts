@@ -141,7 +141,7 @@ function heartsAddLives(book: Book, signs: Record<SignName, Sign>): StarterMap {
 
 /** The levels in order. */
 export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
-  const pal = buildStarterPalette();
+  const pal = buildStarterPalette(undefined, 'coins-and-score');
   const { book, signs } = buildBlocks(pal);
   const levels: Level[] = [
     { file: 'one', title: 'Coins Add Points', hint: 'Touch a coin and the score goes up.', map: coinsAddPoints(book, signs) },

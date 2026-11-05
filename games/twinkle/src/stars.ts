@@ -17,7 +17,7 @@ export interface Timed {
 
 /** The sky's day colors made night, and the grass and dirt darker, for this game's palette only. */
 export function nightPalette(): Pal {
-  const pal = buildStarterPalette();
+  const pal = buildStarterPalette(undefined, 'twinkle');
   const set = (name: string, i: number, rgb: [number, number, number]) => {
     const at = pal.c(name, i) * 3;
     for (let k = 0; k < 3; k++) pal.pal[at + k] = rgb[k] >> 2; // the palette holds 6 bits a color

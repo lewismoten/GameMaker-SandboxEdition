@@ -1,5 +1,5 @@
 // SCORE POPUPS' own title picture, in the Showcase Tricks look (a night skyline, via
-// kit/starter/titleStyles): Kit and the door as in every Starter, with the numbers a coin, a gem and a box leave
+// kit/starter/titleStyles): Yana and the door as in every Starter, with the numbers a coin, a gem and a box leave
 // under the row of coins.
 import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { scaleBlit } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';

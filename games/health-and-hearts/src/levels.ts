@@ -1,9 +1,9 @@
 // HEALTH AND HEARTS's three levels. Each is painted on a Grid (a block a character, see
 // games/kit/starter/map.ts for what the letters mean), then given its signs, spikes, hearts and faces.
 //
-//   1. Hit Points: F2 shows them; one spike takes ten and Kit carries on.
+//   1. Hit Points: F2 shows them; one spike takes ten and Lian carries on.
 //   2. Hearts Heal: another spike, then two hearts give the hit points back. They go on to the next room.
-//   3. Lives: four spikes spread along the ground are more than Kit has, so the third one costs a life and the
+//   3. Lives: four spikes spread along the ground are more than Lian has, so the third one costs a life and the
 //      room starts again with a full 30. The hearts on the ledge up and left, and the second try takes them.
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
@@ -142,7 +142,7 @@ function lives(book: Book, signs: Record<SignName, Sign>): StarterMap {
 
 /** The levels in order. */
 export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
-  const pal = buildStarterPalette();
+  const pal = buildStarterPalette(undefined, 'health-and-hearts');
   const { book, signs } = buildBlocks(pal);
   const levels: Level[] = [
     { file: 'one', title: 'Hit Points', hint: 'F2 shows how many you have.', map: hitPoints(book, signs) },

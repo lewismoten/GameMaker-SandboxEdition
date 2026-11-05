@@ -8,7 +8,7 @@ export const STORY = wrap(`
 
 Some players see colors differently. Red and green can look alike to them.
 
-A small explorer in a teal beanie crosses two short levels. The first one tells things apart by color alone. If the plates look the same to you, that is the point of that level, and a sting only costs a little. The second one tells them apart by shape and brightness, so it works in any color.
+A small explorer in a pink beanie crosses two short levels. The first one tells things apart by color alone. If the plates look the same to you, that is the point of that level, and a sting only costs a little. The second one tells them apart by shape and brightness, so it works in any color.
 
 Each level card has a second picture that shows how that level can look to some players.
 

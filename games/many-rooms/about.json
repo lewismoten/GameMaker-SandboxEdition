@@ -3,6 +3,7 @@
   "author": "Claude",
   "company": "Sandbox Software",
   "series": "starter",
+  "hero": "RIMA",
   "year": 1994,
   "price": "Free",
   "version": "1.0",
@@ -23,7 +24,7 @@
     "accent": "#ffd23f",
     "ink": "#ffffff",
     "tagline": "One map, many rooms.",
-    "back": "A small explorer in a teal beanie walks through a red room, a blue room, a green room and a gold room that are really four corners of one big map. A door drops him into another cell, and it need not be next door. Read the signs, then open the game in Game-Maker and move where a door lands.",
+    "back": "A small explorer in a teal beanie walks through a red room, a blue room, a green room and a gold room that are really four corners of one big map. A door drops her into another cell, and it need not be next door. Read the signs, then open the game in Game-Maker and move where a door lands.",
     "features": ["Signs in the rooms explain each idea", "Rooms are cells of one map, and a door lands in another cell", "Made to be copied and taken apart"],
     "shots": [
       ["one.map", 0, 0],

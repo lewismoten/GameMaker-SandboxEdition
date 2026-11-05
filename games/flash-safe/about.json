@@ -3,6 +3,7 @@
   "author": "Claude",
   "company": "Sandbox Software",
   "series": "starter",
+  "hero": "LAMI",
   "year": 1994,
   "price": "Free",
   "version": "1.0",
@@ -23,7 +24,7 @@
     "accent": "#ffd23f",
     "ink": "#ffffff",
     "tagline": "Easy on the eyes.",
-    "back": "A small explorer in a teal beanie has three short rooms that show how to make a game that never relies on a flash. A hit gets a beep, a face, a number and fewer hit points. A warning lamp blinks slowly and small. A storm sky lifts a little and holds. Read the signs, then open the game in Game-Maker and change a time.",
+    "back": "A small explorer in a red beanie has three short rooms that show how to make a game that never relies on a flash. A hit gets a beep, a face, a number and fewer hit points. A warning lamp blinks slowly and small. A storm sky lifts a little and holds. Read the signs, then open the game in Game-Maker and change a time.",
     "features": [
       "A hit shown four ways, and none of them a flash",
       "A lamp that blinks once a second and one that pulses softly",

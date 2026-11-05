@@ -113,7 +113,7 @@ function popAndLives(book: Book, signs: Record<SignName, Sign>): StarterMap {
 
 /** The levels in order. */
 export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
-  const pal = buildStarterPalette();
+  const pal = buildStarterPalette(undefined, 'meet-the-monsters');
   const { book, signs } = buildBlocks(pal);
   const levels: Level[] = [
     { file: 'one', title: 'Walk and Hurt', hint: 'Some monsters walk a path.', map: walkAndHurt(book, signs) },

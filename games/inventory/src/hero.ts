@@ -1,12 +1,12 @@
-// PICK IT UP's hero: Kit from the kit, plus
-//   3  PICKUP  P  takes the object block he is standing in into the pack (ten places)       (Game-Maker's sequence 3)
-//   4  DROP    D  opens the pack: arrows choose a place, Enter puts it down where he stands  (Game-Maker's sequence 4)
+// PICK IT UP's hero: Mara from the kit, plus
+//   3  PICKUP  P  takes the object block she is standing in into the pack (ten places)       (Game-Maker's sequence 3)
+//   4  DROP    D  opens the pack: arrows choose a place, Enter puts it down where she stands  (Game-Maker's sequence 4)
 //   14 FLAME   Enter  throws a flame   only while a flame item is in the pack  (the sequence is tied to that block)
 //   15 STAR    Enter  throws a star    only while a star item is in the pack
 //   17 NONE    Enter  a short shrug and a low blip: nothing to throw             (never tied, never used up)
 // Game-Maker (PLAYGAME.C SimKeyPress) starts the FIRST sequence on a key that is switched on, so a flame goes before a
 // star, and the shrug comes last. There is no select key: what Enter throws is which tied items are in the pack, and
-// the way to throw the star while holding the flame is to put the flame down. The Kit's walking on D is given up: D drops.
+// the way to throw the star while holding the flame is to put the flame down. The Mara's walking on D is given up: D drops.
 import { MONBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { INF_REPEAT, emptyFrame, type Character, type Frame } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { set } from '@lewismoten/gamemaker-sandbox-tools/kit/actors';
@@ -32,7 +32,7 @@ export const HERO_HIT_POINTS = 50;
 export const HERO_LIVES = 3;
 export { SEQ_FLAME, SEQ_NONE, SEQ_STAR };
 
-/** The kit's hero blocks, plus his three throw poses again with the star in his hand turned to a flame. */
+/** The kit's hero blocks, plus her three throw poses again with the star in her hand turned to a flame. */
 export function buildItemHeroBlocks(pal: Pal): Book {
   const book = buildHeroBlocks(pal);
   const gold = pal.r('gold');
@@ -47,7 +47,7 @@ export function buildItemHeroBlocks(pal: Pal): Book {
   return book;
 }
 
-/** HERO.CHR: Kit with P and D, and Enter throwing a flame, else a star, else shrugging; `items` are the blocks the throws are tied to. */
+/** HERO.CHR: Mara with P and D, and Enter throwing a flame, else a star, else shrugging; `items` are the blocks the throws are tied to. */
 export function buildItemHero(cb: Book, items: { star: number; flame: number }): Character {
   const ch = buildHero(cb);
   const f = (top: string, bottom: string, o: Partial<Frame> = {}): Frame => ({ ...emptyFrame(), pic1: cb.n(top), pic2: cb.n(bottom), pause: 3, ...o });

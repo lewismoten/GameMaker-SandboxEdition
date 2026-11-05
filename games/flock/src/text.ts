@@ -8,7 +8,7 @@ export const STORY = wrap(`
 
 Birds fly together.
 
-A small explorer in a teal beanie crosses two short rooms under a flock of five birds that fly in a V.
+A small explorer in a blue beanie crosses two short rooms under a flock of five birds that fly in a V.
 
 Read the signs. Watch the V as the birds fly right and back. In the second room, see what one faster bird does to it.
 

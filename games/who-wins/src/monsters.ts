@@ -1,5 +1,5 @@
 // WHO WINS?'s monsters. The kit's gumdrop 0, buzzer 1 and shelly 2 stay in the file (unused), then:
-//   STAR     the friendly gold star Kit throws (hero.ts). Power 140.
+//   STAR     the friendly gold star Lami throws (hero.ts). Power 140.
 //   TWINKLE  what a star (or a popped monster) leaves behind for a moment: a little sparkle
 //   PIP      a small mint gumdrop sitting still, solid, power 110: it beats nothing and loses to all
 //   MID      a purple grump sitting still, solid, power 130: a star (140) still beats it
@@ -10,7 +10,7 @@
 // powers differ, the one with less power dies and the stronger one lives; equal powers pass through
 // each other. A monster born from the character (the star) is used up as well when it wins, and
 // the character gets the dead monster's "score bonus". Touching a monster whose power is 100 or
-// more does not kill it, so Kit can only get rid of a pip or a mid by throwing a star.
+// more does not kill it, so Lami can only get rid of a pip or a mid by throwing a star.
 import { SOLBOT, SOLLEF, SOLRIG, SOLTOP, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import type { Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { mon, pace } from '@lewismoten/gamemaker-sandbox-tools/kit/actors';
@@ -30,10 +30,10 @@ export const BIG_STILL = 8;
 /** How many blocks the big one walks before it turns (level 1). */
 export const BIG_RUN = 9;
 
-/** The powers (code/GM/PLAYGAME.C DoCollision): higher kills lower; 100 or more cannot be killed by touching Kit. */
+/** The powers (code/GM/PLAYGAME.C DoCollision): higher kills lower; 100 or more cannot be killed by touching Lami. */
 export const POWER = { pip: 110, mid: 130, star: 140, big: 180 } as const;
 
-/** Hit points Kit starts with (nothing in this game takes any, but Game-Maker wants a number). */
+/** Hit points Lami starts with (nothing in this game takes any, but Game-Maker wants a number). */
 export const HERO_HIT_POINTS = 50;
 /** Pixels a star flies a tick, and how many ticks it flies: the range is the product, about 6 blocks. */
 export const STAR_SPEED = 4;
@@ -166,7 +166,7 @@ export function monsterSet(mb: Book): Monster[] {
     [mb.n(`${name}0`), t],
     [mb.n(`${name}1`), t],
   ];
-  // flies toward where Kit was last walking (towards 1 to 63 is a speed; Game-Maker gives a monster
+  // flies toward where Lami was last walking (towards 1 to 63 is a speed; Game-Maker gives a monster
   // born from the character that direction), dies when it hits a wall or when its lifetime
   // (end, in ticks) is over, and leaves a sparkle either way
   set[STAR] = mon(anim('star', 2), { power: POWER.star, thru: 1, towards: STAR_SPEED, end: STAR_LIFE, newmon: TWINKLE });

@@ -8,7 +8,7 @@ export const STORY = wrap(`
 
 Some doors want a strong key, and some keys are stronger than others.
 
-A small explorer in a teal beanie finds bronze, silver and gold keys. A bronze key is worth 1, a silver key 2 and a gold key 3. A door has a price of its own, and it opens when you can pay it.
+A small explorer in a pink beanie finds bronze, silver and gold keys. A bronze key is worth 1, a silver key 2 and a gold key 3. A door has a price of its own, and it opens when you can pay it.
 
 Read the signs, then open this game in Game-Maker and change a door's price.
 `);

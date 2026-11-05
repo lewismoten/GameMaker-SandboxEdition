@@ -10,7 +10,7 @@ A room that looks as if it is seen from one corner.
 
 The floor is drawn in diamonds. The cubes have a top and two sides. It looks like 3D.
 
-But it is only pictures, cut into the same square blocks as every other game. In the first two rooms Kit walks on the squares. In the third, each arrow walks a diagonal of the floor.
+But it is only pictures, cut into the same square blocks as every other game. In the first two rooms Lena walks on the squares. In the third, each arrow walks a diagonal of the floor.
 
 Read the signs. Then open this game in Game-Maker and look at the blocks.
 `);
@@ -18,7 +18,7 @@ Read the signs. Then open this game in Game-Maker and look at the blocks.
 export const HOWTO = wrap(`
 |HOW TO PLAY
 
-|ARROWS   walk Kit
+|ARROWS   walk Lena
 |SPACE    does nothing
 
 There are three rooms. In each, walk to the gold diamond to leave.
@@ -48,9 +48,9 @@ export const WON = wrap(`
 
 Three rooms, drawn from a corner.
 
-A corner view is a picture trick. The floor, the cubes and the stair are one painting, cut into blocks. Each block is a plain square, and in the first two rooms Kit stays on the squares. In the third his arrows are each made to walk a slant, because a walk can move him across and down in every step.
+A corner view is a picture trick. The floor, the cubes and the stair are one painting, cut into blocks. Each block is a plain square, and in the first two rooms Lena stays on the squares. In the third her arrows are each made to walk a slant, because a walk can move her across and down in every step.
 
-It cannot sort by depth, either. Kit is always drawn on top, so he never walks behind a tower. A tall tower is solid in every block its picture covers. His box is still a square, so he slides along a slanted wall in little steps.
+It cannot sort by depth, either. Lena is always drawn on top, so she never walks behind a tower. A tall tower is solid in every block its picture covers. Her box is still a square, so she slides along a slanted wall in little steps.
 
 Open the game in Game-Maker and look at the Blocks tab: every cube is made of a few blocks.
 `);

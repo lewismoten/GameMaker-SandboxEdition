@@ -8,7 +8,7 @@ export const STORY = wrap(`
 
 Some monsters are only out for a walk.
 
-A small explorer in a teal beanie has two short levels to cross. A purple gumdrop waddles back and forth, and a snail creeps along. The snail is not mean, but it does hurt a little if you bump it.
+A small explorer in a red beanie has two short levels to cross. A purple gumdrop waddles back and forth, and a snail creeps along. The snail is not mean, but it does hurt a little if you bump it.
 
 Read the signs. Jump over what hurts, and drop onto what pops.
 

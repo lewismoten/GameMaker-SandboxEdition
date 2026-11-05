@@ -148,7 +148,7 @@ function notThat(book: Book, signs: Record<SignName, Sign>): StarterMap {
 
 /** The levels in order. */
 export function buildLevels(): { book: Book; pal: Pal; levels: Level[]; shared: number } {
-  const pal = buildStarterPalette();
+  const pal = buildStarterPalette(undefined, 'special-counters');
   const { book, signs, shared } = buildBlocks(pal);
   const levels: Level[] = [
     { file: 'one', title: 'Take Both Keys', hint: 'Keys you do not use stay with you.', map: takeBoth(book, signs) },

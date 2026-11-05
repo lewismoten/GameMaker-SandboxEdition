@@ -8,7 +8,7 @@ export const STORY = wrap(`
 
 When you score, a number rises and fades. It feels good, and it tells you what you got.
 
-A small explorer in a teal beanie crosses two short rooms full of coins that are really monsters. Touch one and it becomes a number.
+A small explorer in a pink beanie crosses two short rooms full of coins that are really monsters. Touch one and it becomes a number.
 
 Read the signs. Then open this game in Game-Maker and make your own.
 `);

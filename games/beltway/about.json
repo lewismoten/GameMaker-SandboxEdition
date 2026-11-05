@@ -3,6 +3,7 @@
   "author": "Claude",
   "company": "Sandbox Software",
   "series": "starter",
+  "hero": "MIA",
   "year": 1994,
   "price": "Free",
   "version": "1.1",
@@ -23,7 +24,7 @@
     "accent": "#2b8fd4",
     "ink": "#ffffff",
     "tagline": "Round and round we go.",
-    "back": "A small explorer in a teal beanie rides the bed of a truck while the hills, the trees and a rail slide past. Then a little car drives a loop in the sky, upside down at the top, and a lamp lights for every lap until the barred door opens. The scenery is rings of blocks; the car is a path that ends where it began. Play, then open the game in Game-Maker and change the speeds.",
+    "back": "A small explorer in a purple beanie rides the bed of a truck while the hills, the trees and a rail slide past. Then a little car drives a loop in the sky, upside down at the top, and a lamp lights for every lap until the barred door opens. The scenery is rings of blocks; the car is a path that ends where it began. Play, then open the game in Game-Maker and change the speeds.",
     "features": [
       "Signs in the levels explain each idea",
       "Scenery that slides forever: rings of blocks that start over",

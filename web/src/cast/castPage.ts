@@ -79,7 +79,7 @@ const TABS: { id: Tab; label: string; blurb: string; ids: string[] }[] = [
     id: 'people',
     label: 'Characters',
     blurb: 'The faces that keep turning up: the dog, the clown, the maker and a couple of robots.',
-    ids: ['teddy', 'gwinn', 'leo', 'lewis', 'lewie', 'kit', 'joe', 'watt'],
+    ids: ['teddy', 'gwinn', 'leo', 'lewis', 'lewie', 'kit', 'mia', 'lena', 'mara', 'lian', 'yana', 'neka', 'rima', 'lami', 'joe', 'watt'],
   },
   {
     id: 'things',

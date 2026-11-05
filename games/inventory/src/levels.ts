@@ -2,12 +2,12 @@
 // the letters mean), then given its signs, its things to carry (object blocks) and its monsters.
 //
 //   1. Step Up:   a brick wall six blocks high, too high to jump. Three wooden crates lie on the ground; P takes one into
-//                 the pack, D then Enter puts one down where Kit stands. Three crates put down one on another are a stair. Coins on the wall and past it.
+//                 the pack, D then Enter puts one down where Mara stands. Three crates put down one on another are a stair. Coins on the wall and past it.
 //   2. Your Pick: a flame and a star lie on the ground; carrying one lets Enter throw it (the sequence is tied to the
 //                 item). A frosty grump in a brick tunnel needs the flame. Past the tunnel a gumdrop waits across
 //                 a strip of spikes: a flame flies two blocks and falls short, a star flies six. Flames go first
 //                 in the hero's list, so the star is thrown by putting the flame down (D, Enter).
-// Both rooms are closed in by brick walls you can see, so Kit is never stopped by something he can't.
+// Both rooms are closed in by brick walls you can see, so Mara is never stopped by something she can't.
 import { Book, LEDGE, PULL } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
@@ -35,12 +35,12 @@ const WORDS: Record<SignName, { text: string; w: number; h: number }> = {
 function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
-  // objects: touching does nothing, P takes one (and the cell turns to sky); put down, the same block stands where Kit was
+  // objects: touching does nothing, P takes one (and the cell turns to sky); put down, the same block stands where Mara was
   book.add('crate', drawCrate(pal), { solid: LEDGE, grav: PULL.down, touch: 'sky', obj: true });
   book.add('starItem', drawItem(pal, 'star'), { touch: 'sky', obj: true });
   book.add('flameItem', drawItem(pal, 'flame'), { touch: 'sky', obj: true });
-  // spikes: they stand on the ground at Kit's height and sting him once, ten hit points, when he touches them (then they
-  // lie flat). The kit's spikes block is solid and hurts, so a Kit standing on top is stung every tick: not used here.
+  // spikes: they stand on the ground at Mara's height and sting her once, ten hit points, when she touches them (then they
+  // lie flat). The kit's spikes block is solid and hurts, so a Mara standing on top is stung every tick: not used here.
   const spikes = book.pics.get('spikes')!;
   book.add('spikeUp', spikes, { grav: PULL.down, hp: -10, touch: 'spikeFlat' });
   book.add(
@@ -84,7 +84,7 @@ function scenery(g: Grid, clouds: [number, number][], bushes: number[], flowers:
   for (const x of flowers) g.put(x, GROUND - 1, 'f');
 }
 
-/** Level 1: the crates' columns, the wall's (first, last column and its top row), where Kit stands at its foot, and the exit's. */
+/** Level 1: the crates' columns, the wall's (first, last column and its top row), where Mara stands at its foot, and the exit's. */
 export const L1 = {
   width: 50,
   exit: 46,
@@ -175,7 +175,7 @@ function yourPick(book: Book, signs: Record<SignName, Sign>): StarterMap {
 
 /** The levels in order. */
 export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
-  const pal = buildStarterPalette();
+  const pal = buildStarterPalette(undefined, 'inventory');
   const { book, signs } = buildBlocks(pal);
   const levels: Level[] = [
     { file: 'one', title: 'Step Up', hint: 'P picks up, D puts down.', map: stepUp(book, signs) },

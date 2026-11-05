@@ -8,7 +8,7 @@ export const STORY = wrap(`
 
 What happens when you touch the ground?
 
-A small explorer in a teal beanie has two jobs. First, a hill is in the way: tunnel through it. Then a lane of spikes covers the surface: dig under it, and climb out the other side.
+A small explorer in a gold beanie has two jobs. First, a hill is in the way: tunnel through it. Then a lane of spikes covers the surface: dig under it, and climb out the other side.
 
 Read the signs. Digging is not a special move. Soil is a block that turns into a tunnel block when it is touched, and walking into it, or standing on it, is touching it.
 
@@ -48,7 +48,7 @@ export const WON = wrap(`
 
 Two levels, and now you know how to dig.
 
-Soil is a block with a touch setting: when it is touched it turns into the tunnel block. The engine changes the block first and checks what is solid afterward, so Kit walks straight on. Rock has no touch setting, so it stays.
+Soil is a block with a touch setting: when it is touched it turns into the tunnel block. The engine changes the block first and checks what is solid afterward, so Neka walks straight on. Rock has no touch setting, so it stays.
 
 Open the game in Game-Maker and find soil on the Blocks tab. Make rock into soil, then play it.
 `);

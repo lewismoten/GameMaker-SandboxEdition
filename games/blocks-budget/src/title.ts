@@ -1,4 +1,4 @@
-// 150 BLOCKS' own title picture, in the Bigger Worlds look (the kit's atlas): an old page with Kit beside a
+// 150 BLOCKS' own title picture, in the Bigger Worlds look (the kit's atlas): an old page with Lena beside a
 // door, and a little village of four houses on it, drawn from the game's own blocks with the count under them.
 import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { scaleBlit } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
@@ -10,7 +10,7 @@ import { W } from '../../kit/starter/screens';
 import { backdrop, frameOf, lookOf } from '../../kit/starter/titleStyles';
 import { HOUSE } from './pictures';
 
-/** The title in the atlas look: the name, a ribbon, then Kit by a door, and four houses on the page. */
+/** The title in the atlas look: the name, a ribbon, then Lena by a door, and four houses on the page. */
 export function titlePicture(pal: Pal, book: Book, hero: Pixels, door: Pixels, name: string, tagline: string): Pixels {
   const look = lookOf(pal, 'atlas');
   const p = backdrop(pal, 'atlas');

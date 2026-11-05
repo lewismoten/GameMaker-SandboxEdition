@@ -3,6 +3,7 @@
   "author": "Claude",
   "company": "Sandbox Software",
   "series": "starter",
+  "hero": "MARA",
   "year": 1994,
   "price": "Free",
   "version": "1.0",
@@ -23,7 +24,7 @@
     "accent": "#ffd23f",
     "ink": "#ffffff",
     "tagline": "Every door goes somewhere.",
-    "back": "A small explorer in a teal beanie walks out of one room and into the next. First a door, then an open archway, then a house with doors that go there and back, and last a fork with two doors to choose from. Read the signs, then open the game in Game-Maker and move where a door lands.",
+    "back": "A small explorer in a green beanie walks out of one room and into the next. First a door, then an open archway, then a house with doors that go there and back, and last a fork with two doors to choose from. Read the signs, then open the game in Game-Maker and move where a door lands.",
     "features": [
       "Signs in the rooms explain each idea",
       "A door is a link: touch it, and you arrive in another room",

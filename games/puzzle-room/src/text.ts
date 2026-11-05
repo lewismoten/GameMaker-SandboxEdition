@@ -8,7 +8,7 @@ export const STORY = wrap(`
 
 A bridge that is not there yet, and a lever or two that might build it.
 
-A small explorer in a teal beanie has two short levels to cross. In the first, two levers share one bridge. In the second there are three levers, and one of them is not for the bridge at all.
+A small explorer in a blue beanie has two short levels to cross. In the first, two levers share one bridge. In the second there are three levers, and one of them is not for the bridge at all.
 
 Read the signs. Nothing in a room is joined to anything else. Levers and planks and the hatch only share counters.
 

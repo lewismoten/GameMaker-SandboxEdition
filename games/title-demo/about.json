@@ -3,6 +3,7 @@
   "author": "Claude",
   "company": "Sandbox Software",
   "series": "starter",
+  "hero": "LIAN",
   "year": 1994,
   "price": "Free",
   "version": "1.0",
@@ -23,7 +24,7 @@
     "accent": "#ffd23f",
     "ink": "#ffffff",
     "tagline": "Make the first thing they see.",
-    "back": "A small explorer in a teal beanie has two short levels about a game's title. In the first the pictures of the title scene come up, with the menu picture the game writes its words on. In the second a demo that plays itself is taken apart, key by key. Read the signs, then open the game in Game-Maker and make a title of your own.",
+    "back": "A small explorer in a blue beanie has two short levels about a game's title. In the first the pictures of the title scene come up, with the menu picture the game writes its words on. In the second a demo that plays itself is taken apart, key by key. Read the signs, then open the game in Game-Maker and make a title of your own.",
     "features": [
       "The title scene's slots, and the picture behind the menu",
       "A demo that plays itself, and the most it can hold",

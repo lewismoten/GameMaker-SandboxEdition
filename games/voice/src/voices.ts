@@ -3,7 +3,7 @@
 // not recordings of anyone. To use your own, record 8-bit mono at 11 kHz into a .VOC file
 // with the same name; the game does not care what is in it.
 //
-//   hello   Kit's "hello", two short syllables (about 0.7 s)
+//   hello   Lena's "hello", two short syllables (about 0.7 s)
 //   welcome the first speaker's line, a bright greeting (about 1.9 s)
 //   deeper  the second speaker's line, lower and slower (about 2.0 s)
 //   bye     the last speaker's goodbye (about 2.4 s)

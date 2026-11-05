@@ -5,7 +5,7 @@
 //      pay 100; each becomes a blinking "100" that rises and is gone.
 //   2. Its Own Picture: a gem pays 200 and a box 500, each with a number picture of its own. Then
 //      the mistake: a coin whose number has no way to leave, so it blinks there for good. The last coin is right.
-// Both rooms are closed in by brick walls you can see, and nothing blocks Kit.
+// Both rooms are closed in by brick walls you can see, and nothing blocks Yana.
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
@@ -63,7 +63,7 @@ function scenery(g: Grid, clouds: [number, number][], bushes: number[], flowers:
   for (const x of flowers) g.put(x, GROUND - 1, 'f');
 }
 
-/** Where the prizes hang: on the ground row, or at Kit's head (a prize there is touched just by walking). */
+/** Where the prizes hang: on the ground row, or at Yana's head (a prize there is touched just by walking). */
 export const HEAD = STAND - 1;
 export const L1_COINS: [number, number][] = [
   [18, STAND],
@@ -124,7 +124,7 @@ function itsOwn(book: Book, signs: Record<SignName, Sign>): StarterMap {
 
 /** The levels in order. */
 export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
-  const pal = buildStarterPalette();
+  const pal = buildStarterPalette(undefined, 'popups');
   const { book, signs } = buildBlocks(pal);
   const levels: Level[] = [
     { file: 'one', title: 'A Number Appears', hint: 'A prize can leave a number.', map: aNumber(book, signs) },

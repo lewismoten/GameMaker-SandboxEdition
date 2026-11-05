@@ -1,5 +1,5 @@
 // THREE PHASES' monsters. The kit's gumdrop 0, buzzer 1 and shelly 2 stay in the file (unused), then:
-//   STAR      the friendly gold star Kit throws (hero.ts): power 200, so it beats every monster it touches
+//   STAR      the friendly gold star Neka throws (hero.ts): power 200, so it beats every monster it touches
 //   TWINKLE   the sparkle a star leaves behind
 //   level 1   four stages: calm, calm, hurried, hurried
 //   level 2   five stages: calm, calm, hurried, hurried, tiny
@@ -9,7 +9,7 @@
 // picture and its path, a back-and-forth walk along the tunnel, to the left and right of where it stands (a calm one is slow and short, a hurried one
 // quick and long, the tiny one quickest). The next stage's walk starts from where the last one fell, so a
 // boss that walks drifts a little. Every stage is solid on every side, stings a little, and has power 150: a
-// touch from Kit cannot kill it (100 or more), but a star (200) can. Each hit scores 20.
+// touch from Neka cannot kill it (100 or more), but a star (200) can. Each hit scores 20.
 import { SOLBOT, SOLLEF, SOLRIG, SOLTOP, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import type { Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { corner, mon } from '@lewismoten/gamemaker-sandbox-tools/kit/actors';
@@ -40,7 +40,7 @@ export const WALK: Record<Look, { run: number; speed: number }> = {
   tiny: { run: 2, speed: 5 },
 };
 
-/** What the bug takes off Kit's hit points when he walks into it. */
+/** What the bug takes off Neka's hit points when she walks into it. */
 export const STING = 1;
 /** Pixels a star flies a tick, and how many ticks it flies: the range is the product, about 9 blocks. */
 export const STAR_SPEED = 4;
@@ -108,7 +108,7 @@ export function monsterSet(mb: Book): Monster[] {
     [mb.n(`${name}0`), t],
     [mb.n(`${name}1`), t],
   ];
-  // flies toward where Kit was last walking, and dies when it hits something or when its lifetime (end, in ticks) is over
+  // flies toward where Neka was last walking, and dies when it hits something or when its lifetime (end, in ticks) is over
   set[STAR] = mon(anim('star', 2), { power: 200, thru: 1, towards: STAR_SPEED, end: STAR_LIFE, newmon: TWINKLE });
   set[TWINKLE] = mon(anim('twinkle', 3), { power: 150, thru: 1, end: 9 });
   // a star kills a stage and it becomes the next; the last becomes the puff. Each walks its look's path

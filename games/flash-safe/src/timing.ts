@@ -6,7 +6,7 @@
 
 /** Level 1: how long a hit's picture (the shaken thorns, the number) stays before it can hit again. */
 export const HIT_SHOWN = 36;
-/** Hit points a thorn bush takes, and the points Kit starts with. */
+/** Hit points a thorn bush takes, and the points Lami starts with. */
 export const THORN_HURT = -5;
 export const HERO_HIT_POINTS = 50;
 

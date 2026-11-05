@@ -1,4 +1,4 @@
-// COLORS THAT WORK's own title picture, in the Telling a Story look (the stage): Kit, a red plate, a green
+// COLORS THAT WORK's own title picture, in the Telling a Story look (the stage): Yana, a red plate, a green
 // plate, a light striped plate and a spike, in a row on the floor, and the exit door.
 import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { scaleBlit } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
@@ -9,7 +9,7 @@ import type { Book } from '../../kit/starter/book';
 import { W } from '../../kit/starter/screens';
 import { backdrop, frameOf, lookOf } from '../../kit/starter/titleStyles';
 
-/** The title in the stage look: the name, a ribbon, then Kit, four plates in a row and the door. */
+/** The title in the stage look: the name, a ribbon, then Yana, four plates in a row and the door. */
 export function titlePicture(pal: Pal, book: Book, hero: Pixels, door: Pixels, name: string, tagline: string): Pixels {
   const look = lookOf(pal, 'stage');
   const p = backdrop(pal, 'stage');

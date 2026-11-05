@@ -37,7 +37,7 @@
     },
     {
       "head": "How this level is made",
-      "html": "<h1>How level 1 is made</h1><ul><li><b>The gap.</b> Open <b>one.map</b> in the map editor. The ground is <b>grass</b> over <b>dirt</b>. Take away the top two rows of ground for three blocks, and what is left at the bottom is a new floor of <b>grass</b>. A gap is only missing blocks.</li><li><b>Why it is safe.</b> The floor is two blocks down, and Kit can jump two blocks (he jumps a brick wall that tall in <b>Your First Game</b>), so there is always a way out. Check this when you make a gap of your own: can he get out of it?</li><li><b>The coin.</b> It sits on the gap&rsquo;s floor. It is a reward for trying the safe way, and the player who jumps over simply passes it.</li><li><b>The signs.</b> A sign is a few ordinary blocks with words drawn on them. The first one names the step (teach), the second one says it is safe. Words on the screen teach better than a long page.</li></ul>"
+      "html": "<h1>How level 1 is made</h1><ul><li><b>The gap.</b> Open <b>one.map</b> in the map editor. The ground is <b>grass</b> over <b>dirt</b>. Take away the top two rows of ground for three blocks, and what is left at the bottom is a new floor of <b>grass</b>. A gap is only missing blocks.</li><li><b>Why it is safe.</b> The floor is two blocks down, and Lena can jump two blocks (she jumps a brick wall that tall in <b>Your First Game</b>), so there is always a way out. Check this when you make a gap of your own: can she get out of it?</li><li><b>The coin.</b> It sits on the gap&rsquo;s floor. It is a reward for trying the safe way, and the player who jumps over simply passes it.</li><li><b>The signs.</b> A sign is a few ordinary blocks with words drawn on them. The first one names the step (teach), the second one says it is safe. Words on the screen teach better than a long page.</li></ul>"
     },
     {
       "head": "Level 2: Test",
@@ -45,7 +45,7 @@
     },
     {
       "head": "How this level is made",
-      "html": "<h1>How level 2 is made</h1><ul><li><b>The same gap.</b> Open <b>two.map</b>. The first gap is the same size as in level 1. The idea has not changed, only what is at the bottom.</li><li><b>The spikes.</b> In <b>ttt.bbl</b> pick <b>spikeUp</b>. Its <b>Hit points</b> is &minus;10 and <b>Becomes block</b> is <b>spikeFlat</b>, so a spike hurts once and then lies down. Kit starts with 50 hit points: open <b>hero.chr</b> and look at the first counter. The <b>Watch Your Step</b> Starter goes further.</li><li><b>A wider gap.</b> Make the gap one block wider and the same jump now needs a run. Play after each change, and stop when it takes a good jump but not a perfect one.</li><li><b>Danger you can see.</b> The spikes are drawn on the floor of the gap in plain sight. A player should be able to look at the screen and know what will hurt.</li></ul>"
+      "html": "<h1>How level 2 is made</h1><ul><li><b>The same gap.</b> Open <b>two.map</b>. The first gap is the same size as in level 1. The idea has not changed, only what is at the bottom.</li><li><b>The spikes.</b> In <b>ttt.bbl</b> pick <b>spikeUp</b>. Its <b>Hit points</b> is &minus;10 and <b>Becomes block</b> is <b>spikeFlat</b>, so a spike hurts once and then lies down. Lena starts with 50 hit points: open <b>hero.chr</b> and look at the first counter. The <b>Watch Your Step</b> Starter goes further.</li><li><b>A wider gap.</b> Make the gap one block wider and the same jump now needs a run. Play after each change, and stop when it takes a good jump but not a perfect one.</li><li><b>Danger you can see.</b> The spikes are drawn on the floor of the gap in plain sight. A player should be able to look at the screen and know what will hurt.</li></ul>"
     },
     {
       "head": "Level 3: Twist",
@@ -61,7 +61,7 @@
     },
     {
       "head": "Make it yours",
-      "html": "<h1>Make it yours</h1><p>Open the game with <b>Edit a copy</b>, so the original stays safe. Then make one change at a time, and play after each.</p><ol><li><b>Change the words.</b> Open <b>ttt.bbl</b> in the blocks editor, pick a sign block (they are named like <b>teach.sign</b>) and change its words.</li><li><b>Make the gap wider.</b> In <b>one.map</b> take away more ground. Can Kit still jump it?</li><li><b>Pick another idea.</b> Instead of a gap, try a spring, a switch or a monster from another Starter. Make one level that teaches it safely, one that tests it, and one that twists it.</li><li><b>Make the twist your own.</b> What if the gap had a ladder? A coin you could only get from below? A door at the bottom?</li></ol>"
+      "html": "<h1>Make it yours</h1><p>Open the game with <b>Edit a copy</b>, so the original stays safe. Then make one change at a time, and play after each.</p><ol><li><b>Change the words.</b> Open <b>ttt.bbl</b> in the blocks editor, pick a sign block (they are named like <b>teach.sign</b>) and change its words.</li><li><b>Make the gap wider.</b> In <b>one.map</b> take away more ground. Can Lena still jump it?</li><li><b>Pick another idea.</b> Instead of a gap, try a spring, a switch or a monster from another Starter. Make one level that teaches it safely, one that tests it, and one that twists it.</li><li><b>Make the twist your own.</b> What if the gap had a ladder? A coin you could only get from below? A door at the bottom?</li></ol>"
     }
   ]
 }

@@ -45,7 +45,7 @@ export interface Room {
   map: StarterMap;
   /** Blocks that take the hero away when touched, by name. */
   exits: Record<string, Spot>;
-  /** Blocks the hero stands on when he comes in, by name. */
+  /** Blocks the hero stands on when she comes in, by name. */
   ways: Record<string, Spot>;
 }
 
@@ -325,7 +325,7 @@ export const CARDS: (Card & { before?: string; after?: string })[] = [
 
 /** The rooms in scene order (scene 2 on), the cards and the pal and blocks they share. */
 export function buildLevels(): { book: Book; pal: Pal; rooms: Room[] } {
-  const pal = buildStarterPalette();
+  const pal = buildStarterPalette(undefined, 'room-to-room');
   const { book, signs } = buildBlocks(pal);
   const rooms = [start, inside, hall, kitchen, bedroom, fork, garden, attic].map((f) => f(book, signs));
   return { book, pal, rooms };

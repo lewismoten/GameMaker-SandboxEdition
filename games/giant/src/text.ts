@@ -23,7 +23,7 @@ export const HOWTO = wrap(`
 |ENTER         throw a star
 |F2            lives, score
 
-A star flies level with Kit's hand: from the ground it reaches the bottom of a giant. Stand on the step to reach its head.
+A star flies level with Rima's hand: from the ground it reaches the bottom of a giant. Stand on the step to reach its head.
 
 In level 2 a hit part blinks red and a star goes right through it. Wait for it to stop.
 

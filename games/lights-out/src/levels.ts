@@ -2,8 +2,8 @@
 //
 //   1. The Lantern Cave: three lamps that never move. Every cell near a lamp is laid with a brighter block of its kind
 //      (air, rock, floor, stalactites), in rings: shade 4 beside the lamp, 3, 2, 1, then 0, the dark everything else is.
-//   2. Light Your Way: a dark tunnel. Each dark air block turns into a lit one when Kit touches it, so light is
-//      left where he has been (a touch changes only the block touched, so it is a trail, not a lantern he carries).
+//   2. Light Your Way: a dark tunnel. Each dark air block turns into a lit one when Mia touches it, so light is
+//      left where she has been (a touch changes only the block touched, so it is a trail, not a lantern she carries).
 //   3. The Lights Come On: the same rings as level 1, but the hall starts as shade 0 everywhere. Every block that should
 //      be brighter has a dark twin, drawn as shade 0, that turns into it after the same number of ticks: the engine's
 //      one clock for a block changes every cell of it at once, so the whole hall lights in a single tick. Six bulbs
@@ -45,7 +45,7 @@ export interface Level {
 const WORDS = {
   shades: 'FIVE SHADES OF ONE BLOCK',
   rings: 'RINGS GET DARKER AWAY FROM A LAMP',
-  fixed: 'THE LAMP STAYS PUT. KIT WALKS ON.',
+  fixed: 'THE LAMP STAYS PUT. MIA WALKS ON.',
   touch: 'TOUCH A DARK BLOCK AND IT LIGHTS',
   jump: 'A JUMP LIGHTS BLOCKS HIGHER UP',
   trail: 'LIGHT STAYS WHERE YOU WALKED',

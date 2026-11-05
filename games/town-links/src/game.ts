@@ -1,9 +1,9 @@
 // townlink.gam: scene 0 is the title and menu, scene 1 the endings, scene 2 the world map, scene 3 the town and
-// scene 4 the house. Each scene loads its own map file; the world also loads its own tiny Kit (character and blocks),
+// scene 4 the house. Each scene loads its own map file; the world also loads its own tiny Yana (character and blocks),
 // the town and the house the full-size one. A scene lists the files it loads in slots (palette, map, blocks, monsters,
 // monster blocks, character, character blocks, sounds, song, a card before it, a card after it) and carries its links:
 // touch the From block here and you are in the To scene, standing on the To cell. Every scroll is on, so the screen
-// follows Kit from wherever the To cell puts him.
+// follows Yana from wherever the To cell puts her.
 import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, newGame, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import {
   HOUSE_EXIT,

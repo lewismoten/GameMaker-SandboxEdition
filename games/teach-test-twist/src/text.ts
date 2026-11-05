@@ -6,7 +6,7 @@ import about from '../about.json';
 export const STORY = wrap(`
 |TEACH, TEST, TWIST
 
-A small explorer in a teal beanie has three tiny rooms to cross.
+A small explorer in a red beanie has three tiny rooms to cross.
 
 Each room has the same thing in it: a gap in the ground.
 

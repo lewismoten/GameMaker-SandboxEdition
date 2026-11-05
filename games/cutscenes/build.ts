@@ -90,7 +90,7 @@ intro('tale2', 'TALE TWO', 'THE LONG WAY ROUND', 'THE LONG WAY ROUND', TALE_TWO,
 disk.put('hall.lst', serializeSlideList([{ name: 'hall.gif', pause: 3 }]));
 
 disk.put('title.gif', gif(titlePicture(pal, book, hero, TITLE, 'A STARTER GAME'), pal));
-disk.put(STARTER_STING, starterStingFli());
+disk.put(STARTER_STING, starterStingFli('cutscenes'));
 disk.put(
   'title.lst',
   serializeSlideList([

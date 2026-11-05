@@ -120,7 +120,7 @@ intro('two', [
 ]);
 
 disk.put('title.gif', gif(titlePicture(pal, book, hero, TITLE, 'A STARTER GAME'), pal));
-disk.put(STARTER_STING, starterStingFli());
+disk.put(STARTER_STING, starterStingFli('title-demo'));
 disk.put(
   'title.lst',
   serializeSlideList([

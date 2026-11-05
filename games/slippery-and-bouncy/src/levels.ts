@@ -172,7 +172,7 @@ export const SHELF_COINS = [29, 30] as const;
 
 /** The levels in order. */
 export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
-  const pal = buildStarterPalette();
+  const pal = buildStarterPalette(undefined, 'slippery-and-bouncy');
   const { book, signs } = buildBlocks(pal);
   const levels: Level[] = [
     { file: 'one', title: 'Ice', hint: 'Ice keeps you sliding.', map: iceLevel(book, signs) },

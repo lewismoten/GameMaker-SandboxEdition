@@ -1,5 +1,5 @@
 // TO THE HORIZON's own title picture: the road itself, with a ball at each of its four sizes
-// coming down the left lane, and Kit cheering on the near road.
+// coming down the left lane, and Lami cheering on the near road.
 import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { scaleBlit } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 import { bevel } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';

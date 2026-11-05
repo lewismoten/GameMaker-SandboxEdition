@@ -1,6 +1,6 @@
 // SHOW THE COUNT's own blocks, added to the Starter block set before the signs:
 //   bulbOff   a dark bulb in a little socket: touch it and counter 22 goes up by one, and the bulb
-//             turns into bulbOn (passable both ways, so Kit walks through)
+//             turns into bulbOn (passable both ways, so Lena walks through)
 //   bulbOn    the same bulb lit and glowing. It stays: a row of them is the meter
 //   gateFive  a stout gate with five empty slots: solid, and a touch takes 5 off counter 22. With
 //             fewer than 5 the touch is refused and the gate stays shut; with 5 it becomes sky.

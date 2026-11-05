@@ -10,7 +10,7 @@ A little stage stands in a meadow, with a red curtain on each side.
 
 Two friends wait behind the curtains. When the level starts, their play starts: they peek out, walk in, say hello to each other, and walk off.
 
-A small explorer in a teal beanie wants to watch.
+A small explorer in a gold beanie wants to watch.
 
 The play does not wait for anyone. Be there when the curtain moves, or use the encore door.
 

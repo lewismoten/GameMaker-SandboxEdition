@@ -42,7 +42,7 @@ export interface Room {
   title: string;
   /** Blocks that take the hero away when touched, by name. */
   exits: Record<string, Spot>;
-  /** The cell the hero lands on (his feet), which is also the middle of the screen. */
+  /** The cell the hero lands on (her feet), which is also the middle of the screen. */
   landing: Spot;
 }
 
@@ -222,7 +222,7 @@ export const HUB_COINS = { from: 20, to: 22, row: FLOOR - 1 };
 
 /** The maps, the rooms in scene order (scene 2 on), and the pal and blocks they share. */
 export function buildLevels(): { book: Book; pal: Pal; levels: MapFile[]; rooms: Room[] } {
-  const pal = buildStarterPalette();
+  const pal = buildStarterPalette(undefined, 'many-rooms');
   const { book, signs } = buildBlocks(pal);
   const one = mapOne(book, signs);
   const two = mapTwo(book, signs);

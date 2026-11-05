@@ -232,6 +232,6 @@ function loopLevel(pal: Pal): Level {
 
 /** The palette and the levels in order. */
 export function buildLevels(): { pal: Pal; levels: Level[] } {
-  const pal = buildStarterPalette();
+  const pal = buildStarterPalette(undefined, 'beat-the-clock');
   return { pal, levels: [race(pal), loopLevel(pal)] };
 }

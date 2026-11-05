@@ -8,7 +8,7 @@ export const STORY = wrap(`
 
 A level can have two planes: a near one, big and clear, and a far one, small and pale. A trail takes you from one to the other.
 
-A small explorer in a teal beanie steps into the distance, walks about in the far plane, and comes back. Then a cliff blocks his way, and the far plane has no cliff.
+A small explorer in a green beanie steps into the distance, walks about in the far plane, and comes back. Then a cliff blocks her way, and the far plane has no cliff.
 
 Read the signs. Then open this game in Game-Maker and change where a trail lands.
 `);

@@ -53,11 +53,11 @@
   "pages": [
     {
       "head": "Welcome",
-      "html": "<h1>Welcome</h1><p><b>Out Loud</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has three short levels and takes a few minutes to finish.</p><p>Play it first, with a Sound Blaster set up so the voices play. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each thing in the levels is made.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. <kbd>Space</kbd> jumps. <kbd>Enter</kbd> makes Kit say hello. <kbd>F2</kbd> shows your lives, hit points and score. Walk into the door at the end of a level to go on.</p><p>Nothing in this game can hurt you. The voices are hums made in code, not recordings of anyone.</p>"
+      "html": "<h1>Welcome</h1><p><b>Out Loud</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has three short levels and takes a few minutes to finish.</p><p>Play it first, with a Sound Blaster set up so the voices play. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each thing in the levels is made.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. <kbd>Space</kbd> jumps. <kbd>Enter</kbd> makes Lena say hello. <kbd>F2</kbd> shows your lives, hit points and score. Walk into the door at the end of a level to go on.</p><p>Nothing in this game can hurt you. The voices are hums made in code, not recordings of anyone.</p>"
     },
     {
       "head": "Level 1: Say Hello",
-      "html": "<h1>Level 1: Say Hello</h1><p><b>PRESS ENTER AND KIT SAYS HELLO</b> comes first. Press <kbd>Enter</kbd> and Kit throws his arms up and says it. <b>A KEY CAN PLAY A SOUND</b> comes next, then three coins. <b>ENTER AGAIN AND THE VOICE RESTARTS</b> stands before three more coins and the door: press <kbd>Enter</kbd> while Kit is still talking and the hello begins again from the start.</p><p>There are six coins, ten points each.</p>"
+      "html": "<h1>Level 1: Say Hello</h1><p><b>PRESS ENTER AND LENA SAYS HELLO</b> comes first. Press <kbd>Enter</kbd> and Lena throws her arms up and says it. <b>A KEY CAN PLAY A SOUND</b> comes next, then three coins. <b>ENTER AGAIN AND THE VOICE RESTARTS</b> stands before three more coins and the door: press <kbd>Enter</kbd> while Lena is still talking and the hello begins again from the start.</p><p>There are six coins, ten points each.</p>"
     },
     {
       "head": "How this level is made",
@@ -77,7 +77,7 @@
     },
     {
       "head": "How this level is made",
-      "html": "<h1>How level 3 is made</h1><ul><li><b>The speaker.</b> It is the same <b>speaker</b> block as level 2, but this level uses <b>vo3.snd</b>, where sound 7 names <b>BYE.VOC</b> instead. A level picks its sound set, so one block can say different things in different levels.</li><li><b>The cut.</b> When the game goes to another scene it frees the voice that is playing, and the new scene may start another. So the last line of a level has to finish first. Kit walks about three and a half blocks a second, so twenty blocks takes him over five seconds, and the goodbye lasts about two and a half.</li><li><b>Do the sum.</b> Divide the clip's length by how fast the hero moves to know how far the speaker must stand from the door. The Level check does not do this for you.</li></ul>"
+      "html": "<h1>How level 3 is made</h1><ul><li><b>The speaker.</b> It is the same <b>speaker</b> block as level 2, but this level uses <b>vo3.snd</b>, where sound 7 names <b>BYE.VOC</b> instead. A level picks its sound set, so one block can say different things in different levels.</li><li><b>The cut.</b> When the game goes to another scene it frees the voice that is playing, and the new scene may start another. So the last line of a level has to finish first. Lena walks about three and a half blocks a second, so twenty blocks takes her over five seconds, and the goodbye lasts about two and a half.</li><li><b>Do the sum.</b> Divide the clip's length by how fast the hero moves to know how far the speaker must stand from the door. The Level check does not do this for you.</li></ul>"
     },
     {
       "head": "What it cannot do",

@@ -6,7 +6,7 @@
 //      orange bug that runs a longer way, quicker. Touching it only stings a little.
 //   2. A Third Face: the same tunnel, five hits: calm, calm, hurried, hurried, and for the last hit a
 //      tiny quick bug with a bow. When it falls the way opens.
-// Both rooms are closed in by brick walls you can see, so Kit is never stopped by something he can't.
+// Both rooms are closed in by brick walls you can see, so Neka is never stopped by something she can't.
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
@@ -121,7 +121,7 @@ function aThirdFace(book: Book, signs: Record<SignName, Sign>): StarterMap {
 
 /** The levels in order. */
 export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
-  const pal = buildStarterPalette();
+  const pal = buildStarterPalette(undefined, 'boss-phases');
   const { book, signs } = buildBlocks(pal);
   const levels: Level[] = [
     { file: 'one', title: 'Half Way', hint: 'Watch it change.', map: halfWay(book, signs) },

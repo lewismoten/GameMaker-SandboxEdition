@@ -9,7 +9,7 @@
 //      the third door ends the game.
 //
 // The tales are scenes too, but they are not levels: they load a stage map without signs.
-// Both rooms are closed in by brick you can see, so Kit is never stopped by something he can't.
+// Both rooms are closed in by brick you can see, so Mara is never stopped by something she can't.
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { Book, PULL, SOLID } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
@@ -138,7 +138,7 @@ function menu(book: Book, signs: Record<string, Sign>): StarterMap {
 
 /** The palette, the shared block set (with its timed blocks) and the scenes in order (scene 2 is the first). */
 export function buildLevels(): { pal: Pal; book: Book; timed: Timed[]; scenes: Scene[] } {
-  const pal = buildStarterPalette();
+  const pal = buildStarterPalette(undefined, 'cutscenes');
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
   const signs: Record<string, Sign> = {};

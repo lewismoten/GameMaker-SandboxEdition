@@ -8,7 +8,7 @@ export const STORY = wrap(`
 
 Some bosses change halfway through a fight.
 
-A small explorer in a teal beanie has a pocketful of gold stars. Two short levels, and Big Bug paces a long tunnel in each.
+A small explorer in a gold beanie has a pocketful of gold stars. Two short levels, and Big Bug paces a long tunnel in each.
 
 Read the signs. Hit it twice and it turns quicker. In the second level the last hit brings a tiny new face.
 

@@ -1,11 +1,11 @@
 // FOLLOW ME's monster. The kit's gumdrop 0, buzzer 1 and shelly 2 stay in the file (unused), then:
 //   PUFF  a small cream pup with a floppy ear and little white wings. It is not solid and hurts nobody.
 //         Its Movement is "toward the hero" (`towards`), so every tick it moves a little in a
-//         straight line to where Kit is. It is slower than Kit, so it falls behind when he runs.
+//         straight line to where Lena is. It is slower than Lena, so it falls behind when she runs.
 // What the engine does (code/GM/PLAYGAME.C ~line 3035): a monster whose `towards` is 1 to 63 aims at
 // the hero's position every tick and moves that many steps (negative runs away). With `thru` set it
 // is stopped by a solid block in its way, on that one side only, and slides on along the other.
-// It plans no route: a wall between it and Kit just stops it.
+// It plans no route: a wall between it and Lena just stops it.
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { outline } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 import { blob } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
@@ -18,11 +18,11 @@ import type { Pal } from '../../kit/starter/palette';
 
 /** The monster number this game adds after the kit's gumdrop 0, buzzer 1 and shelly 2. */
 export const PUFF = 3;
-/** Powers: 100 or more cannot be popped by touching Kit. */
+/** Powers: 100 or more cannot be popped by touching Lena. */
 export const POWER = 110;
-/** Hit points Kit starts with (nothing in this game takes any, but Game-Maker wants a number). */
+/** Hit points Lena starts with (nothing in this game takes any, but Game-Maker wants a number). */
 export const HERO_HIT_POINTS = 50;
-/** How fast Puff flies toward Kit (the Movement setting; Kit walks faster than this). */
+/** How fast Puff flies toward Lena (the Movement setting; Lena walks faster than this). */
 export const PUFF_SPEED = 2;
 
 const T = 255;

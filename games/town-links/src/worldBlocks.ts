@@ -1,9 +1,9 @@
 // The blocks this game adds to the overhead set: the WORLD MAP's art (a block there stands for a great stretch of land,
-// so a whole town is one block and a forest is a few tiny trees), a small key, the town's locked gate, and a tiny Kit.
+// so a whole town is one block and a forest is a few tiny trees), a small key, the town's locked gate, and a tiny Yana.
 // Scale is only what a block is drawn to mean: every block is still 20 x 20 pixels.
 //
 //   world: sea (solid), land (with sandy shores where it meets the sea), hill and forest (solid), trail, the town block, key
-//   town:  gate (solid until Kit carries a key)
+//   town:  gate (solid until Yana carries a key)
 import type { Character } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { Book, SOLID } from '../../kit/starter/book';
@@ -14,7 +14,7 @@ import { buildTopHero } from '../../kit/starter/topHero';
 import { skyOf } from '../../kit/starter/palette';
 
 const N = 20;
-/** The counter the keys add to (and the gate takes from). Kit starts with 1: a counter shows one less than it holds. The keys add 2: a map reloads when you come back to it, so the gate is shut again after the house and needs a second key to leave the yard. */
+/** The counter the keys add to (and the gate takes from). Yana starts with 1: a counter shows one less than it holds. The keys add 2: a map reloads when you come back to it, so the gate is shut again after the house and needs a second key to leave the yard. */
 export const KEY_COUNTER = KEYS + 1;
 
 /** Shore bits: which neighbors of a land block are sea. */
@@ -140,7 +140,7 @@ function worldKey(pal: Pal, land: Pixels): Pixels {
   return p;
 }
 
-/** The yard gate in the town: a wooden gate in the fence line, with a padlock; solid until Kit carries a key. */
+/** The yard gate in the town: a wooden gate in the fence line, with a padlock; solid until Yana carries a key. */
 function gateTile(pal: Pal, under: Pixels): Pixels {
   const ink = pal.c('ink', 0);
   const w = pal.r('wood');
@@ -182,12 +182,12 @@ export function addWorldBlocks(book: Book, pal: Pal, townGround: Pixels): { land
   return { land };
 }
 
-// ---- tiny Kit: the same four facings, drawn about half the size, standing in the lower middle of the block ----
+// ---- tiny Yana: the same four facings, drawn about half the size, standing in the lower middle of the block ----
 
 const FACINGS = ['down', 'up', 'right', 'left'] as const;
 const STEPS = ['0', '1', 'stand'] as const;
 
-/** Kit's hero blocks for the world map: each top-down pose shrunk to 10 x 10 (every other pixel) and set low in the block. */
+/** Yana's hero blocks for the world map: each top-down pose shrunk to 10 x 10 (every other pixel) and set low in the block. */
 export function buildTinyHeroBlocks(pal: Pal, big: Book): Book {
   const book = new Book('cbl');
   for (const f of FACINGS)
@@ -196,7 +196,7 @@ export function buildTinyHeroBlocks(pal: Pal, big: Book): Book {
       const p = new Pixels(N, N, 255);
       for (let y = 0; y < 10; y++)
         for (let x = 0; x < 10; x++) {
-          // of each 2 x 2 patch, the pixel that is not background; the darkest outline wins so he stays readable
+          // of each 2 x 2 patch, the pixel that is not background; the darkest outline wins so she stays readable
           let best = 255;
           for (const [dx, dy] of [
             [0, 0],
@@ -214,14 +214,14 @@ export function buildTinyHeroBlocks(pal: Pal, big: Book): Book {
   return book;
 }
 
-/** The tiny Kit's character: the top-down Kit's keys and walking, with these small pictures. Both characters carry a key counter of 1. */
+/** The tiny Yana's character: the top-down Yana's keys and walking, with these small pictures. Both characters carry a key counter of 1. */
 export function buildTinyHero(cb: Book): Character {
   const ch = buildTopHero(cb);
   ch.meter[KEY_COUNTER] = 1;
   return ch;
 }
 
-/** The town Kit's character: the top-down Kit, with a key counter that starts at 1. */
+/** The town Yana's character: the top-down Yana, with a key counter that starts at 1. */
 export function buildTownHero(cb: Book): Character {
   const ch = buildTopHero(cb);
   ch.meter[KEY_COUNTER] = 1;

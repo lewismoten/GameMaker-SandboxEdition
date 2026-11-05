@@ -11,6 +11,8 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Added
 
+- The Starters have eight more explorers beside Kit: Mia, Lena, Mara, Lian, Yana, Neka, Rima and Lami (the last three are aliens), the same character in other colors. Kit leads the first game of each group; the helpers lead the rest in turn, name themselves in the games' text and have their own cards on the Cast page. The slim top-down Kit is narrower, with a bigger head.
+
 - A new Starter, Beams and Fog: light and fog painted in dots. Level 1 is a dark hall with three lamps, a solid beam that hides the bricks, a checkerboard beam that lets them show and one in three densities that fades at its edge. Level 2 is a valley of hills in solid fog and then dithered fog, thicker the farther away, with banks of fog that drift. Level 3 has three floating lanterns with a solid halo, a checkerboard halo and rings of halo. Its pages say how each is made, with the frames enlarged.
 - The Starters tab marks each Starter you played to its ending with a Done check over its picture, counts them in each group ("4 of 9 done"), and has a Show picker for All Starters, Not done yet or Done. It is kept in this browser.
 - The map editor can generate a layout: Generate offers four real previews of a dungeon (rooms and corridors) or a forest (trees, clearings and a winding path) drawn with the blocks you marked in the Uses tab, for the whole map or the selection, with a seed to repeat one. It says what is missing and links to the Uses tab, and one Undo takes a layout back. The block palette also has a Show filter to list only the blocks that are walls, floors, trees and so on.

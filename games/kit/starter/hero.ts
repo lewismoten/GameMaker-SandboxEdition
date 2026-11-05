@@ -6,43 +6,79 @@ import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
 import { outline } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 import { Book } from './book';
+import { kitRamp } from './heroLook';
 import type { Pal } from './palette';
 
 const T = 255;
 
-type Face = 'smile' | 'blink' | 'ouch' | 'cheer' | 'oh' | 'back';
+export type Face = 'smile' | 'blink' | 'ouch' | 'cheer' | 'oh' | 'back' | 'dizzy';
 
-/** The hero's head and beanie, 20x20, in side-on three-quarter view (`front` looks at you). */
-function head(pal: Pal, face: Face, front = false, look = 0, raised: 'left' | 'right' | 'both' | '' = ''): Pixels {
+/** One row of a shape, from x0 to x1. */
+const span = (p: Pixels, y: number, x0: number, x1: number, c: number) => p.rect(x0, y, x1 - x0 + 1, 1, c);
+
+/** The hero's head and beanie, 20x20, in side-on three-quarter view (`front` looks at you, or away from you). */
+export function head(pal: Pal, face: Face, front = false, look = 0, raised: 'left' | 'right' | 'both' | '' = ''): Pixels {
   const { c, r } = pal;
   const p = new Pixels(20, 20, T);
-  const skin = r('skin');
-  const teal = r('teal');
+  const skin = kitRamp(pal, 'skin');
+  const hat = kitRamp(pal, 'hat');
   const white = r('white');
-  const hair = r('hair');
-  // hair behind, then the round face
-  blob(p, front ? 10 : 7, 11, 4, 4, hair, 0, 2);
-  blob(p, 10, 12, 8.6, 8, skin, 0, 3);
+  const hair = kitRamp(pal, 'hair');
+  const hood = kitRamp(pal, 'hood');
+  // the hood hangs behind the neck, so the head sits in front of it
+  if (front) p.rect(3, 16, 14, 4, hood[2]).rect(3, 16, 14, 1, hood[4]);
+  else p.rect(3, 18, 11, 2, hood[1]).rect(4, 18, 9, 1, hood[2]);
+  // hair behind and at the sides, then the round face a little forward of it
+  blob(p, front ? 10 : 6, 12, front ? 8.2 : 5, 6, hair, 0, 2);
+  blob(p, front ? 10 : 11, 12, front ? 8.2 : 7.4, 7.6, skin, 0, 3);
   // seen from behind (climbing): hair all down the back of the head, and no face
   if (face === 'back') blob(p, 10, 13, 8.2, 7.2, hair, 0, 2);
-  // the beanie: a knit dome over the top of the head, a ribbed cuff and a pom-pom
-  const dome = new Pixels(20, 20, T);
-  blob(dome, 10, 9, 9.4, 6.4, teal, 0, 4);
-  for (let y = 0; y < 10; y++) for (let x = 0; x < 20; x++) if (dome.get(x, y) !== T) p.set(x, y, dome.get(x, y));
-  // knit ribs down the dome
-  for (const x of front ? [6, 10, 14] : [8, 12, 16]) p.rect(x, 4, 1, 4, teal[2]);
-  const cx = front ? 3 : 8;
-  const cw = front ? 14 : 11;
-  p.rect(cx, 8, cw, 3, teal[3]).rect(cx, 8, cw, 1, teal[4]).rect(cx, 10, cw, 1, teal[2]);
-  for (let x = cx + 1; x < cx + cw; x += 2) p.set(x, 9, teal[2]);
-  p.disc(10, 4, 3.5, teal[1]).disc(10, 4, 3, white[3]).rect(11, 5, 2, 2, white[2]).set(12, 4, white[2]).set(8, 3, white[2]).set(9, 2, white[2]);
+  // the beanie: a knit cap that tapers to a slouchy top, a ribbed cuff folded up around it, and a fuzzy pom-pom on top
+  const lean = front ? 0 : 2;
+  const rows: [number, number, number][] = [
+    [8, 2, 18],
+    [7, 2, 17],
+    [6, 3, 17],
+    [5, 4 - lean / 2, 15],
+    [4, 5 - lean, 13],
+  ];
+  for (const [y, x0, x1] of rows) {
+    span(p, y, x0, x1, hat[3]);
+    span(p, y, x0, x0 + 1, hat[4]);
+    span(p, y, x1 - 1, x1, hat[2]);
+  }
+  // knit: slanted stitches down the cap
+  for (let y = 3; y <= 7; y++) for (let x = 5 + (y % 3); x < 16; x += 3) if (p.get(x, y) === hat[3]) p.set(x, y, hat[2]);
+  // the cuff: a thick fold with vertical ribs, flush with the head (no brim)
+  p.rect(2, 8, 17, 3, hat[3]).rect(2, 8, 17, 1, hat[4]).rect(2, 10, 17, 1, hat[1]);
+  for (let x = 3; x < 19; x += 2) p.rect(x, 9, 1, 2, hat[2]);
+  // a little fringe of hair under the cuff, and hair at the back
+  if (face !== 'back') {
+    for (const x of front ? [5, 7, 9, 11, 13] : [10, 12, 14]) p.rect(x, 11, 2, 1, hair[2]).set(x, 12, hair[1]);
+    p.rect(2, 11, 3, 4, hair[2]).rect(2, 11, 1, 4, hair[1]);
+  }
+  // the pom-pom: a fuzzy ball of yarn sitting on the very top, not a badge
+  const px = front ? 10 : 8 - lean;
+  p.disc(px, 3, 2.7, white[3])
+    .set(px - 3, 3, white[3])
+    .set(px + 3, 3, white[3])
+    .set(px, 0, white[3])
+    .set(px - 2, 1, white[3])
+    .set(px + 2, 1, white[3]);
+  for (const [dx, dy] of [
+    [-1, 2],
+    [1, 1],
+    [0, 4],
+    [2, 3],
+  ] as [number, number][])
+    p.set(px + dx, dy, white[2]);
+  p.rect(px - 2, 5, 5, 1, white[1]).set(px + 2, 4, white[1]);
   if (face === 'back') {
-    p.rect(6, 11, 8, 1, teal[1]);
     p.set(2, 13, skin[2]).set(17, 13, skin[2]);
     return p;
   }
   // arms raised beside the head (body() carries them up from the shoulders): sleeve and fist at the block's edge
-  const orange = r('orange');
+  const orange = hood;
   const skinHand = (x: number) => p.disc(x, 13, 1.9, skin[2]).set(x - 1, 12, skin[3]);
   if (raised === 'left' || raised === 'both') {
     p.rect(0, 15, 3, 5, orange[2]).rect(0, 15, 1, 5, orange[4]);
@@ -66,6 +102,7 @@ function head(pal: Pal, face: Face, front = false, look = 0, raised: 'left' | 'r
   for (const [x, y] of eyes) {
     if (face === 'oh') p.rect(x, y - 2, 2, 4, ink).set(x + 1, y - 2, c('white', 3));
     else if (face === 'blink') p.rect(x - 1, y + 1, 3, 1, ink);
+    else if (face === 'dizzy') p.rect(x - 1, y, 3, 1, ink).rect(x, y - 1, 1, 3, ink);
     else if (face === 'ouch') p.line(x - 1, y, x + 1, y + 2, ink).line(x - 1, y + 2, x + 1, y, ink);
     else {
       p.rect(x, y - 1, 2, 3, ink);
@@ -77,6 +114,8 @@ function head(pal: Pal, face: Face, front = false, look = 0, raised: 'left' | 'r
   p.set(mx - 4, 15, c('pink', 2)).set(mx + 4, 15, c('pink', 2));
   if (face === 'oh') {
     p.rect(mx, 16, 3, 3, ink).rect(mx + 1, 17, 1, 1, c('red', 2));
+  } else if (face === 'dizzy') {
+    p.rect(mx, 16, 3, 2, ink).rect(mx + 1, 16, 1, 1, c('red', 2));
   } else if (face === 'cheer' || face === 'ouch') {
     p.rect(mx - 1, 16, 4, 2, ink).rect(mx, 17, 2, 1, c('red', 2));
   } else {
@@ -88,10 +127,10 @@ function head(pal: Pal, face: Face, front = false, look = 0, raised: 'left' | 'r
   return p;
 }
 
-type Legs = { back: [number, number]; front: [number, number] };
+export type Legs = { back: [number, number]; front: [number, number] };
 
 /** The hero's body, 20x20, in the pose given; hands in `arms`, legs in `legs`. */
-function body(
+export function body(
   pal: Pal,
   o: {
     arms: 'down' | 'swingA' | 'swingB' | 'out' | 'upA' | 'upB' | 'rest' | 'high' | 'flail' | 'dig0' | 'dig1' | 'windup' | 'release' | 'follow';
@@ -100,12 +139,12 @@ function body(
     back?: boolean;
   },
 ): Pixels {
-  const { c, r } = pal;
+  const { r } = pal;
   const p = new Pixels(20, 20, T);
-  const shirt = r('orange');
-  const gray = r('stone');
+  const shirt = kitRamp(pal, 'hood');
+  const gray = kitRamp(pal, 'pants');
   const white = r('white');
-  const skin = r('skin');
+  const skin = kitRamp(pal, 'skin');
   const front = !!o.front;
   const x0 = front ? 4 : 5;
   const w = front ? 12 : 10;
@@ -113,7 +152,7 @@ function body(
     p.rect(x, y, w2, 3, white[3])
       .rect(x, y, w2, 1, white[3])
       .rect(x, y + 2, w2, 1, white[1]);
-    p.set(x + w2 - 2, y + 1, c('teal', 3)).set(x + 1, y, white[2]);
+    p.set(x + w2 - 2, y + 1, kitRamp(pal, 'hat')[3]).set(x + 1, y, white[2]);
   };
   const leg = (x: number, lift: number, color: number[]) => {
     p.rect(x, 12 - 0, 4, 4 - lift, color[2]).rect(x, 12, 1, 4 - lift, color[3]);
@@ -151,13 +190,13 @@ function body(
     p.rect(x0 + 1, 0, w - 2, 3, shirt[4]).rect(x0 + 2, 3, w - 4, 1, shirt[2]);
     p.rect(x0 + 3, 5, w - 6, 1, shirt[2]);
   } else {
-    p.rect(x0 + 1, 0, w - 2, 2, shirt[4]);
+    // the hood as a darker collar band hugging the neck and shoulders, and two thin drawstrings with small tips
+    p.rect(x0, 0, w, 3, shirt[1])
+      .rect(x0 + 1, 0, w - 2, 1, shirt[2])
+      .rect(x0 + 1, 2, w - 2, 1, shirt[0]);
     p.rect(x0 + 2, 6, w - 3, 5, shirt[2]).rect(x0 + 2, 6, w - 3, 1, shirt[1]);
     p.rect(x0 + 2, 6, 1, 5, shirt[1]);
-    p.set(x0 + 3, 2, white[3])
-      .set(x0 + 3, 3, white[3])
-      .set(x0 + w - 4, 2, white[3])
-      .set(x0 + w - 4, 3, white[3]);
+    for (const sx of [x0 + 4, x0 + 6]) p.rect(sx, 3, 1, 3, white[3]).set(sx, 6, white[1]);
   }
   // arms
   const sleeve = (x: number, y: number, w2: number, h: number) => p.rect(x, y, w2, h, shirt[2]).rect(x, y, 1, h, shirt[4]);
@@ -274,17 +313,19 @@ function body(
   return p;
 }
 
+/** A head over a body, outlined together so the outline passes across the neck: [top block, bottom block]. */
+export function outlinedPair(pal: Pal, top: Pixels, bottom: Pixels): readonly [Pixels, Pixels] {
+  const whole = new Pixels(20, 40, T);
+  whole.blit(top, 0, 0, T).blit(bottom, 0, 20, T);
+  const out = outline(whole, pal.c('ink', 0), { transparent: T });
+  return [out.crop(0, 0, 20, 20), out.crop(0, 20, 20, 20)] as const;
+}
+
 /** The hero's character blocks (.CBL), by name, with the outlines drawn on. */
 export function buildHeroBlocks(pal: Pal): Book {
-  const ink = pal.c('ink', 0);
   const book = new Book('cbl');
   // (head, body) pairs are outlined together, so the outline passes across the neck
-  const pair = (top: Pixels, bottom: Pixels) => {
-    const whole = new Pixels(20, 40, T);
-    whole.blit(top, 0, 0, T).blit(bottom, 0, 20, T);
-    const out = outline(whole, ink, { transparent: T });
-    return [out.crop(0, 0, 20, 20), out.crop(0, 20, 20, 20)] as const;
-  };
+  const pair = (top: Pixels, bottom: Pixels) => outlinedPair(pal, top, bottom);
   const stand = body(pal, { arms: 'down', legs: { back: [5, 0], front: [11, 0] } });
   const walk: Legs[] = [
     { back: [3, 0], front: [12, 0] },

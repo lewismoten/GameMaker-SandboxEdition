@@ -8,7 +8,7 @@ export const STORY = wrap(`
 
 Some things do not last. Others turn into something else.
 
-A small explorer in a teal beanie crosses two short rooms. A bubble blocks a tunnel in the first, and a sleepy blue gumdrop in the second.
+A small explorer in a purple beanie crosses two short rooms. A bubble blocks a tunnel in the first, and a sleepy blue gumdrop in the second.
 
 Read the signs. Wait, and watch what happens.
 

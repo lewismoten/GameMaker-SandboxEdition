@@ -1,7 +1,7 @@
-// ROUND AND ROUND's two levels. Each is one screen, 16 blocks by 10, that never scrolls. Kit walks
+// ROUND AND ROUND's two levels. Each is one screen, 16 blocks by 10, that never scrolls. Mia walks
 // along the bottom row.
 //
-//   1. The Road Goes By: Kit stands on the bed of a truck. Behind him the hills, the trees and a rail
+//   1. The Road Goes By: Mia stands on the bed of a truck. Behind her the hills, the trees and a rail
 //      slide past, each a short ring of blocks: every block turns into the next after a few ticks and the
 //      last turns back into the first, so the strip slides forever. Near things slide faster. Nothing
 //      moves but the pictures, and the truck never goes anywhere.
@@ -9,7 +9,7 @@
 //      it began, so it goes round forever, turned a quarter at a time as it climbs. A lamp lights for each
 //      lap, and when the third is lit the bars across the door lift. The lamps run on the clock: a block
 //      cannot see a car.
-// Both rooms are closed in by things you can see (a tail board, a cab, hedges), so Kit is never stopped by something he can't.
+// Both rooms are closed in by things you can see (a tail board, a cab, hedges), so Mia is never stopped by something she can't.
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { Book, PULL, SOLID } from '../../kit/starter/book';
@@ -175,7 +175,7 @@ export interface Level {
   st: Stage;
 }
 
-/** A blank grid the size of the screen with Kit's start and the door's marks. */
+/** A blank grid the size of the screen with Mia's start and the door's marks. */
 function marks(doorCol: number): Grid {
   const g = new Grid(COLS, ROWS);
   g.put(START[0], START[1] - 1, 's').put(START[0], START[1], 'S');
@@ -248,7 +248,7 @@ export function finishBlocks(st: Pick<Stage, 'book' | 'timed'>): Block[] {
 
 /** The levels in order. */
 export function buildLevels(): { pal: Pal; levels: Level[] } {
-  const pal = buildStarterPalette();
+  const pal = buildStarterPalette(undefined, 'beltway');
   const one = new Stage(pal, drawRoad(pal), ['ring', 'speed']);
   const two = new Stage(pal, drawLoop(pal), ['loop', 'lamps']);
   const levels: Level[] = [

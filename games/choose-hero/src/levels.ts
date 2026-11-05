@@ -20,7 +20,7 @@ export type SignName = 'pick' | 'fast' | 'big' | 'steps' | 'hop' | 'high' | 'exi
 /** The signs' words and sizes. */
 const WORDS: Record<SignName, { text: string; w: number; h: number }> = {
   pick: { text: 'TWO DOORS, TWO HEROES. THE SAME LEVEL BEHIND BOTH', w: 4, h: 4 },
-  fast: { text: 'FAST FEET. RUNS QUICKLY, JUMPS LIKE KIT', w: 4, h: 4 },
+  fast: { text: 'FAST FEET. RUNS QUICKLY, JUMPS LIKE LIAN', w: 4, h: 4 },
   big: { text: 'BIG HOPS. SLOW FEET, JUMPS SIX BLOCKS', w: 4, h: 4 },
   steps: { text: 'STEPS UP. EVERY HERO CAN TAKE THEM', w: 4, h: 4 },
   hop: { text: 'BIG HOPS CAN SKIP A STEP. FAST FEET TAKES THEM ALL', w: 4, h: 4 },
@@ -201,7 +201,7 @@ function openRoad(book: Book, signs: Record<SignName, Sign>): StarterMap {
 
 /** The levels in order. */
 export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
-  const pal = buildStarterPalette();
+  const pal = buildStarterPalette(undefined, 'choose-hero');
   const { book, signs } = buildBlocks(pal);
   const levels: Level[] = [
     { file: 'doors', title: 'Two Doors', hint: 'Pick a hero.', map: twoDoors(book, signs) },

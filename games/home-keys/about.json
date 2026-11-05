@@ -3,6 +3,7 @@
   "author": "Claude",
   "company": "Sandbox Software",
   "series": "starter",
+  "hero": "MARA",
   "year": 1994,
   "price": "Free",
   "version": "1.0",
@@ -23,7 +24,7 @@
     "accent": "#ffd23f",
     "ink": "#ffffff",
     "tagline": "Which keys do you need?",
-    "back": "A small explorer in a teal beanie has three levels to cross, and a keyboard drawn on the instructions page. Arrows, Space and Enter do the walking, jumping and throwing. A gap that looks as if it needs a diagonal turns out to need only a jump and an arrow. Q and E leap to the extra coins, and the old number pad's 7 and 9 get a page of history.",
+    "back": "A small explorer in a green beanie has three levels to cross, and a keyboard drawn on the instructions page. Arrows, Space and Enter do the walking, jumping and throwing. A gap that looks as if it needs a diagonal turns out to need only a jump and an arrow. Q and E leap to the extra coins, and the old number pad's 7 and 9 get a page of history.",
     "features": [
       "A sign stands before the first place each key is needed",
       "Every key the game uses is listed, and drawn on a keyboard",

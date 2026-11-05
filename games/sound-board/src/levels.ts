@@ -7,7 +7,7 @@
 //      loads the room again, so every pad is back.
 //   2. Sounds That Tell You: a coin, a key, a gate, a jump, a spike and a wrong gate, so you
 //      hear what just happened.
-// Every room is closed in by hedges you can see, so Kit is never stopped by something he can't.
+// Every room is closed in by hedges you can see, so Rima is never stopped by something she can't.
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
@@ -183,7 +183,7 @@ function feedback(book: Book, signs: Record<SignName, Sign>): StarterMap {
 
 /** The levels in order. */
 export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
-  const pal = buildStarterPalette();
+  const pal = buildStarterPalette(undefined, 'sound-board');
   const { book, signs } = buildBlocks(pal);
   const levels: Level[] = [
     { file: 'one', title: 'The Board', hint: 'Step on each pad and listen.', map: board(book, signs) },

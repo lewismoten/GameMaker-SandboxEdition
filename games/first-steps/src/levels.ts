@@ -110,7 +110,7 @@ function climbAndFall(book: Book, signs: Record<SignName, Sign>): StarterMap {
 
 /** The levels in order. */
 export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
-  const pal = buildStarterPalette();
+  const pal = buildStarterPalette(undefined, 'first-steps');
   const { book, signs } = buildBlocks(pal);
   const levels: Level[] = [
     { file: 'walk', title: 'Walk, Jump, Fall', hint: 'Read the signs.', map: walkJumpFall(book, signs) },

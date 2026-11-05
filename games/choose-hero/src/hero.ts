@@ -1,6 +1,6 @@
 // WHO TO BE?'s two heroes. Both are the Starter hero's character file (kit/starter/heroChar.ts) with two numbers changed,
 // and a hoodie color to tell them apart. A scene names the character file it loads, so a door can be a choice:
-//   FAST FEET  (fast.chr, orange hoodie)  walks quickly and jumps a little over three blocks, as Kit always does
+//   FAST FEET  (fast.chr, orange hoodie)  walks quickly and jumps a little over three blocks, as Lian always does
 //   BIG HOPS   (hops.chr, purple hoodie)  walks slowly and jumps six blocks
 // The two pairs of files (.CHR and .CBL) are the only difference between the climb scenes.
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
@@ -13,10 +13,10 @@ import type { Pal } from '../../kit/starter/palette';
 /** Hit points and lives at the start (nothing here takes any). */
 export const HERO_HIT_POINTS = 50;
 export const HERO_LIVES = 3;
-/** Pixels a frame while walking. Kit's own is 4. */
+/** Pixels a frame while walking. Lian's own is 4. */
 export const FAST_STEP = 6;
 export const BIG_STEP = 3;
-/** The upward push of a jump: it rises about N*(N-1)/2 pixels (12 is Kit's 3.3 blocks; 17 gives six, because a move is capped at 11 pixels a tick). */
+/** The upward push of a jump: it rises about N*(N-1)/2 pixels (12 is Lian's 3.3 blocks; 17 gives six, because a move is capped at 11 pixels a tick). */
 export const FAST_PUSH = 12;
 export const BIG_PUSH = 17;
 
@@ -41,7 +41,7 @@ export const buildFast = (cb: Book): Character => tune(buildHero(cb), FAST_STEP,
 /** BIG HOPS's character file, using the purple pictures from `bigBlocks`. */
 export const buildBig = (cb: Book): Character => tune(buildHero(cb), BIG_STEP, BIG_PUSH);
 
-/** Kit's character blocks again, in the same order, with the orange hoodie painted purple. */
+/** Lian's character blocks again, in the same order, with the orange hoodie painted purple. */
 export function bigBlocks(kit: Book, pal: Pal): Book {
   const orange = pal.r('orange');
   const purple = pal.r('purple');

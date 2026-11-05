@@ -19,9 +19,9 @@ import type { Pal } from '../../kit/starter/palette';
 /** The monster numbers this game adds after the kit's gumdrop 0, buzzer 1 and shelly 2. */
 export const BIRD = 3;
 export const QUICK = 4;
-/** Powers: 100 or more cannot be popped by touching Kit. */
+/** Powers: 100 or more cannot be popped by touching Lian. */
 export const POWER = 110;
-/** Hit points Kit starts with (nothing in this game takes any, but Game-Maker wants a number). */
+/** Hit points Lian starts with (nothing in this game takes any, but Game-Maker wants a number). */
 export const HERO_HIT_POINTS = 50;
 /** How many blocks a bird flies before it turns back, and its speeds. */
 export const RUN = 22;

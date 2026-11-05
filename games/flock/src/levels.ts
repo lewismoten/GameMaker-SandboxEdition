@@ -6,7 +6,7 @@
 //      one path at one speed.
 //   2. Out of Step: the same V, but the two middle birds are gold and fly faster. They pull away
 //      and the V comes apart.
-// Both rooms are closed in by brick walls you can see, so Kit is never stopped by something he can't.
+// Both rooms are closed in by brick walls you can see, so Lian is never stopped by something he can't.
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
@@ -121,7 +121,7 @@ function outOfStep(book: Book, signs: Record<SignName, Sign>): StarterMap {
 
 /** The levels in order. */
 export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
-  const pal = buildStarterPalette();
+  const pal = buildStarterPalette(undefined, 'flock');
   const { book, signs } = buildBlocks(pal);
   const levels: Level[] = [
     { file: 'one', title: 'One Shape', hint: 'Same path, same speed.', map: oneShape(book, signs) },

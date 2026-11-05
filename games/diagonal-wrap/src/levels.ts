@@ -7,7 +7,7 @@
 //      third of the map further over, so it wraps three times and is about three times as long. It crosses the
 //      right edge as well, and comes out on the left.
 // A dashed white line marks the map's top row and left column wherever the road crosses them. Hedges you can see
-// close the road in, so nothing stops Kit that he can't see.
+// close the road in, so nothing stops Mia that she can't see.
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
@@ -38,7 +38,7 @@ export interface Level {
   map: DiagMap;
 }
 
-/** A level's map plus where Kit starts and which blocks are the exit doors. */
+/** A level's map plus where Mia starts and which blocks are the exit doors. */
 export interface DiagMap {
   start: [number, number];
   /** The exit doors (their bottom blocks), in map blocks. */
@@ -85,7 +85,7 @@ function build(book: Book, course: Course, signs: Record<SignName, Sign>, placed
   const [tx, ty] = cellAt(course, 0, 2);
   set(tx, ty, 'startTop');
   set(sx, sy, 'startBottom');
-  // the finish: a row of doors across the whole road, so any way Kit walks reaches one
+  // the finish: a row of doors across the whole road, so any way Mia walks reaches one
   const exits: { from: [number, number] }[] = [];
   const f = finishRow(course);
   for (let i = 0; i < WIDTH; i++) {
@@ -153,7 +153,7 @@ function tilted(book: Book, signs: Record<SignName, Sign>): DiagMap {
 
 /** Both levels. */
 export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
-  const pal = buildStarterPalette();
+  const pal = buildStarterPalette(undefined, 'diagonal-wrap');
   const side = new Book('bbl');
   addStarterBlocks(side, pal);
   const book = new Book('bbl');

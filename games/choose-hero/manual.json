@@ -57,11 +57,11 @@
     },
     {
       "head": "Level 1: Two Doors",
-      "html": "<h1>Level 1: Two Doors</h1><p>You start in the middle of a small room. <b>FAST FEET. RUNS QUICKLY, JUMPS LIKE KIT</b> is by the door on the left. <b>BIG HOPS. SLOW FEET, JUMPS SIX BLOCKS</b> is by the door on the right. <b>TWO DOORS, TWO HEROES. THE SAME LEVEL BEHIND BOTH</b> stands between them. Take the coins, read the signs and walk into a door. Both lead to the same climb, so you can come back and pick the other one.</p>"
+      "html": "<h1>Level 1: Two Doors</h1><p>You start in the middle of a small room. <b>FAST FEET. RUNS QUICKLY, JUMPS LIKE LIAN</b> is by the door on the left. <b>BIG HOPS. SLOW FEET, JUMPS SIX BLOCKS</b> is by the door on the right. <b>TWO DOORS, TWO HEROES. THE SAME LEVEL BEHIND BOTH</b> stands between them. Take the coins, read the signs and walk into a door. Both lead to the same climb, so you can come back and pick the other one.</p>"
     },
     {
       "head": "How this level is made",
-      "html": "<h1>How level 1 is made</h1><ul><li><b>Two links.</b> Open <b>pick.gam</b> in the Scenes tab and select the room. A scene can have several links: a block-sized spot on the map, and the scene it takes the hero to. Here the left door's spot goes to the Fast Feet climb and the right door's spot goes to the Big Hops climb.</li><li><b>The doors are ordinary blocks.</b> The link is not drawn: the door picture is just a block on top of the spot. Nothing in the map says which door is which, so the signs do.</li><li><b>The room's hero.</b> The room itself loads <b>fast.chr</b>, Kit's own file, so you walk it as Fast Feet.</li><li><b>The map.</b> Open <b>doors.map</b>: a flat floor, a hedge at each end, the entrance in the middle and a door at each end. The coins are at head height so that walking collects them.</li></ul>"
+      "html": "<h1>How level 1 is made</h1><ul><li><b>Two links.</b> Open <b>pick.gam</b> in the Scenes tab and select the room. A scene can have several links: a block-sized spot on the map, and the scene it takes the hero to. Here the left door's spot goes to the Fast Feet climb and the right door's spot goes to the Big Hops climb.</li><li><b>The doors are ordinary blocks.</b> The link is not drawn: the door picture is just a block on top of the spot. Nothing in the map says which door is which, so the signs do.</li><li><b>The room's hero.</b> The room itself loads <b>fast.chr</b>, Lian's own file, so you walk it as Fast Feet.</li><li><b>The map.</b> Open <b>doors.map</b>: a flat floor, a hedge at each end, the entrance in the middle and a door at each end. The coins are at head height so that walking collects them.</li></ul>"
     },
     {
       "head": "Level 2: The Same Climb",

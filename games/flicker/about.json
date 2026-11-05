@@ -3,6 +3,7 @@
   "author": "Claude",
   "company": "Sandbox Software",
   "series": "starter",
+  "hero": "LAMI",
   "year": 1994,
   "price": "Free",
   "version": "1.0",
@@ -23,7 +24,7 @@
     "accent": "#ffd23f",
     "ink": "#ffffff",
     "tagline": "Flames that flicker, flags that wave, water that falls.",
-    "back": "A small explorer in a teal beanie walks a castle hall, a cliff and a hilltop. A block can turn into another block a few ticks later, so a loop of four makes a flame, a flag or a waterfall move. Even times give a steady wave or a falling stream. Uneven times and frames that lean give a flicker. One block means one clock, so two loops keep neighbors apart. Read the signs, then open the game in Game-Maker and change a time.",
+    "back": "A small explorer in a red beanie walks a castle hall, a cliff and a hilltop. A block can turn into another block a few ticks later, so a loop of four makes a flame, a flag or a waterfall move. Even times give a steady wave or a falling stream. Uneven times and frames that lean give a flicker. One block means one clock, so two loops keep neighbors apart. Read the signs, then open the game in Game-Maker and change a time.",
     "features": [
       "Level 1 shows a torch that pulses, one that flickers, and flags that wave",
       "Level 2 is a cliff with a waterfall made of three kinds of loop",

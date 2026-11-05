@@ -3,7 +3,7 @@
 //               becomes `rubble`. A bump is a touch: the engine does not know which side was hit.
 //               It also adds 1 to a spare counter, which is what makes Game-Maker play the crunch (CRUNCH).
 //   rubble      what a crate leaves: a little pile you can walk through, with nothing to turn into
-//   stuckCoin   a coin whose "becomes" is itself: it pays 2 every tick Kit is touching it and never goes
+//   stuckCoin   a coin whose "becomes" is itself: it pays 2 every tick Yana is touching it and never goes
 //   gem0..gem7  a spinning gem, eight blocks in a loop (each turns into the next after a few ticks). Every
 //               frame has the same touch: it becomes sky (air) and pays 25. A frame left blank would pay
 //               again, like the stuck coin, so all eight are filled in.

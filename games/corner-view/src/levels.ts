@@ -1,14 +1,14 @@
 // CORNER VIEW's two levels. Each is one screen, 16 blocks by 10, that never scrolls. The whole room is painted
 // as one 320x200 picture (iso.ts: a floor of diamonds, cubes with a top and two sides) and cut into 20x20 blocks;
 // cells that come out alike share one block. The game underneath is the plain top view of Gravity Off:
-// Kit walks on the square grid, the four arrows only, and every block's Gravity is none.
+// Lena walks on the square grid, the four arrows only, and every block's Gravity is none.
 //
-//   1. The Corner Room: a diagonal wall of cubes. He cannot walk along it, so he goes round it in square steps.
+//   1. The Corner Room: a diagonal wall of cubes. She cannot walk along it, so she goes round it in square steps.
 //   2. Stairs of Towers: towers one, two and three blocks high. A tall tower covers the blocks above it, so those are solid too.
-//   3. The Diamond Floor: a room whose floor is a diamond. Here Kit walks only diagonally: each arrow walks one
-//      diagonal of the drawn floor (cornerHero.ts), so he goes the way the room is laid out. The room's edges are
-//      cubes in steps of two blocks across and one down, the same slope he walks, with dark blocks outside them.
-// Both rooms are closed in by cubes you can see, so Kit is never stopped by something he can't.
+//   3. The Diamond Floor: a room whose floor is a diamond. Here Lena walks only diagonally: each arrow walks one
+//      diagonal of the drawn floor (cornerHero.ts), so she goes the way the room is laid out. The room's edges are
+//      cubes in steps of two blocks across and one down, the same slope she walks, with dark blocks outside them.
+// Both rooms are closed in by cubes you can see, so Lena is never stopped by something she can't.
 import { newMap, MLEN, type GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { Book, SOLID } from '../../kit/starter/book';
@@ -28,7 +28,7 @@ const WORDS: Record<SignName, string> = {
   cube: 'A CUBE IS ONE BLOCK: A TOP AND TWO SIDES',
   square: 'ARROWS WALK THE SQUARES, NOT THE DIAMONDS',
   tall: 'TALL TOWERS COVER THE BLOCKS ABOVE THEM',
-  front: 'KIT IS ALWAYS IN FRONT, NEVER BEHIND',
+  front: 'LENA IS ALWAYS IN FRONT, NEVER BEHIND',
   lean: 'EACH ARROW TAKES THE NEAREST SLANT',
   upright: 'UP IS UPPER RIGHT. RIGHT IS LOWER RIGHT.',
   downleft: 'DOWN IS LOWER LEFT. LEFT IS UPPER LEFT.',
@@ -51,7 +51,7 @@ const ring: Tower[] = [];
 for (let x = 0; x < COLS; x++) ring.push([x, 0, 1], [x, ROWS - 1, 1]);
 for (let y = 1; y < ROWS - 1; y++) ring.push([0, y, 1], [COLS - 1, y, 1]);
 
-/** Kit starts in the middle of the screen: the view stays where the level starts, centered on him, so he must start there. */
+/** Lena starts in the middle of the screen: the view stays where the level starts, centered on her, so she must start there. */
 export const EXITS: [number, number][] = [
   [13, 7],
   [2, 5],
@@ -72,7 +72,7 @@ FLOOR3.forEach((row, y) =>
     for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) if (FLOOR3[y + dy]?.[x + dx]) return void RING3.push([x, y, 1]);
   }),
 );
-/** Level 1: a wall of cubes running up to the right from the floor's edge, like a wall seen from a corner. Its top end is open: Kit goes round there. */
+/** Level 1: a wall of cubes running up to the right from the floor's edge, like a wall seen from a corner. Its top end is open: Lena goes round there. */
 export const DIAGONAL: Tower[] = [
   [8, 8, 1],
   [9, 7, 1],
@@ -235,7 +235,7 @@ function build(pal: Pal, file: string, spec: Spec, title: string, hint: string):
 
 /** The levels in order, with the book of starter pictures the cards and menus are drawn on. */
 export function buildLevels(): { pal: Pal; levels: Level[] } {
-  const pal = buildStarterPalette();
+  const pal = buildStarterPalette(undefined, 'corner-view');
   const levels = [
     build(pal, 'one', SPECS[0], 'The Corner Room', 'Go round the wall of cubes.'),
     build(pal, 'two', SPECS[1], 'Stairs of Towers', 'Tall things cover what is behind.'),

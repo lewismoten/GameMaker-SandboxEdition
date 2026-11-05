@@ -8,7 +8,7 @@ export const STORY = wrap(`
 
 Gold does not do much on its own. In Game-Maker, it adds up.
 
-A small explorer in a teal beanie is out collecting. Touch a coin and the score goes up. Gems pay more, rocks take points away, and a heart gives something a score cannot: a life.
+A small explorer in a blue beanie is out collecting. Touch a coin and the score goes up. Gems pay more, rocks take points away, and a heart gives something a score cannot: a life.
 
 Read the signs, and press F2 to see how you are doing.
 `);

@@ -1,4 +1,4 @@
-// The things Kit carries, as blocks (20 by 20, on the sky so they sit anywhere): a wooden crate that is a step
+// The things Mara carries, as blocks (20 by 20, on the sky so they sit anywhere): a wooden crate that is a step
 // (solid from above only), a star and a flame on a little round stand. Dropped, a block is the same picture again.
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { skyOf, type Pal } from '../../kit/starter/palette';

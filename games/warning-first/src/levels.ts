@@ -9,8 +9,8 @@
 //      fall in and you land on a mat and hop out.
 //
 // Every clock starts when the scene loads and nothing the player does can change one (the
-// manual says so), so the warning is something to watch for, not something he can set off.
-// Both rooms end in a visible hedge, so Kit is never stopped by something he can't see.
+// manual says so), so the warning is something to watch for, not something she can set off.
+// Both rooms end in a visible hedge, so Rima is never stopped by something she can't see.
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { Book, PULL, SOLID as SOLID_ALL } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
@@ -189,6 +189,6 @@ function flickerThenGone(pal: Pal): Level {
 
 /** The palette and the levels in order. */
 export function buildLevels(): { pal: Pal; levels: Level[] } {
-  const pal = buildStarterPalette();
+  const pal = buildStarterPalette(undefined, 'warning-first');
   return { pal, levels: [rumbleThenPuff(pal), flickerThenGone(pal)] };
 }

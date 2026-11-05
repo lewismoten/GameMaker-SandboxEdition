@@ -1,7 +1,7 @@
 // UNDER THE SURFACE's water: blocks that are only a gravity setting, drawn so you can see which way they pull.
-// Nothing here is a new engine rule, and nothing here hurts: the hero is pulled by the block his feet are in.
+// Nothing here is a new engine rule, and nothing here hurts: the hero is pulled by the block her feet are in.
 //   creek, creekTop   water that pulls LEFT and DOWN (a current along the bed), with chevrons pointing left
-//   deep, deepTop     water that pulls UP (a float), with rising bubbles; the top row has no pull, so Kit settles there
+//   deep, deepTop     water that pulls UP (a float), with rising bubbles; the top row has no pull, so Lami settles there
 //   lift, liftTop     water that pulls UP and LEFT (a slanting lift), with slanting chevrons
 // The top rows are the surface: lighter, with foam, and no pull at all, so a floater stops bobbing and can walk out.
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';

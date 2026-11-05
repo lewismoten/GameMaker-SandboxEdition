@@ -1,4 +1,4 @@
-// GUSTS' own title picture, in the Worlds That Push Back look (the kit's breeze): Kit, a windsock streaming
+// GUSTS' own title picture, in the Worlds That Push Back look (the kit's breeze): Mia, a windsock streaming
 // in the wind, and a shaft of air with a gust and leaves rising in it.
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { scaleBlit } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
@@ -9,7 +9,7 @@ import { W } from '../../kit/starter/screens';
 import { backdrop, frameOf, lookOf } from '../../kit/starter/titleStyles';
 import { pole, sock, updraft } from './props';
 
-/** The title: the name, a ribbon, then Kit beside a windsock in a gust and a shaft of wind. */
+/** The title: the name, a ribbon, then Mia beside a windsock in a gust and a shaft of wind. */
 export function titlePicture(pal: Pal, hero: Pixels, name: string, tagline: string): Pixels {
   const look = lookOf(pal, 'breeze');
   const p = backdrop(pal, 'breeze');

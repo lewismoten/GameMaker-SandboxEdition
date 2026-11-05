@@ -1,11 +1,11 @@
 // TAKE THE WHEEL's two levels. Each is painted on a Grid (a block a character, see
 // games/kit/starter/map.ts for what the letters mean), then given its signs and its monsters.
 //
-//   1. Hop In: on foot, Kit jumps a bird in the road, then walks into a parked kart. That is the
+//   1. Hop In: on foot, Yana jumps a bird in the road, then walks into a parked kart. That is the
 //      exit: its link loads the next scene, and that scene names a different character file.
-//   2. Take the Wheel: the same Kit is a driver. The kart is quick and cannot jump, so a bird in the
+//   2. Take the Wheel: the same Yana is a driver. The kart is quick and cannot jump, so a bird in the
 //      road stops it until a honk (Space) pops the bird and it flies off.
-// Both rooms are closed in by brick walls you can see, and nothing blocks Kit but the birds.
+// Both rooms are closed in by brick walls you can see, and nothing blocks Yana but the birds.
 import { Book, PULL } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
@@ -25,7 +25,7 @@ function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   book.add('kartTop', kart.top, { grav: PULL.down });
   book.add('kartBottom', kart.bottom, { grav: PULL.down });
   const signs = {
-    foot: addSign(book, pal, 'foot.sign', 'ON FOOT, KIT WALKS AND JUMPS', 4, 4),
+    foot: addSign(book, pal, 'foot.sign', 'ON FOOT, YANA WALKS AND JUMPS', 4, 4),
     bird: addSign(book, pal, 'bird.sign', 'A BIRD IN THE ROAD. JUMP IT', 4, 4),
     hop: addSign(book, pal, 'hop.sign', 'WALK INTO THE KART TO DRIVE IT', 4, 4),
     file: addSign(book, pal, 'file.sign', 'THE KART IS A NEW CHARACTER FILE', 4, 4),
@@ -120,7 +120,7 @@ function drive(book: Book, signs: Record<SignName, Sign>): StarterMap {
 
 /** The levels in order. */
 export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
-  const pal = buildStarterPalette();
+  const pal = buildStarterPalette(undefined, 'take-the-wheel');
   const { book, signs } = buildBlocks(pal);
   const levels: Level[] = [
     { file: 'one', title: 'Hop In', hint: 'Walk into the kart.', map: hopIn(book, signs) },

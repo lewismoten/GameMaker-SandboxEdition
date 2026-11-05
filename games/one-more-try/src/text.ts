@@ -8,7 +8,7 @@ export const STORY = wrap(`
 
 Some mistakes need a way out.
 
-A small explorer in a teal beanie has two short levels. In the first, a pit is too deep to climb out of, and a post at the bottom starts the level over. In the second, three pits each have a way back built in.
+A small explorer in a purple beanie has two short levels. In the first, a pit is too deep to climb out of, and a post at the bottom starts the level over. In the second, three pits each have a way back built in.
 
 A player who can fall in should never be stuck. Give them a way out, or a place to start over.
 

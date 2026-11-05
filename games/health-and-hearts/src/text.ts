@@ -6,9 +6,9 @@ import about from '../about.json';
 export const STORY = wrap(`
 |HEALTH AND HEARTS
 
-Hit points are how much a hit Kit can take. Lives are how many tries he gets.
+Hit points are how much a hit Lian can take. Lives are how many tries he gets.
 
-A small explorer in a teal beanie has three short levels to cross. A spike takes ten hit points. A heart gives them back. At zero, a life is gone and the room starts again.
+A small explorer in a blue beanie has three short levels to cross. A spike takes ten hit points. A heart gives them back. At zero, a life is gone and the room starts again.
 
 Read the signs, and press F2 to see your numbers.
 
