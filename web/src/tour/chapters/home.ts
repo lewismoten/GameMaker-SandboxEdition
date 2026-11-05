@@ -186,7 +186,7 @@ export const homeChapter: Chapter = {
     {
       id: 'home-tab-gameware',
       action: 'press',
-      target: tab('gameware', 'Gameware'),
+      target: tab('cd', 'CD'),
       click: true,
       say: 'Gameware: the free games that came with Game-Maker. Play one, or edit a copy to see how it works.',
       sound: 'boing',
@@ -194,7 +194,7 @@ export const homeChapter: Chapter = {
     {
       id: 'home-tab-shareware',
       action: 'press',
-      target: tab('shareware', 'Shareware'),
+      target: tab('cd', 'CD'),
       click: true,
       say: 'Shareware: games other people made with Game-Maker, from the CD and the BBSes.',
       sound: 'boing',

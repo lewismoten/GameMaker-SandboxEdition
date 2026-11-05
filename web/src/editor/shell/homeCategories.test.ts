@@ -20,16 +20,18 @@ const demo = (g: { demo: boolean }) => g.demo;
 afterEach(() => vi.unstubAllGlobals());
 
 describe('the collections', () => {
-  it('put your own games first, then Sandbox and Bizarre before Gameware and Shareware', () => {
-    expect(CATEGORIES.map((c) => c.id)).toEqual(['mine', 'imported', 'starter', 'sandbox', 'bizarre', 'community', 'gameware', 'shareware']);
+  it('put your own games first, then Sandbox and Bizarre before the CD', () => {
+    expect(CATEGORIES.map((c) => c.id)).toEqual(['mine', 'imported', 'starter', 'sandbox', 'bizarre', 'community', 'cd']);
   });
 
   it('open on Sandbox when nothing was picked, and on the one picked otherwise', () => {
     expect(FIRST_CATEGORY).toBe('sandbox');
     storage();
     expect(savedCategory()).toBeUndefined();
-    storage('gameware');
-    expect(savedCategory()).toBe('gameware');
+    storage('gameware'); // a choice saved when Gameware and Shareware were tabs of their own
+    expect(savedCategory()).toBe('cd');
+    storage('shareware');
+    expect(savedCategory()).toBe('cd');
     storage('community');
     expect(savedCategory()).toBe('community');
     storage('nonsense');
