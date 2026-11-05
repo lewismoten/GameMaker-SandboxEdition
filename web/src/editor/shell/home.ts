@@ -9,6 +9,7 @@
 // scrolling by themselves when there are many; narrower, everything stacks. A chosen game is
 // kept in the address (#/game/cd:<id> or #/game/my:<id>), with the collection and search
 // (?tab=sandbox&q=snow), so a reload or a link shows the same.
+import { isCeremony } from '../../project/ceremonies';
 import { h, clear, toast } from '../core/ui';
 import { loadGameList } from '../../project/files';
 import { hasBizarreTab } from '../../project/bizarre';
@@ -334,7 +335,8 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
 
   // The collections are tabs: arrow keys move between them, Tab goes on to the games.
   const renderCats = () => {
-    const counts = Object.fromEntries(CATEGORIES.map((c) => [c.id, lib.gamesOf(c.id).length]));
+    // Graduations open from the Starters tab's own section, so they don't count as Starters.
+    const counts = Object.fromEntries(CATEGORIES.map((c) => [c.id, lib.gamesOf(c.id).filter((g) => !isCeremony(g.entry?.id ?? '')).length]));
     clear(
       catNav,
       ...lib.shownCats().map((c) =>
