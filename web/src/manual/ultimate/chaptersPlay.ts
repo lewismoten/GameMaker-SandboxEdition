@@ -186,6 +186,12 @@ export const LOGIC: Chapter = {
   <p>Now set special counter 1 to start at <b>1</b> and play again. Two tokens open the gate.
   It never counted tokens; it only asks whether the counter can pay 3 without going below
   zero.</p>
+  <h2>Showing a count</h2>
+  <p>The engine cannot print a counter as a number, so show it with pictures. Make each pickup
+  <b>Become</b> a lit version of itself instead of the sky, and a row of them is a meter: lit
+  bulbs are the count. Each value needs its own picture, and the bulbs do not read the counter, so
+  keep the gate's price equal to the number of bulbs in the map.</p>
+  ${onCd('SHOWCNT')}
   <h2>Switches and wiring</h2>
   <ul>
     <li><b>A switch</b> is a block that becomes its “on” picture when bumped. Make switches go

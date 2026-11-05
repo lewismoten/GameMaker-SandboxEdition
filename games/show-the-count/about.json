@@ -1,14 +1,14 @@
 {
-  "title": "Three Tokens",
+  "title": "Show the Count",
   "author": "Claude",
   "company": "Sandbox Software",
   "series": "starter",
   "year": 1994,
   "price": "Free",
   "version": "1.0",
-  "blurb": "Two short levels about gates that count. Tokens add to a counter, and a gate opens only when the counter can pay its price: three tokens for the first, and in the second the gate is the exit itself. Signs in the levels say how. Play it, then open it in Game-Maker and change a price.",
-  "exe": "TOKENS.EXE",
-  "dosName": "THREETOK",
+  "blurb": "Two short levels about showing a count. Game-Maker cannot print a counter as a number, so each bulb adds one to the count and lights up: the row of lit bulbs is the count as pictures. A gate takes the whole count, and in the second level the gate is the exit. Signs in the levels say how. Play it, then open it in Game-Maker and add a bulb.",
+  "exe": "SHOWCNT.EXE",
+  "dosName": "SHOWCNT",
   "sound": "sb",
   "label": {
     "background": "#e8f6ff",
@@ -22,9 +22,9 @@
     "background": "#2f9e5a",
     "accent": "#ffd23f",
     "ink": "#ffffff",
-    "tagline": "A gate can ask for three.",
-    "back": "A small explorer in a teal beanie finds purple tokens lying about. Each one adds to a count. The first gate takes three, so two are not enough. In the second room the gate is the way out. Read the signs, then open the game in Game-Maker and change a price.",
-    "features": ["Signs in the levels explain each idea", "Tokens add to a count, gates spend it", "Made to be copied and taken apart"],
+    "tagline": "Lit bulbs are the count.",
+    "back": "A small explorer in a teal beanie finds rows of dark bulbs. Each one adds to a count and lights up, so the lit bulbs show the count. The first gate takes five. In the second room the full meter opens the way out. Read the signs, then open the game in Game-Maker and add a bulb.",
+    "features": ["Signs in the levels explain each idea", "Bulbs light up as they add to a count", "Made to be copied and taken apart"],
     "shots": [
       ["one.map", 22, 6],
       ["two.map", 22, 6]

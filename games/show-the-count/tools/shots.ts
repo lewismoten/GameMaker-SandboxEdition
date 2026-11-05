@@ -1,6 +1,5 @@
-// Pictures of the lessons (never on the disk), for the progress shots: in level 1 Kit stopped at
-// the three-slot gate with two tokens, then the third token on its ledge; in level 2 the five-slot
-// gate that is the exit.
+// Pictures of the lessons (never on the disk), for the progress shots: level 1's dark meter on its
+// ledge and the five-slot gate, and level 2's six-slot gate that is the exit.
 //   cd web && npx vite-node ../games/show-the-count/tools/shots.ts <outDir>
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';

@@ -28,7 +28,9 @@ function bulbPicture(pal: Pal, lit: boolean): Pixels {
   // the glass
   p.disc(9.5, 8, 6.5, ink);
   if (lit) {
-    p.disc(9.5, 8, 5.5, g[3]).disc(9.5, 8, 4, g[4]).disc(9.5, 8, 2.2, g[g.length - 1]);
+    p.disc(9.5, 8, 5.5, g[3])
+      .disc(9.5, 8, 4, g[4])
+      .disc(9.5, 8, 2.2, g[g.length - 1]);
     for (const [x, y] of [
       [9, 0],
       [0, 8],
