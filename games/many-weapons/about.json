@@ -8,7 +8,7 @@
   "version": "1.0",
   "blurb": "Two short levels about one key that throws different things. A pouch of stars and a pouch of flames fill counters, and Enter throws a flame if there is one, a star if there is not, and shrugs when there is neither. A star pops a mint green gumdrop but cannot melt a frosty grump; a flame can. Each weapon is a sequence in the character file, and the levels are built so that you feel the difference. Nothing here hurts. Signs explain each idea, and every level has a page on how it is made.",
   "exe": "MANYWEAP.EXE",
-  "dosName": "THROWIT",
+  "dosName": "MANYWEAP",
   "sound": "sb",
   "label": {
     "background": "#fff0d9",
@@ -30,16 +30,8 @@
       "Made to be copied and taken apart"
     ],
     "shots": [
-      [
-        "one.map",
-        22,
-        6
-      ],
-      [
-        "two.map",
-        16,
-        3
-      ]
+      ["one.map", 22, 6],
+      ["two.map", 16, 3]
     ],
     "rating": "Everyone"
   }
