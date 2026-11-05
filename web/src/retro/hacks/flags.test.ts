@@ -135,6 +135,15 @@ describe('FLAGS backup and keys', () => {
   });
 });
 
+describe('FLAGS PLAYED', () => {
+  it('rejects an unknown group and a count past the group', async () => {
+    vi.stubGlobal('localStorage', memory());
+    vi.stubGlobal('window', { dispatchEvent: () => true });
+    await expect(item('PLAYED').set!(['NOPE', '1'])).rejects.toBeInstanceOf(FlagError);
+    await expect(item('PLAYED').set!(['STARTERS', '99999'])).rejects.toBeInstanceOf(FlagError);
+  });
+});
+
 describe('FLAGS and the bonus games', () => {
   it('does not explain how they open while none is revealed', async () => {
     vi.stubGlobal('localStorage', memory());

@@ -12,6 +12,7 @@ import { huntStates, OVERRIDES_KEY as HEART_KEY, resetAllOverrides as resetHeart
 import { TIER_NAMES, TOP_TIER, readTrophyOverrides, resetTrophyOverrides, setTrophyOverride, tierOf, type TrophyKind } from '../../scoreTrophies/tiers';
 import { bestSum, loadScores } from '../../scoreTrophies/scores';
 import { deskClockSet, deskNow, resetDeskClock } from '../dos/deskClock';
+import { PLAYED_GROUPS, PlayedError, playedSummary, setPlayed } from './flagsPlayed';
 import { account, filePoints, restoreAccount } from '../bbs/ratio';
 
 /** The hint line's rate (desk/room/phone/hintBill.ts, which the DOS page may not load: flags.test.ts checks it). */
@@ -34,6 +35,14 @@ interface FlagItem {
 }
 
 export class FlagError extends Error {}
+
+async function playedAction(words: string[], clear: boolean): Promise<string> {
+  try {
+    return await setPlayed(words, clear);
+  } catch (e) {
+    throw e instanceof PlayedError ? new FlagError(e.message) : e;
+  }
+}
 
 const area = (): Storage | undefined => {
   try {
@@ -158,6 +167,17 @@ export const ITEMS: readonly FlagItem[] = [
     async reset() {
       await resetAchievements();
       return 'All badges cleared, as the web page Reset does (eggs, hearts and scores held before count as before).';
+    },
+  },
+  {
+    id: 'PLAYED',
+    label: 'Games played and finished (for badges)',
+    show: playedSummary,
+    set: (words) => playedAction(words, false),
+    clear: (words) => playedAction(words, true),
+    async reset() {
+      for (const g of PLAYED_GROUPS) await playedAction([g, 'NONE'], true);
+      return 'No game counts as played or finished for the badges (saves untouched).';
     },
   },
   {
