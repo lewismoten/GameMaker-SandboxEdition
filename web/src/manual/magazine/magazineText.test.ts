@@ -46,6 +46,8 @@ function drawnStrings(v: unknown, key: string, out: string[]): void {
   if (typeof v === 'string') {
     if (!NOT_DRAWN.has(key) && v.trim().split(/\s+/).length >= 3) out.push(plain(v).replace(/\s+/g, ' ').trim());
   } else if (Array.isArray(v)) for (const x of v) drawnStrings(x, key, out);
+  else if (v && typeof v === 'object' && (v as { t?: string }).t === 'mugs')
+    return; // the mugs' names are only alt text
   else if (v && typeof v === 'object') for (const [k, x] of Object.entries(v)) drawnStrings(x, k, out);
 }
 
