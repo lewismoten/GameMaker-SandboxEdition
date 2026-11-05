@@ -128,7 +128,8 @@ export function designPages(shots: GameShot[]): BookletPage[] {
       is a minute, and the longest wait, 9999 ticks, is about nine minutes.</div>
       <p class="see"><i>On the Sample CD:</i> <code>CLOCK</code>, <code>COUNTDWN</code>, <code>WARNFRST</code> and <code>BLOCKBRN</code> (gates that take turns) use time.</p>
       <p class="see"><i>Stars that twinkle out of step, by loops with different times, are on the Sample CD:</i> <code>TWINKLE</code>.</p>
-      <p class="see"><i>Flames, flags and a waterfall that move in place are on the Sample CD:</i> <code>FLICKER</code>.</p>`,
+      <p class="see"><i>Flames, flags and a waterfall that move in place are on the Sample CD:</i> <code>FLICKER</code>.</p>
+      <p class="see"><i>Light made of paint, in rings of brighter blocks, a trail a touch leaves and a hall a clock lights, is on the Sample CD:</i> <code>LIGHTOUT</code>.</p>`,
     ),
     page(
       '3. Designing Games',
