@@ -67,7 +67,8 @@ async function throwAt(bot: StarterBot, kind: number, weapon: number, popped: bo
   if (alive(bot, STAR) || alive(bot, FLAME)) throw new Error(`${what}: a throw is still flying`);
   const used = weapon === SEQ_STAR ? before.c.stars - counters(bot).stars : weapon === SEQ_FLAME ? before.c.flames - counters(bot).flames : 0;
   if (weapon !== SEQ_NONE && used !== 1) throw new Error(`${what}: a throw should use one count, it used ${used}`);
-  if (weapon === SEQ_NONE && (counters(bot).stars !== before.c.stars || counters(bot).flames !== before.c.flames)) throw new Error(`${what}: the shrug used a count`);
+  if (weapon === SEQ_NONE && (counters(bot).stars !== before.c.stars || counters(bot).flames !== before.c.flames))
+    throw new Error(`${what}: the shrug used a count`);
   const gone = before.left - alive(bot, kind);
   if (gone !== (popped ? 1 : 0)) throw new Error(`${what}: expected ${popped ? 'one pop' : 'no pop'}; ${gone} gone`);
   if (bot.sim.ci.score - before.score !== (popped ? POP_SCORE : 0)) throw new Error(`${what}: score ${before.score} -> ${bot.sim.ci.score}`);
@@ -124,7 +125,8 @@ export async function starOrFlame(bot: StarterBot): Promise<void> {
   await must(bot, bot.wait(LOOK), 'reading the sign');
   await must(bot, bot.walk(L2.ledge[0] - 1, 'under the ledge'), 'under the ledge');
   await must(bot, bot.jump('right', L2.flamePouch), 'up to the ledge');
-  if (counters(bot).flames !== 2) throw new Error(`the flame pouch should give two flames; Kit has ${counters(bot).flames} (he is at ${col(bot).toFixed(1)}, ${row(bot).toFixed(1)})`);
+  if (counters(bot).flames !== 2)
+    throw new Error(`the flame pouch should give two flames; Kit has ${counters(bot).flames} (he is at ${col(bot).toFixed(1)}, ${row(bot).toFixed(1)})`);
   await must(bot, bot.walk(21, 'the order sign'), 'to the order sign');
   await must(bot, bot.wait(LOOK), 'reading the sign');
   // flames go first, though a star is in his pocket too

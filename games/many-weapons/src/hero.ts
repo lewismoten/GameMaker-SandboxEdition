@@ -11,7 +11,6 @@ import { MONBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { INF_REPEAT, emptyFrame, type Character, type Frame } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { set } from '@lewismoten/gamemaker-sandbox-tools/kit/actors';
 import type { Book } from '../../kit/starter/book';
-import { SEQ } from '../../kit/starter/ids';
 import { buildHero } from '../../kit/starter/heroChar';
 import { buildHeroBlocks } from '../../kit/starter/hero';
 import type { Pal } from '../../kit/starter/palette';

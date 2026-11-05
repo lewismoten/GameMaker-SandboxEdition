@@ -9,4 +9,3 @@ export const SEQ_NONE = 17;
 /** What a pouch gives: stars or flames for the counter. */
 export const STARS_PER_POUCH = 2;
 export const FLAMES_PER_POUCH = 2;
-

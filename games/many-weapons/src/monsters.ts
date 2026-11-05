@@ -88,7 +88,9 @@ function frosty(pal: Pal, pic: Pixels, tall: boolean): Pixels {
   // brows slanting down toward the middle
   p.line(5, y - 4, 8, y - 3, ink).line(14, y - 4, 11, y - 3, ink);
   const white = pal.c('white', 3);
-  p.set(5, y - 1, white).set(5, y, white).set(6, y - 2, white);
+  p.set(5, y - 1, white)
+    .set(5, y, white)
+    .set(6, y - 2, white);
   return p;
 }
 

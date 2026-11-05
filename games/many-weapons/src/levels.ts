@@ -69,7 +69,18 @@ function scenery(g: Grid, clouds: [number, number][], bushes: number[], flowers:
 }
 
 /** Level 1: the star pouch's column, the three targets' columns and the exit's. */
-export const L1 = { width: 46, exit: 42, pouch: 12, targets: [20, 27, 33], coins: [[23, 9], [24, 9], [36, 9], [37, 9]] } as const;
+export const L1 = {
+  width: 46,
+  exit: 42,
+  pouch: 12,
+  targets: [20, 27, 33],
+  coins: [
+    [23, 9],
+    [24, 9],
+    [36, 9],
+    [37, 9],
+  ],
+} as const;
 /** Level 2: the star pouch's column, the flame pouch's column and ledge, the wall (first, last column), the two frosty grumps, the target and the exit. */
 export const L2 = {
   width: 50,
@@ -81,7 +92,12 @@ export const L2 = {
   wall: [24, 31],
   frosty: [26, 29],
   target: 38,
-  coins: [[14, 9], [21, 9], [35, 9], [41, 9]],
+  coins: [
+    [14, 9],
+    [21, 9],
+    [35, 9],
+    [41, 9],
+  ],
 } as const;
 
 /** Level 1: a pouch, and three mint gumdrops in a row. 46 blocks wide; the ground is row 10. */

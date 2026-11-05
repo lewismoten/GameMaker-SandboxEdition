@@ -1,33 +1,45 @@
 {
-  "title": "Throw It",
+  "title": "Many Weapons",
   "author": "Claude",
   "company": "Sandbox Software",
   "series": "starter",
   "year": 1994,
   "price": "Free",
   "version": "1.0",
-  "blurb": "Two short levels about throwing a star. Press Enter and Kit tosses one the way he last walked: it pops a mint green gumdrop sitting still, falls short if you stand too far away, and clears a grump out of a narrow way. Signs in the levels say how. Play it, then open it in Game-Maker and change the star.",
-  "exe": "THROW.EXE",
+  "blurb": "Two short levels about one key that throws different things. A pouch of stars and a pouch of flames fill counters, and Enter throws a flame if there is one, a star if there is not, and shrugs when there is neither. A star pops a mint green gumdrop but cannot melt a frosty grump; a flame can. Each weapon is a sequence in the character file, and the levels are built so that you feel the difference. Nothing here hurts. Signs explain each idea, and every level has a page on how it is made.",
+  "exe": "MANYWEAP.EXE",
   "dosName": "THROWIT",
   "sound": "sb",
   "label": {
-    "background": "#e8f6ff",
-    "band": "#2fae9a",
+    "background": "#fff0d9",
+    "band": "#c2461e",
     "ink": "#1a1830",
     "logo": "SANDBOX SOFTWARE"
   },
   "box": {
     "levels": "2 short levels",
     "hours": 1,
-    "background": "#2fae9a",
+    "background": "#c2461e",
     "accent": "#ffd23f",
     "ink": "#ffffff",
-    "tagline": "Aim small, miss small.",
-    "back": "A small explorer in a teal beanie has a pocketful of gold stars and two short levels to cross. A mint green gumdrop sits still, waiting to be popped, and a grump fills a narrow way through a brick wall. Read the signs, press Enter, then open the game in Game-Maker and change the star.",
-    "features": ["Signs in the levels explain each idea", "A star flies the way you last walked, and only so far", "Made to be copied and taken apart"],
+    "tagline": "One key. Your pick.",
+    "back": "A small explorer in a teal beanie has two short levels to cross and a pocketful of pouches to find. A pouch of stars, a pouch of flames, a mint green gumdrop and a frosty grump in a narrow way. Enter is the only throwing key, and what it throws depends on what you are carrying. Signs say what each level shows, and the manual says how each is made.",
+    "features": [
+      "Signs in the levels explain each idea",
+      "One key throws a flame, a star or nothing: each weapon is a sequence that counts its own uses",
+      "Made to be copied and taken apart"
+    ],
     "shots": [
-      ["one.map", 22, 6],
-      ["two.map", 26, 6]
+      [
+        "one.map",
+        22,
+        6
+      ],
+      [
+        "two.map",
+        16,
+        3
+      ]
     ],
     "rating": "Everyone"
   }

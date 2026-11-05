@@ -9,8 +9,9 @@ import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blockSheet, writePng } from '@lewismoten/gamemaker-sandbox-tools/kit/png';
 import { renderRegion } from '@lewismoten/gamemaker-sandbox-tools/kit/levelPicture';
 import { ORIGIN } from '../../kit/starter/map';
-import { buildHeroBlocks, heroPicture } from '../../kit/starter/hero';
-import { buildMonsterBlocks, buildMonsters } from '../../kit/starter/monsters';
+import { heroPicture } from '../../kit/starter/hero';
+import { buildWeaponHeroBlocks } from '../src/hero';
+import { finishMonsterPictures, monsterPictures, monsterSet } from '../src/monsters';
 import { buildLevels } from '../src/levels';
 
 const out = process.argv[2] ?? join(tmpdir(), 'many-weapons-preview');
@@ -20,21 +21,24 @@ const sky = pal.c('sky', 3);
 const bbl = book.finish();
 writePng(join(out, 'blocks.png'), blockSheet(bbl.slice(0, book.index.size), 12, 0), pal.pal, 3);
 
-const hero = buildHeroBlocks(pal);
+const hero = buildWeaponHeroBlocks(pal);
 const poses: [string, string][] = [
   ['stand.top', 'stand'],
   ['hurt.top', 'hurt'],
   ['cheer.top', 'jump'],
+  ['cheer.top', 'throw1'],
+  ['cheer.top', 'fire1'],
 ];
 const sheet = new Pixels(poses.length * 24 + 4, 44, sky);
 poses.forEach(([t, b], i) => sheet.blit(heroPicture(hero, t, b), 4 + i * 24, 2, 255));
 writePng(join(out, 'hero.png'), sheet, pal.pal, 5);
 
-const mb = buildMonsterBlocks(pal);
-const mbl = mb.finish();
+const mb = monsterPictures(pal);
+const mbl = finishMonsterPictures(mb);
+writePng(join(out, 'monsters.png'), blockSheet(mbl.slice(0, mb.index.size), 12, 0), pal.pal, 4);
 for (const l of levels) {
   const m = l.map.done();
-  const pic = renderRegion(m, bbl, mbl, buildMonsters(mb), ORIGIN, ORIGIN, l.map.width, l.map.height);
+  const pic = renderRegion(m, bbl, mbl, monsterSet(mb), ORIGIN, ORIGIN, l.map.width, l.map.height);
   writePng(join(out, `${l.file}.png`), pic, pal.pal, 1);
 }
 const disk = new URL('../disk/', import.meta.url);
