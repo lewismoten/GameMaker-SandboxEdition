@@ -15,7 +15,7 @@ import { clipEveryList } from '@lewismoten/gamemaker-sandbox-tools/kit/fliClips'
 import { Disk } from '../kit/disk';
 import { licenseText } from '../kit/license';
 import { STARTER_STING, starterStingFli } from '../kit/starter/sting';
-import { buildHeroBlocks, heroPicture } from '../kit/starter/hero';
+import { heroPicture } from '../kit/starter/hero';
 import { KEYS } from '../kit/starter/blocks';
 import { HERO_HIT_POINTS, HERO_LIVES, buildWeaponHero, buildWeaponHeroBlocks } from './src/hero';
 import { cardPicture, endPicture, gif, menuPicture, paper, scoresPicture, slotsPicture } from '../kit/starter/screens';
