@@ -114,6 +114,7 @@ for (const id of ids) {
       seen.add(scan);
       lines.push(`key ${scan} ${v.short}`);
     }
+  for (const [n, text] of Object.entries<string>(controls.counters ?? {})) lines.push(`ctr ${n} ${text.split(':')[0].slice(0, 19)}`);
   const ok = !why.length || forced.has(id);
   console.log(`${id.padEnd(24)} ${ok ? 'pack' : 'left out: ' + [...new Set(why)].join(', ')}`);
   if (listOnly || !ok) continue;

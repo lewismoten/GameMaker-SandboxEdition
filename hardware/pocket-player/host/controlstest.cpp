@@ -55,7 +55,7 @@ static Need platformer() { return needs(true, true, true, true, true, false); }
 int main() {
   Settings def;
   Layout L = makeLayout(def, platformer());
-  int cx = L.pad.cx, cy = L.pad.cy, R = L.pad.r;
+  int cx = L.pad.cx, cy = L.pad.cy;
 
   { Run r(def, platformer());  // sliding a held finger from the left side to the right side
     r.touch(1, cx - 50, cy); r.wait(100);
@@ -191,6 +191,38 @@ int main() {
     r.touch(1, cx + 50, cy); r.wait(24);
     r.touch(1, cx - 50, cy); r.wait(24);
     check("a quick swipe never holds left and right together", !(r.held[75] && r.held[77]), r.log); }
+
+  { // Layout: every size, both hands, every key set: targets at least 48 px, inside the game view, none overlapping.
+    bool ok = true;
+    std::string why;
+    for (int lefty = 0; lefty < 2; lefty++)
+      for (int ps = 0; ps < 3; ps++)
+        for (int ne = 0; ne < 3; ne++) {
+          Settings s; s.lefty = lefty; s.padSize = ps;
+          Need n = needs(true, true, true, true, true, true);
+          for (int i = 0; i < ne * 3; i++) needAdd(n, 16 + i);  // none, 3, 6 extra keys (more than six go in a second row over the pad: that menu is modal)
+          Layout l = makeLayout(s, n);
+          struct D { Disc d; const char* nm; } ds[] = {{l.pad, "pad"}, {l.space, "space"}, {l.enter, "enter"}};
+          for (auto& a : ds) {
+            if (a.d.r * 2 < 48 || a.d.cx - a.d.r < 0 || a.d.cx + a.d.r > W || a.d.cy - a.d.r < 0 || a.d.cy + a.d.r > 300) { ok = false; why += std::string(a.nm) + " out of bounds or small; "; }
+          }
+          for (int i = 0; i < 3; i++) for (int j = i + 1; j < 3; j++) {
+            int dx = ds[i].d.cx - ds[j].d.cx, dy = ds[i].d.cy - ds[j].d.cy, rr = ds[i].d.r + ds[j].d.r;
+            if (dx * dx + dy * dy < rr * rr) { ok = false; why += std::string(ds[i].nm) + " overlaps " + ds[j].nm + "; "; }
+          }
+          Rect chips[] = {l.menu, l.keys};
+          for (auto& c : chips) {
+            if (c.x1 - c.x0 < 48 || c.y1 - c.y0 < 48) { ok = false; why += "chip small; "; }
+            for (auto& a : ds) if (inDisc(a.d, (c.x0 + c.x1) / 2, (c.y0 + c.y1) / 2) || inDisc(a.d, c.x0, c.y1, 0)) { ok = false; why += "chip over a control; "; }
+          }
+          for (int t = 0; t < n.nextra; t++) {
+            Rect r = l.tile[t];
+            if (r.x1 - r.x0 < 48 || r.y1 - r.y0 < 48 || r.x0 < 0 || r.x1 > W) { ok = false; why += "tile small or off screen; "; }
+            for (auto& a : ds) if (inDisc(a.d, (r.x0 + r.x1) / 2, (r.y0 + r.y1) / 2)) { ok = false; why += "tile over a control; "; }
+          }
+        }
+    check("layout: targets 48 px or more, on screen, not overlapping (both hands, three pad sizes)", ok, why);
+  }
 
   printf("%s\n", failures ? "controls model: FAILURES" : "controls model: all scenarios pass");
   return failures ? 1 : 0;

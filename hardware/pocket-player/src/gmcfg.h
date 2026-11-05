@@ -5,6 +5,7 @@
 //   level <map> <bbl> <cbl> <chr> <pal> <start x> <start y> <scroll up> <down> <left> <right> <blocks>
 //   link <level> <from x> <from y> <to level, -1 = the game is won> <to x> <to y>
 //   key <scan code> <label>          (the keys the game uses, from controls.json)
+//   ctr <counter> <label>            (counters 20 to 29 the game shows, from controls.json)
 // Every file is packed (see Assets::readz). A map is the 100 x 100 block numbers; a .bbl is cut after the
 // last block the game uses (<blocks> of them, unused ones zero). Files are named by content, so games share them.
 #pragma once
@@ -18,8 +19,11 @@ namespace gm {
 constexpr int MAXKEYSET = 12;
 struct KeyInfo { int scan; char label[16]; };
 struct LevelFiles { char map[16], bbl[16], cbl[16], chr[16], pal[16]; int nbl; };
+struct Counter { int n; char label[20]; };
 struct Cfg {
   char title[40];
+  Counter ctr[6];
+  int nctr = 0;
   LevelFiles lv[MAXLEVELS];
   KeyInfo keys[MAXKEYSET];
   int nkeys = 0;
@@ -28,6 +32,7 @@ struct Cfg {
 inline bool parseCfg(const char* text, World& w, Cfg& cfg) {
   w.nlevels = 0;
   cfg.nkeys = 0;
+  cfg.nctr = 0;
   cfg.title[0] = 0;
   for (auto& l : w.levels) l.nlinks = 0;
   const char* p = text;
@@ -55,6 +60,11 @@ inline bool parseCfg(const char* text, World& w, Cfg& cfg) {
     } else if (sscanf(line, "link %d %d %d %d %d %d", &a, &b, &c, &d, &e, &f) == 6 && a >= 0 && a < w.nlevels) {
       Level& L = w.levels[a];
       if (L.nlinks < MAXLINKS) L.links[L.nlinks++] = {b, c, d, e, f};
+    } else if (!strncmp(line, "ctr ", 4) && sscanf(line, "ctr %d %n", &a, &h) >= 1 && cfg.nctr < 6) {
+      Counter& k = cfg.ctr[cfg.nctr++];
+      k.n = a;
+      strncpy(k.label, line + h, sizeof k.label - 1);
+      k.label[sizeof k.label - 1] = 0;
     } else if (!strncmp(line, "key ", 4) && sscanf(line, "key %d %n", &a, &h) >= 1 && cfg.nkeys < MAXKEYSET) {
       KeyInfo& k = cfg.keys[cfg.nkeys++];
       k.scan = a;
