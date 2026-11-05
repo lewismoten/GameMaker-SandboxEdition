@@ -27,4 +27,4 @@ if (seen !== '2 3' || r.keysLeft) {
   console.error(`demoCheck: expected scenes 2 3 (level 1, then the start of level 2) with every key played; got ${seen}`);
   process.exit(1);
 }
-console.log('demoCheck ok: passed the pulse, the lights-out and the flags and went out the door, then started level 2');
+console.log('demoCheck ok: walked past the three lamps and went out the door, then started level 2');

@@ -1,5 +1,5 @@
 // Re-records the title screen's demo into src/demo.ts: the bot's own run through
-// the first level (the pulse, the lights-out, the flags, out the door), then rebuild.
+// the first level (three lamps and their rings, out the door), then rebuild.
 //   cd web && npx vite-node ../games/lights-out/tools/gendemo.ts && npx vite-node ../games/lights-out/build.ts
 import { recordDemo } from '../../kit/demoRecord';
 import { play } from './play';

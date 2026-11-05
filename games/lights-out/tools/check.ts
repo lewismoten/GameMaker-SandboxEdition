@@ -14,7 +14,9 @@ for (const l of built.levels) {
   assertNoInvisibleWalls({ book: l.book, pal: l.pal, levels: [l] });
   // a sign's board and posts are drawn on the darkest air, so a sign must stand where the cave is shade 0
   for (const [name, [x, y]] of Object.entries(l.signs))
-    for (let dx = 0; dx < 4; dx++) for (let dy = 0; dy < 4; dy++) if (shadeAt(x + dx, y + dy, l.lamps) !== 0) throw new Error(`${l.file}: sign ${name} stands in a lamp's light at ${x + dx},${y + dy}`);
+    for (let dx = 0; dx < 4; dx++)
+      for (let dy = 0; dy < 4; dy++)
+        if (shadeAt(x + dx, y + dy, l.lamps) !== 0) throw new Error(`${l.file}: sign ${name} stands in a lamp's light at ${x + dx},${y + dy}`);
 }
 for (const row of contrastTable()) {
   if (row.path < MIN_PATH) throw new Error(`shade ${row.shade}: the floor's edge has contrast ${row.path.toFixed(2)}, under ${MIN_PATH}`);

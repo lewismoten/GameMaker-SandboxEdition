@@ -74,10 +74,17 @@ export function shadeAt(x: number, y: number, lamps: [number, number][]): number
 
 /** The ceiling and walls past a level's edge are dark rock (the map carries on, and the dark carries on with it). */
 class CaveMap extends StarterMap {
+  constructor(
+    private readonly blocks: Book,
+    rows: string[],
+  ) {
+    super(blocks, rows);
+  }
+
   override done(): GameMap {
     const m = super.done();
-    const rock0 = this.book.n('rock.0.0');
-    const rock1 = this.book.n('rock.0.1');
+    const rock0 = this.blocks.n('rock.0.0');
+    const rock1 = this.blocks.n('rock.0.1');
     for (let y = ORIGIN; y < ORIGIN + this.height; y++)
       for (let x = 0; x < MLEN; x++) if (x < ORIGIN || x >= ORIGIN + this.width) m.blocks[y * MLEN + x] = (x + y) % 2 ? rock0 : rock1;
     return m;
@@ -145,7 +152,12 @@ interface Laid {
  * lamps (a lantern on a post) and the doors. With `dark` every brighter block is a dark twin that lights at LIGHTS_AT;
  * with `tunnel` (columns from, to) the air is dark blocks that turn lit when touched.
  */
-function lay(built: Built, W: number, h: number[], o: { dark?: boolean; lamps?: [number, number][]; tunnel?: [number, number]; start: number; exit: number }): Laid {
+function lay(
+  built: Built,
+  W: number,
+  h: number[],
+  o: { dark?: boolean; lamps?: [number, number][]; tunnel?: [number, number]; start: number; exit: number },
+): Laid {
   const { book, pal } = built;
   const lamps = o.lamps ?? [];
   const timed: Timed[] = [];
@@ -199,7 +211,17 @@ function lay(built: Built, W: number, h: number[], o: { dark?: boolean; lamps?: 
       }
       const s = k === 'post' ? shadeAt(x, y, lamps) : shade;
       const name =
-        k === 'rock' ? `rock.${s}.${v}` : k === 'floor' ? `floor.${s}.${v}` : k === 'drip' ? `drip.${s}` : k === 'lantern' ? 'lantern' : k === 'post' ? `post.${s}` : `air.${s}`;
+        k === 'rock'
+          ? `rock.${s}.${v}`
+          : k === 'floor'
+            ? `floor.${s}.${v}`
+            : k === 'drip'
+              ? `drip.${s}`
+              : k === 'lantern'
+                ? 'lantern'
+                : k === 'post'
+                  ? `post.${s}`
+                  : `air.${s}`;
       m.set(x, y, lay1(name, s > 0 || k === 'lantern'));
     }
   const signAt = (name: string, x: number): [number, number] => {
@@ -224,7 +246,20 @@ function lanternCave(): Level {
   ];
   const laid = lay(built, W, heights(W, { 30: 7, 31: 7, 32: 7 }), { lamps, start: 2, exit: 45 });
   const signs = { shades: laid.signAt('shades', 5), rings: laid.signAt('rings', 19), fixed: laid.signAt('fixed', 34) };
-  return { file: 'lanterns', title: 'The Lantern Cave', hint: 'Light drawn in rings of blocks.', pal: built.pal, palFile: 'cave.pal', book: built.book, timed: laid.timed, map: laid.map, lamps, cells: laid.cells, lightsAt: 0, signs };
+  return {
+    file: 'lanterns',
+    title: 'The Lantern Cave',
+    hint: 'Light drawn in rings of blocks.',
+    pal: built.pal,
+    palFile: 'cave.pal',
+    book: built.book,
+    timed: laid.timed,
+    map: laid.map,
+    lamps,
+    cells: laid.cells,
+    lightsAt: 0,
+    signs,
+  };
 }
 
 /** Level 2: a dark tunnel that lights where it is touched, 44 blocks wide. */
@@ -233,7 +268,20 @@ function lightYourWay(): Level {
   const W = 44;
   const laid = lay(built, W, heights(W), { tunnel: [3, 40], start: 2, exit: 41 });
   const signs = { touch: laid.signAt('touch', 6), jump: laid.signAt('jump', 19), trail: laid.signAt('trail', 32) };
-  return { file: 'tunnel', title: 'Light Your Way', hint: 'A dark tunnel that lights where you touch.', pal: built.pal, palFile: 'cave.pal', book: built.book, timed: laid.timed, map: laid.map, lamps: [], cells: laid.cells, lightsAt: 0, signs };
+  return {
+    file: 'tunnel',
+    title: 'Light Your Way',
+    hint: 'A tunnel that lights where you touch.',
+    pal: built.pal,
+    palFile: 'cave.pal',
+    book: built.book,
+    timed: laid.timed,
+    map: laid.map,
+    lamps: [],
+    cells: laid.cells,
+    lightsAt: 0,
+    signs,
+  };
 }
 
 /** A bulb on the clock's row: dark glass that fills when its time comes. */
@@ -263,7 +311,20 @@ function lightsComeOn(): Level {
     laid.map.set(5 + k, 3, `bulb.${k}.off`);
   }
   const signs = { clock: laid.signAt('clock', 5), once: laid.signAt('once', 18) };
-  return { file: 'hall', title: 'The Lights Come On', hint: 'A clock lights every block at once.', pal: built.pal, palFile: 'cave.pal', book: built.book, timed: laid.timed, map: laid.map, lamps, cells: laid.cells, lightsAt: LIGHTS_AT, signs };
+  return {
+    file: 'hall',
+    title: 'The Lights Come On',
+    hint: 'A clock lights every block at once.',
+    pal: built.pal,
+    palFile: 'cave.pal',
+    book: built.book,
+    timed: laid.timed,
+    map: laid.map,
+    lamps,
+    cells: laid.cells,
+    lightsAt: LIGHTS_AT,
+    signs,
+  };
 }
 
 /** The levels in order. */

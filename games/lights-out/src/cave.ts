@@ -90,7 +90,9 @@ export function drip(pal: Pal, k: number): Pixels {
 export function post(pal: Pal, k: number): Pixels {
   const r = pal.r('crock');
   const p = air(pal, k);
-  p.rect(8, 0, 4, 20, r[k + 1]).rect(8, 0, 1, 20, r[k + 2]).rect(11, 0, 1, 20, r[k]);
+  p.rect(8, 0, 4, 20, r[k + 1])
+    .rect(8, 0, 1, 20, r[k + 2])
+    .rect(11, 0, 1, 20, r[k]);
   return p;
 }
 
@@ -101,7 +103,9 @@ export function lantern(pal: Pal, lit: boolean): Pixels {
   const ink = c('ink', 0);
   const metal = lit ? c('stone', 1) : c('stone', 0);
   p.rect(9, 0, 2, 3, metal).rect(7, 0, 6, 1, metal).rect(4, 3, 12, 3, metal).rect(5, 3, 10, 1, c('stone', 2)).rect(4, 5, 12, 1, ink);
-  p.rect(5, 6, 10, 9, lit ? c('gold', 2) : c('stone', 0)).rect(4, 6, 1, 9, metal).rect(15, 6, 1, 9, metal);
+  p.rect(5, 6, 10, 9, lit ? c('gold', 2) : c('stone', 0))
+    .rect(4, 6, 1, 9, metal)
+    .rect(15, 6, 1, 9, metal);
   p.rect(6, 7, 8, 7, lit ? c('gold', 4) : c('ink', 1));
   if (lit) {
     p.disc(10, 11, 3.4, c('gold', 5)).disc(10, 11, 1.8, c('white', 3)).set(10, 7, c('gold', 5)).set(10, 8, c('gold', 5));

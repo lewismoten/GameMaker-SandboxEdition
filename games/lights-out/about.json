@@ -32,16 +32,8 @@
       "Made to be copied and taken apart"
     ],
     "shots": [
-      [
-        "lanterns.map",
-        15,
-        6
-      ],
-      [
-        "hall.map",
-        20,
-        6
-      ]
+      ["lanterns.map", 15, 6],
+      ["hall.map", 20, 6]
     ],
     "rating": "Everyone"
   },
