@@ -8,6 +8,7 @@
 #include <rom/miniz.h>
 #include "board.h"
 #include "controls.h"
+#include "btnicon.h"
 #include "gmcfg.h"
 #include "gt911.h"
 #include "speaker.h"
@@ -161,57 +162,133 @@ static void title(const char* s) {
   tft.print(s);
 }
 
-// The solid controls (MENU, KEYS and the open key tiles): the game is never pushed under them, so a
-// repaint of the picture doesn't blink them off and on (they are drawn once, and again only when they
-// change or the controls are redrawn in full).
-static int solidRects(int (*out)[4]);
-// Pushes `rows` rows of the band at (X0, Ys), w wide, leaving out the solid controls.
-static void pushAround(int X0, int Ys, int w, int rows) {
-  int sr[3 + ctl::MAXEXTRA][4];
-  int ns = solidRects(sr);
-  bool hit = false;
-  for (int i = 0; i < ns && !hit; i++) hit = sr[i][0] < X0 + w && sr[i][2] > X0 && sr[i][1] < Ys + rows && sr[i][3] > Ys;
-  if (!hit) { tft.pushImage(X0, Ys, w, rows, band); return; }
-  for (int r = 0; r < rows; r++) {
-    int Y = Ys + r, x = X0, X1 = X0 + w;
-    while (x < X1) {
-      int stop = X1, skipTo = x;  // the next solid span on this row
-      for (int i = 0; i < ns; i++) {
-        if (Y < sr[i][1] || Y >= sr[i][3] || sr[i][2] <= x || sr[i][0] >= X1) continue;
-        if (sr[i][0] <= x) { if (sr[i][2] > skipTo) skipTo = sr[i][2]; }
-        else if (sr[i][0] < stop) stop = sr[i][0];
-      }
-      if (skipTo > x) { x = skipTo; continue; }
-      tft.pushImage(x, Y, stop - x, 1, band + r * w + (x - X0));
-      x = stop;
-    }
-  }
-}
-
-// Draws screen rectangle [X0,X1) x [Y0,Y1) of the 480x300 view: the game's rows at 1.5x.
-static void drawRegion(int X0, int Y0, int X1, int Y1) {
-  if (X0 < 0) X0 = 0;
-  if (Y0 < 0) Y0 = 0;
-  if (X1 > VIEW_W) X1 = VIEW_W;
-  if (Y1 > VIEW_H) Y1 = VIEW_H;
-  int w = X1 - X0;
-  if (w <= 0 || Y1 <= Y0) return;
-  int rowGy = -1;
-  for (int Ys = Y0; Ys < Y1; Ys += BAND) {
-    int rows = Y1 - Ys < BAND ? Y1 - Ys : BAND;
-    for (int r = 0; r < rows; r++) {
-      int gy = (Ys + r) * 2 / 3;
-      if (gy != rowGy) { world.renderRow(gy, rowIdx); rowGy = gy; }
-      uint16_t* o = band + r * w;
-      for (int X = X0; X < X1; X++) *o++ = pal[rowIdx[X * 2 / 3]];
-    }
-    pushAround(X0, Ys, w, rows);
-  }
-}
+// ---- the picture with the controls on it ----------------------------------------------------------
+// Each band of the picture is built in `band`, the controls that touch it are drawn into the band (through
+// a sprite on the same memory, so the colors need no conversion) and the band is pushed once. The panel
+// never shows the game without the controls (no blink), and a solid chip is never painted twice (no black
+// flash). Only the controls that overlap a band are drawn into it.
+static lgfx::LGFX_Sprite spr(&tft);
+static bool sprReady = false;
+static int bandX = 0, bandY = 0, bandW = 0, bandH = 0;  // the band's corner and size on the screen
 
 static const char* labelOf(int scan, const char* fallback) {
   for (int i = 0; i < cfg.nkeys; i++) if (cfg.keys[i].scan == scan) return cfg.keys[i].label;
   return fallback;
+}
+
+// What each button shows beside its name: the picture of what the key throws or uses (btnicon.h).
+// Index 0 Space, 1 Enter, 2 + i the key tile i. The signature says when the picture changed.
+static gm::BtnIcon icons[2 + ctl::MAXEXTRA];
+static void refreshIcons() {
+  const ctl::Need& nd = controls.need;
+  icons[0] = nd.space ? gm::iconForKey(world, ctl::S_SPACE) : gm::BtnIcon();
+  icons[1] = nd.enter ? gm::iconForKey(world, ctl::S_ENTER) : gm::BtnIcon();
+  for (int i = 0; i < ctl::MAXEXTRA; i++) icons[2 + i] = i < nd.nextra ? gm::iconForKey(world, nd.extra[i]) : gm::BtnIcon();
+}
+
+static int textW(const char* s, float size) {
+  spr.setTextSize(size);
+  return spr.textWidth(s);
+}
+static int textH(float size) { return (int)(8 * size + 0.5f); }
+
+// Where a label may go: a disc (the width left at a height is its chord, less the ring) or a rectangle.
+struct Box { bool round; int cx, cy, r, w; };
+static int availW(const Box& b, int y0, int y1) {
+  if (!b.round) return b.w - 6;
+  int dy = abs(y0 - b.cy) > abs(y1 - b.cy) ? abs(y0 - b.cy) : abs(y1 - b.cy);
+  int rr = b.r - 2;
+  return dy >= rr ? 0 : (int)(2 * sqrtf((float)(rr * rr - dy * dy)));
+}
+
+// Text centered on (x, y) of the screen, with a dark edge when it sits on the game.
+static void putText(const char* s, int x, int y, uint16_t fg, bool edge) {
+  spr.setTextDatum(textdatum_t::middle_center);
+  x -= bandX; y -= bandY;
+  if (edge) {
+    spr.setTextColor(C_BLACK);
+    spr.drawString(s, x - 1, y); spr.drawString(s, x + 1, y); spr.drawString(s, x, y - 1); spr.drawString(s, x, y + 1);
+  }
+  spr.setTextColor(fg);
+  spr.drawString(s, x, y);
+}
+
+// The key's name, as large as fits (2, 1.5, then 1), centered at (cx, yc).
+static void drawName(const Box& b, const char* name, int yc, uint16_t fg, bool edge) {
+  static const float sizes[3] = {2.0f, 1.5f, 1.0f};
+  float sz = 1.0f;
+  for (int i = 0; i < 3; i++) {
+    sz = sizes[i];
+    int h = textH(sz);
+    if (textW(name, sz) <= availW(b, yc - h / 2, yc + h / 2)) break;
+  }
+  spr.setTextSize(sz);
+  putText(name, b.cx, yc, fg, edge);
+}
+
+// The game's label, small, from topY down, at most maxH tall and never outside the box: one line, else two
+// (split at the space nearest the middle), else smaller, else cut with "...".
+static void drawLabel(const Box& b, const char* label, int topY, int maxH, uint16_t fg, bool edge) {
+  static const float sizes[2] = {1.0f, 0.75f};
+  char l1[24], l2[24];
+  int len = (int)strlen(label);
+  if (len > 23) len = 23;
+  for (int pass = 0; pass < 3; pass++) {
+    float sz = pass < 2 ? sizes[pass] : sizes[1];
+    int h = textH(sz);
+    if (h > maxH) continue;
+    bool cut = pass == 2;
+    int nl = 1;
+    memcpy(l1, label, len); l1[len] = 0; l2[0] = 0;
+    if (textW(l1, sz) > availW(b, topY, topY + h) && 2 * h <= maxH) {
+      int best = -1;
+      for (int i = 1; i < len - 1; i++)
+        if (label[i] == ' ' && (best < 0 || abs(i - len / 2) < abs(best - len / 2))) best = i;
+      if (best > 0) {
+        memcpy(l1, label, best); l1[best] = 0;
+        memcpy(l2, label + best + 1, len - best - 1); l2[len - best - 1] = 0;
+        nl = 2;
+      }
+    }
+    bool ok = true;
+    for (int k = 0; k < nl; k++) {
+      char* s = k ? l2 : l1;
+      int y0 = topY + k * h, aw = availW(b, y0, y0 + h);
+      if (textW(s, sz) <= aw) continue;
+      if (!cut) { ok = false; break; }
+      int n = (int)strlen(s);
+      while (n > 0) {
+        s[n - 1] = 0; n--;
+        char t[28];
+        snprintf(t, sizeof t, "%s...", s);
+        if (textW(t, sz) <= aw) { strcpy(s, t); break; }
+      }
+      if (n == 0) s[0] = 0;
+    }
+    if (!ok) continue;
+    spr.setTextSize(sz);
+    for (int k = 0; k < nl; k++) {
+      const char* s = k ? l2 : l1;
+      if (s[0]) putText(s, b.cx, topY + k * h + h / 2, fg, edge);
+    }
+    return;
+  }
+}
+
+// A 20 x 20 picture (palette indices) scaled to S x S at (x0, y0) of the screen, on a dark backing, written
+// straight into the band (it holds panel colors, as `pal` does).
+static void drawIcon(const uint8_t* px, int x0, int y0, int S) {
+  spr.fillRect(x0 - 1 - bandX, y0 - 1 - bandY, S + 2, S + 2, C_BLACK);
+  for (int dy = 0; dy < S; dy++) {
+    int Y = y0 + dy - bandY;
+    if (Y < 0 || Y >= bandH) continue;
+    for (int dx = 0; dx < S; dx++) {
+      int X = x0 + dx - bandX;
+      if (X < 0 || X >= bandW) continue;
+      uint8_t v = px[(dy * 20 / S) * 20 + dx * 20 / S];
+      if (v != 255) band[Y * bandW + X] = pal[v];
+    }
+  }
 }
 
 // Triangle pointing in direction d (0 left, 1 right, 2 up, 3 down) at (cx, cy), size s.
@@ -223,76 +300,106 @@ static void arrow(int cx, int cy, int d, int s, bool lit) {
     case 2: x0 = cx; y0 = cy - s; x1 = cx - s; y1 = cy + s / 2; x2 = cx + s; y2 = cy + s / 2; break;
     default: x0 = cx; y0 = cy + s; x1 = cx - s; y1 = cy - s / 2; x2 = cx + s; y2 = cy - s / 2; break;
   }
-  if (lit) tft.fillTriangle(x0, y0, x1, y1, x2, y2, C_YELLOW);
-  tft.drawTriangle(x0, y0, x1, y1, x2, y2, lit ? C_BLACK : C_WHITE);
+  x0 -= bandX; x1 -= bandX; x2 -= bandX; y0 -= bandY; y1 -= bandY; y2 -= bandY;
+  if (lit) spr.fillTriangle(x0, y0, x1, y1, x2, y2, C_YELLOW);
+  spr.drawTriangle(x0, y0, x1, y1, x2, y2, lit ? C_BLACK : C_WHITE);
 }
-static void disc(const ctl::Disc& d, bool down, const char* label) {
-  if (down) tft.fillCircle(d.cx, d.cy, d.r, C_YELLOW);
-  tft.drawCircle(d.cx, d.cy, d.r + 1, C_BLACK);
-  tft.drawCircle(d.cx, d.cy, d.r, down ? C_BLACK : C_WHITE);
-  tft.drawCircle(d.cx, d.cy, d.r - 1, down ? C_BLACK : C_WHITE);
-  tft.setTextColor(down ? C_BLACK : C_WHITE);
-  tft.setTextSize(1);
-  tft.setTextDatum(textdatum_t::middle_center);
-  tft.drawString(label, d.cx, d.cy);
-  tft.setTextDatum(textdatum_t::top_left);
+// A round button: the key's name big, and under it the picture of what it throws or uses, else the game's label.
+static void disc(const ctl::Disc& d, bool down, int scan, const char* fallback, const gm::BtnIcon& ic) {
+  int cx = d.cx - bandX, cy = d.cy - bandY;
+  if (down) spr.fillCircle(cx, cy, d.r, C_YELLOW);
+  spr.drawCircle(cx, cy, d.r + 1, C_BLACK);
+  spr.drawCircle(cx, cy, d.r, down ? C_BLACK : C_WHITE);
+  spr.drawCircle(cx, cy, d.r - 1, down ? C_BLACK : C_WHITE);
+  const char* name = ctl::scanName(scan);
+  const char* label = labelOf(scan, fallback);
+  bool sub = ic.px || (label[0] && strcmp(label, name));
+  Box b{true, d.cx, d.cy, d.r, 0};
+  uint16_t fg = down ? C_BLACK : C_WHITE;
+  drawName(b, name, sub ? d.cy - d.r / 3 : d.cy, fg, !down);
+  if (ic.px) {
+    int S = d.r * 2 / 3;
+    drawIcon(ic.px, d.cx - S / 2, d.cy + 3, S);
+  } else if (sub) {
+    drawLabel(b, label, d.cy + 3, d.r - 7, fg, !down);
+  }
 }
 static void chip(const ctl::Rect& r, const char* label, bool down) {
-  tft.fillRect(r.x0, r.y0, r.x1 - r.x0, r.y1 - r.y0, C_BLACK);  // square: the game isn't pushed under its corners
-  tft.fillRoundRect(r.x0, r.y0, r.x1 - r.x0, r.y1 - r.y0, 6, down ? C_YELLOW : C_DARK);
-  tft.drawRoundRect(r.x0, r.y0, r.x1 - r.x0, r.y1 - r.y0, 6, C_WHITE);
-  tft.setTextColor(down ? C_BLACK : C_WHITE);
-  tft.setTextSize(1);
-  tft.setTextDatum(textdatum_t::middle_center);
-  tft.drawString(label, (r.x0 + r.x1) / 2, (r.y0 + r.y1) / 2);
-  tft.setTextDatum(textdatum_t::top_left);
+  int x0 = r.x0 - bandX, y0 = r.y0 - bandY, w = r.x1 - r.x0, h = r.y1 - r.y0;
+  spr.fillRect(x0, y0, w, h, C_BLACK);  // square: the game isn't shown in its corners
+  spr.fillRoundRect(x0, y0, w, h, 6, down ? C_YELLOW : C_DARK);
+  spr.drawRoundRect(x0, y0, w, h, 6, C_WHITE);
+  spr.setTextSize(1);
+  putText(label, (r.x0 + r.x1) / 2, (r.y0 + r.y1) / 2, down ? C_BLACK : C_WHITE, false);
+}
+// A key tile: the key's name, then the picture or the game's label.
+static void tile(const ctl::Rect& r, int scan, bool on, const gm::BtnIcon& ic) {
+  int x0 = r.x0 - bandX, y0 = r.y0 - bandY, w = r.x1 - r.x0, h = r.y1 - r.y0;
+  spr.fillRect(x0, y0, w, h, C_BLACK);
+  spr.fillRoundRect(x0, y0, w, h, 6, on ? C_YELLOW : C_DARK);
+  spr.drawRoundRect(x0, y0, w, h, 6, C_WHITE);
+  uint16_t fg = on ? C_BLACK : C_WHITE;
+  Box b{false, (r.x0 + r.x1) / 2, (r.y0 + r.y1) / 2, 0, w};
+  const char* name = ctl::scanName(scan);
+  const char* label = labelOf(scan, "");
+  drawName(b, name, r.y0 + 13, fg, false);
+  if (ic.px) drawIcon(ic.px, b.cx - 13, r.y0 + 26, 26);
+  else if (label[0] && strcmp(label, name)) drawLabel(b, label, r.y0 + 25, h - 28, fg, false);
 }
 
-// The controls, drawn as outlines over the game (clipped to `c`), so the picture shows through.
-static void drawControls(int cx0, int cy0, int cx1, int cy1) {
-  tft.setClipRect(cx0, cy0, cx1 - cx0, cy1 - cy0);
+static bool hitsBand(int x0, int y0, int x1, int y1) { return x0 < bandX + bandW && x1 > bandX && y0 < bandY + bandH && y1 > bandY; }
+static bool hitsDisc(const ctl::Disc& d) { return hitsBand(d.cx - d.r - 2, d.cy - d.r - 2, d.cx + d.r + 3, d.cy + d.r + 3); }
+static bool hitsRect(const ctl::Rect& r) { return hitsBand(r.x0, r.y0, r.x1, r.y1); }
+
+// The controls that overlap the current band, drawn into it.
+static void drawControls() {
   const ctl::Layout& L = controls.L;
   const ctl::Need& nd = controls.need;
   const ctl::Disc& p = L.pad;
-  tft.drawCircle(p.cx, p.cy, p.r + 1, C_BLACK);
-  tft.drawCircle(p.cx, p.cy, p.r, C_WHITE);
-  tft.drawCircle(p.cx, p.cy, L.deadR, C_WHITE);
-  uint8_t d = controls.padDirs;
-  int a = p.r * 2 / 3, s = p.r / 6 + 4;
-  if (nd.left) arrow(p.cx - a, p.cy, 0, s, d & 1);
-  if (nd.right) arrow(p.cx + a, p.cy, 1, s, d & 2);
-  if (nd.up) arrow(p.cx, p.cy - a, 2, s, d & 4);
-  if (nd.down) arrow(p.cx, p.cy + a, 3, s, d & 8);
-  if (nd.space) disc(L.space, controls.btnDown & 1, labelOf(ctl::S_SPACE, "Space"));
-  if (nd.enter) disc(L.enter, controls.btnDown & 2, labelOf(ctl::S_ENTER, "Enter"));
-  chip(L.menu, "MENU", controls.btnDown & 4);
-  if (nd.nextra) chip(L.keys, "KEYS", (controls.btnDown & 8) || controls.keysOpen);
+  if (hitsDisc(p)) {
+    int px = p.cx - bandX, py = p.cy - bandY;
+    spr.drawCircle(px, py, p.r + 1, C_BLACK);
+    spr.drawCircle(px, py, p.r, C_WHITE);
+    spr.drawCircle(px, py, L.deadR, C_WHITE);
+    uint8_t d = controls.padDirs;
+    int a = p.r * 2 / 3, s = p.r / 6 + 4;
+    if (nd.left) arrow(p.cx - a, p.cy, 0, s, d & 1);
+    if (nd.right) arrow(p.cx + a, p.cy, 1, s, d & 2);
+    if (nd.up) arrow(p.cx, p.cy - a, 2, s, d & 4);
+    if (nd.down) arrow(p.cx, p.cy + a, 3, s, d & 8);
+  }
+  if (nd.space && hitsDisc(L.space)) disc(L.space, controls.btnDown & 1, ctl::S_SPACE, "Space", icons[0]);
+  if (nd.enter && hitsDisc(L.enter)) disc(L.enter, controls.btnDown & 2, ctl::S_ENTER, "Enter", icons[1]);
+  if (hitsRect(L.menu)) chip(L.menu, "MENU", controls.btnDown & 4);
+  if (nd.nextra && hitsRect(L.keys)) chip(L.keys, "KEYS", (controls.btnDown & 8) || controls.keysOpen);
   if (controls.keysOpen)
-    for (int i = 0; i < nd.nextra; i++) {
-      const ctl::Rect& r = L.tile[i];
-      bool on = controls.tileDown & (1 << i);
-      tft.fillRect(r.x0, r.y0, r.x1 - r.x0, r.y1 - r.y0, C_BLACK);
-      tft.fillRoundRect(r.x0, r.y0, r.x1 - r.x0, r.y1 - r.y0, 6, on ? C_YELLOW : C_DARK);
-      tft.drawRoundRect(r.x0, r.y0, r.x1 - r.x0, r.y1 - r.y0, 6, C_WHITE);
-      tft.setTextColor(on ? C_BLACK : C_WHITE);
-      tft.setTextSize(2);
-      tft.setTextDatum(textdatum_t::middle_center);
-      tft.drawString(ctl::scanName(nd.extra[i]), (r.x0 + r.x1) / 2, (r.y0 + r.y1) / 2 - 6);
-      tft.setTextSize(1);
-      tft.drawString(labelOf(nd.extra[i], ""), (r.x0 + r.x1) / 2, r.y1 - 10);
-      tft.setTextDatum(textdatum_t::top_left);
-    }
-  tft.clearClipRect();
+    for (int i = 0; i < nd.nextra; i++)
+      if (hitsRect(L.tile[i])) tile(L.tile[i], nd.extra[i], controls.tileDown & (1 << i), icons[2 + i]);
 }
 
-static int solidRects(int (*out)[4]) {
-  const ctl::Layout& L = controls.L;
-  int n = 0;
-  auto add = [&](const ctl::Rect& r) { out[n][0] = r.x0; out[n][1] = r.y0; out[n][2] = r.x1; out[n][3] = r.y1; n++; };
-  add(L.menu);
-  if (controls.need.nextra) add(L.keys);
-  if (controls.keysOpen) for (int i = 0; i < controls.need.nextra; i++) add(L.tile[i]);
-  return n;
+// Draws screen rectangle [X0,X1) x [Y0,Y1) of the 480x300 view: the game's rows at 1.5x, with the controls on top.
+static void drawRegion(int X0, int Y0, int X1, int Y1) {
+  if (X0 < 0) X0 = 0;
+  if (Y0 < 0) Y0 = 0;
+  if (X1 > VIEW_W) X1 = VIEW_W;
+  if (Y1 > VIEW_H) Y1 = VIEW_H;
+  int w = X1 - X0;
+  if (w <= 0 || Y1 <= Y0) return;
+  if (!sprReady) { spr.setColorDepth(16); sprReady = true; }
+  int rowGy = -1;
+  for (int Ys = Y0; Ys < Y1; Ys += BAND) {
+    int rows = Y1 - Ys < BAND ? Y1 - Ys : BAND;
+    for (int r = 0; r < rows; r++) {
+      int gy = (Ys + r) * 2 / 3;
+      if (gy != rowGy) { world.renderRow(gy, rowIdx); rowGy = gy; }
+      uint16_t* o = band + r * w;
+      for (int X = X0; X < X1; X++) *o++ = pal[rowIdx[X * 2 / 3]];
+    }
+    spr.setBuffer(band, w, rows, 16);
+    bandX = X0; bandY = Ys; bandW = w; bandH = rows;
+    drawControls();
+    tft.pushImage(X0, Ys, w, rows, band);
+  }
 }
 
 struct R { int x0, y0, x1, y1; };
@@ -333,6 +440,12 @@ static void controlRects(R* out, int& n) {
 
 static void drawFrame(bool forceFull) {
   const auto& s = world.sc;
+  int oldSig[2 + ctl::MAXEXTRA];
+  for (int i = 0; i < 2 + ctl::MAXEXTRA; i++) oldSig[i] = icons[i].sig;
+  refreshIcons();
+  bool iconCh = false, tileIconCh = false;
+  for (int i = 0; i < 2 + ctl::MAXEXTRA; i++)
+    if (oldSig[i] != icons[i].sig) { if (i < 2) iconCh = true; else tileIconCh = true; }
   bool full = forceFull || !last.valid || last.mx != world.mx || last.my != world.my || last.nx != s.nx || last.ny != s.ny || last.lsx != s.lsx ||
               last.lsy != s.lsy || last.gen != world.gen;
   R hero = heroRect();
@@ -343,31 +456,28 @@ static void drawFrame(bool forceFull) {
   if (!full && nCurMon + nLastMon > 6) full = true;
   if (full) {
     drawRegion(0, 0, VIEW_W, VIEW_H);
-    drawControls(0, 0, VIEW_W, VIEW_H);
   } else {
     R dirty = unionR(hero, last.hero);
     if (!emptyR(dirty)) {
       drawRegion(dirty.x0, dirty.y0, dirty.x1, dirty.y1);
-      drawControls(dirty.x0, dirty.y0, dirty.x1, dirty.y1);
     }
     for (int i = 0; i < nCurMon + nLastMon; i++) {
       const R& r = i < nCurMon ? curMon[i] : lastMon[i - nCurMon];
       drawRegion(r.x0, r.y0, r.x1, r.y1);
-      drawControls(r.x0, r.y0, r.x1, r.y1);
     }
     // A control whose state changed is drawn again over the game behind it.
     bool padCh = controls.padDirs != lastPad, btnCh = controls.btnDown != lastBtn, tileCh = controls.tileDown != lastTile;
-    if (padCh || btnCh || tileCh) {
+    tileCh = tileCh || tileIconCh;
+    if (padCh || btnCh || tileCh || iconCh) {
       R rs[5];
       int n;
       controlRects(rs, n);
       for (int i = 0; i < n; i++) {
-        bool ch = (i == 0 && padCh) || (btnCh && i > 0) || false;
+        bool ch = (i == 0 && padCh) || ((btnCh || iconCh) && i > 0);
         if (!ch) continue;
         drawRegion(rs[i].x0, rs[i].y0, rs[i].x1, rs[i].y1);
-        drawControls(rs[i].x0, rs[i].y0, rs[i].x1, rs[i].y1);
       }
-      if (tileCh && controls.keysOpen) drawControls(0, 56, VIEW_W, 62 + 60 * controls.L.tileRows);
+      if (tileCh && controls.keysOpen) drawRegion(0, 56, VIEW_W, 62 + 60 * controls.L.tileRows);
     }
   }
   last = {world.mx, world.my, s.nx, s.ny, s.lsx, s.lsy, world.gen, hero, true};
