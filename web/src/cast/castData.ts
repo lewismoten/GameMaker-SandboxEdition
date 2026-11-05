@@ -102,6 +102,7 @@ export const CAST_GAMES = {
   shadows: ['Little Shadows', 'starter'],
   beams: ['Beams and Fog', 'starter'],
   'lightning-bugs': ['Lightning Bugs', 'starter'],
+  fireworks: ['Fireworks Night', 'starter'],
   'blocks-budget': ['150 Blocks', 'starter'],
   'near-far': ['Near and Far', 'starter'],
   'very-far': ['Walking Very Far', 'starter'],
@@ -285,6 +286,10 @@ const LISTED: CastMember[] = [
       {
         game: 'flicker',
         as: 'walks a castle hall of pulsing and flickering torches and waving flags, a cliff beside a waterfall, and a hill with a fire and its sparks',
+      },
+      {
+        game: 'fireworks',
+        as: 'watches launchers send up rockets that burst at the top, launches one of her own with Enter, then watches a big show over a sleeping town',
       },
     ],
   },

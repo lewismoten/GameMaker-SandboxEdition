@@ -25,6 +25,7 @@
   "dice": {"hash":"e14d4d43fab516dd","maps":{"one.map|one.bbl":[0,3,67,24]}},
   "drop-down": {"hash":"9694176c97f719c8","maps":{"one.map|dd.bbl":[0,14,64,10],"two.map|dd.bbl":[0,14,65,10]}},
   "duck": {"hash":"651f0f3d76ec51d0","maps":{"one.map|dk.bbl":[0,15,83,10],"two.map|dk.bbl":[0,15,100,10]}},
+  "fireworks": {"hash":"0d52f5c1324659bc","maps":{"one.map|fw.bbl":[5,13,60,10],"two.map|fw.bbl":[5,13,82,10]}},
   "first-steps": {"hash":"38457afeb2d3d716","maps":{"climb.map|steps.bbl":[0,6,71,26],"walk.map|steps.bbl":[0,7,79,22]}},
   "flash-safe": {"hash":"3123ab89053ac8cd","maps":{"one.map|one.bbl":[0,14,63,10],"three.map|three.bbl":[0,14,63,10],"two.map|two.bbl":[0,14,63,10]}},
   "flicker": {"hash":"fbd726c48245b96a","maps":{"camp.map|camp.bbl":[0,15,67,10],"falls.map|falls.bbl":[0,15,81,10],"hall.map|hall.bbl":[0,15,79,10]}},
