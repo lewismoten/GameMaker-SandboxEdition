@@ -1,0 +1,83 @@
+{
+  "title": "Countdown",
+  "howDoI": [
+    {
+      "id": "digit",
+      "q": "How do I show a number that counts down?",
+      "scene": 2,
+      "x": 31,
+      "y": 14,
+      "level": 1
+    },
+    {
+      "id": "door",
+      "q": "How do I open a door when the time is up?",
+      "scene": 2,
+      "x": 31,
+      "y": 18,
+      "level": 1
+    },
+    {
+      "id": "choose",
+      "q": "How do I let the player choose when to leave?",
+      "scene": 2,
+      "x": 31,
+      "y": 19,
+      "level": 1
+    },
+    {
+      "id": "ninetynine",
+      "q": "How do I count down from 99?",
+      "scene": 3,
+      "x": 18,
+      "y": 13,
+      "level": 2
+    },
+    {
+      "id": "force",
+      "q": "How do I make the player leave when time runs out?",
+      "scene": 3,
+      "x": 18,
+      "y": 20,
+      "level": 2
+    },
+    {
+      "id": "land",
+      "q": "How do I send the player on when they land?",
+      "scene": 3,
+      "x": 18,
+      "y": 29,
+      "level": 2
+    }
+  ],
+  "pages": [
+    {
+      "head": "Welcome",
+      "html": "<h1>Welcome</h1><p><b>Countdown</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has two short levels. The first takes about ten seconds of waiting and the second about a minute and a half.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each thing in the levels is made.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. <kbd>Space</kbd> jumps. <kbd>F2</kbd> shows your lives, hit points and score.</p><p>The number in each room counts down by itself. Nothing in this game hurts you: running out of time only opens a door, or the floor.</p>"
+    },
+    {
+      "head": "Level 1: Nine to Zero",
+      "html": "<h1>Level 1: Nine to Zero</h1><p>A big digit on the brick building shows <b>9</b> when the level starts, then 8, then 7, a second apiece, down to <b>0</b>. The double door under it is shut and solid until the digit shows 0. Then it opens, its lamp turns green, and you <i>may</i> go in. Nothing makes you: you can stand at the open door as long as you like.</p><p>The signs say so. Walk up to the door early and push on into it: it does not give. Wait for the 0, then walk in.</p><p>There are four coins on the way, worth ten points each.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 1 is made</h1><ul><li><b>A digit is a chain of blocks.</b> Open <b>one.bbl</b> in the blocks editor and pick <b>big9.tl</b>. It is drawn as the top-left quarter of a 9. Its <b>Next block</b> is <b>big8.tl</b> and its <b>Time</b> is 18 ticks. <b>big8.tl</b> turns into <b>big7.tl</b> after 18 more, and so on down to <b>big0.tl</b>, which has no Next block, so the count stops there. There are 18.2 ticks in a second, so 18 ticks is a hair under one.</li><li><b>Four blocks, four chains.</b> The big digit is two blocks wide and two high, so each quarter (<b>tl</b>, <b>tr</b>, <b>bl</b>, <b>br</b>) is its own chain. They all have the same times, so the four quarters change on the same tick and look like one picture.</li><li><b>Only one is on the map.</b> Open <b>one.map</b>: the four <b>big9</b> blocks are all that is placed above the door. The map never changes. The other nine numbers are the blocks that each one turns into.</li><li><b>The door.</b> The shut door is four blocks, such as <b>door.shut.bl</b>, with <b>Solid</b> ticked. Each has the open door's matching block as its Next block, with a Time of 162 ticks: nine seconds' worth of 18, so it opens on the tick the digit becomes 0. The open blocks are not solid.</li><li><b>The way out.</b> A link in <b>count.gam</b> sits on the door's bottom-left cell. A link works when you touch its cell, so while the door is solid nothing can touch it, and when the door opens you can.</li><li><b>The clock starts with the level.</b> Every timer is set when the scene loads, which is why a level card comes first. Nothing can start it later.</li><li><b>The walls.</b> The room is closed in by brick at both ends, and the building's roof is too high to jump to.</li></ul>"
+    },
+    {
+      "head": "Level 2: Ninety-Nine",
+      "html": "<h1>Level 2: Ninety-Nine</h1><p>Two small digits hang on a brick plaque: <b>99</b>. Every second the ones digit drops by one, and every ten seconds the tens digit drops too, so you can read <b>98</b>, <b>97</b>, and <b>90</b>, then <b>89</b>. Digits are green from 9 to 4, orange from 3 to 1 and red at 0, and the shape of each number reads without the color.</p><p>The count runs 99 times 18 ticks, about 98 seconds of real time. When it reaches <b>00</b> the floor opens. It flashes gold and black stripes for the last three seconds (the digits read 03, 02, 01), and then the planks are gone and you drop down a wide shaft. At the bottom is a soft gold mat, and landing on it takes you on. This time you do not get to choose: there is no floor to stand on.</p><p>There are four coins, and the signs say what is coming. Wait, read, jump about, and enjoy the room while it lasts.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 2 is made</h1><ul><li><b>Two digits, 110 blocks.</b> The tens digit is a chain of ten blocks, <b>ten9</b> to <b>ten0</b>, each lasting 180 ticks (ten seconds). The ones digit looks like a ring (9 down to 0, then 9 again), but a ring would never know when to stop at 00, because a block cannot see the tens. So the ones digit is a chain of one hundred blocks, <b>one99</b> down to <b>one00</b>. <b>one90</b>, the 0 in the nineties, turns into <b>one89</b>, which is drawn as a 9. The last, <b>one00</b>, has no Next block, so the count stops.</li><li><b>Why they line up.</b> Every ones block lasts 18 ticks and every tens block 180, and both clocks start together when the level loads, so the tens digit changes on the same tick the ones digit wraps from 0 to 9. Nothing links them; they only agree because the numbers do.</li><li><b>Room for it.</b> A block file holds 150 blocks. The two digits take 110 of them, so this level's signs are two blocks high. A count from 999 would need over a thousand, which cannot fit. A longer count is a ring digit (which cannot stop at zero) or a bar.</li><li><b>The floor.</b> The floor is the planks <b>trap.shut</b>, solid, with <b>trap.warn</b> as its Next block after 1728 ticks, which is 96 of the 99 seconds. <b>trap.warn</b> is still solid, but it is striped, and after 54 ticks it turns into <b>shaft</b>, a block with no Solid box. The hero falls through it because the shaft's gravity pulls down. That is 1782 ticks in all, the same tick the digits reach <b>00</b>.</li><li><b>Why a trapdoor.</b> A level can only end when the hero touches a link's cell, so to force him out you have to put him on one. Other ways were possible: a floor of pushing blocks that drag him to the exit, or a block that hurts so that he runs out. A push may be walked against, and a block that hurts is not kind, so neither fits. A floor that is gone cannot be argued with, and costs nothing.</li><li><b>The mat.</b> The bottom row of the shaft is the <b>mat</b> block, and the game has a link on each of its fourteen cells, all going to the next scene (the ending). A scene holds twenty links, and the hero lands on the one he happens to be over.</li><li><b>The walls.</b> Brick closes the room in on both sides and over the top, and goes right down the shaft.</li></ul>"
+    },
+    {
+      "head": "What Game-Maker cannot do",
+      "html": "<h1>What Game-Maker cannot do</h1><p>A number in Game-Maker is only blocks that change. Some things you may expect are not there:</p><ul><li>It has no number readout. It cannot print a variable, a score or a clock as digits. Each number you see here is a block that was drawn as that number.</li><li>It cannot count up or down from something that happens. Every timer starts when the scene loads, so a count cannot begin when the hero touches a switch, or restart from where it was.</li><li>It cannot count in whole seconds exactly. Time is in ticks, 18.2 a second, so a one-second step is 18 ticks, and a count of 99 runs about a second short of 100.</li><li>It cannot end a level on a timer. A link only works when the hero touches its cell. A door that opens, or a floor that drops him onto a link, is how a clock decides when he leaves.</li><li>It cannot take a life, or play a sound, when a block changes.</li><li>A block does not know what its neighbors are doing. The ones digit cannot see the tens, which is why it needs a hundred blocks, and a longer count would not fit in the 150 a block file holds.</li></ul>"
+    },
+    {
+      "head": "Make it yours",
+      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>In <b>one.bbl</b>, change a digit's Time from 18 to 9 in every <b>big</b> block, and the count runs at double speed. Change the door's Time to match, or it will open too late.</li><li>Give <b>door.shut.tl</b> a Time of 40 so that it opens while the digit still shows 7.</li><li>In <b>two.bbl</b>, change <b>trap.shut</b>'s Time to make the floor open sooner, and watch it open before the number reaches 00.</li><li>Draw a new picture for <b>shaft</b> in the blocks editor, or move the mat's links, in the Scenes editor.</li><li>Give the open door a Next block and a Time and it shuts again.</li></ul><p>The home page's <b>Starters</b> tab has more small games like this one.</p>"
+    }
+  ]
+}

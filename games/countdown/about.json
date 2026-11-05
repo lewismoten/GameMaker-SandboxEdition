@@ -1,0 +1,38 @@
+{
+  "title": "Countdown",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.0",
+  "blurb": "Two short levels with a number that counts down. In the first, a big digit on a brick building counts 9 to 0 and the door under it opens at 0, so you may go. In the second, two digits count 99 to 00 and the floor is a trapdoor that opens at 00, so you drop out onto a soft mat whether you like it or not. A digit here is a row of blocks that turn into the next number after a second. Signs say how. Play it, then open it in Game-Maker and change how long the count lasts.",
+  "exe": "COUNT.EXE",
+  "dosName": "COUNTDWN",
+  "sound": "sb",
+  "label": {
+    "background": "#e4eeff",
+    "band": "#2b66c8",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "2 short levels",
+    "hours": 1,
+    "background": "#2b66c8",
+    "accent": "#ffd23f",
+    "ink": "#ffffff",
+    "tagline": "3, 2, 1, out!",
+    "back": "A small explorer in a teal beanie has two short rooms and a number in each that counts down. At 0 the door opens and you may leave. At 00 the floor opens and you must. Read the signs, then open the game in Game-Maker and change how long the count lasts.",
+    "features": [
+      "A big number that counts 9 to 0, and a door that opens at 0",
+      "Two digits that count 99 to 00, and a trapdoor floor at 00",
+      "Made to be copied and taken apart"
+    ],
+    "shots": [
+      ["one.map", 22, 1],
+      ["two.map", 0, 1]
+    ],
+    "rating": "Everyone"
+  }
+}
