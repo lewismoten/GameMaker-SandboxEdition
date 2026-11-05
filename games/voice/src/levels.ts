@@ -24,13 +24,13 @@ function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   addStarterBlocks(book, pal);
   const signs = {
     enter: addSign(book, pal, 'enter.sign', 'PRESS ENTER AND KIT SAYS HELLO', 4, 3),
-    key: addSign(book, pal, 'key.sign', 'A KEY CAN PLAY A SOUND. THIS ONE PLAYS A VOICE FILE', 4, 3),
-    again: addSign(book, pal, 'again.sign', 'PRESS IT AGAIN AND THE VOICE STARTS OVER', 4, 3),
+    key: addSign(book, pal, 'key.sign', 'A KEY CAN PLAY A SOUND', 4, 3),
+    again: addSign(book, pal, 'again.sign', 'ENTER AGAIN AND THE VOICE RESTARTS', 4, 3),
     walkin: addSign(book, pal, 'walkin.sign', 'WALK INTO A SPEAKER AND IT TALKS', 4, 3),
-    counter: addSign(book, pal, 'counter.sign', 'ITS COUNTER GOES UP, SO IT PLAYS THE UP VOICE', 4, 3),
-    one: addSign(book, pal, 'one.sign', 'THIS COUNTER GOES DOWN: THE OTHER VOICE', 4, 3),
+    counter: addSign(book, pal, 'counter.sign', 'COUNTER UP PLAYS THE UP VOICE', 4, 3),
+    one: addSign(book, pal, 'one.sign', 'COUNTER DOWN PLAYS THE OTHER VOICE', 4, 3),
     cut: addSign(book, pal, 'cut.sign', 'A NEW SCENE CUTS A VOICE OFF', 4, 3),
-    room: addSign(book, pal, 'room.sign', 'THE DOOR IS FAR ENOUGH FOR THE WHOLE LINE', 4, 3),
+    room: addSign(book, pal, 'room.sign', 'THE DOOR IS FAR ENOUGH FOR THE LINE', 4, 3),
     exit: addSign(book, pal, 'exit.sign', 'EXIT →', 3),
   };
   addSpeakerBlocks(book, pal);

@@ -24,4 +24,3 @@ function setWith(names: Partial<Record<number, string>>): SoundSet {
 export function voiceSounds(): SoundSet[] {
   return [setWith({}), setWith({ [SND.gain]: 'WELCOME', [SND.use]: 'DEEPER' }), setWith({ [SND.gain]: 'BYE' })];
 }
-
