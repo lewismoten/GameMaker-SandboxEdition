@@ -226,6 +226,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Fixed
 
+- The Slow Computers level 1 card no longer lets its hint run outside its box ("Step on each pad. Hear the music."). The text-fit check now measures such cards correctly, so it flags words that spill over a card's edge.
 - Smash It's gems now turn like cut stones, eight frames that narrow to a thin edge and widen again, and a smashed crate plays a crunch.
 - Pick It Up, level 2: the spikes were a solid strip in the ground that stung Kit every moment he stood on top of it. They now stand at his height and sting once when touched, so there is a run-up and a jump over them.
 

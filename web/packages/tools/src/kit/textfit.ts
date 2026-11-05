@@ -401,12 +401,22 @@ export function cardOverflow(c: CardScreen): string[] {
   let [x0, x1, y0, y1] = [24, 24, 16, 16];
   while (x0 > 0 && at(x0 - 1, 16) === fill) x0--;
   while (x1 < W - 1 && at(x1 + 1, 16) === fill) x1++;
-  while (y0 > 0 && at(24, y0 - 1) === fill) y0--;
-  while (y1 < H - 1 && at(24, y1 + 1) === fill) y1++;
+  // the box's height is the longest run of its color down (or up) any column inside it: words that
+  // spill over the box's left edge break the run in a column near the edge, but not in every column
+  for (let x = x0 + 2; x <= x1 - 2; x++) {
+    if (at(x, 16) !== fill) continue;
+    let [a, b] = [16, 16];
+    while (a > 0 && at(x, a - 1) === fill) a--;
+    while (b < H - 1 && at(x, b + 1) === fill) b++;
+    y0 = Math.min(y0, a);
+    y1 = Math.max(y1, b);
+  }
   if (x1 - x0 < 100 || y1 - y0 < 30) return [];
   const frame = new Set<number>();
   for (let x = Math.max(0, x0 - 6); x <= Math.min(W - 1, x1 + 6); x++) for (let y = Math.max(0, y0 - 6); y < y0; y++) frame.add(at(x, y));
-  for (let y = y0; y <= y1; y++) for (const x of [x0 - 1, x0 - 2, x0 - 3, x1 + 1, x1 + 2, x1 + 3]) frame.add(at(x, y));
+  // the frame's sides are read only beside the box's top rows, above any words, so words that spill
+  // over an edge are not mistaken for frame colors
+  for (let y = y0; y <= Math.min(y1, y0 + 6); y++) for (const x of [x0 - 1, x0 - 2, x0 - 3, x1 + 1, x1 + 2, x1 + 3]) frame.add(at(x, y));
   const ink = new Set<number>();
   for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) if (at(x, y) !== fill && !frame.has(at(x, y))) ink.add(at(x, y));
   const problems: string[] = [];

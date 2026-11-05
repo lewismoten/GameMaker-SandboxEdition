@@ -6,7 +6,7 @@
   "hero": "MARA",
   "year": 1994,
   "price": "Free",
-  "version": "1.0",
+  "version": "1.1",
   "blurb": "Three short levels about what made a game slow down on an old PC. Level 1 has a short pad and a long pad: a sound was read from the disk whole before the game went on, so a long one froze the game while it loaded, and the music kept its own time. Level 2 puts 36 friendly monsters on one screen, which a 286 could not keep up with. Level 3 moves the whole sky every tick. A player with a speed setting can run it like a 286, a 386 or a 486 and see the difference. Signs and pages give the numbers as estimates, and tips for keeping a game fast. Play it, then open it in Game-Maker and change a sound or count the monsters.",
   "exe": "SLOWPC.EXE",
   "dosName": "SLOWPC",
