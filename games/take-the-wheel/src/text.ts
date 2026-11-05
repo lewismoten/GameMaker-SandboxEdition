@@ -20,7 +20,7 @@ export const HOWTO = wrap(`
 |SPACE         jump, or honk
 |F2            lives, score
 
-On foot, Space jumps. In the kart it honks. Walk into the kart at the end of level 1 to change.
+On foot, Space jumps. In the kart it honks. Walk into the kart at the end of the first level to change.
 
 In a kart a bird in the road stops you. Honk, and it flies off.
 
