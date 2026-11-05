@@ -50,16 +50,6 @@ async function holdFor(bot: StarterBot, key: number, ticks: number): Promise<Res
   return r;
 }
 
-/** Holds Right until Kit is at column `to`. */
-async function rightTo(bot: StarterBot, to: number, max = 300): Promise<Result> {
-  bot.sim.press(SCAN.right);
-  for (let t = 0; t < max && col(bot) < to; t++) {
-    const r = await bot.tick();
-    if (r) return (bot.sim.releaseAll(), r);
-  }
-  bot.sim.release(SCAN.right);
-  return undefined;
-}
 
 /** Whether the extra coins in level 3 are collected (E and Q), or only the way to the door. */
 export interface Options {
