@@ -46,6 +46,7 @@ export { heroPhysics, weaker, type HeroPhysics } from './jumpModel';
 export { capability, type Capability } from './platformCap';
 export { reachFrom, type Step } from './platformReach';
 export { LADDER as LADDER_CELL } from './grid';
+export { closed as closedCell, DOORC as DOOR_CELL, FLOOR as FLOOR_CELL, LOCK as LOCK_CELL, PATH as PATH_CELL } from './grid';
 export { type PlatformProof } from './platform';
 
 export { type LockInfo } from './props';
