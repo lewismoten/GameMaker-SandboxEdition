@@ -13,7 +13,7 @@ import { isCeremony } from '../../project/ceremonies';
 import { h, clear, toast } from '../core/ui';
 import { loadGameList } from '../../project/files';
 import { hasBizarreTab } from '../../project/bizarre';
-import { listProjects } from '../../project/storage';
+import { listDamagedCopies, listProjects, pruneDamagedCopies } from '../../project/storage';
 import { onCatalogChanged } from '../../project/catalogWatch';
 import './home.css';
 import { PRODUCT } from '../../edition';
@@ -157,6 +157,17 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
       onclick: () => void import('./recentlyDeletedDialog').then((m) => m.showRecentlyDeleted(refreshProjects)),
     },
     'Recently deleted…',
+  );
+  // saves kept whole when the editor opened a damaged game: not games in the list (damagedCopiesDialog.ts)
+  const damagedBtn = h(
+    'button',
+    {
+      type: 'button',
+      class: 'lib-remove-all',
+      hidden: true,
+      onclick: () => void import('./damagedCopiesDialog').then((m) => m.showDamagedCopies(refreshProjects)),
+    },
+    'Damaged copies…',
   );
   const sortBox = h(
     'label',
@@ -416,6 +427,11 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
       void shelfList()
         .then((l) => (recentBtn.hidden = !isOwn(current) || !l.length))
         .catch(() => undefined);
+    if (c !== 'mine') damagedBtn.hidden = true;
+    else
+      void listDamagedCopies()
+        .then((l) => (damagedBtn.hidden = current !== 'mine' || !l.length))
+        .catch(() => undefined);
     // the Starters' "How do I…?" questions, loaded when that tab is first shown
     howDoI.hidden = c !== 'starter';
     if (c === 'starter' && !howDoI.firstChild && !howDoI.dataset.loading) {
@@ -481,7 +497,21 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
         'section',
         { id: 'library', class: 'library', 'aria-labelledby': 'lib-title' },
         h('div', { class: 'lib-bar' }, catNav, h('div', { class: 'lib-find' }, search, newGameBtn, communityBtn)),
-        h('div', { class: 'lib-about' }, libTitle, libLead, sortBox, ratingBox, doneBox, transcriptBtn, historyBtn, recentBtn, removeAllBtn, start.howBtn),
+        h(
+          'div',
+          { class: 'lib-about' },
+          libTitle,
+          libLead,
+          sortBox,
+          ratingBox,
+          doneBox,
+          transcriptBtn,
+          historyBtn,
+          recentBtn,
+          damagedBtn,
+          removeAllBtn,
+          start.howBtn,
+        ),
         howDoI,
         tiles,
         live,
@@ -504,6 +534,8 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
 
   // the tabs stand in their place before the lists load, so the page below them doesn't jump
   renderCats();
+  // copies kept by mistake (the same bytes as a sound original) go before the lists are read
+  await pruneDamagedCopies();
   lib.projects = await listProjects().catch(() => []);
   await lib.loadWalkBadges();
   if (!savedCategory() && lib.projects.length) current = lib.own('mine').length ? 'mine' : 'imported';
