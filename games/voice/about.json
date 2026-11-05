@@ -1,0 +1,47 @@
+{
+  "title": "Out Loud",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.0",
+  "blurb": "Three short levels about a game that talks. A voice is a sound file: a key's move can play one, and so can a counter going up or down. Only one voice plays at a time, and a new scene cuts it off, so a speaker stands far enough from the door for the whole line. Signs say how. Play it, then open it in Game-Maker and look at the Sounds tab.",
+  "exe": "OUTLOUD.EXE",
+  "dosName": "OUTLOUD",
+  "sound": "sb",
+  "label": {
+    "background": "#e8ecf5",
+    "band": "#2f7a8a",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "3 short levels",
+    "hours": 1,
+    "background": "#2f7a8a",
+    "accent": "#ffd23f",
+    "ink": "#ffffff",
+    "tagline": "Press Enter. Listen.",
+    "back": "A small explorer in a teal beanie has three short levels, and something to say in each. A press of Enter makes him say hello. Two loudspeakers talk when he walks into them, one voice when a counter goes up and another when it goes down. A voice that is still playing when the scene changes is cut short, so the last speaker stands well back from the door. Read the signs, then open the game in Game-Maker and look at the Sounds tab.",
+    "features": [
+      "Signs in the levels explain each idea",
+      "A voice is a sound file the Sound Blaster plays",
+      "A key's move, or a counter going up or down, can start it",
+      "Made to be copied and taken apart"
+    ],
+    "shots": [
+      [
+        "one.map",
+        28,
+        6
+      ],
+      [
+        "three.map",
+        24,
+        6
+      ]
+    ],
+    "rating": "Everyone"
+  }
+}

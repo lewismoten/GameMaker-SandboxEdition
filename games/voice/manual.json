@@ -1,0 +1,91 @@
+{
+  "title": "Out Loud",
+  "howDoI": [
+    {
+      "id": "key",
+      "q": "How do I make a key play a sound?",
+      "scene": 2,
+      "x": 6,
+      "y": 9,
+      "level": 1
+    },
+    {
+      "id": "voice",
+      "q": "How do I make my hero say a line out loud?",
+      "scene": 2,
+      "x": 6,
+      "y": 9,
+      "level": 1
+    },
+    {
+      "id": "block",
+      "q": "How do I make a block talk when it is touched?",
+      "scene": 3,
+      "x": 22,
+      "y": 9,
+      "level": 2
+    },
+    {
+      "id": "two",
+      "q": "How do I get two blocks to say different things?",
+      "scene": 3,
+      "x": 36,
+      "y": 9,
+      "level": 2
+    },
+    {
+      "id": "end",
+      "q": "How do I keep a voice from being cut off at the door?",
+      "scene": 4,
+      "x": 28,
+      "y": 9,
+      "level": 3
+    },
+    {
+      "id": "own",
+      "q": "How do I use a recording of my own voice?",
+      "scene": 2,
+      "x": 13,
+      "y": 9,
+      "level": 1
+    }
+  ],
+  "pages": [
+    {
+      "head": "Welcome",
+      "html": "<h1>Welcome</h1><p><b>Out Loud</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has three short levels and takes a few minutes to finish.</p><p>Play it first, with a Sound Blaster set up so the voices play. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each thing in the levels is made.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. <kbd>Space</kbd> jumps. <kbd>Enter</kbd> makes Kit say hello. <kbd>F2</kbd> shows your lives, hit points and score. Walk into the door at the end of a level to go on.</p><p>Nothing in this game can hurt you. The voices are hums made in code, not recordings of anyone.</p>"
+    },
+    {
+      "head": "Level 1: Say Hello",
+      "html": "<h1>Level 1: Say Hello</h1><p><b>PRESS ENTER AND KIT SAYS HELLO</b> comes first. Press <kbd>Enter</kbd> and Kit throws his arms up and says it. <b>A KEY CAN PLAY A SOUND. THIS ONE PLAYS A VOICE FILE</b> comes next, then three coins. <b>PRESS IT AGAIN AND THE VOICE STARTS OVER</b> stands before three more coins and the door: press <kbd>Enter</kbd> while Kit is still talking and the hello begins again from the start.</p><p>There are six coins, ten points each.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 1 is made</h1><ul><li><b>The key.</b> Open the character in the Character tab and pick the cheer sequence. Its <b>Key</b> is <kbd>Enter</kbd>. In the Starters this sequence has no key; here it was given one, so it plays when you press Enter.</li><li><b>The sound.</b> The same sequence has a <b>Sound</b> of 13. A sequence plays its sound number as it starts.</li><li><b>The voice.</b> Open <b>vo1.snd</b> in the Sounds tab and look at sound 13. It has two halves: a short PC speaker tune for a game with no sound card, and a Sound Blaster file, <b>HELLO.VOC</b>. With a Sound Blaster the game plays the file.</li><li><b>One at a time.</b> Starting a voice stops the one that is playing, which is why a second Enter begins the hello again.</li></ul>"
+    },
+    {
+      "head": "Level 2: Two Speakers",
+      "html": "<h1>Level 2: Two Speakers</h1><p><b>WALK INTO A SPEAKER AND IT TALKS</b> comes first. <b>ITS COUNTER GOES UP, SO IT PLAYS THE UP VOICE</b> stands before the first loudspeaker: walk into it and it says a welcome, once. <b>THIS COUNTER GOES DOWN: THE OTHER VOICE</b> stands before the second loudspeaker, which has a lower voice. Each speaker turns into a quiet one after it speaks.</p><p>There are seven coins, ten points each.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 2 is made</h1><ul><li><b>The first speaker.</b> Open <b>vo.bbl</b> in the Blocks tab and pick <b>speaker</b>. It is not solid. Its <b>Touch</b> tab adds 1 to counter 22, and its <b>Becomes block</b> is <b>hush</b>, the same speaker without its sound waves.</li><li><b>Why that makes a voice.</b> When a touch makes a counter go up, Game-Maker plays sound 7. Open <b>vo2.snd</b> and sound 7 names <b>WELCOME.VOC</b>.</li><li><b>The second speaker.</b> Pick <b>lower</b>. It takes 1 from counter 23, and Game-Maker plays sound 8, which in this level's sound set is <b>DEEPER.VOC</b>. The block does not choose a clip. The direction its counter moves does.</li><li><b>Counters 22 and 23.</b> The character starts with one in hand on each, so that taking one away is allowed; a counter from 20 up refuses a touch that would take it to zero or less.</li></ul>"
+    },
+    {
+      "head": "Level 3: Let It Finish",
+      "html": "<h1>Level 3: Let It Finish</h1><p><b>A NEW SCENE CUTS A VOICE OFF</b> comes first. Further on a loudspeaker stands with a long goodbye. <b>THE DOOR IS FAR ENOUGH FOR THE WHOLE LINE</b> stands past it. From the speaker to the door is a walk of twenty blocks, which takes more than twice as long as the line does, so the whole goodbye plays before the next scene starts.</p><p>There are nine coins, ten points each.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 3 is made</h1><ul><li><b>The speaker.</b> It is the same <b>speaker</b> block as level 2, but this level uses <b>vo3.snd</b>, where sound 7 names <b>BYE.VOC</b> instead. A level picks its sound set, so one block can say different things in different levels.</li><li><b>The cut.</b> When the game goes to another scene it frees the voice that is playing, and the new scene may start another. So the last line of a level has to finish first. Kit walks about three and a half blocks a second, so twenty blocks takes him over five seconds, and the goodbye lasts about two and a half.</li><li><b>Do the sum.</b> Divide the clip's length by how fast the hero moves to know how far the speaker must stand from the door. The Level check does not do this for you.</li></ul>"
+    },
+    {
+      "head": "What it cannot do",
+      "html": "<h1>What it cannot do</h1><p>These are the engine's limits, so you can plan around them.</p><ul><li><b>It cannot play two voices at once.</b> A new voice stops the old one. Press Enter over a speaker and you hear the hello and lose the rest of the welcome.</li><li><b>A block cannot choose its clip.</b> Only the counter that changes does, and a sound set has one clip for \"a counter went up\" and one for \"a counter went down\", shared by every block in the level. For more voices, use a sound set per level or a character move with a sound number of its own.</li><li><b>A text page or an animation cannot play a voice.</b> Only a level plays sounds. A clip still playing when a scene changes is cut off.</li><li><b>It needs a Sound Blaster.</b> With no card, the game plays the PC speaker tune for the same sound.</li><li><b>A clip is read whole into memory when it starts.</b> The byte count is 16 bits, so keep a clip under 64 KB, which is about five seconds at 11 kHz.</li></ul>"
+    },
+    {
+      "head": "Make it yours",
+      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>Record a line of your own, save it as 8-bit mono at 11 kHz in a .voc file named <b>HELLO.VOC</b>, and press Enter.</li><li>Change which key says hello on the cheer sequence.</li><li>Swap <b>WELCOME</b> and <b>DEEPER</b> in <b>vo2.snd</b>.</li><li>Move the last speaker close to the door and listen to the goodbye get cut off.</li><li>Give a speaker a second touch that turns it into another speaker with the other voice.</li></ul><p>The home page's <b>Starters</b> tab has more small games like this one.</p>"
+    }
+  ]
+}
