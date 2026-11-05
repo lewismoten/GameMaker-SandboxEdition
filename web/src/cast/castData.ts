@@ -63,6 +63,7 @@ export const CAST_GAMES = {
   'boss-hits': ['Big Bug', 'starter'],
   'boss-phases': ['Three Phases', 'starter'],
   popups: ['Score Popups', 'starter'],
+  cutscenes: ['Cutscenes', 'starter'],
   'take-the-wheel': ['Take the Wheel', 'starter'],
   'short-lived': ['Here Today', 'starter'],
   searchlight: ["Don't Get Seen", 'starter'],
@@ -203,6 +204,7 @@ const LISTED: CastMember[] = [
       { game: 'things-that-grow', as: 'watches a nest hatch birds, then steps on another nest to make it stop' },
       { game: 'take-the-wheel', as: 'jumps a bird on foot, then steps into a little kart that cannot jump and honks the next bird away' },
       { game: 'popups', as: 'touches coins that pay 100, 200 and 500 and watches each number rise and blink away' },
+      { game: 'cutscenes', as: 'sits through a picture and some words, waits for a stage floor to drop away, and climbs to a door that picks his next tale' },
       { game: 'dialog', as: 'talks with Pip, and then joins a group of friends who all talk at once' },
       {
         game: 'parallax',
