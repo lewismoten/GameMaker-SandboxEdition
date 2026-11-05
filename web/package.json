@@ -31,6 +31,7 @@
     "heavy": "node ../scripts/heavy.mjs",
     "editor:touch": "vite-node scripts/editorTouch.ts",
     "check:dialogs": "vite-node scripts/dialogsFit.ts",
+    "check:dialogs:sweep": "vite-node scripts/dialogsSweep.ts",
     "theme:recheck": "vite-node scripts/themeRecheck.ts",
     "check:gestures": "vite-node scripts/touchGestures.ts",
     "check:audio-unlock": "vite-node scripts/audioUnlock.ts",

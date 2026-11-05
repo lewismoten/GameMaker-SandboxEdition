@@ -342,7 +342,7 @@ export async function openShrinkPanel(project: Project, file: string, apply: (by
       { class: 'shrink' },
       h(
         'div',
-        { class: 'shrink-body' },
+        { class: 'shrink-body', dataset: { listArea: '' } },
         h(
           'section',
           { class: 'shrink-left' },

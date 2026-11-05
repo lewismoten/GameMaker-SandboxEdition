@@ -40,7 +40,7 @@ export async function showSandKey(): Promise<void> {
   await modal<void>(`A folded note: the ${SANDSCRIPT_NAME} key`, (close) => [
     h(
       'div',
-      { class: 'sand-paper' },
+      { class: 'sand-paper', dataset: { listArea: '' } },
       h('p', { class: 'sand-title' }, sandSvg(SANDSCRIPT_NAME, SANDSCRIPT_NAME), h('span', null, SANDSCRIPT_NAME)),
       h(
         'p',

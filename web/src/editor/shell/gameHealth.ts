@@ -167,7 +167,7 @@ const KIND_TITLES: Record<Issue['kind'], string> = {
 };
 
 export async function showHealthReport(target: HealthTarget): Promise<void> {
-  const body = h('div', { class: 'health-report' }, h('p', { class: 'meta' }, 'Checking every file…'));
+  const body = h('div', { class: 'health-report', dataset: { listArea: '' } }, h('p', { class: 'meta' }, 'Checking every file…'));
   const shown = modal(target.released ? `${target.title}: notes on its files` : `${target.title}: health check`, (close) => [
     body,
     h('div', { class: 'buttons' }, h('button', { class: 'primary', onclick: () => close(undefined) }, 'Close')),

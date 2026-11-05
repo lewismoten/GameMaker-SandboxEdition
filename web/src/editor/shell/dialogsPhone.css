@@ -122,3 +122,20 @@
     gap: 2px;
   }
 }
+
+/* Pickers and forms with a preview (file picker, instruction and level cards): the cards or fields scroll, the title and actions stay.
+   Two columns of cards, and nothing sideways. */
+@media (max-width: 600px), (max-height: 500px) {
+  .pick-grid {
+    grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
+    overflow-x: hidden;
+  }
+
+  .pick-cell {
+    min-width: 0;
+  }
+
+  .card-columns {
+    padding-right: 2px;
+  }
+}

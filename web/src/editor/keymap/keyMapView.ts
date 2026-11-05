@@ -441,6 +441,7 @@ export function showKeyMap(
   controls?: GameControls | Promise<GameControls | undefined>,
 ): HTMLDialogElement {
   const body = el('div', 'km-body', el('p', 'km-note', 'Reading the game…'));
+  body.dataset.listArea = ''; // on a phone the body is the one scrolling area; the title and the close button stay
   const close = el('button', 'km-close', '×');
   close.title = 'Close (Esc)';
   close.setAttribute('aria-label', 'Close');
