@@ -10,6 +10,7 @@
 import CAMEOS from './cameos.json';
 import HIDDEN from './hidden.json';
 import type { Chicken } from '../chicken/chickenState';
+import { heroOfStarter } from '../project/starterHeroes';
 
 type Family = 'sandbox' | 'bizarre' | 'starter';
 
@@ -180,7 +181,7 @@ const LISTED: CastMember[] = [
   {
     id: 'kit',
     name: 'Kit',
-    role: 'The Starters’ explorer, in a teal beanie',
+    role: 'The Starters’ first explorer, in a teal beanie',
     hi: 'Hi! Jump with Space, climb with Up. Nobody minds if you fall; I do it all the time.',
     art: {
       game: 'first-steps',
@@ -188,7 +189,7 @@ const LISTED: CastMember[] = [
       height: 40,
       alt: 'Kit, a small cheerful kid in a teal knit beanie with a white pom-pom, an orange hoodie with a pocket and drawstrings, gray pants and white sneakers',
     },
-    bio: 'A small, cheerful explorer in a teal knit beanie with a white pom-pom, an orange hoodie with a pocket and drawstrings, gray pants and white sneakers. Kit walks, jumps, falls, climbs ladders (seen from behind), digs with a little shovel, tosses a star and cheers when a level is done. Seen from above, he walks in four directions. A bump only hurts a little, and the same Kit is there in every Starter, so what you learn in one carries to the next.',
+    bio: 'A small, cheerful explorer in a teal knit beanie with a white pom-pom, an orange hoodie with a pocket and drawstrings, gray pants and white sneakers. Kit walks, jumps, falls, climbs ladders (seen from behind), digs with a little shovel, tosses a star and cheers when a level is done. Seen from above, he walks in four directions. A bump only hurts a little. Kit leads the first Starter of every group and his own three; eight helpers in other colors lead the rest, in the same blocks, so what you learn from one carries to the next.',
     appears: [
       { game: 'first-steps', as: 'learns to walk, jump and climb' },
       { game: 'keys-and-doors', as: 'finds a silver key for each locked door' },
@@ -605,6 +606,43 @@ const LISTED: CastMember[] = [
 ];
 
 /** A hidden thing's place, from its game's about.json (hidden.json): only the level, never where on it. */
+/** The eight helpers who lead the Starters Kit does not (games/kit/starter/heroLook.ts has their looks): the same blocks in other colors. */
+const HELPERS: { id: string; name: string; role: string; hi: string; look: string; game: CastGame }[] = [
+  { id: 'mia', name: 'Mia', role: 'A Starter explorer, in a purple beanie', hi: 'Hi! Look both ways, then jump.', look: 'fair skin, auburn hair, a purple beanie and a gold hoodie', game: 'keys-and-doors' },
+  { id: 'lena', name: 'Lena', role: 'A Starter explorer, in a red beanie', hi: 'Ready when you are. Arrows to walk, Space to jump.', look: 'deep brown skin, black hair, a red beanie and a teal hoodie', game: 'meet-the-monsters' },
+  { id: 'mara', name: 'Mara', role: 'A Starter explorer, in a green beanie', hi: 'Doors are my favorite. What is behind this one?', look: 'tan skin, brown hair, a green beanie and a pink hoodie', game: 'room-to-room' },
+  { id: 'lian', name: 'Lian', role: 'A Starter explorer, in a blue beanie', hi: 'Coins first, then the rest.', look: 'fair skin, silver hair, a blue beanie and a red hoodie', game: 'coins-and-score' },
+  { id: 'yana', name: 'Yana', role: 'A Starter explorer, in a pink beanie', hi: 'Bump it, break it, and see what falls out!', look: 'brown skin, blond hair, a pink beanie and a blue hoodie', game: 'breakable-walls' },
+  { id: 'neka', name: 'Neka', role: 'A green alien explorer, in a gold beanie', hi: 'Greetings from far away. Where do we dig?', look: 'green skin, teal hair, a gold beanie and a purple hoodie', game: 'walk-the-ground' },
+  { id: 'rima', name: 'Rima', role: 'A purple alien explorer, in a teal beanie', hi: 'Spikes? I will watch my step.', look: 'purple skin, plum hair, a teal beanie and a gold hoodie', game: 'watch-your-step' },
+  { id: 'lami', name: 'Lami', role: 'A blue alien explorer, in a red beanie', hi: 'Things grow here. So do I!', look: 'blue skin, silver hair, a red beanie and a green hoodie', game: 'things-that-grow' },
+];
+
+/** What Kit does in a game, said of a helper: "he" becomes the name. */
+const said = (as: string, name: string): string => as.replace(/\bhimself\b/g, 'themself').replace(/\bhis\b/g, `${name}’s`).replace(/\bhim\b/g, name).replace(/\bhe\b/g, name);
+
+/** The cast with Kit's list split by who leads each Starter (starterHeroes.ts), and the helpers after him. */
+function withHelpers(list: CastMember[]): CastMember[] {
+  const kit = list.find((m) => m.id === 'kit')!;
+  const mine = (name: string) => kit.appears.filter((a) => heroOfStarter(a.game) === name);
+  const helpers: CastMember[] = HELPERS.map((h) => ({
+    id: h.id,
+    name: h.name,
+    role: h.role,
+    hi: h.hi,
+    art: {
+      game: h.game,
+      width: 20,
+      height: 40,
+      alt: `${h.name}, a small cheerful kid with ${h.look}, gray pants and white sneakers`,
+    },
+    bio: `A small, cheerful explorer with ${h.look}, drawn from the very same blocks as Kit, so every key, jump and climb works the same. ${h.name} leads the Starters shown below, and walks, jumps and climbs through them as Kit would.`,
+    appears: mine(h.name.toUpperCase()).map((a) => ({ ...a, as: said(a.as, h.name) })),
+  }));
+  const at = list.indexOf(kit) + 1;
+  return [...list.slice(0, at - 1), { ...kit, appears: mine('KIT') }, ...helpers, ...list.slice(at)];
+}
+
 const hiddenOn = (map: string) => `hidden somewhere on the ${map.replace(/\.map$/i, '').replace(/[_-]+/g, ' ')} map`;
 
 /**
@@ -612,7 +650,7 @@ const hiddenOn = (map: string) => `hidden somewhere on the ${map.replace(/\.map$
  * Easter egg, the tin heart) in every game whose about.json places one (hidden.json, made by
  * scripts/castHidden.ts), in cameos.json's words where it has some.
  */
-export const CAST: CastMember[] = LISTED.map((m) => {
+export const CAST: CastMember[] = withHelpers(LISTED).map((m) => {
   const said = (CAMEOS as Record<string, Appearance[]>)[m.id] ?? [];
   const placed = ((HIDDEN as unknown as Record<string, [string, string][]>)[m.id] ?? [])
     .filter(([game]) => game in CAST_GAMES)

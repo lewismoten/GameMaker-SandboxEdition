@@ -80,7 +80,7 @@ disk.put(
     pal,
   ),
 );
-disk.put(STARTER_STING, starterStingFli());
+disk.put(STARTER_STING, starterStingFli('road-tiles'));
 disk.put(
   'title.lst',
   serializeSlideList([

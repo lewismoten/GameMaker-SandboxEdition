@@ -99,7 +99,7 @@ disk.put(
     pal,
   ),
 );
-disk.put(STARTER_STING, starterStingFli());
+disk.put(STARTER_STING, starterStingFli('shadows'));
 disk.put(
   'title.lst',
   serializeSlideList([

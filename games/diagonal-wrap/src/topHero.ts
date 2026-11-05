@@ -10,6 +10,7 @@ import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
 import { Book } from '../../kit/starter/book';
 import { KEY, SEQ, SND } from '../../kit/starter/ids';
+import { kitRamp } from '../../kit/starter/heroLook';
 import type { Pal } from '../../kit/starter/palette';
 
 const T = 255;
@@ -25,11 +26,11 @@ function pose(pal: Pal, facing: Facing, step: Step): Pixels {
   if (facing === 'left') return pose(pal, 'right', step).flipX();
   const { c, r } = pal;
   const p = new Pixels(20, 20, T);
-  const skin = r('skin');
-  const teal = r('teal');
+  const skin = kitRamp(pal, 'skin');
+  const teal = kitRamp(pal, 'hat');
   const white = r('white');
-  const hair = r('hair');
-  const orange = r('orange');
+  const hair = kitRamp(pal, 'hair');
+  const orange = kitRamp(pal, 'hood');
   const ink = c('ink', 0);
   const side = facing === 'right';
   const x0 = side ? 9.5 : 10;

@@ -71,7 +71,7 @@ const text = (base: string, heading: string, body: string) => {
   disk.put(`${base}.lst`, serializeSlideList([{ name: `${base}.gif`, pause: 0 }, { name: `${base}.txt` }]));
 };
 disk.put('title.gif', gif(titlePicture(pal, book, cheer, door, TITLE, 'A STARTER GAME', 'coins', 'dressing'), pal));
-disk.put(STARTER_STING, starterStingFli());
+disk.put(STARTER_STING, starterStingFli('take-the-wheel'));
 disk.put(
   'title.lst',
   serializeSlideList([

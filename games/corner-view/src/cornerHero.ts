@@ -11,6 +11,7 @@ import { outline } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { Book } from '../../kit/starter/book';
 import { KEY, SEQ, SND } from '../../kit/starter/ids';
+import { kitRamp } from '../../kit/starter/heroLook';
 import type { Pal } from '../../kit/starter/palette';
 
 const T = 255;
@@ -30,12 +31,12 @@ function pose(pal: Pal, facing: Facing, step: Step): Pixels {
   if (facing === 'ul') return pose(pal, 'ur', step).flipX();
   const { c, r } = pal;
   const g = new Pixels(20, 20, T); // drawn with his head at the top; shifted down a row below, to leave room for the outline
-  const skin = r('skin');
-  const teal = r('teal');
+  const skin = kitRamp(pal, 'skin');
+  const teal = kitRamp(pal, 'hat');
   const white = r('white');
-  const hair = r('hair');
-  const orange = r('orange');
-  const blue = r('blue');
+  const hair = kitRamp(pal, 'hair');
+  const orange = kitRamp(pal, 'hood');
+  const blue = kitRamp(pal, 'pants');
   const ink = c('ink', 0);
   const front = facing === 'dr';
   const fwd = step === 0 ? 1 : step === 1 ? -1 : 0; // how far the near leg is ahead of the far one

@@ -11,6 +11,7 @@ import type { Character } from '@lewismoten/gamemaker-sandbox-engine/formats/cha
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { Book } from '../../kit/starter/book';
 import { WALK_STEP } from '../../kit/starter/heroChar';
+import { kitRamp } from '../../kit/starter/heroLook';
 import type { Pal } from '../../kit/starter/palette';
 
 const CLEAR = 255;
@@ -44,7 +45,7 @@ const POSE_OF: Record<string, string> = {
 
 /** One pose as a 20 x 20 block with Lian centered on the bottom row. */
 export function tinyPose(pal: Pal, name: string): Pixels {
-  const key = { T: pal.c('teal', 2), W: pal.c('white', 3), S: pal.c('skin', 3), O: pal.c('orange', 2), P: pal.c('ink', 0), K: pal.c('ink', 0) };
+  const key = { T: kitRamp(pal, 'hat')[2], W: pal.c('white', 3), S: kitRamp(pal, 'skin')[3], O: kitRamp(pal, 'hood')[2], P: pal.c('ink', 0), K: pal.c('ink', 0) };
   return new Pixels(20, 20, CLEAR).draw(8, 12, POSES[name], key);
 }
 
