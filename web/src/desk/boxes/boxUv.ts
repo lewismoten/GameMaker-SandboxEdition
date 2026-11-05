@@ -9,6 +9,7 @@
 import type { CatalogEntry } from '../../project/files';
 import { uvColor } from '../room/posterUv';
 import { drawBoxLetters, type BoxFaces } from './gameBox';
+import { copyOf, spineOf } from './boxSpine';
 
 type Side = keyof BoxFaces;
 
@@ -33,7 +34,7 @@ export function uvLettering(px: Uint8ClampedArray, letters: Uint8ClampedArray, a
 /** Which game a set of faces shows (shelf.ts tells), so its lettering can be drawn again. */
 const games = new WeakMap<BoxFaces, CatalogEntry>();
 /** The glowing sides made so far, as object URLs. */
-const made = new WeakMap<BoxFaces, Map<Side, Promise<string | undefined>>>();
+const made = new WeakMap<BoxFaces, Map<Side, Promise<Glow | undefined>>>();
 
 export function uvGame(faces: BoxFaces, entry: CatalogEntry): void {
   games.set(faces, entry);
@@ -44,7 +45,7 @@ export function releaseUv(faces: BoxFaces): void {
   games.delete(faces);
   const sides = made.get(faces);
   made.delete(faces);
-  for (const url of sides?.values() ?? []) void url.then((u) => u && URL.revokeObjectURL(u));
+  for (const url of sides?.values() ?? []) void url.then((u) => typeof u === 'string' && URL.revokeObjectURL(u));
 }
 
 /** Waits for a quiet moment. */
@@ -71,15 +72,20 @@ function loadImage(src: string): Promise<HTMLImageElement> {
   return img.decode().then(() => img);
 }
 
-/** One side of the box under black light, as an object URL. */
-async function makeSide(entry: CatalogEntry, faces: BoxFaces, side: Side): Promise<string | undefined> {
-  const [letters, img] = await Promise.all([lettersOf(entry), loadImage(faces[side])]);
+/** One side of the box under black light: a canvas for a shelf spine (small, and no request), else an object URL. */
+type Glow = string | HTMLCanvasElement;
+
+async function makeSide(entry: CatalogEntry, faces: BoxFaces, side: Side): Promise<Glow | undefined> {
+  const spine = side === 'left' ? spineOf(faces) : undefined;
+  const [letters, img] = await Promise.all([lettersOf(entry), spine ?? loadImage(faces[side])]);
   const mask = letters?.[side];
   if (!mask) return undefined;
-  // at the picture's own size: a shelf spine is small (gameBox.ts spineUrl), so is its glow
+  // at the picture's own size: a shelf spine is small (boxSpine.ts), so is its glow
+  const w = img instanceof HTMLCanvasElement ? img.width : img.naturalWidth;
+  const h = img instanceof HTMLCanvasElement ? img.height : img.naturalHeight;
   const c = document.createElement('canvas');
-  c.width = img.naturalWidth || mask.width;
-  c.height = img.naturalHeight || mask.height;
+  c.width = w || mask.width;
+  c.height = h || mask.height;
   const small = c.height < mask.height;
   const ctx = c.getContext('2d', { willReadFrequently: true });
   const lctx = mask.getContext('2d');
@@ -100,13 +106,12 @@ async function makeSide(entry: CatalogEntry, faces: BoxFaces, side: Side): Promi
   }
   uvLettering(pic.data, maskPx.data);
   ctx.putImageData(pic, 0, 0);
-  // a small side goes in the address itself (no request, nothing to release); a big one is encoded off the main thread
-  if (small) return c.toDataURL('image/webp', 0.9);
+  if (small) return c;
   const blob = await new Promise<Blob | null>((done) => c.toBlob(done, 'image/webp', 0.9));
   return blob ? URL.createObjectURL(blob) : undefined;
 }
 
-function uvSide(faces: BoxFaces, side: Side): Promise<string | undefined> | undefined {
+function uvSide(faces: BoxFaces, side: Side): Promise<Glow | undefined> | undefined {
   const entry = games.get(faces);
   if (!entry) return undefined;
   let sides = made.get(faces);
@@ -128,7 +133,11 @@ export function dressUv(model: HTMLElement, faces: BoxFaces, sides: readonly Sid
     void uvSide(faces, side)?.then((src) => {
       const face = model.querySelector(`.bface.${side}`);
       if (!src || !face || face.querySelector('.buv')) return;
-      face.append(Object.assign(document.createElement('img'), { className: 'buv', src, alt: '', draggable: false }));
+      face.append(
+        typeof src === 'string'
+          ? Object.assign(document.createElement('img'), { className: 'buv', src, alt: '', draggable: false })
+          : Object.assign(copyOf(src), { className: 'buv' }),
+      );
     });
   }
 }
