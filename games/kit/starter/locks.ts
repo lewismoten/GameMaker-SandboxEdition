@@ -56,7 +56,7 @@ export function gatePicture(pal: Pal, body: 'wood' | 'blue', plate: Ramp): Pixel
 }
 
 /** The arch over a gate: a stone cap and sides, sky in the middle, a gem of the key's color on top. */
-function archPicture(pal: Pal, trim: Ramp): Pixels {
+export function archPicture(pal: Pal, trim: Ramp | 'purple'): Pixels {
   const p = new Pixels(20, 20, skyOf(pal));
   const ink = pal.c('ink', 0);
   const s = pal.r('stone');

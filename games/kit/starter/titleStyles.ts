@@ -180,7 +180,7 @@ function circuit(p: Pixels, pal: Pal): void {
   // two black chips with a row of pins either side
   for (const [cx, cy] of [
     [140, 112],
-    [198, 66],
+    [10, 50],
   ]) {
     p.rect(cx, cy, 44, 22, c('ink', 0)).rect(cx + 2, cy + 2, 40, 18, c('ink', 1));
     p.disc(cx + 6, cy + 6, 2, c('ink', 2));
