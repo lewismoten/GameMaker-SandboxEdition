@@ -53,7 +53,7 @@
   "pages": [
     {
       "head": "Welcome",
-      "html": "<h1>Welcome</h1><p><b>Day and Night</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has two short levels, about a minute each, and a map that is shown in more than one set of colors.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each thing in the levels is made.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. <kbd>Space</kbd> jumps. <kbd>F2</kbd> shows your lives, hit points and score.</p><p>Nothing in this game hurts you. The only danger is missing the signs."
+      "html": "<h1>Welcome</h1><p><b>Day and Night</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has two short levels, about a minute each, and a map that is shown in more than one set of colors.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each thing in the levels is made.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. <kbd>Space</kbd> jumps. <kbd>F2</kbd> shows your lives, hit points and score.</p><p>Nothing in this game hurts you. Coins add to your score.</p>"
     },
     {
       "head": "Level 1: One Map, Two Looks",
