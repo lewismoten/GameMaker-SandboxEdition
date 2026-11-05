@@ -8,6 +8,7 @@ import { noteFinished, notePlayed, noteWatched, noteOutcome } from './goals';
 import { tally, unlockAchievement } from './store';
 import { noteChickenScene } from '../chicken/chickenStory';
 import { finishedIn, watchRun, type PlayView } from './playedOn';
+import { CourseRun, MOVE_KEYS } from './courseGrades';
 
 export { unlockAchievement, progress, tally } from './store';
 
@@ -77,6 +78,19 @@ export function playAchievements(
   let session: Session | undefined;
   let counted = false;
   let run: ReturnType<typeof watchRun> | undefined;
+  let course: CourseRun | undefined;
+  let stopMoves: (() => void) | undefined;
+  const watchMoves = (c: CourseRun): (() => void) => {
+    if (typeof window === 'undefined') return () => {};
+    const key = (e: KeyboardEvent) => MOVE_KEYS.has(e.key) && c.moved();
+    const touch = () => c.moved();
+    addEventListener('keydown', key);
+    addEventListener('pointerdown', touch);
+    return () => {
+      removeEventListener('keydown', key);
+      removeEventListener('pointerdown', touch);
+    };
+  };
   const hooks: ReturnType<typeof playAchievements> = {
     onSession: (s) => {
       session = s;
@@ -87,19 +101,29 @@ export function playAchievements(
       };
       run?.stop();
       run = undefined;
+      stopMoves?.();
+      course = new CourseRun(saveId?.replace(/^game:/, ''), s.game);
+      stopMoves = saveId?.startsWith('project:') ? undefined : watchMoves(course);
     },
     onLifeLost: () => {
-      if (session && !session.rec.playing) void noteOutcome(saveId, 'life');
+      if (session && !session.rec.playing) {
+        course?.lifeLost();
+        void noteOutcome(saveId, 'life');
+      }
     },
     onPlayEnd: (_score, how) => {
       if (!session || session.rec.playing) return;
       run?.stop();
       run = undefined;
+      stopMoves?.();
+      stopMoves = undefined;
+      course?.end();
       if (how !== 'quit') void noteOutcome(saveId, how);
     },
     onScene: (scene) => {
       if (!session || session.rec.playing) return;
       const catalogGame = saveId?.startsWith('project:') ? undefined : saveId;
+      if (!saveId?.startsWith('project:')) course?.scene(scene);
       if (scene === 1) {
         unlockAchievement('play-finish');
         finishedIn(view, run?.watch.held());

@@ -127,6 +127,20 @@ export const scenes: Scene[] = [
   homeButton('walkthrough', 'Walkthrough'),
   startersButton('how-do-i', /How do I/),
   startersButton('how-it-works', /How it works/),
+  startersButton('transcript', /^Transcript$/),
+  {
+    id: 'transcript-honors',
+    open: async (p) => {
+      await web(p);
+      await p.getByRole('tab', { name: /Starters/ }).click({ timeout: 8000 });
+      await p.waitForTimeout(1500);
+      await p
+        .getByRole('button', { name: /^Transcript$/ })
+        .first()
+        .click({ timeout: 8000 });
+      await p.getByRole('tab', { name: 'Honors' }).click({ timeout: 8000 });
+    },
+  },
   {
     id: 'new-game',
     open: async (p) => {

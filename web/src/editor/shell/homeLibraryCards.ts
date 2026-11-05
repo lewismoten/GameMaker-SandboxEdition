@@ -5,6 +5,9 @@ import { walkTile } from './homeWalkBadge';
 import { h } from '../core/ui';
 import { byCollection } from '../../project/bizarre';
 import { byStarterGroup } from '../../project/starter';
+import { isCeremony } from '../../project/ceremonies';
+import type { Grades } from '../../project/grades';
+import { graduationCards } from './homeGraduations';
 import { allNotes, ratingOf } from '../../imported/gameNotes';
 import { groupByRating, ratingName, starsText } from '../../imported/ratings';
 import { gameTile, type HomeGame } from './homeCards';
@@ -29,8 +32,9 @@ export function libraryCards(
   c: Category,
   ratingFilter: ReturnType<typeof savedRatingFilter>,
   on: CardActions,
-  starters: { finished: ReadonlySet<string>; filter: DoneFilter } = { finished: new Set(), filter: 'all' },
+  starters: { finished: ReadonlySet<string>; filter: DoneFilter; grades?: Grades } = { finished: new Set(), filter: 'all' },
 ): HTMLElement[] {
+  const grades = starters.grades ?? {};
   const isDone = (g: HomeGame) => starters.finished.has(g.entry?.id ?? '');
   const notes = allNotes();
   let cards: HTMLElement[];
@@ -39,6 +43,7 @@ export function libraryCards(
     const tile = (g: HomeGame) => {
       const t = gameTile(g, { onSelect: on.choose, onMore: on.more });
       if (c === 'starter' && isDone(g)) doneTile(t);
+      else if (c === 'starter' && grades[g.entry?.id ?? '']) doneTile(t, grades[g.entry?.id ?? '']);
       if (c === 'imported' && g.project) {
         rateTile(t, notes[g.project.id]);
         walkTile(t, lib.walkBadges.get(g.project.id));
@@ -52,7 +57,12 @@ export function libraryCards(
     // (homeTilePack.ts), each tile telling its group
     const sections: { name: string; tag?: string; count?: number; doneText?: string; games: { g: HomeGame }[] }[] =
       c === 'starter'
-        ? byStarterGroup(lib.gamesOf(c).map((g) => ({ id: g.entry?.id ?? '', title: g.title, g }))).map((sec) => ({
+        ? byStarterGroup(
+            lib
+              .gamesOf(c)
+              .filter((g) => !isCeremony(g.entry?.id ?? ''))
+              .map((g) => ({ id: g.entry?.id ?? '', title: g.title, g })),
+          ).map((sec) => ({
             ...sec,
             doneText: doneCount(sec.games.filter((x) => isDone(x.g)).length, sec.games.length),
             games: sec.games.filter((x) => doneShown(starters.filter, isDone(x.g))),
@@ -80,6 +90,16 @@ export function libraryCards(
                 }))
               : [];
     const shownSections = c === 'starter' ? sections.filter((sec) => sec.games.length) : sections;
+    const graduations =
+      c === 'starter' && (starters.filter === 'all' || starters.filter === 'grad')
+        ? graduationCards(
+            lib.gamesOf(c).filter((g) => isCeremony(g.entry?.id ?? '')),
+            starters.finished,
+            grades,
+            tile,
+            new Map(lib.gamesOf(c).map((g) => [g.entry?.id ?? '', g.title])),
+          )
+        : [];
     cards =
       shownSections.length > 1 || c === 'starter'
         ? shownSections.flatMap((sec, n) => [
@@ -99,6 +119,7 @@ export function libraryCards(
             }),
           ])
         : (c === 'imported' ? rated : lib.gamesOf(c)).map(tile);
+    cards.push(...graduations);
   }
   if (!cards.length)
     cards = [

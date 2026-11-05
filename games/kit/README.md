@@ -61,6 +61,7 @@ Making the files:
 - `synthParts.ts` — small pieces the games' synthesized sounds share: noise through a low-pass, a gate, an
   attack-and-decay envelope and a one-pole low-pass.
 - `disk.ts` — writes the files with DOS 8.3 names and DOS text.
+- `courseStamp.ts` — letters "COURSE 101" in the lower left of a Starter's `title.gif` (`Disk.write` calls it; no number for other games).
 - `menuVersion.ts` — the game's version ("v1.1", from about.json) lettered in the lower right of its menu picture,
   in the PC font with a dark outline in the picture's own lightest and darkest colors. `Disk.write()` does it for every
   game; a game whose menu has a line of its own there moves it (`disk.menuVersion = { y: 186 }`).

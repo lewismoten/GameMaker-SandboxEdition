@@ -5,6 +5,8 @@
 import { isSandboxGame, loadGameList, type CatalogEntry } from '../project/files';
 import { isBizarreGame } from '../project/bizarre';
 import { isStarterGame } from '../project/starter';
+import { isCeremony } from '../project/ceremonies';
+import { noteHonor } from './honorDates';
 import type { Goal } from './catalog';
 import { currentAchievements, loadAchievements, progress, remember, countOccurrence } from './store';
 
@@ -88,6 +90,7 @@ export async function noteFinished(gameId: string | undefined): Promise<void> {
   const id = gameId?.replace(/^game:/, '');
   if (!id || gameId?.startsWith('project:')) return;
   await remember('finished', id);
+  if (isCeremony(id)) noteHonor(id);
   await refreshGoals();
 }
 
