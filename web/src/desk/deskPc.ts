@@ -224,8 +224,12 @@ export function deskPc(scene: Scene, hooks: PcHooks) {
 
   /** Types a command at the prompt (booting first if needed). */
   async function command(cmd: string): Promise<void> {
+    // booting takes seconds: focus goes to the screen only if it is where it was (or nowhere), not if the person has moved on
+    const asked = document.activeElement;
     await power(true);
-    if (!(await loadPc()).typeCommand(cmd)) toast('Quit the program that is running first (Esc usually does it).');
+    const now = document.activeElement;
+    const moved = !!now && now !== document.body && now !== asked && !now.matches('canvas.crt-text');
+    if (!(await loadPc()).typeCommand(cmd, !moved)) toast('Quit the program that is running first (Esc usually does it).');
   }
 
   return {

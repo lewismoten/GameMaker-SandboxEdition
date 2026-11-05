@@ -164,6 +164,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Fixed
 
+- While the PC screen has the keyboard, a small line by the screen says "Shift+Tab leaves the screen" (on the desk and on the DOS page). A command the PC types after booting (the modem, say) no longer pulls focus back to the screen if you have moved on, so closing the mug returns to the mug.
 - On the desk's PC screen and dos.html, a keyboard user is no longer stuck: Shift+Tab leaves the screen (the screen's name says so), and the Sound Boaster note is a labeled region.
 - On a phone, the Sort, Show and Remove all imported controls above a long list of imported games no longer sit on top of the first tiles.
 - Choosing a link or button that opens another page now moves keyboard focus to that page's heading, so a screen reader says where you are. Opening the site, Back and Forward, and changes the page makes itself leave focus alone.
