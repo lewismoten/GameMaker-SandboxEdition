@@ -22,7 +22,10 @@ export function motenUv(desk: HTMLElement): () => void {
       c.getContext('2d')?.drawImage(img, 0, 0);
       poster.append(Object.assign(document.createElement('img'), { className: 'poster-uv', src: uvPoster(c).toDataURL('image/jpeg', 0.85), alt: '' }));
     };
-    img.src = SRC;
+    // the picture the poster already shows (the 512 px AVIF or WebP it hangs as), already loaded: the
+    // full-size JPEG is 96 KB more, for a poster that stands 230 px across on the desk
+    const shown = poster.querySelector('img')?.currentSrc;
+    img.src = shown || SRC;
   };
   const watch = new MutationObserver(make);
   watch.observe(desk, { attributes: true, attributeFilter: ['class'] });
