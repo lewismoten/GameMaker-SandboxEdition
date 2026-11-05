@@ -10,6 +10,7 @@ The 1994 desk gets a fuller PC and a box of feelies, the editors become easier o
 the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to finish.
 
 ### Added
+- The Pocket Player (a small touch-screen board flashed from the site) now has a game picker and plays 30 of the Starters, with a round touch pad that works by finger or stylus, Space and Enter buttons only when a game uses them, and a settings screen (left or right hand, stylus mode, pad size, palm rejection). Starters with monsters, and sound, come later.
 
 - The Clown Club Face Dial in Teddy's Little Biggest Adventure box now has line-art clown faces (a corgi, a shaggy pup, Doc Leo in his fedora, a curly-haired clown, and the rest) instead of 12 by 12 pixel pictures, so each half-face is easy to read on the big and small discs. The pixel faces stay for the game's own screens, and the code each face shows is unchanged.
 - Try Again, a Starter for the Putting It Together group: a pit too deep for Kit to climb out of has a post at the bottom, and touching it starts the level over, because it is a scene link from the post's square back to the same scene (the coins come back, the score stays). The next level gives three pits a way back, a ladder, planks and solid blocks. Two levels, with signs and a "How this level is made" page each.
