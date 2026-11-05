@@ -198,7 +198,7 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
       const n = checkNeeds(kind, roles);
       if (monRow) monRow.hidden = !n.ok || NO_MONSTERS.has(kind);
       diffRow.hidden = kind !== 'platform';
-      diffText.textContent = `Difficulty: ${difficulty}% of the most the hero can jump`;
+      diffText.textContent = `Difficulty: ${difficulty}%`;
       botRun++;
       running?.cancel();
       current = n.ok
