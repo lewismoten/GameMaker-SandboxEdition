@@ -441,6 +441,17 @@ function slimOriginal(o: OriginalExtras): OriginalExtras {
   };
 }
 
+/**
+ * games/index.json: every entry whole, except the Starters', which are as slim as in catalog.json
+ * (a manual holding only its title, details: true). Forty of them carried 300 kB of "How do I…?"
+ * questions and lessons that only the Starters tab and a manual open read (via withDetails), and
+ * the Library, the desk and the magazine loaded all of it with the full catalog.
+ */
+export function indexCatalog(catalog: CdCatalogEntry[]): CdCatalogEntry[] {
+  const slim = slimCatalog(catalog);
+  return catalog.map((e, i) => (e.series === 'starter' && slim[i].details ? { ...e, original: slim[i].original, details: true } : e));
+}
+
 /** An entry's games/details/<id>.json, or undefined when it has nothing slimCatalog leaves out. */
 function catalogDetails(e: CdCatalogEntry): { notice?: string; original?: OriginalExtras } | undefined {
   const original = e.original && (e.original.manual || e.original.printables) ? { manual: e.original.manual, printables: e.original.printables } : undefined;
@@ -522,7 +533,11 @@ export function cdGames(cdRoot: string): Plugin {
           const { catalog, secret } = served();
           res.end(
             JSON.stringify(
-              url.endsWith('catalog.json') ? slimCatalog(catalog) : extra ? secret.filter((e) => (get().gates.get(e.id) ?? 1) === Number(extra[1])) : catalog,
+              url.endsWith('catalog.json')
+                ? slimCatalog(catalog)
+                : extra
+                  ? secret.filter((e) => (get().gates.get(e.id) ?? 1) === Number(extra[1]))
+                  : indexCatalog(catalog),
             ),
           );
           return;
@@ -619,7 +634,7 @@ export function cdGames(cdRoot: string): Plugin {
       });
       const secret = (gate: number) => behind(get(), gate).map(known);
       // Catalogs keep precomputed previews and health; game data lives only in each ZIP.
-      this.emitFile({ type: 'asset', fileName: 'games/index.json', source: JSON.stringify(catalog.map((e) => ({ ...e, gz: true }))) });
+      this.emitFile({ type: 'asset', fileName: 'games/index.json', source: JSON.stringify(indexCatalog(catalog).map((e) => ({ ...e, gz: true }))) });
       this.emitFile({ type: 'asset', fileName: 'games/catalog.json', source: JSON.stringify(slimCatalog(catalog).map((e) => ({ ...e, gz: true }))) });
       for (const e of catalog) {
         const details = catalogDetails(e);
