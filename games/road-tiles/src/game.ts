@@ -36,7 +36,20 @@ export function buildGame(levels: Level[]): Game {
     const scene = emptyScene(ADVTYPE);
     scene.desc = l.title.slice(0, 19);
     scene.pos = { x: 40 + i * 80, y: 80 };
-    scene.files = ['roads.pal', `${l.file}.map`, 'roads.bbl', 'roads.mon', 'roads.mbl', 'hero.chr', 'hero.cbl', 'roads.snd', 'roads.cmf', `${l.file}.lst`, '', ...new Array(9).fill('')];
+    scene.files = [
+      'roads.pal',
+      `${l.file}.map`,
+      'roads.bbl',
+      'roads.mon',
+      'roads.mbl',
+      'hero.chr',
+      'hero.cbl',
+      'roads.snd',
+      'roads.cmf',
+      `${l.file}.lst`,
+      '',
+      ...new Array(9).fill(''),
+    ];
     scene.links = blank();
     const next = levels[i + 1];
     scene.links[0] = next ? { toScene: i + 3, from: cell(l.finish), to: cell(next.start) } : { toScene: 1, from: cell(l.finish), to: { x: 0, y: 0 } };

@@ -10,27 +10,11 @@
       "level": 1
     },
     {
-      "id": "turned",
-      "q": "How do I make all four corners from one drawing?",
-      "scene": 2,
-      "x": 25,
-      "y": 11,
-      "level": 1
-    },
-    {
       "id": "diagonal",
       "q": "How do I make a road that goes diagonally?",
       "scene": 3,
       "x": 17,
       "y": 18,
-      "level": 2
-    },
-    {
-      "id": "bend",
-      "q": "How do I join a straight road to a diagonal?",
-      "scene": 3,
-      "x": 15,
-      "y": 20,
       "level": 2
     },
     {

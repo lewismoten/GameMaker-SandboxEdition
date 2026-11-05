@@ -138,5 +138,3 @@ export async function ground(bot: StarterBot): Promise<void> {
   await must(bot, bot.wait(LOOK), 'looking at the water');
   await through(bot, bot.walk(19, 'the finish line'), 'the finish line');
 }
-
-

@@ -43,7 +43,8 @@ export class RoadMap {
     const w = s.board[0].length;
     const h = s.board.length;
     for (let j = 0; j <= h; j++)
-      for (let i = 0; i < w; i++) if (this.at(x + i, y + j) !== ground) throw new Error(`Sign at ${x},${y} covers ${this.at(x + i, y + j)} at ${x + i},${y + j}`);
+      for (let i = 0; i < w; i++)
+        if (this.at(x + i, y + j) !== ground) throw new Error(`Sign at ${x},${y} covers ${this.at(x + i, y + j)} at ${x + i},${y + j}`);
     s.board.forEach((row, dy) => row.forEach((name, dx) => this.put(x + dx, y + dy, name)));
     return this.put(x, y + h, s.legs[0]).put(x + w - 1, y + h, s.legs[1]);
   }

@@ -63,14 +63,18 @@ export function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sig
   const book = new Book('bbl');
   const grounds = addRoadBlocks(book, pal);
   const signs = {} as Record<SignName, Sign>;
-  for (const [key, [name, words, w, h, ground]] of Object.entries(SIGNS)) signs[key as SignName] = addRoadSign(book, pal, grounds[ground], ground, name, words, w, h);
+  for (const [key, [name, words, w, h, ground]] of Object.entries(SIGNS))
+    signs[key as SignName] = addRoadSign(book, pal, grounds[ground], ground, name, words, w, h);
   return { book, signs, grounds };
 }
 
 /** A level's map: grass inside a ring of trees, with flowers dotted about. */
 function meadow(book: Book, w: number, h: number, flowers: Spot[]): RoadMap {
   const m = new RoadMap(book, w, h, 'grass', 'tree');
-  m.fill(0, 0, w, 1, 'tree').fill(0, h - 1, w, 1, 'tree').fill(0, 0, 1, h, 'tree').fill(w - 1, 0, 1, h, 'tree');
+  m.fill(0, 0, w, 1, 'tree')
+    .fill(0, h - 1, w, 1, 'tree')
+    .fill(0, 0, 1, h, 'tree')
+    .fill(w - 1, 0, 1, h, 'tree');
   for (const [x, y] of flowers) m.put(x, y, 'flower');
   return m;
 }
@@ -118,7 +122,9 @@ function diagonalsLevel(book: Book, s: Record<SignName, Sign>): RoadMap {
   for (let i = 0; i < 3; i++) {
     const x = 6 + i;
     const y = 9 - i;
-    m.put(x, y, 'diag.ne').put(x + 1, y, 'tip.tl').put(x, y - 1, 'tip.br');
+    m.put(x, y, 'diag.ne')
+      .put(x + 1, y, 'tip.tl')
+      .put(x, y - 1, 'tip.br');
   }
   m.put(9, 6, 'bend.e-sw');
   m.fill(10, 6, 4, 1, 'road.h');
@@ -127,7 +133,9 @@ function diagonalsLevel(book: Book, s: Record<SignName, Sign>): RoadMap {
   for (let i = 0; i < 3; i++) {
     const x = 15 + i;
     const y = 7 + i;
-    m.put(x, y, 'diag.se').put(x + 1, y, 'tip.bl').put(x, y + 1, 'tip.tr');
+    m.put(x, y, 'diag.se')
+      .put(x + 1, y, 'tip.bl')
+      .put(x, y + 1, 'tip.tr');
   }
   m.put(18, 10, 'bend.e-nw');
   m.fill(19, 10, 3, 1, 'road.h');

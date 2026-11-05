@@ -104,7 +104,7 @@ export function buildGrounds(pal: Pal): Grounds {
   const gs = new Pixels(N, N).map((x, y) => {
     const b = border(y);
     const mixed = x >= b - 2 && x < b + 2 && (x + y) % 2 === 0;
-    return (x < b) !== mixed ? grass.get(x, y) : sand.get(x, y);
+    return x < b !== mixed ? grass.get(x, y) : sand.get(x, y);
   });
   const sw = new Pixels(N, N).map((x, y) => {
     const b = border(y);
