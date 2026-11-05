@@ -41,8 +41,8 @@ export function slimPose(pal: Pal, facing: SlimFacing, step: Step): Pixels {
     g.rect(x - 1 + (ahead > 0 ? 2 : ahead < 0 ? -1 : 0), 16 - lift, w + 1, 2, near ? white[3] : white[2]);
   };
   if (straight) {
-    leg(7, -fwd, false, 3);
-    leg(10, fwd, true, 3);
+    leg(8, -fwd, false, 2);
+    leg(10, fwd, true, 2);
   } else if (side) {
     leg(7, -fwd * 2, false, 3);
     leg(9, fwd * 2, true, 3);
@@ -53,18 +53,19 @@ export function slimPose(pal: Pal, facing: SlimFacing, step: Step): Pixels {
   // the hoodie, arms and hands
   if (straight) {
     const sw = step === 2 ? [0, 0] : step === 0 ? [-1, 1] : [1, -1];
-    g.rect(6, 8, 8, 5, hood[3]).rect(6, 8, 2, 5, hood[2]).rect(12, 8, 2, 5, hood[4]).rect(6, 12, 8, 1, hood[1]);
-    g.rect(4, 9 + sw[0], 2, 4, hood[2]).rect(14, 9 + sw[1], 2, 4, hood[3]);
-    g.rect(4, 13 + sw[0], 2, 1, skin[2]).rect(14, 13 + sw[1], 2, 1, skin[2]);
+    // a narrow torso (six wide) with arms hanging close at each side, so he reads as a slim kid and not an egg
+    g.rect(7, 8, 6, 5, hood[3]).rect(7, 8, 2, 5, hood[2]).rect(11, 8, 2, 5, hood[4]).rect(7, 12, 6, 1, hood[1]);
+    g.rect(6, 9 + sw[0], 1, 4, hood[2]).rect(13, 9 + sw[1], 1, 4, hood[3]);
+    g.set(6, 13 + sw[0], skin[2]).set(13, 13 + sw[1], skin[2]);
     if (facing === 'down') {
-      g.rect(9, 8, 1, 3, white[2]).rect(11, 8, 1, 3, white[2]).rect(9, 11, 3, 1, hood[2]);
+      g.rect(9, 8, 1, 3, white[2]).rect(10, 8, 1, 3, white[2]).rect(9, 11, 2, 1, hood[2]);
     } else {
       g.rect(7, 8, 6, 2, hood[4]).rect(8, 10, 4, 1, hood[2]); // the hood's back
     }
   } else if (side) {
     g.rect(7, 8, 6, 5, hood[3]).rect(7, 8, 2, 5, hood[2]).rect(11, 8, 2, 5, hood[4]).rect(7, 12, 6, 1, hood[1]);
     const a = step === 2 ? 0 : fwd * 2;
-    g.rect(8 + a, 9, 3, 4, hood[4]).rect(8 + a, 13, 3, 1, skin[2]);
+    g.rect(9 + a, 9, 2, 4, hood[4]).rect(9 + a, 13, 2, 1, skin[2]);
     g.rect(11, 8, 1, 2, white[2]);
   } else {
     g.set(5, 9 + (fwd > 0 ? 1 : 0), hood[1]);
@@ -78,10 +79,10 @@ export function slimPose(pal: Pal, facing: SlimFacing, step: Step): Pixels {
   }
   // the head: three rows under the cuff
   if (facing === 'down') {
-    g.rect(7, 5, 6, 3, skin[3]).rect(7, 5, 6, 1, hair[2]);
+    g.rect(6, 5, 8, 3, skin[3]).rect(6, 5, 8, 1, hair[2]);
     g.set(8, 6, ink).set(11, 6, ink).set(9, 7, skin[1]).set(10, 7, skin[1]);
   } else if (facing === 'up') {
-    g.rect(7, 5, 6, 3, hair[1]).rect(7, 5, 6, 1, hair[2]);
+    g.rect(6, 5, 8, 3, hair[1]).rect(6, 5, 8, 1, hair[2]);
   } else if (side) {
     g.rect(8, 5, 6, 3, skin[3]).rect(7, 5, 3, 3, hair[1]).rect(8, 5, 6, 1, hair[2]);
     g.set(12, 6, ink).set(14, 6, skin[2]).set(13, 7, skin[1]);
@@ -93,13 +94,14 @@ export function slimPose(pal: Pal, facing: SlimFacing, step: Step): Pixels {
     g.rect(12, 6, 1, 2, skin[2]);
   }
   // the beanie: a dome, a ribbed cuff narrower than the shoulders, and a fuzzy pom-pom on top
-  const px = straight ? 9 : side ? 8 : 11;
-  g.rect(8, 2, 5, 1, hat[3]).rect(7, 3, 7, 1, hat[3]).rect(8, 2, 3, 1, hat[4]);
-  g.rect(straight ? 7 : 6, 4, straight ? 6 : 8, 1, hat[2]);
-  for (let x = 7; x < 14; x += 2) g.set(x, 4, hat[1]);
-  g.rect(px, 1, 3, 2, white[3])
+  const px = straight ? 8 : side ? 8 : 11;
+  if (straight) g.rect(8, 2, 4, 1, hat[3]).rect(7, 3, 6, 1, hat[3]).rect(8, 2, 2, 1, hat[4]);
+  else g.rect(8, 2, 5, 1, hat[3]).rect(7, 3, 7, 1, hat[3]).rect(8, 2, 3, 1, hat[4]);
+  g.rect(straight ? 6 : 6, 4, 8, 1, hat[2]);
+  for (let x = straight ? 7 : 7; x < 14; x += 2) g.set(x, 4, hat[1]);
+  g.rect(px, 1, straight ? 4 : 3, 2, white[3])
     .set(px, 1, white[2])
-    .set(px + 2, 2, white[2]);
+    .set(px + (straight ? 3 : 2), 2, white[2]);
   void faceOn;
   const p = new Pixels(20, 20, T);
   p.blit(g, 0, 1, T);
