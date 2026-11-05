@@ -9,6 +9,7 @@
 #include <vector>
 #include <zlib.h>
 #include "gmcfg.h"
+#include "pcspeaker.h"
 
 using namespace gm;
 
@@ -62,6 +63,33 @@ static int msum(const World& w) {
   return a;
 }
 
+// FNV hash of one effect's 36 frequencies (72 bytes), as the web check computes from the .snd file.
+static uint32_t tuneHash(const uint8_t* t) {
+  uint32_t h = 2166136261u;
+  for (int i = 0; i < 72; i++) h = (h ^ t[i]) * 16777619u;
+  return h;
+}
+
+// Plays one effect through the board's Speaker model (pcspeaker.h), polling every 250 us as the 1 ms task
+// would (finer here), and checks every step starts within the polling slack of its time (n / 145.6 s)
+// and holds the frequency PLAYGAME would sound. Returns the number of wrong steps.
+static int tuneTiming(const uint8_t* tune) {
+  Speaker sp;
+  sp.start(tune, 1000);
+  int bad = 0, seen = 0, f = 0;
+  for (uint32_t us = 1000; us < 1000 + 300000 && (sp.on || seen == 0); us += 250) {
+    if (!sp.update(us, f)) continue;
+    int step = seen++;
+    if (step < NUMFREQ) {
+      int want = tune[step * 2] | (tune[step * 2 + 1] << 8);
+      want = want < 20 ? 0 : want > 20000 ? 20000 : want;
+      uint32_t due = 1000 + (uint32_t)((uint64_t)step * 10000000ull / TICK_RATE_X10);
+      if (f != want || us < due || us > due + 500) bad++;
+    }
+  }
+  return bad + (seen == NUMFREQ + 1 ? 0 : 1);
+}
+
 int main(int argc, char** argv) {
   if (argc < 4) return 2;
   dir = argv[1];
@@ -86,6 +114,7 @@ int main(int argc, char** argv) {
   fclose(f);
   w.begin();
   size_t e = 0;
+  int timed = 0, timedBad = 0;
   for (int t = 1; t <= maxTick; t++) {
     while (e < evs.size() && evs[e].tick == t) {
       if (evs[e].key >= 256) w.dropSlot = evs[e].key - 256;  // the picker's choice, ahead of the D press
@@ -95,7 +124,15 @@ int main(int argc, char** argv) {
     char code = w.tick();
     printf("S %d %c %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %u\n", t, code ? code : '-', w.level, w.cx[0], w.cx[1], w.cy[0], w.cy[1],
            w.cseq, w.cframe, w.mx, w.my, w.sc.nx, w.sc.ny, w.sc.lsx, w.sc.lsy, w.score, w.nextx, w.nexty, w.scrx, w.scry, w.hitpts, w.lives, msum(w), frameHash(w));
+    // The effects started this tick: Q <tick> <effect> <hash of its 36 frequencies>
+    for (int q = 0; q < w.nsnd; q++) {
+      const uint8_t* tune = w.snd + w.sndQ[q] * 72;
+      printf("Q %d %d %u\n", t, w.sndQ[q], tuneHash(tune));
+      if (timed < 40 && !(timed++ % 1)) timedBad += tuneTiming(tune);
+    }
+    w.nsnd = 0;
     if (code == 'W') break;
   }
+  printf("Z %d %d\n", timed, timedBad);
   return 0;
 }

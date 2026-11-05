@@ -311,6 +311,7 @@ inline int World::doCollision(int m1, int m2, int where) {
     killMon(m1);
     if (b.fromchar > 0) {
       score += mon::upscore(a1);
+      doSound(KILLSOUND);
       killMon(m2);
       return LASTMM;
     }
@@ -319,6 +320,7 @@ inline int World::doCollision(int m1, int m2, int where) {
   killMon(m2);
   if (a.fromchar > 0) {
     score += mon::upscore(a2);
+    doSound(KILLSOUND);
     killMon(m1);
     return LASTMM;
   }
@@ -484,9 +486,12 @@ inline void World::moveAllMonsters() {
 
     if (i.curPic >= 0 && i.curPic < LASTSL && chkMonChr(m) && i.fromchar != 1) {
       int p = monPicNum(m);
-      doBlockTouchChar(attrOf(mbl, nmbl, p));
+      int playSnd = doBlockTouchChar(attrOf(mbl, nmbl, p)) - 1;
       const uint8_t* now = monAt(mm[m].monnum);
-      if (now && mon::power(now) < CHARPOWER && killMon(m)) continue;
+      if (now && mon::power(now) < CHARPOWER && killMon(m)) {
+        if (!playSnd) doSound(KILLSOUND);
+        continue;
+      }
     }
 
     int survivor = m;

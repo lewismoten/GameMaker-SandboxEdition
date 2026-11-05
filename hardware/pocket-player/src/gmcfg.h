@@ -4,6 +4,7 @@
 //   title <text>
 //   level <map> <bbl> <cbl> <chr> <pal> <start x> <start y> <scroll up> <down> <left> <right> <blocks> [<mon> <mbl> <monsters> <monster blocks>]
 //     (the last four only for a level that can have monsters: the .mon records, the monster blocks, how many of each)
+//   snd <level> <file>               (the level's PC speaker tunes: 30 effects of 36 frequencies, 2160 bytes packed; none: no sound)
 //   link <level> <from x> <from y> <to level, -1 = the game is won> <to x> <to y>
 //   key <scan code> <label>          (the keys the game uses, from controls.json)
 //   ctr <counter> <label>            (counters 20 to 29 the game shows, from controls.json)
@@ -21,7 +22,7 @@ namespace gm {
 
 constexpr int MAXKEYSET = 12;
 struct KeyInfo { int scan; char label[16]; };
-struct LevelFiles { char map[16], bbl[16], cbl[16], chr[16], pal[16], mon[16], mbl[16]; int nbl, nmon, nmbl; };
+struct LevelFiles { char map[16], bbl[16], cbl[16], chr[16], pal[16], mon[16], mbl[16], snd[16]; int nbl, nmon, nmbl; };
 struct Counter { int n; char label[20]; };
 struct Cfg {
   char title[40];
@@ -59,6 +60,7 @@ inline bool parseCfg(const char* text, World& w, Cfg& cfg) {
       strcpy(L.map, m); strcpy(L.bbl, bb); strcpy(L.cbl, cb); strcpy(L.chr, ch); strcpy(L.pal, pl);
       L.nbl = g;
       bool withMons = nm > 0 && nb > 0;
+      L.snd[0] = 0;
       strcpy(L.mon, withMons ? mo : ""); strcpy(L.mbl, withMons ? mb : "");
       L.nmon = withMons ? nm : 0;
       L.nmbl = withMons ? nb : 0;
@@ -66,6 +68,8 @@ inline bool parseCfg(const char* text, World& w, Cfg& cfg) {
       V.startX = a; V.startY = b;
       V.scrollUp = c; V.scrollDown = d; V.scrollLeft = e; V.scrollRight = f;
       w.nlevels++;
+    } else if (!strncmp(line, "snd ", 4) && sscanf(line, "snd %d %15s", &a, m) == 2 && a >= 0 && a < w.nlevels) {
+      strcpy(cfg.lv[a].snd, m);
     } else if (sscanf(line, "link %d %d %d %d %d %d", &a, &b, &c, &d, &e, &f) == 6 && a >= 0 && a < w.nlevels) {
       Level& L = w.levels[a];
       if (L.nlinks < MAXLINKS) L.links[L.nlinks++] = {b, c, d, e, f};
@@ -95,15 +99,15 @@ struct Assets {
   const Cfg* cfg = nullptr;
   ReadFile read = nullptr;
   Inflate inflate = nullptr;
-  uint8_t* bbl = nullptr; uint8_t* cbl = nullptr; uint8_t* chr = nullptr; uint8_t* mon = nullptr; uint8_t* mbl = nullptr;
+  uint8_t* bbl = nullptr; uint8_t* cbl = nullptr; uint8_t* chr = nullptr; uint8_t* mon = nullptr; uint8_t* mbl = nullptr; uint8_t* snd = nullptr;
   uint8_t pal[768];
   bool palChanged = false;
-  char bblName[16] = "", cblName[16] = "", chrName[16] = "", palName[16] = "", monName[16] = "", mblName[16] = "";
+  char bblName[16] = "", cblName[16] = "", chrName[16] = "", palName[16] = "", monName[16] = "", mblName[16] = "", sndName[16] = "";
 
   void release() {
-    free(bbl); free(cbl); free(chr); free(mon); free(mbl);
-    bbl = cbl = chr = mon = mbl = nullptr;
-    bblName[0] = cblName[0] = chrName[0] = palName[0] = monName[0] = mblName[0] = 0;
+    free(bbl); free(cbl); free(chr); free(mon); free(mbl); free(snd);
+    bbl = cbl = chr = mon = mbl = snd = nullptr;
+    bblName[0] = cblName[0] = chrName[0] = palName[0] = monName[0] = mblName[0] = sndName[0] = 0;
   }
   // A packed file: its length (4 bytes, little endian), then the raw deflate of it.
   uint8_t* readz(const char* name, size_t* n) const {
@@ -153,6 +157,13 @@ struct Assets {
       free(a.mon); free(a.mbl);
       a.mon = a.mbl = nullptr;
       a.monName[0] = a.mblName[0] = 0;
+    }
+    if (L.snd[0] && swap(a.snd, a.sndName, L.snd, (size_t)LASTSND * 72, a)) a.w->snd = a.snd;
+    else {
+      free(a.snd);
+      a.snd = nullptr;
+      a.sndName[0] = 0;
+      a.w->snd = nullptr;
     }
     a.w->mon = a.mon; a.w->mbl = a.mbl; a.w->nmon = mons_ ? L.nmon : 0; a.w->nmbl = mons_ ? L.nmbl : 0;
     size_t n = 0;

@@ -43,6 +43,7 @@ struct Settings {
   uint8_t dead = 1;      // 0 small (18 px), 1 medium (26), 2 large (36)
   uint8_t palm = 0;      // 0 off, 1 size, 2 size + near
   uint8_t debug = 1;     // the numbers in the status strip
+  uint8_t sound = 2;     // PC speaker volume: 0 off, 1 low, 2 medium, 3 high
 };
 
 // Which controls a game needs (from its controls.json): the arrows, Space, Enter, and any other keys.
