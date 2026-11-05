@@ -6,6 +6,11 @@
 # keys.txt lines: "<ms since the first key> down|up <mac key code>" (see keyseq.swift).
 # Needs: /Applications/dosbox.app, ffmpeg, swiftc, and Accessibility + Screen Recording for the terminal app.
 set -u
+# DOSBox gets no keys and the screen capture sees only the lock screen when the Mac is locked.
+if ioreg -n Root -d1 | grep -q '"CGSSessionScreenIsLocked"=Yes'; then
+  echo "The screen is LOCKED: DOSBox cannot get keys or be captured. Lewis must unlock the Mac and set Lock Screen / display sleep to Never for the run (caffeinate cannot unlock it)." >&2
+  exit 2
+fi
 KIND=$1 ID=$2 KEYS=$(cd "$(dirname "$3")" && pwd)/$(basename "$3") OUT=$4 BEFORE=${5:-28} AFTER=${6:-6}
 HERE=$(cd "$(dirname "$0")" && pwd)
 ROOT=$(cd "$HERE/../../.." && pwd)
@@ -56,4 +61,8 @@ sleep "$BEFORE"
 sleep "$AFTER"
 osascript -e "$STOP"
 ls -la "$OUT/cap"
+if ! ls "$OUT"/cap/*.avi >/dev/null 2>&1; then
+  echo "FAILED: no capture AVI in $OUT/cap. DOSBox got no keys (locked or asleep screen, no Accessibility permission, or the game did not start); see $OUT/dosbox.log" >&2
+  exit 3
+fi
 echo "decode a level's AVI: ffmpeg -i $OUT/cap/${ID}_001.avi -an -f rawvideo -pix_fmt rgb24 -fps_mode passthrough $OUT/dos.rgb (size: ffprobe)"
