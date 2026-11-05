@@ -4,7 +4,9 @@
 // score, hit points, lives, the counters and a hash of the 312 by 196 picture) is recorded. The C++ core
 // is built for the Mac (needs c++ and zlib), replays the same keys on the same packed data files
 // (data/<id>.cfg, from pocketData.ts) and the two are compared tick by tick. One line per game;
-// exit 1 if any game differs.
+// exit 1 if any game differs. It also records every PC speaker effect the engine starts (tick, number, hash of
+// its 36 frequencies) and compares that schedule with the one the board code queues (Q lines), and the board's
+// tone player (pcspeaker.h) is timed against 1/145.6 s steps for up to 40 of the effects (the Z line).
 //   cd web && npx vite-node scripts/pocketHostCheck.ts [id ...] [--ticks N] [--keep dir]
 // With no ids it checks every game in data/games.txt.
 import { execFileSync } from 'node:child_process';
@@ -14,6 +16,7 @@ import { join } from 'node:path';
 import { renderWorld, VISIBLE_H, VISIBLE_W } from '@lewismoten/gamemaker-sandbox-engine/engine/render';
 import { Screen } from '@lewismoten/gamemaker-sandbox-engine/gfx/screen';
 import { GameSim, readDisk } from '@lewismoten/gamemaker-sandbox-tools/kit/gameSim';
+import { LASTSND } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
 import { decodeKeys, type Walkthrough } from './../src/walkthrough/format';
 
 const args = process.argv.slice(2);
@@ -43,6 +46,11 @@ const exe = join(work, 'hosttest');
 execFileSync('c++', ['-std=c++17', '-O1', '-Wall', '-I', here + 'src', here + 'host/hosttest.cpp', '-o', exe, '-lz'], { stdio: 'inherit' });
 
 const names = 'S tick code level x0 x1 y0 y1 seq frame mx my nx ny lsx lsy score nextx nexty scrx scry hp lives meters hash'.split(' ');
+const fnv = (b: Uint8Array): number => {
+  let h = 2166136261;
+  for (const x of b) h = Math.imul(h ^ x, 16777619) >>> 0;
+  return h;
+};
 const play = (g: GameSim, n: number) =>
   g.game.scenes
     .map((s, i) => ({ s, i }))
@@ -53,6 +61,8 @@ async function checkGame(id: string): Promise<string> {
   const walk = JSON.parse(readFileSync(`${games}${id}/walkthrough.json`, 'utf8')) as Walkthrough;
   const sim = new GameSim(readDisk(`${games}${id}/disk`), walk.rand.seed);
   const script: string[] = [];
+  const sounds: string[] = [];
+  const wrapped = new WeakSet<object>();
   const expected: string[] = [];
   const segs = walk.segments.map((s) => decodeKeys(s.keys));
   let seg = 0;
@@ -99,6 +109,18 @@ async function checkGame(id: string): Promise<string> {
       ki++;
     }
     tickNo++;
+    if (!wrapped.has(sim.w.sound)) {
+      // record each effect the engine starts: its tick, number and the hash of its frequencies
+      wrapped.add(sim.w.sound);
+      const orig = sim.w.sound.play.bind(sim.w.sound);
+      sim.w.sound.play = (n: number) => {
+        const ok = orig(n);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const raw = ok && n >= 0 && n < LASTSND ? ((sim as any).file(sim.scene, 7) as Uint8Array | undefined) : undefined;
+        if (raw) sounds.push(`Q ${tickNo} ${n} ${fnv(raw.subarray(n * 72, n * 72 + 72))}`);
+        return ok;
+      };
+    }
     const r = await sim.tick();
     const w = sim.w;
     renderWorld(screen, w);
@@ -152,7 +174,10 @@ async function checkGame(id: string): Promise<string> {
   } catch (e) {
     return `FAIL  ${id}: the board code stopped (${String(e).split('\n')[0]})`;
   }
-  const got = out.trim().split('\n');
+  const lines = out.trim().split('\n');
+  const got = lines.filter((l) => l.startsWith('S '));
+  const gotQ = lines.filter((l) => l.startsWith('Q ')).join('\n');
+  const timing = (lines.find((l) => l.startsWith('Z ')) ?? 'Z 0 1').split(' ');
   for (let i = 0; i < total; i++) {
     if (got[i] !== expected[i]) {
       const a = expected[i].split(' '),
@@ -161,9 +186,16 @@ async function checkGame(id: string): Promise<string> {
       return `FAIL  ${id}: tick ${i + 1} of ${total}: ${diffs.slice(0, 4).join('; ')}`;
     }
   }
+  if (gotQ !== sounds.join('\n')) {
+    const a = sounds,
+      b = gotQ ? gotQ.split('\n') : [];
+    const k = a.findIndex((l, i) => l !== b[i]);
+    return `FAIL  ${id}: sound schedule differs at event ${k < 0 ? Math.min(a.length, b.length) : k + 1} of ${a.length} (engine "${a[k] ?? 'none'}", board "${b[k] ?? 'none'}")`;
+  }
+  if (timing[2] !== '0') return `FAIL  ${id}: the tone player's steps are off time in ${timing[2]} places`;
   if (sim.ended !== 'won' && limit > 1e8) return `FAIL  ${id}: the walkthrough did not reach the ending on the engine (${sim.ended ?? 'ran out of keys'})`;
   const n = (c: string) => expected.filter((l) => l.split(' ')[2] === c).length;
-  return `ok    ${id}: ${total} ticks match (${n('L')} level changes, ${n('D')} deaths, ${n('W')} win)`;
+  return `ok    ${id}: ${total} ticks match (${n('L')} level changes, ${n('D')} deaths, ${n('W')} win), ${sounds.length} sound events match`;
 }
 
 let bad = 0;
