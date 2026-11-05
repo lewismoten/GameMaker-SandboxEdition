@@ -242,6 +242,7 @@ creatall         (or "create palchos", "create blocedit"… for one program)
 
 ## Learn more
 
+- [CONTRIBUTING.md](CONTRIBUTING.md): branches, checks, release notes and credits
 - [Game-Maker on Wikipedia](https://en.wikipedia.org/wiki/Game-Maker)
 - ["RSD GameMaker"](https://effluviaofascatteredmind.blogspot.com/2011/06/rsd-gamemaker.html),
   Andy Stone looking back on it in 2011: building it as a teenager with his family, and
