@@ -289,3 +289,13 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
+/* "used by 3 scenes" under a category card's count (assetUsedBy.ts); one line, cut with an ellipsis when narrow */
+.asset-card-used {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  color: var(--muted);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

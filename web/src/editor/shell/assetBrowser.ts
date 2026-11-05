@@ -3,6 +3,7 @@ import './assetBrowser.css';
 import { h, clear, toast } from '../core/ui';
 import { KIND_LABELS, type FileKind, type Project } from '../core/project';
 import { groupedKinds } from './assetGroups';
+import { scenesUsing, usedByText } from './assetUsedBy';
 import { assetNames } from './assetFiles';
 import { assetCommands } from './assetCommands';
 import { copiedAsset, onAssetCopy } from './assetClipboard';
@@ -243,6 +244,7 @@ export function assetBrowser(host: BrowserHost): { el: HTMLElement; dispose(): v
               { class: 'asset-group-cards' },
               ...g.kinds.map((k) => {
                 const files = assetNames(project, k);
+                const usedBy = usedByText(scenesUsing(files, (f) => project.usesOf(f)));
                 return h(
                   'button',
                   { type: 'button', class: 'asset-card asset-category', 'data-category': k, onclick: () => host.category(k) },
@@ -259,6 +261,7 @@ export function assetBrowser(host: BrowserHost): { el: HTMLElement; dispose(): v
                     { class: 'asset-card-count' },
                     files.length ? `${files.length.toLocaleString()} ${files.length === 1 ? 'file' : 'files'} · ${sizeText(project, files)}` : 'None yet',
                   ),
+                  usedBy ? h('small', { class: 'asset-card-used', title: usedBy }, usedBy) : null,
                 );
               }),
             ),
