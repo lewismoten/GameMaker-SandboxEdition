@@ -47,5 +47,8 @@
     "9": "The jump",
     "10": "Getting hurt",
     "11": "Falling over"
+  },
+  "counters": {
+    "20": "Keys: every Starter has a key block, and no gate here needs one."
   }
 }
