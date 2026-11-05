@@ -1,6 +1,6 @@
 // An import of a game already held is recognized by its fingerprint.
 import { describe, expect, it } from 'vitest';
-import { alreadyHave } from './alreadyHave';
+import { alreadyHave, heldText } from './alreadyHave';
 
 describe('alreadyHave', () => {
   const notes = { a: { fingerprint: { gam: [1, 2] } }, b: {}, c: { fingerprint: { gam: [9], exe: [5] } } };
@@ -14,5 +14,16 @@ describe('alreadyHave', () => {
   it('finds nothing for a new game or a game with no .gam', () => {
     expect(alreadyHave({ gam: [3] }, notes)).toBeUndefined();
     expect(alreadyHave({ gam: [] }, notes)).toBeUndefined();
+  });
+});
+
+describe('heldText', () => {
+  const held = { a: { fingerprint: { gam: [1, 2] } } };
+  it('names the game already held', () => {
+    expect(heldText({ gam: [1, 2] }, (id) => (id === 'a' ? 'Nebula' : undefined), held)).toBe('Already in your games (Nebula)');
+  });
+  it('says nothing for a new game or one whose project is gone', () => {
+    expect(heldText({ gam: [3] }, () => 'x', held)).toBeUndefined();
+    expect(heldText({ gam: [1, 2] }, () => undefined, held)).toBeUndefined();
   });
 });

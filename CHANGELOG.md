@@ -128,6 +128,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Changed
 
+- The import chooser marks a game you already have ("Already in your games (Name)") and leaves it unticked, so importing the same folder or ZIP twice no longer makes copies unless you tick them.
 - Removing imported games together (all, some ratings, or one import's) now ends with an Undo button that stays for a minute and brings every one of them back, with its ratings and notes.
 - The Starters no longer have download buttons or ZIP links: not on the game tiles, in the Download chooser, on the downloads page or in the Windows, Mac and Linux release lists. They are simple examples, so they stay to play on the site, edit a copy of, and find on the Sample CD and Sample Disk.
 - Pip, the friend in Say Something and Everybody Talks, has a new look of his own: a bee-striped sweater, round glasses and a headband with two bobbles, with no hat and no beard.

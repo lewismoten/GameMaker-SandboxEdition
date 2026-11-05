@@ -22,10 +22,11 @@ import * as chooser from './importChooser';
 import { openImportPanel, pickedLabel, type ImportPanel } from './importPanel';
 import { markBatch, newBatch } from './importBatch';
 import { looksLikeGamePieces } from './importLoose';
-import { alreadyHave } from '../../imported/alreadyHave';
+import { alreadyHave, heldText } from '../../imported/alreadyHave';
 import type { HomeNav } from './home';
 import { playLink, showNotice } from './homeCards';
 import { setImported } from './homeOrigin';
+import { listProjects } from '../../project/storage';
 import { takeCompanion } from '../../project/companion';
 import { takeFileIdDiz } from '../../project/importDiz';
 import { openingFields } from '../tools/opening/openingFields';
@@ -220,13 +221,14 @@ async function importChosen(report: ScanReport, given: ScanFile[], onAdded?: () 
   const sharewareOf = (g: FoundGame) => g.gamCrcs.map((c) => shareware.get(c)).find(Boolean);
   const { chooseGames, importWithProgress } = chooser;
   const records = removedGames();
+  const names = new Map((await listProjects().catch(() => [])).map((p) => [p.id, p.name]));
   const chosen = await chooseGames(
     report,
     (g) => (sharewareOf(g) ? 'shareware: play it from the CD tab' : undefined),
     new GameReader(given),
     (g) => {
       const was = removedMatch(fingerprintOf(g), records);
-      return was && removedBefore(was);
+      return (was && removedBefore(was)) || heldText(fingerprintOf(g), (id) => names.get(id));
     },
   );
   if (!chosen?.length) return;
