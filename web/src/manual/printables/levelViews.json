@@ -22,6 +22,7 @@
   "dialog": {"hash":"48fa6104c5e7897d","maps":{"many.map|dlg.bbl":[0,14,67,10],"pass.map|dlg.bbl":[6,14,16,10],"two.map|dlg.bbl":[0,14,67,10]}},
   "dice": {"hash":"f03c6890368c63be","maps":{"one.map|one.bbl":[0,3,67,24]}},
   "first-steps": {"hash":"7617da7103b3e646","maps":{"climb.map|steps.bbl":[0,6,71,26],"walk.map|steps.bbl":[0,7,79,22]}},
+  "flicker": {"hash":"e57bd4d8d57fe629","maps":{"camp.map|camp.bbl":[0,15,67,10],"falls.map|falls.bbl":[0,15,81,10],"hall.map|hall.bbl":[0,15,79,10]}},
   "flock": {"hash":"a24d4faf87ef720b","maps":{"one.map|bird.bbl":[0,7,67,20],"two.map|bird.bbl":[0,14,67,10]}},
   "follower": {"hash":"6fba519be37f92c0","maps":{"one.map|pup.bbl":[0,7,67,20],"two.map|pup.bbl":[0,9,67,18]}},
   "goat": {"hash":"d8a48111bedb4745","maps":{"caravan.map|goat.bbl":[0,0,53,28],"field.map|goat.bbl":[0,0,64,24],"stable.map|goat.bbl":[0,0,42,23],"town.map|goat.bbl":[0,0,53,30]}},
