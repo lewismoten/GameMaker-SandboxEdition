@@ -66,6 +66,7 @@ export const NEWS: MagSection = {
             list([
               '**1991** Game-Maker’s first version, with the sample games Houses, Nebula, Penguin Pete and Pipemare',
               '**October 1992** a magazine ad lists it for $89 plus $4 shipping',
+              '**November 1992** Andy Stone, asked about it on Usenet, calls it a way for people with no programming to make 256-color VGA games',
               '**August 1994** version 3.00 arrives: the one on this issue’s free CD',
               '**2014** Andy Stone releases the source under the MIT License',
               '**Today** Game-Maker: Sandbox Edition plays it all in a web browser',
