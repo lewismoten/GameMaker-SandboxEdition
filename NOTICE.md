@@ -836,13 +836,13 @@ frame-dump hook and kept the results. This fork uses two things from it:
 
 ## The Pocket Player (hardware/pocket-player)
 
-A firmware for the ESP32-3248S035 board that plays the Starter games, and a dev-only install page (`web/public/pocket/`, not linked from the site). Claude Sonnet 5.5 wrote the firmware and the page.
+A firmware for the ESP32-3248S035 board that plays the Starter games, and a dev-only install page (`web/public/pocket/`, not linked from the site). Claude Sonnet 5.5 wrote the firmware and the page. The firmware binaries' complete third-party notices are in [`web/public/pocket/fw/NOTICES.txt`](web/public/pocket/fw/NOTICES.txt).
 
-- **LovyanGFX** (lovyan03, FreeBSD/BSD-style license) draws to the display; it is compiled into the firmware binaries. Its license text: https://github.com/lovyan03/LovyanGFX/blob/master/license.txt.
-- **Arduino core for the ESP32** (Espressif Systems, LGPL-2.1) and the ESP-IDF parts it contains (Apache-2.0), built with **PlatformIO** (Apache-2.0) and its `espressif32` platform (Apache-2.0).
+- **LovyanGFX 1.1.16** (lovyan03, FreeBSD/BSD-style license, with its bundled Adafruit_ILI9341, Adafruit_GFX and TFT_eSPI notices), the **Arduino core for ESP32 2.0.16** (LGPL-2.1), **ESP-IDF v4.4.7** (Apache-2.0), and **Mbed TLS 2.28.7** (Apache-2.0 chosen from its Apache-2.0-or-GPL-2.0-or-later offer) are compiled into the firmware image set. Their versions, source and license URLs, copyright lines, and required complete license texts are in the firmware notices file.
+- The firmware is built with **PlatformIO** and its `espressif32` platform; they are build tools, not code asserted to be redistributed in the served firmware binaries.
 - **ESP Web Tools** 10.2.1 (esphome/esp-web-tools, Apache-2.0, Open Home Foundation) is copied, as built, into `web/public/pocket/ewt/` with its license. It bundles **esptool-js** (Espressif, MIT), **@material/web** (Google, Apache-2.0) and **improv-wifi-serial-sdk** (Apache-2.0). Nothing loads from outside the site.
 - The board's pin numbers come from community tables: https://homeding.github.io/boards/esp32/panel-3248S035.htm and https://community.home-assistant.io/t/help-making-esp32-3248s035-work/748332. Only numbers are used.
-- The files in `hardware/pocket-player/data/` are the Starter games' own maps, blocks, palettes and hero files, deflated and shared between games. The firmware unpacks them with the raw-deflate decoder in the ESP32's ROM (miniz by Rich Geldreich and others, public domain/MIT, in Espressif's ESP-ROM); the Mac test uses the system zlib and ships nothing.
+- The files in `hardware/pocket-player/data/` are the Starter games' own maps, blocks, palettes and hero files, deflated and shared between games. The firmware unpacks them with an ESP32 ROM raw-deflate decoder; the Mac test uses the system zlib and ships nothing. Its separate primary provenance remains to be pinned before it is credited as a firmware component.
 
 ## Tools used to build and test
 
