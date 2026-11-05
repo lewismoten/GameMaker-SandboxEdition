@@ -11,6 +11,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Added
 
+- A Starter, Lights Out, about fake light: a dark cave where a lamp is only blocks painted brighter in rings (five brightnesses of each block), a tunnel whose dark blocks turn lit when Kit touches them so he leaves a trail, and a hall where a block's clock lights every block at once after six bulbs glow. It says plainly what Game-Maker cannot do: a light cannot follow the hero. Signs and "How this level is made" pages say how.
 - A Starter, Flicker and Flow, about things that move in place: a torch whose flame pulses on even times and flickers on uneven ones, flags that wave, a waterfall four blocks wide made of three kinds of loop (a lip, a body and a splash), and a fire on a hill with sparks that rise
 - A Starter, Walking Very Far, about drawing someone walking a long way off: Kit up close, then the same road as a figure only 8 pixels tall on a pale far ridge, first with the same steps as up close (too quick) and then with small slow steps, and last with a big fence and flowers drawn in front so he looks farther still. It links to Near and Far and Maps Within Maps.
 - A Starter, Twinkle, Twinkle, about a sky of stars that twinkle by themselves: a loop of blocks makes a star blink, but one block means one clock, so level 1 shows every star blinking at once and then the fix (six loops with different times, laid so no neighbors match), and level 2 is a night meadow under it

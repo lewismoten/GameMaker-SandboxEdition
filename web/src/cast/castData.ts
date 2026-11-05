@@ -97,6 +97,7 @@ export const CAST_GAMES = {
   shore: ['Waves on the Shore', 'starter'],
   twinkle: ['Twinkle, Twinkle', 'starter'],
   flicker: ['Flicker and Flow', 'starter'],
+  'lights-out': ['Lights Out', 'starter'],
   'things-that-grow': ['Seeds and Nests', 'starter'],
   dialog: ['Everybody Talks', 'starter'],
   parallax: ['Parallax', 'starter'],
