@@ -11,6 +11,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Added
 
+- Road Tiles, a Starter in a new Drawing with Blocks group, about roads made of blocks seen from above: level 1 is straight pieces and round corners, level 2 is a road that climbs a diagonal and comes down another (a band block with a triangle block beside it, and a bend at each end), and level 3 is one road across grass, sand and water with a crossroads, a T, a blend block and a bridge. Each piece is drawn once and the rest are the same block flipped or turned, and a page lists a full set (21 blocks from 7 drawings) and what it costs of the 150 a set holds.
 - On a game opened to look inside, the Read-only note with Edit a copy now sits in the heading row of the Overview and of each file's page instead of a bar of its own, so the Overview fits one screen again
 - The ? Guides menu offers "What’s new" when the tour has steps added since your last visit: Teddy and Gwinn show only those, and "Not now" hides it until something newer comes (the day is kept in this browser only)
 - An achievement, Learn by looking, for using See how it’s made on a "How do I…?" question to open the map and see how a level is built
