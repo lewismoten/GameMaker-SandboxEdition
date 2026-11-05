@@ -11,6 +11,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Added
 
+- The player's "Run like a" menu has an IBM PS/1 (a 286 at 10 MHz with 1 MB and a slow hard disk). A sound now starts only after its disk read, so the game stops, then you hear it: about half a second for a long sound on the PS/1. A sound too big for the memory left is read and then not played.
 - The Programmer's Guide to Game-Maker 3.0 is a book in the Library (`#/programmers-guide`): a chapter for each part of the player (memory, the screen, blocks, monsters, sound, timing, file formats and more), why each limit is what it is, a table of every limit, links from each citation to the original source line, and one page to print or save as PDF. The Game-Maker box on the desk also holds its 1994 cousin, Technical Reference and Limits.
 - Dig It now feels like digging: Neka carries a small shovel, soil crumbles in five steps (cracked, split open, half dug, nearly dug, a hole with a heap of crumbs) with a crunch instead of vanishing at once, and the Down arrow scoops with the shovel.
 
