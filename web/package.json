@@ -38,6 +38,7 @@
     "check:gestures": "vite-node scripts/touchGestures.ts",
     "check:audio-unlock": "vite-node scripts/audioUnlock.ts",
     "desk:drive": "vite-node scripts/deskDrive.ts",
+    "desk:dast": "vite-node scripts/deskDastShots.ts",
     "check:error-notice": "vite-node scripts/errorNoticeCheck.ts",
     "editor:shots": "vite-node scripts/editorShots.ts",
     "smoke:engines": "vite-node scripts/smokeEngines.ts",
