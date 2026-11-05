@@ -1,9 +1,11 @@
-// Reading a stored editor project that may be damaged (a cut-short or wrong-type file, a bad
-// companion, a file the .GAM names that is gone). It keeps every intact file and lists what is
-// broken in plain words (editor/shell/recoverNotice.ts shows the list). Pure: no IndexedDB here.
+// Reading a stored editor project that may be damaged (a cut-short main .GAM, a wrong-type file,
+// a bad companion, a lost main .GAM). It keeps every intact file and lists what is broken in
+// plain words (editor/shell/recoverNotice.ts shows the list). Only what storage broke counts:
+// a file the .GAM names but the game never had (common in imported DOS games), an empty file
+// or a second .GAM that does not parse is how the game was made, and the health check lists those.
+// Pure: no IndexedDB here.
 import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { GameFiles } from './files';
-import { checkGame } from './health';
 import { COMPANION_FORMAT, parseCompanion, type Companion } from './companion';
 import type { ProjectRecord } from './storage';
 
@@ -61,8 +63,9 @@ export function recoverRecord(id: string, raw: unknown): Recovered {
       damage.push({ kind: 'file', file: n, message: `${n} was stored as the wrong kind of data, so it is left out. Replace it with a copy, or drop it.` });
     else files.set(n, b);
   }
-  // a cut-short .gam does not parse: it would stop the editor, so it is set aside
-  for (const n of files.names().filter((x) => x.toLowerCase().endsWith('.gam'))) {
+  // a cut-short main .gam does not parse: it would stop the editor, so it is set aside
+  const main = files.mainGame(gam || undefined);
+  for (const n of main ? [main] : []) {
     try {
       if (!parseGame(files.get(n)!).scenes.length) throw new Error('no scenes');
     } catch {
@@ -78,13 +81,6 @@ export function recoverRecord(id: string, raw: unknown): Recovered {
     if (!damage.some((d) => d.file === gam))
       damage.push({ kind: 'missing', file: gam, message: `The game file ${gam} is missing. Add a copy of it, or let the editor start a fresh one.` });
     gam = '';
-  }
-  // files the .GAM names that are not stored
-  if (gam) {
-    for (const i of checkGame(files, gam)) {
-      if (i.kind === 'missing' && i.file)
-        damage.push({ kind: 'missing', file: i.file, message: `${i.message.replace(/\.$/, '')}. Add a copy of it, or leave it out.` });
-    }
   }
   const c = companionOf(src.companion);
   if (c.damage) damage.push(c.damage);
