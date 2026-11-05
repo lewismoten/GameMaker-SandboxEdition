@@ -26,6 +26,7 @@ Live sound control, a hook for life losses, and fixes to scrolling and picture d
 
 - Scroll speed wraps like DOS's 16-bit integers.
 - Progressive JPEG prefixes decode only from complete MCU data.
+- A recording that waits on a key screen (such as a drop picker) gets one recorder poll per tick, so a recorded Enter reaches it instead of hanging.
 
 ## [3.1.0] - 2026-10-29
 
