@@ -39,7 +39,7 @@ export const STARTER_GROUPS: { name: string; tag: string; games: string[] }[] = 
   {
     name: 'Worlds That Push Back',
     tag: 'Ice, water, gravity and wind that act on you.',
-    games: ['slippery-and-bouncy', 'gravity-on-gravity-off', 'swim', 'gusts'],
+    games: ['slippery-and-bouncy', 'gravity-on-gravity-off', 'swim', 'gusts', 'drop-down'],
   },
   { name: 'Changing Your Hero', tag: 'New keys, new heroes, new vehicles.', games: ['kit-moves', 'home-keys', 'duck', 'choose-hero', 'take-the-wheel'] },
   {
