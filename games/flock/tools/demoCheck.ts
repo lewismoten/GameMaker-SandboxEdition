@@ -12,7 +12,9 @@ const keys = parseRecording(new Uint8Array(readFileSync(new URL('../disk/demo.re
 const sim = new GameSim(undefined, 1);
 /** The birds' positions in level pixels, in the order they were placed. */
 const birds = (): { x: number; y: number }[] =>
-  sim.w.mm.flatMap((m, i) => (m.monnum === BIRD ? [{ x: (sim.w.mi[i].curx[0] - ORIGIN) * 20 + sim.w.mi[i].curx[1], y: (sim.w.mi[i].cury[0] - ORIGIN) * 20 + sim.w.mi[i].cury[1] }] : []));
+  sim.w.mm.flatMap((m, i) =>
+    m.monnum === BIRD ? [{ x: (sim.w.mi[i].curx[0] - ORIGIN) * 20 + sim.w.mi[i].curx[1], y: (sim.w.mi[i].cury[0] - ORIGIN) * 20 + sim.w.mi[i].cury[1] }] : [],
+  );
 await sim.tick();
 const start = birds();
 if (start.length !== 5) throw new Error(`demoCheck: expected five birds, found ${start.length}`);
