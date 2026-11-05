@@ -1,7 +1,7 @@
-// Re-records the title screen's demo into src/demo.ts: the bot's own run through levels 1 and 2, one
-// unbroken list of keys (the demo recorder counts game ticks across scene changes, so the second level's
-// keys follow the first's after the ticks between them). It shows each lesson once: a real
-// wall that stops him, a picture of a wall he walks through, then a wall that cracks and crumbles.
+// Re-records the title screen's demo into src/demo.ts: the bot's own run through level 1, one unbroken
+// list of keys (the demo recorder counts game ticks across scene changes, so the level entered again by
+// the post follows the first run after the ticks between them). It shows the lesson once: Kit falls in the
+// pit, cannot climb out, touches the post, and the level starts over before he jumps the pit.
 // Rebuild afterwards.
 //   cd web && npx vite-node ../games/one-more-try/tools/gendemo.ts && npx vite-node ../games/one-more-try/build.ts
 //   cd web && npx vite-node ../games/one-more-try/tools/demoCheck.ts      (plays the recording on the real engine)
@@ -10,7 +10,7 @@ import { play } from './play';
 
 /** Ticks cut from the end of the run: the last walk to the exit door. */
 const END_SHORT = 60;
-const { sim } = await play(undefined, 2);
+const { sim } = await play(undefined, 1);
 const keys: { delta: number; key: number }[] = [];
 let carried = 0;
 sim.segments.forEach((seg, i) => {

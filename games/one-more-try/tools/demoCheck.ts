@@ -1,5 +1,5 @@
-// Plays the built title demo (disk/demo.rec) on the real engine and checks it shows each lesson once:
-// level 1, then level 2 entered, and no game over. The recording's keys play as one unbroken list, as the demo
+// Plays the built title demo (disk/demo.rec) on the real engine and checks it shows the lesson once:
+// level 1 entered, then entered again from the post, and no game over. The recording's keys play as one unbroken list, as the demo
 // recorder counts game ticks across scene changes.
 //   cd web && npx vite-node ../games/one-more-try/tools/demoCheck.ts
 import { readFileSync } from 'node:fs';
@@ -23,8 +23,8 @@ const r = await replay(
 const seen = r.scenes.slice(0, 2).join(' ');
 if (r.error) console.log(r.error);
 console.log(`demo: scenes entered ${r.scenes.join(' ')}; ${r.keysLeft} keys unplayed`);
-if (seen !== '2 3' || r.keysLeft || r.scenes.includes(1)) {
-  console.error(`demoCheck: expected scenes 2 3 with every key played and no ending; got ${seen}`);
+if (seen !== '2 2' || r.keysLeft || r.scenes.includes(1)) {
+  console.error(`demoCheck: expected scenes 2 2 with every key played and no ending; got ${seen}`);
   process.exit(1);
 }
-console.log('demoCheck ok: bumped the real wall, walked through the picture, cracked the loose wall, no game over');
+console.log('demoCheck ok: fell in the pit, touched the post, started the level over, no game over');
