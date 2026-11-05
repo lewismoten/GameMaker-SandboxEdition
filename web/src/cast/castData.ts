@@ -64,6 +64,7 @@ export const CAST_GAMES = {
   'boss-phases': ['Three Phases', 'starter'],
   popups: ['Score Popups', 'starter'],
   cutscenes: ['Cutscenes', 'starter'],
+  'title-demo': ['Make a Title', 'starter'],
   'take-the-wheel': ['Take the Wheel', 'starter'],
   'short-lived': ['Here Today', 'starter'],
   searchlight: ["Don't Get Seen", 'starter'],
@@ -212,6 +213,7 @@ const LISTED: CastMember[] = [
       { game: 'take-the-wheel', as: 'jumps a bird on foot, then steps into a little kart that cannot jump and honks the next bird away' },
       { game: 'popups', as: 'touches coins that pay 100, 200 and 500 and watches each number rise and blink away' },
       { game: 'cutscenes', as: 'sits through a picture and some words, waits for a stage floor to drop away, and climbs to a door that picks his next tale' },
+      { game: 'title-demo', as: 'looks at the pictures a title is made of, then reads how a demo that plays itself is recorded, key by key' },
       { game: 'dialog', as: 'talks with Pip, and then joins a group of friends who all talk at once' },
       {
         game: 'parallax',

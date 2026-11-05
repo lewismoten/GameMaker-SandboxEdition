@@ -3,7 +3,7 @@
 // and web/src/engine (game.ts, recorder.ts, showGraphic.ts; menus.ts drawDefaultScreen: no menu
 // picture gives DrawDefaultScrn's random color rings). The instructions advice draws on watching
 // players in two videos (NOTICE.md), in our own words.
-import { opening, tip, type Chapter } from './chapter';
+import { onCd, opening, tip, type Chapter } from './chapter';
 
 export const SHOW: Chapter = {
   id: 'show',
@@ -121,6 +121,7 @@ export const SHOW: Chapter = {
     next level could slip on a faster or slower machine. Demos recorded in this edition count
     game ticks only. Still, a demo that stays in one level is the safe one.</li>
   </ul>
+  ${onCd('MAKETITL')}
   ${tip('Pro tip:', 'Record the demo last. Every change to the first level after it, even one block, can send the demo’s hero into a wall.')}`,
 };
 
