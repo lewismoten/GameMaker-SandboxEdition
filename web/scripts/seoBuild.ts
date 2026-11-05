@@ -24,6 +24,7 @@ import { gameCardPng } from './ogImage';
 import { DOWNLOADS_STYLE, cardPictures, downloadCard } from './downloadsList';
 import { readScoopDates, SCOOP_TITLE, scoopRss } from './scoopFeed';
 import { GUIDE_SECTIONS } from '../src/manual/guideSections';
+import { staticPages, type StaticPage } from './seoStaticPages';
 import {
   appJsonLd,
   clip,
@@ -349,6 +350,31 @@ export function guidePageHtml(indexHtml: string, section: GuideSection, catalog?
   return swapPart(swapPart(html, HEAD_START, HEAD_END, guideHead(section)), BODY_START, BODY_END, guideBody(section, catalog));
 }
 
+/** A static page (cast.html, library.html) from index.html: its own title, tags and text; the app opens its #/… address. */
+export function staticPageHtml(indexHtml: string, page: StaticPage): string {
+  const meta = metaTags({
+    title: page.title,
+    description: page.description,
+    url: `${SITE_URL}${page.file}`,
+    image: OG_IMAGE,
+    imageAlt: OG_IMAGE_ALT,
+  });
+  const open = `<script>if(!location.hash)history.replaceState(null,'',${JSON.stringify(page.hash)})</script>`;
+  const body = `${BODY_START}<main class="seo-static">
+      <h1>${escapeHtml(page.h1)}</h1>
+      ${page.html}
+      <p class="seo-note"><a href="./${escapeHtml(page.hash)}">Open this in the app</a> · <a href="./">${escapeHtml(PRODUCT)}</a></p>
+    </main>${BODY_END}`;
+  const html = indexHtml.replace(/<title>[^<]*<\/title>/, `<title>${escapeHtml(page.title)}</title>`);
+  return swapPart(swapPart(html, HEAD_START, HEAD_END, `${HEAD_START}${meta}\n    ${open}\n    ${STYLE}${HEAD_END}`), BODY_START, BODY_END, body);
+}
+
+/** The static page whose file this is, if any. */
+function pageStatic(catalog: CdCatalogEntry[], path: string): StaticPage | undefined {
+  const file = path.split('?')[0].replace(/^.*\//, '');
+  return staticPages(catalog).find((p) => p.file === file);
+}
+
 /** The Guide section whose page this is (help-<id>.html), if any. */
 function pageSection(path: string): GuideSection | undefined {
   const m = /(?:^|\/)help-([^/]+)\.html$/.exec(path.split('?')[0]);
@@ -439,6 +465,7 @@ function sitemapXml(catalog: CdCatalogEntry[], lastmod: string): string {
     { loc: `${SITE_URL}downloads.html`, priority: '0.6' },
     ...playable(catalog).map((g) => ({ loc: playUrl(g.id), priority: g.original ? '0.8' : '0.6' })),
     ...GUIDE_SECTIONS.map(([id]) => ({ loc: `${SITE_URL}${guideFile(id)}`, priority: '0.5' })),
+    ...staticPages(catalog).map((p) => ({ loc: `${SITE_URL}${p.file}`, priority: '0.5' })),
   ];
   return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -552,7 +579,7 @@ export function seoPages(cdRoot: string): Plugin {
         }
         // A game's page: play.html as the dev server serves it, then made the game's own.
         const image = /^og\/([^/]+)\.png$/.exec(path);
-        const catalog = image || /^play-[^/]+\.html$/.test(path) ? cdCatalog(cdRoot) : [];
+        const catalog = image || /^(play-[^/]+|cast|library)\.html$/.test(path) ? cdCatalog(cdRoot) : [];
         const imageGame = image && playable(catalog).find((g) => g.id === decodeURIComponent(image[1]));
         if (imageGame) {
           res.setHeader('Content-Type', 'image/png');
@@ -562,9 +589,10 @@ export function seoPages(cdRoot: string): Plugin {
         const g = pageGame(catalog, path);
         // a Guide section's page: index.html as the dev server serves it, then made the section's own
         const section = !g && pageSection(path);
-        if (!g && !section) return next();
+        const fixed = !g && !section && pageStatic(catalog, path);
+        if (!g && !section && !fixed) return next();
         server
-          .transformIndexHtml(`/${path}`, readFileSync(join(server.config.root, section ? 'index.html' : 'play.html'), 'utf8'), req.originalUrl)
+          .transformIndexHtml(`/${path}`, readFileSync(join(server.config.root, section || fixed ? 'index.html' : 'play.html'), 'utf8'), req.originalUrl)
           .then((html) => {
             res.setHeader('Content-Type', 'text/html; charset=utf-8');
             res.end(html);
@@ -581,7 +609,9 @@ export function seoPages(cdRoot: string): Plugin {
       const out = html.replace(HEAD_MARK, play ? playHead(catalog) : indexHead(catalog)).replace(BODY_MARK, play ? playBody(catalog) : indexBody(catalog));
       if (g) return gamePageHtml(out, g);
       const section = !play && pageSection(ctx.path);
-      return section ? guidePageHtml(out, section, catalog) : out;
+      if (section) return guidePageHtml(out, section, catalog);
+      const fixed = !play && pageStatic(catalog, ctx.path);
+      return fixed ? staticPageHtml(out, fixed) : out;
     },
     generateBundle: {
       // After Vite has written play.html (with its script and stylesheet links), so each
@@ -593,6 +623,9 @@ export function seoPages(cdRoot: string): Plugin {
         if (index?.type === 'asset')
           for (const section of GUIDE_SECTIONS)
             this.emitFile({ type: 'asset', fileName: guideFile(section[0]), source: guidePageHtml(String(index.source), section, cdCatalog(cdRoot)) });
+        if (index?.type === 'asset')
+          for (const page of staticPages(cdCatalog(cdRoot)))
+            this.emitFile({ type: 'asset', fileName: page.file, source: staticPageHtml(String(index.source), page) });
         const play = bundle['play.html'];
         if (play?.type !== 'asset') return;
         const files = cdFiles(cdRoot);

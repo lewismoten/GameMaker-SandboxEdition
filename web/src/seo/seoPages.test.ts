@@ -6,7 +6,8 @@ import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import type { IndexHtmlTransformContext } from 'vite';
 import { cdCatalog, cdSecretCatalog } from '../../scripts/cdGames';
-import { gamePageHtml, guidePageHtml, seoPages } from '../../scripts/seoBuild';
+import { gamePageHtml, guidePageHtml, seoPages, staticPageHtml } from '../../scripts/seoBuild';
+import { staticPages } from '../../scripts/seoStaticPages';
 import { GUIDE_SECTIONS } from '../manual/guideSections';
 import { gamePage, SITE_URL } from './site';
 import { isStarterGame } from '../project/starter';
@@ -70,7 +71,7 @@ describe('seoBuild', () => {
     expect(
       locs
         .slice(3)
-        .filter((l) => !guide.includes(l))
+        .filter((l) => !guide.includes(l) && !/\/(cast|library)\.html$/.test(l))
         .sort(),
     ).toEqual(playable.map((g) => `${SITE_URL}${gamePage(g.id)}`).sort());
     expect(new Set(locs).size).toBe(locs.length);
@@ -117,6 +118,27 @@ describe('seoBuild', () => {
   it('keeps the generic player and the player to try out of search results, not the download', () => {
     expect(page('play.html')).toMatch(/<meta name="robots" content="noindex" \/>/);
     for (const g of playable.slice(0, 5)) expect(gamePageHtml(page('play.html'), g)).not.toContain('noindex');
+  });
+
+  it('gives the cast and the Library pages of their own, in the sitemap, linking only to listed games and naming no secret game', () => {
+    const pages = staticPages(catalog);
+    expect(pages.map((p) => p.file)).toEqual(['cast.html', 'library.html']);
+    const index = page('index.html');
+    const ids = new Set(playable.map((g) => g.id));
+    for (const p of pages) {
+      const html = staticPageHtml(index, p);
+      expect(files['sitemap.xml']).toContain(`<loc>${SITE_URL}${p.file}</loc>`);
+      expect(html).toContain(`<link rel="canonical" href="${SITE_URL}${p.file}" />`);
+      expect(html).toMatch(/<meta name="description" content="[^"]{50,}"/);
+      expect(html).toContain(`history.replaceState(null,'',"${p.hash}")`);
+      expect(html.match(/<h1>/g)).toHaveLength(1);
+      const plays = [...html.matchAll(/href="\.\/play-([^"]+)\.html"/g)].map((m) => m[1]);
+      expect(plays.length, p.file).toBeGreaterThan(5);
+      for (const id of plays) expect(ids.has(id), `${p.file} links ${id}`).toBe(true);
+      expect(secretHits(html), p.file).toEqual([]);
+      // and no secret game's name in the plain words either
+      for (const g of secret) expect(html.toLowerCase(), p.file).not.toContain(g.title.toLowerCase());
+    }
   });
 
   it('writes the How do I…? questions as readable text, each Starter linked to its play page', () => {
