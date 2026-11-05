@@ -76,7 +76,8 @@ export function putCoolSign(bbl: Block[], map: GameMap, pal: Uint8Array, x: numb
   const halves = coolSignBlocks(pal, [pic(0), pic(1)], use);
   const out: Block[] = bbl.map((b) => ({ ...b, pixels: Uint8Array.from(b.pixels), xtra: Uint8Array.from(b.xtra) }));
   halves.forEach((p, k) => {
-    out[nums[k]] = { ...emptyBlock(nums[k]), pixels: Uint8Array.from(p.px) };
+    // keeps its gravity bits: the editor's checks read which blocks a set has with gravity
+    out[nums[k]] = { ...emptyBlock(nums[k]), grav: bbl[nums[k]].grav, pixels: Uint8Array.from(p.px) };
     map.blocks[at(k)] = nums[k];
   });
   return out;
