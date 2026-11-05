@@ -291,6 +291,11 @@ multi-block objects for `kit/align.ts`, which their checks run. The other play-t
 | cutscenes              | `npx vite-node ../games/cutscenes/tools/gendemo.ts`                    | re-records the title demo into `src/demo.ts` (then rebuild) |
 | cutscenes              | `npx vite-node ../games/cutscenes/tools/preview.ts [dir]`              | PNGs of the blocks, the hero, each map and every picture |
 | cutscenes              | `npx vite-node ../games/cutscenes/tools/shots.ts <dir>`                | pictures of the lessons (never on the disk) for the progress shots |
+| cutscenes         | `npx vite-node ../games/cutscenes/tools/check.ts`                 | the bot waits out the stage floor, then climbs to the menu's three doors (two tales, then the end); no life lost |
+| cutscenes         | `npx vite-node ../games/cutscenes/tools/demoCheck.ts`             | plays the title demo headless: Kit walks across the stage to the wall |
+| cutscenes         | `npx vite-node ../games/cutscenes/tools/gendemo.ts`               | re-records the title demo into `src/demo.ts` (then rebuild) |
+| cutscenes         | `npx vite-node ../games/cutscenes/tools/preview.ts [dir]`         | PNGs of the blocks, the hero, each map and every picture |
+| cutscenes         | `npx vite-node ../games/cutscenes/tools/shots.ts <dir>`           | pictures of the lessons (never on the disk) for the progress shots |
 | popups            | `npx vite-node ../games/popups/tools/shots.ts <dir>`              | pictures of the lessons for the progress shots: a coin and its number, the three numbers, the stuck one                                               |
 | dialog                 | `npx vite-node ../games/dialog/tools/check.ts`                         | the bot plays both levels (walks into Pip, then into the group of three, each opening its own talk scene and bringing Kit back); no life lost                                                                                                           |
 | dialog                 | `npx vite-node ../games/dialog/tools/gendemo.ts`                       | re-records the title demo (level 1, into Pip's talk) into `src/demo.ts` (then rebuild)                                                                                                                                                                  |

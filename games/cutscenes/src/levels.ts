@@ -151,17 +151,23 @@ export function buildLevels(): { pal: Pal; book: Book; timed: Timed[]; scenes: S
   book.add('shaft', shaft(pal), AIR);
   book.add('mat', mat(pal), AIR);
   timed.push({ name: 'trap.shut', next: 'trap.warn', ticks: FLOOR_AT - WARN }, { name: 'trap.warn', next: 'shaft', ticks: WARN });
-  timed.push(
-    { name: 'quick.shut', next: 'quick.warn', ticks: QUICK_AT - QUICK_WARN },
-    { name: 'quick.warn', next: 'shaft', ticks: QUICK_WARN },
-  );
+  timed.push({ name: 'quick.shut', next: 'quick.warn', ticks: QUICK_AT - QUICK_WARN }, { name: 'quick.warn', next: 'shaft', ticks: QUICK_WARN });
 
   const first = stage(book, signs, 'trap');
   const tale = stage(book, undefined, 'quick');
   const hall = menu(book, signs);
   const back = (mat: [number, number][]): Way[] => mat.map((from) => ({ from, to: 'hall' }));
   const scenes: Scene[] = [
-    { file: 'one', mapFile: 'one', title: 'A Scene That Moves On', hint: 'Watch, read, then wait.', level: true, map: first.map, before: 'one.lst', links: back(first.mat) },
+    {
+      file: 'one',
+      mapFile: 'one',
+      title: 'A Scene That Moves On',
+      hint: 'Watch, read, then wait.',
+      level: true,
+      map: first.map,
+      before: 'one.lst',
+      links: back(first.mat),
+    },
     {
       file: 'hall',
       mapFile: 'hall',

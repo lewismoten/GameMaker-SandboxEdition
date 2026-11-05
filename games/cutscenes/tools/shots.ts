@@ -32,7 +32,8 @@ const kit = (col: number, feet = GROUND - 1): Sprite[] => {
 /** The map as the clock leaves it: the floor shut, flashing or open. */
 function stageAt(floor: 'shut' | 'warn' | 'open') {
   const m = buildLevels().scenes[0].map.done();
-  if (floor !== 'shut') for (let i = 0; i < m.blocks.length; i++) if (m.blocks[i] === book.n('trap.shut')) m.blocks[i] = book.n(floor === 'warn' ? 'trap.warn' : 'shaft');
+  if (floor !== 'shut')
+    for (let i = 0; i < m.blocks.length; i++) if (m.blocks[i] === book.n('trap.shut')) m.blocks[i] = book.n(floor === 'warn' ? 'trap.warn' : 'shaft');
   return m;
 }
 const save = (name: string, pic: ReturnType<typeof renderRegion>) => writePng(join(out, name), pic, pal.pal, 3);

@@ -24,7 +24,9 @@ for (const k of keys) {
   else sim.press(k.key & 0x7f);
 }
 for (let i = 0; i < 20; i++) await step();
-console.log(`demo: the hero got to x ${farthest} of ${(WIDTH_STAGE - 1) * 20}; the floor is ${floorShut() ? 'still shut' : 'open'}; ${sim.trail.length} scenes entered`);
+console.log(
+  `demo: the hero got to x ${farthest} of ${(WIDTH_STAGE - 1) * 20}; the floor is ${floorShut() ? 'still shut' : 'open'}; ${sim.trail.length} scenes entered`,
+);
 if (farthest < (WIDTH_STAGE - 3) * 20) {
   console.error('demoCheck: expected the hero to walk across to the right-hand wall');
   process.exit(1);
