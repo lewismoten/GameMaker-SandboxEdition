@@ -140,6 +140,10 @@ multi-block objects for `kit/align.ts`, which their checks run. The other play-t
 | who-wins | `npx vite-node ../games/who-wins/tools/gendemo.ts` | re-records the title demo into `src/demo.ts` (then rebuild) |
 | who-wins | `npx vite-node ../games/who-wins/tools/demoCheck.ts` | plays the title demo: both pips gone, no star thrown |
 | who-wins | `npx vite-node ../games/who-wins/tools/preview.ts [dir]` | PNGs of the blocks, hero, monsters, levels and pictures |
+| three-tokens | `npx vite-node ../games/three-tokens/tools/check.ts` | the bot plays both levels (two tokens and a gate that stays shut, the third token, the gate; then five tokens and the gate that is the exit); no life lost |
+| three-tokens | `npx vite-node ../games/three-tokens/tools/gendemo.ts` | re-records the title demo (level 1) into `src/demo.ts` (then rebuild) |
+| three-tokens | `npx vite-node ../games/three-tokens/tools/demoCheck.ts` | plays the title demo: stopped by the gate with two tokens, then through it with none left |
+| three-tokens | `npx vite-node ../games/three-tokens/tools/preview.ts [dir]` | PNGs of the blocks, hero, levels and pictures |
 | goat              | `npx vite-node ../games/goat/tools/check.ts`                      | the bot eats, gathers wool and screams its way to the manger                                                                                          |
 | goat              | `npx vite-node ../games/goat/tools/gendemo.ts`                    | re-records the title demo into `src/demo.ts` (then rebuild)                                                                                           |
 | mustard           | `npx vite-node ../games/mustard/tools/check.ts`                   | the bot hops the garden, digs to five drops, moves the mountain, rides the breeze                                                                     |

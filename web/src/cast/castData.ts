@@ -50,6 +50,8 @@ export const CAST_GAMES = {
   'who-wins': ['Who Wins?', 'starter'],
   'breakable-walls': ['Smash It', 'starter'],
   'boss-hits': ['Big Bug', 'starter'],
+  'three-tokens': ['Three Tokens', 'starter'],
+  'three-tokens': ['Three Tokens', 'starter'],
   carl: ['A Fly Named Carl', 'bizarre'],
   goat: ['Third Goat from the Left', 'bizarre'],
   loaf: ['Loaf #13 (Left in the Basket)', 'bizarre'],
@@ -145,6 +147,8 @@ const LISTED: CastMember[] = [
       { game: 'your-first-game', as: 'puts it all together: a jump, coins, a gumdrop, spikes, a key and a door' },
       { game: 'breakable-walls', as: 'bumps crates to rubble and catches spinning gems' },
       { game: 'boss-hits', as: 'throws five stars at a cheerful bug that blocks a narrow way' },
+      { game: 'three-tokens', as: 'collects purple tokens until a gate will take its price, and then walks out through the gate' },
+      { game: 'three-tokens', as: 'collects purple tokens until a gate will take its price, and then walks out through the gate' },
     ],
   },
   {
