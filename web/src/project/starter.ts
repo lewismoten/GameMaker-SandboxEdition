@@ -50,7 +50,7 @@ export const STARTER_GROUPS: { name: string; tag: string; games: string[] }[] = 
   {
     name: 'Telling a Story',
     tag: 'Words, pictures and sound.',
-    games: ['say-something', 'pictures-and-cartoons', 'sounds-and-music', 'day-night', 'same-house'],
+    games: ['say-something', 'pictures-and-cartoons', 'sounds-and-music', 'day-night', 'same-house', 'voice'],
   },
   {
     name: 'Putting It Together',
