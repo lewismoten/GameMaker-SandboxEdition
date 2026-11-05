@@ -22,7 +22,7 @@ export const HOWTO = wrap(`
 |SPACE         jump
 |F2            lives, score
 
-The birds fly high above you. They do not hurt, and nothing in this game does.
+The birds fly over you. They do not hurt, and nothing in this game does.
 
 Each bird flies its own path. They keep the V because every bird's path and speed are the same.
 
@@ -61,5 +61,5 @@ export const LOST = wrap(`
 
 That was not meant to happen.
 
-Try again: this time, just walk. The birds are friendly and fly high.
+Try again: this time, just walk. The birds are friendly.
 `);

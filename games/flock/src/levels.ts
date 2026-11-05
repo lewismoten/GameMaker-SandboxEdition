@@ -1,8 +1,8 @@
 // BIRDS OF A FEATHER's two levels. Each is painted on a Grid (a block a character, see
 // games/kit/starter/map.ts for what the letters mean), then given its signs and its birds.
 //
-//   1. One Shape: a flat meadow with a small brick hill. Five green birds start in a V high over
-//      it and fly 14 blocks right and back. They hold the V the whole way, because they share
+//   1. One Shape: a flat meadow with a small brick hill. Five green birds start in a V over
+//      it and fly 24 blocks right and back. They hold the V the whole way, because they share
 //      one path at one speed.
 //   2. Out of Step: the same V, but the two middle birds are gold and fly faster. They pull away
 //      and the V comes apart.
@@ -52,7 +52,7 @@ export const V: [number, number][] = [
   [8, 0],
 ];
 /** The V's left top corner in each level: block column and row. */
-export const FLOCK_AT: [number, number] = [14, 2];
+export const FLOCK_AT: [number, number] = [8, 4];
 
 /** The ground, brick walls at both ends (rows 0 to 9, so the room is closed in), the entrance on the left (x 3) and the exit door at `exitX`. */
 function base(width: number, exitX: number, entrance = true): Grid {
