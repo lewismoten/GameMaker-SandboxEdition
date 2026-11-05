@@ -4,7 +4,7 @@
   ~/.platformio/penv/bin/python web/scripts/pocketStatus.py /dev/cu.usbserial-XXXX "Checking held input"
   ~/.platformio/penv/bin/python web/scripts/pocketStatus.py /dev/cu.usbserial-XXXX off
 Run it when you take a board's lock and again with `off` when you let go. The banner also clears when someone touches
-the screen, and by itself after 2 minutes with no serial traffic. Before a flash show "Flashing new firmware" first (the
+the screen, and by itself after 2 minutes with no serial traffic. Before a flash run it with `flash` (shows "Flashing new firmware") first (the
 chip is in its bootloader afterward and can't draw). Other scripts import `show`, `clear` and `banner`.
 """
 import sys, time
@@ -54,6 +54,6 @@ if __name__ == "__main__":
     if sys.argv[2] == "off":
         clear(s)
     else:
-        show(s, sys.argv[2])
+        show(s, "Flashing new firmware" if sys.argv[2] == "flash" else sys.argv[2])
     time.sleep(0.2)
     s.close()

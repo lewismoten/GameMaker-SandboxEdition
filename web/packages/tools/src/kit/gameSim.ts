@@ -160,13 +160,15 @@ export class GameSim {
       if (voc) this.clip = { name, until: this.clock + Math.ceil((vocMs(voc) / 1000) * TICKS_PER_SECOND) };
       return true;
     };
+    // PLAYGAME's loadscene: a blank character or character blocks slot keeps the last scene's (the globals stay loaded)
+    const kept = this.w as typeof this.w | undefined;
     const w = createWorld(parseMap(f(1)!), { play }, this.rand.next);
     w.bg = padBlocks(parseBlocks(f(2)!, NBACK), NBACK);
     w.mblk = padBlocks(f(4) ? parseBlocks(f(4)!, NMON) : undefined, NMON);
-    w.cblk = padBlocks(parseBlocks(f(6)!, NCHR), NCHR);
+    w.cblk = f(6) || !kept ? padBlocks(parseBlocks(f(6)!, NCHR), NCHR) : kept.cblk;
     w.mon = f(3) ? parseMonsters(f(3)!) : [];
     w.noMons = !f(3) || !f(4);
-    w.chr = parseCharacter(f(5)!);
+    w.chr = f(5) || !kept ? parseCharacter(f(5)!) : kept.chr;
     w.ci = this.ci;
     w.clock = this.clock;
     this.w = w;

@@ -6,13 +6,13 @@ import about from '../about.json';
 export const STORY = wrap(`
 |WHO DO YOU WANT TO BE?
 
-Two doors, two heroes.
+Two doors, two heroes, one road.
 
 A small explorer in a teal beanie stands in a room with two doors. Behind each door is the same climb: two steps up, a plateau and an exit. The only difference is who goes through.
 
 Fast Feet is quick on the ground. Big Hops is slow, but jumps six blocks and can reach the coins up high.
 
-A door can lead anywhere, and each scene says which character file it loads. Pick a door, then come back and pick the other.
+A door can lead anywhere, and each scene says which character file it loads. Pick a door. After the climb, a short road names no hero at all, and you are still the one you picked.
 `);
 
 export const HOWTO = wrap(`
@@ -22,9 +22,9 @@ export const HOWTO = wrap(`
 |SPACE         jump
 |F2            lives, score
 
-Walk into a door to choose a hero. Then climb to the exit door and take the coins on the way.
+Walk into a door to choose a hero. Climb to the exit door, then walk the road to the end, taking the coins on the way.
 
-Nothing can hurt you here. Play it with each hero and see how the same level feels.
+Nothing can hurt you here. Play it with each hero and see how the same levels feel.
 
 |ESC for the menu.
 `);
@@ -45,9 +45,11 @@ One of the Starters: small games that each show one idea.
 export const WON = wrap(`
 |WELL PICKED!
 
-Two levels done. Now try the other door.
+Three levels done. Now try the other door.
 
 Each scene in the game lists the character file it loads. The room and the first climb use Fast Feet's file. The second climb is the same map, but its scene names Big Hops's file: slower feet, a bigger jump and a purple hoodie.
+
+The road at the end lists no character file at all. When a scene leaves that slot blank, the game keeps whoever the last scene loaded, so you were Fast Feet or Big Hops all the way to the exit.
 
 Open the game in Game-Maker, look at the Scenes tab and change which character file a scene loads.
 `);
