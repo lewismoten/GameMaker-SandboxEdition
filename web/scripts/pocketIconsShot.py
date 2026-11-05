@@ -99,15 +99,34 @@ def disc(img, d, cx, cy, r, name, label, icon):
     box = {'round': True, 'cx': cx, 'cy': cy, 'r': r, 'w': 0}
     sub = icon is not None or (label and label != name)
     yc = cy - r // 3 if sub else cy
-    text(d, name, cx, yc, name_size(box, name, yc), fg, True)
-    if icon is not None:
-        S = r * 2 // 3
-        d.rectangle([(cx - S // 2 - 1) * Z, (cy + 2) * Z, (cx - S // 2 + S) * Z, (cy + 3 + S) * Z], fill=(0, 0, 0))
-        img.paste(icon.resize((S * Z, S * Z), Image.NEAREST), ((cx - S // 2) * Z, (cy + 3) * Z), icon.resize((S * Z, S * Z), Image.NEAREST))
-    elif sub:
+    if icon is None:
+        text(d, name, cx, yc, name_size(box, name, yc), fg, True)
+    if icon is not None:  # the picture fills the button, no text (firmware drawIcon)
+        S = (r - 2) * 17 // 10
+        d.ellipse([(cx - r + 2) * Z, (cy - r + 2) * Z, (cx + r - 2) * Z, (cy + r - 2) * Z], fill=(0, 0, 0))
+        im = icon.resize((S * Z, S * Z), Image.NEAREST)
+        mask = Image.new('L', (S * Z, S * Z), 0)
+        ImageDraw.Draw(mask).ellipse([(S // 2 - r + 2) * Z, (S // 2 - r + 2) * Z, (S // 2 + r - 2) * Z, (S // 2 + r - 2) * Z], fill=255)
+        alpha = Image.composite(im.getchannel('A'), Image.new('L', im.size, 0), mask)
+        img.paste(im, ((cx - S // 2) * Z, (cy - S // 2) * Z), alpha)
+        return
+    if sub:
         sz, h, lines = label_lines(box, label, cy + 3, r - 7)
         for k, s in enumerate(lines):
             text(d, s, cx, cy + 3 + k * h + h // 2, sz, fg, True)
+
+
+def tile(img, d, x0, y0, name, label, icon):
+    w, h = 72, 56
+    d.rounded_rectangle([x0 * Z, y0 * Z, (x0 + w) * Z, (y0 + h) * Z], 6 * Z, fill=(40, 40, 48), outline=(255, 255, 255), width=Z)
+    if icon is not None:  # the picture fills the tile, no text
+        S = h - 6
+        im = icon.resize((S * Z, S * Z), Image.NEAREST)
+        img.paste(im, ((x0 + w // 2 - S // 2) * Z, (y0 + 3) * Z), im)
+        return
+    text(d, name, x0 + w // 2, y0 + 13, 1.5, (255, 255, 255), False)
+    if label and label != name:
+        text(d, label[:11], x0 + w // 2, y0 + 33, 1.0, (255, 255, 255), False)
 
 
 for spec in specs:
@@ -130,5 +149,8 @@ for spec in specs:
         if scan in keys:
             n, lab, ic = keys[scan]
             disc(img, d, cx, cy, r, n, lab, ic)
+    extra = [k for k in keys if k not in (57, 28)]
+    for n, scan in enumerate(extra[:4]):
+        tile(img, d, 20 + n * 76, 62, *keys[scan])
     img.save(os.path.join(out, gid + '.png'))
     print(gid, {k: (v[0], v[1], v[2] is not None) for k, v in keys.items()})
