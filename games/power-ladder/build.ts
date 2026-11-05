@@ -78,7 +78,7 @@ disk.put('savegame.gif', gif(slotsPicture(pal, book, 'SAVE GAME'), pal));
 text('story', 'THE LADDER OF LOCKS', STORY);
 text('howto', 'HOW TO PLAY', HOWTO);
 text('credits', 'CREDITS', CREDITS);
-disk.put('wonpic.gif', gif(endPicture(pal, book, cheer, 'UP THE LADDER!', 'THE STRONGEST KEY WINS', 'won'), pal));
+disk.put('wonpic.gif', gif(endPicture(pal, book, cheer, 'UP YOU GO!', 'THE STRONGEST KEY WINS', 'won'), pal));
 disk.put('won.gif', gif(paper(pal, book, 'UP YOU GO'), pal));
 disk.put('won.txt', WON);
 disk.put('won.lst', serializeSlideList([{ name: 'wonpic.gif', pause: 6 }, { name: 'won.gif', pause: 0 }, { name: 'won.txt' }]));

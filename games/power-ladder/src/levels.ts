@@ -95,7 +95,17 @@ function smallKeyBigDoor(book: Book, signs: Record<SignName, Sign>): StarterMap 
   g.row(2, 17, 19, 'c').row(9, 29, 31, 'c').put(38, 9, 'c').put(39, 9, 'c').put(41, 9, 'c');
   wall(g, 27);
   wall(g, 37);
-  scenery(g, [[6, 2], [24, 1], [32, 3], [40, 1]], [8, 34, 44], [13, 25, 42]);
+  scenery(
+    g,
+    [
+      [6, 2],
+      [24, 1],
+      [32, 3],
+      [40, 1],
+    ],
+    [8, 34, 44],
+    [13, 25, 42],
+  );
   const m = new StarterMap(book, g.rows());
   m.set(9, 9, 'key_bronze').set(21, 2, 'key_silver');
   door(m, 27, 'silver');
@@ -115,7 +125,17 @@ function oneGoldKey(book: Book, signs: Record<SignName, Sign>): StarterMap {
   g.row(2, 11, 13, 'c').row(9, 27, 29, 'c').put(37, 9, 'c').put(38, 9, 'c').put(39, 9, 'c').put(41, 9, 'c');
   wall(g, 25);
   wall(g, 35);
-  scenery(g, [[6, 1], [20, 1], [30, 3], [38, 1]], [6, 18, 44], [14, 31, 40]);
+  scenery(
+    g,
+    [
+      [6, 1],
+      [20, 1],
+      [30, 3],
+      [38, 1],
+    ],
+    [6, 18, 44],
+    [14, 31, 40],
+  );
   const m = new StarterMap(book, g.rows());
   m.set(15, 2, 'key_gold');
   door(m, 25, 'bronze');
@@ -132,12 +152,22 @@ function keysAddUp(book: Book, signs: Record<SignName, Sign>): StarterMap {
   ledge(g, 14, 21);
   g.row(2, 16, 18, 'c').row(9, 33, 37, 'c');
   wall(g, 30);
-  scenery(g, [[6, 2], [24, 1], [34, 3], [40, 1]], [7, 38, 44], [12, 23, 41]);
+  scenery(
+    g,
+    [
+      [6, 2],
+      [24, 1],
+      [34, 3],
+      [40, 1],
+    ],
+    [7, 38, 44],
+    [12, 23, 41],
+  );
   const m = new StarterMap(book, g.rows());
   m.set(9, 9, 'key_bronze').set(20, 2, 'key_silver');
   door(m, 30, 'gold');
-  m.sign(22, onGround(GROUND, signs.goldDoor), signs.goldDoor);
-  m.sign(26, onGround(GROUND, signs.adds), signs.adds);
+  m.sign(19, onGround(GROUND, signs.goldDoor), signs.goldDoor);
+  m.sign(24, onGround(GROUND, signs.adds), signs.adds);
   m.sign(40, onGround(GROUND, signs.exit), signs.exit);
   return m;
 }

@@ -30,7 +30,9 @@ function keyPicture(pal: Pal, grade: Grade): Pixels {
   p.rect(9, 8, 10, 4, ink).rect(10, 9, 8, 2, face).rect(10, 9, 8, 1, hi);
   for (let i = 0; i < WORTH[grade]; i++) {
     const x = 16 - i * 3;
-    p.rect(x - 1, 12, 4, 5, ink).rect(x, 12, 2, 4, face).rect(x, 12, 1, 3, hi);
+    p.rect(x - 1, 12, 4, 5, ink)
+      .rect(x, 12, 2, 4, face)
+      .rect(x, 12, 1, 3, hi);
   }
   p.set(3, 7, hi).set(4, 6, hi);
   return p;

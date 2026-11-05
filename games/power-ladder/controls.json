@@ -44,7 +44,7 @@
     }
   },
   "counters": {
-    "20": "Key worth carried: a bronze key adds 1, a silver key 2 and a gold key 3. A bronze door takes 1, a silver door 2 and a gold door 3."
+    "20": "Key worth carried: bronze adds 1, silver 2, gold 3. A door takes 1, 2 or 3."
   },
   "sounds": {
     "9": "The jump",
