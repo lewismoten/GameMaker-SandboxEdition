@@ -10,7 +10,7 @@ export const HELPER_NAMES = ['MIA', 'LENA', 'MARA', 'LIAN', 'YANA', 'NOVA', 'RIM
 /** Games whose story is Kit's own. */
 const KIT_GAMES = new Set(['kit-moves', 'duck', 'kits-shop']);
 /** Starters added after the heroes were first dealt, in the order they were added (each takes the next helper in turn). */
-const ADDED_LATER = ['lightning-bugs', 'fireworks'];
+const ADDED_LATER = ['lightning-bugs', 'fireworks', 'leaves'];
 
 /** Every grouped Starter's hero name, by game id. */
 export const STARTER_HEROES: Record<string, string> = (() => {
