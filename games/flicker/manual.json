@@ -2,14 +2,6 @@
   "title": "Flicker and Flow",
   "howDoI": [
     {
-      "id": "pulse",
-      "q": "How do I make a flame that pulses?",
-      "scene": 2,
-      "x": 16,
-      "y": 18,
-      "level": 1
-    },
-    {
       "id": "flicker",
       "q": "How do I make a torch flame that flickers?",
       "scene": 2,
@@ -42,28 +34,12 @@
       "level": 2
     },
     {
-      "id": "ends",
-      "q": "How do I draw the top and the foot of a waterfall?",
-      "scene": 3,
-      "x": 47,
-      "y": 18,
-      "level": 2
-    },
-    {
       "id": "wide",
       "q": "How do I make a waterfall wider than one block?",
       "scene": 3,
       "x": 56,
       "y": 18,
       "level": 2
-    },
-    {
-      "id": "fire",
-      "q": "How do I make a big fire?",
-      "scene": 4,
-      "x": 17,
-      "y": 18,
-      "level": 3
     },
     {
       "id": "sparks",
