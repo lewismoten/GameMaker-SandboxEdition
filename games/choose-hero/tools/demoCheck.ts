@@ -1,5 +1,5 @@
 // Plays the built title demo (disk/demo.rec) on the real engine and checks it shows each lesson once:
-// the room and the Big Hops climb entered, and no game over. The recording's keys play as one unbroken list, as the demo
+// the room, the Big Hops climb and the road (no hero set) entered, and no game over. The recording's keys play as one unbroken list, as the demo
 // recorder counts game ticks across scene changes.
 //   cd web && npx vite-node ../games/choose-hero/tools/demoCheck.ts
 import { readFileSync } from 'node:fs';
@@ -20,11 +20,11 @@ const r = await replay(
   },
   { maxMinutes: 4 },
 );
-const seen = r.scenes.slice(0, 2).join(' ');
+const seen = r.scenes.slice(0, 3).join(' ');
 if (r.error) console.log(r.error);
 console.log(`demo: scenes entered ${r.scenes.join(' ')}; ${r.keysLeft} keys unplayed`);
-if (seen !== '2 4' || r.keysLeft || r.scenes.includes(1)) {
-  console.error(`demoCheck: expected scenes 2 4 with every key played and no ending; got ${seen}`);
+if (seen !== '2 4 5' || r.keysLeft || r.scenes.includes(1)) {
+  console.error(`demoCheck: expected scenes 2 4 5 with every key played and no ending; got ${seen}`);
   process.exit(1);
 }
-console.log('demoCheck ok: both levels played with the Big Hops door, no game over');
+console.log('demoCheck ok: all three levels played, the Big Hops hero carried to the road, no game over');

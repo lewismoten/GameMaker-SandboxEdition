@@ -55,7 +55,18 @@ export const STARTER_GROUPS: { name: string; tag: string; games: string[] }[] = 
   {
     name: 'Putting It Together',
     tag: 'Timing and a whole small game.',
-    games: ['beat-the-clock', 'countdown', 'warning-first', 'one-more-try', 'teach-test-twist', 'block-brains', 'puzzle-room', 'your-first-game'],
+    games: [
+      'beat-the-clock',
+      'countdown',
+      'warning-first',
+      'one-more-try',
+      'teach-test-twist',
+      'block-brains',
+      'puzzle-room',
+      'spend-it',
+      'kits-shop',
+      'your-first-game',
+    ],
   },
   {
     name: 'Wiring and Puzzles',
@@ -65,7 +76,7 @@ export const STARTER_GROUPS: { name: string; tag: string; games: string[] }[] = 
   {
     name: 'Bigger Worlds',
     tag: 'More than one screen.',
-    games: ['scroll', 'many-rooms', 'overhead', 'diagonal-wrap', 'blocks-budget', 'near-far', 'town-links'],
+    games: ['scroll', 'many-rooms', 'overhead', 'diagonal-wrap', 'blocks-budget', 'near-far', 'very-far', 'town-links'],
   },
   { name: 'Drawing with Blocks', tag: 'Roads, water and sky, drawn and animated.', games: ['road-tiles', 'shore', 'twinkle'] },
   {

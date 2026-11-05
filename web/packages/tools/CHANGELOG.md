@@ -34,6 +34,7 @@ embroidery and 3D-printable and laser models.
 
 ### Fixed
 
+- `kit/gameSim`: a scene with a blank character or character-blocks slot keeps the last scene's, as PLAYGAME's loadscene does.
 - Indexed-pixel shifts that are invalid are rejected, and fractional flood-fill seeds are ignored.
 - `kit/audioEvents` is types only, so it no longer builds an empty chunk.
 
