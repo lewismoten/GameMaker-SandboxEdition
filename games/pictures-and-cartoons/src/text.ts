@@ -44,7 +44,7 @@ One of the Starters: small games that each show one idea.
 );
 
 export const WON = wrap(`
-|THAT'S A WRAP!
+|WELL SHOWN!
 
 Three rooms, three pictures and one cartoon.
 
