@@ -54,6 +54,7 @@ const sources = {
   'formats/recording': 'formats/recording',
   'formats/sound': 'formats/sound',
   'formats/voc': 'formats/voc',
+  'gfx/colorVision': 'gfx/colorVision',
   'gfx/cp437Glyphs': 'gfx/cp437Glyphs',
   'gfx/font8x8': 'gfx/font8x8',
   'gfx/screen': 'gfx/screen',

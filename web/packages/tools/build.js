@@ -78,6 +78,7 @@ const sources = {
   'kit/songFx': 'kit/songFx',
   'kit/fadeOut': 'kit/fadeOut',
   'kit/fliClips': 'kit/fliClips',
+  'kit/fliShrink': 'kit/fliShrink',
   'kit/recordedDemo': 'kit/recordedDemo',
   'kit/hopBot': 'kit/hopBot',
   'kit/align': 'kit/align',
