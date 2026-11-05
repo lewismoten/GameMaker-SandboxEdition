@@ -11,6 +11,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Added
 
+- On a game opened to look inside, the Read-only note with Edit a copy now sits in the heading row of the Overview and of each file's page instead of a bar of its own, so the Overview fits one screen again
 - Overview's category cards say how many scenes use them ("used by 3 scenes"), counted from the same references as an asset's Used by chips
 - The cast, the Library and TURBO BUTTON have pages of their own for search engines (`cast.html`, `library.html`, `magazine.html`: plain text, with links to the games where there are some, replaced by the app when it opens), and are in the sitemap.
 - The editor's Overview groups its asset cards by what things are (Levels, Heroes, Monsters, Pictures and movies, Sounds and music, Words and screens, Colors and other files) instead of one long run of file types

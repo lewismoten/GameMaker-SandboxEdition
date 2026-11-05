@@ -12,6 +12,7 @@ interface OverviewHost {
   project: Project;
   tab: OverviewTab;
   kind?: FileKind;
+  bar?: HTMLElement | null;
   all: () => void;
   category: (kind: FileKind) => void;
   open: (file: string) => void;
@@ -34,6 +35,7 @@ export function overview(host: OverviewHost): { el: HTMLElement; dispose(): void
   const browser = assetBrowser({
     project: host.project,
     kind: host.kind,
+    bar: host.bar,
     all: () => host.all(),
     category: (k) => host.category(k),
     open: (f) => host.open(f),
