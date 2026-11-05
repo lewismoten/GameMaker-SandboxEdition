@@ -1,0 +1,35 @@
+{
+  "title": "Everybody Talks",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.0",
+  "blurb": "Two short rooms about talk with more than one voice. Walk into a friend and one picture comes up with everyone in it, a speech bubble for each turn and a name over each, and the words fit the bubbles. Level 1 is a talk of two; level 2 is a group of four across two cards. Signs in the levels say how. Play it, then open it in Game-Maker and change who says what.",
+  "exe": "TALKS.EXE",
+  "dosName": "EVRYTALK",
+  "sound": "sb",
+  "label": {
+    "background": "#e8f6ff",
+    "band": "#4b3fa0",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "2 short levels",
+    "hours": 1,
+    "background": "#4b3fa0",
+    "accent": "#ffd23f",
+    "ink": "#ffffff",
+    "tagline": "Everyone gets a bubble.",
+    "back": "A small explorer in a teal beanie crosses two short rooms of signs and friendly faces. Walk into a friend and a whole talk comes up in one picture, with a speech bubble and a name for each voice, then back to the room. Read the signs, listen in, then open the game in Game-Maker and change who says what.",
+    "features": ["Signs in the levels explain each idea", "One picture holds a whole talk, a bubble for every voice", "Made to be copied and taken apart"],
+    "shots": [
+      ["two.map", 22, 6],
+      ["many.map", 24, 6]
+    ],
+    "rating": "Everyone"
+  },
+  "acceptedFindings": ["facing s3 The hero climbs side on"]
+}
