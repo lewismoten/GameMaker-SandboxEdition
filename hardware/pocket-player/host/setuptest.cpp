@@ -1,82 +1,99 @@
-// Mac test for src/displaysetup.h: the 200 x 200 button square fits every turn, buttons hit-test and change the mode as
-// named, the touch mapping from one or two corner taps works for all wirings, and the saved record round-trips.
+// Mac test for src/setupflow.h and src/displaysetup.h: three taps on "the one that reads right" settle the picture's flip and
+// the touch wiring over all 4 x 8 pairs, the rough calibration reads every quadrant, the color sets work out, and the saved
+// record round-trips.
 #include <stdio.h>
 #include <stdlib.h>
 #include "displaysetup.h"
+#include "setupflow.h"
 
 static int fails = 0;
 #define CHECK(c, ...) do { if (!(c)) { fails++; printf("FAIL: " __VA_ARGS__); printf("\n"); } } while (0)
 
+// Where a user whose picture is flipped by h and whose touch is wired as `wiring` taps on a glass quadrant, as a raw reading.
+static void rawAt(int quad, int wiring, int& rx, int& ry) {
+  int rq = sf::rawQuadOf(quad, wiring);
+  rx = rq & 1 ? 3300 : 700;
+  ry = rq & 2 ? 3300 : 700;
+}
+
 int main() {
-  const int W = 320, H = 240;
-  // every cell inside the square, none overlapping, each hit at its center and nowhere outside
-  for (int b = 0; b < ds::NBTN; b++) {
-    ds::Rect r = ds::rect(b);
-    CHECK(r.x0 >= 0 && r.y0 >= 0 && r.x1 <= ds::SQ && r.y1 <= ds::SQ, "button %d leaves the 200 square", b);
-    CHECK(r.x1 - r.x0 >= 44 && r.y1 - r.y0 >= 44, "button %d under 44 px", b);
-    CHECK(ds::hit((r.x0 + r.x1) / 2, (r.y0 + r.y1) / 2) == b, "button %d center", b);
+  // ---- step 1: three taps tell all 32 (flip, wiring) pairs apart ----
+  int solved = 0;
+  for (int h = 0; h < sf::FLIPS; h++)
+    for (int m = 0; m < sf::WIRINGS; m++) {
+      sf::Solver sv;
+      for (int r = 0; r < sf::ROUNDS; r++) {
+        int rx, ry;
+        rawAt(sf::glassQuad(r, h), m, rx, ry);
+        sv.tap(r, sf::rawQuad(rx, ry));
+      }
+      CHECK(sv.count() == 1 && sv.flip() == h && sv.wiring() == m, "flip %d wiring %d -> %d left, flip %d wiring %d", h, m, sv.count(), sv.flip(), sv.wiring());
+      solved++;
+    }
+  // each round's layout is a shuffle (every flip shown once), the copy that reads right is never off the glass
+  for (int r = 0; r < sf::ROUNDS; r++) {
+    int seen = 0;
+    for (int q = 0; q < 4; q++) seen |= 1 << sf::LAYOUT[r][q];
+    CHECK(seen == 15, "round %d shows every flip once", r);
   }
-  CHECK(ds::hit(200, 10) == -1 && ds::hit(10, 199) == -1 && ds::hit(-1, 5) == -1, "outside the square hits nothing");
-  // the square lands whole on the 240-wide memory in all four turns: it is 200 <= 240 on both memory axes
-  CHECK(ds::SQ < 240, "square fits the panel's short side");
-  // presses
-  uint8_t p = 0, t = 0;
-  ds::press(ds::ROT, p, t); CHECK(t == 1 && p == 0, "rotate");
-  ds::press(ds::MIR, p, t); CHECK(t == 3, "mirror");
-  ds::press(ds::RB, p, t); ds::press(ds::INV, p, t); ds::press(ds::DRV, p, t); CHECK(p == 7, "mode bits");
-  CHECK(!ds::press(ds::OK, p, t) && p == 7 && t == 3, "OK changes nothing");
-  CHECK(!ds::needsRestart(ds::ROT) && !ds::needsRestart(ds::MIR) && ds::needsRestart(ds::DRV), "restart rules");
-  // corner taps for every wiring of a made-up panel
-  int cases = 0;
-  for (int swap = 0; swap < 2; swap++)
-    for (int fu = 0; fu < 2; fu++)
-      for (int fv = 0; fv < 2; fv++)
-        for (int range = 0; range < 3; range++) {
-          int lo = range == 0 ? 200 : range == 1 ? 350 : 120, hi = range == 0 ? 3900 : range == 1 ? 3700 : 4000;
-          auto raw = [&](int sx, int sy, int& rx, int& ry) {
-            long u = lo + (long)(hi - lo) * (fu ? (W - 1 - sx) : sx) / (W - 1);
-            long v = lo + (long)(hi - lo) * (fv ? (H - 1 - sy) : sy) / (H - 1);
-            if (swap) { rx = (int)v; ry = (int)u; } else { rx = (int)u; ry = (int)v; }
-          };
-          tc::Raw a, b;
-          raw(ds::DOT_A, ds::DOT_Y, a.x, a.y);
-          raw(ds::DOT_B, ds::DOT_Y, b.x, b.y);
-          tc::Cal c, c1;
-          CHECK(ds::fromTwo(a, b, W, H, c), "fromTwo swap=%d fu=%d fv=%d r=%d", swap, fu, fv, range);
-          CHECK(c.swap == swap, "swap found %d want %d (fu=%d fv=%d)", c.swap, swap, fu, fv);
-          // now a button center must come out inside its button, on a 12 px tolerance of the middle (4 px margins)
-          int worst = 0;
-          for (int bn = 0; bn < ds::NBTN; bn++) {
-            ds::Rect r = ds::rect(bn);
-            int cx = (r.x0 + r.x1) / 2, cy = (r.y0 + r.y1) / 2, rx, ry, x, y;
-            raw(cx, cy, rx, ry);
-            tc::toScreen(c, rx, ry, W, H, x, y);
-            CHECK(ds::hit(x, y) == bn, "button %d center read as %d,%d -> %d (swap=%d fu=%d fv=%d r=%d)", bn, x, y, ds::hit(x, y), swap, fu, fv, range);
-            int e = abs(x - cx) > abs(y - cy) ? abs(x - cx) : abs(y - cy);
-            if (e > worst) worst = e;
-          }
-          CHECK(worst <= 20, "corner-tap mapping off by %d px (swap=%d fu=%d fv=%d r=%d)", worst, swap, fu, fv, range);
-          // one tap after a display change: the same wiring flipped on both axes (a half turn), order and scale kept
-          tc::Raw a2;
-          int rx2, ry2;
-          raw(W - 1 - ds::DOT_A, H - 1 - ds::DOT_Y, rx2, ry2);  // the glass corner that is now logical (0,0) is the far one: model it by flipping
-          (void)rx2; (void)ry2;
-          // the half-turned panel is the same wiring with both flips toggled
-          auto raw2 = [&](int sx, int sy, int& rx, int& ry) { raw(W - 1 - sx, H - 1 - sy, rx, ry); };
-          raw2(ds::DOT_A, ds::DOT_Y, a2.x, a2.y);
-          CHECK(ds::fromOne(a2, c, W, H, c1), "fromOne");
-          CHECK(c1.swap == swap, "fromOne keeps the swap");
-          int cx = 50, cy = 33, rx, ry, x, y;
-          raw2(cx, cy, rx, ry);
-          tc::toScreen(c1, rx, ry, W, H, x, y);
-          CHECK(ds::hit(x, y) == ds::hit(cx, cy), "fromOne maps (%d,%d) to %d,%d (swap=%d fu=%d fv=%d r=%d)", cx, cy, x, y, swap, fu, fv, range);
-          cases++;
-        }
-  // refused taps
-  tc::Cal c;
-  CHECK(!ds::fromTwo({1000, 1000}, {1000, 1000}, W, H, c), "two taps on one spot are refused");
-  CHECK(!ds::fromTwo({300, 300}, {2000, 2000}, W, H, c), "a diagonal second tap is refused");
-  CHECK(!ds::fromOne({1000, 0}, tc::Cal(), W, H, c), "a tap at the raw edge is refused");
+  // a tap that fits no pair (a stray one) leaves nothing, so the screen starts again
+  { sf::Solver sv; sv.tap(0, 0); sv.tap(0, 1); CHECK(sv.count() == 0, "two taps that disagree in one round leave nothing"); }
+  // the flips: applying the turn the solver says leaves no flip, for every start turn and flip (turns are xor, as labels)
+  for (int t = 0; t < 4; t++)
+    for (int h = 0; h < 4; h++) {
+      int nt = sf::turnFor(t, h), delta = nt ^ t;
+      CHECK(sf::TURN_OF_LABEL[h] == delta, "turn %d flip %d", t, h);
+    }
+  CHECK(sf::TURN_OF_LABEL[3] == 1 && sf::TURN_OF_LABEL[1] == 3 && sf::TURN_OF_LABEL[2] == 2, "both flips is the half turn (turn 1)");
+  // the word reads differently in all four flips, each cell target is big, the arrow marks the bottom
+  for (int a = 0; a < 4; a++)
+    for (int b = a + 1; b < 4; b++) {
+      int diff = 0;
+      for (int y = 0; y < sf::WORD_H; y++) for (int x = 0; x < sf::WORD_W; x++) diff += sf::wordCell(a, x, y) != sf::wordCell(b, x, y);
+      CHECK(diff >= 20, "flips %d and %d of the word differ in %d cells", a, b, diff);
+    }
+  CHECK(sf::CELL_W >= 60 && sf::CELL_H >= 60 && sf::SET_W >= 60 && sf::SET_H >= 60, "targets of 60 pixels");
+  CHECK(sf::WORD_W * sf::WORD_SCALE <= sf::CELL_W && sf::WORD_H * sf::WORD_SCALE <= sf::CELL_H, "the word fits its quadrant");
+  // ---- the rough calibration reads every quadrant / set center in all 8 wirings (what step 2 and the first tap of step 3 rely on) ----
+  for (int m = 0; m < sf::WIRINGS; m++) {
+    tc::Cal c = sf::roughCal(m);
+    for (int q = 0; q < 4; q++) {
+      int rx, ry, x, y;
+      rawAt(q, m, rx, ry);
+      tc::toScreen(c, rx, ry, sf::W, sf::H, x, y);
+      CHECK((x >= sf::CELL_W) == (q & 1) && (y >= sf::CELL_H) == (q >> 1), "wiring %d quadrant %d read at %d,%d", m, q, x, y);
+    }
+    for (int k = 0; k < 4; k++) {  // step 2's sets: a tap at a set's center, from the raw reading of that screen point
+      int cx = (k & 1) * sf::SET_W + sf::SET_W / 2, cy = sf::HEADER_H + (k >> 1) * sf::SET_H + sf::SET_H / 2;
+      int p = (cx >= sf::CELL_W ? 1 : 0) | (cy >= sf::CELL_H ? 2 : 0), rx, ry, x, y;
+      rawAt(p, m, rx, ry);
+      tc::toScreen(c, rx, ry, sf::W, sf::H, x, y);
+      CHECK(sf::setAt(x, y) == k, "wiring %d set %d read as %d (at %d,%d)", m, k, sf::setAt(x, y), x, y);
+    }
+  }
+  // ---- step 2: the set that reads right is the one whose fault matches the panel's; applying its bits clears the fault ----
+  for (int fault = 0; fault < 4; fault++) {
+    int right = -1;
+    for (int k = 0; k < 4; k++) {
+      bool ok = true;
+      for (int bar = 0; bar < sf::BARS; bar++) {
+        uint8_t a[3], b[3];
+        sf::faulted(k, bar, a);       // what the program draws for set k
+        sf::faulted(fault, 0, b);     // (the panel's fault, applied on top below)
+        uint8_t c[3] = {a[0], a[1], a[2]};
+        if (fault & 1) for (int i = 0; i < 3; i++) c[i] = 255 - c[i];
+        if (fault & 2) { uint8_t t = c[0]; c[0] = c[2]; c[2] = t; }
+        for (int i = 0; i < 3; i++) ok = ok && c[i] == sf::BAR_RGB[bar][i];
+      }
+      if (ok) { CHECK(right < 0, "two sets read right"); right = k; }
+    }
+    CHECK(right == fault, "fault %d: the right set is %d", fault, right);
+    CHECK(sf::panelBitsFor(right) == ((fault & 1 ? 2 : 0) | (fault & 2 ? 4 : 0)), "bits for fault %d", fault);
+  }
+  // ---- the driver and the card ----
+  CHECK(ds::nextDriver(0) == 1 && ds::nextDriver(1) == 0 && ds::nextDriver(7) == 0 && ds::nextDriver(6) == 1, "the driver steps alone and clears the color bits");
+  CHECK(!ds::useCardRecord(true) && ds::useCardRecord(false), "a setup begun in NVS is never replaced by the card's older record");
+  int cases = solved;
   // the record
   ds::Record r, back;
   r.panel = 5;
@@ -95,6 +112,6 @@ int main() {
   ds::chipHex(0x24A1B2C3D4E5ULL, chip);
   ds::cardPath(chip, path, sizeof path);
   CHECK(!strcmp(chip, "24A1B2C3D4E5") && !strcmp(path, "/pocket/boards/24A1B2C3D4E5.cfg"), "chip path %s", path);
-  printf("displaysetup: %d wirings, %d failures\n", cases, fails);
+  printf("setup flow: %d (flip, wiring) pairs, %d failures\n", cases, fails);
   return fails ? 1 : 0;
 }
