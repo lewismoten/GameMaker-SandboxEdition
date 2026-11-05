@@ -93,7 +93,7 @@ export const STARTER_GROUPS: { name: string; tag: string; games: string[] }[] = 
   {
     name: 'Drawing with Blocks',
     tag: 'Roads, water and sky, drawn and animated.',
-    games: ['road-tiles', 'shore', 'twinkle', 'flicker', 'lights-out', 'color-doors', 'shadows'],
+    games: ['road-tiles', 'shore', 'twinkle', 'flicker', 'lights-out', 'color-doors', 'shadows', 'beams'],
   },
   {
     name: 'Showcase Tricks',

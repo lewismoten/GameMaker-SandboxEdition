@@ -97,6 +97,7 @@ export const CAST_GAMES = {
   'town-links': ['Maps Within Maps', 'starter'],
   'color-doors': ['Color Doors', 'starter'],
   shadows: ['Little Shadows', 'starter'],
+  beams: ['Beams and Fog', 'starter'],
   'blocks-budget': ['150 Blocks', 'starter'],
   'near-far': ['Near and Far', 'starter'],
   'very-far': ['Walking Very Far', 'starter'],

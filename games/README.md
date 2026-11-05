@@ -312,6 +312,11 @@ multi-block objects for `kit/align.ts`, which their checks run. The other play-t
 | shadows                | `npx vite-node ../games/shadows/tools/demoCheck.ts` | plays the title demo headless: the same scenes as the bot, every key played |
 | shadows                | `npx vite-node ../games/shadows/tools/preview.ts [dir]` | PNGs of the blocks, 16x10 views of each room with Kit in it and the pictures |
 | shadows                | `npx vite-node ../games/shadows/tools/manual.ts` | draws the manual's frame pictures (shadow pixels marked) into `manual.json` |
+| beams                  | `npx vite-node ../games/beams/tools/check.ts` | the bot reads the first sign, stands in each of the three beams, crosses the solid and the dithered fog, stands under the drifting fog and each lantern, and the last door ends the game without a life lost |
+| beams                  | `npx vite-node ../games/beams/tools/gendemo.ts` | re-records the title demo (the whole run) into `src/demo.ts` (then rebuild) |
+| beams                  | `npx vite-node ../games/beams/tools/demoCheck.ts` | plays the title demo headless: scenes 2 3 4 then the ending, every key played |
+| beams                  | `npx vite-node ../games/beams/tools/preview.ts [dir]` | PNGs of the blocks, 16x10 views of each room with Kit in it and the pictures |
+| beams                  | `npx vite-node ../games/beams/tools/manual.ts` | draws the manual's frame pictures (the lit wall twins, the hills in solid and dithered fog, the puff and the lanterns, painted pixels marked) into `manual.json` |
 | many-rooms             | `npx vite-node ../games/many-rooms/tools/check.ts`                     | the bot goes red, blue, green, back by green's other door, and on to gold, then through the hub twice (the same landing cell, coins back, score kept); every door lands on the middle of a room and no life is lost; no invisible walls |
 | many-rooms             | `npx vite-node ../games/many-rooms/tools/gendemo.ts`                   | re-records the title demo (level 1: two coins and the red door, which lands in the blue room) into `src/demo.ts` (then rebuild) |
 | many-rooms             | `npx vite-node ../games/many-rooms/tools/preview.ts [dir]`             | PNGs of the blocks, both maps whole, each room as the screen shows it, and every picture |
