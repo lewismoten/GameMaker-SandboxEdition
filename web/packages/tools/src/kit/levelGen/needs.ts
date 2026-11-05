@@ -21,7 +21,13 @@ export const KINDS: readonly KindInfo[] = [
     label: 'Dungeon',
     blurb: 'Rooms joined by corridors, with the walls drawn round them.',
     must: ['wall', 'floor'],
-    want: [{ role: 'decoration', use: 'Scattered inside the bigger rooms.', without: 'the rooms are left bare' }],
+    want: [
+      { role: 'decoration', use: 'Scattered inside the bigger rooms.', without: 'the rooms are left bare' },
+      { role: 'locked-door', use: 'Shut in a narrow passage on the way to the exit (needs a key block with the same lock number).', without: 'no locked doors' },
+      { role: 'key', use: 'Placed where it can be reached before its locked door.', without: 'no locked doors' },
+      { role: 'treasure', use: 'In corners and dead ends, more of it far from the entry.', without: 'no treasure' },
+      { role: 'life', use: 'One heart in a far corner.', without: 'no heart' },
+    ],
   },
   {
     id: 'forest',
@@ -32,6 +38,8 @@ export const KINDS: readonly KindInfo[] = [
       { role: 'path', use: 'A winding trail from one side to the other.', without: 'no trail' },
       { role: 'rock', use: 'A few rocks in the open.', without: 'no rocks' },
       { role: 'decoration', use: 'Flowers and bushes in the open.', without: 'no flowers' },
+      { role: 'treasure', use: 'In dead ends and nooks among the trees.', without: 'no treasure' },
+      { role: 'life', use: 'One heart in a far nook.', without: 'no heart' },
     ],
   },
 ];
@@ -74,6 +82,10 @@ export function checkNeeds(kind: GenKind, roles: RoleMap): NeedsReport {
   const message = lacking.length
     ? `Needs ${lacking.map((l) => `a ${l} block`).join(' and ')}. Mark ${lacking.length > 1 ? 'them' : 'one'} in the block editor's Uses tab.`
     : '';
-  const skipped = items.filter((i) => !i.must && !i.count).map((i) => `No ${i.label.toLowerCase()} block: ${i.without}.`);
+  // wants that share an outcome (a lock and its key) are one line
+  const lacking2 = items.filter((i) => !i.must && !i.count);
+  const skipped = [...new Set(lacking2.map((i) => i.without!))].map(
+    (w) => `No ${lacking2.filter((i) => i.without === w).map((i) => i.label.toLowerCase()).join(' or ')} block: ${w}.`,
+  );
   return { kind, items, ok: !lacking.length, message, skipped };
 }
