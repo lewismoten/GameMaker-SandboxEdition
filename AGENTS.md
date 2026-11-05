@@ -190,6 +190,9 @@ preserve what was there.
     bosses, never idle on menus, and play with human timing (no frame-perfect key changes).
   - Check findings are suggestions an author can dismiss. Word them that way and say what the
     tool can't see.
+  - Arrows, Space and Enter carry most of a game's play. Extra keys (number-pad diagonals,
+    Q/E, letters) are fine but less often, and the way through never needs one. `check:keys`
+    measures the share.
 - **Previews and labels:** a preview is a real render, never an emoji or a black stand-in.
   Name a thing for what it does, and give every flow a clear start and end.
 - **Imports:** look at a file's contents before trusting its extension.
@@ -245,7 +248,15 @@ preserve what was there.
   npm, and a DOS export's credits shouldn't mention the web.
 - **Originality:**
   - Write manuals and text fresh. Don't copy RSD's printed manual.
-  - The maintainer's reference photos are reference only, unless they're asked for.
+  - The maintainer's reference photos are reference only, unless they're asked for. The person
+    in game art is always Doc Leo, never Lewis: green tie, purple shirt, dark blue corduroy
+    jacket, tattered fedora.
+- **Starters** (`"series": "starter"`) live only on the desk's Sample CD: no retail box,
+  manual, Level Maps or goodies, and not on downloads lists. Per-level notes go in the project
+  sidecar.
+- **Game bar:** a Sandbox game aims for a 15+ minute walkthrough and a "wow" (story, wit,
+  sound, animated transitions, palette-swapped variety); collecting alone isn't fun. A level
+  that ends on a timer shows an on-screen countdown or meter.
 - **Voice clips:** a level's ending voice must play to the end (the next scene's intro cuts
   it). Bots wait for clips (`sim.waitForClip()`). Score and pickup sounds must not cut voices.
 
