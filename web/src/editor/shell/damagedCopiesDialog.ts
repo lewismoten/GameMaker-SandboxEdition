@@ -62,7 +62,7 @@ export async function showDamagedCopies(refresh: () => unknown): Promise<void> {
             h(
               'div',
               { class: 'dc-acts' },
-              act('Keep as a game', `Keep ${c.name} as a game`, async () =>
+              act('Keep as a game', `Keep as a game: ${c.name}`, async () =>
                 (await keepAsGame(c.id)) ? `“${c.name}” is now under My games.` : 'That copy is gone.',
               ),
               act('Delete', `Delete ${c.name}`, async () => (await letGo(c.id), `Deleted “${c.name}”.`)),
