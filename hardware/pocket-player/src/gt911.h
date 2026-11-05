@@ -11,6 +11,7 @@ struct GT911 {
   uint8_t addr = 0;
   int n = 0;  // points in the last report
   int rawX[5], rawY[5], id[5], size[5];  // size: the contact area the chip reports
+  bool fresh = false;  // the last poll() read a new report (for the serial trace)
 
   bool ping(uint8_t a) {
     Wire.beginTransmission(a);
@@ -36,6 +37,7 @@ struct GT911 {
   }
   // Reads a new report if the chip has one; otherwise keeps the last. Returns the point count.
   int poll() {
+    fresh = false;
     Wire.beginTransmission(addr);
     Wire.write(0x81);
     Wire.write(0x4E);
@@ -44,6 +46,7 @@ struct GT911 {
     if (!Wire.available()) return n;
     uint8_t st = Wire.read();
     if (!(st & 0x80)) return n;
+    fresh = true;
     int cnt = st & 0x0F;
     if (cnt > 5) cnt = 5;
     n = 0;
