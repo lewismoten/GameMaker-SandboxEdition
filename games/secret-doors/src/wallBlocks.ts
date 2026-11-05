@@ -41,7 +41,10 @@ function chips(pal: Pal): Pixels {
   const p = new Pixels(20, 20, skyOf(pal));
   const b = pal.r('brick');
   const chip = (x: number, y: number, w: number, h: number) =>
-    p.rect(x, y, w, h, b[2]).rect(x, y, w, 1, b[4]).rect(x, y + h - 1, w, 1, b[1]);
+    p
+      .rect(x, y, w, h, b[2])
+      .rect(x, y, w, 1, b[4])
+      .rect(x, y + h - 1, w, 1, b[1]);
   chip(2, 15, 7, 4);
   chip(10, 16, 8, 3);
   chip(5, 11, 5, 4);

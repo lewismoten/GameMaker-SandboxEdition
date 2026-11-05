@@ -31,16 +31,8 @@
       "Made to be copied and taken apart"
     ],
     "shots": [
-      [
-        "one.map",
-        28,
-        6
-      ],
-      [
-        "three.map",
-        24,
-        6
-      ]
+      ["one.map", 28, 6],
+      ["three.map", 24, 6]
     ],
     "rating": "Everyone"
   }

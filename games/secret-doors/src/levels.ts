@@ -53,7 +53,17 @@ export const GROUND = 10;
 /** Where each level's walls are (columns), for the bot's route and the shots. */
 export const L1 = { real: 18, realRows: 2, fake: 34, fakeRows: 4 } as const;
 export const L2 = { wallA: 18, wallB: 34, wallBWidth: 2, rows: 4 } as const;
-export const L3 = { x: 30, width: 4, roofRow: 7, windows: [[30, 8], [32, 8], [31, 9], [33, 9]] } as const;
+export const L3 = {
+  x: 30,
+  width: 4,
+  roofRow: 7,
+  windows: [
+    [30, 8],
+    [32, 8],
+    [31, 9],
+    [33, 9],
+  ],
+} as const;
 
 /** The ground, the side walls, the entrance on the left (x 3) and the exit door at `exitX`. */
 function base(width: number, exitX: number): Grid {
