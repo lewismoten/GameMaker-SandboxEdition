@@ -241,6 +241,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Fixed
 
+- Kit's Moves: the three dash gaps are sized to the moves their signs name (one dash, a hop with a dash, a hop with two dashes), and the signs now say to keep Right held.
 - My games no longer fills with “(damaged copy)” games. A game that names a file it never had is no longer called damaged, a copy of a damaged save is kept only when you open that game in the editor, copies that match their sound game byte for byte are cleared on the next visit, and any that remain are under “Damaged copies…”, where each can be kept as a game or deleted.
 - Seeds and Nests (a Starter): the yellow birds no longer fly into the top row of the screen, where Game-Maker does not draw a monster, so level 1's bird stays in sight. The blue birds in level 2 stay about five seconds, so two are in the air at a time (not three) and the last one leaves soon after the nest is stopped.
 

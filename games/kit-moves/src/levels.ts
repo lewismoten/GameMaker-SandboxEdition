@@ -24,8 +24,8 @@ const WORDS: Record<SignName, { text: string; w: number; h: number }> = {
   top: { text: 'LET GO OF UP AND KIT FALLS. NOW WALK RIGHT', w: 4, h: 4 },
   exit: { text: 'EXIT →', w: 3, h: 1 },
   dash: { text: 'ENTER DASHES RIGHT, ONCE PER PRESS. HOLDING IT DASHES ONCE', w: 4, h: 4 },
-  again: { text: 'A WIDER GAP. HOP, THEN LET GO AND PRESS ENTER AGAIN', w: 4, h: 4 },
-  last: { text: 'THE WIDEST GAP. THREE PRESSES, ONE AFTER ANOTHER', w: 4, h: 4 },
+  again: { text: 'A WIDER GAP. HOP, KEEP RIGHT HELD, PRESS ENTER', w: 4, h: 4 },
+  last: { text: 'THE WIDEST GAP. HOP, KEEP RIGHT HELD, ENTER TWICE', w: 4, h: 4 },
 };
 
 /** The block set the levels share: the Starter blocks, then this game's signs. */
@@ -71,14 +71,14 @@ export const L2 = {
   ground: 11,
   width: 70,
   pits: [
-    [11, 12],
+    [11, 11],
     [24, 28],
-    [41, 48],
+    [41, 47],
   ],
   depth: 2,
   exit: 64,
   coins: [
-    [12, 8],
+    [12, 9],
     [17, 9],
     [26, 7],
     [35, 9],
