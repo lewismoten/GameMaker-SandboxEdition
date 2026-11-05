@@ -29,7 +29,7 @@ describe('counter ledger', () => {
     const f = counters(hub, counterSources([hub, side]), counterLedger([hub, side]));
     expect(f).toHaveLength(1);
     expect(f[0].severity).toBe('info');
-    expect(f[0].title).toBe('Counter 21: the gate needs 4; this scene gives 0; Tail Cave give 4');
+    expect(f[0].title).toBe('Counter 21: the gate needs 4; this scene gives 0; Tail Cave gives 4');
     expect(f[0].detail).toContain('Tail Cave 4');
   });
 
@@ -56,6 +56,17 @@ describe('counter ledger', () => {
     expect(l.get(21)).toEqual([expect.objectContaining({ scene: 7, blocks: 0, monsters: 3, monsterCount: 3 })]);
     const f = counters(hub, counterSources([hub, side]), l);
     expect(f[0].detail).toContain('3 from 3 monsters');
+  });
+
+  it('keeps a monster-fed shortfall an info: monsters respawn and drop what the map does not show', () => {
+    const [hub, side] = twoScenes(20, 0);
+    side.mon.push(...Array.from({ length: 64 }, emptyMonster));
+    side.mon[0].pic[0] = [20, 0];
+    side.mbl = side.bbl;
+    side.map.monsters[0] = { ...side.map.monsters[0], monnum: 0, curx: 3, cury: 1 };
+    const f = counters(hub, counterSources([hub, side]), counterLedger([hub, side]));
+    expect(f.map((x) => x.severity)).toEqual(['info']);
+    expect(f[0].title).toContain('not enough in the whole game as drawn');
   });
 
   it('adds nothing without a ledger', () => {

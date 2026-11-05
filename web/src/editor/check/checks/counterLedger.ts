@@ -24,8 +24,12 @@ export type Ledger = Map<number, SceneSupply[]>;
 
 const special = (b: Block | undefined): b is Block => !!b && (b.effect === 3 || b.effect >= 20);
 
-/** What a block adds to `e` when touched, following what it turns into (touch, then timer); 0 if nothing. */
-function adds(bg: Block[], start: number, e: number): number {
+/**
+ * What a block adds to `e` when touched, following what it turns into (touch, then timer); 0 if
+ * nothing. A refill that stays put gives any number, unless `once` (a monster's picture: counted
+ * one touch each, since the monster is hurt or beaten, not stood on).
+ */
+function adds(bg: Block[], start: number, e: number, once = false): number {
   const seen = new Set<number>();
   const todo = [start];
   while (todo.length) {
@@ -33,7 +37,7 @@ function adds(bg: Block[], start: number, e: number): number {
     const b = bg[n];
     if (!b || seen.has(n)) continue;
     seen.add(n);
-    if (special(b) && b.effect === e && b.eamt > 0) return b.touchBl === n ? Infinity : b.eamt;
+    if (special(b) && b.effect === e && b.eamt > 0) return b.touchBl === n && !once ? Infinity : b.eamt;
     todo.push(b.touchBl);
     if (b.ntime > 0) todo.push(b.nextBl);
   }
@@ -46,7 +50,7 @@ function monsterGives(d: SceneData, n: number, e: number): number {
   let total = 0;
   while (n >= 0 && n < LASTMON && !seen.has(n) && d.mon[n]) {
     seen.add(n);
-    for (const [p] of d.mon[n].pic) if (p < BACKBL) total = Math.max(total, adds(d.mbl, p, e));
+    for (const [p] of d.mon[n].pic) if (p < BACKBL) total = Math.max(total, adds(d.mbl, p, e, true));
     n = d.mon[n].newmon;
   }
   return total;
@@ -79,7 +83,10 @@ export function counterLedger(scenes: SceneData[]): Ledger {
 
 const total = (s: SceneSupply) => s.blocks + s.monsters;
 const num = (n: number) => (n === Infinity ? 'any number' : String(n));
-const list = (xs: string[]) => (xs.length < 2 ? xs.join('') : `${xs.slice(0, -1).join(', ')} and ${xs[xs.length - 1]}`);
+const list = (xs: string[]) => {
+  const x = xs.length > 4 ? [...xs.slice(0, 3), `${xs.length - 3} more`] : xs;
+  return x.length < 2 ? x.join('') : `${x.slice(0, -1).join(', ')} and ${x[x.length - 1]}`;
+};
 
 /** What a scene gives: the total, and its parts by source kind when there is more than one kind. */
 export function supplyWords(s: SceneSupply): string {
@@ -94,15 +101,15 @@ export function ledgerFor(
   e: number,
   scene: number,
   start: number,
-  need: number,
 ): { here: number; others: SceneSupply[]; all: number; title: string; detail: string } {
   const rows = ledger.get(e) ?? [];
   const here = rows.find((r) => r.scene === scene);
   const others = rows.filter((r) => r.scene !== scene);
   const hereN = here ? total(here) : 0;
   const all = start + rows.reduce((s, r) => s + total(r), 0);
-  const elsewhere = others.length ? list(others.map((o) => `${o.name} ${supplyWords(o)}`)) : 'no other scene gives any';
-  const title = `needs ${need}; this scene gives ${here ? supplyWords(here) : 0}; ${others.length ? `${list(others.map((o) => o.name))} give ${num(others.reduce((s, o) => s + total(o), 0))}` : 'no other scene gives any'}`;
+  const label = (r: SceneSupply) => (rows.filter((x) => x.name === r.name).length > 1 || !r.name ? `${r.name} (scene ${r.scene})` : r.name);
+  const elsewhere = others.length ? list(others.map((o) => `${label(o)} ${supplyWords(o)}`)) : 'no other scene gives any';
+  const title = `this scene gives ${here ? supplyWords(here) : 0}; ${others.length ? `${list(others.map(label))} ${others.length === 1 ? 'gives' : 'give'} ${num(others.reduce((s, o) => s + total(o), 0))}` : 'no other scene gives any'}`;
   const detail = `The hero starts with ${start}. Supply, counting the maps as drawn: this scene ${here ? supplyWords(here) : 0}; ${elsewhere}. Counters carry from scene to scene.`;
   return { here: hereN, others, all, title, detail };
 }

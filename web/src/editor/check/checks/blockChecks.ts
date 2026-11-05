@@ -186,12 +186,14 @@ export function counters(d: SceneData, gives: Set<number> = new Set(), ledger?: 
       const here = ledger.get(e)?.find((r) => r.scene === d.scene);
       const mine = start + (here ? here.blocks + here.monsters : 0);
       if (mine < need) {
-        const l = ledgerFor(ledger, e, d.scene, start, need);
+        const l = ledgerFor(ledger, e, d.scene, start);
         const enough = l.all >= need;
+        // monsters respawn, drop what the map doesn't show and get shot more than once: a monster-fed count is a hint, not a warning
+        const monsterFed = !!ledger.get(e)?.some((r) => r.monsterCount > 0);
         out.push({
           check: 'counters',
-          severity: enough ? 'info' : 'warning',
-          title: `Counter ${e}: the gate${gates.length > 1 ? 's' : ''} ${l.title}${enough ? '' : ': not enough in the whole game'}`,
+          severity: enough || monsterFed ? 'info' : 'warning',
+          title: `Counter ${e}: ${gates.length > 1 ? `the gates need ${need} in all` : `the gate needs ${need}`}; ${l.title}${enough ? '' : ': not enough in the whole game as drawn'}`,
           detail: `${l.detail} ${enough ? 'Fine if the player earns it elsewhere first.' : 'Fine if a pickup is worth more than the map shows.'} The check can’t see what other doors spend, blocks that birth monsters, or whether a monster can be beaten.`,
           where: { scene: d.scene, map: d.names.map, block: { file: d.names.bbl ?? '', n: gates[0].n }, cells: cellsOf(d, gates[0].n) },
         });
