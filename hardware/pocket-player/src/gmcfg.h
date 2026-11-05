@@ -36,10 +36,10 @@ struct Cfg {
 // A line source the platform gives (the board reads a file of LittleFS or the card, the Mac test stdio). A .cfg is read line by line,
 // never held: a game can have 100 levels, and the level table is not kept in memory (see Assets::readInfo).
 struct Lines {
-  void* (*open)(void* user, const char* name) = nullptr;       // null: could not open
-  bool (*next)(void* h, char* line, int cap) = nullptr;       // the next line without its newline (cut at cap - 1); false at the end
-  void (*close)(void* h) = nullptr;
-  void* user = nullptr;
+  void* (*open)(void* user, const char* name);                // null: could not open
+  bool (*next)(void* h, char* line, int cap);                 // the next line without its newline (cut at cap - 1); false at the end
+  void (*close)(void* h);
+  void* user;
 };
 
 // A `level` line: the level's files and counts into L, its start and scroll limits into V (either may be null). False if it isn't one.
