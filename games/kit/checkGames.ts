@@ -35,6 +35,7 @@ import { cpus, tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, readBounds } from '@lewismoten/gamemaker-sandbox-tools/kit/textBounds';
+import { pairsOfGame } from './colorCues';
 
 const gamesDir = join(dirname(fileURLToPath(import.meta.url)), '..');
 const webDir = join(gamesDir, '../web');
@@ -268,6 +269,16 @@ for (const id of games) {
   console.log(`${pad(id, 10)} ${COLS.map((c) => pad(r[c], 6)).join(' ')} ${String(r.sec).padStart(5)}s`);
 }
 console.log(`tin hearts: ${hearts}   save signs: ${signs}   levelSecrets and box hours: ${sync}   versions: ${versions}`);
+// Advisory, never a failure: pairs a player must tell apart that differ by hue alone (kit/colorCues.ts; `colorCuesCli.ts <id> --pairs` lists them).
+const cues = games.flatMap((id) => {
+  try {
+    const n = pairsOfGame(id).filter((p) => p.hueOnly).length;
+    return n ? [`${id} ${n}`] : [];
+  } catch {
+    return [];
+  }
+});
+console.log(`color cues (advisory): ${cues.length ? `hue-alone pairs in ${cues.join(', ')}` : 'none'}`);
 const failed =
   [...rows.values()].filter((r) => COLS.some((c) => r[c] === 'FAIL')).length +
   (hearts === 'FAIL' ? 1 : 0) +

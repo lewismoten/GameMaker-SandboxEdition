@@ -5,7 +5,7 @@
   "series": "starter",
   "year": 1994,
   "price": "Free",
-  "version": "1.0",
+  "version": "1.1",
   "blurb": "Three short levels about keys that travel. A key you do not use stays in your pocket when the level ends, so a spare opens a door two levels later. But a green door has its own counter, and a gold key will not open it. Signs in the levels say how. Play it, then open it in Game-Maker and give a door a counter of its own.",
   "exe": "SPECCNTR.EXE",
   "dosName": "SPECCNTR",

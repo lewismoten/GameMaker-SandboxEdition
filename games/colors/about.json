@@ -5,7 +5,7 @@
   "series": "starter",
   "year": 1994,
   "price": "Free",
-  "version": "1.0",
+  "version": "1.1",
   "blurb": "Two short levels about colors that everyone can tell apart. In the first, a plate that stings and a plate that is safe differ only by red against green, and the second picture on the level card shows how that can look to a player who sees red and green alike: the same. In the second level, spikes look like spikes and the safe path is light and striped, so it reads in any color. Signs in the levels say how. Play it, then open it in Game-Maker and change a plate.",
   "exe": "COLORS.EXE",
   "dosName": "COLORS",
