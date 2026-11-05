@@ -1,18 +1,20 @@
 // Mac test for the Pocket Player's play loop (src/gmcore.h). It reads the same data files the board
 // gets, replays a key script, and prints the character's state after every tick, so
 // web/scripts/pocketHostCheck.ts can compare it with the real engine.
-//   hosttest <data dir> <key script>     key script lines: "K <tick> <scan, +128 for a release>"
+//   hosttest <data dir> <game id> <key script>     key script lines: "K <tick> <scan, +128 for a release>"
 // Build: c++ -std=c++17 -O1 -I../src hosttest.cpp -o hosttest
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>
 #include <vector>
+#include <zlib.h>
 #include "gmcfg.h"
 
 using namespace gm;
 
 static std::string dir;
 static Cfg cfg;
+static Assets assets;
 
 static std::vector<uint8_t> slurp(const std::string& path) {
   std::vector<uint8_t> v;
@@ -25,10 +27,22 @@ static std::vector<uint8_t> slurp(const std::string& path) {
   return v;
 }
 
-static bool loadMap(void*, int level, uint8_t* blocks) {
-  std::vector<uint8_t> m = slurp(dir + "/" + cfg.map[level]);
-  for (int i = 0; i < MLEN * MWID; i++) blocks[i] = m[i * 2];
-  return true;
+static bool inflateRaw(const uint8_t* src, size_t n, uint8_t* dst, size_t cap) {
+  z_stream z = {};
+  if (inflateInit2(&z, -15) != Z_OK) return false;
+  z.next_in = (Bytef*)src; z.avail_in = (uInt)n; z.next_out = dst; z.avail_out = (uInt)cap;
+  int r = inflate(&z, Z_FINISH);
+  bool ok = r == Z_STREAM_END && z.total_out == cap;
+  inflateEnd(&z);
+  return ok;
+}
+
+static uint8_t* readFile(const char* name, size_t* n) {
+  std::vector<uint8_t> v = slurp(dir + "/" + name);
+  uint8_t* p = (uint8_t*)malloc(v.size() + 1);
+  memcpy(p, v.data(), v.size());
+  *n = v.size();
+  return p;
 }
 
 // The visible part of the game screen (CropScreen: 312 x 196) as a hash, row by row.
@@ -42,21 +56,23 @@ static uint32_t frameHash(const World& w) {
   return h;
 }
 
+static int msum(const World& w) {
+  int32_t a = 0;
+  for (int i = 0; i < 30; i++) a += w.meter[i];
+  return a;
+}
+
 int main(int argc, char** argv) {
-  if (argc < 3) return 2;
+  if (argc < 4) return 2;
   dir = argv[1];
   static World w;
-  std::vector<uint8_t> bbl = slurp(dir + "/steps.bbl"), cbl = slurp(dir + "/hero.cbl"), chr = slurp(dir + "/hero.chr");
-  std::vector<uint8_t> cfgText = slurp(dir + "/steps.cfg");
+  std::vector<uint8_t> cfgText = slurp(dir + "/" + argv[2] + ".cfg");
   cfgText.push_back(0);
-  w.bbl = bbl.data();
-  w.cbl = cbl.data();
-  w.chr = chr.data();
-  w.loadMap = loadMap;
   if (!parseCfg((const char*)cfgText.data(), w, cfg)) return 2;
+  assets.attach(w, cfg, readFile, inflateRaw);
   struct Ev { int tick, key; };
   std::vector<Ev> evs;
-  FILE* f = fopen(argv[2], "r");
+  FILE* f = fopen(argv[3], "r");
   if (!f) return 2;
   char line[64];
   int maxTick = 0;
@@ -74,8 +90,8 @@ int main(int argc, char** argv) {
       e++;
     }
     char code = w.tick();
-    printf("S %d %c %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %u\n", t, code ? code : '-', w.level, w.cx[0], w.cx[1], w.cy[0], w.cy[1],
-           w.cseq, w.cframe, w.mx, w.my, w.sc.nx, w.sc.ny, w.sc.lsx, w.sc.lsy, w.score, w.nextx, w.nexty, w.scrx, w.scry, frameHash(w));
+    printf("S %d %c %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %u\n", t, code ? code : '-', w.level, w.cx[0], w.cx[1], w.cy[0], w.cy[1],
+           w.cseq, w.cframe, w.mx, w.my, w.sc.nx, w.sc.ny, w.sc.lsx, w.sc.lsy, w.score, w.nextx, w.nexty, w.scrx, w.scry, w.hitpts, w.lives, msum(w), frameHash(w));
     if (code == 'W') break;
   }
   return 0;

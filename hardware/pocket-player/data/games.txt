@@ -1,0 +1,30 @@
+first-steps|First Steps|2
+blocks-budget|150 Blocks|2
+beat-the-clock|Beat the Clock|2
+coins-and-score|Coins and Score|3
+countdown|Countdown|2
+day-night|Day and Night|5
+walk-the-ground|Dig It|2
+dialog|Everybody Talks|4
+gravity-on-gravity-off|Gravity On, Gravity Off|2
+gusts|Gusts|2
+health-and-hearts|Health and Hearts|3
+keys-and-doors|Keys and Doors|3
+kit-moves|Kit's Moves|2
+secret-doors|Looks Like a Wall|3
+pictures-and-cartoons|Pictures and Cartoons|3
+power-up|Power Up|2
+room-to-room|Room to Room|8
+many-rooms|Rooms on One Map|7
+say-something|Say Something|5
+scroll|Scroll or Stay|2
+momentum|Slide and Drift|2
+slippery-and-bouncy|Slippery and Bouncy|3
+breakable-walls|Smash It|3
+sounds-and-music|Sounds and Music|3
+switches|Switches|2
+three-tokens|Three Tokens|2
+swim|Under the Surface|3
+warning-first|Warning First|2
+watch-your-step|Watch Your Step|3
+choose-hero|Who Do You Want to Be?|3

@@ -18,7 +18,7 @@ constexpr int MAXGRAV = 11, GRAVSPEED = 1, SCROLLPERMOVE = 6, SCRSPDX = 40, SCRS
 constexpr int SOLTOP = 1, SOLRIG = 2, SOLBOT = 4, SOLLEF = 8;
 constexpr int IDLESEQ = 0, DIESEQ = 1, HURTSEQ = 2, PICKUPSEQ = 3, DROPSEQ = 4;
 constexpr int BLOCK_BYTES = 420, SEQ_BYTES = 185, FRAME_BYTES = 17;
-constexpr int MAXLINKS = 4;
+constexpr int MAXLINKS = 16, MAXLEVELS = 12;
 
 inline int u16(const uint8_t* p) { return p[0] | (p[1] << 8); }
 inline int i16(const uint8_t* p) { return (int16_t)(p[0] | (p[1] << 8)); }
@@ -37,6 +37,7 @@ struct Touch { int bx[6], by[6], num[6]; };
 struct Link { int fromX, fromY, toLevel, toX, toY; };  // toLevel -1: the game is won
 struct Level {
   int startX, startY;
+  int scrollUp = 0xff, scrollDown = 0xff, scrollLeft = 0xff, scrollRight = 0xff;
   int nlinks;
   Link links[MAXLINKS];
 };
@@ -59,7 +60,8 @@ struct World {
   const uint8_t* chr = nullptr;  // hero.chr: 20 sequences of 185 bytes, then x, y, cframe, cseq, inv, meters
   MapLoader loadMap = nullptr;
   void* loadUser = nullptr;
-  Level levels[4];
+  Level levels[MAXLEVELS];
+  int nbl = BACKBL;  // blocks the game's .bbl holds (a smaller file than 150 blocks; the rest are empty)
   int nlevels = 0;
 
   // The scene.
@@ -105,7 +107,7 @@ struct World {
 
   Attr attr(int b) const {
     Attr a;
-    if (b < 0 || b >= BACKBL) {
+    if (b < 0 || b >= nbl) {
       a = {0, 0, 0, b, 0, b, 0, 0, 0, 0};  // the empty block (padBlocks)
       return a;
     }
@@ -728,7 +730,7 @@ struct World {
     int k = seqKey(cseq);
     if (k >= 0 && k < 128) keydn[k] = 1;
     gclk = clock;
-    initScroll(0xff, 0xff, 0xff, 0xff);
+    initScroll(levels[lv].scrollUp, levels[lv].scrollDown, levels[lv].scrollLeft, levels[lv].scrollRight);
     doScroll = false;
     memset(held, 0, sizeof held);
     npending = 0;
@@ -812,7 +814,7 @@ struct World {
       int n = BLEN - wx;
       if (x + n > SIZEX) n = SIZEX - x;
       int b = blkmap[map[cellY * MLEN + (mx + bx) % MLEN]];
-      const uint8_t* src = b < BACKBL ? bbl + b * BLOCK_BYTES + wy * BLEN + wx : nullptr;
+      const uint8_t* src = b < nbl ? bbl + b * BLOCK_BYTES + wy * BLEN + wx : nullptr;
       if (src) memcpy(out + x, src, n);
       else memset(out + x, 0, n);
       x += n;
