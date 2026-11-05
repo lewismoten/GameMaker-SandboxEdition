@@ -164,7 +164,7 @@ export async function chooseGames(
         { class: 'ic-summary' },
         `${scanSummary(r)}.${left} Each one you tick becomes its own game under Imported.`,
         asides
-          ? ` ${asides} ${asides === 1 ? 'is' : 'are'} left unticked (a leftover missing files, or a game you removed before), even by Select all; tick ${asides === 1 ? 'it' : 'one'} to import it too.`
+          ? ` ${asides} ${asides === 1 ? 'is' : 'are'} left unticked (a leftover missing files, a game you removed before, or one you already have), even by Select all; tick ${asides === 1 ? 'it' : 'one'} to import it too.`
           : '',
       ),
       zipNotes(r),
