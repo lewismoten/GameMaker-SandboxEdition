@@ -1,4 +1,4 @@
-// A little shop for the Starters that teach spending (BUY IT, KIT'S SHOP). Three kinds of block:
+// A little shop for the Starters that teach spending (SPEND IT, KIT'S SHOP). Three kinds of block:
 //
 //   cash          a coin that adds to the Money counter (counter 3). Counter 3 is the one counter the
 //                 DOS status page (F2) prints as a number: "Money: 4". It has its own sounds too.

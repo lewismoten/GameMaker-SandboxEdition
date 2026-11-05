@@ -1,4 +1,4 @@
-// Every word BUY IT shows on a text page (30 columns, 16 lines a page).
+// Every word SPEND IT shows on a text page (30 columns, 16 lines a page).
 import { withCreditPage } from '../../kit/license';
 import { wrap } from '../../kit/starter/text';
 import about from '../about.json';
@@ -32,7 +32,7 @@ Money stays with you when a level ends.
 
 export const CREDITS = withCreditPage(
   wrap(`
-|BUY IT  v${about.version}
+|SPEND IT  v${about.version}
 |(c) 1994 Sandbox Software
 
 Design, pixels, beeps and levels by Claude Sonnet 5.5, an AI model made by Anthropic.

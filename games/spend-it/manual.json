@@ -1,5 +1,5 @@
 {
-  "title": "Buy It",
+  "title": "Spend It",
   "howDoI": [
     {
       "id": "price",
@@ -37,7 +37,7 @@
   "pages": [
     {
       "head": "Welcome",
-      "html": "<h1>Welcome</h1><p><b>Buy It</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has two short levels and takes a few minutes to finish.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each thing in the levels is made.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. <kbd>Space</kbd> jumps. <kbd>Up</kbd> and <kbd>Down</kbd> climb a ladder. <kbd>F2</kbd> shows your Money. Walk into the door at the end of a level to go on.</p><p>This one is about <i>spending</i>. For points, see <b>Coins and Score</b>. For a door with a price, see <b>Stronger Keys</b>. For showing a count as pictures, see <b>Show the Count</b>.</p>"
+      "html": "<h1>Welcome</h1><p><b>Spend It</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has two short levels and takes a few minutes to finish.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each thing in the levels is made.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. <kbd>Space</kbd> jumps. <kbd>Up</kbd> and <kbd>Down</kbd> climb a ladder. <kbd>F2</kbd> shows your Money. Walk into the door at the end of a level to go on.</p><p>This one is about <i>spending</i>. For points, see <b>Coins and Score</b>. For a door with a price, see <b>Stronger Keys</b>. For showing a count as pictures, see <b>Show the Count</b>.</p>"
     },
     {
       "head": "Level 1: A Key For 3 Coins",
@@ -45,7 +45,7 @@
     },
     {
       "head": "How this level is made",
-      "html": "<h1>How level 1 is made</h1><ul><li><b>The coins.</b> Open <b>buyit.bbl</b> in the blocks editor and pick the <b>cash</b> block. On its <b>Touch</b> tab, <b>Effect counter</b> is 3 and <b>Effect amount</b> is 1. Counter 3 is Game-Maker's own Money counter. It has no score, because this is spending, not points.</li><li><b>The price.</b> The stall block (<b>stall.key.3</b>) has the same <b>Effect counter</b>, 3, with an <b>Effect amount</b> of &minus;3. That is the whole price tag.</li><li><b>Too few.</b> A counter holds one more than the coins carried, and a touch is only allowed if the counter stays above zero. With two coins the counter holds 3, and 3 &minus; 3 is not above zero, so the stall does nothing. With three coins it holds 4, and the stall takes three.</li><li><b>The key.</b> A block has only one <b>Effect counter</b>, and the price uses it. So the stall turns into another block when it is paid (set on the same <b>Touch</b> tab): <b>give.key</b>. It is passable. Step into it and it adds 1 to counter 20, the key counter, then turns into <b>sold</b>, the empty counter with a SOLD card.</li><li><b>The picture of the price.</b> The roof (<b>awning3</b>) is an ordinary passable block with a coin and a 3 drawn on a card. The picture says the price; the rule on the stall block takes it. Keep the two the same by hand.</li><li><b>Money.</b> Open <b>hero.chr</b> in the character editor. Counter 3 starts at 1, which the game shows as none. Press F2 while you play to see <b>Money: 0</b> and the number as you gather coins.</li><li><b>The door.</b> The gold <b>gate</b> takes one key from counter 20 and then lets you through.</li></ul>"
+      "html": "<h1>How level 1 is made</h1><ul><li><b>The coins.</b> Open <b>spendit.bbl</b> in the blocks editor and pick the <b>cash</b> block. On its <b>Touch</b> tab, <b>Effect counter</b> is 3 and <b>Effect amount</b> is 1. Counter 3 is Game-Maker's own Money counter. It has no score, because this is spending, not points.</li><li><b>The price.</b> The stall block (<b>stall.key.3</b>) has the same <b>Effect counter</b>, 3, with an <b>Effect amount</b> of &minus;3. That is the whole price tag.</li><li><b>Too few.</b> A counter holds one more than the coins carried, and a touch is only allowed if the counter stays above zero. With two coins the counter holds 3, and 3 &minus; 3 is not above zero, so the stall does nothing. With three coins it holds 4, and the stall takes three.</li><li><b>The key.</b> A block has only one <b>Effect counter</b>, and the price uses it. So the stall turns into another block when it is paid (set on the same <b>Touch</b> tab): <b>give.key</b>. It is passable. Step into it and it adds 1 to counter 20, the key counter, then turns into <b>sold</b>, the empty counter with a SOLD card.</li><li><b>The picture of the price.</b> The roof (<b>awning3</b>) is an ordinary passable block with a coin and a 3 drawn on a card. The picture says the price; the rule on the stall block takes it. Keep the two the same by hand.</li><li><b>Money.</b> Open <b>hero.chr</b> in the character editor. Counter 3 starts at 1, which the game shows as none. Press F2 while you play to see <b>Money: 0</b> and the number as you gather coins.</li><li><b>The door.</b> The gold <b>gate</b> takes one key from counter 20 and then lets you through.</li></ul>"
     },
     {
       "head": "Level 2: Save Up",
@@ -61,7 +61,7 @@
     },
     {
       "head": "Make it yours",
-      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>In <b>buyit.bbl</b>, change <b>stall.key.3</b>'s <b>Effect amount</b> to &minus;2. Now two coins buy the key, though the card still says 3.</li><li>Change <b>cash</b>'s <b>Effect amount</b> to 2. Each coin is worth two.</li><li>Copy <b>give.key</b>, set its <b>Effect counter</b> to 1 and make it a heart, and the stall sells a life. (<b>Kit's Shop</b> does this.)</li><li>Take a coin out of level 2's map. The key can no longer be bought there. Put it back.</li></ul><p>The home page's <b>Starters</b> tab has more small games like this one.</p>"
+      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>In <b>spendit.bbl</b>, change <b>stall.key.3</b>'s <b>Effect amount</b> to &minus;2. Now two coins buy the key, though the card still says 3.</li><li>Change <b>cash</b>'s <b>Effect amount</b> to 2. Each coin is worth two.</li><li>Copy <b>give.key</b>, set its <b>Effect counter</b> to 1 and make it a heart, and the stall sells a life. (<b>Kit's Shop</b> does this.)</li><li>Take a coin out of level 2's map. The key can no longer be bought there. Put it back.</li></ul><p>The home page's <b>Starters</b> tab has more small games like this one.</p>"
     }
   ]
 }

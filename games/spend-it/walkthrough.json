@@ -1,0 +1,64 @@
+{
+ "version": 1,
+ "game": "spend-it",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU0tzQNND80DTR7NAE0DOQK5FM0ETQXNA0gnyANNFM0DSw/LA0sDywNQHdADSxnLA00PzQNNS80DTQrNA00="
+  },
+  {
+   "scene": 3,
+   "keys": "AU0ozQNNCs0DTQXNA0gnyANNGc0DSxTLA0sDywNQHdADTQM5ArkTOQK5MM0DTQ/NA00ezQNNCs0DTQ=="
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: A Key For 3 Coins"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: Save Up"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 8255,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 896,
+    "time": 14933.333333333148
+   },
+   {
+    "title": "Level 1: A Key For 3 Coins",
+    "frame": 1644,
+    "time": 27400.000000000564
+   },
+   {
+    "title": "Level 2: Save Up",
+    "frame": 3400,
+    "time": 56666.66666666415
+   },
+   {
+    "title": "Ending",
+    "frame": 4975,
+    "time": 82916.66666666791
+   },
+   {
+    "title": "Credits",
+    "frame": 7182,
+    "time": 119700.00000001195
+   }
+  ]
+ }
+}

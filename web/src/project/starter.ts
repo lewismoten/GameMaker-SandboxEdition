@@ -55,7 +55,7 @@ export const STARTER_GROUPS: { name: string; tag: string; games: string[] }[] = 
   {
     name: 'Putting It Together',
     tag: 'Timing and a whole small game.',
-    games: ['beat-the-clock', 'countdown', 'warning-first', 'one-more-try', 'teach-test-twist', 'block-brains', 'puzzle-room', 'buy-it', 'your-first-game'],
+    games: ['beat-the-clock', 'countdown', 'warning-first', 'one-more-try', 'teach-test-twist', 'block-brains', 'puzzle-room', 'spend-it', 'your-first-game'],
   },
   {
     name: 'Wiring and Puzzles',

@@ -1,5 +1,5 @@
-// BUY IT (Sandbox Software, 1994): builds every file of the game into games/buy-it/disk/.
-//   cd web && npx vite-node ../games/buy-it/build.ts
+// SPEND IT (Sandbox Software, 1994): builds every file of the game into games/spend-it/disk/.
+//   cd web && npx vite-node ../games/spend-it/build.ts
 // A Starter: a small game that shows one idea (games/kit/starter).
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -40,16 +40,16 @@ const cheer = heroPicture(heroBlocks, 'cheer.top', 'jump');
 const door = heroPicture(book, 'doorTop', 'doorBottom').map((_x, _y, c) => (c === skyOf(pal) ? 255 : c));
 
 // the game's shared data: one block set, one palette, one hero, one set of monsters, one song
-disk.put('buyit.pal', serializePalette(pal.pal));
-disk.put('buyit.bbl', serializeBlocks(book.finish()));
-disk.put('buyit.mbl', serializeBlocks(monsterBlocks.finish()));
-disk.put('buyit.mon', serializeMonsters(buildMonsters(monsterBlocks)));
+disk.put('spendit.pal', serializePalette(pal.pal));
+disk.put('spendit.bbl', serializeBlocks(book.finish()));
+disk.put('spendit.mbl', serializeBlocks(monsterBlocks.finish()));
+disk.put('spendit.mon', serializeMonsters(buildMonsters(monsterBlocks)));
 disk.put('hero.cbl', serializeBlocks(heroBlocks.finish()));
 const heroChar = buildHero(heroBlocks);
 heroChar.meter[MONEY] = 1; // Money starts at 0 (a counter shows one less than it holds); counter 3 is the one the DOS status page (F2) prints
 disk.put('hero.chr', serializeCharacter(heroChar));
-disk.put('buyit.snd', serializeSoundSet(buildSounds()));
-disk.put('buyit.cmf', song());
+disk.put('spendit.snd', serializeSoundSet(buildSounds()));
+disk.put('spendit.cmf', song());
 
 // each level's map and its card
 levels.forEach((l, i) => {
@@ -90,8 +90,8 @@ disk.put('lost.txt', LOST);
 disk.put('lost.lst', serializeSlideList([{ name: 'lostpic.gif', pause: 5 }, { name: 'lost.gif', pause: 0 }, { name: 'lost.txt' }]));
 
 disk.put('demo.rec', demoRecording());
-disk.put('buyit.gam', serializeGame(buildGame(levels)));
-disk.put('license.txt', licenseText('Buy It'));
+disk.put('spendit.gam', serializeGame(buildGame(levels)));
+disk.put('license.txt', licenseText('Spend It'));
 clipEveryList(disk.files);
 disk.write();
 console.log(`${TITLE}: ${book.index.size} blocks, ${monsterBlocks.index.size} monster blocks, ${heroBlocks.index.size} hero blocks`);

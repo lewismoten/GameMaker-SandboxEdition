@@ -1,6 +1,6 @@
 // Design previews (never on the disk): the block sheet, the hero's poses, the monsters, and
 // each level's whole map and every picture on the built disk, as PNGs in the folder given (default: the system temp dir).
-//   cd web && npx vite-node ../games/buy-it/tools/preview.ts [outDir]
+//   cd web && npx vite-node ../games/spend-it/tools/preview.ts [outDir]
 import { mkdirSync, readFileSync, readdirSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -13,7 +13,7 @@ import { buildHeroBlocks, heroPicture } from '../../kit/starter/hero';
 import { buildMonsterBlocks, buildMonsters } from '../../kit/starter/monsters';
 import { buildLevels } from '../src/levels';
 
-const out = process.argv[2] ?? join(tmpdir(), 'buy-it-preview');
+const out = process.argv[2] ?? join(tmpdir(), 'spend-it-preview');
 mkdirSync(out, { recursive: true });
 const { book, pal, levels } = buildLevels();
 const sky = pal.c('sky', 3);

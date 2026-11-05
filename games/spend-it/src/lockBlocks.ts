@@ -1,4 +1,4 @@
-// BUY IT's gold door: the gate and its arch (counter 20, the same as the Starter key). The stalls and
+// SPEND IT's gold door: the gate and its arch (counter 20, the same as the Starter key). The stalls and
 // the coin that pays for them are in games/kit/starter/shop.ts.
 import { PULL, SOLID, type Book } from '../../kit/starter/book';
 import { KEYS } from '../../kit/starter/blocks';

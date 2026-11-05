@@ -1,4 +1,4 @@
-// BUY IT's two levels. Each is painted on a Grid (a block a character, see games/kit/starter/map.ts for
+// SPEND IT's two levels. Each is painted on a Grid (a block a character, see games/kit/starter/map.ts for
 // what the letters mean), then given its stall and signs.
 //
 //   1. A Key For 3 Coins: four coins in the level and a stall that sells a gold key for three. With two coins

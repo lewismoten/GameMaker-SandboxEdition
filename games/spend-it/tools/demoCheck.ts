@@ -1,7 +1,7 @@
 // Plays the built title demo (disk/demo.rec) on the headless engine and checks it shows level 1's
 // lesson once: Kit has two coins and the stall does nothing, he gathers two more, pays three,
 // one coin is left (Money, counter 3, holds one more than the coins carried).
-//   cd web && npx vite-node ../games/buy-it/tools/demoCheck.ts
+//   cd web && npx vite-node ../games/spend-it/tools/demoCheck.ts
 import { readFileSync } from 'node:fs';
 import { parseRecording } from '@lewismoten/gamemaker-sandbox-engine/formats/recording';
 import { GameSim } from './sim';

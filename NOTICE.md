@@ -121,7 +121,7 @@ game folder opens in the browser unchanged.
   - **Changing Your Hero:** `games/kit-moves/`, `games/choose-hero/`, `games/take-the-wheel/`.
   - **Foes and Bosses:** `games/boss-hits/`, `games/boss-phases/`, `games/who-wins/`, `games/short-lived/`, `games/follower/`, `games/searchlight/`, `games/flock/`.
   - **Telling a Story:** `games/say-something/`, `games/pictures-and-cartoons/`, `games/sounds-and-music/`, `games/day-night/`, `games/same-house/`, `games/voice/`, `games/cutscenes/`, `games/title-demo/`, `games/colors/`.
-  - **Putting It Together:** `games/beat-the-clock/`, `games/countdown/`, `games/warning-first/`, `games/one-more-try/`, `games/teach-test-twist/`, `games/block-brains/`, `games/puzzle-room/`, `games/buy-it/`, `games/your-first-game/`.
+  - **Putting It Together:** `games/beat-the-clock/`, `games/countdown/`, `games/warning-first/`, `games/one-more-try/`, `games/teach-test-twist/`, `games/block-brains/`, `games/puzzle-room/`, `games/spend-it/`, `games/your-first-game/`.
   - **Wiring and Puzzles:** `games/switches/`, `games/three-tokens/`, `games/and-gate/`, `games/secret-doors/`, `games/show-the-count/`, `games/dice/`, `games/word-lock/`, `games/power-ladder/`, `games/special-counters/`.
   - **Bigger Worlds:** `games/scroll/`, `games/many-rooms/`, `games/diagonal-wrap/`, `games/blocks-budget/`, `games/near-far/`, `games/overhead/`.
   - **Drawing with Blocks:** `games/road-tiles/`.

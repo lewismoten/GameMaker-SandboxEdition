@@ -1,4 +1,4 @@
-# Buy It: tools
+# Spend It: tools
 
 - `check.ts`: the bot plays both levels and must win without losing a life. `route.ts` asserts what each sign teaches. Level 1: two coins and a bump at the stall (nothing happens, no coins taken), the ladder for two more, then three paid, one coin left and one gold key, the gold door. Level 2: the coin left over is still in the pocket, five more are taken, the stall takes five.
 - `walkthrough.ts`, `gendemo.ts`: re-record the walkthrough and the title demo (level 1 up to the payment).
