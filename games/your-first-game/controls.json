@@ -49,6 +49,7 @@
     "11": "Falling over"
   },
   "counters": {
-    "20": "Keys: not used here, but a copy can add them."
+    "20": "Keys carried: a key adds one, a locked door takes one.",
+    "21": "Silver keys carried: not used here, but a copy can add them."
   }
 }
