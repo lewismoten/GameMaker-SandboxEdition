@@ -17,6 +17,13 @@ template <class G> void say(G& g, int x, int y, int size, uint16_t c, const char
   g.setCursor(x, y);
   g.print(s);
 }
+// The same without a background box, so stamps can overlap (the outline of BLACK).
+template <class G> void sayClear(G& g, int cx, int y, int size, uint16_t c, const char* s) {
+  g.setTextSize(size);
+  g.setTextColor(c);
+  g.setCursor(cx - (int)strlen(s) * 3 * size, y);
+  g.print(s);
+}
 template <class G> void sayCentered(G& g, int cx, int y, int size, uint16_t c, const char* s) { say(g, cx - (int)strlen(s) * 3 * size, y, size, c, s); }
 
 // ---- icons, each in a 52 x 36 box centered on (cx, cy) ----
@@ -56,8 +63,10 @@ template <class G> void controls(G& g, int step) {
   const int BX = 6, BW = 52, BH = 36;
   for (int row = 0; row < 2; row++) {
     int y = 158 + row * 42;
-    g.drawRect(BX, y, BW, BH, WHITE);
-    g.drawRect(BX + 1, y + 1, BW - 2, BH - 2, WHITE);
+    if (row == 1) {  // only [OK] is boxed; the BOOT icon is a bare picture so it can't be mistaken for a button
+      g.drawRect(BX, y, BW, BH, WHITE);
+      g.drawRect(BX + 1, y + 1, BW - 2, BH - 2, WHITE);
+    }
     if (row == 0) iconFor(g, step, BX + BW / 2, y + BH / 2);
     else say(g, BX + 12, y + 10, 2, WHITE, "OK");
     say(g, BX + BW + 8, y + 10, 2, WHITE, row == 0 ? "= BOOT button" : "= tap anywhere");
@@ -107,19 +116,18 @@ template <class G> void drawOrient(G& g) {
   counter(g, ORIENT, 276);
   controls(g, ORIENT);
 }
-// Step 4: the words in their own colors on black, then a white patch and a black one (outlined).
+// Step 4: the words in their own colors on black, then WHITE, and BLACK with a white outline (all plain text).
 template <class G> void drawColors(G& g) {
   g.fillScreen(BLACK);
   sayCentered(g, 120, 22, 3, REDC, "RED");
   sayCentered(g, 120, 48, 3, GREENC, "GREEN");
   sayCentered(g, 120, 74, 3, BLUEC, "BLUE");
-  g.fillRect(8, 102, 108, 46, WHITE);
-  g.setTextSize(2);
-  g.setTextColor(BLACK, WHITE);
-  g.setCursor(8 + (108 - 60) / 2, 102 + 15);
-  g.print("WHITE");
-  g.drawRect(124, 102, 108, 46, WHITE);
-  say(g, 124 + (108 - 60) / 2, 102 + 15, 2, WHITE, "BLACK");
+  sayCentered(g, 120, 100, 3, WHITE, "WHITE");
+  // BLACK on black needs an outline: the word in white at the 8 neighbors, then black on top (plain text, no patch).
+  for (int dy = -1; dy <= 1; dy++)
+    for (int dx = -1; dx <= 1; dx++)
+      if (dx || dy) sayClear(g, 120 + dx, 126 + dy, 3, WHITE, "BLACK");
+  sayClear(g, 120, 126, 3, BLACK, "BLACK");
   counter(g, COLORS, 200);
   controls(g, COLORS);
 }
