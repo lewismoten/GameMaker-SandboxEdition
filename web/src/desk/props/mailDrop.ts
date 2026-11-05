@@ -34,8 +34,8 @@ const NOSE = `<svg viewBox="0 0 60 24" aria-hidden="true">
 </svg>`;
 
 const DOGS = [
-  { art: PAW, text: 'Scritch, scritch, slide! Teddy’s paw pushes an envelope under the door. Mail from Recreational Software Designs!' },
-  { art: NOSE, text: 'Snuffle, snuffle, shove! Gwinn noses an envelope under the door. (She only licked it a little.) Mail from RSD!' },
+  { art: PAW, dog: 'teddy' as const, text: 'Scritch, scritch, slide! Teddy’s paw pushes an envelope under the door. Mail from Recreational Software Designs!' },
+  { art: NOSE, dog: 'gwinn' as const, text: 'Snuffle, snuffle, shove! Gwinn noses an envelope under the door. (She only licked it a little.) Mail from RSD!' },
 ];
 
 /** Shows the letter and owner card in the box viewer. */
@@ -94,6 +94,7 @@ export function mailDropProp(door: HTMLElement): () => void {
     const d = nextDog();
     const el = place(m, true);
     roomSound.slide();
+    roomSound.bark(d.dog);
     if (!stillMotion()) {
       dog.innerHTML = d.art;
       flash(dog, 'nudge', 1400);

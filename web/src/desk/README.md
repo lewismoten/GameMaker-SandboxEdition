@@ -66,7 +66,9 @@ calls The Sandbox BBS and types for the tour, then puts back what the call chang
   (`paperStack.ts`), and the mug, phone and lamp (`deskProps.ts`).
 - `props/`: makes the room's little things pressable (`index.ts`, `propKit.ts`, whose `cover`
   lays an empty, named button over a drawing with words on it; their sounds in
-  `propSound.ts`): the clock, waste basket, door, window (`window.ts`, tonight's real moon in
+  `propSound.ts`, whose `bark` plays the tour's real Teddy and Gwinn clips where a dog is on screen:
+  the door's visitors, the dogs outside, THE CHEZ's passenger, the mail dog and Gwinn's tail behind the
+  curtain; only once a tap has unlocked sound, and at most one call every 6 seconds): the clock, waste basket, door, window (`window.ts`, tonight's real moon in
   `moonPhase.ts`) and what goes by outside (`props/outside/`: `outside.ts` and one module each,
   such as THE CHEZ, the dogs, the plow and the mail jeep; `visible.ts` says whether the window can
   be seen), RSD's registration reply under the bedroom door (`mailDrop.ts`; its paper is

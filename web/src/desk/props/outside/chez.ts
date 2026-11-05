@@ -28,6 +28,7 @@ export const chez: OutsideEvent = {
   },
   press() {
     roomSound.honk();
+    roomSound.bark('teddy'); // from the passenger window
     // (the third honk names the chicken as she is now)
     return HONKS() || `Honk honk! Doc Leo tips his fedora. ${chickenWords().full} is riding shotgun, buckled in.`;
   },
