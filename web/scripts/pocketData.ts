@@ -35,8 +35,13 @@ const listOnly = args.includes('--list');
 const cardRoot = opt('--out')[0];
 const series = opt('--series')[0] ?? (cardRoot ? 'any' : 'starter');
 const outDir = cardRoot ? `${cardRoot}/pocket/` : '../hardware/pocket-player/data/';
-/** Games the card leaves out (id: reason); none now. */
-const CARD_HOLD: Record<string, string> = {};
+/** Games the card leaves out (id: reason): their host check differs from the engine (the same with the old fixed level table, so not the streaming). */
+const CARD_HOLD: Record<string, string> = {
+  logic: 'host check: the walkthrough takes a level change on tick 1, the board starts elsewhere',
+  realm: 'host check: the walkthrough starts in level 2, the board in level 0',
+  sleuth: 'host check: the walkthrough starts in level 75, the board in level 0',
+  tuneup: 'host check: a sound effect differs from tick 8153',
+};
 const MAX_LINKS = 24;
 const MAX_LEVELS = 128;
 /** Games whose host check fails or that the board cannot show right; each with the reason. */
