@@ -285,7 +285,7 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
     function linkParts(o: Offer, res: GenResult): HTMLElement[] {
       const list = h(
         'ul',
-        { class: 'gen-link-list' },
+        { class: 'gen-link-list', tabindex: '0', 'aria-label': 'Doors and sites' },
         ...res.links.map((l) => h('li', null, `${l.label} at ${cellText(res.rect, l.cell)}: ${LINK_TARGET[l.kind]}`)),
       );
       if (host.scene === undefined || host.project.readOnly)
@@ -335,9 +335,15 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
         put: (n, b) => host.project.files.set(n, b),
       });
       host.project.saveGame(game);
-      const left = out.skipped.length ? ` Left out ${out.skipped.length}: ${out.skipped.map((s) => `${s.label} (${s.why})`).join('; ')}.` : '';
+      const n = out.made.length;
+      const shown = out.skipped.slice(0, 3).map((s) => `${s.label} (${s.why})`);
+      const left = out.skipped.length
+        ? ` Left out ${out.skipped.length}: ${shown.join('; ')}${out.skipped.length > shown.length ? `, and ${out.skipped.length - shown.length} more` : ''}.`
+        : '';
       toast(
-        `Layout drawn and ${out.made.length} scene${out.made.length === 1 ? '' : 's'} made (${out.made.map((m) => m.label).join(', ')}). Undo takes back the layout, not the scenes.${left}`,
+        n
+          ? `Layout drawn and ${n} scene${n === 1 ? '' : 's'} made (${out.made.map((m) => m.label).join(', ')}). Undo takes back the layout, not the scenes.${left}`
+          : `Layout drawn, but no scene was made.${left}`,
       );
       close(undefined);
     }
