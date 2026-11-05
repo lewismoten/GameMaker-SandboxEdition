@@ -10,3 +10,8 @@ export function scenesUsing(files: readonly string[], usesOf: (file: string) => 
 export function usedByText(count: number): string {
   return count ? `used by ${count.toLocaleString()} ${count === 1 ? 'scene' : 'scenes'}` : '';
 }
+
+/** The same, short enough for a phone's narrow card ("3 scenes"). */
+export function usedByShort(count: number): string {
+  return count ? `${count.toLocaleString()} ${count === 1 ? 'scene' : 'scenes'}` : '';
+}

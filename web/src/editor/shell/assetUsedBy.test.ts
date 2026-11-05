@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { scenesUsing, usedByText } from './assetUsedBy';
+import { scenesUsing, usedByShort, usedByText } from './assetUsedBy';
 
 describe('Overview used-by line', () => {
   const uses: Record<string, { scene: number }[]> = {
@@ -17,5 +17,8 @@ describe('Overview used-by line', () => {
     expect(usedByText(1)).toBe('used by 1 scene');
     expect(usedByText(3)).toBe('used by 3 scenes');
     expect(usedByText(0)).toBe('');
+    expect(usedByShort(1)).toBe('1 scene');
+    expect(usedByShort(12)).toBe('12 scenes');
+    expect(usedByShort(0)).toBe('');
   });
 });

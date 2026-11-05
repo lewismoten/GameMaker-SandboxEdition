@@ -299,3 +299,19 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+.asset-card-used .used-short {
+  display: none;
+}
+@media (max-width: 640px) {
+  .asset-card-used .used-short {
+    display: block;
+  }
+  .asset-card-used .used-full {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+}
