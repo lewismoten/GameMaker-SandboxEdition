@@ -11,6 +11,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Added
 
+- Color help in the palette editor and the block, monster and character painters: show plain color names, warn when colors may look alike (red and green, or blue and yellow), and preview as others might see it, all kept only in your browser; an optional Quick color check suggests which to turn on and is not a medical test.
 - Starters no longer rely on hue alone where a player must tell two things apart: Not That Key's green key and gate differ in shape as well as color, and Colors That Work says on its first level that if the plates look the same to you, that is the point (a sting there costs a little). A new check (`games/kit/colorCues.ts`) lists such pairs under normal, red-weak, green-weak and blue-weak eyes.
 - A Starter, Flicker and Flow, about things that move in place: a torch whose flame pulses on even times and flickers on uneven ones, flags that wave, a waterfall four blocks wide made of three kinds of loop (a lip, a body and a splash), and a fire on a hill with sparks that rise
 - A Starter, Walking Very Far, about drawing someone walking a long way off: Kit up close, then the same road as a figure only 8 pixels tall on a pale far ridge, first with the same steps as up close (too quick) and then with small slow steps, and last with a big fence and flowers drawn in front so he looks farther still. It links to Near and Far and Maps Within Maps.
