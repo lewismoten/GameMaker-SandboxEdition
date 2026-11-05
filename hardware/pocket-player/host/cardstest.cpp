@@ -10,6 +10,7 @@
 #include <vector>
 #include <zlib.h>
 #include "gmcards.h"
+#include "stdiolines.h"
 
 using namespace gm;
 
@@ -64,13 +65,25 @@ int main(int argc, char** argv) {
   size_t fn = 0;
   uint8_t* font = readFile("font.bin", &fn);
   std::vector<std::string> wheres;
-  for (int i = 0; i < 12; i++) wheres.push_back("i" + std::to_string(i));
-  for (int i = 0; i < 12; i++) wheres.push_back("x" + std::to_string(i));
+  int nlev = 0;  // as many levels as the .cfg has
+  for (size_t at = 0; (at = cfgText.find("\nlevel ", at)) != std::string::npos; at++) nlev++;
+  if (!cfgText.compare(0, 6, "level ")) nlev++;
+  for (int i = 0; i < nlev; i++) wheres.push_back("i" + std::to_string(i));
+  for (int i = 0; i < nlev; i++) wheres.push_back("x" + std::to_string(i));
   wheres.push_back("w");
   wheres.push_back("l");
   for (auto& wh : wheres) {
     Card cards[10];
     int n = cardsOf(cfgText.c_str(), wh.c_str(), cards, 10);
+    {  // the line by line reader (the board's) finds the same cards
+      Card again[10];
+      linesDir = dir;
+      std::string name = std::string(argv[2]) + ".cfg";
+      int m = cardsOfFile(stdioLines, name.c_str(), wh.c_str(), again, 10);
+      bool same = m == n;
+      for (int k = 0; same && k < n; k++) same = again[k].kind == cards[k].kind && !strcmp(again[k].file, cards[k].file) && again[k].pause == cards[k].pause && again[k].color == cards[k].color && again[k].more == cards[k].more;
+      if (!same) { fprintf(stderr, "cardsOfFile differs for %s\n", wh.c_str()); return 3; }
+    }
     uint8_t* pic = nullptr;
     char picFile[20] = "";
     bool dirty = false;
