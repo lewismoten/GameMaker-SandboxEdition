@@ -828,6 +828,18 @@
       "game": "remote and tickle",
       "set": "levels",
       "block": "walks-watched-20"
+    },
+    "play-starters": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAD1BMVEX06chKKhTogzr3snr////NcrYaAAAARUlEQVR4nJ2NQQoAIAgEXfv/n0NLdEGimuOgsyIGFkJAjStplt4957J0MRJNqUkvdwGoMo5BOgtn2b6H5KFY/1ipkpAnJlW5AZkHbx5sAAAAAElFTkSuQmCC",
+      "game": "drawn for the badge",
+      "set": "badge art",
+      "block": "show-and-tell"
+    },
+    "finish-starters": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAD1BMVEUfLVwNFTDy8vKqtuDywjDxMqkIAAAAQUlEQVR4nGNgoA5gZGJixCKGLgoWQhOGiyFEoUKMEMDCiEU7CzaLEIKMzMwgJwFJVEEIIFMQDlhYkK2HAuIFSQQA2REBFmiljBUAAAAASUVORK5CYII=",
+      "game": "drawn for the badge",
+      "set": "badge art",
+      "block": "honor-roll"
     }
   }
 }

@@ -29,6 +29,8 @@ export type Goal =
   | 'bizarre'
   | 'sandboxDone'
   | 'bizarreDone'
+  | 'starters'
+  | 'startersDone'
   | 'teddy'
   | 'walkthroughs'
   | 'hearts'
@@ -293,6 +295,25 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
     icon: '🎻',
     category: 'playing',
     from: 'bizarre',
+    unit: 'games',
+  },
+  {
+    id: 'play-starters',
+    title: 'Show and tell',
+    desc: 'Played every Starter.',
+    icon: '🧩',
+    category: 'playing',
+    from: 'starters',
+    unit: 'games',
+  },
+  {
+    id: 'finish-starters',
+    hard: true,
+    title: 'Honor roll',
+    desc: 'Played every Starter all the way to its ending.',
+    icon: '🎓',
+    category: 'playing',
+    from: 'startersDone',
     unit: 'games',
   },
   {
