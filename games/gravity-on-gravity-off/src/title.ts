@@ -1,4 +1,4 @@
-// GRAVITY ON, GRAVITY OFF's own title picture, in the Game Feel look (the kit's sunset): Kit from the side with a
+// GRAVITY ON, GRAVITY OFF's own title picture, in the Worlds That Push Back look (the kit's breeze): Kit from the side with a
 // down arrow beside him, and Kit from above on a patch of lawn with an arrow on each side.
 import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { scaleBlit } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
@@ -21,8 +21,8 @@ function arrow(p: Pixels, x: number, y: number, dir: 'up' | 'down' | 'left' | 'r
 
 /** The title: the name on two lines, a ribbon, then Kit beside a down arrow and Kit from above on the lawn. */
 export function titlePicture(pal: Pal, side: Pixels, above: Pixels, tagline: string): Pixels {
-  const look = lookOf(pal, 'sunset');
-  const p = backdrop(pal, 'sunset');
+  const look = lookOf(pal, 'breeze');
+  const p = backdrop(pal, 'breeze');
   const lines = ['GRAVITY ON,', 'GRAVITY OFF'];
   lines.forEach((l, i) => outlined(p, Math.round((W - textWidth(l, 2)) / 2), 8 + i * 19, l, look.fill, look.outline, 2, look.shadow));
   const ribbon = textWidth(tagline) + 20;
@@ -43,6 +43,6 @@ export function titlePicture(pal: Pal, side: Pixels, above: Pixels, tagline: str
   arrow(p, 240, 157, 'down', 8, gold);
   arrow(p, 195, 124, 'left', 8, gold);
   arrow(p, 285, 124, 'right', 8, gold);
-  frameOf(p, pal, 'sunset');
+  frameOf(p, pal, 'breeze');
   return p;
 }

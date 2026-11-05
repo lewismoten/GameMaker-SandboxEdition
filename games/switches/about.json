@@ -5,7 +5,7 @@
   "series": "starter",
   "year": 1994,
   "price": "Free",
-  "version": "1.0",
+  "version": "1.1",
   "blurb": "Two short levels about counters that do more than count keys. A lever flips when you walk into it and puts planks on a counter, and the dotted planks over a pool spend one each as you step on them and turn solid. A red lever pays for red planks and a blue lever for blue. Signs say how. Play it, then open it in Game-Maker and change what a lever gives.",
   "exe": "SWITCH.EXE",
   "dosName": "SWITCHES",

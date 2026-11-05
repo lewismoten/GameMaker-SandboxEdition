@@ -1,4 +1,4 @@
-// SLIPPERY AND BOUNCY's own title picture, in the Game Feel look (the kit's sunset): Kit, a block of ice,
+// SLIPPERY AND BOUNCY's own title picture, in the Worlds That Push Back look (the kit's breeze): Kit, a block of ice,
 // a belt and a spring pad in a row, and the exit door.
 import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { scaleBlit } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
@@ -9,10 +9,10 @@ import type { Book } from '../../kit/starter/book';
 import { W } from '../../kit/starter/screens';
 import { backdrop, frameOf, lookOf } from '../../kit/starter/titleStyles';
 
-/** The title in the Game Feel look (a sunset): the name, a ribbon, then Kit, the ice, the belt, the spring and the door. */
+/** The title in the Worlds That Push Back look (a breeze): the name, a ribbon, then Kit, the ice, the belt, the spring and the door. */
 export function titlePicture(pal: Pal, book: Book, hero: Pixels, door: Pixels, name: string, tagline: string): Pixels {
-  const look = lookOf(pal, 'sunset');
-  const p = backdrop(pal, 'sunset');
+  const look = lookOf(pal, 'breeze');
+  const p = backdrop(pal, 'breeze');
   const s = name.length > 11 ? 2 : 3;
   outlined(p, Math.round((W - textWidth(name, s)) / 2), 14, name, look.fill, look.outline, s, look.shadow);
   const ribbon = textWidth(tagline) + 20;
@@ -32,6 +32,6 @@ export function titlePicture(pal: Pal, book: Book, hero: Pixels, door: Pixels, n
     ),
   );
   scaleBlit(p, door, 236, 160 - 80, 2);
-  frameOf(p, pal, 'sunset');
+  frameOf(p, pal, 'breeze');
   return p;
 }

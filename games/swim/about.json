@@ -5,7 +5,7 @@
   "series": "starter",
   "year": 1994,
   "price": "Free",
-  "version": "1.0",
+  "version": "1.1",
   "blurb": "Three short levels about water. In a creek the water pulls you to the left, in a deep pool it holds you up so you float, and in a tall pool it lifts you up and to the left to a ledge. Water is not a special thing: it is a block with a gravity setting, and the setting says which ways it pulls. Nothing here hurts. Signs explain each idea, and every level has a page on how it is made.",
   "exe": "SWIM.EXE",
   "dosName": "SWIM",
