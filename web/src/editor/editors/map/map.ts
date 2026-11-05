@@ -15,6 +15,7 @@ import { blockButton } from '../../widgets/blockChooser';
 import { blockCanvas, blockImages } from '../../core/draw';
 import { paletteChooser } from '../../widgets/paletteChooser';
 import type { FileKind, Project } from '../../core/project';
+import { takeNewestMonster } from '../monsters/newestMonster';
 import { fileField, pickFile } from '../../widgets/filePicker';
 import { BACKBL, BLEN, MONBL, newBlockSet, parseBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { LASTMM, MLEN, MWID, parseMap, reindexMonsters, serializeMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
@@ -1141,6 +1142,13 @@ registerEditor(['map'], (host, project, file) => {
     canvas.style.cursor = m === 'pan' ? 'grab' : m === 'zoom' ? 'zoom-in' : m === 'pick' ? 'copy' : 'crosshair';
   }
   setMode('paint');
+  // a monster just made in the monster editor is the brush, already in monster mode
+  const justMade = takeNewestMonster(project);
+  if (justMade !== undefined) {
+    monBrush = justMade;
+    setMode('monster');
+    rebuildMonsters();
+  }
 
   const fileSelect = (label: string, ext: FileKind, get: () => string, setv: (v: string) => void) =>
     fileField(

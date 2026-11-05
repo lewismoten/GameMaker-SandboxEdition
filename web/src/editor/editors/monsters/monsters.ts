@@ -16,6 +16,7 @@ import { LASTMON, LASTSL, parseMonsters, serializeMonsters, type Monster } from 
 import { monsterPathEditor } from './monsterPathEditor';
 import { checkBadges } from '../../widgets/checkBadges';
 import { normalize } from '../../../project/files';
+import { noteNewestMonster } from './newestMonster';
 import { fitToPane } from '../../core/fitPane';
 import { monsterName, setMonsterName } from './monsterNames';
 import { firstUnusedSlot } from './freeSlot';
@@ -117,6 +118,7 @@ registerEditor(['mon'], (host, project, file) => {
     if (free < 0) return;
     mons[free] = structuredClone(mons[current]);
     current = free;
+    noteNewestMonster(project, free);
     anim = 0;
     edit(() => undefined);
     render();
