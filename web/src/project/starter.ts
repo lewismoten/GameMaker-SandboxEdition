@@ -11,6 +11,9 @@ interface Listed {
 /** One of the Starters: an original game marked "series": "starter". */
 export const isStarterGame = (g: Listed): boolean => !!g.original && g.series === 'starter';
 
+/** A game with a retail box on the desk's shelf (and its manual box, print-shop pieces, catalog page): its `original.box`, but never a Starter. The Starters live on the Sample CD (D:\\SAMPLES) and the Sample Disk, not on the shelf. */
+export const hasRetailBox = (g: Listed & { id?: string }): boolean => !isStarterGame(g) && !!(g as { original?: { box?: unknown } }).original?.box;
+
 /** The Starters' groups, in learning order, like the Bard's COLLECTIONS (bizarre.ts): a name, a line about it and the game ids in order. A group with no built game is hidden. Each group's title screens have their own look (games/kit/starter groupStyle). */
 export const STARTER_GROUPS: { name: string; tag: string; games: string[] }[] = [
   {
