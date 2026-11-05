@@ -28,7 +28,7 @@
 }
 .gen-offer canvas {
   width: 100%;
-  max-height: min(22vh, 180px);
+  max-height: min(15vh, 140px);
   object-fit: contain;
   image-rendering: pixelated;
 }
@@ -62,4 +62,27 @@
   .gen-dialog {
     width: min(48rem, calc(100vw - 48px));
   }
+}
+.gen-chip {
+  font-weight: 600;
+  padding: 0 6px;
+  border-radius: 8px;
+  border: 2px solid var(--accent, #4a8);
+  color: var(--text);
+}
+.gen-chip.warn {
+  border-style: dashed;
+}
+.gen-dialog .gen-check {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: left;
+  gap: 8px;
+  align-items: center;
+  min-height: 24px;
+}
+.gen-dialog .gen-check[hidden] {
+  display: none;
 }
