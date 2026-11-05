@@ -13,6 +13,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 - Colors That Work, a Starter for the Telling a Story group: two levels about colors everyone can tell apart. In the first, a plate that stings and a plate that is safe differ only by red against green, and a second picture on the level card shows how that can look to a player who sees red and green alike. In the second, spikes look like spikes and the safe path is light and striped, so it reads in any color.
 
+- Wired Room, a Starter for the Putting It Together group: two levers add up to one bridge, a third lever is wired to a trap door instead, and every fall is a soft drop back to the start.
 - Near and Far, a Starter about two planes in one level: a near scene and a far one drawn smaller and paler, with a trail between them, in Bigger Worlds.
 - Say the Word, a Starter about locks that take a count of words and a tray that gives them back, in Wiring and Puzzles.
 - Make a Title, a Starter for the Telling a Story group: the pictures a title is made of, why the menu picture needs a plain board for the game's own words, and how a demo that plays itself is recorded, with the 1,000 key changes it can hold.
