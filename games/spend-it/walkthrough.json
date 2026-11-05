@@ -27,7 +27,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 8255,
+  "frames": 8272,
   "chapters": [
    {
     "title": "Opening",
@@ -36,28 +36,28 @@
    },
    {
     "title": "Story",
-    "frame": 896,
-    "time": 14933.333333333148
+    "frame": 913,
+    "time": 15216.666666666471
    },
    {
     "title": "Level 1: A Key For 3 Coins",
-    "frame": 1644,
-    "time": 27400.000000000564
+    "frame": 1661,
+    "time": 27683.333333333918
    },
    {
     "title": "Level 2: Save Up",
-    "frame": 3400,
-    "time": 56666.66666666415
+    "frame": 3417,
+    "time": 56949.99999999744
    },
    {
     "title": "Ending",
-    "frame": 4975,
-    "time": 82916.66666666791
+    "frame": 4992,
+    "time": 83200.00000000132
    },
    {
     "title": "Credits",
-    "frame": 7182,
-    "time": 119700.00000001195
+    "frame": 7199,
+    "time": 119983.33333334536
    }
   ]
  }

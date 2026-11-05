@@ -27,7 +27,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 9231,
+  "frames": 9248,
   "chapters": [
    {
     "title": "Opening",
@@ -36,28 +36,28 @@
    },
    {
     "title": "Story",
-    "frame": 896,
-    "time": 14933.333333333148
+    "frame": 913,
+    "time": 15216.666666666471
    },
    {
     "title": "Take Your Turn",
-    "frame": 1644,
-    "time": 27400.000000000564
+    "frame": 1661,
+    "time": 27683.333333333918
    },
    {
     "title": "Out of Step",
-    "frame": 3564,
-    "time": 59399.99999999708
+    "frame": 3581,
+    "time": 59683.333333330374
    },
    {
     "title": "Ending",
-    "frame": 5469,
-    "time": 91150.00000000364
+    "frame": 5486,
+    "time": 91433.33333333705
    },
    {
     "title": "Credits",
-    "frame": 8157,
-    "time": 135950.00000001243
+    "frame": 8174,
+    "time": 136233.3333333456
    }
   ]
  }

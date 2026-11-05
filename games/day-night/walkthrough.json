@@ -51,7 +51,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 8997,
+  "frames": 9015,
   "chapters": [
    {
     "title": "Opening",
@@ -60,43 +60,43 @@
    },
    {
     "title": "Story",
-    "frame": 896,
-    "time": 14933.333333333148
+    "frame": 913,
+    "time": 15216.666666666471
    },
    {
     "title": "Level 1: One Map, Two Looks (day)",
-    "frame": 2125,
-    "time": 35416.66666666724
+    "frame": 2142,
+    "time": 35700.00000000053
    },
    {
     "title": "Level 1: the same map at night",
-    "frame": 3367,
-    "time": 56116.66666666423
+    "frame": 3384,
+    "time": 56399.99999999752
    },
    {
     "title": "Level 2: Sundown Street (day)",
-    "frame": 4046,
-    "time": 67433.33333333007
+    "frame": 4063,
+    "time": 67716.66666666348
    },
    {
     "title": "Level 2: dusk",
-    "frame": 4704,
-    "time": 78399.99999999993
+    "frame": 4721,
+    "time": 78683.33333333334
    },
    {
     "title": "Level 2: night",
-    "frame": 5294,
-    "time": 88233.33333333612
+    "frame": 5311,
+    "time": 88516.66666666954
    },
    {
     "title": "Ending",
-    "frame": 5716,
-    "time": 95266.6666666715
+    "frame": 5733,
+    "time": 95550.00000000492
    },
    {
     "title": "Credits",
-    "frame": 7923,
-    "time": 132050.0000000147
+    "frame": 7941,
+    "time": 132350.00000001452
    }
   ]
  }

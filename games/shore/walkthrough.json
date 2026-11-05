@@ -1,64 +1,64 @@
 {
-  "version": 1,
-  "game": "shore",
-  "rand": {
-    "seed": 1,
-    "per": "scene"
+ "version": 1,
+ "game": "shore",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "FU0ozQBQCNAvTVXNKE1QzShN"
   },
-  "segments": [
-    {
-      "scene": 2,
-      "keys": "FU0ozQBQCNAvTVXNKE1QzShN"
-    },
-    {
-      "scene": 3,
-      "keys": "FU0tzQBIJshQUB7QAE0ezShNeM0oSA=="
-    }
-  ],
-  "chapters": [
-    {
-      "scene": 2,
-      "title": "Level 1: Open Water"
-    },
-    {
-      "scene": 3,
-      "title": "Level 2: The Shoreline"
-    }
-  ],
-  "timeline": {
-    "fps": 60,
-    "frames": 9136,
-    "chapters": [
-      {
-        "title": "Opening",
-        "frame": 0,
-        "time": 0
-      },
-      {
-        "title": "Story",
-        "frame": 896,
-        "time": 14933.333333333148
-      },
-      {
-        "title": "Level 1: Open Water",
-        "frame": 2125,
-        "time": 35416.66666666724
-      },
-      {
-        "title": "Level 2: The Shoreline",
-        "frame": 3944,
-        "time": 65733.33333332957
-      },
-      {
-        "title": "Ending",
-        "frame": 5854,
-        "time": 97566.66666667217
-      },
-      {
-        "title": "Credits",
-        "frame": 8062,
-        "time": 134366.66666668002
-      }
-    ]
+  {
+   "scene": 3,
+   "keys": "FU0tzQBIJshQUB7QAE0ezShNeM0oSA=="
   }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: Open Water"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: The Shoreline"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 9153,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 913,
+    "time": 15216.666666666471
+   },
+   {
+    "title": "Level 1: Open Water",
+    "frame": 2142,
+    "time": 35700.00000000053
+   },
+   {
+    "title": "Level 2: The Shoreline",
+    "frame": 3961,
+    "time": 66016.66666666299
+   },
+   {
+    "title": "Ending",
+    "frame": 5871,
+    "time": 97850.00000000559
+   },
+   {
+    "title": "Credits",
+    "frame": 8079,
+    "time": 134650.00000001318
+   }
+  ]
+ }
 }

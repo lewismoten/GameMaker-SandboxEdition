@@ -35,7 +35,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 9930,
+  "frames": 9947,
   "chapters": [
    {
     "title": "Opening",
@@ -44,33 +44,33 @@
    },
    {
     "title": "Story",
-    "frame": 896,
-    "time": 14933.333333333148
+    "frame": 913,
+    "time": 15216.666666666471
    },
    {
     "title": "Level 1: The Creek",
-    "frame": 2125,
-    "time": 35416.66666666724
+    "frame": 2142,
+    "time": 35700.00000000053
    },
    {
     "title": "Level 2: The Float",
-    "frame": 3572,
-    "time": 59533.333333330396
+    "frame": 3589,
+    "time": 59816.66666666369
    },
    {
     "title": "Level 3: The Lift",
-    "frame": 5530,
-    "time": 92166.6666666706
+    "frame": 5547,
+    "time": 92450.00000000402
    },
    {
     "title": "Ending",
-    "frame": 6646,
-    "time": 110766.66666667601
+    "frame": 6663,
+    "time": 111050.00000000943
    },
    {
     "title": "Credits",
-    "frame": 8856,
-    "time": 147600.00000000565
+    "frame": 8873,
+    "time": 147883.33333333881
    }
   ]
  }

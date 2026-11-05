@@ -35,7 +35,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 11321,
+  "frames": 11338,
   "chapters": [
    {
     "title": "Opening",
@@ -44,33 +44,33 @@
    },
    {
     "title": "Story",
-    "frame": 896,
-    "time": 14933.333333333148
+    "frame": 913,
+    "time": 15216.666666666471
    },
    {
     "title": "Level 1: Arrows, Space, Enter",
-    "frame": 2125,
-    "time": 35416.66666666724
+    "frame": 2142,
+    "time": 35700.00000000053
    },
    {
     "title": "Level 2: No Diagonal Needed",
-    "frame": 4372,
-    "time": 72866.66666666498
+    "frame": 4389,
+    "time": 73149.9999999984
    },
    {
     "title": "Level 3: Leap Shelves",
-    "frame": 5963,
-    "time": 99383.33333333937
+    "frame": 5980,
+    "time": 99666.66666667278
    },
    {
     "title": "Ending",
-    "frame": 8035,
-    "time": 133916.66666668028
+    "frame": 8052,
+    "time": 134200.00000001345
    },
    {
     "title": "Credits",
-    "frame": 10247,
-    "time": 170783.33333332549
+    "frame": 10264,
+    "time": 171066.66666665865
    }
   ]
  }

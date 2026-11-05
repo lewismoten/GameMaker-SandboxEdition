@@ -27,7 +27,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 10879,
+  "frames": 10896,
   "chapters": [
    {
     "title": "Opening",
@@ -36,28 +36,28 @@
    },
    {
     "title": "Story",
-    "frame": 896,
-    "time": 14933.333333333148
+    "frame": 913,
+    "time": 15216.666666666471
    },
    {
     "title": "Level 1: A Menu Picture",
-    "frame": 2125,
-    "time": 35416.66666666724
+    "frame": 2142,
+    "time": 35700.00000000053
    },
    {
     "title": "Level 2: A Demo That Plays Itself",
-    "frame": 5036,
-    "time": 83933.33333333487
+    "frame": 5053,
+    "time": 84216.66666666829
    },
    {
     "title": "Ending",
-    "frame": 7593,
-    "time": 126550.00000001394
+    "frame": 7610,
+    "time": 126833.33333334736
    },
    {
     "title": "Credits",
-    "frame": 9805,
-    "time": 163416.6666666631
+    "frame": 9822,
+    "time": 163699.99999999627
    }
   ]
  }

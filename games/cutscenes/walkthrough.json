@@ -59,7 +59,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 12771,
+  "frames": 12788,
   "chapters": [
    {
     "title": "Opening",
@@ -68,38 +68,38 @@
    },
    {
     "title": "Story",
-    "frame": 896,
-    "time": 14933.333333333148
+    "frame": 913,
+    "time": 15216.666666666471
    },
    {
     "title": "Level 1: A Scene That Moves On",
-    "frame": 2125,
-    "time": 35416.66666666724
+    "frame": 2142,
+    "time": 35700.00000000053
    },
    {
     "title": "Level 2: A Menu Room",
-    "frame": 4329,
-    "time": 72149.99999999811
+    "frame": 4346,
+    "time": 72433.33333333152
    },
    {
     "title": "Level 2: A Menu Room (tale one)",
-    "frame": 5201,
-    "time": 86683.33333333567
+    "frame": 5218,
+    "time": 86966.66666666909
    },
    {
     "title": "Level 2: A Menu Room (tale two)",
-    "frame": 7268,
-    "time": 121133.3333333457
+    "frame": 7285,
+    "time": 121416.66666667911
    },
    {
     "title": "Ending",
-    "frame": 9485,
-    "time": 158083.33333333288
+    "frame": 9502,
+    "time": 158366.66666666605
    },
    {
     "title": "Credits",
-    "frame": 11697,
-    "time": 194949.99999997808
+    "frame": 11714,
+    "time": 195233.33333331125
    }
   ]
  }

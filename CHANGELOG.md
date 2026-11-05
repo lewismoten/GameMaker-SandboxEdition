@@ -164,6 +164,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Changed
 
+- The Starters' opening animation is easier to read: STARTER is built from bigger letters with thicker strokes and a dark outline, the whole word holds for about a second and a half, and Kit hops in only once it is done
 - The guided tour has new steps for the Starters tab and its How do I…? button, the Imported tab's Import history and Recently deleted buttons, and the Game assets overview's group headings and used-by lines.
 - Teddy and Gwinn bark for real on the 1994 desk (their recorded barks from the tour) when they show up: looking in at the door, running past the window, riding in THE CHEZ, nosing the mail under the door, and Gwinn hiding behind the curtain. They only play after your first tap and never more than once every few seconds.
 - Teddy rides in THE CHEZ's front passenger seat now: his head, ears up, is in the door window of the car that drives past the desk's window, on the mouse pad and in the magazine, with Doc Leo still at the wheel behind him.

@@ -35,7 +35,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 8757,
+  "frames": 8774,
   "chapters": [
    {
     "title": "Opening",
@@ -44,33 +44,33 @@
    },
    {
     "title": "Story",
-    "frame": 896,
-    "time": 14933.333333333148
+    "frame": 913,
+    "time": 15216.666666666471
    },
    {
     "title": "Level 1: The Corner Room",
-    "frame": 2125,
-    "time": 35416.66666666724
+    "frame": 2142,
+    "time": 35700.00000000053
    },
    {
     "title": "Level 2: Stairs of Towers",
-    "frame": 3361,
-    "time": 56016.66666666424
+    "frame": 3378,
+    "time": 56299.99999999753
    },
    {
     "title": "Level 3: The Diamond Floor",
-    "frame": 4442,
-    "time": 74033.33333333199
+    "frame": 4459,
+    "time": 74316.6666666654
    },
    {
     "title": "Ending",
-    "frame": 5476,
-    "time": 91266.66666667034
+    "frame": 5493,
+    "time": 91550.00000000375
    },
    {
     "title": "Credits",
-    "frame": 7683,
-    "time": 128050.00000001438
+    "frame": 7700,
+    "time": 128333.3333333478
    }
   ]
  }

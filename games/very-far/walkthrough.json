@@ -43,7 +43,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 9610,
+  "frames": 9627,
   "chapters": [
    {
     "title": "Opening",
@@ -52,38 +52,38 @@
    },
    {
     "title": "Story",
-    "frame": 896,
-    "time": 14933.333333333148
+    "frame": 913,
+    "time": 15216.666666666471
    },
    {
     "title": "Level 1: Up Close",
-    "frame": 2125,
-    "time": 35416.66666666724
+    "frame": 2142,
+    "time": 35700.00000000053
    },
    {
     "title": "Level 2: Far Away (too quick)",
-    "frame": 2659,
-    "time": 44316.666666665944
+    "frame": 2676,
+    "time": 44599.999999999236
    },
    {
     "title": "Level 2: Far Away (slow steps)",
-    "frame": 3467,
-    "time": 57783.33333333065
+    "frame": 3484,
+    "time": 58066.66666666394
    },
    {
     "title": "Level 3: Big Things in Front",
-    "frame": 4779,
-    "time": 79650.00000000029
+    "frame": 4796,
+    "time": 79933.3333333337
    },
    {
     "title": "Ending",
-    "frame": 6327,
-    "time": 105450.0000000078
+    "frame": 6344,
+    "time": 105733.33333334122
    },
    {
     "title": "Credits",
-    "frame": 8536,
-    "time": 142266.66666667542
+    "frame": 8553,
+    "time": 142550.0000000086
    }
   ]
  }

@@ -1,64 +1,64 @@
 {
-  "version": 1,
-  "game": "three-tokens",
-  "rand": {
-    "seed": 1,
-    "per": "scene"
+ "version": 1,
+ "game": "three-tokens",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU0ozQNNFM0DTTzNA00ezQBLI8sDSwXLA0hFyANNI80DSx7LA0sDywNQO9ADTSjNA00KzQNNKM0DTQ=="
   },
-  "segments": [
-    {
-      "scene": 2,
-      "keys": "AU0ozQNNFM0DTTzNA00ezQBLI8sDSwXLA0hFyANNI80DSx7LA0sDywNQO9ADTSjNA00KzQNNKM0DTQ=="
-    },
-    {
-      "scene": 3,
-      "keys": "AU0tzQNNMs0DTQXNA0hFyANLI8sDTRnNA00FzQNNA80DUDvQA003zQNNGc0DTQ=="
-    }
-  ],
-  "chapters": [
-    {
-      "scene": 2,
-      "title": "Level 1: Three for the Gate"
-    },
-    {
-      "scene": 3,
-      "title": "Level 2: The Gate Is the Exit"
-    }
-  ],
-  "timeline": {
-    "fps": 60,
-    "frames": 8259,
-    "chapters": [
-      {
-        "title": "Opening",
-        "frame": 0,
-        "time": 0
-      },
-      {
-        "title": "Story",
-        "frame": 896,
-        "time": 14933.333333333148
-      },
-      {
-        "title": "Level 1: Three for the Gate",
-        "frame": 1644,
-        "time": 27400.000000000564
-      },
-      {
-        "title": "Level 2: The Gate Is the Exit",
-        "frame": 3759,
-        "time": 62649.99999999661
-      },
-      {
-        "title": "Ending",
-        "frame": 5459,
-        "time": 90983.33333333692
-      },
-      {
-        "title": "Credits",
-        "frame": 7186,
-        "time": 119766.66666667863
-      }
-    ]
+  {
+   "scene": 3,
+   "keys": "AU0tzQNNMs0DTQXNA0hFyANLI8sDTRnNA00FzQNNA80DUDvQA003zQNNGc0DTQ=="
   }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: Three for the Gate"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: The Gate Is the Exit"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 8276,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 913,
+    "time": 15216.666666666471
+   },
+   {
+    "title": "Level 1: Three for the Gate",
+    "frame": 1661,
+    "time": 27683.333333333918
+   },
+   {
+    "title": "Level 2: The Gate Is the Exit",
+    "frame": 3776,
+    "time": 62933.3333333299
+   },
+   {
+    "title": "Ending",
+    "frame": 5476,
+    "time": 91266.66666667034
+   },
+   {
+    "title": "Credits",
+    "frame": 7203,
+    "time": 120050.00000001205
+   }
+  ]
+ }
 }

@@ -1,77 +1,77 @@
 {
-  "version": 1,
-  "game": "sounds-and-music",
-  "rand": {
-    "seed": 1,
-    "per": "scene"
+ "version": 1,
+ "game": "sounds-and-music",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU0yzQNNHs0DTSPNA00="
   },
-  "segments": [
-    {
-      "scene": 2,
-      "keys": "AU0yzQNNHs0DTSPNA00="
-    },
-    {
-      "scene": 3,
-      "keys": "AU0tzQNNLc0rTR7NA00JOQK5Ds0yTRnNK00PzStN"
-    },
-    {
-      "scene": 4,
-      "keys": "AU0yzQNND80DOQK5AE0PzQVNFM0DTQ3NA00ezQNNHs0DTQ=="
-    }
-  ],
-  "chapters": [
-    {
-      "scene": 2,
-      "title": "Level 1: A Song Per Room"
-    },
-    {
-      "scene": 3,
-      "title": "Level 2: Sounds on Pickups"
-    },
-    {
-      "scene": 4,
-      "title": "Level 3: A Quiet Room"
-    }
-  ],
-  "timeline": {
-    "fps": 60,
-    "frames": 9042,
-    "chapters": [
-      {
-        "title": "Opening",
-        "frame": 0,
-        "time": 0
-      },
-      {
-        "title": "Story",
-        "frame": 896,
-        "time": 14933.333333333148
-      },
-      {
-        "title": "Level 1: A Song Per Room",
-        "frame": 2125,
-        "time": 35416.66666666724
-      },
-      {
-        "title": "Level 2: Sounds on Pickups",
-        "frame": 3035,
-        "time": 50583.3333333317
-      },
-      {
-        "title": "Level 3: A Quiet Room",
-        "frame": 4706,
-        "time": 78433.33333333327
-      },
-      {
-        "title": "Ending",
-        "frame": 5760,
-        "time": 96000.00000000505
-      },
-      {
-        "title": "Credits",
-        "frame": 7968,
-        "time": 132800.00000001426
-      }
-    ]
+  {
+   "scene": 3,
+   "keys": "AU0tzQNNLc0rTR7NA00JOQK5Ds0yTRnNK00PzStN"
+  },
+  {
+   "scene": 4,
+   "keys": "AU0yzQNND80DOQK5AE0PzQVNFM0DTQ3NA00ezQNNHs0DTQ=="
   }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: A Song Per Room"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: Sounds on Pickups"
+  },
+  {
+   "scene": 4,
+   "title": "Level 3: A Quiet Room"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 9059,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 913,
+    "time": 15216.666666666471
+   },
+   {
+    "title": "Level 1: A Song Per Room",
+    "frame": 2142,
+    "time": 35700.00000000053
+   },
+   {
+    "title": "Level 2: Sounds on Pickups",
+    "frame": 3052,
+    "time": 50866.66666666499
+   },
+   {
+    "title": "Level 3: A Quiet Room",
+    "frame": 4723,
+    "time": 78716.66666666669
+   },
+   {
+    "title": "Ending",
+    "frame": 5777,
+    "time": 96283.33333333847
+   },
+   {
+    "title": "Credits",
+    "frame": 7985,
+    "time": 133083.33333334743
+   }
+  ]
+ }
 }

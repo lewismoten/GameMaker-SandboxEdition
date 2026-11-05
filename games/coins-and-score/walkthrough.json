@@ -35,7 +35,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 9000,
+  "frames": 9018,
   "chapters": [
    {
     "title": "Opening",
@@ -44,33 +44,33 @@
    },
    {
     "title": "Story",
-    "frame": 896,
-    "time": 14933.333333333148
+    "frame": 913,
+    "time": 15216.666666666471
    },
    {
     "title": "Level 1: Coins Add Points",
-    "frame": 1644,
-    "time": 27400.000000000564
+    "frame": 1661,
+    "time": 27683.333333333918
    },
    {
     "title": "Level 2: Some Are Worth More",
-    "frame": 2918,
-    "time": 48633.33333333198
+    "frame": 2935,
+    "time": 48916.666666665275
    },
    {
     "title": "Level 3: Points Are Not Lives",
-    "frame": 4329,
-    "time": 72149.99999999811
+    "frame": 4346,
+    "time": 72433.33333333152
    },
    {
     "title": "Ending",
-    "frame": 5719,
-    "time": 95316.66666667152
+    "frame": 5736,
+    "time": 95600.00000000493
    },
    {
     "title": "Credits",
-    "frame": 7926,
-    "time": 132100.00000001467
+    "frame": 7944,
+    "time": 132400.0000000145
    }
   ]
  }

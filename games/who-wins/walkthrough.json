@@ -27,7 +27,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 8473,
+  "frames": 8490,
   "chapters": [
    {
     "title": "Opening",
@@ -36,28 +36,28 @@
    },
    {
     "title": "Story",
-    "frame": 896,
-    "time": 14933.333333333148
+    "frame": 913,
+    "time": 15216.666666666471
    },
    {
     "title": "Level 1: The Big One",
-    "frame": 2125,
-    "time": 35416.66666666724
+    "frame": 2142,
+    "time": 35700.00000000053
    },
    {
     "title": "Level 2: Your Star",
-    "frame": 3552,
-    "time": 59199.99999999711
+    "frame": 3569,
+    "time": 59483.3333333304
    },
    {
     "title": "Ending",
-    "frame": 5193,
-    "time": 86550.0000000023
+    "frame": 5210,
+    "time": 86833.33333333571
    },
    {
     "title": "Credits",
-    "frame": 7400,
-    "time": 123333.33333334634
+    "frame": 7417,
+    "time": 123616.66666667975
    }
   ]
  }

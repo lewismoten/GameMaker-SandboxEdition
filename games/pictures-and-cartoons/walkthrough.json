@@ -35,7 +35,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 10328,
+  "frames": 10345,
   "chapters": [
    {
     "title": "Opening",
@@ -44,33 +44,33 @@
    },
    {
     "title": "Story",
-    "frame": 896,
-    "time": 14933.333333333148
+    "frame": 913,
+    "time": 15216.666666666471
    },
    {
     "title": "Level 1: A Picture First",
-    "frame": 2125,
-    "time": 35416.66666666724
+    "frame": 2142,
+    "time": 35700.00000000053
    },
    {
     "title": "Level 2: A Cartoon Between",
-    "frame": 3816,
-    "time": 63599.99999999647
+    "frame": 3833,
+    "time": 63883.33333332976
    },
    {
     "title": "Level 3: Keep It Short",
-    "frame": 5415,
-    "time": 90250.00000000338
+    "frame": 5432,
+    "time": 90533.33333333679
    },
    {
     "title": "Ending",
-    "frame": 7044,
-    "time": 117400.00000001128
+    "frame": 7061,
+    "time": 117683.3333333447
    },
    {
     "title": "Credits",
-    "frame": 9254,
-    "time": 154233.33333333512
+    "frame": 9271,
+    "time": 154516.6666666683
    }
   ]
  }

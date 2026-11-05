@@ -27,7 +27,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 8503,
+  "frames": 8519,
   "chapters": [
    {
     "title": "Opening",
@@ -36,28 +36,28 @@
    },
    {
     "title": "Story",
-    "frame": 896,
-    "time": 14933.333333333148
+    "frame": 913,
+    "time": 15216.666666666471
    },
    {
     "title": "Level 1: Throw a Star",
-    "frame": 2125,
-    "time": 35416.66666666724
+    "frame": 2142,
+    "time": 35700.00000000053
    },
    {
     "title": "Level 2: The Narrow Way",
-    "frame": 3756,
-    "time": 62599.99999999662
+    "frame": 3773,
+    "time": 62883.33333332991
    },
    {
     "title": "Ending",
-    "frame": 5223,
-    "time": 87050.00000000244
+    "frame": 5239,
+    "time": 87316.66666666919
    },
    {
     "title": "Credits",
-    "frame": 7430,
-    "time": 123833.33333334648
+    "frame": 7446,
+    "time": 124100.00000001323
    }
   ]
  }

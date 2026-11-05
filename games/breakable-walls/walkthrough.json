@@ -35,7 +35,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 9015,
+  "frames": 9032,
   "chapters": [
    {
     "title": "Opening",
@@ -44,33 +44,33 @@
    },
    {
     "title": "Story",
-    "frame": 896,
-    "time": 14933.333333333148
+    "frame": 913,
+    "time": 15216.666666666471
    },
    {
     "title": "Level 1: Bump a Crate",
-    "frame": 2125,
-    "time": 35416.66666666724
+    "frame": 2142,
+    "time": 35700.00000000053
    },
    {
     "title": "Level 2: Coins Pay Once",
-    "frame": 3328,
-    "time": 55466.66666666432
+    "frame": 3345,
+    "time": 55749.99999999761
    },
    {
     "title": "Level 3: Spinning Gems",
-    "frame": 4607,
-    "time": 76783.33333333279
+    "frame": 4624,
+    "time": 77066.6666666662
    },
    {
     "title": "Ending",
-    "frame": 5733,
-    "time": 95550.00000000492
+    "frame": 5750,
+    "time": 95833.33333333833
    },
    {
     "title": "Credits",
-    "frame": 7941,
-    "time": 132350.00000001452
+    "frame": 7958,
+    "time": 132633.3333333477
    }
   ]
  }
