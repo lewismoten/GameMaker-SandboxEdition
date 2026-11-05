@@ -24,7 +24,11 @@ const here = new URL('../../hardware/pocket-player/', import.meta.url).pathname;
 const games = new URL('../../games/', import.meta.url).pathname;
 const skipArg = new Set([opt('--ticks'), opt('--keep')]);
 let ids = args.filter((a) => !a.startsWith('--') && !skipArg.has(a));
-if (!ids.length) ids = readFileSync(here + 'data/games.txt', 'utf8').trim().split('\n').map((l) => l.split('|')[0]);
+if (!ids.length)
+  ids = readFileSync(here + 'data/games.txt', 'utf8')
+    .trim()
+    .split('\n')
+    .map((l) => l.split('|')[0]);
 
 // A canvas stand-in: the engine's Screen only needs a 2d context to exist.
 const canvas = { width: 0, height: 0, getContext: () => ({ createImageData: () => ({ data: new Uint8ClampedArray(320 * 200 * 4) }) }) };
@@ -39,7 +43,11 @@ const exe = join(work, 'hosttest');
 execFileSync('c++', ['-std=c++17', '-O1', '-Wall', '-I', here + 'src', here + 'host/hosttest.cpp', '-o', exe, '-lz'], { stdio: 'inherit' });
 
 const names = 'S tick code level x0 x1 y0 y1 seq frame mx my nx ny lsx lsy score nextx nexty scrx scry hp lives meters hash'.split(' ');
-const play = (g: GameSim, n: number) => g.game.scenes.map((s, i) => ({ s, i })).filter(({ s }) => s.gametype === 10).findIndex((p) => p.i === n);
+const play = (g: GameSim, n: number) =>
+  g.game.scenes
+    .map((s, i) => ({ s, i }))
+    .filter(({ s }) => s.gametype === 10)
+    .findIndex((p) => p.i === n);
 
 async function checkGame(id: string): Promise<string> {
   const walk = JSON.parse(readFileSync(`${games}${id}/walkthrough.json`, 'utf8')) as Walkthrough;
@@ -71,7 +79,33 @@ async function checkGame(id: string): Promise<string> {
     const s = w.scroll;
     const meters = w.ci.meter.slice(0, 30).reduce((a, b) => (a + b) | 0, 0);
     expected.push(
-      ['S', tickNo, code, play(sim, sim.scene), c.x[0], c.x[1], c.y[0], c.y[1], c.cseq, c.cframe, w.mx, w.my, s.nx, s.ny, s.littleShiftx, s.littleShifty, w.ci.score, w.ci.nextx, w.ci.nexty, w.ci.scrx, w.ci.scry, w.ci.hitpts, w.ci.lives, meters, hash()].join(' '),
+      [
+        'S',
+        tickNo,
+        code,
+        play(sim, sim.scene),
+        c.x[0],
+        c.x[1],
+        c.y[0],
+        c.y[1],
+        c.cseq,
+        c.cframe,
+        w.mx,
+        w.my,
+        s.nx,
+        s.ny,
+        s.littleShiftx,
+        s.littleShifty,
+        w.ci.score,
+        w.ci.nextx,
+        w.ci.nexty,
+        w.ci.scrx,
+        w.ci.scry,
+        w.ci.hitpts,
+        w.ci.lives,
+        meters,
+        hash(),
+      ].join(' '),
     );
     if (r === 'link' && seg + 1 < segs.length) {
       seg++;
