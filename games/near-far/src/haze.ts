@@ -12,8 +12,7 @@ const MIST: [number, number, number] = [50, 59, 63];
 /** The far plane's palette: the near one, 768 bytes, hazed. Color 0 stays black (fades use it). */
 export function farPalette(pal: Pal): Uint8Array {
   const out = Uint8Array.from(pal.pal);
-  for (let i = 1; i < 256; i++)
-    for (let k = 0; k < 3; k++) out[i * 3 + k] = Math.round((pal.pal[i * 3 + k] * (100 - HAZE) + MIST[k] * HAZE) / 100);
+  for (let i = 1; i < 256; i++) for (let k = 0; k < 3; k++) out[i * 3 + k] = Math.round((pal.pal[i * 3 + k] * (100 - HAZE) + MIST[k] * HAZE) / 100);
   return out;
 }
 
@@ -27,7 +26,7 @@ export function hazeMap(pal: Pal): Uint8Array {
     for (let j = 0; j < 256; j++) {
       let d = 0;
       for (let k = 0; k < 3; k++) d += (far[i * 3 + k] - pal.pal[j * 3 + k]) ** 2;
-      if (d < bestD) (bestD = d), (best = j);
+      if (d < bestD) ((bestD = d), (best = j));
     }
     map[i] = best;
   }

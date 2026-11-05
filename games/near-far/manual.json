@@ -1,0 +1,99 @@
+{
+  "title": "Near and Far",
+  "howDoI": [
+    {
+      "id": "two-planes",
+      "q": "How do I make a level with a near plane and a far plane?",
+      "scene": 2,
+      "x": 18,
+      "y": 15,
+      "level": 1
+    },
+    {
+      "id": "far-small",
+      "q": "How do I draw the far plane smaller?",
+      "scene": 3,
+      "x": 18,
+      "y": 15,
+      "level": 1
+    },
+    {
+      "id": "far-pale",
+      "q": "How do I make the far plane paler?",
+      "scene": 3,
+      "x": 18,
+      "y": 15,
+      "level": 1
+    },
+    {
+      "id": "far-hero",
+      "q": "How do I make the hero smaller in the far plane?",
+      "scene": 3,
+      "x": 18,
+      "y": 15,
+      "level": 1
+    },
+    {
+      "id": "step-far",
+      "q": "How do I let the hero step into the distance?",
+      "scene": 2,
+      "x": 24,
+      "y": 15,
+      "level": 1
+    },
+    {
+      "id": "step-back",
+      "q": "How do I let the hero step back to the near plane?",
+      "scene": 3,
+      "x": 11,
+      "y": 15,
+      "level": 1
+    },
+    {
+      "id": "past-wall",
+      "q": "How do I get past a wall by going through the far plane?",
+      "scene": 5,
+      "x": 23,
+      "y": 15,
+      "level": 2
+    },
+    {
+      "id": "other-side",
+      "q": "How do I land the hero on the other side of a wall?",
+      "scene": 6,
+      "x": 24,
+      "y": 15,
+      "level": 2
+    }
+  ],
+  "pages": [
+    {
+      "head": "Welcome",
+      "html": "<h1>Welcome</h1><p><b>Near and Far</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has two short levels about a near plane and a far plane, and takes a few minutes to finish.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each idea is made.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. <kbd>Space</kbd> jumps. <kbd>F2</kbd> shows your hit points, lives and score. Walk into a trail to go through it.</p><h2>The one idea</h2><p>Game-Maker has no depth, but a level can have two planes. The near plane is a scene with big, clear scenery. The far plane is another scene: the same kind of land drawn small, with a paler palette. A link takes the hero from one to the other, so stepping into the distance loads the far scene. Only one plane is on screen at a time.</p>"
+    },
+    {
+      "head": "Level 1: Into the Distance",
+      "html": "<h1>Level 1: Into the Distance</h1><p>The <b>NEAR IS BIG AND CLEAR</b> sign stands by a big tree. The <b>THE TRAIL GOES INTO THE DISTANCE</b> sign points at the gap in the hedge on the right. Take the two coins, then walk into the trail.</p><p>You come out in the far plane. The <b>FAR IS SMALL AND PALE</b> sign says what changed: the tree, the house and even Kit are drawn smaller, and every color is paler. Take the two coins there. The trail on the left (<b>BACK TO NEAR</b>) takes you back to the near plane, and the trail there takes you in again. The door on the right of the far plane takes you on to level 2.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 1 is made</h1><ul><li><b>Two scenes.</b> Open the <b>Scenes</b> tab. The near plane and the far plane are two scenes that load two maps, <b>near1.map</b> and <b>far1.map</b>. Both are 16 blocks wide, with the ground on the same row.</li><li><b>Small is drawn.</b> The far plane uses its own blocks: a tree, a house and a fence at half the size of the near ones, standing on the same ground line. Nothing shrinks a picture while the game runs. Open the <b>Blocks</b> tab to see them next to the big ones.</li><li><b>Pale is a palette.</b> The far scene loads <b>far.pal</b> in its palette slot and the near scene loads <b>near.pal</b>. They hold the same colors in the same places, and the far one has each color mixed part of the way toward a pale sky blue. So the same block numbers look paler.</li><li><b>A smaller hero.</b> The far scene loads <b>far.chr</b> and <b>far.cbl</b>: the same character with every frame drawn at half size. Its keys, speed and jump are the same.</li><li><b>A trail is a link.</b> The gap in the hedge is a block with a link on it: <b>From</b> is the block here, <b>To</b> is a cell of the far scene. The trail in the far plane is a second link, back to a copy of the near scene (so the level card does not show again).</li></ul>"
+    },
+    {
+      "head": "Level 2: Past the Cliff",
+      "html": "<h1>Level 2: Past the Cliff</h1><p>A cliff stands between you and the exit. Jump at it: it does not move. The <b>A CLIFF IS IN THE WAY. TRY THE TRAIL</b> sign sends you left, to a trail through a hedge. Take the coins on the way if you like.</p><p>The far plane has no cliff: only a small mountain in the distance, behind the <b>NO CLIFF HERE</b> sign. Walk on to the trail on the right (<b>IT COMES OUT PAST THE CLIFF</b>). It puts you in the near plane on the other side of the cliff, where the exit door is.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 2 is made</h1><ul><li><b>The cliff.</b> Open <b>near2.map</b>. The cliff is a solid block of rock, drawn six blocks wide and as high as the screen, so it is plainly a wall.</li><li><b>One near map, two windows.</b> <b>near2.map</b> is 32 blocks wide. With scrolling off, a scene shows only the 16 blocks around the cell the hero lands on. The first near scene lands him on the left half, and the last near scene lands him on the right half, past the cliff. They load the same map.</li><li><b>The far plane has no wall.</b> <b>far2.map</b> is a separate map, so it can leave the cliff out. The trail there is a link whose <b>To</b> is a cell on the far side of the cliff in <b>near2.map</b>.</li><li><b>No invisible walls.</b> Everything that stops you is drawn: the cliff, and the hedge at each end.</li></ul>"
+    },
+    {
+      "head": "What it cannot do",
+      "html": "<h1>What it cannot do</h1><p>These are the engine&rsquo;s limits, so you can plan around them.</p><ul><li><b>No live blur or fade.</b> The engine cannot blur a picture or fade it with distance while the game runs. The far plane is paler because its pictures are drawn that way and its scene loads another palette.</li><li><b>No two planes at once.</b> A scene shows one map. The near and the far plane are never on screen together, so nothing in the far plane can be seen from the near one, and a thing in one can never touch a thing in the other.</li><li><b>No change of size while you walk.</b> The hero does not shrink as he walks away. He changes size only when a link loads the scene with the smaller character.</li><li><b>No memory between planes.</b> A scene loads its map fresh each time, so a coin you took is back when you return. Only the score, hit points and lives stay.</li><li><b>A smaller picture is not a smaller hero.</b> The far Kit is half size to look at, but his box for bumping into things is the same as the near Kit&rsquo;s.</li></ul>"
+    },
+    {
+      "head": "Make it yours",
+      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>On the <b>Scenes</b> tab, change which cell the near trail lands on in the far scene.</li><li>In the palette file the far scene loads, make the haze stronger or weaker.</li><li>Load <b>hero.chr</b> in the far scene in place of <b>far.chr</b> and see the big Kit among the small trees.</li><li>Draw a second far tree in the <b>Blocks</b> tab and put it in <b>far1.map</b>.</li><li>Add a link from the far plane to a new third plane that is paler still.</li></ul><p>The home page&rsquo;s <b>Starters</b> tab has more small games like this one.</p>"
+    }
+  ]
+}

@@ -21,13 +21,17 @@ function view(pal: Pal, tree: Pixels, hero: Pixels | undefined, small: boolean):
   const p = new Pixels(PW, PH, sky);
   const ground = PH - 14;
   p.disc(96, ground + 12, small ? 14 : 24, g[2]);
-  p.rect(0, ground + 4, PW, 10, d[2]).rect(0, ground, PW, 4, g[3]).rect(0, ground, PW, 1, g[5]);
+  p.rect(0, ground + 4, PW, 10, d[2])
+    .rect(0, ground, PW, 4, g[3])
+    .rect(0, ground, PW, 1, g[5]);
   p.blit(tree, 16, ground - tree.h + 2, 255);
   p.disc(92, 14, 6, pal.c('gold', 3));
   if (hero) scaleBlit(p, hero, 62, ground - 38, 1);
   else {
     // a small house in the distance, in the half-size style of the game
-    p.rect(66, ground - 9, 16, 9, pal.c('parch', 3)).rect(64, ground - 14, 20, 5, pal.c('red', 2)).rect(72, ground - 6, 3, 6, pal.c('wood', 2));
+    p.rect(66, ground - 9, 16, 9, pal.c('parch', 3))
+      .rect(64, ground - 14, 20, 5, pal.c('red', 2))
+      .rect(72, ground - 6, 3, 6, pal.c('wood', 2));
   }
   return p;
 }
@@ -46,8 +50,21 @@ export function titlePicture(pal: Pal, hero: Pixels, haze: Uint8Array, name: str
   const big = bigTreePicture(pal);
   const sky = pal.c('sky', 3);
   const small = half(big, sky);
-  const near = view(pal, big.crop(0, 0, 40, 60).map((_x, _y, v) => (v === sky ? 255 : v)), hero, false);
-  const far = hazed(view(pal, small.map((_x, _y, v) => (v === sky ? 255 : v)), undefined, true), haze);
+  const near = view(
+    pal,
+    big.crop(0, 0, 40, 60).map((_x, _y, v) => (v === sky ? 255 : v)),
+    hero,
+    false,
+  );
+  const far = hazed(
+    view(
+      pal,
+      small.map((_x, _y, v) => (v === sky ? 255 : v)),
+      undefined,
+      true,
+    ),
+    haze,
+  );
   const y = 80;
   const nx = 24;
   const fx = W - 24 - PW;

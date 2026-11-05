@@ -78,7 +78,10 @@ function fencePicture(pal: Pal, scale: number): Pixels {
   const bottom = 19;
   const postW = scale === 1 ? 4 : 2;
   const xs = scale === 1 ? [1, 8, 15] : [2, 9, 16];
-  for (const x of xs) p.rect(x, top, postW, bottom - top + 1, w[3]).rect(x, top, postW, 1, w[4]).rect(x + postW - 1, top, 1, bottom - top + 1, w[1]);
+  for (const x of xs)
+    p.rect(x, top, postW, bottom - top + 1, w[3])
+      .rect(x, top, postW, 1, w[4])
+      .rect(x + postW - 1, top, 1, bottom - top + 1, w[1]);
   const rail = scale === 1 ? 3 : 2;
   p.rect(0, top + 3, 20, rail, w[2]).rect(0, top + 3, 20, 1, w[4]);
   p.rect(0, top + 3 + (scale === 1 ? 7 : 4), 20, rail, w[2]).rect(0, top + 3 + (scale === 1 ? 7 : 4), 20, 1, w[4]);
@@ -116,7 +119,7 @@ function peakPicture(pal: Pal): Pixels {
   for (let y = 0; y < 40; y++) {
     const halfW = 2 + Math.floor((y * 18) / 39);
     for (let x = 20 - halfW; x < 20 + halfW; x++) {
-      const cap = y < 11 + Math.abs(x - 20) % 3;
+      const cap = y < 11 + (Math.abs(x - 20) % 3);
       p.set(x, y, cap ? pal.c('white', 3) : x < 20 ? s[2] : s[1]);
     }
   }
