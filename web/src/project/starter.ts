@@ -57,7 +57,7 @@ export const STARTER_GROUPS: { name: string; tag: string; games: string[] }[] = 
     tag: 'Timing, switches and a whole small game.',
     games: ['beat-the-clock', 'countdown', 'warning-first', 'switches', 'your-first-game'],
   },
-  { name: 'Wiring and Puzzles', tag: 'Counters that think.', games: ['three-tokens'] },
+  { name: 'Wiring and Puzzles', tag: 'Counters that think.', games: ['three-tokens', 'and-gate'] },
   { name: 'Bigger Worlds', tag: 'More than one screen.', games: ['scroll', 'many-rooms', 'blocks-budget'] },
   { name: 'Showcase Tricks', tag: 'How the big games do their big moments.', games: ['dialog'] },
 ];
