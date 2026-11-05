@@ -11,7 +11,7 @@ import { levelShown, levelShowsCeremony } from './homeLevel';
 import { graduationCards, readyCeremonies, readyStrip } from './homeGraduations';
 import { allNotes, ratingOf } from '../../imported/gameNotes';
 import { groupByRating, ratingName, starsText } from '../../imported/ratings';
-import { gameTile, type HomeGame } from './homeCards';
+import { gameShot, gameTile, type HomeGame } from './homeCards';
 import type { Category } from './homeCategories';
 import { byMaker } from './homeAuthors';
 import { rateTile, ratingShown, type savedRatingFilter } from './homeRatings';
@@ -102,8 +102,9 @@ export function libraryCards(
             new Map(lib.gamesOf(c).map((g) => [g.entry?.id ?? '', g.title])),
           )
         : [];
+    // shown under Not done yet too, so it appears the moment the last course needed is finished
     const ready =
-      c === 'starter' && (starters.filter === 'all' || starters.filter === 'grad')
+      c === 'starter' && starters.filter !== 'done'
         ? readyStrip(
             readyCeremonies(
               lib.gamesOf(c).filter((g) => isCeremony(g.entry?.id ?? '') && levelShowsCeremony(level, g.entry?.id ?? '')),
@@ -111,6 +112,7 @@ export function libraryCards(
               grades,
             ),
             on.choose,
+            (g) => gameShot(g, 'grad-ready-shot pixel'),
           )
         : [];
     cards =

@@ -76,8 +76,8 @@ export function readyCeremonies(games: readonly HomeGame[], finished: ReadonlySe
   });
 }
 
-/** The "Ready to graduate" strip above every group: a title and a Graduate button per open graduation, none when nothing is ready. */
-export function readyStrip(ready: { ceremony: Ceremony; game: HomeGame }[], choose: (g: HomeGame) => void): HTMLElement[] {
+/** The "Ready to graduate" strip above every group: a picture, a title and a Graduate button per open graduation, none when nothing is ready. */
+export function readyStrip(ready: { ceremony: Ceremony; game: HomeGame }[], choose: (g: HomeGame) => void, shot?: (g: HomeGame) => HTMLElement): HTMLElement[] {
   if (!ready.length) return [];
   return [
     h(
@@ -91,6 +91,9 @@ export function readyStrip(ready: { ceremony: Ceremony; game: HomeGame }[], choo
           h(
             'li',
             {},
+            shot
+              ? h('button', { class: 'grad-ready-pic', type: 'button', tabindex: -1, 'aria-hidden': 'true', onclick: () => choose(game) }, shot(game))
+              : null,
             h('span', { class: 'grad-ready-title' }, ceremonyTitle(ceremony)),
             h(
               'button',

@@ -1252,7 +1252,23 @@ a.button.with-ico {
   padding: 4px 0;
 }
 .grad-ready-title {
+  flex: 1 1 8em;
   font-weight: 700;
+}
+.grad-ready-pic {
+  flex: none;
+  padding: 0;
+  border: 2px solid #d4a017;
+  border-radius: 6px;
+  background: #000;
+  line-height: 0;
+  cursor: pointer;
+}
+.grad-ready-shot {
+  display: block;
+  width: 96px;
+  height: 60px;
+  border-radius: 4px;
 }
 .grad-ready .button {
   min-height: 32px;

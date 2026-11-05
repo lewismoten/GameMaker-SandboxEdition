@@ -237,7 +237,7 @@ const shotObserver = new IntersectionObserver(
  * blocks) when it has none. Until then it is marked `shot-loading` (a placeholder shimmer),
  * and `shot-none` when there is no picture to draw.
  */
-function gameShot(game: HomeGame, className = 'card-shot pixel'): HTMLCanvasElement {
+export function gameShot(game: HomeGame, className = 'card-shot pixel'): HTMLCanvasElement {
   const c = h('canvas', {
     class: `${className} shot-loading`,
     width: 320,
