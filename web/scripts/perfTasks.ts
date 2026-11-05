@@ -5,11 +5,11 @@
 // laptop; Lewis's reported INP was 6.9 s). Never 5173.
 //   (add --desk-only 1 to run only the desk steps; --budget 1 for the short set; --repeat N opens and closes each desk overlay N times; --profiles <folder> keeps slow steps' CPU profiles verifyPerf.ts uses:
 //    home, the map editor and its tabs, the desk, the Virus Blaster box)
-//   npm run perf:tasks -- [--dist <scratch vite build>] [--port 5195] [--url http://…] [--throttle 4] [--out <folder>]
+//   npm run perf:tasks -- [--dist <scratch vite build>] [--port 5195] [--url http://…] [--throttle 4] [--network 4g|slow-4g] [--out <folder>]
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import type { CDPSession, Page } from 'playwright-core';
-import { arg, launch, OBSERVE, target } from './perfLib';
+import { applySlowdown, arg, launch, OBSERVE, target } from './perfLib';
 
 interface Hot {
   fn: string;
@@ -131,8 +131,7 @@ try {
   cdp = await context.newCDPSession(page);
   await cdp.send('Performance.enable');
   await cdp.send('Profiler.enable');
-  const rate = Number(arg('throttle') ?? 1);
-  if (rate > 1) await cdp.send('Emulation.setCPUThrottlingRate', { rate });
+  await applySlowdown(cdp);
   const go = (hash: string) => page.goto(`${srv.base}/${hash}`);
   // a real mouse click at the element's middle (the page's own animations keep Playwright's
   // "stable" wait from ever finishing, and its hit-testing would show up in the profiles)
