@@ -1,0 +1,39 @@
+{
+  "title": "The Same House",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.0",
+  "blurb": "Two short levels about reusing one map. In the first, a street has three houses that look alike. Go in each door and the inside is the same house map every time, with a new carpet, wallpaper, roof and curtains. In the second, three labeled doors lead to one tower room that is wood, ice or lava. Each scene names its own palette file. Signs say how. Play it, then open it in Game-Maker and paint a palette of your own.",
+  "exe": "SAMEHS.EXE",
+  "dosName": "SAMEHOUS",
+  "sound": "sb",
+  "label": {
+    "background": "#fdf0d8",
+    "band": "#b8452f",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "2 short levels",
+    "hours": 1,
+    "background": "#b8452f",
+    "accent": "#ffd23f",
+    "ink": "#ffffff",
+    "tagline": "One house, three looks.",
+    "back": "A small explorer in a teal beanie walks down a street of three houses that look alike. Go in each door: the inside is the same house map, with a new carpet, wallpaper and roof every time. Then try the square, where one tower room is wood, ice or lava. Read the signs, then open the game in Game-Maker and paint a palette of your own.",
+    "features": [
+      "One house map in three palettes, with only the colors changed",
+      "One tower room map as wood, ice and lava",
+      "Made to be copied and taken apart"
+    ],
+    "shots": [
+      ["street.map", 6, 1],
+      ["house.map", 0, 1]
+    ],
+    "rating": "Everyone"
+  },
+  "acceptedFindings": []
+}

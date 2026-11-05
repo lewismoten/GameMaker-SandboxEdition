@@ -5,6 +5,8 @@
 // each row entering it later), teddy levels/level5Beasts.ts (locks 108 to 125 against tricks of
 // 110 to 130) and snowbound blocks/hill.ts (JAMIE.BBL). Monster against monster is code/GM
 // PLAYGAME.C DoCollision (equal powers pass, the stronger kills, KillMon gives its "becomes").
+import { onCd } from './chapter';
+
 export const MORE_TRICKS = `<h2>A flock that holds its shape</h2>
   <p>Maximus has pods of star whales that spell a word or draw a picture on the galaxy chart.
   Each whale is one monster on one cell. Every whale of a kind walks the same path at the same
@@ -12,6 +14,7 @@ export const MORE_TRICKS = `<h2>A flock that holds its shape</h2>
   smear. They also share one power, and monsters of equal power pass through each other, so
   the pod never thins itself out. Leave the space a pod swims through empty of other
   monsters, and count it against the map’s 200.</p>
+  ${onCd('FLOCK')}
   <h2>A pulse that runs down the screen</h2>
   <p>The data bus rides in Virus Blaster are one screen that never scrolls, painted in
   perspective. Below the horizon every cell of the board is the same ring of eight blocks, two

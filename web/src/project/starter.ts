@@ -11,6 +11,9 @@ interface Listed {
 /** One of the Starters: an original game marked "series": "starter". */
 export const isStarterGame = (g: Listed): boolean => !!g.original && g.series === 'starter';
 
+/** A game with a retail box on the desk's shelf (and its manual box, print-shop pieces, catalog page): its `original.box`, but never a Starter. The Starters live on the Sample CD (D:\\SAMPLES) and the Sample Disk, not on the shelf. */
+export const hasRetailBox = (g: Listed & { id?: string }): boolean => !isStarterGame(g) && !!(g as { original?: { box?: unknown } }).original?.box;
+
 /** The Starters' groups, in learning order, like the Bard's COLLECTIONS (bizarre.ts): a name, a line about it and the game ids in order. A group with no built game is hidden. Each group's title screens have their own look (games/kit/starter groupStyle). */
 export const STARTER_GROUPS: { name: string; tag: string; games: string[] }[] = [
   {
@@ -51,15 +54,19 @@ export const STARTER_GROUPS: { name: string; tag: string; games: string[] }[] = 
     tag: 'Foes that think, and ones that take a few hits.',
     games: ['boss-hits', 'boss-phases', 'who-wins', 'short-lived', 'follower', 'searchlight', 'flock', 'scripted'],
   },
-  { name: 'Telling a Story', tag: 'Words, pictures and sound.', games: ['say-something', 'pictures-and-cartoons', 'sounds-and-music', 'day-night', 'popups'] },
+  {
+    name: 'Telling a Story',
+    tag: 'Words, pictures and sound.',
+    games: ['say-something', 'pictures-and-cartoons', 'sounds-and-music', 'day-night', 'same-house', 'popups'],
+  },
   {
     name: 'Putting It Together',
     tag: 'Timing, switches and a whole small game.',
-    games: ['beat-the-clock', 'countdown', 'warning-first', 'switches', 'your-first-game'],
+    games: ['beat-the-clock', 'countdown', 'warning-first', 'switches', 'one-more-try', 'your-first-game'],
   },
   { name: 'Wiring and Puzzles', tag: 'Counters that think.', games: ['three-tokens', 'and-gate', 'secret-doors'] },
   { name: 'Bigger Worlds', tag: 'More than one screen.', games: ['scroll', 'many-rooms', 'overhead', 'blocks-budget'] },
-  { name: 'Showcase Tricks', tag: 'How the big games do their big moments.', games: ['dialog', 'horizon'] },
+  { name: 'Showcase Tricks', tag: 'How the big games do their big moments.', games: ['dialog', 'parallax', 'horizon', 'beltway'] },
 ];
 
 /** The order the Starters are meant to be played in, easiest first: the groups' games in order (games/<id>); a starter not listed goes after these, A to Z. */

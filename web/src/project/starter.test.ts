@@ -1,7 +1,7 @@
 // The Starters are Sandbox Software's own games, but they are not "Sandbox games" in any count.
 import { describe, expect, it } from 'vitest';
 import { isSandboxGame } from './files';
-import { byStarterGroup, byStarterOrder, isStarterGame, starterGroupOf, STARTER_GROUPS, STARTER_ORDER } from './starter';
+import { byStarterGroup, byStarterOrder, hasRetailBox, isStarterGame, starterGroupOf, STARTER_GROUPS, STARTER_ORDER } from './starter';
 
 const starter = { original: {}, company: 'Sandbox Software', series: 'starter' };
 const sandbox = { original: {}, company: 'Sandbox Software' };
@@ -44,5 +44,13 @@ describe('the Starters', () => {
       ['More Starters', ['zzz']],
     ]);
     expect(byStarterGroup([g('first-steps')]).map((x) => x.name)).toEqual(['The Basics']);
+  });
+});
+
+describe('the desk shelf', () => {
+  it('stands a retail box for a Sandbox game but never for a Starter', () => {
+    expect(hasRetailBox({ ...sandbox, original: { box: {} } })).toBe(true);
+    expect(hasRetailBox({ ...starter, original: { box: {} } })).toBe(false);
+    expect(hasRetailBox({ ...sandbox, original: {} })).toBe(false);
   });
 });

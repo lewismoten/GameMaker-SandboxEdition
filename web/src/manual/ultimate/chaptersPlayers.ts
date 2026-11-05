@@ -14,7 +14,7 @@
 // him), as engine/monsters.ts chkMonChr and engine/character.ts port them. The DOSBox screenshot
 // is Lewis's (NOTICE.md). The clock and the ceilings are limitsClock.ts, the ideas to try
 // limitIdeas.ts.
-import { opening, tip, type Chapter } from './chapter';
+import { opening, tip, type Chapter, onCd } from './chapter';
 import { LIMIT_IDEAS } from './limitIdeas';
 import { CLOCK_LIMITS } from './limitsClock';
 
@@ -95,6 +95,7 @@ export const PLAYERS: Chapter = {
   place it can’t get back to the start from (dismiss the ones you meant), and when it plays a
   whole game it plays it again leaving behind everything it can, and says where going on
   without something leaves the end out of reach.</p>
+  ${onCd('TRYAGAIN')}
   <h2>Designing for slower hands</h2>
   <p>The bot presses keys to the tick. A jump that needs <kbd>↑</kbd> and <kbd>→</kbd> at the
   same moment, a key let go within a tenth of a second or a hold of exactly so long are easy for
