@@ -1,0 +1,64 @@
+{
+ "version": 1,
+ "game": "parallax",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "pwJN"
+  },
+  {
+   "scene": 3,
+   "keys": "X00UzeoBTQ=="
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: Three Speeds"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: Drifting Clouds"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 8291,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 896,
+    "time": 14933.333333333148
+   },
+   {
+    "title": "Level 1: Three Speeds",
+    "frame": 2125,
+    "time": 35416.66666666724
+   },
+   {
+    "title": "Level 2: Drifting Clouds",
+    "frame": 3512,
+    "time": 58533.33333333054
+   },
+   {
+    "title": "Ending",
+    "frame": 5011,
+    "time": 83516.66666666808
+   },
+   {
+    "title": "Credits",
+    "frame": 7218,
+    "time": 120300.00000001212
+   }
+  ]
+ }
+}

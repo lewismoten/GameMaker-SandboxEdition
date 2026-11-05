@@ -94,8 +94,10 @@ export async function driftingClouds(bot: StarterBot): Promise<void> {
   const barTop = GROUND_ROW - 2;
   await must(bot, bot.land(), 'dropping onto the path');
   const ws = [watchOf(bot, WISPS, 6), watchOf(bot, CLOUDS, 6), watchOf(bot, HILLS, 6)];
-  const start = SUN_COLS.map((x) => blockAt(bot, x, 2));
-  const filled = () => SUN_COLS.filter((x, i) => blockAt(bot, x, 2) !== start[i]).length;
+  /** What a cell looks like now (a sun's blocks differ before they differ in picture). */
+  const look2 = (x: number): string => bot.sim.w.bg[blockAt(bot, x, 2)].pixels.join(',');
+  const start = SUN_COLS.map(look2);
+  const filled = () => SUN_COLS.filter((x, i) => look2(x) !== start[i]).length;
   const waitUntil = async (tick: number) => {
     while (bot.sim.w.clock - t0 < tick) {
       await must(bot, bot.wait(1), 'watching the sky');
