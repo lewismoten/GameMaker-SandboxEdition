@@ -12,8 +12,9 @@
 #include "setupdraw.h"
 #include "softgfx.h"
 
-struct Phys {  // the glass: 240 x 320, stored as it is seen
-  uint16_t px[240 * 320];
+struct Phys {  // the glass: 240 x 320 (W, H), or 320 x 240 for the wide way (sf::WIDE), stored as it is seen
+  uint16_t px[320 * 320];
+  int W = 240, H = 320;
   int tc = 0xFFFF, bgc = 0, ts = 1, cx = 0, cy = 0;
   bool hasBg = false;
   int fx = 0, fy = 0;   // MADCTL mirror bits
@@ -22,13 +23,13 @@ struct Phys {  // the glass: 240 x 320, stored as it is seen
   Phys() { clear(); }
   void clear() { memset(px, 0, sizeof px); clipped = 0; }
   void set(int x, int y, uint16_t c) {
-    if (x < 0 || y < 0 || x >= 240 || y >= 320) { if (c) clipped++; return; }
-    if (fx) x = 239 - x;
-    if (fy) y = 319 - y;
-    px[y * 240 + x] = c;
+    if (x < 0 || y < 0 || x >= W || y >= H) { if (c) clipped++; return; }
+    if (fx) x = W - 1 - x;
+    if (fy) y = H - 1 - y;
+    px[y * W + x] = c;
   }
   uint16_t color565(int r, int g, int b) { return (uint16_t)((r >> 3) << 11 | (g >> 2) << 5 | b >> 3); }
-  void fillScreen(uint16_t c) { for (int y = 0; y < 320; y++) for (int x = 0; x < 240; x++) set(x, y, c); }
+  void fillScreen(uint16_t c) { for (int y = 0; y < H; y++) for (int x = 0; x < W; x++) set(x, y, c); }
   void fillRect(int x, int y, int w, int h, uint16_t c) { for (int j = 0; j < h; j++) for (int i = 0; i < w; i++) set(x + i, y + j, c); }
   void drawRect(int x, int y, int w, int h, uint16_t c) { fillRect(x, y, w, 1, c); fillRect(x, y + h - 1, w, 1, c); fillRect(x, y, 1, h, c); fillRect(x + w - 1, y, 1, h, c); }
   void fillRoundRect(int x, int y, int w, int h, int, uint16_t c) { fillRect(x, y, w, h, c); }
@@ -71,37 +72,38 @@ static void rgb(uint16_t p, int fault, int want, unsigned char out[3]) {
 struct Montage {
   int cols, rows;
   std::vector<unsigned char> img;
-  Montage(int c, int r) : cols(c), rows(r), img((size_t)c * 248 * r * 328 * 3, 40) {}
+  Montage(int c, int r) : cols(c), rows(r), img((size_t)c * 328 * r * 328 * 3, 40) {}
   void put(int col, int row, const Phys& f, int fault = 0, int want = 0) {
-    for (int y = 0; y < 320; y++) for (int x = 0; x < 240; x++) {
+    for (int y = 0; y < f.H; y++) for (int x = 0; x < f.W; x++) {
       unsigned char c[3];
-      rgb(f.px[y * 240 + x], fault, want, c);
-      size_t o = ((size_t)(row * 328 + 4 + y) * (cols * 248) + col * 248 + 4 + x) * 3;
+      rgb(f.px[y * f.W + x], fault, want, c);
+      size_t o = ((size_t)(row * 328 + 4 + y) * (cols * 328) + col * 328 + 4 + x) * 3;
       memcpy(&img[o], c, 3);
     }
   }
   void save(const std::string& path) {
     FILE* f = fopen(path.c_str(), "wb");
-    fprintf(f, "P6\n%d %d\n255\n", cols * 248, rows * 328);
+    fprintf(f, "P6\n%d %d\n255\n", cols * 328, rows * 328);
     fwrite(img.data(), 1, img.size(), f);
     fclose(f);
   }
 };
 
 // Draws a step the way the board does: panel turn u (mirror bits), software mode m.
-static void render(Phys& fb, sg::SoftGfx<Phys>& g, int step, int u, int mode) {
+static void render(Phys& fb, sg::SoftGfx<Phys>& g, int step, int u, int mode, bool wide = false) {
+  fb.W = wide ? 320 : 240; fb.H = wide ? 240 : 320;
   fb.fx = u & 1; fb.fy = u >> 1 & 1;
   g.setMode(mode);
   fb.clear();
-  sf::drawStep(g, step, "Board C fw 1a2b3c4 2026-11-05");
+  sf::drawStep(g, step, "C fw 4d8759e");
 }
 static int litOutside(const Phys& fb, int step, int mode, int u) {
   // lit pixels (panel pixels back to logical) outside the 240 square for steps 1, 2 and 4
   sg::Xf xf; xf.mode = (uint8_t)mode;
   int n = 0;
-  for (int y = 0; y < 320; y++) for (int x = 0; x < 240; x++) {
-    if (!fb.px[y * 240 + x]) continue;
-    int px = (u & 1) ? 239 - x : x, py = (u >> 1 & 1) ? 319 - y : y, lx, ly;
+  for (int y = 0; y < fb.H; y++) for (int x = 0; x < fb.W; x++) {
+    if (!fb.px[y * fb.W + x]) continue;
+    int px = (u & 1) ? fb.W - 1 - x : x, py = (u >> 1 & 1) ? fb.H - 1 - y : y, lx, ly;
     xf.inv(px, py, lx, ly);
     if (step == sf::ORIENT ? (lx < 0 || ly < 0 || lx >= 320 || ly >= 240) : (lx >= 240 || ly >= 240)) n++;
   }
@@ -114,17 +116,22 @@ int main(int argc, char** argv) {
   sg::SoftGfx<Phys> g(fb);
   const char* names[4] = {"step1-flip", "step2-rotate", "step3-orient", "step4-colors"};
   for (int step = 0; step < 4; step++) {
-    int modes = step == sf::ORIENT ? 2 : 1;
+    int modes = step == sf::ORIENT ? 3 : 1;
     Montage m(4, modes);
     for (int mi = 0; mi < modes; mi++) {
-      int mode = step == sf::ORIENT ? 1 + mi : (step == sf::COLORS ? 1 : 0);
+      bool wide = step == sf::ORIENT && mi == 2;
+      int mode = step == sf::ORIENT ? (wide ? 0 : 1 + mi) : (step == sf::COLORS ? 1 : 0);
       for (int u = 0; u < 4; u++) {
-        render(fb, g, step, u, mode);
+        render(fb, g, step, u, mode, wide);
         CHECK(fb.clipped == 0, "%s u=%d mode=%d draws %d pixels off the panel", names[step], u, mode, fb.clipped);
         CHECK(litOutside(fb, step, mode, u) == 0, "%s u=%d mode=%d lights pixels outside its area", names[step], u, mode);
         int lit = 0;
-        for (auto p : fb.px) lit += p != 0;
+        for (int i = 0; i < fb.W * fb.H; i++) lit += fb.px[i] != 0;
         CHECK(lit > 3000, "%s u=%d mode=%d lit only %d pixels", names[step], u, mode, lit);
+        if (step == sf::ORIENT) {  // the frame on the picture's edge reaches all four edges of the glass, in every turn and way
+          CHECK(fb.px[fb.H / 2 * fb.W] && fb.px[fb.H / 2 * fb.W + fb.W - 1] && fb.px[fb.W / 2] && fb.px[(fb.H - 1) * fb.W + fb.W / 2],
+                "step 3 u=%d mode=%d wide=%d: the frame does not reach the glass's edges", u, mode, (int)wide);
+        }
         m.put(u, mi, fb);
       }
     }
@@ -145,6 +152,7 @@ int main(int argc, char** argv) {
       sg::SoftGfx<Phys> g2(fb);
       g2.setMode(mode);
       g2.setBandBuffer(t);
+      fb.W = 240; fb.H = 320;
       fb.clear();
       g2.pushImage(10, 20, 4, 3, band);
       int rx = -1, ry = -1, n = 0;

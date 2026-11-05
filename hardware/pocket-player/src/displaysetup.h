@@ -28,7 +28,7 @@ inline bool useCardRecord(bool nvsHasSetup) { return !nvsHasSetup; }
 // ---- the saved record -------------------------------------------------------------------------------------------
 // state: 0 never set up, 1 set up begun (a display change restarted the board, or it was never finished), 3 saved.
 // soft: 0 an old setup (turn = one of the glass's own landscape turns), 1 and 2 the picture turned in software on the panel's
-// portrait turn (softgfx.h), turn then being its mirror bits (setupflow.h PORTRAIT_ROT).
+// portrait turn (softgfx.h), turn then being its mirror bits (setupflow.h PORTRAIT_ROT); 3 the glass run 320 x 240 with no turn.
 struct Record {
   uint8_t panel = 0, turn = 0, soft = 0;
   tc::Cal cal;
@@ -36,7 +36,7 @@ struct Record {
 };
 inline bool valid(const Record& r) {
   auto in = [](int v) { return v >= 0 && v <= 4095; };
-  return r.panel < PANELS && r.turn < TURNS && r.soft <= 2 && r.cal.swap <= 1 && in(r.cal.u0) && in(r.cal.u1) && in(r.cal.v0) && in(r.cal.v1);
+  return r.panel < PANELS && r.turn < TURNS && r.soft <= 3 && r.cal.swap <= 1 && in(r.cal.u0) && in(r.cal.u1) && in(r.cal.v0) && in(r.cal.v1);
 }
 inline int format(const Record& r, char* out, int n) {
   return snprintf(out, n, "pocket-board 1\npanel=%d\nturn=%d\nswap=%d\nu0=%d\nu1=%d\nv0=%d\nv1=%d\nfull=%d\nsoft=%d\n", r.panel, r.turn, r.cal.swap,

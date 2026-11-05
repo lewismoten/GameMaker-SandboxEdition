@@ -76,6 +76,12 @@ class LGFX : public lgfx::LGFX_Device {
     else { pi_.config(c); setPanel(&pi_); }
   }
 
+  // 320 x 240 (a glass wired the other way round, setup's third landscape way) or 240 x 320 as usual; call setRotation after.
+  void setWide(bool w) {
+    dims(pi_, w);
+    dims(ps_, w);
+  }
+
   // Changes the colors on the running panel (bits 2 inverted, 4 red/blue swapped; the driver bit stays as started) and sets the
   // rotation again, which writes MADCTL with the new color order: the setup's colors step cycles the modes with no restart.
   void applyColors(int t, int rotation) {
@@ -84,6 +90,12 @@ class LGFX : public lgfx::LGFX_Device {
   }
 
  private:
+  template <class P> void dims(P& p, bool w) {
+    auto c = p.config();
+    c.panel_width = c.memory_width = w ? 320 : 240;
+    c.panel_height = c.memory_height = w ? 240 : 320;
+    p.config(c);
+  }
   template <class P> void recolor(P& p, int t) {
     auto c = p.config();
     c.invert = (t & 2) != 0;

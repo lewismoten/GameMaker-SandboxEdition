@@ -34,7 +34,12 @@ int main() {
     CHECK(f.softMode() == 0, "steps 1 and 2 draw in the portrait turn");
     CHECK(f.ok() && f.step == sf::ORIENT && f.soft == 1 && f.softMode() == 1, "step 3 starts as the first quarter turn");
     f.boot(); CHECK(f.soft == 2 && f.softMode() == 2, "step 3 BOOT is the other quarter turn");
-    f.boot(); CHECK(f.soft == 1, "and back");
+    CHECK(!f.wide(), "a quarter turn is not the wide glass");
+    f.boot(); CHECK(f.soft == 3 && f.softMode() == 0 && f.wide(), "step 3 BOOT, third: the glass run 320 x 240 with no software turn");
+    f.boot(); CHECK(f.soft == 1 && f.softMode() == 1 && !f.wide(), "and round again");
+    f.boot(); f.boot(); CHECK(f.soft == 3, "to the wide glass for the step 4 check");
+    CHECK(f.ok() && f.step == sf::COLORS && f.softMode() == 0 && f.wide() && f.soft == 3, "step 4 keeps the wide glass");
+    f.step = sf::ORIENT; f.soft = 1;
     CHECK(f.ok() && f.step == sf::COLORS && f.softMode() == 1, "step 4 keeps the chosen quarter turn");
     for (int i = 1; i <= 4; i++) { f.boot(); CHECK(f.color == (i & 3), "step 4 cycles four color modes (%d)", f.color); }
     CHECK(f.panelBits(1) == 1 && (f.panelBits(0) & 1) == 0, "the driver bit is kept");
@@ -47,6 +52,8 @@ int main() {
     int seen = 0;
     for (int u = 0; u < 4; u++) { int r = sf::rotationFor(u, 1); CHECK((r & 1) == 0, "rotation %d is even (no exchange)", r); seen |= 1 << r; }
     CHECK(seen == (1 | 1 << 2 | 1 << 4 | 1 << 6), "four different even rotations");
+    for (int u = 0; u < 4; u++) CHECK(sf::rotationFor(u, sf::WIDE) == sf::rotationFor(u, 1), "the wide glass uses the same even rotations");
+    CHECK(sf::xfMode(0) == 0 && sf::xfMode(1) == 1 && sf::xfMode(2) == 2 && sf::xfMode(3) == 0, "software turn per soft setting");
     for (int u = 0; u < 4; u++) CHECK(sf::rotationFor(u, 0) == 1 + 2 * u && (sf::rotationFor(u, 0) & 1), "an old setup keeps the odd rotation");
   }
   // ---- the software quarter turns: every landscape point lands on the portrait panel once, the two modes are half a turn apart ----
@@ -102,7 +109,7 @@ int main() {
   CHECK(ds::parse(buf, back) && back.panel == 5 && back.turn == 2 && back.soft == 2 && back.cal.swap == 1 && back.cal.u0 == 3650 && back.cal.u1 == 310 &&
             back.cal.v0 == 280 && back.cal.v1 == 3720 && back.full == 1 && back.cal.valid == 1, "record round trip");
   CHECK(ds::parse("pocket-board 1\npanel=1\nturn=3\nswap=0\nu0=1\nu1=2\nv0=3\nv1=4\nfull=1\n", back) && back.soft == 0 && back.turn == 3, "an old record (no soft line) reads as soft 0");
-  CHECK(!ds::parse("pocket-board 1\npanel=1\nturn=0\nswap=0\nu0=1\nu1=2\nv0=3\nv1=4\nsoft=3\n", back), "soft 3 refused");
+  CHECK(!ds::parse("pocket-board 1\npanel=1\nturn=0\nswap=0\nu0=1\nu1=2\nv0=3\nv1=4\nsoft=4\n", back), "soft 4 refused");
   CHECK(!ds::parse("hello", back), "foreign file refused");
   CHECK(!ds::parse("pocket-board 1\npanel=9\nturn=0\nswap=0\nu0=1\nu1=2\nv0=3\nv1=4\n", back), "panel 9 refused");
   CHECK(!ds::parse("pocket-board 1\npanel=1\nturn=0\n", back), "a short record refused");
