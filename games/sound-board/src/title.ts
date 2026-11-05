@@ -24,8 +24,8 @@ export function titlePicture(pal: Pal, book: Book, hero: Pixels, door: Pixels, n
   // three pads, each with a picture of its sound above it
   ['pad.chime', 'pad.coin', 'pad.blip'].forEach((name, i) => {
     const clear = (b: string) => book.pics.get(b)!.map((_x, _y, c) => (c === skyOf(pal) ? 255 : c));
-    scaleBlit(p, clear(['wave.0', 'wave.2', 'wave.7'][i]), 112 + i * 36, 160 - 76 - 24, 2);
-    scaleBlit(p, clear(name), 112 + i * 36, 160 - 76 + 20, 2);
+    scaleBlit(p, clear(['wave.0', 'wave.2', 'wave.7'][i]), 100 + i * 44, 68, 2);
+    scaleBlit(p, clear(name), 100 + i * 44, 110, 2);
   });
   scaleBlit(p, door, 236, 160 - 80, 2);
   frameOf(p, pal, 'stage');
