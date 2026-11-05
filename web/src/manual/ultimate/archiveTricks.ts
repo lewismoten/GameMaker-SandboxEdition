@@ -247,7 +247,7 @@ export const ARCHIVE_TRICKS = `<h2>More from the archive</h2>
   three speeds above. Balls, puddles, branches and treats are born off the right edge, one block
   of a timed chain each, and when the paw prints in the sky fill in, the path pulls him to the
   finish.</p>
-  ${onCd('BELTWAY')}
+  ${onCd('PARALLAX', 'BELTWAY')}
   <h2>A pass code to get through</h2>
   <p>A short puzzle in the archive locks its exit behind a word. The screen is a wall of carved
   letter tiles, eight across and three rows high, with the hero below. He walks left and right and

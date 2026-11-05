@@ -31,7 +31,7 @@ export const PALETTES: Chapter = {
   <p>Try the same trick for seasons (green, gold and white), underwater (everything pushed
   toward blue-green, the brightest colors pulled down), or a haunted version of a level you
   already built (grays, a sickly green and one red you keep for eyes).</p>
-  ${onCd('DAYNIGHT')}
+  ${onCd('DAYNIGHT', 'SAMEHOUS')}
   <h2>Plan in ramps</h2>
   <p>Palette swaps work best when the palette is planned, not grown. Lay it out in
   <i>ramps</i>: short runs of shades of one material, dark to light. Five shades of grass,

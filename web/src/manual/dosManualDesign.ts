@@ -113,7 +113,7 @@ export function designPages(shots: GameShot[]): BookletPage[] {
       <p>A palette is 256 colors, each mixed from red, green and blue (0 to 63 each). Keep color 0
       black: it is the background of every design screen. Color 15 is the mouse pointer, and
       color 255 is \u201cclear\u201d: monsters and characters show the scenery through it.</p>
-      <p class="see"><i>On the Sample CD</i> (<code>D:\\SAMPLES\\DAYNIGHT</code>), the palette changes in steps for a sunset.</p>
+      <p class="see"><i>On the Sample CD</i> (<code>D:\\SAMPLES\\DAYNIGHT</code>), the palette changes in steps for a sunset; in <code>SAMEHOUS</code>, one house is three houses, each door naming its own palette.</p>
       <h3>Block Designer</h3>
       <p>A background set holds 150 blocks, a monster set 100 and a character set 50. Draw with
       the dot, line, box, filled box, circle, disk and fill tools; shift, rotate and flip a block
@@ -149,7 +149,7 @@ export function designPages(shots: GameShot[]): BookletPage[] {
       <p>Paint a map with background blocks and place up to 200 monsters on it (up to 50 are
       shown on the screen at once). <b>Z</b> zooms out to see the whole map. You can limit
       scrolling to part of the map.</p>
-      <p class="see"><i>On the Sample CD:</i> <code>SCROLL</code>, <code>ONEMAP</code>, <code>BLK150</code>, <code>HORIZON</code> and <code>BELTWAY</code> (scenery that slides past).</p>`,
+      <p class="see"><i>On the Sample CD:</i> <code>SCROLL</code>, <code>ONEMAP</code>, <code>BLK150</code>, <code>PARALLAX</code> and <code>BELTWAY</code> (scenery that slides past), and <code>HORIZON</code>.</p>`,
     ),
     page(
       '3. Designing Games',
