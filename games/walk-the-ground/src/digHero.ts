@@ -1,4 +1,4 @@
-// Neka with a small shovel: DIG IT's own copy of the hero's character blocks and sequences. Neka carries the shovel out in
+// Nova with a small shovel: DIG IT's own copy of the hero's character blocks and sequences. Nova carries the shovel out in
 // front of them when they stand, walk and jump (blade angled to the ground), so walking into soil is plainly a dig; the
 // Enter key scoops (blade into the dirt, then lifted with a clump flying) while they push down into the soil under them.
 // The kit's heroes (games/kit/starter/hero.ts) are not touched: this reuses their head, body and outline drawing.

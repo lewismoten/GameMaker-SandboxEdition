@@ -6,7 +6,7 @@
 //      orange bug that runs a longer way, quicker. Touching it only stings a little.
 //   2. A Third Face: the same tunnel, five hits: calm, calm, hurried, hurried, and for the last hit a
 //      tiny quick bug with a bow. When it falls the way opens.
-// Both rooms are closed in by brick walls you can see, so Neka is never stopped by something she can't.
+// Both rooms are closed in by brick walls you can see, so Nova is never stopped by something she can't.
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';

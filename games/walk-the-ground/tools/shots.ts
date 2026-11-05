@@ -47,7 +47,7 @@ const screen = (map: (typeof maps)[number], col: number, row: number, ...sprites
   renderRegion(map, bbl, mbl, set, ORIGIN + col, ORIGIN + row, 16, 10, sprites.flat());
 
 const G = L1.ground;
-// the break-up chain laid out on level 1's hill: one row, each block a step further along, with Neka at the foot
+// the break-up chain laid out on level 1's hill: one row, each block a step further along, with Nova at the foot
 {
   const m = dug(0, []);
   const chain = ['soil', 'cracked', 'splitOpen', 'halfDug', 'nearlyDug', 'dug'];

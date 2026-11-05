@@ -59,7 +59,10 @@ export function logs(pal: Pal, bg: number): Pixels {
   p.rect(3, 4, 2, 4, c('wood', 1)).rect(35, 4, 2, 4, c('wood', 1));
   for (let x = 0; x < 40; x += 8) {
     // a ring of stones round the logs, with the fire above them
-    p.rect(x, 12, 8, 8, c('stone', 2)).rect(x, 12, 8, 2, c('stone', 3)).rect(x, 18, 8, 2, c('stone', 0)).rect(x + 7, 12, 1, 8, c('stone', 0));
+    p.rect(x, 12, 8, 8, c('stone', 2))
+      .rect(x, 12, 8, 2, c('stone', 3))
+      .rect(x, 18, 8, 2, c('stone', 0))
+      .rect(x + 7, 12, 1, 8, c('stone', 0));
   }
   return p;
 }

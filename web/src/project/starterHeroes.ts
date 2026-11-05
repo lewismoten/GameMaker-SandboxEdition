@@ -4,7 +4,7 @@
 import { STARTER_GROUPS } from './starter';
 
 /** The helpers, in turn (games/kit/starter/heroLook.ts helperPalettes has their looks). */
-export const HELPER_NAMES = ['MIA', 'LENA', 'MARA', 'LIAN', 'YANA', 'NEKA', 'RIMA', 'LAMI'];
+export const HELPER_NAMES = ['MIA', 'LENA', 'MARA', 'LIAN', 'YANA', 'NOVA', 'RIMA', 'LAMI'];
 /** Games whose story is Kit's own. */
 const KIT_GAMES = new Set(['kit-moves', 'duck', 'kits-shop']);
 

@@ -157,7 +157,8 @@ for (const id of ids) {
       const mons = monsOf[n];
       if (hasMonFiles) {
         for (const p of m.monsters) if (p.monnum < LASTMON) mons.add(p.monnum);
-        for (const q of (heroOf[n] ? parseCharacter(file(heroOf[n])).sequences : [])) for (const f of q.frames) if (f.pic2 === 100 && f.pic1 < LASTMON) mons.add(f.pic1);
+        for (const q of heroOf[n] ? parseCharacter(file(heroOf[n])).sequences : [])
+          for (const f of q.frames) if (f.pic2 === 100 && f.pic1 < LASTMON) mons.add(f.pic1);
       }
       const need = new Set<number>(m.blocks);
       const todo = [...need];

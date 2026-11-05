@@ -10,7 +10,7 @@
 // The engine has no number readout. A digit is a row of blocks that each look like one number
 // and turn into the next after 18 ticks (timing.ts). Every block of one kind changes together,
 // so the whole chain is a digit and it counts by itself, from the moment the level starts.
-// Both rooms are closed in by brick you can see, so Neka is never stopped by something she can't.
+// Both rooms are closed in by brick you can see, so Nova is never stopped by something she can't.
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { Book, PULL, SOLID } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';

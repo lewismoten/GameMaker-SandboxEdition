@@ -2,12 +2,12 @@
 // games/kit/starter/map.ts for what the letters mean), then given its water, signs and coins.
 // Water is only a block whose gravity setting pulls some way (water.ts); none of it hurts.
 //
-//   1. The Creek:    water that pulls LEFT and down. Fall in, and it carries Neka back to the bank she started from.
+//   1. The Creek:    water that pulls LEFT and down. Fall in, and it carries Nova back to the bank she started from.
 //                    Stepping stones cross it.
-//   2. The Float:    a deep pool that pulls UP. Neka drops in, floats to the top row (which has no pull) and swims across.
-//   3. The Lift:     a tall pool that pulls UP and LEFT. Neka steps in at the bottom and is lifted to the ledge on the left,
+//   2. The Float:    a deep pool that pulls UP. Nova drops in, floats to the top row (which has no pull) and swims across.
+//   3. The Lift:     a tall pool that pulls UP and LEFT. Nova steps in at the bottom and is lifted to the ledge on the left,
 //                    where the door is.
-// Every level is closed in by hedges you can see, so Neka is never stopped by something she can't.
+// Every level is closed in by hedges you can see, so Nova is never stopped by something she can't.
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';

@@ -65,7 +65,7 @@ for (let r = 0; r * per < poses.length; r++) {
   poses.slice(r * per, (r + 1) * per).forEach((p, i) => put(wholePose(p), palettes[0], 10 + i * 84, y, 4));
   y += 166;
 }
-text('NEKA (GREEN ALIEN) AT 4X', 10, y);
+text('NOVA (GREEN ALIEN) AT 4X', 10, y);
 y += 12;
 poses.slice(0, per).forEach((p, i) => put(wholePose(p), palettes[6], 10 + i * 84, y, 4));
 y += 166;
