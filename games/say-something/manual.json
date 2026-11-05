@@ -5,39 +5,39 @@
       "id": "sign",
       "q": "How do I put words on a sign?",
       "scene": 2,
-      "x": 5,
-      "y": 7,
+      "x": 15,
+      "y": 17,
       "level": 1
     },
     {
       "id": "bubble",
       "q": "How do I show that a character will talk?",
       "scene": 2,
-      "x": 27,
-      "y": 7,
+      "x": 37,
+      "y": 17,
       "level": 1
     },
     {
       "id": "talk",
       "q": "How do I make a character talk when my hero walks into them?",
       "scene": 2,
-      "x": 27,
-      "y": 9,
+      "x": 37,
+      "y": 19,
       "level": 1
     },
     {
       "id": "big",
       "q": "How do I fit more words on a sign?",
       "scene": 3,
-      "x": 5,
-      "y": 6,
+      "x": 15,
+      "y": 16,
       "level": 2
     },
     {
       "id": "pages",
       "q": "How do I make a talk that runs to more than one page?",
       "scene": 3,
-      "x": 26,
+      "x": 36,
       "y": 9,
       "level": 2
     }
