@@ -35,6 +35,7 @@ import { groupsPanel } from './groupsPanel';
 import { walkPathPanel } from './walkPathPanel';
 import { readWalkPaths } from '../../check/walk/walkPaths';
 import { blockProperties } from './blockProperties';
+import { rolesPanel } from './rolesPanel';
 import { blockLabel } from './blockNames';
 import { blockNameField } from './blockNameField';
 
@@ -681,7 +682,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
     walkingProps,
     touchProps,
     timeProps,
-    render: renderProps,
+    render: renderPropsBase,
   } = blockProperties({
     project,
     file,
@@ -695,6 +696,13 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
       insight.refresh(true);
     },
   });
+
+  // the Uses tab (block roles, saved in the companion file; native blocks only)
+  const roles = kind === 'bbl' ? rolesPanel({ project, file, blocks, pal, current: () => current }) : undefined;
+  const renderProps = () => {
+    renderPropsBase();
+    roles?.refresh();
+  };
 
   // character blocks: "Apply to the mirror too" for a block with a linked mirror (character/blockMirrorBar.ts)
   const mirrorSlot = h('div', { style: 'display:contents' });
@@ -754,6 +762,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
             { id: 'walking', label: 'Walking', panel: walkingProps },
             { id: 'touch', label: 'Touch', panel: touchProps },
             { id: 'time', label: 'Time', panel: timeProps },
+            { id: 'uses', label: 'Uses', panel: roles!.el },
           ]
         : [{ id: 'properties', label: 'Properties', panel: props }]),
     ],
