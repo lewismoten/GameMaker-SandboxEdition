@@ -13,6 +13,7 @@ If your registry requires authentication or a scope mapping, configure npm using
 ## APIs
 
 - `formats/blocks`, `character`, `game`, `map`, `monster`, `palette`, `gif`, `graphicScripts`, `sound`, `fli`, `fliLimits`, `voc`, `recording`, and `cmf`: native readers, writers, types, and limits. Each is a separate `formats/<name>` subpath.
+- `gif-shrink`: `shrinkGif(bytes)` returns a smaller GIF with a trimmed color table, or `undefined` when it can't shrink without changing what PLAYGAME shows.
 - `drawing`: indexed pixels, VGA palette builders, font drawing, shading, compositing, and cartoon reels.
 - `audio`: original FM instrument presets, CMF composition, PC speaker effects, and VOC synthesis.
 - `images`: indexed PNG encoding, CRC-32, color reduction, indexed drawing and picture transforms.
