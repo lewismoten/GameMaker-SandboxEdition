@@ -1,0 +1,36 @@
+/* The framed certificate (diplomaSpot.ts): on the wall above the phone in the wide room, in line with the other
+   wall trophies on a narrow screen. */
+.diploma-frame {
+  position: relative;
+  min-width: 24px;
+  min-height: 24px;
+}
+.diploma-frame[hidden] {
+  display: none;
+}
+.diploma-art {
+  display: block;
+  width: 88px;
+  height: 84px;
+  filter: drop-shadow(3px 5px 4px rgb(0 0 0 / 45%));
+}
+.diploma-art svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+@media (min-width: 961px) {
+  /* centered over the wall phone (left 1350, 56 wide, top 168), its frame clear of the handset's top */
+  .desk-scene > .diploma-frame {
+    position: absolute;
+    left: 1334px;
+    top: 72px;
+    z-index: 1;
+    transition: transform 0.15s;
+  }
+  .desk-scene > .diploma-frame:hover,
+  .desk-scene > .diploma-frame:has(> .prop-cover:focus-visible) {
+    transform: scale(1.06);
+  }
+}

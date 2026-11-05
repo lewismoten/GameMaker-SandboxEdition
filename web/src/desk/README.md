@@ -6,11 +6,12 @@ The 1994 desk. `desk.ts` puts it together and works it: the disks, the
 boxes, the catalog and what the address asks for (`deskRestore.ts`). `deskScene.ts` draws the
 scene (`stage.ts` scales it to the window); `deskPc.ts` switches the PC on and off and loads its
 insides; `deskShelf.ts` fills the shelf, `deskGmBox.ts` opens the Game-Maker box, `deskLook.ts`
-points out a prop, and `wallTrophies.ts` hangs the eggs and trophies once earned.
+points out a prop, and `wallTrophies.ts` hangs the eggs and trophies once earned, and the framed certificate above the wall phone once a graduation is finished (`diploma/`: `frameLevel.ts` picks the level and frame, `diplomaArt.ts` draws it, `diplomaSpot.ts` hangs it, follows new honors and opens the Honors tab).
 `overlayFocus.ts` moves the keyboard into an overlay and back. `wallTrophies.ts` also puts Teddy's Forte Locks toy safe ([`fortKnox/`](../fortKnox/README.md)) at the desk's right end after a catalog win, including the zero left by games with no money counter. Its combination is scribbled in pencil on the sticky note under the phone (`room/phoneNotes.ts`). `deskTour.ts` is the guided tour's BBS chapter on this PC: it
 calls The Sandbox BBS and types for the tour, then puts back what the call changed.
 
 - `ejectRule.ts`: drive A:'s eject button works any time but while A:'s light is on.
+- `missingDisk.ts`: what the desk says when its address asks for a disk the box doesn't hold; a Starter or graduation is pointed to the Sample Disk or the CD's SAMPLES folder.
 - `pc/`: the case (`caseParts.ts`: the drive cage as one touching stack, all in mm from one `--mm` factor: the bright white CD-ROM and the 3.5" floppy (laid flat, KELVO, a made-up maker) side by side with their tops aligned, no empty expansion bays; POWER, TURBO and H.D.D. as a row of lights above the control strip with the hard disk's flickering one; `caseFace.ts`: the drawn key lock (open and closed padlocks, padlocks above it, the red arrow along the 45 degree notch toward the open one) and the SANDBOX badge with its sand castle; RESET, round and right of TURBO, reboots a PC that is on, `Computer.reset`; the TURBO button sits beside the MHz display), the CRT (`crtWarp.ts`; `screenGlow.ts` lights the bezel with
   the colors of the picture on the tube; `crtWarmUp.ts` and `crtOn.css` warm the tube up at switch-on: dark, the beam's flickering line, the picture fading up torn into jagged rows that settle;
   `crtOff.css` collapses it at switch-off), the fans whining up and the drives the boot reads (floppy seek test,
