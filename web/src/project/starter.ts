@@ -89,7 +89,11 @@ export const STARTER_GROUPS: { name: string; tag: string; games: string[] }[] = 
     tag: 'More than one screen.',
     games: ['scroll', 'many-rooms', 'overhead', 'diagonal-wrap', 'blocks-budget', 'near-far', 'very-far', 'town-links'],
   },
-  { name: 'Drawing with Blocks', tag: 'Roads, water and sky, drawn and animated.', games: ['road-tiles', 'shore', 'twinkle', 'flicker', 'lights-out'] },
+  {
+    name: 'Drawing with Blocks',
+    tag: 'Roads, water and sky, drawn and animated.',
+    games: ['road-tiles', 'shore', 'twinkle', 'flicker', 'lights-out', 'color-doors'],
+  },
   {
     name: 'Showcase Tricks',
     tag: 'How the big games do their big moments.',

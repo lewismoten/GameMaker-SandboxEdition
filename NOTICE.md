@@ -114,7 +114,7 @@ game folder opens in the browser unchanged.
 - **Fictional hint line** (`web/src/desk/room/phone/hintBill.ts`, `hintLine.ts`): local elapsed-time accounting, backup integration, phone menu and cancellation, achievement, original Teddy dialogue and regression tests implemented with **OpenAI Codex (GPT-6)**, directed by Lewis Moten. The charges are simulated game data; no payment service is used. The per-minute billing paid up front, the automated game-by-game phone tree (`hintTree.ts`, `audio/phone/hintGames.ts`, hints adapted from each game's own hint book) and the Hint Giant script were reworked with **Claude (Sonnet 5.5)**, directed by Lewis Moten.
 - **BBS callback signup** (`web/src/retro/bbs/signup*.ts`): local verified-handle records, simulated incoming modem callbacks, signup flow, tests and playful lines implemented with **OpenAI Codex (GPT-6)**, directed by Lewis Moten. Manual `ATA` answering and `RING` result codes follow the [U.S. Robotics modem command reference](https://ads.usr.com/support/3cxm756/3cxm756-ug/ATCOMS.HTM). This is a behavioral reference; no vendor source, documentation text or modem binaries are bundled.
 - **Final Curtain's paper spyglass and evidence sheet** (`web/src/manual/printables/spyglass.ts`, `fingerprint.ts`, `sleuthPrints.ts`; the stage door in `games/sleuth/`): the black-ink spyglass drawing, the seeded fingerprint patterns and the stage-door puzzle were written by **Claude Sonnet 5.5** (Anthropic), from Lewis Moten's idea. The prints are hidden with the red-film technique the hint book uses (`redFilm.ts`), after Daniel C. Wilson's "red reveal" (danielcwilson.com/blog/2018/02/optical-fun-red-reveal/); no code was copied from it. No third-party artwork or fingerprint data was used.
-- **The Starters** (`games/kit/starter/`; 79 games in the Starters home tab):
+- **The Starters** (`games/kit/starter/`; 80 games in the Starters home tab):
   - **The Basics:** `games/first-steps/`, `games/keys-and-doors/`, `games/meet-the-monsters/`, `games/room-to-room/`, `games/coins-and-score/`, `games/breakable-walls/`, `games/walk-the-ground/`, `games/watch-your-step/`, `games/things-that-grow/`.
   - **Moving and Pushing:** `games/power-up/`, `games/throw-it/`, `games/many-weapons/`, `games/inventory/`, `games/health-and-hearts/`, `games/momentum/`, `games/jump-boots/`.
   - **Worlds That Push Back:** `games/slippery-and-bouncy/`, `games/gravity-on-gravity-off/`, `games/swim/`, `games/gusts/`.
@@ -668,11 +668,11 @@ formats from their published descriptions and from Game-Maker's own source.
 - **Color-vision simulation matrices** (`web/packages/engine/src/gfx/colorVision.ts`, the one copy; used by
   the palette editor's Color vision check in `web/src/editor/editors/palette/colorVision.ts`, by the badge
   look-alike check in `web/scripts/badgeSimilarMetrics.ts` (`npm run badges:similar`), and by the Starter
-  `games/colors/` in `build.ts`, `tools/colorCheck.ts` and `tools/shots.ts`): protanopia, deuteranopia and
+  `games/colors/` in `build.ts`, `tools/colorCheck.ts` and `tools/shots.ts`, and by `games/color-doors/` in `src/views.ts`, to draw its five palettes): protanopia, deuteranopia and
   tritanopia are simulated with the severity-1.0 matrices published by **Gustavo M. Machado, Manuel M.
   Oliveira and Leandro A. F. Fernandes**, "A Physiologically-based Model for Simulation of Color Vision
   Deficiency" (IEEE Transactions on Visualization and Computer Graphics 15(6), 2009), applied in linear
-  RGB as the paper describes. The palette editor's grayscale is the WCAG 2 relative luminance above and
+  RGB as the paper describes. The palette editor's grayscale is the WCAG 2 relative luminance above (`games/color-doors/`'s no-color view keeps each color's Rec. 709 luminance) and
   the badge check's is Rec. 601 luma; the editor and `games/colors/` measure how alike two colors look with
   the CIE's **CIELAB** color space and 1976 color difference (ΔE), using the sRGB standard's (IEC 61966-2-1)
   transfer curve. All are published formulas and numbers; no code of theirs is included. The simulation

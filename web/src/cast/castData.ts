@@ -92,6 +92,7 @@ export const CAST_GAMES = {
   overhead: ['Overhead', 'starter'],
   'road-tiles': ['Road Tiles', 'starter'],
   'town-links': ['Maps Within Maps', 'starter'],
+  'color-doors': ['Color Doors', 'starter'],
   'blocks-budget': ['150 Blocks', 'starter'],
   'near-far': ['Near and Far', 'starter'],
   'very-far': ['Walking Very Far', 'starter'],
