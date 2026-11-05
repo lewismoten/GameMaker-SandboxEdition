@@ -63,10 +63,14 @@ async function checkGame(id: string): Promise<string> {
   const ev = (sim as any).event.bind(sim) as (k: number) => void;
   const nextAt = () => (ki < segs[seg].length ? at + segs[seg][ki].delta : Infinity);
   at = 0;
+  // A runaway guard: once every key is used, the game gets 2000 more ticks to end before the run stops.
+  let lastKeyTick = 0;
   while (tickNo < limit && !sim.ended) {
+    if (seg >= segs.length - 1 && ki >= segs[seg].length && tickNo > lastKeyTick + 2000) break;
     while (seg < segs.length && ki < segs[seg].length && nextAt() === sim.ticks + 1) {
       at = nextAt();
       script.push(`K ${tickNo + 1} ${segs[seg][ki].key}`);
+      lastKeyTick = tickNo + 1;
       ev(segs[seg][ki].key);
       ki++;
     }

@@ -2,7 +2,7 @@
 // the same file builds for the board and for the Mac test (host/hosttest.cpp). It is a port of the
 // parts of web/packages/engine/src/engine (character.ts, keys.ts, touch.ts, scroll.ts, scene.ts,
 // render.ts), which themselves follow code/GM/PLAYGAME.C. Only what First Steps uses is ported:
-// no monsters, sounds, pick up / drop, joystick or inventory. Names follow the TypeScript.
+// no monsters, sounds or joystick. Names follow the TypeScript.
 // Game ticks run at 18.2 Hz. Data comes from the game's real files: steps.bbl (blocks), hero.cbl
 // (character blocks), hero.chr (sequences) and the .map files.
 #pragma once
@@ -18,6 +18,7 @@ constexpr int MAXGRAV = 11, GRAVSPEED = 1, SCROLLPERMOVE = 6, SCRSPDX = 40, SCRS
 constexpr int SOLTOP = 1, SOLRIG = 2, SOLBOT = 4, SOLLEF = 8;
 constexpr int IDLESEQ = 0, DIESEQ = 1, HURTSEQ = 2, PICKUPSEQ = 3, DROPSEQ = 4;
 constexpr int BLOCK_BYTES = 420, SEQ_BYTES = 185, FRAME_BYTES = 17;
+constexpr int MAXINV = 10;
 constexpr int MAXLINKS = 16, MAXLEVELS = 12;
 
 inline int u16(const uint8_t* p) { return p[0] | (p[1] << 8); }
@@ -79,6 +80,7 @@ struct World {
   // The character: x[0]/y[0] the map block, x[1]/y[1] the pixel offset in it.
   int cx[2], cy[2], cframe = 0, cseq = 0;
   int8_t seqon[MAXSEQ];
+  int inv[MAXINV];  // carried object blocks; BACKBL = free slot, BACKBL + 1 = not set up yet
   int meter[30];
   int hitpts = -1, lives = -1, score = 0;
   bool update = false, topthere = false, bottomthere = false;
@@ -281,6 +283,41 @@ struct World {
     return 1;
   }
 
+  // checkseq_fortie: turns on/off every sequence tied to `block`.
+  void checkSeqForTie(int block, bool setting) {
+    for (int i = 0; i < MAXSEQ; i++) if (seqBloc(i) == block) seqon[i] = setting;
+  }
+  // really_checktouch for one cell: false when refused (a counter is empty).
+  bool reallyCheckTouch(int x, int y, int bnum) {
+    if (x == MLEN) return true;
+    Attr b = attr(bnum);
+    if (!doBlockTouchChar(b)) return false;
+    if (bnum != b.touchBl && onscrn(x, y)) { map[y * MLEN + x] = (uint8_t)b.touchBl; gen++; }
+    return true;
+  }
+  // PickupBloc: takes the first touched object block whose touch isn't refused into the next free slot.
+  bool pickupBlock() {
+    if (inv[MAXINV - 1] != BACKBL) return false;
+    int spot = 0;
+    while (spot < MAXINV && inv[spot] != BACKBL) spot++;
+    Touch t = getTouch();
+    for (int j = 0; j < 6; j++) {
+      if (t.bx[j] == MLEN || !attr(t.num[j]).obj) continue;
+      if (reallyCheckTouch(t.bx[j], t.by[j], t.num[j])) {
+        inv[spot] = t.num[j];
+        checkSeqForTie(t.num[j], true);
+        return true;
+      }
+    }
+    return false;
+  }
+  // DropBloc: the replay never picks a slot (Esc), so nothing is dropped.
+  void dropBlock() {
+    topthere = false;
+    bottomthere = false;
+    keydn[seqKey(DROPSEQ) >> 8] = 0;
+  }
+
   void checkTouch() {
     Touch t = getTouch();
     for (int l = 0; l < 6; l++) {
@@ -454,7 +491,8 @@ struct World {
       int oldframe = cframe, oldseq = cseq;
       if (cframe == -1) {
         if (meter[cseq] < INF_REPEAT && cseq > 4) meter[cseq]--;
-        if (cseq == DROPSEQ || cseq == PICKUPSEQ) {  // nothing to drop or pick up in First Steps
+        if (cseq == DROPSEQ) dropBlock();
+        if (cseq == DROPSEQ || (cseq == PICKUPSEQ && !pickupBlock())) {  // nothing happened: back to idle
           cseq = IDLESEQ;
           keystkptr = 0;
           curkey = 0;
@@ -683,6 +721,7 @@ struct World {
     lives = -1;
     score = 0;
     for (int& m : meter) m = -1;
+    for (int& v : inv) v = BACKBL + 1;
     clock = 1;
     gclk = 1;
     ticks = 0;
@@ -697,10 +736,12 @@ struct World {
     gen++;
     if (!loadMap || !loadMap(loadUser, lv, map)) return false;
     // A meter of -20000 marks a sequence the previous character did not define.
+    if (inv[0] == BACKBL + 1) for (int i = 0; i < MAXINV; i++) inv[i] = chr[3714 + i];
     for (int i = 0; i < MAXSEQ; i++) {
       seqon[i] = seqBloc(i) == BACKBL;
       if (meter[i] == -20000) meter[i] = i16(chr + 3724 + i * 2);
     }
+    for (int i = 0; i < MAXINV; i++) for (int q = 0; q < MAXSEQ; q++) if (seqBloc(q) == inv[i]) seqon[q] = true;
     if (meter[0] == -1) {
       for (int i = 0; i < 5; i++) meter[i] = i16(chr + 3724 + i * 2);
       for (int i = 5; i < MAXSEQ; i++) meter[i] = seqKey(i) > 0 ? i16(chr + 3724 + i * 2) : -20000;
