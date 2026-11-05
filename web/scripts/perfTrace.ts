@@ -3,11 +3,11 @@
 // thread's time (script / layout / style), the heap, and what the page allocated (blob URLs left
 // alive and their bytes, workers, audio contexts, bitmaps). Writes JSON, and with --trace a
 // Chrome trace per page that opens in DevTools. Runs its own server; never 5173.
-//   npm run perf:trace -- [--dist <scratch vite build>] [--port 5195] [--url http://…] [--only desk,help] [--trace <folder>] [--profile <folder>] [--out <folder>]
+//   npm run perf:trace -- [--dist <scratch vite build>] [--port 5195] [--url http://…] [--throttle 4] [--network 4g|slow-4g] [--only desk,help] [--trace <folder>] [--profile <folder>] [--out <folder>]
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import type { CDPSession, Page } from 'playwright-core';
-import { arg, launch, OBSERVE, target } from './perfLib';
+import { applySlowdown, arg, launch, OBSERVE, target } from './perfLib';
 
 const PAGES: [string, string][] = [
   ['home', '/#/'],
@@ -86,6 +86,7 @@ async function trace(page: Page, cdp: CDPSession, name: string, url: string, tra
     if (r) r.bytes = e.encodedDataLength;
   });
   await cdp.send('Network.enable');
+  await applySlowdown(cdp);
   await cdp.send('Performance.enable');
   if (traceDir)
     await cdp.send('Tracing.start', { categories: 'devtools.timeline,v8.execute,disabled-by-default-devtools.timeline', transferMode: 'ReturnAsStream' });
