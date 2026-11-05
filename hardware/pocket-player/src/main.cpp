@@ -161,6 +161,33 @@ static void title(const char* s) {
   tft.print(s);
 }
 
+// The solid controls (MENU, KEYS and the open key tiles): the game is never pushed under them, so a
+// repaint of the picture doesn't blink them off and on (they are drawn once, and again only when they
+// change or the controls are redrawn in full).
+static int solidRects(int (*out)[4]);
+// Pushes `rows` rows of the band at (X0, Ys), w wide, leaving out the solid controls.
+static void pushAround(int X0, int Ys, int w, int rows) {
+  int sr[3 + ctl::MAXEXTRA][4];
+  int ns = solidRects(sr);
+  bool hit = false;
+  for (int i = 0; i < ns && !hit; i++) hit = sr[i][0] < X0 + w && sr[i][2] > X0 && sr[i][1] < Ys + rows && sr[i][3] > Ys;
+  if (!hit) { tft.pushImage(X0, Ys, w, rows, band); return; }
+  for (int r = 0; r < rows; r++) {
+    int Y = Ys + r, x = X0, X1 = X0 + w;
+    while (x < X1) {
+      int stop = X1, skipTo = x;  // the next solid span on this row
+      for (int i = 0; i < ns; i++) {
+        if (Y < sr[i][1] || Y >= sr[i][3] || sr[i][2] <= x || sr[i][0] >= X1) continue;
+        if (sr[i][0] <= x) { if (sr[i][2] > skipTo) skipTo = sr[i][2]; }
+        else if (sr[i][0] < stop) stop = sr[i][0];
+      }
+      if (skipTo > x) { x = skipTo; continue; }
+      tft.pushImage(x, Y, stop - x, 1, band + r * w + (x - X0));
+      x = stop;
+    }
+  }
+}
+
 // Draws screen rectangle [X0,X1) x [Y0,Y1) of the 480x300 view: the game's rows at 1.5x.
 static void drawRegion(int X0, int Y0, int X1, int Y1) {
   if (X0 < 0) X0 = 0;
@@ -178,7 +205,7 @@ static void drawRegion(int X0, int Y0, int X1, int Y1) {
       uint16_t* o = band + r * w;
       for (int X = X0; X < X1; X++) *o++ = pal[rowIdx[X * 2 / 3]];
     }
-    tft.pushImage(X0, Ys, w, rows, band);
+    pushAround(X0, Ys, w, rows);
   }
 }
 
@@ -211,6 +238,7 @@ static void disc(const ctl::Disc& d, bool down, const char* label) {
   tft.setTextDatum(textdatum_t::top_left);
 }
 static void chip(const ctl::Rect& r, const char* label, bool down) {
+  tft.fillRect(r.x0, r.y0, r.x1 - r.x0, r.y1 - r.y0, C_BLACK);  // square: the game isn't pushed under its corners
   tft.fillRoundRect(r.x0, r.y0, r.x1 - r.x0, r.y1 - r.y0, 6, down ? C_YELLOW : C_DARK);
   tft.drawRoundRect(r.x0, r.y0, r.x1 - r.x0, r.y1 - r.y0, 6, C_WHITE);
   tft.setTextColor(down ? C_BLACK : C_WHITE);
@@ -243,6 +271,7 @@ static void drawControls(int cx0, int cy0, int cx1, int cy1) {
     for (int i = 0; i < nd.nextra; i++) {
       const ctl::Rect& r = L.tile[i];
       bool on = controls.tileDown & (1 << i);
+      tft.fillRect(r.x0, r.y0, r.x1 - r.x0, r.y1 - r.y0, C_BLACK);
       tft.fillRoundRect(r.x0, r.y0, r.x1 - r.x0, r.y1 - r.y0, 6, on ? C_YELLOW : C_DARK);
       tft.drawRoundRect(r.x0, r.y0, r.x1 - r.x0, r.y1 - r.y0, 6, C_WHITE);
       tft.setTextColor(on ? C_BLACK : C_WHITE);
@@ -254,6 +283,16 @@ static void drawControls(int cx0, int cy0, int cx1, int cy1) {
       tft.setTextDatum(textdatum_t::top_left);
     }
   tft.clearClipRect();
+}
+
+static int solidRects(int (*out)[4]) {
+  const ctl::Layout& L = controls.L;
+  int n = 0;
+  auto add = [&](const ctl::Rect& r) { out[n][0] = r.x0; out[n][1] = r.y0; out[n][2] = r.x1; out[n][3] = r.y1; n++; };
+  add(L.menu);
+  if (controls.need.nextra) add(L.keys);
+  if (controls.keysOpen) for (int i = 0; i < controls.need.nextra; i++) add(L.tile[i]);
+  return n;
 }
 
 struct R { int x0, y0, x1, y1; };
