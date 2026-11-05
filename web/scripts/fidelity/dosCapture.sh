@@ -28,7 +28,7 @@ windowresolution=640x400
 output=surface
 [cpu]
 core=normal
-cycles=fixed 12000
+cycles=${CYCLES:-fixed 12000}
 [sblaster]
 sbtype=sb16
 [dosbox]
