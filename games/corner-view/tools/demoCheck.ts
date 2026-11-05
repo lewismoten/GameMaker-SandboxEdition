@@ -20,7 +20,7 @@ const r = await replay(
   },
   { maxMinutes: 3 },
 );
-const seen = r.scenes.slice(0, 3).join(' ');
+const seen = r.scenes.slice(0, 4).join(' ');
 if (r.error) console.log(r.error);
 console.log(`demo: scenes entered ${r.scenes.join(' ')}; ${r.keysLeft} keys unplayed`);
 if (seen !== '2 3 4 1' || r.keysLeft) {
