@@ -92,6 +92,7 @@ export const CAST_GAMES = {
   'blocks-budget': ['150 Blocks', 'starter'],
   'near-far': ['Near and Far', 'starter'],
   shore: ['Waves on the Shore', 'starter'],
+  twinkle: ['Twinkle, Twinkle', 'starter'],
   'things-that-grow': ['Seeds and Nests', 'starter'],
   dialog: ['Everybody Talks', 'starter'],
   parallax: ['Parallax', 'starter'],
@@ -251,6 +252,7 @@ const LISTED: CastMember[] = [
       { game: 'jump-boots', as: 'taps up a tall cliff like a jet pack, then jumps twice in boots that hold only two jumps' },
       { game: 'diagonal-wrap', as: 'follows a road down the map and out of the bottom, then round the map three times on a tilted one' },
       { game: 'shore', as: 'crosses a pier over a sea that turns itself, then walks a beach where the waves run up the sand and back' },
+      { game: 'twinkle', as: 'walks a night meadow under stars that blink all at once, then under stars that twinkle in no step' },
     ],
   },
   {
