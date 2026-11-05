@@ -263,6 +263,7 @@ Blaster `.VOC` sample instead.
 The `.VOC` editor trims, fades, normalizes, reverses and changes the speed and pitch of a
 sample, or records a new one from the microphone. It saves 8-bit sound, the way the Sound
 Blaster played it.
+Under the waveform a time ruler marks seconds and game ticks, with a yellow zone where a slow PC may stutter and a red zone where it likely will, and a line at 64 KB. DOS reads the whole sound from disk while the game waits, so the zones are estimates from old hard-disk speeds. The sound still records and plays in full; the ruler is only a warning.
 
 ## Animations, slide shows, backdrops and text screens
 

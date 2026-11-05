@@ -76,7 +76,7 @@ Part of the [source map](../README.md).
   `slideShow/`, `textScreen/` (Undo and Redo steps in `textUndo.ts`: a burst of typing is one step, a paste, cut or new line its own) , `recording/` and `highScores/`.
 - `tools/`: ways to make files beyond "new": importing pictures (`importPicture.ts`,
   `convert.ts`), composing songs (`songMaker.ts`), recording or synthesizing samples
-  (`vocMaker.ts`, `sfxMaker.ts`; a recording stops itself where the .VOC would reach 64 KB, with the
+  (`widgets/vocRuler.ts` draws a time ruler under the recorder's and the sample editor's waveform: seconds, game ticks, a yellow "may stutter" and a red "likely stutters" zone and a 64 KB line, from estimates in `audio/vocLimit.ts`; `vocMaker.ts`, `sfxMaker.ts`; a recording stops itself where the .VOC would reach 64 KB, with the
   `widgets/recordMeter.ts` meter), speaker effects (`speakerFx.ts`), textures (`textures.ts`), a
   new game's opening (`opening/`) and the integrator's instruction and level cards (`cards/`: the
   words from the game's keys in `cardText.ts`, a plain backdrop in `cardBackdrop.ts`, the files in

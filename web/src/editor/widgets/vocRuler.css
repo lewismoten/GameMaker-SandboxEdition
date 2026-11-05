@@ -1,0 +1,100 @@
+/* The .VOC time ruler (vocRuler.ts). Zones use patterns as well as color. */
+.voc-ruler {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.voc-ruler-track {
+  position: relative;
+  height: 46px;
+  border-radius: 4px;
+  border: 1px solid var(--line, #888);
+  background: var(--panel, transparent);
+  overflow: hidden;
+}
+.voc-zone {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: flex-start;
+  font-size: 11px;
+  font-weight: 700;
+  color: #111;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.voc-zone span {
+  padding: 1px 4px;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 0 0 4px 0;
+}
+.voc-yellow {
+  background: repeating-linear-gradient(45deg, #f5c518 0 6px, #fbe27a 6px 12px);
+}
+.voc-red {
+  background:
+    repeating-linear-gradient(45deg, transparent 0 5px, rgba(0, 0, 0, 0.35) 5px 7px),
+    repeating-linear-gradient(-45deg, transparent 0 5px, rgba(0, 0, 0, 0.35) 5px 7px), #d93a2b;
+  color: #fff;
+}
+.voc-red span {
+  color: #111;
+}
+.voc-tick,
+.voc-sec,
+.voc-64k {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 0;
+}
+/* the tick marks are drawn at the bottom of each full-height holder; labels sit in a row of their own */
+.voc-tick::before,
+.voc-sec::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  background: #000;
+  width: 1px;
+  height: 6px;
+}
+.voc-sec::before {
+  width: 2px;
+  height: 14px;
+}
+.voc-sec span,
+.voc-64k span {
+  position: absolute;
+  top: 24px;
+  left: 4px;
+  line-height: 1.2;
+  font-size: 11px;
+  color: #000;
+  background: rgba(255, 255, 255, 0.85);
+  padding: 0 2px;
+  white-space: nowrap;
+}
+.voc-64k::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 3px;
+  background: #000;
+}
+.voc-64k span {
+  top: 0;
+  left: 6px;
+  font-weight: 700;
+}
+.voc-ruler-note.warn {
+  border-left: 3px solid #d93a2b;
+  padding-left: 6px;
+}
+.voc-ruler:focus-visible {
+  outline: 2px solid var(--accent, #4a90e2);
+  outline-offset: 2px;
+}
