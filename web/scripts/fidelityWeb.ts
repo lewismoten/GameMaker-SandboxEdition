@@ -2,7 +2,8 @@
 // the player would have seen, one frame per game tick, as RGB (raw .rgb frames in one file).
 //   [KEYS="tick:scan,..."] [MAXTICKS=n] node ../node_modules/vite-node/vite-node.mjs scripts/fidelityWeb.ts <gameware|shareware> <game-id> <demo.rec|-> <out-prefix> [seed]
 // With '-' no recording plays and KEYS (press scan code; scan|0x80 releases) are fed at those game ticks.
-// Known problem: the headless run stalls for good somewhere past game tick 60-80 of a level.
+// ALL=1 also writes <out>.all.rgb and <out>.all.txt: every screen the machine presents (palette fades, slides,
+// menus too), one line per presented frame: index of the stored picture (identical neighbors are stored once), virtual ms, game clock, scene.
 import { readFileSync, writeFileSync } from 'node:fs';
 import { loadCdGame, runHeadless } from '../../games/kit/cdDemos/headless';
 
@@ -17,6 +18,15 @@ let scene = -1;
 let nf = 0;
 let lastClock = -1;
 const clocks: number[] = [];
+const allChunks: Buffer[] = [];
+const allLog: string[] = [];
+const grab = (m: { screen: { pixels: Uint8Array; palette: Uint8Array } }): Buffer => {
+  const px = m.screen.pixels;
+  const pal = m.screen.palette;
+  const rgb = Buffer.alloc(320 * 200 * 3);
+  for (let i = 0; i < 64000; i++) for (let k = 0; k < 3; k++) rgb[i * 3 + k] = (pal[px[i] * 3 + k] << 2) | (pal[px[i] * 3 + k] >> 4);
+  return rgb;
+};
 // KEYS="tick:scan,tick:scan" presses (scan | 0x80 releases) at that game tick
 const keys: [number, number][] = (process.env.KEYS ?? '')
   .split(',')
@@ -37,6 +47,13 @@ await runHeadless(files, gam, {
     if (ticks % 100 === 0) console.error(`.. ${ticks} playing=${s.rec.playing} tick=${s.rec.tick}`);
     if (recPath !== '-' && !s.rec.playing) return true;
   },
+  onPresent: process.env.ALL
+    ? (m, t) => {
+        const g = grab(m);
+        if (!allChunks.length || !g.equals(allChunks[allChunks.length - 1])) allChunks.push(g);
+        allLog.push(`${allChunks.length - 1} ${t.toFixed(1)} ${lastClock} ${scene}`);
+      }
+    : undefined,
   onFrame: (w, _s, m) => {
     nf++;
     if (w.clock === lastClock) return;
@@ -52,6 +69,10 @@ await runHeadless(files, gam, {
   },
 });
 writeFileSync(`${out}.rgb`, Buffer.concat(chunks));
+if (process.env.ALL) {
+  writeFileSync(`${out}.all.rgb`, Buffer.concat(allChunks));
+  writeFileSync(`${out}.all.txt`, allLog.join('\n'));
+}
 writeFileSync(`${out}.clocks`, clocks.join('\n'));
 writeFileSync(`${out}.log`, log.join('\n') + `\nframes ${chunks.length} ticks ${ticks} scene ${scene}\n`);
 console.log(log.join('\n'), `\nframes ${chunks.length} ticks ${ticks}`);
