@@ -5,9 +5,10 @@ import { MLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { explore, type Exploration, type ExitReach } from '../explore';
 import { steadyMoves, type Move } from '../inputs';
 import { playtestScene, type Playtest, type SceneRun } from '../playtest';
+import { scenesOf } from '../sceneData';
 import { startCharInfo } from '../sim';
 import { LEFT, RIGHT, testGame } from '../testGame';
-import { describeMove, leftBehind, oneWay, softlocks, steadyFindings } from './wayBack';
+import { describeMove, leftBehind, noRouteNote, oneWay, softlocks, steadyFindings } from './wayBack';
 
 // prettier-ignore
 const LEDGE = [
@@ -123,5 +124,46 @@ describe('slower hands', () => {
     expect(f).toHaveLength(1);
     expect(f[0].title).toMatch(/^In the bot’s runs with slower hands, it did not get past \(4, 2\)$/);
     expect(f[0].detail).toContain('at least 330 ms between changes');
+  });
+});
+
+describe('slower hands when the bot found no route', () => {
+  it('says plainly that slower hands were not checked, as a suggestion, and what the tool cannot see', () => {
+    const n = noRouteNote(330, false);
+    expect(n.title).toBe('Slower hands were not checked here: no route was found');
+    expect(n.detail).toContain(
+      'found no way through this scene, so a run with slower hands (at least 330 ms between key changes) had nothing to be compared with',
+    );
+    expect(n.detail).toContain('says nothing about whether a person can get through');
+    expect(n.detail).toContain('Suggestion: play it once at an unhurried pace yourself.');
+    expect(n.detail).toContain('can’t see how long a jump lasts');
+    expect(n.detail).not.toContain('tap jump again in the air');
+  });
+
+  it('adds the air-tap timing where the hero can tap again in the air, and "in the time it had" when the search was cut short', () => {
+    const n = noRouteNote(330, true, false);
+    expect(n.detail).toContain('found no way through this scene in the time it had');
+    expect(n.detail).toContain('Chaining those taps needs each press within about the jump’s air time of the last');
+  });
+
+  it('is an info finding where the scene has a link out the bot did not reach, in place of the silence a missing route used to give', async () => {
+    const t = testGame(LEDGE);
+    const main = (await playtestScene(t.game, t, 2))!;
+    const noWay = { ...main, ex: { ...main.ex, exits: [] } };
+    const d = scenesOf(t.game, t).find((s) => s.scene === 2)!;
+    expect(d.links.length).toBeGreaterThan(0);
+    const f = steadyFindings(noWay, noWay, d, 6);
+    expect(f).toHaveLength(1);
+    expect(f[0]).toMatchObject({ check: 'steady', severity: 'info', title: 'Slower hands were not checked here: no route was found' });
+    expect(f[0].detail).toContain('at least 330 ms');
+  });
+
+  it('says nothing for a scene with no link to touch (an ending, a win scene, one the game leaves another way)', async () => {
+    const t = testGame(LEDGE);
+    const main = (await playtestScene(t.game, t, 2))!;
+    const noWay = { ...main, ex: { ...main.ex, exits: [] } };
+    const d = scenesOf(t.game, t).find((s) => s.scene === 2)!;
+    expect(steadyFindings(noWay, noWay, { ...d, links: [] }, 6)).toEqual([]);
+    expect(steadyFindings(noWay, noWay, undefined, 6)).toEqual([]);
   });
 });
