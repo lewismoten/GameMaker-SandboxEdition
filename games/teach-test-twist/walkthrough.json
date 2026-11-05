@@ -1,0 +1,77 @@
+{
+ "version": 1,
+ "game": "teach-test-twist",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU0ZzSdNFM0nSwDLA00SOQK5FM0ESxU5ArkIywxNCM0HTQXNA00DOQK5Dc0HTTfNA00="
+  },
+  {
+   "scene": 3,
+   "keys": "AU0ZzSdNGc0DTQjNBk0EOQK5BM0UTQM5ArkNzQdND80nSwDLA00FzQNNEjkCuRnNA00ZzQNN"
+  },
+  {
+   "scene": 4,
+   "keys": "AU0UzSdND80nTQrNA00IzQdNBc0DTQM5ArkNzQdLAMsDTQXNA00SOQK5Gc0DTQXNJ00ZzQNNHs0DTQ=="
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: Teach"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: Test"
+  },
+  {
+   "scene": 4,
+   "title": "Level 3: Twist"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 9823,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 896,
+    "time": 14933.333333333148
+   },
+   {
+    "title": "Level 1: Teach",
+    "frame": 2125,
+    "time": 35416.66666666724
+   },
+   {
+    "title": "Level 2: Test",
+    "frame": 3595,
+    "time": 59916.666666663674
+   },
+   {
+    "title": "Level 3: Twist",
+    "frame": 5009,
+    "time": 83483.33333333474
+   },
+   {
+    "title": "Ending",
+    "frame": 6540,
+    "time": 109000.00000000883
+   },
+   {
+    "title": "Credits",
+    "frame": 8749,
+    "time": 145816.66666667335
+   }
+  ]
+ }
+}
