@@ -44,11 +44,12 @@ What PLAYGAME and the web engine (`web/packages/engine/src/engine/game.ts` `play
 
 A `.lst` is a slide list: `name seconds` per line, the seconds being how long to wait for a key (0: go on at once, none: wait for a key). Each picture is drawn on black, then the palette fades in; a `.txt` is written over the picture before it, 8 by 8 glyphs from column 5 and row 5, 16 lines a page with MORE... when more follows, in the palette color nearest RGB(50,10,50). A key or a click ends a wait; Esc leaves.
 
-The board (`src/main.cpp`, `src/gmcards.h`) does all of it except: the title, menu, story and credits screens (not part of a play), the high scores (the board keeps none; the list comes next), `.fli` animations (one Starter has one as an exit card; it is left out and the other cards still show), and the Esc key (the MENU chip pauses). It draws at 1.5 times like the game. The fade is by the clock like the engine's, not by a fixed 65 frames: the panel redraws about 10 to 15 times in the 0.93 s, so the steps are visible. A touch moves on wherever the engine waits for a key. When the packed game has no cards the screen just fades.
+The board (`src/main.cpp`, `src/gmcards.h`) does all of it except: the title, menu, story and credits screens (not part of a play), the high scores (the board keeps none; the list comes next), and the Esc key (the MENU chip pauses). `.fli` animations play (Pictures and Cartoons has one, `bloom.fli`, as level 1's exit card): the frames sit one by one in `cards.pak`, so the board unpacks one frame at a time into a 64 KB canvas and draws it, each held for the file's own speed in 1/70 s; a touch ends it. It draws at 1.5 times like the game. The fade is by the clock like the engine's, not by a fixed 65 frames: the panel redraws about 10 to 15 times in the 0.93 s, so the steps are visible. A touch moves on wherever the engine waits for a key. When the packed game has no cards the screen just fades.
 
 - Packing: `pocketData.ts` writes `card <where> g|t <file> <seconds> ...` lines into each `.cfg` (see `src/gmcards.h`): a picture is its 768 palette bytes then 64000 indices, deflated like the other files (3 KB for a typical Starter card, 326 distinct pictures in all, and the games share them); a text page is its text, already cut to the 31 character lines, with its two palette colors worked out then. `data/font.bin` is the 8 by 8 font (95 glyphs).
 - Memory: a card takes one 64 KB block on the heap while it shows (the playing level stays loaded; a card that can't be allocated is skipped).
 - The play loop does not change: `gmcore.h` has a `hold` switch, set by the board, that stops `tick()` at a death or a link (the old level is still there to fade out) until `finish()` enters the next. Without it (the Mac host check, the serial self-test) the tick does both as before, so the tick-for-tick comparison is untouched.
+- Frames: a `card <where> f <table> <seconds> <speed> <frames>` line; the table lists each frame's pak offset and length. The decoder (`fliApply` in `gmcards.h`) handles the FLI chunks COLOR, LC, BLACK, BRUN and COPY, which is all the Starters' animations use; the packer leaves out an animation with any other chunk or size.
 - Check on the Mac: `cd web && npx vite-node scripts/pocketCardsCheck.ts` compares every card and text page of every packed game with what the engine draws on its own `Screen` (pixels, palette, wait seconds).
 
 ## Sound
@@ -113,6 +114,8 @@ The host check cannot see stack, heap or DRAM limits, so the firmware has a seri
 With the board plugged in and on the list (not mid-game, and nobody using it):
 
 `~/.platformio/penv/bin/python web/scripts/pocketBoardCheck.py /dev/cu.usbserial-XXXX --ticks 300`
+
+Add `--cards` (serial: `T all 300 cards`) to also load and draw every card of each game with the game loaded, no waiting: a second table (`SC` lines) of cards shown, failed, milliseconds, free heap, largest block and the heap low-water mark, and the lowest of all.
 
 It prints a table and exits 1 on a failed load, a stack high-water under 1024 bytes, or a board that stops answering (a crash shows as a missing `ST done`).
 

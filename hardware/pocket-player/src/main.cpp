@@ -619,6 +619,8 @@ static void applyControls() {
 // over 65/70 s, as many as the panel can draw in that time) and the pictures and text pages of the game's
 // .lst files, drawn at 1.5x like the game. Taps move on wherever the engine waits for a key.
 
+static bool cardsDry = false;   // the serial self-test: no waits, one drawing per fade
+static int cardsShown = 0, cardsFailed = 0;
 static void setPalette6(const uint8_t* p768) {
   for (int i = 0; i < 256; i++) {
     auto v8 = [](uint8_t c) { c &= 63; return (uint8_t)((c << 2) | (c >> 4)); };
@@ -640,7 +642,7 @@ static void pushPicture(const uint8_t* px) {
 // level when px is null. The clock decides the step, as the engine's does, so a slow panel shows fewer steps.
 static void fadePalette(const uint8_t* from, const uint8_t* to, const uint8_t* px) {
   uint8_t mid[768];
-  uint32_t start = millis();
+  uint32_t start = cardsDry ? millis() - gm::FADE_MS : millis();
   for (;;) {
     uint32_t el = millis() - start;
     int step = el >= (uint32_t)gm::FADE_MS ? gm::FADE_STEPS : (int)(el * gm::FADE_STEPS / gm::FADE_MS);
@@ -653,7 +655,7 @@ static void fadePalette(const uint8_t* from, const uint8_t* to, const uint8_t* p
 }
 // GetKey / PauseTimeKey: a touch (or the time) moves on. gm::PAUSE_KEY waits for the touch alone.
 static void waitTap(int seconds) {
-  if (seconds <= 0) return;
+  if (seconds <= 0 || cardsDry) return;
   uint32_t end = millis() + (uint32_t)seconds * 1000u;
   wasDown = true;  // a finger still down from before is not a tap
   int tx, ty;
@@ -680,6 +682,40 @@ static uint8_t* readPak(size_t off, size_t len) {
 }
 static uint8_t* fontData = nullptr;  // 95 glyphs of 8 rows (data/font.bin), kept once read
 
+// FLI::View: every frame once, c.color (the packed speed) vertical retraces (1/70 s) apart, one frame unpacked at a time
+// (the table of frames, the 64 KB canvas and the frame in turn; never the whole file). A touch ends it early.
+static void playFli(const gm::Card& c) {
+  size_t tn = 0;
+  uint8_t* table = gm::readCard(assets, readPak, c.file, &tn);
+  uint8_t* buf = (uint8_t*)calloc(gm::PIC_BYTES, 1);  // 768 palette bytes, then the canvas
+  if (!table || !buf) { free(table); free(buf); cardsFailed++; return; }
+  setPalette6(buf);
+  tft.fillScreen(C_BLACK);
+  uint32_t due = millis();
+  bool tapped = false;
+  int tx, ty;
+  wasDown = true;
+  for (int i = 0; i < c.more && !tapped; i++) {
+    size_t n = 0;
+    uint8_t* d = gm::fliFrameData(assets, readPak, table, tn, i, &n);
+    if (!d) { cardsFailed++; break; }
+    if (gm::fliApply(d, n, buf + 768, buf)) setPalette6(buf);
+    free(d);
+    pushPicture(buf + 768);
+    cardsShown++;
+    if (cardsDry) continue;
+    due += (uint32_t)c.color * 1000u / 70u;
+    while ((int32_t)(millis() - due) < 0) {
+      pollTouch(millis());
+      if (freshTap(tx, ty)) { tapped = true; break; }
+      delay(2);
+    }
+  }
+  free(table);
+  free(buf);
+  waitTap(c.pause);
+}
+
 // ShowGraphic for one scene slot (where: i<level>, x<level>, w, l): the pictures fade in from black, the text
 // pages are written over the picture before them. A card that can't be read is left out (the engine cleared the screen).
 static void showCards(const char* where) {
@@ -702,15 +738,16 @@ static void showCards(const char* where) {
       free(pic);
       pic = gm::loadPicture(assets, readPak, c.file);
       dirty = false;
-      if (!pic) { picFile[0] = 0; continue; }
+      if (!pic) { picFile[0] = 0; cardsFailed++; continue; }
       strcpy(picFile, c.file);
+      cardsShown++;
       fadePalette(black, pic, pic + 768);
       waitTap(c.pause);
     } else if (c.kind == 't' && pic) {
       if (!fontData) { size_t fn = 0; fontData = readFile("font.bin", &fn); if (fontData && fn < 95 * 8) { free(fontData); fontData = nullptr; } }
       size_t tn = 0;
       uint8_t* t = gm::readCard(assets, readPak, c.file, &tn);
-      if (!t || !fontData) { free(t); continue; }
+      if (!t || !fontData) { free(t); cardsFailed++; continue; }
       int pages = gm::textPageCount(t, tn);
       for (int pg = 0; pg < pages; pg++) {
         if (dirty) {  // the picture again, clean (Display_File restores the screen after each page and file)
@@ -722,6 +759,7 @@ static void showCards(const char* where) {
         gm::drawTextPage(pic + 768, fontData, t, tn, pg, c.color, c.more);
         setPalette6(pic);
         pushPicture(pic + 768);
+        cardsShown++;
         waitTap(c.pause);
       }
       free(t);
@@ -820,7 +858,7 @@ static void message(const char* a, const char* b = nullptr) {
 // "T <index> <ticks>" or "T all <ticks>" on Serial (115200), accepted only on the game list: loads each
 // game the way a tap does, runs it with no input (drawing too), prints one "ST" line, then returns to the list.
 
-static void selfTestOne(int g, int ticks) {
+static void selfTestOne(int g, int ticks, bool cards) {
   bool ok = startGame(g, false);
   for (int i = 0; ok && i < ticks; i++) {
     world.tick();
@@ -832,21 +870,41 @@ static void selfTestOne(int g, int ticks) {
   Serial.printf("ST id=%s ok=%d free=%u largest=%u min=%u stack=%u\n", games[g].id, ok ? 1 : 0, (unsigned)ESP.getFreeHeap(),
                 (unsigned)heap_caps_get_largest_free_block(MALLOC_CAP_8BIT), (unsigned)ESP.getMinFreeHeap(),
                 (unsigned)uxTaskGetStackHighWaterMark(nullptr));
+  if (ok && cards) {
+    // Every card of the game, the way play shows them (no waiting, one drawing per fade), with the level still loaded.
+    cardsDry = true;
+    cardsShown = cardsFailed = 0;
+    uint32_t t0c = millis();
+    char where[8];
+    for (int l = 0; l < world.nlevels; l++) {
+      levelWhere(where, 'i', l);
+      showCards(where);
+      levelWhere(where, 'x', l);
+      showCards(where);
+    }
+    showCards("w");
+    showCards("l");
+    cardsDry = false;
+    Serial.printf("SC id=%s ok=%d shown=%d failed=%d ms=%u free=%u largest=%u min=%u stack=%u\n", games[g].id, cardsFailed == 0 ? 1 : 0, cardsShown,
+                  cardsFailed, (unsigned)(millis() - t0c), (unsigned)ESP.getFreeHeap(), (unsigned)heap_caps_get_largest_free_block(MALLOC_CAP_8BIT),
+                  (unsigned)ESP.getMinFreeHeap(), (unsigned)uxTaskGetStackHighWaterMark(nullptr));
+  }
   spk::stop();
   world.releaseAll();
 }
 
 static void serialCommand(const char* cmd) {
-  char what[16];
+  char what[16], opt[8] = "";
   int ticks = 0;
-  if (sscanf(cmd, "T %15s %d", what, &ticks) != 2 || ticks < 0) return;
+  if (sscanf(cmd, "T %15s %d %7s", what, &ticks, opt) < 2 || ticks < 0) return;
+  bool cards = !strcmp(opt, "cards");
   if (!strcmp(what, "all")) {
-    for (int g = 0; g < ngames; g++) selfTestOne(g, ticks);
+    for (int g = 0; g < ngames; g++) selfTestOne(g, ticks, cards);
     Serial.printf("ST done n=%d\n", ngames);
   } else {
     int g = atoi(what);
     if (g < 0 || g >= ngames) { Serial.println("ST error index"); return; }
-    selfTestOne(g, ticks);
+    selfTestOne(g, ticks, cards);
     Serial.println("ST done n=1");
   }
   enterPicker();

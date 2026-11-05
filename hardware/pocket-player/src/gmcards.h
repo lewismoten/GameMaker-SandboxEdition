@@ -2,6 +2,8 @@
 // code, so the Mac test builds the same pixels. A game's .cfg lists them in the order the engine shows them:
 //   card <where> g <file> <seconds>                       a 320 x 200 picture (768 palette bytes, 6 bit VGA, then 64000 indices)
 //   card <where> t <file> <seconds> <color> <more color>  a text page over the picture before it (lines joined by \n)
+//   card <where> f <table> <seconds> <speed> <frames>     an FLI animation: <table> lists each frame's pak bytes (offset and length,
+//                                                         two u32 each); <speed> is the wait after a frame in 1/70 s
 // <where> is i<level> (before the level), x<level> (after it), w (the game is won) or l (every life lost).
 // <seconds> is how long to wait for a key or touch: 0 shows and goes on, 65535 waits for one. Colors are palette
 // indices picked when the game was packed (the engine matches RGB(50,10,50) and RGB(63,10,10) in the picture's palette).
@@ -55,9 +57,8 @@ inline int cardsOf(const char* cfgText, const char* where, Card* out, int max) {
 // Reads `len` bytes at `off` of cards.pak (malloc'd; the caller frees): LittleFS on the board, stdio in the Mac test.
 typedef uint8_t* (*ReadRange)(size_t off, size_t len);
 // A card file ("<offset>.<length>") unpacked; n gets the unpacked size. Null on any error.
-inline uint8_t* readCard(const Assets& a, ReadRange rr, const char* file, size_t* n) {
-  size_t off = 0, len = 0;
-  if (sscanf(file, "%zu.%zu", &off, &len) != 2 || len < 5) return nullptr;
+inline uint8_t* readCardAt(const Assets& a, ReadRange rr, size_t off, size_t len, size_t* n) {
+  if (len < 5) return nullptr;
   uint8_t* f = rr(off, len);
   if (!f) return nullptr;
   size_t raw = f[0] | (f[1] << 8) | (f[2] << 16) | ((size_t)f[3] << 24);
@@ -67,6 +68,93 @@ inline uint8_t* readCard(const Assets& a, ReadRange rr, const char* file, size_t
   if (!ok) { free(out); return nullptr; }
   *n = raw;
   return out;
+}
+inline uint8_t* readCard(const Assets& a, ReadRange rr, const char* file, size_t* n) {
+  size_t off = 0, len = 0;
+  if (sscanf(file, "%zu.%zu", &off, &len) != 2) return nullptr;
+  return readCardAt(a, rr, off, len, n);
+}
+
+// One FLI frame (its 16 byte header and chunks) from an animation's table, unpacked; null on any error.
+inline uint8_t* fliFrameData(const Assets& a, ReadRange rr, const uint8_t* table, size_t tableBytes, int i, size_t* n) {
+  if ((size_t)(i + 1) * 8 > tableBytes) return nullptr;
+  const uint8_t* t = table + i * 8;
+  size_t off = t[0] | (t[1] << 8) | (t[2] << 16) | ((size_t)t[3] << 24);
+  size_t len = t[4] | (t[5] << 8) | (t[6] << 16) | ((size_t)t[7] << 24);
+  return readCardAt(a, rr, off, len, n);
+}
+
+// FLI::View's frame decoder (the engine's applyFliFrame) for a 320 x 200 animation: chunks COLOR (11), LC (12),
+// BLACK (13), BRUN (15) and COPY (16). `px` is the 64000 indices, `pal` the 768 palette bytes (6 bit).
+// Returns true when the palette changed.
+inline bool fliApply(const uint8_t* f, size_t n, uint8_t* px, uint8_t* pal) {
+  auto u16 = [&](size_t p) { return p + 2 <= n ? f[p] | (f[p + 1] << 8) : 0; };
+  auto u32 = [&](size_t p) { return p + 4 <= n ? (size_t)f[p] | ((size_t)f[p + 1] << 8) | ((size_t)f[p + 2] << 16) | ((size_t)f[p + 3] << 24) : 0; };
+  if (n < 16) return false;
+  int chunks = u16(6);
+  size_t p = 16;
+  bool palChanged = false;
+  for (int c = 0; c < chunks && p + 6 <= n; c++) {
+    size_t size = u32(p);
+    int type = u16(p + 4);
+    size_t d = p + 6, end = p + (size < 6 ? 6 : size);
+    if (end > n) end = n;
+    if (type == 11) {
+      int packets = u16(d);
+      d += 2;
+      int idx = 0;
+      for (int k = 0; k < packets && d + 2 <= end; k++) {
+        idx += f[d++];
+        int cnt = f[d++];
+        if (cnt == 0) cnt = 256;
+        for (int j = 0; j < cnt && idx < 256 && d + 3 <= end; j++, idx++) {
+          pal[idx * 3] = f[d] & 63; pal[idx * 3 + 1] = f[d + 1] & 63; pal[idx * 3 + 2] = f[d + 2] & 63;
+          d += 3;
+        }
+      }
+      palChanged = true;
+    } else if (type == 12) {
+      int y = u16(d), lines = u16(d + 2);
+      d += 4;
+      for (int l = 0; l < lines && d < end; l++, y++) {
+        int packets = f[d++];
+        int x = 0;
+        for (int k = 0; k < packets && d + 2 <= end; k++) {
+          x += f[d++];
+          int cnt = (int8_t)f[d++];
+          if (cnt >= 0) {
+            for (int j = 0; j < cnt && d < end; j++, x++, d++) if (y < PIC_H && x < PIC_W) px[y * PIC_W + x] = f[d];
+          } else if (d < end) {
+            uint8_t v = f[d++];
+            for (int j = 0; j < -cnt; j++, x++) if (y < PIC_H && x < PIC_W) px[y * PIC_W + x] = v;
+          }
+        }
+      }
+    } else if (type == 13) {
+      memset(px, 0, PIC_PIXELS);
+    } else if (type == 15) {
+      for (int y = 0; y < PIC_H && d < end; y++) {
+        d++;  // packet count: unreliable, decode by width
+        int x = 0;
+        while (x < PIC_W && d < end) {
+          int cnt = (int8_t)f[d++];
+          if (cnt >= 0) {
+            if (d >= end) break;
+            uint8_t v = f[d++];
+            for (int j = 0; j < cnt && x < PIC_W; j++) px[y * PIC_W + x++] = v;
+          } else {
+            for (int j = 0; j < -cnt && x < PIC_W && d < end; j++) px[y * PIC_W + x++] = f[d++];
+          }
+        }
+      }
+    } else if (type == 16) {
+      size_t k = end > d ? end - d : 0;
+      memcpy(px, f + d, k < (size_t)PIC_PIXELS ? k : (size_t)PIC_PIXELS);
+    }
+    if (size < 6) break;
+    p += size;
+  }
+  return palChanged;
 }
 
 // A picture: 768 palette bytes then 64000 indices in one malloc'd block (null when it can't be read).

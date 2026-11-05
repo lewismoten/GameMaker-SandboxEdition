@@ -83,6 +83,21 @@ int main(int argc, char** argv) {
         if (!pic) { printf("C %s g ERR\n", wh.c_str()); continue; }
         strcpy(picFile, c.file);
         printf("C %s g 0 %u %u %d\n", wh.c_str(), fnv(pic + 768, PIC_PIXELS), fnv(pic, 768), c.pause);
+      } else if (c.kind == 'f') {
+        size_t tn = 0;
+        uint8_t* table = readCard(assets, readRange, c.file, &tn);
+        uint8_t* px = (uint8_t*)calloc(PIC_PIXELS, 1);
+        uint8_t pal[768] = {};
+        for (int fr = 0; table && fr < c.more; fr++) {
+          size_t n = 0;
+          uint8_t* d = fliFrameData(assets, readRange, table, tn, fr, &n);
+          if (!d) { printf("C %s f ERR\n", wh.c_str()); break; }
+          fliApply(d, n, px, pal);
+          free(d);
+          printf("C %s f %d %u %u %d\n", wh.c_str(), fr, fnv(px, PIC_PIXELS), fnv(pal, 768), c.color);
+        }
+        free(px);
+        free(table);
       } else if (c.kind == 't' && pic) {
         size_t tn = 0;
         uint8_t* t = readCard(assets, readRange, c.file, &tn);
