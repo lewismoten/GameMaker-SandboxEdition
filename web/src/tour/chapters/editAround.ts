@@ -70,6 +70,22 @@ export const editAroundChapter: Chapter = {
       say: 'In the file list, Game assets shows the whole game at once: a card for each kind of file. Press a card to browse those files as pictures.',
     },
     {
+      // still on the overview: the cards sit under six group headings (editor/shell/assetGroups.ts)
+      id: 'edit-around-groups',
+      action: 'point',
+      target: { label: 'the first group heading', css: '.asset-grid .asset-group' },
+      say: 'The cards sit under headings: Levels, Heroes, Monsters, Pictures and movies, Sounds and music, and Words and screens.',
+      optional: true,
+    },
+    {
+      // the line shows when some scene uses the kind (assetUsedBy.ts); a short form on a phone
+      id: 'edit-around-card-used',
+      action: 'point',
+      target: { label: 'a card’s used-by line', css: '.asset-category .used-full, .asset-category .used-short' },
+      say: 'A card also says how many scenes use its files, so you can see what matters before you open it.',
+      optional: true,
+    },
+    {
       id: 'edit-around-assets-back',
       action: 'point',
       go: { hash: '#/p/look:logic/kitchen.map', ready: '.mt-toolset .mt-tool' },

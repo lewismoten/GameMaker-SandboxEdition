@@ -166,6 +166,39 @@ export const homeChapter: Chapter = {
       optional: true,
     },
     {
+      // shown once an import has been made (imported/importHistory.ts)
+      id: 'home-import-history',
+      action: 'point',
+      target: { label: 'the Import history button', css: '.lib-about .lib-remove-all', text: 'Import history…' },
+      say: 'Import history keeps the last twenty imports: what came in, what was left out, and anything that failed.',
+      optional: true,
+    },
+    {
+      // shown while a game deleted in the last 7 days is waiting (project/recentlyDeleted.ts)
+      id: 'home-recently-deleted',
+      action: 'point',
+      target: { label: 'the Recently deleted button', css: '.lib-about .lib-remove-all', text: 'Recently deleted…' },
+      say: 'Delete a game by mistake? It waits in Recently deleted for seven days, and Restore brings it back just as it was.',
+      optional: true,
+    },
+    {
+      // Starters: small teaching games (the tab's lead, homeCategories.ts), and its How do I…? button
+      id: 'home-tab-starters',
+      action: 'press',
+      target: tab('starter', 'Starters'),
+      click: true,
+      say: 'Starters: small games that each show one idea, with signs in the levels. Play one, then edit a copy.',
+      sound: 'boing',
+      optional: true,
+    },
+    {
+      id: 'home-how-do-i',
+      action: 'point',
+      target: { label: 'the How do I button', css: '.hdi-open' },
+      say: 'How do I asks the question in your own words, and points to the Starter that answers it.',
+      optional: true,
+    },
+    {
       id: 'home-tab-sandbox',
       action: 'press',
       target: tab('sandbox', 'Sandbox'),

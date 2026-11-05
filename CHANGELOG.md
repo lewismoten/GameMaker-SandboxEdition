@@ -137,6 +137,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Changed
 
+- The guided tour has new steps for the Starters tab and its How do I…? button, the Imported tab's Import history and Recently deleted buttons, and the Game assets overview's group headings and used-by lines.
 - Teddy rides in THE CHEZ's front passenger seat now: his head, ears up, is in the door window of the car that drives past the desk's window, on the mouse pad and in the magazine, with Doc Leo still at the wheel behind him.
 - A game you delete now stays under Recently deleted for 7 days, on My games and Imported. Restore brings it back exactly as it was (files, notes, checkpoints, rating); the dialog says how much room the kept games take and has Empty now. Deleting several imported games at once is covered the same way.
 - The Imported tab has an Import history… button: the last 20 imports (when, from where, how many came in, how many were left out as already held, and which failed and why), kept in this browser, with a Clear history button.
