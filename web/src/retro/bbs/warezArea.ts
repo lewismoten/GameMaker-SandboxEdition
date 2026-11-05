@@ -1,6 +1,6 @@
 // The W)arez area of THE -= S A N D B O X =- BBS: not on the main menu, behind an "elite users
 // only" access code (bulletin 7 gives it away, and the SysOp breaks in with it after a couple
-// of wrong tries). It holds GMCRACK, SAVEHACK, PLAYHACK and a four-ZIP "rip" of Game-Maker 3.00, each
+// of wrong tries). It holds GMCRACK, SAVEHACK, PLAYHACK, PATCHING.TXT and a four-ZIP "rip" of Game-Maker 3.00, each
 // downloaded by Zmodem and unzipped into C:\DOWNLOAD\<ID> with its FILE_ID.DIZ, as the
 // shareware games are (sandbox.ts); the C: drive shows the downloaded ones
 // (retro/hacks/deskFiles.ts). Warez is not FREE: each ZIP costs a file point, and a caller out
@@ -21,6 +21,7 @@ import { FASTPLAY_DIZ, FASTPLAY_DOC } from '../hacks/fastPlayText';
 import { REGGIE_DIZ, REGGIE_DOC } from '../hacks/reggieText';
 import { FLAGS_DIZ, FLAGS_NFO } from '../hacks/flagsText';
 import { PLAYHACK_DIZ, PLAYHACK_NFO } from '../hacks/playHackText';
+import { PATCHING_DIZ, PATCHING_TXT } from '../hacks/patchingText';
 import { GM30_DIZ, GM30_NFO, GM30_PART_BYTES, GM30_PARTS } from '../hacks/gm30Text';
 import { account, filePoints, recordDownload, updateAccount } from './ratio';
 
@@ -78,6 +79,13 @@ export const WAREZ: WarezRelease[] = [
       { name: 'PLAYHACK.EXE', size: 40_118, run: { kind: 'playhack' } },
       { name: 'PLAYHACK.NFO', size: 0, text: PLAYHACK_NFO },
     ],
+  },
+  {
+    id: 'patching',
+    zip: 'PATCHING.ZIP',
+    bytes: 3_212,
+    diz: PATCHING_DIZ,
+    files: [{ name: 'PATCHING.TXT', size: 0, text: PATCHING_TXT }],
   },
   {
     id: 'gm30',
