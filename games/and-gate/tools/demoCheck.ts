@@ -32,7 +32,10 @@ for (const k of keys) {
   if (k.key & 0x80) sim.release(scan);
   else sim.press(scan);
 }
-console.log(`demo: ${ticks} ticks; first dial on at ${firstOn}; a spark died at the dial that was off (it got to ${furthest.toFixed(1)}) by ${stoppedAt}; lamp lit at ${lit}; dials off now ${alive(DIAL_OFF)}`);
-if (firstOn < 0 || stoppedAt < 0 || furthest > 17.3 || furthest < 15) throw new Error('demoCheck: expected one dial on and a spark dying at the dial that is off');
+console.log(
+  `demo: ${ticks} ticks; first dial on at ${firstOn}; a spark died at the dial that was off (it got to ${furthest.toFixed(1)}) by ${stoppedAt}; lamp lit at ${lit}; dials off now ${alive(DIAL_OFF)}`,
+);
+if (firstOn < 0 || stoppedAt < 0 || furthest > 17.3 || furthest < 15)
+  throw new Error('demoCheck: expected one dial on and a spark dying at the dial that is off');
 if (lit < 0 || alive(DIAL_OFF) !== 0) throw new Error('demoCheck: expected the second dial on and the lamp lit by the end');
 console.log('demoCheck ok: a spark died at the off dial, then both dials on lit the lamp');

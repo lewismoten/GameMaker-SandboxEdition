@@ -39,6 +39,41 @@ const withMonsters = (level: number, list: [number, number, number][]) => {
 const save = (name: string, level: number, map: ReturnType<typeof withMonsters>, col: number, w: number, extra: Sprite[]) =>
   writePng(join(out, name), renderRegion(map, bbl, mbl, monsterSet(mb, levels[level].route), ORIGIN + col, ORIGIN, w, 12, extra), pal.pal, 3);
 
-save('1-one-dial-on.png', 0, withMonsters(0, [[DIAL_ON, 12, 6], [DIAL_OFF, 17, 6], [SPARK, 14, 6], [LAMP, 23, 1]]), 3, 24, kit(['stand.top', 'stand'], 12));
-save('2-both-on-lamp-lit.png', 0, withMonsters(0, [[DIAL_ON, 12, 6], [DIAL_ON, 17, 6], [LIGHT, 23, 9]]), 3, 24, kit(['cheer.top', 'jump'], 21));
-save('3-three-dials.png', 1, withMonsters(1, [[DIAL_ON, 5, 6], [DIAL_OFF, 13, 1], [DIAL_OFF, 20, 6], [LAMP, 24, 1]]), 3, 24, kit(['stand.top', 'stand'], 9));
+save(
+  '1-one-dial-on.png',
+  0,
+  withMonsters(0, [
+    [DIAL_ON, 12, 6],
+    [DIAL_OFF, 17, 6],
+    [SPARK, 14, 6],
+    [LAMP, 23, 1],
+  ]),
+  3,
+  24,
+  kit(['stand.top', 'stand'], 12),
+);
+save(
+  '2-both-on-lamp-lit.png',
+  0,
+  withMonsters(0, [
+    [DIAL_ON, 12, 6],
+    [DIAL_ON, 17, 6],
+    [LIGHT, 23, 9],
+  ]),
+  3,
+  24,
+  kit(['cheer.top', 'jump'], 21),
+);
+save(
+  '3-three-dials.png',
+  1,
+  withMonsters(1, [
+    [DIAL_ON, 5, 6],
+    [DIAL_OFF, 13, 1],
+    [DIAL_OFF, 20, 6],
+    [LAMP, 24, 1],
+  ]),
+  3,
+  24,
+  kit(['stand.top', 'stand'], 9),
+);

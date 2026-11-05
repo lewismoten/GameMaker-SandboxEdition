@@ -10,7 +10,7 @@ import { W } from '../../kit/starter/screens';
 import { backdrop, frameOf, lookOf } from '../../kit/starter/titleStyles';
 
 /** The title: the name, a ribbon, Kit, a wire with two green dials, a spark and a lit lamp, and the door on a green circuit board. */
-export function titlePicture(pal: Pal, book: Book, mb: Book, hero: Pixels, door: Pixels, name: string, tagline: string): Pixels {
+export function titlePicture(pal: Pal, mb: Book, hero: Pixels, door: Pixels, name: string, tagline: string): Pixels {
   const look = lookOf(pal, 'circuit');
   const p = backdrop(pal, 'circuit');
   const s = name.length > 11 ? 2 : 3;

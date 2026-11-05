@@ -50,7 +50,9 @@ function dial(pal: Pal, on: boolean, lit: boolean): Pixels {
   const p = new Pixels(20, 20, T);
   p.rect(2, 3, 16, 14, c('stone', 1)).rect(3, 4, 14, 12, c('stone', 3)).rect(3, 4, 14, 1, c('stone', 4));
   const lamp = r(on ? 'green' : 'red');
-  p.disc(10, 8, 3.4, c('ink', 0)).disc(10, 8, 2.6, lamp[lit ? 4 : 2]).set(9, 7, lamp[lamp.length - 1]);
+  p.disc(10, 8, 3.4, c('ink', 0))
+    .disc(10, 8, 2.6, lamp[lit ? 4 : 2])
+    .set(9, 7, lamp[lamp.length - 1]);
   // the slider: a dark track, with its knob at the left when off and at the right when on
   p.rect(5, 12, 10, 3, c('ink', 0)).rect(6, 13, 8, 1, c('stone', 0));
   const kx = on ? 11 : 5;
@@ -133,7 +135,11 @@ export function monsterSet(mb: Book, route: Route): Monster[] {
     [mb.n(`${name}1`), ticks],
   ];
   const still = (p: [number, number][], o: Partial<Monster>): Monster => mon(p, { thru: 0, ...o });
-  set[SPARK] = mon(pics('spark', 3), { power: POWER.spark, thru: 0, end: -1 }, route.map(([x, y], i) => corner(x, y, i === 0 ? SPARK_SPEED : SPARK_SPEED)));
+  set[SPARK] = mon(
+    pics('spark', 3),
+    { power: POWER.spark, thru: 0, end: -1 },
+    route.map(([x, y], i) => corner(x, y, i === 0 ? SPARK_SPEED : SPARK_SPEED)),
+  );
   set[DIAL_OFF] = still(pics('dialOff', 9), { power: POWER.off, end: 0, newmon: DIAL_ON });
   set[DIAL_ON] = still(pics('dialOn', 9), { power: POWER.on, end: -2 });
   set[LAMP] = still([[mb.n('lamp'), 8]], { power: POWER.lamp, end: 0, newmon: FALLING });
