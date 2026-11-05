@@ -5,6 +5,7 @@ import { MLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { explore, type Exploration, type ExitReach } from '../explore';
 import { steadyMoves, type Move } from '../inputs';
 import { playtestScene, type Playtest, type SceneRun } from '../playtest';
+import { scenesOf } from '../sceneData';
 import { startCharInfo } from '../sim';
 import { LEFT, RIGHT, testGame } from '../testGame';
 import { describeMove, leftBehind, noRouteNote, oneWay, softlocks, steadyFindings } from './wayBack';
@@ -145,13 +146,24 @@ describe('slower hands when the bot found no route', () => {
     expect(n.detail).toContain('Chaining those taps needs each press within about the jump’s air time of the last');
   });
 
-  it('is an info finding, in place of the silence a missing route used to give', async () => {
+  it('is an info finding where the scene has a link out the bot did not reach, in place of the silence a missing route used to give', async () => {
     const t = testGame(LEDGE);
     const main = (await playtestScene(t.game, t, 2))!;
     const noWay = { ...main, ex: { ...main.ex, exits: [] } };
-    const f = steadyFindings(noWay, noWay, undefined, 6);
+    const d = scenesOf(t.game, t).find((s) => s.scene === 2)!;
+    expect(d.links.length).toBeGreaterThan(0);
+    const f = steadyFindings(noWay, noWay, d, 6);
     expect(f).toHaveLength(1);
     expect(f[0]).toMatchObject({ check: 'steady', severity: 'info', title: 'Slower hands were not checked here: no route was found' });
     expect(f[0].detail).toContain('at least 330 ms');
+  });
+
+  it('says nothing for a scene with no link to touch (an ending, a win scene, one the game leaves another way)', async () => {
+    const t = testGame(LEDGE);
+    const main = (await playtestScene(t.game, t, 2))!;
+    const noWay = { ...main, ex: { ...main.ex, exits: [] } };
+    const d = scenesOf(t.game, t).find((s) => s.scene === 2)!;
+    expect(steadyFindings(noWay, noWay, { ...d, links: [] }, 6)).toEqual([]);
+    expect(steadyFindings(noWay, noWay, undefined, 6)).toEqual([]);
   });
 });
