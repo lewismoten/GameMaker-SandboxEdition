@@ -76,6 +76,7 @@ export const CAST_GAMES = {
   dialog: ['Everybody Talks', 'starter'],
   horizon: ['To the Horizon', 'starter'],
   momentum: ['Slide and Drift', 'starter'],
+  'jump-boots': ['Boots and Jet Pack', 'starter'],
   carl: ['A Fly Named Carl', 'bizarre'],
   goat: ['Third Goat from the Left', 'bizarre'],
   loaf: ['Loaf #13 (Left in the Basket)', 'bizarre'],
@@ -197,6 +198,7 @@ const LISTED: CastMember[] = [
       { game: 'dialog', as: 'talks with Pip, and then joins a group of friends who all talk at once' },
       { game: 'horizon', as: 'walks a road to the horizon while beach balls roll out and grow, then waits for a finish arch to open the door' },
       { game: 'momentum', as: 'glides on after letting go, and runs up to hop wide gaps' },
+      { game: 'jump-boots', as: 'taps up a tall cliff like a jet pack, then jumps twice in boots that hold only two jumps' },
     ],
   },
   {

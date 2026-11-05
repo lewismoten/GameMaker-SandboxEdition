@@ -38,6 +38,7 @@ export const STARTER_GROUPS: { name: string; tag: string; games: string[] }[] = 
       'health-and-hearts',
       'slippery-and-bouncy',
       'momentum',
+      'jump-boots',
       'gravity-on-gravity-off',
       'swim',
       'take-the-wheel',
