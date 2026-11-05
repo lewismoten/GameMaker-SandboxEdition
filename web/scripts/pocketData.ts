@@ -15,6 +15,7 @@ import { parseGame, NOSCENE, MAXSCENELINKS } from '@lewismoten/gamemaker-sandbox
 import { parseMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { parseBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { parseCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { LASTSND, NUMFREQ } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
 import { LASTMON, LASTSL, MONSTER_SIZE, parseMonsters } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 
 const args = process.argv.slice(2);
@@ -143,6 +144,11 @@ for (const id of ids) {
       lines.push(
         `level ${store(mapBytes, 'm')} ${store(bbl, 'b')} ${store(file(f[6]), 'c')} ${store(file(f[5]), 'r')} ${store(file(f[0]), 'p')} ${to.x} ${to.y} ${s.scroll.up} ${s.scroll.down} ${s.scroll.left} ${s.scroll.right} ${nbl}${monPart}`,
       );
+    });
+    // The PC speaker tunes (30 effects x 36 frequencies; the .voc names after them are not packed).
+    play.forEach(({ s }, n) => {
+      const name = s.files[7];
+      if (name && dir.some((d) => d.toLowerCase() === name.toLowerCase())) lines.push(`snd ${n} ${store(file(name).subarray(0, LASTSND * NUMFREQ * 2), 's')}`);
     });
     play.forEach(({ s }, n) => {
       let count = 0;

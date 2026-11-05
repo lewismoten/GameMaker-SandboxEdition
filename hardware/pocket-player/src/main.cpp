@@ -10,6 +10,7 @@
 #include "controls.h"
 #include "gmcfg.h"
 #include "gt911.h"
+#include "speaker.h"
 
 static LGFX tft;
 static GT911 gt;
@@ -88,7 +89,7 @@ static void loadGameList() {
 static void saveSettings() {
   File f = LittleFS.open("/settings.txt", "w");
   if (!f) return;
-  f.printf("lefty=%d\nstylus=%d\npad=%d\ndead=%d\npalm=%d\ndebug=%d\n", settings.lefty, settings.stylus, settings.padSize, settings.dead, settings.palm, settings.debug);
+  f.printf("lefty=%d\nstylus=%d\npad=%d\ndead=%d\npalm=%d\ndebug=%d\nsound=%d\n", settings.lefty, settings.stylus, settings.padSize, settings.dead, settings.palm, settings.debug, settings.sound);
 }
 static void loadSettings() {
   settings = ctl::Settings();
@@ -103,6 +104,7 @@ static void loadSettings() {
     else if (l.startsWith("dead")) settings.dead = v < 0 ? 0 : v > 2 ? 2 : v;
     else if (l.startsWith("palm")) settings.palm = v < 0 ? 0 : v > 2 ? 2 : v;
     else if (l.startsWith("debug")) settings.debug = v ? 1 : 0;
+    else if (l.startsWith("sound")) settings.sound = v < 0 ? 0 : v > 3 ? 3 : v;
   }
 }
 
@@ -390,23 +392,31 @@ static void drawPicker() {
 static const char* const HAND[] = {"Right", "Left"};
 static const char* const ONOFF[] = {"Off", "On"};
 static const char* const SIZE3[] = {"Small", "Medium", "Large"};
+// A short rising beep to hear the volume with (36 steps of 1/145.6 s, little endian frequencies in Hz).
+static const uint8_t SAMPLE_TUNE[72] = {
+    0xB8, 0x01, 0xB8, 0x01, 0xB8, 0x01, 0xB8, 0x01, 0xB8, 0x01, 0xB8, 0x01, 0xB8, 0x01, 0xB8, 0x01, 0xB8, 0x01,
+    0x30, 0x02, 0x30, 0x02, 0x30, 0x02, 0x30, 0x02, 0x30, 0x02, 0x30, 0x02, 0x30, 0x02, 0x30, 0x02, 0x30, 0x02,
+    0x88, 0x02, 0x88, 0x02, 0x88, 0x02, 0x88, 0x02, 0x88, 0x02, 0x88, 0x02, 0x88, 0x02, 0x88, 0x02, 0x88, 0x02,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+static const char* const VOLUME[] = {"Off", "Low", "Medium", "High"};
 static const char* const PALM[] = {"Off", "Size", "Size+near"};
 static void drawSettings() {
   tft.fillScreen(C_BLACK);
   title("Settings");
   struct Row { const char* name; const char* value; };
   Row rows[] = {{"Hand", HAND[settings.lefty]},          {"Stylus (taps latch)", ONOFF[settings.stylus]}, {"Pad size", SIZE3[settings.padSize]},
-                {"Pad dead zone", SIZE3[settings.dead]}, {"Palm rejection", PALM[settings.palm]},         {"Status numbers", ONOFF[settings.debug]}};
-  for (int i = 0; i < 6; i++) {
-    int y = 44 + i * 40;
-    tft.fillRoundRect(6, y, 468, 36, 6, C_DARK);
-    tft.drawRoundRect(6, y, 468, 36, 6, C_GRAY);
+                {"Pad dead zone", SIZE3[settings.dead]}, {"Palm rejection", PALM[settings.palm]},         {"Status numbers", ONOFF[settings.debug]},
+                {"Sound", VOLUME[settings.sound]}};
+  for (int i = 0; i < 7; i++) {
+    int y = 42 + i * 34;
+    tft.fillRoundRect(6, y, 468, 32, 6, C_DARK);
+    tft.drawRoundRect(6, y, 468, 32, 6, C_GRAY);
     tft.setTextSize(2);
     tft.setTextColor(C_WHITE, C_DARK);
-    tft.setCursor(14, y + 10);
+    tft.setCursor(14, y + 8);
     tft.print(rows[i].name);
     tft.setTextColor(C_YELLOW, C_DARK);
-    tft.setCursor(300, y + 10);
+    tft.setCursor(300, y + 8);
     tft.print(rows[i].value);
   }
   button(6, 288, 150, 318, "Back");
@@ -458,6 +468,8 @@ static bool startGame(int g) {
   assets.palName[0] = 0;
   world.seed = micros() ^ (millis() << 7);  // the monsters that wander pick differently each play
   if (!world.begin()) return false;
+  world.nsnd = 0;
+  spk::stop();
   for (int i = 0; i < 256; i++) {
     auto v8 = [](uint8_t c) { c &= 63; return (uint8_t)((c << 2) | (c >> 4)); };
     pal[i] = panel565(v8(assets.pal[i * 3]), v8(assets.pal[i * 3 + 1]), v8(assets.pal[i * 3 + 2]));
@@ -483,6 +495,7 @@ static void refreshPalette() {
 }
 
 static void enterPicker() {
+  spk::stop();
   mode = PICKER;
   wasDown = true;
   drawPicker();
@@ -506,6 +519,7 @@ void setup() {
   tft.setBrightness(255);
   tft.setSwapBytes(false);
   message("Game-Maker Pocket Player");
+  spk::begin();
   haveGT = gt.probe();
   char line[64];
   if (haveGT) snprintf(line, sizeof line, "Touch: GT911 at 0x%02X", gt.addr);
@@ -518,6 +532,7 @@ void setup() {
     for (;;) delay(1000);
   }
   loadSettings();
+  spk::setVolume(settings.sound);
   loadGameList();
   if (!ngames) {
     message("No games on the board", "flash the LittleFS image");
@@ -567,8 +582,8 @@ void loop() {
         else enterPicker();
         return;
       }
-      int row = (ty - 44) / 40;
-      if (ty >= 44 && row >= 0 && row < 6) {
+      int row = (ty - 42) / 34;
+      if (ty >= 42 && row >= 0 && row < 7) {
         switch (row) {
           case 0: settings.lefty ^= 1; break;
           case 1: settings.stylus ^= 1; break;
@@ -576,6 +591,11 @@ void loop() {
           case 3: settings.dead = (settings.dead + 1) % 3; break;
           case 4: settings.palm = (settings.palm + 1) % 3; break;
           case 5: settings.debug ^= 1; break;
+          case 6:
+            settings.sound = (settings.sound + 1) % 4;
+            spk::setVolume(settings.sound);
+            spk::play(SAMPLE_TUNE);
+            break;
         }
         drawSettings();
       }
@@ -610,6 +630,7 @@ void loop() {
   controls.update(pts.id, pts.x, pts.y, pts.size, pts.n, now);
   int ev = controls.takeEvent();
   if (ev == ctl::EV_MENU) {
+    spk::stop();
     world.releaseAll();
     applyKeys(now);
     controls.reset();
@@ -631,6 +652,8 @@ void loop() {
   while (ticksRun < due && ran < 4) {
     int lv = world.level;
     char r = world.tick();
+    if (world.nsnd && world.snd) spk::play(world.snd + world.sndQ[world.nsnd - 1] * 72);  // the effect heard is the last one started (a new one cuts the old)
+    world.nsnd = 0;
     ticksRun++;
     ran++;
     if (world.level != lv) oneLevelUp = true;

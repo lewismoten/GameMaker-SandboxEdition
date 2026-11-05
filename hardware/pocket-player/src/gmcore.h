@@ -2,7 +2,8 @@
 // the same file builds for the board and for the Mac test (host/hosttest.cpp). It is a port of the
 // parts of web/packages/engine/src/engine (character.ts, keys.ts, touch.ts, scroll.ts, scene.ts,
 // render.ts, monsters.ts), which themselves follow code/GM/PLAYGAME.C. Monsters are in gmmon.h (the
-// rest of World's member functions). Not ported: sounds and joystick.
+// rest of World's member functions). Sounds are events only: doSound queues the number of the effect
+// (sndQ) for the board or the Mac test to play; it changes nothing in the play. Not ported: joystick.
 // Names follow the TypeScript.
 // Game ticks run at 18.2 Hz. Data comes from the game's real files: steps.bbl (blocks), hero.cbl
 // (character blocks), hero.chr (sequences) and the .map files.
@@ -17,6 +18,8 @@ constexpr int MAXSEQ = 20, MAXFRAME = 10, MAXKEYS = 20, INF_REPEAT = 32767;
 constexpr int SIZEX = 320, SIZEY = 200, SCRNBLEN = 16, SCRNBWID = 10;
 constexpr int MAXGRAV = 11, GRAVSPEED = 1, SCROLLPERMOVE = 6, SCRSPDX = 40, SCRSPDY = 40, OFFSCRN = -100;
 constexpr int SOLTOP = 1, SOLRIG = 2, SOLBOT = 4, SOLLEF = 8;
+constexpr int HELPSOUND = 0, KILLSOUND = 1, ADDMONEYSOUND = 2, SUBMONEYSOUND = 3, ADDLIFESOUND = 4, ADDSCORESOUND = 5, SUBSCORESOUND = 6, ADDOTHERSOUND = 7,
+              SUBOTHERSOUND = 8, LASTSND = 30;
 constexpr int IDLESEQ = 0, DIESEQ = 1, HURTSEQ = 2, PICKUPSEQ = 3, DROPSEQ = 4;
 constexpr int BLOCK_BYTES = 420, SEQ_BYTES = 185, FRAME_BYTES = 17;
 constexpr int MAXINV = 10;
@@ -128,10 +131,16 @@ struct World {
   int npending = 0;
   uint32_t ticks = 0;
   bool won = false;
+  // Sound events: the .snd table of the level (30 effects of 36 little endian u16 frequencies; null: the level has none)
+  // and the effects started since the last takeSound, in order (the last one is the one heard).
+  const uint8_t* snd = nullptr;
+  uint8_t sndQ[8];
+  int nsnd = 0;
 
   // ---- data access --------------------------------------------------------------------------
   const uint8_t* seqRaw(int s) const { return chr + s * SEQ_BYTES; }
   int seqKey(int s) const { return u16(seqRaw(s) + 170); }
+  int seqSound(int s) const { return (int8_t)seqRaw(s)[172]; }
   int seqBloc(int s) const { return seqRaw(s)[174]; }
   int seqGround(int s) const { return (int8_t)seqRaw(s)[175]; }
   int seqNorepeat(int s) const { return (int8_t)seqRaw(s)[178]; }
@@ -283,19 +292,28 @@ struct World {
     return rx >= 1 && ry >= 1 && rx <= SIZEX - BLEN && ry <= SIZEY - BLEN;
   }
 
-  // DoBlockTouchChar without the sounds. 0: refused (a counter is empty), else 1.
+  // DoSound: queues effect n (false when n is out of range or the level has no .snd, as the engine's play()).
+  bool doSound(int n) {
+    if (n < 0 || n >= LASTSND || !snd) return false;
+    if (nsnd < 8) sndQ[nsnd++] = (uint8_t)n;
+    return true;
+  }
+  // DoBlockTouchChar. 0: refused (a counter is empty), 1: done, 2: done and an effect started.
   int doBlockTouchChar(const Attr& b) {
+    bool snded = false;
     if ((b.effect >= 20 || b.effect == 3) && meter[b.effect] + b.eamt <= 0) return 0;
     if (cseq != DIESEQ) {
       if (b.chHitPt <= 0) hitpts = wrap16(hitpts + b.chHitPt);
       else if ((uint16_t)(hitpts + b.chHitPt) < INF_REPEAT) hitpts = wrap16(hitpts + b.chHitPt);
       else hitpts = INF_REPEAT - 1;
-      if (b.chHitPt < 0 && cseq != HURTSEQ) {
+      if (b.chHitPt > 0) snded = doSound(HELPSOUND);
+      else if (b.chHitPt < 0 && cseq != HURTSEQ) {
         pushKey();
         nextAni = clock;
         cseq = HURTSEQ;
         cframe = -1;
         curkey = 0xff;
+        if (seqSound(HURTSEQ) >= 0 && seqSound(HURTSEQ) < LASTSND) snded = doSound(seqSound(HURTSEQ));
       }
       if (hitpts <= 0) {
         nextAni = clock;
@@ -304,8 +322,18 @@ struct World {
         curkey = 0;
       }
     }
-    if (b.effect == 1) lives = wrap16(lives + b.eamt);
+    if (b.effect == 1) {
+      if (b.eamt > 0) snded = doSound(ADDLIFESOUND);
+      lives = wrap16(lives + b.eamt);
+    }
     if (b.effect > 2 && meter[b.effect] != INF_REPEAT && b.effect < 30) {
+      if (!snded) {
+        if (b.effect == 3) {
+          if (b.eamt > 0) snded = doSound(ADDMONEYSOUND);
+          else if (b.eamt < 0) snded = doSound(SUBMONEYSOUND);
+        } else if (b.eamt > 0) snded = doSound(ADDOTHERSOUND);
+        else if (b.eamt < 0) snded = doSound(SUBOTHERSOUND);
+      }
       int m = meter[b.effect];
       if ((uint16_t)(m + b.eamt) < INF_REPEAT) {
         if (m + b.eamt < -1 * (INF_REPEAT - 128)) meter[b.effect] = -1 * (INF_REPEAT - 128);
@@ -313,7 +341,11 @@ struct World {
       } else meter[b.effect] = INF_REPEAT - 1;
     }
     score += b.scorePts;
-    return 1;
+    if (!snded) {
+      if (b.scorePts > 0) snded = doSound(ADDSCORESOUND);
+      else if (b.scorePts < 0) snded = doSound(SUBSCORESOUND);
+    }
+    return snded ? 2 : 1;
   }
 
   // checkseq_fortie: turns on/off every sequence tied to `block`.
@@ -543,6 +575,7 @@ struct World {
           keystkptr = 0;
           curkey = 0;
         }
+        if (seqSound(cseq) >= 0 && seqSound(cseq) < LASTSND) doSound(seqSound(cseq));
       }
       int guard = 0;
       do {
