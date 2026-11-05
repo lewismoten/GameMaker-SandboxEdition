@@ -105,3 +105,23 @@ dialog.modal:has(.download-chooser) {
   height: 24px;
   margin: 0;
 }
+
+/* a phone held sideways: tighter choices, and the description reserves two lines, not four */
+@media (max-height: 500px) {
+  .download-chooser .dl-choice {
+    padding: 3px 8px;
+  }
+
+  .download-chooser .dl-line {
+    min-height: 2.9em;
+    margin-top: 4px;
+  }
+
+  .download-chooser .meta {
+    margin-top: 4px;
+  }
+
+  .download-chooser .dl-previews {
+    margin: 4px 0;
+  }
+}
