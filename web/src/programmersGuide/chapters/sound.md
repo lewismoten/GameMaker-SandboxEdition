@@ -35,7 +35,7 @@ So three things share one divisor: the music's resolution, the speaker's step an
 ## Why 36 steps
 
 The source does not say. What is known: the arrays are `unsigned int freq[36]` (`SOUND.H:30-33`); the effect is therefore 247 ms; and the editor draws one bar per step (`SOUND.HLP`: "a bar chart, with time on the horizontal axis").
-**[inference]** 36 bars at 8 pixels = 288 pixels fits a 320-pixel screen with an 16-pixel margin, which is the likely driver; and 36 is 3 x 12, a round number of bars. The sound editor's source was not released, so I cannot confirm the bar width. A quarter of a second is also the span of a "blip": longer would make a pickup sound block a fast player's next action since only one sound plays at a time.
+**[inference]** 36 bars at 8 pixels = 288 pixels fits a 320-pixel screen with an 16-pixel margin, which is the likely driver; and 36 is 3 x 12, a round number of bars. The sound editor's source was not released, so the bar width cannot be confirmed. A quarter of a second is also the span of a "blip": longer would make a pickup sound block a fast player's next action since only one sound plays at a time.
 
 ## Frequency range
 
@@ -96,7 +96,7 @@ A VOC longer than 65,535 bytes is read only for its first `size mod 65,536` byte
 
 ### 10b.2 What the sample CD says a typical VOC is
 
-I read the header of every `.voc` under `cd/` (a Python scratch script, not committed; it is described in the report): **486 files**, median **10,967 bytes**, 90th percentile **33,114 bytes**, maximum 201,258.
+The header of every `.voc` under `cd/` gives: **486 files**, median **10,967 bytes**, 90th percentile **33,114 bytes**, maximum 201,258.
 Sample-rate divisors give: 8,000 Hz for 176 files, 11,111 Hz for 48, 22,222 Hz for 33, 10,000 Hz for 19, 45,455 Hz for 16, 9,009 Hz for 12, 6,897 Hz for 10; 47 files start with a block type other than 1 (silence/repeat blocks first).
 So the **median clip is about 1.4 seconds at 8 kHz** and the 90th percentile about 4 seconds.
 
@@ -116,7 +116,7 @@ The cost is **the read**, then **bus and interrupt time during playback**.
 
 One game tick is **54.9 ms** (chapter 12). So **one VOC trigger from a hard disk costs one tick, sometimes two, on a 286 and about a third of a tick on a 486**, and from a floppy it freezes the game for half a second or more (the screen stops, the music keeps going because it is driven by the timer interrupt, chapter 12).
 
-### 10b.4 Why it was choppy: causes found, in the order I believe them
+### 10b.4 Why it was choppy: likely causes, most likely first
 
 1. **The read stalls the game.** The main loop calls the read itself, so every digital sound freezes the picture for the read time. On a 286 with a hard disk that is one dropped or skipped tick per sound (the loop then jumps its clock forward, `PG:1453-1455`); with several sounds in a second the game visibly stutters. This is the best fit for "game play was choppy" **when voices are used**.
 2. **The same file is re-read on every trigger.** The buffer is reused but `read` runs every time (`SC:204`). A sound that is re-triggered each tick (below) costs a disk read each tick, which can take more than a whole tick on a 286, so the loop falls behind permanently. DOS disk caches (a 1994 SmartDrive) hide this for repeated files on a 386 or better, and on a 286 with little RAM often did not exist. **[inference]**
@@ -127,7 +127,7 @@ One game tick is **54.9 ms** (chapter 12). So **one VOC trigger from a hard disk
 7. **Truncated samples.** A VOC over 64 KB plays only part of itself (above).
 8. **Slow playback rates are noisy, not choppy.** 8 kHz is the most common rate on the CD (176 of 486 files); it has an audible 4 kHz limit and no filtering on the early cards. That sounds "rough", not "chopped".
 
-Causes that I looked for and **ruled out**: DMA bus stealing is only 1-5% of the bus; the 145.67 Hz timer interrupt costs well under 1% of a 286 (below); the music interrupt is a few percent at worst (chapter 12). None of them cuts a sample.
+Causes checked and **ruled out**: DMA bus stealing is only 1-5% of the bus; the 145.67 Hz timer interrupt costs well under 1% of a 286 (below); the music interrupt is a few percent at worst (chapter 12). None of them cuts a sample.
 
 ### The player's "IBM PS/1 (286, 1 MB)" setting **[estimate]**
 

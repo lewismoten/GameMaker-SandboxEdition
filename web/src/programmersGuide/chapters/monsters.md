@@ -81,7 +81,7 @@ Memory cause: 50 x 400 = **20,000 bytes**, a fifth of the monster side of the bu
 
 `KillMon` sets `FirstEmptyMM = MMnum - 1` when it frees a slot **below** the current hint (`PG:3258`), and `FirstEmptyMM` is an unsigned `int` (`PG:296`). If slot 0 is freed, the hint becomes 65,535.
 `BirthMon` then starts at `t = 65535` (`PG:3332`) and runs `do { ... t++; if (t >= LASTMM) t = 0; } while (t != FirstEmptyMM)` (`PG:3333-3339`). While a free slot exists the loop stops on it. If **all 200 slots are in use**, `t` wraps through
-0..199 forever and never equals 65,535: the program would **hang**. It needs a full table, so it takes about 200 live monsters; no game I know reaches that. The first probe `mm[65535]` also reads memory at offset `65535 x 10 mod 65536 = 65,526` of the data segment
+0..199 forever and never equals 65,535: the program would **hang**. It needs a full table, so it takes about 200 live monsters; no game in the collection checked reaches that. The first probe `mm[65535]` also reads memory at offset `65535 x 10 mod 65536 = 65,526` of the data segment
 (harmless read). The port's `monsters.ts:221-246` should be compared; **[not yet checked in DOSBox]** Check it in DOSBox with a scene of 200 placed monsters after killing monster 0.
 
 ## 6.6 Monster against everything else

@@ -196,6 +196,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Changed
 
+- The Programmer's Guide reads as a book for game makers and programmers: notes on how it was researched are gone, and the chapter labels ("not yet checked in DOSBox", "inference", "estimate") are larger and higher contrast in light and dark.
 - Drop Down: a crate now gives way to a hit, not a touch. Walking into it does nothing; press Enter beside it and Lena swings, the crate cracks, and a second hit breaks it and drops the monster on top. It is made from what the engine has: a swing monster that turns into a burst on the crate, whose touch fills a counter the crate spends. The signs and the "How this level is made" pages say how.
 - The Starter heroes, Kit and the eight helpers, are all "they" now: every Starter's story, signs, manual and Cast entry says they, them and their.
 - The Starters' opening animation is easier to read: STARTER is built from bigger letters with thicker strokes and a dark outline, the whole word holds for about a second and a half, and Kit hops in only once it is done

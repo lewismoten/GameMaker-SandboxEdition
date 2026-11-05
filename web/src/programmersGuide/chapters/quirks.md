@@ -1,6 +1,6 @@
 # Quirks kept for fidelity, and fields PLAYGAME ignores
 
-The rule for the book (AGENTS.md "match DOS bugs and all"): these are described, not fixed. Tags: [16-bit] [64K] [file] [DOS] [design]; [inference]; [not yet checked in DOSBox].
+The rule for the book: the web port matches the DOS program bugs and all, so these are described, not fixed. Tags: [16-bit] [64K] [file] [DOS] [design]; [inference]; [not yet checked in DOSBox].
 
 ## 14.1 Quirks of behavior
 
@@ -74,7 +74,7 @@ All rows are from the audit unless marked **(mine)**. "Ignored" means PLAYGAME's
 | scene `NumLinks`                                                          | not read; all 20 slots are scanned                                                                                    |
 | pre-3.00 `PinChar`, `red`, `green`, `blue`                                | dropped by the converter                                                                                              |
 
-### Constants that are defined and never used (my grep)
+### Constants that are defined and never used (a search of the source)
 
 | Constant             | Where           | Status                                                |
 | -------------------- | --------------- | ----------------------------------------------------- |
@@ -85,7 +85,7 @@ All rows are from the audit unless marked **(mine)**. "Ignored" means PLAYGAME's
 
 ## 14.3 What the port does not reproduce (a summary)
 
-Stale edge cells (1), the `Birthtime` bit (6), the slot-0 hint wrap (5). Everything else I compared matches. These are deliberate, in the sense that the port is a clean-room-style re-implementation checked against games, not a recompile.
+Stale edge cells (1), the `Birthtime` bit (6), the slot-0 hint wrap (5). Everything else compared matches. These are deliberate, in the sense that the port is a clean-room-style re-implementation checked against games, not a recompile.
 A fix would make web play look worse (1) or change what authors rely on (6); none is urgent; each needs a DOSBox check first.
 
 ## 14.4 Tips
@@ -95,11 +95,11 @@ A fix would make web play look worse (1) or change what authors rely on (6); non
 - Set `Birthtime` under 16,384.
 - Keep every digital sound off blocks that stay touched.
 
-## 14.5 What real games did with the ignored fields (an archive scan)
+## 14.5 What real games did with the ignored fields (a survey of shareware games)
 
-- Coverage: 417 ZIPs found, 4 byte-identical copies removed, **408 of 413** unique archives measured; 5 failed to extract; 12 referenced files were too short or the wrong layout. Counts are field instances and say bytes were stored, **not** that they changed play.
+- Coverage: **408 of 413** unique shareware game archives could be measured. Counts are field instances and say bytes were stored, **not** that they changed play.
 - **`thru = 0` (the "Monster blocked by solid blocks" checkbox) was set in 14,113 monster records, 648 asset files and 313 games.** Authors turned on a control that PLAYGAME never reads: monsters in those games are stopped by solid blocks anyway
   (`PG:2754-2778`). This is the one exposed no-op, and the strongest reason chapter 14 exists.
-- **No readable monster had a nonzero `fly`, `jump` or `stick`.** So `fly` never marked a monster that was meant to fall, and no archive game needs a fall-intent list. `fly` cannot make a monster fall.
-- Large non-default counts in `.mbl`/`.cbl` behavior fields (`Birthmon`, `Birthtime`, `touchbl`, ...) are record reuse and editor residue, as the scan cautions.
-- **One disagreement:** the scan and its source audit call every behavior field of a monster block a no-op. Reading `PG:3113-3115` I find a monster block's `scorepts`, `chhitpt`, `effect` and `eamt` **are** applied when a monster touches the hero, so those four are live in `.mbl` (chapters 5 and 6). The scan's counts for those four fields should be read as "used", not "ignored". **[not yet checked in DOSBox]** Check it in DOSBox with a monster whose frame block gives 10 points.
+- **No readable monster had a nonzero `fly`, `jump` or `stick`.** So `fly` never marked a monster that was meant to fall, and no game in the collection needs a fall-intent list. `fly` cannot make a monster fall.
+- Large non-default counts in `.mbl`/`.cbl` behavior fields (`Birthmon`, `Birthtime`, `touchbl`, ...) are record reuse and editor residue, as a survey of the files suggests.
+- **One disagreement:** a first reading of the files called every behavior field of a monster block a no-op. The source (`PG:3113-3115`) shows a monster block's `scorepts`, `chhitpt`, `effect` and `eamt` **are** applied when a monster touches the hero, so those four are live in `.mbl` (chapters 5 and 6). The survey's counts for those four fields should be read as "used", not "ignored". **[not yet checked in DOSBox]** Check it in DOSBox with a monster whose frame block gives 10 points.

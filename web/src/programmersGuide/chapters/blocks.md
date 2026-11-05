@@ -38,7 +38,7 @@ Two arrays of 150 entries drive it (`PG:302-303`):
 At scene start every number shows itself, and `nxtchg = clock + ntime`, or `0xFFFFFFFF` (never) when `ntime <= 0` (`PG:4714-4722`).
 Each tick `changeblks` (`PG:2322-2356`) walks all 150 numbers; one whose time has come and whose `nextbl` differs from the displayed block switches to `nextbl`, and
 `nxtchg += ntime` of the block it just became (`PG:2333-2341`). So **`ntime` is how long the block is shown, and a ring of N blocks is N frames with N durations**. The time is added to the old
-deadline, never to "now", so the ring does not drift (the probe note, section 2, says the same).
+deadline, never to "now", so the ring does not drift.
 
 Consequences:
 
@@ -85,7 +85,7 @@ When the hero touches a block and the effect is accepted (chapter 9), `really_ch
 
 - it edits `map[y][x].blk`, a permanent change for the rest of the scene visit;
 - it happens **only if the cell is on screen** (`onscrn`, `PG:3535`); an off-screen touch does the effect but not the swap;
-- the block used for the test is the **displayed** one (`blknum`), so the touch rule of a ring follows its current frame (that is the "timing judge" noted in the probe).
+- the block used for the test is the **displayed** one (`blknum`), so the touch rule of a ring follows its current frame (the "timing judge").
 - `obj` blocks are skipped by `CheckTouch` (`PG:3518-3519`) and only act through a pickup (`PG:2116-2138`), which applies the effect and then swaps the cell.
 
 ## 5.5 Gravity bits
