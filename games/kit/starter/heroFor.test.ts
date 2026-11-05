@@ -3,7 +3,9 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { STARTER_GROUPS } from '../../../web/src/project/starter';
+import { HELPER_NAMES } from '../../../web/src/project/starterHeroes';
 import { heroFor } from './heroFor';
+import { helperPalettes } from './heroLook';
 
 const G = join(__dirname, '..', '..');
 const starters = readdirSync(G).flatMap((id) => {
@@ -16,6 +18,9 @@ const starters = readdirSync(G).flatMap((id) => {
 });
 
 describe('heroFor', () => {
+  it('has a look for each helper the table names', () => {
+    expect(HELPER_NAMES).toEqual(helperPalettes.map((h) => h.name));
+  });
   it('matches about.json for every Starter', () => {
     for (const s of starters) expect(s.hero, s.id).toBe(heroFor(s.id));
   });
@@ -34,7 +39,8 @@ describe('heroFor', () => {
     for (const s of starters) {
       const mine = heroFor(s.id);
       const text = readFileSync(join(G, s.id, 'about.json'), 'utf8') + readFileSync(join(G, s.id, 'manual.json'), 'utf8');
-      for (const n of names) if (n.toUpperCase() !== mine && !s.title.includes(n)) expect(new RegExp(`\\b${n}\\b`).test(text), `${s.id} mentions ${n}`).toBe(false);
+      for (const n of names)
+        if (n.toUpperCase() !== mine && !s.title.includes(n)) expect(new RegExp(`\\b${n}\\b`).test(text), `${s.id} mentions ${n}`).toBe(false);
     }
   });
 });

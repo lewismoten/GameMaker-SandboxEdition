@@ -45,7 +45,14 @@ const POSE_OF: Record<string, string> = {
 
 /** One pose as a 20 x 20 block with Lian centered on the bottom row. */
 export function tinyPose(pal: Pal, name: string): Pixels {
-  const key = { T: kitRamp(pal, 'hat')[2], W: pal.c('white', 3), S: kitRamp(pal, 'skin')[3], O: kitRamp(pal, 'hood')[2], P: pal.c('ink', 0), K: pal.c('ink', 0) };
+  const key = {
+    T: kitRamp(pal, 'hat')[2],
+    W: pal.c('white', 3),
+    S: kitRamp(pal, 'skin')[3],
+    O: kitRamp(pal, 'hood')[2],
+    P: pal.c('ink', 0),
+    K: pal.c('ink', 0),
+  };
   return new Pixels(20, 20, CLEAR).draw(8, 12, POSES[name], key);
 }
 

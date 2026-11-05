@@ -608,18 +608,79 @@ const LISTED: CastMember[] = [
 /** A hidden thing's place, from its game's about.json (hidden.json): only the level, never where on it. */
 /** The eight helpers who lead the Starters Kit does not (games/kit/starter/heroLook.ts has their looks): the same blocks in other colors. */
 const HELPERS: { id: string; name: string; role: string; hi: string; look: string; game: CastGame }[] = [
-  { id: 'mia', name: 'Mia', role: 'A Starter explorer, in a purple beanie', hi: 'Hi! Look both ways, then jump.', look: 'fair skin, auburn hair, a purple beanie and a gold hoodie', game: 'keys-and-doors' },
-  { id: 'lena', name: 'Lena', role: 'A Starter explorer, in a red beanie', hi: 'Ready when you are. Arrows to walk, Space to jump.', look: 'deep brown skin, black hair, a red beanie and a teal hoodie', game: 'meet-the-monsters' },
-  { id: 'mara', name: 'Mara', role: 'A Starter explorer, in a green beanie', hi: 'Doors are my favorite. What is behind this one?', look: 'tan skin, brown hair, a green beanie and a pink hoodie', game: 'room-to-room' },
-  { id: 'lian', name: 'Lian', role: 'A Starter explorer, in a blue beanie', hi: 'Coins first, then the rest.', look: 'fair skin, silver hair, a blue beanie and a red hoodie', game: 'coins-and-score' },
-  { id: 'yana', name: 'Yana', role: 'A Starter explorer, in a pink beanie', hi: 'Bump it, break it, and see what falls out!', look: 'brown skin, blond hair, a pink beanie and a blue hoodie', game: 'breakable-walls' },
-  { id: 'neka', name: 'Neka', role: 'A green alien explorer, in a gold beanie', hi: 'Greetings from far away. Where do we dig?', look: 'green skin, teal hair, a gold beanie and a purple hoodie', game: 'walk-the-ground' },
-  { id: 'rima', name: 'Rima', role: 'A purple alien explorer, in a teal beanie', hi: 'Spikes? I will watch my step.', look: 'purple skin, plum hair, a teal beanie and a gold hoodie', game: 'watch-your-step' },
-  { id: 'lami', name: 'Lami', role: 'A blue alien explorer, in a red beanie', hi: 'Things grow here. So do I!', look: 'blue skin, silver hair, a red beanie and a green hoodie', game: 'things-that-grow' },
+  {
+    id: 'mia',
+    name: 'Mia',
+    role: 'A Starter explorer, in a purple beanie',
+    hi: 'Hi! Look both ways, then jump.',
+    look: 'fair skin, auburn hair, a purple beanie and a gold hoodie',
+    game: 'keys-and-doors',
+  },
+  {
+    id: 'lena',
+    name: 'Lena',
+    role: 'A Starter explorer, in a red beanie',
+    hi: 'Ready when you are. Arrows to walk, Space to jump.',
+    look: 'deep brown skin, black hair, a red beanie and a teal hoodie',
+    game: 'meet-the-monsters',
+  },
+  {
+    id: 'mara',
+    name: 'Mara',
+    role: 'A Starter explorer, in a green beanie',
+    hi: 'Doors are my favorite. What is behind this one?',
+    look: 'tan skin, brown hair, a green beanie and a pink hoodie',
+    game: 'room-to-room',
+  },
+  {
+    id: 'lian',
+    name: 'Lian',
+    role: 'A Starter explorer, in a blue beanie',
+    hi: 'Coins first, then the rest.',
+    look: 'fair skin, silver hair, a blue beanie and a red hoodie',
+    game: 'coins-and-score',
+  },
+  {
+    id: 'yana',
+    name: 'Yana',
+    role: 'A Starter explorer, in a pink beanie',
+    hi: 'Bump it, break it, and see what falls out!',
+    look: 'brown skin, blond hair, a pink beanie and a blue hoodie',
+    game: 'breakable-walls',
+  },
+  {
+    id: 'neka',
+    name: 'Neka',
+    role: 'A green alien explorer, in a gold beanie',
+    hi: 'Greetings from far away. Where do we dig?',
+    look: 'green skin, teal hair, a gold beanie and a purple hoodie',
+    game: 'walk-the-ground',
+  },
+  {
+    id: 'rima',
+    name: 'Rima',
+    role: 'A purple alien explorer, in a teal beanie',
+    hi: 'Spikes? I will watch my step.',
+    look: 'purple skin, plum hair, a teal beanie and a gold hoodie',
+    game: 'watch-your-step',
+  },
+  {
+    id: 'lami',
+    name: 'Lami',
+    role: 'A blue alien explorer, in a red beanie',
+    hi: 'Things grow here. So do I!',
+    look: 'blue skin, silver hair, a red beanie and a green hoodie',
+    game: 'things-that-grow',
+  },
 ];
 
 /** What Kit does in a game, said of a helper: "he" becomes the name. */
-const said = (as: string, name: string): string => as.replace(/\bhimself\b/g, 'themself').replace(/\bhis\b/g, `${name}’s`).replace(/\bhim\b/g, name).replace(/\bhe\b/g, name);
+const said = (as: string, name: string): string =>
+  as
+    .replace(/\bhimself\b/g, 'themself')
+    .replace(/\bhis\b/g, `${name}’s`)
+    .replace(/\bhim\b/g, name)
+    .replace(/\bhe\b/g, name);
 
 /** The cast with Kit's list split by who leads each Starter (starterHeroes.ts), and the helpers after him. */
 function withHelpers(list: CastMember[]): CastMember[] {
