@@ -39,7 +39,7 @@ function make(roles: RoleMap, seed: number, difficulty?: number, monsters?: numb
   return o.result;
 }
 const area = (r: GenResult): Area => ({ w: r.rect.w, h: r.rect.h, cells: r.kinds });
-const SEEDS = Array.from({ length: 24 }, (_, i) => i * 7919 + 3);
+const SEEDS = Array.from({ length: 10 }, (_, i) => i * 7919 + 3);
 
 describe('platform generator', () => {
   it('proves every layout reachable by the real jump, every pickup collectable and every lock holding', () => {

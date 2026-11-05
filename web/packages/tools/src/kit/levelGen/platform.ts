@@ -275,7 +275,7 @@ function attempt(w: number, h: number, r: Stream, o: PlatformOptions, d: number)
       // the heart goes on the highest place he can stand, away from the ends
       let best = -1;
       for (let c = 0; c < w * h; c++) {
-        if (!reach.stood[c] || c % w < 8 || c % w > w - 9 || taken.has(c)) continue;
+        if (!reach.stood[c] || c % w < 8 || c % w > w - 9 || !emptyCell(c)) continue;
         const y = (c / w) | 0;
         if (best < 0 || y < ((best / w) | 0) || (y === ((best / w) | 0) && r.chance(0.3))) best = c;
       }

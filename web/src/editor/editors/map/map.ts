@@ -107,7 +107,7 @@ function writePref(key: string, on: boolean): void {
 }
 
 /** The block set, monsters and monster blocks of the scene that uses this map. */
-function sceneSet(project: Project, file: string): { bbl?: string; mon?: string; mbl?: string; scenes: number[] } {
+function sceneSet(project: Project, file: string): { bbl?: string; mon?: string; mbl?: string; chr?: string; cbl?: string; scenes: number[] } {
   const game = project.game();
   const scenes = project
     .usesOf(file)
@@ -118,6 +118,8 @@ function sceneSet(project: Project, file: string): { bbl?: string; mon?: string;
     bbl: s?.files[2] || project.files.byExtension('bbl')[0],
     mon: s?.files[3] || project.files.byExtension('mon')[0],
     mbl: s?.files[4] || project.files.byExtension('mbl')[0],
+    chr: s?.files[5] || project.files.byExtension('chr')[0],
+    cbl: s?.files[6] || project.files.byExtension('cbl')[0],
     scenes,
   };
 }
@@ -1348,7 +1350,7 @@ registerEditor(['map'], (host, project, file) => {
     'button',
     {
       type: 'button',
-      title: 'Draw a dungeon or a forest from the blocks marked as walls, floors and trees in the block editor',
+      title: 'Draw a dungeon, forest, building, town, overworld or side view from the blocks marked with roles in the block editor',
       disabled: !bblName || !project.files.has(bblName),
       onclick: () =>
         void import('./generate/generateDialog').then((m) =>
@@ -1362,6 +1364,7 @@ registerEditor(['map'], (host, project, file) => {
             blockSet: () => bg,
             monsters: () => mons,
             wrap: () => wrapping,
+            hero: set.chr && project.files.has(set.chr) ? { chr: set.chr, cbl: set.cbl, mbl: mblName } : undefined,
             apply: (blocks, _what, withMonsters) => {
               remember();
               map.blocks.set(blocks);

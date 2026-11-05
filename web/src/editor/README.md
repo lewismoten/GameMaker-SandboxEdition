@@ -191,6 +191,7 @@ makes Ctrl+S save at once). Files are always written in the original binary form
   edges and corners from the set's terrain brushes, and `placeMonsters` puts the layout's monsters into the map's own monster list (the ones already in the area go; same undo step); `verifyOffer.ts` gives each preview its Verified or Not proven chip from the generator's proof plus the Level check's quick reach test (`checks/sealed.ts`) on the game's real blocks (it does not play the level). The generators themselves are in the tools package
   (`kit/levelGen`, no DOM, seeded). A layout is ordinary map cells in one undo step: no new DOS data, and the
   map is untouched until you pick one. Town and Overworld layouts also list their doors and sites under "Links to make" (suggestions; nothing is linked).
+  `platformBot.ts` plays a generated side view on the level check's scene sim: it presses the hero's own keys along the route the generator's reach model chose (key first when there is a lock), checks where he really lands after each move and wins when the exit link is taken. The Platform kind adds a Difficulty slider and its chip reads Jump math (proven by the model) or Bot won (played on the real engine); `test/levelGenPlatformBot.test.ts` runs a sample of seeds.
 - **Block groups.** The block set editor (`editors/blocks/`) and the character editor share block
   groups (`blockGroups.ts`: a picture drawn across several blocks, kept in the companion file), the
   group shown assembled (`groupView.ts`), and live animation previews at the game's tick rate
