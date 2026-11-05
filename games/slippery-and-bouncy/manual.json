@@ -1,0 +1,91 @@
+{
+  "title": "Slippery and Bouncy",
+  "howDoI": [
+    {
+      "id": "ice",
+      "q": "How do I make ice that my hero slides on?",
+      "scene": 2,
+      "x": 24,
+      "y": 19,
+      "level": 1
+    },
+    {
+      "id": "pull-direction",
+      "q": "How do I change which way a block pulls my hero?",
+      "scene": 2,
+      "x": 24,
+      "y": 19,
+      "level": 1
+    },
+    {
+      "id": "ledge",
+      "q": "How do I make a ledge my hero can jump up through?",
+      "scene": 2,
+      "x": 40,
+      "y": 17,
+      "level": 1
+    },
+    {
+      "id": "belt",
+      "q": "How do I make a floor that carries my hero along?",
+      "scene": 3,
+      "x": 22,
+      "y": 19,
+      "level": 2
+    },
+    {
+      "id": "wind",
+      "q": "How do I make a block that blows my hero up into the air?",
+      "scene": 4,
+      "x": 34,
+      "y": 19,
+      "level": 3
+    },
+    {
+      "id": "spring",
+      "q": "How do I make a spring pad that bounces my hero?",
+      "scene": 4,
+      "x": 19,
+      "y": 19,
+      "level": 3
+    }
+  ],
+  "pages": [
+    {
+      "head": "Welcome",
+      "html": "<h1>Welcome</h1><p><b>Slippery and Bouncy</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has three short levels about blocks that pull, and takes a few minutes to finish.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each idea is made.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. <kbd>Space</kbd> jumps. <kbd>F2</kbd> shows your hit points, lives and score. Walk into the door at the end of a level to go on.</p><h2>The one idea</h2><p>Every block has a <b>Gravity pulls</b> setting: which of four ways it pulls, up, down, left or right, in any mix. Kit is pulled by the block his feet are in. Down is ordinary gravity. Add right and it drags him along. Up lifts him. Nothing else in these three levels is special.</p>"
+    },
+    {
+      "head": "Level 1: Ice",
+      "html": "<h1>Level 1: Ice</h1><p>The <b>ICE DRAGS YOU RIGHT, AND YOU SLIDE ON</b> sign comes first. A patch of pale blue ice lies on the ground, with a spike a little way past its end. Step onto the ice and it speeds Kit up. Let go of every key and he keeps going, all the way off the end and into the spike, which stings him once for 10 hit points and lies flat. Jump near the end of the ice and he sails over it.</p><p>The <b>JUMP UP THROUGH A LEDGE AND LAND ON TOP</b> sign stands before a plank ledge with four coins on it. Stand under it, press <kbd>Space</kbd>, and Kit rises through the plank and lands on top. He cannot drop back down through it: he walks off the end. Three more coins are on the ground before the door.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 1 is made</h1><ul><li><b>Two layers.</b> The ground block <b>ice</b> is plain and solid on every side. The pull is in the <b>slickAir</b> blocks in the two rows above it. Open <b>slip.bbl</b> in the blocks editor and pick <b>slickAir</b>: <b>Gravity pulls</b> has <b>down</b> and <b>right</b> ticked. Kit is pulled by the block his feet are in, not by the floor under him, so the pulling air has to sit where he walks.</li><li><b>Down and right.</b> Down is still ticked, so Kit is held to the ground. Right makes him a little faster every tick he stands in it, up to the game&rsquo;s top speed.</li><li><b>Sliding on.</b> Outside the pulling air the sideways speed fades away in a few ticks. That is why he slides a block or two past the end of the ice and then stops.</li><li><b>The spike.</b> <b>spikeUp</b> has <b>Hit points</b> &minus;10 and <b>Becomes block</b> <b>spikeFlat</b>, so it stings once.</li><li><b>The ledge.</b> The block <b>plank</b> is solid on its top side only (<b>Solid sides</b>). Kit can jump up through it from below and stand on it from above. Its Gravity pulls is down, like air, so he falls when he walks off.</li><li><b>The exit.</b> A scene link joins the door to the next level. Open <b>slip.gam</b> in the scenes editor.</li></ul>"
+    },
+    {
+      "head": "Level 2: The Belt",
+      "html": "<h1>Level 2: The Belt</h1><p>The <b>A BELT CARRIES YOU. JUMP NEAR THE END</b> sign comes first. An orange-chevroned belt runs along the ground, and past its end waits another spike. Step onto it and stand still: the belt carries Kit the whole way, faster and faster, and into the spike. Walk right and he goes faster still. Jump near the end and he clears the spike; jump too early and he lands back on the belt. Five coins lie on the ground after it.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 2 is made</h1><ul><li><b>Same setting as the ice.</b> The <b>beltAir</b> blocks above the belt have <b>Gravity pulls</b> down and right, exactly like <b>slickAir</b>. Only the picture and the length differ. A longer stretch means Kit reaches a higher speed, so the belt feels like a moving walkway where the short ice patch feels like a slip.</li><li><b>Why it carries him.</b> The belt is eight blocks long and Kit&rsquo;s feet are in pulling air the whole way. Standing still changes nothing, because the pull keeps adding speed every tick.</li><li><b>Chevrons and dashes.</b> The orange chevrons on the <b>belt</b> block and the white dashes in the air show the direction. The engine does not need them; they are there so you can see where the pull is.</li><li><b>Jumping off.</b> Up in the air Kit leaves the pulling air, so his sideways speed starts to fade right away. Jump a block or two before the end and he lands past the spike. Jump too early and he lands back in the pull and is carried on.</li><li><b>Where it is.</b> Open <b>two.map</b> in the map editor: eight belt blocks on the ground row, and sixteen <b>beltAir</b> blocks in two rows above them.</li></ul>"
+    },
+    {
+      "head": "Level 3: Wind",
+      "html": "<h1>Level 3: Wind</h1><p>The <b>A SPRING IS A SHORT WIND</b> sign comes first. Three spring pads sit in the ground. Step on them and Kit bounces, over and over, a little higher than a jump. Hold <kbd>Right</kbd> on the way up and he lands on the plank ledge, with four coins on it. Walk off its end.</p><p>The <b>WIND BLOWS YOU UP</b> sign is before a floor fan. Walk into the column of wind above it and Kit rises, through the one-way shelf, and settles on top. A spike is on the shelf a few steps from where he lands, and the door is beyond it, with four more coins on the way.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 3 is made</h1><ul><li><b>Wind is up.</b> The <b>windAir</b> blocks above the fan have <b>Gravity pulls</b> <b>up</b> only. Down is not ticked, so nothing pulls Kit back while he is in the column. He speeds up as he rises, then leaves the top of the column into ordinary air and gravity takes him back down.</li><li><b>How high.</b> The height he reaches is set by how many wind blocks he passes through: the column here is four blocks tall, which is enough to lift him through the shelf. Make it taller and he rises higher.</li><li><b>A spring is a short wind.</b> <b>springAir</b> is the same block, three tall, over solid <b>spring</b> blocks. Kit stands on the spring, the wind lifts him, he falls back, and it lifts him again.</li><li><b>One-way shelf.</b> The shelf is the same <b>plank</b> block as the ledge in level 1, solid on top only, so the wind carries him up through it and he lands on top.</li><li><b>The spike.</b> The shelf spike is the same <b>spikeUp</b>: 10 hit points, once.</li><li><b>Where it is.</b> Open <b>three.map</b> in the map editor. The door stands on the shelf, so the wind is the way there.</li></ul>"
+    },
+    {
+      "head": "What it cannot do",
+      "html": "<h1>What it cannot do</h1><p>These are the engine&rsquo;s limits, so you can plan around them.</p><ul><li><b>No ice that is slippery on a sliding scale.</b> A pull is on or off. You cannot make ice a little slippery and another patch very slippery; only its length changes how fast Kit gets.</li><li><b>No friction to hold on to.</b> Once Kit is in pulling air, holding the other way does not stop him: the pull wins in a few ticks. To leave the ice or the belt against its pull, jump out.</li><li><b>The pull is in the air, not the floor.</b> It belongs to the block his feet are in, so a floor alone is never slippery. Ice always needs the pulling blocks above it.</li><li><b>There is a top speed.</b> The pull adds speed every tick up to a limit, so a long belt gets fast but never faster than that.</li><li><b>Ledges are one way up only.</b> A ledge is solid on its top side. You can jump up through it. There is no way to drop down through one on purpose: you walk off its end or use a ladder.</li><li><b>Wind has no gusts.</b> It blows all the time, always the same way. Making it come and go needs blocks that change by themselves, which is a different Starter.</li></ul>"
+    },
+    {
+      "head": "Make it yours",
+      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>In <b>slickAir</b>, untick <b>right</b> and tick <b>left</b>, and the ice drags the other way.</li><li>Make the ice patch in <b>one.map</b> twice as long, and see how fast Kit gets.</li><li>Give <b>windAir</b> both <b>up</b> and <b>right</b> and watch the wind carry him sideways as it lifts.</li><li>Add one more <b>springAir</b> block above a spring and see Kit bounce higher.</li><li>Move the shelf up or down a row and find the height where the wind no longer reaches it.</li></ul><p>The home page&rsquo;s <b>Starters</b> tab has more small games like this one.</p>"
+    }
+  ]
+}
