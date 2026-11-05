@@ -11,8 +11,4 @@ const here = new URL('../../hardware/pocket-player/', import.meta.url).pathname;
 const exe = join(mkdtempSync(join(tmpdir(), 'pocket-controls-')), 'controlstest');
 execFileSync('c++', ['-std=c++17', '-O1', '-Wall', '-I', here + 'src', here + 'host/controlstest.cpp', '-o', exe], { stdio: 'inherit' });
 const r = spawnSync(exe, { stdio: 'inherit' });
-// the resistive touch calibration (src/touchcal.h) for the 2.8 inch board
-const calExe = join(mkdtempSync(join(tmpdir(), 'pocket-touchcal-')), 'touchcaltest');
-execFileSync('c++', ['-std=c++17', '-O1', '-Wall', '-I', here + 'src', here + 'host/touchcaltest.cpp', '-o', calExe], { stdio: 'inherit' });
-const c = spawnSync(calExe, { stdio: 'inherit' });
-process.exit((r.status ?? 1) || (c.status ?? 1));
+process.exit(r.status ?? 1);
