@@ -79,7 +79,8 @@ After changing a game, rebuild it and run its checks (`npm run check:games -- --
 all checks and verifies two independent builds match byte for byte). `disk/`, `walkPaths.json`
 and `games/.build-cache.json` are ignored build output: never commit them. Root `npm ci`
 generates them; development, build and test commands refresh them when inputs change.
-Use `npm run build:games -- --force` from the root for a clean rebuild of all games.
+Use `npm run build:games -- --force` from the root for a clean rebuild of all games (`--force-all` also
+rebuilds the trinkets, nickels and other extras, which is slow; `--timing` prints per-stage seconds).
 Recorded walkthroughs and demos remain source inputs and regression fixtures. A refactor
 must not change the generated disk bytes, walkthroughs or demos.
 If a game's built content changes since the last push to master, bump its `"version"` in
