@@ -1,7 +1,7 @@
 // Game-Maker Pocket Player for the ESP32-3248S035: a list of games (the Starters packed into LittleFS by
 // web/scripts/pocketData.ts), the play loop (gmcore.h, also built and tested on the Mac), touch
 // controls for fingers and a stylus (controls.h, also tested on the Mac), a settings screen, and a
-// status strip. This file is the board: files, the panel, drawing 320x200 at 1.5x, the screens. No sound.
+// status strip. This file is the board: files, the panel, drawing 320x200 at 1.5x, the screens; sound is in speaker.h.
 #include <Arduino.h>
 #include <LittleFS.h>
 #include <esp_heap_caps.h>
@@ -49,13 +49,22 @@ static uint8_t* readFile(const char* name, size_t* n) {
   *n = len;
   return p;
 }
+// The decompressor's state is about 11 KB: taken from the heap once, since the loop task's whole
+// stack is 8 KB (tinfl_decompress_mem_to_mem puts it on the stack, which overflowed the first time a
+// game loaded) and static memory is full.
+static tinfl_decompressor* inflater = nullptr;
 static bool inflateRaw(const uint8_t* src, size_t n, uint8_t* dst, size_t cap) {
-  size_t got = tinfl_decompress_mem_to_mem(dst, cap, src, n, 0);  // raw deflate: no zlib header
-  return got == cap;
+  if (!inflater) inflater = (tinfl_decompressor*)malloc(sizeof(tinfl_decompressor));
+  if (!inflater) return false;
+  tinfl_init(inflater);
+  size_t in = n, out = cap;  // raw deflate: no zlib header
+  tinfl_status st = tinfl_decompress(inflater, src, &in, dst, dst, &out, TINFL_FLAG_USING_NON_WRAPPING_OUTPUT_BUF);
+  return st == TINFL_STATUS_DONE && out == cap;
 }
 
 struct GameEntry { char id[28]; char title[40]; int levels; };
-static GameEntry games[64];
+constexpr int MAXGAMES = 96;
+static GameEntry games[MAXGAMES];
 static int ngames = 0;
 
 static void loadGameList() {
@@ -65,7 +74,7 @@ static void loadGameList() {
   if (!t) return;
   t[n] = 0;
   char* p = (char*)t;
-  while (*p && ngames < 64) {
+  while (*p && ngames < MAXGAMES) {
     char* e = strchr(p, '\n');
     if (e) *e = 0;
     GameEntry& g = games[ngames];
