@@ -172,6 +172,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Fixed
 
+- The Level check's slower-hands play no longer stays silent when its bot finds no way through a level: it says slower hands were not checked, suggests playing it unhurried, and, where the hero can tap jump again in the air, that chained air taps need each press within about the jump's air time.
 - While the PC screen has the keyboard, a small line by the screen says "Shift+Tab leaves the screen" (on the desk and on the DOS page). A command the PC types after booting (the modem, say) no longer pulls focus back to the screen if you have moved on, so closing the mug returns to the mug.
 - On a phone held sideways, New game keeps its three starts (Ready to play, Empty, Describe it) in one row at the bottom, so Ready to play no longer scrolls out of view.
 - On the desk's PC screen and dos.html, a keyboard user is no longer stuck: Shift+Tab leaves the screen (the screen's name says so), and the Sound Boaster note is a labeled region.
