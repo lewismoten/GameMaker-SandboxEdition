@@ -1,0 +1,77 @@
+{
+  "version": 1,
+  "game": "flash-safe",
+  "rand": {
+    "seed": 1,
+    "per": "scene"
+  },
+  "segments": [
+    {
+      "scene": 2,
+      "keys": "AU0PzTBNGc0/TRTNA00KOQK5CM0wTQrNAzkCuQBNFM0ETQXNAzkCuQBNFM0ETQXNP00="
+    },
+    {
+      "scene": 3,
+      "keys": "AU0PzT9NGc01TRTNP00UzTVNHs0/TSjNP00="
+    },
+    {
+      "scene": 4,
+      "keys": "AU0PzUlNGc1JTS3NH01BzQNN"
+    }
+  ],
+  "chapters": [
+    {
+      "scene": 2,
+      "title": "Level 1: Hit Without a Flash"
+    },
+    {
+      "scene": 3,
+      "title": "Level 2: Slow and Small"
+    },
+    {
+      "scene": 4,
+      "title": "Level 3: Storm, Held"
+    }
+  ],
+  "timeline": {
+    "fps": 60,
+    "frames": 10354,
+    "chapters": [
+      {
+        "title": "Opening",
+        "frame": 0,
+        "time": 0
+      },
+      {
+        "title": "Story",
+        "frame": 896,
+        "time": 14933.333333333148
+      },
+      {
+        "title": "Level 1: Hit Without a Flash",
+        "frame": 1644,
+        "time": 27400.000000000564
+      },
+      {
+        "title": "Level 2: Slow and Small",
+        "frame": 3406,
+        "time": 56766.66666666413
+      },
+      {
+        "title": "Level 3: Storm, Held",
+        "frame": 5532,
+        "time": 92200.00000000394
+      },
+      {
+        "title": "Ending",
+        "frame": 7070,
+        "time": 117833.33333334474
+      },
+      {
+        "title": "Credits",
+        "frame": 9280,
+        "time": 154666.6666666682
+      }
+    ]
+  }
+}
