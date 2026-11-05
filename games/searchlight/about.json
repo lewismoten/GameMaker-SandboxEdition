@@ -1,0 +1,34 @@
+{
+  "title": "Don't Get Seen",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.0",
+  "blurb": "Two short levels about a light that cannot look. A friendly lamp hangs from a rail and walks back and forth over the way; anyone it touches loses hit points. Trenches are dug in the ground under it, so you wait in one while it passes over, then go on. Signs in the levels say how. Play it, then open it in Game-Maker and change how far the lamp walks.",
+  "exe": "SEEN.EXE",
+  "dosName": "SEEN",
+  "sound": "sb",
+  "label": {
+    "background": "#fff1e0",
+    "band": "#d94b3a",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "2 short levels",
+    "hours": 1,
+    "background": "#d94b3a",
+    "accent": "#ffd23f",
+    "ink": "#ffffff",
+    "tagline": "Wait for the light to pass.",
+    "back": "A small explorer in a teal beanie has two halls to cross, and a lamp hangs over each, walking back and forth on a rail. It cannot look. It cannot chase. It only walks its path, and anyone under it is seen. Dig in, let it pass, then go, and open the game in Game-Maker to change how far it walks.",
+    "features": ["Signs in the levels explain each idea", "A light is a column of monsters on one path", "Made to be copied and taken apart"],
+    "shots": [
+      ["one.map", 28, 6],
+      ["two.map", 30, 6]
+    ],
+    "rating": "Everyone"
+  }
+}
