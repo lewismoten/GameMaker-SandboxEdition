@@ -190,7 +190,7 @@ makes Ctrl+S save at once). Files are always written in the original binary form
   link to the Uses tab); `place.ts` writes the chosen layout into cells and gives walls, trees and paths
   edges and corners from the set's terrain brushes, and `placeMonsters` puts the layout's monsters into the map's own monster list (the ones already in the area go; same undo step); `verifyOffer.ts` gives each preview its Verified or Not proven chip from the generator's proof plus the Level check's quick reach test (`checks/sealed.ts`) on the game's real blocks (it does not play the level). The generators themselves are in the tools package
   (`kit/levelGen`, no DOM, seeded). A layout is ordinary map cells in one undo step: no new DOS data, and the
-  map is untouched until you pick one.
+  map is untouched until you pick one. Town and Overworld layouts also list their doors and sites under "Links to make" (suggestions; nothing is linked).
 - **Block groups.** The block set editor (`editors/blocks/`) and the character editor share block
   groups (`blockGroups.ts`: a picture drawn across several blocks, kept in the companion file), the
   group shown assembled (`groupView.ts`), and live animation previews at the game's tick rate

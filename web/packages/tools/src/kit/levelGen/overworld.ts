@@ -88,7 +88,12 @@ export function overworld(w: number, h: number, r: Stream, u: OverworldUses): Ov
       size++;
       const x = c % w,
         y = (c / w) | 0;
-      for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+      for (const [dx, dy] of [
+        [1, 0],
+        [-1, 0],
+        [0, 1],
+        [0, -1],
+      ]) {
         const nx = x + dx,
           ny = y + dy;
         if (nx < 0 || ny < 0 || nx >= w || ny >= h) continue;
@@ -125,7 +130,9 @@ export function overworld(w: number, h: number, r: Stream, u: OverworldUses): Ov
   for (let i = 0; i < cost.length; i++) cost[i] = area.cells[i] === ROCK ? 14 : area.cells[i] === TREE ? 4 : 1 + r.next() * 0.6;
   const joined = sites.length ? [sites[0]] : [];
   for (const s of sites.slice(1)) {
-    const near = joined.reduce((a, b) => (Math.abs((a % w) - (s % w)) + Math.abs(((a / w) | 0) - ((s / w) | 0)) <= Math.abs((b % w) - (s % w)) + Math.abs(((b / w) | 0) - ((s / w) | 0)) ? a : b));
+    const near = joined.reduce((a, b) =>
+      Math.abs((a % w) - (s % w)) + Math.abs(((a / w) | 0) - ((s / w) | 0)) <= Math.abs((b % w) - (s % w)) + Math.abs(((b / w) | 0) - ((s / w) | 0)) ? a : b,
+    );
     for (const c of route(pass, near, s, cost)) {
       area.cells[c] = PATH;
       cost[c] = 0.2;

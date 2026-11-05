@@ -29,7 +29,12 @@ describe('town', () => {
     for (const l of r.links.filter((x) => x.kind === 'home' || x.kind === 'shop')) {
       const x = l.cell % r.rect.w,
         y = (l.cell / r.rect.w) | 0;
-      const near = [[1, 0], [-1, 0], [0, 1], [0, -1]].some(([dx, dy]) => r.kinds[(y + dy) * r.rect.w + x + dx] === 2);
+      const near = [
+        [1, 0],
+        [-1, 0],
+        [0, 1],
+        [0, -1],
+      ].some(([dx, dy]) => r.kinds[(y + dy) * r.rect.w + x + dx] === 2);
       expect(near, `${l.label}`).toBe(true);
     }
   });

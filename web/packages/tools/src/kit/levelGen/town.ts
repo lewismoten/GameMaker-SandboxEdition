@@ -40,12 +40,13 @@ export function town(w: number, h: number, r: Stream, u: TownUses): Town {
   const yc: number[] = [];
   let y0 = mid;
   for (let x = 0; x < w; x++) {
-    if (x % 7 === 6) y0 = Math.min(hi, Math.max(lo, y0 + r.int(-1, 1)));
+    if (x % 4 === 3) y0 = Math.min(hi, Math.max(lo, y0 + r.int(-1, 1)));
     yc.push(y0);
   }
   const fixed = new Uint8Array(w * h); // street, plaza and yard cells houses keep clear of
   const mark = (x: number, y: number, pad: number) => {
-    for (let dy = -pad; dy <= pad; dy++) for (let dx = -pad; dx <= pad; dx++) if (x + dx >= 0 && y + dy >= 0 && x + dx < w && y + dy < h) fixed[at(x + dx, y + dy)] = 1;
+    for (let dy = -pad; dy <= pad; dy++)
+      for (let dx = -pad; dx <= pad; dx++) if (x + dx >= 0 && y + dy >= 0 && x + dx < w && y + dy < h) fixed[at(x + dx, y + dy)] = 1;
   };
   // the ring of trees first, so streets and gates cut through it
   if (u.tree) for (let i = 0; i < w * h; i++) if (i % w < 1 || i % w >= w - 1 || i < w || i >= w * (h - 1)) area.cells[i] = TREE;
@@ -55,12 +56,23 @@ export function town(w: number, h: number, r: Stream, u: TownUses): Town {
   crossX.push(midX - 1);
   for (let x = midX - r.int(17, 21); x > 8; x -= r.int(20, 26)) crossX.push(x);
   for (let x = midX + r.int(17, 21); x < w - 9; x += r.int(20, 26)) crossX.push(x);
-  for (const cx of crossX)
-    for (let y = 2; y < h - 2; y++)
-      for (const x of [cx, cx + 1]) {
+  // each runs to one side of the main street only (the middle one north, the others alternate), ends short of the
+  // edge, and jogs one cell sideways partway, so the streets do not form a grid
+  crossX.forEach((cx, i) => {
+    const north = i % 2 === 0;
+    const jogAt = r.int(0, 1) ? 0.4 : 0.6;
+    const jog = r.chance(0.5) ? 1 : -1;
+    const stop = r.int(3, 5);
+    for (let k = 0; k <= 1; k++) {
+      const cy = yc[Math.min(w - 1, cx + k)];
+      const ends = north ? [stop, cy] : [cy, h - 1 - stop];
+      for (let y = ends[0]; y <= ends[1]; y++) {
+        const x = cx + k + (Math.abs(y - cy) > jogAt * (ends[1] - ends[0]) ? jog : 0);
         set(x, y, PATH);
         mark(x, y, 1);
       }
+    }
+  });
   // the main street, three wide, and the gates at both ends
   for (let x = 0; x < w; x++)
     for (let d = -1; d <= 1; d++) {
@@ -79,11 +91,11 @@ export function town(w: number, h: number, r: Stream, u: TownUses): Town {
       set(x, y, PATH);
       mark(x, y, 1);
     }
-  if (u.decor) set(px + 0, py, DECOR), set(px + 1, py, DECOR);
+  if (u.decor) (set(px + 0, py, DECOR), set(px + 1, py, DECOR));
   // houses along both sides; each faces the street with its door in the bottom (north side) or top (south side) row
   const doors: { cell: number; d: number }[] = [];
   for (const north of [true, false]) {
-    for (let x = 2; x < w - 8; ) {
+    for (let x = 2; x < w - 8;) {
       const hw = r.int(5, 7),
         hh = r.int(4, 5);
       let top = north ? h : 0;
@@ -123,7 +135,7 @@ export function town(w: number, h: number, r: Stream, u: TownUses): Town {
     for (let x = 2; x < w - 2; x++) {
       const c = at(x, y);
       if (area.cells[c] !== FLOOR || fixed[c]) continue;
-      if (u.tree && r.chance(0.05)) area.cells[c] = TREE;
+      if (u.tree && r.chance(0.03)) area.cells[c] = TREE;
       else if (u.decor && r.chance(0.05)) area.cells[c] = DECOR;
     }
   const entry = at(1, yc[1]),

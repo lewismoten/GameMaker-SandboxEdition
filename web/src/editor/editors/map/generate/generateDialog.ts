@@ -109,7 +109,9 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
       needs.replaceChildren(missingRoles({ kind, roles, usesHref }));
       const n = checkNeeds(kind, roles);
       if (monRow) monRow.hidden = !n.ok || NO_MONSTERS.has(kind);
-      current = n.ok ? offers(host.blocks(), roles, terrains, kind, seed, r, { monsters: addMonsters ? monsterIds : undefined, bg: host.blockSet(), wrap: host.wrap?.() }) : [];
+      current = n.ok
+        ? offers(host.blocks(), roles, terrains, kind, seed, r, { monsters: addMonsters ? monsterIds : undefined, bg: host.blockSet(), wrap: host.wrap?.() })
+        : [];
       chosen = Math.min(chosen, 3);
       grid.replaceChildren();
       buttons.length = 0;
