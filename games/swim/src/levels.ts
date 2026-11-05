@@ -52,11 +52,55 @@ export interface Level {
 const onGround = (ground: number, s: Sign) => ground - 1 - s.board.length;
 
 /** Level 1: the ground row, the width, the creek's columns, the stones' columns, the exit column and the coins. */
-export const L1 = { ground: 10, width: 44, creek: [14, 28], stones: [17, 21, 25], exit: 40, coins: [[17, 9], [19, 7], [21, 9], [23, 7], [25, 9], [32, 9], [34, 9]] } as const;
+export const L1 = {
+  ground: 10,
+  width: 44,
+  creek: [14, 28],
+  stones: [17, 21, 25],
+  exit: 40,
+  coins: [
+    [17, 9],
+    [19, 7],
+    [21, 9],
+    [23, 7],
+    [25, 9],
+    [32, 9],
+    [34, 9],
+  ],
+} as const;
 /** Level 2: the ground row, the width, the pool's columns and its depth in rows (the top row is the surface), the exit column. */
-export const L2 = { ground: 10, width: 44, pool: [10, 33], depth: 5, exit: 42, coins: [[14, 9], [18, 9], [22, 9], [26, 9], [30, 9]] } as const;
+export const L2 = {
+  ground: 10,
+  width: 44,
+  pool: [10, 33],
+  depth: 5,
+  exit: 42,
+  coins: [
+    [14, 9],
+    [18, 9],
+    [22, 9],
+    [26, 9],
+    [30, 9],
+  ],
+} as const;
 /** Level 3: the low floor's row, the ledge's row, the pool's columns and top row, the start and exit columns. */
-export const L3 = { floor: 12, ledge: 6, pool: [14, 25], top: 5, width: 42, start: 36, exit: 1, coins: [[33, 11], [29, 11], [17, 3], [4, 5], [12, 5], [13, 5]] } as const;
+export const L3 = {
+  floor: 12,
+  ledge: 6,
+  pool: [14, 25],
+  top: 5,
+  width: 42,
+  start: 36,
+  exit: 1,
+  coins: [
+    [33, 11],
+    [29, 11],
+    [17, 3],
+    [4, 5],
+    [12, 5],
+    [13, 5],
+  ],
+} as const;
 
 function scenery(g: Grid, ground: number, clouds: [number, number][], bushes: number[], flowers: number[]): void {
   for (const [x, y] of clouds) g.put(x, y, '(').put(x + 1, y, ')');
@@ -74,7 +118,17 @@ function theCreek(book: Book, signs: Record<SignName, Sign>): StarterMap {
   g.put(3, G - 2, 's').put(3, G - 1, 'S');
   g.put(L1.exit, G - 2, 'e').put(L1.exit, G - 1, 'E');
   for (const [x, y] of L1.coins) g.put(x, y, 'c');
-  scenery(g, G, [[8, 2], [20, 1], [34, 3]], [7, 33, 38], [11, 31, 42]);
+  scenery(
+    g,
+    G,
+    [
+      [8, 2],
+      [20, 1],
+      [34, 3],
+    ],
+    [7, 33, 38],
+    [11, 31, 42],
+  );
   const m = new StarterMap(book, g.rows());
   for (let x = c0; x <= c1; x++) m.set(x, G, 'creekTop').set(x, G + 1, 'creek');
   for (const x of L1.stones) m.set(x, G, 'stone');
@@ -95,7 +149,17 @@ function theFloat(book: Book, signs: Record<SignName, Sign>): StarterMap {
   g.put(3, G - 2, 's').put(3, G - 1, 'S');
   g.put(L2.exit, G - 2, 'e').put(L2.exit, G - 1, 'E');
   for (const [x, y] of L2.coins) g.put(x, y, 'c');
-  scenery(g, G, [[7, 2], [18, 1], [30, 3]], [6, 41], [4]);
+  scenery(
+    g,
+    G,
+    [
+      [7, 2],
+      [18, 1],
+      [30, 3],
+    ],
+    [6, 41],
+    [4],
+  );
   const m = new StarterMap(book, g.rows());
   for (let x = p0; x <= p1; x++) {
     m.set(x, G, 'deepTop');
@@ -119,7 +183,16 @@ function theLift(book: Book, signs: Record<SignName, Sign>): StarterMap {
   g.put(L3.start, F - 2, 's').put(L3.start, F - 1, 'S');
   g.put(L3.exit, L3.ledge - 2, 'e').put(L3.exit, L3.ledge - 1, 'E');
   for (const [x, y] of L3.coins) g.put(x, y, 'c');
-  scenery(g, F, [[30, 5], [36, 3]], [30, 39], [28, 38]);
+  scenery(
+    g,
+    F,
+    [
+      [30, 5],
+      [36, 3],
+    ],
+    [30, 39],
+    [28, 38],
+  );
   scenery(g, L3.ledge, [[9, 1]], [2], [11]);
   const m = new StarterMap(book, g.rows());
   for (let x = p0; x <= p1; x++) {

@@ -77,7 +77,8 @@ export async function theCreek(bot: StarterBot): Promise<void> {
   for (const stone of L1.stones) {
     await must(bot, bot.jump('right', stone), `onto the stone at ${stone}`);
     bot.say(`stone ${stone}: score ${bot.sim.ci.score - from}`);
-    if (Math.abs(col(bot) - stone) > 0.9 || row(bot) > L1.ground - 1) throw new Error(`should be standing on the stone at ${stone}; he is at ${col(bot).toFixed(1)}, ${row(bot).toFixed(1)}`);
+    if (Math.abs(col(bot) - stone) > 0.9 || row(bot) > L1.ground - 1)
+      throw new Error(`should be standing on the stone at ${stone}; he is at ${col(bot).toFixed(1)}, ${row(bot).toFixed(1)}`);
   }
   await must(bot, bot.jump('right', L1.creek[1] + 2), 'off the last stone');
   await must(bot, bot.walk(L1.coins[L1.coins.length - 1][0] + 1, 'the far coins'), 'to the far coins');
@@ -92,11 +93,19 @@ export async function theFloat(bot: StarterBot): Promise<void> {
   await must(bot, bot.walk(6, 'the first sign'), 'to the first sign');
   await must(bot, bot.wait(LOOK), 'reading the sign');
   await must(bot, bot.walk(p0 - 1, 'the edge of the pool'), 'to the pool');
-  await must(bot, hold(bot, 'right', () => col(bot) >= p0 + 1.5), 'into the pool');
+  await must(
+    bot,
+    hold(bot, 'right', () => col(bot) >= p0 + 1.5),
+    'into the pool',
+  );
   await must(bot, bot.wait(LOOK), 'floating');
   if (row(bot) > L2.ground + 0.2) throw new Error(`Kit should float at the top row (${L2.ground}); he is at row ${row(bot).toFixed(1)}`);
   bot.say(`Kit floats at row ${row(bot).toFixed(1)}`);
-  await must(bot, hold(bot, 'right', () => col(bot) >= p1 + 1), 'swimming across');
+  await must(
+    bot,
+    hold(bot, 'right', () => col(bot) >= p1 + 1),
+    'swimming across',
+  );
   await must(bot, bot.jump('right', p1 + 2), 'out onto the bank');
   await must(bot, bot.walk(L2.exit - 1, 'the exit'), 'to the exit');
   score(bot, from, 10 * L2.coins.length, 'level 2');
@@ -110,10 +119,18 @@ export async function theLift(bot: StarterBot): Promise<void> {
   await must(bot, bot.walk(L3.start - 3, 'the sign'), 'to the sign');
   await must(bot, bot.wait(LOOK), 'reading the sign');
   await must(bot, bot.walk(p0 + 13, 'the pool'), 'to the pool');
-  await must(bot, hold(bot, 'left', () => row(bot) <= L3.top + 0.5, 300), 'riding up');
+  await must(
+    bot,
+    hold(bot, 'left', () => row(bot) <= L3.top + 0.5, 300),
+    'riding up',
+  );
   await must(bot, bot.wait(LOOK), 'at the top');
   bot.say(`score so far ${bot.sim.ci.score - from}; Kit rode up to row ${row(bot).toFixed(1)} at column ${col(bot).toFixed(1)}`);
-  await must(bot, hold(bot, 'left', () => col(bot) <= 6), 'out onto the ledge');
+  await must(
+    bot,
+    hold(bot, 'left', () => col(bot) <= 6),
+    'out onto the ledge',
+  );
   await must(bot, bot.walk(L3.exit + 1, 'the door'), 'to the door');
   score(bot, from, 10 * L3.coins.length, 'level 3');
   await leave(bot, bot.walk(L3.exit, 'the exit'), 'the exit');

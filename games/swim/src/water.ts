@@ -50,8 +50,13 @@ function deep(pal: Pal, surface: boolean): Pixels {
   const w = pal.r('white');
   for (const [x, y] of surface
     ? [[6, 10]]
-    : [[4, 4], [12, 12]]) {
-    p.rect(x, y, 3, 3, w[3]).rect(x + 1, y + 1, 1, 1, w[1]).rect(x, y, 1, 1, w[2]);
+    : [
+        [4, 4],
+        [12, 12],
+      ]) {
+    p.rect(x, y, 3, 3, w[3])
+      .rect(x + 1, y + 1, 1, 1, w[1])
+      .rect(x, y, 1, 1, w[2]);
   }
   return p;
 }
