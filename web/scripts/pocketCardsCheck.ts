@@ -36,7 +36,7 @@ function expected(disk: string, dir: string[], where: string, name: string): str
   const screen = new Screen(canvas as unknown as HTMLCanvasElement);
   const find = (n: string) => dir.find((d) => d.toLowerCase() === n.toLowerCase());
   const file = (n: string) => new Uint8Array(readFileSync(disk + find(n)!));
-  let cols = new Uint8Array(768);
+  let cols: Uint8Array = new Uint8Array(768);
   const show = (fname: string, pause: number | undefined, dflt: number) => {
     if (!find(fname)) return;
     const e = fname.split('.').pop()!.toLowerCase();
@@ -55,7 +55,7 @@ function expected(disk: string, dir: string[], where: string, name: string): str
         let bd = Infinity;
         for (let i = 0; i < 256; i++) {
           const d = (cols[i * 3] - r) ** 2 + (cols[i * 3 + 1] - g) ** 2 + (cols[i * 3 + 2] - b) ** 2;
-          if (d < bd) (bd = d), (best = i);
+          if (d < bd) ((bd = d), (best = i));
         }
         return best;
       };
@@ -94,7 +94,10 @@ for (const id of ids) {
   });
   if (game.scenes[1]?.files[0]) want.push(...expected(disk, dir, 'w', game.scenes[1].files[0]));
   if (game.scenes[1]?.files[2]) want.push(...expected(disk, dir, 'l', game.scenes[1].files[2]));
-  const got = execFileSync(exe, [here + 'data', id], { encoding: 'utf8' }).trim().split('\n').filter(Boolean);
+  const got = execFileSync(exe, [here + 'data', id], { encoding: 'utf8' })
+    .trim()
+    .split('\n')
+    .filter(Boolean);
   // the board code lists i*, then x*, then w, l; the engine order above is by level: sort both the same way
   const key = (l: string) => l.split(' ')[1];
   const order = (a: string[]) => [...a].sort((x, y) => key(x).localeCompare(key(y), 'en', { numeric: true }));

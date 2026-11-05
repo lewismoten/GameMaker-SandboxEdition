@@ -49,6 +49,24 @@ function store(bytes: Uint8Array, ext: string): string {
   return name;
 }
 
+/** The cards' pictures and pages all go in one file, cards.pak (LittleFS gives every file a 4 KB block); a reference is "<offset>.<length>". */
+const pak: Buffer[] = [];
+const pakAt = new Map<string, string>();
+let pakSize = 0;
+function inPak(bytes: Uint8Array): string {
+  const key = sha(bytes);
+  let at = pakAt.get(key);
+  if (!at) {
+    const head = Buffer.alloc(4);
+    head.writeUInt32LE(bytes.length);
+    const packed = Buffer.concat([head, deflateRawSync(bytes, { level: 9 })]);
+    pak.push(packed);
+    at = `${pakSize}.${packed.length}`;
+    pakSize += packed.length;
+    pakAt.set(key, at);
+  }
+  return at;
+}
 if (!listOnly) {
   rmSync(outDir, { recursive: true, force: true });
   mkdirSync(outDir, { recursive: true });
@@ -179,11 +197,11 @@ for (const id of ids) {
           const buf = new Uint8Array(768 + 64000);
           buf.set(im.palette, 0);
           buf.set(im.pixels, 768);
-          lines.push(`card ${where} g ${store(buf, 'g')} ${pause ?? dflt}`);
+          lines.push(`card ${where} g ${inPak(buf)} ${pause ?? dflt}`);
         } else if (e === 'txt') {
           const text = Buffer.from(textLines(file(real)).join('\n'), 'latin1');
           const pal = cols ?? new Uint8Array(768);
-          lines.push(`card ${where} t ${store(text, 't')} ${pause ?? 90} ${matchColor(pal, 50, 10, 50)} ${matchColor(pal, 63, 10, 10)}`);
+          lines.push(`card ${where} t ${inPak(text)} ${pause ?? 90} ${matchColor(pal, 50, 10, 50)} ${matchColor(pal, 63, 10, 10)}`);
         } else leftOut[e] = (leftOut[e] ?? 0) + 1; // .fli animations and .bkd backdrops: not shown on the board yet
       };
       one(name, undefined, 15);
@@ -228,7 +246,8 @@ for (const id of ids) {
 if (!listOnly) {
   index.sort((a, b) => (a.id === 'first-steps' ? -1 : b.id === 'first-steps' ? 1 : a.title.localeCompare(b.title)));
   writeFileSync(outDir + 'games.txt', index.map((g) => `${g.id}|${g.title}|${g.levels}`).join('\n') + '\n');
-  const total = [...put.values()].reduce((a, b) => a + b, 0);
+  writeFileSync(outDir + 'cards.pak', Buffer.concat(pak));
+  const total = pakSize + [...put.values()].reduce((a, b) => a + b, 0);
   if (Object.keys(leftOut).length) console.log('left out of the cards:', leftOut);
   console.log(`${index.length} games, ${put.size} shared files, ${total} bytes (plus the .cfg files)`);
 }

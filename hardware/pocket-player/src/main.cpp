@@ -560,6 +560,14 @@ static void waitTap(int seconds) {
   }
   wasDown = true;
 }
+// Bytes [off, off + len) of data/cards.pak, where every card picture and text page is.
+static uint8_t* readPak(size_t off, size_t len) {
+  File f = LittleFS.open("/cards.pak", "r");
+  if (!f || !f.seek(off)) return nullptr;
+  uint8_t* p = (uint8_t*)malloc(len + 1);
+  if (p && f.read(p, len) != len) { free(p); p = nullptr; }
+  return p;
+}
 static uint8_t* fontData = nullptr;  // 95 glyphs of 8 rows (data/font.bin), kept once read
 
 // ShowGraphic for one scene slot (where: i<level>, x<level>, w, l): the pictures fade in from black, the text
@@ -574,7 +582,7 @@ static void showCards(const char* where) {
   gm::Card cards[10];
   int n = gm::cardsOf(text.c_str(), where, cards, 10);
   uint8_t* pic = nullptr;
-  char picFile[16] = "";
+  char picFile[20] = "";
   bool dirty = false;  // text is on the picture
   uint8_t black[768];
   memset(black, 0, sizeof black);
@@ -582,7 +590,7 @@ static void showCards(const char* where) {
     const gm::Card& c = cards[i];
     if (c.kind == 'g') {
       free(pic);
-      pic = gm::loadPicture(assets, c.file);
+      pic = gm::loadPicture(assets, readPak, c.file);
       dirty = false;
       if (!pic) { picFile[0] = 0; continue; }
       strcpy(picFile, c.file);
@@ -591,13 +599,13 @@ static void showCards(const char* where) {
     } else if (c.kind == 't' && pic) {
       if (!fontData) { size_t fn = 0; fontData = readFile("font.bin", &fn); if (fontData && fn < 95 * 8) { free(fontData); fontData = nullptr; } }
       size_t tn = 0;
-      uint8_t* t = assets.readz(c.file, &tn);
+      uint8_t* t = gm::readCard(assets, readPak, c.file, &tn);
       if (!t || !fontData) { free(t); continue; }
       int pages = gm::textPageCount(t, tn);
       for (int pg = 0; pg < pages; pg++) {
         if (dirty) {  // the picture again, clean (Display_File restores the screen after each page and file)
           free(pic);
-          pic = gm::loadPicture(assets, picFile);
+          pic = gm::loadPicture(assets, readPak, picFile);
           if (!pic) break;
         }
         dirty = true;

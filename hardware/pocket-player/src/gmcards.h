@@ -5,7 +5,8 @@
 // <where> is i<level> (before the level), x<level> (after it), w (the game is won) or l (every life lost).
 // <seconds> is how long to wait for a key or touch: 0 shows and goes on, 65535 waits for one. Colors are palette
 // indices picked when the game was packed (the engine matches RGB(50,10,50) and RGB(63,10,10) in the picture's palette).
-// Every file is packed like the others (Assets::readz). Not here: FLI animations, which the packer leaves out.
+// <file> is "<offset>.<length>": the packed bytes (like the other files: 4 byte length, raw deflate) inside data/cards.pak,
+// one file for all the cards because LittleFS gives every file at least one 4 KB block. Not here: FLI animations, which the packer leaves out.
 #pragma once
 #include <stdio.h>
 #include <stdlib.h>
@@ -21,7 +22,7 @@ constexpr int FADE_STEPS = 65;       // FadeTo: 65 steps, one per VGA retrace at
 constexpr int FADE_MS = FADE_STEPS * 1000 / 70;  // 928 ms
 constexpr int PAUSE_KEY = 65535;     // wait for a key
 
-struct Card { char kind; char file[16]; int pause; int color, more; };
+struct Card { char kind; char file[20]; int pause; int color, more; };
 
 // Collects the cards of `where` from the .cfg text, in order; returns how many (at most `max`).
 inline int cardsOf(const char* cfgText, const char* where, Card* out, int max) {
@@ -34,9 +35,9 @@ inline int cardsOf(const char* cfgText, const char* where, Card* out, int max) {
       char line[80];
       memcpy(line, p, len);
       line[len] = 0;
-      char kind = 0, file[16];
+      char kind = 0, file[20];
       int pause = 0, color = 0, more = 0;
-      if (sscanf(line + 5 + wl, " %c %15s %d %d %d", &kind, file, &pause, &color, &more) >= 3) {
+      if (sscanf(line + 5 + wl, " %c %19s %d %d %d", &kind, file, &pause, &color, &more) >= 3) {
         Card& c = out[n++];
         c.kind = kind;
         strcpy(c.file, file);
@@ -51,10 +52,27 @@ inline int cardsOf(const char* cfgText, const char* where, Card* out, int max) {
   return n;
 }
 
+// Reads `len` bytes at `off` of cards.pak (malloc'd; the caller frees): LittleFS on the board, stdio in the Mac test.
+typedef uint8_t* (*ReadRange)(size_t off, size_t len);
+// A card file ("<offset>.<length>") unpacked; n gets the unpacked size. Null on any error.
+inline uint8_t* readCard(const Assets& a, ReadRange rr, const char* file, size_t* n) {
+  size_t off = 0, len = 0;
+  if (sscanf(file, "%zu.%zu", &off, &len) != 2 || len < 5) return nullptr;
+  uint8_t* f = rr(off, len);
+  if (!f) return nullptr;
+  size_t raw = f[0] | (f[1] << 8) | (f[2] << 16) | ((size_t)f[3] << 24);
+  uint8_t* out = raw < (1u << 20) ? (uint8_t*)malloc(raw + 1) : nullptr;
+  bool ok = out && a.inflate(f + 4, len - 4, out, raw);
+  free(f);
+  if (!ok) { free(out); return nullptr; }
+  *n = raw;
+  return out;
+}
+
 // A picture: 768 palette bytes then 64000 indices in one malloc'd block (null when it can't be read).
-inline uint8_t* loadPicture(const Assets& a, const char* file) {
+inline uint8_t* loadPicture(const Assets& a, ReadRange rr, const char* file) {
   size_t n = 0;
-  uint8_t* p = a.readz(file, &n);
+  uint8_t* p = readCard(a, rr, file, &n);
   if (p && n != (size_t)PIC_BYTES) { free(p); p = nullptr; }
   return p;
 }

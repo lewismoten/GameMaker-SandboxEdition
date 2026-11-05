@@ -40,6 +40,13 @@ static uint8_t* readFile(const char* name, size_t* n) {
   *n = v.size();
   return p;
 }
+static uint8_t* readRange(size_t off, size_t len) {
+  static std::vector<uint8_t> pak = slurp(dir + "/cards.pak");
+  if (off + len > pak.size()) return nullptr;
+  uint8_t* p = (uint8_t*)malloc(len + 1);
+  memcpy(p, pak.data() + off, len);
+  return p;
+}
 static uint32_t fnv(const uint8_t* p, size_t n) {
   uint32_t h = 2166136261u;
   for (size_t i = 0; i < n; i++) h = (h ^ p[i]) * 16777619u;
@@ -65,23 +72,23 @@ int main(int argc, char** argv) {
     Card cards[10];
     int n = cardsOf(cfgText.c_str(), wh.c_str(), cards, 10);
     uint8_t* pic = nullptr;
-    char picFile[16] = "";
+    char picFile[20] = "";
     bool dirty = false;
     for (int i = 0; i < n; i++) {
       const Card& c = cards[i];
       if (c.kind == 'g') {
         free(pic);
-        pic = loadPicture(assets, c.file);
+        pic = loadPicture(assets, readRange, c.file);
         dirty = false;
         if (!pic) { printf("C %s g ERR\n", wh.c_str()); continue; }
         strcpy(picFile, c.file);
         printf("C %s g 0 %u %u %d\n", wh.c_str(), fnv(pic + 768, PIC_PIXELS), fnv(pic, 768), c.pause);
       } else if (c.kind == 't' && pic) {
         size_t tn = 0;
-        uint8_t* t = assets.readz(c.file, &tn);
+        uint8_t* t = readCard(assets, readRange, c.file, &tn);
         int pages = textPageCount(t, tn);
         for (int pg = 0; pg < pages; pg++) {
-          if (dirty) { free(pic); pic = loadPicture(assets, picFile); }
+          if (dirty) { free(pic); pic = loadPicture(assets, readRange, picFile); }
           dirty = true;
           drawTextPage(pic + 768, font, t, tn, pg, c.color, c.more);
           printf("C %s t %d %u %u %d\n", wh.c_str(), pg, fnv(pic + 768, PIC_PIXELS), fnv(pic, 768), c.pause);
