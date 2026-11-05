@@ -54,9 +54,7 @@
   "sounds": {
     "9": "The jump",
     "10": "Getting hurt (nothing here does)",
-    "11": "Falling over (nothing here does)",
-    "7": "A hit lands (the whack)",
-    "8": "A crate gives way (the crunch)"
+    "11": "Falling over (nothing here does)"
   },
   "counters": {
     "20": "Keys: not used here, but a copy can add them.",

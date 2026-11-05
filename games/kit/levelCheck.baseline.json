@@ -133,6 +133,10 @@
  "dice": [
   "warning facing s2 The hero climbs side on"
  ],
+ "drop-down": [
+  "warning counters s2 Counter 21: the gate needs 1; this scene gives 0; no other scene gives any: not enough in the whole game as drawn",
+  "warning counters s3 Counter 21: the gate needs 2; this scene gives 0; no other scene gives any: not enough in the whole game as drawn"
+ ],
  "goat": [
   "warning shot-prize s2 The hero’s shots destroy prize monster 2 (power 60, shots up to 120)",
   "warning shot-prize s5 The hero’s shots destroy prize monster 2 (power 60, shots up to 120)"
