@@ -39,8 +39,8 @@ int main() {
             if (swap) { rx = (int)v; ry = (int)u; } else { rx = (int)u; ry = (int)v; }
           };
           tc::Raw a, b;
-          raw(ds::TX0, ds::TY, a.x, a.y);
-          raw(ds::TX1, ds::TY, b.x, b.y);
+          raw(ds::DOT_A, ds::DOT_Y, a.x, a.y);
+          raw(ds::DOT_B, ds::DOT_Y, b.x, b.y);
           tc::Cal c, c1;
           CHECK(ds::fromTwo(a, b, W, H, c), "fromTwo swap=%d fu=%d fv=%d r=%d", swap, fu, fv, range);
           CHECK(c.swap == swap, "swap found %d want %d (fu=%d fv=%d)", c.swap, swap, fu, fv);
@@ -59,11 +59,11 @@ int main() {
           // one tap after a display change: the same wiring flipped on both axes (a half turn), order and scale kept
           tc::Raw a2;
           int rx2, ry2;
-          raw(W - 1 - ds::TX0, H - 1 - ds::TY, rx2, ry2);  // the glass corner that is now logical (0,0) is the far one: model it by flipping
+          raw(W - 1 - ds::DOT_A, H - 1 - ds::DOT_Y, rx2, ry2);  // the glass corner that is now logical (0,0) is the far one: model it by flipping
           (void)rx2; (void)ry2;
           // the half-turned panel is the same wiring with both flips toggled
           auto raw2 = [&](int sx, int sy, int& rx, int& ry) { raw(W - 1 - sx, H - 1 - sy, rx, ry); };
-          raw2(ds::TX0, ds::TY, a2.x, a2.y);
+          raw2(ds::DOT_A, ds::DOT_Y, a2.x, a2.y);
           CHECK(ds::fromOne(a2, c, W, H, c1), "fromOne");
           CHECK(c1.swap == swap, "fromOne keeps the swap");
           int cx = 50, cy = 33, rx, ry, x, y;

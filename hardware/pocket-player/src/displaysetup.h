@@ -14,9 +14,9 @@
 namespace ds {
 
 constexpr int SQ = 200;          // the square's side
-constexpr int TX0 = tc::MARGIN;  // first touch target (top left of the square, x and y)
-constexpr int TX1 = 176;         // second target, same y, further along the square's top edge
-constexpr int TY = tc::MARGIN;
+constexpr int DOT_A = tc::MARGIN;  // first touch target (top left of the square, x and y)
+constexpr int DOT_B = 176;         // second target, same y, further along the square's top edge
+constexpr int DOT_Y = tc::MARGIN;
 constexpr int PANELS = 8, TURNS = 4;
 
 enum Btn { ROT, MIR, RB, INV, DRV, OK, NBTN };  // turn 180, mirror, swap red and blue, invert colors, driver, done
@@ -46,7 +46,7 @@ inline bool press(int b, uint8_t& panel, uint8_t& turn) {
 inline bool needsRestart(int b) { return b == RB || b == INV || b == DRV; }
 
 // ---- touch mapping from taps on the square's corner ----------------------------------------------------------------
-// The user touches the dot at (TX0, TY), then (when the axes' order is not known yet) the dot at (TX1, TY). Raw values
+// The user touches the dot at (DOT_A, DOT_Y), then (when the axes' order is not known yet) the dot at (DOT_B, DOT_Y). Raw values
 // run 0..4095 across the glass, so a tap near the screen's left edge reads below the middle on the axis that runs along
 // it when that axis counts up, above when it counts down: one tap settles both directions. The second tap, which moved
 // along the screen's x, settles which raw axis that is. Not a calibration (the 3-tap one is the exact one), just enough
@@ -67,16 +67,16 @@ inline void finish(int swap, int rx, int ry, int perPxU, tc::Cal& out, int W, in
   c.valid = 1;
   out = c;
 }
-// Two taps: first at (TX0, TY), second at (TX1, TY). False when they don't look like that (the same spot, a diagonal).
+// Two taps: first at (DOT_A, DOT_Y), second at (DOT_B, DOT_Y). False when they don't look like that (the same spot, a diagonal).
 inline bool fromTwo(const tc::Raw& a, const tc::Raw& b, int W, int H, tc::Cal& out) {
   int dx = absi(b.x - a.x), dy = absi(b.y - a.y);
   int swap = dy > dx;
   int major = swap ? dy : dx, minor = swap ? dx : dy;
-  if (major < tc::MIN_SPAN * (TX1 - TX0) / (W - 1 - 2 * tc::MARGIN) || minor * 2 > major) return false;
-  finish(swap, a.x, a.y, major / (TX1 - TX0), out, W, H);
+  if (major < tc::MIN_SPAN * (DOT_B - DOT_A) / (W - 1 - 2 * tc::MARGIN) || minor * 2 > major) return false;
+  finish(swap, a.x, a.y, major / (DOT_B - DOT_A), out, W, H);
   return true;
 }
-// One tap at (TX0, TY) when the order of the axes and their scale are known from before (`prev`, any earlier calibration).
+// One tap at (DOT_A, DOT_Y) when the order of the axes and their scale are known from before (`prev`, any earlier calibration).
 inline bool fromOne(const tc::Raw& a, const tc::Cal& prev, int W, int H, tc::Cal& out) {
   int span = absi(prev.u1 - prev.u0), px = W - 1 - 2 * tc::MARGIN;
   int per = span / px;
