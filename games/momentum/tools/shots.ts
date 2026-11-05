@@ -33,11 +33,10 @@ const maps = levels.map((l) => l.map.done());
 const screen = (i: number, col: number, row: number, ...sprites: ReturnType<typeof kit>[]) =>
   renderRegion(maps[i], bbl, mbl, set, ORIGIN + col, ORIGIN + row, 16, 10, sprites.flat());
 
-writePng(join(out, 'one-1-hop.png'), screen(0, 3, 5, kit(13, L1.wallTop - 1)), pal.pal, 3);
-writePng(join(out, 'one-2-lifting.png'), screen(0, 22, 0, kit(28, 7)), pal.pal, 3);
-writePng(join(out, 'one-3-on-the-cliff.png'), screen(0, 30, 0, kit(33, L1.cliffTop - 1)), pal.pal, 3);
-writePng(join(out, 'two-1-dash-over-the-gap.png'), screen(1, 36, 2, kit(44, 8)), pal.pal, 3);
-writePng(join(out, 'two-2-before-the-widest-gap.png'), screen(1, 33, 2, kit(40, L2.ground - 1)), pal.pal, 3);
+writePng(join(out, 'one-1-the-rink.png'), screen(0, 0, 3, kit(4, L1.ground - 1)), pal.pal, 3);
+writePng(join(out, 'one-2-gliding-on.png'), screen(0, 18, 3, kit(26, L1.ground - 1)), pal.pal, 3);
+writePng(join(out, 'two-1-before-the-gap.png'), screen(1, 12, 2, kit(17, L2.ground - 1)), pal.pal, 3);
+writePng(join(out, 'two-2-over-the-widest-gap.png'), screen(1, 62, 2, kit(70, 6)), pal.pal, 3);
 levels.forEach((l, i) =>
   writePng(join(out, `level-${i + 1}.png`), renderRegion(maps[i], bbl, mbl, set, ORIGIN, ORIGIN, l.map.width, l.map.height), pal.pal, 2),
 );

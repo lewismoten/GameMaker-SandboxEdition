@@ -27,4 +27,9 @@ if (seen !== '2 3' || r.keysLeft || r.scenes.includes(1)) {
   console.error(`demoCheck: expected scenes 2 3 with every key played and no ending; got ${seen}`);
   process.exit(1);
 }
-console.log('demoCheck ok: the hop, the lift and the dashes played, no game over');
+const into2 = r.scores.find((x) => x.scene === 3)?.score ?? 0;
+if (into2 < 70) {
+  console.error(`demoCheck: level 1's glide should take all seven coins (70) but the demo went on with ${into2}`);
+  process.exit(1);
+}
+console.log('demoCheck ok: the tap, the glide, the turn and the three gaps played, no game over');

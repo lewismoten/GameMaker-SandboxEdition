@@ -22,7 +22,7 @@ const WORDS: Record<SignName, { text: string; w: number; h: number }> = {
   faster: { text: 'HOLD IT LONGER AND HE GOES FASTER', w: 4, h: 4 },
   turn: { text: 'LET GO AND HE SLOWS. LEFT TURNS HIM AROUND', w: 4, h: 4 },
   exit: { text: 'EXIT →', w: 3, h: 1 },
-  run: { text: 'A HOP FROM STANDING GOES NOWHERE. HOLD RIGHT AS YOU HOP', w: 4, h: 4 },
+  run: { text: 'A STANDING HOP GOES NOWHERE. HOLD RIGHT TOO', w: 4, h: 4 },
   longer: { text: 'A WIDER GAP NEEDS A RUN-UP FIRST', w: 4, h: 4 },
   last: { text: 'THE WIDEST. RUN, THEN HOP AT THE EDGE', w: 4, h: 4 },
 };

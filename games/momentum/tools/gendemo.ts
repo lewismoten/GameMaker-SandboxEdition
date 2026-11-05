@@ -1,7 +1,7 @@
 // Re-records the title screen's demo into src/demo.ts: the bot's own run through both levels, one
 // unbroken list of keys (the demo recorder counts game ticks across scene changes, so the second level's
-// keys follow the first's after the ticks between them). It shows each lesson once: a held Space hops once,
-// a held Up lifts Kit above the cliff, a held Enter dashes once and each press crosses a wider gap.
+// keys follow the first's after the ticks between them). It shows each lesson once: a tap glides a little,
+// a long hold glides farther, Left turns him around, Space alone hops in place and a hop with Right held crosses each wider gap.
 // Rebuild afterwards.
 //   cd web && npx vite-node ../games/momentum/tools/gendemo.ts && npx vite-node ../games/momentum/build.ts
 //   cd web && npx vite-node ../games/momentum/tools/demoCheck.ts      (plays the recording on the real engine)

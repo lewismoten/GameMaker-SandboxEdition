@@ -91,7 +91,8 @@ export async function glide(bot: StarterBot): Promise<void> {
   await must(bot, rightTo(bot, 8), 'to the second sign');
   const longGlide = await drift(bot);
   bot.say(`held 5 blocks: ${longGlide.toFixed(1)} blocks after the key was up`);
-  if (longGlide < tapGlide * 2) throw new Error(`holding the key should give a longer glide than a tap (${longGlide.toFixed(1)} against ${tapGlide.toFixed(1)})`);
+  if (longGlide < tapGlide * 2)
+    throw new Error(`holding the key should give a longer glide than a tap (${longGlide.toFixed(1)} against ${tapGlide.toFixed(1)})`);
   await must(bot, rightTo(bot, L1.coins[1] + 0.5), 'to the coins');
   await settle(bot);
   await must(bot, rightTo(bot, 15), 'to the faster sign');
@@ -138,8 +139,9 @@ async function crossGap(bot: StarterBot, pit: readonly [number, number], what: s
   }
   bot.sim.release(SCAN.right);
   bot.say(`path ${path.join(' ')}`);
-  bot.say(`${what}: took off at ${((speed) / 20).toFixed(1)}, landed at column ${col(bot).toFixed(1)}, row ${row(bot).toFixed(1)}`);
-  if (col(bot) < pit[1] + 1 || row(bot) > L2.ground - 1 + 0.2) throw new Error(`Kit should have crossed ${what} and stand past column ${pit[1] + 1}; he is at ${col(bot).toFixed(1)}, ${row(bot).toFixed(1)}`);
+  bot.say(`${what}: took off at ${(speed / 20).toFixed(1)}, landed at column ${col(bot).toFixed(1)}, row ${row(bot).toFixed(1)}`);
+  if (col(bot) < pit[1] + 1 || row(bot) > L2.ground - 1 + 0.2)
+    throw new Error(`Kit should have crossed ${what} and stand past column ${pit[1] + 1}; he is at ${col(bot).toFixed(1)}, ${row(bot).toFixed(1)}`);
   await brake(bot);
 }
 
