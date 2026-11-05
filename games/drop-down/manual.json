@@ -2,82 +2,82 @@
   "title": "Drop Down",
   "howDoI": [
     {
-      "id": "follow",
-      "q": "How do I make a monster follow the hero?",
+      "id": "fall",
+      "q": "How do I make a monster fall when the block under it breaks?",
       "scene": 2,
-      "x": 19,
+      "x": 34,
+      "y": 18,
+      "level": 1
+    },
+    {
+      "id": "nograv",
+      "q": "How do I give a monster gravity?",
+      "scene": 2,
+      "x": 34,
+      "y": 18,
+      "level": 1
+    },
+    {
+      "id": "solid",
+      "q": "How do I make a monster the hero cannot walk through?",
+      "scene": 2,
+      "x": 34,
+      "y": 18,
+      "level": 1
+    },
+    {
+      "id": "breaks",
+      "q": "How do I make a block break when the hero touches it?",
+      "scene": 2,
+      "x": 34,
       "y": 19,
       "level": 1
     },
     {
-      "id": "speed",
-      "q": "How do I make a drop-down slower or faster than the hero?",
-      "scene": 2,
-      "x": 19,
-      "y": 19,
-      "level": 1
-    },
-    {
-      "id": "friendly",
-      "q": "How do I make a drop-down that does not hurt?",
-      "scene": 2,
-      "x": 19,
-      "y": 19,
-      "level": 1
-    },
-    {
-      "id": "wall",
-      "q": "How do I make a drop-down stop at a wall?",
+      "id": "slow",
+      "q": "How do I make a monster fall slowly?",
       "scene": 3,
-      "x": 22,
-      "y": 19,
+      "x": 29,
+      "y": 17,
       "level": 2
     },
     {
-      "id": "under",
-      "q": "How do I keep a drop-down from flying through a ledge?",
+      "id": "soft",
+      "q": "How do I make a monster the hero can walk through?",
       "scene": 3,
-      "x": 22,
-      "y": 19,
-      "level": 2
-    },
-    {
-      "id": "away",
-      "q": "How do I make a monster run away from the hero?",
-      "scene": 3,
-      "x": 22,
-      "y": 19,
+      "x": 29,
+      "y": 17,
       "level": 2
     }
   ],
   "pages": [
     {
       "head": "Welcome",
-      "html": "<h1>Welcome</h1><p><b>Drop Down</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has two short levels and takes a couple of minutes to finish.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each thing in the levels is made.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. <kbd>Space</kbd> jumps. <kbd>F2</kbd> shows your lives, hit points and score. Walk into the door at the end of a level to go on.</p><p>Puff is a small winged pup that flies after Kit. Nothing in this game hurts you.</p>"
+      "html": "<h1>Welcome</h1><p><b>Drop Down</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has two short levels and takes a couple of minutes to finish.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each thing in the levels is made.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. <kbd>Space</kbd> jumps. <kbd>F2</kbd> shows your lives, hit points and score. Walk into the door at the end of a level to go on.</p><p>Walk into a crate to break it. Plop and Pip, the round friends that sit on the crates, hurt nobody, and nothing else in this game does either. For crates on their own see <b>Smash It</b>.</p>"
     },
     {
-      "head": "Level 1: Puff Follows",
-      "html": "<h1>Level 1: Puff Follows</h1><p>The <b>PUFF FLIES AFTER YOU</b> sign stands near the start. Puff begins a few blocks away and flies straight to Kit, then stays with him as he walks and jumps.</p><p>The <b>RUN AND PUFF FALLS BEHIND</b> sign says what to try. Run ahead: Puff is a little slower than Kit, so it drops behind. Stop, and it catches up in a moment and sits beside him again.</p><p>There are six coins, some over a small brick hill. Puff follows Kit up over it.</p>"
-    },
-    {
-      "head": "How this level is made",
-      "html": "<h1>How level 1 is made</h1><ul><li><b>Following.</b> Open <b>dd.mon</b> in the monsters editor and pick Puff. Its <b>Movement</b> is <b>Chases the character</b>. Every tick the game aims Puff at where Kit is and moves it a few pixels that way, in a straight line.</li><li><b>The speed.</b> <b>Speed (pixels per tick)</b> is 2, a bit less than Kit walks, so Puff trails behind when he runs. Raise it and Puff keeps up; set it above Kit's speed and Puff overtakes him.</li><li><b>Friendly.</b> Puff's picture in <b>dd.mbl</b> is not solid and takes no hit points, and its <b>power</b> is 110, so touching Kit neither hurts nor pops it. Puff can sit right on top of Kit.</li><li><b>Forever.</b> Its <b>Lives</b> is <b>Forever (indestructible)</b>, so it is always there.</li><li><b>Where it starts.</b> Open <b>one.map</b> in the map editor. Puff is one monster placed on the map near the start.</li><li><b>The signs.</b> Each sign is a few ordinary blocks side by side, with the words drawn in their pictures.</li></ul>"
-    },
-    {
-      "head": "Level 2: Out of Reach",
-      "html": "<h1>Level 2: Out of Reach</h1><p>Kit starts on a brick ledge, and Puff starts in the low room under it. The <b>PUFF IS STUCK UNDER THE LEDGE</b> sign says what you will see: Puff flies straight up toward Kit and stops against the underside of the ledge.</p><p>The <b>IT FLIES STRAIGHT, NOT AROUND</b> sign says why. Puff does not look for a way up. As Kit walks along the ledge, Puff slides along beneath him. When he steps off the end, the way is clear and Puff flies out to meet him.</p><p>There are six coins, two on the ledge and four on the ground.</p>"
+      "head": "Level 1: In the Way",
+      "html": "<h1>Level 1: In the Way</h1><p>The first sign, <b>PLOP SITS ON A CRATE AND BLOCKS THE WAY</b>, stands before a brick mound with a tunnel through it. In the tunnel a crate stands over a one-block dip in the floor, with Plop sitting on the crate. Plop is solid and the roof is low, so Kit can neither walk through it nor hop over it.</p><p><b>BREAK THE CRATE AND WHAT SITS ON IT FALLS</b> says what to do. Walk into the crate: it turns to rubble and Plop drops two blocks into the dip, its back level with the floor. Kit walks over it. The last sign, <b>MONSTERS HAVE NO GRAVITY. PLOP STEPS DOWN OVER AND OVER</b>, says why it fell.</p><p>There are six coins, three in the tunnel and three beyond it.</p>"
     },
     {
       "head": "How this level is made",
-      "html": "<h1>How level 2 is made</h1><ul><li><b>Stopped by a wall.</b> Puff's <b>Stopped by solid blocks</b> box is checked. When its next step would go into a solid block, Puff stops on that side and goes on moving along the other one, so it slides under the ledge instead of through it.</li><li><b>Blocks that stop it.</b> The ledge is ordinary brick blocks, solid on every side. Puff is checked against the blocks next to it, one step at a time.</li><li><b>No route.</b> There is no setting for finding a way around. Puff only ever aims at where Kit is, so a wall between them just holds it back.</li><li><b>Under the ledge.</b> Open <b>two.map</b> in the map editor. The ledge is one row of brick, with a room two blocks high under it and the left wall closing it in. Puff starts there, and the right end is open so it can come out later.</li><li><b>The exit.</b> The last door links to the <b>The End</b> scene in <b>dd.gam</b>, which plays the ending.</li></ul>"
+      "html": "<h1>How level 1 is made</h1><ul><li><b>Monsters have no gravity.</b> Only Kit does. Game-Maker's monster file has a field called fly, \"whether gravity has an effect on a monster\", but the game never reads it. A monster goes only where its <b>Movement</b> sends it. So Plop falls with a Movement of its own.</li><li><b>The path.</b> Open <b>dd.mon</b> in the monsters editor and pick Plop. Its <b>Movement</b> is <b>Follows its path</b>, with two corners. The first corner is the monster's own square. The second is one block straight down, at speed 20. The path is walked again and again, so Plop is always trying to take one more step down.</li><li><b>Stopped by solid blocks.</b> Plop has this ticked. A solid block under it stops every step, so on a crate it sits still. When the crate becomes rubble, the next step is free and Plop drops, a block at a time, until something solid is under it. Untick it and Plop would fall through the floor.</li><li><b>The speed.</b> The corner's speed is how many pixels it moves each tick: 20 is a whole block, so Plop crosses a block in a tick and lands before Kit can walk in underneath. Level 2 slows it down.</li><li><b>The frames.</b> Plop has two pictures in <b>dd.mbl</b>, <b>plop0</b> with its eyes open for about a second and <b>plop1</b> with them shut for a blink. Its <b>Pictures</b> list gives each a time in ticks.</li><li><b>Solid.</b> In <b>dd.mbl</b>, <b>plop0</b> and <b>plop1</b> are solid on every side, and take no hit points, so touching Plop never hurts. Its power is 110, so touching Kit does not pop it.</li><li><b>The crate and the dip.</b> Open <b>one.map</b> in the map editor. The crate is the same block as in Smash It: solid on every side, and its <b>Becomes block</b> is <b>rubble</b>. The dip is one square of sky in the grass. Plop is one monster placed on the map, on top of the crate.</li></ul>"
+    },
+    {
+      "head": "Level 2: Slow and Soft",
+      "html": "<h1>Level 2: Slow and Soft</h1><p><b>PIP IS THE SAME TRICK, BUT SLOW AND SOFT</b> comes first, then <b>BREAK BOTH CRATES AND WATCH PIP DRIFT DOWN</b>, before a tunnel with two crates stacked in it and a pink friend, Pip, on top. Walk in: Kit touches both crates, they turn to rubble, and Pip drifts down two blocks, a little at a time. It does not stop Kit. He can stand still and Pip sinks right through him, then lands on the floor behind him.</p><p><b>HOW FAST IT FALLS AND IF IT IS SOLID ARE SETTINGS</b> comes after the tunnel, before three coins and the door. There are six coins in all.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 2 is made</h1><ul><li><b>The same Movement, slower.</b> In <b>dd.mon</b>, Pip has exactly Plop's path: two corners, the second one block down. Only the speed on the corners is different: 2 pixels a tick, so a block takes ten ticks. Pip drifts. Change it to 20 and it drops like Plop.</li><li><b>Soft.</b> In <b>dd.mbl</b>, <b>pip0</b> and <b>pip1</b> have no solid sides, so Kit passes through Pip, and Pip passes through him. A solid monster that lands on the hero can push him through the floor, so keep Kit out of its landing square, or make it soft.</li><li><b>Two crates.</b> Kit is two blocks tall, so walking in touches both crates, which are stacked in the tunnel, and both break at once. Pip sits on the top one, so it falls two blocks.</li><li><b>Different, not the same.</b> Pip is monster 4 and Plop monster 3, each with its own pictures and its own path, which is why one can be slow and soft and the other fast and solid. The crates and the tunnel are in <b>two.map</b>.</li></ul>"
     },
     {
       "head": "What it cannot do",
-      "html": "<h1>What it cannot do</h1><p>A drop-down is a straight line to the hero, and that is all it is:</p><ul><li>It cannot find a path. It aims at Kit's position every tick, so a wall, a pit or a ledge between them stops it. To make a drop-down that gets around, the level has to give it a straight way.</li><li>It does not follow Kit from one scene to the next. Going through a door loads the next scene with its monsters where the map put them.</li><li>Its speed is one number from 1 to 63 pixels a tick. It cannot slow down near Kit or speed up when he is far.</li><li>It cannot wait for Kit at a place, or come when called. It is chasing or it is not.</li><li>It sits right on top of Kit when it catches up, because it aims at his exact position.</li></ul>"
+      "html": "<h1>What it cannot do</h1><p>These are the engine's limits, so you can plan around them.</p><ul><li><b>A monster has no gravity.</b> Falling is a path made to look like it. Kit's own gravity speeds up as he falls; a monster's speed is the same all the way down.</li><li><b>It only goes straight down.</b> A monster does not slide off an edge or fall past one. It steps down where it is.</li><li><b>It never looks at the floor.</b> It is always trying to step down; the solid block under it only stops the step.</li><li><b>A monster that lands touches nothing.</b> It does not break a crate, press a switch or pick up a coin. Only Kit touches blocks.</li><li><b>Solid monsters can push Kit through the floor.</b> If Plop lands where Kit stands, Kit can end up inside the ground. Here, level 1 drops Plop fast and Kit cannot walk in under it in time.</li><li><b>A broken block does not drop the blocks above.</b> Crates and bricks never fall; only a monster does.</li><li><b>It cannot wait for you.</b> It starts to fall within a tick or two of the block going.</li></ul>"
     },
     {
       "head": "Make it yours",
-      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>Change Puff's <b>Speed (pixels per tick)</b> to 6. It keeps up with Kit now.</li><li>Pick <b>Runs from the character</b> for <b>Movement</b>. Puff flees whenever Kit comes near.</li><li>Uncheck <b>Stopped by solid blocks</b>. Puff flies straight through the ledge to Kit.</li><li>Put a second Puff on the map with a different speed.</li></ul><p>The home page's <b>Starters</b> tab has more small games like this one.</p>"
+      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>Set Plop's corner speed to 2 and watch it fall slowly.</li><li>Untick Plop's <b>Stopped by solid blocks</b> and watch it fall through the floor of the dip.</li><li>Make Pip solid by giving <b>pip0</b> and <b>pip1</b> solid sides.</li><li>Move the crate somewhere else in <b>one.map</b> and put Plop on it.</li><li>Make the dip deeper.</li></ul><p>The home page's <b>Starters</b> tab has more small games like this one.</p>"
     }
   ]
 }

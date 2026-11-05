@@ -1,10 +1,8 @@
 # Drop Down: tools
 
-- `check.ts`: the bot plays both levels and must win without losing a life. `route.ts` asserts what each sign teaches: in level 1 Puff starts a few blocks away, flies to Kit while he reads, falls behind when he runs and catches up when he stops; in level 2 Puff waits under the ledge, never gets on top of it, and flies out to Kit once he steps off the end. It then asserts all twelve coins.
-- `walkthrough.ts`, `gendemo.ts`: re-record the walkthrough and the title demo. The demo is level 1: Kit walks to the signs, runs ahead, and waits while Puff catches up.
-- `demoCheck.ts`: plays the built `demo.rec` headless and checks Puff gets far behind and ends beside Kit.
-- `preview.ts`: PNGs of the blocks, the hero, the monsters, each level and every picture. `shots.ts`: PNGs of the lessons for the progress shots.
-
-## Starter rule: show the mistake once
-
-A Starter's demo and walkthrough show what each sign teaches, including the mistake once. Here the mistake is running ahead and leaving Puff behind, and standing above it so it cannot reach Kit.
+- `check.ts`: the bot plays both levels and must win without losing a life. `route.ts` asserts what each sign teaches: in level 1 Plop starts on its crate, Kit cannot hop over it (the mound's roof stops him), the crate breaks and Plop ends in the dip with its back level with the floor; in level 2 Pip starts on two crates, drifts down at most 2 px a tick, lands on the floor and does not push Kit. It then asserts all twelve coins.
+- `walkthrough.ts`, `gendemo.ts`: re-record the walkthrough and the title demo. The demo is level 1: Kit reads the signs, tries to hop Plop, breaks the crate and walks over it.
+- `demoCheck.ts`: plays the built `demo.rec` headless and checks Plop starts on its crate and ends in the dip.
+- `shots.ts <outDir>`: before and after pictures of each level's lesson (not on the disk).
+- `preview.ts [outDir]`: the block sheet, the hero, the monsters and every level and picture, as PNGs.
+- `probe.ts`: not committed; a scratch script to poke the headless engine.

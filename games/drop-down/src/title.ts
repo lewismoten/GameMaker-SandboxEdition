@@ -1,4 +1,4 @@
-// DROP DOWN's own title picture: the hero cheers on his way to the door while Puff, a little winged pup, flies after him.
+// DROP DOWN's own title picture: the hero, Plop sitting on its crate, then Plop dropped to the ground by the rubble, and the door.
 import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { scaleBlit } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 import { bevel } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
@@ -7,7 +7,7 @@ import type { Book } from '../../kit/starter/book';
 import type { Pal } from '../../kit/starter/palette';
 import { scene, W } from '../../kit/starter/screens';
 
-/** The title: the name, a ribbon, then Puff flying after the hero, and the door. */
+/** The title: the name, a ribbon, then Plop before and after its crate breaks, the hero and the door. */
 export function titlePicture(pal: Pal, book: Book, mb: Book, hero: Pixels, door: Pixels, name: string, tagline: string): Pixels {
   const p = scene(pal, book, 160);
   const s = name.length > 11 ? 2 : 3;
@@ -17,10 +17,12 @@ export function titlePicture(pal: Pal, book: Book, mb: Book, hero: Pixels, door:
   bevel(p, rx, 50, ribbon, 14, pal.r('parch'), 3, 2);
   text(p, rx + 10, 54, tagline, pal.c('ink', 0));
   const put = (pic: Pixels, x: number, y: number, scale: number) => scaleBlit(p, pic, x, y, scale);
-  // the hero walks to the door; Puff flies after, two wing beats behind
-  put(hero, 180, 160 - 80, 2);
-  put(mb.pics.get('plop0')!, 106, 160 - 84, 3);
-  put(mb.pics.get('plop1')!, 52, 160 - 56, 2);
+  // the hero, Plop sitting on its crate, then Plop on the ground by the rubble
+  put(hero, 40, 160 - 80, 2);
+  put(book.pics.get('crate')!, 112, 160 - 60, 3);
+  put(mb.pics.get('plop0')!, 112, 160 - 120, 3);
+  put(book.pics.get('rubble')!, 184, 160 - 60, 3);
+  put(mb.pics.get('plop1')!, 184, 160 - 60, 3);
   scaleBlit(p, door, 268, 160 - 80, 2);
   return p;
 }

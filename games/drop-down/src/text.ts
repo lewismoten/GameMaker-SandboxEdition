@@ -6,13 +6,13 @@ import about from '../about.json';
 export const STORY = wrap(`
 |DROP DOWN
 
-Some friends tag along.
+Some friends sit very still.
 
-A small explorer in a teal beanie crosses two short rooms with Puff, a little winged pup, who flies after him.
+A small explorer in a teal beanie crosses two short tunnels. In each one a round little friend sits on a crate.
 
-Read the signs. Run ahead, stop, and watch what Puff does. In the second room, see what a wall does to it.
+Read the signs. Break a crate and see what its friend does.
 
-Then open this game in Game-Maker and change how fast Puff flies.
+Then open this game in Game-Maker and change how fast a friend falls.
 `);
 
 export const HOWTO = wrap(`
@@ -22,9 +22,9 @@ export const HOWTO = wrap(`
 |SPACE         jump
 |F2            lives, score
 
-Puff flies straight toward you, a little slower than you walk. It does not hurt, and nothing in this game does.
+Walk into a crate and it breaks. Plop and Pip sit on crates and hurt nobody. Nothing in this game does.
 
-Puff plans no way around anything. If a wall is between you, it stops at the wall.
+Plop is solid: you cannot walk through it. Pip is soft: you can.
 
 Coins add to your score. The door at the end of the level takes you on.
 
@@ -45,13 +45,13 @@ One of the Starters: small games that each show one idea.
 );
 
 export const WON = wrap(`
-|GOOD DOG!
+|WELL DROPPED!
 
-Two levels, and now you know how a friend follows.
+Two tunnels, and now you know how a friend falls.
 
-A monster can have its Movement set to chase the character at a speed from 1 to 63. Every tick it aims at where the hero is and moves that way in a straight line. It does not plan a route, so a solid block between you and it simply stops it.
+Monsters have no gravity in Game-Maker: only Kit does. A monster goes where its Movement sends it. Plop's Movement is a path of one step, one block down, walked again and again. A solid block under it stops every step, so it sits still on a crate. When the crate turns to rubble, the next step is free and it drops.
 
-Open the game in Game-Maker and find the Movement setting on the Monsters tab: Chases the character, with a Speed. Make Puff faster than Kit, or pick Runs from the character.
+Open the game in Game-Maker and find Plop on the Monsters tab: Follows its path, one corner a block below the start, and Stopped by solid blocks. Change the corner's speed to change how fast it falls.
 `);
 
 export const LOST = wrap(`
@@ -59,5 +59,5 @@ export const LOST = wrap(`
 
 That was not meant to happen.
 
-Try again: this time, just walk. Puff is friendly and will catch up.
+Try again: walk into a crate and watch what is on top of it.
 `);
