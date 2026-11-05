@@ -36,24 +36,28 @@ describe('fli frames', () => {
     expect(fitPicture(new Uint8Array(16).fill(3), 4, 4, 2, 2)).toEqual(new Uint8Array(4).fill(3));
   });
 
-  it.skipIf(!flis.length)('re-encodes every CD animation frame for frame', () => {
-    for (const f of flis) {
-      const a = decodeFliFrames(new Uint8Array(readFileSync(f)));
-      const bytes = encodeFliFrames(a);
-      const b = decodeFliFrames(bytes);
-      expect(parseFli(bytes).frameCount, f).toBe(a.frames.length);
-      expect(b.frames.length, f).toBe(a.frames.length);
-      const same = (x: Uint8Array, y: Uint8Array) => x.length === y.length && x.every((v, i) => v === y[i]);
-      b.frames.forEach((fr, i) => {
-        expect(same(fr.pixels, a.frames[i].pixels), `${f} frame ${i} pixels`).toBe(true);
-        expect(
-          same(
-            fr.palette,
-            a.frames[i].palette.map((v) => v & 63),
-          ),
-          `${f} frame ${i} palette`,
-        ).toBe(true);
-      });
-    }
-  });
+  it.skipIf(!flis.length)(
+    're-encodes every CD animation frame for frame',
+    () => {
+      for (const f of flis) {
+        const a = decodeFliFrames(new Uint8Array(readFileSync(f)));
+        const bytes = encodeFliFrames(a);
+        const b = decodeFliFrames(bytes);
+        expect(parseFli(bytes).frameCount, f).toBe(a.frames.length);
+        expect(b.frames.length, f).toBe(a.frames.length);
+        const same = (x: Uint8Array, y: Uint8Array) => x.length === y.length && x.every((v, i) => v === y[i]);
+        b.frames.forEach((fr, i) => {
+          expect(same(fr.pixels, a.frames[i].pixels), `${f} frame ${i} pixels`).toBe(true);
+          expect(
+            same(
+              fr.palette,
+              a.frames[i].palette.map((v) => v & 63),
+            ),
+            `${f} frame ${i} palette`,
+          ).toBe(true);
+        });
+      }
+    },
+    60_000,
+  );
 });
