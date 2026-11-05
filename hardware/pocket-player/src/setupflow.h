@@ -19,7 +19,11 @@
 namespace sf {
 
 constexpr int ROUNDS = 3, MID = 2000;  // raw touch values 0..4095, the middle of the usable 300..3700
-constexpr int W = 320, H = 240, CELL_W = W / 2, CELL_H = H / 2;  // the four quadrants, 160 x 120 each
+constexpr int W = 320, H = 240, CELL_W = W / 2, CELL_H = H / 2;  // the four quadrants of the screen (and of the glass), 160 x 120 each
+// Step 1 draws its four boxes inside a 240 x 240 square at the canvas origin, never in the whole 320 x 240: 240 is the glass's
+// short side, so the square is whole on the glass however the picture is turned. The box centers (60 and 180) still fall in
+// the same quadrants as the whole screen's (the middle is 160 across, 120 down), so the tap math below is unchanged.
+constexpr int SQ = 240, BOX = SQ / 2;
 
 // The label shown in each quadrant (bit 0 of the quadrant: right, bit 1: bottom) in each round.
 constexpr uint8_t LAYOUT[ROUNDS][4] = {{0, 1, 2, 3}, {0, 2, 3, 1}, {1, 0, 3, 2}};
@@ -74,10 +78,10 @@ inline tc::Cal roughCal(int wiring) {
   return c;
 }
 
-// ---- the word: 17 x 11 cells, drawn 8 pixels each (136 x 88), with an arrow under the T so no flip looks like another ----
-constexpr int WORD_W = 17, WORD_H = 11, WORD_SCALE = 8;
+// ---- the word: 17 x 13 cells, drawn 6 pixels each (85 x 65, centered in its 120 x 120 box): a bar on top, TAP, an up arrow under the T ----
+constexpr int WORD_W = 17, WORD_H = 13, WORD_SCALE = 5;  // 85 x 65 in a 120 x 120 box
 inline const char* wordRow(int y) {
-  static const char* const rows[WORD_H] = {"#####..###..####.", "..#...#...#.#...#", "..#...#...#.#...#", "..#...#####.####.", "..#...#...#.#....", "..#...#...#.#....", "..#...#...#.#....", ".................", "..#..............", ".###.............", "#####............"};
+  static const char* const rows[WORD_H] = {"...###########...", ".................", "#####..###..####.", "..#...#...#.#...#", "..#...#...#.#...#", "..#...#####.####.", "..#...#...#.#....", "..#...#...#.#....", "..#...#...#.#....", ".................", "..#..............", ".###.............", "#####............"};
   return rows[y];
 }
 // Is cell (x, y) of the word, drawn with label s (mirrored left to right: bit 0, upside down: bit 1), set?

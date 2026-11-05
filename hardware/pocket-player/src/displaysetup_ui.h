@@ -12,7 +12,7 @@
 #pragma once
 #include <math.h>
 #include "displaysetup.h"
-#include "setupflow.h"
+#include "setupdraw.h"
 
 static bool runCalibration();
 
@@ -213,42 +213,17 @@ static bool dsInjTake(tc::Raw& out) {
 }
 
 
-// ---- drawing ----
-// Step 1: the word in each quadrant flipped by its label (setupflow.h), and one pip per round at the screen's center.
-static void dsDrawOrient(int round) {
+// ---- drawing: setupdraw.h (the same code the host shots use) ----
+// Every screen starts by clearing the panel's whole memory (the native 240 x 320 turn), then the current turn: a clear that
+// covers only the current turn's canvas left an old target behind where the two don't overlap.
+static void clearAll() {
+  tft.setRotation(0);
   tft.fillScreen(C_BLACK);
-  const int S = sf::WORD_SCALE, ox = (sf::CELL_W - sf::WORD_W * S) / 2, oy = (sf::CELL_H - sf::WORD_H * S) / 2;
-  for (int q = 0; q < 4; q++) {
-    int s = sf::LAYOUT[round][q], cx = (q & 1) * sf::CELL_W, cy = (q >> 1) * sf::CELL_H;
-    tft.drawRect(cx + 3, cy + 3, sf::CELL_W - 6, sf::CELL_H - 6, C_GRAY);
-    for (int y = 0; y < sf::WORD_H; y++)
-      for (int x = 0; x < sf::WORD_W; x++)
-        if (sf::wordCell(s, x, y)) tft.fillRect(cx + ox + x * S, cy + oy + y * S, S - 1, S - 1, C_WHITE);
-  }
-  for (int i = 0; i < sf::ROUNDS; i++) {
-    int x = sf::W / 2 - 16 + i * 16, y = sf::H / 2;
-    tft.fillCircle(x, y, 6, C_BLACK);
-    if (i <= round) tft.fillCircle(x, y, 5, C_YELLOW); else tft.drawCircle(x, y, 5, C_YELLOW);
-  }
-}
-// Step 2: four sets of the five bars, each colored as one of the four faults would show them.
-static void dsDrawColors() {
+  tft.setRotation(turnRotation(turnIdx));
   tft.fillScreen(C_BLACK);
-  tft.setTextSize(1);
-  tft.setTextColor(C_WHITE, C_BLACK);
-  tft.setCursor(8, 8);
-  tft.print("Tap the set that goes: red green blue white black");
-  const int BW = sf::SET_W / sf::BARS;
-  for (int k = 0; k < 4; k++) {
-    int x0 = (k & 1) * sf::SET_W, y0 = sf::HEADER_H + (k >> 1) * sf::SET_H;
-    for (int b = 0; b < sf::BARS; b++) {
-      uint8_t c[3];
-      sf::faulted(k, b, c);
-      tft.fillRect(x0 + 4 + b * (BW - 1), y0 + 4, BW - 2, sf::SET_H - 8, tft.color565(c[0], c[1], c[2]));
-    }
-    tft.drawRect(x0 + 2, y0 + 2, sf::SET_W - 4, sf::SET_H - 4, C_GRAY);
-  }
 }
+static void dsDrawOrient(int round, int pips) { clearAll(); sf::drawOrient(tft, round, pips); }
+static void dsDrawColors() { clearAll(); sf::drawColors(tft); }
 
 // ---- the flow ----
 enum { EV_TAP, EV_TURN, EV_MODE, EV_SKIP };
@@ -311,7 +286,7 @@ static bool dsOrientStep() {
   sf::Solver sv;
   int round = 0;
   for (;;) {
-    dsDrawOrient(round);
+    dsDrawOrient(round, round + 1);
     tc::Raw r = {0, 0};
     int ev = dsWait(r);
     if (ev == EV_MODE) dsDriverRestart();
@@ -331,9 +306,22 @@ static bool dsOrientStep() {
     XPT2046::setCal(sf::roughCal(wiring));
     dsFull = false;
     dsNvsU8("full", 0);
-    dsSetStep(ds::STEP_COLORS);
     Serial.printf("setup: orientation flip=%d wiring=%d -> turn %d\n", flip, wiring, turnIdx);
-    return true;
+    // check: the first layout again, upright now; the box that reads right is the top left one. Anything else: start over.
+    dsDrawOrient(0, sf::ROUNDS);
+    tc::Raw v = {0, 0};
+    int ev2 = dsWait(v);
+    if (ev2 == EV_MODE) dsDriverRestart();
+    if (ev2 == EV_SKIP) return false;
+    if (ev2 == EV_TAP) {
+      int vx, vy;
+      XPT2046::toScreen(v.x, v.y, vx, vy);
+      if (vx < sf::CELL_W && vy < sf::CELL_H) { dsSetStep(ds::STEP_COLORS); return true; }
+    }
+    Serial.println("setup: check failed, starting step 1 again");
+    sv.reset();
+    round = 0;
+    continue;
   }
 }
 // Step 2. Returns false when the setup was ended; a changed color mode restarts the board into step 3 and does not return.

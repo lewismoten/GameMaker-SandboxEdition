@@ -1158,7 +1158,7 @@ static bool waitRawTap(tc::Raw& out) {
   }
 }
 // ONE target: a filled dot in a ring with a cross through it (thick, so it can't be mistaken for two). The screen is cleared
-// twice first, so no earlier target can stay behind on a panel that clears part of its memory.
+// first with clearAll() (the panel's whole memory), so no earlier target stays behind.
 static void drawCross(int x, int y) {
   tft.fillCircle(x, y, 7, C_YELLOW);
   tft.drawCircle(x, y, 12, C_YELLOW);
@@ -1188,8 +1188,7 @@ static bool runCalibration() {
   for (;;) {
     tc::Raw r[3];
     for (int i = 0; i < 3; i++) {
-      tft.fillScreen(C_WHITE);
-      tft.fillScreen(C_BLACK);
+      clearAll();
       drawCross(tx[i], ty[i]);
       calPips(i);
       char l[32];

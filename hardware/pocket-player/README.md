@@ -25,8 +25,8 @@ Everything but the layout is the same program (`-DPOCKET_CYD28` in `platformio.i
 
 **Display setup (the first thing the 2.8 inch board does).** These boards come with their picture rotated, mirrored or in the wrong colors, so nothing on the first screens needs reading. Three short steps:
 
-1. **Tap the one that reads right.** The word TAP (with a small arrow under the T) shows in four boxes, each flipped a different way. Tap the box where it reads correctly. It does this three times, with the boxes shuffled each time (three dots in the middle count them). The three taps settle both how the picture is flipped and how the touch chip is wired, so no corner hunting.
-2. **Tap the bars that are right.** Four sets of bars show, each colored as one of the four color faults would show it. Tap the set that goes red, green, blue, white, black from left to right. If the colors needed changing, the board restarts (about a second) and carries on.
+1. **Tap the one that reads right.** The word TAP (with a bar above it and an up arrow under the T) shows in four boxes, each flipped a different way. Tap the box where it reads correctly. It does this three times, with the boxes shuffled each time (three dots in the middle count them). The three taps settle both how the picture is flipped and how the touch chip is wired, so no corner hunting.
+2. **Tap the bars that are right.** Four sets of bands show, each colored as one of the four color faults would show it, and every band has the same letter on it (R, G, B, W, K). Tap the set whose colors match the letters. If the colors needed changing, the board restarts (about a second) and carries on.
 3. **Three crosses.** One target at a time (dots under it count them), then a dot that follows your finger; Done saves.
 
 If the picture is garbage or blank (the wrong display driver), **hold BOOT for about two seconds**: the board switches to the other driver and restarts into step 1. A short BOOT press turns the picture to the next of four turns, a way through with no touch at all.
