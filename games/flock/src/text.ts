@@ -24,7 +24,7 @@ export const HOWTO = wrap(`
 
 The birds fly over you. They do not hurt, and nothing in this game does.
 
-Each bird flies its own path. They keep the V because every bird's path and speed are the same.
+Every bird flies the same path at the same speed, so they keep the V.
 
 Coins add to your score. The door at the end of the level takes you on.
 
