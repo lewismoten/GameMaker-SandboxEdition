@@ -4,7 +4,8 @@
 // the companion (key, joystick, counter and sound names, notes), and the DOS player's fields.
 // It is built in slices so a 300-file game never blocks typing, and it is only imported when
 // the search box is first used (the parsers and the player's patch table are loaded then).
-import { kindOf, type FileKind, type Project } from '../core/project';
+import { kindOf, type FileKind } from '../core/fileKind';
+import type { Project } from '../core/project';
 import { matchingParts, type Part } from './searchMatch';
 import type { SearchGroup } from './searchGroups';
 
@@ -36,7 +37,13 @@ function textParts(bytes: Uint8Array, lines: (b: Uint8Array) => string[]): Part[
     .filter((p) => p.text);
 }
 
-async function fileEntries(project: Project, signal: { stale: boolean }): Promise<SearchEntry[]> {
+/** What file entries are read from: a Project's files, or a game on the home page. */
+export interface FileSource {
+  names(): Iterable<string>;
+  get(name: string): Uint8Array | undefined;
+}
+
+export async function fileEntries(project: { files: FileSource }, signal: { stale: boolean }): Promise<SearchEntry[]> {
   const out: SearchEntry[] = [];
   const [gfx, game, scores, sound] = await Promise.all([
     import('@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts'),
@@ -76,7 +83,7 @@ async function fileEntries(project: Project, signal: { stale: boolean }): Promis
 const SKIP_SECTIONS = new Set(['controls', 'joystickButtons', 'dosPlayer']);
 
 /** Every readable string in a JSON value, with the path it was found at. */
-function strings(value: unknown, path: string, out: Part[], depth = 0): void {
+export function strings(value: unknown, path: string, out: Part[], depth = 0): void {
   if (out.length > 200 || depth > 6) return;
   if (typeof value === 'string') {
     const t = value.trim();
