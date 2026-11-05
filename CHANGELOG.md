@@ -11,6 +11,8 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Added
 
+- The Starters tab splits Game Feel into Moving and Pushing, Worlds That Push Back (a new windy sky with leaves and a wavy water line) and Changing Your Hero (a new dressing room with a mirror and hooks); Switches moves to Wiring and Puzzles, and Score Popups and The Show move to Showcase Tricks.
+
 - Looks Like a Wall, a Starter for the Wiring and Puzzles group: a wall and a picture of a wall can be drawn exactly alike, and only the block's Solid setting says which stops Kit. A touch can turn a block into a cracked one and that into chips, and coins showing in a wall hint at a secret. Three levels, with signs and a "How this level is made" page each.
 - The Show, a Starter for the Foes and Bosses group about plays made of monsters: two friends wait behind a stage curtain and, when the level starts, each peeks out, walks in, says hello and walks off, every act a monster that becomes the next one. Then a cameo waves hello once and is gone. A play never waits for the player, so an encore door at the start loads the level again. Two levels, with signs and a "How this level is made" page each.
 - Follow Me, a Starter for the Foes and Bosses group: Puff, a little winged pup, flies straight after Kit (a monster's Movement set to chase the character, at a speed of 2). Run ahead and Puff falls behind; stop and it catches up. In the second level Kit stands on a ledge and Puff, which plans no way around, waits under it until he steps off. Two levels, with signs, a "How this level is made" page each and a page on what a follower cannot do.
