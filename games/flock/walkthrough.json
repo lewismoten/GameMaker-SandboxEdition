@@ -1,64 +1,64 @@
 {
-  "version": 1,
-  "game": "flock",
-  "rand": {
-    "seed": 1,
-    "per": "scene"
+ "version": 1,
+ "game": "flock",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU0ZzStNHs0rTR7NywFNCDkCuRzNB00jzQNN"
   },
-  "segments": [
-    {
-      "scene": 2,
-      "keys": "AU0ZzStNHs0rTR7NywFNCDkCuRzNB00jzQNN"
-    },
-    {
-      "scene": 3,
-      "keys": "KU0ZzStNHs0rTSPNA008zQNN"
-    }
-  ],
-  "chapters": [
-    {
-      "scene": 2,
-      "title": "Level 1: One Shape"
-    },
-    {
-      "scene": 3,
-      "title": "Level 2: Out of Step"
-    }
-  ],
-  "timeline": {
-    "fps": 60,
-    "frames": 8793,
-    "chapters": [
-      {
-        "title": "Opening",
-        "frame": 0,
-        "time": 0
-      },
-      {
-        "title": "Story",
-        "frame": 896,
-        "time": 14933.333333333148
-      },
-      {
-        "title": "Level 1: One Shape",
-        "frame": 2125,
-        "time": 35416.66666666724
-      },
-      {
-        "title": "Level 2: Out of Step",
-        "frame": 4099,
-        "time": 68316.66666666366
-      },
-      {
-        "title": "Ending",
-        "frame": 5512,
-        "time": 91866.66666667051
-      },
-      {
-        "title": "Credits",
-        "frame": 7719,
-        "time": 128650.00000001455
-      }
-    ]
+  {
+   "scene": 3,
+   "keys": "KU0ZzStNHs0rTSPNA008zQNN"
   }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: One Shape"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: Out of Step"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 8793,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 896,
+    "time": 14933.333333333148
+   },
+   {
+    "title": "Level 1: One Shape",
+    "frame": 2125,
+    "time": 35416.66666666724
+   },
+   {
+    "title": "Level 2: Out of Step",
+    "frame": 4099,
+    "time": 68316.66666666366
+   },
+   {
+    "title": "Ending",
+    "frame": 5512,
+    "time": 91866.66666667051
+   },
+   {
+    "title": "Credits",
+    "frame": 7719,
+    "time": 128650.00000001455
+   }
+  ]
+ }
 }
