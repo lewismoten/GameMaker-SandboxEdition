@@ -403,8 +403,8 @@ static void drawLabel(const Box& b, const char* label, int topY, int maxH, uint1
 
 // A 20 x 20 picture (palette indices) scaled to S x S at (x0, y0) of the screen, on a dark backing, written
 // straight into the band (it holds panel colors, as `pal` does).
-static void drawIcon(const uint8_t* px, int x0, int y0, int S) {
-  spr.fillRect(x0 - 1 - bandX, y0 - 1 - bandY, S + 2, S + 2, C_BLACK);
+static void drawIcon(const uint8_t* px, int x0, int y0, int S, bool backing = true, int clipR = 0) {
+  if (backing) spr.fillRect(x0 - 1 - bandX, y0 - 1 - bandY, S + 2, S + 2, C_BLACK);
   for (int dy = 0; dy < S; dy++) {
     int Y = y0 + dy - bandY;
     if (Y < 0 || Y >= bandH) continue;
@@ -412,6 +412,10 @@ static void drawIcon(const uint8_t* px, int x0, int y0, int S) {
       int X = x0 + dx - bandX;
       if (X < 0 || X >= bandW) continue;
       uint8_t v = px[(dy * 20 / S) * 20 + dx * 20 / S];
+      if (clipR) {  // keep to a disc around the picture's middle (the ring of a round button)
+        int ex = 2 * dx - S + 1, ey = 2 * dy - S + 1;
+        if (ex * ex + ey * ey > 4 * clipR * clipR) continue;
+      }
       if (v != 255) band[Y * bandW + X] = pal[v];
     }
   }
@@ -442,11 +446,14 @@ static void disc(const ctl::Disc& d, bool down, int scan, const char* fallback, 
   bool sub = ic.px || (label[0] && strcmp(label, name));
   Box b{true, d.cx, d.cy, d.r, 0};
   uint16_t fg = down ? C_BLACK : C_WHITE;
+  if (ic.px) {  // the picture fills the button (clipped to the ring), no text
+    if (!down) spr.fillCircle(cx, cy, d.r - 2, C_BLACK);
+    int S = (d.r - 2) * 17 / 10;
+    drawIcon(ic.px, d.cx - S / 2, d.cy - S / 2, S, false, d.r - 2);
+    return;
+  }
   drawName(b, name, sub ? d.cy - d.r / 3 : d.cy, fg, !down);
-  if (ic.px) {
-    int S = d.r * 2 / 3;
-    drawIcon(ic.px, d.cx - S / 2, d.cy + 3, S);
-  } else if (sub) {
+  if (sub) {
     drawLabel(b, label, d.cy + 3, d.r - 7, fg, !down);
   }
 }
@@ -468,9 +475,13 @@ static void tile(const ctl::Rect& r, int scan, bool on, const gm::BtnIcon& ic) {
   Box b{false, (r.x0 + r.x1) / 2, (r.y0 + r.y1) / 2, 0, w};
   const char* name = ctl::scanName(scan);
   const char* label = labelOf(scan, "");
+  if (ic.px) {  // the picture fills the tile, no text
+    int S = h - 6;
+    drawIcon(ic.px, b.cx - S / 2, r.y0 + 3, S, false);
+    return;
+  }
   drawName(b, name, r.y0 + 13, fg, false);
-  if (ic.px) drawIcon(ic.px, b.cx - 13, r.y0 + 26, 26);
-  else if (label[0] && strcmp(label, name)) drawLabel(b, label, r.y0 + 25, h - 28, fg, false);
+  if (label[0] && strcmp(label, name)) drawLabel(b, label, r.y0 + 25, h - 28, fg, false);
 }
 
 static bool hitsBand(int x0, int y0, int x1, int y1) { return x0 < bandX + bandW && x1 > bandX && y0 < bandY + bandH && y1 > bandY; }
@@ -649,15 +660,20 @@ static Mode mode = PICKER;
 static int page = 0;
 constexpr int ROWS = 5;
 
-static void drawPicker() {
-  tft.fillScreen(C_BLACK);
+// Draws the list. `clear` blacks the screen first (entering the picker); a page change paints over the old
+// page instead (each row paints its own background, a row with no game is blacked), so nothing flashes.
+static void drawPicker(bool clear = true) {
+  if (clear) tft.fillScreen(C_BLACK);
   char t[48];
   int pages = (ngames + ROWS - 1) / ROWS;
   snprintf(t, sizeof t, "Pocket Player   %d games   page %d/%d", ngames, page + 1, pages ? pages : 1);
   title(t);
   for (int r = 0; r < ROWS; r++) {
     int i = page * ROWS + r;
-    if (i >= ngames) break;
+    if (i >= ngames) {  // no game here on the last page: black the slot
+      tft.fillRect(0, 44 + r * 46, 480, 46, C_BLACK);
+      continue;
+    }
     char l[64];
     snprintf(l, sizeof l, "%s  (%d level%s)", games[i].title, games[i].levels, games[i].levels == 1 ? "" : "s");
     int y = 44 + r * 46;
@@ -1159,8 +1175,8 @@ void loop() {
     if (freshTap(tx, ty)) {
       int pages = (ngames + ROWS - 1) / ROWS;
       if (ty >= 276) {
-        if (tx < 130 && page > 0) { page--; drawPicker(); }
-        else if (tx >= 130 && tx < 260 && page + 1 < pages) { page++; drawPicker(); }
+        if (tx < 130 && page > 0) { page--; drawPicker(false); }
+        else if (tx >= 130 && tx < 260 && page + 1 < pages) { page++; drawPicker(false); }
         else if (tx >= 340) { mode = SETTINGS_SCREEN; fromPause = false; drawSettings(); }
       } else if (ty >= 44) {
         int r = (ty - 44) / 46, i = page * ROWS + r;
