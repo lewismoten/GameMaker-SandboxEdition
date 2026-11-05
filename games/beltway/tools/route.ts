@@ -8,8 +8,8 @@
 import type { Result, StarterBot } from '../../kit/starter/bot';
 import { ORIGIN } from '../../kit/starter/map';
 import { CAR } from '../src/monsters';
-import { LAP, OPENS_AT } from '../src/levels';
-import { CAR_AT, DOOR2_COL, DOOR_COL, GROUND_ROW, HILLS, LAMPS, LAPS, RAIL, TILE, TREES } from '../src/view';
+import { OPENS_AT } from '../src/levels';
+import { CAR_AT, DOOR2_COL, DOOR_COL, GROUND_ROW, HILLS, LAMPS, LAP, LAPS, RAIL, TILE, TREES } from '../src/view';
 
 /** Runs an order; anything but carrying on (a scene change, getting stuck) is an error. */
 async function must(bot: StarterBot, r: Promise<Result>, what: string): Promise<void> {

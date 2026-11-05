@@ -15,8 +15,7 @@ import { buildLevels, finishBlocks } from '../src/levels';
 import { finishMonsterPictures, monsterPictures, monsterSet } from '../src/monsters';
 import { orientIndex } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { CAR } from '../src/monsters';
-import { DOOR_COL } from '../src/view';
-import { LAP } from '../src/levels';
+import { DOOR_COL, LAP } from '../src/view';
 import { car } from './route';
 import { GameSim } from './sim';
 

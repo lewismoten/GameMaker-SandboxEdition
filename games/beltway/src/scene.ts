@@ -7,7 +7,7 @@
 import { text } from '@lewismoten/gamemaker-sandbox-tools/kit/pcText';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import type { Pal } from '../../kit/starter/palette';
-import { COLS, GROUND_ROW, HILLS, RAIL, RING, TILE, TREES, type Strip } from './view';
+import { GROUND_ROW, HILLS, RAIL, RING, TILE, TREES, type Strip } from './view';
 
 export const W = 320;
 export const H = 200;
