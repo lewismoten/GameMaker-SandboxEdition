@@ -5,48 +5,48 @@
       "id": "power-block",
       "q": "How do I make a block that gives my hero a power?",
       "scene": 2,
-      "x": 35,
-      "y": 9,
+      "x": 45,
+      "y": 19,
       "level": 1
     },
     {
       "id": "high-jump",
       "q": "How do I make my hero jump higher?",
       "scene": 2,
-      "x": 18,
-      "y": 9,
+      "x": 28,
+      "y": 19,
       "level": 1
     },
     {
       "id": "ledge",
       "q": "How do I put the exit where only a power can reach?",
       "scene": 2,
-      "x": 21,
-      "y": 4,
+      "x": 31,
+      "y": 14,
       "level": 1
     },
     {
       "id": "runs-out",
       "q": "How do I make a power that runs out?",
       "scene": 2,
-      "x": 37,
-      "y": 9,
+      "x": 47,
+      "y": 19,
       "level": 1
     },
     {
       "id": "sneakers",
       "q": "How do I make my hero walk faster?",
       "scene": 3,
-      "x": 4,
-      "y": 9,
+      "x": 14,
+      "y": 19,
       "level": 2
     },
     {
       "id": "wide-gap",
       "q": "How do I make a gap that needs a power to cross?",
       "scene": 3,
-      "x": 31,
-      "y": 10,
+      "x": 41,
+      "y": 20,
       "level": 2
     }
   ],

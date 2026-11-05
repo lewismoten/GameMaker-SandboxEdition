@@ -21,8 +21,8 @@
       "id": "way-back",
       "q": "How do I make a door that leads back to the room before?",
       "scene": 5,
-      "x": 3,
-      "y": 9,
+      "x": 13,
+      "y": 19,
       "level": 2
     },
     {
@@ -37,8 +37,8 @@
       "id": "two-exits",
       "q": "How do I give a room two exits?",
       "scene": 7,
-      "x": 4,
-      "y": 9,
+      "x": 14,
+      "y": 19,
       "level": 3
     }
   ],
