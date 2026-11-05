@@ -9,7 +9,7 @@
 // (dosShot.ts); and Joey's crayon drawing for the
 // Mail Bag (joeyDrawing.ts); and the Design Workshop's chain of boss states (bossChain.ts).
 import { h } from '../../editor/core/ui';
-import { drawChez } from '../../desk/props/chezArt';
+import { CHEZ_CLOSE_UP, drawChez } from '../../desk/props/chezArt';
 import { sandboxMarkEl } from '../printables/sandboxMark';
 import { fnv1a } from '../../seededRandom';
 import type { ArtId, OldWebShot, WebShot } from './types';
@@ -27,9 +27,6 @@ import { webShotImg } from './webShots';
 import { svgArt } from './svgArt';
 import { bossChainArt } from './bossChain';
 import { bnbElement, type BnbArt } from './bnbArt';
-
-/** Doc Leo sits back from THE CHEZ's windshield, his face and hat whole in the door window. */
-const DRIVER_SEAT: [number, number] = [-3, 0.5];
 
 /** UPC-style bars from the issue's name, with the price box's digits under them. */
 function barcode(alt: string): Element {
@@ -103,7 +100,7 @@ export function artElement(id: ArtId, alt: string): Element {
     case 'chez': {
       const k = 8;
       const c = h('canvas', { width: 44 * k, height: 24 * k });
-      drawChez(c.getContext('2d')!, 2 * k, 22 * k, k, DRIVER_SEAT);
+      drawChez(c.getContext('2d')!, 2 * k, 22 * k, k, CHEZ_CLOSE_UP.driver, CHEZ_CLOSE_UP.teddy);
       return h('img', { src: c.toDataURL(), alt, class: 'mag-chez' });
     }
   }
