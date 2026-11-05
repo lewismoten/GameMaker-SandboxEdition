@@ -207,6 +207,7 @@ static void dsSerialPoll() {
       buf[n] = 0;
       n = 0;
       if (buf[0] == 'S') dsSerial(buf);
+      else fwSerial(buf);
     } else if (n < (int)sizeof buf - 1) buf[n++] = c;
   }
 }

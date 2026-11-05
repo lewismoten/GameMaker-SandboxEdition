@@ -43,6 +43,24 @@ static void fwBoardLoad() {
   if (p.begin("pocket", true)) { p.getString("bid", boardName, sizeof boardName); p.end(); }
   if (!fw::validBoard(boardName)) fw::defaultBoard(ESP.getEfuseMac(), boardName);
 }
+// "FW" prints the build; "ID set X" names the board. Also called by the setup's serial poll. True when the line was one of them.
+static bool fwSerial(const char* buf) {
+  if (!strncmp(buf, "FW", 2)) {
+    Serial.printf("FW board=%s git=%s date=%s env=%s\n", boardName, FW_GIT, FW_DATE, FW_ENV);
+    return true;
+  }
+  if (strncmp(buf, "ID set ", 7)) return false;
+  char nb[8] = "";
+  strncpy(nb, buf + 7, 4);
+  for (char* q = nb; *q; q++) if (*q >= 'a' && *q <= 'z') *q -= 32;
+  if (fw::validBoard(nb)) {
+    Preferences p;
+    if (p.begin("pocket", false)) { p.putString("bid", nb); p.end(); }
+    strcpy(boardName, nb);
+    Serial.printf("FW board set to %s\n", boardName);
+  } else Serial.println("FW board name: 1 to 4 letters or digits");
+  return true;
+}
 static void fwLabel(char* out, int n, bool shortForm) { fw::label(boardName, FW_GIT, FW_DATE, out, n, shortForm); }
 static bool haveGT = false;
 static gm::World world;
@@ -1444,18 +1462,7 @@ static void pollSerial() {
 #endif
       } else if (buf[0] == 'S') {
         bannerChanged(banner::set(!strncmp(buf, "S off", 5) ? "" : buf + 2));
-      } else if (!strncmp(buf, "FW", 2)) {
-        Serial.printf("FW board=%s git=%s date=%s env=%s\n", boardName, FW_GIT, FW_DATE, FW_ENV);
-      } else if (!strncmp(buf, "ID set ", 7)) {
-        char nb[8] = "";
-        strncpy(nb, buf + 7, 4);
-        for (char* q = nb; *q; q++) if (*q >= 'a' && *q <= 'z') *q -= 32;
-        if (fw::validBoard(nb)) {
-          Preferences p;
-          if (p.begin("pocket", false)) { p.putString("bid", nb); p.end(); }
-          strcpy(boardName, nb);
-          Serial.printf("FW board set to %s\n", boardName);
-        } else Serial.println("FW board name: 1 to 4 letters or digits");
+      } else if (fwSerial(buf)) {
       } else if (buf[0] == 'I' && buf[1] == 'D') {
         bannerChanged(banner::setId(!strncmp(buf, "ID off", 6) ? "" : buf + 3));
       } else if (buf[0] == 'V') traceOn = buf[2] == '1';
