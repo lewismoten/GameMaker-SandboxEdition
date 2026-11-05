@@ -20,6 +20,7 @@
   "gravity-on-gravity-off": {"hash":"371055c3e46c167f","maps":{"one.map|side.bbl":[0,7,61,20],"two.map|top.bbl":[3,4,58,23]}},
   "gusts": {"hash":"c7176e84bf0ab8b0","maps":{"one.map|one.bbl":[0,0,61,27],"two.map|two.bbl":[0,15,65,10]}},
   "health-and-hearts": {"hash":"b255cc18c8fcbfce","maps":{"one.map|hearts.bbl":[0,14,61,10],"three.map|hearts.bbl":[0,7,71,20],"two.map|hearts.bbl":[0,14,61,10]}},
+  "horizon": {"hash":"479e15c4eebb4694","maps":{"one.map|hz1.bbl":[10,10,16,10],"two.map|hz2.bbl":[10,10,16,10]}},
   "keys-and-doors": {"hash":"492db90343e46bf4","maps":{"one.map|keys.bbl":[0,0,67,27],"three.map|keys.bbl":[0,1,69,26],"two.map|keys.bbl":[0,1,67,26]}},
   "kit-moves": {"hash":"c280a6bc684968c6","maps":{"one.map|km.bbl":[0,0,67,31],"two.map|km.bbl":[0,15,91,10]}},
   "loaf": {"hash":"9ec63cd8de177d54","maps":{"baskets.map|loaf.bbl":[0,0,90,19],"hill.map|loaf.bbl":[0,0,79,19],"home.map|loaf.bbl":[0,0,86,20],"wicker.map|loaf.bbl":[0,0,46,30]}},

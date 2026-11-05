@@ -1,0 +1,39 @@
+{
+  "title": "To the Horizon",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.0",
+  "blurb": "Two short levels about driving to the horizon. The road is one picture that narrows to a point; beach balls roll out of the hill and grow as they come, born by blocks nobody can see. In the second level a finish arch grows closer until the barred door opens. Signs in the levels say how. Play it, then open it in Game-Maker and change when the balls come.",
+  "exe": "HORIZON.EXE",
+  "dosName": "HORIZON",
+  "sound": "sb",
+  "label": {
+    "background": "#e8f6ff",
+    "band": "#2b8fd4",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "2 short levels",
+    "hours": 1,
+    "background": "#2b8fd4",
+    "accent": "#ffd23f",
+    "ink": "#ffffff",
+    "tagline": "Over the hill and far away.",
+    "back": "A small explorer in a teal beanie stands on a road that runs to the horizon. Beach balls roll out of the hill and grow as they come, then a finish arch draws near and the barred door opens. The road is one picture; the balls and the arch are blocks and timers. Play, then open the game in Game-Maker and change the timetable.",
+    "features": [
+      "Signs in the levels explain each idea",
+      "A road in perspective, painted once and cut into blocks",
+      "Blocks you cannot see give birth to the balls",
+      "Made to be copied and taken apart"
+    ],
+    "shots": [
+      ["one.map", 8, 5],
+      ["two.map", 8, 5]
+    ],
+    "rating": "Everyone"
+  }
+}
