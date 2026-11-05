@@ -58,7 +58,9 @@ export function drawGolem(pal: Pal, frame: 0 | 1, tone: Tone): Pixels {
     if (frame && tone !== 'red') {
       p.line(x - 3, 15, x + 3, 15, c('ink', 0)).line(x - 3, 16, x + 3, 16, c('ink', 0));
     } else {
-      p.disc(x, 15, 4.1, c('white', 3)).disc(x, 15, 1.7, c('ink', 0)).set(x - 1, 14, c('white', 3));
+      p.disc(x, 15, 4.1, c('white', 3))
+        .disc(x, 15, 1.7, c('ink', 0))
+        .set(x - 1, 14, c('white', 3));
     }
   }
   // brows slanting in and down, a grumpy look
@@ -99,7 +101,9 @@ export function drawRobot(pal: Pal, frame: 0 | 1, tone: Tone): Pixels {
   for (let x = 15; x <= 25; x += 3) p.line(x, 19, x, 21, c('stone', 3));
   // a chest panel with three round lights
   p.rect(12, 29, 16, 6, c('ink', 1));
-  p.disc(16, 32, 1.6, c('gold', 4)).disc(20, 32, 1.6, c('pink', 2)).disc(24, 32, 1.6, c('white', 3 - dim));
+  p.disc(16, 32, 1.6, c('gold', 4))
+    .disc(20, 32, 1.6, c('pink', 2))
+    .disc(24, 32, 1.6, c('white', 3 - dim));
   if (tone !== 'plain') {
     crack(p, pal, 12, 9, [1, -1, 1, -1, 1]);
     crack(p, pal, 30, 27, [-1, 1, -1, 1]);

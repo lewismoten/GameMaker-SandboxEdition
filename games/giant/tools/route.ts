@@ -87,7 +87,8 @@ export async function theGiantLevel(bot: StarterBot): Promise<void> {
   const before = bot.sim.ci.score;
   const heads = [alive(bot, ROCKY), alive(bot, ROCKY + 1)];
   await throwStar(bot, 'from the ground at the head');
-  if (bot.sim.ci.score !== before || alive(bot, ROCKY) !== heads[0] || alive(bot, ROCKY + 1) !== heads[1]) throw new Error('a star from the ground must not touch the head');
+  if (bot.sim.ci.score !== before || alive(bot, ROCKY) !== heads[0] || alive(bot, ROCKY + 1) !== heads[1])
+    throw new Error('a star from the ground must not touch the head');
   // the step: walk up on it and turn back to face the giant
   await must(bot, bot.walk(17, 'back up the step'), 'back onto the step');
   await must(bot, bot.walk(19, 'facing the head'), 'facing the head');
@@ -129,13 +130,15 @@ async function row(bot: StarterBot, front: number, back: number, name: string, r
     await throwStar(bot, `${name}, third`, 12);
     await must(bot, bot.wait(30), 'the stars landing');
     bot.say(`${name}: ${stages(bot, [front, back])}, score ${bot.sim.ci.score - score} up`);
-    if (bot.sim.ci.score - score !== 2 * HIT_SCORE) throw new Error(`${name}: three quick stars should score two hits (${2 * HIT_SCORE}), not ${bot.sim.ci.score - score}; ${stages(bot, [front, back])}`);
+    if (bot.sim.ci.score - score !== 2 * HIT_SCORE)
+      throw new Error(`${name}: three quick stars should score two hits (${2 * HIT_SCORE}), not ${bot.sim.ci.score - score}; ${stages(bot, [front, back])}`);
   } else {
     await hit(bot, front, 'fresh', 'hurt', `${name} front part, first hit`, 22);
     await hit(bot, back, 'fresh', 'hurt', `${name} back part, first hit (through the front one)`, 34);
   }
   await waitForBlinkToEnd(bot, [front, back], name);
-  if (stages(bot, [front, back]) !== 'cracked/cracked') throw new Error(`${name}: both parts should be cracked after the blink (${stages(bot, [front, back])})`);
+  if (stages(bot, [front, back]) !== 'cracked/cracked')
+    throw new Error(`${name}: both parts should be cracked after the blink (${stages(bot, [front, back])})`);
   await hit(bot, front, 'cracked', 'gone', `${name} front part, second hit`, 22);
   await hit(bot, back, 'cracked', 'gone', `${name} back part, second hit`, 34);
 }

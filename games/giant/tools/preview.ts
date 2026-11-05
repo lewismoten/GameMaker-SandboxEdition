@@ -47,7 +47,11 @@ writePng(join(out, 'monsters.png'), blockSheet(mbl.slice(0, mb.index.size), 6, s
 const whole = (names: string[]): Pixels => {
   const w = new Pixels(names.length * 44 + 4, 44, sky);
   names.forEach((n, i) =>
-    (['tl', 'tr', 'bl', 'br'] as const).forEach((k, j) => { const t = new Pixels(20, 20); t.px.set(mbl[mb.n(n.replace('#', k))].pixels); w.blit(t, 4 + i * 44 + (j % 2) * 20, 2 + Math.floor(j / 2) * 20, 255); }),
+    (['tl', 'tr', 'bl', 'br'] as const).forEach((k, j) => {
+      const t = new Pixels(20, 20);
+      t.px.set(mbl[mb.n(n.replace('#', k))].pixels);
+      w.blit(t, 4 + i * 44 + (j % 2) * 20, 2 + Math.floor(j / 2) * 20, 255);
+    }),
   );
   return w;
 };

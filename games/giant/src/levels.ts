@@ -91,7 +91,10 @@ function wallAndStep(g: Grid, wall: readonly [number, number], step: readonly [n
 /** Stands a giant of four monsters in its tunnel: `first` is the monster number of the top left part; `next` how far apart the numbers are. */
 function giant(m: StarterMap, x: number, first: number): void {
   // top left, top right, bottom left, bottom right: the order of the monster numbers
-  m.mon(first, x, TOP).mon(first + 1, x + 1, TOP).mon(first + 2, x, BOTTOM).mon(first + 3, x + 1, BOTTOM);
+  m.mon(first, x, TOP)
+    .mon(first + 1, x + 1, TOP)
+    .mon(first + 2, x, BOTTOM)
+    .mon(first + 3, x + 1, BOTTOM);
 }
 
 /** Level 1: Rocky, four parts, one hit each. 46 blocks wide; the ground is row 10. */
@@ -128,7 +131,7 @@ function ouchWait(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [
       [6, 2],
       [16, 1],
-      [26, 3],
+      [32, 3],
       [40, 1],
     ],
     [10, 36],
@@ -152,4 +155,3 @@ export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
   ];
   return { book, pal, levels };
 }
-

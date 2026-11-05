@@ -1,51 +1,51 @@
 {
-  "title": "Big Bug",
+  "title": "The Giant",
   "howDoI": [
     {
-      "id": "boss-hits",
-      "q": "How do I make a boss that takes several hits?",
+      "id": "giant",
+      "q": "How do I make a boss that is bigger than one block?",
       "scene": 2,
-      "x": 36,
+      "x": 34,
       "y": 19,
       "level": 1
     },
     {
-      "id": "becomes",
-      "q": "How do I make a monster turn into another when it is hit?",
+      "id": "giant-door",
+      "q": "How do I make a boss that guards the way to the door?",
       "scene": 2,
-      "x": 36,
+      "x": 34,
       "y": 19,
       "level": 1
     },
     {
-      "id": "block-way",
-      "q": "How do I make a monster that blocks a narrow way?",
+      "id": "aim-high",
+      "q": "How do I make a star hit a monster that stands higher up?",
       "scene": 2,
-      "x": 36,
+      "x": 34,
       "y": 19,
       "level": 1
     },
     {
-      "id": "sting",
-      "q": "How do I make a monster that hurts my hero when he touches it?",
-      "scene": 2,
-      "x": 36,
-      "y": 19,
-      "level": 1
-    },
-    {
-      "id": "meter",
-      "q": "How do I show how many hits a boss has left?",
+      "id": "hurt-blink",
+      "q": "How do I make a monster blink red when it is hit?",
       "scene": 3,
-      "x": 44,
+      "x": 34,
       "y": 19,
       "level": 2
     },
     {
-      "id": "puff",
-      "q": "How do I make a monster leave a puff when it is beaten?",
+      "id": "hurt-wait",
+      "q": "How do I make a monster that cannot be hurt for a moment?",
       "scene": 3,
-      "x": 44,
+      "x": 34,
+      "y": 19,
+      "level": 2
+    },
+    {
+      "id": "cracked",
+      "q": "How do I change how a monster looks after the first hit?",
+      "scene": 3,
+      "x": 34,
       "y": 19,
       "level": 2
     }
@@ -53,31 +53,31 @@
   "pages": [
     {
       "head": "Welcome",
-      "html": "<h1>Welcome</h1><p><b>Big Bug</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has two short levels about a boss that takes several hits, and takes a few minutes to finish.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each idea is made.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. <kbd>Space</kbd> jumps. <kbd>Enter</kbd> throws a star the way you last walked. <kbd>F2</kbd> shows your hit points, lives and score. Walk into the door at the end of a level to go on.</p><h2>The one idea</h2><p>Game-Maker has no boss with hit points. A monster is hurt one way: a star kills it. So a boss is a <b>chain</b> of monsters, one for each hit. When a star kills the first, it <b>becomes</b> the second, in the same place. When it kills the last, that becomes a puff. Five monsters in a row make a boss that takes five hits.</p>"
+      "html": "<h1>Welcome</h1><p><b>The Giant</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has two short levels about a boss that is bigger than one block, and takes a few minutes to finish.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each idea is made.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. <kbd>Space</kbd> jumps. <kbd>Enter</kbd> throws a star the way you last walked. <kbd>F2</kbd> shows your hit points, lives and score. Walk into the door at the end of a level to go on.</p><h2>The one idea</h2><p>A monster is one block, 20 by 20 pixels, and never bigger. So a giant is <b>several monsters standing side by side</b>, each with its own picture, each hit on its own. Four monsters in a square make a boss two blocks wide and two high. This game also takes the idea of a boss that takes several hits from <b>Big Bug</b>, and the chain a monster &ldquo;becomes&rdquo; from <b>Three Phases</b>; look at those first if the word <i>becomes</i> is new.</p>"
     },
     {
-      "head": "Level 1: Five Hits",
-      "html": "<h1>Level 1: Five Hits</h1><p>The <b>BIG BUG TAKES FIVE HITS</b> sign stands near the start. Big Bug sits in a low tunnel through a brick wall, and there is no room to get past it. One star is not enough. Stand a few steps back, face it and press <kbd>Enter</kbd> five times: after the fifth it puffs away. Each hit scores 20 points.</p><p>Nothing on the bug shows how many hits are left, so you count. The <b>TOUCHING IT ONLY STINGS</b> sign says what happens if you try to push past: it costs Kit a few hit points and counts for nothing. Eight coins are on the way to the door.</p>"
-    },
-    {
-      "head": "How this level is made",
-      "html": "<h1>How level 1 is made</h1><ul><li><b>Five monsters, not one.</b> Open <b>bug.mon</b> in the monsters editor. Monsters 5 to 9 all use the same bug pictures. Each has <b>When destroyed it becomes</b> set to the next one: 5 becomes 6, 6 becomes 7, 7 becomes 8, 8 becomes 9. That is the hit count: the number of monsters in the chain.</li><li><b>The last hit.</b> Monster 9 becomes monster 15, the puff, which has a <b>For a set time</b> of 18 ticks and then goes away on its own. Nothing is left in the tunnel.</li><li><b>Where it sits.</b> The map has only the first one, monster 5, in the tunnel. The others appear in its place as stars land. Open <b>one.map</b> in the map editor.</li><li><b>Stars win, touching loses.</b> Every stage has <b>Power</b> 150. A star has 200, so it wins. A touch from Kit cannot kill anything with Power 100 or more, so only stars count.</li><li><b>It blocks the tunnel.</b> Open <b>bug.mbl</b> in the blocks editor: the bug pictures are <b>Solid</b> on every side and take 1 hit point for each moment you touch them. The tunnel is two blocks high, the hero&rsquo;s own height, with no way over or around.</li><li><b>The score.</b> Each stage&rsquo;s <b>Score when destroyed by a weapon</b> is 20, so five hits make 100.</li><li><b>The star.</b> Kit&rsquo;s Throw sequence gives birth to monster 3. See <b>hero.chr</b> on the characters tab: the same star as in the Throw It Starter.</li></ul>"
-    },
-    {
-      "head": "Level 2: Count the Lights",
-      "html": "<h1>Level 2: Count the Lights</h1><p>The <b>A LIGHT GOES OUT EACH HIT</b> sign comes first. Big Bug is back in a tunnel, and its shell now has five round lights. Throw a star and one goes out. Throw four more and none are left, and the fifth hit makes it poof. The <b>THE LAST ONE MAKES IT POOF</b> sign says what comes next. Seven coins lie along the way.</p>"
+      "head": "Level 1: The Giant",
+      "html": "<h1>Level 1: The Giant</h1><p>The <b>THE GIANT IS 4 MONSTERS</b> sign stands near the start. Rocky, a big grumpy fellow made of stone, fills a low tunnel through a brick wall, with the exit door on the far side. He is four monsters, two on top of two, and every part pops on one star. The <b>STAND ON THE STEP FOR ITS HEAD</b> sign says the rest: Kit&rsquo;s star flies level with his hand, so from the ground it meets only the bottom two. Walk up on the little step and it meets the head. When all four are gone the tunnel is open. Six coins lie along the way, and one sits on the step.</p><p>Try throwing at the head from the ground once. The star flies under it and does nothing.</p>"
     },
     {
       "head": "How this level is made",
-      "html": "<h1>How level 2 is made</h1><ul><li><b>A picture for every count.</b> Open <b>bug.mbl</b> in the blocks editor. <b>lamp5_0</b> and <b>lamp5_1</b> are the bug with all five lights lit and wiggling. <b>lamp4_0</b> has four, and so on down to <b>lamp1_0</b> with one. The lights are only paint.</li><li><b>Each monster shows its own picture.</b> In the monsters editor, monsters 10 to 14 are the same chain as level 1&rsquo;s, but monster 10 uses the five-light pictures, 11 the four-light ones, and so on. A hit turns it into the next monster, and the picture changes with it.</li><li><b>This is the meter.</b> There is no health number or bar to draw: the bug&rsquo;s own picture says how many hits are left. That is the whole trick, and it works for any count.</li><li><b>The same puff.</b> The last stage, monster 14, becomes monster 15 as in level 1.</li><li><b>The map.</b> Open <b>two.map</b>. Only monster 10 is placed, in a tunnel a little farther along.</li></ul>"
+      "html": "<h1>How level 1 is made</h1><ul><li><b>One picture, cut in four.</b> Rocky was drawn as a single 40 by 40 picture in code, then cut along the middle into four 20 by 20 pieces. Open <b>giant.mbl</b> in the blocks editor: <b>gol_tl0</b> (top left), <b>gol_tr0</b>, <b>gol_bl0</b> and <b>gol_br0</b> are the pieces, and each has a second frame (<b>1</b>) so he wiggles. Placed side by side they read as one picture.</li><li><b>Four monsters.</b> In the monsters editor, monsters 6, 7, 8 and 9 are the four parts. Each uses its own piece, has <b>Power</b> 150 and, when destroyed, becomes monster 5, the puff. They have no path, so they stand still.</li><li><b>Where they stand.</b> Open <b>one.map</b> in the map editor. Four monsters are placed in the tunnel, 6 and 7 side by side on the top row, 8 and 9 on the bottom row. Every part is <b>Solid</b> on all sides, so Kit cannot walk through, and the way to the door opens only when the last one is gone.</li><li><b>Stars win, touching loses.</b> A star has Power 200 and kills anything weaker. A touch from Kit cannot kill anything with Power 100 or more, so only stars count. Each part gives 20 points when a star pops it.</li><li><b>Which part a star finds.</b> A star flies in a straight line, level with the spot where Kit&rsquo;s Throw sequence gives it birth (the frame at 0 across and 20 down from his top, which is the row of his lower block). From the ground that is the bottom row; from a one-block step it is the top row. The step is only grass blocks on <b>one.map</b>.</li><li><b>No part tells the others.</b> A monster that dies cannot say so to the rest. The way opens because the parts that blocked it are gone, nothing more.</li></ul>"
+    },
+    {
+      "head": "Level 2: Ouch, Wait",
+      "html": "<h1>Level 2: Ouch, Wait</h1><p>The <b>A HIT PART BLINKS RED</b> sign comes first. Beep, a tin robot, stands in the tunnel, and he is four monsters again, but each part takes two hits. Hit a part once and it cracks, blinks red for about two seconds and cannot be hurt; the <b>WAIT FOR IT TO STOP</b> sign says to hold your stars. A star thrown at a blinking part flies straight through it and hits whatever stands behind. When the blink stops the part is cracked, and the second hit pops it. Do the bottom pair from the ground and the top pair from the step. Seven coins lie along the way.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 2 is made</h1><ul><li><b>Three monsters a part.</b> Each of the four parts is a short chain. Monsters 10 to 13 are the fresh parts; 14 to 17 are the hurt parts; 18 to 21 are the cracked parts. A fresh part becomes the matching hurt part when a star kills it, a hurt part becomes the matching cracked part, and a cracked part becomes the puff, monster 5.</li><li><b>The blink.</b> In the monsters editor, monster 14&rsquo;s two pictures are <b>crk_tl0</b> (the cracked part) and <b>hot_tl</b> (the same part tinted red), five ticks each, so it flashes about twice a second. It is one small part, never the whole screen.</li><li><b>Hurt for a moment.</b> A hurt part has <b>For a set time</b> 40, about two seconds (the game clock runs 18 ticks a second). When the time is up it dies, and <b>When destroyed it becomes</b> turns it into the cracked part, in the same place. That is how it comes back with no one to trigger it.</li><li><b>Why a star goes through.</b> A hurt part has <b>Power</b> 200, the same as a star. When two monsters of equal power meet, neither kills the other, so the star carries on and meets whatever is behind. A fresh or cracked part has Power 150, so the star wins. Touching never hurts it either way: nothing Kit does by touch kills Power 100 or more.</li><li><b>The cracks.</b> They are only paint: <b>crk_tl0</b> is the same piece as <b>rob_tl0</b> with a few dark lines. Compare them in <b>giant.mbl</b>.</li><li><b>The score.</b> Fresh and cracked parts give 20 points when a star pops them. The hurt part gives nothing, and neither does running out of time.</li><li><b>The map.</b> Open <b>two.map</b>. Only the four fresh parts (10, 11, 12, 13) are placed.</li></ul>"
     },
     {
       "head": "What it cannot do",
-      "html": "<h1>What it cannot do</h1><p>These are the engine&rsquo;s limits, so you can plan around them.</p><ul><li><b>No hit points on a monster.</b> A monster does not have a number that goes down. The count of hits is the number of monsters in the chain, and nothing can read it.</li><li><b>No bar or number on the screen.</b> A monster cannot add to a counter, so nothing like a health bar can follow its hits. Show how many are left with a picture for each count, as level 2 does.</li><li><b>A stage cannot hurt in a different way.</b> Every stage is killed by the same thing, a star. A boss that needs two kinds of shot needs the Showcase Tricks.</li><li><b>Hits cannot be undone.</b> A bug does not heal. Leave the level and come back and it starts again from five.</li><li><b>Only one hit a star.</b> A star is used up by what it hits, so a boss never takes two hits from one throw.</li><li><b>A bug that moves loses its place.</b> A stage becomes the next one where it stands, and its path starts from there. A boss that walks about drifts, so this one sits still.</li></ul>"
+      "html": "<h1>What it cannot do</h1><p>These are the engine&rsquo;s limits, so you can plan around them.</p><ul><li><b>A monster is one block.</b> A big boss is several monsters, and each one has its own hit points (its own chain). Nothing makes them one boss: no part knows how the others are doing, and the game cannot say &ldquo;all four are gone&rdquo; to open something. This level works because the four parts physically fill the tunnel.</li><li><b>Parts that move drift apart.</b> When a part becomes the next monster, its path starts again from where it stands, so a giant that walks would shear into pieces after the first hit. These two stand still.</li><li><b>Stars fly flat.</b> A star flies level with Kit&rsquo;s hand and does not aim, so each row of a giant needs its own spot to stand on.</li><li><b>No tint.</b> A monster cannot be tinted on the fly. The red blink is a second picture drawn red, and so is every other change of look.</li><li><b>The blink is a fixed time.</b> A hurt part comes back after the same number of ticks every time. It does not wait for a star to leave, and nothing can make it blink for longer.</li><li><b>Equal power does nothing.</b> A hurt part is not &ldquo;immune&rdquo;; it just has the same power as the star, and anything with a higher power would still kill it.</li></ul>"
     },
     {
       "head": "Make it yours",
-      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>In <b>bug.mon</b>, set monster 9&rsquo;s <b>When destroyed it becomes</b> to the puff and monster 8&rsquo;s to 15 as well: the bug takes four hits.</li><li>Change the chain&rsquo;s <b>Score when destroyed by a weapon</b> and watch the score.</li><li>Give the bug a <b>Movement</b> path of one block and see where it ends up after a hit.</li><li>Uncheck <b>Solid</b> on a bug picture and walk through it.</li><li>Make the star&rsquo;s <b>Power</b> lower than 150 and see that a star no longer hurts it.</li></ul><p>The home page&rsquo;s <b>Starters</b> tab has more small games like this one.</p>"
+      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>In <b>giant.mon</b>, set monster 6&rsquo;s <b>When destroyed it becomes</b> to monster 7&rsquo;s number, so the top left part takes two hits.</li><li>Change <b>For a set time</b> on a hurt part (monster 14) from 40 to 20 and then to 90.</li><li>Draw your own parts in <b>giant.mbl</b>: change the red pictures to purple.</li><li>Move the step on <b>one.map</b> and see where a star flies from.</li><li>Make a hurt part&rsquo;s <b>Power</b> 250: a star now loses to it, and a star no longer passes.</li></ul><p>The home page&rsquo;s <b>Starters</b> tab has more small games like this one.</p>"
     }
   ]
 }

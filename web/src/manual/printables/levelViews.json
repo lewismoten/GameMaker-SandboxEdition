@@ -26,6 +26,7 @@
   "flicker": {"hash":"72b40c0d15ac3ae7","maps":{"camp.map|camp.bbl":[0,15,67,10],"falls.map|falls.bbl":[0,15,81,10],"hall.map|hall.bbl":[0,15,79,10]}},
   "flock": {"hash":"a24d4faf87ef720b","maps":{"one.map|bird.bbl":[0,7,67,20],"two.map|bird.bbl":[0,14,67,10]}},
   "follower": {"hash":"6fba519be37f92c0","maps":{"one.map|pup.bbl":[0,7,67,20],"two.map|pup.bbl":[0,9,67,18]}},
+  "giant": {"hash":"4e79b469f0411fe7","maps":{"one.map|giant.bbl":[0,8,64,20],"two.map|giant.bbl":[0,8,65,20]}},
   "goat": {"hash":"d8a48111bedb4745","maps":{"caravan.map|goat.bbl":[0,0,53,28],"field.map|goat.bbl":[0,0,64,24],"stable.map|goat.bbl":[0,0,42,23],"town.map|goat.bbl":[0,0,53,30]}},
   "gravity-on-gravity-off": {"hash":"371055c3e46c167f","maps":{"one.map|side.bbl":[0,7,61,20],"two.map|top.bbl":[3,4,58,23]}},
   "gusts": {"hash":"c7176e84bf0ab8b0","maps":{"one.map|one.bbl":[0,0,61,27],"two.map|two.bbl":[0,15,65,10]}},

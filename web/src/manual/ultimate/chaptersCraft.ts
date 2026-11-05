@@ -214,7 +214,7 @@ export const CRAFT: Chapter = {
   hit, each a little faster or with a new attack path, so the player sees the fight turning.
   Give him a shape and colors nothing else in the game has, room to dodge, and a reward:
   a big score, an exit picture, a won screen that says thank you.</p>
-  ${onCd('BIGBUG', 'PHASES')}
+  ${onCd('BIGBUG', 'PHASES', 'GIANT')}
   <h2>Variety</h2>
   <p>Each scene can load its own palette, block set, monsters and music, so use them: a new
   place, a new enemy and a new item every level or two. A gimmick (flying, skiing, a puzzle

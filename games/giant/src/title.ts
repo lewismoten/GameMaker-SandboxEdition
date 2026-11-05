@@ -24,7 +24,13 @@ export function titlePicture(pal: Pal, mb: Book, hero: Pixels, door: Pixels, nam
   put(hero, 30, 160 - 80, 2);
   put(mb.pics.get('star0')!, 90, 160 - 44, 2);
   put(mb.pics.get('star1')!, 134, 160 - 40, 1);
-  for (const [k, dx, dy] of [['tl', 0, 0], ['tr', 40, 0], ['bl', 0, 40], ['br', 40, 40]] as const) put(mb.pics.get(`gol_${k}0`)!, 176 + dx, 160 - 80 + dy, 2);
+  for (const [k, dx, dy] of [
+    ['tl', 0, 0],
+    ['tr', 40, 0],
+    ['bl', 0, 40],
+    ['br', 40, 40],
+  ] as const)
+    put(mb.pics.get(`gol_${k}0`)!, 176 + dx, 160 - 80 + dy, 2);
   put(mb.pics.get('twinkle0')!, 156, 160 - 44, 1);
   put(door, 268, 160 - 80, 2);
   frameOf(p, pal, 'arena');

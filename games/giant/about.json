@@ -1,14 +1,14 @@
 {
-  "title": "Big Bug",
+  "title": "The Giant",
   "author": "Claude",
   "company": "Sandbox Software",
   "series": "starter",
   "year": 1994,
   "price": "Free",
   "version": "1.0",
-  "blurb": "Two short levels about a boss that takes several hits. Big Bug sits in a narrow way and a star does not stop it: it takes five. In the first level nothing says how many are left, so you count. In the second its shell has five lights and one goes out with each hit. Signs in the levels say how. Play it, then open it in Game-Maker and change how many hits it takes.",
-  "exe": "BIGBUG.EXE",
-  "dosName": "BIGBUG",
+  "blurb": "Two short levels about a boss that is really several monsters. A monster is one block, so a giant is four standing together: Rocky, made of stone, fills a narrow way with the exit door behind him, and each part pops on its own. A star flies level with Kit's hand, so the head needs a step to stand on. In level 2 a tin robot takes two hits a part: after the first it blinks red for a moment and a star goes right through, so you wait. Signs in the levels say how. Play it, then open it in Game-Maker and look at the parts.",
+  "exe": "GIANT.EXE",
+  "dosName": "GIANT",
   "sound": "sb",
   "label": {
     "background": "#fff1e0",
@@ -22,12 +22,17 @@
     "background": "#d94b3a",
     "accent": "#ffd23f",
     "ink": "#ffffff",
-    "tagline": "Count the lights.",
-    "back": "A small explorer in a teal beanie has a pocketful of gold stars and two short levels to cross. Big Bug, round, green and very cheerful, sits in a narrow way through a brick wall, and one star will not move it: it takes five. Read the signs, press Enter, count, then open the game in Game-Maker and change how many hits it takes.",
-    "features": ["Signs in the levels explain each idea", "A boss is a chain of monsters, one for each hit", "Made to be copied and taken apart"],
+    "tagline": "Four parts, one door.",
+    "back": "A small explorer in a teal beanie has a pocketful of gold stars and two short levels to cross. Rocky, big, grumpy and made of stone, fills a narrow way to the door, but a monster is only one block, so he is really four, and each pops on its own. Then a tin robot blinks red when it is hit, and a star goes right through it. Read the signs, press Enter, wait your turn, then open the game in Game-Maker and look at the parts.",
+    "features": [
+      "Signs in the levels explain each idea",
+      "A giant is four monsters standing together",
+      "A hit part blinks red, and stars go through it",
+      "Made to be copied and taken apart"
+    ],
     "shots": [
-      ["one.map", 24, 6],
-      ["two.map", 32, 6]
+      ["one.map", 22, 6],
+      ["two.map", 22, 6]
     ],
     "rating": "Everyone"
   }
