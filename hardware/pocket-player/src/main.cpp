@@ -7,6 +7,7 @@
 #include "gmsmall.h"
 #include <SD.h>
 #include <SPI.h>
+#include <Preferences.h>
 #include <esp_heap_caps.h>
 #include <rom/miniz.h>
 #include "board.h"
