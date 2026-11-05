@@ -247,3 +247,14 @@
     gap: 8px;
   }
 }
+
+/* Overview's group headings (assetGroups.ts): each spans the whole row, above its category cards */
+.asset-group {
+  grid-column: 1 / -1;
+  margin: 10px 0 0;
+  font-size: 14px;
+  color: var(--muted);
+}
+.asset-group:first-child {
+  margin-top: 0;
+}

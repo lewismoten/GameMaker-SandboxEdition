@@ -2,7 +2,7 @@
 import './assetBrowser.css';
 import { h, clear, toast } from '../core/ui';
 import { KIND_LABELS, type FileKind, type Project } from '../core/project';
-import { FILE_ORDER } from './fileKinds';
+import { groupedKinds } from './assetGroups';
 import { assetNames } from './assetFiles';
 import { assetCommands } from './assetCommands';
 import { copiedAsset, onAssetCopy } from './assetClipboard';
@@ -228,26 +228,29 @@ export function assetBrowser(host: BrowserHost): { el: HTMLElement; dispose(): v
       count.textContent = `${all.length.toLocaleString()} files · ${sizeText(project, all)}`;
       clear(
         grid,
-        ...FILE_ORDER.map((k) => {
-          const files = assetNames(project, k);
-          return h(
-            'button',
-            { type: 'button', class: 'asset-card asset-category', 'data-category': k, onclick: () => host.category(k) },
-            preview(representative(files, k), k),
-            // on a phone the short name shows and the count line goes; screen readers still get both in full
-            h(
-              'strong',
-              null,
-              h('span', { class: 'name-full' }, KIND_LABELS[k]),
-              h('span', { class: 'name-short', 'aria-hidden': 'true' }, SHORT_KIND_LABELS[k]),
-            ),
-            h(
-              'small',
-              { class: 'asset-card-count' },
-              files.length ? `${files.length.toLocaleString()} ${files.length === 1 ? 'file' : 'files'} · ${sizeText(project, files)}` : 'None yet',
-            ),
-          );
-        }),
+        ...groupedKinds().flatMap((g) => [
+          h('h2', { class: 'asset-group', id: `asset-group-${g.id}` }, g.title),
+          ...g.kinds.map((k) => {
+            const files = assetNames(project, k);
+            return h(
+              'button',
+              { type: 'button', class: 'asset-card asset-category', 'data-category': k, onclick: () => host.category(k) },
+              preview(representative(files, k), k),
+              // on a phone the short name shows and the count line goes; screen readers still get both in full
+              h(
+                'strong',
+                null,
+                h('span', { class: 'name-full' }, KIND_LABELS[k]),
+                h('span', { class: 'name-short', 'aria-hidden': 'true' }, SHORT_KIND_LABELS[k]),
+              ),
+              h(
+                'small',
+                { class: 'asset-card-count' },
+                files.length ? `${files.length.toLocaleString()} ${files.length === 1 ? 'file' : 'files'} · ${sizeText(project, files)}` : 'None yet',
+              ),
+            );
+          }),
+        ]),
         playerCard(),
       );
     } else {
