@@ -1,0 +1,83 @@
+{
+  "title": "The Show",
+  "howDoI": [
+    {
+      "id": "actor",
+      "q": "How do I make an actor that walks in, says hello and walks off?",
+      "scene": 2,
+      "x": 25,
+      "y": 19,
+      "level": 1
+    },
+    {
+      "id": "chain",
+      "q": "How do I make one act turn into the next?",
+      "scene": 2,
+      "x": 29,
+      "y": 19,
+      "level": 1
+    },
+    {
+      "id": "bubble",
+      "q": "How do I make a speech bubble that shows for a while and goes?",
+      "scene": 2,
+      "x": 29,
+      "y": 18,
+      "level": 1
+    },
+    {
+      "id": "wait",
+      "q": "How do I make a monster that waits, then starts?",
+      "scene": 2,
+      "x": 36,
+      "y": 19,
+      "level": 1
+    },
+    {
+      "id": "cameo",
+      "q": "How do I make a friend who says hello once and is gone?",
+      "scene": 3,
+      "x": 51,
+      "y": 18,
+      "level": 2
+    },
+    {
+      "id": "encore",
+      "q": "How do I make a door that plays the scene again?",
+      "scene": 2,
+      "x": 11,
+      "y": 19,
+      "level": 1
+    }
+  ],
+  "pages": [
+    {
+      "head": "Welcome",
+      "html": "<h1>Welcome</h1><p><b>The Show</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has two short levels about plays made of monsters, and takes a few minutes to finish.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each idea is made.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. <kbd>Space</kbd> jumps. <kbd>F2</kbd> shows your hit points, lives and score. Walk into the door at the end of a level to go on.</p><h2>The one idea</h2><p>A scene in a play is a <b>chain of monsters</b>. Each act is one monster. When its path or its lifetime runs out it <b>becomes</b> the next monster, right where it stands, and that one starts its own path. The last act has nothing to become, so it is gone. The whole thing starts when the level does, and it does not wait for Kit.</p>"
+    },
+    {
+      "head": "Level 1: Curtain Up",
+      "html": "<h1>Level 1: Curtain Up</h1><p>Two signs stand before the stage. <b>A SCENE IS MONSTERS ON PATHS</b> says what you are about to see, and <b>IT STARTS WHEN THE LEVEL DOES</b> says when. Two friends wait behind the curtains with only their eyes showing. After about four seconds Pip walks in from the left and Blu from the right, Pip says HI, Blu says HI back, and both walk off behind the curtains.</p><p>If you stop to read, the play is over before you get there. That is the lesson: <b>MISSED IT? ENCORE DOOR</b>. The door at the start loads the level again, and the play begins again. Five coins lie past the stage, on the way to the exit.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 1 is made</h1><ul><li><b>Eight acts.</b> Open <b>show.mon</b> in the monsters editor. Pip is monsters 3 to 7: peeking (3), walking in (4), saying HI (5), listening (6) and walking out (7). Blu is 8 to 12, with the same acts but listening before talking. Each one is a monster with its own picture, path and lifetime.</li><li><b>One becomes the next.</b> Each act has a <b>New monster</b>. Walking in has an <b>End</b> of -1 (dies after its path), so when its four blocks are walked it turns into the next act. Peeking, saying and listening have a lifetime in ticks instead (a tick is 1/18.2 of a second): when it is up, the monster turns into the next. Walking out has no new monster, so it is gone.</li><li><b>Waiting is an act too.</b> The peeking monster (3) is the curtain with eyes in it. It does nothing for 70 ticks, then becomes the walker. That is how the play does not start at once.</li><li><b>The speech bubbles are separate monsters.</b> A monster is one block, so a bubble above an actor is another monster. Open <b>one.map</b>: the bubble waits above the spot where Pip will stop, as a clear picture (17), for exactly as long as the acts before it take, then becomes the bubble (18) for one line and is gone. Blu&rsquo;s (21, then 19) waits one line longer.</li><li><b>Where they sit.</b> In <b>one.map</b> the two peeking monsters are on the curtain blocks, one at each side, on the row Kit walks on. Nothing here is solid, so Kit can walk through the actors.</li><li><b>The encore door.</b> In the scene&rsquo;s links (the Scenes editor), the second link goes from the door at the start to the <i>same</i> scene, at the entrance. Loading a scene starts every monster in it again.</li></ul>"
+    },
+    {
+      "head": "Level 2: Say Hello",
+      "html": "<h1>Level 2: Say Hello</h1><p>A cameo is a short visit by someone who is not in the play. Here a friend in a party hat waits in a doorway to the right of the stage. After about three seconds the friend walks to the middle of the stage, says HI, and walks off behind the curtain. Then there is nobody. <b>A CAMEO SAYS HELLO ONCE</b>, the first sign says, and <b>GONE? IT WILL NOT WAIT</b> says the same thing from the other side.</p><p>Stand in front of the stage and watch it, then take the five coins to the exit. The encore door is at the start here too, in case you walked past.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 2 is made</h1><ul><li><b>Four acts.</b> In <b>show.mon</b> the cameo is monsters 13 to 16: waiting in the doorway (13), walking in (14), saying HI (15) and walking out (16). The walk in is fourteen blocks at a speed of 2, the walk out three blocks, so it ends on the left curtain.</li><li><b>The same chain.</b> Waiting and saying use a lifetime; the two walks have an <b>End</b> of -1 (after path); the last act has no new monster. Nothing is new here except that there is one actor, so the whole scene is one chain.</li><li><b>Its bubble</b> is monsters 22 (waiting) and 20 (showing), placed in <b>two.map</b> above the spot the cameo stops at. The wait is the doorway wait plus the walk in, 60 plus 140 ticks.</li><li><b>Once.</b> Nothing loops. A monster that loops (a path that ends where it starts, and an <b>End</b> that never kills it) would say hello again and again. This one is <b>End -1</b> all the way, so when it has walked out it is gone until the level loads again.</li></ul>"
+    },
+    {
+      "head": "What it cannot do",
+      "html": "<h1>What it cannot do</h1><p>These are the engine&rsquo;s limits, so you can plan around them.</p><ul><li><b>A scene cannot wait for the hero.</b> A monster put on the map is born when the scene loads, and its clock runs from then. Nothing can start it when Kit comes near. The only way to start a play when he arrives is to make him wait a while first, or to use a link to load the scene again.</li><li><b>No scripts.</b> There is no &ldquo;then&rdquo; except a monster becoming another. An actor cannot be told to go to a place, only given a path of up to ten corners from where it is born. An actor that must be at two places at the same moment has to be two monsters timed to match.</li><li><b>Timing is arithmetic.</b> Two actors only stay in step because their paths and lifetimes add up to the same number of ticks. Change one and the others drift. Here a walk of one block at speed 1 takes about 20 ticks.</li><li><b>Speech is a picture.</b> A bubble is a block with words drawn in it, and a monster is one block, so it holds a short word or two. It cannot say something different each time or use Kit&rsquo;s name.</li><li><b>No pausing, no skipping.</b> The player cannot press a key to skip the play or to pause it, and an actor cannot be asked to wait for a key. A scene that reloads (the encore door) starts everything from the beginning.</li></ul>"
+    },
+    {
+      "head": "Make it yours",
+      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>In <b>show.mon</b>, give monster 3 (Pip peeking) a longer lifetime and watch Pip start later than Blu&rsquo;s speech bubble does.</li><li>Change Pip&rsquo;s <b>New monster</b> after walking in (monster 4) to monster 7, and Pip skips the talking.</li><li>Give Blu a new speech by drawing a different picture for monster 19 in <b>show.mbl</b>.</li><li>Make the cameo (14) walk in from further away: change its first corner and also the wait of its bubble (22) so they still meet.</li><li>Put the encore door somewhere else in the scene&rsquo;s links.</li></ul><p>The home page&rsquo;s <b>Starters</b> tab has more small games like this one.</p>"
+    }
+  ]
+}

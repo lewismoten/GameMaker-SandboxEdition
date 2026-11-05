@@ -1,0 +1,34 @@
+{
+  "title": "The Show",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.0",
+  "blurb": "Two short levels about plays made of monsters. Little actors wait behind a stage curtain; when the level starts, each peeks out, walks in, says hello and walks off, one act becoming the next. Then a cameo waves hello once and is gone. The show never waits for you, so a door after the stage plays it again. Signs in the levels say how. Play it, then open it in Game-Maker and change who becomes whom.",
+  "exe": "SHOW.EXE",
+  "dosName": "SHOW",
+  "sound": "sb",
+  "label": {
+    "background": "#fff1e0",
+    "band": "#d94b3a",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "2 short levels",
+    "hours": 1,
+    "background": "#d94b3a",
+    "accent": "#ffd23f",
+    "ink": "#ffffff",
+    "tagline": "Be there when the curtain moves.",
+    "back": "A small explorer in a teal beanie finds a stage in a meadow. Two friends wait behind its curtains, and when the level starts, so does their play: each act is a monster that becomes the next. A cameo says hello once and goes. Nothing waits for the hero, so there is an encore door. Open the game in Game-Maker to change the acts.",
+    "features": ["Signs in the levels explain each idea", "A play is a chain of monsters, each becoming the next", "Made to be copied and taken apart"],
+    "shots": [
+      ["one.map", 30, 6],
+      ["two.map", 30, 6]
+    ],
+    "rating": "Everyone"
+  }
+}
