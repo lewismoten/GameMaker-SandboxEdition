@@ -56,9 +56,40 @@ struct Need {
   bool left = false, right = false, up = false, down = false, space = false, enter = false;
   int nextra = 0;
   int extra[MAXEXTRA];
+  // The key the pad's diagonal sectors send, per corner: 0 up-left, 1 up-right, 2 down-left, 3 down-right (0 = the game has none).
+  int diag[4] = {0, 0, 0, 0};
+  uint8_t diagPri[4] = {0, 0, 0, 0};
+  bool anyDiag() const { return diag[0] || diag[1] || diag[2] || diag[3]; }
 };
 
-inline void needAdd(Need& n, int scan) {
+// A diagonal key: the number pad's 7 9 1 3 (Home, PgUp, End, PgDn) first, else Q E Z C. Z and C only count when the label
+// says "down" (Plasma Lance, Kazoo and the like sit on them). Returns the corner, or -1.
+inline int diagCorner(int scan, const char* label, int* pri) {
+  switch (scan) {
+    case 71: *pri = 2; return 0;
+    case 73: *pri = 2; return 1;
+    case 79: *pri = 2; return 2;
+    case 81: *pri = 2; return 3;
+    case 16: *pri = 1; return 0;
+    case 18: *pri = 1; return 1;
+    case 44: case 46: {
+      bool down = false;
+      for (const char* c = label; c && *c; c++)
+        if ((c[0] | 32) == 'd' && (c[1] | 32) == 'o' && (c[2] | 32) == 'w' && (c[3] | 32) == 'n') down = true;
+      if (!down) return -1;
+      *pri = 1;
+      return scan == 44 ? 2 : 3;
+    }
+  }
+  return -1;
+}
+
+inline void needAdd(Need& n, int scan, const char* label = "") {
+  int pri = 0, corner = diagCorner(scan, label, &pri);
+  if (corner >= 0) {   // the pad sends it; no tile
+    if (pri > n.diagPri[corner]) { n.diag[corner] = scan; n.diagPri[corner] = pri; }
+    return;
+  }
   switch (scan) {
     case S_LEFT: case 30: n.left = true; return;     // 30, 32, 17, 31: A, D, W, S are listed beside the arrows
     case S_RIGHT: case 32: n.right = true; return;
@@ -166,6 +197,7 @@ class Controls {
   Need need;
   Layout L;
   bool keysOpen = false;
+  int padDiag = 0;       // the diagonal key the pad is sending (0 none)
   uint8_t padDirs = 0;   // bit 0 left, 1 right, 2 up, 3 down: what the pad is pressing now (for drawing)
   uint8_t btnDown = 0;   // bit 0 space, 1 enter, 2 menu chip, 3 keys chip (for drawing)
   uint16_t tileDown = 0; // bit per extra-key tile
@@ -184,7 +216,7 @@ class Controls {
     memset(want, 0, sizeof want);
     memset(sent, 0, sizeof sent);
     memset(holdUntil, 0, sizeof holdUntil);
-    padDirs = 0; btnDown = 0; tileDown = 0; latch = 0; keysOpen = false;
+    padDirs = 0; padDiag = 0; btnDown = 0; tileDown = 0; latch = 0; keysOpen = false;
     ev = EV_NONE;
   }
 
@@ -254,6 +286,7 @@ class Controls {
   uint32_t holdUntil[128];
   int ev = EV_NONE;
   bool horiz = false, vert = false;   // the pad's last sectors (hysteresis)
+  int diagHeld = -1;                  // the corner of the diagonal sector the finger is in (hysteresis), -1 none
 
   int find(int id) const { for (int k = 0; k < MAXCONTACT; k++) if (slot[k].id == id) return k; return -1; }
 
@@ -323,7 +356,7 @@ class Controls {
 
   void compute(uint32_t now) {
     bool down[128] = {};
-    padDirs = 0; btnDown = 0; tileDown = 0;
+    padDirs = 0; padDiag = 0; btnDown = 0; tileDown = 0;
     bool havePad = false;
     for (int k = 0; k < MAXCONTACT; k++) {
       Slot& s = slot[k];
@@ -337,17 +370,28 @@ class Controls {
         case TILE: tileDown |= 1 << s.tile; if (!s.ghost) press(needScan(need.extra[s.tile]), now); break;
       }
     }
-    if (!havePad) { horiz = vert = false; }
+    if (!havePad) { horiz = vert = false; diagHeld = -1; }
     uint8_t d = padDirs;
     if (!havePad && latch) d |= latch < 0 ? 1 : 2;
-    if (d & 1 && need.left) down[S_LEFT] = true;
-    if (d & 2 && need.right) down[S_RIGHT] = true;
-    if (d & 4 && need.up) down[S_UP] = true;
-    if (d & 8 && need.down) down[S_DOWN] = true;
+    if (padDiag) down[padDiag] = true;   // a diagonal sector sends the game's own diagonal key, not two arrows
+    else {
+      if (d & 1 && need.left) down[S_LEFT] = true;
+      if (d & 2 && need.right) down[S_RIGHT] = true;
+      if (d & 4 && need.up) down[S_UP] = true;
+      if (d & 8 && need.down) down[S_DOWN] = true;
+    }
     for (int s = 0; s < 128; s++) want[s] = down[s] || now < holdUntil[s];
     // A pad direction counts as pressed for the minimum hold too.
     for (int sc : {S_LEFT, S_RIGHT, S_UP, S_DOWN}) if (down[sc] && !sent[sc]) holdUntil[sc] = now + HOLD_MS;
+    if (padDiag && !sent[padDiag]) holdUntil[padDiag] = now + HOLD_MS;
     for (int s = 0; s < 128; s++) want[s] = down[s] || now < holdUntil[s];
+    // The engine follows one direction key at a time: while the finger holds one, the others (arrows, diagonals) let go.
+    {
+      int dirs[8] = {S_LEFT, S_RIGHT, S_UP, S_DOWN, need.diag[0], need.diag[1], need.diag[2], need.diag[3]};
+      bool active = false;
+      for (int sc : dirs) if (sc && down[sc]) active = true;
+      if (active) for (int sc : dirs) if (sc && !down[sc]) { holdUntil[sc] = 0; want[sc] = false; }
+    }
     // Opposite directions never overlap: the one the finger is on wins at once.
     for (int pair = 0; pair < 2; pair++) {
       int a = pair ? S_UP : S_LEFT, b = pair ? S_DOWN : S_RIGHT;
@@ -362,11 +406,27 @@ class Controls {
 
   // Which of left (1), right (2), up (4), down (8) a finger at (x, y) presses; remembers the sector it is in.
   uint8_t padSector(int x, int y) {
+    padDiag = 0;
     int dx = x - L.pad.cx, dy = y - L.pad.cy;
     int ax = dx < 0 ? -dx : dx, ay = dy < 0 ? -dy : dy;
     bool any = horiz || vert;
     int dead = any ? L.deadR * 4 / 5 : L.deadR;  // leaving the middle takes more than coming back
-    if (dx * dx + dy * dy < dead * dead) { horiz = vert = false; return 0; }
+    if (dx * dx + dy * dy < dead * dead) { horiz = vert = false; diagHeld = -1; return 0; }
+    // A game with diagonal keys: 30 degree wedges centered on the diagonals (30 to 60 degrees), 35 to 25 once held.
+    if (need.anyDiag()) {
+      int corner = (dy < 0 ? 0 : 2) + (dx < 0 ? 0 : 1);
+      if (need.diag[corner]) {
+        bool held = diagHeld == corner;
+        int lo = held ? 47 : 58, hi = held ? 214 : 173;   // tan 25 / 30 and tan 65 / 60, times 100
+        int r100 = ax ? ay * 100 / ax : 100000;
+        if (r100 >= lo && r100 <= hi) {
+          diagHeld = corner; horiz = vert = false;
+          padDiag = need.diag[corner];
+          return (dx < 0 ? 1 : 2) | (dy < 0 ? 4 : 8);
+        }
+      }
+    }
+    diagHeld = -1;
     // sector slopes: level within 27 degrees (tan 0.5), widened to 35 degrees (0.7) for the one already held
     bool h = ay * 100 <= ax * (horiz && !vert ? 70 : 50);
     bool v = ax * 100 <= ay * (vert && !horiz ? 70 : 50);

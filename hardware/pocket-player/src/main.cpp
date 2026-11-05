@@ -868,8 +868,8 @@ static bool fromPause = false;
 
 static void applyControls() {
   ctl::Need need;
-  for (int i = 0; i < cfg.nkeys; i++) ctl::needAdd(need, cfg.keys[i].scan);
-  if (!need.left && !need.right && !need.up && !need.down) need.left = need.right = true;  // a game that lists no keys still gets the walk keys
+  for (int i = 0; i < cfg.nkeys; i++) ctl::needAdd(need, cfg.keys[i].scan, cfg.keys[i].label);
+  if (!need.left && !need.right && !need.up && !need.down && !need.anyDiag()) need.left = need.right = true;  // a game that lists no keys still gets the walk keys
   if (!need.space && !need.enter && need.nextra == 0) need.space = true;
   controls.configure(settings, need);
 }
