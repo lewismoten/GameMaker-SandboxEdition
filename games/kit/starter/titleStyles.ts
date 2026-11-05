@@ -6,8 +6,8 @@ import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { gradient, pool } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
 import type { Pal } from './palette';
 
-/** The group looks: meadow (The Basics), sunset (Game Feel), arena (Foes and Bosses), stage (Telling a Story), workbench (Putting It Together), atlas (Bigger Worlds), neon (Showcase Tricks). */
-export type GroupStyle = 'meadow' | 'sunset' | 'arena' | 'stage' | 'workbench' | 'atlas' | 'neon';
+/** The group looks: meadow (The Basics), sunset (Game Feel), arena (Foes and Bosses), circuit (Wiring and Puzzles), stage (Telling a Story), workbench (Putting It Together), atlas (Bigger Worlds), neon (Showcase Tricks). */
+export type GroupStyle = 'meadow' | 'sunset' | 'arena' | 'circuit' | 'stage' | 'workbench' | 'atlas' | 'neon';
 
 /** Where the hero and door stand on the title. */
 const GROUND = 160;
@@ -28,7 +28,7 @@ export interface Look {
 /** The sky, ground and frame of a non-meadow look, drawn behind the hero and door. */
 export function backdrop(pal: Pal, style: Exclude<GroupStyle, 'meadow'>): Pixels {
   const p = new Pixels(W, H);
-  ({ sunset, arena, stage, workbench, atlas, neon })[style](p, pal);
+  ({ sunset, arena, circuit, stage, workbench, atlas, neon })[style](p, pal);
   return p;
 }
 
@@ -38,6 +38,7 @@ export function lookOf(pal: Pal, style: Exclude<GroupStyle, 'meadow'>): Look {
   return {
     sunset: { fill: c('gold', 5), outline: c('purple', 0), shadow: c('purple', 1), ribbon: 'parch', ribbonText: c('purple', 0), floorShadow: c('purple', 0) },
     arena: { fill: c('gold', 5), outline: c('red', 0), shadow: c('ink', 0), ribbon: 'parch', ribbonText: c('red', 0), floorShadow: c('wood', 0) },
+    circuit: { fill: c('gold', 5), outline: c('green', 0), shadow: c('ink', 0), ribbon: 'parch', ribbonText: c('green', 0), floorShadow: c('green', 0) },
     stage: { fill: c('gold', 4), outline: c('red', 0), shadow: c('ink', 0), ribbon: 'parch', ribbonText: c('red', 0), floorShadow: c('wood', 0) },
     workbench: { fill: c('white', 3), outline: c('blue', 0), shadow: c('ink', 0), ribbon: 'parch', ribbonText: c('blue', 0), floorShadow: c('wood', 0) },
     atlas: { fill: c('red', 3), outline: c('wood', 0), shadow: c('wood', 2), ribbon: 'wood', ribbonText: c('parch', 5), floorShadow: c('wood', 0) },
@@ -59,6 +60,10 @@ export function frameOf(p: Pixels, pal: Pal, style: Exclude<GroupStyle, 'meadow'
     border(4, c('gold', 3));
     border(1, c('gold', 5), 4);
     border(1, c('red', 0), 0);
+  } else if (style === 'circuit') {
+    border(4, c('green', 1));
+    border(1, c('gold', 3), 4);
+    border(1, c('green', 0), 0);
   } else if (style === 'stage') {
     border(4, c('wood', 2));
     border(1, c('gold', 4), 4);
@@ -140,6 +145,56 @@ function arena(p: Pixels, pal: Pal): void {
     if (y >= GROUND && y < H - 2) p.set(x, y, c('gold', 3)).set(x, y + 1, c('gold', 3));
   }
   p.rect(0, GROUND, W, 2, c('red', 0));
+}
+
+/** A green circuit board: copper traces with square turns, round solder pads and little black chips with pins, over a darker board floor. */
+function circuit(p: Pixels, pal: Pal): void {
+  const c = pal.c;
+  gradient(p, 0, 0, W, GROUND, pal.r('green'), 0, 2);
+  const copper = c('gold', 3);
+  const shine = c('gold', 4);
+  const pad = (x: number, y: number) => p.disc(x, y, 3, copper).disc(x, y, 1, c('green', 0));
+  // traces: a long run with square turns, ending in pads
+  const runs: [number, number, number, number][] = [
+    [8, 84, 70, 84],
+    [70, 84, 70, 100],
+    [70, 100, 130, 100],
+    [190, 96, 250, 96],
+    [250, 96, 250, 80],
+    [250, 80, 312, 80],
+    [20, 122, 20, 146],
+    [20, 122, 60, 122],
+    [270, 118, 270, 146],
+    [236, 118, 270, 118],
+  ];
+  for (const [x1, y1, x2, y2] of runs) {
+    p.rect(Math.min(x1, x2), Math.min(y1, y2), Math.abs(x2 - x1) + 2, Math.abs(y2 - y1) + 2, copper);
+    p.rect(Math.min(x1, x2), Math.min(y1, y2), Math.abs(x2 - x1) + 2, 1, shine);
+  }
+  for (const [x, y] of [
+    [9, 85],
+    [131, 101],
+    [189, 97],
+    [311, 81],
+    [61, 123],
+    [21, 147],
+    [237, 119],
+    [271, 147],
+  ])
+    pad(x, y);
+  // two black chips with a row of pins either side
+  for (const [cx, cy] of [
+    [140, 112],
+    [10, 50],
+  ]) {
+    p.rect(cx, cy, 44, 22, c('ink', 0)).rect(cx + 2, cy + 2, 40, 18, c('ink', 1));
+    p.disc(cx + 6, cy + 6, 2, c('ink', 2));
+    for (let i = 0; i < 6; i++) p.rect(cx + 5 + i * 7, cy - 3, 3, 3, copper).rect(cx + 5 + i * 7, cy + 22, 3, 3, copper);
+  }
+  // the board's floor: darker green with a copper edge
+  p.rect(0, GROUND, W, H - GROUND, c('green', 1));
+  p.rect(0, GROUND, W, 2, copper);
+  for (let x = 6; x < W; x += 24) p.disc(x, GROUND + 14, 2, c('green', 0)).disc(x, GROUND + 14, 1, copper);
 }
 
 /** A theater: red curtains and a fringed valance, a spotlit back wall and a wooden stage. */

@@ -54,6 +54,7 @@ export const CAST_GAMES = {
   'breakable-walls': ['Smash It', 'starter'],
   'boss-hits': ['Big Bug', 'starter'],
   'short-lived': ['Here Today', 'starter'],
+  'three-tokens': ['Three Tokens', 'starter'],
   carl: ['A Fly Named Carl', 'bizarre'],
   goat: ['Third Goat from the Left', 'bizarre'],
   loaf: ['Loaf #13 (Left in the Basket)', 'bizarre'],
@@ -153,6 +154,7 @@ const LISTED: CastMember[] = [
       { game: 'breakable-walls', as: 'bumps crates to rubble and catches spinning gems' },
       { game: 'boss-hits', as: 'throws five stars at a cheerful bug that blocks a narrow way' },
       { game: 'short-lived', as: 'waits for a bubble to pop and a sleepy gumdrop to wake up' },
+      { game: 'three-tokens', as: 'collects purple tokens until a gate will take its price, and then walks out through the gate' },
     ],
   },
   {
