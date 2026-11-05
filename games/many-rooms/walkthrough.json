@@ -1,153 +1,153 @@
 {
- "version": 1,
- "game": "many-rooms",
- "rand": {
-  "seed": 1,
-  "per": "scene"
- },
- "segments": [
-  {
-   "scene": 2,
-   "keys": "AUsKywNN"
+  "version": 1,
+  "game": "many-rooms",
+  "rand": {
+    "seed": 1,
+    "per": "scene"
   },
-  {
-   "scene": 3,
-   "keys": "BEsZywNN"
-  },
-  {
-   "scene": 4,
-   "keys": "BEs="
-  },
-  {
-   "scene": 3,
-   "keys": "BE0="
-  },
-  {
-   "scene": 4,
-   "keys": "BE0="
-  },
-  {
-   "scene": 5,
-   "keys": "BEsZywNN"
-  },
-  {
-   "scene": 6,
-   "keys": "BEsUywNL"
-  },
-  {
-   "scene": 7,
-   "keys": "BE0="
-  },
-  {
-   "scene": 6,
-   "keys": "BEsUywNN"
-  },
-  {
-   "scene": 8,
-   "keys": "BE0="
-  }
- ],
- "chapters": [
-  {
-   "scene": 2,
-   "title": "Level 1: Four Rooms (the red room)"
-  },
-  {
-   "scene": 3,
-   "title": "Level 1: Four Rooms (the blue room)"
-  },
-  {
-   "scene": 4,
-   "title": "Level 1: Four Rooms (the green room)"
-  },
-  {
-   "scene": 3,
-   "title": "Level 1: Four Rooms (the blue room)"
-  },
-  {
-   "scene": 4,
-   "title": "Level 1: Four Rooms (the green room)"
-  },
-  {
-   "scene": 5,
-   "title": "Level 1: Four Rooms (the gold room)"
-  },
-  {
-   "scene": 6,
-   "title": "Level 2: One Landing Cell (the hub)"
-  },
-  {
-   "scene": 7,
-   "title": "Level 2: One Landing Cell (the west room)"
-  },
-  {
-   "scene": 6,
-   "title": "Level 2: One Landing Cell (the hub)"
-  },
-  {
-   "scene": 8,
-   "title": "Level 2: One Landing Cell (the east room)"
-  }
- ],
- "timeline": {
-  "fps": 60,
-  "frames": 7912,
+  "segments": [
+    {
+      "scene": 2,
+      "keys": "AUsKywNN"
+    },
+    {
+      "scene": 3,
+      "keys": "BEsZywNN"
+    },
+    {
+      "scene": 4,
+      "keys": "BEs="
+    },
+    {
+      "scene": 3,
+      "keys": "BE0="
+    },
+    {
+      "scene": 4,
+      "keys": "BE0="
+    },
+    {
+      "scene": 5,
+      "keys": "BEsZywNN"
+    },
+    {
+      "scene": 6,
+      "keys": "BEsUywNL"
+    },
+    {
+      "scene": 7,
+      "keys": "BE0="
+    },
+    {
+      "scene": 6,
+      "keys": "BEsUywNN"
+    },
+    {
+      "scene": 8,
+      "keys": "BE0="
+    }
+  ],
   "chapters": [
-   {
-    "title": "Opening",
-    "frame": 0,
-    "time": 0
-   },
-   {
-    "title": "Story",
-    "frame": 896,
-    "time": 14933.333333333148
-   },
-   {
-    "title": "Level 1: Four Rooms (the red room)",
-    "frame": 1644,
-    "time": 27400.000000000564
-   },
-   {
-    "title": "Level 1: Four Rooms (the blue room)",
-    "frame": 2137,
-    "time": 35616.66666666721
-   },
-   {
-    "title": "Level 1: Four Rooms (the green room)",
-    "frame": 2503,
-    "time": 41716.66666666632
-   },
-   {
-    "title": "Level 1: Four Rooms (the gold room)",
-    "frame": 3095,
-    "time": 51583.33333333155
-   },
-   {
-    "title": "Level 2: One Landing Cell (the hub)",
-    "frame": 3698,
-    "time": 61633.33333333009
-   },
-   {
-    "title": "Level 2: One Landing Cell (the west room)",
-    "frame": 3916,
-    "time": 65266.666666662895
-   },
-   {
-    "title": "Level 2: One Landing Cell (the east room)",
-    "frame": 4441,
-    "time": 74016.66666666532
-   },
-   {
-    "title": "Ending",
-    "frame": 4633,
-    "time": 77216.66666666625
-   },
-   {
-    "title": "Credits",
-    "frame": 6840,
-    "time": 114000.00000001029
-   }
-  ]
- }
+    {
+      "scene": 2,
+      "title": "Level 1: Four Rooms (the red room)"
+    },
+    {
+      "scene": 3,
+      "title": "Level 1: Four Rooms (the blue room)"
+    },
+    {
+      "scene": 4,
+      "title": "Level 1: Four Rooms (the green room)"
+    },
+    {
+      "scene": 3,
+      "title": "Level 1: Four Rooms (the blue room)"
+    },
+    {
+      "scene": 4,
+      "title": "Level 1: Four Rooms (the green room)"
+    },
+    {
+      "scene": 5,
+      "title": "Level 1: Four Rooms (the gold room)"
+    },
+    {
+      "scene": 6,
+      "title": "Level 2: One Landing Cell (the hub)"
+    },
+    {
+      "scene": 7,
+      "title": "Level 2: One Landing Cell (the west room)"
+    },
+    {
+      "scene": 6,
+      "title": "Level 2: One Landing Cell (the hub)"
+    },
+    {
+      "scene": 8,
+      "title": "Level 2: One Landing Cell (the east room)"
+    }
+  ],
+  "timeline": {
+    "fps": 60,
+    "frames": 7912,
+    "chapters": [
+      {
+        "title": "Opening",
+        "frame": 0,
+        "time": 0
+      },
+      {
+        "title": "Story",
+        "frame": 896,
+        "time": 14933.333333333148
+      },
+      {
+        "title": "Level 1: Four Rooms (the red room)",
+        "frame": 1644,
+        "time": 27400.000000000564
+      },
+      {
+        "title": "Level 1: Four Rooms (the blue room)",
+        "frame": 2137,
+        "time": 35616.66666666721
+      },
+      {
+        "title": "Level 1: Four Rooms (the green room)",
+        "frame": 2503,
+        "time": 41716.66666666632
+      },
+      {
+        "title": "Level 1: Four Rooms (the gold room)",
+        "frame": 3095,
+        "time": 51583.33333333155
+      },
+      {
+        "title": "Level 2: One Landing Cell (the hub)",
+        "frame": 3698,
+        "time": 61633.33333333009
+      },
+      {
+        "title": "Level 2: One Landing Cell (the west room)",
+        "frame": 3916,
+        "time": 65266.666666662895
+      },
+      {
+        "title": "Level 2: One Landing Cell (the east room)",
+        "frame": 4441,
+        "time": 74016.66666666532
+      },
+      {
+        "title": "Ending",
+        "frame": 4633,
+        "time": 77216.66666666625
+      },
+      {
+        "title": "Credits",
+        "frame": 6840,
+        "time": 114000.00000001029
+      }
+    ]
+  }
 }
