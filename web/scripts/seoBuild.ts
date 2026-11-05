@@ -47,6 +47,7 @@ import {
 } from '../src/seo/site';
 import { FORK_NOTE, NOTICE_URL, PRODUCT } from '../src/edition';
 import { magazineJsonLd, siteLinksHtml, websiteJsonLd } from '../src/seo/siteSections';
+import { isStarterGame } from '../src/project/starter';
 import { hasBizarreTab, isBizarreGame } from '../src/project/bizarre';
 
 const HEAD_MARK = '<!--SEO:HEAD-->';
@@ -366,7 +367,7 @@ function versionOf(cdRoot: string, id: string): string | undefined {
  * others, with no play page (Lewis's choice: this page only; nothing else names them).
  */
 export function downloadsPageHtml(catalog: CdCatalogEntry[], cdRoot: string, secretCatalog: CdCatalogEntry[] = []): string {
-  const games = playable(catalog).filter((g) => g.original && g.pack);
+  const games = playable(catalog).filter((g) => g.original && g.pack && !isStarterGame(g)); // the Starters are examples, not downloads
   const secret = secretCatalog.filter((g) => g.original && g.pack);
   const bizarre = hasBizarreTab(games) ? games.filter(isBizarreGame) : [];
   const sections: [string, string, CdCatalogEntry[]][] = [

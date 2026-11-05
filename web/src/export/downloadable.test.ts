@@ -13,6 +13,11 @@ describe('which catalog games may be downloaded', () => {
     expect(catalogDownloadable({ gam: null, kind: 'gameware', company: RSD_COMPANY })).toBe(false);
   });
 
+  it('offers no download for a Starter', () => {
+    expect(catalogDownloadable({ gam: 'first.gam', kind: 'shareware', original: {}, series: 'starter' })).toBe(false);
+    expect(catalogDownloadable({ gam: 'song.gam', kind: 'shareware', original: {}, series: 'bizarre' })).toBe(true);
+  });
+
   it('leaves out every other author’s game on the CD, as the release scripts’ --all does', () => {
     const catalog = cdCatalog(resolve(__dirname, '../../../cd'));
     const picked = catalog.filter(catalogDownloadable);
