@@ -87,6 +87,16 @@ It also compares the sound schedule: the engine's PC speaker effects (tick, effe
 
 After rebuilding a game: `cd web && npx vite-node scripts/pocketData.ts` repacks `data/` (it also writes `games.txt`).
 
+## Check the board itself (serial self-test)
+
+The host check cannot see stack, heap or DRAM limits, so the firmware has a serial self-test. On the game list only, `T <index> <ticks>` or `T all <ticks>` (115200 baud, a line ending in newline) loads each game the way a tap does, runs it with no input and drawing every tick, then prints one line per game: `ST id=... ok=1 free=... largest=... min=... stack=...` (free heap, largest block, lowest free heap since boot, loop-task stack high-water mark in bytes), then `ST done n=...` and returns to the list. Normal play never reads the serial port.
+
+With the board plugged in and on the list (not mid-game, and nobody using it):
+
+`~/.platformio/penv/bin/python web/scripts/pocketBoardCheck.py /dev/cu.usbserial-XXXX --ticks 300`
+
+It prints a table and exits 1 on a failed load, a stack high-water under 1024 bytes, or a board that stops answering (a crash shows as a missing `ST done`).
+
 ## Colors check (on the Mac)
 
 `cd web && npx vite-node scripts/pocketColorCheck.ts out.png` repeats the firmware's color math on First Steps' files, models the panel reading the pushed bytes, and writes the engine's own render, the current firmware and the old one side by side. It exits 1 if a color is off by more than 565 rounding allows. pushImage sends each 16 bit value low byte first and the ST7796 reads it high byte first, so the buffer holds byte-swapped RGB565 (`panel565` in `src/main.cpp`).
