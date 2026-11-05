@@ -50,7 +50,7 @@ function indexBody(id: string, dialog: boolean, onGo?: () => void): { root: HTML
     autocomplete: 'off',
   });
   const count = h('span', { class: 'hdi-count', role: 'status', 'aria-live': 'polite' });
-  const list = h('ul', { class: 'hdi-list', ...(dialog ? { tabindex: '0', 'aria-label': 'Matching questions' } : {}) });
+  const list = h('ul', { class: 'hdi-list', ...(dialog ? { tabindex: '0', 'aria-label': 'Matching questions', 'data-list-area': 'questions' } : {}) });
   const root = h(
     'div',
     { class: `hdi${dialog ? ' hdi-dlg' : ''}`, ...(dialog ? {} : { role: 'region', 'aria-labelledby': `${search.id}-label` }) },
