@@ -22,6 +22,7 @@ kit-moves|Kit's Moves|2
 secret-doors|Looks Like a Wall|3
 many-weapons|Many Weapons|2
 meet-the-monsters|Meet the Monsters|2
+voice|Out Loud|3
 parallax|Parallax|2
 inventory|Pick It Up|2
 pictures-and-cartoons|Pictures and Cartoons|3
