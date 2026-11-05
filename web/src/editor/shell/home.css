@@ -1210,3 +1210,43 @@ a.button.with-ico {
 .grad-missing li {
   margin: 4px 0;
 }
+
+/* "Ready to graduate": a gold strip above every group on the Starters tab, one row per open graduation */
+.lib-tiles > .grad-ready {
+  grid-column: 1 / -1;
+  padding: 10px 14px;
+  border: 3px solid #d4a017;
+  border-radius: 10px;
+  background: color-mix(in srgb, #d4a017 14%, var(--surface, transparent));
+}
+.grad-ready h3 {
+  margin: 0 0 6px;
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.grad-ready ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.grad-ready li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 4px 0;
+}
+.grad-ready-title {
+  font-weight: 700;
+}
+.grad-ready .button {
+  min-height: 32px;
+  min-width: 96px;
+}
+@media (pointer: coarse) {
+  .grad-ready .button {
+    min-height: 44px;
+  }
+}
