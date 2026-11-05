@@ -1205,6 +1205,13 @@ static bool runCalibration() {
     for (;;) {
       uint32_t now = millis();
       pollTouch(now);
+      tc::Raw ij;
+      if (dsInjTake(ij)) {  // a serial "S tap" (testing): the same as a tap on Redo or Done
+        int sx, sy;
+        XPT2046::toScreen(ij.x, ij.y, sx, sy);
+        if (sy >= 198 && sx >= 214) return true;
+        if (sy >= 198 && sx < 106) break;
+      }
       if (digitalRead(0) == LOW || now - idle > 45000) return true;  // the calibration is saved already
       if (pts.n > 0) {
         idle = now;
