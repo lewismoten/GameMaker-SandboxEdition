@@ -18,7 +18,7 @@ import { phoneAttachments } from './printables/feelieItems';
 const here = import.meta.dirname;
 const src = (f: string) => readFileSync(join(here, f), 'utf8');
 const pub = resolve(here, '../../public');
-const SITE_PATHS = ['p', 'game', 'help', 'cast', 'credits', 'achievements', 'mac', 'windows', 'linux', 'magazine', 'library'];
+const SITE_PATHS = ['p', 'game', 'help', 'cast', 'credits', 'achievements', 'mac', 'windows', 'linux', 'magazine', 'library', 'programmers-guide'];
 
 /** The DOS folder name of every game that has one. */
 function sampleNames(): Set<string> {

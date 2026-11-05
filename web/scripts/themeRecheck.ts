@@ -21,6 +21,8 @@ interface Screen {
 const P = '/#/p/look:blaster';
 const screens: Screen[] = [
   { name: 'privacy', route: '/#/privacy' },
+  { name: 'programmers-guide', route: '/#/programmers-guide' },
+  { name: 'programmers-guide-chapter', route: '/#/programmers-guide/memory' },
   { name: 'map-breadcrumb', route: `${P}/bus3.map`, clicks: ['.crumb-back, .crumbs'] },
   { name: 'scene-uses', route: `${P}/blaster.gam?scene=3` },
   { name: 'recording-keys', route: `${P}/demo.rec`, clicks: ['.rec-raw summary'] },
