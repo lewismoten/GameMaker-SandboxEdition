@@ -62,7 +62,7 @@ export function colorHelpControl(): HTMLElement {
     ),
   );
   const sync = () => {
-    if (!el.isConnected && el.dataset.seen) return off(); // gone from the page
+    if (el.dataset.seen && !el.isConnected) return off(); // gone from the page
     if (el.isConnected) el.dataset.seen = '1';
     const c = getColorHelp();
     names.checked = c.names;
@@ -70,5 +70,6 @@ export function colorHelpControl(): HTMLElement {
     (preview.querySelector('select') as HTMLSelectElement).value = c.preview;
   };
   const off = onColorHelp(sync);
+  sync();
   return el;
 }
