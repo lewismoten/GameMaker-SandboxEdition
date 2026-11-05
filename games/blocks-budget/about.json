@@ -1,0 +1,39 @@
+{
+  "title": "150 Blocks",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.0",
+  "blurb": "Two short levels about the 150 blocks a game gets. A picture bigger than one block is a group of blocks, cut like tiles, and a block used again costs nothing more. In the first level a stone tower is one picture in a handful of blocks, and Kit walks right through it, because a picture is not solid unless its blocks say so. In the second a row of houses is built from a few blocks used again and again, and a brick wall is solid in every place it stands. Signs in the levels say how, and the last one counts the game's blocks. Play it, then open it in Game-Maker and look at the Blocks tab.",
+  "exe": "BLK150.EXE",
+  "dosName": "BLK150",
+  "sound": "sb",
+  "label": {
+    "background": "#f4e6c4",
+    "band": "#2f8f6a",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "2 short levels",
+    "hours": 1,
+    "background": "#2f8f6a",
+    "accent": "#ffd23f",
+    "ink": "#ffffff",
+    "tagline": "Draw big, spend small.",
+    "back": "A small explorer in a teal beanie walks through a tower that is only a picture, then past a row of eight houses made from six blocks. A game gets 150 blocks, and a clever one makes them go a long way. Read the signs, then open the game in Game-Maker and see how many blocks it spent.",
+    "features": [
+      "Signs in the levels explain each idea",
+      "A big picture is a group of blocks, and a block can be used again",
+      "Made to be copied and taken apart"
+    ],
+    "shots": [
+      ["one.map", 12, 6],
+      ["two.map", 10, 6]
+    ],
+    "rating": "Everyone"
+  },
+  "acceptedFindings": []
+}
