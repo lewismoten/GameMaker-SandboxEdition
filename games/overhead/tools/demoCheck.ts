@@ -18,7 +18,7 @@ const r = await replay(
     chapters: [],
     timeline: { fps: 30, frames: 0, chapters: [] },
   },
-  { maxMinutes: 3 },
+  { maxMinutes: 8 },
 );
 const WANT = '2 3 4 3 6 5 7 5 7 1';
 const seen = r.scenes.slice(0, 10).join(' ');

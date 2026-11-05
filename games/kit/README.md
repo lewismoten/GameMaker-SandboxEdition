@@ -124,7 +124,7 @@ Making the files:
   block at a time, with `SOLID`, `LEDGE` and `PULL`), `blocks.ts` (`addStarterBlocks`: sky, edge, cloud, grass, dirt,
   brick, plank, bush, flower, ladder, exit door, entrance, coin, key, spikes, in that order), `sign.ts` (`addSign`:
   words as a string on a 2 to 4 block board, in the PC's 8x8 letters, two posts under it), `hero.ts` and `heroChar.ts`
-  (the red-capped hero's blocks and character: walk, Space jump, ladder climb), `monsters.ts` (gumdrop, buzzer and
+  (the red-capped hero's blocks and character: walk, Space jump, ladder climb), `topHero.ts` (Kit seen from above: four facings, two strides each, and a character whose four arrows and WASD walk with no gravity; Gravity On, Gravity Off and Overhead use it), `monsters.ts` (gumdrop, buzzer and
   shelly), `grid.ts` + `map.ts` (a level painted on a `Grid`, then `StarterMap` rows of text: what each letter means is
   at its top; `.sign()` stamps a sign), `screens.ts` (title, menu, paper, cards, ending pictures; the title takes a `groupStyle`), `titleStyles.ts` (the group looks: meadow for The Basics, sunset, stage, workbench, atlas (Bigger Worlds) and neon for the later groups in `web/src/project/starter.ts` STARTER_GROUPS) and `titleSamples.ts` (`cd web && npx vite-node ../games/kit/starter/titleSamples.ts <outDir>` renders a made-up title in each look), `sting.ts` (STARTER.FLI, the 3 second sting every Starter plays before its title: blocks stack into STARTER, Kit cheers on top), `text.ts` (`wrap`
   to 30 columns), `locks.ts` (`addLockBlocks`: a silver key, and one-block locked doors that spend a counter, for games about keys), `sounds.ts`, `ids.ts` (sequences, keys, monsters, sounds) and `bot.ts` (`StarterBot`: walk, jump,
