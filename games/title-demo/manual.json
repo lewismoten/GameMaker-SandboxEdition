@@ -5,7 +5,7 @@
     { "id": "menu-words", "q": "How do I leave room for the menu's words?", "scene": 2, "x": 33, "y": 17, "level": 1 },
     { "id": "record-demo", "q": "How do I record a demo?", "scene": 3, "x": 14, "y": 17, "level": 2 },
     { "id": "demo-slot", "q": "How do I make the demo play on the title screen?", "scene": 3, "x": 30, "y": 16, "level": 2 },
-    { "id": "demo-limit", "q": "How long can a demo be?", "scene": 3, "x": 37, "y": 16, "level": 2 }
+    { "id": "demo-limit", "q": "How do I find out how long a demo can be?", "scene": 3, "x": 37, "y": 16, "level": 2 }
   ],
   "pages": [
     {
