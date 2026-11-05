@@ -23,7 +23,7 @@ constexpr int HELPSOUND = 0, KILLSOUND = 1, ADDMONEYSOUND = 2, SUBMONEYSOUND = 3
 constexpr int IDLESEQ = 0, DIESEQ = 1, HURTSEQ = 2, PICKUPSEQ = 3, DROPSEQ = 4;
 constexpr int BLOCK_BYTES = 420, SEQ_BYTES = 185, FRAME_BYTES = 17;
 constexpr int MAXINV = 10;
-constexpr int MAXLINKS = 16, MAXLEVELS = 12;
+constexpr int MAXLINKS = 24, MAXLEVELS = 128;  // links per level; levels per game (a level's record is read from the .cfg when it is entered, see Assets::readInfo)
 constexpr int LASTMM = 200, LASTMON = 64, LASTSL = 20, MAXMARCH = 10, MONSTER_BYTES = 300;
 constexpr int ATTACKX = 8, ATTACKY = 5, CHARPOWER = 100, MAXMONSSHOWN = 50, MONMOVESPEED = 1;
 constexpr int NORMALMOVEMENT = 0, ATTACKMOVEMENT = 1;
@@ -70,6 +70,8 @@ struct KeyEnt { int key, seq, frame; };
 
 // Fills the 10000 block numbers; mons (10000 monster slot numbers, LASTMM = none) and mm (LASTMM x 3 bytes)
 // only for a level with monsters (the function returns with *hasMons set).
+// Fills one level's record (start, scroll limits, links) from the game's .cfg.
+typedef bool (*LevelInfo)(void* user, int level, Level& out);
 typedef bool (*MapLoader)(void* user, int level, uint8_t* blocks, uint8_t* mons, uint8_t* mm, bool* hasMons);
 
 struct World {
@@ -82,7 +84,20 @@ struct World {
   int nmon = 0, nmbl = 0;
   MapLoader loadMap = nullptr;
   void* loadUser = nullptr;
-  Level levels[MAXLEVELS];
+  // The level table is not held: only the level being played (levelAt), read from the .cfg by loadInfo when it changes.
+  LevelInfo loadInfo = nullptr;
+  void* infoUser = nullptr;
+  Level lvl;
+  int lvlIdx = -1;
+  const Level& levelAt(int n) {
+    if (lvlIdx != n) {
+      lvl.startX = lvl.startY = lvl.nlinks = 0;
+      lvl.scrollUp = lvl.scrollDown = lvl.scrollLeft = lvl.scrollRight = 0xff;
+      if (loadInfo) loadInfo(infoUser, n, lvl);
+      lvlIdx = n;
+    }
+    return lvl;
+  }
   int nbl = BACKBL;  // blocks the game's .bbl holds (a smaller file than 150 blocks; the rest are empty)
   int nlevels = 0;
 
@@ -909,7 +924,10 @@ struct World {
     int k = seqKey(cseq);
     if (k >= 0 && k < 128) keydn[k] = 1;
     gclk = clock;
-    initScroll(levels[lv].scrollUp, levels[lv].scrollDown, levels[lv].scrollLeft, levels[lv].scrollRight);
+    {
+      const Level& li = levelAt(lv);
+      initScroll(li.scrollUp, li.scrollDown, li.scrollLeft, li.scrollRight);
+    }
     doScroll = false;
     memset(held, 0, sizeof held);
     npending = 0;
@@ -920,9 +938,11 @@ struct World {
   // The first level, from the start of the game.
   bool begin() {
     startGame();
-    prevToX = levels[0].startX;
-    prevToY = levels[0].startY;
-    bool ok = enterLevel(0, levels[0].startX, levels[0].startY);
+    const Level& first = levelAt(0);
+    int sx = first.startX, sy = first.startY;
+    prevToX = sx;
+    prevToY = sy;
+    bool ok = enterLevel(0, sx, sy);
     buildDrawList();
     return ok;
   }
@@ -969,7 +989,7 @@ struct World {
     monsolid = 0;
     mmSolid = LASTMM;
     Touch t = getTouch();
-    const Level& L = levels[level];
+    const Level& L = levelAt(level);
     int taken = -1;
     for (int l = 0; l < L.nlinks && taken < 0; l++)
       for (int i = 0; i < 6; i++)

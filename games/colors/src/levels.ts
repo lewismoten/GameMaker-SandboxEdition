@@ -22,7 +22,7 @@ function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   addStarterBlocks(book, pal);
   const signs = {
     sting: addSign(book, pal, 'sting.sign', 'RED PLATES STING. GREEN ONES ARE SAFE', 4, 4),
-    alike: addSign(book, pal, 'alike.sign', 'SOME PLAYERS SEE RED AND GREEN ALIKE', 4, 4),
+    alike: addSign(book, pal, 'alike.sign', 'LOOK THE SAME TO YOU? THAT IS THE POINT', 4, 5),
     shape: addSign(book, pal, 'shape.sign', 'SPIKES LOOK LIKE SPIKES, IN ANY COLOR', 4, 4),
     stripe: addSign(book, pal, 'stripe.sign', 'LIGHT AND STRIPED MEANS SAFE', 4, 3),
     any: addSign(book, pal, 'any.sign', 'NOW IT READS IN ANY COLOR', 4, 2),
@@ -120,7 +120,7 @@ export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
   const pal = buildStarterPalette(addColorRamps);
   const { book, signs } = buildBlocks(pal);
   const levels: Level[] = [
-    { file: 'one', title: 'Red and Green', hint: 'Which plate stings?', map: redAndGreen(book, signs) },
+    { file: 'one', title: 'Red and Green', hint: 'Which plate stings? Only a little.', map: redAndGreen(book, signs) },
     { file: 'two', title: 'Shape and Brightness', hint: 'Now you can tell.', map: shapeAndBrightness(book, signs) },
   ];
   return { book, pal, levels };
