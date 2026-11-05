@@ -49,15 +49,22 @@ for (const [id, cfg] of Object.entries(GAMES)) {
   manual.howDoI = manual.howDoI.filter((h) => !h.id.startsWith('arrive-'));
   const hallWasFirst = manual.pages.some((p) => p.head.startsWith('Level 1:'));
   if (hallWasFirst) {
-    for (const p of manual.pages) if (p.head.startsWith('Level 1:')) [p.head, p.html] = [p.head.replace('Level 1:', 'Level 2:'), p.html.replace('<h1>Level 1:', '<h1>Level 2:')];
+    for (const p of manual.pages)
+      if (p.head.startsWith('Level 1:')) [p.head, p.html] = [p.head.replace('Level 1:', 'Level 2:'), p.html.replace('<h1>Level 1:', '<h1>Level 2:')];
     for (const h of manual.howDoI) Object.assign(h, { scene: 3, level: 2 });
   }
   const welcome = manual.pages.find((p) => p.head === 'Welcome')!;
   if (!welcome.html.includes('two levels')) {
     welcome.html = welcome.html
       .replace('It takes about a minute.', 'It takes a couple of minutes.')
-      .replace('<h2>The keys</h2>', '<p>There are two levels. First you cross campus to the hall, with a few small nods to lessons you took on the way. Then you walk the aisle to the stage.</p><h2>The keys</h2>')
-      .replace('<kbd>Left</kbd> and <kbd>Right</kbd> walk.', '<kbd>Left</kbd> and <kbd>Right</kbd> walk, <kbd>Space</kbd> hops, and <kbd>Up</kbd> and <kbd>Down</kbd> climb a ladder.');
+      .replace(
+        '<h2>The keys</h2>',
+        '<p>There are two levels. First you cross campus to the hall, with a few small nods to lessons you took on the way. Then you walk the aisle to the stage.</p><h2>The keys</h2>',
+      )
+      .replace(
+        '<kbd>Left</kbd> and <kbd>Right</kbd> walk.',
+        '<kbd>Left</kbd> and <kbd>Right</kbd> walk, <kbd>Space</kbd> hops, and <kbd>Up</kbd> and <kbd>Down</kbd> climb a ladder.',
+      );
   }
 
   const course = (p: (typeof placed)[number]): string => `Course ${p.course ?? ''}, ${titleOf(p.nod.course)}`.replace(' ,', ',');
@@ -65,7 +72,9 @@ for (const [id, cfg] of Object.entries(GAMES)) {
   const made = `<h1>How the arrival is made</h1><ul><li><b>The path.</b> Open <b>arrive.map</b> in the map editor. The path is a row of solid <b>paving</b> blocks over two rows of <b>dirt</b>. The trees, banner poles and the hall's front are plain blocks you walk in front of; the hedge at each end is solid. This level has its own block set, <b>arrive.bbl</b>, beside the hall's <b>grad.bbl</b>: open <b>grad.gam</b> in the scenes editor and look at the block slot of each scene.</li>${placed.map((p) => `<li><b>${course(p)}.</b> ${p.nod.made}</li>`).join('')}</ul>`;
   const at = manual.pages.findIndex((p) => p.head.startsWith('Level 2:'));
   manual.pages.splice(at, 0, { head: `Level 1: ${cfg.arrive.title}`, html: level, from: MARK }, { head: 'How this level is made', html: made, from: MARK });
-  manual.howDoI.unshift(...placed.map((p) => ({ id: `arrive-${p.nod.id}`, q: p.nod.how, scene: 2, x: p.x + 5, y: 8, level: 1 })));
+  // a Starter lists 3 to 6 questions: three from the arrival's nods (the first three) and the hall's first three
+  manual.howDoI = manual.howDoI.slice(0, 3);
+  manual.howDoI.unshift(...placed.slice(0, 3).map((p) => ({ id: `arrive-${p.nod.id}`, q: p.nod.how, scene: 2, x: p.x + 5, y: 8, level: 1 })));
   writeFileSync(file, `${JSON.stringify(manual, null, 2)}\n`);
-  console.log(`graduation-${id}: arrival page and ${placed.length} questions`);
+  console.log(`graduation-${id}: arrival page and ${manual.howDoI.length} questions`);
 }

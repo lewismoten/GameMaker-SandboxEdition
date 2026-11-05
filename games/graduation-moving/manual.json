@@ -48,22 +48,6 @@
       "x": 40,
       "y": 8,
       "level": 2
-    },
-    {
-      "id": "banner",
-      "q": "How do I hang a banner on a wall?",
-      "scene": 3,
-      "x": 37,
-      "y": 2,
-      "level": 2
-    },
-    {
-      "id": "stage",
-      "q": "How do I make a carpet and a stage to walk on?",
-      "scene": 3,
-      "x": 34,
-      "y": 10,
-      "level": 2
     }
   ],
   "pages": [

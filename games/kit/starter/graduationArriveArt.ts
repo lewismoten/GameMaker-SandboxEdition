@@ -108,7 +108,7 @@ export function addCampusBlocks(book: Book, pal: Pal): void {
 }
 
 /** Two digits-high text, 2x, in `ink` on `bg`, centered in a block (for the countdown's numbers). */
-export function bigDigit(pal: Pal, ch: string, bg: number, ink: number): Pixels {
+export function bigDigit(ch: string, bg: number, ink: number): Pixels {
   const p = new Pixels(20, 20, bg);
   const g = FONT8X8.subarray(ch.charCodeAt(0) * 8, ch.charCodeAt(0) * 8 + 8);
   for (let y = 0; y < 8; y++) for (let x = 0; x < 8; x++) if (g[y] & (1 << x)) p.rect(2 + x * 2, 2 + y * 2, 2, 2, ink);

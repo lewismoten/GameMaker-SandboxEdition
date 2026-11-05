@@ -26,30 +26,6 @@
       "level": 1
     },
     {
-      "id": "arrive-pads",
-      "q": "How do I make a pad that lights up when stepped on?",
-      "scene": 2,
-      "x": 47,
-      "y": 8,
-      "level": 1
-    },
-    {
-      "id": "arrive-fakeWall",
-      "q": "How do I make a wall you can walk through?",
-      "scene": 2,
-      "x": 58,
-      "y": 8,
-      "level": 1
-    },
-    {
-      "id": "arrive-popups",
-      "q": "How do I make a score that pops up?",
-      "scene": 2,
-      "x": 68,
-      "y": 8,
-      "level": 1
-    },
-    {
       "id": "cheer",
       "q": "How do I make people who cheer, each out of step with the others?",
       "scene": 3,

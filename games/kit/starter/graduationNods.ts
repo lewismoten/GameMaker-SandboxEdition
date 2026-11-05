@@ -72,8 +72,8 @@ export const NODS: Record<string, Nod> = {
     course: 'first-steps',
     say: 'CLIMB THE LADDER',
     note: 'A tower with a ladder up one side and down the other, and coins on top.',
-    how: "How do I make a ladder to climb?",
-    made: "<b>ladder</b> blocks stacked in a column. The ladder has no gravity, so the hero holds on and climbs with Up and Down. Here a ladder stands on each side of a brick tower, so what you climb you can climb back down.",
+    how: 'How do I make a ladder to climb?',
+    made: '<b>ladder</b> blocks stacked in a column. The ladder has no gravity, so the hero holds on and climbs with Up and Down. Here a ladder stands on each side of a brick tower, so what you climb you can climb back down.',
     width: 11,
     blocks: () => undefined,
     place(m, x) {
@@ -88,8 +88,8 @@ export const NODS: Record<string, Nod> = {
     course: 'keys-and-doors',
     say: 'KEY, THEN DOOR',
     note: 'A key lies on the path just before a gate in a wall; the gate takes the key.',
-    how: "How do I make a gate that needs the key lying just before it?",
-    made: "The <b>key</b> block adds one to counter 20 when you touch it. The <b>gate</b> is solid, but its rule takes one from that counter when touched, so with a key it becomes sky. The brick wall above it goes up out of reach, and the arch is plain scenery.",
+    how: 'How do I make a gate that needs the key lying just before it?',
+    made: 'The <b>key</b> block adds one to counter 20 when you touch it. The <b>gate</b> is solid, but its rule takes one from that counter when touched, so with a key it becomes sky. The brick wall above it goes up out of reach, and the arch is plain scenery.',
     width: 11,
     blocks: locks,
     place(m, x) {
@@ -103,8 +103,8 @@ export const NODS: Record<string, Nod> = {
     course: 'coins-and-score',
     say: 'COINS ADD UP',
     note: 'A little arc of coins to walk and hop through; each is worth ten points.',
-    how: "How do I make coins that add to the score?",
-    made: "Each <b>coin</b> has Score points 10 and becomes <b>sky</b> when touched, so it is gone after you take it. The high one needs a hop.",
+    how: 'How do I make coins that add to the score?',
+    made: 'Each <b>coin</b> has Score points 10 and becomes <b>sky</b> when touched, so it is gone after you take it. The high one needs a hop.',
     width: 11,
     blocks: () => undefined,
     place(m, x) {
@@ -123,8 +123,8 @@ export const NODS: Record<string, Nod> = {
     course: 'breakable-walls',
     say: 'CRATES BREAK',
     note: 'A stack of crates in the way: bump one and it turns to rubble.',
-    how: "How do I make a wall that breaks?",
-    made: "A <b>crate</b> is solid, and its Becomes block is <b>rubble</b>, which is not solid. Bumping a crate breaks only that crate.",
+    how: 'How do I make a wall that breaks?',
+    made: 'A <b>crate</b> is solid, and its Becomes block is <b>rubble</b>, which is not solid. Bumping a crate breaks only that crate.',
     width: 11,
     blocks(c) {
       const w = c.pal.r('wood');
@@ -154,8 +154,8 @@ export const NODS: Record<string, Nod> = {
     course: 'health-and-hearts',
     say: 'A HEART FOR YOU',
     note: 'A heart floats just over the path; hop up and it adds a life.',
-    how: "How do I give the hero an extra life?",
-    made: "The <b>heart</b> block adds one to the Lives counter (counter 1) and becomes sky when touched.",
+    how: 'How do I give the hero an extra life?',
+    made: 'The <b>heart</b> block adds one to the Lives counter (counter 1) and becomes sky when touched.',
     width: 11,
     blocks(c) {
       const h = sky(c);
@@ -175,8 +175,8 @@ export const NODS: Record<string, Nod> = {
     course: 'slippery-and-bouncy',
     say: 'ICE IS SLIPPERY',
     note: 'A patch of ice: step on and you slide a little further than you meant.',
-    how: "How do I make ice that slides?",
-    made: "The <b>ice</b> is a solid floor. The air above it, <b>slickAir</b>, pulls down and to the right, so anyone standing in it is carried along and slides on after letting go. It is only three blocks wide, so a jump takes you back across.",
+    how: 'How do I make ice that slides?',
+    made: 'The <b>ice</b> is a solid floor. The air above it, <b>slickAir</b>, pulls down and to the right, so anyone standing in it is carried along and slides on after letting go. It is only three blocks wide, so a jump takes you back across.',
     width: 11,
     blocks(c) {
       const w = c.pal.r('white');
@@ -207,8 +207,8 @@ export const NODS: Record<string, Nod> = {
     course: 'gusts',
     say: 'WIND LIFTS YOU',
     note: 'A fan on the path blows a shaft of air up to a shelf with coins on it.',
-    how: "How do I make wind that lifts the hero?",
-    made: "<b>windAir</b> blocks pull up. Stack them in a column over the <b>fan</b> and under a <b>plank</b> shelf (solid from the top only) and the hero rises through the shelf and stands on it.",
+    how: 'How do I make wind that lifts the hero?',
+    made: '<b>windAir</b> blocks pull up. Stack them in a column over the <b>fan</b> and under a <b>plank</b> shelf (solid from the top only) and the hero rises through the shelf and stands on it.',
     width: 11,
     blocks(c) {
       const s = c.pal.r('stone');
@@ -240,8 +240,8 @@ export const NODS: Record<string, Nod> = {
     course: 'home-keys',
     say: 'SPACE HOPS',
     note: 'Two low brick walls across the path: a tap of Space hops each.',
-    how: "How do I make a low wall to hop over?",
-    made: "Two single <b>brick</b> blocks on the path. A tap of Space lifts the hero over a block one high.",
+    how: 'How do I make a low wall to hop over?',
+    made: 'Two single <b>brick</b> blocks on the path. A tap of Space lifts the hero over a block one high.',
     width: 10,
     blocks: () => undefined,
     place(m, x) {
@@ -255,8 +255,8 @@ export const NODS: Record<string, Nod> = {
     course: 'boss-hits',
     say: 'BIG BUG NAPS',
     note: 'A big friendly bug asleep by the path (it takes five hits to wake a boss; this one is just napping).',
-    how: "How do I draw something bigger than one block?",
-    made: "The bug is four blocks (<b>bugTL</b>, <b>bugTR</b>, <b>bugBL</b>, <b>bugBR</b>), each a quarter of one 40 by 40 drawing, laid side by side. None of them is solid, so you walk in front of it.",
+    how: 'How do I draw something bigger than one block?',
+    made: 'The bug is four blocks (<b>bugTL</b>, <b>bugTR</b>, <b>bugBL</b>, <b>bugBR</b>), each a quarter of one 40 by 40 drawing, laid side by side. None of them is solid, so you walk in front of it.',
     width: 10,
     blocks(c) {
       const g = c.pal.r('green');
@@ -293,8 +293,8 @@ export const NODS: Record<string, Nod> = {
     course: 'flock',
     say: 'FLOCK IN A V',
     note: 'Three birds high overhead flap in a V; they are blocks that turn into each other.',
-    how: "How do I make birds that flap?",
-    made: "<b>birdA0</b> turns into <b>birdA1</b> after 6 ticks and back again; <b>birdB0</b> and <b>birdB1</b> do the same every 8, so the birds do not flap in step.",
+    how: 'How do I make birds that flap?',
+    made: '<b>birdA0</b> turns into <b>birdA1</b> after 6 ticks and back again; <b>birdB0</b> and <b>birdB1</b> do the same every 8, so the birds do not flap in step.',
     width: 11,
     blocks(c) {
       for (const [n, up] of [
@@ -331,7 +331,7 @@ export const NODS: Record<string, Nod> = {
     course: 'say-something',
     say: 'A FRIEND SAYS HI',
     note: 'A guest from the Cast stands by the path with a speech bubble.',
-    how: "How do I put a speech bubble over a friend?",
+    how: 'How do I put a speech bubble over a friend?',
     made: "The guest is the Cast's own picture cut into blocks standing on the path. The bubble is a 3-block <b>sign</b> hung over the friend's head, with no posts.",
     width: 10,
     blocks(c) {
@@ -349,8 +349,8 @@ export const NODS: Record<string, Nod> = {
     course: 'sound-board',
     say: 'STEP ON THE PADS',
     note: 'Three pads on the path light up and chime when you step on them.',
-    how: "How do I make a pad that lights up when stepped on?",
-    made: "Each <b>pad</b> has Score points 5 and Becomes block <b>pad0On</b> (and so on), the same pad lit. The score makes the chime.",
+    how: 'How do I make a pad that lights up when stepped on?',
+    made: 'Each <b>pad</b> has Score points 5 and Becomes block <b>pad0On</b> (and so on), the same pad lit. The score makes the chime.',
     width: 11,
     blocks(c) {
       ['red', 'gold', 'blue'].forEach((hue, i) => {
@@ -381,13 +381,13 @@ export const NODS: Record<string, Nod> = {
     course: 'countdown',
     say: 'WAIT FOR ZERO',
     note: 'A big number counts down on a wall; the door under it opens at 0.',
-    how: "How do I make a number that counts down and opens a gate?",
-    made: "<b>cd5</b> turns into <b>cd4</b> after 18 ticks, and so on down to <b>cd0</b>. The <b>timedGate</b> turns into sky after 90 ticks, the same five seconds, so the gate opens as the number reaches 0.",
+    how: 'How do I make a number that counts down and opens a gate?',
+    made: '<b>cd5</b> turns into <b>cd4</b> after 18 ticks, and so on down to <b>cd0</b>. The <b>timedGate</b> turns into sky after 90 ticks, the same five seconds, so the gate opens as the number reaches 0.',
     width: 10,
     blocks(c) {
       locks(c);
       const bg = c.pal.c('stone', 1);
-      for (let n = 5; n >= 0; n--) add(c, `cd${n}`, bigDigit(c.pal, String(n), bg, c.pal.c('gold', 5)), air);
+      for (let n = 5; n >= 0; n--) add(c, `cd${n}`, bigDigit(String(n), bg, c.pal.c('gold', 5)), air);
       for (let n = 5; n > 0; n--) c.timed.push({ name: `cd${n}`, next: `cd${n - 1}`, ticks: COUNT_TICKS });
       const g = gatePicture(c.pal, 'blue', 'white', true);
       add(c, 'timedGate', g, { solid: SOLID });
@@ -404,8 +404,8 @@ export const NODS: Record<string, Nod> = {
     course: 'switches',
     say: 'FLIP THE LEVER',
     note: 'A lever on the path opens the gate in the wall beyond it.',
-    how: "How do I make a lever that opens a gate?",
-    made: "The <b>lever</b> adds one to counter 22 and becomes <b>leverOn</b> (its handle flipped over). The <b>powerGate</b> takes one from counter 22 when touched, so after the lever it becomes sky.",
+    how: 'How do I make a lever that opens a gate?',
+    made: 'The <b>lever</b> adds one to counter 22 and becomes <b>leverOn</b> (its handle flipped over). The <b>powerGate</b> takes one from counter 22 when touched, so after the lever it becomes sky.',
     width: 10,
     blocks(c) {
       locks(c);
@@ -433,8 +433,8 @@ export const NODS: Record<string, Nod> = {
     course: 'three-tokens',
     say: 'THREE TOKENS',
     note: 'Three tokens lie on the path; the gate beyond wants all three.',
-    how: "How do I make a gate that wants three tokens?",
-    made: "Each <b>token</b> adds one to counter 21. The <b>tokenGate</b> takes three from it, so it opens only once all three are in your pocket.",
+    how: 'How do I make a gate that wants three tokens?',
+    made: 'Each <b>token</b> adds one to counter 21. The <b>tokenGate</b> takes three from it, so it opens only once all three are in your pocket.',
     width: 11,
     blocks(c) {
       locks(c);
@@ -443,7 +443,7 @@ export const NODS: Record<string, Nod> = {
       t.disc(9.5, 9.5, 7, b[1])
         .disc(9.5, 9.5, 5.8, b[3])
         .disc(9.5, 9.5, 4.2, b[2])
-        .t.ring(9.5, 9.5, 4, c.pal.c('white', 3))
+        .ring(9.5, 9.5, 4, c.pal.c('white', 3))
         .disc(9.5, 9.5, 1.6, c.pal.c('white', 3));
       add(c, 'token', lined(c, t), { ...air, score: 10, effect: SILVER_KEYS, eamt: 1, touch: 'sky' });
       add(c, 'tokenGate', gatePicture(c.pal, 'blue', 'white', true), { solid: SOLID, effect: SILVER_KEYS, eamt: -3, touch: 'sky' });
@@ -459,7 +459,7 @@ export const NODS: Record<string, Nod> = {
     course: 'secret-doors',
     say: 'A SECRET WALL',
     note: 'A wall drawn like brick that you can simply walk through.',
-    how: "How do I make a wall you can walk through?",
+    how: 'How do I make a wall you can walk through?',
     made: "<b>fakeBrick</b> is a copy of the <b>brick</b> picture with nothing solid about it. Only the Blocks tab's rules tell the two apart.",
     width: 10,
     blocks(c) {
@@ -475,8 +475,8 @@ export const NODS: Record<string, Nod> = {
     course: 'shore',
     say: 'WATER THAT MOVES',
     note: 'A footbridge over water whose waves are blocks that turn into each other.',
-    how: "How do I make water that moves?",
-    made: "<b>water0</b>, <b>water1</b> and <b>water2</b> turn into each other every 6 ticks, and the map starts neighbors on different ones so the waves ripple. The footbridge is a <b>plank</b> row over them.",
+    how: 'How do I make water that moves?',
+    made: '<b>water0</b>, <b>water1</b> and <b>water2</b> turn into each other every 6 ticks, and the map starts neighbors on different ones so the waves ripple. The footbridge is a <b>plank</b> row over them.',
     width: 11,
     blocks(c) {
       const b = c.pal.r('blue');
@@ -501,8 +501,8 @@ export const NODS: Record<string, Nod> = {
     course: 'twinkle',
     say: 'STARS TWINKLE',
     note: 'Sparkles in the sky that blink, each on its own time.',
-    how: "How do I make stars that twinkle?",
-    made: "<b>spark0</b>, <b>spark1</b> and <b>spark2</b> are a small, a big and a medium sparkle that turn into each other every 7 ticks, started on different ones.",
+    how: 'How do I make stars that twinkle?',
+    made: '<b>spark0</b>, <b>spark1</b> and <b>spark2</b> are a small, a big and a medium sparkle that turn into each other every 7 ticks, started on different ones.',
     width: 11,
     blocks(c) {
       const names = [0, 1, 2].map((f) => {
@@ -540,8 +540,8 @@ export const NODS: Record<string, Nod> = {
     course: 'popups',
     say: 'POINTS POP UP',
     note: 'Big coins pay a hundred and a floating 100 rises where they were.',
-    how: "How do I make a score that pops up?",
-    made: "A <b>bigCoin</b> has Score points 100 and becomes <b>pop0</b>, a picture of 100; that turns into <b>pop1</b>, then <b>pop2</b> a few ticks apart, each drawn a little higher, and then into sky.",
+    how: 'How do I make a score that pops up?',
+    made: 'A <b>bigCoin</b> has Score points 100 and becomes <b>pop0</b>, a picture of 100; that turns into <b>pop1</b>, then <b>pop2</b> a few ticks apart, each drawn a little higher, and then into sky.',
     width: 10,
     blocks(c) {
       const coin = sky(c);

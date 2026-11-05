@@ -32,7 +32,7 @@ import { HOWTO, LOST } from './graduationText';
 /** Writes the game's disk: `dir` is the game's folder, `built` its levels (buildLevels), `demo` its DEMO.REC bytes. */
 export function buildGraduation(dir: string, cfg: Graduation, built: ReturnType<typeof buildLevels>, demo: Uint8Array): void {
   const disk = new Disk(join(dir, 'disk'));
-  const { book, pal, timed, levels } = built;
+  const { book, pal, levels } = built;
   const { STORY, WON, CREDITS } = { STORY: cfg.text.story, WON: cfg.text.won, CREDITS: cfg.text.credits };
   const title = cfg.title ?? TITLE;
   const heroBlocks = buildHeroBlocks(pal);
@@ -49,9 +49,9 @@ export function buildGraduation(dir: string, cfg: Graduation, built: ReturnType<
   disk.put('grad.mon', serializeMonsters(buildMonsters(monsterBlocks)));
   disk.put('hero.cbl', serializeBlocks(heroBlocks.finish()));
   const character = buildHero(heroBlocks);
-  // the arrival's gates count on these counters, which (like the key counter) start at 1: a count of none
-  character.meter[SILVER_KEYS] = 1;
-  character.meter[POWER] = 1;
+  // the arrival's counting gates use these counters, which (like the key counter) start at 1: a count of none
+  if (levels.some((l) => l.book.has('tokenGate'))) character.meter[SILVER_KEYS] = 1;
+  if (levels.some((l) => l.book.has('powerGate'))) character.meter[POWER] = 1;
   disk.put('hero.chr', serializeCharacter(character));
   disk.put('grad.snd', serializeSoundSet(buildSounds()));
   disk.put('grad.cmf', song(cfg.song));
