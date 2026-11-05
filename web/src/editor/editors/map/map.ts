@@ -4,6 +4,7 @@ import { MAX_ZOOM, MIN_ZOOM, clampZoom, pictureScale, wheelZoom, zoomFromUrl, zo
 import { drawTile } from './mapTile';
 import { mapViewport } from './mapViewport';
 import { nativeCell } from './mapWrap';
+import { rememberWrap, wrapFor } from './mapWrapPref';
 import { panelTabs } from '../../widgets/panelTabs';
 import { rovingGrid } from '../../widgets/rovingGrid';
 import { History } from '../../core/history';
@@ -154,7 +155,8 @@ registerEditor(['map'], (host, project, file) => {
   let bgImgs: HTMLCanvasElement[] = [];
   const overlay: OverlayState = { grid: readPref('gm-map-grid'), found: [] };
   let finding = false;
-  let wrapping = readPref('gm-map-wrap');
+  // Wrap is remembered for this map in the companion (a town stays flat when the world map wraps); a map never toggled follows the last choice made anywhere.
+  let wrapping = wrapFor(project, file, readPref('gm-map-wrap'));
   overlay.wrap = wrapping;
 
   let monImgs: HTMLCanvasElement[] = [];
@@ -937,6 +939,7 @@ registerEditor(['map'], (host, project, file) => {
         redrawOverlay();
         viewport.setWrapped(wrapping);
         writePref('gm-map-wrap', wrapping);
+        rememberWrap(project, file, wrapping);
         syncToggles();
       },
     },
