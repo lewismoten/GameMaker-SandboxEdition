@@ -840,6 +840,12 @@
       "game": "drawn for the badge",
       "set": "badge art",
       "block": "honor-roll"
+    },
+    "learn-lesson": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAElBMVEX06cg6Khq/4/KLWiv///8qiopXWm56AAAATElEQVR42q3QUQ6AMAgDUChy/yvbmRkq80ez/u2lyQCzj/ERhUwCgCeTDuBiwWlUKd4mVUflD5bK974WpdqmnxtFZ76p4etdYofam579SQEzGwe5oAAAAABJRU5ErkJggg==",
+      "game": "drawn for the badge",
+      "set": "badge art",
+      "block": "learn-by-looking"
     }
   }
 }
