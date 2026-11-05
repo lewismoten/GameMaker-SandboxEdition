@@ -27,7 +27,7 @@ export function citationHref(text: string): string | undefined {
   if (path) return `${REPO}${path[1]}${lines(path[2], path[3])}`;
   const port = /^(?:web\/packages\/engine\/src\/|engine\/)([\w/]+\.ts)(?::(\d+)(?:-(\d+))?)?$/.exec(t);
   if (port) {
-    const file = /^(?:formats|engine|audio)\//.test(port[1]) ? port[1] : `engine/${port[1]}`;
+    const file = /^(?:formats|engine|audio|player)\//.test(port[1]) ? port[1] : `engine/${port[1]}`;
     return `${REPO}web/packages/engine/src/${file}${lines(port[2], port[3])}`;
   }
   return undefined;

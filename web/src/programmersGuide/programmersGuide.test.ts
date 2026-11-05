@@ -52,6 +52,7 @@ describe('citations', () => {
     expect(citationHref('code/GM/MAKERS.MAK:8-9')).toBe(`${base}code/GM/MAKERS.MAK#L8-L9`);
     expect(citationHref('engine/formats/character.ts:10')).toBe(`${base}web/packages/engine/src/formats/character.ts#L10`);
     expect(citationHref('engine/render.ts:36-42')).toBe(`${base}web/packages/engine/src/engine/render.ts#L36-L42`);
+    expect(citationHref('engine/player/patchTable.ts:92')).toBe(`${base}web/packages/engine/src/player/patchTable.ts#L92`);
     expect(citationHref('NOSUCH.H:4')).toBeUndefined();
     expect(citationHref('ci.meter[effect]')).toBeUndefined();
   });

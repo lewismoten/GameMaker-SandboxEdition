@@ -11,6 +11,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Added
 
+- The Programmer's Guide has a chapter, "Patching the player": the settings of the DOS player by file offset, how a patch is applied and spotted, and the line it keeps (your own copy, credits left alone).
 - The Programmer's Guide to Game-Maker 3.0 is a book in the Library (`#/programmers-guide`): a chapter for each part of the player (memory, the screen, blocks, monsters, sound, timing, file formats and more), why each limit is what it is, a table of every limit, links from each citation to the original source line, and one page to print or save as PDF. The Game-Maker box on the desk also holds its 1994 cousin, Technical Reference and Limits.
 - Dig It now feels like digging: Neka carries a small shovel, soil crumbles in five steps (cracked, split open, half dug, nearly dug, a hole with a heap of crumbs) with a crunch instead of vanishing at once, and the Down arrow scoops with the shovel.
 
