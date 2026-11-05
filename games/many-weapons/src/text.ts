@@ -8,7 +8,7 @@ export const STORY = wrap(`
 
 Which weapon does Enter throw?
 
-A small explorer in a teal beanie has two short levels to cross, and a pouch or two to find. A pouch of stars, a pouch of flames, and a frosty grump in a narrow way.
+A small explorer in a red beanie has two short levels to cross, and a pouch or two to find. A pouch of stars, a pouch of flames, and a frosty grump in a narrow way.
 
 Read the signs. Enter is always the same key. What it throws depends on what you are carrying.
 

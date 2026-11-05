@@ -8,7 +8,7 @@
 //   2. Say Hello: a cameo waits in a doorway, walks to the stage, waves HI once and goes off behind the
 //      curtain. Once it is gone it is gone, until the encore door.
 // Every room is closed in by brick walls you can see, and the actors are not solid, so nothing stops Neka
-// that he can't see.
+// that she can't see.
 import { SOLID, Book, PULL } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';

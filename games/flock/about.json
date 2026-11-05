@@ -24,7 +24,7 @@
     "accent": "#ffd23f",
     "ink": "#ffffff",
     "tagline": "Five birds, one shape.",
-    "back": "A small explorer in a teal beanie crosses two short rooms under a flock of five birds. They fly in a V and hold it, because every bird has the same path and speed. Give two of them more speed and the V comes apart. Play, then open the game in Game-Maker and change a bird's speed.",
+    "back": "A small explorer in a blue beanie crosses two short rooms under a flock of five birds. They fly in a V and hold it, because every bird has the same path and speed. Give two of them more speed and the V comes apart. Play, then open the game in Game-Maker and change a bird's speed.",
     "features": ["Signs in the levels explain each idea", "Monsters that share a path keep their shape", "Made to be copied and taken apart"],
     "shots": [
       ["one.map", 14, 4],

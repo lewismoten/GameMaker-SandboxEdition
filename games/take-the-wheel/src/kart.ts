@@ -31,7 +31,7 @@ function kartBody(pal: Pal, hero: Book | undefined, turn: boolean, seatOnly = fa
   const ink = c('ink', 0);
   const p = new Pixels(20, 20, T);
   if (hero && !seatOnly) {
-    // Yana's shoulders and arms, from the hero's own body picture (down to the waist), then the kart over his lap
+    // Yana's shoulders and arms, from the hero's own body picture (down to the waist), then the kart over her lap
     p.blit(hero.pics.get('stand')!.crop(0, 0, 20, 20), 0, 0, T);
     for (let y = 9; y < 20; y++) for (let x = 0; x < 20; x++) p.set(x, y, T);
   }

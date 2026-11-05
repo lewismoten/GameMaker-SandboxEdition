@@ -8,7 +8,7 @@ export const STORY = wrap(`
 
 Some things are best met from a little way off.
 
-A small explorer in a teal beanie has a pocketful of gold stars. Two short levels, and a gumdrop in the way of each.
+A small explorer in a purple beanie has a pocketful of gold stars. Two short levels, and a gumdrop in the way of each.
 
 Read the signs. Press Enter, and a star flies. Face the right way, stand close enough, and the way opens.
 
@@ -50,7 +50,7 @@ export const WON = wrap(`
 
 Two levels, three gumdrops, and every star found its mark.
 
-A star is a monster that Mia gives birth to. One frame of his Throw sequence does it, and the star flies off the way he last walked. A star is stronger than a gumdrop, so when they touch, the gumdrop pops.
+A star is a monster that Mia gives birth to. One frame of her Throw sequence does it, and the star flies off the way she last walked. A star is stronger than a gumdrop, so when they touch, the gumdrop pops.
 
 Open the game in Game-Maker and find the Throw sequence on the Characters tab. Change how far a star flies, how fast, or which key throws it, then play your change.
 `);

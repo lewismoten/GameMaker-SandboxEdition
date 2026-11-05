@@ -24,7 +24,7 @@
     "accent": "#ffd23f",
     "ink": "#ffffff",
     "tagline": "Light is only dots.",
-    "back": "A small explorer in a teal beanie walks a dark hall hung with lamps, a valley of hazy hills and a corridor of floating lanterns. A game has no see-through colors, so light and fog are painted in a checkerboard that lets what is behind show through. A solid beam hides the bricks. A dithered one does not. Far hills get more fog than near ones, a bank of fog is a monster, and a lantern is a monster with a glow. Read the signs, then open the game in Game-Maker and look at the frames.",
+    "back": "A small explorer in a blue beanie walks a dark hall hung with lamps, a valley of hazy hills and a corridor of floating lanterns. A game has no see-through colors, so light and fog are painted in a checkerboard that lets what is behind show through. A solid beam hides the bricks. A dithered one does not. Far hills get more fog than near ones, a bank of fog is a monster, and a lantern is a monster with a glow. Read the signs, then open the game in Game-Maker and look at the frames.",
     "features": [
       "Level 1 has three beams: solid, checkerboard and three densities",
       "Level 2 has solid fog and dithered fog, thicker the farther away, with banks that drift",

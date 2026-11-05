@@ -8,7 +8,7 @@ export const STORY = wrap(`
 
 Some things are worth carrying.
 
-A small explorer in a teal beanie has two short levels to cross. In the first, a wall is too high to jump, and two crates lie on the ground. In the second, a flame and a star wait on their stands.
+A small explorer in a green beanie has two short levels to cross. In the first, a wall is too high to jump, and two crates lie on the ground. In the second, a flame and a star wait on their stands.
 
 Read the signs. A pack holds ten things. What you carry changes what you can do.
 

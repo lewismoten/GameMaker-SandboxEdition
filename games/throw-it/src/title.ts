@@ -8,7 +8,7 @@ import type { Book } from '../../kit/starter/book';
 import type { Pal } from '../../kit/starter/palette';
 import { scene, W } from '../../kit/starter/screens';
 
-/** The title: the name, a ribbon, then the hero in his throw, a star flying, the gumdrop it is flying at, and the door. */
+/** The title: the name, a ribbon, then the hero in her throw, a star flying, the gumdrop it is flying at, and the door. */
 export function titlePicture(pal: Pal, book: Book, mb: Book, hero: Pixels, door: Pixels, name: string, tagline: string): Pixels {
   const p = scene(pal, book, 160);
   const s = name.length > 11 ? 2 : 3;

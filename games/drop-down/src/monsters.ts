@@ -1,6 +1,6 @@
 // DROP DOWN's monster. The kit's gumdrop 0, buzzer 1 and shelly 2 stay in the file (unused), then:
 //   PLOP  a plump round green friend with big eyes that blinks. It sits where the map puts it, solid
-//         on every side (Lena cannot walk through it, he can stand on it) and it hurts nobody.
+//         on every side (Lena cannot walk through it, she can stand on it) and it hurts nobody.
 //   PIP   the same friend in pink, soft (not solid: Lena walks through it) and with a slower step down: it
 //         falls at a tenth of Plop's speed.
 //

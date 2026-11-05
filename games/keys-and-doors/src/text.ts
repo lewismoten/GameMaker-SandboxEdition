@@ -8,7 +8,7 @@ export const STORY = wrap(`
 
 Some doors do not open just because you ask nicely.
 
-A small explorer in a teal beanie has locked doors to get through. The first one is shut before you find a key, so look around. Read the signs: they say what a key does, and which door it fits.
+A small explorer in a purple beanie has locked doors to get through. The first one is shut before you find a key, so look around. Read the signs: they say what a key does, and which door it fits.
 
 Then open this game in Game-Maker and move a key, or lock a new door.
 `);

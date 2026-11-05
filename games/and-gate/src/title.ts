@@ -1,5 +1,5 @@
 // BOTH TOGETHER's own title picture: the circuit-board look (Wiring and Puzzles), Lami on the left,
-// two dials and a spark on a copper wire over his head, a lit lamp at its end and the door at the right.
+// two dials and a spark on a copper wire over her head, a lit lamp at its end and the door at the right.
 import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { scaleBlit } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 import { bevel } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';

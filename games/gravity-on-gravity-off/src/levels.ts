@@ -1,6 +1,6 @@
 // GRAVITY ON, GRAVITY OFF's two levels: one scene, drawn twice. A wall, a ledge with five coins, bushes and an
 // exit door, first from the side (gravity pulls Rima down: jump the wall, walk off the ledge and fall) and then
-// from above (nothing pulls him: walk around the wall, step off the deck and nothing happens).
+// from above (nothing pulls her: walk around the wall, step off the deck and nothing happens).
 //
 //   1. Gravity On:  side.bbl, every air block has Gravity "down".
 //   2. Gravity Off: top.bbl, every block has Gravity "none", and top.chr walks in four directions.

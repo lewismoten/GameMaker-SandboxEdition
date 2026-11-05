@@ -9,7 +9,7 @@ import type { Pal } from '../../kit/starter/palette';
 import { W } from '../../kit/starter/screens';
 import { backdrop, frameOf, lookOf } from '../../kit/starter/titleStyles';
 
-/** The title in the arena look: the name, a ribbon, then Rima in his throw, a star flying, Rocky in his four parts and the door. */
+/** The title in the arena look: the name, a ribbon, then Rima in her throw, a star flying, Rocky in her four parts and the door. */
 export function titlePicture(pal: Pal, mb: Book, hero: Pixels, door: Pixels, name: string, tagline: string): Pixels {
   const look = lookOf(pal, 'arena');
   const p = backdrop(pal, 'arena');

@@ -1,12 +1,12 @@
 // SLIDE AND DRIFT's two levels. Each is painted on a Grid (a block a character, see games/kit/starter/map.ts
 // for what the letters mean), then given its signs and coins. No new blocks: what is new is in the hero's
-// character file (hero.ts), whose walking steps add to Yana's speed instead of moving him.
+// character file (hero.ts), whose walking steps add to Yana's speed instead of moving her.
 //
-//   1. Glide: a flat rink. A tap of Right and he glides on; holding makes him faster, and so a longer glide;
-//             Left turns him around. The door is at the end.
-//   2. Run-Up: three gaps, each wider than the last, too wide for a hop from standing. His speed from a run
+//   1. Glide: a flat rink. A tap of Right and she glides on; holding makes her faster, and so a longer glide;
+//             Left turns her around. The door is at the end.
+//   2. Run-Up: three gaps, each wider than the last, too wide for a hop from standing. Her speed from a run
 //             carries the hop across.
-// Every edge is a hedge or a wall you can see, so Yana is never stopped by something he can't.
+// Every edge is a hedge or a wall you can see, so Yana is never stopped by something she can't.
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
@@ -19,8 +19,8 @@ export type SignName = 'glide' | 'faster' | 'turn' | 'exit' | 'run' | 'longer' |
 /** The signs' words and sizes. */
 const WORDS: Record<SignName, { text: string; w: number; h: number }> = {
   glide: { text: 'TAP RIGHT AND LET GO. YANA GLIDES ON', w: 4, h: 4 },
-  faster: { text: 'HOLD IT LONGER AND HE GOES FASTER', w: 4, h: 4 },
-  turn: { text: 'LET GO AND HE SLOWS. LEFT TURNS HIM AROUND', w: 4, h: 4 },
+  faster: { text: 'HOLD IT LONGER AND SHE GOES FASTER', w: 4, h: 4 },
+  turn: { text: 'LET GO AND SHE SLOWS. LEFT TURNS HER AROUND', w: 4, h: 4 },
   exit: { text: 'EXIT →', w: 3, h: 1 },
   run: { text: 'A STANDING HOP GOES NOWHERE. HOLD RIGHT TOO', w: 4, h: 4 },
   longer: { text: 'A WIDER GAP NEEDS A RUN-UP FIRST', w: 4, h: 4 },
@@ -145,7 +145,7 @@ export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
   const pal = buildStarterPalette(undefined, 'momentum');
   const { book, signs } = buildBlocks(pal);
   const levels: Level[] = [
-    { file: 'one', title: 'Glide', hint: 'Tap, and let him coast.', map: glide(book, signs) },
+    { file: 'one', title: 'Glide', hint: 'Tap, and let her coast.', map: glide(book, signs) },
     { file: 'two', title: 'Run-Up', hint: 'Get up to speed, then hop.', map: runUp(book, signs) },
   ];
   return { book, pal, levels };

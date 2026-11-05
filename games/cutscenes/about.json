@@ -24,7 +24,7 @@
     "accent": "#ffd23f",
     "ink": "#ffffff",
     "tagline": "Watch, then walk on.",
-    "back": "A small explorer in a teal beanie has two short levels. In the first a picture and some words come up, and then a stage floor drops away and takes him on. In the second a room of three doors lets him pick which short tale to watch. Read the signs, then open the game in Game-Maker and send a door somewhere new.",
+    "back": "A small explorer in a green beanie has two short levels. In the first a picture and some words come up, and then a stage floor drops away and takes her on. In the second a room of three doors lets her pick which short tale to watch. Read the signs, then open the game in Game-Maker and send a door somewhere new.",
     "features": [
       "A picture and words, then a stage that ends the scene by itself",
       "A menu room: each door is a link to a scene",

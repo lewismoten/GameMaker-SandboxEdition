@@ -45,7 +45,7 @@ export interface Room {
   map: StarterMap;
   /** Blocks that take the hero away when touched, by name. */
   exits: Record<string, Spot>;
-  /** Blocks the hero stands on when he comes in, by name. */
+  /** Blocks the hero stands on when she comes in, by name. */
   ways: Record<string, Spot>;
 }
 

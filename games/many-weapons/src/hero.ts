@@ -27,7 +27,7 @@ export const HERO_HIT_POINTS = 50;
 export const HERO_LIVES = 3;
 export { FLAMES_PER_POUCH, SEQ_FLAME, SEQ_NONE, SEQ_STAR, STARS_PER_POUCH };
 
-/** The kit's hero blocks, plus his three throw poses again with the star in his hand turned to a flame. */
+/** The kit's hero blocks, plus her three throw poses again with the star in her hand turned to a flame. */
 export function buildWeaponHeroBlocks(pal: Pal): Book {
   const book = buildHeroBlocks(pal);
   const gold = pal.r('gold');

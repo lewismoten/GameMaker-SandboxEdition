@@ -73,7 +73,7 @@
     },
     {
       "head": "Level 3: Lives",
-      "html": "<h1>Level 3: Lives</h1><p>Four spikes stand along the ground, spaced out so each stings on its own. That is 40, and Lian has 30. The <b>AT ZERO HIT POINTS YOU LOSE A LIFE</b> sign says what happens: walk straight along the ground and the third spike takes his last hit point. He falls over, a life is gone (press <kbd>F2</kbd>) and the room starts again, with 30 hit points.</p><p>This time jump up onto the ledge first. Two hearts sit on it, and the <b>HEARTS CAN TAKE YOU PAST 30</b> sign says why that is fine: 50 hit points get him past all four spikes. Near the end a ledge holds a smiling face in a teal beanie. The <b>A FACE ADDS A LIFE</b> sign says the rest.</p>"
+      "html": "<h1>Level 3: Lives</h1><p>Four spikes stand along the ground, spaced out so each stings on its own. That is 40, and Lian has 30. The <b>AT ZERO HIT POINTS YOU LOSE A LIFE</b> sign says what happens: walk straight along the ground and the third spike takes his last hit point. He falls over, a life is gone (press <kbd>F2</kbd>) and the room starts again, with 30 hit points.</p><p>This time jump up onto the ledge first. Two hearts sit on it, and the <b>HEARTS CAN TAKE YOU PAST 30</b> sign says why that is fine: 50 hit points get him past all four spikes. Near the end a ledge holds a smiling face in a blue beanie. The <b>A FACE ADDS A LIFE</b> sign says the rest.</p>"
     },
     {
       "head": "How this level is made",

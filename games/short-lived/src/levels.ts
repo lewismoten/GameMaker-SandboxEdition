@@ -6,7 +6,7 @@
 //   2. Wake Up: a sleepy blue gumdrop blocks the tunnel. When its lifetime is up it does not
 //      vanish, it becomes an awake orange one that is not solid and strolls about. Mia waits, then
 //      walks through (and past) it.
-// Both rooms are closed in by brick walls you can see, so Mia is never stopped by something he can't.
+// Both rooms are closed in by brick walls you can see, so Mia is never stopped by something she can't.
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';

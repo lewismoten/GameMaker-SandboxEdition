@@ -8,7 +8,7 @@ export const STORY = wrap(`
 
 What happens when you touch the ground?
 
-A small explorer in a teal beanie has two jobs. First, a hill is in the way: tunnel through it. Then a lane of spikes covers the surface: dig under it, and climb out the other side.
+A small explorer in a gold beanie has two jobs. First, a hill is in the way: tunnel through it. Then a lane of spikes covers the surface: dig under it, and climb out the other side.
 
 Read the signs. Digging is not a special move. Soil is a block that turns into a tunnel block when it is touched, and walking into it, or standing on it, is touching it.
 

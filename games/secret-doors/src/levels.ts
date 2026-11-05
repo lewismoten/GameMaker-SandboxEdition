@@ -7,7 +7,7 @@
 //      you touch becomes a second block, and that one becomes a third.
 //   3. Coins in the Wall: a wall of fake bricks with coins showing in it. A secret is fair when
 //      the level hints at it.
-// Every room is closed in by hedges you can see, so Mia is never stopped by something he can't.
+// Every room is closed in by hedges you can see, so Mia is never stopped by something she can't.
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';

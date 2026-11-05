@@ -42,7 +42,7 @@ export interface Room {
   title: string;
   /** Blocks that take the hero away when touched, by name. */
   exits: Record<string, Spot>;
-  /** The cell the hero lands on (his feet), which is also the middle of the screen. */
+  /** The cell the hero lands on (her feet), which is also the middle of the screen. */
   landing: Spot;
 }
 

@@ -12,7 +12,7 @@
 //
 // Every ring starts when the scene loads and nothing Mara does can change one (the manual says
 // so). A block changes with its own timer and cannot see where Mara is. Both rooms end in a
-// visible hedge, so Mara is never stopped by something he can't see.
+// visible hedge, so Mara is never stopped by something she can't see.
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { Book, PULL, SOLID } from '../../kit/starter/book';

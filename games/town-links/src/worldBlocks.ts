@@ -196,7 +196,7 @@ export function buildTinyHeroBlocks(pal: Pal, big: Book): Book {
       const p = new Pixels(N, N, 255);
       for (let y = 0; y < 10; y++)
         for (let x = 0; x < 10; x++) {
-          // of each 2 x 2 patch, the pixel that is not background; the darkest outline wins so he stays readable
+          // of each 2 x 2 patch, the pixel that is not background; the darkest outline wins so she stays readable
           let best = 255;
           for (const [dx, dy] of [
             [0, 0],

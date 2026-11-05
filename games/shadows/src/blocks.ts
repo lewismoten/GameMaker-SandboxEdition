@@ -1,10 +1,10 @@
 // LITTLE SHADOWS' own blocks, added to the Starter block set before the signs:
 //   wall, wallCap     a pale stone wall at the back of the yard, and its top edge
 //   doorTopW ...      the Starter doors again with the wall behind them instead of sky
-//   lane.*            the strip of ground Mara and the critters stand in (not solid: he walks in it): sand, grass, soil
+//   lane.*            the strip of ground Mara and the critters stand in (not solid: she walks in it): sand, grass, soil
 //   floor.*           the same ground, solid, in the rows below the lane
 // The lane and the floor are drawn the same on purpose, so the ground looks like one field that reaches back to the wall.
-// Mara stands in the bottom of the lane's block, and his shadow is painted on the ground behind his feet.
+// Mara stands in the bottom of the lane's block, and her shadow is painted on the ground behind her feet.
 import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { Book, PULL, SOLID } from '../../kit/starter/book';
 import { skyOf, type Pal } from '../../kit/starter/palette';

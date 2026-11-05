@@ -7,7 +7,7 @@
 //      third of the map further over, so it wraps three times and is about three times as long. It crosses the
 //      right edge as well, and comes out on the left.
 // A dashed white line marks the map's top row and left column wherever the road crosses them. Hedges you can see
-// close the road in, so nothing stops Mia that he can't see.
+// close the road in, so nothing stops Mia that she can't see.
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';

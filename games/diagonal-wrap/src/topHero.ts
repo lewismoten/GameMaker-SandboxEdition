@@ -1,7 +1,7 @@
 // Mia seen from above, for level 2 (gravity off): one 20x20 block a pose instead of two, drawn in four facing
-// directions (down, up, right and left) with two walking steps each, in the same teal beanie and orange hoodie.
+// directions (down, up, right and left) with two walking steps each, in the same purple beanie and orange hoodie.
 // The pictures are this game's second hero.cbl; its character file has Up and Down walk the way a person
-// would, since nothing pulls him (the side-view Up and Down climb a ladder).
+// would, since nothing pulls her (the side-view Up and Down climb a ladder).
 import { CHARBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { set } from '@lewismoten/gamemaker-sandbox-tools/kit/actors';
@@ -46,7 +46,7 @@ function pose(pal: Pal, facing: Facing, step: Step): Pixels {
   // the hoodie
   blob(p, x0, 14, side ? 5.2 : 6.6, 4.2, orange, 0, 4);
   if (!side) {
-    // arms at his sides, swinging with the stride
+    // arms at her sides, swinging with the stride
     const sw = step === 2 ? [0, 0] : step === 0 ? [-1, 1] : [1, -1];
     p.rect(2, 12 + sw[0], 3, 5, orange[2]).rect(15, 12 + sw[1], 3, 5, orange[2]);
     p.rect(2, 12 + sw[0], 1, 5, orange[3]).rect(17, 12 + sw[1], 1, 5, orange[1]);

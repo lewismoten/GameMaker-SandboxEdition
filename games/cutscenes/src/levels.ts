@@ -9,7 +9,7 @@
 //      the third door ends the game.
 //
 // The tales are scenes too, but they are not levels: they load a stage map without signs.
-// Both rooms are closed in by brick you can see, so Mara is never stopped by something he can't.
+// Both rooms are closed in by brick you can see, so Mara is never stopped by something she can't.
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { Book, PULL, SOLID } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';

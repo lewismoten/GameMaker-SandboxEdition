@@ -7,7 +7,7 @@
   "year": 1994,
   "price": "Free",
   "version": "1.0",
-  "blurb": "Two short levels about a boss that is really several monsters. A monster is one block, so a giant is four standing together: Rocky, made of stone, fills a narrow way with the exit door behind him, and each part pops on its own. A star flies level with Rima's hand, so the head needs a step to stand on. In level 2 a tin robot takes two hits a part: after the first it blinks red for a moment and a star goes right through, so you wait. Signs in the levels say how. Play it, then open it in Game-Maker and look at the parts.",
+  "blurb": "Two short levels about a boss that is really several monsters. A monster is one block, so a giant is four standing together: Rocky, made of stone, fills a narrow way with the exit door behind her, and each part pops on its own. A star flies level with Rima's hand, so the head needs a step to stand on. In level 2 a tin robot takes two hits a part: after the first it blinks red for a moment and a star goes right through, so you wait. Signs in the levels say how. Play it, then open it in Game-Maker and look at the parts.",
   "exe": "GIANT.EXE",
   "dosName": "GIANT",
   "sound": "sb",
@@ -24,7 +24,7 @@
     "accent": "#ffd23f",
     "ink": "#ffffff",
     "tagline": "Four parts, one door.",
-    "back": "A small explorer in a teal beanie has a pocketful of gold stars and two short levels to cross. Rocky, big, grumpy and made of stone, fills a narrow way to the door, but a monster is only one block, so he is really four, and each pops on its own. Then a tin robot blinks red when it is hit, and a star goes right through it. Read the signs, press Enter, wait your turn, then open the game in Game-Maker and look at the parts.",
+    "back": "A small explorer in a teal beanie has a pocketful of gold stars and two short levels to cross. Rocky, big, grumpy and made of stone, fills a narrow way to the door, but a monster is only one block, so she is really four, and each pops on its own. Then a tin robot blinks red when it is hit, and a star goes right through it. Read the signs, press Enter, wait your turn, then open the game in Game-Maker and look at the parts.",
     "features": [
       "Signs in the levels explain each idea",
       "A giant is four monsters standing together",

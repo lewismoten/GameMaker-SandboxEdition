@@ -7,7 +7,7 @@
 //      the voice: the first speaker's counter goes up, the second's goes down.
 //   3. Let It Finish: one voice is cut off when another starts or the scene changes, so the
 //      speaker stands far enough from the door for the whole line.
-// Every room is closed in by hedges you can see, so Lena is never stopped by something he can't.
+// Every room is closed in by hedges you can see, so Lena is never stopped by something she can't.
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';

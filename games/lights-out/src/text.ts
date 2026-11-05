@@ -8,7 +8,7 @@ export const STORY = wrap(`
 
 A dark cave, and only paint for light.
 
-A small explorer in a teal beanie goes into a cave where nothing is lit. Game-Maker has no lights. A lamp is a few blocks drawn brighter than the blocks beside them.
+A small explorer in a purple beanie goes into a cave where nothing is lit. Game-Maker has no lights. A lamp is a few blocks drawn brighter than the blocks beside them.
 
 Read the signs. Blocks come in five brightnesses, laid in rings round a lamp. A touch can light the block Mia walks through. A clock can light a whole hall in one tick.
 

@@ -24,7 +24,7 @@
     "accent": "#ffd23f",
     "ink": "#ffffff",
     "tagline": "One room. Five ways to see it.",
-    "back": "A small explorer in a teal beanie walks a hall with five doors. Behind each is the same gallery of colors, seen the way one kind of eyes might see it: as drawn, red and green close together, blue and yellow mixed up, or no color at all. The name under each swatch stays readable in every room. Play, then open the game in Game-Maker and look at the scenes: one map, five palettes.",
+    "back": "A small explorer in a red beanie walks a hall with five doors. Behind each is the same gallery of colors, seen the way one kind of eyes might see it: as drawn, red and green close together, blue and yellow mixed up, or no color at all. The name under each swatch stays readable in every room. Play, then open the game in Game-Maker and look at the scenes: one map, five palettes.",
     "features": ["A door for each way of seeing", "One map shared by five scenes", "Names that read in every view", "Made to be copied and taken apart"],
     "shots": [
       ["hall.map", 0, 0],

@@ -4,7 +4,7 @@
 //   POPFIVE  the number "-5": one picture that holds still (it never blinks), rises two blocks along its
 //            path and is gone when the path ends (`end` -1). Power 150, so Lami walks through it, and it pays nothing.
 // What the engine does (code/GM/PLAYGAME.C): a monster Lami touches whose power is under 100 first has its
-// picture block's effects applied (the hit points; losing some starts Lami's own hurt sequence: his ouch
+// picture block's effects applied (the hit points; losing some starts Lami's own hurt sequence: her ouch
 // face and a beep), then KillMon turns it into `newmon` at the same place. A number is only a picture.
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import type { Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';

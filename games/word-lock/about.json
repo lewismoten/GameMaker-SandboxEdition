@@ -24,7 +24,7 @@
     "accent": "#ffd23f",
     "ink": "#ffffff",
     "tagline": "A lock takes three. A tray gives them back.",
-    "back": "A small explorer in a teal beanie finds speech bubbles lying about. Each one adds a word to a count. A lock takes three of them, and a gold tray beyond it can hand them back. In the second room there is no tray, so every word counts. Read the signs, then open the game in Game-Maker and change a price.",
+    "back": "A small explorer in a blue beanie finds speech bubbles lying about. Each one adds a word to a count. A lock takes three of them, and a gold tray beyond it can hand them back. In the second room there is no tray, so every word counts. Read the signs, then open the game in Game-Maker and change a price.",
     "features": ["Signs in the levels explain each idea", "A lock spends words, a tray gives them back", "Made to be copied and taken apart"],
     "shots": [
       ["one.map", 22, 6],

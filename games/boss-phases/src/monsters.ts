@@ -40,7 +40,7 @@ export const WALK: Record<Look, { run: number; speed: number }> = {
   tiny: { run: 2, speed: 5 },
 };
 
-/** What the bug takes off Neka's hit points when he walks into it. */
+/** What the bug takes off Neka's hit points when she walks into it. */
 export const STING = 1;
 /** Pixels a star flies a tick, and how many ticks it flies: the range is the product, about 9 blocks. */
 export const STAR_SPEED = 4;

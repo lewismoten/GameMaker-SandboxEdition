@@ -8,7 +8,7 @@ export const STORY = wrap(`
 
 A key you do not use does not vanish when the level ends. It goes with you.
 
-A small explorer in a teal beanie carries keys from one level to the next. A gold key opens a gold door, today or two levels later. But a green door is a different door. Read the signs: they say which key fits.
+A small explorer in a gold beanie carries keys from one level to the next. A gold key opens a gold door, today or two levels later. But a green door is a different door. Read the signs: they say which key fits.
 
 Then open this game in Game-Maker and give a door a counter of its own.
 `);

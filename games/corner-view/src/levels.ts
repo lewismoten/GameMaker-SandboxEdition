@@ -3,12 +3,12 @@
 // cells that come out alike share one block. The game underneath is the plain top view of Gravity Off:
 // Lena walks on the square grid, the four arrows only, and every block's Gravity is none.
 //
-//   1. The Corner Room: a diagonal wall of cubes. He cannot walk along it, so he goes round it in square steps.
+//   1. The Corner Room: a diagonal wall of cubes. She cannot walk along it, so she goes round it in square steps.
 //   2. Stairs of Towers: towers one, two and three blocks high. A tall tower covers the blocks above it, so those are solid too.
 //   3. The Diamond Floor: a room whose floor is a diamond. Here Lena walks only diagonally: each arrow walks one
-//      diagonal of the drawn floor (cornerHero.ts), so he goes the way the room is laid out. The room's edges are
-//      cubes in steps of two blocks across and one down, the same slope he walks, with dark blocks outside them.
-// Both rooms are closed in by cubes you can see, so Lena is never stopped by something he can't.
+//      diagonal of the drawn floor (cornerHero.ts), so she goes the way the room is laid out. The room's edges are
+//      cubes in steps of two blocks across and one down, the same slope she walks, with dark blocks outside them.
+// Both rooms are closed in by cubes you can see, so Lena is never stopped by something she can't.
 import { newMap, MLEN, type GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { Book, SOLID } from '../../kit/starter/book';
@@ -51,7 +51,7 @@ const ring: Tower[] = [];
 for (let x = 0; x < COLS; x++) ring.push([x, 0, 1], [x, ROWS - 1, 1]);
 for (let y = 1; y < ROWS - 1; y++) ring.push([0, y, 1], [COLS - 1, y, 1]);
 
-/** Lena starts in the middle of the screen: the view stays where the level starts, centered on him, so he must start there. */
+/** Lena starts in the middle of the screen: the view stays where the level starts, centered on her, so she must start there. */
 export const EXITS: [number, number][] = [
   [13, 7],
   [2, 5],

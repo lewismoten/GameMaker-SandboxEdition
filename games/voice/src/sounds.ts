@@ -7,7 +7,7 @@ import { type SoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/soun
 import { SND } from '../../kit/starter/ids';
 import { buildSounds } from '../../kit/starter/sounds';
 
-/** Sound 13: Lena's hello, played by his Enter move. */
+/** Sound 13: Lena's hello, played by her Enter move. */
 export const SND_HELLO = 13;
 /** Enter, as the character file writes a key: scan code 0x1C, ASCII 13. */
 export const ENTER = 0x1c0d;

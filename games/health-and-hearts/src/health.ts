@@ -71,7 +71,7 @@ function heart(pal: Pal): Pixels {
   return outline(p, pal.c('ink', 0), { transparent: skyOf(pal) });
 }
 
-/** Lian's face in his teal beanie, a smile and a bit of orange hood: a spare life. */
+/** Lian's face in his blue beanie, a smile and a bit of orange hood: a spare life. */
 function face(pal: Pal): Pixels {
   const p = new Pixels(20, 20, skyOf(pal));
   const t = pal.r('teal');

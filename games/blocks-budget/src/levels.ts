@@ -5,7 +5,7 @@
 //      Lena walks through it, because a picture is not solid unless its blocks are told to be.
 //   2. Use It Again: a village row of eight houses made of six blocks, and a brick wall whose every copy
 //      is solid. The last sign counts the whole game's blocks against the 150 an editor allows.
-// Every room is closed in by brick walls you can see, so Lena is never stopped by something he can't.
+// Every room is closed in by brick walls you can see, so Lena is never stopped by something she can't.
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';

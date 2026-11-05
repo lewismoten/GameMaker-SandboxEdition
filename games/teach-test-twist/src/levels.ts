@@ -6,7 +6,7 @@
 //   2. Test: the same gap with spikes at the bottom, and a wider one, so a bad jump costs a little.
 //   3. Twist: the same gap again, but now you want to be in it: the key to the locked door is down there.
 //
-// Every room is closed in by hedges you can see, so Lena is never stopped by something he can't.
+// Every room is closed in by hedges you can see, so Lena is never stopped by something she can't.
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';

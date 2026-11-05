@@ -7,7 +7,7 @@
 //      to Lami, who carries it to the gate (the gate is the way out).
 //   2. All Three: the same with three dials, and the wire climbs over a ledge, so one dial is
 //      up where Lami must climb to it.
-// Both rooms are closed in by brick walls you can see, so Lami is never stopped by something he can't.
+// Both rooms are closed in by brick walls you can see, so Lami is never stopped by something she can't.
 import { ORIGIN, StarterMap } from '../../kit/starter/map';
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';

@@ -24,7 +24,7 @@
     "accent": "#ffd23f",
     "ink": "#ffffff",
     "tagline": "Copy it. Change it. Yours!",
-    "back": "A small explorer in a teal beanie crosses three short levels with a little of everything: a jump over a wall, coins, a friendly gumdrop, spikes to hop and a key for a locked door. It is a whole small game, from the title to the ending, made to be copied. Open it in Game-Maker and change anything you like.",
+    "back": "A small explorer in a gold beanie crosses three short levels with a little of everything: a jump over a wall, coins, a friendly gumdrop, spikes to hop and a key for a locked door. It is a whole small game, from the title to the ending, made to be copied. Open it in Game-Maker and change anything you like.",
     "features": ["Three levels that use what the other Starters teach", "A guide to making it your own, step by step", "Made to be copied and taken apart"],
     "shots": [
       ["one.map", 26, 1],

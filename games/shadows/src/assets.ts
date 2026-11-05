@@ -6,7 +6,7 @@ import { buildCritterBlocks } from './critters';
 import { shadowedHero } from './shadow';
 
 export interface Assets {
-  /** Mara as the Starters draw him: no shadow (the screens use him). */
+  /** Mara as the Starters draw her: no shadow (the screens use her). */
   plain: Book;
   /** Mara's character blocks and the monster blocks for a scene whose shadows are solid, or dithered. */
   solid: { hero: Book; critters: Book };

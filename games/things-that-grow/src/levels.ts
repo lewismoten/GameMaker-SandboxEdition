@@ -6,7 +6,7 @@
 //   2. Empty Nest: the shelf nest keeps hatching (it has no touch rule). A second nest lies on the
 //      path and hatches blue birds; Lami steps on it and it becomes an empty nest. The blue ones go
 //      when their time is up and no more come, while the yellow ones keep on.
-// Both rooms are closed in by brick walls you can see, so Lami is never stopped by something he can't.
+// Both rooms are closed in by brick walls you can see, so Lami is never stopped by something she can't.
 import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
 import { Book, PULL } from '../../kit/starter/book';

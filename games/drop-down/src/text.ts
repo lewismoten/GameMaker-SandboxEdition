@@ -8,7 +8,7 @@ export const STORY = wrap(`
 
 Some friends sit very still.
 
-A small explorer in a teal beanie crosses two short tunnels. In each one a round little friend sits on a crate.
+A small explorer in a red beanie crosses two short tunnels. In each one a round little friend sits on a crate.
 
 Read the signs. Break a crate and see what its friend does.
 

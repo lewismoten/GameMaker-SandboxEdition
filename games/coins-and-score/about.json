@@ -24,7 +24,7 @@
     "accent": "#1a1830",
     "ink": "#1a1830",
     "tagline": "Gold does not do much on its own.",
-    "back": "A small explorer in a teal beanie is out collecting. Coins add to the score, gems pay more, and a rock takes a little away. A heart adds a life, which no score can do. Read the signs, press F2 to look at the score, then open the game in Game-Maker and change what a pickup is worth.",
+    "back": "A small explorer in a blue beanie is out collecting. Coins add to the score, gems pay more, and a rock takes a little away. A heart adds a life, which no score can do. Read the signs, press F2 to look at the score, then open the game in Game-Maker and change what a pickup is worth.",
     "features": [
       "Signs in the levels explain each idea",
       "Every pickup is a block with a number on it",

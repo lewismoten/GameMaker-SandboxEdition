@@ -8,7 +8,7 @@ export const STORY = wrap(`
 
 Two doors, two heroes, one road.
 
-A small explorer in a teal beanie stands in a room with two doors. Behind each door is the same climb: two steps up, a plateau and an exit. The only difference is who goes through.
+A small explorer in a blue beanie stands in a room with two doors. Behind each door is the same climb: two steps up, a plateau and an exit. The only difference is who goes through.
 
 Fast Feet is quick on the ground. Big Hops is slow, but jumps six blocks and can reach the coins up high.
 

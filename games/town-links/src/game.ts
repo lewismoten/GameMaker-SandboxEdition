@@ -3,7 +3,7 @@
 // the town and the house the full-size one. A scene lists the files it loads in slots (palette, map, blocks, monsters,
 // monster blocks, character, character blocks, sounds, song, a card before it, a card after it) and carries its links:
 // touch the From block here and you are in the To scene, standing on the To cell. Every scroll is on, so the screen
-// follows Yana from wherever the To cell puts him.
+// follows Yana from wherever the To cell puts her.
 import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, newGame, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import {
   HOUSE_EXIT,

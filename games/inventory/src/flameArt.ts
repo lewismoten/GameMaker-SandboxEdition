@@ -1,6 +1,6 @@
 // The flame: a small friendly orange flame with two tongues, 20 by 20, drawn from a pattern in two
 // sways (the second is the first turned left to right, so it flickers as it flies).
-// The same flame the hero holds in his flame frames (hero.ts recolors his star), only larger.
+// The same flame the hero holds in her flame frames (hero.ts recolors her star), only larger.
 import { outline } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import type { Pal } from '../../kit/starter/palette';

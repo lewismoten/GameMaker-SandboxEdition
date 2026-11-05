@@ -1,5 +1,5 @@
 // WATCH YOUR STEP's own title picture: the hero on the grass with spikes, a pool and the exit door
-// ahead of him, and nothing floating or trailing from him (the kit's title arcs coins from the hero).
+// ahead of her, and nothing floating or trailing from her (the kit's title arcs coins from the hero).
 import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { scaleBlit } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 import { bevel } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';

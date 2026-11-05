@@ -1,7 +1,7 @@
 // FOLLOW ME's monster. The kit's gumdrop 0, buzzer 1 and shelly 2 stay in the file (unused), then:
 //   PUFF  a small cream pup with a floppy ear and little white wings. It is not solid and hurts nobody.
 //         Its Movement is "toward the hero" (`towards`), so every tick it moves a little in a
-//         straight line to where Lena is. It is slower than Lena, so it falls behind when he runs.
+//         straight line to where Lena is. It is slower than Lena, so it falls behind when she runs.
 // What the engine does (code/GM/PLAYGAME.C ~line 3035): a monster whose `towards` is 1 to 63 aims at
 // the hero's position every tick and moves that many steps (negative runs away). With `thru` set it
 // is stopped by a solid block in its way, on that one side only, and slides on along the other.

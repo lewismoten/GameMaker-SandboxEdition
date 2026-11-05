@@ -5,7 +5,7 @@
 //   lamp  window glass and lantern bulbs: dull glass by day, warm light by night
 //   star  one slot that is the sky's own color by day, so a star is there but cannot be seen
 // DUSK.PAL is halfway between, with a sunset sky. NIGHT.PAL darkens and cools every ramp, except
-// Lami's own colors (kept bright so he is easy to follow) and the three text colors and designer
+// Lami's own colors (kept bright so she is easy to follow) and the three text colors and designer
 // colors, which stay as they are so the score line reads the same.
 import type { PaletteBuilder } from '@lewismoten/gamemaker-sandbox-tools/kit/palette';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
@@ -19,7 +19,7 @@ export interface Palettes {
   night: Uint8Array;
 }
 
-/** Ramps the hero is drawn with: dimmed less at night so he stays easy to find. */
+/** Ramps the hero is drawn with: dimmed less at night so she stays easy to find. */
 const HERO = new Set(['skin', 'teal', 'hair', 'orange', 'pink', 'white', 'kskin', 'khair', 'khat', 'khood', 'kpants']);
 /** Ramps that keep their colors at every hour (the score line and menus use them). */
 const FIXED = new Set(['menublue', 'plum', 'hot']);

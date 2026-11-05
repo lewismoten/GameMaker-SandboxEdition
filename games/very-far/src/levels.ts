@@ -24,7 +24,7 @@ const SIGNS = {
   quick: ['quick', 'TOO FAST. THE SAME STEPS AS UP CLOSE', 4, 2],
   slow: ['slow', 'SLOW STEPS. HE IS ONLY 8 PIXELS TALL', 4, 3],
   front: ['front', 'BIG THINGS IN FRONT MAKE HIM FAR AWAY', 4, 3],
-  contrast: ['contrast', 'DARK AND ORANGE ON PALE: HE STAYS CLEAR', 4, 3],
+  contrast: ['contrast', 'DARK AND RED ON PALE: HE STAYS CLEAR', 4, 3],
 } as const;
 export type SignName = keyof typeof SIGNS;
 

@@ -24,7 +24,7 @@
     "accent": "#ffd23f",
     "ink": "#ffffff",
     "tagline": "Lit bulbs are the count.",
-    "back": "A small explorer in a teal beanie finds rows of dark bulbs. Each one adds to a count and lights up, so the lit bulbs show the count. The first gate takes five. In the second room the full meter opens the way out. Read the signs, then open the game in Game-Maker and add a bulb.",
+    "back": "A small explorer in a red beanie finds rows of dark bulbs. Each one adds to a count and lights up, so the lit bulbs show the count. The first gate takes five. In the second room the full meter opens the way out. Read the signs, then open the game in Game-Maker and add a bulb.",
     "features": ["Signs in the levels explain each idea", "Bulbs light up as they add to a count", "Made to be copied and taken apart"],
     "shots": [
       ["one.map", 22, 6],

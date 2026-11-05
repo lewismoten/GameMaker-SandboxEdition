@@ -24,7 +24,7 @@
     "accent": "#ffd23f",
     "ink": "#ffffff",
     "tagline": "Bump it. It breaks.",
-    "back": "A small explorer in a teal beanie has three short levels, and crates in the way each time. Walk into a crate and it turns to rubble. A coin that stays a coin keeps paying, a coin that turns to air pays once, and a spinning gem has to turn to air in every frame. Read the signs, then open the game in Game-Maker and change what a block becomes.",
+    "back": "A small explorer in a pink beanie has three short levels, and crates in the way each time. Walk into a crate and it turns to rubble. A coin that stays a coin keeps paying, a coin that turns to air pays once, and a spinning gem has to turn to air in every frame. Read the signs, then open the game in Game-Maker and change what a block becomes.",
     "features": [
       "Signs in the levels explain each idea",
       "A block can turn into another when touched: a crate into rubble, a coin into air",

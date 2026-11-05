@@ -1,5 +1,5 @@
 // THROW IT's star: a five-point gold star, 20 by 20, in two turns (so it spins as it flies).
-// The same star the hero holds in his throw frames (kit/starter/hero.ts), only larger.
+// The same star the hero holds in her throw frames (kit/starter/hero.ts), only larger.
 import { outline } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import type { Pal } from '../../kit/starter/palette';

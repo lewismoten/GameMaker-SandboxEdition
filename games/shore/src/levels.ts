@@ -6,7 +6,7 @@
 //   2. The Shoreline: sand with water round it. A sand tile that touches water is a loop of frames in which the wave runs
 //      up the sand and back; every shape of shore (straight, round corners, a cove, a point) is its own loop, laid
 //      along the beach from four starts so the waves roll.
-// Water is solid and drawn as water (Neka walks round it; for water he can swim in see Under the Surface).
+// Water is solid and drawn as water (Neka walks round it; for water she can swim in see Under the Surface).
 import { Book, SOLID } from '../../kit/starter/book';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
 import { type Sign } from '../../kit/starter/sign';

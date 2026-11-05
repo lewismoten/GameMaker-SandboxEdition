@@ -1,12 +1,12 @@
 // MAPS IN MAPS: three scenes, each with its own map file and its own scale, joined by links that land Yana on a chosen cell.
 //
 //   world.map  a country: 22 x 14 blocks of sea, land, hills and forest. A block is a great stretch of country, so the
-//              town is one block (a ring of tiny roofs) and Yana is tiny (his own character file). Touch the town block
-//              and a scene link lands him at the town's south gate.
+//              town is one block (a ring of tiny roofs) and Yana is tiny (her own character file). Touch the town block
+//              and a scene link lands her at the town's south gate.
 //   town.map   the town: 36 x 26 blocks, scrolling, Yana full size, streets and houses 3 blocks wide. The south gate is
 //              a link back to the world (landing beside the town block, not at the world's start); the door of one
 //              house is a link into the house, behind a yard gate that needs the keys lying on the world map.
-//   house.map  inside that house: 18 x 12 blocks. Its door is a link that lands Yana in the yard, outside the door he
+//   house.map  inside that house: 18 x 12 blocks. Its door is a link that lands Yana in the yard, outside the door she
 //              came in by (not at the town gate); its far door is the way out of the game.
 import { Book } from '../../kit/starter/book';
 import { Grid } from '../../kit/starter/grid';
@@ -43,7 +43,7 @@ export interface Level {
 // the world
 export const WORLD_START: Spot = at(5, 7);
 export const TOWN_BLOCK: Spot = at(9, 4);
-/** Where Yana lands when he comes back from the town: the trail just below the town block. */
+/** Where Yana lands when she comes back from the town: the trail just below the town block. */
 export const WORLD_BESIDE: Spot = at(9, 5);
 export const KEY_BLOCK: Spot = at(18, 8);
 
@@ -52,10 +52,10 @@ export const TOWN_W = 36;
 export const TOWN_H = 26;
 /** The south gate's two road cells (the bottom row of the map). */
 export const TOWN_GATE: Spot[] = [at(17, 25), at(18, 25)];
-/** Where Yana lands when he comes in from the world: two blocks inside the gate. */
+/** Where Yana lands when she comes in from the world: two blocks inside the gate. */
 export const TOWN_LANDING: Spot = at(17, 23);
 export const HOUSE_DOOR: Spot = at(21, 6);
-/** Where Yana lands when he comes out of the house: the yard, just below the door. */
+/** Where Yana lands when she comes out of the house: the yard, just below the door. */
 export const TOWN_YARD: Spot = at(21, 7);
 export const YARD_GATE: Spot = at(21, 10);
 

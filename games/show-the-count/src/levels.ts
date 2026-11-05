@@ -2,7 +2,7 @@
 // games/kit/starter/map.ts for what the letters mean), then given its signs.
 //
 //   1. Light the Meter: five dark bulbs in a row along a ledge up a ladder. Each one Lena walks
-//      through lights up for good and adds one to his count, so the row of lit bulbs is the count
+//      through lights up for good and adds one to her count, so the row of lit bulbs is the count
 //      shown as pictures (the game cannot print a number). A gate on the ground takes five.
 //   2. The Full Meter: six bulbs, three on the ground and three on a ledge, and the level's only
 //      way out is a six-slot gate. No other door: the link is on the gate's own block.

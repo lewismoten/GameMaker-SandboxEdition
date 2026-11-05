@@ -24,7 +24,7 @@
     "accent": "#ffd23f",
     "ink": "#ffffff",
     "tagline": "Press Enter. Listen.",
-    "back": "A small explorer in a teal beanie has three short levels, and something to say in each. A press of Enter makes him say hello. Two loudspeakers talk when he walks into them, one voice when a counter goes up and another when it goes down. A voice that is still playing when the scene changes is cut short, so the last speaker stands well back from the door. Read the signs, then open the game in Game-Maker and look at the Sounds tab.",
+    "back": "A small explorer in a red beanie has three short levels, and something to say in each. A press of Enter makes her say hello. Two loudspeakers talk when she walks into them, one voice when a counter goes up and another when it goes down. A voice that is still playing when the scene changes is cut short, so the last speaker stands well back from the door. Read the signs, then open the game in Game-Maker and look at the Sounds tab.",
     "features": [
       "Signs in the levels explain each idea",
       "A voice is a sound file the Sound Blaster plays",

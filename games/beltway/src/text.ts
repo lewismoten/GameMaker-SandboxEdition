@@ -8,7 +8,7 @@ export const STORY = wrap(`
 
 A road that goes by, and a track that goes round.
 
-A small explorer in a teal beanie rides the bed of a truck while the hills, the trees and a rail slide past. Then a little car drives a loop in the sky, upside down at the top, and counts its laps in lamps.
+A small explorer in a purple beanie rides the bed of a truck while the hills, the trees and a rail slide past. Then a little car drives a loop in the sky, upside down at the top, and counts its laps in lamps.
 
 Read the signs. Then open this game in Game-Maker and change how fast things go.
 `);

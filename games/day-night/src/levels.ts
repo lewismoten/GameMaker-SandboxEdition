@@ -23,7 +23,7 @@ import { gateTop, lanternBrick, orb, pillar, post, postTop, roof, star, windowBr
 
 export type Hour = 'day' | 'dusk' | 'night';
 
-/** One scene of a level: which palette it loads, whether a level card comes first, where the hero stands on arriving, and the cells that take him on (world blocks). */
+/** One scene of a level: which palette it loads, whether a level card comes first, where the hero stands on arriving, and the cells that take her on (world blocks). */
 export interface Stage {
   hour: Hour;
   card: boolean;

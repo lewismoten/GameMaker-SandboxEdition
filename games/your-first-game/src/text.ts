@@ -6,7 +6,7 @@ import about from '../about.json';
 export const STORY = wrap(`
 |YOUR FIRST GAME
 
-A small explorer in a teal beanie has three rooms to cross.
+A small explorer in a gold beanie has three rooms to cross.
 
 There is a wall to jump, coins to collect, a friendly gumdrop, some spikes and a locked door with a key hiding nearby.
 

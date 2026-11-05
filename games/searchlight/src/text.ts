@@ -8,7 +8,7 @@ export const STORY = wrap(`
 
 Some halls are watched by a friendly lamp that hangs from a rail and walks back and forth, all day.
 
-A small explorer in a teal beanie has two halls to cross. The lamp is not looking for anyone. It only walks its path, and anyone under it is seen.
+A small explorer in a green beanie has two halls to cross. The lamp is not looking for anyone. It only walks its path, and anyone under it is seen.
 
 Dig in, let it pass, then go.
 

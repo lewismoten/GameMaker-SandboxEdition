@@ -8,7 +8,7 @@ export const STORY = wrap(`
 
 The same place looks different when the light changes.
 
-A small explorer in a teal beanie has two short levels. In the first, a house with a door: go in, and you are back in the very same room, but it is night. In the second, a street with two gates, and the sun sets as you walk.
+A small explorer in a red beanie has two short levels. In the first, a house with a door: go in, and you are back in the very same room, but it is night. In the second, a street with two gates, and the sun sets as you walk.
 
 Watch the sky, the windows and the stars.
 

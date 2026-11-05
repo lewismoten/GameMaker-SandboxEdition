@@ -1,6 +1,6 @@
 // Lian seen from very far away: 4 pixels wide and 8 tall, standing on the bottom row of a 20 x 20 block (the block
 // above him stays empty). Each pose is drawn by hand, one letter a pixel. His colors are the near Lian's own
-// (teal beanie, orange hoodie, dark pants), left unhazed by the far palette so a speck still reads.
+// (blue beanie, orange hoodie, dark pants), left unhazed by the far palette so a speck still reads.
 //
 // tinyHero() makes a whole character file from these: the near character's sequences with every frame swapped for
 // a tiny pose, so the keys, the walk cycle's order and the 2-block hitbox stay as they were. A far scene loads it

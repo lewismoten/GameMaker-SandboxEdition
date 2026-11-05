@@ -6,9 +6,9 @@ import about from '../about.json';
 export const STORY = wrap(`
 |TAKE THE WHEEL
 
-A small explorer in a teal beanie finds a little blue kart parked at the end of the road.
+A small explorer in a pink beanie finds a little blue kart parked at the end of the road.
 
-Hop in, and he is a different driver: quicker, with a horn, and no jump at all.
+Hop in, and she is a different driver: quicker, with a horn, and no jump at all.
 
 Read the signs. Then open this game in Game-Maker and make your own.
 `);

@@ -3,11 +3,11 @@
 //
 //   1. Wait and Go: a light hangs from a rail and walks back and forth over ten blocks of the way. Two
 //      trenches are dug in the ground under it. Being seen (touching the light) costs hit points, so
-//      Mara waits in a trench until the light has walked over him, then goes on.
+//      Mara waits in a trench until the light has walked over her, then goes on.
 //   2. Two Lights: two lights walking at two speeds, each over its own stretch with its own trenches,
 //      and a patch of grass between them to rest on.
 // The light is a path and nothing more: it does not look. Every room is closed in by brick walls you
-// can see, so Mara is never stopped by something he can't.
+// can see, so Mara is never stopped by something she can't.
 import { Book, PULL } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';

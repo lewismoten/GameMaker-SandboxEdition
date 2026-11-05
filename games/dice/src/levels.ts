@@ -9,7 +9,7 @@
 //
 // Nothing here is random. The clock starts when the room loads and counts ticks, so the face
 // at a touch is whatever the tick makes it (the manual says so). The room ends in visible
-// hedges, so Mara is never stopped by something he can't see.
+// hedges, so Mara is never stopped by something she can't see.
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { Book, PULL } from '../../kit/starter/book';
 import { addStarterBlocks, KEYS } from '../../kit/starter/blocks';

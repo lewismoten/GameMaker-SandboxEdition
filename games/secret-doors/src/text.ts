@@ -8,7 +8,7 @@ export const STORY = wrap(`
 
 Some walls are only pictures.
 
-A small explorer in a teal beanie has three short levels to cross. Walls of brick stand on the path. One may be real. The next may be a picture, and Mia walks right through it.
+A small explorer in a purple beanie has three short levels to cross. Walls of brick stand on the path. One may be real. The next may be a picture, and Mia walks right through it.
 
 Read the signs. Whether a block is solid is a setting, and a block can turn into another block when it is touched. That makes real walls, secret doors, and walls that crumble.
 

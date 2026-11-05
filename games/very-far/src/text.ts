@@ -8,7 +8,7 @@ export const STORY = wrap(`
 
 How do you draw someone walking a long way off? Not by drawing them smaller everywhere: by drawing them tiny.
 
-A small explorer in a teal beanie walks a road up close. Then the same walk, on a distant ridge, where he is only eight pixels tall.
+A small explorer in a blue beanie walks a road up close. Then the same walk, on a distant ridge, where he is only eight pixels tall.
 
 Read the signs. Then open this game in Game-Maker and change how far a step goes.
 `);

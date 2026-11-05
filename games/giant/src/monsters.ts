@@ -33,7 +33,7 @@ export const FRESH = ROCKY + 4;
 export const HURT = FRESH + 4;
 export const CRACKED = HURT + 4;
 
-/** What a giant takes off Rima's hit points when he walks into it. */
+/** What a giant takes off Rima's hit points when she walks into it. */
 export const STING = 1;
 /** Pixels a star flies a tick, and how many ticks it flies: the range is the product, about 6 blocks. */
 export const STAR_SPEED = 4;

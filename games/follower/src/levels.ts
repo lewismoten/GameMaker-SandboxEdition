@@ -2,12 +2,12 @@
 // games/kit/starter/map.ts for what the letters mean), then given its signs and its monster.
 //
 //   1. Puff Follows: a flat meadow with a small brick hill. Puff, a little winged pup, starts a few
-//      blocks from Lena and flies straight at him whenever he moves. It is slower than Lena, so it
-//      falls behind when he runs and catches up when he stops.
+//      blocks from Lena and flies straight at her whenever she moves. It is slower than Lena, so it
+//      falls behind when she runs and catches up when she stops.
 //   2. Out of Reach: Lena starts on a brick ledge, and Puff starts in the low room under it. Puff
-//      flies straight at Lena, hits the underside of the ledge and stays there, below him, until
-//      he steps off the end. It plans no way around.
-// Both rooms are closed in by brick walls you can see, so Lena is never stopped by something he can't.
+//      flies straight at Lena, hits the underside of the ledge and stays there, below her, until
+//      she steps off the end. It plans no way around.
+// Both rooms are closed in by brick walls you can see, so Lena is never stopped by something she can't.
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';

@@ -24,7 +24,7 @@
     "accent": "#ffd23f",
     "ink": "#ffffff",
     "tagline": "Fell in? Touch the post.",
-    "back": "A small explorer in a teal beanie has two short levels, and pits in the way each time. One pit is too deep to climb out of, so a post at the bottom starts the level over. In the next level every pit has a way back built in: a ladder, steps of planks, steps of solid blocks. A good level never leaves the player stuck. Read the signs, then open the game in Game-Maker and look at the post.",
+    "back": "A small explorer in a purple beanie has two short levels, and pits in the way each time. One pit is too deep to climb out of, so a post at the bottom starts the level over. In the next level every pit has a way back built in: a ladder, steps of planks, steps of solid blocks. A good level never leaves the player stuck. Read the signs, then open the game in Game-Maker and look at the post.",
     "features": [
       "Signs in the levels explain each idea",
       "A post that starts the level over is one scene link back to the same scene",

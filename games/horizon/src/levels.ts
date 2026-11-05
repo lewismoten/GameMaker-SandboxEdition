@@ -8,7 +8,7 @@
 //   2. Coming Closer: no balls. A finish arch stands on the hill and grows in four sizes as the
 //      seconds go by (each block of its picture turns into the next after a time), and when it
 //      arrives the bars across the door lift and the door is open.
-// Both rooms are closed in by hedges you can see, so Lami is never stopped by something he can't.
+// Both rooms are closed in by hedges you can see, so Lami is never stopped by something she can't.
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { spawnChains, type RoadEntry } from '@lewismoten/gamemaker-sandbox-tools/kit/road3d';
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';

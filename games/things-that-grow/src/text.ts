@@ -8,7 +8,7 @@ export const STORY = wrap(`
 
 Some blocks do not sit still. They hatch things.
 
-A small explorer in a teal beanie crosses two short rooms. A nest on a shelf hatches a bird every few seconds in the first. In the second, a nest on the path can be stopped with a touch.
+A small explorer in a red beanie crosses two short rooms. A nest on a shelf hatches a bird every few seconds in the first. In the second, a nest on the path can be stopped with a touch.
 
 Read the signs. Watch what comes out.
 

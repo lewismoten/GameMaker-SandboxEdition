@@ -97,7 +97,7 @@ function plant(p: Pixels, pal: Pal, f: number): void {
   daisy(p, pal, FX, GROUND - h - (open > 0 ? 8 : 2), open);
 }
 
-/** Yana's pose (top and bottom block names), and where his feet stand, at frame f. */
+/** Yana's pose (top and bottom block names), and where her feet stand, at frame f. */
 function kit(f: number): [[string, string], number, number] {
   const x = 112;
   if (f < CHEER_AT) return [f % 14 > 11 ? ['blink.top', 'stand'] : f % 14 > 6 ? ['look.top', 'stand'] : ['stand.top', 'stand'], x, GROUND];

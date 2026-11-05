@@ -13,7 +13,7 @@
 // What the engine does (code/GM/PLAYGAME.C, DoCollision): when two monsters overlap, the one
 // with less power dies and the stronger one lives; but a monster born from the character
 // (fromchar) is used up as well, and the character gets the dead monster's "score bonus". A star
-// born from Lena can never hurt him. Touching a monster whose power is 100 or more does not
+// born from Lena can never hurt her. Touching a monster whose power is 100 or more does not
 // kill it, so Lena can only get rid of a guard by throwing a star.
 import { SOLBOT, SOLLEF, SOLRIG, SOLTOP, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import type { Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';

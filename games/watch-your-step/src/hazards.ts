@@ -2,7 +2,7 @@
 //   spikeUp   spikes you can walk into: 10 hit points once, then they lie flat
 //   spikeFlat what a spike becomes when touched: harmless (the "touch" rule, as a coin goes)
 //   waterTop  a pool's surface: harmless. Gravity tests the cells below the hero before it checks
-//             solidity, so a hurting top row would kill him at the edge of the grass, not just in the pool
+//             solidity, so a hurting top row would kill her at the edge of the grass, not just in the pool
 //   water     the pool under it: more hit points than the hero has, which costs a life
 // None of them is solid, so nothing holds the hero while it hurts. The kit's own spikes block is
 // solid and keeps hurting; these two-step spikes are the gentle kind.

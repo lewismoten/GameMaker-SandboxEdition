@@ -6,7 +6,7 @@
 //   2. A Cartoon Between: nothing before; the exit slot holds a cartoon (an FLI), so it plays
 //      between this level and the next.
 //   3. Keep It Short: the intro is a list of two pictures; signs say what a cartoon can't do.
-// Every room is closed in by hedges you can see, so Yana is never stopped by something he can't.
+// Every room is closed in by hedges you can see, so Yana is never stopped by something she can't.
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';

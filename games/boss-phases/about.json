@@ -24,7 +24,7 @@
     "accent": "#ffd23f",
     "ink": "#ffffff",
     "tagline": "Three faces, one bug.",
-    "back": "A small explorer in a teal beanie has a pocketful of gold stars and two short levels to cross. Big Bug, round and very cheerful, paces a long tunnel through a brick wall, and it does not stay the same: hit it twice and it turns quicker, and the last hit brings a tiny new face. Read the signs, wait for it to come close, then open the game in Game-Maker and change when it changes.",
+    "back": "A small explorer in a gold beanie has a pocketful of gold stars and two short levels to cross. Big Bug, round and very cheerful, paces a long tunnel through a brick wall, and it does not stay the same: hit it twice and it turns quicker, and the last hit brings a tiny new face. Read the signs, wait for it to come close, then open the game in Game-Maker and change when it changes.",
     "features": ["Signs in the levels explain each idea", "A boss that changes is a chain of different monsters", "Made to be copied and taken apart"],
     "shots": [
       ["one.map", 24, 6],

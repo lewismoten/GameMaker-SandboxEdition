@@ -24,7 +24,7 @@
     "accent": "#ffd23f",
     "ink": "#ffffff",
     "tagline": "Wait for your turn.",
-    "back": "A small explorer in a teal beanie meets gates that open one after another. Rings of blocks keep the turns, and lamps show whose it is. Watch the lit lamp, then walk through each gate in its turn. A block cannot see you: it only follows its own timer. Play, then open the game in Game-Maker and change how long a turn lasts.",
+    "back": "A small explorer in a green beanie meets gates that open one after another. Rings of blocks keep the turns, and lamps show whose it is. Watch the lit lamp, then walk through each gate in its turn. A block cannot see you: it only follows its own timer. Play, then open the game in Game-Maker and change how long a turn lasts.",
     "features": ["Rings of blocks that turn into one another on a timer", "Lamps and gates that take turns together", "Made to be copied and taken apart"],
     "shots": [
       ["one.map", 12, 1],

@@ -24,7 +24,7 @@
     "accent": "#ffd23f",
     "ink": "#ffffff",
     "tagline": "3, 2, 1, out!",
-    "back": "A small explorer in a teal beanie has two short rooms and a number in each that counts down. At 0 the door opens and you may leave. At 00 the floor opens and you must. Read the signs, then open the game in Game-Maker and change how long the count lasts.",
+    "back": "A small explorer in a gold beanie has two short rooms and a number in each that counts down. At 0 the door opens and you may leave. At 00 the floor opens and you must. Read the signs, then open the game in Game-Maker and change how long the count lasts.",
     "features": [
       "A big number that counts 9 to 0, and a door that opens at 0",
       "Two digits that count 99 to 00, and a trapdoor floor at 00",

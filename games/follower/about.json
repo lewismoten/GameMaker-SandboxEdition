@@ -7,7 +7,7 @@
   "year": 1994,
   "price": "Free",
   "version": "1.0",
-  "blurb": "Two short levels about a friend that follows. Puff, a little winged pup, flies straight after Lena, a bit slower than he runs. In the second room Lena climbs a ledge and Puff, which plans no way around, waits under it. Signs in the levels say how. Play it, then open it in Game-Maker and change how fast Puff flies.",
+  "blurb": "Two short levels about a friend that follows. Puff, a little winged pup, flies straight after Lena, a bit slower than she runs. In the second room Lena climbs a ledge and Puff, which plans no way around, waits under it. Signs in the levels say how. Play it, then open it in Game-Maker and change how fast Puff flies.",
   "exe": "FOLLOWME.EXE",
   "dosName": "FOLLOWME",
   "sound": "sb",
@@ -24,7 +24,7 @@
     "accent": "#ffd23f",
     "ink": "#ffffff",
     "tagline": "A friend flies after you.",
-    "back": "A small explorer in a teal beanie crosses two short rooms with Puff, a winged pup that flies after him. Run ahead and Puff falls behind; stand on a ledge and Puff waits underneath. Play, then open the game in Game-Maker and change how fast Puff flies.",
+    "back": "A small explorer in a red beanie crosses two short rooms with Puff, a winged pup that flies after her. Run ahead and Puff falls behind; stand on a ledge and Puff waits underneath. Play, then open the game in Game-Maker and change how fast Puff flies.",
     "features": ["Signs in the levels explain each idea", "A monster can fly toward the hero at a speed you choose", "Made to be copied and taken apart"],
     "shots": [
       ["one.map", 14, 4],

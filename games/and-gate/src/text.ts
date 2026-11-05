@@ -8,7 +8,7 @@ export const STORY = wrap(`
 
 Two switches. One lamp.
 
-A small explorer in a teal beanie finds a wire in the sky. A spark runs along it every few seconds, and at the end of the wire waits a lamp.
+A small explorer in a red beanie finds a wire in the sky. A spark runs along it every few seconds, and at the end of the wire waits a lamp.
 
 Read the signs. Bump the dials on. See what happens when only one is.
 

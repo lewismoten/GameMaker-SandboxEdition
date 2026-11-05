@@ -8,7 +8,7 @@ export const STORY = wrap(`
 
 Some doors wait for a number.
 
-A small explorer in a teal beanie has two short rooms, and a number in each that counts down. In the first the number is 9 and a door waits for it to reach 0. In the second it is 99, and the floor has its own idea about 00.
+A small explorer in a gold beanie has two short rooms, and a number in each that counts down. In the first the number is 9 and a door waits for it to reach 0. In the second it is 99, and the floor has its own idea about 00.
 
 Watch the numbers. Wait, then go.
 

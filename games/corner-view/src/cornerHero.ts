@@ -1,9 +1,9 @@
 // Lena in a corner view: one 20x20 block a pose, drawn only on the four diagonal facings (down-right, down-left,
-// up-right, up-left), as a person seen from a corner of the room. He is never drawn facing the camera, which
-// would be wider than he is tall in this view. He is about 10 pixels wide and 19 tall, a little under one cube's
-// height, in the same teal beanie and orange hoodie as every Lena (colors from games/kit/starter/palette.ts).
+// up-right, up-left), as a person seen from a corner of the room. She is never drawn facing the camera, which
+// would be wider than she is tall in this view. She is about 10 pixels wide and 19 tall, a little under one cube's
+// height, in the same red beanie and orange hoodie as every Lena (colors from games/kit/starter/palette.ts).
 // The pictures are this game's cbl; it has two character files made from them: square (levels 1 and 2: the arrows
-// walk the square grid and he faces the nearest diagonal) and diagonal (level 3: each arrow walks a drawn diagonal).
+// walk the square grid and she faces the nearest diagonal) and diagonal (level 3: each arrow walks a drawn diagonal).
 import { CHARBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { set } from '@lewismoten/gamemaker-sandbox-tools/kit/actors';
@@ -16,21 +16,21 @@ import type { Pal } from '../../kit/starter/palette';
 
 const T = 255;
 
-/** The four facings, named by where he is heading on the screen. */
+/** The four facings, named by where she is heading on the screen. */
 export type Facing = 'dr' | 'dl' | 'ur' | 'ul';
 /** A step: 0 and 1 are the two strides, 2 is standing. */
 type Step = 0 | 1 | 2;
 
 /**
- * One pose, 20x20. The right-hand facings are drawn; the left-hand ones are those mirrored. He is built from plain
- * rectangles so every part can be moved: a head and beanie of 7 rows (a third of his height), narrower than his
- * shoulders; one arm forward; the feet stepping along the diagonal he walks.
+ * One pose, 20x20. The right-hand facings are drawn; the left-hand ones are those mirrored. She is built from plain
+ * rectangles so every part can be moved: a head and beanie of 7 rows (a third of her height), narrower than her
+ * shoulders; one arm forward; the feet stepping along the diagonal she walks.
  */
 function pose(pal: Pal, facing: Facing, step: Step): Pixels {
   if (facing === 'dl') return pose(pal, 'dr', step).flipX();
   if (facing === 'ul') return pose(pal, 'ur', step).flipX();
   const { c, r } = pal;
-  const g = new Pixels(20, 20, T); // drawn with his head at the top; shifted down a row below, to leave room for the outline
+  const g = new Pixels(20, 20, T); // drawn with her head at the top; shifted down a row below, to leave room for the outline
   const skin = kitRamp(pal, 'skin');
   const teal = kitRamp(pal, 'hat');
   const white = r('white');
@@ -56,7 +56,7 @@ function pose(pal: Pal, facing: Facing, step: Step): Pixels {
   // the hoodie: its far side darker, its near side lit, a hem
   g.rect(6, 8, 8, 5, orange[3]).rect(6, 8, 2, 5, orange[2]).rect(12, 8, 2, 5, orange[4]).rect(6, 12, 8, 1, orange[1]);
   if (front) {
-    g.rect(10, 8, 1, 2, white[2]).rect(12, 8, 1, 2, white[2]); // the drawstrings, toward the way he faces
+    g.rect(10, 8, 1, 2, white[2]).rect(12, 8, 1, 2, white[2]); // the drawstrings, toward the way she faces
     g.rect(9, 11, 3, 1, orange[2]); // the pocket
   } else {
     g.rect(7, 8, 6, 1, orange[4]).rect(7, 9, 6, 1, orange[3]); // the back of the hood
@@ -66,8 +66,8 @@ function pose(pal: Pal, facing: Facing, step: Step): Pixels {
     g.rect(7, 5, 6, 3, skin[3]).rect(7, 5, 2, 3, hair[1]); // hair behind, the face turned toward the right
     g.set(10, 6, ink).set(12, 6, ink).set(11, 7, ink);
   } else {
-    g.rect(7, 5, 6, 3, hair[1]).rect(7, 5, 6, 1, hair[2]); // the back of his head
-    g.rect(12, 6, 1, 2, skin[2]); // a little of the cheek on the side he is turned to
+    g.rect(7, 5, 6, 3, hair[1]).rect(7, 5, 6, 1, hair[2]); // the back of her head
+    g.rect(12, 6, 1, 2, skin[2]); // a little of the cheek on the side she is turned to
   }
   // the beanie: a dome, a cuff, and a pom-pom toward the facing side
   g.rect(8, 2, 5, 1, teal[3]).rect(7, 3, 7, 1, teal[3]).rect(8, 2, 3, 1, teal[4]);
@@ -105,9 +105,9 @@ export const ARROW_FACING: Record<'up' | 'right' | 'down' | 'left', Facing> = { 
 
 /**
  * The hero's character file. With `diagonal` false the four arrows walk the square grid (up, right, down, left) and
- * he faces the nearest diagonal. With `diagonal` true each arrow walks one diagonal of the drawn floor, every frame
- * of its sequence moving him both across and down: Up is up-right, Right is down-right, Down is down-left and Left
- * is up-left. Space has nothing to do (nothing pulls him down).
+ * she faces the nearest diagonal. With `diagonal` true each arrow walks one diagonal of the drawn floor, every frame
+ * of its sequence moving her both across and down: Up is up-right, Right is down-right, Down is down-left and Left
+ * is up-left. Space has nothing to do (nothing pulls her down).
  */
 export function buildCornerHero(cb: Book, diagonal: boolean): Character {
   const ch = newCharacter();

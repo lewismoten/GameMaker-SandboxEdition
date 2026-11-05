@@ -5,7 +5,7 @@
 //      is a scene link back to this same scene, so the level starts over from the way in.
 //   2. Ways Back: three pits, each with a way out built into it (a ladder, steps of planks, steps of
 //      solid blocks), so nobody needs a post. The better fix for a trap is not to build one.
-// Every room is closed in by hedges you can see, so Mia is never stopped by something he can't.
+// Every room is closed in by hedges you can see, so Mia is never stopped by something she can't.
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';

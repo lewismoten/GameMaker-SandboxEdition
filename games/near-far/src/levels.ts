@@ -42,7 +42,7 @@ export interface Room {
   plane: 'near' | 'far';
   /** Blocks that take Mara away when touched, by name. */
   exits: Record<string, Spot>;
-  /** The cell Mara lands on (his feet), which is also the middle of the screen. */
+  /** The cell Mara lands on (her feet), which is also the middle of the screen. */
   landing: Spot;
 }
 

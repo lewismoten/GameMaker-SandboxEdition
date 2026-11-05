@@ -10,7 +10,7 @@
 //      moment and settles back, with a small bolt that is only there while it is held.
 //
 // Every clock starts when the scene loads and nothing the player does can change one. Every room
-// ends in a visible hedge, so Lami is never stopped by something he can't see.
+// ends in a visible hedge, so Lami is never stopped by something she can't see.
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { Book, PULL } from '../../kit/starter/book';

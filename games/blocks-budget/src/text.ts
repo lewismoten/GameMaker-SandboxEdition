@@ -8,7 +8,7 @@ export const STORY = wrap(`
 
 A game gets 150 blocks to draw with, and no more.
 
-A small explorer in a teal beanie walks past a tower that is one big picture, then past a village built from a few blocks used again and again.
+A small explorer in a red beanie walks past a tower that is one big picture, then past a village built from a few blocks used again and again.
 
 Read the signs. Then open this game in Game-Maker and look at the Blocks tab.
 `);
@@ -20,7 +20,7 @@ export const HOWTO = wrap(`
 |SPACE         jump
 |F2            lives, score
 
-Pictures are not walls. Lena walks through a tower that is only drawn, but a brick wall stops him, so jump over it.
+Pictures are not walls. Lena walks through a tower that is only drawn, but a brick wall stops her, so jump over it.
 
 Coins add to your score. The door at the end of a level takes you on.
 

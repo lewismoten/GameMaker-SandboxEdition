@@ -24,7 +24,7 @@
     "accent": "#ffd23f",
     "ink": "#ffffff",
     "tagline": "A key costs three coins.",
-    "back": "A small explorer in a teal beanie gathers coins and visits a stall. A key costs three, and with two the stall does nothing. Pay, and it takes three and keeps the rest of your Money for later. Read the signs, then open the game in Game-Maker and change a price.",
+    "back": "A small explorer in a pink beanie gathers coins and visits a stall. A key costs three, and with two the stall does nothing. Pay, and it takes three and keeps the rest of your Money for later. Read the signs, then open the game in Game-Maker and change a price.",
     "features": ["Signs in the levels explain each idea", "A stall sells a key and says SOLD", "Made to be copied and taken apart"],
     "shots": [
       ["one.map", 22, 6],

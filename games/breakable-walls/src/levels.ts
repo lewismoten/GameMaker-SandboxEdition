@@ -7,7 +7,7 @@
 //      (the mistake), then ordinary coins that become air and pay once, then a crate wall to the exit.
 //   3. Spinning Gems: gems that turn in four frames. Every frame has the same touch, so a gem goes
 //      whichever frame it is caught in. A crate wall hides a stack of them.
-// Every room is closed in by hedges you can see, so Yana is never stopped by something he can't.
+// Every room is closed in by hedges you can see, so Yana is never stopped by something she can't.
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';

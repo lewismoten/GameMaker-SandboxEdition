@@ -1,7 +1,7 @@
 // OVERHEAD's two levels, both drawn from above with gravity off (every block has Gravity "none").
 //
-//   1. The Room: one map (one.map), a room 26 x 14 blocks with scrolling on. Lami faces the way he walks, the walls
-//      and furniture you can see are solid, and a door in the right-hand wall takes him on.
+//   1. The Room: one map (one.map), a room 26 x 14 blocks with scrolling on. Lami faces the way she walks, the walls
+//      and furniture you can see are solid, and a door in the right-hand wall takes her on.
 //   2. The Four Roads: one map (world.map) of five 16 x 10 areas, each its own scene with scrolling off, like the
 //      windows of ROOMS ON ONE MAP. Meadow, Woods, Village and Pond are joined in a ring by their map edges: the
 //      road runs off the edge of one area and a scene link (a link on the edge blocks) lands Lami in the middle of the
@@ -23,7 +23,7 @@ const at = (x: number, y: number): Spot => [x + ORIGIN, y + ORIGIN];
 const SIGNS = {
   // the room
   arrows: ['arrows', 'THE ARROWS WALK UP, DOWN, LEFT AND RIGHT', 4, 3, 'floor'],
-  facing: ['facing', 'LAMI TURNS TO FACE THE WAY HE WALKS', 4, 3, 'floor'],
+  facing: ['facing', 'LAMI TURNS TO FACE THE WAY SHE WALKS', 4, 3, 'floor'],
   solid: ['solid', 'FURNITURE IS SOLID. WALK ROUND IT', 4, 3, 'floor'],
   wallsign: ['wallsign', 'SEE A WALL? IT IS A WALL. DOOR →', 4, 3, 'floor'],
   // the roads

@@ -24,7 +24,7 @@
     "accent": "#ffd23f",
     "ink": "#ffffff",
     "tagline": "A shadow is only pixels.",
-    "back": "A small explorer in a teal beanie walks a courtyard where everything has a shadow. A game has no see-through colors, so a shadow is painted into the picture of the thing that casts it. A solid one is a dark patch. A dithered one is a checkerboard that lets the ground show through. A hop makes the shadow shrink, and a hovering bee gets a shadow block of its own. Read the signs, then open the game in Game-Maker and look at the frames.",
+    "back": "A small explorer in a green beanie walks a courtyard where everything has a shadow. A game has no see-through colors, so a shadow is painted into the picture of the thing that casts it. A solid one is a dark patch. A dithered one is a checkerboard that lets the ground show through. A hop makes the shadow shrink, and a hovering bee gets a shadow block of its own. Read the signs, then open the game in Game-Maker and look at the frames.",
     "features": [
       "Level 1 paints the same yard with a solid shadow, then a dithered one",
       "Level 2 has three hops: no shadow, one that never changes, one that shrinks",

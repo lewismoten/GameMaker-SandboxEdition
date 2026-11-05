@@ -3,7 +3,7 @@
   "howDoI": [
     {
       "id": "wrap",
-      "q": "How do I make the map wrap, so my hero comes in at the top when he walks off the bottom?",
+      "q": "How do I make the map wrap, so my hero comes in at the top when she walks off the bottom?",
       "scene": 2,
       "x": 48,
       "y": 93,
@@ -61,7 +61,7 @@
     },
     {
       "head": "How this level is made",
-      "html": "<h1>How level 1 is made</h1><ul><li><b>The map wraps.</b> That is the engine, not a setting. A map is always 100 blocks across and 100 down, and a hero or the view that goes off one edge comes in at the opposite edge. Nothing in this game turns it on.</li><li><b>The road.</b> Open <b>one.map</b> in the map editor. It is a column of <b>path</b> blocks five wide, with two <b>hedge</b> blocks on each side. The hedge is solid, so it stops Mia. The road starts in the middle of the map and runs down 99 rows, past the bottom edge, and on to the top and down again, until it is back beside where it began.</li><li><b>The edge.</b> The blocks <b>seamTop</b> and <b>seamLeft</b> are <b>path</b> with a dashed white line along one side. They sit on the map's first row and first column, wherever the road crosses them. The line is only a picture; the engine marks nothing there.</li><li><b>The end.</b> A row of <b>hedge</b> closes the road behind the start, and a row of <b>exitBottom</b> blocks with <b>exitTop</b> above them closes it at the finish. Each of the five door cells has its own scene link to the next level in <b>dw.gam</b>, so any way Mia walks across the row takes him on.</li><li><b>The signs.</b> They are ordinary blocks with words in their pictures, set on the road.</li></ul>"
+      "html": "<h1>How level 1 is made</h1><ul><li><b>The map wraps.</b> That is the engine, not a setting. A map is always 100 blocks across and 100 down, and a hero or the view that goes off one edge comes in at the opposite edge. Nothing in this game turns it on.</li><li><b>The road.</b> Open <b>one.map</b> in the map editor. It is a column of <b>path</b> blocks five wide, with two <b>hedge</b> blocks on each side. The hedge is solid, so it stops Mia. The road starts in the middle of the map and runs down 99 rows, past the bottom edge, and on to the top and down again, until it is back beside where it began.</li><li><b>The edge.</b> The blocks <b>seamTop</b> and <b>seamLeft</b> are <b>path</b> with a dashed white line along one side. They sit on the map's first row and first column, wherever the road crosses them. The line is only a picture; the engine marks nothing there.</li><li><b>The end.</b> A row of <b>hedge</b> closes the road behind the start, and a row of <b>exitBottom</b> blocks with <b>exitTop</b> above them closes it at the finish. Each of the five door cells has its own scene link to the next level in <b>dw.gam</b>, so any way Mia walks across the row takes her on.</li><li><b>The signs.</b> They are ordinary blocks with words in their pictures, set on the road.</li></ul>"
     },
     {
       "head": "Level 2: Tilted",

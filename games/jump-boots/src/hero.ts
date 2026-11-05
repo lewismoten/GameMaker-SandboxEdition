@@ -1,6 +1,6 @@
 // BOOTS AND JET PACK's heroes: the Starter hero (kit/starter/heroChar.ts) twice.
-//   hero.chr   level 1: Neka as he is. His jump (sequence 9) is a push upward that adds to his speed (momentum),
-//              and its uses are unlimited, so every tap in the air lifts him again: a jet pack.
+//   hero.chr   level 1: Neka as she is. Her jump (sequence 9) is a push upward that adds to her speed (momentum),
+//              and its uses are unlimited, so every tap in the air lifts her again: a jet pack.
 //   hero2.chr  level 2: the jump moves to sequence 17, whose meter is 2. Each tap that starts it spends one,
 //              and with none left Space does nothing until a boot charge fills it again.
 // Why a different sequence: the game keeps one set of counters from the first level on. A sequence that the

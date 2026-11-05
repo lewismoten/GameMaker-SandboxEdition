@@ -10,8 +10,8 @@
 //      is level with the floor, so Lena walks over it.
 //   2. Slow and Soft: two crates stacked in the tunnel with Pip on top. Pip is slow (the Speed of its step
 //      down is small) and soft (its picture is not solid), so after the bump it drifts down two blocks,
-//      through Lena if he walks on. No hole this time.
-// Both rooms are closed in by walls you can see, so Lena is never stopped by something he can't.
+//      through Lena if she walks on. No hole this time.
+// Both rooms are closed in by walls you can see, so Lena is never stopped by something she can't.
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';

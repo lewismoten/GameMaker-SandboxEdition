@@ -1,6 +1,6 @@
 // PICK IT UP's hero: Mara from the kit, plus
-//   3  PICKUP  P  takes the object block he is standing in into the pack (ten places)       (Game-Maker's sequence 3)
-//   4  DROP    D  opens the pack: arrows choose a place, Enter puts it down where he stands  (Game-Maker's sequence 4)
+//   3  PICKUP  P  takes the object block she is standing in into the pack (ten places)       (Game-Maker's sequence 3)
+//   4  DROP    D  opens the pack: arrows choose a place, Enter puts it down where she stands  (Game-Maker's sequence 4)
 //   14 FLAME   Enter  throws a flame   only while a flame item is in the pack  (the sequence is tied to that block)
 //   15 STAR    Enter  throws a star    only while a star item is in the pack
 //   17 NONE    Enter  a short shrug and a low blip: nothing to throw             (never tied, never used up)
@@ -32,7 +32,7 @@ export const HERO_HIT_POINTS = 50;
 export const HERO_LIVES = 3;
 export { SEQ_FLAME, SEQ_NONE, SEQ_STAR };
 
-/** The kit's hero blocks, plus his three throw poses again with the star in his hand turned to a flame. */
+/** The kit's hero blocks, plus her three throw poses again with the star in her hand turned to a flame. */
 export function buildItemHeroBlocks(pal: Pal): Book {
   const book = buildHeroBlocks(pal);
   const gold = pal.r('gold');

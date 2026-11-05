@@ -8,7 +8,7 @@
 //   FLY      the bird flapping up and away along a path, gone when the path ends (`end` -1).
 // What the engine does (code/GM/PLAYGAME.C): when two monsters overlap the one with less power
 // dies and, if it has a `newmon`, turns into that monster in the same place. The character cannot
-// jump unless a sequence on a key pushes him upward, and a kart has no such sequence.
+// jump unless a sequence on a key pushes her upward, and a kart has no such sequence.
 import { SOLBOT, SOLLEF, SOLRIG, SOLTOP, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import type { Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { corner, mon } from '@lewismoten/gamemaker-sandbox-tools/kit/actors';

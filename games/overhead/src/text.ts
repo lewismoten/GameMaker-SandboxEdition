@@ -8,9 +8,9 @@ export const STORY = wrap(`
 
 A map seen from above.
 
-First Lami walks around a room. The walls and the furniture you can see are the ones that stop him.
+First Lami walks around a room. The walls and the furniture you can see are the ones that stop her.
 
-Then he sets out along four roads. Each road runs off the edge of the screen and into the next place, and one house has a door.
+Then she sets out along four roads. Each road runs off the edge of the screen and into the next place, and one house has a door.
 
 Read the signs. Then open this game in Game-Maker and look at how the places link.
 `);
@@ -46,7 +46,7 @@ export const WON = wrap(`
 
 Two levels, from above.
 
-A top-down map is an ordinary map: gravity off, a hero with a picture for each way he faces, and solid blocks drawn like what they are.
+A top-down map is an ordinary map: gravity off, a hero with a picture for each way she faces, and solid blocks drawn like what they are.
 
 An overworld is several of those, joined. A link on the blocks at a map's edge lands you in the middle of the next area, and a door is the same kind of link.
 

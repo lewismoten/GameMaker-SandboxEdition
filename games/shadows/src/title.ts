@@ -7,7 +7,7 @@ import type { Pal } from '../../kit/starter/palette';
 import { W } from '../../kit/starter/screens';
 import { backdrop, frameOf, lookOf } from '../../kit/starter/titleStyles';
 
-/** `hero` is Mara with his dithered shadow; `pip`, `bee` and `shade` are 20x20 critter pictures. Everyone stands on the ground line (y 160) with their shadow just under it. */
+/** `hero` is Mara with her dithered shadow; `pip`, `bee` and `shade` are 20x20 critter pictures. Everyone stands on the ground line (y 160) with their shadow just under it. */
 export function titlePicture(pal: Pal, hero: Pixels, pip: Pixels, bee: Pixels, shade: Pixels, name: string, tagline: string): Pixels {
   const look = lookOf(pal, 'stage');
   const p = backdrop(pal, 'stage');

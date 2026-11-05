@@ -8,7 +8,7 @@ export const STORY = wrap(`
 
 Some friends tag along.
 
-A small explorer in a teal beanie crosses two short rooms with Puff, a little winged pup, who flies after him.
+A small explorer in a red beanie crosses two short rooms with Puff, a little winged pup, who flies after her.
 
 Read the signs. Run ahead, stop, and watch what Puff does. In the second room, see what a wall does to it.
 

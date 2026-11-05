@@ -8,7 +8,7 @@ export const STORY = wrap(`
 
 A game you can hear is a game that feels alive.
 
-A small explorer in a teal beanie has three short rooms to cross. The first plays one song, the second plays another, and the third is quiet. Coins, bags, hearts and spikes each make a sound of their own.
+A small explorer in a gold beanie has three short rooms to cross. The first plays one song, the second plays another, and the third is quiet. Coins, bags, hearts and spikes each make a sound of their own.
 
 Read the signs, and listen.
 

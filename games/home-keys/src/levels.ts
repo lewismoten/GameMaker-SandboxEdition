@@ -8,7 +8,7 @@
 //                    Space, then hold Right, is all it takes.
 //   3. Leap Shelves: two shelves of coins too high for a jump. E leaps up and right onto one, Q up and left
 //                    onto the other. They are extra: the way to the door is flat.
-// Every edge is a hedge or a wall you can see, so Mara is never stopped by something he can't.
+// Every edge is a hedge or a wall you can see, so Mara is never stopped by something she can't.
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';

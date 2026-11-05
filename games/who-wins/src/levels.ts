@@ -7,7 +7,7 @@
 //   2. Your Star: the big one stands still in front of the tunnel. A star thrown at it is used up
 //      (it is stronger than the star). Lami steps past the big one, which is friendly, and throws:
 //      the star (stronger than a mint pip and a purple grump) pops both, one star each.
-// Both rooms are closed in by brick walls you can see, so Lami is never stopped by something he can't.
+// Both rooms are closed in by brick walls you can see, so Lami is never stopped by something she can't.
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';

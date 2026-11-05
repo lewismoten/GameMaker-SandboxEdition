@@ -9,7 +9,7 @@
 //      little shelters in the tunnel (no wind in them) are somewhere to wait.
 //
 // Every clock starts when the scene loads and nothing the player does can change one (the manual
-// says so). Both rooms end in a visible hedge, so Mia is never stopped by something he can't see,
+// says so). Both rooms end in a visible hedge, so Mia is never stopped by something she can't see,
 // and a tunnel's ends are open.
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { Book, PULL, SOLID as SOLID_ALL } from '../../kit/starter/book';
@@ -50,7 +50,7 @@ export function finishBlocks(l: Pick<Level, 'book' | 'timed'>): Block[] {
 }
 
 const AIR = { grav: PULL.down };
-/** The pull of each kind of cell: up the shaft in level 1, left along the tunnel in level 2 (down too, so he still falls). */
+/** The pull of each kind of cell: up the shaft in level 1, left along the tunnel in level 2 (down too, so she still falls). */
 const UP = { grav: PULL.up };
 const LEFT = { grav: PULL.left | PULL.down };
 const PULL_OF = { calm: AIR, flutter: AIR };

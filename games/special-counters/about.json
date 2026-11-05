@@ -24,7 +24,7 @@
     "accent": "#ffd23f",
     "ink": "#ffffff",
     "tagline": "A gold key will not open a green door.",
-    "back": "A small explorer in a teal beanie keeps a spare key from one level to the next, until a green door will not take it. Counters carry across levels and have numbers, not names, so each door answers only to its own. Read the signs, then open the game in Game-Maker and copy a key and a door onto a counter of your own.",
+    "back": "A small explorer in a gold beanie keeps a spare key from one level to the next, until a green door will not take it. Counters carry across levels and have numbers, not names, so each door answers only to its own. Read the signs, then open the game in Game-Maker and copy a key and a door onto a counter of your own.",
     "features": ["Signs in the levels explain each idea", "A spare key goes with you to the next level", "Made to be copied and taken apart"],
     "shots": [
       ["one.map", 22, 6],

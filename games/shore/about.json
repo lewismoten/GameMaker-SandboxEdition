@@ -24,7 +24,7 @@
     "accent": "#ffd23f",
     "ink": "#ffffff",
     "tagline": "Water that moves itself.",
-    "back": "A small explorer in a teal beanie crosses a pier over a sea and walks round a beach. A block can turn into another block a few ticks later, and that is all the water is: a loop of four blocks, laid over the whole sea, and loops of their own where the sand meets the waves. Read the signs, then open the game in Game-Maker and make some water of your own.",
+    "back": "A small explorer in a gold beanie crosses a pier over a sea and walks round a beach. A block can turn into another block a few ticks later, and that is all the water is: a loop of four blocks, laid over the whole sea, and loops of their own where the sand meets the waves. Read the signs, then open the game in Game-Maker and make some water of your own.",
     "features": [
       "Level 1: one animated block makes a whole sea move; four starts of the same loop make ripples roll",
       "Level 2: every shore block is its own loop, with round corners, so waves run up the sand and back",

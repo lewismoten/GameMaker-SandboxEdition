@@ -8,7 +8,7 @@ export const STORY = wrap(`
 
 Leave a little to chance.
 
-A small explorer in a teal beanie finds a die rolling on the ground. Touch it and it stops. Its face picks the door.
+A small explorer in a green beanie finds a die rolling on the ground. Touch it and it stops. Its face picks the door.
 
 Watch it roll. Then touch it.
 

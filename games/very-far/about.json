@@ -24,7 +24,7 @@
     "accent": "#ffd23f",
     "ink": "#ffffff",
     "tagline": "A long way off, in a few pixels.",
-    "back": "A small explorer in a teal beanie walks a road up close, then the same road on a far ridge where he is only a few pixels tall, with small slow steps and pale hills. Read the signs, then open the game in Game-Maker and change how far a step goes.",
+    "back": "A small explorer in a blue beanie walks a road up close, then the same road on a far ridge where he is only a few pixels tall, with small slow steps and pale hills. Read the signs, then open the game in Game-Maker and change how far a step goes.",
     "features": ["Signs in the levels explain each idea", "The same walk up close and far away", "Made to be copied and taken apart"],
     "shots": [
       ["close.map", 0, 0],

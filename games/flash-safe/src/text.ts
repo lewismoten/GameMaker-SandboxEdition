@@ -8,7 +8,7 @@ export const STORY = wrap(`
 
 Some players can get sick from fast flashing, and some people have seizures from flashing light.
 
-You can make a game that stays easy on the eyes. A small explorer in a teal beanie has three short rooms that show how.
+You can make a game that stays easy on the eyes. A small explorer in a red beanie has three short rooms that show how.
 
 Show a hit without a flash. Blink slowly and small. Hold a storm instead of strobing it.
 `);

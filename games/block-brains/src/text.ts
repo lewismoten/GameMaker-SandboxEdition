@@ -8,7 +8,7 @@ export const STORY = wrap(`
 
 Blocks that count to three.
 
-A small explorer in a teal beanie meets gates that open one after another, each when its lamp lights.
+A small explorer in a green beanie meets gates that open one after another, each when its lamp lights.
 
 Watch the lamps. Walk through each gate in its turn.
 

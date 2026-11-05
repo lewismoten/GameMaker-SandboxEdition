@@ -8,7 +8,7 @@ export const STORY = wrap(`
 
 Crates in the way, and nothing to do but bump them.
 
-A small explorer in a teal beanie has three short levels to cross. Walls of wooden crates stand on the path. Walk into one and it turns to rubble.
+A small explorer in a pink beanie has three short levels to cross. Walls of wooden crates stand on the path. Walk into one and it turns to rubble.
 
 Read the signs. A block can turn into another block when it is touched, and that one idea makes crates, coins and spinning gems.
 

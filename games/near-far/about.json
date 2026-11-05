@@ -24,7 +24,7 @@
     "accent": "#ffd23f",
     "ink": "#ffffff",
     "tagline": "Step into the distance.",
-    "back": "A small explorer in a teal beanie steps through a gap in a hedge into the distance, where everything is small and pale, and walks past a cliff that blocks the way near. Read the signs, then open the game in Game-Maker and move where a trail lands.",
+    "back": "A small explorer in a green beanie steps through a gap in a hedge into the distance, where everything is small and pale, and walks past a cliff that blocks the way near. Read the signs, then open the game in Game-Maker and move where a trail lands.",
     "features": ["Signs in the levels explain each idea", "A near scene and a far scene, drawn at two sizes", "Made to be copied and taken apart"],
     "shots": [
       ["near1.map", 0, 0],

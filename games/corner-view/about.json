@@ -7,7 +7,7 @@
   "year": 1994,
   "price": "Free",
   "version": "2.0",
-  "blurb": "Three rooms drawn as if seen from one corner: a floor of diamonds, cubes with a top and two sides, a stair of towers and a diamond-shaped floor. It is all pictures cut into square blocks, so in the first two rooms Lena walks on the squares and goes round the diagonal wall in square steps. In the third his arrows each walk one diagonal of the floor, the way the room is laid out. Signs say how. Play it, then open it in Game-Maker and look at the blocks.",
+  "blurb": "Three rooms drawn as if seen from one corner: a floor of diamonds, cubes with a top and two sides, a stair of towers and a diamond-shaped floor. It is all pictures cut into square blocks, so in the first two rooms Lena walks on the squares and goes round the diagonal wall in square steps. In the third her arrows each walk one diagonal of the floor, the way the room is laid out. Signs say how. Play it, then open it in Game-Maker and look at the blocks.",
   "exe": "CORNER.EXE",
   "dosName": "CORNER",
   "sound": "sb",
@@ -24,7 +24,7 @@
     "accent": "#ffd23f",
     "ink": "#ffffff",
     "tagline": "Looks 3D. Walks flat.",
-    "back": "A small explorer in a teal beanie crosses three rooms drawn from a corner: a floor of diamonds, cubes with tops and sides, a stair of towers, a floor shaped like a diamond. It is one painting cut into square blocks, so in the first two rooms he walks the squares, not the diamonds, and in the third each arrow walks a diagonal. Read the signs, then open the game in Game-Maker and look at the blocks.",
+    "back": "A small explorer in a red beanie crosses three rooms drawn from a corner: a floor of diamonds, cubes with tops and sides, a stair of towers, a floor shaped like a diamond. It is one painting cut into square blocks, so in the first two rooms she walks the squares, not the diamonds, and in the third each arrow walks a diagonal. Read the signs, then open the game in Game-Maker and look at the blocks.",
     "features": [
       "A floor of diamonds and cubes, drawn on the square grid",
       "Lena walks the four arrow ways round a diagonal wall, then the four diagonals",

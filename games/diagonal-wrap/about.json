@@ -24,7 +24,7 @@
     "accent": "#ffd23f",
     "ink": "#ffffff",
     "tagline": "The long way round.",
-    "back": "A small explorer in a teal beanie follows a road between hedges. The map wraps at every edge: walk off the bottom and you come in at the top. Laid straight, the road wraps once. Tilted a little, the same road goes round three times and is three times as far. Read the signs, then open the game in Game-Maker and tilt a road of your own.",
+    "back": "A small explorer in a purple beanie follows a road between hedges. The map wraps at every edge: walk off the bottom and you come in at the top. Laid straight, the road wraps once. Tilted a little, the same road goes round three times and is three times as far. Read the signs, then open the game in Game-Maker and tilt a road of your own.",
     "features": [
       "Level 1 runs straight down the map and wraps once; level 2 is the same road tilted, so it wraps three times",
       "A dashed line marks the map's edge on the road",

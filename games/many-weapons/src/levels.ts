@@ -6,7 +6,7 @@
 //   2. Star or Flame: a wall with a tunnel, and two frosty grumps in it that a star cannot melt. A flame
 //                   pouch sits up on a ledge. Flames go before stars, and a star is thrown when the flames
 //                   are gone.
-// Both rooms are closed in by brick walls you can see, so Lena is never stopped by something he can't.
+// Both rooms are closed in by brick walls you can see, so Lena is never stopped by something she can't.
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';

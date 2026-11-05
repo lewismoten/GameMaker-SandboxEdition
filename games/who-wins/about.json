@@ -7,7 +7,7 @@
   "year": 1994,
   "price": "Free",
   "version": "1.1",
-  "blurb": "Two short levels about power. Every monster has one number, and when two meet, the stronger one wins. A big red gumdrop pops the small ones blocking a tunnel by itself, then Lami throws stars and finds out which foes his star can pop and which one is too strong. Signs in the levels say how. Play it, then open it in Game-Maker and change a power.",
+  "blurb": "Two short levels about power. Every monster has one number, and when two meet, the stronger one wins. A big red gumdrop pops the small ones blocking a tunnel by itself, then Lami throws stars and finds out which foes her star can pop and which one is too strong. Signs in the levels say how. Play it, then open it in Game-Maker and change a power.",
   "exe": "WHOWINS.EXE",
   "dosName": "WHOWINS",
   "sound": "sb",
@@ -24,7 +24,7 @@
     "accent": "#ffd23f",
     "ink": "#ffffff",
     "tagline": "The stronger one wins.",
-    "back": "A small explorer in a teal beanie crosses two short rooms. Two small gumdrops block a tunnel, and a big red one is stronger than they are. Watch who wins, throw a star to find out how strong it is, then open the game in Game-Maker and change a power.",
+    "back": "A small explorer in a red beanie crosses two short rooms. Two small gumdrops block a tunnel, and a big red one is stronger than they are. Watch who wins, throw a star to find out how strong it is, then open the game in Game-Maker and change a power.",
     "features": ["Signs in the levels explain each idea", "Every monster has a power, and the stronger one wins", "Made to be copied and taken apart"],
     "shots": [
       ["one.map", 26, 6],

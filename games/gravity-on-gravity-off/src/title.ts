@@ -1,5 +1,5 @@
 // GRAVITY ON, GRAVITY OFF's own title picture, in the Worlds That Push Back look (the kit's breeze): Rima from the side with a
-// down arrow beside him, and Rima from above on a patch of lawn with an arrow on each side.
+// down arrow beside her, and Rima from above on a patch of lawn with an arrow on each side.
 import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { scaleBlit } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 import { bevel } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
@@ -29,12 +29,12 @@ export function titlePicture(pal: Pal, side: Pixels, above: Pixels, tagline: str
   const rx = Math.round((W - ribbon) / 2);
   bevel(p, rx, 50, ribbon, 14, pal.r(look.ribbon), 3, 2);
   text(p, rx + 10, 54, tagline, look.ribbonText);
-  // gravity on: Rima stands on the floor, and an arrow shows which way he is pulled
+  // gravity on: Rima stands on the floor, and an arrow shows which way she is pulled
   p.rect(44, 158, 32, 3, look.floorShadow);
   scaleBlit(p, side, 40, 160 - 80 - 4, 2);
   arrow(p, 104, 130, 'down', 14, pal.c('gold', 5));
   p.rect(103, 100, 3, 18, pal.c('gold', 5));
-  // gravity off: Rima from above on a patch of lawn, an arrow for each way he can walk
+  // gravity off: Rima from above on a patch of lawn, an arrow for each way she can walk
   const g = pal.r('grass');
   bevel(p, 192, 88, 96, 72, g, 2, 2);
   scaleBlit(p, above, 220, 104, 2);

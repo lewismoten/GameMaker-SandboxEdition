@@ -24,7 +24,7 @@
     "accent": "#ffd23f",
     "ink": "#ffffff",
     "tagline": "Which lever goes with what?",
-    "back": "A small explorer in a teal beanie finds a bridge of dotted planks and a few levers. Two levers add up to a whole bridge, and a third is wired to a trap door that only drops you back to the start. Nothing is hurt, nothing is lost, and every lever works through counters you can change. Read the signs, then open the game in Game-Maker and rewire it.",
+    "back": "A small explorer in a blue beanie finds a bridge of dotted planks and a few levers. Two levers add up to a whole bridge, and a third is wired to a trap door that only drops you back to the start. Nothing is hurt, nothing is lost, and every lever works through counters you can change. Read the signs, then open the game in Game-Maker and rewire it.",
     "features": ["Signs in the levels explain each idea", "Levers fill counters and planks and a hatch spend them", "Made to be copied and taken apart"],
     "shots": [
       ["one.map", 18, 6],
