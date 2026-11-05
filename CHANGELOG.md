@@ -11,6 +11,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Added
 
+- The Download chooser has a Pocket Player (microSD) choice: the game as one .gmp file to copy into the pocket folder on the Pocket Player's microSD card, with plain notes on what the board leaves out (Sound Blaster sounds, music) or may not manage.
 - A graduation that has opened but not been earned shows first on the Starters tab, in a gold "Ready to graduate" strip with a Graduate button, and moves back to the Graduations section once earned.
 - The Starters tab has a Level picker (100s First Steps, 200s Moving and Pushing, and so on) that shows one stage's courses and its graduation, together with the Show picker. It is remembered in the browser.
 - A new Starter, Under the Hood (course 617), walks through what the DOS player is made of in three short levels: a row of bytes with the four that spell Play at their real offset, a word that must be the same size as its slot, and backing up first. None of its levels patches anything; its pages link to the Programmer's Guide chapter on patching.
