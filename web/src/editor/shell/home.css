@@ -1137,6 +1137,19 @@ a.button.with-ico {
   color: var(--muted);
 }
 
+/* Damaged copies (damagedCopiesDialog.ts): a long list scrolls inside the dialog */
+.dc-list {
+  max-height: 45vh;
+  overflow-y: auto;
+}
+
+.dc-acts {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
 /* a Starter played to its ending: a check pill at the bottom right of its picture (homeDone.ts);
    dark green with white words and a white edge, so it reads over any picture, light or dark */
 .tile-done {

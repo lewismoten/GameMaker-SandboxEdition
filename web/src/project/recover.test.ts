@@ -42,7 +42,7 @@ describe('recoverRecord', () => {
     const ok = recoverRecord('a', good({ companion: JSON.parse(new TextDecoder().decode(serializeCompanion(emptyCompanion()))) }));
     expect(ok.damage).toEqual([]);
   });
-  it('names a missing .gam and a file the .gam names that is gone', () => {
+  it('names a missing main .gam', () => {
     const r = recoverRecord('a', good({ files: { 'x.gif': new Uint8Array([1]) } }));
     expect(r.damage[0]).toMatchObject({ kind: 'missing', file: 'game.gam' });
     expect(recoverRecord('a', 5).damage[0].kind).toBe('record');
@@ -81,13 +81,13 @@ describe('loadProject with damage', () => {
     vi.useFakeTimers();
     const rows = new Map<string, unknown>([['a', good({ files: { 'game.gam': gam, 'bad.gif': 'oops' } })]]);
     vi.stubGlobal('indexedDB', fakeIdb(rows));
-    const p = loadProject('a');
+    const p = loadProject('a', { keepCopy: true });
     await vi.runAllTimersAsync();
     const r = (await p)!;
     expect(r.damage).toHaveLength(1);
     expect(r.files.names()).toEqual(['game.gam']);
     expect(rows.get('a~damaged')).toMatchObject({ id: 'a~damaged', name: 'Test (damaged copy)', files: { 'bad.gif': 'oops' } });
-    const again = loadProject('a');
+    const again = loadProject('a', { keepCopy: true });
     await vi.runAllTimersAsync();
     await again;
     vi.useRealTimers();
