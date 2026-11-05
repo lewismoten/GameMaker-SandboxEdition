@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { browserName, copyText, formatDetails, routeOf } from './details';
-import { ignorable } from './watch';
+import { ignorable, refusedChange } from './watch';
+import { ReadOnlyError } from '../editor/core/readOnly';
 
 describe('error details', () => {
   it('names the browser only', () => {
@@ -28,5 +29,11 @@ describe('error details', () => {
     expect(got).toBe('a');
     expect(await copyText('a', { writeText: () => Promise.reject(new Error('no')) })).toBe(false);
     expect(await copyText('a', undefined)).toBe(false);
+  });
+
+  it('leaves out a look-only game refusing a change (its own dialog says so)', () => {
+    expect(refusedChange(new ReadOnlyError('one.map'))).toBe(true);
+    expect(refusedChange(new Error('one.map'))).toBe(false);
+    expect(refusedChange('ReadOnlyError')).toBe(false);
   });
 });
