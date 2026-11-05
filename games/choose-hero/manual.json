@@ -42,14 +42,6 @@
       "level": 2
     },
     {
-      "id": "look",
-      "q": "How do I draw a second version of the hero?",
-      "scene": 4,
-      "x": 3,
-      "y": 15,
-      "level": 2
-    },
-    {
       "id": "keep",
       "q": "How do I keep the hero I picked in a later scene?",
       "scene": 5,

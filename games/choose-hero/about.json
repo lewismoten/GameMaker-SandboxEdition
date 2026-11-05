@@ -31,16 +31,8 @@
       "A scene that names no character file keeps the hero you picked"
     ],
     "shots": [
-      [
-        "doors.map",
-        10,
-        2
-      ],
-      [
-        "climb.map",
-        12,
-        7
-      ]
+      ["doors.map", 10, 2],
+      ["climb.map", 12, 7]
     ],
     "rating": "Everyone"
   }

@@ -1,77 +1,77 @@
 {
- "version": 1,
- "game": "choose-hero",
- "rand": {
-  "seed": 1,
-  "per": "scene"
- },
- "segments": [
-  {
-   "scene": 2,
-   "keys": "AUsUyytLFMsrTTzNK00RzQNN"
+  "version": 1,
+  "game": "choose-hero",
+  "rand": {
+    "seed": 1,
+    "per": "scene"
   },
-  {
-   "scene": 4,
-   "keys": "AU0OzStNGs0rTRvNA0sAywM5ArkATSTNA00JOQK5Ds0TTQbNK00HzQM5ArkiTQ3NAzkCuSJNDs0DOQK5Ik0fzQNNQs0DTQ=="
-  },
-  {
-   "scene": 5,
-   "keys": "AU0bzStNKM0DTQM5ArkqzQNNFM0DTU3NA00="
-  }
- ],
- "chapters": [
-  {
-   "scene": 2,
-   "title": "Level 1: Two Doors"
-  },
-  {
-   "scene": 4,
-   "title": "Level 2: The Same Climb (Big Hops)"
-  },
-  {
-   "scene": 5,
-   "title": "Level 3: The Open Road (still Big Hops)"
-  }
- ],
- "timeline": {
-  "fps": 60,
-  "frames": 10282,
+  "segments": [
+    {
+      "scene": 2,
+      "keys": "AUsUyytLFMsrTTzNK00RzQNN"
+    },
+    {
+      "scene": 4,
+      "keys": "AU0OzStNGs0rTRvNA0sAywM5ArkATSTNA00JOQK5Ds0TTQbNK00HzQM5ArkiTQ3NAzkCuSJNDs0DOQK5Ik0fzQNNQs0DTQ=="
+    },
+    {
+      "scene": 5,
+      "keys": "AU0bzStNKM0DTQM5ArkqzQNNFM0DTU3NA00="
+    }
+  ],
   "chapters": [
-   {
-    "title": "Opening",
-    "frame": 0,
-    "time": 0
-   },
-   {
-    "title": "Story",
-    "frame": 896,
-    "time": 14933.333333333148
-   },
-   {
-    "title": "Level 1: Two Doors",
-    "frame": 2125,
-    "time": 35416.66666666724
-   },
-   {
-    "title": "Level 2: The Same Climb (Big Hops)",
-    "frame": 3308,
-    "time": 55133.33333333104
-   },
-   {
-    "title": "Level 3: The Open Road (still Big Hops)",
-    "frame": 5638,
-    "time": 93966.66666667112
-   },
-   {
-    "title": "Ending",
-    "frame": 6998,
-    "time": 116633.33333334439
-   },
-   {
-    "title": "Credits",
-    "frame": 9208,
-    "time": 153466.6666666689
-   }
-  ]
- }
+    {
+      "scene": 2,
+      "title": "Level 1: Two Doors"
+    },
+    {
+      "scene": 4,
+      "title": "Level 2: The Same Climb (Big Hops)"
+    },
+    {
+      "scene": 5,
+      "title": "Level 3: The Open Road (still Big Hops)"
+    }
+  ],
+  "timeline": {
+    "fps": 60,
+    "frames": 10282,
+    "chapters": [
+      {
+        "title": "Opening",
+        "frame": 0,
+        "time": 0
+      },
+      {
+        "title": "Story",
+        "frame": 896,
+        "time": 14933.333333333148
+      },
+      {
+        "title": "Level 1: Two Doors",
+        "frame": 2125,
+        "time": 35416.66666666724
+      },
+      {
+        "title": "Level 2: The Same Climb (Big Hops)",
+        "frame": 3308,
+        "time": 55133.33333333104
+      },
+      {
+        "title": "Level 3: The Open Road (still Big Hops)",
+        "frame": 5638,
+        "time": 93966.66666667112
+      },
+      {
+        "title": "Ending",
+        "frame": 6998,
+        "time": 116633.33333334439
+      },
+      {
+        "title": "Credits",
+        "frame": 9208,
+        "time": 153466.6666666689
+      }
+    ]
+  }
 }
