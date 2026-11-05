@@ -39,6 +39,17 @@ const homeButton = (id: string, label: string | RegExp, route = '/#/game/cd:nebu
   },
 });
 
+/** A button on the home page's Starters tab (the How do I…? questions, How it works). */
+const startersButton = (id: string, label: string | RegExp): Scene => ({
+  id,
+  open: async (p) => {
+    await web(p);
+    await p.getByRole('tab', { name: /Starters/ }).click({ timeout: 8000 });
+    await p.waitForTimeout(1500);
+    await p.getByRole('button', { name: label }).first().click({ timeout: 8000 });
+  },
+});
+
 /** Makes a starter game (the New game dialog's "Ready to play") and waits for its editor. */
 async function newProject(page: Page): Promise<void> {
   await web(page);
@@ -92,6 +103,8 @@ export const scenes: Scene[] = [
   homeButton('download', 'Download'),
   homeButton('saves-and-scores', /Saves/),
   homeButton('walkthrough', 'Walkthrough'),
+  startersButton('how-do-i', /How do I/),
+  startersButton('how-it-works', /How it works/),
   {
     id: 'new-game',
     open: async (p) => {
