@@ -147,7 +147,7 @@ function torchHall(): Level {
       .set(x, 10, 'pole.mid');
     things.push({ ring: 'flagA', x, y: 8, kind: 'flag' }, { ring: 'flagB', x: x + 1, y: 8, kind: 'flag' });
   }
-  return { file: 'hall', title: 'The Torch Hall', hint: 'Torches that pulse, then flicker, and flags.', pal, palFile: 'hall.pal', book, timed, map: m, things };
+  return { file: 'hall', title: 'The Torch Hall', hint: 'Torches that flicker, and flags.', pal, palFile: 'hall.pal', book, timed, map: m, things };
 }
 
 /** Level 2: the cliff and the waterfall, 60 blocks wide. */
