@@ -2,7 +2,7 @@
 //
 //   Level 1 (color alone): plateHot and plateSafe are the same flat plate, the same size, with the
 //     same three rivets; one is red and one is green, matched so a player who sees red and green
-//     alike (see games/kit/colorVision.ts) cannot tell them apart. The red one stings.
+//     alike (see the engine's gfx/colorVision.ts) cannot tell them apart. The red one stings.
 //   Level 2 (shape and brightness): spikeRed points and is dark; plateStripe is flat, light and
 //     striped. They sting or not by what they look like, in any color.
 //

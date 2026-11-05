@@ -6,7 +6,7 @@
 // Color Vision Deficiency", IEEE TVCG 15(6), 2009, severity 1.0 (the published tables, applied to
 // linear RGB). Achromatopsia is plain luminance. See NOTICE.md.
 
-import { MACHADO } from '../src/editor/editors/palette/machadoMatrices';
+import { MACHADO, linearToSrgb, srgbToLinear } from '@lewismoten/gamemaker-sandbox-engine/gfx/colorVision';
 
 /** 8-bit RGBA, row-major. */
 export interface Raster {
@@ -24,14 +24,8 @@ export const CVD: Record<string, Matrix> = {
 };
 export const FILTERS = [...Object.keys(CVD), 'achromatopsia'] as const;
 
-const toLinear = (v: number): number => {
-  const c = v / 255;
-  return c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
-};
-const fromLinear = (c: number): number => {
-  const v = Math.min(1, Math.max(0, c));
-  return Math.round(255 * (v <= 0.0031308 ? v * 12.92 : 1.055 * v ** (1 / 2.4) - 0.055));
-};
+const toLinear = (v: number): number => srgbToLinear(v / 255);
+const fromLinear = (c: number): number => Math.round(255 * linearToSrgb(c));
 
 /** Rec. 601 luma of gamma-encoded RGB, 0-255. */
 export const luma = (r: number, g: number, b: number): number => 0.299 * r + 0.587 * g + 0.114 * b;

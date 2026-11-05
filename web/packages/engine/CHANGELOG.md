@@ -9,6 +9,7 @@ Live sound control, a hook for life losses, and fixes to scrolling and picture d
 
 ### Added
 
+- Color-vision simulation (`gfx/colorVision`): the Machado, Oliveira and Fernandes matrices, sRGB and linear RGB, CIELAB and CIE76 delta E, one copy for the palette editor, the badge look-alike report and the games' color checks.
 - Player life-loss events, so a caller can watch for them without counting recorded playback.
 - Play's F10 shows an imported player's own About page and the build it was first made with.
 - Sparse FLI palette changes (only the colors a frame draws), and FLI clip options that leave out the ring frame or cut where a whole frame adds the fewest bytes.

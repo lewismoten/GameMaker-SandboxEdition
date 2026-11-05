@@ -1,12 +1,12 @@
 // Checks each level's two blocks (the one that stings and the safe one) the way a player who sees colors
-// differently would meet them: with the color-vision matrices of games/kit/colorVision.ts, are the two
+// differently would meet them: with the color-vision matrices of web/packages/engine/src/gfx/colorVision.ts, are the two
 // still told apart? A pair is told apart by color (mean delta E of 25 or more) or by shape (a fifth of
 // the block's cells differ in where they have ink). Level 1 must be told apart to normal eyes but NOT to
 // deuteranopia (the lesson is that it fails); level 2 must be told apart to every kind of vision.
 //   cd web && npx vite-node ../games/colors/tools/colorCheck.ts
 // A finding here is a suggestion for an author: it measures two flat blocks, not a whole screen, and it
 // cannot say how a person feels about a color.
-import { deltaE, simulate, type Rgb, type Vision } from '../../kit/colorVision';
+import { deltaEBytes as deltaE, simulateBytes as simulate, type Rgb, type Vision } from '@lewismoten/gamemaker-sandbox-engine/gfx/colorVision';
 import { skyOf } from '../../kit/starter/palette';
 import { buildLevels } from '../src/levels';
 

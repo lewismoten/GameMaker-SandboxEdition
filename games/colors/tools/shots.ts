@@ -1,12 +1,12 @@
 // Color-vision pictures of both levels (never on the disk): each level's whole map as you see it and as a
-// player with deuteranopia, protanopia or tritanopia sees it (games/kit/colorVision.ts), as PNGs, plus a
+// player with deuteranopia, protanopia or tritanopia sees it (web/packages/engine/src/gfx/colorVision.ts), as PNGs, plus a
 // zoomed row of the plates for each. Used to check level 2 and for the progress shots.
 //   cd web && npx vite-node ../games/colors/tools/shots.ts <outDir>
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { writePng } from '@lewismoten/gamemaker-sandbox-tools/kit/png';
 import { renderRegion } from '@lewismoten/gamemaker-sandbox-tools/kit/levelPicture';
-import { simulatePalette, type Vision } from '../../kit/colorVision';
+import { simulatePalette, type Vision } from '@lewismoten/gamemaker-sandbox-engine/gfx/colorVision';
 import { ORIGIN } from '../../kit/starter/map';
 import { buildMonsterBlocks, buildMonsters } from '../../kit/starter/monsters';
 import { PLATE_X, ROW, buildLevels } from '../src/levels';
