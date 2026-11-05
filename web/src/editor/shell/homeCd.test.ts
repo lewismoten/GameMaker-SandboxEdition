@@ -14,8 +14,15 @@ vi.stubGlobal(
   },
 );
 const gam = new Uint8Array([1, 2, 3, 4, 5, 6, 7]);
-const entry = (id: string, kind: 'gameware' | 'shareware', extra: Partial<CatalogEntry> = {}): CatalogEntry =>
-  ({ id, title: id.toUpperCase(), kind, path: id, gam: `${id}.gam`, files: [], ...extra });
+const entry = (id: string, kind: 'gameware' | 'shareware', extra: Partial<CatalogEntry> = {}): CatalogEntry => ({
+  id,
+  title: id.toUpperCase(),
+  kind,
+  path: id,
+  gam: `${id}.gam`,
+  files: [],
+  ...extra,
+});
 const catalog = [entry('free1', 'gameware'), entry('share1', 'shareware', { gamCrc: crc32(gam) }), entry('share2', 'shareware', { gamCrc: 12345 })];
 
 vi.mock('../../project/files', async (orig) => ({ ...(await orig<typeof import('../../project/files')>()), loadCatalog: async () => catalog }));
