@@ -311,11 +311,25 @@ struct World {
     }
     return false;
   }
-  // DropBloc: the replay never picks a slot (Esc), so nothing is dropped.
-  void dropBlock() {
+  // DropBloc: puts the carried block in place `dropSlot` (chosen on the picker; -1 = Esc) at the character's
+  // cell and closes the gap. Returns true when something was dropped.
+  int dropSlot = -1;
+  bool dropBlock() {
     topthere = false;
     bottomthere = false;
+    int chosen = dropSlot;
+    dropSlot = -1;
+    bool dropped = false;
+    if (chosen >= 0 && chosen < MAXINV && inv[chosen] != BACKBL) {
+      map[cy[0] * MLEN + cx[0]] = (uint8_t)inv[chosen];
+      gen++;
+      checkSeqForTie(inv[chosen], false);
+      for (int i = chosen; i < MAXINV - 1; i++) inv[i] = inv[i + 1];
+      inv[MAXINV - 1] = BACKBL;
+      dropped = true;
+    }
     keydn[seqKey(DROPSEQ) >> 8] = 0;
+    return dropped;
   }
 
   void checkTouch() {
@@ -491,8 +505,7 @@ struct World {
       int oldframe = cframe, oldseq = cseq;
       if (cframe == -1) {
         if (meter[cseq] < INF_REPEAT && cseq > 4) meter[cseq]--;
-        if (cseq == DROPSEQ) dropBlock();
-        if (cseq == DROPSEQ || (cseq == PICKUPSEQ && !pickupBlock())) {  // nothing happened: back to idle
+        if ((cseq == DROPSEQ && !dropBlock()) || (cseq == PICKUPSEQ && !pickupBlock())) {  // nothing happened: back to idle
           cseq = IDLESEQ;
           keystkptr = 0;
           curkey = 0;
