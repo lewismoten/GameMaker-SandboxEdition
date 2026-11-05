@@ -172,6 +172,7 @@ export const homeChapter: Chapter = {
       target: { label: 'the Import history button', css: '.lib-about .lib-remove-all', text: 'Import history…' },
       say: 'Import history keeps the last twenty imports: what came in, what was left out, and anything that failed.',
       optional: true,
+      since: '2026-11-05',
     },
     {
       // shown while a game deleted in the last 7 days is waiting (project/recentlyDeleted.ts)
@@ -180,6 +181,7 @@ export const homeChapter: Chapter = {
       target: { label: 'the Recently deleted button', css: '.lib-about .lib-remove-all', text: 'Recently deleted…' },
       say: 'Delete a game by mistake? It waits in Recently deleted for seven days, and Restore brings it back just as it was.',
       optional: true,
+      since: '2026-11-05',
     },
     {
       // Starters: small teaching games (the tab's lead, homeCategories.ts), and its How do I…? button
@@ -190,6 +192,7 @@ export const homeChapter: Chapter = {
       say: 'Starters: small games that each show one idea, with signs in the levels. Play one, then edit a copy.',
       sound: 'boing',
       optional: true,
+      since: '2026-11-05',
     },
     {
       id: 'home-how-do-i',
@@ -197,6 +200,7 @@ export const homeChapter: Chapter = {
       target: { label: 'the How do I button', css: '.hdi-open' },
       say: 'How do I asks the question in your own words, and points to the Starter that answers it.',
       optional: true,
+      since: '2026-11-05',
     },
     {
       id: 'home-tab-sandbox',
