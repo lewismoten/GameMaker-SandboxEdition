@@ -20,6 +20,7 @@ export const HOWTO = wrap(`
 
 |LEFT, RIGHT   walk, dig
 |SPACE         jump
+|ENTER         dig down
 |UP, DOWN      climb a ladder
 |F2            lives, score
 

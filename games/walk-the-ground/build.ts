@@ -15,12 +15,14 @@ import { clipEveryList } from '@lewismoten/gamemaker-sandbox-tools/kit/fliClips'
 import { Disk } from '../kit/disk';
 import { licenseText } from '../kit/license';
 import { STARTER_STING, starterStingFli } from '../kit/starter/sting';
-import { buildHeroBlocks, heroPicture } from '../kit/starter/hero';
+import { heroPicture } from '../kit/starter/hero';
+import { buildDigHero, buildDigHeroBlocks } from './src/digHero';
 import { KEYS } from '../kit/starter/blocks';
-import { buildHero } from '../kit/starter/heroChar';
 import { buildMonsterBlocks, buildMonsters } from '../kit/starter/monsters';
 import { cardPicture, endPicture, gif, menuPicture, paper, scoresPicture, slotsPicture, titlePicture } from '../kit/starter/screens';
 import { buildSounds } from '../kit/starter/sounds';
+import { SND } from '../kit/starter/ids';
+import { CRUNCH, DIG_COUNTER } from './src/digBlocks';
 import { demoRecording } from './src/demo';
 import { TITLE, buildGame } from './src/game';
 import { HERO_HIT_POINTS, HERO_LIVES } from './src/hero';
@@ -32,7 +34,7 @@ const here = dirname(fileURLToPath(import.meta.url));
 const disk = new Disk(join(here, 'disk'));
 
 const { book, pal, levels } = buildLevels();
-const heroBlocks = buildHeroBlocks(pal);
+const heroBlocks = buildDigHeroBlocks(pal);
 const monsterBlocks = buildMonsterBlocks(pal);
 const hero = heroPicture(heroBlocks, 'stand.top', 'stand');
 const cheer = heroPicture(heroBlocks, 'cheer.top', 'jump');
@@ -45,12 +47,15 @@ disk.put('dg.bbl', serializeBlocks(book.finish()));
 disk.put('dg.mbl', serializeBlocks(monsterBlocks.finish()));
 disk.put('dg.mon', serializeMonsters(buildMonsters(monsterBlocks)));
 disk.put('hero.cbl', serializeBlocks(heroBlocks.finish()));
-const heroChar = buildHero(heroBlocks);
+const heroChar = buildDigHero(heroBlocks);
 heroChar.meter[KEYS] = INF_REPEAT; // no keys in this game
+heroChar.meter[DIG_COUNTER] = 1; // the spare counter the dug steps add to (a counter holds one more than it shows)
 heroChar.meter[0] = HERO_HIT_POINTS;
 heroChar.meter[1] = HERO_LIVES;
 disk.put('hero.chr', serializeCharacter(heroChar));
-disk.put('dg.snd', serializeSoundSet(buildSounds()));
+const sounds = buildSounds();
+sounds.freqs[SND.gain] = CRUNCH; // each dug step raises a spare counter, which plays sound 7
+disk.put('dg.snd', serializeSoundSet(sounds));
 disk.put('dg.cmf', song());
 
 // each level's map and its card

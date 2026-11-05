@@ -5,7 +5,8 @@ import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { writePng } from '@lewismoten/gamemaker-sandbox-tools/kit/png';
 import { renderRegion } from '@lewismoten/gamemaker-sandbox-tools/kit/levelPicture';
-import { buildHeroBlocks, heroPicture } from '../../kit/starter/hero';
+import { heroPicture } from '../../kit/starter/hero';
+import { buildDigHeroBlocks } from '../src/digHero';
 import { ORIGIN } from '../../kit/starter/map';
 import { buildMonsterBlocks, buildMonsters } from '../../kit/starter/monsters';
 import { L1, L2, buildLevels } from '../src/levels';
@@ -18,7 +19,7 @@ const bbl = book.finish();
 const mb = buildMonsterBlocks(pal);
 const mbl = mb.finish();
 const set = buildMonsters(mb);
-const hero = buildHeroBlocks(pal);
+const hero = buildDigHeroBlocks(pal);
 
 /** Kit standing in column `col` with his feet on level row `feet`, as two sprites for renderRegion. */
 const kit = (col: number, feet: number) => {
@@ -46,6 +47,13 @@ const screen = (map: (typeof maps)[number], col: number, row: number, ...sprites
   renderRegion(map, bbl, mbl, set, ORIGIN + col, ORIGIN + row, 16, 10, sprites.flat());
 
 const G = L1.ground;
+// the break-up chain laid out on level 1's hill: one row, each block a step further along, with Neka at the foot
+{
+  const m = dug(0, []);
+  const chain = ['soil', 'cracked', 'splitOpen', 'halfDug', 'nearlyDug', 'dug'];
+  chain.forEach((n, i) => (m.blocks[(G - 2 + ORIGIN) * 100 + L1.hill[0] + 5 + i + ORIGIN] = book.n(n)));
+  writePng(join(out, 'dig-chain.png'), screen(m, L1.hill[0] + 1, 1, kit(L1.hill[0] + 3, G - 1)), pal.pal, 4);
+}
 writePng(join(out, 'one-1-the-rock.png'), screen(maps[0], 8, 1, kit(L1.rock - 1, G - 1)), pal.pal, 3);
 writePng(
   join(out, 'one-2-dug-over-it.png'),
