@@ -90,7 +90,7 @@ Part of the [source map](../README.md).
     links into a scene (apart from `playtest.ts`, so the editors' badges don't load the explorer and
     engine).
   - `checks/`: the file checks (hazard art, opposites, waits, look-alike footing, density, contrast, sounds, keys…:
-    `blockChecks.ts`, `monsterChecks.ts`, `gameChecks.ts`, `keyReach.ts`, `facing.ts`,
+    `blockChecks.ts`, `counterLedger.ts` (what each scene supplies to each counter), `monsterChecks.ts`, `gameChecks.ts`, `keyReach.ts`, `facing.ts`,
     `mazeCheck.ts`, `sealed.ts` (a prize the other plane of two reaches counts as reachable);
     `inView.ts` prizes in view but out of reach; `helpKeys.ts` keys the help names that nothing
     uses; `textContrast.ts` text pages and the menu hard to read against their pictures (the pages

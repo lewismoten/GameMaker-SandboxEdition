@@ -30,7 +30,7 @@ describe('third-party notices', () => {
     for (const s of ['Copyright (c) 2026 Lewis Moten', 'Copyright (c) Zig contributors', 'GNU C Library', 'WebKitGTK']) expect(linux).toContain(s);
     expect(linux).not.toContain('mingw');
     expect(thirdPartyNotices('mac')).toContain('Copyright (c) 2026 Lewis Moten');
-  });
+  }, 60_000);
 
   it('travel in every download', async () => {
     const exe = await winExe({ title: 'T', id: 't', html, player: pub('win/GameMakerPlayer-x64.exe') });

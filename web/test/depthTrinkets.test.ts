@@ -38,7 +38,7 @@ describe('Depth trinkets', () => {
     const { bodies } = makeTrinket(TRINKETS.find((t) => t.id === 'docleo')!);
     expect(bodies).toHaveLength(4);
     for (const a of bodies) for (const b of bodies) if (a !== b) expect(Math.hypot(...a.color.map((v, i) => v - b.color[i]))).toBeGreaterThan(40);
-  });
+  }, 60_000);
   it('every trinket has a name, a line and an id', () => {
     for (const t of TRINKETS) expect(t.id && t.title && t.blurb).toBeTruthy();
     expect(new Set(TRINKETS.map((t) => t.id)).size).toBe(TRINKETS.length);

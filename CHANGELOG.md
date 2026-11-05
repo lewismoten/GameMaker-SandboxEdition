@@ -11,6 +11,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Added
 
+- The Level check's counter findings say what the whole game supplies: a gate whose counter this scene can't fill now reads, for example, "the gate needs 20; this scene gives 0; Lost Woods and Tail Cave give 4", with each scene's share split into blocks and monsters. It is an info when other scenes cover it and a warning when the whole game falls short; both can be dismissed.
 - On a game opened to look inside, the Read-only note with Edit a copy now sits in the heading row of the Overview and of each file's page instead of a bar of its own, so the Overview fits one screen again
 - The ? Guides menu offers "What’s new" when the tour has steps added since your last visit: Teddy and Gwinn show only those, and "Not now" hides it until something newer comes (the day is kept in this browser only)
 - An achievement, Learn by looking, for using See how it’s made on a "How do I…?" question to open the map and see how a level is built
@@ -23,7 +24,8 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 - On a tablet or phone the First steps list opens folded to its title bar (and folds again when a step opens its editor), so it no longer covers the editors; its buttons are 44 px on touch. After "Add an exit" on the map, tapping the map places the exit there
 - Two achievements for the Starters: Show and tell (played every Starter) and Honor roll (played every Starter to its ending). They count apart from the Sandbox games.
 - The Guide's "How do I…?" page now has its questions as plain text for search engines and readers without scripts, each Starter linked to its play page, and a Starter's page describes it as a small teaching game instead of a shareware release.
-- The Pocket Player's Space and Enter buttons and key tiles show the key's name (the one the in-game signs use) with the game's label or the picture of what it throws or uses under it, all inside the button, and the controls no longer flicker over the picture.
+- The Pocket Player's Space and Enter buttons and key tiles show the picture of what the key throws or uses, filling the button, or else the key's name (the one the in-game signs use) with the game's label under it, and the controls no longer flicker over the picture. Turning pages in the game list no longer blinks the screen.
+- The Pocket Player keeps a held direction or button down when the touch chip drops a finger for a moment or reports the same thumb under a new number, so flying or walking no longer stops and starts on its own.
 - The Pocket Player reads a microSD card: games on it (fifteen Sandbox and Bizarre games to start with) appear after the Starters in the list with an SD tag. With no card the board is as before.
 - The Pocket Player now shows what the games show between levels: the screen fades out and in, each level's intro card, and the won and lost screens (pictures and text pages at 1.5 times size). A tap moves on early. The one cartoon between levels (in Pictures and Cartoons) plays too.
 - The Pocket Player plays the games' PC speaker sounds (pickups, hurt, kills, jumps and the other effects each game sets), timed like the original, with a Sound setting for off, low, medium and high. Sound Blaster clips and music are not on the board yet.

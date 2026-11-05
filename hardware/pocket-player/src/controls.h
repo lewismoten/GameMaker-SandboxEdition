@@ -15,6 +15,8 @@
 //   already held stays held out to about 35 degrees (hysteresis), so a thumb doesn't flicker.
 // - A finger that began on the pad stays on the pad until it lifts, wherever it slides (the GT911
 //   gives each finger an id), so two fingers work: pad and a button, or two buttons.
+// - A finger the chip stops reporting (a dropped frame, or the same thumb under a new id) keeps pressing for 60 ms; a new contact
+//   within 70 px of it takes its place, so a held Up is not let go and a re-id'd thumb keeps the pad. After 60 ms it lifts.
 // - Every key stays down at least 3 game ticks, so a quick tap of a stylus or a finger still registers.
 // - Stylus mode: a short tap on the pad (under 300 ms, moved under 10 px) latches the direction it was
 //   on, so the hero keeps walking while the one hand taps Space; a tap in the middle (or on the other
@@ -33,6 +35,8 @@ constexpr int MAXCONTACT = 5, MAXEXTRA = 12;
 constexpr int HOLD_MS = 165;       // three game ticks at 18.2 Hz
 constexpr int TAP_MS = 300, TAP_PX = 10;
 constexpr int NEAR_PX = 70;
+constexpr int GRACE_MS = 60;       // a held finger the chip stops reporting keeps pressing this long (about one tick)
+constexpr int ADOPT_PX = 70;       // a new id this near a ghost is the same finger
 
 enum Scan { S_ENTER = 28, S_SPACE = 57, S_UP = 72, S_LEFT = 75, S_RIGHT = 77, S_DOWN = 80 };
 
@@ -167,18 +171,43 @@ class Controls {
   // One poll: the contacts now on the glass (screen coordinates). `now` in ms.
   void update(const int* ids, const int* xs, const int* ys, const int* sizes, int n, uint32_t now) {
     bool seen[MAXCONTACT] = {};
+    int match[MAXCONTACT];  // the slot each contact belongs to
+    // 1. Contacts the chip still reports under the same id (a ghost that comes back under its id is a held finger again).
     for (int i = 0; i < n; i++) {
-      int k = find(ids[i]);
-      if (k < 0) k = open(ids[i], xs[i], ys[i], sizes[i], now);
+      match[i] = find(ids[i]);
+      if (match[i] >= 0) { seen[match[i]] = true; slot[match[i]].ghost = false; }
+    }
+    // 2. A finger the chip stopped reporting becomes a ghost: it keeps pressing for GRACE_MS. (Buttons and the pad only: a
+    //    one-frame dropout or a swapped id must not let go of a held Up; Menu and Keys act on lift at once.)
+    for (int k = 0; k < MAXCONTACT; k++) {
+      Slot& s = slot[k];
+      if (s.id < 0 || seen[k] || s.ghost) continue;
+      if (s.role == PAD || s.role == SPACE || s.role == ENTER || s.role == TILE) { s.ghost = true; s.lostAt = now; }
+      else { lift(k, now); seen[k] = true; }
+    }
+    // 3. A new id: it takes over a ghost lost a moment ago within ADOPT_PX (the chip gave the same thumb a new id), else it is a new finger.
+    for (int i = 0; i < n; i++) {
+      if (match[i] >= 0) continue;
+      int g = -1, best = ADOPT_PX * ADOPT_PX + 1;
+      for (int k = 0; k < MAXCONTACT; k++) {
+        if (slot[k].id < 0 || !slot[k].ghost) continue;
+        int dx = xs[i] - slot[k].x, dy = ys[i] - slot[k].y, d = dx * dx + dy * dy;
+        if (d < best) { best = d; g = k; }
+      }
+      if (g >= 0) { slot[g].id = ids[i]; slot[g].ghost = false; match[i] = g; seen[g] = true; }
+      else { match[i] = open(ids[i], xs[i], ys[i], sizes[i], now); if (match[i] >= 0) seen[match[i]] = true; }
+    }
+    for (int i = 0; i < n; i++) {
+      int k = match[i];
       if (k < 0) continue;
-      seen[k] = true;
       slot[k].x = xs[i];
       slot[k].y = ys[i];
       if ((xs[i] - slot[k].x0) * (xs[i] - slot[k].x0) + (ys[i] - slot[k].y0) * (ys[i] - slot[k].y0) > TAP_PX * TAP_PX) slot[k].moved = true;
       lastSize = sizes[i]; lastId = ids[i]; lastX = xs[i]; lastY = ys[i];
     }
+    // 4. Ghosts whose grace is over really lifted (the lift is dated when the chip stopped reporting).
     for (int k = 0; k < MAXCONTACT; k++)
-      if (slot[k].id >= 0 && !seen[k]) lift(k, now);
+      if (slot[k].id >= 0 && slot[k].ghost && now - slot[k].lostAt >= (uint32_t)GRACE_MS) lift(k, slot[k].lostAt);
     compute(now);
   }
   // Keys that changed since the last call: releases first, then presses. Returns how many.
@@ -199,7 +228,7 @@ class Controls {
 
  private:
   enum Role { NONE, PAD, SPACE, ENTER, MENU, KEYS, TILE, IGNORED };
-  struct Slot { int id = -1, role = NONE, tile = 0, x0 = 0, y0 = 0, x = 0, y = 0; uint32_t t0 = 0; bool moved = false; };
+  struct Slot { int id = -1, role = NONE, tile = 0, x0 = 0, y0 = 0, x = 0, y = 0; uint32_t t0 = 0, lostAt = 0; bool moved = false, ghost = false; };
   Slot slot[MAXCONTACT];
   bool want[128], sent[128];
   uint32_t holdUntil[128];
@@ -281,11 +310,11 @@ class Controls {
       if (s.id < 0) continue;
       switch (s.role) {
         case PAD: havePad = true; padDirs = padSector(s.x, s.y); break;
-        case SPACE: btnDown |= 1; press(S_SPACE, now); break;
-        case ENTER: btnDown |= 2; press(S_ENTER, now); break;
+        case SPACE: btnDown |= 1; if (!s.ghost) press(S_SPACE, now); break;
+        case ENTER: btnDown |= 2; if (!s.ghost) press(S_ENTER, now); break;
         case MENU: btnDown |= 4; break;
         case KEYS: btnDown |= 8; break;
-        case TILE: tileDown |= 1 << s.tile; press(needScan(need.extra[s.tile]), now); break;
+        case TILE: tileDown |= 1 << s.tile; if (!s.ghost) press(needScan(need.extra[s.tile]), now); break;
       }
     }
     if (!havePad) { horiz = vert = false; }

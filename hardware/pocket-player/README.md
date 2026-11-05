@@ -158,3 +158,9 @@ Whether the touch orientation guess is right, whether the pad sizes and dead zon
 ## Pins (board.h)
 
 Display SPI: SCLK 14, MOSI 13, MISO 12, CS 15, DC 2, backlight 27. GT911 (I2C): SDA 33, SCL 32, INT 21, RST 25. XPT2046 shares the display bus: CS 33, IRQ 36. Speaker: GPIO 26 (`src/speaker.h`). Sources are in `src/board.h`, `src/speaker.h` and NOTICE.md.
+
+## Held-input trace
+
+For a live check of the touch path over USB (serial 115200): `V 1` prints every new GT911 report (`R ms n= id= x= y= size=`) and, each game tick, the keys the game holds (`K ms tick= up= down= left= right= space= pad= n=`); `V 0` stops it. `G <index>` starts a game from the list; `I x y` holds a made-up finger at that screen point (no chip involved, so it shows what the controls and the loop do with a steady touch) and `I off` lifts it. `web/scripts/pocketHeldTrace.py <port> <index|-> [x y] [seconds]` runs it and summarizes ticks with Up down, tick gaps, report gaps and zero-point reports; with `-` and no x y it just listens while someone holds the screen.
+
+The touch model (`controls.h`) lets a finger the chip stops reporting keep pressing for 60 ms, and a new contact within 70 px of it takes its place, so a dropped frame or a re-numbered thumb does not release a held direction.

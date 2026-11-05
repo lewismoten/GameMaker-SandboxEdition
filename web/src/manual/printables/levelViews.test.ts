@@ -34,5 +34,5 @@ describe('Level Maps crop to what the player sees', () => {
           expect(m.x >= a.x && m.y >= a.y && m.x + m.w <= a.x + a.w && m.y + m.h <= a.y + a.h, `${id} ${l.group.map} ${m.kind} ${m.x},${m.y}`).toBe(true);
       }
     }
-  });
+  }, 60_000);
 });

@@ -192,6 +192,49 @@ int main() {
     r.touch(1, cx - 50, cy); r.wait(24);
     check("a quick swipe never holds left and right together", !(r.held[75] && r.held[77]), r.log); }
 
+  { Run r(def, platformer());  // held Up: the chip drops the contact for one report (8 ms), then it is back
+    r.touch(1, cx, cy - 55); r.wait(200);
+    r.up(1); r.wait(8);
+    r.touch(1, cx, cy - 55); r.wait(200);
+    check("a one-report dropout does not let go of a held Up", r.log == "+72 ", r.log); }
+
+  { Run r(def, platformer());  // held Up: the chip drops the contact for 40 ms
+    r.touch(1, cx, cy - 55); r.wait(200);
+    r.up(1); r.wait(40);
+    r.touch(1, cx, cy - 55); r.wait(200);
+    check("a 40 ms dropout does not let go of a held Up", r.log == "+72 ", r.log); }
+
+  { Run r(def, platformer());  // held Up: the same thumb comes back under a new id, the old id going in the same report
+    r.touch(1, cx, cy - 55); r.wait(200);
+    r.up(1); r.touch(2, cx + 4, cy - 52); r.wait(300);
+    check("a thumb re-reported under a new id keeps the pad", r.log == "+72 " && r.held[72], r.log);
+    r.touch(2, cx - 55, cy); r.wait(100);
+    check("and the pad still steers", r.held[75] && !r.held[72], r.log);
+    r.up(2); r.wait(100);
+    check("and lifting lets go", !r.held[75] && !r.held[72], r.log); }
+
+  { Run r(def, platformer());  // a real lift is let go within 80 ms of the chip's last report
+    r.touch(1, cx, cy - 55); r.wait(300);
+    r.up(1);
+    int t = 0;
+    while (r.held[72] && t < 200) { r.wait(8); t += 8; }
+    check("a real lift of Up releases within 80 ms", !r.held[72] && t <= 80, std::to_string(t) + " " + r.log); }
+
+  { Run r(def, platformer());  // a dropped Space finger is held through the gap, a real lift lets go
+    r.touch(1, L.space.cx, L.space.cy); r.wait(300);
+    r.up(1); r.wait(24);
+    r.touch(1, L.space.cx, L.space.cy); r.wait(100);
+    check("a Space press with a 24 ms dropout is one press", r.log == "+57 ", r.log);
+    r.up(1); r.wait(200);
+    check("and lets go after the lift", !r.held[57], r.log); }
+
+  { Run r(def, platformer());  // no key is ever stuck: every contact gone for good releases everything
+    r.touch(1, cx, cy - 55); r.touch(2, L.space.cx, L.space.cy); r.wait(200);
+    r.up(1); r.up(2); r.wait(260);
+    bool any = false;
+    for (int i = 0; i < 128; i++) any |= r.held[i];
+    check("no key is left down once every finger has lifted", !any, r.log); }
+
   { // Layout: every size, both hands, every key set: targets at least 48 px, inside the game view, none overlapping.
     bool ok = true;
     std::string why;
