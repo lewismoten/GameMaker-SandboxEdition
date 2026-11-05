@@ -411,7 +411,8 @@ export function cardOverflow(c: CardScreen): string[] {
     y0 = Math.min(y0, a);
     y1 = Math.max(y1, b);
   }
-  if (x1 - x0 < 100 || y1 - y0 < 30) return [];
+  // a Starter card's box is about 60 px tall; a taller field of that color (a blank sheet of paper) is another design
+  if (x1 - x0 < 100 || y1 - y0 < 30 || y1 - y0 > 90) return [];
   const frame = new Set<number>();
   for (let x = Math.max(0, x0 - 6); x <= Math.min(W - 1, x1 + 6); x++) for (let y = Math.max(0, y0 - 6); y < y0; y++) frame.add(at(x, y));
   // the frame's sides are read only beside the box's top rows, above any words, so words that spill

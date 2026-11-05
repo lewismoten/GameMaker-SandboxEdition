@@ -204,7 +204,7 @@ export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
   const { book, signs } = buildBlocks(pal);
   const levels: Level[] = [
     { file: 'one', title: 'Head Height', hint: 'Down, and the bird flies over.', map: headHeight(book, signs) },
-    { file: 'two', title: 'High or Low', hint: 'Duck for the bird, hop for the ball.', map: highOrLow(book, signs) },
+    { file: 'two', title: 'High or Low', hint: 'Duck for birds, hop for balls.', map: highOrLow(book, signs) },
   ];
   return { book, pal, levels };
 }
