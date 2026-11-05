@@ -164,6 +164,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Fixed
 
+- On a phone, the Sort, Show and Remove all imported controls above a long list of imported games no longer sit on top of the first tiles.
 - Choosing a link or button that opens another page now moves keyboard focus to that page's heading, so a screen reader says where you are. Opening the site, Back and Forward, and changes the page makes itself leave focus alone.
 - Play this level and See how it's made in How do I…? now say where they took you ("Opened the map of First Steps, level 1."), so a screen reader knows the page changed.
 - A game opened to look at only no longer shows an error notice when an editor tries to change it; the dialog offering a copy is enough.

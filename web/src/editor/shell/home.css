@@ -140,6 +140,8 @@
 .lib-about {
   /* tall enough for its tallest state (the how-it-works button shown, 29px), so the tiles below don't jump while the collection loads */
   min-height: 29px;
+  /* in the library's column it must not shrink to that when Sort, Show and the buttons wrap onto more lines (they sat over the tiles) */
+  flex-shrink: 0;
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
