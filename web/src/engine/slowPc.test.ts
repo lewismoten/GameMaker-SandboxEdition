@@ -111,4 +111,12 @@ describe('Run like a… presets', () => {
     while (cpu.busy()) lost++;
     expect(lost).toBe(Math.floor(180 / INT_MS)); // 26 interrupts, 3 game ticks
   });
+
+  it('a screenful of animated cells slows a 286 a little, and not a 486', () => {
+    const k = SPEED_PRESETS['286'];
+    expect(tickCost(k, 0, 160)).toBeGreaterThan(50);
+    expect(tickCost(k, 0, 160)).toBeLessThan(75);
+    expect(tickCost(SPEED_PRESETS['486'], 0, 160)).toBeLessThan(15);
+    expect(tickCost(k, 0, 1000)).toBe(tickCost(k, 0, 170)); // at most 170 dirty rectangles
+  });
 });

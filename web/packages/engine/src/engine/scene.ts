@@ -29,6 +29,7 @@ import {
   SCRNBWID,
   bgBlock,
   createWorld,
+  mapBlock,
   padBlocks,
   type CharInfo,
   type Coord,
@@ -431,6 +432,17 @@ export async function playScene(s: Session, dosc: number, prev: number, linkIn: 
     for (let l = 0; l < LASTMM && n < 50; l++) if (w.mm[l].monnum < LASTMON && w.mi[l].scrPos.x !== OFFSCRN) n++; // MaxMonsShown
     return n;
   };
+  // animated cells redrawn this tick: the visible cells whose block kind changed its picture
+  const shownBefore = new Uint8Array(w.blkmap.length);
+  const animatedCells = () => {
+    let n = 0;
+    for (let by = 0; by < SCRNBWID; by++)
+      for (let bx = 0; bx < SCRNBLEN; bx++) {
+        const kind = mapBlock(w, (w.mx + bx) % MLEN, (w.my + by) % MWID);
+        if (kind < shownBefore.length && w.blkmap[kind] !== shownBefore[kind]) n++;
+      }
+    return n;
+  };
   let last = m.now();
   let acc = 0;
   const resync = () => {
@@ -590,9 +602,13 @@ export async function playScene(s: Session, dosc: number, prev: number, linkIn: 
         else if (f !== 7) await funcKey(f);
       }
       if (oldClock < s.timerCounter) {
-        if (pc) cpu.spend(tickCost(pc, monstersOnScreen()));
+        if (pc) {
+          cpu.spend(tickCost(pc, monstersOnScreen()));
+          shownBefore.set(w.blkmap);
+        }
         s.vocStall = 0;
         await tick();
+        if (pc && pc.cellMs) cpu.spend(tickCost({ ...pc, tickMs: 0, monsterMs: 0 }, 0, animatedCells()));
         if (pc && s.vocStall) cpu.spend(s.vocStall);
         s.vocStall = 0;
       }

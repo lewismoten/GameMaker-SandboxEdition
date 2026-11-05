@@ -36,6 +36,8 @@ export interface PcCosts {
   scrollPassMs: number;
   /** Each new 4 pixel edge strip DrawScroll draws and copies to the screen. */
   stripMs: number;
+  /** Each animated map cell redrawn on screen that tick (up to 170 dirty rectangles, DIRTRECT.C MAXDIRTY). */
+  cellMs?: number;
   /** Disk read of a .voc (PlaySbVocFile reads the whole file on the game's own thread): fixed cost to open it. */
   vocOpenMs?: number;
   /** ...and how many bytes a millisecond the disk then delivers. */
@@ -83,9 +85,9 @@ export class SlowCpu {
   }
 }
 
-/** What one game tick costs with `monsters` drawn on screen. */
-export function tickCost(pc: PcCosts, monsters: number): number {
-  return pc.tickMs + pc.monsterMs * monsters;
+/** What one game tick costs with `monsters` drawn on screen and `cells` animated map cells redrawn. */
+export function tickCost(pc: PcCosts, monsters: number, cells = 0): number {
+  return pc.tickMs + pc.monsterMs * monsters + (pc.cellMs ?? 0) * Math.min(cells, 170);
 }
 
 /** What one DrawScroll call costs when it drew `strips` new 4 pixel strips. */
@@ -106,11 +108,11 @@ export const SPEED_CHOICES: readonly SpeedChoice[] = ['today', '486', '386', '28
 
 export const SPEED_PRESETS: Record<Exclude<SpeedChoice, 'today'>, PcCosts> = {
   // 286 at 12 MHz, IDE disk about 400 KB/s, 30 ms to open a file; 20 monsters fill a tick
-  '286': { tickMs: 20, monsterMs: 1.8, scrollPassMs: 3.3, stripMs: 2, vocOpenMs: 30, vocBytesPerMs: 400 },
+  '286': { tickMs: 20, monsterMs: 1.8, scrollPassMs: 3.3, stripMs: 2, cellMs: 0.25, vocOpenMs: 30, vocBytesPerMs: 400 },
   // 386DX-33, disk about 800 KB/s, 18 ms to open
-  '386': { tickMs: 9, monsterMs: 0.8, scrollPassMs: 1.5, stripMs: 0.8, vocOpenMs: 18, vocBytesPerMs: 800 },
+  '386': { tickMs: 9, monsterMs: 0.8, scrollPassMs: 1.5, stripMs: 0.8, cellMs: 0.12, vocOpenMs: 18, vocBytesPerMs: 800 },
   // 486DX2-66, disk about 1.5 MB/s, 12 ms to open
-  '486': { tickMs: 4, monsterMs: 0.35, scrollPassMs: 0.7, stripMs: 0.4, vocOpenMs: 12, vocBytesPerMs: 1500 },
+  '486': { tickMs: 4, monsterMs: 0.35, scrollPassMs: 0.7, stripMs: 0.4, cellMs: 0.05, vocOpenMs: 12, vocBytesPerMs: 1500 },
 };
 
 /** The costs for a choice; undefined for Today (nothing is charged). */
