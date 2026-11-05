@@ -1,7 +1,7 @@
 // Today's web header: the ⚙ Settings menu (playing offline, the source code, the credits, the theme, sound and tour, the whole
 // guided tour, AI setup and back up / restore), and the same items for the ⋯ menu on narrow windows (main.ts). The
 // Offline dialog, AI setup and back up / restore load when chosen.
-import { h, toast } from './editor/core/ui';
+import { h } from './editor/core/ui';
 import { themeItem } from './theme';
 import { wholeTourItem } from './tour/tourButton';
 import { pageLife } from './pageLife';
@@ -15,16 +15,8 @@ const openOffline = () => void import('./offline/offlineDialog').then((m) => m.o
 /** AI setup for the assistant (assistant/chat/settingsDialog.ts). */
 const openAi = () => void import('./assistant/chat/settingsDialog').then((m) => m.openAiSetup());
 
-/**
- * Back up / restore (backup/openDataBackup.ts, being built separately). A glob, so the menu
- * works (and says so) before that module exists, and it loads only when chosen once it does.
- */
-const backupModule = import.meta.glob<{ openDataBackup(): unknown }>('./backup/openDataBackup.ts');
-const openBackup = () => {
-  const load = Object.values(backupModule)[0];
-  if (!load) return toast('Back up / restore is not ready yet.', 'error');
-  void load().then((m) => m.openDataBackup());
-};
+/** Back up / restore: export everything or restore a file (backup/openDataBackup.ts). */
+const openBackup = () => void import('./backup/openDataBackup').then((m) => m.openDataBackup());
 
 /** "Sound and tour…": the dialog for music, voice and sound effects (on and volume) and the tour (soundSettings/). */
 const openSound = () => void import('./soundSettings/soundDialog').then((m) => m.openSoundDialog());
