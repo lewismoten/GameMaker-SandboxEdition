@@ -30,7 +30,7 @@ function advice(why: string): string {
 
 export async function exportPocket(
   files: GameFiles,
-  options: { title: string; gam: string; id?: string; controls?: PocketSource['controls'] },
+  options: { title: string; gam: string; id?: string; version?: string; controls?: PocketSource['controls'] },
 ): Promise<PocketExport> {
   const id = pocketId(options.id ?? options.gam.replace(/\.gam$/i, ''));
   const store: PocketStore = new Map();
@@ -49,6 +49,6 @@ export async function exportPocket(
     notes.push('The Pocket Player plays the PC speaker sounds only, so its Sound Blaster sounds and music stay silent.');
   const skipped = Object.keys(packed.leftOut);
   if (skipped.length) notes.push(`Some pictures between levels are left out (${skipped.join(', ')}).`);
-  const bytes = writeGmp({ id, title: options.title, levels: packed.levels, cfg: packed.lines, files: store, cards: cards.parts });
+  const bytes = writeGmp({ id, title: options.title, version: options.version, levels: packed.levels, cfg: packed.lines, files: store, cards: cards.parts });
   return { name: gmpName(id), bytes, notes };
 }

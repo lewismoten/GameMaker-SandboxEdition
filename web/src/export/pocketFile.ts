@@ -1,7 +1,7 @@
 // The Pocket Player's bundle of files, "GMS1" (hardware/pocket-player/src/gmsmall.h): "GMS1", a count, entries
 // sorted by name (name[32], offset, length; little endian), then the data. The Starters' small.pak is one,
 // and so is a game on its own for the microSD card, NAME.GMP in the card's /pocket folder: its `game.txt`
-// ("GMP 1", then id|title|levels), `<id>.cfg`, `cards.pak` (the card references in the .cfg are offsets
+// ("GMP 1", then id|title|levels, then "version <game version>" when known, for a catalog to match), `<id>.cfg`, `cards.pak` (the card references in the .cfg are offsets
 // into that entry) and its packed files. The firmware finds a .GMP by listing /pocket, so copying the
 // one file is the whole install.
 
@@ -76,6 +76,8 @@ export interface GmpParts {
   id: string;
   title: string;
   levels: number;
+  /** The game's own version (about.json, or the author's), so a catalog can tell an update; left out when unknown. */
+  version?: string;
   cfg: string[];
   files: Map<string, Uint8Array>;
   cards: Uint8Array[];
@@ -84,6 +86,7 @@ export interface GmpParts {
 /** The one-file game for the card. */
 export function writeGmp(p: GmpParts): Uint8Array {
   const text = (s: string) => new Uint8Array([...s].map((c) => (c.charCodeAt(0) < 256 ? c.charCodeAt(0) : 63)));
+  const version = p.version?.replace(/[^\x21-\x7e]/g, '').slice(0, 16);
   const title = p.title.replace(/[|\r\n]/g, ' ').slice(0, 39);
   const cards = new Uint8Array(p.cards.reduce((t, b) => t + b.length, 0));
   let at = 0;
@@ -92,7 +95,7 @@ export function writeGmp(p: GmpParts): Uint8Array {
     at += b.length;
   }
   return writeBundle([
-    ['game.txt', text(`GMP ${GMP_VERSION}\n${p.id}|${title}|${p.levels}\n`)],
+    ['game.txt', text(`GMP ${GMP_VERSION}\n${p.id}|${title}|${p.levels}\n${version ? `version ${version}\n` : ''}`)],
     [`${p.id}.cfg`, text(p.cfg.join('\n') + '\n')],
     ['cards.pak', cards],
     ...p.files,

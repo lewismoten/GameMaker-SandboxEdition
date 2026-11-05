@@ -94,7 +94,7 @@ for (const id of ids) {
     if (gmpDir)
       writeFileSync(
         outDir + gmpName(id),
-        writeGmp({ id, title: about.title, levels: packed.levels, cfg: packed.lines, files: gameStore, cards: gamePak.parts }),
+        writeGmp({ id, title: about.title, version: about.version, levels: packed.levels, cfg: packed.lines, files: gameStore, cards: gamePak.parts }),
       );
     else if (cardRoot) {
       writeFileSync(`${outDir}${short}.cfg`, cfg);

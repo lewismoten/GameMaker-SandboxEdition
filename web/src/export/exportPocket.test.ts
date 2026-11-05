@@ -5,7 +5,7 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { inflateRawSync } from 'node:zlib';
 import { GameFiles } from '@lewismoten/gamemaker-sandbox-engine/core/gameFiles';
 import { exportPocket } from './exportPocket';
-import { gmpName, pocketId, readBundle, writeBundle } from './pocketFile';
+import { gmpName, pocketId, readBundle, writeBundle, writeGmp } from './pocketFile';
 
 const folder = (url: URL) => new GameFiles(readdirSync(url).map((n) => [n, new Uint8Array(readFileSync(new URL(n, url)))]));
 const peach = () => folder(new URL('../../../cd/gameware/peach/', import.meta.url));
@@ -66,6 +66,12 @@ describe('pocketFile', () => {
     expect([...back.keys()]).toEqual(['A.txt', 'a.cfg', 'b.txt']);
     expect([...back.get('A.txt')!.bytes]).toEqual([1, 1]);
     expect(() => readBundle(new Uint8Array(8))).toThrow();
+  });
+
+  it('puts the format, the id line and the version in game.txt', () => {
+    const b = readBundle(writeGmp({ id: 'x', title: 'A|B', version: '2.1', levels: 3, cfg: ['title A'], files: new Map(), cards: [] }));
+    expect(text(b.get('game.txt')!.bytes)).toBe('GMP 1\nx|A B|3\nversion 2.1\n');
+    expect([...b.keys()]).toEqual(['cards.pak', 'game.txt', 'x.cfg']);
   });
 
   it('names the file 8.3 and keeps ids short enough for the firmware', () => {

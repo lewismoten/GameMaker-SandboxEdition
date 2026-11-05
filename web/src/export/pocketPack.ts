@@ -213,7 +213,7 @@ export async function packPocketGame(src: PocketSource, store: PocketStore, pak:
   if (big.length) {
     const top = big.reduce((a, b) => (b.heap > a.heap ? b : a));
     warn.push(
-      `${big.length === 1 ? `Level ${top.n + 1} needs` : `${big.length} levels need`} more than the board's about ${POCKET_LEVEL_HEAP / 1000} KB for blocks, monster pictures and hero (level ${top.n + 1}: about ${Math.round(top.heap / 1000)} KB), so ${big.length === 1 ? 'it' : 'they'} may not load. Fewer blocks or monster pictures in a level help.`,
+      `${big.length === 1 ? `Level ${top.n + 1} needs` : `${big.length} levels need`} more room for blocks, monster pictures and hero than the board's free ${POCKET_LEVEL_HEAP / 1000} KB or so (level ${top.n + 1}: about ${Math.round(top.heap / 1000)} KB), so ${big.length === 1 ? 'it' : 'they'} may not load. Fewer blocks or monster pictures in a level help.`,
     );
   }
   // The PC speaker tunes (30 effects x 36 frequencies; the .voc names after them are not packed).
