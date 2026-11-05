@@ -58,7 +58,7 @@ export async function hiddenMonstersOfGame(id: string): Promise<HiddenMonster[]>
   if (!existsSync(path) || !existsSync(join(games, id, 'disk'))) return [];
   const walk = JSON.parse(readFileSync(path, 'utf8')) as Walkthrough;
   const found = new Map<string, HiddenMonster>();
-  const runs = new Map<number, { last: number; start: number; len: number }>(); // per monster slot
+  const runs = new Map<number, { key: string; last: number; start: number; len: number }>(); // per monster slot
   await replay(id, walk, {
     onWorld(w, scene, frame) {
       for (let i = 0; i < LASTMM; i++) {
@@ -76,15 +76,15 @@ export async function hiddenMonstersOfGame(id: string): Promise<HiddenMonster[]>
         const cellY = cy * BLEN - w.scroll.ny;
         const edges = edgesHiding(cellX, cellY, cellX + mi.curx[1], cellY + mi.cury[1]);
         if (!edges) continue;
+        const key = `${scene}/${type}`;
         const run = runs.get(i);
-        if (run && frame - run.last <= 2) {
+        if (run && run.key === key && frame - run.last <= 2) {
           run.last = frame;
           run.len++;
-        } else runs.set(i, { last: frame, start: frame, len: 1 });
+        } else runs.set(i, { key, last: frame, start: frame, len: 1 });
         const cur = runs.get(i)!;
         const x = cellX + mi.curx[1];
         const y = cellY + mi.cury[1];
-        const key = `${scene}/${type}`;
         const e = found.get(key) ?? {
           scene,
           monster: type,
