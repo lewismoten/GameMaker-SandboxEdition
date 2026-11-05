@@ -42,8 +42,8 @@ const region = (map: ReturnType<typeof empty>, col: number, w: number, extra: Sp
 const save = (name: string, pic: ReturnType<typeof region>) => writePng(join(out, name), pic, pal.pal, 3);
 
 // level 1: the big one on its way, the pips in the tunnel, then clear; level 2: a star at the big one, then at the pip
-save('1-pips-wait.png', region(empty(0), 14, 18, [...kit(['stand.top', 'stand'], 16), thing('pip0', 24), thing('pip0', 27), thing('big0', 21)]));
-save('2-big-pops.png', region(empty(0), 14, 18, [...kit(['stand.top', 'stand'], 16), thing('twinkle0', 26), thing('pip0', 27), thing('big0', 25)]));
+save('1-pips-wait.png', region(empty(0), 14, 18, [...kit(['stand.top', 'stand'], 18), thing('pip0', 24), thing('pip0', 27), thing('big0', 21)]));
+save('2-big-pops.png', region(empty(0), 14, 18, [...kit(['stand.top', 'stand'], 18), thing('twinkle0', 26), thing('pip0', 27), thing('big0', 25)]));
 save('3-clear.png', region(empty(0), 14, 18, [...kit(['stand.top', 'stand'], 20), thing('big1', 29)]));
 save('4-star-at-big.png', region(empty(1), 8, 18, [...kit(['cheer.top', 'throw1'], 11), thing('star0', 14), thing('big0', 19)]));
 save('5-star-pops-pip.png', region(empty(1), 16, 18, [...kit(['stand.top', 'throw2'], 21), thing('twinkle0', 27), thing('mid0', 30), thing('big0', 19)]));

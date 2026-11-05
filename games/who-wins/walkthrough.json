@@ -1,0 +1,64 @@
+{
+ "version": 1,
+ "game": "who-wins",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU1BzYUBTWTNA00="
+  },
+  {
+   "scene": 3,
+   "keys": "AU08zQMcA5w8TSPNAxwDnDxND80DHAOcPE1LzQNN"
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: The Big One"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: Your Star"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 8473,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 896,
+    "time": 14933.333333333148
+   },
+   {
+    "title": "Level 1: The Big One",
+    "frame": 2125,
+    "time": 35416.66666666724
+   },
+   {
+    "title": "Level 2: Your Star",
+    "frame": 3552,
+    "time": 59199.99999999711
+   },
+   {
+    "title": "Ending",
+    "frame": 5193,
+    "time": 86550.0000000023
+   },
+   {
+    "title": "Credits",
+    "frame": 7400,
+    "time": 123333.33333334634
+   }
+  ]
+ }
+}
