@@ -90,6 +90,24 @@ describe('seoBuild', () => {
     }
   });
 
+  it('describes a Starter as a small teaching game, not a shareware release', () => {
+    const starter = playable.find((g) => isStarterGame(g))!;
+    const html = gamePageHtml(page('play.html'), starter);
+    expect(html).toMatch(/name="description" content="[^"]*Starter game made with Game-Maker/);
+    expect(html).not.toMatch(/name="description" content="[^"]*shareware/);
+  });
+
+  it('writes the How do I…? questions as readable text, each Starter linked to its play page', () => {
+    const section = GUIDE_SECTIONS.find(([id]) => id === 'how-do-i')!;
+    const html = guidePageHtml(page('index.html'), section, catalog);
+    expect(html).not.toContain('shows here once the page has loaded');
+    const withQuestions = playable.filter((g) => isStarterGame(g) && (g.original?.manual as { howDoI?: unknown[] } | undefined)?.howDoI?.length);
+    expect(withQuestions.length).toBeGreaterThan(0);
+    for (const g of withQuestions) expect(html).toContain(`href="./${gamePage(g.id)}"`);
+    expect(html).toContain('How do I make a wall my hero has to jump over?');
+    expect(html.match(/<h1>/g)).toHaveLength(1);
+  });
+
   it('lists every original game’s ZIP on downloads.html (not the Starters), the secret ones last with no play page', () => {
     const html = files['downloads.html'];
     const originals = playable.filter((g) => g.original && !isStarterGame(g));
