@@ -56,6 +56,7 @@ npm run check:games                                # all of the game checks abov
 npm run check:games -- --game <id> --quick         # one game, without the reproducibility rebuild
 npm run walk:auto -- <folder|.zip> [--budget ms] [--game NAME.GAM] [--out w.json] [--basic-keys]  # the editor's walkthrough bot on any game; a table per scene; exits 1 if it didn't win; --basic-keys: arrows, Space and Enter only
 npm run check:dialogs [-- --only id,id]          # every pop-up dialog fits 375×812, 390×844, 360×740 (and 844×390 as advice) with no scrolling, close and primary buttons in view, light and dark; exits 1 on a failure
+npm run check:offline -- --dist <scratch production build>  # "Play offline" really works: downloads the copy, goes offline, then the web home, a Starter, the desk, the phone's recorded clips and the tour's voice work and no request fails; 3 to 6 minutes; needs a scratch `vite build --outDir` (through npm run heavy --)
 npm run check:keys [-- id ...]                     # keyboard accessibility: each walkthrough's share of arrows/Space/Enter presses, its diagonals and other keys; suggestions
 npm run editor:touch -- <route> [--out dir]       # touch audit of one editor route at iPad and iPhone sizes: controls under 44 px, overflow, axe, screenshots
 npm run check:gestures -- [--route r] [--out dir]  # map editor touch gestures (pinch, pan, paint, stray stroke, long-press) with real touch events at iPad and iPhone sizes; PASS/FAIL per step; exits 1 on a FAIL

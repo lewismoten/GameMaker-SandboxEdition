@@ -32,6 +32,7 @@
     "heavy": "node ../scripts/heavy.mjs",
     "editor:touch": "vite-node scripts/editorTouch.ts",
     "check:dialogs": "vite-node scripts/dialogsFit.ts",
+    "check:offline": "vite-node scripts/checkOffline.ts",
     "check:leaks": "bash scripts/leakSweep.sh",
     "check:dialogs:sweep": "vite-node scripts/dialogsSweep.ts",
     "theme:recheck": "vite-node scripts/themeRecheck.ts",
