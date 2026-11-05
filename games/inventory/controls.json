@@ -43,10 +43,6 @@
     "25": {
       "short": "Pick up",
       "long": "Pick up the thing you are standing in."
-    },
-    "60": {
-      "short": "Your pack",
-      "long": "Show your pack, lives and score."
     }
   },
   "joystick": {
@@ -65,11 +61,11 @@
     "11": "Falling over (nothing here does)",
     "13": "A star leaves",
     "14": "A flame leaves",
-    "15": "Nothing to throw"
+    "15": "Nothing to throw",
+    "16": "Picking something up",
+    "17": "Putting something down"
   },
   "counters": {
-    "14": "Flames: how many Enter can still throw. A flame pouch adds to it.",
-    "15": "Stars: how many Enter can throw after the flames. A star pouch adds to it.",
     "20": "Keys: not used here, but a copy can add them."
   }
 }
