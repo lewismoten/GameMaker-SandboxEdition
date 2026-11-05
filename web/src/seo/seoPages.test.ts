@@ -9,6 +9,7 @@ import { cdCatalog, cdSecretCatalog } from '../../scripts/cdGames';
 import { gamePageHtml, guidePageHtml, seoPages } from '../../scripts/seoBuild';
 import { GUIDE_SECTIONS } from '../manual/guideSections';
 import { gamePage, SITE_URL } from './site';
+import { isStarterGame } from '../project/starter';
 
 const cdRoot = join(__dirname, '../../../cd');
 const catalog = cdCatalog(cdRoot);
@@ -89,11 +90,12 @@ describe('seoBuild', () => {
     }
   });
 
-  it('lists every original game’s ZIP on downloads.html, the secret ones last with no play page', () => {
+  it('lists every original game’s ZIP on downloads.html (not the Starters), the secret ones last with no play page', () => {
     const html = files['downloads.html'];
-    const originals = playable.filter((g) => g.original);
+    const originals = playable.filter((g) => g.original && !isStarterGame(g));
     expect(originals.length).toBeGreaterThan(0);
     for (const g of [...originals, ...secret]) expect(html).toContain(`href="./${g.path}${g.pack}"`);
+    for (const g of playable.filter((p) => isStarterGame(p))) expect(html).not.toContain(`game-${g.id}"`);
     for (const g of secret) {
       expect(html).not.toContain(gamePage(g.id));
       expect(html).not.toContain(`games/shots/${g.id}-`);
