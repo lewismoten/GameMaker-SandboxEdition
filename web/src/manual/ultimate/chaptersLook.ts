@@ -137,6 +137,7 @@ export const BLOCKS: Chapter = {
     <tr><td>Secrets and spares</td><td>the rest</td></tr>
   </table>
   ${onCd('BLK150')}
+  ${onCd('SHORE')}
   <h2>Trade art for blocks</h2>
   <p>When a scene runs out of blocks, don’t draw smaller; choose what the player won’t miss.
   A door handle, a sun visor or a crease in an armrest is a block or two that nobody sees at

@@ -91,6 +91,7 @@ export const CAST_GAMES = {
   'town-links': ['Maps Within Maps', 'starter'],
   'blocks-budget': ['150 Blocks', 'starter'],
   'near-far': ['Near and Far', 'starter'],
+  shore: ['Waves on the Shore', 'starter'],
   'things-that-grow': ['Seeds and Nests', 'starter'],
   dialog: ['Everybody Talks', 'starter'],
   parallax: ['Parallax', 'starter'],
@@ -249,6 +250,7 @@ const LISTED: CastMember[] = [
       { game: 'momentum', as: 'glides on after letting go, and runs up to hop wide gaps' },
       { game: 'jump-boots', as: 'taps up a tall cliff like a jet pack, then jumps twice in boots that hold only two jumps' },
       { game: 'diagonal-wrap', as: 'follows a road down the map and out of the bottom, then round the map three times on a tilted one' },
+      { game: 'shore', as: 'crosses a pier over a sea that turns itself, then walks a beach where the waves run up the sand and back' },
     ],
   },
   {
