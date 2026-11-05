@@ -42,6 +42,7 @@ export const CAST_GAMES = {
   'say-something': ['Say Something', 'starter'],
   'beat-the-clock': ['Beat the Clock', 'starter'],
   switches: ['Switches', 'starter'],
+  'gravity-on-gravity-off': ['Gravity On, Gravity Off', 'starter'],
   carl: ['A Fly Named Carl', 'bizarre'],
   goat: ['Third Goat from the Left', 'bizarre'],
   loaf: ['Loaf #13 (Left in the Basket)', 'bizarre'],
@@ -114,7 +115,7 @@ const LISTED: CastMember[] = [
       height: 40,
       alt: 'Kit, a small cheerful kid in a teal knit beanie with a white pom-pom, an orange hoodie with a pocket and drawstrings, gray pants and white sneakers',
     },
-    bio: 'A small, cheerful explorer in a teal knit beanie with a white pom-pom, an orange hoodie with a pocket and drawstrings, gray pants and white sneakers. Kit walks, jumps, falls, climbs ladders (seen from behind), digs with a little shovel, tosses a star and cheers when a level is done. A bump only hurts a little, and the same Kit is there in every Starter, so what you learn in one carries to the next.',
+    bio: 'A small, cheerful explorer in a teal knit beanie with a white pom-pom, an orange hoodie with a pocket and drawstrings, gray pants and white sneakers. Kit walks, jumps, falls, climbs ladders (seen from behind), digs with a little shovel, tosses a star and cheers when a level is done. Seen from above, he walks in four directions. A bump only hurts a little, and the same Kit is there in every Starter, so what you learn in one carries to the next.',
     appears: [
       { game: 'first-steps', as: 'learns to walk, jump and climb' },
       { game: 'keys-and-doors', as: 'finds a silver key for each locked door' },
@@ -129,6 +130,7 @@ const LISTED: CastMember[] = [
       { game: 'say-something', as: 'reads the signs and talks to Pip, Moss and Dot' },
       { game: 'beat-the-clock', as: 'races a bar of light to a gate before it shuts' },
       { game: 'switches', as: 'pulls a lever to build a bridge' },
+      { game: 'gravity-on-gravity-off', as: 'jumps a wall, then walks around it with gravity off' },
     ],
   },
   {
