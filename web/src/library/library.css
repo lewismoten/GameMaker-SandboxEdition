@@ -1042,3 +1042,14 @@ dialog.modal:has(.lib-stacks) {
   outline: 3px solid var(--focus);
   outline-offset: 1px;
 }
+
+/* the card catalog in its dialog on a phone: drawers wrap down the page (the dialog's list scrolls), not sideways */
+@media (max-width: 600px), (max-height: 500px) {
+  dialog.modal .lib-cabinet {
+    grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
+    grid-template-rows: none;
+    grid-auto-columns: auto;
+    grid-auto-flow: row;
+    overflow-x: visible;
+  }
+}

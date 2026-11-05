@@ -1,17 +1,22 @@
 // Finds dialogs by clicking: in a new game, every visible button on each tab and in each file's editor is clicked once; a dialog
 // that opens is measured at 375x812 (dialogsFitMeasure.ts) and closed with Escape. Prints a line per dialog that fails.
-// Usage: npm run check:dialogs:sweep [-- --port 5593] [--theme light|dark] [--out dir] [--only substring-of-location]
+// Usage: npm run check:dialogs:sweep [-- --port 5593] [--theme light|dark] [--width 375 --height 812] [--axe] [--out dir] [--only substring-of-location]
 import { mkdirSync } from 'node:fs';
 import { resolve } from 'node:path';
 import type { Page } from 'playwright-core';
 import { arg, launch, target } from './perfLib';
 import { assertTheme, forceTheme } from './forceTheme';
+import { readFileSync } from 'node:fs';
 import { measure } from './dialogsFitMeasure';
 
 const theme = (arg('theme') ?? 'light') as 'light' | 'dark';
 const out = arg('out') ? resolve(arg('out') as string) : undefined;
 if (out) mkdirSync(out, { recursive: true });
 const onlyLoc = arg('only');
+const width = Number(arg('width') ?? 375);
+const height = Number(arg('height') ?? 812);
+const runAxe = process.argv.includes('--axe');
+const axeSrc = runAxe ? readFileSync(resolve('../node_modules/axe-core/axe.min.js'), 'utf8') : '';
 
 const srv = await target(5593);
 const browser = await launch();
@@ -31,7 +36,7 @@ const buttons = (page: Page) =>
   );
 
 try {
-  const ctx = await browser.newContext({ viewport: { width: 375, height: 812 }, hasTouch: true, isMobile: true, deviceScaleFactor: 1 });
+  const ctx = await browser.newContext({ viewport: { width, height }, hasTouch: width < 700, isMobile: width < 700, deviceScaleFactor: 1 });
   await forceTheme(ctx, theme);
   const page = await ctx.newPage();
   await page.addInitScript(() => {
@@ -138,7 +143,19 @@ try {
         );
         const hard = m.problems.filter((x) => !x.includes('[allowed list]'));
         if (hard.length) bad++;
-        console.log(`${hard.length ? 'FAIL' : 'ok  '} ${loc} > ${b.label} => "${title}"${hard.length ? ': ' + hard.slice(0, 3).join('; ') : ''}`);
+        let axeNote = '';
+        if (runAxe) {
+          await page.addScriptTag({ content: axeSrc });
+          const v: string[] = await page.evaluate(async () => {
+            // @ts-expect-error axe is a page global once injected
+            const res = await axe.run(document.querySelector('dialog[open]') ?? document, { resultTypes: ['violations'] });
+            return res.violations
+              .filter((x: { impact?: string }) => x.impact !== 'minor')
+              .map((x: { id: string; nodes: unknown[] }) => `${x.id} x${x.nodes.length}`);
+          });
+          if (v.length) axeNote = ` [axe: ${v.join(', ')}]`;
+        }
+        console.log(`${hard.length ? 'FAIL' : 'ok  '} ${loc} > ${b.label} => "${title}"${hard.length ? ': ' + hard.slice(0, 3).join('; ') : ''}${axeNote}`);
         if (out) await page.screenshot({ path: `${out}/${(loc + '-' + b.label).replace(/[^a-z0-9]+/gi, '_')}.png` });
         await page.keyboard.press('Escape');
         await page.waitForTimeout(150);
