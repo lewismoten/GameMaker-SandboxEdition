@@ -33,7 +33,7 @@ export const KEYBOARD_SIZE = { w: 268, h: 92 };
 export const KEYBOARD: KeyBox[] = [
   ...letters('QWERTYUIOP', 4, 4),
   ...letters('ASDFGHJKL', 12, 4 + PITCH),
-  { label: 'ENTER', x: 12 + 9 * PITCH, y: 4 + PITCH, w: 36, h: SIZE, role: 'main' },
+  { label: 'ENTER', x: 12 + 9 * PITCH, y: 4 + PITCH, w: 44, h: SIZE, role: 'main' },
   ...letters('ZXCVBNM', 20, 4 + 2 * PITCH),
   { label: 'SPACE', x: 40, y: 4 + 3 * PITCH, w: 120, h: SIZE, role: 'main' },
   { label: '\x18', x: 224, y: 4 + 2 * PITCH, w: SIZE, h: SIZE, role: 'main' },

@@ -134,7 +134,17 @@ function arrowsSpaceEnter(book: Book, signs: Record<SignName, Sign>): StarterMap
   g.fill(h0, G - 5, h1 - h0 + 1, 3, 'B').row(G - 6, h0, h1, 'G');
   g.put(L1.exit, G - 2, 'e').put(L1.exit, G - 1, 'E');
   for (const [x, y] of L1.coins) g.put(x, y, 'c');
-  scenery(g, G, [[8, 2], [26, 1], [54, 3]], [8, 24, 59], [10, 22, 60]);
+  scenery(
+    g,
+    G,
+    [
+      [8, 2],
+      [26, 1],
+      [54, 3],
+    ],
+    [8, 24, 59],
+    [10, 22, 60],
+  );
   const m = new StarterMap(book, g.rows());
   for (const x of L1.jellies) m.mon(JELLY, x, G - 1);
   m.sign(6, onGround(G, signs.walk), signs.walk);
@@ -158,7 +168,17 @@ function noDiagonal(book: Book, signs: Record<SignName, Sign>): StarterMap {
   g.put(3, G - 2, 's').put(3, G - 1, 'S');
   g.put(L2.exit, G - 2, 'e').put(L2.exit, G - 1, 'E');
   for (const [x, y] of L2.coins) g.put(x, y, 'c');
-  scenery(g, G, [[7, 2], [28, 1], [48, 3]], [9, 31, 44], [11, 33, 42]);
+  scenery(
+    g,
+    G,
+    [
+      [7, 2],
+      [28, 1],
+      [48, 3],
+    ],
+    [9, 31, 44],
+    [11, 33, 42],
+  );
   const m = new StarterMap(book, g.rows());
   m.sign(6, onGround(G, signs.arc), signs.arc);
   m.sign(29, onGround(G, signs.higher), signs.higher);
@@ -176,7 +196,17 @@ function leapShelves(book: Book, signs: Record<SignName, Sign>): StarterMap {
   g.put(L3.exit, G - 2, 'e').put(L3.exit, G - 1, 'E');
   for (const [a, b] of [L3.shelfE, L3.shelfQ]) g.row(L3.shelfTop, a, b, '=');
   for (const [x, y] of [...L3.coins, ...L3.coinsE, ...L3.coinsQ]) g.put(x, y, 'c');
-  scenery(g, G, [[8, 2], [30, 1], [55, 3]], [13, 31, 48], [15, 34, 50]);
+  scenery(
+    g,
+    G,
+    [
+      [8, 2],
+      [30, 1],
+      [55, 3],
+    ],
+    [13, 31, 48],
+    [15, 34, 50],
+  );
   const m = new StarterMap(book, g.rows());
   m.sign(8, onGround(G, signs.shelves), signs.shelves);
   m.sign(28, onGround(G, signs.old), signs.old);

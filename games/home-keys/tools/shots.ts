@@ -7,17 +7,17 @@ import { writePng } from '@lewismoten/gamemaker-sandbox-tools/kit/png';
 import { renderRegion } from '@lewismoten/gamemaker-sandbox-tools/kit/levelPicture';
 import { buildHeroBlocks, heroPicture } from '../../kit/starter/hero';
 import { ORIGIN } from '../../kit/starter/map';
-import { buildMonsterBlocks, buildMonsters } from '../../kit/starter/monsters';
-import { L1, L2, buildLevels } from '../src/levels';
+import { finishMonsterPictures, monsterPictures, monsterSet } from '../src/monsters';
+import { L1, L2, L3, buildLevels } from '../src/levels';
 
 const out = process.argv[2];
 if (!out) throw new Error('usage: shots.ts <outDir>');
 mkdirSync(out, { recursive: true });
 const { book, pal, levels } = buildLevels();
 const bbl = book.finish();
-const mb = buildMonsterBlocks(pal);
-const mbl = mb.finish();
-const set = buildMonsters(mb);
+const mb = monsterPictures(pal);
+const mbl = finishMonsterPictures(mb);
+const set = monsterSet(mb);
 const hero = buildHeroBlocks(pal);
 
 /** Kit standing in column `col` with his feet on level row `feet`, as two sprites for renderRegion. */
@@ -33,11 +33,10 @@ const maps = levels.map((l) => l.map.done());
 const screen = (i: number, col: number, row: number, ...sprites: ReturnType<typeof kit>[]) =>
   renderRegion(maps[i], bbl, mbl, set, ORIGIN + col, ORIGIN + row, 16, 10, sprites.flat());
 
-writePng(join(out, 'one-1-hop.png'), screen(0, 3, 5, kit(13, L1.wallTop - 1)), pal.pal, 3);
-writePng(join(out, 'one-2-lifting.png'), screen(0, 22, 0, kit(28, 7)), pal.pal, 3);
-writePng(join(out, 'one-3-on-the-cliff.png'), screen(0, 30, 0, kit(33, L1.cliffTop - 1)), pal.pal, 3);
-writePng(join(out, 'two-1-dash-over-the-gap.png'), screen(1, 36, 2, kit(44, 8)), pal.pal, 3);
-writePng(join(out, 'two-2-before-the-widest-gap.png'), screen(1, 33, 2, kit(40, L2.ground - 1)), pal.pal, 3);
+writePng(join(out, 'one-1-the-wall.png'), screen(0, 8, 3, kit(L1.wall[0] - 2, L1.ground - 1)), pal.pal, 3);
+writePng(join(out, 'one-2-the-tunnel.png'), screen(0, 26, 3, kit(L1.jellies[0] - 1, L1.ground - 1)), pal.pal, 3);
+writePng(join(out, 'two-1-the-arc.png'), screen(1, 8, 3, kit(L2.pits[0][0] - 1, L2.ground - 1)), pal.pal, 3);
+writePng(join(out, 'three-1-the-shelf.png'), screen(2, 14, 3, kit(L3.shelfE[0] - 2, L3.ground - 1)), pal.pal, 3);
 levels.forEach((l, i) =>
   writePng(join(out, `level-${i + 1}.png`), renderRegion(maps[i], bbl, mbl, set, ORIGIN, ORIGIN, l.map.width, l.map.height), pal.pal, 2),
 );

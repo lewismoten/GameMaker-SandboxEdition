@@ -52,6 +52,7 @@ export const CAST_GAMES = {
   gusts: ['Gusts', 'starter'],
   swim: ['Under the Surface', 'starter'],
   'kit-moves': ["Kit's Moves", 'starter'],
+  'home-keys': ['Home Keys', 'starter'],
   'walk-the-ground': ['Dig It', 'starter'],
   'choose-hero': ['Who Do You Want to Be?', 'starter'],
   'many-weapons': ['Many Weapons', 'starter'],
@@ -210,6 +211,10 @@ const LISTED: CastMember[] = [
       { game: 'same-house', as: 'goes in three doors on one street and finds the same house with a new carpet, wallpaper and roof each time' },
       { game: 'colors', as: 'crosses a row of red and green plates that look alike to some players, then spikes and striped plates that never do' },
       { game: 'choose-hero', as: 'picks a door, and is Fast Feet or Big Hops for the same climb' },
+      {
+        game: 'home-keys',
+        as: 'walks, jumps and throws with only the arrows, Space and Enter, crosses a gap that looks as if it needs a diagonal, and leaps for extra coins with Q and E',
+      },
       { game: 'kit-moves', as: 'hops once however long he holds Space, lifts up a cliff while Up is held and dashes across gaps one press at a time' },
       { game: 'many-weapons', as: 'fills a pouch with stars, another with flames, and finds that one key throws whichever he has' },
       { game: 'inventory', as: 'packs three crates and puts them down as a stair, then puts a flame down to throw a star' },

@@ -44,11 +44,7 @@ export function buildKeyHero(cb: Book): Character {
   const f = (top: string, bottom: string, o: Partial<Frame> = {}): Frame => ({ ...emptyFrame(), pic1: cb.n(top), pic2: cb.n(bottom), pause: 2, ...o });
   const leap = (side: number, mirror: boolean): Frame[] => {
     const orient = mirror ? 0x44 : 0;
-    return [
-      f('up.top', 'jumpup', { x: side, y: -LEAP_PUSH, orient }),
-      f('cheer.top', 'jump', { x: side, orient }),
-      f('oh.top', 'fall', { orient }),
-    ];
+    return [f('up.top', 'jumpup', { x: side, y: -LEAP_PUSH, orient }), f('cheer.top', 'jump', { x: side, orient }), f('oh.top', 'fall', { orient })];
   };
   set(S[SEQ_LEAP_LEFT], leap(-LEAP_SIDE, true), { key: KEY_Q, norepeat: 1, momentum: 1 });
   set(S[SEQ_LEAP_RIGHT], leap(LEAP_SIDE, false), { key: KEY_E, norepeat: 1, momentum: 1 });

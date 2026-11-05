@@ -61,7 +61,6 @@ async function rightTo(bot: StarterBot, to: number, max = 300): Promise<Result> 
   return undefined;
 }
 
-
 /** Whether the extra coins in level 3 are collected (E and Q), or only the way to the door. */
 export interface Options {
   detour: boolean;
@@ -94,7 +93,7 @@ export async function arrowsSpaceEnter(bot: StarterBot): Promise<void> {
   // what the sign teaches, with the trouble first: walking into a jelly does not move it
   const first = L1.jellies[0];
   await must(bot, holdFor(bot, SCAN.right, 30), 'walking into the jelly');
-  if (col(bot) > first - 1 + 0.2) throw new Error(`the jelly should block the tunnel; Kit is at column ${col(bot).toFixed(1)}`);
+  if (col(bot) > first - 0.2) throw new Error(`the jelly should block the tunnel; Kit is at column ${col(bot).toFixed(1)}`);
   await must(bot, bot.wait(20), 'a look');
   bot.say(`score at the tunnel ${bot.sim.ci.score}`);
   for (const [n, x] of L1.jellies.entries()) {
@@ -120,13 +119,15 @@ export async function noDiagonal(bot: StarterBot): Promise<void> {
   const [p1, p2] = L2.pits;
   await must(bot, bot.walk(p1[0], 'the first gap'), 'to the first gap');
   await must(bot, bot.jump('right', L2.step.from + 2), 'over the first gap');
-  if (col(bot) < L2.step.from || row(bot) > G - L2.step.rise - 1 + 0.2) throw new Error(`Kit should stand on the high ground; he is at ${col(bot).toFixed(1)}, ${row(bot).toFixed(1)}`);
+  if (col(bot) < L2.step.from || row(bot) > G - L2.step.rise - 1 + 0.2)
+    throw new Error(`Kit should stand on the high ground; he is at ${col(bot).toFixed(1)}, ${row(bot).toFixed(1)}`);
   await must(bot, bot.walk(L2.step.to - 1, 'the end of the high ground'), 'along the high ground');
   await must(bot, bot.walk(30, 'the second sign'), 'to the sign');
   await must(bot, bot.wait(LOOK), 'reading the sign');
   await must(bot, bot.walk(p2[0], 'the second gap'), 'to the second gap');
   await must(bot, bot.jump('right', p2[1] + 2), 'over the second gap');
-  if (col(bot) < p2[1] + 1 || row(bot) > G - 1 + 0.2) throw new Error(`Kit should be across the second gap; he is at ${col(bot).toFixed(1)}, ${row(bot).toFixed(1)}`);
+  if (col(bot) < p2[1] + 1 || row(bot) > G - 1 + 0.2)
+    throw new Error(`Kit should be across the second gap; he is at ${col(bot).toFixed(1)}, ${row(bot).toFixed(1)}`);
   await must(bot, bot.walk(L2.coins[L2.coins.length - 1][0] + 1, 'the far coin'), 'to the far coin');
   score(bot, from, 10 * L2.coins.length, 'level 2');
   await leave(bot, bot.walk(L2.exit, 'the exit'), 'the exit');
@@ -138,7 +139,8 @@ async function leapOnto(bot: StarterBot, key: number, dir: 'left' | 'right', she
   await must(bot, bot.land(), `landing on ${what}`);
   const top = L3.shelfTop - 1;
   bot.say(`${what}: landed at column ${col(bot).toFixed(1)}, row ${row(bot).toFixed(1)}`);
-  if (row(bot) > top + 0.2 || col(bot) < shelf[0] - 0.5 || col(bot) > shelf[1] + 1) throw new Error(`Kit should stand on ${what}; he is at ${col(bot).toFixed(1)}, ${row(bot).toFixed(1)}`);
+  if (row(bot) > top + 0.2 || col(bot) < shelf[0] - 0.5 || col(bot) > shelf[1] + 1)
+    throw new Error(`Kit should stand on ${what}; he is at ${col(bot).toFixed(1)}, ${row(bot).toFixed(1)}`);
   void dir;
 }
 

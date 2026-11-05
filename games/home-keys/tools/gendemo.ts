@@ -1,4 +1,4 @@
-// Re-records the title screen's demo into src/demo.ts: the bot's own run through both levels, one
+// Re-records the title screen's demo into src/demo.ts: the bot's own run through all three levels, one
 // unbroken list of keys (the demo recorder counts game ticks across scene changes, so the second level's
 // keys follow the first's after the ticks between them). It shows each lesson once: a held Space hops once,
 // a held Up lifts Kit above the cliff, a held Enter dashes once and each press crosses a wider gap.

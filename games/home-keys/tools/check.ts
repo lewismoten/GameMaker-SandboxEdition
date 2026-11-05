@@ -27,7 +27,10 @@ function extras(sim: Awaited<ReturnType<typeof play>>['sim']): Map<number, Set<n
 
 const plain = await play(undefined, undefined, false);
 const other = extras(plain.sim);
-if (other.size) throw new Error(`the way through must need only the arrows, Space and Enter; the bot also pressed ${[...other].map(([s, k]) => `${[...k].map(scanName)} in scene ${s}`)}`);
+if (other.size)
+  throw new Error(
+    `the way through must need only the arrows, Space and Enter; the bot also pressed ${[...other].map(([s, k]) => `${[...k].map(scanName)} in scene ${s}`)}`,
+  );
 const full = await play();
 const more = extras(full.sim);
 for (const [scene, keys] of more) {

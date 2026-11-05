@@ -7,6 +7,9 @@ import type { Pal } from '../../kit/starter/palette';
 import { paper } from '../../kit/starter/screens';
 import { HANDS, KEYBOARD, type KeyRole } from './keyboardLayout';
 
+/** The arrow keys' labels (keyboardLayout.ts) and the way each points. */
+const ARROW_DIR: Record<string, 'up' | 'down' | 'left' | 'right'> = { '\x18': 'up', '\x19': 'down', '\x1b': 'left', '\x1a': 'right' };
+
 /** Where the 268 x 92 keyboard sits on the paper. */
 const AT = { x: 26, y: 34 };
 
@@ -22,6 +25,18 @@ export function keyboardPicture(pal: Pal, book: Book): Pixels {
   }
   for (const k of KEYBOARD) {
     p.rect(AT.x + k.x, AT.y + k.y, k.w, k.h, edge[k.role]).rect(AT.x + k.x + 1, AT.y + k.y + 1, k.w - 2, k.h - 3, fill[k.role]);
+    const dir = ARROW_DIR[k.label];
+    if (dir) {
+      // an arrow key: a little solid triangle that points the way
+      const cx = AT.x + k.x + 7;
+      const cy = AT.y + k.y + 6;
+      for (let i = 0; i < 6; i++)
+        for (let j = 0; j <= i; j++) {
+          const [dx, dy] = dir === 'up' ? [j - i / 2, i - 3] : dir === 'down' ? [j - i / 2, 3 - i] : dir === 'left' ? [i - 3, j - i / 2] : [3 - i, j - i / 2];
+          p.set(Math.round(cx + dx), Math.round(cy + dy), c('ink', 0));
+        }
+      continue;
+    }
     const label = k.label.length === 1 ? k.label : k.label === 'ENTER' ? 'ENTER' : 'SPACE';
     const w = textWidth(label);
     text(p, AT.x + k.x + Math.floor((k.w - w) / 2), AT.y + k.y + 4, label, c('ink', 0));

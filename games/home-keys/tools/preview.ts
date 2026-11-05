@@ -10,7 +10,7 @@ import { blockSheet, writePng } from '@lewismoten/gamemaker-sandbox-tools/kit/pn
 import { renderRegion } from '@lewismoten/gamemaker-sandbox-tools/kit/levelPicture';
 import { ORIGIN } from '../../kit/starter/map';
 import { buildHeroBlocks, heroPicture } from '../../kit/starter/hero';
-import { buildMonsterBlocks, buildMonsters } from '../../kit/starter/monsters';
+import { finishMonsterPictures, monsterPictures, monsterSet } from '../src/monsters';
 import { buildLevels } from '../src/levels';
 
 const out = process.argv[2] ?? join(tmpdir(), 'home-keys-preview');
@@ -30,11 +30,11 @@ const sheet = new Pixels(poses.length * 24 + 4, 44, sky);
 poses.forEach(([t, b], i) => sheet.blit(heroPicture(hero, t, b), 4 + i * 24, 2, 255));
 writePng(join(out, 'hero.png'), sheet, pal.pal, 5);
 
-const mb = buildMonsterBlocks(pal);
-const mbl = mb.finish();
+const mb = monsterPictures(pal);
+const mbl = finishMonsterPictures(mb);
 for (const l of levels) {
   const m = l.map.done();
-  const pic = renderRegion(m, bbl, mbl, buildMonsters(mb), ORIGIN, ORIGIN, l.map.width, l.map.height);
+  const pic = renderRegion(m, bbl, mbl, monsterSet(mb), ORIGIN, ORIGIN, l.map.width, l.map.height);
   writePng(join(out, `${l.file}.png`), pic, pal.pal, 1);
 }
 const disk = new URL('../disk/', import.meta.url);

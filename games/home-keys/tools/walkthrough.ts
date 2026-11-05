@@ -7,7 +7,8 @@ import { SEED, play } from './play';
 
 const { sim } = await play(SEED);
 const titles: Record<number, string> = {
-  2: 'Level 1: Tap and Hold',
-  3: 'Level 2: Once Per Press',
+  2: 'Level 1: Arrows, Space, Enter',
+  3: 'Level 2: No Diagonal Needed',
+  4: 'Level 3: Leap Shelves',
 };
 await writeSimWalkthrough('home-keys', sim, SEED, titles);
