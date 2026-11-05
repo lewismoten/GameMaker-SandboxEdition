@@ -22,7 +22,12 @@ dialog|Everybody Talks|4
 flash-safe|Flash Safe|3
 flicker|Flicker and Flow|3
 follower|Follow Me|2
+graduation-blocks|Graduation: Blocks and Showcase|1
 graduation-basics|Graduation: First Steps|1
+graduation-heroes|Graduation: Heroes and Foes|1
+graduation-moving|Graduation: Moving and Pushing|1
+graduation-story|Graduation: Story and Finish|1
+graduation-wiring|Graduation: Wiring and Worlds|1
 gravity-on-gravity-off|Gravity On, Gravity Off|2
 gusts|Gusts|2
 health-and-hearts|Health and Hearts|3
@@ -71,6 +76,7 @@ take-the-wheel|Take the Wheel|2
 teach-test-twist|Teach, Test, Twist|3
 giant|The Giant|2
 same-house|The Same House|8
+graduation-diploma|The Sandbox Diploma|1
 scripted|The Show|2
 boss-phases|Three Phases|2
 three-tokens|Three Tokens|2
@@ -78,6 +84,7 @@ throw-it|Throw It|2
 horizon|To the Horizon|2
 one-more-try|Try Again|2
 twinkle|Twinkle, Twinkle|2
+under-the-hood|Under the Hood|3
 swim|Under the Surface|3
 very-far|Walking Very Far|4
 warning-first|Warning First|2
