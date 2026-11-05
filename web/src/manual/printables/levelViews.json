@@ -15,7 +15,7 @@
   "day-night": {"hash":"b687084f79ea4d32","maps":{"one.map|one.bbl":[0,14,47,10],"two.map|two.bbl":[0,14,56,10]}},
   "depth": {"hash":"441b447a19f292a1","maps":{"l1far.map|l1far.bbl":[17,38,66,24],"l1near.map|l1near.bbl":[21,38,57,24],"l2far.map|l2far.bbl":[21,32,53,35],"l2near.map|l2near.bbl":[16,33,73,34],"l3far.map|l3far.bbl":[20,31,53,37],"l3near.map|l3near.bbl":[20,31,53,37],"l4far.map|l4far.bbl":[16,30,68,39],"l4near.map|l4near.bbl":[16,30,68,39],"l5far.map|l5far.bbl":[16,30,68,39],"l5near.map|l5near.bbl":[16,30,68,39],"l6far.map|l6far.bbl":[14,33,69,33],"l6near.map|l6near.bbl":[18,33,63,33]}},
   "dialog": {"hash":"48fa6104c5e7897d","maps":{"many.map|dlg.bbl":[0,14,67,10],"pass.map|dlg.bbl":[6,14,16,10],"two.map|dlg.bbl":[0,14,67,10]}},
-  "dice": {"hash":"babc8aa28929a14e","maps":{"one.map|one.bbl":[0,3,67,24]}},
+  "dice": {"hash":"f03c6890368c63be","maps":{"one.map|one.bbl":[0,3,67,24]}},
   "first-steps": {"hash":"7617da7103b3e646","maps":{"climb.map|steps.bbl":[0,6,71,26],"walk.map|steps.bbl":[0,7,79,22]}},
   "flock": {"hash":"a24d4faf87ef720b","maps":{"one.map|bird.bbl":[0,7,67,20],"two.map|bird.bbl":[0,14,67,10]}},
   "follower": {"hash":"6fba519be37f92c0","maps":{"one.map|pup.bbl":[0,7,67,20],"two.map|pup.bbl":[0,9,67,18]}},

@@ -19,7 +19,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 7556,
+  "frames": 7074,
   "chapters": [
    {
     "title": "Opening",
@@ -33,18 +33,18 @@
    },
    {
     "title": "Roll the Dice",
-    "frame": 2125,
-    "time": 35416.66666666724
+    "frame": 1644,
+    "time": 27400.000000000564
    },
    {
     "title": "Ending",
-    "frame": 4277,
-    "time": 71283.33333333119
+    "frame": 3795,
+    "time": 63249.99999999652
    },
    {
     "title": "Credits",
-    "frame": 6484,
-    "time": 108066.66666667523
+    "frame": 6002,
+    "time": 100033.33333333956
    }
   ]
  }

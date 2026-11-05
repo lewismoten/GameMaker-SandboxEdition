@@ -49,6 +49,7 @@
     "11": "Falling over"
   },
   "counters": {
-    "20": "Keys: not used here, but a copy can add them."
+    "20": "Gold keys: an odd face adds one, the gold door takes one.",
+    "21": "Silver keys: an even face adds one, the silver door takes one."
   }
 }
