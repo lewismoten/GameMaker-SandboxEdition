@@ -2,7 +2,11 @@ import { describe, expect, it } from 'vitest';
 import { alikePairs, alikeTo, alikeUnder, previewViews, touchingAlike, warnVisions } from './alike';
 
 const pal = new Uint8Array(768);
-const set = (i: number, r: number, g: number, b: number) => pal.set([r, g, b].map((v) => Math.round(v / 4.0476)), i * 3);
+const set = (i: number, r: number, g: number, b: number) =>
+  pal.set(
+    [r, g, b].map((v) => Math.round(v / 4.0476)),
+    i * 3,
+  );
 // 1: orange-brown and 2: olive (alike with red-green differences); 3: green and 4: teal (blue-yellow); 5: blue
 set(1, 170, 90, 20);
 set(2, 110, 130, 20);

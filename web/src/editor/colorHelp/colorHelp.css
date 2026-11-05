@@ -1,0 +1,108 @@
+/* Color help: the small settings control, the "as others might see it" previews, the look-alike
+   note and the Quick color check tiles. Colors come from the theme tokens. */
+.color-help {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 4px 8px;
+}
+.color-help > summary {
+  cursor: pointer;
+  min-height: 24px;
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+}
+.color-help-body {
+  display: grid;
+  gap: 8px;
+  padding: 6px 0 4px;
+}
+.color-help-body .field select {
+  max-width: 100%;
+}
+.color-help-note {
+  font-size: 0.85em;
+  color: var(--muted, inherit);
+  margin: 0;
+}
+.seen-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: flex-start;
+}
+.seen-view {
+  display: grid;
+  gap: 2px;
+  justify-items: start;
+  margin: 0;
+}
+.seen-view canvas {
+  max-width: 100%;
+  height: auto;
+  image-rendering: pixelated;
+  border: 1px solid var(--border);
+  background: var(--bg);
+}
+.seen-view figcaption {
+  font-size: 0.8em;
+}
+.seen-chip {
+  width: 48px;
+  height: 48px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+.alike-note {
+  margin: 0;
+  padding: 6px 8px;
+  border: 1px solid var(--warn, #b26a00);
+  border-radius: 6px;
+  font-size: 0.9em;
+}
+.alike-note[hidden] {
+  display: none;
+}
+.alike-chip {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 1px solid var(--border);
+  vertical-align: -2px;
+  margin-right: 3px;
+}
+.pal-swatches button[data-alike] {
+  outline: 2px dashed var(--fg);
+  outline-offset: -3px;
+}
+.qc-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 64px);
+  gap: 8px;
+  justify-content: center;
+  margin: 12px auto;
+}
+.qc-tile {
+  width: 64px;
+  height: 64px;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  padding: 0;
+  cursor: pointer;
+}
+.qc-tile:focus-visible {
+  outline: 3px solid var(--fg);
+  outline-offset: 2px;
+}
+.qc-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+.qc-body {
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+  max-width: 360px;
+}
