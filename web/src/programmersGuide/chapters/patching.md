@@ -10,7 +10,7 @@ Game-Maker 3.0 writes a finished game as a copy of one program, `XFERPLAY.EXE`, 
 - **Credits and copyright text are not settings.** RSD's About text, the copyright lines and the notices are marked `keep` in the patch map and are left out of the table on purpose. Nothing here shows how to remove or hide an author's credit.
 - **Registration is not taught.** The registration check (`CHK.C`, `gmReg/`) is a different subject. Shareware authors were paid by it, so this chapter explains what the player's settings are and does not show how to get around a registration. It lists no offset that belongs to registration code. (The desk's pretend `GMCRACK.EXE` stays a labeled toy for this project's own games and is not a how-to.)
 - **Do not pass on someone else's patched player.** It carries their changes, and in the 1990s sometimes their buyer's stamp (the "owner stamp" of ch 16).
-- **DOS fidelity.** The table offers only settings that were read from the file and checked against `PLAYGAME.C`; there is no "write any byte here" box (`patchTable.ts:1-7`).
+- **DOS fidelity.** The table offers only settings that were read from the file and checked against `PLAYGAME.C`; there is no "write any byte here" box (`patchTable.ts:1-9`).
 
 ## 2. XFERPLAY and PLAYGAME
 
@@ -30,7 +30,7 @@ Numbers are patched the same way, but they live in the _code_. A screen position
 
 ## 4. The settings, by group
 
-130 entries (`PATCHES`, `patchTable.ts:92`), in six groups (`PatchGroup`, `patchTable.ts:10`). 35 are `caution` (they move or resize something the screen layout depends on, so the panel warns) and the rest `safe`. 129 are shown by the web player too; `str.save.failed` is DOS only (a web page cannot fail to save the way a disk can, `patchTable.ts:389`).
+139 entries (`PATCHES`, `patchTable.ts:98`), in seven groups (`PatchGroup`, `patchTable.ts:12`). 35 are `caution` (they move or resize something the screen layout depends on, so the panel warns), the 9 of the `play` group are `experimental` (section 9) and the rest `safe`. 138 are shown by the web player too; `str.save.failed` is DOS only (a web page cannot fail to save the way a disk can, `patchTable.ts:395`).
 
 | group     | entries | what they change                                                                                                                              | where in the file                                             |
 | --------- | ------: | --------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
@@ -40,18 +40,19 @@ Numbers are patched the same way, but they live in the _code_. A screen position
 | positions |      34 | x and y of the menu words, the title, the high-score table and the load and save headings                                                     | immediates at `0xafc0-0x1c00b`                                |
 | times     |      12 | seconds the menu idles before the demo, the high-score table, About page 1, each message, and the default time of a .gif, .bkd, .fli and .txt | immediates at `0xafb6-0x13bea`                                |
 | keys      |       3 | F5 (save), F6 (load) and F9 (joystick setup), each on or off                                                                                  | `DoFunKy`'s jump table at `0xcce8-0xccf0`                     |
+| play      |       9 | experimental: the character's top speed, gravity, monster attack reach, scrolling and fade length (section 9)                                 | immediates at `0xbe71-0x1a92c`                                |
 
 ### 4.1 The kinds of entry
 
-The kind says how a value becomes bytes (`writePatch`, `patchRules.ts:84-109`). Counts are of the 130:
+The kind says how a value becomes bytes (`writePatch`, `patchRules.ts:84-109`). Counts are of the 139:
 
 | kind     | count | what is written                                                                                                                              | rule (`patchProblem`, `patchRules.ts:29-57`)                                |
 | -------- | ----: | -------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
 | `text`   |    30 | the characters of a NUL-ended string, space-padded to the slot's length                                                                      | no longer than the slot, characters 0x20-0x7E                               |
 | `format` |     8 | a printf string such as `Score:     %ld`                                                                                                     | as text, and the same `%` codes in the same order, and no stray `%`         |
-| `number` |    47 | one immediate, or the same value in each of several immediates patched together (`border.marker.width` writes two)                           | a whole number from the entry's `min` to `max`                              |
+| `number` |    56 | one immediate, or the same value in each of several immediates patched together (`border.marker.width` writes two)                           | a whole number from the entry's `min` to `max`                              |
 | `rgb`    |    11 | three bytes, red then green then blue (listed red, green, blue; the three bytes are not next to each other and may run backward in the file) | each 0-63: the VGA DAC is six bits                                          |
-| `select` |    23 | one word: the DGROUP address of one of seven color targets (`COLOR_TARGETS`, `patchTable.ts:19`), the push before `RGBdata::Match`           | one of `yellow`, `red`, `blue`, `purple`, `hsRed`, `hsBlue`, `hsGreen`      |
+| `select` |    23 | one word: the DGROUP address of one of seven color targets (`COLOR_TARGETS`, `patchTable.ts:22`), the push before `RGBdata::Match`           | one of `yellow`, `red`, `blue`, `purple`, `hsRed`, `hsBlue`, `hsGreen`      |
 | `frame`  |     8 | four immediates (left, top, right, bottom)                                                                                                   | left and right 0-319, top and bottom 0-199, or 0-127 for a one-byte operand |
 | `fkey`   |     3 | a word in the jump table: the key's own handler (on) or `FKEY_OFF` `0x28f9`, DoFunKy's "does nothing" target (off)                           | `on` or `off`                                                               |
 
@@ -71,7 +72,7 @@ These rows are checked against `PATCHES` by a test (`patching.test.ts`), so the 
 | `border.invent.outer` | `frame`  | `0xe04f 0xe04d 0xe04a 0xe047` | `0A`, `0A`, `36 01`, `BE 00` (10, 10, 310, 190) | the F2 status screen's outer frame |
 | `table.fkeys.F5`      | `fkey`   | `0xcce8`                      | `B8 28` (`0x28b8`, F5's handler)                | F5 saves                           |
 
-Each `rgb` entry has three offsets because the three components are not adjacent: each sits in its own instruction. The offsets of one value therefore need not be in order, or near each other. A `frame` is four immediates; the left and right edges may be 1 byte (`push imm8`) and the others 2 bytes, so the stock bytes depend on the edge: 10 fits one byte, 310 needs two. That is the reason the table records `size` per field (`ImmField`, `patchTable.ts:23`).
+Each `rgb` entry has three offsets because the three components are not adjacent: each sits in its own instruction. The offsets of one value therefore need not be in order, or near each other. A `frame` is four immediates; the left and right edges may be 1 byte (`push imm8`) and the others 2 bytes, so the stock bytes depend on the edge: 10 fits one byte, 310 needs two. That is the reason the table records `size` per field (`ImmField`, `patchTable.ts:26`).
 
 ## 5. Applying a patch: size and MD5 first
 
@@ -115,7 +116,54 @@ Nothing in Game-Maker 3.0 customized the player, so authors reached for general 
 
 The editor's **DOS player** panel (`web/src/editor/editors/integrator/dosPlayer/`) does the same work with the table: the same bytes, the length rule enforced as you type, and a copy it can re-read. Its Patch Lab strip shows each setting's file offset, stock bytes and new bytes, the changed ones marked, so a reader can see the patch this chapter describes.
 
-## 9. Limits
+## 9. Experimental: the gameplay constants
+
+These change how every scene of the game plays, not how a screen looks, so the panel shows them on a tab of their own, **Gameplay**, each marked Experimental, under the warning "these change how every scene plays; test the patched game in DOSBox before you share it". The web player plays by the same values when the game has them (`playTuning`, `web/packages/engine/src/engine/playerLook.ts`), so a playtest in the editor matches the patched `XFERPLAY.EXE`. With none set, both play exactly as the CD's player does. **[not yet checked in DOSBox]**
+
+Each is a `#define` in `PLAYGAME.C` (lines 65-80), or for the fade the default step count of FadeTo and FadeAllTo (`PALETTE.H:65-66`), and the compiler copied it into the code wherever it is used. A patch writes the new value into every one of those copies and into nothing else: a constant whose copies cannot all be found, or that shares its bytes with some other number, is not offered. A clamp such as `if (tx < -MAXGRAV) tx = -MAXGRAV` holds the value negated, and the table marks those copies `negate` so they get minus the value (`ImmField`).
+
+| id                  | constant        | stock | range | what it changes                                                                                                                   |
+| ------------------- | --------------- | ----: | ----- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `play.maxSpeed`     | `MAXGRAV`       |    11 | 1-19  | the character's most pixels a move, either way (`PG:2484-2487`); kept under a block's 20 pixels                                   |
+| `play.gravityCap`   | `MAXGRAV*4`     |    44 | 0-127 | the most momentum gravity blocks build (`PG:3761-3764`); 0 turns gravity blocks off. The compiler folded it to 44, its own copies |
+| `play.gravityTicks` | `GRAVSPEED`     |     1 | 1-18  | game ticks (18.2 a second) between gravity pulls (`PG:3738`); more is gentler                                                     |
+| `play.attackX`      | `ATTACKX`       |     8 | 0-100 | blocks left or right within which a monster starts its attack path (`PG:2608`); 0 means never                                     |
+| `play.attackY`      | `ATTACKY`       |     5 | 0-100 | blocks up or down for the same test (`PG:2609`)                                                                                   |
+| `play.scrollSpeedX` | `SCRSPDX`       |    40 | 1-100 | the scroll speed when the character reaches the screen's side (`PG:3935, 3943`); a move still stops at 28 pixels (`PG:3956-3959`) |
+| `play.scrollSpeedY` | `SCRSPDY`       |    40 | 1-100 | the same, top and bottom (`PG:3948, 3953`)                                                                                        |
+| `play.scrollSteps`  | `SCROLLPERMOVE` |     6 | 1-60  | timer ticks one scroll move is spread over (`PG:3963, 3967`); more is slower and smoother                                         |
+| `play.fadeSteps`    | FadeTo's `tim`  |    65 | 0-65  | steps of every fade in and out, one a screen refresh (70 a second); 0 cuts at once                                                |
+
+The ranges keep each copy inside its instruction. A one-byte copy (`imm8`) is sign-extended, so it holds -128 to 127, and the negated copies of `play.gravityCap` stay inside that at 127. Other limits come from the code around the copies: the scroll speed is multiplied by a distance of up to a screen width in 16-bit math, which overflows past about 100; `SCROLLPERMOVE` divides a move, so 0 would hang the scroll; and FadeTo counts in signed bytes that reach the step count plus 62, so 65, the stock value, is the most that works.
+
+### 9.1 Where each one is
+
+File offsets of every copy, in the CD's two 3.00 players. The panel writes `XFERPLAY.EXE` only (section 2); the `PLAYGAME.EXE` column is for reading. A `-` marks a copy that holds the value negated.
+
+| id                  | XFERPLAY.EXE (160,598 bytes)                        | PLAYGAME.EXE (163,130 bytes)                        | encoding                                                  |
+| ------------------- | --------------------------------------------------- | --------------------------------------------------- | --------------------------------------------------------- |
+| `play.maxSpeed`     | f507 f50d -f512 -f518 f51d f523 -f528 -f52e         | fd79 fd7f -fd84 -fd8a fd8f fd95 -fd9a -fda0         | `cmp imm8`, `mov imm16`, in turn                          |
+| `play.gravityCap`   | 12651 12658 -1265e -12665 1266b 12672 -12678 -1267f | 12ec3 12eca -12ed0 -12ed7 12edd 12ee4 -12eea -12ef1 | `cmp imm8`, `mov imm16`, in turn                          |
+| `play.gravityTicks` | 124f5                                               | 12d67                                               | `add ax, imm16`                                           |
+| `play.attackX`      | f851                                                | 100c3                                               | `cmp ax, imm16`                                           |
+| `play.attackY`      | f866                                                | 100d8                                               | `cmp ax, imm16`                                           |
+| `play.scrollSpeedX` | 12aaa 12ad7                                         | 1331c 13349                                         | `imul imm8`                                               |
+| `play.scrollSpeedY` | 12b08 12b39                                         | 1337a 133ab                                         | `imul imm8`                                               |
+| `play.scrollSteps`  | 12b8e 12ba0                                         | 13400 13412                                         | `mov imm16`                                               |
+| `play.fadeSteps`    | be71 bf2b c614 c92a 155d7 1a92c                     | c66a c724 ce0d d123 15e49 1b19e                     | `push imm8` before each FadeTo call and the one FadeAllTo |
+
+### 9.2 Left out, and why
+
+| constant        |          stock | why it is not offered                                                                                                                                                                                                                                                                                                                                                                               |
+| --------------- | -------------: | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `MONMOVESPEED`  |              1 | folded away. `speed = (clock - NextMove + 1) / MONMOVESPEED` divides by 1, so the compiler left out the divide; only `NextMove = clock + 1` keeps a copy (`0x106e9` in XFERPLAY). Patching that alone would not do what a different `MONMOVESPEED` does.                                                                                                                                            |
+| `MaxMonsShown`  |             50 | a buffer is sized by it. The monster picture memory is `BLEN*BLEN*MaxMonsShown`, folded to one `push 4E20` (20,000 bytes) at `0xa6e6`, apart from the loop limit at `0xc8a3`. Raising the limit alone would draw past the end of that buffer.                                                                                                                                                       |
+| `SLOWSCROLLAMT` |              4 | defined but never used: nothing in the file to patch.                                                                                                                                                                                                                                                                                                                                               |
+| the timer rate  | 145.6 a second | the player sets the PC's timer to 8 times its usual 18.2 (divisor `0x1FFF`, `0x146ad` and `0x146b0` in XFERPLAY, `0x14f1f` and `0x14f22` in PLAYGAME) and passes every 8th tick on to DOS's clock (`SndClock & 7`, `PG:4423`). Another divisor would make DOS's time of day run fast or slow, and it also sets the music's tempo, the speaker sounds, the scrolling and the game clock all at once. |
+
+The player's own waits (`PauseTimeKey`) are in the `times` group already: the 10-second "No game-specific" lines, About page 1's 60 seconds and the 2 seconds after a load. The 120-second warning about a broken scene link is only in PLAYGAME.EXE (`#ifndef TRANSFER`, `PG:1092`), and the 2-second pause at start-up is part of the text-mode start-up messages the table leaves out.
+
+## 10. Limits
 
 - 160,598-byte XFERPLAY 3.00 only: size and MD5 are checked before any write (section 5).
 - Strings never grow; shorter ones are space-padded; the NUL after one is never touched (section 3).
