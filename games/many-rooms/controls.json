@@ -12,6 +12,14 @@
       "short": "Jump",
       "long": "Jump. Steer with Left and Right while you are in the air."
     },
+    "72": {
+      "short": "Not used",
+      "long": "Not used in this game: there are no ladders."
+    },
+    "80": {
+      "short": "Not used",
+      "long": "Not used in this game: there are no ladders."
+    },
     "30": {
       "short": "Walk left",
       "long": "Same as the Left arrow."
@@ -36,8 +44,7 @@
     }
   },
   "counters": {
-    "20": "Gold keys carried: the kitchen key adds one, the gold door takes it.",
-    "21": "Silver keys carried: not used in this game."
+    "20": "Keys: not used here, but a copy can add them."
   },
   "sounds": {
     "9": "The jump",

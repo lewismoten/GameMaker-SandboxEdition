@@ -93,7 +93,9 @@ const doorway = (g: Grid, r: Spot0) => g.put(r.rl + LAND_X, r.rt + FLOOR - 2, 's
 function paintRoom(g: Grid, r: Spot0, clouds: number[], bushes: number[], flowers: number[]): void {
   const { rl, rt } = r;
   g.row(rt + FLOOR, rl, rl + ROOM_W - 1, 'G').fill(rl, rt + FLOOR + 1, ROOM_W, ROOM_H - FLOOR - 1, 'D');
-  g.row(rt, rl, rl + ROOM_W - 1, 'B').col(rl, rt, rt + FLOOR - 1, 'B').col(rl + ROOM_W - 1, rt, rt + FLOOR - 1, 'B');
+  g.row(rt, rl, rl + ROOM_W - 1, 'B')
+    .col(rl, rt, rt + FLOOR - 1, 'B')
+    .col(rl + ROOM_W - 1, rt, rt + FLOOR - 1, 'B');
   clouds.forEach((lx, i) => g.put(rl + lx, rt + 1 + (i % 2), '(').put(rl + lx + 1, rt + 1 + (i % 2), ')'));
   for (const lx of bushes) g.put(rl + lx, rt + FLOOR - 1, 'b');
   for (const lx of flowers) g.put(rl + lx, rt + FLOOR - 1, 'f');

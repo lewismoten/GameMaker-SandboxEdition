@@ -35,7 +35,9 @@ export function titlePicture(pal: Pal, hero: Pixels, door: Pixels, name: string,
   for (const [cx, cy, ramp] of rooms) {
     const x = mx + cx * (rw + 4);
     const y = my + cy * (rh + 4);
-    p.rect(x, y, rw, rh, c(ramp, 2)).frame(x, y, rw, rh, c(ramp, 0)).rect(x + 1, y + 1, rw - 2, 2, c(ramp, 4));
+    p.rect(x, y, rw, rh, c(ramp, 2))
+      .frame(x, y, rw, rh, c(ramp, 0))
+      .rect(x + 1, y + 1, rw - 2, 2, c(ramp, 4));
     p.rect(x + rw - 12, y + rh - 14, 5, 12, c('wood', 2)); // a door
   }
   const dots = (x0: number, y0: number, x1: number, y1: number) => {

@@ -93,4 +93,6 @@ disk.put('rooms.gam', serializeGame(buildGame(rooms)));
 disk.put('license.txt', licenseText('Rooms on One Map'));
 clipEveryList(disk.files);
 disk.write();
-console.log(`${TITLE}: ${book.index.size} blocks, ${monsterBlocks.index.size} monster blocks, ${heroBlocks.index.size} hero blocks, ${levels.length} maps, ${rooms.length} rooms`);
+console.log(
+  `${TITLE}: ${book.index.size} blocks, ${monsterBlocks.index.size} monster blocks, ${heroBlocks.index.size} hero blocks, ${levels.length} maps, ${rooms.length} rooms`,
+);

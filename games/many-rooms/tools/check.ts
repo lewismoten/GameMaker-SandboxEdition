@@ -4,6 +4,7 @@ import { assertNoInvisibleWalls } from '../../kit/starter/invisibleWalls';
 import { buildLevels } from '../src/levels';
 import { play } from './play';
 
-assertNoInvisibleWalls(buildLevels());
+const { book, pal, levels } = buildLevels();
+assertNoInvisibleWalls({ book, pal, levels });
 const { sim } = await play();
 console.log(`many-rooms: the bot played both levels; score ${sim.ci.score}, ${sim.trail.length} scenes entered`);
