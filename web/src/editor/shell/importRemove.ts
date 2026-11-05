@@ -4,15 +4,16 @@
 // room, with Cancel the default, then deletes each as the home page's Delete does, with
 // progress and Cancel. Each leaves a record of its fingerprint, rating and note (imported/).
 import { h, modal, toast } from '../core/ui';
-import { deleteProject, listProjects, loadProject, saveProject } from '../../project/storage';
-import { forgetOrigin, isImported, originId, rememberOrigin, setImported } from './homeOrigin';
+import { deleteProject, listProjects, loadProject } from '../../project/storage';
+import { forgetOrigin, isImported, setImported } from './homeOrigin';
 import { undoToast } from './homeProjectActions';
-import { batchOf, forgetBatch, importedToRemove, markBatch } from './importBatch';
+import { forgetBatch, importedToRemove } from './importBatch';
 import { working } from './importChooser';
+import { bringBack, shelve } from './deletedShelf';
 import { forgetUsed } from '../../project/projectUse';
 import { fingerprintOfFiles, type Fingerprint } from '../../imported/fingerprint';
 import { allNotes, ratingOf, type Rating } from '../../imported/gameNotes';
-import { noteRemoval, undoRemoval } from '../../imported/noteMoves';
+import { noteRemoval } from '../../imported/noteMoves';
 import { groupByRating, ratingName, starsText, withRatings } from '../../imported/ratings';
 import '../../imported/imported.css';
 
@@ -70,8 +71,8 @@ export async function removeImported(refresh: () => unknown, batch?: string): Pr
       const size = now.reduce((sum, p) => sum + (sizes.get(p.id) ?? 0), 0);
       const all = n === targets.length;
       line.textContent = batch
-        ? `Remove the ${gamesText(n)} this import brought in (${bytesText(size)}) from this browser? Games made here, and any you moved to My games, are kept. An Undo button stays for a minute afterward.`
-        : `Remove ${all ? 'all ' : ''}${gamesText(n)} ${all ? 'listed under Imported' : 'of those ratings'} (${bytesText(size)}) from this browser? Games made here, and any you moved to My games, are kept. Their ratings and notes stay in the Library. An Undo button stays for a minute afterward.`;
+        ? `Remove the ${gamesText(n)} this import brought in (${bytesText(size)}) from this browser? Games made here, and any you moved to My games, are kept. For 7 days they can be brought back from Recently deleted.`
+        : `Remove ${all ? 'all ' : ''}${gamesText(n)} ${all ? 'listed under Imported' : 'of those ratings'} (${bytesText(size)}) from this browser? Games made here, and any you moved to My games, are kept. Their ratings and notes stay in the Library. For 7 days they can be brought back from Recently deleted.`;
       go.textContent = `Remove ${gamesText(n)}`;
       go.disabled = !n;
       go.onclick = () => close(now);
@@ -102,8 +103,8 @@ export async function removeImported(refresh: () => unknown, batch?: string): Pr
   if (!chosen?.length) return;
   const n = chosen.length;
   let done = 0;
-  // kept in memory for the Undo that follows (released when it goes away)
-  let held: { p: Target; stored: NonNullable<Awaited<ReturnType<typeof loadProject>>>; origin: string | undefined; batch: string | undefined }[] = [];
+  // each goes on the Recently deleted shelf (deletedShelf.ts), where Undo takes it back from
+  const removed: string[] = [];
   let job: Promise<void> | undefined;
   await working(
     'Removing games',
@@ -113,14 +114,14 @@ export async function removeImported(refresh: () => unknown, batch?: string): Pr
         for (const [i, p] of chosen.entries()) {
           if (signal.aborted) return;
           tell(i, n, `Game ${i + 1} of ${n}: ${p.name}`);
-          const stored = await loadProject(p.id).catch(() => undefined);
-          if (stored) held.push({ p, stored, origin: originId(p.id), batch: batchOf(p.id) });
+          await shelve(p.id);
           await deleteProject(p.id);
           forgetOrigin(p.id);
           setImported(p.id, false);
           forgetBatch([p.id]);
           forgetUsed(p.id);
           noteRemoval(p, undefined, prints.get(p.id));
+          removed.push(p.id);
           done++;
         }
       })()),
@@ -129,23 +130,15 @@ export async function removeImported(refresh: () => unknown, batch?: string): Pr
   await job;
   await refresh();
   const text = done === n ? `Removed ${gamesText(n)}.` : `Canceled: removed ${done} of ${gamesText(n)}.`;
-  if (!held.length) return toast(text);
+  if (!removed.length) return toast(text);
   undoToast(
-    text,
+    `${text} They stay under Recently deleted for 7 days.`,
     async () => {
-      for (const { p, stored, origin, batch } of held) {
-        await saveProject(p.id, stored.record.name, stored.record.gam, stored.files, stored.record.companion);
-        rememberOrigin(p.id, origin);
-        setImported(p.id, true);
-        if (batch) markBatch([p.id], batch);
-        undoRemoval(p.id);
-      }
-      toast(`Brought back ${gamesText(held.length)}.`);
+      let back = 0;
+      for (const id of removed) if (await bringBack(id)) back++;
+      toast(`Brought back ${gamesText(back)}.`);
       await refresh();
     },
     UNDO_MS,
-    () => {
-      held = [];
-    },
   );
 }

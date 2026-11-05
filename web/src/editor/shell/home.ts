@@ -22,6 +22,7 @@ import { categoryOf, homeLibrary, isByMaker, isOwn, SORT_KEY, type MySort } from
 import { showcase } from './homeShowcase';
 import { icon } from './homeIcons';
 import { CATEGORIES, CATEGORY_KEY, FIRST_CATEGORY, oldCategory, pickFeatured, savedCategory, type Category } from './homeCategories';
+import { shelfList } from './deletedShelf';
 import { importHistory } from '../../imported/importHistory';
 import { batchOf } from './importBatch';
 import { lastUsed } from '../../project/projectUse';
@@ -136,6 +137,16 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     'button',
     { type: 'button', class: 'lib-remove-all', hidden: true, onclick: () => void import('./importHistoryDialog').then((m) => m.showImportHistory()) },
     'Import history…',
+  );
+  const recentBtn = h(
+    'button',
+    {
+      type: 'button',
+      class: 'lib-remove-all',
+      hidden: true,
+      onclick: () => void import('./recentlyDeletedDialog').then((m) => m.showRecentlyDeleted(refreshProjects)),
+    },
+    'Recently deleted…',
   );
   const sortBox = h(
     'label',
@@ -380,6 +391,12 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     sortBox.hidden = !isOwn(c) || lib.own(c).length < 2;
     removeAllBtn.hidden = c !== 'imported' || !lib.own(c).length;
     historyBtn.hidden = c !== 'imported' || !importHistory().length;
+    // games deleted in the last 7 days (deletedShelf.ts) can come back from My games and Imported
+    recentBtn.hidden = true;
+    if (isOwn(c))
+      void shelfList()
+        .then((l) => (recentBtn.hidden = !isOwn(current) || !l.length))
+        .catch(() => undefined);
     // the Starters' "How do I…?" questions, loaded when that tab is first shown
     howDoI.hidden = c !== 'starter';
     if (c === 'starter' && !howDoI.firstChild && !howDoI.dataset.loading) {
@@ -435,7 +452,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
         'section',
         { id: 'library', class: 'library', 'aria-labelledby': 'lib-title' },
         h('div', { class: 'lib-bar' }, catNav, h('div', { class: 'lib-find' }, search, newGameBtn, communityBtn)),
-        h('div', { class: 'lib-about' }, libTitle, libLead, sortBox, ratingBox, historyBtn, removeAllBtn, start.howBtn),
+        h('div', { class: 'lib-about' }, libTitle, libLead, sortBox, ratingBox, historyBtn, recentBtn, removeAllBtn, start.howBtn),
         howDoI,
         tiles,
         live,

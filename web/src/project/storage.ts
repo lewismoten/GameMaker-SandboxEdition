@@ -170,6 +170,11 @@ export async function saveCheckpoints(id: string, checkpoints: StoredCheckpoint[
   });
 }
 
+/** Puts a record back exactly as it was kept (its last-saved time, companion and checkpoints included). */
+export async function putRecord(record: ProjectRecord): Promise<void> {
+  await request(PROJECTS, 'readwrite', (s) => s.put(record));
+}
+
 export async function deleteProject(id: string): Promise<void> {
   await request(PROJECTS, 'readwrite', (s) => s.delete(id));
 }

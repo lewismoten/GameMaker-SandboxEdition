@@ -1115,3 +1115,24 @@ a.button.with-ico {
   font-style: italic;
   overflow-wrap: anywhere;
 }
+
+/* Recently deleted (recentlyDeletedDialog.ts) */
+.rd-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 6px 0;
+  border-top: 1px solid var(--border);
+}
+
+.rd-what {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.rd-what small {
+  color: var(--muted);
+}

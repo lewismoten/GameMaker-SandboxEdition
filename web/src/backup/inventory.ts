@@ -35,6 +35,7 @@ export type StoreId = keyof typeof STORES;
 /** Databases left out, and why. */
 export const DATABASES_NOT_BACKED_UP: Record<string, string> = {
   'gamemaker-web-player': 'the web player page’s own saves (hostedPlayer/), on whatever site hosts it; it exports them itself',
+  'gamemaker-recently-deleted': 'games deleted in the last 7 days, kept so they can be brought back; a backup holds only the games that are listed',
 };
 
 /** Save ids (project/storage.ts saves store) that are a section of their own rather than a game's saves. */
@@ -134,6 +135,7 @@ export const LOCAL_KEYS: Record<SectionId, { keys: string[]; prefixes?: string[]
 export const KEYS_NOT_BACKED_UP: Record<string, string> = {
   'gm-project-source': 'marks imported games, whose files are never backed up',
   'gm-import-batch': 'groups imported games by the import that brought them',
+  'gm-import-history': 'the last 20 imports and their failures, about files that are never backed up',
   'gm-received': 'games other sites sent, kept as imported games',
   'gm-offline': 'the offline copy, a cache that downloads again',
   'gm-library-context': 'the Library’s start, noted as pages are viewed',
