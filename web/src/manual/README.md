@@ -184,6 +184,7 @@ address with no issue, open No. 2. `go:issue/1` and `go:issue/2` switch issues f
   - `joeyDrawing.ts`, a reader's crayon drawing of Teddy driving THE CHEZ to the moon, for the
     Mail Bag;
   - `bossChain.ts`, the Design Workshop's diagram of a boss with hit points as a chain of states;
+  - `plainText.ts` and `staticText.ts`, the issues' words as plain text, issue by issue and section by section (no DOM), for the static `magazine.html`: `scripts/magazineText.ts` writes them to `src/seo/magazineText.json` and `magazineText.test.ts` keeps them in step with the pages;
   - `deskShot.ts`, its snapshot of the 1994 desk, `web/public/magazine/desk-1994.webp`, with how to
     take it again; `webShots.ts`, its screenshots of today's web, `web/public/magazine/web-*.webp`,
     likewise; and `dosShot.ts`, Lewis's DOSBox screenshot of Carl's garbled cover,

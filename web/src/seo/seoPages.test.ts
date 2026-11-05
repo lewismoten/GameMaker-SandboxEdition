@@ -71,7 +71,7 @@ describe('seoBuild', () => {
     expect(
       locs
         .slice(3)
-        .filter((l) => !guide.includes(l) && !/\/(cast|library)\.html$/.test(l))
+        .filter((l) => !guide.includes(l) && !/\/(cast|library|magazine)\.html$/.test(l))
         .sort(),
     ).toEqual(playable.map((g) => `${SITE_URL}${gamePage(g.id)}`).sort());
     expect(new Set(locs).size).toBe(locs.length);
@@ -122,7 +122,7 @@ describe('seoBuild', () => {
 
   it('gives the cast and the Library pages of their own, in the sitemap, linking only to listed games and naming no secret game', () => {
     const pages = staticPages(catalog);
-    expect(pages.map((p) => p.file)).toEqual(['cast.html', 'library.html']);
+    expect(pages.map((p) => p.file)).toEqual(['cast.html', 'magazine.html', 'library.html']);
     const index = page('index.html');
     const ids = new Set(playable.map((g) => g.id));
     for (const p of pages) {
@@ -133,7 +133,7 @@ describe('seoBuild', () => {
       expect(html).toContain(`history.replaceState(null,'',"${p.hash}")`);
       expect(html.match(/<h1>/g)).toHaveLength(1);
       const plays = [...html.matchAll(/href="\.\/play-([^"]+)\.html"/g)].map((m) => m[1]);
-      expect(plays.length, p.file).toBeGreaterThan(5);
+      if (p.file !== 'magazine.html') expect(plays.length, p.file).toBeGreaterThan(5);
       for (const id of plays) expect(ids.has(id), `${p.file} links ${id}`).toBe(true);
       expect(secretHits(html), p.file).toEqual([]);
       // and no secret game's name in the plain words either
