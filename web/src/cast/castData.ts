@@ -48,6 +48,7 @@ export const CAST_GAMES = {
   'sounds-and-music': ['Sounds and Music', 'starter'],
   'your-first-game': ['Your First Game', 'starter'],
   'breakable-walls': ['Smash It', 'starter'],
+  'boss-hits': ['Big Bug', 'starter'],
   carl: ['A Fly Named Carl', 'bizarre'],
   goat: ['Third Goat from the Left', 'bizarre'],
   loaf: ['Loaf #13 (Left in the Basket)', 'bizarre'],
@@ -141,6 +142,7 @@ const LISTED: CastMember[] = [
       { game: 'sounds-and-music', as: 'listens to a song in every room and a beep for every pickup' },
       { game: 'your-first-game', as: 'puts it all together: a jump, coins, a gumdrop, spikes, a key and a door' },
       { game: 'breakable-walls', as: 'bumps crates to rubble and catches spinning gems' },
+      { game: 'boss-hits', as: 'throws five stars at a cheerful bug that blocks a narrow way' },
     ],
   },
   {
