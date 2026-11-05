@@ -1,0 +1,71 @@
+{
+  "keys": {
+    "75": {
+      "short": "Walk left",
+      "long": "Walk left."
+    },
+    "77": {
+      "short": "Walk right",
+      "long": "Walk right."
+    },
+    "30": {
+      "short": "Walk left",
+      "long": "Same as the Left arrow."
+    },
+    "32": {
+      "short": "Walk right",
+      "long": "Same as the Right arrow."
+    },
+    "57": {
+      "short": "Jump",
+      "long": "Jump. Hold Left or Right as well to jump that way."
+    },
+    "28": {
+      "short": "Throw",
+      "long": "Throw a star, one for each press. It pops a jelly."
+    },
+    "16": {
+      "short": "Leap left",
+      "long": "Leap up and to the left in one press. Only for the extra coins in level 3."
+    },
+    "18": {
+      "short": "Leap right",
+      "long": "Leap up and to the right in one press. Only for the extra coins in level 3."
+    },
+    "72": {
+      "short": "Climb",
+      "long": "Climb a ladder. Nothing to climb here."
+    },
+    "17": {
+      "short": "Climb",
+      "long": "Same as the Up arrow."
+    },
+    "80": {
+      "short": "Down",
+      "long": "Climb down. Nothing to climb here."
+    },
+    "31": {
+      "short": "Down",
+      "long": "Same as the Down arrow."
+    }
+  },
+  "joystick": {
+    "1": {
+      "short": "Jump",
+      "long": "Jump."
+    },
+    "2": {
+      "short": "Throw",
+      "long": "Throw a star."
+    }
+  },
+  "sounds": {
+    "9": "The jump",
+    "10": "Getting hurt",
+    "11": "Falling over",
+    "13": "The throw"
+  },
+  "counters": {
+    "20": "Keys: not used here, but a copy can add them."
+  }
+}

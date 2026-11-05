@@ -195,8 +195,10 @@ export const ARCHIVE_TRICKS = `<h2>More from the archive</h2>
   <p>An isometric room needs no new engine. Paint a floor of diamonds 20 pixels wide and 10 high
   (it repeats every 20 pixels, so every plain floor cell is the same block), draw cubes as a
   diamond top with two darker sides, and cut the picture into blocks. The hero still walks the
-  square grid and is drawn over everything: he cannot walk the drawn diagonals or go behind a
-  tower, and a tower taller than one block is solid in every block its picture covers.</p>
+  square grid and is drawn over everything: he cannot go behind a tower, and a tower taller
+  than one block is solid in every block its picture covers. To walk the drawn diagonals, give
+  each arrow's sequence a frame that moves him across and down at once (4 and 2 pixels fit
+  diamonds twice as wide as high), and draw him only on the four diagonal facings.</p>
   ${onCd('CORNER')}
   <h2>Choices you walk into</h2>
   <p>A menu doesn’t have to be a menu. Start the game in a small room with two or three doors,

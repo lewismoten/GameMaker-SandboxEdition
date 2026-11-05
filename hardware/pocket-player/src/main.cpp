@@ -1157,10 +1157,21 @@ static bool waitRawTap(tc::Raw& out) {
     delay(4);
   }
 }
+// ONE target: a filled dot in a ring with a cross through it (thick, so it can't be mistaken for two). The screen is cleared
+// twice first, so no earlier target can stay behind on a panel that clears part of its memory.
 static void drawCross(int x, int y) {
-  tft.drawCircle(x, y, 10, C_YELLOW);
-  tft.drawFastHLine(x - 16, y, 33, C_YELLOW);
-  tft.drawFastVLine(x, y - 16, 33, C_YELLOW);
+  tft.fillCircle(x, y, 7, C_YELLOW);
+  tft.drawCircle(x, y, 12, C_YELLOW);
+  tft.drawCircle(x, y, 13, C_YELLOW);
+  tft.fillRect(x - 20, y - 1, 41, 3, C_YELLOW);
+  tft.fillRect(x - 1, y - 20, 3, 41, C_YELLOW);
+}
+// Three pips at the screen's center, the first n filled: how many taps are done (no reading needed).
+static void calPips(int n) {
+  for (int i = 0; i < 3; i++) {
+    int x = scr::W / 2 - 20 + i * 20, y = scr::H / 2 + 30;
+    if (i < n) tft.fillCircle(x, y, 6, C_WHITE); else tft.drawCircle(x, y, 6, C_WHITE);
+  }
 }
 static void say(const char* a, const char* b) {
   tft.setTextSize(1);
@@ -1177,8 +1188,10 @@ static bool runCalibration() {
   for (;;) {
     tc::Raw r[3];
     for (int i = 0; i < 3; i++) {
+      tft.fillScreen(C_WHITE);
       tft.fillScreen(C_BLACK);
       drawCross(tx[i], ty[i]);
+      calPips(i);
       char l[32];
       snprintf(l, sizeof l, "Tap the cross  %d of 3", i + 1);
       say(l, "(BOOT button cancels)");
@@ -1225,18 +1238,8 @@ static bool runCalibration() {
     }
   }
 }
-// BOOT held (setup screen, or 2 s on the list): the next display mode (driver, inversion, red/blue order), kept in NVS, then a restart.
-static void nextPanel() {
-  panelType = (panelType + 1) % PANEL_TYPES;
-  Preferences p;
-  if (p.begin("pocket", false)) { p.putUChar("panel", panelType); p.end(); }
-  dsMarkBegun(true);
-  saveSettings();
-  char nb[16];
-  message("Display mode", panelName(nb));
-  delay(900);
-  ESP.restart();
-}
+// BOOT held (setup screen, or 2 s on the list): the other display driver, then a restart into setup step 1 (displaysetup_ui.h).
+static void nextPanel() { dsDriverRestart(); }
 #endif
 
 static void selfTestOne(int g, int ticks, bool cards) {

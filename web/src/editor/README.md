@@ -292,6 +292,13 @@ makes Ctrl+S save at once). Files are always written in the original binary form
   designer dismissed as meant to look alike, in the companion file on the `.pal`.
   `visionFallback.ts` supplies block artwork using the selected palette when the map is
   empty, then all 256 palette swatches when no suitable artwork is available.
+- **Color help.** `colorHelp/` holds three local preferences (`colorHelpPrefs.ts`, localStorage
+  `gm-color-help`: show color names, warn about look-alike colors for red-green or blue-yellow,
+  preview as others might see it), their small control (`colorHelpControl.ts`), plain color
+  names (`colorNames.ts`), the look-alike pairing over the engine's `gfx/colorVision` (`alike.ts`),
+  the block painters' panel (`blockColorHelp.ts` with `seenPreview.ts`; the palette editor wires
+  its own) and the optional Quick color check (`quickCheck.ts`, screens and suggestions in
+  `quickCheckLogic.ts`), which only suggests settings and keeps no answers.
 - **Color 0.** The palette editor's Backgrounds tab and its color-0 links show live miniatures;
   choosing one opens `editors/palette/colorZeroDialog.ts`:
   each player screen drawn on color 0 (`colorZeroScreens.ts`: the high-score name prompt and

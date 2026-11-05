@@ -1,91 +1,28 @@
 // Display setup of the 2.8 inch board, with no board code in it (host/setuptest.cpp checks it on the Mac).
-// The screen's buttons all sit in a 200 x 200 square at the panel's memory origin, logical (0,0) in every turn. The
-// panel is 240 x 320 in memory, so in any of the four landscape turns that square lands whole in one corner of the
-// glass and is never clipped, however the picture is rotated, mirrored or colored. Everything else on that screen is
-// information. This file also holds: the touch mapping worked out from one or two taps on that corner (before any
-// 3-tap calibration), the saved record (text, kept in NVS and on the card at /pocket/boards/<chip id>.cfg) and the
-// button effects.
+// What the steps show and how a tap is read is in setupflow.h. This file holds the saved record (text, kept in NVS and on
+// the card at /pocket/boards/<chip id>.cfg), the chip id and file name, and the rules for the display mode and for when the
+// card's record is used.
 #pragma once
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include "touchcal.h"
 
 namespace ds {
 
-constexpr int SQ = 200;          // the square's side
-constexpr int DOT_A = tc::MARGIN;  // first touch target (top left of the square, x and y)
-constexpr int DOT_B = 176;         // second target, same y, further along the square's top edge
-constexpr int DOT_Y = tc::MARGIN;
 constexpr int PANELS = 8, TURNS = 4;
-
-enum Btn { ROT, MIR, RB, INV, DRV, OK, NBTN };  // turn 180, mirror, swap red and blue, invert colors, driver, done
-constexpr int COLS = 2, ROWS = 3, CELL_W = SQ / COLS, CELL_H = SQ / ROWS;  // 100 x 66
-
-struct Rect { int x0, y0, x1, y1; };
-inline Rect rect(int b) { return {(b % COLS) * CELL_W, (b / COLS) * CELL_H, (b % COLS + 1) * CELL_W, (b / COLS + 1) * CELL_H}; }
-// Which button is at screen (x, y), or -1.
-inline int hit(int x, int y) {
-  if (x < 0 || y < 0 || x >= SQ || y >= CELL_H * ROWS) return -1;
-  return (y / CELL_H) * COLS + x / CELL_W;
-}
-
-// One button's effect on the display mode (panel bits: 1 ST7789, 2 inverted, 4 red/blue swapped) and the turn (bit 0 is
-// the half turn, bit 1 the mirror). Returns true when the picture changes (OK changes nothing).
-inline bool press(int b, uint8_t& panel, uint8_t& turn) {
-  switch (b) {
-    case ROT: turn ^= 1; return true;
-    case MIR: turn ^= 2; return true;
-    case RB: panel ^= 4; return true;
-    case INV: panel ^= 2; return true;
-    case DRV: panel ^= 1; return true;
-  }
-  return false;
-}
-// A change of driver or color order restarts the board (the driver is chosen before the panel starts); a turn is live.
-inline bool needsRestart(int b) { return b == RB || b == INV || b == DRV; }
-
-// ---- touch mapping from taps on the square's corner ----------------------------------------------------------------
-// The user touches the dot at (DOT_A, DOT_Y), then (when the axes' order is not known yet) the dot at (DOT_B, DOT_Y). Raw values
-// run 0..4095 across the glass, so a tap near the screen's left edge reads below the middle on the axis that runs along
-// it when that axis counts up, above when it counts down: one tap settles both directions. The second tap, which moved
-// along the screen's x, settles which raw axis that is. Not a calibration (the 3-tap one is the exact one), just enough
-// to hit buttons that are 100 x 66 pixels.
-inline int absi(int v) { return v < 0 ? -v : v; }
-inline void finish(int swap, int rx, int ry, int perPxU, tc::Cal& out, int W, int H) {
-  // perPxU: counts per pixel along the screen's x axis (positive); y has W/H times as many (the same raw span, fewer pixels)
-  int u = swap ? ry : rx, v = swap ? rx : ry;
-  int su = u < 2048 ? perPxU : -perPxU;
-  int perPxV = perPxU * W / H;
-  int sv = v < 2048 ? perPxV : -perPxV;
-  tc::Cal c;
-  c.swap = swap;
-  c.u0 = (int16_t)u;
-  c.u1 = (int16_t)(u + su * (W - 1 - 2 * tc::MARGIN));
-  c.v0 = (int16_t)v;
-  c.v1 = (int16_t)(v + sv * (H - 1 - 2 * tc::MARGIN));
-  c.valid = 1;
-  out = c;
-}
-// Two taps: first at (DOT_A, DOT_Y), second at (DOT_B, DOT_Y). False when they don't look like that (the same spot, a diagonal).
-inline bool fromTwo(const tc::Raw& a, const tc::Raw& b, int W, int H, tc::Cal& out) {
-  int dx = absi(b.x - a.x), dy = absi(b.y - a.y);
-  int swap = dy > dx;
-  int major = swap ? dy : dx, minor = swap ? dx : dy;
-  if (major < tc::MIN_SPAN * (DOT_B - DOT_A) / (W - 1 - 2 * tc::MARGIN) || minor * 2 > major) return false;
-  finish(swap, a.x, a.y, major / (DOT_B - DOT_A), out, W, H);
-  return true;
-}
-// One tap at (DOT_A, DOT_Y) when the order of the axes and their scale are known from before (`prev`, any earlier calibration).
-inline bool fromOne(const tc::Raw& a, const tc::Cal& prev, int W, int H, tc::Cal& out) {
-  int span = absi(prev.u1 - prev.u0), px = W - 1 - 2 * tc::MARGIN;
-  int per = span / px;
-  if (per < 4 || per > 40) per = 12;  // an unset or odd previous calibration: about the usual 3600 counts over 300 pixels
-  int u = prev.swap ? a.y : a.x;
-  if (u <= 0 || u >= 4095) return false;
-  finish(prev.swap, a.x, a.y, per, out, W, H);
-  return true;
-}
+// Display modes (panel bits): 1 ST7789 driver (else ILI9341), 2 colors inverted, 4 red and blue swapped.
+// The steps of the first-boot setup (setupflow.h), kept in NVS so a restart in the middle resumes at the right one.
+enum Step { STEP_ORIENT = 0, STEP_COLORS = 1, STEP_CALIBRATE = 2 };
+// The BOOT button held on the setup screen steps the driver only (the one fault a picture can't show its way out of): the other
+// color bits are cleared so step 2 starts fresh.
+inline uint8_t nextDriver(uint8_t panel) { return (uint8_t)((panel ^ 1) & 1); }
+// At start: is the chip's file on the microSD card read? Only when this chip has never been set up (no "setup" key in NVS, so
+// a reflashed-and-erased board finds its own file). A setup that was begun and not finished (state 1) must NOT be replaced by
+// the card's older record: that sent every restart in the middle of a setup (a color change, the driver) back to the old turn
+// and straight out of the setup, so the turn seemed stuck.
+inline bool useCardRecord(bool nvsHasSetup) { return !nvsHasSetup; }
 
 // ---- the saved record -------------------------------------------------------------------------------------------
 // state: 0 never set up, 1 set up begun (a display change restarted the board, or it was never finished), 3 saved.

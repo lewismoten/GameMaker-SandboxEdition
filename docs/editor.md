@@ -228,6 +228,15 @@ as they were in DOS: color 255 is drawn as see-through in monster and character 
 color 0 is the background of PLAYGAME's menus. The panel below lists the blocks that use each
 color, so you can see what a change will touch.
 
+**Color help** (a small control in the palette editor and in the block, monster and character
+painters) holds three choices, kept only in your browser: show each color's plain name ("dark
+red", "light blue-green") on its swatch and on the selected color's line; warn about colors that
+look alike to some eyes, red and green or blue and yellow, with dashed outlines in the palette and
+a note when two such colors touch in a picture you are painting; and preview the color or picture
+as others might see it, side by side. An optional **Quick color check** (a few "which tile looks
+different?" screens) only suggests which of these to turn on. It is not a medical test and keeps
+no answers.
+
 ## Music
 
 ![The music editor with title.cmf: a piano roll with colored tracks for flute, celesta and bass, a velocity strip, and play, loop and snap controls](screenshots/editor/09-music.webp)

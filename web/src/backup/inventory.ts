@@ -84,6 +84,7 @@ export const LOCAL_KEYS: Record<SectionId, { keys: string[]; prefixes?: string[]
   prefs: {
     keys: [
       'gm-theme',
+      'gm-color-help',
       'gm-ui',
       'gm-read-view',
       'gm-read-size',

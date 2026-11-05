@@ -13,6 +13,10 @@
   {
    "scene": 3,
    "keys": "KUsLyyhNCs0DUA/QC0seyytID8gDSw=="
+  },
+  {
+   "scene": 4,
+   "keys": "KUsFywRQBdAESwXLBFAF0CxNHc0oSA=="
   }
  ],
  "chapters": [
@@ -23,11 +27,15 @@
   {
    "scene": 3,
    "title": "Level 2: Stairs of Towers"
+  },
+  {
+   "scene": 4,
+   "title": "Level 3: The Diamond Floor"
   }
  ],
  "timeline": {
   "fps": 60,
-  "frames": 7738,
+  "frames": 8774,
   "chapters": [
    {
     "title": "Opening",
@@ -50,14 +58,19 @@
     "time": 56299.99999999753
    },
    {
-    "title": "Ending",
+    "title": "Level 3: The Diamond Floor",
     "frame": 4459,
     "time": 74316.6666666654
    },
    {
+    "title": "Ending",
+    "frame": 5493,
+    "time": 91550.00000000375
+   },
+   {
     "title": "Credits",
-    "frame": 6666,
-    "time": 111100.00000000944
+    "frame": 7700,
+    "time": 128333.3333333478
    }
   ]
  }

@@ -41,7 +41,7 @@ export const STARTER_GROUPS: { name: string; tag: string; games: string[] }[] = 
     tag: 'Ice, water, gravity and wind that act on you.',
     games: ['slippery-and-bouncy', 'gravity-on-gravity-off', 'swim', 'gusts'],
   },
-  { name: 'Changing Your Hero', tag: 'New keys, new heroes, new vehicles.', games: ['kit-moves', 'choose-hero', 'take-the-wheel'] },
+  { name: 'Changing Your Hero', tag: 'New keys, new heroes, new vehicles.', games: ['kit-moves', 'home-keys', 'choose-hero', 'take-the-wheel'] },
   {
     name: 'Foes and Bosses',
     tag: 'Foes that think, and ones that take a few hits.',
@@ -50,7 +50,18 @@ export const STARTER_GROUPS: { name: string; tag: string; games: string[] }[] = 
   {
     name: 'Telling a Story',
     tag: 'Words, pictures and sound.',
-    games: ['say-something', 'pictures-and-cartoons', 'sounds-and-music', 'day-night', 'same-house', 'voice', 'cutscenes', 'title-demo', 'colors'],
+    games: [
+      'say-something',
+      'pictures-and-cartoons',
+      'sounds-and-music',
+      'sound-board',
+      'day-night',
+      'same-house',
+      'voice',
+      'cutscenes',
+      'title-demo',
+      'colors',
+    ],
   },
   {
     name: 'Putting It Together',
@@ -78,7 +89,11 @@ export const STARTER_GROUPS: { name: string; tag: string; games: string[] }[] = 
     tag: 'More than one screen.',
     games: ['scroll', 'many-rooms', 'overhead', 'diagonal-wrap', 'blocks-budget', 'near-far', 'very-far', 'town-links'],
   },
-  { name: 'Drawing with Blocks', tag: 'Roads, water and sky, drawn and animated.', games: ['road-tiles', 'shore', 'twinkle', 'flicker', 'lights-out'] },
+  {
+    name: 'Drawing with Blocks',
+    tag: 'Roads, water and sky, drawn and animated.',
+    games: ['road-tiles', 'shore', 'twinkle', 'flicker', 'lights-out', 'color-doors', 'shadows'],
+  },
   {
     name: 'Showcase Tricks',
     tag: 'How the big games do their big moments.',

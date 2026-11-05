@@ -4,9 +4,11 @@
 //            up, right, up, right, up, right past its open top end, then down to the gold diamond. The arrows
 //            only ever walk straight.
 //   level 2: he walks into the stair of towers (stopped), goes round the front of it and on to the exit
+//   level 3: each arrow walks a diagonal. He goes straight left by tapping Left then Down, twice; holds Right into the
+//            lower right wall (it walks lower right, so he stops); then Up (upper right) to the gold diamond
 import type { Result, StarterBot } from '../../kit/starter/bot';
 import { SCAN } from '../../kit/starter/ids';
-import { DIAGONAL, EXITS, STAIRS } from '../src/levels';
+import { DIAGONAL, EXITS, STAIRS, START } from '../src/levels';
 
 async function must(bot: StarterBot, r: Promise<Result>, what: string): Promise<void> {
   const out = await r;
@@ -82,4 +84,36 @@ export async function towers(bot: StarterBot): Promise<void> {
   await must(bot, bot.wait(LOOK), 'looking back');
   await must(bot, bot.climb('up', EXITS[1][1], 'back up to the exit row'), 'up');
   await leave(bot, bot.walk(EXITS[1][0], 'the gold diamond'), 'the exit');
+}
+
+/** Holds `key` for `ticks` ticks (a tap is a few), then lets go; returns what the game said, if anything. */
+async function hold(bot: StarterBot, key: 'left' | 'right' | 'up' | 'down', ticks: number): Promise<Result> {
+  bot.sim.press(SCAN[key]);
+  let out: Result;
+  for (let t = 0; t < ticks && !out; t++) out = await bot.tick();
+  bot.sim.release(SCAN[key]);
+  return out ?? (await bot.wait(4));
+}
+
+/** 3. The Diamond Floor: straight left with two taps in turn, into a wall the wrong way, then the diagonals to the gold diamond. */
+export async function diamondFloor(bot: StarterBot): Promise<void> {
+  const home = { x: START[0] * 20, y: START[1] * 20 };
+  await must(bot, bot.wait(LOOK), 'reading');
+  // to go straight left take Left (upper left) and Down (lower left) in turn: across 40, no up or down
+  for (let i = 0; i < 2; i++) {
+    await must(bot, hold(bot, 'left', 5), 'left tap');
+    await must(bot, hold(bot, 'down', 5), 'down tap');
+  }
+  const p = bot.px;
+  if (p.x > home.x - 36 || Math.abs(p.y - home.y) > 6)
+    throw new Error(`two taps in turn should go straight left; he went from ${home.x},${home.y} to ${p.x},${p.y}`);
+  bot.say(`straight left to ${p.x}, ${p.y}`);
+  await must(bot, bot.wait(LOOK), 'looking');
+  // the mistake, once: Right is lower right, straight into the lower right wall
+  const stop = await bump(bot, 'right', 'into the wall');
+  if (stop.y < p.y + 20) throw new Error(`Right should go lower right; he went from ${p.y} to ${stop.y}`);
+  bot.say(`Right walked lower right, stopped at ${stop.x}, ${stop.y}`);
+  await must(bot, bot.wait(LOOK), 'looking at the wall');
+  // Up is upper right: from the wall's foot it runs the length of the room to the gold diamond
+  await leave(bot, hold(bot, 'up', 200), 'the gold diamond');
 }

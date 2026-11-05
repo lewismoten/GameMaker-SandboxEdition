@@ -1,0 +1,83 @@
+{
+  "title": "Sound Board",
+  "howDoI": [
+    {
+      "id": "pad-sound",
+      "q": "How do I make a block play a sound?",
+      "scene": 2,
+      "x": 26,
+      "y": 19,
+      "level": 1
+    },
+    {
+      "id": "sound-number",
+      "q": "How do I choose which sound a block plays?",
+      "scene": 2,
+      "x": 31,
+      "y": 19,
+      "level": 1
+    },
+    {
+      "id": "silent-sound",
+      "q": "How do I make a sound that is silent?",
+      "scene": 2,
+      "x": 41,
+      "y": 19,
+      "level": 1
+    },
+    {
+      "id": "replay-door",
+      "q": "How do I put the blocks back the way they were?",
+      "scene": 2,
+      "x": 12,
+      "y": 19,
+      "level": 1
+    },
+    {
+      "id": "gate-sound",
+      "q": "How do I make a gate creak when it opens?",
+      "scene": 3,
+      "x": 38,
+      "y": 19,
+      "level": 2
+    },
+    {
+      "id": "wrong-sound",
+      "q": "How do I make a \"no\" sound for a wrong way?",
+      "scene": 3,
+      "x": 60,
+      "y": 19,
+      "level": 2
+    }
+  ],
+  "pages": [
+    {
+      "head": "Welcome",
+      "html": "<h1>Welcome</h1><p><b>Sound Board</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has two short rooms about sound effects and takes a few minutes. Turn your sound up.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each idea is made. <b>Sounds and Music</b> is the Starter about songs and about which sound a pickup makes; this one is about the numbers behind the sounds.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. <kbd>Space</kbd> jumps. <kbd>F2</kbd> shows your hit points, lives and score. Walk into the door at the end of a level to go on.</p>"
+    },
+    {
+      "head": "Level 1: The Board",
+      "html": "<h1>Level 1: The Board</h1><p>A row of pads. Step on one and it plays a sound. Each has a sign with its name and a <b>sound number</b>, and above the sign is a small picture of the sound: time goes to the right and high notes sit high. Step on all four. The <b>SILENT NO. 3 IS EMPTY</b> pad plays nothing, on purpose. A pad plays once. The <b>PLAY AGAIN</b> door by the entrance loads the room again with every pad back, so you can listen again.</p><p>At the end, two pads hang one above the other. Jump up through them: the long sound (no. 4) starts, and the short one (no. 5) starts a moment later and cuts it off. Only one sound can play at a time.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 1 is made</h1><ul><li><b>A pad is a block.</b> Open <b>sndboard.bbl</b> in the blocks editor. Each pad changes one counter when Kit touches it, and Game-Maker plays that counter&rsquo;s sound by itself: <b>pad.chime</b> adds 10 hit points (sound 0), <b>pad.coin</b> adds 1 money (2), <b>pad.quiet</b> takes 1 money (3), <b>pad.long</b> adds 1 life (4), <b>pad.short</b> adds 10 score points (5) and <b>pad.blip</b> adds 1 to counter 22 (7). The block has no sound of its own: its sound number comes from <i>what it changes</i>.</li><li><b>The sound is a number in a file.</b> Open <b>sndboard.snd</b> in the sound editor. Sound 0 is a high bell, sound 4 is six notes up and down, sound 5 is one short ping. Change the notes and the pad sounds different, with no change to the block.</li><li><b>A pad plays once.</b> Its Touch tab says <b>Becomes</b> the pressed pad (<b>padOn.</b> something), which changes nothing. Without that, a pad would play again every moment Kit stood on it, and you would hear only the start of the sound over and over.</li><li><b>The pictures of the sounds</b> are ordinary blocks (<b>wave.0</b>, <b>wave.2</b> and so on) drawn from the same notes, 36 steps wide at two steps a pixel. The silent one is a dashed line.</li><li><b>Silence is a choice.</b> Sound 3 has no notes at all. The pad still &ldquo;plays&rdquo; it, and you hear nothing.</li><li><b>The replay door</b> is a link in the scene editor from the door to the same scene. Loading the scene reads the map file again, so every pad is back.</li><li><b>The cut-off.</b> A sound is at most 36 short steps, about a quarter of a second, and a new sound starts at its first step and replaces the old one. The two pads are one block apart, and a jump takes the hero through both in about a tick.</li></ul>"
+    },
+    {
+      "head": "Level 2: Sounds Tell You",
+      "html": "<h1>Level 2: Sounds Tell You</h1><p>A game can say what just happened without a word. Here a coin <b>pings</b> (5), a key <b>blips</b> (7, the same sound as the blip pad), the gate <b>creaks</b> when the key opens it (8), jumping has its own beep (9), a spike plays the hurt sound (10), and the <b>WRONG WAY</b> gate gives a soft two-note &ldquo;no&rdquo; (6) when you walk into it. It never opens: jump over it. Walk through every one and listen.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 2 is made</h1><ul><li><b>The coin and the key</b> are the Starter blocks&rsquo;. A coin gives score, so it plays sound 5. A key adds to counter 20 (keys), a counter above the first few, so it plays sound 7.</li><li><b>The gate</b> takes 1 from counter 20 when Kit touches it, and then becomes open sky. A counter going down plays sound 8, here a low creak. Without a key the touch is refused, so the gate stays shut and makes <i>no</i> sound.</li><li><b>The jump</b> is a sound on a move, not on a block. Open <b>hero.chr</b> in the character editor and pick the <b>Jump</b> sequence: its <b>Sound</b> is 9. Hurt is the same, sound 10, played when a block takes hit points.</li><li><b>The wrong gate</b> is a solid block with <b>Score points</b> of -10. Touching it plays sound 6, the score-down sound, and takes 10 points. It then becomes a plain gate, so it speaks once.</li><li><b>One set of sounds.</b> Both levels use the same <b>sndboard.snd</b>. Slot 7 is a blip in level 1 and a key sound in level 2, because both blocks add to a counter.</li></ul>"
+    },
+    {
+      "head": "What it can and can't do",
+      "html": "<h1>What the engine can and can&rsquo;t do</h1><ul><li><b>A block has no sound field.</b> It plays one by changing something: hit points (0), a life (4), money (2 up, 3 down), score (5 up, 6 down) or any other counter (7 up, 8 down). So a block can pick from about eight sounds, and two blocks that change the same kind of counter share a sound.</li><li><b>The other sounds belong to moves.</b> Sounds 9 to 29 play only when a character&rsquo;s move names them, such as the jump or hurt. Sound 1 is played when a monster is squashed.</li><li><b>A refused touch is silent.</b> A gate with no key, or a block that would take money you do not have, plays nothing. For a &ldquo;no&rdquo; sound, make the wrong thing change the score, as the wrong gate does.</li><li><b>A touch repeats.</b> A block that does something is touched every moment Kit overlaps it, so one that stays the same block replays its sound over and over. Make it become another block, as the pads do.</li><li><b>Only one sound at a time.</b> A new sound replaces the one playing. It also lasts at most 36 steps, about a quarter of a second.</li><li><b>Counters 5 to 19 belong to Kit&rsquo;s moves</b> (each move&rsquo;s repeat count), so a block that adds to a spare counter should use 20 or higher.</li><li><b>No volume or pitch change,</b> and a pad cannot be pressed again without loading its room again. The PC speaker beeps here can each be replaced by a recorded .voc file on a Sound Blaster; this game uses only beeps.</li></ul>"
+    },
+    {
+      "head": "Make it yours",
+      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>Open <b>sndboard.snd</b> and change sound 0 to a low note. Play level 1 and the chime pad is a different sound.</li><li>Make the silent pad play something: put notes in sound 3.</li><li>Copy a pad block, give it a different counter, and see which sound it plays.</li><li>Swap sounds 4 and 5, then jump through the pair.</li><li>Give the wrong gate the creak instead of the &ldquo;no&rdquo; and see whether a game still feels fair.</li></ul><p>The home page&rsquo;s <b>Starters</b> tab has more small games like this one.</p>"
+    }
+  ]
+}
