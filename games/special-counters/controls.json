@@ -44,8 +44,8 @@
     }
   },
   "counters": {
-    "20": "Gold keys carried: a gold key adds one, a gold door takes one or two.",
-    "21": "Silver keys carried: a silver key adds one, a silver door takes one."
+    "20": "Gold keys carried. They carry on to the next level.",
+    "22": "Green keys carried: a green key adds one, a green door takes one."
   },
   "sounds": {
     "9": "The jump",

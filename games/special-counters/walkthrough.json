@@ -1,77 +1,77 @@
 {
- "version": 1,
- "game": "special-counters",
- "rand": {
-  "seed": 1,
-  "per": "scene"
- },
- "segments": [
-  {
-   "scene": 2,
-   "keys": "AU0ozQNNCs0DTTLNA00KzQNNI80DTQ=="
+  "version": 1,
+  "game": "special-counters",
+  "rand": {
+    "seed": 1,
+    "per": "scene"
   },
-  {
-   "scene": 3,
-   "keys": "AU08zQNNCs0DTRTNA00ZzQNNMs0DTQ=="
-  },
-  {
-   "scene": 4,
-   "keys": "AU1kzQNNHs0ASyPLA0sFywNIRcgDTSPNA0seywNLA8sDUDvQA00ozQNNCs0DTSjNA00KzQNNFM0DTQ=="
-  }
- ],
- "chapters": [
-  {
-   "scene": 2,
-   "title": "Level 1: Take Both Keys"
-  },
-  {
-   "scene": 3,
-   "title": "Level 2: The Spare Fits"
-  },
-  {
-   "scene": 4,
-   "title": "Level 3: Not That Key"
-  }
- ],
- "timeline": {
-  "fps": 60,
-  "frames": 9579,
+  "segments": [
+    {
+      "scene": 2,
+      "keys": "AU0ozQNNCs0DTTLNA00KzQNNI80DTQ=="
+    },
+    {
+      "scene": 3,
+      "keys": "AU08zQNNCs0DTRTNA00ZzQNNMs0DTQ=="
+    },
+    {
+      "scene": 4,
+      "keys": "AU1kzQNNHs0ASyPLA0sFywNIRcgDTSPNA0seywNLA8sDUDvQA00ozQNNCs0DTSjNA00KzQNNFM0DTQ=="
+    }
+  ],
   "chapters": [
-   {
-    "title": "Opening",
-    "frame": 0,
-    "time": 0
-   },
-   {
-    "title": "Story",
-    "frame": 896,
-    "time": 14933.333333333148
-   },
-   {
-    "title": "Level 1: Take Both Keys",
-    "frame": 2125,
-    "time": 35416.66666666724
-   },
-   {
-    "title": "Level 2: The Spare Fits",
-    "frame": 3153,
-    "time": 52549.99999999808
-   },
-   {
-    "title": "Level 3: Not That Key",
-    "frame": 4181,
-    "time": 69683.33333333072
-   },
-   {
-    "title": "Ending",
-    "frame": 6296,
-    "time": 104933.33333334098
-   },
-   {
-    "title": "Credits",
-    "frame": 8505,
-    "time": 141750.00000000905
-   }
-  ]
- }
+    {
+      "scene": 2,
+      "title": "Level 1: Take Both Keys"
+    },
+    {
+      "scene": 3,
+      "title": "Level 2: The Spare Fits"
+    },
+    {
+      "scene": 4,
+      "title": "Level 3: Not That Key"
+    }
+  ],
+  "timeline": {
+    "fps": 60,
+    "frames": 9579,
+    "chapters": [
+      {
+        "title": "Opening",
+        "frame": 0,
+        "time": 0
+      },
+      {
+        "title": "Story",
+        "frame": 896,
+        "time": 14933.333333333148
+      },
+      {
+        "title": "Level 1: Take Both Keys",
+        "frame": 2125,
+        "time": 35416.66666666724
+      },
+      {
+        "title": "Level 2: The Spare Fits",
+        "frame": 3153,
+        "time": 52549.99999999808
+      },
+      {
+        "title": "Level 3: Not That Key",
+        "frame": 4181,
+        "time": 69683.33333333072
+      },
+      {
+        "title": "Ending",
+        "frame": 6296,
+        "time": 104933.33333334098
+      },
+      {
+        "title": "Credits",
+        "frame": 8505,
+        "time": 141750.00000000905
+      }
+    ]
+  }
 }

@@ -81,7 +81,12 @@ function takeBoth(book: Book, signs: Record<SignName, Sign>): StarterMap {
   g.put(10, 9, 'k').put(12, 9, 'k');
   wall(g, 24, GROUND, 'l', 'L');
   g.row(9, 14, 16, 'c').row(9, 27, 31, 'c');
-  clouds(g, [[6, 2], [14, 0], [30, 1], [38, 2]]);
+  clouds(g, [
+    [6, 2],
+    [14, 0],
+    [30, 1],
+    [38, 2],
+  ]);
   for (const x of [18, 26, 44]) g.put(x, GROUND - 1, 'b');
   for (const x of [7, 21, 43]) g.put(x, GROUND - 1, 'f');
   const m = new StarterMap(book, g.rows());
@@ -98,7 +103,11 @@ function spareFits(book: Book, signs: Record<SignName, Sign>): StarterMap {
   wall(g, 16, GROUND, 'l', 'L');
   g.row(9, 11, 13, 'c').row(9, 22, 25, 'c').row(9, 33, 35, 'c');
   g.put(20, 9, 'k');
-  clouds(g, [[8, 1], [24, 2], [34, 0]]);
+  clouds(g, [
+    [8, 1],
+    [24, 2],
+    [34, 0],
+  ]);
   for (const x of [4, 15, 37]) g.put(x, GROUND - 1, 'b');
   for (const x of [10, 26, 44]) g.put(x, GROUND - 1, 'f');
   const m = new StarterMap(book, g.rows());
@@ -118,11 +127,18 @@ function notThat(book: Book, signs: Record<SignName, Sign>): StarterMap {
   // the gold door, further on
   wall(g, 34, GROUND, 'l', 'L');
   g.row(2, 18, 20, 'c').row(9, 26, 27, 'c').row(9, 36, 38, 'c');
-  clouds(g, [[6, 2], [12, 0], [30, 1], [38, 3]]);
+  clouds(g, [
+    [6, 2],
+    [12, 0],
+    [30, 1],
+    [38, 3],
+  ]);
   for (const x of [9, 33, 44]) g.put(x, GROUND - 1, 'b');
   for (const x of [11, 25, 43]) g.put(x, GROUND - 1, 'f');
   const m = new StarterMap(book, g.rows());
-  m.set(24, GROUND - 2, 'gateTopGreen').set(24, GROUND - 1, 'gateGreen').set(22, 2, 'keyGreen');
+  m.set(24, GROUND - 2, 'gateTopGreen')
+    .set(24, GROUND - 1, 'gateGreen')
+    .set(22, 2, 'keyGreen');
   m.sign(5, onGround(GROUND, signs.notThat), signs.notThat);
   m.sign(18, onGround(GROUND, signs.number), signs.number);
   m.sign(28, onGround(GROUND, signs.saved), signs.saved);
