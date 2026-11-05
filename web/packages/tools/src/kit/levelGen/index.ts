@@ -3,12 +3,17 @@
 // same blocks. It returns ordinary map cells and proposals (where the hero could start, an exit), and
 // writes nothing itself: the map editor puts the cells into the map as one undo step, and draws
 // wall and tree edges with the set's terrain brushes (`terrainCells`).
-import { MAX_PAIR, blocksWithRole, type Role, type RoleMap } from '../blockRoles';
-import { checkNeeds, type GenKind } from './needs';
-import { DECOR, FLOOR, KEY, LIFE, LOCK, PATH, ROCK, TREASURE, TREE, WALL, closed, distances, stream, type Area } from './grid';
+import { FACINGS, MAX_PAIR, blocksWithRole, type Facing, type Role, type RoleMap } from '../blockRoles';
+import { checkNeeds, kindInfo, type GenKind } from './needs';
+import { DECOR, DOORC, FLOOR, KEY, LIFE, LOCK, PATH, ROCK, TREASURE, TREE, WALL, closed, distances, stream, type Area } from './grid';
 import { addProps, proveKeys, type LockInfo } from './props';
 import { dungeon } from './dungeon';
 import { forest } from './forest';
+import { interior } from './interior';
+import { castle } from './castle';
+import { DIR, type Avail, type Item } from './furnish';
+
+export { type Item as Furniture } from './furnish';
 
 export { type LockInfo } from './props';
 export { KINDS, checkNeeds, kindInfo, type GenKind, type KindInfo, type NeedItem, type NeedsReport } from './needs';
@@ -29,7 +34,15 @@ export interface GenParams {
   monsters?: number[];
 }
 
-export const MIN_SIDE = 12;
+/** The smallest side any kind can draw in (each kind has its own minimum, `kindInfo(kind).min`). */
+/** The biggest a building is drawn (blocks); a bigger area gets it in the middle. */
+const MAX_SIZE: Partial<Record<GenKind, { w: number; h: number }>> = {
+  home: { w: 24, h: 16 },
+  shop: { w: 26, h: 14 },
+  castle: { w: 56, h: 40 },
+};
+
+export const MIN_SIDE = 10;
 
 /** What the cells of a result are, for edges: which cells (area-local indexes) belong to a role's terrain. */
 export type TerrainRole = 'wall' | 'tree' | 'path';
@@ -52,6 +65,10 @@ export interface GenResult {
   life?: number;
   /** Monsters to place as map monsters: a monster number and a rectangle-local start cell. */
   monsters: { cell: number; monnum: number }[];
+  /** Furniture (interiors): the cell, the role, which way the front looks, and the block chosen. Rugs are walkable. */
+  furniture: (Item & { block: number })[];
+  /** Where the shopkeeper could stand (shops), a proposal like the entry. */
+  shopkeeper?: number;
   /** What was left out, in plain words. */
   notes: string[];
 }
@@ -67,37 +84,71 @@ const first = (roles: RoleMap, role: Role): number | undefined => blocksWithRole
 export function generate(roles: RoleMap, params: GenParams): GenOutcome {
   const needs = checkNeeds(params.kind, roles);
   if (!needs.ok) return { ok: false, message: needs.message };
-  const { w, h } = params.rect;
-  if (w < MIN_SIDE || h < MIN_SIDE) return { ok: false, message: `That area is small: a ${params.kind} needs at least ${MIN_SIDE} by ${MIN_SIDE} blocks.` };
+  const min = kindInfo(params.kind).min;
+  if (params.rect.w < min.w || params.rect.h < min.h)
+    return { ok: false, message: `That area is small: a ${params.kind} needs at least ${min.w} by ${min.h} blocks.` };
+  // a building is drawn in the middle of a big area and leaves the rest of the map as it is
+  const cap = MAX_SIZE[params.kind];
+  const w = Math.min(params.rect.w, cap?.w ?? Infinity),
+    h = Math.min(params.rect.h, cap?.h ?? Infinity);
+  const rect: Rect = { x: params.rect.x + ((params.rect.w - w) >> 1), y: params.rect.y + ((params.rect.h - h) >> 1), w, h };
   const r = stream(params.seed);
   const notes = [...needs.skipped];
   const has = (role: Role) => blocksWithRole(roles, role).length > 0;
   let area: Area;
   let entry: number, exit: number;
   const terrainCells: GenResult['terrainCells'] = {};
+  let furniture: GenResult['furniture'] = [];
+  let shopkeeper: number | undefined;
+  const furnitureBlock = (role: Role, facing?: Facing): number => {
+    const list = blocksWithRole(roles, role);
+    return list.find((n) => roles[n].facing === facing) ?? list.find((n) => !roles[n].facing) ?? list[0];
+  };
   if (params.kind === 'dungeon') {
     const d = dungeon(w, h, r, has('decoration'));
     ({ area, entry, exit } = d);
+  } else if (params.kind === 'castle') {
+    const c = castle(w, h, r, { path: has('path'), decorate: has('decoration') });
+    ({ area, entry, exit } = c);
+  } else if (params.kind === 'home' || params.kind === 'shop') {
+    const avail: Avail = {};
+    for (const role of ['table', 'chair', 'bed', 'counter', 'shelf', 'stove', 'rug', 'lamp', 'plant'] as Role[]) {
+      const list = blocksWithRole(roles, role);
+      if (list.length) avail[role] = list.some((n) => !roles[n].facing) ? FACINGS : [...new Set(list.map((n) => roles[n].facing!))];
+    }
+    const it = interior(w, h, r, params.kind, avail);
+    ({ area, entry, exit } = it);
+    shopkeeper = it.shopkeeper;
+    furniture = it.items.map((i) => ({ ...i, block: furnitureBlock(i.role, i.facing) }));
+    for (const role of it.skipped)
+      notes.push(
+        role === 'chair'
+          ? 'Chairs skipped: no chair block faces the way a chair beside a table must.'
+          : `Some ${role}s skipped: no ${role} block faces the way it must stand against a wall.`,
+      );
   } else {
     const f = forest(w, h, r, { path: has('path'), rock: has('rock'), decor: has('decoration') });
     ({ area, entry, exit } = f);
   }
   // props: locks and keys (dungeons), treasure, a heart, monsters; each needs its role, else it is skipped
   const pairs =
-    params.kind === 'dungeon'
+    params.kind === 'dungeon' || params.kind === 'castle'
       ? Array.from({ length: MAX_PAIR }, (_, i) => i + 1).filter(
           (p) => blocksWithRole(roles, 'locked-door', p).length && blocksWithRole(roles, 'key', p).length,
         )
       : [];
-  const props = addProps(area, entry, exit, stream(params.seed ^ 0x9e3779b9), {
-    pairs,
-    treasure: has('treasure'),
-    life: has('life'),
-    monsters: params.monsters ?? [],
-  });
-  if (params.kind === 'dungeon' && has('locked-door') && !pairs.length)
-    notes.push('The locked door blocks and key blocks share no lock number, so no doors were locked.');
-  if (params.kind === 'dungeon' && pairs.length && !props.locks.length) notes.push('No narrow passage fit a locked door in this layout.');
+  const furnished = params.kind === 'home' || params.kind === 'shop';
+  const props = furnished
+    ? { locks: [], treasure: [], life: undefined, monsters: [] }
+    : addProps(area, entry, exit, stream(params.seed ^ 0x9e3779b9), {
+        pairs,
+        treasure: has('treasure'),
+        life: has('life'),
+        monsters: params.monsters ?? [],
+      });
+  const dungeonish = params.kind === 'dungeon' || params.kind === 'castle';
+  if (dungeonish && has('locked-door') && !pairs.length) notes.push('The locked door blocks and key blocks share no lock number, so no doors were locked.');
+  if (dungeonish && pairs.length && !props.locks.length) notes.push('No narrow passage fit a locked door in this layout.');
   // blocks: the first block of each role, with the other floor blocks scattered for variety
   const pick: Record<number, number[]> = {
     [WALL]: blocksWithRole(roles, 'wall').slice(0, 1),
@@ -106,6 +157,7 @@ export function generate(roles: RoleMap, params: GenParams): GenOutcome {
     [TREE]: blocksWithRole(roles, 'tree').slice(0, 1),
     [ROCK]: blocksWithRole(roles, 'rock').slice(0, 1),
     [DECOR]: blocksWithRole(roles, 'decoration'),
+    [DOORC]: blocksWithRole(roles, 'door').slice(0, 1),
   };
   const floor = first(roles, 'floor')!;
   const blocks = new Uint8Array(area.cells.length);
@@ -126,13 +178,14 @@ export function generate(roles: RoleMap, params: GenParams): GenOutcome {
   }
   putBlocks(props.treasure, blocksWithRole(roles, 'treasure').length ? blocksWithRole(roles, 'treasure') : [floor]);
   if (props.life !== undefined) blocks[props.life] = blocksWithRole(roles, 'life')[0];
-  terrainCells.wall = params.kind === 'dungeon' ? cellsOf(WALL) : undefined;
+  for (const f of furniture) blocks[f.cell] = f.block;
+  terrainCells.wall = params.kind !== 'forest' ? cellsOf(WALL) : undefined;
   terrainCells.tree = params.kind === 'forest' ? cellsOf(TREE) : undefined;
   terrainCells.path = cellsOf(PATH).length ? cellsOf(PATH) : undefined;
   return {
     ok: true,
     result: {
-      rect: params.rect,
+      rect,
       blocks,
       kinds: area.cells,
       terrainCells,
@@ -142,6 +195,8 @@ export function generate(roles: RoleMap, params: GenParams): GenOutcome {
       treasure: props.treasure,
       life: props.life,
       monsters: props.monsters,
+      furniture,
+      shopkeeper,
       notes,
     },
   };
@@ -168,6 +223,30 @@ export interface Proof {
   keysFirst: boolean;
   /** Every key, treasure and the exit can be collected by playing the keys out. */
   collectable: boolean;
+  /** Furniture: every piece has a reachable open side, each chair looks at a table and the door's inside is open. True with none. */
+  furnished: boolean;
+}
+
+/** The furniture part of the proof (plain cell codes only). */
+function proveFurniture(result: GenResult): boolean {
+  if (!result.furniture.length) return true;
+  const a: Area = { w: result.rect.w, h: result.rect.h, cells: result.kinds };
+  const d = distances(a, result.entry);
+  const tables = new Set(result.furniture.filter((f) => f.role === 'table').map((f) => f.cell));
+  return result.furniture.every((f) => {
+    const x = f.cell % a.w,
+      y = (f.cell / a.w) | 0;
+    if (f.open) return d[f.cell] >= 0;
+    if (f.role === 'chair') {
+      const [dx, dy] = DIR[f.facing!];
+      if (!tables.has((y + dy) * a.w + x + dx)) return false;
+    }
+    return Object.values(DIR).some(([dx, dy]) => {
+      const nx = x + dx,
+        ny = y + dy;
+      return nx >= 0 && ny >= 0 && nx < a.w && ny < a.h && d[ny * a.w + nx] >= 0;
+    });
+  });
 }
 
 /** The generator's own proof for a result: reach, key-before-lock and that everything can be collected. */
@@ -176,7 +255,7 @@ export function proveResult(result: GenResult): Proof {
   const pickups = [...result.treasure, ...(result.life === undefined ? [] : [result.life])];
   const k = proveKeys(a, result.entry, result.exit, result.locks, pickups);
   const reach = verifyReach(result).ok;
-  return { reach, keysFirst: k.strict, collectable: k.ok };
+  return { reach, keysFirst: k.strict, collectable: k.ok, furnished: proveFurniture(result) };
 }
 
 export const PROP_KINDS = { LOCK, KEY, TREASURE, LIFE };

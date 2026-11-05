@@ -33,9 +33,12 @@ export const LOCK = 6;
 export const KEY = 7;
 export const TREASURE = 8;
 export const LIFE = 9;
+/** Furniture a person cannot walk through (interiors); a door cell in a wall (open: the entry and exit of an interior, a gate). */
+export const FURN = 10;
+export const DOORC = 11;
 
 /** Cells a person or monster cannot stand on. */
-export const closed = (c: number) => c === WALL || c === TREE || c === ROCK;
+export const closed = (c: number) => c === WALL || c === TREE || c === ROCK || c === FURN;
 
 export interface Area {
   w: number;

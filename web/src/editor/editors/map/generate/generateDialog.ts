@@ -1,4 +1,4 @@
-// The map editor's Generate dialog: choose a kind (dungeon or forest) and where (the whole map or the
+// The map editor's Generate dialog: choose a kind (dungeon, castle, forest, home or shop) and where (the whole map or the
 // selection), see four real renders from a seed, pick one. The layouts only ever write ordinary cells,
 // as one undo step. The dialog fits a 375 by 812 phone without scrolling: two rows of previews,
 // and the Missing roles panel folds away when everything needed is set.
@@ -44,7 +44,7 @@ function selectionRect(s: MapSelection | undefined): Rect | undefined {
 }
 
 function drawOffer(canvas: HTMLCanvasElement, blocks: Uint8Array, rect: Rect, imgs: HTMLCanvasElement[]): void {
-  const s = Math.max(1, Math.min(4, Math.floor(240 / Math.max(rect.w, rect.h))));
+  const s = Math.max(1, Math.min(10, Math.floor(240 / Math.max(rect.w, rect.h))));
   canvas.width = rect.w * s;
   canvas.height = rect.h * s;
   const ctx = canvas.getContext('2d')!;
@@ -94,7 +94,7 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
       blurb.textContent = kindInfo(kind).blurb;
       needs.replaceChildren(missingRoles({ kind, roles, usesHref }));
       const n = checkNeeds(kind, roles);
-      if (monRow) monRow.hidden = !n.ok;
+      if (monRow) monRow.hidden = !n.ok || kind === 'home' || kind === 'shop';
       current = n.ok ? offers(host.blocks(), roles, terrains, kind, seed, r, { monsters: addMonsters ? monsterIds : undefined, bg: host.blockSet() }) : [];
       chosen = Math.min(chosen, 3);
       grid.replaceChildren();
@@ -106,7 +106,7 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
       } else {
         current.forEach((o, i) => {
           const c = h('canvas', { class: 'pixel', 'aria-hidden': 'true' });
-          drawOffer(c, o.blocks!, r, host.images());
+          drawOffer(c, o.blocks!, o.outcome.ok ? o.outcome.result.rect : r, host.images());
           const b = h(
             'button',
             {
@@ -140,15 +140,18 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
       use.disabled = !ok;
       if (!ok || !o.outcome.ok) return void (note.textContent = '');
       const res = o.outcome.result;
+      const furnished = res.furniture.length > 0 || kind === 'home' || kind === 'shop';
       const has = [
+        res.furniture.filter((f) => !f.open).length ? `${res.furniture.filter((f) => !f.open).length} pieces of furniture` : '',
+        res.shopkeeper !== undefined ? `shopkeeper could stand at ${cellText(res.rect, res.shopkeeper)}` : '',
         res.locks.length ? `${res.locks.length} locked door${res.locks.length > 1 ? 's' : ''}` : '',
         res.monsters.length ? `${res.monsters.length} monsters` : '',
       ].filter(Boolean);
       note.textContent = [
-        `Seed ${o.seed}: hero could start at ${cellText(res.rect, res.entry)}, exit at ${cellText(res.rect, res.exit)}; nothing is linked.${has.length ? ` ${has.join(', ')}.` : ''}`,
+        `Seed ${o.seed}: hero could start at ${cellText(res.rect, res.entry)}, ${furnished ? 'door' : 'exit'} at ${cellText(res.rect, res.exit)}; nothing is linked.${has.length ? ` ${has.join(', ')}.` : ''}`,
         ...res.notes,
         o.check?.verified
-          ? `Verified: keys, treasure and exit can be reached in order. ${NOT_CHECKED}`
+          ? `Verified: ${furnished ? 'every open cell and piece of furniture can be reached from the door' : 'keys, treasure and exit can be reached in order'}. ${NOT_CHECKED}`
           : `Not proven: ${o.check?.problems.join(' ')} ${NOT_CHECKED}`,
       ].join(' ');
     }
@@ -163,7 +166,7 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
     use.addEventListener('click', () => {
       const o = current[chosen];
       if (!o?.blocks) return;
-      host.apply(o.blocks, `${kindInfo(kind).label} layout`, addMonsters && o.outcome.ok ? o.outcome.result : undefined);
+      host.apply(o.blocks, `${kindInfo(kind).label} layout`, addMonsters && kind !== 'home' && kind !== 'shop' && o.outcome.ok ? o.outcome.result : undefined);
       close(undefined);
     });
     const monBox = h('input', { type: 'checkbox', checked: addMonsters, 'aria-label': 'Add monsters' });
