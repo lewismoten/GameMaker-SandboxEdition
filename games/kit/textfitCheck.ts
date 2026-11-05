@@ -81,8 +81,13 @@ for (const s of screens) {
 }
 for (const i of issues) console.log(`${i.screen}: "${i.text}" at (${i.x},${i.y}): ${i.problems.join(', ')}`);
 // the pictures shown between levels have their words baked in: they must sit inside their box
+// (an animation has no words baked in, and its sky or ground can look like a box to the measure)
 const cards = levelCards(files);
-for (const c of cards) for (const p of cardOverflow(c)) issues.push({ screen: c.name, text: '(card)', x: 0, y: 0, artPixels: 0, contrast: 0, problems: [p] });
+for (const c of cards.filter((card) => !card.name.endsWith('.fli')))
+  for (const p of cardOverflow(c)) {
+    issues.push({ screen: c.name, text: '(card)', x: 0, y: 0, artPixels: 0, contrast: 0, problems: [p] });
+    console.log(`${c.name}: (card): ${p}`);
+  }
 const gam = [...files.keys()].find((f) => f.endsWith('.gam'))!;
 const lines = gwriteLines(parseGame(files.get(gam)!), { get: (n) => files.get(n.toLowerCase()) }, gam);
 const high = lines.filter((l) => highChars(l.text).length);
