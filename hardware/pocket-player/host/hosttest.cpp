@@ -88,7 +88,8 @@ int main(int argc, char** argv) {
   size_t e = 0;
   for (int t = 1; t <= maxTick; t++) {
     while (e < evs.size() && evs[e].tick == t) {
-      w.key(evs[e].key & 127, !(evs[e].key & 128));
+      if (evs[e].key >= 256) w.dropSlot = evs[e].key - 256;  // the picker's choice, ahead of the D press
+      else w.key(evs[e].key & 127, !(evs[e].key & 128));
       e++;
     }
     char code = w.tick();
