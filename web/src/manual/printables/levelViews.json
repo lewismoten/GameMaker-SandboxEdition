@@ -11,6 +11,7 @@
   "carl": {"hash":"85bff570c89cb3fe","maps":{"aux.map|house.bbl":[0,0,58,18],"bed.map|house.bbl":[0,0,68,18],"couch.map|house.bbl":[0,0,71,20],"walls.map|house.bbl":[0,0,63,20],"wild.map|yard.bbl":[0,0,84,21],"window.map|yard.bbl":[0,0,84,19]}},
   "choose-hero": {"hash":"3bc29e9c951d93a8","maps":{"climb.map|pick.bbl":[0,9,79,25],"doors.map|pick.bbl":[0,16,57,10]}},
   "coins-and-score": {"hash":"33b8d543d9f19c89","maps":{"one.map|coins.bbl":[0,1,67,26],"three.map|coins.bbl":[0,1,73,26],"two.map|coins.bbl":[0,1,73,26]}},
+  "corner-view": {"hash":"4f390351de5cbbbf","maps":{"one.map|one.bbl":[3,6,29,17],"two.map|two.bbl":[3,6,29,17]}},
   "countdown": {"hash":"1a130cf97b990ff3","maps":{"one.map|one.bbl":[0,14,43,10],"two.map|two.bbl":[0,14,37,21]}},
   "cutscenes": {"hash":"5939545779c805fb","maps":{"hall.map|cuts.bbl":[0,4,61,23],"one.map|cuts.bbl":[0,14,37,21],"tale.map|cuts.bbl":[0,14,37,21]}},
   "day-night": {"hash":"b687084f79ea4d32","maps":{"one.map|one.bbl":[0,14,47,10],"two.map|two.bbl":[0,14,56,10]}},

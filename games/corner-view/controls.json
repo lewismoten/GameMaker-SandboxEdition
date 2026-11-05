@@ -1,0 +1,40 @@
+{
+  "keys": {
+    "75": {
+      "short": "Walk left",
+      "long": "Walk left. The arrow keys move him along the grid of squares, never along the diamonds drawn on the floor."
+    },
+    "77": {
+      "short": "Walk right",
+      "long": "Walk right."
+    },
+    "72": {
+      "short": "Walk up",
+      "long": "Walk up the screen."
+    },
+    "80": {
+      "short": "Walk down",
+      "long": "Walk down the screen."
+    },
+    "30": {
+      "short": "Walk left",
+      "long": "Same as the Left arrow."
+    },
+    "32": {
+      "short": "Walk right",
+      "long": "Same as the Right arrow."
+    },
+    "17": {
+      "short": "Walk up",
+      "long": "Same as the Up arrow."
+    },
+    "31": {
+      "short": "Walk down",
+      "long": "Same as the Down arrow."
+    }
+  },
+  "sounds": {
+    "10": "Getting hurt",
+    "11": "Falling over"
+  }
+}
