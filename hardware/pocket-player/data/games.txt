@@ -8,6 +8,7 @@ and-gate|Both Together|2
 coins-and-score|Coins and Score|3
 countdown|Countdown|2
 day-night|Day and Night|5
+diagonal-wrap|Diagonal Wrap|2
 walk-the-ground|Dig It|2
 searchlight|Don't Get Seen|2
 dialog|Everybody Talks|4
