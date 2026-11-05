@@ -7,6 +7,7 @@ import { h, modal, toast } from '../core/ui';
 import type { CatalogEntry } from '../../project/files';
 import { filterQuestions, levelTitle, loadQuestions, type Question } from '../../project/howDoI';
 import { starterGroupOf } from '../../project/starter';
+import { unlockAchievement } from '../../achievements';
 import { playHref, seeHref } from './howDoIGo';
 
 /** The two buttons for one question, with names that say which question they are for. */
@@ -24,7 +25,10 @@ export function questionButtons(entry: CatalogEntry, q: Question, onGo?: () => v
           void href(entry, q)
             .then((to) =>
               to
-                ? ((location.hash = to), onGo?.(), toast(`${primary ? 'Starting' : 'Opened the map of'} ${entry.title}, level ${q.level}.`))
+                ? ((location.hash = to),
+                  onGo?.(),
+                  primary || unlockAchievement('learn-lesson'),
+                  toast(`${primary ? 'Starting' : 'Opened the map of'} ${entry.title}, level ${q.level}.`))
                 : toast('That level could not be opened.'),
             )
             .catch(() => toast('That level could not be opened.'))
