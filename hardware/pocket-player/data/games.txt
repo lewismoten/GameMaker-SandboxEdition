@@ -3,6 +3,7 @@ blocks-budget|150 Blocks|2
 beat-the-clock|Beat the Clock|2
 boss-hits|Big Bug|2
 flock|Birds of a Feather|2
+block-brains|Block Brains|2
 jump-boots|Boots and Jet Pack|2
 and-gate|Both Together|2
 coins-and-score|Coins and Score|3
@@ -25,6 +26,7 @@ secret-doors|Looks Like a Wall|3
 title-demo|Make a Title|2
 many-weapons|Many Weapons|2
 meet-the-monsters|Meet the Monsters|2
+near-far|Near and Far|6
 voice|Out Loud|3
 parallax|Parallax|2
 inventory|Pick It Up|2
@@ -47,6 +49,7 @@ sounds-and-music|Sounds and Music|3
 power-ladder|Stronger Keys|3
 switches|Switches|2
 take-the-wheel|Take the Wheel|2
+teach-test-twist|Teach, Test, Twist|3
 same-house|The Same House|8
 scripted|The Show|2
 boss-phases|Three Phases|2
