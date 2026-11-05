@@ -50,7 +50,9 @@ function rubble(pal: Pal): Pixels {
   const w = pal.r('wood');
   // a chip: a lit top edge, a body and a dark underside
   const chip = (x: number, y: number, cw: number, ch: number) => {
-    p.rect(x, y, cw, ch, w[3]).rect(x, y, cw, 1, w[4]).rect(x, y + ch - 1, cw, 1, w[1]);
+    p.rect(x, y, cw, ch, w[3])
+      .rect(x, y, cw, 1, w[4])
+      .rect(x, y + ch - 1, cw, 1, w[1]);
   };
   chip(2, 14, 7, 4);
   chip(10, 15, 8, 3);
