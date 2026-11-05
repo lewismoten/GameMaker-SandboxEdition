@@ -24,7 +24,14 @@ using Touch = GT911;
 #endif
 #include "speaker.h"
 
+#ifdef POCKET_CYD28
+#include "softgfx.h"
+static LGFX tftHw;                         // the panel itself
+static sg::SoftGfx<LGFX> tft(tftHw);       // what everything draws on: the picture turned in software when the setup chose that
+#else
 static LGFX tft;
+static LGFX& tftHw = tft;
+#endif
 static Touch gt;
 static bool haveGT = false;
 static gm::World world;
@@ -36,6 +43,9 @@ static uint16_t pal[256];  // panel byte order (high byte first)
 
 constexpr int VIEW_W = scr::W, VIEW_H = scr::VIEW_H, BAND = 30;
 static uint16_t band[VIEW_W * BAND];
+#ifdef POCKET_CYD28
+static uint16_t tband[VIEW_W * BAND];  // a band turned a quarter, for SoftGfx::pushImage
+#endif
 static uint8_t rowIdx[gm::SIZEX];
 
 // Pushing RGB565 with pushImage sends each value low byte first; the ST7796 wants the high byte
@@ -356,7 +366,7 @@ static void title(const char* s) {
 // a sprite on the same memory, so the colors need no conversion) and the band is pushed once. The panel
 // never shows the game without the controls (no blink), and a solid chip is never painted twice (no black
 // flash). Only the controls that overlap a band are drawn into it.
-static lgfx::LGFX_Sprite spr(&tft);
+static lgfx::LGFX_Sprite spr(&tftHw);
 static bool sprReady = false;
 static int bandX = 0, bandY = 0, bandW = 0, bandH = 0;  // the band's corner and size on the screen
 
@@ -782,7 +792,7 @@ static const uint8_t SAMPLE_TUNE[72] = {
 static const char* const VOLUME[] = {"Off", "Low", "Medium", "High"};
 static const char* const PALM[] = {"Off", "Size", "Size+near"};
 #ifdef POCKET_CYD28
-static uint8_t panelType = PANEL_ILI9341, turnIdx = 0;
+static uint8_t panelType = PANEL_ILI9341, turnIdx = 0, softIdx = 0;  // softIdx 0: the glass's own landscape turn, 1 and 2: turned in software
 static const char* panelName(char* b) {  // "ILI", "ST inv", "ILI inv bgr", ...
   snprintf(b, 16, "%s%s%s", (panelType & 1) ? "ST" : "ILI", (panelType & 2) ? " inv" : "", (panelType & 4) ? " bgr" : "");
   return b;
@@ -1163,7 +1173,7 @@ static bool waitRawTap(tc::Raw& out) {
   }
 }
 // ONE target: a filled dot in a ring with a cross through it (thick, so it can't be mistaken for two). The screen is cleared
-// twice first, so no earlier target can stay behind on a panel that clears part of its memory.
+// first with clearAll() (the panel's whole memory), so no earlier target stays behind.
 static void drawCross(int x, int y) {
   tft.fillCircle(x, y, 7, C_YELLOW);
   tft.drawCircle(x, y, 12, C_YELLOW);
@@ -1193,8 +1203,7 @@ static bool runCalibration() {
   for (;;) {
     tc::Raw r[3];
     for (int i = 0; i < 3; i++) {
-      tft.fillScreen(C_WHITE);
-      tft.fillScreen(C_BLACK);
+      clearAll();
       drawCross(tx[i], ty[i]);
       calPips(i);
       char l[32];
@@ -1397,16 +1406,17 @@ void setup() {
   for (int pin : {PIN_LED_R, PIN_LED_G, PIN_LED_B}) { pinMode(pin, OUTPUT); digitalWrite(pin, HIGH); }  // the RGB LED is active low
   pinMode(0, INPUT_PULLUP);  // BOOT
   dsBoot();  // chip id, the saved display setup (NVS, else this chip's file on the card)
-  tft.choose(panelType);
+  tftHw.choose(panelType);
 #endif
-  tft.init();
+  tftHw.init();
 #ifdef POCKET_CYD28
-  tft.setRotation(turnRotation(turnIdx));
+  tft.setBandBuffer(tband);
+  applyDisplay();
 #else
-  tft.setRotation(1);
+  tftHw.setRotation(1);
 #endif
-  tft.setBrightness(255);
-  tft.setSwapBytes(false);
+  tftHw.setBrightness(255);
+  tftHw.setSwapBytes(false);
 #ifdef POCKET_CYD28
   haveGT = gt.probe();
   if (dsState != 3) runDisplaySetup();  // first start (or one left unfinished): the display setup screen
@@ -1420,7 +1430,7 @@ void setup() {
   else snprintf(line, sizeof line, "Touch: no XPT2046 found");
   {
     char nb[16];
-    Serial.printf("display mode %s turn %d\n", panelName(nb), turnIdx + 1);
+    Serial.printf("display mode %s turn %d soft %d\n", panelName(nb), turnIdx + 1, softIdx);
   }
 #else
   if (haveGT) snprintf(line, sizeof line, "Touch: GT911 at 0x%02X", gt.addr);
