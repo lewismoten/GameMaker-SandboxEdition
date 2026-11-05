@@ -201,6 +201,11 @@ multi-block objects for `kit/align.ts`, which their checks run. The other play-t
 | pictures-and-cartoons | `npx vite-node ../games/pictures-and-cartoons/tools/gendemo.ts` | re-records the title demo (level 1, to its door) into `src/demo.ts` (then rebuild) |
 | pictures-and-cartoons | `npx vite-node ../games/pictures-and-cartoons/tools/demoCheck.ts` | plays the title demo on the real engine: level 1 to its door and on to level 2 |
 | pictures-and-cartoons | `npx vite-node ../games/pictures-and-cartoons/tools/preview.ts [dir]` | PNGs of the blocks, the hero, each level, every picture and four frames of the cartoon |
+| breakable-walls   | `npx vite-node ../games/breakable-walls/tools/check.ts`            | the bot bumps crates to rubble (the ones above Kit stay), stands in the coin that pays again and again, catches the spinning gems and wins without losing a life |
+| breakable-walls   | `npx vite-node ../games/breakable-walls/tools/demoCheck.ts`        | plays the title demo headless: scenes 2 3, no game over |
+| breakable-walls   | `npx vite-node ../games/breakable-walls/tools/gendemo.ts`          | re-records the title demo into `src/demo.ts` (then rebuild) |
+| breakable-walls   | `npx vite-node ../games/breakable-walls/tools/preview.ts [dir]`    | PNGs of the blocks, the hero, each level and every picture |
+| breakable-walls   | `npx vite-node ../games/breakable-walls/tools/shots.ts <dir>`      | pictures of the lessons (never on the disk) for the progress shots |
 
 The felt eggs have checks of their own where a game's route never goes near one
 (`depth/tools/egg.ts`, `realm/tools/eggcheck.ts`, `sleuth/tools/check.ts --egg`). The other
