@@ -92,9 +92,19 @@ class Board(threading.Thread):
         return None, got
 
     def load_list(self):
-        self.s.reset_input_buffer()
-        self.send("L")
-        _, got = self.read_until("L done", 8)
+        quiet, end = time.time(), time.time() + 240  # a self-test (`T all`) from an earlier run may still be going: wait until it is quiet
+        while time.time() - quiet < 3 and time.time() < end:
+            if self.ctx.stop.is_set():
+                raise Stop()
+            if self.s.readline():
+                quiet = time.time()
+        got = []
+        for _ in range(5):  # opening the port can reset the board: it may still be starting
+            self.s.reset_input_buffer()
+            self.send("L")
+            _, got = self.read_until("L done", 6)
+            if any(l.startswith("L done") for l in got):
+                break
         self.games = [(int(p[1]), p[2], p[3] == "1") for p in (l.split() for l in got) if len(p) == 4 and p[0] == "L" and p[1].isdigit()]
         if not self.games:
             raise RuntimeError("no game list: is the board on its game list, with the new firmware?")
