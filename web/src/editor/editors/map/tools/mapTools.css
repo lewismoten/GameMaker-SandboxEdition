@@ -319,3 +319,11 @@
   min-height: 24px;
   font-weight: bold;
 }
+
+/* the zoom steps' base size above comes after the touch rule, so touch restates it */
+@media (hover: none) and (pointer: coarse) {
+  .mt-zoom-step {
+    min-width: 44px;
+    min-height: 44px;
+  }
+}

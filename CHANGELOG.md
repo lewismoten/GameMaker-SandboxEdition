@@ -12,6 +12,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 ### Added
 
 - After "+ New monster", the map editor opens with that monster already chosen in monster mode, so placing it takes no slot hunting
+- On a tablet or phone the First steps list opens folded to its title bar (and folds again when a step opens its editor), so it no longer covers the editors; its buttons are 44 px on touch. After "Add an exit" on the map, tapping the map places the exit there
 - Two achievements for the Starters: Show and tell (played every Starter) and Honor roll (played every Starter to its ending). They count apart from the Sandbox games.
 - The Guide's "How do I…?" page now has its questions as plain text for search engines and readers without scripts, each Starter linked to its play page, and a Starter's page describes it as a small teaching game instead of a shareware release.
 - The Pocket Player's Space and Enter buttons and key tiles show the key's name (the one the in-game signs use) with the game's label or the picture of what it throws or uses under it, all inside the button, and the controls no longer flicker over the picture.

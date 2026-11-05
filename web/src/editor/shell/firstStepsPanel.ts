@@ -33,6 +33,16 @@ export function firstStepsPanel(project: Project, nav: FirstStepsNav): FirstStep
   const live = h('p', { class: 'sr-only', 'aria-live': 'polite' });
   const list = h('ol', { class: 'fs-list' });
   const foot = h('div', { class: 'fs-foot' });
+  // On a tablet or phone the list would sit over the editor, so it folds to its title bar (the toggle opens it again)
+  const small = window.matchMedia('(max-width: 1100px), (pointer: coarse)');
+  const minBtn = h('button', { type: 'button', class: 'fs-min', onclick: () => fold(!panel.classList.contains('fs-folded')) });
+  function fold(on: boolean): void {
+    panel.classList.toggle('fs-folded', on);
+    minBtn.textContent = on ? '▴' : '▾';
+    minBtn.setAttribute('aria-label', on ? 'Show the First steps list' : 'Fold the First steps list to its title');
+    minBtn.setAttribute('aria-expanded', String(!on));
+    minBtn.title = on ? 'Show the list' : 'Fold the list away (the title bar stays)';
+  }
   const panel = h(
     'section',
     { class: 'fs-panel', id: 'fs-panel', 'aria-labelledby': 'fs-title', hidden: true },
@@ -41,6 +51,7 @@ export function firstStepsPanel(project: Project, nav: FirstStepsNav): FirstStep
       { class: 'fs-head' },
       heading,
       count,
+      minBtn,
       h(
         'button',
         {
@@ -75,6 +86,7 @@ export function firstStepsPanel(project: Project, nav: FirstStepsNav): FirstStep
     else {
       const f = fileFor(s);
       if (f) nav.open(f);
+      if (small.matches) fold(true); // the step's editor is opening: keep it clear of the list
     }
   };
 
@@ -183,10 +195,12 @@ export function firstStepsPanel(project: Project, nav: FirstStepsNav): FirstStep
 
   function toggle(open = panel.hidden): void {
     panel.hidden = !open;
+    if (open && small.matches && !firstStepsState(project)?.seen) fold(true);
     if (open) updateFirstSteps(project, { seen: true });
     for (const b of buttons) syncButton(b);
   }
 
+  fold(false);
   refresh(false);
   // it opens by itself the first time a new starter game is opened
   if (!firstStepsState(project)?.seen) toggle(true);
