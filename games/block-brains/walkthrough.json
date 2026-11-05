@@ -1,0 +1,64 @@
+{
+ "version": 1,
+ "game": "block-brains",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU0PzTBNFM2LAU0ezTBNGc0DTQHNAEsGywNNFM0DTQrNA00UzQNNCs0DTRTNA00UzQNN"
+  },
+  {
+   "scene": 3,
+   "keys": "AU0PzTBNGc15TQrNME0FzQNNFM0DTQ/NA00BzQBLBssDTRTNA00KzQNNFM0DTQrNCk0UzQNNFM0DTQ=="
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Take Your Turn"
+  },
+  {
+   "scene": 3,
+   "title": "Out of Step"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 9231,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 896,
+    "time": 14933.333333333148
+   },
+   {
+    "title": "Take Your Turn",
+    "frame": 1644,
+    "time": 27400.000000000564
+   },
+   {
+    "title": "Out of Step",
+    "frame": 3564,
+    "time": 59399.99999999708
+   },
+   {
+    "title": "Ending",
+    "frame": 5469,
+    "time": 91150.00000000364
+   },
+   {
+    "title": "Credits",
+    "frame": 8157,
+    "time": 135950.00000001243
+   }
+  ]
+ }
+}
