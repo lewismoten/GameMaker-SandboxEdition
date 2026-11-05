@@ -26,6 +26,7 @@ export function checkLayout(result: GenResult, blocks: Uint8Array, bg: Block[] |
   if (!proof.keysFirst) problems.push('A key may sit behind its own locked door.');
   if (!proof.collectable) problems.push('Not every key, treasure and the exit can be collected in order.');
   if (!proof.furnished) problems.push('A piece of furniture has no open side to reach it, or a chair does not face a table.');
+  if (!proof.linked) problems.push('A door or site cannot be reached from the entry.');
   if (bg) {
     const cell = (i: number) => (result.rect.y + Math.floor(i / result.rect.w)) * MLEN + result.rect.x + (i % result.rect.w);
     const seen = openFrom(blocks, bg, [cell(result.entry)]);
@@ -42,6 +43,10 @@ export function checkLayout(result: GenResult, blocks: Uint8Array, bg: Block[] |
     cut(
       'A key',
       result.locks.map((l) => l.key),
+    );
+    cut(
+      'A door or site',
+      result.links.map((l) => l.cell),
     );
     cut('Treasure', [...result.treasure, ...(result.life === undefined ? [] : [result.life])]);
     cut(

@@ -5,15 +5,18 @@
 // wall and tree edges with the set's terrain brushes (`terrainCells`).
 import { FACINGS, MAX_PAIR, blocksWithRole, type Facing, type Role, type RoleMap } from '../blockRoles';
 import { checkNeeds, kindInfo, type GenKind } from './needs';
-import { DECOR, DOORC, FLOOR, KEY, LIFE, LOCK, PATH, ROCK, TREASURE, TREE, WALL, closed, distances, stream, type Area } from './grid';
+import { DECOR, DOORC, FLOOR, KEY, LIFE, LOCK, PATH, ROCK, ROOF, TREASURE, TREE, WALL, WATER, closed, distances, stream, type Area } from './grid';
 import { addProps, proveKeys, type LockInfo } from './props';
 import { dungeon } from './dungeon';
 import { forest } from './forest';
 import { interior } from './interior';
 import { castle } from './castle';
+import { town, type SceneLink } from './town';
+import { overworld } from './overworld';
 import { DIR, type Avail, type Item } from './furnish';
 
 export { type Item as Furniture } from './furnish';
+export { type SceneLink } from './town';
 
 export { type LockInfo } from './props';
 export { KINDS, checkNeeds, kindInfo, type GenKind, type KindInfo, type NeedItem, type NeedsReport } from './needs';
@@ -32,6 +35,8 @@ export interface GenParams {
   rect: Rect;
   /** Monster numbers (from the game's .mon file) that may be placed; none or left out: no monsters. */
   monsters?: number[];
+  /** The map wraps over its edges (overworld land then lines up across the seam). */
+  wrap?: boolean;
 }
 
 /** The smallest side any kind can draw in (each kind has its own minimum, `kindInfo(kind).min`). */
@@ -40,12 +45,13 @@ const MAX_SIZE: Partial<Record<GenKind, { w: number; h: number }>> = {
   home: { w: 24, h: 16 },
   shop: { w: 26, h: 14 },
   castle: { w: 56, h: 40 },
+  town: { w: 80, h: 56 },
 };
 
 export const MIN_SIDE = 10;
 
 /** What the cells of a result are, for edges: which cells (area-local indexes) belong to a role's terrain. */
-export type TerrainRole = 'wall' | 'tree' | 'path';
+export type TerrainRole = 'wall' | 'tree' | 'path' | 'water';
 
 export interface GenResult {
   rect: Rect;
@@ -69,6 +75,8 @@ export interface GenResult {
   furniture: (Item & { block: number })[];
   /** Where the shopkeeper could stand (shops), a proposal like the entry. */
   shopkeeper?: number;
+  /** Doors and sites a person could link to other scenes (towns and overworlds): proposals only, nothing is linked. */
+  links: SceneLink[];
   /** What was left out, in plain words. */
   notes: string[];
 }
@@ -100,6 +108,7 @@ export function generate(roles: RoleMap, params: GenParams): GenOutcome {
   const terrainCells: GenResult['terrainCells'] = {};
   let furniture: GenResult['furniture'] = [];
   let shopkeeper: number | undefined;
+  let links: SceneLink[] = [];
   const furnitureBlock = (role: Role, facing?: Facing): number => {
     const list = blocksWithRole(roles, role);
     return list.find((n) => roles[n].facing === facing) ?? list.find((n) => !roles[n].facing) ?? list[0];
@@ -110,6 +119,12 @@ export function generate(roles: RoleMap, params: GenParams): GenOutcome {
   } else if (params.kind === 'castle') {
     const c = castle(w, h, r, { path: has('path'), decorate: has('decoration') });
     ({ area, entry, exit } = c);
+  } else if (params.kind === 'town') {
+    const t = town(w, h, r, { tree: has('tree'), decor: has('decoration') });
+    ({ area, entry, exit, links } = t);
+  } else if (params.kind === 'overworld') {
+    const o = overworld(w, h, r, { tree: has('tree'), rock: has('rock'), decor: has('decoration'), wrap: !!params.wrap });
+    ({ area, entry, exit, links } = o);
   } else if (params.kind === 'home' || params.kind === 'shop') {
     const avail: Avail = {};
     for (const role of ['table', 'chair', 'bed', 'counter', 'shelf', 'stove', 'rug', 'lamp', 'plant'] as Role[]) {
@@ -137,7 +152,7 @@ export function generate(roles: RoleMap, params: GenParams): GenOutcome {
           (p) => blocksWithRole(roles, 'locked-door', p).length && blocksWithRole(roles, 'key', p).length,
         )
       : [];
-  const furnished = params.kind === 'home' || params.kind === 'shop';
+  const furnished = params.kind === 'home' || params.kind === 'shop' || params.kind === 'town' || params.kind === 'overworld';
   const props = furnished
     ? { locks: [], treasure: [], life: undefined, monsters: [] }
     : addProps(area, entry, exit, stream(params.seed ^ 0x9e3779b9), {
@@ -158,6 +173,8 @@ export function generate(roles: RoleMap, params: GenParams): GenOutcome {
     [ROCK]: blocksWithRole(roles, 'rock').slice(0, 1),
     [DECOR]: blocksWithRole(roles, 'decoration'),
     [DOORC]: blocksWithRole(roles, 'door').slice(0, 1),
+    [WATER]: blocksWithRole(roles, 'water').slice(0, 1),
+    [ROOF]: blocksWithRole(roles, 'wall-top').length ? blocksWithRole(roles, 'wall-top').slice(0, 1) : blocksWithRole(roles, 'wall').slice(0, 1),
   };
   const floor = first(roles, 'floor')!;
   const blocks = new Uint8Array(area.cells.length);
@@ -179,8 +196,10 @@ export function generate(roles: RoleMap, params: GenParams): GenOutcome {
   putBlocks(props.treasure, blocksWithRole(roles, 'treasure').length ? blocksWithRole(roles, 'treasure') : [floor]);
   if (props.life !== undefined) blocks[props.life] = blocksWithRole(roles, 'life')[0];
   for (const f of furniture) blocks[f.cell] = f.block;
-  terrainCells.wall = params.kind !== 'forest' ? cellsOf(WALL) : undefined;
-  terrainCells.tree = params.kind === 'forest' ? cellsOf(TREE) : undefined;
+  const roofed = params.kind === 'town' && !has('wall-top');
+  terrainCells.wall = params.kind !== 'forest' && params.kind !== 'overworld' ? [...cellsOf(WALL), ...(roofed ? cellsOf(ROOF) : [])] : undefined;
+  terrainCells.tree = params.kind === 'forest' || params.kind === 'town' || params.kind === 'overworld' ? cellsOf(TREE) : undefined;
+  terrainCells.water = params.kind === 'overworld' ? cellsOf(WATER) : undefined;
   terrainCells.path = cellsOf(PATH).length ? cellsOf(PATH) : undefined;
   return {
     ok: true,
@@ -197,6 +216,7 @@ export function generate(roles: RoleMap, params: GenParams): GenOutcome {
       monsters: props.monsters,
       furniture,
       shopkeeper,
+      links,
       notes,
     },
   };
@@ -225,6 +245,8 @@ export interface Proof {
   collectable: boolean;
   /** Furniture: every piece has a reachable open side, each chair looks at a table and the door's inside is open. True with none. */
   furnished: boolean;
+  /** Every proposed door and site (towns, overworlds) can be reached from the entry. True with none. */
+  linked: boolean;
 }
 
 /** The furniture part of the proof (plain cell codes only). */
@@ -249,13 +271,21 @@ function proveFurniture(result: GenResult): boolean {
   });
 }
 
+/** Every proposed link's door or site can be reached from the entry. */
+function proveLinks(result: GenResult): boolean {
+  if (!result.links.length) return true;
+  const a: Area = { w: result.rect.w, h: result.rect.h, cells: result.kinds };
+  const d = distances(a, result.entry);
+  return result.links.every((l) => d[l.cell] >= 0);
+}
+
 /** The generator's own proof for a result: reach, key-before-lock and that everything can be collected. */
 export function proveResult(result: GenResult): Proof {
   const a: Area = { w: result.rect.w, h: result.rect.h, cells: result.kinds };
   const pickups = [...result.treasure, ...(result.life === undefined ? [] : [result.life])];
   const k = proveKeys(a, result.entry, result.exit, result.locks, pickups);
   const reach = verifyReach(result).ok;
-  return { reach, keysFirst: k.strict, collectable: k.ok, furnished: proveFurniture(result) };
+  return { reach, keysFirst: k.strict, collectable: k.ok, furnished: proveFurniture(result), linked: proveLinks(result) };
 }
 
 export const PROP_KINDS = { LOCK, KEY, TREASURE, LIFE };

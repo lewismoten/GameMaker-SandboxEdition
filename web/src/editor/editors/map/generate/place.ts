@@ -16,7 +16,7 @@ import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks'
 import { checkLayout, type LayoutCheck } from './verifyOffer';
 import { paintTerrain, pickBlock, type Terrain } from '../tools/autotile';
 
-const TERRAIN_ROLE: Record<TerrainRole, Role> = { wall: 'wall', tree: 'tree', path: 'path' };
+const TERRAIN_ROLE: Record<TerrainRole, Role> = { wall: 'wall', tree: 'tree', path: 'path', water: 'water' };
 
 /** The terrain that holds a block with this role as its fill (so painting it gives that block edges), if any. */
 export function terrainFor(terrains: Terrain[], roles: RoleMap, role: TerrainRole): Terrain | undefined {
@@ -88,11 +88,11 @@ export function offers(
   kind: GenKind,
   seed: number,
   rect: Rect,
-  extra: { monsters?: number[]; bg?: Block[] } = {},
+  extra: { monsters?: number[]; bg?: Block[]; wrap?: boolean } = {},
 ): Offer[] {
   return [0, 1, 2, 3].map((i) => {
     const s = offerSeed(seed, i);
-    const outcome = generate(roles, { kind, seed: s, rect, monsters: extra.monsters });
+    const outcome = generate(roles, { kind, seed: s, rect, monsters: extra.monsters, wrap: extra.wrap });
     const placed = outcome.ok ? place(blocks, outcome.result, roles, terrains).blocks : undefined;
     return { seed: s, outcome, blocks: placed, check: outcome.ok ? checkLayout(outcome.result, placed!, extra.bg) : undefined };
   });

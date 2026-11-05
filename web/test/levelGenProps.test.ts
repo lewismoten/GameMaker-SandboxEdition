@@ -29,7 +29,7 @@ describe('locks and keys', () => {
     for (let s = 1; s <= 200; s++) {
       const r = run('dungeon', full, s * 7919);
       const p = proveResult(r);
-      expect(p, `seed ${s * 7919}`).toEqual({ reach: true, keysFirst: true, collectable: true, furnished: true });
+      expect(p, `seed ${s * 7919}`).toEqual({ reach: true, keysFirst: true, collectable: true, furnished: true, linked: true });
       locked += r.locks.length;
       for (const l of r.locks) {
         expect(r.blocks[l.cell]).toBe(l.pair === 1 ? 10 : 12);

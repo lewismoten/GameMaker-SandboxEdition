@@ -3,7 +3,7 @@
 // Generate dialog read this, so what is asked for and what is used never drift apart.
 import { ROLES, blocksWithRole, type Role, type RoleMap } from '../blockRoles';
 
-export type GenKind = 'dungeon' | 'forest' | 'home' | 'shop' | 'castle';
+export type GenKind = 'dungeon' | 'forest' | 'home' | 'shop' | 'castle' | 'town' | 'overworld';
 
 export interface KindInfo {
   id: GenKind;
@@ -98,6 +98,34 @@ export const KINDS: readonly KindInfo[] = [
       { role: 'key', use: 'Placed where it can be reached before its locked door.', without: 'no locked doors' },
       { role: 'treasure', use: 'In tower rooms, corners and dead ends of the keep.', without: 'no treasure' },
       { role: 'life', use: 'One heart in a far corner.', without: 'no heart' },
+    ],
+  },
+  {
+    id: 'town',
+    label: 'Town',
+    blurb: 'A winding main street between two gates, cross streets, a plaza and houses with their doors on the street.',
+    min: { w: 40, h: 28 },
+    must: ['wall', 'floor'],
+    want: [
+      { role: 'door', use: 'On each house front and in the two gates (proposed links to interiors and the overworld).', without: 'the doors are plain floor' },
+      { role: 'wall-top', use: 'The two top rows of each house (its roof).', without: 'roofs use the wall block' },
+      { role: 'path', use: 'The streets and the plaza.', without: 'streets are plain floor' },
+      { role: 'tree', use: 'A ring round the town and a few in the open.', without: 'no trees' },
+      { role: 'decoration', use: 'In the plaza and scattered in the open.', without: 'no decoration' },
+    ],
+  },
+  {
+    id: 'overworld',
+    label: 'Overworld',
+    blurb: 'Land and sea with forests and mountains, shores drawn with the water brush, and a road joining towns, dungeon entrances and a castle.',
+    min: { w: 40, h: 40 },
+    must: ['floor', 'water'],
+    want: [
+      { role: 'tree', use: 'Forest where the land is wet.', without: 'no forests' },
+      { role: 'rock', use: 'Mountains on the highest ground.', without: 'no mountains' },
+      { role: 'path', use: 'A road joining the sites.', without: 'roads are plain floor' },
+      { role: 'door', use: 'The mark of each site (a town, dungeon entrance or castle).', without: 'sites are marked by a clearing only' },
+      { role: 'decoration', use: 'Scattered on the grass.', without: 'no flowers' },
     ],
   },
 ];
