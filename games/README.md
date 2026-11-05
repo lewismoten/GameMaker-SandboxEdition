@@ -245,6 +245,11 @@ multi-block objects for `kit/align.ts`, which their checks run. The other play-t
 | many-rooms             | `npx vite-node ../games/many-rooms/tools/check.ts`                     | the bot goes red, blue, green, back by green's other door, and on to gold, then through the hub twice (the same landing cell, coins back, score kept); every door lands on the middle of a room and no life is lost; no invisible walls |
 | many-rooms             | `npx vite-node ../games/many-rooms/tools/gendemo.ts`                   | re-records the title demo (level 1: two coins and the red door, which lands in the blue room) into `src/demo.ts` (then rebuild) |
 | many-rooms             | `npx vite-node ../games/many-rooms/tools/preview.ts [dir]`             | PNGs of the blocks, both maps whole, each room as the screen shows it, and every picture |
+| gusts             | `npx vite-node ../games/gusts/tools/check.ts`                     | the bot reads the signs and checks every tick that the shaft and each windsock go calm, flutter, gust on time; level 1 it jumps once in the calm shaft, then rides the gust up to the ledge; level 2 it leans into a gust and is pushed back, crosses while it is calm and waits out each gust in a shelter|
+| gusts             | `npx vite-node ../games/gusts/tools/demoCheck.ts`                 | plays the title demo headless: the gust lifts him above the ledge and he lands on it, with nothing lost                                               |
+| gusts             | `npx vite-node ../games/gusts/tools/gendemo.ts`                   | re-records the title demo into `src/demo.ts` (then rebuild)                                                                                           |
+| gusts             | `npx vite-node ../games/gusts/tools/preview.ts [dir]`             | PNGs of the blocks, the hero, each level and every picture                                                                                            |
+| gusts             | `npx vite-node ../games/gusts/tools/shots.ts <dir>`               | pictures of the lessons (never on the disk) for the progress shots                                                                                    |
 
 The felt eggs have checks of their own where a game's route never goes near one
 (`depth/tools/egg.ts`, `realm/tools/eggcheck.ts`, `sleuth/tools/check.ts --egg`). The other
