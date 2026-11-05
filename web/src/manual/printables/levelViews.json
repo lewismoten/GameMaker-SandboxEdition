@@ -47,7 +47,7 @@
   "inventory": {"hash":"f4174be3cdbba055","maps":{"one.map|inv.bbl":[0,6,68,21],"two.map|inv.bbl":[0,8,74,19]}},
   "jump-boots": {"hash":"2cd726eace0b93e2","maps":{"one.map|boots.bbl":[0,0,78,41],"two.map|boots.bbl":[0,8,88,25]}},
   "keys-and-doors": {"hash":"2186bfa66cfb8d82","maps":{"one.map|keys.bbl":[0,0,67,27],"three.map|keys.bbl":[0,1,69,26],"two.map|keys.bbl":[0,1,67,26]}},
-  "kit-moves": {"hash":"00988367f59b25e1","maps":{"one.map|km.bbl":[0,0,67,31],"two.map|km.bbl":[0,15,91,10]}},
+  "kit-moves": {"hash":"c25cf5a5eec8cb07","maps":{"one.map|km.bbl":[0,0,67,31],"two.map|km.bbl":[0,15,91,10]}},
   "kits-shop": {"hash":"6619535be9dfb292","maps":{"one.map|kitshop.bbl":[0,4,77,23]}},
   "lights-out": {"hash":"e06494e7e1a8eb58","maps":{"hall.map|hall.bbl":[0,12,60,10],"lanterns.map|lanterns.bbl":[0,12,68,10],"tunnel.map|tunnel.bbl":[0,12,64,10]}},
   "loaf": {"hash":"9ec63cd8de177d54","maps":{"baskets.map|loaf.bbl":[0,0,90,19],"hill.map|loaf.bbl":[0,0,79,19],"home.map|loaf.bbl":[0,0,86,20],"wicker.map|loaf.bbl":[0,0,46,30]}},
