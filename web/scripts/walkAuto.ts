@@ -11,7 +11,7 @@ import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { GameFiles } from '../src/project/files';
 import { autoWalk, STRATEGIES } from '../src/editor/check/walk/autoWalk';
 import { verifyWalk } from '../src/editor/check/walk/verify';
-import { parseArgs, pickGam, sceneLine } from './walkAutoArgs';
+import { parseArgs, pickGam, sceneLine, walkOutput } from './walkAutoArgs';
 import { BASIC_KEYS, withKeys } from '../src/editor/check/keyLimit';
 
 const args = parseArgs(process.argv.slice(2));
@@ -44,7 +44,7 @@ if (result.stopped) console.log(`Stopped: ${result.stopped}`);
 if (args.out && result.walk) {
   const verified = await verifyWalk(files, picked.gam, result.walk, { maxMinutes: 60 });
   result.walk.timeline = { fps: result.walk.timeline.fps, frames: verified.frames, chapters: verified.chapters };
-  writeFileSync(args.out, JSON.stringify(result.walk, null, 1) + '\n');
+  writeFileSync(args.out, JSON.stringify(walkOutput(result.walk, result.scenes), null, 1) + '\n');
   console.log(`Wrote ${args.out}`);
 }
 process.exit(result.won ? 0 : 1);
