@@ -1,4 +1,4 @@
-// The map editor's Generate dialog: choose a kind (dungeon, castle, forest, home or shop) and where (the whole map or the
+// The map editor's Generate dialog: choose a kind (dungeon, castle, forest, home, shop, town or overworld) and where (the whole map or the
 // selection), see four real renders from a seed, pick one. The layouts only ever write ordinary cells,
 // as one undo step. The dialog fits a 375 by 812 phone without scrolling: two rows of previews,
 // and the Missing roles panel folds away when everything needed is set.
@@ -31,6 +31,8 @@ export interface GenerateHost {
   /** The block set's blocks (for the reach check) and the scene's monsters (for placing some). */
   blockSet: () => Block[];
   monsters: () => Monster[];
+  /** The map wraps over its edges (an overworld's land then lines up across the seam). */
+  wrap?: () => boolean;
   /** Puts the chosen layout into the map as one undo step; `withMonsters` is the result whose monsters to place too. */
   apply: (blocks: Uint8Array, what: string, withMonsters?: GenResult) => void;
 }
@@ -55,6 +57,17 @@ function drawOffer(canvas: HTMLCanvasElement, blocks: Uint8Array, rect: Rect, im
       if (img) ctx.drawImage(img, 0, 0, BLEN, BLEN, x * s, y * s, s, s);
     }
 }
+
+const NO_MONSTERS = new Set<GenKind>(['home', 'shop', 'town', 'overworld']);
+
+const LINK_TARGET: Record<string, string> = {
+  home: 'a home interior',
+  shop: 'a shop interior',
+  town: 'a town',
+  dungeon: 'a dungeon',
+  castle: 'a castle',
+  overworld: 'the overworld',
+};
 
 const cellText = (rect: Rect, i: number) => `(${rect.x + (i % rect.w)}, ${rect.y + Math.floor(i / rect.w)})`;
 
@@ -86,6 +99,7 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
     const needs = h('div');
     const grid = h('div', { class: 'gen-offers', role: 'group', 'aria-label': 'Four layouts to pick from' });
     const note = h('p', { class: 'meta gen-note', role: 'status' });
+    const linksBox = h('details', { class: 'gen-links', hidden: true });
     const use = h('button', { class: 'primary', type: 'button' }, 'Use this layout');
     const buttons: HTMLButtonElement[] = [];
 
@@ -94,8 +108,8 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
       blurb.textContent = kindInfo(kind).blurb;
       needs.replaceChildren(missingRoles({ kind, roles, usesHref }));
       const n = checkNeeds(kind, roles);
-      if (monRow) monRow.hidden = !n.ok || kind === 'home' || kind === 'shop';
-      current = n.ok ? offers(host.blocks(), roles, terrains, kind, seed, r, { monsters: addMonsters ? monsterIds : undefined, bg: host.blockSet() }) : [];
+      if (monRow) monRow.hidden = !n.ok || NO_MONSTERS.has(kind);
+      current = n.ok ? offers(host.blocks(), roles, terrains, kind, seed, r, { monsters: addMonsters ? monsterIds : undefined, bg: host.blockSet(), wrap: host.wrap?.() }) : [];
       chosen = Math.min(chosen, 3);
       grid.replaceChildren();
       buttons.length = 0;
@@ -138,8 +152,17 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
       const o = current[chosen];
       const ok = !!o?.outcome.ok;
       use.disabled = !ok;
+      linksBox.hidden = true;
       if (!ok || !o.outcome.ok) return void (note.textContent = '');
       const res = o.outcome.result;
+      if (res.links.length) {
+        linksBox.hidden = false;
+        linksBox.replaceChildren(
+          h('summary', null, `Links to make (${res.links.length})`),
+          h('p', { class: 'meta' }, 'Suggestions only: make a scene for each and link the door or site yourself.'),
+          h('ul', { class: 'gen-link-list' }, ...res.links.map((l) => h('li', null, `${l.label} at ${cellText(res.rect, l.cell)}: ${LINK_TARGET[l.kind]}`))),
+        );
+      }
       const furnished = res.furniture.length > 0 || kind === 'home' || kind === 'shop';
       const has = [
         res.furniture.filter((f) => !f.open).length ? `${res.furniture.filter((f) => !f.open).length} pieces of furniture` : '',
@@ -148,10 +171,10 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
         res.monsters.length ? `${res.monsters.length} monsters` : '',
       ].filter(Boolean);
       note.textContent = [
-        `Seed ${o.seed}: hero could start at ${cellText(res.rect, res.entry)}, ${furnished ? 'door' : 'exit'} at ${cellText(res.rect, res.exit)}; nothing is linked.${has.length ? ` ${has.join(', ')}.` : ''}`,
+        `Seed ${o.seed}: hero could start at ${cellText(res.rect, res.entry)}, ${furnished ? 'door' : res.links.length ? 'far end' : 'exit'} at ${cellText(res.rect, res.exit)}; nothing is linked.${has.length ? ` ${has.join(', ')}.` : ''}${res.links.length ? ` ${res.links.length} doors and sites could link to other scenes.` : ''}`,
         ...res.notes,
         o.check?.verified
-          ? `Verified: ${furnished ? 'every open cell and piece of furniture can be reached from the door' : 'keys, treasure and exit can be reached in order'}. ${NOT_CHECKED}`
+          ? `Verified: ${furnished ? 'every open cell and piece of furniture can be reached from the door' : res.links.length ? 'every open cell, door and site can be reached from the start' : 'keys, treasure and exit can be reached in order'}. ${NOT_CHECKED}`
           : `Not proven: ${o.check?.problems.join(' ')} ${NOT_CHECKED}`,
       ].join(' ');
     }
@@ -166,7 +189,7 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
     use.addEventListener('click', () => {
       const o = current[chosen];
       if (!o?.blocks) return;
-      host.apply(o.blocks, `${kindInfo(kind).label} layout`, addMonsters && kind !== 'home' && kind !== 'shop' && o.outcome.ok ? o.outcome.result : undefined);
+      host.apply(o.blocks, `${kindInfo(kind).label} layout`, addMonsters && !NO_MONSTERS.has(kind) && o.outcome.ok ? o.outcome.result : undefined);
       close(undefined);
     });
     const monBox = h('input', { type: 'checkbox', checked: addMonsters, 'aria-label': 'Add monsters' });
@@ -200,6 +223,7 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
       monRow,
       grid,
       note,
+      linksBox,
       h('div', { class: 'toolbar' }, use, h('button', { type: 'button', onclick: () => close(undefined) }, 'Cancel')),
     );
   });

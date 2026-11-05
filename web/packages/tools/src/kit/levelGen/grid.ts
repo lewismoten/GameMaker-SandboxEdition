@@ -36,9 +36,12 @@ export const LIFE = 9;
 /** Furniture a person cannot walk through (interiors); a door cell in a wall (open: the entry and exit of an interior, a gate). */
 export const FURN = 10;
 export const DOORC = 11;
+/** Water (overworlds) and a house's roof row (towns); neither can be walked on. */
+export const WATER = 12;
+export const ROOF = 13;
 
 /** Cells a person or monster cannot stand on. */
-export const closed = (c: number) => c === WALL || c === TREE || c === ROCK || c === FURN;
+export const closed = (c: number) => c === WALL || c === TREE || c === ROCK || c === FURN || c === WATER || c === ROOF;
 
 export interface Area {
   w: number;

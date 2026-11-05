@@ -39,6 +39,19 @@
 .gen-note {
   margin: 0;
 }
+.gen-links {
+  margin: 0;
+}
+.gen-links summary {
+  cursor: pointer;
+  min-height: 24px;
+}
+.gen-link-list {
+  margin: 4px 0;
+  padding-left: 18px;
+  max-height: 96px;
+  overflow: auto;
+}
 .mt-needs summary {
   cursor: pointer;
   min-height: 24px;

@@ -40,7 +40,7 @@ function keepBiggest(a: Area): number {
 }
 
 /** The cheapest route over per-cell costs (Dijkstra with a binary heap). */
-function route(a: Area, from: number, to: number, cost: Float32Array): number[] {
+export function route(a: Area, from: number, to: number, cost: Float32Array): number[] {
   const best = new Float64Array(a.cells.length).fill(Infinity);
   const from_ = new Int32Array(a.cells.length).fill(-1);
   const heap: [number, number][] = [[0, from]];

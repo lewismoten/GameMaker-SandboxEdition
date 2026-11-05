@@ -1361,6 +1361,7 @@ registerEditor(['map'], (host, project, file) => {
             selection: () => tools.selection,
             blockSet: () => bg,
             monsters: () => mons,
+            wrap: () => wrapping,
             apply: (blocks, _what, withMonsters) => {
               remember();
               map.blocks.set(blocks);
