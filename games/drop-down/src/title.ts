@@ -19,10 +19,10 @@ export function titlePicture(pal: Pal, book: Book, mb: Book, hero: Pixels, door:
   const put = (pic: Pixels, x: number, y: number, scale: number) => scaleBlit(p, pic, x, y, scale);
   // the hero, Plop sitting on its crate, then Plop on the ground by the rubble
   put(hero, 40, 160 - 80, 2);
-  put(book.pics.get('crate')!, 112, 160 - 60, 3);
-  put(mb.pics.get('plop0')!, 112, 160 - 120, 3);
-  put(book.pics.get('rubble')!, 184, 160 - 60, 3);
-  put(mb.pics.get('plop1')!, 184, 160 - 60, 3);
+  put(book.pics.get('crate')!, 112, 160 - 40, 2);
+  put(mb.pics.get('plop0')!, 112, 160 - 80, 2);
+  put(book.pics.get('rubble')!, 184, 160 - 40, 2);
+  put(mb.pics.get('plop1')!, 184, 160 - 40, 2);
   scaleBlit(p, door, 268, 160 - 80, 2);
   return p;
 }

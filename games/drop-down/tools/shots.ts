@@ -57,4 +57,4 @@ const full = (level: number) => levels[level].map.done();
 save('1-plop-on-crate.png', region(full(0), 16, 18, [...kit(['stand.top', 'stand'], 21)]));
 save('2-plop-in-dip.png', region(broken(0, 24, [CORK_ROW]), 16, 18, [...kit(['stand.top', 'stand'], 22), thing('plop1', 24, GROUND + 1)]));
 save('3-pip-on-crates.png', region(full(1), 8, 18, [...kit(['stand.top', 'stand'], 15)]));
-save('4-pip-drifted-down.png', region(broken(1, 19, [CORK_ROW, CORK_ROW - 1]), 8, 18, [...kit(['stand.top', 'stand'], 19), thing('pip1', 19, GROUND)]));
+save('4-pip-drifted-down.png', region(broken(1, 19, [CORK_ROW, CORK_ROW - 1]), 8, 18, [...kit(['stand.top', 'stand'], 21), thing('pip1', 19, GROUND)]));
