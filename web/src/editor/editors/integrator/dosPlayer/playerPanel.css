@@ -175,6 +175,16 @@ dialog.modal label.dp-check {
   font-size: 12px;
 }
 
+.dp-experimental {
+  border-color: var(--danger);
+}
+
+.dp-warn {
+  padding: 6px 10px;
+  border-left: 4px solid var(--danger);
+  color: inherit;
+}
+
 .dp-each summary {
   min-height: 28px;
   margin-top: 12px;
