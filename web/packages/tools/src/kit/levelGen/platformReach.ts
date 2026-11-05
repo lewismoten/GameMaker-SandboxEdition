@@ -75,11 +75,35 @@ export function reachFrom(a: Area, p: HeroPhysics, start: number, locksOpen: boo
     for (let cy = Math.max(0, y0); cy <= Math.min(h - 1, y1); cy++)
       for (let cx = Math.floor(X / BLEN); cx <= Math.floor((X + BLEN - 1) / BLEN); cx++) if (cx >= 0 && cx < w) touched[cy * w + cx] = 1;
   };
-  /** Footing under his middle (or a ladder holding him). Only at whole rows. */
-  const standable = (X: number, row: number): boolean => {
+  const topOf = (c: number) => solid(c) || c === PLAT;
+  /**
+   * What PLAYGAME's ground check (chkDowns, engine/character.ts) makes of him at (X, row): the blocks under both of his
+   * columns count (one pixel over a footing is enough), but when only one of them is a footing and he is mostly over the
+   * other (more than half a block), he is nudged onto the other's edge, off the footing. `x` is where he ends up;
+   * `held` is whether he is still standing there. `spiked`: a spike under one of his columns, which gravity presses him into
+   * on the next tick (PLAYGAME touches the block he is moving to before the ground stops him), so he cannot stand there.
+   */
+  const ground = (X: number, row: number): { held: boolean; x: number; spiked: boolean } => {
+    const cl = Math.floor(X / BLEN),
+      x1 = X - cl * BLEN;
+    const cL = cell(cl, row + 1),
+      cR = x1 > 0 ? cell(cl + 1, row + 1) : FREE;
+    const l = topOf(cL),
+      r = topOf(cR);
+    const spiked = cL === HAZARD || cR === HAZARD;
+    if (!l && !r) return { held: false, x: X, spiked };
+    if (l && !r && x1 > BLEN / 2) return { held: false, x: (cl + 1) * BLEN, spiked };
+    if (r && !l && x1 < BLEN / 2) return { held: false, x: cl * BLEN, spiked };
+    return { held: true, x: X, spiked };
+  };
+  const onLadder = (X: number, row: number): boolean => {
     const cm = Math.floor((X + BLEN / 2) / BLEN);
-    const below = cell(cm, row + 1);
-    return solid(below) || below === PLAT || cell(cm, row) === LADDER || cell(cm, row - 1) === LADDER;
+    return cell(cm, row) === LADDER || cell(cm, row - 1) === LADDER;
+  };
+  /** Footing under him (or a ladder holding him). Only at whole rows. */
+  const standable = (X: number, row: number): boolean => {
+    const g = ground(X, row);
+    return onLadder(X, row) || (g.held && !g.spiked);
   };
   /** Pixels a walking step moves him. */
   const STEP = Math.max(1, Math.round(p.vx));
@@ -133,18 +157,30 @@ export function reachFrom(a: Area, p: HeroPhysics, start: number, locksOpen: boo
       }
       const ny = py + s.dy;
       if (s.dy > 0) {
-        // the row his feet reach: he lands if his middle is over a footing there (and ignores a corner it is not over)
+        // the row his feet reach: he lands on a footing under either column he is in, and PLAYGAME may nudge him off its edge
         const rr = Math.floor((ny + BLEN - 1) / BLEN);
         if (rr >= h) return;
         const cm = Math.floor((X + BLEN / 2) / BLEN);
         if (rr > Math.floor((py + BLEN - 1) / BLEN)) {
-          const c = cell(cm, rr);
-          if (solid(c) || c === PLAT) {
+          const g = ground(X, rr - 1);
+          if (g.held || g.x !== X) {
+            // PLAYGAME touches the blocks at the place he is falling to before the ground stops him: a spike next to the footing hurts
+            if (body(X, ny) === DEADLY) return;
             const row = rr - 1;
             if (body(X, row * BLEN) !== FREE) return;
-            mark(X, row * BLEN);
-            push(X, row, { kind, dir, steerTicks, from, startX: X0 });
-            return;
+            if (g.held) {
+              if (g.spiked && !onLadder(X, row)) return;
+              mark(X, row * BLEN);
+              push(X, row, { kind, dir, steerTicks, from, startX: X0 });
+              return;
+            }
+            // nudged off the edge: he stands one tick, then falls again from rest
+            if (body(g.x, row * BLEN) !== FREE) return;
+            X = g.x;
+            py = row * BLEN;
+            f.land();
+            mark(X, py);
+            continue;
           }
         }
         const b = body(X, ny);
@@ -168,13 +204,21 @@ export function reachFrom(a: Area, p: HeroPhysics, start: number, locksOpen: boo
       const mid = () => Math.floor((X + BLEN / 2) / BLEN);
       const rowIn = () => Math.floor((py + BLEN / 2) / BLEN);
       if (cell(mid(), rowIn()) === LADDER) {
-        for (let k = 0; k < 40; k++) {
-          const dy = f.fade();
-          if (!dy) break;
-          if (body(X, py + dy) !== FREE) return;
-          py += dy;
+        f.fade();
+        for (let k = 0; k < ARC_TICKS; k++) {
+          const s = f.slide();
+          if (s.dx) {
+            const r = body(X + s.dx, py);
+            if (r === DEADLY) return;
+            if (r === FREE) X += s.dx;
+          }
+          if (s.dy) {
+            if (body(X, py + s.dy) !== FREE) return;
+            py += s.dy;
+          }
           mark(X, py);
           if (cell(mid(), rowIn()) !== LADDER) return;
+          if (s.done) break;
         }
         if (body(X, rowIn() * BLEN) === FREE) push(X, rowIn(), { kind, dir, steerTicks, from, startX: X0 });
         return;
@@ -193,9 +237,14 @@ export function reachFrom(a: Area, p: HeroPhysics, start: number, locksOpen: boo
     for (const d of [-1, 1] as const) {
       const nx = X + d * STEP;
       if (nx < 0 || nx > w * BLEN - BLEN || body(nx, py) !== FREE) continue;
+      if (ground(nx, row).spiked && !onLadder(nx, row)) continue;
       mark(nx, py);
       if (standable(nx, row)) push(nx, row, { kind: 'walk', dir: d, steerTicks: 0, from: { X, row }, startX: X });
-      else for (const v of variants) if (v.kind === 'fall' && v.dir !== 0) fly(nx, py, 'fall', v.dir, v.steerTicks, { X, row });
+      else {
+        // off the edge: the ground check may carry him on to the block's edge before he falls
+        const fx = ground(nx, row).x;
+        if (body(fx, py) === FREE) for (const v of variants) if (v.kind === 'fall' && v.dir !== 0) fly(fx, py, 'fall', v.dir, v.steerTicks, { X, row });
+      }
     }
     // jump, except from a ladder and on a plain stretch of ground with nothing within a jump's reach
     if (!held && !plain(X, row)) for (const v of variants) if (v.kind === 'jump') fly(X, py, 'jump', v.dir, v.steerTicks);

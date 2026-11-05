@@ -144,6 +144,19 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
       }
       return o.check?.verified ? { text: 'Verified', ok: true, more: '' } : { text: 'Not proven', ok: false, more: '' };
     }
+    /** The first offer with the strongest proof (Bot won, then Jump math or Verified, then Not proven); a failed offer ranks last. */
+    function strongest(list: Offer[]): number {
+      const rank = (o: Offer) => {
+        if (!o.outcome.ok) return 4;
+        const c = chipOf(o);
+        return c.text === 'Bot won' ? 0 : c.ok ? 1 : 2;
+      };
+      let best = 0;
+      list.forEach((o, i) => {
+        if (rank(o) < rank(list[best])) best = i;
+      });
+      return best;
+    }
     /** An offer button's name: its visible caption first ("Layout 2 Bot won"), then what the chip means and the seed. */
     const offerName = (i: number, c: { text: string; more: string }, o: Offer) => `Layout ${i + 1} ${c.text}${c.more ? `, ${c.more}` : ''}, seed ${o.seed}`;
     const chips: HTMLElement[] = [];
@@ -210,7 +223,7 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
             difficulty,
           })
         : [];
-      chosen = Math.min(chosen, 3);
+      chosen = strongest(current);
       grid.replaceChildren();
       buttons.length = 0;
       chips.length = 0;

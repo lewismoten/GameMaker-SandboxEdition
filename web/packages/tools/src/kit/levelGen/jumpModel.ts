@@ -109,10 +109,25 @@ export class Flight {
       dx: this.dir && t >= 1 && t <= this.steerTicks && (p.steer || this.kind === 'fall') ? Math.round(this.dir * p.vx) : 0,
     };
   }
-  /** A block with no gravity under him: his speed fades to 5/6 a tick (engine/character.ts onGround). Returns the pixels moved. */
-  fade(): number {
+  /**
+   * A block with no gravity holds him (engine/character.ts onGround): the tick he reaches it his speed fades to 5/6 once; after
+   * that `slide` moves him by his speed and fades it twice a tick (the ground check runs after the sideways move and again
+   * after the vertical one), while the walk key goes on steering him for its ticks.
+   */
+  fade(): void {
     this.vy = Math.trunc((this.vy * 5) / 6);
-    return Math.max(-MAXGRAV, Math.min(MAXGRAV, this.vy));
+  }
+  slide(): { dx: number; dy: number; done: boolean } {
+    const { p, t } = this;
+    const dy = Math.max(-MAXGRAV, Math.min(MAXGRAV, this.vy));
+    const dx = this.dir && t >= 1 && t <= this.steerTicks && (p.steer || this.kind === 'fall') ? Math.round(this.dir * p.vx) : 0;
+    this.vy = Math.trunc((Math.trunc((this.vy * 5) / 6) * 5) / 6);
+    this.t++;
+    return { dx, dy, done: this.vy === 0 && dy === 0 && this.t > this.steerTicks };
+  }
+  /** He has landed (the ground check stopped his fall): his speed is gone, and the gravity clock runs on. */
+  land(): void {
+    this.vy = 0;
   }
   bump(): void {
     if (this.vy < 0) this.vy = 0;
