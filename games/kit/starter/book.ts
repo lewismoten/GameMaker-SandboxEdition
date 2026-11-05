@@ -27,6 +27,8 @@ export interface Rules {
   eamt?: number;
   /** The block it turns into when touched (a coin is gone). */
   touch?: string;
+  /** An object: touching does nothing, but the pick-up key takes it into the inventory (and the drop key puts it down again). */
+  obj?: boolean;
 }
 
 const COUNT = { bbl: BACKBL, mbl: 50, cbl: CHARBL } as const;
@@ -54,6 +56,7 @@ export class Book {
     b.scorePts = r.score ?? 0;
     b.chHitPt = r.hp ?? 0;
     b.grav = r.grav ?? 0;
+    b.obj = r.obj ? 1 : 0;
     b.effect = r.effect ?? 0;
     b.eamt = r.eamt ?? 0;
     this.rules.push([i, r]);
