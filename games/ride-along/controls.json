@@ -1,0 +1,55 @@
+{
+  "keys": {
+    "75": {
+      "short": "Walk or drive left",
+      "long": "Walk left on foot; drive left in the kart."
+    },
+    "77": {
+      "short": "Walk or drive right",
+      "long": "Walk right on foot; drive right in the kart."
+    },
+    "57": {
+      "short": "Jump or honk",
+      "long": "On foot: jump, and steer with Left and Right in the air. In the kart: honk, which sends a ripple ahead that pops a bird."
+    },
+    "72": {
+      "short": "Climb up",
+      "long": "Climb up a ladder."
+    },
+    "80": {
+      "short": "Climb down",
+      "long": "Climb down a ladder."
+    },
+    "30": {
+      "short": "Walk or drive left",
+      "long": "Same as the Left arrow."
+    },
+    "32": {
+      "short": "Walk or drive right",
+      "long": "Same as the Right arrow."
+    },
+    "17": {
+      "short": "Climb up",
+      "long": "Same as the Up arrow."
+    },
+    "31": {
+      "short": "Climb down",
+      "long": "Same as the Down arrow."
+    }
+  },
+  "joystick": {
+    "1": {
+      "short": "Jump",
+      "long": "Jump."
+    }
+  },
+  "sounds": {
+    "9": "The jump",
+    "10": "Getting hurt (nothing here does)",
+    "11": "Falling over (nothing here does)",
+    "13": "The honk"
+  },
+  "counters": {
+    "20": "Keys: not used here, but a copy can add them."
+  }
+}

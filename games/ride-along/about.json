@@ -1,0 +1,35 @@
+{
+  "title": "Ride Along",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "hero": "YANA",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.0",
+  "blurb": "Three short levels about a ride that keeps moving by itself. On foot, a small explorer walks into a parked rocket. The next level names a different character file: the rocket rises on its own, even when no key is held, and the arrows only steer it past rocks and between stars. The last level does the same trick in a canoe on a river that flows up the screen. Signs in the levels say how. Play it, then open it in Game-Maker and make your own.",
+  "exe": "RIDEALNG.EXE",
+  "dosName": "RIDEALNG",
+  "sound": "sb",
+  "label": {
+    "background": "#14183c",
+    "band": "#d8423c",
+    "ink": "#ffffff",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "3 short levels",
+    "hours": 1,
+    "background": "#14183c",
+    "accent": "#ffd23f",
+    "ink": "#ffffff",
+    "tagline": "Climb in. It keeps going.",
+    "back": "A small explorer climbs into a rocket that rises all by itself. Steer between the rocks, catch the stars and dock at the top, then take a canoe down a river that flows the same way. Each ride is a character file of its own. Play it, then open the game in Game-Maker and build your own.",
+    "features": ["Signs in the levels explain each idea", "A vehicle is a character file that moves without a key", "Made to be copied and taken apart"],
+    "shots": [
+      ["two.map", 0, 44],
+      ["three.map", 0, 40]
+    ],
+    "rating": "Everyone"
+  }
+}
