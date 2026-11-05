@@ -82,6 +82,7 @@ template <class B> class SoftGfx {
   void drawRoundRect(int x, int y, int w, int h, int r, uint16_t c) { int a, d, e, f; xf.rect(x, y, w, h, a, d, e, f); b.drawRoundRect(a, d, e, f, r, c); }
   void fillCircle(int x, int y, int r, uint16_t c) { int a, d; xf.pt(x, y, a, d); b.fillCircle(a, d, r, c); }
   void drawCircle(int x, int y, int r, uint16_t c) { int a, d; xf.pt(x, y, a, d); b.drawCircle(a, d, r, c); }
+  void drawPixel(int x, int y, uint16_t c) { int a, d; xf.pt(x, y, a, d); b.drawPixel(a, d, c); }
   void drawLine(int x0, int y0, int x1, int y1, uint16_t c) { int a, d, e, f; xf.pt(x0, y0, a, d); xf.pt(x1, y1, e, f); b.drawLine(a, d, e, f, c); }
   void fillTriangle(int x0, int y0, int x1, int y1, int x2, int y2, uint16_t c) {
     int p[6];
