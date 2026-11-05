@@ -184,6 +184,20 @@ These Node build helpers complement the browser-safe `images` API.
 CMF swells, arpeggios, glides, echoes and rhythm effects. Instrument presets are original
 project data under the MIT License; recordings and complete songs are not included.
 
+### Mumble-speak (nonsense talk as VOC)
+
+`kit/mumble` is a small formant synthesizer that says nonsense, the way a game of 1994 might hum a character's
+talk. A line is a list of syllables `[vowel, fromHz, toHz, seconds, restSeconds?]`. `mumble(line, { rate, gain })`
+returns samples in -1..1, `mumbleVoc(line)` returns an 8-bit mono 11 kHz .VOC, and `syllablesFromText(text, { pitch, speed, seed })`
+turns a line of text into syllables (vowels from its letters, so the same line and seed mumble the same way;
+a question rises, a sentence falls). `MUMBLE_VOICES` has `bright`, `deep` and `small` settings.
+
+```ts
+import { MUMBLE_VOICES, mumbleVoc, syllablesFromText } from '@lewismoten/gamemaker-sandbox-tools/kit/mumble';
+
+const voc = mumbleVoc(syllablesFromText('Welcome to the show!', MUMBLE_VOICES.bright)); // write it as HELLO.VOC
+```
+
 ### Native animations and demos
 
 `kit/fadeOut` adds palette-only FLI fades. `kit/fliClips` splits long animations at stable
