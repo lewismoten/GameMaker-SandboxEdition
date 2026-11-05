@@ -7,6 +7,7 @@ jump-boots|Boots and Jet Pack|2
 and-gate|Both Together|2
 coins-and-score|Coins and Score|3
 countdown|Countdown|2
+cutscenes|Cutscenes|4
 day-night|Day and Night|5
 diagonal-wrap|Diagonal Wrap|2
 walk-the-ground|Dig It|2
@@ -27,6 +28,7 @@ parallax|Parallax|2
 inventory|Pick It Up|2
 pictures-and-cartoons|Pictures and Cartoons|3
 power-up|Power Up|2
+dice|Roll the Dice|1
 room-to-room|Room to Room|8
 many-rooms|Rooms on One Map|7
 beltway|Round and Round|2
@@ -34,6 +36,7 @@ say-something|Say Something|5
 popups|Score Popups|2
 scroll|Scroll or Stay|2
 things-that-grow|Seeds and Nests|2
+show-the-count|Show the Count|2
 momentum|Slide and Drift|2
 slippery-and-bouncy|Slippery and Bouncy|3
 breakable-walls|Smash It|3
