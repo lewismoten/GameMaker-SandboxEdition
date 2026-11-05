@@ -30,7 +30,6 @@ import { currentRoute, formatHash, setHashParams, type ParamValue } from '../../
 import { libraryCards } from './homeLibraryCards';
 import { tilePacker } from './homeTilePack';
 import { tileArrowKeys } from './homeTileKeys';
-import { homeDeepSearch } from './homeDeepSearch';
 import { gettingStarted } from './homeGettingStarted';
 import { homeImport, importTile, libraryDrops } from './homeDrop';
 
@@ -106,7 +105,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     placeholder: 'Find a game…',
     'aria-label': 'Find a game',
     // the deeper search (words inside games) starts reading when the box is first used, never at load
-    onfocus: () => void deep.focus(),
+    onfocus: () => deep.focus(),
     oninput: () => {
       filterTiles();
       keep({ q: search.value.trim() });
@@ -165,10 +164,21 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
 
   // games found by words inside them (file names, text screens, the blurb…), with where: they join as the background read goes
   let deepHits = new Map<string, string>();
-  const deep = homeDeepSearch({
-    games: () => lib.shownCats().flatMap((c) => lib.gamesOf(c.id)),
-    onMore: () => filterTiles(true),
-  });
+  // loaded with the first focus of the search box, so the page's first load carries none of it
+  type Deep = ReturnType<Awaited<typeof import('./homeDeepSearch')>['homeDeepSearch']>;
+  let deepNow: Deep | undefined;
+  const deep = {
+    focus: () =>
+      void import('./homeDeepSearch').then((m) => {
+        deepNow ??= m.homeDeepSearch({
+          games: () => lib.shownCats().flatMap((c) => lib.gamesOf(c.id)),
+          onMore: () => filterTiles(true),
+        });
+        return deepNow.focus();
+      }),
+    find: (q: string) => deepNow?.find(q) ?? new Map<string, string>(),
+    stop: () => deepNow?.stop(),
+  };
   atEnd(() => deep.stop());
   let lastShown = 0;
 
