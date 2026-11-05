@@ -26,26 +26,10 @@
       "level": 1
     },
     {
-      "id": "far-hero",
-      "q": "How do I make the hero smaller in the far plane?",
-      "scene": 3,
-      "x": 18,
-      "y": 15,
-      "level": 1
-    },
-    {
       "id": "step-far",
       "q": "How do I let the hero step into the distance?",
       "scene": 2,
       "x": 24,
-      "y": 15,
-      "level": 1
-    },
-    {
-      "id": "step-back",
-      "q": "How do I let the hero step back to the near plane?",
-      "scene": 3,
-      "x": 11,
       "y": 15,
       "level": 1
     },

@@ -35,5 +35,5 @@ export function hazeMap(pal: Pal): Uint8Array {
 
 /** A copy of `p` with every color looked up in `map` (255, a clear pixel, stays). */
 export function hazed(p: Pixels, map: Uint8Array): Pixels {
-  return p.crop(0, 0, p.w, p.h).map((x, y, c) => (c === 255 ? c : map[c]));
+  return p.crop(0, 0, p.w, p.h).map((_x, _y, c) => (c === 255 ? c : map[c]));
 }

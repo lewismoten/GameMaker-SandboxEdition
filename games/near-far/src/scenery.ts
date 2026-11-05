@@ -50,23 +50,26 @@ function archPicture(pal: Pal, into: boolean): Pixels {
   for (let i = 0; i < 40; i++) p.set(Math.floor(rand() * 20), 6 + Math.floor(rand() * 34), g[i % 3 === 0 ? 1 : 3]);
   p.rect(0, 12, 2, 28, g[1]).rect(18, 12, 2, 28, g[1]);
   // the opening
-  p.rect(5, 12, 10, 28, pal.c('sky', 4)).rect(6, 10, 8, 2, pal.c('sky', 4)).rect(7, 9, 6, 1, pal.c('sky', 4));
+  p.rect(4, 12, 12, 28, pal.c('sky', 4)).rect(5, 10, 10, 2, pal.c('sky', 4)).rect(7, 9, 6, 1, pal.c('sky', 4));
+  // the view through the opening, 10 x 28, drawn on its own so nothing spills onto the hedge
+  const view = new Pixels(12, 28, pal.c('sky', 4));
   if (into) {
-    p.disc(5, 28, 8, g[3]).disc(15, 30, 9, g[3]).rect(5, 28, 10, 12, g[3]);
-    p.disc(10, 26, 5, g[4]).rect(5, 30, 10, 10, g[3]);
-    p.rect(9, 21, 2, 4, pal.c('wood', 2)).disc(10, 20, 2, g[1]);
-    // the trail: a narrow strip at the top that widens to the bottom
-    for (let y = 26; y < 40; y++) {
-      const half = 1 + Math.floor(((y - 26) * 4) / 13);
-      p.rect(10 - half, y, half * 2, 1, d[y % 5 === 0 ? 2 : 3]);
+    // low hills, a tiny tree far off, and a trail that is narrow at the horizon and widens toward you
+    view.disc(2, 15, 6, g[2]).disc(10, 16, 7, g[2]).rect(0, 16, 12, 12, g[3]);
+    view.rect(6, 11, 1, 3, pal.c('wood', 1)).disc(6, 10, 2, g[1]);
+    for (let y = 16; y < 28; y++) {
+      const halfW = 1 + Math.floor(((y - 16) * 5) / 11);
+      view.rect(6 - halfW, y, halfW * 2, 1, (y - 16) % 3 === 2 ? pal.c('stone', 2) : pal.c('stone', 3));
     }
   } else {
-    p.rect(5, 26, 10, 14, g[3]);
-    p.disc(7, 33, 5, g[1]).disc(7, 32, 4, g[2]).disc(6, 31, 2, g[3]);
-    p.rect(12, 28, 1, 12, g[1]).disc(12, 27, 2, pal.c('red', 2)).disc(12, 27, 1, pal.c('gold', 3));
-    p.rect(9, 36, 6, 4, d[3]);
+    // up close: a big round bush, a tall flower and the trail running out under your feet
+    view.rect(0, 14, 12, 14, g[3]);
+    view.disc(3, 21, 5, g[1]).disc(3, 20, 4, g[2]).disc(2, 19, 2, g[3]);
+    view.rect(9, 12, 1, 16, g[1]).disc(9, 11, 2, pal.c('red', 2)).disc(9, 11, 1, pal.c('gold', 3));
+    view.rect(3, 24, 8, 4, d[3]);
   }
-  p.rect(5, 12, 1, 28, g[0]).rect(14, 12, 1, 28, g[0]);
+  p.blit(view, 4, 12);
+  p.rect(4, 12, 1, 28, g[0]).rect(15, 12, 1, 28, g[0]);
   return p;
 }
 
