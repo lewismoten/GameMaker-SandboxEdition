@@ -20,7 +20,8 @@ export const HOWTO = wrap(`
 
 |LEFT, RIGHT   walk, dig
 |SPACE         jump
-|UP, DOWN      climb a ladder
+|DOWN          dig down
+|UP, S         climb a ladder
 |F2            lives, score
 
 Walk to the door in each level. Dig the gold flecks on the way.

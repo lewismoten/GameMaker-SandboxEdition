@@ -17,8 +17,8 @@
       "long": "Climb up a ladder."
     },
     "80": {
-      "short": "Climb down",
-      "long": "Climb down a ladder."
+      "short": "Dig down",
+      "long": "Scoop with the shovel, down into the soil under you."
     },
     "30": {
       "short": "Walk left",
@@ -34,7 +34,7 @@
     },
     "31": {
       "short": "Climb down",
-      "long": "Same as the Down arrow."
+      "long": "Climb down a ladder."
     }
   },
   "joystick": {
