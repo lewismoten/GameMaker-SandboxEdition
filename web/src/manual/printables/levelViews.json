@@ -23,6 +23,7 @@
   "dialog": {"hash":"f994a024ff8eda4e","maps":{"many.map|dlg.bbl":[0,14,67,10],"pass.map|dlg.bbl":[6,14,16,10],"two.map|dlg.bbl":[0,14,67,10]}},
   "dice": {"hash":"e14d4d43fab516dd","maps":{"one.map|one.bbl":[0,3,67,24]}},
   "first-steps": {"hash":"38457afeb2d3d716","maps":{"climb.map|steps.bbl":[0,6,71,26],"walk.map|steps.bbl":[0,7,79,22]}},
+  "flash-safe": {"hash":"3123ab89053ac8cd","maps":{"one.map|one.bbl":[0,14,63,10],"three.map|three.bbl":[0,14,63,10],"two.map|two.bbl":[0,14,63,10]}},
   "flicker": {"hash":"fbd726c48245b96a","maps":{"camp.map|camp.bbl":[0,15,67,10],"falls.map|falls.bbl":[0,15,81,10],"hall.map|hall.bbl":[0,15,79,10]}},
   "flock": {"hash":"dfd3808b7640343f","maps":{"one.map|bird.bbl":[0,7,67,20],"two.map|bird.bbl":[0,14,67,10]}},
   "follower": {"hash":"b7ea0e2b15ba940b","maps":{"one.map|pup.bbl":[0,7,67,20],"two.map|pup.bbl":[0,9,67,18]}},

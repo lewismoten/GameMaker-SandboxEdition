@@ -210,8 +210,10 @@ preserve what was there.
   - Fictional addresses must be obviously fake, e.g. "P.O. Box 000".
   - Phone numbers are 555-01xx. Three stay on purpose: the two BBSes, 1-412-555-SAND and 1-412-555-SOFA, and Jenny's 867-5309, the song's number everyone tries.
   - No membership or lineage organizations.
-  - No health, grief or money material. The exceptions are the lactose-intolerance game and the
-    tin hearts' nod to the maintainer's pacemaker (on the cast page and in TURBO BUTTON).
+  - No health, grief or money material. The exceptions are the lactose-intolerance game, the
+    tin hearts' nod to the maintainer's pacemaker (on the cast page and in TURBO BUTTON), and the
+    flashing-lights Starter's design guidance on photosensitivity (plain words about design, no
+    medical detail).
 - **Made-up domains** must be listed in `web/src/manual/magazine/mockSites.json` and pass `npm run domains:check`; a test fails on any unlisted domain.
 - **Clowns are always friendly.** Never scary, villains or jump scares. The maintainer, Doc Leo,
   is in a clown club that entertains children.

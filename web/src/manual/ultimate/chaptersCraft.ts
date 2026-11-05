@@ -236,10 +236,12 @@ export const CRAFT: Chapter = {
     whose it is.</li>
     <li><b>Nothing that flashes fast.</b> A block ring with one-tick frames, or an animation
     that swaps bright and dark, can flash 18 times a second. Keep big bright flashes under three
-    a second, for the comfort and safety of every player.</li>
+    a second, for the comfort and safety of every player. Show a hit with a sound, a face and a
+    number rather than a flash, and let a storm sky lift and hold instead of strobing.</li>
     <li><b>Kind jokes.</b> Funny is good; funny at the expense of a real person, or of a group
     of people, isn’t.</li>
   </ul>
+  ${onCd('FLASHSAF')}
   <h2>Charm players remember</h2>
   <p>Players forgive rough art in a game that makes them laugh. What they talk about later is
   rarely the engine work; it is the personality.</p>
