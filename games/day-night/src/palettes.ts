@@ -5,7 +5,7 @@
 //   lamp  window glass and lantern bulbs: dull glass by day, warm light by night
 //   star  one slot that is the sky's own color by day, so a star is there but cannot be seen
 // DUSK.PAL is halfway between, with a sunset sky. NIGHT.PAL darkens and cools every ramp, except
-// Kit's own colors (kept brighter so he is easy to follow) and the three text colors and designer
+// Kit's own colors (kept bright so he is easy to follow) and the three text colors and designer
 // colors, which stay as they are so the score line reads the same.
 import type { PaletteBuilder } from '@lewismoten/gamemaker-sandbox-tools/kit/palette';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
@@ -32,8 +32,8 @@ const clamp = (v: number) => Math.max(0, Math.min(255, Math.round(v)));
 const lerp = (a: RGB, b: RGB, t: number): RGB => [clamp(a[0] + (b[0] - a[0]) * t), clamp(a[1] + (b[1] - a[1]) * t), clamp(a[2] + (b[2] - a[2]) * t)];
 
 /** Night: every color darker and bluer. */
-function nightOf(c: RGB, kit: boolean, bright = false): RGB {
-  const k = bright ? 0.66 : kit ? 0.78 : 0.4;
+function nightOf(c: RGB, kit: boolean, bright = false, deep = false): RGB {
+  const k = bright ? 0.66 : kit ? 0.95 : deep ? 0.26 : 0.4;
   return [clamp(c[0] * k * 0.88 + 8), clamp(c[1] * k * 0.95 + 12), clamp(c[2] * k * 1.25 + 40)];
 }
 
@@ -52,10 +52,22 @@ export function buildPalettes(): Palettes {
   const rgb = (a: Uint8Array, i: number): RGB => [a[i * 3] * 4, a[i * 3 + 1] * 4, a[i * 3 + 2] * 4];
   const put = (a: Uint8Array, i: number, c: RGB) => a.set([c[0] >> 2, c[1] >> 2, c[2] >> 2], i * 3);
   const NIGHT_LIGHT: Record<string, RGB[]> = {
-    orb: [[150, 160, 192], [206, 216, 238], [246, 250, 255]],
-    lamp: [[226, 138, 24], [255, 204, 70], [255, 246, 170]],
+    orb: [
+      [150, 160, 192],
+      [206, 216, 238],
+      [246, 250, 255],
+    ],
+    lamp: [
+      [226, 138, 24],
+      [255, 204, 70],
+      [255, 246, 170],
+    ],
     star: [[255, 250, 200]],
-    gold: [[170, 100, 20], [255, 214, 90], [255, 250, 170]],
+    gold: [
+      [170, 100, 20],
+      [255, 214, 90],
+      [255, 250, 170],
+    ],
   };
   for (const [name, ids] of builder.ramps) {
     if (FIXED.has(name)) continue;
@@ -65,12 +77,25 @@ export function buildPalettes(): Palettes {
       if (LIT.has(name) && NIGHT_LIGHT[name]) {
         const lit = NIGHT_LIGHT[name];
         n = name === 'gold' ? lerp(nightOf(d, true), d, 0.45) : lit[Math.min(k, lit.length - 1)];
-      } else n = nightOf(d, KIT.has(name), READABLE.has(name));
+      } else n = nightOf(d, KIT.has(name), READABLE.has(name), name === 'sky');
       put(night, id, n);
       // dusk: halfway, with the sky and the sun/moon warmed to sunset colors
       let m = lerp(d, n, 0.5);
-      if (name === 'sky') m = lerp(lerp(d, [255, 150, 84], 0.62), n, 0.2);
-      if (name === 'orb') m = [[255, 130, 40], [255, 168, 70], [255, 220, 150]][k] as RGB;
+      if (name === 'sky')
+        m = ([
+          [120, 70, 140],
+          [176, 84, 130],
+          [224, 108, 112],
+          [255, 150, 100],
+          [255, 192, 130],
+          [255, 226, 176],
+        ][k] ?? m) as RGB;
+      if (name === 'orb')
+        m = [
+          [255, 130, 40],
+          [255, 168, 70],
+          [255, 220, 150],
+        ][k] as RGB;
       if (name === 'lamp') m = lerp(d, n, 0.45);
       if (name === 'star') m = lerp(d, n, 0.3);
       put(dusk, id, m);
@@ -78,7 +103,7 @@ export function buildPalettes(): Palettes {
   }
   // the star slot, by day, is exactly the sky's own color (block 'sky' is sky shade 3)
   put(day, builder.get('star')[0], rgb(day, pal.c('sky', 3)));
-  put(dusk, builder.get('star')[0], lerp(rgb(day, pal.c('sky', 3)), [255, 140, 96], 0.5));
+  put(dusk, builder.get('star')[0], [255, 214, 170]);
   pal.pal.set(day); // the cards and pictures are painted in the day palette
   return { pal, day, dusk, night };
 }

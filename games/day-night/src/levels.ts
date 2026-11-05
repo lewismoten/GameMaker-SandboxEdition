@@ -152,7 +152,13 @@ function sundownStreet(pal: Pal): Level {
     g.put(x, y, '(').put(x + 1, y, ')');
   for (const x of [7, 14, 21]) g.put(x, GROUND - 1, 'b');
   for (const x of [9, 13, 20]) g.put(x, GROUND - 1, 'f');
-  for (const [x, y] of [[8, 9], [20, 9], [14, 8], [21, 8]]) g.put(x, y, 'c');
+  for (const [x, y] of [
+    [8, 9],
+    [20, 9],
+    [14, 8],
+    [21, 8],
+  ])
+    g.put(x, y, 'c');
   // the cottage at the street's end: its door is the left-hand column, so the street leads straight to it
   g.fill(DOOR_TWO, 7, 6, 3, 'B');
   g.put(DOOR_TWO, 8, 'e').put(DOOR_TWO, 9, 'E');
@@ -165,7 +171,9 @@ function sundownStreet(pal: Pal): Level {
   m.set(DOOR_TWO + 2, 8, 'window').set(DOOR_TWO + 4, 8, 'window');
   // two gates: a lintel with a lantern, and a pillar either side of the way through
   for (const mid of GATES) {
-    m.set(mid - 1, 7, 'gate.l').set(mid, 7, 'gate.m').set(mid + 1, 7, 'gate.r');
+    m.set(mid - 1, 7, 'gate.l')
+      .set(mid, 7, 'gate.m')
+      .set(mid + 1, 7, 'gate.r');
     for (const y of [8, 9]) m.set(mid - 1, y, 'pillar').set(mid + 1, y, 'pillar');
   }
   // street lamps that only light at night

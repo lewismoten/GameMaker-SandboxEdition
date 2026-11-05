@@ -23,7 +23,9 @@ function hillTwice(p: Pixels, pal: Pal): void {
     p.rect(FX + half, FY + i, half, 1, c('blue', Math.min(2, Math.floor((i / FH) * 3))));
   }
   p.disc(FX + 34, FY + 14, 7, c('gold', 4)).disc(FX + 34, FY + 14, 5, c('gold', 2));
-  p.disc(FX + 82, FY + 14, 7, c('white', 3)).disc(FX + 80, FY + 12, 3, c('white', 2)).disc(FX + 85, FY + 16, 1.5, c('stone', 3));
+  p.disc(FX + 82, FY + 14, 7, c('white', 3))
+    .disc(FX + 80, FY + 12, 3, c('white', 2))
+    .disc(FX + 85, FY + 16, 1.5, c('stone', 3));
   for (const [x, y] of [
     [66, 6],
     [74, 24],

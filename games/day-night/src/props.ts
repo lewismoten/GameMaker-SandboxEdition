@@ -16,11 +16,22 @@ export function orb(pal: Pal): Pixels {
   return p;
 }
 
-/** A star: a small plus with a bright heart, in the one slot that is the sky's color by day. */
+/** A star: a small round twinkle (a heart with eight short rays, not a plus), in the one slot that is the sky's color by day. */
 export function star(pal: Pal): Pixels {
   const s = pal.r('star')[0];
   const p = sky(pal);
-  p.rect(9, 6, 2, 8, s).rect(6, 9, 8, 2, s).rect(8, 8, 4, 4, s);
+  p.disc(10, 10, 2.2, s);
+  for (const [dx, dy, n] of [
+    [0, -1, 6],
+    [1, 0, 6],
+    [0, 1, 6],
+    [-1, 0, 6],
+    [1, 1, 4],
+    [1, -1, 4],
+    [-1, 1, 4],
+    [-1, -1, 4],
+  ])
+    p.line(10 + dx * 2, 10 + dy * 2, 10 + dx * n, 10 + dy * n, s);
   return p;
 }
 
@@ -32,7 +43,7 @@ export function windowBrick(pal: Pal, brick: Pixels): Pixels {
   const p = new Pixels(20, 20);
   p.px.set(brick.px);
   p.rect(3, 2, 14, 16, w[1]).rect(5, 4, 10, 12, g[1]).rect(5, 4, 10, 1, g[0]).rect(5, 15, 10, 1, g[0]);
-  p.rect(9, 4, 2, 12, w[2]).rect(5, 9, 10, 2, w[2]);
+  p.rect(5, 9, 10, 2, w[2]);
   p.rect(7, 6, 2, 2, g[2]).rect(12, 12, 2, 2, g[2]);
   p.frame(3, 2, 14, 16, c('ink', 0));
   return p;
@@ -99,7 +110,9 @@ export function gateTop(pal: Pal, part: 'l' | 'm' | 'r'): Pixels {
   const p = sky(pal);
   const x0 = part === 'l' ? 2 : 0;
   const x1 = part === 'r' ? 18 : 20;
-  p.rect(x0, 0, x1 - x0, 8, s[2]).rect(x0, 0, x1 - x0, 2, s[4]).rect(x0, 6, x1 - x0, 2, s[1]);
+  p.rect(x0, 0, x1 - x0, 8, s[2])
+    .rect(x0, 0, x1 - x0, 2, s[4])
+    .rect(x0, 6, x1 - x0, 2, s[1]);
   if (part === 'm') {
     p.rect(9, 8, 2, 3, c('ink', 0)).rect(5, 10, 10, 8, c('ink', 0)).rect(6, 11, 8, 6, g[1]).rect(8, 12, 4, 4, g[2]);
   } else {
