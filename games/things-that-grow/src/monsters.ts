@@ -24,9 +24,9 @@ export const BLUEBIRD = 4;
 export const POWER = 110;
 /** Hit points Lami starts with (nothing in this game takes any, but Game-Maker wants a number). */
 export const HERO_HIT_POINTS = 50;
-/** How long a bird stays, in ticks (18.2 a second): level 1's flies off after about 8 seconds, level 2's stay longer so the sky fills. */
+/** How long a bird stays, in ticks (18.2 a second): level 1's flies off after about 8 seconds, level 2's blue ones go after about 5 seconds, so two are in the air at a time and the last one leaves soon after the nest is stopped. */
 export const BIRD_LIFE = 150;
-export const BLUEBIRD_LIFE = 300;
+export const BLUEBIRD_LIFE = 100;
 
 const T = 255;
 
@@ -69,14 +69,14 @@ export function finishMonsterPictures(mb: Book): Block[] {
   return blocks;
 }
 
-/** The .MON: the kit's three, then the two birds. A bird flutters up and across and back (a path of 5 blocks, 2 up), and goes when its time is up. */
+/** The .MON: the kit's three, then the two birds. A bird flutters up and across and back (a path of 5 blocks, 1 up: higher and it would reach the top screen row, where a monster is not drawn), and goes when its time is up. */
 export function monsterSet(mb: Book): Monster[] {
   const set = buildMonsters(mb);
   const anim = (name: string, t: number): [number, number][] => [
     [mb.n(`${name}0`), t],
     [mb.n(`${name}1`), t],
   ];
-  set[BIRD] = mon(anim('bird', 3), { power: POWER, thru: 1, end: BIRD_LIFE }, pace(5, 2, -2));
+  set[BIRD] = mon(anim('bird', 3), { power: POWER, thru: 1, end: BIRD_LIFE }, pace(5, 2, -1));
   set[BLUEBIRD] = mon(anim('bluebird', 3), { power: POWER, thru: 1, end: BLUEBIRD_LIFE }, pace(4, 2, -2));
   return set;
 }
