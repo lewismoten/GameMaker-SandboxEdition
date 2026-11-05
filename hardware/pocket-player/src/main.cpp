@@ -14,6 +14,7 @@
 #include "banner.h"
 #include "btnicon.h"
 #include "gmcards.h"
+#include "fwid.h"
 #include "gmcfg.h"
 #include "screen.h"
 #ifdef POCKET_CYD28
@@ -34,6 +35,14 @@ static LGFX tft;
 static LGFX& tftHw = tft;
 #endif
 static Touch gt;
+// ---- which firmware, which board (fwid.h) ----
+static char boardName[6] = "";
+static void fwBoardLoad() {
+  Preferences p;
+  if (p.begin("pocket", true)) { p.getString("bid", boardName, sizeof boardName); p.end(); }
+  if (!fw::validBoard(boardName)) fw::defaultBoard(ESP.getEfuseMac(), boardName);
+}
+static void fwLabel(char* out, int n, bool shortForm) { fw::label(boardName, FW_GIT, FW_DATE, out, n, shortForm); }
 static bool haveGT = false;
 static gm::World world;
 static gm::Cfg cfg;
@@ -401,6 +410,15 @@ static void title(const char* s) {
   tft.setTextSize(2);
   tft.setCursor(8, scr::SMALL ? 6 : 12);
   tft.print(s);
+  char fl[40];  // the board and firmware, small, at the right of the bar
+  fwLabel(fl, sizeof fl, false);
+  int room = scr::W - 8 - (int)strlen(s) * 12 - 8;
+  if ((int)strlen(fl) * 6 > room) fwLabel(fl, sizeof fl, true);
+  if ((int)strlen(fl) * 6 > room) return;  // no room (the 3.5 inch list's long title)
+  tft.setTextSize(1);
+  tft.setTextColor(C_WHITE, C_BLUE);
+  tft.setCursor(scr::W - (int)strlen(fl) * 6 - 4, scr::SMALL ? 12 : 16);
+  tft.print(fl);
 }
 
 // ---- the picture with the controls on it ----------------------------------------------------------
@@ -1425,6 +1443,18 @@ static void pollSerial() {
 #endif
       } else if (buf[0] == 'S') {
         bannerChanged(banner::set(!strncmp(buf, "S off", 5) ? "" : buf + 2));
+      } else if (!strncmp(buf, "FW", 2)) {
+        Serial.printf("FW board=%s git=%s date=%s env=%s\n", boardName, FW_GIT, FW_DATE, FW_ENV);
+      } else if (!strncmp(buf, "ID set ", 7)) {
+        char nb[8] = "";
+        strncpy(nb, buf + 7, 4);
+        for (char* q = nb; *q; q++) if (*q >= 'a' && *q <= 'z') *q -= 32;
+        if (fw::validBoard(nb)) {
+          Preferences p;
+          if (p.begin("pocket", false)) { p.putString("bid", nb); p.end(); }
+          strcpy(boardName, nb);
+          Serial.printf("FW board set to %s\n", boardName);
+        } else Serial.println("FW board name: 1 to 4 letters or digits");
       } else if (buf[0] == 'I' && buf[1] == 'D') {
         bannerChanged(banner::setId(!strncmp(buf, "ID off", 6) ? "" : buf + 3));
       } else if (buf[0] == 'V') traceOn = buf[2] == '1';
@@ -1444,6 +1474,8 @@ static void pollSerial() {
 
 void setup() {
   Serial.begin(115200);
+  fwBoardLoad();
+  Serial.printf("FW board=%s git=%s date=%s env=%s built=%s %s\n", boardName, FW_GIT, FW_DATE, FW_ENV, __DATE__, __TIME__);
   banner::configure(scr::W, scr::SMALL ? 28 : 40);  // the 320 px bar must stay clear of the MENU and KEYS chips
 #ifdef POCKET_CYD28
   for (int pin : {PIN_LED_R, PIN_LED_G, PIN_LED_B}) { pinMode(pin, OUTPUT); digitalWrite(pin, HIGH); }  // the RGB LED is active low
