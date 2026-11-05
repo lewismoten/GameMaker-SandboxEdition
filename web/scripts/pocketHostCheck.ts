@@ -157,10 +157,16 @@ async function checkGame(id: string): Promise<string> {
         hash(),
       ].join(' '),
     );
-    if (r === 'link' && seg + 1 < segs.length) {
-      seg++;
-      ki = 0;
-      at = 0;
+    // The next segment is the one recorded for the scene just entered (as the walkthrough player picks it, runtime.ts
+    // SegmentRecorder.enterScene): a scene with no segment of its own, such as a pass-through drive between two
+    // levels, leaves the current one in place instead of using up the next level's keys.
+    if (r === 'link') {
+      const next = walk.segments.findIndex((s, k) => k > seg && s.scene === sim.scene);
+      if (next >= 0) {
+        seg = next;
+        ki = 0;
+        at = 0;
+      }
     }
   }
   const total = expected.length;
