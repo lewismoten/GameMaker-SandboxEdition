@@ -11,25 +11,33 @@ import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
 import { addSign, type Sign } from '../../kit/starter/sign';
-import { addCounterBlocks } from './lockBlocks';
+import { addGoldBlocks, addGreenBlocks } from './lockBlocks';
 
-/** The block set all levels share: the Starter blocks, the door blocks, then this game's signs. */
-export function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
+/**
+ * The block set: the Starter blocks, the gold door, levels 1 and 2's signs; then (after `shared` blocks)
+ * the green set and level 3's signs. Levels 1 and 2 load the first `shared` blocks; level 3 loads its own
+ * copy of the set with the rest added, and every shared block keeps its number.
+ */
+export function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign>; shared: number } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
-  addCounterBlocks(book, pal);
+  addGoldBlocks(book, pal);
   const signs = {
     both: addSign(book, pal, 'both', 'TAKE BOTH KEYS', 4, 2),
     one: addSign(book, pal, 'one', 'ONE KEY OPENS THIS DOOR', 4, 2),
     spare: addSign(book, pal, 'spare', 'THE SPARE KEY GOES WITH YOU', 4, 3),
     none: addSign(book, pal, 'none', 'NO KEY IN THIS LEVEL. TRY THE SPARE', 4, 3),
     again: addSign(book, pal, 'again', 'TAKE THIS ONE TOO', 4, 2),
+    exit: addSign(book, pal, 'exit', 'EXIT →', 3),
+  };
+  const shared = book.index.size;
+  addGreenBlocks(book, pal);
+  Object.assign(signs, {
     notThat: addSign(book, pal, 'notThat', 'A GOLD KEY IS NOT A GREEN KEY', 4, 2),
     number: addSign(book, pal, 'number', 'COUNTER 20 IS GOLD. COUNTER 22 IS GREEN.', 4, 3),
     saved: addSign(book, pal, 'saved', 'THE GOLD KEY WAITED FOR THIS DOOR', 4, 3),
-    exit: addSign(book, pal, 'exit', 'EXIT →', 3),
-  };
-  return { book, signs };
+  });
+  return { book, signs: signs as Record<SignName, Sign>, shared };
 }
 
 export type SignName = 'both' | 'one' | 'spare' | 'none' | 'again' | 'notThat' | 'number' | 'saved' | 'exit';
@@ -39,6 +47,8 @@ export interface Level {
   title: string;
   /** What the level card says under the title. */
   hint: string;
+  /** True when the level loads its own copy of the block set (the shared one plus the green set). */
+  ownSet?: boolean;
   map: StarterMap;
 }
 
@@ -121,13 +131,13 @@ function notThat(book: Book, signs: Record<SignName, Sign>): StarterMap {
 }
 
 /** The levels in order. */
-export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
+export function buildLevels(): { book: Book; pal: Pal; levels: Level[]; shared: number } {
   const pal = buildStarterPalette();
-  const { book, signs } = buildBlocks(pal);
+  const { book, signs, shared } = buildBlocks(pal);
   const levels: Level[] = [
     { file: 'one', title: 'Take Both Keys', hint: 'Keys you do not use stay with you.', map: takeBoth(book, signs) },
     { file: 'two', title: 'The Spare Fits', hint: 'A key from before opens this door.', map: spareFits(book, signs) },
-    { file: 'three', title: 'Not That Key', hint: 'Each door knows its own counter.', map: notThat(book, signs) },
+    { file: 'three', title: 'Not That Key', hint: 'Each door knows its own counter.', map: notThat(book, signs), ownSet: true },
   ];
-  return { book, pal, levels };
+  return { book, pal, levels, shared };
 }

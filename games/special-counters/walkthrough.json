@@ -1,6 +1,6 @@
 {
  "version": 1,
- "game": "keys-and-doors",
+ "game": "special-counters",
  "rand": {
   "seed": 1,
   "per": "scene"
@@ -8,34 +8,34 @@
  "segments": [
   {
    "scene": 2,
-   "keys": "AU14zQNNHs0ASyPLA0sFywNIRcgDTSPNA0seywNLA8sDUDvQA00ozQNNCs0DTSjNA00="
+   "keys": "AU0ozQNNCs0DTTLNA00KzQNNI80DTQ=="
   },
   {
    "scene": 3,
-   "keys": "AU0tzQNNUM0DTR7NAEseywNNBc0DSEXIA0soywNNI80DTQPNA1A70ANNGc0DTQrNA00ozQNN"
+   "keys": "AU08zQNNCs0DTRTNA00ZzQNNMs0DTQ=="
   },
   {
    "scene": 4,
-   "keys": "AU0jzQNND80DTQ/NA00FzQNIRcgDSy3LA00ozQNNA80DUDvQA01QzQNNCs0DTSPNA00="
+   "keys": "AU1kzQNNHs0ASyPLA0sFywNIRcgDTSPNA0seywNLA8sDUDvQA00ozQNNCs0DTSjNA00KzQNNFM0DTQ=="
   }
  ],
  "chapters": [
   {
    "scene": 2,
-   "title": "Level 1: One Key, One Door"
+   "title": "Level 1: Take Both Keys"
   },
   {
    "scene": 3,
-   "title": "Level 2: Two Keys, One Door"
+   "title": "Level 2: The Spare Fits"
   },
   {
    "scene": 4,
-   "title": "Level 3: Two Keys, Two Doors"
+   "title": "Level 3: Not That Key"
   }
  ],
  "timeline": {
   "fps": 60,
-  "frames": 10939,
+  "frames": 9579,
   "chapters": [
    {
     "title": "Opening",
@@ -48,29 +48,29 @@
     "time": 14933.333333333148
    },
    {
-    "title": "Level 1: One Key, One Door",
-    "frame": 1644,
-    "time": 27400.000000000564
+    "title": "Level 1: Take Both Keys",
+    "frame": 2125,
+    "time": 35416.66666666724
    },
    {
-    "title": "Level 2: Two Keys, One Door",
-    "frame": 3739,
-    "time": 62316.666666663325
+    "title": "Level 2: The Spare Fits",
+    "frame": 3153,
+    "time": 52549.99999999808
    },
    {
-    "title": "Level 3: Two Keys, Two Doors",
-    "frame": 5812,
-    "time": 96866.66666667197
+    "title": "Level 3: Not That Key",
+    "frame": 4181,
+    "time": 69683.33333333072
    },
    {
     "title": "Ending",
-    "frame": 7653,
-    "time": 127550.00000001423
+    "frame": 6296,
+    "time": 104933.33333334098
    },
    {
     "title": "Credits",
-    "frame": 9865,
-    "time": 164416.66666666252
+    "frame": 8505,
+    "time": 141750.00000000905
    }
   ]
  }

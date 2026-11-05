@@ -1,71 +1,67 @@
 {
-  "title": "Keys and Doors",
+  "title": "Not That Key",
   "howDoI": [
     {
-      "id": "key",
-      "q": "How do I make a key my hero picks up and carries?",
+      "id": "carry",
+      "q": "How do I make a key my hero carries on to the next level?",
       "scene": 2,
-      "x": 36,
-      "y": 12,
+      "x": 34,
+      "y": 19,
       "level": 1
     },
     {
-      "id": "locked-door",
-      "q": "How do I make a door that needs a key?",
-      "scene": 2,
-      "x": 28,
-      "y": 9,
-      "level": 1
-    },
-    {
-      "id": "two-keys",
-      "q": "How do I make a door that needs two keys?",
-      "scene": 3,
-      "x": 29,
-      "y": 9,
-      "level": 2
-    },
-    {
-      "id": "two-counters",
-      "q": "How do I make two kinds of key, each with its own door?",
+      "id": "other-counter",
+      "q": "How do I make a door that a key from another level will not open?",
       "scene": 4,
       "x": 34,
-      "y": 9,
+      "y": 19,
+      "level": 3
+    },
+    {
+      "id": "copy-set",
+      "q": "How do I copy a key and its door onto a counter of their own?",
+      "scene": 4,
+      "x": 32,
+      "y": 12,
       "level": 3
     }
   ],
   "pages": [
     {
       "head": "Welcome",
-      "html": "<h1>Welcome</h1><p><b>Keys and Doors</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has three short levels and takes a few minutes to finish.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each thing in the levels is made.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. <kbd>Space</kbd> jumps. <kbd>Up</kbd> and <kbd>Down</kbd> climb a ladder. Walk into the door at the end of a level to go on. There is nothing to fight and nothing that hurts.</p>"
+      "html": "<h1>Welcome</h1><p><b>Not That Key</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has three short levels and takes a few minutes to finish.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each thing in the levels is made.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. <kbd>Space</kbd> jumps. <kbd>Up</kbd> and <kbd>Down</kbd> climb a ladder. Walk into the door at the end of a level to go on.</p><p>Keys and doors are counters. Here the counters go with you from level to level, so play the levels in order.</p>"
     },
     {
-      "head": "Level 1: One Key, One Door",
-      "html": "<h1>Level 1: One Key, One Door</h1><p>You walk right and reach a padlocked door before you have seen a key. Bump it: nothing happens, and the <b>LOCKED. FIND A KEY.</b> sign says why. Look up: the key sits on a ledge over the door, with a ladder just before it. Climb the ladder, take the key, climb down and walk into the door. It opens, and you carry no keys again. The <b>EXIT &rarr;</b> sign points to the way out.</p><p>Coins are worth ten points each. There are eight, and a key is worth 25.</p>"
-    },
-    {
-      "head": "How this level is made",
-      "html": "<h1>How level 1 is made</h1><ul><li><b>The key.</b> Open <b>keys.bbl</b> in the blocks editor and pick the <b>key</b> block. On its <b>Touch</b> tab, <b>Effect counter</b> is set to counter 20 and <b>Effect amount</b> to 1, and <b>Becomes block</b> is sky, so the key is gone once you have it.</li><li><b>The locked door.</b> The <b>gate</b> block is solid on every side, so it stops you. Its <b>Effect counter</b> is also counter 20, but its <b>Effect amount</b> is &minus;1. A counter from 20 up will not go to zero or less, so a touch that cannot be paid for does nothing. Walk into the door with no key and it stays shut. With a key, the touch pays one, and <b>Becomes block</b> turns the door into sky.</li><li><b>Why the door comes first.</b> Open <b>one.map</b> in the map editor. The door is in a wall on the path from the start, and the key is up on a ledge of <b>grass</b> over <b>dirt</b>, reached by a <b>ladder</b> just before the wall. To make a level where the key comes first, move the <b>key</b> block to the ground before the wall.</li><li><b>Why you cannot jump over it.</b> The door is one block high, with an arch block above it that you walk under, and a wall of <b>brick</b> from there up to the top of the level. There is no way around.</li><li><b>The counter itself.</b> Open <b>hero.chr</b> in the character editor. Counter 20 starts at 1, which the game shows as none carried.</li><li><b>The signs.</b> Each sign is a few ordinary blocks side by side, with the words drawn in their pictures. Change the words in the blocks editor and play again.</li><li><b>The exit.</b> A scene link joins the door at the end to the next level. Open <b>keys.gam</b> in the scenes editor and look at the links of the One Key, One Door scene.</li></ul>"
-    },
-    {
-      "head": "Level 2: Two Keys, One Door",
-      "html": "<h1>Level 2: Two Keys, One Door</h1><p>This gold door needs two keys, and the <b>THIS DOOR NEEDS 2 KEYS</b> sign says so. One gold key lies on the ground on the way. The second sits on a ledge above, with a ladder beside it. Take the first key and walk into the door: it stays shut, and you keep your key. Climb up for the second, come back down and the door opens, taking both.</p><p>Carry both keys and the door opens. The <b>FIND BOTH KEYS</b> sign says what to do, and the padlock's two key holes show how many it wants. There are eight coins.</p>"
+      "head": "Level 1: Take Both Keys",
+      "html": "<h1>Level 1: Take Both Keys</h1><p>Two gold keys lie on the ground, and one gold door stands in a wall further on. Take both keys and walk into the door. It opens and takes one key. The other stays with you, and the last sign says so. There are eight coins.</p>"
     },
     {
       "head": "How this level is made",
-      "html": "<h1>How level 2 is made</h1><ul><li><b>A door that costs two.</b> Open <b>keys.bbl</b> and compare the <b>gate</b> and <b>gateTwo</b> blocks. They are the same except for <b>Effect amount</b>: &minus;1 on <b>gate</b>, &minus;2 on <b>gateTwo</b>, which is drawn with two key holes. A counter holds one more than the keys you carry, and a touch that would leave it at zero or less does nothing. So with one key the door refuses and you keep the key; with two, it takes both.</li><li><b>Two of the same key.</b> Both keys are the ordinary <b>key</b> block, each adding one to counter 20. Open <b>two.map</b> in the map editor and see one on the ground and one on the ledge.</li><li><b>The ladder and the ledge.</b> The ledge is a row of <b>grass</b> over <b>dirt</b>. The <b>ladder</b> block has no gravity pull and no solid side, so you stay on it and <kbd>Up</kbd> lifts you.</li><li><b>The exit.</b> The door at the end links to the next level in <b>keys.gam</b>.</li></ul>"
+      "html": "<h1>How level 1 is made</h1><ul><li><b>The keys.</b> Open <b>notkey.bbl</b> in the blocks editor and pick the <b>key</b> block. On its <b>Touch</b> tab, <b>Effect counter</b> is counter 20 and <b>Effect amount</b> is 1. Touch it and counter 20 goes up by one.</li><li><b>The door.</b> The <b>gate</b> block has the same <b>Effect counter</b>, 20, with an <b>Effect amount</b> of &minus;1. It takes one key and no more, so with two keys one is left.</li><li><b>The spare.</b> Counters are not reset when a level ends. The next level starts with whatever the counter held. Nothing in this level saves the spare: the engine just carries it.</li><li><b>The start.</b> Open <b>hero.chr</b> in the character editor. Counter 20 starts at 1, which the game shows as none carried.</li><li><b>The signs.</b> Each sign is a few ordinary blocks side by side with the words drawn in their pictures.</li></ul>"
     },
     {
-      "head": "Level 3: Two Keys, Two Doors",
-      "html": "<h1>Level 3: Two Keys, Two Doors</h1><p>Two doors, and each wants its own key. A gold key lies on the ground by the <b>GOLD KEY, GOLD DOOR</b> sign. A silver key sits on a ledge high above the start, where you can see it but not yet reach it. Take the gold key and open the gold door. Behind it a ladder climbs to the ledge: climb up, walk back along the ledge for the silver key, and climb down again. The silver key opens the silver door, and the exit is beyond.</p><p>There are eleven coins, some of them along the ledge.</p>"
+      "head": "Level 2: The Spare Fits",
+      "html": "<h1>Level 2: The Spare Fits</h1><p>A gold door stands near the start, and there is no key in front of it. Walk into it: the spare from level 1 opens it. Behind the door lies one more gold key, and you take it, so you leave with a spare again. There are ten coins.</p>"
     },
     {
       "head": "How this level is made",
-      "html": "<h1>How level 3 is made</h1><ul><li><b>A second counter.</b> A silver key adds to counter 21, a gold key to counter 20. Each door spends from its own counter, so a gold key never opens a silver door. Open <b>keys.bbl</b> and compare the <b>key</b>, <b>keySilver</b>, <b>gate</b> and <b>gateSilver</b> blocks. Counter 21 also has to start at 1 in <b>hero.chr</b>.</li><li><b>A door can need more than one key.</b> Level 2 does that with the <b>gateTwo</b> block.</li><li><b>The ledge.</b> Open <b>three.map</b> in the map editor. The ledge is a row of <b>grass</b> over <b>dirt</b>. It runs over the gold door, so the only way up is the <b>ladder</b> on the far side of it.</li><li><b>The ladder.</b> The <b>ladder</b> block has no gravity pull and no solid side, so you stay on it and <kbd>Up</kbd> lifts you.</li><li><b>The exit.</b> The last door links to the <b>The End</b> scene in <b>keys.gam</b>, which plays the ending.</li></ul>"
+      "html": "<h1>How level 2 is made</h1><ul><li><b>The same door.</b> Open <b>two.map</b> in the map editor. The door is the same <b>gate</b> block as level 1, so it still wants counter 20. Nothing in this level mentions level 1.</li><li><b>Why it opens.</b> Counter 20 still holds the spare. The touch can be paid for, so the door takes one and becomes sky.</li><li><b>The new key.</b> It is the same <b>key</b> block, placed after the door. A level a player starts by itself, without level 1 before it, starts with no key, so this door stays shut. The level is made to be played in order.</li></ul>"
+    },
+    {
+      "head": "Level 3: Not That Key",
+      "html": "<h1>Level 3: Not That Key</h1><p>A blue door with a green padlock stands in a wall, and you reach it holding a gold key. Walk into it: nothing happens, and you keep the key. The <b>A GOLD KEY IS NOT A GREEN KEY</b> sign says why. Climb the ladder to the ledge for the green key, come down and walk into the door. It opens. A gold door farther on takes the gold key you carried all along. There are eight coins.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 3 is made</h1><ul><li><b>A set copied onto another counter.</b> Open <b>three.bbl</b> and compare <b>key</b>, <b>gate</b> and <b>gateTop</b> with <b>keyGreen</b>, <b>gateGreen</b> and <b>gateTopGreen</b>. They are copies. Only the picture and the <b>Effect counter</b> differ: counter 22 instead of 20. Counter 21 is left unused. Any number from 20 to 29 works.</li><li><b>A copy of the set for this level.</b> Levels 1 and 2 load <b>notkey.bbl</b>. Level 3 loads <b>three.bbl</b>, a copy of it with the green set added after the last shared block, so every shared block keeps its number. Open <b>notkey.gam</b> in the scenes editor and look at the block set each scene loads. Only level 3 needs the green blocks, so the others never carry them.</li><li><b>Why the gold key fails.</b> The green door takes from counter 22. That counter holds nothing, so the touch cannot be paid for and the door stays shut. Counter 20, with the gold key in it, is a different counter.</li><li><b>Counters are numbers.</b> A counter has no name. Gold and green are only the colors in the pictures. The key, the door and the sign agree because you made them agree.</li><li><b>The start.</b> Open <b>hero.chr</b> in the character editor. Counter 22 starts at 1, like counter 20.</li><li><b>The gold door.</b> It is the level 1 <b>gate</b> again. It takes the gold key you carried through two levels.</li></ul>"
+    },
+    {
+      "head": "What it cannot do",
+      "html": "<h1>What it cannot do</h1><p>A key here is a counter, and that is all it is:</p><ul><li>Counters have numbers, not names. The editor shows <b>counter 22</b>, never &ldquo;green&rdquo;. Nothing stops a door and a key from using different numbers by mistake, so keep a list of which number is which.</li><li>There are ten counters for keys and the like, numbers 20 to 29. Past that, a copy of the set has no number to use.</li><li>Counters carry from level to level and cannot be given a level of their own. A different number for each level's keys is how to keep them apart.</li><li>A copy of the block set is a whole file. Change a shared block in one copy and the others do not follow, so change shared blocks in every copy.</li><li>Nothing shows a number. The game shows no key counts, so the player learns what they carry by trying doors.</li></ul>"
     },
     {
       "head": "Make it yours",
-      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>Move a key somewhere harder to reach.</li><li>Put a key in front of the door in level 1, so it is not shut at first.</li><li>Draw a third kind of door and key, with counter 22 (set it to start at 1 in <b>hero.chr</b>).</li><li>Draw a platform with the <b>plank</b> block: solid on top only, so you can jump up through it.</li></ul><p>The home page's <b>Starters</b> tab has more small games like this one.</p>"
+      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>In <b>notkey.bbl</b>, change <b>gateGreen</b>'s <b>Effect counter</b> to 20. Now the gold key opens the green door, and the green key is no use.</li><li>Change <b>keyGreen</b>'s counter to 20 as well. Both colors now add to the same counter.</li><li>Copy <b>key</b>, <b>gate</b> and <b>gateTop</b> again, set them to counter 23 and draw them blue. You have a third kind of key.</li><li>Raise <b>gate</b>'s <b>Effect amount</b> to &minus;2. Now the spare is not enough on its own.</li></ul><p>The home page's <b>Starters</b> tab has more small games like this one.</p>"
     }
   ]
 }

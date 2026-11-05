@@ -11,10 +11,14 @@ import type { Pal } from '../../kit/starter/palette';
 /** The counter the green keys add to (20 is gold; 21 stays unused). */
 export const GREEN_KEYS = KEYS + 2;
 
-export function addCounterBlocks(book: Book, pal: Pal): void {
+/** The gold gate and its arch (counter 20), in the set levels 1 and 2 load. */
+export function addGoldBlocks(book: Book, pal: Pal): void {
   book.add('gateTop', archPicture(pal, 'gold'), { grav: PULL.down });
   book.add('gate', gatePicture(pal, 'wood', 'gold'), { solid: SOLID, effect: KEYS, eamt: -1, touch: 'sky' });
-  // the copy for counter 22
+}
+
+/** The copy for counter 22, added after every block levels 1 and 2 use, so level 3's own copy of the set keeps their numbers. */
+export function addGreenBlocks(book: Book, pal: Pal): void {
   book.add('keyGreen', keyPicture(pal, 'green'), { grav: PULL.down, score: 25, effect: GREEN_KEYS, eamt: 1, touch: 'sky' });
   book.add('gateTopGreen', archPicture(pal, 'green'), { grav: PULL.down });
   book.add('gateGreen', gatePicture(pal, 'blue', 'green'), { solid: SOLID, effect: GREEN_KEYS, eamt: -1, touch: 'sky' });

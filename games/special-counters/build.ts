@@ -31,7 +31,7 @@ import { CREDITS, HOWTO, LOST, STORY, WON } from './src/text';
 const here = dirname(fileURLToPath(import.meta.url));
 const disk = new Disk(join(here, 'disk'));
 
-const { book, pal, levels } = buildLevels();
+const { book, pal, levels, shared } = buildLevels();
 const heroBlocks = buildHeroBlocks(pal);
 const monsterBlocks = buildMonsterBlocks(pal);
 const hero = heroPicture(heroBlocks, 'stand.top', 'stand');
@@ -41,7 +41,8 @@ const door = heroPicture(book, 'doorTop', 'doorBottom').map((_x, _y, c) => (c ==
 
 // the game's shared data: one block set, one palette, one hero, one set of monsters, one song
 disk.put('notkey.pal', serializePalette(pal.pal));
-disk.put('notkey.bbl', serializeBlocks(book.finish()));
+disk.put('notkey.bbl', serializeBlocks(book.finish().slice(0, shared))); // levels 1 and 2
+disk.put('three.bbl', serializeBlocks(book.finish())); // level 3's own copy: the same blocks, then the green set
 disk.put('notkey.mbl', serializeBlocks(monsterBlocks.finish()));
 disk.put('notkey.mon', serializeMonsters(buildMonsters(monsterBlocks)));
 disk.put('hero.cbl', serializeBlocks(heroBlocks.finish()));

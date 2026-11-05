@@ -35,7 +35,7 @@ export function buildGame(levels: Level[]): Game {
     scene.files = [
       'notkey.pal',
       `${l.file}.map`,
-      'notkey.bbl',
+      l.ownSet ? `${l.file}.bbl` : 'notkey.bbl',
       'notkey.mon',
       'notkey.mbl',
       'hero.chr',
