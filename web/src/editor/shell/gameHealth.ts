@@ -204,7 +204,7 @@ export async function showHealthReport(target: HealthTarget): Promise<void> {
       h(
         'section',
         null,
-        h('h4', null, title(kind, items.length)),
+        h('h3', null, title(kind, items.length)),
         h(
           'ul',
           null,
@@ -238,7 +238,7 @@ export async function showHealthReport(target: HealthTarget): Promise<void> {
           h(
             'section',
             null,
-            h('h4', null, 'About this edition'),
+            h('h3', null, 'About this edition'),
             h('ul', null, ...notes.map((n) => h('li', { class: 'warning' }, h('span', { class: 'sev', 'aria-label': 'note' }, 'ⓘ'), ' ', n))),
           ),
         ]
