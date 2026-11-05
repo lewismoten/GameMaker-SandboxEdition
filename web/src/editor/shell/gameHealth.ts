@@ -167,7 +167,7 @@ const KIND_TITLES: Record<Issue['kind'], string> = {
 };
 
 export async function showHealthReport(target: HealthTarget): Promise<void> {
-  const body = h('div', { class: 'health-report' }, h('p', { class: 'meta' }, 'Checking every file…'));
+  const body = h('div', { class: 'health-report', dataset: { listArea: '' } }, h('p', { class: 'meta' }, 'Checking every file…'));
   const shown = modal(target.released ? `${target.title}: notes on its files` : `${target.title}: health check`, (close) => [
     body,
     h('div', { class: 'buttons' }, h('button', { class: 'primary', onclick: () => close(undefined) }, 'Close')),
@@ -204,7 +204,7 @@ export async function showHealthReport(target: HealthTarget): Promise<void> {
       h(
         'section',
         null,
-        h('h4', null, title(kind, items.length)),
+        h('h3', null, title(kind, items.length)),
         h(
           'ul',
           null,
@@ -238,7 +238,7 @@ export async function showHealthReport(target: HealthTarget): Promise<void> {
           h(
             'section',
             null,
-            h('h4', null, 'About this edition'),
+            h('h3', null, 'About this edition'),
             h('ul', null, ...notes.map((n) => h('li', { class: 'warning' }, h('span', { class: 'sev', 'aria-label': 'note' }, 'ⓘ'), ' ', n))),
           ),
         ]

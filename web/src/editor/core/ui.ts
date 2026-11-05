@@ -114,8 +114,20 @@ export function modal<T>(title: string, build: (close: (v: T | undefined) => voi
       build(close),
     ]);
     document.body.append(dlg);
+    focusableListAreas(dlg, title);
     dlg.showModal();
   });
+}
+
+/** A scrolling list area of a phone-sized dialog (data-list-area) takes the keyboard, so arrow keys can scroll it. */
+function focusableListAreas(dlg: HTMLElement, title: string): void {
+  for (const area of dlg.querySelectorAll<HTMLElement>('[data-list-area]')) {
+    if (!area.hasAttribute('tabindex')) area.tabIndex = 0;
+    if (area.tagName === 'DIV' && !area.hasAttribute('role') && !area.hasAttribute('aria-label')) {
+      area.setAttribute('role', 'region');
+      area.setAttribute('aria-label', title);
+    }
+  }
 }
 
 export async function promptText(title: string, label: string, value = '', pattern?: string): Promise<string | undefined> {

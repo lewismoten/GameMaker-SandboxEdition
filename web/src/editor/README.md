@@ -36,6 +36,7 @@ Part of the [source map](../README.md).
     the cross-project native file clipboard (`assetClipboard.ts`, bytes plus file-local companion extras),
     exact file snapshot/replacement helpers (`assetFiles.ts`, including unknown extensions and extensionless DOS files),
     gallery commands (`assetCommands.ts`: duplicate, copy/paste, matching-type replacement, delete and non-overwriting file drops), "Used by" (`usedBy.ts`), the breadcrumb above a file (`crumbs.ts`) and Back landing where a page was left (`scrollMemory.ts`), the file list keeping its scroll while it is redrawn (`keepScroll.ts`), the save note (`saveNote.ts`, its wording and timing in `saveState.ts`), the shared 44 px touch rules (`shellTouch.css`), the quick switcher
+    gallery commands (`assetCommands.ts`: duplicate, copy/paste, matching-type replacement, delete and non-overwriting file drops), "Used by" (`usedBy.ts`), the breadcrumb above a file (`crumbs.ts`) and Back landing where a page was left (`scrollMemory.ts`), the save note (`saveNote.ts`, its wording and timing in `saveState.ts`), the shared 44 px touch rules (`shellTouch.css`), the shared phone rules for dialogs and their one scrolling list area (`dialogsPhone.css`, checked by `npm run check:dialogs`), the quick switcher
     (`quickOpen.ts`), folding hints (`hintFold.ts`) and the Download chooser (`download.ts`).
   - New games (`starter.ts`, with the "First steps" checklist, `firstSteps.ts` and
     `firstStepsPanel.ts`), new-file templates (`templates.ts`; + New music's empty song is
