@@ -177,6 +177,12 @@ makes Ctrl+S save at once). Files are always written in the original binary form
   `#/p/look:<id>`, see `shell/lookId.ts`) is an in-memory project that `core/readOnly.ts` makes
   read-only: every change through `core/project.ts` is refused before it happens and nothing is
   saved, and the refusal offers Edit a copy's flow (shareware stays look-only, with its notice).
+- **Block roles.** The block editor's Uses tab (`editors/blocks/rolesPanel.ts`, stored by `blockRoles.ts` in
+  the companion file's `roles` section, never in the .bbl) marks what a background block is for: wall, door,
+  locked door and key (with a lock number), chair facing south, and so on, several per block. The no-DOM
+  model and `suggestRoles` are in the tools package (`kit/blockRoles.ts`), so a level generator and the
+  games can read them. Guesses from what the block does and its picture show as dashed chips; nothing is
+  added until you tap one or Accept all.
 - **Block groups.** The block set editor (`editors/blocks/`) and the character editor share block
   groups (`blockGroups.ts`: a picture drawn across several blocks, kept in the companion file), the
   group shown assembled (`groupView.ts`), and live animation previews at the game's tick rate

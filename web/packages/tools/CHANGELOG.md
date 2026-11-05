@@ -10,6 +10,7 @@ embroidery and 3D-printable and laser models.
 
 ### Added
 
+- `kit/blockRoles`: block roles (wall, door, key, chair with a facing and more) with `suggestRoles`, which guesses them from a block's behavior and picture, and helpers to clean and pack them for an editor's companion data.
 - `kit/mumble`: nonsense talk as a .VOC. `mumble` and `mumbleVoc` voice a list of syllables, `syllablesFromText` turns a line of text into syllables the same way every time, and `MUMBLE_VOICES` has bright, deep and small voices.
 - `kit/levelGrid`: a character grid to paint a level in code (fill, row, column, put) before it becomes rows of text.
 - `image/animatedGif`: a looping animated GIF from indexed frames that each carry their own VGA palette, as an FLI's do.

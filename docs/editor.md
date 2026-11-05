@@ -200,6 +200,7 @@ then say how it behaves: which sides are solid, which way gravity pulls, whether
 up.
 Shift- or Ctrl-click several blocks to group them and change them together. Flip, rotate,
 shift and _Make an edge set_ save a lot of drawing.
+The **Uses** tab marks what a block is for (wall, door, key, chair facing south...) with chips; the editor suggests some from what the block does, and you tap to keep them. They are saved with the project, never in the game's files.
 
 ## Monsters and their paths
 

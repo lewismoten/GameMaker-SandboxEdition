@@ -46,6 +46,7 @@ const sources = {
   'mesh/sampledField': 'mesh/sampledField',
   images: 'images',
   'kit/blit': 'kit/blit',
+  'kit/blockRoles': 'kit/blockRoles',
   'kit/clips': 'kit/clips',
   'kit/gameSim': 'kit/gameSim',
   'kit/music': 'kit/music',
