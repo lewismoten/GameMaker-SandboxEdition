@@ -34,6 +34,7 @@ export const STARTER_GROUPS: { name: string; tag: string; games: string[] }[] = 
     games: [
       'power-up',
       'throw-it',
+      'many-weapons',
       'health-and-hearts',
       'slippery-and-bouncy',
       'momentum',
