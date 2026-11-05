@@ -33,7 +33,10 @@ export const PALETTES: Chapter = {
   already built (grays, a sickly green and one red you keep for eyes). A far plane is the same
   trick: draw the far scene’s things half the size, and give it a palette with every color mixed
   part of the way toward a pale sky, so a trail that loads it looks like a step into the distance.</p>
-  ${onCd('DAYNIGHT', 'SAMEHOUS', 'NEARFAR')}
+  <p>Some players see colors differently, and red and green can look alike to them. Do not let a
+  color carry a meaning alone: give danger a pointed shape, give a safe path a light, striped
+  pattern, and look at the level with the color taken out. Game-Maker cannot check this for you.</p>
+  ${onCd('DAYNIGHT', 'SAMEHOUS', 'NEARFAR', 'COLORS')}
   <h2>Plan in ramps</h2>
   <p>Palette swaps work best when the palette is planned, not grown. Lay it out in
   <i>ramps</i>: short runs of shades of one material, dark to light. Five shades of grass,

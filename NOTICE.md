@@ -120,7 +120,7 @@ game folder opens in the browser unchanged.
   - **Worlds That Push Back:** `games/slippery-and-bouncy/`, `games/gravity-on-gravity-off/`, `games/swim/`, `games/gusts/`.
   - **Changing Your Hero:** `games/kit-moves/`, `games/choose-hero/`, `games/take-the-wheel/`.
   - **Foes and Bosses:** `games/boss-hits/`, `games/boss-phases/`, `games/who-wins/`, `games/short-lived/`, `games/follower/`, `games/searchlight/`, `games/flock/`.
-  - **Telling a Story:** `games/say-something/`, `games/pictures-and-cartoons/`, `games/sounds-and-music/`, `games/day-night/`, `games/same-house/`, `games/voice/`, `games/cutscenes/`, `games/title-demo/`.
+  - **Telling a Story:** `games/say-something/`, `games/pictures-and-cartoons/`, `games/sounds-and-music/`, `games/day-night/`, `games/same-house/`, `games/voice/`, `games/cutscenes/`, `games/title-demo/`, `games/colors/`.
   - **Putting It Together:** `games/beat-the-clock/`, `games/countdown/`, `games/warning-first/`, `games/one-more-try/`, `games/teach-test-twist/`, `games/block-brains/`, `games/your-first-game/`.
   - **Wiring and Puzzles:** `games/switches/`, `games/three-tokens/`, `games/and-gate/`, `games/secret-doors/`, `games/show-the-count/`, `games/dice/`, `games/word-lock/`, `games/power-ladder/`, `games/special-counters/`.
   - **Bigger Worlds:** `games/scroll/`, `games/many-rooms/`, `games/diagonal-wrap/`, `games/blocks-budget/`, `games/near-far/`.
@@ -201,6 +201,14 @@ game folder opens in the browser unchanged.
 - **MD5** (`web/packages/archives/src/player/md5.ts`) is written from the algorithm's description in RFC 1321
   (R. Rivest, MIT Laboratory for Computer Science and RSA Data Security, Inc., 1992), only to tell
   the CD's `XFERPLAY.EXE` from other files before patching it; no RSA reference code is used.
+- **Color-vision simulation matrices** (`games/kit/colorVision.ts`; the Starter `games/colors/`): the
+  protanopia, deuteranopia and tritanopia 3x3 matrices (severity 1.0) are the published numbers of
+  Gustavo M. Machado, Manuel M. Oliveira and Leandro A. F. Fernandes, "A Physiologically-based Model
+  for Simulation of Color Vision Deficiency", IEEE Transactions on Visualization and Computer Graphics
+  15(6), 2009. They are applied to linear RGB as the paper describes; the rest of the file (delta E, a
+  whole-palette conversion) is this project's own code. The simulation only draws the second picture on
+  the game's level cards and runs its check; no game ships the matrices. The code was written by Claude
+  Sonnet 5.5, an AI model made by Anthropic, under Lewis Moten's direction.
 - **Research: the whole Game-Maker Archive, ideas only.** A second survey read every Game-Maker
   game in the Internet Archive's Game-Maker Archive collection, 271 games in all, with this
   project's own file readers (no program from them was run). Its techniques are described,
