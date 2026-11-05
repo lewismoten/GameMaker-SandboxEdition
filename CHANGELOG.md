@@ -11,6 +11,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Added
 
+- Color help in the palette editor and the block, monster and character painters: show plain color names, warn when colors may look alike (red and green, or blue and yellow), and preview as others might see it, all kept only in your browser; an optional Quick color check suggests which to turn on and is not a medical test.
 - Starters no longer rely on hue alone where a player must tell two things apart: Not That Key's green key and gate differ in shape as well as color, and Colors That Work says on its first level that if the plates look the same to you, that is the point (a sting there costs a little). A new check (`games/kit/colorCues.ts`) lists such pairs under normal, red-weak, green-weak and blue-weak eyes.
 - A Starter, Lights Out, about fake light: a dark cave where a lamp is only blocks painted brighter in rings (five brightnesses of each block), a tunnel whose dark blocks turn lit when Kit touches them so he leaves a trail, and a hall where a block's clock lights every block at once after six bulbs glow. It says plainly what Game-Maker cannot do: a light cannot follow the hero. Signs and "How this level is made" pages say how.
 - A Starter, Flicker and Flow, about things that move in place: a torch whose flame pulses on even times and flickers on uneven ones, flags that wave, a waterfall four blocks wide made of three kinds of loop (a lip, a body and a splash), and a fire on a hill with sparks that rise
