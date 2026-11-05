@@ -12,7 +12,7 @@ import { ORIGIN } from '../../kit/starter/map';
 import { buildHeroBlocks, heroPicture } from '../../kit/starter/hero';
 import { buildMonsterBlocks, buildMonsters } from '../../kit/starter/monsters';
 import { buildLevels } from '../src/levels';
-import { buildTopHeroBlocks } from '../src/topHero';
+import { buildTopHeroBlocks } from '../../kit/starter/topHero';
 
 const out = process.argv[2] ?? join(tmpdir(), 'gravity-on-gravity-off-preview');
 mkdirSync(out, { recursive: true });

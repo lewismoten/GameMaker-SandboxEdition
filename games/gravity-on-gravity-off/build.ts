@@ -23,7 +23,7 @@ import { cardPicture, endPicture, gif, menuPicture, paper, scoresPicture, slotsP
 import { buildSounds } from '../kit/starter/sounds';
 import { demoRecording } from './src/demo';
 import { TITLE, buildGame } from './src/game';
-import { buildTopHero, buildTopHeroBlocks, topPicture } from './src/topHero';
+import { buildTopHero, buildTopHeroBlocks, topPicture } from '../kit/starter/topHero';
 import { buildLevels } from './src/levels';
 import { song } from './src/song';
 import { titlePicture } from './src/title';

@@ -11,7 +11,7 @@ import { buildHeroBlocks, heroPicture } from '../../kit/starter/hero';
 import { ORIGIN } from '../../kit/starter/map';
 import { buildMonsterBlocks, buildMonsters } from '../../kit/starter/monsters';
 import { GROUND, PATH_Y, WALL_X, buildLevels } from '../src/levels';
-import { buildTopHeroBlocks } from '../src/topHero';
+import { buildTopHeroBlocks } from '../../kit/starter/topHero';
 
 const out = process.argv[2];
 if (!out) throw new Error('usage: shots.ts <outDir>');
