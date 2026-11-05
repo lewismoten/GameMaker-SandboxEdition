@@ -42,7 +42,7 @@ import { parsePalette } from '../formats/palette';
 import { parseSoundSet, type SoundSet } from '../formats/sound';
 import { MAXSCENELINKS, NOSCENE, type Game } from '../formats/game';
 import { TICK_RATE } from '../audio/cmfPlayer';
-import { scrollCost, SlowCpu, tickCost, type PcCosts } from './slowPc';
+import { scrollCost, SlowCpu, tickCost, vocStallMs, type PcCosts } from './slowPc';
 import { gainAtLoad, newPlayGain, type PlayGain } from './playGain';
 
 const DEAD = 2;
@@ -70,6 +70,8 @@ export interface Session {
   onFrame?: (w: World) => void;
   /** Emulated PC speed; read every tick so it can change while playing. */
   speed: SpeedSetting;
+  /** Milliseconds a voice read still owes the emulated PC (SpeedSetting.slowPc); playscene charges it. */
+  vocStall?: number;
   /** RunOptions.gmHelp: Game-Maker's own GMHELP.TXT, which F1 shows first (PLAYGAME.EXE only). */
   gmHelp?: Uint8Array;
   /** RunOptions.player as the screens use it (engine/playerLook.ts); left out, the CD player's look. */
@@ -198,8 +200,12 @@ function attachSound(s: Session, w: World, sounds: SoundSet | undefined): void {
     play: (n) => {
       if (!sounds || !s.soundOn || n < 0 || n >= LASTSND) return false;
       const digital = sounds.digital[n];
-      if (!s.speakerOnly && s.m.audio.soundCardEnabled !== false && digital && digital[0] !== ' ') s.m.audio.playVoc(s.m.files.get(`${digital}.voc`));
-      else s.m.audio.playSpeaker(sounds.freqs[n]);
+      if (!s.speakerOnly && s.m.audio.soundCardEnabled !== false && digital && digital[0] !== ' ') {
+        const bytes = s.m.files.get(`${digital}.voc`);
+        s.m.audio.playVoc(bytes);
+        // the read happens on the game's own thread: an emulated slow PC is frozen for it
+        if (bytes) s.vocStall = (s.vocStall ?? 0) + vocStallMs(s.speed.slowPc, bytes.length);
+      } else s.m.audio.playSpeaker(sounds.freqs[n]);
       return true;
     },
   };
@@ -585,7 +591,10 @@ export async function playScene(s: Session, dosc: number, prev: number, linkIn: 
       }
       if (oldClock < s.timerCounter) {
         if (pc) cpu.spend(tickCost(pc, monstersOnScreen()));
+        s.vocStall = 0;
         await tick();
+        if (pc && s.vocStall) cpu.spend(s.vocStall);
+        s.vocStall = 0;
       }
     }
     renderWorld(m.screen, w);

@@ -9,6 +9,7 @@ Live sound control, a hook for life losses, and fixes to scrolling and picture d
 
 ### Added
 
+- Slow-PC presets for 486, 386 and 286 (`SPEED_PRESETS`, `costsFor`) and a voice-read stall (`vocStallMs`): a game freezes while a .voc is read from disk, as PLAYGAME's synchronous read did. Estimates; the default speed charges nothing.
 - Color-vision simulation (`gfx/colorVision`): the Machado, Oliveira and Fernandes matrices, sRGB and linear RGB, CIELAB and CIE76 delta E, one copy for the palette editor, the badge look-alike report and the games' color checks.
 - Player life-loss events, so a caller can watch for them without counting recorded playback.
 - Play's F10 shows an imported player's own About page and the build it was first made with.
