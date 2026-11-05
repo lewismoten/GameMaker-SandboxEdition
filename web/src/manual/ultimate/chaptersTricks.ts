@@ -6,7 +6,7 @@
 // pulse panels), smirked blocks.ts (fog vents), brief levels/wing.ts (word locks), remote and
 // tickle sprites (stings, cameos), blaster bosses/, depth and maximus monsters (bosses). The
 // later tricks (flocks, sweeping pulses, power-ladder locks, a copied set) are tricksMore.ts.
-import { opening, tip, type Chapter } from './chapter';
+import { opening, tip, type Chapter, onCd } from './chapter';
 import { MORE_TRICKS } from './tricksMore';
 
 export const TRICKS: Chapter = {
@@ -34,6 +34,7 @@ export const TRICKS: Chapter = {
     <li><b>A current.</b> Creek blocks pull left. The deep ones pull left <i>and</i> up, so a
     swimmer floats and is carried back downstream.</li>
   </ul>
+  ${onCd('GUSTS')}
   <h2>Vehicles are characters</h2>
   <p>Game-Maker has no vehicles, but each scene names its own character file in the
   Integrator. A car, a sled or a submarine is just another <code>.CHR</code>, and a link into a
@@ -52,6 +53,7 @@ export const TRICKS: Chapter = {
     scene. Every thrust has momentum and moves a pixel a frame, for that drifting feel; a dash
     is momentum and once per press, a quick shove of 7 and then 4.</li>
   </ul>
+  ${onCd('WHEEL')}
   <h2>Two planes and a focus key</h2>
   <p>Depth Perception plays each level in two planes, near and far. They are two scenes built
   from one layout, each with its own map, block set and character, both on one palette. A
@@ -83,6 +85,7 @@ export const TRICKS: Chapter = {
     <li><b>Every copy fires at once.</b> For a row that ripples, give each place its own block
     numbers, with each ring starting at a different frame.</li>
   </ul>
+  ${onCd('WARNFRST')}
   <h2>Word locks and counter gates</h2>
   <p>KEEP IT BRIEF! counts the words a reader carries in the money counter, renamed. A word
   lock is a solid turnstile that takes 20 and becomes an open turnstile; walking through the
@@ -132,6 +135,7 @@ export const TRICKS: Chapter = {
     faster). Last comes a light worth 10,000 that heals the hero. Six stages use six of the
     set’s 64 monsters: count them early.</li>
   </ul>
+  ${onCd('PHASES')}
   ${MORE_TRICKS}
   ${tip('Borrow freely:', 'Open any Sandbox game in the editor and look at the blocks and monsters behind a trick you liked. Everything above is there to be read, setting by setting.')}`,
 };

@@ -7,7 +7,7 @@
 // (editors/map/check/checkPanel.ts, widgets/checkBadges.ts, uploadChecklist.ts, walkDialog.ts,
 // checkReport.ts, playScene.ts, watchScene.ts),
 // and the First steps checklist of a new starter game (editor/shell/firstSteps.ts).
-import { opening, tip, type Chapter } from './chapter';
+import { opening, tip, type Chapter, onCd } from './chapter';
 
 export const CHECK: Chapter = {
   id: 'check',
@@ -157,6 +157,7 @@ export const CHECK: Chapter = {
   build the level, change the hero and a monster, give it a sound, add a way to win and a Game
   won screen, then run the Level check. Each step ticks itself the moment the game changes,
   opens the file to do it in, and links to the page of this guide that explains it.</p>
+  ${onCd('FIRSTGAM')}
   <h2>What is still your job</h2>
   <p>No check can tell you whether the first minute is fun, whether the story hangs together,
   whether a joke lands, or whether the boss is a good fight rather than merely a long one. The

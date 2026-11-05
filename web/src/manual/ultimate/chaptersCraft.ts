@@ -6,7 +6,7 @@
 // F6; playscene's death and a scene's exit picture shown only on leaving by a link); the advice is
 // our own. What players said about Game-Maker games comes from watching levelengine's RSD Game
 // Maker Binge and Pixelmusement's ADG Episode 250 (NOTICE.md); nothing of theirs is quoted.
-import { opening, tip, type Chapter } from './chapter';
+import { opening, tip, type Chapter, onCd } from './chapter';
 
 export const CRAFT: Chapter = {
   id: 'craft',
@@ -40,6 +40,7 @@ export const CRAFT: Chapter = {
     quickly; or, for a shooter, put the shot on the walk frames themselves, so the hero fires
     whenever he moves.</li>
   </ul>
+  ${onCd('SLIDE', 'KITMOVES')}
   <h2>Face the way you walk</h2>
   <p>A hero drawn only from the front, sliding left and right with his legs going, is one of the
   first things a player notices, and often reads as a rushed game. Most heroes look best drawn
@@ -213,6 +214,7 @@ export const CRAFT: Chapter = {
   hit, each a little faster or with a new attack path, so the player sees the fight turning.
   Give him a shape and colors nothing else in the game has, room to dodge, and a reward:
   a big score, an exit picture, a won screen that says thank you.</p>
+  ${onCd('BIGBUG', 'PHASES')}
   <h2>Variety</h2>
   <p>Each scene can load its own palette, block set, monsters and music, so use them: a new
   place, a new enemy and a new item every level or two. A gimmick (flying, skiing, a puzzle
