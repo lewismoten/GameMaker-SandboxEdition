@@ -24,8 +24,10 @@ const opt = (n: string) => (args.includes(n) ? args[args.indexOf(n) + 1] : undef
 const limit = Number(opt('--ticks') ?? 1e9);
 const work = opt('--keep') ?? mkdtempSync(join(tmpdir(), 'pocket-host-'));
 const here = new URL('../../hardware/pocket-player/', import.meta.url).pathname;
+// --data <dir>: a folder with <id>.cfg and the files (a card's /pocket folder, with its .cfg copied to <id>.cfg)
+const dataDir = opt('--data') ?? here + 'data';
 const games = new URL('../../games/', import.meta.url).pathname;
-const skipArg = new Set([opt('--ticks'), opt('--keep')]);
+const skipArg = new Set([opt('--ticks'), opt('--keep'), opt('--data')]);
 let ids = args.filter((a) => !a.startsWith('--') && !skipArg.has(a));
 if (!ids.length)
   ids = readFileSync(here + 'data/games.txt', 'utf8')
@@ -176,7 +178,7 @@ async function checkGame(id: string): Promise<string> {
   writeFileSync(join(dir, 'expected.txt'), expected.join('\n') + '\n');
   let out: string;
   try {
-    out = execFileSync(exe, [here + 'data', id, join(dir, 'keys.txt')], { maxBuffer: 1 << 28 }).toString();
+    out = execFileSync(exe, [dataDir, id, join(dir, 'keys.txt')], { maxBuffer: 1 << 28 }).toString();
   } catch (e) {
     return `FAIL  ${id}: the board code stopped (${String(e).split('\n')[0]})`;
   }

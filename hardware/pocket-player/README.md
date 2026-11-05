@@ -4,7 +4,7 @@ Firmware for the ESP32-3248S035 board (3.5 inch, 480 by 320, ST7796, GT911 capac
 
 The flashed firmware binaries' third-party notices are in [`web/public/pocket/fw/NOTICES.txt`](../../web/public/pocket/fw/NOTICES.txt). Keep that file with the firmware image set when redistributing it.
 
-The play rules are `src/gmcore.h`, a port of the web engine's character, touch, scroll, block-effect and scene code (itself from `code/GM/PLAYGAME.C`) with no board code in it, so the same file runs in the Mac test. Monsters (`src/gmmon.h`, a port of the web engine's `monsters.ts`) are in. **Sound** is queued by the core as events and played by `src/speaker.h` (see Sound below). Not ported: Sound Blaster .VOC clips, FM music, the joystick. Every Sandbox game is left out (`npx vite-node scripts/pocketData.ts --list` says why for each).
+The play rules are `src/gmcore.h`, a port of the web engine's character, touch, scroll, block-effect and scene code (itself from `code/GM/PLAYGAME.C`) with no board code in it, so the same file runs in the Mac test. Monsters (`src/gmmon.h`, a port of the web engine's `monsters.ts`) are in. **Sound** is queued by the core as events and played by `src/speaker.h` (see Sound below). Not ported: Sound Blaster .VOC clips, FM music, the joystick. The Sandbox games with more than 12 levels or 16 links are left out; the others go on a microSD card (see below) (`npx vite-node scripts/pocketData.ts --list --series any` says why for each).
 
 Files: `src/gmcore.h` (play loop), `src/gmcards.h` (the pictures and text pages between levels, no board code), `src/gmmon.h` (monsters), `src/gmcfg.h` (a game's `.cfg` and the level file loader), `src/controls.h` (touch controls model), `src/pcspeaker.h` (the PC speaker tune player, no board code), `src/speaker.h` (GPIO 26 and the task that drives it), `src/gt911.h` (touch chip, up to 5 fingers with ids and sizes), `src/main.cpp` (files, panel, screens, drawing), `src/btnicon.h` (which picture a key's button shows: the shot or item it throws or uses), `host/hosttest.cpp`, `host/controlstest.cpp`, `host/cardstest.cpp` (Mac tests) and `host/iconsdump.cpp` (lists the picture each button gets; `web/scripts/pocketIconsShot.py` draws them). The controls are drawn into each band of the picture before it is pushed once (`drawControls` in `main.cpp`), so they never blink; a button shows its key's name big and under it the picture or the game's label, wrapped to two lines, shrunk, then cut with "...".
 
@@ -32,6 +32,23 @@ The board shows a list of games, five to a page (Prev, Next, Settings along the 
 12. The status strip: `HP`, `Lives`, `Score`, money and the game's own counters (Keys carried); on the right `lv N fps tick-ms draw-ms size` while Status numbers is on. Does anything stutter? Tell me the fps while the view scrolls.
 
 Report: which games feel wrong, any picture glitch, the pad numbers that felt right (size and dead zone), and the palm and fingertip sizes.
+
+## The microSD card
+
+The board's slot (TF_CS 5, TF_SPI_SCLK 18, TF_SPI_MISO 19, TF_SPI_MOSI 23, from rzeldent's `esp32-3248S035C.json`, re-read on 2026-11-05; `src/board.h`) holds more games than the 3 MB LittleFS can. Games on the card follow the Starters in the picker with a yellow **SD** tag. With no card, or a card with no `/pocket` folder, the board behaves exactly as without the slot (the serial line `microSD: no card` is the only sign).
+
+**To try it**
+
+1. Format a card FAT32 (cards over 32 GB come exFAT: use the Disk Utility "MS-DOS (FAT)" format with the MBR scheme, or `diskutil eraseDisk FAT32 POCKET MBR /dev/diskN`; 2 to 32 GB cards are the safe size).
+2. Build the card's files: `cd web && npx vite-node scripts/pocketData.ts --out /Volumes/POCKET` (this writes `/Volumes/POCKET/pocket/`, 15 games, about 7 MB: every public game that is not a Starter and passes the packer: four Sandbox games (Sandcastle Knight, In The Year 2000! and the first two Teddy games) and eleven Bizarre games). It deletes only `pocket/` on the card.
+3. Put the card in the slot (power off first) and power on. The list should show 84 games with SD on the last 15.
+4. No card reader at hand: with a blank FAT32 card in the board and the board on its game list, `~/.platformio/penv/bin/python web/scripts/pocketSdWrite.py /dev/cu.usbserial-XXXX /tmp/pocketcard/pocket` (after `pocketData.ts --out /tmp/pocketcard`) writes the files through the USB cable, about 10 KB/s (about 20 minutes for the 15 games), then resets the board.
+
+On the card: every file is in `/pocket/`. A game's `<file>.cfg` and `<file>.pak` use an 8 character name (the hash of its id, so no long file names are needed); the game list is `/pocket/games.txt` (`id|title|levels|file`); the picture, map and block files are named by content and shared by the games. The firmware reads them with the same code as LittleFS (`readFileIn` and `selectGame` in `main.cpp`); `gmcore.h` and `gmcards.h` did not change (`gmcfg.h` loads the map and the biggest files first and reads the `cbln` line). The play loop's host check and the cards check (`pocketCardsCheck.ts --data <dir>`, and `pocketHostCheck.ts --data <dir>` with the card's files) pass on the packed card games (15 of 15 tick for tick).
+
+**Memory (what the board check showed).** A mounted card holds about 33 KB of heap and splits the free blocks, and the heap's one long free stretch is only 110 KB (the rest of the 240 KB is in pieces under 26 KB), so a big level needs care. The firmware (1) mounts the card only while it reads (the Starters play with the heap they always had; with the card in, idle free heap is 241,696 B, largest block 110,580), (2) frees the buffers a new card level replaces, then reads that level's compressed files together with the heap emptiest, unmounts, and inflates from those, (3) loads the map first and the biggest buffers (blocks, monster pictures, hero blocks) before the small ones, and (4) on a card the packer cuts each level's hero blocks after the last one a frame shows (`cbln` lines in the `.cfg`). With that, all 15 card games load and show their cards. The tightest is a Sandbox game whose blocks, monster pictures and hero blocks add up to about 108 KB; a level over about 110 KB of those three could not load, so the packer's levels-and-links limit is not the only one.
+
+Not yet on the card: the games with more than 12 levels or more than 16 links on a level (they need levels read one at a time), Sound Blaster clips and music. The card is read at 20 MHz; a level loads in well under a second.
 
 ## Between levels
 
