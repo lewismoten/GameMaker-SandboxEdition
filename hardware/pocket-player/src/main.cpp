@@ -249,9 +249,22 @@ static void loadSettings() {
 struct Pts { int n, id[5], x[5], y[5], size[5]; };
 static Pts pts;
 static uint32_t lastPoll = 0;
+// Serial debug (see the README, "Held-input trace"): `V 1` prints every new GT911 report ("R") and every game tick's held keys ("K");
+// `I x y` holds a made-up finger at screen x,y (as if a thumb rested there) and `I off` lifts it; `G n` starts game n from the list.
+static bool traceOn = false, injOn = false;
+static int injX = 0, injY = 0;
 static void pollTouch(uint32_t now) {
+  if (injOn) { pts.n = 1; pts.id[0] = 0; pts.x[0] = injX; pts.y[0] = injY; pts.size[0] = 40; return; }
   if (!haveGT) { pts.n = 0; return; }
-  if (now - lastPoll >= 8) { lastPoll = now; gt.poll(); }
+  if (now - lastPoll >= 8) {
+    lastPoll = now;
+    gt.poll();
+    if (traceOn && gt.fresh) {
+      int x = -1, y = -1;
+      if (gt.n > 0) GT911::toScreen(gt.rawX[0], gt.rawY[0], x, y);
+      Serial.printf("R %lu n=%d id=%d x=%d y=%d size=%d\n", (unsigned long)now, gt.n, gt.n ? gt.id[0] : -1, x, y, gt.n ? gt.size[0] : 0);
+    }
+  }
   pts.n = gt.n;
   for (int i = 0; i < gt.n; i++) {
     GT911::toScreen(gt.rawX[i], gt.rawY[i], pts.x[i], pts.y[i]);
@@ -1115,7 +1128,16 @@ static void pollSerial() {
     if (c == '\n' || c == '\r') {
       buf[n] = 0;
       n = 0;
-      if (buf[0] == 'T') serialCommand(buf);
+      if (buf[0] == 'V') traceOn = buf[2] == '1';
+      else if (buf[0] == 'I') {
+        int x, y;
+        injOn = sscanf(buf, "I %d %d", &x, &y) == 2;
+        if (injOn) { injX = x; injY = y; }
+      } else if (buf[0] == 'G' && mode == PICKER) {
+        int g = atoi(buf + 2);
+        if (g >= 0 && g < ngames && startGame(g)) wasDown = true;
+        Serial.printf("G %d %s %s\n", g, g >= 0 && g < ngames ? games[g].id : "?", mode == PLAYING ? "playing" : "failed");
+      } else if (buf[0] == 'T' && mode == PICKER) serialCommand(buf);
       else if (buf[0] == 'W') serialWrite(buf);
     } else if (n < (int)sizeof buf - 1) buf[n++] = c;
   }
@@ -1242,6 +1264,7 @@ void loop() {
     return;
   }
 
+  if (mode == PLAYING) pollSerial();  // V and I only act here
   // PLAYING: the contacts go through the controls model; its key changes go to the game.
   controls.update(pts.id, pts.x, pts.y, pts.size, pts.n, now);
   int ev = controls.takeEvent();
@@ -1267,6 +1290,7 @@ void loop() {
   bool oneLevelUp = false;
   while (ticksRun < due && ran < 4) {
     int lv = world.level;
+    if (traceOn) Serial.printf("K %lu tick=%lu up=%d down=%d left=%d right=%d space=%d pad=%d n=%d\n", (unsigned long)millis(), (unsigned long)ticksRun, world.held[ctl::S_UP], world.held[ctl::S_DOWN], world.held[ctl::S_LEFT], world.held[ctl::S_RIGHT], world.held[ctl::S_SPACE], controls.padDirs, pts.n);
     char r = world.tick();
     if (world.nsnd && world.snd) spk::play(world.snd + world.sndQ[world.nsnd - 1] * 72);  // the effect heard is the last one started (a new one cuts the old)
     world.nsnd = 0;
