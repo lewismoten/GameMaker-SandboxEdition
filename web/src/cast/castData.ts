@@ -116,6 +116,7 @@ export const CAST_GAMES = {
   'corner-view': ['Corner View', 'starter'],
   'slow-computers': ['Slow Computers', 'starter'],
   'under-the-hood': ['Under the Hood', 'starter'],
+  'ride-along': ['Ride Along', 'starter'],
   momentum: ['Slide and Drift', 'starter'],
   'jump-boots': ['Boots and Jet Pack', 'starter'],
   'diagonal-wrap': ['Diagonal Wrap', 'starter'],

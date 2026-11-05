@@ -26,35 +26,11 @@
       "level": 2
     },
     {
-      "id": "steer",
-      "q": "How do I steer a vehicle that is always moving?",
-      "scene": 3,
-      "x": 11,
-      "y": 64,
-      "level": 2
-    },
-    {
       "id": "speed",
       "q": "How do I make Up speed it up and Down slow it?",
       "scene": 3,
       "x": 21,
       "y": 59,
-      "level": 2
-    },
-    {
-      "id": "stop",
-      "q": "How do I make a rock that stops the vehicle without hurting it?",
-      "scene": 3,
-      "x": 21,
-      "y": 54,
-      "level": 2
-    },
-    {
-      "id": "exit",
-      "q": "How do I end a flying level at a docking bay?",
-      "scene": 3,
-      "x": 11,
-      "y": 24,
       "level": 2
     },
     {
@@ -71,14 +47,6 @@
       "scene": 4,
       "x": 11,
       "y": 58,
-      "level": 3
-    },
-    {
-      "id": "pickups",
-      "q": "How do I put pickups along the way?",
-      "scene": 4,
-      "x": 21,
-      "y": 44,
       "level": 3
     }
   ],
