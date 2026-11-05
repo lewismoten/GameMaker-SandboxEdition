@@ -3,13 +3,15 @@
 // times in any one second. Two tests, run on every pair of neighboring frames:
 //   - general flash: a pixel whose relative luminance changes by 0.1 or more (the darker of the two
 //     below 0.8) counts toward a transition; a transition is a flash change when those pixels cover
-//     a tenth of the screen or more (WCAG's 341x256 pixel area on a 1024x768 screen is 11%);
+//     a tenth of the screen or more, net (WCAG's 341x256 pixel area on a 1024x768 screen is 11%;
+//     pixels that got lighter cancel pixels that got darker, so a scroll across a textured picture,
+//     which moves both ways at once, is not counted);
 //   - red flash: the same, for a pixel to or from a saturated red (R/(R+G+B) of 0.8 or more) whose
 //     (R-G-B)*320 changes by more than 20.
 // A flash is a pair of opposing changes (lighter then darker, or the reverse); "more than three
-// flashes in a second" is the failing line. It sees the whole picture, scrolling included: a fast
-// scroll across a high-contrast pattern can read as flashing here, which is a suggestion to look at
-// that spot, not a verdict. It can't see where the eye is, or how big the player's screen is.
+// flashes in a second" is the failing line. It sees the whole picture; a fast scroll over a big
+// one-sided pattern can still read as flashing, which is a suggestion to look at that spot, not a
+// verdict. It can't see where the eye is, or how big the player's screen is.
 import { vga8 } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 
 const PIXELS = 320 * 200;
@@ -113,7 +115,8 @@ export class FlashMeter {
         if (Math.abs(rd) > RED_STEP) rd > 0 ? rup++ : rdown++;
       }
     }
-    if (Math.max(up, down) / PIXELS >= AREA) this.general.add(this.frames, up >= down ? 1 : -1, Math.max(up, down) / PIXELS);
-    if (Math.max(rup, rdown) / PIXELS >= AREA) this.red.add(this.frames, rup >= rdown ? 1 : -1, Math.max(rup, rdown) / PIXELS);
+    // the area that moved the same way: a scroll moves as many pixels lighter as darker, so it nets out
+    if (Math.abs(up - down) / PIXELS >= AREA) this.general.add(this.frames, up > down ? 1 : -1, Math.abs(up - down) / PIXELS);
+    if (Math.abs(rup - rdown) / PIXELS >= AREA) this.red.add(this.frames, rup > rdown ? 1 : -1, Math.abs(rup - rdown) / PIXELS);
   }
 }

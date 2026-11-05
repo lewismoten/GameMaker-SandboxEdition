@@ -42,6 +42,15 @@ describe('FlashMeter', () => {
   it('counts a red strobe as a red flash', () => {
     expect(strobe(0, 2, 6, 2).red.worst.flashes).toBeGreaterThan(3);
   });
+  it('ignores a scroll of stripes, which moves as many pixels lighter as darker', () => {
+    const m = new FlashMeter(60);
+    for (let i = 0; i < 120; i++) {
+      const f = new Uint8Array(64000);
+      for (let k = 0; k < 64000; k++) f[k] = Math.floor(((k % 320) + i) / 4) % 2;
+      m.push(f, PAL);
+    }
+    expect(m.general.worst.flashes).toBe(0);
+  });
   it('does not count a fade as flashing', () => {
     const m = new FlashMeter(60);
     for (let i = 0; i < 60; i++) {
