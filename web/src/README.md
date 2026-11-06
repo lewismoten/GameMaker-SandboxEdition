@@ -138,6 +138,7 @@ SDK implementation lives in the packages below; the app imports their declared e
   - [`editor/editors/map/links/`](editor/editors/map/links/README.md): integrator link markers and detail popover on maps.
   - [`editor/editors/map/tools/`](editor/editors/map/tools/README.md): map selection, terrain, stamps and building tools.
   - [`editor/editors/music/arrange/`](editor/editors/music/arrange/README.md): seeded accompaniment and melody-copy transforms.
+  - [`editor/editors/music/roll/`](editor/editors/music/roll/README.md): layered piano-roll input and cached rendering.
 - [`editor/disk/`](editor/disk/README.md): the disk-space tool: merges of monster files, block sets and palettes, and the floppy disks a game needs.
 - [`editor/editors/palette/`](editor/editors/palette/README.md): VGA palette editing, role reservations and contrast checks.
 - [`saves/`](saves/README.md): the home page's Saves & scores panel: saved games, high scores and
@@ -192,6 +193,8 @@ SDK implementation lives in the packages below; the app imports their declared e
   print shop's disk labels, CD labels and retail boxes, the site's videos and each game's walkthrough video.
 - [`manual/`](manual/README.md): the Owner's Guide, the web Guide, each game's manual and box
   contents, the zine, the Ultimate Owner's Guide and TURBO BUTTON.
+  Subareas:
+  - [`manual/magazine/sections/spring93/`](manual/magazine/sections/spring93/README.md): spring 1993 issue-specific sections.
 
 ## Main flows
 
