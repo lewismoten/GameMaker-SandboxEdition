@@ -3,6 +3,7 @@
 import { wrap, creditsPage } from '../../kit/starter/graduationText';
 import type { Graduation } from '../../kit/starter/graduationConfig';
 import about from '../about.json';
+import { song } from './song';
 
 export const cfg: Graduation = {
   id: 'graduation-diploma',
@@ -41,7 +42,7 @@ export const cfg: Graduation = {
     nods: ['ladder', 'wind', 'hop', 'pads', 'fakeWall', 'popups'],
   },
   level: { title: 'The Long Aisle', hint: 'Walk up to the stage.' },
-  song: { bpm: 76, lead: 'brass', transpose: 0 },
+  song,
   text: {
     story: wrap(`
 |THE SANDBOX DIPLOMA

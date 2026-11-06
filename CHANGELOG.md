@@ -6,6 +6,8 @@ changelog: [engine](web/packages/engine/CHANGELOG.md), [archives](web/packages/a
 
 ## [Unreleased]
 
+- Beat the Clock, Countdown, Warning First and all seven graduations have distinct, original 32-bar scores in their Starter groups’ bands.
+
 - 39 more Starters keep their original tunes in longer, 32-bar songs, with a new B section and their group’s band.
 
 - Pocket Player clears scene and text-page backgrounds across the whole panel on both boards and avoids stray pixels below pictures on the 2.8 inch board.

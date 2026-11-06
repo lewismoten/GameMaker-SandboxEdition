@@ -6,7 +6,7 @@
   "hero": "RIMA",
   "year": 1994,
   "price": "Free",
-  "version": "1.0",
+  "version": "1.1",
   "blurb": "Two short levels where something warns you before it happens. Three fog vents rumble before they puff, and a puff stings a little: wait for it to end, then cross. Planks over a pit flicker before they vanish and come back later, and a soft mat catches you if you fall. A warning here is a block that changes first. Signs say how. Play it, then open it in Game-Maker and change how long a warning lasts.",
   "exe": "WARN.EXE",
   "dosName": "WARNFRST",
