@@ -4,7 +4,7 @@
 // level 2's first star is thrown at the big one and used up. The checks here fail if anything else happens.
 import type { Result, StarterBot } from '../../kit/starter/bot';
 import { ORIGIN } from '../../kit/starter/map';
-import { BIG, BIG_STILL, MID, PIP, POP_SCORE, STAR } from '../src/monsters';
+import { BIG, BIG_STILL, FIZZLE, MID, PIP, POP_SCORE, STAR } from '../src/monsters';
 import { SCAN_ENTER } from '../src/hero';
 
 /** Runs an order; anything but carrying on (a scene change, getting stuck) is an error. */
@@ -27,13 +27,18 @@ export function alive(bot: StarterBot, n: number): number {
 /** Ticks a star lives (monsters.ts STAR_LIFE) and the sparkle after it, so a throw has finished by then. */
 const THROW_WATCH = 60;
 
-/** Presses Enter like a person (a tap), then waits for the star to land or fizzle. */
-export async function throwStar(bot: StarterBot, what: string): Promise<void> {
+/** Presses Enter like a person (a tap), then waits for the star to land; true if it was seen to fizzle. */
+export async function throwStar(bot: StarterBot, what: string): Promise<boolean> {
   bot.sim.press(SCAN_ENTER);
   await must(bot, bot.wait(3), 'throwing');
   bot.sim.release(SCAN_ENTER);
-  await must(bot, bot.wait(THROW_WATCH), 'watching the star');
+  let fizzled = false;
+  for (let t = 0; t < THROW_WATCH; t += 2) {
+    await must(bot, bot.wait(2), 'watching the star');
+    if (alive(bot, FIZZLE)) fizzled = true;
+  }
   bot.say(`threw a star ${what}, score ${bot.sim.ci.score}`);
+  return fizzled;
 }
 
 /** Every coin is 10 points and every pop 50: a level that should give `n` coins (and how many `pops`) must have. */
@@ -70,7 +75,7 @@ export async function yourStar(bot: StarterBot): Promise<void> {
   await must(bot, bot.walk(15, 'the big one'), 'to the second sign');
   // the mistake, once: the big one is stronger than the star, so the star is used up and nothing pops
   let before = { score: bot.sim.ci.score, pips: alive(bot, PIP), mids: alive(bot, MID), big: alive(bot, BIG_STILL) };
-  await throwStar(bot, 'at the big one');
+  if (!(await throwStar(bot, 'at the big one'))) throw new Error('the star at the big one should fizzle where a player can see it');
   if (alive(bot, PIP) !== before.pips || alive(bot, MID) !== before.mids || alive(bot, BIG_STILL) !== before.big || bot.sim.ci.score !== before.score)
     throw new Error('the star at the big one was meant to be used up and do nothing');
   if (alive(bot, STAR)) throw new Error('a star is still flying');
