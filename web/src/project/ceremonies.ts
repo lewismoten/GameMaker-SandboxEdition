@@ -47,7 +47,7 @@ export const CEREMONIES: Ceremony[] = [
   {
     id: 'graduation-blocks',
     stage: 'Blocks and Showcase',
-    groups: ['Drawing with Blocks', 'Showcase Tricks'],
+    groups: ['Drawing with Blocks', 'Weather', 'Showcase Tricks'],
     skills: 'drawn and animated blocks, light and dark, the big-game tricks',
   },
 ];

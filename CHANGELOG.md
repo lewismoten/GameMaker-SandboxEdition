@@ -11,6 +11,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Added
 
+- Lightning, a new Starter in a new Weather group: a storm drawn with blocks, where the sky and a bolt swap to lighter twins for a moment on one clock, the thunder is written into the song, and the flash is kept gentle.
 - The Generate dialog fits a phone held sideways: the settings go in a left column and the previews, notes and buttons in a right one, so Use this layout stays in view.
 - `archive.html`, a page nothing links to, that fetches every file of the site a few at a time so a web archive (the Wayback Machine's Save Page Now) can record them. In an archived copy the site registers no service worker and says "This is an archived copy; some parts weren't saved." for a missing part. Nothing changes on a normal host.
 - The Pocket Player install page (/pocket/) asks which board you have, the 3.5 inch ESP32-3248S035 or the 2.8 inch ESP32-2432S028, shows a drawing of each, and installs the right program from Chrome or Edge over USB
