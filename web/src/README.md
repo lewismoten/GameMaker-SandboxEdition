@@ -130,6 +130,7 @@ SDK implementation lives in the packages below; the app imports their declared e
 - [`editor/`](editor/README.md): today's web interface: the home page, the workspace, the editors,
   the Level check and the Guide.
   Subareas:
+  - [`editor/check/`](editor/check/README.md): level check orchestration, worker protocol, exploration and reporting.
   - [`editor/check/checks/`](editor/check/checks/README.md): individual static and play-derived design checks.
   - [`editor/check/generators/`](editor/check/generators/README.md): one-click fixes and maze setup using ordinary game data.
   - [`editor/check/walk/`](editor/check/walk/README.md): walkthrough generation, replay verification and kept author/bot routes.
@@ -214,6 +215,7 @@ SDK implementation lives in the packages below; the app imports their declared e
 - [`manual/`](manual/README.md): the Owner's Guide, the web Guide, each game's manual and box
   contents, the zine, the Ultimate Owner's Guide and TURBO BUTTON.
   Subareas:
+  - [`manual/magazine/sections/`](manual/magazine/sections/README.md): magazine article/ad section factories.
   - [`manual/magazine/sections/spring93/`](manual/magazine/sections/spring93/README.md): spring 1993 issue-specific sections.
 
 ## Main flows
