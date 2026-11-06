@@ -80,7 +80,7 @@
   "say-something": {"hash":"705239e3522b31e7","maps":{"chat.map|say.bbl":[0,14,67,10],"hello.map|say.bbl":[0,14,67,10],"pass.map|say.bbl":[6,14,16,10]}},
   "scripted": {"hash":"17b0b741e4e4118e","maps":{"one.map|show.bbl":[1,14,74,10],"two.map|show.bbl":[1,14,82,10]}},
   "scroll": {"hash":"fcee75ef1be64f2e","maps":{"one.map|sc.bbl":[10,10,16,10],"two.map|sc.bbl":[0,14,81,10]}},
-  "searchlight": {"hash":"909dfc52bf0133ec","maps":{"one.map|seen.bbl":[0,5,68,24],"two.map|seen.bbl":[0,14,79,10]}},
+  "searchlight": {"hash":"01786f04135a5f03","maps":{"one.map|seen.bbl":[0,5,68,24],"two.map|seen.bbl":[0,14,79,10]}},
   "secret-doors": {"hash":"6be18bfa076f51fb","maps":{"one.map|sd.bbl":[0,7,73,20],"three.map|sd.bbl":[0,9,73,18],"two.map|sd.bbl":[0,9,70,18]}},
   "shadows": {"hash":"f1e48ecbe59cb12c","maps":{"hop.map|hop.bbl":[0,14,61,10],"hover.map|hover.bbl":[0,14,59,10],"yard.map|dither.bbl":[0,14,63,10],"yard.map|solid.bbl":[0,14,63,10]}},
   "shore": {"hash":"eea66c13752617dc","maps":{"one.map|one.bbl":[13,33,81,17],"two.map|two.bbl":[14,35,60,25]}},

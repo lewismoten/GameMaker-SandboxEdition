@@ -45,6 +45,6 @@
     "rating": "Everyone"
   },
   "acceptedFindings": [
-    "density s3 10 enemies on one screen at (30, 10)"
+    "density s3 6 enemies on one screen at (30, 10)"
   ]
 }
