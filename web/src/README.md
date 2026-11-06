@@ -157,6 +157,8 @@ SDK implementation lives in the packages below; the app imports their declared e
   - [`editor/editors/slideShow/`](editor/editors/slideShow/README.md): lST media sequencing on a timeline.
   - [`editor/editors/sounds/`](editor/editors/sounds/README.md): sND speaker and Sound Blaster effect editing.
   - [`editor/editors/textScreen/`](editor/editors/textScreen/README.md): tXT page editing and game-accurate preview.
+  - [`editor/tools/cards/`](editor/tools/cards/README.md): instruction and level-card dialogs and generated files.
+  - [`editor/tools/opening/`](editor/tools/opening/README.md): opening-sting selection, previews and scene wiring.
 - [`editor/disk/`](editor/disk/README.md): the disk-space tool: merges of monster files, block sets and palettes, and the floppy disks a game needs.
 - [`editor/editors/palette/`](editor/editors/palette/README.md): VGA palette editing, role reservations and contrast checks.
 - [`saves/`](saves/README.md): the home page's Saves & scores panel: saved games, high scores and
