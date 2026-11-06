@@ -1,4 +1,4 @@
-# `editor/editors/highScores/`: hIS table editing
+# `editor/editors/highScores/`: HIS table editing
 
 Part of the [source map](../../../README.md).
 

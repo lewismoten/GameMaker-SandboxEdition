@@ -1,4 +1,4 @@
-# `editor/editors/animation/`: fLI frame editing and Scene/Frames workflows
+# `editor/editors/animation/`: FLI frame editing and Scene/Frames workflows
 
 Part of the [source map](../../../README.md).
 

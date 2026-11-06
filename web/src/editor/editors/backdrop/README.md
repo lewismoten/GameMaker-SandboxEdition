@@ -1,4 +1,4 @@
-# `editor/editors/backdrop/`: bKD picture-window editing and picture resolution
+# `editor/editors/backdrop/`: BKD picture-window editing and picture resolution
 
 Part of the [source map](../../../README.md).
 
