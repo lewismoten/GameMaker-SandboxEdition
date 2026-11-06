@@ -268,6 +268,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 ### Fixed
 
 - Pop-up dialogs announce their visible title to screen readers, including when one dialog opens another.
+- The Community submission form keeps its required fields and actions visible on small portrait phones; the submission steps unfold when needed.
 
 - Most Sandbox and Bard of Bizarre games draw their text pages in a dark purple their players choose, so story, how-to and level pages are easy to read on light paper. Quest for the Round Tuit uses its talk pages' dark plum on every page, and in Maximus: The Hundred Worlds the F2 status line, F9 words and high-score name are amber instead of a dim blue on black.
 - Graduation: the "wait for zero" countdown now starts at 9 and counts slowly enough that you reach the door with time left to watch it hit zero, and Brother Camel is shrunk to fit the balcony so his head is no longer off the top of the screen.
