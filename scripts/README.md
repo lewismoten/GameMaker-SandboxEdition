@@ -23,6 +23,15 @@ lockfile, so editing a page under `web/src` that no game imports rebuilds nothin
 `game-build-entry.mjs` runs one `build.ts` and exits at once (vite-node sometimes lingered after a finished
 build until the 240 s timeout killed it). `game-build-inputs.mjs` is the fingerprint shared with
 `render-game-frames.mjs`, which renders one animation shard for the game-frames workflow.
+`child-signal-retry.mjs` retries a signaled child once, logging its stage, signal, `killed` flag and
+elapsed time. Each attempt still has the 240 s deadline. Extra stages may retry a timeout; disks
+retain their existing early-signal-only rule (at most 230 s), and shared logo/frame renders keep their
+no-retry behavior. Numeric failures keep the bundle-to-vite-node
+fallback and still fail if that fails. `killed` records an API kill, not proof of the signal's sender.
+After a terminal concurrent failure, no new queued games start; active children are joined and successful
+games keep their incremental cache entries before the parent fails. Tests: `web/test/buildGames.test.mjs`
+(real readiness-gated external SIGTERM, tiny payloads) and `web/test/childSignalRetry.test.mjs`
+(fake elapsed-time boundaries and a native timeout). `heavy.mjs` gates admission only; it has no build-duration timeout.
 
 Site build-time tools remain in [`web/scripts`](../web/scripts/README.md).
 
