@@ -40,7 +40,7 @@ export const VOC_MAYBE_BYTES = 10_000;
 /** At this size a 286's read takes about two ticks (red). */
 export const VOC_LIKELY_BYTES = 32_000;
 
-export type StutterLevel = 'ok' | 'maybe' | 'likely' | 'toobig';
+type StutterLevel = 'ok' | 'maybe' | 'likely' | 'toobig';
 
 /** How likely a .VOC of this many bytes is to stall play on a slow PC. */
 export const stutterLevel = (bytes: number): StutterLevel =>

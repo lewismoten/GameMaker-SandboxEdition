@@ -21,7 +21,7 @@ import { TICK_S } from './blockChecks';
 const MAX_ONE_WAY = 3;
 
 /** The hero has a jump that works in the air too, so taps can be chained (a jump that needs the ground doesn't count). */
-export function hasAirTaps(d: SceneData): boolean {
+function hasAirTaps(d: SceneData): boolean {
   return characterActions(
     d.chr,
     d.bbl.some((b) => b.grav),

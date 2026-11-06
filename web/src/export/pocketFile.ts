@@ -6,7 +6,7 @@
 // one file is the whole install.
 
 /** The one-file game's format version (the first line of its game.txt); a firmware lists only the versions it reads. */
-export const GMP_VERSION = 1;
+const GMP_VERSION = 1;
 const ENTRY = 40;
 
 /** One bundle of the entries, sorted by name (byte order, as the firmware's strcmp). */
@@ -72,7 +72,7 @@ export function pocketId(id: string): string {
   );
 }
 
-export interface GmpParts {
+interface GmpParts {
   id: string;
   title: string;
   levels: number;

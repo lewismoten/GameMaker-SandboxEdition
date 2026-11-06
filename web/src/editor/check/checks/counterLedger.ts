@@ -8,7 +8,7 @@ import { LASTMON } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { blockUse, type SceneData } from '../sceneData';
 
-export interface SceneSupply {
+interface SceneSupply {
   scene: number;
   name: string;
   /** Total the map's blocks add (Infinity: a refill that stays put gives as much as the hero likes). */
@@ -89,7 +89,7 @@ const list = (xs: string[]) => {
 };
 
 /** What a scene gives: the total, and its parts by source kind when there is more than one kind. */
-export function supplyWords(s: SceneSupply): string {
+function supplyWords(s: SceneSupply): string {
   if (s.monsterCount === 0) return num(s.blocks);
   const m = `${num(s.monsters)} from ${s.monsterCount} monster${s.monsterCount === 1 ? '' : 's'}`;
   return s.blocks > 0 ? `${num(total(s))} (${num(s.blocks)} from blocks, ${m})` : m;

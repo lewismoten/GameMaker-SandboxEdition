@@ -6,17 +6,17 @@ import type { Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palet
 import type { Warn, Preview } from './colorHelpPrefs';
 
 /** Plainly different side by side in normal vision (CIE76 delta E)... */
-export const DISTINCT = 20;
+const DISTINCT = 20;
 /** ...but this close in the simulated view. */
-export const ALIKE = 6;
+const ALIKE = 6;
 
 /** The simulations a choice stands for: red-green covers two kinds, blue-yellow one. */
-export const VISIONS: Record<'rg' | 'by', Vision[]> = { rg: ['protan', 'deutan'], by: ['tritan'] };
+const VISIONS: Record<'rg' | 'by', Vision[]> = { rg: ['protan', 'deutan'], by: ['tritan'] };
 
 export const warnVisions = (w: Warn): Vision[] => (w === 'off' ? [] : w === 'both' ? [...VISIONS.rg, ...VISIONS.by] : VISIONS[w]);
 
 /** A palette color as 0-255 bytes. */
-export const bytes = (pal: Palette, i: number): Rgb => [0, 1, 2].map((k) => Math.round((pal[i * 3 + k] * 255) / 63)) as Rgb;
+const bytes = (pal: Palette, i: number): Rgb => [0, 1, 2].map((k) => Math.round((pal[i * 3 + k] * 255) / 63)) as Rgb;
 
 /** The first simulation (of `visions`) in which two 0-255 colors look alike but are not, if any. */
 export function alikeUnder(a: Rgb, b: Rgb, visions: Vision[]): Vision | undefined {

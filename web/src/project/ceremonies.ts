@@ -94,7 +94,7 @@ export const needed = (c: Ceremony): number => Math.ceil((stageGames(c).length *
 export const unlockRule = (c: Ceremony): string =>
   c === DIPLOMA ? 'Earn the honors from all six stages.' : `Get a B or better in ${needed(c)} of the ${stageGames(c).length} courses.`;
 
-export interface TranscriptRow {
+interface TranscriptRow {
   id: string;
   /** 101, 102 ... */
   course: number;

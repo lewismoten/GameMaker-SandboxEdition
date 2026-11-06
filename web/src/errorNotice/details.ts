@@ -25,7 +25,7 @@ export function messageOf(reason: unknown): string {
   return 'Something went wrong';
 }
 
-export interface Env {
+interface Env {
   commit?: string;
   href: string;
   userAgent: string;

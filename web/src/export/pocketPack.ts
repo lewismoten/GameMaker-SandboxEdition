@@ -19,13 +19,13 @@ import { LASTSND, NUMFREQ } from '@lewismoten/gamemaker-sandbox-engine/formats/s
 import { LASTMON, LASTSL, MONSTER_SIZE, parseMonsters } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 
 /** Raw deflate (no zlib header). The command line passes zlib at level 9; the browser CompressionStream. */
-export type Deflate = (bytes: Uint8Array) => Uint8Array | Promise<Uint8Array>;
+type Deflate = (bytes: Uint8Array) => Uint8Array | Promise<Uint8Array>;
 
 /** The firmware's limits (src/gmcfg.h). */
 export const POCKET_MAX_LEVELS = 128;
 export const POCKET_MAX_LINKS = 24;
 /** The heap's one long free stretch on the board (README "Memory"): a level's blocks, monster pictures and hero blocks must fit in it. */
-export const POCKET_LEVEL_HEAP = 108_000;
+const POCKET_LEVEL_HEAP = 108_000;
 
 /** What a game is packed from: its files (case-insensitive names) and what its controls mean (controls.json's shape). */
 export interface PocketSource {
@@ -38,14 +38,14 @@ export interface PocketSource {
 export type PocketStore = Map<string, Uint8Array>;
 
 /** The cards' pictures and pages in one pak; a reference is "<offset>.<length>". */
-export interface PocketCards {
+interface PocketCards {
   parts: Uint8Array[];
   at: Map<string, string>;
   size: number;
 }
 export const newCards = (): PocketCards => ({ parts: [], at: new Map(), size: 0 });
 
-export interface PocketPacked {
+interface PocketPacked {
   /** The .cfg's lines. */
   lines: string[];
   levels: number;
