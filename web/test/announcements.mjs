@@ -1,6 +1,8 @@
 // Browser regressions against actual Vite modules; controlled workers/storage, not reader speech.
 // Start your own Vite server, then: node web/test/announcements.mjs http://127.0.0.1:5318
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { createRequire } from 'node:module';
 import { after, before, test } from 'node:test';
 import { chromium } from 'playwright-core';
 import WebSocket from 'ws';
@@ -497,4 +499,23 @@ test('success toasts survive the modal that their action closes synchronously', 
   await page.waitForTimeout(30);
   assert.equal(await page.locator('dialog').count(), 0);
   assert.match(await accessibleText(), /Saved final outcome/);
+});
+test('error notice text and dismiss control retain contrast in both stored themes', async () => {
+  for (const theme of ['light', 'dark']) {
+    await reset();
+    await page.addInitScript((t) => localStorage.setItem('gm-theme', t), theme);
+    await page.goto(`${base}/?contrast=${theme}#/privacy`);
+    await page
+      .locator('h1')
+      .filter({ hasText: /Privacy/ })
+      .waitFor();
+    await page.evaluate(async () => (await import('/src/editor/core/ui.ts')).toast('Readable error notice', 'error'));
+    await page.locator('.toast [role=status]').filter({ hasText: 'Readable error notice' }).waitFor();
+    assert.equal(await page.locator('html').getAttribute('data-theme'), theme);
+    await page.addScriptTag({ content: readFileSync(createRequire(import.meta.url).resolve('axe-core/axe.min.js'), 'utf8') });
+    const violations = await page.evaluate(async () =>
+      (await window.axe.run(document.querySelector('.toast'), { runOnly: ['color-contrast'] })).violations.map((v) => v.id),
+    );
+    assert.deepEqual(violations, []);
+  }
 });
