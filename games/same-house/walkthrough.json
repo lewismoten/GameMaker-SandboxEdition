@@ -15,7 +15,7 @@
    "keys": "AU0PzTVNN80DTQ=="
   },
   {
-   "scene": 2,
+   "scene": 10,
    "keys": "AU0ezQNN"
   },
   {
@@ -23,7 +23,7 @@
    "keys": "PU1GzQNN"
   },
   {
-   "scene": 2,
+   "scene": 10,
    "keys": "AU0ezQNN"
   },
   {
@@ -31,7 +31,7 @@
    "keys": "PU1GzQNN"
   },
   {
-   "scene": 2,
+   "scene": 10,
    "keys": "AU0ZzTVN"
   },
   {
@@ -43,7 +43,7 @@
    "keys": "AU0PzTVNN80DTQ=="
   },
   {
-   "scene": 6,
+   "scene": 11,
    "keys": "AU0ezQNN"
   },
   {
@@ -51,7 +51,7 @@
    "keys": "PU1GzQNN"
   },
   {
-   "scene": 6,
+   "scene": 11,
    "keys": "AU0ezQNN"
   },
   {
@@ -59,7 +59,7 @@
    "keys": "PU1GzQNN"
   },
   {
-   "scene": 6,
+   "scene": 11,
    "keys": "AU0ezTVN"
   }
  ],
@@ -73,24 +73,21 @@
    "title": "Level 1: house 1 (red)"
   },
   {
-   "scene": 2,
-   "title": "Level 1: the street"
+   "scene": 10
   },
   {
    "scene": 4,
    "title": "Level 1: house 2 (blue)"
   },
   {
-   "scene": 2,
-   "title": "Level 1: the street"
+   "scene": 10
   },
   {
    "scene": 5,
    "title": "Level 1: house 3 (green)"
   },
   {
-   "scene": 2,
-   "title": "Level 1: the street"
+   "scene": 10
   },
   {
    "scene": 6,
@@ -101,29 +98,26 @@
    "title": "Level 2: the wood room"
   },
   {
-   "scene": 6,
-   "title": "Level 2: the square"
+   "scene": 11
   },
   {
    "scene": 8,
    "title": "Level 2: the ice room"
   },
   {
-   "scene": 6,
-   "title": "Level 2: the square"
+   "scene": 11
   },
   {
    "scene": 9,
    "title": "Level 2: the lava room"
   },
   {
-   "scene": 6,
-   "title": "Level 2: the square"
+   "scene": 11
   }
  ],
  "timeline": {
   "fps": 60,
-  "frames": 13306,
+  "frames": 11887,
   "chapters": [
    {
     "title": "Opening",
@@ -147,43 +141,43 @@
    },
    {
     "title": "Level 1: house 2 (blue)",
-    "frame": 3854,
-    "time": 64233.33333332971
+    "frame": 3617,
+    "time": 60283.33333333029
    },
    {
     "title": "Level 1: house 3 (green)",
-    "frame": 4869,
-    "time": 81150.00000000073
+    "frame": 4396,
+    "time": 73266.6666666651
    },
    {
     "title": "Level 2: the square",
-    "frame": 6098,
-    "time": 101633.33333334002
+    "frame": 5389,
+    "time": 89816.66666666992
    },
    {
     "title": "Level 2: the wood room",
-    "frame": 6733,
-    "time": 112216.66666667644
+    "frame": 6024,
+    "time": 100400.00000000633
    },
    {
     "title": "Level 2: the ice room",
-    "frame": 7725,
-    "time": 128750.00000001458
+    "frame": 6780,
+    "time": 113000.00000001
    },
    {
     "title": "Level 2: the lava room",
-    "frame": 8741,
-    "time": 145683.3333333401
+    "frame": 7559,
+    "time": 125983.33333334711
    },
    {
     "title": "Ending",
-    "frame": 10020,
-    "time": 166999.99999999435
+    "frame": 8601,
+    "time": 143350.00000000812
    },
    {
     "title": "Credits",
-    "frame": 12232,
-    "time": 203866.66666663956
+    "frame": 10813,
+    "time": 180216.66666665333
    }
   ]
  }

@@ -1,8 +1,10 @@
 // samehs.gam: scene 0 is the title and menu, scene 1 the endings, then for each level a hub scene
 // (the street, the square) followed by one scene for each of its three doors. The three door scenes
 // name the very same room map and blocks and a different palette file in slot 0; only that differs.
+// Last come the hubs again without their cards, for the rooms to come back to.
 import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, newGame, type Game, type Scene } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { ORIGIN } from '../../kit/starter/map';
+import { addReturnScenes } from '../../kit/starter/returnScenes';
 import type { Level } from './levels';
 
 /** The title of the game, as the .GAM names it (19 characters at most). */
@@ -75,6 +77,12 @@ export function buildGame(levels: Level[]): Game {
     // the room scenes: each one's door comes back to the hub, just past the door it came in by
     l.room.pals.forEach((pal, k) => add(l.room.scenes[k], pal, l.room.file, '', [link(hub, l.room.exit, l.hub.landings[k])]));
   });
+
+  // a room comes back to its hub's copy without the card (kit/starter/returnScenes.ts), so the card shows once
+  addReturnScenes(
+    game,
+    levels.map((_, i) => hubScene(i)),
+  );
 
   title.links[0] = link(2, [0, 0], levels[0].hub.enter);
   return game;
