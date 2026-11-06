@@ -75,6 +75,7 @@ game folder opens in the browser unchanged.
   safe, its dial and the dog treat store inside), from Lewis's description of his childhood
   bank. It also built the Starter Ride Along (`games/ride-along/`: its pictures, levels, song,
   signs and bot). Notes kept for Lewis stay out of the repository.
+- **Hermes OpenAI Codex GPT-6.1 Sol** (OpenAI), directed by Lewis, revised Slow Computers' crowd layout and cutaway cave pixels, its lesson notes and its gameplay regression checks (`games/slow-computers/`). The original game credits remain.
 - **Reviews and a sounding board**: Lewis has also had **ChatGPT-6.1 Sol** (OpenAI) review
   the fork, TURBO BUTTON and the games' content, and talked ideas through with **Google
   Gemini 3** (Google): 1990s nostalgia and his own memories, the home-office supplies of the

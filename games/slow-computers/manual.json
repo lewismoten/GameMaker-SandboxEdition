@@ -49,7 +49,7 @@
     },
     {
       "head": "Level 2: A Crowd",
-      "html": "<h1>Level 2: A Crowd</h1><p>Thirty-six friendly monsters share one screen: ten gumdrops on the ground, eight snails on a plank and eighteen bees in three rows. They are all harmless: you walk through them.</p><p>Walk into the middle of the crowd on <b>286</b> and watch yourself. Your walking slows down, and so does the bees' flapping and the snails' creep, because the game could not finish a round of moving and drawing 36 monsters in time. On a <b>386</b> you will see a little less; on a <b>486</b> and <b>Today</b> nothing changes.</p>"
+      "html": "<h1>Level 2: A Crowd</h1><p>Thirty-six friendly monsters share one screen: ten gumdrops on the grass, eight snails in a lit cave below it and eighteen bees in two low rows. The cave is a cutaway: its solid grass roof carries you safely over the snails. They are all harmless: you walk through them.</p><p>Walk into the middle of the crowd on <b>286</b> and watch yourself. Your walking slows down, and so does the bees' flapping and the snails' creep, because the game could not finish a round of moving and drawing 36 monsters in time. On a <b>386</b> you will see a little less; on a <b>486</b> and <b>Today</b> nothing changes.</p>"
     },
     {
       "head": "How this level is made",

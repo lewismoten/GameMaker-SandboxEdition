@@ -24,5 +24,5 @@ export function finishMonsterPictures(mb: Book): Block[] {
 
 /** The .MON: the kit's three. */
 export function monsterSet(mb: Book): Monster[] {
-  return buildMonsters(mb);
+  return buildMonsters(mb, { buzzer: 1 });
 }
