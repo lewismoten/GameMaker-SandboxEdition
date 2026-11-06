@@ -34,6 +34,9 @@ games keep their incremental cache entries before the parent fails. Tests: `web/
 (fake elapsed-time boundaries and a native timeout). `heavy.mjs` gates admission only; it has no build-duration timeout.
 
 Site build-time tools remain in [`web/scripts`](../web/scripts/README.md).
+The [headless PLAYGAME capture harness](../tools/dosbox-286/README.md) records WAV
+and raw OPL audio under DOSBox-X's 286 instruction model at fixed cycles; it needs
+no display or manual input.
 
 [`player-diff/`](player-diff/README.md) (Python, `uv run scripts/player-diff/gmpdiff.py all`)
 is research tooling, not part of a build. It inventories historical Game-Maker players,
