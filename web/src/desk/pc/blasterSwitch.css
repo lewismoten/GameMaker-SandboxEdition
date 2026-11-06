@@ -1,6 +1,8 @@
 /* the Sound Boaster switch on the right speaker (desk/pc/blasterSwitch.ts): its name printed
    on the plastic and a small slide switch, ON to the right */
 .sb-switch {
+  /* The speaker scales with the PC; the switch still needs a finger-sized target. */
+  min-height: 26px;
   display: flex;
   align-items: center;
   justify-content: space-between;
