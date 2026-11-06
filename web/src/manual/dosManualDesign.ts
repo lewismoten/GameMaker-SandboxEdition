@@ -128,9 +128,11 @@ export function designPages(shots: GameShot[]): BookletPage[] {
       is a minute, and the longest wait, 9999 ticks, is about nine minutes.</div>
       <p class="see"><i>On the Sample CD:</i> <code>CLOCK</code>, <code>COUNTDWN</code>, <code>WARNFRST</code> and <code>BLOCKBRN</code> (gates that take turns) use time.</p>
       <p class="see"><i>A hit, a lamp and a storm sky that stay easy on the eyes are on the Sample CD:</i> <code>FLASHSAF</code>.</p>
+      <p class="see"><i>A storm made of blocks, a sky and a bolt that swap to lit twins on one clock and thunder written into the song, are on the Sample CD:</i> <code>LIGHTNIN</code>.</p>
       <p class="see"><i>What slows a game on an old PC (a long sound, a crowd of monsters, a sky that moves) is on the Sample CD:</i> <code>SLOWPC</code>.</p>
       <p class="see"><i>Stars that twinkle out of step, by loops with different times, are on the Sample CD:</i> <code>TWINKLE</code>.</p>
       <p class="see"><i>Flames, flags and a waterfall that move in place are on the Sample CD:</i> <code>FLICKER</code>.</p>
+      <p class="see"><i>Far hills that wobble in the heat, each row of blocks a loop started a picture behind the row under it, and a mirage that hides when you come near, are on the Sample CD:</i> <code>HEATWAVE</code>.</p>
       <p class="see"><i>Light made of paint, in rings of brighter blocks, a trail a touch leaves and a hall a clock lights, is on the Sample CD:</i> <code>LIGHTOUT</code>.</p>
       <p class="see"><i>Shadows painted into the pictures, solid or dithered, a hop that shrinks one and a bee over a shadow block of its own, are on the Sample CD:</i> <code>SHADOWS</code>.</p>
       <p class="see"><i>Beams of light and drifting fog painted in dots, so the wall and the hills show through, and lanterns that carry a glow, are on the Sample CD:</i> <code>BEAMS</code>.</p>
@@ -146,7 +148,7 @@ export function designPages(shots: GameShot[]): BookletPage[] {
       counter (arrows, for instance). Set the hero\u2019s hit points, lives and starting
       inventory (up to ten objects). A frame can give birth to a monster: that is how a hero
       shoots.</p>
-      <p class="see"><i>On the Sample CD:</i> <code>THROWIT</code>, <code>MANYWEAP</code>, <code>PICKITUP</code>, <code>KITMOVES</code>, <code>HOMEKEYS</code>, <code>KITDUCK</code>, <code>CHOOSE</code>, <code>WHEEL</code>, <code>RIDEALNG</code> (a rocket and a canoe that keep moving by themselves), <code>HEALTH</code>, <code>POWERUP</code>, <code>SLIDE</code>, <code>BOOTS</code>, <code>GRAVITY</code>, <code>SWIM</code>, <code>GUSTS</code> and <code>DROPDOWN</code> (a monster that falls when the crate under it breaks).</p>
+      <p class="see"><i>On the Sample CD:</i> <code>THROWIT</code>, <code>MANYWEAP</code>, <code>PICKITUP</code>, <code>KITMOVES</code>, <code>HOMEKEYS</code>, <code>KITDUCK</code>, <code>CHOOSE</code>, <code>WHEEL</code>, <code>RIDEALNG</code> (a rocket and a canoe that keep moving by themselves), <code>HEALTH</code>, <code>POWERUP</code>, <code>SLIDE</code>, <code>BOOTS</code>, <code>GRAVITY</code>, <code>SWIM</code>, <code>GUSTS</code>, <code>DROPDOWN</code> (a monster that falls when the crate under it breaks) and <code>QUIKSAND</code> (sand that gives way where you stand still).</p>
       <h3>Monster Maker</h3>
       <p>A monster set has up to 64 monsters of up to 20 frames each. Each one moves toward the
       hero, away, at random or along a path you draw; it can attack when the hero comes close,

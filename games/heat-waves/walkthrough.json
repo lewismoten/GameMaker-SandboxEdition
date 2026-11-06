@@ -1,0 +1,77 @@
+{
+ "version": 1,
+ "game": "heat-waves",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "f00PzStN"
+  },
+  {
+   "scene": 3,
+   "keys": "N00FzQNNBc0DTQXNA00FzQNNBc0DTQXNA00FzQNNBc0DTQXNA00FzQNNBc0DTQXNA00FzQNNBc0DTQXNA00FzQNNBc0DTQXNA00FzQNNBc0DTQXNK00FzQNNBc0DTQXNA00FzQNNBc0DTQXNA00FzQNNBc0DTQXNA00FzQNNBc0DTQXNA00FzQNNBc0DTQXNA00="
+  },
+  {
+   "scene": 4,
+   "keys": "N00KzStN"
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: The Wobble"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: The Mirage"
+  },
+  {
+   "scene": 4,
+   "title": "Level 3: Cool Evening"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 8314,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 913,
+    "time": 15216.666666666471
+   },
+   {
+    "title": "Level 1: The Wobble",
+    "frame": 1661,
+    "time": 27683.333333333918
+   },
+   {
+    "title": "Level 2: The Mirage",
+    "frame": 2652,
+    "time": 44199.999999999294
+   },
+   {
+    "title": "Level 3: Cool Evening",
+    "frame": 4280,
+    "time": 71333.3333333312
+   },
+   {
+    "title": "Ending",
+    "frame": 5034,
+    "time": 83900.00000000153
+   },
+   {
+    "title": "Credits",
+    "frame": 7241,
+    "time": 120683.33333334557
+   }
+  ]
+ }
+}

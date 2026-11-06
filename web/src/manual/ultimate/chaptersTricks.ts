@@ -33,8 +33,12 @@ export const TRICKS: Chapter = {
     Two pictures of rising streaks swap every 3 ticks, so the column looks like it moves.</li>
     <li><b>A current.</b> Creek blocks pull left. The deep ones pull left <i>and</i> up, so a
     swimmer floats and is carried back downstream.</li>
+    <li><b>Quicksand.</b> A solid block that becomes the next one when touched, in a long
+    chain that ends in an open hole. Standing on a block touches it every tick, so the sand
+    sinks only where the hero stands still.</li>
   </ul>
   ${onCd('GUSTS')}
+  ${onCd('QUIKSAND')}
   <h2>Vehicles are characters</h2>
   <p>Game-Maker has no vehicles, but each scene names its own character file in the
   Integrator. A car, a sled or a submarine is just another <code>.CHR</code>, and a link into a

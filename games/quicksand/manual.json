@@ -1,0 +1,75 @@
+{
+  "title": "Quicksand",
+  "howDoI": [
+    {
+      "id": "sink",
+      "q": "How do I make ground that sinks when you stand on it?",
+      "scene": 2,
+      "x": 26,
+      "y": 20,
+      "level": 1
+    },
+    {
+      "id": "chain",
+      "q": "How do I make a block change each time it is touched?",
+      "scene": 2,
+      "x": 26,
+      "y": 20,
+      "level": 1
+    },
+    {
+      "id": "fall",
+      "q": "How do I let the player drop through a block?",
+      "scene": 2,
+      "x": 26,
+      "y": 20,
+      "level": 1
+    },
+    {
+      "id": "stones",
+      "q": "How do I make a safe place to rest?",
+      "scene": 3,
+      "x": 29,
+      "y": 20,
+      "level": 2
+    },
+    {
+      "id": "faster",
+      "q": "How do I make one patch sink faster than another?",
+      "scene": 3,
+      "x": 37,
+      "y": 20,
+      "level": 2
+    }
+  ],
+  "pages": [
+    {
+      "head": "Welcome",
+      "html": "<h1>Welcome</h1><p><b>Quicksand</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has two short levels and nothing in it can cost a life.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each thing in the levels is made.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. <kbd>Space</kbd> jumps. <kbd>F2</kbd> shows your lives, hit points and score.</p><p>Sand here sinks only where you stand. Stand still and the sand under your feet ripples, then gives way, and you drop into a hole one block deep. Jump out and keep walking.</p>"
+    },
+    {
+      "head": "Level 1: Don't Stand Still",
+      "html": "<h1>Level 1: Don't Stand Still</h1><p>Past the two signs is a patch of sand between two grassy banks. Walk onto it and stop. Under Lena's feet the sand ripples: one ring, then two, then three with grains sliding in. About two seconds after she stopped, the sand gives way and she drops into a hole a block deep. Press <kbd>Space</kbd> to jump out.</p><p>The first sign says that standing still makes sand sink. The second says to keep walking, or jump out. Walk across without stopping and the sand holds; it only keeps a faint ripple where you went. There are four coins, two over the sand and two past it, worth ten points each.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 1 is made</h1><ul><li><b>Sand is a chain of blocks.</b> Open <b>one.bbl</b> in the blocks editor and pick <b>sand.0</b>, the smooth sand. Its <b>Becomes when touched</b> block is <b>sand.1</b>, and <b>sand.1</b> becomes <b>sand.2</b>, and so on to <b>sand.35</b>, which becomes <b>sand.hole</b>. That is 36 blocks in a row.</li><li><b>Standing on a block touches it.</b> Game-Maker pulls the player down on every tick, and checks the block they would move into. Standing on sand, that is the sand block under the feet, so it is touched about 18 times a second and moves one step down its chain each time. Walking past, each block is under you for only a few ticks.</li><li><b>Four pictures, 36 blocks.</b> Each picture is used by 9 blocks in a row: smooth, one ring, two rings, three rings and a swirl. That is how the sand shows you how close it is to giving way.</li><li><b>Only the block you touch changes.</b> A touch changes one cell of the map, not every block of its kind, so the sand sinks only where Lena stands.</li><li><b>The hole is a block that is not solid.</b> Every sand block in the chain is solid, so you stand on it. <b>sand.hole</b> is not, and pulls down like the sky, so Lena drops into it.</li><li><b>The bed.</b> Under the sand is <b>bed</b>, firm sand that is solid and never changes, so a hole is only one block deep and a jump gets you out.</li><li><b>The walls.</b> A hedge closes the room in at both ends.</li></ul>"
+    },
+    {
+      "head": "Level 2: Stepping Stones",
+      "html": "<h1>Level 2: Stepping Stones</h1><p>A wide patch of sand, with three gray stones across it and a coin over each. The stones never sink, so stand on one as long as you like. Between the second and third stones the sand is dark and wet. It gives way in well under a second, so cross it without stopping.</p><p>The first sign says stones never sink. The second says dark wet sand sinks faster. If you do drop into a hole, jump out and hurry on to the next stone.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 2 is made</h1><ul><li><b>A stone is a plain solid block.</b> <b>stone</b> has no <b>Becomes when touched</b> block, so touching it changes nothing and it never sinks.</li><li><b>Wet sand has a shorter chain.</b> Open <b>two.bbl</b>. The dry sand goes <b>sand.0</b> to <b>sand.35</b>, 36 blocks. The wet sand goes <b>wet.0</b> to <b>wet.19</b>, only 20 blocks, 5 for each picture, so the same standing still runs it down sooner.</li><li><b>Same pictures, other colors.</b> The wet sand's pictures are the dry sand's, drawn in darker browns with a shine, so it looks like the same stuff, only wet.</li><li><b>A coin on each stone.</b> A coin is a reason to stop, and the stones are the safe place to stop.</li><li><b>The walls.</b> A hedge closes the room in at both ends.</li></ul>"
+    },
+    {
+      "head": "What Game-Maker cannot do",
+      "html": "<h1>What Game-Maker cannot do</h1><p>Quicksand in Game-Maker is a chain of blocks that change when touched. Some things you may expect are not there:</p><ul><li>It cannot let the player sink slowly into sand. Blocks are drawn behind the player, so sand can never cover Lena's legs. The rings are only pictures, and when the last block turns into a hole she drops a whole block at once.</li><li>It cannot give one block its own clock. A block timer changes every block of its kind on the same tick, all over the map. So the sand counts touches instead of time.</li><li>It cannot fill a hole back in. A hole stays a hole, and a ripple you leave behind stays too, until the level starts again.</li><li>It cannot slow the player's walking. Sand can only pull, like any block's Gravity, so here it does not slow you down at all.</li><li>It cannot pull the player under. Being caught here only means a short drop and a jump out.</li></ul>"
+    },
+    {
+      "head": "Make it yours",
+      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>In <b>one.bbl</b>, set <b>sand.0</b>'s <b>Becomes when touched</b> block to <b>sand.27</b>. The chain is shorter, and the sand gives way in about half a second.</li><li>Set a sand block's <b>Becomes when touched</b> to itself, and that block stops the chain: the sand never gives way.</li><li>Give <b>sand.hole</b> a score of 10, and dropping into a hole earns points.</li><li>Draw your own ripple pictures in the blocks editor.</li></ul><p>The home page's <b>Starters</b> tab has more small games like this one.</p>"
+    }
+  ]
+}
