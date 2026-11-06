@@ -18,6 +18,9 @@ export const walkAisle =
       const out = await bot.walk(x, what);
       if (out) throw new Error(`${what}: ${out}\n${bot.log.slice(-8).join('\n')}`);
     }
+    // Let the whole audience cheer in view before collecting the certificate (about five seconds).
+    const pause = await bot.wait(90);
+    if (pause) throw new Error(`the ceremony: ${pause}`);
     const out = await bot.walk(lectern, 'the certificate');
     if (out !== 'link' && out !== 'end') throw new Error(`the certificate: ${out ?? 'still here'}\n${bot.log.slice(-8).join('\n')}`);
   };

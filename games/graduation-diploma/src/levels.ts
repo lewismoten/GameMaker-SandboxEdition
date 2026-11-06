@@ -1,6 +1,6 @@
 // THE SANDBOX DIPLOMA's one level, "The Long Aisle": the first graduation's hall made bigger (88 x 13 blocks, floor row 10).
 //   x  2        the doorway you start in
-//   x  3..63    the balcony: all eight helpers and the Cast's guests, in turn (Teddy has a small diploma beside him)
+//   x 70..81    the compact two-tier balcony: all eight helpers and fourteen Cast guests (Teddy has a small diploma beside him)
 //   x  3..56    (row 1) a one-word banner for each of the six stages (STEPS, PUSHING, HEROES, STORY, WIRING, BLOCKS), high on the wall, and confetti falling in the gaps
 //   x 68..86    the stage: the lectern at x 74 with the diploma, Doc Leo at x 76, THE CHEZ parked at x 80
 // Touching the diploma is the door out: the link to the ending. The first level is the arrival (graduationArrive.ts), a nod to one lesson of each stage.
@@ -10,11 +10,12 @@ import { Grid } from '../../kit/starter/grid';
 import { ORIGIN } from '../../kit/starter/map';
 import { PULL } from '../../kit/starter/book';
 import { chezBlocks } from '../../kit/starter/graduationCameo';
-import { HallMap, buildBlocks, buildPalette, stamp, type Level } from '../../kit/starter/graduationLevel';
+import { BALCONY_RAIL, HallMap, buildBlocks, buildPalette, stamp, type Level } from '../../kit/starter/graduationLevel';
 import { ARRIVE, buildArrival } from '../../kit/starter/graduationArrive';
 import { skyOf, type Pal } from '../../kit/starter/palette';
 import { addSign, type Sign } from '../../kit/starter/sign';
 import type { Timed } from '../../kit/starter/graduationHall';
+import { CONFETTI } from '../../kit/starter/graduationConfetti';
 import { cfg } from './config';
 
 export const W = 88;
@@ -80,12 +81,18 @@ export function buildLevels() {
   }
   for (let y = 0; y < H; y++) m.set(0, y, 'curtainEdge').set(W - 1, y, 'curtainEdge');
   for (let x = 1; x < W - 1; x++) m.set(x, 0, 'valance').set(x, 1, chain[x % 2]);
-  // the wall: a banner for each stage, confetti in some of the gaps between them
+  // the wall: a banner for each stage, confetti in the visible row above the crowd
   const bannerAt = (x: number): boolean => STAGES.some((_t, i) => x >= 3 + i * 10 && x < 7 + i * 10);
-  for (let x = 2; x < STAGE_FROM - 1; x++) if (!bannerAt(x) && x % 2 === 0) m.set(x, 2 + (x % 4 === 0 ? 0 : 1), chain[(x >> 1) % 2]);
+  for (let x = 2; x < STAGE_FROM - 1; x++) if (!bannerAt(x) && x % 2 === 0) m.set(x, BALCONY_RAIL - 2, chain[(x >> 1) % 2]);
   banners.forEach((b, i) => stamp(m, b, 3 + i * 10, 1, false));
-  // the balcony: a rail and its front, the helpers and the guests in turn along it, Teddy's diploma beside him
-  for (let x = 2; x < STAGE_FROM - 1; x++) m.set(x, 5, 'rail').set(x, 6, 'riser');
+  // Clear-backed paper falls past the guests and rail without replacing their pictures.
+  for (let x = 3, i = 0; x < W - 2; x += 5, i++) m.mon(CONFETTI[i % CONFETTI.length], x, BALCONY_RAIL - 2);
+  // Two tiers beside the lectern, not a long row left behind by the ceremony camera.
+  // Twelve columns (local 70..81) fit the measured world x=1558..1581 camera.
+  for (let x = 70; x < 82; x++) {
+    m.set(x, BALCONY_RAIL, 'rail');
+    m.set(x, BALCONY_RAIL + 2, 'rail').set(x, BALCONY_RAIL + 3, 'riser');
+  }
   const crowd: (string | string[])[] = [];
   const guests = hall.cameos.slice();
   hall.helpers.forEach((h, i) => {
@@ -97,9 +104,10 @@ export function buildLevels() {
   });
   while (guests.length) crowd.push(guests.shift()!);
   crowd.forEach((one, i) => {
-    const x = 4 + i * 3;
+    const x = 70 + (i % 12);
+    const rail = BALCONY_RAIL + Math.floor(i / 12) * 2;
     const parts = typeof one === 'string' ? [one] : one;
-    parts.forEach((name, k) => m.set(x, 5 - parts.length + k, name));
+    parts.forEach((name, k) => m.set(x, rail - parts.length + k, name));
   });
   // the stage
   for (let y = 2; y < FLOOR; y++) for (const x of [STAGE_FROM, STAGE_FROM + 1, W - 3, W - 2]) m.set(x, y, 'drape');
