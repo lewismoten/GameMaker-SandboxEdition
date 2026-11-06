@@ -261,6 +261,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Fixed
 
+- In the Starter Beat the Clock the countdown bar is on screen while you play: it sits along the top of the view, placed often enough that one whole bar is always in sight, with the first clock set into the brick wall at the start.
 - Two Starters had art a child could read the wrong way: Ride Along's title stars no longer climb out of the hero like a stream, and Under the Hood's second level no longer has a plus sign made of green panels
 
 - Kit's Moves: the three dash gaps are sized to the moves their signs name (one dash, a hop with a dash, a hop with two dashes), and the signs now say to keep Right held.
