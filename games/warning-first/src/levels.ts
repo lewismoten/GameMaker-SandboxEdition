@@ -2,10 +2,10 @@
 // games/kit/starter/map.ts for what the letters mean), then given its signs and its clocks.
 //
 //   1. Rumble, Then Puff: three fog vents in the ground take turns. Each rests, rumbles (the
-//      warning: the grate hops, shake marks appear, a few wisps rise), then puffs fog two blocks
+//      warning: the grate shakes side to side, shake marks appear, a few wisps rise), then puffs fog two blocks
 //      high that stings a little, and rests again. Wait for the puff to end, then cross.
 //   2. Flicker, Then Gone: two plank bridges over a soft pit. A plank is solid, then flickers
-//      (still solid, striped: the warning), then is gone, then is back. Cross while it is solid;
+//      (still solid, cracked and blinking gold: the warning), then is gone, then is back. Cross while it is solid;
 //      fall in and you land on a mat and hop out.
 //
 // Every clock starts when the scene loads and nothing the player does can change one (the
@@ -19,7 +19,7 @@ import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
 import { addSign, type Sign } from '../../kit/starter/sign';
 import { MOODS, fog, grate, mat, pit, plank, type Mood } from './props';
-import { FLICKER, GONE, PLANK_FIRST, PUFF, PUFF_HURT, REST, RUMBLE, SOLID, VENT_FIRST } from './timing';
+import { FLICKER_STEPS, GONE, PLANK_FIRST, PUFF, PUFF_HURT, REST, RUMBLE, SHAKE_STEPS, SOLID, VENT_FIRST } from './timing';
 
 /** A block that turns into another after some ticks. */
 interface Timed {
@@ -108,10 +108,18 @@ function rumbleThenPuff(pal: Pal): Level {
         for (const m of MOODS) book.add(ventBlock(k, fam, m), cells[cell](m), fam === 'h' ? AIR : rules(m));
         timed.push(
           { name: ventBlock(k, fam, 'start'), next: ventBlock(k, fam, 'rumble'), ticks: VENT_FIRST[k] },
-          { name: ventBlock(k, fam, 'rumble'), next: ventBlock(k, fam, 'puff'), ticks: RUMBLE },
           { name: ventBlock(k, fam, 'puff'), next: ventBlock(k, fam, 'rest'), ticks: PUFF },
           { name: ventBlock(k, fam, 'rest'), next: ventBlock(k, fam, 'rumble'), ticks: REST },
         );
+        if (cell !== 'g') timed.push({ name: ventBlock(k, fam, 'rumble'), next: ventBlock(k, fam, 'puff'), ticks: RUMBLE });
+        else {
+          // the grate shakes: rumble, rumble2, rumble3... side to side, then the puff, on the fog's clock
+          const steps = SHAKE_STEPS.map((_, i) => (i ? `${ventBlock(k, 'g', 'rumble')}${i + 1}` : ventBlock(k, 'g', 'rumble')));
+          steps.forEach((name, i) => {
+            if (i) book.add(name, grate(pal, 'rumble', (i % 2) as 0 | 1), rules('rumble'));
+            timed.push({ name, next: steps[i + 1] ?? ventBlock(k, 'g', 'puff'), ticks: SHAKE_STEPS[i] });
+          });
+        }
       }
     }
   }
@@ -148,14 +156,19 @@ function flickerThenGone(pal: Pal): Level {
   book.add('pit', pit(pal), AIR);
   book.add('mat', mat(pal), { solid: SOLID_ALL });
   BRIDGE_X.forEach((_, k) => {
-    book.add(`p${k}.start`, plank(pal, false), { solid: SOLID_ALL, grav: PULL.down });
-    book.add(`p${k}.solid`, plank(pal, false), { solid: SOLID_ALL, grav: PULL.down });
-    book.add(`p${k}.flicker`, plank(pal, true), { solid: SOLID_ALL, grav: PULL.down });
+    const plankRules = { solid: SOLID_ALL, grav: PULL.down };
+    book.add(`p${k}.start`, plank(pal, 'solid'), plankRules);
+    book.add(`p${k}.solid`, plank(pal, 'solid'), plankRules);
+    // the flicker: p0.flicker (cracked), p0.flicker2 (cracked and lit gold), p0.flicker3 (cracked)... then gone
+    const steps = FLICKER_STEPS.map((_, i) => `p${k}.flicker${i ? i + 1 : ''}`);
+    steps.forEach((name, i) => {
+      book.add(name, plank(pal, i % 2 ? 'lit' : 'cracked'), plankRules);
+      timed.push({ name, next: steps[i + 1] ?? `p${k}.gone`, ticks: FLICKER_STEPS[i] });
+    });
     book.add(`p${k}.gone`, pit(pal), AIR);
     timed.push(
-      { name: `p${k}.start`, next: `p${k}.flicker`, ticks: PLANK_FIRST[k] },
-      { name: `p${k}.solid`, next: `p${k}.flicker`, ticks: SOLID },
-      { name: `p${k}.flicker`, next: `p${k}.gone`, ticks: FLICKER },
+      { name: `p${k}.start`, next: steps[0], ticks: PLANK_FIRST[k] },
+      { name: `p${k}.solid`, next: steps[0], ticks: SOLID },
       { name: `p${k}.gone`, next: `p${k}.solid`, ticks: GONE },
     );
   });

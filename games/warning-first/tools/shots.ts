@@ -1,4 +1,4 @@
-// Pictures of the lessons (never on the disk), for the progress shots: a vent at rest, rumbling and puffing, and a bridge solid, flickering and gone.
+// Pictures of the lessons (never on the disk), for the progress shots: a vent at rest, rumbling and puffing, and a bridge solid, flickering (both pictures) and gone.
 //   cd web && npx vite-node ../games/warning-first/tools/shots.ts <outDir>
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
@@ -50,5 +50,6 @@ save('2-rumble.png', region(one, at(one, 'rumble'), 8, 0, 16, kit(14)));
 save('3-puff.png', region(one, at(one, 'puff'), 8, 0, 16, kit(14)));
 save('4-solid.png', region(two, at(two, 'solid'), 4, 4, 16, kit(8)));
 save('5-flicker.png', region(two, at(two, 'flicker'), 4, 4, 16, kit(11)));
+save('5-flicker-lit.png', region(two, at(two, 'flicker2'), 4, 4, 16, kit(11)));
 save('6-gone.png', region(two, at(two, 'gone'), 4, 4, 16, kit(11, PIT_ROWS[0])));
 console.log(`shots in ${out}`);

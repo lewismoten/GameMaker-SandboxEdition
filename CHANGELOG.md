@@ -266,6 +266,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 - Most Sandbox and Bard of Bizarre games draw their text pages in a dark purple their players choose, so story, how-to and level pages are easy to read on light paper. Quest for the Round Tuit uses its talk pages' dark plum on every page, and in Maximus: The Hundred Worlds the F2 status line, F9 words and high-score name are amber instead of a dim blue on black.
 - Graduation: the "wait for zero" countdown now starts at 9 and counts slowly enough that you reach the door with time left to watch it hit zero, and Brother Camel is shrunk to fit the balcony so his head is no longer off the top of the screen.
 
+- Warning First's warnings move as the signs say: a plank bridge really flickers before it goes (it cracks and blinks gold, a gentle two or three times a second, in place of a still striped picture whose stripes broke at each plank), and a fog vent's grate shakes from side to side while it rumbles.
 - On the Starters tab, Show: Done also lists the graduations you have earned, after the Starters you have finished, and Show: Not done yet lists the locked ones as well as the ones ready to graduate, so an earned graduation no longer disappears under a filter.
 - Say Something, Everybody Talks, Cutscenes, Color Doors and The Same House: coming back from a talk, a tale, a gallery or a room no longer shows the level card again. It shows only when you first arrive.
 
