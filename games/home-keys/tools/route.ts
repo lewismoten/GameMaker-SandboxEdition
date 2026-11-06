@@ -1,10 +1,11 @@
 // The way through the game, as orders for the bot (kit/starter/bot.ts): the keys a person would press,
 // level by level, taking every coin on the way. Levels 1 and 2 and the way to the door in level 3 use only the
 // arrows, Space and Enter (check.ts asserts it from the keys the bot pressed). Level 3's extra coins on the
-// two shelves are a detour with E and then Q, and `play` can leave the detour out.
+// two shelves and the ledge are a detour with E and then Q, and `play` can leave the detour out.
 //   level 1: walk into a jelly (it holds), walk to the wall and jump, throw a star at each of two jellies
 //   level 2: Space, then Right held, across a gap with higher ground beyond, and across a wide gap
-//   level 3: the flat way to the door; with the detour, E leaps onto one shelf and Q onto the other
+//   level 3: the flat way to the door; with the detour, E leaps onto one shelf, Q from where E landed up to the
+//            ledge above it (then off its right end, back down onto the shelf), and Q onto the other shelf
 import type { Result, StarterBot } from '../../kit/starter/bot';
 import { SCAN } from '../../kit/starter/ids';
 import { ORIGIN } from '../../kit/starter/map';
@@ -122,11 +123,18 @@ export async function noDiagonal(bot: StarterBot): Promise<void> {
   await leave(bot, bot.walk(L2.exit, 'the exit'), 'the exit');
 }
 
-/** A leap with `key` (E or Q) from where Kit stands, then `dir` held in the air until he is `to` columns along; he must land on the shelf. */
-async function leapOnto(bot: StarterBot, key: number, dir: 'left' | 'right', shelf: readonly [number, number], what: string): Promise<void> {
+/** A leap with `key` (E or Q) from where Kit stands, nothing else held; he must land on the shelf (top row `topRow`). */
+async function leapOnto(
+  bot: StarterBot,
+  key: number,
+  dir: 'left' | 'right',
+  shelf: readonly [number, number],
+  what: string,
+  topRow: number = L3.shelfTop,
+): Promise<void> {
   await must(bot, holdFor(bot, key, 2), `leap to ${what}`);
   await must(bot, bot.land(), `landing on ${what}`);
-  const top = L3.shelfTop - 1;
+  const top = topRow - 1;
   bot.say(`${what}: landed at column ${col(bot).toFixed(1)}, row ${row(bot).toFixed(1)}`);
   if (row(bot) > top + 0.2 || col(bot) < shelf[0] - 0.5 || col(bot) > shelf[1] + 1)
     throw new Error(`Kit should stand on ${what}; he is at ${col(bot).toFixed(1)}, ${row(bot).toFixed(1)}`);
@@ -145,7 +153,11 @@ export async function leapShelves(bot: StarterBot, o: Options = { detour: true }
     // a plain jump is not enough: what the sign says is a high place
     await must(bot, bot.walk(e0 - 1, 'the shelf'), 'to the shelf');
     await leapOnto(bot, SCAN_E, 'right', L3.shelfE, 'the first shelf');
-    await must(bot, bot.walk(e1 + 1, 'along the shelf'), 'along the shelf');
+    // from where E landed, the ledge is in sight above and to the left: Q, then along it and off its right end onto the shelf
+    await must(bot, bot.wait(LOOK / 2), 'a look up');
+    await leapOnto(bot, SCAN_Q, 'left', L3.ledgeQ, 'the ledge', L3.ledgeTop);
+    await must(bot, bot.walk(L3.ledgeQ[0], 'along the ledge'), 'along the ledge');
+    await must(bot, bot.walk(e1 + 1, 'along the shelf'), 'back down and along the shelf');
     await must(bot, bot.land(), 'down from the shelf');
   }
   await must(bot, bot.walk(29, 'the second sign'), 'to the sign');
@@ -158,7 +170,7 @@ export async function leapShelves(bot: StarterBot, o: Options = { detour: true }
     await must(bot, bot.land(), 'down from the shelf');
   }
   await must(bot, bot.walk(L3.coins[2][0] + 1, 'the last coin'), 'to the last coin');
-  const want = 10 * L3.coins.length + (o.detour ? 10 * (L3.coinsE.length + L3.coinsQ.length) : 0);
+  const want = 10 * L3.coins.length + (o.detour ? 10 * (L3.coinsE.length + L3.coinsLedge.length + L3.coinsQ.length) : 0);
   score(bot, from, want, 'level 3');
   await leave(bot, bot.walk(L3.exit, 'the exit'), 'the exit');
 }

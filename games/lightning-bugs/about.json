@@ -1,0 +1,53 @@
+{
+  "title": "Lightning Bugs",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "hero": "YANA",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.0",
+  "blurb": "Fireflies over a meadow at dusk, each blinking by itself. A firefly is a monster whose picture is mostly clear, with a soft glow of dots, a list of frames that stay up for different times (a long dark, then a quick flash) and a path that loops. But every monster starts at the same tick, so copies of one firefly blink and fly in step. Level 1 shows six copies first, then six fireflies that are each their own monster. Level 2 is a meadow of ten kinds, no two of a kind side by side. Play it, then open it in Game-Maker and change a firefly's times.",
+  "exe": "BUGS.EXE",
+  "dosName": "LITEBUGS",
+  "sound": "sb",
+  "label": {
+    "background": "#efe6f4",
+    "band": "#2a1e54",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "2 short levels",
+    "hours": 1,
+    "background": "#2a1e54",
+    "accent": "#c8f050",
+    "ink": "#ffffff",
+    "tagline": "Every light keeps its own time.",
+    "back": "A small explorer in a pink beanie walks a meadow at dusk while fireflies blink over the long grass. A firefly is a monster: a mostly clear picture with a glow of dots, frames that stay up for different times, and a looping path. But copies of one monster blink and fly in step, so a meadow that looks alive is many kinds, each with its own times and its own loop. Read the signs, then open the game in Game-Maker and change a firefly's times.",
+    "features": [
+      "Level 1 shows six copies of one firefly blinking as one, then six that are each their own",
+      "Level 2 is a meadow at dusk with fireflies of ten kinds",
+      "Signs in the levels say how it is done",
+      "Made to be copied and taken apart"
+    ],
+    "shots": [
+      ["step.map", 0, 3],
+      ["dusk.map", 24, 3]
+    ],
+    "rating": "Everyone"
+  },
+  "sameEverySide": [
+    "bugs.mon#0",
+    "bugs.mon#1",
+    "bugs.mon#2",
+    "bugs.mon#3",
+    "bugs.mon#4",
+    "bugs.mon#5",
+    "bugs.mon#6",
+    "bugs.mon#7",
+    "bugs.mon#8",
+    "bugs.mon#9",
+    "bugs.mon#10"
+  ]
+}

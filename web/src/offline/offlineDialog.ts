@@ -2,6 +2,7 @@
 // copy of the whole site costs, downloads it with a progress bar that can be stopped, then
 // says it is ready, with a way to remove it again (offlineCopy.ts does the work).
 import './offline.css';
+import { inArchiveReplay } from './replay';
 import { h, clear, modal } from '../editor/core/ui';
 import { gameCount, hasRoom, makeOffline, offlineStatus, removeOffline, sizeText, type OfflineStatus } from './offlineCopy';
 
@@ -11,6 +12,7 @@ function storageLine(s: OfflineStatus): string | null {
 }
 
 export async function openOfflineDialog(): Promise<void> {
+  if (inArchiveReplay()) return; // an archived copy cannot be kept offline from
   let stop = new AbortController();
   let busy = false;
   await modal<void>('Play offline', (close) => {

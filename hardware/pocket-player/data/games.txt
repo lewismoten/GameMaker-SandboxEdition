@@ -1,5 +1,6 @@
 first-steps|First Steps|2
 blocks-budget|150 Blocks|2
+around-the-room|Around the Room|4
 beams|Beams and Fog|3
 beat-the-clock|Beat the Clock|2
 boss-hits|Big Bug|2
@@ -22,12 +23,12 @@ dialog|Everybody Talks|4
 flash-safe|Flash Safe|3
 flicker|Flicker and Flow|3
 follower|Follow Me|2
-graduation-blocks|Graduation: Blocks and Showcase|1
-graduation-basics|Graduation: First Steps|1
-graduation-heroes|Graduation: Heroes and Foes|1
-graduation-moving|Graduation: Moving and Pushing|1
-graduation-story|Graduation: Story and Finish|1
-graduation-wiring|Graduation: Wiring and Worlds|1
+graduation-blocks|Graduation: Blocks and Showcase|2
+graduation-basics|Graduation: First Steps|2
+graduation-heroes|Graduation: Heroes and Foes|2
+graduation-moving|Graduation: Moving and Pushing|2
+graduation-story|Graduation: Story and Finish|2
+graduation-wiring|Graduation: Wiring and Worlds|2
 gravity-on-gravity-off|Gravity On, Gravity Off|2
 gusts|Gusts|2
 health-and-hearts|Health and Hearts|3
@@ -52,6 +53,7 @@ parallax|Parallax|2
 inventory|Pick It Up|2
 pictures-and-cartoons|Pictures and Cartoons|3
 power-up|Power Up|2
+ride-along|Ride Along|3
 road-tiles|Road Tiles|3
 dice|Roll the Dice|1
 room-to-room|Room to Room|8
@@ -76,7 +78,7 @@ take-the-wheel|Take the Wheel|2
 teach-test-twist|Teach, Test, Twist|3
 giant|The Giant|2
 same-house|The Same House|8
-graduation-diploma|The Sandbox Diploma|1
+graduation-diploma|The Sandbox Diploma|2
 scripted|The Show|2
 boss-phases|Three Phases|2
 three-tokens|Three Tokens|2

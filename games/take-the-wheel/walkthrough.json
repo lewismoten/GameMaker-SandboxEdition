@@ -27,7 +27,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 8479,
+  "frames": 8489,
   "chapters": [
    {
     "title": "Opening",
@@ -51,13 +51,13 @@
    },
    {
     "title": "Ending",
-    "frame": 5199,
-    "time": 86650.00000000233
+    "frame": 5209,
+    "time": 86816.66666666904
    },
    {
     "title": "Credits",
-    "frame": 7406,
-    "time": 123433.33333334637
+    "frame": 7416,
+    "time": 123600.00000001308
    }
   ]
  }

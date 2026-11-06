@@ -200,7 +200,10 @@ since their selected tests use synthetic format data and do not need the game di
 `achievementArt.ts` extracts the explicitly selected public games’ original 20×20 blocks
 into `src/achievements/blockArt.json`, with per-badge provenance and transparent pixels.
 Run `npx vite-node scripts/achievementArt.ts` after changing those source sprites. It
-rejects unknown achievement IDs, non-block dimensions and duplicate artwork. The browser
+rejects unknown achievement IDs, non-block dimensions and duplicate artwork. It never replaces a badge it did
+not make: `achievementArtKeep.ts` refreshes or removes only entries marked `"generator": "scripts/achievementArt.ts"`,
+copies every unmarked entry (hand-drawn badges, which are also listed in its `HAND_DRAWN`) through byte for byte with a
+logged `kept` line, and `--adopt <id>` deliberately hands an unmarked entry that is not hand-drawn to the generator. The browser
 loads these small embedded images without fetching game ZIPs. Art gaps and proposals
 are listed in `docs/achievement-art.md`. `achievementSets.ts` builds the games' block sets and the
 picks that name a block by achievement id; `achievementTiers.ts` draws the nine every-game tier

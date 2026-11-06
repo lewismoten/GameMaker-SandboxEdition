@@ -133,7 +133,9 @@ export function designPages(shots: GameShot[]): BookletPage[] {
       <p class="see"><i>Flames, flags and a waterfall that move in place are on the Sample CD:</i> <code>FLICKER</code>.</p>
       <p class="see"><i>Light made of paint, in rings of brighter blocks, a trail a touch leaves and a hall a clock lights, is on the Sample CD:</i> <code>LIGHTOUT</code>.</p>
       <p class="see"><i>Shadows painted into the pictures, solid or dithered, a hop that shrinks one and a bee over a shadow block of its own, are on the Sample CD:</i> <code>SHADOWS</code>.</p>
-      <p class="see"><i>Beams of light and drifting fog painted in dots, so the wall and the hills show through, and lanterns that carry a glow, are on the Sample CD:</i> <code>BEAMS</code>.</p>`,
+      <p class="see"><i>Beams of light and drifting fog painted in dots, so the wall and the hills show through, and lanterns that carry a glow, are on the Sample CD:</i> <code>BEAMS</code>.</p>
+      <p class="see"><i>Fireflies that blink by themselves, each its own monster with its own times and its own loop so no two keep in step, are on the Sample CD:</i> <code>LITEBUGS</code>.</p>
+      <p class="see"><i>Autumn leaves that tumble on their frames and swoop down on zigzag paths, dropped by branch blocks on timers and blown by a gust every tree keeps, are on the Sample CD:</i> <code>LEAVES</code>.</p>`,
     ),
     page(
       '3. Designing Games',
@@ -144,7 +146,7 @@ export function designPages(shots: GameShot[]): BookletPage[] {
       counter (arrows, for instance). Set the hero\u2019s hit points, lives and starting
       inventory (up to ten objects). A frame can give birth to a monster: that is how a hero
       shoots.</p>
-      <p class="see"><i>On the Sample CD:</i> <code>THROWIT</code>, <code>MANYWEAP</code>, <code>PICKITUP</code>, <code>KITMOVES</code>, <code>HOMEKEYS</code>, <code>KITDUCK</code>, <code>CHOOSE</code>, <code>WHEEL</code>, <code>HEALTH</code>, <code>POWERUP</code>, <code>SLIDE</code>, <code>BOOTS</code>, <code>GRAVITY</code>, <code>SWIM</code>, <code>GUSTS</code> and <code>DROPDOWN</code> (a monster that falls when the crate under it breaks).</p>
+      <p class="see"><i>On the Sample CD:</i> <code>THROWIT</code>, <code>MANYWEAP</code>, <code>PICKITUP</code>, <code>KITMOVES</code>, <code>HOMEKEYS</code>, <code>KITDUCK</code>, <code>CHOOSE</code>, <code>WHEEL</code>, <code>RIDEALNG</code> (a rocket and a canoe that keep moving by themselves), <code>HEALTH</code>, <code>POWERUP</code>, <code>SLIDE</code>, <code>BOOTS</code>, <code>GRAVITY</code>, <code>SWIM</code>, <code>GUSTS</code> and <code>DROPDOWN</code> (a monster that falls when the crate under it breaks).</p>
       <h3>Monster Maker</h3>
       <p>A monster set has up to 64 monsters of up to 20 frames each. Each one moves toward the
       hero, away, at random or along a path you draw; it can attack when the hero comes close,
@@ -152,6 +154,7 @@ export function designPages(shots: GameShot[]): BookletPage[] {
       after a time or never. A dying monster can leave another behind, and killing it can add to
       the score.</p>
       <p class="see"><i>On the Sample CD:</i> <code>MONSTERS</code>, <code>FOLLOWME</code>, <code>FLOCK</code>, <code>SEEN</code>, <code>BIGBUG</code>, <code>PHASES</code>, <code>GIANT</code>, <code>WHOWINS</code>, <code>HERETODY</code>, <code>SEEDNEST</code> and <code>POPUPS</code>.</p>
+      <p class="see"><i>Rockets that turn into their bursts at the end of their path, launchers that are blocks giving birth to them, and bursts nine monsters wide, are on the Sample CD:</i> <code>FIREWORK</code>.</p>
       <h3>Map Maker</h3>
       <p>Paint a map with background blocks and place up to 200 monsters on it (up to 50 are
       shown on the screen at once). <b>Z</b> zooms out to see the whole map. You can limit

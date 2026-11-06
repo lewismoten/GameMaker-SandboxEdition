@@ -21,7 +21,7 @@ picture; `host.ts` is what programs on it can use.
   midnight (00:00), dawn/sunrise (07:15), morning (09:00), day/noon (12:00),
   afternoon (14:00), dusk/sunset (16:54), evening (18:00), and night (22:00).
   These keep the current date and update the room immediately; `TIME RESET` restores local time.
-- `text/`: 80×25 text mode (`textScreen.ts`, `textInput.ts`, `cp437.ts`) and Game-Maker's text UI
+- `text/`: 80×25 text mode (`textScreen.ts`, `textInput.ts`, CP437 (from the engine package, `gamemaker-sandbox-engine/text/cp437`)) and Game-Maker's text UI
   (`textUi.ts`).
 - `gm.ts`: GM.EXE's menus. `gmReg/`: Game-Maker's registration and copy check (`chk.ts`,
   `registration.ts`, `copyCheck.ts`; `tourPretend.ts` makes the PC pretend to be unregistered while the guided tour plays); `regSide.ts` (loaded by `regSideLater.ts`, asked for by

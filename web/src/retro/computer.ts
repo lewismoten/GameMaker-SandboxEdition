@@ -6,6 +6,7 @@
 import { attr, COLS, ROWS } from './text/textScreen';
 import { biosId } from './biosId';
 import { type ProgramRef } from './dos/vfs';
+import { hasOkMsg, MENU_REFUSAL } from './dos/okMsg';
 import { swapsDisks } from './diskSwap';
 import { ProgramAborted } from './text/textInput';
 import type { OpenDesigner } from './host';
@@ -206,12 +207,41 @@ export class Computer extends ComputerFolders {
           // Game-Maker and its designers, the BBS: each loads when first run (see gm.ts)
           await (await import('./gm')).runGameMaker(this, 'main', _args);
           break;
+        case 'menu':
+          // MENU.C:38: without OKMSG and a third word it only says so, in place, and quits
+          if (!hasOkMsg(_args, 3)) {
+            this.screen.write(MENU_REFUSAL.x, MENU_REFUSAL.y, attr(MENU_REFUSAL.color, 0), MENU_REFUSAL.text);
+            break;
+          }
+          this.opts.onDriveAccess?.(this.shell.drive);
+          await (await import('./gm')).runGameMaker(this, 'menu', _args);
+          break;
         case 'playgame':
           this.screen.gameMakerColors();
           await (await import('./gm')).playgame(this);
-          this.screen.resetPalette();
-          this.screen.clear();
+          // PLAYGAME.C:596: RestorePal is set only without OKMSG, and GENC.C:82 then sets text mode
+          // again on exit (which clears the screen); started by GM, it leaves the screen to GM
+          if (!hasOkMsg(_args, 2)) {
+            this.screen.resetPalette();
+            this.screen.clear();
+          }
           break;
+        case 'image': {
+          // IMAGE.C:99 is the same test as PLAYGAME's
+          const loaded = await import('../vga/image').catch(() => undefined);
+          if (!loaded?.program) {
+            this.screen.print("Can't load IMAGE.EXE (offline?).\n");
+            break;
+          }
+          this.screen.gameMakerColors();
+          this.screen.clear(attr(7, 0));
+          await loaded.program.run(this);
+          if (!hasOkMsg(_args, 2)) {
+            this.screen.resetPalette();
+            this.screen.clear();
+          }
+          break;
+        }
         case 'terminal':
           await (await import('./bbs/bbs')).runTerminal(this, _args);
           break;
@@ -317,7 +347,7 @@ export class Computer extends ComputerFolders {
 
   /** Game-Maker (or one of its designers) is running. */
   get inGameMaker(): boolean {
-    return this.program === 'gm';
+    return this.program === 'gm' || this.program === 'menu';
   }
 
   /**

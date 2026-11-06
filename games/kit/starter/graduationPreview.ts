@@ -45,7 +45,9 @@ export function graduationPreview(id: string, dir: URL, built: ReturnType<typeof
 
   for (const l of levels) {
     const m = l.map.done();
-    const pic = renderRegion(m, bbl, mbl, buildMonsters(mb), ORIGIN, ORIGIN, l.map.width, l.map.height);
+    const blocks = l.book.finish();
+    if (l.bbl !== 'grad') writePng(join(out, `${l.bbl}-blocks.png`), blockSheet(blocks.slice(0, l.book.index.size), 12, 0), pal.pal, 3);
+    const pic = renderRegion(m, blocks, mbl, buildMonsters(mb), ORIGIN, ORIGIN, l.map.width, l.map.height);
     writePng(join(out, `${l.file}.png`), pic, pal.pal, 1);
   }
   const disk = new URL('disk/', dir);

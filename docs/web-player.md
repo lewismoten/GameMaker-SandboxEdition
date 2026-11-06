@@ -96,12 +96,15 @@ do not alter the game files on the host; clearing site data resets them.
 
 ## Run like a slow PC
 
-The **Run like a** menu in the player's top corner (Today, 486, 386, 286) runs any game the way
-an old PC would, for trying how a game feels on slow machines. A round of the game that takes
-longer than a tick (1/18 second) is skipped, as PLAYGAME skips it, so walking and animation slow
-down. A digital sound (.VOC) is read from disk whole while the game waits, as PLAYGAME does; the
-music keeps its own time. The costs are estimates, not measurements, and Today (the default)
-charges nothing. It changes nothing in the game's files or the host.
+The **Run like a** menu in the player's top corner (Today, 486, 386, 286, IBM PS/1) runs any game
+the way an old PC would, for trying how a game feels on slow machines. A round of the game that
+takes longer than a tick (1/18 second) is skipped, as PLAYGAME skips it, so walking and animation
+slow down. A digital sound (.VOC) is read from disk whole while the game waits, as PLAYGAME does;
+the music keeps its own time. A level also takes time to load: the screen stays black while its
+files are read from disk (each file costs an open, then its bytes at the disk's speed; for a big
+level about 0.24 s on the 486, 0.4 s on the 386, 0.8 s on the 286 and 2 s on the PS/1), and the
+game clock waits. The
+costs are estimates, not measurements, and Today (the default) charges nothing. It changes nothing in the game's files or the host.
 
 ## Saves and high scores
 

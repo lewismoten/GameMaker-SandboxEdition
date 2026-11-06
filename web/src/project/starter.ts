@@ -93,14 +93,33 @@ export const STARTER_GROUPS: { name: string; tag: string; games: string[] }[] = 
   {
     name: 'Drawing with Blocks',
     tag: 'Roads, water and sky, drawn and animated.',
-    games: ['road-tiles', 'shore', 'twinkle', 'flicker', 'lights-out', 'color-doors', 'shadows', 'beams'],
+    games: ['road-tiles', 'shore', 'twinkle', 'flicker', 'lights-out', 'color-doors', 'shadows', 'beams', 'lightning-bugs', 'fireworks', 'leaves'],
   },
   {
     name: 'Showcase Tricks',
     tag: 'How the big games do their big moments.',
-    games: ['dialog', 'popups', 'scripted', 'parallax', 'horizon', 'beltway', 'corner-view', 'slow-computers', 'under-the-hood'],
+    games: [
+      'dialog',
+      'popups',
+      'scripted',
+      'parallax',
+      'horizon',
+      'beltway',
+      'corner-view',
+      'slow-computers',
+      'under-the-hood',
+      'around-the-room',
+      'ride-along',
+    ],
   },
 ];
+
+/**
+ * Starters filed in a group after the heroes and course numbers were first dealt, in the order they came. Each sits in its
+ * group in learning order, but takes the next hero (starterHeroes.ts) and the next course number of its stage
+ * (ceremonies.ts) only after every other game has its own, so filing one changes no other game's hero or course number.
+ */
+export const ADDED_LATER: readonly string[] = ['lightning-bugs', 'fireworks', 'leaves'];
 
 /** The order the Starters are meant to be played in, easiest first: the groups' games in order (games/<id>); a starter not listed goes after these, A to Z. */
 export const STARTER_ORDER: string[] = STARTER_GROUPS.flatMap((g) => g.games);

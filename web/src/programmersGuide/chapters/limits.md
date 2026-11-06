@@ -7,6 +7,7 @@ One row per limit. Chapter numbers point to the reason. Cause tags: 16-bit, 64K,
 | Screen                    |                                  320 x 200, 256 colors | VGA          | `GRAPH.H:15-16`        |      3 |
 | Block size                |                 20 x 20 pixels (400 bytes; record 420) | VGA          | `BLOC.H:4, 35-53`      |   3, 5 |
 | Play field                |                                         16 x 10 blocks | VGA          | `PG:66-67`             |      3 |
+| Shown while playing       |                   312 x 196 pixels (15.6 x 9.8 blocks) | VGA          | `PG:1049-1061`         |      3 |
 | Scroll step               |                                     4 pixels + 0-3 pan | VGA          | `PG:4020-4040`         |      3 |
 | Background blocks         |              150 per file (151 allocated; 150 = empty) | 64K          | `BLOC.H:6`, `PG:1348`  |   2, 5 |
 | Monster blocks            |                                                    100 | 64K          | `BLOC.H:7`             |   2, 6 |

@@ -20,6 +20,8 @@ export interface DosNode {
 export type ProgramRef =
   | { kind: 'gm' }
   | { kind: 'playgame' }
+  | { kind: 'menu' }
+  | { kind: 'image' }
   | { kind: 'egg' }
   | { kind: 'terminal' }
   | { kind: 'vpic' }

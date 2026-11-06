@@ -37,6 +37,7 @@ import { fileURLToPath } from 'node:url';
 import { describe, readBounds } from '@lewismoten/gamemaker-sandbox-tools/kit/textBounds';
 import { pairsOfGame } from './colorCues';
 import { vocCuesOfGame } from './vocCues';
+import { hiddenMonstersOfGame } from './viewCheck';
 
 const gamesDir = join(dirname(fileURLToPath(import.meta.url)), '..');
 const webDir = join(gamesDir, '../web');
@@ -290,6 +291,17 @@ const vocs = games.flatMap((id) => {
   }
 });
 console.log(`voc stutter (advisory): ${vocs.length ? `sounds that may stall slow PCs in ${vocs.join(', ')}` : 'none'}`);
+// Advisory, never a failure: monsters PLAYGAME skips drawing (and so can't hurt) because their map cell is in the screen's edge row or column while they are mostly in view (kit/viewCheck.ts; `viewCheckCli.ts <id>` lists them). It can't see a monster meant to hide.
+const hidden: string[] = [];
+for (const id of games) {
+  try {
+    const n = (await hiddenMonstersOfGame(id)).length;
+    if (n) hidden.push(`${id} ${n}`);
+  } catch {
+    // unreadable: nothing to say
+  }
+}
+console.log(`view edge (advisory): ${hidden.length ? `monsters hidden at the screen edge in ${hidden.join(', ')}` : 'none'}`);
 const failed =
   [...rows.values()].filter((r) => COLS.some((c) => r[c] === 'FAIL')).length +
   (hearts === 'FAIL' ? 1 : 0) +

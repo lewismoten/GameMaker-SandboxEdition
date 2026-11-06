@@ -86,6 +86,7 @@ export const SHAREWARE: Chapter = {
   other. Make them move and the hero never stops: an auto-runner (<i>Hurdles</i>) or a sled that
   always slides downhill while the keys steer and speed it (<i>Seal Boarders</i>). Scroll the
   scene one way only, so there is no going back.</p>
+  ${onCd('RIDEALNG')}
   <h2>One key, many weapons</h2>
   <p>Several sequences can share a key. PLAYGAME starts the first one that is switched on and has
   uses left, so give each weapon its own sequence, each needing the pickup that switches it on,
@@ -113,6 +114,9 @@ export const SHAREWARE: Chapter = {
   ${onCd('LIGHTOUT')}
   ${onCd('SHADOWS')}
   ${onCd('BEAMS')}
+  ${onCd('LITEBUGS')}
+  ${onCd('FIREWORK')}
+  ${onCd('LEAVES')}
   <h2>Transitions with the palette</h2>
   <p>An animation frame that changes only the palette costs a few hundred bytes, however big the
   picture. Fade a picture in or out, flash it or cycle its colors that way, and the whole

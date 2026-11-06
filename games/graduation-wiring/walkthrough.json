@@ -8,18 +8,26 @@
  "segments": [
   {
    "scene": 2,
+   "keys": "AU08zRtNCs0DTRnNA00PzRtNFM0DTQ/NA00UzRtNHs0DTQ/NA00="
+  },
+  {
+   "scene": 3,
    "keys": "AU0ezQNNKM0DTTzNA00yzQNN"
   }
  ],
  "chapters": [
   {
    "scene": 2,
+   "title": "The Lab Yard"
+  },
+  {
+   "scene": 3,
    "title": "The Lab"
   }
  ],
  "timeline": {
   "fps": 60,
-  "frames": 5463,
+  "frames": 6832,
   "chapters": [
    {
     "title": "Opening",
@@ -32,19 +40,24 @@
     "time": 15216.666666666471
    },
    {
-    "title": "The Lab",
+    "title": "The Lab Yard",
     "frame": 1661,
     "time": 27683.333333333918
    },
    {
+    "title": "The Lab",
+    "frame": 3031,
+    "time": 50516.66666666504
+   },
+   {
     "title": "Ending",
-    "frame": 2662,
-    "time": 44366.66666666594
+    "frame": 4033,
+    "time": 67216.66666666334
    },
    {
     "title": "Credits",
-    "frame": 4391,
-    "time": 73183.33333333174
+    "frame": 5760,
+    "time": 96000.00000000505
    }
   ]
  }

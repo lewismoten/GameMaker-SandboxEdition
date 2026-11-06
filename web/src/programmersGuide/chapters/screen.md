@@ -1,12 +1,26 @@
 # The screen and the blocks
 
-## The grid: 16 x 10, with nothing left over
+## The grid: 16 x 10 in the mode, 312 x 196 on show
 
 `GRAPH.H:15-16` sets `SIZEX 320`, `SIZEY 200` ("graphics mode 0x13"). Blocks are 20 x 20 (`BLOC.H:4`), so the play field is
-**320 / 20 = 16 columns** by **200 / 20 = 10 rows** (`SCRNBLEN 16`, `SCRNBWID 10`, `PG:66-67`). 16 x 10 x 400 = 64,000 bytes: exactly the whole screen.
-There is **no status bar or border**: the score and inventory are drawn on demand over the picture (`Display_Invent`, `PG:1955-1985`, a box from (10,10) to (310,190)). The authors gave every pixel to the map.
+**320 / 20 = 16 columns** by **200 / 20 = 10 rows** (`SCRNBLEN 16`, `SCRNBWID 10`, `PG:66-67`). 16 x 10 x 400 = 64,000 bytes: exactly the whole screen in memory. The player does not see all of it, though (next section).
+There is **no status bar**: the score and inventory are drawn on demand on the F2 status screen (`Display_Invent`, `PG:1955-1985`, a box from (10,10) to (310,190), called from `DoFunKy` at `PG:1608` after `UnCropScreen` at `PG:1595`).
 Why 20 pixels: 320 and 200 are both multiples of 20 and of 40; 20 gives a 16-column grid which is a power of two for the shifts, and a hero two blocks tall (40 px) is 20% of the screen height.
 **[inference]** 20 is the smallest size that still draws a recognizable face; 16 px would give 20 x 12.5 rows (not whole), and 25 px gives 12.8 columns (not whole).
+
+## The crop: 312 x 196 while playing
+
+`CropScreen` (`PG:1049-1061`, commented "Shorten the screen so wrap around painting invisible") reprograms two CRTC registers:
+
+- **0x01, horizontal display end**, is set to `0x4D` (77) instead of 79. The register counts character clocks of 4 pixels, ending at the value plus one, so 78 x 4 = **312 pixels** show and the last 8 columns do not.
+- **0x12, vertical display end**, is read and lowered by 8. Mode 0x13 double-scans 200 rows into 400 lines, so 8 lines are **4 pixel rows**: 196 show.
+
+The cut-off columns and rows show the VGA border (overscan) color instead of the buffer. PLAYGAME never sets it: the only attribute-controller write in the source is the pel-panning index 0x13 (`SVGAA.ASM:155-159`), there is no write to index 0x11, and the only INT 10h calls set modes (`GENC.C:87, 234, 280`). The mode set leaves it at 0, so the strips show **palette entry 0**, and fade with it. [not yet checked in DOSBox]
+`CropScreen` runs for every video card, Simulate included, at the start of a scene (`PG:1123`, `PG:1397`) and again after a function-key screen (`PG:1637`). `UnCropScreen` (`PG:1065-1076`, 79 and +8) restores the full 320 x 200 when the scene ends (`PG:1534`) and before a function-key screen (`PG:1595`), so pictures between scenes and the F-key screens use every pixel.
+Why: when the view scrolls, the strip of new ground is painted at the edge of the window (`drawhorizside`/`drawvertside`, `PG:4046-4080`), and the crop keeps that painting out of sight, as the comment says. **[inference]** The right and bottom are where the start-address wrap puts it. A playing screen shows **15.6 x 9.8 blocks**, not 16 x 10.
+The port does the same: `VISIBLE_W = 312` and `VISIBLE_H = 196` (`web/packages/engine/src/engine/render.ts:12-14`), and it fills the hidden columns and rows with color 0 each frame (`web/packages/engine/src/engine/render.ts:73-76`).
+
+**Tip:** keep signs, faces and anything the player must read out of the right-most 8 pixels and bottom 4 rows of a playing screen. Design full-screen pictures for 320 x 200.
 
 ## How the screen scrolls (why everything is 4 pixels)
 
@@ -41,7 +55,7 @@ Both corners are inclusive (`COORD2D.HPP:33-36`, `>=` and `<=`). Only after the 
 - **The other edge is different.** A monster in the right-most allowed cell (screen position 300) with a pixel offset of 1 or more lands at 301 to 319, fails the draw test (`minfo::Draw`, `PG:2294`) but keeps a real position: it is invisible and can still hurt. [inference] [not yet checked in DOSBox]
 - This fits the **Round and Round** fix better than a one-pixel rule: its car vanished at the top of the loop, and the fix moved the loop and path down one block (commit `03c724f6c`).
 
-**Tip:** keep spawn cells and the ends of paths out of the left column and top row of every screen where they must be seen, and fully inside a 16 x 10 view at the right and bottom (x <= 300, y <= 180). Do not hide a hazard in the band on purpose; know why a monster in the top row did nothing.
+**Tip:** keep spawn cells and the ends of paths out of the left column and top row of every screen where they must be seen, and fully inside a 16 x 10 view at the right and bottom (x <= 300, y <= 180). Even then, a cell at x = 300 or y = 180 loses its last 8 columns or 4 rows to the crop. Do not hide a hazard in the band on purpose; know why a monster in the top row did nothing.
 
 ## What changes block pictures (and the stale edge)
 

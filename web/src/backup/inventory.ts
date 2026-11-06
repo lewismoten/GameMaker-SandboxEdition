@@ -98,6 +98,7 @@ export const LOCAL_KEYS: Record<SectionId, { keys: string[]; prefixes?: string[]
       'gm-home-category',
       'gm-imported-rating-filter',
       'gm-starter-done-filter',
+      'gm-starter-level',
       'gm-volume',
       'gm-screen-keys',
       'gm-touch-controls',

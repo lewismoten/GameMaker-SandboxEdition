@@ -2,6 +2,7 @@
 //   cd web && npx vite-node ../games/sandcast/build.ts
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
+import { putCoolSign } from '../kit/coolSign';
 import { serializeBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { serializeMonsters } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { serializeMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
@@ -125,7 +126,7 @@ for (const key of Object.keys(L) as (keyof typeof L)[]) {
   // dig: every background block is taken, so the sandbox gets its own copy of the set with
   // blocks it never shows given to the sign.
   if (key === 'hub') {
-    disk.put('sandbox.bbl', serializeBlocks(putSaveSign(bg, map, DAY, 43, 2)));
+    disk.put('sandbox.bbl', serializeBlocks(putCoolSign(putSaveSign(bg, map, DAY, 43, 2), map, DAY, 11, 1)));
     (lv as { bbl?: string }).bbl = 'sandbox.bbl';
   }
   disk.put(lv.name, serializeMap(map));

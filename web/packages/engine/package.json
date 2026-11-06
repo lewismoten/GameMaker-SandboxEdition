@@ -137,6 +137,11 @@
       "gamemaker-source": "./src/engine/slowPc.ts",
       "import": "./dist/engine/slowPc.js"
     },
+    "./engine/slowPcMusic": {
+      "types": "./dist/types/engine/slowPcMusic.d.ts",
+      "gamemaker-source": "./src/engine/slowPcMusic.ts",
+      "import": "./dist/engine/slowPcMusic.js"
+    },
     "./engine/touch": {
       "types": "./dist/types/engine/touch.d.ts",
       "gamemaker-source": "./src/engine/touch.ts",
