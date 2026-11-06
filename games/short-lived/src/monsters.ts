@@ -22,6 +22,7 @@ import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import type { Book } from '../../kit/starter/book';
 import { buildMonsterBlocks, buildMonsters } from '../../kit/starter/monsters';
 import type { Pal } from '../../kit/starter/palette';
+import { sparkle } from '../../kit/starter/sparkle';
 
 /** The monster numbers this game adds after the kit's gumdrop 0, buzzer 1 and shelly 2. */
 export const TWINKLE = 3;
@@ -46,32 +47,6 @@ export const HERO_HIT_POINTS = 50;
 export const STAGE_LIFE = 40;
 
 const T = 255;
-
-/** A little four-point sparkle, upright (a plus) or turned (an x). */
-function sparkle(pal: Pal, turned: boolean): Pixels {
-  const p = new Pixels(20, 20, T);
-  const gold = pal.r('gold');
-  const white = pal.c('white', 3);
-  const arm = (dx: number, dy: number, len: number) => {
-    for (let i = 1; i <= len; i++) p.set(10 + dx * i, 10 + dy * i, i < 3 ? gold[4] : gold[3]);
-  };
-  const dirs: [number, number][] = turned
-    ? [
-        [-1, -1],
-        [1, -1],
-        [-1, 1],
-        [1, 1],
-      ]
-    : [
-        [0, -1],
-        [0, 1],
-        [-1, 0],
-        [1, 0],
-      ];
-  for (const [dx, dy] of dirs) arm(dx, dy, turned ? 4 : 6);
-  p.set(10, 10, white).set(9, 10, gold[4]).set(11, 10, gold[4]).set(10, 9, gold[4]).set(10, 11, gold[4]);
-  return p;
-}
 
 /**
  * A soap bubble: a thin blue-white ring you can see the sky through, a bright shine, resting on

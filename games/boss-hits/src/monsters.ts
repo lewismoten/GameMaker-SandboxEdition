@@ -11,10 +11,10 @@
 import { SOLBOT, SOLLEF, SOLRIG, SOLTOP, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import type { Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { mon } from '@lewismoten/gamemaker-sandbox-tools/kit/actors';
-import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import type { Book } from '../../kit/starter/book';
 import { buildMonsterBlocks, buildMonsters } from '../../kit/starter/monsters';
 import type { Pal } from '../../kit/starter/palette';
+import { sparkle } from '../../kit/starter/sparkle';
 import { drawStar } from './starArt';
 import { drawBug, drawPoof } from './bugArt';
 
@@ -35,34 +35,6 @@ export const STAR_SPEED = 4;
 export const STAR_LIFE = 30;
 /** Points each hit scores. */
 export const HIT_SCORE = 20;
-
-const T = 255;
-
-/** A little four-point sparkle, upright (a plus) or turned (an x). */
-function sparkle(pal: Pal, turned: boolean): Pixels {
-  const p = new Pixels(20, 20, T);
-  const gold = pal.r('gold');
-  const white = pal.c('white', 3);
-  const arm = (dx: number, dy: number, len: number) => {
-    for (let i = 1; i <= len; i++) p.set(10 + dx * i, 10 + dy * i, i < 3 ? gold[4] : gold[3]);
-  };
-  const dirs: [number, number][] = turned
-    ? [
-        [-1, -1],
-        [1, -1],
-        [-1, 1],
-        [1, 1],
-      ]
-    : [
-        [0, -1],
-        [0, 1],
-        [-1, 0],
-        [1, 0],
-      ];
-  for (const [dx, dy] of dirs) arm(dx, dy, turned ? 4 : 6);
-  p.set(10, 10, white).set(9, 10, gold[4]).set(11, 10, gold[4]).set(10, 9, gold[4]).set(10, 11, gold[4]);
-  return p;
-}
 
 /** The monster pictures: the kit's, then the star's two turns, two sparkles, the plain bug, the lamped bug (a picture for each count of lights) and the puff. */
 export function monsterPictures(pal: Pal): Book {
