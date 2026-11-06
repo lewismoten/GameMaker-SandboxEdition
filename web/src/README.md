@@ -147,6 +147,8 @@ SDK implementation lives in the packages below; the app imports their declared e
   - [`editor/editors/map/generate/`](editor/editors/map/generate/README.md): seeded map-generation dialog and placement.
   - [`editor/editors/map/links/`](editor/editors/map/links/README.md): integrator link markers and detail popover on maps.
   - [`editor/editors/map/tools/`](editor/editors/map/tools/README.md): map selection, terrain, stamps and building tools.
+  - [`editor/editors/monsters/`](editor/editors/monsters/README.md): monster values, animation and movement-path UI.
+  - [`editor/editors/music/`](editor/editors/music/README.md): cMF tracks, instruments, piano-roll integration and playback.
   - [`editor/editors/music/arrange/`](editor/editors/music/arrange/README.md): seeded accompaniment and melody-copy transforms.
   - [`editor/editors/music/roll/`](editor/editors/music/roll/README.md): layered piano-roll input and cached rendering.
 - [`editor/disk/`](editor/disk/README.md): the disk-space tool: merges of monster files, block sets and palettes, and the floppy disks a game needs.
