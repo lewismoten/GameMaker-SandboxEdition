@@ -243,6 +243,13 @@
       "block": "discSleeve",
       "generator": "scripts/achievementArt.ts"
     },
+    "play-all-mine": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAG1BMVEWioqZJMBxhQSR5VTCSaTyiEBy6HCj/++sgICSpNRDcAAAAeklEQVR42m2P4RKAIAiD2WbS+z9xB2KZtR/IfSewGX5kFFNmZmD1JChJAeMtyB1qQL+lWGexeIV5SGqSnyk/XLmqxcblZ8Ksb8iC63jTfqiPRGHzYSLCksLnGO9HwZf57iLAbyJwHnquV6Jf8027LBBHj6ycMZVBMNsLl7UGAGVxzBQAAAAASUVORK5CYII=",
+      "game": "sleuth",
+      "set": "sleuthParlor",
+      "block": "checklist",
+      "generator": "scripts/achievementArt.ts"
+    },
     "play-save": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAJFBMVEUUDBT///eSfV26pn3Tw57v376WLCjLTUGyXSwUKHk0VaJ5tvvj8NTKAAAAj0lEQVR42m1QCQ7DMAgzxdCE/f+/E4eqtZ0TBWQbIhlUFkxJy6IkDqqmYJaXpaB1UnskeYVpNdlfGvh5QWERckNsQiPEXaSui7tvS6fLEHUup6RjnLE1yfOGdDLCZ99MbObOB9oZAATo94cUWWstEUny+Oes3587DdwvaEVXeWWZwDEhtmKp0aAVoU2+3X4BokUIVnSJ+jsAAAAASUVORK5CYII=",
       "game": "remote",

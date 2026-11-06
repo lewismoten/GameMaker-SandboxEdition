@@ -14,7 +14,7 @@ import { errorBox, askText } from './text/textUi';
 import type { PlayerHandle } from '../player/player';
 import { deskJoystick } from '../input/deskJoystick';
 import { GameFiles } from '../project/files';
-import { loadProject, loadSaveData, writeSaveFile } from '../project/storage';
+import { loadProject, loadSaveData } from '../project/storage';
 import { Project } from '../editor/core/project';
 import { kindOf } from '../editor/core/project';
 import { Vga } from '../vga/shared/vga';
@@ -27,7 +27,8 @@ import { mouseDriverLine } from './computer/mouseDriver';
 import { soundBlaster } from './computer/soundBlaster';
 import { ComputerFolders } from './computer/folders';
 import { clearEnergySnore, drawEnergySnore } from './energySnore';
-import { deskProgram, playAchievements, playWrote, unlockAchievement } from '../achievements';
+import { deskProgram, playAchievements, unlockAchievement } from '../achievements';
+import { playSaves } from '../achievements/playSaves';
 
 /** How long the BIOS screen with its logo stays up, in a quick boot too. */
 const POST_HOLD_MS = 2500;
@@ -464,7 +465,7 @@ export class Computer extends ComputerFolders {
               // The desk opts into live card control; DOS-compatible startup-only detection stays available to other hosts.
               audio,
               onQuit: () => false, // back to DOS
-              onFileWrite: saveId ? (name, bytes) => (playWrote(saveId, name), void writeSaveFile(saveId, name, bytes)) : undefined,
+              ...playSaves(saveId, gam),
               saveId,
               ...achieve,
               onSession,

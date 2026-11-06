@@ -11,10 +11,11 @@ import { watchForUpdates } from './devReload';
 import { watchErrors } from './errorNotice/watch';
 import { GameFiles, loadCatalogList, withDetails, type CatalogEntry } from './project/files';
 import { streamHostedGame } from './project/streamGame';
-import { loadProject, loadSaveData, writeSaveFile } from './project/storage';
+import { loadProject, loadSaveData } from './project/storage';
 import { markUsed } from './project/projectUse';
 import { registerServiceWorker } from './offline';
-import { playAchievements, playWrote } from './achievements';
+import { playAchievements } from './achievements';
+import { playSaves } from './achievements/playSaves';
 import { catalogPatches } from './dosPlayer/catalogPatches';
 import { companionPatches } from './dosPlayer/playerRecord';
 import type { PlayerPatches } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
@@ -185,7 +186,7 @@ async function main(): Promise<void> {
       playerAbout: game.playerAbout,
       poster: game.poster,
       back: game.back ? { href: game.back, label: '← All games' } : undefined,
-      onFileWrite: (name, bytes) => (playWrote(game.id, name), void writeSaveFile(game.id, name, bytes)),
+      ...playSaves(game.id, game.gam),
       saveId: game.id,
       ...playAchievements(game.id, 'web'),
       onQuit: () => !game.back, // stand-alone apps go back to their menu

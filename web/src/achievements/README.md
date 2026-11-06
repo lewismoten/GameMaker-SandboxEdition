@@ -73,6 +73,20 @@ counts only score growth beyond the sums. `mergeRecords` keeps the later mark, s
 backup or a stale tab brings back the unlocks it holds but doesn't lift the cutoff. Tests:
 `resetSticks.test.ts`.
 
+## High-score tables
+
+`highScores.ts` checks one game's persisted `.his` overlay: ten complete DOS records,
+nonzero scores (the engine's display rule), and the same nonblank name after trimming
+and case folding. It never pools games or falls back to another table on the disk.
+`playSaves.ts` supplies the actual web and desk/DOS `onFileWrite` callback: keep the
+usual save badge, persist first, then reread the authoritative table. Opening either
+player also checks its saved table; `start.ts` scans on startup and coalesced save changes.
+Bundles/standalone players do not earn site badges. There is no account or play ledger:
+imported/edited tables can qualify too; table contents cannot prove ten separate plays.
+Reset remembers qualifying tables, and unchanged tables stay forgotten across reload;
+a changed qualifying table can earn All Mine again. Existing backups include the new
+catalog id and reset baseline automatically. Tests: `highScores.test.ts`, `highScoresWatch.test.ts`.
+
 ## Course grades
 
 `courseGrades.ts` keeps, per Starter, the best letter grade ever earned (`gm-course-grades`, in the backup under Achievements, emptied by Reset). A `CourseRun` is fed by `playAchievements` from the player's scene and life-lost hooks and by a key or touch on the page (the engine is untouched); the rules, course numbers (101 ...), GPA and transcript are in `project/grades.ts` and `project/ceremonies.ts`. A first-level grade (C-, C, D+) is saved when the play ends.
