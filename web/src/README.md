@@ -132,6 +132,8 @@ SDK implementation lives in the packages below; the app imports their declared e
   Subareas:
   - [`editor/check/checks/`](editor/check/checks/README.md): individual static and play-derived design checks.
   - [`editor/check/generators/`](editor/check/generators/README.md): one-click fixes and maze setup using ordinary game data.
+  - [`editor/check/walk/`](editor/check/walk/README.md): walkthrough generation, replay verification and kept author/bot routes.
+  - [`editor/editors/animation/`](editor/editors/animation/README.md): fLI frame editing and Scene/Frames workflows.
   - [`editor/editors/animation/scene/`](editor/editors/animation/scene/README.md): companion-backed animation Scene maker and renderer.
   - [`editor/editors/animation/shrink/`](editor/editors/animation/shrink/README.md): worker-backed FLI size reduction and real result preview.
   - [`editor/editors/integrator/dosPlayer/`](editor/editors/integrator/dosPlayer/README.md): dOS player customization UI and preview.
