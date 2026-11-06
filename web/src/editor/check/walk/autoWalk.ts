@@ -21,7 +21,7 @@ import { explore, type Entry, type Exploration, type ExploreOptions } from '../e
 import type { Move } from '../inputs';
 import { SceneSim, startCharInfo, type FileSource } from '../sim';
 import { replayMine } from './replayMine';
-import { fetchKeys, locksAtEntry, type FetchKeysDiagnostics } from './fetchKeys';
+import { fetchKeys, locksAtEntry, tripCapReached, type FetchKeysDiagnostics } from './fetchKeys';
 import { lockedWhy } from './gates';
 import { otherScenesAdding } from './otherScenes';
 import { scenePaths } from './walkPaths';
@@ -308,6 +308,7 @@ export async function autoWalk(game: Game, files: FileSource, gameId: string, op
     if (!found && !canceled) {
       const locks = locksAtEntry(game, files, scene, entry);
       const unreached = new Set<number>();
+      let tripCap: number | undefined;
       if (locks.wanted.size) {
         outcome.tried.push('keys');
         if (opt.progress?.(scene, 'Fetch the keys, then go on', 0)) canceled = true;
@@ -323,9 +324,12 @@ export async function autoWalk(game: Game, files: FileSource, gameId: string, op
             progress: (places) => (opt.progress?.(scene, 'Fetch the keys, then go on', places) ? (canceled = true) : canceled),
           }));
         if (keys && keys.replay) found = { replay: keys.replay, strategy: STRATEGIES.find((x) => x.id === 'keys')! };
-        else if (keys) outcome.keys = keys.diagnostics;
+        else if (keys) {
+          outcome.keys = keys.diagnostics;
+          tripCap = tripCapReached(keys.diagnostics);
+        }
       }
-      lockWhy = lockedWhy(locks, unreached, otherScenesAdding(game, files, scene, locks.missing));
+      lockWhy = lockedWhy(locks, unreached, otherScenesAdding(game, files, scene, locks.missing), tripCap);
     }
     if (!found && !canceled && !backOnly) await collect();
     if (canceled) {
