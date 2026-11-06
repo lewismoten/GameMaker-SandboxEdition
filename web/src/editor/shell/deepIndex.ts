@@ -5,7 +5,6 @@
 // store that fails costs only the speed. The text itself is read by deepExtract.ts in a Web
 // Worker (deepIndexClient.ts). No DOM.
 import { matches } from './searchMatch';
-import type { Part } from './searchMatch';
 import type { DeepJob, DeepPart } from './deepExtract';
 
 /** Where a game's files and words come from; home.ts builds one per HomeGame. */
@@ -113,4 +112,3 @@ export function createDeepIndex(o: Options) {
 }
 
 export type DeepIndex = ReturnType<typeof createDeepIndex>;
-export type { Part };

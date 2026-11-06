@@ -33,8 +33,6 @@ export function vocLimitNote(name: string, bytes: number): string {
 
 /** One game tick in milliseconds (a timer rate of 18.2 per second). */
 export const TICK_MS = 54.9;
-/** Game ticks per second. */
-export const TICKS_PER_SECOND = 1000 / TICK_MS;
 /** Estimated hard-disk read time for a .VOC of this size, in ms. */
 export const readMs = (bytes: number, pc: 'pc286' | 'pc486'): number => (pc === 'pc286' ? 30 + bytes / 400 : 15 + bytes / 1000);
 /** At this size a 286's read takes about one game tick (yellow). */
