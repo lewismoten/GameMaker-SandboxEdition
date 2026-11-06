@@ -13,10 +13,10 @@ import { loadHonorDates } from '../../achievements/honorDates';
 import { NAME_MAX, certificateAlt, cleanName, drawCertificate } from './certificateImage';
 import { gpaText, gradeLabel } from './transcriptText';
 
-export const NAME_KEY = 'gm-certificate-name';
+const NAME_KEY = 'gm-certificate-name';
 
 /** The saved name on the certificates ("" for none). */
-export function savedName(): string {
+function savedName(): string {
   try {
     return cleanName(localStorage.getItem(NAME_KEY) ?? '');
   } catch {

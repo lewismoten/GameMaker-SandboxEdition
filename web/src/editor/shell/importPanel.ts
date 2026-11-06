@@ -7,7 +7,7 @@ import './importChooser.css';
 
 /** The steps in the order they come; the bar fills a fifth at each. */
 const STEPS = ['Reading', 'Unpacking', 'Finding the game', 'Extracting', 'Opening'] as const;
-export type ImportStep = (typeof STEPS)[number];
+type ImportStep = (typeof STEPS)[number];
 
 export interface ImportPanel {
   /** Moves to a step; `detail` says what it is doing, `done` of `total` how far through that step. */

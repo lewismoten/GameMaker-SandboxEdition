@@ -67,26 +67,6 @@ export function playOrder(gamName: string, gam: Uint8Array | undefined, names: s
   return out;
 }
 
-/**
- * The order of a game's files in its pack (project/gamePack.ts): play order, each file
- * followed by the ones it names (a slide list's pictures, a sound set's samples), so a
- * game read from the start of its pack has what it needs as early as it can.
- */
-export function packOrder(gamName: string | null, names: string[], get: (name: string) => Uint8Array | undefined): string[] {
-  const out: string[] = [];
-  const seen = new Set<string>();
-  const add = (name: string | undefined) => {
-    const n = name ? resolveName(names, name) : undefined;
-    if (!n || seen.has(n)) return;
-    seen.add(n);
-    out.push(n);
-    const bytes = get(n);
-    if (bytes) filesNamedBy(n, bytes).forEach(add);
-  };
-  for (const n of gamName ? playOrder(gamName, get(gamName), names) : names) add(n);
-  return out;
-}
-
 /** The catalog name a game's reference opens (A-J.BKD finds the CD's a_j.bkd), if it has one. */
 function resolveName(names: string[], name: string): string | undefined {
   const n = normalize(name);

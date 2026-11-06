@@ -335,7 +335,7 @@ export interface PackHandle {
 /**
  * Starts reading a hosted game's pack (or joins the reading of it already going on), or
  * undefined when it has none. `onFile` hears of each file in it: those in already at once,
- * then the rest as they arrive, in pack order (play order, streamGame.ts packOrder). Shared:
+ * then the rest as they arrive, in pack order (play order). Shared:
  * do not modify the files.
  */
 export function openPack(entry: Pick<CatalogEntry, 'path' | 'pack'>, base = './', onFile?: (name: string, bytes: Uint8Array) => void): PackHandle | undefined {
