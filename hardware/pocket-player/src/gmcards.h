@@ -193,16 +193,26 @@ inline int textPageCount(const uint8_t* t, size_t n) {
   return l ? (l + TEXT_LINES - 1) / TEXT_LINES : 1;
 }
 
+struct TextRect { int x0 = PIC_W, y0 = PIC_H, x1 = 0, y1 = 0; };
+
 // Display_File: writes page `page` of the text into the 320 x 200 indices `px`, 8 x 8 glyphs (bit 0 leftmost) at
 // column 5, row 5, and "MORE..." at (224, 168) when more lines follow. `font` is 95 glyphs of 8 rows, from ' '.
-inline void drawTextPage(uint8_t* px, const uint8_t* font, const uint8_t* t, size_t n, int page, int color, int more) {
+inline void drawTextPage(uint8_t* px, const uint8_t* font, const uint8_t* t, size_t n, int page, int color, int more, TextRect* bounds = nullptr) {
   auto glyph = [&](int x, int y, int col, unsigned char ch) {
     if (ch < 32 || ch > 126) ch = '?';
     const uint8_t* g = font + (ch - 32) * 8;
     for (int r = 0; r < 8; r++) {
       if (y + r < 0 || y + r >= PIC_H) continue;
       for (int b = 0; b < 8; b++)
-        if ((g[r] & (1 << b)) && x + b >= 0 && x + b < PIC_W) px[(y + r) * PIC_W + x + b] = (uint8_t)col;
+        if ((g[r] & (1 << b)) && x + b >= 0 && x + b < PIC_W) {
+          px[(y + r) * PIC_W + x + b] = (uint8_t)col;
+          if (bounds) {
+            if (x + b < bounds->x0) bounds->x0 = x + b;
+            if (y + r < bounds->y0) bounds->y0 = y + r;
+            if (x + b + 1 > bounds->x1) bounds->x1 = x + b + 1;
+            if (y + r + 1 > bounds->y1) bounds->y1 = y + r + 1;
+          }
+        }
     }
   };
   int line = 0, col = 0;

@@ -63,6 +63,7 @@ game folder opens in the browser unchanged.
   (`code/GM/SOUNDC.C`) and joystick routines (`code/GM/JSTICKC.C`, `code/GM/JSTICKA.ASM`),
   and the Sound Designer's digitized speech with Andy Stone (`code/GM/SNDEDIT.C`).
 - **This fork**: Lewis Moten.
+- **Pocket Player text-page redraw and resistive slide fixes**: OpenAI Codex, directed by Lewis Moten, implemented the firmware changes and host regressions.
 - **PLAYGAME 286 audio measurements** (`tools/dosbox-286/measure_*.py` and
   `docs/research/playgame-music-286-results.md`): Hermes Agent using **OpenAI Codex
   GPT-6.1 Sol**, directed by Lewis Moten. The measurement tools use external NumPy
@@ -883,7 +884,6 @@ A firmware for the ESP32-3248S035 board that plays the Starter games, and an ins
 ## Tools used to build and test
 
 OpenAI Codex (GPT-6), directed by Lewis Moten, added capture-matrix validation and failure regressions to the PLAYGAME measurement collector and plotter (`tools/dosbox-286/`).
-
 
 Built with [TypeScript](https://www.typescriptlang.org/) (Apache-2.0),
 [Vite](https://vitejs.dev/), [Vitest](https://vitest.dev/) and vite-node (MIT, both from the
