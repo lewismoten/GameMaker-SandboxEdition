@@ -1,5 +1,6 @@
 // A small Markdown reader for a kit's README, for the box's instruction books (phoneBook.ts): headings, paragraphs, bullet and numbered
-// lists (with their wrapped lines), pipe tables, fenced code, and inline `code`, **bold**, *italic* and [links] (a book can't click, so
+// lists (with their wrapped lines), pipe tables, fenced code, diagram lines (`[diagram: name]`, drawn by the caller's builder), and inline
+// `code`, **bold**, *italic* or _italic_ (underscores only at word edges, so CT_VOICE stays a name) and [links] (a book can't click, so
 // a link keeps its words only). `readMarkdown` gives a plain tree (so it tests without a page); `element` builds a block as DOM with
 // text nodes, never innerHTML. Not general Markdown: nested lists, images and HTML are not read.
 import { h } from '../../editor/core/ui';
@@ -10,19 +11,22 @@ export type Block =
   | { tag: 'pre'; text: string }
   /** `start`: the number an ordered list's first item carries in the Markdown, when it isn't 1 (a list a table split in two). */
   | { tag: 'ul' | 'ol'; items: Inline[][]; start?: number }
-  | { tag: 'table'; head: Inline[][]; rows: Inline[][][] };
+  | { tag: 'table'; head: Inline[][]; rows: Inline[][][] }
+  /** A line that is only `[diagram: name]`: a picture the book draws in code (techRefDiagrams.ts). */
+  | { tag: 'diagram'; name: string };
 
-/** Inline marks inside one line of text: code, bold, italic, links (kept as their words). */
+/** Inline marks inside one line of text: code, bold, italic (stars or underscores), links (kept as their words). */
 function inline(text: string): Inline[] {
   const out: Inline[] = [];
-  const re = /`([^`]+)`|\*\*([^*]+)\*\*|(?<![\w*])\*([^\s*][^*]*?)\*(?![\w*])|\[([^\]]+)\]\(([^)]*)\)/g;
+  const re = /`([^`]+)`|\*\*([^*]+)\*\*|(?<![\w*])\*([^\s*][^*]*?)\*(?![\w*])|(?<![\w_])_([^\s_][^_]*?)_(?![\w_])|\[([^\]]+)\]\(([^)]*)\)/g;
   let at = 0;
   for (let m = re.exec(text); m; m = re.exec(text)) {
     if (m.index > at) out.push(text.slice(at, m.index));
     if (m[1] !== undefined) out.push({ tag: 'code', kids: [m[1]] });
     else if (m[2] !== undefined) out.push({ tag: 'strong', kids: inline(m[2]) });
     else if (m[3] !== undefined) out.push({ tag: 'em', kids: inline(m[3]) });
-    else out.push(...inline(m[4]));
+    else if (m[4] !== undefined) out.push({ tag: 'em', kids: inline(m[4]) });
+    else out.push(...inline(m[5]));
     at = m.index + m[0].length;
   }
   if (at < text.length) out.push(text.slice(at));
@@ -57,8 +61,12 @@ export function readMarkdown(source: string, columns?: string[]): Section[] {
   for (let i = 0; i < lines.length;) {
     const line = lines[i];
     const heading = /^(#{1,6})\s+(.*?)\s*#*\s*$/.exec(line);
+    const diagram = /^\s*\[diagram:\s*([\w-]+)\s*\]\s*$/.exec(line);
     if (!line.trim()) i++;
-    else if (/^```/.test(line)) {
+    else if (diagram) {
+      add({ tag: 'diagram', name: diagram[1] });
+      i++;
+    } else if (/^```/.test(line)) {
       const body: string[] = [];
       for (i++; i < lines.length && !/^```/.test(lines[i]); i++) body.push(lines[i]);
       i++;
@@ -86,7 +94,8 @@ export function readMarkdown(source: string, columns?: string[]): Section[] {
     } else {
       // The first line always belongs to the paragraph: a pipe line that is not a table's head stops the loop below at once, and without this it never advanced (a heap crash).
       const text: string[] = [line.trim()];
-      for (i++; i < lines.length && lines[i].trim() && !/^(#{1,6}\s|```|\s*\|)/.test(lines[i]) && !bullet.test(lines[i]); i++) text.push(lines[i].trim());
+      for (i++; i < lines.length && lines[i].trim() && !/^(#{1,6}\s|```|\s*\||\s*\[diagram:)/.test(lines[i]) && !bullet.test(lines[i]); i++)
+        text.push(lines[i].trim());
       add({ tag: 'p', kids: inline(text.join(' ')) });
     }
   }
@@ -95,8 +104,12 @@ export function readMarkdown(source: string, columns?: string[]): Section[] {
 
 const nodes = (kids: Inline[]): Node[] => kids.map((k) => (typeof k === 'string' ? document.createTextNode(k) : h(k.tag, null, ...nodes(k.kids))));
 
+/** Draws a named diagram; a book without one for that name prints the name as a plain note. */
+export type Diagrams = Record<string, () => HTMLElement>;
+
 /** One block as an element. */
-export function element(b: Block): HTMLElement {
+export function element(b: Block, diagrams: Diagrams = {}): HTMLElement {
+  if (b.tag === 'diagram') return diagrams[b.name]?.() ?? h('p', { class: 'md-diagram-missing' }, `(Diagram: ${b.name})`);
   if (b.tag === 'p') return h('p', null, ...nodes(b.kids));
   if (b.tag === 'pre') return h('pre', null, h('code', null, b.text));
   if (b.tag === 'table')
@@ -114,6 +127,7 @@ export function blockText(b: Block): string {
   const flat = (k: Inline[]): string => k.map((x) => (typeof x === 'string' ? x : flat(x.kids))).join('');
   if (b.tag === 'p') return flat(b.kids);
   if (b.tag === 'pre') return b.text;
+  if (b.tag === 'diagram') return '';
   if (b.tag === 'table') return [...b.head, ...b.rows.flat()].map(flat).join(' ');
   return b.items.map(flat).join(' ');
 }
