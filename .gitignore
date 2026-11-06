@@ -36,6 +36,7 @@ __pycache__/
 
 # Games are built from source; DOS disks and derived path metadata never ship in Git.
 /games/*/disk/
+/games/kit/testdisks/*/disk/
 /games/*/walkPaths.json
 /games/.build-cache.json
 /games/.render-cache/

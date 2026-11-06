@@ -23,6 +23,10 @@ This folder keeps game artwork and repository policy: `disk.ts` reads `about.jso
 `align.ts` selects a repository disk and prints its audit. The portable work is in the package.
 The descriptions below cover both package-owned helpers and the remaining repository tools.
 
+Nested developer-only diagnostics live under `testdisks/`, with their own build/check
+instructions. They are intentionally outside automatic game, Starter, download and
+Pocket discovery; never add their output to a top-level game or the public tree.
+
 Making the files:
 
 - `pixels.ts` — an indexed-color canvas for 20x20 blocks and 320x200 screens, seeded randomness, dithering.
