@@ -153,6 +153,8 @@ SDK implementation lives in the packages below; the app imports their declared e
   - [`editor/editors/music/roll/`](editor/editors/music/roll/README.md): layered piano-roll input and cached rendering.
   - [`editor/editors/picture/`](editor/editors/picture/README.md): gIF viewing/import and copying regions into blocks.
   - [`editor/editors/recording/`](editor/editors/recording/README.md): rEC demo recording, playback and trimming.
+  - [`editor/editors/sample/`](editor/editors/sample/README.md): vOC waveform editing and recording.
+  - [`editor/editors/slideShow/`](editor/editors/slideShow/README.md): lST media sequencing on a timeline.
 - [`editor/disk/`](editor/disk/README.md): the disk-space tool: merges of monster files, block sets and palettes, and the floppy disks a game needs.
 - [`editor/editors/palette/`](editor/editors/palette/README.md): VGA palette editing, role reservations and contrast checks.
 - [`saves/`](saves/README.md): the home page's Saves & scores panel: saved games, high scores and
