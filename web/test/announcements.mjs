@@ -375,3 +375,22 @@ test('transcripts are browsable documents, not a live payload; loading errors ca
   assert.equal(result.live, false);
   assert.match(await page.locator('.lib-video-transcript-status').textContent(), /Transcript loaded/);
 });
+test('Saves & scores announces a consumed read failure in its local footer', async () => {
+  await reset();
+  await page.evaluate(async () => {
+    const { openSaves } = await import('/src/saves/savesPanel.ts');
+    void openSaves({
+      title: 'Fixture',
+      saveId: 'fixture',
+      gam: 'fixture.gam',
+      files: async () => ({
+        get() {
+          throw new Error('Controlled saved-data refusal');
+        },
+      }),
+    });
+  });
+  await page.waitForFunction(() => document.querySelector('.sv-main')?.textContent.includes('Could not read the saves'));
+  assert.match(await page.locator('.sv-say').textContent(), /Could not read the saves.*Controlled saved-data refusal/);
+  assert.match(await accessibleText(), /Could not read the saves/);
+});
