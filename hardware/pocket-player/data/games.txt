@@ -1,5 +1,6 @@
 first-steps|First Steps|2
 blocks-budget|150 Blocks|2
+around-the-room|Around the Room|4
 beams|Beams and Fog|3
 beat-the-clock|Beat the Clock|2
 boss-hits|Big Bug|2
@@ -52,6 +53,7 @@ parallax|Parallax|2
 inventory|Pick It Up|2
 pictures-and-cartoons|Pictures and Cartoons|3
 power-up|Power Up|2
+ride-along|Ride Along|3
 road-tiles|Road Tiles|3
 dice|Roll the Dice|1
 room-to-room|Room to Room|8
