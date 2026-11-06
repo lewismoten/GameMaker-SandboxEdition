@@ -38,8 +38,8 @@ front (the magazine, the desk, the level check's explorer, the engine…), walki
 
 - [`main.ts`](main.ts), [`modernUi.ts`](modernUi.ts): the site's entry and today's web interface
   (see Main flows).
-- `archive.html` → [`archive/archive.ts`](archive/archive.ts) (nothing links to it): fetches every file in `archive.json` (the build writes it from the whole built site: the offline copy plus link previews, the pocket firmware, crawler files, trinkets and laser kits; never a secret game's or the gate lists), four at a time with a progress bar, so a web archive's "Save page" records them ([`archive/plan.ts`](archive/plan.ts) orders them: shell, home and desk, the rest, then game packs with `?games=1`; `?part=N` slices). [`offline/replay.ts`](offline/replay.ts) spots a Wayback replay (its `__wm` / `_WBWombat` globals or a `/web/<14 digits>/` address); there `offline.ts` registers no service worker and a missing chunk gets a calm note, not the reload notice.
-- [`play.ts`](play.ts): the play page's entry. [`dosPage/`](dosPage) is `dos.html`'s.
+- `archive.html` → [`archive/archive.ts`](archive/archive.ts) ([README](archive/README.md); nothing links to it): fetches every file in `archive.json` (the build writes it from the whole built site: the offline copy plus link previews, the pocket firmware, crawler files, trinkets and laser kits; never a secret game's or the gate lists), four at a time with a progress bar, so a web archive's "Save page" records them ([`archive/plan.ts`](archive/plan.ts) orders them: shell, home and desk, the rest, then game packs with `?games=1`; `?part=N` slices). [`offline/replay.ts`](offline/replay.ts) spots a Wayback replay (its `__wm` / `_WBWombat` globals or a `/web/<14 digits>/` address); there `offline.ts` registers no service worker and a missing chunk gets a calm note, not the reload notice.
+- [`play.ts`](play.ts): the play page's entry. [`dosPage/`](dosPage/README.md) is `dos.html`'s.
 - [`libraryStart.ts`](libraryStart.ts): the game the Library starts on, noted from the last game page, look or
   project view (`library/libraryPage.ts` reads it once).
 - [`urlState.ts`](urlState.ts): what the address bar keeps. [`viewSwitch.ts`](viewSwitch.ts): the
@@ -60,7 +60,7 @@ front (the magazine, the desk, the level check's explorer, the engine…), walki
   string hash (FNV-1a) that pictures, songs, maps and walkthroughs use to come out the same every
   time.
 - [`devReload.ts`](devReload.ts): development only, a Reload button in place of reloading the page; the dev server keeps serving the old code until it is pressed (`manualReload` in `vite.config.ts` holds back Vite's invalidation)
-- [`devLog/interactionLog.ts`](devLog/interactionLog.ts): development on localhost only, opt in with the 🙈/🐵 corner switch (remembered): logs screen size, pointer, clicks, keys (never what is typed in a field), routes, slow paints, long tasks and every JavaScript error to `.for-lewis/debug/interaction-log/<date>.jsonl` through `scripts/devLog.ts`; it pauses after 5 minutes with no mouse or keyboard
+- [`devLog/`](devLog/README.md): `interactionLog.ts`: development on localhost only, opt in with the 🙈/🐵 corner switch (remembered): logs screen size, pointer, clicks, keys (never what is typed in a field), routes, slow paints, long tasks and every JavaScript error to `.for-lewis/debug/interaction-log/<date>.jsonl` through `scripts/devLog.ts`; it pauses after 5 minutes with no mouse or keyboard
 - [`devLog/gameLog.ts`](devLog/gameLog.ts), [`devLog/replayCore.ts`](devLog/replayCore.ts): with the 🐵 switch on, a running game also logs `game-start` (game, .gam hash, random seed, hardware), `game-input` (the keys the game applied, `[clock, scan, ...]`), `game-snap` (scene, hero, hit points, lives, score, about every second and on scene change, hurt, death, pickup and win), `game-note` and `game-end`; `npm run replay:log -- <log.jsonl>` (`scripts/replayLog.ts`) replays it headless and checks each snapshot
   (which would switch off the desk's PC) whenever a source file changes.
 - [`firstLoad.test.ts`](firstLoad.test.ts) and [`importWalk.ts`](importWalk.ts): the up-front
@@ -87,7 +87,7 @@ SDK implementation lives in the packages below; the app imports their declared e
 - [`../packages/tools/`](../packages/tools/README.md): the development-only npm toolkit for native formats, drawing, audio generation and headless checks.
 - [`audio/`](audio/README.md): OPL2 music, the CMF player, Web Audio output, PC speaker sounds, and
   making songs and sound effects.
-- [`gfx/`](gfx): pictures drawn from a game's own maps: `levelPicture.ts`,
+- [`gfx/`](gfx/README.md): pictures drawn from a game's own maps: `levelPicture.ts`,
   `titlePicture.ts`, `titlePoster.ts` (the click-to-play title for projects and bundles), `gameShots.ts` and `sandboxShots.ts` (the Game-Maker box's and guide's), and
   screenshots that are a moment of play (`shotFrame.ts`, shown by `frameShot.ts`).
 - [`input/`](input/README.md): Mac keys for keyboards without a keypad (`macKeys.ts`), keys pressed with the mouse or
@@ -118,10 +118,10 @@ SDK implementation lives in the packages below; the app imports their declared e
 - [`linkIn/`](linkIn/README.md): opening a game another site links to or sends by postMessage.
 - [`community/`](community/README.md): reviewed links to independently hosted games and
   the Community submission form; [contribution guide](../../docs/community-games.md).
-- [`offline/`](offline): "Make available offline": the whole site in the service worker's cache at
+- [`offline/`](offline/README.md): "Make available offline": the whole site in the service worker's cache at
   once (`offlineCopy.ts`), from the web's Offline dialog (`offlineDialog.ts`) or `OFFLINE.EXE` on
   the desk (`offlineExe.ts`); `loadFailure.ts` says so when a part of the site cannot load.
-- [`seo/`](seo): page titles, descriptions and JSON-LD for the site and its game pages: `site.ts`
+- [`seo/`](seo/README.md): page titles, descriptions and JSON-LD for the site and its game pages: `site.ts`
   (shared with the build), `route.ts` (keeps the tags in step at run time) and `siteSections.ts` (the home page's WebSite and
   magazine data and its links to the `#/…` pages, which `seoBuild.ts` writes in).
 
@@ -135,7 +135,7 @@ SDK implementation lives in the packages below; the app imports their declared e
   backups.
 - [`backup/`](backup/README.md): Settings › Back up / restore: everything this browser keeps in one
   `.gmbackup` file, and bringing it back part by part.
-- [`macHelp/`](macHelp), [`winHelp/`](winHelp), [`linuxHelp/`](linuxHelp): the `#/mac`,
+- [`macHelp/`](macHelp/README.md), [`winHelp/`](winHelp/README.md), [`linuxHelp/`](linuxHelp/README.md): the `#/mac`,
   `#/windows` and `#/linux` pages for players: opening a downloaded game the first time, what it
   does, removing it.
 - [`cast/`](cast/README.md): the Cast page: the regulars on a stage, and the games each appears in.
@@ -161,7 +161,7 @@ SDK implementation lives in the packages below; the app imports their declared e
 
 - [`desk/`](desk/README.md): the 1994 desk: the room, the PC's case, keyboard and monitor, the
   boxes, disks and props.
-- [`dosPage/`](dosPage): DOS Game-Maker (`dos.html`, `dosPage.ts`): the PC's page with its one-row
+- [`dosPage/`](dosPage/README.md): DOS Game-Maker (`dos.html`, `dosPage.ts`): the PC's page with its one-row
   bar and ⋯ menu (`moreMenu.ts`, with the modem speed, `lineSpeed.ts`), disk menu (`diskMenu.ts`),
   and one-row footer (`footer.ts`) with the on-screen keys (`keypad.ts`) and the status line.
 - [`retro/`](retro/README.md): the PC shared by the desk and `dos.html`: DOS, Game-Maker's menus and
