@@ -11,6 +11,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Added
 
+- Sample Undo and Revert restore the original VOC bytes exactly; undoing a sound-maker replacement restores its settings too.
 - Music Undo keeps Redo after a canceled gesture, restores empty tracks, and limits track-order history to 200 steps.
 - Lightning Bugs, Fireworks Night and Leaves in the Wind now draw and name the same helpers as their Cast entries: Rima, Lami and Mia.
 - Slow Computers brings both rows of bees into the playing view and puts its eight snails in a lit cutaway cave beneath the grass, without the floating plank. The crowd still has 36 friendly monsters.
