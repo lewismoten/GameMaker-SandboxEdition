@@ -6,7 +6,7 @@
   "hero": "NOVA",
   "year": 1994,
   "price": "Free",
-  "version": "1.0",
+  "version": "1.1",
   "blurb": "Water that moves, drawn with blocks. A block can turn into another block by itself a few ticks later. Four blocks that turn into each other make a loop, and a sea laid from that loop moves everywhere at once. Level 1 crosses a pier over two seas: one laid from a single block, so it turns all together, and one laid from the loop's four starts, so the ripples roll. Level 2 walks a beach where every sand block that touches the water is a loop of its own, with round corners, so the waves run up the sand and back. Play it, then open it in Game-Maker and look at the blocks.",
   "exe": "SHORE.EXE",
   "dosName": "SHORE",

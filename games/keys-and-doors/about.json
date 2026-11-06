@@ -6,7 +6,7 @@
   "hero": "MIA",
   "year": 1994,
   "price": "Free",
-  "version": "1.0",
+  "version": "1.1",
   "blurb": "Three short levels about keys and doors. A door can be shut before you find a key, a door can need two of the same key, and different doors can want different keys. Signs in the levels say how. Play it, then open it in Game-Maker and move a key or lock a new door.",
   "exe": "KEYS.EXE",
   "dosName": "KEYSDOOR",

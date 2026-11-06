@@ -6,7 +6,7 @@
   "hero": "KIT",
   "year": 1994,
   "price": "Free",
-  "version": "1.0",
+  "version": "1.1",
   "blurb": "Three short levels about drawing roads out of blocks. Level 1 is straight pieces and round corners that curve the road into the grass. Level 2 is a road that bends up onto a diagonal and down onto another, made of a band block and the corner triangles beside it. Level 3 lays one road across grass, sand and water, with a crossroads, a T, a blend block where grass runs into sand and a bridge. Signs name each piece, and the pages say how many blocks a set needs and how to draw each once and flip or turn it. Play it, then open it in Game-Maker and look at the blocks.",
   "exe": "ROADTILE.EXE",
   "dosName": "ROADTILE",

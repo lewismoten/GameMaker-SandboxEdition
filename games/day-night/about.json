@@ -6,7 +6,7 @@
   "hero": "LAMI",
   "year": 1994,
   "price": "Free",
-  "version": "1.0",
+  "version": "1.1",
   "blurb": "Two short levels with one map and two looks. In the first, walk into a house with a lit door and you are back in the same room, but it is night: a moon, glowing windows and stars. In the second, the sun sets as you walk through two gates: day, dusk, night. A scene picks its own palette, so the same pictures show new colors. Signs say how. Play it, then open it in Game-Maker and paint a palette of your own.",
   "exe": "DAYNGT.EXE",
   "dosName": "DAYNIGHT",

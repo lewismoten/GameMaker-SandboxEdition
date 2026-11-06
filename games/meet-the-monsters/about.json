@@ -6,7 +6,7 @@
   "hero": "LENA",
   "year": 1994,
   "price": "Free",
-  "version": "1.0",
+  "version": "1.1",
   "blurb": "Two short levels about monsters. One walks a path back and forth, one hurts a little when touched, and a mint green one pops when you land on it. Signs in the levels say how. Play it, then open it in Game-Maker and change a monster.",
   "exe": "MEET.EXE",
   "dosName": "MONSTERS",
