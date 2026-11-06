@@ -1,5 +1,5 @@
 // RIDE ALONG's title picture: the neon look (Showcase Tricks), the helper on the ground at the left, and the
-// rocket (at the right, as the exit of level 1) rising above a little trail of stars.
+// rocket (at the right, as the exit of level 1) with a row of stars in the sky.
 import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { scaleBlit } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 import { bevel } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
@@ -10,7 +10,7 @@ import { backdrop, frameOf, lookOf } from '../../kit/starter/titleStyles';
 import { starSprite } from './rideBlocks';
 import { rocket } from './shipArt';
 
-/** The title: the name, a ribbon, the helper, four stars climbing and the rocket on the neon backdrop. */
+/** The title: the name, a ribbon, the helper, a row of four stars and the rocket on the neon backdrop. */
 export function titlePicture(pal: Pal, hero: Pixels, name: string, tagline: string): Pixels {
   const look = lookOf(pal, 'neon');
   const p = backdrop(pal, 'neon');
@@ -22,9 +22,9 @@ export function titlePicture(pal: Pal, hero: Pixels, name: string, tagline: stri
   text(p, rx + 10, 54, tagline, look.ribbonText);
   p.rect(44, 158, 32, 3, look.floorShadow);
   scaleBlit(p, hero, 40, 160 - 80, 2);
-  // a row of stars climbing from the helper to the rocket
+  // a level row of stars high in the sky (a trail rising from the helper's waist read as a stream)
   const star = starSprite(pal);
-  for (let i = 0; i < 4; i++) scaleBlit(p, star, 98 + i * 30, 126 - i * 16, 1);
+  for (let i = 0; i < 4; i++) scaleBlit(p, star, 98 + i * 30, 74 + (i % 2) * 6, 1);
   scaleBlit(p, rocket(pal, true, 1), 226, 160 - 88, 2);
   frameOf(p, pal, 'neon');
   return p;
