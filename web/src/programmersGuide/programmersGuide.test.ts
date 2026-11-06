@@ -35,6 +35,18 @@ describe('the chapters', () => {
     for (const c of CHAPTERS) expect(md(c.id).match(bad)?.[0], c.id).toBeUndefined();
   });
 
+  it('explains the two Escape checks and the matching web fade sequence', () => {
+    const keys = md('timing').split('## 12.3 Keys')[1].split('## 12.4')[0];
+    expect(keys).toContain('hold Escape until the screen goes black');
+    expect(keys).toContain('release it during the fade');
+    for (const source of ['PLAYGAME.C:1424', 'PLAYGAME.C:1533', 'PLAYGAME.C:1547', 'engine/engine/scene.ts:668-671', 'engine/engine/scene.ts:715-721']) {
+      expect(keys).toContain(`\`${source}\``);
+      expect(citationHref(source), source).toBeDefined();
+    }
+    expect(keys).toContain('DOS fidelity');
+    expect(keys).toContain('[not yet checked in DOSBox]');
+  });
+
   it('keep the corrected hidden band: a whole cell, and a hidden monster cannot hurt', () => {
     const s = md('screen');
     expect(s).toContain('whole cell, not one pixel');
