@@ -71,6 +71,10 @@ async function fixture({ extra, vite = false, secret = false, args = ['--force']
     write(`games/${id}/build.ts`, '// fixture');
     write(`games/${id}/about.json`, JSON.stringify({ secret: secret && id === 'alpha' }));
   }
+  // A nested, fully populated diagnostic is not a catalog game or an automatic build target.
+  write('games/kit/testdisks/sound-stress/build.ts', 'throw new Error("nested diagnostic must not run");');
+  write('games/kit/testdisks/sound-stress/about.json', JSON.stringify({ title: 'Sound stress TEST' }));
+  write('games/kit/testdisks/sound-stress/disk/SOUNDTST.GAM', 'nested fixture bytes');
   if (cached) {
     for (const id of ids) write(`games/${id}/disk/TEST.GAM`, 'stable fixture bytes');
     const hash = createHash('sha256').update('TEST.GAM\0stable fixture bytes\0').digest('hex');
