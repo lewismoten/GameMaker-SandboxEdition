@@ -30,7 +30,7 @@
   "flicker": {"hash":"fbd726c48245b96a","maps":{"camp.map|camp.bbl":[0,15,67,10],"falls.map|falls.bbl":[0,15,81,10],"hall.map|hall.bbl":[0,15,79,10]}},
   "flock": {"hash":"dfd3808b7640343f","maps":{"one.map|bird.bbl":[0,7,67,20],"two.map|bird.bbl":[0,14,67,10]}},
   "follower": {"hash":"b7ea0e2b15ba940b","maps":{"one.map|pup.bbl":[0,7,67,20],"two.map|pup.bbl":[0,9,67,18]}},
-  "giant": {"hash":"2a46ffa152ae05f7","maps":{"one.map|giant.bbl":[0,8,64,20],"two.map|giant.bbl":[0,8,65,20]}},
+  "giant": {"hash":"9c012e91e51b1fc8","maps":{"one.map|giant.bbl":[0,8,64,20],"two.map|giant.bbl":[0,8,65,20]}},
   "goat": {"hash":"d8a48111bedb4745","maps":{"caravan.map|goat.bbl":[0,0,53,28],"field.map|goat.bbl":[0,0,64,24],"stable.map|goat.bbl":[0,0,42,23],"town.map|goat.bbl":[0,0,53,30]}},
   "graduation-basics": {"hash":"e92e0dcd26ec73a6","maps":{"hall.map|grad.bbl":[0,14,69,10]}},
   "graduation-blocks": {"hash":"d8f3ee0f3fa66a15","maps":{"hall.map|grad.bbl":[0,14,69,10]}},
