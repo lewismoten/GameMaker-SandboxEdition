@@ -416,21 +416,30 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
     return h(
       'div',
       { class: 'stack gen-dialog' },
+      // two columns on a landscape phone (the settings, then the previews); one stack everywhere else
       h(
         'div',
-        { class: 'gen-row' },
-        h('label', { class: 'field' }, h('span', null, 'Kind'), kindSel),
-        h('label', { class: 'field' }, h('span', null, 'Where'), areaSel),
+        { class: 'stack gen-col' },
+        h(
+          'div',
+          { class: 'gen-row' },
+          h('label', { class: 'field' }, h('span', null, 'Kind'), kindSel),
+          h('label', { class: 'field' }, h('span', null, 'Where'), areaSel),
+        ),
+        blurb,
+        h('div', { class: 'gen-row' }, h('label', { class: 'field' }, h('span', null, 'Seed'), seedIn), another),
+        diffRow,
+        monRow,
       ),
-      blurb,
-      h('div', { class: 'gen-row' }, h('label', { class: 'field' }, h('span', null, 'Seed'), seedIn), another),
-      diffRow,
-      needs,
-      monRow,
-      grid,
-      note,
-      linksBox,
-      h('div', { class: 'toolbar' }, use, h('button', { type: 'button', onclick: () => close(undefined) }, 'Cancel')),
+      h(
+        'div',
+        { class: 'stack gen-col' },
+        needs,
+        grid,
+        note,
+        linksBox,
+        h('div', { class: 'toolbar' }, use, h('button', { type: 'button', onclick: () => close(undefined) }, 'Cancel')),
+      ),
     );
   });
   running?.cancel();

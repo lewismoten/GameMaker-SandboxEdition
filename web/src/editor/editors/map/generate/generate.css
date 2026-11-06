@@ -64,16 +64,33 @@
 .mt-role-filter {
   margin: 0 0 4px;
 }
-/* a landscape phone is short: the four previews go in one row */
+/* a landscape phone is short: the settings go in the left column, the four previews (two by two) and the buttons in the right */
+.gen-col {
+  display: contents;
+}
 @media (max-height: 500px) {
-  .gen-offers {
-    grid-template-columns: repeat(4, 1fr);
+  .gen-dialog {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    column-gap: 16px;
+    align-items: start;
+    width: min(52rem, calc(100vw - 32px));
+  }
+  .gen-col {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+  }
+  .gen-offers > p {
+    grid-column: 1 / -1;
+    margin: 0;
   }
   .gen-offer canvas {
-    max-height: 28vh;
+    max-height: 16vh;
   }
-  .gen-dialog {
-    width: min(48rem, calc(100vw - 48px));
+  .gen-link-list {
+    max-height: 56px;
   }
 }
 .gen-chip {
