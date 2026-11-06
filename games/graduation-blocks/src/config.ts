@@ -3,6 +3,7 @@ import { wrap, creditsPage } from '../../kit/starter/graduationText';
 import type { Graduation } from '../../kit/starter/graduationConfig';
 import { GALLERY } from '../../kit/starter/graduationThemes';
 import about from '../about.json';
+import { song } from './song';
 
 export const cfg: Graduation = {
   id: 'graduation-blocks',
@@ -26,7 +27,7 @@ export const cfg: Graduation = {
     nods: ['shore', 'stars', 'popups'],
   },
   level: { title: 'The Gallery', hint: 'Walk to the gallery stage.' },
-  song: { bpm: 88, lead: 'strings', transpose: -3 },
+  song,
   text: {
     story: wrap(`
 |GRADUATION
