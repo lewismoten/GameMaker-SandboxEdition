@@ -3,17 +3,22 @@
 // character; only the palette slot differs (as.pal, red1.pal, red2.pal, blue.pal, gray.pal), and the way back lands
 // at the door that scene was entered by. A scene lists the files it loads in slots (palette, map, blocks, monsters,
 // monster blocks, character, character blocks, sounds, song, a card before it) and carries its links: touch the
-// From block here and you are in the To scene, standing on the To cell.
+// From block here and you are in the To scene, standing on the To cell. Last, scene 8 is the hall again without
+// its card, for the galleries to come back to.
 import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, newGame, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { GALLERY_END, GROUND, HALL_DOORS, HALL_FINISH, hallLanding, type Level } from './levels';
 import { VIEWS } from './views';
 import { ORIGIN } from '../../kit/starter/map';
+import { addReturnScenes } from '../../kit/starter/returnScenes';
 
 /** The title of the game, as the .GAM names it (19 characters at most). */
 export const TITLE = 'COLOR DOORS';
 
 /** The scenes by number. */
 export const SCENE = { end: 1, hall: 2 } as const;
+
+/** The hall's copy without its card, after the galleries: the way back from each gallery leads here. */
+export const HALL_BACK = 3 + VIEWS.length;
 
 export function buildGame(hall: Level, gallery: Level): Game {
   const game = newGame(TITLE);
@@ -61,6 +66,9 @@ export function buildGame(hall: Level, gallery: Level): Game {
     s.links[0] = { toScene: SCENE.hall, from: feet(GALLERY_END), to: { x: hallLanding(i)[0], y: hallLanding(i)[1] } };
     game.scenes.push(s);
   });
+
+  // the way back comes to the hall's copy without its card (kit/starter/returnScenes.ts), so the card shows once
+  addReturnScenes(game, [SCENE.hall]);
 
   const first = hall.map.start;
   title.links[0] = { toScene: SCENE.hall, from: { x: 0, y: 0 }, to: { x: first[0], y: first[1] } };

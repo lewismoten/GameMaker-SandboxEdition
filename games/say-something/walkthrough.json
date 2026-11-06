@@ -15,7 +15,7 @@
    "keys": ""
   },
   {
-   "scene": 2,
+   "scene": 7,
    "keys": "BE0ozQNN"
   },
   {
@@ -27,7 +27,7 @@
    "keys": ""
   },
   {
-   "scene": 3,
+   "scene": 8,
    "keys": "BE0UzQNN"
   },
   {
@@ -35,7 +35,7 @@
    "keys": ""
   },
   {
-   "scene": 3,
+   "scene": 8,
    "keys": "BE0PzQNN"
   }
  ],
@@ -48,8 +48,7 @@
    "scene": 4
   },
   {
-   "scene": 2,
-   "title": "Level 1: Say Hello"
+   "scene": 7
   },
   {
    "scene": 3,
@@ -59,20 +58,18 @@
    "scene": 5
   },
   {
-   "scene": 3,
-   "title": "Level 2: Two Friends"
+   "scene": 8
   },
   {
    "scene": 6
   },
   {
-   "scene": 3,
-   "title": "Level 2: Two Friends"
+   "scene": 8
   }
  ],
  "timeline": {
   "fps": 60,
-  "frames": 11681,
+  "frames": 10972,
   "chapters": [
    {
     "title": "Opening",
@@ -91,18 +88,18 @@
    },
    {
     "title": "Level 2: Two Friends",
-    "frame": 4387,
-    "time": 73116.66666666506
+    "frame": 4151,
+    "time": 69183.33333333058
    },
    {
     "title": "Ending",
-    "frame": 8395,
-    "time": 139916.66666667679
+    "frame": 7686,
+    "time": 128100.00000001439
    },
    {
     "title": "Credits",
-    "frame": 10607,
-    "time": 176783.333333322
+    "frame": 9898,
+    "time": 164966.6666666622
    }
   ]
  }

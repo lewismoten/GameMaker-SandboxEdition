@@ -1,8 +1,10 @@
-// say-something.gam: scene 0 is the title and menu, scene 1 the endings, then one scene a level.
+// say-something.gam: scene 0 is the title and menu, scene 1 the endings, then one scene a level,
+// one a talk, and last each level again without its card, for the talks to come back to.
 // A level's scene lists the files it loads in slots (palette, map, blocks, monsters, monster
 // blocks, character, character blocks, sounds, song, card) and links its door to the next scene.
 import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, newGame, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import type { StarterMap } from '../../kit/starter/map';
+import { addReturnScenes } from '../../kit/starter/returnScenes';
 import type { Level } from './levels';
 
 /** The title of the game, as the .GAM names it (19 characters at most). */
@@ -15,7 +17,8 @@ export const talkFile = (who: string, n: number) => `${who}${n}`;
  * Scene 0 is the title and menu, scene 1 the endings, scenes 2.. the levels, then one scene for each
  * talk. A talk's scene loads the tiny PASS map (`pass`) under an all-black palette, shows its
  * slide list (a picture, then the friend's words) as its intro, and the hero, who starts on
- * the pass map's exit cell, is taken straight back to the level, a few blocks past the friend.
+ * the pass map's exit cell, is taken straight back to the level, a few blocks past the friend: to the
+ * level's last scene, its copy without the level card.
  */
 export function buildGame(levels: Level[], pass: StarterMap): Game {
   const game = newGame(TITLE);
@@ -93,6 +96,12 @@ export function buildGame(levels: Level[], pass: StarterMap): Game {
       n++;
     });
   });
+
+  // a talk comes back to the level's copy without its card (kit/starter/returnScenes.ts), so "Level 1 of 2" shows once
+  addReturnScenes(
+    game,
+    levels.map((_, i) => i + 2),
+  );
 
   const first = levels[0].map.start;
   title.links[0] = { toScene: 2, from: { x: 0, y: 0 }, to: { x: first[0], y: first[1] } };
