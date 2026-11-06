@@ -105,11 +105,11 @@ export async function exportDialog(): Promise<'restore' | undefined> {
           try {
             const file = await makeBackup(snaps, ids);
             saveFile(file.name, file.bytes);
-            toast(`Saved ${file.name}.`);
+            toast(`Saved ${file.name}.`, 'info', { repeat: true });
             close(undefined);
           } catch (err) {
             go.disabled = false;
-            toast(`The backup could not be made: ${(err as Error).message}`, 'error');
+            toast(`The backup could not be made: ${(err as Error).message}`, 'error', { repeat: true });
           }
         },
       },

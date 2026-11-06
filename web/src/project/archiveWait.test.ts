@@ -2,8 +2,16 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { archiveLabel, fetchArchive, retryDelayMs } from './archiveWait';
 
+const writes: string[] = [];
+let text = '';
 const region = {
-  textContent: '',
+  get textContent() {
+    return text;
+  },
+  set textContent(value: string) {
+    text = value;
+    writes.push(value);
+  },
   hidden: true,
   style: {} as Record<string, string>,
   attrs: {} as Record<string, string>,
@@ -11,10 +19,51 @@ const region = {
     this.attrs[k] = v;
   },
 };
-beforeEach(() => vi.stubGlobal('document', { createElement: () => region, body: { append: () => undefined } }));
+beforeEach(() => {
+  writes.length = 0;
+  vi.stubGlobal('document', { createElement: () => region, body: { append: () => undefined } });
+});
 afterEach(() => vi.unstubAllGlobals());
 
 describe('archiveWait', () => {
+  it('clears pending feedback on cancellation without claiming the archive opened', async () => {
+    vi.stubGlobal('fetch', async () => new Response(null, { status: 202 }));
+    const stop = new AbortController();
+    const response = await fetchArchive('./games/x/y/y.zip', { signal: stop.signal }, async () => stop.abort());
+    expect(response.status).toBe(202);
+    expect(region.hidden).toBe(true);
+    expect(region.textContent).toBe('');
+  });
+  it('does not rewrite identical pending text on every retry', async () => {
+    let count = 0;
+    vi.stubGlobal('fetch', async () => new Response(null, { status: ++count <= 3 ? 202 : 200 }));
+    await fetchArchive('./games/x/y/y.zip', undefined, async () => {});
+    expect(writes.filter((t) => t.startsWith('Preparing'))).toEqual(['Preparing y… (still building)']);
+  });
+  it('restores the still-pending request label when another settles, and clears after rejection', async () => {
+    const release = new Map<string, () => void>();
+    const counts = new Map<string, number>();
+    vi.stubGlobal('fetch', async (url: string) => {
+      const n = (counts.get(url) ?? 0) + 1;
+      counts.set(url, n);
+      if (n > 1 && url.includes('/a/')) throw new Error('Controlled archive refusal');
+      return new Response(null, { status: n === 1 ? 202 : 200 });
+    });
+    const wait = (key: string) => async () => new Promise<void>((resolve) => release.set(key, resolve));
+    const a = fetchArchive('./games/x/a/a.zip', undefined, wait('a'));
+    const failed = expect(a).rejects.toThrow('Controlled archive refusal');
+    const b = fetchArchive('./games/x/b/b.zip', undefined, wait('b'));
+    await vi.waitFor(() => expect(release.size).toBe(2));
+    expect(region.textContent).toBe('Preparing b… (still building)');
+    release.get('b')!();
+    await b;
+    const pending = { text: region.textContent, hidden: region.hidden };
+    release.get('a')!();
+    await failed;
+    expect(pending.text).toBe('Preparing a… (still building)');
+    expect(pending.hidden).toBe(false);
+    expect(region.hidden).toBe(true);
+  });
   it('backs off from 2 s to at most 30 s, honoring Retry-After', () => {
     expect([0, 1, 2, 3, 4, 9].map((n) => retryDelayMs(n))).toEqual([2000, 4000, 8000, 16000, 30000, 30000]);
     expect(retryDelayMs(0, 5)).toBe(5000);
