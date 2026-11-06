@@ -118,6 +118,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Fixed
 
+- Both Phone of the Future kits now link their board QR codes to the kit page and use the current datasheet URLs.
 - Watch Your Step, level 2: walking up to the edge of the pool no longer costs a life before you can jump. Only falling in does, and a jump across now picks up all three coins.
 - The Loofah game's title and cover now show the friendly golden bath monster from its levels, with googly eyes and a wide smile, instead of the little horns (version 1.5).
 - Choosing the Starters tab twice in a quick keyboard burst no longer shows a second "How do I…?" list.
