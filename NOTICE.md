@@ -876,6 +876,15 @@ The desk's black-light poster (`games/kit/scans/blacklight.py`) is drawn on the 
 computer with Pillow (MIT-CMU License) and NumPy (BSD); the Caveat font was cut down with
 fontTools (MIT). Only their output is committed.
 
+The player machine-code diff (`scripts/player-diff/`, research only) runs on the developer's
+computer with [Capstone](https://www.capstone-engine.org/) 5.0.7 (BSD-3-Clause, Nguyen Anh
+Quynh and contributors) to disassemble, and [Deark](https://entropymine.com/deark/) (MIT,
+Jason Summers) to unpack PKLITE/EXEPACK copies. The scripts and original player analyses
+were written by **Claude Opus 5.5** (Anthropic), directed by Lewis Moten. Only their small
+text reports are committed; historical corpus binaries and full disassembly are not.
+Public-safe integration, source-label exports and optional-dependency tests were contributed
+with **Hermes / OpenAI Codex GPT-6.1 Sol**, directed by Lewis Moten.
+
 The tour's narration script (`web/scripts/narrate.ts`, `npm run voice`) runs on the
 developer's computer with ffmpeg, Pocket TTS's ONNX model and ONNX Runtime's WASM build (see
 "The guided tour's voice" in Credits), read from folders outside the repository; only the clips

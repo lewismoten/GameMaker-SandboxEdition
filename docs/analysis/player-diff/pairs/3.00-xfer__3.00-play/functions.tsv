@@ -1,0 +1,616 @@
+status	old_addr	old_lin	old_size	new_addr	new_lin	new_size	norm_sim	method	confidence	name	string_hint
+changed	0000:0000	00000	414	0000:0000	00000	326	0.704	callgraph	medium		
+data-moved	0000:0183	00183	19	0000:0146	00146	19	0.778	shape	high		
+identical	0000:0196	00196	1	0000:0159	00159	1	1.000	bytes	high		
+changed	0000:0197	00197	62	0000:015A	0015A	30	0.409	order	low		Divide error\r\n
+constants	0000:01A9	001A9	67	0000:0178	00178	67	0.958	shape	high		
+relocated	0000:01EC	001EC	45	0000:01BB	001BB	45	1.000	norm	high		
+changed	0000:0219	00219	87	0000:022C	0022C	65	0.645	callgraph	low		
+relocated	0000:02AB	002AB	61	0000:028C	0028C	61	1.000	norm	high		
+relocated	0000:02E8	002E8	49	0000:02DD	002DD	49	1.000	norm	high		
+relocated	0000:0319	00319	22	0000:030E	0030E	22	1.000	norm	high		
+identical	0000:032F	0032F	22	0000:0324	00324	22	1.000	bytes	high		
+relocated	0000:0345	00345	36	0000:033A	0033A	36	1.000	norm	high		
+relocated	0000:0369	00369	33	0000:035E	0035E	33	1.000	norm	high		
+relocated	0000:038F	0038F	90	0000:03AD	003AD	90	1.000	norm	high		
+identical	0000:03E9	003E9	19	0000:0407	00407	19	1.000	bytes	high		
+identical	0000:03FC	003FC	22	0000:041A	0041A	22	1.000	bytes	high		
+identical	0000:0434	00434	23	0000:0452	00452	23	1.000	bytes	high		
+identical	0000:044B	0044B	28	0000:0469	00469	28	1.000	bytes	high		
+identical	0000:0467	00467	23	0000:0485	00485	23	1.000	bytes	high		
+identical	0000:047E	0047E	23	0000:049C	0049C	23	1.000	bytes	high		
+identical	0000:0495	00495	19	0000:04B3	004B3	19	1.000	bytes	high		
+identical	0000:04A8	004A8	21	0000:04C6	004C6	21	1.000	bytes	high		
+identical	0000:04BD	004BD	3	0000:04DB	004DB	3	1.000	callgraph	medium		
+identical	0000:04C0	004C0	149	0000:04DE	004DE	149	1.000	bytes	high		
+identical	0000:04C4	004C4	3	0000:04E2	004E2	3	1.000	callgraph	medium		
+identical	0000:04C7	004C7	150	0000:04E5	004E5	150	1.000	bytes	high		
+identical	0000:04CC	004CC	153	0000:04EA	004EA	153	1.000	bytes	high		
+identical	0000:04D7	004D7	148	0000:04F5	004F5	148	1.000	bytes	high		
+identical	0000:056B	0056B	3	0000:0589	00589	3	1.000	bytes	high		
+identical	0000:056E	0056E	30	0000:058C	0058C	30	1.000	bytes	high		
+identical	0000:058F	0058F	30	0000:05AD	005AD	30	1.000	bytes	high		
+identical	0000:05AD	005AD	77	0000:05CB	005CB	77	1.000	bytes	high		
+relocated	0000:060D	0060D	62	0000:062B	0062B	62	1.000	norm	high		
+identical	0000:064B	0064B	20	0000:0669	00669	20	1.000	bytes	high		
+identical	0000:065F	0065F	21	0000:067D	0067D	21	1.000	bytes	high		
+identical	0000:0674	00674	130	0000:0692	00692	130	1.000	bytes	high		
+identical	0000:06F6	006F6	36	0000:0714	00714	36	1.000	bytes	high		
+relocated	0000:071A	0071A	45	0000:0738	00738	45	1.000	norm	high		
+data-moved	0000:0747	00747	97	0000:0765	00765	97	0.977	strings	high		TMP
+relocated	0000:07A8	007A8	91	0000:07C6	007C6	91	1.000	norm	high		
+data-moved	0000:081F	0081F	101	0000:083D	0083D	101	0.906	shape	high		Borland C++ - Copyright 1994 Borland Intl.
+relocated	0000:0884	00884	46	0000:08A2	008A2	46	1.000	norm	high		
+relocated	0000:08B2	008B2	81	0000:08D0	008D0	81	1.000	norm	high		
+relocated	0000:0903	00903	61	0000:0921	00921	61	1.000	norm	high		
+data-moved	0000:0966	00966	90	0000:0984	00984	90	0.955	strings	high		Out of memory
+relocated	0000:0A5D	00A5D	71	0000:0A7B	00A7B	71	1.000	callgraph	medium		
+identical	0000:0ADC	00ADC	18	0000:0AFA	00AFA	18	1.000	bytes	high		
+relocated	0000:0AEE	00AEE	85	0000:0B0C	00B0C	85	1.000	norm	high		
+identical	0000:0B43	00B43	22	0000:0B61	00B61	22	1.000	bytes	high		
+identical	0000:0B59	00B59	23	0000:0B77	00B77	23	1.000	bytes	high		
+identical	0000:0B70	00B70	33	0000:0B8E	00B8E	33	1.000	bytes	high		
+relocated	0000:0B91	00B91	21	0000:0BAF	00BAF	21	1.000	norm	high		
+relocated	0000:0BA6	00BA6	41	0000:0BC4	00BC4	41	1.000	norm	high		
+relocated	0000:0BCF	00BCF	50	0000:0BED	00BED	50	1.000	norm	high		
+identical	0000:0C01	00C01	28	0000:0C1F	00C1F	28	1.000	bytes	high		
+identical	0000:0C1D	00C1D	47	0000:0C3B	00C3B	47	1.000	bytes	high		
+data-moved	0000:0C4C	00C4C	418	0000:0C6A	00C6A	418	0.994	shape	high		
+identical	0000:0DEE	00DEE	34	0000:0E0C	00E0C	34	1.000	bytes	high		
+identical	0000:0E10	00E10	23	0000:0E2E	00E2E	23	1.000	bytes	high		
+identical	0000:0E27	00E27	23	0000:0E45	00E45	23	1.000	bytes	high		
+relocated	0000:0EE2	00EE2	64	0000:0F00	00F00	64	1.000	norm	high		
+relocated	0000:0F22	00F22	88	0000:0F40	00F40	88	1.000	norm	high		
+relocated	0000:0F7A	00F7A	48	0000:0F98	00F98	48	1.000	norm	high		
+relocated	0000:0FAA	00FAA	48	0000:0FC8	00FC8	48	1.000	norm	high		
+identical	0000:0FDA	00FDA	28	0000:0FF8	00FF8	28	1.000	bytes	high		
+data-moved	0000:0FF6	00FF6	510	0000:1014	01014	510	0.995	shape	high		
+relocated	0000:12C4	012C4	193	0000:12E2	012E2	193	1.000	norm	high		
+identical	0000:12EB	012EB	10	0000:1309	01309	10	1.000	bytes	high		
+identical	0000:12F4	012F4	52	0000:1312	01312	52	1.000	bytes	high		
+data-moved	0000:1787	01787	90	0000:17A5	017A5	90	0.958	shape	high		
+identical	0000:17EB	017EB	67	0000:1809	01809	67	1.000	bytes	high		
+data-moved	0000:1858	01858	101	0000:1876	01876	101	0.974	shape	high		
+identical	0000:18CB	018CB	67	0000:18E9	018E9	67	1.000	bytes	high		
+calls-differ	0000:190E	0190E	66	0000:192C	0192C	66	1.000	norm	high		
+identical	0000:1950	01950	84	0000:196E	0196E	84	1.000	bytes	high		
+identical	0000:19A4	019A4	88	0000:19C2	019C2	88	1.000	bytes	high		
+relocated	0000:1A71	01A71	36	0000:1A8F	01A8F	36	1.000	norm	high		
+relocated	0000:1AA1	01AA1	99	0000:1ABF	01ABF	99	1.000	norm	high		
+relocated	0000:1B04	01B04	113	0000:1B22	01B22	113	1.000	norm	high		
+relocated	0000:1B75	01B75	41	0000:1B93	01B93	41	1.000	norm	high		NULL CHECK
+relocated	0000:1B9E	01B9E	55	0000:1BBC	01BBC	55	1.000	norm	high		NULL CHECK
+relocated	0000:1BD5	01BD5	41	0000:1BF3	01BF3	41	1.000	norm	high		
+relocated	0000:1BFE	01BFE	100	0000:1C1C	01C1C	100	1.000	norm	high		
+relocated	0000:1C62	01C62	90	0000:1C80	01C80	90	1.000	norm	high		
+identical	0000:1CBC	01CBC	35	0000:1CDA	01CDA	35	1.000	bytes	high		
+relocated	0000:1CDF	01CDF	126	0000:1CFD	01CFD	126	1.000	norm	high		
+relocated	0000:1CE9	01CE9	125	0000:1D07	01D07	125	1.000	norm	high		
+relocated	0000:1D66	01D66	124	0000:1D84	01D84	124	1.000	norm	high		
+relocated	0000:1DE2	01DE2	100	0000:1E00	01E00	100	1.000	norm	high		
+relocated	0000:1E46	01E46	123	0000:1E64	01E64	123	1.000	norm	high		
+relocated	0000:1E4D	01E4D	122	0000:1E6B	01E6B	122	1.000	norm	high		
+relocated	0000:1EC7	01EC7	142	0000:1EE5	01EE5	142	1.000	norm	high		
+relocated	0000:1F55	01F55	67	0000:1F73	01F73	67	1.000	norm	high		
+relocated	0000:1F98	01F98	143	0000:1FB6	01FB6	143	1.000	norm	high		
+identical	0000:2027	02027	53	0000:2045	02045	53	1.000	bytes	high		
+identical	0000:205C	0205C	154	0000:207A	0207A	154	1.000	bytes	high		
+identical	0000:20F6	020F6	45	0000:2114	02114	45	1.000	bytes	high		
+relocated	0000:2123	02123	301	0000:257D	0257D	301	1.000	norm	high		No such device
+relocated	0000:2250	02250	519	0000:26AA	026AA	519	1.000	norm	high		
+data-moved	0000:2457	02457	117	0000:28B1	028B1	117	0.984	shape	high		
+identical	0000:24CC	024CC	21	0000:2926	02926	21	1.000	bytes	high		
+relocated	0000:24E1	024E1	33	0000:293B	0293B	33	1.000	norm	high		
+relocated	0000:2502	02502	44	0000:295C	0295C	44	1.000	norm	high		
+relocated	0000:252E	0252E	34	0000:2988	02988	34	1.000	norm	high		
+identical	0000:2550	02550	17	0000:29AA	029AA	17	1.000	bytes	high		
+relocated	0000:2561	02561	125	0000:29BB	029BB	125	1.000	norm	high		
+relocated	0000:25DE	025DE	192	0000:2A38	02A38	192	1.000	norm	high		
+identical	0000:269E	0269E	209	0000:2AF8	02AF8	209	1.000	bytes	high		
+identical	0000:276F	0276F	154	0000:2BC9	02BC9	154	1.000	bytes	high		
+relocated	0000:2809	02809	55	0000:2C63	02C63	55	1.000	norm	high		
+relocated	0000:2840	02840	49	0000:2C9A	02C9A	49	1.000	norm	high		
+relocated	0000:2871	02871	69	0000:2CCB	02CCB	69	1.000	norm	high		
+data-moved	0000:28B6	028B6	76	0000:2D10	02D10	76	0.970	shape	high		
+data-moved	0000:2902	02902	212	0000:2D5C	02D5C	212	0.987	shape	high		
+relocated	0000:29D6	029D6	210	0000:2E30	02E30	210	1.000	norm	high		
+data-moved	0000:2AA8	02AA8	77	0000:2F02	02F02	77	0.938	shape	high		
+identical	0000:2AF5	02AF5	57	0000:2F4F	02F4F	57	1.000	bytes	high		
+identical	0000:2B2E	02B2E	85	0000:2F88	02F88	85	1.000	bytes	high		
+relocated	0000:2B83	02B83	283	0000:2FDD	02FDD	283	1.000	norm	high		
+relocated	0000:2C9E	02C9E	84	0000:30F8	030F8	84	1.000	norm	high		
+identical	0000:2CF2	02CF2	137	0000:314C	0314C	137	1.000	bytes	high		
+relocated	0000:2D7B	02D7B	130	0000:31D5	031D5	130	1.000	norm	high		
+relocated	0000:2DFD	02DFD	225	0000:3257	03257	225	1.000	norm	high		
+relocated	0000:2EDE	02EDE	153	0000:3338	03338	153	1.000	norm	high		
+data-moved	0000:2F77	02F77	69	0000:33D1	033D1	69	0.903	shape	high		 Copyright(C) 1994  
+identical	0000:2FBC	02FBC	123	0000:3416	03416	123	1.000	bytes	high		
+identical	0000:3037	03037	25	0000:3491	03491	25	1.000	bytes	high		
+data-moved	0000:3053	03053	249	0000:34AD	034AD	249	0.989	shape	high		
+relocated	0000:315C	0315C	112	0000:35B6	035B6	112	1.000	norm	high		
+identical	0000:31CC	031CC	40	0000:3626	03626	40	1.000	bytes	high		
+identical	0000:31F4	031F4	36	0000:364E	0364E	36	1.000	bytes	high		
+identical	0000:3218	03218	38	0000:3672	03672	38	1.000	bytes	high		
+identical	0000:323E	0323E	34	0000:3698	03698	34	1.000	bytes	high		
+relocated	0000:3260	03260	82	0000:36BA	036BA	82	1.000	norm	high		
+identical	0000:32B2	032B2	37	0000:370C	0370C	37	1.000	bytes	high		
+relocated	0000:32D7	032D7	31	0000:3731	03731	31	1.000	norm	high		
+identical	0000:32F6	032F6	22	0000:3750	03750	22	1.000	bytes	high		
+relocated	0000:330C	0330C	394	0000:3766	03766	394	1.000	norm	high		
+relocated	0000:3496	03496	83	0000:38F0	038F0	83	1.000	norm	high		
+identical	0000:34E9	034E9	25	0000:3943	03943	25	1.000	bytes	high		
+data-moved	0000:3502	03502	145	0000:395C	0395C	145	0.910	strings	high		Unknown error
+data-moved	0000:3593	03593	31	0000:39ED	039ED	31	0.889	shape	high		
+identical	0000:35B2	035B2	32	0000:3A0C	03A0C	32	1.000	bytes	high		
+data-moved	0000:35D2	035D2	395	0000:3A2C	03A2C	395	0.987	shape	high		
+data-moved	0000:375D	0375D	24	0000:3BB7	03BB7	24	0.933	shape	high		
+relocated	0000:3775	03775	523	0000:3BCF	03BCF	523	1.000	norm	high		
+relocated	0000:3980	03980	207	0000:3DDA	03DDA	207	1.000	norm	high		
+identical	0000:3A4F	03A4F	3	0000:3EA9	03EA9	3	1.000	bytes	high		
+data-moved	0000:3A52	03A52	289	0000:3EAC	03EAC	289	0.970	shape	high		
+identical	0000:3B73	03B73	69	0000:3FCD	03FCD	69	1.000	bytes	high		
+data-moved	0000:3BB8	03BB8	38	0000:4012	04012	38	0.950	shape	high		
+data-moved	0000:3BDE	03BDE	37	0000:4038	04038	37	0.947	shape	high		
+identical	0000:3C03	03C03	63	0000:405D	0405D	63	1.000	bytes	high		
+identical	0000:3C42	03C42	63	0000:409C	0409C	63	1.000	bytes	high		
+identical	0000:3C81	03C81	48	0000:40DB	040DB	48	1.000	bytes	high		
+identical	0000:3CB1	03CB1	41	0000:410B	0410B	41	1.000	bytes	high		
+identical	0000:3CDA	03CDA	65	0000:4134	04134	65	1.000	bytes	high		
+identical	0000:3D1B	03D1B	33	0000:4175	04175	33	1.000	bytes	high		
+identical	0000:3D3C	03D3C	49	0000:4196	04196	49	1.000	bytes	high		
+identical	0000:3D6D	03D6D	68	0000:41C7	041C7	68	1.000	bytes	high		
+identical	0000:3DB1	03DB1	41	0000:420B	0420B	41	1.000	bytes	high		
+identical	0000:3DDA	03DDA	15	0000:4234	04234	15	1.000	bytes	high		
+data-moved	0000:3DE9	03DE9	175	0000:4243	04243	175	0.970	shape	high		
+identical	0000:3E98	03E98	29	0000:42F2	042F2	29	1.000	bytes	high		
+identical	0000:3EB5	03EB5	35	0000:430F	0430F	35	1.000	bytes	high		
+data-moved	0000:3ED8	03ED8	508	0000:4332	04332	508	0.995	strings	high		EST
+relocated	0000:40D4	040D4	236	0000:452E	0452E	236	1.000	norm	high		
+relocated	0000:41C0	041C0	358	0000:461A	0461A	358	1.000	norm	high		
+relocated	0000:4326	04326	63	0000:4780	04780	63	1.000	norm	high		
+identical	0000:4365	04365	28	0000:47BF	047BF	28	1.000	bytes	high		
+data-moved	0000:4381	04381	66	0000:47DB	047DB	66	0.966	shape	high		
+data-moved	0000:43C3	043C3	63	0000:481D	0481D	63	0.964	shape	high		
+relocated	0000:4402	04402	85	0000:485C	0485C	85	1.000	norm	high		
+data-moved	0000:447B	0447B	114	0000:48D5	048D5	114	0.930	shape	high		Borland C++ - Copyright 1994 Borland Intl.
+identical	0000:44ED	044ED	61	0000:4947	04947	61	1.000	bytes	high		
+relocated	0000:456C	0456C	71	0000:49C6	049C6	71	1.000	callgraph	medium		
+data-moved	0000:460F	0460F	154	0000:4A69	04A69	154	0.983	shape	high		
+data-moved	0000:46CD	046CD	158	0000:4B27	04B27	158	0.983	shape	high		
+relocated	0000:476B	0476B	82	0000:4BC5	04BC5	82	1.000	norm	high		
+data-moved	0000:47CB	047CB	83	0000:4C25	04C25	83	0.915	shape	high		Borland C++ - Copyright 1994 Borland Intl.
+data-moved	0000:4842	04842	169	0000:4C9C	04C9C	169	0.983	shape	high		
+relocated	0000:497C	0497C	82	0000:4DD6	04DD6	82	1.000	norm	high		
+relocated	0000:49CE	049CE	37	0000:4E28	04E28	37	1.000	norm	high		<notype>
+identical	0000:49F3	049F3	139	0000:4E4D	04E4D	139	1.000	bytes	high		
+identical	0000:4A7E	04A7E	339	0000:4ED8	04ED8	339	1.000	bytes	high		
+identical	0000:4BD1	04BD1	372	0000:502B	0502B	372	1.000	bytes	high		 Copyright(C) 1994  
+calls-differ	0000:4D45	04D45	99	0000:519F	0519F	99	1.000	norm	high		
+relocated	0000:4DA8	04DA8	64	0000:5202	05202	64	1.000	norm	high		
+identical	0000:4DE8	04DE8	156	0000:5242	05242	156	1.000	bytes	high		 Copyright(C) 1994  
+relocated	0000:4E84	04E84	135	0000:52DE	052DE	135	1.000	norm	high		
+relocated	0000:51D2	051D2	145	0000:562C	0562C	145	1.000	norm	high		
+relocated	0000:539F	0539F	185	0000:57F9	057F9	185	1.000	norm	high		
+constants	0000:54BE	054BE	806	0000:5918	05918	806	0.988	shape	high		
+identical	0000:57F8	057F8	89	0000:5C52	05C52	89	1.000	bytes	high		
+relocated	0000:5851	05851	170	0000:5CAB	05CAB	170	1.000	norm	high		
+identical	0000:58FB	058FB	133	0000:5D55	05D55	133	1.000	bytes	high		
+identical	0000:5980	05980	71	0000:5DDA	05DDA	71	1.000	bytes	high		
+identical	0000:59C7	059C7	5	0000:5E21	05E21	5	1.000	bytes	high		
+relocated	0000:59CC	059CC	1142	0000:5E26	05E26	1142	1.000	norm	high		Borland C++ - Copyright 1994 Borland Intl.
+data-moved	0000:5E79	05E79	69	0000:62D3	062D3	69	0.966	shape	high		
+identical	0000:5EC8	05EC8	203	0000:6322	06322	203	1.000	bytes	high		
+identical	0000:5F93	05F93	110	0000:63ED	063ED	110	1.000	bytes	high		
+identical	0000:6001	06001	204	0000:645B	0645B	204	1.000	bytes	high		
+identical	0000:60CD	060CD	131	0000:6527	06527	131	1.000	bytes	high		
+identical	0000:6150	06150	678	0000:65AA	065AA	678	1.000	bytes	high		
+relocated	0000:63F6	063F6	178	0000:6850	06850	178	1.000	norm	high		
+identical	0000:65A9	065A9	32	0000:6A03	06A03	32	1.000	bytes	high		
+identical	0000:65C9	065C9	42	0000:6A23	06A23	42	1.000	bytes	high		
+identical	0000:65F3	065F3	132	0000:6A4D	06A4D	132	1.000	bytes	high		
+relocated	0000:667F	0667F	398	0000:6AD9	06AD9	398	1.000	norm	high		
+data-moved	0000:6A5E	06A5E	89	0000:6EB8	06EB8	89	0.970	shape	high		
+identical	0000:6AC9	06AC9	129	0000:6F23	06F23	129	1.000	bytes	high		
+identical	0000:6B4A	06B4A	715	0000:6FA4	06FA4	715	1.000	bytes	high		
+relocated	0000:6E15	06E15	258	0000:726F	0726F	258	1.000	norm	high		
+identical	0000:6F17	06F17	177	0000:7371	07371	177	1.000	bytes	high		
+relocated	0000:6FC8	06FC8	1003	0000:7422	07422	1003	1.000	norm	high		
+relocated	0000:73B3	073B3	85	0000:780D	0780D	85	1.000	norm	high		**BCCxh1
+data-moved	0000:743A	0743A	110	0000:7894	07894	110	0.944	shape	high		Borland C++ - Copyright 1994 Borland Intl.
+identical	0000:74A8	074A8	15	0000:7902	07902	15	1.000	bytes	high		
+data-moved	0000:74B7	074B7	52	0000:7911	07911	52	0.958	shape	high		
+identical	0000:74EB	074EB	38	0000:7945	07945	38	1.000	bytes	high		
+identical	0000:7511	07511	33	0000:796B	0796B	33	1.000	bytes	high		
+identical	0000:7532	07532	120	0000:798C	0798C	120	1.000	bytes	high		
+identical	0000:75AA	075AA	26	0000:7A04	07A04	26	1.000	bytes	high		
+data-moved	0000:75C4	075C4	131	0000:7A1E	07A1E	131	0.949	shape	high		Borland C++ - Copyright 1994 Borland Intl.
+identical	0000:7647	07647	582	0000:7AA1	07AA1	582	1.000	bytes	high		
+data-moved	0000:788D	0788D	357	0000:7CE7	07CE7	357	0.980	shape	high		Borland C++ - Copyright 1994 Borland Intl.
+identical	0000:7A7A	07A7A	41	0000:7ED4	07ED4	41	1.000	bytes	high		
+identical	0000:7AA3	07AA3	49	0000:7EFD	07EFD	49	1.000	bytes	high		
+identical	0000:7AD4	07AD4	18	0000:7F2E	07F2E	18	1.000	bytes	high		
+identical	0000:7AE6	07AE6	143	0000:7F40	07F40	143	1.000	bytes	high		Recreational Software Designs
+relocated	0000:7B96	07B96	198	0000:7FF0	07FF0	198	1.000	norm	high		COMPAQ
+identical	0000:7C7B	07C7B	5	0000:80D5	080D5	5	1.000	bytes	high		
+identical	0000:7C80	07C80	30	0000:80DA	080DA	30	1.000	bytes	high		
+relocated	0000:7C9E	07C9E	49	0000:80F8	080F8	49	1.000	norm	high		
+relocated	0000:7CCF	07CCF	97	0000:8129	08129	97	1.000	norm	high		
+relocated	0000:7D30	07D30	77	0000:818A	0818A	77	1.000	norm	high		
+relocated	0000:7EAC	07EAC	32	0000:8306	08306	32	1.000	norm	high		
+identical	0000:7F24	07F24	48	0000:837E	0837E	48	1.000	bytes	high		
+identical	0000:7F54	07F54	11	0000:83AE	083AE	11	1.000	bytes	high		
+relocated	0000:7F72	07F72	71	0000:83CC	083CC	71	1.000	callgraph	medium		
+relocated	0000:7FEE	07FEE	71	0000:8448	08448	71	1.000	callgraph	medium		
+relocated	0000:8035	08035	71	0000:848F	0848F	71	1.000	callgraph	medium		
+identical	0000:8169	08169	47	0000:85C3	085C3	47	1.000	bytes	high		
+relocated	0000:8198	08198	71	0000:85F2	085F2	71	1.000	callgraph	medium		
+relocated	0000:81DF	081DF	71	0000:8639	08639	71	1.000	callgraph	medium		
+relocated	0000:8226	08226	71	0000:8680	08680	71	1.000	callgraph	medium		
+relocated	0826:000E	0826E	145	086C:0008	086C8	145	1.000	norm	high		
+data-moved	0826:009F	082FF	114	086C:0099	08759	114	0.977	shape	high		
+data-moved	0826:0111	08371	135	086C:010B	087CB	135	0.978	shape	high		
+identical	0826:0198	083F8	86	086C:0192	08852	86	1.000	bytes	high		
+relocated	0826:01EE	0844E	192	086C:01E8	088A8	192	1.000	norm	high		
+identical	0826:02AE	0850E	117	086C:02A8	08968	117	1.000	bytes	high		
+changed	0826:0347	085A7	931	086C:0341	08A01	1464	0.602	callgraph	low		cOoL
+relocated	0826:06EA	0894A	32	086C:08F9	08FB9	32	1.000	norm	high		
+data-moved	0826:070A	0896A	78	086C:0919	08FD9	78	0.968	shape	high		
+constants	0826:0758	089B8	146	086C:0967	09027	146	0.922	strings	high		data*.rec
+relocated	0826:07EA	08A4A	503	086C:09F9	090B9	503	1.000	norm	high		
+data-moved	0826:09E1	08C41	1009	086C:0BF0	092B0	1009	0.942	shape	high		
+relocated	0826:13AC	0960C	140	086C:15BB	09C7B	140	1.000	norm	high		
+relocated	0826:1438	09698	139	086C:1647	09D07	139	1.000	norm	high		Play
+identical	0826:14C3	09723	43	086C:16D2	09D92	43	1.000	bytes	high		
+identical	0826:14EE	0974E	45	086C:16FD	09DBD	45	1.000	bytes	high		
+identical	0826:151B	0977B	45	086C:172A	09DEA	45	1.000	bytes	high		
+changed	0826:1548	097A8	1489	086C:1757	09E17	1883	0.855	callgraph	medium		   Although you correctly drew links between the …
+constants	0826:1B4B	09DAB	1484	086C:1EE4	0A5A4	1484	0.971	strings	high		.gif
+data-moved	0826:2117	0A377	1721	086C:24B0	0AB70	1721	0.996	strings	high		Sorry...Out of Memory!
+data-moved	0826:27DC	0AA3C	676	086C:2B75	0B235	676	0.983	shape	high		
+data-moved	0826:2A94	0ACF4	258	086C:2E2D	0B4ED	258	0.949	shape	high		.dat
+data-moved	0826:2B96	0ADF6	426	086C:2F2F	0B5EF	426	0.963	shape	high		.dat
+data-moved	0826:2D40	0AFA0	2505	086C:30D9	0B799	2505	0.947	shape	high		Load Game
+data-moved	0826:3709	0B969	942	086C:3AA2	0C162	942	0.936	strings	high		Save Game
+data-moved	0826:3AB7	0BD17	580	086C:3E50	0C510	580	0.981	strings	high		      G A M E - M A K E R
+changed	0826:3CFB	0BF5B	205	086C:4094	0C754	326	0.731	callgraph	medium		gmhelp
+data-moved	0826:3DC8	0C028	654	086C:41DA	0C89A	654	0.992	strings	high		Score:     %ld
+data-moved	0826:4056	0C2B6	559	086C:4468	0CB28	559	0.985	strings	high		Missing File:
+data-moved	0826:4285	0C4E5	778	086C:4697	0CD57	778	0.986	strings	high		This machine does not have a 
+relocated	0826:458F	0C7EF	116	086C:49A1	0D061	116	1.000	norm	high		
+relocated	0826:4603	0C863	218	086C:4A15	0D0D5	218	1.000	norm	high		
+data-moved	0826:46DD	0C93D	937	086C:4AEF	0D1AF	937	0.988	strings	high		Choose object to drop
+relocated	0826:4A98	0CCF8	41	086C:4EAA	0D56A	41	1.000	norm	high		
+relocated	0826:4AC1	0CD21	275	086C:4ED3	0D593	275	1.000	norm	high		
+relocated	0826:4BD4	0CE34	101	086C:4FE6	0D6A6	101	1.000	norm	high		
+relocated	0826:4C39	0CE99	272	086C:504B	0D70B	272	1.000	norm	high		
+relocated	0826:4D49	0CFA9	81	086C:515B	0D81B	81	1.000	norm	high		
+data-moved	0826:4D9A	0CFFA	444	086C:51AC	0D86C	444	0.975	shape	high		
+relocated	0826:4F56	0D1B6	1651	086C:5368	0DA28	1651	1.000	norm	high		
+relocated	0826:55C9	0D829	75	086C:59DB	0E09B	75	1.000	norm	high		
+relocated	0826:5614	0D874	445	086C:5A26	0E0E6	445	1.000	norm	high		
+relocated	0826:57D1	0DA31	459	086C:5BE3	0E2A3	459	1.000	norm	high		
+identical	0826:599C	0DBFC	231	086C:5DAE	0E46E	231	1.000	bytes	high		
+relocated	0826:5A83	0DCE3	102	086C:5E95	0E555	102	1.000	norm	high		
+relocated	0826:5AE9	0DD49	627	086C:5EFB	0E5BB	627	1.000	norm	high		
+relocated	0826:5D5C	0DFBC	543	086C:616E	0E82E	543	1.000	norm	high		
+identical	0826:5F7B	0E1DB	776	086C:638D	0EA4D	776	1.000	bytes	high		
+relocated	0826:6283	0E4E3	2731	086C:6695	0ED55	2731	1.000	norm	high		
+relocated	0826:6D2E	0EF8E	500	086C:7140	0F800	500	1.000	norm	high		
+relocated	0826:6F22	0F182	499	086C:7334	0F9F4	499	1.000	norm	high		
+identical	0826:7115	0F375	120	086C:7527	0FBE7	120	1.000	callgraph	medium		
+identical	0826:718D	0F3ED	120	086C:759F	0FC5F	120	1.000	callgraph	medium		
+relocated	0826:7205	0F465	228	086C:7617	0FCD7	228	1.000	norm	high		
+relocated	0826:72E9	0F549	355	086C:76FB	0FDBB	355	1.000	norm	high		
+identical	0826:744C	0F6AC	102	086C:785E	0FF1E	102	1.000	bytes	high		
+relocated	0826:74B2	0F712	210	086C:78C4	0FF84	210	1.000	norm	high		
+relocated	0826:7584	0F7E4	233	086C:7996	10056	233	1.000	norm	high		
+relocated	0826:766D	0F8CD	57	086C:7A7F	1013F	57	1.000	norm	high		
+relocated	0826:76A6	0F906	340	086C:7AB8	10178	340	1.000	norm	high		
+relocated	0826:77FA	0FA5A	634	086C:7C0C	102CC	634	1.000	norm	high		
+relocated	0826:7A74	0FCD4	115	086C:7E86	10546	115	1.000	norm	high		
+relocated	0826:7AE7	0FD47	236	086C:7EF9	105B9	236	1.000	norm	high		
+identical	0826:7BD3	0FE33	112	086C:7FE5	106A5	112	1.000	bytes	high		
+relocated	0826:7C43	0FEA3	301	086C:8055	10715	301	1.000	norm	high		
+relocated	0826:7D70	0FFD0	322	086C:8182	10842	322	1.000	norm	high		
+relocated	0826:7EB2	10112	297	086C:82C4	10984	297	1.000	norm	high		
+relocated	0826:7FDB	1023B	363	086C:83ED	10AAD	363	1.000	norm	high		
+relocated	0826:8146	103A6	288	086C:8558	10C18	288	1.000	norm	high		
+relocated	0826:8266	104C6	450	086C:8678	10D38	450	1.000	norm	high		
+relocated	0826:8428	10688	516	086C:883A	10EFA	516	1.000	norm	high		
+relocated	0826:862C	1088C	171	086C:8A3E	110FE	171	1.000	norm	high		
+relocated	0826:86D7	10937	165	086C:8AE9	111A9	165	1.000	norm	high		
+relocated	0826:877C	109DC	60	086C:8B8E	1124E	60	1.000	norm	high		
+relocated	0826:87B8	10A18	401	086C:8BCA	1128A	401	1.000	norm	high		
+data-moved	0826:8949	10BA9	1194	086C:8D5B	1141B	1194	0.992	shape	high		Borland C++ - Copyright 1994 Borland Intl.
+relocated	0826:8DF3	11053	155	086C:9205	118C5	155	1.000	norm	high		
+relocated	0826:8E8E	110EE	157	086C:92A0	11960	157	1.000	norm	high		
+identical	0826:8F2B	1118B	225	086C:933D	119FD	225	1.000	bytes	high		
+relocated	0826:900C	1126C	492	086C:941E	11ADE	492	1.000	norm	high		
+relocated	0826:91F8	11458	181	086C:960A	11CCA	181	1.000	norm	high		
+data-moved	0826:92AD	1150D	2147	086C:96BF	11D7F	2147	0.947	shape	high		I am missing these game files:
+data-moved	0826:9B10	11D70	118	086C:9F22	125E2	118	0.917	shape	high		
+data-moved	0826:9B86	11DE6	89	086C:9F98	12658	89	0.971	shape	high		
+data-moved	0826:9BDF	11E3F	99	086C:9FF1	126B1	99	0.974	shape	high		
+data-moved	0826:9C42	11EA2	109	086C:A054	12714	109	0.952	shape	high		
+relocated	0826:9CAF	11F0F	140	086C:A0C1	12781	140	1.000	norm	high		
+data-moved	0826:9D3B	11F9B	85	086C:A14D	1280D	85	0.935	shape	high		
+data-moved	0826:9D90	11FF0	440	086C:A1A2	12862	440	0.981	shape	high		
+relocated	0826:9FDB	1223B	453	086C:A3ED	12AAD	453	1.000	norm	high		
+relocated	0826:A1A0	12400	93	086C:A5B2	12C72	93	1.000	norm	high		
+relocated	0826:A1FD	1245D	45	086C:A60F	12CCF	45	1.000	norm	high		
+relocated	0826:A22A	1248A	169	086C:A63C	12CFC	169	1.000	norm	high		
+relocated	0826:A2D3	12533	193	086C:A6E5	12DA5	193	1.000	norm	high		
+identical	0826:A394	125F4	18	086C:A7A6	12E66	18	1.000	bytes	high		
+identical	0826:A3A6	12606	18	086C:A7B8	12E78	18	1.000	bytes	high		
+data-moved	0826:A3B8	12618	112	086C:A7CA	12E8A	112	0.979	shape	high		
+identical	0826:A428	12688	22	086C:A83A	12EFA	22	1.000	bytes	high		
+identical	0826:A43E	1269E	24	086C:A850	12F10	24	1.000	bytes	high		
+data-moved	0826:A456	126B6	103	086C:A868	12F28	103	0.950	shape	high		
+data-moved	0826:A4BD	1271D	892	086C:A8CF	12F8F	892	0.989	shape	high		
+relocated	0826:A839	12A99	120	086C:AC4B	1330B	120	1.000	norm	high		
+identical	0826:A8B1	12B11	50	086C:ACC3	13383	50	1.000	bytes	high		
+data-moved	0826:A8E3	12B43	850	086C:ACF5	133B5	850	0.978	shape	high		VGA Chip Type
+data-moved	0826:AC35	12E95	3364	086C:B047	13707	3364	0.989	shape	high		config.hlp
+relocated	0826:BB00	13D60	400	086C:BF12	145D2	400	1.000	norm	high		
+relocated	0826:BC90	13EF0	145	086C:C0A2	14762	145	1.000	norm	high		
+constants	0826:BD21	13F81	50	086C:C133	147F3	50	0.905	shape	high		
+relocated	0826:BD53	13FB3	62	086C:C165	14825	62	1.000	norm	high		See Credits
+identical	0826:BD91	13FF1	63	086C:C1A3	14863	63	1.000	bytes	high		
+data-moved	0826:BDD0	14030	288	086C:C1E2	148A2	288	0.991	shape	high		
+relocated	0826:BEF0	14150	154	086C:C302	149C2	154	1.000	norm	high		
+data-moved	0826:BF8A	141EA	81	086C:C39C	14A5C	81	0.941	shape	high		
+data-moved	0826:BFF7	14257	290	086C:C409	14AC9	290	0.952	shape	high		
+relocated	0826:C119	14379	135	086C:C52B	14BEB	135	1.000	norm	high		
+relocated	0826:C1B6	14416	60	086C:C5C8	14C88	60	1.000	norm	high		
+data-moved	0826:C1F2	14452	320	086C:C604	14CC4	320	0.991	shape	high		
+relocated	0826:C3AE	1460E	183	086C:C7C0	14E80	183	1.000	norm	high		UnTitled
+relocated	0826:C465	146C5	119	086C:C877	14F37	119	1.000	norm	high		
+relocated	0826:C4DC	1473C	58	086C:C8EE	14FAE	58	1.000	norm	high		
+relocated	0826:C516	14776	150	086C:C928	14FE8	150	1.000	norm	high		
+identical	0826:C5AC	1480C	58	086C:C9BE	1507E	58	1.000	bytes	high		
+relocated	0826:C628	14888	173	086C:CA3A	150FA	173	1.000	norm	high		
+relocated	0826:C713	14973	88	086C:CB25	151E5	88	1.000	norm	high		
+relocated	0826:C76B	149CB	210	086C:CB7D	1523D	210	1.000	norm	high		
+relocated	0826:C8B5	14B15	93	086C:CCC7	15387	93	1.000	norm	high		
+relocated	0826:C912	14B72	189	086C:CD24	153E4	189	1.000	norm	high		
+relocated	0826:C9CF	14C2F	100	086C:CDE1	154A1	100	1.000	norm	high		
+relocated	14C9:0004	14C94	11	1550:0006	15506	11	1.000	norm	high		
+relocated	14C9:000F	14C9F	11	1550:0011	15511	11	1.000	norm	high		
+identical	14C9:00C8	14D58	19	1550:00CA	155CA	19	1.000	bytes	high		
+relocated	14D6:000B	14D6B	173	155D:000D	155DD	173	1.000	norm	high		
+relocated	14D6:00B8	14E18	51	155D:00BA	1568A	51	1.000	norm	high		
+relocated	14D6:00EB	14E4B	65	155D:00ED	156BD	65	1.000	norm	high		
+relocated	14D6:012C	14E8C	11	155D:012E	156FE	11	1.000	norm	high		
+relocated	14D6:0137	14E97	71	155D:0139	15709	71	1.000	norm	high		
+relocated	14D6:017E	14EDE	48	155D:0180	15750	48	1.000	norm	high		
+relocated	14D6:01AE	14F0E	126	155D:01B0	15780	126	1.000	norm	high		
+relocated	14D6:022C	14F8C	49	155D:022E	157FE	49	1.000	norm	high		
+relocated	14FB:000E	14FBE	177	1583:0000	15830	177	1.000	norm	high		
+relocated	14FB:00BF	1506F	191	1583:00B1	158E1	191	1.000	norm	high		
+relocated	14FB:017E	1512E	39	1583:0170	159A0	39	1.000	norm	high		
+relocated	14FB:01A5	15155	80	1583:0197	159C7	80	1.000	norm	high		
+relocated	14FB:01F5	151A5	65	1583:01E7	15A17	65	1.000	norm	high		
+relocated	14FB:0236	151E6	55	1583:0228	15A58	55	1.000	norm	high		
+relocated	14FB:026D	1521D	41	1583:025F	15A8F	41	1.000	norm	high		
+relocated	14FB:0296	15246	44	1583:0288	15AB8	44	1.000	norm	high		
+relocated	1527:0002	15272	67	15AE:0004	15AE4	67	1.000	norm	high		
+relocated	1527:0045	152B5	55	15AE:0047	15B27	55	1.000	norm	high		
+relocated	1527:007C	152EC	47	15AE:007E	15B5E	47	1.000	norm	high		
+relocated	1527:00AB	1531B	53	15AE:00AD	15B8D	53	1.000	norm	high		
+relocated	1527:00E0	15350	177	15AE:00E2	15BC2	177	1.000	norm	high		
+relocated	1527:0191	15401	57	15AE:0193	15C73	57	1.000	norm	high		
+relocated	1527:01CC	1543C	41	15AE:01CE	15CAE	41	1.000	norm	high		
+data-moved	1546:0005	15465	108	15CD:0007	15CD7	108	0.981	strings	high		sndblast.drv
+data-moved	1546:0071	154D1	424	15CD:0073	15D43	424	0.992	shape	high		
+relocated	1546:0219	15679	45	15CD:021B	15EEB	45	1.000	norm	high		
+data-moved	1546:0246	156A6	406	15CD:0248	15F18	406	0.992	strings	high		.voc
+relocated	1546:03DC	1583C	19	15CD:03DE	160AE	19	1.000	norm	high		
+relocated	1546:03EF	1584F	65	15CD:03F1	160C1	65	1.000	norm	high		
+relocated	1546:0430	15890	119	15CD:0432	16102	119	1.000	norm	high		
+relocated	1546:04A7	15907	316	15CD:04A9	16179	316	1.000	norm	high		BLASTER
+relocated	1546:05E3	15A43	31	15CD:05E5	162B5	31	1.000	norm	high		
+data-moved	1546:0602	15A62	267	15CD:0604	162D4	267	0.983	shape	high		Can't Find file!
+data-moved	1546:070D	15B6D	126	15CD:070F	163DF	126	0.978	shape	high		
+relocated	15BE:000B	15BEB	164	1645:000D	1645D	164	1.000	norm	high		*.*
+data-moved	15BE:00AF	15C8F	3118	1645:00B1	16501	3118	0.992	shape	high		(E)xit.
+relocated	15BE:0CDD	168BD	356	1645:0CDF	1712F	356	1.000	norm	high		
+relocated	15BE:0E41	16A21	168	1645:0E43	17293	168	1.000	norm	high		
+relocated	15BE:0EE9	16AC9	727	1645:0EEB	1733B	727	1.000	norm	high		
+data-moved	15BE:11C0	16DA0	488	1645:11C2	17612	488	0.995	shape	high		
+data-moved	15BE:13A8	16F88	505	1645:13AA	177FA	505	0.990	shape	high		Borland C++ - Copyright 1994 Borland Intl.
+relocated	15BE:1437	17017	381	1645:1439	17889	381	1.000	norm	high		
+relocated	15BE:1636	17216	130	1645:1638	17A88	130	1.000	norm	high		
+relocated	15BE:16B8	17298	114	1645:16BA	17B0A	114	1.000	norm	high		
+relocated	15BE:172A	1730A	81	1645:172C	17B7C	81	1.000	norm	high		
+relocated	15BE:177B	1735B	141	1645:177D	17BCD	141	1.000	norm	high		
+data-moved	15BE:1808	173E8	227	1645:180A	17C5A	227	0.981	shape	high		Can't Find file!
+constants	15BE:18EB	174CB	491	1645:18ED	17D3D	491	0.964	shape	high		(C)ontinue save    (D)o not save
+data-moved	15BE:1AD6	176B6	104	1645:1AD8	17F28	104	0.975	shape	high		
+data-moved	15BE:1B3E	1771E	189	1645:1B40	17F90	189	0.989	strings	high		Are you sure you want to delete %s
+relocated	15BE:1BFB	177DB	65	1645:1BFD	1804D	65	1.000	norm	high		%s%s
+data-moved	1781:000C	1781C	204	1808:000E	1808E	204	0.964	shape	high		gm.cfg
+data-moved	1781:00D8	178E8	195	1808:00DA	1815A	195	0.949	shape	high		gm.cfg
+relocated	1781:019B	179AB	160	1808:019D	1821D	160	1.000	norm	high		
+identical	1781:023B	17A4B	38	1808:023D	182BD	38	1.000	bytes	high		
+relocated	1781:0261	17A71	48	1808:0263	182E3	48	1.000	norm	high		%s%s%s
+identical	1781:0291	17AA1	178	1808:0293	18313	178	1.000	bytes	high		
+identical	1781:0343	17B53	162	1808:0345	183C5	162	1.000	bytes	high		
+identical	1781:03E5	17BF5	26	1808:03E7	18467	26	1.000	bytes	high		
+identical	1781:03FF	17C0F	31	1808:0401	18481	31	1.000	bytes	high		
+data-moved	1781:041E	17C2E	142	1808:0420	184A0	142	0.980	shape	high		
+relocated	1781:04AC	17CBC	162	1808:04AE	1852E	162	1.000	norm	high		
+relocated	1781:054E	17D5E	86	1808:0550	185D0	86	1.000	norm	high		
+relocated	1781:05A4	17DB4	157	1808:05A6	18626	157	1.000	norm	high		
+data-moved	1781:0641	17E51	112	1808:0643	186C3	112	0.978	shape	high		
+identical	1781:06B1	17EC1	42	1808:06B3	18733	42	1.000	bytes	high		
+data-moved	1781:06F7	17F07	46	1808:06F9	18779	46	0.900	shape	high		
+data-moved	17F8:0005	17F85	499	187F:0007	187F7	499	0.978	strings	high		(R)eturn to Menu
+relocated	17F8:01F8	18178	457	187F:01FA	189EA	457	1.000	norm	high		
+relocated	17F8:03C1	18341	88	187F:03C3	18BB3	88	1.000	norm	high		
+relocated	17F8:0419	18399	118	187F:041B	18C0B	118	1.000	norm	high		
+relocated	17F8:048F	1840F	101	187F:0491	18C81	101	1.000	norm	high		
+relocated	17F8:04F4	18474	212	187F:04F6	18CE6	212	1.000	norm	high		Code Too LARGE, memory error 1
+relocated	17F8:05C8	18548	328	187F:05CA	18DBA	328	1.000	norm	high		
+relocated	17F8:071E	1869E	135	187F:0720	18F10	135	1.000	norm	high		
+data-moved	17F8:07A5	18725	48	187F:07A7	18F97	48	0.909	shape	high		
+data-moved	17F8:07D5	18755	493	187F:07D7	18FC7	493	0.963	strings	high		Error Opening Bkd %s!
+data-moved	17F8:09C2	18942	147	187F:09C4	191B4	147	0.980	shape	high		
+identical	189D:0005	189D5	179	1924:0007	19247	179	1.000	bytes	high		
+identical	189D:00B8	18A88	146	1924:00BA	192FA	146	1.000	bytes	high		
+relocated	189D:014A	18B1A	621	1924:014C	1938C	621	1.000	norm	high		 Copyright(C) 1994  
+relocated	189D:03B7	18D87	588	1924:03B9	195F9	588	1.000	norm	high		 Copyright(C) 1994  
+identical	189D:0603	18FD3	341	1924:0605	19845	341	1.000	bytes	high		
+identical	189D:0758	19128	378	1924:075A	1999A	378	1.000	bytes	high		
+identical	189D:080F	191DF	345	1924:0811	19A51	345	1.000	bytes	high		
+relocated	189D:08D2	192A2	401	1924:08D4	19B14	401	1.000	norm	high		
+identical	189D:0A63	19433	65	1924:0A65	19CA5	65	1.000	bytes	high		
+identical	189D:0AA4	19474	199	1924:0AA6	19CE6	199	1.000	bytes	high		
+data-moved	1953:000B	1953B	134	19DA:000D	19DAD	134	0.981	shape	high		Standard
+relocated	1953:0091	195C1	234	19DA:0093	19E33	234	1.000	norm	high		Paradise Super VGA detected!\n
+relocated	1953:017B	196AB	217	19DA:017D	19F1D	217	1.000	norm	high		761295520
+relocated	1953:034E	1987E	65	19DA:0350	1A0F0	65	1.000	norm	high		
+relocated	1953:03A9	198D9	78	19DA:03AB	1A14B	78	1.000	norm	high		
+relocated	1953:03F7	19927	63	19DA:03F9	1A199	63	1.000	norm	high		
+relocated	1953:0436	19966	105	19DA:0438	1A1D8	105	1.000	norm	high		VGA=
+data-moved	1953:049F	199CF	70	19DA:04A1	1A241	70	0.966	shape	high		See Credits
+relocated	1953:04E5	19A15	62	19DA:04E7	1A287	62	1.000	norm	high		
+relocated	1953:0523	19A53	59	19DA:0525	1A2C5	59	1.000	norm	high		
+relocated	1953:055E	19A8E	253	19DA:0560	1A300	253	1.000	norm	high		ATI ULTRA
+relocated	1953:065B	19B8B	20	19DA:065D	1A3FD	20	1.000	norm	high		
+relocated	1953:066F	19B9F	86	19DA:0671	1A411	86	1.000	norm	high		
+data-moved	19BF:0005	19BF5	542	1A46:0007	1A467	542	0.964	shape	high		Top Ten Scores
+data-moved	19BF:0223	19E13	639	1A46:0225	1A685	639	0.973	strings	high		Congratulations!
+data-moved	1A0C:0004	1A0C4	61	1A93:0006	1A936	61	0.960	shape	high		
+relocated	1A0C:0041	1A101	62	1A93:0043	1A973	62	1.000	norm	high		
+data-moved	1A0C:007F	1A13F	396	1A93:0081	1A9B1	396	0.993	shape	high		
+relocated	1A0C:020B	1A2CB	34	1A93:020D	1AB3D	34	1.000	norm	high		
+relocated	1A0C:022D	1A2ED	22	1A93:022F	1AB5F	22	1.000	norm	high		
+relocated	1A0C:0243	1A303	10	1A93:0245	1AB75	10	1.000	callgraph	medium		
+relocated	1A0C:024D	1A30D	10	1A93:024F	1AB7F	10	1.000	callgraph	medium		
+relocated	1A0C:0257	1A317	23	1A93:0259	1AB89	23	1.000	norm	high		
+relocated	1A0C:045A	1A51A	135	1A93:045C	1AD8C	135	1.000	norm	high		
+relocated	1A5A:0001	1A5A1	739	1AE1:0003	1AE13	739	1.000	norm	high		
+data-moved	1A5A:02E4	1A884	96	1AE1:02E6	1B0F6	96	0.974	shape	high		config.dat
+data-moved	1A5A:0344	1A8E4	82	1AE1:0346	1B156	82	0.970	shape	high		config.dat
+relocated	1A5A:0396	1A936	78	1AE1:0398	1B1A8	78	1.000	norm	high		NotInit
+relocated	1A5A:03E4	1A984	63	1AE1:03E6	1B1F6	63	1.000	norm	high		
+relocated	1A5A:0423	1A9C3	48	1AE1:0425	1B235	48	1.000	norm	high		
+identical	1A9F:0004	1A9F4	86	1B26:0006	1B266	86	1.000	bytes	high		 Copyright(C) 1994  
+identical	1AA4:000A	1AA4A	36	1B2B:000C	1B2BC	36	1.000	callgraph	medium		
+identical	1AA4:002E	1AA6E	24	1B2B:0030	1B2E0	24	1.000	callgraph	medium		 Copyright(C) 1994  
+identical	1AA4:0046	1AA86	33	1B2B:0048	1B2F8	33	1.000	bytes	high		
+identical	1AA4:0067	1AAA7	25	1B2B:0069	1B319	25	1.000	bytes	high		
+relocated	1AAC:0000	1AAC0	96	1B33:0002	1B332	96	1.000	norm	high		
+identical	1AAC:0060	1AB20	102	1B33:0062	1B392	102	1.000	bytes	high		
+identical	1AAC:00C6	1AB86	91	1B33:00C8	1B3F8	91	1.000	bytes	high		
+identical	1AAC:0121	1ABE1	93	1B33:0123	1B453	93	1.000	bytes	high		
+relocated	1AAC:0198	1AC58	337	1B33:019A	1B4CA	337	1.000	norm	high		
+identical	1AAC:02E9	1ADA9	56	1B33:02EB	1B61B	56	1.000	bytes	high		
+identical	1AAC:0321	1ADE1	79	1B33:0323	1B653	79	1.000	bytes	high		
+identical	1AAC:0370	1AE30	71	1B33:0372	1B6A2	71	1.000	bytes	high		
+identical	1AAC:03B7	1AE77	38	1B33:03B9	1B6E9	38	1.000	bytes	high		
+identical	1AE9:000D	1AE9D	83	1B70:000F	1B70F	83	1.000	bytes	high		
+relocated	1AE9:0060	1AEF0	111	1B70:0062	1B762	111	1.000	norm	high		
+relocated	1AE9:00CF	1AF5F	612	1B70:00D1	1B7D1	612	1.000	norm	high		
+identical	1AE9:0333	1B1C3	92	1B70:0335	1BA35	92	1.000	bytes	high		
+relocated	1AE9:038F	1B21F	257	1B70:0391	1BA91	257	1.000	norm	high		
+relocated	1AE9:0490	1B320	308	1B70:0492	1BB92	308	1.000	norm	high		
+relocated	1B45:0004	1B454	62	1BCC:0006	1BCC6	62	1.000	norm	high		
+relocated	1B45:0042	1B492	70	1BCC:0044	1BD04	70	1.000	norm	high		
+data-moved	1B4D:0008	1B4D8	599	1BD4:000A	1BD4A	599	0.995	shape	high		
+relocated	1B4D:025F	1B72F	278	1BD4:0261	1BFA1	278	1.000	norm	high		
+relocated	1B4D:0375	1B845	263	1BD4:0377	1C0B7	263	1.000	norm	high		
+data-moved	1B4D:047C	1B94C	147	1BD4:047E	1C1BE	147	0.982	shape	high		
+relocated	1B4D:050F	1B9DF	84	1BD4:0511	1C251	84	1.000	norm	high		
+relocated	1B4D:0563	1BA33	77	1BD4:0565	1C2A5	77	1.000	norm	high		
+identical	1BA8:0000	1BA80	27	1C2F:0002	1C2F2	27	1.000	bytes	high		
+identical	1BA8:001B	1BA9B	87	1C2F:001D	1C30D	87	1.000	bytes	high		
+identical	1BA8:0072	1BAF2	144	1C2F:0074	1C364	144	1.000	bytes	high		
+identical	1BA8:0102	1BB82	264	1C2F:0104	1C3F4	264	1.000	bytes	high		MicroChannel Bus Detected!\n
+identical	1BA8:020A	1BC8A	189	1C2F:020C	1C4FC	189	1.000	bytes	high		
+identical	1BA8:02C7	1BD47	243	1C2F:02C9	1C5B9	243	1.000	bytes	high		
+identical	1BA8:03BA	1BE3A	354	1C2F:03BC	1C6AC	354	1.000	bytes	high		
+relocated	1BA8:051C	1BF9C	239	1C2F:051E	1C80E	239	1.000	norm	high		New Frame: %d Size:%5lu Chunks:%u\n
+data-moved	1BA8:080E	1C28E	47	1C2F:0810	1CB00	47	0.941	shape	high		
+identical	1BA8:083D	1C2BD	21	1C2F:083F	1CB2F	21	1.000	bytes	high		
+relocated	1BA8:0852	1C2D2	211	1C2F:0854	1CB44	211	1.000	norm	high		
+relocated	1BA8:095D	1C3DD	51	1C2F:095F	1CC4F	51	1.000	norm	high		
+identical	1C41:0001	1C411	31	1CC8:0003	1CC83	31	1.000	bytes	high		
+identical	1C41:0020	1C430	19	1CC8:0022	1CCA2	19	1.000	bytes	high		
+identical	1C41:0033	1C443	42	1CC8:0035	1CCB5	42	1.000	bytes	high		
+identical	1C41:005D	1C46D	39	1CC8:005F	1CCDF	39	1.000	bytes	high		
+identical	1C41:0084	1C494	82	1CC8:0086	1CD06	82	1.000	bytes	high		
+identical	1C41:00D6	1C4E6	80	1CC8:00D8	1CD58	80	1.000	bytes	high		
+identical	1C41:0126	1C536	84	1CC8:0128	1CDA8	84	1.000	bytes	high		
+identical	1C41:017A	1C58A	67	1CC8:017C	1CDFC	67	1.000	bytes	high		
+identical	1C41:01BD	1C5CD	36	1CC8:01BF	1CE3F	36	1.000	norm	high		
+identical	1C41:01E1	1C5F1	24	1CC8:01E3	1CE63	24	1.000	shape	high		 Copyright(C) 1994  
+identical	1C41:01F9	1C609	24	1CC8:01FB	1CE7B	24	1.000	bytes	high		 Copyright(C) 1994  
+identical	1C41:0211	1C621	25	1CC8:0213	1CE93	25	1.000	bytes	high		
+data-moved	1C63:000A	1C63A	331	1CEA:000C	1CEAC	331	0.993	shape	high		
+relocated	1C63:0155	1C785	294	1CEA:0157	1CFF7	294	1.000	norm	high		
+relocated	1C8A:000E	1C8AE	153	1D11:0010	1D120	153	1.000	norm	high	_MoveViewScreen	MicroChannel Bus Detected!\n
+identical	1C8A:00A7	1C947	16	1D11:00A9	1D1B9	16	1.000	bytes	high	_GetROMFont	
+relocated	1C8A:00B7	1C957	99	1D11:00B9	1D1C9	99	1.000	norm	high	_SoftwareScroll	MicroChannel Bus Detected!\n
+relocated	1C8A:011A	1C9BA	198	1D11:011C	1D22C	198	1.000	norm	high	_SvgaBufToScrn	
+relocated	1C8A:01F7	1CA97	173	1D11:01F9	1D309	173	1.000	norm	high	_SetPage	
+relocated	1C8A:02A4	1CB44	64	1D11:02A6	1D3B6	64	1.000	norm	high	_SetTridentStart	
+identical	1C8A:02E4	1CB84	31	1D11:02E6	1D3F6	31	1.000	bytes	high	_SetTrident	
+identical	1C8A:0303	1CBA3	33	1D11:0305	1D415	33	1.000	bytes	high	_Gwritestr	
+identical	1C8A:0324	1CBC4	70	1D11:0326	1D436	70	1.000	bytes	high	_BoxFill	
+relocated	1C8A:036A	1CC0A	99	1D11:036C	1D47C	99	1.000	norm	high	_Point	
+relocated	1C8A:03CD	1CC6D	83	1D11:03CF	1D4DF	83	1.000	norm	high	_GetCol	
+data-moved	1CCC:0000	1CCC0	104	1D53:0002	1D532	104	0.974	shape	high	string::string(const string far&)	
+data-moved	1CCC:00E2	1CDA2	188	1D53:00E4	1D614	188	0.986	shape	high	string::string(const char far*)	
+data-moved	1CCC:02F1	1CFB1	121	1D53:02F3	1D823	121	0.977	shape	high	string::~string()	
+data-moved	1CCC:036A	1D02A	173	1D53:036C	1D89C	173	0.949	shape	high	string::assert_element(unsigned int) const	String reference out of range
+data-moved	1CCC:0417	1D0D7	173	1D53:0419	1D949	173	0.949	shape	high	string::assert_index(unsigned int) const	String reference out of range
+data-moved	1CCC:04C4	1D184	170	1D53:04C6	1D9F6	170	0.948	shape	high	TSubString::assert_element(unsigned int) const	String reference out of range
+data-moved	1CCC:056E	1D22E	224	1D53:0570	1DAA0	224	0.987	shape	high	TStringRef::TStringRef(const char far*,unsigned int,const char far*,unsigned int,unsigned int)	
+data-moved	1CCC:064E	1D30E	89	1D53:0650	1DB80	89	0.970	shape	high	TStringRef::~TStringRef()	
+data-moved	1CCC:06A7	1D367	109	1D53:06A9	1DBD9	109	0.976	shape	high	TStringRef::reserve(unsigned int)	
+data-moved	1CCC:0714	1D3D4	103	1D53:0716	1DC46	103	0.974	shape	high	TStringRef::check_freeboard()	
+data-moved	1CCC:077B	1D43B	97	1D53:077D	1DCAD	97	0.946	shape	high	TStringRef::grow_to(unsigned int)	
+data-moved	1CCC:07DC	1D49C	61	1D53:07DE	1DD0E	61	0.962	shape	high	TStringRef::round_capacity(unsigned int)	
+data-moved	1CCC:0819	1D4D9	445	1D53:081B	1DD4B	445	0.987	shape	high	TStringRef::splice(unsigned int,unsigned int,const char far*,unsigned int)	
+relocated	1CCC:09D6	1D696	29	1D53:09D8	1DF08	29	1.000	order	medium	string::set_case_sensitive(int)	
+relocated	1CCC:09F3	1D6B3	29	1D53:09F5	1DF25	29	1.000	order	medium	string::set_paranoid_check(int)	
+relocated	1CCC:0A10	1D6D0	29	1D53:0A12	1DF42	29	1.000	order	medium	string::skip_whitespace(int)	
+relocated	1CCC:0A2D	1D6ED	29	1D53:0A2F	1DF5F	29	1.000	order	medium	string::initial_capacity(unsigned int)	
+relocated	1CCC:0A4A	1D70A	42	1D53:0A4C	1DF7C	42	1.000	norm	high	string::resize_increment(unsigned int)	
+relocated	1CCC:0A74	1D734	29	1D53:0A76	1DFA6	29	1.000	similarity	medium	string::max_waste(unsigned int)	
+relocated	1D8A:0002	1D8A2	39	1E11:0004	1E114	39	1.000	norm	high	SBC_READ_DSP_TIME	
+relocated	1D8A:0029	1D8C9	40	1E11:002B	1E13B	40	1.000	norm	high	SBC_WRITE_DSP_TIME	
+identical	1D8A:008E	1D92E	21	1E11:0090	1E1A0	21	1.000	bytes	high	SET_INT_VECTOR	
+identical	1D8A:00A3	1D943	19	1E11:00A5	1E1B5	19	1.000	bytes	high	GET_INT_VECTOR	
+relocated	1D8A:00E4	1D984	154	1E11:00E6	1E1F6	154	1.000	norm	high	_sbc_check_card	
+relocated	1D8A:017E	1DA1E	33	1E11:0180	1E290	33	1.000	norm	high		
+data-moved	1D8A:019F	1DA3F	125	1E11:01A1	1E2B1	125	0.982	shape	high		
+relocated	1D8A:021C	1DABC	41	1E11:021E	1E32E	41	1.000	norm	high		
+identical	1D8A:0245	1DAE5	13	1E11:0247	1E357	13	1.000	bytes	high		
+relocated	1D8A:025C	1DAFC	47	1E11:025E	1E36E	47	1.000	norm	high	_sbc_dsp_reset	
+identical	1D8A:028C	1DB2C	9	1E11:028E	1E39E	9	1.000	bytes	high	_sbfd_init	
+identical	1D8A:0295	1DB35	19	1E11:0297	1E3A7	19	1.000	bytes	high	_sbfd_instrument	
+identical	1D8A:02A8	1DB48	9	1E11:02AA	1E3BA	9	1.000	bytes	high	_sbfd_music_off	
+identical	1D8A:02B1	1DB51	9	1E11:02B3	1E3C3	9	1.000	bytes	high	_sbfd_reset	
+identical	1D8A:02BA	1DB5A	23	1E11:02BC	1E3CC	23	1.000	bytes	high	_sbfd_note_on	
+identical	1D8A:02D1	1DB71	23	1E11:02D3	1E3E3	23	1.000	bytes	high	_sbfd_note_off	
+identical	1D8A:02E8	1DB88	20	1E11:02EA	1E3FA	20	1.000	bytes	high	_sbfd_program_change	
+identical	1D8A:02FC	1DB9C	23	1E11:02FE	1E40E	23	1.000	bytes	high	_sbfd_control_change	
+identical	1D8A:0313	1DBB3	17	1E11:0315	1E425	17	1.000	bytes	high	_sbfd_setmode	
+identical	1DBD:0814	1E3E4	80	1E44:0814	1EC54	80	1.000	bytes	high		
+identical	1DBD:0864	1E434	103	1E44:0864	1ECA4	103	1.000	bytes	high		
+removed	0000:0270	00270	8								
+removed	0000:0278	00278	51								
+removed	1CCC:0A67	1D727	13								
+added				0000:01E8	001E8	68					
+added				0000:0271	00271	27					Abnormal program termination\r\n
+added				0000:02C9	002C9	20					
+added				0000:037F	0037F	41					
+added				0000:1850	01850	152					
+added				0000:1A1A	01A1A	61					
+added				0000:2393	02393	37					
+added				0000:23B8	023B8	302					
+added				0000:24E6	024E6	151					
+added				1645:1A7E	17ECE	368					(C)ontinue save    (D)o not save
+added				1A93:0437	1AD67	455					
