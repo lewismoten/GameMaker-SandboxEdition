@@ -25,6 +25,9 @@ build until the 240 s timeout killed it). `game-build-inputs.mjs` is the fingerp
 `render-game-frames.mjs`, which renders one animation shard for the game-frames workflow.
 
 Site build-time tools remain in [`web/scripts`](../web/scripts/README.md).
+The [headless PLAYGAME capture harness](../tools/dosbox-286/README.md) records WAV
+and raw OPL audio under DOSBox-X's 286 instruction model at fixed cycles; it needs
+no display or manual input.
 
 `backup-local.mjs` (root `npm run backup:local -- <folder>`, `npm run backup:restore -- <file> <folder>`)
 backs up the work Git doesn't keep: `.for-lewis`, `.narrate`'s results (not its `node_modules` or
