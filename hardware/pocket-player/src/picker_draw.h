@@ -44,9 +44,24 @@ template <class G> void drawRow(G& tft, const char* text, bool sd, int W, int y,
       tft.setCursor(W - 40, y + (height - 16) / 2); tft.print("SD");
     }
 }
-template <class G> void drawKeyboard(G& tft, int W, int H, int titleH, const char* text) {
+// Preserve the common prefix and erase only the edited suffix and old caret. The keyboard
+// and title are painted once on entry; even Clear never clears beyond this 16-pixel line.
+template <class G> void drawSearchText(G& tft, int titleH, const char* text, const char* previous = nullptr) {
+  if (previous && !strcmp(text, previous)) return;
+  const char* shown = text[0] ? text : "Type a title";
+  const char* old = previous && previous[0] ? previous : "Type a title";
+  size_t prefix = 0;
+  if (previous && text[0] && previous[0])
+    while (text[prefix] && text[prefix] == previous[prefix]) prefix++;
+  size_t width = strlen(shown), oldWidth = strlen(old);
+  if (oldWidth > width) width = oldWidth;
+  tft.fillRect(8 + prefix * 12, titleH + 4, (width - prefix) * 12 + 2, 16, C_BLACK);
   tft.setTextSize(2); tft.setTextColor(C_WHITE, C_BLACK);
-  tft.setCursor(8, titleH + 4); tft.print(text[0] ? text : "Type a title");
+  tft.setCursor(8 + prefix * 12, titleH + 4); tft.print(shown + prefix);
+  tft.fillRect(8 + strlen(shown) * 12, titleH + 4, 2, 16, C_WHITE);
+}
+template <class G> void drawKeyboard(G& tft, int W, int H, int titleH, const char* text) {
+  drawSearchText(tft, titleH, text);
   const char* keys = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
   int top = titleH + 26, step = (H - top - 38) / 4;
   for (int i = 0; i < 36; i++) {

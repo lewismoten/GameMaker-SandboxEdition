@@ -21,9 +21,12 @@ struct Phys {  // the glass: 240 x 320 (W, H), or 320 x 240 for the wide way (sf
   int fx = 0, fy = 0;   // MADCTL mirror bits
   int clipped = 0;      // writes of a non-black pixel outside the panel
   int outside = 0;      // lit pixels outside the logical square (set by the caller's region test)
+  int searchY = -1, searchOutside = 0, writes = 0;  // count every write, including black clears
   Phys() { clear(); }
   void clear() { memset(px, 0, sizeof px); clipped = 0; }
   void set(int x, int y, uint16_t c) {
+    writes++;
+    if (searchY >= 0 && (x < 8 || x >= 298 || y < searchY || y >= searchY + 16)) searchOutside++;
     if (x < 0 || y < 0 || x >= W || y >= H) { if (c) clipped++; return; }
     if (fx) x = W - 1 - x;
     if (fy) y = H - 1 - y;
@@ -155,6 +158,28 @@ int main(int argc, char** argv) {
     fprintf(f, "P6\n%d %d\n255\n", fb.W, fb.H);
     for (int i = 0; i < fb.W * fb.H; i++) { unsigned char c[3]; rgb(fb.px[i], 0, 0, c); fwrite(c, 1, 3, f); }
     fclose(f);
+  }
+  // Every edit must match a fresh render, without touching the keyboard/title even with black.
+  for (int w : {320, 480}) {
+    static Phys edited, fresh;
+    edited.W = fresh.W = w; edited.H = fresh.H = w == 320 ? 240 : 320;
+    edited.searchY = -1; edited.clear(); fresh.clear();
+    int titleH = w == 320 ? 28 : 40;
+    pk::drawKeyboard(edited, w, edited.H, titleH, "");
+    std::string previous;
+    std::vector<std::string> edits = {"", "C", "CA", "CAR", "CARL", "CAR", "CA", "C", "", "", "A", "A ", "A FLY", "", "012345678901234567890123", "01234567890123456789012", "", "Z"};
+    for (const auto& text : edits) {
+      edited.searchY = titleH + 4; edited.searchOutside = edited.writes = 0;
+      pk::drawSearchText(edited, titleH, text.c_str(), previous.c_str());
+      CHECK(edited.searchOutside == 0, "search edit at %d writes outside its field", w);
+      if (text == previous) CHECK(edited.writes == 0, "unchanged search at %d repaints", w);
+      if (!previous.empty() && text.size() == previous.size() + 1 && text.compare(0, previous.size(), previous) == 0)
+        CHECK(edited.writes < 700, "search append at %d repaints the prefix (%d writes)", w, edited.writes);
+      fresh.clear(); pk::drawKeyboard(fresh, w, fresh.H, titleH, text.c_str());
+      CHECK(!memcmp(edited.px, fresh.px, w * edited.H * sizeof(uint16_t)), "incremental search at %d differs for '%s'", w, text.c_str());
+      CHECK(edited.clipped == 0, "search edit at %d clips", w);
+      previous = text;
+    }
   }
   // step 4 on a glass whose colors are off: what each of the four modes shows when the glass is inverted and swapped (mode 3)
   {

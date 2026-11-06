@@ -1078,6 +1078,8 @@ static void drawSettings() {
     tft.setTextSize(1);
     tft.setTextColor(C_GRAY, C_BLACK);
     button(160, 288, 280, 318, pages > 1 ? (setPage + 1 < pages ? "More >" : "< First") : "");
+    tft.setTextSize(1); tft.setTextColor(C_GRAY, C_BLACK);
+    tft.setCursor(290, 290); tft.print("Touch: no calibration needed");
   }
   banner::paint(tft, 0, 0);
 }
@@ -1771,6 +1773,8 @@ void loop() {
   }
   if (mode == SEARCH_SCREEN) {
     if (freshTap(tx, ty)) {
+      char previous[sizeof searchText];
+      memcpy(previous, searchText, sizeof previous);
       int n = strlen(searchText), top = TITLE_H + 26, step = (scr::H - top - 38) / 4;
       if (ty >= scr::H - 36) {
         int b = tx * 4 / scr::W;
@@ -1782,7 +1786,7 @@ void loop() {
         searchText[n] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"[(ty - top) / step * 9 + tx * 9 / scr::W];
         searchText[n + 1] = 0;
       }
-      drawSearch();
+      pk::drawSearchText(tft, TITLE_H, searchText, previous);
     }
     delay(5); return;
   }
