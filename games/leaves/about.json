@@ -24,7 +24,7 @@
     "accent": "#ffd23f",
     "ink": "#ffffff",
     "tagline": "Swoop, glide, swoop.",
-    "back": "A small explorer in a green beanie walks under autumn trees on a breezy day. A leaf here is a monster: eight frames turn it over and a path of corners swoops it from side to side, so it floats instead of dropping. A branch is a block that drops a leaf every few seconds, and a gust is one loop of blocks every tree keeps, so all three bend at once. Read the signs, then open the game in Game-Maker and change a path.",
+    "back": "A small explorer in a teal beanie walks under autumn trees on a breezy day. A leaf here is a monster: eight frames turn it over and a path of corners swoops it from side to side, so it floats instead of dropping. A branch is a block that drops a leaf every few seconds, and a gust is one loop of blocks every tree keeps, so all three bend at once. Read the signs, then open the game in Game-Maker and change a path.",
     "features": [
       "Level 1 shows a stiff leaf, a spinning one and one that floats, side by side",
       "Level 2 has a maple, an oak and a birch, each with its own leaves",
