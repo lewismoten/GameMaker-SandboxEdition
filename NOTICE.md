@@ -63,6 +63,11 @@ game folder opens in the browser unchanged.
   (`code/GM/SOUNDC.C`) and joystick routines (`code/GM/JSTICKC.C`, `code/GM/JSTICKA.ASM`),
   and the Sound Designer's digitized speech with Andy Stone (`code/GM/SNDEDIT.C`).
 - **This fork**: Lewis Moten.
+- **PLAYGAME 286 audio measurements** (`tools/dosbox-286/measure_*.py` and
+  `docs/research/playgame-music-286-results.md`): Hermes Agent using **OpenAI Codex
+  GPT-6.1 Sol**, directed by Lewis Moten. The measurement tools use external NumPy
+  (BSD) and DOSBox-X by the DOSBox-X Team (GPL); neither dependency is bundled.
+  The DRO decoder follows DOSBox-X's published `RawHeader`/`Capture` format.
 - **The web port**: written with **Claude Opus 5.5** (Anthropic), covering both the
   _1994 desk_ (the recreated PC, DOS prompt, Game-Maker's VGA designers, the BBS) and the
   _modern web_ editor and player. AI assistance did most of the porting and code
