@@ -312,3 +312,43 @@ test('level checks retain failed/stopped outcomes with or without previous resul
     assert.match(result.success, /^Checked/);
   }
 });
+test('offline failure, cancel and success use the same attached live region', async () => {
+  for (const outcome of ['failure', 'cancel', 'success', 'cache-error']) {
+    await reset();
+    await page.route('**/offline.json', (r) => r.fulfill({ json: { version: 'fixture', shell: [], files: [['fixture-payload.bin', 20, 20]] } }));
+    await page.route('**/games/catalog.json', (r) => r.fulfill({ json: [] }));
+    await page.route('**/fixture-payload.bin', async (r) => {
+      if (outcome === 'cancel') await new Promise((resolve) => setTimeout(resolve, 200));
+      await r.fulfill({ status: outcome === 'failure' ? 503 : 200, body: 'Controlled fixture payload' }).catch(() => {});
+    });
+    await page.evaluate(async () => {
+      await caches.delete('gm-site');
+      localStorage.removeItem('gm-offline');
+      const { openOfflineDialog } = await import('/src/offline/offlineDialog.ts');
+      void openOfflineDialog();
+    });
+    await page.getByRole('button', { name: /^Download / }).waitFor();
+    await page.evaluate(() => {
+      window.originalStatus = document.querySelector('.offline-status');
+      window.detaches = 0;
+      new MutationObserver((ms) => {
+        for (const m of ms) if ([...m.removedNodes].includes(originalStatus)) detaches++;
+      }).observe(originalStatus.parentElement, { childList: true });
+    });
+    if (outcome === 'cache-error')
+      await page.evaluate(() => {
+        caches.open = async () => {
+          throw new Error('Controlled cache failure');
+        };
+      });
+    await page.getByRole('button', { name: /^Download / }).click();
+    if (outcome === 'cancel') await page.getByRole('button', { name: 'Cancel', exact: true }).click();
+    const expected =
+      outcome === 'success' ? /Ready offline/ : outcome === 'cancel' ? /Stopped/ : outcome === 'cache-error' ? /Controlled cache failure/ : /download failed/;
+    await page.waitForFunction((pattern) => new RegExp(pattern).test(document.querySelector('.offline-status')?.textContent), expected.source, {
+      timeout: 5000,
+    });
+    assert.equal(await page.evaluate(() => detaches), 0);
+    assert.match(await accessibleText(), expected);
+  }
+});
