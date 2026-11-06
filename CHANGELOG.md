@@ -274,6 +274,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Fixed
 
+- Imported game names and DOS text use the PC's CP437 characters outside DOS; menu frames no longer appear as superscript threes in titles. Previously derived imported names repair on load without changing chosen names or game files.
 - Auto-arrange can put an ending above or below its sources, keeping shortcut arrows clear of branches that leave a level and return to it.
 
 - Errors stay available to screen readers inside dialogs; saves, downloads and checks retain their final outcomes, rapid progress is quieter, and opening a transcript announces its loading state rather than the whole document. Error notices remain readable in both themes.

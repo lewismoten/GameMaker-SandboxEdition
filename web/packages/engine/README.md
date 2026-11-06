@@ -64,13 +64,21 @@ The format modules need no browser. This reads a `.GAM` file from the original C
 ```ts
 import { readFileSync } from 'node:fs';
 import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { fromCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 
 const game = parseGame(readFileSync('cd/gameware/peach/peach.gam'));
-console.log(`${game.scenes.length} scenes: ${game.scenes.slice(2, 4).map((s) => s.desc).join(' and ')}`);
+console.log(`${game.scenes.length} scenes: ${game.scenes.slice(2, 4).map((s) => fromCp437(s.desc)).join(' and ')}`);
 // prints: 20 scenes: Grasslands 1 and Grasslands 2
 ```
 
 A test (`web/test/readmeExamples.test.ts`) runs this block in Node against the built package and compares what it prints with the `// prints:` line.
+
+Parsed descriptions are DOS byte strings, not Unicode. For a game name outside DOS use
+`gameTitle(game)` from `formats/game`: it decodes CP437 and trims decorative menu frames.
+For other DOS labels use `fromCp437`; for DOS text-file bytes use `cp437Text` from `text/cp437`,
+which retains ASCII controls so the caller can handle line endings and DOS EOF. Neither API
+is for already decoded Unicode, JSON, HTML or UTF-8 text. Keep the parsed fields and original
+bytes for DOS rendering and round trips; convert only at the presentation boundary.
 
 ## Native player screens
 
