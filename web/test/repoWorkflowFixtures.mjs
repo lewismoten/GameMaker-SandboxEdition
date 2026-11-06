@@ -11,6 +11,8 @@ export function fixture() {
   try {
     mkdirSync(root);
     git(root, 'init', '-b', 'develop');
+    git(root, 'config', 'commit.gpgsign', 'false');
+    git(root, 'config', 'tag.gpgsign', 'false');
     git(root, 'config', 'user.email', 'test@example.invalid');
     git(root, 'config', 'user.name', 'Workflow test');
     git(root, 'config', 'core.hooksPath', '/dev/null');

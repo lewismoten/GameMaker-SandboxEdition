@@ -1,5 +1,5 @@
 // Integration mechanics use real disposable Git repos; expensive checks use recorded-shape results.
-import { existsSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
 import { gateOptions, runGate } from '../../scripts/merge-gate.mjs';
@@ -82,7 +82,23 @@ describe('merge gate', () => {
     change(f.root, 'feature/json', 'data.json', '{"value":1}\n');
     change(f.root, 'develop', 'data.json', '{"value":2}\n');
     const bad = run(f, { branches: ['feature/json'] });
-    expect(bad.exitCode).toBe(3);
+    expect(bad.exitCode, bad.error).toBe(3);
+    expect(bad.error).toMatch(/JSON/);
+    expect(bad.steps).toEqual([]);
+    expect(git(f.integration, 'status', '--porcelain')).toBe('');
+    expect(readFileSync(join(f.integration, 'data.json'), 'utf8')).toBe('{"value":2}\n');
+  });
+
+  it('reuses a clean detached integration worktree through a symlink alias', () => {
+    const f = setup();
+    change(f.root, 'feature/task', 'new.txt', 'feature\n');
+    const first = run(f);
+    expect(first.exitCode, first.error).toBe(0);
+    const alias = join(f.dir, 'merge-alias');
+    symlinkSync(f.integration, alias, 'dir');
+    f.integration = alias;
+    const second = run(f);
+    expect(second.exitCode, second.error).toBe(0);
   });
 
   it('refuses candidate drift and a remote that advances during testing', () => {

@@ -1,5 +1,5 @@
 // Build and test a detached integration candidate; publish only the exact validated revision.
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmdirSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, rmdirSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { command, git, mainModule, repository } from './repo-command.mjs';
@@ -56,7 +56,8 @@ export function runGate(options, settings = {}) {
     result.inputs = options.branches.map((branch) => ({ branch, revision: git(repo.root, 'rev-parse', '--verify', `refs/remotes/origin/${branch}^{commit}`) }));
     if (existsSync(integration)) {
       if (
-        resolve(git(integration, 'rev-parse', '--show-toplevel')) !== resolve(integration) ||
+        // Git reports the physical path (for example /private/var rather than /var on macOS).
+        realpathSync(git(integration, 'rev-parse', '--show-toplevel')) !== realpathSync(integration) ||
         command(integration, ['git', 'symbolic-ref', '-q', 'HEAD']).code !== 1 ||
         git(integration, 'status', '--porcelain')
       )
