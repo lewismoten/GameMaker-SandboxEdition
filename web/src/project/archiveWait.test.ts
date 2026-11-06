@@ -26,6 +26,14 @@ beforeEach(() => {
 afterEach(() => vi.unstubAllGlobals());
 
 describe('archiveWait', () => {
+  it('clears pending feedback on cancellation without claiming the archive opened', async () => {
+    vi.stubGlobal('fetch', async () => new Response(null, { status: 202 }));
+    const stop = new AbortController();
+    const response = await fetchArchive('./games/x/y/y.zip', { signal: stop.signal }, async () => stop.abort());
+    expect(response.status).toBe(202);
+    expect(region.hidden).toBe(true);
+    expect(region.textContent).toBe('');
+  });
   it('does not rewrite identical pending text on every retry', async () => {
     let count = 0;
     vi.stubGlobal('fetch', async () => new Response(null, { status: ++count <= 3 ? 202 : 200 }));

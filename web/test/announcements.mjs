@@ -519,3 +519,46 @@ test('error notice text and dismiss control retain contrast in both stored theme
     assert.deepEqual(violations, []);
   }
 });
+test('offline initial-check and removal rejections retain useful local outcomes', async () => {
+  for (const stage of ['check', 'remove']) {
+    await reset();
+    await page.route('**/offline.json', (r) => r.fulfill({ json: { version: 'fixture', shell: [], files: [['fixture-payload.bin', 20, 20]] } }));
+    await page.route('**/games/catalog.json', (r) => r.fulfill({ json: [] }));
+    await page.evaluate(async (stage) => {
+      await caches.delete('gm-site');
+      if (stage === 'remove') {
+        const cache = await caches.open('gm-site');
+        await cache.put(new URL('./fixture-payload.bin', location.href), new Response('fixture'));
+      } else
+        caches.open = async () => {
+          throw new Error('Controlled initial cache refusal');
+        };
+      const { openOfflineDialog } = await import('/src/offline/offlineDialog.ts');
+      void openOfflineDialog();
+    }, stage);
+    if (stage === 'remove') {
+      await page.getByRole('button', { name: 'Remove offline copies', exact: true }).waitFor();
+      await page.evaluate(() => {
+        caches.open = async () => {
+          throw new Error('Controlled removal refusal');
+        };
+      });
+      await page.getByRole('button', { name: 'Remove offline copies', exact: true }).click();
+      await page.waitForFunction(() => document.querySelector('.offline-status').textContent.includes('could not be removed'));
+      assert.equal(await page.getByRole('button', { name: 'Remove offline copies', exact: true }).isEnabled(), true);
+    } else await page.waitForFunction(() => document.querySelector('.offline-status').textContent.includes('could not be checked'));
+    assert.match(await accessibleText(), /Controlled.*refusal/);
+  }
+});
+test('Saves & scores completes loading without making its interactive content live', async () => {
+  await reset();
+  await page.evaluate(async () => {
+    const { Project } = await import('/src/editor/core/project.ts');
+    const project = Project.create('Saves fixture');
+    const { openSaves } = await import('/src/saves/savesPanel.ts');
+    void openSaves({ title: 'Fixture', saveId: 'fixture', gam: project.gam, files: async () => project.files });
+  });
+  await page.waitForFunction(() => document.querySelector('.sv-say').textContent === 'Saves loaded.');
+  assert.equal(await page.locator('.sv-main').getAttribute('aria-live'), 'off');
+  assert.doesNotMatch(await page.locator('.sv-main').textContent(), /Loading/);
+});
