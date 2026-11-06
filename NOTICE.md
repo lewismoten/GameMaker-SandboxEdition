@@ -99,6 +99,7 @@ game folder opens in the browser unchanged.
   Codex made no new levels, art, music or story text for the games. The entries below that say
   "OpenAI Codex (GPT-6)" are part of the same work.
 
+- **Integrator return-path layout** (`web/src/editor/editors/integrator/integratorLayout.ts`): bounded ending placement and return-copy regression tests implemented with **Hermes / OpenAI Codex GPT-6.1 Sol** (OpenAI), directed by Lewis Moten. Game files and runtime scene links are unchanged.
 - **The npm engine package** (`web/packages/engine/`): extracted and documented with
   **OpenAI Codex (GPT-6)** through Visual Studio Code, directed by Lewis, from this fork's
   existing TypeScript web engine.
