@@ -3,7 +3,7 @@
 // overflow past the device width (exit 1), axe violations and a screenshot each. Starts its own Vite (never 5173) via perfLib.
 // Usage: npm run editor:touch -- <route> [--out dir] [--tag name] [--wait selector] [--click 'sel;sel'] [--port 5291] [--dist dir] [--url u]
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
-import { auditFailed } from './editorTouchAudit';
+import { auditFailed, measureTargets } from './editorTouchAudit';
 import { resolve } from 'node:path';
 import { arg, launch, target } from './perfLib';
 import { assertTheme, forceTheme } from './forceTheme';
@@ -48,27 +48,7 @@ try {
       }
       await assertTheme(page, scheme);
       await page.screenshot({ path: `${out}/${tag}-${name}-${scheme}.png` });
-      const r = await page.evaluate((deviceWidth) => {
-        const sel = 'button, a[href], input, select, textarea, summary, [role=button], [role=tab], [tabindex]:not([tabindex="-1"])';
-        const small: string[] = [];
-        const under24: string[] = [];
-        for (const el of document.querySelectorAll<HTMLElement>(sel)) {
-          const b = el.getBoundingClientRect();
-          const cs = getComputedStyle(el);
-          if (!b.width || !b.height || cs.visibility === 'hidden' || cs.display === 'none') continue;
-          const detail = `${el.tagName.toLowerCase()} "${(el.getAttribute('aria-label') || el.textContent || el.getAttribute('title') || '').trim().slice(0, 80)}" ${b.width}x${b.height}`;
-          if (b.width < 24 || b.height < 24) under24.push(detail);
-          if (b.width < 44 || b.height < 44) {
-            const label = (el.getAttribute('aria-label') || el.textContent || el.getAttribute('title') || '').trim().slice(0, 24);
-            small.push(
-              `${el.tagName.toLowerCase()}${el.className ? '.' + String(el.className).split(' ')[0] : ''} "${label}" ${Math.round(b.width)}x${Math.round(b.height)}`,
-            );
-          }
-        }
-        // Compare with the configured device width, not innerWidth: Chromium's mobile emulation widens the layout viewport to fit
-        // overflowing content (innerWidth then equals scrollWidth), while a real iPhone keeps the width and scrolls sideways.
-        return { small, under24, overflowX: document.documentElement.scrollWidth - deviceWidth };
-      }, width);
+      const r = await page.evaluate(measureTargets, width);
       await page.addScriptTag({ content: axeSrc });
       const ax = await page.evaluate(async () => {
         // @ts-expect-error axe is a page global once injected
