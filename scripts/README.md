@@ -1,5 +1,83 @@
 # Repository scripts
 
+`npm run merge:gate -- feature/name [feature/other ...] [--games id,id] [--push]`
+fetches origin and builds a detached candidate in the main clone's
+`.claude/worktrees/merge`, outside the invoking checkout. The existing integration
+worktree must be clean and detached; a concurrent gate is rejected by an exclusive
+directory lock. A failed candidate and its logs remain for inspection. After an
+interrupted process, inspect the worktree before manually removing `merge.gate-lock`.
+No server is started and no running server is contacted.
+
+The gate pins develop and every branch SHA, merges in argument order, aborts code,
+binary and modify/delete conflicts, and permits text union only for `.md`, `.json`,
+`.csv`, and `.txt`. JSON unions must parse; this does not validate schemas or CSV
+meaning, so review these resolutions. It never takes an entire generated file from
+one side. It builds SDK declarations, force-rebuilds disks before tests, optionally
+regenerates the requested Level Maps and commits only `levelViews.json`, then pins
+the final candidate commit and tree. Typecheck, lint and full Vitest follow, then
+each requested game's `checkGames --quick`. Builds, scans, Vitest and game checks use
+the shared heavy scheduler; invoke the gate directly, without wrapping it in another
+heavy slot. Provision dependencies in the integration worktree first
+(for example with the bootstrap command below); builds reject symlinked disks.
+
+Without `--push` this validates only. With it, the gate requires remote develop to
+still match its starting SHA, a clean candidate, and unchanged HEAD, then pushes the
+exact tested commit to develop with a normal fast-forward push. It never touches
+master. If develop advances, rerun the whole gate. Checks may not edit tracked inputs.
+The printed JSON and a private temporary directory (printed as `output`) contain
+`result.json`, per-command logs, pinned revisions/tree, durations, test fingerprints,
+exceptions used, and publication status. Exit codes: **0** pass (possibly with exact
+exceptions), **2** usage/setup/policy, **3** merge/conflict, **4** build/check/candidate
+drift, **5** publication or remote drift. Missing reports, signals, test collection
+errors, interruption and unhandled errors block publication.
+
+`merge-gate-allowlist.json` replaces handoff prose. It currently allows **nothing**:
+the two previously named Integrator cases passed on revision
+`1a172cad7c9d286614101c6225f98265654f4726` with the local disks on November 6, 2026.
+Stale Level Maps disks are rebuilt, never waived. Any unresolved failure must first
+be reproduced; add an entry with exact web-relative `file`, Vitest `test` fullName,
+`owner`, `issue` link or local tracking ID, `firstSeenRevision` (40 hex characters),
+`fingerprint` (SHA-256 from the gate result), and `expires` (UTC date, exclusive).
+Failure fingerprints include assertion messages but remove ANSI and stack locations.
+Changed messages, extra failures, duplicate entries and expired entries block.
+Policy is read from the invoking checkout before candidate merges and checked again
+after tests. `gate-vitest-reporter.mjs` records completion and unhandled errors alongside
+Vitest JSON, whose reporter omits those fields. No test or budget is automatically weakened.
+
+`npm run worker:bootstrap -- feature/name <new-path>` fetches origin, creates a
+feature worktree at that exact develop revision, copies private disks and walkthrough
+paths from the main checkout, then runs `npm ci` in a heavy slot. On macOS it uses
+`cp -cR` for APFS clones; Linux uses `cp --reflink=auto -R` (private copies when reflinks
+are unavailable). There is no symlink fallback, and any source/output symlink or
+preexisting destination output blocks setup. `npm ci` builds SDKs in dependency order
+and refreshes generated disks; copied timestamps alone are not proof of freshness.
+Failure leaves the partial worktree for inspection, never deletes it automatically.
+
+`npm run worker:bootstrap -- --doctor` prints capabilities without creating a
+worktree or installing dependencies. Both modes report the actual shared heavy-lock
+write probe, PlatformIO executable and directory access, bounded HTTPS reachability
+to npm/PlatformIO registries, and serial paths with access bits. This does not open
+devices, acquire PlatformIO's lock, or flash hardware. Those capabilities remain
+explicitly unverified; unavailable operations belong in an authorized host job.
+Heavy-lock failure blocks bootstrap; never set a per-worker lock directory to bypass
+the shared limit. The report includes what the worker can do and remaining limits.
+
+`npm run branches:triage` reports cached unmerged `origin/feature/*`: tip age in days,
+SHA, ahead/behind develop, last author (not assumed task ownership), patch-equivalent
+or identical-tree work already on develop, merge-tree conflicts and worktree state,
+including dirty, locked and prunable worktrees. Fetch beforehand for a current remote
+inventory. Merged ancestors are omitted. `merge-tree --write-tree` uses temporary
+object storage, leaving repository refs, index and objects unchanged. Errors are
+reported as unknown, never clean. It never deletes branches. Use `npm run already --
+<task words>` before briefing; task records supply ownership and supersession intent.
+
+Workflow tests: `web/test/mergeGate.test.mjs`, `gateFailures.test.mjs`,
+`branchTriage.test.mjs`, and `workerDisks.test.mjs`. They use disposable local Git
+remotes and real merge/push mechanics; costly checks are stubbed. They never publish
+to a network remote or touch the maintainer's refs or servers. Git-backed tests inherit
+the host's signing policy; if sandbox restrictions block its signing agent, report that
+capability failure and run them on an authorized host rather than disabling signing.
+
 `verify-changed.mjs` runs through `npm run verify:changed` (root or `web/`): the quick pre-merge check of only what the branch touched against `origin/develop` (or `--base <ref>`). `npm run verify` is the full check.
 
 `verify-packages.mjs` runs through root `npm run verify:packages`. It copies each SDK

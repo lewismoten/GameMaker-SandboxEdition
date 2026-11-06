@@ -46,7 +46,10 @@
     "replay:log": "npm run replay:log -w gamemaker-web --",
     "domains:check": "npm run domains:check -w gamemaker-web --",
     "dead:code": "npm run dead:code -w gamemaker-web --",
-    "badges:similar": "npm run badges:similar -w gamemaker-web --"
+    "badges:similar": "npm run badges:similar -w gamemaker-web --",
+    "merge:gate": "node scripts/merge-gate.mjs",
+    "worker:bootstrap": "node scripts/worker-bootstrap.mjs",
+    "branches:triage": "node scripts/branch-triage.mjs"
   },
   "engines": {
     "node": ">=22.12.0"
