@@ -1,22 +1,11 @@
-// The first-boot setup of the 2.8 inch board in four steps, each answered with two controls that need no touch map and no
-// reading: the BOOT button does the step's action and a tap ANYWHERE on the glass is OK. No board code in it (host/setuptest.cpp
-// checks all of it on the Mac).
-//   1 flip      "MIRROR?"  BOOT mirrors the picture left to right until the word reads right
-//   2 rotate    "UP"       BOOT turns the picture half a turn until the arrow points up
-//   3 orient    "LANDSCAPE" BOOT tries three ways to land the wide picture: a software quarter turn, the other quarter turn
-//               (the glass is run in its portrait turn and the picture turned, see softgfx.h, because some glasses ignore the
-//               row/column exchange) and the glass run 320 x 240 as it is (a glass wired the other way round)
-//   4 colors    RED GREEN BLUE  BOOT steps the four color modes (plain, inverted, red/blue swapped, both) until the words
-//               are written in their own colors and the patches are white and black
-// then the 3-tap touch calibration (touchcal.h works out any touch wiring).
-// Steps 1, 2 and 4 draw only inside a 240 x 240 square at the origin, so nothing is clipped in any turn.
+// Three display steps: Mirror, Landscape (includes every mounting turn), Colors; then touch calibration.
 #pragma once
 #include <stdint.h>
 
 namespace sf {
 
-constexpr int SQ = 240;  // the square steps 1, 2 and 4 draw in
-enum Step { FLIP = 0, ROTATE = 1, ORIENT = 2, COLORS = 3, STEPS = 4 };
+constexpr int SQ = 240;  // the square Mirror and Colors draw in
+enum Step { FLIP = 0, ORIENT = 1, COLORS = 2, STEPS = 3 };
 
 // The panel's portrait turns that differ in MADCTL's mirror bits only: bit 0 of u = mirrored left to right (MX), bit 1 = upside
 // down (MY). They are the LovyanGFX rotations 0, 6, 4 and 2, in that order, and they never touch the row/column exchange.
@@ -36,8 +25,9 @@ struct Flow {
   // the BOOT button's action for this step
   void boot() {
     if (step == FLIP) u ^= 1;
-    else if (step == ROTATE) u ^= 3;
-    else if (step == ORIENT) soft = soft >= WIDE ? 1 : soft + 1;  // quarter turn, the other, the glass itself, round again
+    else if (step == ORIENT) {
+      if (soft >= WIDE) { soft = 1; u ^= 3; } else soft++;
+    }  // quarter turn, the other, the glass itself, round again
     else if (step == COLORS) color = (color + 1) & 3;
   }
   // OK (a tap anywhere); false after the last step
@@ -47,7 +37,7 @@ struct Flow {
     if (step == ORIENT && !soft) soft = 1;
     return true;
   }
-  // How the picture is turned on the glass in this step: steps 1 and 2 draw in the panel's portrait turn, step 3 on.
+  // Mirror uses the portrait square; Landscape and Colors use the selected orientation.
   int softMode() const { return step >= ORIENT ? xfMode(soft) : 0; }
   bool wide() const { return step >= ORIENT && isWide(soft); }  // the glass is run 320 x 240 (see WIDE)
   int rotation() const { return PORTRAIT_ROT[u & 3]; }

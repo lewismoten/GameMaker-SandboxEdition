@@ -107,7 +107,11 @@ for (const id of ids) {
 }
 if (!listOnly) {
   index.sort((a, b) => (a.id === 'first-steps' ? -1 : b.id === 'first-steps' ? 1 : a.title.localeCompare(b.title)));
-  if (!gmpDir) writeFileSync(outDir + 'games.txt', index.map((g) => `${g.id}|${g.title}|${g.levels}${cardRoot ? '|' + g.short : ''}`).join('\n') + '\n');
+  if (!gmpDir)
+    writeFileSync(
+      outDir + 'games.txt',
+      index.map((g) => `${g.id}|${g.title.replace(/[|\r\n]/g, ' ').slice(0, 95)}|${g.levels}${cardRoot ? '|' + g.short : ''}`).join('\n') + '\n',
+    );
   if (cardRoot) for (const [n, b] of store) writeFileSync(outDir + n, b);
   if (!cardRoot && !gmpDir) {
     writeFileSync(outDir + 'cards.pak', Buffer.concat(pak.parts));

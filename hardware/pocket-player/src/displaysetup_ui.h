@@ -1,7 +1,7 @@
 // The 2.8 inch board's display setup and its saving (the pure parts are in displaysetup.h and setupflow.h). Included by
 // main.cpp, inside its POCKET_CYD28 block, so it uses main.cpp's tft, touch and settings statics (not stand-alone).
-//   Four steps (setupflow.h), each with two controls that need no touch map: the BOOT button does the step's action (flip,
-//   rotate, orient, cycle the colors) and a tap anywhere on the glass is OK; then the 3-tap calibration. BOOT held 1.5 s
+//   Three steps (setupflow.h), each with two controls that need no touch map: the BOOT button does the step's action (flip,
+//   orient, cycle the colors) and a tap anywhere on the glass is OK; then the 3-tap calibration. BOOT held 1.5 s
 //   steps the driver and restarts into step 1 (for a picture that is garbage).
 //   Saved per chip: NVS (namespace "pocket": panel, turn, cal, setup, sstep, full, swapk) and, when a card is in, the file
 //   /pocket/boards/<chip id>.cfg, so a card moved between boards carries every board's setup. The card is read only when
@@ -134,7 +134,7 @@ static void dsBoot() {
   if (panelType >= PANEL_TYPES) panelType = PANEL_ILI9341;
   if (turnIdx >= TURNS) turnIdx = 0;
   if (softIdx > 3) softIdx = 0;
-  if (dsStep != ds::STEP_CALIBRATE) dsStep = 0;  // only the calibration resumes; the four steps start again
+  if (dsStep != ds::STEP_CALIBRATE) dsStep = 0;  // only the calibration resumes; the three steps start again
 }
 // A display change that is not yet confirmed with OK: the next start comes back to setup. `geometry`: the touch no longer
 // matches the picture (a turn or another driver), so the calibration is marked not valid (its axes' order is kept).
@@ -251,7 +251,7 @@ static void clearAll() {
   tftHw.fillScreen(C_BLACK);
   applyDisplay();
 }
-// One step of the setup drawn for the flow's turn: the portrait turn of its mirror bits, the software mode from step 3 on.
+// One step of the setup drawn for the flow's turn: the portrait turn of its mirror bits, the software mode from Landscape on.
 static void dsDraw(const sf::Flow& f) {
   setGlass(f.wide());
   tftHw.setRotation(f.rotation());
@@ -312,9 +312,9 @@ static void dsDriverRestart() {
   delay(700);
   ESP.restart();
 }
-// The four steps. Returns false when the setup was ended (S skip); true when the user said OK on step 4 and the display
+// The three steps. Returns false when the setup was ended (S skip); true when the user said OK on step 3 and the display
 // settings (turn, software turn, color mode) are applied and marked begun, ready for the calibration.
-static bool dsFourSteps() {
+static bool dsDisplaySteps() {
   sf::Flow f;
   if (softIdx) { f.u = turnIdx & 3; f.soft = softIdx; }  // a setup made with this flow: start from it
   f.color = (panelType >> 1) & 3;
@@ -343,8 +343,9 @@ static bool dsFourSteps() {
 }
 // Runs the setup; returns when it ended (the 3-tap calibration and saving are done). The caller redraws.
 static void runDisplaySetup() {
-  Serial.printf("setup: open (chip %s, step %d)\n", dsChip, dsStep + 1);
-  if (dsStep != ds::STEP_CALIBRATE && !dsFourSteps()) { applyDisplay(); dsSave(); return; }
+  stopCardScan();
+  Serial.printf("setup: open (chip %s, step %d)\n", dsChip, dsStep == ds::STEP_CALIBRATE ? sf::STEPS + 1 : 1);
+  if (dsStep != ds::STEP_CALIBRATE && !dsDisplaySteps()) { applyDisplay(); dsSave(); return; }
   if (runCalibration()) dsCalDone();
   dsSave();
   applyDisplay();
