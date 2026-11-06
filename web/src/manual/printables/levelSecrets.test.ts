@@ -1,10 +1,10 @@
-// Level Maps keep the secrets: levelSecrets.json matches the games, and no map draws or marks a tin
+// Level Maps keep the secrets: levelSecrets/*.json matches the games, and no map draws or marks a tin
 // heart or an egg.
 import { describe, expect, it } from 'vitest';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import SECRETS from './levelSecrets.json';
-import { levelSecretsJson, scanLevelSecrets } from '../../../scripts/levelSecretsScan';
+import { SECRETS } from './levelMetadata';
+import { scanLevelSecrets } from '../../../scripts/levelSecretsScan';
 import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { MLEN, parseMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { levelsOf } from './levelMapLayout';
@@ -33,7 +33,8 @@ describe('Level Maps keep the secrets', () => {
   it('lists the blocks the games’ about.json and disks hide (else rerun scripts/levelSecrets.ts), never a secret game', () => {
     const scanned = scanLevelSecrets(games);
     expect(SECRETS).toEqual(scanned);
-    expect(readFileSync(join(__dirname, 'levelSecrets.json'), 'utf8')).toBe(levelSecretsJson(scanned));
+    for (const [id, value] of Object.entries(scanned))
+      expect(readFileSync(join(__dirname, 'levelSecrets', `${id}.json`), 'utf8')).toBe(`${JSON.stringify(value)}\n`);
     for (const id of readdirSync(games))
       if (existsSync(join(games, id, 'about.json')) && about(id).secret === true) expect(Object.keys(SECRETS)).not.toContain(id);
   });

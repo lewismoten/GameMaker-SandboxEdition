@@ -56,8 +56,8 @@ their contents rows buttons that turn to the page; `gen.ts` makes what every San
   `worldMapGroundKit.ts`, `worldMapIndoors.ts`, `worldMapWays.ts`, `worldMapDecor.ts`,
   `worldMapTerrain.ts` and `worldMapArt.ts` drawing it; `worldMapLayout.ts` for the pages) and
   the Level Maps (`levelMaps.ts`, `levelMapLayout.ts`), which never show a tin heart or egg
-  (`levelSecrets.ts`, from `levelSecrets.json` written by `web/scripts/levelSecrets.ts`) and crop to
-  what the player sees (`levelViews.ts`, from `levelViews.json` written by
+  (`levelSecrets.ts`, from `levelSecrets/<id>.json` written by `web/scripts/levelSecrets.ts`) and crop to
+  what the player sees (`levelViews.ts`, from `levelViews/<id>.json` written by
   `web/scripts/levelViews.ts`; a map the hero walks off the edge of is laid out as the player goes
   through it, `editor/check/unroll.ts`, and goes round forever only if the hero got round; a
   course through the wrap, `editor/check/course.ts`, prints as the strip the way runs, turned
