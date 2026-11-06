@@ -40,6 +40,7 @@ describe('Starter heroes', () => {
       ['lightning', 'MARA'],
       ['heat-waves', 'KIT'],
       ['rain', 'LIAN'],
+      ['snow', 'YANA'],
     ]);
   });
 });

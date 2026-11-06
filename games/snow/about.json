@@ -3,7 +3,7 @@
   "author": "Hermes (OpenAI GPT-6.1 Sol)",
   "company": "Sandbox Software",
   "series": "starter",
-  "hero": "KIT",
+  "hero": "YANA",
   "year": 1994,
   "price": "Free",
   "version": "1.0",
@@ -20,8 +20,16 @@
     "ink": "#ffffff",
     "tagline": "Look behind you.",
     "back": "Snowflakes drift down a blue winter sky. Walk through fresh snow to leave two little bootprints in each tile you touch. Hop over it and leave a gap. A drift grows in three steps, but the floor stays put: these are pictures and touch-changed blocks, not a snow simulator.",
-    "features": ["Swaying snowflake loops", "Three stages of a growing drift", "Bootprints only where you touch the powder", "Short signs and editable lessons"],
-    "shots": [["one.map", 18, 15], ["two.map", 18, 15]],
+    "features": [
+      "Swaying snowflake loops",
+      "Three stages of a growing drift",
+      "Bootprints only where you touch the powder",
+      "Short signs and editable lessons"
+    ],
+    "shots": [
+      ["one.map", 18, 15],
+      ["two.map", 18, 15]
+    ],
     "rating": "Everyone"
   },
   "acceptedFindings": ["facing s3 The hero climbs side on"]
