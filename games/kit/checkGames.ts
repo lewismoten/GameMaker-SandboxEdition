@@ -38,7 +38,7 @@ import { describe, readBounds } from '@lewismoten/gamemaker-sandbox-tools/kit/te
 import { pairsOfGame } from './colorCues';
 import { vocCuesOfGame } from './vocCues';
 import { hiddenMonstersOfGame } from './viewCheck';
-import { textPurpleOfGame } from './textPurple';
+import { inkFlagged, textPurpleOfGame } from './textPurple';
 
 const gamesDir = join(dirname(fileURLToPath(import.meta.url)), '..');
 const webDir = join(gamesDir, '../web');
@@ -303,16 +303,16 @@ for (const id of games) {
   }
 }
 console.log(`view edge (advisory): ${hidden.length ? `monsters hidden at the screen edge in ${hidden.join(', ')}` : 'none'}`);
-// Advisory, never a failure: text pages whose ink isn't PLAYGAME's purple because the palette lacks it (kit/textPurple.ts; `textPurpleCheck.ts <id>` lists them).
+// Advisory, never a failure: text pages whose ink isn't PLAYGAME's purple because the palette lacks it, or, when the game's player.json chooses the color, reads under 4.5:1 (kit/textPurple.ts; `textPurpleCheck.ts <id>` lists them).
 const offPurple = games.flatMap((id) => {
   try {
-    const n = textPurpleOfGame(id, gamesDir).filter((f) => f.distance > 0).length;
+    const n = textPurpleOfGame(id, gamesDir).filter(inkFlagged).length;
     return n ? [`${id} ${n}`] : [];
   } catch {
     return [];
   }
 });
-console.log(`text ink (advisory): ${offPurple.length ? `pages not in true purple in ${offPurple.join(', ')}` : 'none'}`);
+console.log(`text ink (advisory): ${offPurple.length ? `text pages to look at in ${offPurple.join(', ')}` : 'none'}`);
 const failed =
   [...rows.values()].filter((r) => COLS.some((c) => r[c] === 'FAIL')).length +
   (hearts === 'FAIL' ? 1 : 0) +
