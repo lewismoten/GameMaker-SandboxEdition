@@ -227,7 +227,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Changed
 
-- Opening a game in the editor no longer downloads the home page or unused playback controls; player-patch data stays available to imports and file pickers.
+- Opening a game in the editor no longer downloads the home page's showcase, cards and styles.
 
 - Both Pocket Player boards' flash images include all 106 Starters and Graduations, including Snow Trails, Rain on the Path, Quicksand, Lightning, Heat Waves, and the rebuilt lessons.
 - Who Wins? shows who is stronger: the big red gumdrop now fills its block and the mint ones are half its size, POWER charts list each monster's picture beside its real power number (180, 140, 130, 110), an arrow sign says to watch the big red one, and a star used up on something stronger fizzles gray where you can see it, with a sign saying why (180 to 140).

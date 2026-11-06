@@ -1,43 +1,21 @@
-// Manual chunks must not turn a pure player-data import into an engine download.
-import { describe, expect, it } from 'vitest';
+// Home stays a chunk-plan root after its static modernUi re-export is removed.
+import { expect, it } from 'vitest';
 import { resolve } from 'node:path';
 import type { Rollup } from 'vite';
 import config from '../vite.config';
 
-const root = resolve(__dirname, '..');
-const id = (path: string) => resolve(root, path);
-
-function classify(graph: Record<string, string[]>): (path: string) => ReturnType<Rollup.GetManualChunk> {
+it('does not put home-required data in the play-only runtime', () => {
+  const root = resolve(__dirname, '..');
+  const id = (path: string) => resolve(root, path);
+  const catalog = 'src/project/files.ts';
+  const graph: Record<string, string[]> = {
+    [id('src/play.ts')]: [catalog],
+    [id('src/editor/shell/home.ts')]: [catalog],
+  };
   const output = config.build!.rollupOptions!.output as Rollup.OutputOptions;
   const chunk = output.manualChunks as Rollup.GetManualChunk;
   const meta = {
     getModuleInfo: (path: string) => ({ importedIds: (graph[path] ?? []).map(id) }),
   } as unknown as Rollup.ManualChunkMeta;
-  // These tests share one graph, like the callback's cached closures in one build.
-  return (path) => chunk(id(path), meta);
-}
-
-const table = 'packages/engine/src/player/patchTable.ts';
-const rules = 'packages/engine/src/player/patchRules.ts';
-const game = 'packages/engine/src/engine/game.ts';
-const record = 'src/dosPlayer/playerRecord.ts';
-const graph = {
-  [id('src/play.ts')]: [table, rules, game, record],
-  [id('src/editor/shell/home.ts')]: [table],
-  [id('src/editor/shell/workspace.ts')]: [record],
-};
-
-describe('player chunk boundaries', () => {
-  it('does not pull playback into editor consumers of player metadata', () => {
-    const chunk = classify(graph);
-    expect(chunk(record)).not.toBe(chunk(game));
-  });
-  it('keeps reusable patch rules out of the play-only runtime', () => {
-    const chunk = classify(graph);
-    expect(chunk(rules)).not.toBe(chunk(game));
-    expect(chunk(rules)).toBe(chunk(table));
-  });
-  it('does not put home-required data in the play-only runtime', () => {
-    expect(classify(graph)(table)).not.toBe('player');
-  });
+  expect(chunk(id(catalog), meta)).not.toBe('player');
 });

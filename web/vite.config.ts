@@ -268,10 +268,7 @@ function playChunks(): Rollup.GetManualChunk {
     ['main', ['src/main.ts', 'src/seo/route.ts']], // index.html's two scripts
     ['desk', ['src/desk/desk.ts']],
     ['web', ['src/modernUi.ts', 'src/editor/shell/home.ts']], // independent project and home routes
-    // These lazy first views also use player metadata and drawing helpers, not playback.
-    // Without their closures, a utility import silently fetches the entire play-only chunk.
-    ['editor', ['src/editor/shell/workspace.ts', 'src/editor/editors/map/map.ts']],
-    ['library', ['src/library/libraryPage.ts']],
+
     ['play', ['src/play.ts']],
     ['dos', ['src/dosPage/dosPage.ts']], // so the DOS page shares the PC's code, not the whole player chunk
   ];
@@ -297,9 +294,7 @@ function playChunks(): Rollup.GetManualChunk {
     // the tin hearts' list and saves: the player reads them, but so do pages that never play
     // (achievements counting hearts at start-up, the desk's trophy), which shouldn't fetch the engine for them
     if (/\/src\/tinHearts\/(tinHearts\.ts|manifest\.ts|hearts\.json)/.test(id)) return 'tinHearts';
-    // Pure DOS patch data/rules are also used by importers, thumbnails and file pickers.
-    // Keep their synchronous APIs, but do not make those callers fetch playback UI/audio.
-    if (/\/packages\/engine\/src\/player\/(patchTable|patchRules|fileExtensions)\.ts$/.test(id)) return 'playerPatches';
+
     if (pages.some(([, entries]) => entries.some((e) => id === resolve(__dirname, e)))) return undefined; // each page's own chunk
     const users = pages.filter((_, i) => closures![i].has(id)).map(([name]) => name);
     if (!users.includes('play') || users.includes('main')) return undefined;
