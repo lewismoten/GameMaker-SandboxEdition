@@ -9,6 +9,7 @@
 // trim and tape together (A1, B1, ... like a road atlas), each the same SVG looking at its own
 // part. On screen it comes folded and opens into a map you can zoom and drag around.
 import './paper.css'; // first: this piece's own styles build on the paper's
+import { fromCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import './worldMap.css';
 import { h } from '../../editor/core/ui';
 import { GameFiles, peekGameFile, type CatalogEntry } from '../../project/files';
@@ -173,7 +174,8 @@ function drawWorld(entry: CatalogEntry, scenes: Game, files: GameFiles, hints: W
   const names = new Map<number, string[]>();
   if (grouping) for (const i of new Set([...grouping.folded.keys(), ...grouping.labels.keys()])) names.set(i, wrapNames(placeLabels(scenes, grouping, i)));
   const kindOf = (i: number) => (game.scenes[i].gametype === STARTTYPE ? 'start' : game.scenes[i].gametype === ENDTYPE ? 'end' : 'scene');
-  const label = (i: number) => fit(game.scenes[i].desc || { start: 'Title', end: 'The end', scene: 'Untitled' }[kindOf(i)], 24);
+  const nameOf = (i: number) => grouping?.names.get(i) ?? fromCp437(scenes.scenes[i].desc);
+  const label = (i: number) => fit(nameOf(i) || { start: 'Title', end: 'The end', scene: 'Untitled' }[kindOf(i)], 24);
   const plan = planWorld(game, label, (i) => names.get(i)?.length ?? 0, undefined, hints);
   // the plan (places and paths) between the title and the key, in the middle of a narrow sheet
   const b = plan.bounds;
@@ -195,7 +197,7 @@ function drawWorld(entry: CatalogEntry, scenes: Game, files: GameFiles, hints: W
   }
   const paths = plan.paths.map((p) => ({ ...p, line: p.line.map((q) => moved(q, d)) }));
   const all = [...places.values()];
-  const regions = regionsOf(game, graph, hints).filter((r) => r.ids.length >= 2 && r.ids.every((i) => places.has(i)));
+  const regions = regionsOf(scenes, graph, hints, nameOf).filter((r) => r.ids.length >= 2 && r.ids.every((i) => places.has(i)));
   const land = ground({ theme: theme.id, W, H, seed, places: all, regions: regions.map((r) => r.ids), lines: paths.map((p) => p.line) });
 
   const svg = el('svg', { xmlns: NS, viewBox: `0 0 ${W} ${H}`, class: `wm-svg wm-theme-${theme.id}`, 'font-family': SERIF }) as SVGSVGElement;

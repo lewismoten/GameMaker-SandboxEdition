@@ -3,6 +3,7 @@
 // step with the tools (prompt.ts buildBrief), and the bot plays it. Until the bot wins, the model
 // is shown why and asked to fix it, a couple of times at most.
 import { GameFiles } from '../../project/files';
+import { gameTitle } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { ADVTYPE, parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { fillStarter } from '../../editor/shell/starter';
 import { GAME_TOOL_DEFS } from '../tools/index';
@@ -20,7 +21,7 @@ export function hasNoLevel(ctx: GameContext): boolean {
 /** The starter level's files for this game, as one change; undefined when the library game has none. */
 export function starterChange(ctx: GameContext, lib: GameFiles): Change | undefined {
   const files = ctx.files.copy();
-  const title = parseGame(files.get(ctx.gam)!).scenes[0]?.desc.trim() || 'My Game';
+  const title = gameTitle(parseGame(files.get(ctx.gam)!)) || 'My Game';
   if (!fillStarter({ files, gam: ctx.gam }, title, lib)) return undefined;
   const out: Record<string, Uint8Array> = {};
   for (const n of files.names()) if (files.get(n) !== ctx.files.get(n)) out[n] = files.get(n)!;

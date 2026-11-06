@@ -2,6 +2,7 @@
 // to open it. With nothing typed it lists the files opened most recently, kept in the
 // project's companion file (never among the game's files), saved with the next edit.
 import { h, modal } from '../core/ui';
+import { fromCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import { companionPatches } from '../../dosPlayer/playerRecord';
 import { kindOf, KIND_LABELS, type Project } from '../core/project';
 import { fileThumb } from '../widgets/thumbs';
@@ -49,10 +50,15 @@ export function quickHits(project: Project, query: string): Hit[] {
   const scenes: Hit[] = [];
   const game = project.game();
   game.scenes.forEach((s, i) => {
-    if (!s.desc?.toLowerCase().includes(q)) return;
+    if (
+      !fromCp437(s.desc ?? '')
+        .toLowerCase()
+        .includes(q)
+    )
+      return;
     for (const f of s.files)
       if (f && project.files.has(f) && ![...starts, ...holds].includes(f.toLowerCase()) && !scenes.some((x) => x.file === f.toLowerCase()))
-        scenes.push({ file: f.toLowerCase(), note: `Used by ${s.desc.trim() || `scene ${i}`}` });
+        scenes.push({ file: f.toLowerCase(), note: `Used by ${fromCp437(s.desc).trim() || `scene ${i}`}` });
   });
   return [...starts, ...holds].map((file) => ({ file, note: '' })).concat(scenes);
 }

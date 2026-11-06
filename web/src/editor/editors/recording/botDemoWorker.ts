@@ -2,6 +2,7 @@
 // the chosen scene, unless one is given, then plays it on the engine and writes the demo
 // (botDemo.ts). Posts progress, then the demo; stopping ends the worker (botDemoClient.ts).
 import { GameFiles } from '../../../project/files';
+import { fromCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import type { Walkthrough } from '../../../walkthrough/format';
 import { autoWalk } from '../../check/walk/autoWalk';
@@ -41,7 +42,7 @@ self.onmessage = async (e: MessageEvent<BotDemoRequest>) => {
           else if (reached) return true;
           if (performance.now() - last < 250) return;
           last = performance.now();
-          post({ kind: 'progress', what: `${game.scenes[scene]?.desc.trim() || `Scene ${scene}`}: ${style}, ${places} places tried` });
+          post({ kind: 'progress', what: `${fromCp437(game.scenes[scene]?.desc ?? '').trim() || `Scene ${scene}`}: ${style}, ${places} places tried` });
         },
       });
       if (!r.walk) {

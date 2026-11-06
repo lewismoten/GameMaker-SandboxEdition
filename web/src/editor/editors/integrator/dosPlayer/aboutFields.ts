@@ -2,6 +2,7 @@
 // (RSD's attribution, or the original author's from the player the game was imported with), with
 // a switch between the page as the DOS player shows it and as Play on the web does, and which page.
 import { h } from '../../../core/ui';
+import { fromCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import type { PlayerAbout } from '@lewismoten/gamemaker-sandbox-engine/engine/playerLook';
 import type { PlayerOrigin } from '@lewismoten/gamemaker-sandbox-archives/project/importPlayer';
 import { originText, playerAbout } from '../../../../dosPlayer/playerOrigin';
@@ -70,12 +71,12 @@ export function aboutFields(o: AboutOpts): HTMLElement {
   const look = aboutLookOf(o.view, o.origin);
   const own = !!o.origin?.about?.length;
   const pages = look?.pages ?? [];
-  const lines = o.view === 'web' && !own ? ['(this edition’s words, with RSD’s notice)'] : pages.flat().map(([, t]) => t);
+  const lines = o.view === 'web' && !own ? ['(this edition’s words, with RSD’s notice)'] : pages.flat().map(([, t]) => fromCp437(t));
   const why =
     o.view === 'web'
       ? 'Play on the web shows this page; it isn’t a setting, so it can’t be edited.'
       : own
-        ? `Read-only: this is the original author’s attribution${o.origin?.aboutAuthor ? ` (${o.origin.aboutAuthor})` : ''}, kept from the player this game was imported with.`
+        ? `Read-only: this is the original author’s attribution${o.origin?.aboutAuthor ? ` (${fromCp437(o.origin.aboutAuthor)})` : ''}, kept from the player this game was imported with.`
         : 'Read-only: this is Recreational Software Designs’ attribution, which the DOS player keeps.';
   return h(
     'section',

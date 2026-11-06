@@ -3,6 +3,7 @@
 // true of it (no claiming digitized sound for a PC speaker game), its rating seal, and
 // how the back cover's copy, reviews, features and screenshots fit the space they have.
 import type { CatalogEntry } from '../../project/files';
+import { fromCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import { gameDisks } from '../../project/diskFacts';
 import { ADVTYPE, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { fnv1a, mulberry32 } from '../../seededRandom';
@@ -150,7 +151,7 @@ export function planBack(available: number, featureCount: number, reviewCount: n
 
 /** A screenshot's caption: the name of the level its map belongs to ("1a The Data Bus" -> "Stage 1: The Data Bus"). */
 export function shotCaption(game: Game | undefined, map: string): string {
-  const desc = game?.scenes.find((s) => s.files.some((f) => f.toLowerCase() === map.toLowerCase()))?.desc.trim() ?? '';
+  const desc = fromCp437(game?.scenes.find((s) => s.files.some((f) => f.toLowerCase() === map.toLowerCase()))?.desc ?? '').trim();
   return desc.replace(/^(\d+)[a-z]\s+/i, 'Stage $1: ');
 }
 

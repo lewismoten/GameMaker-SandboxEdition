@@ -1,5 +1,6 @@
 // Map editor (MAPMAKER.EXE): paint background blocks onto the 100x100 map and place monsters.
 import { lastZoom, recallView, rememberView, type MapView } from './mapViews';
+import { fromCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import { MAX_ZOOM, MIN_ZOOM, clampZoom, pictureScale, wheelZoom, zoomFromUrl, zoomToUrl } from './mapZoom';
 import { drawTile } from './mapTile';
 import { mapViewport } from './mapViewport';
@@ -294,8 +295,9 @@ registerEditor(['map'], (host, project, file) => {
     game.scenes.forEach((s, i) =>
       s.links.forEach((l) => {
         if (l.toScene === 0xffff) return;
-        if (sceneIdx.has(i)) marks.push({ ...l.from, kind: 'from', label: `to ${game.scenes[l.toScene]?.desc ?? l.toScene}` });
-        if (sceneIdx.has(l.toScene)) marks.push({ ...l.to, kind: 'to', label: `start from ${s.desc}` });
+        if (sceneIdx.has(i))
+          marks.push({ ...l.from, kind: 'from', label: `to ${game.scenes[l.toScene] ? fromCp437(game.scenes[l.toScene].desc) : l.toScene}` });
+        if (sceneIdx.has(l.toScene)) marks.push({ ...l.to, kind: 'to', label: `start from ${fromCp437(s.desc)}` });
       }),
     );
     return marks;

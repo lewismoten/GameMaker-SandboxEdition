@@ -2,6 +2,7 @@
 // the file. At most 10 lines of 45 characters, plain ASCII, CRLF line ends. `fileIdDiz` writes one
 // from the About fields (aboutGame.ts); `readFileIdDiz` reads one back from an imported ZIP.
 import type { AboutGame } from './aboutGame';
+import { cp437Text } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 
 export const DIZ_LINES = 10;
 export const DIZ_WIDTH = 45;
@@ -75,10 +76,10 @@ export function fileIdDiz(about: AboutGame, fallbackTitle: string, version?: str
 
 /** What a FILE_ID.DIZ says, as About fields: the first line is the title (a trailing "v1.2" is the version), "by X / Y, 1994" the credit. */
 export function readFileIdDiz(bytes: Uint8Array): { about: AboutGame; version?: string } {
-  const text = new TextDecoder('latin1').decode(bytes).replace(/\x1a/g, '');
+  const text = cp437Text(bytes).replace(/\x1a[\s\S]*$/, '');
   const lines = text
     .split(/\r?\n/)
-    .map((l) => l.replace(/[^\x20-\x7e]/g, '').trim())
+    .map((l) => l.replace(/[\x00-\x1f\x7f]/g, '').trim())
     .filter(Boolean);
   const about: AboutGame = {};
   let version: string | undefined;

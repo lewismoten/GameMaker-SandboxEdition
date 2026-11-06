@@ -3,6 +3,7 @@
 // behind all it can, and each scene again with steady hands when asked), all gathered into one
 // report the worker can post back (plain data: heat maps as typed arrays, no engine objects).
 import type { GameFiles } from '../../project/files';
+import { fromCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import { blockChecks, counterSources, counters } from './checks/blockChecks';
 import { counterLedger } from './checks/counterLedger';
 import { characterChecks, controls, endingChecks, jumps, mechanics, soundChecks, speedCap, variety } from './checks/gameChecks';
@@ -194,10 +195,10 @@ export async function runChecks(files: GameFiles, opt: CheckOptions = {}): Promi
         const p = feed.update({ scene, index: done, total, nodes: places, queued, budgetMs }, live);
         if (p) opt.live(p);
       }
-      return opt.progress?.(`${game.scenes[scene]?.desc.trim() || `Scene ${scene}`}: ${places} places tried`, done, total);
+      return opt.progress?.(`${fromCp437(game.scenes[scene]?.desc ?? '').trim() || `Scene ${scene}`}: ${places} places tried`, done, total);
     };
     const runs: SceneRun[] = [];
-    const name = (n: number) => game.scenes[n]?.desc.trim() || `scene ${n}`;
+    const name = (n: number) => fromCp437(game.scenes[n]?.desc ?? '').trim() || `scene ${n}`;
     if (opt.scene !== undefined) {
       let r: SceneRun | undefined;
       try {

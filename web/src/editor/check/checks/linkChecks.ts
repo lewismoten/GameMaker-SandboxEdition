@@ -5,6 +5,7 @@
 // blocks solid on every side, links off the 100 × 100 map, and whether any chain of links leads
 // from the title's first link (where play starts) to the game won scene (scene 1).
 import { CHARBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { fromCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import { IDLESEQ } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { NOSCENE, type Game, type Link } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
@@ -21,7 +22,7 @@ function sceneName(game: Game, n: number): string {
   if (n === 1) return 'the game won scene';
   if (n === 0) return 'the title';
   if (n >= game.scenes.length) return `scene ${n}, which isn’t in the game`;
-  return game.scenes[n].desc.trim() || `scene ${n}`;
+  return fromCp437(game.scenes[n].desc).trim() || `scene ${n}`;
 }
 
 /** Each link's earlier link on the same cell, if one is there (it fires instead). */

@@ -14,6 +14,7 @@
 // quickly on to where it stopped. A walkthrough that stops partway keeps the scenes it got
 // through and says on its closing card where it stopped (`ending`).
 import { encodeKeys, keysAt, WALKTHROUGH_FPS, type Walkthrough } from '../../../walkthrough/format';
+import { fromCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import type { Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { bestAttempt } from './bestAttempt';
 import { MLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
@@ -170,7 +171,7 @@ export async function autoWalk(game: Game, files: FileSource, gameId: string, op
   });
   for (let guard = 0; guard < 200 && scene !== 1; guard++) {
     const s = game.scenes[scene];
-    const name = s.desc.trim() || `Scene ${scene}`;
+    const name = fromCp437(s.desc).trim() || `Scene ${scene}`;
     const level = (l: { toScene: number }) => l.toScene === 1 || (l.toScene > 1 && l.toScene < game.scenes.length);
     // a scene not played yet (or the won scene); else back the way a hub game goes (a side room
     // returns to the hub), each way taken at most twice so the bot can't go round for ever
@@ -372,7 +373,7 @@ export async function autoWalk(game: Game, files: FileSource, gameId: string, op
     scene = link.toScene;
     // what is kept if it is stopped in the next scene
     if (opt.onScene) {
-      const nextName = game.scenes[scene]?.desc.trim() || `Scene ${scene}`;
+      const nextName = fromCp437(game.scenes[scene]?.desc ?? '').trim() || `Scene ${scene}`;
       opt.onScene({
         scenes: [...out.scenes.map(({ heat: _h, ...o }) => ({ ...o, tried: o.tried.slice() })), { scene, name: nextName, tried: [] }],
         won: false,

@@ -8,6 +8,7 @@
 // menu, where the walkthrough reads the storyline and then picks Play, every level through
 // play() as a demo plays them, the ending and score table, and back on the menu the credits.
 import { mulberry32 } from '../seededRandom';
+import { fromCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import { Machine } from '@lewismoten/gamemaker-sandbox-engine/engine/machine';
 import { Recorder } from '@lewismoten/gamemaker-sandbox-engine/engine/recorder';
 import { gameNameOf, loadGameFile, play } from '@lewismoten/gamemaker-sandbox-engine/engine/game';
@@ -285,12 +286,12 @@ async function runWalkthrough(m: WalkMachine, gamFile: string, walk: Walkthrough
       if (scene > 1 && scene !== levelAt) {
         levelAt = scene;
         if (!levelNo.has(scene)) levelNo.set(scene, levelNo.size + 1);
-        hooks.onItem?.('level', marks.get(scene) || game.scenes[scene]?.desc || '', levelNo.get(scene));
+        hooks.onItem?.('level', marks.get(scene) || fromCp437(game.scenes[scene]?.desc ?? ''), levelNo.get(scene));
       }
       const title = marks.get(scene);
       if (title !== undefined) {
         marks.delete(scene);
-        chapter(title || game.scenes[scene]?.desc || `Scene ${scene}`);
+        chapter(title || fromCp437(game.scenes[scene]?.desc ?? '') || `Scene ${scene}`);
       }
     },
   };
