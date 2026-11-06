@@ -5,7 +5,7 @@
 // frame read this. Earned = the ceremony's game id is in the achievements finished set (homeDone.ts
 // loadFinished). Design: .for-lewis/research/ceremonies/2026-11-05-design.md.
 import { gpa, isB, withFinished, type Grade, type Grades } from './grades';
-import { STARTER_GROUPS } from './starter';
+import { ADDED_LATER, STARTER_GROUPS } from './starter';
 
 export interface Ceremony {
   /** The game id (games/<id>). */
@@ -66,8 +66,11 @@ export const ceremonyTitle = (c: Ceremony): string => (c === DIPLOMA ? DIPLOMA.s
 /** What the award is called: "Honors in First Steps"; the diploma is "The Sandbox Diploma". */
 export const certificateTitle = (c: Ceremony): string => (c === DIPLOMA ? DIPLOMA.stage : `Honors in ${c.stage}`);
 
-/** The Starters (courses) a stage covers, in group order. */
-export const stageGames = (c: Ceremony): string[] => c.groups.flatMap((g) => STARTER_GROUPS.find((x) => x.name === g)?.games ?? []);
+/** The Starters (courses) a stage covers, in group order, then the stage's ADDED_LATER games in the order they came (so their course numbers follow the others'). */
+export const stageGames = (c: Ceremony): string[] => {
+  const all = c.groups.flatMap((g) => STARTER_GROUPS.find((x) => x.name === g)?.games ?? []);
+  return [...all.filter((id) => !ADDED_LATER.includes(id)), ...ADDED_LATER.filter((id) => all.includes(id))];
+};
 
 /**
  * A course number: the stage's number (1 to 6) and the Starter's place in the stage, 101 for the first Starter of
