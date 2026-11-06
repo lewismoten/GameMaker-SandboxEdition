@@ -136,6 +136,8 @@ SDK implementation lives in the packages below; the app imports their declared e
   - [`editor/editors/map/check/`](editor/editors/map/check/README.md): level-check UI, heat maps and author play sessions.
   - [`editor/editors/map/generate/`](editor/editors/map/generate/README.md): seeded map-generation dialog and placement.
   - [`editor/editors/map/links/`](editor/editors/map/links/README.md): integrator link markers and detail popover on maps.
+  - [`editor/editors/map/tools/`](editor/editors/map/tools/README.md): map selection, terrain, stamps and building tools.
+  - [`editor/editors/music/arrange/`](editor/editors/music/arrange/README.md): seeded accompaniment and melody-copy transforms.
 - [`editor/disk/`](editor/disk/README.md): the disk-space tool: merges of monster files, block sets and palettes, and the floppy disks a game needs.
 - [`editor/editors/palette/`](editor/editors/palette/README.md): VGA palette editing, role reservations and contrast checks.
 - [`saves/`](saves/README.md): the home page's Saves & scores panel: saved games, high scores and
