@@ -2,6 +2,7 @@
 #pragma once
 #include <stdint.h>
 #include "screen.h"
+#include "gmcards.h"
 
 namespace carddraw {
 // Palette words are byte-swapped for pushImage; shape calls take native RGB565.
@@ -20,5 +21,27 @@ template <class G> void pushPicture(G& g, const uint8_t* px, const uint16_t* pal
     }
     g.pushImage(0, y, scr::W, rows, band);
   }
+}
+// Map source bounds with ceiling edges: at 1.5x an odd source pixel spans two panel pixels.
+template <class G> void pushTextRect(G& g, const uint8_t* px, const uint16_t* pal, uint16_t* band, int bandRows, const gm::TextRect& rect) {
+  if (rect.x1 <= rect.x0 || rect.y1 <= rect.y0) return;
+  auto edge = [](int v) { return (v * scr::GN + scr::GD - 1) / scr::GD; };
+  int x0 = edge(rect.x0), x1 = edge(rect.x1), y1 = edge(rect.y1), w = x1 - x0;
+  for (int y = edge(rect.y0); y < y1; y += bandRows) {
+    int rows = y1 - y < bandRows ? y1 - y : bandRows;
+    for (int r = 0; r < rows; r++) for (int x = x0; x < x1; x++)
+      band[r * w + x - x0] = pal[px[scr::down(y + r) * 320 + scr::down(x)]];
+    g.pushImage(x0, y, w, rows, band);
+  }
+}
+// px is the clean, reloaded scene picture. Reuse is allowed only for the same picture and palette.
+template <class G> void textPage(G& g, uint8_t* px, const uint16_t* pal, uint16_t* band, int bandRows,
+    const uint8_t* font, const uint8_t* text, size_t n, int page, int color, int more, bool reuse, gm::TextRect& previous) {
+  if (reuse) pushTextRect(g, px, pal, band, bandRows, previous);
+  gm::TextRect next;
+  gm::drawTextPage(px, font, text, n, page, color, more, &next);
+  if (reuse) pushTextRect(g, px, pal, band, bandRows, next);
+  else { clear(g, pal[0]); pushPicture(g, px, pal, band, bandRows); }
+  previous = next;
 }
 }  // namespace carddraw

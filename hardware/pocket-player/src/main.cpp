@@ -1250,6 +1250,7 @@ static void showCards(const char* where) {
   uint8_t* pic = nullptr;
   char picFile[20] = "";
   bool dirty = false;  // text is on the picture
+  gm::TextRect previousText;
   uint8_t black[768];
   memset(black, 0, sizeof black);
   for (int i = 0; i < n; i++) {
@@ -1259,6 +1260,7 @@ static void showCards(const char* where) {
       free(pic);
       pic = gm::loadPicture(assets, readPak, c.file);
       dirty = false;
+      previousText = gm::TextRect();
       if (!pic) { picFile[0] = 0; cardsFailed++; continue; }
       strcpy(picFile, c.file);
       cardsShown++;
@@ -1276,11 +1278,9 @@ static void showCards(const char* where) {
           pic = gm::loadPicture(assets, readPak, picFile);
           if (!pic) break;
         }
-        dirty = true;
-        gm::drawTextPage(pic + 768, fontData, t, tn, pg, c.color, c.more);
         setPalette6(pic);
-        carddraw::clear(tft, pal[0]);
-        pushPicture(pic + 768);
+        carddraw::textPage(tft, pic + 768, pal, band, BAND, fontData, t, tn, pg, c.color, c.more, true, previousText);
+        dirty = true;
         cardsShown++;
         waitTap(c.pause);
       }

@@ -287,7 +287,7 @@ class Controls {
 
  private:
   enum Role { NONE, PAD, SPACE, ENTER, MENU, KEYS, TILE, IGNORED };
-  struct Slot { int id = -1, role = NONE, tile = 0, oldLatch = 0, x0 = 0, y0 = 0, x = 0, y = 0; uint32_t t0 = 0, lostAt = 0; bool moved = false, ghost = false; };
+  struct Slot { int id = -1, role = NONE, tile = 0, oldLatch = 0, x0 = 0, y0 = 0, x = 0, y = 0; uint32_t t0 = 0, lostAt = 0; bool moved = false, ghost = false; uint8_t slideDirs = 0; int slideDiag = 0; bool slideSpace = false; };
   Slot slot[MAXCONTACT];
   bool want[128], sent[128];
   uint32_t holdUntil[128];
@@ -372,8 +372,28 @@ class Controls {
       Slot& s = slot[k];
       if (s.id < 0) continue;
       switch (s.role) {
-        case PAD: havePad = true; padDirs = padSector(s.x, s.y); break;
-        case SPACE: btnDown |= 1; if (!s.ghost) press(S_SPACE, now); break;
+        case PAD:
+          havePad = true;
+#ifdef POCKET_CYD28
+          // Single-contact steering can cross onto Space. Widen the exit by 6 px to reject edge noise.
+          if (need.space && inDisc(L.space, s.x, s.y, s.slideSpace ? 14 : 8)) {
+            s.slideSpace = true; padDirs = s.slideDirs; padDiag = s.slideDiag;
+            btnDown |= 1;
+            if (!s.ghost) press(S_SPACE, now);
+            break;
+          }
+          s.slideSpace = false;
+#endif
+          padDirs = padSector(s.x, s.y);
+          s.slideDirs = padDirs; s.slideDiag = padDiag;
+          break;
+        case SPACE:
+#ifdef POCKET_CYD28
+          if (inDisc(L.pad, s.x, s.y, 14)) {
+            s.role = PAD; havePad = true; padDirs = padSector(s.x, s.y); s.slideDirs = padDirs; s.slideDiag = padDiag; break;
+          }
+#endif
+          btnDown |= 1; if (!s.ghost) press(S_SPACE, now); break;
         case ENTER: btnDown |= 2; if (!s.ghost) press(S_ENTER, now); break;
         case MENU: btnDown |= 4; break;
         case KEYS: btnDown |= 8; break;

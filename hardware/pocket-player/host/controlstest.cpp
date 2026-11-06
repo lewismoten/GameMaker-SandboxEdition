@@ -112,6 +112,38 @@ int main() {
 #else
     check("capacitive diagonal retains Up + Right", r.held[S_RIGHT] && r.held[S_UP] && !r.held[S_SPACE], r.log);
 #endif
+#ifdef POCKET_CYD28
+    for (int direction : {-1, 1}) {
+      Run slide(s, n);
+      int arrowX = p.cx + direction * p.r / 2;
+      slide.touch(1, arrowX, p.cy); slide.wait(200);
+      slide.touch(1, slide.c.L.space.cx, slide.c.L.space.cy); slide.wait(200);
+      int scan = direction < 0 ? S_LEFT : S_RIGHT;
+      check("same resistive contact slides arrow to Space and keeps direction", slide.held[scan] && slide.held[S_SPACE] && !slide.held[direction < 0 ? S_RIGHT : S_LEFT], slide.log);
+      auto space = slide.c.L.space;
+      slide.touch(1, space.cx + space.r + 11, space.cy); slide.wait(200);
+      check("Space exit hysteresis keeps Jump near its edge", slide.held[scan] && slide.held[S_SPACE], slide.log);
+      slide.touch(1, arrowX, p.cy); slide.wait(200);
+      check("same contact slides Space back to arrow and releases Jump", slide.held[scan] && !slide.held[S_SPACE], slide.log);
+      slide.touch(1, arrowX, p.cy - p.r / 2); slide.wait(200);
+      check("same contact slides arrow to jump wedge", slide.held[scan] && slide.held[S_SPACE], slide.log);
+      slide.touch(1, arrowX, p.cy - p.r * 3 / 10); slide.wait(200);
+      check("jump wedge hysteresis resists sector-edge noise", slide.held[scan] && slide.held[S_SPACE], slide.log);
+      slide.touch(1, p.cx - direction * p.r / 2, p.cy); slide.wait(8);
+      check("held resistive contact changes arrow sector every poll", slide.held[direction < 0 ? S_RIGHT : S_LEFT] && !slide.held[scan], slide.log);
+      slide.up(1); slide.wait(300);
+      check("lifting after slide releases direction and Jump", !slide.held[scan] && !slide.held[S_SPACE], slide.log);
+      Run button(s, n);
+      button.touch(1, space.cx, space.cy); button.wait(200);
+      button.touch(1, arrowX, p.cy); button.wait(200);
+      check("contact beginning on Space can slide onto pad", button.held[scan] && !button.held[S_SPACE], button.log);
+    }
+#else
+    Run slide(s, n);
+    slide.touch(1, x, p.cy); slide.wait(200);
+    slide.touch(1, slide.c.L.space.cx, slide.c.L.space.cy); slide.wait(200);
+    check("GT911 pad contact retains pad ownership over Space", !slide.held[S_SPACE], slide.log);
+#endif
     r.c.reset(); r.n = 0; memset(r.held, 0, sizeof r.held);
     r.touch(1, x, p.cy); r.wait(200);
     r.touch(2, r.c.L.space.cx, r.c.L.space.cy); r.wait(200);
@@ -133,6 +165,10 @@ int main() {
     Run diagonal(s, native);
     diagonal.touch(1, x, y); diagonal.wait(200);
     check("native diagonal binding takes priority over Jump wedge", diagonal.held[73] && !diagonal.held[S_SPACE], diagonal.log);
+#ifdef POCKET_CYD28
+    diagonal.touch(1, diagonal.c.L.space.cx, diagonal.c.L.space.cy); diagonal.wait(200);
+    check("sliding a native diagonal onto Space preserves its binding", diagonal.held[73] && diagonal.held[S_SPACE] && !diagonal.held[S_UP], diagonal.log);
+#endif
     Need horizontal = needs(true, true, false, false, false, false); needAdd(horizontal, S_SPACE, "Hop");
     Run hop(s, horizontal); hop.touch(1, x, y); hop.wait(200);
 #ifdef POCKET_CYD28

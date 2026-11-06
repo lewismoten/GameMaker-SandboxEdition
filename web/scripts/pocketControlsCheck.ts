@@ -8,7 +8,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
 const here = new URL('../../hardware/pocket-player/', import.meta.url).pathname;
-// Card drawing uses the same bounded bands and palette-0 clearing as the firmware.
+// Compare full and same-picture text redraw framebuffers, bounded bands and palette-0 clearing.
 for (const flags of [[], ['-DPOCKET_CYD28']]) {
   const cardExe = join(mkdtempSync(join(tmpdir(), 'pocket-carddraw-')), 'carddrawtest');
   execFileSync('c++', ['-std=c++17', '-O1', '-Wall', ...flags, '-I', here + 'src', here + 'host/carddrawtest.cpp', '-o', cardExe], { stdio: 'inherit' });
@@ -17,7 +17,8 @@ for (const flags of [[], ['-DPOCKET_CYD28']]) {
 const exe = join(mkdtempSync(join(tmpdir(), 'pocket-controls-')), 'controlstest');
 execFileSync('c++', ['-std=c++17', '-O1', '-Wall', '-I', here + 'src', here + 'host/controlstest.cpp', '-o', exe], { stdio: 'inherit' });
 const r = spawnSync(exe, { stdio: 'inherit' });
-// Run the new one-contact scenarios at the resistive board's actual geometry too.
+// Run held arrow -> Space -> arrow and jump-wedge slides, both hands, with edge hysteresis
+// at the resistive board's actual geometry. The large build also checks GT911 ownership.
 const smallExe = exe + '-small';
 execFileSync('c++', ['-std=c++17', '-O1', '-Wall', '-DPOCKET_CYD28', '-I', here + 'src', here + 'host/controlstest.cpp', '-o', smallExe], { stdio: 'inherit' });
 const small = spawnSync(smallExe, { stdio: 'inherit' });
