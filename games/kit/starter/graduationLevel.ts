@@ -1,7 +1,7 @@
 // A graduation's second level (the first is the arrival, graduationArrive.ts), "The Aisle": a hall with the stage's helpers on the balcony, a red
 // carpet to walk up, and a stage with a lectern, Doc Leo and the certificate. 48 x 13 blocks: the floor is row 10.
 //   x  2        the doorway you start in
-//   x  4..33    the carpet, with signs; the balcony (rail and front) is above, the helpers leaning on it
+//   x  4..33    the carpet, with signs; the compact two-tier balcony sits beside the lectern at x 36..43
 //   x 34..46    the stage; the banner hangs over the lectern (x 40), Doc Leo stands at x 42
 // Touching the certificate (it lies on the lectern) is the door out: the link to the ending.
 import type { GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
@@ -123,11 +123,14 @@ function aisle(
   for (let y = 0; y < H; y++) m.set(0, y, 'curtainEdge').set(W - 1, y, 'curtainEdge');
   // the ceiling's valance and bunting
   for (let x = 1; x < W - 1; x++) m.set(x, 0, 'valance').set(x, 1, x % 2 ? 'bunting0' : 'bunting1');
-  // the balcony: a rail with a front, and the helpers leaning on it
-  for (let x = 2; x < STAGE_FROM - 1; x++) m.set(x, BALCONY_RAIL, 'rail').set(x, BALCONY_RAIL + 1, 'riser');
-  hall.helpers.forEach((name, i) => m.set(4 + i * 4, BALCONY_RAIL - 1, name));
-  // the Cast's guests lean on the rail in every gap between helpers, and the one before the first (a tall one reaches up a row)
-  hall.cameos.slice(0, hall.helpers.length).forEach((parts, i) => parts.forEach((name, k) => m.set(2 + i * 4, BALCONY_RAIL - parts.length + k, name)));
+  // Two compact tiers at the lectern: the recorded final camera is world x=878..901.
+  // Local columns 36..43 therefore fit together, with head rows 5 and 7 (20/60px below the view top).
+  for (let x = 36; x < 44; x++) {
+    m.set(x, BALCONY_RAIL, 'rail');
+    m.set(x, BALCONY_RAIL + 2, 'rail').set(x, BALCONY_RAIL + 3, 'riser');
+  }
+  hall.helpers.forEach((name, i) => m.set(36 + i, BALCONY_RAIL - 1, name));
+  hall.cameos.slice(0, hall.helpers.length).forEach((parts, i) => parts.forEach((name, k) => m.set(36 + i, BALCONY_RAIL + 2 - parts.length + k, name)));
   // the stage's own wall pieces, hung high between the ceiling and the helpers' heads
   const order = theme.decorOrder ?? [];
   if (order.length) for (let x = 3, i = 0; x < STAGE_FROM - 1; x += theme.decorEvery ?? 5, i++) m.set(x, 2, `decor.${order[i % order.length]}`);
@@ -140,7 +143,7 @@ function aisle(
   stamp(m, signs.start, 5, FLOOR - 1 - 2, true);
   stamp(m, signs.helpers, 13, FLOOR - 1 - 2, true);
   stamp(m, signs.cheer, 24, FLOOR - 1 - 2, true);
-  stamp(m, signs.doc, 36, FLOOR - 1 - 2, true);
+  stamp(m, signs.doc, 29, FLOOR - 1 - 2, true);
   // the certificate is the door
   m.exits.push({ from: [LECTERN + ORIGIN, 9 + ORIGIN] });
   return m;

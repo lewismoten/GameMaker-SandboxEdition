@@ -1,5 +1,7 @@
 // The real hall camera must leave room over the cheering crowd, including tall Cast guests.
 import { describe, expect, it } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { replay } from '../walkthrough';
 import { serializeBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { serializeCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
@@ -44,6 +46,56 @@ const halls = [
 ];
 
 describe('graduation hall framing', () => {
+  it.each(halls)(
+    '$id keeps every guest simultaneously inside the final ceremony camera',
+    async ({ id, build }) => {
+      const hall = build().levels[1];
+      const audience = new Set([...hall.book.index].filter(([n]) => n.startsWith('hall.') || n.startsWith('cameo.')).map(([, n]) => n));
+      const seats = [...hall.map.done().blocks].flatMap((n, i) => (audience.has(n) ? [{ n, x: i % MLEN, y: Math.floor(i / MLEN) }] : []));
+      expect(seats).toHaveLength(id === 'graduation-diploma' ? 22 : 16);
+      expect(new Set(seats.map((s) => s.n)).size).toBe(seats.length);
+      let checkedDisk = false;
+      const frames: { frame: number; bounds: number[][]; heroX: string }[] = [];
+      const walk = JSON.parse(readFileSync(new URL(`../../${id}/walkthrough.json`, import.meta.url), 'utf8'));
+      const result = await replay(id, walk, {
+        onWorld(w, scene, frame) {
+          // The final approach and pause beside the lectern, not a favorable traveling midpoint.
+          const lectern = id === 'graduation-diploma' ? 74 : 40;
+          if (scene !== 3 || w.chr.y[0] !== 19 || w.chr.y[1] !== 0 || w.chr.x[0] < lectern + 8) return;
+          if (!checkedDisk) {
+            // Refuse a stale built disk: these must be the actual replayed audience cells.
+            for (const s of seats) expect(w.map[s.y * MLEN + s.x]).toBe(s.n);
+            checkedDisk = true;
+          }
+          const cameraX = w.mx * 20 + w.scroll.nx + w.scroll.littleShiftx;
+          const cameraY = w.my * 20 + w.scroll.ny + w.scroll.littleShifty;
+          frames.push({ frame, heroX: w.chr.x.join(','), bounds: seats.map((s) => [s.x * 20 - cameraX, s.y * 20 - cameraY]) });
+        },
+      });
+      expect(result.error).toBeUndefined();
+      expect(result.won).toBe(true);
+      expect(result.keysLeft).toBe(0);
+      expect(frames.length).toBeGreaterThanOrEqual(30);
+      let same = 0;
+      let longestPause = 0;
+      for (const [i, f] of frames.entries()) {
+        same = i > 0 && f.frame === frames[i - 1].frame + 1 && f.heroX === frames[i - 1].heroX ? same + 1 : 1;
+        longestPause = Math.max(longestPause, same);
+      }
+      // Four seconds at the walkthrough's 60fps, with the hero actually motionless.
+      expect(longestPause).toBeGreaterThanOrEqual(240);
+      for (const f of frames)
+        for (const [i, [x, y]] of f.bounds.entries()) {
+          const label = `${id} frame ${f.frame}, guest ${seats[i].n}`;
+          expect(x, label).toBeGreaterThanOrEqual(0);
+          expect(x + 20, label).toBeLessThanOrEqual(312);
+          expect(y, label).toBeGreaterThanOrEqual(20);
+          expect(y + 20, label).toBeLessThanOrEqual(196);
+        }
+    },
+    120000,
+  );
+
   it('places falling confetti along the diploma balcony', async () => {
     const built = diploma();
     const falling = built.levels[1].map.done().monsters.filter((m) => m.monnum === 3 || m.monnum === 4);
