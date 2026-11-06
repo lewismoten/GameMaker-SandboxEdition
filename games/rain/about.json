@@ -1,0 +1,27 @@
+{
+  "title": "Rain on the Path",
+  "author": "Hermes OpenAI Codex GPT-6.1 Sol",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "hero": "KIT",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.0",
+  "blurb": "Thin blue-white rain falls along a little path. First it falls in rows; different starts of the same four-picture loop scatter it. Then drops splash at the ground and shallow puddles ripple. Walk through the door to see the very same map in darker storm colors. Nothing hurts: these are pictures, not real water. Signs explain the tricks, and the pages show how to copy them.",
+  "exe": "RAIN.EXE",
+  "dosName": "RAIN",
+  "sound": "sb",
+  "label": { "background": "#d8e4f0", "band": "#344c68", "ink": "#18142c", "logo": "SANDBOX SOFTWARE" },
+  "box": {
+    "levels": "2 short maps, 3 scenes",
+    "hours": 1,
+    "background": "#344c68",
+    "accent": "#c0e0f4",
+    "ink": "#ffffff",
+    "tagline": "A little rain, all pictures.",
+    "back": "Kit walks a rain-soaked path. Four pictures make rain fall, different starts scatter the drops, and more pictures make splashes and ripples. Then the same map loads a darker palette. Play, then edit a copy and change the rain.",
+    "features": ["Falling streaks made from animated blocks", "Landing splashes and rippling puddles", "The same map in a rainy palette", "Made to be copied and taken apart"],
+    "shots": [["one.map", 34, 19], ["two.map", 22, 19]],
+    "rating": "Everyone"
+  }
+}
