@@ -239,7 +239,7 @@ export const FORMAT_DIAGRAMS: Diagrams = {
         ['Type 1 +1', '1', 'u8', 'Codec; 0 = unsigned PCM'],
         ['Type 1 +2', 'rest', 'u8[]', 'Samples; 128 near center'],
       ],
-      'Type 1 offsets are relative to its payload. The next block follows the payload. DOS hands blocks to the voice driver; the web reader decodes them.',
+      'Type 1 offsets are relative to its payload. The next block follows the payload. DOS hands blocks to the voice driver.',
     ),
   cmf: () =>
     layout(
@@ -307,19 +307,19 @@ export const FORMAT_DIAGRAMS: Diagrams = {
         ['28', '41', 'chars', 'Driver path + NUL'],
         ['69', '431', 'bytes', 'Reserved; total 500'],
       ],
-      'DAT means CONFIG.DAT here. Enum sizes follow the shipped 500-byte file and the 16-bit build; there is no web format codec for either configuration file.',
+      'DAT means CONFIG.DAT here. Enum sizes follow the shipped 500-byte file and the 16-bit build.',
     ),
   saves: () =>
     layout(
-      'DOS saves: fixed prefix, native objects',
+      'DOS saves: fixed prefix, compiler objects',
       [
         ['0', '1', 'u8', 'Active block spawner count'],
         ['1,3,5', '6', '3 × i16', 'Previous scene, scene, link'],
         ['7', '4', 'u32', 'Saved clock'],
         ['11', '600', 'u32[150]', 'Block animation times'],
         ['611', '150', 'u8[150]', 'Block index remapping'],
-        ['761', 'native', 'objects', 'Hero state, CHR, viewport'],
-        ['Then', 'native', 'objects', '200 live + placed monsters'],
+        ['761', 'compiler', 'objects', 'Hero state, CHR, viewport'],
+        ['Then', 'compiler', 'objects', '200 live + placed monsters'],
         ['Then', '20,000', 'cells', 'Live MAP grid'],
         ['Then', 'variable', 'objects', 'Flag, spawners, recorder'],
         ['Names 21s', '21', 'chars', 'SAVNAMES.DAT slot label'],

@@ -368,7 +368,7 @@ A music program creates the original CMF. SNDEDIT's converter writes a new CMF t
 
 Each instrument occupies sixteen bytes: eleven FM register values and five reserved bytes. The header points to the instrument and event blocks independently, allowing descriptive strings between them. A MIDI program change selects an instrument index; note events select pitch and velocity on a channel. Each event begins with a variable-length delay in seven-bit groups, high bit meaning another byte follows. Running status can reuse the previous channel command. End-of-track is FFh 2Fh 00h after its delay.
 
-The DOS player requires the clock field to be 146 and uses the FM chip's nine voices. Keep the event block under 65,536 bytes and its file offsets representable by the header's sixteen-bit fields. The web writer caps its instrument table at 128; the DOS loader does not validate that same ceiling.
+The DOS player requires the clock field to be 146 and uses the FM chip's nine voices. Keep the event block under 65,536 bytes and its file offsets representable by the header's sixteen-bit fields. Keep the instrument table at 128 entries or fewer; the DOS loader does not check that ceiling for you.
 
 **Worked example.** GMSONG1.CMF is 5,952 bytes. The header gives instrument offset 40, music offset 216, eleven instruments, 73 ticks per beat and 146 ticks per second. Eleven × 16 = 176, exactly the distance from 40 to 216. Instrument 3 starts at 88. The event stream occupies 5,736 bytes, from 216 to the end. The GAM slot names the whole song; its program changes index the embedded instruments.
 
@@ -382,7 +382,7 @@ IMAGE writes a BKD to select a 320 × 200 window of a GIF. Its normal output is 
 
 **Worked example.** The supplied PEACH.BKD is thirteen bytes: four zeros, then `peach.gif`. Its words choose window (0,0), and its remaining nine bytes name the external picture. This is a real short file, rather than IMAGE's full 44-byte output. Use a normal terminated name when writing a new file.
 
-An LST is a text-authored sequence of graphic names with optional pause seconds. A TXT is text-authored page content. The original IMAGE and GRATOR do not write these text formats; the web editor can write slide lists. PLAYGAME reads both from graphic slots, including entrance, exit, title, story and credits. Do not serialize the in-memory FileEntry structure into an LST.
+An LST is a text-authored sequence of graphic names with optional pause seconds. A TXT is text-authored page content. IMAGE and GRATOR do not write these text formats; write them with any text editor. PLAYGAME reads both from graphic slots, including entrance, exit, title, story and credits. Do not serialize the in-memory FileEntry structure into an LST.
 
 [diagram: scripts]
 
@@ -418,7 +418,7 @@ PLAYGAME's save menu writes ten 21-byte labels to SAVNAMES.DAT, and live state t
 
 [diagram: saves]
 
-The save's first 761 bytes have explicit scalar and array sizes. What follows includes native compiler objects and far pointers. **Inferred layout:** with byte packing and the expected pointer widths, the fixed state is about 37,685 bytes before spawners and recording data. This is not a guaranteed interchange size. Loading re-reads the scene's assets and restores saved live cells; editing the original MAP does not replace those saved cells. No binary DOS save was available for a worked byte example. Do not mistake a same-named file from a different player for this native layout.
+The save's first 761 bytes have explicit scalar and array sizes. What follows includes the compiler's own objects and far pointers. **Estimated layout:** with byte packing and the expected pointer widths, the fixed state is about 37,685 bytes before spawners and recording data. This is not a guaranteed interchange size. Loading re-reads the scene's assets and restores saved live cells; editing the original MAP does not replace those saved cells. No binary DOS save was available for a worked byte example. A same-named file made by another program is not this layout.
 
 ---
 
