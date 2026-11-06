@@ -107,9 +107,14 @@ const nodes = (kids: Inline[]): Node[] => kids.map((k) => (typeof k === 'string'
 /** Draws a named diagram; a book without one for that name prints the name as a plain note. */
 export type Diagrams = Record<string, () => HTMLElement>;
 
+/** A block builder that draws a book's diagrams by name (`element` alone prints a diagram's name as a plain note). */
+export function elementWith(diagrams: Diagrams): (b: Block) => HTMLElement {
+  return (b) => (b.tag === 'diagram' && diagrams[b.name] ? diagrams[b.name]() : element(b));
+}
+
 /** One block as an element. */
-export function element(b: Block, diagrams: Diagrams = {}): HTMLElement {
-  if (b.tag === 'diagram') return diagrams[b.name]?.() ?? h('p', { class: 'md-diagram-missing' }, `(Diagram: ${b.name})`);
+export function element(b: Block): HTMLElement {
+  if (b.tag === 'diagram') return h('p', { class: 'md-diagram-missing' }, `(Diagram: ${b.name})`);
   if (b.tag === 'p') return h('p', null, ...nodes(b.kids));
   if (b.tag === 'pre') return h('pre', null, h('code', null, b.text));
   if (b.tag === 'table')

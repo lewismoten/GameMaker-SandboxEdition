@@ -6,7 +6,7 @@ import { h } from '../../editor/core/ui';
 import { bookletPageCount } from './imposition';
 import { measurer, type BookPage } from './manualPages';
 import { paginate } from './paginate';
-import { element, readMarkdown, type Block } from './markdownBlocks';
+import { elementWith, readMarkdown, type Block } from './markdownBlocks';
 import type { BoxItem } from './viewer';
 import { sheet } from './kit';
 import { TECHREF_DIAGRAMS } from './techRefDiagrams';
@@ -62,7 +62,7 @@ export async function techRefPages(): Promise<BookPage[]> {
     const next = measurer(host);
     const pages: BookPage[] = [{ kind: 'cover', body: [techRefCover()] }];
     for (const c of techRefChapters(markdown))
-      for (const body of paginate([h('h2', null, c.head), ...c.blocks.map((b) => element(b, TECHREF_DIAGRAMS))], next))
+      for (const body of paginate([h('h2', null, c.head), ...c.blocks.map(elementWith(TECHREF_DIAGRAMS))], next))
         pages.push({ kind: 'text', head: ['GAME-MAKER 3.0', TECHREF_TITLE], body });
     const pads = bookletPageCount(pages.length + 1) - pages.length - 1;
     for (let i = 0; i < pads; i++)
