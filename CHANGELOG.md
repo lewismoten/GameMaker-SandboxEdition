@@ -211,6 +211,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Changed
 
+- The Game-Maker box's Technical Reference and Limits booklet is finished: a memory map with corrected figures (PLAYGAME holds about 420K before a scene), drawings of the screen's blocks, scrolling and the 64K block files, a table of sound sizes and monsters by machine, a glossary to end on and a printed back cover. It says pixels, and its stray closing note is gone. Italic written with underscores now shows as italic in the box's booklets.
 - Sound Board's pads look like real sound pads: a colored cap in a rubber collar with a mark for its sound, and a pressed pad sinks, dims and lights its lamp. The Giant's tunnel has a brick ceiling lit from below, edged with bricks stood on end.
 - The green alien Starter helper is now called Nova, and Jump Boots ends on "SAFE ACROSS".
 - Switching to the desk from a Starter or graduation no longer says only that the disk isn’t in the disk box. It says where the game is: on the Sample Disk, or in the CD’s SAMPLES folder.
