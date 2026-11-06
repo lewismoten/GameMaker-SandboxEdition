@@ -55,9 +55,10 @@ export interface PcCosts {
    */
   vocHeapBytes?: number;
   /**
-   * The timer interrupt waits while the disk is read (the BIOS read keeps interrupts off), so the music,
-   * which PlayIt advances one step per interrupt, stands still for the read: the FM chip holds the notes
-   * it was playing, and the song goes on afterward from where it stopped, later than it would have been.
+   * Optional custom-PC assumption: a disk BIOS masks the timer for the whole read, so PlayIt cannot
+   * advance and the FM chip holds its notes. The built-in presets leave the timer running: Lewis's
+   * PS/1 Model 2011 observation in 86Box (November 6, 2026) found a gameplay pause without a music hold.
+   * That observation does not establish IRQ behavior for every historical BIOS.
    */
   readHoldsMusic?: boolean;
   /** The timer interrupt itself (entry, EOI, PlayIt's bookkeeping; the BIOS clock every 8th), per interrupt. */
@@ -163,12 +164,13 @@ export const SPEED_PRESETS: Record<Exclude<SpeedChoice, 'today'>, PcCosts> = {
 };
 
 /**
- * The music's share of a slow PC (all estimates): the disk read holds the timer, the interrupt's own cost,
- * and the FM driver's per-event cost. A register write costs the same on every machine of the period
- * (the waits are the chip's, timed on the 8 MHz ISA bus).
+ * The music's share of a slow PC (all estimates): the interrupt's own cost and the FM driver's per-event
+ * cost. Disk reads block the game loop, not this timer; do not infer a masked IRQ from a slow disk.
+ * A register write costs the same on every machine of the period (the waits are the chip's, timed on
+ * the 8 MHz ISA bus).
  */
 function music(isrMs: number, fmEventMs: number): Pick<PcCosts, 'readHoldsMusic' | 'isrMs' | 'fmEventMs' | 'fmWriteMs'> {
-  return { readHoldsMusic: true, isrMs, fmEventMs, fmWriteMs: 0.03 };
+  return { readHoldsMusic: false, isrMs, fmEventMs, fmWriteMs: 0.03 };
 }
 
 /** The costs for a choice; undefined for Today (nothing is charged). */

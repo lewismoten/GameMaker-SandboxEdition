@@ -1,8 +1,9 @@
-// The music worklet's hold (a slow PC reading its disk): the song stands still while its notes keep
-// sounding, then goes on from where it was, later than it would have been; without a hold nothing changes.
+// An explicit timer-masked custom PC can hold the sequencer; the built-in presets must not.
+// The chip keeps sounding during an explicit hold and the song resumes where it was.
 import { readFileSync } from 'node:fs';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { loadSong } from '@lewismoten/gamemaker-sandbox-engine/audio/cmfLoad';
+import { musicHoldMs, SPEED_PRESETS, vocStallMs } from '@lewismoten/gamemaker-sandbox-engine/engine/slowPc';
 
 interface Processor {
   port: { onmessage: (e: { data: unknown }) => void };
@@ -49,6 +50,14 @@ describe('music worklet hold', () => {
   beforeAll(() => {
     plain = render(4);
     held = render(4, { at: 1, ms: 500 });
+  });
+
+  it.each(['ps1', '286', '386', '486'] as const)('%s disk reads leave the sequencer and rendered FM identical to uninterrupted playback', (preset) => {
+    const pc = SPEED_PRESETS[preset];
+    const ms = musicHoldMs(pc, vocStallMs(pc, 60000));
+    const duringRead = render(4, { at: 1, ms });
+    // Compare the actual worklet + CmfPlayer + OPL PCM, not just nonzero sustained notes.
+    expect(duringRead.every((sample, i) => sample === plain[i])).toBe(true);
   });
 
   it('plays the same as before up to the hold', () => {
