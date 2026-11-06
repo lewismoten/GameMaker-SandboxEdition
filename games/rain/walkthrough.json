@@ -1,0 +1,77 @@
+{
+ "version": 1,
+ "game": "rain",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU0ZzUNNVc1DTQ=="
+  },
+  {
+   "scene": 3,
+   "keys": "AU0ZzSNNGc0jTR7NM00="
+  },
+  {
+   "scene": 4,
+   "keys": "AU0yzVNN"
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Falling Rain: rows, then scattered drops"
+  },
+  {
+   "scene": 3,
+   "title": "Splashes and rippling puddles"
+  },
+  {
+   "scene": 4,
+   "title": "The same map in storm colors"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 8748,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 913,
+    "time": 15216.666666666471
+   },
+   {
+    "title": "Falling Rain: rows, then scattered drops",
+    "frame": 2142,
+    "time": 35700.00000000053
+   },
+   {
+    "title": "Splashes and rippling puddles",
+    "frame": 3431,
+    "time": 57183.33333333074
+   },
+   {
+    "title": "The same map in storm colors",
+    "frame": 4512,
+    "time": 75199.999999999
+   },
+   {
+    "title": "Ending",
+    "frame": 5467,
+    "time": 91116.6666666703
+   },
+   {
+    "title": "Credits",
+    "frame": 7674,
+    "time": 127900.00000001433
+   }
+  ]
+ }
+}

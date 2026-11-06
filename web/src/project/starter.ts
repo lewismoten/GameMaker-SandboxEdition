@@ -101,6 +101,11 @@ export const STARTER_GROUPS: { name: string; tag: string; games: string[] }[] = 
     games: ['heat-waves', 'lightning'],
   },
   {
+    name: 'Weather',
+    tag: 'Rain, snow, lightning and heat, drawn and animated.',
+    games: ['rain'],
+  },
+  {
     name: 'Showcase Tricks',
     tag: 'How the big games do their big moments.',
     games: [
