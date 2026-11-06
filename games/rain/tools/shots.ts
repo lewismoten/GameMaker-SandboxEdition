@@ -17,7 +17,7 @@ const r = await replay('rain', walk, {
     frame++;
     const n = (counts.get(scene) ?? 0) + 1;
     counts.set(scene, n);
-    if ((scene === undefined && frame === 160) || ([2, 3, 4].includes(scene) && [180, 184, 330].includes(n))) {
+    if ((scene === undefined && frame === 300) || ([2, 3, 4].includes(scene) && [330, 420, 424, 510].includes(n))) {
       const pic = new Pixels(320, 200);
       pic.px.set(screen.pixels);
       writePng(join(out, scene === undefined ? 'title.png' : `scene-${scene}-frame-${n}.png`), pic, screen.palette, 3);
