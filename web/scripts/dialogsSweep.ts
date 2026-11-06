@@ -36,7 +36,7 @@ const buttons = (page: Page) =>
   );
 
 try {
-  const ctx = await browser.newContext({ viewport: { width, height }, hasTouch: width < 700, isMobile: width < 700, deviceScaleFactor: 1 });
+  const ctx = await browser.newContext({ viewport: { width, height }, hasTouch: width < 700, isMobile: width < 700, deviceScaleFactor: 1, colorScheme: theme });
   await forceTheme(ctx, theme);
   const page = await ctx.newPage();
   await page.addInitScript(() => {
@@ -113,6 +113,7 @@ try {
       if (out) await page.screenshot({ path: `${out}/skip-${loc.replace(/[^a-z0-9]+/gi, '_')}.png` });
       continue;
     }
+    await assertTheme(page, theme);
     const list = await buttons(page);
     const url0 = page.url();
     for (const b of list) {
@@ -132,6 +133,7 @@ try {
         if (!clicked) continue;
         await page.addStyleTag({ content: '.ach-toasts, .toasts { display: none !important; }' });
         await page.waitForTimeout(300);
+        await assertTheme(page, theme);
         const m = await measure(page);
         if (!m.open) {
           if (page.url() !== url0) await go();
@@ -161,12 +163,14 @@ try {
         await page.waitForTimeout(150);
         if ((await page.locator('dialog[open]').count()) || page.url() !== url0) await go();
       } catch (e) {
+        bad++;
         console.log(`[err] ${key}: ${(e as Error).message.split('\n')[0].slice(0, 80)}`);
         await go().catch(() => undefined);
       }
     }
   }
-  console.log(`\n${found} dialog(s) found, ${bad} failing at 375x812 ${theme}.`);
+  console.log(`\n${found} dialog(s) found, ${bad} failing at ${width}x${height} ${theme}.`);
+  if (bad) process.exitCode = 1;
 } finally {
   await browser.close();
   srv.stop();

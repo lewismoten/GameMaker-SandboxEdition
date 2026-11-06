@@ -36,6 +36,7 @@
     "check:leaks": "bash scripts/leakSweep.sh",
     "check:dialogs:sweep": "vite-node scripts/dialogsSweep.ts",
     "theme:recheck": "vite-node scripts/themeRecheck.ts",
+    "theme:check": "vite-node scripts/themeCheck.ts",
     "check:gestures": "vite-node scripts/touchGestures.ts",
     "check:audio-unlock": "vite-node scripts/audioUnlock.ts",
     "desk:drive": "vite-node scripts/deskDrive.ts",

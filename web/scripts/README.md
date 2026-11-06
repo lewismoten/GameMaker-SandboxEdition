@@ -60,10 +60,18 @@ This folder holds the build's Vite plugins and the scripts run by hand (from
 - `deadCode.ts` (`npm run dead:code [-- --only exports|files|css] [--json]`): lists exports no other file imports (marked `~` when the file still uses the name itself, so only `export` is extra), files nothing imports, and CSS classes no TS or HTML names. Static and dynamic imports, `import.meta.glob`, `new URL(..., import.meta.url)`, HTML script tags, package `exports` entries (public API) and tests count as uses. Suggestions only: classes built at run time (`` `ug-b${i}` ``) and files named from build scripts by path show up as false positives.
 - `themeRecheck.ts` (`npm run theme:recheck -- [--url u|--port p] [--out dir] [--only a,b] [--themes light,dark] [--widths 1440,390,375]`): opens a list of screens (Privacy, breadcrumb, recording keys, integrator lists, feelies note, update notice, Settings, Starters, map zoom, compact assets) in the really-forced light and dark themes at each width, runs axe and measures sideways overflow, saves a screenshot each; exits 1 on a finding. Add a screen to its `screens` list.
 - `pagesA11y.ts` (`npx vite-node scripts/pagesA11y.ts --out <private-dir> [--url <own-server>|--port 5316]`): scans the loaded home, desk, explicitly selected Starters tab, Library, Cast and Guide at 1440×900 and 390×844 in both stored themes (24 cases). Requires the built games; Starters blocks if its rendered tile count differs from the nonsecret source catalog. Each case saves a full-page PNG and raw axe results, including incomplete contrast checks, labels, selected state, overflow and target geometry. Inert and disabled controls are excluded. Inline links are recorded separately; existing invisible hardware hit areas count only if a 24px square actually hits the control at nine sampled points. Exits 1 on any failed or blocked case; a clean automated scan is not a manual accessibility certification.
-- `forceTheme.ts`: for headless checks. `forceTheme(ctx, 'light')` before `newPage()` stores the site's
-  own theme (`gm-theme`), because the theme defaults to dark and Playwright's `colorScheme` doesn't
-  change it; `pageTheme(page)` reads `data-theme` back and `assertTheme(page, theme)` throws on a mismatch (`dos.html` and the
-  web player don't set one). Without it a "light" screenshot or axe run is probably dark.
+- `themeCheck.ts` (`npm run theme:check -- [--url u|--port p] [--out report.json]`): browser regressions against the real app. Checks missing, invalid, light, dark and auto storage under both media schemes, parser initialization and reload, plus deliberately wrong rendered colors and missing theme metadata. Needs bundled Chromium; starts its own server unless `--url` is supplied.
+- `forceTheme.ts` and `renderedTheme.ts`: for headless checks. `forceTheme(ctx, 'light')` before navigation
+  stores the site's own theme (`gm-theme`); `colorScheme` alone does not override the dark default.
+  `pageTheme(page)` reads the preference; `assertTheme(page, theme)` resolves `auto` through the media query,
+  rejects missing or wrong metadata, then decodes a real screenshot pixel from uncovered dialog, editor or page
+  padding. That pixel must be within 8/channel of the intended neutral palette in `editor.css`, and at least
+  80/channel (maximum-channel distance) from every opposite-theme neutral. The guard logs coordinates, RGB and both distances;
+  it fails closed if no representative surface exists. It never paints a synthetic swatch or hides content.
+  The retro desk has fixed colors and logs an explicit rendered-coverage skip; `dos.html` and the web player
+  are not modern-theme coverage and must not call this guard. Call after the target UI loads and again after
+  interactions that may change it, before axe or screenshots. Keep palette baselines in step with deliberate theme redesigns.
+  Historical private axe runners that only emulate the media scheme do not qualify as light coverage.
 - `tourCheck.ts` (`npm run tour:check -- <chapter>[,<chapter>]`, or `all`): starts its own vite on a
   free port from 5190 (never 5173) with a scratch cache, plays the tour chapters in headless Chrome
   (playwright-core) at 1440 and 390 wide, light and dark, stepping through paused, and prints a table
