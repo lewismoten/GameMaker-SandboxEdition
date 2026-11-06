@@ -212,3 +212,43 @@ test('import failure has one durable channel and ignores late progress', async (
   assert.match(result.text, /import stopped.*Archive is damaged/);
   assert.equal(result.alerts, 0);
 });
+test('walkthrough progress stays visual but speech is bounded and failures persist', async () => {
+  await reset();
+  await page.evaluate(async () => {
+    const { Project } = await import('/src/editor/core/project.ts');
+    window.project = Project.create('Walk fixture');
+    window.Worker = class {
+      constructor() {
+        window.worker = this;
+      }
+      postMessage() {}
+      terminate() {}
+    };
+    const { walkDialog } = await import('/src/editor/widgets/walkDialog.ts');
+    void walkDialog(project);
+  });
+  await page.getByRole('button', { name: '🤖 Make it', exact: true }).click();
+  const result = await page.evaluate(async () => {
+    const region = [...document.querySelectorAll('.wd [role=status]')].at(-1);
+    const messages = [];
+    const observer = new MutationObserver(() => messages.push(region.textContent));
+    observer.observe(region, { childList: true });
+    for (let i = 0; i < 8; i++) {
+      worker.onmessage({ data: { kind: 'progress', what: `Scene 1: search, ${i} places tried` } });
+      await new Promise((r) => setTimeout(r, 10));
+    }
+    const visual = document.querySelector('.wd-progress')?.textContent;
+    const progress = [...messages];
+    worker.onmessage({ data: { kind: 'error', message: 'Controlled bot failure' } });
+    await new Promise((r) => setTimeout(r, 10));
+    observer.disconnect();
+    return { progress, visual, final: region.textContent, toasts: document.querySelectorAll('.toast').length };
+  });
+  assert.ok(result.progress.length <= 1);
+  assert.match(result.visual, /7 places tried/);
+  assert.match(result.final, /walkthrough bot failed.*Controlled bot failure/);
+  assert.equal(result.toasts, 0);
+  await page.getByRole('button', { name: '🤖 Make it', exact: true }).click();
+  await page.getByRole('button', { name: '■ Stop', exact: true }).click();
+  await page.waitForFunction(() => [...document.querySelectorAll('.wd [role=status]')].at(-1).textContent.startsWith('Stopped'));
+});
