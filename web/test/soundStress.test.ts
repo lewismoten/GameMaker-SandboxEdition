@@ -1,4 +1,5 @@
 // The diagnostic stays a real nine-voice CMF, not sixteen MIDI slots mistaken for OPL2 voices.
+import { parseSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
 import { describe, expect, it } from 'vitest';
 import { parseCmf } from '@lewismoten/gamemaker-sandbox-engine/formats/cmf';
 import { buildSong, bandEvents, LOOP_TICKS } from '../../games/kit/testdisks/sound-stress/audio';
@@ -9,6 +10,15 @@ import { decodeVoc } from '@lewismoten/gamemaker-sandbox-engine/formats/voc';
 import { makeDisk } from '../../games/kit/testdisks/sound-stress/disk';
 import { GameSim } from '@lewismoten/gamemaker-sandbox-tools/kit/gameSim';
 import { StarterBot } from '../../games/kit/starter/bot';
+
+it('initializes each text-list palette with a paper GIF before DOS matches its text ink', () => {
+  const disk = makeDisk('unused');
+  for (const base of ['howto', 'credits']) {
+    const entries = parseSlideList(disk.files.get(`${base}.lst`)!);
+    expect(entries.map((entry) => entry.name)).toEqual(['paper.gif', `${base}.txt`]);
+    expect(disk.files.has(entries[0].name)).toBe(true);
+  }
+});
 
 it('builds the same standalone disk twice and plays both rooms, pads, score and reset doors', async () => {
   const a = makeDisk('unused');

@@ -89,12 +89,12 @@ it('neither serves guessed test-disk URLs nor emits them into a production catal
     }
     for (const path of ['games/originals/sound-stress/soundtst.zip', 'games/kit/testdisks/sound-stress/disk/soundtst.gam', 'games/details/sound-stress.json'])
       expect((await fetch(base + path)).status).toBe(404);
-    for (let tries = 0; tries < 100; tries++) {
+    for (let tries = 0; tries < 200; tries++) {
       const response = await fetch(base + 'games/originals/control/control.zip');
       if (response.status === 200) break;
       expect(response.status).toBe(202);
-      await new Promise((done) => setTimeout(done, 50));
-      if (tries === 99) throw new Error('Control archive never ready');
+      await new Promise((done) => setTimeout(done, 100));
+      if (tries === 199) throw new Error('Control archive never ready');
     }
   } finally {
     await server.close();

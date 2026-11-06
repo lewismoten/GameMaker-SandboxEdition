@@ -85,15 +85,17 @@ export function makeDisk(out: string): Disk {
   disk.put('scores.gif', gif(scoresPicture(pal, book, 'TEST SCORES'), pal));
   disk.put('load.gif', gif(slotsPicture(pal, book, 'LOAD TEST'), pal));
   disk.put('save.gif', gif(slotsPicture(pal, book, 'SAVE TEST'), pal));
+  // ShowGraphic(.lst) allocates an uninitialized DOS palette. A GIF must fill it before text ink matching.
+  disk.put('paper.gif', gif(paper(pal, book, 'TEST NOTES'), pal));
   disk.put('howto.txt', textPages(NOTES));
-  disk.put('howto.lst', serializeSlideList([{ name: 'howto.txt' }]));
+  disk.put('howto.lst', serializeSlideList([{ name: 'paper.gif', pause: 0 }, { name: 'howto.txt' }]));
   disk.put(
     'credits.txt',
     textPages(
       'Diagnostic code, music and text: Hermes OpenAI Codex GPT-6.1 Sol.\nKit artwork and instruments: Game-Maker Sandbox Edition.\nOriginal DOS engine: Recreational Software Designs.\n',
     ),
   );
-  disk.put('credits.lst', serializeSlideList([{ name: 'credits.txt' }]));
+  disk.put('credits.lst', serializeSlideList([{ name: 'paper.gif', pause: 0 }, { name: 'credits.txt' }]));
   disk.put('soundtst.gam', serializeGame(game));
   return disk;
 }
