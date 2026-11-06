@@ -16,10 +16,10 @@ export const STARTER_HEROES: Record<string, string> = (() => {
   let n = 0;
   for (const g of STARTER_GROUPS)
     g.games.forEach((id, at) => {
-      if (ADDED_LATER.includes(id)) return;
+      if (ADDED_LATER.includes(id) && at > 0) return; // the first game of a new group is Kit's even when it came later
       out[id] = at === 0 || KIT_GAMES.has(id) ? 'KIT' : HELPER_NAMES[n++ % HELPER_NAMES.length];
     });
-  for (const id of ADDED_LATER) out[id] = HELPER_NAMES[n++ % HELPER_NAMES.length];
+  for (const id of ADDED_LATER) out[id] ??= HELPER_NAMES[n++ % HELPER_NAMES.length];
   return out;
 })();
 
