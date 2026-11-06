@@ -9,12 +9,12 @@ import { TECHREF_DIAGRAMS } from './techRefDiagrams';
 const text = readFileSync(join(import.meta.dirname, '../../programmersGuide/booklet1994.md'), 'utf8');
 
 describe('Technical Reference and Limits', () => {
-  it('has fourteen numbered chapters after the opening one, none empty, and ends on its glossary', () => {
+  it('has thirty numbered chapters after the opening one, none empty, and ends on its glossary', () => {
     const heads = techRefChapters(text).map((c) => c.head);
     expect(heads[0]).toBe('Before you begin');
     expect(heads).toContain('Limits at a glance');
     expect(heads.at(-1)).toBe('Words used in this booklet');
-    expect(heads).toHaveLength(15);
+    expect(heads).toHaveLength(31);
   });
 
   it('says pixels, not dots, and leaves no stray note or literal underscores', () => {
