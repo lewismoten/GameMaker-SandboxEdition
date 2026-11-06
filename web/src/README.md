@@ -162,6 +162,8 @@ SDK implementation lives in the packages below; the app imports their declared e
   - [`editor/editors/sounds/`](editor/editors/sounds/README.md): sND speaker and Sound Blaster effect editing.
   - [`editor/editors/textScreen/`](editor/editors/textScreen/README.md): tXT page editing and game-accurate preview.
   - [`editor/keymap/`](editor/keymap/README.md): computed game controls and reusable Keys dialog.
+  - [`editor/shell/`](editor/shell/README.md): home, workspace, asset browsing and project actions.
+  - [`editor/tools/`](editor/tools/README.md): file-maker registry, import/conversion and generators.
   - [`editor/tools/cards/`](editor/tools/cards/README.md): instruction and level-card dialogs and generated files.
   - [`editor/tools/opening/`](editor/tools/opening/README.md): opening-sting selection, previews and scene wiring.
 - [`editor/disk/`](editor/disk/README.md): the disk-space tool: merges of monster files, block sets and palettes, and the floppy disks a game needs.
