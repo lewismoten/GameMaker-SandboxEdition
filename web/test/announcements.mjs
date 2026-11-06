@@ -448,3 +448,28 @@ test('MP4 progress keeps visual updates quiet and always announces completion/er
   await page.evaluate(() => encodeResolve({ blob: new Blob(['fixture-not-a-real-video']), frames: 600, audio: 'none' }));
   await page.waitForFunction(() => document.querySelector('.wt-status').textContent.startsWith('Saved '));
 });
+test('archive helper samples file progress and announces one final outcome', async () => {
+  await reset();
+  let release;
+  await page.route('**/archive.json', async (r) => {
+    await new Promise((resolve) => {
+      release = resolve;
+    });
+    await r.fulfill({ json: { shell: [], files: Array.from({ length: 20 }, (_, i) => [`fixture-${i}.bin`, 1, 1]) } });
+  });
+  await page.route('**/games/catalog.json', (r) => r.fulfill({ json: [] }));
+  await page.route('**/games/index.json', (r) => r.fulfill({ json: [] }));
+  await page.route('**/fixture-*.bin', (r) => r.fulfill({ status: r.request().url().includes('fixture-19.') ? 503 : 200, body: 'fixture' }));
+  await page.goto(`${base}/archive.html`);
+  await page.evaluate(() => {
+    window.progressMessages = [];
+    const status = document.querySelector('#status');
+    new MutationObserver(() => progressMessages.push(status.textContent)).observe(status, { childList: true });
+  });
+  release();
+  await page.waitForFunction(() => document.querySelector('#done').hidden === false);
+  assert.equal(await page.locator('[role=status]').count(), 1);
+  const messages = await page.evaluate(() => progressMessages);
+  assert.ok(messages.filter((t) => !t.startsWith('Done')).length <= 1);
+  assert.match(messages.at(-1), /^Done\. 1 of 22 files could not be fetched/);
+});
