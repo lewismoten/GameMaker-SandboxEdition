@@ -136,6 +136,8 @@ SDK implementation lives in the packages below; the app imports their declared e
   - [`editor/editors/animation/`](editor/editors/animation/README.md): fLI frame editing and Scene/Frames workflows.
   - [`editor/editors/animation/scene/`](editor/editors/animation/scene/README.md): companion-backed animation Scene maker and renderer.
   - [`editor/editors/animation/shrink/`](editor/editors/animation/shrink/README.md): worker-backed FLI size reduction and real result preview.
+  - [`editor/editors/backdrop/`](editor/editors/backdrop/README.md): bKD picture-window editing and picture resolution.
+  - [`editor/editors/blocks/`](editor/editors/blocks/README.md): block-set pixel and behavior editor.
   - [`editor/editors/integrator/dosPlayer/`](editor/editors/integrator/dosPlayer/README.md): dOS player customization UI and preview.
   - [`editor/editors/map/check/`](editor/editors/map/check/README.md): level-check UI, heat maps and author play sessions.
   - [`editor/editors/map/generate/`](editor/editors/map/generate/README.md): seeded map-generation dialog and placement.
