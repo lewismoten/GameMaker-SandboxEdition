@@ -117,6 +117,7 @@ export const CAST_GAMES = {
   'slow-computers': ['Slow Computers', 'starter'],
   'under-the-hood': ['Under the Hood', 'starter'],
   'around-the-room': ['Around the Room', 'starter'],
+  'ride-along': ['Ride Along', 'starter'],
   momentum: ['Slide and Drift', 'starter'],
   'jump-boots': ['Boots and Jet Pack', 'starter'],
   'diagonal-wrap': ['Diagonal Wrap', 'starter'],
