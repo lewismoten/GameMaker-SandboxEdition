@@ -79,6 +79,30 @@ for (const s of screens) {
   issues.push(...found);
   if (pngDir && (all || found.length)) rgbPng(join(pngDir, `${s.name.replace(/[^a-z0-9.]+/gi, '_')}.png`), renderRgb(s, marks), W, H);
 }
+// the heading drawn on a plain paper picture (games/kit/starter/screens.ts paper) must stay on the paper:
+// its ink (the commonest color in the band that isn't the paper) may not appear beyond the paper's edges (x 22 to 298)
+for (const s of screens) {
+  const at = (x: number, y: number) => s.pixels[y * W + x];
+  if (at(30, 100) !== at(290, 100) || at(30, 100) === at(5, 100)) continue; // not a paper page
+  const count = new Map<number, number>();
+  for (let y = 4; y < 36; y++) for (let x = 30; x < 290; x++) count.set(at(x, y), (count.get(at(x, y)) ?? 0) + 1);
+  const ink = [...count].filter(([c]) => c !== at(30, 100)).sort((a, b) => b[1] - a[1])[0]?.[0];
+  if (ink === undefined) continue;
+  let out = 0;
+  for (let y = 4; y < 36; y++) for (let x = 0; x < W; x++) if ((x < 22 || x >= 298) && at(x, y) === ink) out++;
+  if (out > 8) {
+    const m: TextFitIssue = {
+      screen: s.name,
+      text: '(heading)',
+      x: 0,
+      y: 4,
+      artPixels: out,
+      contrast: 0,
+      problems: [`the heading is wider than its paper (${out} pixels of its ink beyond the edges)`],
+    };
+    issues.push(m);
+  }
+}
 for (const i of issues) console.log(`${i.screen}: "${i.text}" at (${i.x},${i.y}): ${i.problems.join(', ')}`);
 // the pictures shown between levels have their words baked in: they must sit inside their box
 // (an animation has no words baked in, and its sky or ground can look like a box to the measure)

@@ -86,7 +86,7 @@ const intro = (base: string, head: string, line: string, heading: string, body: 
 };
 intro('one', 'THE SCENE BEGINS', 'A PICTURE, THEN WORDS', 'A SCENE', SCENE_ONE, true);
 intro('tale1', 'TALE ONE', 'THE PAPER BOAT', 'THE PAPER BOAT', TALE_ONE, false);
-intro('tale2', 'TALE TWO', 'THE LONG WAY ROUND', 'THE LONG WAY ROUND', TALE_TWO, false);
+intro('tale2', 'TALE TWO', 'THE LONG WAY AROUND', 'THE LONG WAY AROUND', TALE_TWO, false);
 disk.put('hall.lst', serializeSlideList([{ name: 'hall.gif', pause: 3 }]));
 
 disk.put('title.gif', gif(titlePicture(pal, book, hero, TITLE, 'A STARTER GAME'), pal));

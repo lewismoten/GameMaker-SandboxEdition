@@ -261,6 +261,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Fixed
 
+- A Starter's page heading too long for its paper (Cutscenes' "The Long Way Around") now goes onto two lines instead of running off the paper; the game check measures headings against their paper, and Cutscenes says "around" where it said "round".
 - On the Starters tab, Show: Done also lists the graduations you have earned, after the Starters you have finished, and Show: Not done yet lists the locked ones as well as the ones ready to graduate, so an earned graduation no longer disappears under a filter.
 - Two Starters had art a child could read the wrong way: Ride Along's title stars no longer climb out of the hero like a stream, and Under the Hood's second level no longer has a plus sign made of green panels
 
