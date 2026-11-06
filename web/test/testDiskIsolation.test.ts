@@ -3,7 +3,6 @@ import { afterAll, beforeAll, expect, it, vi } from 'vitest';
 import type { Roots } from '../scripts/mcp/roots';
 import { execFileSync } from 'node:child_process';
 import { mkdtempSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
-import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { cdCatalog, cdSecretCatalog, cdFiles, slimCatalog, pageCatalog, indexCatalog, cdGames } from '../scripts/cdGames';
 import { makeDisk } from '../../games/kit/testdisks/sound-stress/disk';
@@ -16,7 +15,10 @@ const write = (name: string, data: string | Uint8Array) => {
   writeFileSync(join(root, name), data);
 };
 beforeAll(() => {
-  root = mkdtempSync(join(tmpdir(), 'testdisk-isolation-'));
+  // Keep Vite's root and HTML input inside the project, avoiding macOS tmpdir symlink paths.
+  const cache = join(repo, 'web/node_modules/.cache');
+  mkdirSync(cache, { recursive: true });
+  root = mkdtempSync(join(cache, 'testdisk-isolation-'));
   mkdirSync(join(root, 'cd'));
   for (const name of ['xferplay.exe', 'sndblast.drv', 'config.hlp']) write(`cd/gm/${name}`, readFileSync(join(repo, 'cd/gm', name)));
   mkdirSync(join(root, 'web'));
