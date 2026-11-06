@@ -56,6 +56,8 @@ game folder opens in the browser unchanged.
 
 ## Credits
 
+- **Cooperative relay and challenge foundations**: **OpenAI Codex (GPT-6)**, directed by Lewis Moten, wrote the printable activity, descriptor, guest-state seam, design and tests. The relay uses this project’s existing Teddy manual and hint-book route; no new game content or third-party assets were added.
+
 - **RSD Game-Maker 1.0–3.0** (1991–1995): Recreational Software Designs: G. Andrew Stone,
   G. Oliver Stone, Oliver Stone Jr. and Joan Stone. Source released under the MIT License
   by Andy Stone in 2014.

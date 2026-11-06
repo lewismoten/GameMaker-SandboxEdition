@@ -36,6 +36,8 @@ front (the magazine, the desk, the level check's explorer, the engine…), walki
 
 ## Modules at the top
 
+- [`challenges/`](challenges/README.md): reviewed challenge descriptors and the guest-state isolation design and storage seam.
+
 - [`main.ts`](main.ts), [`modernUi.ts`](modernUi.ts): the site's entry and today's web interface
   (see Main flows).
 - `archive.html` → [`archive/archive.ts`](archive/archive.ts) ([README](archive/README.md); nothing links to it): fetches every file in `archive.json` (the build writes it from the whole built site: the offline copy plus link previews, the pocket firmware, crawler files, trinkets and laser kits; never a secret game's or the gate lists), four at a time with a progress bar, so a web archive's "Save page" records them ([`archive/plan.ts`](archive/plan.ts) orders them: shell, home and desk, the rest, then game packs with `?games=1`; `?part=N` slices). [`offline/replay.ts`](offline/replay.ts) spots a Wayback replay (its `__wm` / `_WBWombat` globals or a `/web/<14 digits>/` address); there `offline.ts` registers no service worker and a missing chunk gets a calm note, not the reload notice.

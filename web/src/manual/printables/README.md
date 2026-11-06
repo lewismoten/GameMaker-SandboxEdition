@@ -16,6 +16,17 @@ browser's own Print command prints the manual page by page.
 A game with no manual (the Bard of Bizarre's song-games) gets a 🗺 Maps button instead, which
 opens the same viewer with only the World Map and Level Maps (`openGameMaps`).
 
+## Cooperative relay pilot
+
+`relay.ts` and `relay.css` add one letter-size Navigator/player relay sheet to Teddy’s
+box and therefore its Library shelf (Letters and papers), beside the existing Level Maps
+and Teddy Hint Book. It uses the backyard’s existing hints, swaps roles at the fedora on
+F2’s paused status screen, and ends on reaching Maple Street. No game files change.
+The printed setup asks for a separate browser guest profile: the ordinary player still
+records progress. Challenge data and the future guest-run boundary are documented in
+[`challenges/`](../../challenges/README.md). Try the sheet with a partner before expanding
+this activity; the handover’s enjoyment still needs that manual pilot.
+
 ## Extras every game gets
 
 Made from the catalog entry, the manual and the disk. Turn any off with `"skip"`.

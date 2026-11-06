@@ -6,6 +6,8 @@ changelog: [engine](web/packages/engine/CHANGELOG.md), [archives](web/packages/a
 
 ## [Unreleased]
 
+- A printable navigator/player relay sheet in Teddy’s Library shelf helps two people explore the backyard and swap roles at the fedora.
+
 - Pocket Player keeps shared pictures steady between text pages and lets resistive-board fingers slide between steering and Jump without lifting.
 
 - Beat the Clock, Countdown, Warning First and all seven graduations have distinct, original 32-bar scores in their Starter groups’ bands.
