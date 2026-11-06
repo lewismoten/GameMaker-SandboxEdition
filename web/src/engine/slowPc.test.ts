@@ -1,8 +1,13 @@
 // Turbo off: the slower PC skips only the timer ticks it is still busy for, as PLAYGAME did.
 import { describe, expect, it } from 'vitest';
+import { readdirSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { TICK_RATE } from '@lewismoten/gamemaker-sandbox-engine/audio/cmfPlayer';
+import { LOADGAME_SLOTS, sceneReads } from '@lewismoten/gamemaker-sandbox-engine/engine/scene';
+import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import {
   costsFor,
+  sceneLoadMs,
   scrollCost,
   SlowCpu,
   SPEED_PRESETS,
@@ -11,6 +16,7 @@ import {
   vocStallMs,
   vocWontFit,
   type PcCosts,
+  type SpeedChoice,
 } from '@lewismoten/gamemaker-sandbox-engine/engine/slowPc';
 
 const INT_MS = 1000 / TICK_RATE;
@@ -162,5 +168,48 @@ describe('Run like a… presets', () => {
       expect(run(ps1, 0, false).ticks).toBeCloseTo(TICK_RATE / 8, 0);
       expect(run(ps1, 15, false).ticks).toBeLessThan(TICK_RATE / 8 - 1);
     });
+  });
+});
+
+describe('the pause between scenes on each preset (sceneLoadMs of the files loadscene reads)', () => {
+  // Donut (cd/gameware/donut), scene 2, its first level: palette, map, three block sets, monsters,
+  // character, sound set and song, all named, so loadscene (PLAYGAME.C 4239) opens nine files
+  const dir = join(__dirname, '../../../cd/gameware/donut');
+  const files = new Map(readdirSync(dir).map((n) => [n.toLowerCase(), new Uint8Array(readFileSync(join(dir, n)))]));
+  const s = { game: parseGame(files.get('donut.gam')!), m: { files } };
+  const reads = sceneReads(s, 2, true);
+  const f6 = sceneReads(s, 2, true, LOADGAME_SLOTS);
+  const ms = (choice: SpeedChoice, r: number[]) => Math.round(sceneLoadMs(costsFor(choice), r) * 10) / 10;
+
+  it('reads the files the source loads: nine with a sound card, eight without, seven for F6', () => {
+    expect(reads).toEqual([768, 22000, 63000, 19200, 42000, 7568, 21000, 2430, 19479]);
+    expect(reads.reduce((a, b) => a + b, 0)).toBe(197_445);
+    expect(sceneReads(s, 2, false)).toEqual(reads.slice(0, 8)); // no card: InitMusic is not called
+    expect(f6).toEqual([768, 63000, 19200, 42000, 21000, 2430, 19479]); // LoadGame: the save holds map and character
+    expect(f6.reduce((a, b) => a + b, 0)).toBe(167_877);
+  });
+
+  it('a level change costs each preset its own disk: about 2 s on the PS/1 down to a quarter second on a 486', () => {
+    expect(ms('today', reads)).toBe(0);
+    expect(ms('486', reads)).toBe(239.6); // 9 x 12 ms + 197,445 / 1500
+    expect(ms('386', reads)).toBe(408.8); // 9 x 18 ms + 197,445 / 800
+    expect(ms('286', reads)).toBe(763.6); // 9 x 30 ms + 197,445 / 400
+    expect(ms('ps1', reads)).toBe(2036.3); // 9 x 80 ms + 197,445 / 150
+    expect(sceneLoadMs(TURBO_OFF, reads)).toBe(0); // the desk turbo has no disk figures
+  });
+
+  it("F6's LoadGame reads fewer files, so it pauses less", () => {
+    expect(ms('today', f6)).toBe(0);
+    expect(ms('486', f6)).toBe(195.9);
+    expect(ms('386', f6)).toBe(335.8);
+    expect(ms('286', f6)).toBe(629.7);
+    expect(ms('ps1', f6)).toBe(1679.2);
+  });
+
+  it('a blank slot opens nothing', () => {
+    const game = parseGame(files.get('donut.gam')!);
+    game.scenes[2].files[3] = ''; // no monsters named: loadscene skips the slot (NoMons)
+    expect(sceneReads({ game, m: { files } }, 2, true)).toEqual([768, 22000, 63000, 42000, 7568, 21000, 2430, 19479]);
+    expect(ms('ps1', sceneReads({ game, m: { files } }, 2, true))).toBe(1828.3);
   });
 });

@@ -38,7 +38,13 @@ export interface PcCosts {
   stripMs: number;
   /** Each animated map cell redrawn on screen that tick (up to 170 dirty rectangles, DIRTRECT.C MAXDIRTY). */
   cellMs?: number;
-  /** Disk read of a .voc (PlaySbVocFile reads the whole file on the game's own thread): fixed cost to open it. */
+  /**
+   * Disk read of a .voc (PlaySbVocFile reads the whole file on the game's own thread): fixed cost to open it
+   * (directory lookup, FAT, seek to the data). It is also what each scene file costs to open: loadscene
+   * (PLAYGAME.C 4239) reads a scene's files from this same disk while the screen is black, and F6's LoadGame
+   * reads most of them again (sceneLoadMs). One disk per machine, so a sound and a level never disagree about
+   * how fast it is. Left out (TURBO_OFF), sounds and scenes load in no time.
+   */
   vocOpenMs?: number;
   /** ...and how many bytes a millisecond the disk then delivers. */
   vocBytesPerMs?: number;
@@ -126,6 +132,7 @@ export const SPEED_CHOICES: readonly SpeedChoice[] = ['today', '486', '386', '28
 
 export const SPEED_PRESETS: Record<Exclude<SpeedChoice, 'today'>, PcCosts> = {
   // 286 at 12 MHz, IDE disk about 400 KB/s, 30 ms to open a file; 20 monsters fill a tick
+  // (sourced range for a 286-era MFM or early IDE drive: about 220-550 KB/s, 30-75 ms an open)
   '286': { tickMs: 20, monsterMs: 1.8, scrollPassMs: 3.3, stripMs: 2, cellMs: 0.25, vocOpenMs: 30, vocBytesPerMs: 400, ...music(0.035, 0.033) },
   // 386DX-33, disk about 800 KB/s, 18 ms to open
   '386': { tickMs: 9, monsterMs: 0.8, scrollPassMs: 1.5, stripMs: 0.8, cellMs: 0.12, vocOpenMs: 18, vocBytesPerMs: 800, ...music(0.016, 0.015) },
@@ -135,6 +142,10 @@ export const SPEED_PRESETS: Record<Exclude<SpeedChoice, 'today'>, PcCosts> = {
   // (about 80 ms to find a file and about 150 KB/s after that), no disk cache, no EMS. PLAYGAME reads a
   // .voc whole from the disk every time it plays one and keeps nothing between plays, so the cache a
   // roomier PC might have added never helps here; the extra 384 KB above 640 KB is out of PLAYGAME's reach.
+  // The disk is the 2011's 30 MB WDL-330P (IBM PS/1 Technical Reference 57F1970, p. 8-26): 19 ms average
+  // access, 3600 rpm, 33 sectors a track at a 4:1 interleave, so at most about 247 KB/s; 80 ms and 150 KB/s
+  // are the slow end of what that gives with an uncached directory and fragmented files (range 30-90 ms,
+  // 145-245 KB/s). Estimates, not timed on a real PS/1 or in an emulator.
   // DOS 4 lives in the PS/1's ROM, so only its data takes conventional memory (about 45 KB more for the
   // game than a DOS loaded from disk): about 145 KB of the far heap is left once DOS's data, drivers and
   // the game's own data have their share.
@@ -185,4 +196,18 @@ export function musicHoldMs(pc: PcCosts | undefined, readMs: number): number {
 /** True when the far heap cannot hold a .voc of `bytes`: PlaySbVocFile returns FALSE and nothing plays. */
 export function vocWontFit(pc: PcCosts | undefined, bytes: number): boolean {
   return !!pc && pc.vocHeapBytes !== undefined && bytes > pc.vocHeapBytes;
+}
+
+/**
+ * How long a scene load keeps the screen black on this PC: each file opened costs vocOpenMs, then its
+ * bytes at vocBytesPerMs (`reads` is the byte count of each file read, 0 for one that failed to open).
+ * Game time does not move: playscene sets TimerCounter back to its value from before the load (PLAYGAME.C
+ * 1404), and LoadGame puts back the saved clock. Every preset (486, 386, 286, PS/1) has disk figures; 0 on a
+ * PC without them (TURBO_OFF) or on Today.
+ */
+export function sceneLoadMs(pc: PcCosts | undefined, reads: readonly number[]): number {
+  if (!pc || pc.vocOpenMs === undefined || !pc.vocBytesPerMs) return 0;
+  let ms = 0;
+  for (const bytes of reads) ms += pc.vocOpenMs + bytes / pc.vocBytesPerMs;
+  return ms;
 }
