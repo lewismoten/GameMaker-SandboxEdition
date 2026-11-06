@@ -170,7 +170,7 @@ export function sfxMaker(project: Project, opts: Options = {}): Promise<SfxMade 
       let name = normalize(nameInput.value.trim());
       if (!name.includes('.')) name += '.voc';
       if (!validDosName(name) || !name.endsWith('.voc')) {
-        toast('Use a DOS name: up to 8 letters or digits, then .VOC.', 'error');
+        toast('Use a DOS name: up to 8 letters or digits, then .VOC.', 'error', { repeat: true });
         nameInput.focus();
         return;
       }

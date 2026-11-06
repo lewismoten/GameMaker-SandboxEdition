@@ -468,7 +468,7 @@ async function build(game: DownloadGame, kind: DownloadKind, alt: boolean, previ
     downloaded(kind === 'player' ? 'web' : kind);
   } catch (e) {
     closeBuilding?.();
-    toast(plainError(e), 'error');
+    toast(plainError(e), 'error', { repeat: true });
   } finally {
     closeBuilding?.();
     closeBuilding = undefined;
@@ -479,5 +479,5 @@ function save(name: string, data: Uint8Array | string, type: string, next: strin
   download(name, data, type);
   closeBuilding?.();
   closeBuilding = undefined;
-  toast(`Saved ${name}. ${next}`);
+  toast(`Saved ${name}. ${next}`, 'info', { repeat: true });
 }

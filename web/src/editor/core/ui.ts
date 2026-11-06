@@ -76,18 +76,19 @@ function noticesIn(parent: Element): HTMLElement {
   return host;
 }
 /** Shows a message for a while. */
-export function toast(message: string, kind: 'info' | 'error' = 'info'): void {
-  void notice(message, kind);
+export function toast(message: string, kind: 'info' | 'error' = 'info', opts: { repeat?: boolean } = {}): void {
+  // An action may close its dialog immediately after toast(); choose the surviving destination after that action.
+  queueMicrotask(() => void notice(message, kind, opts));
 }
 
 /** Like toast, and the returned function closes the message early. Rapid identical bursts coalesce for one second, not forever. */
-export function notice(message: string, kind: 'info' | 'error' = 'info', opts: { persistent?: boolean } = {}): () => void {
+export function notice(message: string, kind: 'info' | 'error' = 'info', opts: { persistent?: boolean; repeat?: boolean } = {}): () => void {
   const toastHost = noticesIn([...document.querySelectorAll(':modal')].at(-1) ?? document.body);
   const recent = recentNotices.get(toastHost)!;
   const key = `${kind}:${!!opts.persistent}:${message}`;
   const now = performance.now();
   const previous = recent.get(key);
-  if (previous?.el.isConnected && now - previous.at < 1000) return previous.close;
+  if (!opts.repeat && !opts.persistent && previous?.el.isConnected && now - previous.at < 1000) return previous.close;
   for (const [k, v] of recent) if (!v.el.isConnected || now - v.at >= 1000) recent.delete(k);
   const close = h('button', { class: 'toast-close', 'aria-label': 'Dismiss', title: 'Dismiss' }, '×');
   // Only the message is live, not the other toasts or their Dismiss controls. Populate after attachment.

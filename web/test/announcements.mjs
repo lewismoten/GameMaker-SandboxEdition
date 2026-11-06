@@ -65,15 +65,18 @@ test('shared errors stay in the top modal; bursts coalesce but later retries sur
   assert.match(await accessibleText(), /Choose a background block set first/);
   assert.equal(await page.locator('dialog').last().locator('.toast').count(), 1);
   assert.equal(await page.locator('.toast-close[role=status], [role=status] .toast-close').count(), 0);
-  await page.waitForTimeout(1100);
-  await page.evaluate(() => ui.toast('Choose a background block set first.', 'error'));
+  // A fresh user attempt may need the identical error even within the burst window.
+  await page.evaluate(() => window.ui.toast('Choose a background block set first.', 'error', { repeat: true }));
   assert.equal(await page.locator('dialog').last().locator('.toast').count(), 2);
+  await page.waitForTimeout(1100);
+  await page.evaluate(() => window.ui.toast('Choose a background block set first.', 'error'));
+  assert.equal(await page.locator('dialog').last().locator('.toast').count(), 3);
   await page.getByRole('button', { name: 'Close', exact: true }).last().click();
-  await page.evaluate(() => ui.toast('Outer retry', 'error'));
+  await page.evaluate(() => window.ui.toast('Outer retry', 'error'));
   await page.waitForFunction(() => document.querySelector('[role=status]')?.textContent === 'Outer retry');
   assert.match(await accessibleText(), /Outer retry/);
   await page.getByRole('button', { name: 'Close', exact: true }).click();
-  await page.evaluate(() => ui.toast('Page result'));
+  await page.evaluate(() => window.ui.toast('Page result'));
   await page.waitForFunction(() => document.querySelector('[role=status]')?.textContent === 'Page result');
   assert.match(await accessibleText(), /Page result/);
 });
@@ -104,8 +107,8 @@ test('pending downloads remain visible beyond 30 seconds and settle on failure/s
     /Building/,
   );
   await page.evaluate(async () => {
-    fileReject(new Error('Controlled download refusal'));
-    await dp;
+    window.fileReject(new Error('Controlled download refusal'));
+    await window.dp;
   });
   await page.clock.runFor(20);
   assert.doesNotMatch(
@@ -225,7 +228,7 @@ test('walkthrough progress stays visual but speech is bounded and failures persi
       terminate() {}
     };
     const { walkDialog } = await import('/src/editor/widgets/walkDialog.ts');
-    void walkDialog(project);
+    void walkDialog(window.project);
   });
   await page.getByRole('button', { name: '🤖 Make it', exact: true }).click();
   const result = await page.evaluate(async () => {
@@ -234,12 +237,12 @@ test('walkthrough progress stays visual but speech is bounded and failures persi
     const observer = new MutationObserver(() => messages.push(region.textContent));
     observer.observe(region, { childList: true });
     for (let i = 0; i < 8; i++) {
-      worker.onmessage({ data: { kind: 'progress', what: `Scene 1: search, ${i} places tried` } });
+      window.worker.onmessage({ data: { kind: 'progress', what: `Scene 1: search, ${i} places tried` } });
       await new Promise((r) => setTimeout(r, 10));
     }
     const visual = document.querySelector('.wd-progress')?.textContent;
     const progress = [...messages];
-    worker.onmessage({ data: { kind: 'error', message: 'Controlled bot failure' } });
+    window.worker.onmessage({ data: { kind: 'error', message: 'Controlled bot failure' } });
     await new Promise((r) => setTimeout(r, 10));
     observer.disconnect();
     return { progress, visual, final: region.textContent, toasts: document.querySelectorAll('.toast').length };
@@ -287,7 +290,7 @@ test('level checks retain failed/stopped outcomes with or without previous resul
       const button = panel.el.querySelector('button.primary');
       const status = panel.el.querySelector('[role=status]');
       button.click();
-      worker.onmessage({ data: { kind: 'error', message: 'Controlled check failure' } });
+      window.worker.onmessage({ data: { kind: 'error', message: 'Controlled check failure' } });
       await tick();
       const failed = status.textContent;
       button.click();
@@ -295,7 +298,7 @@ test('level checks retain failed/stopped outcomes with or without previous resul
       await tick();
       const stopped = status.textContent;
       button.click();
-      worker.onmessage({ data: { kind: 'done', report: { runs: [], findings: [], ms: 50 } } });
+      window.worker.onmessage({ data: { kind: 'done', report: { runs: [], findings: [], ms: 50 } } });
       await tick();
       results.push({ previous, failed, stopped, success: status.textContent });
       panel.el.remove();
@@ -332,8 +335,8 @@ test('offline failure, cancel and success use the same attached live region', as
       window.originalStatus = document.querySelector('.offline-status');
       window.detaches = 0;
       new MutationObserver((ms) => {
-        for (const m of ms) if ([...m.removedNodes].includes(originalStatus)) detaches++;
-      }).observe(originalStatus.parentElement, { childList: true });
+        for (const m of ms) if ([...m.removedNodes].includes(window.originalStatus)) window.detaches++;
+      }).observe(window.originalStatus.parentElement, { childList: true });
     });
     if (outcome === 'cache-error')
       await page.evaluate(() => {
@@ -348,7 +351,7 @@ test('offline failure, cancel and success use the same attached live region', as
     await page.waitForFunction((pattern) => new RegExp(pattern).test(document.querySelector('.offline-status')?.textContent), expected.source, {
       timeout: 5000,
     });
-    assert.equal(await page.evaluate(() => detaches), 0);
+    assert.equal(await page.evaluate(() => window.detaches), 0);
     assert.match(await accessibleText(), expected);
   }
 });
@@ -429,7 +432,7 @@ test('MP4 progress keeps visual updates quiet and always announces completion/er
     const observer = new MutationObserver(() => messages.push(status.textContent));
     observer.observe(status, { childList: true });
     for (let i = 1; i <= 8; i++) {
-      encoding.onProgress(i * 30, 600);
+      window.encoding.onProgress(i * 30, 600);
       await new Promise((r) => setTimeout(r, 10));
     }
     observer.disconnect();
@@ -438,14 +441,14 @@ test('MP4 progress keeps visual updates quiet and always announces completion/er
   assert.ok(progress.messages.length <= 1);
   assert.match(progress.visual, /40%/);
   assert.equal(progress.bar, 0.4);
-  await page.evaluate(() => encodeReject(new Error('Controlled encoder refusal')));
+  await page.evaluate(() => window.encodeReject(new Error('Controlled encoder refusal')));
   await page.waitForFunction(() => document.querySelector('.wt-status').textContent.includes('Controlled encoder refusal'));
   await page.getByRole('button', { name: /Download MP4/ }).click();
   await page.getByRole('button', { name: /Cancel MP4/ }).click();
   await page.waitForFunction(() => document.querySelector('.wt-status').textContent === 'Video canceled.');
   await page.getByRole('button', { name: /Download MP4/ }).click();
   await page.waitForFunction(() => document.querySelector('.wt-export-progress').hidden === false);
-  await page.evaluate(() => encodeResolve({ blob: new Blob(['fixture-not-a-real-video']), frames: 600, audio: 'none' }));
+  await page.evaluate(() => window.encodeResolve({ blob: new Blob(['fixture-not-a-real-video']), frames: 600, audio: 'none' }));
   await page.waitForFunction(() => document.querySelector('.wt-status').textContent.startsWith('Saved '));
 });
 test('archive helper samples file progress and announces one final outcome', async () => {
@@ -464,12 +467,34 @@ test('archive helper samples file progress and announces one final outcome', asy
   await page.evaluate(() => {
     window.progressMessages = [];
     const status = document.querySelector('#status');
-    new MutationObserver(() => progressMessages.push(status.textContent)).observe(status, { childList: true });
+    new MutationObserver(() => window.progressMessages.push(status.textContent)).observe(status, { childList: true });
   });
   release();
   await page.waitForFunction(() => document.querySelector('#done').hidden === false);
   assert.equal(await page.locator('[role=status]').count(), 1);
-  const messages = await page.evaluate(() => progressMessages);
+  const messages = await page.evaluate(() => window.progressMessages);
   assert.ok(messages.filter((t) => !t.startsWith('Done')).length <= 1);
   assert.match(messages.at(-1), /^Done\. 1 of 22 files could not be fetched/);
+});
+test('success toasts survive the modal that their action closes synchronously', async () => {
+  await reset();
+  await page.evaluate(async () => {
+    const ui = await import('/src/editor/core/ui.ts');
+    void ui.modal('Closing action', (close) =>
+      ui.h(
+        'button',
+        {
+          onclick: () => {
+            ui.toast('Saved final outcome', 'info', { repeat: true });
+            close();
+          },
+        },
+        'Finish',
+      ),
+    );
+  });
+  await page.getByRole('button', { name: 'Finish', exact: true }).click();
+  await page.waitForTimeout(30);
+  assert.equal(await page.locator('dialog').count(), 0);
+  assert.match(await accessibleText(), /Saved final outcome/);
 });
