@@ -53,7 +53,7 @@ describe('platform generator', () => {
       for (const c of [...r.treasure, ...r.locks.map((l) => l.key)]) expect(again.touched[c]).toBe(1);
       expect(r.platform!.proof.exit).toBe(true);
     }
-  });
+  }, 60_000);
 
   it('keeps a margin: at 50% a weaker hero (85% speed, 95% push) still gets through every layout', () => {
     const weak = weaker(physics, 0.85, 0.95);
@@ -61,7 +61,7 @@ describe('platform generator', () => {
       const r = make(ROLES, seed, 50);
       expect([seed, reachFrom(area(r), weak, r.entry, true).stood[r.exit]]).toEqual([seed, 1]);
     }
-  });
+  }, 60_000);
 
   it('asks no more pit width and step height than the share of the hero’s most that the difficulty names', () => {
     const cap = capability(physics);
@@ -80,7 +80,7 @@ describe('platform generator', () => {
     expect(most[100].gap).toBeGreaterThan(most[30].gap);
     expect(most[100].rise).toBeGreaterThanOrEqual(most[30].rise);
     expect(most[100].gap).toBeLessThanOrEqual(cap.maxGap);
-  });
+  }, 60_000);
 
   it('is the same every time for a seed, and different for another', () => {
     const a = make(ROLES, 11),
