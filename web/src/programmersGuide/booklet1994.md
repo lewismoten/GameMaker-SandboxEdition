@@ -158,13 +158,13 @@ Eight of the timer chip's 146 steps make one tick, and PLAYGAME uses all three a
 
 ### 11. If your game runs slowly on a 286
 
-- A 286 can keep full speed with about **ten monsters** on the screen. Twenty is a full tick of work. The limit of 50 is a safety, not a goal.
+- A 286 keeps full speed with up to about **19 monsters** on a still screen (14 on a slower 10 MHz 286), and fewer while it scrolls. Twenty is a full tick of work. The limit of 50 is a safety, not a goal.
 - Scrolling through a crowded screen is the hardest case. Put crowds where the screen does not scroll.
 - A digitized sound stops the game for the time it takes to read it. Put long sounds at the start and end of scenes.
 - Do not put a digitized sound on a block that the hero stands on for a long time; the sound would start over each tick.
 - If you still need more speed, use a 386 or 486, or set the video type to match your card instead of Simulate.
 
-**Sizes by machine.** The disk matters more than the processor. PLAYGAME reads a digitized sound from the disk every time it plays it, and the game and its music stand still until the read is done;
+**Sizes by machine.** The disk matters more than the processor. PLAYGAME reads a digitized sound from the disk every time it plays it, and the game stands still until the read is done;
 a slow processor only shows when more monsters are on the screen than the table allows. A scene change is slow too, but the screen is black and the clock waits, so it costs no play.
 
 | Measure                                  | 286, slow disk | 286 or 386SX |    386DX |      486 |

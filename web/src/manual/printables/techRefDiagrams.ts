@@ -89,7 +89,6 @@ function memory(): HTMLElement {
     ...parts,
     bracket(bands.dos, ['Outside', 'PLAYGAME']),
     bracket(bands.game, ['PLAYGAME:', 'about 420K,', 'then the scene'], true),
-    bracket(bands.free, ['Outside', 'PLAYGAME']),
     text(x + w / 2, top - 4, '640K', 'text-anchor="middle" font-weight="700"'),
     text(x + w / 2, top + height + 12, '0K', 'text-anchor="middle" font-weight="700"'),
   ].join('');
