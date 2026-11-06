@@ -10,6 +10,7 @@ Builds The Ultimate Owner’s Guide from ordered chapters, figures and measured 
 - [`ultimateGuide.ts`](ultimateGuide.ts): Fills chapter figures, measures/paginates content, computes starts, and adds contents/notes/covers.
 - [`chapter.ts`](chapter.ts): Defines chapter records and shared opening/tip/Sample-CD HTML helpers.
 - [`plan.ts`](plan.ts): Orders chapters and computes folded-sheet padding and chapter start pages.
+- [`installScript.ts`](installScript.ts): Chapter 18's DOS 3.3 installation lesson, with a complete two-disk listing in short printable parts; disk two is illustrative, and the hand-written `GAMES` destination choice is distinguished from the exported installer's drive argument.
 - [`openUltimate.ts`](openUltimate.ts): Opens/selects the guide in the box viewer with an optional chapter target.
 
 ## Loading and development
@@ -20,7 +21,7 @@ Keep the item definition lightweight: plan.ts statically imports chapter content
 
 ## Tests
 
-Colocated coverage includes [`chapterRefs.test.ts`](chapterRefs.test.ts), [`plan.test.ts`](plan.test.ts), [`playerWords.test.ts`](playerWords.test.ts).
+Colocated coverage includes [`chapterRefs.test.ts`](chapterRefs.test.ts), [`plan.test.ts`](plan.test.ts), [`playerWords.test.ts`](playerWords.test.ts), and [`installScript.test.ts`](installScript.test.ts). The installer tests check the printed listing and conservative syntax; they are not a DOS emulator or proof of successful copying.
 
 From `web/`:
 
