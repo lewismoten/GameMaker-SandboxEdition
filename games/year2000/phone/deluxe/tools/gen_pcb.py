@@ -232,11 +232,11 @@ print("FAILED NETS:", [netnames[n - 1] for n in failed])
 padpts = [(pl.x + rx, pl.y + ry, pad.d / 2 * (1.42 if pad.square else 1)) for pl in placed.values() for pad, rx, ry in pl.pads]
 padpts += [(mx, my, 2.0) for mx, my in MOUNT]
 # Back-side advertising in the three blank spots of the back (found from the back preview): QR codes and Dex.
-PARTS_URL = "https://github.com/lewismoten/GameMaker-SandboxEdition/tree/master/games/year2000/phone"
-SITE_URL = "https://lewismoten.github.io/GameMaker-SandboxEdition"
+PARTS_URL = "https://github.com/lewismoten/GameMaker-SandboxEdition/tree/develop/games/year2000/phone"
+SITE_URL = "https://lewismoten.github.io/GameMaker-SandboxEdition/"
 URL_LINES = {      # what is printed beside each QR code (1.0 mm letters); together each is the address the QR code holds, without https://
     SITE_URL: ["lewismoten.github.io/", "GameMaker-SandboxEdition"],
-    PARTS_URL: ["github.com/lewismoten/", "GameMaker-SandboxEdition/", "tree/master/games/", "year2000/phone"],
+    PARTS_URL: ["github.com/lewismoten/", "GameMaker-SandboxEdition/", "tree/develop/games/", "year2000/phone"],
 }
 QR_PARTS = (25.41, 36.25, 0.5)     # x, y (top-left, board coordinates), module mm: 41 modules = 20.5 mm (blankspots.py)
 QR_SITE = (52.5, 156.8, 0.45)      # 33 modules = 14.85 mm (the battery holder covers the middle of the back)
