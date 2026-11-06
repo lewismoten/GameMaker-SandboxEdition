@@ -66,3 +66,23 @@ describe('a pipe line that is not a table', () => {
     expect(s[0].blocks.map(blockText)).toEqual(['before', '| not a table after', '|', '| last line']);
   }, 5000);
 });
+
+describe('underscores and diagrams', () => {
+  it('reads _word_ as italic, but leaves CT_VOICE, snake_case and a lone underscore alone', () => {
+    const [b] = readMarkdown('32,767 means _never changes_; CT_VOICE.DRV and snake_case_name stay, and so does a _ alone.')[0].blocks;
+    expect(b).toEqual({
+      tag: 'p',
+      kids: ['32,767 means ', { tag: 'em', kids: ['never changes'] }, '; CT_VOICE.DRV and snake_case_name stay, and so does a _ alone.'],
+    });
+  });
+
+  it('reads a [diagram: name] line as its own block, even right under a paragraph', () => {
+    const blocks = readMarkdown('Words here.\n[diagram: memory]\n\nMore words.')[0].blocks;
+    expect(blocks).toEqual([
+      { tag: 'p', kids: ['Words here.'] },
+      { tag: 'diagram', name: 'memory' },
+      { tag: 'p', kids: ['More words.'] },
+    ]);
+    expect(blockText(blocks[1])).toBe('');
+  });
+});
