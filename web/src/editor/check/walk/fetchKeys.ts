@@ -71,10 +71,24 @@ interface FetchOptions {
   paths?: ReadonlySet<number>;
   /** Filled with the counters still short when the keys could not be fetched (for lockedWhy). */
   unreached?: Set<number>;
+  /** Most trips for keys; MAX_KEY_TRIPS unless a test needs a smaller cap. */
+  maxTrips?: number;
 }
 
-/** Most trips for keys before the bot gives up on a door. */
-const ROUNDS = 6;
+/**
+ * Most trips for keys before the bot gives up on a door (cutoff `round-limit`). Each trip stops at
+ * the first key gained, so a door that takes N single keys needs about N trips; the time budget
+ * still bounds every trip, so the cap only keeps a long scene from looping on. The counter-door
+ * audit (2026-11-05 archive walks) found the old cap of 6 left doors taking 22-336 keys unpaid that
+ * the same loop opened when uncapped, the largest in 272 trips; 400 leaves room above that.
+ */
+export const MAX_KEY_TRIPS = 400;
+
+/** The trip cap, when the keys strategy stopped because it made that many trips (for lockedWhy). */
+export function tripCapReached(d: FetchKeysDiagnostics, cap: number = MAX_KEY_TRIPS): number | undefined {
+  return d.cutoff === 'round-limit' && d.rounds.filter((round) => round.kind === 'key').length >= cap ? cap : undefined;
+}
+
 const NO_DISTANCE = 0xffff;
 
 /** The doors a scene holds shut when the hero comes in, and what fetching their keys would take. */
@@ -194,11 +208,12 @@ export async function fetchKeys(game: Game, files: FileSource, scene: number, en
   const deadline = now() + o.budgetMs * 0.5;
   // Rounds: each goes for the nearest place that adds to a short counter (or pays every door), then
   // plays that on and looks again from there. A door that takes several keys, or keys the hero must
-  // come back between, needs more than one; stop when a round gains nothing or at ROUNDS.
+  // come back between, needs more than one; stop when a round gains nothing or at the trip cap.
   let r1: Replay | undefined;
   let meter: ArrayLike<number> = entry.ci.meter;
   let cutoff: FetchKeysCutoff | null = null;
-  for (let round = 0; round < ROUNDS && !paid(meter); round++) {
+  const maxTrips = o.maxTrips ?? MAX_KEY_TRIPS;
+  for (let round = 0; round < maxTrips && !paid(meter); round++) {
     const left = deadline - now();
     if (left <= 0) {
       rounds.push(budgetDiagnostic('key', sources, sourceDistance, entry));

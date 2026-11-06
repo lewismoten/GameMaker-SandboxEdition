@@ -244,6 +244,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 - My games no longer fills with “(damaged copy)” games. A game that names a file it never had is no longer called damaged, a copy of a damaged save is kept only when you open that game in the editor, copies that match their sound game byte for byte are cleared on the next visit, and any that remain are under “Damaged copies…”, where each can be kept as a game or deleted.
 - Seeds and Nests (a Starter): the yellow birds no longer fly into the top row of the screen, where Game-Maker does not draw a monster, so level 1's bird stays in sight. The blue birds in level 2 stay about five seconds, so two are in the air at a time (not three) and the last one leaves soon after the nest is stopped.
+- The walkthrough bot keeps going back for keys to a door that takes many of them (up to 400 trips, where it stopped at 6) and, when it stops short, says whether it ran out of time or reached that limit. Its note on a key that only another scene adds no longer suggests a player can surely bring it: that scene may come only after the door.
 
 - The Slow Computers level 1 card no longer lets its hint run outside its box ("Step on each pad. Hear the music."). The text-fit check now measures such cards correctly, so it flags words that spill over a card's edge.
 - Smash It's gems now turn like cut stones, eight frames that narrow to a thin edge and widen again, and a smashed crate plays a crunch.

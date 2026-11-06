@@ -128,7 +128,9 @@ Part of the [source map](../README.md).
     that turn into a key, with a key's price in another counter owed too), and `fetchKeys.ts`
     fetches those keys first, then goes on; when nothing in the scene adds to a door's counter,
     `otherScenes.ts` names the scenes that do and the bot's message says "another scene adds to it:
-    <scene>" as a suggestion (counters carry across scenes; it can't tell which way leads there);
+    <scene>" as a suggestion (counters carry across scenes; it can't tell whether that scene comes
+    before the door, so the door may never open); `fetchKeys.ts` makes at most `MAX_KEY_TRIPS`
+    trips for keys, and the message says when that limit, not time, stopped it;
     `takes.ts` cuts the author's own play
     of a scene from the player's recorder, `mine.ts` keeps it, and `replayMine.ts` plays it in place
     of the bot's; `botRoutes.ts` keeps the bot's route of one scene with a fingerprint of the scene,
