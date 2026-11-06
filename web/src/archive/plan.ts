@@ -13,7 +13,7 @@ export interface Manifest {
 }
 
 /** The size of one `?part=N` slice, in bytes on the wire. */
-export const PART_BYTES = 12_000_000;
+const PART_BYTES = 12_000_000;
 
 /** Code the home page and the desk start from, by chunk name (assets/<name>-<hash>.<ext>). */
 const FIRST_CODE = /^assets\/(main|site|ui|offline|preload-helper|tourButton|desk|designers|tinHearts|modernUi|web|dos|shared-[a-z-]+)[-.]/;
