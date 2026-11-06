@@ -394,3 +394,57 @@ test('Saves & scores announces a consumed read failure in its local footer', asy
   assert.match(await page.locator('.sv-say').textContent(), /Could not read the saves.*Controlled saved-data refusal/);
   assert.match(await accessibleText(), /Could not read the saves/);
 });
+test('MP4 progress keeps visual updates quiet and always announces completion/error/cancel', async () => {
+  await reset();
+  // Only the encoder is controlled; use the actual player UI/runtime and a private new project.
+  await page.route('**/src/walkthrough/exportVideo.ts*', (r) =>
+    r.fulfill({
+      contentType: 'text/javascript',
+      body: `
+    export const canExport = async () => true;
+    export const exportWalkthrough = opts => new Promise((resolve, reject) => {
+      window.encoding = opts; window.encodeResolve = resolve; window.encodeReject = reject;
+      opts.signal.addEventListener('abort', () => reject(new DOMException('Stopped', 'AbortError')));
+    });`,
+    }),
+  );
+  await page.evaluate(async () => {
+    const { Project } = await import('/src/editor/core/project.ts');
+    const project = Project.create('Video fixture');
+    const { watchWalkthrough } = await import('/src/walkthrough/player.ts');
+    void watchWalkthrough({ id: 'project:fixture', title: 'Fixture', gam: project.gam }, async () => project.files, undefined, {
+      version: 1,
+      game: 'fixture',
+      rand: { seed: 1, per: 'game' },
+      segments: [],
+      chapters: [],
+      timeline: { fps: 60, frames: 600, chapters: [] },
+    });
+  });
+  await page.getByRole('button', { name: /Download MP4/ }).click();
+  await page.waitForFunction(() => !!window.encoding);
+  const progress = await page.evaluate(async () => {
+    const status = document.querySelector('.wt-status');
+    const messages = [];
+    const observer = new MutationObserver(() => messages.push(status.textContent));
+    observer.observe(status, { childList: true });
+    for (let i = 1; i <= 8; i++) {
+      encoding.onProgress(i * 30, 600);
+      await new Promise((r) => setTimeout(r, 10));
+    }
+    observer.disconnect();
+    return { messages, visual: document.querySelector('.wt-export-line')?.textContent, bar: document.querySelector('.wt-export-progress').value };
+  });
+  assert.ok(progress.messages.length <= 1);
+  assert.match(progress.visual, /40%/);
+  assert.equal(progress.bar, 0.4);
+  await page.evaluate(() => encodeReject(new Error('Controlled encoder refusal')));
+  await page.waitForFunction(() => document.querySelector('.wt-status').textContent.includes('Controlled encoder refusal'));
+  await page.getByRole('button', { name: /Download MP4/ }).click();
+  await page.getByRole('button', { name: /Cancel MP4/ }).click();
+  await page.waitForFunction(() => document.querySelector('.wt-status').textContent === 'Video canceled.');
+  await page.getByRole('button', { name: /Download MP4/ }).click();
+  await page.waitForFunction(() => document.querySelector('.wt-export-progress').hidden === false);
+  await page.evaluate(() => encodeResolve({ blob: new Blob(['fixture-not-a-real-video']), frames: 600, audio: 'none' }));
+  await page.waitForFunction(() => document.querySelector('.wt-status').textContent.startsWith('Saved '));
+});
