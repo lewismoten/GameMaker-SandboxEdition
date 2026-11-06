@@ -24,6 +24,7 @@ import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { parsePalette, vga8 } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import { playerLook } from '@lewismoten/gamemaker-sandbox-engine/engine/playerLook';
 import { readDisk } from '@lewismoten/gamemaker-sandbox-tools/kit/textfit';
+import type { PlayerPatches } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
 import { readPlayer } from './player';
 
 type RGB = [number, number, number];
@@ -167,14 +168,14 @@ function walk(k: Walk, file: string, s: Screen, colors: Uint8Array, where: strin
 
 const blankScreen = (dac: Uint8Array, unknown: boolean, from: string): Screen => ({ pixels: new Uint8Array(W * H), dac: dac.slice(), unknown, from });
 
-/** Every text page the game can show, with the ink it lands on. */
-export function textPurpleOfGame(id: string, gamesDir: string): TextPurpleFinding[] {
+/** Every text page the game can show, with the ink it lands on, under `patches` (the game's player.json by default). */
+export function textPurpleOfGame(id: string, gamesDir: string, patches: PlayerPatches = readPlayer(id)): TextPurpleFinding[] {
   const files = readDisk(join(gamesDir, id, 'disk'));
   const gam = [...files.keys()].find((f) => f.endsWith('.gam'));
   if (!gam) return [];
   const game = parseGame(files.get(gam)!);
-  const look = playerLook(readPlayer(id));
-  const k: Walk = { files, want: look.rgb(`color.rgb.${String(readPlayer(id)['color.select.textPages'] ?? 'purple')}`), out: [] };
+  const look = playerLook(patches);
+  const k: Walk = { files, want: look.rgb(`color.rgb.${String(patches['color.select.textPages'] ?? 'purple')}`), out: [] };
   const slot = (scene: number, n: number) => game.scenes[scene]?.files[n]?.toLowerCase() || undefined;
 
   // The title shows before any palette: `colors` is still all zeros.
