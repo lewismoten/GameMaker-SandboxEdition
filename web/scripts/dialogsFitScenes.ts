@@ -1,5 +1,6 @@
 // The dialogs checked by dialogsFit.ts: how to open each on today's web (home or an editor) with real or test content.
 import type { Page } from 'playwright-core';
+import { extraScenes } from './dialogsExtraScenes';
 
 export interface Scene {
   id: string;
@@ -13,11 +14,8 @@ export interface Scene {
 
 /** The desk is the default interface: switch to today's web (home). */
 async function web(page: Page): Promise<void> {
-  await page
-    .getByText('Too retro')
-    .click({ timeout: 8000 })
-    .catch(() => undefined);
-  await page.waitForSelector('text=New game', { timeout: 15000 }).catch(() => page.waitForTimeout(2500));
+  if (await page.getByText('Too retro').isVisible()) await page.getByText('Too retro').click({ timeout: 8000 });
+  await page.waitForSelector('.topbar', { timeout: 15000 });
 }
 
 async function moreMenu(page: Page, item: string | RegExp): Promise<void> {
@@ -69,6 +67,7 @@ const toolButton = (id: string, label: string | RegExp): Scene => ({
 });
 
 export const scenes: Scene[] = [
+  ...extraScenes,
   {
     id: 'optimize',
     open: async (p) => {

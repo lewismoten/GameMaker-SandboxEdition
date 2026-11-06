@@ -16,6 +16,15 @@ export async function measure(page: Page): Promise<Measure> {
     const vw = vv?.width ?? innerWidth;
     const vh = vv?.height ?? innerHeight;
     const problems: string[] = [];
+    const labelledBy = (dlg.getAttribute('aria-labelledby') ?? '').split(/\s+/).filter(Boolean);
+    const dialogName =
+      dlg.getAttribute('aria-label')?.trim() ||
+      labelledBy
+        .map((id) => document.getElementById(id)?.textContent?.trim())
+        .filter(Boolean)
+        .join(' ') ||
+      dlg.getAttribute('title')?.trim();
+    if (!dialogName) problems.push('dialog has no accessible name');
     const b = dlg.getBoundingClientRect();
     const over = (n: number) => Math.round(n);
     if (b.top < -1 || b.left < -1 || b.bottom > vh + 1 || b.right > vw + 1)
@@ -49,11 +58,29 @@ export async function measure(page: Page): Promise<Measure> {
     const close = dlg.querySelector<HTMLElement>('.modal-close, [aria-label="Close"], button[aria-label^="Close"]');
     if (close) visible(close, 'close button');
     else {
-      const any = [...dlg.querySelectorAll<HTMLElement>('button')].find((x) => /^(close|done|ok|cancel|got it|back)/i.test((x.textContent ?? '').trim()));
+      const any = [...dlg.querySelectorAll<HTMLElement>('button')].find((x) =>
+        /^(close|done|ok|cancel|got it|back|go to game-maker)/i.test((x.textContent ?? '').trim()),
+      );
       if (any) visible(any, `"${any.textContent?.trim()}" button`);
       else problems.push('no close button found');
     }
-    const shown = (q: string) => [...dlg.querySelectorAll<HTMLElement>(q)].filter((x) => x.offsetWidth > 0 && getComputedStyle(x).visibility !== 'hidden');
+    const shown = (q: string) =>
+      [...dlg.querySelectorAll<HTMLElement>(q)].filter((x) => {
+        if (!x.offsetWidth || getComputedStyle(x).visibility === 'hidden') return false;
+        const folded = x.closest('details:not([open])');
+        return !folded || !!folded.querySelector(':scope > summary')?.contains(x);
+      });
+    for (const control of shown('button, input:not([type="hidden"]), select, textarea, summary, [role="button"]')) {
+      if (control.matches(':disabled')) continue;
+      const labelTarget = control.matches('input[type="checkbox"], input[type="radio"]') ? (control as HTMLInputElement).labels?.[0] : undefined;
+      const controlRect = control.getBoundingClientRect();
+      const target = controlRect.width >= 24 && controlRect.height >= 24 ? control : (labelTarget ?? control);
+      const rect = target.getBoundingClientRect();
+      if (rect.width < 24 || rect.height < 24) {
+        const label = (control.getAttribute('aria-label') || control.getAttribute('title') || control.textContent || control.tagName).trim().slice(0, 50);
+        problems.push(`target "${label}" is ${over(rect.width)}x${over(rect.height)} (minimum 24x24)`);
+      }
+    }
     const prim = shown('button[type="submit"], button.primary, button.go')[0] ?? shown('.buttons button').pop() ?? null;
     if (prim && prim !== close) visible(prim, `primary button "${(prim.textContent ?? '').trim().slice(0, 20)}"`);
     return { open: true, problems };
