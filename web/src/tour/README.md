@@ -156,7 +156,7 @@ as a plain tour (pointer and buttons back).
   step's id, action (enter, walk, point, press, say, exit), target, bubble, caption, sound,
   duration, whether a press really clicks (only where harmless) and whether it is optional; the
   hosts, props, sounds and music the tour may use, and the bubble and caption limits.
-- `chapters/`: one file per chapter (above), `targets.ts` (the header's links and the Settings
+- [`chapters/`](chapters/README.md): one file per chapter (above), `targets.ts` (the header's links and the Settings
   menu's items, which more than one chapter points at) and `index.ts`, the whole tour in order with
   the chapters still to write.
 - `lines.ts`: every line as `{ id, chapter, where, speaker, text }` (`tourLines()`, no DOM) for the
