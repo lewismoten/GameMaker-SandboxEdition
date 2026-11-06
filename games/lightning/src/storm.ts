@@ -83,7 +83,7 @@ export function addHill(book: Book, pal: Pal): string[][] {
   const p = new Pixels(80, 40, skyOf(pal));
   for (let x = 0; x < 80; x++) {
     const t = (x - 39.5) / 40;
-    const top = Math.round(39 - 34 * Math.sqrt(Math.max(0, 1 - t * t)));
+    const top = Math.round(39 - 38 * Math.sqrt(Math.max(0, 1 - t * t)));
     p.rect(x, top, 1, 40 - top, c('sky', 1));
   }
   const names: string[][] = [[], []];
@@ -152,7 +152,6 @@ export function addLitTwins(book: Book, timed: Timed[], pal: Pal, names: Iterabl
     [skyOf(pal), litSkyOf(pal)],
     [c('sky', 4), c('flash', 1)],
     [c('sky', 5), c('flash', 2)],
-    [c('sky', 1), c('sky', 2)],
   ]);
   for (const name of names) {
     if (name.endsWith('.lit') || book.has(`${name}.lit`)) continue;

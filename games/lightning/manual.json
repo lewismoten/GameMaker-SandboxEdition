@@ -1,0 +1,67 @@
+{
+  "title": "Lightning",
+  "howDoI": [
+    {
+      "id": "flash",
+      "q": "How do I make the sky flash for a moment?",
+      "scene": 2,
+      "x": 17,
+      "y": 18,
+      "level": 1
+    },
+    {
+      "id": "bolt",
+      "q": "How do I draw a bolt of lightning that comes and goes?",
+      "scene": 2,
+      "x": 29,
+      "y": 16,
+      "level": 1
+    },
+    {
+      "id": "thunder",
+      "q": "How do I play thunder after the lightning?",
+      "scene": 2,
+      "x": 34,
+      "y": 18,
+      "level": 1
+    },
+    {
+      "id": "twins",
+      "q": "How do I make stones on the ground light up with the flash?",
+      "scene": 3,
+      "x": 30,
+      "y": 20,
+      "level": 2
+    }
+  ],
+  "pages": [
+    {
+      "head": "Welcome",
+      "html": "<h1>Welcome</h1><p><b>Lightning</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. This one is about a storm at night, made only of blocks. It has two short levels. In level 1 the sky flashes, a bolt strikes a far hill and the thunder rumbles after. In level 2 stepping stones over a dark ditch light up with the sky. Each takes a minute or two.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each thing in the levels is made.</p><h2>The keys</h2><p>The <kbd>Left</kbd> and <kbd>Right</kbd> arrows walk and <kbd>Space</kbd> jumps. Walk into the door at the end of a level to go on. Nothing in this game can hurt you.</p><h2>A gentle flash</h2><p>The sky flashes once about every 7 seconds, for a sixth of a second, to a gray-blue, never white. Fast or bright flashing can make some players sick, and some people have seizures from it, so this game keeps it slow and soft. <b>Flash Safe</b> is the Starter about that.</p>"
+    },
+    {
+      "head": "Level 1: Flash and Rumble",
+      "html": "<h1>Level 1: Flash and Rumble</h1><p>A field at night under storm clouds. <b>THE SKY TURNS LIGHT FOR A MOMENT</b> stands beside you: wait a few seconds and the whole sky, clouds and all, goes lighter for an instant. <b>THE BOLT IS 5 BLOCKS THAT SHOW FOR A MOMENT</b> stands near a dark hill, and in the same instant a bolt runs from a cloud down to the hilltop. <b>THE SONG PLAYS THE THUNDER, A BEAT LATER</b> stands after it: listen, and a low rumble follows each flash.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 1 is made</h1><ul><li><b>The sky is two blocks.</b> Open <b>one.bbl</b> in the blocks editor and pick <b>sky</b>, the dark sky. Its <b>Next block</b> is <b>sky.lit</b>, the same sky in a lighter blue, and its <b>Time</b> is 117 ticks (there are 18.2 ticks in a second). <b>sky.lit</b> turns back into <b>sky</b> after 3 ticks. So the sky is dark for six and a half seconds and lit for a sixth of one, over and over.</li><li><b>One clock for each block.</b> The game keeps the time for each block number, not for each place on the map, so every cell of <b>sky</b> changes in the same tick: the whole sky flashes at once. (<b>Twinkle, Twinkle</b> shows the other side of this: stars that should not blink together.)</li><li><b>Every block that shows sky has a lit twin.</b> A sign's posts, a flower, a cloud, the hill and the doors all have sky in their pictures. Each has a twin with the sky (and a cloud's grays) painted lighter: <b>cloud3.0</b> and <b>cloud3.0.lit</b>, and so on, with the same 117 and 3 ticks. Leave one out and it stays a dark square in the lit sky.</li><li><b>The bolt.</b> Five blocks, <b>bolt.0</b> to <b>bolt.4</b>, stand in a column from the cloud to the hilltop. Each looks just like the dark sky, and its twin <b>bolt.0.lit</b> ... <b>bolt.4.lit</b> shows a piece of the bolt on the lit sky. Same times again, so the bolt shows whole, only while the sky is lit.</li><li><b>The thunder.</b> A block can't play a sound. But the song (<b>ltng.cmf</b>) and the block clock run off the same timer, so the song is written exactly as long as two flashes (32 beats at 146 a minute, 240 ticks), with a low rumble on beat 4 of each 16. The song starts as the level loads, a little before the clock, so the rumble lands just after each flash.</li></ul>"
+    },
+    {
+      "head": "Level 2: Light the Way",
+      "html": "<h1>Level 2: Light the Way</h1><p>A ditch in the dark, with three stepping stones over it. <b>THE STONES LIGHT UP WITH THE SKY</b> and <b>DIM, BUT YOU CAN ALWAYS SEE THEM</b> stand before it. Jump from stone to stone to the other side. If you walk straight on and drop into the ditch, nothing hurts: walk back up the step on the left and try again. The demo on the title screen does just that.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 2 is made</h1><ul><li><b>The stones have twins too.</b> Open <b>two.bbl</b> and pick <b>stone</b>: a dim gray stone, solid all round. Its <b>Next block</b> is <b>stone.lit</b>, the same stone bright and pale, and the times are the sky's (117 and 3), so the stones light up in the same tick as the sky.</li><li><b>Never only in the flash.</b> The dim stone is easy to see without the flash. A flash is a nice touch, but a player who blinks, looks away or turns flashing off in their head must still see the way. Never make something show only when the screen flashes.</li><li><b>The ditch is safe.</b> It is two blocks deep, with a one-block step on the left, so a fall costs only a few seconds.</li><li><b>The same storm.</b> The clouds, hill and bolt are the ones from level 1, laid again over the far side.</li></ul>"
+    },
+    {
+      "head": "What it cannot do",
+      "html": "<h1>What Game-Maker cannot do</h1><ul><li><b>No real flash or light.</b> The palette is set when a level loads and can't change in the middle of it, so a flash is only pictures swapping. That is also why everything that shows sky needs a twin.</li><li><b>No sound from a block.</b> The thunder has to be in the song, timed by hand. The song starts a moment before the block clock (while the level fades in), so the rumble is placed by ear, a little after the flash, not to the tick.</li><li><b>No random strikes.</b> A block's time is fixed, so the bolt strikes the same spot on the same beat every round. For strikes in several places, use more bolt blocks with the same times in other columns, but keep it to a few.</li><li><b>Kept gentle on purpose.</b> Faster or whiter flashing is easy to make and hard on some players' eyes: no more than three flashes in any one second, and a big flash short, rare and never bright red. This game flashes once every 7 seconds.</li></ul>"
+    },
+    {
+      "head": "Make it yours",
+      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>In <b>one.bbl</b>, draw a different bolt in <b>bolt.0.lit</b> to <b>bolt.4.lit</b>, or move the bolt blocks to another column on the map.</li><li>Leave one twin out (set <b>flower.lit</b>'s picture back to the dark one) and watch for the dark square in the flash.</li><li>Give the sky a longer dark time and the stones the same, so the storm is calmer. Keep every twin's times the same as the sky's.</li></ul><p>For more ways to draw light, see <b>Lights Out</b> (light painted in rings round a lamp) and <b>Day and Night</b> (a palette for each scene). The home page's <b>Starters</b> tab has more small games like this one.</p>"
+    }
+  ]
+}
