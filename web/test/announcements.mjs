@@ -352,3 +352,26 @@ test('offline failure, cancel and success use the same attached live region', as
     assert.match(await accessibleText(), expected);
   }
 });
+test('transcripts are browsable documents, not a live payload; loading errors can retry', async () => {
+  await reset();
+  let attempt = 0;
+  await page.route('**/0riemzdF8gc.transcript.json', async (r) => {
+    if (++attempt === 1) await r.fulfill({ status: 503, body: 'Controlled failure' });
+    else await r.continue();
+  });
+  await page.evaluate(async () => {
+    const { openVideo } = await import('/src/library/videoDialog.ts');
+    void openVideo('0riemzdF8gc', 'Fixture video');
+  });
+  await page.getByText('Transcript', { exact: true }).click();
+  await page.waitForFunction(() => [...document.querySelectorAll('[role=status]')].some((e) => e.textContent.includes('could not be loaded')));
+  await page.getByText('Transcript', { exact: true }).click();
+  await page.getByText('Transcript', { exact: true }).click();
+  await page.locator('.lib-video-transcript p').first().waitFor();
+  const result = await page
+    .locator('.lib-video-transcript')
+    .evaluate((el) => ({ paragraphs: el.children.length, live: !!el.closest('[role=status], [aria-live=polite], [aria-live=assertive]') }));
+  assert.ok(result.paragraphs > 1);
+  assert.equal(result.live, false);
+  assert.match(await page.locator('.lib-video-transcript-status').textContent(), /Transcript loaded/);
+});
