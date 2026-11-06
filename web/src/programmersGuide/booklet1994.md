@@ -18,7 +18,7 @@ When a number looks strange, one of those three is usually the reason.
 
 ### 1. What you need
 
-|          | Minimum                   | Better                                        |
+| Part     | Minimum                   | Better                                        |
 | -------- | ------------------------- | --------------------------------------------- |
 | Computer | 286                       | 386 or 486                                    |
 | Display  | VGA                       | VGA with a fast bus                           |
@@ -87,7 +87,7 @@ If you leave a file slot empty, the scene uses what the last scene loaded: a son
 
 ### 5. Monsters
 
-|                           |                                Limit | Why                                                                                                    |
+| Thing                     |                                Limit | Why                                                                                                    |
 | ------------------------- | -----------------------------------: | ------------------------------------------------------------------------------------------------------ |
 | Monster types in a game   |                               **64** | a round number; the file is 19,200 bytes                                                               |
 | Monsters placed on a map  |                              **200** | a round number; also the most that can be alive at once, so births count against it                    |
@@ -167,7 +167,7 @@ Eight of the timer chip's 146 steps make one tick, and PLAYGAME uses all three a
 **Sizes by machine.** The disk matters more than the processor. PLAYGAME reads a digitized sound from the disk every time it plays it, and the game and its music stand still until the read is done;
 a slow processor only shows when more monsters are on the screen than the table allows. A scene change is slow too, but the screen is black and the clock waits, so it costs no play.
 
-|                                          | 286, slow disk | 286 or 386SX |    386DX |      486 |
+| Measure                                  | 286, slow disk | 286 or 386SX |    386DX |      486 |
 | ---------------------------------------- | -------------: | -----------: | -------: | -------: |
 | Pause to read a one-second sound (11K)   |        3 ticks |       1 tick |   ½ tick |   ⅓ tick |
 | Largest sound for a pause under 2 ticks  |             4K |          30K |      64K |      64K |
