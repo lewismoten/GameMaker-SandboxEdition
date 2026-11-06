@@ -11,7 +11,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Added
 
-- The Ultimate Owner’s Guide explains how to write a DOS 3.3 installation batch file for a game in `C:\NAME` or `C:\GAMES\NAME`, with disk prompts, a clearly illustrative second disk, and copy-error warnings.
+- The Ultimate Owner’s Guide explains how to write a DOS 3.3 installation batch file for `C:\SANDBOX` or `C:\GAMES\SANDBOX`, with source-root `A:INSTALL` instructions, hard-drive launch commands, a clearly illustrative second disk, copy-error warnings and a rendered Snowbound floppy label.
 
 - Pocket Player shows its game list before discovering one-file card games, adds title search and compact icon buttons, keeps long titles inside their rows, brings Display options to both boards, reduces display setup to three steps, offers a saved smaller picture away from the touch pad, and preserves held touches across incomplete GT911 reads.
 

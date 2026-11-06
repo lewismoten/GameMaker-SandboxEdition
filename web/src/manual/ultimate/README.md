@@ -10,7 +10,8 @@ Builds The Ultimate Owner’s Guide from ordered chapters, figures and measured 
 - [`ultimateGuide.ts`](ultimateGuide.ts): Fills chapter figures, measures/paginates content, computes starts, and adds contents/notes/covers.
 - [`chapter.ts`](chapter.ts): Defines chapter records and shared opening/tip/Sample-CD HTML helpers.
 - [`plan.ts`](plan.ts): Orders chapters and computes folded-sheet padding and chapter start pages.
-- [`installScript.ts`](installScript.ts): Chapter 18's DOS 3.3 installation lesson, with a complete two-disk listing in short printable parts; disk two is illustrative, and the hand-written `GAMES` destination choice is distinguished from the exported installer's drive argument.
+- [`installScript.ts`](installScript.ts): Chapter 18's DOS 3.3 installation lesson, with SANDBOX paths, source-root `A:INSTALL` instructions and a complete two-disk listing in short printable parts; disk two is illustrative, and the hand-written `GAMES` destination choice is distinguished from the exported installer's drive argument.
+- `installLabel.png`: the nonsecret Snowbound label, captured from the existing `desk/disks/diskLabel.ts` `printedDiskLabel` renderer at 720px disk width and 2× device scale, with `To install: A:INSTALL` as its footer. Its scene comes from the normal first box shot and its hero from `games/snowbound/printables.json`; no new game art or private reference image. The lesson supplies the required drive/root context. The same image is packaged into the EPUB.
 - [`openUltimate.ts`](openUltimate.ts): Opens/selects the guide in the box viewer with an optional chapter target.
 
 ## Loading and development
