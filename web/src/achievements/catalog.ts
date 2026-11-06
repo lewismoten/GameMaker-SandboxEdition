@@ -476,7 +476,7 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
   {
     id: 'bbs-download-every-speed',
     hard: true,
-    title: 'The long way round',
+    title: 'The long way around',
     desc: 'Downloaded a whole file from a BBS at every modem speed, start to finish, without skipping.',
     icon: '🐢',
     category: 'desk',
