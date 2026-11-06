@@ -1,11 +1,11 @@
 // What the player ever sees of each map: the bounding box of every screen the engine shows while
 // the level check's explorer plays each scene from every way in. The printed Level Maps crop to it
-// (levelMapLayout.ts), so sky and ground no one reaches stay off the page. levelViews.json is
-// written by web/scripts/levelViews.ts for the games levelSecrets.json lists; a map that isn't in
+// (levelMapLayout.ts), so sky and ground no one reaches stay off the page. levelViews/*.json is
+// written by web/scripts/levelViews.ts for the games levelSecrets/*.json lists; a map that isn't in
 // it keeps the part of the map in use. A map the hero walks off the edge of (maps wrap) also has
 // its unrolled box (editor/check/unroll.ts): the map laid out as the player goes through it. A
 // course through the wrap (editor/check/course.ts) also has the walkthrough's path along it.
-import VIEWS from './levelViews.json';
+import { VIEWS } from './levelMetadata';
 import type { Unrolled } from '../../editor/check/unroll';
 import type { CoursePath } from '../../editor/check/course';
 
@@ -24,7 +24,7 @@ export type LevelViews = Record<
   { hash: string; maps: Record<string, SeenRect>; unrolled?: Record<string, UnrolledMap>; courses?: Record<string, CoursePath> }
 >;
 
-const LISTED = VIEWS as unknown as LevelViews;
+const LISTED = VIEWS;
 
 /** A game's seen boxes by "map|bbl" (lower case), or undefined when it wasn't scanned. */
 export const listedViews = (id: string): Record<string, SeenRect> | undefined => LISTED[id]?.maps;

@@ -1,10 +1,11 @@
 // npm run release:check
-// A package whose src changed since its last tag must list a change under Unreleased, and its changelog's
+// A package whose src changed since its last tag must list a change in a fragment or under Unreleased, and its changelog's
 // newest version must not be newer than package.json's. The site only warns. Exits 1 on a failure.
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { extractSection, hasNoChanges, latestVersion } from '../../../scripts/release/changelog.mjs';
+import { hasNoChanges, latestVersion } from '../../../scripts/release/changelog.mjs';
 import { TARGETS, commitsSince, lastTag, repoRoot } from './git';
+import { pendingNotes, readFragments } from './fragments';
 
 const root = repoRoot();
 let failed = false;
@@ -17,10 +18,10 @@ for (const t of Object.values(TARGETS)) {
     continue;
   }
   const text = readFileSync(file, 'utf8');
+  const pending = pendingNotes(text, readFragments(root, t.name));
   const tag = lastTag(root, t);
   const src = commitsSince(root, t, tag).filter((c) => c.files.some((f) => t.path === '' || f.startsWith(`${t.path}/src/`)));
-  if (src.length && hasNoChanges(extractSection(text, 'Unreleased')))
-    problems.push(`${src.length} commits since ${tag || 'the start'}, but Unreleased lists nothing`);
+  if (src.length && hasNoChanges(pending)) problems.push(`${src.length} commits since ${tag || 'the start'}, but Unreleased and fragments list nothing`);
   if (t.manifest) {
     const version = (JSON.parse(readFileSync(join(root, t.manifest), 'utf8')) as { version: string }).version;
     const latest = latestVersion(text);

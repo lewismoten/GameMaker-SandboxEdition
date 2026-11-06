@@ -202,8 +202,8 @@ catalogPatches.ts`) and the DOS download writes it into XFERPLAY.EXE; it never g
   games: what it would merge, what it leaves alone and why, and the size in 1.44 MB and 720 KB floppies. It reads
   `games/<id>/disk` and changes nothing; `--write` also writes `.for-lewis/research/disk-space-findings.md`, `--strict`
   exits 1 when a step is left to apply.
-- `syncCheck.ts` — `levelSecrets.json` and every box's play hours are current (what `scripts/levelSecrets.ts` and
-  `playtime.ts` would write), and `levelViews.json` was scanned from the game's disk and walkthrough as they are now
+- `syncCheck.ts` — `levelSecrets/<id>.json` and every box's play hours are current (what `scripts/levelSecrets.ts` and
+  `playtime.ts` would write), and `levelViews/<id>.json` was scanned from the game's disk and walkthrough as they are now
   (else rerun `npx vite-node scripts/levelViews.ts <id>`), without writing anything.
 - `versionCheck.ts` / `versions.ts` — each game's version is `"version": "major.minor"` in its about.json, the one
   place it is written: the game's text reads it from there (the in-story date beside it stays as written), and the
