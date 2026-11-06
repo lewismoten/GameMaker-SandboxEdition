@@ -18,6 +18,7 @@
 #include "fwid.h"
 #include "gmcfg.h"
 #include "screen.h"
+#include "picker_draw.h"
 #ifdef POCKET_CYD28
 #include "xpt2046.h"
 using Touch = XPT2046;
@@ -268,7 +269,7 @@ static bool inflateRaw(const uint8_t* src, size_t n, uint8_t* dst, size_t cap) {
 }
 
 // file: the 8 character name of an SD game's .cfg and .pak, or (one: true) the name of its .GMP in /pocket
-struct GameEntry { char id[28]; char title[40]; int levels; bool sd; bool one; char file[16]; };
+struct GameEntry { char id[28]; char* title; int levels; bool sd; bool one; char file[16]; };
 constexpr int MAXGAMES = 128;  // the Starters (101 in the current build) and the card's games
 static GameEntry games[MAXGAMES];
 static int ngames = 0;
@@ -297,7 +298,13 @@ static bool parseGameLine(char* p, bool withFile, GameEntry& g) {
   if (!a || !b || (withFile && !c)) return false;
   *a = 0; *b = 0;
   strncpy(g.id, p, sizeof g.id - 1); g.id[sizeof g.id - 1] = 0;
-  strncpy(g.title, a + 1, sizeof g.title - 1); g.title[sizeof g.title - 1] = 0;
+  // Keep full searchable titles without reserving 96 bytes for every one of 128 slots in static DRAM.
+  size_t titleLen = strlen(a + 1);
+  if (titleLen > 95) titleLen = 95;
+  char* title = (char*)malloc(titleLen + 1);
+  if (!title) return false;
+  memcpy(title, a + 1, titleLen); title[titleLen] = 0;
+  free(g.title); g.title = title;
   g.levels = atoi(b + 1);
   g.sd = withFile;
   g.one = false;
@@ -323,17 +330,34 @@ static void addGames(fs::FS& fsys, const char* base, bool sd) {
 }
 // The one-file games in /pocket (card mounted): every NAME.GMP whose game.txt is "GMP 1" then id|title|levels, and whose id the
 // list doesn't hold yet. A later format version is left out (this firmware can't read it).
-static void addOneFileGames() {
-  File d = SD.open("/pocket");
-  if (!d || !d.isDirectory()) return;
-  for (File f = d.openNextFile(); f && ngames < MAXGAMES; f = d.openNextFile()) {
-    const char* nm = strrchr(f.name(), '/') ? strrchr(f.name(), '/') + 1 : f.name();
+static File scanDir;
+static bool scanDone = false;
+static uint32_t scanStart = 0, scanFiles = 0;
+static void stopCardScan() { scanDir.close(); unmountSD(); }
+// Read names without opening every loose asset. At most eight directory entries per UI loop;
+// only GMP candidates need a file open. Leaving the picker releases the card's 33 KB of heap.
+static bool scanCardBatch() {
+  if (scanDone || !haveSD) return false;
+  if (!scanDir) {
+    if (!mountSD()) { scanDone = true; return true; }
+    scanDir = SD.open("/pocket");
+    if (!scanDir) { scanDone = true; stopCardScan(); return true; }
+    scanStart = millis(); scanFiles = 0;
+  }
+  int before = ngames;
+  for (int batch = 0; batch < 8 && ngames < MAXGAMES; batch++) {
+    bool dir = false;
+    String path = scanDir.getNextFileName(&dir);
+    if (!path.length()) { scanDone = true; break; }
+    scanFiles++;
+    const char* nm = strrchr(path.c_str(), '/');
+    nm = nm ? nm + 1 : path.c_str();
     size_t len = strlen(nm), tn = 0;
+    if (dir || len <= 4 || len >= sizeof games[0].file || strcasecmp(nm + len - 4, ".gmp")) continue;
+    File f;
     gm::SmallPak pak;
-    pak.user = &f;
-    pak.readAt = smallReadAt;
-    uint8_t* t = nullptr;
-    if (!f.isDirectory() && len > 4 && len < sizeof games[0].file && !strcasecmp(nm + len - 4, ".gmp") && pak.begin()) t = packRead(f, pak, "game.txt", &tn);
+    if (!packOpen(SD, path.c_str(), f, pak)) continue;
+    uint8_t* t = packRead(f, pak, "game.txt", &tn);
     if (t) {
       t[tn] = 0;
       char* line2 = strchr((char*)t, '\n');
@@ -344,31 +368,36 @@ static void addOneFileGames() {
       bool dup = false;
       if (!strcmp((char*)t, "GMP 1") && line2 && parseGameLine(line2, false, g)) {
         for (int i = 0; i < ngames && !dup; i++) dup = !strcmp(games[i].id, g.id);
-        if (!dup) {
-          g.sd = g.one = true;
-          strcpy(g.file, nm);
-          ngames++;
-        }
+        if (!dup) { g.sd = g.one = true; strcpy(g.file, nm); ngames++; }
       }
       free(t);
     }
     f.close();
   }
-  d.close();
+  if (ngames >= MAXGAMES) scanDone = true;
+  if (scanDone) {
+    Serial.printf("BOOT ms=%lu card-discovery elapsed=%lu entries=%lu games=%d\n", (unsigned long)millis(), (unsigned long)(millis() - scanStart), (unsigned long)scanFiles, ngames);
+    stopCardScan();
+  }
+  return before != ngames || scanDone;
 }
 // The Starters from LittleFS, then (when a card is in) the games on it. With no card the list is the Starters alone.
 static void loadGameList() {
+  stopCardScan();
+  scanDone = false;
+  for (auto& g : games) { free(g.title); g.title = nullptr; }
   ngames = 0;
   addGames(LittleFS, "", false);
   if (haveSD && mountSD()) {
     addGames(SD, "/pocket", true);
-    addOneFileGames();
+    scanDone = false;
     unmountSD();
   }
 }
 static const char* fileOf(const GameEntry& g) { return g.sd && !g.one ? g.file : g.id; }  // the name of its .cfg (and .pak)
 // Points the file readers at game g.
 static bool selectGame(int g) {
+  stopCardScan();
   curOne[0] = 0;
   curPakBase = 0;
   if (games[g].one) {  // one file: the cards are its cards.pak entry
@@ -443,12 +472,17 @@ static void prefetchLevel(int level) {
 }
 // ---- settings ----------------------------------------------------------------------------------
 
+static bool smallerPicture = false;
 static void saveSettings() {
+  Preferences pref;
+  if (pref.begin("pocket", false)) { pref.putBool("smaller", smallerPicture); pref.end(); }
   File f = LittleFS.open("/settings.txt", "w");
   if (!f) return;
   f.printf("lefty=%d\nstylus=%d\npad=%d\ndead=%d\npalm=%d\ndebug=%d\nsound=%d\n", settings.lefty, settings.stylus, settings.padSize, settings.dead, settings.palm, settings.debug, settings.sound);
 }
 static void loadSettings() {
+  Preferences pref;
+  if (pref.begin("pocket", true)) { smallerPicture = pref.getBool("smaller", false); pref.end(); }
   settings = ctl::Settings();
   File f = LittleFS.open("/settings.txt", "r");
   if (!f) return;
@@ -517,7 +551,6 @@ static void button(int x0, int y0, int x1, int y1, const char* label, bool hot =
 // Where the screens put things (the 480x320 numbers are the 3248S035's; the 320x240 ones are for the 2432S028).
 constexpr int TITLE_H = scr::SMALL ? 28 : 40;
 constexpr int PK_Y0 = scr::SMALL ? 30 : 44, PK_STEP = scr::SMALL ? 42 : 46, PK_H = scr::SMALL ? 38 : 42, PK_BTN_Y = scr::SMALL ? 200 : 276;
-constexpr int PK_SPLIT1 = scr::SMALL ? 104 : 130, PK_SPLIT2 = scr::SMALL ? 208 : 260, PK_SPLIT3 = scr::SMALL ? 208 : 340;
 constexpr int ST_Y0 = scr::SMALL ? 30 : 42, ST_STEP = 34, ST_PER_PAGE = scr::SMALL ? 5 : 7, ST_FOOT_Y = scr::SMALL ? 200 : 288;
 constexpr int PA_BOX_X = scr::SMALL ? 50 : 100, PA_BOX_Y = scr::SMALL ? 8 : 40, PA_BOX_W = scr::SMALL ? 220 : 280, PA_BOX_H = scr::SMALL ? 184 : 236;
 constexpr int PA_X0 = PA_BOX_X + 12, PA_X1 = PA_BOX_X + PA_BOX_W - 12, PA_Y0 = scr::SMALL ? 18 : 52, PA_STEP = scr::SMALL ? 42 : 56, PA_H = scr::SMALL ? 36 : 48;
@@ -765,6 +798,15 @@ static void drawControls() {
   if (banner::hits(bandX, bandY, bandW, bandH)) banner::paint(spr, bandX, bandY);  // the test banner, on top
 }
 
+// Reduced view anchored at the top, completely past the pad and its 14 px touch slop.
+static scr::Picture picture() {
+  const auto& pad = controls.L.pad;
+  int edge = settings.lefty ? VIEW_W - pad.cx + pad.r : pad.cx + pad.r;
+  return {VIEW_W, VIEW_H, smallerPicture, settings.lefty != 0, edge + 14};
+}
+static int gameX(int x) { return picture().toX(x); }
+static int gameY(int y) { return picture().toY(y); }
+
 // Draws screen rectangle [X0,X1) x [Y0,Y1) of the 480x300 view: the game's rows at 1.5x, with the controls on top.
 static void drawRegion(int X0, int Y0, int X1, int Y1) {
   if (X0 < 0) X0 = 0;
@@ -775,13 +817,18 @@ static void drawRegion(int X0, int Y0, int X1, int Y1) {
   if (w <= 0 || Y1 <= Y0) return;
   if (!sprReady) { spr.setColorDepth(16); sprReady = true; }
   int rowGy = -1;
+  const scr::Picture view = picture();
   for (int Ys = Y0; Ys < Y1; Ys += BAND) {
     int rows = Y1 - Ys < BAND ? Y1 - Ys : BAND;
     for (int r = 0; r < rows; r++) {
-      int gy = scr::down(Ys + r);
-      if (gy != rowGy) { world.renderRow(gy, rowIdx); rowGy = gy; }
+      int gy = view.fromY(Ys + r);
+      if (gy < gm::SIZEY && gy != rowGy) { world.renderRow(gy, rowIdx); rowGy = gy; }
       uint16_t* o = band + r * w;
-      for (int X = X0; X < X1; X++) *o++ = pal[rowIdx[scr::down(X)]];
+      for (int X = X0; X < X1; X++) {
+        int gx = view.fromX(X);
+        bool inside = view.contains(X, Ys + r);
+        *o++ = inside ? pal[rowIdx[gx]] : 0;
+      }
     }
     spr.setBuffer(band, w, rows, 16);
     bandX = X0; bandY = Ys; bandW = w; bandH = rows;
@@ -802,7 +849,7 @@ static R heroRect() {
   if (world.scrx <= gm::OFFSCRN) return {0, 0, 0, 0};
   int gx = world.scrx - world.sc.lsx, gy = world.scry - world.sc.lsy;
   int gy0 = world.curtop < gm::CHARBL ? gy - gm::BLEN : gy;
-  return {scr::up(gx) - 2, scr::up(gy0) - 2, scr::up(gx + gm::BLEN) + 3, scr::up(gy + gm::BLEN) + 3};
+  return {gameX(gx) - 2, gameY(gy0) - 2, gameX(gx + gm::BLEN) + 3, gameY(gy + gm::BLEN) + 3};
 }
 
 static struct { int mx, my, nx, ny, lsx, lsy; uint32_t gen; R hero; bool valid; } last;
@@ -811,7 +858,7 @@ static R lastMon[gm::MAXMONSSHOWN];
 static int nLastMon = 0;
 static R monRect(const gm::MonDraw& d) {
   int gx = d.x - world.sc.lsx, gy = d.y - world.sc.lsy;
-  return {scr::up(gx) - 2, scr::up(gy) - 2, scr::up(gx + gm::BLEN) + 3, scr::up(gy + gm::BLEN) + 3};
+  return {gameX(gx) - 2, gameY(gy) - 2, gameX(gx + gm::BLEN) + 3, gameY(gy + gm::BLEN) + 3};
 }
 static uint8_t lastPad = 0, lastBtn = 0;
 static uint16_t lastTile = 0;
@@ -907,53 +954,57 @@ static void drawStrip() {
 
 // ---- screens -------------------------------------------------------------------------------------
 
-enum Mode { PICKER, PLAYING, PAUSED, SETTINGS_SCREEN, DONE };
+enum Mode { PICKER, PLAYING, PAUSED, SETTINGS_SCREEN, SEARCH_SCREEN, DISPLAY_SCREEN, DONE };
 static Mode mode = PICKER;
 static int page = 0;
+static char searchText[25] = "";
+static int matches[MAXGAMES], nmatch = 0;
+static void filterGames() {
+  nmatch = 0;
+  for (int i = 0; i < ngames; i++) if (pk::matches(games[i].title, searchText)) matches[nmatch++] = i;
+}
 constexpr int ROWS = scr::SMALL ? 4 : 5;
 
-// Draws the list. `clear` blacks the screen first (entering the picker); a page change paints over the old
-// page instead (each row paints its own background, a row with no game is blacked), so nothing flashes.
 static void drawPicker(bool clear = true) {
+  filterGames();
+  int pages = (nmatch + ROWS - 1) / ROWS;
+  if (page >= pages) page = 0;
   if (clear) tft.fillScreen(C_BLACK);
+  // Include the gaps between buttons: erase text left by older firmware's wrapping.
+  tft.fillRect(0, TITLE_H, scr::W, PK_BTN_Y - TITLE_H, C_BLACK);
   char t[48];
-  int pages = (ngames + ROWS - 1) / ROWS;
-  if (scr::SMALL) snprintf(t, sizeof t, "Pocket Player  %d/%d", page + 1, pages ? pages : 1);
-  else snprintf(t, sizeof t, "Pocket Player   %d games   page %d/%d", ngames, page + 1, pages ? pages : 1);
+  snprintf(t, sizeof t, "%s %d/%d%s", searchText[0] ? "Search" : "Pocket Player", page + 1, pages ? pages : 1, haveSD && !scanDone ? " ..." : "");
   title(t);
   for (int r = 0; r < ROWS; r++) {
-    int i = page * ROWS + r;
-    int y = PK_Y0 + r * PK_STEP;
-    if (i >= ngames) {  // no game here on the last page: black the slot
-      tft.fillRect(0, y, scr::W, PK_STEP, C_BLACK);
-      continue;
-    }
-    char l[64];
-    if (scr::SMALL) {  // 21 characters fit beside the SD tag
-      snprintf(l, sizeof l, "%.21s", games[i].title);
-      if (strlen(games[i].title) > 21) strcpy(l + 18, "...");
-    } else snprintf(l, sizeof l, "%s  (%d level%s)", games[i].title, games[i].levels, games[i].levels == 1 ? "" : "s");
-    tft.fillRoundRect(6, y, scr::W - 12, PK_H, 6, C_DARK);
-    tft.drawRoundRect(6, y, scr::W - 12, PK_H, 6, C_GRAY);
-    tft.setTextColor(C_WHITE, C_DARK);
-    tft.setTextSize(2);
-    tft.setCursor(16, y + (PK_H - 16) / 2);
-    tft.print(l);
-    if (games[i].sd) {  // a game on the microSD card
-      tft.setTextColor(C_YELLOW, C_DARK);
-      tft.setCursor(scr::W - 40, y + (PK_H - 16) / 2);
-      tft.print("SD");
-    }
+    int at = page * ROWS + r, y = PK_Y0 + r * PK_STEP;
+    if (at >= nmatch) continue;
+    int i = matches[at];
+    pk::drawRow(tft, games[i].title, games[i].sd, scr::W, y, PK_H);
   }
-  if (scr::SMALL) {
-    button(6, PK_BTN_Y + 2, 100, scr::H - 2, "< Prev");
-    button(108, PK_BTN_Y + 2, 202, scr::H - 2, "Next >");
-    button(210, PK_BTN_Y + 2, 314, scr::H - 2, "Settings");
-  } else {
-    button(6, 276, 126, 318, "< Prev");
-    button(134, 276, 254, 318, "Next >");
-    button(342, 276, 474, 318, "Settings");
+  if (!nmatch) {
+    tft.setTextSize(2); tft.setTextColor(C_WHITE, C_BLACK); tft.setCursor(16, PK_Y0 + 12);
+    tft.print(haveSD && !scanDone ? "Reading card..." : searchText[0] ? "No titles match" : "No games found");
   }
+  for (int i = 0; i < 4; i++) pk::drawIcon(tft, i, scr::W, scr::H, PK_BTN_Y);
+  banner::paint(tft, 0, 0);
+}
+static void drawSearch() {
+  tft.fillScreen(C_BLACK); title("Search titles");
+  pk::drawKeyboard(tft, scr::W, scr::H, TITLE_H, searchText);
+  banner::paint(tft, 0, 0);
+}
+// Board A has fixed ST7796 geometry and GT911 coordinates; no resistive calibration or driver guessing.
+// Display still exposes the picture size on both boards; the CYD also offers its hardware setup.
+static void drawDisplayOptions() {
+  tft.fillScreen(C_BLACK); title("Display");
+  button(6, TITLE_H + 12, scr::W - 6, TITLE_H + 52, smallerPicture ? "Smaller picture: On" : "Smaller picture: Off");
+#ifdef POCKET_CYD28
+  button(6, TITLE_H + 60, scr::W - 6, TITLE_H + 100, "Panel setup");
+#else
+  tft.setTextSize(1); tft.setTextColor(C_WHITE, C_BLACK);
+  tft.setCursor(12, TITLE_H + 70); tft.print("Touch needs no calibration.");
+#endif
+  button(6, scr::H - 38, 100, scr::H - 2, "Back");
   banner::paint(tft, 0, 0);
 }
 
@@ -975,7 +1026,7 @@ static const char* panelName(char* b) {  // "ILI", "ST inv", "ILI inv bgr", ...
   return b;
 }
 #endif
-constexpr int ST_ROWS = scr::SMALL ? 9 : 7;  // the 2.8 inch board's Settings also has Calibrate and Display
+constexpr int ST_ROWS = scr::SMALL ? 9 : 8;  // the 2.8 inch board's Settings also has Calibrate and Display
 static int setPage = 0;
 static void drawSettings() {
   tft.fillScreen(C_BLACK);
@@ -995,6 +1046,8 @@ static void drawSettings() {
                        ,
                        {"Calibrate", "tap 3"},
                        {"Display", panelName(pname)}
+#else
+                       , {"Display", "options"}
 #endif
   };
   int pages = (ST_ROWS + ST_PER_PAGE - 1) / ST_PER_PAGE;
@@ -1024,21 +1077,21 @@ static void drawSettings() {
     button(6, 288, 150, 318, "Back");
     tft.setTextSize(1);
     tft.setTextColor(C_GRAY, C_BLACK);
-    tft.setCursor(160, 296);
-    tft.print("touch the screen: x,y size shows here");
+    button(160, 288, 280, 318, pages > 1 ? (setPage + 1 < pages ? "More >" : "< First") : "");
   }
   banner::paint(tft, 0, 0);
 }
 static void settingsTouchInfo() {
-  int ix = scr::SMALL ? 210 : 160, iy = scr::SMALL ? ST_FOOT_Y + 22 : 308;
+  int ix = scr::SMALL ? 210 : 290, iy = scr::SMALL ? ST_FOOT_Y + 22 : 308;
   tft.fillRect(ix, iy - (scr::SMALL ? 2 : 2), scr::W - ix, 12, C_BLACK);
   tft.setTextSize(1);
   tft.setTextColor(C_WHITE, C_BLACK);
   tft.setCursor(ix, iy);
   char l[64];
   if (pts.n && scr::SMALL) snprintf(l, sizeof l, "%d,%d z%d", pts.x[0], pts.y[0], pts.size[0]);
-  else if (pts.n) snprintf(l, sizeof l, "raw %d,%d  screen %d,%d  size %d", gt.rawX[0], gt.rawY[0], pts.x[0], pts.y[0], pts.size[0]);
+  else if (pts.n) snprintf(l, sizeof l, "%d,%d > %d,%d z%d", gt.rawX[0], gt.rawY[0], pts.x[0], pts.y[0], pts.size[0]);
   else snprintf(l, sizeof l, "no touch");
+  l[(scr::W - ix) / 6] = 0;
   tft.print(l);
 }
 
@@ -1294,7 +1347,7 @@ static void refreshPalette() {
 
 static void enterPicker() {
   spk::stop();
-  unmountSD();
+  stopCardScan();
   mode = PICKER;
   wasDown = true;
   drawPicker();
@@ -1308,7 +1361,11 @@ static void message(const char* a, const char* b = nullptr) {
   tft.setTextSize(2);
   tft.setCursor(20, 120);
   tft.print(a);
-  if (b) { tft.setCursor(20, 150); tft.print(b); }
+  if (b) {
+    char line[96];
+    pk::ellipsize(b, line, sizeof line, (scr::W - 40) / 12);
+    tft.setCursor(20, 150); tft.print(line);
+  }
 }
 
 // ---- serial self-test ----------------------------------------------------------------------------
@@ -1494,6 +1551,7 @@ static void serialCommand(const char* cmd) {
 static void serialWrite(const char* cmd) {
   char name[24];
   unsigned long len = 0;
+  stopCardScan();
   if (!haveSD || !mountSD()) { Serial.println("ERR no card"); return; }
   if (sscanf(cmd, "W %23s %lu", name, &len) != 2 || strchr(name, '/')) { Serial.println("ERR args"); return; }
   SD.mkdir("/pocket");
@@ -1529,6 +1587,8 @@ static void bannerChanged(bool changed) {
   switch (mode) {
     case PICKER: drawPicker(false); break;
     case SETTINGS_SCREEN: drawSettings(); break;
+    case SEARCH_SCREEN: drawSearch(); break;
+    case DISPLAY_SCREEN: drawDisplayOptions(); break;
     case PLAYING: last.valid = false; break;
     case PAUSED: tft.fillScreen(C_BLACK); last.valid = false; drawFrame(true); drawStrip(); drawPause(); break;
     default: break;
@@ -1585,6 +1645,7 @@ static void pollSerial() {
 
 void setup() {
   Serial.begin(115200);
+  Serial.printf("BOOT ms=%lu start\n", (unsigned long)millis());
   fwBoardLoad();
   Serial.printf("FW board=%s git=%s date=%s env=%s built=%s %s\n", boardName, FW_GIT, FW_DATE, FW_ENV, __DATE__, __TIME__);
   banner::configure(scr::W, scr::SMALL ? 28 : 40);  // the 320 px bar must stay clear of the MENU and KEYS chips
@@ -1630,20 +1691,24 @@ void setup() {
     for (;;) delay(1000);
   }
   {  // the microSD slot (TF_CS 5, TF_SPI_SCLK 18, TF_SPI_MISO 19, TF_SPI_MOSI 23 in board.h); no card is no error
+    uint32_t sdStart = millis();
     haveSD = mountSD();
     unmountSD();
+    Serial.printf("BOOT ms=%lu card-probe elapsed=%lu\n", (unsigned long)millis(), (unsigned long)(millis() - sdStart));
     Serial.printf("microSD: %s\n", haveSD ? "card found" : "no card");
   }
   loadSettings();
   spk::setVolume(settings.sound);
   loadGameList();
-  if (!ngames) {
+  Serial.printf("BOOT ms=%lu list-loaded games=%d\n", (unsigned long)millis(), ngames);
+  if (!ngames && !haveSD) {
     message("No games on the board", "flash the LittleFS image");
     for (;;) delay(1000);
   }
-  delay(900);
+
   Serial.printf("ready: %d games (microSD %s), heap %u, largest %u\n", ngames, haveSD ? "in" : "out", (unsigned)ESP.getFreeHeap(), (unsigned)heap_caps_get_largest_free_block(MALLOC_CAP_8BIT));
   enterPicker();
+  Serial.printf("BOOT ms=%lu picker-ready games=%d\n", (unsigned long)millis(), ngames);
 }
 
 static void applyKeys(uint32_t now) {
@@ -1665,6 +1730,7 @@ void loop() {
   if (banner::shown() && ((pts.n > 0 && !injOn) || now - banner::st.seen > banner::IDLE_MS)) { bool a = banner::set(""), b = banner::setId(""); bannerChanged(a || b); }  // Lewis takes over, or the agent is gone
 
   if (mode == PICKER) {
+    if (scanCardBatch()) drawPicker(false);
 #ifdef POCKET_CYD28
     {  // BOOT: a short press opens the display setup, 2 seconds changes the display mode (for a screen that is unreadable)
       static uint32_t bootT = 0;
@@ -1681,17 +1747,19 @@ void loop() {
     }
 #endif
     if (freshTap(tx, ty)) {
-      int pages = (ngames + ROWS - 1) / ROWS;
+      int pages = (nmatch + ROWS - 1) / ROWS;
 #ifdef POCKET_CYD28
       if (ty < TITLE_H && tx < 208) { runDisplaySetup(); enterPicker(); return; }  // the list's top-left corner: display setup
 #endif
       if (ty >= PK_BTN_Y) {
-        if (tx < PK_SPLIT1 && page > 0) { page--; drawPicker(false); }
-        else if (tx >= PK_SPLIT1 && tx < PK_SPLIT2 && page + 1 < pages) { page++; drawPicker(false); }
-        else if (tx >= PK_SPLIT3) { mode = SETTINGS_SCREEN; fromPause = false; setPage = 0; drawSettings(); }
+        if (tx < scr::W / 4 && page > 0) { page--; drawPicker(false); }
+        else if (tx >= scr::W / 4 && tx < scr::W / 2 && page + 1 < pages) { page++; drawPicker(false); }
+        else if (tx >= scr::W / 2 && tx < scr::W * 3 / 4) { stopCardScan(); mode = SEARCH_SCREEN; drawSearch(); }
+        else if (tx >= scr::W * 3 / 4) { stopCardScan(); mode = SETTINGS_SCREEN; fromPause = false; setPage = 0; drawSettings(); }
       } else if (ty >= PK_Y0) {
-        int r = (ty - PK_Y0) / PK_STEP, i = page * ROWS + r;
-        if (r < ROWS && i < ngames) {
+        int r = (ty - PK_Y0) / PK_STEP, at = page * ROWS + r;
+        if (r < ROWS && at < nmatch && (ty - PK_Y0) % PK_STEP < PK_H) {
+          int i = matches[at];
           message("Loading", games[i].title);
           if (!startGame(i)) { message("Could not load", games[i].title); delay(1500); enterPicker(); }
           else wasDown = true;
@@ -1701,10 +1769,37 @@ void loop() {
     delay(5);
     return;
   }
+  if (mode == SEARCH_SCREEN) {
+    if (freshTap(tx, ty)) {
+      int n = strlen(searchText), top = TITLE_H + 26, step = (scr::H - top - 38) / 4;
+      if (ty >= scr::H - 36) {
+        int b = tx * 4 / scr::W;
+        if (b == 0 && n < 24) { searchText[n] = ' '; searchText[n + 1] = 0; }
+        if (b == 1 && n) searchText[n - 1] = 0;
+        if (b == 2) searchText[0] = 0;
+        if (b == 3) { page = 0; mode = PICKER; drawPicker(); return; }
+      } else if (ty >= top && ty < top + 4 * step && n < 24) {
+        searchText[n] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"[(ty - top) / step * 9 + tx * 9 / scr::W];
+        searchText[n + 1] = 0;
+      }
+      drawSearch();
+    }
+    delay(5); return;
+  }
+  if (mode == DISPLAY_SCREEN) {
+    if (freshTap(tx, ty)) {
+      if (ty >= scr::H - 38) { mode = SETTINGS_SCREEN; drawSettings(); }
+      else if (ty >= TITLE_H + 12 && ty < TITLE_H + 52) { smallerPicture = !smallerPicture; saveSettings(); last.valid = false; drawDisplayOptions(); }
+#ifdef POCKET_CYD28
+      else if (ty >= TITLE_H + 60 && ty < TITLE_H + 100) { runDisplaySetup(); drawDisplayOptions(); }
+#endif
+    }
+    delay(5); return;
+  }
   if (mode == SETTINGS_SCREEN) {
     if (freshTap(tx, ty)) {
       int pagesS = (ST_ROWS + ST_PER_PAGE - 1) / ST_PER_PAGE;
-      if (scr::SMALL && ty >= ST_FOOT_Y && tx >= 104 && tx < 208) {
+      if (ty >= ST_FOOT_Y && tx >= (scr::SMALL ? 104 : 160) && tx < (scr::SMALL ? 208 : 280)) {
         if (pagesS > 1) { setPage = (setPage + 1) % pagesS; drawSettings(); }
         return;
       }
@@ -1730,7 +1825,9 @@ void loop() {
             break;
 #ifdef POCKET_CYD28
           case 7: saveSettings(); if (runCalibration()) dsCalDone(); drawSettings(); wasDown = true; return;
-          case 8: saveSettings(); runDisplaySetup(); drawSettings(); wasDown = true; return;
+          case 8: saveSettings(); mode = DISPLAY_SCREEN; drawDisplayOptions(); wasDown = true; return;
+#else
+          case 7: saveSettings(); mode = DISPLAY_SCREEN; drawDisplayOptions(); wasDown = true; return;
 #endif
         }
         drawSettings();
@@ -1788,7 +1885,7 @@ void loop() {
   bool oneLevelUp = false;
   while (ticksRun < due && ran < 4) {
     int lv = world.level;
-    if (traceOn) Serial.printf("K %lu tick=%lu up=%d down=%d left=%d right=%d space=%d pad=%d n=%d\n", (unsigned long)millis(), (unsigned long)ticksRun, world.held[ctl::S_UP], world.held[ctl::S_DOWN], world.held[ctl::S_LEFT], world.held[ctl::S_RIGHT], world.held[ctl::S_SPACE], controls.padDirs, pts.n);
+    if (traceOn) Serial.printf("K %lu tick=%lu up=%d down=%d left=%d right=%d space=%d pad=%d n=%d seq=%d frame=%d sugar=%d gx=%d gy=%d\n", (unsigned long)millis(), (unsigned long)ticksRun, world.held[ctl::S_UP], world.held[ctl::S_DOWN], world.held[ctl::S_LEFT], world.held[ctl::S_RIGHT], world.held[ctl::S_SPACE], controls.padDirs, pts.n, world.cseq, world.cframe, world.meter[3] - 1, world.gravx, world.gravy);
     char r = world.tick();
     if (world.nsnd && world.snd) spk::play(world.snd + world.sndQ[world.nsnd - 1] * 72);  // the effect heard is the last one started (a new one cuts the old)
     world.nsnd = 0;

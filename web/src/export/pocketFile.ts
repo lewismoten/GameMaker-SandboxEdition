@@ -87,7 +87,7 @@ interface GmpParts {
 export function writeGmp(p: GmpParts): Uint8Array {
   const text = (s: string) => new Uint8Array([...s].map((c) => (c.charCodeAt(0) < 256 ? c.charCodeAt(0) : 63)));
   const version = p.version?.replace(/[^\x21-\x7e]/g, '').slice(0, 16);
-  const title = p.title.replace(/[|\r\n]/g, ' ').slice(0, 39);
+  const title = p.title.replace(/[|\r\n]/g, ' ').slice(0, 95);
   const cards = new Uint8Array(p.cards.reduce((t, b) => t + b.length, 0));
   let at = 0;
   for (const b of p.cards) {

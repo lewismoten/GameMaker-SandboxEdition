@@ -852,6 +852,8 @@ frame-dump hook and kept the results. This fork uses two things from it:
 
 ## The Pocket Player (hardware/pocket-player)
 
+OpenAI Codex (GPT-6), directed by Lewis Moten, revised the Pocket Player's card discovery, picker search and labels, display options and setup flow, touch packet handling, packers and regression checks. Existing game assets retain their own credits.
+
 A firmware for the ESP32-3248S035 board that plays the Starter games, and an install page (`web/public/pocket/`). Claude Sonnet 5.5 wrote the firmware and the page. The firmware binaries' complete third-party notices are in [`web/public/pocket/fw/NOTICES.txt`](web/public/pocket/fw/NOTICES.txt).
 
 - **LovyanGFX 1.1.16** (lovyan03, FreeBSD/BSD-style license, with its bundled Adafruit_ILI9341, Adafruit_GFX and TFT_eSPI notices), the **Arduino core for ESP32 2.0.16** (LGPL-2.1), **ESP-IDF v4.4.7** (Apache-2.0), and **Mbed TLS 2.28.7** (Apache-2.0 chosen from its Apache-2.0-or-GPL-2.0-or-later offer) are compiled into the firmware image set. Their versions, source and license URLs, copyright lines, and required complete license texts are in the firmware notices file.

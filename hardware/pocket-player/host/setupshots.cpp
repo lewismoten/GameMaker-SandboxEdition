@@ -11,9 +11,10 @@
 #include <vector>
 #include "setupdraw.h"
 #include "softgfx.h"
+#include "picker_draw.h"
 
 struct Phys {  // the glass: 240 x 320 (W, H), or 320 x 240 for the wide way (sf::WIDE), stored as it is seen
-  uint16_t px[320 * 320];
+  uint16_t px[480 * 320];
   int W = 240, H = 320;
   int tc = 0xFFFF, bgc = 0, ts = 1, cx = 0, cy = 0;
   bool hasBg = false;
@@ -114,8 +115,8 @@ int main(int argc, char** argv) {
   std::string out = argc > 1 ? argv[1] : ".";
   static Phys fb;
   sg::SoftGfx<Phys> g(fb);
-  const char* names[4] = {"step1-flip", "step2-rotate", "step3-orient", "step4-colors"};
-  for (int step = 0; step < 4; step++) {
+  const char* names[sf::STEPS] = {"step1-flip", "step2-orient", "step3-colors"};
+  for (int step = 0; step < sf::STEPS; step++) {
     int modes = step == sf::ORIENT ? 3 : 1;
     Montage m(4, modes);
     for (int mi = 0; mi < modes; mi++) {
@@ -136,6 +137,24 @@ int main(int argc, char** argv) {
       }
     }
     m.save(out + "/" + names[step] + ".ppm");
+  }
+  // The picker and keyboard use the firmware's own drawing routines at both board sizes.
+  for (int w : {320, 480}) for (int keyboard : {0, 1}) {
+    fb.W = w; fb.H = w == 320 ? 240 : 320; fb.fx = fb.fy = 0; fb.clear();
+    int titleH = w == 320 ? 28 : 40;
+    if (keyboard) pk::drawKeyboard(fb, w, fb.H, titleH, "CARL");
+    else {
+      int top = w == 320 ? 30 : 44, step = w == 320 ? 42 : 46, height = w == 320 ? 38 : 42, footer = w == 320 ? 200 : 276;
+      for (int i = 0; i < (w == 320 ? 4 : 5); i++)
+        pk::drawRow(fb, i ? "A Fly Named Carl" : "Graduation: Blocks and showcase beyond the edge", i % 2, w, top + i * step, height);
+      for (int i = 0; i < 4; i++) pk::drawIcon(fb, i, w, fb.H, footer);
+    }
+    CHECK(fb.clipped == 0, "picker/keyboard at %d clips %d pixels", w, fb.clipped);
+    std::string path = out + (keyboard ? "/keyboard-" : "/picker-") + std::to_string(w) + ".ppm";
+    FILE* f = fopen(path.c_str(), "wb");
+    fprintf(f, "P6\n%d %d\n255\n", fb.W, fb.H);
+    for (int i = 0; i < fb.W * fb.H; i++) { unsigned char c[3]; rgb(fb.px[i], 0, 0, c); fwrite(c, 1, 3, f); }
+    fclose(f);
   }
   // step 4 on a glass whose colors are off: what each of the four modes shows when the glass is inverted and swapped (mode 3)
   {
