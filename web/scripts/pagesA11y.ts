@@ -4,7 +4,7 @@ import { mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import type { AxeResults } from 'axe-core';
 import { arg, launch, target } from './perfLib';
-import { forceTheme } from './forceTheme';
+import { assertTheme, forceTheme } from './forceTheme';
 
 const out = resolve(arg('out') ?? '../.for-lewis/research/pages-a11y');
 mkdirSync(out, { recursive: true });
@@ -51,6 +51,7 @@ try {
           }
           await page.evaluate(() => document.fonts.ready);
           await page.waitForTimeout(1200);
+          await assertTheme(page, theme);
           const loaded = await page.evaluate(() => ({
             title: document.title,
             url: location.href,
