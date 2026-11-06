@@ -11,6 +11,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Added
 
+- The save note and narrow-screen pill show unsaved and saving changes immediately once they reach the project; old save completions cannot clear newer edits, and remounting keeps the last save state.
 - Background and monster block behavior changes now join painting Undo and Redo, including scores, counters, solidity and timed changes.
 - Character Undo keeps block files and mirror links bound to their own names when the preview block set changes.
 - Sample Undo and Revert restore the original VOC bytes exactly; undoing a sound-maker replacement restores its settings too.

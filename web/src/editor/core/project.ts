@@ -15,7 +15,7 @@ export { kindOf, KIND_LABELS, type FileKind };
 import { MEMORY_SECTIONS, refuse, type ReadOnlyGuard } from './readOnly';
 
 /** Where an autosave is: begun, kept in IndexedDB, or refused (storage full, private mode…). */
-type SaveState = 'saving' | 'saved' | 'failed';
+type SaveState = 'dirty' | 'saving' | 'saved' | 'failed';
 
 export class Project {
   id: string;
@@ -75,41 +75,58 @@ export class Project {
     return () => this.listeners.delete(fn);
   }
 
-  private saveListeners = new Set<(state: SaveState, error?: Error) => void>();
+  private saveListeners = new Set<(state: SaveState, error?: Error, savedAt?: Date) => void>();
+  private saveState?: { state: SaveState; error?: Error; savedAt?: Date };
 
   /** Hears each autosave start, finish or failure (the editor's "Saved" note: shell/saveNote.ts). */
-  onSaveState(fn: (state: SaveState, error?: Error) => void): () => void {
+  onSaveState(fn: (state: SaveState, error?: Error, savedAt?: Date) => void): () => void {
     this.saveListeners.add(fn);
+    if (this.saveState) fn(this.saveState.state, this.saveState.error, this.saveState.savedAt);
     return () => this.saveListeners.delete(fn);
   }
 
   private tellSave(state: SaveState, error?: Error): void {
-    for (const l of this.saveListeners) l(state, error);
+    this.saveState = { state, error, savedAt: state === 'saved' ? new Date() : undefined };
+    for (const l of this.saveListeners) l(state, error, this.saveState.savedAt);
   }
 
-  private persist = debounce(() => {
+  private revision = 0;
+  private saveRequest = 0;
+  private saveQueue = Promise.resolve();
+  private persist(): void {
     if (this.readOnly) return;
-    this.tellSave('saving');
-    this.saving = saveProject(this.id, this.name, this.gam, this.files, this.companion).then(
-      () => this.tellSave('saved'),
-      (e: unknown) => {
-        console.error('Autosave failed', e);
-        this.tellSave('failed', e as Error);
-      },
-    );
+    this.revision++;
+    this.tellSave('dirty');
+    this.schedulePersist();
+  }
+
+  private schedulePersist = debounce(() => {
+    if (this.readOnly) return;
+    this.saving = this.writeSave().catch((e: unknown) => console.error('Autosave failed', e));
   }, 400);
 
-  saveNow(): Promise<void> {
-    if (this.readOnly) return this.saving;
+  private writeSave(): Promise<void> {
+    const revision = this.revision;
+    const request = ++this.saveRequest;
+    const files = new GameFiles(this.files.entries().map(([name, bytes]) => [name, bytes.slice()]));
+    const companion = this.companion ? structuredClone(this.companion) : undefined;
     this.tellSave('saving');
-    this.saving = saveProject(this.id, this.name, this.gam, this.files, this.companion).then(
-      () => this.tellSave('saved'),
+    const write = this.saveQueue.then(() => saveProject(this.id, this.name, this.gam, files, companion));
+    this.saveQueue = write.catch(() => undefined);
+    return write.then(
+      () => {
+        if (revision === this.revision && request === this.saveRequest) this.tellSave('saved');
+      },
       (e: unknown) => {
-        this.tellSave('failed', e as Error);
+        if (revision === this.revision && request === this.saveRequest) this.tellSave('failed', e as Error);
         throw e;
       },
     );
-    return this.saving;
+  }
+
+  saveNow(): Promise<void> {
+    if (this.readOnly) return this.saving;
+    return (this.saving = this.writeSave());
   }
 
   /** One section of a file's editor-only extras (e.g. the terrains of forest.bbl). */

@@ -19,12 +19,14 @@ export function saveNote(project: Project): { el: HTMLElement; dispose: () => vo
   const announcer = h('p', { class: 'sr-only', role: 'status', 'aria-live': 'polite' });
   const announce = quietly((t) => (announcer.textContent = t), 1500);
   let fade = 0;
-  const flashIt = (text: string, failed: boolean) => {
+  const flashIt = (text: string, failed: boolean, pending = false) => {
     window.clearTimeout(fade);
     flash.textContent = text;
     flash.classList.toggle('failed', failed);
+    flash.classList.toggle('pending', pending);
     flash.classList.add('on');
-    if (!failed) fade = window.setTimeout(() => (flash.classList.remove('on'), (fade = window.setTimeout(() => (flash.textContent = ''), 600))), 2200);
+    if (!failed && !pending)
+      fade = window.setTimeout(() => (flash.classList.remove('on'), (fade = window.setTimeout(() => (flash.textContent = ''), 600))), 2200);
   };
   document.body.append(flash, announcer);
   const show = (text: string, failed = false) => {
@@ -32,12 +34,14 @@ export function saveNote(project: Project): { el: HTMLElement; dispose: () => vo
     el.classList.toggle('failed', failed);
   };
   show('✓ Changes save in this browser');
-  let shown = 0;
-  const stop = project.onSaveState((state, error) => {
-    window.clearTimeout(shown);
-    if (state === 'saving') shown = window.setTimeout(() => show('Saving…'), 300);
-    else if (state === 'saved') {
-      const now = new Date();
+  const stop = project.onSaveState((state, error, savedAt) => {
+    if (state === 'dirty' || state === 'saving') {
+      const text = state === 'dirty' ? 'Unsaved changes…' : 'Saving…';
+      show(text);
+      flashIt(text, false, true);
+      announce.cancel();
+    } else if (state === 'saved') {
+      const now = savedAt ?? new Date();
       show(savedText(undefined, now));
       flashIt(`✓ Saved ${savedTime(now)}`, false);
       announce.tell(`Saved ${savedTime(now)}`);
@@ -59,14 +63,6 @@ export function saveNote(project: Project): { el: HTMLElement; dispose: () => vo
   document.addEventListener('keydown', onKey);
   return {
     el,
-    dispose: () => (
-      stop(),
-      window.clearTimeout(shown),
-      window.clearTimeout(fade),
-      announce.cancel(),
-      flash.remove(),
-      announcer.remove(),
-      document.removeEventListener('keydown', onKey)
-    ),
+    dispose: () => (stop(), window.clearTimeout(fade), announce.cancel(), flash.remove(), announcer.remove(), document.removeEventListener('keydown', onKey)),
   };
 }
