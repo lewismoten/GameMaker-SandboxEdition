@@ -47,7 +47,8 @@ export const CEREMONIES: Ceremony[] = [
   {
     id: 'graduation-blocks',
     stage: 'Blocks and Showcase',
-    groups: ['Drawing with Blocks', 'Showcase Tricks'],
+    // Append the new group here, even though its home tab is before Showcase: old course numbers stay put.
+    groups: ['Drawing with Blocks', 'Showcase Tricks', 'Weather'],
     skills: 'drawn and animated blocks, light and dark, the big-game tricks',
   },
 ];

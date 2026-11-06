@@ -96,6 +96,11 @@ export const STARTER_GROUPS: { name: string; tag: string; games: string[] }[] = 
     games: ['road-tiles', 'shore', 'twinkle', 'flicker', 'lights-out', 'color-doors', 'shadows', 'beams'],
   },
   {
+    name: 'Weather',
+    tag: 'Rain, snow, lightning and heat, drawn and animated.',
+    games: ['rain'],
+  },
+  {
     name: 'Showcase Tricks',
     tag: 'How the big games do their big moments.',
     games: ['dialog', 'popups', 'scripted', 'parallax', 'horizon', 'beltway', 'corner-view', 'slow-computers', 'under-the-hood'],
