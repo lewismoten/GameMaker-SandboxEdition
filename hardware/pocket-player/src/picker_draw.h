@@ -20,9 +20,10 @@ template <class G> void drawIcon(G& tft, int slot, int W, int H, int footer) {
     tft.fillRect(cx - 12, cy - 2, 24, 4, C_WHITE);
     tft.fillTriangle(cx + d * 14, cy, cx, cy - 10, cx, cy + 10, C_WHITE);
   } else if (slot == 2) {
-    tft.drawCircle(cx - 4, cy - 4, 9, C_WHITE);
-    tft.drawCircle(cx - 4, cy - 4, 8, C_WHITE);
-    tft.fillRect(cx + 4, cy + 4, 4, 9, C_WHITE);
+    // A three-pixel ring and a short 45-degree handle, centered as one silhouette.
+    tft.fillCircle(cx - 3, cy - 3, 10, C_WHITE);
+    tft.fillCircle(cx - 3, cy - 3, 7, C_DARK);
+    for (int d = 4; d <= 11; d++) tft.fillRect(cx + d - 1, cy + d - 1, 3, 3, C_WHITE);
   } else {
     for (int i = -1; i <= 1; i += 2) {
       tft.fillRect(cx - 3, cy + i * 10 - 3, 6, 6, C_WHITE);
@@ -44,9 +45,29 @@ template <class G> void drawRow(G& tft, const char* text, bool sd, int W, int y,
       tft.setCursor(W - 40, y + (height - 16) / 2); tft.print("SD");
     }
 }
-template <class G> void drawKeyboard(G& tft, int W, int H, int titleH, const char* text) {
+// Repaint directly on the dark backing; only an empty slot needs erasing.
+template <class G> void drawPageRow(G& tft, const char* text, bool sd, int W, int y, int height) {
+  if (text) drawRow(tft, text, sd, W, y, height);
+  else tft.fillRect(6, y, W - 12, height, C_BLACK);
+}
+// Preserve the common prefix and erase only the edited suffix and old caret. The keyboard
+// and title are painted once on entry; even Clear never clears beyond this 16-pixel line.
+template <class G> void drawSearchText(G& tft, int titleH, const char* text, const char* previous = nullptr) {
+  if (previous && !strcmp(text, previous)) return;
+  const char* shown = text[0] ? text : "Type a title";
+  const char* old = previous && previous[0] ? previous : "Type a title";
+  size_t prefix = 0;
+  if (previous && text[0] && previous[0])
+    while (text[prefix] && text[prefix] == previous[prefix]) prefix++;
+  size_t width = strlen(shown), oldWidth = strlen(old);
+  if (oldWidth > width) width = oldWidth;
+  tft.fillRect(8 + prefix * 12, titleH + 4, (width - prefix) * 12 + 2, 16, C_BLACK);
   tft.setTextSize(2); tft.setTextColor(C_WHITE, C_BLACK);
-  tft.setCursor(8, titleH + 4); tft.print(text[0] ? text : "Type a title");
+  tft.setCursor(8 + prefix * 12, titleH + 4); tft.print(shown + prefix);
+  tft.fillRect(8 + strlen(shown) * 12, titleH + 4, 2, 16, C_WHITE);
+}
+template <class G> void drawKeyboard(G& tft, int W, int H, int titleH, const char* text) {
+  drawSearchText(tft, titleH, text);
   const char* keys = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
   int top = titleH + 26, step = (H - top - 38) / 4;
   for (int i = 0; i < 36; i++) {
