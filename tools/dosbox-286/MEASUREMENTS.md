@@ -100,7 +100,7 @@ records every child exit status and fails if any capture fails.
 against source CMF ticks at 8191/1193182 seconds per tick. This walks the original
 `SBMUSIC.C` event rules; it is not a voice-allocator/cycle simulator.
 
-Collect all successful status records and retain failures explicitly:
+Final collection requires a nonempty finalized matrix whose status records all match and succeed. Failed, missing, or inconsistent records exit nonzero before emitting results; use `--partial` to retain failures explicitly in an incomplete diagnostic collection. Final plots reject partial, empty, or failed collections:
 
 ```sh
 python3 tools/dosbox-286/summarize_measurements.py \

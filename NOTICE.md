@@ -862,6 +862,9 @@ A firmware for the ESP32-3248S035 board that plays the Starter games, and an ins
 
 ## Tools used to build and test
 
+OpenAI Codex (GPT-6), directed by Lewis Moten, added capture-matrix validation and failure regressions to the PLAYGAME measurement collector and plotter (`tools/dosbox-286/`).
+
+
 Built with [TypeScript](https://www.typescriptlang.org/) (Apache-2.0),
 [Vite](https://vitejs.dev/), [Vitest](https://vitest.dev/) and vite-node (MIT, both from the
 Vitest project), and

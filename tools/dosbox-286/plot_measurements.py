@@ -30,8 +30,9 @@ def main():
     parser.add_argument('roots', type=Path, nargs='+', help='original capture roots')
     args = parser.parse_args()
     data = json.loads(args.results.read_text())
-    if not data['complete']:
-        parser.error('plots require a finalized, not partial, result collection')
+    if (not data['complete'] or data.get('failed_capture_count', 0)
+            or data.get('failures') or not data.get('captures')):
+        parser.error('plots require a finalized, nonempty result collection without failures')
     out = args.output.resolve()
     out.mkdir(parents=True, exist_ok=True)
     os.environ.setdefault('MPLCONFIGDIR', str(out / '.mpl-cache'))

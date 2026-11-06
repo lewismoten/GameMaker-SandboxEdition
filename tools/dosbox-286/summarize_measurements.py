@@ -88,17 +88,33 @@ def main():
     parser.add_argument('--partial', action='store_true', help='inspect only finished status records')
     args = parser.parse_args()
     records, failures = [], []
+    pending = []
     for root in args.roots:
-        if not args.partial and not (root / 'matrix.json').exists():
-            parser.error(f'{root}: matrix not finalized (or use --partial)')
-        for status in sorted(root.glob('*.status.json')):
-            item = json.loads(status.read_text())
-            if item['exit_code'] != 0:
-                failures.append({'root': root.name, **item})
-                continue
-            result = inspect_run(root / item['directory'])
-            result['root'] = root.name
-            records.append(result)
+        statuses = [json.loads(path.read_text())
+                    for path in sorted(root.glob('*.status.json'))]
+        if not args.partial:
+            manifest = root / 'matrix.json'
+            if not manifest.exists():
+                parser.error(f'{root}: matrix not finalized (or use --partial)')
+            matrix = json.loads(manifest.read_text())
+            if not isinstance(matrix, list) or not matrix:
+                parser.error(f'{root}: empty or invalid capture matrix')
+            expected = {item['directory']: item for item in matrix}
+            actual = {item['directory']: item for item in statuses}
+            if (len(expected) != len(matrix) or len(actual) != len(statuses)
+                    or expected != actual):
+                parser.error(f'{root}: incomplete or inconsistent capture matrix')
+            if any(item['exit_code'] != 0 for item in matrix):
+                parser.error(f'{root}: failed captures in matrix (or use --partial)')
+        pending.extend((root, item) for item in statuses)
+    # Validate every root before inspecting captures or emitting final results.
+    for root, item in pending:
+        if item['exit_code'] != 0:
+            failures.append({'root': root.name, **item})
+            continue
+        result = inspect_run(root / item['directory'])
+        result['root'] = root.name
+        records.append(result)
     baselines = {(r['scenario'], r['repeat']): r for r in records if r['cycles'] == 20000}
     for row in records:
         base = baselines.get((row['scenario'], 1))

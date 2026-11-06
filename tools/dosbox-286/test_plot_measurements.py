@@ -1,10 +1,34 @@
 """Optional Matplotlib plot tests; tone fixture is not study evidence."""
+import contextlib
+import io
+import json
 import importlib.util
 from pathlib import Path
 import struct
 import tempfile
 import unittest
+from unittest.mock import patch
 import wave
+
+
+class CollectionValidationTests(unittest.TestCase):
+    def test_final_plots_reject_partial_failed_and_empty_results_before_creating_output(self):
+        from plot_measurements import main
+        for data in ({'complete': False},
+                     {'complete': True, 'failed_capture_count': 1},
+                     {'complete': True, 'failures': [{'exit_code': 1}]},
+                     {'complete': True, 'captures': []}):
+            with self.subTest(data=data), tempfile.TemporaryDirectory() as tmp:
+                root = Path(tmp)
+                results = root / 'results.json'
+                results.write_text(json.dumps(data))
+                output = root / 'plots'
+                with patch('sys.argv', ['plot', str(results), str(output), tmp]):
+                    with contextlib.redirect_stderr(io.StringIO()):
+                        with self.assertRaises(SystemExit) as error:
+                            main()
+                self.assertEqual(error.exception.code, 2)
+                self.assertFalse(output.exists())
 
 
 @unittest.skipUnless(importlib.util.find_spec('matplotlib'), 'optional Matplotlib dependency')
