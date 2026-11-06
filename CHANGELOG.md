@@ -261,6 +261,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Fixed
 
+- On the Starters tab, Show: Done also lists the graduations you have earned, after the Starters you have finished, and Show: Not done yet lists the locked ones as well as the ones ready to graduate, so an earned graduation no longer disappears under a filter.
 - Two Starters had art a child could read the wrong way: Ride Along's title stars no longer climb out of the hero like a stream, and Under the Hood's second level no longer has a plus sign made of green panels
 
 - Kit's Moves: the three dash gaps are sized to the moves their signs name (one dash, a hop with a dash, a hop with two dashes), and the signs now say to keep Right held.
