@@ -252,3 +252,63 @@ test('walkthrough progress stays visual but speech is bounded and failures persi
   await page.getByRole('button', { name: '■ Stop', exact: true }).click();
   await page.waitForFunction(() => [...document.querySelectorAll('.wd [role=status]')].at(-1).textContent.startsWith('Stopped'));
 });
+test('level checks retain failed/stopped outcomes with or without previous results and reset on success', async () => {
+  await reset();
+  const results = await page.evaluate(async () => {
+    const { Project } = await import('/src/editor/core/project.ts');
+    const { checkPanel } = await import('/src/editor/editors/map/check/checkPanel.ts');
+    window.Worker = class {
+      constructor() {
+        window.worker = this;
+      }
+      postMessage() {}
+      terminate() {}
+    };
+    const results = [];
+    const tick = () => new Promise((r) => setTimeout(r, 10));
+    for (const previous of [false, true]) {
+      const project = Project.create('Check fixture');
+      if (previous)
+        project.setExtras('audit.map', 'levelCheck', {
+          when: '2026-11-05T12:00:00Z',
+          budget: 15,
+          heat: '0'.repeat(10000),
+          soon: '0'.repeat(10000),
+          stuck: [],
+          deaths: [],
+          findings: [],
+          places: 3,
+          complete: true,
+          ms: 100,
+        });
+      const panel = checkPanel({ project, file: 'audit.map', scene: undefined, overlay: {}, redraw() {}, goTo() {}, reload() {}, selection() {}, paint() {} });
+      document.body.append(panel.el);
+      panel.toggle(true);
+      const button = panel.el.querySelector('button.primary');
+      const status = panel.el.querySelector('[role=status]');
+      button.click();
+      worker.onmessage({ data: { kind: 'error', message: 'Controlled check failure' } });
+      await tick();
+      const failed = status.textContent;
+      button.click();
+      button.click();
+      await tick();
+      const stopped = status.textContent;
+      button.click();
+      worker.onmessage({ data: { kind: 'done', report: { runs: [], findings: [], ms: 50 } } });
+      await tick();
+      results.push({ previous, failed, stopped, success: status.textContent });
+      panel.el.remove();
+    }
+    return results;
+  });
+  for (const result of results) {
+    assert.match(result.failed, /level check failed.*Controlled check failure/);
+    assert.match(result.stopped, /^Stopped/);
+    if (result.previous) {
+      assert.match(result.failed, /previous result/);
+      assert.match(result.stopped, /previous result/);
+    }
+    assert.match(result.success, /^Checked/);
+  }
+});
