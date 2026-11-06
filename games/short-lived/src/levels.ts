@@ -2,11 +2,15 @@
 // games/kit/starter/map.ts for what the letters mean), then given its signs and its monsters.
 //
 //   1. A Bubble: a clear bubble sits in a low tunnel through a brick wall and blocks it. It has a
-//      lifetime, so it pops on its own after a while and leaves a sparkle. Mia waits, then walks through.
+//      lifetime, so it shrinks stage by stage, pops on its own and leaves a sparkle. Mia waits,
+//      then walks through.
 //   2. Wake Up: a sleepy blue gumdrop blocks the tunnel. When its lifetime is up it does not
-//      vanish, it becomes an awake orange one that is not solid and strolls about. Mia waits, then
-//      walks through (and past) it.
-// Both rooms are closed in by brick walls you can see, so Mia is never stopped by something she can't.
+//      vanish, it opens its eyes stage by stage and becomes an awake orange one that is not solid
+//      and strolls about. Mia waits, then walks through (and past) it.
+// Both rooms are short: the signs, Mia's entrance and the tunnel with its monster are all in the
+// opening view (the view centers on Mia, about 8 blocks to her left and 7 to her right), so the
+// whole countdown is watched from the start. Both rooms are closed in by brick walls you can see,
+// so Mia is never stopped by something she can't.
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
@@ -15,17 +19,17 @@ import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
 import { addSign, type Sign } from '../../kit/starter/sign';
 import { BUBBLE, SLEEPER } from './monsters';
 
-export type SignName = 'life' | 'wait' | 'sleepy' | 'becomes' | 'exit';
+export type SignName = 'life' | 'shrink' | 'wakes' | 'eyes' | 'exit';
 
 /** The block set both levels share: the Starter blocks, then this game's signs. */
 function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
   const signs = {
-    life: addSign(book, pal, 'life.sign', 'THIS BUBBLE POPS ON ITS OWN', 4, 4),
-    wait: addSign(book, pal, 'wait.sign', 'WAIT FOR IT TO GO', 4, 3),
-    sleepy: addSign(book, pal, 'sleepy.sign', 'A SLEEPY ONE BLOCKS THE TUNNEL', 4, 4),
-    becomes: addSign(book, pal, 'becomes.sign', 'LATER IT BECOMES AN AWAKE ONE', 4, 4),
+    life: addSign(book, pal, 'life.sign', 'THIS BUBBLE POPS ON ITS OWN', 4, 2),
+    shrink: addSign(book, pal, 'shrink.sign', 'WATCH IT SHRINK', 3, 2),
+    wakes: addSign(book, pal, 'wakes.sign', 'THIS ONE WAKES UP AS ANOTHER', 4, 2),
+    eyes: addSign(book, pal, 'eyes.sign', 'WATCH ITS EYES', 3, 2),
     exit: addSign(book, pal, 'exit.sign', 'EXIT →', 3),
   };
   return { book, signs };
@@ -46,12 +50,15 @@ export const GROUND = 10;
 /** Where the monsters stand: the row above the ground. */
 export const STAND = GROUND - 1;
 
-/** The ground, brick walls at both ends (rows 0 to 9, so the room is closed in), the entrance on the left (x 3) and the exit door at `exitX`. */
+/** Where Mia comes in, in both levels: one sign behind her, one ahead, then the tunnel. */
+const ENTRANCE = 6;
+
+/** The ground, brick walls at both ends (rows 0 to 9, so the room is closed in), the entrance (x ENTRANCE) and the exit door at `exitX`. */
 function base(width: number, exitX: number): Grid {
   const g = new Grid(width, 15);
   g.row(GROUND, 0, width - 1, 'G').fill(0, GROUND + 1, width, 4, 'D');
   g.col(0, 0, 9, 'B').col(width - 1, 0, 9, 'B');
-  g.put(3, 8, 's').put(3, 9, 'S');
+  g.put(ENTRANCE, 8, 's').put(ENTRANCE, 9, 'S');
   g.put(exitX, 8, 'e').put(exitX, 9, 'E');
   return g;
 }
@@ -62,61 +69,63 @@ function scenery(g: Grid, clouds: [number, number][], bushes: number[], flowers:
   for (const x of flowers) g.put(x, GROUND - 1, 'f');
 }
 
-/** Where the bubble stands in level 1 and the sleeper in level 2, and each tunnel (a brick wall from x 22 to 29 in level 1, 24 to 33 in level 2). */
-export const BUBBLE_X = 23;
-export const SLEEPER_X = 25;
-export const TUNNEL_1 = [22, 29] as const;
-export const TUNNEL_2 = [24, 33] as const;
+/** Where the bubble stands in level 1 and the sleeper in level 2, one block into each tunnel (a brick wall from x 10 to 15 in level 1, 10 to 17 in level 2). */
+export const BUBBLE_X = 11;
+export const SLEEPER_X = 11;
+export const TUNNEL_1 = [10, 15] as const;
+export const TUNNEL_2 = [10, 17] as const;
 
 /** A wall with a two-block-high tunnel through it. */
 function wall(g: Grid, [from, to]: readonly [number, number]): void {
   g.fill(from, 0, to - from + 1, 8, 'B');
 }
 
-/** Level 1: a bubble in the tunnel pops on its own. 46 blocks wide; the ground is row 10. */
+/** Level 1: a bubble in the tunnel shrinks and pops on its own. 26 blocks wide; the ground is row 10. */
 function aBubble(book: Book, signs: Record<SignName, Sign>): StarterMap {
-  const g = base(46, 42);
+  const g = base(26, 24);
   wall(g, TUNNEL_1);
-  g.row(9, 11, 12, 'c').row(9, 32, 35, 'c');
+  // two coins in the tunnel behind the bubble, in sight from the start, and four past the wall
+  g.row(9, 13, 14, 'c').row(9, 16, 19, 'c');
   scenery(
     g,
     [
-      [6, 2],
-      [14, 1],
-      [33, 2],
-      [39, 4],
+      [2, 2],
+      [7, 1],
+      [17, 2],
+      [21, 4],
     ],
-    [9, 20, 37],
-    [13, 31, 40],
+    [5],
+    [23],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(6, onGround(GROUND, signs.life), signs.life);
-  m.sign(14, onGround(GROUND, signs.wait), signs.wait);
-  m.sign(38, onGround(GROUND, signs.exit), signs.exit);
+  m.sign(1, onGround(GROUND, signs.life), signs.life);
+  m.sign(7, onGround(GROUND, signs.shrink), signs.shrink);
+  m.sign(20, onGround(GROUND, signs.exit), signs.exit);
   m.mon(BUBBLE, BUBBLE_X, STAND);
   return m;
 }
 
-/** Level 2: a sleepy gumdrop in the tunnel wakes up. 46 blocks wide. */
+/** Level 2: a sleepy gumdrop in the tunnel wakes up. 28 blocks wide. */
 function wakeUp(book: Book, signs: Record<SignName, Sign>): StarterMap {
-  const g = base(46, 42);
+  const g = base(28, 26);
   wall(g, TUNNEL_2);
-  g.row(9, 10, 11, 'c').row(9, 35, 38, 'c');
+  // two coins in the tunnel past the awake one's stroll, and four past the wall
+  g.row(9, 15, 16, 'c').row(9, 18, 21, 'c');
   scenery(
     g,
     [
-      [6, 2],
-      [16, 1],
-      [20, 3],
-      [40, 1],
+      [2, 1],
+      [8, 3],
+      [19, 1],
+      [23, 3],
     ],
-    [9, 22, 41],
-    [18, 34, 40],
+    [5],
+    [25],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(6, onGround(GROUND, signs.sleepy), signs.sleepy);
-  m.sign(12, onGround(GROUND, signs.becomes), signs.becomes);
-  m.sign(39, onGround(GROUND, signs.exit), signs.exit);
+  m.sign(1, onGround(GROUND, signs.wakes), signs.wakes);
+  m.sign(7, onGround(GROUND, signs.eyes), signs.eyes);
+  m.sign(22, onGround(GROUND, signs.exit), signs.exit);
   m.mon(SLEEPER, SLEEPER_X, STAND);
   return m;
 }
