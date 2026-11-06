@@ -101,7 +101,7 @@ function flashAndRumble(pal: Pal): Level {
     [34, 2, 2],
   ]);
   addLitTwins(b.book, b.timed, pal, laid(m, b.book));
-  return { file: 'one', title: 'Flash and Rumble', hint: 'A flash, a bolt and the thunder after.', book: b.book, timed: b.timed, map: m, bolt, stones: [] };
+  return { file: 'one', title: 'Flash and Rumble', hint: 'A flash, a bolt, then a rumble.', book: b.book, timed: b.timed, map: m, bolt, stones: [] };
 }
 
 /** Level 2: 46 blocks wide; a ditch two deep with three stones over it, steps out of it on the left. */

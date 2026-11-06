@@ -18,7 +18,7 @@ import { STARTER_STING, starterStingFli } from '../kit/starter/sting';
 import { buildHeroBlocks, heroPicture } from '../kit/starter/hero';
 import { buildHero } from '../kit/starter/heroChar';
 import { buildMonsterBlocks, buildMonsters } from '../kit/starter/monsters';
-import { cardPicture, endPicture, gif, menuPicture, paper, scoresPicture, slotsPicture, titlePicture } from '../kit/starter/screens';
+import { cardPicture, endPicture, gif, menuPicture, paper, scoresPicture, slotsPicture } from '../kit/starter/screens';
 import { skyOf } from '../kit/starter/palette';
 import { buildSounds } from '../kit/starter/sounds';
 import { demoRecording } from './src/demo';
@@ -26,6 +26,7 @@ import { TITLE, buildGame } from './src/game';
 import { buildLevels } from './src/levels';
 import { finishBlocks } from './src/storm';
 import { song } from './src/song';
+import { stormTitle } from './src/title';
 import { CREDITS, HOWTO, LOST, STORY, WON } from './src/text';
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -63,7 +64,7 @@ const text = (base: string, heading: string, body: string) => {
   disk.put(`${base}.txt`, body);
   disk.put(`${base}.lst`, serializeSlideList([{ name: `${base}.gif`, pause: 0 }, { name: `${base}.txt` }]));
 };
-disk.put('title.gif', gif(titlePicture(pal, book, hero, door, TITLE, 'A STARTER GAME'), pal));
+disk.put('title.gif', gif(stormTitle(pal, book, hero, door, TITLE, 'A STARTER GAME'), pal));
 disk.put(STARTER_STING, starterStingFli('lightning'));
 disk.put(
   'title.lst',
