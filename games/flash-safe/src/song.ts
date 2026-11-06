@@ -1,34 +1,19 @@
-// FLASH SAFE's one song, "Tick Tock": eight bars of a ticking tune in G major for the Sound
-// Blaster (a lead, a bass and a plucked arpeggio, each its own FM channel). It plays on the title,
-// the menu, the levels and the endings. Note strings are the kit's (kit/tune.ts): a note, an
-// octave and a length (w h q e), as in "E5 q".
-import { INSTRUMENTS } from '@lewismoten/gamemaker-sandbox-tools/kit/music';
-import { join, tune, v } from '@lewismoten/gamemaker-sandbox-tools/kit/tune';
-
-const MELODY = join(
-  'G5 e, G5 e, D5 q, G5 e, G5 e, D6 q',
-  'B5 e, B5 e, G5 q, B5 e, B5 e, D6 q',
-  'C6 e, C6 e, A5 q, C6 e, C6 e, E6 q',
-  'D6 e, B5 e, G5 q, D6 h',
-  'E6 e, E6 e, C6 q, E6 e, E6 e, G6 q',
-  'D6 e, D6 e, B5 q, D6 e, D6 e, B5 q',
-  'A5 e, D6 e, F#5 q, A5 e, D6 e, A5 q',
-  'G5 e, B5 e, D6 q, G6 h',
-);
-
-/** One bar of each chord: its three notes for the arpeggio, and its root and fifth for the bass. */
-const CHORDS = {
-  G: { arp: ['G3', 'B3', 'D4'], bass: ['G2', 'D3'] },
-  Em: { arp: ['E3', 'G3', 'B3'], bass: ['E2', 'B2'] },
-  C: { arp: ['E3', 'G3', 'C4'], bass: ['C3', 'G2'] },
-  D: { arp: ['F#3', 'A3', 'D4'], bass: ['D3', 'A2'] },
-} as const;
-const BARS: (keyof typeof CHORDS)[] = ['G', 'Em', 'C', 'G', 'C', 'G', 'D', 'G'];
-
-const arp = join(...BARS.map((b) => [0, 1, 2, 1, 0, 1, 2, 1].map((i) => `${CHORDS[b].arp[i]} e`).join(', ')));
-const bass = join(...BARS.map((b) => CHORDS[b].bass.map((n) => `${n} h`).join(', ')));
+// FLASH SAFE's one song, "Gentle Glow": a clockwork tune in F major in its group's band (kit/starter/songStyle.ts:
+// piano with a bell above, a walking bass, a pluck on every off-beat and a ticking hat), an A and a B section played
+// AABA, 32 bars before it loops. It plays on the title, the menu, the levels and the endings.
+import { starterSong } from '../../kit/starter/songStyle';
 
 /** The song as a .CMF file. */
 export function song(): Uint8Array {
-  return tune(144, [v(0, INSTRUMENTS.lead, MELODY, 100), v(1, INSTRUMENTS.bass, bass, 90), v(2, INSTRUMENTS.pluck, arp, 60)]);
+  return starterSong('together', {
+    bpm: 116,
+    A: {
+      chords: 'F | C | Dm | Bb | F | C | Bb | C',
+      tune: 'A5 q, G5 e, F5 e, C5 q, F5 q | G5 q, E5 e, C5 e, G4 h | A4 e, D5 e, F5 e, A5 e, D6 q, A5 q | Bb5 h, F5 h | C6 q, A5 e, F5 e, C6 q, F6 q | E6 q, C6 e, G5 e, E5 h | D5 e, F5 e, Bb5 e, D6 e, C6 q, Bb5 q | G5 h., r q',
+    },
+    B: {
+      chords: 'Bb | F | Gm | Dm | Bb | F | Gm | C',
+      tune: 'D6 h, F6 q, D6 q | C6 h, A5 q, F5 q | G5 e, Bb5 e, D6 e, Bb5 e, G5 q, D5 q | F5 h, A5 h | Bb5 q, D6 q, F6 q, Bb5 q | A5 q, C6 q, F6 h | G5 q, Bb5 q, A5 q, G5 q | E5 h., r q',
+    },
+  });
 }

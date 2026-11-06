@@ -148,6 +148,11 @@ This folder holds the build's Vite plugins and the scripts run by hand (from
   assistant's tools (`assistant/tools`) on game folders, zips, this project's games and the CD's,
   writing only in the folders it is given, with its own vite-node settings (`mcp/vite.config.ts`).
   Its README has the setup for Claude Code, Claude Desktop and other clients.
+- `songsSimilar.ts` (`npm run songs:similar [-- --starters] [--top n] [--json out.json] [id ...]`): advisory list of how
+  alike the games' songs are. It builds every `games/<id>/src/song.ts` export, reads the notes back from the .CMF and
+  prints each song's tempo, bars, seconds, bytes and instruments, the byte-identical twins, and the pairs whose top lines
+  match most closely (intervals and note spacing, in any key). It hears nothing: two songs with low scores can still
+  sound alike through the same instruments and groove, which is why the instrument column is there.
 - `badgeSimilar.ts` (`npm run badges:similar [-- --threshold 0.27] [--gray 0.03] [--top n] [--out dir] [--strict]`): advisory
   check that no two achievement badges (`../src/achievements/blockArt.json`) look too alike. A coarse 8x8 pass drops
   plainly different pairs, then a 40x40 comparison blends mean luminance difference with an edge-shape
