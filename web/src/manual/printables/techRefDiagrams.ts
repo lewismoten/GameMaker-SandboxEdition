@@ -31,71 +31,94 @@ const text = (x: number, y: number, s: string, extra = '') => `<text x="${x}" y=
  * patches of 400 bytes) and the Sound Blaster voice driver it reads from SNDBLAST.DRV (2,493 bytes, SOUNDC.C). A scene adds
  * its song, sound list, scene list and the buffer for the largest digitized sound it plays.
  */
-const MEMORY: { k: number; name: string; size: string; kind: 'out' | 'prog' | 'scene' | 'free' }[] = [
-  { k: 20, name: 'DOS, with DOS=HIGH', size: 'about 20K', kind: 'out' },
-  { k: 20, name: 'Mouse driver', size: '15K to 25K', kind: 'out' },
-  { k: 181, name: 'PLAYGAME and its data, with the map', size: '181K', kind: 'prog' },
-  { k: 64, name: 'Screen buffer', size: '64K', kind: 'prog' },
-  { k: 62, name: 'Background blocks (.BBL)', size: '62K', kind: 'prog' },
-  { k: 41, name: 'Monster blocks (.MBL)', size: '41K', kind: 'prog' },
-  { k: 21, name: 'Hero blocks (.CBL)', size: '21K', kind: 'prog' },
-  { k: 50, name: 'Monster tables', size: '50K', kind: 'prog' },
-  { k: 2.5, name: 'Sound Blaster voice driver', size: '2.5K', kind: 'prog' },
-  { k: 60, name: 'This scene’s song, sounds and lists', size: '20K to 120K', kind: 'scene' },
+const MEMORY: { k: number; name: string; size: string; kind: 'out' | 'prog' | 'scene'; side: 'left' | 'right'; one?: boolean }[] = [
+  { k: 20, name: 'DOS (DOS=HIGH)', size: 'about 20K', kind: 'out', side: 'right', one: true },
+  { k: 20, name: 'Mouse driver', size: '15K to 25K', kind: 'out', side: 'right', one: true },
+  { k: 181, name: 'PLAYGAME program', size: '181K, with the map', kind: 'prog', side: 'right' },
+  { k: 64, name: 'Screen buffer', size: '64K', kind: 'prog', side: 'left' },
+  { k: 62, name: 'Background blocks', size: '62K (.BBL)', kind: 'prog', side: 'right' },
+  { k: 41, name: 'Monster blocks', size: '41K (.MBL)', kind: 'prog', side: 'left' },
+  { k: 21, name: 'Hero blocks', size: '21K (.CBL)', kind: 'prog', side: 'right' },
+  { k: 50, name: 'Monster tables', size: '50K', kind: 'prog', side: 'left' },
+  { k: 2.5, name: 'Voice driver', size: '2.5K (Sound Blaster)', kind: 'prog', side: 'left' },
+  { k: 60, name: 'This scene', size: 'song, sounds, lists: 20K to 120K', kind: 'scene', side: 'right' },
 ];
 
+/**
+ * The memory map: three sections with a gap between them (DOS and drivers, PLAYGAME, free memory), each with a bracket and
+ * a title on the far left. Heights are to scale within the 640K (the gaps are not memory). Labels alternate sides of the bar,
+ * placed from the bottom up and pushed apart; a pushed label gets a short slanted leader, never one that crosses another.
+ */
 function memory(): HTMLElement {
-  const top = 14;
-  const height = 290;
-  const scale = height / 640;
-  const x = 128;
-  const w = 64;
-  const used = MEMORY.reduce((s, m) => s + m.k, 0);
-  const rows = [...MEMORY, { k: 640 - used, name: 'Free memory', size: `about ${Math.round((640 - used) / 10) * 10}K`, kind: 'free' as const }];
-  const fill = { out: '#d8d3c6', prog: SPOT, scene: '#ffffff', free: '#ffffff' };
-  const opacity = { out: 1, prog: 0.25, scene: 1, free: 1 };
-  let y = top + height; // the bottom of memory, 0K
-  let labelY = Infinity; // labels are placed from the bottom up and pushed apart
+  const scale = 330 / 640;
+  const gap = 10;
+  const top = 26;
+  const bx = 200; // the bar
+  const bw = 56;
+  const tall = (k: number) => Math.max(k * scale, 3); // the voice driver's 2.5K would be a hairline
+  const used = MEMORY.reduce((t, m) => t + m.k, 0);
+  const free = 640 - used;
+  const freeH = free * scale;
+  const outH = MEMORY.filter((m) => m.kind === 'out').reduce((t, m) => t + tall(m.k), 0);
+  const gameH = MEMORY.filter((m) => m.kind !== 'out').reduce((t, m) => t + tall(m.k), 0);
+  const freeTop = top;
+  const gameTop = freeTop + freeH + gap;
+  const outTop = gameTop + gameH + gap;
+  const base = outTop + outH;
+  const fill = { out: '#d8d3c6', prog: SPOT, scene: '#ffffff' };
+  const opacity = { out: 1, prog: 0.25, scene: 1 };
   const parts: string[] = [];
-  const bands: Record<string, [number, number]> = {};
-  for (const r of rows) {
-    const hgt = Math.max(r.k * scale, 3);
+  const next = { left: Infinity, right: Infinity }; // the highest label baseline so far on each side
+  let y = base;
+  for (const r of MEMORY) {
+    if (r.kind !== 'out' && y > gameTop + gameH) y = gameTop + gameH; // step over the gap
+    const hgt = tall(r.k);
     const y0 = y - hgt;
     const dash = r.kind === 'scene' ? ' stroke-dasharray="4 3"' : '';
-    parts.push(`<rect x="${x}" y="${y0}" width="${w}" height="${hgt}" fill="${fill[r.kind]}" fill-opacity="${opacity[r.kind]}" stroke="${INK}"${dash}/>`);
+    parts.push(
+      `<rect x="${bx}" y="${y0}" width="${bw}" height="${hgt}" fill="${fill[r.kind]}" fill-opacity="${opacity[r.kind]}" stroke="${INK}" stroke-width=".8"${dash}/>`,
+    );
     const mid = y0 + hgt / 2;
-    const ly = Math.min(mid + 3.5, labelY - 24);
-    labelY = ly;
-    parts.push(`<path d="M${x + w} ${mid} H${x + w + 8} L${x + w + 14} ${ly - 3.5} H${x + w + 18}" fill="none" stroke="${INK}" stroke-width=".6"/>`);
-    parts.push(text(x + w + 21, ly - 4, r.name, 'font-weight="700"'));
-    parts.push(text(x + w + 21, ly + 7, r.size));
-    const band = r.kind === 'prog' || r.kind === 'scene' ? 'game' : r.kind === 'out' ? 'dos' : 'free';
-    bands[band] = [Math.min(bands[band]?.[0] ?? y0, y0), Math.max(bands[band]?.[1] ?? y, y)];
+    const ly = Math.min(mid + 3.5, next[r.side] - (r.one ? 14 : 25)); // the name's baseline
+    next[r.side] = ly;
+    const left = r.side === 'left';
+    const edge = left ? bx : bx + bw;
+    const out = left ? -1 : 1;
+    const end = edge + out * 9;
+    parts.push(`<path d="M${edge} ${mid} L${end} ${ly - 3.5} H${end + out * 3}" fill="none" stroke="${INK}" stroke-width=".7"/>`);
+    const tx = end + out * 6;
+    const anchor = left ? ' text-anchor="end"' : '';
+    if (r.one) parts.push(text(tx, ly, `<tspan font-weight="700">${r.name}</tspan>, ${r.size}`, anchor));
+    else parts.push(text(tx, ly, r.name, `font-weight="700"${anchor}`), text(tx, ly + 11, r.size, anchor));
     y = y0;
   }
-  // brackets on the left: what PLAYGAME holds, and what is outside it
-  const bracket = (b: [number, number], lines: string[], spot = false) => {
-    const [a, z] = b;
+  // free memory: its own box, its size inside
+  parts.push(`<rect x="${bx}" y="${freeTop}" width="${bw}" height="${freeH}" fill="#ffffff" stroke="${INK}" stroke-width=".8"/>`);
+  parts.push(text(bx + bw / 2, freeTop + freeH / 2 + 4, `${Math.round(free / 10) * 10}K`, 'text-anchor="middle"'));
+  // each section's outline, bracket and title
+  const bracket = (a: number, z: number, lines: string[], spot = false) => {
     const c = spot ? SPOT : INK;
     const m = (a + z) / 2;
     return (
-      `<path d="M${x - 6} ${a + 2.5} H${x - 12} V${z - 2.5} H${x - 6}" fill="none" stroke="${c}" stroke-width="1.2"/>` +
+      `<rect x="${bx}" y="${a}" width="${bw}" height="${z - a}" fill="none" stroke="${c}" stroke-width="1.8"/>` +
+      `<path d="M84 ${a + 1} H78 V${z - 1} H84" fill="none" stroke="${c}" stroke-width="1.4"/>` +
       lines
-        .map((l, i) => text(x - 17, m + 4 + (i - (lines.length - 1) / 2) * 12, l, `text-anchor="end" fill="${c}"${i === 0 ? ' font-weight="700"' : ''}`))
+        .map((l, i) => text(72, m + 4 + (i - (lines.length - 1) / 2) * 12, l, `text-anchor="end" fill="${c}"${i === 0 ? ' font-weight="700"' : ''}`))
         .join('')
     );
   };
   const markup = [
     ...parts,
-    bracket(bands.dos, ['Outside', 'PLAYGAME']),
-    bracket(bands.game, ['PLAYGAME:', 'about 420K,', 'then the scene'], true),
-    text(x + w / 2, top - 4, '640K', 'text-anchor="middle" font-weight="700"'),
-    text(x + w / 2, top + height + 12, '0K', 'text-anchor="middle" font-weight="700"'),
+    bracket(freeTop, freeTop + freeH, ['Free memory']),
+    bracket(gameTop, gameTop + gameH, ['PLAYGAME', 'about 420K,', 'then the scene'], true),
+    bracket(outTop, base, ['DOS and', 'drivers']),
+    text(bx + bw / 2, top - 8, '640K: the top of conventional memory', 'text-anchor="middle" font-weight="700"'),
+    text(bx + bw / 2, base + 14, 'the start of memory', 'text-anchor="middle"'),
   ].join('');
   return figure(
-    `0 0 440 ${top + height + 18}`,
+    `0 0 450 ${base + 20}`,
     markup,
-    'A memory map of 640K: DOS and a mouse driver at the bottom, then PLAYGAME with its program, screen buffer, three block files, monsters and voice driver, then a scene, and free memory at the top.',
+    'A memory map of 640K in three parts: DOS and a mouse driver at the start of memory; PLAYGAME with its program, screen buffer, three block files, monster tables, voice driver and the scene; and free memory at the top.',
     'Figure 1. A full-size game in 640K. The scene’s share changes from scene to scene; what is left is free.',
   );
 }
