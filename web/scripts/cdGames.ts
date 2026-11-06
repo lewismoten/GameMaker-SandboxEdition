@@ -29,6 +29,7 @@ import type { PrintablesFile } from '../src/manual/printables/types';
 import { blurbOf, dosText, storyFile } from '../src/export/gameAbout';
 import { gameShots } from './gameShots';
 import { builtHeroPath, heroOf } from '../src/gfx/levelPicture';
+import { fromCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import { checkGame, QUICK_CHECK_FILE, type Issue } from '../src/project/health';
 import { boxGame, type BoxGame } from '../src/desk/boxes/boxFacts';
 import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
@@ -169,9 +170,11 @@ const GAME_INFO: Record<string, GameInfo> = {
   zoom: { title: 'Zoom the Super Bear', company: AJ, price: '$20' },
 };
 
+/** A NUL-ended DOS string as text: CP437 (byte 0xB3 is a box line, not Latin-1's superscript three), with the box-drawing frame some authors put around a game's name trimmed from both ends, as gameDisplayName does. */
 function cString(bytes: Uint8Array): string {
   const end = bytes.indexOf(0);
-  return new TextDecoder('latin1').decode(end < 0 ? bytes : bytes.subarray(0, end)).trim();
+  const raw = Array.from(end < 0 ? bytes : bytes.subarray(0, end), (b) => String.fromCharCode(b)).join('');
+  return fromCp437(raw).replace(/^[\s\u2500-\u259f]+|[\s\u2500-\u259f]+$/g, '');
 }
 
 function gameTitle(gam: Uint8Array): string {
