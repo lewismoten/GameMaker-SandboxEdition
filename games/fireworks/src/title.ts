@@ -1,5 +1,5 @@
 // FIREWORKS' title picture: the name over a night sky, a ring and a peony bursting over the rooftops of a sleeping
-// town, a rocket on its way up, and Nova cheering on the grass. The bursts are the game's own frames (sparks.ts).
+// town, a rocket on its way up, and Lami cheering on the grass. The bursts are the game's own frames (sparks.ts).
 import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { scaleBlit } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 import { bevel, gradient } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
@@ -18,7 +18,7 @@ function burst(p: Pixels, pal: Pal, name: 'ring' | 'peony' | 'willow' | 'pop' | 
   p.blit(pic, Math.round(x - pic.w / 2), Math.round(y - pic.h / 2), 255);
 }
 
-/** `hero` is Nova cheering (20x40); `book` holds the town's blocks and the grass. */
+/** `hero` is Lami cheering (20x40); `book` holds the town's blocks and the grass. */
 export function titlePicture(pal: Pal, book: Book, hero: Pixels, name: string, tagline: string): Pixels {
   const { c, r } = pal;
   const p = new Pixels(W, H);
@@ -53,7 +53,7 @@ export function titlePicture(pal: Pal, book: Book, hero: Pixels, name: string, t
   const rx = Math.round((W - ribbon) / 2);
   bevel(p, rx, 44, ribbon, 14, r('parch'), 3, 2);
   text(p, rx + 10, 48, tagline, c('ink', 0));
-  // Nova, cheering, and the launcher beside them
+  // Lami, cheering, and the launcher beside them
   scaleBlit(p, hero, 24, GROUND - 80, 2);
   scaleBlit(p, book.pics.get('launch.pink')!, 70, GROUND - 40, 2);
   return p;
