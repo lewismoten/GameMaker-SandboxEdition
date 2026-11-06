@@ -1,10 +1,10 @@
-# Gusts: tools
+# Quicksand: tools
 
-- `check.ts`: the bot plays both levels. `route.ts` watches every tick: in level 1 each vent goes rumble, puff, rest in order for the lengths its blocks say (40, 30 and 90 ticks, give or take two), the first vent is stood on through its rumble and stings exactly once (10 hit points), and the other two are crossed after their puffs without a scratch; in level 2 the bridges go flicker, gone, solid on time, the bot stays on the first through its flicker and falls to the mat with nothing lost, hops out, then crosses each bridge while it is solid. It asserts the coins (4 and 4). The run wins with no life lost.
-- `walkthrough.ts`, `gendemo.ts`: re-record the walkthrough and the title demo (level 1: take the first puff, wait out the others).
-- `demoCheck.ts`: plays the built `demo.rec` on the real engine and checks it shows exactly one 10-point sting.
-- `preview.ts`: PNGs of the blocks, the hero, each level and every picture. `shots.ts`: pictures of the lessons for the progress shots (a vent at rest, rumbling and puffing; a bridge solid, flickering and gone).
+- `check.ts`: the bot plays both levels (`route.ts`). In level 1 it stands still on the sand and checks the block under it gives way after as many ticks as its chain has links left (give or take 4), that the hole is one block deep, then jumps out and walks across without another block giving way. In level 2 it rests on two stones and checks they never sink, stops on the wet sand and checks it gives way much sooner than dry sand, jumps out and goes on. It asserts the coins (4 and 3) and that nothing costs hit points. The run wins with no life lost.
+- `walkthrough.ts`, `gendemo.ts`: re-record the walkthrough and the title demo (level 1: stand still, drop into the hole, jump out, walk on).
+- `demoCheck.ts`: plays the built `demo.rec` on the real engine and checks the hero drops into a hole with nothing lost.
+- `preview.ts`: PNGs of each level's blocks, the hero, each level and every picture. `shots.ts`: pictures of the lessons for the progress shots (the sand at each stage under the hero, the hole, the stones).
 
 ## Starter rule: show the mistake once
 
-A Starter's demo and walkthrough show what each sign teaches, including the mistake once. Here the bot stands on level 1's first vent through its puff, and on level 2's first bridge through its flicker.
+A Starter's demo and walkthrough show what each sign teaches, including the mistake once. Here the bot stands still on level 1's sand until it gives way, and stops on level 2's wet sand until it does too.

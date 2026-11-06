@@ -28,7 +28,7 @@ import { song } from './src/song';
 import { titlePicture } from './src/title';
 import { CREDITS, HOWTO, LOST, STORY, WON } from './src/text';
 
-/** Hit points and lives at the start (nothing in this game takes any; they are there for F2). */
+/** Hit points and lives at the start (nothing in this game takes any: a hole is only a drop; they are there for F2). */
 const HERO_HIT_POINTS = 50;
 const HERO_LIVES = 3;
 
