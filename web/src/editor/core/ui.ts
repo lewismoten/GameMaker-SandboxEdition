@@ -91,10 +91,13 @@ export function notice(message: string, kind: 'info' | 'error' = 'info'): () => 
   return () => (stop(), t.remove());
 }
 
+let modalHeadingId = 0;
+
 /** A modal <dialog>. Resolves with the value passed to close(). */
 export function modal<T>(title: string, build: (close: (v: T | undefined) => void) => Child): Promise<T | undefined> {
   return new Promise((resolve) => {
-    const dlg = h('dialog', { class: 'modal' });
+    const headingId = `modal-heading-${++modalHeadingId}`;
+    const dlg = h('dialog', { class: 'modal', 'aria-labelledby': headingId });
     const close = (v: T | undefined) => {
       dlg.close();
       dlg.remove();
@@ -108,7 +111,7 @@ export function modal<T>(title: string, build: (close: (v: T | undefined) => voi
       h(
         'header',
         { class: 'modal-head' },
-        h('h2', null, title),
+        h('h2', { id: headingId }, title),
         h('button', { class: 'modal-close', 'aria-label': 'Close', title: 'Close (Esc)', onclick: () => close(undefined) }, '×'),
       ),
       build(close),
