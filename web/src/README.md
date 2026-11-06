@@ -223,8 +223,10 @@ SDK implementation lives in the packages below; the app imports their declared e
   contents, the zine, the Ultimate Owner's Guide and TURBO BUTTON.
   Subareas:
   - [`manual/epub/`](manual/epub/README.md): on-demand EPUB builders, packaging and validation.
+  - [`manual/magazine/`](manual/magazine/README.md): tURBO BUTTON issue assembly and reading/rendering.
   - [`manual/magazine/sections/`](manual/magazine/sections/README.md): magazine article/ad section factories.
   - [`manual/magazine/sections/spring93/`](manual/magazine/sections/spring93/README.md): spring 1993 issue-specific sections.
+  - [`manual/ultimate/`](manual/ultimate/README.md): ultimate Owner's Guide chapter content and booklet flow.
 
 ## Main flows
 
