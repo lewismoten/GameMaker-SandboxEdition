@@ -26,6 +26,11 @@ const graph = {
 };
 
 describe('player chunk boundaries', () => {
+  it('keeps reusable patch rules out of the play-only runtime', () => {
+    const chunk = classify(graph);
+    expect(chunk(rules)).not.toBe(chunk(game));
+    expect(chunk(rules)).toBe(chunk(table));
+  });
   it('does not put home-required data in the play-only runtime', () => {
     expect(classify(graph)(table)).not.toBe('player');
   });

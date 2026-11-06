@@ -293,6 +293,9 @@ function playChunks(): Rollup.GetManualChunk {
     // the tin hearts' list and saves: the player reads them, but so do pages that never play
     // (achievements counting hearts at start-up, the desk's trophy), which shouldn't fetch the engine for them
     if (/\/src\/tinHearts\/(tinHearts\.ts|manifest\.ts|hearts\.json)/.test(id)) return 'tinHearts';
+    // Pure DOS patch data/rules are also used by importers, thumbnails and file pickers.
+    // Keep their synchronous APIs, but do not make those callers fetch playback UI/audio.
+    if (/\/packages\/engine\/src\/player\/(patchTable|patchRules|fileExtensions)\.ts$/.test(id)) return 'playerPatches';
     if (pages.some(([, entries]) => entries.some((e) => id === resolve(__dirname, e)))) return undefined; // each page's own chunk
     const users = pages.filter((_, i) => closures![i].has(id)).map(([name]) => name);
     if (!users.includes('play') || users.includes('main')) return undefined;
