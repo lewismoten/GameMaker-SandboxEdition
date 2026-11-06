@@ -77,3 +77,62 @@ test('shared errors stay in the top modal; bursts coalesce but later retries sur
   await page.waitForFunction(() => document.querySelector('[role=status]')?.textContent === 'Page result');
   assert.match(await accessibleText(), /Page result/);
 });
+test('pending downloads remain visible beyond 30 seconds and settle on failure/success', async () => {
+  await reset();
+  await page.clock.install();
+  await page.evaluate(async () => {
+    const { chooseDownload } = await import('/src/editor/shell/download.ts');
+    window.dp = chooseDownload({
+      title: 'Fixture',
+      gam: 'fixture.gam',
+      project: true,
+      files: () =>
+        new Promise((resolve, reject) => {
+          window.fileResolve = resolve;
+          window.fileReject = reject;
+        }),
+    });
+  });
+  await page.locator('#dl-files').check();
+  await page.getByRole('button', { name: 'Download .zip', exact: true }).click();
+  await page.clock.fastForward(31000);
+  assert.match(
+    await page
+      .locator('.toast')
+      .allTextContents()
+      .then((a) => a.join(' ')),
+    /Building/,
+  );
+  await page.evaluate(async () => {
+    fileReject(new Error('Controlled download refusal'));
+    await dp;
+  });
+  await page.clock.runFor(20);
+  assert.doesNotMatch(
+    await page
+      .locator('.toast')
+      .allTextContents()
+      .then((a) => a.join(' ')),
+    /Building/,
+  );
+  assert.match(await accessibleText(), /Controlled download refusal/);
+  await page.evaluate(async () => {
+    const { Project } = await import('/src/editor/core/project.ts');
+    const project = Project.create('Download fixture');
+    const { chooseDownload } = await import('/src/editor/shell/download.ts');
+    void chooseDownload({ title: 'Fixture', gam: project.gam, project: true, files: async () => project.files });
+  });
+  await page.locator('#dl-files').check();
+  const downloaded = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Download .zip', exact: true }).click();
+  assert.match((await downloaded).suggestedFilename(), /\.zip$/);
+  await page.clock.runFor(20);
+  assert.match(await accessibleText(), /Saved.*\.zip/);
+  assert.doesNotMatch(
+    await page
+      .locator('.toast')
+      .allTextContents()
+      .then((a) => a.join(' ')),
+    /Building/,
+  );
+});

@@ -81,10 +81,10 @@ export function toast(message: string, kind: 'info' | 'error' = 'info'): void {
 }
 
 /** Like toast, and the returned function closes the message early. Rapid identical bursts coalesce for one second, not forever. */
-export function notice(message: string, kind: 'info' | 'error' = 'info'): () => void {
+export function notice(message: string, kind: 'info' | 'error' = 'info', opts: { persistent?: boolean } = {}): () => void {
   const toastHost = noticesIn([...document.querySelectorAll(':modal')].at(-1) ?? document.body);
   const recent = recentNotices.get(toastHost)!;
-  const key = `${kind}:${message}`;
+  const key = `${kind}:${!!opts.persistent}:${message}`;
   const now = performance.now();
   const previous = recent.get(key);
   if (previous?.el.isConnected && now - previous.at < 1000) return previous.close;
@@ -92,7 +92,13 @@ export function notice(message: string, kind: 'info' | 'error' = 'info'): () => 
   const close = h('button', { class: 'toast-close', 'aria-label': 'Dismiss', title: 'Dismiss' }, '×');
   // Only the message is live, not the other toasts or their Dismiss controls. Populate after attachment.
   const spoken = h('span', { class: 'sr-only', role: 'status', 'aria-live': 'polite' });
-  const t = h('div', { class: `toast ${kind}` }, h('span', { 'aria-hidden': 'true' }, message), spoken, close);
+  const t = h(
+    'div',
+    { class: `toast ${kind}`, dataset: { persistent: String(!!opts.persistent) } },
+    h('span', { 'aria-hidden': 'true' }, message),
+    spoken,
+    close,
+  );
   toastHost.append(t);
   let timer = 0;
   const announced = window.setTimeout(() => {
@@ -107,10 +113,11 @@ export function notice(message: string, kind: 'info' | 'error' = 'info'): () => 
   recent.set(key, { at: now, el: t, close: remove });
   // never a tall pile over the page: the newest three stay, on a phone only the newest
   const keep = window.matchMedia('(max-width: 430px)').matches ? 1 : 3;
-  while (toastHost.children.length > keep) toastHost.firstElementChild?.remove();
+  const transient = [...toastHost.querySelectorAll('.toast[data-persistent="false"]')];
+  for (const old of transient.slice(0, -keep)) old.remove();
   const start = () => {
     stop();
-    timer = window.setTimeout(remove, toastMs(message, kind));
+    if (!opts.persistent) timer = window.setTimeout(remove, toastMs(message, kind));
   };
   close.addEventListener('click', remove);
   t.addEventListener('pointerenter', stop);

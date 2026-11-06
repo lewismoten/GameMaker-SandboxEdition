@@ -368,6 +368,7 @@ const NAMES: Record<DownloadKind, string> = {
 let closeBuilding: (() => void) | undefined;
 
 async function build(game: DownloadGame, kind: DownloadKind, alt: boolean, previews?: boolean): Promise<void> {
+  closeBuilding = notice(`Building the ${kind === 'web' && alt ? 'web app' : NAMES[kind]} of ${game.title}…`, 'info', { persistent: true });
   try {
     if (kind === 'dos' && !game.project && game.entry?.pack?.endsWith('.zip')) {
       const response = await fetchArchive(`./${game.entry.path}${game.entry.pack}`);
@@ -386,7 +387,6 @@ async function build(game: DownloadGame, kind: DownloadKind, alt: boolean, previ
       save('web-player.html', await fetchWebPlayer(), 'text/html', 'Put it beside Game-Maker game folders on a web host.');
       return downloaded('web');
     }
-    closeBuilding = notice(`Building the ${kind === 'web' && alt ? 'web app' : NAMES[kind]} of ${game.title}…`);
     const saved = await game.files();
     // the author's version lettered on the menu picture, when they asked: not in their own backup (project/composeFiles.ts)
     const files =
@@ -469,6 +469,9 @@ async function build(game: DownloadGame, kind: DownloadKind, alt: boolean, previ
   } catch (e) {
     closeBuilding?.();
     toast(plainError(e), 'error');
+  } finally {
+    closeBuilding?.();
+    closeBuilding = undefined;
   }
 }
 
