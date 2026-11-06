@@ -136,6 +136,7 @@ SDK implementation lives in the packages below; the app imports their declared e
   - [`editor/check/walk/`](editor/check/walk/README.md): walkthrough generation, replay verification and kept author/bot routes.
   - [`editor/colorHelp/`](editor/colorHelp/README.md): optional color naming, look-alike warnings and simulated previews.
   - [`editor/core/`](editor/core/README.md): shared editor project, history, DOM and indexed drawing helpers.
+  - [`editor/editors/`](editor/editors/README.md): file-kind dispatch and lazy editor registration.
   - [`editor/editors/animation/`](editor/editors/animation/README.md): fLI frame editing and Scene/Frames workflows.
   - [`editor/editors/animation/scene/`](editor/editors/animation/scene/README.md): companion-backed animation Scene maker and renderer.
   - [`editor/editors/animation/shrink/`](editor/editors/animation/shrink/README.md): worker-backed FLI size reduction and real result preview.
@@ -160,6 +161,7 @@ SDK implementation lives in the packages below; the app imports their declared e
   - [`editor/editors/slideShow/`](editor/editors/slideShow/README.md): lST media sequencing on a timeline.
   - [`editor/editors/sounds/`](editor/editors/sounds/README.md): sND speaker and Sound Blaster effect editing.
   - [`editor/editors/textScreen/`](editor/editors/textScreen/README.md): tXT page editing and game-accurate preview.
+  - [`editor/keymap/`](editor/keymap/README.md): computed game controls and reusable Keys dialog.
   - [`editor/tools/cards/`](editor/tools/cards/README.md): instruction and level-card dialogs and generated files.
   - [`editor/tools/opening/`](editor/tools/opening/README.md): opening-sting selection, previews and scene wiring.
 - [`editor/disk/`](editor/disk/README.md): the disk-space tool: merges of monster files, block sets and palettes, and the floppy disks a game needs.
