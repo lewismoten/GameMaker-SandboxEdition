@@ -11,10 +11,10 @@ import type { BoxItem } from './viewer';
 import { sheet } from './kit';
 import { TECHREF_DIAGRAMS } from './techRefDiagrams';
 
-export const TECHREF_TITLE = 'Technical Reference and Limits';
+const TECHREF_TITLE = 'Technical Reference and Limits';
 
 /** The cover: the product's name, the booklet's, and its byline. */
-export function techRefCover(): HTMLElement {
+function techRefCover(): HTMLElement {
   return h(
     'div',
     {
@@ -54,7 +54,7 @@ export function techRefChapters(markdown: string): { head: string; blocks: Block
 }
 
 /** The booklet as pages: a cover, the chapters, notes pages to fill the last sheet, a back cover. */
-export async function techRefPages(): Promise<BookPage[]> {
+async function techRefPages(): Promise<BookPage[]> {
   const markdown = (await import('../../programmersGuide/booklet1994.md?raw')).default;
   const host = h('div', { class: 'gmb-measure gmb-pages', 'aria-hidden': 'true' });
   document.body.append(host);
