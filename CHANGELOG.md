@@ -11,6 +11,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Added
 
+- Character Undo keeps block files and mirror links bound to their own names when the preview block set changes.
 - Sample Undo and Revert restore the original VOC bytes exactly; undoing a sound-maker replacement restores its settings too.
 - Music Undo keeps Redo after a canceled gesture, restores empty tracks, and limits track-order history to 200 steps.
 - Lightning Bugs, Fireworks Night and Leaves in the Wind now draw and name the same helpers as their Cast entries: Rima, Lami and Mia.
