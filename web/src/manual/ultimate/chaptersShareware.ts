@@ -111,6 +111,7 @@ export const SHAREWARE: Chapter = {
   ${onCd('CLOCK', 'COUNTDWN', 'BLOCKBRN')}
   ${onCd('TWINKLE')}
   ${onCd('FLICKER')}
+  ${onCd('HEATWAVE')}
   ${onCd('LIGHTOUT')}
   ${onCd('SHADOWS')}
   ${onCd('BEAMS')}

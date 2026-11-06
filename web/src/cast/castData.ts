@@ -104,6 +104,7 @@ export const CAST_GAMES = {
   'lightning-bugs': ['Lightning Bugs', 'starter'],
   fireworks: ['Fireworks Night', 'starter'],
   leaves: ['Leaves in the Wind', 'starter'],
+  'heat-waves': ['Heat Waves', 'starter'],
   'blocks-budget': ['150 Blocks', 'starter'],
   'near-far': ['Near and Far', 'starter'],
   'very-far': ['Walking Very Far', 'starter'],
