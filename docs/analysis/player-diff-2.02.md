@@ -20,16 +20,16 @@ The binary evidence shows this is not merely a version-string change.
 
 ## Summary
 
-| # | change | 2.00 → 2.02 address | class | confidence |
-| --- | --- | --- | --- | --- |
-| 1 | Saved games store the map view position (`mx`, `my`); restoring no longer re-centers the view on the character. The `.SAV` file gains 4 bytes at offset 4,679. | `Save_Game` 03B4:17A2 → 03B4:17FE; `Load_Game` 03B4:124F → 03B4:12A9 | bug fix, file-format change | high (code and source); the effect on play is an inference |
-| 2 | Title menu: Esc now quits, and the menu counts its items 1–6 instead of 0–5. | `DoGame` 03B4:02B1 → 03B4:02B1 | new feature (behavior change) | high |
-| 3 | Title menu: the buffer for the intro-music file name grows from 20 to 62 bytes. In 2.00 the path of the player's own folder could overflow it on the stack. | `DoGame` (local `out`, `[bp-0x26]` → `[bp-0x50]`) | bug fix (stack overflow) | high for the code; medium that it misbehaved in practice |
-| 4 | `MoveViewScreen(0,0)` is called after `ViewWindow(0)` wherever the game resets the screen (5 places), and the title screen first calls `MoveWindow(0); ViewWindow(0)`. This resets the scroll registers and their cached values. | `play` 03B4:096C → 03B4:099C, `playscene` 03B4:0C0E → 03B4:0C4C, `DoFunKy` 03B4:0FD8 → 03B4:1024, `DropBloc` 03B4:2558 → 03B4:25E0, `loadscene` 03B4:7580 → 03B4:7616, `DoGame` | bug fix (display) | high for what the code does; medium for the symptom it fixed |
-| 5 | The sprite-block drawer clears the high byte of its `char` rotation argument (`mov ah,0`). In 2.00, a sprite near the right edge could be drawn with the wrong rotation or flip once more than 170 dirty rectangles were queued. | `_BufDrawSpBlk` 0D87:0004 → 0D91:0008 | bug fix | high for the fix (source comment); the symptom is an inference |
-| 6 | `horizmenu`: Esc (or Up) now selects and returns 0 (cancel). In 2.00, Esc and Up did nothing. | 0E59:13F9 → 0E63:13FF; case bodies in the gap 0E59:14DB → 0E63:14DD | library change, **dead code in the player** | high; it has no effect in the player (nothing calls it) |
-| 7 | About text "Version 2.00" → "Version 2.02". | data 0977B (DGROUP) | version string | high |
-| – | 94 *relocated*, 4 *constants*, 5 *data-moved* functions; 25 differing out-of-function gaps; header fields | see [Relinking noise](#relinking-noise) | compiler/relink noise | high |
+| #   | change                                                                                                                                                                                                                           | 2.00 → 2.02 address                                                                                                                                                             | class                                       | confidence                                                     |
+| --- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------- | -------------------------------------------------------------- |
+| 1   | Saved games store the map view position (`mx`, `my`); restoring no longer re-centers the view on the character. The `.SAV` file gains 4 bytes at offset 4,679.                                                                   | `Save_Game` 03B4:17A2 → 03B4:17FE; `Load_Game` 03B4:124F → 03B4:12A9                                                                                                            | bug fix, file-format change                 | high (code and source); the effect on play is an inference     |
+| 2   | Title menu: Esc now quits, and the menu counts its items 1–6 instead of 0–5.                                                                                                                                                     | `DoGame` 03B4:02B1 → 03B4:02B1                                                                                                                                                  | new feature (behavior change)               | high                                                           |
+| 3   | Title menu: the buffer for the intro-music file name grows from 20 to 62 bytes. In 2.00 the path of the player's own folder could overflow it on the stack.                                                                      | `DoGame` (local `out`, `[bp-0x26]` → `[bp-0x50]`)                                                                                                                               | bug fix (stack overflow)                    | high for the code; medium that it misbehaved in practice       |
+| 4   | `MoveViewScreen(0,0)` is called after `ViewWindow(0)` wherever the game resets the screen (5 places), and the title screen first calls `MoveWindow(0); ViewWindow(0)`. This resets the scroll registers and their cached values. | `play` 03B4:096C → 03B4:099C, `playscene` 03B4:0C0E → 03B4:0C4C, `DoFunKy` 03B4:0FD8 → 03B4:1024, `DropBloc` 03B4:2558 → 03B4:25E0, `loadscene` 03B4:7580 → 03B4:7616, `DoGame` | bug fix (display)                           | high for what the code does; medium for the symptom it fixed   |
+| 5   | The sprite-block drawer clears the high byte of its `char` rotation argument (`mov ah,0`). In 2.00, a sprite near the right edge could be drawn with the wrong rotation or flip once more than 170 dirty rectangles were queued. | `_BufDrawSpBlk` 0D87:0004 → 0D91:0008                                                                                                                                           | bug fix                                     | high for the fix (source comment); the symptom is an inference |
+| 6   | `horizmenu`: Esc (or Up) now selects and returns 0 (cancel). In 2.00, Esc and Up did nothing.                                                                                                                                    | 0E59:13F9 → 0E63:13FF; case bodies in the gap 0E59:14DB → 0E63:14DD                                                                                                             | library change, **dead code in the player** | high; it has no effect in the player (nothing calls it)        |
+| 7   | About text "Version 2.00" → "Version 2.02".                                                                                                                                                                                      | data 0977B (DGROUP)                                                                                                                                                             | version string                              | high                                                           |
+| –   | 94 _relocated_, 4 _constants_, 5 _data-moved_ functions; 25 differing out-of-function gaps; header fields                                                                                                                        | see [Relinking noise](#relinking-noise)                                                                                                                                         | compiler/relink noise                       | high                                                           |
 
 No other differences exist. Nothing was added or removed, nothing is packed or protected
 against tampering, and DOS/BIOS services, I/O ports, embedded files and the initialized data
@@ -39,17 +39,17 @@ are all unchanged apart from the version string.
 
 The image grows by 176 bytes, and every one is accounted for:
 
-| where | bytes |
-| --- | --- |
-| `DoGame` 837 → 879 (two calls, 1-based menu, Esc case) | +42 |
-| `play`, `playscene`, `DoFunKy`, `DropBloc`, `loadscene`: one `MoveViewScreen(0,0)` each (`push 0` ×3, far call, `add sp,6`) | +70 |
-| `Save_Game` 482 → 526 (two `fwrite`) | +44 |
-| `Load_Game` 1363 → 1365 (two `fread`: +32; re-centering removed: −30) | +2 |
-| `_BufDrawSpBlk` 189 → 191 (`mov ah,0`) | +2 |
-| `horizmenu` 506 → 518, plus its case bodies outside the function (+4) | +16 |
-| `DoGame` case bodies outside the function (`lea` with a 16-bit displacement, longer `jmp`s) | +6 |
-| alignment padding before the FM-music data in segment 13DE → 13E9 | −6 |
-| **total** (code region 84,448 → 84,624; DGROUP paragraph 149E → 14A9) | **+176** |
+| where                                                                                                                       | bytes    |
+| --------------------------------------------------------------------------------------------------------------------------- | -------- |
+| `DoGame` 837 → 879 (two calls, 1-based menu, Esc case)                                                                      | +42      |
+| `play`, `playscene`, `DoFunKy`, `DropBloc`, `loadscene`: one `MoveViewScreen(0,0)` each (`push 0` ×3, far call, `add sp,6`) | +70      |
+| `Save_Game` 482 → 526 (two `fwrite`)                                                                                        | +44      |
+| `Load_Game` 1363 → 1365 (two `fread`: +32; re-centering removed: −30)                                                       | +2       |
+| `_BufDrawSpBlk` 189 → 191 (`mov ah,0`)                                                                                      | +2       |
+| `horizmenu` 506 → 518, plus its case bodies outside the function (+4)                                                       | +16      |
+| `DoGame` case bodies outside the function (`lea` with a 16-bit displacement, longer `jmp`s)                                 | +6       |
+| alignment padding before the FM-music data in segment 13DE → 13E9                                                           | −6       |
+| **total** (code region 84,448 → 84,624; DGROUP paragraph 149E → 14A9)                                                       | **+176** |
 
 There are 1,094 relocations in 2.00 and 1,105 in 2.02, an increase of 11. That is exactly the
 number of new far calls: 2 in `DoGame`, 5 `MoveViewScreen` calls, 2 `fread` and 2 `fwrite`.
@@ -224,13 +224,13 @@ calls in the other order. 2.02 adds `MoveViewScreen(0,0)` right after `ViewWindo
   03B4:0A7D 03B4:0ABB  cmp word ptr [0x9294], 1     ; if (curscene==1) // Game Won!
 ```
 
-| function (source name) | 2.00 → 2.02 | evidence that it is that function |
-| --- | --- | --- |
-| `play` | 03B4:096C → 03B4:099C | `curscene==1` test right after the calls; ".txt" |
-| `playscene` | 03B4:0C0E → 03B4:0C4C | `ViewWindow` before `MoveWindow` and the `scroll.*Stop` stores just before them, as in source |
-| `DoFunKy` (function keys) | 03B4:0FD8 → 03B4:1024 | `Screen(0)`, `MoveWindow(0)`, `BoxFill(0,0,319,199,0)`, `ViewWindow(0)`, then `Screen(1)` |
-| `DropBloc` | 03B4:2558 → 03B4:25E0 | "Choose object to drop" |
-| `loadscene` (error path) | 03B4:7580 → 03B4:7616 | "map\\", the red-palette error screen, then `BoxFill(0,0,319,199,0)` |
+| function (source name)    | 2.00 → 2.02           | evidence that it is that function                                                             |
+| ------------------------- | --------------------- | --------------------------------------------------------------------------------------------- |
+| `play`                    | 03B4:096C → 03B4:099C | `curscene==1` test right after the calls; ".txt"                                              |
+| `playscene`               | 03B4:0C0E → 03B4:0C4C | `ViewWindow` before `MoveWindow` and the `scroll.*Stop` stores just before them, as in source |
+| `DoFunKy` (function keys) | 03B4:0FD8 → 03B4:1024 | `Screen(0)`, `MoveWindow(0)`, `BoxFill(0,0,319,199,0)`, `ViewWindow(0)`, then `Screen(1)`     |
+| `DropBloc`                | 03B4:2558 → 03B4:25E0 | "Choose object to drop"                                                                       |
+| `loadscene` (error path)  | 03B4:7580 → 03B4:7616 | "map\\", the red-palette error screen, then `BoxFill(0,0,319,199,0)`                          |
 
 `DoGame` also gains `MoveWindow(0); ViewWindow(0)` after `GraphMode()` (03B4:02D5–02E6, shown
 in change 2). The 2.04-era source has every one of these calls (`PLAYGAME.C`: `play`,
@@ -328,17 +328,17 @@ relocated segments and moved addresses only.
 
 **Constants (4) and data-moved (5).** Each differs only by a pointer to code that moved:
 
-| function 2.00 → 2.02 | grade | the differing value | what it points to |
-| --- | --- | --- | --- |
-| 03B4:000E → 03B4:000E ("ShowVideoMemory") | constants | far code pointer 03B4:81EA → 03B4:828E | a function that moved |
-| 03B4:267E → 03B4:2714 | constants | `setvect(9, …)` handler 03B4:7E7F → 03B4:7F23 | keyboard interrupt handler (out-of-function code) |
-| 0E59:0C02 → 0E63:0C08 ("%s*.*") | constants | far code pointer 0E59:0B16 → 0E63:0B1C | an interrupt handler ending in `iret` |
-| 1253:0265 → 125F:025B | constants | sparse switch table 04B1 → 04A7 | the table that moved (values the same) |
-| 0E59:0008 → 0E63:000E ("(E)xit.") | data-moved | sparse switch table 0B06 → 0B0C | the table that moved |
-| 0E59:0D59 → 0E63:0D5F | data-moved | table 0ED5 → 0EDB | the table that moved |
-| 11A5:0552 → 11B0:0558 ("ATI ULTRA") | data-moved | table 063C → 0642 | the table that moved |
-| 1339:0000 → 1344:0006 | data-moved | table 02E8 → 02EE | the table that moved |
-| 13DE:01A3 → 13E9:01A9 | data-moved | `mov dx,cs; mov ax,0x256` → `0x25c` | code in the same segment that moved |
+| function 2.00 → 2.02                      | grade      | the differing value                           | what it points to                                 |
+| ----------------------------------------- | ---------- | --------------------------------------------- | ------------------------------------------------- |
+| 03B4:000E → 03B4:000E ("ShowVideoMemory") | constants  | far code pointer 03B4:81EA → 03B4:828E        | a function that moved                             |
+| 03B4:267E → 03B4:2714                     | constants  | `setvect(9, …)` handler 03B4:7E7F → 03B4:7F23 | keyboard interrupt handler (out-of-function code) |
+| 0E59:0C02 → 0E63:0C08 ("%s*.*")           | constants  | far code pointer 0E59:0B16 → 0E63:0B1C        | an interrupt handler ending in `iret`             |
+| 1253:0265 → 125F:025B                     | constants  | sparse switch table 04B1 → 04A7               | the table that moved (values the same)            |
+| 0E59:0008 → 0E63:000E ("(E)xit.")         | data-moved | sparse switch table 0B06 → 0B0C               | the table that moved                              |
+| 0E59:0D59 → 0E63:0D5F                     | data-moved | table 0ED5 → 0EDB                             | the table that moved                              |
+| 11A5:0552 → 11B0:0558 ("ATI ULTRA")       | data-moved | table 063C → 0642                             | the table that moved                              |
+| 1339:0000 → 1344:0006                     | data-moved | table 02E8 → 02EE                             | the table that moved                              |
+| 13DE:01A3 → 13E9:01A9                     | data-moved | `mov dx,cs; mov ax,0x256` → `0x25c`           | code in the same segment that moved               |
 
 The changed functions in change 4 (`play` and the others) also carry the `setvect` pointer
 shifts (7DE4 → 7E88 for the timer handler, 7E7F → 7F23 for the keyboard handler) and longer

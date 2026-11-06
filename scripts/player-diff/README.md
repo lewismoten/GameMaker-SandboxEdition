@@ -37,13 +37,13 @@ Options:
 
 Committed (`--out`, small text only):
 
-| file | what |
-| --- | --- |
-| `inventory.md`, `inventory.tsv` | one row per build: canonical copy, SHA-256, sizes, MZ header fields, linker mark, compiler banner, packer, owner-slot state, predecessor; pairs; what is missing |
-| `copies.tsv` | every copy found, with its relation to its build's canonical copy |
-| `pairs.md` | function counts for every pair |
-| `pairs/<old>__<new>/summary.md` | functions by status, the least-similar changed functions, added and removed functions, header and layout, DOS services, I/O ports, embedded files, data regions, strings |
-| `pairs/<old>__<new>/functions.tsv` | the full match table |
+| file                               | what                                                                                                                                                                     |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `inventory.md`, `inventory.tsv`    | one row per build: canonical copy, SHA-256, sizes, MZ header fields, linker mark, compiler banner, packer, owner-slot state, predecessor; pairs; what is missing         |
+| `copies.tsv`                       | every copy found, with its relation to its build's canonical copy                                                                                                        |
+| `pairs.md`                         | function counts for every pair                                                                                                                                           |
+| `pairs/<old>__<new>/summary.md`    | functions by status, the least-similar changed functions, added and removed functions, header and layout, DOS services, I/O ports, embedded files, data regions, strings |
+| `pairs/<old>__<new>/functions.tsv` | the full match table                                                                                                                                                     |
 
 Work folder only (not committed): `bin/<build>/*.exe` (extracted copies), `copies.json`,
 `canonical.json`, `listings/<build>.lst` (every function, with address, bytes, instruction and
@@ -76,18 +76,18 @@ grep -n -A60 '^; ---- 03B4:02B1' $W/listings/2.02.lst
 
 ## How it works
 
-| module | job |
-| --- | --- |
-| `builds.toml` | the known builds (by MZ load-image size) and the pairs, in name-propagation order |
-| `gmpd/collect.py` | walks the roots, opens zips (nested one level; PKZIP 1.x Implode/Shrink through Info-ZIP `unzip`), unpacks with Deark, files each copy, picks a canonical copy per build |
-| `gmpd/mz.py` | MZ header, load image, relocations, packer signatures, TLINK mark, owner slot |
-| `gmpd/disasm.py` | function discovery and normalization (below) |
-| `gmpd/mapfile.py` | reads Borland `.MAP` files and applies names only where they verifiably fit |
-| `gmpd/match.py` | function matching across two builds |
-| `gmpd/report.py` | the per-pair reports, data/string/service diffs, redaction |
-| `inspect_pair.py` | after a run: side-by-side functions, gaps, pointer mapping, raw disassembly |
-| `attribute.py` | one pair, after `gmpdiff.py diff`: which link module (source file) each function is in, by pairing the binary's code segments with two `.MAP` files' segment lists; MAP names on both sides; every byte outside functions classified; added/removed functions that are undiscovered code on the other side (see below) |
-| `srcmap.py` | one module of one pair: each function attributed to a source function of two source revisions (string anchors, MAP names and definition order), and whether that function's source changed |
+| module            | job                                                                                                                                                                                                                                                                                                                    |
+| ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `builds.toml`     | the known builds (by MZ load-image size) and the pairs, in name-propagation order                                                                                                                                                                                                                                      |
+| `gmpd/collect.py` | walks the roots, opens zips (nested one level; PKZIP 1.x Implode/Shrink through Info-ZIP `unzip`), unpacks with Deark, files each copy, picks a canonical copy per build                                                                                                                                               |
+| `gmpd/mz.py`      | MZ header, load image, relocations, packer signatures, TLINK mark, owner slot                                                                                                                                                                                                                                          |
+| `gmpd/disasm.py`  | function discovery and normalization (below)                                                                                                                                                                                                                                                                           |
+| `gmpd/mapfile.py` | reads Borland `.MAP` files and applies names only where they verifiably fit                                                                                                                                                                                                                                            |
+| `gmpd/match.py`   | function matching across two builds                                                                                                                                                                                                                                                                                    |
+| `gmpd/report.py`  | the per-pair reports, data/string/service diffs, redaction                                                                                                                                                                                                                                                             |
+| `inspect_pair.py` | after a run: side-by-side functions, gaps, pointer mapping, raw disassembly                                                                                                                                                                                                                                            |
+| `attribute.py`    | one pair, after `gmpdiff.py diff`: which link module (source file) each function is in, by pairing the binary's code segments with two `.MAP` files' segment lists; MAP names on both sides; every byte outside functions classified; added/removed functions that are undiscovered code on the other side (see below) |
+| `srcmap.py`       | one module of one pair: each function attributed to a source function of two source revisions (string anchors, MAP names and definition order), and whether that function's source changed                                                                                                                             |
 
 **Builds and canonical copies.** A build is recognized by its load-image size, a "Version"
 string is recorded as a cross-check. Copies that differ only in the 52-byte owner slot at
@@ -104,20 +104,20 @@ Borland prologues (`push bp; mov bp,sp`, `enter`) in code nothing else reached; 
 tables (`jmp cs:[bx+table]`) are followed when a preceding `cmp` bounds them. A second pass
 cuts every body at the final set of function starts.
 
-**Normalization.** Each instruction gets three forms. *exact*: raw bytes with relocated words
-zeroed. *norm*: call targets become `F`, relocated segments `SEG:C` or `SEG:D`, absolute data
+**Normalization.** Each instruction gets three forms. _exact_: raw bytes with relocated words
+zeroed. _norm_: call targets become `F`, relocated segments `SEG:C` or `SEG:D`, absolute data
 addresses `[G]`, immediates that point at a string in DGROUP become the string's text,
-in-function jumps become relative instruction labels; other constants stay. *shape*: mnemonic
+in-function jumps become relative instruction labels; other constants stay. _shape_: mnemonic
 and operand kinds only.
 
 **Matching** (old → new), each stage pairing only functions unique on its key: exact bytes,
 norm text, the set of referenced strings, shape, then call-graph neighbours of matched pairs
 (callees and callers, aligned in call order), then functions in the same address gap between
 two matched anchors, then the best mutual similarity of what is left. A match is graded
-*identical*, *relocated* (same code, things moved), *calls-differ*, *data-moved* (same shape;
+_identical_, _relocated_ (same code, things moved), _calls-differ_, _data-moved_ (same shape;
 every differing immediate moved by a shift that at least three matched functions share, so
 the data layout moved),
-*constants* (same shape, other numbers or strings) or *changed*, with `norm_sim` (the share of matching normalized
+_constants_ (same shape, other numbers or strings) or _changed_, with `norm_sim` (the share of matching normalized
 instructions). Matches from the first four stages are high confidence; call-graph, order and
 similarity matches are medium at 0.7 or more, otherwise low. Treat low ones as leads.
 
@@ -177,7 +177,7 @@ counts differ; read the listing to settle them.
 - Small functions with many look-alikes stay unmatched unless the call graph places them.
 - The strings section is a multiset difference of printable runs; a string that moved but
   did not change does not appear.
-- Statuses compare machine code. A function graded *relocated* behaves the same only if the
+- Statuses compare machine code. A function graded _relocated_ behaves the same only if the
   data it reads did not change; check the data section too.
 
 The scripts and original analyses were written by Claude Opus 5.5 (Anthropic) for Lewis Moten.
