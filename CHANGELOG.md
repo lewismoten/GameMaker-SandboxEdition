@@ -11,6 +11,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Added
 
+- The Pocket Player install page (/pocket/) asks which board you have, the 3.5 inch ESP32-3248S035 or the 2.8 inch ESP32-2432S028, shows a drawing of each, and installs the right program from Chrome or Edge over USB
 - The Download chooser has a Pocket Player (microSD) choice: the game as one .gmp file to copy into the pocket folder on the Pocket Player's microSD card, with plain notes on what the board leaves out (Sound Blaster sounds, music) or may not manage.
 - A graduation that has opened but not been earned shows first on the Starters tab, in a gold "Ready to graduate" strip with a Graduate button, and moves back to the Graduations section once earned.
 - The Starters tab has a Level picker (100s First Steps, 200s Moving and Pushing, and so on) that shows one stage's courses and its graduation, together with the Show picker. It is remembered in the browser.

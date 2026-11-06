@@ -52,9 +52,11 @@ Serial (115200) for testing without seeing the screen: `S st` prints the state (
 
 ## Flash it from the browser
 
-1. After you pull this branch, start your dev server as usual and open **http://localhost:5173/pocket/index.html** in desktop Chrome or Edge (the page is not linked from the site).
-2. Plug the board in with a USB cable that carries data.
-3. Click Install, pick the serial port, click Install again, wait a minute or two. This replaces everything on the board, including the settings, and uses a new partition table (1 MB for the program, 3 MB for LittleFS).
+1. Open **/pocket/index.html** on the site (or on your dev server, http://localhost:5173/pocket/index.html) in desktop Chrome or Edge.
+2. Under "Which board?", pick the 3.5 inch (ESP32-3248S035) or the 2.8 inch (ESP32-2432S028) board. Each has its own manifest (`manifest-35.json`, `manifest-28.json`) and images (`fw/esp32-3248s035/`, `fw/cyd-2432s028/`).
+3. Plug the board in with a USB cable that carries data, click Install, pick the serial port, click Install again, wait a minute or two. This replaces everything on the board, including the settings, and uses a new partition table (1 MB for the program, 3 MB for LittleFS).
+
+The install window can also offer "Connect to Wi-Fi" (Improv Wi-Fi over the same USB cable) when the firmware speaks Improv. This firmware does not yet, so that step does not appear.
 
 ## What to try (and what to report back)
 
@@ -203,9 +205,9 @@ npm run heavy -- ~/.platformio/penv/bin/pio run -d hardware/pocket-player       
 npm run heavy -- ~/.platformio/penv/bin/pio run -d hardware/pocket-player -t buildfs      # LittleFS image from data/
 ```
 
-Then copy `bootloader.bin`, `partitions.bin`, `firmware.bin` and `littlefs.bin` from `hardware/pocket-player/.pio/build/esp32-3248s035/` into `web/public/pocket/fw/`. The offsets in `web/public/pocket/manifest.json` match `partitions.csv`: bootloader 0x1000, partitions 0x8000, firmware 0x10000, LittleFS 0x110000 (3 MB).
+Then copy `bootloader.bin`, `partitions.bin`, `firmware.bin` and `littlefs.bin` from `hardware/pocket-player/.pio/build/<env>/` into `web/public/pocket/fw/<env>/` (build both envs; each needs its own `-e <env>` and `-t buildfs`). The offsets in the two manifests in `web/public/pocket/` match `partitions.csv`: bootloader 0x1000, partitions 0x8000, firmware 0x10000, LittleFS 0x110000 (3 MB).
 
-The 3.5 inch board's browser installer (`web/public/pocket/fw/`) is for the first board only; the 2.8 inch board is flashed with `pio` as above.
+The browser installer covers both boards (see "Flash it from the browser"); `pio` as above is the other way.
 
 ## What only a board can tell
 
