@@ -1,5 +1,5 @@
 // Pictures of the lessons (never on the disk), for the progress shots: the big one and the pips
-// in level 1, and in level 2 a star thrown at the big one and one popping the pip.
+// in level 1, and in level 2 a star fizzling on the big one and one popping the pip.
 //   cd web && npx vite-node ../games/who-wins/tools/shots.ts <outDir>
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
@@ -41,9 +41,13 @@ const region = (map: ReturnType<typeof empty>, col: number, w: number, extra: Sp
   renderRegion(map, bbl, mbl, set, ORIGIN + col, ORIGIN + 4, w, 8, extra);
 const save = (name: string, pic: ReturnType<typeof region>) => writePng(join(out, name), pic, pal.pal, 3);
 
-// level 1: the big one on its way, the pips in the tunnel, then clear; level 2: a star at the big one, then at the pip
-save('1-pips-wait.png', region(empty(0), 14, 18, [...kit(['stand.top', 'stand'], 18), thing('pip0', 24), thing('pip0', 27), thing('big0', 21)]));
-save('2-big-pops.png', region(empty(0), 14, 18, [...kit(['stand.top', 'stand'], 18), thing('twinkle0', 26), thing('pip0', 27), thing('big0', 25)]));
-save('3-clear.png', region(empty(0), 14, 18, [...kit(['stand.top', 'stand'], 20), thing('big1', 29)]));
-save('4-star-at-big.png', region(empty(1), 8, 18, [...kit(['cheer.top', 'throw1'], 11), thing('star0', 14), thing('big0', 19)]));
-save('5-star-pops-pip.png', region(empty(1), 16, 18, [...kit(['stand.top', 'throw2'], 21), thing('twinkle0', 27), thing('mid0', 30), thing('big0', 19)]));
+// level 1: the signs, the big one on its way and the pips in the tunnel, then a pop; level 2: the
+// chart, a star fizzling on the big one, then a star popping the pip
+save('1-signs-and-big-one.png', region(empty(0), 2, 27, [...kit(['stand.top', 'stand'], 16), thing('pip0', 24), thing('pip1', 27), thing('big0', 21)]));
+save('2-big-pops.png', region(empty(0), 14, 18, [...kit(['stand.top', 'stand'], 18), thing('twinkle0', 24), thing('pip0', 27), thing('big0', 25)]));
+save('3-chart-and-star.png', region(empty(1), 2, 20, [...kit(['cheer.top', 'throw1'], 15), thing('star0', 17), thing('big0', 19)]));
+save('4-star-fizzles.png', region(empty(1), 2, 20, [...kit(['stand.top', 'throw2'], 15), thing('fizzle0', 18), thing('big0', 19)]));
+save(
+  '5-star-pops-pip.png',
+  region(empty(1), 16, 18, [...kit(['stand.top', 'throw2'], 21), thing('twinkle0', 27), thing('fizzle1', 26), thing('mid0', 30), thing('big0', 19)]),
+);
