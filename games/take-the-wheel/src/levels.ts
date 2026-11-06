@@ -53,7 +53,7 @@ export const GROUND = 10;
 export const STAND = GROUND - 1;
 /** Where the birds sit in each level (blocks). */
 export const L1_BIRD = 21;
-export const L2_BIRDS = [22, 33];
+export const L2_BIRDS = [22, 32];
 
 /** The ground, brick walls at both ends (rows 0 to 9, so the room is closed in), the entrance on the left (x 3) and the exit at `exitX`. */
 function base(width: number, exitX: number): Grid {

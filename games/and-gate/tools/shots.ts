@@ -70,7 +70,7 @@ save(
   withMonsters(1, [
     [DIAL_ON, 5, 6],
     [DIAL_OFF, 13, 1],
-    [DIAL_OFF, 20, 6],
+    [DIAL_OFF, 22, 7],
     [LAMP, 24, 1],
   ]),
   3,

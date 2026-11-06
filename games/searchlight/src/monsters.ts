@@ -1,5 +1,5 @@
 // DON'T GET SEEN's monsters. The kit's gumdrop 0, buzzer 1 and shelly 2 stay in the file (unused), then:
-//   a lamp and four pieces of cone for each of the three sweeps (see lampOf): a light is five monsters in a column
+//   a lamp and two pieces of cone for each of the three sweeps (see lampOf): a light is three monsters in a column
 // A light is a column of monsters that all walk the same path at the same speed, so they stay one
 // above the other. The light does not look for Mara: it only walks back and forth. A monster picture takes
 // hit points from Mara while she overlaps it (the picture's own rules), whether it is solid or not, so any
@@ -23,7 +23,7 @@ export const SWEEP = [
   { run: 9, speed: 2 },
 ] as const;
 
-/** The monster pictures: the kit's, then the lamp's two looks and the cone's four pieces in two frames each. */
+/** The monster pictures: the kit's, then the lamp's two looks and the cone's two pieces in two frames each. */
 export function monsterPictures(pal: Pal): Book {
   const mb = buildMonsterBlocks(pal);
   // a light is not solid: Mara walks into it and is seen, she is not stopped by it
@@ -43,7 +43,7 @@ export function finishMonsterPictures(mb: Book): Block[] {
   return blocks;
 }
 
-/** The .MON: the kit's three, then for each of the three sweeps a lamp and its four pieces of cone (so each sweep has its own run and speed). */
+/** The .MON: the kit's three, then for each of the three sweeps a lamp and its two pieces of cone (so each sweep has its own run and speed). */
 export function monsterSet(mb: Book): Monster[] {
   const set = buildMonsters(mb);
   const anim = (name: string, t: number): [number, number][] => [

@@ -32,7 +32,7 @@ export interface Level {
 
 /** The beams' landmarks (level blocks). */
 export const BEAMS = { width: 46, lamps: [12, 23, 34] as const, exit: 44 };
-export const FOG_ROOM = { width: 54, zoneB: 26, exit: 51, far: { x: 28, row: 3, run: 10 }, near: { x: 30, row: 5, run: 10 } };
+export const FOG_ROOM = { width: 54, zoneB: 26, exit: 51, far: { x: 28, row: 4, run: 10 }, near: { x: 30, row: 5, run: 10 } };
 export const GLOW = { width: 44, lamps: [8, 19, 30] as const, row: 6, run: 6, exit: 42 };
 
 type Words = Record<string, [string, number, number]>;
