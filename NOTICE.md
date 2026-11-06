@@ -113,6 +113,8 @@ game folder opens in the browser unchanged.
 - **Build runner interruption recovery** (`scripts/build-games.mjs`, `scripts/child-signal-retry.mjs`)
   and its regression tests: implemented with **Hermes Agent running OpenAI Codex GPT-6.1 Sol**,
   directed by Lewis Moten. No game content or generated disk formats changed.
+- **Repository merge gate, worker bootstrap and branch triage** (`scripts/`): implementation,
+  regression tests and documentation made with **OpenAI Codex (GPT-6)**, directed by Lewis Moten.
 - **The npm engine package** (`web/packages/engine/`): extracted and documented with
   **OpenAI Codex (GPT-6)** through Visual Studio Code, directed by Lewis, from this fork's
   existing TypeScript web engine.
