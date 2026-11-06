@@ -189,6 +189,8 @@ SDK implementation lives in the packages below; the app imports their declared e
 - [`tour/`](tour/README.md): the guided tour: characters from the games point at and press the
   page's controls while another explains them, with captions, a Sandbox game's music and a
   recording mode; started from the header's ? button, ⚙ Settings or `#/?tour=all`.
+  Subarea:
+  - [`tour/chapters/`](tour/chapters/README.md): guided-tour chapter data and shared targets.
 
 ### The assistant: AI tools working on a game
 
@@ -227,6 +229,7 @@ SDK implementation lives in the packages below; the app imports their declared e
   - [`manual/magazine/sections/`](manual/magazine/sections/README.md): magazine article/ad section factories.
   - [`manual/magazine/sections/spring93/`](manual/magazine/sections/spring93/README.md): spring 1993 issue-specific sections.
   - [`manual/ultimate/`](manual/ultimate/README.md): ultimate Owner's Guide chapter content and booklet flow.
+  - [`manual/zine/`](manual/zine/README.md): nO CARRIER and Tiny Pockets Press paper items.
 
 ## Main flows
 
