@@ -24,7 +24,7 @@ export interface DeepJob {
 }
 
 /** Files that are plain text under other extensions. */
-export const PLAIN_TEXT = /\.(diz|doc|nfo|1st|me|asc)$/i;
+const PLAIN_TEXT = /\.(diz|doc|nfo|1st|me|asc)$/i;
 /** Whether the main thread should fetch this file for the worker to read. */
 export const worthReading = (name: string): boolean => /\.(txt|lst|gam|his|snd|bkd|diz|doc|nfo|1st|me|asc)$/i.test(name);
 

@@ -4,15 +4,15 @@
 // are worked out apart from the drawing (certificateText) so they can be tested.
 import { DIPLOMA, CEREMONIES, certificateTitle, type Ceremony } from '../../project/ceremonies';
 
-export const CERT_W = 960;
-export const CERT_H = 720;
+const CERT_W = 960;
+const CERT_H = 720;
 /** The longest name the player can put on a certificate. */
 export const NAME_MAX = 24;
 
 const COLORS = ['#2f7d4f', '#2b6cb0', '#b4551d', '#7a3e9d', '#0e7c86', '#a3322f'];
 const GOLD = '#b98a00';
 
-export interface CertificateText {
+interface CertificateText {
   title: string;
   /** "This certificate is awarded to" */
   lead: string;
