@@ -273,6 +273,8 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Fixed
 
+- Auto-arrange can put an ending above or below its sources, keeping shortcut arrows clear of branches that leave a level and return to it.
+
 - Errors stay available to screen readers inside dialogs; saves, downloads and checks retain their final outcomes, rapid progress is quieter, and opening a transcript announces its loading state rather than the whole document. Error notices remain readable in both themes.
 - The desk’s screenshot, recording, enlarge-screen, power, disk-eject, speaker sound switch and keyboard tray controls have larger targets, including when the desktop PC is scaled down.
 - The character editor's links to Overview controls have a 24px touch target instead of a text-height strip.
