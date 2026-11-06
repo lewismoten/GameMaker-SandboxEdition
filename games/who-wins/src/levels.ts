@@ -148,7 +148,7 @@ export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
   const pal = buildStarterPalette(undefined, 'who-wins');
   const { book, signs } = buildBlocks(pal);
   const levels: Level[] = [
-    { file: 'one', title: 'The Big One', hint: 'Watch the big red one. Higher power wins.', map: theBigOne(book, signs) },
+    { file: 'one', title: 'The Big One', hint: 'Higher power wins. Watch!', map: theBigOne(book, signs) },
     { file: 'two', title: 'Your Star', hint: 'Your star is 140. What can it pop?', map: yourStar(book, signs) },
   ];
   return { book, pal, levels };
