@@ -13,6 +13,9 @@ const m: Manifest = {
     ['phone/p.bin', 10, 10],
     ['tour/t.json', 10, 10],
     ['icon.svg', 1, 1],
+    ['games/extra-1.json', 5, 5],
+    ['pocket/fw/a.bin', 5, 5],
+    ['trinkets/t.stl', 5, 5],
   ],
 };
 
@@ -24,11 +27,13 @@ describe('fetchOrder', () => {
     expect(paths.indexOf('desk/y.png')).toBeLessThan(paths.indexOf('bbs/x.bin'));
     expect(paths.some((p) => /^(games\/.*\.zip$|phone\/)/.test(p))).toBe(false);
     expect(paths).toContain('games/catalog.json');
+    expect(paths).toContain('pocket/fw/a.bin');
+    expect(paths).not.toContain('games/extra-1.json');
     expect(new Set(paths).size).toBe(paths.length);
   });
   it('adds the packs last with games', () => {
     const paths = fetchOrder(m, true).map((e) => e[0]);
-    expect(paths.slice(-2).sort()).toEqual(['games/g/g.zip', 'phone/p.bin']);
+    expect(paths.slice(-3).sort()).toEqual(['games/g/g.zip', 'phone/p.bin', 'trinkets/t.stl']);
   });
 });
 

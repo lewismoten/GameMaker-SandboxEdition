@@ -1,9 +1,10 @@
-// What archive.html fetches, and in what order. The build lists every file (offline.json); this
+// What archive.html fetches, and in what order. The build lists every file (archive.json, made from the
+// whole built site, so a new kind of file is found with no edit here); this
 // puts the shell and the code for the home page and the desk first, then the rest of the code, the
 // tour, the desk's and BBS's data and the magazine, and the game packs (and the phone's files) last,
 // only when asked. Names stay in this module: the page shows counts only.
 
-/** [path, bytes on the wire, bytes stored] as offline.json lists them. */
+/** [path, bytes on the wire, bytes stored] as archive.json (and offline.json) list them. */
 type Entry = [string, number, number];
 
 export interface Manifest {
@@ -20,8 +21,10 @@ const FIRST_CODE = /^assets\/(main|site|ui|offline|preload-helper|tourButton|des
 const FIRST_DATA = /^((desk|frames|opening|dos|gm)\/|games\/(catalog|index)\.json$)/;
 /** The game lists the build writes after offline.json is made: the page asks for them, so they are listed here. */
 const LISTS = ['games/catalog.json', 'games/index.json'];
-/** The big packs: games and the phone's files. */
-const LAST = /^(games\/.*\.(zip|gmpak)$|phone\/)/;
+/** The big packs: games, the phone's files and the 3D-print and laser kits. */
+const LAST = /^(games\/.*\.(zip|gmpak)$|phone\/|trinkets\/|laser\/)/;
+/** Never fetched: the gate lists, which name the secret games. The build leaves them out too; this is the second lock. */
+const NEVER = /^games\/extra-\d+\.json$/;
 
 const tierOf = (path: string, shell: Set<string>): number => {
   if (shell.has(path)) return 0;
@@ -34,7 +37,7 @@ const tierOf = (path: string, shell: Set<string>): number => {
 export function fetchOrder(m: Manifest, games: boolean): Entry[] {
   const clean = (s: string) => (s === './' ? '' : s.replace(/^\.\//, ''));
   const shell = new Set(m.shell.map(clean));
-  const all: Entry[] = [...m.shell.map((s): Entry => [s === './' ? './' : clean(s), 0, 0]), ...m.files.filter(([p]) => !shell.has(p))];
+  const all: Entry[] = [...m.shell.map((s): Entry => [s === './' ? './' : clean(s), 0, 0]), ...m.files.filter(([p]) => !shell.has(p) && !NEVER.test(p))];
   for (const p of LISTS) if (!all.some((e) => e[0] === p)) all.push([p, 0, 0]);
   return all
     .map((e, i) => ({ e, i, t: tierOf(clean(e[0]), shell) }))

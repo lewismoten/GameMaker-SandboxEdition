@@ -1,4 +1,4 @@
-// archive.html: fetches every file of the site (offline.json), a few at a time, so a web archive's
+// archive.html: fetches every file of the site (archive.json), a few at a time, so a web archive's
 // "save page" records them. Nothing links here. It registers no service worker, writes no storage and
 // shows counts only: never a file's or a game's name.
 import { fetchOrder, partCount, takePart, type Manifest } from './plan';
@@ -26,7 +26,13 @@ async function run(): Promise<void> {
   const q = new URLSearchParams(location.search);
   let manifest: Manifest;
   try {
-    manifest = (await (await fetch('./offline.json', { cache: 'reload' })).json()) as Manifest;
+    // archive.json lists every file; offline.json (the offline copy's smaller list) stands in for an older deploy
+    const get = async (name: string) => {
+      const r = await fetch(`./${name}`, { cache: 'reload' });
+      if (!r.ok) throw new Error(name);
+      return (await r.json()) as Manifest;
+    };
+    manifest = await get('archive.json').catch(() => get('offline.json'));
   } catch {
     say('The list of files is not here. This page works on the published site.');
     return;
