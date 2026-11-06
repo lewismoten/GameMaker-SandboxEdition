@@ -201,6 +201,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Changed
 
+- Sound Board's pads look like real sound pads: a colored cap in a rubber collar with a mark for its sound, and a pressed pad sinks, dims and lights its lamp. The Giant's tunnel has a brick ceiling lit from below, edged with bricks stood on end.
 - The green alien Starter helper is now called Nova, and Jump Boots ends on "SAFE ACROSS".
 - Switching to the desk from a Starter or graduation no longer says only that the disk isn’t in the disk box. It says where the game is: on the Sample Disk, or in the CD’s SAMPLES folder.
 - The Programmer's Guide reads as a book for game makers and programmers: notes on how it was researched are gone, and the chapter labels ("not yet checked in DOSBox", "inference", "estimate") are larger and higher contrast in light and dark.
