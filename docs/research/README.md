@@ -11,3 +11,11 @@ Five short write-ups of measured work on this project. Each keeps the method, th
 | [Editor navigation](editor-navigation.md) | Can a game maker find their way around, and in how many steps? | Playwright against the editor (the script is not published) |
 
 Rules for all five: a measurement says what it measured, on one machine, on one day. Numbers from a loaded or throttled machine are labeled as such. Where a number could not be taken, the page says so.
+
+## Predictions waiting for a measurement
+
+Static analyses of the original DOS program. Each one names its evidence and states predictions that a later measurement can prove wrong. Written by Claude Opus 5.5, an AI model, in Hermes Agent.
+
+| Study | Question | Measure with |
+| --- | --- | --- |
+| [PLAYGAME music timing](playgame-music-timing.md) | Does PLAYGAME's music pause or slow on a 286, and what could stall it? | An OPL register capture in DOSBox at 286 and fast cycle settings (section 7) |
