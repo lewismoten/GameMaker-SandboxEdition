@@ -20,3 +20,10 @@ export const opening = (n: number | string, title: string, lead: string) => `<he
 
 /** A boxed tip. */
 export const tip = (label: string, html: string) => `<div class="note"><strong>${label}</strong> ${html}</div>`;
+
+/** A pointer to the Sample CD's starter games, one line, like the 1994 Owner's Guide's "On the Sample CD:" (folders by their DOS names, never URLs). */
+export const onCd = (...folders: string[]) =>
+  `<p class="see"><i>On the Sample CD:</i> ${folders
+    .map((f) => `<code>${f}</code>`)
+    .join(', ')
+    .replace(/, ([^,]*)$/, folders.length > 2 ? ', and $1' : ' and $1')}.</p>`;

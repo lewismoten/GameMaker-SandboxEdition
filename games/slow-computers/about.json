@@ -1,0 +1,41 @@
+{
+  "title": "Slow Computers",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "hero": "MARA",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.1",
+  "blurb": "Three short levels about what made a game slow down on an old PC. Level 1 has a short pad and a long pad: a sound was read from the disk whole before the game went on, so a long one froze the game while it loaded, and the music kept its own time. Level 2 puts 36 friendly monsters on one screen, which a 286 could not keep up with. Level 3 moves the whole sky every tick. A player with a speed setting can run it like a 286, a 386 or a 486 and see the difference. Signs and pages give the numbers as estimates, and tips for keeping a game fast. Play it, then open it in Game-Maker and change a sound or count the monsters.",
+  "exe": "SLOWPC.EXE",
+  "dosName": "SLOWPC",
+  "sound": "sb",
+  "label": {
+    "background": "#e6ecf2",
+    "band": "#7a4a1e",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "3 short levels",
+    "hours": 1,
+    "background": "#7a4a1e",
+    "accent": "#ffd23f",
+    "ink": "#ffffff",
+    "tagline": "Why old games stuttered.",
+    "back": "A small explorer finds three short rooms that show what slowed a game down on a 1994 PC: a long sound that freezes the game while it loads, a crowd of monsters, and a sky that moves every tick. A player with a speed setting can run it like a 286, a 386 or a 486. Read the signs, then open the game in Game-Maker and change a sound.",
+    "features": [
+      "A short pad and a long pad: a sound has to be read from the disk",
+      "36 friendly monsters on one screen",
+      "A sky that moves every tick",
+      "Made to be copied and taken apart"
+    ],
+    "shots": [
+      ["one.map", 14, 1],
+      ["two.map", 14, 1],
+      ["three.map", 4, 1]
+    ],
+    "rating": "Everyone"
+  }
+}

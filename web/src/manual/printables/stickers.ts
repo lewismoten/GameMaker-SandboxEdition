@@ -15,6 +15,7 @@ import { bbsSticker, dieCut, floppy, gmSticker, polyPath, sandboxSticker, shaped
 import type { StickerSpec } from './types';
 import { drawnArt } from './stickerDrawn';
 import { chickenNow } from '../../chicken/chickenState';
+import { yieldNow } from './yieldNow';
 
 type Special = 'bbs' | 'gm' | 'sandbox';
 
@@ -249,10 +250,17 @@ export async function stickers(ctx: PrintContext): Promise<Sheet[]> {
  */
 async function fitted(specs: MixedSticker[], id: string, extra: Sticker[] = []): Promise<Sheet[]> {
   for (let shrink = 0; ; shrink++) {
-    const made = await Promise.all(specs.map((spec) => resolveSticker(spec, spec.from, shrink)));
+    // one sticker at a time, the browser handed back between them: a pass is long at a slow CPU
+    const made: Awaited<ReturnType<typeof resolveSticker>>[] = [];
+    for (const spec of specs) {
+      made.push(await resolveSticker(spec, spec.from, shrink));
+      await yieldNow();
+    }
     const list = [...extra, ...made.map((m) => m.sticker)];
     const minis = made.flatMap((m) => (m.mini ? [m.mini] : []));
-    if (shrink >= 3 || layoutStickers(list.map((s) => s.geom)).length === 1) return stickerSheets(list, minis, id);
+    const fits = shrink >= 3 || layoutStickers(list.map((s) => s.geom)).length === 1;
+    await yieldNow();
+    if (fits) return stickerSheets(list, minis, id);
   }
 }
 
@@ -287,12 +295,13 @@ const fileName = (s: string) =>
     .replace(/^-|-$/g, '')
     .toLowerCase();
 
-function stickerSheets(list: Sticker[], minis: Sticker[], id: string): Sheet[] {
+async function stickerSheets(list: Sticker[], minis: Sticker[], id: string): Promise<Sheet[]> {
   const all = [...list, ...minis];
   const pages = layoutStickers(
     list.map((s) => s.geom),
     minis.map((s) => s.geom),
   );
+  await yieldNow(); // the packing above and the drawing below are each a long slice
   const names = all.map((s) => s.name);
   const base = fileName(id);
   return pages.map((page, i) => {

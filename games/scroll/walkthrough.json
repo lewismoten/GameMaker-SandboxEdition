@@ -1,0 +1,64 @@
+{
+ "version": 1,
+ "game": "scroll",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AUsjywNLKMsATTzNA00="
+  },
+  {
+   "scene": 3,
+   "keys": "AU0yzQNNzQHNA00="
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: One Screen"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: The View Follows"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 7467,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 913,
+    "time": 15216.666666666471
+   },
+   {
+    "title": "Level 1: One Screen",
+    "frame": 2142,
+    "time": 35700.00000000053
+   },
+   {
+    "title": "Level 2: The View Follows",
+    "frame": 2959,
+    "time": 49316.666666665216
+   },
+   {
+    "title": "Ending",
+    "frame": 4188,
+    "time": 69799.99999999742
+   },
+   {
+    "title": "Credits",
+    "frame": 6395,
+    "time": 106583.33333334146
+   }
+  ]
+ }
+}

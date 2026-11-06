@@ -58,6 +58,16 @@
       "gamemaker-source": "./src/kit/fliShrink.ts",
       "import": "./dist/kit/fliShrink.js"
     },
+    "./kit/blockRoles": {
+      "types": "./dist/types/kit/blockRoles.d.ts",
+      "gamemaker-source": "./src/kit/blockRoles.ts",
+      "import": "./dist/kit/blockRoles.js"
+    },
+    "./kit/levelGen": {
+      "types": "./dist/types/kit/levelGen/index.d.ts",
+      "gamemaker-source": "./src/kit/levelGen/index.ts",
+      "import": "./dist/kit/levelGen.js"
+    },
     "./kit/*": {
       "types": "./dist/types/kit/*.d.ts",
       "browser": null,

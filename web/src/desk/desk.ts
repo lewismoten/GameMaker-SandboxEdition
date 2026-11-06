@@ -34,6 +34,7 @@ import { wallTrophies } from './wallTrophies';
 import { deskTour } from './deskTour';
 import { beginDesk, endDesk } from './lifetime';
 import { ejectRefusal } from './ejectRule';
+import { hasRetailBox } from '../project/starter';
 
 // What is opened or read on the desk loads when it first is: the manuals and the catalog (the
 // boxes' insides, deskGmBox.ts and deskShelf.ts).
@@ -367,7 +368,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     pc.captureCode,
     () => fetch('./gm/index.json'), // C:\GM's listing, so GM starts offline too
   ]);
-  void loadGameList().then((cat) => shelf.fill(cat.filter((g) => g.original?.box)));
+  void loadGameList().then((cat) => shelf.fill(cat.filter(hasRetailBox)));
   // a secret game revealed or hidden again (13 felt eggs found, or EGG.EXE): the shelf
   // and the disk box follow, and the box of a game no longer listed is put back
   const unCatalog = onCatalogChanged(async () => {
@@ -376,7 +377,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     const viewer = document.querySelector<HTMLElement>('.box-viewer');
     const showing = viewer?.getAttribute('aria-label');
     if (showing && !cat.some((g) => `${g.title} box` === showing)) viewer!.querySelector<HTMLButtonElement>('.box-viewer-bar button:last-child')?.click();
-    void shelf.fill(cat.filter((g) => g.original?.box));
+    void shelf.fill(cat.filter(hasRetailBox));
     void refreshDisks();
   });
   const unWall = wallTrophies(desk);

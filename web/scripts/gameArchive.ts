@@ -6,8 +6,13 @@ import { exportDos } from '../src/export/exportDos';
 import { catalogPatches } from '../src/dosPlayer/catalogPatches';
 import type { CdCatalogEntry } from './cdGames';
 
-/** Permanent DOS-compatible ZIP basename, independent of game contents and release version. */
-export const gameZipName = (id: string): string => `${id.slice(0, 8)}.zip`;
+import { dosDir } from '../src/project/dosDir';
+
+/** Permanent DOS-compatible ZIP basename (its dosDir name, 8.3), independent of game contents and release version. */
+export const gameZipName = (g: { id: string; exe?: string; dosName?: string }): string => `${dosDir(g).toLowerCase()}.zip`;
+
+/** The ZIP name a game had before it had a dosName (its id cut to 8): that old link still serves the same file. */
+export const legacyZipName = (id: string): string => `${id.slice(0, 8)}.zip`;
 
 export async function gameArchive(entry: CdCatalogEntry, paths: ReadonlyMap<string, string>): Promise<Uint8Array> {
   const read = (path: string) => {

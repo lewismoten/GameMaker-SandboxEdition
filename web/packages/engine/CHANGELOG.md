@@ -9,6 +9,10 @@ Live sound control, a hook for life losses, and fixes to scrolling and picture d
 
 ### Added
 
+- Experimental gameplay patches (`player/patchTable` group `play`: `play.maxSpeed`, `play.gravityCap`, `play.gravityTicks`, `play.attackX`, `play.attackY`, `play.scrollSpeedX`, `play.scrollSpeedY`, `play.scrollSteps`, `play.fadeSteps`), `ImmField.negate`, and `World.tune` with `STOCK_TUNING` and `playTuning(look)`, so a scene plays by a patched player's constants. With no patches play is unchanged.
+- An IBM PS/1 slow-PC preset (`SPEED_PRESETS.ps1`: 286 at 10 MHz, slow disk, `vocHeapBytes`), `vocWontFit`, and a voice that starts only after its emulated disk read (a sound too big for the heap is read and not played). Estimates; Today charges nothing.
+- Slow-PC presets for 486, 386 and 286 (`SPEED_PRESETS`, `costsFor`) and a voice-read stall (`vocStallMs`): a game freezes while a .voc is read from disk, as PLAYGAME's synchronous read did. Estimates; the default speed charges nothing.
+- Color-vision simulation (`gfx/colorVision`): the Machado, Oliveira and Fernandes matrices, sRGB and linear RGB, CIELAB and CIE76 delta E, one copy for the palette editor, the badge look-alike report and the games' color checks.
 - Player life-loss events, so a caller can watch for them without counting recorded playback.
 - Play's F10 shows an imported player's own About page and the build it was first made with.
 - Sparse FLI palette changes (only the colors a frame draws), and FLI clip options that leave out the ring frame or cut where a whole frame adds the fewest bytes.

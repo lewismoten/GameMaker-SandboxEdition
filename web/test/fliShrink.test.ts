@@ -39,6 +39,10 @@ function sample(): FliFrames {
 }
 
 /** The screen as the player has it after each frame. */
+// toEqual on 64,000-byte frames is slow; these compare the bytes directly.
+const sameBytes = (a: Uint8Array, b: Uint8Array): boolean => a.length === b.length && Buffer.compare(a, b) === 0;
+const sameFrames = (a: Uint8Array[], b: Uint8Array[]): boolean => a.length === b.length && a.every((f, i) => sameBytes(f, b[i]));
+
 function play(fli: Uint8Array) {
   const a = parseFli(fli);
   const c = newFliCanvas(a);
@@ -61,7 +65,7 @@ describe('sparse palettes', () => {
       const a = play(full);
       const b = play(sparse);
       for (let f = 0; f < a.length; f++) {
-        expect(b[f].px).toEqual(a[f].px);
+        expect(sameBytes(b[f].px, a[f].px), `frame ${f}`).toBe(true);
         const used = new Set(a[f].px);
         for (const c of used) for (let j = 0; j < 3; j++) expect(b[f].pal[c * 3 + j]).toBe(a[f].pal[c * 3 + j]);
       }
@@ -168,7 +172,7 @@ describe('shrink steps', () => {
   it('frame it: nothing set is the same picture', () => {
     const r = frameStep(s, { top: 0, bottom: 0, left: 0, right: 0, zoom: 1, panX: 0, panY: 0 });
     expect(r.lossless).toBe(true);
-    expect(r.frames.frames).toEqual(s.frames);
+    expect(sameFrames(r.frames.frames, s.frames)).toBe(true);
   });
   it(
     'frame it: bands are exactly the band color, frames and timing stay, and it round trips',
@@ -187,7 +191,7 @@ describe('shrink steps', () => {
       });
       expect(bad).toBe(0);
       const back = decodeFli(encodeFrames(r.frames, r.encode));
-      expect(back.frames).toEqual(r.frames.frames);
+      expect(sameFrames(back.frames, r.frames.frames)).toBe(true);
       expect(back.speed).toBe(s.speed);
       expect(r.savedBytes).toBeGreaterThan(0);
     },
@@ -203,11 +207,15 @@ describe('shrink steps', () => {
   it('frame it: zoom out averages into existing colors, zoom in repeats pixels', () => {
     const small = frameStep(s, { top: 0, bottom: 0, left: 0, right: 0, zoom: 0.5, panX: 0, panY: 0 });
     const used = new Set(s.frames.flatMap((f) => [...new Set(f)]));
-    for (const f of small.frames.frames) for (const c of new Set(f)) expect(used.has(c) || c === bandColor(s.palettes[0])).toBe(true);
+    const band = bandColor(s.palettes[0]);
+    const strays = small.frames.frames.flatMap((f) => [...new Set(f)].filter((c) => !used.has(c) && c !== band));
+    expect(strays).toEqual([]);
     expect(small.frames.frames[0][0]).toBe(bandColor(s.palettes[0]));
     const big = frameStep(s, { top: 0, bottom: 0, left: 0, right: 0, zoom: 2, panX: 0, panY: 0 });
     // a 2x zoom shows each pixel twice across: neighbors in a pair match
     const f = big.frames.frames[0];
-    for (let x = 0; x < 320; x += 2) expect(f[100 * 320 + x]).toBe(f[100 * 320 + x + 1]);
+    const odd: number[] = [];
+    for (let x = 0; x < 320; x += 2) if (f[100 * 320 + x] !== f[100 * 320 + x + 1]) odd.push(x);
+    expect(odd).toEqual([]);
   });
 });

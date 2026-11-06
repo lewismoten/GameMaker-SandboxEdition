@@ -66,7 +66,11 @@ const only = process.argv.flatMap((arg, i) => (process.argv[i - 1] === '--game' 
 const stale = ids.filter(
   (id) =>
     (!only.length || only.includes(id)) &&
-    (process.argv.includes('--force') || cached?.keys?.[id] !== keys[id] || !cached?.outputs?.[id] || cached.outputs[id] !== outputs(id)),
+    (process.argv.includes('--force') ||
+      process.argv.includes('--force-all') ||
+      cached?.keys?.[id] !== keys[id] ||
+      !cached?.outputs?.[id] ||
+      cached.outputs[id] !== outputs(id)),
 );
 // slowest first keeps the last workers busy; GM_BUILD_JOBS sets the worker count (CI uses every core, a desk keeps two)
 const slowFirst = ['depth', 'realm', 'blaster', 'maximus'];
@@ -102,7 +106,14 @@ function logo() {
 }
 const jobs = Math.max(1, Math.floor(Number(process.env.GM_BUILD_JOBS)) || (process.env.CI ? availableParallelism() : 2));
 const timing = process.argv.includes('--timing') || process.env.GM_BUILD_TIMING === '1';
+// --force rebuilds every game; the trinkets and nickels keep their own source keys (manifest.json) and are re-made only when those change, or with --force-all
+const forceExtras = process.argv.includes('--force-all');
 const times = [];
+const scriptBegan = Date.now();
+// GM_BUILD_TIMING=1 / --timing: every stage after the games, with its seconds
+const stage = (label, since) => {
+  if (timing) console.log(`stage ${label}: ${((Date.now() - since) / 1000).toFixed(1)} s (at ${((Date.now() - scriptBegan) / 1000).toFixed(1)} s)`);
+};
 // the cache records a game as built only once it is; written after every game, so a build stopped
 // partway (a CI step timeout) keeps what it finished and the next run picks up from there
 const built = new Set();
@@ -212,6 +223,7 @@ for (const [from, to] of [
 // The kit's downloads (ZIPs of the printer parts and of the circuit board files, the parts lists, the README the box reads as
 // its instructions book) are made beside them (games/kit/phoneDownloads.ts).
 if (existsSync(join(root, 'games/year2000/phone/kicad')) && (!only.length || only.includes('year2000'))) {
+  const phoneStarted = Date.now();
   await runEntry(
     'phone-downloads',
     { file: join(root, 'games/kit/phoneDownloads.ts') },
@@ -220,6 +232,7 @@ if (existsSync(join(root, 'games/year2000/phone/kicad')) && (!only.length || onl
     { cwd: join(root, 'web'), maxBuffer: 16 << 20, timeout: 240_000 },
     'phone downloads',
   );
+  stage('phone downloads', phoneStarted);
 }
 const began = Date.now();
 // The plastic trinkets of the games that mesh them from distance fields (STL, 3MF and support files the site serves from
@@ -244,8 +257,9 @@ const fieldTrinketGames = [
   ['snowbound', 'Snowbound'],
   ['blaster', 'Blaster'],
 ];
+// GM_SKIP_FIELD_TRINKETS=1 leaves them out (the Mac, Windows and Linux download jobs only need the disks).
 const trinkets = Promise.all(
-  fieldTrinketGames
+  (process.env.GM_SKIP_FIELD_TRINKETS ? [] : fieldTrinketGames)
     .filter(([id]) => ids.includes(id) && (!only.length || only.includes(id)))
     .map(async ([id, name]) => {
       const started = Date.now();
@@ -253,7 +267,7 @@ const trinkets = Promise.all(
         `${id}-trinkets`,
         { file: join(root, `games/${id}/tools/trinkets.ts`) },
         `../games/${id}/tools/trinkets.ts`,
-        ['--workers', String(Math.min(3, jobs)), ...(process.argv.includes('--force') ? ['--force'] : [])],
+        ['--workers', String(Math.min(3, jobs)), ...(forceExtras ? ['--force'] : [])],
         { cwd: join(root, 'web'), maxBuffer: 16 << 20, timeout: 240_000 },
         `${id}-trinkets`,
       );
@@ -261,7 +275,9 @@ const trinkets = Promise.all(
     }),
 );
 if (pending.some((id) => logoUsers.has(id))) void logo();
+const gamesStarted = Date.now();
 await Promise.all([trinkets, ...Array.from({ length: Math.min(jobs, pending.length) }, worker)]);
+stage('games + field trinkets', gamesStarted);
 // The pixel-figure trinkets of the other games (games/kit/pixelTrinkets.ts: web/public/trinkets/<game>/) are meshed from the
 // built disks, so they run after the games; each game is skipped when its figures and the mesh code are unchanged (a key
 // in its manifest.json), which makes an up-to-date tree cost one process start. A secret game has none.
@@ -271,10 +287,11 @@ if (!process.env.GM_SKIP_PIXEL_TRINKETS && (!only.length || only.some((id) => id
     'pixel-trinkets',
     { file: join(root, 'games/kit/pixelTrinkets.ts') },
     '../games/kit/pixelTrinkets.ts',
-    [...(only.length ? ['--game', only.join(',')] : []), ...(process.argv.includes('--force') ? ['--force'] : [])],
+    [...(only.length ? ['--game', only.join(',')] : []), ...(forceExtras ? ['--force'] : [])],
     { cwd: join(root, 'web'), maxBuffer: 16 << 20, timeout: 240_000 },
     'pixel trinkets',
   );
+  stage('pixel trinkets', started);
   if (timing) console.log(`Pixel trinkets: ${made.stdout.trim().split('\n').length} lines (${((Date.now() - started) / 1000).toFixed(1)} s)`);
 }
 // The laser wooden nickels (games/kit/laserNickels.ts: SVGs and PNG previews in web/public/laser/<game>/) are drawn from the
@@ -286,10 +303,11 @@ if (!process.env.GM_SKIP_LASER_NICKELS && (!only.length || only.some((id) => ids
     'laser-nickels',
     { file: join(root, 'games/kit/laserNickels.ts') },
     '../games/kit/laserNickels.ts',
-    [...(only.length ? ['--game', only.join(',')] : []), ...(process.argv.includes('--force') ? ['--force'] : [])],
+    [...(only.length ? ['--game', only.join(',')] : []), ...(forceExtras ? ['--force'] : [])],
     { cwd: join(root, 'web'), maxBuffer: 16 << 20, timeout: 240_000 },
     'laser nickels',
   );
+  stage('laser nickels', started);
   if (timing) console.log(`Laser nickels: ${made.stdout.trim().split('\n').length} lines (${((Date.now() - started) / 1000).toFixed(1)} s)`);
 }
 // Final Curtain's laser Stage Box (games/sleuth/laser/stageBox.ts) writes web/public/laser/sleuth/stage-box/; it is cheap, so it

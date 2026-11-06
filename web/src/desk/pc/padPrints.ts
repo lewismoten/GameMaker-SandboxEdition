@@ -4,7 +4,7 @@
 // it, a night sky, and plain blue. The desk's pad (tray.ts) and the magazine's chooser
 // (padChooser.ts) both draw from here.
 import { SANDBOX_COLORS } from '../../retro/bbs/bbsName';
-import { drawChez } from '../props/chezArt';
+import { CHEZ_CLOSE_UP, drawChez } from '../props/chezArt';
 import type { PadPrint } from './padChoice';
 
 const W = 156;
@@ -41,8 +41,6 @@ function sandbox(id: string): string {
     <text x="150" y="132" text-anchor="end" font-family="'Courier New', monospace" font-weight="700" font-size="9" fill="#3a2a10">1-412-555-SAND</text>`;
 }
 
-/** Doc Leo sits back from the windshield, his face and hat whole in the door window (as in the magazine). */
-const DRIVER_SEAT: [number, number] = [-3, 0.5];
 let chezPng: string | undefined;
 
 /** THE CHEZ from the passenger side, drawn once on a canvas: 44 x 24 of the car's units, the ground at 22. */
@@ -53,7 +51,7 @@ function chezImage(): string {
   c.width = 44 * k;
   c.height = 24 * k;
   const ctx = c.getContext('2d');
-  if (ctx) drawChez(ctx, 2 * k, 22 * k, k, DRIVER_SEAT);
+  if (ctx) drawChez(ctx, 2 * k, 22 * k, k, CHEZ_CLOSE_UP.driver, CHEZ_CLOSE_UP.teddy);
   chezPng = ctx ? c.toDataURL() : '';
   return chezPng;
 }

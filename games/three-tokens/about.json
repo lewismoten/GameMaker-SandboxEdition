@@ -1,0 +1,36 @@
+{
+  "title": "Three Tokens",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "hero": "RIMA",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.0",
+  "blurb": "Two short levels about gates that count. Tokens add to a counter, and a gate opens only when the counter can pay its price: three tokens for the first, and in the second the gate is the exit itself. Signs in the levels say how. Play it, then open it in Game-Maker and change a price.",
+  "exe": "TOKENS.EXE",
+  "dosName": "THREETOK",
+  "sound": "sb",
+  "label": {
+    "background": "#e8f6ff",
+    "band": "#2f9e5a",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "2 short levels",
+    "hours": 1,
+    "background": "#2f9e5a",
+    "accent": "#ffd23f",
+    "ink": "#ffffff",
+    "tagline": "A gate can ask for three.",
+    "back": "A small explorer in a teal beanie finds purple tokens lying about. Each one adds to a count. The first gate takes three, so two are not enough. In the second room the gate is the way out. Read the signs, then open the game in Game-Maker and change a price.",
+    "features": ["Signs in the levels explain each idea", "Tokens add to a count, gates spend it", "Made to be copied and taken apart"],
+    "shots": [
+      ["one.map", 22, 6],
+      ["two.map", 22, 6]
+    ],
+    "rating": "Everyone"
+  },
+  "acceptedFindings": ["facing s2 The hero climbs side on"]
+}

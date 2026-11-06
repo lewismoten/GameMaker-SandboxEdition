@@ -34,7 +34,10 @@ export interface BblMerge {
 /** A self-linked block's bytes, links normalized, to find an identical one elsewhere. */
 const bytes = (b: Block) => serializeBlocks([{ ...b, nextBl: 0, touchBl: 0 }]).join(',');
 const selfLinked = (b: Block, i: number) => b.nextBl === i && b.touchBl === i;
-const isBlank = (b: Block, i: number) => [false, true].some((t) => serializeBlocks([emptyBlock(i, t)]).every((v, k) => v === serializeBlocks([b])[k]));
+const isBlank = (b: Block, i: number) => {
+  const mine = serializeBlocks([b]);
+  return [false, true].some((t) => serializeBlocks([emptyBlock(i, t)]).every((v, k) => v === mine[k]));
+};
 
 /** The merge, or why the two sets can't share one file. */
 export function mergeBackgroundSets(input: BblMergeInput): BblMerge | string {

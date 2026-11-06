@@ -47,6 +47,8 @@ export interface CatalogEntry {
   gz?: boolean;
   /** Built sites: a downloadable DOS ZIP; older catalogs use gzipped GMPK. Named with a hash of its content. */
   pack?: string;
+  /** Original games: the 8.3 name of its ZIP and folders in DOS (about.json "dosName"), where the id is longer; read it through dosDir(). */
+  dosName?: string;
   /** Built sites: the size of its pack in bytes. */
   packBytes?: number;
   /** Built sites: what the quick check (project/health.ts) finds in it, so no file need be fetched to know. */
@@ -70,12 +72,12 @@ export interface CatalogEntry {
 const SANDBOX_COMPANY = 'Sandbox Software';
 
 /**
- * A Sandbox Software game: one of ours, with its box, disk and manual. Other games built in
+ * A Sandbox Software game: one of ours, with its box, disk and manual (not a Starter, see starter.ts). Other games built in
  * ../games under another publisher's name (a BBS download such as The Bard of Bizarre's)
  * are listed with the shareware instead.
  */
-export function isSandboxGame(g: Pick<CatalogEntry, 'original' | 'company'>): boolean {
-  return !!g.original && (g.company ?? SANDBOX_COMPANY) === SANDBOX_COMPANY;
+export function isSandboxGame(g: Pick<CatalogEntry, 'original' | 'company'> & { series?: string }): boolean {
+  return !!g.original && (g.company ?? SANDBOX_COMPANY) === SANDBOX_COMPANY && g.series !== 'starter';
 }
 
 const catalogs = new Map<string, Promise<CatalogEntry[]>>();
@@ -140,9 +142,12 @@ export function loadGameList(base = './games/'): Promise<CatalogEntry[]> {
 /** An entry with its shareware notice, manual and printables (games/details/<id>.json), for one from loadCatalogList. */
 export async function withDetails(entry: CatalogEntry, base = './games/'): Promise<CatalogEntry> {
   if (!entry.details) return entry; // nothing left out, or a full entry
-  const details = await fetchJson<Pick<CatalogEntry, 'notice' | 'original'>>(`${base}details/${entry.id}.json`).catch(() => undefined);
+  const details = await fetchJson<Pick<CatalogEntry, 'notice' | 'original' | 'blurb' | 'controls' | 'player'>>(`${base}details/${entry.id}.json`).catch(
+    () => undefined,
+  );
   if (!details) return (await loadCatalog(base)).find((g) => g.id === entry.id) ?? entry;
-  return { ...entry, notice: details.notice, original: entry.original || details.original ? { ...entry.original, ...details.original } : undefined };
+  const { original, ...more } = details; // a Starter's blurb, controls, player look, label and box art too (scripts/cdGames.ts pageCatalog)
+  return { ...entry, ...more, original: entry.original || original ? { ...entry.original, ...original } : undefined };
 }
 
 // Hosted game files fetched this session, shared by everything that asks for the same

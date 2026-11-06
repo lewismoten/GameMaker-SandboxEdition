@@ -7,42 +7,15 @@ import { defaultPalette, parsePalette, type Palette } from '@lewismoten/gamemake
 import { decodeGif, isGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
 import { debounce } from './ui';
 import { isSolidPalette, mostReadable } from './readablePalette';
-import { emptyCompanion, getSection, renameInCompanion, setMenuVersion, setSection, type Companion } from '../../project/companion';
+import { emptyCompanion, getSection, renameInCompanion, setExportPreviews, setMenuVersion, setSection, type Companion } from '../../project/companion';
+import { setAbout, type AboutGame } from '../../project/aboutGame';
 import { editedFile, unlockAchievement } from '../../achievements';
+import { kindOf, KIND_LABELS, type FileKind } from './fileKind';
+export { kindOf, KIND_LABELS, type FileKind };
 import { MEMORY_SECTIONS, refuse, type ReadOnlyGuard } from './readOnly';
-
-export type FileKind =
-  'gam' | 'pal' | 'bbl' | 'mbl' | 'cbl' | 'mon' | 'chr' | 'map' | 'snd' | 'gif' | 'fli' | 'bkd' | 'txt' | 'lst' | 'cmf' | 'voc' | 'rec' | 'his' | 'other';
-
-export const KIND_LABELS: Record<FileKind, string> = {
-  gam: 'Game (integrator)',
-  pal: 'Palettes',
-  bbl: 'Background blocks',
-  mbl: 'Monster blocks',
-  cbl: 'Character blocks',
-  mon: 'Monsters',
-  chr: 'Characters',
-  map: 'Maps',
-  snd: 'Sound sets',
-  gif: 'Pictures',
-  fli: 'Animations',
-  bkd: 'Backdrops',
-  txt: 'Text screens',
-  lst: 'Slide shows',
-  cmf: 'Music',
-  voc: 'Digital sounds',
-  rec: 'Demo recordings',
-  his: 'High scores',
-  other: 'Other files',
-};
 
 /** Where an autosave is: begun, kept in IndexedDB, or refused (storage full, private mode…). */
 type SaveState = 'saving' | 'saved' | 'failed';
-
-export function kindOf(name: string): FileKind {
-  const ext = (/\.([^.]+)$/.exec(name)?.[1] ?? '').toLowerCase();
-  return (ext in KIND_LABELS ? ext : 'other') as FileKind;
-}
 
 export class Project {
   id: string;
@@ -57,6 +30,8 @@ export class Project {
   private extrasListeners = new Set<(file: string, section: string) => void>();
   /** Set for a game opened only to look inside (readOnly.ts makeReadOnly): every change is refused before it happens, and nothing is saved. */
   readOnly?: ReadOnlyGuard;
+  /** Set by the workspace: play test a level starting at a spot (the map editor's Play here); undefined where nothing can play. */
+  playAt?: (scene: number, at: { x: number; y: number }) => void;
 
   constructor(id: string, name: string, gam: string, files: GameFiles, companion?: Companion) {
     this.id = id;
@@ -157,6 +132,22 @@ export class Project {
     if (this.readOnly) refuse(this, 'version');
     this.companion ??= emptyCompanion();
     setMenuVersion(this.companion, version, show);
+    this.persist();
+  }
+
+  /** Whether the one-page export includes animation and sound previews (companion.ts); the game's files are not touched. */
+  setExportPreviews(on: boolean): void {
+    if (this.readOnly) refuse(this, 'export');
+    this.companion ??= emptyCompanion();
+    setExportPreviews(this.companion, on);
+    this.persist();
+  }
+
+  /** "About this game" (project/aboutGame.ts): editor-only, so the game's files are not touched. */
+  setAbout(about: AboutGame): void {
+    if (this.readOnly) refuse(this, 'about');
+    this.companion ??= emptyCompanion();
+    setAbout(this.companion, about);
     this.persist();
   }
 

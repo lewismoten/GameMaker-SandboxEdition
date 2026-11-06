@@ -94,6 +94,15 @@ settings** to bypass it by default, including autoplay. Saved per-game choices s
 **Video & audio…** on the Play screen lets you change them later. These browser preferences
 do not alter the game files on the host; clearing site data resets them.
 
+## Run like a slow PC
+
+The **Run like a** menu in the player's top corner (Today, 486, 386, 286) runs any game the way
+an old PC would, for trying how a game feels on slow machines. A round of the game that takes
+longer than a tick (1/18 second) is skipped, as PLAYGAME skips it, so walking and animation slow
+down. A digital sound (.VOC) is read from disk whole while the game waits, as PLAYGAME does; the
+music keeps its own time. The costs are estimates, not measurements, and Today (the default)
+charges nothing. It changes nothing in the game's files or the host.
+
 ## Saves and high scores
 
 Everything a game writes (its high scores, saved games and their names) is kept in the

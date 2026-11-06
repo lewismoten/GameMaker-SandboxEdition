@@ -1,12 +1,15 @@
 // The home page's collections (its tabs) in the order they show: your own games, then this
-// edition's (Sandbox, and Bizarre once it has enough games), then the CD's (Gameware,
-// Shareware). The one opened first, the one remembered, and the featured game a collection
+// edition's (Starters and Sandbox, and Bizarre once it has enough games), then the CD's (Gameware,
+// one CD tab). The one opened first, the one remembered, and the featured game a collection
 // shows when it is chosen (pickFeatured) are here too.
 import type { GameKind } from './homeCards';
 import type { IconName } from './homeIcons';
 
 /** A collection: a kind of game, with your own games split into those made here and those imported. */
-export type Category = GameKind | 'imported';
+export type Category = Exclude<GameKind, 'gameware' | 'shareware'> | 'imported' | 'cd';
+
+/** Old addresses and saved choices from when Gameware and Shareware were tabs of their own. */
+export const oldCategory = (id: string | null | undefined): string | null | undefined => (id === 'gameware' || id === 'shareware' ? 'cd' : id);
 
 /** Each collection: `short` is the one line shown above its games, `lead` the whole of it (More, and the tab's tip). */
 export const CATEGORIES: { id: Category; icon: IconName; name: string; short: string; lead: string }[] = [
@@ -23,6 +26,13 @@ export const CATEGORIES: { id: Category; icon: IconName; name: string; short: st
     name: 'Imported',
     short: 'Games brought in from folders, files, .zips or .html exports.',
     lead: 'Games brought in from a folder, files, a .zip or a one-page export, often made by someone else. Kept in this browser; ⋯ More moves one to My games.',
+  },
+  {
+    id: 'starter',
+    icon: 'manual',
+    name: 'Starters',
+    short: 'Small games that each show one idea. Play one, then edit a copy to start your own.',
+    lead: 'Small games that each show one Game-Maker idea, with signs in the levels that say what you are looking at. Play one, then edit a copy: find the sign in the map editor, change a block and play your change.',
   },
   {
     id: 'sandbox',
@@ -46,18 +56,11 @@ export const CATEGORIES: { id: Category; icon: IconName; name: string; short: st
     lead: 'Games hosted on their creators’ websites. Open a game there, download its optional ZIP, or edit a copy. Add your own through a pull request using Add your game.',
   },
   {
-    id: 'gameware',
+    id: 'cd',
     icon: 'disk',
-    name: 'Gameware',
-    short: 'Free games that came with Game-Maker. Play or edit a copy.',
-    lead: 'The free “gameware” that came with Game-Maker. Play them, or edit a copy to see how they were made and reuse their pictures, monsters and sounds in your own games.',
-  },
-  {
-    id: 'shareware',
-    icon: 'lock',
-    name: 'Shareware',
-    short: 'Other people’s games from the CD and BBSes, as released.',
-    lead: 'Games other people made with Game-Maker, from the CD and the BBSes. Most are copyrighted shareware that can only be played here, exactly as released; a few are free to share. If you enjoy one, read its notice to see how the author asked to be registered or thanked.',
+    name: 'CD',
+    short: 'The Game-Maker CD: free gameware to play or edit, then other people’s shareware, by maker.',
+    lead: 'What came on the Game-Maker CD. Gameware is free: play it, or edit a copy to see how it was made and reuse its pictures, monsters and sounds in your own games. Shareware is other people’s games from the CD and the BBSes: most are copyrighted and can only be played here, exactly as released; a few are free to share. If you enjoy one, read its notice to see how the author asked to be registered or thanked.',
   },
 ];
 
@@ -69,7 +72,7 @@ export const CATEGORY_KEY = 'gm-home-category';
 /** The collection the visitor picked last, if any. */
 export function savedCategory(): Category | undefined {
   try {
-    const c = localStorage.getItem(CATEGORY_KEY) as Category | null;
+    const c = oldCategory(localStorage.getItem(CATEGORY_KEY)) as Category | null;
     return c && CATEGORIES.some((x) => x.id === c) ? c : undefined;
   } catch {
     return undefined;

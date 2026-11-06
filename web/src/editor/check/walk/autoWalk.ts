@@ -21,7 +21,7 @@ import { explore, type Entry, type Exploration, type ExploreOptions } from '../e
 import type { Move } from '../inputs';
 import { SceneSim, startCharInfo, type FileSource } from '../sim';
 import { replayMine } from './replayMine';
-import { fetchKeys, locksAtEntry } from './fetchKeys';
+import { fetchKeys, locksAtEntry, type FetchKeysDiagnostics } from './fetchKeys';
 import { lockedWhy } from './gates';
 import { otherScenesAdding } from './otherScenes';
 import { scenePaths } from './walkPaths';
@@ -73,6 +73,8 @@ export interface SceneOutcome {
   mine?: 'used' | 'broke';
   /** The scene has walking paths: the share of the route's walking on them, and whether a second search keeping to them gave the route. */
   paths?: { share: number; kept: boolean };
+  /** Why fetching keys for a still-locked way on failed. */
+  keys?: FetchKeysDiagnostics;
 }
 
 export interface AutoWalk {
@@ -309,7 +311,7 @@ export async function autoWalk(game: Game, files: FileSource, gameId: string, op
       if (locks.wanted.size) {
         outcome.tried.push('keys');
         if (opt.progress?.(scene, 'Fetch the keys, then go on', 0)) canceled = true;
-        const replay =
+        const keys =
           !canceled &&
           (await fetchKeys(game, files, scene, entry, locks, {
             goal,
@@ -320,7 +322,8 @@ export async function autoWalk(game: Game, files: FileSource, gameId: string, op
             unreached,
             progress: (places) => (opt.progress?.(scene, 'Fetch the keys, then go on', places) ? (canceled = true) : canceled),
           }));
-        if (replay) found = { replay, strategy: STRATEGIES.find((x) => x.id === 'keys')! };
+        if (keys && keys.replay) found = { replay: keys.replay, strategy: STRATEGIES.find((x) => x.id === 'keys')! };
+        else if (keys) outcome.keys = keys.diagnostics;
       }
       lockWhy = lockedWhy(locks, unreached, otherScenesAdding(game, files, scene, locks.missing));
     }

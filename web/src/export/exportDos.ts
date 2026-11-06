@@ -15,6 +15,8 @@ import type { PlayerPatches } from '@lewismoten/gamemaker-sandbox-engine/player/
 import { playerChanges, renamedFiles } from '../dosPlayer/describePatches';
 import { extensionClashes, extensionMap } from '@lewismoten/gamemaker-sandbox-engine/player/fileExtensions';
 import { WEB_ONLY } from './webOnly';
+import type { AboutGame } from '../project/aboutGame';
+import { DIZ_NAME, fileIdDiz } from '../project/fileIdDiz';
 import { rewriteNames, swapExtension } from '@lewismoten/gamemaker-sandbox-archives/project/extensionNames';
 
 interface DosExportOptions {
@@ -28,6 +30,9 @@ interface DosExportOptions {
   kept?: PreservedParts;
   /** Build-time callers supply the CD runtime directly, without HTTP or browser globals. */
   runtime?: { player: Uint8Array; driver: Uint8Array; help?: Uint8Array };
+  /** "About this game" (project/aboutGame.ts) and the game's version: written as FILE_ID.DIZ. The game's own files stay as they are. */
+  about?: AboutGame;
+  version?: string;
   /** A fixed timestamp makes catalog distributions reproducible. */
   date?: Date;
 }
@@ -149,6 +154,10 @@ export async function exportDos(files: GameFiles, opts: DosExportOptions): Promi
       ),
     },
   ];
+  // the board-style description, unless the game's own files already include one
+  const written = opts.about && Object.keys(opts.about).length && !names.some((n) => n.toUpperCase() === DIZ_NAME);
+  const diz = written ? fileIdDiz(opts.about!, opts.title, opts.version) : undefined;
+  if (diz) entries.push({ name: DIZ_NAME, data: diz });
   return { name: `${stem.toLowerCase()}.zip`, zip: await createZip(entries, opts.date), exe };
 }
 

@@ -26,6 +26,10 @@ export function siteShelf(zineFound: boolean): ShelfItem[] {
     }),
     ...(zineFound ? [site('zine', 'NO CARRIER #3', 'A photocopied zine about the desk PC’s power tools', '📠', 'magazine', { via: 'zine' })] : []),
     site('guide', 'The Guide', 'How to play, make and share games here', '📖', 'guide', { via: 'href', href: '#/help' }),
+    site('programmers-guide', 'The Programmer’s Guide to Game-Maker 3.0', 'Why each limit of the player is what it is, with the source lines', '🛠️', 'guide', {
+      via: 'href',
+      href: '#/programmers-guide',
+    }),
     site('mac', 'Playing on a Mac', 'The downloaded games on macOS', '🍏', 'guide', { via: 'href', href: '#/mac' }),
     site('windows', 'Playing on Windows', 'The downloaded games on Windows', '🪟', 'guide', { via: 'href', href: '#/windows' }),
     site('linux', 'Playing on Linux', 'The downloaded games on Linux', '🐧', 'guide', { via: 'href', href: '#/linux' }),

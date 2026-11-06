@@ -10,8 +10,6 @@ import { ATTACKMOVEMENT, LASTSL, MAXMARCH, NORMALMOVEMENT, type March, type Mons
 import { chrFrame } from './keys';
 import { doBlockTouchChar, doSound, KILLSOUND, onscrn } from './touch';
 import {
-  ATTACKX,
-  ATTACKY,
   BACKBL,
   BLEN,
   CHARBL,
@@ -214,7 +212,7 @@ function chkWalls(w: World, mi: MonInfo, move: Coord): boolean {
 /** MonInRange: within ATTACKX x ATTACKY blocks of the character, so the attack march starts. */
 function monInRange(w: World, mm: number): boolean {
   const mi = w.mi[mm];
-  return Math.abs(mi.curx[0] - w.chr.x[0]) < ATTACKX && Math.abs(mi.cury[0] - w.chr.y[0]) < ATTACKY;
+  return Math.abs(mi.curx[0] - w.chr.x[0]) < w.tune.attackX && Math.abs(mi.cury[0] - w.chr.y[0]) < w.tune.attackY;
 }
 
 /** BirthMon: puts monster `mon` in slot mm (or the first empty slot when mm >= LASTMM). */

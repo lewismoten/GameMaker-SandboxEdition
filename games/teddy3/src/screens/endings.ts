@@ -6,7 +6,7 @@ import { pastePhoto, polaroid, resample, tone } from '@lewismoten/gamemaker-sand
 import { loadScan } from '../../../kit/photo';
 import { blob, centered, gradient, micro, microWidth, outlined, recolor, scaleBlit } from '../art/draw';
 import { errandSprite } from '../sprites/errands';
-import { gwinnSits } from '../sprites/klubfolk';
+import { gwinnSits } from '../sprites/clubfolk';
 import { POSES } from '../sprites/teddy';
 import { partyHat } from './birthday';
 import { chezWith, leoHead } from './drive';

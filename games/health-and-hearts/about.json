@@ -1,0 +1,52 @@
+{
+  "title": "Health and Hearts",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "hero": "LIAN",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.0",
+  "blurb": "Three short levels about hit points, hearts and lives. A spike takes ten hit points, a heart gives ten back, and at zero a life is gone and the room starts again with a full 30. A smiling face adds a life. Press F2 to see the numbers. Signs say how. Play it, then open it in Game-Maker and change a heart.",
+  "exe": "HEARTS.EXE",
+  "dosName": "HEALTH",
+  "sound": "sb",
+  "label": {
+    "background": "#e8f6ff",
+    "band": "#2fae9a",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "3 short levels",
+    "hours": 1,
+    "background": "#2fae9a",
+    "accent": "#ffd23f",
+    "ink": "#ffffff",
+    "tagline": "Count your hearts.",
+    "back": "A small explorer in a blue beanie has three short levels to cross and 30 hit points to spend. Spikes take ten, hearts give ten back, and running out costs a life and starts the room again. Read the signs, press F2 to check the numbers, then open the game in Game-Maker and change a heart.",
+    "features": [
+      "Signs in the levels explain each idea",
+      "Spikes take hit points, hearts give them back, a face adds a life",
+      "Made to be copied and taken apart"
+    ],
+    "shots": [
+      [
+        "one.map",
+        16,
+        6
+      ],
+      [
+        "two.map",
+        16,
+        6
+      ],
+      [
+        "three.map",
+        22,
+        6
+      ]
+    ],
+    "rating": "Everyone"
+  }
+}

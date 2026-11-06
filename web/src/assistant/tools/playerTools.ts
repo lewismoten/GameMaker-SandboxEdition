@@ -11,12 +11,16 @@ const limits = (e: PatchEntry) => (e.kind === 'text' || e.kind === 'format' ? { 
 
 const getPatches: ToolDef = {
   name: 'get_player_patches',
-  description: 'The DOS player’s changeable words, colors, frames, positions, times and F-keys: stock value and this game’s value. Filter by screen or group.',
+  description:
+    'The DOS player’s changeable words, colors, frames, positions, times, F-keys and experimental gameplay constants: stock value and this game’s value. Filter by screen or group.',
   inputSchema: {
     type: 'object',
     properties: {
-      screen: { type: 'string', enum: ['menu', 'hiscores', 'newHiscore', 'status', 'load', 'save', 'drop', 'help', 'text', 'missing', 'about', 'play', 'all'] },
-      group: { type: 'string', enum: ['words', 'colors', 'frames', 'positions', 'times', 'keys'] },
+      screen: {
+        type: 'string',
+        enum: ['menu', 'hiscores', 'newHiscore', 'status', 'load', 'save', 'drop', 'help', 'text', 'missing', 'about', 'play', 'gameplay', 'all'],
+      },
+      group: { type: 'string', enum: ['words', 'colors', 'frames', 'positions', 'times', 'keys', 'play'] },
       changed_only: { type: 'boolean', description: 'Only the ones this game changes.' },
     },
   },
@@ -33,6 +37,7 @@ const getPatches: ToolDef = {
         ...(e.id in mine ? { value: mine[e.id] } : {}),
         ...limits(e),
         ...(e.safety === 'caution' ? { caution: true } : {}),
+        ...(e.safety === 'experimental' ? { experimental: true } : {}),
       })),
     );
   },

@@ -1,0 +1,64 @@
+{
+ "version": 1,
+ "game": "show-the-count",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU2HAc0DTR7NAEs8ywNLBcsDSEXIA00ZzQNNI80DSzfLA0sDywNQO9ADTUHNA00KzQNNFM0DTQ=="
+  },
+  {
+   "scene": 3,
+   "keys": "AU03zQNNKM0DTQXNA0hFyANLI8sDTRnNA00FzQNNA80DUDvQA003zQNNHs0DTQ=="
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: Light the Meter"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: The Full Meter"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 9093,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 913,
+    "time": 15216.666666666471
+   },
+   {
+    "title": "Level 1: Light the Meter",
+    "frame": 1661,
+    "time": 27683.333333333918
+   },
+   {
+    "title": "Level 2: The Full Meter",
+    "frame": 4095,
+    "time": 68249.99999999697
+   },
+   {
+    "title": "Ending",
+    "frame": 5811,
+    "time": 96850.0000000053
+   },
+   {
+    "title": "Credits",
+    "frame": 8019,
+    "time": 133650.00000001377
+   }
+  ]
+ }
+}

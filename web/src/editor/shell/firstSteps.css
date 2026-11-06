@@ -47,6 +47,25 @@
   line-height: 1;
 }
 
+.fs-min {
+  width: 28px;
+  height: 28px;
+  margin-left: auto;
+  padding: 0;
+  border-radius: 50%;
+  font-size: 14px;
+  line-height: 1;
+}
+.fs-min + .fs-close {
+  margin-left: 0;
+}
+
+.fs-folded .fs-lead,
+.fs-folded .fs-list,
+.fs-folded .fs-foot {
+  display: none;
+}
+
 .fs-lead {
   margin: 4px 0 8px;
 }
@@ -169,5 +188,22 @@
     bottom: 8px;
     width: auto;
     max-height: 62dvh;
+  }
+}
+
+/* Touch: the panel's buttons are 44 px. */
+@media (hover: none) and (pointer: coarse) {
+  .fs-panel .fs-close,
+  .fs-panel .fs-min {
+    width: 44px;
+    height: 44px;
+  }
+  .fs-panel .fs-actions button,
+  .fs-panel .fs-guide {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  .fs-panel .fs-link {
+    min-height: 44px;
   }
 }

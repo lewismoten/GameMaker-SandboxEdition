@@ -1,0 +1,54 @@
+{
+  "keys": {
+    "75": {
+      "short": "Walk left",
+      "long": "Walk left."
+    },
+    "77": {
+      "short": "Walk right",
+      "long": "Walk right."
+    },
+    "57": {
+      "short": "Hop",
+      "long": "Hop over a ball that rolls along the ground."
+    },
+    "80": {
+      "short": "Duck",
+      "long": "Duck while the key is held. A bird at head height flies over, and Kit stands up when the key is let go."
+    },
+    "30": {
+      "short": "Walk left",
+      "long": "Same as the Left arrow."
+    },
+    "32": {
+      "short": "Walk right",
+      "long": "Same as the Right arrow."
+    },
+    "31": {
+      "short": "Duck",
+      "long": "Same as the Down arrow."
+    },
+    "72": {
+      "short": "Up",
+      "long": "Climb a ladder. There is none here."
+    },
+    "17": {
+      "short": "Up",
+      "long": "Same as the Up arrow."
+    }
+  },
+  "joystick": {
+    "1": {
+      "short": "Hop",
+      "long": "Hop."
+    }
+  },
+  "sounds": {
+    "9": "The hop",
+    "10": "Getting hurt",
+    "11": "Falling over"
+  },
+  "counters": {
+    "20": "Keys: not used here, but a copy can add them."
+  }
+}

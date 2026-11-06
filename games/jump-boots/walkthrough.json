@@ -1,0 +1,64 @@
+{
+ "version": 1,
+ "game": "jump-boots",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "KTkCuSw5ArkHOQK5OE1PzQRNADkCuQQ5ArkEOQK5BDkCuQQ5ArkEOQK5Ps0sTQnNBE0AOQK5ETkCuQc5ArkNOQK5BzkCuQ05ArkQzQRNIs0ETQ=="
+  },
+  {
+   "scene": 3,
+   "keys": "KU0ZzQQ5ArkMOQK5DjkCuSg5Ark8TTXNBE0uzSxNADkCuQw5ArkQzQRNF80sTSjNBE0DzQRNADkCuQw5ArkazQRNDs0ETQHNBE0AOQK5DDkCuRDNBE0KzQRNBs0ETQA5ArkMOQK5EM0ETQ=="
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: Jet Pack"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: Double-Jump Boots"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 10085,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 913,
+    "time": 15216.666666666471
+   },
+   {
+    "title": "Level 1: Jet Pack",
+    "frame": 2142,
+    "time": 35700.00000000053
+   },
+   {
+    "title": "Level 2: Double-Jump Boots",
+    "frame": 4205,
+    "time": 70083.33333333084
+   },
+   {
+    "title": "Ending",
+    "frame": 6801,
+    "time": 113350.0000000101
+   },
+   {
+    "title": "Credits",
+    "frame": 9011,
+    "time": 150183.33333333748
+   }
+  ]
+ }
+}

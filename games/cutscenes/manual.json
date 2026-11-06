@@ -1,0 +1,41 @@
+{
+  "title": "Cutscenes",
+  "howDoI": [
+    { "id": "words", "q": "How do I show a picture and some words before a level?", "scene": 2, "x": 13, "y": 16, "level": 1 },
+    { "id": "end-itself", "q": "How do I make a scene end by itself?", "scene": 2, "x": 18, "y": 20, "level": 1 },
+    { "id": "mat", "q": "How do I send the player on when they land?", "scene": 2, "x": 18, "y": 29, "level": 1 },
+    { "id": "menu", "q": "How do I make a menu out of a room?", "scene": 3, "x": 15, "y": 16, "level": 2 },
+    { "id": "door-pick", "q": "How do I make a door that goes to a scene I pick?", "scene": 3, "x": 23, "y": 15, "level": 2 },
+    { "id": "back-to-menu", "q": "How do I send the player back to the menu?", "scene": 4, "x": 18, "y": 29, "level": 2 }
+  ],
+  "pages": [
+    {
+      "head": "Welcome",
+      "html": "<h1>Welcome</h1><p><b>Cutscenes</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has two short levels. The first takes about half a minute and the second about two.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each thing in the levels is made.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. <kbd>Up</kbd> and <kbd>Down</kbd> climb a ladder. <kbd>Space</kbd> jumps. <kbd>F2</kbd> shows your lives, hit points and score.</p><p>A picture or a page of words goes by itself after a few seconds, or sooner if you press a key. Nothing in this game hurts you.</p>"
+    },
+    {
+      "head": "Level 1: A Scene That Moves On",
+      "html": "<h1>Level 1: A Scene That Moves On</h1><p>A level card comes up, then a picture of Mara with a landscape, then a page of words. After that you are on a small stage with two signs. Read them. The floor is a trapdoor: for about fourteen seconds it is planks, then it flashes gold and black stripes for three seconds, and then it is gone. You drop down a shaft onto a gold mat, and landing on it takes you on to the menu room.</p><p>You can walk about, jump, and push at the walls, but there is no door out of this room. The scene ends when the floor says so, and nothing you press changes that.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 1 is made</h1><ul><li><b>The picture and the words.</b> Open <b>cuts.gam</b> in the Scenes editor and look at the scene's <b>Before</b> slot: it holds <b>one.lst</b>, a list. A list shows its files in a row: the level card (<b>one.gif</b>, 3 seconds), a picture (<b>onep.gif</b>, 3 seconds), a page of paper (<b>onew.gif</b>) and the words on top of it (<b>onew.txt</b>, 14 seconds). A key press turns any of them sooner. The scene's map does not load until the list is done.</li><li><b>The stage.</b> Open <b>one.map</b>: the floor is the block <b>trap.shut</b> on every cell of one row, solid, with brick on both sides and above.</li><li><b>The floor ends the scene.</b> <b>trap.shut</b> has <b>trap.warn</b> as its Next block after 252 ticks. <b>trap.warn</b> is still solid but striped, and after 54 more ticks it turns into <b>shaft</b>, which is not solid, so the hero falls. Every timer starts when the scene loads, which is after its list.</li><li><b>The mat.</b> The bottom row of the shaft is the <b>mat</b> block, and the game has a link on each of its fourteen cells, all going to the menu room. A scene holds twenty links, and the hero lands on whichever one they are over.</li><li><b>Why a trapdoor.</b> A scene is only left by touching a link's cell, and a clock cannot touch anything. So the clock removes the floor, and gravity carries the hero onto a link.</li></ul>"
+    },
+    {
+      "head": "Level 2: A Menu Room",
+      "html": "<h1>Level 2: A Menu Room</h1><p>A hall with a sign and three doors, each on its own grassy ledge with a ladder beside it and a label under it. <b>Tale one</b> and <b>Tale two</b> each take you to a scene with its own picture and words, then a short stage with a quick floor, and the floor drops you back in the hall. <b>The end</b> ends the game.</p><p>Climb a ladder, walk into a door, and watch. Do them in any order, and as many times as you like.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 2 is made</h1><ul><li><b>A menu is a room with doors.</b> Open <b>hall.map</b>. There is nothing special about it: it is a map with three door blocks. What makes each door different is its link in <b>cuts.gam</b>, which says which scene to go to.</li><li><b>Each door is a link.</b> The hall's scene has three links. The first sits on door one's bottom block and goes to the scene <b>Tale One</b>, the second to <b>Tale Two</b>, and the third to the ending scene.</li><li><b>Doors on ledges.</b> A link works when you touch its cell, so doors in a row on the ground would be touched on the way past. Each door stands on its own ledge, with a ladder up to it, so you only touch the door you mean to.</li><li><b>Tales are scenes.</b> <b>Tale One</b> and <b>Tale Two</b> are two scenes that load the same map, <b>tale.map</b>, and differ in their Before list: <b>tale1.lst</b> and <b>tale2.lst</b>, each a picture and a page of words. Their floors are <b>quick.shut</b> blocks, set to open after 90 ticks, since there are no signs to read.</li><li><b>Back to the menu.</b> The mat in each tale has a link on every cell, all going to the hall, landing at its entrance.</li><li><b>The level card.</b> The hall's Before list is just <b>hall.lst</b>, the card, and a scene shows its Before list every time it is entered, so you see the card each time you come back from a tale. A longer game would leave the slot empty.</li></ul>"
+    },
+    {
+      "head": "What Game-Maker cannot do",
+      "html": "<h1>What Game-Maker cannot do</h1><p>A scene is a picture, a map and a few links. Some things you may expect are not there:</p><ul><li>It cannot skip a room with a key. A key can turn the page of a picture or of words, but a room such as the stage is only left through a link. To let a player skip it, you would give the hero a key sequence that walks them onto the link, and that is a trick, not a setting.</li><li>It cannot end a scene on a timer. Only touching a link ends one, so a clock takes the floor away and lets gravity do the touching.</li><li>It cannot remember which tales you have seen. A scene starts afresh each time, so the menu cannot cross a door off. A copy of the hall for each choice is the way round, at the cost of more scenes.</li><li>It cannot show a menu with a cursor. A menu is a place you walk to, not a list you scroll.</li><li>A list shows pictures and words one after another and cannot draw them together: words go over the last picture, and a page of words is only as long as the screen.</li></ul>"
+    },
+    {
+      "head": "Make it yours",
+      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>Change <b>onew.txt</b>, or draw your own <b>onep.gif</b>, and the first scene shows yours.</li><li>In <b>cuts.bbl</b>, change <b>trap.shut</b>'s Time to make the stage's floor open sooner or later.</li><li>In the Scenes editor, move the third door's link to <b>Tale One</b> and the menu has two doors to the same tale.</li><li>Add a fourth door: a ledge, a ladder, a door block and a new link, and a scene for it to go to.</li><li>Give the mat's links a different target and the tales lead somewhere else.</li></ul><p>The home page's <b>Starters</b> tab has more small games like this one.</p>"
+    }
+  ]
+}

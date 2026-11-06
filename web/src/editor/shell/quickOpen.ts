@@ -60,7 +60,7 @@ export function quickHits(project: Project, query: string): Hit[] {
 /** Opens the switcher; resolves with the file chosen (or undefined). */
 export function quickOpen(project: Project): Promise<string | undefined> {
   return modal<string>('Open a file', (close) => {
-    const list = h('ul', { class: 'qo-list', role: 'listbox', id: 'qo-list', 'aria-label': 'Files' });
+    const list = h('ul', { class: 'qo-list', 'data-list-area': 'files', role: 'listbox', id: 'qo-list', 'aria-label': 'Files' });
     const input = h('input', {
       type: 'search',
       class: 'qo-input',

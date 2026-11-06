@@ -185,9 +185,9 @@ export class Computer extends ComputerFolders {
   }
 
   /** Types a command at the prompt, as if on the keyboard. */
-  typeCommand(cmd: string): boolean {
+  typeCommand(cmd: string, focus = true): boolean {
     if (!this.powered || this.busy) return false;
-    this.focus();
+    if (focus) this.focus();
     this.keys.type(`${cmd}\n`);
     return true;
   }
@@ -583,6 +583,10 @@ export class Computer extends ComputerFolders {
       await project.saveNow();
       await this.swapInProject(project);
       return project;
+    }
+    if (d.disk.folders) {
+      if (!this.quiet) await errorBox(this, 'Choose a game folder first (such as FIRSTSTP\\).', 'The Sample Disk has one folder for each game.  (C)ontinue');
+      return undefined;
     }
     if (d.disk.writeProtected)
       return this.copyToHardDisk(d.disk.title, d.files, d.disk.gam, d.disk.catalog?.id, `${d.disk.title}: the disk is write-protected.`);

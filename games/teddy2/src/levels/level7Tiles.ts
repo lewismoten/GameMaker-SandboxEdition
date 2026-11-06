@@ -9,7 +9,7 @@ import { blob, clubArt, micro, speckle } from '../art/draw';
 import { GRAV, Tiles } from './level';
 import { c, canvas, cloud, copy, cut, dirt, r, sky } from '../blocks/tiles';
 import { sign } from './common';
-import { KLUB } from '../sprites/klubfolk';
+import { CLUB } from '../sprites/clubfolk';
 import { halves } from '../sprites/people';
 import { rootBeer } from '../sprites/toys';
 import { CTR } from '../ids';
@@ -119,10 +119,10 @@ export function midwayTiles(): Tiles {
     t.air(`${name}Top`, a);
     t.air(`${name}Bot`, b);
   };
-  fig('honker', KLUB.honker);
-  fig('bubbles', KLUB.bubbles);
-  fig('twirly', KLUB.twirly);
-  fig('pratfall', KLUB.pratfall);
+  fig('honker', CLUB.honker);
+  fig('bubbles', CLUB.bubbles);
+  fig('twirly', CLUB.twirly);
+  fig('pratfall', CLUB.pratfall);
 
   // The carousel: a striped canopy (its roof is a ledge) on a center pole.
   const car = canvas(5, 4, (_bx, by) => sky(bandRow(36 + by)));

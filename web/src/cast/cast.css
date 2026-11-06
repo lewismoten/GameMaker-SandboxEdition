@@ -5,6 +5,7 @@ main.cast {
   --cast-sprite-bg: #b9c1d3;
   --fam-sandbox: #b8860b;
   --fam-bizarre: #8e3bb5;
+  --fam-starter: #1f7a8c;
   --fam-cd: #2f7d4f;
   max-width: 1180px;
   margin: 0 auto;
@@ -16,6 +17,7 @@ main.cast {
   --cast-sprite-bg: #3a3f55;
   --fam-sandbox: #f0c040;
   --fam-bizarre: #d29bf0;
+  --fam-starter: #5fd0d8;
   --fam-cd: #6fd39a;
 }
 
@@ -25,6 +27,8 @@ main.cast {
     --cast-sprite-bg: #3a3f55;
     --fam-sandbox: #f0c040;
     --fam-bizarre: #d29bf0;
+    --fam-starter: #5fd0d8;
+    --fam-starter: #5fd0d8;
     --fam-cd: #6fd39a;
   }
 }
@@ -93,6 +97,10 @@ main.cast .lead {
 
 .fam-bizarre {
   --fam: var(--fam-bizarre);
+}
+
+.fam-starter {
+  --fam: var(--fam-starter);
 }
 
 .fam-cd {

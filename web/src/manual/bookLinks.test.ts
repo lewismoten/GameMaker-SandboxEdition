@@ -7,6 +7,8 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { listZip } from '@lewismoten/gamemaker-sandbox-archives/zip';
 import { GUIDE_SECTIONS } from './guideSections';
+import { CHAPTERS } from './ultimate/plan';
+import { STARTER_ORDER } from '../project/starter';
 import { pagesA } from './printables/dexReportPagesA';
 import { pagesB } from './printables/dexReportPagesB';
 import { pagesC } from './printables/dexReportPagesC';
@@ -16,7 +18,18 @@ import { phoneAttachments } from './printables/feelieItems';
 const here = import.meta.dirname;
 const src = (f: string) => readFileSync(join(here, f), 'utf8');
 const pub = resolve(here, '../../public');
-const SITE_PATHS = ['p', 'game', 'help', 'cast', 'credits', 'achievements', 'mac', 'windows', 'linux', 'magazine', 'library'];
+const SITE_PATHS = ['p', 'game', 'help', 'cast', 'credits', 'achievements', 'mac', 'windows', 'linux', 'magazine', 'library', 'programmers-guide'];
+
+/** The DOS folder name of every game that has one. */
+function sampleNames(): Set<string> {
+  const games = resolve(here, '../../../games');
+  return new Set(
+    readdirSync(games).flatMap((g) => {
+      const f = join(games, g, 'about.json');
+      return existsSync(f) ? [String(JSON.parse(readFileSync(f, 'utf8')).dosName ?? '')] : [];
+    }),
+  );
+}
 
 describe('the Guide’s links', () => {
   it('point at a Guide section or a page of the site', () => {
@@ -26,6 +39,66 @@ describe('the Guide’s links', () => {
         expect(SITE_PATHS, `${id} links #/${m[1]}`).toContain(m[1]);
         if (m[1] === 'help' && m[2]) expect(ids.has(m[2]), `${id} links #/help/${m[2]}`).toBe(true);
       }
+    }
+  });
+
+  it('has Try it boxes whose game/question keys exist in the Starters’ manuals', () => {
+    const games = resolve(here, '../../../games');
+    for (const [id, , html] of GUIDE_SECTIONS) {
+      for (const m of html.matchAll(/data-try="([^"]+)"/g)) {
+        for (const key of m[1].split(/\s+/)) {
+          const [game, q] = key.split('/');
+          const f = join(games, game, 'manual.json');
+          expect(existsSync(f), `${id}: ${key} names a game`).toBe(true);
+          const asked = (JSON.parse(readFileSync(f, 'utf8')).howDoI ?? []) as { id: string }[];
+          expect(
+            asked.some((x) => x.id === q),
+            `${id}: ${key} is a question of ${game}`,
+          ).toBe(true);
+        }
+      }
+    }
+  });
+
+  it('points the Owner’s Guide at Sample CD folders that are games on the CD', () => {
+    const names = sampleNames();
+    for (const m of src('dosManualDesign.ts').matchAll(/<i>On the Sample CD[\s\S]*?<\/p>/g)) {
+      for (const c of m[0].matchAll(/<code>([A-Z0-9]+)<\/code>/g)) expect(names.has(c[1]), `SAMPLES\\${c[1]}`).toBe(true);
+    }
+  });
+
+  it('points the Ultimate Owner’s Guide at Sample CD folders that are games on the CD', () => {
+    const names = sampleNames();
+    let lines = 0;
+    for (const c of CHAPTERS) {
+      for (const m of c.html.matchAll(/<i>On the Sample CD:<\/i>[\s\S]*?<\/p>/g)) {
+        lines++;
+        const codes = [...m[0].matchAll(/<code>([A-Z0-9]+)<\/code>/g)];
+        expect(codes.length, `${c.id}: a pointer names a folder`).toBeGreaterThan(0);
+        for (const k of codes) expect(names.has(k[1]), `${c.id}: SAMPLES\\${k[1]}`).toBe(true);
+      }
+    }
+    expect(lines).toBeGreaterThan(20);
+  });
+
+  it('names every Starter in the Owner’s Guide, the Ultimate Owner’s Guide or a Guide Try it box', () => {
+    const games = resolve(here, '../../../games');
+    const named = new Set<string>();
+    for (const m of src('dosManualDesign.ts').matchAll(/<code>([A-Z0-9]+)<\/code>/g)) named.add(m[1]);
+    for (const c of CHAPTERS) for (const m of c.html.matchAll(/<code>([A-Z0-9]+)<\/code>/g)) named.add(m[1]);
+    for (const [, , html] of GUIDE_SECTIONS) {
+      for (const m of html.matchAll(/data-try="([^"]+)"/g)) {
+        for (const key of m[1].split(/\s+/)) {
+          const f = join(games, key.split('/')[0], 'about.json');
+          if (existsSync(f)) named.add(String(JSON.parse(readFileSync(f, 'utf8')).dosName));
+        }
+      }
+    }
+    for (const id of STARTER_ORDER) {
+      const f = join(games, id, 'about.json');
+      if (!existsSync(f)) continue;
+      const dos = String(JSON.parse(readFileSync(f, 'utf8')).dosName);
+      expect(named.has(dos), `${id} (SAMPLES\\${dos}) is named`).toBe(true);
     }
   });
 });

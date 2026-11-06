@@ -299,7 +299,7 @@ export function backyardTiles(): Tiles {
   t.air('signCar', sign(tuft(sky(3), 84), 'TOWN'));
 
   // The alley: a gravel lane and the Clown Car.
-  t.klownCar(
+  t.clownCar(
     (bx, by) => (by === 0 ? t.pic('hedge') : tuft(sky(3), 90 + bx)),
     'hat',
     t.pic('hedgeTop'),

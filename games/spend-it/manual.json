@@ -1,0 +1,67 @@
+{
+  "title": "Spend It",
+  "howDoI": [
+    {
+      "id": "price",
+      "q": "How do I make a stall that sells something for coins?",
+      "scene": 2,
+      "x": 26,
+      "y": 19,
+      "level": 1
+    },
+    {
+      "id": "too-few",
+      "q": "How do I make a block that does nothing until the player has enough coins?",
+      "scene": 2,
+      "x": 26,
+      "y": 19,
+      "level": 1
+    },
+    {
+      "id": "money",
+      "q": "How do I make coins the player can spend?",
+      "scene": 2,
+      "x": 19,
+      "y": 19,
+      "level": 1
+    },
+    {
+      "id": "carry-money",
+      "q": "How do I make coins left over come to the next level?",
+      "scene": 3,
+      "x": 35,
+      "y": 19,
+      "level": 2
+    }
+  ],
+  "pages": [
+    {
+      "head": "Welcome",
+      "html": "<h1>Welcome</h1><p><b>Spend It</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has two short levels and takes a few minutes to finish.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each thing in the levels is made.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. <kbd>Space</kbd> jumps. <kbd>Up</kbd> and <kbd>Down</kbd> climb a ladder. <kbd>F2</kbd> shows your Money. Walk into the door at the end of a level to go on.</p><p>This one is about <i>spending</i>. For points, see <b>Coins and Score</b>. For a door with a price, see <b>Stronger Keys</b>. For showing a count as pictures, see <b>Show the Count</b>.</p>"
+    },
+    {
+      "head": "Level 1: A Key For 3 Coins",
+      "html": "<h1>Level 1: A Key For 3 Coins</h1><p>Two coins lie on the ground and a stall stands ahead. Its card says 3. Walk into it with two coins and nothing happens. Climb the ladder for two more, come back, and walk into it again: it takes three coins, the counter turns to <b>SOLD</b>, and a gold key is yours. One coin is left. The gold door farther on takes the key.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 1 is made</h1><ul><li><b>The coins.</b> Open <b>spendit.bbl</b> in the blocks editor and pick the <b>cash</b> block. On its <b>Touch</b> tab, <b>Effect counter</b> is 3 and <b>Effect amount</b> is 1. Counter 3 is Game-Maker's own Money counter. It has no score, because this is spending, not points.</li><li><b>The price.</b> The stall block (<b>stall.key.3</b>) has the same <b>Effect counter</b>, 3, with an <b>Effect amount</b> of &minus;3. That is the whole price tag.</li><li><b>Too few.</b> A counter holds one more than the coins carried, and a touch is only allowed if the counter stays above zero. With two coins the counter holds 3, and 3 &minus; 3 is not above zero, so the stall does nothing. With three coins it holds 4, and the stall takes three.</li><li><b>The key.</b> A block has only one <b>Effect counter</b>, and the price uses it. So the stall turns into another block when it is paid (set on the same <b>Touch</b> tab): <b>give.key</b>. It is passable. Step into it and it adds 1 to counter 20, the key counter, then turns into <b>sold</b>, the empty counter with a SOLD card.</li><li><b>The picture of the price.</b> The roof (<b>awning3</b>) is an ordinary passable block with a coin and a 3 drawn on a card. The picture says the price; the rule on the stall block takes it. Keep the two the same by hand.</li><li><b>Money.</b> Open <b>hero.chr</b> in the character editor. Counter 3 starts at 1, which the game shows as none. Press F2 while you play to see <b>Money: 0</b> and the number as you gather coins.</li><li><b>The door.</b> The gold <b>gate</b> takes one key from counter 20 and then lets you through.</li></ul>"
+    },
+    {
+      "head": "Level 2: Save Up",
+      "html": "<h1>Level 2: Save Up</h1><p>The stall now wants five coins, and there are exactly five in the level: three on the ground and two up the ladder. The coin left over from level 1 stays in your pocket, so you leave with one. Buy the key, open the gold door, and go.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 2 is made</h1><ul><li><b>A new price.</b> <b>stall.key.5</b> is a copy of the first stall with its <b>Effect amount</b> changed to &minus;5, and its roof (<b>awning5</b>) redrawn with a 5. Both stalls turn into the same <b>give.key</b>.</li><li><b>Money carries.</b> Counters are not reset when a level ends. The coin left in level 1 is still counter 3 here. Nothing in this level mentions it.</li><li><b>Enough coins.</b> Level 2 has five coins, the price. So a player who spent every coin in level 1 can still buy the key here. Check your own levels for the same: each one should have as many coins as it needs.</li></ul>"
+    },
+    {
+      "head": "What it cannot do",
+      "html": "<h1>What it cannot do</h1><ul><li>There is no number on the screen while you play. Money is a counter, and Game-Maker prints only one counter as a number: Money, counter 3, on the status page (<kbd>F2</kbd>). The change you get back is on that page and nowhere else. The price is in the picture, which you draw yourself.</li><li>A block has one <b>Effect counter</b>. The price uses it, so the item has to come from the block the stall turns into. A stall can sell one thing; two items for one price means two stalls.</li><li>A price is the same every time. There is no haggling, no sale price and no change that depends on the item.</li><li>The picture and the price are separate. Change <b>stall.key.3</b>'s <b>Effect amount</b> and the card on the roof still says 3 until you redraw it.</li><li>Money is counter 3 for everything. Two kinds of money would need two counters from 20 up, which the status page does not print.</li><li>A bought item cannot be taken back. Once the stall is <b>sold</b>, it stays sold until you play the level again.</li></ul>"
+    },
+    {
+      "head": "Make it yours",
+      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>In <b>spendit.bbl</b>, change <b>stall.key.3</b>'s <b>Effect amount</b> to &minus;2. Now two coins buy the key, though the card still says 3.</li><li>Change <b>cash</b>'s <b>Effect amount</b> to 2. Each coin is worth two.</li><li>Copy <b>give.key</b>, set its <b>Effect counter</b> to 1 and make it a heart, and the stall sells a life. (<b>Yana's Shop</b> does this.)</li><li>Take a coin out of level 2's map. The key can no longer be bought there. Put it back.</li></ul><p>The home page's <b>Starters</b> tab has more small games like this one.</p>"
+    }
+  ]
+}

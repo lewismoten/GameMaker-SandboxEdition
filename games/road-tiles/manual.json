@@ -1,0 +1,95 @@
+{
+  "title": "Road Tiles",
+  "howDoI": [
+    {
+      "id": "corner",
+      "q": "How do I draw a round corner on a road?",
+      "scene": 2,
+      "x": 18,
+      "y": 12,
+      "level": 1
+    },
+    {
+      "id": "diagonal",
+      "q": "How do I make a road that goes diagonally?",
+      "scene": 3,
+      "x": 17,
+      "y": 18,
+      "level": 2
+    },
+    {
+      "id": "triangles",
+      "q": "How do I stop a diagonal road pinching where its blocks meet?",
+      "scene": 3,
+      "x": 18,
+      "y": 18,
+      "level": 2
+    },
+    {
+      "id": "blend",
+      "q": "How do I make a road run from one kind of ground into another?",
+      "scene": 4,
+      "x": 17,
+      "y": 16,
+      "level": 3
+    },
+    {
+      "id": "junction",
+      "q": "How do I make a crossroads or a T?",
+      "scene": 4,
+      "x": 13,
+      "y": 16,
+      "level": 3
+    },
+    {
+      "id": "bridge",
+      "q": "How do I put a road over water?",
+      "scene": 4,
+      "x": 24,
+      "y": 16,
+      "level": 3
+    }
+  ],
+  "pages": [
+    {
+      "head": "Welcome",
+      "html": "<h1>Welcome</h1><p><b>Road Tiles</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has three short levels about drawing roads out of blocks. Level 1 is straight pieces and round corners that curve the road into the grass. Level 2 is a road that climbs a diagonal and comes down another. Level 3 is one road across grass, sand and water, with a crossroads, a T, a blend block and a bridge. It takes a few minutes to finish.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each idea is made. The game is seen from above, like <b>Overhead</b>, and <b>Diagonal Wrap</b> shows what a tilted road does to a map that wraps round.</p><h2>The keys</h2><p>The four arrows walk Kit up, down, left and right. <kbd>Space</kbd> does nothing in this game. Nothing here hurts Kit; only water and trees stop them, and the road never does.</p>"
+    },
+    {
+      "head": "Level 1: Round Corners",
+      "html": "<h1>Level 1: Round Corners</h1><p>Kit starts at the end of a road in a meadow. It runs straight, curves down, runs straight again, and so on, to a finish line of black and white squares at the bottom. Four signs name what you are looking at: the <b>STRAIGHT PIECES</b> sign, the <b>ROUND CORNERS</b> sign, the <b>FOUR CORNERS, ONE DRAWING</b> sign and the <b>FINISH LINE</b> sign.</p><p>The road bends four times, and each bend is a different corner block, so you pass all four. Follow it with the arrows, one at a time. Kit can walk anywhere on the grass too; the road is only a picture, and the next pages say what that means.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 1 is made</h1><ul><li><b>A road is a row of blocks.</b> Open <b>roads.bbl</b> in the blocks editor. <b>road.h</b> is a straight piece for a road that goes across, with a yellow dashed line down its middle and the grass showing a pixel or two either side. <b>road.v</b> is the same block turned a quarter, for a road that goes up and down. Laid end to end they join, because each one's road leaves its edge at the same place: the middle.</li><li><b>A round corner is a quarter circle.</b> <b>corner.se</b> has the road coming in from the bottom of the block and going out of the right, curving round the block's bottom right corner. The curve is a quarter circle with a radius of half a block, so it meets the middle of the two edges, exactly where the straight pieces do.</li><li><b>Draw it once, then turn it.</b> The other three corners, <b>corner.sw</b>, <b>corner.nw</b> and <b>corner.ne</b>, are <b>corner.se</b> turned a quarter, a half and three quarters of a turn. In the blocks editor, copy a block to a new slot and press <b>Rotate &#8635;</b> or <b>Rotate &#8634;</b>; <b>Flip &#8596;</b> and <b>Flip &#8597;</b> are beside them. This game's own build does the same turns in code, so the four blocks always match.</li><li><b>The finish line is a straight piece with squares drawn on it.</b> <b>finish.h</b> and <b>finish.v</b> are the straights with a block of black and white squares. In <b>roadtile.gam</b>, the scene's link has the finish block as its <b>From</b>, and the next level's first block as its <b>To</b>.</li><li><b>Nothing here is solid but the trees.</b> Every road block has no <b>Solid sides</b> checked and no gravity, so Kit walks over them. The trees round the meadow are solid, and the map outside the level is filled with trees.</li></ul>"
+    },
+    {
+      "head": "Level 2: Diagonals",
+      "html": "<h1>Level 2: Diagonals</h1><p>The road runs straight, bends and climbs up and to the right on a diagonal, bends flat again, runs along the top, and then comes down a second diagonal to a finish line. The signs say <b>A DIAGONAL</b>, <b>TRIANGLES FILL THE GAPS</b>, <b>A BEND TURNS ONTO A DIAGONAL</b> and <b>KIT WALKS A DIAGONAL IN STEPS</b>.</p><p>Kit cannot walk diagonally, so they go up the road one step across and one step up, like a staircase. The road under them goes smoothly corner to corner.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 2 is made</h1><ul><li><b>A diagonal block has a slanted band.</b> <b>diag.ne</b> has the road running from the block's bottom left corner to its top right. Put the next one up and to the right of it, and the band carries on, because each block's band leaves through a corner and the next block's band starts in that same corner. <b>diag.se</b> is it flipped left to right, for a road going down and to the right.</li><li><b>The band spills into the blocks beside it.</b> A band as wide as the straight road does not fit inside its block at the corners, so a little of the road lies in the block to the right of it and the block above it. Those blocks hold a <b>corner triangle</b>: <b>tip.tl</b> (road in the top left), <b>tip.br</b> (the bottom right), and their flips <b>tip.tr</b> and <b>tip.bl</b> for the other diagonal. Leave them out and the road pinches to nothing at each corner, like a chain of beads. They are the half-and-half blocks, cut on the diagonal, that make a slanted edge out of square blocks.</li><li><b>A bend joins straight to diagonal.</b> <b>bend.w-ne</b> has the road coming in from the left, then turning up to the top right corner. <b>bend.w-se</b>, <b>bend.e-nw</b> and <b>bend.e-sw</b> are the same bend flipped, for the other three joins. Each bend also has triangle blocks beside it.</li><li><b>How a step goes in the map.</b> A step up the diagonal is one band block with a <b>tip.tl</b> block on its right and a <b>tip.br</b> block above it, so <b>two.map</b> lays three blocks for each step of the staircase.</li><li><b>The pieces were drawn on a bigger picture.</b> To get the triangles right, the build draws each piece on a canvas three blocks wide and three high, with the road running on past the middle block, and cuts out the middle one and the ones beside it. Drawing in your own editor, you can do it the same way with the Map tab: lay the straight road, paint the diagonal over several blocks, then cut the blocks out.</li></ul>"
+    },
+    {
+      "head": "Level 3: Road and Ground",
+      "html": "<h1>Level 3: Road and Ground</h1><p>One road runs from the left, across grass, sand and a river, to a finish line on the far shore. On the way it crosses another road at a <b>crossroads</b> (the sign says <b>FOUR WAYS</b>), has a <b>T</b> where a branch goes south (<b>THREE WAYS, A T</b>), passes the place where the <b>grass blends into sand</b>, and crosses the river on a <b>bridge</b>.</p><p>Walk up the road from the crossroads, and down the T, to see where they go. Then step down off the bridge and the water stops you. The road never does.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 3 is made</h1><ul><li><b>A road on a different ground is a different block.</b> A block has one picture, so a road over sand cannot be the grass road with sand under it. <b>road.h.sand</b> is the straight piece drawn on sand. A set of roads for two kinds of ground is two sets.</li><li><b>A blend block is a border drawn in one block.</b> <b>blend.gs</b> has grass on its left and sand on its right, with a ragged line between them, and a few grains dithered into the grass so the edge is soft. <b>road.h.blend</b> is the road laid over that same picture, so a road can cross the border without a seam.</li><li><b>The far shore is the near shore flipped.</b> <b>shore.sw</b> is sand on the left running into water on the right. <b>shore.ws</b> is that block flipped left to right: drawn once, used twice.</li><li><b>A road over water is a bridge.</b> <b>bridge</b> is a deck of planks drawn over the water picture, with a rail along each edge. <b>bridge.sw</b> and <b>bridge.ws</b> are the same deck over the two shore blocks, one at each end. The water block has <b>Solid sides</b> checked, so Kit cannot walk into it; a bridge block has none, so they can cross.</li><li><b>Junctions are drawn with the lines through them.</b> <b>cross</b> has the road going all four ways. <b>tee</b> has the road going left, right and down; the other three Ts are the same block turned, and this level needs only the one. The dashed center line stops at a junction, as it does on a real road.</li><li><b>The edge of the level</b> is trees on the grass, boulders on the sand and the river itself. All of them are solid and drawn as what they are.</li></ul>"
+    },
+    {
+      "head": "The piece set",
+      "html": "<h1>The piece set</h1><p>Here is every road piece in <b>roads.bbl</b>, the way a game maker would list a tile sheet. A full road set for one ground needs these blocks:</p><table><tr><th>Piece</th><th>Blocks</th><th>Drawn</th><th>Rest are</th></tr><tr><td>Straight (across, up and down)</td><td>2</td><td>1</td><td>turned</td></tr><tr><td>Round corner</td><td>4</td><td>1</td><td>turned</td></tr><tr><td>Bend, straight to diagonal</td><td>4</td><td>1</td><td>flipped</td></tr><tr><td>Diagonal band</td><td>2</td><td>1</td><td>flipped</td></tr><tr><td>Corner triangle</td><td>4</td><td>1</td><td>flipped</td></tr><tr><td>T</td><td>4</td><td>1</td><td>turned</td></tr><tr><td>Crossroads</td><td>1</td><td>1</td><td>none</td></tr><tr><td><b>A full set</b></td><td><b>21</b></td><td><b>7</b></td><td></td></tr></table><p>That is 21 blocks and 7 drawings. Add a dead end for each way a road can stop and it is 25. Every other ground the road crosses needs its own set of the pieces that lie on it, and every border between two grounds needs a blend block, a flipped blend block for the other way round, and the road laid over each.</p><p>A block file holds <b>150</b> background blocks (<b>BLOC.H</b>, line 6), so spend them carefully. Two full sets would be 42 of the 150. This game uses 33 blocks for the grounds and roads it shows, 3 for trees, flowers and boulders, and 95 for its signs (a sign is a block for each square of its board), leaving 19 free.</p><h2>Flip and turn in the blocks editor</h2><p>In the blocks editor, the buttons under the picture are <b>Flip &#8596;</b>, <b>Flip &#8597;</b>, <b>Rotate &#8635;</b> and <b>Rotate &#8634;</b>. Draw a corner once, copy the block into the next three slots, and turn each copy a quarter more than the one before: that is four corners. Draw a bend once, copy it three times and flip the copies. Nothing is lost by it; each block is its own picture in the file.</p>"
+    },
+    {
+      "head": "What it cannot do",
+      "html": "<h1>What it cannot do</h1><p>These are the engine's limits, from the original PLAYGAME code, so you can plan around them.</p><ul><li><b>The road is only a picture.</b> Solid is a setting of a whole block (and of each of its four sides), not of the pixels in it. <code>OnGround</code> and <code>chkscrnbounds</code> in <b>PLAYGAME.C</b> test the blocks Kit is over, never what is drawn on them. A curve or a diagonal cannot be a wall that follows its edge; if you want the road to hold them in, put solid blocks, such as trees or fences, along each side of it.</li><li><b>It cannot walk them diagonally.</b> A key starts one sequence: <code>SimKeyPress</code> in <b>PLAYGAME.C</b> (lines 4449 to 4472) runs down the character's sequences and starts the first whose key matches. Hold two arrows and only the newest key's sequence plays. So they go up a diagonal in steps, one axis at a time.</li><li><b>Blocks are 20 by 20 pixels, always.</b> A road no wider than a block, with sharp joins at the block edges, is what fits. A wider road or a gentler curve takes several blocks for each piece, and several times as many pictures.</li><li><b>A block has one picture.</b> There is no layer: a road cannot be drawn over a ground block, so every ground a road crosses needs its own copy of every piece that lies on it. A set holds 150 blocks (<b>BLOC.H</b>, line 6).</li><li><b>It cannot show more than 16 by 10 blocks.</b> The screen is that size (<code>drawmap</code> in <b>PLAYGAME.C</b>, lines 4344 to 4346), so the longer roads here scroll with them.</li></ul>"
+    },
+    {
+      "head": "Make it yours",
+      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>In <b>roads.bbl</b>, copy <b>corner.se</b> into a free slot and press <b>Rotate &#8635;</b> to see the next corner appear.</li><li>Open <b>one.map</b> and swap a straight for a corner to make the road turn somewhere new.</li><li>In <b>two.map</b>, take away one triangle block and see the road pinch.</li><li>Give the water block no <b>Solid sides</b> and walk across the river.</li><li>Check <b>Solid sides</b> on the tree and then on a road block, and see the road become a wall.</li><li>Add a link at the T's last block, so its road leads to the ending.</li></ul><p>The home page&rsquo;s <b>Starters</b> tab has more small games like this one.</p>"
+    }
+  ]
+}

@@ -3,6 +3,7 @@
 // (importThumbs.ts), to tick the ones to import; importing them one at a time, again with
 // Cancel; and what was found when no game was.
 import { h, modal } from '../core/ui';
+import { sizeText, totalsOf, totalsText } from '../../imported/collectionPreview';
 import { scanImport, scanSummary, type FoundGame, type GameReader, type ScanFile, type ScanReport } from '@lewismoten/gamemaker-sandbox-archives/scan';
 import { importThumbs } from './importThumbs';
 import './importChooser.css';
@@ -98,8 +99,11 @@ export async function chooseGames(
   const chosen = await modal<FoundGame[]>('Import games', (close) => {
     const boxes: [HTMLInputElement, FoundGame, boolean][] = [];
     const go = h('button', { type: 'submit', class: 'primary' });
+    const totals = h('p', { class: 'ic-totals', 'aria-live': 'polite' });
     const count = () => {
       const n = boxes.filter(([b]) => b.checked).length;
+      const ticked = totalsOf(boxes.filter(([b]) => b.checked).map(([, g]) => g));
+      totals.textContent = `Everything found: ${totalsText(totalsOf(r.games))}. Ticked: ${n ? totalsText(ticked) : 'none'}.`;
       go.textContent = n === 1 ? 'Import 1 game' : `Import ${n} games`;
       go.disabled = !n;
     };
@@ -127,7 +131,7 @@ export async function chooseGames(
             { class: 'ic-from', id: `ic-from-${i}` },
             [
               g.from || 'the files picked',
-              `${g.fileCount} ${g.fileCount === 1 ? 'file' : 'files'}`,
+              `${g.fileCount} ${g.fileCount === 1 ? 'file' : 'files'}${g.bytes ? `, ${sizeText(g.bytes)}` : ''}`,
               g.missing && !g.leftover && `${g.missing} ${g.missing === 1 ? 'file' : 'files'} missing`,
               g.leftover,
               g.alsoIn && `also in ${g.alsoIn.join(', ')}`,
@@ -164,9 +168,10 @@ export async function chooseGames(
         { class: 'ic-summary' },
         `${scanSummary(r)}.${left} Each one you tick becomes its own game under Imported.`,
         asides
-          ? ` ${asides} ${asides === 1 ? 'is' : 'are'} left unticked (a leftover missing files, or a game you removed before), even by Select all; tick ${asides === 1 ? 'it' : 'one'} to import it too.`
+          ? ` ${asides} ${asides === 1 ? 'is' : 'are'} left unticked (a leftover missing files, a game you removed before, or one you already have), even by Select all; tick ${asides === 1 ? 'it' : 'one'} to import it too.`
           : '',
       ),
+      totals,
       zipNotes(r),
       misnamedNotes(r),
       h(

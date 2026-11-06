@@ -4,9 +4,11 @@
 // (desk/, retro/, vga/) or today's web (editor/shell, the editors) is imported when it is
 // first shown. The editors themselves load when a game is opened (or the desk's PC opens one).
 import './editor/shell/editor.css';
+import './editor/shell/dialogsPhone.css';
 import { h, clear } from './editor/core/ui';
 import type { Workspace } from './editor/shell/workspace';
 import { watchForUpdates } from './devReload';
+import { watchErrors } from './errorNotice/watch';
 import { registerServiceWorker } from './offline';
 import { EDITION, FORK_NOTE, PRODUCT, SHORT } from './edition';
 import './edition.css';
@@ -14,6 +16,7 @@ import { settingsItems, settingsMenu } from './settingsMenu';
 import { viewSwitch } from './viewSwitch';
 import { tourButton } from './tour/tourButton';
 import { parseHash } from './urlState';
+import { focusNewView, trackPersonInput } from './routeFocus';
 import { noteLibraryContext } from './libraryStart';
 import { parseLinkRequest, type LinkRequest } from './linkIn/protocol';
 import { beginPage } from './pageLife';
@@ -208,7 +211,12 @@ async function route(): Promise<void> {
     }
     workspace?.dispose();
     workspace = undefined;
-    const opened = await openStored(id, content, file);
+    let storageError = false;
+    const opened = await openStored(id, content, file).catch(() => ((storageError = true), undefined));
+    if (storageError) {
+      storageGone();
+      return;
+    }
     if (!opened) {
       notHere();
       return;
@@ -287,6 +295,13 @@ async function route(): Promise<void> {
     renderLinuxHelp(content);
     return;
   }
+  if (kind === 'programmers-guide') {
+    const { renderProgrammersGuide } = await import('./programmersGuide/programmersGuidePage');
+    const title = await renderProgrammersGuide(content, id);
+    if (ui !== 'modern') return;
+    document.title = `${title} · ${PRODUCT}`;
+    return;
+  }
   if (kind === 'help') {
     content.setAttribute('role', 'main');
     const { renderWebManual } = await import('./manual/webManual');
@@ -329,7 +344,31 @@ function notHere(): void {
   );
 }
 
+/** This browser would not open its game storage (a private window, or storage turned off): say so instead of a blank page. */
+function storageGone(): void {
+  clear(titleSlot);
+  document.title = `Can’t reach saved games · ${SHORT}`;
+  clear(
+    content,
+    h(
+      'main',
+      { class: 'not-here', style: 'max-width:42rem;margin:48px auto;padding:0 16px' },
+      h('h1', null, 'This browser won’t open its saved games'),
+      h(
+        'p',
+        { role: 'status', 'aria-live': 'polite' },
+        'Saved games live in the browser’s own storage, and it is not available now. A private window or a setting that blocks site data does this. Open the page in a normal window to reach your games; nothing was changed.',
+      ),
+      h('p', null, h('a', { class: 'button primary', href: '#/' }, 'See all games')),
+    ),
+  );
+}
+
+trackPersonInput();
+let lastHash = location.hash;
 window.addEventListener('hashchange', () => {
+  const from = lastHash;
+  const to = (lastHash = location.hash);
   // a link from one interface to the other (the magazine's, say): #/desk from today's web, or a
   // page of today's web from the desk (the desk itself never changes the hash with a hashchange)
   const [kind] = parseHash(location.hash).path;
@@ -338,14 +377,14 @@ window.addEventListener('hashchange', () => {
     disposeDesk?.();
     disposeDesk = undefined;
     startModern();
-  } else void route();
+  } else void route().then(() => focusNewView(content, from, to));
 });
 
 // Links into today's web (a project #/p/…, a game on the home page #/game/…, the guide
 // #/help, the cast #/cast, the credits #/credits, the Mac, Windows and Linux pages #/mac, #/windows and #/linux, the magazine #/magazine, the library #/library, the home page #/) open it, #/desk the desk; otherwise use the last choice.
 // index.html makes the same choice for the page background before the first paint.
 /** The pages of today's web an address can name. */
-const MODERN_PATHS = ['p', 'game', 'help', 'cast', 'credits', 'privacy', 'achievements', 'mac', 'windows', 'linux', 'magazine', 'library'];
+const MODERN_PATHS = ['p', 'game', 'help', 'cast', 'credits', 'privacy', 'achievements', 'mac', 'windows', 'linux', 'magazine', 'library', 'programmers-guide'];
 const startHash = location.hash;
 const startPath = parseHash(startHash).path;
 const modernLink = /^#\/?(\?|$)/.test(startHash) ? !!startHash : MODERN_PATHS.includes(startPath[0] ?? '');
@@ -412,6 +451,7 @@ const onHand = () => {
 };
 for (const t of HANDS) addEventListener(t, onHand, { capture: true, passive: true });
 
+watchErrors();
 watchForUpdates();
 // dev server on localhost only: the opt-in interaction log (its switch is in the corner)
 if (import.meta.env.DEV) void import('./devLog/interactionLog').then((m) => m.startInteractionLog());

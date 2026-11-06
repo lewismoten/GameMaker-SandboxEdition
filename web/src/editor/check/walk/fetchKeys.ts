@@ -1,20 +1,61 @@
 // Fetches what the doors still shut need, then goes on (gates.ts says which doors and what adds
 // to their counters). The explorer searches, heading for what adds to them, for the first place
-// where every short counter is
-// high enough for the doors that read it (explore's `stopWhen`), that path is played again from
-// the scene's start (in rounds while a trip gains keys), and a second search from there looks for the way on. The key can be off
-// the direct route: the doors are only on the way after it.
+// where every short counter is high enough for the doors that read it (explore's `stopWhen`), that
+// path is played again from the scene's start (in rounds while a trip gains keys), and a second
+// search from there looks for the way on. The key can be off the direct route: the doors are only
+// on the way after it.
 import { INF_REPEAT } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
 import type { Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import type { World } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
-import { explore, type Entry } from '../explore';
+import { explore, type Entry, type Exploration } from '../explore';
 import { SceneSim, type FileSource } from '../sim';
 import { locksOf, type Locks } from './gates';
 import { pathTo, replayPath, type Replay } from './replayPath';
 
-/** The doors a scene holds shut when the hero comes in, and what fetching their keys would take. */
-export function locksAtEntry(game: Game, files: FileSource, scene: number, entry: Entry): Locks {
-  return locksOf(new SceneSim(game, scene, files, entry.start, entry.ci, entry.clock, entry.prev).w);
+/** The source cells a keys-search round was trying to reach. */
+export interface FetchKeysSource {
+  counter: number;
+  cell: number;
+}
+
+/** Why a keys strategy stopped without replaying a wanted exit. */
+export type FetchKeysCutoff = 'budget' | 'no-reachable-state' | 'replay-failure' | 'round-limit';
+
+/** Compact evidence from one search in the keys strategy. No snapshots, paths, or heat maps are retained. */
+export interface FetchKeysRoundDiagnostic {
+  /** `key` fetches a counter source; `exit` searches from paid keys for a wanted way on. */
+  kind: 'key' | 'exit';
+  /** The candidate source closest to the best state this key search reached, or null when there are no candidates. */
+  source: FetchKeysSource | null;
+  /** Every source this key search was allowed to reach; an exit search has none. */
+  candidates: FetchKeysSource[];
+  /** Whether the explorer exhausted its states; a successful stop at a source is not complete. */
+  complete: boolean;
+  /** Work allocated to this exploration, in milliseconds. */
+  budgetMs: number;
+  /** Work the explorer reports doing, in milliseconds, from its injected clock. */
+  ms: number;
+  /** Search states reached. */
+  places: number;
+  /** Least toroidal cell distance from any reached place to a goal source or exit, or null before a search starts. */
+  nearestGoalDistance: number | null;
+  exits: number;
+  deaths: number;
+  incidents: number;
+  /** Null for a round that led onward; the terminal round names the precise failed cutoff. */
+  cutoff: FetchKeysCutoff | null;
+}
+
+export interface FetchKeysDiagnostics {
+  rounds: FetchKeysRoundDiagnostic[];
+  /** The terminal cutoff, or null when the key strategy replayed a wanted exit. */
+  cutoff: FetchKeysCutoff | null;
+}
+
+export interface FetchKeysResult {
+  replay?: Replay;
+  diagnostics: FetchKeysDiagnostics;
 }
 
 interface FetchOptions {
@@ -24,6 +65,8 @@ interface FetchOptions {
   budgetMs: number;
   seed?: number;
   progress?: (places: number) => boolean | void;
+  /** A worker-safe clock seam for both the key deadline and explorer timing. */
+  now?: () => number;
   /** Walking paths, to measure the route against. */
   paths?: ReadonlySet<number>;
   /** Filled with the counters still short when the keys could not be fetched (for lockedWhy). */
@@ -32,53 +75,187 @@ interface FetchOptions {
 
 /** Most trips for keys before the bot gives up on a door. */
 const ROUNDS = 6;
+const NO_DISTANCE = 0xffff;
 
-/** The route that fetches the keys and then reaches a way on (merged keys), or undefined. */
-export async function fetchKeys(game: Game, files: FileSource, scene: number, entry: Entry, locks: Locks, o: FetchOptions): Promise<Replay | undefined> {
-  if (!locks.wanted.size) return undefined;
+/** The doors a scene holds shut when the hero comes in, and what fetching their keys would take. */
+export function locksAtEntry(game: Game, files: FileSource, scene: number, entry: Entry): Locks {
+  return locksOf(new SceneSim(game, scene, files, entry.start, entry.ci, entry.clock, entry.prev).w);
+}
+
+/** Exact wrapped Manhattan distance to the nearest goal for every map cell. */
+function distancesTo(goals: readonly number[]): Uint16Array {
+  const count = MLEN * MWID;
+  const distance = new Uint16Array(count).fill(NO_DISTANCE);
+  const queue: number[] = [];
+  for (const goal of goals) {
+    if (goal < 0 || goal >= count || distance[goal] === 0) continue;
+    distance[goal] = 0;
+    queue.push(goal);
+  }
+  for (let head = 0; head < queue.length; head++) {
+    const cell = queue[head];
+    const nextDistance = distance[cell] + 1;
+    const x = cell % MLEN;
+    const next = [
+      x ? cell - 1 : cell + MLEN - 1,
+      x + 1 < MLEN ? cell + 1 : cell - MLEN + 1,
+      cell >= MLEN ? cell - MLEN : cell + MLEN * (MWID - 1),
+      cell + MLEN < count ? cell + MLEN : cell - MLEN * (MWID - 1),
+    ];
+    for (const neighbor of next)
+      if (distance[neighbor] === NO_DISTANCE) {
+        distance[neighbor] = nextDistance;
+        queue.push(neighbor);
+      }
+  }
+  return distance;
+}
+
+function nearestGoalDistance(ex: Exploration, distance: Uint16Array): number | null {
+  let nearest = NO_DISTANCE;
+  for (const place of ex.places) nearest = Math.min(nearest, distance[place.cell] ?? NO_DISTANCE);
+  return nearest === NO_DISTANCE ? null : nearest;
+}
+
+function deaths(ex: Exploration): number {
+  let count = 0;
+  for (const at of ex.deaths.values()) count += at;
+  return count;
+}
+
+function cellDistance(a: number, b: number): number {
+  const ax = a % MLEN;
+  const ay = Math.floor(a / MLEN);
+  const bx = b % MLEN;
+  const by = Math.floor(b / MLEN);
+  return Math.min(Math.abs(ax - bx), MLEN - Math.abs(ax - bx)) + Math.min(Math.abs(ay - by), MWID - Math.abs(ay - by));
+}
+
+function sourceAt(ex: Exploration, sources: readonly FetchKeysSource[], distance: Uint16Array): FetchKeysSource | null {
+  if (!sources.length) return null;
+  let cell = ex.reached === undefined ? undefined : ex.places[ex.reached]?.cell;
+  if (cell === undefined) for (const place of ex.places) if (cell === undefined || distance[place.cell] < distance[cell]) cell = place.cell;
+  if (cell === undefined) return sources[0];
+  return sources.reduce((closest, source) => (cellDistance(cell, source.cell) < cellDistance(cell, closest.cell) ? source : closest));
+}
+
+function roundDiagnostic(
+  kind: FetchKeysRoundDiagnostic['kind'],
+  ex: Exploration,
+  sources: FetchKeysSource[],
+  distance: Uint16Array,
+  budgetMs: number,
+): FetchKeysRoundDiagnostic {
+  return {
+    kind,
+    source: kind === 'key' ? sourceAt(ex, sources, distance) : null,
+    candidates: kind === 'key' ? sources.slice() : [],
+    complete: ex.complete,
+    budgetMs,
+    ms: ex.ms,
+    places: ex.places.length,
+    nearestGoalDistance: nearestGoalDistance(ex, distance),
+    exits: ex.exits.length,
+    deaths: deaths(ex),
+    incidents: ex.incidents.length,
+    cutoff: null,
+  };
+}
+
+function budgetDiagnostic(kind: FetchKeysRoundDiagnostic['kind'], sources: FetchKeysSource[], distance: Uint16Array, entry: Entry): FetchKeysRoundDiagnostic {
+  const cell = entry.start.y * MLEN + entry.start.x;
+  const nearest = distance[cell];
+  return {
+    kind,
+    source: null,
+    candidates: kind === 'key' ? sources.slice() : [],
+    complete: false,
+    budgetMs: 0,
+    ms: 0,
+    places: 0,
+    nearestGoalDistance: nearest === NO_DISTANCE ? null : nearest,
+    exits: 0,
+    deaths: 0,
+    incidents: 0,
+    cutoff: 'budget',
+  };
+}
+
+/** The route that fetches the keys and then reaches a way on (merged keys), with compact diagnostics. */
+export async function fetchKeys(game: Game, files: FileSource, scene: number, entry: Entry, locks: Locks, o: FetchOptions): Promise<FetchKeysResult> {
+  const rounds: FetchKeysRoundDiagnostic[] = [];
+  if (!locks.wanted.size) return { diagnostics: { rounds, cutoff: 'no-reachable-state' } };
   const owed = locks.owed;
   const paid = (meter: ArrayLike<number>) => [...locks.wanted].every((c) => meter[c] === INF_REPEAT || meter[c] > (owed.get(c) ?? 0));
+  const sources = locks.sources.filter((source) => locks.wanted.has(source.counter)).map(({ counter, cell }) => ({ counter, cell }));
+  const sourceDistance = distancesTo(sources.map((source) => source.cell));
+  const now = o.now ?? (() => performance.now());
   const seed = o.seed ?? 1;
-  const deadline = Date.now() + o.budgetMs * 0.5;
+  const deadline = now() + o.budgetMs * 0.5;
   // Rounds: each goes for the nearest place that adds to a short counter (or pays every door), then
   // plays that on and looks again from there. A door that takes several keys, or keys the hero must
   // come back between, needs more than one; stop when a round gains nothing or at ROUNDS.
   let r1: Replay | undefined;
   let meter: ArrayLike<number> = entry.ci.meter;
+  let cutoff: FetchKeysCutoff | null = null;
   for (let round = 0; round < ROUNDS && !paid(meter); round++) {
-    const left = deadline - Date.now();
-    if (left <= 0) break;
+    const left = deadline - now();
+    if (left <= 0) {
+      rounds.push(budgetDiagnostic('key', sources, sourceDistance, entry));
+      cutoff = 'budget';
+      break;
+    }
     const before = Array.from(meter);
     const gained = (w: World) => [...locks.wanted].some((c) => w.ci.meter[c] > before[c]);
     const ex1 = await explore(game, scene, files, entry, {
       budgetMs: left,
-      goal: locks.sources.map((s) => s.cell),
+      goal: sources.map((source) => source.cell),
       stopWhen: (w) => paid(w.ci.meter) || gained(w),
       ...(r1 ? { start: r1.snap, exact: true } : {}),
       progress: o.progress,
+      now: o.now,
     });
+    const diagnostic = roundDiagnostic('key', ex1, sources, sourceDistance, left);
+    rounds.push(diagnostic);
     const at = ex1.reached === undefined ? undefined : ex1.places[ex1.reached]?.via;
-    if (!at) break;
-    const r = await replayPath(game, files, scene, entry, ex1.moves, pathTo(ex1, at), seed, r1 && r1.snap ? { snap: r1.snap, ticks: r1.ticks } : undefined);
-    if (!r || r.link >= 0 || !r.snap) break;
+    if (!at) {
+      cutoff = ex1.complete ? 'no-reachable-state' : 'budget';
+      diagnostic.cutoff = cutoff;
+      break;
+    }
+    const r = await replayPath(game, files, scene, entry, ex1.moves, pathTo(ex1, at), seed, r1?.snap ? { snap: r1.snap, ticks: r1.ticks } : undefined);
+    if (!r || r.link >= 0 || !r.snap) {
+      cutoff = 'replay-failure';
+      diagnostic.cutoff = cutoff;
+      break;
+    }
     r1 = r1 ? { ...r, events: [...r1.events, ...r.events] } : r;
     meter = r.ci.meter;
   }
   if (!r1?.snap || !paid(meter)) {
+    cutoff ??= 'round-limit';
+    if (cutoff === 'round-limit' && rounds.length) rounds[rounds.length - 1].cutoff = cutoff;
     for (const c of locks.wanted) if (!(meter[c] === INF_REPEAT || meter[c] > (owed.get(c) ?? 0))) o.unreached?.add(c);
-    return undefined;
+    return { diagnostics: { rounds, cutoff } };
   }
+  const exitDistance = distancesTo(o.goal);
   const ex2 = await explore(game, scene, files, entry, {
     goal: o.goal,
     start: r1.snap,
     exact: true,
     budgetMs: o.budgetMs * 0.5,
-    stopAt: (l) => o.wanted.has(l),
+    stopAt: (link) => o.wanted.has(link),
     progress: o.progress,
+    now: o.now,
   });
-  for (const e of ex2.exits.filter((x) => o.wanted.has(x.link)).sort((a, b) => a.tick - b.tick)) {
-    const r2 = await replayPath(game, files, scene, entry, ex2.moves, pathTo(ex2, e.via), seed, { snap: r1.snap, ticks: r1.ticks }, o.paths);
-    if (r2 && o.wanted.has(r2.link)) return { ...r2, events: [...r1.events, ...r2.events] };
+  const exitDiagnostic = roundDiagnostic('exit', ex2, [], exitDistance, o.budgetMs * 0.5);
+  rounds.push(exitDiagnostic);
+  const exits = ex2.exits.filter((exit) => o.wanted.has(exit.link)).sort((a, b) => a.tick - b.tick);
+  for (const exit of exits) {
+    const r2 = await replayPath(game, files, scene, entry, ex2.moves, pathTo(ex2, exit.via), seed, { snap: r1.snap, ticks: r1.ticks }, o.paths);
+    if (r2 && o.wanted.has(r2.link)) return { replay: { ...r2, events: [...r1.events, ...r2.events] }, diagnostics: { rounds, cutoff: null } };
   }
-  return undefined;
+  cutoff = exits.length ? 'replay-failure' : ex2.complete ? 'no-reachable-state' : 'budget';
+  exitDiagnostic.cutoff = cutoff;
+  return { diagnostics: { rounds, cutoff } };
 }

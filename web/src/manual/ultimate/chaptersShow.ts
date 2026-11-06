@@ -3,7 +3,7 @@
 // and web/src/engine (game.ts, recorder.ts, showGraphic.ts; menus.ts drawDefaultScreen: no menu
 // picture gives DrawDefaultScrn's random color rings). The instructions advice draws on watching
 // players in two videos (NOTICE.md), in our own words.
-import { opening, tip, type Chapter } from './chapter';
+import { onCd, opening, tip, type Chapter } from './chapter';
 
 export const SHOW: Chapter = {
   id: 'show',
@@ -99,7 +99,7 @@ export const SHOW: Chapter = {
   <h2>Demos</h2>
   <p>Leave the menu alone for 30 seconds and PLAYGAME plays the demo recording named in scene 0,
   then comes back to the menu. A recording keeps only the keys, each with the game tick it was
-  pressed on, up to 1,000 presses.</p>
+  pressed or let go on, up to 1,000 of those changes (a press and its release are two).</p>
   <ul>
     <li><b>Making one.</b> In this edition, <i>Record one by playing…</i> starts your game in its
     first level and records you; watch it back and trim the end. And every game that makes the
@@ -121,6 +121,7 @@ export const SHOW: Chapter = {
     next level could slip on a faster or slower machine. Demos recorded in this edition count
     game ticks only. Still, a demo that stays in one level is the safe one.</li>
   </ul>
+  ${onCd('MAKETITL')}
   ${tip('Pro tip:', 'Record the demo last. Every change to the first level after it, even one block, can send the demo’s hero into a wall.')}`,
 };
 

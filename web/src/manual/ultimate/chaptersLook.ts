@@ -1,6 +1,6 @@
 // The Ultimate Owner's Guide, chapters 1 and 2: palettes, and blocks that behave. Every claim
 // is checked against PLAYGAME (code/GM/PLAYGAME.C) and its port (web/src/engine).
-import { opening, tip, type Chapter } from './chapter';
+import { opening, tip, type Chapter, onCd } from './chapter';
 
 export const PALETTES: Chapter = {
   id: 'palettes',
@@ -30,7 +30,13 @@ export const PALETTES: Chapter = {
   </ul>
   <p>Try the same trick for seasons (green, gold and white), underwater (everything pushed
   toward blue-green, the brightest colors pulled down), or a haunted version of a level you
-  already built (grays, a sickly green and one red you keep for eyes).</p>
+  already built (grays, a sickly green and one red you keep for eyes). A far plane is the same
+  trick: draw the far scene’s things half the size, and give it a palette with every color mixed
+  part of the way toward a pale sky, so a trail that loads it looks like a step into the distance.</p>
+  <p>Some players see colors differently, and red and green can look alike to them. Do not let a
+  color carry a meaning alone: give danger a pointed shape, give a safe path a light, striped
+  pattern, and look at the level with the color taken out. Game-Maker cannot check this for you.</p>
+  ${onCd('DAYNIGHT', 'SAMEHOUS', 'NEARFAR', 'VERYFAR', 'COLORS', 'COLRDOOR')}
   <h2>Plan in ramps</h2>
   <p>Palette swaps work best when the palette is planned, not grown. Lay it out in
   <i>ramps</i>: short runs of shades of one material, dark to light. Five shades of grass,
@@ -130,6 +136,8 @@ export const BLOCKS: Chapter = {
     <tr><td>Rewards, doors, switches and their “after” blocks</td><td>15–25</td></tr>
     <tr><td>Secrets and spares</td><td>the rest</td></tr>
   </table>
+  ${onCd('BLK150')}
+  ${onCd('SHORE')}
   <h2>Trade art for blocks</h2>
   <p>When a scene runs out of blocks, don’t draw smaller; choose what the player won’t miss.
   A door handle, a sun visor or a crease in an armrest is a block or two that nobody sees at
@@ -168,6 +176,7 @@ export const BLOCKS: Chapter = {
     takes them, so a monster walking off a ledge walks on through the air. Keep walkers on paths
     that stay on the ground, and let things that should fall do it with a path that goes down.</li>
   </ul>
+  ${onCd('GRAVITY', 'SWIM', 'DROPDOWN')}
   <h2>Animation runs by block number</h2>
   <p>A block can turn into another block after a number of ticks (a tick is 1/18 of a second),
   and that one into the next. A chain that comes back to its start loops: water, torches,
@@ -192,6 +201,7 @@ export const BLOCKS: Chapter = {
     frame is showing, so each frame needs the same touch settings.</li>
   </ul>
   <figure data-fig="chain"></figure>
+  ${onCd('SMASHIT', 'DIGIT')}
   <h2>Big pictures: groups, and watching them move</h2>
   <p>A sign, a mirror or a poster is several blocks that only make sense together, and so is a
   monster two blocks wide. In the block editor, Shift-click or Ctrl-click the blocks and choose
@@ -216,5 +226,6 @@ export const BLOCKS: Chapter = {
   comes near. In Ohm Sweet Ohm each battery is a birth block that sends sparks along its wire;
   a <i>pulsing</i> battery is a birth block that animates into a resting block and back, so
   the current comes and goes.</p>
-  ${tip('Pro tip:', 'Leaving a scene and coming back loads its map fresh from the disk: every coin is back, every door shut again. Score, counters and inventory come along with the hero. Plan for it, or a player will farm your coins.')}`,
+  ${tip('Pro tip:', 'Leaving a scene and coming back loads its map fresh from the disk: every coin is back, every door shut again. Score, counters and inventory come along with the hero. Plan for it, or a player will farm your coins.')}
+  ${onCd('SEEDNEST')}`,
 };

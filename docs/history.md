@@ -47,6 +47,21 @@ I just left RSD's. (Game-Maker 3.00's player stopped asking for it.)
 I graduated in May 1994, and my parents gave me a 486 with a CD-ROM drive as a graduation
 gift. I left for Pittsburgh in June.
 
+## The author, on Usenet, 1992
+
+A month after the October ad, the program's author answered a stranger's question online. On
+November 18, 1992, in the Usenet group rec.games.programmer, Stacy Purcell asked whether
+anyone had used Recreational Software's Game-Maker. Andy Stone replied, said
+up front that he wrote it, and described it as a way for people with no programming
+background to make action-adventure, role-playing and shoot-'em-up games in 256-color VGA,
+with smoothly scrolling scenes and a utility for pulling pictures out of GIF files. He was
+plain about its limits: it was not meant for long professional games, but it worked well for
+shareware and for prototypes. He gave the price as about $89 from KD Software. Two days
+later Kirk Baum answered that he would like to see examples before paying. Both posts survive
+in a 1992 Usenet collection on Discmaster
+([Stone](https://discmaster.textfiles.com/view/28245/NN_1992_27.iso/spool/rec/games/programm/4743),
+[Baum](https://discmaster.textfiles.com/view/28245/NN_1992_27.iso/spool/rec/games/programm/4778)).
+
 ## Later
 
 That sound editor kept coming back in my own projects:

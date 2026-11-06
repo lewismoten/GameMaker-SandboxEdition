@@ -108,6 +108,7 @@ export async function runGame(m: Machine, gamFile: string, opts: RunOptions = {}
   // Screens that wait for a key keep the demo recorder going, as PLAYGAME's GetKey did.
   m.keyPoll = (polls) => s.rec.advanceWait(polls);
   m.keyPollEnd = () => s.rec.finishWait();
+  m.keyPollOnce = () => s.rec.pollOnce();
   opts.onSession?.(s);
   const file = (scene: number, slot: number) => sceneFile(game, scene, slot);
   const show = (f: string, cols?: Uint8Array, pause?: number) => showGraphic(m, f, { cols, pause, gamePalette: s.colors, look });

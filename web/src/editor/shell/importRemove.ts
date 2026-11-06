@@ -6,8 +6,10 @@
 import { h, modal, toast } from '../core/ui';
 import { deleteProject, listProjects, loadProject } from '../../project/storage';
 import { forgetOrigin, isImported, setImported } from './homeOrigin';
+import { undoToast } from './homeProjectActions';
 import { forgetBatch, importedToRemove } from './importBatch';
 import { working } from './importChooser';
+import { bringBack, shelve } from './deletedShelf';
 import { forgetUsed } from '../../project/projectUse';
 import { fingerprintOfFiles, type Fingerprint } from '../../imported/fingerprint';
 import { allNotes, ratingOf, type Rating } from '../../imported/gameNotes';
@@ -21,6 +23,9 @@ function bytesText(n: number): string {
   if (n < 1024 * 1024) return `${Math.round(n / 1024)} KB`;
   return `${(n / 1024 / 1024).toFixed(1)} MB`;
 }
+
+/** How long the Undo after a bulk removal stays. */
+const UNDO_MS = 60000;
 
 const gamesText = (n: number) => `${n} ${n === 1 ? 'game' : 'games'}`;
 
@@ -66,8 +71,8 @@ export async function removeImported(refresh: () => unknown, batch?: string): Pr
       const size = now.reduce((sum, p) => sum + (sizes.get(p.id) ?? 0), 0);
       const all = n === targets.length;
       line.textContent = batch
-        ? `Remove the ${gamesText(n)} this import brought in (${bytesText(size)}) from this browser? Games made here, and any you moved to My games, are kept. This can’t be undone.`
-        : `Remove ${all ? 'all ' : ''}${gamesText(n)} ${all ? 'listed under Imported' : 'of those ratings'} (${bytesText(size)}) from this browser? Games made here, and any you moved to My games, are kept. Their ratings and notes stay in the Library. This can’t be undone.`;
+        ? `Remove the ${gamesText(n)} this import brought in (${bytesText(size)}) from this browser? Games made here, and any you moved to My games, are kept. For 7 days they can be brought back from Recently deleted.`
+        : `Remove ${all ? 'all ' : ''}${gamesText(n)} ${all ? 'listed under Imported' : 'of those ratings'} (${bytesText(size)}) from this browser? Games made here, and any you moved to My games, are kept. Their ratings and notes stay in the Library. For 7 days they can be brought back from Recently deleted.`;
       go.textContent = `Remove ${gamesText(n)}`;
       go.disabled = !n;
       go.onclick = () => close(now);
@@ -98,6 +103,8 @@ export async function removeImported(refresh: () => unknown, batch?: string): Pr
   if (!chosen?.length) return;
   const n = chosen.length;
   let done = 0;
+  // each goes on the Recently deleted shelf (deletedShelf.ts), where Undo takes it back from
+  const removed: string[] = [];
   let job: Promise<void> | undefined;
   await working(
     'Removing games',
@@ -107,12 +114,14 @@ export async function removeImported(refresh: () => unknown, batch?: string): Pr
         for (const [i, p] of chosen.entries()) {
           if (signal.aborted) return;
           tell(i, n, `Game ${i + 1} of ${n}: ${p.name}`);
+          await shelve(p.id);
           await deleteProject(p.id);
           forgetOrigin(p.id);
           setImported(p.id, false);
           forgetBatch([p.id]);
           forgetUsed(p.id);
           noteRemoval(p, undefined, prints.get(p.id));
+          removed.push(p.id);
           done++;
         }
       })()),
@@ -120,5 +129,16 @@ export async function removeImported(refresh: () => unknown, batch?: string): Pr
   // Cancel closes the dialog at once; the game being removed then is finished first
   await job;
   await refresh();
-  toast(done === n ? `Removed ${gamesText(n)}.` : `Canceled: removed ${done} of ${gamesText(n)}.`);
+  const text = done === n ? `Removed ${gamesText(n)}.` : `Canceled: removed ${done} of ${gamesText(n)}.`;
+  if (!removed.length) return toast(text);
+  undoToast(
+    `${text} They stay under Recently deleted for 7 days.`,
+    async () => {
+      let back = 0;
+      for (const id of removed) if (await bringBack(id)) back++;
+      toast(`Brought back ${gamesText(back)}.`);
+      await refresh();
+    },
+    UNDO_MS,
+  );
 }

@@ -10,7 +10,7 @@ import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CTR, KEEPSAKE } from '../ids';
 import { eggBlock } from '../sprites/egg';
 import { P } from '../art/pal';
-import { klownCar, pockets, propOn, wantBubble } from '../sprites/klown';
+import { clownCar, pockets, propOn, wantBubble } from '../sprites/clown';
 
 export interface Level {
   /** File name stem (8.3). */
@@ -83,9 +83,9 @@ export class Tiles extends BlockSet {
    * The Clown Car and Pockets, over background blocks given per cell. The car door only
    * opens for one costume piece (the props counter); the open door is the way out.
    */
-  klownCar(base: (bx: number, by: number) => Pixels, want: string, bubbleBase: Pixels, pocketsBase: (by: number) => Pixels): void {
-    const shut = klownCar(base, false);
-    const open = klownCar(base, true);
+  clownCar(base: (bx: number, by: number) => Pixels, want: string, bubbleBase: Pixels, pocketsBase: (by: number) => Pixels): void {
+    const shut = clownCar(base, false);
+    const open = clownCar(base, true);
     this.ledge('carRoofL', shut[0][0]);
     this.ledge('carRoofR', shut[0][1]);
     this.air('carOpen', open[1][0]);

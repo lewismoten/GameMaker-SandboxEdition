@@ -113,7 +113,26 @@ game folder opens in the browser unchanged.
 - **Continuous course maps** (`web/src/manual/printables/levelCourseSvg.ts`): shared-coordinate image assembly and map annotations implemented with **OpenAI Codex (GPT-6)**, directed by Lewis Moten. Game artwork retains its existing authors and credits.
 - **Fictional hint line** (`web/src/desk/room/phone/hintBill.ts`, `hintLine.ts`): local elapsed-time accounting, backup integration, phone menu and cancellation, achievement, original Teddy dialogue and regression tests implemented with **OpenAI Codex (GPT-6)**, directed by Lewis Moten. The charges are simulated game data; no payment service is used. The per-minute billing paid up front, the automated game-by-game phone tree (`hintTree.ts`, `audio/phone/hintGames.ts`, hints adapted from each game's own hint book) and the Hint Giant script were reworked with **Claude (Sonnet 5.5)**, directed by Lewis Moten.
 - **BBS callback signup** (`web/src/retro/bbs/signup*.ts`): local verified-handle records, simulated incoming modem callbacks, signup flow, tests and playful lines implemented with **OpenAI Codex (GPT-6)**, directed by Lewis Moten. Manual `ATA` answering and `RING` result codes follow the [U.S. Robotics modem command reference](https://ads.usr.com/support/3cxm756/3cxm756-ug/ATCOMS.HTM). This is a behavioral reference; no vendor source, documentation text or modem binaries are bundled.
+- **The Programmer's Guide to Game-Maker 3.0** (`web/src/programmersGuide/`) and the 1994 booklet **Technical Reference and Limits**: the research (reading `code/GM`, the sample CD and the shareware archives) and the prose were made by **Claude** (Sonnet 5.5 workers, reviewed by Opus 5.5, Anthropic), directed by Lewis Moten. The original source is the reference and is quoted only in short lines; the numbers are the original authors'. Nothing is copied from RSD's printed manual.
 - **Final Curtain's paper spyglass and evidence sheet** (`web/src/manual/printables/spyglass.ts`, `fingerprint.ts`, `sleuthPrints.ts`; the stage door in `games/sleuth/`): the black-ink spyglass drawing, the seeded fingerprint patterns and the stage-door puzzle were written by **Claude Sonnet 5.5** (Anthropic), from Lewis Moten's idea. The prints are hidden with the red-film technique the hint book uses (`redFilm.ts`), after Daniel C. Wilson's "red reveal" (danielcwilson.com/blog/2018/02/optical-fun-red-reveal/); no code was copied from it. No third-party artwork or fingerprint data was used.
+- **The Starters** (`games/kit/starter/`; 89 games in the Starters home tab):
+  - **The Basics:** `games/first-steps/`, `games/keys-and-doors/`, `games/meet-the-monsters/`, `games/room-to-room/`, `games/coins-and-score/`, `games/breakable-walls/`, `games/walk-the-ground/`, `games/watch-your-step/`, `games/things-that-grow/`.
+  - **Moving and Pushing:** `games/power-up/`, `games/throw-it/`, `games/many-weapons/`, `games/inventory/`, `games/health-and-hearts/`, `games/momentum/`, `games/jump-boots/`.
+  - **Worlds That Push Back:** `games/slippery-and-bouncy/`, `games/gravity-on-gravity-off/`, `games/swim/`, `games/gusts/`, `games/drop-down/`.
+  - **Changing Your Hero:** `games/kit-moves/`, `games/home-keys/`, `games/duck/`, `games/choose-hero/`, `games/take-the-wheel/`.
+  - **Foes and Bosses:** `games/boss-hits/`, `games/boss-phases/`, `games/giant/`, `games/who-wins/`, `games/short-lived/`, `games/follower/`, `games/searchlight/`, `games/flock/`.
+  - **Telling a Story:** `games/say-something/`, `games/pictures-and-cartoons/`, `games/sounds-and-music/`, `games/sound-board/`, `games/day-night/`, `games/same-house/`, `games/voice/`, `games/cutscenes/`, `games/title-demo/`, `games/colors/`.
+  - **Putting It Together:** `games/beat-the-clock/`, `games/countdown/`, `games/warning-first/`, `games/flash-safe/`, `games/one-more-try/`, `games/teach-test-twist/`, `games/block-brains/`, `games/puzzle-room/`, `games/spend-it/`, `games/kits-shop/`, `games/your-first-game/`.
+  - **Wiring and Puzzles:** `games/switches/`, `games/three-tokens/`, `games/and-gate/`, `games/secret-doors/`, `games/show-the-count/`, `games/dice/`, `games/word-lock/`, `games/power-ladder/`, `games/special-counters/`.
+  - **Bigger Worlds:** `games/scroll/`, `games/many-rooms/`, `games/diagonal-wrap/`, `games/blocks-budget/`, `games/near-far/`, `games/very-far/`, `games/overhead/`, `games/town-links/`.
+  - **Drawing with Blocks:** `games/road-tiles/`, `games/shore/`, `games/twinkle/`, `games/flicker/`, `games/lights-out/`, `games/color-doors/`, `games/shadows/`, `games/beams/`.
+  - **Showcase Tricks:** `games/dialog/`, `games/popups/`, `games/scripted/`, `games/parallax/`, `games/horizon/`, `games/beltway/`, `games/corner-view/`, `games/slow-computers/`, `games/under-the-hood/`.
+  - **Graduations** (a stage's Starters, then its honors; not in the Starters groups, not listed on the site yet): `games/graduation-basics/`, `games/graduation-moving/`, `games/graduation-heroes/`, `games/graduation-story/`, `games/graduation-wiring/`, `games/graduation-blocks/` and the finale `games/graduation-diploma/`, which share `games/kit/starter/graduation*.ts` (Doc Leo is the tune-up game's drawing, `games/tuneup/src/sprites/leo.ts`, recolored for the Starters' palette; the audience is the helpers' look swapped into the hero's head, and a few guests from the Cast: Teddy and Gwinn from the Teddy game's sprites, the others from their own Cast pictures in `web/public/cast/` (the games they come from are credited in their own lines), each redrawn into the hall's palette by nearest color).
+
+  The shared palette, block set, sign blocks, hero, monsters, screens, song and sounds, First Steps', Keys and Doors', Meet the Monsters' Room to Room's, Coins and Score's and Power Up's levels, lock blocks, the mint gumdrop and star monsters, Throw It's thrown star, sparkle and grump, Health and Hearts' heart and extra-life face, Say Something's friends, speech bubbles and talks, Beat the Clock's bar, clock face, gate and clock door, Switches' levers, dotted planks and pools, Gravity On, Gravity Off's top-down block set and Kit's four-direction top-down pictures, Sounds and Music's money bag, notes and two songs, Your First Game's levels, title and Make it yours guide, Who Wins?'s levels, red crowned gumdrop and mint, purple and red foes, Pictures and Cartoons' framed paintings, easel and the BLOOM cartoon (a seed, sun, daisy and Kit, drawn frame by frame in code), Smash It's crates, rubble, stuck coin and spinning gems, Big Bug's beetle stages and the arena title look, Warning First's fog vents, fog and flickering planks, Day and Night's sun that is a moon, windows, lanterns, stars, gates, three palettes and song, The Same House's street fronts, house and tower room, seven palettes, house numbers, title picture and song, Here Today's bubble, sleepy and awake gumdrops and song, Three Tokens' purple tokens, gates and circuit-board title look, Rooms on One Map's colored room bricks, Overhead's room furniture, outdoor blocks, house, shop, four-area title map and song, Many Weapons' pouches, flame, frosty grump and song, Everybody Talks' speech-bubble cards, talk layout, neon title and song, Diagonal Wrap's edge-marked roads and two-block hedges, Score Popups' coins, gem, box and hand-drawn numbers, Boots and Jet Pack's blue boot-charge bubbles and song, words and manual, Round and Round's truck, sliding scenery strips, loop track, car and lap lamps, and the play-testing bot were written fresh with **Claude Sonnet 5.5** (Anthropic), directed by Lewis Moten. Everything is drawn and composed in code; the sign letters are the PC's 8x8 font already credited above (the arrows are drawn). No third-party artwork or audio was used.
+
+  The four voice clips in Out Loud (`games/voice/src/voices.ts`) are not recordings and used no text-to-speech model: a small formant synthesizer written for the game (two resonant filters per vowel) hums a few syllables of nonsense, in code, with no third-party code or data. Claude Sonnet 5.5 (Anthropic) wrote it, directed by Lewis Moten.
+
 - **FLAGS.EXE** (`web/src/retro/hacks/flags*.ts`): the debugging utility that lists, sets, clears, resets, backs up and restores the desk PC's remembered browser state, its BBS Warez listing and tests, written with **Claude Sonnet 5.5** (Anthropic), directed by Lewis Moten.
 - **DOS clock shortcuts** (`web/src/retro/dos/`): named room times, command help, and clock regression checks implemented with **OpenAI Codex (GPT-6)**, directed by Lewis Moten.
 - **Website game ZIP distributions** (`web/scripts/gameArchive.ts`, `web/src/project/hostedZip.ts`): the reproducible DOS distribution builder, shared browser ZIP loading, permanent links and Vite serving were implemented and verified with **OpenAI Codex**, directed by Lewis Moten. Original game data stays intact; DOS runtime and game notices travel in each archive.
@@ -349,6 +368,7 @@ game folder opens in the browser unchanged.
     plays **Happy Birthday to You**, the tune of "Good Morning to All" by Mildred J. Hill
     (1893), public domain in the US; arrangement by the game, which credits it on its
     credits screen.
+  - _Twinkle, Twinkle_: `games/twinkle/disk/twin.cmf` is the French nursery tune **Ah! vous dirai-je, maman** (1761), the tune of "Twinkle, Twinkle, Little Star", public domain; arrangement by the game.
   - _A hidden bonus on the site_: a music box (`web/src/eggs/musicBox.ts`) plays **Yankee
     Doodle**, the same traditional tune, public domain.
   - _RSD's sample music on the CD_ quotes public-domain works: `GMMOONLT.CMF` is the first
@@ -372,7 +392,7 @@ game folder opens in the browser unchanged.
     of the Earth taken by the crew of Apollo 17 in 1972
     ([NASA](https://en.wikipedia.org/wiki/The_Blue_Marble)), also small in `MENU.GIF` and
     `NOVA.FLI`. `SATRING.GIF` is a **Voyager 1** picture of Saturn's crescent and rings
-    (1980, frame C3501159, the same picture as `cd/picture/space/planets/C3501159.GIF`),
+    (1980, frame C3501159, the same picture as `cd/picture/space/planets/c3501159.gif`),
     tinted blue. `YELOSUN.GIF`, `YELOLOW.GIF`, `YELOBYE.FLI`, `NOVA.FLI` and `MENU.GIF` appear
     to be a **Voyager 1** color picture of Jupiter's moon **Io** (1979) with a volcanic plume
     on its edge ([NASA/JPL](https://photojournal.jpl.nasa.gov/target/io)). These NASA pictures
@@ -406,8 +426,8 @@ game folder opens in the browser unchanged.
   - _Houses_ (`cd/gameware/houses`, RSD): `HOUSES.GIF` and `BKG.GIF` are a **photograph** of a
     boathouse with a canoe on a pond; its source was not identified.
   - _Glubada Pond_ (`cd/gameware/glub`): `OCEAN.GIF` (also in `END.FLI`) is the CD's own
-    picture library's `cd/picture/nature/OCEAN1.GIF`, a beach photograph; `POND.GIF` is its
-    `cd/picture/nature/AMER01_I.GIF`, a mountain lake; and `WATER.GIF` is another photograph.
+    picture library's `cd/picture/nature/ocean1.gif`, a beach photograph; `POND.GIF` is its
+    `cd/picture/nature/amer01_i.gif`, a mountain lake; and `WATER.GIF` is another photograph.
     Their sources were not identified.
   - _RSD's title picture_ (`GMTITLE.GIF`, "Recreational Software Designs' Game-Maker
     Presents:", in many of the CD's games) is lettered over a **photograph of clouds** whose
@@ -422,9 +442,9 @@ game folder opens in the browser unchanged.
   Bell and others). Shareware games are shown play-only, with their authors' original
   notices; they have no download, can't be edited, and the desk's make-believe GMCRACK
   leaves them alone. The CD's tools are kept as it held them, each its author's: LHarc 1.13
-  (`cd/backup/LHARC.EXE`, "(c)Yoshi, 1988-89") and LHA 2.13 with its
+  (`cd/backup/lharc.exe`, "(c)Yoshi, 1988-89") and LHA 2.13 with its
   documentation (`cd/sharware/tools`, Haruyasu Yoshizaki), and Alchemy Mindworks' Graphic
-  Workshop shareware for DOS and Windows (`cd/sharware/tools/GWSDOS.ZIP`, `GWSWIN.ZIP`).
+  Workshop shareware for DOS and Windows (`cd/sharware/tools/gwsdos.zip`, `GWSWIN.ZIP`).
   None of them are on the website.
 
 ## The Bard of Bizarre recordings: personal, non-commercial only
@@ -647,18 +667,19 @@ formats from their published descriptions and from Game-Maker's own source.
   Accessibility Guidelines (WCAG) 2, and its flashing check follows WCAG 2's **three flashes a
   second** threshold (success criterion 2.3.1). All are used as published; no code of theirs is
   included.
-- **The palette editor's Color vision check** (`web/src/editor/editors/palette/colorVision.ts`)
-  simulates protanopia, deuteranopia and tritanopia with the severity-1.0 matrices published
-  by **Gustavo M. Machado, Manuel M. Oliveira and Leandro A. F. Fernandes**, "A
-  Physiologically-based Model for Simulation of Color Vision Deficiency" (IEEE Transactions
-  on Visualization and Computer Graphics 15(6), 2009), applied in linear RGB. Its grayscale is
-  the WCAG 2 relative luminance above, and it measures how alike two colors look with the
-  CIE's **CIELAB** color space and 1976 color difference (ΔE), using the sRGB standard's
-  (IEC 61966-2-1) transfer curve. All are published formulas and numbers; no code of theirs
-  is included.
-- **The badge look-alike check** (`web/scripts/badgeSimilarMetrics.ts`, `npm run badges:similar`) uses
-  the same Machado, Oliveira and Fernandes (2009) severity-1.0 matrices in linear RGB, with
-  Rec. 601 luma for grayscale and achromatopsia. Published numbers only; no code of theirs is included.
+- **Color-vision simulation matrices** (`web/packages/engine/src/gfx/colorVision.ts`, the one copy; used by
+  the palette editor's Color vision check in `web/src/editor/editors/palette/colorVision.ts`, by the badge
+  look-alike check in `web/scripts/badgeSimilarMetrics.ts` (`npm run badges:similar`), and by the Starter
+  `games/colors/` in `build.ts`, `tools/colorCheck.ts` and `tools/shots.ts`, and by `games/color-doors/` in `src/views.ts`, to draw its five palettes): protanopia, deuteranopia and
+  tritanopia are simulated with the severity-1.0 matrices published by **Gustavo M. Machado, Manuel M.
+  Oliveira and Leandro A. F. Fernandes**, "A Physiologically-based Model for Simulation of Color Vision
+  Deficiency" (IEEE Transactions on Visualization and Computer Graphics 15(6), 2009), applied in linear
+  RGB as the paper describes. The palette editor's grayscale is the WCAG 2 relative luminance above (`games/color-doors/`'s no-color view keeps each color's Rec. 709 luminance) and
+  the badge check's is Rec. 601 luma; the editor and `games/colors/` measure how alike two colors look with
+  the CIE's **CIELAB** color space and 1976 color difference (ΔE), using the sRGB standard's (IEC 61966-2-1)
+  transfer curve. All are published formulas and numbers; no code of theirs is included. The simulation
+  only draws pictures and runs checks; no game ships the matrices. The shared module was written by Claude
+  Sonnet 5.5, an AI model made by Anthropic, under Lewis Moten's direction.
 - **The sound effect makers** (`web/src/audio/sfxSynth.ts`, `sfxPresets.ts` and
   `web/src/editor/tools/speakerFx.ts`) follow the idea of **sfxr**, Tomas Pettersson's
   ("DrPetter") 2007 sound effect generator: a few sliders for pitch, slide, vibrato and an
@@ -819,6 +840,18 @@ frame-dump hook and kept the results. This fork uses two things from it:
   `port/baseline/<game>/states.txt`. `games/kit/dosStates.ts` compares our engine against them.
 - The finding that ChangeScroll's speed arithmetic overflows a 16-bit `int` in DOS. Our
   `web/packages/engine/src/engine/scroll.ts` wraps the same way.
+
+## The Pocket Player (hardware/pocket-player)
+
+A firmware for the ESP32-3248S035 board that plays the Starter games, and a dev-only install page (`web/public/pocket/`, not linked from the site). Claude Sonnet 5.5 wrote the firmware and the page. The firmware binaries' complete third-party notices are in [`web/public/pocket/fw/NOTICES.txt`](web/public/pocket/fw/NOTICES.txt).
+
+- **LovyanGFX 1.1.16** (lovyan03, FreeBSD/BSD-style license, with its bundled Adafruit_ILI9341, Adafruit_GFX and TFT_eSPI notices), the **Arduino core for ESP32 2.0.16** (LGPL-2.1), **ESP-IDF v4.4.7** (Apache-2.0), and **Mbed TLS 2.28.7** (Apache-2.0 chosen from its Apache-2.0-or-GPL-2.0-or-later offer) are compiled into the firmware image set. Their versions, source and license URLs, copyright lines, and required complete license texts are in the firmware notices file.
+- The firmware is built with **PlatformIO** and its `espressif32` platform; they are build tools, not code asserted to be redistributed in the served firmware binaries.
+- **ESP Web Tools** 10.2.1 (esphome/esp-web-tools, Apache-2.0, Open Home Foundation) is copied, as built, into `web/public/pocket/ewt/` with its license. It bundles **esptool-js** (Espressif, MIT), **@material/web** (Google, Apache-2.0) and **improv-wifi-serial-sdk** (Apache-2.0). Nothing loads from outside the site.
+- The board's pin numbers come from community tables: https://homeding.github.io/boards/esp32/panel-3248S035.htm and https://community.home-assistant.io/t/help-making-esp32-3248s035-work/748332. Only numbers are used.
+- The speaker pin (GPIO 26, the ESP32's DAC2, wired to the board's JST1.25 2-pin speaker connector) comes from rzeldent's platformio-espressif32-sunton board definition `esp32-3248S035C.json` (`SPEAK=26`; https://github.com/rzeldent/platformio-espressif32-sunton, MIT License). Only the pin number is used; none of its code. The tune timing (36 steps of 1/145.6 s) follows `code/GM/PLAYGAME.C` and the web engine. Claude Sonnet 5.5 wrote `speaker.h` and `pcspeaker.h`.
+- The files in `hardware/pocket-player/data/` are the Starter games' own maps, blocks, palettes and hero files, deflated and shared between games. The firmware unpacks them with an ESP32 ROM raw-deflate decoder; the Mac test uses the system zlib and ships nothing. Its separate primary provenance remains to be pinned before it is credited as a firmware component.
+- **miniz / tinfl** (Rich Geldreich, public domain, with its later MIT-style option): the firmware calls `tinfl_decompress` through ESP-IDF's `rom/miniz.h`. The decoder is code already burned into the ESP32 chip's ROM, so no miniz source is compiled into or shipped in the firmware image set; the header is part of ESP-IDF (Apache-2.0, above). Named here because the firmware depends on it.
 
 ## Tools used to build and test
 

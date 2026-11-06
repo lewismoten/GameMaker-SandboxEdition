@@ -66,7 +66,8 @@
     12px ui-monospace,
     Menlo,
     monospace;
-  color: var(--muted);
+  /* sits over the board's dark corner in both themes, so not the theme's muted gray */
+  color: #c4cbe6;
 }
 .grator-board-wrap {
   position: relative;
@@ -268,5 +269,12 @@
     justify-content: center;
     min-width: 44px;
     min-height: 44px;
+  }
+}
+
+/* Touch: the side panel's drag handle is a 10 px bar; its grab area reaches 44 px wide. */
+@media (hover: none) and (pointer: coarse) {
+  .grator-resize::before {
+    inset: 0 -17px;
   }
 }

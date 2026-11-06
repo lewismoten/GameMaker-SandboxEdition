@@ -1,12 +1,14 @@
 // Touch gestures for the map and block canvases, whatever tool is chosen: two fingers pinch to zoom
-// and drag their midpoint to pan; a first finger that lasted under 150 ms is taken back when a second
+// and drag their midpoint to pan; a first finger that lasted under 300 ms or moved under 40 px is taken back when a second
 // arrives (so a pinch leaves no dot); one finger held still for 500 ms asks the editor for a
 // long-press menu (the touch stand-in for a right click); the Hand tool scrolls with one finger.
 // Editor-only behavior: it never touches saved bytes. Listeners sit first on the element, in the
 // capture phase, so the tools' own pointer handlers never see a finger that belongs to a gesture.
 import { clampZoom } from './mapZoom';
 
-const PINCH_JOIN_MS = 150;
+const PINCH_JOIN_MS = 300;
+/** A first finger that moved less than this (pixels) when a second arrives is taken back too. */
+const PINCH_JOIN_TRAVEL = 40;
 export const LONG_PRESS_MS = 500;
 const LONG_PRESS_SLOP = 10;
 
@@ -42,7 +44,7 @@ export function touchGestures(host: TouchHost): () => void {
   const { el, scroller } = host;
   const fingers = new Map<number, Pt>();
   const ignored = new Set<number>();
-  let first: { id: number; at: number; from: Pt } | undefined;
+  let first: { id: number; at: number; from: Pt; travel: number } | undefined;
   let timer: ReturnType<typeof setTimeout> | undefined;
   let pinch: { distance: number; zoom: number; mid: Pt } | undefined;
   let hand: Pt | undefined;
@@ -66,7 +68,7 @@ export function touchGestures(host: TouchHost): () => void {
     const p = { x: e.clientX, y: e.clientY };
     fingers.set(e.pointerId, p);
     if (fingers.size === 1) {
-      first = { id: e.pointerId, at: Date.now(), from: p };
+      first = { id: e.pointerId, at: Date.now(), from: p, travel: 0 };
       if (host.hand?.()) {
         hand = p;
         stop(e);
@@ -88,7 +90,7 @@ export function touchGestures(host: TouchHost): () => void {
     stop(e);
     ignored.add(e.pointerId);
     if (fingers.size === 2) {
-      if (!hand) host.abort?.(!!first && Date.now() - first.at < PINCH_JOIN_MS);
+      if (!hand) host.abort?.(!!first && (Date.now() - first.at < PINCH_JOIN_MS || first.travel < PINCH_JOIN_TRAVEL));
       if (first) ignored.add(first.id);
       hand = undefined;
       const [a, b] = two();
@@ -121,6 +123,7 @@ export function touchGestures(host: TouchHost): () => void {
       return;
     }
     if (ignored.has(e.pointerId)) return stop(e);
+    if (first && e.pointerId === first.id) first.travel = Math.max(first.travel, Math.hypot(p.x - first.from.x, p.y - first.from.y));
     if (first && e.pointerId === first.id && timer && Math.hypot(p.x - first.from.x, p.y - first.from.y) > LONG_PRESS_SLOP) {
       clearTimeout(timer);
       timer = undefined;
@@ -142,6 +145,19 @@ export function touchGestures(host: TouchHost): () => void {
     if (swallow) stop(e);
   }
 
+  // iOS Safari does its own page pinch and ignores user-scalable=no: over the map, two fingers (or
+  // WebKit's gesture events) never reach it. Elsewhere the page still pinch-zooms.
+  const nonPassive = { passive: false, capture: true };
+  const twoFingers = (e: TouchEvent) => {
+    if (e.touches.length >= 2 && e.cancelable) e.preventDefault();
+  };
+  const noGesture = (e: Event) => e.preventDefault();
+  el.style.touchAction = 'none';
+  for (const child of Array.from(el.children)) (child as HTMLElement).style.touchAction = 'none';
+  el.addEventListener('touchstart', twoFingers, nonPassive);
+  el.addEventListener('touchmove', twoFingers, nonPassive);
+  const gestures = ['gesturestart', 'gesturechange', 'gestureend'];
+  for (const g of gestures) el.addEventListener(g, noGesture, nonPassive);
   const opts = { capture: true };
   el.addEventListener('pointerdown', down, opts);
   el.addEventListener('pointermove', move, opts);
@@ -149,6 +165,9 @@ export function touchGestures(host: TouchHost): () => void {
   el.addEventListener('pointercancel', up, opts);
   return () => {
     clearTimeout(timer);
+    el.removeEventListener('touchstart', twoFingers, nonPassive);
+    el.removeEventListener('touchmove', twoFingers, nonPassive);
+    for (const g of gestures) el.removeEventListener(g, noGesture, nonPassive);
     el.removeEventListener('pointerdown', down, opts);
     el.removeEventListener('pointermove', move, opts);
     el.removeEventListener('pointerup', up, opts);

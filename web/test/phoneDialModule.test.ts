@@ -1,5 +1,6 @@
 // The Junior Lab phone's dial module: the one-way clutch angle walk (a wind gives no pulses, a return gives n), the printed spring, and the
 // printable parts (one piece each, no thin specks) drawn by games/year2000/phone/tools/dialModule.ts.
+// Stays slow: each part is meshed from its real 3D field; the check is that the print is one piece.
 import { describe, expect, it } from 'vitest';
 import { meshFieldTrinket } from '@lewismoten/gamemaker-sandbox-tools/mesh/fieldTrinket';
 import { dialParams, holeDeg, travelDeg, walk } from '../../games/year2000/phone/tools/dialMechanism';

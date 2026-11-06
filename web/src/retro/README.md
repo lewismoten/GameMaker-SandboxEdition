@@ -7,7 +7,7 @@ page around it supplies `computer/setup.ts` `ComputerOptions`; `computer/monitor
 picture; `host.ts` is what programs on it can use.
 
 - `energySnore.ts`: the parody power-saving logo (a sleepy star, ENERGY SNORE) in the BIOS boot screen's top-right corner, drawn as 136x80 pixel art (`energySnoreArt.ts`, readable ASCII rows in white and cyan) cut into redefined 8x16 character glyphs, as the 1990s BIOSes did (`TextScreen.defineGlyphs` / `resetGlyphs`). The POST screen with the logo stays up about 2.5 s, also on a quick boot.
-- `computer.ts`: power and programs (the boot reads its drives as a PC did: the floppy's seek test, a try of A: for a boot disk, the hard disk, the CD-ROM driver's test of its drive; `onDriveAccess` lights them), with `computer/` (`drives.ts`, game folders in
+- `computer.ts`: power and programs (the boot reads its drives as a PC did: the floppy's seek test, a try of A: for a boot disk, the hard disk, the CD-ROM driver's test of its drive; `onDriveAccess` lights them), with `computer/` (`drives.ts` (A:, C: and D:, the Sample CD with its SAMPLES folder), game folders in
   `folders.ts`, its sound line `pcAudio.ts`, the Sound Blaster card `soundBlaster.ts`, and the boot's mouse line `mouseDriver.ts`, which now and then has a day of its own).
   `leaveProgram.ts` and `saveFirst.ts` get it back to the DOS prompt for a disk; `diskSwap.ts` says
   which utilities keep running while the disk in A: is swapped instead.
@@ -50,7 +50,8 @@ picture; `host.ts` is what programs on it can use.
   add to C: in `deskFiles.ts` and `pcExtras.ts`, which also keeps the serial in PLAYGAME.EXE):
   debugging tools for registration modes, saved games and backups, dressed as 1990s scene
   programs.
-- `hacks/flags.ts`, `flagsItems.ts`, `flagsBackup.ts`, `flagsText.ts`: FLAGS.EXE in C:\DOS and in
+- `hacks/patchingText.ts`: PATCHING.TXT and its FILE_ID.DIZ, the Warez area's text-only PATCHING.ZIP (a release in `bbs/warezArea.ts`). THE BLOCKSMITH's friendly how-to: patch your own game's player, back up first, same length, HEXEDIT or PLAYHACK, credits and registration left alone. Test: `hacks/patchingText.test.ts`.
+- `hacks/flags.ts`, `flagsItems.ts`, `flagsBackup.ts`, `flagsText.ts`, `flagsPlayed.ts` (PLAYED: games counted for badges): FLAGS.EXE in C:\DOS and in
   the BBS's Warez area (FLAGS.ZIP, with a FILE_ID.DIZ and FLAGS.NFO). `FLAGS` lists the PC's
   hard-to-reach browser state (badges, felt eggs, tin hearts, score trophy tiers, the hint line
   bill, registration mail, the BBS caller file, the room clock, registration; the bonus-game row

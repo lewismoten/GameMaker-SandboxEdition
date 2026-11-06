@@ -1,10 +1,10 @@
 // The title and cover art, drawn for the game (no cover came with the song): a gothic bathroom by
 // candlelight, black-and-teal tile, a pointed window with the moon in it, and on a polished
-// silver rack the loofah of Lucifer, coral as sin, hanging by its cord, smug: half-lidded eyes, a
-// crooked smirk, two little horns. Steam rises through the candlelight; a mirror's fog drips.
+// silver rack the loofah of Lucifer, a goofy golden sponge hanging by its cord (the bath monster of its
+// sprites): googly eyes looking two ways, a wide smile with a tongue, a fuzzy rim. Steam rises through the candlelight; a mirror's fog drips.
 // Painted in true color, a pixel at a time, then reduced to one 256-color palette for the FLI
 // (cartoons.ts). `t` (0..1) animates it: the steam drifts up, the candles flicker, the loofah
-// sways on its hook, a glint runs along the rack, and its eyes open and glow.
+// sways on its hook, a glint runs along the rack, and its googly eyes look left and right.
 import { smooth, noise2 } from '@lewismoten/gamemaker-sandbox-tools/kit/coverPaint';
 
 const COVER_W = 320;
@@ -136,54 +136,45 @@ export function coverRgb(t: number): Uint8Array {
     const u = k / 30;
     put(HOOK.x + (sx - HOOK.x) * u + Math.sin(u * Math.PI) * 3, HOOK.y + 8 + (sy - SPONGE.ry - HOOK.y - 6) * u, [230, 210, 170]);
   }
-  const eyes = smooth(0.35, 0.8, t);
   for (let y = Math.floor(sy - SPONGE.ry - 10); y <= sy + SPONGE.ry + 2; y++)
     for (let x = Math.floor(sx - SPONGE.rx - 4); x <= sx + SPONGE.rx + 4; x++) {
       const dx = (x - sx) / SPONGE.rx;
       const dy = (y - sy) / SPONGE.ry;
-      // the horns
-      for (const side of [-1, 1]) {
-        const hx = sx + side * 13;
-        const hy = sy - SPONGE.ry + 6;
-        const u = (hy - y) / 14;
-        if (u > 0 && u < 1 && Math.abs(x - (hx + side * u * 6)) < 3.2 * (1 - u)) put(x, y, [120 + u * 60, 20, 24]);
-      }
       const r = dx * dx + dy * dy;
       if (r > 1) continue;
       // a net of mesh: ridges where the noise crosses a band
       const m = fbm(x / 9 + 9, y / 9) * 4;
       const ridge = Math.min(Math.abs(Math.sin((x - sx) * 0.42 + m)), Math.abs(Math.sin((y - sy) * 0.36 - m * 0.8 + (x - sx) * 0.12))) < 0.22 ? 1 : 0;
       const shade = Math.sqrt(1 - r) * (0.75 + 0.35 * (-dx * 0.5 - dy * 0.6));
-      const coral: RGB = ridge ? [150 * shade + 40, 50 * shade + 14, 46 * shade + 14] : [250 * shade + 30, 128 * shade + 22, 100 * shade + 20];
+      const coral: RGB = ridge ? [180 * shade + 30, 100 * shade + 10, 10 * shade + 8] : [255 * shade + 20, 205 * shade + 14, 72 * shade + 10];
       const w = Math.min(1.2, warm(x, y));
       put(x, y, [coral[0] * (0.95 + w * 0.2), coral[1] * (0.95 + w * 0.15), coral[2] * (0.95 + w * 0.1)]);
       // candlelight warms its edge
       add(x, y, [255, 140, 60], (1 - Math.sqrt(1 - r)) * 0.25 * warm(x, y));
     }
-  // the face: half-lidded eyes (opening, glowing), a crooked smirk
+  // the face, as in its sprites: goofy googly eyes looking two ways, a wide wobbly smile with a tongue
+  const look = Math.round(Math.sin(t * Math.PI * 2) * 2);
   for (const side of [-1, 1]) {
-    const ex = sx + side * 11;
-    const ey = sy - 6;
-    for (let y = -4; y <= 4; y++)
-      for (let x = -6; x <= 6; x++) {
-        const e = (x / 6) ** 2 + (y / 4) ** 2;
+    const ex = sx + side * 10;
+    const ey = sy - 7;
+    for (let y = -6; y <= 6; y++)
+      for (let x = -7; x <= 7; x++) {
+        const e = (x / 7) ** 2 + (y / 6) ** 2;
         if (e > 1) continue;
-        const lid = y < -4 + 6 * (1 - eyes) + 2;
-        put(ex + x, ey + y, lid ? [120, 40, 34] : [255, 220 - Math.abs(x) * 10, 90]);
-        if (!lid && Math.abs(x - side) < 2 && Math.abs(y) < 2) put(ex + x, ey + y, [30, 10, 10]);
+        put(ex + x, ey + y, e > 0.72 ? [60, 40, 20] : [255, 252, 240]);
       }
-    // the lid's heavy line (smug)
-    for (let x = -7; x <= 7; x++) put(ex + x, ey - 4 + 6 * (1 - eyes) + 1 + (side * x > 0 ? 1 : 0), [40, 12, 14]);
-    if (eyes > 0.2)
-      for (let k = 0; k < 40; k++) add(Math.round(ex + Math.cos(k) * (6 + (k % 5))), Math.round(ey + Math.sin(k) * (4 + (k % 4))), [255, 180, 60], 0.12 * eyes);
+    for (let y = -3; y <= 3; y++) for (let x = -3; x <= 3; x++) if (x * x + y * y <= 9) put(ex + x - side * look, ey + y + 1, [30, 20, 16]);
+    put(ex - side * look - 1, ey - 1, [255, 255, 255]);
   }
-  // the smirk: up at one corner
-  for (let x = -12; x <= 12; x++) {
-    const y = sy + 13 - Math.round(x * x * 0.018 + (x > 0 ? x * 0.3 : 0));
-    put(sx + x, y, [50, 10, 14]);
-    put(sx + x, y + 1, [90, 24, 24]);
+  // the smile: up at both corners, and a pink tongue
+  for (let x = -15; x <= 15; x++) {
+    const y = sy + 15 - Math.round(x * x * 0.03);
+    put(sx + x, y, [60, 24, 16]);
+    put(sx + x, y + 1, [60, 24, 16]);
   }
-  put(sx + 13, sy + 4, [50, 10, 14]);
+  for (let y = 0; y < 5; y++) for (let x = -4; x <= 4; x++) if ((x / 4) ** 2 + (y / 5) ** 2 <= 1) put(sx + 3 + x, sy + 17 + y, [240, 90, 110]);
+  for (const side of [-1, 1])
+    for (let y = -2; y <= 2; y++) for (let x = -3; x <= 3; x++) if (x * x + y * y <= 6) add(sx + side * 21 + x, sy + 8 + y, [255, 120, 120], 0.35);
 
   // ---- candles on the shelves, their flames, their glow
   for (const [x0, x1, y] of [

@@ -1,0 +1,77 @@
+{
+ "version": 1,
+ "game": "your-first-game",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU0ZzSdNHs0DTR7NJ00DOQK5F80DTRc5ArkuzQxNFM0nTSPNA00="
+  },
+  {
+   "scene": 3,
+   "keys": "AU0ZzSdLAMsDTQQ5ArkOzTJLBcsDOQK5AE0ZzQNNPM0DTR7NAEsjywNLBcsDSEXIA00jzQNLHssDSwPLA1A70ANNKM0DTQrNA00ozQNN"
+  },
+  {
+   "scene": 4,
+   "keys": "AU0ZzSdNBc0DOQK5AE0ZzQNNQc0DTQM5ArkczQNND80nTRTNA00jzQNN"
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: Walk and Jump"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: Key and Door"
+  },
+  {
+   "scene": 4,
+   "title": "Level 3: All Together"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 10973,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 913,
+    "time": 15216.666666666471
+   },
+   {
+    "title": "Level 1: Walk and Jump",
+    "frame": 2142,
+    "time": 35700.00000000053
+   },
+   {
+    "title": "Level 2: Key and Door",
+    "frame": 3803,
+    "time": 63383.333333329836
+   },
+   {
+    "title": "Level 3: All Together",
+    "frame": 6277,
+    "time": 104616.66666667422
+   },
+   {
+    "title": "Ending",
+    "frame": 7687,
+    "time": 128116.66666668106
+   },
+   {
+    "title": "Credits",
+    "frame": 9899,
+    "time": 164983.33333332886
+   }
+  ]
+ }
+}

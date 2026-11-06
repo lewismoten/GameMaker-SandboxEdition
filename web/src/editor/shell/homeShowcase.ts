@@ -5,6 +5,7 @@
 // made it, a few lines about it, and everything that can be done with it.
 import './homeShowcase.css';
 import { h, clear, promptText, toast } from '../core/ui';
+import { withDetails } from '../../project/files';
 import { demoDialogButton, demoInPicture, gameActions, type HomeGame, type GameKind } from './homeCards';
 import { healthBadge, healthNote } from './gameHealth';
 import { icon } from './homeIcons';
@@ -20,6 +21,7 @@ import { fillRating } from './homeRatings';
 const KIND_LABEL: Record<GameKind, string> = {
   mine: 'My game',
   gameware: 'Gameware',
+  starter: 'Starter',
   sandbox: 'Sandbox',
   shareware: 'Shareware',
   bizarre: 'Bizarre',
@@ -91,7 +93,7 @@ function whenIdleAndSeen(el: Element, ready: Promise<unknown>, f: () => void): v
 function catalogDownload(game: HomeGame): HTMLElement | null {
   const e = game.entry;
   if (!e || game.project || !catalogDownloadable(e)) return null;
-  return downloadButton(game.title, () =>
+  return downloadButton(game.title, async () =>
     chooseDownload({
       title: e.title,
       gam: e.gam!,
@@ -99,7 +101,7 @@ function catalogDownload(game: HomeGame): HTMLElement | null {
       id: e.id,
       author: e.author ?? e.company,
       year: e.year,
-      box: e.original?.box,
+      box: (await withDetails(e).catch(() => e)).original?.box, // a Starter's box art is in its details
       fiction: fictionNote(e),
       entry: e,
     }),
@@ -124,6 +126,8 @@ interface Showcase {
   show(game: HomeGame, how: { featured?: boolean; resume?: boolean; onAnother?: () => void }): void;
   /** Opens the game's Saves & scores (at a part named in the address: a slot, 'scores', 'backups'). */
   openSaves(initial?: string): void;
+  /** Moves keyboard focus to the Play button (else the first main action), without scrolling. */
+  focusPlay(): void;
   readonly game: HomeGame | undefined;
 }
 
@@ -299,6 +303,7 @@ export function showcase(nav: HomeNav, refresh: () => Promise<void>, life?: Abor
     el,
     show,
     openSaves: (initial) => void saves?.open(initial),
+    focusPlay: () => (actions.querySelector<HTMLElement>('.sc-play') ?? actions.querySelector<HTMLElement>('.primary') ?? title).focus({ preventScroll: true }),
     get game() {
       return current;
     },

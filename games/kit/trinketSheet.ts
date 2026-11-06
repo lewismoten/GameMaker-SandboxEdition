@@ -16,7 +16,11 @@ const out = resolve(flag('--out') ?? join(here, '../../.for-lewis/research/trink
 mkdirSync(out, { recursive: true });
 const only = flag('--only')?.split(',');
 
-const { TRINKETS, makeTrinket } = await import(/* @vite-ignore */ join(here, '..', game, 'src/trinkets/trinkets.ts'));
+const trinketsDir = join(here, '..', game, 'src/trinkets');
+const mod = await import(/* @vite-ignore */ join(trinketsDir, 'trinkets.ts'));
+// Most games export makeTrinket next to TRINKETS; Depth Perception's is in make.ts.
+const { TRINKETS } = mod;
+const makeTrinket = mod.makeTrinket ?? (await import(/* @vite-ignore */ join(trinketsDir, 'make.ts'))).makeTrinket;
 const views: [number, number][] = [
   [0, -90],
   [-30, -38],

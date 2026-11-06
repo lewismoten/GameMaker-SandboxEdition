@@ -155,13 +155,19 @@ const dropCursor = (screen: Screen, j: number, k: number, c: number) =>
   screen.box(33 + j * (BLEN + 5), 33 + k * (BLEN + 5), 36 + BLEN + j * (BLEN + 5), 36 + BLEN + k * (BLEN + 5), c);
 
 /** DropBloc's picker: arrows choose a slot, Enter drops, Esc cancels (-1). */
-export async function pickDropSlot(m: Machine, w: World, look = STOCK_LOOK): Promise<number> {
+export function pickDropSlot(m: Machine, w: World, look = STOCK_LOOK): Promise<number> {
+  // A GetKey wait: during demo playback the recorded keys (Esc, Enter...) arrive through it.
+  return m.waiting(() => pickDropSlotKeys(m, w, look));
+}
+
+async function pickDropSlotKeys(m: Machine, w: World, look: PlayerLook): Promise<number> {
   const yellow = drawDropPicker(m.screen, w, look);
   let j = 0;
   let k = 0;
   const cursor = (c: number) => dropCursor(m.screen, j, k, c);
   m.flushKeys();
   for (;;) {
+    for (const k of m.keyPollOnce?.() ?? []) m.keyboard.feed(k);
     const key = m.keyboard.readKey();
     // Pointer picking is a port addition; the C took arrow keys only.
     if (m.takeClick()) {

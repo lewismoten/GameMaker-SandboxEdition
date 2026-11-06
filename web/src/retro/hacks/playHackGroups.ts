@@ -1,9 +1,10 @@
 // PLAYHACK's first screen: your games sorted the way the home page sorts them, so a PC with
 // hundreds of imports opens on a short list. Imported games (homeOrigin's mark) go under
-// Imported; a copy of a catalog game goes under that game's tab (Gameware, Shareware, Sandbox,
+// Imported; a copy of a catalog game goes under that game's group (Gameware, Shareware, Sandbox,
 // Bizarre); everything else is Mine.
 import { isImported, originId } from '../../editor/shell/homeOrigin';
 import { isBizarreGame } from '../../project/bizarre';
+import { isStarterGame } from '../../project/starter';
 import { isSandboxGame, type CatalogEntry } from '../../project/files';
 
 export type HackGroup = 'mine' | 'imported' | 'gameware' | 'shareware' | 'sandbox' | 'bizarre';
@@ -24,8 +25,8 @@ export function hackGroupOf(id: string, catalog: readonly CatalogEntry[]): HackG
   const from = originId(id);
   const game = from ? catalog.find((g) => g.id === from) : undefined;
   if (!game) return 'mine';
-  // as the home page's tabs sort them: Sandbox Software's games ship as shareware too
+  // as the home page sorts them: Sandbox Software's games ship as shareware too
   if (isBizarreGame(game)) return 'bizarre';
-  if (isSandboxGame(game)) return 'sandbox';
+  if (isSandboxGame(game) || isStarterGame(game)) return 'sandbox';
   return game.kind === 'shareware' ? 'shareware' : 'gameware';
 }

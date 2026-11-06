@@ -1,0 +1,77 @@
+{
+ "version": 1,
+ "game": "corner-view",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "KU0QzShIBcgLTQXNC0gFyAtNBc0LSAXIC00FzQtNBc0DUBnQK0s="
+  },
+  {
+   "scene": 3,
+   "keys": "KUsLyyhNCs0DUA/QC0seyytID8gDSw=="
+  },
+  {
+   "scene": 4,
+   "keys": "KUsFywRQBdAESwXLBFAF0CxNHc0oSA=="
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: The Corner Room"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: Stairs of Towers"
+  },
+  {
+   "scene": 4,
+   "title": "Level 3: The Diamond Floor"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 8774,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 913,
+    "time": 15216.666666666471
+   },
+   {
+    "title": "Level 1: The Corner Room",
+    "frame": 2142,
+    "time": 35700.00000000053
+   },
+   {
+    "title": "Level 2: Stairs of Towers",
+    "frame": 3378,
+    "time": 56299.99999999753
+   },
+   {
+    "title": "Level 3: The Diamond Floor",
+    "frame": 4459,
+    "time": 74316.6666666654
+   },
+   {
+    "title": "Ending",
+    "frame": 5493,
+    "time": 91550.00000000375
+   },
+   {
+    "title": "Credits",
+    "frame": 7700,
+    "time": 128333.3333333478
+   }
+  ]
+ }
+}

@@ -64,7 +64,7 @@ function blasterNote(sw: HTMLElement): { open(text: string): void; focusFirst():
   const closeBtn = h('button', { type: 'button', class: 'sb-note-close', 'aria-label': 'Close', title: 'Close (Esc)' }, '×');
   const panel = h(
     'div',
-    { class: 'sb-note', role: 'group', 'aria-label': 'Sound Boaster', hidden: true },
+    { class: 'sb-note', role: 'region', 'aria-label': 'Sound Boaster', hidden: true },
     text,
     h('div', { class: 'sb-note-buttons' }, closeBtn),
   );

@@ -8,6 +8,8 @@
 import type { Delta } from '@lewismoten/gamemaker-sandbox-tools/delta';
 import { GameFiles } from './files';
 import type { Companion } from './companion';
+import { recoverRecord, type Damage } from './recover';
+import { DAMAGED_SUFFIX, isDamagedCopy, redundantCopies } from './damagedCopies';
 
 const DB_NAME = 'gamemaker-web';
 const DB_VERSION = 1;
@@ -81,16 +83,78 @@ function request<T>(store: string, mode: IDBTransactionMode, run: (s: IDBObjectS
   );
 }
 
-/** Project summaries without their files. getAll() still loads the files, then drops them. */
-export async function listProjects(): Promise<Omit<ProjectRecord, 'files'>[]> {
-  const all = await request<ProjectRecord[]>(PROJECTS, 'readonly', (s) => s.getAll());
-  return all.map(({ files: _files, ...rest }) => rest).sort((a, b) => b.updated - a.updated);
+type Summary = Omit<ProjectRecord, 'files'>;
+
+// every stored record that has an id, files and all
+async function allRecords(): Promise<ProjectRecord[]> {
+  return (await request<ProjectRecord[]>(PROJECTS, 'readonly', (s) => s.getAll())).filter((r) => r && typeof r === 'object' && typeof r.id === 'string');
 }
 
-export async function loadProject(id: string): Promise<{ record: ProjectRecord; files: GameFiles } | undefined> {
-  const record = await request<ProjectRecord | undefined>(PROJECTS, 'readonly', (s) => s.get(id));
-  if (!record) return undefined;
-  return { record, files: new GameFiles(Object.entries(record.files)) };
+const summaries = (rows: ProjectRecord[]): Summary[] => rows.map(({ files: _files, ...rest }) => rest).sort((a, b) => b.updated - a.updated);
+
+/**
+ * Project summaries without their files, newest first. getAll() still loads the files, then drops
+ * them. The kept copies of damaged saves (`<id>~damaged`) are not games of their own: see listDamagedCopies.
+ */
+export async function listProjects(): Promise<Summary[]> {
+  return summaries((await allRecords()).filter((r) => !isDamagedCopy(r.id)));
+}
+
+/** The kept copies of damaged saves, newest first (the home page's "Damaged copies…" lists them). */
+export async function listDamagedCopies(): Promise<Summary[]> {
+  return summaries((await allRecords()).filter((r) => isDamagedCopy(r.id)));
+}
+
+let pruned: Promise<number> | undefined;
+
+/**
+ * Deletes each kept damaged copy that holds nothing its original lacks (damagedCopies.ts says
+ * when), once a page load; resolves to how many went. Never throws: a copy that can't be checked stays.
+ */
+export function pruneDamagedCopies(): Promise<number> {
+  return (pruned ??= pruneNow());
+}
+
+async function pruneNow(): Promise<number> {
+  try {
+    const gone = redundantCopies(await allRecords());
+    for (const id of gone) await request(PROJECTS, 'readwrite', (s) => s.delete(id));
+    return gone.length;
+  } catch {
+    return 0;
+  }
+}
+
+/**
+ * A stored project with every intact file. A damaged piece (recover.ts) is left out and listed
+ * in `damage`. `keepCopy` (only the editor opening the game passes it): the record as it was
+ * stored is first kept whole under `<id>~damaged`, so nothing the person might still want is
+ * overwritten by the next autosave. A listing, preview or check never makes a copy.
+ */
+export async function loadProject(
+  id: string,
+  o: { keepCopy?: boolean } = {},
+): Promise<{ record: ProjectRecord; files: GameFiles; damage: Damage[] } | undefined> {
+  const raw = await request<unknown>(PROJECTS, 'readonly', (s) => s.get(id));
+  if (raw === undefined || raw === null) return undefined;
+  const { record, files, damage } = recoverRecord(id, raw);
+  if (o.keepCopy && damage.length && !isDamagedCopy(id)) await keepDamagedCopy(id, raw, record.name);
+  return { record, files, damage };
+}
+
+// Stores the project exactly as it was found, once; failing to is not a reason to stop the open.
+async function keepDamagedCopy(id: string, raw: unknown, name: string): Promise<void> {
+  try {
+    const copyId = id + DAMAGED_SUFFIX;
+    if ((await request<unknown>(PROJECTS, 'readonly', (s) => s.get(copyId))) !== undefined) return;
+    const copy =
+      typeof raw === 'object' && raw
+        ? { ...raw, id: copyId, name: `${name} (damaged copy)` }
+        : { id: copyId, name: `${name} (damaged copy)`, gam: '', updated: Date.now(), files: {} };
+    await request(PROJECTS, 'readwrite', (s) => s.put(copy));
+  } catch {
+    /* the notice still tells what is broken */
+  }
 }
 
 /**
@@ -142,6 +206,11 @@ export async function saveCheckpoints(id: string, checkpoints: StoredCheckpoint[
     tx.onerror = () => reject(tx.error);
     tx.onabort = () => reject(tx.error);
   });
+}
+
+/** Puts a record back exactly as it was kept (its last-saved time, companion and checkpoints included). */
+export async function putRecord(record: ProjectRecord): Promise<void> {
+  await request(PROJECTS, 'readwrite', (s) => s.put(record));
 }
 
 export async function deleteProject(id: string): Promise<void> {

@@ -317,3 +317,27 @@
 .topbar .topbar-menu > [hidden] {
   display: none;
 }
+
+/* 375 px iPhones and 360 px Android phones: the bar (logo, Desk | DOS | Web, ? and ⋯ at 44 px each) was 4 to
+   11 px from the edge, and a real phone's text cut the ⋯ off. Tighter gaps and logo letters give it room,
+   and the title slot, with no room left, gives up its gap. */
+@media (max-width: 430px) {
+  .topbar {
+    gap: 4px;
+    padding: 6px;
+  }
+  .topbar > :nth-child(2) {
+    display: none; /* the open game's name had a few pixels left here: only a cut-off letter or a lone … */
+  }
+  .topbar .brand-title {
+    letter-spacing: 0.04em;
+  }
+  .topbar .topbar-gear,
+  .topbar .tour-wrap,
+  .topbar .topbar-more {
+    flex: none; /* a 44 px target stays 44 px wide */
+  }
+  .topbar .spacer {
+    flex: 0 1 0;
+  }
+}

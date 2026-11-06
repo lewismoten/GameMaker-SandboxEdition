@@ -15,6 +15,7 @@ import { boxAward, boxClaims, boxGame, boxReviews, disksLine, hoursLine, planBac
 import { wear } from './boxWear';
 import { diskIcons, laurel, onePlayer, platformBadge, platformBadgeHeight, priceSticker, RATING_NOTE, ratingSeal, starburst } from './boxSeals';
 import { coverArt, SEALS } from './covers';
+import { setSpine } from './boxSpine';
 import { gameVersion } from '../../project/gameVersion';
 import {
   type Box,
@@ -121,17 +122,18 @@ const BACK_TEXT = 'rgba(0, 0, 0, 0.55)';
 export async function drawBox(entry: CatalogEntry, { shots = true, cover = true, blobs = false } = {}): Promise<BoxFaces | undefined> {
   const sides = await paintBox(entry, shots, false, cover, undefined, blobs);
   if (!sides) return undefined;
-  // `blobs`: for the shelf. Only the sides that show there (the spine, and the front when it
-  // is turned out, which is the one drawn with its cover) are encoded, off the main thread, into
-  // addresses good for this page only (released by releaseFaces); the others are blank until the
-  // box is drawn whole.
+  // `blobs`: for the shelf. Only the sides that show there are made: the spine, as a small
+  // canvas at the size it stands on the shelf (spineOf: no request, nothing to release), and the
+  // front when it is turned out, which is the one drawn with its cover (encoded off the main
+  // thread into an address good for this page only, released by releaseFaces). The others are
+  // blank until the box is drawn whole.
   // Otherwise data addresses, which a manual or a saved page can carry away.
   const url = Object.fromEntries(
-    await Promise.all(
-      Object.entries(sides).map(async ([k, c]) => [k, !blobs ? c.toDataURL() : k === 'left' || (k === 'front' && cover) ? await blobUrl(c) : BLANK] as const),
-    ),
+    await Promise.all(Object.entries(sides).map(async ([k, c]) => [k, !blobs ? c.toDataURL() : k === 'front' && cover ? await blobUrl(c) : BLANK] as const)),
   );
-  return url as unknown as BoxFaces;
+  const faces = url as unknown as BoxFaces;
+  if (blobs) setSpine(faces, sides.left);
+  return faces;
 }
 
 const BLANK = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';

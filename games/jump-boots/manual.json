@@ -1,0 +1,75 @@
+{
+  "title": "Boots and Jet Pack",
+  "howDoI": [
+    {
+      "id": "airtap",
+      "q": "How do I make a jump that works again in the air?",
+      "scene": 2,
+      "x": 6,
+      "y": 23,
+      "level": 1
+    },
+    {
+      "id": "jetpack",
+      "q": "How do I make a jump that never runs out, like a jet pack?",
+      "scene": 2,
+      "x": 22,
+      "y": 5,
+      "level": 1
+    },
+    {
+      "id": "limit",
+      "q": "How do I limit how many times a jump can be used?",
+      "scene": 3,
+      "x": 4,
+      "y": 15,
+      "level": 2
+    },
+    {
+      "id": "refill",
+      "q": "How do I make a pickup that gives the hero another jump?",
+      "scene": 3,
+      "x": 15,
+      "y": 15,
+      "level": 2
+    },
+    {
+      "id": "ownlimit",
+      "q": "How do I give a later level its own jump limit?",
+      "scene": 3,
+      "x": 4,
+      "y": 15,
+      "level": 2
+    }
+  ],
+  "pages": [
+    {
+      "head": "Welcome",
+      "html": "<h1>Welcome</h1><p><b>Boots and Jet Pack</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has two short levels and takes a few minutes to finish.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each thing in the levels is made.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. <kbd>Space</kbd> jumps, and jumps again in the air. <kbd>Up</kbd> and <kbd>Down</kbd> climb a ladder. <kbd>F2</kbd> shows your lives, hit points and score. Walk into the door at the end of a level to go on.</p><p>In the first level Nova's jump never runs out, so tapping it keeps them rising, as a jet pack would. In the second, their boots hold two jumps and blue bubbles fill them up. Nothing in this game hurts you.</p>"
+    },
+    {
+      "head": "Level 1: Jet Pack",
+      "html": "<h1>Level 1: Jet Pack</h1><p>The <b>TAP SPACE IN THE AIR AND NOVA RISES AGAIN</b> sign stands near the start. Tap Space once and Nova hops. Tap it again while they are still in the air and they rise again, higher than one hop could take them.</p><p>A cliff stands ahead of you, eighteen blocks tall, with coins hanging up its face. Walk to its foot, hold <kbd>Right</kbd> against it and keep tapping Space about three times a second. Nova climbs the cliff and lands on top.</p><p>The <b>HOLD RIGHT, KEEP TAPPING, FLY ACROSS</b> sign on top says what to do about the gap beyond. It is ten blocks wide, much more than one hop can cross. Hold Right, tap Space now and then to stay up, and Nova flies over to the far side, where the door is. If you fall, you land on the ground below. Walk back to the cliff and try again. There are eight coins.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 1 is made</h1><ul><li><b>A jump that adds up.</b> Open <b>hero.chr</b> in the Character tab and look at the sequence on the Space key (sequence 9). Its one push is a frame with <b>y</b> of -12, and the sequence is set to <b>Moves with momentum</b>, so the push is added to Nova's speed and does not move them by itself. They then rises, and gravity takes the speed back.</li><li><b>No limit.</b> Open the Requirements tab of that sequence. <b>Uses</b> is <b>Unlimited</b>, so a tap is always allowed.</li><li><b>Why a tap in the air works.</b> Game-Maker never asks whether the hero is standing before it starts a sequence. A tap while they are in the air starts the jump again and adds another push to the speed they already has. Tapping on and on is a jet pack. Nothing in the level makes it one: the jump is the same one every Starter uses.</li><li><b>Tapping, not holding.</b> The sequence has <b>Once per key press</b> on, which means Space has to be let go before the next tap counts. Holding the key gives one jump.</li><li><b>A limit on the climb.</b> The game stops their upward speed at 44 pixels a tick, so a faster tapper does not go on speeding up. The cliff is eighteen blocks tall and a person can tap up it with time to spare.</li><li><b>The map.</b> Open <b>one.map</b>. It is a flat floor with a cliff and a platform made of grass and dirt blocks, ten blocks apart, and a hedge at each end. The sky above is empty, so it does not matter if Nova rises too far. The coins up the face are blocks, and each takes ten points when touched.</li></ul>"
+    },
+    {
+      "head": "Level 2: Double-Jump Boots",
+      "html": "<h1>Level 2: Double-Jump Boots</h1><p>The <b>THESE BOOTS HOLD TWO JUMPS. EACH TAP USES ONE</b> sign stands near the start. Nova's boots hold two jumps. Tap once, tap again in the air, and they have used both. A third tap in the air does nothing, and they drop. Once they are back on the ground, Space does nothing at all.</p><p>The <b>NO JUMPS LEFT? TOUCH A BLUE BUBBLE</b> sign points at three blue bubbles with an arrow on each. Each one you touch adds a jump and is used up. Take all three and you have a spare.</p><p>The <b>TOO TALL FOR ONE JUMP. TAP AGAIN</b> sign stands before a step five blocks tall. One jump rises only three blocks, so tap, tap again at the top of the first jump, and land on it. Beyond it are more bubbles, and the <b>TWO TAPS CROSS IT. FILL UP FIRST</b> sign says to take them before the pit. The pit is too wide for one jump and fine for two. If you fall in, a ladder at its near side leads out.</p><p>Past the pit are bubbles, then two steps like the first, one above the other, with a row of bubbles on the first one. The door is at the top. There are five coins.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 2 is made</h1><ul><li><b>A jump with two uses.</b> Open <b>hero2.chr</b> in the Character tab and look at sequence 17. It is the same jump as level 1's, but its <b>Uses</b> is <b>Limited</b> and <b>Uses at start</b> is 2. Each time Space starts it, the game takes one off. With none left, Space is ignored: no frame, no sound.</li><li><b>Why it is sequence 17.</b> The game keeps one set of counters from the first level on. A sequence that level 1's character defines, like the jump on sequence 9, keeps its counter in every later level, whatever the later character file says. Sequence 17 is one that hero.chr leaves with no key, so level 2's own file sets its counter. In <b>hero2.chr</b> sequence 9 has no key, so Space starts only sequence 17.</li><li><b>The bubbles.</b> Open <b>boots.bbl</b> in the Blocks tab and pick the blue bubble. Its <b>Effect</b> is <b>Repetition count 13 (sequence 17)</b> and its <b>Effect amount</b> is 1, so each touch adds one jump, and Game-Maker plays the sound for a counter that goes up. It <b>changes into</b> the sky block when touched, so it is used up, like a coin.</li><li><b>A spare.</b> Each row has three bubbles for two jumps, so a stray tap does not leave Nova stuck. A person who wastes more than that can press <kbd>Esc</kbd> and start again.</li><li><b>The step and the pit.</b> Open <b>two.map</b>. One jump rises 66 pixels, three blocks and a bit. Two rise about 110, five blocks and a bit. So a step five blocks high needs two taps, and one of three would need only one. The pit is six blocks across from where Nova takes off, wider than one hop reaches (about four and a half) and narrower than two jumps reach.</li><li><b>The ladder.</b> Nova falls two blocks to the pit's floor, and with no jumps left they could not climb out, so there is a ladder in the pit's first column. It has no pull, so it holds them up when they climb.</li></ul>"
+    },
+    {
+      "head": "What it cannot do",
+      "html": "<h1>What it cannot do</h1><p>These are the engine's limits, so you can plan around them.</p><ul><li><b>It cannot tell standing from flying.</b> Game-Maker never checks whether the hero is on the ground before it starts a sequence. It only asks whether the key is down, the sequence is turned on and has uses left. So a jump that works only from the ground is not possible, and neither is a double jump that cannot be used from a standing start. The nearest thing is a limit on uses, which counts taps and not landings.</li><li><b>It cannot refill when they land.</b> Nothing runs when Nova touches the ground. A counter changes only when they touch a block or a monster. So the boots fill from pickups, or when a level starts, for a sequence the first level's character left without a key.</li><li><b>It cannot show the count.</b> The F2 screen shows score, money, hit points, lives and what they carry, and not a repetition count. The engine has no number readout, so the player has to count taps, or the level has to show the jumps left with blocks of its own.</li><li><b>It cannot cap a pickup.</b> A bubble adds its amount, whatever the count is already. There is no &quot;up to two&quot;. If a person must not hoard, use each bubble once.</li><li><b>It cannot make the second tap weaker.</b> Each tap adds the same push. The second rises less than a first because they are already moving, and a tap at the top of the first jump rises the most.</li></ul>"
+    },
+    {
+      "head": "Make it yours",
+      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>In <b>hero.chr</b>, set the jump's <b>Uses</b> to <b>Limited</b> and <b>Uses at start</b> to 4. The jet pack now has four puffs, and the cliff is too tall.</li><li>In <b>hero2.chr</b>, set <b>Uses at start</b> to 3. Every step can now be taken with a tap to spare.</li><li>In the Blocks tab, change the bubble's <b>Effect amount</b> to 2.</li><li>Put a bubble in the sky over the pit in <b>two.map</b>. Nova can spend both jumps early and still touch it in the air to get another.</li><li>Change the jump frame's <b>y</b> from -12 to -16 and see how much higher one tap takes them.</li></ul><p>The home page's <b>Starters</b> tab has more small games like this one.</p>"
+    }
+  ]
+}

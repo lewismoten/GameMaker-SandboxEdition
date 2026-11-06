@@ -1,0 +1,55 @@
+{
+  "keys": {
+    "75": {
+      "short": "Speed left",
+      "long": "Add to Kit's speed to the left. Hold it to go faster; let go to glide on."
+    },
+    "77": {
+      "short": "Speed right",
+      "long": "Add to Kit's speed to the right. Hold it to go faster; let go to glide on."
+    },
+    "57": {
+      "short": "Jump",
+      "long": "Jump. Tap again in the air to rise again (level 2: the boots hold two jumps). Steer with Left and Right while you are in the air."
+    },
+    "80": {
+      "short": "Down",
+      "long": "Move down. Nothing here to climb."
+    },
+    "30": {
+      "short": "Speed left",
+      "long": "Same as the Left arrow."
+    },
+    "32": {
+      "short": "Speed right",
+      "long": "Same as the Right arrow."
+    },
+    "31": {
+      "short": "Down",
+      "long": "Same as the Down arrow."
+    },
+    "72": {
+      "short": "Up",
+      "long": "Move up. Nothing here to climb."
+    },
+    "17": {
+      "short": "Up",
+      "long": "Same as the Up arrow."
+    }
+  },
+  "joystick": {
+    "1": {
+      "short": "Hop",
+      "long": "Hop."
+    }
+  },
+  "sounds": {
+    "9": "The jump",
+    "10": "Getting hurt",
+    "11": "Falling over"
+  },
+  "counters": {
+    "20": "Keys: not used here, but a copy can add them.",
+    "17": "Jumps left in the boots (level 2): each tap uses one, a blue bubble adds one."
+  }
+}

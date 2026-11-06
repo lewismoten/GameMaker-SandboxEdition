@@ -55,6 +55,7 @@ front (the magazine, the desk, the level check's explorer, the engine…), walki
 - [`phoneScreen.ts`](phoneScreen.ts): whether the screen is a phone's (touch, its shorter side 500
   pixels or less) and how it is held, for the achievements and the documents' default view.
 - [`keepTogether.ts`](keepTogether.ts): THE CHEZ kept on one line (above).
+- [`routeFocus.ts`](routeFocus.ts): after a link or button opens another page, focus moves to its h1 (never on first load, Back, code-made hash changes, or while a dialog or text box has focus).
   [`seededRandom.ts`](seededRandom.ts): the seeded random numbers (Mulberry32, xorshift32) and
   string hash (FNV-1a) that pictures, songs, maps and walkthroughs use to come out the same every
   time.
@@ -140,6 +141,8 @@ SDK implementation lives in the packages below; the app imports their declared e
 - [`cast/`](cast/README.md): the Cast page: the regulars on a stage, and the games each appears in.
 - [`credits/`](credits/README.md): the Credits page: software, the original, the games' authors, the
   AI tools and the people.
+- [`errorNotice/`](errorNotice/README.md): the notice with Copy error details when something breaks.
+- [`programmersGuide/`](programmersGuide/README.md): The Programmer's Guide to Game-Maker 3.0 (`#/programmers-guide`) and the words of the 1994 Technical Reference booklet.
 - [`privacy/`](privacy/README.md): the Privacy page: what the site keeps on the device, how to clear it,
   what is sent and when.
 - [`achievements/`](achievements/README.md): what the visitor has done: the catalog, the record, the
@@ -192,7 +195,7 @@ through `fetchGameFile` (`project/files.ts`), which shares each request and read
 already at hand. The build also puts in the catalog what pages would otherwise fetch files to work
 out (the quick health check, a box's captions). Lists load `games/catalog.json`
 (`loadCatalogList`), and a game's notice, manual and printables come from
-`games/details/<id>.json` when it is opened (`withDetails`); pictures of listed games are prebuilt
+`games/details/<id>.json` when it is opened (`withDetails`; every original game's controls and player look, and a Starter's blurb, label and box art, so `catalog.json` keeps only what the home page and dos.html read at load, `pageCatalog` in `scripts/cdGames.ts`); pictures of listed games are prebuilt
 in `games/shots/` (`gfx/levelPicture.ts`; the tiles' title screens, `gfx/titlePicture.ts`).
 `main.ts` starts one or the other and switches between them; the desk's PC can also open today's
 editors full screen on its monitor (`retro/computer.ts` `openEditor`, through the same editor

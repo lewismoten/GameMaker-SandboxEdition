@@ -29,6 +29,8 @@ export type Goal =
   | 'bizarre'
   | 'sandboxDone'
   | 'bizarreDone'
+  | 'starters'
+  | 'startersDone'
   | 'teddy'
   | 'walkthroughs'
   | 'hearts'
@@ -187,6 +189,13 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
     unit: 'cards',
   },
   { id: 'make-opening', title: 'Presenting…', desc: 'Gave a game an Opening sting on its start scene.', icon: '🎬', category: 'making' },
+  {
+    id: 'learn-lesson',
+    title: 'Learn by looking',
+    desc: 'Used See how it’s made on a “How do I…?” question to look at the map.',
+    icon: '🔍',
+    category: 'making',
+  },
   { id: 'make-heat', title: 'Feeling the heat', desc: 'Played your own map with Play and record, and grew your heat map.', icon: '🔥', category: 'making' },
   { id: 'make-take', title: 'Take one', desc: 'Kept your own play of a scene for its walkthrough.', icon: '⏺️', category: 'making' },
   { id: 'palette-vision', title: 'Seen by everyone', desc: 'Applied a ✨ fix from the palette’s Color vision check.', icon: '👓', category: 'making' },
@@ -293,6 +302,25 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
     icon: '🎻',
     category: 'playing',
     from: 'bizarre',
+    unit: 'games',
+  },
+  {
+    id: 'play-starters',
+    title: 'Show and tell',
+    desc: 'Played every Starter.',
+    icon: '🧩',
+    category: 'playing',
+    from: 'starters',
+    unit: 'games',
+  },
+  {
+    id: 'finish-starters',
+    hard: true,
+    title: 'Honor roll',
+    desc: 'Played every Starter all the way to its ending.',
+    icon: '🎓',
+    category: 'playing',
+    from: 'startersDone',
     unit: 'games',
   },
   {

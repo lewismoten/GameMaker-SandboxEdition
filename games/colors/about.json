@@ -1,0 +1,35 @@
+{
+  "title": "Colors That Work",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "hero": "YANA",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.1",
+  "blurb": "Two short levels about colors that everyone can tell apart. In the first, a plate that stings and a plate that is safe differ only by red against green, and the second picture on the level card shows how that can look to a player who sees red and green alike: the same. In the second level, spikes look like spikes and the safe path is light and striped, so it reads in any color. Signs in the levels say how. Play it, then open it in Game-Maker and change a plate.",
+  "exe": "COLORS.EXE",
+  "dosName": "COLORS",
+  "sound": "sb",
+  "label": {
+    "background": "#e8f6ff",
+    "band": "#b8452e",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "2 short levels",
+    "hours": 1,
+    "background": "#b8452e",
+    "accent": "#ffd23f",
+    "ink": "#ffffff",
+    "tagline": "Say it with more than color.",
+    "back": "A small explorer in a pink beanie crosses two short levels. In the first, the plate that stings and the plate that is safe are told apart by red and green alone, and some players see those two colors alike. In the second, shape and brightness carry the meaning, so it reads in any color. Play, then open the game in Game-Maker and change a plate.",
+    "features": ["Signs in the levels explain each idea", "A second picture on each level card shows how it can look to some players", "Made to be copied and taken apart"],
+    "shots": [
+      ["one.map", 11, 5],
+      ["two.map", 11, 5]
+    ],
+    "rating": "Everyone"
+  }
+}

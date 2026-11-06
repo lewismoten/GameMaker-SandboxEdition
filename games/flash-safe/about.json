@@ -1,0 +1,41 @@
+{
+  "title": "Flash Safe",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "hero": "LAMI",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.0",
+  "blurb": "Three short levels about making a game that is easy on the eyes. Some players can get sick from fast flashing, and some people have seizures from flashing light, so a game should never rely on it. Level 1 shows a hit without a flash: a beep, an ouch face, a number that rises and fewer hit points. Level 2 blinks a small amber lamp once a second and pulses another in soft steps. Level 3 lifts a dark sky a little, holds it, and lets it settle. Signs and still pictures show the wrong way, and the simple rules: no more than 3 flashes in a second, no big red flashes, keep flashing small, and offer other cues. Play it, then open it in Game-Maker and change a time.",
+  "exe": "FLASHSAF.EXE",
+  "dosName": "FLASHSAF",
+  "sound": "sb",
+  "label": {
+    "background": "#dfe8f4",
+    "band": "#2a4a7c",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "3 short levels",
+    "hours": 1,
+    "background": "#2a4a7c",
+    "accent": "#ffd23f",
+    "ink": "#ffffff",
+    "tagline": "Easy on the eyes.",
+    "back": "A small explorer in a red beanie has three short rooms that show how to make a game that never relies on a flash. A hit gets a beep, a face, a number and fewer hit points. A warning lamp blinks slowly and small. A storm sky lifts a little and holds. Read the signs, then open the game in Game-Maker and change a time.",
+    "features": [
+      "A hit shown four ways, and none of them a flash",
+      "A lamp that blinks once a second and one that pulses softly",
+      "A storm sky that lifts, holds and settles",
+      "Made to be copied and taken apart"
+    ],
+    "shots": [
+      ["one.map", 14, 1],
+      ["two.map", 4, 1],
+      ["three.map", 14, 1]
+    ],
+    "rating": "Everyone"
+  }
+}

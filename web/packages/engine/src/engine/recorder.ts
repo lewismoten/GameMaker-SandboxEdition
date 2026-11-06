@@ -108,6 +108,27 @@ export class Recorder {
   }
 
   /**
+   * One GetKey poll (DoPlayBack) by a key screen in a tick-counted recording, where waits
+   * otherwise don't count (advanceWait): the keys a demo gave that screen one tick after
+   * its opening key (DropBloc's Enter) become pending. Recordings made in DOS count their waits.
+   */
+  pollOnce(): number[] {
+    if (this.paused || this.mode !== PLAYBACK || this.countsWaits) return [];
+    return this.advanceByTick();
+  }
+
+  private advanceByTick(): number[] {
+    const out: number[] = [];
+    this.timer++;
+    while (this.index < this.keys.length && this.lastKeyPress + this.keys[this.index].delta <= this.timer) {
+      out.push(this.keys[this.index].key);
+      this.lastKeyPress += this.keys[this.index].delta;
+      this.index++;
+    }
+    return out;
+  }
+
+  /**
    * A screen that read keys has finished. In DOS the next key may have come during it
    * (the recording shows a gap of many thousands of polls), however fast that PC polled;
    * catch up to it, and to keys a poll or two behind it (taken by the keyboard flush that

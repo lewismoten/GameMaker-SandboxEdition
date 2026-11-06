@@ -5,6 +5,7 @@ import { mountPlayer } from '../player/player';
 import { GameFiles } from '../project/files';
 import { decodeGame, fromBase64, GAME_ELEMENT_ID, toBase64, type SinglePageGame } from './singlePage';
 import { CREDIT } from './pageSeo';
+import { readExternalDom } from './insideRead';
 import type { PlayerPatches } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
 import './credit.css';
 
@@ -43,7 +44,12 @@ function showCredit(): void {
   credit.className = 'gm-made-with';
   credit.append(link(CREDIT.site, CREDIT.text), ' · ', link(CREDIT.repo, 'source'));
   document.body.append(credit);
-  const update = () => (credit.hidden = !root.querySelector('.gm-start'));
+  // the "Inside this game" section below the player shows on the start screen only, so playing never scrolls the page
+  const inside = document.getElementById('gm-inside');
+  const update = () => {
+    credit.hidden = !root.querySelector('.gm-start');
+    if (inside) inside.hidden = credit.hidden;
+  };
   new MutationObserver(update).observe(root, { childList: true });
   update();
 }
@@ -57,7 +63,11 @@ async function main(): Promise<void> {
   }
   const game = JSON.parse(el.textContent ?? '') as SinglePageGame;
   el.remove(); // the parsed copy is all we need; free the text
-  const files = new GameFiles(await decodeGame(game));
+  const external = readExternalDom(
+    document,
+    (game.ext ?? []).map(([, id]) => id),
+  );
+  const files = new GameFiles(await decodeGame(game, external));
   for (const [name, b64] of Object.entries(loadSaves(game.id))) files.set(name, fromBase64(b64));
   document.title = game.title;
   const start = () =>

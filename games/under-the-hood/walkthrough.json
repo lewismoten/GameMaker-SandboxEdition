@@ -1,0 +1,77 @@
+{
+  "version": 1,
+  "game": "under-the-hood",
+  "rand": {
+    "seed": 1,
+    "per": "scene"
+  },
+  "segments": [
+    {
+      "scene": 2,
+      "keys": "AU1zzQNNHs0DTQrNA00="
+    },
+    {
+      "scene": 3,
+      "keys": "AU1pzQNNHs0ASx7LA0gnyANNHs0DTR7NAE0DzQtNHs0DTQ=="
+    },
+    {
+      "scene": 4,
+      "keys": "AU0jzQNNI80DTWnNA00="
+    }
+  ],
+  "chapters": [
+    {
+      "scene": 2,
+      "title": "Level 1: What Is an EXE"
+    },
+    {
+      "scene": 3,
+      "title": "Level 2: Same Size"
+    },
+    {
+      "scene": 4,
+      "title": "Level 3: Ask First"
+    }
+  ],
+  "timeline": {
+    "fps": 60,
+    "frames": 8376,
+    "chapters": [
+      {
+        "title": "Opening",
+        "frame": 0,
+        "time": 0
+      },
+      {
+        "title": "Story",
+        "frame": 913,
+        "time": 15216.666666666471
+      },
+      {
+        "title": "Level 1: What Is an EXE",
+        "frame": 2142,
+        "time": 35700.00000000053
+      },
+      {
+        "title": "Level 2: Same Size",
+        "frame": 3118,
+        "time": 51966.66666666483
+      },
+      {
+        "title": "Level 3: Ask First",
+        "frame": 4585,
+        "time": 76416.66666666602
+      },
+      {
+        "title": "Ending",
+        "frame": 5576,
+        "time": 92933.33333333749
+      },
+      {
+        "title": "Credits",
+        "frame": 7303,
+        "time": 121716.6666666792
+      }
+    ]
+  }
+}

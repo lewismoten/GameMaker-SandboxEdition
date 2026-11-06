@@ -51,6 +51,7 @@ export const GUIDE_SECTIONS = [
   'workspace',
   'editors',
   'tools',
+  'how-do-i',
   'play',
   'export',
   'offline',

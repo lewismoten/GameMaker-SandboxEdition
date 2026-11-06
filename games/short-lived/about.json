@@ -1,0 +1,39 @@
+{
+  "title": "Here Today",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "hero": "MIA",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.0",
+  "blurb": "Two short levels about things that do not last. A bubble blocks a tunnel and pops on its own, and a sleepy gumdrop in the next tunnel wakes up and becomes another monster. Signs in the levels say how. Play it, then open it in Game-Maker and change how long they last.",
+  "exe": "HERETODY.EXE",
+  "dosName": "HERETODY",
+  "sound": "sb",
+  "label": {
+    "background": "#e8f6ff",
+    "band": "#2fae9a",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "2 short levels",
+    "hours": 1,
+    "background": "#2fae9a",
+    "accent": "#ffd23f",
+    "ink": "#ffffff",
+    "tagline": "Some things do not last.",
+    "back": "A small explorer in a purple beanie crosses two short rooms. A bubble blocks a tunnel and pops on its own, and a sleepy gumdrop wakes up and becomes another monster. Wait, watch, then open the game in Game-Maker and change how long they last.",
+    "features": [
+      "Signs in the levels explain each idea",
+      "A monster can last for a set time, then vanish or become another",
+      "Made to be copied and taken apart"
+    ],
+    "shots": [
+      ["one.map", 26, 6],
+      ["two.map", 26, 6]
+    ],
+    "rating": "Everyone"
+  }
+}

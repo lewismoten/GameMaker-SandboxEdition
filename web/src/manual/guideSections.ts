@@ -102,7 +102,7 @@ export const GUIDE_SECTIONS: [id: string, title: string, html: string][] = [
     <p>Give each imported game 1 to 5 stars and a note (<b>Your rating and note</b> beside it, or
     <b>Rating and note…</b> under ⋯ More), then show only some ratings or sort by rating. Your notes
     are in the Library too. <b>Remove all imported…</b> removes them all, only some ratings, or
-    one import’s games.</p>
+    one import’s games, and <b>Recently deleted…</b> brings them back for 7 days.</p>
     <h3>Sandbox</h3>
     <p>New games made for this edition in the original formats, so they also play in DOS. Each
     has a <b>Manual</b> to read or print, and <b>Walkthrough</b> plays the whole game from start
@@ -205,7 +205,8 @@ export const GUIDE_SECTIONS: [id: string, title: string, html: string][] = [
       <tr><td><code>.CHR</code></td><td>Character</td><td>The player’s animation sequences (idle, die, hurt, pick up, drop and up to 15 of your own), the keys that start them, and what they need.</td></tr>
       <tr><td><code>.SND</code></td><td>Sounds</td><td>30 effects, each a PC-speaker tune or a Sound Blaster <code>.VOC</code> sample.</td></tr>
       <tr><td><code>.GIF .FLI .CMF .VOC .TXT</code> and more</td><td>Media</td><td>View pictures and animations, hear music and samples, edit songs on a piano roll, and edit text screens, slide shows, backdrops, high-score tables and demos.</td></tr>
-    </table>`,
+    </table>
+    <aside class="try-it" data-try="room-to-room/door-link meet-the-monsters/path first-steps/gravity"><strong>Try it:</strong> the Integrator’s links, the Monsters editor’s paths and the Blocks editor’s gravity, each in a Starter.</aside>`,
   ],
   [
     'tools',
@@ -219,7 +220,133 @@ export const GUIDE_SECTIONS: [id: string, title: string, html: string][] = [
       <tr><td>PC speaker sounds (<code>.SND</code>)</td><td>In the sound set editor, press a recipe (heal, coin, laser, explosion…) for a new take on it, and change it with higher, lower, faster, echo, mutate and more. The recipe that suits each of the game’s own nine sounds is highlighted.</td></tr>
       <tr><td>A block’s picture</td><td>In the block editor, <b>Make a texture</b> draws a seamless 20×20 texture (grass, brick, water…) in the nearest colors your palette has.</td></tr>
       <tr><td>A demo (<code>.REC</code>)</td><td><b>Record one by playing…</b> starts the game in its first level and records your keys; watch it back, and trim the end. Choose it as the start scene’s demo recording.</td></tr>
-    </table>`,
+    </table>
+    <aside class="try-it" data-try="sounds-and-music/room-song pictures-and-cartoons/cartoon"><strong>Try it:</strong> a song in a room, and a cartoon between two levels, each in a Starter.</aside>`,
+  ],
+  [
+    'how-do-i',
+    'How do I…?',
+    `<p>The Starters are small games that each show one idea: walking and jumping, keys and doors,
+    monsters, and rooms joined by doors. Each question below is answered by one level. <b>Play this
+    level</b> starts the game at it. <b>See how it’s made</b> opens its map at the spot, to look at
+    only, with a <b>How this level is made</b> button for the manual’s page about it. To change
+    something, choose <b>Edit a copy</b> on the bar above the map.</p>
+    <div class="guide-how-do-i"><p>The searchable list shows here once the page has loaded.</p></div>
+    <h3>Moving and jumping</h3>
+    <p>The hero walks with the arrow keys and jumps with Space. A wall two blocks high is too tall to
+    walk through, so the level asks for a jump.</p>
+    <aside class="try-it" data-try="first-steps/walls"><strong>Try it:</strong> First Steps, level 1.</aside>
+    <h3>Gravity</h3>
+    <p>A block can pull the hero down. Walk off an edge and the pull of the sky block does the rest.</p>
+    <aside class="try-it" data-try="first-steps/gravity"><strong>Try it:</strong> First Steps, level 1.</aside>
+    <h3>Ladders</h3>
+    <p>A ladder is a block with no pull and no solid side, so Up lifts the hero.</p>
+    <aside class="try-it" data-try="first-steps/ladder"><strong>Try it:</strong> First Steps, level 2.</aside>
+    <h3>Keys and doors</h3>
+    <p>A key adds one to a counter, and a locked door spends one from it.</p>
+    <aside class="try-it" data-try="keys-and-doors/key keys-and-doors/locked-door"><strong>Try it:</strong> Keys and Doors, level 1.</aside>
+    <h3>Counters</h3>
+    <p>A door can cost two keys, and a second counter gives a second kind of key.</p>
+    <aside class="try-it" data-try="keys-and-doors/two-keys keys-and-doors/two-counters"><strong>Try it:</strong> Keys and Doors, levels 2 and 3.</aside>
+    <h3>Monsters</h3>
+    <p>A monster walks a short path of corners, back and forth.</p>
+    <aside class="try-it" data-try="meet-the-monsters/path"><strong>Try it:</strong> Meet the Monsters, level 1.</aside>
+    <h3>Hurting</h3>
+    <p>A monster’s picture can take hit points away. Another can be popped by touching it.</p>
+    <aside class="try-it" data-try="meet-the-monsters/hurts meet-the-monsters/pop"><strong>Try it:</strong> Meet the Monsters, levels 1 and 2.</aside>
+    <h3>Scene links and exits</h3>
+    <p>A door, or an open archway in a room's wall, is a link to another scene.</p>
+    <aside class="try-it" data-try="room-to-room/door-link room-to-room/open-archway room-to-room/two-exits"><strong>Try it:</strong> Room to Room, levels 1 and 3.</aside>
+    <h3>Treasure and score</h3>
+    <p>A coin block adds points to the score, one can be worth more, and a hazard can take points away.</p>
+    <aside class="try-it" data-try="coins-and-score/coin coins-and-score/worth-more"><strong>Try it:</strong> Coins and Score.</aside>
+    <h3>Hit points and lives</h3>
+    <p>The hero starts with hit points, a heart gives some back, and running out costs a life.</p>
+    <aside class="try-it" data-try="health-and-hearts/hit-points health-and-hearts/lose-life"><strong>Try it:</strong> Health and Hearts.</aside>
+    <h3>Hazards</h3>
+    <p>A block can hurt every time or only once, and a pool can cost a life.</p>
+    <aside class="try-it" data-try="watch-your-step/spikes watch-your-step/pool"><strong>Try it:</strong> Watch Your Step.</aside>
+    <h3>Warning before it happens</h3>
+    <p>A hazard that blinks first gives the player a fair chance, and can ring again and again.</p>
+    <aside class="try-it" data-try="warning-first/warn warning-first/ring"><strong>Try it:</strong> Warning First.</aside>
+    <h3>Powers that run out</h3>
+    <p>A block gives a power: a higher jump or quicker feet, for a while.</p>
+    <aside class="try-it" data-try="power-up/power-block power-up/runs-out"><strong>Try it:</strong> Power Up.</aside>
+    <h3>Throwing and weapons</h3>
+    <p>A key throws a star that flies a set distance; a pouch can hold other things to throw.</p>
+    <aside class="try-it" data-try="throw-it/throw many-weapons/pouch"><strong>Try it:</strong> Throw It and Many Weapons.</aside>
+    <h3>Who beats whom</h3>
+    <p>One monster can be stronger than another, and one can pop another by touching it.</p>
+    <aside class="try-it" data-try="who-wins/power"><strong>Try it:</strong> Who Wins?</aside>
+    <h3>Bosses</h3>
+    <p>A boss takes several hits, and can change its look and speed as it is hurt.</p>
+    <aside class="try-it" data-try="boss-hits/boss-hits boss-phases/faster"><strong>Try it:</strong> Big Bug and Three Phases.</aside>
+    <h3>Following, flocking and watching</h3>
+    <p>A monster can follow the hero, fly in formation, or sweep a light back and forth.</p>
+    <aside class="try-it" data-try="follower/follow flock/flock searchlight/light"><strong>Try it:</strong> Follow Me, Birds of a Feather and Don’t Get Seen.</aside>
+    <h3>Monsters that come and go</h3>
+    <p>A block can hatch a monster, and a monster can vanish or change after a while.</p>
+    <aside class="try-it" data-try="things-that-grow/hatch short-lived/vanish"><strong>Try it:</strong> Seeds and Nests, and Here Today.</aside>
+    <h3>Popping numbers</h3>
+    <p>A touched monster can turn into a number that floats up and goes away.</p>
+    <aside class="try-it" data-try="popups/becomes"><strong>Try it:</strong> Score Popups.</aside>
+    <h3>Wind, ice and springs</h3>
+    <p>Blocks can slide, carry or lift the hero, and wind can warn before it blows.</p>
+    <aside class="try-it" data-try="slippery-and-bouncy/ice gusts/warn"><strong>Try it:</strong> Slippery and Bouncy and Gusts.</aside>
+    <h3>Speed and dashes</h3>
+    <p>The hero can pick up speed while a key is held, glide on, or dash once for each press.</p>
+    <aside class="try-it" data-try="momentum/faster kit-moves/dash"><strong>Try it:</strong> Slide and Drift and Kit’s Moves.</aside>
+    <h3>Water</h3>
+    <p>Water can pull the hero sideways without hurting, and the hero can float.</p>
+    <aside class="try-it" data-try="swim/nohurt swim/float"><strong>Try it:</strong> Under the Surface.</aside>
+    <h3>Looking down and gravity off</h3>
+    <p>Turn the pull off for a level that looks down from above.</p>
+    <aside class="try-it" data-try="gravity-on-gravity-off/from-above"><strong>Try it:</strong> Gravity On, Gravity Off, level 2.</aside>
+    <h3>Digging and breaking</h3>
+    <p>Some blocks can be dug through or broken from any side, and leave something behind.</p>
+    <aside class="try-it" data-try="walk-the-ground/soil breakable-walls/crate"><strong>Try it:</strong> Dig It and Smash It.</aside>
+    <h3>Levers, gates and puzzles</h3>
+    <p>A lever can make a bridge, a gate can need three tokens, and a puzzle can need two things at once.</p>
+    <aside class="try-it" data-try="switches/lever three-tokens/gate and-gate/and"><strong>Try it:</strong> Switches, Three Tokens and Both Together.</aside>
+    <h3>Secret walls</h3>
+    <p>A wall can look solid and let the hero through, or look secret and stay solid.</p>
+    <aside class="try-it" data-try="secret-doors/fake"><strong>Try it:</strong> Looks Like a Wall.</aside>
+    <h3>Clocks and countdowns</h3>
+    <p>A bar can show time running out, and a number can count down to a door.</p>
+    <aside class="try-it" data-try="beat-the-clock/bar countdown/digit"><strong>Try it:</strong> Beat the Clock and Countdown.</aside>
+    <h3>Signs and talk</h3>
+    <p>A sign shows words, and a character talks when the hero walks into them.</p>
+    <aside class="try-it" data-try="say-something/sign dialog/two-voices"><strong>Try it:</strong> Say Something and Everybody Talks.</aside>
+    <h3>Acting scenes</h3>
+    <p>An actor can walk in, say hello and walk out, one act turning into the next.</p>
+    <aside class="try-it" data-try="scripted/actor"><strong>Try it:</strong> The Show.</aside>
+    <h3>Pictures and cartoons</h3>
+    <p>A picture or cartoon can play before or after a level.</p>
+    <aside class="try-it" data-try="pictures-and-cartoons/before"><strong>Try it:</strong> Pictures and Cartoons.</aside>
+    <h3>Songs and sounds</h3>
+    <p>A room can play its own song, and a pickup can play its own sound.</p>
+    <aside class="try-it" data-try="sounds-and-music/room-song sounds-and-music/pickup-sound"><strong>Try it:</strong> Sounds and Music.</aside>
+    <h3>Day and night</h3>
+    <p>The palette can change when the player walks somewhere, to make a sunset in steps.</p>
+    <aside class="try-it" data-try="day-night/gate day-night/sunset"><strong>Try it:</strong> Day and Night.</aside>
+    <h3>Choosing a hero and driving</h3>
+    <p>A door can pick the hero, and a level can give the hero another character, a car, say.</p>
+    <aside class="try-it" data-try="choose-hero/door take-the-wheel/character"><strong>Try it:</strong> Who Do You Want to Be? and Take the Wheel.</aside>
+    <h3>Scrolling</h3>
+    <p>A level can stay on one screen or scroll to follow the hero.</p>
+    <aside class="try-it" data-try="scroll/stay scroll/follow"><strong>Try it:</strong> Scroll or Stay.</aside>
+    <h3>Rooms on one map</h3>
+    <p>Several rooms can share a map, with doors that land in another room.</p>
+    <aside class="try-it" data-try="many-rooms/rooms-one-map"><strong>Try it:</strong> Rooms on One Map.</aside>
+    <h3>Bigger pictures</h3>
+    <p>One picture can span several blocks, and a road can run away to the horizon.</p>
+    <aside class="try-it" data-try="blocks-budget/big-picture horizon/road"><strong>Try it:</strong> 150 Blocks and To the Horizon.</aside>
+    <h3>Near and far</h3>
+    <p>A level can have a near scene and a far one, drawn smaller and paler, with a trail between them.</p>
+    <aside class="try-it" data-try="near-far/two-planes"><strong>Try it:</strong> Near and Far.</aside>
+    <h3>Putting a game together</h3>
+    <p>Levels join into one game with doors, coins, a hazard and a key.</p>
+    <aside class="try-it" data-try="your-first-game/join"><strong>Try it:</strong> Your First Game.</aside>`,
   ],
   [
     'play',
@@ -315,7 +442,8 @@ export const GUIDE_SECTIONS: [id: string, title: string, html: string][] = [
     and the 🤖 walkthrough bot.</p>
     <p><button type="button" class="guide-open-ultimate">📒 Open The Ultimate Owner’s Guide</button></p>
     <p>It opens in the box with everything else that came in it (the Library has it too), and
-    prints as a booklet: choose <b>🖨 Print…</b>, then <b>Print booklet: this one</b>.</p>`,
+    prints as a booklet: choose <b>🖨 Print…</b>, then <b>Print booklet: this one</b>.</p>
+    <aside class="try-it" data-try="gusts/warn boss-phases/boss-phases scripted/cameo"><strong>Try it:</strong> its wind, staged boss and cameo, each in a Starter.</aside>`,
   ],
   [
     'credits',

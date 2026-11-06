@@ -7,7 +7,9 @@
 // voice clips, which aren't MIT, are named in the readable text (recordedAudio.ts).
 import { PRODUCT } from '../edition';
 import { PROJECT } from './notices';
-import { escapeHtml, gameDescription, gameJsonLd, jsonLdScript, metaTags, REPO_URL, SITE_URL, type GameSeo } from '../seo/site';
+import { gameLd } from './gameLd';
+import type { AboutGame } from '../project/aboutGame';
+import { escapeHtml, gameDescription, jsonLdScript, metaTags, REPO_URL, SITE_URL, type GameSeo } from '../seo/site';
 
 export interface ExportMeta extends GameSeo {
   /** Shareware: the author's notice (readme / order form). */
@@ -16,11 +18,24 @@ export interface ExportMeta extends GameSeo {
   fiction?: string;
   /** A Bard of Bizarre game's non-commercial voice clips (recordedAudio.ts recordedAudioNotice). */
   audio?: string;
+  /** The title screen as a PNG data: URL, shown while no script runs (a Files preview) and until the game starts. */
+  poster?: string;
+  /** The "Inside this game" section (insideGame.ts), placed after the player. */
+  inside?: string;
+  /** "About this game" and the version (project/aboutGame.ts), for the page's search-engine data. */
+  about?: AboutGame;
+  version?: string;
+  /** Pictures kept in the page, for the search-engine data. */
+  pictures?: { name: string; width: number; height: number; alt: string }[];
 }
 
 /** The page still needs a web engine: a browser, or the one a Windows, Mac or Linux download wraps it in. */
 const PAGE_CAVEAT =
   'It plays offline, but it still runs on a web engine (a browser, or the one built into Windows, macOS or Linux), so a future change to browsers or web standards could break or change it. The DOS download, in DOSBox, is the most future-proof.';
+
+/** Shown only where scripts don't run (a Files or Mail preview, or JavaScript turned off). */
+const NO_SCRIPT_NOTICE =
+  'This preview can’t run the game. Open the file in a full browser to play it. On iPhone or iPad, save it to Files if it isn’t there yet, then tap Share and choose Safari if it is offered, or open it from a browser’s own file picker.';
 
 /** Tags for the page <head> (the <title> is already there). */
 export function exportHead(m: ExportMeta): string {
@@ -29,7 +44,7 @@ export function exportHead(m: ExportMeta): string {
     `<!--\n${PROJECT}\n-->`,
     metaTags({ title: m.title, description, siteName: m.title }),
     `<meta name="generator" content="${escapeHtml(PRODUCT)}" />`,
-    jsonLdScript([gameJsonLd(m)]),
+    jsonLdScript([gameLd(m)]),
   ].join('\n');
 }
 
@@ -37,10 +52,13 @@ export function exportHead(m: ExportMeta): string {
 export function exportAbout(m: ExportMeta): string {
   const p = (s: string) => `<p>${s}</p>`;
   return [
-    `<div class="gm-about" style="max-width:40rem;margin:0 auto;padding:24px 16px;font:16px/1.5 system-ui,sans-serif;color:#ccc">`,
+    `<main class="gm-about" style="max-width:40rem;margin:0 auto;padding:24px 16px;font:16px/1.5 system-ui,sans-serif;color:#ccc">`,
     `<h1 style="font:bold 1.6rem monospace;color:#ff5">${escapeHtml(m.title)}</h1>`,
+    m.poster
+      ? `<img src="${m.poster}" width="320" height="200" alt="${escapeHtml(`${m.title}: the game's title screen`)}" style="display:block;width:100%;max-width:640px;height:auto;aspect-ratio:8/5;margin:0 auto 16px;image-rendering:pixelated;image-rendering:crisp-edges" />`
+      : '',
     p(escapeHtml(gameDescription(m))),
-    `<noscript>${p('<strong>This game runs in your browser: please turn on JavaScript to play.</strong>')}</noscript>`,
+    `<noscript><div role="note" style="border:2px solid #ff5;border-radius:6px;padding:8px 14px;margin:0 0 16px;color:#fff;background:#222">${p(`<strong>${escapeHtml(NO_SCRIPT_NOTICE)}</strong>`)}</div></noscript>`,
     m.notice
       ? `<details><summary>Shareware: the author’s notice</summary><pre style="white-space:pre-wrap;font:13px monospace">${escapeHtml(m.notice)}</pre></details>`
       : '',
@@ -52,7 +70,7 @@ export function exportAbout(m: ExportMeta): string {
         ` · <a style="color:#9cf" href="${REPO_URL}">source code</a>` +
         ` · the player is <a style="color:#9cf" href="${REPO_URL}/blob/master/LICENSE">MIT licensed</a></small>`,
     ),
-    `</div>`,
+    `</main>`,
   ].join('');
 }
 

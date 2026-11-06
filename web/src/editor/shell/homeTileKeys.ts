@@ -1,10 +1,57 @@
-// Arrow keys between the home page's tiles (Tab stops once per tile); Home and End go to the
-// ends. Up and down find the tile in the next row that way nearest straight above or below.
-export function tileArrowKeys(tiles: HTMLElement): void {
+// The home page's tiles as one keyboard grid. A roving tabindex makes the list a single Tab
+// stop (the tile last used, else the featured one, else the first). Arrow keys move between
+// tiles (up and down find the tile in the next row nearest straight above or below, from the
+// real layout), Home and End go to the ends. Each tile says its collection and place
+// ("3 of 18") after its title and maker, to screen readers.
+const ITEM = '.game-tile:not([hidden]) .tile-select, .lib-drop-pick';
+
+export function tileArrowKeys(tiles: HTMLElement, collection: () => string = () => ''): void {
+  let roving: HTMLElement | undefined;
+  const items = () => [...tiles.querySelectorAll<HTMLElement>(ITEM)];
+
+  const sync = () => {
+    const all = items();
+    if (!all.length) return;
+    const games = all.filter((el) => el.classList.contains('tile-select'));
+    if (!roving || !all.includes(roving)) roving = all.find((el) => el.getAttribute('aria-current') === 'true') ?? all[0];
+    const where = collection();
+    for (const el of all) {
+      el.tabIndex = el === roving ? 0 : -1;
+      if (!el.classList.contains('tile-select')) continue;
+      // said after the tile's own words, so its name still starts with what is on screen
+      let pos = el.querySelector<HTMLElement>('.tile-pos');
+      if (!pos) {
+        pos = document.createElement('span');
+        pos.className = 'vh tile-pos';
+        el.append(pos);
+      }
+      const text = `, ${[where, `${games.indexOf(el) + 1} of ${games.length}`].filter(Boolean).join(', ')}`;
+      if (pos.textContent !== text) pos.textContent = text;
+    }
+  };
+  let queued = false;
+  const later = () => {
+    if (queued) return;
+    queued = true;
+    queueMicrotask(() => {
+      queued = false;
+      sync();
+    });
+  };
+  new MutationObserver(later).observe(tiles, { childList: true, subtree: true, attributes: true, attributeFilter: ['hidden', 'aria-current'] });
+  tiles.addEventListener('focusin', (e) => {
+    const t = (e.target as HTMLElement).closest<HTMLElement>('.tile-select, .lib-drop-pick');
+    if (t && t !== roving) {
+      roving = t;
+      sync();
+    }
+  });
+  later();
+
   tiles.addEventListener('keydown', (e) => {
     const from = (e.target as HTMLElement).closest<HTMLElement>('.tile-select, .lib-drop-pick');
     if (!from || !['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End'].includes(e.key)) return;
-    const all = [...tiles.querySelectorAll<HTMLElement>('.game-tile:not([hidden]) .tile-select, .lib-drop-pick')];
+    const all = items();
     const i = all.indexOf(from);
     const box = (el: HTMLElement) => el.closest('.card')!.getBoundingClientRect();
     // up and down: the tile in the next row that way nearest straight above or below (the
@@ -27,6 +74,6 @@ export function tileArrowKeys(tiles: HTMLElement): void {
     if (j < 0 || j >= all.length) return;
     e.preventDefault();
     all[j].focus();
-    all[j].scrollIntoView({ block: 'nearest' });
+    all[j].scrollIntoView({ block: 'nearest', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
   });
 }

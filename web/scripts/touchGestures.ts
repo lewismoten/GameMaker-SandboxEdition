@@ -17,6 +17,7 @@ const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 const sizes = [
   ['ipad-1024x768', 1024, 768],
   ['iphone-390x844', 390, 844],
+  ['iphone-375x812', 375, 812],
 ] as const;
 
 interface State {
@@ -61,6 +62,7 @@ const checks: Record<string, (a: State, b: State) => string | undefined> = {
           : undefined,
   paint: (a, b) => (b.hash !== a.hash ? undefined : 'one finger dragging left the map unchanged'),
   'stray-stroke': (a, b) => (b.hash === a.hash ? undefined : 'a second finger joining left a stray painted stroke'),
+  'stray-stroke-200': (a, b) => (b.hash === a.hash ? undefined : 'a second finger at 200 ms left a stray painted stroke (real fingers rarely land together)'),
   'long-press': (_a, b) => (b.menu ? undefined : 'holding still did not open the block menu'),
   'long-press-moved': (_a, b) => (b.menu ? 'a held finger that moved opened the block menu' : undefined),
 };
@@ -157,6 +159,22 @@ try {
         await touch('touchMove', [
           [cx - 100 - i * 4, cy - 60],
           [cx + 60 + i * 4, cy - 60],
+        ]);
+        await sleep(30);
+      }
+      await touch('touchEnd', []);
+    });
+    await run('stray-stroke-200', async () => {
+      await touch('touchStart', [[cx - 100, cy - 90]]);
+      await sleep(200);
+      await touch('touchStart', [
+        [cx - 100, cy - 90],
+        [cx + 60, cy - 90],
+      ]);
+      for (let i = 1; i <= 5; i++) {
+        await touch('touchMove', [
+          [cx - 100 - i * 4, cy - 90],
+          [cx + 60 + i * 4, cy - 90],
         ]);
         await sleep(30);
       }

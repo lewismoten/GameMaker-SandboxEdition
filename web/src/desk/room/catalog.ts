@@ -6,6 +6,7 @@ import { creditLine, type CatalogEntry } from '../../project/files';
 import { sizeText, storageLine, zipBytes, zipName } from '../../project/diskFacts';
 import { decorateBbsName } from '../../retro/bbs/bbsName';
 import { epubControl } from '../../manual/epub/save';
+import { isStarterGame } from '../../project/starter';
 
 const STYLE = `
 .paper-catalog { width: min(1040px, 100%); max-height: 86vh; overflow: auto; padding: 18px 30px 26px;
@@ -52,7 +53,7 @@ interface CatalogActions {
 
 export function openCatalog(entries: CatalogEntry[], actions: CatalogActions): Promise<void> {
   return new Promise((resolve) => {
-    const games = entries.filter((g) => g.kind === 'shareware' && g.gam);
+    const games = entries.filter((g) => g.kind === 'shareware' && g.gam && !isStarterGame(g));
     // disk numbers follow the catalog order; two sections by what the author asks
     const disk = new Map(games.map((g, i) => [g.id, i + 1]));
     const sections = [

@@ -1,0 +1,83 @@
+{
+  "title": "Gusts",
+  "howDoI": [
+    {
+      "id": "warn",
+      "q": "How do I warn the player before the wind blows?",
+      "scene": 2,
+      "x": 28,
+      "y": 16,
+      "level": 1
+    },
+    {
+      "id": "gust",
+      "q": "How do I make wind that blows for a while and then stops?",
+      "scene": 2,
+      "x": 28,
+      "y": 18,
+      "level": 1
+    },
+    {
+      "id": "lift",
+      "q": "How do I lift the player up to a high ledge?",
+      "scene": 2,
+      "x": 28,
+      "y": 15,
+      "level": 1
+    },
+    {
+      "id": "socks",
+      "q": "How do I show the wind with a windsock?",
+      "scene": 3,
+      "x": 35,
+      "y": 14,
+      "level": 2
+    },
+    {
+      "id": "push",
+      "q": "How do I make wind that pushes sideways?",
+      "scene": 3,
+      "x": 25,
+      "y": 19,
+      "level": 2
+    },
+    {
+      "id": "shelter",
+      "q": "How do I make a place the wind does not reach?",
+      "scene": 3,
+      "x": 29,
+      "y": 20,
+      "level": 2
+    }
+  ],
+  "pages": [
+    {
+      "head": "Welcome",
+      "html": "<h1>Welcome</h1><p><b>Gusts</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has two short levels and nothing in it can cost a life.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each thing in the levels is made.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. <kbd>Space</kbd> jumps. <kbd>F2</kbd> shows your lives, hit points and score.</p><p>The wind here comes and goes. <b>Slippery and Bouncy</b> shows wind that always blows. In this one a gust is calm, then flutters (the warning), then blows, then is calm again, round and round.</p>"
+    },
+    {
+      "head": "Level 1: Wait for the Gust",
+      "html": "<h1>Level 1: Wait for the Gust</h1><p>A stone ledge is too high to jump to. Beside the first signs is a shaft of air standing on a stone slot in the ground. For about five and a half seconds it is <b>calm</b>. Then the leaves in it <b>flutter</b> for two seconds, with little gold shake marks, and then a <b>gust</b> blows up the shaft for three seconds, with long white streaks, and lifts Mia up through the ledge. When the wind drops they land on the ledge.</p><p>The first sign says the leaves flutter first. The second says to wait in the shaft. Try a jump while it is calm and you will see why. There are six coins: two on the ground and four on the ledge, worth ten points each.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 1 is made</h1><ul><li><b>A gust is a ring of three blocks.</b> Open <b>one.bbl</b> in the blocks editor and pick <b>up.calm</b>. Its <b>Next block</b> is <b>up.flutter</b> and its <b>Time</b> is 100 ticks. <b>up.flutter</b> lasts 36 and turns into <b>up.gust</b>, which lasts 54 and turns back into <b>up.calm</b>. Because the last block points back to the first, the wind goes round for ever. There are 18.2 ticks in a second.</li><li><b>The wind is a pull.</b> <b>up.gust</b> has its <b>Gravity</b> set to up and nothing else, so anyone standing in it is pulled up. <b>up.calm</b> and <b>up.flutter</b> pull down, like the sky, so the warning does not move Mia.</li><li><b>The warning is a block.</b> <b>up.flutter</b> is the same as <b>up.calm</b> with leaves and shake marks drawn on it. It is a different shape from the gust, so a player who cannot tell the colors apart can still tell a flutter from a calm.</li><li><b>One shaft, many cells.</b> The shaft is six cells high and three wide, all the same block, so every cell changes on the same tick. Every block of one kind changes together.</li><li><b>The ledge is a plank.</b> A plank is solid on top only, so the gust lifts them up through it and they land on it when the wind drops.</li><li><b>The slot.</b> <b>slot</b> is a solid block in the ground under the shaft, so a player can see where the wind comes from.</li><li><b>The clock starts with the level.</b> Every timer is set when the scene loads, which is why a level card comes first.</li><li><b>The walls.</b> A hedge closes the room in at both ends.</li></ul>"
+    },
+    {
+      "head": "Level 2: Windsocks and Shelter",
+      "html": "<h1>Level 2: Windsocks and Shelter</h1><p>A tunnel runs through a hill. Gusts blow <b>left</b> along it, against Mia, and push them back out. Three windsocks stand on the hill. A sock <b>droops</b> when it is calm, <b>twitches</b> half lifted when the wind is about to blow, and <b>streams</b> out to the left in a gust. They change on the very same ticks as the wind in the tunnel, so they tell you from anywhere.</p><p>Two little shelters sit in the tunnel, with an awning and a lantern. There is no wind in a shelter. The first sign says the windsock shows the wind. The second says to wait in a shelter while it blows. Cross a stretch while it is calm, and wait in a shelter for each gust. Try walking into a gust and you will find out why. There are four coins, on the rugs in the shelters.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 2 is made</h1><ul><li><b>The tunnel wind is a ring.</b> Open <b>two.bbl</b>. <b>side.calm</b> lasts 100 ticks and turns into <b>side.flutter</b>, which lasts 36 and turns into <b>side.gust</b>, which lasts 54 and turns back. <b>side.gust</b> has its <b>Gravity</b> set to left and down, so it pushes Mia left, and they still falls if they jump.</li><li><b>The windsocks are in step.</b> <b>sock.calm</b>, <b>sock.flutter</b> and <b>sock.gust</b> form a second ring with the very same times. Both rings start when the scene loads and change by the same lengths, so they never drift apart. A windsock has no pull; it is only a picture that changes.</li><li><b>The sock has a pole.</b> The pole is its own block, <b>pole</b>, under the top block that changes.</li><li><b>A shelter is a gap in the wind.</b> In each shelter, the cells where the tunnel wind would be are other blocks that pull down like the sky: <b>awning</b>, <b>lantern</b>, <b>back</b>, <b>rug</b> and <b>rugCoin</b>. Whichever block they are standing in decides their pull, so in a shelter there is none.</li><li><b>Coins on the rug.</b> <b>rugCoin</b> adds 10 points and its <b>Touched block</b> is <b>rug</b>, so the coin goes and the rug stays.</li><li><b>A roof you can see.</b> The tunnel has a stone roof and floor, so they cannot jump over the wind, and the ends are open: nothing here is invisible.</li><li><b>The walls.</b> A hedge closes the room in at both ends.</li></ul>"
+    },
+    {
+      "head": "What Game-Maker cannot do",
+      "html": "<h1>What Game-Maker cannot do</h1><p>A gust in Game-Maker is a block that pulls, in a ring that changes on a timer. Some things you may expect are not there:</p><ul><li>It cannot make a random gust. A ring has fixed times, so the wind comes round every 190 ticks, the same each time.</li><li>It cannot start a gust when the player does something. Every timer starts when the scene loads, so the wind cannot rise because Mia stepped in the shaft.</li><li>It cannot blow harder in one place. A pull is on or off; how long Mia is in it makes them go faster, up to a top speed.</li><li>It cannot tell a block where the player is. A shelter works only because it is made of other blocks, not because anything shields them.</li><li>It cannot play a sound when a block changes. The warning has to be something you can see.</li><li>A windsock cannot feel the wind. It agrees with the wind only because its times are the same, so change both together.</li></ul>"
+    },
+    {
+      "head": "Make it yours",
+      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>In <b>one.bbl</b>, change <b>up.gust</b>'s Time from 54 to 24. The gust is shorter and may let go before Mia reaches the ledge.</li><li>Change <b>up.flutter</b>'s Time from 36 to 72 for a longer warning, or to 8 for a very short one.</li><li>In <b>two.bbl</b>, change a time in <b>side</b> and the same one in <b>sock</b>, or the socks will drift from the wind.</li><li>Open <b>side.gust</b> and set its Gravity to right and down, and the wind pushes them on instead of back.</li><li>Draw your own windsock in the blocks editor.</li></ul><p>The home page's <b>Starters</b> tab has more small games like this one.</p>"
+    }
+  ]
+}

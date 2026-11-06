@@ -12,6 +12,7 @@ These pictures were taken in a copy of _Snowbound: The $89 Shovel_, at 1440 × 9
 theme. Some are cropped to the part that matters.
 
 - [The home page and your games](#the-home-page-and-your-games)
+- [Make a first level](#make-a-first-level)
 - [Opening a copy of a Sandbox game](#opening-a-copy-of-a-sandbox-game)
 - [Overview and file galleries](#overview-and-file-galleries)
 - [The map editor](#the-map-editor)
@@ -45,6 +46,19 @@ has your own AI build one from a few lines of description (see
 
 Games you make or copy are kept in this browser under _My games_, newest first, and the side
 panel offers to pick up where you left off. Nothing is uploaded, unless you set up your own AI to work on a game.
+
+## Make a first level
+
+Choose _+ New game_, give it a title, then choose _▶ Ready to play_. It starts with a first
+level containing scenery, monsters, a hero and sounds from the CD library, ready to change.
+
+1. Press _▶ Play Game_ to see the starter. Escape or _Stop_ returns to the editor.
+2. Open _🎓 First steps_ beside _Play Game_. Its ten small jobs take you through changing a
+   color, drawing a block, building the level, changing the hero and a monster, adding a sound,
+   making a way to win and a Game won screen, then running the Level check. Each job ticks itself
+   when it is done and opens the file where you do it.
+3. In the map, press _🩺 Level check_ before sharing the game. It plays the level and points out
+   traps and dead ends it can find.
 
 The Play screen offers **Show setup on first run**. With it checked, a game without saved
 hardware choices opens video/audio setup before playing. Choose Sound Blaster for music and
@@ -112,6 +126,8 @@ editor: the DOS files never change. **Undo** and **Redo** work here too.
 [The Integrator and the DOS player](#the-integrator-and-the-dos-player). The Integrator's
 **DOS player** button opens this tab.
 
+Beside the preview, the **Patch Lab** strip shows the setting being edited as bytes: the file offset in `XFERPLAY.EXE`, the CD's own bytes and the new ones, with the changed bytes in bold, underlined and boxed (so color is never the only cue). It is read-only and scrolls sideways inside its own box. The Programmer's Guide chapter "Patching the player" explains the bytes.
+
 **Tools** gathers the tools that work on the whole game, one card each, with a picture or what is
 known now and a button that opens it: **Level check** (a picture of the first level, how many levels have
 a saved check and what it found), **Before You Upload** (lines ticked), **Make a walkthrough**
@@ -168,6 +184,8 @@ edit the same map, including selections, pasted blocks and terrain brushes. Use 
 or the focused map's arrow keys to scroll; on a touch screen, choose **Scroll** before dragging.
 The Wrap preference is remembered and included in preference backups.
 
+The **Show** list above the block palette keeps only the blocks marked as a wall, floor, tree and so on in the block editor's Uses tab. **Generate** draws a dungeon (rooms joined by corridors), a castle (outer wall, towers, gate, courtyard and a keep), a forest (trees, clearings and a winding path), or a home or shop with furniture (beds and shelves against walls, chairs facing the table, a lane from the door), or a **Platform** side view (ground with pits, steps, ladders, spikes, stepping stones and ledges sized to the hero's real jump, with a Difficulty slider; each preview says Jump math or Bot won) from those marked blocks: it shows four real previews from a seed, for the whole map or the selection, and nothing changes until you pick one. If a kind needs a block you have not marked, it says which and links to the Uses tab. A layout is ordinary blocks in one undo step; where the block set has a terrain brush for walls, trees or paths, it also gets edges and corners. It proposes where the hero could start and an exit but links nothing.
+
 ## Play Game and Play Level
 
 ![Play Level running LaVale Mall: the game's own level screen and briefing, "4. LaVale Mall, 8:00 PM. One hour to closing."](screenshots/editor/04-play-level.webp)
@@ -186,6 +204,7 @@ then say how it behaves: which sides are solid, which way gravity pulls, whether
 up.
 Shift- or Ctrl-click several blocks to group them and change them together. Flip, rotate,
 shift and _Make an edge set_ save a lot of drawing.
+The **Uses** tab marks what a block is for (wall, door, key, chair facing south...) with chips; the editor suggests some from what the block does, and you tap to keep them. They are saved with the project, never in the game's files.
 
 ## Monsters and their paths
 
@@ -214,6 +233,15 @@ as they were in DOS: color 255 is drawn as see-through in monster and character 
 color 0 is the background of PLAYGAME's menus. The panel below lists the blocks that use each
 color, so you can see what a change will touch.
 
+**Color help** (a small control in the palette editor and in the block, monster and character
+painters) holds three choices, kept only in your browser: show each color's plain name ("dark
+red", "light blue-green") on its swatch and on the selected color's line; warn about colors that
+look alike to some eyes, red and green or blue and yellow, with dashed outlines in the palette and
+a note when two such colors touch in a picture you are painting; and preview the color or picture
+as others might see it, side by side. An optional **Quick color check** (a few "which tile looks
+different?" screens) only suggests which of these to turn on. It is not a medical test and keeps
+no answers.
+
 ## Music
 
 ![The music editor with title.cmf: a piano roll with colored tracks for flute, celesta and bass, a velocity strip, and play, loop and snap controls](screenshots/editor/09-music.webp)
@@ -237,6 +265,7 @@ Blaster `.VOC` sample instead.
 The `.VOC` editor trims, fades, normalizes, reverses and changes the speed and pitch of a
 sample, or records a new one from the microphone. It saves 8-bit sound, the way the Sound
 Blaster played it.
+Under the waveform a time ruler marks seconds and game ticks, with a yellow zone where a slow PC may stutter and a red zone where it likely will, and a line at 64 KB. DOS reads the whole sound from disk while the game waits, so the zones are estimates from old hard-disk speeds. The sound still records and plays in full; the ruler is only a warning.
 
 ## Animations, slide shows, backdrops and text screens
 

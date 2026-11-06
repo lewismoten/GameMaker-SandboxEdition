@@ -1,0 +1,47 @@
+{
+  "title": "Overhead",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "hero": "LAMI",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.0",
+  "blurb": "Two short levels about maps seen from above. In a room, gravity is off, Lami walks any of four ways and faces the way they go, and the walls and furniture you can see are what stop them. Then four small areas make an overworld: each road runs off the edge of one area and into the next, and a house has a door into a shop. Signs say how, and a page says what an overhead map cannot do. Play it, then open it in Game-Maker and look at a scene's links.",
+  "exe": "OVERHEAD.EXE",
+  "dosName": "OVERHEAD",
+  "sound": "sb",
+  "label": {
+    "background": "#fff0d8",
+    "band": "#7a5a2a",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "2 short levels",
+    "hours": 1,
+    "background": "#7a5a2a",
+    "accent": "#ffd23f",
+    "ink": "#ffffff",
+    "tagline": "Down the road, off the edge.",
+    "back": "A small explorer in a red beanie walks round a room seen from above, turning to face the way they go, and bumps into a table they can see. Then four small places are joined by their roads: walk off the edge of one and you are in the next, and a house has a door into a shop. Read the signs, then open the game in Game-Maker and look at a scene's links.",
+    "features": [
+      "Signs in the levels explain each idea",
+      "Level 1 is a top-down room; level 2 joins four areas by their edges",
+      "Made to be copied and taken apart"
+    ],
+    "shots": [
+      [
+        "one.map",
+        16,
+        10
+      ],
+      [
+        "world.map",
+        16,
+        10
+      ]
+    ],
+    "rating": "Everyone"
+  }
+}

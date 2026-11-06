@@ -268,7 +268,7 @@ export function renderLibrary(el: HTMLElement): void {
     await modal<void>(title, (close) => {
       closeDialog = () => close(undefined);
       return [
-        h('div', { class: `lib-dlg ${cls}`.trim() }, ...nodes),
+        h('div', { class: `lib-dlg ${cls}`.trim(), dataset: { listArea: '' } }, ...nodes),
         // a long shelf starts at its top: there the dialog's own × takes the focus, not Close at the foot
         h('div', { class: 'buttons' }, h('button', { type: 'button', autofocus: !cls, onclick: () => close(undefined) }, 'Close')),
       ];

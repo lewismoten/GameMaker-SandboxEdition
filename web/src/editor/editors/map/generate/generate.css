@@ -1,0 +1,119 @@
+/* The Generate dialog: two rows of four previews that fit a phone without scrolling. */
+.gen-dialog {
+  min-width: 0;
+  max-width: 100%;
+}
+.gen-row {
+  display: flex;
+  gap: 8px;
+  align-items: end;
+  flex-wrap: wrap;
+}
+.gen-row .field {
+  flex: 1 1 120px;
+  min-width: 0;
+}
+.gen-offers {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.gen-offer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 4px;
+  min-height: 44px;
+}
+.gen-offer canvas {
+  width: 100%;
+  max-height: min(15vh, 140px);
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+.gen-offer[aria-pressed='true'] {
+  outline: 3px solid var(--accent, #4a8);
+  outline-offset: -1px;
+}
+.gen-note {
+  margin: 0;
+}
+.gen-links {
+  margin: 0;
+}
+.gen-links summary {
+  cursor: pointer;
+  min-height: 24px;
+}
+.gen-link-list {
+  margin: 4px 0;
+  padding-left: 18px;
+  max-height: 96px;
+  overflow: auto;
+}
+.mt-needs summary {
+  cursor: pointer;
+  min-height: 24px;
+}
+.mt-need-list {
+  margin: 4px 0;
+  padding-left: 0;
+  list-style: none;
+}
+.mt-role-filter {
+  margin: 0 0 4px;
+}
+/* a landscape phone is short: the four previews go in one row */
+@media (max-height: 500px) {
+  .gen-offers {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .gen-offer canvas {
+    max-height: 28vh;
+  }
+  .gen-dialog {
+    width: min(48rem, calc(100vw - 48px));
+  }
+}
+.gen-chip {
+  font-weight: 600;
+  padding: 0 6px;
+  border-radius: 8px;
+  border: 2px solid var(--accent, #4a8);
+  color: var(--text);
+}
+.gen-chip.warn {
+  border-style: dashed;
+}
+.gen-dialog .gen-check {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: left;
+  gap: 8px;
+  align-items: center;
+  min-height: 24px;
+}
+.gen-dialog .gen-check[hidden] {
+  display: none;
+}
+/* The side view's Difficulty: its words and the slider on one line, so the dialog still fits a 360 by 740 phone. */
+.gen-diff:not([hidden]) {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+.gen-diff > span {
+  white-space: nowrap;
+}
+.gen-diff > input {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+/* The Difficulty slider is for side views only; a class that sets display would show it on every kind. */
+.gen-diff[hidden] {
+  display: none;
+}

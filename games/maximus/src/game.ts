@@ -61,6 +61,18 @@ export interface Built {
   problems: string[];
 }
 
+/** Places in world 41 where soil:1 is swapped for soil:2 (see the DAST note where it is used). */
+const SOIL_SWAPS: [number, number][] = [
+  [50, 34],
+  [45, 35],
+  [57, 37],
+  [39, 38],
+  [18, 39],
+  [6, 42],
+  [96, 43],
+  [95, 47],
+];
+
 const link = (toScene: number, from: { x: number; y: number }, to: { x: number; y: number }): Link => ({ toScene, from: { ...from }, to: { ...to } });
 
 export function buildGame(): Built {
@@ -304,6 +316,9 @@ export function buildGame(): Built {
             (nm) => s.has(nm) && s.id(nm) === b,
           );
         if (world.kind !== 'rover') tidyUnreachable(p.grid, s, bbl[setName], p.arrive, world.kind !== 'ocean', p.caveFloor);
+        // The DAST tool read a dark speckle of soil:1 beside its neighbors in world 41 as swastika-like (a
+        // pinwheel of speckles, 8 places). The same solid soil, another variant, plays exactly the same.
+        if (w.scene === 41) for (const [x, y] of SOIL_SWAPS) p.grid.set(x, y, s.id('soil:2'));
         const bad = checkPlanet(p, bbl[setName], passable, world.kind === 'surface' || world.kind === 'station');
         if (bad.length) problems.push(`${world.name}: ${bad.join(', ')}`);
         const famName = famOf(world.kind);

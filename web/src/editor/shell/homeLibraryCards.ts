@@ -4,12 +4,18 @@
 import { walkTile } from './homeWalkBadge';
 import { h } from '../core/ui';
 import { byCollection } from '../../project/bizarre';
+import { byStarterGroup } from '../../project/starter';
+import { isCeremony } from '../../project/ceremonies';
+import type { Grades } from '../../project/grades';
+import { levelShown, levelShowsCeremony } from './homeLevel';
+import { graduationCards, readyCeremonies, readyStrip } from './homeGraduations';
 import { allNotes, ratingOf } from '../../imported/gameNotes';
 import { groupByRating, ratingName, starsText } from '../../imported/ratings';
-import { gameTile, type HomeGame } from './homeCards';
+import { gameShot, gameTile, playLink, type HomeGame } from './homeCards';
 import type { Category } from './homeCategories';
 import { byMaker } from './homeAuthors';
 import { rateTile, ratingShown, type savedRatingFilter } from './homeRatings';
+import { doneCount, doneShown, doneTile, type DoneFilter } from './homeDone';
 import { isByMaker, isOwn, type HomeLibrary } from './homeLibrary';
 
 interface CardActions {
@@ -22,13 +28,24 @@ interface CardActions {
   newGame(): void;
 }
 
-export function libraryCards(lib: HomeLibrary, c: Category, ratingFilter: ReturnType<typeof savedRatingFilter>, on: CardActions): HTMLElement[] {
+export function libraryCards(
+  lib: HomeLibrary,
+  c: Category,
+  ratingFilter: ReturnType<typeof savedRatingFilter>,
+  on: CardActions,
+  starters: { finished: ReadonlySet<string>; filter: DoneFilter; grades?: Grades; level?: number } = { finished: new Set(), filter: 'all' },
+): HTMLElement[] {
+  const grades = starters.grades ?? {};
+  const level = starters.level ?? 0;
+  const isDone = (g: HomeGame) => starters.finished.has(g.entry?.id ?? '');
   const notes = allNotes();
   let cards: HTMLElement[];
   if (!isOwn(c) && c !== 'community' && lib.catalogError) cards = [h('p', { class: 'meta' }, lib.catalogError)];
   else {
     const tile = (g: HomeGame) => {
       const t = gameTile(g, { onSelect: on.choose, onMore: on.more });
+      if (c === 'starter' && isDone(g)) doneTile(t);
+      else if (c === 'starter' && grades[g.entry?.id ?? '']) doneTile(t, grades[g.entry?.id ?? '']);
       if (c === 'imported' && g.project) {
         rateTile(t, notes[g.project.id]);
         walkTile(t, lib.walkBadges.get(g.project.id));
@@ -40,28 +57,73 @@ export function libraryCards(lib: HomeLibrary, c: Category, ratingFilter: Return
     // the Bard's games under his collections, in the flyer's order, and Gameware and
     // Shareware by who made them (homeAuthors.ts), packed into as few rows as they fit
     // (homeTilePack.ts), each tile telling its group
-    const sections: { name: string; count?: number; games: { g: HomeGame }[] }[] =
-      c === 'bizarre'
-        ? byCollection(lib.gamesOf(c).map((g) => ({ id: g.entry?.id ?? '', g }))).map((sec) => ({
+    const sections: { name: string; tag?: string; count?: number; doneText?: string; games: { g: HomeGame }[] }[] =
+      c === 'starter'
+        ? byStarterGroup(
+            lib
+              .gamesOf(c)
+              .filter((g) => !isCeremony(g.entry?.id ?? '') && levelShown(level, g.entry?.id ?? ''))
+              .map((g) => ({ id: g.entry?.id ?? '', title: g.title, g })),
+          ).map((sec) => ({
             ...sec,
-            games: [...sec.games].sort((a, b) => a.g.title.localeCompare(b.g.title, undefined, { numeric: true, sensitivity: 'base' })),
+            doneText: doneCount(sec.games.filter((x) => isDone(x.g)).length, sec.games.length),
+            games: sec.games.filter((x) => doneShown(starters.filter, isDone(x.g))),
           }))
-        : isByMaker(c)
-          ? byMaker(lib.gamesOf(c)).map((m) => ({ name: m.name, count: m.games.length, games: m.games.map((g) => ({ g })) }))
-          : c === 'imported' && lib.sort === 'rating'
-            ? groupByRating(rated, (g) => ratingOf(g.project!.id, notes)).map((grp) => ({
-                name: grp.rating ? `${starsText(grp.rating)} ${ratingName(grp.rating)}` : 'Unrated',
-                count: grp.items.length,
-                games: grp.items.map((g) => ({ g })),
-              }))
-            : [];
+        : c === 'bizarre'
+          ? byCollection(lib.gamesOf(c).map((g) => ({ id: g.entry?.id ?? '', g }))).map((sec) => ({
+              ...sec,
+              games: [...sec.games].sort((a, b) => a.g.title.localeCompare(b.g.title, undefined, { numeric: true, sensitivity: 'base' })),
+            }))
+          : isByMaker(c)
+            ? // Gameware first, then Shareware, each by maker; the tag tells which
+              (['gameware', 'shareware'] as const).flatMap((kind) =>
+                byMaker(lib.gamesOf(c).filter((g) => g.kind === kind)).map((m) => ({
+                  name: m.name,
+                  tag: kind === 'gameware' ? 'Gameware' : 'Shareware',
+                  count: m.games.length,
+                  games: m.games.map((g) => ({ g })),
+                })),
+              )
+            : c === 'imported' && lib.sort === 'rating'
+              ? groupByRating(rated, (g) => ratingOf(g.project!.id, notes)).map((grp) => ({
+                  name: grp.rating ? `${starsText(grp.rating)} ${ratingName(grp.rating)}` : 'Unrated',
+                  count: grp.items.length,
+                  games: grp.items.map((g) => ({ g })),
+                }))
+              : [];
+    const shownSections = c === 'starter' ? sections.filter((sec) => sec.games.length) : sections;
+    const graduations =
+      c === 'starter' && (starters.filter === 'all' || starters.filter === 'grad')
+        ? graduationCards(
+            lib.gamesOf(c).filter((g) => isCeremony(g.entry?.id ?? '') && levelShowsCeremony(level, g.entry?.id ?? '')),
+            starters.finished,
+            grades,
+            tile,
+            new Map(lib.gamesOf(c).map((g) => [g.entry?.id ?? '', g.title])),
+          )
+        : [];
+    // shown under Not done yet too, so it appears the moment the last course needed is finished
+    const ready =
+      c === 'starter' && starters.filter !== 'done'
+        ? readyStrip(
+            readyCeremonies(
+              lib.gamesOf(c).filter((g) => isCeremony(g.entry?.id ?? '') && levelShowsCeremony(level, g.entry?.id ?? '')),
+              starters.finished,
+              grades,
+            ),
+            (g) => playLink(g.entry?.id ?? ''),
+            (g) => gameShot(g, 'grad-ready-shot pixel'),
+          )
+        : [];
     cards =
-      sections.length > 1
-        ? sections.flatMap((sec, n) => [
+      shownSections.length > 1 || c === 'starter'
+        ? shownSections.flatMap((sec, n) => [
             h(
               'h3',
               { class: `lib-sub${sec.games.length === 1 ? ' lib-sub-one' : ''}`, id: `lib-sub-${n}`, dataset: { group: String(n) } },
               sec.name,
+              (c === 'starter' || c === 'cd') && sec.tag ? h('span', { class: 'lib-sub-tag' }, ` · ${sec.tag}`) : null,
+              c === 'starter' && sec.doneText ? h('span', { class: 'lib-sub-count' }, ` · ${sec.doneText}`) : null,
               sec.count ? h('span', { class: 'lib-sub-count' }, ` · ${sec.count} game${sec.count === 1 ? '' : 's'}`) : null,
             ),
             ...sec.games.map((x) => {
@@ -72,8 +134,22 @@ export function libraryCards(lib: HomeLibrary, c: Category, ratingFilter: Return
             }),
           ])
         : (c === 'imported' ? rated : lib.gamesOf(c)).map(tile);
+    cards = [...ready, ...cards, ...graduations];
   }
-  if (!cards.length) cards = [emptyCollection(lib, c, ratingFilter, on)];
+  if (!cards.length)
+    cards = [
+      c === 'starter' && (starters.filter !== 'all' || level)
+        ? h(
+            'p',
+            { class: 'meta' },
+            level && starters.filter === 'all'
+              ? 'Nothing is in this Level yet. Pick All levels to see every Starter.'
+              : starters.filter === 'done'
+                ? 'No Starter is done yet. Pick All Starters under Show to see them all.'
+                : 'Every Starter is done. Pick All Starters under Show to see them all.',
+          )
+        : emptyCollection(lib, c, ratingFilter, on),
+    ];
   return cards;
 }
 
@@ -89,7 +165,7 @@ function emptyCollection(lib: HomeLibrary, c: Category, ratingFilter: ReturnType
           'div',
           { class: 'toolbar' },
           h('button', { class: 'primary', type: 'button', onclick: () => on.newGame() }, '+ Make a new game'),
-          h('button', { type: 'button', onclick: () => on.browse('gameware') }, 'Browse Gameware'),
+          h('button', { type: 'button', onclick: () => on.browse('cd') }, 'Browse the CD'),
           h('button', { type: 'button', onclick: () => on.browse('sandbox') }, 'Browse Sandbox'),
         ),
       )

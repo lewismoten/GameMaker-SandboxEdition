@@ -5,6 +5,8 @@
 // each row entering it later), teddy levels/level5Beasts.ts (locks 108 to 125 against tricks of
 // 110 to 130) and snowbound blocks/hill.ts (JAMIE.BBL). Monster against monster is code/GM
 // PLAYGAME.C DoCollision (equal powers pass, the stronger kills, KillMon gives its "becomes").
+import { onCd } from './chapter';
+
 export const MORE_TRICKS = `<h2>A flock that holds its shape</h2>
   <p>Maximus has pods of star whales that spell a word or draw a picture on the galaxy chart.
   Each whale is one monster on one cell. Every whale of a kind walks the same path at the same
@@ -12,6 +14,7 @@ export const MORE_TRICKS = `<h2>A flock that holds its shape</h2>
   smear. They also share one power, and monsters of equal power pass through each other, so
   the pod never thins itself out. Leave the space a pod swims through empty of other
   monsters, and count it against the map’s 200.</p>
+  ${onCd('FLOCK')}
   <h2>A pulse that runs down the screen</h2>
   <p>The data bus rides in Virus Blaster are one screen that never scrolls, painted in
   perspective. Below the horizon every cell of the board is the same ring of eight blocks, two
@@ -37,10 +40,22 @@ export const MORE_TRICKS = `<h2>A flock that holds its shape</h2>
     keep the most useful trick for the top step.</li>
     <li><b>Teach each trick before its lock.</b> A player who has used the whirl once will think
     of it when a lock seems to want a spin.</li>
+    <li><b>A counter makes a ladder too.</b> Give bronze, silver and gold keys the amounts 1, 2 and
+    3 on one counter, and doors the prices 1, 2 and 3. A bigger key opens every cheaper door, and
+    each door takes only its price, so the change stays in the counter.</li>
   </ul>
+  ${onCd('POWERKEY')}
+  <p>A price can also be paid in coins. Give a coin the Money counter (number 3) and a stall block the same counter with a negative amount: touching it takes the price, and with too few coins nothing happens. The stall turns into a block that hands over the item.</p>
+  ${onCd('SPENDIT')}
+  <p>A shop is the same idea on a shelf. Give a coin the Money counter (number 3) and each stall block the same counter with a negative amount for its price: touching it takes the price, and with too few coins nothing happens. The stall turns into a block that hands over the item and then into a SOLD counter, so each thing can be bought once.</p>
+  ${onCd('KITSSHOP')}
   <h2>A set copied for one level</h2>
   <p>Snowbound’s long sled run needed more blocks than its full 150. The answer was a copy of
   the set for that one scene, with the blocks the hill never shows (the houses, the mall, the
   arcade) drawn over as snowbanks, birches and distance boards. Every block it shares with the
   other levels keeps its number, so the sled and the snow behave the same. Any scene can load
-  its own set this way (Chapter 2).</p>`;
+  its own set this way (Chapter 2).</p>
+  <p>The same trick keeps keys apart. Counters carry from level to level, so a spare gold key is
+  still in the pocket two levels later. A level whose doors must not take it gets keys and doors
+  on another special counter, in a copy of the set made for that level.</p>
+  ${onCd('SPECCNTR')}`;

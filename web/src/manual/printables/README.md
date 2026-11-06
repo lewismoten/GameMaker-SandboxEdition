@@ -213,3 +213,5 @@ cells), taped-in graph-paper insets and photos (`dexReportParts.ts`), a teacher'
 `games/year2000/phone` (the Phone of the Future kit) and must stay true to that design: change a number there, change
 it here. The two photos of the board (`dexReport/board-front.png`, `board-back.png`) are renders of the kit's 3D viewer
 data, made by `web/scripts/phoneBoardPhotos.ts`; run it again after the board changes.
+
+`yieldNow.ts`: `yieldNow()` hands the browser back between slices of a long drawing (the sticker sheet, level maps and world map are drawn right after a box opens), and `whenQuiet()` waits until no key or press has come in for a moment. The box's "In the box" pictures use both, so a key pressed while they are drawn is not kept waiting.

@@ -17,7 +17,7 @@ const HONKS = turns([
 export const chez: OutsideEvent = {
   kind: 'chez',
   id: 'desk-chez',
-  label: 'THE\u00a0CHEZ driving by, Doc Leo at the wheel: honk',
+  label: 'THE\u00a0CHEZ driving by, Doc Leo at the wheel and Teddy at the window: honk',
   when: 'day',
   ms: 11_000,
   start: () => roomSound.whirr(11),
@@ -28,6 +28,7 @@ export const chez: OutsideEvent = {
   },
   press() {
     roomSound.honk();
+    roomSound.bark('teddy'); // from the passenger window
     // (the third honk names the chicken as she is now)
     return HONKS() || `Honk honk! Doc Leo tips his fedora. ${chickenWords().full} is riding shotgun, buckled in.`;
   },

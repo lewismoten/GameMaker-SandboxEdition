@@ -56,7 +56,7 @@ async function showGraphicNow(m: Machine, file: string, opts: GraphicOptions): P
     if (pause === -1) pause = look.seconds(e === '.gif' ? 'timing.showGraphic.gif' : 'timing.showGraphic.bkd');
     m.screen.setPaletteTo(0, 0, 0);
     if (drawGifFile(m, file, cols, e === '.bkd')) {
-      await m.fadeTo(cols);
+      await m.fadeTo(cols, look.num('play.fadeSteps'));
       key = (await m.pauseTimeKey(pause))?.ascii;
     } else m.screen.clear();
   } else if (e === '.fli') {

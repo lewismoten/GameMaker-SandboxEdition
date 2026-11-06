@@ -32,6 +32,8 @@ export interface FoundGame {
   playerCrcs?: number[];
   /** The files it brings (the .EXEs DOS alone needs are left out). */
   fileCount: number;
+  /** The size of those files together, in bytes. */
+  bytes?: number;
   /** The picked zip it is in (none for loose files), and the paths of the zips inside that one it is in, outermost first. */
   zips: ScanFile[];
   inner: string[];
@@ -218,13 +220,15 @@ export interface ScanOptions {
   zipLimits?: ZipLimits;
   /** Told before each zip given (not those inside them) is read, and once at the end. */
   onProgress?: (done: number, total: number, path?: string) => void;
+  /** Told which step a zip is at: 'unpack' while it is read, 'find' while its games are looked for. */
+  onStep?: (step: 'unpack' | 'find', path: string) => void;
 }
 
 /** Waits a moment, so a long look through many zips leaves the page free to draw and click. */
 const breathe = () => new Promise<void>((r) => setTimeout(r, 0));
 
 /** Looks through what was given for its games. Throws an AbortError when canceled. */
-export async function scanImport(given: ScanFile[], { signal, onProgress, zipLimits }: ScanOptions = {}): Promise<ScanReport> {
+export async function scanImport(given: ScanFile[], { signal, onProgress, onStep, zipLimits }: ScanOptions = {}): Promise<ScanReport> {
   const report: ScanReport = { games: [], zips: 0, emptyZips: [], badZips: [], loose: [] };
   const topZips = given.filter((f) => isZipName(f.path));
   let done = 0;
@@ -256,6 +260,7 @@ export async function scanImport(given: ScanFile[], { signal, onProgress, zipLim
         gamCrcs: crcs,
         ...(playerCrcs.length ? { playerCrcs } : {}),
         fileCount: files.length,
+        bytes: files.reduce((sum, f) => sum + f.size, 0),
         zips: zips.slice(0, 1),
         inner,
         paths: files.map((f) => f.path),
@@ -318,6 +323,7 @@ export async function scanImport(given: ScanFile[], { signal, onProgress, zipLim
     const label = [zips[0].path, ...inner].map(clean).join(' › ');
     let entries: ScanFile[];
     try {
+      onStep?.('unpack', label);
       const bytes = await z.read();
       if (asSfx) {
         // an MS-DOS program (MZ) with a zip's end record in it
@@ -340,6 +346,7 @@ export async function scanImport(given: ScanFile[], { signal, onProgress, zipLim
     if (asSfx) sfxPaths.add(label);
     // zips deeper than this are left unopened
     const files = depth + 1 >= MAX_DEPTH ? entries.filter((e) => !isZipName(e.path)) : entries;
+    onStep?.('find', label);
     const n = await look(files, zips, inner, depth + 1);
     if (!n) report.emptyZips.push({ path: asSfx ? sfxNote(label) : label, held: heldBy(files, sfx) });
     return n;
@@ -408,11 +415,15 @@ export interface ReadGame {
   gam?: string;
 }
 
+/** Told before each file is read (the number done, the total, its path); it may return a promise to wait for. */
+export type FileProgress = (done: number, total: number, path: string) => void | Promise<void>;
+
 /** Fills a game's files from these, as an import of the game's own files always has. */
-export async function gameFromFiles(list: ScanFile[]): Promise<ReadGame> {
+export async function gameFromFiles(list: ScanFile[], onFile?: FileProgress): Promise<ReadGame> {
   const files = new GameFiles();
   const players: ReadGame['players'] = [];
-  for (const f of list) {
+  for (const [i, f] of list.entries()) {
+    await onFile?.(i, list.length, f.path);
     const name = baseOf(clean(f.path));
     if (PLAYER_EXE(name, f.size)) {
       const bytes = await f.read();
@@ -454,9 +465,12 @@ export class GameReader {
     return game.gam ?? game.paths.filter(isGam).map(normalize).sort()[0];
   }
 
-  async read(game: FoundGame): Promise<ReadGame> {
+  async read(game: FoundGame, onFile?: FileProgress): Promise<ReadGame> {
     const from = game.zips.length ? await this.zipEntries(game) : this.loose;
-    const read = await gameFromFiles(game.paths.map((p) => from.get(p)).filter((f): f is ScanFile => !!f));
+    const read = await gameFromFiles(
+      game.paths.map((p) => from.get(p)).filter((f): f is ScanFile => !!f),
+      onFile,
+    );
     return game.gam ? { ...read, name: game.name, gam: game.gam } : read;
   }
 

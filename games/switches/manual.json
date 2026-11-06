@@ -1,0 +1,79 @@
+{
+  "title": "Switches",
+  "howDoI": [
+    {
+      "id": "lever",
+      "q": "How do I make a lever my hero can pull?",
+      "scene": 2,
+      "x": 12,
+      "y": 9,
+      "level": 1
+    },
+    {
+      "id": "counter",
+      "q": "How do I count something that is not a key?",
+      "scene": 2,
+      "x": 5,
+      "y": 6,
+      "level": 1
+    },
+    {
+      "id": "bridge",
+      "q": "How do I make a bridge that is only there once a lever is pulled?",
+      "scene": 2,
+      "x": 24,
+      "y": 10,
+      "level": 1
+    },
+    {
+      "id": "colors",
+      "q": "How do I make two levers that do not mix?",
+      "scene": 3,
+      "x": 5,
+      "y": 6,
+      "level": 2
+    },
+    {
+      "id": "effort",
+      "q": "How do I make a lever my hero has to climb to?",
+      "scene": 3,
+      "x": 24,
+      "y": 5,
+      "level": 2
+    },
+    {
+      "id": "wrong",
+      "q": "How do I make a bridge that wants one particular lever?",
+      "scene": 3,
+      "x": 33,
+      "y": 10,
+      "level": 2
+    }
+  ],
+  "pages": [
+    {
+      "head": "Welcome",
+      "html": "<h1>Welcome</h1><p><b>Switches</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has two short levels and takes a few minutes to finish.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each thing in the levels is made.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. <kbd>Space</kbd> jumps. <kbd>Up</kbd> and <kbd>Down</kbd> climb a ladder. <kbd>F2</kbd> shows your lives, hit points and score. Walk into the door at the end of a level to go on.</p><p>Walk into a lever to pull it. The pool under a bridge takes a life, and the room starts again where you came in.</p>"
+    },
+    {
+      "head": "Level 1: Pull the Lever",
+      "html": "<h1>Level 1: Pull the Lever</h1><p>Three signs stand along the way. <b>A LEVER ADDS TO A COUNTER</b> comes first, then a red lever on the path. <b>EACH DOTTED PLANK SPENDS ONE</b> and <b>ONE PULL, SIX PLANKS</b> come after it, just before a pool with six dotted planks over it.</p><p>Walk into the lever: it flips and the lamp on its base lights. Then walk out onto the dotted planks. Each one turns into a real plank just as you step on it, and you cross without getting wet. Step out onto them without pulling the lever and there is nothing to stand on: you fall in the pool.</p><p>There are eleven coins, worth ten points each, six of them over the planks.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 1 is made</h1><ul><li><b>The lever and the bridge never talk to each other.</b> A block changes only itself when you touch it, so a lever cannot reach across a room and change a plank. What they share is a counter. The lever puts planks on it, and each plank takes one off.</li><li><b>The lever.</b> Open <b>sw.bbl</b> in the blocks editor and pick <b>leverRed</b>. On its <b>Touch</b> tab, <b>Effect counter</b> is counter 22 and <b>Effect amount</b> is 6, and <b>Becomes block</b> is <b>leverRedOn</b>, the same lever leaning the other way with its lamp lit. That is how a lever flips: it is a block that turns into another block when touched. It is not solid, so you pull it by walking through it.</li><li><b>The dotted plank.</b> Pick <b>ghostRed</b>. It is not solid, so you can walk into its square, and it sits in the row of the ground over the pool. Its <b>Effect counter</b> is also counter 22, but its <b>Effect amount</b> is &minus;1, and <b>Becomes block</b> is <b>plank</b>, a floor you can stand on. A counter from 20 up will not go to zero or less, so a plank with nothing on the counter stays a dotted outline and you fall through it. With six on the counter, six planks are paid for.</li><li><b>Why six.</b> The lever's amount and the number of planks are the same number on purpose, so one pull builds exactly the bridge. Change the lever's amount to 3 and you can only build half of it. Change it to 12 and you can build it twice.</li><li><b>The pool.</b> <b>waterTop</b> and <b>water</b> take 200 hit points when touched, far more than Kit has, so falling in costs a life. Open <b>one.map</b> in the map editor and look under the bridge.</li><li><b>The counter itself.</b> Open <b>hero.chr</b> in the character editor. Counter 22 starts at 1, which the game shows as none.</li><li><b>The signs and the exit.</b> The signs are ordinary blocks with words in their pictures. A scene link joins the door at the end to the next level in <b>sw.gam</b>.</li></ul>"
+    },
+    {
+      "head": "Level 2: Red and Blue",
+      "html": "<h1>Level 2: Red and Blue</h1><p>A taller sign, <b>EACH COLOR HAS ITS OWN COUNTER</b>, comes first. Then a blue lever stands right on the path, where you will walk into it. Past it, <b>RED LEVER UP THE LADDER</b> points up at a ledge with a red lever on it. After that come two pools: a bridge of red dotted planks first, with <b>RED PLANKS WANT RED</b> before it, then a bridge of blue ones with <b>BLUE PLANKS WANT BLUE</b>.</p><p>The blue lever is the wrong one for the first bridge. Walk on to the red planks with only the blue lever pulled and the red counter is still empty: you fall in the pool. Go back, climb the ladder, pull the red lever and the red bridge is yours. The blue bridge is paid for by the blue lever you pulled on the way.</p><p>There are thirteen coins, worth ten points each.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 2 is made</h1><ul><li><b>Two counters.</b> The red lever and the red planks use counter 22. The blue lever and the blue planks use counter 23. Open <b>sw.bbl</b> and look at <b>leverBlue</b> and <b>ghostBlue</b> next to the red ones: they are the same blocks with another counter number and another color. A red plank never looks at the blue counter, so the blue lever cannot build it.</li><li><b>The ledge.</b> The red lever stands on a ledge of <b>grass</b> over <b>dirt</b>, with a <b>ladder</b> up to it. Open <b>two.map</b> in the map editor. Put a lever where it takes some effort to reach and pulling it feels like a reward.</li><li><b>When a life is lost.</b> A counter keeps its number when you lose a life, but the room starts again with its levers back. Pull the blue lever again and it pays six more, so six planks' worth of blue is left over after the blue bridge. A lever that can be pulled many times is a way to save up.</li><li><b>The two pools.</b> Each is six dotted planks over a pool, like level 1's. Pull a lever too early and its counter is waiting for you.</li><li><b>The signs and the exit.</b> The signs are ordinary blocks with words in their pictures. The last door links to the <b>The End</b> scene in <b>sw.gam</b>.</li></ul>"
+    },
+    {
+      "head": "Make it yours",
+      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>Change <b>leverRed</b>'s <b>Effect amount</b> to 3, and see how far the bridge builds.</li><li>Change the <b>Effect counter</b> of <b>ghostBlue</b> to 22, and see which lever builds the blue bridge.</li><li>Redraw <b>ghostRed</b> in the blocks editor so the unbuilt bridge looks like something else.</li><li>Put a lever in a map and a <b>plank</b>-making block somewhere far away.</li><li>Use a counter for something other than a bridge: make a coin that adds to counter 22.</li></ul><p>The home page's <b>Starters</b> tab has more small games like this one.</p>"
+    }
+  ]
+}

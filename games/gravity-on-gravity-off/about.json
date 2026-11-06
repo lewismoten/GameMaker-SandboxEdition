@@ -1,0 +1,39 @@
+{
+  "title": "Gravity On, Gravity Off",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "hero": "RIMA",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.1",
+  "blurb": "The same little place, twice. In level 1 you see it from the side and gravity pulls Rima down: they jump a wall and walks off a ledge to fall. In level 2 you see it from above with gravity off, and Rima walks any of four ways and goes around the wall. Signs say how. Play it, then open it in Game-Maker and change one block's Gravity.",
+  "exe": "GRAVITY.EXE",
+  "dosName": "GRAVITY",
+  "sound": "sb",
+  "label": {
+    "background": "#fff0d8",
+    "band": "#e0603a",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "2 short levels",
+    "hours": 1,
+    "background": "#e0603a",
+    "accent": "#ffd23f",
+    "ink": "#ffffff",
+    "tagline": "Down, then all around.",
+    "back": "A small explorer in a teal beanie visits the same place twice. First from the side, where gravity pulls them down and a wall is something to jump. Then from above, where nothing pulls their and the arrow keys walk their every way. Read the signs, then open the game in Game-Maker and change the Gravity of a block.",
+    "features": [
+      "Level 1 is a side-scroller with gravity; level 2 is the same scene from above with gravity off",
+      "Rima walks in four directions when nothing pulls them down",
+      "Made to be copied and taken apart"
+    ],
+    "shots": [
+      ["one.map", 16, 11],
+      ["two.map", 16, 10]
+    ],
+    "rating": "Everyone"
+  }
+}

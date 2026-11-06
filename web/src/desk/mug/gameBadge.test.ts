@@ -143,8 +143,10 @@ describe('ink: a solid ribbon behind the lettering', () => {
       const sy = Math.round(scr.height / 2);
       const top = BADGE_CY - (sy - m.y) - 1;
       const left = Math.round(BADGE_CX - (m.w + 2) / 2);
+      const stray: string[] = [];
       for (let y = top; y < top + m.h + 2; y++)
-        for (let x = left; x < left + m.w + 2; x++) expect(ok.has(b.data[y * BADGE_W + x] >>> 0), `${mug.game} ${x},${y}`).toBe(true);
+        for (let x = left; x < left + m.w + 2; x++) if (!ok.has(b.data[y * BADGE_W + x] >>> 0)) stray.push(`${mug.game} ${x},${y}`);
+      expect(stray).toEqual([]);
     }
   });
 });

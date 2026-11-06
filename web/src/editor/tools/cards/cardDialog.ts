@@ -97,7 +97,7 @@ export async function instructionCardDialog(project: Project, start: Scene): Pro
         { class: 'hint' },
         `The goal first, then the keys, the dangers and the items, with F1, F2, F5 and F6 at the end. Saved as the game’s own files${had ? `, in place of ${had.toUpperCase()} in the instructions slot` : ' in the instructions slot'}.`,
       ),
-      h('div', { class: 'card-columns' }, h('div', { class: 'stack' }, goal.el, keys.el, dangers.el, items.el, plain.el), view.el),
+      h('div', { class: 'card-columns', dataset: { listArea: '' } }, h('div', { class: 'stack' }, goal.el, keys.el, dangers.el, items.el, plain.el), view.el),
       h(
         'div',
         { class: 'buttons' },
@@ -144,7 +144,7 @@ export async function levelCardDialog(project: Project, game: Game, n: number): 
       ),
       h(
         'div',
-        { class: 'card-columns' },
+        { class: 'card-columns', dataset: { listArea: '' } },
         h(
           'div',
           { class: 'stack' },

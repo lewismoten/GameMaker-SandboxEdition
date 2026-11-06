@@ -1,0 +1,36 @@
+{
+  "title": "Wired Room",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "hero": "LIAN",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.0",
+  "blurb": "Two short levels about putting counters together. Lian finds levers, a bridge of dotted planks and a pool that is only soft. Each lever puts planks on a counter, and each plank spends one, so two levers build a bridge neither can alone. In the second room one lever is wired to a hatch in the path instead, and pulling it drops Lian back to the start with nothing hurt. Signs say how. Play it, then open it in Game-Maker and rewire a lever.",
+  "exe": "WIREDRM.EXE",
+  "dosName": "WIREDRM",
+  "sound": "sb",
+  "label": {
+    "background": "#e8f6ff",
+    "band": "#8a4fc4",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "2 short levels",
+    "hours": 1,
+    "background": "#8a4fc4",
+    "accent": "#ffd23f",
+    "ink": "#ffffff",
+    "tagline": "Which lever goes with what?",
+    "back": "A small explorer in a blue beanie finds a bridge of dotted planks and a few levers. Two levers add up to a whole bridge, and a third is wired to a trap door that only drops you back to the start. Nothing is hurt, nothing is lost, and every lever works through counters you can change. Read the signs, then open the game in Game-Maker and rewire it.",
+    "features": ["Signs in the levels explain each idea", "Levers fill counters and planks and a hatch spend them", "Made to be copied and taken apart"],
+    "shots": [
+      ["one.map", 18, 6],
+      ["two.map", 30, 6]
+    ],
+    "rating": "Everyone"
+  },
+  "acceptedFindings": ["facing s2 The hero climbs side on"]
+}

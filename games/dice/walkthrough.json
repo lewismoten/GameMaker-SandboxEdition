@@ -1,0 +1,51 @@
+{
+ "version": 1,
+ "game": "dice",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU0PzTBNGc0wTQ/NKU0KzR9NUM0DTR7NAEsoywNNBc0DSDHIA00jzQNNDc0NTRTNA00="
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Roll the Dice"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 7091,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 913,
+    "time": 15216.666666666471
+   },
+   {
+    "title": "Roll the Dice",
+    "frame": 1661,
+    "time": 27683.333333333918
+   },
+   {
+    "title": "Ending",
+    "frame": 3812,
+    "time": 63533.333333329814
+   },
+   {
+    "title": "Credits",
+    "frame": 6019,
+    "time": 100316.66666667297
+   }
+  ]
+ }
+}

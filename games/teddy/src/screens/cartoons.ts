@@ -8,7 +8,7 @@ import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CLEAR, blob, centered, clubArt, outlined, scaleBlit } from '../art/draw';
 import { FX } from '../sprites/fx';
 import { GWINN } from '../sprites/gwinn';
-import { CHEZ, citiCar } from '../sprites/klown';
+import { CHEZ, citiCar } from '../sprites/clown';
 import { chezRide } from './ride';
 import { dove, marcher } from '../sprites/magic';
 import { docLeo, DRESSED } from '../sprites/people';

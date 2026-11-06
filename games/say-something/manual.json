@@ -1,0 +1,71 @@
+{
+  "title": "Say Something",
+  "howDoI": [
+    {
+      "id": "sign",
+      "q": "How do I put words on a sign?",
+      "scene": 2,
+      "x": 15,
+      "y": 17,
+      "level": 1
+    },
+    {
+      "id": "bubble",
+      "q": "How do I show that a character will talk?",
+      "scene": 2,
+      "x": 37,
+      "y": 17,
+      "level": 1
+    },
+    {
+      "id": "talk",
+      "q": "How do I make a character talk when my hero walks into them?",
+      "scene": 2,
+      "x": 37,
+      "y": 19,
+      "level": 1
+    },
+    {
+      "id": "big",
+      "q": "How do I fit more words on a sign?",
+      "scene": 3,
+      "x": 15,
+      "y": 16,
+      "level": 2
+    },
+    {
+      "id": "pages",
+      "q": "How do I make a talk that runs to more than one page?",
+      "scene": 3,
+      "x": 36,
+      "y": 9,
+      "level": 2
+    }
+  ],
+  "pages": [
+    {
+      "head": "Welcome",
+      "html": "<h1>Welcome</h1><p><b>Say Something</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has two short levels and takes a couple of minutes to finish.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each thing in the levels is made.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. <kbd>Space</kbd> jumps. Any key turns a page of words. <kbd>F2</kbd> shows your lives, hit points and score. Walk into the door at the end of a level to go on.</p><p>Walk right into a friend with a speech bubble over their head and they talk. Nothing in this game hurts you.</p>"
+    },
+    {
+      "head": "Level 1: Say Hello",
+      "html": "<h1>Level 1: Say Hello</h1><p>Three signs stand along the way. <b>A SIGN IS A PICTURE OF WORDS</b> says what a sign is. <b>EDIT ITS BLOCKS TO CHANGE THE WORDS</b> says where to change it. <b>A BUBBLE SAYS SOMEONE WILL TALK</b> points ahead to Pip, a friend in a straw hat with a speech bubble over their head.</p><p>The <b>WALK INTO PIP TO TALK</b> sign stands just before Pip. Walk into Pip and the room fades out. A picture comes up with Pip saying hello in a bubble, then a page of words, and then you are back in the room just past Pip, with the rest of the coins and the door ahead. Pip stands in the way on purpose: you cannot pass without a word. Anything you collected before Pip stays collected, but the room is a fresh copy when you come back.</p><p>There are nine coins, worth ten points each.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 1 is made</h1><ul><li><b>The signs.</b> Each sign is a few ordinary blocks side by side, with the words drawn into their pictures in the same 8-by-8 letters DOS uses. Open <b>say.bbl</b> in the blocks editor and look at <b>what.sign</b> and its neighbors. Change the picture to change the words. Nothing reads them as text: a sign is only a picture.</li><li><b>The friend.</b> Pip is two ordinary scenery blocks stacked, <b>pip.top</b> and <b>pip.bottom</b>, drawn in the blocks editor like any other picture. The speech bubble is a third block, <b>bubble</b>, above Pip's head. Its sky is the same as the room's, and none of the three is solid, so Kit can walk into them.</li><li><b>What makes Pip talk.</b> Nothing in the block. In the scenes editor, open <b>say.gam</b> and pick the <b>Say Hello</b> scene. Its second link starts on the block Pip's feet are in, and goes to the scene called <b>Pip talks</b>. A link fires when the hero touches the block it starts from, any block, so a link on a picture of a friend is a talk.</li><li><b>The talk scene.</b> <b>Pip talks</b> is a scene like any other, with a one-tick map (<b>pass.map</b>) under an all-black palette (<b>pass.pal</b>), so the only thing you see is its <b>intro</b>, the slide list <b>pip1.lst</b>. Kit starts the scene standing on its exit cell, so its one link fires at once and takes them back to Say Hello, a few blocks past Pip, not on Pip, so they do not talk again.</li><li><b>The slide list.</b> <b>pip1.lst</b> shows a picture, <b>pip1.gif</b> (Pip's line in a bubble), for four seconds, then the paper picture <b>talk.gif</b> and the text file <b>pip1.txt</b> over it. A text page is 30 characters across and 16 lines down. Any key turns it, or it turns by itself after twelve seconds.</li><li><b>The exit.</b> The door links to the next level in <b>say.gam</b>.</li></ul>"
+    },
+    {
+      "head": "Level 2: Two Friends",
+      "html": "<h1>Level 2: Two Friends</h1><p>A taller sign, <b>A TALLER BOARD HOLDS MORE WORDS</b>, is four blocks wide and three high. <b>EACH FRIEND HAS WORDS OF THEIR OWN</b> comes next, and <b>A LONG TALK RUNS TWO PAGES</b> stands before Moss, a friend with a gray beard and a teal hat.</p><p>Walk into Moss and a picture comes up, then two pages of words, one after the other. Then you are back, a few blocks past Moss. A little further on, Dot has one short line and a single page. Then the door.</p><p>There are nine coins, worth ten points each.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 2 is made</h1><ul><li><b>The taller sign.</b> <b>big.sign</b> is the same kind of sign as level 1's, a block taller, so there is room for more lines. A four-block board holds about nine letters across, and six lines when it is three blocks high. A word too long for the board is an error when the game is built, so the signs are all short words.</li><li><b>Each friend has their own talk.</b> Open <b>say.gam</b>. Moss and Dot each have a link from their own feet, to a scene of their own: <b>Moss talks</b> and <b>Dot talks</b>. Each scene shows its own slide list: <b>moss2.lst</b> and <b>dot3.lst</b>.</li><li><b>Pages.</b> A text file is one page of up to 16 lines. For a longer talk, list more than one file in the slide list: <b>moss2.lst</b> holds <b>moss2.txt</b> then <b>moss2b.txt</b>. Each turns on any key, or after twelve seconds. (A text file longer than 16 lines also runs on to a second page by itself, with a MORE... prompt. This game lists separate files instead, so each page is exactly one screen.)</li><li><b>Who looks like what.</b> The friends are drawn the same way with different hats, smocks and hair. Look at <b>moss.top</b>, <b>moss.bottom</b>, <b>dot.top</b> and <b>dot.bottom</b> in the blocks editor.</li><li><b>The exit.</b> The last door links to the <b>The End</b> scene in <b>say.gam</b>, which plays the ending.</li></ul>"
+    },
+    {
+      "head": "Make it yours",
+      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>Open <b>pip1.txt</b> in a text editor and change what Pip says. It must stay within 30 characters across.</li><li>Redraw the picture of a sign in the blocks editor and change its words.</li><li>Move Pip's link in the scenes editor onto another block, say a flower, and see who talks.</li><li>Add a third page to Moss: put another .txt file in <b>moss2.lst</b>.</li><li>Change which scene Dot's link goes to, and give the talk another picture.</li></ul><p>The home page's <b>Starters</b> tab has more small games like this one.</p>"
+    }
+  ]
+}

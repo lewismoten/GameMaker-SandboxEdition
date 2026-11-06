@@ -7,7 +7,7 @@
 // "becomes" is born on the same spot; PLAYGAME.C plays the won song and picture only on reaching
 // scene 1); the advice is our own, and the lessons on fair danger,
 // look-alike blocks and finding the way draw on watching players in two videos (NOTICE.md).
-import { opening, tip, type Chapter } from './chapter';
+import { opening, tip, type Chapter, onCd } from './chapter';
 
 export const LEVELS: Chapter = {
   id: 'levels',
@@ -22,6 +22,7 @@ export const LEVELS: Chapter = {
   half explored, so ask whether it could come back with a twist. Sometimes the answer is no: a
   one-off surprise, a single silly level, a joke told once can be the best moment in a game. The
   last level is a fine place for every idea to come back together.</p>
+  ${onCd('FIRSTSTP', 'TEACHTWI')}
   <h2>Never trap the player</h2>
   <p>A player should always be able to go on or go back. Getting stuck with no way out but
   <kbd>Esc</kbd> is the one mistake nobody forgives, because the only fix is to start again.</p>
@@ -47,6 +48,7 @@ export const LEVELS: Chapter = {
   the bottom of a cell is, to the engine, a full block of spikes, so the hero dies a hand’s
   width above them. Draw hazard blocks edge to edge and top to bottom, or move the danger into
   a monster that sits still, which hurts only by its drawn shape.</p>
+  ${onCd('HAZARDS')}
   <h2>Danger players can see</h2>
   <p>A death is fair when the player could have seen it coming and could have got away. Three
   kinds break that rule, and players remember each one as the moment the game cheated.</p>
@@ -92,6 +94,7 @@ export const LEVELS: Chapter = {
   <p>The Level check asks about the blocks that fool the eye (<b>Floors and walls that look
   alike</b>) and the ones drawn like the level’s exits that aren’t (<b>Doors that lead
   nowhere</b>); a fair secret you meant can be marked as on purpose.</p>
+  ${onCd('SLIPPERY')}
   <h2>Opposites apart</h2>
   <p>Two blocks that do opposite things (a lift up and a lift down, ice beside glue, a push
   left beside a push right) should never touch, and should never share a color. Put a block of

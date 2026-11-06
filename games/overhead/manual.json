@@ -1,0 +1,83 @@
+{
+  "title": "Overhead",
+  "howDoI": [
+    {
+      "id": "room",
+      "q": "How do I make a room that is seen from above?",
+      "scene": 2,
+      "x": 13,
+      "y": 17,
+      "level": 1
+    },
+    {
+      "id": "facing",
+      "q": "How do I make my hero face the way they walk?",
+      "scene": 2,
+      "x": 13,
+      "y": 19,
+      "level": 1
+    },
+    {
+      "id": "solid",
+      "q": "How do I make walls and furniture that stop my hero?",
+      "scene": 2,
+      "x": 22,
+      "y": 16,
+      "level": 1
+    },
+    {
+      "id": "edges",
+      "q": "How do I make a road that runs off the edge into the next area?",
+      "scene": 3,
+      "x": 25,
+      "y": 25,
+      "level": 2
+    },
+    {
+      "id": "landing",
+      "q": "How do I choose where my hero lands in the next area?",
+      "scene": 3,
+      "x": 18,
+      "y": 25,
+      "level": 2
+    },
+    {
+      "id": "house",
+      "q": "How do I put a door into a building on an outdoor map?",
+      "scene": 5,
+      "x": 34,
+      "y": 12,
+      "level": 2
+    }
+  ],
+  "pages": [
+    {
+      "head": "Welcome",
+      "html": "<h1>Welcome</h1><p><b>Overhead</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has two short levels about maps seen from above. Level 1 is a room: gravity is off, Lami walks any of four ways and faces the way they go, and the walls and furniture you can see are what stop them. Level 2 is four small areas joined by their roads, with a house whose door leads into a shop. It takes a few minutes to finish.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each idea is made.</p><h2>The keys</h2><p>The four arrows walk Lami up, down, left and right. <kbd>Space</kbd> does nothing in this game. Walk into a door, or off the end of a road, to go on. Nothing in this game hurts Lami.</p>"
+    },
+    {
+      "head": "Level 1: The Room",
+      "html": "<h1>Level 1: The Room</h1><p>Lami stands in a room seen from above. The <b>THE ARROWS WALK</b> sign comes first: each arrow walks the hero its way, and the hero’s picture turns to face it. <kbd>Space</kbd> does nothing here, because nothing is pulling them down.</p><p>A bed, three plants, a bookshelf and a table stand on the floor, and a brick wall runs all round. Walk into any of them and Lami is stopped. The table sits on a rug with a coin at each corner, so go round the table to get all four. The door in the right-hand wall takes them out into the second level.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 1 is made</h1><ul><li><b>No gravity.</b> Open <b>over.bbl</b> in the blocks editor and pick the floor. Under <b>Gravity pulls</b>, nothing is checked, and it is the same for every block in this game. With nothing pulling, Lami stays where they are, and a key that moves them up or down just moves them.</li><li><b>The view is only pictures.</b> Game-Maker has no top-down mode. The map is the same grid of blocks, and <b>over.bbl</b> draws each one as seen from above: boards for the floor, brick wall tops, a bed with a quilt.</li><li><b>Lami has a picture for every way they face.</b> In <b>hero.chr</b>, in the character editor, <b>Right</b>, <b>Left</b>, <b>Up</b> and <b>Down</b> are four sequences, one for each arrow (and each of A, D, W and S). Each plays four frames of the walk, drawn from <b>hero.cbl</b> facing that way, and each moves them 4 pixels a frame in its own direction. When they are still, the idle sequence shows them facing down.</li><li><b>Solid is a block setting too.</b> The brick wall, bed, table, shelf and plant have <b>Solid sides</b> checked on all four sides, so they stop them; the floor, rug and door do not. Each one is drawn like what it is, so nothing stops them that they cannot see.</li><li><b>Coins are blocks.</b> A coin has <b>Score</b> 10 and turns into floor when it is touched. The ones on the rug are ordinary coin blocks placed in <b>one.map</b>.</li><li><b>The door is a link.</b> In the scene's links in <b>overhead.gam</b>, the door block at the right-hand wall is the <b>From</b> of a link to the next scene. The scene scrolls, so the view follows them through the room, and the 100 by 100 block map outside it is filled with the same brick.</li></ul>"
+    },
+    {
+      "head": "Level 2: The Four Roads",
+      "html": "<h1>Level 2: The Four Roads</h1><p>Lami starts in the middle of a meadow. A road runs north and another east, and each runs right off the edge of the screen. Walk to the edge and the next place appears, with Lami standing in the middle of it. The <b>OFF THE EDGE IS A LINK</b> sign says so.</p><p>North is the woods, with three coins in a clearing. South out of the woods comes back to the meadow, because the link goes both ways. East is a pond with three coins along its shore, and north of the pond is a village. The house in the village has a wall that stops their and a door that does not: the <b>A DOOR IS A LINK TOO</b> sign says to walk in. Inside the shop are three more coins, a back door to the village and an exit door on the right that ends the game.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 2 is made</h1><ul><li><b>One map, five areas.</b> <b>world.map</b> holds the meadow, woods, village, pond and shop side by side, each 16 blocks wide and 10 high, with trees all round. Five scenes in <b>overhead.gam</b> load the same map file.</li><li><b>Scrolling is off.</b> In each scene's settings all four scrolling settings are off, so the screen stays on one area: the 16 by 10 blocks around the block Lami lands on.</li><li><b>A road off the edge is two links.</b> The road leaves each area two blocks wide, and each of those two edge blocks is the <b>From</b> of a link in the scene, with the next area's middle block as its <b>To</b>. Both need a link because Lami can be on either one, or half on both. On the right and bottom they are the very last blocks; on the top and left they are one block in, because the engine never lets them onto a screen's first row or column. A scene has up to 20 links, so one area can have a good many ways out.</li><li><b>Where they land is chosen.</b> The <b>To</b> block of every link is the middle of an area, where two roads cross, because the screen is centered on the block Lami arrives on. They arrive standing still, facing down.</li><li><b>Links go both ways because you make both.</b> The woods' south edge is a link back to the meadow. Nothing joins two areas for you.</li><li><b>A door is a link on a door block.</b> The house door in the village is the <b>From</b> of a link to the shop, and the shop's back door is a link to the village. The house is six ordinary blocks, with the door block in the middle of the lower row; the other five are solid.</li><li><b>The coins</b> are 10 points each and turn into grass or floor when touched. The shop's exit door is a link to the ending.</li></ul>"
+    },
+    {
+      "head": "What it cannot do",
+      "html": "<h1>What it cannot do</h1><p>These are the engine's limits, from the original PLAYGAME code, so you can plan around them.</p><ul><li><b>It cannot face or walk diagonally.</b> A key starts one sequence: <code>SimKeyPress</code> in <b>PLAYGAME.C</b> (lines 4449 to 4472) runs down the character's sequences and starts the first whose key matches. Hold two arrows and only the newest key's sequence plays; the older one waits on a key stack and resumes when the other is let go. So they step along one axis at a time, and there is no diagonal picture unless you add a sequence of its own on a key of its own.</li><li><b>It cannot have many facings.</b> A character has 20 sequences, and a sequence has 10 frames (<b>CHAR.H</b>, lines 7 and 8). Four facings on the arrows and four more on A, D, W and S use eight of the 20.</li><li><b>There is no top-down mode.</b> Gravity belongs to a block: <code>OnGround</code> (<b>PLAYGAME.C</b>, lines 3693 to 3708) reads the Gravity setting of the block they are mostly standing on. A level is top-down only because its blocks pull nowhere and its pictures are drawn from above.</li><li><b>It cannot show more than 16 by 10 blocks.</b> The screen is that size (<code>drawmap</code> in <b>PLAYGAME.C</b>, lines 4344 to 4346), and there is no zoom. A bigger area has to scroll, and scrolling is a setting of the scene.</li><li><b>It cannot land them at the edge with the view lined up.</b> When a link fires, <code>StartSceneInits</code> (<b>PLAYGAME.C</b>, lines 4673 to 4694) puts them on the <b>To</b> block, in the idle sequence, and centers the screen on it. An area is whatever surrounds that block, so a landing near an edge shows the blocks past it.</li><li><b>It cannot walk them onto the top row or the left column of a screen that does not scroll.</b> <code>chkscrnbounds</code> (<b>PLAYGAME.C</b>, lines 3395 to 3435) holds them back from them, though not from the right column or the bottom row. So the links on a road's top and left edges sit one block in, and the road's last block is just scenery.</li><li><b>It cannot make a world bigger than 100 by 100 blocks.</b> The map is that size (<b>MAP.H</b>, lines 9 and 10) and wraps round (the <code>%100</code> in <code>drawmap</code>), so an overworld has to fit on one map, or use another map in another scene.</li><li><b>A link needs a block.</b> <code>chklnk</code> (<b>PLAYGAME.C</b>, lines 3837 to 3858) tests the six blocks Lami is touching against each link's <b>From</b> block, so a link is a block, never a line along an edge. An edge needs a link on every block of the road across it.</li></ul>"
+    },
+    {
+      "head": "Make it yours",
+      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>In <b>over.bbl</b>, check <b>Solid sides</b> on the rug, and see it become a wall.</li><li>In <b>hero.chr</b>, give the <b>Left</b> sequence the pictures that face right, and watch them moonwalk.</li><li>Move the table in <b>one.map</b> to block the way to the door, then make a way round.</li><li>In <b>overhead.gam</b>, change where the meadow's north link lands, and see where the view ends up.</li><li>Open the meadow scene and turn scrolling on, to see the next area's trees at its edges.</li><li>Add a link at a pond block, so the water takes them to the woods.</li></ul><p>The home page&rsquo;s <b>Starters</b> tab has more small games like this one.</p>"
+    }
+  ]
+}

@@ -203,6 +203,24 @@
   color: #6d6553;
 }
 
+/* in the bezel above the glass (the modem hides the strip below it on a phone), lettered like the brand: said only while the PC screen has the keyboard */
+.monitor .screen-hint {
+  position: absolute;
+  left: 7%;
+  top: 1.6%;
+  display: none;
+  font:
+    700 10px/1 ui-monospace,
+    monospace;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+  color: #4a4435;
+}
+
+.monitor:has(.crt-text:focus) .screen-hint {
+  display: block;
+}
+
 .monitor .enlarge {
   position: absolute;
   right: 13%;

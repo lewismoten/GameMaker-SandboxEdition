@@ -30,6 +30,7 @@ import { SPACE, ground } from './worldMapGround';
 import { ways, waySample } from './worldMapWays';
 import { themeOf, type Theme, type ThemeId } from './worldMapThemes';
 import { panZoom } from './panZoom';
+import { yieldNow } from './yieldNow';
 
 const NS = 'http://www.w3.org/2000/svg';
 
@@ -484,7 +485,9 @@ function tileSheet(world: World, t: Rect & { name: string; col: number; row: num
 export async function worldMap(ctx: PrintContext, every = false): Promise<Sheet[]> {
   const loaded = await loadWorld(ctx.entry);
   if (!loaded) return [];
+  await yieldNow(); // the files are in; the drawing below is one long slice
   const world = drawWorld(ctx.entry, loaded.game, loaded.files, ctx.printables.worldMap, every);
+  await yieldNow();
   const grid = tileGrid(world.W, world.H);
   const full = freshCopy(world.svg);
   if (grid) full.append(grid);

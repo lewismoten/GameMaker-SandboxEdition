@@ -4,9 +4,10 @@
 // report the worker can post back (plain data: heat maps as typed arrays, no engine objects).
 import type { GameFiles } from '../../project/files';
 import { blockChecks, counterSources, counters } from './checks/blockChecks';
+import { counterLedger } from './checks/counterLedger';
 import { characterChecks, controls, endingChecks, jumps, mechanics, soundChecks, speedCap, variety } from './checks/gameChecks';
 import { cornerLinks, offMap, shadowedLinks, solidLinks, startsOnLink, wonRoute } from './checks/linkChecks';
-import { bigVocs, missingFiles, missingVocs, outOfRange } from './checks/missingParts';
+import { bigVocs, stutterVocs, missingFiles, missingVocs, outOfRange } from './checks/missingParts';
 import { monsterChecks, startThreat } from './checks/monsterChecks';
 import { sealed } from './checks/sealed';
 import { facing } from './checks/facing';
@@ -24,7 +25,7 @@ import { blankIdle, startValues } from './checks/heroStart';
 import { shotPrize } from './checks/shotPrize';
 import { changingKeys, keyHabits } from './checks/keyHabits';
 import { screenText } from './checks/screenText';
-import { fakeExits, music, noWayOut } from './checks/levelExits';
+import { fakeExits, music, noWayOut, untitledGame } from './checks/levelExits';
 import { hiddenExits } from './checks/hiddenExit';
 import { flashing } from './checks/flashing';
 import { stakes } from './checks/stakes';
@@ -127,10 +128,11 @@ export async function runChecks(files: GameFiles, opt: CheckOptions = {}): Promi
   const scenes = opt.scene === undefined ? all : all.filter((s) => s.scene === opt.scene);
   const findings: Finding[] = [];
   const gives = counterSources(all);
+  const ledger = counterLedger(all);
   const same = new Set(opt.sameEverySide);
   findings.push(...colorRoles(scenes, opt.reservations));
   for (const d of scenes) {
-    findings.push(...counters(d, gives));
+    findings.push(...counters(d, gives, ledger));
     for (const c of [...blockChecks, ...monsterChecks, ...solidPushChecks]) findings.push(...c(d));
     findings.push(
       ...startThreat(d, game),
@@ -148,6 +150,7 @@ export async function runChecks(files: GameFiles, opt: CheckOptions = {}): Promi
       ...hiddenExits(game, d),
       ...noWayOut(d, game),
       ...music(d, game, files),
+      ...untitledGame(d, game),
       ...flashing(d),
       ...shadowedLinks(game, d),
       ...startsOnLink(game, d, all),
@@ -156,6 +159,7 @@ export async function runChecks(files: GameFiles, opt: CheckOptions = {}): Promi
       ...offMap(game, d),
       ...missingVocs(d, files),
       ...bigVocs(d, files),
+      ...stutterVocs(d, files),
       ...outOfRange(d),
       ...speedCap(d),
     );

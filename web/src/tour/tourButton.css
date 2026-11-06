@@ -78,3 +78,8 @@
 :is(.desk-bar, .dos-bar) .tour-wrap > .topbar-menu[hidden] {
   display: none;
 }
+
+/* "What's new" and "Not now" show only while there is news */
+.tour-wrap .topbar-menu > button[hidden] {
+  display: none !important;
+}

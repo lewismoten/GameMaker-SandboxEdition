@@ -2,7 +2,8 @@
 import './assetBrowser.css';
 import { h, clear, toast } from '../core/ui';
 import { KIND_LABELS, type FileKind, type Project } from '../core/project';
-import { FILE_ORDER } from './fileKinds';
+import { groupedKinds } from './assetGroups';
+import { scenesUsing, usedByShort, usedByText } from './assetUsedBy';
 import { assetNames } from './assetFiles';
 import { assetCommands } from './assetCommands';
 import { copiedAsset, onAssetCopy } from './assetClipboard';
@@ -11,6 +12,7 @@ import { fileThumb, KIND_ICON } from '../widgets/thumbs';
 import { PLAYABLE, playButton, stopThumbPlayback } from '../widgets/thumbPlayButton';
 import { diskStatus, floppyFor, openOptimize } from '../disk/diskCard';
 import { assetSearch } from './assetSearch';
+import { SHORT_KIND_LABELS } from './assetShortNames';
 import { companionPatches } from '../../dosPlayer/playerRecord';
 import { companionOrigin, originText } from '../../dosPlayer/playerOrigin';
 import { parsePalette, type Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
@@ -29,6 +31,8 @@ interface BrowserHost {
   open: (file: string) => void;
   add: (kind: FileKind) => void;
   /** Search results that live in Overview's other tabs. */
+  /** The Read-only bar of a game opened to look inside, shown inline in the heading. */
+  bar?: HTMLElement | null;
   openControls?: () => void;
   openPlayerField?: (patch: string) => void;
 }
@@ -48,7 +52,7 @@ export function assetBrowser(host: BrowserHost): { el: HTMLElement; dispose(): v
   const { project, kind } = host;
   const commands = assetCommands(project, host.open);
   const title = kind ? KIND_LABELS[kind] : 'Game assets';
-  const count = h('p', { class: 'meta', role: 'status', 'aria-live': 'polite' });
+  const count = h('p', { class: 'meta asset-count', role: 'status', 'aria-live': 'polite' });
   const grid = h('div', { class: 'asset-grid', role: 'region', tabindex: 0, 'aria-label': kind ? `${title} files` : 'Asset categories' });
   const searchSlot = h('div', { class: 'asset-search-slot' });
   const el = h(
@@ -64,6 +68,7 @@ export function assetBrowser(host: BrowserHost): { el: HTMLElement; dispose(): v
         h('p', { class: 'asset-project' }, project.name),
         count,
       ),
+      host.bar ?? null,
       kind ? null : optimizeEntry(project),
     ),
     searchSlot,
@@ -222,25 +227,58 @@ export function assetBrowser(host: BrowserHost): { el: HTMLElement; dispose(): v
     observer.disconnect();
     const focused = document.activeElement instanceof HTMLElement ? document.activeElement.closest<HTMLElement>('[data-file]')?.dataset.file : undefined;
     pasteButton = undefined;
+    grid.classList.toggle('asset-groups', !kind);
     if (!kind) {
       const all = project.files.names();
       count.textContent = `${all.length.toLocaleString()} files · ${sizeText(project, all)}`;
       clear(
         grid,
-        ...FILE_ORDER.map((k) => {
-          const files = assetNames(project, k);
-          return h(
-            'button',
-            { type: 'button', class: 'asset-card asset-category', 'data-category': k, onclick: () => host.category(k) },
-            preview(representative(files, k), k),
-            h('strong', null, KIND_LABELS[k]),
+        ...groupedKinds().map((g) =>
+          h(
+            'section',
+            {
+              class: `asset-group-box${g.kinds.length <= 2 ? ' asset-group-small' : ''}`,
+              'aria-labelledby': `asset-group-${g.id}`,
+              style: `--n:${g.kinds.length}`,
+            },
+            h('h2', { class: 'asset-group', id: `asset-group-${g.id}` }, g.title),
             h(
-              'small',
-              null,
-              files.length ? `${files.length.toLocaleString()} ${files.length === 1 ? 'file' : 'files'} · ${sizeText(project, files)}` : 'None yet',
+              'div',
+              { class: 'asset-group-cards' },
+              ...g.kinds.map((k) => {
+                const files = assetNames(project, k);
+                const usedCount = scenesUsing(files, (f) => project.usesOf(f));
+                const usedBy = usedByText(usedCount);
+                return h(
+                  'button',
+                  { type: 'button', class: 'asset-card asset-category', 'data-category': k, onclick: () => host.category(k) },
+                  preview(representative(files, k), k),
+                  // on a phone the short name shows and the count line goes; screen readers still get both in full
+                  h(
+                    'strong',
+                    null,
+                    h('span', { class: 'name-full' }, KIND_LABELS[k]),
+                    h('span', { class: 'name-short', 'aria-hidden': 'true' }, SHORT_KIND_LABELS[k]),
+                  ),
+                  h(
+                    'small',
+                    { class: 'asset-card-count' },
+                    files.length ? `${files.length.toLocaleString()} ${files.length === 1 ? 'file' : 'files'} · ${sizeText(project, files)}` : 'None yet',
+                  ),
+                  usedBy
+                    ? h(
+                        'small',
+                        { class: 'asset-card-used' },
+                        h('span', { class: 'used-full' }, usedBy),
+                        // on a phone the card is narrow: the short form shows, screen readers still get the full one
+                        h('span', { class: 'used-short', 'aria-hidden': 'true' }, usedByShort(usedCount)),
+                      )
+                    : null,
+                );
+              }),
             ),
-          );
-        }),
+          ),
+        ),
         playerCard(),
       );
     } else {
@@ -278,6 +316,7 @@ export function assetBrowser(host: BrowserHost): { el: HTMLElement; dispose(): v
     },
   });
   searchSlot.append(search.el);
+  el.querySelector('.asset-heading')?.append(search.button);
   const off = project.onChange(() => {
     if (frame) return;
     frame = requestAnimationFrame(() => {

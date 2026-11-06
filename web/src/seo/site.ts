@@ -77,6 +77,11 @@ export const ROUTES = {
     description:
       'Download any game for Linux: how to extract and play it, the WebKitGTK package it needs on Debian, Ubuntu, Fedora and Arch, the web browser fallback, adding it to the applications menu, what the program does and how to remove it.',
   },
+  programmersGuide: {
+    title: `The Programmer’s Guide to Game-Maker 3.0 · ${PRODUCT}`,
+    description:
+      'Why each limit of the Game-Maker 3.0 player is what it is: 150 blocks, 64 monsters, 36 sound steps, 20 scene links. A chapter for each part of the engine, with the lines of the original source.',
+  },
   editor: {
     title: `Editor · ${PRODUCT}`,
     description: `Designing a game in ${PRODUCT}, the browser remake of RSD Game-Maker 3.0.`,
@@ -106,6 +111,8 @@ export interface GameSeo {
   kind?: 'gameware' | 'shareware';
   /** Original games made for this project (catalog entries with `original`). */
   original?: unknown;
+  /** About.json "series": a Starter is a small teaching game, not a shareware release. */
+  series?: string;
 }
 
 export const escapeHtml = (s: string): string => s.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
@@ -137,13 +144,16 @@ export const GAME_IMAGE_SIZE = [1200, 630] as const;
 export function gameDescription(game: GameSeo): string {
   const by = game.author ?? game.company;
   const made = [by && `by ${by}`, game.year && `(${game.year})`].filter(Boolean).join(' ');
-  const what = game.original
-    ? 'A new shareware game made with Game-Maker'
-    : game.kind === 'shareware'
-      ? 'A 90s shareware game made with Game-Maker'
-      : game.kind === 'gameware'
-        ? 'A sample game that came with Game-Maker 3.0'
-        : 'A game made with Game-Maker';
+  const what =
+    game.original && game.series === 'starter'
+      ? 'A small Starter game made with Game-Maker to show one idea'
+      : game.original
+        ? 'A new shareware game made with Game-Maker'
+        : game.kind === 'shareware'
+          ? 'A 90s shareware game made with Game-Maker'
+          : game.kind === 'gameware'
+            ? 'A sample game that came with Game-Maker 3.0'
+            : 'A game made with Game-Maker';
   const head = `${game.title}${made ? ` ${made}` : ''}: ${what.charAt(0).toLowerCase()}${what.slice(1)}, playable in your browser.`;
   const text = game.blurb ? `${head} ${game.blurb}` : head;
   return clip(text, 200);

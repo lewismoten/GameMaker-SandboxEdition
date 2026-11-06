@@ -71,3 +71,9 @@ reset counts again; eggs have no date, so an egg already held stays ignored), an
 counts only score growth beyond the sums. `mergeRecords` keeps the later mark, so a restored older
 backup or a stale tab brings back the unlocks it holds but doesn't lift the cutoff. Tests:
 `resetSticks.test.ts`.
+
+## Course grades
+
+`courseGrades.ts` keeps, per Starter, the best letter grade ever earned (`gm-course-grades`, in the backup under Achievements, emptied by Reset). A `CourseRun` is fed by `playAchievements` from the player's scene and life-lost hooks and by a key or touch on the page (the engine is untouched); the rules, course numbers (101 ...), GPA and transcript are in `project/grades.ts` and `project/ceremonies.ts`. A first-level grade (C-, C, D+) is saved when the play ends.
+
+`honorDates.ts` keeps the day each graduation was first finished (`gm-honors-dates`, in the backup and cleared by Reset) for the certificate; `noteFinished` writes it. The Honors tab's name field is `gm-certificate-name` (in the backup, kept by Reset, never sent anywhere).

@@ -4,6 +4,9 @@
 // named, until the lists show it anyway.
 import { isSandboxGame, loadGameList, type CatalogEntry } from '../project/files';
 import { isBizarreGame } from '../project/bizarre';
+import { isStarterGame } from '../project/starter';
+import { isCeremony } from '../project/ceremonies';
+import { noteHonor } from './honorDates';
 import type { Goal } from './catalog';
 import { currentAchievements, loadAchievements, progress, remember, countOccurrence } from './store';
 
@@ -17,6 +20,8 @@ const GOAL_SET: Partial<Record<Goal, string>> = {
   bizarre: 'played',
   sandboxDone: 'finished',
   bizarreDone: 'finished',
+  starters: 'played',
+  startersDone: 'finished',
   teddy: 'finished',
   walkthroughs: 'watched',
   playedCount: 'played',
@@ -36,11 +41,13 @@ export function goalTargets(catalog: readonly Listed[], goal: Goal): string[] {
       ? isSandboxGame
       : goal === 'bizarre' || goal === 'bizarreDone'
         ? isBizarreGame
-        : goal === 'teddy'
-          ? isTeddyGame
-          : goal === 'walkthroughs'
-            ? (g: Listed) => !!g.original && !!g.walkthrough
-            : () => false;
+        : goal === 'starters' || goal === 'startersDone'
+          ? isStarterGame
+          : goal === 'teddy'
+            ? isTeddyGame
+            : goal === 'walkthroughs'
+              ? (g: Listed) => !!g.original && !!g.walkthrough
+              : () => false;
   return catalog.filter((g) => pick(g as CatalogEntry)).map((g) => g.id);
 }
 
@@ -83,6 +90,7 @@ export async function noteFinished(gameId: string | undefined): Promise<void> {
   const id = gameId?.replace(/^game:/, '');
   if (!id || gameId?.startsWith('project:')) return;
   await remember('finished', id);
+  if (isCeremony(id)) noteHonor(id);
   await refreshGoals();
 }
 

@@ -9,10 +9,11 @@
 // scrolling by themselves when there are many; narrower, everything stacks. A chosen game is
 // kept in the address (#/game/cd:<id> or #/game/my:<id>), with the collection and search
 // (?tab=sandbox&q=snow), so a reload or a link shows the same.
+import { isCeremony } from '../../project/ceremonies';
 import { h, clear, toast } from '../core/ui';
 import { loadGameList } from '../../project/files';
 import { hasBizarreTab } from '../../project/bizarre';
-import { listProjects } from '../../project/storage';
+import { listDamagedCopies, listProjects, pruneDamagedCopies } from '../../project/storage';
 import { onCatalogChanged } from '../../project/catalogWatch';
 import './home.css';
 import { PRODUCT } from '../../edition';
@@ -21,11 +22,16 @@ import type { HomeGame } from './homeCards';
 import { categoryOf, homeLibrary, isByMaker, isOwn, SORT_KEY, type MySort } from './homeLibrary';
 import { showcase } from './homeShowcase';
 import { icon } from './homeIcons';
-import { CATEGORIES, CATEGORY_KEY, FIRST_CATEGORY, pickFeatured, savedCategory, type Category } from './homeCategories';
+import { CATEGORIES, CATEGORY_KEY, FIRST_CATEGORY, oldCategory, pickFeatured, savedCategory, type Category } from './homeCategories';
+import { shelfList } from './deletedShelf';
+import { importHistory } from '../../imported/importHistory';
 import { batchOf } from './importBatch';
 import { lastUsed } from '../../project/projectUse';
 import { NOTES_CHANGED } from '../../imported/gameNotes';
 import { ratingFilterBox, savedRatingFilter } from './homeRatings';
+import { levelFilterBox, savedLevel } from './homeLevel';
+import { doneFilterBox, loadFinished, savedDoneFilter } from './homeDone';
+import { loadGrades } from '../../achievements/courseGrades';
 import { currentRoute, formatHash, setHashParams, type ParamValue } from '../../urlState';
 import { libraryCards } from './homeLibraryCards';
 import { tilePacker } from './homeTilePack';
@@ -71,7 +77,9 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
   /** When this page is replaced (or at once, if another render already replaced it while this one was loading). */
   const atEnd = (f: () => void) => (life.aborted ? f() : life.addEventListener('abort', f, { once: true }));
   const catNav = h('div', { class: 'lib-cats', role: 'tablist', 'aria-label': 'Game collections' });
-  const libTitle = h('h2', { id: 'lib-title' });
+  // hidden until a category names it (an empty heading is a screen-reader and axe finding while the page draws)
+  const libTitle = h('h2', { id: 'lib-title', hidden: true });
+  const howDoI = h('div', { class: 'lib-hdi', hidden: true });
   // the collection in a line (cut short with … if it must be); More shows all of it
   const libLeadText = h('span', { class: 'lib-lead-text' });
   const leadMore = h(
@@ -103,6 +111,8 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     class: 'lib-search',
     placeholder: 'Find a game…',
     'aria-label': 'Find a game',
+    // the deeper search (words inside games) starts reading when the box is first used, never at load
+    onfocus: () => deep.focus(),
     oninput: () => {
       filterTiles();
       keep({ q: search.value.trim() });
@@ -127,6 +137,38 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     'button',
     { type: 'button', class: 'lib-remove-all', hidden: true, onclick: () => void import('./importRemove').then((m) => m.removeImported(refreshProjects)) },
     'Remove all imported…',
+  );
+  const historyBtn = h(
+    'button',
+    { type: 'button', class: 'lib-remove-all', hidden: true, onclick: () => void import('./importHistoryDialog').then((m) => m.showImportHistory()) },
+    'Import history…',
+  );
+  // the Starters' transcript (grades by course) and honors, one dialog with two tabs (transcriptDialog.ts)
+  const transcriptBtn = h(
+    'button',
+    { type: 'button', class: 'lib-remove-all', hidden: true, onclick: () => void import('./transcriptDialog').then((m) => m.showTranscript()) },
+    'Transcript',
+  );
+  const recentBtn = h(
+    'button',
+    {
+      type: 'button',
+      class: 'lib-remove-all',
+      hidden: true,
+      onclick: () => void import('./recentlyDeletedDialog').then((m) => m.showRecentlyDeleted(refreshProjects)),
+    },
+    'Recently deleted…',
+  );
+  // saves kept whole when the editor opened a damaged game: not games in the list (damagedCopiesDialog.ts)
+  const damagedBtn = h(
+    'button',
+    {
+      type: 'button',
+      class: 'lib-remove-all',
+      hidden: true,
+      onclick: () => void import('./damagedCopiesDialog').then((m) => m.showDamagedCopies(refreshProjects)),
+    },
+    'Damaged copies…',
   );
   const sortBox = h(
     'label',
@@ -157,16 +199,63 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     ratingFilter = f;
     void select(current);
   });
+  // Starters narrowed to the ones not played to the ending yet, or the ones that were (homeDone.ts)
+  let doneFilter = savedDoneFilter();
+  const doneBox = doneFilterBox(doneFilter, (f) => {
+    doneFilter = f;
+    void select(current);
+  });
+  let level = savedLevel();
+  const levelBox = levelFilterBox(level, (n) => {
+    level = n;
+    void select(current);
+  });
   let current: Category = savedCategory() ?? FIRST_CATEGORY;
 
-  const filterTiles = () => {
+  // games found by words inside them (file names, text screens, the blurb…), with where: they join as the background read goes
+  let deepHits = new Map<string, string>();
+  // loaded with the first focus of the search box, so the page's first load carries none of it
+  type Deep = ReturnType<Awaited<typeof import('./homeDeepSearch')>['homeDeepSearch']>;
+  let deepNow: Deep | undefined;
+  const deep = {
+    focus: () =>
+      void import('./homeDeepSearch').then((m) => {
+        deepNow ??= m.homeDeepSearch({
+          games: () => lib.shownCats().flatMap((c) => lib.gamesOf(c.id)),
+          onMore: () => filterTiles(true),
+        });
+        return deepNow.focus();
+      }),
+    find: (q: string) => deepNow?.find(q) ?? new Map<string, string>(),
+    stop: () => deepNow?.stop(),
+  };
+  atEnd(() => deep.stop());
+  let lastShown = 0;
+  let countTimer: ReturnType<typeof setTimeout> | undefined;
+
+  const filterTiles = (fromDeep = false) => {
     const q = search.value.trim().toLowerCase();
+    deepHits = deep.find(q);
     let shown = 0;
     for (const t of tiles.querySelectorAll<HTMLElement>('.card:not(.lib-drop-tile)')) {
-      const hit = !q || (t.dataset.search ?? '').includes(q);
+      const byName = !q || (t.dataset.search ?? '').includes(q);
+      const found = !byName ? deepHits.get(t.dataset.key ?? '') : undefined;
+      const hit = byName || !!found;
       t.hidden = !hit;
+      const hint = t.querySelector('.tile-hint');
+      if (found) {
+        if (hint) hint.textContent = found;
+        else t.querySelector('.tile-select')?.append(h('span', { class: 'tile-hint meta' }, found));
+      } else hint?.remove();
       if (hit) shown++;
     }
+    // a screen reader hears when the background read added games to the list
+    if (fromDeep && shown > lastShown && q) announce(`${shown} ${shown === 1 ? 'game matches' : 'games match'} “${search.value.trim()}”`);
+    lastShown = shown;
+    // typing says how many games match, once the typing pauses (the background read speaks for itself above)
+    clearTimeout(countTimer);
+    if (!fromDeep && q && shown)
+      countTimer = setTimeout(() => announce(`${shown} ${shown === 1 ? 'game matches' : 'games match'} “${search.value.trim()}”`), 800);
     // a collection's heading only while one of its games shows
     for (const sub of tiles.querySelectorAll<HTMLElement>('.lib-sub')) {
       let any = false;
@@ -181,7 +270,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     const elsewhere = lib
       .shownCats()
       .filter((c) => c.id !== current)
-      .map((c) => ({ c, n: lib.gamesOf(c.id).filter((g) => g.search.includes(q)).length }))
+      .map((c) => ({ c, n: lib.gamesOf(c.id).filter((g) => g.search.includes(q) || deepHits.has(g.key)).length }))
       .filter((x) => x.n);
     tiles.append(
       h(
@@ -199,8 +288,14 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     );
   };
 
+  // a polite live region: choosing a game says so once, for screen readers
+  const live = h('p', { class: 'vh', role: 'status', 'aria-live': 'polite' });
+  const announce = (text: string) => {
+    live.textContent = '';
+    setTimeout(() => (live.textContent = text), 50);
+  };
   const packer = tilePacker(tiles);
-  const pack = () => packer.pack(isByMaker(current), !!search.value.trim(), current === 'imported');
+  const pack = () => packer.pack(isByMaker(current), !!search.value.trim(), current === 'imported' || current === 'starter');
   const packWatch = new ResizeObserver(() => pack());
   packWatch.observe(tiles);
   atEnd(() => packWatch.disconnect()); // or it holds this page for good
@@ -222,7 +317,8 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     const r = top.el.getBoundingClientRect();
     if (r.top < 0 || r.top > innerHeight * 0.5)
       top.el.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
-    top.el.querySelector<HTMLElement>('.sc-title')?.focus({ preventScroll: true });
+    top.focusPlay();
+    announce(`${game.title} featured`);
   };
 
   /** The games a collection can feature: its finished ones (all of yours). */
@@ -232,7 +328,8 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
    * Sandbox while `c` has none; its Another button picks again from the same collection.
    */
   const feature = (c: Category = current) => {
-    const from = featurable(c).length ? c : FIRST_CATEGORY;
+    // this collection's, else Sandbox's, else any collection that has a game (a removed game must not stay on show)
+    const from = [c, FIRST_CATEGORY, ...CATEGORIES.map((x) => x.id)].find((x) => featurable(x).length) ?? c;
     const pick = pickFeatured(featurable(from), top.game?.key, (g) => !!g.entry?.files.some((f) => f.endsWith('.rec')));
     if (!pick) return;
     top.show(pick, { featured: true, onAnother: () => feature(from) });
@@ -255,7 +352,8 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
 
   // The collections are tabs: arrow keys move between them, Tab goes on to the games.
   const renderCats = () => {
-    const counts = Object.fromEntries(CATEGORIES.map((c) => [c.id, lib.gamesOf(c.id).length]));
+    // Graduations open from the Starters tab's own section, so they don't count as Starters.
+    const counts = Object.fromEntries(CATEGORIES.map((c) => [c.id, lib.gamesOf(c.id).filter((g) => !isCeremony(g.entry?.id ?? '')).length]));
     clear(
       catNav,
       ...lib.shownCats().map((c) =>
@@ -292,7 +390,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     );
   };
   // Arrow keys move between the tiles (Tab stops once per tile); Home and End go to the ends.
-  tileArrowKeys(tiles);
+  tileArrowKeys(tiles, () => CATEGORIES.find((c) => c.id === current)?.name ?? '');
 
   catNav.addEventListener('keydown', (e) => {
     const step = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1, Home: -99, End: 99 }[e.key];
@@ -307,7 +405,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
   /** Shows a collection; remembered when the visitor picked it. */
   const select = async (c: Category, picked = false) => {
     // a Bizarre tab remembered from a catalog that had one: its games are with the shareware now
-    if (c === 'bizarre' && !hasBizarreTab(lib.catalog)) c = 'shareware';
+    if (c === 'bizarre' && !hasBizarreTab(lib.catalog)) c = 'cd';
     const changed = c !== current;
     current = c;
     // another collection chosen: one of its games is featured at the top (an empty one keeps the game shown)
@@ -324,18 +422,48 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     tiles.setAttribute('aria-labelledby', `lib-tab-${c}`);
     const info = CATEGORIES.find((x) => x.id === c)!;
     libTitle.textContent = info.name;
+    libTitle.hidden = false;
     showLead(false);
     sortBox.hidden = !isOwn(c) || lib.own(c).length < 2;
     removeAllBtn.hidden = c !== 'imported' || !lib.own(c).length;
+    historyBtn.hidden = c !== 'imported' || !importHistory().length;
+    // games deleted in the last 7 days (deletedShelf.ts) can come back from My games and Imported
+    if (!isOwn(c)) recentBtn.hidden = true;
+    else
+      void shelfList()
+        .then((l) => (recentBtn.hidden = !isOwn(current) || !l.length))
+        .catch(() => undefined);
+    if (c !== 'mine') damagedBtn.hidden = true;
+    else
+      void listDamagedCopies()
+        .then((l) => (damagedBtn.hidden = current !== 'mine' || !l.length))
+        .catch(() => undefined);
+    // the Starters' "How do I…?" questions, loaded when that tab is first shown
+    howDoI.hidden = c !== 'starter';
+    if (c === 'starter' && !howDoI.firstChild && !howDoI.dataset.loading) {
+      howDoI.dataset.loading = '1'; // choosing the tab again before the index is in must not add a second one
+      void import('./howDoIIndex').then((m) => howDoI.append(m.howDoIIndex({ compact: true })));
+    }
     ratingBox.hidden = c !== 'imported' || !lib.own(c).length;
+    doneBox.hidden = c !== 'starter';
+    levelBox.hidden = c !== 'starter';
+    transcriptBtn.hidden = c !== 'starter';
+    const finished = c === 'starter' ? await loadFinished() : new Set<string>();
+    if (current !== c) return; // another collection was chosen while the record loaded
     newGameBtn.hidden = c === 'community';
     communityBtn.hidden = c !== 'community';
-    const cards = libraryCards(lib, c, ratingFilter, {
-      choose,
-      more: (game, anchor) => void import('./homeTileMenu').then((m) => m.homeTileMenu(anchor, game, refreshProjects)),
-      browse: (to) => void select(to, true).then(() => document.getElementById(`lib-tab-${to}`)?.focus()),
-      newGame: () => void homeImport().then((m) => m.newGame(nav)),
-    });
+    const cards = libraryCards(
+      lib,
+      c,
+      ratingFilter,
+      {
+        choose,
+        more: (game, anchor) => void import('./homeTileMenu').then((m) => m.homeTileMenu(anchor, game, refreshProjects)),
+        browse: (to) => void select(to, true).then(() => document.getElementById(`lib-tab-${to}`)?.focus()),
+        newGame: () => void homeImport().then((m) => m.newGame(nav)),
+      },
+      { finished, filter: doneFilter, grades: c === 'starter' ? loadGrades() : {}, level },
+    );
     // The import target stays first, including after sorting or filtering the games.
     if (isOwn(c)) {
       dropTile.classList.remove('over');
@@ -376,8 +504,25 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
         'section',
         { id: 'library', class: 'library', 'aria-labelledby': 'lib-title' },
         h('div', { class: 'lib-bar' }, catNav, h('div', { class: 'lib-find' }, search, newGameBtn, communityBtn)),
-        h('div', { class: 'lib-about' }, libTitle, libLead, sortBox, ratingBox, removeAllBtn, start.howBtn),
+        h(
+          'div',
+          { class: 'lib-about' },
+          libTitle,
+          libLead,
+          sortBox,
+          ratingBox,
+          doneBox,
+          levelBox,
+          transcriptBtn,
+          historyBtn,
+          recentBtn,
+          damagedBtn,
+          removeAllBtn,
+          start.howBtn,
+        ),
+        howDoI,
         tiles,
+        live,
       ),
       start.section(),
     ),
@@ -397,6 +542,8 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
 
   // the tabs stand in their place before the lists load, so the page below them doesn't jump
   renderCats();
+  // copies kept by mistake (the same bytes as a sound original) go before the lists are read
+  await pruneDamagedCopies();
   lib.projects = await listProjects().catch(() => []);
   await lib.loadWalkBadges();
   if (!savedCategory() && lib.projects.length) current = lib.own('mine').length ? 'mine' : 'imported';
@@ -408,7 +555,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
   }
   // the collection in the address (#/?tab=sandbox) comes back, before a game is featured from it
   const { tab, q } = currentRoute().params;
-  const tabbed = CATEGORIES.find((c) => c.id === tab)?.id;
+  const tabbed = CATEGORIES.find((c) => c.id === oldCategory(tab))?.id;
   if (tabbed) current = tabbed;
   // a link to a game shows it, in its own collection
   const chosen = lib.findGame(hashKey());

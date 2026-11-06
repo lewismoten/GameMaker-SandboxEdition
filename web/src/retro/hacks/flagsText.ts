@@ -14,6 +14,7 @@ export const FLAGS_HELP = [
   '  SET EGGS 3|ALL|NONE  felt eggs found   HEARTS: same, for tin hearts',
   '  SET TROPHY BEST 3    tier 0-5 or name  (TOTAL too); CLEAR goes back',
   '  SET BILL 45          minutes on the hint line;  CLEAR MAIL  RESET BBS',
+  '  SET PLAYED STARTERS 5 [DONE]  games played (and finished); SANDBOX, BIZARRE',
   `Names: ${ITEMS.filter((i) => i.id !== 'BONUS')
     .map((i) => i.id)
     .join(' ')}`,

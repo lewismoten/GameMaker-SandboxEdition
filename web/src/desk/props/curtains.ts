@@ -24,7 +24,10 @@ export function curtainProps(win: HTMLElement): () => void {
         const l = line();
         roomSound.swish();
         flash(c, 'swish', 900);
-        if (l.tail) flash(tail, 'out', 3200);
+        if (l.tail) {
+          flash(tail, 'out', 3200);
+          roomSound.bark('gwinn'); // given away
+        }
         say(c, l.text);
       },
       { id: 'desk-curtains' },

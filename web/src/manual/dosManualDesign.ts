@@ -113,6 +113,7 @@ export function designPages(shots: GameShot[]): BookletPage[] {
       <p>A palette is 256 colors, each mixed from red, green and blue (0 to 63 each). Keep color 0
       black: it is the background of every design screen. Color 15 is the mouse pointer, and
       color 255 is \u201cclear\u201d: monsters and characters show the scenery through it.</p>
+      <p class="see"><i>On the Sample CD</i> (<code>D:\\SAMPLES\\DAYNIGHT</code>), the palette changes in steps for a sunset; in <code>SAMEHOUS</code>, one house is three houses, each door naming its own palette; in <code>COLORS</code>, a plate that stings and a plate that is safe are told apart by shape and brightness, so they read in any color; in <code>COLRDOOR</code>, one room is seen through five doors, each scene giving it its own palette.</p>
       <h3>Block Designer</h3>
       <p>A background set holds 150 blocks, a monster set 100 and a character set 50. Draw with
       the dot, line, box, filled box, circle, disk and fill tools; shift, rotate and flip a block
@@ -122,8 +123,17 @@ export function designPages(shots: GameShot[]): BookletPage[] {
       area), whether it is an object to pick up, what it becomes after a time or when touched,
       what it adds to score, hit points, money, lives or a counter, and which monster it gives
       birth to. Drag one block onto another to copy its attributes.</p>
+      <p class="see"><i>On the Sample CD:</i> <code>SLIPPERY</code> (ice and springs), <code>SMASHIT</code> and <code>DIGIT</code> (blocks that break or dig), <code>SWITCHES</code>, <code>THREETOK</code>, <code>ANDGATE</code>, <code>SHOWCNT</code> and <code>LOOKWALL</code> (counters and secret walls), <code>ROLLDICE</code> (a die that stops on a touch), <code>WORDLOCK</code> (a lock that takes words and a tray that gives them back) <code>POWERKEY</code> (keys of different worth, and doors with a price), <code>SPENDIT</code> (a stall that sells a key for coins), <code>KITSSHOP</code> (a shop with three things for sale, each bought once) and <code>SPECCNTR</code> (a key that only fits the door on its own counter).</p>
       <div class="note"><strong>Time.</strong> Game time runs at about 18 ticks a second: 1092 ticks
-      is a minute, and the longest wait, 9999 ticks, is about nine minutes.</div>`,
+      is a minute, and the longest wait, 9999 ticks, is about nine minutes.</div>
+      <p class="see"><i>On the Sample CD:</i> <code>CLOCK</code>, <code>COUNTDWN</code>, <code>WARNFRST</code> and <code>BLOCKBRN</code> (gates that take turns) use time.</p>
+      <p class="see"><i>A hit, a lamp and a storm sky that stay easy on the eyes are on the Sample CD:</i> <code>FLASHSAF</code>.</p>
+      <p class="see"><i>What slows a game on an old PC (a long sound, a crowd of monsters, a sky that moves) is on the Sample CD:</i> <code>SLOWPC</code>.</p>
+      <p class="see"><i>Stars that twinkle out of step, by loops with different times, are on the Sample CD:</i> <code>TWINKLE</code>.</p>
+      <p class="see"><i>Flames, flags and a waterfall that move in place are on the Sample CD:</i> <code>FLICKER</code>.</p>
+      <p class="see"><i>Light made of paint, in rings of brighter blocks, a trail a touch leaves and a hall a clock lights, is on the Sample CD:</i> <code>LIGHTOUT</code>.</p>
+      <p class="see"><i>Shadows painted into the pictures, solid or dithered, a hop that shrinks one and a bee over a shadow block of its own, are on the Sample CD:</i> <code>SHADOWS</code>.</p>
+      <p class="see"><i>Beams of light and drifting fog painted in dots, so the wall and the hills show through, and lanterns that carry a glow, are on the Sample CD:</i> <code>BEAMS</code>.</p>`,
     ),
     page(
       '3. Designing Games',
@@ -134,16 +144,20 @@ export function designPages(shots: GameShot[]): BookletPage[] {
       counter (arrows, for instance). Set the hero\u2019s hit points, lives and starting
       inventory (up to ten objects). A frame can give birth to a monster: that is how a hero
       shoots.</p>
+      <p class="see"><i>On the Sample CD:</i> <code>THROWIT</code>, <code>MANYWEAP</code>, <code>PICKITUP</code>, <code>KITMOVES</code>, <code>HOMEKEYS</code>, <code>KITDUCK</code>, <code>CHOOSE</code>, <code>WHEEL</code>, <code>HEALTH</code>, <code>POWERUP</code>, <code>SLIDE</code>, <code>BOOTS</code>, <code>GRAVITY</code>, <code>SWIM</code>, <code>GUSTS</code> and <code>DROPDOWN</code> (a monster that falls when the crate under it breaks).</p>
       <h3>Monster Maker</h3>
       <p>A monster set has up to 64 monsters of up to 20 frames each. Each one moves toward the
       hero, away, at random or along a path you draw; it can attack when the hero comes close,
       pass through walls or be stopped by them, and die when killed, at the end of its path,
       after a time or never. A dying monster can leave another behind, and killing it can add to
       the score.</p>
+      <p class="see"><i>On the Sample CD:</i> <code>MONSTERS</code>, <code>FOLLOWME</code>, <code>FLOCK</code>, <code>SEEN</code>, <code>BIGBUG</code>, <code>PHASES</code>, <code>GIANT</code>, <code>WHOWINS</code>, <code>HERETODY</code>, <code>SEEDNEST</code> and <code>POPUPS</code>.</p>
       <h3>Map Maker</h3>
       <p>Paint a map with background blocks and place up to 200 monsters on it (up to 50 are
       shown on the screen at once). <b>Z</b> zooms out to see the whole map. You can limit
-      scrolling to part of the map.</p>`,
+      scrolling to part of the map.</p>
+      <p class="see"><i>Water that moves, drawn as a loop of blocks, is on the Sample CD:</i> <code>SHORE</code>.</p>
+      <p class="see"><i>On the Sample CD:</i> <code>SCROLL</code>, <code>ONEMAP</code>, <code>OVERHEAD</code> (a top-down room and roads joined by their edges), <code>TOWNLINK</code> (a world map, a town and a house, each its own scene and scale), <code>BLK150</code>, <code>PARALLAX</code> and <code>BELTWAY</code> (scenery that slides past), <code>DIAGWRAP</code> (a tilted road that wraps), <code>HORIZON</code>, <code>ROADTILE</code> (roads drawn from straight, corner, diagonal and bridge blocks), <code>CORNER</code> (a room drawn from a corner) <code>NEARFAR</code> (a far plane drawn small and pale) and <code>VERYFAR</code> (a figure only a few pixels tall, with slow steps, walking a long way off).</p>`,
     ),
     page(
       '3. Designing Games',
@@ -157,15 +171,19 @@ export function designPages(shots: GameShot[]): BookletPage[] {
       hit points gained, a monster dies, money gained and spent, a life gained, score up and
       down, and a counter up and down. The Sound Designer also converts <code>.CMF</code> music
       for Game-Maker.</p>
+      <p class="see"><i>On the Sample CD:</i> <code>SOUNDS</code>, <code>SNDBOARD</code>; <code>OUTLOUD</code> for <code>.VOC</code> voices.</p>
       <h3>Integrator</h3>
       <p>Each square on the Integrator\u2019s screen is a scene. The green ones are the title
       screen and the end of the game. Give each scene its palette, map, block sets, monsters,
       character, sounds and music, then draw links between scenes: a link is a door on one map
       that leads to a spot on another.</p>
+      <p class="see"><i>On the Sample CD:</i> <code>ROOMS</code>, <code>TEACHTWI</code>, <code>WIREDRM</code> (levers, a bridge and a trap door wired with counters), <code>FIRSTGAM</code>, <code>TRYAGAIN</code> and <code>SHOW</code>.</p>
       <p>Pictures and words between levels are <i>multimedia displays</i>: a <code>.GIF</code>,
       an <code>.FLI</code> animation, a <code>.TXT</code> file (30 characters to a line) or a
       <code>.LST</code> list that shows several of them in turn. Each line of a list is a file
-      name and the seconds to show it.</p>`,
+      name and the seconds to show it.</p>
+      <p class="see"><i>On the Sample CD:</i> <code>PICTURES</code>, <code>SAYSOMTH</code>, <code>EVRYTALK</code>, <code>CUTSCENE</code> and <code>MAKETITL</code>.</p>
+      <p class="see"><i>What the player program itself is made of (bytes at offsets, a new word the same size as the old one, a backup first) is on the Sample CD:</i> <code>UNDRHOOD</code>.</p>`,
     ),
     page(
       '3. Designing Games',

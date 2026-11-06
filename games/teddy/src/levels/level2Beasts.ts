@@ -12,7 +12,7 @@ import { FLIP } from '../characters/mons';
 import { CTR, POWER } from '../ids';
 import { newBestiary } from './level';
 import { balloonBox, balloonProp, crate, hand, mailTruck } from '../sprites/folks';
-import { propSprite } from '../sprites/klown';
+import { propSprite } from '../sprites/clown';
 
 export function streetBeasts() {
   const b = newBestiary();

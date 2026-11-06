@@ -1,0 +1,36 @@
+{
+  "title": "Switches",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "hero": "KIT",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.1",
+  "blurb": "Two short levels about counters that do more than count keys. A lever flips when you walk into it and puts planks on a counter, and the dotted planks over a pool spend one each as you step on them and turn solid. A red lever pays for red planks and a blue lever for blue. Signs say how. Play it, then open it in Game-Maker and change what a lever gives.",
+  "exe": "SWITCH.EXE",
+  "dosName": "SWITCHES",
+  "sound": "sb",
+  "label": {
+    "background": "#e8f6ff",
+    "band": "#2a5fc4",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "2 short levels",
+    "hours": 1,
+    "background": "#2a5fc4",
+    "accent": "#ffd23f",
+    "ink": "#ffffff",
+    "tagline": "Pull it, then cross.",
+    "back": "A small explorer in a teal beanie has two short levels to cross, and a pool in the way each time. A lever on the path fills a counter, and the dotted planks over the water spend it one by one and turn solid. Read the signs, then open the game in Game-Maker and change what a lever gives.",
+    "features": ["Signs in the levels explain each idea", "A lever fills a counter and dotted planks spend it, one each", "Made to be copied and taken apart"],
+    "shots": [
+      ["one.map", 18, 6],
+      ["two.map", 30, 6]
+    ],
+    "rating": "Everyone"
+  },
+  "acceptedFindings": ["facing s3 The hero climbs side on"]
+}

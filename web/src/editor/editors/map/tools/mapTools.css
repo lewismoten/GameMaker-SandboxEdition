@@ -24,9 +24,9 @@
   align-items: center;
   justify-content: center;
   gap: 4px;
-  min-width: 32px;
+  min-width: 30px;
   min-height: 32px;
-  padding: 4px 7px;
+  padding: 4px 5px;
   line-height: 1;
 }
 .mt-tool[aria-pressed='true']:not(.primary) {
@@ -68,6 +68,7 @@
   .mt-modes button,
   .mt-modes select,
   .mt-big,
+  .mt-zoom-step,
   .mt-tool,
   .mt-brush-actions button {
     min-width: 44px;
@@ -304,4 +305,25 @@
 .mt-marks-note {
   flex-basis: 100%;
   margin: 0;
+}
+
+.mt-zoom-row {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+.mt-zoom-step {
+  flex: none;
+  width: auto;
+  min-width: 24px;
+  min-height: 24px;
+  font-weight: bold;
+}
+
+/* the zoom steps' base size above comes after the touch rule, so touch restates it */
+@media (hover: none) and (pointer: coarse) {
+  .mt-zoom-step {
+    min-width: 44px;
+    min-height: 44px;
+  }
 }

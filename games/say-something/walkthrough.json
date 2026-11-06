@@ -1,0 +1,109 @@
+{
+ "version": 1,
+ "game": "say-something",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU1GzQNN"
+  },
+  {
+   "scene": 4,
+   "keys": ""
+  },
+  {
+   "scene": 2,
+   "keys": "BE0ozQNN"
+  },
+  {
+   "scene": 3,
+   "keys": "AU1QzQNN"
+  },
+  {
+   "scene": 5,
+   "keys": ""
+  },
+  {
+   "scene": 3,
+   "keys": "BE0UzQNN"
+  },
+  {
+   "scene": 6,
+   "keys": ""
+  },
+  {
+   "scene": 3,
+   "keys": "BE0PzQNN"
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: Say Hello"
+  },
+  {
+   "scene": 4
+  },
+  {
+   "scene": 2,
+   "title": "Level 1: Say Hello"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: Two Friends"
+  },
+  {
+   "scene": 5
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: Two Friends"
+  },
+  {
+   "scene": 6
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: Two Friends"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 11681,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 913,
+    "time": 15216.666666666471
+   },
+   {
+    "title": "Level 1: Say Hello",
+    "frame": 2142,
+    "time": 35700.00000000053
+   },
+   {
+    "title": "Level 2: Two Friends",
+    "frame": 4387,
+    "time": 73116.66666666506
+   },
+   {
+    "title": "Ending",
+    "frame": 8395,
+    "time": 139916.66666667679
+   },
+   {
+    "title": "Credits",
+    "frame": 10607,
+    "time": 176783.333333322
+   }
+  ]
+ }
+}

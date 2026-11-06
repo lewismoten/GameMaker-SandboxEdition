@@ -10,7 +10,17 @@ import { mkdirSync, writeFileSync } from 'node:fs';
 import { deflateSync } from 'node:zlib';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { checkTextScreen, H, readDisk, renderRgb, textScreens, W, type TextFitIssue } from '@lewismoten/gamemaker-sandbox-tools/kit/textfit';
+import {
+  cardOverflow,
+  checkTextScreen,
+  H,
+  levelCards,
+  readDisk,
+  renderRgb,
+  textScreens,
+  W,
+  type TextFitIssue,
+} from '@lewismoten/gamemaker-sandbox-tools/kit/textfit';
 import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { asciiFor, gwriteLines, highChars } from '../../web/src/editor/check/checks/dosChars';
 import { readPlayer } from './player';
@@ -70,6 +80,14 @@ for (const s of screens) {
   if (pngDir && (all || found.length)) rgbPng(join(pngDir, `${s.name.replace(/[^a-z0-9.]+/gi, '_')}.png`), renderRgb(s, marks), W, H);
 }
 for (const i of issues) console.log(`${i.screen}: "${i.text}" at (${i.x},${i.y}): ${i.problems.join(', ')}`);
+// the pictures shown between levels have their words baked in: they must sit inside their box
+// (an animation has no words baked in, and its sky or ground can look like a box to the measure)
+const cards = levelCards(files);
+for (const c of cards.filter((card) => !card.name.endsWith('.fli')))
+  for (const p of cardOverflow(c)) {
+    issues.push({ screen: c.name, text: '(card)', x: 0, y: 0, artPixels: 0, contrast: 0, problems: [p] });
+    console.log(`${c.name}: (card): ${p}`);
+  }
 const gam = [...files.keys()].find((f) => f.endsWith('.gam'))!;
 const lines = gwriteLines(parseGame(files.get(gam)!), { get: (n) => files.get(n.toLowerCase()) }, gam);
 const high = lines.filter((l) => highChars(l.text).length);
@@ -80,6 +98,6 @@ for (const l of high)
       .join(', ')}`,
   );
 console.log(
-  `${id}: ${screens.length} text screens, ${issues.length} lines with issues; ${lines.length} lines drawn in play, ${high.length} with characters DOS can't draw`,
+  `${id}: ${screens.length} text screens, ${cards.length} level cards, ${issues.length} lines with issues; ${lines.length} lines drawn in play, ${high.length} with characters DOS can't draw`,
 );
 process.exit(issues.length || high.length ? 1 : 0);

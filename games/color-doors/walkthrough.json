@@ -1,0 +1,156 @@
+{
+ "version": 1,
+ "game": "color-doors",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "KU0="
+  },
+  {
+   "scene": 3,
+   "keys": "KU25Ac0XTQ=="
+  },
+  {
+   "scene": 2,
+   "keys": "FU0="
+  },
+  {
+   "scene": 4,
+   "keys": "KU25Ac0XTQ=="
+  },
+  {
+   "scene": 2,
+   "keys": "FU0="
+  },
+  {
+   "scene": 5,
+   "keys": "KU25Ac0XTQ=="
+  },
+  {
+   "scene": 2,
+   "keys": "FU0="
+  },
+  {
+   "scene": 6,
+   "keys": "KU25Ac0XTQ=="
+  },
+  {
+   "scene": 2,
+   "keys": "FU0="
+  },
+  {
+   "scene": 7,
+   "keys": "KU25Ac0XTQ=="
+  },
+  {
+   "scene": 2,
+   "keys": "FU0="
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "The hall"
+  },
+  {
+   "scene": 3,
+   "title": "As you see it"
+  },
+  {
+   "scene": 2,
+   "title": "The hall"
+  },
+  {
+   "scene": 4,
+   "title": "Red-green, one kind"
+  },
+  {
+   "scene": 2,
+   "title": "The hall"
+  },
+  {
+   "scene": 5,
+   "title": "Red-green, the other"
+  },
+  {
+   "scene": 2,
+   "title": "The hall"
+  },
+  {
+   "scene": 6,
+   "title": "Blue-yellow"
+  },
+  {
+   "scene": 2,
+   "title": "The hall"
+  },
+  {
+   "scene": 7,
+   "title": "No color"
+  },
+  {
+   "scene": 2,
+   "title": "The hall"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 17800,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 913,
+    "time": 15216.666666666471
+   },
+   {
+    "title": "The hall",
+    "frame": 1661,
+    "time": 27683.333333333918
+   },
+   {
+    "title": "As you see it",
+    "frame": 2293,
+    "time": 38216.66666666683
+   },
+   {
+    "title": "Red-green, one kind",
+    "frame": 4738,
+    "time": 78966.66666666676
+   },
+   {
+    "title": "Red-green, the other",
+    "frame": 7182,
+    "time": 119700.00000001195
+   },
+   {
+    "title": "Blue-yellow",
+    "frame": 9627,
+    "time": 160449.99999999817
+   },
+   {
+    "title": "No color",
+    "frame": 12073,
+    "time": 201216.6666666411
+   },
+   {
+    "title": "Ending",
+    "frame": 14519,
+    "time": 241983.33333328404
+   },
+   {
+    "title": "Credits",
+    "frame": 16728,
+    "time": 278799.9999999584
+   }
+  ]
+ }
+}

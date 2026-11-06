@@ -1,0 +1,83 @@
+{
+  "title": "Kit's Moves",
+  "howDoI": [
+    {
+      "id": "once",
+      "q": "How do I make a key hop only once, however long it is held?",
+      "scene": 2,
+      "x": 6,
+      "y": 13,
+      "level": 1
+    },
+    {
+      "id": "held",
+      "q": "How do I make a key keep going while it is held down?",
+      "scene": 2,
+      "x": 23,
+      "y": 13,
+      "level": 1
+    },
+    {
+      "id": "rise",
+      "q": "How do I let the hero rise above a tall cliff?",
+      "scene": 2,
+      "x": 28,
+      "y": 8,
+      "level": 1
+    },
+    {
+      "id": "dash",
+      "q": "How do I make the hero dash?",
+      "scene": 3,
+      "x": 6,
+      "y": 10,
+      "level": 2
+    },
+    {
+      "id": "press",
+      "q": "How do I make a dash happen once for each press?",
+      "scene": 3,
+      "x": 6,
+      "y": 9,
+      "level": 2
+    },
+    {
+      "id": "gap",
+      "q": "How do I size a gap so it needs a certain number of dashes?",
+      "scene": 3,
+      "x": 11,
+      "y": 11,
+      "level": 2
+    }
+  ],
+  "pages": [
+    {
+      "head": "Welcome",
+      "html": "<h1>Welcome</h1><p><b>Kit's Moves</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has two short levels and takes a few minutes to finish.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each thing in the levels is made.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. <kbd>Space</kbd> hops, once for each press. <kbd>Up</kbd> lifts Kit for as long as it is held. <kbd>Enter</kbd> dashes to the right, once for each press. <kbd>F2</kbd> shows your lives, hit points and score. Walk into the door at the end of a level to go on.</p><p>Try each key tapped, and then held down. Nothing in this game can hurt you.</p>"
+    },
+    {
+      "head": "Level 1: Tap and Hold",
+      "html": "<h1>Level 1: Tap and Hold</h1><p><b>SPACE HOPS ONCE PER PRESS. HOLD IT AND KIT STILL HOPS ONCE</b> is the first sign. Hold <kbd>Space</kbd> as long as you like: Kit hops once and lands. Hop onto the low wall and take its coin. <b>TOO TALL TO HOP. THE UP KEY IS DIFFERENT</b> and <b>HOLD UP. KIT KEEPS LIFTING WHILE THE KEY IS DOWN</b> come next. Stand by the brick cliff and hold <kbd>Up</kbd>: Kit rises past the coins, and a tap lifts them only a little. When they are above the top, press <kbd>Right</kbd>, and walk to the door.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 1 is made</h1><ul><li><b>One hop per press.</b> Open <b>hero.chr</b> in the Character tab and look at the Space sequence. Its setting <b>One sequence per key stroke</b> is on, so when the frames run out the game goes back to standing, even while the key is held. A new press starts a new hop.</li><li><b>Keep going while held.</b> The Up sequence has that setting off. When its frames run out and the key is still down, the game starts them again. Each frame pushes upward (it has the <b>Momentum</b> setting, so the push adds to their speed) and gravity takes it back, so while the key is held Kit climbs faster and faster, to a top speed.</li><li><b>Why a tap lifts a little.</b> A short press runs only a few frames. The push is spent and gravity brings them down, so how far they go depends on how long the key was held.</li><li><b>The map.</b> Open <b>one.map</b>: a wall three blocks high, which a hop clears, and a cliff nine blocks high with brick for its face and grass for the top. The coins beside the cliff are the ones you pass on the way up.</li><li><b>The signs and the exit.</b> The signs are ordinary blocks with words in their pictures. A scene link joins the door at the right to the next level in <b>km.gam</b>.</li></ul>"
+    },
+    {
+      "head": "Level 2: Once Per Press",
+      "html": "<h1>Level 2: Once Per Press</h1><p><b>ENTER DASHES RIGHT, ONCE PER PRESS. HOLDING IT DASHES ONCE</b> comes first. Hold <kbd>Enter</kbd> and Kit dashes about three blocks and then stops. Three gaps follow. <b>A WIDER GAP. HOP, THEN LET GO AND PRESS ENTER AGAIN</b> and <b>THE WIDEST GAP. THREE PRESSES, ONE AFTER ANOTHER</b> say how: hop at the edge and press <kbd>Enter</kbd> in the air once, twice or three times, letting go in between. Take the coins and walk into the door.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 2 is made</h1><ul><li><b>The dash is a sequence.</b> Open <b>hero.chr</b> and look at the sequence on the Enter key: six frames, each moving Kit right by 11 pixels. That is the most the engine lets them move in one tick, so a longer dash needs more frames, not bigger steps.</li><li><b>Once per press.</b> <b>One sequence per key stroke</b> is on, so holding Enter does not start another dash. <b>Cannot be interrupted</b> is on too, so a dash always runs to its end, even if another key is pressed.</li><li><b>Sized by the map.</b> Open <b>two.map</b>: the gaps are 2, 5 and 8 blocks wide, and a dash is a little over three, so they need one, two and three presses. A hop moves Kit up but not sideways, so the dashes do the crossing.</li><li><b>No harm in falling.</b> A gap is only two blocks deep, with ground at the bottom, so Kit lands in it and can hop out. Nothing is lost.</li><li><b>The signs and the exit.</b> The signs are ordinary blocks with words in their pictures. The last door links to the <b>The End</b> scene in <b>km.gam</b>.</li></ul>"
+    },
+    {
+      "head": "What it cannot do",
+      "html": "<h1>What it cannot do</h1><p>These are the engine's limits, so you can plan around them.</p><ul><li><b>It cannot tell how long a key was held.</b> A sequence only runs again while the key is down, or does not. A short tap and a long press are the same until the frames run out, so \"hold longer to go higher\" comes from repeating a push, not from measuring.</li><li><b>It cannot change speed in the middle of a sequence.</b> Each frame has its own move, and that is all. A move is also capped at 11 pixels a tick.</li><li><b>One key runs one sequence at a time.</b> Holding Right and Space together does not do both. A new key starts its sequence in place of the old one unless the old one cannot be interrupted.</li><li><b>A sequence has one key and one direction.</b> A dash to the left is a sequence of its own, on its own key.</li><li><b>It cannot count presses for you.</b> There is no cooldown or limit on dashes except what the level asks of the player.</li></ul>"
+    },
+    {
+      "head": "Make it yours",
+      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>Turn on <b>One sequence per key stroke</b> for Up, and watch the lift become a single push.</li><li>Turn it off for Space, then hold it: Kit hops again and again.</li><li>Add frames to the dash to make it longer, and the gaps wider to match.</li><li>Make a second dash sequence on another key that goes left.</li><li>Draw new frames for the lift, such as a spinning propeller on the beanie.</li></ul><p>The home page's <b>Starters</b> tab has more small games like this one.</p>"
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "title": "Lights Out",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "hero": "MIA",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.1",
+  "blurb": "A dark cave with no lights at all, because Game-Maker has none. Light is only paint: a block drawn in five brightnesses, laid in rings round a lamp. Level 1 has three lamps that stay where they are. Level 2 is a tunnel where every dark block turns lit when Mia touches it, so they leave light behind them. Level 3 is a hall that starts dark, and a clock lights every block of it in one tick. Signs say how. Play it, then open it in Game-Maker and light a cave of your own.",
+  "exe": "LIGHTOUT.EXE",
+  "dosName": "LIGHTOUT",
+  "sound": "sb",
+  "label": {
+    "background": "#1c1a3a",
+    "band": "#c98a2c",
+    "ink": "#fff1c8",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "3 short levels",
+    "hours": 1,
+    "background": "#1c1a3a",
+    "accent": "#ffd23f",
+    "ink": "#ffffff",
+    "tagline": "Light is only paint.",
+    "back": "A small explorer in a purple beanie goes into a cave with no lights. A lamp is a few blocks painted brighter, in rings. A touch can turn a dark block lit, and a clock can turn a whole hall lit at once. Read the signs, then open the game in Game-Maker and light a cave of your own.",
+    "features": [
+      "Level 1: three lamps and the rings of light round them",
+      "Level 2: a dark tunnel that lights where you touch",
+      "Level 3: a hall where a clock lights every block at once",
+      "Signs in the levels say how it is done",
+      "Made to be copied and taken apart"
+    ],
+    "shots": [
+      ["lanterns.map", 15, 6],
+      ["hall.map", 20, 6]
+    ],
+    "rating": "Everyone"
+  },
+  "acceptedFindings": []
+}

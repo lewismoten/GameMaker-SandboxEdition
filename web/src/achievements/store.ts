@@ -12,6 +12,8 @@
 // read with the record, so a page that unlocks nothing early doesn't load it up front.
 import { loadSaveData, writeSaveFile } from '../project/storage';
 import type { Achievement } from './catalog';
+import { clearGrades } from './courseGrades';
+import { clearHonorDates } from './honorDates';
 import { laterMark, parseMark, snapshotSaves, type ResetMark } from './resetMark';
 
 export const SAVE_ID = 'site:achievements';
@@ -254,6 +256,8 @@ export function countOccurrence(key: string, limit: number): Promise<void> {
 
 /** Forgets everything (the achievements page's Reset). */
 export async function resetAchievements(): Promise<void> {
+  clearGrades();
+  clearHonorDates();
   await loadAchievements();
   held = [];
   // what the saves hold now is "before": hearts, eggs and scores read from them must not unlock again

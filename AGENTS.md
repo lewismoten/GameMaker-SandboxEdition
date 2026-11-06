@@ -51,9 +51,12 @@ npx vite-node ../games/kit/palCheck.ts [id]        # no byte-identical .pal file
 npx vite-node ../games/kit/tinHearts.ts check      # every heart is found when touched
 npx vite-node ../games/kit/playtime.ts             # the only writer of box play hours
 npx vite-node ../games/kit/versionCheck.ts         # a game changed since the last push to master has a higher version
+npm run heavy -- <command...>                  # a heavy job (build, full vitest, verify:perf, check:games, walkthrough recording) in one of 2 shared slots; waits while the load is over 20; log in ~/.cache/gamemaker-heavy/log.tsv
 npm run check:games                                # all of the game checks above, every game, a table
 npm run check:games -- --game <id> --quick         # one game, without the reproducibility rebuild
 npm run walk:auto -- <folder|.zip> [--budget ms] [--game NAME.GAM] [--out w.json] [--basic-keys]  # the editor's walkthrough bot on any game; a table per scene; exits 1 if it didn't win; --basic-keys: arrows, Space and Enter only
+npm run check:dialogs [-- --only id,id]          # every pop-up dialog fits 375×812, 390×844, 360×740 (and 844×390 as advice) with no scrolling, close and primary buttons in view, light and dark; exits 1 on a failure
+npm run check:offline -- --dist <scratch production build>  # "Play offline" really works: downloads the copy, goes offline, then the web home, a Starter, the desk, the phone's recorded clips and the tour's voice work and no request fails; 3 to 6 minutes; needs a scratch `vite build --outDir` (through npm run heavy --)
 npm run check:keys [-- id ...]                     # keyboard accessibility: each walkthrough's share of arrows/Space/Enter presses, its diagonals and other keys; suggestions
 npm run editor:touch -- <route> [--out dir]       # touch audit of one editor route at iPad and iPhone sizes: controls under 44 px, overflow, axe, screenshots
 npm run check:gestures -- [--route r] [--out dir]  # map editor touch gestures (pinch, pan, paint, stray stroke, long-press) with real touch events at iPad and iPhone sizes; PASS/FAIL per step; exits 1 on a FAIL
@@ -63,6 +66,7 @@ npm run verify:perf                            # performance budgets (bytes, req
 npm run badges:similar                             # advisory: achievement badges that look alike in gray or to color-blind eyes; HTML report in .for-lewis/research/badges-similar/
 npm run release:draft -- <pages|engine|archives|tools>  # a draft Unreleased body from the commits since that target's last tag (prints; never writes)
 npm run release:cut -- <target> <version>          # Unreleased becomes a dated version; sets a package's version
+npm run verify:changed [-- --base <ref>]           # the pre-merge check: prettier + eslint on changed files, tsc (whole project), vitest --changed, release:check if a package src changed; prints the check:games command for a changed game; the full one is root npm run verify
 npm run release:check                              # a package whose src changed since its tag needs an Unreleased line (in root npm run verify)
 npm run domains:check                              # every made-up domain is still unregistered (whois + DNS; needs network)
 npm run dosbox                                     # dosbox/ (git-ignored) to mount as C: in DOSBox (open DOSBox or any window only when Lewis is away)
@@ -77,7 +81,8 @@ After changing a game, rebuild it and run its checks (`npm run check:games -- --
 all checks and verifies two independent builds match byte for byte). `disk/`, `walkPaths.json`
 and `games/.build-cache.json` are ignored build output: never commit them. Root `npm ci`
 generates them; development, build and test commands refresh them when inputs change.
-Use `npm run build:games -- --force` from the root for a clean rebuild of all games.
+Use `npm run build:games -- --force` from the root for a clean rebuild of all games (`--force-all` also
+rebuilds the trinkets, nickels and other extras, which is slow; `--timing` prints per-stage seconds).
 Recorded walkthroughs and demos remain source inputs and regression fixtures. A refactor
 must not change the generated disk bytes, walkthroughs or demos.
 If a game's built content changes since the last push to master, bump its `"version"` in
@@ -167,7 +172,8 @@ preserve what was there.
     which DOS, native and web-page exports never include.
   - Match DOS bugs and all: a fix that changes what PLAYGAME did is only a note.
 - **Accessibility and layout:** keyboard reachable, labeled, 24px targets, and no
-  horizontal scroll at 390px. Editor and home views should fit one screen. Check new UI with
+  horizontal scroll at 390px. Editor and home views should fit one screen. Dialogs fit a phone
+  screen (375×812) without scrolling (`npm run check:dialogs`). Check new UI with
   axe at 1440 and 390, in light and dark.
 - **Permissions:** if a command is blocked, stop and report it. Don't work around it.
 - **Scope:** do what was asked. Don't add games, features or settings nobody asked for, and
@@ -184,6 +190,9 @@ preserve what was there.
     bosses, never idle on menus, and play with human timing (no frame-perfect key changes).
   - Check findings are suggestions an author can dismiss. Word them that way and say what the
     tool can't see.
+  - Arrows, Space and Enter carry most of a game's play. Extra keys (number-pad diagonals,
+    Q/E, letters) are fine but less often, and the way through never needs one. `check:keys`
+    measures the share.
 - **Previews and labels:** a preview is a real render, never an emoji or a black stand-in.
   Name a thing for what it does, and give every flow a clear start and end.
 - **Imports:** look at a file's contents before trusting its extension.
@@ -201,8 +210,10 @@ preserve what was there.
   - Fictional addresses must be obviously fake, e.g. "P.O. Box 000".
   - Phone numbers are 555-01xx. Three stay on purpose: the two BBSes, 1-412-555-SAND and 1-412-555-SOFA, and Jenny's 867-5309, the song's number everyone tries.
   - No membership or lineage organizations.
-  - No health, grief or money material. The exceptions are the lactose-intolerance game and the
-    tin hearts' nod to the maintainer's pacemaker (on the cast page and in TURBO BUTTON).
+  - No health, grief or money material. The exceptions are the lactose-intolerance game, the
+    tin hearts' nod to the maintainer's pacemaker (on the cast page and in TURBO BUTTON), and the
+    flashing-lights Starter's design guidance on photosensitivity (plain words about design, no
+    medical detail).
 - **Made-up domains** must be listed in `web/src/manual/magazine/mockSites.json` and pass `npm run domains:check`; a test fails on any unlisted domain.
 - **Clowns are always friendly.** Never scary, villains or jump scares. The maintainer, Doc Leo,
   is in a clown club that entertains children.
@@ -239,7 +250,15 @@ preserve what was there.
   npm, and a DOS export's credits shouldn't mention the web.
 - **Originality:**
   - Write manuals and text fresh. Don't copy RSD's printed manual.
-  - The maintainer's reference photos are reference only, unless they're asked for.
+  - The maintainer's reference photos are reference only, unless they're asked for. The person
+    in game art is always Doc Leo, never Lewis: green tie, purple shirt, dark blue corduroy
+    jacket, tattered fedora.
+- **Starters** (`"series": "starter"`) live only on the desk's Sample CD: no retail box,
+  manual, Level Maps or goodies, and not on downloads lists. Per-level notes go in the project
+  sidecar.
+- **Game bar:** a Sandbox game aims for a 15+ minute walkthrough and a "wow" (story, wit,
+  sound, animated transitions, palette-swapped variety); collecting alone isn't fun. A level
+  that ends on a timer shows an on-screen countdown or meter.
 - **Voice clips:** a level's ending voice must play to the end (the next scene's intro cuts
   it). Bots wait for clips (`sim.waitForClip()`). Score and pickup sounds must not cut voices.
 

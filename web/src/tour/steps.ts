@@ -115,7 +115,7 @@ export const barkUrl = (name: string): string => `./tour/sfx/${name}.ogg`;
 export const MUSIC = {
   teddyTitle: 'teddy/title.cmf',
   teddyPark: 'teddy/park.cmf',
-  clownClub: 'teddy/klub.cmf',
+  clownClub: 'teddy/club.cmf',
   briefLibrary: 'brief/library.cmf',
   y2kTitle: 'year2000/title.cmf',
   sleuthParlor: 'sleuth/parlor.cmf',
@@ -220,6 +220,8 @@ export interface TourStep {
   pageOnly?: boolean;
   /** Left out, rather than said with nothing to point at, when its target isn't on the page. */
   optional?: boolean;
+  /** The day (YYYY-MM-DD) this step was added: "What's new" offers the steps newer than a visitor's last visit (whatsNew.ts). Left off, the step is old. */
+  since?: string;
   /** Starts or stops the page's game preview as the action lands (previews are held still during a tour otherwise). */
   demo?: 'play' | 'stop';
   /** Something from a game that wanders through: across the screen, or over to the target. */

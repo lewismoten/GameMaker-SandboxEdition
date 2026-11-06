@@ -35,6 +35,7 @@ export type StoreId = keyof typeof STORES;
 /** Databases left out, and why. */
 export const DATABASES_NOT_BACKED_UP: Record<string, string> = {
   'gamemaker-web-player': 'the web player page’s own saves (hostedPlayer/), on whatever site hosts it; it exports them itself',
+  'gamemaker-recently-deleted': 'games deleted in the last 7 days, kept so they can be brought back; a backup holds only the games that are listed',
 };
 
 /** Save ids (project/storage.ts saves store) that are a section of their own rather than a game's saves. */
@@ -54,7 +55,7 @@ export const LOCAL_KEYS: Record<SectionId, { keys: string[]; prefixes?: string[]
   projects: { keys: PROJECT_MAPS, prefixes: [PROJECT_HIDDEN_PREFIX, WALK_KEPT_PREFIX] },
   saves: { keys: [] },
   trophies: { keys: ['gm-score-trophies'] },
-  achievements: { keys: [] },
+  achievements: { keys: ['gm-course-grades', 'gm-honors-dates', 'gm-certificate-name'] },
   eggs: { keys: ['gm-eggs', 'gm-egg-taps', 'gm-egg-hatched', 'gm-chicken'] },
   hearts: { keys: ['gm-tin-hearts', 'gm-clock-heart', 'gm-clock-pops', 'gm-hearts-before-clock', 'gm-heart-reveal'] },
   desk: {
@@ -83,6 +84,7 @@ export const LOCAL_KEYS: Record<SectionId, { keys: string[]; prefixes?: string[]
   prefs: {
     keys: [
       'gm-theme',
+      'gm-color-help',
       'gm-ui',
       'gm-read-view',
       'gm-read-size',
@@ -95,6 +97,7 @@ export const LOCAL_KEYS: Record<SectionId, { keys: string[]; prefixes?: string[]
       'gm-ach-hide-unearned',
       'gm-home-category',
       'gm-imported-rating-filter',
+      'gm-starter-done-filter',
       'gm-volume',
       'gm-screen-keys',
       'gm-touch-controls',
@@ -124,6 +127,7 @@ export const LOCAL_KEYS: Record<SectionId, { keys: string[]; prefixes?: string[]
       'gm-demo-audio',
       'gm-tour-on',
       'gm-tour-sound',
+      'gm-tour-seen',
     ],
     prefixes: ['gm-library-only-'],
   },
@@ -134,6 +138,7 @@ export const LOCAL_KEYS: Record<SectionId, { keys: string[]; prefixes?: string[]
 export const KEYS_NOT_BACKED_UP: Record<string, string> = {
   'gm-project-source': 'marks imported games, whose files are never backed up',
   'gm-import-batch': 'groups imported games by the import that brought them',
+  'gm-import-history': 'the last 20 imports and their failures, about files that are never backed up',
   'gm-received': 'games other sites sent, kept as imported games',
   'gm-offline': 'the offline copy, a cache that downloads again',
   'gm-library-context': 'the Library’s start, noted as pages are viewed',
@@ -142,6 +147,7 @@ export const KEYS_NOT_BACKED_UP: Record<string, string> = {
   'gm-dev-log': 'the dev server’s interaction-log switch (localhost only)',
   'gm-last-place': 'where the editor was last open, to pick up there',
   'gm-file-clip': 'the asset browser’s copied native file and editor extras (this tab only)',
+  'gm-map-views': 'the zoom and spot each map was last looked at, so a map opens as you left it (up to 200 maps)',
   'gm-map-clip': 'the map editor’s clipboard (this visit only)',
   'gm-mus-preset-tab': 'the music editor’s preset picker tab (this tab only)',
   'gm-ach-tab': 'the achievements page’s chosen tab (this tab only)',

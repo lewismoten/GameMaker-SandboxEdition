@@ -61,15 +61,97 @@ describe('fetching keys', () => {
     expect(l.sources).toHaveLength(1);
   });
 
-  it('fetches the key and then takes the link', async () => {
+  it('reports a reachable key on a successful route', async () => {
     const t = lockedGame();
     const entry = { start: { x: 7, y: 3 }, ci: startCharInfo(), clock: 1 };
     const locks = locksAtEntry(t.game, t, 2, entry);
-    const r = await fetchKeys(t.game, t, 2, entry, locks, { goal: [3 * MLEN + 14], wanted: new Set([0]), budgetMs: 10_000 });
-    expect(r?.link).toBe(0);
+    const r = await fetchKeys(t.game, t, 2, entry, locks, { goal: [3 * MLEN + 14], wanted: new Set([0]), budgetMs: 10_000, now: () => 0 });
+    expect(r.replay?.link).toBe(0);
+    expect(r.diagnostics.cutoff).toBeNull();
+    const keyRounds = r.diagnostics.rounds.filter((round) => round.kind === 'key');
+    expect(keyRounds).not.toHaveLength(0);
+    const key = keyRounds[0];
+    const exit = r.diagnostics.rounds.at(-1)!;
+    expect(key).toMatchObject({
+      kind: 'key',
+      source: { counter: 20, cell: 3 * MLEN + 1 },
+      candidates: [{ counter: 20, cell: 3 * MLEN + 1 }],
+      budgetMs: 5_000,
+      ms: 0,
+      complete: false,
+      nearestGoalDistance: 6,
+      cutoff: null,
+    });
+    expect(key.places).toBeGreaterThan(1);
+    expect(exit).toMatchObject({ kind: 'exit', source: null, candidates: [], budgetMs: 5_000, ms: 0, complete: false, cutoff: null });
+    expect(exit.places).toBeGreaterThan(1);
+    expect(r.diagnostics.rounds.every((round) => round.kind === 'key' || round.cutoff === null)).toBe(true);
     // the key is 6 cells back, the door 4 forward: far more than the direct 7 cells to the exit
-    expect(r!.ticks).toBeGreaterThan(60);
+    expect(r.replay!.ticks).toBeGreaterThan(60);
   }, 60_000);
+
+  it('accounts for key rounds before the exit search', async () => {
+    const t = lockedGame();
+    const entry = { start: { x: 7, y: 3 }, ci: startCharInfo(), clock: 1 };
+    const locks = locksAtEntry(t.game, t, 2, entry);
+    const r = await fetchKeys(t.game, t, 2, entry, locks, { goal: [3 * MLEN + 14], wanted: new Set([0]), budgetMs: 10_000, now: () => 0 });
+    expect(r.replay?.link).toBe(0);
+    expect(r.diagnostics.cutoff).toBeNull();
+    const exit = r.diagnostics.rounds.at(-1)!;
+    expect(exit).toMatchObject({ kind: 'exit', source: null, candidates: [], cutoff: null });
+    expect(r.diagnostics.rounds.slice(0, -1)).not.toHaveLength(0);
+    expect(r.diagnostics.rounds.slice(0, -1).every((round) => round.kind === 'key' && round.source?.counter === 20 && round.cutoff === null)).toBe(true);
+  }, 60_000);
+
+  it('records an unreachable source as a completed no-reachable-state search', async () => {
+    const t = lockedGame(ROWS.map((row) => row.replace('k', '.')));
+    const entry = { start: { x: 7, y: 3 }, ci: startCharInfo(), clock: 1 };
+    const locks = locksAtEntry(t.game, t, 2, entry);
+    const sourceCell = 3 * MLEN;
+    locks.wanted = new Set([20]);
+    locks.sources = [{ counter: 20, cell: sourceCell }];
+    const r = await fetchKeys(t.game, t, 2, entry, locks, { goal: [3 * MLEN + 14], wanted: new Set([0]), budgetMs: 10_000, now: () => 0 });
+    expect(r.replay).toBeUndefined();
+    expect(r.diagnostics.cutoff).toBe('no-reachable-state');
+    expect(r.diagnostics.rounds.length).toBeGreaterThan(0);
+    const terminal = r.diagnostics.rounds.at(-1)!;
+    expect(terminal).toMatchObject({
+      kind: 'key',
+      source: { counter: 20, cell: sourceCell },
+      candidates: [{ counter: 20, cell: sourceCell }],
+      budgetMs: 5_000,
+      ms: 0,
+      complete: true,
+      cutoff: 'no-reachable-state',
+    });
+    expect(terminal.places).toBeGreaterThan(1);
+    expect(terminal.nearestGoalDistance).toBeGreaterThan(0);
+  }, 60_000);
+
+  it('records a budget cutoff without waiting', async () => {
+    const t = lockedGame();
+    const entry = { start: { x: 7, y: 3 }, ci: startCharInfo(), clock: 1 };
+    const locks = locksAtEntry(t.game, t, 2, entry);
+    const r = await fetchKeys(t.game, t, 2, entry, locks, { goal: [3 * MLEN + 14], wanted: new Set([0]), budgetMs: 0, now: () => 0 });
+    expect(r.replay).toBeUndefined();
+    expect(r.diagnostics.cutoff).toBe('budget');
+    expect(r.diagnostics.rounds).toEqual([
+      expect.objectContaining({
+        kind: 'key',
+        source: null,
+        candidates: [{ counter: 20, cell: 3 * MLEN + 1 }],
+        budgetMs: 0,
+        ms: 0,
+        places: 0,
+        complete: false,
+        nearestGoalDistance: 6,
+        exits: 0,
+        deaths: 0,
+        incidents: 0,
+        cutoff: 'budget',
+      }),
+    ]);
+  });
 
   it('still finishes the level, and the engine agrees', async () => {
     const t = lockedGame();
@@ -84,7 +166,7 @@ describe('fetching keys', () => {
     const entry = { start: { x: 7, y: 3 }, ci: startCharInfo(), clock: 1 };
     const locks = locksAtEntry(t.game, t, 2, entry);
     const r = await fetchKeys(t.game, t, 2, entry, locks, { goal: [3 * MLEN + 14], wanted: new Set([0]), budgetMs: 10_000 });
-    expect(r?.link).toBe(0);
+    expect(r.replay?.link).toBe(0);
   }, 60_000);
 
   it('says plainly when a key exists but was never reached', () => {

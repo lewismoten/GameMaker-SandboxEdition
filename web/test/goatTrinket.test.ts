@@ -1,3 +1,4 @@
+// Stays slow: it builds and meshes the real printable trinket.
 import { expect, it } from 'vitest';
 import { inspectMesh } from '@lewismoten/gamemaker-sandbox-tools/mesh/meshCheck';
 import { makeTrinket, TRINKETS } from '../../games/goat/src/trinkets/trinkets';

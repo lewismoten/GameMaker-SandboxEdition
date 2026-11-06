@@ -9,7 +9,7 @@ import { readSong, RHYTHM_CHANNELS, writeSong, type CmfSong, type Note, DRUM_NAM
 import { presetName } from './sbi';
 import { presetPreview } from '../../../audio/oplPresetPreview';
 import type { OplPreset } from '../../../audio/oplPatch';
-import { instrumentLook } from './instrumentLook';
+import { groupColor, instrumentLook } from './instrumentLook';
 import { orderTracks } from './trackOrder';
 import { isReadOnlyError } from '../../core/readOnly';
 
@@ -61,12 +61,6 @@ export const SNAPS: [number, string][] = [
   [0.125, '1/8 beat'],
   [0, 'Off'],
 ];
-
-/** A track's color: its instrument's group color, else its channel's own. */
-function trackColorOf(song: CmfSong, ch: number): string {
-  const inst = song.instruments[startProgram(song, ch)];
-  return instrumentLook(inst).color ?? TRACK_COLORS[ch];
-}
 
 /** Resolves just after the next paint (or soon, when no frames are being drawn). */
 function afterPaint(): Promise<void> {
@@ -157,8 +151,13 @@ export class MusicDoc {
     return orderTracks([...set], this.order);
   }
 
+  /** The track's family color; a later track of the same family is a shade apart. */
   trackColor(ch: number): string {
-    return trackColorOf(this.song, ch);
+    const inst = this.song.instruments[startProgram(this.song, ch)];
+    const family = instrumentLook(inst).family;
+    if (!family) return TRACK_COLORS[ch];
+    const same = this.tracks().filter((c) => instrumentLook(this.song.instruments[startProgram(this.song, c)]).family === family);
+    return groupColor(family, Math.max(0, same.indexOf(ch)));
   }
 
   trackName(ch: number): string {

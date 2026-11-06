@@ -88,6 +88,7 @@ ${TEMPLATE_ONLY}
 <title>${TITLE_MARK}</title>
 ${HEAD_MARK}
 <style>${style}</style>
+<style>html,body{background:#000;color:#ccc;margin:0}</style>
 </head>
 <body class="player-page">
 <div id="player">${ABOUT_MARK}</div>

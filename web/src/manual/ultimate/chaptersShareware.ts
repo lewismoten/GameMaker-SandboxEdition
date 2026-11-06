@@ -20,7 +20,7 @@
 // file), and GMTITLE.GIF from PLAYBACK.C (the earlier player, under TRANSFER). The DOS player panel
 // it points to is editor/editors/integrator/dosPlayer/ (rules in dosPlayer/; its Files tab's
 // extensions in dosPlayer/fileExtensions.ts), PLAYHACK retro/hacks/.
-import { opening, tip, type Chapter } from './chapter';
+import { opening, tip, type Chapter, onCd } from './chapter';
 import { PLAYER_EXE, PLAYER_WORDS } from './playerWords';
 import { ARCHIVE_TRICKS } from './archiveTricks';
 
@@ -52,6 +52,7 @@ export const SHAREWARE: Chapter = {
   a copy with a gravity is a hidden slide or current. Copies that look like empty space but stand
   in the way, and change when bumped, make the invisible maze of <i>Parsec Man 3D</i>. Hint at
   them fairly: a crack, a different echo, a coin that leads the way.</p>
+  ${onCd('LOOKWALL')}
   <h2>Touch chains</h2>
   <p>A block that turns into another block when touched can do more than vanish. Chain eleven of
   them whose solidity goes from none up to full and back down, and a door slides open a step each
@@ -65,6 +66,7 @@ export const SHAREWARE: Chapter = {
   <i>Blinky 2</i>’s intro and ending, which share one map).</p>
   <p>The same one-screen room with several doors is a level select, a hub of minigames or a
   music room: each door a link to its own scene, and each scene its own song.</p>
+  ${onCd('CUTSCENE')}
   <h2>Choosing a hero by link</h2>
   <p>Leave a scene’s character slot empty and PLAYGAME keeps the character it already has. So a
   select screen whose links each lead into a copy of the first level with a different character
@@ -73,6 +75,7 @@ export const SHAREWARE: Chapter = {
   costume. And only the first character’s starting values count (Chapter 4): a ship that “takes
   less damage” can’t be made from its own hit points, so let the heroes differ in what they do,
   not in what they can take.</p>
+  ${onCd('CHOOSE')}
   <h2>Physics by changing the character</h2>
   <p>The same hero with a slower walk and jumps made of momentum is a moon level; with gentle
   steps in every direction, a swim. Give those scenes their own character file (<i>Ninja Tuck</i>’s
@@ -104,6 +107,12 @@ export const SHAREWARE: Chapter = {
   (<i>Ninja Tuck</i>), a patrol that slows into each corner by giving each leg its own speed, and a
   crowd of the same creature with slightly different picture times so they never move in step
   (<i>Penguin Pete</i>) all look alive for no extra pictures.</p>
+  ${onCd('CLOCK', 'COUNTDWN', 'BLOCKBRN')}
+  ${onCd('TWINKLE')}
+  ${onCd('FLICKER')}
+  ${onCd('LIGHTOUT')}
+  ${onCd('SHADOWS')}
+  ${onCd('BEAMS')}
   <h2>Transitions with the palette</h2>
   <p>An animation frame that changes only the palette costs a few hundred bytes, however big the
   picture. Fade a picture in or out, flash it or cycle its colors that way, and the whole
@@ -146,6 +155,7 @@ export const SHAREWARE: Chapter = {
     are, out of respect, and because Game-Maker’s license notice should travel with the player.</li>
     <li><b>Test in DOSBox</b> after every change: the menu, F1, F5, F6, a drop and a high score.</li>
   </ul>
+  ${onCd('UNDRHOOD')}
   <p>A hand edit changes only that one <code>.EXE</code>: the web player and the other downloads
   don’t read it, and every DOS download starts from a fresh copy of the CD’s player. The DOS
   player panel’s changes travel with the game instead. The desk’s <code>HEXEDIT</code> can’t do
@@ -187,6 +197,7 @@ export const SHAREWARE: Chapter = {
   first (One key, many weapons, above). This is how Teddy digs in Teddy’s Little Big Adventure. Two things to
   plan for: every clod is one of the map’s 200 monsters, so dig fields stay small, and monsters
   feel no gravity, so nothing above a hole ever falls in.</p>
+  ${onCd('DIGIT')}
   <h2>Searchlights and sneaking</h2>
   <p>A guard’s light is a monster on a path: a pale beam, power 100 or more so it stays,
   sweeping its corridor on a steady loop. Draw it as a light dither: its see-through pixels let
@@ -217,12 +228,14 @@ export const SHAREWARE: Chapter = {
   block showing the roll, so it can’t be thrown twice. Let the faces add 1 to 6 to a special
   counter, and gates further on that take 4 or 6 make a board game: how far the player gets
   depends on the roll.</p>
+  ${onCd('ROLLDICE')}
   <h2>A friend who follows</h2>
   <p>A monster that moves toward the hero a little slower than his walk, with harmless pictures
   and power 100 or more, trots along behind him. Give it more power than the enemies and it
   beats any it bumps into, a guard dog that clears the way. It beats moving prizes just as
   surely, since they stay under 100 for the hero to collect them, so leave the friend at home in
   levels that have them.</p>
+  ${onCd('FOLLOWME')}
   <h2>A key to start over</h2>
   <p>When a puzzle can be ruined, a start-over key saves the player from quitting. Its sequence
   fires a slow monster with a lifetime of one tick, too short to go anywhere, that

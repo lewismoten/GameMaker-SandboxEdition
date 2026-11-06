@@ -9,6 +9,9 @@ import { viewState } from '../../../urlState';
 import { TEXTURES, paintTexture } from '../../tools/textures';
 import { h, clear, selectField, debounce, toast } from '../../core/ui';
 import { blockCanvas, paintBlock, lut } from '../../core/draw';
+import { blockColorHelp } from '../../colorHelp/blockColorHelp';
+import { paletteColorName } from '../../colorHelp/colorNames';
+import { getColorHelp, onColorHelp } from '../../colorHelp/colorHelpPrefs';
 import { paletteChooser } from '../../widgets/paletteChooser';
 import { BLEN, BLOCK_COUNTS, BLOCK_SIZE, TRANSPARENT, parseBlocks, serializeBlocks, type BlockKind } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { paletteCss } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
@@ -32,6 +35,7 @@ import { groupsPanel } from './groupsPanel';
 import { walkPathPanel } from './walkPathPanel';
 import { readWalkPaths } from '../../check/walk/walkPaths';
 import { blockProperties } from './blockProperties';
+import { rolesPanel } from './rolesPanel';
 import { blockLabel } from './blockNames';
 import { blockNameField } from './blockNameField';
 
@@ -79,6 +83,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
     renderBlock();
   });
   const pal = () => chooser.palette;
+  const colorHelp = blockColorHelp(pal, sprites ? TRANSPARENT : undefined);
   const insight = blockInsight({ project, file, blocks, current: () => current, pal, sprites, open: (f) => openInEditor(project, f) });
   // level check notes on this block: hazard art smaller than its cell, a hard-to-see monster picture…
   const groups = groupsPanel({
@@ -296,6 +301,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
     if (!preview) {
       for (const id of s.ids) if (pickerCanvases[id]) paintBlock(pickerCanvases[id], blocks[id].pixels, pal(), { transparent: sprites });
       insight?.refresh();
+      colorHelp.refresh(px, w, h);
       groups?.refresh();
       characterFrames?.redraw();
       mirrorBar?.refresh();
@@ -636,6 +642,8 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
   const swatchCss = (i: number) =>
     sprites && i === TRANSPARENT ? 'repeating-conic-gradient(var(--checker-a) 0 25%, var(--checker-b) 0 50%) 0 0 / 8px 8px' : paletteCss(pal(), i);
   const colorLabel = h('div', { class: 'meta' });
+  /** ", dark red" when Show color names is on. */
+  const nameOf = (i: number) => (getColorHelp().names ? `: ${paletteColorName(pal(), i)}` : '');
   const colorBox = colorChoice({
     get: () => color,
     set: (i) => {
@@ -643,7 +651,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
       renderSwatches();
     },
     css: swatchCss,
-    name: (i) => (sprites && i === TRANSPARENT ? '255: transparent' : `Color ${i}`),
+    name: (i) => (sprites && i === TRANSPARENT ? '255: transparent' : `Color ${i}${nameOf(i)}`),
   });
   function renderSwatches(): void {
     const ranges = paletteReservations(project);
@@ -656,7 +664,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
           title:
             sprites && i === TRANSPARENT
               ? '255: transparent'
-              : `Color ${i}${foreignRole(kind, ranges, i) ? ` (reserved for ${foreignRole(kind, ranges, i)}s)` : ''}`,
+              : `Color ${i}${nameOf(i)}${foreignRole(kind, ranges, i) ? ` (reserved for ${foreignRole(kind, ranges, i)}s)` : ''}`,
           onclick: () => {
             color = i;
             renderSwatches();
@@ -665,7 +673,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
       ),
     );
     colorBox.refresh();
-    colorLabel.textContent = `Drawing with color ${color}${sprites && color === TRANSPARENT ? ' (transparent)' : ''}. Right-drag erases; Alt-click picks.${colorRoleNote(kind, ranges, color)}`;
+    colorLabel.textContent = `Drawing with color ${color}${getColorHelp().names && !(sprites && color === TRANSPARENT) ? ` (${paletteColorName(pal(), color)})` : ''}${sprites && color === TRANSPARENT ? ' (transparent)' : ''}. Right-drag erases; Alt-click picks.${colorRoleNote(kind, ranges, color)}`;
   }
 
   // ---- properties -----------------------------------------------------------
@@ -674,7 +682,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
     walkingProps,
     touchProps,
     timeProps,
-    render: renderProps,
+    render: renderPropsBase,
   } = blockProperties({
     project,
     file,
@@ -688,6 +696,13 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
       insight.refresh(true);
     },
   });
+
+  // the Uses tab (block roles, saved in the companion file; native blocks only)
+  const roles = kind === 'bbl' ? rolesPanel({ project, file, blocks, pal, current: () => current }) : undefined;
+  const renderProps = () => {
+    renderPropsBase();
+    roles?.refresh();
+  };
 
   // character blocks: "Apply to the mirror too" for a block with a linked mirror (character/blockMirrorBar.ts)
   const mirrorSlot = h('div', { style: 'display:contents' });
@@ -747,6 +762,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
             { id: 'walking', label: 'Walking', panel: walkingProps },
             { id: 'touch', label: 'Touch', panel: touchProps },
             { id: 'time', label: 'Time', panel: timeProps },
+            { id: 'uses', label: 'Uses', panel: roles!.el },
           ]
         : [{ id: 'properties', label: 'Properties', panel: props }]),
     ],
@@ -784,6 +800,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
       actions,
       mirrorSlot,
       groups.el,
+      colorHelp.el,
       sprites ? null : textures,
       badges.el,
       insight.el,
@@ -837,7 +854,10 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
     }
   };
   window.addEventListener('keydown', onKey);
+  const stopNames = onColorHelp(renderSwatches);
   return () => {
+    stopNames();
+    colorHelp.dispose();
     finishStroke(false);
     window.removeEventListener('keydown', onKey);
     insight.dispose();

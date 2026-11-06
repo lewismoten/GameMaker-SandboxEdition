@@ -1,0 +1,71 @@
+{
+  "title": "First Steps",
+  "howDoI": [
+    {
+      "id": "walls",
+      "q": "How do I make a wall my hero has to jump over?",
+      "scene": 2,
+      "x": 34,
+      "y": 8,
+      "level": 1
+    },
+    {
+      "id": "gravity",
+      "q": "How do I make my hero fall off an edge?",
+      "scene": 2,
+      "x": 48,
+      "y": 8,
+      "level": 1
+    },
+    {
+      "id": "coins",
+      "q": "How do I make a coin that gives points?",
+      "scene": 2,
+      "x": 32,
+      "y": 19,
+      "level": 1
+    },
+    {
+      "id": "door",
+      "q": "How do I join one level to the next with a door?",
+      "scene": 2,
+      "x": 55,
+      "y": 10,
+      "level": 1
+    },
+    {
+      "id": "ladder",
+      "q": "How do I make a ladder my hero can climb?",
+      "scene": 3,
+      "x": 14,
+      "y": 10,
+      "level": 2
+    }
+  ],
+  "pages": [
+    {
+      "head": "Welcome",
+      "html": "<h1>Welcome</h1><p><b>First Steps</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has two short levels and takes a minute or two to finish.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each thing in the levels is made.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. <kbd>Space</kbd> jumps. <kbd>Up</kbd> and <kbd>Down</kbd> climb a ladder. Walk into the door at the end of a level to go on. There is nothing to fight and nothing that hurts.</p>"
+    },
+    {
+      "head": "Level 1: Walk, Jump, Fall",
+      "html": "<h1>Level 1: Walk, Jump, Fall</h1><p>You start in the open doorway under the <b>YOU START HERE</b> sign. The signs along the way tell you what to try: <b>&larr; &rarr; WALK</b>, then <b>SPACE JUMPS</b> in front of a wall too high to walk through, and <b>GRAVITY PULLS YOU DOWN</b> at the edge of a plateau. Walk off the edge and you fall to the ground below. The <b>EXIT &rarr;</b> sign points to the door.</p><p>Coins are worth ten points each. There are fourteen, and a few of them are only in reach if you jump.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 1 is made</h1><ul><li><b>The ground.</b> Open <b>walk.map</b> in the map editor. The ground is a row of the <b>grass</b> block over <b>dirt</b>. Blocks marked solid on every side stop you; that is why you walk on them and not through them.</li><li><b>The wall.</b> Two <b>brick</b> blocks stacked. Open <b>steps.bbl</b> in the blocks editor, pick brick and look at <b>Properties</b>, <b>Solid sides</b>: all four sides are checked.</li><li><b>Gravity.</b> The <b>sky</b> block has <b>Gravity pulls</b> set to down. While you are on a block that pulls down you fall until something solid is under your feet. Ground has no pull of its own.</li><li><b>Jumping.</b> Open <b>hero.chr</b> in the character editor, <b>Sequences (moves)</b> tab, and pick the <b>jump</b> sequence. Its key is Space, it moves up once, and <b>Moves with momentum</b> is on, so gravity then pulls you back down.</li><li><b>Coins.</b> The <b>coin</b> block has <b>Score points</b> set to 10 on its <b>Touch</b> tab, and <b>Becomes block</b> set to sky, so it is gone once you touch it.</li><li><b>The signs.</b> Each sign is a few ordinary blocks side by side, with the words drawn in their pictures. Change the words in the blocks editor and play again.</li><li><b>The door.</b> A scene link joins the door to the next level. Open <b>steps.gam</b> in the scenes editor and look at the links of the Walk, Jump, Fall scene.</li></ul>"
+    },
+    {
+      "head": "Level 2: Climb and Fall",
+      "html": "<h1>Level 2: Climb and Fall</h1><p>The <b>CLIMB THE LADDER</b> sign stands by a ladder that leads up to an island in the sky. Hold <kbd>Up</kbd> to climb. At the top, walk right across the island and off its edge: you drop onto a lower island, and then to the ground by the door.</p><p>There are sixteen coins, along the island and down the two drops.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 2 is made</h1><ul><li><b>The ladder.</b> Open <b>steps.bbl</b> in the blocks editor and pick the <b>ladder</b> block. Under <b>Properties</b>, <b>Gravity pulls</b> is empty and no side is solid. With no pull on it, you do not fall while you stand in it, and <kbd>Up</kbd> can lift you.</li><li><b>Climbing.</b> In <b>hero.chr</b>, <b>Sequences (moves)</b> tab, the <b>up</b> and <b>down</b> sequences move the hero a little each step. They work anywhere, but only a ladder holds you up against gravity.</li><li><b>The islands.</b> Open <b>climb.map</b> in the map editor. Each island is a row of grass over a few rows of dirt, with sky all around and below it.</li><li><b>Falling.</b> Nothing is built for a fall. When you walk off an island you are on sky again, and sky pulls down.</li><li><b>The exit.</b> The last door links to the <b>The End</b> scene in <b>steps.gam</b>, which plays the ending.</li></ul>"
+    },
+    {
+      "head": "Make it yours",
+      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>Draw a new platform with the <b>plank</b> block: solid on top only, so you can jump up through it.</li><li>Move the door, or add another coin.</li><li>Change <b>Gravity pulls</b> on the sky block and see what happens.</li><li>Make the jump higher in the <b>jump</b> sequence.</li></ul><p>The home page's <b>Starters</b> tab has more small games like this one.</p>"
+    }
+  ]
+}

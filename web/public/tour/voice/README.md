@@ -34,10 +34,14 @@ records every clip again.
 | [home-show.ogg](home/home-show.ogg) | Show narrows the list to one rating, or to the games you haven’t rated yet. | Home: Teddy points at the Show rating picker | 5.22 |
 | [home-sort.ogg](home/home-sort.ogg) | Sort by Rating puts your five-star games first, with the unrated ones last. | Home: Teddy points at the Sort by picker | 5.50 |
 | [home-notes-search.ogg](home/home-notes-search.ogg) | And the search box finds the words in your notes, too. | Home: Teddy points at the Find a game box | 3.97 |
+| [home-import-history.ogg](home/home-import-history.ogg) | Import history keeps the last twenty imports: what came in, what was left out, and anything that failed. | Home: Teddy points at the Import history button | 7.07 |
+| [home-recently-deleted.ogg](home/home-recently-deleted.ogg) | Delete a game by mistake? It waits in Recently deleted for seven days, and Restore brings it back just as it was. | Home: Teddy points at the Recently deleted button | 7.89 |
+| [home-tab-starters.ogg](home/home-tab-starters.ogg) | Starters: small games that each show one idea, with signs in the levels. Play one, then edit a copy. | Home: Teddy presses the Starters tab | 6.84 |
+| [home-how-do-i.ogg](home/home-how-do-i.ogg) | How do I asks the question in your own words, and points to the Starter that answers it. | Home: Teddy points at the How do I button | 5.54 |
 | [home-tab-sandbox.ogg](home/home-tab-sandbox.ogg) | Sandbox: new games made with Game-Maker in its original formats, so they play in real DOS too. | Home: Teddy presses the Sandbox tab | 6.90 |
 | [home-tab-bizarre.ogg](home/home-tab-bizarre.ogg) | Bizarre: big, heartfelt songs about all the wrong things, each one made into a game. | Home: Teddy presses the Bizarre tab | 5.75 |
-| [home-tab-gameware.ogg](home/home-tab-gameware.ogg) | Gameware: the free games that came with Game-Maker. Play one, or edit a copy to see how it works. | Home: Teddy presses the Gameware tab | 6.82 |
-| [home-tab-shareware.ogg](home/home-tab-shareware.ogg) | Shareware: games other people made with Game-Maker, from the CD and the BBSes. | Home: Teddy presses the Shareware tab | 5.94 |
+| [home-tab-gameware.ogg](home/home-tab-gameware.ogg) | Gameware: the free games that came with Game-Maker. Play one, or edit a copy to see how it works. | Home: Teddy presses the CD tab | 6.82 |
+| [home-tab-shareware.ogg](home/home-tab-shareware.ogg) | Shareware: games other people made with Game-Maker, from the CD and the BBSes. | Home: Teddy presses the CD tab | 5.94 |
 | [home-shareware-what.ogg](home/home-shareware-what.ogg) | Shareware meant try it free. If you kept playing, you sent the author a fee. Games got around on floppy disks and BBSes. | Home: Teddy points at the shareware games | 8.35 |
 | [home-shareware-notice.ogg](home/home-shareware-notice.ogg) | They’re other people’s games, so most just play here, exactly as released. Each keeps its author’s notice. | Home: Teddy points at the shareware games | 6.97 |
 | [home-search.ogg](home/home-search.ogg) | Looking for one game? Type part of its name here. | Home: Teddy points at the Find a game box | 3.82 |
@@ -172,6 +176,8 @@ records every clip again.
 | [edit-around-find.ogg](edit-around/edit-around-find.ogg) | Type part of a name here and the list narrows to match. Handy in a game with a hundred files. | Editor: Watt points at the Find a file box | 5.78 |
 | [edit-around-quick.ogg](edit-around/edit-around-quick.ogg) | The magnifier opens any file by its name. Ctrl+P does the same, from anywhere in the editor. | Editor: Watt points at the Open a file by name button | 7.00 |
 | [edit-around-assets.ogg](edit-around/edit-around-assets.ogg) | In the file list, Game assets shows the whole game at once: a card for each kind of file. Press a card to browse those files as pictures. | Editor: Watt points at the Game assets button | 9.29 |
+| [edit-around-groups.ogg](edit-around/edit-around-groups.ogg) | The cards sit under headings: Levels, Heroes, Monsters, Pictures and movies, Sounds and music, and Words and screens. | Editor: Watt points at the first group heading | 8.45 |
+| [edit-around-card-used.ogg](edit-around/edit-around-card-used.ogg) | A card also says how many scenes use its files, so you can see what matters before you open it. | Editor: Watt points at a card’s used-by line | 5.40 |
 | [edit-around-assets-back.ogg](edit-around/edit-around-assets-back.ogg) | Back in a file, Assets jumps to that kind’s gallery, so you can try another map or block set. | Editor: Watt points at the Assets button | 6.24 |
 | [edit-around-used.ogg](edit-around/edit-around-used.ogg) | Here is every scene that uses this file. Press one to open it in the game’s own scene list. | Editor: Watt points at the Used by links | 6.39 |
 | [edit-around-undo.ogg](edit-around/edit-around-undo.ogg) | Undo and Redo step back and forward through your edits in this file. Ctrl+Z and Ctrl+Y work too. Nothing to undo here. | Editor: Watt points at the Undo button | 9.29 |

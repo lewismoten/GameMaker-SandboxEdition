@@ -92,3 +92,39 @@ dialog.modal:has(.download-chooser) {
   align-items: center;
   min-height: 24px;
 }
+
+.download-chooser .dl-previews {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+  margin: 8px 0;
+}
+.download-chooser .dl-previews[hidden] {
+  display: none;
+}
+.download-chooser .dl-previews input {
+  width: 24px;
+  height: 24px;
+  margin: 0;
+}
+
+/* a phone held sideways: tighter choices, and the description reserves two lines, not four */
+@media (max-height: 500px) {
+  .download-chooser .dl-choice {
+    padding: 3px 8px;
+  }
+
+  .download-chooser .dl-line {
+    min-height: 2.9em;
+    margin-top: 4px;
+  }
+
+  .download-chooser .meta {
+    margin-top: 4px;
+  }
+
+  .download-chooser .dl-previews {
+    margin: 4px 0;
+  }
+}

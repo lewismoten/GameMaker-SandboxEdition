@@ -1,0 +1,83 @@
+{
+  "title": "Everybody Talks",
+  "howDoI": [
+    {
+      "id": "two-voices",
+      "q": "How do I put two speakers in one talk?",
+      "scene": 2,
+      "x": 37,
+      "y": 19,
+      "level": 1
+    },
+    {
+      "id": "names",
+      "q": "How do I put each speaker's name in their bubble?",
+      "scene": 2,
+      "x": 21,
+      "y": 16,
+      "level": 1
+    },
+    {
+      "id": "words",
+      "q": "How do I keep the words inside their bubbles?",
+      "scene": 2,
+      "x": 27,
+      "y": 16,
+      "level": 1
+    },
+    {
+      "id": "crowd",
+      "q": "How do I fit three or more speakers in one picture?",
+      "scene": 3,
+      "x": 37,
+      "y": 19,
+      "level": 2
+    },
+    {
+      "id": "second-card",
+      "q": "How do I make a talk longer than one card?",
+      "scene": 3,
+      "x": 27,
+      "y": 16,
+      "level": 2
+    },
+    {
+      "id": "group",
+      "q": "How do I start a talk by touching one of a group?",
+      "scene": 3,
+      "x": 37,
+      "y": 19,
+      "level": 2
+    }
+  ],
+  "pages": [
+    {
+      "head": "Welcome",
+      "html": "<h1>Welcome</h1><p><b>Everybody Talks</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has two short levels and takes a couple of minutes to finish.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each thing in the levels is made.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. <kbd>Space</kbd> jumps. Any key turns a page of words. <kbd>F2</kbd> shows your lives, hit points and score. Walk into the door at the end of a level to go on.</p><p>This one is about talk with more than one voice. <b>Say Something</b> shows a friend with a single line; here a whole conversation fits in one picture, the way the big games do it. Nothing in this game hurts you.</p>"
+    },
+    {
+      "head": "Level 1: Two Voices",
+      "html": "<h1>Level 1: Two Voices</h1><p>Three signs stand along the way. <b>A TALK CAN HAVE TWO SPEAKERS</b> says what is ahead. <b>THE PICTURE DRAWS THE BUBBLES AND NAMES</b> and <b>THE TXT HOLDS ONLY THE WORDS</b> say how it is made. The <b>WALK INTO PIP TO TALK</b> sign stands just before Pip, a friend in a straw hat with a speech bubble over their head.</p><p>Walk into Pip and the room fades out. One picture comes up with Kit at the top and Pip below them, and four speech bubbles down the left, each with a name over its words: Kit, Pip, Kit, Pip. The words appear in the bubbles, and then you are back in the room just past Pip, with the rest of the coins and the door ahead. Anything you collected before Pip stays collected, but the room is a fresh copy when you come back.</p><p>There are nine coins, worth ten points each.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 1 is made</h1><ul><li><b>Pip talks.</b> Pip is two scenery blocks and a bubble block, like the friend in <b>Say Something</b>. In the scenes editor, open <b>dlg.gam</b> and pick the <b>Two Voices</b> scene. Its second link starts on the block Pip's feet are in and goes to the scene <b>Kit and Pip talk</b>. That scene's only job is to show the slide list <b>hello.lst</b> and send Kit back, a few blocks past Pip.</li><li><b>One picture, many speakers.</b> <b>hello1.gif</b> is a single 320 by 200 picture with Kit and Pip in it and a speech bubble for each turn of the talk. Both people are in the same picture, so the talk costs no more than one friend's did. Draw it in any paint program, as long as you use the game's own palette.</li><li><b>The words.</b> <b>hello1.txt</b> is a plain text file shown over the picture. The engine writes its lines in one color, 8 by 8 letters, starting 40 pixels from the left and 40 down, one line every 8 pixels, up to 16 lines. It never draws a bubble or a name, so the picture draws them. Each speech in the file begins with an empty line, where its name is lettered in the picture, followed by its words.</li><li><b>Bubbles that fit.</b> A bubble is as tall as its lines of words, plus the name line above them. A line over 28 letters would run out of its bubble, so the file keeps every line to 28 or fewer. Play it to be sure: a line that runs past its bubble is easy to see.</li><li><b>The slide list.</b> <b>hello.lst</b> shows the picture at once and then the text file on top of it, for long enough to read it. Any key turns it sooner.</li><li><b>The signs.</b> Each sign is a few ordinary blocks side by side, with the words drawn into their pictures.</li></ul>"
+    },
+    {
+      "head": "Level 2: A Crowd",
+      "html": "<h1>Level 2: A Crowd</h1><p>Three more signs: <b>MORE SPEAKERS, SMALLER PICTURES</b>, <b>A CARD HOLDS 16 ROWS OF WORDS</b> and <b>A LONGER TALK USES A SECOND CARD</b>. Then <b>WALK INTO THE GROUP</b>, just before three friends standing side by side: Pip in the yellow hat, Moss in the teal one and Dot in the pink one. Only Pip has a bubble over their head.</p><p>Walk into the group and the picture comes up with all four of you in a column along the right: Pip, Moss, Dot and Kit, a little smaller than before to make room. The bubbles come up one at a time down the left, a riddle from Dot, then a second picture with the answer. You are back in the room just past the three of them.</p><p>There are nine coins, worth ten points each.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 2 is made</h1><ul><li><b>One touch for the group.</b> Open <b>dlg.gam</b> and pick the <b>A Crowd</b> scene. Only Pip's feet have a link, to the scene <b>The crowd talks</b>. Moss and Dot are scenery next to Pip, and Kit walks on past them after the talk because they are put back three blocks past Dot.</li><li><b>More people, smaller people.</b> <b>crowd1.gif</b> and <b>crowd2.gif</b> both draw everyone in the same places, so the picture does not jump between cards. Four people at the same size as level 1's two would not fit the screen's 200 rows, so each is drawn at half the size. Whoever is not talking still stands there, listening.</li><li><b>Sixteen rows.</b> The engine shows 16 lines of words, and every speech uses its words plus a name row and a blank row. The riddle alone takes four rows. The game counts the rows of every card as it builds, and stops if one needs more than 16.</li><li><b>A second card.</b> <b>crowd.lst</b> lists <b>crowd1.gif</b> and <b>crowd1.txt</b>, then <b>crowd2.gif</b> and <b>crowd2.txt</b>. Each card has its own picture because each picture's bubbles must be as tall as that card's lines. Keep the same people in the same places and the cards look like one scene.</li><li><b>Who is who.</b> A name is lettered in a color of that person's own, in the picture. Pip's is purple, Moss's blue, Dot's green and Kit's teal, and a bar of the same color lies under each person's feet, so you can tell whose bubble is whose. The words are all in one color, whoever says them, because the engine draws them in one.</li><li><b>The exit.</b> The door links to the <b>The End</b> scene in <b>dlg.gam</b>.</li></ul>"
+    },
+    {
+      "head": "What Game-Maker cannot do",
+      "html": "<h1>What Game-Maker cannot do</h1><p>A talk is a picture with a text file written over it, and that is all:</p><ul><li>The words cannot name who says them. The text file has no speaker; the name is lettered in the picture, so if you change a line you may need to redraw its bubble and name.</li><li>Every speaker's words are the same color. The engine draws the whole file in one color. Only the names, and the people themselves, can be told apart by color.</li><li>A bubble is not drawn by the engine, so a longer line does not make a bigger bubble. Make the picture and the words together, and play it.</li><li>A card holds 16 lines of 28 letters or so. A longer file runs on by itself with a MORE... line, which waits for a key. This game uses separate cards for a longer talk.</li><li>A talk cannot ask a question or branch. The player can only turn the page. A choice would need separate friends, or separate doors, each with its own talk.</li></ul>"
+    },
+    {
+      "head": "Make it yours",
+      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>Open <b>hello1.txt</b> in a text editor and change what Pip says. Keep each line to 28 letters, and keep the blank lines where the names are.</li><li>Give Moss a line in <b>crowd1.txt</b>. Its bubble in <b>crowd1.gif</b> is too short now, so draw it taller in a paint program.</li><li>Add a third card to <b>crowd.lst</b>: a new <b>.gif</b> and <b>.txt</b> pair after the second.</li><li>Move Kit to the other side of the picture, and swing the tails around.</li><li>Move Pip's link onto Moss and see who the group's talk starts from.</li></ul><p>The home page's <b>Starters</b> tab has more small games like this one.</p>"
+    }
+  ]
+}

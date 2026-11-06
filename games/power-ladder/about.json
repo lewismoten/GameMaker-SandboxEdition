@@ -1,0 +1,37 @@
+{
+  "title": "Stronger Keys",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "hero": "YANA",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.0",
+  "blurb": "Three short levels about a ladder of locks. A bronze key is worth 1, a silver key 2 and a gold key 3, and a door has a price of its own. A door opens when you can pay it and takes only its price, so a gold key opens a silver door and still has some left. Signs in the levels say how. Play it, then open it in Game-Maker and change a door's price.",
+  "exe": "POWERKEY.EXE",
+  "dosName": "POWERKEY",
+  "sound": "sb",
+  "label": {
+    "background": "#e8f6ff",
+    "band": "#d2851f",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "3 short levels",
+    "hours": 1,
+    "background": "#d2851f",
+    "accent": "#ffd23f",
+    "ink": "#ffffff",
+    "tagline": "A stronger key opens every weaker door.",
+    "back": "A small explorer in a pink beanie finds bronze, silver and gold keys, each worth more than the last. A bigger key opens a smaller door and keeps the change, and small keys can add up to a big one. Read the signs, then open the game in Game-Maker and change a door's price.",
+    "features": ["Signs in the levels explain each idea", "Keys add to a counter, doors take their price", "Made to be copied and taken apart"],
+    "shots": [
+      ["one.map", 22, 6],
+      ["two.map", 22, 6],
+      ["three.map", 20, 6]
+    ],
+    "rating": "Everyone"
+  },
+  "acceptedFindings": ["facing s2 The hero climbs side on"]
+}

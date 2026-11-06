@@ -29,7 +29,8 @@ export interface AboutForHearts {
 const SANDBOX = 'Sandbox Software';
 
 /** Does a game count toward the tin hearts at all (a Sandbox or Bard of Bizarre game, not secret)? */
-export const heartsCount = (a: AboutForHearts): boolean => a.secret !== true && ((a.company ?? SANDBOX) === SANDBOX || a.series === 'bizarre');
+export const heartsCount = (a: AboutForHearts): boolean =>
+  a.secret !== true && a.series !== 'starter' && ((a.company ?? SANDBOX) === SANDBOX || a.series === 'bizarre');
 
 /** The about.json "tinHeart" field checked, or an error saying what is wrong with it. */
 export function heartPlace(a: AboutForHearts): HeartPlace | string | undefined {

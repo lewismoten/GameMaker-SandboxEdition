@@ -40,13 +40,15 @@ interface Visit {
   text: string;
   sound: 'rattle' | 'knock' | 'creak' | 'honk';
   peek?: string;
+  /** Who looks in, so the right dog barks. */
+  dog?: 'teddy' | 'gwinn';
 }
 
 const VISITS: Visit[] = [
   { sound: 'rattle', text: 'Rattle, rattle. It’s locked from this side: DO NOT DISTURB, MAKING GAMES.' },
-  { sound: 'creak', peek: TEDDY, text: 'Teddy noses the door open, both ears up, and checks the floor for snacks. None. He leaves.' },
+  { sound: 'creak', peek: TEDDY, dog: 'teddy', text: 'Teddy noses the door open, both ears up, and checks the floor for snacks. None. He leaves.' },
   { sound: 'knock', text: 'Knock knock! “Dinner in ten minutes!” (It’s always ten more minutes.)' },
-  { sound: 'creak', peek: GWINN, text: 'Gwinn pokes her head in with a sock in her mouth. It wasn’t her. (It was her.)' },
+  { sound: 'creak', peek: GWINN, dog: 'gwinn', text: 'Gwinn pokes her head in with a sock in her mouth. It wasn’t her. (It was her.)' },
   { sound: 'honk', text: 'Honk honk! A bike horn out in the hall: Doc Leo, saying hi on his way past.' },
 ];
 
@@ -67,6 +69,7 @@ export function doorProp(door: HTMLElement): () => void {
   const use = () => {
     const v = next();
     roomSound[v.sound]();
+    if (v.dog) roomSound.bark(v.dog);
     if (v.peek) {
       peeker.innerHTML = v.peek;
       flash(door, 'ajar', stillMotion() ? 3000 : 3200);

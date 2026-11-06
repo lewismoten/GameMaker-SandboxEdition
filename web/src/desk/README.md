@@ -6,11 +6,12 @@ The 1994 desk. `desk.ts` puts it together and works it: the disks, the
 boxes, the catalog and what the address asks for (`deskRestore.ts`). `deskScene.ts` draws the
 scene (`stage.ts` scales it to the window); `deskPc.ts` switches the PC on and off and loads its
 insides; `deskShelf.ts` fills the shelf, `deskGmBox.ts` opens the Game-Maker box, `deskLook.ts`
-points out a prop, and `wallTrophies.ts` hangs the eggs and trophies once earned.
+points out a prop, and `wallTrophies.ts` hangs the eggs and trophies once earned, and the framed certificate above the wall phone once a graduation is finished (`diploma/`: `frameLevel.ts` picks the level and frame, `diplomaArt.ts` draws it, `diplomaSpot.ts` hangs it, follows new honors and opens the Honors tab).
 `overlayFocus.ts` moves the keyboard into an overlay and back. `wallTrophies.ts` also puts Teddy's Forte Locks toy safe ([`fortKnox/`](../fortKnox/README.md)) at the desk's right end after a catalog win, including the zero left by games with no money counter. Its combination is scribbled in pencil on the sticky note under the phone (`room/phoneNotes.ts`). `deskTour.ts` is the guided tour's BBS chapter on this PC: it
 calls The Sandbox BBS and types for the tour, then puts back what the call changed.
 
 - `ejectRule.ts`: drive A:'s eject button works any time but while A:'s light is on.
+- `missingDisk.ts`: what the desk says when its address asks for a disk the box doesn't hold; a Starter or graduation is pointed to the Sample Disk or the CD's SAMPLES folder.
 - `pc/`: the case (`caseParts.ts`: the drive cage as one touching stack, all in mm from one `--mm` factor: the bright white CD-ROM and the 3.5" floppy (laid flat, KELVO, a made-up maker) side by side with their tops aligned, no empty expansion bays; POWER, TURBO and H.D.D. as a row of lights above the control strip with the hard disk's flickering one; `caseFace.ts`: the drawn key lock (open and closed padlocks, padlocks above it, the red arrow along the 45 degree notch toward the open one) and the SANDBOX badge with its sand castle; RESET, round and right of TURBO, reboots a PC that is on, `Computer.reset`; the TURBO button sits beside the MHz display), the CRT (`crtWarp.ts`; `screenGlow.ts` lights the bezel with
   the colors of the picture on the tube; `crtWarmUp.ts` and `crtOn.css` warm the tube up at switch-on: dark, the beam's flickering line, the picture fading up torn into jagged rows that settle;
   `crtOff.css` collapses it at switch-off), the fans whining up and the drives the boot reads (floppy seek test,
@@ -24,7 +25,7 @@ calls The Sandbox BBS and types for the tour, then puts back what the call chang
   the capture card (`capture.ts`, loaded by `captureStub.ts` on the first press).
   Narrow layouts hide the physical speakers and expose a 32px Sound Boaster switch beneath
   the key strip. Both controls share the remembered state and apply it to the current player.
-- `boxes/`: the retail boxes and their shelf (`shelf.ts`, `shelfLayout.ts`), turned in the box
+- `boxes/`: the retail boxes and their shelf (`shelf.ts`, `shelfLayout.ts`; each box is drawn when its slot nears the screen, its spine a small canvas from `boxSpine.ts`, so the desk's load does not grow with the games), turned in the box
   viewer (`boxViewer.ts`). The box in the viewer is kept in the address (`boxAddress.ts`): `#/desk?open=box:<game id>`, with `&turn=<y>,<x>,<zoom>` once turned by hand. Opening pushes a history entry (Back closes the viewer), stepping along the shelf replaces it; a reload or shared link opens it again, but only for a box on this visitor's shelf (an unknown id, or a secret game not yet revealed, opens nothing and is dropped from the address). The manual box opened from it ("Everything in the box", `manual/gameManual.ts`) has a **Game** picker first in its bar (`manual/printables/gamePicker.ts`): a labeled select plus ◀ ▶ (and the `[` and `]` keys; the arrows and PageUp/PageDown stay with the reader). It lists the shelf's boxes in shelf order (secret games only once revealed), swaps to that game's box at the same kind of piece, and the desk's `open=manual:<id>` follows. A game's box (`gameBox.ts`) is drawn from the game itself
   (`boxFacts.ts`, its play hours from its walkthrough in `playtime.ts`) with `boxPaint.ts`,
   `boxSeals.ts`, shelf wear (`boxWear.ts`), a glow under the black light (`boxUv.ts`) and a
@@ -66,7 +67,9 @@ calls The Sandbox BBS and types for the tour, then puts back what the call chang
   (`paperStack.ts`), and the mug, phone and lamp (`deskProps.ts`).
 - `props/`: makes the room's little things pressable (`index.ts`, `propKit.ts`, whose `cover`
   lays an empty, named button over a drawing with words on it; their sounds in
-  `propSound.ts`): the clock, waste basket, door, window (`window.ts`, tonight's real moon in
+  `propSound.ts`, whose `bark` plays the tour's real Teddy and Gwinn clips where a dog is on screen:
+  the door's visitors, the dogs outside, THE CHEZ's passenger, the mail dog and Gwinn's tail behind the
+  curtain; only once a tap has unlocked sound, and at most one call every 6 seconds): the clock, waste basket, door, window (`window.ts`, tonight's real moon in
   `moonPhase.ts`) and what goes by outside (`props/outside/`: `outside.ts` and one module each,
   such as THE CHEZ, the dogs, the plow and the mail jeep; `visible.ts` says whether the window can
   be seen), RSD's registration reply under the bedroom door (`mailDrop.ts`; its paper is

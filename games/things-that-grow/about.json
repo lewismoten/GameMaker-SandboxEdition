@@ -1,0 +1,47 @@
+{
+  "title": "Seeds and Nests",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "hero": "LAMI",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.1",
+  "blurb": "Two short levels about blocks that hatch things. A nest on a shelf hatches a bird every few seconds, and a nest on the path hatches blue ones until Lami steps on it and it stops. Signs in the levels say how. Play it, then open it in Game-Maker and change what hatches, and how often.",
+  "exe": "SEEDNEST.EXE",
+  "dosName": "SEEDNEST",
+  "sound": "sb",
+  "label": {
+    "background": "#e8f6ff",
+    "band": "#2fae9a",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "2 short levels",
+    "hours": 1,
+    "background": "#2fae9a",
+    "accent": "#ffd23f",
+    "ink": "#ffffff",
+    "tagline": "Some blocks hatch things.",
+    "back": "A small explorer in a red beanie crosses two short rooms. A nest on a shelf hatches a bird every few seconds, and a nest on the path hatches blue birds until Lami steps on it and it stops. Watch, then open the game in Game-Maker and change what hatches.",
+    "features": [
+      "Signs in the levels explain each idea",
+      "A block can hatch a monster again and again, and a touch can make it stop",
+      "Made to be copied and taken apart"
+    ],
+    "shots": [
+      [
+        "one.map",
+        24,
+        6
+      ],
+      [
+        "two.map",
+        24,
+        6
+      ]
+    ],
+    "rating": "Everyone"
+  }
+}

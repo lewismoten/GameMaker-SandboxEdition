@@ -2,7 +2,7 @@
 // all), trophy tiers, the bill, the backup's text, and that its keys are the owners' and backed up.
 import { readFileSync } from 'node:fs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { parseFlags } from './flags';
+import { parseFlags, runFlags } from './flags';
 import { BACKUP_KEYS, FlagError, HINT_CENTS_PER_MINUTE, ITEMS, overridesForCount, parseCount, parseTier } from './flagsItems';
 import { parseBak } from './flagsBackup';
 import { FLAGS_DIZ, FLAGS_HELP, FLAGS_NFO } from './flagsText';
@@ -132,5 +132,26 @@ describe('FLAGS backup and keys', () => {
     for (const l of [...FLAGS_HELP, ...FLAGS_DIZ, ...FLAGS_NFO]) expect(l.length).toBeLessThanOrEqual(79);
     expect(FLAGS_DIZ.at(-1)).toContain('Couriered by');
     expect(FLAGS_DIZ.length).toBeLessThanOrEqual(10);
+  });
+});
+
+describe('FLAGS PLAYED', () => {
+  it('rejects an unknown group and a count past the group', async () => {
+    vi.stubGlobal('localStorage', memory());
+    vi.stubGlobal('window', { dispatchEvent: () => true });
+    await expect(item('PLAYED').set!(['NOPE', '1'])).rejects.toBeInstanceOf(FlagError);
+    await expect(item('PLAYED').set!(['STARTERS', '99999'])).rejects.toBeInstanceOf(FlagError);
+  });
+});
+
+describe('FLAGS and the bonus games', () => {
+  it('does not explain how they open while none is revealed', async () => {
+    vi.stubGlobal('localStorage', memory());
+    vi.stubGlobal('window', { dispatchEvent: () => true });
+    const lines: string[] = [];
+    await runFlags({ screen: { print: (t: string) => lines.push(t) } } as never, ['SET', 'BONUS']);
+    const text = lines.join('');
+    expect(text).toContain('Don\'t know "BONUS"');
+    expect(text).not.toMatch(/felt egg|tin heart/i);
   });
 });

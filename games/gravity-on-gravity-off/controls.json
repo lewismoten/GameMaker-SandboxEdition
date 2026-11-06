@@ -1,0 +1,54 @@
+{
+  "keys": {
+    "75": {
+      "short": "Walk left",
+      "long": "Walk left."
+    },
+    "77": {
+      "short": "Walk right",
+      "long": "Walk right."
+    },
+    "57": {
+      "short": "Jump",
+      "long": "Jump in level 1, where gravity pulls you back down. In level 2 there is no gravity and Space does nothing."
+    },
+    "72": {
+      "short": "Walk up",
+      "long": "Walk up in level 2, where gravity is off. Level 1 has no ladder."
+    },
+    "80": {
+      "short": "Walk down",
+      "long": "Walk down in level 2, where gravity is off. Level 1 has no ladder."
+    },
+    "30": {
+      "short": "Walk left",
+      "long": "Same as the Left arrow."
+    },
+    "32": {
+      "short": "Walk right",
+      "long": "Same as the Right arrow."
+    },
+    "17": {
+      "short": "Walk up",
+      "long": "Same as the Up arrow."
+    },
+    "31": {
+      "short": "Walk down",
+      "long": "Same as the Down arrow."
+    }
+  },
+  "joystick": {
+    "1": {
+      "short": "Jump",
+      "long": "Jump."
+    }
+  },
+  "sounds": {
+    "9": "The jump",
+    "10": "Getting hurt",
+    "11": "Falling over"
+  },
+  "counters": {
+    "20": "Keys: not used here, but a copy can add them."
+  }
+}

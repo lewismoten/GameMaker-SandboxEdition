@@ -6,9 +6,10 @@
 import { GameFiles, IGNORED_FILE } from '../project/files';
 import { isZip, readZip } from '@lewismoten/gamemaker-sandbox-archives/zip';
 import { decodePack } from '@lewismoten/gamemaker-sandbox-archives/pack';
-import { fromBase64, readSinglePage, unpack, type SinglePageGame } from '../export/singlePage';
+import { fromBase64, readSinglePage, unpack, withExternal, type SinglePageGame } from '../export/singlePage';
 import { parseGame, gameTitle } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { takeCompanion, type Companion } from '../project/companion';
+import { takeFileIdDiz } from '../project/importDiz';
 import { LinkError, MAX_FILES, MAX_TOTAL_BYTES, checkLimits, cleanName } from './protocol';
 
 export interface UnpackedGame {
@@ -66,13 +67,16 @@ async function pageGame(bytes: Uint8Array): Promise<{ files: [string, Uint8Array
   if (!list.every((f) => Array.isArray(f) && typeof f[0] === 'string' && Number.isInteger(f[1]) && f[1] >= 0) || typeof game.data !== 'string') {
     throw new LinkError('The web page’s game is damaged.', 'invalid');
   }
-  if (list.length > MAX_FILES || list.reduce((n, f) => n + f[1], 0) > MAX_TOTAL_BYTES)
+  const ext = Array.isArray(game.ext) ? game.ext : [];
+  if (!ext.every((f) => Array.isArray(f) && typeof f[0] === 'string' && typeof f[1] === 'string' && Number.isInteger(f[2]) && f[2] >= 0))
+    throw new LinkError('The web page’s game is damaged.', 'invalid');
+  if (list.length + ext.length > MAX_FILES || list.reduce((n, f) => n + f[1], 0) + ext.reduce((n, f) => n + f[2], 0) > MAX_TOTAL_BYTES)
     throw new LinkError('The game is bigger than the limit allows.', 'too-big');
   try {
     const raw = fromBase64(game.data);
     const blob = game.enc === 'gzip' ? await gunzip(raw) : raw;
     return {
-      files: unpack(list, blob),
+      files: withExternal(unpack(list, blob), ext, game.external),
       title: typeof game.title === 'string' ? game.title : undefined,
       gam: typeof game.gam === 'string' ? game.gam : undefined,
     };
@@ -135,6 +139,7 @@ export async function unpackGame(input: [string, Uint8Array][], opts: { name?: s
     // a damaged companion (editor-only extras) is left behind; the game itself is fine
     for (const n of files.byExtension('gmx')) files.delete(n);
   }
+  companion = takeFileIdDiz(files, companion);
   const gam = files.mainGame(preferred);
   if (!gam)
     throw new LinkError(

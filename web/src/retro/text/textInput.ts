@@ -40,6 +40,8 @@ export class TextKeys {
     const k = e as KeyboardEvent;
     if (!this.enabled || k.metaKey) return;
     if (k.key === 'Shift' || k.key === 'Control' || k.key === 'Alt' || k.key === 'CapsLock') return;
+    // Shift+Tab is the way out of the screen for a keyboard (the DOS programs here never read it), so focus is not trapped
+    if (k.key === 'Tab' && k.shiftKey && !k.ctrlKey && !k.altKey) return;
     k.preventDefault();
     this.push({ key: k.key, code: k.code, ctrl: k.ctrlKey, shift: k.shiftKey, alt: k.altKey });
   };

@@ -13,7 +13,8 @@ export const KEPT: Record<SectionId, string> = {
   hearts: 'Tin hearts you found.',
   desk: 'The 1994 desk: the mug, the mail, the clock, the BBS sign-ups, the C: drive, your game pad and the sound card switch.',
   notes: 'Notes on imported games and games you removed from the list.',
-  prefs: 'Settings: light or dark, text size, which tab or sort you last used, sound and tour choices, print options.',
+  prefs:
+    'Settings: light or dark, text size, Color help choices (color names, look-alike warnings, previews), which tab or sort you last used, sound and tour choices (and the day you last saw the tour’s What’s new), print options.',
   ai: 'Your AI setup if you made one: the address, the model and the key, exactly as you typed them.',
 };
 
@@ -21,6 +22,7 @@ export const KEPT: Record<SectionId, string> = {
 export const DATABASES: Record<string, string> = {
   'gamemaker-web': 'your games and saved games',
   'gamemaker-save-backups': 'copies of saved games taken before a change',
+  'gamemaker-recently-deleted': 'games you deleted in the last 7 days, kept so they can be brought back',
   'gamemaker-desk': 'the desk PC’s C: drive',
   'gamemaker-web-player': 'saved games for the player page and games exported for the web',
 };

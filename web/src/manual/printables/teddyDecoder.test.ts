@@ -8,6 +8,7 @@ import type { CodeWheelItem } from './types';
 import { turnFor } from './codeWheel';
 import { OUTER, INNER, HIDDEN, WINDOWS, GLYPHS, GATES, GATE_CODES, codeOf, turnOf } from '../../../../games/teddy3/src/wheel/wheel';
 import { FACES } from '../../../../games/teddy3/src/wheel/faces';
+import { resolvedFaceArt, FACE_ART } from '../../../../games/teddy3/src/wheel/faceArt';
 import { FACE_FILLS, FILL_COLORS } from '../../../../games/teddy3/src/wheel/faceColors';
 
 const file = join(__dirname, '../../../../games/teddy3/printables.json');
@@ -48,6 +49,12 @@ describe("Teddy's Little Biggest Adventure: the Face Dial matches the game", () 
     expect(GATE_CODES.findIndex((c) => c.join() === codeOf('Gwinn').join())).toBe(GATES.open);
     expect(new Set(GATE_CODES.map((c) => c.join())).size).toBe(GATE_CODES.length);
     expect(p.answer).toContain(codeOf('Gwinn').join(', '));
+  });
+
+  it('draws every face as line art, the same nine as the pixel faces, with a copy of the game folder shapes', () => {
+    expect(it0.faceArt).toEqual(resolvedFaceArt());
+    expect(Object.keys(FACE_ART).sort()).toEqual(Object.keys(FACES).sort());
+    for (const shapes of Object.values(FACE_ART)) expect(shapes.length).toBeGreaterThan(8);
   });
 
   it('colors every face on both discs the same as the game, over the same 12 by 12 picture', () => {

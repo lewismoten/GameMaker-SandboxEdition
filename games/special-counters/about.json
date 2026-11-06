@@ -1,0 +1,37 @@
+{
+  "title": "Not That Key",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "hero": "NOVA",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.1",
+  "blurb": "Three short levels about keys that travel. A key you do not use stays in your pocket when the level ends, so a spare opens a door two levels later. But a green door has its own counter, and a gold key will not open it. Signs in the levels say how. Play it, then open it in Game-Maker and give a door a counter of its own.",
+  "exe": "SPECCNTR.EXE",
+  "dosName": "SPECCNTR",
+  "sound": "sb",
+  "label": {
+    "background": "#e8f6ff",
+    "band": "#2a9a6a",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "3 short levels",
+    "hours": 1,
+    "background": "#2a9a6a",
+    "accent": "#ffd23f",
+    "ink": "#ffffff",
+    "tagline": "A gold key will not open a green door.",
+    "back": "A small explorer in a gold beanie keeps a spare key from one level to the next, until a green door will not take it. Counters carry across levels and have numbers, not names, so each door answers only to its own. Read the signs, then open the game in Game-Maker and copy a key and a door onto a counter of your own.",
+    "features": ["Signs in the levels explain each idea", "A spare key goes with you to the next level", "Made to be copied and taken apart"],
+    "shots": [
+      ["one.map", 22, 6],
+      ["two.map", 22, 6],
+      ["three.map", 20, 6]
+    ],
+    "rating": "Everyone"
+  },
+  "acceptedFindings": ["facing s4 The hero climbs side on"]
+}

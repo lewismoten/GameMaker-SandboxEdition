@@ -1,0 +1,71 @@
+{
+  "title": "Coins and Score",
+  "pages": [
+    {
+      "head": "Welcome",
+      "html": "<h1>Welcome</h1><p><b>Coins and Score</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has three short levels and takes a few minutes to finish.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each thing in the levels is made.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. <kbd>Space</kbd> jumps. <kbd>Up</kbd> and <kbd>Down</kbd> climb a ladder. <kbd>F2</kbd> shows your score and lives. Walk into the door at the end of a level to go on. There is nothing to fight and nothing that hurts.</p>"
+    },
+    {
+      "head": "Level 1: Coins Add Points",
+      "html": "<h1>Level 1: Coins Add Points</h1><p>Walk right and touch the coins. Each one is worth ten points and is gone once you have it. Six lie along the ground, and five more run along a ledge up a ladder. That makes 110 points. The <b>COINS ADD POINTS</b> sign says so, and just after it the <b>F2 SHOWS YOUR SCORE</b> sign says where to look: the score is not drawn on the play screen. Press <kbd>F2</kbd> to see it, then any key to carry on.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 1 is made</h1><ul><li><b>The coin.</b> Open <b>coins.bbl</b> in the blocks editor and pick the <b>coin</b> block. On its <b>Touch</b> tab, <b>Score points</b> is 10, and <b>Becomes block</b> is sky, so the coin is gone once you have it.</li><li><b>Where the score is shown.</b> Game-Maker keeps the score for you and has no place for it on the play screen. <kbd>F2</kbd> opens a status page with the score, the lives, the hit points and the time. That page comes with Game-Maker. Nothing in this game draws it.</li><li><b>The ledge.</b> Open <b>one.map</b> in the map editor. The ledge is a row of <b>grass</b> over <b>dirt</b>, reached by a <b>ladder</b>. The coins along it are the same <b>coin</b> block.</li><li><b>The signs.</b> Each sign is a few ordinary blocks side by side, with the words drawn in their pictures. Change the words in the blocks editor and play again.</li><li><b>The exit.</b> A scene link joins the door at the end to the next level. Open <b>coins.gam</b> in the scenes editor and look at the links of the Coins Add Points scene.</li></ul>"
+    },
+    {
+      "head": "Level 2: Some Are Worth More",
+      "html": "<h1>Level 2: Some Are Worth More</h1><p>Not every pickup pays the same. A coin is worth 10, and the <b>A COIN IS WORTH 10</b> sign says so. Up a ladder, three blue gems sit on a ledge, each worth 50. Further on, a gray rock lies in the path, and the <b>A ROCK TAKES 20 AWAY</b> sign warns you. Walk into it and your score goes down by 20. You can jump over it to keep your points. The level holds 40 + 150 + 30 = 220 points, or 200 if you take the rock.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 2 is made</h1><ul><li><b>Different points.</b> Open <b>coins.bbl</b> and compare the <b>coin</b>, <b>gem</b> and <b>rock</b> blocks. They are the same kind of block with a different <b>Score points</b> on the <b>Touch</b> tab: 10, 50 and &minus;20. Each one also has <b>Becomes block</b> set to sky, so it is gone once touched.</li><li><b>A pickup that costs.</b> Score points can be below zero. Touching the rock subtracts from the score, and Game-Maker plays its own sound for it. Nothing stops the score going negative, so a level that takes points away is best kept small.</li><li><b>The gems.</b> Open <b>two.map</b> in the map editor. The gems are on a ledge of <b>grass</b> over <b>dirt</b>, reached by a <b>ladder</b>. To change what a gem is worth, edit the <b>gem</b> block, not the map.</li><li><b>The exit.</b> The door at the end links to the next level in <b>coins.gam</b>.</li></ul>"
+    },
+    {
+      "head": "Level 3: Points Are Not Lives",
+      "html": "<h1>Level 3: Points Are Not Lives</h1><p>Ten coins lie in a row, and the <b>COINS ARE ONLY POINTS</b> sign tells you what they do: they add 100 to the score and nothing else. Press <kbd>F2</kbd> and your lives are still 3. Further on, a red heart sits on a ledge up a ladder, with a <b>A HEART ADDS A LIFE</b> sign. Take it and press <kbd>F2</kbd> again: 4 lives. The heart is worth no points at all.</p><p>Many games give an extra life at a certain score. <b>Game-Maker does not.</b> Its score only counts up (or down), and nothing in the engine watches it for a limit. A life comes from a block that adds to the lives counter, like the heart.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 3 is made</h1><ul><li><b>The heart.</b> Open <b>coins.bbl</b> and pick the <b>heart</b> block. On its <b>Touch</b> tab, <b>Effect counter</b> is set to 1 (the lives counter) and <b>Effect amount</b> to 1. <b>Score points</b> is 0, and <b>Becomes block</b> is sky. Game-Maker plays its own sound when a life is added.</li><li><b>Starting lives.</b> Open <b>hero.chr</b> in the character editor. The hero starts with 3 lives; that number is on the character, not in the level.</li><li><b>Why coins give no life.</b> The <b>coin</b> block only has <b>Score points</b>. The score is a plain number that nothing checks against a limit, so a life has to come from a block.</li><li><b>Where lives show.</b> <kbd>F2</kbd> shows them on the same status page as the score. The lives also decide what happens when the hero falls: with one or more left, the level starts over.</li><li><b>The exit.</b> The last door links to the <b>The End</b> scene in <b>coins.gam</b>, which plays the ending.</li></ul>"
+    },
+    {
+      "head": "Make it yours",
+      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>Change a gem&rsquo;s <b>Score points</b> to 100 and play level 2 again.</li><li>Make the rock cost 50, or cost nothing.</li><li>Put a heart on the ground in level 3 where you cannot miss it.</li><li>Give the hero 5 lives in <b>hero.chr</b> and press <kbd>F2</kbd> on the first level.</li></ul><p>The home page&rsquo;s <b>Starters</b> tab has more small games like this one.</p>"
+    }
+  ],
+  "howDoI": [
+    {
+      "id": "coin",
+      "q": "How do I make a coin that gives points?",
+      "scene": 2,
+      "x": 23,
+      "y": 19,
+      "level": 1
+    },
+    {
+      "id": "worth-more",
+      "q": "How do I make a pickup worth more points?",
+      "scene": 3,
+      "x": 37,
+      "y": 12,
+      "level": 2
+    },
+    {
+      "id": "take-away",
+      "q": "How do I make something take points away?",
+      "scene": 3,
+      "x": 49,
+      "y": 19,
+      "level": 2
+    },
+    {
+      "id": "extra-life",
+      "q": "How do I give the player an extra life?",
+      "scene": 4,
+      "x": 41,
+      "y": 12,
+      "level": 3
+    }
+  ]
+}

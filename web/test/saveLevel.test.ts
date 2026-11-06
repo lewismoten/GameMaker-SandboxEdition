@@ -2,6 +2,7 @@
 // panel and SAVEHACK) gives a save F6 loads (restoreSaved) in the new level at its start, with
 // the score, lives, inventory and counters kept; moving the hero checks the blocks he stands
 // in; the picture is the playing view around him.
+// Stays slow: each case loads every level of a real game.
 import { describe, expect, it } from 'vitest';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
@@ -32,7 +33,12 @@ const games = join(__dirname, '..', '..', 'games');
 function disk(id: string) {
   const dir = join(games, id, 'disk');
   const byName = new Map(readdirSync(dir).map((n) => [n.toLowerCase(), join(dir, n)]));
-  const get = (n: string) => (byName.has(n.toLowerCase()) ? new Uint8Array(readFileSync(byName.get(n.toLowerCase())!)) : undefined);
+  const read = new Map<string, Uint8Array | undefined>(); // each file is read from disk once
+  const get = (n: string) => {
+    const k = n.toLowerCase();
+    if (!read.has(k)) read.set(k, byName.has(k) ? new Uint8Array(readFileSync(byName.get(k)!)) : undefined);
+    return read.get(k);
+  };
   const gam = [...byName.keys()].find((n) => n.endsWith('.gam'))!;
   return { files: { get }, gam };
 }
@@ -68,7 +74,7 @@ describe('changing a saved game’s level', () => {
         expect(game.scenes[save.prevscene].links[save.linkin].toScene).toBe(level.scene);
         expect(save.world.chr.x[0]).toBe(level.to.x);
         expect(save.world.chr.y[0]).toBe(level.to.y);
-        expect(serializeSave(parseSave(serializeSave(save)))).toEqual(serializeSave(save));
+        expect(Buffer.compare(serializeSave(parseSave(serializeSave(save))), serializeSave(save))).toBe(0);
 
         const s = { m: { files }, game, rand: seeded, ci: newCharInfo(), rec: new Recorder(), sndClock: 0 };
         const loaded = restoreSaved(s, undefined, JSON.parse(JSON.stringify(save)) as Saved);

@@ -7,7 +7,7 @@ import { floppyElement } from './diskBox';
 export function fillDiskBox(box: HTMLElement, disks: Disk[]): void {
   // two stacks standing in the box: the site's disks (Sandbox's games in front) on the
   // left, the user's own on the right (a blank one when there are none yet)
-  const site = disks.filter((d) => d.kind === 'original' || d.kind === 'rsd' || d.kind === 'gameware').slice(0, 6);
+  const site = disks.filter((d) => d.kind === 'sample' || d.kind === 'original' || d.kind === 'rsd' || d.kind === 'gameware').slice(0, 6);
   const own = disks.filter((d) => d.kind === 'project').slice(0, 5);
   const mine = [...own, ...disks.filter((d) => d.kind === 'blank')];
   // a row seen from the front and a little above: each disk behind stands a little

@@ -1,0 +1,83 @@
+{
+  "title": "Say the Word",
+  "howDoI": [
+    {
+      "id": "word",
+      "q": "How do I make a pickup that adds a word to a count?",
+      "scene": 2,
+      "x": 19,
+      "y": 19,
+      "level": 1
+    },
+    {
+      "id": "lock",
+      "q": "How do I make a lock that takes three words?",
+      "scene": 2,
+      "x": 29,
+      "y": 19,
+      "level": 1
+    },
+    {
+      "id": "refund",
+      "q": "How do I give back what a lock took?",
+      "scene": 2,
+      "x": 31,
+      "y": 19,
+      "level": 1
+    },
+    {
+      "id": "refund-path",
+      "q": "How do I make sure the player always gets the refund?",
+      "scene": 2,
+      "x": 31,
+      "y": 19,
+      "level": 1
+    },
+    {
+      "id": "keep",
+      "q": "How do I make a lock keep what it takes?",
+      "scene": 3,
+      "x": 28,
+      "y": 19,
+      "level": 2
+    },
+    {
+      "id": "exit-lock",
+      "q": "How do I make a lock the level's exit?",
+      "scene": 3,
+      "x": 54,
+      "y": 19,
+      "level": 2
+    }
+  ],
+  "pages": [
+    {
+      "head": "Welcome",
+      "html": "<h1>Welcome</h1><p><b>Say the Word</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has two short levels and takes a couple of minutes to finish.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each thing in the levels is made.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. <kbd>Space</kbd> jumps. <kbd>Up</kbd> and <kbd>Down</kbd> climb a ladder. <kbd>F2</kbd> shows your lives, hit points and score. Walk into the door at the end of a level to go on.</p><p>A speech bubble adds one word to a counter you carry. A lock takes three from that count. A gold tray gives three back. Nothing in this game hurts you.</p>"
+    },
+    {
+      "head": "Level 1: Pay to Pass",
+      "html": "<h1>Level 1: Pay to Pass</h1><p>The <b>WORDS ADD UP. GET 3</b> sign stands at the start, with three speech bubbles on the ground behind it. Further on, a brick wall has a green lock in it, and the <b>THIS LOCK TAKES 3 WORDS</b> sign stands in front.</p><p>Pick up all three bubbles and walk into the lock. It opens and takes all three, so your count is zero. Just past it a small gold tray lies on the ground. Walk over it and the three words come back. The <b>PAY THIS LOCK AGAIN</b> sign stands by a second lock, and because you have three words again, it opens too.</p><p>There are nine coins on the way, worth ten points each.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 1 is made</h1><ul><li><b>The word.</b> Open <b>words.bbl</b> in the blocks editor and pick the speech bubble. It is not solid, so Lian walks into it. Its <b>Changes counter</b> is <b>Special counter 3</b> by <b>1</b>, and <b>Becomes</b> is the sky, so the bubble is gone once you touch it. Special counters are numbers 20 to 29 in the engine, free for a game to use.</li><li><b>The lock.</b> Pick the green lock. It is <b>solid on all four sides</b>. Its <b>Changes counter</b> is <b>Special counter 3</b> by <b>-3</b>, and <b>Becomes</b> is the sky. A touch is refused if the counter cannot pay, so with two words the lock does nothing. With three it opens and the counter goes back to zero.</li><li><b>The refund.</b> Pick the gold tray. It is the same idea as the word: not solid, <b>Changes counter</b> is <b>Special counter 3</b>, but by <b>3</b>, and <b>Becomes</b> is the sky. It knows nothing about the lock. It only adds three to the same counter, once.</li><li><b>On the way.</b> The tray lies right behind the lock, on the ground, so every walk through the lock crosses it. A refund the player can step around is a refund they can miss.</li><li><b>The start.</b> Open <b>hero.chr</b> in the Character Maker. The counter's <b>Starts at</b> is 0.</li><li><b>No way over.</b> Each lock is one block high, under an arch in a brick wall that goes to the top of the room, so it cannot be jumped over.</li></ul>"
+    },
+    {
+      "head": "Level 2: No Tray",
+      "html": "<h1>Level 2: No Tray</h1><p>The <b>NO TRAY HERE. GET 6</b> sign says what this level needs. Three speech bubbles lie on the ground, and a brick wall with a lock stands past them. Walk through it and the lock takes your three. This time no tray lies behind it, and the <b>NO TRAY. THEY ARE GONE</b> sign says so.</p><p>Further on, the exit lock is a second brick wall away. Walk into it with an empty count and it stays shut. Three more speech bubbles sit along a ledge you reach by the ladder. Take them, come back down, and the exit lock opens. You walk on into the ending.</p><p>There are seven coins along the ground, worth ten points each.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 2 is made</h1><ul><li><b>Leave the tray out.</b> This level uses the same lock block as level 1, and a lock only takes. Nothing in the map adds to the counter after it, so what the lock took stays taken.</li><li><b>Six words.</b> The map holds three words before the first lock and three more on the ledge, and two locks take three each. A map with only five would leave the exit lock shut for good, and the Level check's <i>Counters that run out</i> would say so.</li><li><b>The lock is the door.</b> Open <b>words.gam</b> in the game editor. The level's only link starts on the exit lock's own block. A lock is solid until it is paid, then it becomes sky, and the next step into that block is the link to the next scene.</li><li><b>A fresh count.</b> Counters travel from level to level. Level 1 ends with the count at zero, so this level starts at zero.</li><li><b>The ledge.</b> The extra words wait up a ladder, in plain sight from the ground.</li></ul>"
+    },
+    {
+      "head": "What Game-Maker cannot do",
+      "html": "<h1>What Game-Maker cannot do</h1><p>A lock and a tray are two blocks and a counter, and that is all:</p><ul><li>A lock cannot keep part of a payment, and a tray cannot return part of one. A touch changes the counter by one fixed amount, or it is refused. The game's own touch rule (<b>PLAYGAME.C</b>, <i>DoBlockTouchChar</i>) refuses any touch that would leave a special counter at zero or below, and otherwise adds the amount in full.</li><li>A tray does not know what a lock took. It gives its own number, three, even if you paid something else. If the lock's price changes, change the tray to match.</li><li>A touch cannot read the counter and decide. Nothing here says <i>give back half</i> or <i>give back whatever was paid</i>.</li><li>The player does not see the counter. The status line shows hit points, lives and score, not a special counter. Put the price in the picture, as the lock does with its three notches.</li><li>A counter cannot go below zero, so a lock can never put you in debt.</li></ul>"
+    },
+    {
+      "head": "Make it yours",
+      "html": "<h1>Make it yours</h1><ul><li>Change the tray's amount to 2 in the blocks editor. The second lock now cannot open, and the Level check says the counter runs out.</li><li>Change the tray to give 5. Level 1 now leaves you with two spare words after the second lock.</li><li>Take the tray out of level 1's map and put a bubble past the first lock instead.</li><li>Put a tray into level 2 behind the first lock. Three words are now enough for the whole level.</li><li>Move the tray up onto a ledge, then see that a player can walk right past it.</li></ul><p>The home page's <b>Starters</b> tab has more small games like this one.</p>"
+    }
+  ]
+}

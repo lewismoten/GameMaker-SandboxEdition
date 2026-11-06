@@ -1,4 +1,7 @@
 {
+ "beltway": [
+  "warning waits s3 Timed block 98 stays shut for 18.5 s at a time"
+ ],
  "blaster": [
   "warning births s10 Block 31 gives birth to monster 15 every 0.7 s",
   "warning births s10 Block 33 gives birth to monster 14 every 0.7 s",
@@ -127,9 +130,23 @@
   "warning start-threat s7 Monster 2 starts 3 blocks from where the hero comes in",
   "warning start-threat s7 Monster 20 starts 2 blocks from where the hero comes in"
  ],
+ "dice": [
+  "warning facing s2 The hero climbs side on"
+ ],
+ "drop-down": [
+  "warning counters s2 Counter 21: the gate needs 1; this scene gives 0; no other scene gives any: not enough in the whole game as drawn",
+  "warning counters s3 Counter 21: the gate needs 2; this scene gives 0; no other scene gives any: not enough in the whole game as drawn"
+ ],
  "goat": [
   "warning shot-prize s2 The hero’s shots destroy prize monster 2 (power 60, shots up to 120)",
   "warning shot-prize s5 The hero’s shots destroy prize monster 2 (power 60, shots up to 120)"
+ ],
+ "horizon": [
+  "warning waits s3 Timed block 142 stays shut for 19.2 s at a time"
+ ],
+ "inventory": [
+  "warning facing s3 The hero climbs side on",
+  "warning reach s- P (pick up) makes the right hand leave the arrows"
  ],
  "loaf": [],
  "logic": [
@@ -440,6 +457,12 @@
  "needle": [
   "warning start-threat s2 The hero starts with nothing to fire, and 2 enemies are on the first screen"
  ],
+ "one-more-try": [
+  "warning facing s3 The hero climbs side on"
+ ],
+ "parallax": [
+  "warning waits s3 Timed block 92 stays shut for 16.5 s at a time"
+ ],
  "realm": [
   "warning density s37 6 enemies on one screen at (42, 24)",
   "warning start-threat s2 Monster 11 starts 2 blocks from where the hero comes in",
@@ -511,6 +534,10 @@
  "tickle": [
   "warning hazard-art s2 Block 34 hurts through its whole cell, but its art fills 20% of it",
   "warning start-threat s5 Monster 9 starts 2 blocks from where the hero comes in"
+ ],
+ "watch-your-step": [
+  "warning hazard-art s3 Block 62 hurts through its whole cell, but its art fills 17% of it",
+  "warning hazard-art s4 Block 62 hurts through its whole cell, but its art fills 17% of it"
  ],
  "year2000": [
   "warning start-threat s6 Monster 21 starts 2 blocks from where the hero comes in",

@@ -1,0 +1,72 @@
+{
+ "version": 1,
+ "game": "one-more-try",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU1szQ5LAMsDSwXLAzkCuQBLRssDSwDLAzkCuQBLRssDSwDLAzkCuQBLRssrTQ=="
+  },
+  {
+   "scene": 2,
+   "keys": "A01kzQNNATkCuR3NA00="
+  },
+  {
+   "scene": 3,
+   "keys": "AU0yzQNNCM0OSwDLA00KzQNIJ8gDTQrNA00ezQNNCM0OSwDLA00FzQM5ArkATQXNCTkCuQBNBc0TTSPNA00IzQ5LAMsDSwDLAzkCuQBNBc0SOQK5AE0FzRI5ArkATQjNDE0KzQNN"
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: A Post to Start Over"
+  },
+  {
+   "scene": 2,
+   "title": "Level 1: A Post to Start Over"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: Ways Back"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 9973,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 913,
+    "time": 15216.666666666471
+   },
+   {
+    "title": "Level 1: A Post to Start Over",
+    "frame": 2142,
+    "time": 35700.00000000053
+   },
+   {
+    "title": "Level 2: Ways Back",
+    "frame": 4953,
+    "time": 82550.00000000114
+   },
+   {
+    "title": "Ending",
+    "frame": 6689,
+    "time": 111483.33333334289
+   },
+   {
+    "title": "Credits",
+    "frame": 8899,
+    "time": 148316.6666666719
+   }
+  ]
+ }
+}

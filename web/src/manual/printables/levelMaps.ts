@@ -30,6 +30,7 @@ import { panZoom } from './panZoom';
 import type { Reader, ReaderOptions, ReadView } from '../readView';
 import { percentOf, widthAt, type ReadSize } from '../readSize';
 import { scrollPages, type ScrollPages } from '../scrollPages';
+import { yieldNow } from './yieldNow';
 
 /** A printed page (landscape letter, tenths of an inch), its margin, header and footer. */
 const PAGE = { w: 105, h: 80 };
@@ -512,7 +513,11 @@ async function printSheets(
   const boxes = levels.map((l) => levelBox(game, l));
   const placed = packPages(boxes, AREA, GAP);
   // a first-sheet picture paints only the levels on page 0
-  for (const [i, l] of levels.entries()) if (!l.course && (!firstOnly || placed[i].page === 0)) urls.set(l, await paint(l));
+  for (const [i, l] of levels.entries())
+    if (!l.course && (!firstOnly || placed[i].page === 0)) {
+      urls.set(l, await paint(l));
+      await yieldNow(); // a level at a time, so a key pressed meanwhile is not kept waiting for them all
+    }
   const pages = new Map<number, SVGElement[]>();
   const out: Sheet[] = [];
   const pageCount = firstOnly ? Math.min(1, placed.length) : placed.length ? Math.max(...placed.map((p) => p.page)) + 1 : 0;

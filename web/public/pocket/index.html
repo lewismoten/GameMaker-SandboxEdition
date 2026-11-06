@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Pocket Player Install</title>
+    <!-- Dev-only spike page: not linked from the site. ESP Web Tools is vendored in ewt/ (Apache-2.0), so nothing loads from outside. -->
+    <style>
+      body { font: 16px/1.5 system-ui, sans-serif; max-width: 36rem; margin: 2rem auto; padding: 0 16px; background: #fff; color: #111; }
+      @media (prefers-color-scheme: dark) { body { background: #111; color: #eee; } a { color: #8cf; } }
+      h1 { font-size: 1.4rem; }
+      /* the vendored button's default blue gives white text 2.6:1; this one gives about 6:1 */
+      esp-web-install-button { --esp-tools-button-color: #0a5a99; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Game-Maker Pocket Player: install</h1>
+      <p>For the ESP32-3248S035 (3.5 inch, 480 by 320). This writes the whole board: it replaces what was on it.</p>
+      <ol>
+        <li>Use desktop Chrome or Edge. Firefox and Safari can't do this.</li>
+        <li>Plug the board into the computer with a USB cable that carries data.</li>
+        <li>Click Install below, pick the board's serial port, and click Install again.</li>
+        <li>Wait for it to finish (about a minute). The board restarts by itself.</li>
+      </ol>
+      <esp-web-install-button manifest="manifest.json">
+        <span slot="unsupported">This browser can't flash a board. Use desktop Chrome or Edge.</span>
+        <span slot="not-allowed">Open this page from http://localhost or https, not a file.</span>
+      </esp-web-install-button>
+      <p>Then see <code>hardware/pocket-player/README.md</code> for what the screen should show.</p>
+    </main>
+    <script type="module" src="ewt/install-button.js"></script>
+  </body>
+</html>

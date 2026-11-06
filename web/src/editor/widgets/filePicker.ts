@@ -61,7 +61,7 @@ export function pickFile(project: Project, kind: FileKind, opts: PickOptions = {
       stopPreview();
       close0(v);
     };
-    const grid = h('div', { class: 'pick-grid' });
+    const grid = h('div', { class: 'pick-grid', dataset: { listArea: '' } });
     const filters = h('div', { class: 'pick-filters', role: 'group', 'aria-label': 'Sound groups' });
     const tabs = h('div', { class: 'pick-tabs', role: 'tablist' });
     let filter: SoundGroup | 'all' = 'all';

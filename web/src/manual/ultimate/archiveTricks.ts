@@ -10,7 +10,7 @@
 // of a block's birth time, only in cells showing it, up to half a screen past the edges, a hero
 // moves at most MAXGRAV (11) pixels a tick, and XFERPLAY opens the .gam named after its own .EXE
 // (main, argv[0]).
-import { tip } from './chapter';
+import { tip, onCd } from './chapter';
 
 export const ARCHIVE_TRICKS = `<h2>More from the archive</h2>
   <p>A second look through the collection, the rest of its two hundred and seventy games, turned
@@ -163,6 +163,7 @@ export const ARCHIVE_TRICKS = `<h2>More from the archive</h2>
   <p>The author drew the numbers 1 to 6 on the start blocks to keep them straight in the editor,
   and the numbers flash on the screen for the first few ticks. Draw the start blocks as the
   ground they stand for, and keep the numbers in a notebook.</p>
+  ${onCd('HORIZON')}
   <h2>An end to a road that never ends</h2>
   <p>A road like that goes nowhere: the hero only moves left and right. The Cloud Lane in
   <i>In The Year 2000!</i> gives it a destination, an idea from this edition’s maintainer:</p>
@@ -190,6 +191,15 @@ export const ARCHIVE_TRICKS = `<h2>More from the archive</h2>
     leap, 240 pixels in a tick, onto the horizon, so nothing is ever seen arriving from the side.
     Two more spawners give birth to the lane dashes every 8 ticks, forever.</li>
   </ul>
+  <h2>A room seen from a corner</h2>
+  <p>An isometric room needs no new engine. Paint a floor of diamonds 20 pixels wide and 10 high
+  (it repeats every 20 pixels, so every plain floor cell is the same block), draw cubes as a
+  diamond top with two darker sides, and cut the picture into blocks. The hero still walks the
+  square grid and is drawn over everything: he cannot go behind a tower, and a tower taller
+  than one block is solid in every block its picture covers. To walk the drawn diagonals, give
+  each arrow's sequence a frame that moves him across and down at once (4 and 2 pixels fit
+  diamonds twice as wide as high), and draw him only on the four diagonal facings.</p>
+  ${onCd('CORNER')}
   <h2>Choices you walk into</h2>
   <p>A menu doesn’t have to be a menu. Start the game in a small room with two or three doors,
   each a link to a different scene, and label the floor in front of each: the player picks by
@@ -246,6 +256,7 @@ export const ARCHIVE_TRICKS = `<h2>More from the archive</h2>
   three speeds above. Balls, puddles, branches and treats are born off the right edge, one block
   of a timed chain each, and when the paw prints in the sky fill in, the path pulls him to the
   finish.</p>
+  ${onCd('PARALLAX', 'BELTWAY')}
   <h2>A pass code to get through</h2>
   <p>A short puzzle in the archive locks its exit behind a word. The screen is a wall of carved
   letter tiles, eight across and three rows high, with the hero below. He walks left and right and

@@ -1,0 +1,36 @@
+{
+  "title": "Slippery and Bouncy",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "hero": "KIT",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.1",
+  "blurb": "Three short levels about gravity as a tool. Ice drags Kit along and they slide on after they let go, a belt carries them down its length, a spring pad bounces them up and a fan's wind lifts them through a ledge. Each level has one spike to learn from. Signs say how. Play it, then open it in Game-Maker and change a pull.",
+  "exe": "SLIP.EXE",
+  "dosName": "SLIPPERY",
+  "sound": "sb",
+  "label": {
+    "background": "#eef2ff",
+    "band": "#5b6fd6",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "3 short levels",
+    "hours": 1,
+    "background": "#5b6fd6",
+    "accent": "#ffd23f",
+    "ink": "#ffffff",
+    "tagline": "Let the blocks pull.",
+    "back": "A small explorer in a teal beanie has three short levels to cross, and every block in them can pull. Ice drags them and they slide on, a belt carries them, a spring pad bounces them and a fan's wind lifts them up through a ledge. Read the signs, mind the spikes, then open the game in Game-Maker and change a pull.",
+    "features": ["Signs in the levels explain each idea", "Ice, a belt, a spring and wind: a block's pull is one setting", "Made to be copied and taken apart"],
+    "shots": [
+      ["one.map", 14, 3],
+      ["two.map", 12, 3],
+      ["three.map", 19, 1]
+    ],
+    "rating": "Everyone"
+  }
+}

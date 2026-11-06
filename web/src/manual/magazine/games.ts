@@ -20,7 +20,7 @@ interface HintBookItem {
 
 export function magGames(entries: readonly Entry[]): MagGame[] {
   return entries
-    .filter((g) => g.gam && !isOldSecret(g.id))
+    .filter((g) => g.gam && !isOldSecret(g.id) && g.series !== 'starter')
     .map((g) => {
       const book = g.original?.printables?.items?.find((i) => i.kind === 'hintbook') as HintBookItem | undefined;
       return {

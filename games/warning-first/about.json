@@ -1,0 +1,39 @@
+{
+  "title": "Warning First",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "hero": "RIMA",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.0",
+  "blurb": "Two short levels where something warns you before it happens. Three fog vents rumble before they puff, and a puff stings a little: wait for it to end, then cross. Planks over a pit flicker before they vanish and come back later, and a soft mat catches you if you fall. A warning here is a block that changes first. Signs say how. Play it, then open it in Game-Maker and change how long a warning lasts.",
+  "exe": "WARN.EXE",
+  "dosName": "WARNFRST",
+  "sound": "sb",
+  "label": {
+    "background": "#e4eeff",
+    "band": "#2b66c8",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "2 short levels",
+    "hours": 1,
+    "background": "#2b66c8",
+    "accent": "#ffd23f",
+    "ink": "#ffffff",
+    "tagline": "Listen first, then go.",
+    "back": "A small explorer in a teal beanie has two short rooms where things warn you first. Fog vents rumble before they puff. Planks flicker before they vanish. Read the signs, wait for the right moment, then open the game in Game-Maker and change how long a warning lasts.",
+    "features": [
+      "Fog vents that rumble, puff and rest, taking turns",
+      "Planks that flicker, vanish and come back over a soft pit",
+      "Made to be copied and taken apart"
+    ],
+    "shots": [
+      ["one.map", 14, 1],
+      ["two.map", 4, 1]
+    ],
+    "rating": "Everyone"
+  }
+}

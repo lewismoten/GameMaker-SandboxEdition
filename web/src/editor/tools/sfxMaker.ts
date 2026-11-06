@@ -188,7 +188,7 @@ export function sfxMaker(project: Project, opts: Options = {}): Promise<SfxMade 
       presetBar,
       h(
         'div',
-        { class: 'sfxm-body' },
+        { class: 'sfxm-body', dataset: { listArea: '' } },
         h('div', { class: 'sfxm-left' }, waveSeg, wave, info, h('button', { type: 'button', class: 'primary', onclick: () => play(samples) }, '▶ Listen')),
         grid,
       ),

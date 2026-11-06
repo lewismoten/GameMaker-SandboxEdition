@@ -1,0 +1,83 @@
+{
+  "title": "The Same House",
+  "howDoI": [
+    {
+      "id": "sameMap",
+      "q": "How do I use the same map in many places?",
+      "scene": 3,
+      "x": 22,
+      "y": 19,
+      "level": 1
+    },
+    {
+      "id": "recolor",
+      "q": "How do I give each copy its own carpet, wallpaper and roof?",
+      "scene": 4,
+      "x": 18,
+      "y": 20,
+      "level": 1
+    },
+    {
+      "id": "alike",
+      "q": "How do I make houses that look alike on a street?",
+      "scene": 2,
+      "x": 23,
+      "y": 17,
+      "level": 1
+    },
+    {
+      "id": "back",
+      "q": "How do I send the player back outside after a room?",
+      "scene": 3,
+      "x": 30,
+      "y": 19,
+      "level": 1
+    },
+    {
+      "id": "places",
+      "q": "How do I use one room for different places, like wood, ice and lava?",
+      "scene": 8,
+      "x": 23,
+      "y": 16,
+      "level": 2
+    },
+    {
+      "id": "glow",
+      "q": "How do I make a lamp glow a different color in each place?",
+      "scene": 9,
+      "x": 21,
+      "y": 16,
+      "level": 2
+    }
+  ],
+  "pages": [
+    {
+      "head": "Welcome",
+      "html": "<h1>Welcome</h1><p><b>The Same House</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has two short levels, about two minutes each. Both show one map that is used again and again, and looks different each time.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each thing in the levels is made.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. <kbd>Space</kbd> jumps. <kbd>F2</kbd> shows your lives, hit points and score.</p><p>Nothing in this game hurts you. Coins add to your score.</p>"
+    },
+    {
+      "head": "Level 1: Three Front Doors",
+      "html": "<h1>Level 1: Three Front Doors</h1><p>A street with three houses that look just alike, numbered 1, 2 and 3. A sign says that three doors share one house map. Coins lie between the houses, and a door at the far end goes on.</p><p>Go in door 1. The inside is a house cut in half so you can see it all: a stepped roof, striped wallpaper, a carpet, a sofa, a picture and two windows with curtains, and four coins. Go out the door at the right-hand end and you are back on the street, just past the door you came in by. Now try door 2 and door 3. It is the very same house each time, but the carpet, the wallpaper, the roof and the curtains have new colors."
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 1 is made</h1><ul><li><b>Four scenes for the houses.</b> Open <b>samehs.gam</b> in the Scenes editor. Scene 2 is the street. Scenes 3, 4 and 5 are the three houses. Scenes 3, 4 and 5 all name the same map (<b>house.map</b>) and the same blocks (<b>house.bbl</b>). They differ in one slot: scene 3 names <b>red.pal</b> for its palette, scene 4 names <b>blue.pal</b> and scene 5 names <b>green.pal</b>.</li><li><b>A palette is a file.</b> A block is a 20 by 20 picture, and each pixel is a slot number. The palette file says what color each slot is. The four ramps called carpet, paper, roof and cloth are the only slots that differ between the three files. Everything else, Mia and the brick walls included, is the same color in all of them.</li><li><b>Which block uses which ramp.</b> The carpet block is drawn in the carpet ramp, the wallpaper block in the paper ramp, the roof tiles in the roof ramp, and the curtains, the sofa and the picture in the cloth ramp. Nothing in the map says red or blue.</li><li><b>Houses that look alike.</b> The street's three fronts are the same blocks, put down three times. The roof, the siding, the windows and the curtains use slots from <b>street.pal</b>, and a scene shows one palette at a time, so the three fronts have to match. Only the numbers over the doors differ, because those are three different blocks.</li><li><b>The doors.</b> A link belongs to a scene. In scene 2 each door's bottom block has a link to scene 3, 4 or 5, with Mia landing at the house's start. In each house scene the exit door has a link back to scene 2, landing two blocks to the right of the door they came in by, so they can walk on to the next one. The same house map is used with three different links, one in each scene.</li><li><b>Fading.</b> Every scene fades its map in from black when it starts and fades to black when you leave. That covers the change of palette, so you never see one house change colors.</li></ul>"
+    },
+    {
+      "head": "Level 2: One Room, Three Places",
+      "html": "<h1>Level 2: One Room, Three Places</h1><p>A grassy square with three doors, each with a sign: wood room, ice room and lava room. A fourth sign says that one map is used for all three. A door at the far end goes on to the ending.</p><p>Go in each door. Inside is a room in a tower, with a battlement on top, brick walls, two lamps, a banner and a slit of sky. It is the same room each time, but it is a warm brown cottage, a pale blue ice room and a dark red lava room. The lamps glow a different color in each."
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 2 is made</h1><ul><li><b>Scenes 6 to 9.</b> Scene 6 is the square. Scenes 7, 8 and 9 all name <b>tower.map</b> and <b>tower.bbl</b>, and name <b>wood.pal</b>, <b>ice.pal</b> and <b>lava.pal</b>.</li><li><b>Four ramps again.</b> The floor slabs use the carpet ramp, the bricks the paper ramp, the battlement and the corner posts the roof ramp, and the lamps and the banner the cloth ramp. The same four ramps that colored the houses color the tower, because the seven palette files all hold the same slots. Only the colors in them change.</li><li><b>A lamp's glow.</b> The lamp is drawn with three slots of the cloth ramp. Where that ramp is gold, the lamp is a candle; where it is cyan, it is a cold lantern; where it is orange to yellow, it is a flame. One block, three lights.</li><li><b>A different palette for the square?</b> The square and the street both use <b>street.pal</b>, the plain palette. Two scenes may name the same palette file, and two palette files may share nearly every color. Here no two of the seven are the same.</li><li><b>Labels.</b> The signs over each door are ordinary blocks with words drawn in, and they have to say which place is behind the door, because the door looks the same.</li></ul>"
+    },
+    {
+      "head": "What Game-Maker cannot do",
+      "html": "<h1>What Game-Maker cannot do</h1><p>A palette is one file for a whole scene. Some things you may expect are not there:</p><ul><li>It cannot change the palette in the middle of a scene. A scene loads one palette when it starts. To change colors while the hero stays put, you need a link to another scene, or a cartoon (an FLI file), which can change the palette as it plays.</li><li>It cannot color one house differently from another in the same scene. The scene has one palette, and every block that uses a slot changes at once. That is why the three fronts on the street are the same. To make one front different on a street, it needs its own blocks, drawn in other slots.</li><li>The same blocks can only change color, never shape. A block is a picture of slot numbers. A window with curtains in one house and none in another needs two different blocks.</li><li>It cannot choose a palette when it is needed, for example at random or for each visit. A scene lists a palette file by name, and a door goes to one scene. Three doors need three scenes.</li><li>It cannot show more than 256 colors at once. Slot 255 is kept as clear, so there are 255 to share between the sky, the ground, the signs, Mia, the houses and the coins. Slot 0 is black, used for the border and for fading. The designer colors and the three text colors the game writes with are fixed slots, so keep them the same in every palette file.</li><li>A palette file always holds all the slots. Only 16 of the 256 colors change from one of these files to the next, but each file is complete.</li><li>A link goes one way. The doors out of the houses go back to the street because each house scene has a link of its own.</li></ul>"
+    },
+    {
+      "head": "Make it yours",
+      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>Open <b>red.pal</b> in the Palette editor and change the carpet's slots to purple. Only house 1 changes. Open <b>street.pal</b> and change the roof's slots: all three roofs on the street change together, because they are one set of slots.</li><li>Copy <b>blue.pal</b>, call it <b>mine.pal</b>, and in the Scenes editor give scene 5 that palette file. The third house now has your colors.</li><li>Add a fourth house to the street. Copy scene 5, give it a palette of its own and a link from a new door in scene 2.</li><li>Draw a new block for a lamp in the Blocks tab, in the cloth ramp, and put it in the tower map. It glows in all three places.</li><li>Change the lava palette's lamp slots to blue. The lava room has a cold flame.</li></ul><p>The home page's <b>Starters</b> tab has more small games like this one.</p>"
+    }
+  ]
+}
