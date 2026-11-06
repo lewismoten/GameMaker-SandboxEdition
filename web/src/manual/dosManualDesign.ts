@@ -130,6 +130,7 @@ export function designPages(shots: GameShot[]): BookletPage[] {
       <p class="see"><i>A hit, a lamp and a storm sky that stay easy on the eyes are on the Sample CD:</i> <code>FLASHSAF</code>.</p>
       <p class="see"><i>What slows a game on an old PC (a long sound, a crowd of monsters, a sky that moves) is on the Sample CD:</i> <code>SLOWPC</code>.</p>
       <p class="see"><i>Stars that twinkle out of step, by loops with different times, are on the Sample CD:</i> <code>TWINKLE</code>.</p>
+      <p class="see"><i>Falling snow that sways, a growing drift and bootprints that a touch leaves are on the Sample CD:</i> <code>SNOW</code>.</p>
       <p class="see"><i>Flames, flags and a waterfall that move in place are on the Sample CD:</i> <code>FLICKER</code>.</p>
       <p class="see"><i>Light made of paint, in rings of brighter blocks, a trail a touch leaves and a hall a clock lights, is on the Sample CD:</i> <code>LIGHTOUT</code>.</p>
       <p class="see"><i>Shadows painted into the pictures, solid or dithered, a hop that shrinks one and a bee over a shadow block of its own, are on the Sample CD:</i> <code>SHADOWS</code>.</p>

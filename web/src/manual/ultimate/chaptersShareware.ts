@@ -110,6 +110,8 @@ export const SHAREWARE: Chapter = {
   (<i>Penguin Pete</i>) all look alive for no extra pictures.</p>
   ${onCd('CLOCK', 'COUNTDWN', 'BLOCKBRN')}
   ${onCd('TWINKLE')}
+  <p>Snowflakes that sway in a loop, a drift that grows in steps and bootprints left by a touch:</p>
+  ${onCd('SNOW')}
   ${onCd('FLICKER')}
   ${onCd('LIGHTOUT')}
   ${onCd('SHADOWS')}

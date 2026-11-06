@@ -19,7 +19,10 @@ export const STARTER_HEROES: Record<string, string> = (() => {
       if (ADDED_LATER.includes(id)) return;
       out[id] = at === 0 || KIT_GAMES.has(id) ? 'KIT' : HELPER_NAMES[n++ % HELPER_NAMES.length];
     });
-  for (const id of ADDED_LATER) out[id] = HELPER_NAMES[n++ % HELPER_NAMES.length];
+  for (const id of ADDED_LATER) {
+    // A new group's first course is still Kit's, even when it was filed after the original deal.
+    out[id] = KIT_GAMES.has(id) || STARTER_GROUPS.some((g) => g.games[0] === id) ? 'KIT' : HELPER_NAMES[n++ % HELPER_NAMES.length];
+  }
   return out;
 })();
 
