@@ -19,7 +19,7 @@
    "keys": ""
   },
   {
-   "scene": 3,
+   "scene": 6,
    "keys": "AU1azQNIJ8gDTQ=="
   },
   {
@@ -27,7 +27,7 @@
    "keys": ""
   },
   {
-   "scene": 3,
+   "scene": 6,
    "keys": "AU2HAc0DSCfIA00="
   }
  ],
@@ -45,21 +45,19 @@
    "title": "Level 2: A Menu Room (tale one)"
   },
   {
-   "scene": 3,
-   "title": "Level 2: A Menu Room"
+   "scene": 6
   },
   {
    "scene": 5,
    "title": "Level 2: A Menu Room (tale two)"
   },
   {
-   "scene": 3,
-   "title": "Level 2: A Menu Room"
+   "scene": 6
   }
  ],
  "timeline": {
   "fps": 60,
-  "frames": 12788,
+  "frames": 12314,
   "chapters": [
    {
     "title": "Opening",
@@ -88,18 +86,18 @@
    },
    {
     "title": "Level 2: A Menu Room (tale two)",
-    "frame": 7285,
-    "time": 121416.66666667911
+    "frame": 7049,
+    "time": 117483.33333334464
    },
    {
     "title": "Ending",
-    "frame": 9502,
-    "time": 158366.66666666605
+    "frame": 9028,
+    "time": 150466.66666667064
    },
    {
     "title": "Credits",
-    "frame": 11714,
-    "time": 195233.33333331125
+    "frame": 11240,
+    "time": 187333.33333331585
    }
   ]
  }
