@@ -5,7 +5,7 @@
 import type { Rgb } from '@lewismoten/gamemaker-sandbox-engine/gfx/colorVision';
 import type { ColorHelp, Preview, Warn } from './colorHelpPrefs';
 
-export interface Screen {
+interface Screen {
   kind: 'rg' | 'by';
   base: Rgb;
   odd: Rgb;
