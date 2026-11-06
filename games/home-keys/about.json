@@ -6,7 +6,7 @@
   "hero": "MARA",
   "year": 1994,
   "price": "Free",
-  "version": "1.0",
+  "version": "1.1",
   "blurb": "Three short levels about which keys a game really needs. The arrows, Space and Enter walk, jump and throw through the first level, and a sign stands before each one. In the second, a gap looks as if it needs a diagonal key and does not. In the third, Q and E leap up to extra coins, which you can skip. A picture of the keyboard shows where the hands rest, and every key is listed in the instructions. Nothing here hurts.",
   "exe": "HOMEKEYS.EXE",
   "dosName": "HOMEKEYS",

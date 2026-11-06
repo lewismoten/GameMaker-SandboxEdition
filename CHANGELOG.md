@@ -201,6 +201,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Changed
 
+- Home Keys, level 3: a plank ledge above the first shelf, for a Q leap up and left from where E lands. The way to the door is unchanged.
 - The green alien Starter helper is now called Nova, and Jump Boots ends on "SAFE ACROSS".
 - Switching to the desk from a Starter or graduation no longer says only that the disk isn’t in the disk box. It says where the game is: on the Sample Disk, or in the CD’s SAMPLES folder.
 - The Programmer's Guide reads as a book for game makers and programmers: notes on how it was researched are gone, and the chapter labels ("not yet checked in DOSBox", "inference", "estimate") are larger and higher contrast in light and dark.
