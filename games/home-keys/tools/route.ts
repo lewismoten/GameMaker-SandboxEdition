@@ -50,7 +50,6 @@ async function holdFor(bot: StarterBot, key: number, ticks: number): Promise<Res
   return r;
 }
 
-
 /** Whether the extra coins in level 3 are collected (E and Q), or only the way to the door. */
 export interface Options {
   detour: boolean;

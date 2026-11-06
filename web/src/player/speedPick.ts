@@ -1,4 +1,4 @@
-// "Run like a…" in the player's corner: Today, 486, 386 or 286. A DOS game cannot change the
+// "Run like a…" in the player's corner: Today, 486, 386, 286 or an IBM PS/1. A DOS game cannot change the
 // CPU, so the player does it from outside: it charges each pass of the game loop what the old
 // machine would have taken (engine/slowPc.ts), including the freeze while a .voc is read from
 // disk. The game's files and rules are untouched; Today (the default) charges nothing.
@@ -6,7 +6,13 @@ import './speedPick.css';
 import { costsFor, SPEED_CHOICES, type SpeedChoice } from '@lewismoten/gamemaker-sandbox-engine/engine/slowPc';
 import type { SpeedSetting } from '@lewismoten/gamemaker-sandbox-engine/engine/scene';
 
-const LABELS: Record<SpeedChoice, string> = { today: 'Today', '486': '486 (66 MHz)', '386': '386 (33 MHz)', '286': '286 (12 MHz)' };
+const LABELS: Record<SpeedChoice, string> = {
+  today: 'Today',
+  '486': '486 (66 MHz)',
+  '386': '386 (33 MHz)',
+  '286': '286 (12 MHz)',
+  ps1: 'IBM PS/1 (286, 1 MB)',
+};
 
 /** Adds the control to the corner; `speed` is the object the running game reads every tick. */
 export function speedPick(corner: HTMLElement, speed: SpeedSetting, canvas: HTMLElement): void {

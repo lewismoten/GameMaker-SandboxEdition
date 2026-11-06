@@ -1,10 +1,10 @@
 // SOUNDS AND MUSIC's blocks, added to the Starter block set after the signs. Each one makes a
-// different sound when Neka touches it, because each changes a different counter (the engine
+// different sound when Nova touches it, because each changes a different counter (the engine
 // plays one sound per counter, see code/GM/PLAYGAME.C DoBlockTouchChar):
 //   coin      (the Starter kit's) 10 points: the score sound
 //   bag       a money bag: counter 3 (money) goes up by one: the money sound
 //   heart     10 hit points back: the help sound
-//   spikeUp   10 hit points taken: Neka's hurt move plays its own sound (spikeFlat is what it becomes)
+//   spikeUp   10 hit points taken: Nova's hurt move plays its own sound (spikeFlat is what it becomes)
 // None is solid, so nothing holds the hero while a sound plays.
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { outline } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';

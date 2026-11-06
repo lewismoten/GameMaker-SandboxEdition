@@ -42,3 +42,6 @@ One row per limit. Chapter numbers point to the reason. Cause tags: 16-bit, 64K,
 | Demo recording            |                                       1,000 key events | design       | `PG:216`               |     13 |
 | High scores               |                                                     10 | design       | `HISCOREL.C`           |     13 |
 | Memory a full game holds  |         about 443,000 bytes fixed + 30-120 KB per game | DOS          | chapter 4              |      4 |
+| Patchable player          |     XFERPLAY 3.00 only: 160,598 bytes, MD5 `fcaf47d5…` | file         | `applyPatches.ts:37`   |     17 |
+| Patched string            |             never longer than its slot, 0x20-0x7E only | file         | `patchRules.ts:29-40`  |     17 |
+| Patched color level       |                                   0-63 (6-bit VGA DAC) | VGA          | `patchRules.ts:46`     |     17 |

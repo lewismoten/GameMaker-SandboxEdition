@@ -139,7 +139,7 @@ export const helperPalettes: Helper[] = [
     look: { skin: SKIN.brown, hair: HAIR.blond, hat: HAT.pink, hood: HOOD.blue, pants: PANTS.olive },
   },
   {
-    name: 'NEKA',
+    name: 'NOVA',
     about: 'green alien, teal hair, gold beanie, purple hoodie',
     look: { skin: SKIN.green, hair: HAIR.teal, hat: HAT.gold, hood: HOOD.purple, pants: PANTS.charcoal },
   },

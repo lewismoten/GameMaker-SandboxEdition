@@ -10,7 +10,7 @@ Some friends sit very still.
 
 A small explorer in a red beanie crosses two short tunnels. In each one a round little friend sits on a crate.
 
-Read the signs. Break a crate and see what its friend does.
+Read the signs. Hit a crate and see what its friend does.
 
 Then open this game in Game-Maker and change how fast a friend falls.
 `);
@@ -20,9 +20,10 @@ export const HOWTO = wrap(`
 
 |LEFT, RIGHT   walk
 |SPACE         jump
+|ENTER         hit
 |F2            lives, score
 
-Walk into a crate and it breaks. Plop and Pip sit on crates and hurt nobody. Nothing in this game does.
+Stand beside a crate and press Enter to hit it. One hit cracks it and a second breaks it. Walking into it does nothing. Plop and Pip sit on crates and hurt nobody. Nothing in this game does.
 
 Plop is solid: you cannot walk through it. Pip is soft: you can.
 
@@ -49,7 +50,7 @@ export const WON = wrap(`
 
 Two tunnels, and now you know how a friend falls.
 
-Monsters have no gravity in Game-Maker: only Lena does. A monster goes where its Movement sends it. Plop's Movement is a path of one step, one block down, walked again and again. A solid block under it stops every step, so it sits still on a crate. When the crate turns to rubble, the next step is free and it drops.
+Monsters have no gravity in Game-Maker: only Lena does. A monster goes where its Movement sends it. Plop's Movement is a path of one step, one block down, walked again and again. A solid block under it stops every step, so it sits still on a crate. When your second hit turns the crate to rubble, the next step is free and it drops.
 
 Open the game in Game-Maker and find Plop on the Monsters tab: Follows its path, one corner a block below the start, and Stopped by solid blocks. Change the corner's speed to change how fast it falls.
 `);
@@ -59,5 +60,5 @@ export const LOST = wrap(`
 
 That was not meant to happen.
 
-Try again: walk into a crate and watch what is on top of it.
+Try again: hit a crate with Enter and watch what is on top of it.
 `);

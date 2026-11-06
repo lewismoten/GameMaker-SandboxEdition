@@ -68,7 +68,44 @@ function keepGoing(c: Ceremony, state: Extract<CeremonyState, { state: 'locked' 
   ]);
 }
 
-/** The heading and tiles of the Graduations section. `tile` makes the real tile of a game that is open or earned. */
+/** The graduations that are open but not yet earned (and whose game is on this site), in stage order, the diploma last. */
+export function readyCeremonies(games: readonly HomeGame[], finished: ReadonlySet<string>, grades: Grades): { ceremony: Ceremony; game: HomeGame }[] {
+  return [...CEREMONIES, DIPLOMA].flatMap((ceremony) => {
+    const game = games.find((g) => g.entry?.id === ceremony.id);
+    return game && ceremonyState(ceremony, grades, finished).state === 'open' ? [{ ceremony, game }] : [];
+  });
+}
+
+/** The "Ready to graduate" strip above every group: a picture, a title and a Graduate button (which starts the ceremony) per open graduation, none when nothing is ready. */
+export function readyStrip(
+  ready: { ceremony: Ceremony; game: HomeGame }[],
+  playHref: (g: HomeGame) => string,
+  shot?: (g: HomeGame) => HTMLElement,
+): HTMLElement[] {
+  if (!ready.length) return [];
+  return [
+    h(
+      'section',
+      { class: 'grad-ready', 'aria-labelledby': 'grad-ready-h', dataset: { gradReady: '' } },
+      h('h3', { id: 'grad-ready-h' }, 'Ready to graduate'),
+      h(
+        'ul',
+        {},
+        ...ready.map(({ ceremony, game }) =>
+          h(
+            'li',
+            {},
+            shot ? h('a', { class: 'grad-ready-pic', href: playHref(game), tabindex: -1, 'aria-hidden': 'true' }, shot(game)) : null,
+            h('span', { class: 'grad-ready-title' }, ceremonyTitle(ceremony)),
+            h('a', { class: 'button primary', href: playHref(game), 'aria-label': `Graduate: play ${ceremonyTitle(ceremony)}` }, 'Graduate'),
+          ),
+        ),
+      ),
+    ),
+  ];
+}
+
+/** The heading and tiles of the Graduations section. `tile` makes the real tile of a game that is earned; one that is ready is in readyStrip until then. */
 export function graduationCards(
   games: readonly HomeGame[],
   finished: ReadonlySet<string>,
@@ -77,19 +114,22 @@ export function graduationCards(
   titles: Map<string, string>,
 ): HTMLElement[] {
   const all = withFinished(grades, finished);
-  const out: HTMLElement[] = [
-    h('h3', { class: 'lib-sub', id: 'lib-sub-grad' }, 'Graduations', h('span', { class: 'lib-sub-count' }, ' · Each opens when you have earned it')),
-  ];
+  const out: HTMLElement[] = [];
   for (const c of [...CEREMONIES, DIPLOMA]) {
-    const state = ceremonyState(c, grades, finished);
     const game = games.find((g) => g.entry?.id === c.id);
-    if (game && state.state !== 'locked') {
+    if (!game) continue; // left out by the Level filter, or not on this site yet
+    const state = ceremonyState(c, grades, finished);
+    if (state.state === 'earned') {
       const t = tile(game);
       t.dataset.grad = state.state;
       t.querySelector('.tile-select')?.setAttribute('aria-describedby', 'lib-sub-grad');
       out.push(t);
     } else if (state.state === 'locked') out.push(lockedTile(c, state, () => keepGoing(c, state, titles, all)));
-    // open, but the game is not on this site yet: nothing to show
+    // open: shown in readyStrip
   }
-  return out;
+  if (!out.length) return out;
+  return [
+    h('h3', { class: 'lib-sub', id: 'lib-sub-grad' }, 'Graduations', h('span', { class: 'lib-sub-count' }, ' · Each opens when you have earned it')),
+    ...out,
+  ];
 }

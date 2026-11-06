@@ -182,7 +182,8 @@ export function designPages(shots: GameShot[]): BookletPage[] {
       an <code>.FLI</code> animation, a <code>.TXT</code> file (30 characters to a line) or a
       <code>.LST</code> list that shows several of them in turn. Each line of a list is a file
       name and the seconds to show it.</p>
-      <p class="see"><i>On the Sample CD:</i> <code>PICTURES</code>, <code>SAYSOMTH</code>, <code>EVRYTALK</code>, <code>CUTSCENE</code> and <code>MAKETITL</code>.</p>`,
+      <p class="see"><i>On the Sample CD:</i> <code>PICTURES</code>, <code>SAYSOMTH</code>, <code>EVRYTALK</code>, <code>CUTSCENE</code> and <code>MAKETITL</code>.</p>
+      <p class="see"><i>What the player program itself is made of (bytes at offsets, a new word the same size as the old one, a backup first) is on the Sample CD:</i> <code>UNDRHOOD</code>.</p>`,
     ),
     page(
       '3. Designing Games',

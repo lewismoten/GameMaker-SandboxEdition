@@ -1,7 +1,7 @@
 # Reading this book
 
-Paths are relative to the repository root. `PG:n` = `code/GM/PLAYGAME.C` line n. The original source is read-only; where I cite the web port
-(`web/packages/engine/src/...`, shortened `engine/`) I say so, because the port is a re-implementation, not the source.
+Paths are relative to the repository root. `PG:n` = `code/GM/PLAYGAME.C` line n. The original source is read-only; where the web port is cited
+(`web/packages/engine/src/...`, shortened `engine/`) it is named as such, because the port is a re-implementation, not the source.
 
 ## What this book is
 
@@ -40,7 +40,7 @@ Every limit in this book carries one of seven tags.
 
 Two more marks:
 
-- **[inference]**: the source states the number but not the reason; this is my reading and may be wrong.
+- **[inference]**: the source states the number but not the reason; this is a reading and may be wrong.
 - **[not yet checked in DOSBox]**: confirm in DOSBox (or on real hardware).
 
 ## How to cite the source

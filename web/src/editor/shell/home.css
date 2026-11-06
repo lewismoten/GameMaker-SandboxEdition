@@ -1137,6 +1137,19 @@ a.button.with-ico {
   color: var(--muted);
 }
 
+/* Damaged copies (damagedCopiesDialog.ts): a long list scrolls inside the dialog */
+.dc-list {
+  max-height: 45vh;
+  overflow-y: auto;
+}
+
+.dc-acts {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
 /* a Starter played to its ending: a check pill at the bottom right of its picture (homeDone.ts);
    dark green with white words and a white edge, so it reads over any picture, light or dark */
 .tile-done {
@@ -1209,4 +1222,60 @@ a.button.with-ico {
 }
 .grad-missing li {
   margin: 4px 0;
+}
+
+/* "Ready to graduate": a gold strip above every group on the Starters tab, one row per open graduation */
+.lib-tiles > .grad-ready {
+  grid-column: 1 / -1;
+  padding: 10px 14px;
+  border: 3px solid #d4a017;
+  border-radius: 10px;
+  background: color-mix(in srgb, #d4a017 14%, var(--surface, transparent));
+}
+.grad-ready h3 {
+  margin: 0 0 6px;
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.grad-ready ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.grad-ready li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 4px 0;
+}
+.grad-ready-title {
+  flex: 1 1 8em;
+  font-weight: 700;
+}
+.grad-ready-pic {
+  flex: none;
+  padding: 0;
+  border: 2px solid #d4a017;
+  border-radius: 6px;
+  background: #000;
+  line-height: 0;
+  cursor: pointer;
+}
+.grad-ready-shot {
+  display: block;
+  width: 96px;
+  height: 60px;
+  border-radius: 4px;
+}
+.grad-ready .button {
+  min-height: 32px;
+  min-width: 96px;
+}
+@media (pointer: coarse) {
+  .grad-ready .button {
+    min-height: 44px;
+  }
 }

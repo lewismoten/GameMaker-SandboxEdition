@@ -24,7 +24,7 @@ about 22 KB for floppies. The next section checks whether memory could have been
 
 A recollection from 1994: "map size may also be smaller to allow for characters and monsters to be on the screen with limited memory."
 
-I added up everything PLAYGAME holds. Sizes come from the headers (cited) or from the link map for the program image. Estimates are marked.
+This table adds up everything PLAYGAME holds. Sizes come from the headers (cited) or from the link map for the program image. Estimates are marked.
 
 ### Program image (loaded from the EXE)
 
@@ -46,7 +46,7 @@ Cause worth noting: `DGROUP` (near data, BSS, stack) must stay under 64 KB in th
 | Recorder (`Recording`, 1,000 x 3-byte records)           |    3,000 + object | `PG:216-245` (`RECLEN 1000`, `RecordStruct` = `uint`+`uchar`)                                                                                                  |
 | Hero save-under, top and bottom (2 x 20 x 20)            |               800 | `PG:615-616`                                                                                                                                                   |
 | Monster save-under (`MaxMonsShown` 50 x 400)             |            20,000 | `PG:80, 617`                                                                                                                                                   |
-| `mi`, per-monster runtime state, 200 x `sizeof(minfo)`   |      about 11,000 | `PG:618`; fields at `PG:113-137`; my count of the fields is 55 bytes with byte packing [estimate] **[not yet checked in DOSBox]** (a `sizeof` would settle it) |
+| `mi`, per-monster runtime state, 200 x `sizeof(minfo)`   |      about 11,000 | `PG:618`; fields at `PG:113-137`; counting the fields gives 55 bytes with byte packing [estimate] **[not yet checked in DOSBox]** (a `sizeof` would settle it) |
 | `mon` (64 monster types x 300)                           |            19,200 | `PG:619`, `MON.H:6, 41`                                                                                                                                        |
 | Screen scratch buffer (the 64 KB ring + paragraph slack) |            65,570 | `DIRTRECT.C:86`                                                                                                                                                |
 | **Subtotal**                                             | **about 119,570** |                                                                                                                                                                |
@@ -101,7 +101,7 @@ and a silent `return(FALSE)` in the voice player (`SOUNDC.C:196-199`).
   put the same number of bytes into both.
 - A map of 150 x 150 would cost 45,000 (+25,000, to 467,774 fixed); 181 x 181 would cost 65,522 (+45,522, to 488,296 fixed) and leave **167 KB** for DOS **and** all the variable data above.
   **[inference]** That is the plausible reason 100 was kept: it is the largest round number that leaves a typical machine a few tens of KB of margin, with the map segment at about 30% full.
-- The editors hold their own copies (MAPMAKER keeps a map plus its working data). I did not total their budgets. **[not yet checked in DOSBox]** It matters only if the editors' limit mattered more than the player's.
+- The editors hold their own copies (MAPMAKER keeps a map plus its working data). Their budgets are not totaled here. **[not yet checked in DOSBox]** It matters only if the editors' limit mattered more than the player's.
 
 Verdict on A recollection from 1994: **plausible but only partly supported.** Memory was tight (about 60% of a 640 KB machine is spoken for before a scene loads), and the number of drawn monsters
 is capped for memory (`MaxMonsShown`, `PG:80`), exactly as he remembers. But the map itself is a small piece; a 181 x 181 map would still have fit the segment.
@@ -137,7 +137,7 @@ The 20 file slots are assigned by position: 0 palette, 1 map, 2 background block
 | Link coordinates     | `int`, but the map is 100 wide                      | no check                                                                                                                                 | [16-bit]       |
 
 Why 231: **[inference]** `new` takes a 16-bit size in the large model (it is the C library's `size_t`). 283 x 232 = 65,656 wraps to 120, so a 232-scene game would allocate 120 bytes and
-overwrite the heap. I did not test it; nothing in the shipped games goes near it. **[not yet checked in DOSBox]** Check it by building a 232-scene `.gam` and loading it in DOSBox.
+overwrite the heap. It is untested; nothing in the shipped games goes near it. **[not yet checked in DOSBox]** Check it by building a 232-scene `.gam` and loading it in DOSBox.
 
 ### How a link fires (`chklnk`, `PG:3837-3858`)
 

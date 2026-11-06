@@ -57,7 +57,7 @@
     },
     {
       "head": "Level 1: Step Up",
-      "html": "<h1>Level 1: Step Up</h1><p><b>STAND IN A CRATE AND PRESS P. IT GOES IN YOUR PACK</b> is the first sign. Three wooden crates lie on the ground. Walk into one and press <kbd>P</kbd>: it leaves the ground and joins your pack. <b>F2 SHOWS YOUR PACK. ANY KEY SHUTS IT</b> shows the pack as a grid of ten places, with the crates in it. <b>TOO HIGH TO JUMP. AT THE WALL PRESS D, THEN ENTER</b> comes next, at the foot of a brick wall six blocks high. Jump and Mara falls short. Press <kbd>D</kbd> and the pack opens; <kbd>Enter</kbd> puts the first crate down where Mara stands. <b>THE CRATE STAYS WHERE YOU DROPPED IT. JUMP ON, DROP THE NEXT</b> tells the rest: jump onto the crate, put down another where you stand, and a third. Three crates make a stair up to the top of the wall, where two coins wait.</p>"
+      "html": "<h1>Level 1: Step Up</h1><p><b>STAND IN FRONT OF A CRATE AND PRESS P. IT GOES IN YOUR PACK</b> is the first sign. Three wooden crates lie on the ground. Stand in front of one and press <kbd>P</kbd>: it leaves the ground and joins your pack. <b>F2 SHOWS YOUR PACK. ANY KEY SHUTS IT</b> shows the pack as a grid of ten places, with the crates in it. <b>TOO HIGH TO JUMP. AT THE WALL PRESS D, THEN ENTER</b> comes next, at the foot of a brick wall six blocks high. Jump and Mara falls short. Press <kbd>D</kbd> and the pack opens; <kbd>Enter</kbd> puts the first crate down where Mara stands. <b>THE CRATE STAYS WHERE YOU DROPPED IT. JUMP ON, DROP THE NEXT</b> tells the rest: jump onto the crate, put down another where you stand, and a third. Three crates make a stair up to the top of the wall, where two coins wait.</p>"
     },
     {
       "head": "How this level is made",

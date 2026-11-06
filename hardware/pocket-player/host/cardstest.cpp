@@ -64,7 +64,12 @@ int main(int argc, char** argv) {
   assets.read = readFile;
   assets.inflate = inflateRaw;
   size_t fn = 0;
-  uint8_t* font = readFile("font.bin", &fn);
+  // a one-file game holds no font (the board's is on LittleFS): the font.bin beside it
+  std::string fontDir = isGmp(dir) ? dir.substr(0, dir.rfind('/') == std::string::npos ? 0 : dir.rfind('/')) : dir;
+  std::vector<uint8_t> fv = slurp((fontDir.empty() ? std::string(".") : fontDir) + "/font.bin");
+  uint8_t* font = (uint8_t*)malloc(fv.size() + 1);
+  memcpy(font, fv.data(), fv.size());
+  fn = fv.size();
   std::vector<std::string> wheres;
   int nlev = 0;  // as many levels as the .cfg has
   for (size_t at = 0; (at = cfgText.find("\nlevel ", at)) != std::string::npos; at++) nlev++;

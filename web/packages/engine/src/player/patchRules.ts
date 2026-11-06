@@ -90,7 +90,7 @@ export function writePatch(exe: Uint8Array, entry: PatchEntry, value: PatchValue
       return;
     }
     case 'number':
-      for (const f of entry.fields) writeImm(exe, f, value as number);
+      for (const f of entry.fields) writeImm(exe, f, f.negate ? -(value as number) : (value as number));
       return;
     case 'rgb':
       entry.offsets.forEach((o, i) => (exe[o] = (value as number[])[i]));
@@ -117,7 +117,10 @@ export function readPatch(exe: Uint8Array, entry: PatchEntry): PatchValue | unde
       return s.trimEnd();
     }
     case 'number': {
-      const vs = entry.fields.map((f) => readImm(exe, f, entry.signed));
+      const vs = entry.fields.map((f) => {
+        const v = readImm(exe, f, entry.signed);
+        return f.negate ? -(f.size === 2 ? (v << 16) >> 16 : v) : v;
+      });
       return vs.every((v) => v === vs[0]) ? vs[0] : undefined;
     }
     case 'rgb':

@@ -21,7 +21,7 @@ export type SignName = 'pick' | 'pack' | 'wall' | 'stair' | 'exit' | 'items' | '
 
 /** The signs' words and sizes. */
 const WORDS: Record<SignName, { text: string; w: number; h: number }> = {
-  pick: { text: 'STAND IN A CRATE AND PRESS P. IT GOES IN YOUR PACK', w: 4, h: 4 },
+  pick: { text: 'STAND IN FRONT OF A CRATE AND PRESS P. IT GOES IN YOUR PACK', w: 4, h: 4 },
   pack: { text: 'F2 SHOWS YOUR PACK. ANY KEY SHUTS IT', w: 4, h: 3 },
   wall: { text: 'TOO HIGH TO JUMP. AT THE WALL PRESS D, THEN ENTER', w: 4, h: 4 },
   stair: { text: 'THE CRATE STAYS WHERE YOU DROPPED IT. JUMP ON, DROP THE NEXT', w: 4, h: 5 },

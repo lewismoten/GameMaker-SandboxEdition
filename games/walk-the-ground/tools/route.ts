@@ -10,7 +10,7 @@ import { SCAN } from '../../kit/starter/ids';
 import { ORIGIN } from '../../kit/starter/map';
 import { L1, L2 } from '../src/levels';
 
-/** Ticks a dug block holds Neka (five crumbling steps) and a few more: a person leans on the soil this long before they think it is a wall. */
+/** Ticks a dug block holds Nova (five crumbling steps) and a few more: a person leans on the soil this long before they think it is a wall. */
 const PATIENCE = 9;
 
 /**

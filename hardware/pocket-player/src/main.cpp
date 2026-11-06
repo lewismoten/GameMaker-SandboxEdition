@@ -89,10 +89,13 @@ constexpr uint16_t C_WHITE = 0xFFFF, C_BLACK = 0, C_YELLOW = 0xFF2A, C_GRAY = 0x
 // ---- files -------------------------------------------------------------------------------------
 
 // Where the game being played keeps its files: the Starters are in LittleFS (the root), the games on a microSD
-// card are in /pocket (their files, <file>.cfg and <file>.pak; see "The microSD card" in README.md).
+// card are in /pocket (their files, <file>.cfg and <file>.pak; see "The microSD card" in README.md), or a game is one file there,
+// /pocket/NAME.GMP: a bundle like small.pak of its game.txt, <id>.cfg, cards.pak and files (web/src/export/pocketFile.ts).
 static fs::FS* curFs = &LittleFS;
 static char curBase[10] = "";
-static char curPak[24] = "/cards.pak";
+static char curPak[32] = "/cards.pak";
+static char curOne[32] = "";     // a one-file game's path (its files are the bundle's entries), else empty
+static uint32_t curPakBase = 0;  // where the cards start in curPak (a one-file game's cards.pak entry)
 static bool sdUp = false;
 static bool mountSD();
 static void unmountSD();
@@ -103,14 +106,24 @@ static bool smallReadAt(void* user, uint32_t off, void* buf, uint32_t n) {
   File* f = (File*)user;
   return f->seek(off) && f->read((uint8_t*)buf, n) == n;
 }
-static bool smallOpen(File& f, gm::SmallPak& pak) {
-  f = LittleFS.open("/small.pak", "r");
+static bool packOpen(fs::FS& fsys, const char* path, File& f, gm::SmallPak& pak) {
+  f = fsys.open(path, "r");
   if (!f) return false;
   pak.user = &f;
   pak.readAt = smallReadAt;
   if (pak.begin()) return true;
   f.close();
   return false;
+}
+static bool smallOpen(File& f, gm::SmallPak& pak) { return packOpen(LittleFS, "/small.pak", f, pak); }
+// The entry `name` of an open bundle (malloc'd, with a spare byte), or nullptr.
+static uint8_t* packRead(File& pf, gm::SmallPak& pak, const char* name, size_t* n) {
+  uint32_t off, len;
+  if (!pak.find(name, &off, &len)) return nullptr;
+  uint8_t* p = (uint8_t*)malloc(len + 1);
+  if (p && !smallReadAt(&pf, off, p, len)) { free(p); p = nullptr; }
+  if (p) *n = len;
+  return p;
 }
 static uint8_t* readFileIn(fs::FS& fsys, const char* base, const char* name, size_t* n) {
   if (&fsys == &LittleFS && !base[0]) {
@@ -145,6 +158,21 @@ static uint8_t* readFileIn(fs::FS& fsys, const char* base, const char* name, siz
   if (card && !wasUp) unmountSD();
   return p;
 }
+// A file of the game being played: an entry of its .GMP for a one-file game, else a file of its folder.
+static uint8_t* readGameFile(const char* name, size_t* n) {
+  if (!curOne[0]) return readFileIn(*curFs, curBase, name, n);
+  bool wasUp = sdUp;
+  if (!mountSD()) return nullptr;
+  File pf;
+  gm::SmallPak pak;
+  uint8_t* p = nullptr;
+  if (packOpen(SD, curOne, pf, pak)) {
+    p = packRead(pf, pak, name, n);
+    pf.close();
+  }
+  if (!wasUp) unmountSD();
+  return p;
+}
 // A game's .cfg is read line by line (a big game's is tens of KB: nothing holds it, and a level's record is found by reading it again).
 static File cfgFile;
 static bool cfgMounted = false;  // this reader mounted the card (and unmounts it at the end)
@@ -166,6 +194,15 @@ static void* cfgOpen(void*, const char* name) {
   if (curFs == &SD && !sdUp) {
     if (!mountSD()) return nullptr;
     cfgMounted = true;
+  }
+  if (curOne[0]) {  // a one-file game: its .cfg is an entry of the .GMP
+    if (packOpen(SD, curOne, smallCfg, smallCfgPak)) {
+      if (smallCfgLines.open(&smallCfgPak, name)) { cfgInPak = true; return &smallCfg; }
+      smallCfg.close();
+    }
+    if (cfgMounted) unmountSD();
+    cfgMounted = false;
+    return nullptr;
   }
   cfgFile = curFs->open(path, "r");
   if (!cfgFile) {
@@ -193,8 +230,10 @@ static bool cfgNext(void*, char* line, int cap) {
   return true;
 }
 static void cfgClose(void*) {
-  if (cfgInPak) { smallCfg.close(); cfgInPak = false; return; }
-  cfgFile.close();
+  if (cfgInPak) {
+    smallCfg.close();
+    cfgInPak = false;
+  } else cfgFile.close();
   if (cfgMounted) unmountSD();
   cfgMounted = false;
 }
@@ -213,7 +252,7 @@ static uint8_t* readFile(const char* name, size_t* n) {
       *n = x.n;
       return p;
     }
-  return readFileIn(*curFs, curBase, name, n);
+  return readGameFile(name, n);
 }
 // The decompressor's state is about 11 KB: taken from the heap once, since the loop task's whole
 // stack is 8 KB (tinfl_decompress_mem_to_mem puts it on the stack, which overflowed the first time a
@@ -228,8 +267,9 @@ static bool inflateRaw(const uint8_t* src, size_t n, uint8_t* dst, size_t cap) {
   return st == TINFL_STATUS_DONE && out == cap;
 }
 
-struct GameEntry { char id[28]; char title[40]; int levels; bool sd; char file[12]; };  // file: the 8 character name of an SD game's .cfg and .pak
-constexpr int MAXGAMES = 96;
+// file: the 8 character name of an SD game's .cfg and .pak, or (one: true) the name of its .GMP in /pocket
+struct GameEntry { char id[28]; char title[40]; int levels; bool sd; bool one; char file[16]; };
+constexpr int MAXGAMES = 128;  // the Starters (96 in the current build) and the card's games
 static GameEntry games[MAXGAMES];
 static int ngames = 0;
 static bool haveSD = false;  // a card was found at start (it is mounted only while it is read: a mounted card holds about 33 KB of heap)
@@ -248,6 +288,23 @@ static void unmountSD() {
   sdUp = false;
 }
 
+// Fills g from one list line, id|title|levels (and for the card's games.txt also |<file>); false if it is not one.
+static bool parseGameLine(char* p, bool withFile, GameEntry& g) {
+  char* a = strchr(p, '|');
+  char* b = a ? strchr(a + 1, '|') : nullptr;
+  char* c = b ? strchr(b + 1, '|') : nullptr;
+  if (c) *c = 0;
+  if (!a || !b || (withFile && !c)) return false;
+  *a = 0; *b = 0;
+  strncpy(g.id, p, sizeof g.id - 1); g.id[sizeof g.id - 1] = 0;
+  strncpy(g.title, a + 1, sizeof g.title - 1); g.title[sizeof g.title - 1] = 0;
+  g.levels = atoi(b + 1);
+  g.sd = withFile;
+  g.one = false;
+  if (withFile) { strncpy(g.file, c + 1, sizeof g.file - 1); g.file[sizeof g.file - 1] = 0; }
+  else g.file[0] = 0;
+  return true;
+}
 // Adds the games of a list file (lines id|title|levels, and for the card also |<file>) to the picker.
 static void addGames(fs::FS& fsys, const char* base, bool sd) {
   size_t n = 0;
@@ -258,25 +315,46 @@ static void addGames(fs::FS& fsys, const char* base, bool sd) {
   while (*p && ngames < MAXGAMES) {
     char* e = strchr(p, '\n');
     if (e) *e = 0;
-    GameEntry& g = games[ngames];
-    char* a = strchr(p, '|');
-    char* b = a ? strchr(a + 1, '|') : nullptr;
-    char* c = b ? strchr(b + 1, '|') : nullptr;
-    if (c) *c = 0;
-    if (a && b && (!sd || c)) {
-      *a = 0; *b = 0;
-      strncpy(g.id, p, sizeof g.id - 1); g.id[sizeof g.id - 1] = 0;
-      strncpy(g.title, a + 1, sizeof g.title - 1); g.title[sizeof g.title - 1] = 0;
-      g.levels = atoi(b + 1);
-      g.sd = sd;
-      if (sd) { strncpy(g.file, c + 1, sizeof g.file - 1); g.file[sizeof g.file - 1] = 0; }
-      else g.file[0] = 0;
-      ngames++;
-    }
+    if (parseGameLine(p, sd, games[ngames])) ngames++;
     if (!e) break;
     p = e + 1;
   }
   free(t);
+}
+// The one-file games in /pocket (card mounted): every NAME.GMP whose game.txt is "GMP 1" then id|title|levels, and whose id the
+// list doesn't hold yet. A later format version is left out (this firmware can't read it).
+static void addOneFileGames() {
+  File d = SD.open("/pocket");
+  if (!d || !d.isDirectory()) return;
+  for (File f = d.openNextFile(); f && ngames < MAXGAMES; f = d.openNextFile()) {
+    const char* nm = strrchr(f.name(), '/') ? strrchr(f.name(), '/') + 1 : f.name();
+    size_t len = strlen(nm), tn = 0;
+    gm::SmallPak pak;
+    pak.user = &f;
+    pak.readAt = smallReadAt;
+    uint8_t* t = nullptr;
+    if (!f.isDirectory() && len > 4 && len < sizeof games[0].file && !strcasecmp(nm + len - 4, ".gmp") && pak.begin()) t = packRead(f, pak, "game.txt", &tn);
+    if (t) {
+      t[tn] = 0;
+      char* line2 = strchr((char*)t, '\n');
+      if (line2) *line2++ = 0;
+      char* e = line2 ? strchr(line2, '\n') : nullptr;
+      if (e) *e = 0;
+      GameEntry& g = games[ngames];
+      bool dup = false;
+      if (!strcmp((char*)t, "GMP 1") && line2 && parseGameLine(line2, false, g)) {
+        for (int i = 0; i < ngames && !dup; i++) dup = !strcmp(games[i].id, g.id);
+        if (!dup) {
+          g.sd = g.one = true;
+          strcpy(g.file, nm);
+          ngames++;
+        }
+      }
+      free(t);
+    }
+    f.close();
+  }
+  d.close();
 }
 // The Starters from LittleFS, then (when a card is in) the games on it. With no card the list is the Starters alone.
 static void loadGameList() {
@@ -284,12 +362,32 @@ static void loadGameList() {
   addGames(LittleFS, "", false);
   if (haveSD && mountSD()) {
     addGames(SD, "/pocket", true);
+    addOneFileGames();
     unmountSD();
   }
 }
-static const char* fileOf(const GameEntry& g) { return g.sd ? g.file : g.id; }  // the name of its .cfg (and .pak)
+static const char* fileOf(const GameEntry& g) { return g.sd && !g.one ? g.file : g.id; }  // the name of its .cfg (and .pak)
 // Points the file readers at game g.
 static bool selectGame(int g) {
+  curOne[0] = 0;
+  curPakBase = 0;
+  if (games[g].one) {  // one file: the cards are its cards.pak entry
+    curFs = &SD;
+    strcpy(curBase, "/pocket");
+    snprintf(curOne, sizeof curOne, "/pocket/%s", games[g].file);
+    strcpy(curPak, curOne);
+    bool wasUp = sdUp, ok = false;
+    if (!mountSD()) return false;
+    File pf;
+    gm::SmallPak pak;
+    uint32_t len = 0;
+    if (packOpen(SD, curOne, pf, pak)) {
+      ok = pak.find("cards.pak", &curPakBase, &len);
+      pf.close();
+    }
+    if (!wasUp) unmountSD();
+    return ok;
+  }
   if (games[g].sd) {
     curFs = &SD;
     strcpy(curBase, "/pocket");
@@ -334,7 +432,7 @@ static void prefetchLevel(int level) {
   want[n++] = L.map;
   for (int i = 0; i < n; i++) {
     size_t len = 0;
-    uint8_t* p = readFileIn(SD, curBase, want[i], &len);
+    uint8_t* p = readGameFile(want[i], &len);
     if (!p) continue;
     strncpy(pre[i].name, want[i], sizeof pre[i].name - 1);
     pre[i].name[sizeof pre[i].name - 1] = 0;
@@ -1027,7 +1125,7 @@ static uint8_t* readPak(size_t off, size_t len) {
   if (card && !mountSD()) return nullptr;
   uint8_t* p = nullptr;
   File f = curFs->open(curPak, "r");
-  if (f && f.seek(off)) {
+  if (f && f.seek(off + curPakBase)) {
     p = (uint8_t*)malloc(len + 1);
     if (p && f.read(p, len) != len) { free(p); p = nullptr; }
   }

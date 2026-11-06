@@ -6,7 +6,7 @@
   "hero": "KIT",
   "year": 1994,
   "price": "Free",
-  "version": "1.0",
+  "version": "1.1",
   "blurb": "Two short levels about dodging by ducking. Friendly bluebirds fly back and forth at the height of Kit's head, and Down makes them duck: their crouch has a picture in the bottom block only, so a bird in the row of their head touches nothing. A ball rolling on the ground is another matter, and needs a hop. Signs explain each idea, and every level has a page on how it is made.",
   "exe": "KITDUCK.EXE",
   "dosName": "KITDUCK",

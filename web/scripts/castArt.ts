@@ -87,7 +87,7 @@ const CAST_ART: Record<string, Source> = {
   mara: { game: 'room-to-room', chr: 'hero.chr', cbl: 'hero.cbl', pal: 'room.pal' },
   lian: { game: 'coins-and-score', chr: 'hero.chr', cbl: 'hero.cbl', pal: 'coins.pal' },
   yana: { game: 'breakable-walls', chr: 'hero.chr', cbl: 'hero.cbl', pal: 'sm.pal' },
-  neka: { game: 'walk-the-ground', chr: 'hero.chr', cbl: 'hero.cbl', pal: 'dg.pal' },
+  nova: { game: 'walk-the-ground', chr: 'hero.chr', cbl: 'hero.cbl', pal: 'dg.pal' },
   rima: { game: 'watch-your-step', chr: 'hero.chr', cbl: 'hero.cbl', pal: 'step.pal' },
   lami: { game: 'things-that-grow', chr: 'hero.chr', cbl: 'hero.cbl', pal: 'nests.pal' },
   lewie: { game: 'snowbound', chr: 'kid.chr', cbl: 'kid.cbl', pal: 'noon.pal' },

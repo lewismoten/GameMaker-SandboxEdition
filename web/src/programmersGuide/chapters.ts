@@ -34,6 +34,12 @@ export const CHAPTERS: Chapter[] = [
   },
   { id: 'tricks', no: '15', title: 'Tips and tricks that use the rules', about: 'Tricks that follow from the earlier chapters.' },
   { id: 'versions', no: '16', title: 'How the player grew, 1.0 to 3.0', about: 'The versions side by side, from the files themselves.' },
+  {
+    id: 'patching',
+    no: '17',
+    title: 'Patching the player',
+    about: 'XFERPLAY.EXE’s settings by offset, how a patch is applied and spotted, and the line it keeps.',
+  },
   { id: 'limits', no: '', title: 'Appendix: limits at a glance', about: 'Every limit in one table: its value, its cause and where to read about it.' },
 ];
 

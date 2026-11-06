@@ -1,8 +1,8 @@
 # Game-Maker player, editor and XFERGAME versions: how the program grew (1.0 → 3.0)
 
-2026-11-05. Static analysis only: no EXE was run. Inputs were an archive of the original shareware releases (unzipped to a scratch tree, read-only), `cd/` (the original CD), the read-only 3.0 source `code/GM` (with its `GM.ZIP` 2.04 snapshot), and the March 1995 3.0 demo. The method was MZ headers, segment layout from fixups, string and literal scans, byte diffs of same-size copies, and a few disassembly slices. Sources are cited as `FILE:line` (source) or `@offset` (binary file offset).
+This chapter compares the original shareware releases, the original CD (`cd/`), the 3.0 source `code/GM` (with its `GM.ZIP` 2.04 snapshot) and the March 1995 3.0 demo. No program was run; the comparison reads file headers, segment layout, strings, byte differences between same-size copies and a few disassembled slices. Sources are cited as `FILE:line` (source) or `@offset` (binary file offset).
 
-Players carry 1990s owners' names and serials. This report says **owner stamp** and copies no name, serial or address. Inferences are marked **[inference]**. Confidence is high unless marked otherwise.
+Players carry 1990s owners' names and serials. This chapter says **owner stamp** and copies no name, serial or address. Inferences are marked **[inference]**. Confidence is high unless marked otherwise.
 
 ## 1. Timeline
 
@@ -17,7 +17,7 @@ Players carry 1990s owners' names and serials. This report says **owner stamp** 
 | **3.0 XFERPLAY**         | `INSTALL.CPP:88-89` "August 24,1994 Version 3.00"; all 343 stock copies identical                                                                                       |                                                                                                                            160,598 | custom startup (©1991 string from the author's own c0) + BC++ 4.x library                                                     | − owner stamp segment (CS:IP back to 0000:0000), − keyboard ASCII tables, − "insert a disk" errors; + "be simulated in Software" VGA, "This game has not been saved!", "(A)bort Save (R)etry"                                                                                            |
 | **3.0 PLAYGAME**         | dated 1994-09-03 15:25 (byte-identical copy in the March 1995 demo)                                                                                                     |                                                                                                                            163,130 | standard BC++ 4.x `c0l.obj`, "Copyright **1994**" (`@25B4A`), "NULL CHECK"                                                    | the same player as XFERPLAY plus the game-picker menu, `.gam` version check, level-design warning, general F1 help (§4)                                                                                                                                                                  |
 
-**Packers.** No player or Game-Maker editor is packed. There is no PKLITE, LZEXE, EXEPACK or DIET signature, entropy is 5.0–6.9 bits/byte, and no image has overlay bytes. The only packed file is the third-party 1988 GIF converter `CVTGIF.EXE` (EXEPACK) in the 1.00 kit. PKLITE-packed games in the archive (FIGHTER.EXE, YUFEX.EXE) were packed by their authors [inference]. The 3.0 install floppies use LHarc `.lzh` archives (`FLOPINST.CPP:26,196`).
+**Packers.** No player or Game-Maker editor is packed. There is no PKLITE, LZEXE, EXEPACK or DIET signature, entropy is 5.0–6.9 bits/byte, and no image has overlay bytes. The only packed file is the third-party 1988 GIF converter `CVTGIF.EXE` (EXEPACK) in the 1.00 kit. PKLITE-packed games in the collection (FIGHTER.EXE, YUFEX.EXE) were packed by their authors [inference]. The 3.0 install floppies use LHarc `.lzh` archives (`FLOPINST.CPP:26,196`).
 
 **Memory model.** Every build is large model: `bcc -ml -1 -O2`, `tasm /ml /jP286N`, `tlink /s/c` (`MAKERS.MAK:1-9`). It targets 80186/286 instructions with no floating point. SS:SP is always DGROUP:0080.
 
@@ -26,7 +26,7 @@ Players carry 1990s owners' names and serials. This report says **owner stamp** 
 | install               | launcher                                                                                                                                                                                     | editors (bytes)                                                                                                                                                  | compiler                                                  |
 | --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
 | 1.00 (1992-03-22…31)  | GM.EXE 43,146: C menu (Play/Design/Utilities/About/Quit/Help) with the Utilities submenu (Backup, Restore, **Transfer**, Joystick) built in; reads `playgame.reg`                            | PALCHOS 43,106; BLOCEDIT 57,160; MONEDIT 61,334; MAPMAKER 47,724; CHAREDIT 66,590; IMAGE 50,698; SNDEDIT 56,178; GRATOR 74,380; JOYSETUP 29,500; JOYDIAGS 30,776 | BC++ ©1991, standard c0                                   |
-| 2.0 demo              | none: a GIF slideshow of editor screenshots (`DEMO.BAT`, third-party MSC viewer CGIF.EXE) plus one game with a stamped 2.00 player                                                           | **no editor binaries exist in the archive**                                                                                                                      | n/a                                                       |
+| 2.0 demo              | none: a GIF slideshow of editor screenshots (`DEMO.BAT`, third-party MSC viewer CGIF.EXE) plus one game with a stamped 2.00 player                                                           | **no editor binaries exist in the collection**                                                                                                                      | n/a                                                       |
 | 3.0 CD                | gm.exe 1,147-byte assembly EXEC loop (`GM.ASM:26-40`; INT 21h 4B00h, then 4Dh return code picks the next tool) + MENU.EXE 52,448 + **UTILITY.EXE 61,780** (Backup/Restore/Transfer/Joystick) | PALCHOS 78,912; BLOCEDIT 107,960; MONEDIT 96,436; MAPMAKER 89,690; CHAREDIT 104,798; IMAGE 84,614; SNDEDIT 99,072; GRATOR 116,800                                | BC++ 3.1 (C++ compile) + custom `startupl` ("GM:" errors) |
 | 3.0 demo (1995-03-04) | the same 11 DOS tools at slightly different sizes + GMWIN.EXE 545,312 (Visual Basic 3 Windows menu, 1994-10-24)                                                                              | all saves disabled except Maps; Transfer compiled out; no XFERPLAY shipped                                                                                       | as CD                                                     |
 
@@ -41,7 +41,7 @@ Players carry 1990s owners' names and serials. This report says **owner stamp** 
 
 So **a transferred game's EXE is XFERPLAY renamed**, and the player finds its data from its own name: `ParseFileName(argv[0])` + ".gam" (`PLAYGAME.C:666-669`). That explains why every 3.0 game EXE is exactly 160,598 bytes, and every 1.0 game EXE is 82,803 bytes: the 1.0 `feof` loop appends one 0xFF to **every** file it copies. The same extra byte appears on most transferred data in the 1.0 folder: .PAL 769 (11 files) vs 768 (4), .MON 19,201 (14) vs 19,200 (4), .MAP 22,001 (57) vs 22,000 (4). The .GAM files are almost all an exact 6,600 bytes (11 of 12), which suggests Transfer rewrote the .GAM rather than copying it [inference]. The 3.0 block copy adds no byte, yet a few 3.0-folder files are also 1 byte longer than the record total; those are probably 1.0 data carried forward [inference]. [mechanism: inference; the byte itself is measured]
 
-**Owner stamping is separate from Transfer.** The registration tools `insertstr("a:xferplay.exe", final, 0x1800, 34)` (`REGIST.C:125-148`, `BYTENUMS.H:2-3`, `MKDSK.CPP:126-127`) personalised the _distribution disk's_ XFERPLAY at install time, so every game a buyer transferred carried that buyer's owner stamp. All 26 stamped players in the archive decode to valid serials (values withheld). In 3.0 the stamp segment is gone and the 343 stock copies are byte-identical. That suggests 3.0 stopped tracing games back to buyers [inference].
+**Owner stamping is separate from Transfer.** The registration tools `insertstr("a:xferplay.exe", final, 0x1800, 34)` (`REGIST.C:125-148`, `BYTENUMS.H:2-3`, `MKDSK.CPP:126-127`) personalised the _distribution disk's_ XFERPLAY at install time, so every game a buyer transferred carried that buyer's owner stamp. All 26 stamped players in the collection decode to valid serials (values withheld). In 3.0 the stamp segment is gone and the 343 stock copies are byte-identical. That suggests 3.0 stopped tracing games back to buyers [inference].
 
 ### PLAYGAME vs XFERPLAY (the 2,532-byte difference)
 
@@ -132,7 +132,7 @@ A literal scan of the linked sources against both CD binaries finds 197 literals
 - **Version banners vs reality:**
   - The CD's `about.hlp` still says "Version 2.00"; the source `ABOUT.HLP` says "Version 1.04" with "$89".
   - `PLAYGAME.C:3-4` header reads "Last Edited: July 8, 1993 … Version: 2.04" while the file is 3.00 code.
-  - "V1.06" was used internally in 1992-93 (registration program, bug list, `gogm.bat`) and was never a public player version in the archive.
+  - "V1.06" was used internally in 1992-93 (registration program, bug list, `gogm.bat`) and was never a public player version in the collection.
   - The format headers say v1.05 (1991).
   - The help, header and banner text was not kept in step with releases [inference].
 - **Dated changelog lines** (`PLAYGAME.C:3-7`): created June 20, 1991; MicroChannel keyboard Feb 21 '94; GIFs/FLIs between scenes + new integrator format Aug 8 '94.
@@ -149,12 +149,12 @@ A literal scan of the linked sources against both CD binaries finds 197 literals
   - The monster record's `fly` ("Whether or not gravity has an effect on a monster"), `jump` and `stick` ("Not currently used") are serialized (`MON.H:23-26`), but no editor writes them and no player reads them. They are zero in all 52,066 archive monster records (see `2026-11-05-ignored-fields.md`).
   - Monster gravity was planned but never built [inference].
   - The `.gam` 3.0 header's 250-byte "RSD" fill and the 11-byte `extra[]` in the old scene record are reserved space.
-- **Third-party edits:** several archive players have length-preserving hex edits of text (About screens, re-branded extensions `.gam→.z0g`, renamed HUD labels). They explain "no version string" players and are not Game-Maker versions.
+- **Third-party edits:** several players in the collection have length-preserving hex edits of text (About screens, re-branded extensions `.gam→.z0g`, renamed HUD labels). They explain "no version string" players and are not Game-Maker versions.
 
 ## 5. What it tells us
 
 1. **Game-Maker grew in three steps, not six.** 1.0/1.04 is a PC-speaker, VGA, per-file engine (1991-92). 2.x (built 1992-93, refined to 2.04 in mid-1994) adds Sound Blaster, configuration and save games without changing data formats except `.snd`. 3.0 (Aug–Sep 1994) is a C++ rebuild with a new self-describing `.gam`, FLI/GIF cut-scenes, a demo recorder and multi-slot saves. 1.04, 2.02 and 2.04 are maintenance releases: hardware detection, bug fixes and build-layout changes.
-2. **The record formats were frozen from 1991.** Blocks 420, monsters 300, characters 3,784, maps 22,000 and palettes 768 never change. Only the `.snd` file (2.00) and the `.gam` container (3.0) changed. The `.gam` is the only file with a version number, and only from 3.0. [measured across all archive games]
+2. **The record formats were frozen from 1991.** Blocks 420, monsters 300, characters 3,784, maps 22,000 and palettes 768 never change. Only the `.snd` file (2.00) and the `.gam` container (3.0) changed. The `.gam` is the only file with a version number, and only from 3.0. [measured across all games in the collection]
 3. **XFERGAME is a feature, not a program.** "Transfer" copies a prebuilt XFERPLAY under the game's name and the player identifies its game from `argv[0]`. Up to 2.x, the distributed XFERPLAY was personalised at install time with an owner stamp; 3.0 dropped the stamp, so every 3.0 game ships an identical player.
 4. **XFERPLAY is PLAYGAME minus the authoring scaffolding** (menu, registration handshake, version-check box, designer warning, general help). Its smaller custom startup also explains part of the 2,532 B [inference].
 5. **The 2.04 "shrink" and the 2.00 "bloat" are linker artefacts** (zero data stored in or out of the file), not features. [measured; cause inferred]
@@ -162,11 +162,7 @@ A literal scan of the linked sources against both CD binaries finds 197 literals
 
 ## Gaps
 
-- No 2.x editors and no 2.x XFERPLAY kit survive in the archive. 2.x editor features are inferred from `GM_SPEC.TXT` and the 3.0 editors.
+- No 2.x editors and no 2.x XFERPLAY kit survive in the collection. 2.x editor features are inferred from `GM_SPEC.TXT` and the 3.0 editors.
 - Feature claims rest on strings, literal scans and source; no function-level disassembly diff was done.
 - The 1.0 owner-stamp name encoding was not decoded (it does not need to be).
 - int 33h and port byte-pattern counts are low confidence.
-
-## Evidence trail
-
-Kanban parents of t_c9db7353: t_7c384a04 (extraction and inventory, 821 MZ files, archive hashes verified unchanged), t_8712e576 (31 distinct player binaries), t_50d90fed (editors and Transfer disassembly), t_951e9cd5 (source/CD map, literal scans), t_d6c9b431 (first synthesis). This report adds the `.gam`/`.snd` header and size census across all version folders (scratch `gamscan.py`). Scripts and raw tables are attached to those cards and are not in the repo.

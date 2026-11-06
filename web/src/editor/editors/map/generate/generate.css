@@ -113,3 +113,7 @@
   flex: 1 1 auto;
   min-width: 0;
 }
+/* The Difficulty slider is for side views only; a class that sets display would show it on every kind. */
+.gen-diff[hidden] {
+  display: none;
+}

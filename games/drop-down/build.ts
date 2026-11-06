@@ -17,10 +17,11 @@ import { licenseText } from '../kit/license';
 import { STARTER_STING, starterStingFli } from '../kit/starter/sting';
 import { buildHeroBlocks, heroPicture } from '../kit/starter/hero';
 import { KEYS } from '../kit/starter/blocks';
-import { buildHero } from '../kit/starter/heroChar';
+import { HIT_COUNTER } from './src/blocks';
+import { buildHitter } from './src/hero';
+import { dropSounds } from './src/sounds';
 import { cardPicture, endPicture, gif, menuPicture, paper, scoresPicture, slotsPicture } from '../kit/starter/screens';
 import { skyOf } from '../kit/starter/palette';
-import { buildSounds } from '../kit/starter/sounds';
 import { demoRecording } from './src/demo';
 import { TITLE, buildGame } from './src/game';
 import { buildLevels } from './src/levels';
@@ -46,11 +47,12 @@ disk.put('dd.bbl', serializeBlocks(book.finish()));
 disk.put('dd.mbl', serializeBlocks(finishMonsterPictures(monsterBlocks)));
 disk.put('dd.mon', serializeMonsters(monsterSet(monsterBlocks)));
 disk.put('hero.cbl', serializeBlocks(heroBlocks.finish()));
-const heroChar = buildHero(heroBlocks);
+const heroChar = buildHitter(heroBlocks);
 heroChar.meter[KEYS] = INF_REPEAT; // no keys in this game
+heroChar.meter[HIT_COUNTER] = 1; // the hit counter starts empty (a counter holds one more than it shows)
 heroChar.meter[0] = HERO_HIT_POINTS; // nothing here takes any
 disk.put('hero.chr', serializeCharacter(heroChar));
-disk.put('dd.snd', serializeSoundSet(buildSounds()));
+disk.put('dd.snd', serializeSoundSet(dropSounds()));
 disk.put('dd.cmf', song());
 
 // each level's map and its card

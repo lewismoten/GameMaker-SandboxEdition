@@ -1,0 +1,51 @@
+{
+ "version": 1,
+ "game": "graduation-heroes",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU0ezQNNKM0DTTzNA00yzQNN"
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "The Great Hall"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 5463,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 913,
+    "time": 15216.666666666471
+   },
+   {
+    "title": "The Great Hall",
+    "frame": 1661,
+    "time": 27683.333333333918
+   },
+   {
+    "title": "Ending",
+    "frame": 2662,
+    "time": 44366.66666666594
+   },
+   {
+    "title": "Credits",
+    "frame": 4391,
+    "time": 73183.33333333174
+   }
+  ]
+ }
+}

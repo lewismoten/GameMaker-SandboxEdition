@@ -84,7 +84,7 @@ text('story', 'THE WATER', STORY);
 text('howto', 'HOW TO PLAY', HOWTO);
 text('credits', 'CREDITS', CREDITS);
 disk.put('wonpic.gif', gif(endPicture(pal, book, cheer, 'SPLASH!', 'THREE POOLS DONE', 'won'), pal));
-disk.put('won.gif', gif(paper(pal, book, 'ALL WET'), pal));
+disk.put('won.gif', gif(paper(pal, book, 'SAFE ASHORE'), pal));
 disk.put('won.txt', WON);
 disk.put('won.lst', serializeSlideList([{ name: 'wonpic.gif', pause: 6 }, { name: 'won.gif', pause: 0 }, { name: 'won.txt' }]));
 disk.put('lostpic.gif', gif(endPicture(pal, book, heroPicture(heroBlocks, 'hurt.top', 'hurt'), 'WHOOPS!', 'THE WATER HOLDS YOU', 'lost'), pal));

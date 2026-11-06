@@ -1,12 +1,12 @@
 // DIG IT's own blocks, added to the Starter block set after the signs:
-//   soil     loose, light brown earth with pebbles. It is solid, and every tick Neka pushes on it (walking into it, standing
+//   soil     loose, light brown earth with pebbles. It is solid, and every tick Nova pushes on it (walking into it, standing
 //            on it, jumping up into it) it breaks up one step along a chain: soil, cracked, split open, half dug, nearly dug, then `dug`
 //            (a hole with a heap of crumbs). The steps are solid, so they are held for five ticks, shovel against the
 //            dirt, and then walks straight on. A touch chain is the only per-block animation PLAYGAME has: a block timer
 //            would change every copy of the block on the screen at once.
 //   nugget   soil with a gold fleck. It pays 10 on its first touch (once), glints as it cracks and then joins the chain.
 //   crumbs   the dug hole's crunch: touching soil adds one to a spare counter, which Game-Maker answers with sound 7.
-//   tunnel   the hole that is left: a dark brown wall behind Neka, nothing solid, with the pull of ordinary air (down)
+//   tunnel   the hole that is left: a dark brown wall behind Nova, nothing solid, with the pull of ordinary air (down)
 //   mineLadder  a ladder on the tunnel's dark wall: the way up out of a dug tunnel
 //   rock     gray stone with cracks. It is solid and has no touch, so it never digs: a hole goes around it.
 // The Starters' own `dirt` (dark, packed) is not diggable either; only `soil` is.
