@@ -10,7 +10,7 @@ export function relayItem(entry: CatalogEntry): BoxItem[] {
   return [
     {
       id: 'navigator-relay',
-      title: 'Navigator/player relay',
+      title: 'Navigator and player relay',
       note: 'Two people · one backyard · one printable hint sheet',
       icon: '🧭',
       render: () => Promise.resolve([relaySheet()]),
@@ -29,7 +29,7 @@ function relaySheet(): Sheet {
     h('p', null, 'Bring Doc Leo’s fedora to Pockets. Take turns steering Teddy and helping him find the way. No timer, score target or winner between you.'),
     section(
       'Start here',
-      'Use a separate browser guest profile to keep the regular browser owner’s progress safe. Open Teddy’s Little Big Adventure, choose Play for a new run, and begin at Doc Leo’s Backyard. Do not load a saved game.',
+      'Use a guest window or a separate browser profile, so nobody’s saved progress changes. Open Teddy’s Little Big Adventure, choose Play for a new run, and begin at Doc Leo’s Backyard. Do not load a saved game.',
     ),
     section(
       'Choose two roles',
@@ -59,7 +59,7 @@ function relaySheet(): Sheet {
     ),
     section(
       'Finish together',
-      'After the car ride and the Maple Street introduction finish, press F2. You have finished this activity! Let every voice clip finish. Choose whether to stop or keep exploring. To stop, return with Enter, use Esc to quit to the menu, then close the guest profile. No save is needed.',
+      'Ride in the car and let the Maple Street introduction finish, voices included. That is the end of this activity, so cheer! Then choose: keep exploring, or stop. To stop, press Esc to quit to the menu, then close the guest window. No save is needed.',
     ),
     section(
       'Take another try',

@@ -11,7 +11,7 @@ describe('navigator/player relay printable', () => {
   it('has a stable box opening and a Library paper classification', () => {
     const items = relayItem(entry('teddy'));
     expect(items).toHaveLength(1);
-    expect(items[0]).toMatchObject({ id: 'navigator-relay', title: 'Navigator/player relay' });
+    expect(items[0]).toMatchObject({ id: 'navigator-relay', title: 'Navigator and player relay' });
     expect(typeOfPiece('teddy', items[0].id)).toBe('letter');
   });
 
