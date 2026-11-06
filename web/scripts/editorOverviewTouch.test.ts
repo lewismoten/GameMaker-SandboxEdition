@@ -11,6 +11,9 @@ it('counts a pseudo-element hit area only when it really receives pointer hits',
       `<style>.handle { position:absolute;left:100px;top:100px;width:10px;height:200px }.handle::before { content:'';position:absolute;inset:0 -7px }</style><div class="handle" tabindex="0" role="separator" aria-label="Resize"></div>`,
     );
     expect((await page.evaluate(measureTargets, 390)).under24).toHaveLength(0);
+    await page.setViewportSize({ width: 844, height: 390 });
+    await page.addStyleTag({ content: '.handle { top:227px;height:672px }' });
+    expect((await page.evaluate(measureTargets, 844)).under24).toHaveLength(0);
     await page.addStyleTag({ content: '.handle::before { pointer-events:none }' });
     expect((await page.evaluate(measureTargets, 390)).under24).toHaveLength(1);
   } finally {

@@ -14,8 +14,10 @@ export function measureTargets(deviceWidth: number) {
     if (b.width < 24 || b.height < 24) {
       // A CSS pseudo-element can enlarge a grip without widening the layout. Verify real
       // pointer hits at the corners and edge midpoints of a 24px square, not just its CSS.
-      const x = Math.max(12, Math.min(innerWidth - 12, b.left + b.width / 2));
-      const y = Math.max(12, Math.min(innerHeight - 12, b.top + b.height / 2));
+      // Leave one extra pixel at the viewport edge: elementFromPoint rounds fractional
+      // coordinates and otherwise returns null for the last subpixel row/column.
+      const x = Math.max(13, Math.min(innerWidth - 13, b.left + b.width / 2));
+      const y = Math.max(13, Math.min(innerHeight - 13, b.top + b.height / 2));
       const hits = [-11.99, 0, 11.99].every((dx) =>
         [-11.99, 0, 11.99].every((dy) => {
           const hit = document.elementFromPoint(x + dx, y + dy);
