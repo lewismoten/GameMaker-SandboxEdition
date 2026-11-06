@@ -1,7 +1,7 @@
 // "Run like a…" in the player's corner: Today, 486, 386, 286 or an IBM PS/1. A DOS game cannot change the
 // CPU, so the player does it from outside: it charges each pass of the game loop what the old
 // machine would have taken (engine/slowPc.ts), including the freeze while a .voc is read from
-// disk and, on the 286 and PS/1, the black screen while a level's files are read. The game's files and rules are untouched; Today (the default) charges nothing.
+// disk and the black screen while a level's files are read. The game's files and rules are untouched; Today (the default) charges nothing.
 import './speedPick.css';
 import { costsFor, SPEED_CHOICES, type SpeedChoice } from '@lewismoten/gamemaker-sandbox-engine/engine/slowPc';
 import type { SpeedSetting } from '@lewismoten/gamemaker-sandbox-engine/engine/scene';
@@ -18,8 +18,7 @@ const LABELS: Record<SpeedChoice, string> = {
 export function speedPick(corner: HTMLElement, speed: SpeedSetting, canvas: HTMLElement): void {
   const label = document.createElement('label');
   label.className = 'gm-speed';
-  label.title =
-    'Slow the game the way an old PC would: the picture, walking, monsters, the pause while a sound loads from disk and, on the 286 and PS/1, while a level loads (estimates)';
+  label.title = 'Slow the game the way an old PC would: the picture, walking, monsters, and the pauses while a sound or a level loads from disk (estimates)';
   const select = document.createElement('select');
   for (const c of SPEED_CHOICES) select.append(Object.assign(document.createElement('option'), { value: c, textContent: LABELS[c] }));
   select.addEventListener('change', () => {
