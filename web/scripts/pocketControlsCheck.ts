@@ -11,6 +11,10 @@ const here = new URL('../../hardware/pocket-player/', import.meta.url).pathname;
 const exe = join(mkdtempSync(join(tmpdir(), 'pocket-controls-')), 'controlstest');
 execFileSync('c++', ['-std=c++17', '-O1', '-Wall', '-I', here + 'src', here + 'host/controlstest.cpp', '-o', exe], { stdio: 'inherit' });
 const r = spawnSync(exe, { stdio: 'inherit' });
+// Run the new one-contact scenarios at the resistive board's actual geometry too.
+const smallExe = exe + '-small';
+execFileSync('c++', ['-std=c++17', '-O1', '-Wall', '-DPOCKET_CYD28', '-I', here + 'src', here + 'host/controlstest.cpp', '-o', smallExe], { stdio: 'inherit' });
+const small = spawnSync(smallExe, { stdio: 'inherit' });
 // the resistive touch calibration (src/touchcal.h) for the 2.8 inch board
 const calExe = join(mkdtempSync(join(tmpdir(), 'pocket-touchcal-')), 'touchcaltest');
 execFileSync('c++', ['-std=c++17', '-O1', '-Wall', '-I', here + 'src', here + 'host/touchcaltest.cpp', '-o', calExe], { stdio: 'inherit' });
@@ -24,4 +28,4 @@ const shotsDir = mkdtempSync(join(tmpdir(), 'pocket-shots-'));
 const shotsExe = join(shotsDir, 'setupshots');
 execFileSync('c++', ['-std=c++17', '-O1', '-Wall', '-I', here + 'src', here + 'host/setupshots.cpp', '-o', shotsExe], { stdio: 'inherit' });
 const e = spawnSync(shotsExe, [shotsDir], { stdio: 'inherit', cwd: here });
-process.exit((r.status ?? 1) || (c.status ?? 1) || (d.status ?? 1) || (e.status ?? 1));
+process.exit((r.status ?? 1) || (small.status ?? 1) || (c.status ?? 1) || (d.status ?? 1) || (e.status ?? 1));

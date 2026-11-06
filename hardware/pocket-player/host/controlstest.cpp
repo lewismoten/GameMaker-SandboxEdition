@@ -95,6 +95,57 @@ int main() {
     check("search matches titles only, without case", pk::matches("A Fly Named Carl", "named carl") && !pk::matches("A Fly Named Carl", "2 levels"));
   }
 
+  // Both board geometries: one-contact jump wedges and saved sticky direction behavior.
+  for (int lefty : {0, 1}) {
+    Settings s; s.lefty = lefty;
+    Need n = platformer(); needAdd(n, S_SPACE, "Jump");
+    Run r(s, n); auto p = r.c.L.pad;
+    int x = p.cx + p.r / 2, y = p.cy - p.r / 2;
+    r.touch(1, x, p.cy); r.wait(200);
+    r.touch(1, x, y); r.wait(200);
+#ifdef POCKET_CYD28
+    check("resistive upper-right wedge holds Right + Jump, without Up", r.held[S_RIGHT] && r.held[S_SPACE] && !r.held[S_UP], r.log);
+    r.touch(1, x, p.cy); r.wait(200);
+    check("slide back to Right releases Jump without lifting", r.held[S_RIGHT] && !r.held[S_SPACE], r.log);
+    r.touch(1, p.cx - p.r / 2, y); r.wait(200);
+    check("resistive upper-left wedge holds Left + Jump", r.held[S_LEFT] && r.held[S_SPACE] && !r.held[S_RIGHT], r.log);
+#else
+    check("capacitive diagonal retains Up + Right", r.held[S_RIGHT] && r.held[S_UP] && !r.held[S_SPACE], r.log);
+#endif
+    r.c.reset(); r.n = 0; memset(r.held, 0, sizeof r.held);
+    r.touch(1, x, p.cy); r.wait(200);
+    r.touch(2, r.c.L.space.cx, r.c.L.space.cy); r.wait(200);
+    r.up(2); r.wait(300);
+    check("Jump finger releases while direction stays held", r.held[S_RIGHT] && !r.held[S_SPACE], r.log);
+    s.sticky = 1; Run sticky(s, n);
+    auto tap = [&](int tx) { sticky.touch(1, tx, p.cy); sticky.wait(80); sticky.up(1); sticky.wait(240); };
+    tap(x);
+    check("sticky tap keeps walking after lift", sticky.held[S_RIGHT], sticky.log);
+    sticky.touch(2, sticky.c.L.space.cx, sticky.c.L.space.cy); sticky.wait(80); sticky.up(2); sticky.wait(240);
+    check("sticky walking survives a Jump tap", sticky.held[S_RIGHT] && !sticky.held[S_SPACE], sticky.log);
+    tap(x);
+    check("same sticky direction tap stops walking", !sticky.held[S_RIGHT] && !sticky.held[S_LEFT], sticky.log);
+    tap(x); tap(p.cx - p.r / 2);
+    check("opposite sticky direction replaces walking direction", sticky.held[S_LEFT] && !sticky.held[S_RIGHT], sticky.log);
+    sticky.c.reset(); sticky.wait(240);
+    check("reset clears sticky direction", sticky.c.latch == 0 && sticky.c.padDirs == 0, sticky.log);
+    Need native = n; needAdd(native, 73, "Up-right");
+    Run diagonal(s, native);
+    diagonal.touch(1, x, y); diagonal.wait(200);
+    check("native diagonal binding takes priority over Jump wedge", diagonal.held[73] && !diagonal.held[S_SPACE], diagonal.log);
+    Need horizontal = needs(true, true, false, false, false, false); needAdd(horizontal, S_SPACE, "Hop");
+    Run hop(s, horizontal); hop.touch(1, x, y); hop.wait(200);
+#ifdef POCKET_CYD28
+    check("jump wedge works without a game's Up binding", hop.held[S_RIGHT] && hop.held[S_SPACE], hop.log);
+#endif
+    Need action = platformer(); needAdd(action, S_SPACE, "Fire");
+    check("only Jump or Hop labels enable jump wedges", n.jump && !action.jump);
+  }
+
+#ifdef POCKET_CYD28
+  printf("resistive controls model: %s\n", failures ? "FAILURES" : "all passed");
+  return failures ? 1 : 0;
+#endif
   Settings def;
   Layout L = makeLayout(def, platformer());
   int cx = L.pad.cx, cy = L.pad.cy;

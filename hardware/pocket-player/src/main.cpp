@@ -475,15 +475,15 @@ static void prefetchLevel(int level) {
 static bool smallerPicture = false;
 static void saveSettings() {
   Preferences pref;
-  if (pref.begin("pocket", false)) { pref.putBool("smaller", smallerPicture); pref.end(); }
+  if (pref.begin("pocket", false)) { pref.putBool("smaller", smallerPicture); pref.putBool("sticky", settings.sticky); pref.end(); }
   File f = LittleFS.open("/settings.txt", "w");
   if (!f) return;
   f.printf("lefty=%d\nstylus=%d\npad=%d\ndead=%d\npalm=%d\ndebug=%d\nsound=%d\n", settings.lefty, settings.stylus, settings.padSize, settings.dead, settings.palm, settings.debug, settings.sound);
 }
 static void loadSettings() {
-  Preferences pref;
-  if (pref.begin("pocket", true)) { smallerPicture = pref.getBool("smaller", false); pref.end(); }
   settings = ctl::Settings();
+  Preferences pref;
+  if (pref.begin("pocket", true)) { smallerPicture = pref.getBool("smaller", false); settings.sticky = pref.getBool("sticky", false); pref.end(); }
   File f = LittleFS.open("/settings.txt", "r");
   if (!f) return;
   while (f.available()) {
@@ -787,6 +787,12 @@ static void drawControls() {
     if (nd.right) arrow(p.cx + a, p.cy, 1, s, d & 2);
     if (nd.up) arrow(p.cx, p.cy - a, 2, s, d & 4);
     if (nd.down) arrow(p.cx, p.cy + a, 3, s, d & 8);
+#ifdef POCKET_CYD28
+    if (nd.jump) for (int side : {-1, 1}) {
+      int x = p.cx + side * p.r / 2, y = p.cy - p.r / 2;
+      arrow(x, y, 2, s / 2, (d & 4) && (d & (side < 0 ? 1 : 2)));
+    }
+#endif
   }
   if (nd.space && hitsDisc(L.space)) disc(L.space, controls.btnDown & 1, ctl::S_SPACE, "Space", icons[0]);
   if (nd.enter && hitsDisc(L.enter)) disc(L.enter, controls.btnDown & 2, ctl::S_ENTER, "Enter", icons[1]);
@@ -965,28 +971,40 @@ static void filterGames() {
 }
 constexpr int ROWS = scr::SMALL ? 4 : 5;
 
-static void drawPicker(bool clear = true) {
+static void drawPicker(bool clear = true, bool paging = false) {
   filterGames();
   int pages = (nmatch + ROWS - 1) / ROWS;
   if (page >= pages) page = 0;
   if (clear) tft.fillScreen(C_BLACK);
   // Include the gaps between buttons: erase text left by older firmware's wrapping.
-  tft.fillRect(0, TITLE_H, scr::W, PK_BTN_Y - TITLE_H, C_BLACK);
+  if (!paging) tft.fillRect(0, TITLE_H, scr::W, PK_BTN_Y - TITLE_H, C_BLACK);
   char t[48];
   snprintf(t, sizeof t, "%s %d/%d%s", searchText[0] ? "Search" : "Pocket Player", page + 1, pages ? pages : 1, haveSD && !scanDone ? " ..." : "");
-  title(t);
+  static size_t previousTitleLength = 0;
+  if (!paging) title(t);
+  else {
+    // The prefix, firmware label and footer stay untouched. Print opaque text over
+    // the previous page count; reserve enough width for a shorter final page.
+    int prefix = searchText[0] ? 7 : 14;
+    tft.setTextSize(2); tft.setTextColor(C_WHITE, C_BLUE);
+    tft.setCursor(8 + prefix * 12, scr::SMALL ? 6 : 12);
+    tft.print(t + prefix);
+    for (size_t i = strlen(t); i < previousTitleLength; i++) tft.print(" ");
+  }
+  previousTitleLength = strlen(t);
   for (int r = 0; r < ROWS; r++) {
     int at = page * ROWS + r, y = PK_Y0 + r * PK_STEP;
-    if (at >= nmatch) continue;
-    int i = matches[at];
-    pk::drawRow(tft, games[i].title, games[i].sd, scr::W, y, PK_H);
+    int i = at < nmatch ? matches[at] : -1;
+    pk::drawPageRow(tft, i >= 0 ? games[i].title : nullptr, i >= 0 && games[i].sd, scr::W, y, PK_H);
   }
   if (!nmatch) {
     tft.setTextSize(2); tft.setTextColor(C_WHITE, C_BLACK); tft.setCursor(16, PK_Y0 + 12);
     tft.print(haveSD && !scanDone ? "Reading card..." : searchText[0] ? "No titles match" : "No games found");
   }
-  for (int i = 0; i < 4; i++) pk::drawIcon(tft, i, scr::W, scr::H, PK_BTN_Y);
-  banner::paint(tft, 0, 0);
+  if (!paging) {
+    for (int i = 0; i < 4; i++) pk::drawIcon(tft, i, scr::W, scr::H, PK_BTN_Y);
+    banner::paint(tft, 0, 0);
+  }
 }
 static void drawSearch() {
   tft.fillScreen(C_BLACK); title("Search titles");
@@ -1026,7 +1044,7 @@ static const char* panelName(char* b) {  // "ILI", "ST inv", "ILI inv bgr", ...
   return b;
 }
 #endif
-constexpr int ST_ROWS = scr::SMALL ? 9 : 8;  // the 2.8 inch board's Settings also has Calibrate and Display
+constexpr int ST_ROWS = scr::SMALL ? 10 : 9;  // the 2.8 inch board's Settings also has Calibrate and Display
 static int setPage = 0;
 static void drawSettings() {
   tft.fillScreen(C_BLACK);
@@ -1041,7 +1059,8 @@ static void drawSettings() {
                        {scr::SMALL ? "Dead zone" : "Pad dead zone", SIZE3[settings.dead]},
                        {scr::SMALL ? "Palm reject" : "Palm rejection", PALM[settings.palm]},
                        {scr::SMALL ? "Status nums" : "Status numbers", ONOFF[settings.debug]},
-                       {"Sound", VOLUME[settings.sound]}
+                       {"Sound", VOLUME[settings.sound]},
+                       {"Sticky direction", ONOFF[settings.sticky]}
 #ifdef POCKET_CYD28
                        ,
                        {"Calibrate", "tap 3"},
@@ -1061,7 +1080,9 @@ static void drawSettings() {
     tft.setTextSize(2);
     tft.setTextColor(C_WHITE, C_DARK);
     tft.setCursor(14, y + 8);
+    if (scr::SMALL && i == 7) tft.setTextSize(1);
     tft.print(rows[i].name);
+    tft.setTextSize(2);
     tft.setTextColor(C_YELLOW, C_DARK);
     tft.setCursor(scr::SMALL ? 176 : 300, y + 8);
     tft.print(rows[i].value);
@@ -1754,8 +1775,8 @@ void loop() {
       if (ty < TITLE_H && tx < 208) { runDisplaySetup(); enterPicker(); return; }  // the list's top-left corner: display setup
 #endif
       if (ty >= PK_BTN_Y) {
-        if (tx < scr::W / 4 && page > 0) { page--; drawPicker(false); }
-        else if (tx >= scr::W / 4 && tx < scr::W / 2 && page + 1 < pages) { page++; drawPicker(false); }
+        if (tx < scr::W / 4 && page > 0) { page--; drawPicker(false, true); }
+        else if (tx >= scr::W / 4 && tx < scr::W / 2 && page + 1 < pages) { page++; drawPicker(false, true); }
         else if (tx >= scr::W / 2 && tx < scr::W * 3 / 4) { stopCardScan(); mode = SEARCH_SCREEN; drawSearch(); }
         else if (tx >= scr::W * 3 / 4) { stopCardScan(); mode = SETTINGS_SCREEN; fromPause = false; setPage = 0; drawSettings(); }
       } else if (ty >= PK_Y0) {
@@ -1827,11 +1848,12 @@ void loop() {
             spk::setVolume(settings.sound);
             spk::play(SAMPLE_TUNE);
             break;
+          case 7: settings.sticky ^= 1; saveSettings(); break;
 #ifdef POCKET_CYD28
-          case 7: saveSettings(); if (runCalibration()) dsCalDone(); drawSettings(); wasDown = true; return;
-          case 8: saveSettings(); mode = DISPLAY_SCREEN; drawDisplayOptions(); wasDown = true; return;
+          case 8: saveSettings(); if (runCalibration()) dsCalDone(); drawSettings(); wasDown = true; return;
+          case 9: saveSettings(); mode = DISPLAY_SCREEN; drawDisplayOptions(); wasDown = true; return;
 #else
-          case 7: saveSettings(); mode = DISPLAY_SCREEN; drawDisplayOptions(); wasDown = true; return;
+          case 8: saveSettings(); mode = DISPLAY_SCREEN; drawDisplayOptions(); wasDown = true; return;
 #endif
         }
         drawSettings();

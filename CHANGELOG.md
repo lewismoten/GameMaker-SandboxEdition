@@ -6,6 +6,8 @@ changelog: [engine](web/packages/engine/CHANGELOG.md), [archives](web/packages/a
 
 ## [Unreleased]
 
+- Pocket Player page arrows repaint only the game rows and page count, and the search icon has a round lens and diagonal handle. Resistive boards gain direction-plus-jump pad wedges; Sticky direction saves in NVS so a direction tap can keep walking while Jump is tapped separately.
+
 - Pocket Player title search redraws only the edited text and caret while typing, keeping the keyboard steady. The 3.5 inch board's Settings explains that its touch needs no calibration.
 
 The 1994 desk gets a fuller PC and a box of feelies, the editors become easier on touch screens and keyboards,
