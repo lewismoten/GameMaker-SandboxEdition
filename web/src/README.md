@@ -132,6 +132,8 @@ SDK implementation lives in the packages below; the app imports their declared e
   Subareas:
   - [`editor/editors/animation/scene/`](editor/editors/animation/scene/README.md): companion-backed animation Scene maker and renderer.
   - [`editor/editors/animation/shrink/`](editor/editors/animation/shrink/README.md): worker-backed FLI size reduction and real result preview.
+  - [`editor/editors/integrator/dosPlayer/`](editor/editors/integrator/dosPlayer/README.md): dOS player customization UI and preview.
+  - [`editor/editors/map/check/`](editor/editors/map/check/README.md): level-check UI, heat maps and author play sessions.
 - [`editor/disk/`](editor/disk/README.md): the disk-space tool: merges of monster files, block sets and palettes, and the floppy disks a game needs.
 - [`editor/editors/palette/`](editor/editors/palette/README.md): VGA palette editing, role reservations and contrast checks.
 - [`saves/`](saves/README.md): the home page's Saves & scores panel: saved games, high scores and
