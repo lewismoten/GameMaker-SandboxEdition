@@ -137,30 +137,30 @@ SDK implementation lives in the packages below; the app imports their declared e
   - [`editor/colorHelp/`](editor/colorHelp/README.md): optional color naming, look-alike warnings and simulated previews.
   - [`editor/core/`](editor/core/README.md): shared editor project, history, DOM and indexed drawing helpers.
   - [`editor/editors/`](editor/editors/README.md): file-kind dispatch and lazy editor registration.
-  - [`editor/editors/animation/`](editor/editors/animation/README.md): fLI frame editing and Scene/Frames workflows.
+  - [`editor/editors/animation/`](editor/editors/animation/README.md): FLI frame editing and Scene/Frames workflows.
   - [`editor/editors/animation/scene/`](editor/editors/animation/scene/README.md): companion-backed animation Scene maker and renderer.
   - [`editor/editors/animation/shrink/`](editor/editors/animation/shrink/README.md): worker-backed FLI size reduction and real result preview.
-  - [`editor/editors/backdrop/`](editor/editors/backdrop/README.md): bKD picture-window editing and picture resolution.
+  - [`editor/editors/backdrop/`](editor/editors/backdrop/README.md): BKD picture-window editing and picture resolution.
   - [`editor/editors/blocks/`](editor/editors/blocks/README.md): block-set pixel and behavior editor.
   - [`editor/editors/character/`](editor/editors/character/README.md): hero starting values, sequences and character frames.
-  - [`editor/editors/highScores/`](editor/editors/highScores/README.md): hIS table editing.
-  - [`editor/editors/integrator/`](editor/editors/integrator/README.md): gAM scenes, links and boards.
-  - [`editor/editors/integrator/dosPlayer/`](editor/editors/integrator/dosPlayer/README.md): dOS player customization UI and preview.
+  - [`editor/editors/highScores/`](editor/editors/highScores/README.md): HIS table editing.
+  - [`editor/editors/integrator/`](editor/editors/integrator/README.md): GAM scenes, links and boards.
+  - [`editor/editors/integrator/dosPlayer/`](editor/editors/integrator/dosPlayer/README.md): DOS player customization UI and preview.
   - [`editor/editors/map/`](editor/editors/map/README.md): map painting, monsters, viewport and play entry.
   - [`editor/editors/map/check/`](editor/editors/map/check/README.md): level-check UI, heat maps and author play sessions.
   - [`editor/editors/map/generate/`](editor/editors/map/generate/README.md): seeded map-generation dialog and placement.
   - [`editor/editors/map/links/`](editor/editors/map/links/README.md): integrator link markers and detail popover on maps.
   - [`editor/editors/map/tools/`](editor/editors/map/tools/README.md): map selection, terrain, stamps and building tools.
   - [`editor/editors/monsters/`](editor/editors/monsters/README.md): monster values, animation and movement-path UI.
-  - [`editor/editors/music/`](editor/editors/music/README.md): cMF tracks, instruments, piano-roll integration and playback.
+  - [`editor/editors/music/`](editor/editors/music/README.md): CMF tracks, instruments, piano-roll integration and playback.
   - [`editor/editors/music/arrange/`](editor/editors/music/arrange/README.md): seeded accompaniment and melody-copy transforms.
   - [`editor/editors/music/roll/`](editor/editors/music/roll/README.md): layered piano-roll input and cached rendering.
-  - [`editor/editors/picture/`](editor/editors/picture/README.md): gIF viewing/import and copying regions into blocks.
-  - [`editor/editors/recording/`](editor/editors/recording/README.md): rEC demo recording, playback and trimming.
-  - [`editor/editors/sample/`](editor/editors/sample/README.md): vOC waveform editing and recording.
-  - [`editor/editors/slideShow/`](editor/editors/slideShow/README.md): lST media sequencing on a timeline.
-  - [`editor/editors/sounds/`](editor/editors/sounds/README.md): sND speaker and Sound Blaster effect editing.
-  - [`editor/editors/textScreen/`](editor/editors/textScreen/README.md): tXT page editing and game-accurate preview.
+  - [`editor/editors/picture/`](editor/editors/picture/README.md): GIF viewing/import and copying regions into blocks.
+  - [`editor/editors/recording/`](editor/editors/recording/README.md): REC demo recording, playback and trimming.
+  - [`editor/editors/sample/`](editor/editors/sample/README.md): VOC waveform editing and recording.
+  - [`editor/editors/slideShow/`](editor/editors/slideShow/README.md): LST media sequencing on a timeline.
+  - [`editor/editors/sounds/`](editor/editors/sounds/README.md): SND speaker and Sound Blaster effect editing.
+  - [`editor/editors/textScreen/`](editor/editors/textScreen/README.md): TXT page editing and game-accurate preview.
   - [`editor/keymap/`](editor/keymap/README.md): computed game controls and reusable Keys dialog.
   - [`editor/shell/`](editor/shell/README.md): home, workspace, asset browsing and project actions.
   - [`editor/tools/`](editor/tools/README.md): file-maker registry, import/conversion and generators.
@@ -225,11 +225,11 @@ SDK implementation lives in the packages below; the app imports their declared e
   contents, the zine, the Ultimate Owner's Guide and TURBO BUTTON.
   Subareas:
   - [`manual/epub/`](manual/epub/README.md): on-demand EPUB builders, packaging and validation.
-  - [`manual/magazine/`](manual/magazine/README.md): tURBO BUTTON issue assembly and reading/rendering.
+  - [`manual/magazine/`](manual/magazine/README.md): TURBO BUTTON issue assembly and reading/rendering.
   - [`manual/magazine/sections/`](manual/magazine/sections/README.md): magazine article/ad section factories.
   - [`manual/magazine/sections/spring93/`](manual/magazine/sections/spring93/README.md): spring 1993 issue-specific sections.
   - [`manual/ultimate/`](manual/ultimate/README.md): ultimate Owner's Guide chapter content and booklet flow.
-  - [`manual/zine/`](manual/zine/README.md): nO CARRIER and Tiny Pockets Press paper items.
+  - [`manual/zine/`](manual/zine/README.md): NO CARRIER and Tiny Pockets Press paper items.
 
 ## Main flows
 

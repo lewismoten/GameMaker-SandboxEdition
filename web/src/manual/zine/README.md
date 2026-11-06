@@ -1,4 +1,4 @@
-# `manual/zine/`: nO CARRIER and Tiny Pockets Press paper items
+# `manual/zine/`: NO CARRIER and Tiny Pockets Press paper items
 
 Part of the [source map](../../README.md).
 

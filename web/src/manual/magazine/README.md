@@ -1,4 +1,4 @@
-# `manual/magazine/`: tURBO BUTTON issue assembly and reading/rendering
+# `manual/magazine/`: TURBO BUTTON issue assembly and reading/rendering
 
 Part of the [source map](../../README.md).
 
