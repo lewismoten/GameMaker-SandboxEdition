@@ -40,7 +40,7 @@ const WHOLE: Rect = { x: 0, y: 0, w: MLEN, h: MWID };
 /** How many seeds are tried for each new scene before it is given up as Not proven. */
 const TRIES = 8;
 
-export interface PlannedScene {
+interface PlannedScene {
   link: SceneLink;
   /** Where the door or site is, in the map, and the open cell beside it that the way back arrives at. */
   door: { x: number; y: number };
@@ -49,12 +49,12 @@ export interface PlannedScene {
   slot: number;
 }
 
-export interface Skipped {
+interface Skipped {
   label: string;
   why: string;
 }
 
-export interface Plan {
+interface Plan {
   make: PlannedScene[];
   skipped: Skipped[];
 }
@@ -103,13 +103,13 @@ export function planScenes(game: Game, hostScene: number, result: GenResult, rol
   return { make, skipped };
 }
 
-export interface MadeScene {
+interface MadeScene {
   scene: number;
   label: string;
   map: string;
 }
 
-export interface MakeInput {
+interface MakeInput {
   game: Game;
   hostScene: number;
   result: GenResult;
@@ -123,7 +123,7 @@ export interface MakeInput {
   put: (name: string, bytes: Uint8Array) => void;
 }
 
-export interface MakeOutcome {
+interface MakeOutcome {
   made: MadeScene[];
   skipped: Skipped[];
 }

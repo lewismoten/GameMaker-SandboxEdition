@@ -22,7 +22,7 @@ import type { BotRun } from './platformBot';
 import type { RunningBot } from './platformBotClient';
 import './generate.css';
 
-export interface GenerateHost {
+interface GenerateHost {
   project: Project;
   /** The block set's file name. */
   bbl: string;
