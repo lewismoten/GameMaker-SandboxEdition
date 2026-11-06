@@ -28,7 +28,7 @@ const WORDS = {
   enter: 'PRESS ENTER TO LAUNCH ONE',
   nine: '9 MONSTERS IN STEP MAKE 1 BIG BURST',
   back: 'THE BURST TURNS BACK INTO ITS ROCKET',
-  shapes: 'RING, PEONY, WILLOW: NEW PICTURES, ONE TRICK',
+  shapes: 'ALL THREE WORK THE SAME. ONLY THE PICTURES DIFFER',
 } as const;
 export type SignName = keyof typeof WORDS;
 
