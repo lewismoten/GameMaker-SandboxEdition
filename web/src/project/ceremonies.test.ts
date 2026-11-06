@@ -48,8 +48,9 @@ describe('ceremonies', () => {
   it('a Starter added later takes the next course number of its stage, so no other course number moves', () => {
     expect(courseNumber('dialog')).toBe(609);
     expect(courseNumber('under-the-hood')).toBe(617);
-    expect(['lightning-bugs', 'fireworks', 'leaves'].map(courseNumber)).toEqual([618, 619, 620]);
-    expect(courseGame(620)).toBe('leaves');
+    expect(['around-the-room', 'ride-along'].map(courseNumber)).toEqual([618, 619]);
+    expect(['lightning-bugs', 'fireworks', 'leaves'].map(courseNumber)).toEqual([620, 621, 622]);
+    expect(courseGame(622)).toBe('leaves');
   });
 
   it('needs a B or better in at least three of every four, rounded up', () => {
