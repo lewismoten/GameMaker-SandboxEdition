@@ -63,32 +63,62 @@ export function toastMs(message: string, kind: 'info' | 'error' = 'info'): numbe
   return Math.min(30000, Math.max(kind === 'error' ? 8000 : 4000, 2000 + message.length * 65));
 }
 
-let toastHost: HTMLElement | undefined;
+// Each native modal owns its notices: body siblings are inert while showModal() is active.
+const toastHosts = new WeakMap<Element, HTMLElement>();
+const recentNotices = new WeakMap<HTMLElement, Map<string, { at: number; el: HTMLElement; close: () => void }>>();
+function noticesIn(parent: Element): HTMLElement {
+  let host = toastHosts.get(parent);
+  if (!host) {
+    host = parent.appendChild(h('div', { class: 'toasts' }));
+    toastHosts.set(parent, host);
+    recentNotices.set(host, new Map());
+  }
+  return host;
+}
 /** Shows a message for a while. */
 export function toast(message: string, kind: 'info' | 'error' = 'info'): void {
   void notice(message, kind);
 }
 
-/** Like toast, and the returned function closes the message early (a "Building…" notice closes when the build is done). */
+/** Like toast, and the returned function closes the message early. Rapid identical bursts coalesce for one second, not forever. */
 export function notice(message: string, kind: 'info' | 'error' = 'info'): () => void {
-  toastHost ??= document.body.appendChild(h('div', { class: 'toasts', role: 'status', 'aria-live': 'polite' }));
+  const toastHost = noticesIn([...document.querySelectorAll(':modal')].at(-1) ?? document.body);
+  const recent = recentNotices.get(toastHost)!;
+  const key = `${kind}:${message}`;
+  const now = performance.now();
+  const previous = recent.get(key);
+  if (previous?.el.isConnected && now - previous.at < 1000) return previous.close;
+  for (const [k, v] of recent) if (!v.el.isConnected || now - v.at >= 1000) recent.delete(k);
   const close = h('button', { class: 'toast-close', 'aria-label': 'Dismiss', title: 'Dismiss' }, '×');
-  const t = h('div', { class: `toast ${kind}` }, h('span', null, message), close);
+  // Only the message is live, not the other toasts or their Dismiss controls. Populate after attachment.
+  const spoken = h('span', { class: 'sr-only', role: 'status', 'aria-live': 'polite' });
+  const t = h('div', { class: `toast ${kind}` }, h('span', { 'aria-hidden': 'true' }, message), spoken, close);
   toastHost.append(t);
+  let timer = 0;
+  const announced = window.setTimeout(() => {
+    if (t.isConnected) spoken.textContent = message;
+  }, 0);
+  const stop = () => clearTimeout(timer);
+  const remove = () => {
+    stop();
+    clearTimeout(announced);
+    t.remove();
+  };
+  recent.set(key, { at: now, el: t, close: remove });
   // never a tall pile over the page: the newest three stay, on a phone only the newest
   const keep = window.matchMedia('(max-width: 430px)').matches ? 1 : 3;
   while (toastHost.children.length > keep) toastHost.firstElementChild?.remove();
-  // the clock stops while the pointer or focus is on the toast, and starts over when it leaves
-  let timer = 0;
-  const start = () => (timer = window.setTimeout(() => t.remove(), toastMs(message, kind)));
-  const stop = () => clearTimeout(timer);
-  close.addEventListener('click', () => (stop(), t.remove()));
+  const start = () => {
+    stop();
+    timer = window.setTimeout(remove, toastMs(message, kind));
+  };
+  close.addEventListener('click', remove);
   t.addEventListener('pointerenter', stop);
   t.addEventListener('pointerleave', start);
   t.addEventListener('focusin', stop);
   t.addEventListener('focusout', start);
   start();
-  return () => (stop(), t.remove());
+  return remove;
 }
 
 let modalHeadingId = 0;
