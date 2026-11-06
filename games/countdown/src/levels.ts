@@ -9,7 +9,10 @@
 //
 // The engine has no number readout. A digit is a row of blocks that each look like one number
 // and turn into the next after 18 ticks (timing.ts). Every block of one kind changes together,
-// so the whole chain is a digit and it counts by itself, from the moment the level starts.
+// so the whole chain is a digit and it counts by itself, from the moment the level starts. Every
+// digit sits low enough to be on screen while the hero stands on the floor (the camera shows rows
+// 4 down), and level 1's big one is placed three times and level 2's pair twice, so one is always in
+// view on the way (games/kit/inViewCheck.ts checks both on the walkthrough).
 // Both rooms are closed in by brick you can see, so Nova is never stopped by something she can't.
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { Book, PULL, SOLID } from '../../kit/starter/book';
@@ -59,9 +62,11 @@ export const WIDTH_TWO = 16;
 /** Level 1's double door (left block) and its building's lintel. */
 export const DOOR_X = 21;
 export const BOARD_Y = 4;
-/** Level 2's digits, trapdoor row and the mat at the bottom of the shaft. */
-export const TENS_AT: [number, number] = [7, 3];
-export const ONES_AT: [number, number] = [8, 3];
+/** Level 1's two more big digits, each on top of a sign, so one is in view all the way from the start to the door. */
+export const BIG_COPIES = [6, 11] as const;
+/** Level 2's digits (the tens column of each pair, on DIGIT_ROW; the ones are just right of it), trapdoor row and the mat at the bottom of the shaft. Two pairs, one over each sign, because the camera scrolls sideways in that room and no one place is always in view. */
+export const DIGIT_PAIRS = [5, 11] as const;
+export const DIGIT_ROW = 5;
 export const MAT_ROW = 19;
 /** The quarters of a 2x2 picture: block suffix, then its offset in pixels. */
 const QUARTERS = [
@@ -138,6 +143,7 @@ function nineToZero(pal: Pal): Level {
   m.sign(10, onGround(GROUND, signs.door), signs.door);
   for (const [q, x, y] of QUARTERS) {
     m.set(DOOR_X + x / 20, BOARD_Y + y / 20, `big9.${q}`);
+    for (const cx of BIG_COPIES) m.set(cx + x / 20, BOARD_Y + y / 20, `big9.${q}`);
     m.set(DOOR_X + x / 20, 8 + y / 20, `door.shut.${q}`);
   }
   return { file: 'one', title: 'Nine to Zero', hint: 'Wait for the 0.', map: m, book, timed, links: [[DOOR_X + ORIGIN, 9 + ORIGIN]] };
@@ -168,13 +174,13 @@ function ninetyNine(pal: Pal): Level {
     .col(0, 2, 19, 'B')
     .col(WIDTH_TWO - 1, 2, 19, 'B')
     .fill(0, 20, WIDTH_TWO, 2, 'D');
-  g.fill(5, 3, 6, 2, 'B'); // the plaque the digits sit on
+  g.fill(4, 3, 10, 4, 'B'); // the plaque the digits sit on, hung from the ceiling low enough to be in view
   g.put(1, 8, 's').put(1, 9, 'S');
   g.put(7, 9, 'c').put(8, 9, 'c').put(13, 9, 'c').put(14, 9, 'c');
   const m = new StarterMap(book, g.rows());
   m.sign(3, onGround(GROUND, signs.two), signs.two);
   m.sign(9, onGround(GROUND, signs.floor), signs.floor);
-  m.set(...TENS_AT, 'ten9').set(...ONES_AT, 'one99');
+  for (const x of DIGIT_PAIRS) m.set(x, DIGIT_ROW, 'ten9').set(x + 1, DIGIT_ROW, 'one99');
   const links: [number, number][] = [];
   for (let x = 1; x < WIDTH_TWO - 1; x++) {
     m.set(x, GROUND, 'trap.shut');
