@@ -148,7 +148,8 @@
   "warning facing s2 The hero climbs side on"
  ],
  "graduation-story": [
-  "warning flashing s2 Block 92 flashes light and dark about 0.2 times a second over 160 blocks of one screen, from (0, 0)"
+  "warning flashing s2 Block 96 flashes light and dark about 0.1 times a second over 160 blocks of one screen, from (0, 0)",
+  "warning waits s2 Timed block 96 stays shut for 17.8 s at a time"
  ],
  "horizon": [
   "warning waits s3 Timed block 142 stays shut for 19.2 s at a time"

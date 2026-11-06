@@ -19,7 +19,9 @@ export const POWER = KEYS + 2;
 const LIVES = 1;
 const air = { grav: PULL.down };
 /** One countdown digit lasts this many ticks (the engine's clock runs about 18 a second). */
-export const COUNT_TICKS = 18;
+export const COUNT_TICKS = 36;
+/** The number it starts at: 9 digits of 2 s is about 18 s, longer than the walk from the plaza's start to the door. */
+export const COUNT_FROM = 9;
 
 export interface NodCtx {
   book: Book;
@@ -382,23 +384,23 @@ export const NODS: Record<string, Nod> = {
     id: 'countdown',
     course: 'countdown',
     say: 'WAIT FOR ZERO',
-    note: 'A big number counts down on a wall; the door under it opens at 0.',
+    note: 'A big number counts down from 9 on a wall; the door under it opens at 0.',
     how: 'How do I make a number that counts down and opens a gate?',
-    made: '<b>cd5</b> turns into <b>cd4</b> after 18 ticks, and so on down to <b>cd0</b>. The <b>timedGate</b> turns into sky after 90 ticks, the same five seconds, so the gate opens as the number reaches 0.',
+    made: '<b>cd9</b> turns into <b>cd8</b> after 36 ticks, and so on down to <b>cd0</b>. The <b>timedGate</b> turns into sky after 324 ticks, the same nine two-second counts, so the gate opens as the number reaches 0.',
     width: 10,
     blocks(c) {
       locks(c);
       const bg = c.pal.c('stone', 1);
-      for (let n = 5; n >= 0; n--) add(c, `cd${n}`, bigDigit(String(n), bg, c.pal.c('gold', 5)), air);
-      for (let n = 5; n > 0; n--) c.timed.push({ name: `cd${n}`, next: `cd${n - 1}`, ticks: COUNT_TICKS });
+      for (let n = COUNT_FROM; n >= 0; n--) add(c, `cd${n}`, bigDigit(String(n), bg, c.pal.c('gold', 5)), air);
+      for (let n = COUNT_FROM; n > 0; n--) c.timed.push({ name: `cd${n}`, next: `cd${n - 1}`, ticks: COUNT_TICKS });
       const g = gatePicture(c.pal, 'blue', 'white', true);
       add(c, 'timedGate', g, { solid: SOLID });
-      c.timed.push({ name: 'timedGate', next: 'sky', ticks: COUNT_TICKS * 5 });
+      c.timed.push({ name: 'timedGate', next: 'sky', ticks: COUNT_TICKS * COUNT_FROM });
     },
     place(m, x) {
       const f = x + 5;
       gateWall(m, f + 4, 'timedGate');
-      m.set(f + 4, 6, 'cd5');
+      m.set(f + 4, 6, `cd${COUNT_FROM}`);
     },
   },
   lever: {

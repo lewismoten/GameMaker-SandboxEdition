@@ -59,6 +59,17 @@ function castBlocks(pal: Pal, id: string, frame: number): Pixels[] {
   const colors = usedColors(pal);
   const pic = new Pixels(s.w, s.h, 255);
   for (let i = 0; i < raw.length; i++) if (raw[i]) pic.set(i % s.w, Math.floor(i / s.w), nearest(colors, rgb[raw[i] - 1]));
+  // a tall guest (the camel is 33 high) is shrunk, nearest pixel, to one block, so his head stays inside the balcony's view
+  if (s.h > 20) {
+    const w = Math.max(1, Math.round((s.w * 20) / s.h));
+    const small = new Pixels(w, 20, 255);
+    for (let y = 0; y < 20; y++)
+      for (let x = 0; x < w; x++) {
+        const c = pic.get(Math.min(s.w - 1, Math.floor((x * s.h) / 20)), Math.floor((y * s.h) / 20));
+        if (c !== 255) small.set(x, y, c);
+      }
+    return blocksOf(small, skyOf(pal));
+  }
   return blocksOf(pic, skyOf(pal));
 }
 

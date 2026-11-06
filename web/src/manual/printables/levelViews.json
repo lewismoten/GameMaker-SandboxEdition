@@ -39,7 +39,7 @@
   "graduation-diploma": {"hash":"18d6f8836a5dcb14","maps":{"arrive.map|arrive.bbl":[0,3,100,24],"hall.map|grad.bbl":[0,14,100,10]}},
   "graduation-heroes": {"hash":"8f4a243963057a23","maps":{"arrive.map|arrive.bbl":[0,8,72,19],"hall.map|grad.bbl":[0,14,69,10]}},
   "graduation-moving": {"hash":"b2f4bab709302a8c","maps":{"arrive.map|arrive.bbl":[0,3,74,24],"hall.map|grad.bbl":[0,14,69,10]}},
-  "graduation-story": {"hash":"0357bea243dbe4e1","maps":{"arrive.map|arrive.bbl":[0,14,72,10],"hall.map|grad.bbl":[0,14,69,10]}},
+  "graduation-story": {"hash":"1c721c8170cb37f7","maps":{"arrive.map|arrive.bbl":[0,14,72,10],"hall.map|grad.bbl":[0,14,69,10]}},
   "graduation-wiring": {"hash":"0a71c49ea6f6fb19","maps":{"arrive.map|arrive.bbl":[0,14,72,10],"hall.map|grad.bbl":[0,14,69,10]}},
   "gravity-on-gravity-off": {"hash":"acf700c60c28b3ad","maps":{"one.map|side.bbl":[0,7,61,20],"two.map|top.bbl":[3,4,58,23]}},
   "gusts": {"hash":"07bccbb3d10773aa","maps":{"one.map|one.bbl":[0,0,61,27],"two.map|two.bbl":[0,15,65,10]}},
