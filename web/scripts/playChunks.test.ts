@@ -7,7 +7,7 @@ import config from '../vite.config';
 const root = resolve(__dirname, '..');
 const id = (path: string) => resolve(root, path);
 
-function classify(graph: Record<string, string[]>): (path: string) => string | null | undefined {
+function classify(graph: Record<string, string[]>): (path: string) => ReturnType<Rollup.GetManualChunk> {
   const output = config.build!.rollupOptions!.output as Rollup.OutputOptions;
   const chunk = output.manualChunks as Rollup.GetManualChunk;
   const meta = {
@@ -20,12 +20,18 @@ function classify(graph: Record<string, string[]>): (path: string) => string | n
 const table = 'packages/engine/src/player/patchTable.ts';
 const rules = 'packages/engine/src/player/patchRules.ts';
 const game = 'packages/engine/src/engine/game.ts';
+const record = 'src/dosPlayer/playerRecord.ts';
 const graph = {
-  [id('src/play.ts')]: [table, rules, game],
+  [id('src/play.ts')]: [table, rules, game, record],
   [id('src/editor/shell/home.ts')]: [table],
+  [id('src/editor/shell/workspace.ts')]: [record],
 };
 
 describe('player chunk boundaries', () => {
+  it('does not pull playback into editor consumers of player metadata', () => {
+    const chunk = classify(graph);
+    expect(chunk(record)).not.toBe(chunk(game));
+  });
   it('keeps reusable patch rules out of the play-only runtime', () => {
     const chunk = classify(graph);
     expect(chunk(rules)).not.toBe(chunk(game));

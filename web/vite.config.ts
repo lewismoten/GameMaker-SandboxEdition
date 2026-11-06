@@ -268,6 +268,10 @@ function playChunks(): Rollup.GetManualChunk {
     ['main', ['src/main.ts', 'src/seo/route.ts']], // index.html's two scripts
     ['desk', ['src/desk/desk.ts']],
     ['web', ['src/modernUi.ts', 'src/editor/shell/home.ts']], // independent project and home routes
+    // These lazy first views also use player metadata and drawing helpers, not playback.
+    // Without their closures, a utility import silently fetches the entire play-only chunk.
+    ['editor', ['src/editor/shell/workspace.ts', 'src/editor/editors/map/map.ts']],
+    ['library', ['src/library/libraryPage.ts']],
     ['play', ['src/play.ts']],
     ['dos', ['src/dosPage/dosPage.ts']], // so the DOS page shares the PC's code, not the whole player chunk
   ];
