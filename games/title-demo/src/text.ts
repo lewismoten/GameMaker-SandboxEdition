@@ -53,6 +53,8 @@ The menu graphic is a plain picture with a board left clear, because the game wr
 
 A demo holds 1,000 key changes at most, and a press and a release are two.
 
+This disk has a template for each picture the game writes on: TMENU.GIF, TSCORES.GIF, TLOAD.GIF and TSAVE.GIF. Open one in the picture editor and draw around the hatched boxes, not in them.
+
 Open the game in Game-Maker, look at the title scene's slots, and put in pictures of your own.
 `);
 
