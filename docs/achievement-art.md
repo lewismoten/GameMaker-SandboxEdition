@@ -68,6 +68,7 @@ overrides; `--adopt <id>` is the one deliberate way to replace another unmarked 
 | record-video | remote | remote / camcorder |
 | desk-bbs-file | remote | remote / diskDrive |
 | mag-disc | remote | remote / discSleeve |
+| play-all-mine | sleuth | sleuthParlor / checklist |
 | play-save | remote | remote / saveTape |
 | blaster-big-name | carl | carl / speaker |
 | desk-curtains | sleuth | sleuthParlor / curtain0 |
