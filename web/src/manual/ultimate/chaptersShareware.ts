@@ -109,6 +109,8 @@ export const SHAREWARE: Chapter = {
   (<i>Penguin Pete</i>) all look alive for no extra pictures.</p>
   ${onCd('CLOCK', 'COUNTDWN', 'BLOCKBRN')}
   ${onCd('TWINKLE')}
+  <p>Rain on the Path uses different starting pictures of one loop for scattered falling streaks, more loops for splashes and puddle rings, and a second scene palette for storm colors.</p>
+  ${onCd('RAIN')}
   ${onCd('FLICKER')}
   ${onCd('LIGHTOUT')}
   ${onCd('SHADOWS')}
