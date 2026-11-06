@@ -8,7 +8,7 @@ export const cfg: Graduation = {
   id: 'graduation-wiring',
   stage: 'Wiring and Worlds',
   groups: ['Wiring and Puzzles', 'Bigger Worlds'],
-  cameos: ['gwinn', 'watt', 'loaf'],
+  cameos: ['gwinn', 'watt', 'loaf', 'chicken', 'teddy', 'joe', 'seed', 'goat'],
   theme: LAB,
   upper: 'WIRING & WORLDS',
   honors: 'IN WIRING & WORLDS',

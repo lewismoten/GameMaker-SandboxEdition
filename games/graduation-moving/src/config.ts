@@ -8,7 +8,7 @@ export const cfg: Graduation = {
   id: 'graduation-moving',
   stage: 'Moving and Pushing',
   groups: ['Moving and Pushing', 'Worlds That Push Back'],
-  cameos: ['gwinn', 'goat', 'carl'],
+  cameos: ['gwinn', 'joe', 'goat', 'teddy', 'carl', 'chicken', 'loaf', 'lewie'],
   theme: GYM,
   upper: 'MOVING & PUSHING',
   honors: 'IN MOVING & PUSHING',

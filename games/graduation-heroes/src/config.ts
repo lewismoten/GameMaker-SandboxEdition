@@ -8,7 +8,7 @@ export const cfg: Graduation = {
   id: 'graduation-heroes',
   stage: 'Heroes and Foes',
   groups: ['Changing Your Hero', 'Foes and Bosses'],
-  cameos: ['chicken', 'will', 'watt'],
+  cameos: ['chicken', 'teddy', 'will', 'joe', 'goat', 'gwinn', 'watt', 'camel'],
   theme: CASTLE,
   upper: 'HEROES AND FOES',
   honors: 'IN HEROES AND FOES',

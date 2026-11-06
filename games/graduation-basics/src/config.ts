@@ -8,7 +8,7 @@ export const cfg: Graduation = {
   id: 'graduation-basics',
   stage: 'First Steps',
   groups: ['The Basics'],
-  cameos: ['teddy', 'lewie'],
+  cameos: ['teddy', 'joe', 'loaf', 'gwinn', 'will', 'chicken', 'seed', 'lewie'],
   theme: {},
   upper: 'FIRST STEPS',
   honors: 'IN FIRST STEPS',

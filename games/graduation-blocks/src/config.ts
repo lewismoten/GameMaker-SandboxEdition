@@ -8,7 +8,7 @@ export const cfg: Graduation = {
   id: 'graduation-blocks',
   stage: 'Blocks and Showcase',
   groups: ['Drawing with Blocks', 'Showcase Tricks'],
-  cameos: ['lewie', 'camel', 'joe'],
+  cameos: ['lewie', 'gwinn', 'camel', 'joe', 'chicken', 'watt', 'teddy', 'will'],
   theme: GALLERY,
   upper: 'BLOCKS & SHOWCASE',
   honors: 'IN BLOCKS & SHOWCASE',

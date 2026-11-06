@@ -46,7 +46,18 @@ export function buildBlocks(pal: Pal, cfg: Graduation) {
   addStarterBlocks(book, pal);
   const heroBlocks = buildHeroBlocks(pal);
   const pic = (n: string) => heroBlocks.pics.get(n)!;
-  const hall = addHallBlocks(book, pal, timed, audienceOf(...cfg.groups), pic('stand.top'), pic('cheer2.top'), pic('blink.top'), cfg.theme, cfg.cameos);
+  const hall = addHallBlocks(
+    book,
+    pal,
+    timed,
+    audienceOf(...cfg.groups),
+    pic('stand.top'),
+    pic('cheer2.top'),
+    pic('blink.top'),
+    cfg.theme,
+    cfg.cameos,
+    cfg.stillGuests,
+  );
   const signs: Record<SignName, Sign> = {
     start: addSign(book, pal, 'start', cfg.signs.start, 4, 2),
     helpers: addSign(book, pal, 'helpers', cfg.signs.helpers, 4, 2),
@@ -113,8 +124,8 @@ function aisle(
   // the balcony: a rail with a front, and the helpers leaning on it
   for (let x = 2; x < STAGE_FROM - 1; x++) m.set(x, 5, 'rail').set(x, 6, 'riser');
   hall.helpers.forEach((name, i) => m.set(4 + i * 4, 4, name));
-  // the Cast's guests lean on the rail in the gaps between helpers (a tall one reaches up a row)
-  hall.cameos.forEach((parts, i) => parts.forEach((name, k) => m.set(6 + i * 8, 5 - parts.length + k, name)));
+  // the Cast's guests lean on the rail in every gap between helpers, and the one before the first (a tall one reaches up a row)
+  hall.cameos.slice(0, hall.helpers.length).forEach((parts, i) => parts.forEach((name, k) => m.set(2 + i * 4, 5 - parts.length + k, name)));
   // the stage's own wall pieces, hung high between the ceiling and the helpers' heads
   const order = theme.decorOrder ?? [];
   if (order.length) for (let x = 3, i = 0; x < STAGE_FROM - 1; x += theme.decorEvery ?? 5, i++) m.set(x, 2, `decor.${order[i % order.length]}`);

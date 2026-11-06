@@ -8,7 +8,7 @@ export const cfg: Graduation = {
   id: 'graduation-story',
   stage: 'Story and Finish',
   groups: ['Telling a Story', 'Putting It Together'],
-  cameos: ['teddy', 'joe', 'seed'],
+  cameos: ['teddy', 'chicken', 'will', 'gwinn', 'seed', 'joe', 'camel', 'carl'],
   theme: THEATER,
   upper: 'STORY AND FINISH',
   honors: 'IN STORY AND FINISH',

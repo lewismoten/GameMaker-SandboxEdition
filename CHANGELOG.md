@@ -12,6 +12,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 ### Added
 
 - Every graduation begins outside: a friendly walk across campus to the hall's doors, with a few small nods to the stage's courses along the way (a ladder to climb, a key before a gate, wind that lifts, a lever, stars that twinkle), each on a sign that names its course. Nothing hurts and nothing traps you. The hall is the second level, and The Sandbox Diploma's walk nods to one lesson from each stage.
+- Every seat at graduation is filled: between the helpers sit Gwinn, Teddy, the rubber chicken, Joe and other Cast friends (a different eight in each hall, and the Sandbox Diploma has the biggest crowd).
 - A graduation that has opened but not been earned shows first on the Starters tab, in a gold "Ready to graduate" strip with a Graduate button, and moves back to the Graduations section once earned.
 - The Starters tab has a Level picker (100s First Steps, 200s Moving and Pushing, and so on) that shows one stage's courses and its graduation, together with the Show picker. It is remembered in the browser.
 - A new Starter, Under the Hood (course 617), walks through what the DOS player is made of in three short levels: a row of bytes with the four that spell Play at their real offset, a word that must be the same size as its slot, and backing up first. None of its levels patches anything; its pages link to the Programmer's Guide chapter on patching.

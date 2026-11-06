@@ -36,13 +36,13 @@ function confetti(book: Book, pal: Pal, timed: Timed[]): string[] {
       y: (i * 11 + chain * 6) % 20,
       c: colors[(i * 3 + chain) % colors.length],
     }));
-    for (let f = 0; f < 3; f++) {
+    for (let f = 0; f < 2; f++) {
       const p = new Pixels(20, 20, skyOf(pal));
       for (const b of bits) p.rect(b.x + (f % 2), (b.y + f * 6) % 19, 2, 2, b.c);
       book.add(`confetti.${chain}.${f}`, p, air);
     }
     const ticks = [11, 15][chain];
-    for (let f = 0; f < 3; f++) timed.push({ name: `confetti.${chain}.${f}`, next: `confetti.${chain}.${(f + 1) % 3}`, ticks });
+    for (let f = 0; f < 2; f++) timed.push({ name: `confetti.${chain}.${f}`, next: `confetti.${chain}.${(f + 1) % 2}`, ticks });
     names.push(`confetti.${chain}.0`);
   }
   return names;

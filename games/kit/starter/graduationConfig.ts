@@ -12,6 +12,8 @@ export interface Graduation {
   groups: string[];
   /** Guests from the Cast who sit in the audience beside the helpers. */
   cameos: CameoName[];
+  /** Every guest one frame, to save blocks (the crowded finale). */
+  stillGuests?: boolean;
   /** The hall's look. */
   theme: HallTheme;
   /** The game's title as the .GAM and the cards name it (19 characters at most); GRADUATION when left out. */
