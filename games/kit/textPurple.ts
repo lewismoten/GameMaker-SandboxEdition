@@ -193,7 +193,7 @@ export function textPurpleOfGame(id: string, gamesDir: string): TextPurpleFindin
   // Each level's palette (a blank slot keeps the one before).
   const pals: Uint8Array[] = [];
   const palNames: string[] = [];
-  let last = menuCols;
+  let last: Uint8Array = menuCols;
   let lastName = menu.from;
   game.scenes.forEach((_, i) => {
     const p = i > 1 ? slot(i, 0) : undefined;
