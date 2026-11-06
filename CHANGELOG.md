@@ -11,6 +11,8 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Added
 
+- The Ultimate Owner’s Guide explains how to write a DOS 3.3 installation batch file for a game in `C:\NAME` or `C:\GAMES\NAME`, with disk prompts, a clearly illustrative second disk, and copy-error warnings.
+
 - Pocket Player shows its game list before discovering one-file card games, adds title search and compact icon buttons, keeps long titles inside their rows, brings Display options to both boards, reduces display setup to three steps, offers a saved smaller picture away from the touch pad, and preserves held touches across incomplete GT911 reads.
 
 - All Mine, an achievement for filling all ten high-score places in one game with the same name.

@@ -172,6 +172,7 @@ game folder opens in the browser unchanged.
   switch, the mugs (each badge made from a game's own files or the BBS's ANSI art) and the mouse
   pad prints. Like everything else added here they are under
   the MIT License, so the games they open can carry them anywhere.
+- **DOS installation lesson** (`web/src/manual/ultimate/installScript.ts`): the original Chapter 18 prose, DOS 3.3 batch example and listing guards were written with **Hermes Agent running OpenAI Codex GPT-6.1 Sol**, directed by Lewis Moten. Compatibility was exercised with MS-DOS 3.30 in Jeff Parsons’s MIT-licensed PCjs emulator; no emulator or DOS binaries are distributed here.
 - **Lewis's DOSBox screenshot** of A Fly Named Carl's garbled title (his own capture, taken while
   testing the games in real DOS) illustrates "Where Game-Maker Runs Out" in The Ultimate Owner's
   Guide (`web/public/ultimate/carl-dos.webp`, cropped to the game screen and scaled to 320 × 200),
