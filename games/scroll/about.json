@@ -6,7 +6,7 @@
   "hero": "KIT",
   "year": 1994,
   "price": "Free",
-  "version": "1.0",
+  "version": "1.1",
   "blurb": "Two short levels about the camera. The first is one room that fits the screen exactly, so the picture never moves. The second is a long walk, and the picture slides along after you. Whether a level scrolls is one switch on its scene, and the size of the level has to agree with it. Signs explain each idea, and every level has a page on how it is made.",
   "exe": "SCROLL.EXE",
   "dosName": "SCROLL",

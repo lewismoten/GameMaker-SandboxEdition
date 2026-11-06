@@ -6,7 +6,7 @@
   "hero": "MIA",
   "year": 1994,
   "price": "Free",
-  "version": "1.0",
+  "version": "1.1",
   "blurb": "One map, one road, laid two ways. The map wraps: walk off the bottom and you come in at the top. In level 1 the road runs straight down and wraps once. In level 2 it is tilted a little, so it wraps three times and is three times as far on the very same map. Signs in the levels say how. Play it, then open it in Game-Maker and tilt a road of your own.",
   "exe": "DIAGWRAP.EXE",
   "dosName": "DIAGWRAP",

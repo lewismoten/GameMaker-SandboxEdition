@@ -6,6 +6,8 @@ changelog: [engine](web/packages/engine/CHANGELOG.md), [archives](web/packages/a
 
 ## [Unreleased]
 
+- 39 more Starters keep their original tunes in longer, 32-bar songs, with a new B section and their group’s band.
+
 - Pocket Player clears scene and text-page backgrounds across the whole panel on both boards and avoids stray pixels below pictures on the 2.8 inch board.
 
 - Pocket Player page arrows repaint only the game rows and page count, and the search icon has a round lens and diagonal handle. Resistive boards gain direction-plus-jump pad wedges; Sticky direction saves in NVS so a direction tap can keep walking while Jump is tapped separately.

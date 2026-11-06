@@ -6,7 +6,7 @@
   "hero": "MIA",
   "year": 1994,
   "price": "Free",
-  "version": "1.0",
+  "version": "1.1",
   "blurb": "Two short levels about getting a second chance. A pit is too deep for Mia to climb out of, and a post at the bottom starts the level over: it is a link from the post's square back to the same scene. In the next level three pits each have a way back built in, a ladder, steps of planks and steps of solid blocks, so nobody needs a post. Signs say how. Play it, then open it in Game-Maker and find the link.",
   "exe": "TRYAGAIN.EXE",
   "dosName": "TRYAGAIN",
