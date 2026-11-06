@@ -55,6 +55,7 @@
     "tour:check": "vite-node scripts/tourCheck.ts --",
     "tour:audit": "vite-node scripts/tourAudit.ts --",
     "badges:similar": "vite-node scripts/badgeSimilar.ts --",
+    "songs:similar": "vite-node scripts/songsSimilar.ts --",
     "voice": "vite-node scripts/narrate.ts --",
     "voice:all": "vite-node scripts/narrate.ts -- --force",
     "voice:phone": "vite-node scripts/narrate.ts -- --lines phone --out public/phone/voice",
