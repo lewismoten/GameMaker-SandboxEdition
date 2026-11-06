@@ -28,7 +28,7 @@ All four are round numbers; only the last has a memory price (chapter 4: 50 x 40
 |    122 |    2 | `activate`      | 0 none, 1 attack path absolute, 2 attack path relative to the hero (`PG:3003-3025`)                                                                               |
 |    124 |    2 | `end`           | -2 never dies, -1 dies after its path, 0 dies when killed, `n` > 0 lives `n` ticks (`PG:3157-3160`)                                                               |
 |    126 |    2 | `towards`       | 0 follow the path; 1..63 chase at that speed; negative flee; 64 or more wander at random (`PG:3040-3075`)                                                         |
-|    128 |    4 | `close[2]`      | "close enough to take action": not read by name; overlapped by the index -1 read of `march` (see below)                                                           |
+|    128 |    4 | `close[2]`      | "close enough to take action": not used by name in PLAYGAME; possible `march[-1]` layout overlap discussed below                                                  |
 |    132 |  160 | `march[2][10]`  | two paths of 10 corners (normal, attack); a corner is `x`, `y`, `pic` = speed in pixels per tick, `orient` (8 bytes)                                              |
 |    292 |    8 | `cur`           | editor preview cursor                                                                                                                                             |
 
@@ -37,11 +37,10 @@ Check: 8 + 2 (power, thru) = 10; 10 + 84 = 94; + 4 = 98; + 1 + 2 = 101; + 21 = 1
 
 ### Discoveries while checking against the source audit
 
-- **`close[2]` is not read by name, but it is read by accident.** A search of `code/GM` for `close` as a field (`->close`, `.close`, `close[`) finds only the declaration (`MON.H:37`); the real trigger distance is hard-coded:
+- **`close[2]` does not set the attack range.** The real trigger distance is hard-coded:
   `MonInRange` fires when `|dx| < ATTACKX` (8) **and** `|dy| < ATTACKY` (5) in blocks (`PG:2606-2611`, `PG:72-73`), a 15 x 9 block window, the size of the animated interior of the screen. So `activate` works at that fixed distance and `close` does not set it.
-  **But** `march[0]` sits right after `close[]` in the record, and the path code reads `march[CurMarch][dest-1]` (`PG:3043`); when `dest` is 0 that is index **-1**, the eight bytes just before the array: `end`, `towards`, `close[0]`, `close[1]`,
-  read as a corner (`x = end`, `y = towards`, `speed = close[0]`, `orient = close[1]`). For the attack path, index -1 is the last corner of the normal path. The web port reproduces this overlap (`engine/engine/monsters.ts:41-47`).
-  So `close[0]` can matter as a speed in the one case where a path is followed from `dest == 0`. **[not yet checked in DOSBox]** Check it in DOSBox how often that happens, and what MONEDIT writes into `close`.
+  **But** the path expression reads `march[CurMarch][dest-1]` (`PG:3030-3033`). If it ran with `dest == 0`, index **-1** would precede the path: under the packed record layout the normal path's preceding eight bytes are `end`, `towards`, `close[0]`, `close[1]` (`MON.H:34-40`); for the attack path they are the normal path's last corner. The web helper explicitly models that overlap (`engine/engine/monsters.ts:39-44`).
+  That layout alone does **not** demonstrate a live `close[0]` speed effect. Reset and transformation set `offl = -1`; normal path setup then increments `dest` before the speed read (`PG:3311-3324`, `PG:3263-3267`, `PG:3157-3183`). Relative-attack completion also returns to the normal path with `offl == -1` (`PG:3016-3033`). **[inference; not yet checked in DOSBox]** A reachable state bypassing that setup would be needed to demonstrate the overlap. MONEDIT's defaults are already source-settled: `close[0] = 8`, `close[1] = 5`, and it saves the raw records (`code/GM/MONEDIT.C:574-591`, `code/GM/MONEDIT.C:201-204`).
 - **A monster block's effect fields run when a monster touches the hero** (`PG:3113-3115`), so the audit's "type-dependent no-op" for `.mbl` is only true of birth/next/touch/gravity/object fields.
 
 ## 6.3 How a monster moves
@@ -77,12 +76,11 @@ Memory cause: 50 x 400 = **20,000 bytes**, a fifth of the monster side of the bu
 
 `fromchar` is also a **counter**: when a shot transforms through `newmon`, `fromchar++` (`PG:3266`), so a chain of transformations stays "the hero's".
 
-### A possible hang (new, source-only, **[not yet checked in DOSBox]**; the web port does not reproduce it: it clamps the hint with `Math.max(0, mm - 1)`, `monsters.ts:256`)
+### An unsafe free-slot hint (**[not yet checked in DOSBox]**)
 
-`KillMon` sets `FirstEmptyMM = MMnum - 1` when it frees a slot **below** the current hint (`PG:3258`), and `FirstEmptyMM` is an unsigned `int` (`PG:296`). If slot 0 is freed, the hint becomes 65,535.
-`BirthMon` then starts at `t = 65535` (`PG:3332`) and runs `do { ... t++; if (t >= LASTMM) t = 0; } while (t != FirstEmptyMM)` (`PG:3333-3339`). While a free slot exists the loop stops on it. If **all 200 slots are in use**, `t` wraps through
-0..199 forever and never equals 65,535: the program would **hang**. It needs a full table, so it takes about 200 live monsters; no game in the collection checked reaches that. The first probe `mm[65535]` also reads memory at offset `65535 x 10 mod 65536 = 65,526` of the data segment
-(harmless read). The port's `monsters.ts:221-246` should be compared; **[not yet checked in DOSBox]** Check it in DOSBox with a scene of 200 placed monsters after killing monster 0.
+`KillMon` sets `FirstEmptyMM = MMnum - 1` when it frees a slot **below** the current hint (`PG:3251-3259`), and the hint is unsigned (`PG:296`). Freeing slot 0 under that condition underflows the 16-bit hint to 65,535. But `BirthMon` copies it into a **signed int** `t`, then probes `mm[t]` before validating the index (`PG:3327-3342`): on the intended 16-bit conversion that starts at -1, not a valid slot. The source does not establish a harmless fixed-address read.
+
+**[inference; not yet checked in DOSBox]** Unsafe indexing and a possible nonterminating scan remain hazards, not a demonstrated hang recipe. Killing slot 0 also makes slot 0 free; an ordinary next birth can find it and reset the hint, so "200 placed monsters, then kill 0" alone does not demonstrate a full-table hang. Exact compiled behavior needs a binary or runtime check. The port avoids both hazards: it clamps the hint and bounds the scan (`engine/engine/monsters.ts:218-244`, `engine/engine/monsters.ts:247-255`).
 
 ## 6.6 Monster against everything else
 
@@ -91,13 +89,13 @@ See chapter 8 for the pixel test. Short version: monster against hero, monster a
 ## 6.7 Tips
 
 - Put the "long life" monster in a low slot (placed first) so it is drawn underneath, and effects (sparks) in higher slots.
-- A lifetime (`end > 0`) is an exact stopwatch; chain lifetimes with `newmon` for timed stages.
+- A lifetime (`end > 0`) is a tick-based stopwatch: death/transformation is checked when `BirthTime + end <= clock` during movement, so late processing can overshoot (`PG:3141-3142`). Chain lifetimes with `newmon` for timed stages.
 - Keep fewer than 50 monsters visible at once; a screen of 20 or fewer is comfortable on a slow PC (chapter 12).
 - `thru` and `fly` do nothing. Use a block's `solid` and `grav`.
 - Corner speed 0 ends a path early. That is a feature: put a 0-speed corner to shorten a path.
 
 ## 6.8 Hazards
 
-- `used`, `fly`, `jump`, `stick`, `thru`, `lasttime`, `cur`, `xtra`: ignored; `close[2]` is read only through the `march[-1]` overlap (chapter 14).
+- `used`, `fly`, `jump`, `stick`, `thru`, `lasttime`, `cur`, `xtra`: ignored; a live `close[2]` effect through the possible `march[-1]` overlap is not established (section 6.2; chapter 14).
 - A monster whose first picture is not a valid block number never draws.
-- Monsters born past the screen edge continue to hurt while invisible.
+- An undrawn monster can still hurt if its cell passes the on-screen contact gate; a cell rejected as `OFFSCRN` cannot (`PG:2281-2308`, `PG:3104-3119`).
