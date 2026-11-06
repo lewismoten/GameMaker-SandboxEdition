@@ -14,16 +14,16 @@ import { locksOf, type Locks } from './gates';
 import { pathTo, replayPath, type Replay } from './replayPath';
 
 /** The source cells a keys-search round was trying to reach. */
-export interface FetchKeysSource {
+interface FetchKeysSource {
   counter: number;
   cell: number;
 }
 
 /** Why a keys strategy stopped without replaying a wanted exit. */
-export type FetchKeysCutoff = 'budget' | 'no-reachable-state' | 'replay-failure' | 'round-limit';
+type FetchKeysCutoff = 'budget' | 'no-reachable-state' | 'replay-failure' | 'round-limit';
 
 /** Compact evidence from one search in the keys strategy. No snapshots, paths, or heat maps are retained. */
-export interface FetchKeysRoundDiagnostic {
+interface FetchKeysRoundDiagnostic {
   /** `key` fetches a counter source; `exit` searches from paid keys for a wanted way on. */
   kind: 'key' | 'exit';
   /** The candidate source closest to the best state this key search reached, or null when there are no candidates. */
@@ -53,7 +53,7 @@ export interface FetchKeysDiagnostics {
   cutoff: FetchKeysCutoff | null;
 }
 
-export interface FetchKeysResult {
+interface FetchKeysResult {
   replay?: Replay;
   diagnostics: FetchKeysDiagnostics;
 }
