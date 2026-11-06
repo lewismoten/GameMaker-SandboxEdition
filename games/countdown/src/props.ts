@@ -37,7 +37,8 @@ export function trap(pal: Pal, flash: boolean): Pixels {
     for (let x = 0; x < 20; x++) for (let y = 4; y < 17; y++) if ((x + y) % 8 < 4) p.set(x, y, c('gold', 3));
     for (let x = 0; x < 20; x++) for (let y = 4; y < 17; y++) if ((x + y) % 8 === 4) p.set(x, y, c('ink', 0));
   } else {
-    p.disc(3, 5, 1, w[0]).disc(16, 5, 1, w[0]).disc(3, 16, 1, w[0]).disc(16, 16, 1, w[0]);
+    // square nail heads: a radius-1 disc is a plus sign, and a floor of them read as rows of crosses
+    for (const [x, y] of [[2, 4], [15, 4], [2, 15], [15, 15]] as const) p.rect(x, y, 2, 2, w[0]);
   }
   return p;
 }
