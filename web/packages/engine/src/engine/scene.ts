@@ -178,7 +178,7 @@ export function loadScene(
 
 /** The scene file slots loadscene opens (PLAYGAME.C 4239), the song aside; LoadGame's (1798-1806) skip the map and character, which the save holds. */
 const LOADSCENE_SLOTS: readonly number[] = [0, 1, 2, 3, 4, 5, 6, 7];
-const LOADGAME_SLOTS: readonly number[] = [0, 2, 3, 4, 6, 7];
+export const LOADGAME_SLOTS: readonly number[] = [0, 2, 3, 4, 6, 7];
 
 /**
  * The byte count of each file a scene load reads from disk, in the order it reads them: every named slot of
@@ -202,12 +202,12 @@ export function sceneReads(
 }
 
 /**
- * Charges a scene load to the emulated slow PC's disk (PcCosts.sceneDisk): the screen stays as it is
- * for the read time. Does nothing at all, not even a frame's wait, on a PC without scene disk figures.
+ * Charges a scene load to the emulated slow PC's disk (PcCosts.vocOpenMs and vocBytesPerMs): the screen stays
+ * as it is for the read time. Does nothing at all, not even a frame's wait, on Today or a PC without disk figures.
  */
 async function chargeSceneReads(s: Session, scnum: number, slots: readonly number[]): Promise<void> {
   const pc = s.speed.slowPc;
-  if (!pc?.sceneDisk) {
+  if (!pc || pc.vocOpenMs === undefined || !pc.vocBytesPerMs) {
     if (s.sceneLoad) s.sceneLoad = undefined;
     return;
   }
