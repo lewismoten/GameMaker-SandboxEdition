@@ -135,8 +135,8 @@ export function paper(pal: Pal, book: Book, heading: string): Pixels {
   const p = scene(pal, book, 176, 11);
   bevel(p, 22, 0, 276, 200, pal.r('parch'), 3, 2);
   p.rect(26, 4, 268, 194, c('parch', 4));
-  // drawn at 2x, the paper holds 16 characters a line: a longer heading goes onto two lines, split at the space nearest its middle
-  if (heading.length <= 16) centered(p, 14, heading, c('wood', 1), 2);
+  // drawn at 2x, the paper holds 17 characters a line: a longer heading goes onto two lines, split at the space nearest its middle
+  if (heading.length <= 17) centered(p, 14, heading, c('wood', 1), 2);
   else {
     const spaces = [...heading].flatMap((ch, i) => (ch === ' ' ? [i] : []));
     const at = spaces.reduce((a, b) => (Math.abs(b - heading.length / 2) < Math.abs(a - heading.length / 2) ? b : a));

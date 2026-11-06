@@ -6,7 +6,7 @@
 // Lists every text line that touches art, reads badly or DOS can't draw, and exits 1 if there are any.
 // --png writes each screen as the player sees it (art near text tinted magenta) to <dir>;
 // --all writes every screen, not just the ones with issues.
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { deflateSync } from 'node:zlib';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -81,7 +81,15 @@ for (const s of screens) {
 }
 // the heading drawn on a plain paper picture (games/kit/starter/screens.ts paper) must stay on the paper:
 // its ink (the commonest color in the band that isn't the paper) may not appear beyond the paper's edges (x 22 to 298)
-for (const s of screens) {
+// (only the Starters draw their pages this way)
+const isStarter = (() => {
+  try {
+    return readFileSync(join(here, '..', id, 'about.json'), 'utf8').includes('"series": "starter"');
+  } catch {
+    return false;
+  }
+})();
+for (const s of isStarter ? screens : []) {
   const at = (x: number, y: number) => s.pixels[y * W + x];
   if (at(30, 100) !== at(290, 100) || at(30, 100) === at(5, 100)) continue; // not a paper page
   const count = new Map<number, number>();
