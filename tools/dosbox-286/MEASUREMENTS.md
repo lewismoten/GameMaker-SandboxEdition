@@ -17,10 +17,12 @@ python3 tools/dosbox-286/measure_scenarios.py /path/to/new-matrix \
   --scenarios menu gif sand wood loop --jobs 4
 python3 tools/dosbox-286/measure_scenarios.py /path/to/controls \
   --scenarios stress toggle --jobs 2
+python3 tools/dosbox-286/measure_scenarios.py /path/to/f3-controls \
+  --scenarios f3 --jobs 2
 # Supplemental lower-cycle menu checks (not calibrated hardware equivalents).
 python3 tools/dosbox-286/measure_scenarios.py /path/to/lower-matrix \
   --scenarios menu --cycles 563 750 1510 --jobs 3
-python3 -m unittest discover -s tools/dosbox-286 -p 'test_measure*.py' -v
+python3 -m unittest discover -s tools/dosbox-286 -p 'test_*measure*.py' -v
 
 # Full-capture RMS gaps and the first matched 60-second musical passage.
 python3 tools/dosbox-286/measure_audio.py /path/to/new-matrix/menu-1000-1 \
@@ -28,7 +30,7 @@ python3 tools/dosbox-286/measure_audio.py /path/to/new-matrix/menu-1000-1 \
 ```
 
 `measure_scenarios.py` makes private copies of Donut. Only the copied `.gam`
-scene graph changes, except `stress`, which also raises the copied character's
+scene graph changes, except `stress` and `f3`, which also raise the copied character's
 hit-point meter to 32767 to keep monster damage from ending the comparison.
 Title/menu animation and demo are disabled, `gif` restores
 an original GIF in the menu slot, `wood` starts in Wood Castle, and `loop`
@@ -44,7 +46,15 @@ not claims to have completed the original levels.
 | `wood`   |                        210 | Enter at 90 s; wait in Wood Castle                                      |
 | `loop`   |                       1400 | Enter at 90 s; repeated real self-linked scene loads                    |
 | `stress` |                        240 | Protected-health Sand Castle; Enter at 90 s, right/Space held 165–225 s |
-| `toggle` |                        210 | Enter at 90 s; F3 at 170 and 175 s, each held 250 ms                    |
+| `toggle` |                        210 | Original-health diagnostic; F3 at 170 and 175 s, each held 250 ms       |
+| `f3`     |                        210 | Protected health; F3 at 170 and 175 s, each held 600 ms                 |
+
+The protected `f3` run is the valid toggle control. Original-health `toggle`
+runs can die before the keys arrive; they are retained as diagnostics, not
+silently counted as successful toggle tests. `PLAYGAME.C`'s `SlowKeys` sets a
+one-second typematic delay, so 600 ms spans slow rendering without a repeat.
+The collector selects an off/on event around its scheduled timestamp, not the
+second stop in the file (which might instead be a character death).
 
 ADDKEY's `lN` changes release duration; it does **not** advance the delay clock.
 Each key also advances that clock by a few milliseconds. The exact sequence is
@@ -94,7 +104,7 @@ Collect all successful status records and retain failures explicitly:
 
 ```sh
 python3 tools/dosbox-286/summarize_measurements.py \
-  /path/to/new-matrix /path/to/controls /path/to/lower-matrix > results.json
+  /path/to/new-matrix /path/to/controls /path/to/f3-controls /path/to/lower-matrix > results.json
 ```
 
 The collector hashes WAV/DRO bytes, emits timestamped PCM gaps and OPL stops,

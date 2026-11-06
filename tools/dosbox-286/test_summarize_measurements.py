@@ -33,5 +33,12 @@ class ManifestTests(unittest.TestCase):
                 s.inspect_run(run)
 
 
+    def test_f3_selection_ignores_earlier_character_death(self):
+        stops = [{'stop_ms': 100000, 'restart_ms': 102000, 'gap_ms': 2000},
+                 {'stop_ms': 160010, 'restart_ms': 165020, 'gap_ms': 5010}]
+        self.assertEqual(s.find_toggle_stop(stops, 10), stops[1])
+        self.assertIsNone(s.find_toggle_stop(stops[:1], 10))
+
+
 if __name__ == '__main__':
     unittest.main()

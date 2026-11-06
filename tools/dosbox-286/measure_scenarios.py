@@ -22,6 +22,7 @@ SCENARIOS = {
     'loop': (1400, 'p90000 l50 enter'),
     'stress': (240, 'p90000 l250 enter p75000 l60000 right space'),
     'toggle': (210, 'p90000 l250 enter p80000 l250 f3 p5000 f3'),
+    'f3': (210, 'p90000 l250 enter p80000 l600 f3 p5000 f3'),
 }
 
 
@@ -49,7 +50,7 @@ def prepare(root, scenario):
                              2, 38 + k % 4, 41 + k // 4, 40, 43)
     target = destination / 'donut.gam'
     target.write_bytes(d)
-    if scenario == 'stress':
+    if scenario in ('stress', 'f3'):
         # CHR_RECORD_SIZE=3784; hit-point meter begins at 3724 (formats/character.ts).
         character = bytearray((source / 'donut.chr').read_bytes())
         struct.pack_into('<h', character, 3724, 32767)
@@ -57,7 +58,7 @@ def prepare(root, scenario):
     (destination / 'measurement-fixture.json').write_text(json.dumps({
         'scenario': scenario, 'source_gam_sha256': hashlib.sha256((source / 'donut.gam').read_bytes()).hexdigest(),
         'fixture_gam_sha256': hashlib.sha256(d).hexdigest(),
-        'modified_archival_files': ['donut.gam', 'donut.chr'] if scenario == 'stress' else ['donut.gam'],
+        'modified_archival_files': ['donut.gam', 'donut.chr'] if scenario in ('stress', 'f3') else ['donut.gam'],
     }, indent=2) + '\n')
     return target
 

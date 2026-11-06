@@ -22,13 +22,14 @@ class ScenarioTests(unittest.TestCase):
 
 
     def test_stress_raises_only_private_hit_points(self):
-        with tempfile.TemporaryDirectory() as tmp:
-            path = s.prepare(Path(tmp), 'stress')
-            data = (path.parent / 'donut.chr').read_bytes()
-            self.assertEqual(struct.unpack_from('<h', data, 3724)[0], 32767)
-            source = (s.REPO / 'cd/gameware/donut/donut.chr').read_bytes()
-            self.assertNotEqual(source[3724:3726], data[3724:3726])
-            self.assertEqual(source[:3724] + source[3726:], data[:3724] + data[3726:])
+        for scenario in ('stress', 'f3'):
+            with self.subTest(scenario=scenario), tempfile.TemporaryDirectory() as tmp:
+                path = s.prepare(Path(tmp), scenario)
+                data = (path.parent / 'donut.chr').read_bytes()
+                self.assertEqual(struct.unpack_from('<h', data, 3724)[0], 32767)
+                source = (s.REPO / 'cd/gameware/donut/donut.chr').read_bytes()
+                self.assertNotEqual(source[3724:3726], data[3724:3726])
+                self.assertEqual(source[:3724] + source[3726:], data[:3724] + data[3726:])
 
 
 if __name__ == '__main__':

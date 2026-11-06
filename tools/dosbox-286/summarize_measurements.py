@@ -11,6 +11,12 @@ from measure_audio import compare_onsets, decode_dro, key_ons, stop_events, wav_
 REPO = Path(__file__).resolve().parents[2]
 
 
+def find_toggle_stop(stops, startup_seconds):
+    target = (170 - startup_seconds) * 1000
+    return next((s for s in stops if abs(s['stop_ms'] - target) <= 1500
+                 and s['gap_ms'] is not None and 4000 <= s['gap_ms'] <= 6000), None)
+
+
 def inspect_run(run):
     scenario, cycles, repeat = run.name.rsplit('-', 2)
     metadata = json.loads((run / 'run.json').read_text())
@@ -57,10 +63,12 @@ def inspect_run(run):
                 onset + (start + length) / 1000)
         if scenario in ('sand', 'stress'):
             passage('motion', 165000 - onset * 1000, 225000 - onset * 1000, 165, 225)
-        if scenario == 'toggle' and len(stops) >= 2 and stops[1]['restart_ms'] is not None:
-            start = stops[1]['restart_ms']
-            passage('after_toggle', start, start + 20000,
-                    onset + start / 1000, onset + start / 1000 + 20)
+        if scenario in ('toggle', 'f3'):
+            event = find_toggle_stop(stops, onset)
+            if event is not None:
+                start = event['restart_ms']
+                passage('after_toggle', start, start + 20000,
+                        onset + start / 1000, onset + start / 1000 + 20)
     if len(segments) == 1:
         # Censored end: no claim is made about when progression would resume.
         first['trailing_no_write_ms'] = max(0, round((pcm['duration_seconds'] - onset) * 1000) - first['last_write_ms'])
@@ -91,7 +99,7 @@ def main():
         for name, p in row['passages'].items():
             ref = base['passages'].get(name) if base else None
             p['vs_baseline'] = compare_onsets(ref['_notes'], p['_notes']) if ref else None
-            if row['scenario'] == 'toggle' and name == 'after_toggle':
+            if row['scenario'] in ('toggle', 'f3') and name == 'after_toggle':
                 # F3 restarts the same score; compare against the first 20 s before it.
                 quiet = row['passages']['quiet']
                 q = [v for v in quiet['_notes'] if v[0] < quiet['dro_start_ms'] + 20000]
