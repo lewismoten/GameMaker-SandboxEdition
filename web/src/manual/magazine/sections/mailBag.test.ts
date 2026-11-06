@@ -40,6 +40,23 @@ describe('the Mail Bag', async () => {
     expect(text).toContain('exactly one phone line');
   });
 
+  it('keeps the sound IRQ tip on the Design Desk, with a card-specific fix rather than a universal IRQ', () => {
+    const tip = pages[1].blocks
+      .flatMap((b) => (b.t === 'grid' ? b.cells.flat() : [b]))
+      .find((b) => b.t === 'side' && b.title === 'Music, but no sound effects?');
+    expect(tip).toBeDefined();
+    const words = plain(JSON.stringify(tip));
+    expect(words).toContain('FM music and digitized sound use different parts of a Sound Blaster');
+    expect(words).toContain('A tune can play even when the game’s sound IRQ is wrong');
+    expect(words).toContain('CONFIG said IRQ 5');
+    expect(words).toContain('card used IRQ 7');
+    expect(words).toContain('Setting the game to 7 restored the .VOC effects');
+    expect(words).toContain('Seven is not a magic number');
+    expect(words).toContain('match the card’s actual IRQ');
+    expect(words).toContain('setup utility or jumper settings');
+    expect(words).not.toMatch(/86Box|DOSBox|emulat|2026|browser/i);
+  });
+
   it('signs every letter with a handle and a town, and prints no phone number', () => {
     const signed = [...text.matchAll(/— ([A-Z][A-Z ]+)(, age \d+)?, ([A-Z][a-z]+), ([A-Z][a-zA-Z.]+)\./g)];
     expect(signed.length).toBeGreaterThanOrEqual(4);

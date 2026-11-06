@@ -511,6 +511,18 @@
           },
           {
             "tag": "h4",
+            "text": "Music, but no sound effects?"
+          },
+          {
+            "tag": "p",
+            "text": "FM music and digitized sound use different parts of a Sound Blaster. A tune can play even when the game’s sound IRQ is wrong. On one PC, CONFIG said IRQ 5, but the card used IRQ 7. Setting the game to 7 restored the .VOC effects."
+          },
+          {
+            "tag": "p",
+            "text": "Seven is not a magic number! Check your card’s setup utility or jumper settings, then make the game’s IRQ match the card’s actual IRQ."
+          },
+          {
+            "tag": "h4",
             "text": "The fix in one line"
           },
           {
