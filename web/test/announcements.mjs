@@ -136,3 +136,65 @@ test('pending downloads remain visible beyond 30 seconds and settle on failure/s
     /Building/,
   );
 });
+test('autosave failures outrank debounce, recovery is explicit, and Ctrl+S has one voice', async () => {
+  await reset();
+  const result = await page.evaluate(async () => {
+    const { saveNote } = await import('/src/editor/shell/saveNote.ts');
+    let listen;
+    let failExplicit = false;
+    const project = {
+      onSaveState(fn) {
+        listen = fn;
+        return () => {};
+      },
+      async saveNow() {
+        if (failExplicit) {
+          listen('failed', new Error('Quota'));
+          throw new Error('Quota');
+        }
+        listen('saved');
+      },
+    };
+    const note = saveNote(project);
+    document.body.append(note.el);
+    const region = document.querySelector('p.sr-only[role=status]');
+    const messages = [];
+    const observer = new MutationObserver(() => messages.push(region.textContent));
+    observer.observe(region, { childList: true });
+    const tick = () => new Promise((r) => setTimeout(r, 10));
+    listen('failed', new Error('Quota'));
+    await tick();
+    for (let i = 0; i < 5; i++) {
+      listen('failed', new Error('Quota'));
+      await tick();
+    }
+    const failures = [...messages];
+    listen('saved');
+    await tick();
+    const recovery = [...messages];
+    messages.length = 0;
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 's', ctrlKey: true }));
+    await new Promise((r) => setTimeout(r, 1700));
+    const shortcut = [...messages];
+    messages.length = 0;
+    failExplicit = true;
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 's', ctrlKey: true }));
+    await new Promise((r) => setTimeout(r, 1700));
+    const explicitFailure = [...messages];
+    const toasts = document.querySelectorAll('.toast').length;
+    listen('saved');
+    note.dispose();
+    await new Promise((r) => setTimeout(r, 1700));
+    observer.disconnect();
+    return { failures, recovery, shortcut, explicitFailure, toasts, disposed: region.isConnected };
+  });
+  assert.equal(result.failures.length, 1);
+  assert.match(result.failures[0], /Not saved.*Quota.*Download a \.zip/);
+  assert.match(result.recovery.at(-1), /Saved.*again|Saved.*after/i);
+  assert.equal(result.shortcut.length, 1);
+  assert.match(result.shortcut[0], /Saved in this browser/);
+  assert.equal(result.explicitFailure.length, 1);
+  assert.match(result.explicitFailure[0], /Not saved.*Quota.*Download/);
+  assert.equal(result.toasts, 0);
+  assert.equal(result.disposed, false);
+});
