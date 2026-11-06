@@ -45,6 +45,10 @@ So a pass-through scene costs the two fades of the **message** (about 1 s each) 
 The inventory screen, the load screen and the error boxes ask for "blue" or "yellow" by value (`RGBBlue(10,10,63)`, `RGBYellow(63,63,0)`, `RGBRed(63,10,10)`, `PG:287-290`) and then **find the nearest entry in the scene's own palette** (`RGBdata::Match`, `PC:16`).
 So a scene with no blue in its palette shows its inventory box in whatever is nearest. A game maker who wants the inventory legible must put a clear blue, a yellow and a red in every scene's palette. [design]
 
+Text pages work the same way: a `.txt` page prints in `RGBPurple(50,10,50)` (`PG:291`) matched to the palette of the picture shown before it, or the scene's when there is none (`PG:1300-1305`). A palette without that purple prints the page in its nearest color.
+
+Screens without a picture are filled with **color 0 of the palette that is up**, not with black: the F2 status screen (`PG:1591`), the load screen (`PG:1753`), the start of play (`PG:1121`), a text page's clear (`PG:2038`) and the high score table, drawn in the scene's colors (`HISCOREL.C:52`). Scene fades still go to true black (`FadeAllTo(Black)`). So pick color 0 with care: everything on those screens is read against it.
+
 ## 11.4 Tips
 
 - Reserve entry 255 for transparency from the start; keep entry 0 black.
