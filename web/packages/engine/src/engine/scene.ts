@@ -43,7 +43,8 @@ import { parsePalette } from '../formats/palette';
 import { parseSoundSet, type SoundSet } from '../formats/sound';
 import { MAXSCENELINKS, NOSCENE, type Game } from '../formats/game';
 import { TICK_RATE } from '../audio/cmfPlayer';
-import { scrollCost, SlowCpu, tickCost, vocStallMs, vocWontFit, type PcCosts } from './slowPc';
+import { musicHoldMs, scrollCost, SlowCpu, tickCost, vocStallMs, vocWontFit, type PcCosts } from './slowPc';
+import { songIsrMs, songLoad, type SongLoad } from './slowPcMusic';
 import { gainAtLoad, newPlayGain, type PlayGain } from './playGain';
 
 const DEAD = 2;
@@ -199,6 +200,15 @@ async function sceneReady(s: Session, scnum: number): Promise<void> {
   m.want(files[10], ...next);
 }
 
+/**
+ * A read from the emulated slow PC's disk (SpeedSetting.slowPc): game time stops for it (playscene
+ * charges s.vocStall) and, on a PC whose disk read holds the timer, the music stands still too.
+ */
+function diskRead(s: Session, ms: number): void {
+  s.vocStall = (s.vocStall ?? 0) + ms;
+  s.m.audio.holdMusic(musicHoldMs(s.speed.slowPc, ms));
+}
+
 function attachSound(s: Session, w: World, sounds: SoundSet | undefined): void {
   w.sound = {
     play: (n) => {
@@ -213,7 +223,7 @@ function attachSound(s: Session, w: World, sounds: SoundSet | undefined): void {
           // the read happens on the game's own thread: an emulated slow PC is frozen for it, and the
           // sound (which PlaySbVocFile cut off first) only starts when the read is done
           s.m.audio.stopVoc();
-          s.vocStall = (s.vocStall ?? 0) + stall;
+          diskRead(s, stall);
           if (vocWontFit(pc, bytes.length)) s.vocLate = undefined;
           else s.vocLate = { bytes, wait: (s.vocLate?.wait ?? 0) + stall };
         }
@@ -438,6 +448,11 @@ export async function playScene(s: Session, dosc: number, prev: number, linkIn: 
   // costs that interrupt's pass of the loop. A late game tick runs on the next free pass;
   // one that is a whole tick late is skipped, not queued (OldClock = TimerCounter).
   const cpu = new SlowCpu(tickMs);
+  let costOf: { song: Uint8Array | undefined; load: SongLoad | undefined } | undefined;
+  const songCost = (bytes: Uint8Array | undefined) => {
+    if (!costOf || costOf.song !== bytes) costOf = { song: bytes, load: songLoad(bytes) };
+    return costOf.load;
+  };
   const monstersOnScreen = () => {
     let n = 0;
     for (let l = 0; l < LASTMM && n < 50; l++) if (w.mm[l].monnum < LASTMON && w.mi[l].scrPos.x !== OFFSCRN) n++; // MaxMonsShown
@@ -588,7 +603,11 @@ export async function playScene(s: Session, dosc: number, prev: number, linkIn: 
       s.sndClock++;
       const pc = s.speed.slowPc;
       if (!pc) cpu.reset();
-      else if (cpu.busy()) continue;
+      else {
+        // NewTimer's own time, with PlayIt's share when a song plays (slowPcMusic.ts)
+        cpu.spend(songIsrMs(pc, s.musicOn && m.audio.musicEnabled ? songCost(song) : undefined));
+        if (cpu.busy()) continue;
+      }
       if (doScroll) {
         const strips = drawScroll(w);
         if (pc) cpu.spend(scrollCost(pc, strips));

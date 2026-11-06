@@ -3,7 +3,7 @@
 //   x  3..63    the balcony: all eight helpers and the Cast's guests, in turn (Teddy has a small diploma beside him)
 //   x  3..56    (row 1) a one-word banner for each of the six stages (STEPS, PUSHING, HEROES, STORY, WIRING, BLOCKS), high on the wall, and confetti falling in the gaps
 //   x 68..86    the stage: the lectern at x 74 with the diploma, Doc Leo at x 76, THE CHEZ parked at x 80
-// Touching the diploma is the door out: the link to the ending.
+// Touching the diploma is the door out: the link to the ending. The first level is the arrival (graduationArrive.ts), a nod to one lesson of each stage.
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import type { Book } from '../../kit/starter/book';
 import { Grid } from '../../kit/starter/grid';
@@ -11,6 +11,7 @@ import { ORIGIN } from '../../kit/starter/map';
 import { PULL } from '../../kit/starter/book';
 import { chezBlocks } from '../../kit/starter/graduationCameo';
 import { HallMap, buildBlocks, buildPalette, stamp, type Level } from '../../kit/starter/graduationLevel';
+import { ARRIVE, buildArrival } from '../../kit/starter/graduationArrive';
 import { skyOf, type Pal } from '../../kit/starter/palette';
 import { addSign, type Sign } from '../../kit/starter/sign';
 import type { Timed } from '../../kit/starter/graduationHall';
@@ -35,13 +36,13 @@ function confetti(book: Book, pal: Pal, timed: Timed[]): string[] {
       y: (i * 11 + chain * 6) % 20,
       c: colors[(i * 3 + chain) % colors.length],
     }));
-    for (let f = 0; f < 3; f++) {
+    for (let f = 0; f < 2; f++) {
       const p = new Pixels(20, 20, skyOf(pal));
       for (const b of bits) p.rect(b.x + (f % 2), (b.y + f * 6) % 19, 2, 2, b.c);
       book.add(`confetti.${chain}.${f}`, p, air);
     }
     const ticks = [11, 15][chain];
-    for (let f = 0; f < 3; f++) timed.push({ name: `confetti.${chain}.${f}`, next: `confetti.${chain}.${(f + 1) % 3}`, ticks });
+    for (let f = 0; f < 2; f++) timed.push({ name: `confetti.${chain}.${f}`, next: `confetti.${chain}.${(f + 1) % 2}`, ticks });
     names.push(`confetti.${chain}.0`);
   }
   return names;
@@ -114,6 +115,10 @@ export function buildLevels() {
   ] as const)
     stamp(m, s, x, FLOOR - 3, true);
   m.exits.push({ from: [LECTERN + ORIGIN, 9 + ORIGIN] });
-  const levels: Level[] = [{ file: 'hall', title: cfg.level.title, hint: cfg.level.hint, map: m }];
+  const arrival = buildArrival(cfg, pal);
+  const levels: Level[] = [
+    { file: ARRIVE, title: cfg.arrive.title, hint: cfg.arrive.hint, map: arrival.map, book: arrival.book, timed: arrival.timed, bbl: ARRIVE },
+    { file: 'hall', title: cfg.level.title, hint: cfg.level.hint, map: m, book, timed, bbl: 'grad' },
+  ];
   return { book, pal, timed, levels };
 }

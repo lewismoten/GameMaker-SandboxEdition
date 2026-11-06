@@ -365,7 +365,12 @@ export abstract class ComputerDrives {
   /** C:\GM (hard disk, with your games and changes) or D:\GM (the CD, as shipped). */
   protected async gmFolder(hardDisk: boolean): Promise<DosNode[]> {
     const index = await this.gmIndexList();
-    const runs: Record<string, ProgramRef> = { 'GM.EXE': { kind: 'gm' }, 'MENU.EXE': { kind: 'gm' }, 'PLAYGAME.EXE': { kind: 'playgame' } };
+    const runs: Record<string, ProgramRef> = {
+      'GM.EXE': { kind: 'gm' },
+      'MENU.EXE': { kind: 'menu' },
+      'IMAGE.EXE': { kind: 'image' },
+      'PLAYGAME.EXE': { kind: 'playgame' },
+    };
     const programs = index
       .filter((e) => !e.dir)
       .map((e) => {

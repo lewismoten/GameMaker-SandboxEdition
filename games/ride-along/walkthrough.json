@@ -1,0 +1,77 @@
+{
+  "version": 1,
+  "game": "ride-along",
+  "rand": {
+    "seed": 1,
+    "per": "scene"
+  },
+  "segments": [
+    {
+      "scene": 2,
+      "keys": "AU0hzStNG80rTQPNAzkCuQBNCs0GTRLNA00MzSxNHs0rTQ=="
+    },
+    {
+      "scene": 3,
+      "keys": "gwE5DLkASAzIAFAM0ABLAcsFSwHLCUsBy4gBSw/LFE0CzQRNAs0BTQbNAU0HzQFNCM0BTQbNAU0GzXdLAcsBSwHLAksBywFLAcsBSwHLAksBywFLAcsBSwHLAksBywFLAcsCSwHLLE0BzQFNAs0BTQHNAU0CzQFNAs0BTQHNAU0CzSBLAcsBSwHLAUsCywFLAcsBSwLLAUsBywFLAssBSwHLAUsCywFLAcs="
+    },
+    {
+      "scene": 4,
+      "keys": "KU0HzQNNAc0HTQHNPTkGuVBLHMtQTQHNAU0BzQFNA80BTQLNAU0DzQFNA80BTQHNAU0DzQFNAc0BTQPNAU0CzQFNA80BTQPNAU0BzQFNA80BTQHNNk0BzQRNAc0FTQHNA00BzQVNAc0DTQHNBU0BzVBLAcsBSwHLAUsBywFLAcsBSwLLAUsCywFLAssBSwLLAUsBywFLAssBSwLLAUsBywFLAssBSwHLZ00BzQ=="
+    }
+  ],
+  "chapters": [
+    {
+      "scene": 2,
+      "title": "Level 1: Climb In"
+    },
+    {
+      "scene": 3,
+      "title": "Level 2: Lift Off"
+    },
+    {
+      "scene": 4,
+      "title": "Level 3: Down the River"
+    }
+  ],
+  "timeline": {
+    "fps": 60,
+    "frames": 11352,
+    "chapters": [
+      {
+        "title": "Opening",
+        "frame": 0,
+        "time": 0
+      },
+      {
+        "title": "Story",
+        "frame": 913,
+        "time": 15216.666666666471
+      },
+      {
+        "title": "Level 1: Climb In",
+        "frame": 1661,
+        "time": 27683.333333333918
+      },
+      {
+        "title": "Level 2: Lift Off",
+        "frame": 3133,
+        "time": 52216.666666664794
+      },
+      {
+        "title": "Level 3: Down the River",
+        "frame": 5773,
+        "time": 96216.66666667178
+      },
+      {
+        "title": "Ending",
+        "frame": 8547,
+        "time": 142450.00000000864
+      },
+      {
+        "title": "Credits",
+        "frame": 10278,
+        "time": 171299.99999999185
+      }
+    ]
+  }
+}

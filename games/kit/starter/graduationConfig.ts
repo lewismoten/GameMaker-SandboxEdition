@@ -12,6 +12,8 @@ export interface Graduation {
   groups: string[];
   /** Guests from the Cast who sit in the audience beside the helpers. */
   cameos: CameoName[];
+  /** Every guest one frame, to save blocks (the crowded finale). */
+  stillGuests?: boolean;
   /** The hall's look. */
   theme: HallTheme;
   /** The game's title as the .GAM and the cards name it (19 characters at most); GRADUATION when left out. */
@@ -24,8 +26,10 @@ export interface Graduation {
   honors: string;
   /** Signs along the carpet and the banner over the lectern. */
   signs: { start: string; helpers: string; cheer: string; doc: string; banner: string };
-  /** The level's title and hint (its card). */
+  /** The hall's title and hint (its card): the second level. */
   level: { title: string; hint: string };
+  /** The first level, the outside arrival: its title and hint, the welcome sign and the nods (graduationNods.ts ids) along the path. */
+  arrive: { title: string; hint: string; welcome: string; nods: string[] };
   /** The song's tempo, lead voice and transposition (graduationSong.ts). */
   song: { bpm: number; lead: 'lead' | 'brass' | 'organ' | 'bell' | 'strings'; transpose: number };
   /** The pages: the story, the win and the credits (graduationText.ts). */
