@@ -145,7 +145,8 @@ sounds that repeat.
 ### 9. Colors
 
 The VGA offers **256 colors out of 262,144**: each of red, green and blue has 64 levels. A scene has one palette of 256 colors, 768 bytes. **Color 255 is clear.** A hero or monster pixel of color 255 shows what is behind it and never touches anything.
-Background blocks draw every pixel, so there color 255 is just a color. Put a clear blue, a red and a yellow in every scene's palette: PLAYGAME picks the nearest one for the inventory box and its messages.
+Background blocks draw every pixel, so there color 255 is just a color. Put a clear blue, a red and a yellow in every scene's palette: PLAYGAME picks the nearest one for the inventory box and its messages. Text pages print in the purple nearest to 50,10,50.
+Screens without a picture (the status screen, saving, loading, high scores and text pages) fill with color 0 of the palette, so pick color 0 with care.
 
 A fade takes **65 screen refreshes**, about a second.
 

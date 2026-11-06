@@ -264,6 +264,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 - On the Starters tab, Show: Done also lists the graduations you have earned, after the Starters you have finished, and Show: Not done yet lists the locked ones as well as the ones ready to graduate, so an earned graduation no longer disappears under a filter.
 - Say Something, Everybody Talks, Cutscenes, Color Doors and The Same House: coming back from a talk, a tale, a gallery or a room no longer shows the level card again. It shows only when you first arrive.
 
+- Teddy's Little Big, Little Bigger and Little Biggest Adventure and Final Curtain print their text pages in Game-Maker's own purple, as the player intends, not a nearby plum; the Programmer's Guide and the Technical Reference booklet note that text pages match that purple and that screens without a picture fill with palette color 0.
 - Two Starters had art a child could read the wrong way: Ride Along's title stars no longer climb out of the hero like a stream, and Under the Hood's second level no longer has a plus sign made of green panels
 
 - Kit's Moves: the three dash gaps are sized to the moves their signs name (one dash, a hop with a dash, a hop with two dashes), and the signs now say to keep Right held.

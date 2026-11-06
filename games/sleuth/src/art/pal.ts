@@ -39,7 +39,7 @@ const INKS: [string, RGB][] = [
   ['red', [228, 40, 40]], // "MORE...", "Top Ten Scores", "Hit any key" (nearest 63,10,10)
   ['blue', [56, 72, 252]], // menu, scores, F2 status (nearest 10,10,63)
   ['yellow', [252, 236, 40]], // save/load names (nearest 63,63,0)
-  ['purple', [176, 30, 160]], // text screens (nearest 50,10,50)
+  ['purple', [200, 40, 200]], // text screens: exactly 50,10,50, so they print in true purple
   ['white', [255, 255, 255]],
 ];
 
