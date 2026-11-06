@@ -63,6 +63,12 @@ game folder opens in the browser unchanged.
   (`code/GM/SOUNDC.C`) and joystick routines (`code/GM/JSTICKC.C`, `code/GM/JSTICKA.ASM`),
   and the Sound Designer's digitized speech with Andy Stone (`code/GM/SNDEDIT.C`).
 - **This fork**: Lewis Moten.
+- **PLAYGAME 286 audio measurements** (`tools/dosbox-286/measure_*.py` and
+  `docs/research/playgame-music-286-results.md`): Hermes Agent using **OpenAI Codex
+  GPT-6.1 Sol**, directed by Lewis Moten. The measurement tools use external NumPy
+  (BSD), optional Matplotlib (Matplotlib License, PSF-based) for measured plots,
+  and DOSBox-X by the DOSBox-X Team (GPL); none of those dependencies is bundled.
+  The DRO decoder follows DOSBox-X's published `RawHeader`/`Capture` format.
 - **The web port**: written with **Claude Opus 5.5** (Anthropic), covering both the
   _1994 desk_ (the recreated PC, DOS prompt, Game-Maker's VGA designers, the BBS) and the
   _modern web_ editor and player. AI assistance did most of the porting and code
@@ -871,6 +877,9 @@ A firmware for the ESP32-3248S035 board that plays the Starter games, and an ins
 - **miniz / tinfl** (Rich Geldreich, public domain, with its later MIT-style option): the firmware calls `tinfl_decompress` through ESP-IDF's `rom/miniz.h`. The decoder is code already burned into the ESP32 chip's ROM, so no miniz source is compiled into or shipped in the firmware image set; the header is part of ESP-IDF (Apache-2.0, above). Named here because the firmware depends on it.
 
 ## Tools used to build and test
+
+OpenAI Codex (GPT-6), directed by Lewis Moten, added capture-matrix validation and failure regressions to the PLAYGAME measurement collector and plotter (`tools/dosbox-286/`).
+
 
 Built with [TypeScript](https://www.typescriptlang.org/) (Apache-2.0),
 [Vite](https://vitejs.dev/), [Vitest](https://vitest.dev/) and vite-node (MIT, both from the
