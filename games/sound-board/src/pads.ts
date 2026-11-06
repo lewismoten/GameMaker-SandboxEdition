@@ -45,20 +45,51 @@ export const PADS: Record<'chime' | 'coin' | 'quiet' | 'blip' | 'long' | 'short'
   short: { name: 'short', slot: SLOT.ping, ramp: 'green', rule: { score: 10 } },
 };
 
-/** A pad, 20 x 20: a stone base and a round button; pressed, the button sits low and flat. */
-function padPicture(pal: Pal, ramp: PadKind['ramp'], pressed: boolean): Pixels {
+/** Each pad's face mark, 7 x 5 (`#` dark, `o` a shine): what its sound is like. */
+const ICONS: Record<keyof typeof PADS, string[]> = {
+  // a bell
+  chime: ['..###..', '.#####.', '.#####.', '#######', '...#...'],
+  // a coin with a shine
+  coin: ['..###..', '.#oo.#.', '.#o..#.', '.#...#.', '..###..'],
+  // a speaker with nothing coming out of it
+  quiet: ['...#...', '.###...', '.###...', '.###...', '...#...'],
+  // one note
+  blip: ['....##.', '....#.#', '....#..', '..###..', '..##...'],
+  // a long bar
+  long: ['.......', '#######', '#######', '.......', '.......'],
+  // a dot
+  short: ['.......', '..###..', '..###..', '.......', '.......'],
+};
+
+/**
+ * A pad, 20 x 20, standing on the floor: a dark rubber collar with a small light, and a square
+ * colored cap standing up out of it with its mark on the front. Pressed, the cap sinks three pixels
+ * into the collar and goes dim, and the light comes on.
+ */
+function padPicture(pal: Pal, kind: keyof typeof PADS, pressed: boolean): Pixels {
   const p = new Pixels(20, 20, skyOf(pal));
-  const ink = pal.c('ink', 0);
-  const s = pal.r('stone');
-  const m = pal.r(ramp);
+  const ink = pal.r('ink');
+  const m = pal.r(PADS[kind].ramp);
   const hi = m[m.length - 1];
-  p.rect(1, 14, 18, 6, ink).rect(2, 15, 16, 4, s[2]).rect(2, 15, 16, 1, s[4]).rect(2, 18, 16, 1, s[1]);
-  if (pressed) {
-    p.rect(4, 12, 12, 3, ink).rect(5, 13, 10, 2, m[1]);
-  } else {
-    p.rect(3, 6, 14, 9, ink).rect(4, 7, 12, 8, m[3]).rect(4, 7, 12, 2, hi).rect(4, 13, 12, 2, m[2]).rect(5, 6, 10, 1, hi);
-    p.rect(5, 9, 2, 2, hi);
-  }
+  const top = pressed ? 5 : 2;
+  // the cap: a rounded square, lit from the top left
+  p.rect(3, top, 14, 14 - top, ink[0]).rect(2, top + 1, 16, 13 - top, ink[0]);
+  p.rect(3, top + 1, 14, 13 - top, pressed ? m[1] : m[3]);
+  p.rect(4, top + 1, 12, 1, pressed ? m[2] : hi).rect(3, top + 2, 1, 11 - top, pressed ? m[2] : hi);
+  p.rect(16, top + 2, 1, 11 - top, pressed ? m[0] : m[2]);
+  const mark = pressed ? m[3] : ink[0];
+  ICONS[kind].forEach((row, dy) => {
+    for (let dx = 0; dx < row.length; dx++) {
+      const y = (pressed ? 7 : 5) + dy;
+      if (row[dx] === '#') p.set(7 + dx, y, mark);
+      else if (row[dx] === 'o') p.set(7 + dx, y, pressed ? m[2] : hi);
+    }
+  });
+  // the collar the cap stands in: its rim, its front and the light
+  p.rect(1, 12, 18, 8, ink[0]).rect(2, 13, 16, 6, ink[1]).rect(2, 13, 16, 1, ink[2]);
+  p.rect(2, 18, 16, 1, ink[0]);
+  p.rect(8, 15, 4, 2, ink[0]).rect(9, 15, 2, 2, pressed ? hi : m[0]);
+  if (pressed) p.set(9, 15, pal.c('white', 3));
   return p;
 }
 
@@ -144,9 +175,10 @@ export const WAVES: [number, PadKind['ramp'] | 'red' | 'orange' | 'pink'][] = [
 /** Adds the pads, waves, spikes and the wrong gate to `book` (call after the signs and locks). */
 export function addBoardBlocks(book: Book, pal: Pal): void {
   const air = { grav: PULL.down };
-  for (const k of Object.values(PADS)) {
-    book.add(`padOn.${k.name}`, padPicture(pal, k.ramp, true), air);
-    book.add(`pad.${k.name}`, padPicture(pal, k.ramp, false), { ...air, ...k.rule, touch: `padOn.${k.name}` });
+  for (const kind of Object.keys(PADS) as (keyof typeof PADS)[]) {
+    const k = PADS[kind];
+    book.add(`padOn.${k.name}`, padPicture(pal, kind, true), air);
+    book.add(`pad.${k.name}`, padPicture(pal, kind, false), { ...air, ...k.rule, touch: `padOn.${k.name}` });
   }
   for (const [slot, ramp] of WAVES) book.add(`wave.${slot}`, wavePicture(pal, slot, ramp), air);
   book.add('spikeOn', flat(pal), air);
