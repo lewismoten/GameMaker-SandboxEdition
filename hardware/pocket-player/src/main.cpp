@@ -269,7 +269,7 @@ static bool inflateRaw(const uint8_t* src, size_t n, uint8_t* dst, size_t cap) {
 
 // file: the 8 character name of an SD game's .cfg and .pak, or (one: true) the name of its .GMP in /pocket
 struct GameEntry { char id[28]; char title[40]; int levels; bool sd; bool one; char file[16]; };
-constexpr int MAXGAMES = 128;  // the Starters (96 in the current build) and the card's games
+constexpr int MAXGAMES = 128;  // the Starters (101 in the current build) and the card's games
 static GameEntry games[MAXGAMES];
 static int ngames = 0;
 static bool haveSD = false;  // a card was found at start (it is mounted only while it is read: a mounted card holds about 33 KB of heap)
