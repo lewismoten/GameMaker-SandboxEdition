@@ -59,6 +59,7 @@ inventory|Pick It Up|2
 pictures-and-cartoons|Pictures and Cartoons|3
 power-up|Power Up|2
 quicksand|Quicksand|2
+rain|Rain on the Path|3
 ride-along|Ride Along|3
 road-tiles|Road Tiles|3
 dice|Roll the Dice|1
