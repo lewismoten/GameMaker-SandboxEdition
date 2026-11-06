@@ -4,6 +4,7 @@
 // extra words. No DOM, no storage: deepIndexWorker.ts runs it off the main thread.
 import { fileEntries, strings, type FileSource } from './searchIndex';
 import type { Part } from './searchMatch';
+import { cp437Text } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 
 /** One searchable line of a game: the file it is in ('' when it is not in a file) and what it says. */
 export interface DeepPart {
@@ -32,10 +33,10 @@ const MAX_PARTS = 4000;
 const SKIP_SECTIONS = new Set(['controls', 'joystickButtons', 'dosPlayer']);
 
 function plainLines(bytes: Uint8Array, file: string): DeepPart[] {
-  const text = new TextDecoder('latin1').decode(bytes.subarray(0, 64 * 1024));
+  const text = cp437Text(bytes.subarray(0, 64 * 1024)).replace(/\x1a[\s\S]*$/, '');
   return text
     .split(/\r?\n/)
-    .map((t, i) => ({ file, label: `Line ${i + 1}`, text: t.replace(/[^\x20-\x7e\xa1-\xff]/g, ' ').trim() }))
+    .map((t, i) => ({ file, label: `Line ${i + 1}`, text: t.replace(/[\x00-\x1f\x7f]/g, ' ').trim() }))
     .filter((p) => /[\p{L}\p{N}]/u.test(p.text));
 }
 

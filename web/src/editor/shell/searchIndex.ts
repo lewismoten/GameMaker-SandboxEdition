@@ -6,6 +6,7 @@
 // the search box is first used (the parsers and the player's patch table are loaded then).
 import { kindOf, type FileKind } from '../core/fileKind';
 import type { Project } from '../core/project';
+import { fromCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import { matchingParts, type Part } from './searchMatch';
 import type { SearchGroup } from './searchGroups';
 
@@ -72,7 +73,7 @@ export async function fileEntries(project: { files: FileSource }, signal: { stal
       } catch {
         parts = [];
       }
-      parts = parts.filter((p) => printable(p.text));
+      parts = parts.map((p) => ({ ...p, text: fromCp437(p.text) })).filter((p) => printable(p.text));
       if (parts.length) out.push({ group: 'text', id: `t:${name}`, title: label, parts, file: name, kind });
     }
     if (++n % 25 === 0) await slice();

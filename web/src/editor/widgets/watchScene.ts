@@ -7,6 +7,7 @@
 // for one scene keeps a fingerprint of the scene's files, so the panel
 // can say when the map changed since and offer to make it again (check/walk/botRoutes.ts).
 import { toast } from '../core/ui';
+import { fromCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import type { Project } from '../core/project';
 import { GameFiles, type CatalogEntry } from '../../project/files';
 import { serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
@@ -17,7 +18,7 @@ import { allWalkPaths } from '../check/walk/walkPaths';
 import { botRoutes, keepBotRoute, walkthroughThrough } from '../check/walk/botRoutes';
 import { startingAt } from '../editors/integrator/startAt';
 
-const sceneName = (project: Project, scene: number) => project.game().scenes[scene]?.desc.trim() || `Scene ${scene}`;
+const sceneName = (project: Project, scene: number) => fromCp437(project.game().scenes[scene]?.desc ?? '').trim() || `Scene ${scene}`;
 
 /** The project's files with the game started at `scene`. */
 function startedAt(project: Project, scene: number): GameFiles {

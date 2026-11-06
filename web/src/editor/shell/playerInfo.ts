@@ -4,6 +4,7 @@
 // (their text shown where printable) and the About text. Read-only: the .EXE isn't among the
 // project's files, and its About text is RSD's or the original author's attribution.
 import './playerInfo.css';
+import { fromCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import { h, modal } from '../core/ui';
 import type { Project } from '../core/project';
 import { companionOrigin, originText } from '../../dosPlayer/playerOrigin';
@@ -31,7 +32,7 @@ function playerDetails(project: Project): HTMLElement {
       ...row('Build', `${originText(o)} (${o.confidence} confidence)`),
       ...row('Size', `${o.size.toLocaleString('en-US')} bytes`),
       ...row('MD5', o.md5),
-      ...row('Version line', o.versionLine || 'none'),
+      ...row('Version line', fromCp437(o.versionLine ?? '') || 'none'),
       ...row('Stock or patched', o.stock ? 'Stock: every byte as that build’s own copy has it' : 'Patched by its author'),
     ),
     h('h3', null, 'Why that build'),
@@ -70,7 +71,7 @@ function playerDetails(project: Project): HTMLElement {
       : h('p', null, 'Nothing else changed.'),
     h('h3', null, 'About (F10) text'),
     o.about?.length
-      ? h('pre', { class: 'player-info-text', tabindex: '0', 'aria-label': 'Its About text (read-only)' }, o.about.join('\n'))
+      ? h('pre', { class: 'player-info-text', tabindex: '0', 'aria-label': 'Its About text (read-only)' }, o.about.map(fromCp437).join('\n'))
       : h('p', null, 'RSD’s, as the build came.'),
     h(
       'p',

@@ -12,6 +12,7 @@
 // said so, and the bot plays that scene. In a scene with walking paths (marked in the block
 // editor, check/walk/walkPaths.ts) it says how much of the route keeps to them.
 import { gameTitle } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { fromCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import { h, clear, modal, selectField, toast } from '../core/ui';
 import { progressAnnouncements } from '../core/progressAnnouncements';
 import type { Project } from '../core/project';
@@ -116,7 +117,7 @@ export async function walkDialog(project: Project, given: WalkDialogOptions = {}
     const now = project.extras<SavedWalk | undefined>(project.gam, WALK_SECTION, undefined);
     if (before && scene !== undefined && now?.walk) {
       const later = changedAfter(before, now.walk, scene);
-      const names = later.map((n) => project.game().scenes[n]?.desc.trim() || `Scene ${n}`);
+      const names = later.map((n) => fromCp437(project.game().scenes[n]?.desc ?? '').trim() || `Scene ${n}`);
       toast(
         later.length
           ? `Redone. The levels after it that the bot had to play again, because they no longer carried on from the new play: ${names.join(', ')}.`
@@ -135,7 +136,7 @@ async function makeDialog(project: Project, opt: WalkDialogOptions, redoing?: Re
   let finished = false;
   let closeModal: ((v: undefined) => void) | undefined;
   const game = () => project.game();
-  const sceneName = (n: number) => game().scenes[n]?.desc.trim() || `Scene ${n}`;
+  const sceneName = (n: number) => fromCp437(game().scenes[n]?.desc ?? '').trim() || `Scene ${n}`;
   /** The scene's map, when it has one to play on. */
   const mapOf = (n: number) => {
     const m = game().scenes[n]?.files[1];

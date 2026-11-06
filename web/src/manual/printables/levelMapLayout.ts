@@ -3,6 +3,7 @@
 // hidden (levelSecrets.ts), the marks for where you arrive and the ways out, and how the maps
 // pack onto printed pages. No DOM, so it is tested on the real disks.
 import { BACKBL, parseBlocks, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { fromCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import { ADVTYPE, ENDTYPE, NOSCENE, STARTTYPE, type Game, type Point } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { MLEN, MWID, parseMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import type { Rect } from './worldMapLayout';
@@ -698,7 +699,7 @@ export function levelsOf(
     const { cells, hidden } = hideSecrets(map.blocks, blocks, new Set(secret[group.bbl] ?? []));
     const marks = levelMarks(game, group.scenes, hidden);
     const first = game.scenes[group.scenes[0]];
-    const name = group.scenes.length > 1 ? `${first.desc || 'Untitled'} and ${group.scenes.length - 1} more` : first.desc || 'Untitled';
+    const name = group.scenes.length > 1 ? `${fromCp437(first.desc) || 'Untitled'} and ${group.scenes.length - 1} more` : fromCp437(first.desc) || 'Untitled';
     const whole = usedArea(cells, marks);
     const key = `${group.map}|${group.bbl}`;
     const seen = views[key];

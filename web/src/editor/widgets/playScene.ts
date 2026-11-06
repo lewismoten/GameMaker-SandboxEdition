@@ -7,6 +7,7 @@
 // Close) ends the session and adds its heat to the map's heat map. Esc belongs to the game while
 // it plays (it leaves the level), so the dialog closes with its buttons.
 import './playScene.css';
+import { fromCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import { h } from '../core/ui';
 import type { Project } from '../core/project';
 import { GameFiles } from '../../project/files';
@@ -31,8 +32,8 @@ const secs = (ticks: number) => Math.round(ticks / TICKS_PER_SECOND);
 /** Plays `scene` (whose map is `map`) from its start until the author is done; resolves with what was kept. */
 export function playScene(project: Project, scene: number, map: string): Promise<PlayResult> {
   const game = project.game();
-  const name = game.scenes[scene]?.desc.trim() || `Scene ${scene}`;
-  const sceneName = (n: number) => (n === 1 ? 'the won scene' : game.scenes[n]?.desc.trim() || `scene ${n}`);
+  const name = fromCp437(game.scenes[scene]?.desc ?? '').trim() || `Scene ${scene}`;
+  const sceneName = (n: number) => (n === 1 ? 'the won scene' : fromCp437(game.scenes[n]?.desc ?? '').trim() || `scene ${n}`);
   const session = new PlaySession(game, scene, map);
   return new Promise((resolve) => {
     let player: { stop(): void } | undefined;

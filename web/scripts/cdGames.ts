@@ -29,10 +29,9 @@ import type { PrintablesFile } from '../src/manual/printables/types';
 import { blurbOf, dosText, storyFile } from '../src/export/gameAbout';
 import { gameShots } from './gameShots';
 import { builtHeroPath, heroOf } from '../src/gfx/levelPicture';
-import { fromCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import { checkGame, QUICK_CHECK_FILE, type Issue } from '../src/project/health';
 import { boxGame, type BoxGame } from '../src/desk/boxes/boxFacts';
-import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { parseGame, gameTitle as displayGameTitle } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 
 export interface CdCatalogEntry {
   id: string;
@@ -170,17 +169,12 @@ const GAME_INFO: Record<string, GameInfo> = {
   zoom: { title: 'Zoom the Super Bear', company: AJ, price: '$20' },
 };
 
-/** A NUL-ended DOS string as text: CP437 (byte 0xB3 is a box line, not Latin-1's superscript three), with the box-drawing frame some authors put around a game's name trimmed from both ends, as gameDisplayName does. */
-function cString(bytes: Uint8Array): string {
-  const end = bytes.indexOf(0);
-  const raw = Array.from(end < 0 ? bytes : bytes.subarray(0, end), (b) => String.fromCharCode(b)).join('');
-  return fromCp437(raw).replace(/^[\s\u2500-\u259f]+|[\s\u2500-\u259f]+$/g, '');
-}
-
 function gameTitle(gam: Uint8Array): string {
-  const isV3 = gam[0] === 0x47 && gam[1] === 0x4d; // "GM" header
-  // v3: 256 byte header + 6 byte grator header + scene0 { type 2, pos 4, scroll 16, links 1 } -> desc[20]
-  return isV3 ? cString(gam.subarray(285, 305)) : cString(gam.subarray(6, 21));
+  try {
+    return displayGameTitle(parseGame(gam));
+  } catch {
+    return ''; // A damaged menu keeps the catalog's directory-name fallback.
+  }
 }
 
 const CRC = (() => {

@@ -8,6 +8,7 @@
 import { ENDTYPE, NOSCENE, STARTTYPE, type Game, type Link, SCENEDESCLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import type { Graph } from '../../editor/editors/integrator/layoutCells';
 import type { WorldMapHints } from './types';
+import { fromCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 
 interface Grouping {
   /** Folded scene -> the place it's shown on. */
@@ -34,7 +35,9 @@ export function sceneRefs(game: Game, ref: number | string): number[] {
     return Array.from({ length: Math.abs(b - a) + 1 }, (_, k) => Math.min(a, b) + k);
   }
   const want = ref.trim().toLowerCase();
-  const hits = game.scenes.flatMap((s, i) => (s.gametype !== NOSCENE && s.desc.trim().toLowerCase() === want ? [i] : []));
+  const hits = game.scenes.flatMap((s, i) =>
+    s.gametype !== NOSCENE && [s.desc.trim().toLowerCase(), fromCp437(s.desc).trim().toLowerCase()].includes(want) ? [i] : [],
+  );
   return hits.length === 1 ? hits : [];
 }
 
@@ -137,7 +140,7 @@ export function placeLabels(game: Game, g: Grouping, place: number): string[] {
   if (own) return own;
   const byName = new Map<string, number[]>();
   for (const i of g.folded.get(place) ?? []) {
-    const name = sceneLabel(game.scenes[i].desc);
+    const name = sceneLabel(fromCp437(game.scenes[i].desc));
     byName.set(name, [...(byName.get(name) ?? []), i]);
   }
   return [...byName].map(([name, ids]) => `${ids.join(', ')} ${name}`);

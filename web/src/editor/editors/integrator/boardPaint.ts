@@ -2,6 +2,7 @@
 // group on that board, arrows between them, and labeled stubs ("→ Act Two: Green Room") for
 // links that lead to or come from another board. Clicking a stub switches to that board.
 import { NOSCENE } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { fromCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import type { Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { drawCard, drawEdges, rectAt, roundRect, usedScenes, type BoardView, type Edge, type Rect } from './board';
 import { layNodes, type BoardDef, type BoardNode, type BoardsData } from './boardLayout';
@@ -35,7 +36,7 @@ export function buildModel(game: Game, data: BoardsData, activeId: string, measu
   const used = usedScenes(game);
   const { nodes: all, nodeOf } = layNodes(data, used, (i) => game.scenes[i].pos);
   const nodes = all.filter((n) => n.board === active.id);
-  const nameOf = (n: BoardNode) => (n.group ? `${n.group.name} (${n.scenes.length})` : game.scenes[n.scenes[0]].desc || 'scene');
+  const nameOf = (n: BoardNode) => (n.group ? `${n.group.name} (${n.scenes.length})` : fromCp437(game.scenes[n.scenes[0]].desc) || 'scene');
   const boardName = (id: string) => data.boards.find((b) => b.id === id)?.name ?? id;
   const wanted = new Map<string, { node: BoardNode; other: BoardNode; scene: number; incoming: boolean }>();
   for (const i of used) {

@@ -20,6 +20,14 @@ never exported).
 `importScan.ts` and `importPlayer.ts` use the portable `gameFiles.ts` container directly;
 archive consumers can reuse them without loading the site's catalog or UI.
 
+DOS scene descriptions remain byte strings. Use the engine's `gameTitle` for an externally
+displayed game name (CP437 decoding and menu-frame trimming), and `fromCp437` for other DOS
+labels without stripping their box drawing. Do not decode Unicode companion fields or sender
+names again. `importedTitle.ts` repairs only a stored name exactly matching the main `.GAM`'s
+old raw or decoded-but-framed description. Listings and loads persist that name-only repair
+in the read transaction; chosen names, timestamps, companion fields, checkpoints, DOS bytes
+and damaged backup copies stay unchanged. An already repaired name needs no further write.
+
 - The secret games (`secretGames.ts`; `catalogWatch.ts` keeps the listings live when one is
   revealed or hidden).
 - The Starters, small games that each show one idea (`starter.ts`: about.json `"series": "starter"`, not

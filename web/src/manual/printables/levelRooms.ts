@@ -6,6 +6,7 @@
 // be drawn once (levelRoomHints.ts), and a room (or a whole map) the hero never walks around
 // in, because every scene there starts him right on its way out, is left out.
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { fromCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import { NOSCENE, type Game, type Point } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import type { Rect } from './worldMapLayout';
@@ -221,7 +222,7 @@ export function cutRooms(game: Game, scenes: number[], rooms: Rooms, hint?: Room
     if (!hint && (own === undefined || shown.some((o, j) => j !== k && overlap(o, rect)))) return undefined;
     out.push({
       rect,
-      name: h?.name ?? ((own !== undefined && game.scenes[own].desc) || `Room ${k + 1}`),
+      name: h?.name ?? ((own !== undefined && fromCp437(game.scenes[own].desc)) || `Room ${k + 1}`),
       short: h?.short,
       scenes: all,
       own: h ? undefined : own,
@@ -257,7 +258,7 @@ export function cutRooms(game: Game, scenes: number[], rooms: Rooms, hint?: Room
 export function numberRooms(cuts: RoomCut[], game: Game, numbered: RoomsHint['numbered']): void {
   if (!numbered) return;
   const owned = cuts.filter((c) => c.own !== undefined).sort((a, b) => a.own! - b.own!);
-  owned.forEach((c, i) => (c.name = `${numbered.label} ${i + 1}: ${numbered.names?.[i] ?? game.scenes[c.own!].desc}`));
+  owned.forEach((c, i) => (c.name = `${numbered.label} ${i + 1}: ${numbered.names?.[i] ?? fromCp437(game.scenes[c.own!].desc)}`));
 }
 
 /** Moves a mark from a copy onto the room drawn for it, when the block under it is the same there. */

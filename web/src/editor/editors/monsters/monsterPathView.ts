@@ -2,6 +2,7 @@
 // can use (turns and mirrors, as orient in BLOCC.C), and the maps it can draw the path on:
 // the scenes that use this monster set, any map, or a plain grid.
 import type { Project } from '../../core/project';
+import { fromCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import { BLEN, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import type { Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import type { Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
@@ -48,7 +49,7 @@ export function mapChoices(project: Project, monFile: string): MapChoice[] {
   const n = normalize(monFile);
   game.scenes.forEach((s, i) => {
     if (normalize(s.files[3] || '') !== n || !s.files[1] || !project.files.has(s.files[1])) return;
-    out.push({ label: `${s.desc || `Scene ${i + 1}`} — ${s.files[1].toUpperCase()}`, map: s.files[1], bbl: s.files[2], pal: s.files[0] });
+    out.push({ label: `${fromCp437(s.desc) || `Scene ${i + 1}`} — ${s.files[1].toUpperCase()}`, map: s.files[1], bbl: s.files[2], pal: s.files[0] });
   });
   if (!out.length) {
     const bbl = project.files.byExtension('bbl')[0];

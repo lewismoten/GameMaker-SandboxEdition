@@ -28,6 +28,7 @@ Live sound control, a hook for life losses, and fixes to scrolling and picture d
 
 ### Fixed
 
+- CP437 display decoding recovers the Windows-1252 aliases produced by the binary reader; `cp437Text` decodes DOS text files while retaining their line endings and end markers for callers.
 - Slow-PC presets keep FM music advancing during disk reads while preserving the full gameplay freeze and delayed digital-sound start. Explicit custom timer holds and interrupt/FM costs are unchanged.
 - A too-short or oversized-header FLI, and a CMF cut short, give a clear error (or play) instead of a RangeError or a huge allocation.
 

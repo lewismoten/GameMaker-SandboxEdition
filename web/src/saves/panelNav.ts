@@ -1,6 +1,7 @@
 // The Saves & scores panel's list on the left: the ten slots, the high scores, the backups and the
 // game's tin heart, each with a line on what it holds and a dot for unsaved changes.
 import { h, clear } from '../editor/core/ui';
+import { fromCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import { HIGH_SCORES } from '../project/saveData';
 import { FOUND_FILE, heartOf, parseFound } from '../tinHearts/tinHearts';
 import type { Panel, View } from './panelState';
@@ -38,7 +39,12 @@ export function renderNav(p: Panel, nav: HTMLElement): void {
     ...saves.slots.map((s) => {
       const save = p.work.get(s.slot)?.save ?? s.save;
       const sub = s.error ? 'Damaged' : save ? `${fmt(save.world.ci.score)} pts · ${p.labels?.sceneName(save.doscene) ?? `level ${save.doscene}`}` : 'Empty';
-      return item(s.slot, `${s.slot + 1}. ${(p.work.get(s.slot)?.name ?? s.name) || (save ? 'Unnamed' : '—')}`, sub, p.dirtySlot(s.slot) ? '●' : undefined);
+      return item(
+        s.slot,
+        `${s.slot + 1}. ${fromCp437(p.work.get(s.slot)?.name ?? s.name) || (save ? 'Unnamed' : '—')}`,
+        sub,
+        p.dirtySlot(s.slot) ? '●' : undefined,
+      );
     }),
     h('h3', { class: 'sv-nav-head' }, 'More'),
     item('scores', 'High scores', `${saves.highScores.entries.filter((e) => e.score !== 0).length} of ${HIGH_SCORES}`, p.dirtyScores() ? '●' : undefined),

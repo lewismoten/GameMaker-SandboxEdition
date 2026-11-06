@@ -1,6 +1,7 @@
 // "What uses this?": which scenes use a file, where a block appears (maps, monsters, the hero,
 // other blocks), and which blocks paint with a palette color. Read only: nothing is changed.
 import { normalize } from '../../project/files';
+import { fromCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import { parseBlocks, BLOCK_COUNTS, BLOCK_SIZE, MONBL, type BlockKind } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { parseMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { parseMonsters } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
@@ -28,7 +29,7 @@ interface Use {
 /** A scene's name as the integrator shows it. */
 export function sceneName(project: Project, i: number): string {
   const s = project.game().scenes[i];
-  return s?.desc?.trim() || (i === 0 ? 'Start scene' : i === 1 ? 'End scene' : `Scene ${i}`);
+  return fromCp437(s?.desc ?? '').trim() || (i === 0 ? 'Start scene' : i === 1 ? 'End scene' : `Scene ${i}`);
 }
 
 /** The slot's name ("Map", "Title song"…) for a scene of its kind. */
