@@ -8,6 +8,12 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
 const here = new URL('../../hardware/pocket-player/', import.meta.url).pathname;
+// Card drawing uses the same bounded bands and palette-0 clearing as the firmware.
+for (const flags of [[], ['-DPOCKET_CYD28']]) {
+  const cardExe = join(mkdtempSync(join(tmpdir(), 'pocket-carddraw-')), 'carddrawtest');
+  execFileSync('c++', ['-std=c++17', '-O1', '-Wall', ...flags, '-I', here + 'src', here + 'host/carddrawtest.cpp', '-o', cardExe], { stdio: 'inherit' });
+  execFileSync(cardExe, { stdio: 'inherit' });
+}
 const exe = join(mkdtempSync(join(tmpdir(), 'pocket-controls-')), 'controlstest');
 execFileSync('c++', ['-std=c++17', '-O1', '-Wall', '-I', here + 'src', here + 'host/controlstest.cpp', '-o', exe], { stdio: 'inherit' });
 const r = spawnSync(exe, { stdio: 'inherit' });

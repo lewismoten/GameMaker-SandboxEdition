@@ -15,6 +15,7 @@
 #include "banner.h"
 #include "btnicon.h"
 #include "gmcards.h"
+#include "carddraw.h"
 #include "fwid.h"
 #include "gmcfg.h"
 #include "screen.h"
@@ -1152,14 +1153,7 @@ static void setPalette6(const uint8_t* p768) {
 }
 // A 320 x 200 picture of palette indices over the whole view, through `pal`.
 static void pushPicture(const uint8_t* px) {
-  for (int Ys = 0; Ys < VIEW_H; Ys += BAND) {
-    for (int r = 0; r < BAND; r++) {
-      const uint8_t* src = px + scr::down(Ys + r) * gm::PIC_W;
-      uint16_t* o = band + r * VIEW_W;
-      for (int X = 0; X < VIEW_W; X++) *o++ = pal[src[scr::down(X)]];
-    }
-    tft.pushImage(0, Ys, VIEW_W, BAND, band);
-  }
+  carddraw::pushPicture(tft, px, pal, band, BAND);
 }
 // FadeTo from one palette (6 bit values) to another, each step drawn as the picture `px`, or as the playing
 // level when px is null. The clock decides the step, as the engine's does, so a slow panel shows fewer steps.
@@ -1219,7 +1213,7 @@ static void playFli(const gm::Card& c) {
   uint8_t* buf = (uint8_t*)calloc(gm::PIC_BYTES, 1);  // 768 palette bytes, then the canvas
   if (!table || !buf) { free(table); free(buf); cardsFailed++; return; }
   setPalette6(buf);
-  tft.fillScreen(C_BLACK);
+  carddraw::clear(tft, pal[0]);
   uint32_t due = millis();
   bool tapped = false;
   int tx, ty;
@@ -1250,6 +1244,7 @@ static void playFli(const gm::Card& c) {
 static void showCards(const char* where) {
   bool cardWasUp = sdUp, card = curFs == &SD;
   if (card) mountSD();  // held while the cards show (the level's buffers are already freed)
+  carddraw::clear(tft, pal[0]);
   gm::Card cards[10];
   int n = gm::cardsOfFile(cfgLines, assets.cfgName, where, cards, 10);
   uint8_t* pic = nullptr;
@@ -1260,6 +1255,7 @@ static void showCards(const char* where) {
   for (int i = 0; i < n; i++) {
     const gm::Card& c = cards[i];
     if (c.kind == 'g') {
+      carddraw::clear(tft, pal[0]);
       free(pic);
       pic = gm::loadPicture(assets, readPak, c.file);
       dirty = false;
@@ -1283,6 +1279,7 @@ static void showCards(const char* where) {
         dirty = true;
         gm::drawTextPage(pic + 768, fontData, t, tn, pg, c.color, c.more);
         setPalette6(pic);
+        carddraw::clear(tft, pal[0]);
         pushPicture(pic + 768);
         cardsShown++;
         waitTap(c.pause);
@@ -1298,13 +1295,13 @@ static void fadeLevelOut() {
   uint8_t black[768];
   memset(black, 0, sizeof black);
   fadePalette(assets.pal, black, nullptr);
-  tft.fillScreen(C_BLACK);
+  carddraw::clear(tft, pal[0]);
 }
 // The level just entered fades in from black, then the controls and strip come on.
 static void fadeLevelIn() {
   uint8_t black[768];
   memset(black, 0, sizeof black);
-  tft.fillScreen(C_BLACK);
+  carddraw::clear(tft, 0);
   fadePalette(black, assets.pal, nullptr);
   assets.palChanged = false;
   setPalette6(assets.pal);
