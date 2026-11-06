@@ -16,7 +16,7 @@ import { licenseText } from '../license';
 import { STARTER_STING, starterStingFli } from './sting';
 import { buildHeroBlocks, heroPicture } from './hero';
 import { buildHero } from './heroChar';
-import { buildMonsterBlocks, buildMonsters } from './monsters';
+import { graduationMonsters } from './graduationConfetti';
 import { cardPicture, endPicture, gif, menuPicture, paper, scoresPicture, slotsPicture, titlePicture } from './screens';
 import { skyOf } from './palette';
 import { SILVER_KEYS } from './locks';
@@ -36,7 +36,7 @@ export function buildGraduation(dir: string, cfg: Graduation, built: ReturnType<
   const { STORY, WON, CREDITS } = { STORY: cfg.text.story, WON: cfg.text.won, CREDITS: cfg.text.credits };
   const title = cfg.title ?? TITLE;
   const heroBlocks = buildHeroBlocks(pal);
-  const monsterBlocks = buildMonsterBlocks(pal);
+  const { monsterBlocks, monsters } = graduationMonsters(pal, book);
   const hero = heroPicture(heroBlocks, 'stand.top', 'stand');
   const cheer = heroPicture(heroBlocks, 'cheer.top', 'jump');
   // the exit door as a picture to stand in the scenes: its sky made clear
@@ -46,7 +46,7 @@ export function buildGraduation(dir: string, cfg: Graduation, built: ReturnType<
   disk.put('grad.pal', serializePalette(pal.pal));
   for (const l of levels) disk.put(`${l.bbl}.bbl`, serializeBlocks(finishBlocks({ book: l.book, timed: l.timed })));
   disk.put('grad.mbl', serializeBlocks(monsterBlocks.finish()));
-  disk.put('grad.mon', serializeMonsters(buildMonsters(monsterBlocks)));
+  disk.put('grad.mon', serializeMonsters(monsters));
   disk.put('hero.cbl', serializeBlocks(heroBlocks.finish()));
   const character = buildHero(heroBlocks);
   // the arrival's counting gates use these counters, which (like the key counter) start at 1: a count of none

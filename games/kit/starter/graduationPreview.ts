@@ -10,7 +10,7 @@ import { blockSheet, writePng } from '@lewismoten/gamemaker-sandbox-tools/kit/pn
 import { renderRegion } from '@lewismoten/gamemaker-sandbox-tools/kit/levelPicture';
 import { ORIGIN } from './map';
 import { buildHeroBlocks, heroPicture } from './hero';
-import { buildMonsterBlocks, buildMonsters } from './monsters';
+import { graduationMonsters } from './graduationConfetti';
 import type { buildLevels } from './graduationLevel';
 
 /** Writes the previews of the game in folder `dir` (a file URL ending in a slash) to argv[2]. */
@@ -39,7 +39,7 @@ export function graduationPreview(id: string, dir: URL, built: ReturnType<typeof
   poses.forEach(([t, b], i) => sheet.blit(heroPicture(hero, t, b), 4 + i * 24, 2, 255));
   writePng(join(out, 'hero.png'), sheet, pal.pal, 5);
 
-  const mb = buildMonsterBlocks(pal);
+  const { monsterBlocks: mb, monsters } = graduationMonsters(pal, book);
   const mbl = mb.finish();
   writePng(join(out, 'monsters.png'), blockSheet(mbl.slice(0, mb.index.size), 6, sky), pal.pal, 6);
 
@@ -47,7 +47,7 @@ export function graduationPreview(id: string, dir: URL, built: ReturnType<typeof
     const m = l.map.done();
     const blocks = l.book.finish();
     if (l.bbl !== 'grad') writePng(join(out, `${l.bbl}-blocks.png`), blockSheet(blocks.slice(0, l.book.index.size), 12, 0), pal.pal, 3);
-    const pic = renderRegion(m, blocks, mbl, buildMonsters(mb), ORIGIN, ORIGIN, l.map.width, l.map.height);
+    const pic = renderRegion(m, blocks, mbl, monsters, ORIGIN, ORIGIN, l.map.width, l.map.height);
     writePng(join(out, `${l.file}.png`), pic, pal.pal, 1);
   }
   const disk = new URL('disk/', dir);

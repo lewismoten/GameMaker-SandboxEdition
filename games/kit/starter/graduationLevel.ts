@@ -22,6 +22,8 @@ export const W = 48;
 export const H = 13;
 /** The floor's top row. */
 export const FLOOR = 10;
+/** The standing camera starts at row 4: keep a clear row above the audience's heads. */
+export const BALCONY_RAIL = 6;
 /** The lectern's column: touching it is the end of the walk. */
 export const LECTERN = 40;
 export const STAGE_FROM = 34;
@@ -122,10 +124,10 @@ function aisle(
   // the ceiling's valance and bunting
   for (let x = 1; x < W - 1; x++) m.set(x, 0, 'valance').set(x, 1, x % 2 ? 'bunting0' : 'bunting1');
   // the balcony: a rail with a front, and the helpers leaning on it
-  for (let x = 2; x < STAGE_FROM - 1; x++) m.set(x, 5, 'rail').set(x, 6, 'riser');
-  hall.helpers.forEach((name, i) => m.set(4 + i * 4, 4, name));
+  for (let x = 2; x < STAGE_FROM - 1; x++) m.set(x, BALCONY_RAIL, 'rail').set(x, BALCONY_RAIL + 1, 'riser');
+  hall.helpers.forEach((name, i) => m.set(4 + i * 4, BALCONY_RAIL - 1, name));
   // the Cast's guests lean on the rail in every gap between helpers, and the one before the first (a tall one reaches up a row)
-  hall.cameos.slice(0, hall.helpers.length).forEach((parts, i) => parts.forEach((name, k) => m.set(2 + i * 4, 5 - parts.length + k, name)));
+  hall.cameos.slice(0, hall.helpers.length).forEach((parts, i) => parts.forEach((name, k) => m.set(2 + i * 4, BALCONY_RAIL - parts.length + k, name)));
   // the stage's own wall pieces, hung high between the ceiling and the helpers' heads
   const order = theme.decorOrder ?? [];
   if (order.length) for (let x = 3, i = 0; x < STAGE_FROM - 1; x += theme.decorEvery ?? 5, i++) m.set(x, 2, `decor.${order[i % order.length]}`);
