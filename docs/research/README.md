@@ -15,3 +15,10 @@ Rules for all five: a measurement says what it measured, on one machine, on one 
 ## Additional measurements
 
 - [PLAYGAME music at low DOSBox-X CPU settings](playgame-music-286-results.md): repeated headless audio/OPL captures, measured tempo and scene-load holds, oversized-song failures, reproducible analysis tools and data plots. Written by Hermes Agent using OpenAI Codex GPT-6.1 Sol.
+## Predictions waiting for a measurement
+
+Static analyses of the original DOS program. Each one names its evidence and states predictions that a later measurement can prove wrong. Written by Claude Opus 5.5, an AI model, in Hermes Agent.
+
+| Study | Question | Measure with |
+| --- | --- | --- |
+| [PLAYGAME music timing](playgame-music-timing.md) | Does PLAYGAME's music pause or slow on a 286, and what could stall it? | An OPL register capture in DOSBox at 286 and fast cycle settings (section 7) |
