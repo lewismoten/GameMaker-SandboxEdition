@@ -1,5 +1,7 @@
 # games/
 
+Rain on the Path (`rain`) is a Weather Starter. From `web/`, build with `npx vite-node ../games/rain/build.ts`; `tools/check.ts` checks the real engine's rain, splash and ripple frames and plays all three scenes without a lost life. `tools/gendemo.ts` re-records every lesson (then rebuild); `tools/demoCheck.ts` replays it; `tools/walkthrough.ts` records the full walkthrough; `tools/shots.ts <dir>` saves actual replay frames for visual review. Its manual links to Day and Night, Twinkle, Twinkle, Waves on the Shore and Under the Surface rather than repeating their full lessons.
+
 The original games made for Game-Maker: Sandbox Edition. Each one is built entirely in code:
 a `build.ts` draws every block, lays out every map, composes the music and writes each file
 through the shared engine formats and `@lewismoten/gamemaker-sandbox-tools`, so the result is a real
