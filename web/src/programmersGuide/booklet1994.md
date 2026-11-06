@@ -41,12 +41,16 @@ says "NOT ENOUGH MEMORY", remove resident programs before you shrink your game.
 
 The screen is **320 x 200**, 256 colors, because that is the largest VGA mode that gives each pixel its own byte and lets the program draw directly to memory.
 
-A block is **20 x 20** pixels. 320 / 20 is 16 and 200 / 20 is 10, so the playing screen is **16 blocks across and 10 down**, with no pixels left over, and no status bar. Your hero is two blocks tall (40 pixels).
+A block is **20 x 20** pixels. 320 / 20 is 16 and 200 / 20 is 10, so the screen holds **16 blocks across and 10 down**, and there is no status bar. Your hero is two blocks tall (40 pixels).
+
+While you play, PLAYGAME shows only **312 x 196** of it. The last 8 pixels on the right and the last 4 rows at the bottom are left as the border color, color 0 of the palette, so the edge where the screen scrolls in new pictures stays out of sight. A playing screen shows a little under 16 x 10 blocks. Pictures and menus use the full 320 x 200.
 [diagram: screen]
+
+Keep anything important, such as a sign, a sprite's face or a score, out of the right-most 8 pixels and the bottom 4. Design full-screen pictures for 320 x 200.
 
 Twenty pixels is the smallest block that still draws a face you can recognize; 16 would leave a fraction of a row at the bottom.
 
-**Scrolling.** The screen scrolls by moving the start of the picture in video memory, 4 pixels at a time, and pans the last 0 to 3 pixels with a VGA register. Only the new strip at the edge is redrawn.
+**Scrolling.** The screen scrolls by moving the start of the picture in video memory, 4 pixels at a time, and pans the last 0 to 3 pixels with a VGA register. Only the new strip at the edge is redrawn, and the hidden border strip keeps that drawing out of sight.
 That is why scrolling is smooth on a 286 and why scroll speeds come in steps of 4.
 
 [diagram: scrolling]
@@ -194,8 +198,9 @@ If a file is a different size, it is not a Game-Maker file of that kind. A `.CHR
 | Thing                            | Limit                            |
 | -------------------------------- | -------------------------------- |
 | Screen                           | 320 x 200, 256 colors            |
+| Shown while playing              | 312 x 196 pixels                 |
 | Block                            | 20 x 20 pixels                   |
-| Playing screen                   | 16 x 10 blocks                   |
+| Playing screen                   | a little under 16 x 10 blocks    |
 | Background, monster, hero blocks | 150, 100, 50                     |
 | Map                              | 100 x 100 blocks, wraps          |
 | Monsters placed / alive          | 200                              |

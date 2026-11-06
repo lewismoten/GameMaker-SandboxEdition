@@ -124,42 +124,58 @@ function memory(): HTMLElement {
 }
 
 function screen(): HTMLElement {
-  const s = 1;
-  const ox = 34;
+  // To scale, one unit per pixel. PLAYGAME.C CropScreen hides the right 8 pixels and bottom 4 rows while you play.
+  const ox = 50;
   const oy = 30;
-  const b = 20 * s;
+  const b = 20;
   const lines: string[] = [];
   for (let c = 1; c < 16; c++) lines.push(`<line x1="${ox + c * b}" y1="${oy}" x2="${ox + c * b}" y2="${oy + 10 * b}"/>`);
   for (let r = 1; r < 10; r++) lines.push(`<line x1="${ox}" y1="${oy + r * b}" x2="${ox + 16 * b}" y2="${oy + r * b}"/>`);
   const W = 16 * b;
   const H = 10 * b;
+  const SW = 312;
+  const SH = 196;
   const one = { c: 11, r: 2 };
   const hero = { c: 4, r: 7 };
+  const hy = oy + 9 * b + 4; // the hidden strip's callout, below the hero's
+  const hidden = `M${ox + SW} ${oy} H${ox + W} V${oy + H} H${ox} V${oy + SH} H${ox + SW} Z`;
   const markup = [
+    `<defs><pattern id="tr-hidden" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="4" height="4" fill="#d8d3c6"/><line x1="0" y1="0" x2="0" y2="4" stroke="${INK}" stroke-width="1.4"/></pattern></defs>`,
     `<rect x="${ox + hero.c * b}" y="${oy + hero.r * b}" width="${b}" height="${2 * b}" fill="${SPOT}" fill-opacity=".35"/>`,
     `<rect x="${ox + one.c * b}" y="${oy + one.r * b}" width="${b}" height="${b}" fill="${SPOT}" fill-opacity=".35"/>`,
     `<g stroke="${INK}" stroke-width=".5">${lines.join('')}</g>`,
+    `<path d="${hidden}" fill="url(#tr-hidden)" stroke="${INK}" stroke-width=".6"/>`,
     `<rect x="${ox}" y="${oy}" width="${W}" height="${H}" fill="none" stroke="${INK}" stroke-width="1.5"/>`,
-    // dimension lines
+    // dimension lines: the whole screen above and outside, what is shown while playing below and inside
     `<path d="M${ox} ${oy - 12} H${ox + W} M${ox} ${oy - 16} V${oy - 8} M${ox + W} ${oy - 16} V${oy - 8}" stroke="${INK}" fill="none" stroke-width=".8"/>`,
     text(ox + W / 2, oy - 16, '320 pixels = 16 blocks', `text-anchor="middle" font-weight="700"`),
-    `<path d="M${ox - 12} ${oy} V${oy + H} M${ox - 16} ${oy} H${ox - 8} M${ox - 16} ${oy + H} H${ox - 8}" stroke="${INK}" fill="none" stroke-width=".8"/>`,
-    text(ox - 16, oy + H / 2, '200 pixels = 10 blocks', `text-anchor="middle" font-weight="700" transform="rotate(-90 ${ox - 16} ${oy + H / 2})"`),
+    `<path d="M${ox - 30} ${oy} V${oy + H} M${ox - 34} ${oy} H${ox - 26} M${ox - 34} ${oy + H} H${ox - 26}" stroke="${INK}" fill="none" stroke-width=".8"/>`,
+    text(ox - 34, oy + H / 2, '200 pixels = 10 blocks', `text-anchor="middle" font-weight="700" transform="rotate(-90 ${ox - 34} ${oy + H / 2})"`),
+    `<path d="M${ox - 10} ${oy} V${oy + SH} M${ox - 14} ${oy} H${ox - 6} M${ox - 14} ${oy + SH} H${ox - 6}" stroke="${INK}" fill="none" stroke-width=".8"/>`,
+    text(ox - 13, oy + SH / 2, '196 shown', `text-anchor="middle" transform="rotate(-90 ${ox - 13} ${oy + SH / 2})"`),
+    `<path d="M${ox} ${oy + H + 10} H${ox + SW} M${ox} ${oy + H + 6} V${oy + H + 14} M${ox + SW} ${oy + H + 6} V${oy + H + 14}" stroke="${INK}" fill="none" stroke-width=".8"/>`,
+    text(ox + SW / 2, oy + H + 23, '312 pixels shown while playing', 'text-anchor="middle"'),
     // callouts
     `<path d="M${ox + (one.c + 1) * b} ${oy + (one.r + 0.5) * b} H${ox + W + 10}" stroke="${INK}" stroke-width="1.4"/>`,
     text(ox + W + 13, oy + (one.r + 0.5) * b - 2, 'One block:', 'font-weight="700"'),
     text(ox + W + 13, oy + (one.r + 0.5) * b + 10, '20 x 20'),
     text(ox + W + 13, oy + (one.r + 0.5) * b + 21, 'pixels'),
-    `<path d="M${ox + (hero.c + 1) * b} ${oy + (hero.r + 1) * b} H${ox + W + 10}" stroke="${INK}" stroke-width="1.4"/>`,
-    text(ox + W + 13, oy + (hero.r + 1) * b - 2, 'The hero:', 'font-weight="700"'),
-    text(ox + W + 13, oy + (hero.r + 1) * b + 10, 'two blocks,'),
-    text(ox + W + 13, oy + (hero.r + 1) * b + 21, '40 pixels tall'),
+    `<path d="M${ox + SW + 4} ${hy - 4} H${ox + W + 10}" stroke="${INK}" stroke-width="1.4"/>`,
+    `<path d="M${ox + SW - 24} ${oy + SH + 2} L${ox + W + 10} ${hy + 2}" stroke="${INK}" stroke-width="1.4"/>`,
+    text(ox + W + 13, hy - 2, 'Not shown', 'font-weight="700"'),
+    text(ox + W + 13, hy + 10, 'while playing:', 'font-weight="700"'),
+    text(ox + W + 13, hy + 22, 'border,'),
+    text(ox + W + 13, hy + 34, 'color 0'),
+    `<path d="M${ox + (hero.c + 1) * b} ${oy + hero.r * b} H${ox + W + 10}" stroke="${INK}" stroke-width="1.4"/>`,
+    text(ox + W + 13, oy + hero.r * b - 2, 'The hero:', 'font-weight="700"'),
+    text(ox + W + 13, oy + hero.r * b + 10, 'two blocks,'),
+    text(ox + W + 13, oy + hero.r * b + 21, '40 pixels tall'),
   ].join('');
   return figure(
-    `0 0 440 ${oy + H + 8}`,
+    `0 0 450 ${oy + H + 28}`,
     markup,
-    'The 320 by 200 screen as a grid of 16 by 10 blocks of 20 by 20 pixels, with one block and the two-block hero marked.',
-    'Figure 2. The playing screen is 16 blocks across and 10 down, with nothing left over.',
+    'The 320 by 200 screen as a grid of 16 by 10 blocks of 20 by 20 pixels, with one block and the two-block hero marked. A strip 8 pixels wide at the right and 4 pixels tall at the bottom is hatched: while playing it is not shown and takes the border color, color 0, so 312 by 196 pixels show.',
+    'Figure 2. The screen is 16 blocks across and 10 down; while you play, the hatched edges are border and 312 x 196 pixels show.',
   );
 }
 
@@ -219,12 +235,13 @@ function scrolling(): HTMLElement {
     text(x + step + 5, 100 + H + 12, 'The start moves 4 pixels; the VGA pans the last 0 to 3.'),
     `<path d="M${x + step + W - step / 2} ${100 + H / 2} L${x + step + W + 28} ${100 + H / 2 - 14}" stroke="${INK}" stroke-width=".8"/>`,
     text(x + step + W + 31, 100 + H / 2 - 18, 'Only this new', 'font-weight="700"'),
-    text(x + step + W + 31, 100 + H / 2 - 6, 'strip is drawn'),
+    text(x + step + W + 31, 100 + H / 2 - 6, 'strip is drawn,'),
+    text(x + step + W + 31, 100 + H / 2 + 6, 'out of sight'),
   ].join('');
   return figure(
     `0 0 440 ${100 + H + 18}`,
     markup,
-    'The screen as a window on a wider picture in video memory; one step later the window has moved 4 pixels and only the new strip at its edge is drawn.',
+    'The screen as a window on a wider picture in video memory; one step later the window has moved 4 pixels and only the new strip at its edge is drawn, in the hidden border where it is out of sight.',
     'Figure 3. How the screen scrolls (the step is drawn wider than it is).',
   );
 }
