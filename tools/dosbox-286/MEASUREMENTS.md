@@ -13,7 +13,10 @@ copy, or full WAV is bundled with this measurement code.
 ```sh
 # Set DOSBOX_X and LD_LIBRARY_PATH as described in README.md first.
 # A new directory OUTSIDE this checkout; four concurrent emulators at most.
-python3 tools/dosbox-286/measure_scenarios.py /path/to/new-matrix --jobs 4
+python3 tools/dosbox-286/measure_scenarios.py /path/to/new-matrix \
+  --scenarios menu gif sand wood loop --jobs 4
+python3 tools/dosbox-286/measure_scenarios.py /path/to/controls \
+  --scenarios stress toggle --jobs 2
 # Supplemental lower-cycle menu checks (not calibrated hardware equivalents).
 python3 tools/dosbox-286/measure_scenarios.py /path/to/lower-matrix \
   --scenarios menu --cycles 563 750 1510 --jobs 3
@@ -25,19 +28,23 @@ python3 tools/dosbox-286/measure_audio.py /path/to/new-matrix/menu-1000-1 \
 ```
 
 `measure_scenarios.py` makes private copies of Donut. Only the copied `.gam`
-scene graph changes: title/menu animation and demo are disabled, `gif` restores
+scene graph changes, except `stress`, which also raises the copied character's
+hit-point meter to 32767 to keep monster damage from ending the comparison.
+Title/menu animation and demo are disabled, `gif` restores
 an original GIF in the menu slot, `wood` starts in Wood Castle, and `loop`
 places 20 self-links around the Sand Castle spawn. Engine and song bytes are
 unchanged. The original game remains intact. These are **controlled test graphs**,
 not claims to have completed the original levels.
 
-| Capture | Seconds, including startup | Input schedule (emulated time after ADDKEY) |
-| --- | ---: | --- |
-| `menu` | 150 | None; stationary menu with `gentle.cmf` |
-| `gif` | 150 | None; same music starts before the original menu GIF decodes |
-| `sand` | 270 | Enter at 90 s; right and Space held 165–225 s; F3 at 245 and 250 s |
-| `wood` | 210 | Enter at 90 s; wait in Wood Castle |
-| `loop` | 1400 | Enter at 90 s; repeated real self-linked scene loads |
+| Capture  | Seconds, including startup | Input schedule (emulated time after ADDKEY)                             |
+| -------- | -------------------------: | ----------------------------------------------------------------------- |
+| `menu`   |                        150 | None; stationary menu with `gentle.cmf`                                 |
+| `gif`    |                        150 | None; same music starts before the original menu GIF decodes            |
+| `sand`   |                        270 | Enter at 90 s; right and Space held 165–225 s; F3 at 245 and 250 s      |
+| `wood`   |                        210 | Enter at 90 s; wait in Wood Castle                                      |
+| `loop`   |                       1400 | Enter at 90 s; repeated real self-linked scene loads                    |
+| `stress` |                        240 | Protected-health Sand Castle; Enter at 90 s, right/Space held 165–225 s |
+| `toggle` |                        210 | Enter at 90 s; F3 at 170 and 175 s, each held 250 ms                    |
 
 ADDKEY's `lN` changes release duration; it does **not** advance the delay clock.
 Each key also advances that clock by a few milliseconds. The exact sequence is
@@ -70,11 +77,35 @@ DRO times begin at its first FM key-on; WAV times begin at capture start. Do not
 subtract one from the other without alignment. The decoder implements the
 published DOSBox-X v2026.01.02 `RawHeader`/`Capture` file structure in
 `src/hardware/adlib.cpp`. It rejects unsupported, truncated, or inconsistent
-DROs. DOSBox-X filters unchanged register writes, so the strict descending nine
-B-register-zero stop signature is a conservative detector, not a complete trace
-of every FM-library call. The WAV hash must match the successful harness record
-before analysis. The capture matrix records every child exit status and fails if
-any capture fails.
+DROs by default. `--allow-rollover` additionally accepts the exact DOSBox-X
+writer behavior when a changed-register write arrives after more than 30 s:
+that delay is included in the old header but not encoded in its command stream,
+and a new DRO can start at the next key-on. The unencoded interval is reported
+separately; files are never rewritten or stitched into a falsely exact timeline.
+Use `--dro-segment N` for a split capture's local time coordinate. The WAV hash
+must match the successful harness record before analysis. The capture matrix
+records every child exit status and fails if any capture fails.
+
+`--score original.cmf` optionally compares nearest MIDI pitches decoded from OPL
+against source CMF ticks at 8191/1193182 seconds per tick. This walks the original
+`SBMUSIC.C` event rules; it is not a voice-allocator/cycle simulator.
+
+Collect all successful status records and retain failures explicitly:
+
+```sh
+python3 tools/dosbox-286/summarize_measurements.py \
+  /path/to/new-matrix /path/to/controls /path/to/lower-matrix > results.json
+```
+
+The collector hashes WAV/DRO bytes, emits timestamped PCM gaps and OPL stops,
+fits quiet/motion/post-toggle passages separately, counts completed scene loops,
+and reports censored no-write tails. It does not call sustaining FM tones
+silence. `--partial` is for diagnostics only, not final completion evidence.
+Stop detection accepts at least four descending zero B-register writes ending
+at B0 within 20 ms: the library writes nine, but DOSBox-X omits already-zero
+values. Stops involving fewer than four changing registers can be missed.
+Early key-ons before an instrument reload are race **candidates**, not proof
+that a particular FM voice audibly sustained through the whole gap.
 
 Code and measurement text: Hermes Agent / OpenAI Codex GPT-6.1 Sol, directed by
 Lewis Moten. NumPy (BSD) and DOSBox-X (DOSBox-X Team, GPL) remain external.

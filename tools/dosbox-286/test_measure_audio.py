@@ -23,12 +23,18 @@ class AnalysisTests(unittest.TestCase):
         self.assertEqual(m.key_ons(writes), [(0, (0, 100, 17)), (522, (0, 100, 17))])
         with self.assertRaises(ValueError):
             m.decode_dro(header + bytes([0xa0, 0xb0]) + pairs[:-1])
+        rollover = bytearray(header + bytes([0xa0, 0xb0]) + pairs)
+        struct.pack_into('<I', rollover, 16, 40522)
+        with self.assertRaises(ValueError):
+            m.decode_dro(rollover)
+        self.assertEqual(m.decode_dro(rollover, allow_rollover=True), writes)
 
 
     def test_matching_passage_detects_half_rate_without_startup_bias(self):
         base = [(i * 100, (i % 9, i, 17)) for i in range(80)]
         slow = [(7000 + i * 200, token) for i, (_, token) in enumerate(base)]
         measured = m.compare_onsets(base, slow)
+        assert measured is not None
         self.assertAlmostEqual(measured['tempo_ratio'], .5)
         self.assertAlmostEqual(measured['baseline_segment_seconds'], 7.2)
         self.assertAlmostEqual(measured['segment_seconds'], 14.4)
@@ -41,6 +47,9 @@ class AnalysisTests(unittest.TestCase):
         self.assertEqual(m.stop_events(writes), [{'stop_ms': 100, 'restart_ms': 901,
                                                 'gap_ms': 801, 'instrument_ms': 800,
                                                 'key_before_instrument': False}])
+        cached = [v for v in writes if v[1] not in (0xb8, 0xb4)]
+        self.assertEqual(m.stop_events(cached)[0]['stop_ms'], 101)
+        self.assertEqual(len(m.stop_events(cached)), 1)
 
 
     def test_pcm_window_read_and_absolute_gap_clock(self):
@@ -54,6 +63,19 @@ class AnalysisTests(unittest.TestCase):
             self.assertAlmostEqual(result['duration_seconds'], .6)
             self.assertEqual(result['startup_seconds'], .2)
             self.assertEqual(result['gaps'], [{'start_seconds': .30000000000000004, 'length_seconds': .2}])
+            clipped = m.wav_measure(path, window=.1, start=.3, end=.5)
+            self.assertEqual(clipped['gaps'], [{'start_seconds': .3, 'length_seconds': .2}])
+
+
+    def test_cmf_score_and_opl_pitch_can_compare_to_pit_clock(self):
+        data = bytearray(64)
+        data[:4] = b'CTMF'
+        struct.pack_into('<4H', data, 6, 40, 64, 96, 146)
+        data += bytes([0, 0x90, 60, 100, 10, 62, 100, 10, 0xff, 0x2f, 0])
+        self.assertEqual(m.cmf_notes(data), [(0, 60), (10, 62)])
+        # F-number 432, block 4 is the linked driver's E4 (MIDI 64).
+        writes = [(0, 0xa0, 176), (1, 0xb0, 49)]
+        self.assertEqual(m.pitched_ons(writes), [(1, 64)])
 
 
 if __name__ == '__main__':
