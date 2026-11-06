@@ -20,9 +20,10 @@ export function titlePicture(pal: Pal, hero: Pixels, name: string, tagline: stri
   bevel(p, rx, 50, ribbon, 14, pal.r(look.ribbon), 3, 2);
   text(p, rx + 10, 54, tagline, look.ribbonText);
   // the hero on a stone, then the sand's stages in a row, smooth to swirl
-  scaleBlit(p, stone(pal), 40, 160, 2);
-  scaleBlit(p, hero, 40, 160 - 80, 2);
-  for (let i = 0; i < STAGES; i++) scaleBlit(p, sandAt(pal, 'sand', i), 120 + i * 40, 160, 2);
+  const floor = 130;
+  scaleBlit(p, stone(pal), 50, floor, 2);
+  scaleBlit(p, hero, 50, floor - 80, 2);
+  for (let i = 0; i < STAGES; i++) scaleBlit(p, sandAt(pal, 'sand', i), 90 + i * 40, floor, 2);
   frameOf(p, pal, 'breeze');
   return p;
 }
