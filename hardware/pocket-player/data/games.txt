@@ -20,6 +20,7 @@ walk-the-ground|Dig It|2
 searchlight|Don't Get Seen|2
 drop-down|Drop Down|2
 dialog|Everybody Talks|4
+fireworks|Fireworks Night|2
 flash-safe|Flash Safe|3
 flicker|Flicker and Flow|3
 follower|Follow Me|2
@@ -38,6 +39,8 @@ keys-and-doors|Keys and Doors|3
 duck|Kit Ducks|2
 kit-moves|Kit's Moves|2
 kits-shop|Kit's Shop|1
+leaves|Leaves in the Wind|2
+lightning-bugs|Lightning Bugs|2
 lights-out|Lights Out|3
 shadows|Little Shadows|4
 secret-doors|Looks Like a Wall|3
