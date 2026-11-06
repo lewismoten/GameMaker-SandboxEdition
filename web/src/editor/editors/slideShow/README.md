@@ -1,4 +1,4 @@
-# `editor/editors/slideShow/`: lST media sequencing on a timeline
+# `editor/editors/slideShow/`: LST media sequencing on a timeline
 
 Part of the [source map](../../../README.md).
 

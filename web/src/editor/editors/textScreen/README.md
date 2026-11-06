@@ -1,4 +1,4 @@
-# `editor/editors/textScreen/`: tXT page editing and game-accurate preview
+# `editor/editors/textScreen/`: TXT page editing and game-accurate preview
 
 Part of the [source map](../../../README.md).
 

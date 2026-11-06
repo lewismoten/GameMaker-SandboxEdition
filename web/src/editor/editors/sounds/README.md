@@ -1,4 +1,4 @@
-# `editor/editors/sounds/`: sND speaker and Sound Blaster effect editing
+# `editor/editors/sounds/`: SND speaker and Sound Blaster effect editing
 
 Part of the [source map](../../../README.md).
 
