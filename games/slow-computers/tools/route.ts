@@ -70,8 +70,9 @@ export async function aCrowd(bot: StarterBot): Promise<void> {
   await must(bot, bot.wait(70), 'reading the sign');
   if (alive(bot) !== CROWD) throw new Error(`there should be ${CROWD} monsters, not ${alive(bot)}`);
   const hp = bot.sim.ci.hitpts;
-  await must(bot, bot.walk(CROWD_X[0] + 6, 'into the crowd'), 'into the crowd');
-  await must(bot, bot.wait(60), 'looking at the crowd');
+  // The camera leads a rightward walk. Stop here, not past the crowd's left edge.
+  await must(bot, bot.walk(CROWD_X[0] + 3, 'into the crowd'), 'into the crowd');
+  await must(bot, bot.wait(80), 'looking at the crowd');
   await must(bot, bot.walk(29, 'the last sign'), 'to the last sign');
   await must(bot, bot.wait(70), 'reading the sign');
   if (bot.sim.ci.hitpts !== hp) throw new Error('the friendly crowd cost hit points');

@@ -38,6 +38,8 @@ export const CREDITS = withCreditPage(
 
 Design, pixels, sounds and levels by Claude Sonnet 5.5, an AI model made by Anthropic.
 
+Crowd layout and cave pixels revised with Hermes OpenAI Codex GPT-6.1 Sol, made by OpenAI.
+
 Made with GAME-MAKER 3.0 from Recreational Software Designs.
 
 One of the Starters: small games that each show one idea.

@@ -27,6 +27,25 @@ export function pad(pal: Pal, kind: 'short' | 'long', pressed: boolean): Pixels 
   return p;
 }
 
+/** Warm, quiet rock behind a cutaway cave; lamps are scenery, never collision. */
+export function cave(pal: Pal, lamp: boolean): Pixels {
+  const p = new Pixels(20, 20, pal.c('stone', 0));
+  p.rect(0, 0, 20, 1, pal.c('ink', 1));
+  p.rect(0, 10, 20, 1, pal.c('ink', 1));
+  p.rect(5, 1, 1, 9, pal.c('ink', 1));
+  p.rect(15, 11, 1, 9, pal.c('ink', 1));
+  if (lamp) {
+    p.disc(10, 11, 8, pal.c('dirt', 1));
+    p.disc(10, 11, 5, pal.c('dirt', 2));
+    p.rect(8, 0, 4, 6, pal.c('wood', 0));
+    p.rect(7, 6, 6, 9, pal.c('ink', 0));
+    p.rect(8, 7, 4, 6, pal.c('gold', 3));
+    p.rect(9, 8, 2, 4, pal.c('gold', 5));
+    p.rect(7, 15, 6, 1, pal.c('wood', 0));
+  }
+  return p;
+}
+
 /** One frame of the breeze: three short pale wisps in a sky tile, each a few pixels further right each tick (they wrap round). */
 export function breeze(pal: Pal, frame: number): Pixels {
   const p = new Pixels(20, 20, skyOf(pal));
