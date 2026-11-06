@@ -172,7 +172,7 @@ game folder opens in the browser unchanged.
   switch, the mugs (each badge made from a game's own files or the BBS's ANSI art) and the mouse
   pad prints. Like everything else added here they are under
   the MIT License, so the games they open can carry them anywhere.
-- **TURBO BUTTON’s sound IRQ tip** (`web/src/manual/magazine/sections/mailBag.ts`): written with **Hermes Agent running OpenAI Codex GPT-6.1 Sol**, directed by Lewis Moten, from his report of music playing while .VOC effects stayed silent until the game’s IRQ matched the Sound Blaster’s. Existing magazine credits remain.
+- **TURBO BUTTON’s Help Desk tips** (`web/src/manual/magazine/sections/mailBag.ts`): written and corrected with **Hermes Agent running OpenAI Codex GPT-6.1 Sol**, directed by Lewis Moten. His sound setup already used IRQ 7 on both sides; sound/music set to None was the cause. The Escape advice follows PLAYGAME’s checks before and after the fade, and the video advice concerns CONFIG’s SVGA type. Existing magazine credits remain.
 - **DOS installation lesson** (`web/src/manual/ultimate/installScript.ts`): the original Chapter 18 prose, DOS 3.3 batch example and listing guards were written with **Hermes Agent running OpenAI Codex GPT-6.1 Sol**, directed by Lewis Moten. Compatibility was exercised with MS-DOS 3.30 in Jeff Parsons’s MIT-licensed PCjs emulator; no emulator or DOS binaries are distributed here.
 - **Lewis's DOSBox screenshot** of A Fly Named Carl's garbled title (his own capture, taken while
   testing the games in real DOS) illustrates "Where Game-Maker Runs Out" in The Ultimate Owner's
