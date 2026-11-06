@@ -158,14 +158,34 @@ export const MAIL_BAG: MagSection = {
           deck: 'You’re making games, and your friends are getting stuck in them. Here are four from this month’s stack, and what we would change.',
         }),
         cols(2, DESK_LETTERS.flatMap(letter)),
-        side(
-          'The fix in one line',
+        grid([
           [
-            list(['Draw a way out at every link, and nowhere else.', 'One fire key fires every way.', 'Floors look like floors; scenery looks like scenery.']),
-            p('More of what players gripe about, and how to fix it, is in this issue’s [Design Workshop](go:mag/gripes).'),
+            side(
+              'Music, but no sound effects?',
+              [
+                p(
+                  'FM music and digitized sound use different parts of a Sound Blaster. A tune can play even when the game’s sound IRQ is wrong. On one PC, CONFIG said **IRQ 5**, but the card used **IRQ 7**. Setting the game to **7** restored the **.VOC effects**.',
+                ),
+                p('Seven is not a magic number! Check your card’s setup utility or jumper settings, then make the game’s IRQ **match the card’s actual IRQ**.'),
+              ],
+              'yellow',
+            ),
           ],
-          'cyan',
-        ),
+          [
+            side(
+              'The fix in one line',
+              [
+                list([
+                  'Draw a way out at every link, and nowhere else.',
+                  'One fire key fires every way.',
+                  'Floors look like floors; scenery looks like scenery.',
+                ]),
+                p('More of what players gripe about, and how to fix it, is in this issue’s [Design Workshop](go:mag/gripes).'),
+              ],
+              'cyan',
+            ),
+          ],
+        ]),
       ],
     },
   ],

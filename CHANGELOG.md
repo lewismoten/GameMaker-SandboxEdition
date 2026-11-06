@@ -11,6 +11,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Added
 
+- TURBO BUTTON's Mail Bag has a sound troubleshooting tip: music can play while digitized effects stay silent when the game's Sound Blaster IRQ does not match the card.
 - Lightning Bugs, Fireworks Night and Leaves in the Wind now draw and name the same helpers as their Cast entries: Rima, Lami and Mia.
 - Slow Computers brings both rows of bees into the playing view and puts its eight snails in a lit cutaway cave beneath the grass, without the floating plank. The crowd still has 36 friendly monsters.
 - 43 Starters that shared a song with another game now each have their own, 32 bars long instead of 8, and each group of Starters has its own band: a march for The Basics, a chip tune for Moving and Pushing, swing for Changing Your Hero, a minor-key drive for Foes and Bosses, a storybook for Telling a Story, calypso for Bigger Worlds, and more.
