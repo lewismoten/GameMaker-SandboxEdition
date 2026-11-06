@@ -1,6 +1,6 @@
 # File formats, byte by byte
 
-All integers are 16-bit little endian unless said. Structures are byte packed (Borland's default; the sizes below only add up that way). Tags: [16-bit] [64K] [file] [DOS] [design]; [inference]; [not yet checked in DOSBox].
+All integers are 16-bit little endian unless said. The file layouts below use byte packing; the web parsers encode the fields explicitly. Sizes of DOS runtime objects in saves still depend on the original compiler's layout (section 13.7). Tags: [16-bit] [64K] [file] [DOS] [design]; [inference]; [not yet checked in DOSBox].
 
 ## 13.1 At a glance
 
@@ -44,8 +44,8 @@ Older games (before version 3.00) use a 330-byte scene with 9 file names of 10 c
 ## 13.3 `.map`, blocks, monsters, character, palette
 
 Offsets for each record are in the chapters that explain them: block 420 (chapter 5), monster 300 (chapter 6), character 3,784 (chapter 7). The `.map` file has no header: 20,000 bytes of `{blk, mon}` pairs in row-major order, then 200 x 10 bytes of placed monsters (`PG:4330-4336`).
-Reading is by count, not by file length (`fread` of exactly `MLEN*MWID`, then `LASTMM`); a **short file is not detected** and leaves the rest of the arrays as they were from the previous scene. [inference from `loadspecmap`, `PG:4330-4336`: the return value of `fread` is ignored]
-The same is true of block, monster, character and sound files (`PG:4294-4340`).
+Reading is by count, not by file length (`fread` of exactly `MLEN*MWID`, then `LASTMM`); `loadspecmap` ignores both read counts and reports success once the file opens (`PG:4330-4337`). A short read can leave old bytes in these persistent arrays, but that is not a promise that all previous-scene state survives: scene initialization also changes it.
+Block, monster and sound loaders likewise ignore read counts (`PG:4294-4327`), as does the character's general loader (`code/GM/GENC.C:295-307`). There is an important exception to the stale-byte warning: sound names are zeroed before reading (`PG:4301-4302`); block buffers are newly allocated on ordinary scene entry (`PG:1347-1350`, `PG:1541-1545`). Exact partial-record and visible results are **[not yet checked in DOSBox]**. The web map parser instead builds fresh arrays and zero-fills missing bytes (`engine/formats/map.ts:28-40`, `engine/formats/binary.ts:33-68`).
 
 ## 13.4 `.snd` (30 effects)
 
@@ -54,9 +54,9 @@ Names are 8 letters and no extension: the player appends `.voc` and looks in the
 
 ## 13.5 `.cmf`
 
-The header struct `CMFHDR` is in `SBCMUSIC.H:30-52`; PLAYGAME uses: the four-letter id, `clock_ticks` (must equal 146, `HDRCLK`), the instrument count (up to 128, 16 bytes each), and the offset of the music block (`SBMUSIC.C:71-100`).
+The header struct `CMFHDR` is in `SBCMUSIC.H:30-52`; PLAYGAME uses: the four-letter id, `clock_ticks` (must equal 146, `HDRCLK`), the instrument count (16 bytes each; this loader does not check a 128-instrument ceiling), and the offset of the music block (`SBMUSIC.C:71-100`).
 Oddity: the id test is written `(id[0] != 'C') && (id[1] != 'T') && (id[2] != 'M') && (id[3] != 'F')` (`SBMUSIC.C:73-74`), which rejects a file only when **all four** letters are wrong; a file with any one correct letter in place passes the check
-(the clock-tick test that follows rejects most strangers). [inference] it was meant to be `||`. The music block is read with `fread(ptr, 1, MusicSize, fp)` where `MusicSize` is a `long` (`SBMUSIC.C:100`): a song block over **65,535 bytes** may be cut short. [16-bit] **[not yet checked in DOSBox]**
+(a separate test requires the clock-tick value 146, `SBMUSIC.C:80-86`). [inference] it was meant to be `||`; that would require all four letters to match, but the source does not establish the author's intent. The web parser does require all four (`engine/formats/cmf.ts:20-25`). The DOS music block is read with `fread(ptr, 1, MusicSize, fp)` where `MusicSize` is a `long`, and the read count is ignored (`SBMUSIC.C:87-102`). With a 16-bit `size_t`, that count cannot represent a block over **65,535 bytes**. The resulting playback is **[not yet checked in DOSBox]**. [16-bit]
 
 ## 13.6 `.rec`, `.his`, `.pal`
 
@@ -85,10 +85,10 @@ Oddity: the id test is written `(id[0] != 'C') && (id[1] != 'T') && (id[2] != 'M
 |    13 | `BlkMon[MaxBlkMon]`                                    |                                5 each |
 |    14 | the recorder object and `RecIndex` events              |                       object + 3 each |
 
-Fixed part: 1 + 6 + 4 + 600 + 150 + 135 + 3,784 + 4 + 11,000 + 2,000 + 20,000 + 1 = **37,685 bytes**; with 10 spawners and an empty recorder, about 37.8 KB (**[estimate]**). A saved game is a **snapshot of everything that can change**, and nothing that cannot: the blocks, monsters and sounds are
-re-read from the scene's files on load (`PG:1800-1815`). So the save works with an edited game only if the **map layout and monster slots** still match. [inference]
-Two things to know: `mi` holds a **far pointer** (`save`, `PG:127`) that is written and read back unchanged, and the first-time redraw sets it again; and the saved `ci`/`chr` hold the hero's position, which is the only place the `.chr` file's own saved `x`,`y`,`cframe`,`cseq` fields matter (chapter 14).
-The web port does not read or write DOS saved games (no `formats/` file for them); **[not yet checked in DOSBox]** layouts in DOSBox before printing sizes.
+Fixed part under the table's layout assumptions: 1 + 6 + 4 + 600 + 150 + 135 + 3,784 + 4 + 11,000 + 2,000 + 20,000 + 1 = **37,685 bytes**; with 10 spawners and an empty recorder, about 37.8 KB (**[estimate]**). In particular, 55 bytes per `minfo` assumes byte packing, 2-byte ints, 4-byte longs and 4-byte far pointers (`PG:113-146`, `code/GM/COORD2D.HPP:13-19`). The writer uses actual `sizeof` values, not these printed totals (`PG:1874-1890`); the recorder adds its whole runtime object and its events (`PG:220-236`, `PG:255-265`).
+The save contains the listed live state, not every mutable global. On load, the **saved map and placed monsters** replace memory; the `.map` file is not re-read. Blocks, monster types, sounds and other assets are re-read from the saved scene's file slots (`PG:1773-1812`). An edited map therefore need not match the saved map, but those reloaded assets and scene references must still make sense for the saved indexes.
+Two things to know: `mi` holds a **far pointer** (`save`, `PG:127`) that is serialized, but load clears every `mi[i].save`; it also preserves the current character save-under buffers instead of using the saved pointers (`PG:1766-1767`, `PG:1814-1821`). The saved `ci`/`chr` hold the hero's position (chapter 14).
+The web port writes JSON state and restores it through its own scene loader (`engine/scene.ts:761-805`), not the DOS object layout. The printed DOS sizes remain an **[estimate]**: **[not yet checked in DOSBox]**, and no original-toolchain `sizeof` probe verifies them here.
 
 ## 13.8 Graphics and text scripts (not Game-Maker structures)
 
@@ -97,6 +97,6 @@ The web port does not read or write DOS saved games (no `formats/` file for them
 ## 13.9 Tips
 
 - Check sizes first: 22,000 / 63,000 / 19,200 / 42,000 / 7,568 / 21,000 / 2,430 / 768.
-- A scene file slot left blank keeps the **previous** scene's data in memory (chapter 4): it is a feature (shared sounds) and a trap (stale monsters).
+- A scene file slot left blank skips its loader (`PG:4239-4253`); do not assume fresh defaults. Persistent arrays can retain data, but the block sets are freed on ordinary scene exit (`PG:1541-1545`), so not every blank slot means "reuse the previous scene" (chapter 4).
 - Keep every `.voc` under 65,535 bytes and every `.cmf` music block too.
 - Do not rely on the filler bytes; PLAYGAME ignores them (chapter 14).

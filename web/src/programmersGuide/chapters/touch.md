@@ -25,12 +25,12 @@ Facts that follow: the right column counts only when the hero is **even one pixe
 
 ## 8.2 What touching does
 
-`CheckTouch` runs every move: for each of the 6 cells whose block is **not** an object (`obj == 0`) it calls `really_checktouch` (`PG:3512-3547`):
+`CheckTouch` runs when movement, gravity, a solid monster or `ci.update` enters the character-update branch (`PG:2475-2500`): for each of the 6 cells whose block is **not** an object (`obj == 0`) it calls `really_checktouch` (`PG:3512-3547`):
 
 1. `DoBlockTouchChar`: score, hit points, counter (chapter 9). If that returns "refused" nothing else happens.
 2. If the block's `touchbl` differs from itself **and the cell is on screen**, the map cell is replaced and redrawn (chapter 5).
 
-It repeats **every tick** the hero overlaps the cell, so a hurting block hurts every tick unless the hurt sequence interrupts (the first hurt starts `HURTSEQ`, then `chr.cseq != HURTSEQ` suppresses re-triggering, `PG:3455-3463`).
+There is no per-cell once-only latch: a persistent overlap can repeat on every **executed check**, not necessarily every tick. A hurting block's first accepted damage starts `HURTSEQ`; the `chr.cseq != HURTSEQ` test then suppresses damage during that sequence (`PG:3455-3463`).
 Touch is per **overlap of cells**, not of pixels: a block's transparent pixels (255) are not consulted for background blocks, so even a blank-looking corner of a hurting block hurts.
 
 ## 8.3 Solid sides
@@ -54,12 +54,12 @@ So the hero's transparent pixels do not touch: **an all-clear hero frame is immu
 
 ### Which monsters count as "on screen" (the cell test)
 
-`CalcDraw` (`PG:2281-2290`) runs `onscrn` on the monster's **map cell**, not its pixel: `ScrPos = (cell - view) x 20 - scroll offset`, tested against `{1,1}`..`{300,180}` (`PG:294`, `PG:3815-3830`). Only after that passes does it add the monster's pixel offset inside the cell (`curx[1]`).
-Consequences (**[inference] from reading; [not yet checked in DOSBox]**):
+`CalcDraw` (`PG:2281-2290`) runs `onscrn` on the monster's **map cell**, not its pixel: `ScrPos = (cell - view) x 20 - scroll offset`, with map wrap, tested against `{1,1}`..`{300,180}` (`PG:294`, `PG:3819-3830`). Only after that passes does it add the monster's pixel offset inside the cell (`curx[1]`). Rejected cells get `OFFSCRN`, which rejects hero contact (`PG:3104-3113`, `PG:2722-2729`). These source rules also appear in the port (`engine/engine/touch.ts:27-43`, `engine/engine/monsters.ts:72-79`, `engine/engine/monsters.ts:598-605`).
+Consequences from those tests (not new DOSBox observations):
 
-- With `scroll.nx = 0` the cell at the screen's left edge has `ScrPos.x = 0`, which is below the lower bound of 1. The **whole left column** of cells is off screen: not drawn at any pixel offset, and `ChkMonChr` is skipped. The same holds for the top row when `scroll.ny = 0`. (The `ScrollStruct` comment gives `nx`,`ny` as "1-20", `PG:~178`; if that is the real range, the hidden cell is whichever one lands at screen position 0 or below that tick. Either way a whole cell is lost, not a pixel.) So the "hidden band" is one **block** wide, not one pixel, whenever the screen is not part-scrolled.
-- `ScrPos` then gets the in-cell offset (0..19) added, so a monster in the right-most allowed cell (screen 300) with an offset of 1 or more lands at 301..319, **fails the draw test** (`minfo::Draw`, `PG:2294`) but keeps a real `ScrPos`: it is **invisible and can still hurt**.
-- This is a better fit for the Round-and-Round fix (the path was moved down one **block**, commit `03c724f6c`) than a one-pixel rule.
+- With `scroll.nx = 0` the cell at the screen's left edge has `ScrPos.x = 0`, below the lower bound of 1. The **whole left column** of cells is rejected before any pixel offset is added. The same holds for the top row when `scroll.ny = 0`. Zero is a real state: initialization sets both offsets to 0 (`PG:193-201`, `PG:4693-4699`), and scrolling normalizes them to 0..19 (`PG:4033-4036`), despite the "1-20" comment. So the hidden band is one **block** wide, not one pixel, on an unscrolled screen.
+- `ScrPos` then gets the in-cell offset (0..19) added, so a monster in the right-most allowed cell (screen 300) with an offset of 1 or more lands at 301..319 and **fails the draw test** (`PG:2292-2308`) but keeps a real `ScrPos`: it can still reach the hero collision/effect tests (`PG:3104-3119`). Invisible does not always mean harmless.
+- The Round-and-Round fix moved the loop and car down one **block** (commit `03c724f6c`). That historical change is compatibility context, not a new DOSBox test of these rules.
 
 ## 8.5 Monster against monster (`DoCollision`, `PG:2793-2845`)
 
@@ -68,8 +68,8 @@ if the **winner** was fired by the hero (`fromchar > 0`), the loser's `upscore` 
 
 ## 8.6 Cost (estimates)
 
-`PicChkTouch` is a nested loop over the overlap rectangle with two byte reads and two compares per pixel: **up to 400 iterations**, about 25-30 clock cycles each on a 286 = 10,000-12,000 cycles (**[estimate]**), which is 1.0-1.5 ms at 8-12 MHz, 0.2-0.3 ms on a 486DX2-66. It returns at the first overlapping pixel, so the worst case is _nearly_ touching.
-Each on-screen monster costs this against the hero (twice, top and bottom) plus up to three more tests against neighbors, which is why the web port's slow-PC model charges 1.2 ms per monster on a 286-class machine (`engine/engine/slowPc.ts`, `TURBO_OFF.monsterMs`).
+`PicChkTouch` loops over the overlap rectangle: **up to 400 iterations**, returning at the first jointly non-255 pixel pair (`PG:2850-2953`). A large overlap with no jointly opaque pixels, or a very late first match, makes it scan the most; _nearly_ touching geometrically gives a smaller rectangle. The port uses the same bound and early exit (`engine/engine/monsters.ts:353-402`).
+About 25-30 clock cycles per iteration on a 286 = 10,000-12,000 cycles, roughly 0.8-1.5 ms at 8-12 MHz, and 0.2-0.3 ms on a 486DX2-66 remain **[estimate; not measured on those CPUs]**. Source loop bounds do not establish instruction timings or cross-CPU speedups. Eligible monsters may test against both hero halves and up to four occupancy cells (`PG:2748-2751`, `PG:3130-3137`); bounding checks and early exits change the work. The web slow-PC model's 1.2 ms per monster is an explicit modeling choice, not a DOS benchmark (`engine/engine/slowPc.ts:72-76`).
 
 ## 8.7 Tips
 
