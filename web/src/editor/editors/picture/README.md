@@ -1,4 +1,4 @@
-# `editor/editors/picture/`: gIF viewing/import and copying regions into blocks
+# `editor/editors/picture/`: GIF viewing/import and copying regions into blocks
 
 Part of the [source map](../../../README.md).
 

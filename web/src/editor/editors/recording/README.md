@@ -1,4 +1,4 @@
-# `editor/editors/recording/`: rEC demo recording, playback and trimming
+# `editor/editors/recording/`: REC demo recording, playback and trimming
 
 Part of the [source map](../../../README.md).
 

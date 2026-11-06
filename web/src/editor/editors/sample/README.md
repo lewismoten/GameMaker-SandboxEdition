@@ -1,4 +1,4 @@
-# `editor/editors/sample/`: vOC waveform editing and recording
+# `editor/editors/sample/`: VOC waveform editing and recording
 
 Part of the [source map](../../../README.md).
 
