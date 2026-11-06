@@ -76,6 +76,7 @@
   "power-up": {"hash":"d29db20f869b364b","maps":{"one.map|power.bbl":[0,1,67,26],"two.map|power.bbl":[0,6,68,25]}},
   "puzzle-room": {"hash":"efc862a0a5035a1f","maps":{"one.map|pr.bbl":[0,4,73,23],"two.map|pr.bbl":[0,4,81,24]}},
   "quicksand": {"hash":"9ac17df0723a0e89","maps":{"one.map|one.bbl":[0,14,57,10],"two.map|two.bbl":[0,14,65,10]}},
+  "rain": {"hash":"58897c10bf0bf9dd","maps":{"one.map|one.bbl":[0,14,57,10],"two.map|two.bbl":[0,14,47,10]}},
   "realm": {"hash":"d4caf06e5b425b29","maps":{"barrows.map|barrows.bbl":[11,20,78,71],"flats.map|flats.bbl":[0,27,100,46],"keep.map|keep.bbl":[15,9,70,81],"mines.map|mines.bbl":[6,16,92,72],"pass.map|pass.bbl":[2,5,34,10],"port.map|port.bbl":[0,0,100,100],"town.map|town.bbl":[0,0,100,75],"vaults.map|vaults.bbl":[10,11,79,87],"world.map|world.bbl":[0,3,100,94]}},
   "reckoning": {"hash":"2c4648865307e44f","maps":{"bedroom.map|reckon.bbl":[0,0,81,19],"dash.map|reckon.bbl":[0,0,88,19],"fridge.map|reckon.bbl":[0,0,68,23],"hell.map|reckon.bbl":[0,0,61,20]}},
   "remote": {"hash":"f2a5ddc7ffe2f473","maps":{"den.map|remote.bbl":[0,0,43,24],"kitchen.map|remote.bbl":[0,0,44,20],"ride.map|remote.bbl":[0,0,43,21],"void.map|remote.bbl":[0,0,47,28]}},

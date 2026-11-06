@@ -3,7 +3,7 @@
   "author": "Hermes OpenAI Codex GPT-6.1 Sol",
   "company": "Sandbox Software",
   "series": "starter",
-  "hero": "KIT",
+  "hero": "LIAN",
   "year": 1994,
   "price": "Free",
   "version": "1.0",
@@ -19,9 +19,17 @@
     "accent": "#c0e0f4",
     "ink": "#ffffff",
     "tagline": "A little rain, all pictures.",
-    "back": "Kit walks a rain-soaked path. Four pictures make rain fall, different starts scatter the drops, and more pictures make splashes and ripples. Then the same map loads a darker palette. Play, then edit a copy and change the rain.",
-    "features": ["Falling streaks made from animated blocks", "Landing splashes and rippling puddles", "The same map in a rainy palette", "Made to be copied and taken apart"],
-    "shots": [["one.map", 34, 19], ["two.map", 22, 19]],
+    "back": "Lian walks a rain-soaked path. Four pictures make rain fall, different starts scatter the drops, and more pictures make splashes and ripples. Then the same map loads a darker palette. Play, then edit a copy and change the rain.",
+    "features": [
+      "Falling streaks made from animated blocks",
+      "Landing splashes and rippling puddles",
+      "The same map in a rainy palette",
+      "Made to be copied and taken apart"
+    ],
+    "shots": [
+      ["one.map", 34, 19],
+      ["two.map", 22, 19]
+    ],
     "rating": "Everyone"
   }
 }
