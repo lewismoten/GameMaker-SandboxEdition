@@ -1,4 +1,4 @@
-# `editor/editors/integrator/`: gAM scenes, links and boards
+# `editor/editors/integrator/`: GAM scenes, links and boards
 
 Part of the [source map](../../../README.md).
 

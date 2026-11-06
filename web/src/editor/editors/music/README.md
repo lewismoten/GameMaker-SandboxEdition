@@ -1,4 +1,4 @@
-# `editor/editors/music/`: cMF tracks, instruments, piano-roll integration and playback
+# `editor/editors/music/`: CMF tracks, instruments, piano-roll integration and playback
 
 Part of the [source map](../../../README.md).
 

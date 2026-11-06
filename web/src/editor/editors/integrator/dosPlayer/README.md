@@ -1,4 +1,4 @@
-# `editor/editors/integrator/dosPlayer/`: dOS player customization UI and preview
+# `editor/editors/integrator/dosPlayer/`: DOS player customization UI and preview
 
 Part of the [source map](../../../../README.md).
 
