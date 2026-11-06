@@ -52,7 +52,16 @@ export interface TextPurpleFinding {
   paperGuessed: boolean;
   /** WCAG contrast ratio of the ink on the paper. */
   contrast: number;
+  /** The game's player.json sets the text-page color (color.rgb.purple or color.select.textPages). */
+  chosen: boolean;
 }
+
+/**
+ * A page to look at: under 4.5:1 on its paper when the game's player chooses the text color (a
+ * dark target is matched to the nearest ink on purpose); otherwise ink that isn't the purple asked
+ * for, or under textfit's 3:1 (stock purple on light paper can't reach 4.5:1).
+ */
+export const inkFlagged = (f: TextPurpleFinding): boolean => (f.chosen ? f.contrast < 4.5 : f.distance > 0 || f.contrast < 3);
 
 const lum = (c: RGB) => {
   const ch = c.map((v) => {
@@ -110,6 +119,7 @@ function drawImage(s: Screen, px: Uint8Array, w: number, h: number, x0: number, 
 interface Walk {
   files: Map<string, Uint8Array>;
   want: RGB;
+  chosen: boolean;
   out: TextPurpleFinding[];
 }
 
@@ -157,6 +167,7 @@ function walk(k: Walk, file: string, s: Screen, colors: Uint8Array, where: strin
       paper,
       paperGuessed: s.unknown,
       contrast: contrastOf(shown, paper),
+      chosen: k.chosen,
     });
   } else if (e === '.lst') {
     // A list called without NewCols makes its own (zeroed here, as the engine does).
@@ -175,7 +186,9 @@ export function textPurpleOfGame(id: string, gamesDir: string, patches: PlayerPa
   if (!gam) return [];
   const game = parseGame(files.get(gam)!);
   const look = playerLook(patches);
-  const k: Walk = { files, want: look.rgb(`color.rgb.${String(patches['color.select.textPages'] ?? 'purple')}`), out: [] };
+  const target = String(patches['color.select.textPages'] ?? 'purple');
+  const chosen = 'color.select.textPages' in patches || `color.rgb.${target}` in patches;
+  const k: Walk = { files, want: look.rgb(`color.rgb.${target}`), chosen, out: [] };
   const slot = (scene: number, n: number) => game.scenes[scene]?.files[n]?.toLowerCase() || undefined;
 
   // The title shows before any palette: `colors` is still all zeros.
