@@ -156,16 +156,19 @@ SDK implementation lives in the packages below; the app imports their declared e
 
 - [`assistant/`](assistant/README.md): the tools an AI uses to open, check and change a game, the
   Assistant chat, and the MCP bridge.
+  Sub-areas: [`tools/`](assistant/tools/README.md), [`chat/`](assistant/chat/README.md), [`bridge/`](assistant/bridge/README.md), [`shared/`](assistant/shared/README.md).
 
 ### The 1994 desk and its PC
 
 - [`desk/`](desk/README.md): the 1994 desk: the room, the PC's case, keyboard and monitor, the
   boxes, disks and props.
+  Sub-areas: [`pc/`](desk/pc/README.md), [`room/`](desk/room/README.md), [`props/`](desk/props/README.md), [`diploma/`](desk/diploma/README.md), [`disks/`](desk/disks/README.md), [`mug/`](desk/mug/README.md), [`boxes/`](desk/boxes/README.md).
 - [`dosPage/`](dosPage/README.md): DOS Game-Maker (`dos.html`, `dosPage.ts`): the PC's page with its one-row
   bar and ⋯ menu (`moreMenu.ts`, with the modem speed, `lineSpeed.ts`), disk menu (`diskMenu.ts`),
   and one-row footer (`footer.ts`) with the on-screen keys (`keypad.ts`) and the status line.
 - [`retro/`](retro/README.md): the PC shared by the desk and `dos.html`: DOS, Game-Maker's menus and
   registration, the utilities and the BBSes.
+  Sub-areas: [`computer/`](retro/computer/README.md), [`dos/`](retro/dos/README.md), [`gmReg/`](retro/gmReg/README.md), [`hexedit/`](retro/hexedit/README.md), [`view/`](retro/view/README.md), [`text/`](retro/text/README.md), [`hacks/`](retro/hacks/README.md), [`bbs/`](retro/bbs/README.md).
 - [`vga/`](vga/README.md): Game-Maker's eight designers, ported from their C source.
 - [`chicken/`](chicken/README.md): the rubber chicken's state (Sir Reginald or Lady Regina, following Tune-Up's story), its words and tiara, and the desk's restore utility.
 - [`eggs/`](eggs/README.md): the felt eggs hidden in the Sandbox games, their shadow box and
