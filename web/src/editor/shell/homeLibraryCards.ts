@@ -11,7 +11,7 @@ import { levelShown, levelShowsCeremony } from './homeLevel';
 import { graduationCards, readyCeremonies, readyStrip } from './homeGraduations';
 import { allNotes, ratingOf } from '../../imported/gameNotes';
 import { groupByRating, ratingName, starsText } from '../../imported/ratings';
-import { gameShot, gameTile, type HomeGame } from './homeCards';
+import { gameShot, gameTile, playLink, type HomeGame } from './homeCards';
 import type { Category } from './homeCategories';
 import { byMaker } from './homeAuthors';
 import { rateTile, ratingShown, type savedRatingFilter } from './homeRatings';
@@ -111,7 +111,7 @@ export function libraryCards(
               starters.finished,
               grades,
             ),
-            on.choose,
+            (g) => playLink(g.entry?.id ?? ''),
             (g) => gameShot(g, 'grad-ready-shot pixel'),
           )
         : [];
