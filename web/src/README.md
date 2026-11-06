@@ -166,6 +166,7 @@ SDK implementation lives in the packages below; the app imports their declared e
   - [`editor/tools/`](editor/tools/README.md): file-maker registry, import/conversion and generators.
   - [`editor/tools/cards/`](editor/tools/cards/README.md): instruction and level-card dialogs and generated files.
   - [`editor/tools/opening/`](editor/tools/opening/README.md): opening-sting selection, previews and scene wiring.
+  - [`editor/widgets/`](editor/widgets/README.md): reusable editor controls, previews and check/play dialogs.
 - [`editor/disk/`](editor/disk/README.md): the disk-space tool: merges of monster files, block sets and palettes, and the floppy disks a game needs.
 - [`editor/editors/palette/`](editor/editors/palette/README.md): VGA palette editing, role reservations and contrast checks.
 - [`saves/`](saves/README.md): the home page's Saves & scores panel: saved games, high scores and
@@ -221,6 +222,7 @@ SDK implementation lives in the packages below; the app imports their declared e
 - [`manual/`](manual/README.md): the Owner's Guide, the web Guide, each game's manual and box
   contents, the zine, the Ultimate Owner's Guide and TURBO BUTTON.
   Subareas:
+  - [`manual/epub/`](manual/epub/README.md): on-demand EPUB builders, packaging and validation.
   - [`manual/magazine/sections/`](manual/magazine/sections/README.md): magazine article/ad section factories.
   - [`manual/magazine/sections/spring93/`](manual/magazine/sections/spring93/README.md): spring 1993 issue-specific sections.
 
