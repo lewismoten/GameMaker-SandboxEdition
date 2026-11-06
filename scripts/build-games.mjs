@@ -7,6 +7,7 @@ import { availableParallelism } from 'node:os';
 import { gameSourceHash, root } from './game-build-inputs.mjs';
 import { gameKeys, logoUsers } from './game-import-keys.mjs';
 import { bundleEntry } from './game-bundle.mjs';
+import { retrySignal } from './child-signal-retry.mjs';
 import { promisify } from 'node:util';
 const games = join(root, 'games');
 const cacheFile = join(games, '.build-cache.json');
@@ -17,17 +18,40 @@ const viteNode = [join(root, 'node_modules/vite-node/vite-node.mjs'), '-c', join
 // or one that fails (a non-signal exit) means vite-node runs it as before, so a game needing a vite-only feature still builds
 const useBundles = process.env.GM_VITE_NODE !== '1';
 const fallbacks = [];
-async function runEntry(name, entry, viteFile, args, options, label) {
-  const bundle = useBundles ? await bundleEntry(name, entry) : undefined;
-  if (bundle) {
-    try {
-      return await run(process.execPath, ['--enable-source-maps', bundle, ...args], options);
-    } catch (error) {
-      if (error.signal) throw error;
-      fallbacks.push(label);
+async function runEntry(name, entry, viteFile, args, options, label, retryBefore = Infinity) {
+  const runOnce = async () => {
+    const bundle = useBundles ? await bundleEntry(name, entry) : undefined;
+    if (bundle) {
+      try {
+        return await run(process.execPath, ['--enable-source-maps', bundle, ...args], options);
+      } catch (error) {
+        if (error.signal) throw error;
+        fallbacks.push(label);
+      }
     }
-  }
-  return run(process.execPath, [...viteNode, viteFile, ...args], options);
+    return run(process.execPath, [...viteNode, viteFile, ...args], options);
+  };
+  // One signal retry, including a timed-out extra stage. Disk builds keep their early-signal cutoff.
+  // Numeric failures retain the bundle -> vite-node fallback, never a signal retry.
+  return retrySignal(runOnce, label, retryBefore);
+}
+// Join running siblings before propagating failure; never orphan them via Promise.all's early rejection.
+async function joined(work) {
+  const results = await Promise.allSettled(
+    work.map((job) =>
+      job.catch((error) => {
+        stop();
+        throw error;
+      }),
+    ),
+  );
+  const failed = results.find((result) => result.status === 'rejected');
+  if (failed) throw failed.reason;
+}
+let stopped = false;
+function stop() {
+  if (!stopped) console.error('Build failed; draining active work. Queued game builds will not be started.');
+  stopped = true;
 }
 if (process.env.GM_SKIP_GAME_BUILD === '1') {
   console.log('Game output generation deferred to the build job.');
@@ -98,6 +122,7 @@ function logo() {
           killSignal: 'SIGKILL',
         },
         'logo',
+        -1, // Optional shared renders keep their existing no-retry behavior.
       ).then(
         () => undefined,
         () => undefined, // a failed shared render only means each game renders its own
@@ -130,7 +155,7 @@ function save(all = false) {
   );
 }
 async function worker() {
-  for (;;) {
+  for (; !stopped;) {
     // a game that needs the logo waits for it only if no game that doesn't is queued
     const next = pending.findIndex((id) => !logoUsers.has(id));
     const id = pending.splice(logoReady && next >= 0 && !existsSync(logoFile) ? next : 0, 1)[0];
@@ -141,7 +166,7 @@ async function worker() {
       if (id === 'depth') {
         const shards = Array.from({ length: 8 }, (_, i) => i).filter((i) => !existsSync(join(frames, `shard-${i}.json`)));
         async function renderWorker() {
-          for (;;) {
+          for (; !stopped;) {
             const shard = shards.shift();
             if (shard === undefined) return;
             await runEntry(
@@ -157,39 +182,34 @@ async function worker() {
                 maxBuffer: 64 << 20,
               },
               'depth frames',
+              -1,
             );
           }
         }
         // the shards are independent, so a local build with no cached frames uses the cores it has
-        await Promise.all(Array.from({ length: Math.min(shards.length, Math.max(2, availableParallelism())) }, renderWorker));
+        await joined(Array.from({ length: Math.min(shards.length, Math.max(2, availableParallelism())) }, renderWorker));
       }
       if (logoUsers.has(id)) await logo();
-      // a build killed from outside well before its timeout (memory pressure, a stray pkill) is tried once more
-      for (let attempt = 1; ; attempt++) {
-        const began = Date.now();
-        try {
-          await runEntry(
-            id,
-            {
-              contents: `import ${JSON.stringify(join(games, id, 'build.ts'))};\nawait new Promise((done) => process.stdout.write('', done));\nprocess.exit(0);\n`,
-            },
-            '../scripts/game-build-entry.mjs',
-            [id],
-            {
-              cwd: join(root, 'web'),
-              maxBuffer: 64 << 20,
-              timeout: 240_000,
-              killSignal: 'SIGKILL',
-              env: { ...process.env, GAME_DISK_OUT: '', TEXT_BOUNDS: '', DEPTH_FRAME_CACHE: frames, SANDLOGO_FLI: logoFile },
-            },
-            secret ? 'a game' : id,
-          );
-          break;
-        } catch (error) {
-          if (attempt > 1 || !error.signal || Date.now() - began > 230_000) throw error;
-        }
-      }
+      if (stopped) return;
+      await runEntry(
+        id,
+        {
+          contents: `import ${JSON.stringify(join(games, id, 'build.ts'))};\nawait new Promise((done) => process.stdout.write('', done));\nprocess.exit(0);\n`,
+        },
+        '../scripts/game-build-entry.mjs',
+        [id],
+        {
+          cwd: join(root, 'web'),
+          maxBuffer: 64 << 20,
+          timeout: 240_000,
+          killSignal: 'SIGKILL',
+          env: { ...process.env, GAME_DISK_OUT: '', TEXT_BOUNDS: '', DEPTH_FRAME_CACHE: frames, SANDLOGO_FLI: logoFile },
+        },
+        secret ? 'a game' : id,
+        230_000, // Preserve the existing disk policy: retry only an early signal.
+      );
     } catch (error) {
+      stop();
       throw new Error(
         secret
           ? 'A game build failed.'
@@ -258,7 +278,7 @@ const fieldTrinketGames = [
   ['blaster', 'Blaster'],
 ];
 // GM_SKIP_FIELD_TRINKETS=1 leaves them out (the Mac, Windows and Linux download jobs only need the disks).
-const trinkets = Promise.all(
+const trinkets = joined(
   (process.env.GM_SKIP_FIELD_TRINKETS ? [] : fieldTrinketGames)
     .filter(([id]) => ids.includes(id) && (!only.length || only.includes(id)))
     .map(async ([id, name]) => {
@@ -276,7 +296,7 @@ const trinkets = Promise.all(
 );
 if (pending.some((id) => logoUsers.has(id))) void logo();
 const gamesStarted = Date.now();
-await Promise.all([trinkets, ...Array.from({ length: Math.min(jobs, pending.length) }, worker)]);
+await joined([trinkets, ...Array.from({ length: Math.min(jobs, pending.length) }, worker), ...(logoReady ? [logoReady] : [])]);
 stage('games + field trinkets', gamesStarted);
 // The pixel-figure trinkets of the other games (games/kit/pixelTrinkets.ts: web/public/trinkets/<game>/) are meshed from the
 // built disks, so they run after the games; each game is skipped when its figures and the mesh code are unchanged (a key
