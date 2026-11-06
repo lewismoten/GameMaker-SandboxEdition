@@ -1,0 +1,1018 @@
+side	addr	lin	size	module	object	name	name_source	status	partner	sim	method	confidence	other_side_gap	strings
+2.04	0003:0004	00034	414	_TEXT	startup.asm			constants	0000:0000	0.974	shape	high		
+2.04	0003:0187	001B7	19	_TEXT	startup.asm	__cleanup	map:130	constants	0000:0183	0.778	shape	high		
+2.04	0003:019A	001CA	1	_TEXT	startup.asm	__checknull	map:130	identical	0000:0196	1.000	bytes	high		
+2.04	0003:019B	001CB	62	_TEXT	startup.asm	__terminate	map:130	relocated	0000:0197	1.000	norm	high		
+2.04	0003:01AD	001DD	67	_TEXT	startup.asm			constants	0000:01A9	0.958	shape	high		
+2.04	0003:01F0	00220	45	_TEXT	startup.asm	__restorezero	map:130	identical	0000:01EC	1.000	bytes	high		
+2.04	0003:021D	0024D	87	_TEXT	startup.asm			constants	0000:0219	0.943	shape	high		
+2.04	0003:0274	002A4	8	_TEXT	startup.asm			identical	0000:0270	1.000	bytes	high		
+2.04	0003:02AF	002DF	61	_TEXT	_stpcpy	__stpcpy	map:130	relocated	0000:02AB	1.000	norm	high		
+2.04	0003:02EC	0031C	49	_TEXT	atexit	_atexit	map:130	relocated	0000:02E8	1.000	norm	high		
+2.04	0003:031D	0034D	36	_TEXT	dosfattr	__dos_getfileattr	map:130	relocated	0000:0345	1.000	norm	high		
+2.04	0003:0341	00371	33	_TEXT	dosfattr	__dos_setfileattr	map:130	relocated	0000:0369	1.000	norm	high		
+2.04	0003:0367	00397	90	_TEXT	exit			relocated	0000:038F	1.000	norm	high		
+2.04	0003:03C1	003F1	19	_TEXT	exit	_exit	map:130	identical	0000:03E9	1.000	bytes	high		
+2.04	0003:03D4	00404	22	_TEXT	exit	__exit	map:130	identical	0000:03FC	1.000	bytes	high		
+2.04	0003:040C	0043C	23	_TEXT	f_lxmul	LXMUL@	map:130	identical	0000:0434	1.000	bytes	high		
+2.04	0003:0423	00453	28	_TEXT	f_scopy	SCOPY@	map:130	identical	0000:044B	1.000	bytes	high		
+2.04	0003:043F	0046F	23	_TEXT	getdate	_getdate	map:130	identical	0000:0467	1.000	bytes	high		
+2.04	0003:0456	00486	23	_TEXT	getdate	_gettime	map:130	identical	0000:047E	1.000	bytes	high		
+2.04	0003:046D	0049D	19	_TEXT	getvect	_getvect	map:130	identical	0000:0495	1.000	bytes	high		
+2.04	0003:0480	004B0	21	_TEXT	getvect	_setvect	map:130	identical	0000:04A8	1.000	bytes	high		
+2.04	0003:0495	004C5	3	_TEXT	h_ldiv	N_LDIV@	map:130	identical	0000:04BD	1.000	callgraph	medium		
+2.04	0003:0498	004C8	149	_TEXT	h_ldiv			identical	0000:04C0	1.000	bytes	high		
+2.04	0003:049F	004CF	150	_TEXT	h_ldiv			identical	0000:04C7	1.000	bytes	high		
+2.04	0003:04A4	004D4	3	_TEXT	h_ldiv	N_LMOD@	map:130	identical	0000:04C4	1.000	norm	high		
+2.04	0003:04A7	004D7	150	_TEXT	h_ldiv			changed	0000:04CC	0.979	order	medium		
+2.04	0003:04AF	004DF	148	_TEXT	h_ldiv	LUMOD@	map:130	identical	0000:04D7	1.000	bytes	high		
+2.04	0003:0543	00573	3	_TEXT	h_llsh	N_LXLSH@	map:130	identical	0000:056B	1.000	bytes	high		
+2.04	0003:0546	00576	30	_TEXT	h_llsh	LXLSH@	map:130	identical	0000:056E	1.000	bytes	high		
+2.04	0003:0567	00597	30	_TEXT	h_lursh	LXURSH@	map:130	identical	0000:058F	1.000	bytes	high		
+2.04	0003:0585	005B5	77	_TEXT	h_padd			identical	0000:05AD	1.000	bytes	high		
+2.04	0003:05EB	0061B	33	_TEXT	h_spush	SPUSH@	map:130	removed						
+2.04	0003:060C	0063C	62	_TEXT	ioerror	__IOERROR	map:130	relocated	0000:060D	1.000	norm	high		
+2.04	0003:064A	0067A	20	_TEXT	ioerror	__DOSERROR	map:130	identical	0000:064B	1.000	bytes	high		
+2.04	0003:065E	0068E	21	_TEXT	isatty	_isatty	map:130	identical	0000:065F	1.000	bytes	high		
+2.04	0003:0673	006A3	130	_TEXT	longtoa	__LONGTOA	map:130	identical	0000:0674	1.000	bytes	high		
+2.04	0003:06F5	00725	36	_TEXT	longtoa	__UTOA	map:130	identical	0000:06F6	1.000	bytes	high		
+2.04	0003:0719	00749	45	_TEXT	lseek	_lseek	map:130	relocated	0000:071A	1.000	norm	high		
+2.04	0003:0746	00776	97	_TEXT	mkname	__MKNAME	map:130	constants	0000:0747	0.977	strings	high		TMP \| .$$$
+2.04	0003:07A7	007D7	91	_TEXT	mkname	__TMPNAM	map:130	relocated	0000:07A8	1.000	norm	high		
+2.04	0003:0802	00832	23	_TEXT	n_lxmul	N_LXMUL@	map:130	identical	0000:0B59	1.000	bytes	high		
+2.04	0003:0819	00849	33	_TEXT	n_pcmp	N_PCMP@	map:130	identical	0000:0B70	1.000	bytes	high		
+2.04	0003:083A	0086A	21	_TEXT	rand	_srand	map:130	relocated	0000:0B91	1.000	norm	high		
+2.04	0003:084F	0087F	41	_TEXT	rand	_rand	map:130	relocated	0000:0BA6	1.000	norm	high		
+2.04	0003:0878	008A8	50	_TEXT	reada	__read	map:130	relocated	0000:0BCF	1.000	norm	high		
+2.04	0003:08AA	008DA	28	_TEXT	remove	_remove	map:130	relocated	0000:0C01	1.000	callgraph	medium		
+2.04	0003:08C6	008F6	47	_TEXT	scantol			identical	0000:0C1D	1.000	bytes	high		
+2.04	0003:08F5	00925	418	_TEXT	scantol	__scantol	map:130	constants	0000:0C4C	0.994	shape	high		
+2.04	0003:0A97	00AC7	34	_TEXT	segread	_segread	map:130	identical	0000:0DEE	1.000	bytes	high		
+2.04	0003:0AB9	00AE9	23	_TEXT	setdate	_setdate	map:130	identical	0000:0E10	1.000	bytes	high		
+2.04	0003:0AD0	00B00	23	_TEXT	setdate	_settime	map:130	identical	0000:0E27	1.000	bytes	high		
+2.04	0003:0B8B	00BBB	64	_TEXT	stime	_stime	map:130	relocated	0000:0EE2	1.000	norm	high		
+2.04	0003:0BCB	00BFB	88	_TEXT	stime	_time	map:130	relocated	0000:0F22	1.000	norm	high		
+2.04	0003:0C23	00C53	48	_TEXT	toupper	_toupper	map:130	relocated	0000:0FAA	1.000	norm	high		
+2.04	0003:0C53	00C83	28	_TEXT	unlink	_unlink	map:130	relocated	0000:0FDA	1.000	callgraph	medium		
+2.04	0003:0C87	00CB7	193	_TEXT	vprinter	__VPRINTER	map:130	relocated	0000:12C4	1.000	norm	high		
+2.04	0003:0CAE	00CDE	10	_TEXT	vprinter			identical	0000:12EB	1.000	bytes	high		
+2.04	0003:0CB7	00CE7	52	_TEXT	vprinter			identical	0000:12F4	1.000	bytes	high		
+2.04	0003:1156	01186	99	_TEXT	farheap			relocated	0000:1AA1	1.000	norm	high		
+2.04	0003:11B9	011E9	113	_TEXT	farheap			relocated	0000:1B04	1.000	norm	high		
+2.04	0003:122A	0125A	41	_TEXT	farheap			relocated	0000:1B75	1.000	norm	high		Borland C++ - Copyright 1991 Borland In…
+2.04	0003:1253	01283	55	_TEXT	farheap			relocated	0000:1B9E	1.000	norm	high		Borland C++ - Copyright 1991 Borland In…
+2.04	0003:128A	012BA	41	_TEXT	farheap	_free	map:130	relocated	0000:1BD5	1.000	norm	high		
+2.04	0003:12B3	012E3	100	_TEXT	farheap			relocated	0000:1BFE	1.000	norm	high		
+2.04	0003:1317	01347	90	_TEXT	farheap			relocated	0000:1C62	1.000	norm	high		
+2.04	0003:1371	013A1	35	_TEXT	farheap			identical	0000:1CBC	1.000	bytes	high		
+2.04	0003:1394	013C4	126	_TEXT	farheap			relocated	0000:1CDF	1.000	norm	high		
+2.04	0003:139E	013CE	125	_TEXT	farheap	_farmalloc	map:130	relocated	0000:1CE9	1.000	norm	high		
+2.04	0003:141B	0144B	124	_TEXT	farheap			relocated	0000:1D66	1.000	norm	high		
+2.04	0003:1497	014C7	100	_TEXT	farheap			relocated	0000:1DE2	1.000	norm	high		
+2.04	0003:14FB	0152B	123	_TEXT	farheap			relocated	0000:1E46	1.000	norm	high		
+2.04	0003:1502	01532	122	_TEXT	farheap	_farrealloc	map:130	relocated	0000:1E4D	1.000	norm	high		
+2.04	0003:157C	015AC	142	_TEXT	fbrk			relocated	0000:1EC7	1.000	norm	high		
+2.04	0003:160A	0163A	67	_TEXT	fbrk	__brk	map:130	relocated	0000:1F55	1.000	norm	high		
+2.04	0003:164D	0167D	143	_TEXT	fbrk	__sbrk	map:130	relocated	0000:1F98	1.000	norm	high		
+2.04	0003:16DC	0170C	53	_TEXT	int86	_int86	map:130	relocated	0000:2027	1.000	norm	high		
+2.04	0003:1711	01741	154	_TEXT	int86	_int86x	map:130	relocated	0000:205C	1.000	norm	high		
+2.04	0003:17AB	017DB	45	_TEXT	ioctl	_ioctl	map:130	relocated	0000:20F6	1.000	norm	high		
+2.04	0003:17D8	01808	301	_TEXT	_timecvt	__dostounix	map:130	relocated	0000:2123	1.000	norm	high		
+2.04	0003:1905	01935	519	_TEXT	_timecvt	__unixtodos	map:130	calls-differ	0000:2250	1.000	norm	high		
+2.04	0003:1B0C	01B3C	117	_TEXT	atol	_atol	map:130	constants	0000:2457	0.984	shape	high		
+2.04	0003:1B81	01BB1	21	_TEXT	atol	_atoi	map:130	identical	0000:24CC	1.000	bytes	high		
+2.04	0003:1B96	01BC6	33	_TEXT	chmoda	__rtl_chmod	map:130	relocated	0000:24E1	1.000	norm	high		
+2.04	0003:1BB7	01BE7	44	_TEXT	close	_close	map:130	relocated	0000:2502	1.000	norm	high		
+2.04	0003:1BE3	01C13	34	_TEXT	closea	__rtl_close	map:130	relocated	0000:252E	1.000	norm	high		
+2.04	0003:1C05	01C35	17	_TEXT	closea	__close	map:130	identical	0000:2550	1.000	bytes	high		
+2.04	0003:1C16	01C46	125	_TEXT	eof	_eof	map:130	relocated	0000:2561	1.000	norm	high		
+2.04	0003:1C93	01CC3	192	_TEXT	fclose	_fclose	map:130	relocated	0000:25DE	1.000	norm	high		
+2.04	0003:1D53	01D83	209	_TEXT	fflush	_fflush	map:130	relocated	0000:269E	1.000	norm	high		
+2.04	0003:1E24	01E54	154	_TEXT	fgets	_fgets	map:130	identical	0000:276F	1.000	bytes	high		
+2.04	0003:1EBE	01EEE	55	_TEXT	findfirs	_findfirst	map:130	relocated	0000:2809	1.000	norm	high		
+2.04	0003:1EF5	01F25	49	_TEXT	findfirs	_findnext	map:130	relocated	0000:2840	1.000	norm	high		
+2.04	0003:1F26	01F56	69	_TEXT	flength	_filelength	map:130	relocated	0000:2871	1.000	norm	high		
+2.04	0003:1F6B	01F9B	76	_TEXT	flushall	_flushall	map:130	data-moved	0000:28B6	0.970	shape	high		
+2.04	0003:1FB7	01FE7	212	_TEXT	fopen			constants	0000:2902	0.987	shape	high		
+2.04	0003:208B	020BB	210	_TEXT	fopen	__OPENFP	map:130	relocated	0000:29D6	1.000	norm	high		
+2.04	0003:215D	0218D	77	_TEXT	fopen	__GETFP	map:130	data-moved	0000:2AA8	0.938	shape	high		
+2.04	0003:21AA	021DA	57	_TEXT	fopen	_fopen	map:130	identical	0000:2AF5	1.000	bytes	high		
+2.04	0003:21E3	02213	85	_TEXT	fputs	_fputs	map:130	relocated	0000:2B2E	1.000	norm	high		
+2.04	0003:2238	02268	283	_TEXT	fread			relocated	0000:2B83	1.000	norm	high		
+2.04	0003:2353	02383	84	_TEXT	fread	_fread	map:130	relocated	0000:2C9E	1.000	norm	high		
+2.04	0003:23A7	023D7	137	_TEXT	fseek			identical	0000:2CF2	1.000	bytes	high		
+2.04	0003:2430	02460	130	_TEXT	fseek	_fseek	map:130	relocated	0000:2D7B	1.000	norm	high		
+2.04	0003:24B2	024E2	225	_TEXT	fseek	_ftell	map:130	relocated	0000:2DFD	1.000	norm	high		
+2.04	0003:2593	025C3	153	_TEXT	fwrite	_fwrite	map:130	relocated	0000:2EDE	1.000	norm	high		
+2.04	0003:262C	0265C	69	_TEXT	getc			data-moved	0000:2F77	0.968	shape	high		
+2.04	0003:2671	026A1	123	_TEXT	getc			relocated	0000:2FBC	1.000	norm	high		
+2.04	0003:26EC	0271C	25	_TEXT	getc	__fgetc	map:130	identical	0000:3037	1.000	bytes	high		
+2.04	0003:2708	02738	249	_TEXT	getc	_fgetc	map:130	constants	0000:3053	0.989	shape	high		
+2.04	0003:2811	02841	112	_TEXT	getenv	_getenv	map:130	relocated	0000:315C	1.000	norm	high		
+2.04	0003:2881	028B1	36	_TEXT	memcpy	_memcpy	map:130	identical	0000:31F4	1.000	bytes	high		
+2.04	0003:28A5	028D5	38	_TEXT	memset	_setmem	map:130	identical	0000:3218	1.000	bytes	high		
+2.04	0003:28CB	028FB	34	_TEXT	memset	_memset	map:130	identical	0000:323E	1.000	bytes	high		
+2.04	0003:28ED	0291D	31	_TEXT	open			relocated	0000:32D7	1.000	norm	high		
+2.04	0003:290C	0293C	22	_TEXT	open			identical	0000:32F6	1.000	bytes	high		
+2.04	0003:2922	02952	394	_TEXT	open	_open	map:130	relocated	0000:330C	1.000	norm	high		
+2.04	0003:2AAC	02ADC	83	_TEXT	opena	__rtl_open	map:130	relocated	0000:3496	1.000	norm	high		
+2.04	0003:2AFF	02B2F	25	_TEXT	opena	__open	map:130	identical	0000:34E9	1.000	bytes	high		
+2.04	0003:2B18	02B48	145	_TEXT	perror	_perror	map:130	data-moved	0000:3502	0.910	strings	high		Unknown error
+2.04	0003:2BA9	02BD9	31	_TEXT	printf	_printf	map:130	data-moved	0000:3593	0.889	shape	high		
+2.04	0003:2BC8	02BF8	32	_TEXT	putc	__fputc	map:130	identical	0000:35B2	1.000	bytes	high		
+2.04	0003:2BE8	02C18	395	_TEXT	putc	_fputc	map:130	constants	0000:35D2	0.987	shape	high		
+2.04	0003:2D73	02DA3	24	_TEXT	putc	_fputchar	map:130	data-moved	0000:375D	0.933	shape	high		
+2.04	0003:2D8B	02DBB	523	_TEXT	putc	__FPUTN	map:130	relocated	0000:3775	1.000	norm	high		
+2.04	0003:2F96	02FC6	207	_TEXT	read	___read	map:130	relocated	0000:3980	1.000	norm	high		
+2.04	0003:3065	03095	3	_TEXT	readu	_read	map:130	identical	0000:3A4F	1.000	bytes	high		
+2.04	0003:3068	03098	289	_TEXT	setvbuf	_setvbuf	map:130	constants	0000:3A52	0.970	shape	high		
+2.04	0003:3189	031B9	69	_TEXT	sprintf			relocated	0000:3B73	1.000	norm	high		
+2.04	0003:31CE	031FE	38	_TEXT	sprintf	_sprintf	map:130	data-moved	0000:3BB8	0.950	shape	high		
+2.04	0003:31F4	03224	37	_TEXT	sprintf	_vsprintf	map:130	data-moved	0000:3BDE	0.947	shape	high		
+2.04	0003:3219	03249	63	_TEXT	strcat	_strcat	map:130	identical	0000:3C03	1.000	bytes	high		
+2.04	0003:3258	03288	63	_TEXT	strchr	_strchr	map:130	identical	0000:3C42	1.000	bytes	high		
+2.04	0003:3297	032C7	41	_TEXT	strcpy	_strcpy	map:130	identical	0000:3CB1	1.000	bytes	high		
+2.04	0003:32C0	032F0	65	_TEXT	stricmp	_stricmp	map:130	identical	0000:3CDA	1.000	bytes	high		
+2.04	0003:3301	03331	33	_TEXT	strlen	_strlen	map:130	identical	0000:3D1B	1.000	bytes	high		
+2.04	0003:3322	03352	49	_TEXT	strncpy	_strncpy	map:130	identical	0000:3D3C	1.000	bytes	high		
+2.04	0003:3353	03383	68	_TEXT	strnicmp	_strnicmp	map:130	identical	0000:3D6D	1.000	bytes	high		
+2.04	0003:3397	033C7	41	_TEXT	strtoul			identical	0000:3DB1	1.000	bytes	high		
+2.04	0003:33C0	033F0	15	_TEXT	strtoul			identical	0000:3DDA	1.000	bytes	high		
+2.04	0003:33CF	033FF	175	_TEXT	strtoul	_strtoul	map:130	constants	0000:3DE9	0.970	shape	high		
+2.04	0003:347E	034AE	29	_TEXT	timecvt	_dostounix	map:130	relocated	0000:3E98	1.000	norm	high		
+2.04	0003:349B	034CB	35	_TEXT	timecvt	_unixtodos	map:130	relocated	0000:3EB5	1.000	norm	high		
+2.04	0003:34BE	034EE	508	_TEXT	tzset	_tzset	map:130	data-moved	0000:3ED8	0.995	strings	high		EST \| EDT
+2.04	0003:36BA	036EA	236	_TEXT	tzset	__ISDST	map:130	relocated	0000:40D4	1.000	norm	high		
+2.04	0003:37A6	037D6	358	_TEXT	write	___write	map:130	relocated	0000:41C0	1.000	norm	high		
+2.04	0003:390C	0393C	63	_TEXT	writea	__rtl_write	map:130	relocated	0000:4326	1.000	norm	high		
+2.04	0003:394B	0397B	28	_TEXT	writea	__write	map:130	identical	0000:4365	1.000	bytes	high		
+2.04	0003:3967	03997	66	_TEXT	xfclose	__xfclose	map:130	data-moved	0000:4381	0.966	shape	high		
+2.04	0003:39A9	039D9	63	_TEXT	xfflush	__xfflush	map:130	data-moved	0000:43C3	0.964	shape	high		
+2.04	0003:39E8	03A18	41	_TEXT	bioskey	_bioskey	map:130	identical	0000:7A7A	1.000	bytes	high		
+2.04	0003:3A11	03A41	49	_TEXT	crtinit			identical	0000:7AA3	1.000	bytes	high		
+2.04	0003:3A42	03A72	18	_TEXT	crtinit			identical	0000:7AD4	1.000	bytes	high		
+2.04	0003:3A54	03A84	143	_TEXT	crtinit	__VideoInt	map:130	identical	0000:7AE6	1.000	bytes	high		
+2.04	0003:3B04	03B34	198	_TEXT	crtinit	__crtinit	map:130	relocated	0000:7B96	1.000	norm	high		COMPAQ
+2.04	0003:3BE9	03C19	5	_TEXT	delay			identical	0000:7C7B	1.000	bytes	high		
+2.04	0003:3BEE	03C1E	30	_TEXT	delay			identical	0000:7C80	1.000	bytes	high		
+2.04	0003:3C0C	03C3C	49	_TEXT	delay			relocated	0000:7C9E	1.000	norm	high		
+2.04	0003:3C3D	03C6D	97	_TEXT	delay	_delay	map:130	relocated	0000:7CCF	1.000	norm	high		
+2.04	0003:3C9E	03CCE	77	_TEXT	gotoxy	_gotoxy	map:130	relocated	0000:7D30	1.000	norm	high		
+2.04	0003:3E1A	03E4A	32	_TEXT	setblock	_setblock	map:130	relocated	0000:7EAC	1.000	norm	high		
+2.04	0003:3E92	03EC2	48	_TEXT	sound	_sound	map:130	identical	0000:7F24	1.000	bytes	high		
+2.04	0003:3EC2	03EF2	11	_TEXT	sound	_nosound	map:130	identical	0000:7F54	1.000	bytes	high		
+2.04	03EF:000E	03EFE	718	PLAYGAME_TEXT	playgame.c	_main	map:8	changed	0826:0347	0.588	callgraph	low		ShowVideoMemory \|   (Q)uit \| NOT ENOUGH MEMORY! \| NotInit \| config \| MicroChannel Bus Detected!\n \| .gam \| You are missing %s.gam!  I can't do any…
+2.04	03EF:02DC	041CC	906	PLAYGAME_TEXT	playgame.c			removed						GMtitle.gif \| .cmf \| snd\ \| You are missing Game Maker's Title Scre…
+2.04	03EF:0891	04781	140	PLAYGAME_TEXT	playgame.c			relocated	0826:13AC	1.000	norm	high		
+2.04	03EF:091D	0480D	174	PLAYGAME_TEXT	playgame.c			changed	0826:1438	0.850	strings	high		Play \| Read Instructions \| Read Storyline \| See Credits \| See Highest Scores \| Quit
+2.04	03EF:09CB	048BB	43	PLAYGAME_TEXT	playgame.c			identical	0826:14C3	1.000	bytes	high		Paradise
+2.04	03EF:09F6	048E6	703	PLAYGAME_TEXT	playgame.c			removed						Paradise \| .cmf \| snd\ \| .txt \| gam\
+2.04	03EF:0CB5	04BA5	1069	PLAYGAME_TEXT	playgame.c			removed						
+2.04	03EF:0D85	04C75	861	PLAYGAME_TEXT	playgame.c			changed	0826:2117	0.482	callgraph	low		
+2.04	03EF:10EE	04FDE	593	PLAYGAME_TEXT	playgame.c			changed	0826:27DC	0.536	callgraph	low		
+2.04	03EF:1353	05243	1436	PLAYGAME_TEXT	playgame.c			removed						.sav \| You have not saved a game! \| Old Game Loaded! \|   (Q)uit \| NOT ENOUGH MEMORY! \| pal\ \| .pal \| blk\ \| .bbl \| mon\ \| .mon \| .mbl \| .cbl \| snd\ \| .snd \| .cmf
+2.04	03EF:18EF	057DF	534	PLAYGAME_TEXT	playgame.c			changed	0826:3709	0.529	callgraph	low		.sav \| I cannot save your game! \| Game Saved!
+2.04	03EF:1B05	059F5	612	PLAYGAME_TEXT	playgame.c			changed	0826:3AB7	0.205	callgraph	low		      G A M E - M A K E R \|           Version 2.04    \| Recreational Software Designs \| [redacted: address or phone] \| This game was made with GAME- \| MAKER.  No programming needed! \| Design your own worlds, mon-   \| sters, characters, sounds...   \| Game-Maker software, documen-  \| tation,…
+2.04	03EF:1D69	05C59	210	PLAYGAME_TEXT	playgame.c			removed						.txt \| gmhelp \| gam\ \| No game-specific help included
+2.04	03EF:1E3B	05D2B	707	PLAYGAME_TEXT	playgame.c			changed	0826:3DC8	0.774	strings	high		Score:     %ld \| Money:     %d \| Hitpoints: %d \| Lives:     %d \| Elapsed Time: %02ld:%02ld:%02ld.%02ld
+2.04	03EF:20FE	05FEE	617	PLAYGAME_TEXT	playgame.c			changed	0826:4056	0.470	strings	high		Missing File: \| The file %s is \| missing or cannot be opened. \| MORE...
+2.04	03EF:2367	06257	738	PLAYGAME_TEXT	playgame.c			changed	0826:4285	0.630	callgraph	low		This machine does not have a   \| game port installed!     You   \| cannot configure a joystick    \| until you have installed a     \| game port and joystick.        \| Move joystick all the way Left \| and Forward.  Press either     \| joystick button when there.    \| Stick minimum (%3d,%3d) \| …
+2.04	03EF:2649	06539	102	PLAYGAME_TEXT	playgame.c			changed	0826:458F	0.854	callgraph	medium		
+2.04	03EF:26AF	0659F	216	PLAYGAME_TEXT	playgame.c			changed	0826:4603	0.971	callgraph	medium		
+2.04	03EF:2787	06677	944	PLAYGAME_TEXT	playgame.c			changed	0826:46DD	0.708	strings	high		Choose object to drop \| Use arrow keys to select, \| <Enter> to accept, <ESC>  \| to quit without dropping.
+2.04	03EF:2B49	06A39	41	PLAYGAME_TEXT	playgame.c			relocated	0826:4A98	1.000	norm	high		
+2.04	03EF:2B72	06A62	271	PLAYGAME_TEXT	playgame.c			changed	0826:4AC1	0.985	callgraph	medium		
+2.04	03EF:2C81	06B71	97	PLAYGAME_TEXT	playgame.c			changed	0826:4BD4	0.957	callgraph	medium		
+2.04	03EF:2CE2	06BD2	272	PLAYGAME_TEXT	playgame.c	minfo::draw(int)	map:8	relocated	0826:4C39	1.000	norm	high		
+2.04	03EF:2DF2	06CE2	81	PLAYGAME_TEXT	playgame.c	minfo::erase()	map:8	relocated	0826:4D49	1.000	norm	high		
+2.04	03EF:2E43	06D33	444	PLAYGAME_TEXT	playgame.c			constants	0826:4D9A	0.975	shape	high		
+2.04	03EF:2FFF	06EEF	1765	PLAYGAME_TEXT	playgame.c			changed	0826:4F56	0.790	callgraph	medium		
+2.04	03EF:36E4	075D4	75	PLAYGAME_TEXT	playgame.c			relocated	0826:55C9	1.000	norm	high		
+2.04	03EF:372F	0761F	433	PLAYGAME_TEXT	playgame.c	minfo::chkhorizwalls(coord2d far*,coord2d far*)	map:8	changed	0826:5614	0.954	callgraph	medium		
+2.04	03EF:38E0	077D0	445	PLAYGAME_TEXT	playgame.c	minfo::chkvertwalls(coord2d far*,coord2d far*)	map:8	changed	0826:57D1	0.955	callgraph	medium		
+2.04	03EF:3A9D	0798D	225	PLAYGAME_TEXT	playgame.c	minfo::chkwalls(coord2d far*)	map:8	changed	0826:599C	0.960	callgraph	medium		
+2.04	03EF:3B7E	07A6E	97	PLAYGAME_TEXT	playgame.c			changed	0826:5A83	0.927	callgraph	medium		
+2.04	03EF:3BDF	07ACF	590	PLAYGAME_TEXT	playgame.c			changed	0826:5AE9	0.870	callgraph	medium		
+2.04	03EF:3E2D	07D1D	534	PLAYGAME_TEXT	playgame.c			changed	0826:5D5C	0.935	callgraph	medium		
+2.04	03EF:4043	07F33	756	PLAYGAME_TEXT	playgame.c			changed	0826:5F7B	0.866	callgraph	medium		
+2.04	03EF:4337	08227	2670	PLAYGAME_TEXT	playgame.c			changed	0826:6283	0.971	callgraph	medium		
+2.04	03EF:4DA5	08C95	500	PLAYGAME_TEXT	playgame.c			relocated	0826:6D2E	1.000	norm	high		
+2.04	03EF:4F99	08E89	405	PLAYGAME_TEXT	playgame.c	minfo::bresenhams(int)	map:8	changed	0826:6F22	0.650	callgraph	low		
+2.04	03EF:512E	0901E	120	PLAYGAME_TEXT	playgame.c	minfo::disttoplace(coord2d)	map:8	identical	0826:7115	1.000	callgraph	medium		
+2.04	03EF:51A6	09096	120	PLAYGAME_TEXT	playgame.c			identical	0826:718D	1.000	norm	high		
+2.04	03EF:521E	0910E	228	PLAYGAME_TEXT	playgame.c			relocated	0826:7205	1.000	norm	high		
+2.04	03EF:5302	091F2	355	PLAYGAME_TEXT	playgame.c			relocated	0826:72E9	1.000	norm	high		
+2.04	03EF:5465	09355	102	PLAYGAME_TEXT	playgame.c			identical	0826:744C	1.000	bytes	high		
+2.04	03EF:54CB	093BB	210	PLAYGAME_TEXT	playgame.c			relocated	0826:74B2	1.000	norm	high		
+2.04	03EF:559D	0948D	233	PLAYGAME_TEXT	playgame.c			relocated	0826:7584	1.000	norm	high		
+2.04	03EF:5686	09576	53	PLAYGAME_TEXT	playgame.c			changed	0826:766D	0.919	callgraph	medium		
+2.04	03EF:56BB	095AB	331	PLAYGAME_TEXT	playgame.c			changed	0826:76A6	0.941	callgraph	medium		
+2.04	03EF:5806	096F6	571	PLAYGAME_TEXT	playgame.c			changed	0826:77FA	0.832	callgraph	medium		
+2.04	03EF:5A41	09931	115	PLAYGAME_TEXT	playgame.c			relocated	0826:7A74	1.000	norm	high		
+2.04	03EF:5AB4	099A4	236	PLAYGAME_TEXT	playgame.c			relocated	0826:7AE7	1.000	norm	high		
+2.04	03EF:5BA0	09A90	112	PLAYGAME_TEXT	playgame.c			identical	0826:7BD3	1.000	bytes	high		
+2.04	03EF:5C10	09B00	301	PLAYGAME_TEXT	playgame.c			relocated	0826:7C43	1.000	norm	high		
+2.04	03EF:5D3D	09C2D	322	PLAYGAME_TEXT	playgame.c			relocated	0826:7D70	1.000	norm	high		
+2.04	03EF:5E7F	09D6F	297	PLAYGAME_TEXT	playgame.c			relocated	0826:7EB2	1.000	norm	high		
+2.04	03EF:5FA8	09E98	363	PLAYGAME_TEXT	playgame.c			relocated	0826:7FDB	1.000	norm	high		
+2.04	03EF:6113	0A003	288	PLAYGAME_TEXT	playgame.c			relocated	0826:8146	1.000	norm	high		
+2.04	03EF:6233	0A123	450	PLAYGAME_TEXT	playgame.c			relocated	0826:8266	1.000	norm	high		
+2.04	03EF:63F5	0A2E5	516	PLAYGAME_TEXT	playgame.c			relocated	0826:8428	1.000	norm	high		
+2.04	03EF:65F9	0A4E9	171	PLAYGAME_TEXT	playgame.c			relocated	0826:862C	1.000	norm	high		
+2.04	03EF:66A4	0A594	165	PLAYGAME_TEXT	playgame.c			constants	0826:86D7	0.905	shape	high		
+2.04	03EF:6749	0A639	60	PLAYGAME_TEXT	playgame.c			relocated	0826:877C	1.000	norm	high		
+2.04	03EF:6785	0A675	401	PLAYGAME_TEXT	playgame.c			relocated	0826:87B8	1.000	norm	high		
+2.04	03EF:6916	0A806	1103	PLAYGAME_TEXT	playgame.c			changed	0826:8949	0.948	callgraph	medium		
+2.04	03EF:6D65	0AC55	155	PLAYGAME_TEXT	playgame.c			relocated	0826:8DF3	1.000	norm	high		
+2.04	03EF:6E00	0ACF0	157	PLAYGAME_TEXT	playgame.c			relocated	0826:8E8E	1.000	norm	high		
+2.04	03EF:6E9D	0AD8D	207	PLAYGAME_TEXT	playgame.c			changed	0826:8F2B	0.810	callgraph	medium		
+2.04	03EF:6F6C	0AE5C	484	PLAYGAME_TEXT	playgame.c			changed	0826:900C	0.960	callgraph	medium		
+2.04	03EF:7150	0B040	168	PLAYGAME_TEXT	playgame.c			changed	0826:91F8	0.764	callgraph	medium		  (Q)uit \| NOT ENOUGH MEMORY!
+2.04	03EF:71F8	0B0E8	1079	PLAYGAME_TEXT	playgame.c			changed	0826:92AD	0.341	order	low		.pal \| pal\ \| map\ \| .map \| blk\ \| .bbl \| mon\ \| .mon \| .mbl \| chr\ \| .chr \| .cbl \| I am missing these game files: \| Hit a key... \| snd\ \| .snd \| .cmf
+2.04	03EF:762F	0B51F	148	PLAYGAME_TEXT	playgame.c			changed	0826:9B10	0.778	callgraph	medium		
+2.04	03EF:76C3	0B5B3	119	PLAYGAME_TEXT	playgame.c			changed	0826:9B86	0.750	callgraph	medium		
+2.04	03EF:773A	0B62A	117	PLAYGAME_TEXT	playgame.c			changed	0826:9BDF	0.635	callgraph	low		
+2.04	03EF:77AF	0B69F	139	PLAYGAME_TEXT	playgame.c			changed	0826:9C42	0.792	callgraph	medium		
+2.04	03EF:783A	0B72A	149	PLAYGAME_TEXT	playgame.c			changed	0826:9CAF	0.972	callgraph	medium		
+2.04	03EF:78CF	0B7BF	81	PLAYGAME_TEXT	playgame.c			changed	0826:9D3B	0.881	callgraph	medium		
+2.04	03EF:7920	0B810	440	PLAYGAME_TEXT	playgame.c			constants	0826:9D90	0.981	shape	high		
+2.04	03EF:7B69	0BA59	453	PLAYGAME_TEXT	playgame.c			relocated	0826:9FDB	1.000	norm	high		
+2.04	03EF:7D2E	0BC1E	93	PLAYGAME_TEXT	playgame.c			relocated	0826:A1A0	1.000	norm	high		
+2.04	03EF:7D8B	0BC7B	41	PLAYGAME_TEXT	playgame.c			changed	0826:A1FD	0.919	callgraph	medium		
+2.04	03EF:7DB4	0BCA4	164	PLAYGAME_TEXT	playgame.c			changed	0826:A22A	0.954	callgraph	medium		
+2.04	03EF:7F13	0BE03	112	PLAYGAME_TEXT	playgame.c			constants	0826:A3B8	0.979	shape	high		
+2.04	03EF:7F83	0BE73	18	PLAYGAME_TEXT	playgame.c			changed	0826:A428	0.889	order	medium		
+2.04	03EF:7F95	0BE85	20	PLAYGAME_TEXT	playgame.c			changed	0826:A43E	0.897	order	medium		
+2.04	03EF:7FA9	0BE99	97	PLAYGAME_TEXT	playgame.c			changed	0826:A456	0.740	callgraph	medium		
+2.04	03EF:800A	0BEFA	760	PLAYGAME_TEXT	playgame.c			changed	0826:A4BD	0.892	callgraph	medium		
+2.04	03EF:8302	0C1F2	121	PLAYGAME_TEXT	playgame.c			changed	0826:A839	0.929	callgraph	medium		
+2.04	03EF:837B	0C26B	50	PLAYGAME_TEXT	playgame.c			identical	0826:A8B1	1.000	bytes	high		
+2.04	03EF:83AD	0C29D	864	PLAYGAME_TEXT	playgame.c			changed	0826:A8E3	0.935	callgraph	medium		Auto-Detect \| VGA Chip Type \| Sound And Music \| Port  Interrupt \| Sound Driver \| None \| Sound Blaster \| Help \| Done
+2.04	03EF:870D	0C5FD	3238	PLAYGAME_TEXT	playgame.c			changed	0826:AC35	0.856	callgraph	medium		Auto-Detect \| NotInit \| VGA Chip Type \| Sound And Music \| Port  Interrupt \| Sound Driver \| None \| Sound Blaster \| Help \| Done \| config.hlp \| %s%s
+2.04	03EF:953C	0D42C	400	PLAYGAME_TEXT	playgame.c			relocated	0826:BB00	1.000	norm	high		
+2.04	03EF:96CC	0D5BC	145	PLAYGAME_TEXT	playgame.c			relocated	0826:BC90	1.000	norm	high		
+2.04	03EF:975D	0D64D	36	PLAYGAME_TEXT	playgame.c			changed	0826:BD21	0.611	callgraph	low		
+2.04	03EF:9781	0D671	64	PLAYGAME_TEXT	playgame.c			changed	0826:BD53	0.900	callgraph	medium		
+2.04	0D6B:00B0	0D760	19	microcnl_TEXT	microcnl.asm	_MicroChannel	via 3.00-xfer	identical	14C9:00C8	1.000	bytes	high		
+2.04	0D77:0003	0D773	173	DIRTRECT_TEXT	dirtrect.c	adddirtyrect(int,int,int,int)	map:7	relocated	14D6:000B	1.000	norm	high		
+2.04	0D77:00B0	0D820	51	DIRTRECT_TEXT	dirtrect.c	adddirtyrect(unsigned int,int,int)	map:7	relocated	14D6:00B8	1.000	norm	high		
+2.04	0D77:00E3	0D853	69	DIRTRECT_TEXT	dirtrect.c	drawdirtyrects()	map:7	changed	14D6:00EB	0.981	callgraph	medium		
+2.04	0D77:0128	0D898	11	DIRTRECT_TEXT	dirtrect.c	cleardirtyrects()	map:7	relocated	14D6:012C	1.000	norm	high		
+2.04	0D77:0133	0D8A3	62	DIRTRECT_TEXT	dirtrect.c	initdirty()	map:7	changed	14D6:0137	0.941	callgraph	medium		
+2.04	0D77:0195	0D905	126	DIRTRECT_TEXT	dirtrect.c	svgabufscrnbox(int,int,int,int)	map:7	relocated	14D6:01AE	1.000	norm	high		
+2.04	0D77:0213	0D983	49	DIRTRECT_TEXT	dirtrect.c	svgabuftoscrn(unsigned int,int,int)	map:7	relocated	14D6:022C	1.000	norm	high		
+2.04	0D9B:0004	0D9B4	177	membloca_TEXT	membloca.asm	_BufDrawSpBlkAddr	map:8	relocated	14FB:000E	1.000	norm	high		
+2.04	0D9B:00B5	0DA65	191	membloca_TEXT	membloca.asm	_BufDrawSpBlk	map:8	relocated	14FB:00BF	1.000	norm	high		
+2.04	0D9B:0174	0DB24	39	membloca_TEXT	membloca.asm	_BufPoint	map:8	relocated	14FB:017E	1.000	norm	high		
+2.04	0D9B:019B	0DB4B	80	membloca_TEXT	membloca.asm	_BufDrawBlk	map:8	relocated	14FB:01A5	1.000	norm	high		
+2.04	0D9B:01EB	0DB9B	65	membloca_TEXT	membloca.asm	_BufDrawBlkAddr	map:8	relocated	14FB:01F5	1.000	norm	high		
+2.04	0D9B:022C	0DBDC	55	membloca_TEXT	membloca.asm	_BufGetBlk	map:8	relocated	14FB:0236	1.000	norm	high		
+2.04	0D9B:0263	0DC13	41	membloca_TEXT	membloca.asm	_BufGetBlkAddr	map:8	relocated	14FB:026D	1.000	norm	high		
+2.04	0D9B:028C	0DC3C	44	membloca_TEXT	membloca.asm	_BufDraw4x4Addr	map:8	relocated	14FB:0296	1.000	norm	high		
+2.04	0DC6:0008	0DC68	67	MOUSEFN_TEXT	oldmouse.asm	initmouse()	map:7	relocated	1527:0002	1.000	norm	high		
+2.04	0DC6:004B	0DCAB	55	MOUSEFN_TEXT	oldmouse.asm	moucur(int)	map:7	relocated	1527:0045	1.000	norm	high		
+2.04	0DC6:0082	0DCE2	47	MOUSEFN_TEXT	oldmouse.asm	setmoupos(int,int)	map:7	relocated	1527:007C	1.000	norm	high		
+2.04	0DC6:00B1	0DD11	53	MOUSEFN_TEXT	oldmouse.asm	moustats(int far*,int far*,int far*)	map:7	relocated	1527:00AB	1.000	norm	high		
+2.04	0DC6:00E6	0DD46	177	MOUSEFN_TEXT	oldmouse.asm	moucurbox(int,int,int,int)	map:7	relocated	1527:00E0	1.000	norm	high		
+2.04	0DC6:0197	0DDF7	57	MOUSEFN_TEXT	oldmouse.asm	getmoubox(int far*,int far*,int far*,int far*)	map:7	relocated	1527:0191	1.000	norm	high		
+2.04	0DC6:01D2	0DE32	41	MOUSEFN_TEXT	oldmouse.asm	mouclearbut()	map:7	relocated	1527:01CC	1.000	norm	high		
+2.04	0DE5:000B	0DE5B	188	SOUNDC_TEXT	soundc.c	detectcard(soundcards far*,unsigned int far*,unsigned int far*,char far*)	map:6	changed	1546:0005	0.734	callgraph	medium		SOUND \| sndblast.drv
+2.04	0DE5:00C7	0DF17	425	SOUNDC_TEXT	soundc.c	initsbvocdriver(configstruct far*)	map:6	changed	1546:0071	0.969	callgraph	medium		
+2.04	0DE5:0270	0E0C0	45	SOUNDC_TEXT	soundc.c			relocated	1546:0219	1.000	norm	high		
+2.04	0DE5:029D	0E0ED	403	SOUNDC_TEXT	soundc.c	playsbvocfile(char far*)	map:6	changed	1546:0246	0.892	callgraph	medium		.voc \| snd\
+2.04	0DE5:0430	0E280	12	SOUNDC_TEXT	soundc.c	stopsound()	map:6	changed	1546:03DC	0.875	callgraph	medium		
+2.04	0DE5:04A6	0E2F6	316	SOUNDC_TEXT	soundc.c			relocated	1546:04A7	1.000	norm	high		BLASTER
+2.04	0DE5:0601	0E451	267	SOUNDC_TEXT	soundc.c	loadsnd(char far*,char far*,char far*,unsigned char far*,char far*,int)	map:6	constants	1546:0602	0.940	shape	high		(C)ontinue \| Can't Find file!
+2.04	0DE5:070C	0E55C	623	SOUNDC_TEXT	soundc.c	savesnd(char far*,char far*,char far*,char far*,char far*)	map:6	removed						(C)ontinue save    (D)o not save \| This file already exists! Saving now wi… \| (E)xit (R)etry \| Unable to Save!
+2.04	0E7C:000B	0E7CB	2668	WINDIO_TEXT	windio.c	getfname(int,int,char far*,char far*,char far*)	map:11	changed	15BE:00AF	0.451	callgraph	low		(E)xit. \| Out Of Memory! \| *%s \| (R)eenter name (E)xit \| Sorry, the file does not exist!
+2.04	0E7C:0B5E	0F31E	407	WINDIO_TEXT	windio.c			changed	1C63:000A	0.420	callgraph	low		%s*.* \| d                               \| (C)ontinue \| This directory doesn't exist!
+2.04	0E7C:0CF5	0F4B5	409	WINDIO_TEXT	windio.c	getstr(int,int,int,char far*)	map:11	changed	15BE:0CDD	0.805	callgraph	medium		
+2.04	0E7C:0E8E	0F64E	168	WINDIO_TEXT	windio.c	qwindow(int,int,int,char far*,char far*)	map:11	relocated	15BE:0E41	1.000	norm	high		
+2.04	0E7C:0F36	0F6F6	727	WINDIO_TEXT	windio.c	errorbox(char far*,char far*,unsigned int)	map:11	constants	15BE:0EE9	0.993	shape	high		
+2.04	0E7C:120D	0F9CD	488	WINDIO_TEXT	windio.c	vertmenu(int,int,int,int,int)	map:11	constants	15BE:11C0	0.980	shape	high		
+2.04	0E7C:13F5	0FBB5	505	WINDIO_TEXT	windio.c	horizmenu(int,int,int,...)	map:11	constants	15BE:13A8	0.985	shape	high		
+2.04	0E7C:1484	0FC44	381	WINDIO_TEXT	windio.c			constants	15BE:1437	0.994	shape	high		
+2.04	0E7C:1683	0FE43	130	WINDIO_TEXT	windio.c			relocated	15BE:1636	1.000	norm	high		
+2.04	0E7C:1705	0FEC5	114	WINDIO_TEXT	windio.c			relocated	15BE:16B8	1.000	norm	high		
+2.04	0E7C:1777	0FF37	81	WINDIO_TEXT	windio.c	closemenu(int,int,int,int,char far*)	map:11	relocated	15BE:172A	1.000	norm	high		
+2.04	0E7C:17C8	0FF88	141	WINDIO_TEXT	windio.c	openmenu(int,int,int,int,char far*)	map:11	relocated	15BE:177B	1.000	norm	high		
+2.04	0E7C:1855	10015	227	WINDIO_TEXT	windio.c	loadany(char far*,char far*,char far*,unsigned int,char far*,int)	map:11	constants	15BE:1808	0.933	shape	high		(C)ontinue \| Can't Find file!
+2.04	0E7C:1938	100F8	599	WINDIO_TEXT	windio.c	saveany(char far*,char far*,char far*,unsigned int,char far*)	map:11	changed	15BE:18EB	0.631	callgraph	low		(C)ontinue save    (D)o not save \| This file already exists! Saving now wi… \| (E)xit (R)etry \| Unable to Save!
+2.04	0E7C:1B8F	1034F	186	WINDIO_TEXT	windio.c	delany(char far*,char far*,char far*)	map:11	constants	15BE:1B3E	0.913	strings	high		Are you sure you want to delete %s \|          (D)elete    (E)xit
+2.04	0E7C:1C49	10409	65	WINDIO_TEXT	windio.c			relocated	15BE:1BFB	1.000	norm	high		%s%s
+2.04	1044:000A	1044A	102	GENC_TEXT	genc.c	pausetimekey(int)	map:10	changed	1781:019B	0.729	callgraph	medium		
+2.04	1044:0070	104B0	46	GENC_TEXT	genc.c	makefilename(char far*,const char far*,const char far*,const char far*)	map:10	changed	1781:0261	0.905	strings	high		%s%s%s
+2.04	1044:009E	104DE	178	GENC_TEXT	genc.c	parsefilename(const char far*,char far*,char far*)	map:10	constants	1781:0291	0.971	shape	high		
+2.04	1044:0150	10590	26	GENC_TEXT	genc.c	getscrn(char far*)	map:10	identical	1781:03E5	1.000	bytes	high		
+2.04	1044:016A	105AA	31	GENC_TEXT	genc.c	restorescrn(char far*)	map:10	identical	1781:03FF	1.000	bytes	high		
+2.04	1044:0189	105C9	208	GENC_TEXT	genc.c	displayhelpfile(char far*)	map:10	changed	1781:041E	0.645	callgraph	low		
+2.04	1044:0259	10699	157	GENC_TEXT	genc.c	textmode()	map:10	changed	1781:04AC	0.973	callgraph	medium		
+2.04	1044:02F6	10736	157	GENC_TEXT	genc.c	graphmode()	map:10	relocated	1781:05A4	1.000	norm	high		
+2.04	1044:0393	107D3	112	GENC_TEXT	genc.c	loadspecany(char far*,char far*,char far*,unsigned int,char far*)	map:10	constants	1781:0641	0.978	shape	high		
+2.04	1044:0403	10843	42	GENC_TEXT	genc.c	swap(int far*,int far*)	map:10	identical	1781:06B1	1.000	bytes	high		
+2.04	1086:000D	1086D	499	GIFC_TEXT	gifc.c	intro(file far*,rgbdata far*)	map:4	constants	17F8:0005	0.978	strings	high		(R)eturn to Menu \| No graphics file was indicated! \| This file is not in GIF format! \| There is no image in this file!
+2.04	1086:0200	10A60	457	GIFC_TEXT	gifc.c	decode(file far*,int)	map:4	relocated	17F8:01F8	1.000	norm	high		
+2.04	1086:03C9	10C29	88	GIFC_TEXT	gifc.c			relocated	17F8:03C1	1.000	norm	high		
+2.04	1086:0421	10C81	118	GIFC_TEXT	gifc.c			relocated	17F8:0419	1.000	norm	high		
+2.04	1086:0497	10CF7	101	GIFC_TEXT	gifc.c			relocated	17F8:048F	1.000	norm	high		
+2.04	1086:04FC	10D5C	212	GIFC_TEXT	gifc.c			relocated	17F8:04F4	1.000	norm	high		Code Too LARGE, memory error 1
+2.04	1086:05D0	10E30	328	GIFC_TEXT	gifc.c			relocated	17F8:05C8	1.000	norm	high		
+2.04	1086:0726	10F86	135	GIFC_TEXT	gifc.c			relocated	17F8:071E	1.000	norm	high		
+2.04	1086:07AD	1100D	48	GIFC_TEXT	gifc.c			constants	17F8:07A5	0.909	shape	high		
+2.04	1086:07DD	1103D	445	GIFC_TEXT	gifc.c	drawbkd(char far*,rgbdata far*)	map:4	changed	17F8:07D5	0.473	callgraph	low		.bkd \| gif\ \| Error Opening %s! \| (C)ontinue \| Bad GIF File
+2.04	1086:099A	111FA	147	GIFC_TEXT	gifc.c	drawgif(char far*,rgbdata far*)	map:4	constants	17F8:09C2	0.980	shape	high		
+2.04	1128:000D	1128D	142	PALC_TEXT	palc.c	palfindcol(unsigned char,unsigned char,unsigned char,rgbdata far*)	map:8	changed	189D:0005	0.448	callgraph	low		
+2.04	1128:009B	1131B	621	PALC_TEXT	palc.c	fadeto(rgbdata far*,int)	map:8	relocated	189D:014A	1.000	norm	high		
+2.04	1128:0308	11588	588	PALC_TEXT	palc.c	fadeallto(rgbdata,int)	map:8	relocated	189D:03B7	1.000	norm	high		
+2.04	1128:0554	117D4	341	PALC_TEXT	palc.c	findforcol(rgbdata far*,char,char)	map:8	identical	189D:0603	1.000	bytes	high		
+2.04	1128:06A9	11929	378	PALC_TEXT	palc.c	rainbowcols(rgbdata far*)	map:8	identical	189D:0758	1.000	bytes	high		
+2.04	1128:0760	119E0	345	PALC_TEXT	palc.c			identical	189D:080F	1.000	bytes	high		
+2.04	1128:0823	11AA3	401	PALC_TEXT	palc.c	randcols(rgbdata far*)	map:8	relocated	189D:08D2	1.000	norm	high		
+2.04	1128:09B4	11C34	65	PALC_TEXT	palc.c	insertcol(int,unsigned char,unsigned char,unsigned char,rgbdata far*)	map:8	identical	189D:0A63	1.000	bytes	high		
+2.04	1128:09F5	11C75	199	PALC_TEXT	palc.c	initstartcols(rgbdata far*)	map:8	identical	189D:0AA4	1.000	bytes	high		
+2.04	11D3:000C	11D3C	134	SVGAC_TEXT	svgac.c	force_vga(videocards)	map:4	constants	1953:000B	0.846	strings	high		Standard \| Forcing Super VGA to %s.\n
+2.04	11D3:0092	11DC2	234	SVGAC_TEXT	svgac.c	identify_vga()	map:4	relocated	1953:0091	1.000	norm	high		Paradise Super VGA detected!\n \| Trident 8800 VGA chip detected!\n \| Trident 8900 VGA chip detected!\n \| Tseng ET4000 Super VGA chip detected!\n \| No super Vga card detected! Assuming st…
+2.04	11D3:017C	11EAC	217	SVGAC_TEXT	svgac.c			relocated	1953:017B	1.000	norm	high		761295520
+2.04	11D3:034F	1207F	65	SVGAC_TEXT	svgac.c			constants	1953:034E	0.968	shape	high		
+2.04	11D3:03A8	120D8	78	SVGAC_TEXT	svgac.c			relocated	1953:03A9	1.000	norm	high		Paradise
+2.04	11D3:03F6	12126	63	SVGAC_TEXT	svgac.c			relocated	1953:03F7	1.000	norm	high		
+2.04	11D3:0435	12165	105	SVGAC_TEXT	svgac.c			relocated	1953:0436	1.000	norm	high		VGA=
+2.04	11D3:049E	121CE	70	SVGAC_TEXT	svgac.c			relocated	1953:049F	1.000	norm	high		
+2.04	11D3:04E4	12214	62	SVGAC_TEXT	svgac.c			relocated	1953:04E5	1.000	norm	high		
+2.04	11D3:0522	12252	59	SVGAC_TEXT	svgac.c			relocated	1953:0523	1.000	norm	high		
+2.04	11D3:055D	1228D	253	SVGAC_TEXT	svgac.c			relocated	1953:055E	1.000	norm	high		ATI ULTRA
+2.04	11D3:065A	1238A	20	SVGAC_TEXT	svgac.c			relocated	1953:065B	1.000	norm	high		
+2.04	11D3:066E	1239E	86	SVGAC_TEXT	svgac.c	movewindow(unsigned char)	map:4	relocated	1953:066F	1.000	norm	high		
+2.04	11D3:06C4	123F4	226	SVGAC_TEXT	svgac.c	viewwindow(unsigned long)	map:4	removed						Paradise
+2.04	124D:0006	124D6	896	HISCOREL_TEXT	hiscorel.c			changed	19BF:0223	0.439	callgraph	low		.his \|      Congratulations! \|  You have scored number %2d \|    on the Top Ten list! \| Enter Your Name:  \|   (E)xit \|  Problem writing Top Score File \|                 Top Ten Scores \|               Hit any key to exit
+2.04	1285:0006	12856	61	SBMUSIC_TEXT	sbmusic.c	soundcard(configstruct far*)	map:5	data-moved	1A0C:0004	0.960	shape	high		
+2.04	1285:0043	12893	62	SBMUSIC_TEXT	sbmusic.c	initmusic(int far*,char far*)	map:5	relocated	1A0C:0041	1.000	norm	high		
+2.04	1285:0081	128D1	396	SBMUSIC_TEXT	sbmusic.c			data-moved	1A0C:007F	0.993	shape	high		
+2.04	1285:020D	12A5D	34	SBMUSIC_TEXT	sbmusic.c	sbfreemem()	map:5	relocated	1A0C:020B	1.000	norm	high		
+2.04	1285:022F	12A7F	22	SBMUSIC_TEXT	sbmusic.c	stopit()	map:5	relocated	1A0C:022D	1.000	norm	high		
+2.04	1285:0245	12A95	10	SBMUSIC_TEXT	sbmusic.c			relocated	1A0C:0243	1.000	callgraph	medium		
+2.04	1285:024F	12A9F	10	SBMUSIC_TEXT	sbmusic.c	resetfm()	map:5	relocated	1A0C:024D	1.000	callgraph	medium		
+2.04	1285:0259	12AA9	23	SBMUSIC_TEXT	sbmusic.c			relocated	1A0C:0257	1.000	norm	high		
+2.04	1285:045C	12CAC	135	SBMUSIC_TEXT	sbmusic.c			relocated	1A0C:045A	1.000	norm	high		
+2.04	12D3:0003	12D33	739	JSTICKC_TEXT	jstickc.c	getjoypos(char far*,int far*,configstruct far*)	map:5	relocated	1A5A:0001	1.000	norm	high		
+2.04	12D3:02E6	13016	96	JSTICKC_TEXT	jstickc.c	loadconfigdata(configstruct far*)	map:5	data-moved	1A5A:02E4	0.974	shape	high		config.dat
+2.04	12D3:0346	13076	82	JSTICKC_TEXT	jstickc.c	saveconfigdata(configstruct far*)	map:5	data-moved	1A5A:0344	0.970	shape	high		config.dat
+2.04	12D3:0398	130C8	78	JSTICKC_TEXT	jstickc.c			constants	1A5A:0396	0.964	strings	high		NotInit
+2.04	12D3:03E6	13116	63	JSTICKC_TEXT	jstickc.c	initjstick()	map:5	relocated	1A5A:03E4	1.000	norm	high		
+2.04	12D3:0425	13155	48	JSTICKC_TEXT	jstickc.c	joyclearbuts()	map:5	relocated	1A5A:0423	1.000	norm	high		
+2.04	1318:0006	13186	86	jsticka_TEXT	jsticka.asm			identical	1A9F:0004	1.000	bytes	high		
+2.04	131D:000C	131DC	36	pala_TEXT	pala.asm	_SetAllPalTo	map:4	identical	1AA4:000A	1.000	callgraph	medium		
+2.04	131D:0030	13200	24	pala_TEXT	pala.asm	_SetAllPal	map:4	identical	1AA4:002E	1.000	callgraph	medium		
+2.04	131D:0048	13218	33	pala_TEXT	pala.asm	_GetAllPal	map:4	identical	1AA4:0046	1.000	bytes	high		
+2.04	131D:0069	13239	25	pala_TEXT	pala.asm	_Palette	map:4	identical	1AA4:0067	1.000	bytes	high		
+2.04	1325:0002	13252	96	scrnrout_TEXT	scrnrout.asm	_clrbox	map:9	relocated	1AAC:0000	1.000	norm	high		
+2.04	1325:0062	132B2	102	scrnrout_TEXT	scrnrout.asm	_xchgbox	map:9	identical	1AAC:0060	1.000	bytes	high		
+2.04	1325:00C8	13318	91	scrnrout_TEXT	scrnrout.asm	_savebox	map:9	identical	1AAC:00C6	1.000	bytes	high		
+2.04	1325:0123	13373	93	scrnrout_TEXT	scrnrout.asm	_restorebox	map:9	identical	1AAC:0121	1.000	bytes	high		
+2.04	1325:019A	133EA	337	scrnrout_TEXT	scrnrout.asm	_drawbox	map:9	relocated	1AAC:0198	1.000	norm	high		
+2.04	1325:02EB	1353B	56	scrnrout_TEXT	scrnrout.asm	_copypage	map:9	identical	1AAC:02E9	1.000	bytes	high		
+2.04	1325:0323	13573	79	scrnrout_TEXT	scrnrout.asm	_writestr	map:9	identical	1AAC:0321	1.000	bytes	high		
+2.04	1325:0372	135C2	71	scrnrout_TEXT	scrnrout.asm	_writech	map:9	identical	1AAC:0370	1.000	bytes	high		
+2.04	1325:03B9	13609	38	scrnrout_TEXT	scrnrout.asm	_readch	map:9	identical	1AAC:03B7	1.000	bytes	high		
+2.04	1362:000F	1362F	83	GRAPHC_TEXT	graphc.c	gwrite(int,int,unsigned char,char far*)	map:6	identical	1AE9:000D	1.000	bytes	high		
+2.04	1362:0062	13682	111	GRAPHC_TEXT	graphc.c	gputchar(int,int,unsigned char,char)	map:6	relocated	1AE9:0060	1.000	norm	high		
+2.04	1362:00D1	136F1	612	GRAPHC_TEXT	graphc.c	gget(int,int,unsigned char,unsigned char,char far*,int)	map:6	relocated	1AE9:00CF	1.000	norm	high		
+2.04	1362:0335	13955	92	GRAPHC_TEXT	graphc.c	box(int,int,int,int,unsigned char)	map:6	identical	1AE9:0333	1.000	bytes	high		
+2.04	1362:0391	139B1	257	GRAPHC_TEXT	graphc.c	line(int,int,int,int,unsigned char)	map:6	relocated	1AE9:038F	1.000	norm	high		
+2.04	1362:0492	13AB2	308	GRAPHC_TEXT	graphc.c	draw4dat(int,int,char far*,int,int,unsigned char far*,int)	map:6	relocated	1AE9:0490	1.000	norm	high		
+2.04	13BE:0006	13BE6	62	bloca_TEXT	bloca.asm	_drawblk	map:2	relocated	1B45:0004	1.000	norm	high		
+2.04	13BE:0044	13C24	70	bloca_TEXT	bloca.asm	_getblk	map:2	relocated	1B45:0042	1.000	norm	high		
+2.04	13C6:000C	13C6C	153	svgaa_TEXT	svgaa.asm	_MoveViewScreen	map:9	relocated	1C8A:000E	1.000	norm	high		Paradise
+2.04	13C6:00A5	13D05	16	svgaa_TEXT	svgaa.asm	_GetROMFont	map:9	identical	1C8A:00A7	1.000	bytes	high		
+2.04	13C6:00B5	13D15	198	svgaa_TEXT	svgaa.asm	_SvgaBufToScrn	map:9	relocated	1C8A:011A	1.000	norm	high		
+2.04	13C6:0192	13DF2	173	svgaa_TEXT	svgaa.asm	_SetPage	map:9	relocated	1C8A:01F7	1.000	norm	high		
+2.04	13C6:023F	13E9F	64	svgaa_TEXT	svgaa.asm	_SetTridentStart	map:9	relocated	1C8A:02A4	1.000	norm	high		Paradise
+2.04	13C6:027F	13EDF	31	svgaa_TEXT	svgaa.asm	_SetTrident	map:9	identical	1C8A:02E4	1.000	bytes	high		
+2.04	13C6:029E	13EFE	33	svgaa_TEXT	svgaa.asm	_Gwritestr	map:9	identical	1C8A:0303	1.000	bytes	high		
+2.04	13C6:02BF	13F1F	70	svgaa_TEXT	svgaa.asm	_BoxFill	map:9	identical	1C8A:0324	1.000	bytes	high		
+2.04	13C6:0305	13F65	99	svgaa_TEXT	svgaa.asm	_Point	map:9	relocated	1C8A:036A	1.000	norm	high		
+2.04	13FC:0008	13FC8	39	CT_TEXT	SBCRWIO	SBC_READ_DSP_TIME	map:17	relocated	1D8A:0002	1.000	norm	high		
+2.04	13FC:002F	13FEF	40	CT_TEXT	SBCRWIO	SBC_WRITE_DSP_TIME	map:17	relocated	1D8A:0029	1.000	norm	high		
+2.04	13FC:0094	14054	21	CT_TEXT	VECTOR	SET_INT_VECTOR	map:17	identical	1D8A:008E	1.000	bytes	high		
+2.04	13FC:00A9	14069	19	CT_TEXT	VECTOR	GET_INT_VECTOR	map:17	identical	1D8A:00A3	1.000	bytes	high		
+2.04	13FC:00EA	140AA	154	CT_TEXT	cardhere	_sbc_check_card	map:17	relocated	1D8A:00E4	1.000	norm	high		
+2.04	13FC:0184	14144	33	CT_TEXT	cardhere			relocated	1D8A:017E	1.000	norm	high		
+2.04	13FC:01A5	14165	125	CT_TEXT	cardhere			constants	1D8A:019F	0.982	shape	high		
+2.04	13FC:0222	141E2	41	CT_TEXT	cardhere			relocated	1D8A:021C	1.000	norm	high		
+2.04	13FC:024B	1420B	13	CT_TEXT	cardhere			identical	1D8A:0245	1.000	bytes	high		
+2.04	13FC:0262	14222	47	CT_TEXT	dspreset	_sbc_dsp_reset	map:17	relocated	1D8A:025C	1.000	norm	high		
+2.04	13FC:0292	14252	9	CT_TEXT	midiasm	_sbfd_init	map:17	identical	1D8A:028C	1.000	bytes	high		
+2.04	13FC:029B	1425B	19	CT_TEXT	midiasm	_sbfd_instrument	map:17	identical	1D8A:0295	1.000	bytes	high		
+2.04	13FC:02AE	1426E	9	CT_TEXT	midiasm	_sbfd_off_music	map:17	identical	1D8A:02A8	1.000	bytes	high		
+2.04	13FC:02B7	14277	9	CT_TEXT	midiasm	_sbfd_reset	map:17	identical	1D8A:02B1	1.000	bytes	high		
+2.04	13FC:02C0	14280	23	CT_TEXT	midiasm	_sbfd_note_on	map:17	identical	1D8A:02BA	1.000	bytes	high		
+2.04	13FC:02D7	14297	23	CT_TEXT	midiasm	_sbfd_note_off	map:17	identical	1D8A:02D1	1.000	bytes	high		
+2.04	13FC:02EE	142AE	20	CT_TEXT	midiasm	_sbfd_program_change	map:17	identical	1D8A:02E8	1.000	bytes	high		
+2.04	13FC:0302	142C2	23	CT_TEXT	midiasm	_sbfd_control_change	map:17	identical	1D8A:02FC	1.000	bytes	high		
+2.04	13FC:0319	142D9	17	CT_TEXT	midiasm	_sbfd_setmode	map:17	identical	1D8A:0313	1.000	bytes	high		
+2.04	142F:0814	14B04	80	SBFM_MIDI_CODE	MIDIRTN	SBFM_MIDI_SERVICE	map:2	identical	1DBD:0814	1.000	bytes	high		
+2.04	142F:0864	14B54	103	SBFM_MIDI_CODE	MIDIRTN	SBFM_MIDI_CODE_RTN	map:2	identical	1DBD:0864	1.000	bytes	high		
+3.00-xfer	0000:0000	00000	414	_TEXT	c0.ASM			constants	0003:0004	0.974	shape	high		
+3.00-xfer	0000:0183	00183	19	_TEXT	c0.ASM	__cleanup	via 2.04	constants	0003:0187	0.778	shape	high		
+3.00-xfer	0000:0196	00196	1	_TEXT	c0.ASM	__checknull	via 2.04	identical	0003:019A	1.000	bytes	high		
+3.00-xfer	0000:0197	00197	62	_TEXT	c0.ASM	__terminate	via 2.04	relocated	0003:019B	1.000	norm	high		
+3.00-xfer	0000:01A9	001A9	67	_TEXT	c0.ASM			constants	0003:01AD	0.958	shape	high		
+3.00-xfer	0000:01EC	001EC	45	_TEXT	c0.ASM	__restorezero	via 2.04	identical	0003:01F0	1.000	bytes	high		
+3.00-xfer	0000:0219	00219	87	_TEXT	c0.ASM			constants	0003:021D	0.943	shape	high		
+3.00-xfer	0000:0270	00270	8	_TEXT	c0.ASM			identical	0003:0274	1.000	bytes	high		
+3.00-xfer	0000:0278	00278	51	_TEXT	c0.ASM			added						
+3.00-xfer	0000:02AB	002AB	61	_TEXT	_stpcpy.c	__stpcpy	via 2.04	relocated	0003:02AF	1.000	norm	high		
+3.00-xfer	0000:02E8	002E8	49	_TEXT	atexit.c	_atexit	via 2.04	relocated	0003:02EC	1.000	norm	high		
+3.00-xfer	0000:0319	00319	22	_TEXT	delarray.cpp			added						
+3.00-xfer	0000:032F	0032F	22	_TEXT	dosfattr.cas			added						
+3.00-xfer	0000:0345	00345	36	_TEXT	dosfattr.cas	__dos_getfileattr	via 2.04	relocated	0003:031D	1.000	norm	high		
+3.00-xfer	0000:0369	00369	33	_TEXT	dosfattr.cas	__dos_setfileattr	via 2.04	relocated	0003:0341	1.000	norm	high		
+3.00-xfer	0000:038F	0038F	90	_TEXT	exit.c			relocated	0003:0367	1.000	norm	high		
+3.00-xfer	0000:03E9	003E9	19	_TEXT	exit.c	_exit	via 2.04	identical	0003:03C1	1.000	bytes	high		
+3.00-xfer	0000:03FC	003FC	22	_TEXT	exit.c	__exit	via 2.04	identical	0003:03D4	1.000	bytes	high		
+3.00-xfer	0000:0434	00434	23	_TEXT	f_lxmul.asm	LXMUL@	map:9	identical	0003:040C	1.000	bytes	high		
+3.00-xfer	0000:044B	0044B	28	_TEXT	f_scopy.asm	SCOPY@	map:9	identical	0003:0423	1.000	bytes	high		
+3.00-xfer	0000:0467	00467	23	_TEXT	getdate.c	_getdate	map:9	identical	0003:043F	1.000	bytes	high		
+3.00-xfer	0000:047E	0047E	23	_TEXT	getdate.c	_gettime	map:9	identical	0003:0456	1.000	bytes	high		
+3.00-xfer	0000:0495	00495	19	_TEXT	getvect.cas	_getvect	map:9	identical	0003:046D	1.000	bytes	high		
+3.00-xfer	0000:04A8	004A8	21	_TEXT	getvect.cas	_setvect	map:9	identical	0003:0480	1.000	bytes	high		
+3.00-xfer	0000:04BD	004BD	3	_TEXT	h_ldiv.asm	N_LDIV@	map:9	identical	0003:0495	1.000	callgraph	medium		
+3.00-xfer	0000:04C0	004C0	149	_TEXT	h_ldiv.asm			identical	0003:0498	1.000	bytes	high		
+3.00-xfer	0000:04C4	004C4	3	_TEXT	h_ldiv.asm	N_LMOD@	via 2.04	identical	0003:04A4	1.000	norm	high		
+3.00-xfer	0000:04C7	004C7	150	_TEXT	h_ldiv.asm			identical	0003:049F	1.000	bytes	high		
+3.00-xfer	0000:04CC	004CC	153	_TEXT	h_ldiv.asm			changed	0003:04A7	0.979	order	medium		
+3.00-xfer	0000:04D7	004D7	148	_TEXT	h_ldiv.asm	LUMOD@	map:5	identical	0003:04AF	1.000	bytes	high		
+3.00-xfer	0000:056B	0056B	3	_TEXT	h_llsh.asm	N_LXLSH@	map:5	identical	0003:0543	1.000	bytes	high		
+3.00-xfer	0000:056E	0056E	30	_TEXT	h_llsh.asm	LXLSH@	map:5	identical	0003:0546	1.000	bytes	high		
+3.00-xfer	0000:058F	0058F	30	_TEXT	h_lursh.asm	LXURSH@	via 2.04	identical	0003:0567	1.000	bytes	high		
+3.00-xfer	0000:05AD	005AD	77	_TEXT	h_padd.asm			identical	0003:0585	1.000	bytes	high		
+3.00-xfer	0000:060D	0060D	62	_TEXT	ioerror.cas	__IOERROR	map:24	relocated	0003:060C	1.000	norm	high		
+3.00-xfer	0000:064B	0064B	20	_TEXT	ioerror.cas	__DOSERROR	map:24	identical	0003:064A	1.000	bytes	high		
+3.00-xfer	0000:065F	0065F	21	_TEXT	isatty.cas	_isatty	map:24	identical	0003:065E	1.000	bytes	high		
+3.00-xfer	0000:0674	00674	130	_TEXT	longtoa.cas	__LONGTOA	map:24	identical	0003:0673	1.000	bytes	high		
+3.00-xfer	0000:06F6	006F6	36	_TEXT	longtoa.cas	__UTOA	map:24	identical	0003:06F5	1.000	bytes	high		
+3.00-xfer	0000:071A	0071A	45	_TEXT	lseek.cas	_lseek	map:24	relocated	0003:0719	1.000	norm	high		
+3.00-xfer	0000:0747	00747	97	_TEXT	mkname.c	__MKNAME	map:24	constants	0003:0746	0.977	strings	high		TMP \| .$$$
+3.00-xfer	0000:07A8	007A8	91	_TEXT	mkname.c	__TMPNAM	map:24	relocated	0003:07A7	1.000	norm	high		
+3.00-xfer	0000:081F	0081F	101	_TEXT	new.cpp	xnew_handler()	map:24	added						
+3.00-xfer	0000:0884	00884	46	_TEXT	new.cpp	set_new_handler(void(far*)())	map:24	added						
+3.00-xfer	0000:08B2	008B2	81	_TEXT	new.cpp	operator new(unsigned int)	map:24	added						
+3.00-xfer	0000:0903	00903	61	_TEXT	new.cpp			added						
+3.00-xfer	0000:0966	00966	90	_TEXT	new.cpp			added						Out of memory
+3.00-xfer	0000:0A5D	00A5D	71	_TEXT	new.cpp			added						
+3.00-xfer	0000:0ADC	00ADC	18	_TEXT	newarray.cpp	operator ...	map:24	added						
+3.00-xfer	0000:0AEE	00AEE	85	_TEXT	newf.cpp	operator new(unsigned long)	map:24	added						
+3.00-xfer	0000:0B43	00B43	22	_TEXT	newfarry.cpp	operator ...	map:24	added						
+3.00-xfer	0000:0B59	00B59	23	_TEXT	n_lxmul.asm	N_LXMUL@	map:24	identical	0003:0802	1.000	bytes	high		
+3.00-xfer	0000:0B70	00B70	33	_TEXT	n_pcmp.asm	N_PCMP@	map:24	identical	0003:0819	1.000	bytes	high		
+3.00-xfer	0000:0B91	00B91	21	_TEXT	rand.c	_srand	map:24	relocated	0003:083A	1.000	norm	high		
+3.00-xfer	0000:0BA6	00BA6	41	_TEXT	rand.c	_rand	map:24	relocated	0003:084F	1.000	norm	high		
+3.00-xfer	0000:0BCF	00BCF	50	_TEXT	reada.cas	__read	map:24	relocated	0003:0878	1.000	norm	high		
+3.00-xfer	0000:0C01	00C01	28	_TEXT	remove.cas	_remove	map:24	relocated	0003:08AA	1.000	callgraph	medium		
+3.00-xfer	0000:0C1D	00C1D	47	_TEXT	scantol.cas			identical	0003:08C6	1.000	bytes	high		
+3.00-xfer	0000:0C4C	00C4C	418	_TEXT	scantol.cas	__scantol	map:24	constants	0003:08F5	0.994	shape	high		
+3.00-xfer	0000:0DEE	00DEE	34	_TEXT	segread.cas	_segread	map:24	identical	0003:0A97	1.000	bytes	high		
+3.00-xfer	0000:0E10	00E10	23	_TEXT	setdate.cas	_setdate	map:24	identical	0003:0AB9	1.000	bytes	high		
+3.00-xfer	0000:0E27	00E27	23	_TEXT	setdate.cas	_settime	map:24	identical	0003:0AD0	1.000	bytes	high		
+3.00-xfer	0000:0EE2	00EE2	64	_TEXT	stime.c	_stime	map:5	relocated	0003:0B8B	1.000	norm	high		
+3.00-xfer	0000:0F22	00F22	88	_TEXT	stime.c	_time	map:5	relocated	0003:0BCB	1.000	norm	high		
+3.00-xfer	0000:0F7A	00F7A	48	_TEXT	tolower.c	_tolower	map:5	added						
+3.00-xfer	0000:0FAA	00FAA	48	_TEXT	toupper.c	_toupper	map:5	relocated	0003:0C23	1.000	norm	high		
+3.00-xfer	0000:0FDA	00FDA	28	_TEXT	unlink.cas	_unlink	map:5	relocated	0003:0C53	1.000	callgraph	medium		
+3.00-xfer	0000:0FF6	00FF6	510	_TEXT	vnewf.cpp			added						
+3.00-xfer	0000:12C4	012C4	193	_TEXT	vprinter.cas	__VPRINTER	via 2.04	relocated	0003:0C87	1.000	norm	high		
+3.00-xfer	0000:12EB	012EB	10	_TEXT	vprinter.cas			identical	0003:0CAE	1.000	bytes	high		
+3.00-xfer	0000:12F4	012F4	52	_TEXT	vprinter.cas			identical	0003:0CB7	1.000	bytes	high		
+3.00-xfer	0000:1787	01787	90	_TEXT	xxa.cpp			added						
+3.00-xfer	0000:17EB	017EB	67	_TEXT	xxv.cpp			added						
+3.00-xfer	0000:1858	01858	101	_TEXT	xxv.cpp			added						
+3.00-xfer	0000:18CB	018CB	67	_TEXT	xxv.cpp	set_unexpected(void(far*)())	map:4	added						
+3.00-xfer	0000:190E	0190E	66	_TEXT	xxv.cpp	___call_unexpected	map:4	added						
+3.00-xfer	0000:1950	01950	84	_TEXT	xxv.cpp	__GetPolymorphicDTC(void far*,unsigned int)	map:4	added						
+3.00-xfer	0000:19A4	019A4	88	_TEXT	xxv.cpp	__GetPolymorphicDTCfar(void far*,unsigned int)	map:4	added						
+3.00-xfer	0000:1A71	01A71	36	_TEXT	cputype.asm			added						
+3.00-xfer	0000:1AA1	01AA1	99	_TEXT	farheap.asm			relocated	0003:1156	1.000	norm	high		
+3.00-xfer	0000:1B04	01B04	113	_TEXT	farheap.asm			relocated	0003:11B9	1.000	norm	high		
+3.00-xfer	0000:1B75	01B75	41	_TEXT	farheap.asm			relocated	0003:122A	1.000	norm	high		Borland C++ - Copyright 1991 Borland In…
+3.00-xfer	0000:1B9E	01B9E	55	_TEXT	farheap.asm			relocated	0003:1253	1.000	norm	high		Borland C++ - Copyright 1991 Borland In…
+3.00-xfer	0000:1BD5	01BD5	41	_TEXT	farheap.asm	_free	via 2.04	relocated	0003:128A	1.000	norm	high		
+3.00-xfer	0000:1BFE	01BFE	100	_TEXT	farheap.asm			relocated	0003:12B3	1.000	norm	high		
+3.00-xfer	0000:1C62	01C62	90	_TEXT	farheap.asm			relocated	0003:1317	1.000	norm	high		
+3.00-xfer	0000:1CBC	01CBC	35	_TEXT	farheap.asm			identical	0003:1371	1.000	bytes	high		
+3.00-xfer	0000:1CDF	01CDF	126	_TEXT	farheap.asm			relocated	0003:1394	1.000	norm	high		
+3.00-xfer	0000:1CE9	01CE9	125	_TEXT	farheap.asm	_farmalloc	via 2.04	relocated	0003:139E	1.000	norm	high		
+3.00-xfer	0000:1D66	01D66	124	_TEXT	farheap.asm			relocated	0003:141B	1.000	norm	high		
+3.00-xfer	0000:1DE2	01DE2	100	_TEXT	farheap.asm			relocated	0003:1497	1.000	norm	high		
+3.00-xfer	0000:1E46	01E46	123	_TEXT	farheap.asm			relocated	0003:14FB	1.000	norm	high		
+3.00-xfer	0000:1E4D	01E4D	122	_TEXT	farheap.asm	_farrealloc	map:31	relocated	0003:1502	1.000	norm	high		
+3.00-xfer	0000:1EC7	01EC7	142	_TEXT	fbrk.c			relocated	0003:157C	1.000	norm	high		
+3.00-xfer	0000:1F55	01F55	67	_TEXT	fbrk.c	__brk	map:31	relocated	0003:160A	1.000	norm	high		
+3.00-xfer	0000:1F98	01F98	143	_TEXT	fbrk.c	__sbrk	map:31	relocated	0003:164D	1.000	norm	high		
+3.00-xfer	0000:2027	02027	53	_TEXT	int86.cas	_int86	map:31	relocated	0003:16DC	1.000	norm	high		
+3.00-xfer	0000:205C	0205C	154	_TEXT	int86.cas	_int86x	map:31	relocated	0003:1711	1.000	norm	high		
+3.00-xfer	0000:20F6	020F6	45	_TEXT	ioctl.cas	_ioctl	map:31	relocated	0003:17AB	1.000	norm	high		
+3.00-xfer	0000:2123	02123	301	_TEXT	_timecvt.c	__dostounix	map:31	relocated	0003:17D8	1.000	norm	high		
+3.00-xfer	0000:2250	02250	519	_TEXT	_timecvt.c	__unixtodos	map:31	calls-differ	0003:1905	1.000	norm	high		
+3.00-xfer	0000:2457	02457	117	_TEXT	atol.cas	_atol	map:31	constants	0003:1B0C	0.984	shape	high		
+3.00-xfer	0000:24CC	024CC	21	_TEXT	atol.cas	_atoi	map:31	identical	0003:1B81	1.000	bytes	high		
+3.00-xfer	0000:24E1	024E1	33	_TEXT	chmoda.cas	__rtl_chmod	map:31	relocated	0003:1B96	1.000	norm	high		
+3.00-xfer	0000:2502	02502	44	_TEXT	close.c	_close	map:31	relocated	0003:1BB7	1.000	norm	high		
+3.00-xfer	0000:252E	0252E	34	_TEXT	closea.cas	__rtl_close	map:31	relocated	0003:1BE3	1.000	norm	high		
+3.00-xfer	0000:2550	02550	17	_TEXT	closea.cas	__close	map:31	identical	0003:1C05	1.000	bytes	high		
+3.00-xfer	0000:2561	02561	125	_TEXT	eof.cas	_eof	map:31	relocated	0003:1C16	1.000	norm	high		
+3.00-xfer	0000:25DE	025DE	192	_TEXT	fclose.c	_fclose	map:31	relocated	0003:1C93	1.000	norm	high		
+3.00-xfer	0000:269E	0269E	209	_TEXT	fflush.c	_fflush	map:31	relocated	0003:1D53	1.000	norm	high		
+3.00-xfer	0000:276F	0276F	154	_TEXT	fgets.c	_fgets	map:31	identical	0003:1E24	1.000	bytes	high		
+3.00-xfer	0000:2809	02809	55	_TEXT	findfirs.cas	_findfirst	map:31	relocated	0003:1EBE	1.000	norm	high		
+3.00-xfer	0000:2840	02840	49	_TEXT	findfirs.cas	_findnext	map:31	relocated	0003:1EF5	1.000	norm	high		
+3.00-xfer	0000:2871	02871	69	_TEXT	flength.cas	_filelength	map:31	relocated	0003:1F26	1.000	norm	high		
+3.00-xfer	0000:28B6	028B6	76	_TEXT	flushall.c	_flushall	map:31	data-moved	0003:1F6B	0.970	shape	high		
+3.00-xfer	0000:2902	02902	212	_TEXT	fopen.c			constants	0003:1FB7	0.987	shape	high		
+3.00-xfer	0000:29D6	029D6	210	_TEXT	fopen.c	__OPENFP	map:31	relocated	0003:208B	1.000	norm	high		
+3.00-xfer	0000:2AA8	02AA8	77	_TEXT	fopen.c	__GETFP	map:31	data-moved	0003:215D	0.938	shape	high		
+3.00-xfer	0000:2AF5	02AF5	57	_TEXT	fopen.c	_fopen	map:31	identical	0003:21AA	1.000	bytes	high		
+3.00-xfer	0000:2B2E	02B2E	85	_TEXT	fputs.c	_fputs	map:31	relocated	0003:21E3	1.000	norm	high		
+3.00-xfer	0000:2B83	02B83	283	_TEXT	fread.c			relocated	0003:2238	1.000	norm	high		
+3.00-xfer	0000:2C9E	02C9E	84	_TEXT	fread.c	_fread	map:31	relocated	0003:2353	1.000	norm	high		
+3.00-xfer	0000:2CF2	02CF2	137	_TEXT	fseek.c			identical	0003:23A7	1.000	bytes	high		
+3.00-xfer	0000:2D7B	02D7B	130	_TEXT	fseek.c	_fseek	map:31	relocated	0003:2430	1.000	norm	high		
+3.00-xfer	0000:2DFD	02DFD	225	_TEXT	fseek.c	_ftell	map:31	relocated	0003:24B2	1.000	norm	high		
+3.00-xfer	0000:2EDE	02EDE	153	_TEXT	fwrite.c	_fwrite	map:31	relocated	0003:2593	1.000	norm	high		
+3.00-xfer	0000:2F77	02F77	69	_TEXT	getc.cas			data-moved	0003:262C	0.968	shape	high		
+3.00-xfer	0000:2FBC	02FBC	123	_TEXT	getc.cas			relocated	0003:2671	1.000	norm	high		
+3.00-xfer	0000:3037	03037	25	_TEXT	getc.cas	__fgetc	map:31	identical	0003:26EC	1.000	bytes	high		
+3.00-xfer	0000:3053	03053	249	_TEXT	getc.cas	_fgetc	via 2.04	constants	0003:2708	0.989	shape	high		
+3.00-xfer	0000:315C	0315C	112	_TEXT	getenv.cas	_getenv	map:22	relocated	0003:2811	1.000	norm	high		
+3.00-xfer	0000:31CC	031CC	40	_TEXT	memcmp.cas	_memcmp	map:22	added						
+3.00-xfer	0000:31F4	031F4	36	_TEXT	memcpy.cas	_memcpy	map:22	identical	0003:2881	1.000	bytes	high		
+3.00-xfer	0000:3218	03218	38	_TEXT	memset.cas	_setmem	map:22	identical	0003:28A5	1.000	bytes	high		
+3.00-xfer	0000:323E	0323E	34	_TEXT	memset.cas	_memset	map:22	identical	0003:28CB	1.000	bytes	high		
+3.00-xfer	0000:3260	03260	82	_TEXT	movmem.cas	_movmem	map:22	added						
+3.00-xfer	0000:32B2	032B2	37	_TEXT	movmem.cas	_memmove	map:22	added						
+3.00-xfer	0000:32D7	032D7	31	_TEXT	open.cas			relocated	0003:28ED	1.000	norm	high		
+3.00-xfer	0000:32F6	032F6	22	_TEXT	open.cas			identical	0003:290C	1.000	bytes	high		
+3.00-xfer	0000:330C	0330C	394	_TEXT	open.cas	_open	map:22	relocated	0003:2922	1.000	norm	high		
+3.00-xfer	0000:3496	03496	83	_TEXT	opena.cas	__rtl_open	map:22	relocated	0003:2AAC	1.000	norm	high		
+3.00-xfer	0000:34E9	034E9	25	_TEXT	opena.cas	__open	map:22	identical	0003:2AFF	1.000	bytes	high		
+3.00-xfer	0000:3502	03502	145	_TEXT	perror.c	_perror	map:22	data-moved	0003:2B18	0.910	strings	high		Unknown error
+3.00-xfer	0000:3593	03593	31	_TEXT	printf.c	_printf	map:22	data-moved	0003:2BA9	0.889	shape	high		
+3.00-xfer	0000:35B2	035B2	32	_TEXT	putc.c	__fputc	map:22	identical	0003:2BC8	1.000	bytes	high		
+3.00-xfer	0000:35D2	035D2	395	_TEXT	putc.c	_fputc	map:22	constants	0003:2BE8	0.987	shape	high		
+3.00-xfer	0000:375D	0375D	24	_TEXT	putc.c	_fputchar	map:22	data-moved	0003:2D73	0.933	shape	high		
+3.00-xfer	0000:3775	03775	523	_TEXT	putc.c	__FPUTN	map:22	relocated	0003:2D8B	1.000	norm	high		
+3.00-xfer	0000:3980	03980	207	_TEXT	read.cas	___read	map:22	relocated	0003:2F96	1.000	norm	high		
+3.00-xfer	0000:3A4F	03A4F	3	_TEXT	readu.asm	_read	map:22	identical	0003:3065	1.000	bytes	high		
+3.00-xfer	0000:3A52	03A52	289	_TEXT	setvbuf.c	_setvbuf	map:22	constants	0003:3068	0.970	shape	high		
+3.00-xfer	0000:3B73	03B73	69	_TEXT	sprintf.c			relocated	0003:3189	1.000	norm	high		
+3.00-xfer	0000:3BB8	03BB8	38	_TEXT	sprintf.c	_sprintf	map:22	data-moved	0003:31CE	0.950	shape	high		
+3.00-xfer	0000:3BDE	03BDE	37	_TEXT	sprintf.c	_vsprintf	map:22	data-moved	0003:31F4	0.947	shape	high		
+3.00-xfer	0000:3C03	03C03	63	_TEXT	strcat.cas	_strcat	map:22	identical	0003:3219	1.000	bytes	high		
+3.00-xfer	0000:3C42	03C42	63	_TEXT	strcmp.cas	_strchr	via 2.04	identical	0003:3258	1.000	bytes	high		
+3.00-xfer	0000:3C81	03C81	48	_TEXT	strcpy.cas			added						
+3.00-xfer	0000:3CB1	03CB1	41	_TEXT	stricmp.cas	_strcpy	via 2.04	identical	0003:3297	1.000	bytes	high		
+3.00-xfer	0000:3CDA	03CDA	65	_TEXT	stricmp.cas	_stricmp	via 2.04	identical	0003:32C0	1.000	bytes	high		
+3.00-xfer	0000:3D1B	03D1B	33	_TEXT	strncpy.cas	_strlen	via 2.04	identical	0003:3301	1.000	bytes	high		
+3.00-xfer	0000:3D3C	03D3C	49	_TEXT	strnicmp.cas	_strncpy	via 2.04	identical	0003:3322	1.000	bytes	high		
+3.00-xfer	0000:3D6D	03D6D	68	_TEXT	strnicmp.cas	_strnicmp	via 2.04	identical	0003:3353	1.000	bytes	high		
+3.00-xfer	0000:3DB1	03DB1	41	_TEXT	strtoul.c			identical	0003:3397	1.000	bytes	high		
+3.00-xfer	0000:3DDA	03DDA	15	_TEXT	strtoul.c			identical	0003:33C0	1.000	bytes	high		
+3.00-xfer	0000:3DE9	03DE9	175	_TEXT	strtoul.c	_strtoul	via 2.04	constants	0003:33CF	0.970	shape	high		
+3.00-xfer	0000:3E98	03E98	29	_TEXT	timecvt.c	_dostounix	via 2.04	relocated	0003:347E	1.000	norm	high		
+3.00-xfer	0000:3EB5	03EB5	35	_TEXT	tzset.cas	_unixtodos	via 2.04	relocated	0003:349B	1.000	norm	high		
+3.00-xfer	0000:3ED8	03ED8	508	_TEXT	tzset.cas	_tzset	via 2.04	data-moved	0003:34BE	0.995	strings	high		EST \| EDT
+3.00-xfer	0000:40D4	040D4	236	_TEXT	tzset.cas	__ISDST	via 2.04	relocated	0003:36BA	1.000	norm	high		
+3.00-xfer	0000:41C0	041C0	358	_TEXT	write.c	___write	via 2.04	relocated	0003:37A6	1.000	norm	high		
+3.00-xfer	0000:4326	04326	63	_TEXT	writea.cas	__rtl_write	via 2.04	relocated	0003:390C	1.000	norm	high		
+3.00-xfer	0000:4365	04365	28	_TEXT	xfclose.c	__write	via 2.04	identical	0003:394B	1.000	bytes	high		
+3.00-xfer	0000:4381	04381	66	_TEXT	xfclose.c	__xfclose	via 2.04	data-moved	0003:3967	0.966	shape	high		
+3.00-xfer	0000:43C3	043C3	63	_TEXT	xalloc.cpp	__xfflush	via 2.04	data-moved	0003:39A9	0.964	shape	high		
+3.00-xfer	0000:4402	04402	85	_TEXT	xalloc.cpp			added						
+3.00-xfer	0000:447B	0447B	114	_TEXT	xalloc.cpp			added						
+3.00-xfer	0000:44ED	044ED	61	_TEXT	xalloc.cpp			added						
+3.00-xfer	0000:456C	0456C	71	_TEXT	xalloc.cpp			added						
+3.00-xfer	0000:460F	0460F	154	_TEXT	xmsg.cpp			added						
+3.00-xfer	0000:46CD	046CD	158	_TEXT	xmsg.cpp			added						
+3.00-xfer	0000:476B	0476B	82	_TEXT	xmsg.cpp			added						
+3.00-xfer	0000:47CB	047CB	83	_TEXT	xmsg.cpp			added						
+3.00-xfer	0000:4842	04842	169	_TEXT	xmsg.cpp			added						
+3.00-xfer	0000:497C	0497C	82	_TEXT	xx.cpp	__Set_debugger_callbacks(int,void(far*)(char far*,unsigned long),void(far*)(unsigned long),(far*)(void far*)	map:11	added						
+3.00-xfer	0000:49CE	049CE	37	_TEXT	xx.cpp	typeIDname(tpid far*)	map:11	added						<notype>
+3.00-xfer	0000:49F3	049F3	139	_TEXT	xx.cpp			added						
+3.00-xfer	0000:4A7E	04A7E	339	_TEXT	xx.cpp			added						
+3.00-xfer	0000:4BD1	04BD1	372	_TEXT	xx.cpp			added						
+3.00-xfer	0000:4D45	04D45	99	_TEXT	xx.cpp			added						
+3.00-xfer	0000:4DA8	04DA8	64	_TEXT	xx.cpp			added						
+3.00-xfer	0000:4DE8	04DE8	156	_TEXT	xx.cpp			added						
+3.00-xfer	0000:4E84	04E84	135	_TEXT	xx.cpp			added						
+3.00-xfer	0000:51D2	051D2	145	_TEXT	xx.cpp			added						
+3.00-xfer	0000:539F	0539F	185	_TEXT	xx.cpp			added						
+3.00-xfer	0000:54BE	054BE	806	_TEXT	xx.cpp			added						
+3.00-xfer	0000:57F8	057F8	89	_TEXT	xx.cpp	_ThrowException(void far*,void far*,void far*,void far*,unsigned int,unsigned int,unsigned int,unsigned char)	map:11	added						
+3.00-xfer	0000:5851	05851	170	_TEXT	xx.cpp	_ReThrowException(unsigned int,unsigned char far*)	map:11	added						
+3.00-xfer	0000:58FB	058FB	133	_TEXT	xx.cpp			added						
+3.00-xfer	0000:5980	05980	71	_TEXT	xx.cpp	__Global_unwind	map:11	added						
+3.00-xfer	0000:59C7	059C7	5	_TEXT	xx.cpp			added						
+3.00-xfer	0000:59CC	059CC	1142	_TEXT	xx.cpp	_RaiseException	map:11	added						
+3.00-xfer	0000:5E79	05E79	69	_TEXT	xx.cpp			added						
+3.00-xfer	0000:5EC8	05EC8	203	_TEXT	xx.cpp			added						
+3.00-xfer	0000:5F93	05F93	110	_TEXT	xx.cpp	_CatchCleanup()	map:11	added						
+3.00-xfer	0000:6001	06001	204	_TEXT	xx.cpp			added						
+3.00-xfer	0000:60CD	060CD	131	_TEXT	xx.cpp			added						
+3.00-xfer	0000:6150	06150	678	_TEXT	xx.cpp			added						
+3.00-xfer	0000:63F6	063F6	178	_TEXT	xx.cpp			added						
+3.00-xfer	0000:65A9	065A9	32	_TEXT	xx.cpp	__Local_unwind	map:11	added						
+3.00-xfer	0000:65C9	065C9	42	_TEXT	xx.cpp	__Return_unwind	map:11	added						
+3.00-xfer	0000:65F3	065F3	132	_TEXT	xx.cpp			added						
+3.00-xfer	0000:667F	0667F	398	_TEXT	xx.cpp	__ExceptionHandler	map:11	added						
+3.00-xfer	0000:6A5E	06A5E	89	_TEXT	xx.cpp			added						
+3.00-xfer	0000:6AC9	06AC9	129	_TEXT	xx.cpp			added						
+3.00-xfer	0000:6B4A	06B4A	715	_TEXT	xx.cpp			added						
+3.00-xfer	0000:6E15	06E15	258	_TEXT	xx.cpp			added						
+3.00-xfer	0000:6F17	06F17	177	_TEXT	xx.cpp			added						
+3.00-xfer	0000:6FC8	06FC8	1003	_TEXT	xx.cpp			added						
+3.00-xfer	0000:73B3	073B3	85	_TEXT	xx.cpp	__CurrExcContext	map:11	added						**BCCxh1
+3.00-xfer	0000:743A	0743A	110	_TEXT	xx.cpp	Type_info::Type_info(const Type_info far&)	map:11	added						
+3.00-xfer	0000:74A8	074A8	15	_TEXT	xx.cpp	Type_info::operator =(const Type_info far&)	map:11	added						
+3.00-xfer	0000:74B7	074B7	52	_TEXT	xx.cpp	Type_info::~Type_info()	map:11	added						
+3.00-xfer	0000:74EB	074EB	38	_TEXT	xx.cpp	Type_info::operator ==(const Type_info far&) const	map:11	added						
+3.00-xfer	0000:7511	07511	33	_TEXT	xx.cpp	Type_info::operator !=(const Type_info far&) const	map:11	added						
+3.00-xfer	0000:7532	07532	120	_TEXT	xx.cpp	Type_info::before(const Type_info far&) const	map:11	added						
+3.00-xfer	0000:75AA	075AA	26	_TEXT	xx.cpp	Type_info::name() const	map:11	added						
+3.00-xfer	0000:75C4	075C4	131	_TEXT	xx.cpp	__GetTypeInfo(void far*,void far*,void far*,void far*)	map:11	added						
+3.00-xfer	0000:7647	07647	582	_TEXT	xx.cpp			added						
+3.00-xfer	0000:788D	0788D	357	_TEXT	xx.cpp	__DynamicCast(void far*,void far*,void far*,void far*,int)	map:11	added						
+3.00-xfer	0000:7A7A	07A7A	41	_TEXT	bioskey.cas	_bioskey	map:11	identical	0003:39E8	1.000	bytes	high		
+3.00-xfer	0000:7AA3	07AA3	49	_TEXT	crtinit.cas			identical	0003:3A11	1.000	bytes	high		
+3.00-xfer	0000:7AD4	07AD4	18	_TEXT	crtinit.cas			identical	0003:3A42	1.000	bytes	high		
+3.00-xfer	0000:7AE6	07AE6	143	_TEXT	crtinit.cas	__VideoInt	map:11	identical	0003:3A54	1.000	bytes	high		Recreational Software Designs
+3.00-xfer	0000:7B96	07B96	198	_TEXT	crtinit.cas	__crtinit	map:3	relocated	0003:3B04	1.000	norm	high		COMPAQ
+3.00-xfer	0000:7C7B	07C7B	5	_TEXT	delay.cas			identical	0003:3BE9	1.000	bytes	high		
+3.00-xfer	0000:7C80	07C80	30	_TEXT	delay.cas			identical	0003:3BEE	1.000	bytes	high		
+3.00-xfer	0000:7C9E	07C9E	49	_TEXT	delay.cas			relocated	0003:3C0C	1.000	norm	high		
+3.00-xfer	0000:7CCF	07CCF	97	_TEXT	delay.cas	_delay	map:3	relocated	0003:3C3D	1.000	norm	high		
+3.00-xfer	0000:7D30	07D30	77	_TEXT	gotoxy.c	_gotoxy	map:3	relocated	0003:3C9E	1.000	norm	high		
+3.00-xfer	0000:7EAC	07EAC	32	_TEXT	setblock.cas	_setblock	via 2.04	relocated	0003:3E1A	1.000	norm	high		
+3.00-xfer	0000:7F24	07F24	48	_TEXT	sound.cas	_sound	via 2.04	identical	0003:3E92	1.000	bytes	high		
+3.00-xfer	0000:7F54	07F54	11	_TEXT	sound.cas	_nosound	via 2.04	identical	0003:3EC2	1.000	bytes	high		
+3.00-xfer	0000:7F72	07F72	71	_TEXT	ctor2.cpp			added						
+3.00-xfer	0000:7FEE	07FEE	71	_TEXT	ctor3.cpp			added						
+3.00-xfer	0000:8035	08035	71	_TEXT	ctor3.cpp			added						
+3.00-xfer	0000:8169	08169	47	_TEXT	strings.cpp			added						
+3.00-xfer	0000:8198	08198	71	_TEXT	strings.cpp			added						
+3.00-xfer	0000:81DF	081DF	71	_TEXT	strings.cpp			added						
+3.00-xfer	0000:8226	08226	71	_TEXT	strings.cpp			added						
+3.00-xfer	0826:000E	0826E	145	PLAYGAME_TEXT	playgame.c			added						
+3.00-xfer	0826:009F	082FF	114	PLAYGAME_TEXT	playgame.c			added						
+3.00-xfer	0826:0111	08371	135	PLAYGAME_TEXT	playgame.c			added						
+3.00-xfer	0826:0198	083F8	86	PLAYGAME_TEXT	playgame.c			added						
+3.00-xfer	0826:01EE	0844E	192	PLAYGAME_TEXT	playgame.c			added						
+3.00-xfer	0826:02AE	0850E	117	PLAYGAME_TEXT	playgame.c			added						
+3.00-xfer	0826:0347	085A7	931	PLAYGAME_TEXT	playgame.c			changed	03EF:000E	0.588	callgraph	low		ShowVideoMemory \|   (Q)uit \| NOT ENOUGH MEMORY! \| .rec \| Playback with %s.\n \| NotInit \| config \| MicroChannel Bus Detected!\n \| .gam \| You are missing %s!  I can't do anythin…
+3.00-xfer	0826:06EA	0894A	32	PLAYGAME_TEXT	playgame.c			added						
+3.00-xfer	0826:070A	0896A	78	PLAYGAME_TEXT	playgame.c			added						
+3.00-xfer	0826:0758	089B8	146	PLAYGAME_TEXT	playgame.c			added						data*.rec
+3.00-xfer	0826:07EA	08A4A	503	PLAYGAME_TEXT	playgame.c			added						
+3.00-xfer	0826:09E1	08C41	1009	PLAYGAME_TEXT	playgame.c			added						
+3.00-xfer	0826:13AC	0960C	140	PLAYGAME_TEXT	playgame.c			relocated	03EF:0891	1.000	norm	high		
+3.00-xfer	0826:1438	09698	139	PLAYGAME_TEXT	playgame.c			changed	03EF:091D	0.850	strings	high		Play \| Read Instructions \| Read Storyline \| See Credits \| See Highest Scores \| Quit
+3.00-xfer	0826:14C3	09723	43	PLAYGAME_TEXT	playgame.c			identical	03EF:09CB	1.000	bytes	high		
+3.00-xfer	0826:14EE	0974E	45	PLAYGAME_TEXT	playgame.c			added						
+3.00-xfer	0826:151B	0977B	45	PLAYGAME_TEXT	playgame.c			added						
+3.00-xfer	0826:1548	097A8	1489	PLAYGAME_TEXT	playgame.c			added						%sdata%d.rec
+3.00-xfer	0826:1B4B	09DAB	1484	PLAYGAME_TEXT	playgame.c			added						.gif \| .bkd \| .fli \| .txt \| .lst
+3.00-xfer	0826:2117	0A377	1721	PLAYGAME_TEXT	playgame.c			changed	03EF:0D85	0.482	callgraph	low		Sorry...Out of Memory!
+3.00-xfer	0826:27DC	0AA3C	676	PLAYGAME_TEXT	playgame.c			changed	03EF:10EE	0.536	callgraph	low		
+3.00-xfer	0826:2A94	0ACF4	258	PLAYGAME_TEXT	playgame.c			added						.dat \| SavNames \| %sgame%d.sav
+3.00-xfer	0826:2B96	0ADF6	426	PLAYGAME_TEXT	playgame.c			added						.dat \| SavNames \| %sgame%d.sav
+3.00-xfer	0826:2D40	0AFA0	2505	PLAYGAME_TEXT	playgame.c			added						Load Game \| This game has not been saved! \| Old Game Loaded!
+3.00-xfer	0826:3709	0B969	942	PLAYGAME_TEXT	playgame.c			changed	03EF:18EF	0.529	callgraph	low		Save Game \| I cannot save your game! \| Game Saved!
+3.00-xfer	0826:3AB7	0BD17	580	PLAYGAME_TEXT	playgame.c			changed	03EF:1B05	0.205	callgraph	low		      G A M E - M A K E R \|           Version 3.00    \| Recreational Software Designs \| [redacted: address or phone] \| This game was made with GAME- \| MAKER.  No programming needed! \| Design your own worlds, mon-   \| sters, characters, sounds...   \| Game-Maker software, documen-  \| tation,…
+3.00-xfer	0826:3CFB	0BF5B	205	PLAYGAME_TEXT	playgame.c			added						No game-specific help included.
+3.00-xfer	0826:3DC8	0C028	654	PLAYGAME_TEXT	playgame.c			changed	03EF:1E3B	0.774	strings	high		Score:     %ld \| Money:     %d \| Hitpoints: %d \| Lives:     %d \| Elapsed Time: %02ld:%02ld:%02ld.%02ld
+3.00-xfer	0826:4056	0C2B6	559	PLAYGAME_TEXT	playgame.c			changed	03EF:20FE	0.470	strings	high		Missing File: \| The file %s is \| missing or cannot be opened. \| MORE...
+3.00-xfer	0826:4285	0C4E5	778	PLAYGAME_TEXT	playgame.c			changed	03EF:2367	0.630	callgraph	low		This machine does not have a  \| game port installed!     You  \| cannot configure a joystick   \| until you have installed a    \| game port and joystick.       \| Move joystick all the way Left \| and Forward.  Press either     \| joystick button when there.    \| Stick minimum (%3d,%3d) \| Move …
+3.00-xfer	0826:458F	0C7EF	116	PLAYGAME_TEXT	playgame.c			changed	03EF:2649	0.854	callgraph	medium		
+3.00-xfer	0826:4603	0C863	218	PLAYGAME_TEXT	playgame.c			changed	03EF:26AF	0.971	callgraph	medium		
+3.00-xfer	0826:46DD	0C93D	937	PLAYGAME_TEXT	playgame.c			changed	03EF:2787	0.708	strings	high		Choose object to drop \| Use arrow keys to select, \| <Enter> to accept, <ESC>  \| to quit without dropping.
+3.00-xfer	0826:4A98	0CCF8	41	PLAYGAME_TEXT	playgame.c			relocated	03EF:2B49	1.000	norm	high		
+3.00-xfer	0826:4AC1	0CD21	275	PLAYGAME_TEXT	playgame.c			changed	03EF:2B72	0.985	callgraph	medium		
+3.00-xfer	0826:4BD4	0CE34	101	PLAYGAME_TEXT	playgame.c			changed	03EF:2C81	0.957	callgraph	medium		
+3.00-xfer	0826:4C39	0CE99	272	PLAYGAME_TEXT	playgame.c	minfo::draw(int)	via 2.04	relocated	03EF:2CE2	1.000	norm	high		
+3.00-xfer	0826:4D49	0CFA9	81	PLAYGAME_TEXT	playgame.c	minfo::erase()	via 2.04	relocated	03EF:2DF2	1.000	norm	high		
+3.00-xfer	0826:4D9A	0CFFA	444	PLAYGAME_TEXT	playgame.c			constants	03EF:2E43	0.975	shape	high		
+3.00-xfer	0826:4F56	0D1B6	1651	PLAYGAME_TEXT	playgame.c			changed	03EF:2FFF	0.790	callgraph	medium		
+3.00-xfer	0826:55C9	0D829	75	PLAYGAME_TEXT	playgame.c			relocated	03EF:36E4	1.000	norm	high		
+3.00-xfer	0826:5614	0D874	445	PLAYGAME_TEXT	playgame.c	minfo::chkhorizwalls(coord2d far*,coord2d far*)	via 2.04	changed	03EF:372F	0.954	callgraph	medium		
+3.00-xfer	0826:57D1	0DA31	459	PLAYGAME_TEXT	playgame.c	minfo::chkvertwalls(coord2d far*,coord2d far*)	via 2.04	changed	03EF:38E0	0.955	callgraph	medium		
+3.00-xfer	0826:599C	0DBFC	231	PLAYGAME_TEXT	playgame.c	minfo::chkwalls(coord2d far*)	via 2.04	changed	03EF:3A9D	0.960	callgraph	medium		
+3.00-xfer	0826:5A83	0DCE3	102	PLAYGAME_TEXT	playgame.c			changed	03EF:3B7E	0.927	callgraph	medium		
+3.00-xfer	0826:5AE9	0DD49	627	PLAYGAME_TEXT	playgame.c			changed	03EF:3BDF	0.870	callgraph	medium		
+3.00-xfer	0826:5D5C	0DFBC	543	PLAYGAME_TEXT	playgame.c			changed	03EF:3E2D	0.935	callgraph	medium		
+3.00-xfer	0826:5F7B	0E1DB	776	PLAYGAME_TEXT	playgame.c			changed	03EF:4043	0.866	callgraph	medium		
+3.00-xfer	0826:6283	0E4E3	2731	PLAYGAME_TEXT	playgame.c			changed	03EF:4337	0.971	callgraph	medium		
+3.00-xfer	0826:6D2E	0EF8E	500	PLAYGAME_TEXT	playgame.c			relocated	03EF:4DA5	1.000	norm	high		
+3.00-xfer	0826:6F22	0F182	499	PLAYGAME_TEXT	playgame.c			changed	03EF:4F99	0.650	callgraph	low		
+3.00-xfer	0826:7115	0F375	120	PLAYGAME_TEXT	playgame.c	minfo::disttoplace(coord2d)	via 2.04	identical	03EF:512E	1.000	callgraph	medium		
+3.00-xfer	0826:718D	0F3ED	120	PLAYGAME_TEXT	playgame.c			identical	03EF:51A6	1.000	norm	high		
+3.00-xfer	0826:7205	0F465	228	PLAYGAME_TEXT	playgame.c			relocated	03EF:521E	1.000	norm	high		
+3.00-xfer	0826:72E9	0F549	355	PLAYGAME_TEXT	playgame.c			relocated	03EF:5302	1.000	norm	high		
+3.00-xfer	0826:744C	0F6AC	102	PLAYGAME_TEXT	playgame.c			identical	03EF:5465	1.000	bytes	high		
+3.00-xfer	0826:74B2	0F712	210	PLAYGAME_TEXT	playgame.c			relocated	03EF:54CB	1.000	norm	high		
+3.00-xfer	0826:7584	0F7E4	233	PLAYGAME_TEXT	playgame.c			relocated	03EF:559D	1.000	norm	high		
+3.00-xfer	0826:766D	0F8CD	57	PLAYGAME_TEXT	playgame.c			changed	03EF:5686	0.919	callgraph	medium		
+3.00-xfer	0826:76A6	0F906	340	PLAYGAME_TEXT	playgame.c			changed	03EF:56BB	0.941	callgraph	medium		
+3.00-xfer	0826:77FA	0FA5A	634	PLAYGAME_TEXT	playgame.c			changed	03EF:5806	0.832	callgraph	medium		
+3.00-xfer	0826:7A74	0FCD4	115	PLAYGAME_TEXT	playgame.c			relocated	03EF:5A41	1.000	norm	high		
+3.00-xfer	0826:7AE7	0FD47	236	PLAYGAME_TEXT	playgame.c			relocated	03EF:5AB4	1.000	norm	high		
+3.00-xfer	0826:7BD3	0FE33	112	PLAYGAME_TEXT	playgame.c			identical	03EF:5BA0	1.000	bytes	high		
+3.00-xfer	0826:7C43	0FEA3	301	PLAYGAME_TEXT	playgame.c			relocated	03EF:5C10	1.000	norm	high		
+3.00-xfer	0826:7D70	0FFD0	322	PLAYGAME_TEXT	playgame.c			relocated	03EF:5D3D	1.000	norm	high		
+3.00-xfer	0826:7EB2	10112	297	PLAYGAME_TEXT	playgame.c			relocated	03EF:5E7F	1.000	norm	high		
+3.00-xfer	0826:7FDB	1023B	363	PLAYGAME_TEXT	playgame.c			relocated	03EF:5FA8	1.000	norm	high		
+3.00-xfer	0826:8146	103A6	288	PLAYGAME_TEXT	playgame.c			relocated	03EF:6113	1.000	norm	high		
+3.00-xfer	0826:8266	104C6	450	PLAYGAME_TEXT	playgame.c			relocated	03EF:6233	1.000	norm	high		
+3.00-xfer	0826:8428	10688	516	PLAYGAME_TEXT	playgame.c			relocated	03EF:63F5	1.000	norm	high		
+3.00-xfer	0826:862C	1088C	171	PLAYGAME_TEXT	playgame.c			relocated	03EF:65F9	1.000	norm	high		
+3.00-xfer	0826:86D7	10937	165	PLAYGAME_TEXT	playgame.c			constants	03EF:66A4	0.905	shape	high		
+3.00-xfer	0826:877C	109DC	60	PLAYGAME_TEXT	playgame.c			relocated	03EF:6749	1.000	norm	high		
+3.00-xfer	0826:87B8	10A18	401	PLAYGAME_TEXT	playgame.c			relocated	03EF:6785	1.000	norm	high		
+3.00-xfer	0826:8949	10BA9	1194	PLAYGAME_TEXT	playgame.c			changed	03EF:6916	0.948	callgraph	medium		
+3.00-xfer	0826:8DF3	11053	155	PLAYGAME_TEXT	playgame.c			relocated	03EF:6D65	1.000	norm	high		
+3.00-xfer	0826:8E8E	110EE	157	PLAYGAME_TEXT	playgame.c			relocated	03EF:6E00	1.000	norm	high		
+3.00-xfer	0826:8F2B	1118B	225	PLAYGAME_TEXT	playgame.c			changed	03EF:6E9D	0.810	callgraph	medium		
+3.00-xfer	0826:900C	1126C	492	PLAYGAME_TEXT	playgame.c			changed	03EF:6F6C	0.960	callgraph	medium		
+3.00-xfer	0826:91F8	11458	181	PLAYGAME_TEXT	playgame.c			changed	03EF:7150	0.764	callgraph	medium		
+3.00-xfer	0826:92AD	1150D	2147	PLAYGAME_TEXT	playgame.c			changed	03EF:71F8	0.341	order	low		I am missing these game files: \| Hit any key...
+3.00-xfer	0826:9B10	11D70	118	PLAYGAME_TEXT	playgame.c			changed	03EF:762F	0.778	callgraph	medium		
+3.00-xfer	0826:9B86	11DE6	89	PLAYGAME_TEXT	playgame.c			changed	03EF:76C3	0.750	callgraph	medium		
+3.00-xfer	0826:9BDF	11E3F	99	PLAYGAME_TEXT	playgame.c			changed	03EF:773A	0.635	callgraph	low		
+3.00-xfer	0826:9C42	11EA2	109	PLAYGAME_TEXT	playgame.c			changed	03EF:77AF	0.792	callgraph	medium		
+3.00-xfer	0826:9CAF	11F0F	140	PLAYGAME_TEXT	playgame.c			changed	03EF:783A	0.972	callgraph	medium		
+3.00-xfer	0826:9D3B	11F9B	85	PLAYGAME_TEXT	playgame.c			changed	03EF:78CF	0.881	callgraph	medium		
+3.00-xfer	0826:9D90	11FF0	440	PLAYGAME_TEXT	playgame.c			constants	03EF:7920	0.981	shape	high		
+3.00-xfer	0826:9FDB	1223B	453	PLAYGAME_TEXT	playgame.c			relocated	03EF:7B69	1.000	norm	high		
+3.00-xfer	0826:A1A0	12400	93	PLAYGAME_TEXT	playgame.c			relocated	03EF:7D2E	1.000	norm	high		
+3.00-xfer	0826:A1FD	1245D	45	PLAYGAME_TEXT	playgame.c			changed	03EF:7D8B	0.919	callgraph	medium		
+3.00-xfer	0826:A22A	1248A	169	PLAYGAME_TEXT	playgame.c			changed	03EF:7DB4	0.954	callgraph	medium		
+3.00-xfer	0826:A2D3	12533	193	PLAYGAME_TEXT	playgame.c			added					03EF:7E58+187 0.41	
+3.00-xfer	0826:A394	125F4	18	PLAYGAME_TEXT	playgame.c			added						
+3.00-xfer	0826:A3A6	12606	18	PLAYGAME_TEXT	playgame.c			added						
+3.00-xfer	0826:A3B8	12618	112	PLAYGAME_TEXT	playgame.c			constants	03EF:7F13	0.979	shape	high		
+3.00-xfer	0826:A428	12688	22	PLAYGAME_TEXT	playgame.c			changed	03EF:7F83	0.889	order	medium		
+3.00-xfer	0826:A43E	1269E	24	PLAYGAME_TEXT	playgame.c			changed	03EF:7F95	0.897	order	medium		
+3.00-xfer	0826:A456	126B6	103	PLAYGAME_TEXT	playgame.c			changed	03EF:7FA9	0.740	callgraph	medium		
+3.00-xfer	0826:A4BD	1271D	892	PLAYGAME_TEXT	playgame.c			changed	03EF:800A	0.892	callgraph	medium		
+3.00-xfer	0826:A839	12A99	120	PLAYGAME_TEXT	playgame.c			changed	03EF:8302	0.929	callgraph	medium		
+3.00-xfer	0826:A8B1	12B11	50	PLAYGAME_TEXT	playgame.c			identical	03EF:837B	1.000	bytes	high		
+3.00-xfer	0826:A8E3	12B43	850	PLAYGAME_TEXT	playgame.c			changed	03EF:83AD	0.935	callgraph	medium		VGA Chip Type \| Sound And Music \| Port  Interrupt \| Sound Driver \| None \| Sound Blaster \| Help \| Done
+3.00-xfer	0826:AC35	12E95	3364	PLAYGAME_TEXT	playgame.c			changed	03EF:870D	0.856	callgraph	medium		NotInit \| VGA Chip Type \| Sound And Music \| Port  Interrupt \| Sound Driver \| None \| Sound Blaster \| Help \| Done \| config.hlp \| %s%s
+3.00-xfer	0826:BB00	13D60	400	PLAYGAME_TEXT	playgame.c			relocated	03EF:953C	1.000	norm	high		
+3.00-xfer	0826:BC90	13EF0	145	PLAYGAME_TEXT	playgame.c			relocated	03EF:96CC	1.000	norm	high		
+3.00-xfer	0826:BD21	13F81	50	PLAYGAME_TEXT	playgame.c			changed	03EF:975D	0.611	callgraph	low		
+3.00-xfer	0826:BD53	13FB3	62	PLAYGAME_TEXT	playgame.c			changed	03EF:9781	0.900	callgraph	medium		
+3.00-xfer	0826:BD91	13FF1	63	PLAYGAME_TEXT	playgame.c			added						
+3.00-xfer	0826:BDD0	14030	288	PLAYGAME_TEXT	playgame.c			added						
+3.00-xfer	0826:BEF0	14150	154	PLAYGAME_TEXT	playgame.c			added						
+3.00-xfer	0826:BF8A	141EA	81	PLAYGAME_TEXT	playgame.c			added						
+3.00-xfer	0826:BFF7	14257	290	PLAYGAME_TEXT	playgame.c			added						
+3.00-xfer	0826:C119	14379	135	PLAYGAME_TEXT	playgame.c			added						
+3.00-xfer	0826:C1B6	14416	60	PLAYGAME_TEXT	playgame.c			added						
+3.00-xfer	0826:C1F2	14452	320	PLAYGAME_TEXT	playgame.c			added						
+3.00-xfer	0826:C3AE	1460E	183	PLAYGAME_TEXT	playgame.c			added						UnTitled
+3.00-xfer	0826:C465	146C5	119	PLAYGAME_TEXT	playgame.c			added						
+3.00-xfer	0826:C4DC	1473C	58	PLAYGAME_TEXT	playgame.c			added						
+3.00-xfer	0826:C516	14776	150	PLAYGAME_TEXT	playgame.c			added						
+3.00-xfer	0826:C5AC	1480C	58	PLAYGAME_TEXT	playgame.c			added						
+3.00-xfer	0826:C628	14888	173	PLAYGAME_TEXT	playgame.c			added						
+3.00-xfer	0826:C713	14973	88	PLAYGAME_TEXT	playgame.c			added						
+3.00-xfer	0826:C76B	149CB	210	PLAYGAME_TEXT	playgame.c			added						
+3.00-xfer	0826:C8B5	14B15	93	PLAYGAME_TEXT	playgame.c			added						
+3.00-xfer	0826:C912	14B72	189	PLAYGAME_TEXT	playgame.c			added						
+3.00-xfer	0826:C9CF	14C2F	100	PLAYGAME_TEXT	playgame.c			added						
+3.00-xfer	14C9:0004	14C94	11	microcnl_TEXT	microcnl.asm	_KeyBoardOff	map:3	added						
+3.00-xfer	14C9:000F	14C9F	11	microcnl_TEXT	microcnl.asm	_KeyBoardOn	map:3	added						
+3.00-xfer	14C9:00C8	14D58	19	microcnl_TEXT	microcnl.asm	_MicroChannel	map:3	identical	0D6B:00B0	1.000	bytes	high		
+3.00-xfer	14D6:000B	14D6B	173	DIRTRECT_TEXT	dirtrect.c	adddirtyrect(int,int,int,int)	via 2.04	relocated	0D77:0003	1.000	norm	high		
+3.00-xfer	14D6:00B8	14E18	51	DIRTRECT_TEXT	dirtrect.c	adddirtyrect(unsigned int,int,int)	via 2.04	relocated	0D77:00B0	1.000	norm	high		
+3.00-xfer	14D6:00EB	14E4B	65	DIRTRECT_TEXT	dirtrect.c	drawdirtyrects()	via 2.04	changed	0D77:00E3	0.981	callgraph	medium		
+3.00-xfer	14D6:012C	14E8C	11	DIRTRECT_TEXT	dirtrect.c	cleardirtyrects()	via 2.04	relocated	0D77:0128	1.000	norm	high		
+3.00-xfer	14D6:0137	14E97	71	DIRTRECT_TEXT	dirtrect.c	initdirty()	via 2.04	changed	0D77:0133	0.941	callgraph	medium		
+3.00-xfer	14D6:017E	14EDE	48	DIRTRECT_TEXT	dirtrect.c			added					0D77:0171+36 0.55	
+3.00-xfer	14D6:01AE	14F0E	126	DIRTRECT_TEXT	dirtrect.c	svgabufscrnbox(int,int,int,int)	via 2.04	relocated	0D77:0195	1.000	norm	high		
+3.00-xfer	14D6:022C	14F8C	49	DIRTRECT_TEXT	dirtrect.c	svgabuftoscrn(unsigned int,int,int)	via 2.04	relocated	0D77:0213	1.000	norm	high		
+3.00-xfer	14FB:000E	14FBE	177	membloca_TEXT	membloca.asm	_BufDrawSpBlkAddr	map:8	relocated	0D9B:0004	1.000	norm	high		
+3.00-xfer	14FB:00BF	1506F	191	membloca_TEXT	membloca.asm	_BufDrawSpBlk	map:8	relocated	0D9B:00B5	1.000	norm	high		
+3.00-xfer	14FB:017E	1512E	39	membloca_TEXT	membloca.asm	_BufPoint	map:8	relocated	0D9B:0174	1.000	norm	high		
+3.00-xfer	14FB:01A5	15155	80	membloca_TEXT	membloca.asm	_BufDrawBlk	map:8	relocated	0D9B:019B	1.000	norm	high		
+3.00-xfer	14FB:01F5	151A5	65	membloca_TEXT	membloca.asm	_BufDrawBlkAddr	map:8	relocated	0D9B:01EB	1.000	norm	high		
+3.00-xfer	14FB:0236	151E6	55	membloca_TEXT	membloca.asm	_BufGetBlk	map:8	relocated	0D9B:022C	1.000	norm	high		
+3.00-xfer	14FB:026D	1521D	41	membloca_TEXT	membloca.asm	_BufGetBlkAddr	map:8	relocated	0D9B:0263	1.000	norm	high		
+3.00-xfer	14FB:0296	15246	44	membloca_TEXT	membloca.asm	_BufDraw4x4Addr	map:8	relocated	0D9B:028C	1.000	norm	high		
+3.00-xfer	1527:0002	15272	67	MOUSEFN_TEXT	oldmouse.asm	initmouse()	map:7	relocated	0DC6:0008	1.000	norm	high		
+3.00-xfer	1527:0045	152B5	55	MOUSEFN_TEXT	oldmouse.asm	moucur(int)	map:7	relocated	0DC6:004B	1.000	norm	high		
+3.00-xfer	1527:007C	152EC	47	MOUSEFN_TEXT	oldmouse.asm	setmoupos(int,int)	map:7	relocated	0DC6:0082	1.000	norm	high		
+3.00-xfer	1527:00AB	1531B	53	MOUSEFN_TEXT	oldmouse.asm	moustats(int far*,int far*,int far*)	map:7	relocated	0DC6:00B1	1.000	norm	high		
+3.00-xfer	1527:00E0	15350	177	MOUSEFN_TEXT	oldmouse.asm	moucurbox(int,int,int,int)	map:7	relocated	0DC6:00E6	1.000	norm	high		
+3.00-xfer	1527:0191	15401	57	MOUSEFN_TEXT	oldmouse.asm	getmoubox(int far*,int far*,int far*,int far*)	map:7	relocated	0DC6:0197	1.000	norm	high		
+3.00-xfer	1527:01CC	1543C	41	MOUSEFN_TEXT	oldmouse.asm	mouclearbut()	map:7	relocated	0DC6:01D2	1.000	norm	high		
+3.00-xfer	1546:0005	15465	108	SOUNDC_TEXT	soundc.c	detectcard(soundcards far*,unsigned int far*,unsigned int far*,char far*)	via 2.04	changed	0DE5:000B	0.734	callgraph	medium		sndblast.drv
+3.00-xfer	1546:0071	154D1	424	SOUNDC_TEXT	soundc.c	initsbvocdriver(configstruct far*)	via 2.04	changed	0DE5:00C7	0.969	callgraph	medium		
+3.00-xfer	1546:0219	15679	45	SOUNDC_TEXT	soundc.c			relocated	0DE5:0270	1.000	norm	high		
+3.00-xfer	1546:0246	156A6	406	SOUNDC_TEXT	soundc.c	playsbvocfile(char far*)	via 2.04	changed	0DE5:029D	0.892	callgraph	medium		.voc
+3.00-xfer	1546:03DC	1583C	19	SOUNDC_TEXT	soundc.c	stopsound()	via 2.04	changed	0DE5:0430	0.875	callgraph	medium		
+3.00-xfer	1546:03EF	1584F	65	SOUNDC_TEXT	soundc.c			added						
+3.00-xfer	1546:0430	15890	119	SOUNDC_TEXT	soundc.c			added					0DE5:043C+106 0.60	
+3.00-xfer	1546:04A7	15907	316	SOUNDC_TEXT	soundc.c			relocated	0DE5:04A6	1.000	norm	high		BLASTER
+3.00-xfer	1546:05E3	15A43	31	SOUNDC_TEXT	soundc.c			added					0DE5:05E2+31 0.77	
+3.00-xfer	1546:0602	15A62	267	SOUNDC_TEXT	soundc.c	loadsnd(char far*,char far*,char far*,unsigned char far*,char far*,int)	via 2.04	constants	0DE5:0601	0.940	shape	high		(C)ontinue \| Can't Find file!
+3.00-xfer	1546:070D	15B6D	126	SOUNDC_TEXT	soundc.c			added						
+3.00-xfer	15BE:000B	15BEB	164	WINDIO_TEXT	windio.c			added						*.*
+3.00-xfer	15BE:00AF	15C8F	3118	WINDIO_TEXT	windio.c			changed	0E7C:000B	0.451	callgraph	low		(E)xit. \| Out Of Memory! \| (R)eenter name (E)xit \| Sorry, the file does not exist! \| ..\
+3.00-xfer	15BE:0CDD	168BD	356	WINDIO_TEXT	windio.c	getstr(int,int,int,char far*)	via 2.04	changed	0E7C:0CF5	0.805	callgraph	medium		
+3.00-xfer	15BE:0E41	16A21	168	WINDIO_TEXT	windio.c	qwindow(int,int,int,char far*,char far*)	via 2.04	relocated	0E7C:0E8E	1.000	norm	high		
+3.00-xfer	15BE:0EE9	16AC9	727	WINDIO_TEXT	windio.c	errorbox(char far*,char far*,unsigned int)	via 2.04	constants	0E7C:0F36	0.993	shape	high		
+3.00-xfer	15BE:11C0	16DA0	488	WINDIO_TEXT	windio.c	vertmenu(int,int,int,int,int)	via 2.04	constants	0E7C:120D	0.980	shape	high		
+3.00-xfer	15BE:13A8	16F88	505	WINDIO_TEXT	windio.c	horizmenu(int,int,int,...)	via 2.04	constants	0E7C:13F5	0.985	shape	high		
+3.00-xfer	15BE:1437	17017	381	WINDIO_TEXT	windio.c			constants	0E7C:1484	0.994	shape	high		
+3.00-xfer	15BE:1636	17216	130	WINDIO_TEXT	windio.c			relocated	0E7C:1683	1.000	norm	high		
+3.00-xfer	15BE:16B8	17298	114	WINDIO_TEXT	windio.c			relocated	0E7C:1705	1.000	norm	high		
+3.00-xfer	15BE:172A	1730A	81	WINDIO_TEXT	windio.c	closemenu(int,int,int,int,char far*)	via 2.04	relocated	0E7C:1777	1.000	norm	high		
+3.00-xfer	15BE:177B	1735B	141	WINDIO_TEXT	windio.c	openmenu(int,int,int,int,char far*)	via 2.04	relocated	0E7C:17C8	1.000	norm	high		
+3.00-xfer	15BE:1808	173E8	227	WINDIO_TEXT	windio.c	loadany(char far*,char far*,char far*,unsigned int,char far*,int)	via 2.04	constants	0E7C:1855	0.933	shape	high		(C)ontinue \| Can't Find file!
+3.00-xfer	15BE:18EB	174CB	491	WINDIO_TEXT	windio.c			changed	0E7C:1938	0.631	callgraph	low		(C)ontinue save    (D)o not save \| This file already exists! Saving now wi… \| (A)bort Save    (R)etry \| Unable to Save!
+3.00-xfer	15BE:1AD6	176B6	104	WINDIO_TEXT	windio.c			added						
+3.00-xfer	15BE:1B3E	1771E	189	WINDIO_TEXT	windio.c	delany(char far*,char far*,char far*)	via 2.04	constants	0E7C:1B8F	0.913	strings	high		Are you sure you want to delete %s \|          (D)elete    (E)xit
+3.00-xfer	15BE:1BFB	177DB	65	WINDIO_TEXT	windio.c			relocated	0E7C:1C49	1.000	norm	high		%s%s
+3.00-xfer	1781:000C	1781C	204	GENC_TEXT	genc.c			added						gm.cfg
+3.00-xfer	1781:00D8	178E8	195	GENC_TEXT	genc.c			added						gm.cfg
+3.00-xfer	1781:019B	179AB	160	GENC_TEXT	genc.c	pausetimekey(int)	via 2.04	changed	1044:000A	0.729	callgraph	medium		
+3.00-xfer	1781:023B	17A4B	38	GENC_TEXT	genc.c			added						
+3.00-xfer	1781:0261	17A71	48	GENC_TEXT	genc.c	makefilename(char far*,const char far*,const char far*,const char far*)	via 2.04	changed	1044:0070	0.905	strings	high		%s%s%s
+3.00-xfer	1781:0291	17AA1	178	GENC_TEXT	genc.c	parsefilename(const char far*,char far*,char far*)	via 2.04	constants	1044:009E	0.971	shape	high		
+3.00-xfer	1781:0343	17B53	162	GENC_TEXT	genc.c			added						
+3.00-xfer	1781:03E5	17BF5	26	GENC_TEXT	genc.c	getscrn(char far*)	via 2.04	identical	1044:0150	1.000	bytes	high		
+3.00-xfer	1781:03FF	17C0F	31	GENC_TEXT	genc.c	restorescrn(char far*)	via 2.04	identical	1044:016A	1.000	bytes	high		
+3.00-xfer	1781:041E	17C2E	142	GENC_TEXT	genc.c			changed	1044:0189	0.645	callgraph	low		
+3.00-xfer	1781:04AC	17CBC	162	GENC_TEXT	genc.c	textmode()	via 2.04	changed	1044:0259	0.973	callgraph	medium		
+3.00-xfer	1781:054E	17D5E	86	GENC_TEXT	genc.c			added						
+3.00-xfer	1781:05A4	17DB4	157	GENC_TEXT	genc.c	graphmode()	via 2.04	relocated	1044:02F6	1.000	norm	high		
+3.00-xfer	1781:0641	17E51	112	GENC_TEXT	genc.c	loadspecany(char far*,char far*,char far*,unsigned int,char far*)	via 2.04	constants	1044:0393	0.978	shape	high		
+3.00-xfer	1781:06B1	17EC1	42	GENC_TEXT	genc.c	swap(int far*,int far*)	via 2.04	identical	1044:0403	1.000	bytes	high		
+3.00-xfer	1781:06F7	17F07	46	GENC_TEXT	genc.c			added						
+3.00-xfer	17F8:0005	17F85	499	GIFC_TEXT	gifc.c	intro(file far*,rgbdata far*)	via 2.04	constants	1086:000D	0.978	strings	high		(R)eturn to Menu \| No graphics file was indicated! \| This file is not in GIF format! \| There is no image in this file!
+3.00-xfer	17F8:01F8	18178	457	GIFC_TEXT	gifc.c	decode(file far*,int)	via 2.04	relocated	1086:0200	1.000	norm	high		
+3.00-xfer	17F8:03C1	18341	88	GIFC_TEXT	gifc.c			relocated	1086:03C9	1.000	norm	high		
+3.00-xfer	17F8:0419	18399	118	GIFC_TEXT	gifc.c			relocated	1086:0421	1.000	norm	high		
+3.00-xfer	17F8:048F	1840F	101	GIFC_TEXT	gifc.c			relocated	1086:0497	1.000	norm	high		
+3.00-xfer	17F8:04F4	18474	212	GIFC_TEXT	gifc.c			relocated	1086:04FC	1.000	norm	high		Code Too LARGE, memory error 1
+3.00-xfer	17F8:05C8	18548	328	GIFC_TEXT	gifc.c			relocated	1086:05D0	1.000	norm	high		
+3.00-xfer	17F8:071E	1869E	135	GIFC_TEXT	gifc.c			relocated	1086:0726	1.000	norm	high		
+3.00-xfer	17F8:07A5	18725	48	GIFC_TEXT	gifc.c			constants	1086:07AD	0.909	shape	high		
+3.00-xfer	17F8:07D5	18755	493	GIFC_TEXT	gifc.c			changed	1086:07DD	0.473	callgraph	low		Error Opening Bkd %s! \| (C)ontinue \| Error Opening Gif %s! \| Bad GIF File
+3.00-xfer	17F8:09C2	18942	147	GIFC_TEXT	gifc.c	drawgif(char far*,rgbdata far*)	via 2.04	constants	1086:099A	0.980	shape	high		
+3.00-xfer	189D:0005	189D5	179	PALC_TEXT	palc.c			changed	1128:000D	0.448	callgraph	low		
+3.00-xfer	189D:00B8	18A88	146	PALC_TEXT	palc.c			added						
+3.00-xfer	189D:014A	18B1A	621	PALC_TEXT	palc.c	fadeto(rgbdata far*,int)	via 2.04	relocated	1128:009B	1.000	norm	high		MicroChannel Bus Detected!\n
+3.00-xfer	189D:03B7	18D87	588	PALC_TEXT	palc.c	fadeallto(rgbdata,int)	via 2.04	relocated	1128:0308	1.000	norm	high		MicroChannel Bus Detected!\n
+3.00-xfer	189D:0603	18FD3	341	PALC_TEXT	palc.c	findforcol(rgbdata far*,char,char)	via 2.04	identical	1128:0554	1.000	bytes	high		
+3.00-xfer	189D:0758	19128	378	PALC_TEXT	palc.c	rainbowcols(rgbdata far*)	via 2.04	identical	1128:06A9	1.000	bytes	high		
+3.00-xfer	189D:080F	191DF	345	PALC_TEXT	palc.c			identical	1128:0760	1.000	bytes	high		
+3.00-xfer	189D:08D2	192A2	401	PALC_TEXT	palc.c	randcols(rgbdata far*)	via 2.04	relocated	1128:0823	1.000	norm	high		
+3.00-xfer	189D:0A63	19433	65	PALC_TEXT	palc.c	insertcol(int,unsigned char,unsigned char,unsigned char,rgbdata far*)	via 2.04	identical	1128:09B4	1.000	bytes	high		
+3.00-xfer	189D:0AA4	19474	199	PALC_TEXT	palc.c	initstartcols(rgbdata far*)	via 2.04	identical	1128:09F5	1.000	bytes	high		
+3.00-xfer	1953:000B	1953B	134	SVGAC_TEXT	svgac.c	force_vga(videocards)	via 2.04	constants	11D3:000C	0.846	strings	high		Standard \| Forcing Super VGA to %s.\n
+3.00-xfer	1953:0091	195C1	234	SVGAC_TEXT	svgac.c	identify_vga()	via 2.04	relocated	11D3:0092	1.000	norm	high		Paradise Super VGA detected!\n \| Trident 8800 VGA chip detected!\n \| Trident 8900 VGA chip detected!\n \| Tseng ET4000 Super VGA chip detected!\n \| No super Vga card detected! Assuming st…
+3.00-xfer	1953:017B	196AB	217	SVGAC_TEXT	svgac.c			relocated	11D3:017C	1.000	norm	high		761295520
+3.00-xfer	1953:034E	1987E	65	SVGAC_TEXT	svgac.c			constants	11D3:034F	0.968	shape	high		
+3.00-xfer	1953:03A9	198D9	78	SVGAC_TEXT	svgac.c			relocated	11D3:03A8	1.000	norm	high		
+3.00-xfer	1953:03F7	19927	63	SVGAC_TEXT	svgac.c			relocated	11D3:03F6	1.000	norm	high		
+3.00-xfer	1953:0436	19966	105	SVGAC_TEXT	svgac.c			relocated	11D3:0435	1.000	norm	high		VGA=
+3.00-xfer	1953:049F	199CF	70	SVGAC_TEXT	svgac.c			relocated	11D3:049E	1.000	norm	high		
+3.00-xfer	1953:04E5	19A15	62	SVGAC_TEXT	svgac.c			relocated	11D3:04E4	1.000	norm	high		
+3.00-xfer	1953:0523	19A53	59	SVGAC_TEXT	svgac.c			relocated	11D3:0522	1.000	norm	high		
+3.00-xfer	1953:055E	19A8E	253	SVGAC_TEXT	svgac.c			relocated	11D3:055D	1.000	norm	high		ATI ULTRA
+3.00-xfer	1953:065B	19B8B	20	SVGAC_TEXT	svgac.c			relocated	11D3:065A	1.000	norm	high		
+3.00-xfer	1953:066F	19B9F	86	SVGAC_TEXT	svgac.c	movewindow(unsigned char)	via 2.04	relocated	11D3:066E	1.000	norm	high		
+3.00-xfer	19BF:0005	19BF5	542	HISCOREL_TEXT	hiscorel.c			added						.his \| Top Ten Scores \| %10ld %s \| %10ld Your Latest Score \| Hit any key
+3.00-xfer	19BF:0223	19E13	639	HISCOREL_TEXT	hiscorel.c			changed	124D:0006	0.439	callgraph	low		.his \| Congratulations! \| You scored number %2d on the Top Ten! \| Enter Your Name:
+3.00-xfer	1A0C:0004	1A0C4	61	SBMUSIC_TEXT	sbmusic.c	soundcard(configstruct far*)	via 2.04	data-moved	1285:0006	0.960	shape	high		
+3.00-xfer	1A0C:0041	1A101	62	SBMUSIC_TEXT	sbmusic.c	initmusic(int far*,char far*)	via 2.04	relocated	1285:0043	1.000	norm	high		
+3.00-xfer	1A0C:007F	1A13F	396	SBMUSIC_TEXT	sbmusic.c			data-moved	1285:0081	0.993	shape	high		
+3.00-xfer	1A0C:020B	1A2CB	34	SBMUSIC_TEXT	sbmusic.c	sbfreemem()	via 2.04	relocated	1285:020D	1.000	norm	high		
+3.00-xfer	1A0C:022D	1A2ED	22	SBMUSIC_TEXT	sbmusic.c	stopit()	via 2.04	relocated	1285:022F	1.000	norm	high		
+3.00-xfer	1A0C:0243	1A303	10	SBMUSIC_TEXT	sbmusic.c			relocated	1285:0245	1.000	callgraph	medium		
+3.00-xfer	1A0C:024D	1A30D	10	SBMUSIC_TEXT	sbmusic.c	resetfm()	via 2.04	relocated	1285:024F	1.000	callgraph	medium		
+3.00-xfer	1A0C:0257	1A317	23	SBMUSIC_TEXT	sbmusic.c			relocated	1285:0259	1.000	norm	high		
+3.00-xfer	1A0C:045A	1A51A	135	SBMUSIC_TEXT	sbmusic.c			relocated	1285:045C	1.000	norm	high		
+3.00-xfer	1A5A:0001	1A5A1	739	JSTICKC_TEXT	jstickc.c	getjoypos(char far*,int far*,configstruct far*)	via 2.04	relocated	12D3:0003	1.000	norm	high		
+3.00-xfer	1A5A:02E4	1A884	96	JSTICKC_TEXT	jstickc.c	loadconfigdata(configstruct far*)	via 2.04	data-moved	12D3:02E6	0.974	shape	high		config.dat
+3.00-xfer	1A5A:0344	1A8E4	82	JSTICKC_TEXT	jstickc.c	saveconfigdata(configstruct far*)	via 2.04	data-moved	12D3:0346	0.970	shape	high		config.dat
+3.00-xfer	1A5A:0396	1A936	78	JSTICKC_TEXT	jstickc.c			constants	12D3:0398	0.964	strings	high		NotInit
+3.00-xfer	1A5A:03E4	1A984	63	JSTICKC_TEXT	jstickc.c	initjstick()	via 2.04	relocated	12D3:03E6	1.000	norm	high		
+3.00-xfer	1A5A:0423	1A9C3	48	JSTICKC_TEXT	jstickc.c	joyclearbuts()	via 2.04	relocated	12D3:0425	1.000	norm	high		
+3.00-xfer	1A9F:0004	1A9F4	86	jsticka_TEXT	jsticka.asm			identical	1318:0006	1.000	bytes	high		
+3.00-xfer	1AA4:000A	1AA4A	36	pala_TEXT	pala.asm	_SetAllPalTo	map:4	identical	131D:000C	1.000	callgraph	medium		
+3.00-xfer	1AA4:002E	1AA6E	24	pala_TEXT	pala.asm	_SetAllPal	map:4	identical	131D:0030	1.000	callgraph	medium		
+3.00-xfer	1AA4:0046	1AA86	33	pala_TEXT	pala.asm	_GetAllPal	map:4	identical	131D:0048	1.000	bytes	high		
+3.00-xfer	1AA4:0067	1AAA7	25	pala_TEXT	pala.asm	_Palette	map:4	identical	131D:0069	1.000	bytes	high		
+3.00-xfer	1AAC:0000	1AAC0	96	scrnrout_TEXT	scrnrout.asm	_clrbox	map:9	relocated	1325:0002	1.000	norm	high		
+3.00-xfer	1AAC:0060	1AB20	102	scrnrout_TEXT	scrnrout.asm	_xchgbox	map:9	identical	1325:0062	1.000	bytes	high		
+3.00-xfer	1AAC:00C6	1AB86	91	scrnrout_TEXT	scrnrout.asm	_savebox	map:9	identical	1325:00C8	1.000	bytes	high		
+3.00-xfer	1AAC:0121	1ABE1	93	scrnrout_TEXT	scrnrout.asm	_restorebox	map:9	identical	1325:0123	1.000	bytes	high		
+3.00-xfer	1AAC:0198	1AC58	337	scrnrout_TEXT	scrnrout.asm	_drawbox	map:9	relocated	1325:019A	1.000	norm	high		
+3.00-xfer	1AAC:02E9	1ADA9	56	scrnrout_TEXT	scrnrout.asm	_copypage	map:9	identical	1325:02EB	1.000	bytes	high		
+3.00-xfer	1AAC:0321	1ADE1	79	scrnrout_TEXT	scrnrout.asm	_writestr	map:9	identical	1325:0323	1.000	bytes	high		
+3.00-xfer	1AAC:0370	1AE30	71	scrnrout_TEXT	scrnrout.asm	_writech	map:9	identical	1325:0372	1.000	bytes	high		
+3.00-xfer	1AAC:03B7	1AE77	38	scrnrout_TEXT	scrnrout.asm	_readch	map:9	identical	1325:03B9	1.000	bytes	high		
+3.00-xfer	1AE9:000D	1AE9D	83	GRAPHC_TEXT	graphc.c	gwrite(int,int,unsigned char,char far*)	via 2.04	identical	1362:000F	1.000	bytes	high		
+3.00-xfer	1AE9:0060	1AEF0	111	GRAPHC_TEXT	graphc.c	gputchar(int,int,unsigned char,char)	via 2.04	relocated	1362:0062	1.000	norm	high		
+3.00-xfer	1AE9:00CF	1AF5F	612	GRAPHC_TEXT	graphc.c	gget(int,int,unsigned char,unsigned char,char far*,int)	via 2.04	relocated	1362:00D1	1.000	norm	high		
+3.00-xfer	1AE9:0333	1B1C3	92	GRAPHC_TEXT	graphc.c	box(int,int,int,int,unsigned char)	via 2.04	identical	1362:0335	1.000	bytes	high		
+3.00-xfer	1AE9:038F	1B21F	257	GRAPHC_TEXT	graphc.c	line(int,int,int,int,unsigned char)	via 2.04	relocated	1362:0391	1.000	norm	high		
+3.00-xfer	1AE9:0490	1B320	308	GRAPHC_TEXT	graphc.c	draw4dat(int,int,char far*,int,int,unsigned char far*,int)	via 2.04	relocated	1362:0492	1.000	norm	high		
+3.00-xfer	1B45:0004	1B454	62	bloca_TEXT	bloca.asm	_drawblk	map:2	relocated	13BE:0006	1.000	norm	high		
+3.00-xfer	1B45:0042	1B492	70	bloca_TEXT	bloca.asm	_getblk	map:2	relocated	13BE:0044	1.000	norm	high		
+3.00-xfer	1B4D:0008	1B4D8	599	FILECLSS_TEXT	..\drv\fileclss.cpp			added						
+3.00-xfer	1B4D:025F	1B72F	278	FILECLSS_TEXT	..\drv\fileclss.cpp			added						
+3.00-xfer	1B4D:0375	1B845	263	FILECLSS_TEXT	..\drv\fileclss.cpp			added						
+3.00-xfer	1B4D:047C	1B94C	147	FILECLSS_TEXT	..\drv\fileclss.cpp			added						
+3.00-xfer	1B4D:050F	1B9DF	84	FILECLSS_TEXT	..\drv\fileclss.cpp			added						
+3.00-xfer	1B4D:0563	1BA33	77	FILECLSS_TEXT	..\drv\fileclss.cpp			added						
+3.00-xfer	1BA8:0000	1BA80	27	FLI_TEXT	..\image\fli\fli.cpp			added						
+3.00-xfer	1BA8:001B	1BA9B	87	FLI_TEXT	..\image\fli\fli.cpp			added						
+3.00-xfer	1BA8:0072	1BAF2	144	FLI_TEXT	..\image\fli\fli.cpp			added						
+3.00-xfer	1BA8:0102	1BB82	264	FLI_TEXT	..\image\fli\fli.cpp			added						MicroChannel Bus Detected!\n
+3.00-xfer	1BA8:020A	1BC8A	189	FLI_TEXT	..\image\fli\fli.cpp			added						
+3.00-xfer	1BA8:02C7	1BD47	243	FLI_TEXT	..\image\fli\fli.cpp			added						
+3.00-xfer	1BA8:03BA	1BE3A	354	FLI_TEXT	..\image\fli\fli.cpp			added						
+3.00-xfer	1BA8:051C	1BF9C	239	FLI_TEXT	..\image\fli\fli.cpp			added						New Frame: %d Size:%5lu Chunks:%u\n \|   New Chunk: Size:%5lu 
+3.00-xfer	1BA8:080E	1C28E	47	FLI_TEXT	..\image\fli\fli.cpp			added						
+3.00-xfer	1BA8:083D	1C2BD	21	FLI_TEXT	..\image\fli\fli.cpp			added						
+3.00-xfer	1BA8:0852	1C2D2	211	FLI_TEXT	..\image\fli\fli.cpp			added						
+3.00-xfer	1BA8:095D	1C3DD	51	FLI_TEXT	..\image\fli\fli.cpp			added						
+3.00-xfer	1C41:0001	1C411	31	vgaobj_TEXT	..\drv\vgaobj.asm			added						
+3.00-xfer	1C41:0020	1C430	19	vgaobj_TEXT	..\drv\vgaobj.asm			added						
+3.00-xfer	1C41:0033	1C443	42	vgaobj_TEXT	..\drv\vgaobj.asm			added						
+3.00-xfer	1C41:005D	1C46D	39	vgaobj_TEXT	..\drv\vgaobj.asm			added						
+3.00-xfer	1C41:0084	1C494	82	vgaobj_TEXT	..\drv\vgaobj.asm			added						
+3.00-xfer	1C41:00D6	1C4E6	80	vgaobj_TEXT	..\drv\vgaobj.asm			added						
+3.00-xfer	1C41:0126	1C536	84	vgaobj_TEXT	..\drv\vgaobj.asm			added						
+3.00-xfer	1C41:017A	1C58A	67	vgaobj_TEXT	..\drv\vgaobj.asm			added						
+3.00-xfer	1C41:01BD	1C5CD	36	vgaobj_TEXT	..\drv\vgaobj.asm			added						
+3.00-xfer	1C41:01E1	1C5F1	24	vgaobj_TEXT	..\drv\vgaobj.asm			added						
+3.00-xfer	1C41:01F9	1C609	24	vgaobj_TEXT	..\drv\vgaobj.asm			added						
+3.00-xfer	1C41:0211	1C621	25	vgaobj_TEXT	..\drv\vgaobj.asm			added						
+3.00-xfer	1C63:000A	1C63A	331	FINDFILE_TEXT	findfile.cpp			changed	0E7C:0B5E	0.420	callgraph	low		
+3.00-xfer	1C63:0155	1C785	294	FINDFILE_TEXT	findfile.cpp			added						
+3.00-xfer	1C8A:000E	1C8AE	153	svgaa_TEXT	svgaa.asm	_MoveViewScreen	map:11	relocated	13C6:000C	1.000	norm	high		MicroChannel Bus Detected!\n
+3.00-xfer	1C8A:00A7	1C947	16	svgaa_TEXT	svgaa.asm	_GetROMFont	map:11	identical	13C6:00A5	1.000	bytes	high		
+3.00-xfer	1C8A:00B7	1C957	99	svgaa_TEXT	svgaa.asm	_SoftwareScroll	map:11	added						MicroChannel Bus Detected!\n
+3.00-xfer	1C8A:011A	1C9BA	198	svgaa_TEXT	svgaa.asm	_SvgaBufToScrn	map:11	relocated	13C6:00B5	1.000	norm	high		
+3.00-xfer	1C8A:01F7	1CA97	173	svgaa_TEXT	svgaa.asm	_SetPage	map:11	relocated	13C6:0192	1.000	norm	high		
+3.00-xfer	1C8A:02A4	1CB44	64	svgaa_TEXT	svgaa.asm	_SetTridentStart	map:11	relocated	13C6:023F	1.000	norm	high		
+3.00-xfer	1C8A:02E4	1CB84	31	svgaa_TEXT	svgaa.asm	_SetTrident	map:11	identical	13C6:027F	1.000	bytes	high		
+3.00-xfer	1C8A:0303	1CBA3	33	svgaa_TEXT	svgaa.asm	_Gwritestr	map:11	identical	13C6:029E	1.000	bytes	high		
+3.00-xfer	1C8A:0324	1CBC4	70	svgaa_TEXT	svgaa.asm	_BoxFill	map:11	identical	13C6:02BF	1.000	bytes	high		
+3.00-xfer	1C8A:036A	1CC0A	99	svgaa_TEXT	svgaa.asm	_Point	map:11	relocated	13C6:0305	1.000	norm	high		
+3.00-xfer	1C8A:03CD	1CC6D	83	svgaa_TEXT	svgaa.asm	_GetCol	map:11	added						
+3.00-xfer	1CCC:0000	1CCC0	104	_TEXTC	ctor2.cpp	string::string(const string far&)	map:19	added						
+3.00-xfer	1CCC:00E2	1CDA2	188	_TEXTC	ctor3.cpp	string::string(const char far*)	map:19	added						
+3.00-xfer	1CCC:02F1	1CFB1	121	_TEXTC	strings.cpp	string::~string()	map:19	added						
+3.00-xfer	1CCC:036A	1D02A	173	_TEXTC	strings.cpp	string::assert_element(unsigned int) const	map:19	added						String reference out of range
+3.00-xfer	1CCC:0417	1D0D7	173	_TEXTC	strings.cpp	string::assert_index(unsigned int) const	map:19	added						String reference out of range
+3.00-xfer	1CCC:04C4	1D184	170	_TEXTC	strings.cpp	TSubString::assert_element(unsigned int) const	map:19	added						String reference out of range
+3.00-xfer	1CCC:056E	1D22E	224	_TEXTC	strings.cpp	TStringRef::TStringRef(const char far*,unsigned int,const char far*,unsigned int,unsigned int)	map:19	added						
+3.00-xfer	1CCC:064E	1D30E	89	_TEXTC	strings.cpp	TStringRef::~TStringRef()	map:19	added						
+3.00-xfer	1CCC:06A7	1D367	109	_TEXTC	strings.cpp	TStringRef::reserve(unsigned int)	map:19	added						
+3.00-xfer	1CCC:0714	1D3D4	103	_TEXTC	strings.cpp	TStringRef::check_freeboard()	map:19	added						
+3.00-xfer	1CCC:077B	1D43B	97	_TEXTC	strings.cpp	TStringRef::grow_to(unsigned int)	map:19	added						
+3.00-xfer	1CCC:07DC	1D49C	61	_TEXTC	strings.cpp	TStringRef::round_capacity(unsigned int)	map:19	added						
+3.00-xfer	1CCC:0819	1D4D9	445	_TEXTC	strings.cpp	TStringRef::splice(unsigned int,unsigned int,const char far*,unsigned int)	map:19	added						
+3.00-xfer	1CCC:09D6	1D696	29	_TEXTC	strings.cpp	string::set_case_sensitive(int)	map:19	added						
+3.00-xfer	1CCC:09F3	1D6B3	29	_TEXTC	strings.cpp	string::set_paranoid_check(int)	map:19	added						
+3.00-xfer	1CCC:0A10	1D6D0	29	_TEXTC	strings.cpp	string::skip_whitespace(int)	map:19	added						
+3.00-xfer	1CCC:0A2D	1D6ED	29	_TEXTC	strings.cpp	string::initial_capacity(unsigned int)	map:19	added						
+3.00-xfer	1CCC:0A4A	1D70A	42	_TEXTC	strings.cpp	string::resize_increment(unsigned int)	map:19	added						
+3.00-xfer	1CCC:0A67	1D727	13	_TEXTC	strings.cpp			added						
+3.00-xfer	1CCC:0A74	1D734	29	_TEXTC	strings.cpp	string::max_waste(unsigned int)	map:19	added						
+3.00-xfer	1D8A:0002	1D8A2	39	CT_TEXT	SBCRWIO.ASM	SBC_READ_DSP_TIME	map:17	relocated	13FC:0008	1.000	norm	high		
+3.00-xfer	1D8A:0029	1D8C9	40	CT_TEXT	SBCRWIO.ASM	SBC_WRITE_DSP_TIME	map:17	relocated	13FC:002F	1.000	norm	high		
+3.00-xfer	1D8A:008E	1D92E	21	CT_TEXT	VECTOR.ASM	SET_INT_VECTOR	map:17	identical	13FC:0094	1.000	bytes	high		
+3.00-xfer	1D8A:00A3	1D943	19	CT_TEXT	VECTOR.ASM	GET_INT_VECTOR	map:17	identical	13FC:00A9	1.000	bytes	high		
+3.00-xfer	1D8A:00E4	1D984	154	CT_TEXT	cardhere.ASM	_sbc_check_card	map:17	relocated	13FC:00EA	1.000	norm	high		
+3.00-xfer	1D8A:017E	1DA1E	33	CT_TEXT	cardhere.ASM			relocated	13FC:0184	1.000	norm	high		
+3.00-xfer	1D8A:019F	1DA3F	125	CT_TEXT	cardhere.ASM			constants	13FC:01A5	0.982	shape	high		
+3.00-xfer	1D8A:021C	1DABC	41	CT_TEXT	cardhere.ASM			relocated	13FC:0222	1.000	norm	high		
+3.00-xfer	1D8A:0245	1DAE5	13	CT_TEXT	cardhere.ASM			identical	13FC:024B	1.000	bytes	high		
+3.00-xfer	1D8A:025C	1DAFC	47	CT_TEXT	dspreset.ASM	_sbc_dsp_reset	map:17	relocated	13FC:0262	1.000	norm	high		
+3.00-xfer	1D8A:028C	1DB2C	9	CT_TEXT	midiasm.ASM	_sbfd_init	map:17	identical	13FC:0292	1.000	bytes	high		
+3.00-xfer	1D8A:0295	1DB35	19	CT_TEXT	midiasm.ASM	_sbfd_instrument	map:17	identical	13FC:029B	1.000	bytes	high		
+3.00-xfer	1D8A:02A8	1DB48	9	CT_TEXT	midiasm.ASM	_sbfd_off_music	map:17	identical	13FC:02AE	1.000	bytes	high		
+3.00-xfer	1D8A:02B1	1DB51	9	CT_TEXT	midiasm.ASM	_sbfd_reset	map:17	identical	13FC:02B7	1.000	bytes	high		
+3.00-xfer	1D8A:02BA	1DB5A	23	CT_TEXT	midiasm.ASM	_sbfd_note_on	map:17	identical	13FC:02C0	1.000	bytes	high		
+3.00-xfer	1D8A:02D1	1DB71	23	CT_TEXT	midiasm.ASM	_sbfd_note_off	map:17	identical	13FC:02D7	1.000	bytes	high		
+3.00-xfer	1D8A:02E8	1DB88	20	CT_TEXT	midiasm.ASM	_sbfd_program_change	map:17	identical	13FC:02EE	1.000	bytes	high		
+3.00-xfer	1D8A:02FC	1DB9C	23	CT_TEXT	midiasm.ASM	_sbfd_control_change	map:17	identical	13FC:0302	1.000	bytes	high		
+3.00-xfer	1D8A:0313	1DBB3	17	CT_TEXT	midiasm.ASM	_sbfd_setmode	map:17	identical	13FC:0319	1.000	bytes	high		
+3.00-xfer	1DBD:0814	1E3E4	80	SBFM_MIDI_CODE	MIDIRTN.ASM	SBFM_MIDI_SERVICE	map:2	identical	142F:0814	1.000	bytes	high		
+3.00-xfer	1DBD:0864	1E434	103	SBFM_MIDI_CODE	MIDIRTN.ASM	SBFM_MIDI_CODE_RTN	map:2	identical	142F:0864	1.000	bytes	high		

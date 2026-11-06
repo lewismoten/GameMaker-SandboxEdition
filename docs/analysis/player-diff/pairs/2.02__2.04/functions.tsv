@@ -1,0 +1,455 @@
+status	old_addr	old_lin	old_size	new_addr	new_lin	new_size	norm_sim	method	confidence	name	string_hint
+changed	0003:0004	00034	367	0003:0004	00034	414	0.803	callgraph	medium		
+constants	0003:0158	00188	19	0003:0187	001B7	19	0.778	shape	high		
+identical	0003:016B	0019B	1	0003:019A	001CA	1	1.000	bytes	high		
+changed	0003:016C	0019C	39	0003:019B	001CB	62	0.651	callgraph	low		Divide error\r\nAbnormal program termination\r\n
+constants	0003:017E	001AE	67	0003:01AD	001DD	67	0.958	shape	high		
+relocated	0003:01C1	001F1	45	0003:01F0	00220	45	1.000	norm	high		
+constants	0003:01EE	0021E	87	0003:021D	0024D	87	0.943	shape	high		
+identical	0003:0245	00275	8	0003:0274	002A4	8	1.000	bytes	high		
+changed	0003:0268	00298	45	0003:02EC	0031C	49	0.632	callgraph	low		
+changed	0003:0295	002C5	32	0003:031D	0034D	36	0.895	callgraph	medium		
+changed	0003:02B5	002E5	29	0003:0341	00371	33	0.889	callgraph	medium		
+changed	0003:02D3	00303	87	0003:0367	00397	90	0.857	callgraph	medium		
+changed	0003:032A	0035A	15	0003:03C1	003F1	19	0.818	callgraph	medium		
+changed	0003:0339	00369	18	0003:03D4	00404	22	0.833	callgraph	medium		
+identical	0003:0365	00395	23	0003:040C	0043C	23	1.000	bytes	high		
+identical	0003:037C	003AC	28	0003:0423	00453	28	1.000	bytes	high		
+changed	0003:0398	003C8	19	0003:043F	0046F	23	0.818	callgraph	medium		
+changed	0003:03AB	003DB	19	0003:0456	00486	23	0.818	callgraph	medium		
+changed	0003:03BE	003EE	15	0003:046D	0049D	19	0.818	callgraph	medium		
+changed	0003:03CD	003FD	17	0003:0480	004B0	21	0.833	callgraph	medium		
+identical	0003:03DE	0040E	3	0003:0495	004C5	3	1.000	callgraph	medium		
+identical	0003:03E1	00411	149	0003:0498	004C8	149	1.000	bytes	high		
+identical	0003:03E8	00418	150	0003:049F	004CF	150	1.000	bytes	high		
+identical	0003:03ED	0041D	3	0003:04A4	004D4	3	1.000	callgraph	medium		
+identical	0003:03F0	00420	150	0003:04A7	004D7	150	1.000	bytes	high		
+identical	0003:03F8	00428	148	0003:04AF	004DF	148	1.000	bytes	high		
+identical	0003:048C	004BC	3	0003:0543	00573	3	1.000	bytes	high		
+identical	0003:048F	004BF	30	0003:0546	00576	30	1.000	bytes	high		
+identical	0003:04B0	004E0	30	0003:0567	00597	30	1.000	bytes	high		
+identical	0003:04CE	004FE	77	0003:0585	005B5	77	1.000	bytes	high		
+identical	0003:0534	00564	33	0003:05EB	0061B	33	1.000	bytes	high		
+changed	0003:057D	005AD	57	0003:060C	0063C	62	0.449	callgraph	low		
+changed	0003:05B6	005E6	18	0003:064A	0067A	20	0.667	callgraph	low		
+changed	0003:05C8	005F8	17	0003:065E	0068E	21	0.818	callgraph	medium		
+identical	0003:05D9	00609	130	0003:0673	006A3	130	1.000	bytes	high		
+changed	0003:065B	0068B	32	0003:06F5	00725	36	0.889	callgraph	medium		
+changed	0003:067B	006AB	41	0003:0719	00749	45	0.850	callgraph	medium		
+changed	0003:06A4	006D4	93	0003:0746	00776	97	0.929	strings	high		TMP
+changed	0003:0701	00731	87	0003:07A7	007D7	91	0.949	callgraph	medium		
+identical	0003:0758	00788	23	0003:0802	00832	23	1.000	bytes	high		
+identical	0003:076F	0079F	33	0003:0819	00849	33	1.000	bytes	high		
+changed	0003:0790	007C0	17	0003:083A	0086A	21	0.778	order	medium		
+changed	0003:07A1	007D1	38	0003:084F	0087F	41	0.828	callgraph	medium		
+changed	0003:07C7	007F7	47	0003:0878	008A8	50	0.833	callgraph	medium		
+changed	0003:07F6	00826	24	0003:08AA	008DA	28	0.875	callgraph	medium		
+changed	0003:080E	0083E	43	0003:08C6	008F6	47	0.917	callgraph	medium		
+constants	0003:0839	00869	418	0003:08F5	00925	418	0.994	shape	high		
+changed	0003:09DB	00A0B	32	0003:0A97	00AC7	34	0.933	callgraph	medium		
+changed	0003:09FB	00A2B	21	0003:0AB9	00AE9	23	0.917	order	medium		
+changed	0003:0A10	00A40	21	0003:0AD0	00B00	23	0.917	order	medium		
+changed	0003:0ADB	00B0B	64	0003:0B8B	00BBB	64	0.861	order	medium		
+changed	0003:0B1B	00B4B	88	0003:0BCB	00BFB	88	0.795	callgraph	medium		
+changed	0003:0B73	00BA3	24	0003:347E	034AE	29	0.600	similarity	low		
+changed	0003:0B8B	00BBB	44	0003:0C23	00C53	48	0.909	similarity	medium		
+changed	0003:0BB7	00BE7	24	0003:0C53	00C83	28	0.875	callgraph	medium		
+changed	0003:0BE7	00C17	193	0003:0C87	00CB7	193	0.986	callgraph	medium		
+identical	0003:0C0E	00C3E	10	0003:0CAE	00CDE	10	1.000	bytes	high		
+identical	0003:0C17	00C47	52	0003:0CB7	00CE7	52	1.000	bytes	high		
+changed	0003:10A5	010D5	52	0003:02AF	002DF	61	0.862	callgraph	medium		
+changed	0003:10D9	01109	37	0003:39E8	03A18	41	0.895	callgraph	medium		
+changed	0003:10FE	0112E	45	0003:3A11	03A41	49	0.900	callgraph	medium		
+changed	0003:112B	0115B	14	0003:3A42	03A72	18	0.778	callgraph	medium		
+changed	0003:1139	01169	132	0003:3A54	03A84	143	0.791	callgraph	medium		
+changed	0003:11DA	0120A	219	0003:3B04	03B34	198	0.916	strings	high		COMPAQ
+changed	0003:12D5	01305	26	0003:3BEE	03C1E	30	0.875	callgraph	medium		
+changed	0003:1310	01340	97	0003:3C3D	03C6D	97	0.713	callgraph	medium		
+relocated	0003:137D	013AD	99	0003:1156	01186	99	1.000	norm	high		
+relocated	0003:13E0	01410	113	0003:11B9	011E9	113	1.000	norm	high		
+relocated	0003:1451	01481	41	0003:122A	0125A	41	1.000	norm	high		Borland C++ - Copyright 1991 Borland Intl.
+relocated	0003:147A	014AA	55	0003:1253	01283	55	1.000	norm	high		Borland C++ - Copyright 1991 Borland Intl.
+relocated	0003:14B1	014E1	41	0003:128A	012BA	41	1.000	norm	high		
+relocated	0003:14DA	0150A	100	0003:12B3	012E3	100	1.000	norm	high		
+relocated	0003:153E	0156E	90	0003:1317	01347	90	1.000	norm	high		
+identical	0003:1598	015C8	35	0003:1371	013A1	35	1.000	bytes	high		
+relocated	0003:15BB	015EB	126	0003:1394	013C4	126	1.000	norm	high		
+relocated	0003:15C5	015F5	125	0003:139E	013CE	125	1.000	norm	high		
+relocated	0003:1642	01672	124	0003:141B	0144B	124	1.000	norm	high		
+relocated	0003:16BE	016EE	100	0003:1497	014C7	100	1.000	norm	high		
+relocated	0003:1722	01752	123	0003:14FB	0152B	123	1.000	norm	high		
+relocated	0003:1729	01759	122	0003:1502	01532	122	1.000	norm	high		
+changed	0003:17A3	017D3	118	0003:157C	015AC	142	0.509	callgraph	low		
+changed	0003:1819	01849	63	0003:160A	0163A	67	0.923	callgraph	medium		
+changed	0003:1858	01888	142	0003:164D	0167D	143	0.724	callgraph	medium		
+changed	0003:18E6	01916	73	0003:3C9E	03CCE	77	0.933	callgraph	medium		
+changed	0003:192F	0195F	49	0003:16DC	0170C	53	0.926	callgraph	medium		
+changed	0003:1960	01990	153	0003:1711	01741	154	0.992	callgraph	medium		
+changed	0003:19F9	01A29	41	0003:17AB	017DB	45	0.909	callgraph	medium		
+changed	0003:1B4D	01B7D	28	0003:3E1A	03E4A	32	0.882	callgraph	medium		
+changed	0003:1BC1	01BF1	44	0003:3E92	03EC2	48	0.917	order	medium		
+changed	0003:1BED	01C1D	7	0003:3EC2	03EF2	11	0.667	callgraph	low		
+constants	0003:1BF4	01C24	117	0003:1B0C	01B3C	117	0.984	shape	high		
+changed	0003:1C69	01C99	17	0003:1B81	01BB1	21	0.833	callgraph	medium		
+changed	0003:1C7A	01CAA	29	0003:1B96	01BC6	33	0.889	callgraph	medium		
+changed	0003:1C97	01CC7	40	0003:1BB7	01BE7	44	0.857	callgraph	medium		
+changed	0003:1CBF	01CEF	30	0003:1BE3	01C13	34	0.812	callgraph	medium		
+changed	0003:1CDD	01D0D	119	0003:1C16	01C46	125	0.739	callgraph	medium		
+changed	0003:1D54	01D84	171	0003:1C93	01CC3	192	0.893	callgraph	medium		
+changed	0003:1DFF	01E2F	203	0003:1D53	01D83	209	0.513	callgraph	low		
+changed	0003:1ECC	01EFC	156	0003:1E24	01E54	154	0.806	callgraph	medium		
+changed	0003:1F68	01F98	51	0003:1EBE	01EEE	55	0.939	callgraph	medium		
+changed	0003:1F9B	01FCB	45	0003:1EF5	01F25	49	0.935	callgraph	medium		
+changed	0003:1FC8	01FF8	65	0003:1F26	01F56	69	0.941	callgraph	medium		
+changed	0003:2009	02039	66	0003:1F6B	01F9B	76	0.708	callgraph	medium		
+changed	0003:204B	0207B	188	0003:1FB7	01FE7	212	0.816	callgraph	medium		
+changed	0003:2107	02137	207	0003:208B	020BB	210	0.885	callgraph	medium		
+changed	0003:21D6	02206	74	0003:215D	0218D	77	0.721	callgraph	medium		
+changed	0003:2220	02250	53	0003:21AA	021DA	57	0.920	callgraph	medium		
+changed	0003:2255	02285	244	0003:2238	02268	283	0.756	callgraph	medium		
+changed	0003:2349	02379	142	0003:2353	02383	84	0.627	callgraph	low		
+changed	0003:23D7	02407	130	0003:23A7	023D7	137	0.709	callgraph	medium		
+changed	0003:2459	02489	128	0003:2430	02460	130	0.860	callgraph	medium		
+changed	0003:24D9	02509	88	0003:24B2	024E2	225	0.471	callgraph	low		
+changed	0003:2531	02561	139	0003:2593	025C3	153	0.672	callgraph	low		
+changed	0003:25BC	025EC	62	0003:262C	0265C	69	0.800	callgraph	medium		
+changed	0003:25FA	0262A	120	0003:2671	026A1	123	0.818	callgraph	medium		
+changed	0003:2672	026A2	21	0003:26EC	0271C	25	0.857	callgraph	medium		
+changed	0003:268A	026BA	236	0003:2708	02738	249	0.682	callgraph	low		
+relocated	0003:2784	027B4	112	0003:2811	02841	112	1.000	norm	high		
+identical	0003:27F4	02824	36	0003:2881	028B1	36	1.000	bytes	high		
+changed	0003:2818	02848	36	0003:28A5	028D5	38	0.952	callgraph	medium		
+changed	0003:283C	0286C	31	0003:28CB	028FB	34	0.774	callgraph	medium		
+changed	0003:285B	0288B	27	0003:28ED	0291D	31	0.875	callgraph	medium		
+changed	0003:2876	028A6	18	0003:290C	0293C	22	0.818	callgraph	medium		
+changed	0003:2888	028B8	367	0003:2922	02952	394	0.677	callgraph	low		
+changed	0003:29F7	02A27	79	0003:2AAC	02ADC	83	0.917	callgraph	medium		
+changed	0003:2A46	02A76	27	0003:2BA9	02BD9	31	0.750	callgraph	medium		
+changed	0003:2A61	02A91	28	0003:2BC8	02BF8	32	0.882	callgraph	medium		
+changed	0003:2A7D	02AAD	397	0003:2BE8	02C18	395	0.762	callgraph	medium		
+changed	0003:2C10	02C40	20	0003:2D73	02DA3	24	0.769	callgraph	medium		
+changed	0003:2C24	02C54	506	0003:2D8B	02DBB	523	0.733	callgraph	medium		
+changed	0003:2E23	02E53	209	0003:2F96	02FC6	207	0.949	callgraph	medium		
+relocated	0003:2EF4	02F24	3	0003:3065	03095	3	1.000	norm	high		
+changed	0003:2EF7	02F27	280	0003:3068	03098	289	0.623	callgraph	low		
+changed	0003:3012	03042	64	0003:3189	031B9	69	0.833	callgraph	medium		
+changed	0003:3052	03082	34	0003:31CE	031FE	38	0.833	callgraph	medium		
+changed	0003:3074	030A4	33	0003:31F4	03224	37	0.824	callgraph	medium		
+identical	0003:3095	030C5	63	0003:3219	03249	63	1.000	bytes	high		
+changed	0003:30D4	03104	61	0003:3258	03288	63	0.971	callgraph	medium		
+identical	0003:3141	03171	41	0003:3297	032C7	41	1.000	bytes	high		
+identical	0003:316A	0319A	65	0003:32C0	032F0	65	1.000	bytes	high		
+changed	0003:31AB	031DB	31	0003:3301	03331	33	0.947	callgraph	medium		
+identical	0003:31CA	031FA	49	0003:3322	03352	49	1.000	bytes	high		
+identical	0003:31FB	0322B	68	0003:3353	03383	68	1.000	bytes	high		
+changed	0003:323F	0326F	39	0003:3397	033C7	41	0.850	order	medium		
+changed	0003:3266	03296	11	0003:33C0	033F0	15	0.750	order	medium		
+changed	0003:3271	032A1	180	0003:33CF	033FF	175	0.824	callgraph	medium		
+changed	0003:3325	03355	298	0003:17D8	01808	301	0.695	callgraph	low		
+changed	0003:344F	0347F	516	0003:1905	01935	519	0.950	callgraph	medium		
+changed	0003:3653	03683	492	0003:34BE	034EE	508	0.696	strings	high		EST
+changed	0003:383F	0386F	223	0003:36BA	036EA	236	0.789	callgraph	medium		
+changed	0003:391E	0394E	335	0003:37A6	037D6	358	0.535	callgraph	low		
+changed	0003:3A6D	03A9D	60	0003:390C	0393C	63	0.828	callgraph	medium		
+changed	0003:3AA9	03AD9	61	0003:3967	03997	66	0.643	callgraph	low		
+changed	0003:3AE6	03B16	56	0003:39A9	039D9	63	0.741	callgraph	medium		
+changed	03B4:000E	03B4E	675	03EF:000E	03EFE	718	0.813	callgraph	medium		ShowVideoMemory
+changed	03B4:02B1	03DF1	879	03EF:02DC	041CC	906	0.621	strings	high		GMtitle.gif
+changed	03B4:0852	04392	138	03EF:0891	04781	140	0.544	callgraph	low		
+changed	03B4:08DC	0441C	192	03EF:091D	0480D	174	0.695	strings	high		Play
+changed	03B4:099C	044DC	688	03EF:09F6	048E6	703	0.636	callgraph	low		.txt
+changed	03B4:0C4C	0478C	972	03EF:0CB5	04BA5	1069	0.550	callgraph	low		
+changed	03B4:1024	04B64	625	03EF:10EE	04FDE	593	0.642	callgraph	low		
+changed	03B4:12A9	04DE9	1365	03EF:1353	05243	1436	0.721	strings	high		You have not saved a game!
+changed	03B4:17FE	0533E	526	03EF:18EF	057DF	534	0.883	strings	high		I cannot save your game!
+changed	03B4:1A0C	0554C	548	03EF:1B05	059F5	612	0.852	callgraph	medium		      G A M E - M A K E R
+changed	03B4:1C30	05770	193	03EF:1D69	05C59	210	0.819	strings	high		gmhelp
+changed	03B4:1CF1	05831	683	03EF:1E3B	05D2B	707	0.708	callgraph	medium		Score:     %ld
+changed	03B4:1F9C	05ADC	537	03EF:20FE	05FEE	617	0.646	strings	high		Missing File:
+changed	03B4:21B5	05CF5	792	03EF:2367	06257	738	0.723	strings	high		This machine does not have a  
+changed	03B4:24CD	0600D	88	03EF:2649	06539	102	0.630	callgraph	low		
+changed	03B4:2525	06065	187	03EF:26AF	0659F	216	0.491	callgraph	low		
+changed	03B4:25E0	06120	989	03EF:2787	06677	944	0.659	callgraph	low		Choose object to drop
+changed	03B4:29CF	0650F	39	03EF:2B49	06A39	41	0.474	callgraph	low		
+changed	03B4:29F6	06536	268	03EF:2B72	06A62	271	0.891	callgraph	medium		
+changed	03B4:2B02	06642	97	03EF:2C81	06B71	97	0.892	callgraph	medium		
+changed	03B4:2D3F	0687F	130	03EF:2DF2	06CE2	81	0.472	callgraph	low		
+changed	03B4:2DC1	06901	432	03EF:2E43	06D33	444	0.540	callgraph	low		
+changed	03B4:2F71	06AB1	1873	03EF:2FFF	06EEF	1765	0.475	callgraph	low		
+changed	03B4:36C2	07202	87	03EF:36E4	075D4	75	0.567	similarity	low		
+changed	03B4:38F8	07438	113	03EF:3B7E	07A6E	97	0.635	callgraph	low		
+changed	03B4:396D	074AD	662	03EF:3BDF	07ACF	590	0.486	callgraph	low		
+changed	03B4:3C03	07743	514	03EF:3E2D	07D1D	534	0.665	callgraph	low		
+changed	03B4:51B6	08CF6	519	03EF:4F99	08E89	405	0.490	similarity	low		
+changed	03B4:53BD	08EFD	166	03EF:51A6	09096	120	0.157	similarity	low		
+changed	03B4:5463	08FA3	189	03EF:521E	0910E	228	0.447	callgraph	low		
+changed	03B4:5520	09060	532	03EF:5302	091F2	355	0.471	callgraph	low		
+changed	03B4:59D9	09519	53	03EF:5686	09576	53	0.788	callgraph	medium		
+changed	03B4:5A0E	0954E	375	03EF:56BB	095AB	331	0.612	callgraph	low		
+changed	03B4:5B85	096C5	679	03EF:5806	096F6	571	0.519	callgraph	low		
+changed	03B4:5E2C	0996C	95	03EF:5A41	09931	115	0.517	callgraph	low		
+changed	03B4:5E8B	099CB	242	03EF:5AB4	099A4	236	0.619	callgraph	low		
+changed	03B4:5F80	09AC0	102	03EF:5BA0	09A90	112	0.779	callgraph	medium		
+changed	03B4:5FE6	09B26	315	03EF:5C10	09B00	301	0.760	callgraph	medium		
+changed	03B4:6121	09C61	342	03EF:5D3D	09C2D	322	0.754	callgraph	medium		
+changed	03B4:6277	09DB7	309	03EF:5E7F	09D6F	297	0.705	callgraph	medium		
+changed	03B4:63AC	09EEC	376	03EF:5FA8	09E98	363	0.805	callgraph	medium		
+changed	03B4:6524	0A064	296	03EF:6113	0A003	288	0.634	callgraph	low		
+changed	03B4:664C	0A18C	418	03EF:6233	0A123	450	0.599	callgraph	low		
+changed	03B4:67EE	0A32E	520	03EF:63F5	0A2E5	516	0.630	callgraph	low		
+changed	03B4:6AA8	0A5E8	188	03EF:66A4	0A594	165	0.263	order	low		
+changed	03B4:6B64	0A6A4	61	03EF:6749	0A639	60	0.941	callgraph	medium		
+changed	03B4:6BA1	0A6E1	388	03EF:6785	0A675	401	0.807	callgraph	medium		
+changed	03B4:6D25	0A865	1094	03EF:6916	0A806	1103	0.619	callgraph	low		
+changed	03B4:716B	0ACAB	143	03EF:6D65	0AC55	155	0.587	callgraph	low		
+changed	03B4:71FA	0AD3A	138	03EF:6E00	0ACF0	157	0.598	callgraph	low		
+changed	03B4:7284	0ADC4	240	03EF:6E9D	0AD8D	207	0.647	order	low		
+changed	03B4:7374	0AEB4	497	03EF:6F6C	0AE5C	484	0.282	order	low		
+changed	03B4:7565	0B0A5	177	03EF:7150	0B040	168	0.678	strings	high		  (Q)uit
+changed	03B4:7616	0B156	992	03EF:71F8	0B0E8	1079	0.627	strings	high		map\
+changed	03B4:79F6	0B536	150	03EF:762F	0B51F	148	0.769	callgraph	medium		
+changed	03B4:7A8C	0B5CC	115	03EF:76C3	0B5B3	119	0.851	callgraph	medium		
+changed	03B4:7AFF	0B63F	113	03EF:773A	0B62A	117	0.851	callgraph	medium		
+changed	03B4:7B70	0B6B0	133	03EF:77AF	0B69F	139	0.816	callgraph	medium		
+changed	03B4:7BF5	0B735	116	03EF:783A	0B72A	149	0.537	callgraph	low		
+changed	03B4:7C69	0B7A9	85	03EF:78CF	0B7BF	81	0.571	callgraph	low		
+changed	03B4:7CBE	0B7FE	458	03EF:7920	0B810	440	0.532	callgraph	low		
+changed	03B4:7F9E	0BADE	450	03EF:7B69	0BA59	453	0.758	callgraph	medium		
+changed	03B4:8160	0BCA0	93	03EF:7D2E	0BC1E	93	0.575	callgraph	low		
+changed	03B4:81BD	0BCFD	53	03EF:7D8B	0BC7B	41	0.667	callgraph	low		
+changed	03B4:81F2	0BD32	156	03EF:7DB4	0BCA4	164	0.680	callgraph	low		
+changed	03B4:8356	0BE96	111	03EF:7F13	0BE03	112	0.584	callgraph	low		
+changed	03B4:83C5	0BF05	23	03EF:7F83	0BE73	18	0.640	callgraph	low		
+changed	03B4:83DC	0BF1C	23	03EF:7F95	0BE85	20	0.692	callgraph	low		
+changed	03B4:83F3	0BF33	104	03EF:7FA9	0BE99	97	0.493	order	low		
+changed	03B4:845B	0BF9B	949	03EF:800A	0BEFA	760	0.598	callgraph	low		
+changed	03B4:8810	0C350	103	03EF:8302	0C1F2	121	0.750	callgraph	medium		
+changed	03B4:8877	0C3B7	31	03EF:837B	0C26B	50	0.410	order	low		
+changed	03B4:8896	0C3D6	900	03EF:83AD	0C29D	864	0.730	callgraph	medium		Auto-Detect
+changed	03B4:8C1A	0C75A	3272	03EF:870D	0C5FD	3238	0.492	callgraph	low		config.hlp
+changed	0D6D:000D	0D6DD	181	0D77:0003	0D773	173	0.880	callgraph	medium		
+changed	0D6D:00C2	0D792	59	0D77:00B0	0D820	51	0.718	callgraph	medium		
+changed	0D6D:00FD	0D7CD	63	0D77:00E3	0D853	69	0.566	callgraph	low		
+changed	0D6D:0147	0D817	65	0D77:0133	0D8A3	62	0.750	callgraph	medium		
+changed	0D6D:01AC	0D87C	117	0D77:0195	0D905	126	0.720	callgraph	medium		
+changed	0D6D:0221	0D8F1	38	0D77:0213	0D983	49	0.564	callgraph	low		
+relocated	0D91:0008	0D918	191	0D9B:00B5	0DA65	191	1.000	norm	high		
+relocated	0D91:00CE	0D9DE	39	0D9B:0174	0DB24	39	1.000	norm	high		
+relocated	0D91:00F5	0DA05	80	0D9B:019B	0DB4B	80	1.000	norm	high		
+relocated	0D91:0145	0DA55	65	0D9B:01EB	0DB9B	65	1.000	norm	high		
+relocated	0D91:0186	0DA96	55	0D9B:022C	0DBDC	55	1.000	norm	high		
+relocated	0D91:01BD	0DACD	44	0D9B:028C	0DC3C	44	1.000	norm	high		
+relocated	0DAF:01C4	0DCB4	177	0DC6:00E6	0DD46	177	1.000	norm	high		
+relocated	0DAF:0275	0DD65	57	0DC6:0197	0DDF7	57	1.000	norm	high		
+calls-differ	0DAF:02B0	0DDA0	41	0DC6:01D2	0DE32	41	1.000	norm	high		
+changed	0DDC:0009	0DDC9	127	0DE5:000B	0DE5B	188	0.412	strings	high		SOUND
+changed	0DDC:0088	0DE48	436	0DE5:00C7	0DF17	425	0.562	callgraph	low		
+changed	0DDC:023C	0DFFC	41	0DE5:0270	0E0C0	45	0.727	callgraph	medium		
+changed	0DDC:0265	0E025	386	0DE5:029D	0E0ED	403	0.604	strings	high		.voc
+changed	0DDC:0461	0E221	329	0DE5:04A6	0E2F6	316	0.890	strings	high		BLASTER
+changed	0DDC:05CB	0E38B	223	0DE5:0601	0E451	267	0.550	callgraph	low		Can't Find file!
+changed	0DDC:06AA	0E46A	468	0DE5:070C	0E55C	623	0.479	callgraph	low		(C)ontinue save    (D)o not save
+changed	0E63:000E	0E63E	2231	0E7C:000B	0E7CB	2668	0.465	callgraph	low		(E)xit.
+changed	0E63:0C08	0F238	343	0E7C:0B5E	0F31E	407	0.497	callgraph	low		%s*.*
+changed	0E63:0D5F	0F38F	275	0E7C:0CF5	0F4B5	409	0.351	order	low		
+changed	0E63:0EEB	0F51B	171	0E7C:0E8E	0F64E	168	0.726	callgraph	medium		
+changed	0E63:0F96	0F5C6	675	0E7C:0F36	0F6F6	727	0.506	callgraph	low		
+changed	0E63:1239	0F869	454	0E7C:120D	0F9CD	488	0.640	callgraph	low		
+changed	0E63:13FF	0FA2F	518	0E7C:13F5	0FBB5	505	0.598	callgraph	low		
+changed	0E63:1696	0FCC6	127	0E7C:1683	0FE43	130	0.515	callgraph	low		
+changed	0E63:1715	0FD45	106	0E7C:1705	0FEC5	114	0.549	callgraph	low		
+changed	0E63:177F	0FDAF	75	0E7C:1777	0FF37	81	0.765	callgraph	medium		
+changed	0E63:17CA	0FDFA	132	0E7C:17C8	0FF88	141	0.726	callgraph	medium		
+changed	0E63:184E	0FE7E	175	0E7C:1855	10015	227	0.540	callgraph	low		Can't Find file!
+changed	0E63:18FD	0FF2D	441	0E7C:1938	100F8	599	0.471	callgraph	low		(C)ontinue save    (D)o not save
+changed	0E63:1AB6	100E6	161	0E7C:1B8F	1034F	186	0.687	strings	high		Are you sure you want to delete %s
+changed	0E63:1B59	10189	61	0E7C:1C49	10409	65	0.800	strings	high		%s%s
+changed	101C:0008	101C8	89	1044:000A	1044A	102	0.543	callgraph	low		
+changed	101C:0061	10221	44	1044:0070	104B0	46	0.821	strings	high		%s%s%s
+changed	101C:008D	1024D	148	1044:009E	104DE	178	0.419	order	low		
+changed	101C:0157	10317	187	1044:0189	105C9	208	0.657	callgraph	low		
+changed	101C:0212	103D2	60	03EF:9781	0D671	64	0.929	callgraph	medium		
+changed	101C:024E	1040E	145	1044:0259	10699	157	0.766	callgraph	medium		
+changed	101C:02DF	1049F	139	1044:02F6	10736	157	0.680	callgraph	low		
+changed	101C:036A	1052A	111	1044:0393	107D3	112	0.818	callgraph	medium		
+changed	101C:03D9	10599	36	1044:0403	10843	42	0.750	callgraph	medium		
+changed	105B:000D	105BD	492	1086:000D	1086D	499	0.777	strings	high		(R)eturn to Menu
+changed	105B:01F9	107A9	461	1086:0200	10A60	457	0.530	callgraph	low		
+changed	105B:03C6	10976	78	1086:03C9	10C29	88	0.806	callgraph	medium		
+changed	105B:0414	109C4	122	1086:0421	10C81	118	0.581	callgraph	low		
+changed	105B:048E	10A3E	103	1086:0497	10CF7	101	0.619	callgraph	low		
+changed	105B:04F5	10AA5	204	1086:04FC	10D5C	212	0.621	strings	high		Code Too LARGE, memory error 1
+changed	105B:05C1	10B71	319	1086:05D0	10E30	328	0.708	callgraph	medium		
+changed	105B:070E	10CBE	130	1086:0726	10F86	135	0.516	callgraph	low		
+changed	105B:0790	10D40	41	1086:07AD	1100D	48	0.439	order	low		
+changed	105B:07B9	10D69	467	1086:07DD	1103D	445	0.677	strings	high		.bkd
+changed	105B:098C	10F3C	148	1086:099A	111FA	147	0.763	callgraph	medium		
+changed	10FD:0624	115F4	318	1128:0554	117D4	341	0.601	similarity	low		
+changed	10FD:0764	11734	341	1128:0760	119E0	345	0.616	callgraph	low		
+changed	10FD:08B9	11889	370	1128:0823	11AA3	401	0.718	callgraph	medium		
+changed	10FD:0A2B	119FB	58	1128:09B4	11C34	65	0.679	callgraph	low		
+changed	10FD:0A65	11A35	216	1128:09F5	11C75	199	0.904	callgraph	medium		
+changed	11B0:000D	11B0D	147	11D3:000C	11D3C	134	0.712	strings	high		Standard
+changed	11B0:00A0	11BA0	228	11D3:0092	11DC2	234	0.849	strings	high		Paradise Super VGA detected!\n
+changed	11B0:0184	11C84	200	11D3:017C	11EAC	217	0.566	strings	high		761295520
+changed	11B0:0345	11E45	76	11D3:034F	1207F	65	0.585	callgraph	low		
+changed	11B0:03AB	11EAB	90	11D3:03A8	120D8	78	0.693	callgraph	low		Paradise
+changed	11B0:0405	11F05	62	11D3:03F6	12126	63	0.792	order	medium		
+changed	11B0:0443	11F43	86	11D3:0435	12165	105	0.378	strings	high		VGA=
+changed	11B0:0499	11F99	71	11D3:049E	121CE	70	0.586	callgraph	low		
+changed	11B0:04E0	11FE0	67	11D3:04E4	12214	62	0.852	callgraph	medium		
+changed	11B0:0523	12023	53	11D3:0522	12252	59	0.800	callgraph	medium		
+changed	11B0:0558	12058	205	11D3:055D	1228D	253	0.341	strings	high		ATI ULTRA
+changed	11B0:065A	1215A	22	11D3:065A	1238A	20	0.556	callgraph	low		
+changed	11B0:0670	12170	86	11D3:066E	1239E	86	0.629	callgraph	low		
+changed	11B0:06C6	121C6	249	11D3:06C4	123F4	226	0.681	callgraph	low		Paradise
+changed	122B:000F	122BF	817	124D:0006	124D6	896	0.613	callgraph	low		.his
+changed	125F:0000	125F0	53	1285:0006	12856	61	0.667	callgraph	low		
+changed	125F:0035	12625	58	1285:0043	12893	62	0.792	callgraph	medium		
+changed	125F:006F	1265F	394	1285:0081	128D1	396	0.852	callgraph	medium		
+changed	125F:01F9	127E9	37	1285:020D	12A5D	34	0.583	order	low		
+changed	125F:021E	1280E	22	1285:022F	12A7F	22	0.533	callgraph	low		
+changed	125F:0248	12838	19	1285:0259	12AA9	23	0.800	callgraph	medium		
+changed	125F:04BF	12AAF	137	1285:045C	12CAC	135	0.833	callgraph	medium		
+changed	12B3:0008	12B38	733	12D3:0003	12D33	739	0.987	callgraph	medium		
+changed	12B3:02E5	12E15	98	12D3:02E6	13016	96	0.773	callgraph	medium		config.dat
+changed	12B3:0347	12E77	84	12D3:0346	13076	82	0.730	callgraph	medium		config.dat
+changed	12B3:039B	12ECB	96	12D3:0398	130C8	78	0.300	strings	high		NotInit
+changed	12B3:03FB	12F2B	59	12D3:03E6	13116	63	0.792	callgraph	medium		
+changed	12B3:0436	12F66	43	12D3:0425	13155	48	0.698	callgraph	low		
+changed	12F9:0002	12F92	95	1318:0006	13186	86	0.869	callgraph	medium		
+identical	12FF:0002	12FF2	36	131D:000C	131DC	36	1.000	bytes	high		
+identical	12FF:0026	13016	24	131D:0030	13200	24	1.000	bytes	high		
+identical	12FF:003E	1302E	33	131D:0048	13218	33	1.000	bytes	high		
+identical	12FF:005F	1304F	25	131D:0069	13239	25	1.000	bytes	high		
+relocated	1306:0008	13068	96	1325:0002	13252	96	1.000	norm	high		
+identical	1306:0068	130C8	102	1325:0062	132B2	102	1.000	bytes	high		
+identical	1306:00CE	1312E	91	1325:00C8	13318	91	1.000	bytes	high		
+identical	1306:0129	13189	93	1325:0123	13373	93	1.000	bytes	high		
+relocated	1306:01A0	13200	337	1325:019A	133EA	337	1.000	norm	high		
+identical	1306:02F1	13351	56	1325:02EB	1353B	56	1.000	bytes	high		
+identical	1306:0329	13389	79	1325:0323	13573	79	1.000	bytes	high		
+relocated	1306:0378	133D8	71	1325:0372	135C2	71	1.000	norm	high		
+identical	1306:03C0	13420	38	1325:03B9	13609	38	1.000	bytes	high		
+changed	1344:0006	13446	549	1362:00D1	136F1	612	0.373	callgraph	low		
+changed	1344:02FE	1373E	95	1362:0335	13955	92	0.615	order	low		
+changed	1344:035D	1379D	278	1362:0391	139B1	257	0.330	callgraph	low		
+changed	1344:0473	138B3	80	1362:000F	1362F	83	0.514	callgraph	low		
+changed	1344:04C3	13903	106	1362:0062	13682	111	0.361	callgraph	low		
+changed	1344:052D	1396D	272	1362:0492	13AB2	308	0.265	order	low		
+relocated	13A8:000E	13A8E	62	13BE:0006	13BE6	62	1.000	norm	high		
+relocated	13A8:004C	13ACC	70	13BE:0044	13C24	70	1.000	norm	high		
+changed	13B1:0004	13B14	151	13C6:000C	13C6C	153	0.642	callgraph	low	_MoveViewScreen	Paradise
+identical	13B1:009C	13BAC	16	13C6:00A5	13D05	16	1.000	bytes	high	_GetROMFont	
+changed	13B1:00AC	13BBC	201	13C6:00B5	13D15	198	0.910	callgraph	medium	_SvgaBufToScrn	
+changed	13B1:018E	13C9E	205	13C6:0192	13DF2	173	0.851	callgraph	medium	_SetPage	
+relocated	13B1:0261	13D71	64	13C6:023F	13E9F	64	1.000	norm	high	_SetTridentStart	Paradise
+identical	13B1:02A1	13DB1	31	13C6:027F	13EDF	31	1.000	bytes	high	_SetTrident	
+identical	13B1:02C0	13DD0	33	13C6:029E	13EFE	33	1.000	bytes	high	_Gwritestr	
+identical	13B1:02E1	13DF1	70	13C6:02BF	13F1F	70	1.000	bytes	high	_BoxFill	
+relocated	13B1:0327	13E37	99	13C6:0305	13F65	99	1.000	norm	high	_Point	
+relocated	13E9:000C	13E9C	39	13FC:0008	13FC8	39	1.000	norm	high	SBC_READ_DSP_TIME	
+relocated	13E9:0033	13EC3	40	13FC:002F	13FEF	40	1.000	norm	high	SBC_WRITE_DSP_TIME	
+identical	13E9:0098	13F28	21	13FC:0094	14054	21	1.000	bytes	high	SET_INT_VECTOR	
+identical	13E9:00AD	13F3D	19	13FC:00A9	14069	19	1.000	bytes	high	GET_INT_VECTOR	
+relocated	13E9:00EE	13F7E	154	13FC:00EA	140AA	154	1.000	norm	high	_sbc_check_card	
+relocated	13E9:0188	14018	33	13FC:0184	14144	33	1.000	norm	high		
+constants	13E9:01A9	14039	125	13FC:01A5	14165	125	0.982	shape	high		
+relocated	13E9:0226	140B6	41	13FC:0222	141E2	41	1.000	norm	high		
+identical	13E9:024F	140DF	13	13FC:024B	1420B	13	1.000	bytes	high		
+relocated	13E9:0266	140F6	47	13FC:0262	14222	47	1.000	norm	high	_sbc_dsp_reset	
+identical	13E9:0296	14126	9	13FC:0292	14252	9	1.000	bytes	high	_sbfd_init	
+identical	13E9:029F	1412F	19	13FC:029B	1425B	19	1.000	bytes	high	_sbfd_instrument	
+identical	13E9:02B2	14142	9	13FC:02AE	1426E	9	1.000	bytes	high	_sbfd_music_off	
+identical	13E9:02BB	1414B	9	13FC:02B7	14277	9	1.000	bytes	high	_sbfd_reset	
+identical	13E9:02C4	14154	23	13FC:02C0	14280	23	1.000	bytes	high	_sbfd_note_on	
+identical	13E9:02DB	1416B	23	13FC:02D7	14297	23	1.000	bytes	high	_sbfd_note_off	
+identical	13E9:02F2	14182	20	13FC:02EE	142AE	20	1.000	bytes	high	_sbfd_program_change	
+identical	13E9:0306	14196	23	13FC:0302	142C2	23	1.000	bytes	high	_sbfd_control_change	
+identical	13E9:031D	141AD	17	13FC:0319	142D9	17	1.000	bytes	high	_sbfd_setmode	
+identical	141C:0814	149D4	80	142F:0814	14B04	80	1.000	bytes	high		
+identical	141C:0864	14A24	103	142F:0864	14B54	103	1.000	bytes	high		
+removed	0003:0555	00585	9								
+removed	0003:055E	0058E	11								
+removed	0003:0569	00599	9								
+removed	0003:0572	005A2	11								
+removed	0003:12D4	01304	1								
+removed	0003:3111	03141	48								
+removed	03B4:1D6E	058AE	633								Score:     %ld
+removed	03B4:2714	06254	767								Choose object to drop
+removed	03B4:2B63	066A3	476								
+removed	03B4:3719	07259	479								
+removed	03B4:3E05	07945	573								
+removed	03B4:4042	07B82	3791								
+removed	03B4:4F11	08A51	675								
+removed	03B4:5734	09274	340								
+removed	03B4:5888	093C8	337								
+removed	03B4:69F6	0A536	178								
+removed	03B4:828E	0BDCE	172								
+removed	03B4:833A	0BE7A	14								
+removed	03B4:8348	0BE88	14								
+removed	03B4:99BA	0D4FA	383								
+removed	03B4:9B39	0D679	100								
+removed	0D6D:013C	0D80C	11								
+removed	0D6D:0188	0D858	36								
+removed	0DAF:0009	0DAF9	144								
+removed	0DAF:0099	0DB89	84								
+removed	0DAF:00ED	0DBDD	99								
+removed	0DAF:0152	0DC42	112								
+removed	0DDC:02D3	0E093	281								
+removed	0DDC:030D	0E0CD	223								
+removed	0DDC:03E7	0E1A7	12								
+removed	0DDC:03F3	0E1B3	110								
+removed	0DDC:05AA	0E36A	33								
+removed	101C:0121	102E1	27								
+removed	101C:013C	102FC	27								
+removed	10FD:0000	10FD0	207								
+removed	10FD:00CF	1109F	699								
+removed	10FD:038A	1135A	666								
+removed	125F:0234	12824	10								
+removed	125F:023E	1282E	10								
+removed	125F:025B	1284B	378								
+removed	12FF:000D	12FFD	25								
+added				0003:1C05	01C35	17					
+added				0003:21E3	02213	85					
+added				0003:2AFF	02B2F	25					
+added				0003:2B18	02B48	145					Unknown error
+added				0003:349B	034CB	35					
+added				0003:394B	0397B	28					
+added				0003:3BE9	03C19	5					
+added				0003:3C0C	03C3C	49					
+added				03EF:09CB	048BB	43					Paradise
+added				03EF:0D85	04C75	861					
+added				03EF:2CE2	06BD2	272					
+added				03EF:372F	0761F	433					
+added				03EF:38E0	077D0	445					
+added				03EF:3A9D	0798D	225					
+added				03EF:4043	07F33	756					
+added				03EF:4337	08227	2670					
+added				03EF:4DA5	08C95	500					
+added				03EF:512E	0901E	120					
+added				03EF:5465	09355	102					
+added				03EF:54CB	093BB	210					
+added				03EF:559D	0948D	233					
+added				03EF:65F9	0A4E9	171					
+added				03EF:953C	0D42C	400					
+added				03EF:96CC	0D5BC	145					
+added				03EF:975D	0D64D	36					
+added				0D6B:00B0	0D760	19					
+added				0D77:0128	0D898	11					
+added				0D9B:0004	0D9B4	177					
+added				0D9B:0263	0DC13	41					
+added				0DC6:0008	0DC68	67					
+added				0DC6:004B	0DCAB	55					
+added				0DC6:0082	0DCE2	47					
+added				0DC6:00B1	0DD11	53					
+added				0DE5:0430	0E280	12					
+added				0E7C:1484	0FC44	381					
+added				1044:0150	10590	26					
+added				1044:016A	105AA	31					
+added				1128:000D	1128D	142					
+added				1128:009B	1131B	621					
+added				1128:0308	11588	588					
+added				1128:06A9	11929	378					
+added				1285:0245	12A95	10					
+added				1285:024F	12A9F	10					

@@ -26,12 +26,20 @@ build until the 240 s timeout killed it). `game-build-inputs.mjs` is the fingerp
 
 Site build-time tools remain in [`web/scripts`](../web/scripts/README.md).
 
-`backup-local.mjs` (root `npm run backup:local -- <folder>`, `npm run backup:restore -- <file> <folder>`)
-backs up the work Git doesn't keep: `.for-lewis`, `.narrate`'s results (not its `node_modules` or
-models), `dosbox-saves`, `.claude/agents` and Claude's memory folder, into one dated archive encrypted
-with AES-256-GCM (passphrase from `BACKUP_PASSPHRASE`, or asked). Restore into an empty folder for a drill.
+[`player-diff/`](player-diff/README.md) (Python, `uv run scripts/player-diff/gmpdiff.py all`)
+is research tooling, not part of a build. It inventories historical Game-Maker players,
+compares their machine code and writes [small text reports](../docs/analysis/player-diff/README.md).
+Optional archive inputs must be supplied explicitly; local source hierarchies and binaries
+are not published.
 
-`already.mjs` (`npm run already -- <words...>`, root) answers "is this already done?" before a brief: for the words given it prints the 10 best matches, with dates, among origin/develop's commits (`git log -i --grep` per word), tracked files (`git grep`, not `code/`, `cd/` or `runtime/`) and `.for-lewis/research/**/*.md` (path, title, headings; found here or in the main checkout). More of your words matched ranks higher, then the newer date. Tests: `web/test/already.test.mjs`.
+`backup-local.mjs` (`npm run backup:local -- <folder>` and
+`npm run backup:restore -- <file> <folder>`) makes an AES-256-GCM encrypted archive of
+local working data. The passphrase comes from `BACKUP_PASSPHRASE` or a prompt.
+Restore into an empty folder for a drill; inspect the script's input list before use.
+
+`already.mjs` (`npm run already -- <words...>`) searches commit history, tracked files
+and optional local research notes for earlier work. Results rank by matching words and
+date. Tests: `web/test/already.test.mjs`.
 
 `heavy.mjs` (`npm run heavy -- <command...>`, root or `web/`) runs a heavy job (a build, full vitest,
 `verify:perf`, `check:games`, a walkthrough recording) in one of 2 shared slots, so agents on one Mac don't
