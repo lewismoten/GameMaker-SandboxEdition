@@ -19,6 +19,8 @@ export type CellRect = [number, number, number, number];
 export interface InViewRule {
   scene: number;
   rects: CellRect[];
+  /** Only the frames the hero stands with his feet in this map row (chr.y, no pixel offset): leaves out jumps and falls. */
+  standing?: number;
 }
 export interface InViewResult {
   scene: number;
@@ -52,6 +54,7 @@ export async function inViewOfGame(id: string, rules: InViewRule[]): Promise<InV
     onWorld(w, scene, frame) {
       rules.forEach((r, i) => {
         if (r.scene !== scene) return;
+        if (r.standing !== undefined && (w.chr.y[0] !== r.standing || w.chr.y[1] !== 0)) return;
         results[i].frames++;
         if (!r.rects.some((rect) => rectInView(w, rect))) results[i].missed.push(frame);
       });

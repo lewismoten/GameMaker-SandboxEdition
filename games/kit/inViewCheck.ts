@@ -3,7 +3,8 @@
 // Rectangles are in map cells (world blocks, the map editor's numbers); a rule passes when at
 // least one of its rectangles is wholly in view every frame. Only the walkthrough's route is seen.
 //
-//   npx vite-node ../games/kit/inViewCheck.ts <id> --scene <n> --rect x,y,w,h [--rect ...] [--scene ...]
+//   npx vite-node ../games/kit/inViewCheck.ts <id> --scene <n> [--standing <row>] --rect x,y,w,h [--rect ...] [--scene ...]
+//   (--standing: only frames the hero stands with his feet in that map row, not mid-jump or falling)
 //   npx vite-node ../games/kit/inViewCheck.ts <id> --rows     the map rows and columns each scene ever shows
 //
 // Exits 1 when a rule fails; prints the frames (walkthrough frames) where none of its rectangles showed.
@@ -29,6 +30,7 @@ if (args.includes('--rows')) {
   const rules: InViewRule[] = [];
   for (let i = 0; i < args.length; i++) {
     if (args[i] === '--scene') rules.push({ scene: Number(args[++i]), rects: [] });
+    else if (args[i] === '--standing') rules[rules.length - 1].standing = Number(args[++i]);
     else if (args[i] === '--rect') rules[rules.length - 1].rects.push(args[++i].split(',').map(Number) as CellRect);
   }
   let failed = false;
