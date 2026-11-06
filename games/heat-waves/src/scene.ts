@@ -6,7 +6,7 @@
 //   puddle(pal, f, h)       the mirage: half of a shiny pool on the road, in three glints
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import type { Pal } from '../../kit/starter/palette';
-import { GROUND_ROW } from './view';
+import { GROUND_ROW, PUDDLES } from './view';
 
 export const CLEAR = 255;
 /** The far hills repeat every this many pixels (4 blocks), so a few blocks draw the whole row. */
@@ -56,7 +56,7 @@ export function bandCell(band: Pixels, r: number, col: number, s: number): Pixel
   return p;
 }
 
-/** A still cell: sky above the hills, near sand under them, the road on the ground row. `x` picks a few sand cells with a tuft of dry brush. */
+/** A still cell: sky above the hills, near sand under them, the road on the ground row. `x` picks a few sand cells with a tuft of dry brush, none near level 2's puddles. */
 export function stillCell(pal: Pal, y: number, x = 0): Pixels {
   const { c } = pal;
   if (y < 4) return new Pixels(20, 20, c('haze', SKY_SHADE[y]));
@@ -79,8 +79,8 @@ export function stillCell(pal: Pal, y: number, x = 0): Pixels {
     [1, 17],
   ] as const)
     p.set(gx, gy, c('sand', 1));
-  if (y === 8 && x % 5 === 3) {
-    // a tuft of dry brush: short strokes fanning up from the sand
+  if (y === 8 && x % 5 === 3 && !PUDDLES.some((p) => x >= p - 2 && x <= p + 3)) {
+    // a tuft of dry brush: short strokes fanning up from the sand (never beside a puddle)
     for (const [x0, x1, top] of [
       [9, 6, 10],
       [10, 10, 8],
@@ -126,10 +126,10 @@ export function puddle(pal: Pal, f: number, h: number): Pixels {
   for (let x = 0; x < 20; x++) {
     const gx = h * 20 + x; // across the whole pool, 0 to 39
     const edge = Math.min(gx, 39 - gx); // how far in from the nearer end
-    const top = edge < 2 ? 18 : edge < 5 ? 17 : 16;
-    for (let y = top; y < 20; y++) p.set(x, y, c('glint', y === top ? 2 : y === 19 ? 0 : 1));
-    if (edge >= 4 && (gx + f * 3) % 7 < 2) p.set(x, 17, c('glint', 2));
-    if (edge >= 6 && (gx + 4 + f * 5) % 11 < 3) p.set(x, 16, c('white', 3));
+    const top = edge < 2 ? 17 : edge < 4 ? 16 : edge < 8 ? 15 : 14;
+    for (let y = top; y < 20; y++) p.set(x, y, c('glint', y === top ? 2 : y >= 18 ? 0 : 1));
+    if (edge >= 4 && (gx + f * 3) % 7 < 2) p.set(x, 16, c('glint', 2));
+    if (edge >= 6 && (gx + 4 + f * 5) % 11 < 3) p.set(x, 15, c('white', 3));
   }
   return p;
 }

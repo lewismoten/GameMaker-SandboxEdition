@@ -19,8 +19,8 @@ export const LONG = { width: 60, wall: 47, door: 46 } as const;
 /** Level 2's puddles: the left block of each (each is two blocks wide), on the road. PLAYGAME's attack range is
  * 8 blocks across, and the view runs about 11 blocks ahead of a walking hero, so each shows for a few steps. */
 export const PUDDLES = [24, 38] as const;
-/** Level 2's two signs (their left block). */
-export const LONG_SIGNS = { puddle: 10, mirage: 20 } as const;
+/** Level 2's two signs (their left block): the second comes after the first puddle has hidden. */
+export const LONG_SIGNS = { puddle: 10, mirage: 28 } as const;
 /** The rows of far hills that wobble, top to bottom. */
 export const HAZE_ROWS = [4, 5, 6] as const;
 /** The near rock in the middle of level 1, in front of the hills (it is close, so it never wobbles): columns 7 and 8. */
