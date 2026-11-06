@@ -6,7 +6,7 @@
   "hero": "MIA",
   "year": 1994,
   "price": "Free",
-  "version": "1.0",
+  "version": "1.1",
   "blurb": "Two short levels about things that do not last. A bubble blocks a tunnel and pops on its own, and a sleepy gumdrop in the next tunnel wakes up and becomes another monster. Signs in the levels say how. Play it, then open it in Game-Maker and change how long they last.",
   "exe": "HERETODY.EXE",
   "dosName": "HERETODY",
