@@ -2,54 +2,72 @@
   "title": "Graduation: First Steps",
   "howDoI": [
     {
-      "id": "cheer",
-      "q": "How do I make people who cheer, each out of step with the others?",
+      "id": "arrive-ladder",
+      "q": "How do I make a ladder to climb?",
       "scene": 2,
-      "x": 4,
-      "y": 4,
-      "level": 1
-    },
-    {
-      "id": "swap",
-      "q": "How do I make several different people from one drawing?",
-      "scene": 2,
-      "x": 8,
-      "y": 4,
-      "level": 1
-    },
-    {
-      "id": "scroll",
-      "q": "How do I make a pickup that ends the level?",
-      "scene": 2,
-      "x": 40,
+      "x": 15,
       "y": 8,
       "level": 1
     },
     {
-      "id": "banner",
-      "q": "How do I hang a banner on a wall?",
+      "id": "arrive-keyGate",
+      "q": "How do I make a gate that needs the key lying just before it?",
       "scene": 2,
-      "x": 37,
-      "y": 2,
+      "x": 26,
+      "y": 8,
       "level": 1
     },
     {
-      "id": "stage",
-      "q": "How do I make a carpet and a stage to walk on?",
+      "id": "arrive-coins",
+      "q": "How do I make coins that add to the score?",
       "scene": 2,
-      "x": 34,
-      "y": 10,
+      "x": 37,
+      "y": 8,
       "level": 1
+    },
+    {
+      "id": "cheer",
+      "q": "How do I make people who cheer, each out of step with the others?",
+      "scene": 3,
+      "x": 4,
+      "y": 4,
+      "level": 2
+    },
+    {
+      "id": "swap",
+      "q": "How do I make several different people from one drawing?",
+      "scene": 3,
+      "x": 8,
+      "y": 4,
+      "level": 2
+    },
+    {
+      "id": "scroll",
+      "q": "How do I make a pickup that ends the level?",
+      "scene": 3,
+      "x": 40,
+      "y": 8,
+      "level": 2
     }
   ],
   "pages": [
     {
       "head": "Welcome",
-      "html": "<h1>Welcome</h1><p><b>Graduation: First Steps</b> is a Starter of a different kind. It is a short walk, not a lesson. You have been through The Basics; now the helpers who led those Starters are on the balcony, Doc Leo is on the stage, and your honors are on the lectern.</p><p>It takes about a minute. Play it first, then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. There is nothing to fight and nothing that hurts. Walk into the scroll on the lectern and the game ends with your honors.</p>"
+      "html": "<h1>Welcome</h1><p><b>Graduation: First Steps</b> is a Starter of a different kind. It is a short walk, not a lesson. You have been through The Basics; now the helpers who led those Starters are on the balcony, Doc Leo is on the stage, and your honors are on the lectern.</p><p>It takes a couple of minutes. Play it first, then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below.</p><p>There are two levels. First you cross campus to the hall, with a few small nods to lessons you took on the way. Then you walk the aisle to the stage.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk, <kbd>Space</kbd> hops, and <kbd>Up</kbd> and <kbd>Down</kbd> climb a ladder. There is nothing to fight and nothing that hurts. Walk into the scroll on the lectern and the game ends with your honors.</p>"
     },
     {
-      "head": "Level 1: The Aisle",
-      "html": "<h1>Level 1: The Aisle</h1><p>You start in the doorway at the back of the hall. Four signs along the red carpet say what is going on: <b>WALK UP TO THE STAGE</b>, <b>YOUR HELPERS ARE HERE</b>, <b>THEY CHEER FOR YOU</b> and <b>DOC LEO HAS A SCROLL FOR YOU</b>. Up on the balcony the eight helpers of The Basics wave and blink, each out of step with the others. Doc Leo waits beside the lectern, under the banner.</p><p>Walk up the carpet and onto the stage. The rolled-up scroll on the lectern is worth a hundred points, and touching it takes you to the ending.</p>"
+      "head": "Level 1: The Front Walk",
+      "html": "<h1>Level 1: The Front Walk</h1><p>Stroll up to the hall doors. You start on the path with a welcome sign beside you, and the hall's doors are at the far end. Along the way are 4 small moments. Each one is a nod to a Starter you took in this stage, and each has a sign that gives its course number. Nothing here hurts, and nothing can trap you: every climb has a way back down.</p><ul><li><b>Course 101, First Steps.</b> A tower with a ladder up one side and down the other, and coins on top.</li><li><b>Course 102, Keys and Doors.</b> A key lies on the path just before a gate in a wall; the gate takes the key.</li><li><b>Course 105, Coins and Score.</b> A little arc of coins to walk and hop through; each is worth ten points.</li><li><b>Course 106, Smash It.</b> A stack of crates in the way: bump one and it turns to rubble.</li></ul><p>Walk through the doors under the banner to go inside.</p>",
+      "from": "arrive"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How the arrival is made</h1><ul><li><b>The path.</b> Open <b>arrive.map</b> in the map editor. The path is a row of solid <b>paving</b> blocks over two rows of <b>dirt</b>. The trees, banner poles and the hall's front are plain blocks you walk in front of; the hedge at each end is solid. This level has its own block set, <b>arrive.bbl</b>, beside the hall's <b>grad.bbl</b>: open <b>grad.gam</b> in the scenes editor and look at the block slot of each scene.</li><li><b>Course 101, First Steps.</b> <b>ladder</b> blocks stacked in a column. The ladder has no gravity, so the hero holds on and climbs with Up and Down. Here a ladder stands on each side of a brick tower, so what you climb you can climb back down.</li><li><b>Course 102, Keys and Doors.</b> The <b>key</b> block adds one to counter 20 when you touch it. The <b>gate</b> is solid, but its rule takes one from that counter when touched, so with a key it becomes sky. The brick wall above it goes up out of reach, and the arch is plain scenery.</li><li><b>Course 105, Coins and Score.</b> Each <b>coin</b> has Score points 10 and becomes <b>sky</b> when touched, so it is gone after you take it. The high one needs a hop.</li><li><b>Course 106, Smash It.</b> A <b>crate</b> is solid, and its Becomes block is <b>rubble</b>, which is not solid. Bumping a crate breaks only that crate.</li></ul>",
+      "from": "arrive"
+    },
+    {
+      "head": "Level 2: The Aisle",
+      "html": "<h1>Level 2: The Aisle</h1><p>You start in the doorway at the back of the hall. Four signs along the red carpet say what is going on: <b>WALK UP TO THE STAGE</b>, <b>YOUR HELPERS ARE HERE</b>, <b>THEY CHEER FOR YOU</b> and <b>DOC LEO HAS A SCROLL FOR YOU</b>. Up on the balcony the eight helpers of The Basics wave and blink, each out of step with the others. Doc Leo waits beside the lectern, under the banner.</p><p>Walk up the carpet and onto the stage. The rolled-up scroll on the lectern is worth a hundred points, and touching it takes you to the ending.</p>"
     },
     {
       "head": "How this level is made",

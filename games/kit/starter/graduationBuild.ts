@@ -19,6 +19,8 @@ import { buildHero } from './heroChar';
 import { buildMonsterBlocks, buildMonsters } from './monsters';
 import { cardPicture, endPicture, gif, menuPicture, paper, scoresPicture, slotsPicture, titlePicture } from './screens';
 import { skyOf } from './palette';
+import { SILVER_KEYS } from './locks';
+import { POWER } from './graduationNods';
 import { buildSounds } from './sounds';
 import type { Graduation } from './graduationConfig';
 import { TITLE, buildGame } from './graduationGame';
@@ -30,7 +32,7 @@ import { HOWTO, LOST } from './graduationText';
 /** Writes the game's disk: `dir` is the game's folder, `built` its levels (buildLevels), `demo` its DEMO.REC bytes. */
 export function buildGraduation(dir: string, cfg: Graduation, built: ReturnType<typeof buildLevels>, demo: Uint8Array): void {
   const disk = new Disk(join(dir, 'disk'));
-  const { book, pal, timed, levels } = built;
+  const { book, pal, levels } = built;
   const { STORY, WON, CREDITS } = { STORY: cfg.text.story, WON: cfg.text.won, CREDITS: cfg.text.credits };
   const title = cfg.title ?? TITLE;
   const heroBlocks = buildHeroBlocks(pal);
@@ -42,18 +44,22 @@ export function buildGraduation(dir: string, cfg: Graduation, built: ReturnType<
 
   // the game's shared data: one block set, one palette, one hero, one set of monsters, one song
   disk.put('grad.pal', serializePalette(pal.pal));
-  disk.put('grad.bbl', serializeBlocks(finishBlocks({ book, timed })));
+  for (const l of levels) disk.put(`${l.bbl}.bbl`, serializeBlocks(finishBlocks({ book: l.book, timed: l.timed })));
   disk.put('grad.mbl', serializeBlocks(monsterBlocks.finish()));
   disk.put('grad.mon', serializeMonsters(buildMonsters(monsterBlocks)));
   disk.put('hero.cbl', serializeBlocks(heroBlocks.finish()));
-  disk.put('hero.chr', serializeCharacter(buildHero(heroBlocks)));
+  const character = buildHero(heroBlocks);
+  // the arrival's counting gates use these counters, which (like the key counter) start at 1: a count of none
+  if (levels.some((l) => l.book.has('tokenGate'))) character.meter[SILVER_KEYS] = 1;
+  if (levels.some((l) => l.book.has('powerGate'))) character.meter[POWER] = 1;
+  disk.put('hero.chr', serializeCharacter(character));
   disk.put('grad.snd', serializeSoundSet(buildSounds()));
   disk.put('grad.cmf', song(cfg.song));
 
   // each level's map and its card
   levels.forEach((l, i) => {
     disk.put(`${l.file}.map`, serializeMap(l.map.done()));
-    disk.put(`${l.file}.gif`, gif(cardPicture(pal, book, hero, i + 1, levels.length, l.title, l.hint), pal));
+    disk.put(`${l.file}.gif`, gif(cardPicture(pal, l.book, hero, i + 1, levels.length, l.title, l.hint), pal));
     disk.put(`${l.file}.lst`, serializeSlideList([{ name: `${l.file}.gif`, pause: 3 }]));
   });
 

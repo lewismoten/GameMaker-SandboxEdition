@@ -150,6 +150,7 @@ export function addHallBlocks(
   blink: Pixels,
   theme: HallTheme = {},
   cameos: CameoName[] = [],
+  still = false,
 ): Hall {
   const drapeRamp = theme.drape ?? 'purple';
   const woodRamp = theme.rail ?? 'wood';
@@ -201,7 +202,7 @@ export function addHallBlocks(
 
   // the Cast's guests: still ones are plain blocks; a dog moves between two frames
   const guests = cameos.map((n, i) => {
-    const frames = cameoFrames(pal, n);
+    const frames = cameoFrames(pal, n, still);
     frames.forEach((parts, f) => parts.forEach((px, k) => book.add(`cameo.${n}.${f}.${k}`, px, air)));
     if (frames.length > 1) {
       const a = 30 + ((i * 11) % 19);
