@@ -1,0 +1,41 @@
+{
+  "title": "Lightning",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "hero": "LENA",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.0",
+  "blurb": "A storm at night, made of blocks. Game-Maker has no flash, so every block that shows sky has a twin drawn on a lighter sky, and each turns into its twin for a moment and back, all on the same clock: the whole sky flashes at once. The bolt is five blocks that look like sky until then. A block can't make a sound, so the thunder is in the song, a beat after each flash. Level 1 is a field in the storm; in level 2 the stones over a dark ditch light up with the sky. The flash is kept gentle: one every 7 seconds, short and gray-blue. Play it, then open it in Game-Maker and look at the sky's blocks.",
+  "exe": "LIGHTNIN.EXE",
+  "dosName": "LIGHTNIN",
+  "sound": "sb",
+  "label": {
+    "background": "#dde2f2",
+    "band": "#262c4a",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "2 short levels",
+    "hours": 1,
+    "background": "#262c4a",
+    "accent": "#ffd23f",
+    "ink": "#ffffff",
+    "tagline": "A flash, a bolt, and the thunder after.",
+    "back": "A storm at night, drawn with blocks. Every block that shows sky has a lighter twin, and they all swap on the same clock, so the sky flashes in one tick. The bolt is five blocks that look like sky until then, and the thunder is in the song, a beat later. The flash is gentle on purpose. Read the signs, then open the game in Game-Maker and look at the sky's blocks.",
+    "features": [
+      "Level 1 is a field in a storm: a flash, a bolt and a rumble",
+      "Level 2 has stones over a dark ditch that light up with the sky",
+      "Signs in the levels say how it is done",
+      "Made to be copied and taken apart"
+    ],
+    "shots": [
+      ["one.map", 15, 6],
+      ["two.map", 18, 6]
+    ],
+    "rating": "Everyone"
+  },
+  "acceptedFindings": ["facing s3 The hero climbs side on"]
+}
