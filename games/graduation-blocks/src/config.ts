@@ -7,7 +7,7 @@ import about from '../about.json';
 export const cfg: Graduation = {
   id: 'graduation-blocks',
   stage: 'Blocks and Showcase',
-  groups: ['Drawing with Blocks', 'Showcase Tricks'],
+  groups: ['Drawing with Blocks', 'Weather', 'Showcase Tricks'],
   cameos: ['lewie', 'gwinn', 'camel', 'joe', 'chicken', 'watt', 'teddy', 'will'],
   theme: GALLERY,
   upper: 'BLOCKS & SHOWCASE',
@@ -31,7 +31,7 @@ export const cfg: Graduation = {
     story: wrap(`
 |GRADUATION
 
-You have been through Drawing with Blocks and Showcase Tricks: drawn and animated blocks, light and dark and the big-game tricks.
+You have been through Drawing with Blocks, Weather and Showcase Tricks: drawn and animated blocks, light and dark and the big-game tricks.
 
 The gallery is full of the helpers who showed you around, and a few friends. Doc Leo is on the stage by the paintings.
 
@@ -46,6 +46,6 @@ You can draw and animate your own blocks, play with light and dark and use the b
 
 The Sandbox Diploma is waiting once every stage has its honors.
 `),
-    credits: creditsPage('GRADUATION: BLOCKS AND SHOWCASE', about.version, 'A graduation: it comes after Drawing with Blocks and Showcase Tricks.'),
+    credits: creditsPage('GRADUATION: BLOCKS AND SHOWCASE', about.version, 'A graduation: it comes after Drawing with Blocks, Weather and Showcase Tricks.'),
   },
 };

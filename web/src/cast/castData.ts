@@ -112,6 +112,7 @@ export const CAST_GAMES = {
   'very-far': ['Walking Very Far', 'starter'],
   shore: ['Waves on the Shore', 'starter'],
   twinkle: ['Twinkle, Twinkle', 'starter'],
+  rain: ['Rain on the Path', 'starter'],
   flicker: ['Flicker and Flow', 'starter'],
   'lights-out': ['Lights Out', 'starter'],
   'things-that-grow': ['Seeds and Nests', 'starter'],
@@ -202,6 +203,7 @@ const LISTED: CastMember[] = [
     bio: 'A small, cheerful explorer in a teal knit beanie with a white pom-pom, an orange hoodie with a pocket and drawstrings, gray pants and white sneakers. Kit walks, jumps, falls, climbs ladders (seen from behind), digs with a little shovel, tosses a star and cheers when a level is done. Seen from above, Kit walks in four directions. A bump only hurts a little. Kit leads the first Starter of every group and his own three; eight helpers in other colors lead the rest, in the same blocks, so what you learn from one carries to the next.',
     appears: [
       { game: 'first-steps', as: 'learns to walk, jump and climb' },
+      { game: 'rain', as: 'walks a rainy path, watches splashes and puddles, then sees the same map in storm colors' },
       { game: 'keys-and-doors', as: 'finds a silver key for each locked door' },
       { game: 'meet-the-monsters', as: 'meets the gumdrops, the buzzer and the snail' },
       { game: 'room-to-room', as: 'walks through doors from room to room' },
