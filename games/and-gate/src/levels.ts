@@ -163,13 +163,16 @@ function allThree(book: Book, signs: Record<SignName, Sign>): Omit<Level, 'file'
     [6, 22, 33],
   );
   const m = new StarterMap(book, g.rows());
-  const pts: [number, number][] = [BOX, [8, WIRE], [8, 1], [16, 1], [16, WIRE], [24, WIRE], [24, 2]];
+  // past the sign about staying on, the wire steps down a row, so the third dial and the post's foot stay in view once
+  // the camera has followed Lami down off the ledge (it then keeps her about three rows below the screen's top row,
+  // where PLAYGAME draws no monster)
+  const pts: [number, number][] = [BOX, [8, WIRE], [8, 1], [16, 1], [16, WIRE], [21, WIRE], [21, WIRE + 1], [24, WIRE + 1], [24, 2]];
   m.set(BOX[0], BOX[1], 'box');
   lay(m, pts);
   const dials: [number, number][] = [
     [5, WIRE],
     [13, 1],
-    [20, WIRE],
+    [22, WIRE + 1],
   ];
   for (const [x, y] of dials) m.mon(DIAL_OFF, x, y);
   const lamp: [number, number] = [24, 1];

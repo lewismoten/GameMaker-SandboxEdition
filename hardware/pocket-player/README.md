@@ -52,9 +52,11 @@ Serial (115200) for testing without seeing the screen: `S st` prints the state (
 
 ## Flash it from the browser
 
-1. After you pull this branch, start your dev server as usual and open **http://localhost:5173/pocket/index.html** in desktop Chrome or Edge (the page is not linked from the site).
-2. Plug the board in with a USB cable that carries data.
-3. Click Install, pick the serial port, click Install again, wait a minute or two. This replaces everything on the board, including the settings, and uses a new partition table (1 MB for the program, 3 MB for LittleFS).
+1. Open **/pocket/index.html** on the site (or on your dev server, http://localhost:5173/pocket/index.html) in desktop Chrome or Edge.
+2. Under "Which board?", pick the 3.5 inch (ESP32-3248S035) or the 2.8 inch (ESP32-2432S028) board. Each has its own manifest (`manifest-35.json`, `manifest-28.json`) and images (`fw/esp32-3248s035/`, `fw/cyd-2432s028/`).
+3. Plug the board in with a USB cable that carries data, click Install, pick the serial port, click Install again, wait a minute or two. This replaces everything on the board, including the settings, and uses a new partition table (1 MB for the program, 3 MB for LittleFS).
+
+The install window can also offer "Connect to Wi-Fi" (Improv Wi-Fi over the same USB cable) when the firmware speaks Improv. This firmware does not yet, so that step does not appear.
 
 ## What to try (and what to report back)
 
@@ -85,6 +87,16 @@ The board's slot (TF_CS 5, TF_SPI_SCLK 18, TF_SPI_MISO 19, TF_SPI_MOSI 23, from 
 2. Build the card's files: `cd web && npx vite-node scripts/pocketData.ts --out /Volumes/POCKET` (this writes `/Volumes/POCKET/pocket/`, 15 games, about 7 MB: every public game that is not a Starter and passes the packer: four Sandbox games (Sandcastle Knight, In The Year 2000! and the first two Teddy games) and eleven Bizarre games). It deletes only `pocket/` on the card.
 3. Put the card in the slot (power off first) and power on. The list should show 84 games with SD on the last 15.
 4. No card reader at hand: with a blank FAT32 card in the board and the board on its game list, `~/.platformio/penv/bin/python web/scripts/pocketSdWrite.py /dev/cu.usbserial-XXXX /tmp/pocketcard/pocket` (after `pocketData.ts --out /tmp/pocketcard`) writes the files through the USB cable, about 10 KB/s (about 20 minutes for the 15 games), then resets the board.
+
+**One game, one file (from the site).** On the site, a game's Download button has **Pocket Player (microSD)**: it saves `NAME.GMP` (an 8.3 name from the game's id). To copy it to the card:
+
+1. Put the card in your computer (FAT32, as in step 1 above).
+2. Make a folder named `pocket` at the top of the card if there isn't one, and copy `NAME.GMP` into it. Nothing else to edit: the board lists every `.GMP` in `/pocket`.
+3. Eject the card, put it in the board with the power off, power on. The game is on the list with the SD tag.
+
+Or without a card reader: `pocketSdWrite.py PORT <folder with the .GMP>` as in step 4. From the command line, `npx vite-node scripts/pocketData.ts --gmp /Volumes/POCKET [--only id,id]` writes the same kind of file for the repository's games (it adds or replaces `.GMP` files and deletes nothing). The site's download plays PC speaker sounds only (no Sound Blaster clips or music) and says when a level may be too big for the board's memory.
+
+A `.GMP` is a bundle in the `small.pak` format (`src/gmsmall.h`, written by `web/src/export/pocketFile.ts`): `game.txt` (`GMP 1`, then `id|title|levels`, then `version <v>` when known), `<id>.cfg`, `cards.pak` (the `.cfg`'s card offsets count from this entry) and the packed files. The firmware lists only format 1, skips a `.GMP` whose id is already listed, and reads the game's files, `.cfg` lines and cards straight from the bundle (`readGameFile`, `cfgOpen`, `readPak` in `main.cpp`). The Mac checks take a `.GMP` as the data folder: `pocketHostCheck.ts <id> --data /path/NAME.GMP` and `pocketCardsCheck.ts <id> --data /path/NAME.GMP` (with `font.bin` beside it).
 
 On the card: every file is in `/pocket/`. A game's `<file>.cfg` and `<file>.pak` use an 8 character name (the hash of its id, so no long file names are needed); the game list is `/pocket/games.txt` (`id|title|levels|file`); the picture, map and block files are named by content and shared by the games. The firmware reads them with the same code as LittleFS (`readFileIn` and `selectGame` in `main.cpp`); `gmcore.h` and `gmcards.h` did not change (`gmcfg.h` loads the map and the biggest files first and reads the `cbln` line). The play loop's host check and the cards check (`pocketCardsCheck.ts --data <dir>`, and `pocketHostCheck.ts --data <dir>` with the card's files) pass on the packed card games (15 of 15 tick for tick).
 
@@ -193,9 +205,9 @@ npm run heavy -- ~/.platformio/penv/bin/pio run -d hardware/pocket-player       
 npm run heavy -- ~/.platformio/penv/bin/pio run -d hardware/pocket-player -t buildfs      # LittleFS image from data/
 ```
 
-Then copy `bootloader.bin`, `partitions.bin`, `firmware.bin` and `littlefs.bin` from `hardware/pocket-player/.pio/build/esp32-3248s035/` into `web/public/pocket/fw/`. The offsets in `web/public/pocket/manifest.json` match `partitions.csv`: bootloader 0x1000, partitions 0x8000, firmware 0x10000, LittleFS 0x110000 (3 MB).
+Then copy `bootloader.bin`, `partitions.bin`, `firmware.bin` and `littlefs.bin` from `hardware/pocket-player/.pio/build/<env>/` into `web/public/pocket/fw/<env>/` (build both envs; each needs its own `-e <env>` and `-t buildfs`). The offsets in the two manifests in `web/public/pocket/` match `partitions.csv`: bootloader 0x1000, partitions 0x8000, firmware 0x10000, LittleFS 0x110000 (3 MB).
 
-The 3.5 inch board's browser installer (`web/public/pocket/fw/`) is for the first board only; the 2.8 inch board is flashed with `pio` as above.
+The browser installer covers both boards (see "Flash it from the browser"); `pio` as above is the other way.
 
 ## What only a board can tell
 

@@ -76,6 +76,12 @@ export class Book {
     return i;
   }
 
+  /** The rules block `name` was added with (a copy). */
+  rulesOf(name: string): Rules {
+    const r = this.rules.find(([i]) => i === this.n(name));
+    return { ...(r?.[1] ?? {}) };
+  }
+
   /** Whether block number `n` is solid on every side in `mask` (SOLID, say). */
   isSolid(n: number, mask: number): boolean {
     return (this.blocks[n].solid & mask) === mask;

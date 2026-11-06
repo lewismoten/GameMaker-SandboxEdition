@@ -146,7 +146,7 @@ export function designPages(shots: GameShot[]): BookletPage[] {
       counter (arrows, for instance). Set the hero\u2019s hit points, lives and starting
       inventory (up to ten objects). A frame can give birth to a monster: that is how a hero
       shoots.</p>
-      <p class="see"><i>On the Sample CD:</i> <code>THROWIT</code>, <code>MANYWEAP</code>, <code>PICKITUP</code>, <code>KITMOVES</code>, <code>HOMEKEYS</code>, <code>KITDUCK</code>, <code>CHOOSE</code>, <code>WHEEL</code>, <code>HEALTH</code>, <code>POWERUP</code>, <code>SLIDE</code>, <code>BOOTS</code>, <code>GRAVITY</code>, <code>SWIM</code>, <code>GUSTS</code> and <code>DROPDOWN</code> (a monster that falls when the crate under it breaks).</p>
+      <p class="see"><i>On the Sample CD:</i> <code>THROWIT</code>, <code>MANYWEAP</code>, <code>PICKITUP</code>, <code>KITMOVES</code>, <code>HOMEKEYS</code>, <code>KITDUCK</code>, <code>CHOOSE</code>, <code>WHEEL</code>, <code>RIDEALNG</code> (a rocket and a canoe that keep moving by themselves), <code>HEALTH</code>, <code>POWERUP</code>, <code>SLIDE</code>, <code>BOOTS</code>, <code>GRAVITY</code>, <code>SWIM</code>, <code>GUSTS</code> and <code>DROPDOWN</code> (a monster that falls when the crate under it breaks).</p>
       <h3>Monster Maker</h3>
       <p>A monster set has up to 64 monsters of up to 20 frames each. Each one moves toward the
       hero, away, at random or along a path you draw; it can attack when the hero comes close,

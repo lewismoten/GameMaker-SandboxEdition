@@ -2,54 +2,72 @@
   "title": "Graduation: Blocks and Showcase",
   "howDoI": [
     {
-      "id": "cheer",
-      "q": "How do I make people who cheer, each out of step with the others?",
+      "id": "arrive-shore",
+      "q": "How do I make water that moves?",
       "scene": 2,
-      "x": 4,
-      "y": 4,
-      "level": 1
-    },
-    {
-      "id": "swap",
-      "q": "How do I make several different people from one drawing?",
-      "scene": 2,
-      "x": 8,
-      "y": 4,
-      "level": 1
-    },
-    {
-      "id": "scroll",
-      "q": "How do I make a pickup that ends the level?",
-      "scene": 2,
-      "x": 40,
+      "x": 15,
       "y": 8,
       "level": 1
     },
     {
-      "id": "banner",
-      "q": "How do I hang a banner on a wall?",
+      "id": "arrive-stars",
+      "q": "How do I make stars that twinkle?",
       "scene": 2,
-      "x": 37,
-      "y": 2,
+      "x": 26,
+      "y": 8,
       "level": 1
     },
     {
-      "id": "stage",
-      "q": "How do I make a carpet and a stage to walk on?",
+      "id": "arrive-popups",
+      "q": "How do I make a score that pops up?",
       "scene": 2,
-      "x": 34,
-      "y": 10,
+      "x": 37,
+      "y": 8,
       "level": 1
+    },
+    {
+      "id": "cheer",
+      "q": "How do I make people who cheer, each out of step with the others?",
+      "scene": 3,
+      "x": 4,
+      "y": 4,
+      "level": 2
+    },
+    {
+      "id": "swap",
+      "q": "How do I make several different people from one drawing?",
+      "scene": 3,
+      "x": 8,
+      "y": 4,
+      "level": 2
+    },
+    {
+      "id": "scroll",
+      "q": "How do I make a pickup that ends the level?",
+      "scene": 3,
+      "x": 40,
+      "y": 8,
+      "level": 2
     }
   ],
   "pages": [
     {
       "head": "Welcome",
-      "html": "<h1>Welcome</h1><p><b>Graduation: First Steps</b> is a Starter of a different kind. It is a short walk, not a lesson. You have been through The Basics; now the helpers who led those Starters are on the balcony, Doc Leo is on the stage, and your honors are on the lectern.</p><p>It takes about a minute. Play it first, then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. There is nothing to fight and nothing that hurts. Walk into the scroll on the lectern and the game ends with your honors.</p>"
+      "html": "<h1>Welcome</h1><p><b>Graduation: First Steps</b> is a Starter of a different kind. It is a short walk, not a lesson. You have been through The Basics; now the helpers who led those Starters are on the balcony, Doc Leo is on the stage, and your honors are on the lectern.</p><p>It takes a couple of minutes. Play it first, then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below.</p><p>There are two levels. First you cross campus to the hall, with a few small nods to lessons you took on the way. Then you walk the aisle to the stage.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk, <kbd>Space</kbd> hops, and <kbd>Up</kbd> and <kbd>Down</kbd> climb a ladder. There is nothing to fight and nothing that hurts. Walk into the scroll on the lectern and the game ends with your honors.</p>"
     },
     {
-      "head": "Level 1: The Aisle",
-      "html": "<h1>Level 1: The Aisle</h1><p>You start in the doorway at the back of the hall. Four signs along the red carpet say what is going on: <b>WALK UP TO THE STAGE</b>, <b>YOUR HELPERS ARE HERE</b>, <b>THEY CHEER FOR YOU</b> and <b>DOC LEO HAS A SCROLL FOR YOU</b>. Up on the balcony the eight helpers of The Basics wave and blink, each out of step with the others. Doc Leo waits beside the lectern, under the banner.</p><p>Walk up the carpet and onto the stage. The rolled-up scroll on the lectern is worth a hundred points, and touching it takes you to the ending.</p>"
+      "head": "Level 1: The Sculpture Walk",
+      "html": "<h1>Level 1: The Sculpture Walk</h1><p>Stroll to the gallery doors. You start on the path with a welcome sign beside you, and the hall's doors are at the far end. Along the way are 3 small moments. Each one is a nod to a Starter you took in this stage, and each has a sign that gives its course number. Nothing here hurts, and nothing can trap you: every climb has a way back down.</p><ul><li><b>Course 602, Waves on the Shore.</b> A footbridge over water whose waves are blocks that turn into each other.</li><li><b>Course 603, Twinkle, Twinkle.</b> Sparkles in the sky that blink, each on its own time.</li><li><b>Course 610, Score Popups.</b> Big coins pay a hundred and a floating 100 rises where they were.</li></ul><p>Walk through the doors under the banner to go inside.</p>",
+      "from": "arrive"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How the arrival is made</h1><ul><li><b>The path.</b> Open <b>arrive.map</b> in the map editor. The path is a row of solid <b>paving</b> blocks over two rows of <b>dirt</b>. The trees, banner poles and the hall's front are plain blocks you walk in front of; the hedge at each end is solid. This level has its own block set, <b>arrive.bbl</b>, beside the hall's <b>grad.bbl</b>: open <b>grad.gam</b> in the scenes editor and look at the block slot of each scene.</li><li><b>Course 602, Waves on the Shore.</b> <b>water0</b>, <b>water1</b> and <b>water2</b> turn into each other every 6 ticks, and the map starts neighbors on different ones so the waves ripple. The footbridge is a <b>plank</b> row over them.</li><li><b>Course 603, Twinkle, Twinkle.</b> <b>spark0</b>, <b>spark1</b> and <b>spark2</b> are a small, a big and a medium sparkle that turn into each other every 7 ticks, started on different ones.</li><li><b>Course 610, Score Popups.</b> A <b>bigCoin</b> has Score points 100 and becomes <b>pop0</b>, a picture of 100; that turns into <b>pop1</b>, then <b>pop2</b> a few ticks apart, each drawn a little higher, and then into sky.</li></ul>",
+      "from": "arrive"
+    },
+    {
+      "head": "Level 2: The Aisle",
+      "html": "<h1>Level 2: The Aisle</h1><p>You start in the doorway at the back of the hall. Four signs along the red carpet say what is going on: <b>WALK UP TO THE STAGE</b>, <b>YOUR HELPERS ARE HERE</b>, <b>THEY CHEER FOR YOU</b> and <b>DOC LEO HAS A SCROLL FOR YOU</b>. Up on the balcony the eight helpers of The Basics wave and blink, each out of step with the others. Doc Leo waits beside the lectern, under the banner.</p><p>Walk up the carpet and onto the stage. The rolled-up scroll on the lectern is worth a hundred points, and touching it takes you to the ending.</p>"
     },
     {
       "head": "How this level is made",

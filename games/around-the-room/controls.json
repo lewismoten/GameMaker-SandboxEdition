@@ -1,0 +1,54 @@
+{
+  "keys": {
+    "75": {
+      "short": "Walk left",
+      "long": "Walk left. On the floor it walks forward; on the ceiling it walks back."
+    },
+    "77": {
+      "short": "Walk right",
+      "long": "Walk right. On the ceiling it walks forward; on the floor it walks back."
+    },
+    "72": {
+      "short": "Walk up",
+      "long": "Walk up. Up the left wall it walks forward; down the right wall it walks back."
+    },
+    "80": {
+      "short": "Walk down",
+      "long": "Walk down. Down the right wall it walks forward; up the left wall it walks back."
+    },
+    "57": {
+      "short": "Jump",
+      "long": "Jump off the wall, away from the surface you stand on. Steer along the wall with the arrow while you are in the air."
+    },
+    "30": {
+      "short": "Walk left",
+      "long": "Same as the Left arrow."
+    },
+    "32": {
+      "short": "Walk right",
+      "long": "Same as the Right arrow."
+    },
+    "17": {
+      "short": "Walk up",
+      "long": "Same as the Up arrow."
+    },
+    "31": {
+      "short": "Walk down",
+      "long": "Same as the Down arrow."
+    }
+  },
+  "joystick": {
+    "1": {
+      "short": "Jump",
+      "long": "Jump."
+    }
+  },
+  "sounds": {
+    "9": "The jump",
+    "10": "Getting hurt",
+    "11": "Falling over"
+  },
+  "counters": {
+    "20": "Keys: not used here, but a copy can add them."
+  }
+}

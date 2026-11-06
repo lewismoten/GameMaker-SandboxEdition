@@ -31,7 +31,7 @@ const kit = (pose: [string, string], col: number, feet = GROUND - 1): Sprite[] =
 };
 /** A monster picture in block (col, row). */
 const thing = (name: string, col: number, row: number): Sprite => ({ pixels: Uint8Array.from(mbl[mb.n(name)].pixels), x: ORIGIN + col, y: ORIGIN + row });
-/** A light (lamp, then four pieces of cone) with its lamp at column `col`. */
+/** A light (lamp, then its pieces of cone) with its lamp at column `col`. */
 const light = (col: number): Sprite[] => [thing('lamp0', col, 5), ...[0, 1, 2, 3].map((i) => thing(`cone${i}_0`, col, 6 + i))];
 /** The level's map with its monsters taken out (the picture adds the ones to show). */
 const empty = (level: number) => {

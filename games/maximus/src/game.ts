@@ -11,6 +11,7 @@ import type { SetBuilder } from './blocks/blockset';
 import { courier, vehicle, type CharSet } from './characters/chars';
 import { heartMap, maelstromMap } from './levels/core';
 import { tidyUnreachable } from './levels/tidy';
+import { putCoolSign } from '../../kit/coolSign';
 import { GATE, homeMap } from './levels/home';
 import { homeSet } from './blocks/homeSet';
 import { WHEEL_SCENES } from './wheel/wheel';
@@ -233,6 +234,12 @@ export function buildGame(): Built {
       palette: buildPalette(ROLES, themeFor('station', 1995)).pal,
     });
     game.scenes[0].links[0] = link(SCENE.home, { x: 0, y: 0 }, home.arrive);
+    // the tip of the hat (kit/coolSign.ts): a plaque on the wall just past where Max arrives. The
+    // training deck's block set gets its own copy for it, in blocks the deck never shows.
+    const deck = home.grid.toMap();
+    const deckSet = putCoolSign(bbl.home, deck, buildPalette(ROLES, themeFor('station', 1995)).pal, home.arrive.x + 3, home.arrive.y - 2);
+    put('home.bbl', serializeBlocks(deckSet));
+    put('home.map', serializeMap(deck));
   }
   // galaxy scene
   const maelstrom = maelstromMap(sets.space, monsters.space2);

@@ -15,11 +15,12 @@ import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
 import { addSign, type Sign } from '../../kit/starter/sign';
+import { addCeiling } from './ceilingArt';
 import { FRESH, ROCKY } from './monsters';
 
 export type SignName = 'four' | 'head' | 'ouch' | 'wait' | 'exit';
 
-/** The block set both levels share: the Starter blocks, then this game's signs. */
+/** The block set both levels share: the Starter blocks, this game's signs, then the tunnel ceiling. */
 function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
@@ -30,6 +31,7 @@ function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
     wait: addSign(book, pal, 'wait.sign', 'WAIT FOR IT TO STOP', 4, 3),
     exit: addSign(book, pal, 'exit.sign', 'EXIT →', 3),
   };
+  addCeiling(book, pal);
   return { book, signs };
 }
 
@@ -88,6 +90,11 @@ function wallAndStep(g: Grid, wall: readonly [number, number], step: readonly [n
   g.row(BOTTOM, step[0], step[1], 'G');
 }
 
+/** The wall's bottom row, over the tunnel, is the ceiling block (ceilingArt.ts). */
+function ceiling(m: StarterMap, wall: readonly [number, number]): void {
+  for (let x = wall[0]; x <= wall[1]; x++) m.set(x, TOP - 1, 'ceiling');
+}
+
 /** Stands a giant of four monsters in its tunnel: `first` is the monster number of the top left part; `next` how far apart the numbers are. */
 function giant(m: StarterMap, x: number, first: number): void {
   // top left, top right, bottom left, bottom right: the order of the monster numbers
@@ -114,6 +121,7 @@ function theGiant(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [11, 30, 40],
   );
   const m = new StarterMap(book, g.rows());
+  ceiling(m, WALL[0]);
   m.sign(6, onGround(GROUND, signs.four), signs.four);
   m.sign(11, onGround(GROUND, signs.head), signs.head);
   m.sign(38, onGround(GROUND, signs.exit), signs.exit);
@@ -138,6 +146,7 @@ function ouchWait(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [8, 31, 41],
   );
   const m = new StarterMap(book, g.rows());
+  ceiling(m, WALL[1]);
   m.sign(6, onGround(GROUND, signs.ouch), signs.ouch);
   m.sign(12, onGround(GROUND, signs.wait), signs.wait);
   m.sign(39, onGround(GROUND, signs.exit), signs.exit);

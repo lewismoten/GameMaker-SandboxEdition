@@ -6,8 +6,9 @@
 //                    block a tunnel. A sign stands before the first place each key is needed.
 //   2. No Diagonal Needed: two gaps whose coins curve up and to the right, as if a diagonal key were needed.
 //                    Space, then hold Right, is all it takes.
-//   3. Leap Shelves: two shelves of coins too high for a jump. E leaps up and right onto one, Q up and left
-//                    onto the other. They are extra: the way to the door is flat.
+//   3. Leap Shelves: two shelves of coins too high for a jump. E leaps up and right onto one, and from it Q
+//                    leaps up and left to a ledge higher still; Q also leaps up and left onto the other shelf.
+//                    They are extra: the way to the door is flat.
 // Every edge is a hedge or a wall you can see, so Mara is never stopped by something she can't.
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
@@ -90,18 +91,29 @@ export const L2 = {
     [45, 11],
   ],
 } as const;
-/** Level 3: the ground row, the width, the two shelves' [first, last] columns and top row, the exit column and the coins. */
+/** Level 3: the ground row, the width, the two shelves' [first, last] columns and top row, the ledge above and left of
+ *  the E shelf (reached from it with Q) and its top row, the exit column and the coins. */
 export const L3 = {
   ground: 13,
   width: 66,
   shelfE: [20, 25],
   shelfQ: [40, 45],
   shelfTop: 9,
+  /** Four rows above the E shelf, as the shelf is above the ground: a Q leap (5.5 rows) clears it, a jump (3.3) does not.
+   *  Its right end stops where the shelf starts, so a Q from where E lands (column 21.3, 2.3 columns left) comes down on it,
+   *  and walking off its right end drops back onto the shelf. */
+  ledgeQ: [15, 19],
+  ledgeTop: 5,
   exit: 61,
   coinsE: [
     [21, 8],
     [23, 8],
     [25, 8],
+  ],
+  coinsLedge: [
+    [15, 4],
+    [17, 4],
+    [19, 4],
   ],
   coinsQ: [
     [40, 8],
@@ -187,7 +199,7 @@ function noDiagonal(book: Book, signs: Record<SignName, Sign>): StarterMap {
   return m;
 }
 
-/** Level 3: flat ground to the door, with a shelf of coins on each side of the way, too high for Space alone. */
+/** Level 3: flat ground to the door, with a shelf of coins on each side of the way, too high for Space alone, and a ledge above the first shelf for Q. */
 function leapShelves(book: Book, signs: Record<SignName, Sign>): StarterMap {
   const G = L3.ground;
   const g = new Grid(L3.width, G + 3);
@@ -196,7 +208,8 @@ function leapShelves(book: Book, signs: Record<SignName, Sign>): StarterMap {
   g.put(3, G - 2, 's').put(3, G - 1, 'S');
   g.put(L3.exit, G - 2, 'e').put(L3.exit, G - 1, 'E');
   for (const [a, b] of [L3.shelfE, L3.shelfQ]) g.row(L3.shelfTop, a, b, '=');
-  for (const [x, y] of [...L3.coins, ...L3.coinsE, ...L3.coinsQ]) g.put(x, y, 'c');
+  g.row(L3.ledgeTop, L3.ledgeQ[0], L3.ledgeQ[1], '=');
+  for (const [x, y] of [...L3.coins, ...L3.coinsE, ...L3.coinsLedge, ...L3.coinsQ]) g.put(x, y, 'c');
   scenery(
     g,
     G,

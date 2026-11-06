@@ -4,8 +4,9 @@ Part of the [source map](../README.md).
 
 Publishing a game: as an offline web app (`exportWebApp.ts`), a single web
 page (`exportSinglePage.ts`, `singlePage.ts` (its no-script view: `pageSeo.ts`, `titleImage.ts`), played by `standalonePlayer.ts`), the web player
-(`exportWebPlayer.ts`), or a DOS folder with PLAYGAME (`exportDos.ts`); plus the service worker
-(`serviceWorker.ts`). How a download is made is below.
+(`exportWebPlayer.ts`), a DOS folder with PLAYGAME (`exportDos.ts`), or one file for the Pocket Player's
+microSD card (`exportPocket.ts`, packed by `pocketPack.ts`, which `web/scripts/pocketData.ts` shares, and bundled as
+NAME.GMP by `pocketFile.ts`); plus the service worker (`serviceWorker.ts`). How a download is made is below.
 
 ## How a download is made
 
