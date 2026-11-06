@@ -261,6 +261,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Fixed
 
+- In the Starter Countdown the numbers are on screen while you wait: level 1's big number also sits on top of each sign, and level 2's two digits hang lower, once over each sign. The trapdoor's nail heads are square.
 - In the Starter Beat the Clock the countdown bar is on screen while you play: it sits along the top of the view, placed often enough that one whole bar is always in sight, with the first clock set into the brick wall at the start.
 - Two Starters had art a child could read the wrong way: Ride Along's title stars no longer climb out of the hero like a stream, and Under the Hood's second level no longer has a plus sign made of green panels
 
