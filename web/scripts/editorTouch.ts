@@ -2,7 +2,8 @@
 // and 844x390, Android 360x740, light; the 1024, 390 and 375 portrait ones also dark): visible controls under 44 px, page
 // overflow past the device width (exit 1), axe violations and a screenshot each. Starts its own Vite (never 5173) via perfLib.
 // Usage: npm run editor:touch -- <route> [--out dir] [--tag name] [--wait selector] [--click 'sel;sel'] [--port 5291] [--dist dir] [--url u]
-import { mkdirSync, readFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { auditFailed } from './editorTouchAudit';
 import { resolve } from 'node:path';
 import { arg, launch, target } from './perfLib';
 import { assertTheme, forceTheme } from './forceTheme';
@@ -11,7 +12,7 @@ const route = process.argv[2]?.startsWith('--') ? undefined : process.argv[2];
 if (!route) throw new Error('Give a route, e.g. "/#/p/look:blaster/bus2.map".');
 const out = resolve(arg('out') ?? '../.for-lewis/research/editor-modern/touch');
 const tag = arg('tag') ?? 'audit';
-const wait = arg('wait');
+const wait = arg('wait') ?? 'main.editor';
 const clicks = (arg('click') ?? '').split(';').filter(Boolean); // click these (Playwright selectors) before measuring, to open tabs and lists
 mkdirSync(out, { recursive: true });
 const axeSrc = readFileSync(resolve('../node_modules/axe-core/axe.min.js'), 'utf8');
@@ -25,6 +26,7 @@ const sizes = [
 ] as const;
 
 let failed = 0;
+const results: unknown[] = [];
 const srv = await target(5291);
 const browser = await launch();
 try {
@@ -35,8 +37,10 @@ try {
       await forceTheme(ctx, scheme);
       const page = await ctx.newPage();
       await page.goto(srv.base + route);
-      if (wait) await page.waitForSelector(wait, { timeout: 90000 }).catch(() => undefined);
-      else await page.waitForLoadState('networkidle').catch(() => undefined);
+      const ready = await page.waitForSelector(wait, { timeout: 30000 }).then(
+        () => true,
+        () => false,
+      );
       await page.waitForTimeout(1500);
       for (const sel of clicks) {
         await page.click(sel, { timeout: 5000 }).catch(() => console.log(`(could not click ${sel})`));
@@ -47,10 +51,13 @@ try {
       const r = await page.evaluate((deviceWidth) => {
         const sel = 'button, a[href], input, select, textarea, summary, [role=button], [role=tab], [tabindex]:not([tabindex="-1"])';
         const small: string[] = [];
+        const under24: string[] = [];
         for (const el of document.querySelectorAll<HTMLElement>(sel)) {
           const b = el.getBoundingClientRect();
           const cs = getComputedStyle(el);
           if (!b.width || !b.height || cs.visibility === 'hidden' || cs.display === 'none') continue;
+          const detail = `${el.tagName.toLowerCase()} "${(el.getAttribute('aria-label') || el.textContent || el.getAttribute('title') || '').trim().slice(0, 80)}" ${b.width}x${b.height}`;
+          if (b.width < 24 || b.height < 24) under24.push(detail);
           if (b.width < 44 || b.height < 44) {
             const label = (el.getAttribute('aria-label') || el.textContent || el.getAttribute('title') || '').trim().slice(0, 24);
             small.push(
@@ -60,17 +67,25 @@ try {
         }
         // Compare with the configured device width, not innerWidth: Chromium's mobile emulation widens the layout viewport to fit
         // overflowing content (innerWidth then equals scrollWidth), while a real iPhone keeps the width and scrolls sideways.
-        return { small, overflowX: document.documentElement.scrollWidth - deviceWidth };
+        return { small, under24, overflowX: document.documentElement.scrollWidth - deviceWidth };
       }, width);
       await page.addScriptTag({ content: axeSrc });
       const ax = await page.evaluate(async () => {
         // @ts-expect-error axe is a page global once injected
         const res = await axe.run(document, { resultTypes: ['violations'] });
-        return res.violations.map((v: { id: string; nodes: unknown[] }) => `${v.id} x${v.nodes.length}`);
+        return res.violations.map((v: { id: string; nodes: { target: string[]; html: string; failureSummary: string }[] }) => ({
+          id: v.id,
+          nodes: v.nodes.map(({ target, html, failureSummary }) => ({ target, html, failureSummary })),
+        }));
       });
-      console.log(`\n== ${name} ${scheme}: overflowX=${r.overflowX}, ${r.small.length} targets under 44px; axe: ${ax.join(', ') || 'none'}`);
+      console.log(
+        `\n== ${name} ${scheme}: ready=${ready}, overflowX=${r.overflowX}, ${r.small.length} targets under 44px, ${r.under24.length} under 24px; axe: ${ax.map((v: { id: string; nodes: unknown[] }) => `${v.id} x${v.nodes.length}`).join(', ') || 'none'}`,
+      );
       if (scheme === 'light') console.log([...new Set(r.small)].slice(0, 60).join('\n'));
-      if (r.overflowX > 0) failed++;
+      const result = { route, name, width, height, scheme, ready, ...r, violations: ax };
+      results.push(result);
+      writeFileSync(`${out}/${tag}.json`, JSON.stringify(results, null, 2));
+      if (auditFailed(result)) failed++;
       await ctx.close();
     }
 } finally {
@@ -78,6 +93,6 @@ try {
   srv.stop();
 }
 if (failed) {
-  console.log(`\nFAIL: ${failed} size(s) are wider than the device (sideways scroll on a real phone).`);
+  console.log(`\nFAIL: ${failed} cases have missing editors, overflow, sub-24px targets or axe violations. See ${out}/${tag}.json.`);
   process.exitCode = 1;
 }
