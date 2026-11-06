@@ -2,7 +2,7 @@
 // (There is no DOM here: a bare window, document and room stand in.)
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-const engine = vi.hoisted(() => ({ pauses: [] as boolean[], playing: false }));
+const engine = vi.hoisted(() => ({ pauses: [] as boolean[], started: (): void => undefined, dispose: vi.fn() }));
 
 vi.mock('@lewismoten/gamemaker-sandbox-engine/audio/engine', () => ({
   AudioEngine: class {
@@ -11,13 +11,15 @@ vi.mock('@lewismoten/gamemaker-sandbox-engine/audio/engine', () => ({
       return Promise.resolve();
     }
     playSong() {
-      engine.playing = true;
+      engine.started();
       return Promise.resolve();
     }
     pauseMusic(p: boolean) {
       engine.pauses.push(p);
     }
-    dispose() {}
+    dispose() {
+      engine.dispose();
+    }
   },
 }));
 vi.mock('../project/files', () => ({
@@ -27,6 +29,9 @@ vi.mock('../project/files', () => ({
 vi.mock('../media/demoAudio', () => ({ demoAudio: () => 'blaster' }));
 
 import { startLibraryMusic } from './libraryMusic';
+import { beginPage } from '../pageLife';
+
+let started: Promise<void>;
 
 const win = new EventTarget();
 const classes = new Set<string>();
@@ -36,16 +41,20 @@ const doc = Object.assign(new EventTarget(), {
 });
 
 beforeEach(() => {
+  started = new Promise<void>((resolve) => (engine.started = resolve));
   vi.stubGlobal('addEventListener', win.addEventListener.bind(win));
   vi.stubGlobal('removeEventListener', win.removeEventListener.bind(win));
   vi.stubGlobal('document', doc);
 });
 
 afterEach(() => {
+  beginPage(); // release listeners even when an assertion fails
+  vi.clearAllTimers();
+  vi.useRealTimers();
   vi.unstubAllGlobals();
   classes.clear();
   engine.pauses = [];
-  engine.playing = false;
+  engine.dispose.mockClear();
 });
 
 describe('library music and the tour', () => {
@@ -53,7 +62,8 @@ describe('library music and the tour', () => {
     const room = { isConnected: true } as HTMLElement;
     startLibraryMusic(room);
     win.dispatchEvent(new Event('keydown'));
-    await vi.waitFor(() => expect(engine.playing).toBe(true));
+    // Await playback itself, not a short deadline for the lazy engine import.
+    await started;
     expect(engine.pauses).toEqual([]);
 
     classes.add('tour-on');
@@ -70,6 +80,7 @@ describe('library music and the tour', () => {
     win.dispatchEvent(new Event('hashchange'));
     vi.advanceTimersByTime(2500);
     vi.useRealTimers();
+    expect(engine.dispose).toHaveBeenCalled();
     win.dispatchEvent(new CustomEvent('gm-tour', { detail: 'start' }));
     expect(engine.pauses).toEqual([true, false]);
   });

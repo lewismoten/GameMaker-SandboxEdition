@@ -1,13 +1,20 @@
 // deskShelf: leaving the desk while the shelf is still being drawn releases it once it is made.
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { CatalogEntry } from '../project/files';
 
 const dispose = vi.fn();
-let finish: () => void = () => undefined;
+let finish: () => void;
+let drawing: () => void;
+let started: Promise<void>;
+beforeEach(() => {
+  dispose.mockClear();
+  started = new Promise<void>((resolve) => (drawing = resolve));
+});
 vi.mock('./boxes/shelf', () => ({
   gameShelf: () =>
     new Promise((resolve) => {
       finish = () => resolve({ element: { remove: () => undefined }, face: () => undefined, dispose });
+      drawing();
     }),
 }));
 
@@ -18,8 +25,8 @@ describe('deskShelf', () => {
     const desk = { querySelector: () => scene };
     const s = deskShelf(desk as never, { insert: () => undefined, manual: () => undefined, restoreBox: undefined } as never);
     const filling = s.fill([{ id: 'x' } as CatalogEntry]);
-    await vi.waitFor(() => expect(finish).not.toBe(undefined));
-    await new Promise((r) => setTimeout(r));
+    // The lazy import may take any number of turns; leave only once drawing has begun.
+    await started;
     s.dispose();
     finish();
     await filling;
