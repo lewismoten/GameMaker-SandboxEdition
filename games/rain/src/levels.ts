@@ -63,7 +63,7 @@ function lesson(pal: Pal, pools: boolean): Level {
     file: pools ? 'two' : 'one',
     card: pools ? 'two' : 'one',
     title: pools ? 'Splashes and Pools' : 'Falling Rain',
-    hint: pools ? 'Watch the ground, then try the door.' : 'One loop, with different starts.',
+    hint: pools ? 'Watch the ground. Try the door.' : 'One loop, with different starts.',
     palette: 'rain',
     book,
     timed,
