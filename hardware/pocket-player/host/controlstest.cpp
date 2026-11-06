@@ -6,6 +6,8 @@
 #include <string>
 #include <vector>
 #include "controls.h"
+#include "picker.h"
+#include "gt911report.h"
 
 using namespace ctl;
 
@@ -53,7 +55,46 @@ static Need needs(bool l, bool r, bool u, bool d, bool sp, bool en, std::vector<
 }
 static Need platformer() { return needs(true, true, true, true, true, false); }
 
+// I2C stand-in: the register requests return either a complete report or an interrupted transfer.
+struct ReportBus {
+  std::vector<int> bytes;
+  size_t pos = 0;
+  int count = 1, shortBy = 0, acks = 0, failReg = 0;
+  std::vector<int> tx;
+  void beginTransmission(int) { tx.clear(); }
+  void write(int b) { tx.push_back(b); }
+  int endTransmission() {
+    if (tx.size() == 3) acks++;
+    return tx.size() == 2 && tx[1] == failReg ? 1 : 0;
+  }
+  int requestFrom(int, int n) {
+    bytes = n == 1 ? std::vector<int>{0x80 | count} : std::vector<int>{2, 100, 0, 200, 0, 40, 0, 0};
+    if (n > 1 && shortBy) bytes.resize(bytes.size() - shortBy);
+    pos = 0; return bytes.size();
+  }
+  int available() { return bytes.size() - pos; }
+  int read() { return bytes[pos++]; }
+};
+
 int main() {
+  {
+    gtr::Report r; ReportBus bus;
+    check("GT911 complete contact starts a hold", r.pollReport(bus, 0x5D) == 1 && r.id[0] == 2 && r.rawX[0] == 100 && r.fresh && bus.acks == 1);
+    bus.shortBy = 1;
+    check("GT911 short packet preserves the held contact without acknowledgment", r.pollReport(bus, 0x5D) == 1 && r.id[0] == 2 && !r.fresh && bus.acks == 1);
+    bus.shortBy = 0; bus.failReg = 0x4F;
+    check("GT911 failed point register read preserves a hold", r.pollReport(bus, 0x5D) == 1 && !r.fresh && bus.acks == 1);
+    bus.failReg = 0; bus.count = 0;
+    check("GT911 complete lift releases the hold", r.pollReport(bus, 0x5D) == 0 && r.fresh && bus.acks == 2);
+  }
+
+  {
+    char label[96];
+    pk::ellipsize("Graduation: Blocks and showcase", label, sizeof label, 21);
+    check("long title fits its button", strlen(label) == 21 && !strcmp(label + 18, "..."));
+    check("search matches titles only, without case", pk::matches("A Fly Named Carl", "named carl") && !pk::matches("A Fly Named Carl", "2 levels"));
+  }
+
   Settings def;
   Layout L = makeLayout(def, platformer());
   int cx = L.pad.cx, cy = L.pad.cy;
@@ -255,6 +296,13 @@ int main() {
       { std::string nm = "Carl: pad at " + std::to_string(cs.deg) + " degrees sends its numpad diagonal alone"; check(nm.c_str(), r.held[cs.scan] && !r.held[S_UP] && !r.held[S_DOWN] && !r.held[S_LEFT] && !r.held[S_RIGHT], r.log); }
     }
     { Run r(def, carl); at(r, 20); check("Carl: 20 degrees is still plain right", r.held[S_RIGHT] && !r.held[73] && !r.held[S_UP], r.log); }
+    for (int deg : {45, 90, 135}) {
+      Run r(def, carl); at(r, deg);
+      int scan = deg == 45 ? 73 : deg == 90 ? S_UP : 71;
+      std::string initial = r.log;
+      r.wait(10000);
+      check("Carl: ten seconds of held flight never releases or pulses the key", r.held[scan] && r.log == initial, r.log);
+    }
     { Run r(def, carl); at(r, 70); check("Carl: 70 degrees is still plain up", r.held[S_UP] && !r.held[73] && !r.held[S_RIGHT], r.log); }
     { Run r(def, carl); at(r, 45); r.up(1); r.wait(30);
       check("Carl: the 60 ms grace holds the diagonal after a dropout", r.held[73], r.log);

@@ -14,8 +14,8 @@ namespace ds {
 constexpr int PANELS = 8, TURNS = 4;
 // Display modes (panel bits): 1 ST7789 driver (else ILI9341), 2 colors inverted, 4 red and blue swapped.
 // The steps of the first-boot setup (setupflow.h), kept in NVS so a restart in the middle resumes at the right one.
-// The four steps (setupflow.h: flip, rotate, orient, colors) are 0..3, then the calibration.
-enum Step { STEP_FLIP = 0, STEP_ROTATE = 1, STEP_ORIENT = 2, STEP_COLORS = 3, STEP_CALIBRATE = 4 };
+// Display has three live steps. Saved calibration stage stays 4 for compatibility with older NVS records.
+enum Step { STEP_FLIP = 0, STEP_ORIENT = 1, STEP_COLORS = 2, STEP_CALIBRATE = 4 };
 // The BOOT button held on the setup screen steps the driver only (the one fault a picture can't show its way out of): the other
 // color bits are cleared so the colors step starts fresh.
 inline uint8_t nextDriver(uint8_t panel) { return (uint8_t)((panel ^ 1) & 1); }
