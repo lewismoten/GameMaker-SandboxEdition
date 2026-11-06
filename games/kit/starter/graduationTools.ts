@@ -1,6 +1,6 @@
 // What the graduations' tools/ folders share: the bot's walk up the aisle, the play loop on a game's built disk
 // and the runs behind check.ts, gendemo.ts and walkthrough.ts (each game's own file is a few lines).
-import { assertNoInvisibleWalls } from './invisibleWalls';
+import { invisibleWalls } from './invisibleWalls';
 import { StarterBot } from './bot';
 import { playLevels } from '../levelRun';
 import { recordDemo } from '../demoRecord';
@@ -54,7 +54,10 @@ interface Sim {
 
 /** check.ts: no invisible walls, then the bot wins without losing a life. */
 export async function graduationCheck(id: string, built: ReturnType<typeof buildLevels>, play: Play): Promise<void> {
-  assertNoInvisibleWalls(built);
+  for (const l of built.levels) {
+    const found = invisibleWalls(l.book, l.book.finish(), built.pal, [{ name: l.file, map: l.map.done() }]);
+    if (found.length) throw new Error(`Invisible walls (a solid block drawn as sky). Draw a wall, hedge or fence instead:\n  ${found.join('\n  ')}`);
+  }
   const sim = (await play()).sim as Sim;
   console.log(`${id}: the bot walked the aisle; score ${sim.ci.score}, ${sim.trail.length} scenes entered`);
 }

@@ -11,7 +11,7 @@ const LABELS: Record<SpeedChoice, string> = {
   '486': '486 (66 MHz)',
   '386': '386 (33 MHz)',
   '286': '286 (12 MHz)',
-  ps1: 'IBM PS/1 (286, 1 MB)',
+  ps1: 'IBM PS/1 Model 2011 (286, 10 MHz, 1 MB)',
 };
 
 /** Adds the control to the corner; `speed` is the object the running game reads every tick. */

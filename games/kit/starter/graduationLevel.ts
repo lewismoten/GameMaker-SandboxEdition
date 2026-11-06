@@ -1,4 +1,4 @@
-// A graduation's one level, "The Aisle": a hall with the stage's helpers on the balcony, a red
+// A graduation's second level (the first is the arrival, graduationArrive.ts), "The Aisle": a hall with the stage's helpers on the balcony, a red
 // carpet to walk up, and a stage with a lectern, Doc Leo and the certificate. 48 x 13 blocks: the floor is row 10.
 //   x  2        the doorway you start in
 //   x  4..33    the carpet, with signs; the balcony (rail and front) is above, the helpers leaning on it
@@ -16,6 +16,7 @@ import { addSign, type Sign } from './sign';
 import type { Graduation } from './graduationConfig';
 import { addHallRamps, audienceOf } from './graduationCast';
 import { addHallBlocks, type Timed } from './graduationHall';
+import { ARRIVE, buildArrival } from './graduationArrive';
 
 export const W = 48;
 export const H = 13;
@@ -30,6 +31,10 @@ export interface Level {
   title: string;
   hint: string;
   map: StarterMap;
+  /** The level's own block set, its timed loops and the file it is saved to (without .bbl): the hall's is grad, the arrival's arrive. */
+  book: Book;
+  timed: Timed[];
+  bbl: string;
 }
 
 export type SignName = 'start' | 'helpers' | 'cheer' | 'doc' | 'banner';
@@ -41,7 +46,18 @@ export function buildBlocks(pal: Pal, cfg: Graduation) {
   addStarterBlocks(book, pal);
   const heroBlocks = buildHeroBlocks(pal);
   const pic = (n: string) => heroBlocks.pics.get(n)!;
-  const hall = addHallBlocks(book, pal, timed, audienceOf(...cfg.groups), pic('stand.top'), pic('cheer2.top'), pic('blink.top'), cfg.theme, cfg.cameos);
+  const hall = addHallBlocks(
+    book,
+    pal,
+    timed,
+    audienceOf(...cfg.groups),
+    pic('stand.top'),
+    pic('cheer2.top'),
+    pic('blink.top'),
+    cfg.theme,
+    cfg.cameos,
+    cfg.stillGuests,
+  );
   const signs: Record<SignName, Sign> = {
     start: addSign(book, pal, 'start', cfg.signs.start, 4, 2),
     helpers: addSign(book, pal, 'helpers', cfg.signs.helpers, 4, 2),
@@ -108,8 +124,8 @@ function aisle(
   // the balcony: a rail with a front, and the helpers leaning on it
   for (let x = 2; x < STAGE_FROM - 1; x++) m.set(x, 5, 'rail').set(x, 6, 'riser');
   hall.helpers.forEach((name, i) => m.set(4 + i * 4, 4, name));
-  // the Cast's guests lean on the rail in the gaps between helpers (a tall one reaches up a row)
-  hall.cameos.forEach((parts, i) => parts.forEach((name, k) => m.set(6 + i * 8, 5 - parts.length + k, name)));
+  // the Cast's guests lean on the rail in every gap between helpers, and the one before the first (a tall one reaches up a row)
+  hall.cameos.slice(0, hall.helpers.length).forEach((parts, i) => parts.forEach((name, k) => m.set(2 + i * 4, 5 - parts.length + k, name)));
   // the stage's own wall pieces, hung high between the ceiling and the helpers' heads
   const order = theme.decorOrder ?? [];
   if (order.length) for (let x = 3, i = 0; x < STAGE_FROM - 1; x += theme.decorEvery ?? 5, i++) m.set(x, 2, `decor.${order[i % order.length]}`);
@@ -132,6 +148,10 @@ function aisle(
 export function buildLevels(cfg: Graduation) {
   const pal = buildPalette(cfg);
   const { book, timed, hall, signs } = buildBlocks(pal, cfg);
-  const levels: Level[] = [{ file: 'hall', title: cfg.level.title, hint: cfg.level.hint, map: aisle(book, signs, hall, cfg.theme, cfg.cameos.length) }];
+  const arrival = buildArrival(cfg, pal);
+  const levels: Level[] = [
+    { file: ARRIVE, title: cfg.arrive.title, hint: cfg.arrive.hint, map: arrival.map, book: arrival.book, timed: arrival.timed, bbl: ARRIVE },
+    { file: 'hall', title: cfg.level.title, hint: cfg.level.hint, map: aisle(book, signs, hall, cfg.theme, cfg.cameos.length), book, timed, bbl: 'grad' },
+  ];
   return { book, pal, timed, levels };
 }

@@ -89,8 +89,8 @@ async function help(h: RetroHost, name: string): Promise<void> {
   else await errorBox(h, `Can't find ${name.toUpperCase()}!`, '(C)ontinue');
 }
 
-/** GM: runs until Quit. `args`: GM's command line (GM REGISTER). */
-export async function runGameMaker(h: RetroHost, start: 'main' | 'design' = 'main', args: string[] = []): Promise<void> {
+/** GM: runs until Quit. `args`: GM's command line (GM REGISTER). 'menu' is MENU.EXE started by GM: CHK.EXE has already run. */
+export async function runGameMaker(h: RetroHost, start: 'main' | 'menu' | 'design' = 'main', args: string[] = []): Promise<void> {
   // the designers, in Design-bar order, fetched ahead while the menu waits
   prefetchWhenIdle(
     TOOLS.map((t) => PORTED[t.exe]).filter((load) => !!load),
