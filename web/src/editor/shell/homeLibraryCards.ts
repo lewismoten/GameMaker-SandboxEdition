@@ -8,7 +8,7 @@ import { byStarterGroup } from '../../project/starter';
 import { isCeremony } from '../../project/ceremonies';
 import type { Grades } from '../../project/grades';
 import { levelShown, levelShowsCeremony } from './homeLevel';
-import { graduationCards, readyCeremonies, readyStrip } from './homeGraduations';
+import { gradShowFor, graduationCards, readyCeremonies, readyStrip } from './homeGraduations';
 import { allNotes, ratingOf } from '../../imported/gameNotes';
 import { groupByRating, ratingName, starsText } from '../../imported/ratings';
 import { gameShot, gameTile, playLink, type HomeGame } from './homeCards';
@@ -93,13 +93,14 @@ export function libraryCards(
               : [];
     const shownSections = c === 'starter' ? sections.filter((sec) => sec.games.length) : sections;
     const graduations =
-      c === 'starter' && (starters.filter === 'all' || starters.filter === 'grad')
+      c === 'starter'
         ? graduationCards(
             lib.gamesOf(c).filter((g) => isCeremony(g.entry?.id ?? '') && levelShowsCeremony(level, g.entry?.id ?? '')),
             starters.finished,
             grades,
             tile,
             new Map(lib.gamesOf(c).map((g) => [g.entry?.id ?? '', g.title])),
+            gradShowFor(starters.filter),
           )
         : [];
     // shown under Not done yet too, so it appears the moment the last course needed is finished
