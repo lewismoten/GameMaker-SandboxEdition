@@ -76,8 +76,12 @@ export function readyCeremonies(games: readonly HomeGame[], finished: ReadonlySe
   });
 }
 
-/** The "Ready to graduate" strip above every group: a picture, a title and a Graduate button per open graduation, none when nothing is ready. */
-export function readyStrip(ready: { ceremony: Ceremony; game: HomeGame }[], choose: (g: HomeGame) => void, shot?: (g: HomeGame) => HTMLElement): HTMLElement[] {
+/** The "Ready to graduate" strip above every group: a picture, a title and a Graduate button (which starts the ceremony) per open graduation, none when nothing is ready. */
+export function readyStrip(
+  ready: { ceremony: Ceremony; game: HomeGame }[],
+  playHref: (g: HomeGame) => string,
+  shot?: (g: HomeGame) => HTMLElement,
+): HTMLElement[] {
   if (!ready.length) return [];
   return [
     h(
@@ -91,15 +95,9 @@ export function readyStrip(ready: { ceremony: Ceremony; game: HomeGame }[], choo
           h(
             'li',
             {},
-            shot
-              ? h('button', { class: 'grad-ready-pic', type: 'button', tabindex: -1, 'aria-hidden': 'true', onclick: () => choose(game) }, shot(game))
-              : null,
+            shot ? h('a', { class: 'grad-ready-pic', href: playHref(game), tabindex: -1, 'aria-hidden': 'true' }, shot(game)) : null,
             h('span', { class: 'grad-ready-title' }, ceremonyTitle(ceremony)),
-            h(
-              'button',
-              { class: 'button primary', type: 'button', 'aria-label': `Graduate: ${ceremonyTitle(ceremony)}`, onclick: () => choose(game) },
-              'Graduate',
-            ),
+            h('a', { class: 'button primary', href: playHref(game), 'aria-label': `Graduate: play ${ceremonyTitle(ceremony)}` }, 'Graduate'),
           ),
         ),
       ),
