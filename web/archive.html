@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex" />
+    <title>Archive helper · Game-Maker: Sandbox Edition</title>
+    <style>
+      :root { color-scheme: light dark; }
+      body { font: 16px/1.5 system-ui, sans-serif; max-width: 36rem; margin: 0 auto; padding: 24px 16px; }
+      progress { width: 100%; height: 1.5rem; }
+      #done { font-weight: bold; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Fetching the site</h1>
+      <p>This page asks for every file of the site, a few at a time, so a web archive can save them. Leave it open until it says Done.</p>
+      <p id="part"></p>
+      <progress id="bar" value="0" max="1" aria-label="Files fetched"></progress>
+      <p id="status" role="status" aria-live="polite">Starting.</p>
+      <p id="done" role="status" hidden></p>
+    </main>
+    <script type="module" src="/src/archive/archive.ts"></script>
+  </body>
+</html>

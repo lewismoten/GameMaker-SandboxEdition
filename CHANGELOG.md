@@ -11,6 +11,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Added
 
+- `archive.html`, a page nothing links to, that fetches every file of the site a few at a time so a web archive (the Wayback Machine's Save Page Now) can record them. In an archived copy the site registers no service worker and says "This is an archived copy; some parts weren't saved." for a missing part. Nothing changes on a normal host.
 - The Download chooser has a Pocket Player (microSD) choice: the game as one .gmp file to copy into the pocket folder on the Pocket Player's microSD card, with plain notes on what the board leaves out (Sound Blaster sounds, music) or may not manage.
 - Every graduation begins outside: a friendly walk across campus to the hall's doors, with a few small nods to the stage's courses along the way (a ladder to climb, a key before a gate, wind that lifts, a lever, stars that twinkle), each on a sign that names its course. Nothing hurts and nothing traps you. The hall is the second level, and The Sandbox Diploma's walk nods to one lesson from each stage.
 - Every seat at graduation is filled: between the helpers sit Gwinn, Teddy, the rubber chicken, Joe and other Cast friends (a different eight in each hall, and the Sandbox Diploma has the biggest crowd).
