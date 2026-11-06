@@ -98,7 +98,7 @@ export const STARTER_GROUPS: { name: string; tag: string; games: string[] }[] = 
   {
     name: 'Weather',
     tag: 'Rain, snow, lightning and heat, drawn and animated.',
-    games: ['heat-waves', 'lightning', 'rain'],
+    games: ['heat-waves', 'lightning', 'rain', 'snow'],
   },
   {
     name: 'Showcase Tricks',
@@ -137,6 +137,7 @@ export const ADDED_LATER: readonly string[] = [
   'lightning',
   'heat-waves',
   'rain',
+  'snow',
 ];
 
 /** The order the Starters are meant to be played in, easiest first: the groups' games in order (games/<id>); a starter not listed goes after these, A to Z. */

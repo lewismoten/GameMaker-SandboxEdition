@@ -15,6 +15,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 - Lightning Bugs, Fireworks Night and Leaves in the Wind now draw and name the same helpers as their Cast entries: Rima, Lami and Mia.
 - Slow Computers brings both rows of bees into the playing view and puts its eight snails in a lit cutaway cave beneath the grass, without the floating plank. The crowd still has 36 friendly monsters.
+- Snow Trails, a Weather Starter with swaying falling snow, a drift that grows in three steps, and bootprints left in touched powder. Two short walks show the block loops and touch changes, with editable lesson pages.
 - 43 Starters that shared a song with another game now each have their own, 32 bars long instead of 8, and each group of Starters has its own band: a march for The Basics, a chip tune for Moving and Pushing, swing for Changing Your Hero, a minor-key drive for Foes and Bosses, a storybook for Telling a Story, calypso for Bigger Worlds, and more.
 - Quicksand, a Starter for the Worlds That Push Back group: sand that sinks only where you stand. Stand still and the sand under your feet ripples, then gives way, and you drop into a hole a block deep and jump out; keep walking and it holds. The second level has stepping stones that never sink and dark wet sand that gives way sooner. The manual says plainly how it is faked: each block of sand is a chain of blocks that change when touched, and the hero cannot really sink. Two levels, with signs and a "How this level is made" page each.
 - Lightning, a new Starter in the Weather group: a storm drawn with blocks, where the sky and a bolt swap to lighter twins for a moment on one clock, the thunder is written into the song, and the flash is kept gentle.
@@ -271,6 +272,8 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 - The Starters have no invisible walls: each room ends in a hedge you can see, and a check fails if a solid block is ever drawn as sky. Room to Room's second room now leaves by an open archway with a THIS WAY OUT sign instead of an invisible edge.
 
 ### Fixed
+
+- Auto-arrange can put an ending above or below its sources, keeping shortcut arrows clear of branches that leave a level and return to it.
 
 - Errors stay available to screen readers inside dialogs; saves, downloads and checks retain their final outcomes, rapid progress is quieter, and opening a transcript announces its loading state rather than the whole document. Error notices remain readable in both themes.
 - The desk’s screenshot, recording, enlarge-screen, power, disk-eject, speaker sound switch and keyboard tray controls have larger targets, including when the desktop PC is scaled down.

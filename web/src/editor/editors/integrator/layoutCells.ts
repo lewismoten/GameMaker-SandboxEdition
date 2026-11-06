@@ -187,15 +187,25 @@ function treeBlock(id: number, kids: Map<number, number[]>, leafRows: number): B
   return { w: w + 1, h: y, at };
 }
 
-/** Adds the end scenes: in a column of their own after everything, or just after the scenes that lead to them. */
-function placeEnds(g: Graph, cells: Cells, beside: boolean): void {
+/** Adds the ends after their sources, or above/below them so a shortcut can go around a returning branch. */
+function placeEnds(g: Graph, cells: Cells, beside: boolean | 'above' | 'below'): void {
   const width = Math.max(-1, ...[...cells.values()].map((p) => p.c)) + 1;
   for (const e of g.ends) {
     const from = g.inn.get(e)!.filter((p) => cells.has(p));
     const rows = from.map((p) => cells.get(p)!.r);
     const want = rows.length ? rows.reduce((a, b) => a + b, 0) / rows.length : Math.max(0, ...[...cells.values()].map((p) => p.r)) / 2;
-    const c = beside && from.length ? Math.max(...from.map((p) => cells.get(p)!.c)) + 1 : width;
+    const outside = typeof beside === 'string' && from.length > 0;
+    const c = outside
+      ? Math.round(from.reduce((sum, p) => sum + cells.get(p)!.c, 0) / from.length)
+      : beside && from.length
+        ? Math.max(...from.map((p) => cells.get(p)!.c)) + 1
+        : width;
     const taken = [...cells.values()].filter((p) => Math.abs(p.c - c) < 1).map((p) => p.r);
+    if (outside) {
+      const rs = [...cells.values()].map((p) => p.r);
+      cells.set(e, { c, r: beside === 'above' ? Math.min(...rs) - 1 : Math.max(...rs) + 1 });
+      continue;
+    }
     let r = Math.round(want * 2) / 2;
     for (let d = 0; d < 200; d++) {
       const tryR = [r + d, r - d].find((x) => x >= 0 && taken.every((t) => Math.abs(t - x) >= 1));
@@ -209,7 +219,7 @@ function placeEnds(g: Graph, cells: Cells, beside: boolean): void {
 }
 
 /** The forest left to right (trees nothing reaches stacked below the main one), then the ends. */
-export function treeCells(g: Graph, leafRows: number, endsBeside: boolean): Cells {
+export function treeCells(g: Graph, leafRows: number, endsBeside: boolean | 'above' | 'below'): Cells {
   const { roots, kids } = spanningForest(g);
   const cells: Cells = new Map();
   let y = 0;

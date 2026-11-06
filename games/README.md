@@ -10,6 +10,16 @@ picks up every folder here that has an `about.json` and a `disk/`.
 
 ## Layout
 
+Snow Trails (`snow`, Weather) uses the shared Starter kit. Run from `web/`:
+
+| Game | Command                                            | Checks or output                                                            |
+| ---- | -------------------------------------------------- | --------------------------------------------------------------------------- |
+| snow | `npx vite-node ../games/snow/tools/check.ts`       | Animation, jump gaps, footprints, growing drifts, safe win and clean resets |
+| snow | `npx vite-node ../games/snow/tools/gendemo.ts`     | Re-record the demo; rebuild afterward                                       |
+| snow | `npx vite-node ../games/snow/tools/demoCheck.ts`   | Actual-player demo replay                                                   |
+| snow | `npx vite-node ../games/snow/tools/walkthrough.ts` | Both lessons and the ending                                                 |
+| snow | `npx vite-node ../games/snow/tools/shots.ts <dir>` | Eight real-render PNGs                                                      |
+
 Every game folder has the same shape:
 
 ```

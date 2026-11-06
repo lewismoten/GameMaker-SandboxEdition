@@ -1,0 +1,64 @@
+{
+ "version": 1,
+ "game": "snow",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU0UzSdNHs0DOQK5AE0UzQRNFM0fSyjLH00="
+  },
+  {
+   "scene": 3,
+   "keys": "AU0ZzTlNPM0DSxnLIU0="
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: A Snowy Walk"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: Snow Piles Up"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 7914,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 913,
+    "time": 15216.666666666471
+   },
+   {
+    "title": "Level 1: A Snowy Walk",
+    "frame": 1661,
+    "time": 27683.333333333918
+   },
+   {
+    "title": "Level 2: Snow Piles Up",
+    "frame": 2985,
+    "time": 49749.99999999849
+   },
+   {
+    "title": "Ending",
+    "frame": 4155,
+    "time": 69249.99999999726
+   },
+   {
+    "title": "Credits",
+    "frame": 6362,
+    "time": 106033.3333333413
+   }
+  ]
+ }
+}
