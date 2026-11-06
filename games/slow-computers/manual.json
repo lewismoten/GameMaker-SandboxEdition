@@ -32,6 +32,14 @@
       "x": 20,
       "y": 19,
       "level": 3
+    },
+    {
+      "id": "escape",
+      "q": "Why does Escape restart the level?",
+      "scene": 2,
+      "x": 42,
+      "y": 19,
+      "level": 1
     }
   ],
   "pages": [
@@ -45,7 +53,7 @@
     },
     {
       "head": "How this level is made",
-      "html": "<h1>How this level is made</h1><p>The pads are <b>background blocks</b>. A block can add to the score or to a counter when you touch it, and Game-Maker plays a sound for each of those changes. A block cannot name a sound itself, so the short pad adds <b>1 to the score</b>, which plays the <b>score sound</b> (slot 5), and the long pad adds <b>1 to the money counter</b>, which plays the <b>coin sound</b> (slot 2). In <b>slowpc.snd</b> those two slots have a digital sound: <b>BLIP.VOC</b> and <b>LONGSND.VOC</b>. Every other sound is a PC speaker blip.</p><p>When a block is touched it can turn into another block (its <b>touch block</b>). Here the touched cell turns into a pressed pad that does nothing, so one step plays one sound. A block that has an animation timer would not work for this: the timer changes <b>every block of that kind at once</b>, and it does not count from your touch.</p><p>The hero's <b>money counter</b> must be a real counter for the coin sound to play, so the game's character has money set to 1. A counter set to unlimited never changes and plays no sound.</p>"
+      "html": "<h1>How this level is made</h1><p>The pads are <b>background blocks</b>. A block can add to the score or to a counter when you touch it, and Game-Maker plays a sound for each of those changes. A block cannot name a sound itself, so the short pad adds <b>1 to the score</b>, which plays the <b>score sound</b> (slot 5), and the long pad adds <b>1 to the money counter</b>, which plays the <b>coin sound</b> (slot 2). In <b>slowpc.snd</b> those two slots have a digital sound: <b>BLIP.VOC</b> and <b>LONGSND.VOC</b>. Every other sound is a PC speaker blip.</p><p>When a block is touched it can turn into another block (its <b>touch block</b>). Here the touched cell turns into a pressed pad that does nothing, so one step plays one sound. A block that has an animation timer would not work for this: the timer changes <b>every block of that kind at once</b>, and it does not count from your touch.</p><p>The hero's <b>money counter</b> must be a real counter for the coin sound to play, so the game's character has money set to 1. A counter set to unlimited never changes and plays no sound.</p><h2>Why does Escape restart the level?</h2><p>Escape first ends the scene, then the screen fades to black. The game checks Escape again after the fade: it quits only if the key is still held. If you tap Escape and release it during the fade, the level can restart instead. On a slow computer, hold Escape until the screen goes black, then release it. The web player keeps this original DOS behavior.</p>"
     },
     {
       "head": "Level 2: A Crowd",
