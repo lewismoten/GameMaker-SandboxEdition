@@ -267,7 +267,7 @@ function playChunks(): Rollup.GetManualChunk {
   const pages: [name: string, entries: string[]][] = [
     ['main', ['src/main.ts', 'src/seo/route.ts']], // index.html's two scripts
     ['desk', ['src/desk/desk.ts']],
-    ['web', ['src/modernUi.ts']],
+    ['web', ['src/modernUi.ts', 'src/editor/shell/home.ts']], // independent project and home routes
     ['play', ['src/play.ts']],
     ['dos', ['src/dosPage/dosPage.ts']], // so the DOS page shares the PC's code, not the whole player chunk
   ];

@@ -15,7 +15,7 @@ Builds Home and the project workspace, including asset browsing, import/save act
 
 ## Loading and development
 
-[`modernUi.ts`](../../modernUi.ts) shows Home and dynamically loads Workspace.
+[`main.ts`](../../main.ts) loads Home directly on home routes. [`modernUi.ts`](../../modernUi.ts) opens projects and dynamically loads Workspace, without a static Home re-export.
 
 Home search, Overview content search and sidebar filename filtering are separate flows. Play tests use copies. Dispose mounted editors and galleries when replacing them.
 
