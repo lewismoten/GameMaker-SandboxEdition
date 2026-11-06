@@ -296,7 +296,10 @@ const LISTED: CastMember[] = [
         game: 'fireworks',
         as: 'watches launchers send up rockets that burst at the top, launches one of their own with Enter, then watches a big show over a sleeping town',
       },
-      { game: 'lightning', as: 'walks a field in a storm where the sky flashes and a bolt strikes a far hill, then hops stepping stones that light up with the sky' },
+      {
+        game: 'lightning',
+        as: 'walks a field in a storm where the sky flashes and a bolt strikes a far hill, then hops stepping stones that light up with the sky',
+      },
     ],
   },
   {
