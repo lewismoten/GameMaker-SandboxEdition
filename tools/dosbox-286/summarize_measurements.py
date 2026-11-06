@@ -17,6 +17,12 @@ def find_toggle_stop(stops, startup_seconds):
                  and s['gap_ms'] is not None and 4000 <= s['gap_ms'] <= 6000), None)
 
 
+def short_scene_gap_candidates(stops):
+    # Every ordinary self-link load in this protocol takes >=~970 ms.
+    # First-0x20 heuristics can miss a reset/reload before spurious key-ons.
+    return [s for s in stops if s['gap_ms'] is not None and s['gap_ms'] < 500]
+
+
 def inspect_run(run):
     scenario, cycles, repeat = run.name.rsplit('-', 2)
     metadata = json.loads((run / 'run.json').read_text())
@@ -113,6 +119,7 @@ def main():
                 'min_stop_gap_ms': min(gaps) if gaps else None,
                 'median_stop_gap_ms': float(np.median(gaps)) if gaps else None,
                 'max_stop_gap_ms': max(gaps) if gaps else None,
+                'short_stop_gap_under_500ms_candidates': short_scene_gap_candidates(complete),
                 'early_key_before_instrument_candidates': sum(
                     s['key_before_instrument'] and s['instrument_ms'] - s['restart_ms'] > 100 for s in complete),
             }

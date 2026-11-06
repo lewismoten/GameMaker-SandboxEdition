@@ -115,7 +115,22 @@ Stop detection accepts at least four descending zero B-register writes ending
 at B0 within 20 ms: the library writes nine, but DOSBox-X omits already-zero
 values. Stops involving fewer than four changing registers can be missed.
 Early key-ons before an instrument reload are race **candidates**, not proof
-that a particular FM voice audibly sustained through the whole gap.
+that a particular FM voice audibly sustained through the whole gap. A first-0x20
+heuristic can miss an early key-on preceded by a library reset; the collector
+also retains sub-500 ms scene-stop anomalies for direct register-state inspection.
+
+Optional data plots (Matplotlib 3.10.7 was used; its PSF-based license is external):
+
+```sh
+# With NumPy and Matplotlib installed in an isolated environment:
+python3 tools/dosbox-286/plot_measurements.py results.json /path/to/new-plots \
+  /path/to/new-matrix /path/to/controls /path/to/f3-controls /path/to/lower-matrix
+```
+
+The plots read real PCM and OPL files, retain their hashes in
+`plot-provenance.json`, label fixed cycles rather than MHz, and reject an
+index-aligned menu drift plot unless the matched note sequences really agree.
+The RMS plots deliberately show continuing sound after musical key-ons stop.
 
 Code and measurement text: Hermes Agent / OpenAI Codex GPT-6.1 Sol, directed by
 Lewis Moten. NumPy (BSD) and DOSBox-X (DOSBox-X Team, GPL) remain external.

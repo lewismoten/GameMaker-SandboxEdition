@@ -40,5 +40,10 @@ class ManifestTests(unittest.TestCase):
         self.assertIsNone(s.find_toggle_stop(stops[:1], 10))
 
 
+    def test_short_scene_gap_candidate_is_not_lost_to_first_operator_write(self):
+        stops = [{'gap_ms': 13}, {'gap_ms': 973}, {'gap_ms': None}]
+        self.assertEqual(s.short_scene_gap_candidates(stops), [stops[0]])
+
+
 if __name__ == '__main__':
     unittest.main()

@@ -66,7 +66,8 @@ game folder opens in the browser unchanged.
 - **PLAYGAME 286 audio measurements** (`tools/dosbox-286/measure_*.py` and
   `docs/research/playgame-music-286-results.md`): Hermes Agent using **OpenAI Codex
   GPT-6.1 Sol**, directed by Lewis Moten. The measurement tools use external NumPy
-  (BSD) and DOSBox-X by the DOSBox-X Team (GPL); neither dependency is bundled.
+  (BSD), optional Matplotlib (Matplotlib License, PSF-based) for measured plots,
+  and DOSBox-X by the DOSBox-X Team (GPL); none of those dependencies is bundled.
   The DRO decoder follows DOSBox-X's published `RawHeader`/`Capture` format.
 - **The web port**: written with **Claude Opus 5.5** (Anthropic), covering both the
   _1994 desk_ (the recreated PC, DOS prompt, Game-Maker's VGA designers, the BBS) and the
