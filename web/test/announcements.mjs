@@ -198,3 +198,17 @@ test('autosave failures outrank debounce, recovery is explicit, and Ctrl+S has o
   assert.equal(result.toasts, 0);
   assert.equal(result.disposed, false);
 });
+test('import failure has one durable channel and ignores late progress', async () => {
+  await reset();
+  const result = await page.evaluate(async () => {
+    const { openImportPanel } = await import('/src/editor/shell/importPanel.ts');
+    const panel = openImportPanel('fixture.zip');
+    await panel.step('Unpacking', 'asset', 10, 20);
+    panel.fail('Archive is damaged');
+    await panel.step('Opening', 'late progress');
+    const status = document.querySelector('.ic-status');
+    return { text: status.textContent, alerts: document.querySelectorAll('[role=alert]').length };
+  });
+  assert.match(result.text, /import stopped.*Archive is damaged/);
+  assert.equal(result.alerts, 0);
+});

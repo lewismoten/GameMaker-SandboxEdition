@@ -42,6 +42,7 @@ export function openImportPanel(label: string): ImportPanel | undefined {
   const buttons = h('div', { class: 'buttons' });
   const cancel = h('button', { type: 'button' }, 'Cancel');
   let ended = false;
+  let failed = false;
   let finish: (() => void) | undefined;
   let spoke = -1;
   let last = 0;
@@ -65,7 +66,7 @@ export function openImportPanel(label: string): ImportPanel | undefined {
   return {
     signal: ctl.signal,
     async step(step, detail, done, total) {
-      if (ended) return;
+      if (ended || failed) return;
       const at = STEPS.indexOf(step);
       // saving the game can't be stopped half way
       cancel.hidden = step === 'Opening';
@@ -88,14 +89,12 @@ export function openImportPanel(label: string): ImportPanel | undefined {
     },
     end: () => finish?.(),
     fail(message) {
-      if (ended) return;
+      if (ended || failed) return;
+      failed = true;
       line.textContent = 'The import stopped.';
       status.textContent = `The import stopped. ${message}`;
       bar.hidden = true;
-      buttons.replaceChildren(
-        h('p', { class: 'ic-line', role: 'alert' }, message),
-        h('button', { type: 'button', class: 'primary', autofocus: true, onclick: () => finish?.() }, 'OK'),
-      );
+      buttons.replaceChildren(h('button', { type: 'button', class: 'primary', autofocus: true, onclick: () => finish?.() }, 'OK'));
     },
   };
 }
