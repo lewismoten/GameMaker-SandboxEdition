@@ -7,6 +7,7 @@
 import './techRefDiagrams.css';
 import { h } from '../../editor/core/ui';
 import type { Diagrams } from './markdownBlocks';
+import { FORMAT_DIAGRAMS } from './techRefFormats';
 
 const INK = '#18150f';
 const SPOT = '#14304a';
@@ -246,5 +247,26 @@ function scrolling(): HTMLElement {
   );
 }
 
+/** GM remains resident while one child runs; its return code selects the next child. */
+function architecture(): HTMLElement {
+  const box = (y: number, title: string, detail: string) =>
+    `<rect x="65" y="${y}" width="320" height="43" fill="#fff" stroke="${INK}"/>` +
+    text(225, y + 17, title, 'text-anchor="middle" font-weight="700"') +
+    text(225, y + 32, detail, 'text-anchor="middle"');
+  return figure(
+    '0 0 450 254',
+    [
+      box(8, 'DOS starts GM.EXE', 'Small launcher keeps the program-name table'),
+      box(72, 'GM runs MENU.EXE', 'Command tail: cOoL + previous selection letter'),
+      box(136, 'MENU returns a utility number', 'DOS exit code selects one child program'),
+      box(200, 'GM runs the selected utility', 'Utility returns 11 for menu, 0 for quit'),
+      `<path d="M225 51 V72 m-4 -6 l4 6 4 -6 M225 115 V136 m-4 -6 l4 6 4 -6 M225 179 V200 m-4 -6 l4 6 4 -6 M385 221 H422 V93 H385 m6 -4 l-6 4 6 4" fill="none" stroke="${INK}" stroke-width="1.2"/>`,
+      text(416, 158, '11', 'text-anchor="end" font-weight="700"'),
+    ].join(''),
+    'DOS starts GM, which executes MENU with cOoL and a selection letter. The menu exits with a utility number; GM runs that utility. Return code 11 loops to MENU; zero quits to DOS.',
+    'The launcher owns the loop. The cOoL token identifies a managed launch; return codes choose what runs next.',
+  );
+}
+
 /** The booklet's diagrams by the names booklet1994.md gives them. */
-export const TECHREF_DIAGRAMS: Diagrams = { memory, screen, pieces, scrolling };
+export const TECHREF_DIAGRAMS: Diagrams = { memory, screen, pieces, scrolling, architecture, ...FORMAT_DIAGRAMS };

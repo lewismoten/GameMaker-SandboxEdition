@@ -24,7 +24,7 @@ function techRefCover(): HTMLElement {
     },
     h('div', { style: 'font-size:.85em;letter-spacing:.2em' }, 'GAME-MAKER 3.0'),
     h('div', { style: 'font-size:1.9em;font-weight:700;line-height:1.1' }, 'Technical Reference and Limits'),
-    h('div', { style: 'font-size:.95em;opacity:.85' }, 'How big a game can be, and why'),
+    h('div', { style: 'font-size:.95em;opacity:.85' }, 'Architecture, file layouts and limits'),
     h('div', { style: 'font-size:.8em;margin-top:2em;opacity:.8' }, 'Notes by technical staff', h('br'), '1994'),
   );
 }
@@ -79,7 +79,7 @@ export function techRefItem(): BoxItem {
   return {
     id: 'techref',
     title: TECHREF_TITLE,
-    note: 'Limits and file sizes, stapled',
+    note: 'Architecture, file layouts and limits, stapled',
     icon: '📗',
     pages: techRefPages,
     render: async () => [sheet(5.5, 8.5, 'techref-thumb', techRefCover())],

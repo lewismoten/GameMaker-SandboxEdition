@@ -6,6 +6,8 @@ changelog: [engine](web/packages/engine/CHANGELOG.md), [archives](web/packages/a
 
 ## [Unreleased]
 
+- The Technical Reference adds byte layouts, real-file examples and a utility architecture chapter, mirrored with source citations in the Programmer’s Guide.
+
 - Beat the Clock, Countdown, Warning First and all seven graduations have distinct, original 32-bar scores in their Starter groups’ bands.
 
 - 39 more Starters keep their original tunes in longer, 32-bar songs, with a new B section and their group’s band.
