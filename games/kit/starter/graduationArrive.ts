@@ -62,9 +62,9 @@ export function buildArrival(cfg: Graduation, pal: Pal) {
   });
   const ctx: NodCtx = { book, pal, timed, guest };
   const { placed, hall, width } = arrivalLayout(cfg.arrive.nods);
-  const welcome = addSign(book, pal, 'welcome', cfg.arrive.welcome, 4, 2);
-  const banner = addSign(book, pal, 'hallBanner', cfg.signs.banner, 4, 2);
-  const signs = placed.map((p) => addSign(book, pal, `nod.${p.nod.id}`, nodSign(p), 4, 2));
+  const welcome = addSign(book, pal, 'welcome', cfg.arrive.welcome, 4, 2, true);
+  const banner = addSign(book, pal, 'hallBanner', cfg.signs.banner, 4, 2, true);
+  const signs = placed.map((p) => addSign(book, pal, `nod.${p.nod.id}`, nodSign(p), 4, 2, true));
   for (const p of placed) p.nod.blocks(ctx);
 
   const g = new Grid(width, ARRIVE_H);
