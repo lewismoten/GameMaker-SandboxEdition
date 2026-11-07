@@ -6,7 +6,7 @@
 //   1. Pumpkin Yard   leaf piles that hide snacks, fences to hop, friendly squirrels      (the pie)
 //   2. Gravy Slide    a kitchen floor with robot vacuums: every bump spills the gravy      (the gravy boat)
 //   3. Windy Park     a backyard football game in the way: bobbing footballs               (the casserole)
-//   4. Cranberry Roll the sauce rolls out of its can and bounces off the pillars           (the cranberry sauce)
+//   4. Cranberry Roll the sauce rolls out of its can and bounces along the street        (the cranberry sauce)
 //   5. Hungry Dog     the dog wants the rolls: fetch his bone from the high shelf first    (the rolls)
 //   6. Parade Dash    the rolls are getting cold: a bar of rolls cools, the town hall doors shut (the rolls again)
 //
@@ -18,7 +18,8 @@ import { Grid } from '../../kit/starter/grid';
 import { addLockBlocks, SILVER_KEYS } from '../../kit/starter/locks';
 import { ORIGIN, StarterMap } from '../../kit/starter/map';
 import { addSign, type Sign } from '../../kit/starter/sign';
-import type { Pal } from '../../kit/starter/palette';
+import { skyOf, type Pal } from '../../kit/starter/palette';
+import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import * as art from './art';
 import { MONS } from './monsters';
 import type { Mood } from './palette';
@@ -49,10 +50,10 @@ type Rules = Parameters<Book['add']>[2];
 export const AT = {
   yard: { dish: 10, gate: 76, exit: 84, fences: [24, 44, 62], piles: [16, 19, 30, 33, 48, 51, 54, 70, 73], squirrels: [38, 66] },
   gravy: { dish: 10, gate: 72, exit: 80, vacuums: [24, 38, 52, 64] },
-  park: { dish: 10, gate: 80, exit: 88, balls: [26, 40, 54, 68] },
-  berry: { dish: 10, gate: 76, exit: 84, berries: [22, 34, 46, 58], pillars: [28, 40, 52, 64] },
+  park: { dish: 10, gate: 78, exit: 86, balls: [26, 40, 54, 66] },
+  berry: { dish: 10, gate: 76, exit: 84, berries: [22, 34, 46, 58] },
   dog: { dish: 10, ladder: 20, shelf: [21, 28], bone: 26, dog: 44, gate: 64, exit: 72 },
-  dash: { dish: 8, restart: 1, floats: [30, 48, 62], hall: 76, gate: 84, exit: 90 },
+  dash: { dish: 10, restart: 1, floats: [30, 46, 58], hall: 70, gate: 79, exit: 86 },
 } as const;
 
 /** The book every level starts from: the Starter blocks and the lock blocks (the house door is the gold gate). */
@@ -98,6 +99,17 @@ function neighbor(m: StarterMap, x: number): void {
   m.wallToSky(x);
 }
 
+/** Hit points a hazard takes, once (it is gone after that). */
+export const BUMP = -10;
+
+/** A monster picture as a block picture: its see-through color made sky. */
+const asBlock = (pal: Pal, p: Pixels): Pixels => p.crop(0, 0, 20, 20).map((_x, _y, c) => (c === art.T ? skyOf(pal) : c));
+
+/** A hazard block: touch it and it takes 10 hit points once, then it is gone (like the Starters' spikes). */
+function hazard(book: Book, pal: Pal, name: string, pic: Pixels): void {
+  book.add(name, asBlock(pal, pic), { ...AIR, hp: BUMP, touch: 'sky' });
+}
+
 function bone(book: Book, pal: Pal): void {
   book.add('bone', art.bone(pal), { ...AIR, score: 25, effect: SILVER_KEYS, eamt: 1, touch: 'sky' });
 }
@@ -139,12 +151,12 @@ function yard(pal: Pal): Level {
 function gravy(pal: Pal): Level {
   const book = newBook(pal);
   book.add('dish', art.gravy(pal), { ...AIR, score: 25, effect: KEYS, eamt: 1, touch: 'sky' });
+  hazard(book, pal, 'vacuum', art.vacuum(pal, true));
   book.add('window', art.window(pal), AIR);
   book.add('pot', art.pot(pal), AIR);
   const s = signs(book, pal, {
     hello: ['A GRAVY BOAT SPILLS EASILY. KEEP YOUR HIT POINTS UP', 4, 4],
     vac: ['THE ROBOT VACUUMS THINK GRAVY IS A SNACK', 4, 4],
-    jump: ['JUMP OVER A VACUUM. IT IS ONLY A FOOT HIGH', 4, 4],
     door: ['MR OKAFOR LIKES HIS GRAVY HOT', 4, 3],
     exit: ['NEXT HOUSE →', 4, 2],
   });
@@ -155,10 +167,9 @@ function gravy(pal: Pal): Level {
   m.set(AT.gravy.dish, 9, 'dish');
   for (const x of [14, 30, 46, 60]) m.set(x, 5, 'window');
   for (const x of [8, 28, 44, 58, 66]) m.set(x, 9, 'pot');
-  for (const x of AT.gravy.vacuums) m.mon(MONS.vacuum, x, 9);
+  for (const x of AT.gravy.vacuums) m.set(x, 9, 'vacuum');
   m.sign(5, onGround(s.hello), s.hello);
   m.sign(17, onGround(s.vac), s.vac);
-  m.sign(32, onGround(s.jump), s.jump);
   m.sign(AT.gravy.gate - 6, onGround(s.door), s.door);
   m.sign(AT.gravy.exit - 4, onGround(s.exit), s.exit);
   neighbor(m, AT.gravy.gate);
@@ -168,6 +179,7 @@ function gravy(pal: Pal): Level {
 /** Level 3: Windy Park. */
 function park(pal: Pal): Level {
   const book = newBook(pal);
+  hazard(book, pal, 'football', art.football(pal, false));
   book.add('dish', art.casserole(pal), { ...AIR, score: 25, effect: KEYS, eamt: 1, touch: 'sky' });
   const s = signs(book, pal, {
     hello: ['THE PARK IS WINDY AND THE BIG GAME IS ON', 4, 4],
@@ -176,25 +188,26 @@ function park(pal: Pal): Level {
     door: ['THE LOPEZ FAMILY IS HUNGRY', 4, 3],
     exit: ['NEXT HOUSE →', 4, 2],
   });
-  const g = room(92, AT.park.exit);
+  const g = room(90, AT.park.exit);
   wall(g, AT.park.gate);
   g.row(9, 14, 16, 'c').row(9, 33, 34, 'c').row(9, 47, 48, 'c').row(9, 61, 62, 'c');
   scenery(g, [[6, 2], [18, 4], [30, 2], [44, 4], [60, 2], [72, 4]], [12, 36, 50, 74], [20, 42, 58, 70]);
   const m = new StarterMap(book, g.rows());
   m.set(AT.park.dish, 9, 'dish');
-  for (const x of AT.park.balls) m.mon(MONS.football, x, 7);
+  for (const x of AT.park.balls) m.set(x, 9, 'football');
   m.sign(5, onGround(s.hello), s.hello);
   m.sign(18, onGround(s.balls), s.balls);
   m.sign(46, onGround(s.ref), s.ref);
   m.sign(AT.park.gate - 6, onGround(s.door), s.door);
   m.sign(AT.park.exit - 4, onGround(s.exit), s.exit);
   neighbor(m, AT.park.gate);
-  return { file: 'park', title: 'Windy Park', hint: 'Footballs everywhere. Wait for a gap.', mood: 'park', song: 'pie.cmf', book, map: m, timed: [], width: 92 };
+  return { file: 'park', title: 'Windy Park', hint: 'Footballs everywhere. Wait for a gap.', mood: 'park', song: 'pie.cmf', book, map: m, timed: [], width: 90 };
 }
 
 /** Level 4: Cranberry Roll. */
 function berry(pal: Pal): Level {
   const book = newBook(pal);
+  hazard(book, pal, 'berry', art.berry(pal, false));
   book.add('dish', art.cranberry(pal), { ...AIR, score: 25, effect: KEYS, eamt: 1, touch: 'sky' });
   const s = signs(book, pal, {
     hello: ['THE CRANBERRY SAUCE ROLLED OUT OF ITS CAN', 4, 4],
@@ -204,12 +217,11 @@ function berry(pal: Pal): Level {
   });
   const g = room(88, AT.berry.exit);
   wall(g, AT.berry.gate);
-  for (const x of AT.berry.pillars) g.put(x, 9, 'B');
   g.row(9, 14, 16, 'c').row(9, 36, 37, 'c').row(9, 56, 58, 'c');
   scenery(g, [[6, 2], [20, 4], [34, 2], [50, 4], [66, 2]], [12, 32, 62], [18, 46, 70]);
   const m = new StarterMap(book, g.rows());
   m.set(AT.berry.dish, 9, 'dish');
-  for (const x of AT.berry.berries) m.mon(MONS.berry, x, 9);
+  for (const x of AT.berry.berries) m.set(x, 9, 'berry').set(x + 1, 9, 'berry');
   m.sign(5, onGround(s.hello), s.hello);
   m.sign(16, onGround(s.roll), s.roll);
   m.sign(AT.berry.gate - 6, onGround(s.door), s.door);
@@ -258,6 +270,7 @@ function dog(pal: Pal): Level {
 function dash(pal: Pal): Level {
   const book = newBook(pal);
   const timed: Level['timed'] = [];
+  hazard(book, pal, 'float', art.floatCar(pal, false));
   book.add('dish', art.rolls(pal), { ...AIR, score: 25, effect: KEYS, eamt: 1, touch: 'sky' });
   const s = signs(book, pal, {
     hello: ['THE ROLLS ARE HOT NOW. THE BAR SHOWS HOW HOT', 4, 4],
@@ -285,16 +298,16 @@ function dash(pal: Pal): Level {
   book.add('balloon', art.balloon(pal)[0], AIR);
   const parts = art.balloon(pal);
   parts.forEach((p, i) => i && book.add(`balloon${i}`, p, AIR));
-  const g = room(96, AT.dash.exit);
+  const g = room(90, AT.dash.exit);
   wall(g, AT.dash.gate);
   for (const x of [AT.dash.hall - 1, AT.dash.hall, AT.dash.hall + 1]) g.col(x, 0, 7, 'B');
-  g.row(9, 20, 22, 'c').row(9, 40, 42, 'c').row(9, 70, 72, 'c');
+  g.row(9, 20, 22, 'c').row(9, 38, 40, 'c').row(9, 52, 54, 'c');
   scenery(g, [[8, 2], [60, 1]], [14, 36, 56], [18, 44, 66]);
   const m = new StarterMap(book, g.rows());
   m.set(AT.dash.dish, 9, 'dish');
   // the parade balloon floats over the street (scenery), three blocks square
   for (let i = 0; i < 9; i++) m.set(34 + (i % 3), 1 + Math.floor(i / 3), i ? `balloon${i}` : 'balloon');
-  for (const x of AT.dash.floats) m.mon(MONS.float, x, 9);
+  for (const x of AT.dash.floats) m.set(x, 9, 'float');
   m.set(AT.dash.restart, 8, 'oven.top').set(AT.dash.restart, 9, 'oven.bottom');
   m.set(AT.dash.hall, 8, 'hall.open.top').set(AT.dash.hall, 9, 'hall.open.bottom');
   for (const x of BAR_X) {
@@ -306,7 +319,7 @@ function dash(pal: Pal): Level {
   m.sign(AT.dash.gate - 6, onGround(s.last), s.last);
   neighbor(m, AT.dash.gate);
   m.wallToSky(AT.dash.hall - 1).wallToSky(AT.dash.hall + 1).wallToSky(AT.dash.hall);
-  return { file: 'dash', title: 'Parade Dash', hint: 'Hot rolls! Run to the town hall.', mood: 'parade', song: 'dash.cmf', book, map: m, timed, restart: [AT.dash.restart + ORIGIN, 9 + ORIGIN], width: 96 };
+  return { file: 'dash', title: 'Parade Dash', hint: 'Hot rolls! Run to the town hall.', mood: 'parade', song: 'dash.cmf', book, map: m, timed, restart: [AT.dash.restart + ORIGIN, 9 + ORIGIN], width: 90 };
 }
 
 /** The six levels in order. */
