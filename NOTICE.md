@@ -1075,3 +1075,10 @@ by this repository's trinket tools, designed by Claude Sonnet 5.5 (Anthropic) un
 maker "ZORP" is invented. The shell is untested: nothing has been printed.
 
 - **Embroidery generator and Maximus's patch** (`web/packages/tools/src/embroidery/`, `games/maximus/patch/`, `web/src/desk/boxes/patchModel.ts`): the stitch generator, the DST, EXP and PES writers, the single-line lettering, the stitch simulation and the patch design were written by **Claude Sonnet 5.5** (Anthropic), directed by Lewis Moten. The file layouts follow the public descriptions of the Tajima DST, Melco EXP and Brother PES/PEC formats kept by the open embroidery projects (Embroidermodder's libembroidery, MIT, and pyembroidery, MIT); no code or data was copied, and the PES thread-chart indices are approximate. The patch uses only the game's own colors and words. Nothing has been sewn on a real machine.
+
+## Native SDL host prototype
+
+- **OpenAI Codex**, directed by Lewis Moten, implemented the SDL launcher, file/input/display/timing adapters, PCM VOC first cut, replay checks and documentation in `hardware/pi-player/`. It compiles the existing Pocket C++ core and font directly; their existing credits remain. The VOC implementation follows this project's own decoder and the original RSD file-format behavior. No original DOS source is modified.
+- **SDL2**, by Sam Lantinga and contributors, is linked as an external library under the **zlib license** ([upstream license](https://www.libsdl.org/license.php)); no SDL source is copied. The host was built against Homebrew SDL2 2.32.70.
+- **zlib**, by Jean-loup Gailly and Mark Adler, is linked externally for raw-deflate asset loading under the **zlib license** ([upstream license](https://zlib.net/zlib_license.html)). Neither library is relicensed by this project; retain their license notices when distributing binaries and dependencies.
+- **ymfm**, by Aaron Giles and contributors, **BSD-3-Clause** ([upstream](https://github.com/aaronsgiles/ymfm)), is the planned OPL2 backend documented in `hardware/pi-player/MUSIC.md`. No ymfm code or binary is included or linked yet.
