@@ -5,10 +5,10 @@ import './machineDialog.css';
 
 export async function openMachineDialog(current: MachineSettings, apply: (value: MachineSettings) => void, opener: HTMLElement): Promise<void> {
   await modal<void>('Machine settings', (close) => {
-    const select = (choices: readonly { id: string; name: string }[], value: string) =>
-      h('select', null, ...choices.map((c) => h('option', { value: c.id, selected: c.id === value }, c.name)));
-    const cpu = select(CPU_CHOICES, current.cpu);
-    const disk = select(DISK_CHOICES, current.disk);
+    const select = (choices: readonly { id: string; name: string }[], value: string, name: string) =>
+      h('select', { 'aria-label': name }, ...choices.map((c) => h('option', { value: c.id, selected: c.id === value }, c.name)));
+    const cpu = select(CPU_CHOICES, current.cpu, 'CPU');
+    const disk = select(DISK_CHOICES, current.disk, 'Hard drive timing');
     return h(
       'form',
       {
