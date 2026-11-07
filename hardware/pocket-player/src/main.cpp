@@ -29,6 +29,7 @@
 #include "statusled.h"
 #include "pressrect.h"
 #include "settingsdraw.h"
+#include "firstrun.h"
 #include "picturetune.h"
 #include <mbedtls/sha256.h>
 #ifdef POCKET_CYD28
@@ -958,7 +959,7 @@ static void drawStrip() {
 
 // ---- screens -------------------------------------------------------------------------------------
 
-enum Mode { PICKER, PLAYING, PAUSED, HELP_SCREEN, SETTINGS_SCREEN, SEARCH_SCREEN, DETAILS_SCREEN, DONE };
+enum Mode { PICKER, PLAYING, PAUSED, HELP_SCREEN, SETTINGS_SCREEN, SEARCH_SCREEN, DETAILS_SCREEN, DONE, FIRST_RUN };
 static Mode mode = PICKER;
 static int page = 0, selected = -1, nmatch = 0;
 static char searchText[25] = "", savedSearch[25] = "";
@@ -1809,6 +1810,111 @@ static bool isSetupCommand(const char* buf) {
   return false;
 }
 
+// ---- first run (firstrun.h): How to hold it, Pick your hand, the playground; Settings, Controls, Try the controls opens the playground ----
+// "firstrun" in NVS (namespace pocket) is written once, on Done; serial "FIRST reset" erases only that key, "FIRST" opens the flow.
+static fr::Flow frFlow;
+static bool frPaused = false;      // the playground came from Settings over a paused game: Done goes back there
+static bool frDoneDown = false;    // a touch began on Done (it counts when it lifts there)
+static uint8_t frHeld = 0;         // the keys the playground's thumb holds (st::heldText's bits)
+static int frLook = ctl::LOOK_OFF;
+static ctl::Disc frPad = {0, 0, 0};
+static bool firstRunDone() {
+  Preferences p;
+  bool done = false;
+  if (p.begin("pocket", true)) { done = p.getBool("firstrun", false); p.end(); }
+  return done;
+}
+static void drawPlayground(bool full) {
+  fr::playground(tft, controls.L, controls.need, controls.padDirs, controls.btnDown, frHeld, frLook, settings.floatPad, full, frPad);
+  if (frDoneDown) { fr::Box d = fr::doneBox(); ovl::button(tft, d.x0, d.y0, d.x1, d.y1, "Done", true, C_BLUE, 2); }
+  frPad = controls.L.pad;
+  banner::paint(tft, 0, 0);
+}
+static void drawFirstRun() {
+  switch (frFlow.step) {
+    case fr::HOWTO: fr::howTo(tft); break;
+    case fr::HAND: fr::pickHand(tft); break;
+    case fr::PLAY:
+      controls.configure(settings, fr::playNeed());
+      frHeld = 0; frDoneDown = false; frLook = controls.padLook(millis());
+      drawPlayground(true);
+      return;
+    default: return;
+  }
+  banner::paint(tft, 0, 0);
+}
+static void openFirstRun(bool fromSettings) {
+  frPaused = fromSettings && setView.fromPause;
+  frFlow.start(fromSettings);
+  mode = FIRST_RUN;
+  wasDown = true;  // the touch that opened it is not a tap here
+  drawFirstRun();
+}
+static void openSettings(bool paused);
+// Done: the first run is marked and the hand kept; from Settings, back to its Controls tab.
+static void finishFirstRun() {
+  controls.reset();
+  if (frFlow.marksDone()) {
+    Preferences p;
+    if (p.begin("pocket", false)) { p.putBool("firstrun", true); p.end(); }
+    saveSettings();
+    Serial.println("FIRST done");
+    enterPicker();
+    return;
+  }
+  openSettings(frPaused);
+}
+static void firstRunLoop(uint32_t now) {
+  int tx, ty;
+  if (frFlow.step != fr::PLAY) {
+    if (!freshTap(tx, ty)) return;
+    fr::Tap t = fr::hit(frFlow.step, tx, ty);
+    if (frFlow.step == fr::HAND && (t == fr::T_PAD_LEFT || t == fr::T_PAD_RIGHT)) {
+      fr::pickHand(tft, t == fr::T_PAD_RIGHT ? 1 : 0);  // the picked one lights a moment
+      clickSound();
+      delay(150);
+    } else if (t != fr::T_NONE) clickSound();
+    if (frFlow.apply(t)) {
+      if (frFlow.chose) settings.lefty = frFlow.lefty;
+      drawFirstRun();
+      wasDown = true;
+    }
+    return;
+  }
+  // The playground: every contact goes to the controls model; Done is a button of its own, counted when the touch lifts on it.
+  bool down = pts.n > 0;
+  fr::Box d = fr::doneBox();
+  if (down && !wasDown && d.has(pts.x[0], pts.y[0])) { frDoneDown = true; ovl::button(tft, d.x0, d.y0, d.x1, d.y1, "Done", true, C_BLUE, 2); }
+  if (frDoneDown && down && !d.has(pts.x[0], pts.y[0])) { frDoneDown = false; ovl::button(tft, d.x0, d.y0, d.x1, d.y1, "Done", false, C_BLUE, 2); }
+  if (frDoneDown && !down) {
+    frDoneDown = false;
+    wasDown = false;
+    clickSound();
+    frFlow.apply(fr::T_DONE);
+    finishFirstRun();
+    return;
+  }
+  wasDown = down;
+  uint8_t d0 = controls.padDirs, b0 = controls.btnDown, h0 = frHeld;
+  if (frDoneDown) controls.update(nullptr, nullptr, nullptr, nullptr, 0, now);
+  else controls.update(pts.id, pts.x, pts.y, pts.size, pts.n, now);
+  controls.takeEvent();
+  ctl::Change ch[16];
+  int k = controls.flush(ch, 16);
+  for (int i = 0; i < k; i++) {
+    int s = ch[i].scan;
+    uint8_t bit = s == ctl::S_LEFT ? 1 : s == ctl::S_RIGHT ? 2 : s == ctl::S_UP ? 4 : s == ctl::S_DOWN ? 8 : s == ctl::S_SPACE ? 16 : 0;
+    if (ch[i].down) frHeld |= bit;
+    else frHeld &= ~bit;
+  }
+  int look = controls.padLook(now);
+  const ctl::Disc& p = controls.L.pad;
+  if (controls.padDirs != d0 || controls.btnDown != b0 || frHeld != h0 || look != frLook || p.cx != frPad.cx || p.cy != frPad.cy) {
+    frLook = look;
+    drawPlayground(false);
+  }
+}
+
 static void pollSerial() {
   static char buf[48];
   static int n = 0;
@@ -1826,6 +1932,14 @@ static void pollSerial() {
         bannerChanged(banner::set(!strncmp(buf, "S2 off", 6) ? "" : buf + 3, true));
       } else if (buf[0] == 'S') {
         bannerChanged(banner::set(!strncmp(buf, "S off", 5) ? "" : buf + 2));
+      } else if (!strncmp(buf, "FIRST", 5)) {  // "FIRST reset": erase only the first-run key; "FIRST": open the first run (game list only)
+        if (!strncmp(buf, "FIRST reset", 11)) {
+          Preferences p;
+          bool ok = p.begin("pocket", false) && p.remove("firstrun");
+          p.end();
+          Serial.printf("FIRST reset %s\n", ok ? "ok" : "none");
+        } else if (mode == PICKER) openFirstRun(false);
+        Serial.printf("FIRST mode=%d step=%d\n", (int)mode, (int)frFlow.step);
       } else if (fwSerial(buf)) {
       } else if (buf[0] == 'I' && buf[1] == 'D') {
         bannerChanged(banner::setId(!strncmp(buf, "ID off", 6) ? "" : buf + 3));
@@ -1939,6 +2053,7 @@ void setup() {
   Serial.printf("ready: %d games (microSD %s), heap %u, largest %u\n", ngames, haveSD ? "in" : "out", (unsigned)ESP.getFreeHeap(), (unsigned)heap_caps_get_largest_free_block(MALLOC_CAP_8BIT));
   enterPicker();
   Serial.printf("BOOT ms=%lu picker-ready games=%d\n", (unsigned long)millis(), ngames);
+  if (!firstRunDone()) { Serial.println("FIRST open"); openFirstRun(false); }  // after the display setup and the list, never inside them
 }
 
 static void applyKeys(uint32_t now) {
@@ -1980,6 +2095,7 @@ static void chooseSetting(st::Item it, int chip) {
       if (!fromPause) { saveSettings(); rescanCard(); return; }
       drawSettings();
       return;
+    case st::I_TRY: saveSettings(); openFirstRun(true); return;
 #ifdef POCKET_CYD28
     case st::I_CAL: saveSettings(); if (runCalibration()) dsCalDone(); drawSettings(); return;
     case st::I_PANEL:
@@ -2329,6 +2445,11 @@ void loop() {
         default: break;
       }
     }
+    delay(5);
+    return;
+  }
+  if (mode == FIRST_RUN) {
+    firstRunLoop(now);
     delay(5);
     return;
   }

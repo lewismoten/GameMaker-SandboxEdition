@@ -16,7 +16,7 @@
 namespace st {
 constexpr uint16_t C_WHITE = 0xFFFF, C_BLACK = 0, C_YELLOW = 0xFF2A, C_GRAY = 0x7BEF, C_DARK = 0x2104, C_BLUE = 0x3A9C, C_VIEW = 0x10A6;
 enum Tab : uint8_t { T_CONTROLS, T_DISPLAY, T_SOUND, T_CARD, T_COUNT };
-enum Item : uint8_t { I_HAND, I_PAD, I_DEAD, I_POS, I_JUMP, I_STYLUS, I_STICKY, I_PALM, I_CAL, I_BRIGHT, I_SMALLER, I_DEBUG, I_LED, I_PANEL, I_SOUND, I_CLICKS, I_RESCAN, I_NONE };
+enum Item : uint8_t { I_HAND, I_PAD, I_DEAD, I_POS, I_JUMP, I_STYLUS, I_STICKY, I_PALM, I_CAL, I_BRIGHT, I_SMALLER, I_DEBUG, I_LED, I_PANEL, I_SOUND, I_CLICKS, I_RESCAN, I_TRY, I_NONE };
 inline const char* tabName(int t) { static const char* const n[T_COUNT] = {"Controls", "Display", "Sound", "Card"}; return n[t]; }
 // A row's name, its chips ("A|B|C"; one label is an action button) and, for Controls, a line that says what it does.
 struct Info { const char* name; const char* chips; const char* hint; };
@@ -39,6 +39,7 @@ inline Info info(Item i) {
     case I_SOUND: return {"Sound", "Off|Low|Medium|High", ""};
     case I_CLICKS: return {"Button clicks", "Off|On", ""};
     case I_RESCAN: return {"Library", "Rescan card", ""};
+    case I_TRY: return {"Practice", "Try the controls", "A gray field with the real pad and Jump: each key lights up and says its name."};
     default: return {"", "", ""};
   }
 }
@@ -162,6 +163,7 @@ inline int tabItems(Tab t, Item* out) {
     case T_CONTROLS:
       for (Item i : {I_HAND, I_PAD, I_DEAD, I_POS, I_JUMP, I_STYLUS, I_STICKY, I_PALM}) out[n++] = i;
       if (scr::SMALL) out[n++] = I_CAL;
+      out[n++] = I_TRY;
       break;
     case T_DISPLAY:
       for (Item i : {I_BRIGHT, I_SMALLER, I_DEBUG}) out[n++] = i;
