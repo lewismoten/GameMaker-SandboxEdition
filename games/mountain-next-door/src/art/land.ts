@@ -205,25 +205,35 @@ export function trunk(pal: Pal, blazed: boolean, marked = false): Pixels {
   return inked(pal, p);
 }
 
-/** A big round crown of autumn leaves, 60x60, cut into nine blocks (0..8, left to right, top to bottom). */
-export function crown(pal: Pal, k: number): Pixels {
+/** A big round crown of autumn leaves, 60x60, cut into nine blocks (0..8, left to right, top to bottom): an orange oak, or (`maple`) a taller red-and-gold maple. */
+export function crown(pal: Pal, k: number, maple = false): Pixels {
   const big = new Pixels(60, 60, skyOf(pal));
-  const o = pal.r('orange');
-  const red = pal.r('brick');
-  const rand = rng(17);
-  for (const [cx, cy, r] of [
-    [30, 34, 22],
-    [16, 30, 13],
-    [44, 30, 13],
-    [24, 16, 12],
-    [38, 15, 12],
-    [30, 46, 14],
-  ])
-    blob(big, cx, cy, r, r * 0.9, o, 0, o.length - 1);
+  const o = maple ? pal.r('brick') : pal.r('orange');
+  const red = maple ? pal.r('gold') : pal.r('brick');
+  const rand = rng(maple ? 41 : 17);
+  const puffs = maple
+    ? [
+        [30, 36, 20],
+        [18, 38, 11],
+        [42, 38, 11],
+        [30, 18, 14],
+        [21, 25, 10],
+        [40, 24, 10],
+        [30, 49, 11],
+      ]
+    : [
+        [30, 34, 22],
+        [16, 30, 13],
+        [44, 30, 13],
+        [24, 16, 12],
+        [38, 15, 12],
+        [30, 46, 14],
+      ];
+  for (const [cx, cy, r] of puffs) blob(big, cx, cy, r, r * 0.9, o, maple ? 1 : 0, o.length - 1);
   for (let i = 0; i < 70; i++) {
     const x = Math.floor(rand() * 60);
     const y = Math.floor(rand() * 60);
-    if (big.get(x, y) !== skyOf(pal)) big.rect(x, y, 2, 2, i % 3 ? red[2] : o[4]);
+    if (big.get(x, y) !== skyOf(pal)) big.rect(x, y, 2, 2, i % 3 ? red[maple ? 4 : 2] : o[4]);
   }
   const p = inked(pal, big).crop((k % 3) * 20, Math.floor(k / 3) * 20, 20, 20);
   return p;

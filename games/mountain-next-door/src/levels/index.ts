@@ -22,6 +22,18 @@ import { levelStream } from './stream';
 import { levelTunnel } from './tunnel';
 import { levelZigzag } from './zigzag';
 import { levelNext } from './next';
+import { dress, type DressOptions } from '../dress';
+
+/** How each level is dressed (dress.ts): birds in the day, distant hills where the sky is wide. */
+const DRESS: Record<string, DressOptions> = {
+  gates: { birds: true },
+  prints: { birds: true, maples: true, far: { row: 9 } },
+  stream: { maples: true, far: { row: 9 } },
+  signs: { birds: true },
+  hollow: { far: { row: 7 } },
+  ridge: { far: { row: 20 } },
+  picnic: { birds: true, far: { row: 7 } },
+};
 
 /** The base palette and every level. */
 export function buildLevels(): { pal: ReturnType<typeof buildMountainPalette>; levels: Level[] } {
@@ -38,5 +50,6 @@ export function buildLevels(): { pal: ReturnType<typeof buildMountainPalette>; l
     levelZigzag(pal),
     levelPicnic(pal),
   ];
+  for (const l of levels) dress(l, pal, DRESS[l.file]);
   return { pal, levels };
 }
