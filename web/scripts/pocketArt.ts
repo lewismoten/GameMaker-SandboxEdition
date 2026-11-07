@@ -267,12 +267,15 @@ add(
     '................',
   ]),
 );
-// 16 Good on touch: a fingertip with ripples
+// 16 Good on touch: a screen with a tap ripple
 {
   const g = blank();
-  disc(g, 7.5, 7.5, 2.5, 'y');
-  disc(g, 7.5, 7.5, 5.2, 'w', 4.2);
-  disc(g, 7.5, 7.5, 7.5, 'c', 6.5);
+  // a screen with a tap: a dot and a ripple ring
+  rect(g, 3, 0, 10, 16, 'l');
+  rect(g, 4, 1, 8, 14, 'k');
+  disc(g, 7.5, 7.5, 1.6, 'y');
+  disc(g, 7.5, 7.5, 3.9, 'c', 2.9);
+  rect(g, 6, 13, 3, 1, 'd');
   add('Good on touch', g);
 }
 // 17 Search: a magnifier
