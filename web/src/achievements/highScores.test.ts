@@ -18,7 +18,7 @@ vi.mock('../project/storage', () => ({
 }));
 vi.mock('../project/files', async (original) => ({
   ...(await original<object>()),
-  loadCatalogList: async () => [
+  loadLeanCatalogList: async () => [
     { id: 'one', gam: 'ONE.GAM' },
     { id: 'two', gam: 'ONE.GAM' },
   ],
