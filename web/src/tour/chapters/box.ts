@@ -110,6 +110,21 @@ export const boxChapter: Chapter = {
       spoken: 'An ad for the bee bee ess. Call in and download more.',
     }),
     piece('stickers', 'the Sticker sheet in the list', 'A sheet of stickers. Cut them out, if you dare.'),
+    // why boxes of the day were so full, and why these are fuller still
+    {
+      id: 'box-why',
+      action: 'point',
+      target: { label: 'the list of what else came in the box', css: '.box-viewer .bc-list', in: box },
+      say: 'Why so much? Three motives. A code wheel stopped copying, a map pulled you into the story, and a full box beat a copied disk from a friend or a BBS.',
+      optional: true,
+    },
+    {
+      id: 'box-confess',
+      action: 'point',
+      target: { label: 'the list of what else came in the box', css: '.box-viewer .bc-list', in: box },
+      say: 'A confession: these boxes hold more than any store box did, even a deluxe edition. They’re packed for your entertainment.',
+      optional: true,
+    },
     {
       id: 'box-buttons',
       action: 'point',

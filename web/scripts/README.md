@@ -138,8 +138,17 @@ This folder holds the build's Vite plugins and the scripts run by hand (from
   `--lines <file.json>` reads `[{ id, chapter, where, text, voice? }]` instead of the tour, `--out <dir>`
   writes elsewhere, `--wav` also keeps each take as .wav, and `--dry-run` lists what it would
   record. Each line is said in the spoken form `narrate/spoken.ts` gives it (numbers in words,
-  BBS, DOS, PLAYGAME, THE CHEZ and the like spelled for the voice, straight quotes for Pocket TTS),
+  BBS, DOS, PLAYGAME, THE CHEZ and the like spelled for the voice, straight quotes for Pocket TTS,
+  and, last, the made-up and unusual words of the pronunciation lexicon `narrate/pronounce.json`
+  respelled by `narrate/pronounce.ts`: word → `say` (and `kokoro` for Kokoro's voices), with
+  `sounds`, the intended sound such as `GRAV-ih-tass`, whole words in any case),
   or a step's own `spoken` where even that comes out wrong; the bubbles keep their written words,
+  `npm run voice:words` (`narrate/words.ts`; `-- --only <word>[,<word>]`, `-- --compare` adds each
+  word as written, lexicon off) records each lexicon word in a short frame in every voice whose lines say it,
+  into `/.narrate/words/`, and lists what Whisper hears and what `narrate/letters.ts` spells (wav2vec2,
+  no dictionary, so a misread made-up word shows; model outside the repo, `WAV2VEC2_MODEL`), in the
+  terminal and `/.narrate/voice-words.md`; a changed respelling changes the spoken form's hash, so
+  `npm run voice` then retakes the lines that say that word,
   `npm run voice:phone` / `voice:phone:check` do the same for the desk's wall phone (`--lines phone`:
   `narrate/phoneLines.ts` lists a clip per sentence and the spliced number clips, recorded into
   `../public/phone/voice/` and cast by `src/audio/phone/phoneCast.ts`),
