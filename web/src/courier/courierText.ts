@@ -2,6 +2,7 @@
 // four sections, what an empty one says, a letter's date, and a stamp's line. No count of what
 // is missing, no "of N", nothing that asks for more play.
 import { STAMP_WORDS, worldName } from './tables';
+import { deskDate } from '../retro/dos/vfs';
 import type { Postcard, Stamp } from './courierStore';
 
 export const SECTIONS = ['Mail', 'Postcards', 'Packages', 'Setup'] as const;
@@ -15,7 +16,14 @@ export const EMPTY: Readonly<Record<Exclude<Section, 'Setup'>, string>> = {
 
 export const QUIET_WORDS = 'Quiet (no words, just waves)';
 
-/** "11-07-94", as DOS showed dates; empty for none. */
+/** The PC's day (DATE's December 1994, retro/dos/vfs.ts deskDate), YYYY-MM-DD: when a letter came. */
+export function mailDay(now?: Date | number): string {
+  const d = deskDate(now);
+  const two = (n: number) => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${two(d.getMonth() + 1)}-${two(d.getDate())}`;
+}
+
+/** "12-07-94", as DOS showed dates, on the card and in SCOOT.EXE alike; empty for none. */
 export function letterDate(day: string): string {
   const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(day);
   return m ? `${m[2]}-${m[3]}-${m[1].slice(2)}` : '';

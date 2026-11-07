@@ -5,9 +5,9 @@
 // next call; nothing arrives without a call.
 import type { RetroHost } from '../host';
 import { commas } from '../dos/vfs';
-import { deskNow } from '../dos/deskClock';
 import { deliver, waitingLetter } from '../../courier/courierStore';
 import type { Letter } from '../../courier/tables';
+import { mailDay } from '../../courier/courierText';
 import { sleep, type Term } from './term';
 import { expectText, progress } from './transfer';
 
@@ -36,7 +36,7 @@ export async function courierMail(t: Term, h: RetroHost, board: string): Promise
     return;
   }
   t.line();
-  deliver(letter.id, deskNow().toLocaleDateString('en-CA'));
+  deliver(letter.id, mailDay());
   t.line('|10Got it.|07 Scoot has a new letter: type |15SCOOT|07 at the DOS prompt to read it.');
   t.line();
   await t.drain();
