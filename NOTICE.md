@@ -56,6 +56,8 @@ game folder opens in the browser unchanged.
 
 ## Credits
 
+- **Pocket Player host hardening**: **Hermes Agent running OpenAI Codex GPT-6.1 Sol**, directed by Lewis Moten, added deterministic reader-failure probes, source-slice error-path regressions, and reproducible per-level host frame profiling. Host timings are not CYD measurements.
+
 - **Cooperative relay and challenge foundations**: **OpenAI Codex (GPT-6)**, directed by Lewis Moten, wrote the printable activity, descriptor, guest-state seam, design and tests. The relay uses this project’s existing Teddy manual and hint-book route; no new game content or third-party assets were added.
 
 - **RSD Game-Maker 1.0–3.0** (1991–1995): Recreational Software Designs: G. Andrew Stone,
