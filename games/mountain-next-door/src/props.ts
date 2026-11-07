@@ -2,7 +2,7 @@
 // asks only for the groups it needs (a set holds 150 blocks). Blocks on a clock (rain, water, stones, stars,
 // the mountain's eyes) come back as Timed entries: the block, the one it turns into, and after how many ticks.
 //   mountain   rock, rock2, slopeL/R (steep), gentleL1/L2/R1/R2 (two blocks a row), peakL/R, ledge (stand on
-//              it), gate.<color> (take it). The face is monsters (monsters.ts), so it can blink and wake.
+//              it), step (a solid rocky stair), gate.<color> (take it). The face is monsters (monsters.ts), so it can blink and wake.
 //   sleepy     the big toe across the sidewalk (toeL/M/R over toe): gone when the mountain wakes
 //   town       wall, wallB, window, windowLit, windowB, roofL/M/R, fence, plug.<color> (a wheelbarrow in a
 //              gateway; a gate puts it back as home.<color>), yardGate (opens when the mountain yawns)
@@ -65,6 +65,7 @@ export function addProps(book: Book, pal: Pal, groups: readonly string[], o: Pro
     book.add('peakL', peak(pal, true), air);
     book.add('peakR', peak(pal, false), air);
     book.add('ledge', ledge(pal, 6), { solid: LEDGE, grav: PULL.down });
+    book.add('step', ledge(pal, 7), { solid: SOLID });
     book.add('gentleL1', gentle(pal, true, 1), air);
     book.add('gentleL2', gentle(pal, true, 2), air);
     book.add('gentleR1', gentle(pal, false, 1), air);

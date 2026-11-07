@@ -199,10 +199,25 @@ export function hollowSet(mb: Book): Monster[] {
   return set;
 }
 
-/** picnic.mon's slots and clock: the sun rises once; each neighbor waits, walks up and stays, then a heart; Wisp floats in last. */
-export const PICNIC = { sunRise: 0, sunStay: 1, hale: 2, okoro: 10, wisp: 18, face: 21, walk: 6, hale0: 120, okoro0: 260, wisp0: 420 } as const;
+/** picnic.mon's slots and clock: the sun rises once; each neighbor waits offstage, walks up the steps and stays, then a heart; Wisp floats in last. */
+export const PICNIC = { sunRise: 0, sunStay: 1, hale: 2, okoro: 10, wisp: 18, face: 21, hale0: 420, okoro0: 640, wisp0: 980 } as const;
+/** The way each neighbor walks to the picnic: along the ground, up the steps, along the top ([dx, dy] blocks per leg). */
+export const PICNIC_WALK = {
+  hale: [
+    [9, 0],
+    [14, -7],
+    [5, 0],
+  ],
+  okoro: [
+    [9, 0],
+    [14, -7],
+    [13, 0],
+  ],
+} as const;
 
-function arrive(set: Monster[], mb: Book, at: number, who: 'okoro' | 'hale', wait: number, walk: number): void {
+const legTicks = (legs: readonly (readonly [number, number])[]) => legs.reduce((t, [dx, dy]) => t + Math.max(Math.abs(dx), Math.abs(dy)) * BLOCK_TICKS, 0);
+
+function arrive(set: Monster[], mb: Book, at: number, who: 'okoro' | 'hale', wait: number, legs: readonly (readonly [number, number])[]): void {
   for (const [k, part] of [
     [0, 'Top'],
     [1, 'Bot'],
@@ -210,10 +225,10 @@ function arrive(set: Monster[], mb: Book, at: number, who: 'okoro' | 'hale', wai
     const s = at + k;
     const walking: Pics = part === 'Top' ? [[mb.n(`${who}Top`), 6]] : anim(mb, `${who}Bot0`, `${who}Bot1`, 5);
     set[s] = mon(still(mb, NOTHING), { ...actor, end: wait, newmon: s + 2 });
-    set[s + 2] = mon(walking, { ...actor, end: -1, newmon: s + 4 }, [corner(walk, 0, 1, 0), corner(0, 0, 0)]);
+    set[s + 2] = mon(walking, { ...actor, thru: 0, end: -1, newmon: s + 4 }, [...legs.map(([dx, dy]) => corner(dx, dy, 1, 0)), corner(0, 0, 0)]);
     set[s + 4] = mon(still(mb, part === 'Top' ? `${who}Top` : `${who}Bot0`), { ...actor, end: -2 });
   }
-  set[at + 6] = mon(still(mb, NOTHING), { ...actor, end: wait + walk * BLOCK_TICKS + 20, newmon: at + 7 });
+  set[at + 6] = mon(still(mb, NOTHING), { ...actor, end: wait + legTicks(legs) + 20, newmon: at + 7 });
   set[at + 7] = mon(still(mb, 'bubHeart'), { ...actor, end: 90 });
 }
 
@@ -221,15 +236,18 @@ export function picnicSet(mb: Book): Monster[] {
   const set = newMonsterSet();
   set[PICNIC.sunRise] = mon(still(mb, 'sun'), { ...actor, end: -1, newmon: PICNIC.sunStay }, [corner(0, -3, 1), corner(0, 0, 0)]);
   set[PICNIC.sunStay] = mon(still(mb, 'sun'), { ...actor, end: -2 });
-  arrive(set, mb, PICNIC.hale, 'hale', PICNIC.hale0, PICNIC.walk);
-  arrive(set, mb, PICNIC.okoro, 'okoro', PICNIC.okoro0, PICNIC.walk);
+  arrive(set, mb, PICNIC.hale, 'hale', PICNIC.hale0, PICNIC_WALK.hale);
+  arrive(set, mb, PICNIC.okoro, 'okoro', PICNIC.okoro0, PICNIC_WALK.okoro);
   const w = PICNIC.wisp;
   set[w] = mon(still(mb, NOTHING), { ...actor, end: PICNIC.wisp0, newmon: w + 1 });
-  set[w + 1] = mon(anim(mb, 'wispUp0', 'wispUp1', 9), { ...actor, end: -1, newmon: w + 2 }, [corner(5, -2, 1), corner(0, 0, 0)]);
+  set[w + 1] = mon(anim(mb, 'wispUp0', 'wispUp1', 9), { ...actor, thru: 0, end: -1, newmon: w + 2 }, [corner(-8, -1, 1), corner(0, 0, 0)]);
   set[w + 2] = mon(anim(mb, 'wispUp0', 'wispUp1', 9), { ...actor, end: -2 });
   face(set, mb, PICNIC.face);
   return set;
 }
+
+/** Ticks until Wisp has floated in and settled on top. */
+export const WISP_HOME = PICNIC.wisp0 + 8 * BLOCK_TICKS + 20;
 
 /** Each monster file by name (a level's `mon`). */
 export const MON_SETS: Record<'trail' | 'next' | 'hollow' | 'picnic', (mb: Book) => Monster[]> = {

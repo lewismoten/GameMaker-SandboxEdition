@@ -2,6 +2,7 @@
 // it came. Some are shallow dents; some are deep, and a pebble the mountain kicked loose rolls about in the bottom
 // (hop over). Tess paints a blaze on every trail post and every big tree, so the mountain can find its way home,
 // takes the acorns off the oak's branch where Nutmeg the squirrel runs, and hops a fallen log. Mist drifts by.
+// Then up a ladder to the canopy walk over the treetops, and back along it, where the prints show best.
 import { StarterMap } from '../../../kit/starter/map';
 import type { Pal } from '../../../kit/starter/palette';
 import { Grid } from '../../../kit/starter/grid';
@@ -19,8 +20,9 @@ export const PRINTS_AT = {
   log: 49,
   pie: 62,
   mist: [[6, 4], [26, 3], [47, 5], [66, 4], [80, 3]],
-  exit: 87,
-  signs: { follow: 4, blaze: 25, nut: 36, mist: 82 },
+  canopy: { row: 5, from: 4, to: 85, ladder: 86, posts: [74, 50, 28, 12], acorns: [64, 40, 20], nuts: [56, 30] },
+  exit: 5,
+  signs: { follow: 4, blaze: 25, nut: 36, mist: 80, canopy: 78 },
 } as const;
 
 const SIGNS = {
@@ -28,6 +30,7 @@ const SIGNS = {
   blaze: ['PAINT A BLAZE ON EVERY POST AND TREE.', 4, 3],
   nut: ['THAT IS NUTMEG. SHE IS NOSY.', 4, 2],
   mist: ['KEEP TO THE BLAZES IN THE MIST.', 4, 3],
+  canopy: ['THE CANOPY WALK: SEE THE PRINTS!', 4, 3],
 } as const;
 
 export function levelPrints(pal: Pal): Level {
@@ -38,7 +41,11 @@ export function levelPrints(pal: Pal): Level {
   g.row(G3, 0, W - 1, 'G').fill(0, G3 + 1, W, 3, 'D');
   g.col(0, 0, G3 - 1, 'X').col(W - 1, 0, G3 - 1, 'X');
   g.put(3, G3 - 2, 's').put(3, G3 - 1, 'S');
-  g.put(PRINTS_AT.exit, G3 - 2, 'e').put(PRINTS_AT.exit, G3 - 1, 'E');
+  const c = PRINTS_AT.canopy;
+  g.put(PRINTS_AT.exit, c.row - 2, 'e').put(PRINTS_AT.exit, c.row - 1, 'E');
+  // the canopy walk: planks over the treetops, a ladder up at the far end
+  g.row(c.row, c.from, c.to, '=');
+  g.col(c.ladder, c.row - 1, G3 - 1, 'H');
   // the deep footprints: two wide and two deep
   for (const x of PRINTS_AT.holes) g.fill(x, G3, 2, 2, ' ');
   // the oak's ladder and branch
@@ -60,8 +67,12 @@ export function levelPrints(pal: Pal): Level {
   for (const x of PRINTS_AT.holes) m.mon(TRAIL.pebbleShort, x, G3 + 1);
   m.mon(TRAIL.nutBranch, o.from + 1, o.row - 1);
   for (const [x, y] of PRINTS_AT.mist) m.mon(TRAIL.mist, x, y);
+  for (const x of c.posts) m.set(x, c.row - 1, 'post');
+  for (const x of c.acorns) m.set(x, c.row - 1, 'acorn');
+  for (const x of c.nuts) m.mon(TRAIL.nutmeg, x, c.row - 1);
   const at = PRINTS_AT.signs;
-  for (const k of Object.keys(at) as (keyof typeof at)[]) m.sign(at[k], onGround(G3, s[k]), s[k]);
+  for (const k of ['follow', 'blaze', 'nut', 'mist'] as const) m.sign(at[k], onGround(G3, s[k]), s[k]);
+  m.sign(at.canopy, onGround(c.row, s.canopy), s.canopy);
   return { file: 'prints', title: 'Footprints in the Park', hint: 'Blaze every post and tree.', look: 'mist', map: m, book, timed, mon: 'trail', song: 'trail' };
 }
 
@@ -74,9 +85,8 @@ export function tree(m: StarterMap, x: number, ground = G3): void {
 function scenery(g: Grid): void {
   for (const [x, y] of [
     [12, 3],
-    [37, 2],
-    [61, 3],
-    [84, 2],
+    [37, 1],
+    [61, 1],
   ])
     g.put(x, y, '(').put(x + 1, y, ')');
   for (const x of [7, 28, 52, 70, 85]) g.put(x, G3 - 1, 'b');

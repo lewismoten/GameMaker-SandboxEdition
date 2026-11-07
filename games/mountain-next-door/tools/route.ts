@@ -10,11 +10,12 @@ import { G4, STREAM_AT } from '../src/levels/stream';
 import { FLOORS, SIGNS_AT } from '../src/levels/signs';
 import { HOLLOW_AT, STARS } from '../src/levels/hollow';
 import { G7, LEDGES, RIDGE_AT } from '../src/levels/ridge';
-import { TUNNEL_AT } from '../src/levels/tunnel';
+import { TUNNEL_AT, UPPER } from '../src/levels/tunnel';
 import { ZFLOORS, ZIGZAG_AT } from '../src/levels/zigzag';
+import { PICNIC_AT, TOP } from '../src/levels/picnic';
 import { buildLevels } from '../src/levels';
 import { GROUND } from '../src/level';
-import { PROLOGUE } from '../src/monsters';
+import { PICNIC, PICNIC_WALK, PROLOGUE, WISP_HOME } from '../src/monsters';
 import { POINTS } from '../src/props';
 import { READ, climbUp, hop, hopLeft, leave, must, readAt, score, shownAt, solidNow, watchFor } from './routeKit';
 
@@ -125,9 +126,14 @@ export async function footprints(bot: StarterBot): Promise<void> {
   await hop(bot, h3, 2, 'the third deep print');
   await take(bot, p5, POINTS.blaze, 'the fifth post');
   await readAt(bot, at.mist + 1, 'the mist sign');
-  score(bot, from, 9 * POINTS.blaze + 2 * POINTS.acorn, 'level 3');
+  const c = P.canopy;
+  await climbUp(bot, c.ladder, c.row - 1, 'the ladder to the canopy walk');
+  await readAt(bot, at.canopy + 2, 'the canopy sign');
+  const stops = [...c.posts.map((x) => [x, POINTS.blaze] as const), ...c.acorns.map((x) => [x, POINTS.acorn] as const)].sort((a, b) => b[0] - a[0]);
+  for (const [x, pts] of stops) await take(bot, x, pts, 'something on the canopy walk');
+  score(bot, from, 13 * POINTS.blaze + 5 * POINTS.acorn, 'level 3');
   void G3;
-  await leave(bot, bot.walk(P.exit + 1, 'the exit'), 'the exit');
+  await leave(bot, bot.walk(P.exit - 1, 'the exit'), 'the exit');
 }
 
 /** Block numbers by name in a level's own set. */
@@ -304,26 +310,29 @@ export async function windyRidge(bot: StarterBot): Promise<void> {
   await leave(bot, bot.walk(R.exit + 1, 'the exit'), 'the exit');
 }
 
-/** 8. The Low Tunnel: every lantern lit on the way through, a look up at the glow-worms, and Wisp found. */
+/** 8. The Low Tunnel: in along the low road and back along the mill race, every lantern lit, a look up at the glow-worms, and Wisp found. */
 export async function lowTunnel(bot: StarterBot): Promise<void> {
   const from = bot.sim.ci.score;
   const T = TUNNEL_AT;
   const at = T.signs;
-  const [l1, l2, l3, l4, l5] = T.lanterns;
+  const lower = T.lanterns.filter(([, k]) => k === 'lower').map(([x]) => x);
+  const upper = T.lanterns.filter(([, k]) => k === 'upper').map(([x]) => x);
   await readAt(bot, at.dark + 1, 'the dark sign');
-  await take(bot, l1, POINTS.lantern, 'the first lantern');
+  await take(bot, lower[0], POINTS.lantern, 'a lantern');
   await readAt(bot, at.low + 2, 'the low sign');
-  await take(bot, l2, POINTS.lantern, 'the second lantern');
+  await take(bot, lower[1], POINTS.lantern, 'a lantern');
   await readAt(bot, at.worms + 1, 'the glow-worm sign');
   await must(bot, bot.wait(READ), 'watching the glow-worms');
-  await take(bot, l3, POINTS.lantern, 'the third lantern');
-  await take(bot, l4, POINTS.lantern, 'the fourth lantern');
-  await take(bot, l5, POINTS.lantern, 'the fifth lantern');
-  await readAt(bot, at.wisp + 1, 'the Wisp sign');
-  await must(bot, bot.walk(T.wisp - 1, 'Wisp'), 'to Wisp');
+  for (const x of lower.slice(2)) await take(bot, x, POINTS.lantern, 'a lantern');
+  await readAt(bot, at.race + 1, 'the mill race sign');
+  await must(bot, bot.walk(T.ladder, 'the ladder'), 'onto the ladder');
+  await must(bot, bot.climb('up', UPPER.floor - 1, 'up the ladder'), 'up the ladder');
+  for (const x of upper) await take(bot, x, POINTS.lantern, 'a lantern on the mill race');
+  await readAt(bot, at.wisp + 2, 'the Wisp sign');
+  await must(bot, bot.walk(T.wisp + 1, 'Wisp'), 'to Wisp');
   await must(bot, bot.wait(READ), 'a moment with Wisp');
-  score(bot, from, 5 * POINTS.lantern, 'level 8');
-  await leave(bot, bot.walk(T.exit + 1, 'the exit'), 'the exit');
+  score(bot, from, T.lanterns.length * POINTS.lantern, 'level 8');
+  await leave(bot, bot.walk(T.exit - 1, 'the exit'), 'the exit');
 }
 
 /** 9. The Zigzag Home: five paths, a blaze on every turn, the ruts hopped, Wisp following behind. */
@@ -363,4 +372,22 @@ export async function zigzagHome(bot: StarterBot): Promise<void> {
   await path(4, 'right', [[at.top + 1, () => readAt(bot, at.top + 1, 'the top sign')]]);
   score(bot, from, 10 * POINTS.blaze + 6 * POINTS.acorn, "level 9");
   await leave(bot, bot.walk(Z.exit + 1, 'the exit'), 'the exit');
+}
+
+/** 10. Summit Picnic: the doormat, up the steps, then watch the neighbors arrive and Wisp come home. */
+export async function summitPicnic(bot: StarterBot): Promise<void> {
+  const t0 = bot.sim.w.clock;
+  const P = PICNIC_AT;
+  const at = P.signs;
+  await readAt(bot, at.home + 1, 'the home sign');
+  await readAt(bot, at.mat + 1, 'the doormat sign');
+  await must(bot, bot.walk(P.steps[0] - 1, 'the steps'), 'to the steps');
+  await must(bot, bot.walk(P.top[0] + 1, 'up the steps'), 'up the steps');
+  if (Math.round(bot.px.y / 20) !== TOP - 1) throw new Error(`not on top of the mountain (row ${bot.px.y / 20})`);
+  const arrived = PICNIC.okoro0 + PICNIC_WALK.okoro.reduce((t, [dx, dy]) => t + Math.max(Math.abs(dx), Math.abs(dy)) * 20, 0);
+  await watchFor(bot, () => since(bot, t0) > arrived + 60, 'the neighbors arriving for the picnic', 1600);
+  await readAt(bot, at.end + 1, 'the last sign');
+  await watchFor(bot, () => since(bot, t0) > WISP_HOME + 40, 'Wisp floating home', 1600);
+  await must(bot, bot.wait(READ / 2), 'a last look');
+  await leave(bot, bot.walk(P.exit, 'the picnic door'), 'the end');
 }

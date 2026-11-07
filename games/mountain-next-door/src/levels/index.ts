@@ -9,9 +9,11 @@
 //   7. Windy Ridge         dusk; an updraft and a gust carry Tess up and over, following Wisp's puddles
 //   8. The Low Tunnel      dark; light the lanterns, leave a trail of light; glow-worms; Wisp is hiding here
 //   9. The Zigzag Home     moonlight; five switchbacks up the hill, a blaze on every turn, Wisp following
+//  10. Summit Picnic      (watch) sunrise; the mountain home and sitting down; the neighbors climb up; the doormat
 import { buildMountainPalette } from '../palette';
 import type { Level } from '../level';
 import { levelGates } from './gates';
+import { levelPicnic } from './picnic';
 import { levelPrints } from './prints';
 import { levelHollow } from './hollow';
 import { levelRidge } from './ridge';
@@ -24,6 +26,6 @@ import { levelNext } from './next';
 /** The base palette and every level. */
 export function buildLevels(): { pal: ReturnType<typeof buildMountainPalette>; levels: Level[] } {
   const pal = buildMountainPalette();
-  const levels: Level[] = [levelNext(pal), levelGates(pal), levelPrints(pal), levelStream(pal), levelSigns(pal), levelHollow(pal), levelRidge(pal), levelTunnel(pal), levelZigzag(pal)];
+  const levels: Level[] = [levelNext(pal), levelGates(pal), levelPrints(pal), levelStream(pal), levelSigns(pal), levelHollow(pal), levelRidge(pal), levelTunnel(pal), levelZigzag(pal), levelPicnic(pal)];
   return { pal, levels };
 }
