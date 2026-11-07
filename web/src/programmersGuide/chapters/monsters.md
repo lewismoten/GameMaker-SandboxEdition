@@ -99,3 +99,11 @@ See chapter 8 for the pixel test. Short version: monster against hero, monster a
 - `used`, `fly`, `jump`, `stick`, `thru`, `lasttime`, `cur`, `xtra`: ignored; a live `close[2]` effect through the possible `march[-1]` overlap is not established (section 6.2; chapter 14).
 - A monster whose first picture is not a valid block number never draws.
 - An undrawn monster can still hurt if its cell passes the on-screen contact gate; a cell rejected as `OFFSCRN` cannot (`PG:2281-2308`, `PG:3104-3119`).
+
+## Lifetime and the visible-cell frame
+
+ A monster can be set to live a fixed number of ticks, to end after its path, or to end when it is hit. A positive lifetime counts across the whole loaded map, starting at birth, including time off screen or outside attack range. Walking away neither stops nor resets it. The player checks the birth clock plus the lifetime against the current clock during movement; on a busy machine death occurs at the first processed check after the deadline. Re-entering a freshly loaded map creates its monsters anew.
+
+[not yet checked in DOSBox] Source: all 200 live slots pass the movement loop without a screen/range lifetime guard (`code/GM/PLAYGAME.C:2974-2999`, `code/GM/PLAYGAME.C:3141-3142`). Birth records `BirthTime = clock` (`code/GM/PLAYGAME.C:3343-3347`). Walking away does not change that deadline. A successor created by `KillMon` calls `BirthMon`, receiving a new birth clock (`code/GM/PLAYGAME.C:3253-3267`). MON's lifetime is a signed word at 124 (`code/GM/MON.H:34-35`, `engine/formats/monster.ts:70-76`).
+
+The booklet now describes both gates: cell-origin coordinates must be inside (1,1) through (300,180), then the within-cell offsets 0–19 are added and the final picture origin is tested again (`code/GM/PLAYGAME.C:294`, `code/GM/PLAYGAME.C:2281-2308`, `code/GM/PLAYGAME.C:3095-3109`, `code/GM/PLAYGAME.C:3819-3830`). The left/top hidden band can be a whole cell, rather than a one-pixel margin. A final-draw rejection alone does not make a monster harmless; the cell `OFFSCRN` rejection does (`code/GM/PLAYGAME.C:2722-2729`).

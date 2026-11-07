@@ -36,7 +36,7 @@ A file of the wrong size is a good first test of a bad import. The slot position
 |        256 |         6 | `GratorHeader` | `NumScenes`, `FilesPerScene` (always 20), `LinksPerScene` (always 20); only `NumScenes` is read (`PG:5164`)                               |
 |        262 |   283 x N | `Scene[N]`     | see chapter 4                                                                                                                             |
 | 262 + 283N |         2 | `FreePtr`      | length of the name pool; clamped to 0xFFF0 (`PG:5173-5174`)                                                                               |
-|            | `FreePtr` | name pool      | NUL-terminated names; a scene's `Files[i]` is an offset into it; offset 0 holds an empty string = "no file" (`GRATOR.H:116-118, 134-147`) |
+|            | `FreePtr` | name pool      | NULLL-terminated names; a scene's `Files[i]` is an offset into it; offset 0 holds an empty string = "no file" (`GRATOR.H:116-118, 134-147`) |
 
 Example size: 60 scenes, 3,000-byte pool = 256 + 6 + 16,980 + 2 + 3,000 = **20,244 bytes**.
 Older games (before version 3.00) use a 330-byte scene with 9 file names of 10 characters inline, 15-character descriptions and 20 links of five ints (`GRATOR.H:36-61`); the web port converts them (`fmt/game.ts:221-274`).
@@ -49,7 +49,7 @@ Block, monster and sound loaders likewise ignore read counts (`PG:4294-4327`), a
 
 ## 13.4 `.snd` (30 effects)
 
-30 records of 36 unsigned 16-bit frequencies (72 bytes), then 30 names of 9 bytes: 2,160 + 270 = **2,430** (`PG:4294-4304`, `SOUND.H:11, 30-33`). A frequency of 0 is silence. A name starting with a NUL or a space means "use the speaker" (`PG:4595`).
+30 records of 36 unsigned 16-bit frequencies (72 bytes), then 30 names of 9 bytes: 2,160 + 270 = **2,430** (`PG:4294-4304`, `SOUND.H:11, 30-33`). A frequency of 0 is silence. A name starting with a NULLL or a space means "use the speaker" (`PG:4595`).
 Names are 8 letters and no extension: the player appends `.voc` and looks in the game's folder (`SOUNDC.C:167`). Sound slot numbers: `LASTSND 30`, nine of them assigned to events (`SOUND.H:17-25`).
 
 ## 13.5 `.cmf`
@@ -109,11 +109,11 @@ The following atlas mirrors the printed Technical Reference. It adds a source au
 
 The following plates describe the 3.00 disk files. Offsets start at zero and are decimal unless followed by `h`, which means hexadecimal. `u8`, `u16` and `u32` mean unsigned integers of one, two and four bytes; `i8`, `i16` and `i32` are signed integers of those sizes. Multi-byte numbers are little endian: `2C 01` is 300, and `FF FF` is -1 as an i16 or 65,535 as a u16. There is no automatic padding between fields in these game records.
 
-A record-relative offset must be added to the record's base. Indexes start at zero. A NUL is a zero byte ending a string; an LF is byte 10 and a CR byte 13. Reserved bytes still occupy space and should survive an edit, even where the player gives them no meaning. The plates show field boundaries rather than lengths to scale.
+A record-relative offset must be added to the record's base. Indexes start at zero. NULLL means a zero byte ending a string. LF means line feed (byte 10); CR means carriage return (byte 13). DOS text normally ends a line with CR LF: on a typewriter, carriage return sends the carriage to the start of the line and line feed advances the paper. The end-of-file marker (1Ah, Ctrl-Z, EOF) has the ASCII name SUB, meaning substitute; DOS uses it to mark the end of text, not as an ordinary printed character. Reserved bytes still occupy space and should survive an edit, even where the player gives them no meaning. The plates show field boundaries rather than lengths to scale.
 
-The worked examples use the installed TUTOR files unless another supplied file is named. They are byte readings, not instructions to replace the examples' artwork. A file's name and extension are external to its contents: most Game-Maker records have no signature, version or count. The scene's file slot tells the reader what to expect.
+The worked examples use Sandbox games: TEDDY's files unless another game is named. File names are shown in capitals; DOS treats their case alike. They are byte readings, not instructions to replace the examples' artwork. A file's name and extension are external to its contents: most Game-Maker records have no signature, version or count. The scene's file slot tells the reader what to expect.
 
-**Source audit.** The byte packing is checked against the explicit field reads and writes in `engine/formats/binary.ts:1-146`. Worked-file paths are rooted at `runtime/run/GM/TUTOR/` unless stated; PEACH, SAMPLE and the two installed configuration files are under `runtime/run/GM/`. The transfer executable is `cd/gm/xferplay.exe`. These are original supplied files; their authors retain the credits in NOTICE.md.
+**Source audit.** The byte packing is checked against the explicit field reads and writes in `engine/formats/binary.ts:1-146`. Worked-file paths are rooted at `games/teddy/disk/`, except W99.BKD in `games/maximus/disk/`. Both games are non-secret. HIS, configuration and transferred-executable illustrations are explicitly constructed or source-derived; they are not claimed game-disk artifacts.
 
 ### 13.10.2 PAL: the scene's colors
 
@@ -131,7 +131,7 @@ Color c runs from 0 through 255. A block pixel selects c; it stores no RGB value
 
 A BBL, MBL or CBL pixel is a one-byte index into this table. The GAM adventure scene names the palette in file slot 0. Sharing pictures across scenes requires compatible color positions, not merely the same collection of colors. Sprite pixel 255 means transparent; background pixel 255 remains an ordinary palette lookup.
 
-**Worked example.** HUES.PAL begins `00 00 00 00 00 07`. Color 0 is black. Color 1 starts at byte 3 and is RGB (0,0,7), a dark blue. A pixel byte 1 selects that triple. Color 255 begins at byte 765, leaving the final three bytes inside the 768-byte file.
+**Worked example.** PARK.PAL is 768 bytes and begins `00 00 00 21 21 21`. Color 0 is black; color 1 starts at byte 3 and is RGB (33,33,33), gray. Color 255 starts at byte 765. These are actual file values, independent of the suggested index assignments above.
 
 **Source audit.** Layout and tools: `code/GM/PALETTE.H:8-17`, `code/GM/PALCHOS.C:162`, `code/GM/IMAGE.C:189`; port read/write `engine/formats/palette.ts:7-15`. The three u8 fields are repeated 256 times, with no header in either writer.
 
@@ -158,7 +158,7 @@ Cell (x,y) starts at 2 × (100y + x). Placed slot m starts at 20,000 + 10m.
 
 The first byte of a cell selects BBL block 0 through 149 from adventure slot 2. The second selects a placement record, not a MON type. That placement's first byte selects type 0 through 63 from slot 3's MON. The type in turn selects pictures in slot 4's MBL. Thus changing the order of MON records changes what an unchanged map places.
 
-**Worked example.** TUTOR.MAP is 22,000 bytes. Cell (5,5) starts at 2 × (500 + 5) = 1,010 and contains `00 C8`: BBL block 0, with no monster placement (C8h = 200). Placement 0 starts at byte 20,000 and begins `40 00 00 00 FF FF FF FF 00 00`: type 64 means unused, and its x and y words are both -1. The coordinate words are map cells, not screen pixels.
+**Worked example.** PARK.MAP is 22,000 bytes. Cell (5,5) starts at 2 × (100 × 5 + 5) = 1,010 and contains `00 C8`: block 0 and no placement (200). Placement 0 at 20,000 is `18 00 00 00 25 00 25 00 00 00`: MON type 24 at cell (37,37), with the reserved bytes zero. Coordinates are whole signed little-endian words, not packed x/y bit fields.
 
 **Source audit.** Layout and writes: `code/GM/MAP.H:8-28`, `code/GM/MAPC.C:41-53`; DOS reader `PG:4330-4336`; port read/write `engine/formats/map.ts:28-48`. The later MapHeader/MapStruct declarations in MAP.H are not written by savemap; do not prepend them to a 22,000-byte map.
 
@@ -190,7 +190,7 @@ Record b starts at 420b. Pixel (x,y) is byte 20y + x within that record. Bits 1,
 
 The map selects a record by index. Each pixel selects a color in the scene's PAL. Next and touched block fields select other records in the same BBL; a birth field selects a type in the scene's MON. The counter field selects a hero counter, not a sound effect. The player chooses event sounds from SND separately. Index 150 means no background block where a field accepts that sentinel. Timers count game ticks; all cells with one block number share its animation state.
 
-**Worked example.** In TUTOR.BBL, block 10 starts at 4,200. Its tail has next block 8 at byte 4,611, interval `02 00` at 4,612, and touched block 10 at 4,614. It changes to block 8 after two ticks and keeps its own block number on touch. Block 10's first pixel is at 4,200, its last at 4,599; neither belongs to that tail.
+**Worked example.** In PARK.BBL, block 10 starts at 4,200; its picture ends at 4,599. Byte 4,605 is `0F`: solid on all four sides. Bytes 4,611 through 4,614 are `0A 00 00 0A`: next block 10, zero interval, touched block 10. The twenty property bytes separate adjacent pictures.
 
 **Source audit.** Fields and counts: `code/GM/BLOC.H:3-8`, `code/GM/BLOC.H:35-54`; writer `code/GM/BLOCC.C:73-87`; port read/write `engine/formats/blocks.ts:72-122`. The offsets follow the same field order and signedness; gravity is a signed byte interpreted as direction bits.
 
@@ -213,9 +213,9 @@ CHR frames select CBL pictures by index; MON animation pairs select MBL pictures
 
 Do not discard the tail as picture padding. In particular, an MBL picture's score, hit-point and counter fields participate in contact with the hero. Background animation, births and pickup behavior should be designed in the BBL.
 
-**CBL example.** PENGUIN.CBL is 21,000 bytes. Its first 32 bytes are FFh, so that part of picture 0 is transparent. Picture 8 starts at 8 × 420 = 3,360; the hero example below selects it as the lower picture.
+**CBL example.** TEDDY.CBL is 21,000 bytes. The first 32 bytes are FFh (transparent). Picture 8 begins at 3,360 and is selected as the lower picture by the character example.
 
-**MBL example.** PENGUIN.MBL is 42,000 bytes. Byte 19 is CFh (207), surrounded by FFh pixels. It is the rightmost pixel of picture 0's first row and selects palette color 207. Picture 1 begins at 420, not at 400.
+**MBL example.** PARK.MBL is 42,000 bytes. Its first pixel is FFh (transparent). Picture indexes are zero-based: picture 0 is the first, starting at byte 0; picture 1 is the second, starting at 420. Saying picture 1 starts at 420 was correct: bytes 400 through 419 are picture 0's properties, not picture 1's pixels.
 
 **Source audit.** Same record and counts: `code/GM/BLOC.H:6-8`, `code/GM/BLOCC.C:80-84`, `engine/formats/blocks.ts:6-20`, `engine/formats/blocks.ts:72-122`. Contact effects use the monster picture record (`PG:3113-3115`); animation uses MON picture indexes (`PG:2980-2991`). The port deliberately retains all twenty tail bytes for all block kinds.
 
@@ -275,7 +275,7 @@ Each sequence has ten 17-byte frames, then fifteen bytes of controls. The top an
 
 Frame f begins at sequence base + 17f. Picture 50 is absent, bottom 51 ends, bottom 100 fires the MON type named by the top field.
 
-**Worked example.** PENGUIN.CHR frame 0 begins `00 00 00 00 00 00 32 00 08 00 07 00`. It moves (0,0), has orientation 0, omits the top picture (50), shows CBL picture 8 below, and waits seven ticks. Its sequence's byte 172 is 1Eh (30, no sound), and byte 174 is 96h (150, no inventory tie). At byte 3,724 the first counter is `64 00` (100); at 3,726 the next is `02 00` (2). The end marker is bottom picture 51; bottom picture 100 instead fires the MON type stored in the top field.
+**Worked example.** TEDDY.CHR frame 0 begins `00 00 00 00 00 00 32 00 08 00 24 00`: no movement, orientation 0, top absent (50), lower picture 8, pause 36 ticks. Bytes 172 and 174 are 30 (no sound) and 150 (no inventory tie). The first two counters at 3,724 are `64 00 03 00`: 100 hit points and 3 lives.
 
 **Source audit.** Nested layouts: `code/GM/CHAR.H:6-51`; writer `code/GM/CHAREDIT.C:213-216`; first-record load `PG:4252`; port read/write `engine/formats/character.ts:70-123`. C char controls are signed in the original declarations; several port controls use u8 reads to retain their bit patterns. Sizes and offsets agree. For movement and frame sentinels, see `PG:2409-2468`; inventory ties use `PG:4655`.
 
@@ -308,13 +308,13 @@ The file stores 21 picture pairs but the player shows at most 20. Picture 100 me
 
 Power is an unsigned byte; the hero's power is 100. Lifetime -2 means never end, -1 end after the path, 0 end when killed, and positive values specify ticks. Positive chase values below 64 move toward the hero; negative ones move away. Several saved fields are editor preview or reserved state; the record must still retain their bytes.
 
-**Worked example.** PENGUIN.MON type 0 starts with four zero words, then `B4 00`: power 180 and a zero thru byte. Its first picture pair at byte 10 is `64 00 05 00`: picture 100, duration five. The sentinel makes this type pictureless. At offsets 122, 124 and 126 are 0, 10 and -9: no attack path, ten-tick lifetime, and movement away from the hero. A nonzero power does not guarantee a visible picture.
+**Worked example.** PARK.MON type 0 starts `01 00 00 00 00 00 00 00 6A 01`: used 1, fly/jump/stick 0, power 106, thru 1. The first animation pair at byte 10 is `00 00 02 00`: picture 0 for two ticks. Words at 122, 124 and 126 are 0, 9 and 9: no attack path, nine-tick lifetime and chase speed 9.
 
 **Source audit.** Every field, including the 21st pair and preview cursor: `code/GM/MON.H:6-41`; writer `code/GM/MONEDIT.C:201-204`; reader `PG:4308-4314`; port read/write `engine/formats/monster.ts:51-100`. The close fields are not a demonstrated live range control; see chapter 6 for the possible preceding-path overlap. Runtime preview fields are retained for round trips.
 
 ### 13.10.8 GAM: the scene graph and its dependencies
 
-GRATOR writes the integrator file. PLAYGAME reads it to find the start, ending and adventure scenes. A 3.00 GAM has a 256-byte identification header, a six-byte scene-count header, N 283-byte scenes and a length-prefixed name pool. The signature is GM. Older games use 330-byte scenes with names inline; do not apply the 3.00 offsets to them.
+GRATOR writes the integrator file. PLAYGAME reads it to find the start, ending and adventure scenes. A 3.00 GAM has a 256-byte identification header, a six-byte scene-count header, N 283-byte scenes and a length-prefixed name pool. The signature is GM. The encryption byte at offset 4 is initialized to zero but the loader never branches on it: it does not turn encryption on. The 250 bytes at offset 6 are reserved header space; the original constructor fills them with repeating bytes `52 53 44` (the maker's three initials in ASCII), rather than scene data. Preserve them on an edit. Older games use 330-byte scenes with names inline; do not apply the 3.00 offsets to them.
 
 **GAM 3.00: header, scenes, names**
 
@@ -330,11 +330,11 @@ GRATOR writes the integrator file. PLAYGAME reads it to find the start, ending a
 | 260    | 2     | i16     | Links per scene: 20       |
 | 262    | 283N  | records | Scenes in index order     |
 | P      | 2     | u16     | Name-pool length L        |
-| P + 2  | L     | strings | NUL-terminated file names |
+| P + 2  | L     | strings | NULLL-terminated file names |
 
 P = 262 + 283N. File pointers are offsets from P + 2, not from the start of the GAM. Pool byte 0 is an empty name.
 
-Each scene contains twenty file pointers and twenty links, even if some are unused. A pointer is a byte offset into the shared pool of NUL-terminated names; it is not a disk address. Zero selects the pool's empty string. Links use scene indexes, so reordering records requires updating the links. The practical scene limit is 231 for the player's single-segment scene array; the reader clamps the name pool to 65,520 bytes. The editor initially allocates 10,000 name bytes, a separate constraint from that reader ceiling.
+Each scene contains twenty file pointers and twenty links, even if some are unused. A pointer is a byte offset into the shared pool of NULLL-terminated names; it is not a disk address. Zero selects the pool's empty string. Links use scene indexes, so reordering records requires updating the links. The single-segment planning limit is inferred as 231: 231 × 283 = 65,373, but 232 × 283 = 65,656 exceeds 65,536 bytes in one segment; the reader clamps the name pool to 65,520 bytes. The editor initially allocates 10,000 name bytes, a separate constraint from that reader ceiling.
 
 **Scene: 283 bytes**
 
@@ -359,7 +359,7 @@ Scene s starts at 262 + 283s; link k at scene + 83 + 10k. Destination 65535 mean
 
 A link stores a destination scene and source and destination map cells. Its source cell triggers the transition and its destination cell places the hero on arrival. Scroll bytes are zero for still, 255 for following the hero, or a constant speed; the style byte selects normal, centered or snap scrolling. Integrator diagram x,y positions only arrange boxes in the editor.
 
-**Worked example.** TUTOR.GAM is 6,263 bytes, begins `47 4D 2C 01 00 08`, and has counts (20,20,20) at byte 256. Its pool length word is at 262 + 20 × 283 = 5,922; the length is 339, giving 5,922 + 2 + 339 = 6,263. Scene 2 begins at 828. Its map pointer at 828 + 45 is 42, selecting `tutor.map` at absolute byte 5,924 + 42 = 5,966. Its first link at 911 goes to scene 3 from cell (96,11), arriving at (90,18).
+**Worked example.** TEDDY.GAM has 3,685 bytes and begins `47 4D 2C 01 00 08`. Its counts are (10,20,20). The pool word is at 262 + 10 × 283 = 3,092; its length is 591, so 3,092 + 2 + 591 = 3,685. Scene 2 starts at 828; its MAP pointer at 873 is 173, selecting BACKYARD.MAP at absolute byte 3,267. Its first link at 911 goes to scene 3 from (77,39), arriving at (6,39).
 
 **Source audit.** Header and scenes: `code/GM/GMGEN.H:80-109`, `code/GM/GRATOR.H:63-109`, `code/GM/GRATOR.H:162-184`; pool writer `code/GM/GRATOR.H:138-155`; integrator writer `code/GM/GRATOR.C:1395-1414`; player read `PG:5156-5177`; port `engine/formats/game.ts:1-24`, `engine/formats/game.ts:184-217`, `engine/formats/game.ts:277-307`. File slot meanings: `engine/formats/game.ts:43-81` and `PG:4239-4253`. Editor pool allocation is 10,000 (`code/GM/GRATOR.H:123-128`); Add does not grow it (`code/GM/GRATOR.H:138-148`). Treat the 65,520 reader clamp as a loader bound, not a safe editor capacity.
 
@@ -374,17 +374,17 @@ SNDEDIT writes a set of thirty effects; PLAYGAME loads it from adventure slot 7.
 | 0        | 2,160 | 30 × 72 | Speaker frequency rows   |
 | 2,160    | 270   | 30 × 9  | Digital sound stems      |
 | 72e + 2t | 2     | u16     | Effect e, step t: hertz  |
-| 2160+9e  | 9     | chars   | Effect e: VOC stem + NUL |
+| 2160+9e  | 9     | chars   | Effect e: VOC stem + NULLL |
 
 e = 0 to 29; t = 0 to 35. A zero frequency is silence. The effect number addresses both tables; the VOC bytes live in another file.
 
 A CHR sequence directly selects an effect number. Block and monster contact uses the player's event assignments: slots 0 through 8 cover hit points up, monster killed, counter additions and subtractions. Every speaker step lasts about 1/146 second; 36 steps make roughly a quarter second. Zero hertz is silence. The speaker produces one tone at a time.
 
-For effect e, the digital name lives at 2,160 + 9e. It holds at most eight characters plus NUL, without an extension. PLAYGAME adds `.VOC` in the game's working directory. An empty name or one beginning with a space selects the speaker. With digital sound enabled and a usable name, the VOC supplies the samples; it does not replace the frequency row on disk. Only one digital effect plays at once.
+For effect e, the digital name lives at 2,160 + 9e. It holds at most eight characters plus NULLL, without an extension. PLAYGAME adds `.VOC` in the game's working directory. An empty name or one beginning with a space selects the speaker. With digital sound enabled and a usable name, the VOC supplies the samples; it does not replace the frequency row on disk. Only one digital effect plays at once.
 
-**Worked example.** SOUNDS1.SND begins `62 00` repeatedly: the first steps of effect 0 are 98 Hz. Its digital entry at 2,160 is `exclnt` followed by three zero bytes. Entry 1 at 2,169 is `dead` followed by five zeros. Playing effect 1 selects DEAD.VOC; entry 5 selects BEBEEP.VOC. The same slot number joins the two tables without storing any VOC sample inside SND.
+**Worked example.** TEDDY.SND begins `0B 02`: 523 Hz. At 2,160 effect 0 names `yum` plus six zero bytes, selecting YUM.VOC. Effect 1 at 2,169 names `pop`, and effect 2 at 2,178 names `crunch`. The sample bytes remain in those separate VOC files.
 
-**Source audit.** Shape and event slots: `code/GM/SOUND.H:11-33`; writer `code/GM/SOUNDC.C:370-381`; player read `PG:4294-4304`; port read/write `engine/formats/sound.ts:37-63`. Speaker/digital selection: `PG:4585-4608`; name-to-path resolution: `code/GM/SOUNDC.C:153-168`. The 2,160-byte PENGUIN.SND in TUTOR is a real speaker-only example; both readers zero missing digital names.
+**Source audit.** Shape and event slots: `code/GM/SOUND.H:11-33`; writer `code/GM/SOUNDC.C:370-381`; player read `PG:4294-4304`; port read/write `engine/formats/sound.ts:37-63`. Speaker/digital selection: `PG:4585-4608`; name-to-path resolution: `code/GM/SOUNDC.C:153-168`. Both readers zero missing digital names; the current Sandbox worked example uses a full 2,430-byte set.
 
 ### 13.10.10 VOC: sampled effects
 
@@ -409,7 +409,7 @@ Type 1 offsets are relative to its payload. The next block follows the payload. 
 
 Type 1 gives a time constant, codec and sample bytes. For uncompressed eight-bit mono sound, the rate is 1,000,000 / (256 - time constant). Type 2 continues samples, type 3 adds silence and types 6 and 7 bracket a repeat. Newer VOC variants need corresponding driver support; a decoder's ability to read a block does not establish that every DOS driver can play it. Keep the whole file under 65,535 bytes for the DOS allocation and read path. The DOS player takes its first-block offset from the low byte of the header field, so the usual 26-byte header is the safest choice.
 
-**Worked example.** DEAD.VOC is 9,217 bytes. Byte 20 begins `1A 00`, selecting block offset 26. There the bytes are `01 E2 23 00 D3 00`: type 1, length 23E2h = 9,186, time constant D3h = 211 and codec 0. Samples start at 32. The rate is about 22,222 Hz, and the payload holds 9,184 samples, about 0.413 second. Its next block is at 26 + 4 + 9,186 = 9,216: the final zero terminator.
+**Worked example.** WOOF.VOC has 2,459 bytes. The first-block offset at byte 20 is `1A 00` (26). At 26 are `01 7C 09 00 A5 00`: type 1, payload 097Ch = 2,428 bytes, time constant 165, codec 0. The 2,426 samples start at 32, at approximately 10,989 Hz (1,000,000/91), about 0.221 second. The terminator is at 26 + 4 + 2,428 = 2,458.
 
 **Source audit.** DOS consumes only signature bytes and the low byte of the first-block offset (`code/GM/SOUNDC.C:203-235`); Creative driver function 6 handles the block stream. The detailed standard block layout is verified in the port, `engine/formats/voc.ts:1-23`, `engine/formats/voc.ts:35-111`, rather than a DOS struct definition. These are different validation paths, not two independent in-source implementations of every VOC field. The driver codec compatibility limit has not been tested here. [not yet checked in DOSBox]
 
@@ -440,7 +440,7 @@ Each instrument occupies sixteen bytes: eleven FM register values and five reser
 
 The DOS player requires the clock field to be 146 and uses the FM chip's nine voices. Keep the event block under 65,536 bytes and its file offsets representable by the header's sixteen-bit fields. The web writer caps its instrument table at 128; the DOS loader does not validate that same ceiling.
 
-**Worked example.** GMSONG1.CMF is 5,952 bytes. The header gives instrument offset 40, music offset 216, eleven instruments, 73 ticks per beat and 146 ticks per second. Eleven × 16 = 176, exactly the distance from 40 to 216. Instrument 3 starts at 88. The event stream occupies 5,736 bytes, from 216 to the end. The GAM slot names the whole song; its program changes index the embedded instruments.
+**Worked example.** PARK.CMF has 2,676 bytes: instrument offset 40, music offset 296, sixteen instruments, 70 ticks per beat and clock 146. Sixteen × 16 = 256 bytes of instruments; the event block is 2,380 bytes. Instrument 3 begins at 40 + 3 × 16 = 88.
 
 **Source audit.** Header fields: `code/GM/SBCMUSIC.H:30-52`; DOS reader `code/GM/SBMUSIC.C:57-102`; converter `code/GM/SNDEDIT.C:438-507`; port read/write `engine/formats/cmf.ts:26-42`, `engine/formats/cmf.ts:74-106`. The header declares signed ints while the port treats offsets/counts as u16; the byte positions agree. The 128 instrument cap belongs to encodeCmf, not the DOS loader. The DOS signature conjunction quirk is documented in 13.5.
 
@@ -454,11 +454,11 @@ IMAGE writes a BKD to select a 320 × 200 window of a GIF. Its normal output is 
 | ------ | ----- | ----- | ----------------------- |
 | 0      | 2     | i16   | Left edge of GIF window |
 | 2      | 2     | i16   | Top edge of GIF window  |
-| 4      | 40    | chars | GIF name, LF, NUL, tail |
+| 4      | 40    | chars | GIF name, LF, NULLL, tail |
 
 No signature. The player reads two words, then at most 39 name bytes. Shorter name-only tails also occur in shipped files.
 
-**Worked example.** The supplied PEACH.BKD is thirteen bytes: four zeros, then `peach.gif`. Its words choose window (0,0), and its remaining nine bytes name the external picture. This is a real short file, rather than IMAGE's full 44-byte output. Use a normal terminated name when writing a new file.
+**Worked example.** MAXIMUS's W99.BKD is fourteen bytes: `00 00 B8 0B`, then `cards5.gif`. The words choose window (0,3000). This short name tail has no terminator; IMAGE's normal output reserves forty bytes for the name. The GIF remains external.
 
 An LST is a text-authored sequence of graphic names with optional pause seconds. A TXT is text-authored page content. The original IMAGE and GRATOR do not write these text formats; the web editor can write slide lists. PLAYGAME reads both from graphic slots, including entrance, exit, title, story and credits. Do not serialize the in-memory FileEntry structure into an LST.
 
@@ -474,11 +474,11 @@ An LST is a text-authored sequence of graphic names with optional pause seconds.
 
 LST names select GIF, FLI, BKD, TXT or another list. These are author-supplied text, not binary Scene or FileEntry objects.
 
-**LST example.** TUTOR.LST is 48 bytes. Its first line is `gm3a.fli` followed by CR LF at bytes 8 and 9. The third line is `backgrnd.fli 0`: a picture name and a zero pause; the fourth is `tutor.txt`. A final 1Ah marks DOS text EOF. The DOS reader allocates 100 list entries and keeps at most fifteen name characters per entry; stay below that allocation and use DOS 8.3 names.
+**LST example.** PARK.LST has thirteen bytes: `park.gif 30` followed by CR LF (0Dh 0Ah). It asks for the external GIF and a thirty-second pause. It has no end-of-file marker. The DOS reader allocates 100 entries and retains at most fifteen name characters per entry; stay below that allocation and use DOS 8.3 names.
 
-**TXT example.** TUTOR.TXT is a separate 1,607-byte text file named by that list. It begins with CR LF at bytes 0 and 1, followed by byte 54h, the letter T, at offset 2. There is no count or binary header. The display reads at most 31 characters at a time into a 32-byte buffer, so keep authored lines short. TXT holds CP437 text bytes; CR LF ends a physical line and 1Ah can end DOS text. Imported GIF and FLI pictures remain external media, not files generated by Game-Maker's editors.
+**TXT example.** HELP.TXT has 1,103 bytes and begins `4D 4F 56 49 4E 47`, spelling MOVING. There is no binary header. The display reads at most 31 characters into a 32-byte buffer; keep authored lines short. TXT holds CP437 bytes; CR LF ends a line, and an end-of-file marker (1Ah, Ctrl-Z, EOF) can end DOS text.
 
-**Source audit.** IMAGE record and full-size writer: `code/GM/IMAGE.C:39-44`, `code/GM/IMAGE.C:195-204`; DOS reader `code/GM/GIFC.C:307-339`; port read/write `engine/formats/graphicScripts.ts:14-33`. The port writes only coordinates and name bytes, not IMAGE's forty-byte name field. Short PEACH.BKD is a fixture observation; the DOS reader's LF search is unsafe without a newline, so successful DOS playback of that short file is **not established**. [not yet checked in DOSBox]
+**Source audit.** IMAGE record and full-size writer: `code/GM/IMAGE.C:39-44`, `code/GM/IMAGE.C:195-204`; DOS reader `code/GM/GIFC.C:307-339`; port read/write `engine/formats/graphicScripts.ts:14-33`. The port writes only coordinates and name bytes, not IMAGE's forty-byte name field. Short W99.BKD is a Sandbox fixture observation; the DOS reader's LF search is unsafe without a newline, so successful DOS playback of that short file is **not established**. [not yet checked in DOSBox]
 
 LST parsing and allocation: `PG:1181-1243`; TXT display: `PG:1989-2029`; dispatch by extension: `PG:1254-1318`; port read/write `engine/formats/graphicScripts.ts:41-74`. The list allocation is 100, but the loop has no count guard and its pause-default check occurs after increment; 100 is not a safely enforced limit. The web parser does not reproduce that unsafe indexing.
 
@@ -493,41 +493,41 @@ PLAYGAME writes REC demonstrations and reads them from the start scene's demo sl
 | REC 3e  | 2     | u16     | Elapsed game ticks        |
 | 3e + 2  | 1     | u8 bits | Scan code; bit 7 releases |
 | HIS 34r | 4     | i32     | Score for rank r          |
-| 34r + 4 | 30    | chars   | Name, NUL, unused tail    |
+| 34r + 4 | 30    | chars   | Name, NULLL, unused tail    |
 
 REC holds at most 1,000 events (3,000 bytes). HIS always has ten ranks (340 bytes). Neither embeds a game file name.
 
-**REC example.** TUTOR's DEMO.REC is 1,536 bytes, or 512 events. Its first six bytes are `19 00 4D 0D 00 CD`: wait 25 game ticks, press Right (4Dh), wait thirteen more ticks, release Right (CDh). These are elapsed times, not absolute clock readings. The GAM supplies the game and scene context; REC does not contain either name.
+**REC example.** TEDDY's DEMO.REC is 174 bytes, or 58 events. Its first six bytes are `01 00 4D 1E 00 48`: wait one game tick, press Right (4Dh), wait thirty more ticks, press Up (48h). A release would set bit 7, for example CDh for Right. The times are deltas, not absolute clock readings.
 
-PLAYGAME also writes a ten-rank HIS table under the game's name. Each rank is a signed 32-bit score followed by thirty name bytes, 340 bytes in all, with no signature. The working directory and game stem associate the table with the game; the file itself contains no GAM pointer. A score fits a signed long, and a normal name leaves room for its terminating NUL.
+PLAYGAME also writes a ten-rank HIS table under the game's name. Each rank is a signed 32-bit score followed by thirty name bytes, 340 bytes in all, with no signature. The working directory and game stem associate the table with the game; the file itself contains no GAM pointer. A score fits a signed long, and a normal name leaves room for its terminating NULLL.
 
-**HIS example.** SAMPLE.HIS begins `50 00 00 00`: score 80 at rank 0. Its next thirty bytes are zero, an empty name. Rank 1 starts at 34 with `41 00 00 00`, score 65, then the name `GAS` and a NUL at byte 41. Score sorting is separate from the record layout.
+**HIS example (constructed).** A score of 80 would begin `50 00 00 00`; a following empty name is a zero byte plus unused tail. Rank 1 begins at 34. Sandbox games do not supply a player-created HIS table, so this illustrates the record rather than claiming to quote a disk file.
 
-**Source audit.** Recorder shape, bound and disk writer: `PG:216-236`, `PG:510-528`, `PG:563-577`; port read/write `engine/formats/recording.ts:19-31`. Score record and writer: `code/GM/HISCOREL.C:16-20`, `code/GM/HISCOREL.C:121-124`; port read/write `engine/formats/highscore.ts:11-24`. Real fixtures: `runtime/run/GM/TUTOR/DEMO.REC`, `runtime/run/GM/SAMPLE/SAMPLE.HIS`.
+**Source audit.** Recorder shape, bound and disk writer: `PG:216-236`, `PG:510-528`, `PG:563-577`; port read/write `engine/formats/recording.ts:19-31`. Score record and writer: `code/GM/HISCOREL.C:16-20`, `code/GM/HISCOREL.C:121-124`; port read/write `engine/formats/highscore.ts:11-24`. REC fixture: `games/teddy/disk/demo.rec`. HIS has a constructed example; no player-created score table is supplied by the game.
 
 ### 13.10.14 Configuration and saved play
 
-The utilities share GM.CFG so they can reopen the working directory. It is a 51-byte NUL-terminated directory field written by the common startup/shutdown code. PLAYGAME setup reads and writes CONFIG.DAT for joystick, display and sound choices. These files configure the installed tools rather than define game content.
+The utilities share GM.CFG so they can reopen the working directory. It is a 51-byte NULLL-terminated directory field written by the common startup/shutdown code. PLAYGAME setup reads and writes CONFIG.DAT for joystick, display and sound choices. These files configure the installed tools rather than define game content.
 
 **Configuration: no headers**
 
 | Offset   | Bytes | Type   | Contents                |
 | -------- | ----- | ------ | ----------------------- |
-| GM.CFG 0 | 51    | chars  | Working directory + NUL |
+| GM.CFG 0 | 51    | chars  | Working directory + NULLL |
 | DAT 0    | 10    | i16[5] | Joystick x calibration  |
 | 10       | 10    | i16[5] | Joystick y calibration  |
 | 20       | 2     | enum16 | Video selection         |
 | 22       | 2     | enum16 | Sound selection         |
 | 24       | 2     | u16    | Sound interrupt         |
 | 26       | 2     | u16    | Sound I/O port          |
-| 28       | 41    | chars  | Driver path + NUL       |
+| 28       | 41    | chars  | Driver path + NULLL       |
 | 69       | 431   | bytes  | Reserved; total 500     |
 
 DAT means CONFIG.DAT here. Enum sizes follow the shipped 500-byte file and the 16-bit build; there is no web format codec for either configuration file.
 
-**Worked examples.** The installed GM.CFG is 51 bytes and begins `SAMPLE` followed by a backslash and NUL. The supplied CONFIG.DAT is 500 bytes: at offset 20 it has `0D 00` (video enum 13, automatic detection), at 22 `01 00` (Sound Blaster), at 24 `07 00` (IRQ 7), at 26 `20 02` (port 0220h), and at 28 the driver path. Paths have fifty characters plus NUL in GM.CFG and forty plus NUL in CONFIG.DAT. These are local installation settings; they do not use the GAM name pool.
+**Configuration example (constructed).** Video enum 13 is `0D 00` at 20; Sound Blaster enum 1 is `01 00` at 22; IRQ 7 is `07 00` at 24; port 0220h is `20 02` at 26. Sandbox game disks do not supply local installation settings. These are source-derived settings, not readings from a game file. GM.CFG allows fifty path characters plus NULLL; CONFIG.DAT allows forty plus NULLL.
 
-PLAYGAME's save menu writes ten 21-byte labels to SAVNAMES.DAT, and live state to GAME0.SAV through GAME9.SAV. Slot number, not a stored pointer, joins each label to its save. A label has twenty characters plus NUL. Saves retain the current map after touches, monster state, hero state, animation clocks, scene indexes and recorder state; they still depend on the matching GAM and assets.
+PLAYGAME's save menu writes ten 21-byte labels to SAVNAMES.DAT, and live state to GAME0.SAV through GAME9.SAV. Slot number, not a stored pointer, joins each label to its save. A label has twenty characters plus NULLL. Saves retain the current map after touches, monster state, hero state, animation clocks, scene indexes and recorder state; they still depend on the matching GAM and assets.
 
 **DOS saves: fixed prefix, native objects**
 
@@ -552,7 +552,7 @@ The save's first 761 bytes have explicit scalar and array sizes. What follows in
 
 Save prefix and order: `PG:1874-1894`; state types `PG:113-172`, recorder `PG:228-236`; compare 13.7 for assumptions. No binary DOS SAV fixture is present: files under `web/test/fixtures/saves/` are web JSON, including the file described as a DOS save in that folder's README. The port uses JSON in `engine/engine/scene.ts:761-809`, not a native-object codec; no claim of binary interchange is made.
 
-SAVNAMES.DAT: `PG:1664-1725`, web read/write `web/src/project/saveData/saveGame.ts:92-114`. The real dated fixture `web/test/fixtures/saves/2026-11-02-master-66c59762c/SAVNAMES.DAT` is 210 bytes and begins with ASCII first slot plus NUL, followed by zero padding to byte 21. Slot 0 joins to GAME0.SAV by index. This fixture is web-generated but has the same fixed label layout.
+SAVNAMES.DAT: `PG:1664-1725`, web read/write `web/src/project/saveData/saveGame.ts:92-114`. The real dated fixture `web/test/fixtures/saves/2026-11-02-master-66c59762c/SAVNAMES.DAT` is 210 bytes and begins with ASCII first slot plus NULLL, followed by zero padding to byte 21. Slot 0 joins to GAME0.SAV by index. This fixture is web-generated but has the same fixed label layout.
 
 ### 13.10.15 Transfer files and imported media
 
@@ -572,10 +572,24 @@ UTILITY's transfer command copies XFERPLAY.EXE under the game's stem, copies the
 
 UTILITY copies XFERPLAY.EXE under the game name and writes CONFIG.BAT. A DOS paragraph is 16 bytes; the EXE is a program, not a scene container.
 
-**Worked executable example.** The supplied XFERPLAY.EXE begins MZ. It is 160,598 bytes long. The word at offset 8 is 512 paragraphs, so the load image begins at 8,192; the word at offset 24 is 62, the relocation-table offset. The player's private settings belong to its particular build; changing a byte in a different build at the same address is not a format conversion. A batch file has no header or fixed count: read the command as text, not as an integrator record.
+**Transfer example (source-derived).** Transferring TEDDY writes a batch line `teddy configure` followed by CR LF, and copies the supplied player to TEDDY.EXE. The executable is an MZ program with its own header, relocations and machine code, not a packed game. There is no generated transferred executable on this game disk to quote. Build-specific executable patching belongs in a separate reference.
 
 GIF pictures, FLI animation and VOC recordings are imported media. CMF conversion changes an imported song's timing; IMAGE extracts game data from GIF rather than writing a new GIF. HLP help files and the Sound Blaster driver are supplied inputs; transfer copies them unchanged. Build, installation and registration tools can also copy executables or write administrative text, but those outputs are not game-resource layouts. This distinction keeps a list of game formats from implying that the editors author every file they can open.
 
-**Source audit.** Transfer copies XFERPLAY.EXE and writes CONFIG.BAT (`code/GM/UTILITY.C:291-311`); byte copying `code/GM/UTILITY.C:337-378`. `cd/gm/xferplay.exe` is the real executable example. Standard MZ offsets are also decoded locally in `web/src/programmersGuide/chapters/reading.md` for PLAYGAME; there is no engine format writer for MZ. See chapter 17 for build-specific patch locations. CONFIG.BAT has source-defined text, but no shipped generated example was available; a stem-plus-configure line is a source-derived example, not an observed transfer run.
+**Source audit.** Transfer copies XFERPLAY.EXE and writes CONFIG.BAT (`code/GM/UTILITY.C:291-311`); byte copying `code/GM/UTILITY.C:337-378`. The batch command is source-derived; no executable copied by an actual transfer run is claimed as a Sandbox example. Standard MZ offsets are also decoded locally in `web/src/programmersGuide/chapters/reading.md` for PLAYGAME; there is no engine format writer for MZ. See chapter 17 for build-specific patch locations. CONFIG.BAT has source-defined text, but no shipped generated example was available; a stem-plus-configure line is a source-derived example, not an observed transfer run.
 
 Writer inventory scope: released interactive tools and PLAYGAME, including installation settings and transfer output. The VGATYPE.DAT macro (`code/GM/GMGEN.H:27`) has no writer in the source. The backdrop rewrite at `code/GM/UTILITY.C:752-785` is commented out; IMAGE is the active writer. Registration/manufacturing helpers (for example `code/GM/MKDSK.CPP:97-109`, `code/GM/REGISTER.C:57`) produce administrative records or patch/copy release executables, not additional playable resource types. Imported GIF/FLI/VOC, supplied HLP and drivers are read or copied, not encoded by these tools.
+
+## Review clarifications: byte diagrams and ownership
+
+Picture indexes are zero-based: picture 0 occupies pixel bytes 0–399 and properties 400–419; picture 1 starts at 420. This is not a correction to a 400-byte picture size: each **record** is 420 bytes (`code/GM/BLOC.H:37-53`, `engine/formats/blocks.ts:6-7`). The booklet's real pixel grids use PARK.BBL block 10, TEDDY.CBL picture 8 and PARK.MBL picture 0, with PARK.PAL. The property plates follow the grids. Solid and gravity low bits use masks 1,2,4,8 (`code/GM/BLOC.H:12-15`, `code/GM/BLOC.H:44-49`). The hurt mask is retained but unused in the player. Character orientation nibbles and keyboard byte order come from `code/GM/CHAR.H:19-40`, `engine/formats/character.ts:55-85`. Every format plate now includes an eight-bit byte ribbon and integer-width/byte-order key; dedicated diagrams explain PAL components, MAP cell bytes, CHR nibbles, REC release bits, VOC u24 lengths and CMF seven-bit delay groups.
+
+The GAM encryption field is initialized FALSE but is not acted on by this loader. Filler at offset 6 is 250 reserved bytes initialized to repeating ASCII RSD (`code/GM/GMGEN.H:80-110`). `Validate` checks only GM; `code/GM/PLAYGAME.C:5156-5169` loads records without decryption. The independent parser also treats these bytes as header padding (`engine/formats/game.ts:184-217`). Preserve them rather than treating them as scene content.
+
+The saved clock at byte 7 is the fast sound clock, not the 18.2 Hz game clock. Its unsigned 32-bit range is 0 through 4,294,967,295. At 1,193,180/8,191 interrupts per second it wraps after about 29,484,300 seconds, or 341.25 days. It continues across scenes during a play session, with pauses restored and a new game resetting it, so it is not per-map time or a permanent all-sessions total. On overflow unsigned arithmetic returns to zero. Clock comparisons and the derived game clock can then jump backward or miss deadlines; uninterrupted play through overflow is unsafe, not a supported duration guarantee. Those consequences follow from the arithmetic and have not been tested by leaving a PC running that long.
+
+The saved value is `SaveGame(SndClock)`, not `clock` (`code/GM/PLAYGAME.C:1609`, `code/GM/PLAYGAME.C:1878`). Load derives `clock = SavedTime >> 3` (`code/GM/PLAYGAME.C:1825-1826`); new-game initialization resets all clocks (`code/GM/PLAYGAME.C:4627-4631`); scene entry preserves a clock snapshot (`code/GM/PLAYGAME.C:1337-1341`, `code/GM/PLAYGAME.C:1403-1404`). At the programmed rate the computed wrap period is 2^32 × 8191 / 1193180 = 29,484,300 seconds = 341.253 days. [inference] Unsigned wrap is certain; gameplay effects at overflow depend on the pending comparisons (`code/GM/PLAYGAME.C:1454`, `code/GM/PLAYGAME.C:3141`). [not yet checked in DOSBox] No engine format codec implements these compiler-object DOS saves.
+
+Old per-extension transfer is commented out (`code/GM/UTILITY.C:619-638`); active transfer copies all game-area files and the supplied player, and writes CONFIG.BAT (`code/GM/UTILITY.C:276-311`). The older registration writer embeds a 34-byte distribution-information stamp in executables (`code/GM/REGIST.C:125-148`); it is obsolete player/distribution information, not a GAM field or a header to add to imported media. GIF/FLI/VOC stay external inputs. No transferred EXE, DOS save, HIS or local configuration is claimed as an observed Sandbox disk example.
+
+**May these formats be described here?** Yes: original explanations of a file layout are appropriate; copying Creative's prose or diagrams would be a different matter. U.S. copyright law separates methods and systems from their written expression ([17 USC 102(b)](https://www.copyright.gov/title17/92chap1.html#102)). The format names and origins are credited to Creative Technology Ltd.; the CMF header is independently checked against `code/GM/SBCMUSIC.H:30-52` and `engine/formats/cmf.ts:25-38`, and VOC framing against `code/GM/SOUNDC.C:164-212` and `engine/formats/voc.ts:1-20`. Creative's original reference is the Sound Blaster Developer Kit's **Creative Music File (CMF)** and **Creative Voice File (VOC)** format documentation. No prose or diagrams from those specifications are reproduced here; NOTICE.md records this attribution and the documentation work.

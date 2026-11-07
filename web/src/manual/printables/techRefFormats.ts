@@ -9,7 +9,7 @@ type Row = [offset: string, bytes: string, type: string, field: string];
 function layout(title: string, rows: Row[], caption: string): HTMLElement {
   const ns = 'http://www.w3.org/2000/svg';
   const svg = document.createElementNS(ns, 'svg');
-  const height = 48 + rows.length * 21;
+  const height = 88 + rows.length * 21;
   svg.setAttribute('viewBox', `0 0 460 ${height}`);
   svg.setAttribute('role', 'img');
   svg.setAttribute('aria-label', `${title}. ${rows.map((r) => `${r[0]}: ${r[1]} bytes, ${r[2]}, ${r[3]}`).join('; ')}`);
@@ -42,6 +42,25 @@ function layout(title: string, rows: Row[], caption: string): HTMLElement {
     svg.append(rule);
     r.forEach((s, j) => text(columns[j], y + 15, s));
   });
+  const by = 53 + rows.length * 21;
+  text(9, by, 'Byte bits:');
+  for (let bit = 7; bit >= 0; bit--) {
+    const box = document.createElementNS(ns, 'rect');
+    for (const [key, value] of Object.entries({
+      x: String(85 + (7 - bit) * 19),
+      y: String(by - 12),
+      width: '19',
+      height: '16',
+      fill: '#fff',
+      stroke: '#14304a',
+      'stroke-width': '.5',
+    }))
+      box.setAttribute(key, value);
+    svg.append(box);
+    text(90 + (7 - bit) * 19, by, String(bit));
+  }
+  text(245, by, 'u8: 8 bits; u16: 16; u32: 32');
+  text(9, by + 20, 'Words: low byte first. Signed values: two’s complement.');
   return h('figure', { class: 'tr-fig' }, svg, h('figcaption', null, caption));
 }
 
@@ -94,7 +113,7 @@ export const FORMAT_DIAGRAMS: Diagrams = {
         ['417', '1', 'u8', 'Counter index'],
         ['418', '2', 'i16', 'Counter change'],
       ],
-      'Record b starts at 420b. Pixel (x,y) is byte 20y + x within that record. Bits 1,2,4,8 mean top,right,bottom,left.',
+      'Record b starts at 420b. Pixel (x,y) is byte 20y + x within that record. Masks 1,2,4,8 mean top,right,bottom,left.',
     ),
   sprites: () =>
     layout(
@@ -184,13 +203,13 @@ export const FORMAT_DIAGRAMS: Diagrams = {
         ['2', '2', 'i16', 'Version: 300'],
         ['4', '1', 'u8', 'Encryption flag'],
         ['5', '1', 'u8', 'File type: 8'],
-        ['6', '250', 'bytes', 'Filler'],
+        ['6', '250', 'bytes', 'Reserved: 52 53 44 repeated'],
         ['256', '2', 'i16', 'Number of scenes N'],
         ['258', '2', 'i16', 'Files per scene: 20'],
         ['260', '2', 'i16', 'Links per scene: 20'],
         ['262', '283N', 'records', 'Scenes in index order'],
         ['P', '2', 'u16', 'Name-pool length L'],
-        ['P + 2', 'L', 'strings', 'NUL-terminated file names'],
+        ['P + 2', 'L', 'strings', 'NULL-terminated file names'],
       ],
       'P = 262 + 283N. File pointers are offsets from P + 2, not from the start of the GAM. Pool byte 0 is an empty name.',
     ),
@@ -220,7 +239,7 @@ export const FORMAT_DIAGRAMS: Diagrams = {
         ['0', '2,160', '30 × 72', 'Speaker frequency rows'],
         ['2,160', '270', '30 × 9', 'Digital sound stems'],
         ['72e + 2t', '2', 'u16', 'Effect e, step t: hertz'],
-        ['2160+9e', '9', 'chars', 'Effect e: VOC stem + NUL'],
+        ['2160+9e', '9', 'chars', 'Effect e: VOC stem + NULL'],
       ],
       'e = 0 to 29; t = 0 to 35. A zero frequency is silence. The effect number addresses both tables; the VOC bytes live in another file.',
     ),
@@ -228,7 +247,7 @@ export const FORMAT_DIAGRAMS: Diagrams = {
     layout(
       'VOC: standard header and block stream',
       [
-        ['0', '20', 'bytes', 'Creative Voice File + 1Ah'],
+        ['0', '20', 'bytes', 'Voice signature + Ctrl-Z'],
         ['20', '2', 'u16', 'First block offset B'],
         ['22', '2', 'u16', 'Version'],
         ['24', '2', 'u16', 'Version check'],
@@ -266,7 +285,7 @@ export const FORMAT_DIAGRAMS: Diagrams = {
       [
         ['0', '2', 'i16', 'Left edge of GIF window'],
         ['2', '2', 'i16', 'Top edge of GIF window'],
-        ['4', '40', 'chars', 'GIF name, LF, NUL, tail'],
+        ['4', '40', 'chars', 'GIF name, LF, NULL, tail'],
       ],
       'No signature. The player reads two words, then at most 39 name bytes. Shorter name-only tails also occur in shipped files.',
     ),
@@ -278,7 +297,7 @@ export const FORMAT_DIAGRAMS: Diagrams = {
         ['Next', '2', 'bytes', 'CR LF ends each line'],
         ['Next line', 'variable', 'chars', 'Another graphic file name'],
         ['TXT 0', 'variable', 'CP437', 'Text with CR LF lines'],
-        ['EOF', '0 or 1', 'byte', 'Optional DOS 1Ah marker'],
+        ['EOF', '0 or 1', 'byte', 'Optional Ctrl-Z EOF (1Ah)'],
       ],
       'LST names select GIF, FLI, BKD, TXT or another list. These are author-supplied text, not binary Scene or FileEntry objects.',
     ),
@@ -289,7 +308,7 @@ export const FORMAT_DIAGRAMS: Diagrams = {
         ['REC 3e', '2', 'u16', 'Elapsed game ticks'],
         ['3e + 2', '1', 'u8 bits', 'Scan code; bit 7 releases'],
         ['HIS 34r', '4', 'i32', 'Score for rank r'],
-        ['34r + 4', '30', 'chars', 'Name, NUL, unused tail'],
+        ['34r + 4', '30', 'chars', 'Name, NULL, unused tail'],
       ],
       'REC holds at most 1,000 events (3,000 bytes). HIS always has ten ranks (340 bytes). Neither embeds a game file name.',
     ),
@@ -297,14 +316,14 @@ export const FORMAT_DIAGRAMS: Diagrams = {
     layout(
       'Configuration: no headers',
       [
-        ['GM.CFG 0', '51', 'chars', 'Working directory + NUL'],
+        ['GM.CFG 0', '51', 'chars', 'Working directory + NULL'],
         ['DAT 0', '10', 'i16[5]', 'Joystick x calibration'],
         ['10', '10', 'i16[5]', 'Joystick y calibration'],
         ['20', '2', 'enum16', 'Video selection'],
         ['22', '2', 'enum16', 'Sound selection'],
         ['24', '2', 'u16', 'Sound interrupt'],
         ['26', '2', 'u16', 'Sound I/O port'],
-        ['28', '41', 'chars', 'Driver path + NUL'],
+        ['28', '41', 'chars', 'Driver path + NULL'],
         ['69', '431', 'bytes', 'Reserved; total 500'],
       ],
       'DAT means CONFIG.DAT here. Enum sizes follow the shipped 500-byte file and the 16-bit build.',
@@ -315,7 +334,7 @@ export const FORMAT_DIAGRAMS: Diagrams = {
       [
         ['0', '1', 'u8', 'Active block spawner count'],
         ['1,3,5', '6', '3 × i16', 'Previous scene, scene, link'],
-        ['7', '4', 'u32', 'Saved clock'],
+        ['7', '4', 'u32', 'Fast sound clock (≈146 Hz)'],
         ['11', '600', 'u32[150]', 'Block animation times'],
         ['611', '150', 'u8[150]', 'Block index remapping'],
         ['761', 'compiler', 'objects', 'Hero state, CHR, viewport'],

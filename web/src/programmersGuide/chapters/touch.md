@@ -38,7 +38,7 @@ Touch is per **overlap of cells**, not of pixels: a block's transparent pixels (
 Bits: 1 top, 2 right, 4 bottom, 8 left (`BLOC.H:11-14`). A block's **right** bit stops something moving **left** into it from the right (`chklefts` tests `SOLRIG` of the cell to the left, `PG:3562-3580`), and so on. So the bit names the side that is solid, not the direction blocked.
 The hero's body is two cells high, so each direction tests two cells (three when offset). Two behaviors worth knowing:
 
-- **Corner nudge.** If only the lower cell of a two-high wall stops the hero and he is more than half a block down, the code **moves him** to the next block boundary (`chr.y[1] = BLEN`) or up to 0 (`PG:3585-3592`). That is the slide that carries a hero around a corner.
+- **Corner nudge.** If only the lower cell of a two-high wall stops the hero and the hero is more than half a block down, the code **moves the hero** to the next block boundary (`chr.y[1] = BLEN`) or up to 0 (`PG:3585-3592`). That is the slide that carries a hero around a corner.
 - **Monsters** check the block under the _next pixel step_ in a single axis at a time (`ChkHorizWalls`/`ChkVertWalls`, `PG:2606-2700`). There is a commented-out second test (`PG:2618-2620`) the authors abandoned because "in practice it does not work well at all".
 
 The solid test uses the **displayed** frame (`blkmap`) as well (`PG:2632-2669`: `blks[0][blkmap[map[...].blk]].solid`), so a ring of block frames can switch a wall on and off. That is the door/gate primitive.
@@ -73,7 +73,7 @@ About 25-30 clock cycles per iteration on a 286 = 10,000-12,000 cycles, roughly 
 
 ## 8.7 Tips
 
-- A hurting block should have a one-block margin of free space; because touch is by cell, the hero is hurt when he overlaps its cell, not its art.
+- A hurting block should have a one-block margin of free space; because touch is by cell, the hero is hurt when the hero overlaps its cell, not its art.
 - For a gate: a block ring with `solid` bits in some frames. For a door that opens when touched: `touchbl` on a trigger cell **next to** the door.
 - Make a pass-through shot with the same power as its target (they will not collide) and a different power for a shot that should kill.
 - To make a monster harmless for a moment, give a frame a block that is all 255.
