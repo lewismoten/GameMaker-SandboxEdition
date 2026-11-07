@@ -145,6 +145,14 @@ template<class G> void emptyFavorites(G&g,int W,bool hidden) {
   clippedText(g,clip,hidden?"that is not in right now.":"Open a game's Details",44,48+10*scale,scale,C_WHITE);
   if(!hidden)clippedText(g,clip,"and tap the star.",44,48+20*scale,scale,C_WHITE);
 }
+// Details: the buttons for the game's own pages (picker.h detailsPageSpan). Text is 6 by 8 on the small board, 12 by 16 on the large.
+template<class G> void detailsPages(G&g,int W,int H,int mask) {
+  int y0=detailsPagesTop(H),y1=detailsPagesBottom(H),scale=W==320?1:2;
+  for(int k=0,x0,x1;k<DETAILS_PAGES;k++){if(!detailsPageSpan(W,mask,k,x0,x1))continue;
+    g.fillRoundRect(x0,y0,x1-x0,y1-y0,6,C_DARK);g.drawRoundRect(x0,y0,x1-x0,y1-y0,6,C_WHITE);
+    const char*l=detailsPageLabel(k);g.setTextSize(scale);g.setTextColor(C_WHITE,C_DARK);
+    g.setCursor((x0+x1)/2-(int)strlen(l)*3*scale,(y0+y1)/2-4*scale);g.print(l);}
+}
 // A line under the title in Details: whether the game is a favorite, or that the list is full.
 template<class G> void detailsNote(G&g,int W,int H,const char*note) {
   Tile clip={8,H-58,W-16,16,0,0};g.fillRect(8,H-58,W-16,16,C_BLACK);clippedText(g,clip,note,8,H-54,1,C_YELLOW);

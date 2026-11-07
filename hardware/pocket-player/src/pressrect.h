@@ -4,6 +4,7 @@
 #pragma once
 #include <stdint.h>
 #include "overlaydraw.h"
+#include "picker.h"
 #include "settingsdraw.h"
 namespace prs {
 struct Rect {
@@ -20,6 +21,7 @@ struct Ctx {
   int tiles = 0;                                                // library: tiles on this page
   st::View settings;     // settings: the tab and page showing
   int displayRows = 1;  // display options: 1 or 2 buttons
+  int pages = 0;        // details: the game's own pages (picker.h detailsPageSpan mask)
 };
 inline Rect tileRect(int W, int i) {
   bool s = W == 320;
@@ -55,7 +57,13 @@ inline bool under(const Ctx& c, int x, int y, Rect& r) {
       }
       return r.has(x, y);
     }
-    case SC_DETAILS:  // Back, Favorite, Play (picker_draw.h detailsFooter)
+    case SC_DETAILS: {  // Title, Story, Instructions (picker_draw.h detailsPages), then Back, Favorite, Play (detailsFooter)
+      int k = pk::detailsPageAt(W, H, c.pages, x, y), x0, x1;
+      if (k >= 0 && pk::detailsPageSpan(W, c.pages, k, x0, x1)) {
+        r = {x0, pk::detailsPagesTop(H), x1, pk::detailsPagesBottom(H)};
+        return true;
+      }
+    }
       if (y < H - 38) return false;
       r = x < W / 3 ? Rect{0, H - 38, W / 3 - 2, H} : x < 2 * W / 3 ? Rect{W / 3, H - 38, 2 * W / 3 - 2, H} : Rect{2 * W / 3, H - 38, W, H};
       return r.has(x, y);

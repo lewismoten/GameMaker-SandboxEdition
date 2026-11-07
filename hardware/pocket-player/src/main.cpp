@@ -1054,13 +1054,15 @@ static void drawSearch() {
   pk::drawButton(tft,42,0,scr::W,32,searchAll?"All games":"This category");
   pk::drawSmallIcon(tft,searchAll?0:18,50,8,true);
 }
+static int detailsMask = 0;  // the selected game's own pages (picker.h detailsPageSpan), read from its .cfg when Details opens
 static void drawDetails() {
   tft.fillScreen(C_BLACK);title("Game details");
   pk::Meta m;gameMeta(games[selected],m);
-  pk::Tile clip={8,40,scr::W-16,scr::H-90,0,0};
+  pk::Tile clip={8,40,scr::W-16,pk::detailsPagesTop(scr::H)-44,0,0};
   size_t at=0,n=strlen(m.title);int y=44,cols=(scr::W-16)/6;
   while(at<n){char b[81];size_t take=n-at<(size_t)cols?n-at:cols;memcpy(b,m.title+at,take);b[take]=0;pk::clippedText(tft,clip,b,8,y,1,C_WHITE);at+=take;y+=12;}
   bool pinned=catalog&&catalog->pins.has(games[selected].uid);
+  pk::detailsPages(tft,scr::W,scr::H,detailsMask);
   pk::detailsFooter(tft,scr::W,scr::H,pinned);if(pinned)pk::detailsNote(tft,scr::W,scr::H,"In Favorites");
 }
 // A short rising beep to hear the volume with (36 steps of 1/145.6 s, little endian frequencies in Hz).
@@ -1147,6 +1149,7 @@ static void applyControls() {
 // .lst files, drawn at 1.5x like the game. Taps move on wherever the engine waits for a key.
 
 static bool cardsDry = false;   // the serial self-test: no waits, one drawing per fade
+static bool readingPages = false;  // Details is showing the game's own pages: every wait is for a touch (paged by touch)
 static int cardsShown = 0, cardsFailed = 0;
 static void setPalette6(const uint8_t* p768) {
   for (int i = 0; i < 256; i++) {
@@ -1176,6 +1179,7 @@ static void fadePalette(const uint8_t* from, const uint8_t* to, const uint8_t* p
 // GetKey / PauseTimeKey: a touch (or the time) moves on. gm::PAUSE_KEY waits for the touch alone.
 static void waitTap(int seconds) {
   if (seconds <= 0 || cardsDry) return;
+  if (readingPages) seconds = gm::PAUSE_KEY;
   uint32_t end = millis() + (uint32_t)seconds * 1000u;
   wasDown = true;  // a finger still down from before is not a tap
   int tx, ty;
@@ -1248,24 +1252,24 @@ static void showCards(const char* where) {
   bool cardWasUp = sdUp, card = curFs == &SD;
   if (card) mountSD();  // held while the cards show (the level's buffers are already freed)
   carddraw::clear(tft, pal[0]);
-  gm::Card cards[10];
-  int n = gm::cardsOfFile(cfgLines, assets.cfgName, where, cards, 10);
+  gm::Card cards[gm::MAX_CARDS];
+  int n = gm::cardsOfFile(cfgLines, assets.cfgName, where, cards, gm::MAX_CARDS);
   uint8_t* pic = nullptr;
-  char picFile[20] = "";
+  gm::Card picCard = {};  // the picture's card, to draw it again clean
   bool dirty = false;  // text is on the picture
   gm::TextRect previousText;
   uint8_t black[768];
   memset(black, 0, sizeof black);
   for (int i = 0; i < n; i++) {
     const gm::Card& c = cards[i];
-    if (c.kind == 'g') {
+    if (c.kind == 'g' || c.kind == 'p') {
       carddraw::clear(tft, pal[0]);
       free(pic);
-      pic = gm::loadPicture(assets, readPak, c.file);
+      pic = gm::loadCardPicture(assets, readPak, c);
       dirty = false;
       previousText = gm::TextRect();
-      if (!pic) { picFile[0] = 0; cardsFailed++; continue; }
-      strcpy(picFile, c.file);
+      if (!pic) { cardsFailed++; continue; }
+      picCard = c;
       cardsShown++;
       fadePalette(black, pic, pic + 768);
       waitTap(c.pause);
@@ -1278,7 +1282,7 @@ static void showCards(const char* where) {
       for (int pg = 0; pg < pages; pg++) {
         if (dirty) {  // the picture again, clean (Display_File restores the screen after each page and file)
           free(pic);
-          pic = gm::loadPicture(assets, readPak, picFile);
+          pic = gm::loadCardPicture(assets, readPak, picCard);
           if (!pic) break;
         }
         setPalette6(pic);
@@ -1398,6 +1402,37 @@ static void enterPicker() {
   mode = PICKER;
   wasDown = true;
   drawPicker();
+}
+// Details for the selected game: which of its own pages (title, story, instructions) its .cfg has, then the screen.
+static void openDetails() {
+  stopCardScan();
+  char name[24];
+  snprintf(name, sizeof name, "%s.cfg", fileOf(games[selected]));
+  detailsMask = selectGame(games[selected]) ? gm::menuPagesOfFile(cfgLines, name) : 0;
+  mode = DETAILS_SCREEN;
+  drawDetails();
+}
+// Title, Story or Instructions from Details (k: 0, 1, 2): the game's own pictures and text pages, as its DOS menu showed them,
+// each waiting for a touch. The catalog is let go first, as for a launch, so a 64 KB picture has the heap; then Details again.
+static void readMenuPages(int k) {
+  activeGame = games[selected];
+  curGame = selected;
+  if (!selectGame(activeGame)) { drawDetails(); return; }
+  snprintf(assets.cfgName, sizeof assets.cfgName, "%s.cfg", fileOf(activeGame));
+  assets.inflate = inflateRaw;  // before any game has played it is not set yet
+  releaseCatalog();
+  char where[2] = {pk::detailsPageWhere(k), 0};
+  tft.fillScreen(C_BLACK);
+  readingPages = true;
+  showCards(where);
+  readingPages = false;
+  spk::stop();
+  loadGameList();
+  restoreSelection = true;
+  selected = pk::selection(games, ngames, activeGame.uid);
+  wasDown = true;
+  if (selected < 0) { enterPicker(); return; }
+  openDetails();
 }
 
 // A game or level that cannot load: the failure card (instead of a reset) until the button is tapped (or 30 seconds pass).
@@ -1945,6 +1980,8 @@ static prs::Ctx ctxFor(prs::Screen sc) {
     c.next = page + 1 < pages;
     c.action = (searchText[0] && !nmatch) || (selected >= 0 && selected < ngames && !browsingCategories);
     c.tiles = count - page * 6 < 0 ? 0 : count - page * 6 > 6 ? 6 : count - page * 6;
+  } else if (sc == prs::SC_DETAILS) {
+    c.pages = detailsMask;
   } else if (sc == prs::SC_SETTINGS) {
     c.settings = setView;
   } else if (sc == prs::SC_DISPLAY) {
@@ -2094,7 +2131,7 @@ void loop() {
         else if(tx>=50&&tx<98&&page+1<pages){page++;restoreSelection=false;selected=-1;drawPicker(false,true);}
         else if(tx>=scr::W-100){
           if(searchText[0]&&!nmatch){searchText[0]=0;drawPicker();}
-          else if(selected>=0&&selected<ngames){stopCardScan();mode=DETAILS_SCREEN;drawDetails();}
+          else if(selected>=0&&selected<ngames)openDetails();
         }
       }else {
         int slot=pk::hitTile(scr::W,tx,ty),at=page*6+slot;
@@ -2109,8 +2146,9 @@ void loop() {
     return;
   }
   if(mode==DETAILS_SCREEN){
-    if(menuTap(prs::SC_DETAILS,tx,ty)){int b=pk::detailsButton(scr::W,tx);
-      if(b==0){mode=PICKER;drawPicker();}
+    if(menuTap(prs::SC_DETAILS,tx,ty)){int b=pk::detailsButton(scr::W,tx),k=pk::detailsPageAt(scr::W,scr::H,detailsMask,tx,ty);
+      if(k>=0)readMenuPages(k);
+      else if(b==0){mode=PICKER;drawPicker();}
       else if(b==1){int r=toggleFavorite(games[selected].uid);drawDetails();pk::detailsNote(tft,scr::W,scr::H,pinMessage(r));}
       else{if(!launchGame(selected))enterPicker();else wasDown=true;}}delay(5);return;
   }
