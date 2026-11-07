@@ -20,5 +20,7 @@ const RUNS: Record<string, ProgramRef> = {
 
 /** The program a file in the GM folder starts, by its (upper-case) name; undefined for data. */
 export function gmProgramRef(name: string): ProgramRef | undefined {
+  // GMMENU.BAT, DE.BAT, BL.BAT ...: RSD's batch files for PCs that cannot chain programs
+  if (name.endsWith('.BAT')) return { kind: 'batch' };
   return RUNS[name];
 }

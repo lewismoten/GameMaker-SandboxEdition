@@ -54,7 +54,8 @@ export type ProgramRef =
   | { kind: 'offline' }
   | { kind: 'roomfix' }
   | { kind: 'flags' }
-  | { kind: 'batch'; lines: string[] };
+  /** A .BAT: the shell runs it from the node's own bytes, or from these lines. */
+  | { kind: 'batch'; lines?: string[] };
 
 interface Drive {
   letter: string;
