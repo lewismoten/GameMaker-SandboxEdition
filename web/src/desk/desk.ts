@@ -382,6 +382,12 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     void refreshDisks();
   });
   const unWall = wallTrophies(desk);
+  // Scoot, the desk buddy, on the right speaker (beside the Game-Maker box on a phone), loaded on its own
+  let unBuddy: (() => void) | undefined;
+  void import('./buddy/deskBuddy').then(({ deskBuddy }) => {
+    if (!desk.isConnected) return;
+    unBuddy = deskBuddy((el) => (desk.querySelector('.desk-right') ?? desk.querySelector('.desk-scene'))?.append(el));
+  });
   // the guided tour's BBS chapter calls the board on this PC, and puts everything back after
   const unTour = deskTour(desk, pc);
   drawBoxTiles(boxTiles);
@@ -397,6 +403,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     shelf.dispose();
     unCatalog();
     unWall();
+    unBuddy?.();
     unTour();
     pc.dispose();
     endDesk();
