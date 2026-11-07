@@ -138,6 +138,12 @@ export class Shell {
       this.screen.cursorVisible = true;
       return;
     }
+    // SPECIALS.EXE (the limited-time games' test utility, specials/specialsExe.ts) answers from anywhere too, unlisted like EGG.EXE
+    if (/^(?:[a-z]:)?\\?specials(?:\.exe)?$/i.test(trimmed.split(/\s+/)[0])) {
+      const { specialsCommand } = await import('../../specials/specialsExe');
+      for (const line of specialsCommand(args)) this.out(line);
+      return;
+    }
     const prog = await this.findProgram(trimmed.split(/\s+/)[0]);
     if (!prog) {
       this.out('Bad command or file name');
