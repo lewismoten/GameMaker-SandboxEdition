@@ -6,14 +6,12 @@
 import { h, toast, promptText, modal } from '../core/ui';
 import { Project } from '../core/project';
 import { renderShot, renderTitle } from '../../gfx/gameShots';
-import { titlePixels } from '../../gfx/titlePicture';
 import { paintIndexed } from '../core/draw';
 import { GameFiles, creditLine, loadHostedGame, withDetails, type CatalogEntry } from '../../project/files';
 import { demoNeeds, streamHostedGame } from '../../project/streamGame';
 import { listProjects, loadProject } from '../../project/storage';
 import { controlsFromCompanion } from '../core/gameControls';
 import { ADVTYPE, NOSCENE, parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
-import { levelShot } from '../editors/integrator/integratorArt';
 import { catalogTarget, healthBadge, projectTarget, type HealthTarget } from './gameHealth';
 import type { DemoPreview } from '../../media/demoPreview';
 import type { HomeNav } from './home';
@@ -196,6 +194,7 @@ export function projectGame(p: ProjectSummary, original?: CatalogEntry): HomeGam
       const link = game.scenes[0]?.links.find((l) => l.toScene !== NOSCENE && game.scenes[l.toScene]?.gametype === ADVTYPE);
       const i = link ? link.toScene : game.scenes.findIndex((s) => s.gametype === ADVTYPE);
       if (i < 0) return false;
+      const { levelShot } = await import('../editors/integrator/integratorArt');
       const shot = levelShot(files, game.scenes[i], link?.to ?? { x: 50, y: 50 }, Math.round(c.width / 20), Math.round(c.height / 20));
       if (!shot) return false;
       const ctx = c.getContext('2d')!;
@@ -206,6 +205,8 @@ export function projectGame(p: ProjectSummary, original?: CatalogEntry): HomeGam
     // its title screen, from its own files as they are now
     drawTitle: async (c) => {
       const files = await load();
+      // drawn live only for a game of yours (a listed game's is built ahead: gameShots.ts), so its readers load then
+      const { titlePixels } = await import('../../gfx/titlePicture');
       const pic = titlePixels(files, parseGame(files.get(p.gam)!));
       if (pic) paintIndexed(c, pic.pixels, pic.width, pic.height, pic.palette);
       return !!pic;
