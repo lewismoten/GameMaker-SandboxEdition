@@ -34,6 +34,7 @@ import {
   type Icon,
   type Place as PlaceName,
 } from './art';
+import { addDress } from './dress';
 import type { LookName } from './palette';
 import type { Place, Step } from './place';
 import type { SongName } from './song';
@@ -156,6 +157,7 @@ export function startBook(pal: Pal, place: PlaceName, o: BookOptions = {}): { bo
     book.add(`pad.${ic}`, pad(pal, bg, ic, false), { ...bgRule, score: POINTS.part, effect: ch, eamt: 1, touch: `stamp.${ic}` });
     book.add(`stamp.${ic}`, pad(pal, bg, ic, true), bgRule);
   }
+  if (!o.lean) addDress(book, pal, place, timed, bgRule);
   return { book, timed };
 }
 

@@ -9,6 +9,7 @@
 //   6 Supper Under the Window        setwest (plates), seteast (cups), moonmeal (mats)
 import type { Pal } from '../../../kit/starter/palette';
 import type { Icon, Place as PlaceName } from '../art';
+import { dressRoom } from '../dress';
 import { addSigns, startBook, type Level, type MonFile, type SignDefs } from '../level';
 import { ROOF } from '../monsters';
 import { CHANNELS } from '../nell';
@@ -64,6 +65,7 @@ export function buildRoom(pal: Pal, r: RoomSpec): Level {
   const { book, timed } = startBook(pal, r.place, { parts, pads, tilt: r.tilt });
   const signs = addSigns(book, pal, r.signs);
   const map = paintRoom(book, r.width, r.plan, r.decor, r.place === 'roof', signs);
+  dressRoom(map, r.place, r.width);
   if (r.colander !== undefined) map.mon(ROOF.colander[r.colander], COLANDER_FROM, 3);
   return { file: r.file, title: r.title, hint: r.hint, look: r.look, map, book, timed, mon: r.mon ?? 'kitchen', song: r.song, hero: 'nell', plan: r.plan };
 }

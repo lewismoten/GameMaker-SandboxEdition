@@ -112,6 +112,11 @@ const LOOKS: Record<Exclude<LookName, ''>, Record<string, Tint>> = {
   },
   // the roof: clear indigo night, cool stone, warm windows
   night: {
+    brick: [
+      [36, 20, 36],
+      [150, 96, 104],
+      [92, 48, 62],
+    ],
     sky: [
       [8, 10, 40],
       [60, 70, 140],
@@ -130,6 +135,11 @@ const LOOKS: Record<Exclude<LookName, ''>, Record<string, Tint>> = {
   },
   // the reveal: the same night, the bakery window a little warmer
   reveal: {
+    brick: [
+      [36, 20, 36],
+      [150, 96, 104],
+      [92, 48, 62],
+    ],
     sky: [
       [10, 12, 46],
       [70, 80, 150],

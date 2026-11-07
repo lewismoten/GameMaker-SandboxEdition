@@ -7,6 +7,7 @@
 //   uphill    wide swings with stairs painted along the fronts, the window's moon in view
 import { ORIGIN } from '../../../kit/starter/map';
 import type { Pal } from '../../../kit/starter/palette';
+import { castShadows, varyWalls } from '../dress';
 import { addSigns, startBook, type Level } from '../level';
 import type { LookName } from '../palette';
 import { Place } from '../place';
@@ -118,6 +119,9 @@ export function buildShaft(pal: Pal, s: Shaft): Level {
   }
   const path = shaftPath(s);
   for (const y of s.washers) m.set(Math.round(pathAt(path, y)), y, 'washer');
+  // cupboard fronts of mixed kinds, each row of fronts casting its shadow
+  castShadows(m, ['wall'], 3, W - 4, 1, H - 1);
+  varyWalls(m, -ORIGIN, W + ORIGIN, -ORIGIN, H + ORIGIN);
   m.start = [SHAFT.start[0] + ORIGIN, SHAFT.start[1] + ORIGIN];
   m.set(SHAFT.start[0], SHAFT.start[1], 'inBot').set(SHAFT.start[0], SHAFT.start[1] - 1, 'inTop');
   return { file: s.file, title: s.title, hint: s.hint, look: s.look, map: m, book, timed, mon: 'kitchen', song: 'orbit', hero: 'ring' };

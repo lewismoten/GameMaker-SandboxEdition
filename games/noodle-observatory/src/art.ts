@@ -10,6 +10,7 @@
 // outline on a locked socket, and fitted in place once the socket takes it.
 import { Pixels, dither } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import type { Pal } from '../../kit/starter/palette';
+import { shaded } from './dressArt';
 
 export const T = 255;
 type P = Pixels;
@@ -138,7 +139,8 @@ export function floor(pal: Pal, kind: 'counter' | 'mat' | 'boards' | 'slate'): P
 
 /** A shelf plank across the top of the tile, its bracket below, over the backdrop. */
 export function shelf(pal: Pal, bg: P, look: 'wood' | 'pad' = 'wood'): P {
-  const p = tile(bg);
+  // its own shadow on the wall below the plank (none in the open night sky)
+  const p = look === 'wood' && bg.get(0, 0) !== pal.c('sky', 1) ? shaded(pal, bg, (_x, y) => (y < 5 ? 0 : 0.85 - (y - 5) / 16)) : tile(bg);
   const k = look === 'pad' ? pal.r('blue') : pal.r('cab');
   p.rect(0, 0, 20, 5, k[2]).rect(0, 0, 20, 1, k[4]).rect(0, 4, 20, 1, k[0]);
   p.rect(4, 5, 2, 4, k[1]).line(5, 8, 9, 5, k[1]);
