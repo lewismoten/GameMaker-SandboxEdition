@@ -8,10 +8,12 @@
 import { buildCatPalette } from '../palette';
 import type { Level } from '../level';
 import { levelOne } from './one';
+import { levelThree } from './three';
+import { levelTwo } from './two';
 
 /** The base palette and every level. */
 export function buildLevels(): { pal: ReturnType<typeof buildCatPalette>; levels: Level[] } {
   const pal = buildCatPalette();
-  const levels: Level[] = [levelOne(pal)];
+  const levels: Level[] = [levelOne(pal), levelTwo(pal), levelThree(pal)];
   return { pal, levels };
 }

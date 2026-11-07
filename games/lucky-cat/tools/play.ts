@@ -2,11 +2,11 @@
 // (check.ts, walkthrough.ts and gendemo.ts run it).
 import { StarterBot } from '../../kit/starter/bot';
 import { playLevels } from '../../kit/levelRun';
-import { ladderLane } from './route';
+import { ladderLane, mirrorMaze, townHall } from './route';
 import { GameSim } from './sim';
 
 export const SEED = 1;
-export const LEVELS = [ladderLane];
+export const LEVELS = [ladderLane, mirrorMaze, townHall];
 
 export async function play(seed = SEED, upTo = LEVELS.length): Promise<{ sim: GameSim; bot: StarterBot }> {
   const sim = new GameSim(undefined, seed);

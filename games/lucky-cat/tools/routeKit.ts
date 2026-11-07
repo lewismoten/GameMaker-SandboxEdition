@@ -1,6 +1,7 @@
 // Small orders every level's route shares: run an order and fail on anything unexpected, leave through a door,
 // read a sign like a person, jump a hazard, and check what a level scored.
 import type { Result, StarterBot } from '../../kit/starter/bot';
+import { SCAN } from '../../kit/starter/ids';
 import { CHARM_POINTS } from '../src/props';
 
 /** Runs an order; anything but carrying on (a scene change, getting stuck) is an error. */
@@ -44,4 +45,19 @@ export function score(bot: StarterBot, from: number, charms: number, extra: numb
   const want = charms * CHARM_POINTS + extra;
   const got = bot.sim.ci.score - from;
   if (got !== want) throw new Error(`${what}: scored ${got}, expected ${want} (${charms} charms and ${extra} more)`);
+}
+
+/** Runs `fn` with the bot's Left and Right keys swapped, as the mirror's character file swaps them: the bot still means "walk right" and the cat does it on the other key. */
+export async function mirrored<T>(bot: StarterBot, fn: () => Promise<T>): Promise<T> {
+  const sim = bot.sim;
+  const swap = (k: number) => (k === SCAN.left ? SCAN.right : k === SCAN.right ? SCAN.left : k);
+  const { press, release } = sim;
+  sim.press = (k: number) => press.call(sim, swap(k));
+  sim.release = (k: number) => release.call(sim, swap(k));
+  try {
+    return await fn();
+  } finally {
+    sim.press = press;
+    sim.release = release;
+  }
 }
