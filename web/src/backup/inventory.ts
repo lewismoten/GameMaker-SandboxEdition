@@ -79,6 +79,7 @@ export const LOCAL_KEYS: Record<SectionId, { keys: string[]; prefixes?: string[]
       'gm-desk-mouse',
       'gm-sound-blaster',
       'gm-desk-machine',
+      'gm-specials',
     ],
   },
   notes: { keys: ['gm-imported-notes', 'gm-removed-games'] },
@@ -160,6 +161,8 @@ export const KEYS_NOT_BACKED_UP: Record<string, string> = {
   'gm-turbo': 'an old setting the desk removes',
   'gm-assistant-archive': 'the Assistant chat’s archive (this tab only)',
   'gm-tour-demo': 'the guided tour’s signal to start or stop a game preview (an event, never stored)',
+  'gm-specials-changed': 'the signal that a Special was kept, locked or reset (an event, never stored)',
+  'gm-specials-today': 'the test date SPECIALS DATE sets, for testing only',
 };
 
 /** Which section owns a localStorage key, or undefined. */
