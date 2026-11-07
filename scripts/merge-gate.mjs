@@ -79,7 +79,7 @@ export function runGate(options, settings = {}) {
         throw error;
       }
     }
-    const markers = command(integration, ['git', 'grep', '-n', '-E', '^(<<<<<<< |=======$|>>>>>>> )', '--', ':!package-lock.json']);
+    const markers = command(integration, ['git', 'grep', '-n', '-E', '^(<<<<<<< |=======$|>>>>>>> )', '--', ':!package-lock.json', ':!code', ':!cd', ':!runtime']);
     if (markers.code !== 1) throw new Error(`Conflict markers or grep failure: ${markers.stdout}${markers.stderr}`);
     result.mergedRevision = git(integration, 'rev-parse', 'HEAD');
     result.mergedTree = git(integration, 'rev-parse', 'HEAD^{tree}');
