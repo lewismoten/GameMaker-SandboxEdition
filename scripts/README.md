@@ -1,5 +1,9 @@
 # Repository scripts
 
+[`task-records/`](task-records/README.md) defines the validated private intake read
+model: client-key and board-ID lookup, distinct run summaries, adapter integration
+and SQLite regression tests. It does not publish the private intake or its data.
+
 `verify-changed.mjs` runs through `npm run verify:changed` (root or `web/`): the quick pre-merge check of only what the branch touched against `origin/develop` (or `--base <ref>`). `npm run verify` is the full check.
 
 `verify-packages.mjs` runs through root `npm run verify:packages`. It copies each SDK

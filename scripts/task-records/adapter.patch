@@ -1,0 +1,49 @@
+--- a/intake.py
++++ b/intake.py
+@@ -4,2 +4,4 @@
+ from pathlib import Path
++from contextlib import closing, ExitStack
++from task_records import Failure, resolve_request, bind_task, read_path
+ 
+@@ -26,3 +28,3 @@
+     try:
+-        with sqlite3.connect(path.as_uri() + '?mode=ro', uri=True) as board:
++        with closing(sqlite3.connect(path.as_uri() + '?mode=ro', uri=True)) as board:
+             return [r[0] for r in board.execute('SELECT id FROM tasks WHERE idempotency_key=?', (key,))]
+@@ -30,5 +32,2 @@
+         raise Failure('board_unavailable')
+-
+-class Failure(Exception):
+-    pass
+ 
+@@ -62,5 +61,5 @@
+     os.chmod(HOME, 0o700)
+-    with open(HOME / 'lock', 'a') as lock:
++    with open(HOME / 'lock', 'a') as lock, ExitStack() as stack:
+         fcntl.flock(lock, fcntl.LOCK_EX)
+-        db = sqlite3.connect(HOME / 'intake.sqlite3')
++        db = stack.enter_context(closing(sqlite3.connect(HOME / 'intake.sqlite3')))
+         db.execute('PRAGMA synchronous=FULL')
+@@ -76,3 +75,7 @@
+         db.commit()
+-        row = db.execute('SELECT digest,task_id,attempted,original_title,original_body,instructions FROM requests WHERE key=?', (key,)).fetchone()
++        resolved = resolve_request(db, key, board_db())
++        if resolved:
++            key, row = resolved
++        else:
++            row = None
+         if action == 'read' and row is None:
+@@ -117,12 +120,5 @@
+                 task_id = task['id']
+-            db.execute('UPDATE requests SET task_id=? WHERE key=?', (task_id, key))
++            bind_task(db, key, task_id)
+             db.commit()
+-        detail = cli('show', task_id, '--json')
+-        result = detail['task']
+-        if result.get('id') != task_id:
+-            raise Failure('readback_mismatch')
+-        task = {k: result.get(k) for k in ('id', 'title', 'body', 'status', 'created_at', 'assignee', 'result', 'completed_at', 'last_failure_error')}
+-        task['latest_summary'] = detail.get('latest_summary')
+-        original = {'title': row[3], 'body': row[4]} if row[3] is not None else None
+-        return {'task': task, 'original_request': original, 'project_instructions': row[5]}
++        return read_path(board_db(), key, (row[0], task_id, *row[2:]))
