@@ -93,15 +93,15 @@ prs::drawPressed(fb,g);prs::drawPressed(fb,n);assert(!fb.clipped);save(fb,out+"/
       pk::thumbnail(fb,W,i,raw.data(),m.dos,i==0,false,false,m.title,m.course);  // Starters carry a text caption (main.cpp)
     }
     assert(!fb.clipped);save(fb,out+"/thumbnails-"+std::to_string(W)+".ppm");
-    // The hand mark (a score of 85 or more) sits top left of a tile, beside the favorite star top right; both are drawn over the picture.
+    // The hand mark (a score of 85 or more) sits bottom right of a tile, beside the favorite star top right; both are drawn over the picture.
     for(int i=0;i<6;i++) {
       auto&m=records[i];uint32_t off,len;assert(pak.find(m.thumb,&off,&len));std::vector<uint8_t>b(len),raw(pk::THUMB_RAW);assert(readAt(f,off,b.data(),len));
       z_stream z={};assert(inflateInit2(&z,-15)==Z_OK);z.next_in=b.data()+4;z.avail_in=len-4;z.next_out=raw.data();z.avail_out=raw.size();assert(inflate(&z,Z_FINISH)==Z_STREAM_END);inflateEnd(&z);
       pk::thumbnail(fb,W,i,raw.data(),m.dos,false,false,i==1,i==2?m.title:nullptr,i==2?m.course:0,i%2==0);
     }
     assert(!fb.clipped);save(fb,out+"/touch-marks-"+std::to_string(W)+".ppm");
-    for(int i:{0,2,4}){auto r=pk::tile(W,i);bool marked=true;for(int sy=0;sy<16;sy++)for(int sx=0;sx<16;sx++){uint8_t v=pk::ICONS[16][sy*16+sx];if(v&&fb.px[(r.y+3+sy)*W+r.x+3+sx]!=pk::ICON_PALETTE[v])marked=false;}assert(marked);}  // the hand's own colors, drawn over the picture
-    {auto r=pk::tile(W,3);bool same=true;for(int sy=0;sy<16;sy++)for(int sx=0;sx<16;sx++){uint8_t v=pk::ICONS[16][sy*16+sx];if(v&&fb.px[(r.y+3+sy)*W+r.x+3+sx]!=pk::ICON_PALETTE[v])same=false;}assert(!same);}  // an unmarked tile has no hand
+    for(int i:{0,2,4}){auto r=pk::tile(W,i);bool marked=true;for(int sy=0;sy<16;sy++)for(int sx=0;sx<16;sx++){uint8_t v=pk::ICONS[16][sy*16+sx];if(v&&fb.px[(r.y+r.h-18+sy)*W+r.x+r.w-18+sx]!=pk::ICON_PALETTE[v])marked=false;}assert(marked);}  // the hand's own colors, drawn over the picture
+    {auto r=pk::tile(W,3);bool same=true;for(int sy=0;sy<16;sy++)for(int sx=0;sx<16;sx++){uint8_t v=pk::ICONS[16][sy*16+sx];if(v&&fb.px[(r.y+r.h-18+sy)*W+r.x+r.w-18+sx]!=pk::ICON_PALETTE[v])same=false;}assert(!same);}  // an unmarked tile has no hand
     // Details: the plain-words touch line (what main.cpp's drawDetails adds under the title).
     for(const char*t:{"Plays well on touch","Needs quick, exact jumps"}){
       fb.clear();pk::clearTiles(fb,W);fb.fillRect(0,0,W,fb.H,pk::C_BLACK);

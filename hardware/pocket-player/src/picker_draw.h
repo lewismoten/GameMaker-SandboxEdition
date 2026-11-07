@@ -129,7 +129,7 @@ template<class G> void tileName(G&g,const Tile&r,const char*name,int scale) {
 }
 template<class G> void clearTiles(G&g,int W) {g.fillRect(0,32,W,footer(W)-32,C_BLACK);}
 // The Good on touch icon (16 = ICONS index) at 1x, no backing, with a dark outline so it reads over any picture: the mark of a game
-// that scores 85 or more on the touch advisory. Top left of its tile (the favorite's star is top right).
+// that scores 85 or more on the touch advisory. Bottom right of its tile, clear of the title art (the favorite's star is top right).
 template<class G> void touchMark(G&g,int x,int y,bool panelOrder=false) {
   (void)panelOrder;  // fillRect takes plain colors
   auto on=[](int sx,int sy){return sx>=0&&sx<16&&sy>=0&&sy<16&&ICONS[16][sy*16+sx];};
@@ -170,7 +170,7 @@ template<class G> void thumbnail(G&g,int W,int i,const uint8_t*raw,const char*do
   }else tileName(g,r,dos,1);  // no title picture: the name main.cpp gives (the title, else the DOS name), wrapped; a picture is shown whole
   g.drawRect(r.x,r.y,r.w,r.h,selected?C_YELLOW:C_GRAY);
   if(pinned)starMark(g,W,i);
-  if(touch)touchMark(g,r.x+3,r.y+3,panelOrder);
+  if(touch)touchMark(g,r.x+r.w-18,r.y+r.h-18,panelOrder);
 }
 // Details' footer: Back, the Favorite star (a toggle: outlined, or filled when the game is a favorite) and Play, in thirds.
 inline int detailsButton(int W,int x) {return x<W/3?0:x<2*W/3?1:2;}
