@@ -1,5 +1,5 @@
 // Mac test for the Pocket Player's between-level cards (src/gmcards.h). For one game it builds each card list
-// (i0.., x0.., w, l) the way the board does and prints one line per picture or text page:
+// (i0.., x0.., w, l, and the menu pages t, s, h) the way the board does and prints one line per picture or text page:
 //   C <where> <g|t> <page> <hash of the 64000 indices> <hash of the 768 palette bytes>
 // web/scripts/pocketCardsCheck.ts compares them with what the engine's ShowGraphic draws.
 //   cardstest <data dir> <game id>
@@ -78,17 +78,20 @@ int main(int argc, char** argv) {
   for (int i = 0; i < nlev; i++) wheres.push_back("x" + std::to_string(i));
   wheres.push_back("w");
   wheres.push_back("l");
+  for (const char* m : {"t", "s", "h"}) wheres.push_back(m);  // the menu pages Details reads (title, story, instructions)
   for (auto& wh : wheres) {
-    Card cards[10];
-    int n = cardsOf(cfgText.c_str(), wh.c_str(), cards, 10);
+    Card cards[MAX_CARDS];
+    int n = cardsOf(cfgText.c_str(), wh.c_str(), cards, MAX_CARDS);
     {  // the line by line reader (the board's) finds the same cards
-      Card again[10];
+      Card again[MAX_CARDS];
       linesDir = dir;
       std::string name = std::string(argv[2]) + ".cfg";
-      int m = cardsOfFile(stdioLines, name.c_str(), wh.c_str(), again, 10);
+      int m = cardsOfFile(stdioLines, name.c_str(), wh.c_str(), again, MAX_CARDS);
       bool same = m == n;
       for (int k = 0; same && k < n; k++) same = again[k].kind == cards[k].kind && !strcmp(again[k].file, cards[k].file) && again[k].pause == cards[k].pause && again[k].color == cards[k].color && again[k].more == cards[k].more;
       if (!same) { fprintf(stderr, "cardsOfFile differs for %s\n", wh.c_str()); return 3; }
+      int bit = wh == "t" ? 1 : wh == "s" ? 2 : wh == "h" ? 4 : 0;  // Details' buttons: menuPagesOfFile sees the same pages
+      if (bit && !!(menuPagesOfFile(stdioLines, name.c_str()) & bit) != (n > 0)) { fprintf(stderr, "menuPagesOfFile differs for %s\n", wh.c_str()); return 3; }
     }
     uint8_t* pic = nullptr;
     char picFile[20] = "";
