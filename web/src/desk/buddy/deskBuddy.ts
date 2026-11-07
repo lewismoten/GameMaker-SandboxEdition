@@ -2,7 +2,8 @@
 // box). It hears what happens on the desk (the PC's game and scenes, `DESK_PLAY` from deskPc.ts;
 // new badges; a new certificate frame; quiet time) and answers with a pose and, now and then, one
 // short line in a bubble (buddyLines.ts has the rules). Pressing it opens a small card with what
-// it has seen (buddyStats.ts) and a Quiet switch. It never pushes play.
+// it has seen (buddyStats.ts) and the courier's four sections (courierCard.ts: Mail, Postcards,
+// Packages, Setup with the Quiet switch); an envelope shows when a letter is new. It never pushes play.
 import './deskBuddy.css';
 import { h } from '../../editor/core/ui';
 import { ACHIEVEMENTS_CHANGED, ACHIEVEMENT_UNLOCKED } from '../../achievements/store';
@@ -12,6 +13,12 @@ import { buddySvg } from './buddyArt';
 import { loadBuddy, saveBuddy } from './buddyStore';
 import { buddySummary } from './buddyStats';
 import { DESK_PLAY, type DeskPlay } from './deskPlay';
+import { courierCard } from './courierCard';
+import { COURIER_CHANGED, hasNewMail, loadQuiet } from '../../courier/courierStore';
+
+/** A small envelope (a letter is new): paper, a flap, and a red seal. */
+const ENVELOPE =
+  '<svg viewBox="0 0 22 16" aria-hidden="true"><rect x="1" y="1" width="20" height="14" rx="1.5" fill="#fffaf0" stroke="#5a5446" stroke-width="1.2"/><path d="M1.6 1.8 11 9.2l9.4-7.4" fill="none" stroke="#5a5446" stroke-width="1.2"/><circle cx="11" cy="9" r="2" fill="#b8321a"/></svg>';
 
 /** Quiet this long (no key, tap or pointer) and it dozes off. */
 const IDLE_MS = 3 * 60_000;
@@ -35,8 +42,10 @@ export function deskBuddy(place: (el: HTMLElement) => void): () => void {
     'aria-controls': 'buddy-card',
   });
   press.append(screen);
-  const card = h('div', { class: 'buddy-card', id: 'buddy-card', role: 'dialog', 'aria-labelledby': 'buddy-title', hidden: true });
-  const el = h('div', { class: 'desk-buddy' }, bubble, press, card);
+  const card = h('div', { class: 'buddy-card courier', id: 'buddy-card', role: 'dialog', 'aria-labelledby': 'buddy-title', hidden: true });
+  const envelope = h('span', { class: 'buddy-envelope', hidden: true });
+  envelope.innerHTML = ENVELOPE;
+  const el = h('div', { class: 'desk-buddy' }, bubble, press, envelope, card);
   place(el);
 
   const draw = (p: Pose | 'blink') => (screen.innerHTML = buddySvg(p));
@@ -128,13 +137,26 @@ export function deskBuddy(place: (el: HTMLElement) => void): () => void {
     remember();
     if (mind.quiet) bubble.textContent = '';
   });
-  const facts = h('dl', { class: 'buddy-facts' });
+  const facts = h('dl', { class: 'buddy-facts courier-facts' });
+  const sections = courierCard(h('label', { class: 'buddy-quiet' }, quiet, ' Quiet (no words, just waves)'));
+  // a new letter: the envelope (no number), and the toy's name says so too
+  const mailed = () => {
+    const fresh = hasNewMail();
+    envelope.hidden = !fresh;
+    press.setAttribute('aria-label', fresh ? 'Scoot, your desk buddy: a new letter' : 'Scoot, your desk buddy');
+  };
+  // SCOOT.EXE (or another tab) changed the mail or the Quiet switch
+  const onCourier = () => {
+    mailed();
+    mind.quiet = quiet.checked = loadQuiet();
+    if (mind.quiet) bubble.textContent = '';
+  };
   const close = h('button', { class: 'buddy-close', 'aria-label': 'Close Scoot’s card' }, '×');
   card.append(
     h('h2', { id: 'buddy-title' }, 'Scoot'),
     h('p', { class: 'buddy-blurb' }, 'Your desk buddy. It sits here and watches the PC with you.'),
     facts,
-    h('label', { class: 'buddy-quiet' }, quiet, ' Quiet (no words, just waves)'),
+    sections.el,
     close,
   );
   const fillCard = async () => {
@@ -153,6 +175,7 @@ export function deskBuddy(place: (el: HTMLElement) => void): () => void {
     press.setAttribute('aria-expanded', String(open));
     if (open) {
       void fillCard();
+      sections.refresh();
       if (pose === 'sleep') hear({ kind: 'back' });
       else show('wave');
       close.focus();
@@ -171,16 +194,22 @@ export function deskBuddy(place: (el: HTMLElement) => void): () => void {
   });
 
   addEventListener(DESK_PLAY, onPlay);
+  addEventListener(COURIER_CHANGED, onCourier);
+  addEventListener('storage', onCourier);
   addEventListener(ACHIEVEMENT_UNLOCKED, onBadge);
   addEventListener(ACHIEVEMENTS_CHANGED, onHonors);
   for (const t of ['keydown', 'pointerdown', 'pointermove', 'wheel'] as const) addEventListener(t, awake, { passive: true });
   draw('idle');
+  mailed();
   onHonors();
   awake();
   hear({ kind: 'open', today: new Date().toLocaleDateString('en-CA') });
 
   return () => {
     removeEventListener(DESK_PLAY, onPlay);
+    removeEventListener(COURIER_CHANGED, onCourier);
+    removeEventListener('storage', onCourier);
+    sections.dispose();
     removeEventListener(ACHIEVEMENT_UNLOCKED, onBadge);
     removeEventListener(ACHIEVEMENTS_CHANGED, onHonors);
     for (const t of ['keydown', 'pointerdown', 'pointermove', 'wheel'] as const) removeEventListener(t, awake);

@@ -11,6 +11,10 @@ play: no reminders, streaks, grades or totals still to go, and nothing about los
   (games played, badges, the game on the PC now, a Quiet switch). It listens for `DESK_PLAY`, new
   badges (`ACHIEVEMENT_UNLOCKED`), a new or better certificate frame (`diploma/frameLevel.ts`, on
   `ACHIEVEMENTS_CHANGED`) and three quiet minutes (it dozes). Loaded by `desk.ts` on its own.
+- `courierCard.ts` (and `courierCard.css`): the card's four sections, the web face of SCOOT.EXE:
+  Mail, Postcards, Packages and Setup (the Quiet switch), over the courier store
+  ([`courier/`](../../courier/README.md)); the envelope at Scoot's shoulder when a letter is new,
+  never a number.
 - `buddyLines.ts`: the rules, no DOM: what each event gets, how often it may speak (`LINE_GAP`;
   levels only now and then), the Quiet switch, the once-a-day hello. Tests: `buddyLines.test.ts`,
   which also checks that no line pushes play.
