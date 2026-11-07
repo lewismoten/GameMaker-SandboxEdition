@@ -92,8 +92,21 @@ for (const [name, flags] of [
   execFileSync('c++', ['-std=c++17', '-O1', '-Wall', ...flags, '-I', here + 'src', here + 'host/idletest.cpp', '-o', idleExe], { stdio: 'inherit' });
   idleBad ||= spawnSync(idleExe, { stdio: 'inherit' }).status ?? 1;
 }
+// Details' own pages (host/storytest.cpp): which pages a packed game has, the page buttons' hit table for every mix of pages, and
+// renders of Details and each Story and Instructions page of two Starters (PNGs to GM_STORYSHOTS_OUT).
+const storyDir = process.env.GM_STORYSHOTS_OUT ?? mkdtempSync(join(tmpdir(), 'pocket-story-'));
+let storyBad = 0;
+for (const [name, flags] of [
+  ['480', []],
+  ['320', ['-DPOCKET_CYD28']],
+] as const) {
+  const storyExe = join(storyDir, 'storytest' + name);
+  execFileSync('c++', ['-std=c++17', '-O1', '-Wall', ...flags, '-I', here + 'src', here + 'host/storytest.cpp', '-lz', '-o', storyExe], { stdio: 'inherit' });
+  storyBad ||= spawnSync(storyExe, [here + 'data', storyDir, 'first-steps', 'your-first-game'], { stdio: 'inherit' }).status ?? 1;
+}
 process.exit(
-  idleBad ||
+  storyBad ||
+    idleBad ||
     settingsBad ||
     playBad ||
     (library.status ?? 1) ||
