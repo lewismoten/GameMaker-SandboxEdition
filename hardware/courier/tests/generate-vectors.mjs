@@ -9,7 +9,7 @@ import { join, dirname } from 'node:path';
 import { pathToFileURL, fileURLToPath } from 'node:url';
 const require = createRequire(import.meta.url);
 const ts = require(process.argv[3] || 'typescript');
-const revision = process.argv[2] || '56e048a715be2028187a64cfe278ee765122a816';
+const revision = process.argv[2] || '93880e054f164ac47ba934c30ab58c1691c4d139';
 const dir = dirname(fileURLToPath(import.meta.url));
 const temp = mkdtempSync(join(process.env.TMPDIR || tmpdir(), 'courier-oracle-'));
 try {

@@ -20,7 +20,7 @@ sanitize:
 
 # Optional regeneration only: needs Node and the repository's TypeScript dev dependency.
 TS_MODULE ?= typescript
-TS_REF ?= 56e048a715be2028187a64cfe278ee765122a816
+TS_REF ?= 93880e054f164ac47ba934c30ab58c1691c4d139
 vectors:
 	node tests/generate-vectors.mjs $(TS_REF) $(TS_MODULE)
 
