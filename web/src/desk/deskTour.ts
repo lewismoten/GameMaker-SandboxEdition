@@ -18,7 +18,13 @@ interface Act {
   do: string;
   text?: string;
   wait?: string;
+  hold?: boolean;
+  /** Called once the awaited prompt is up (or never will be): the step's line may start. */
+  ready?: () => void;
 }
+
+/** How long the prompt shows before a held step's script answers it, so the line is heard over it. */
+const SHOW_MS = 1500;
 
 /** The speed the call is made at (the board's own), so its menus come quickly and a download takes a while. */
 const CALL_SPEED = 14400;
@@ -132,12 +138,16 @@ export function deskTour(desk: HTMLElement, pc: DeskPc): () => void {
 
   const run = async (act: Act, g: number) => {
     if (act.do === 'bbs-call') return call();
-    if (!found || desk.dataset.tourBbs !== 'on') return;
+    if (!found || desk.dataset.tourBbs !== 'on') return act.ready?.();
     if (act.wait && !(await waitFor(act.wait, g))) {
       // the board isn't where the script thought: nothing more is typed, and the steps about it are left out
       if (g === gen) desk.dataset.tourBbs = 'lost';
+      act.ready?.();
       return;
     }
+    // the prompt is up: a held step's line starts now, and the answer follows a moment later
+    act.ready?.();
+    if (act.hold) await sleep(SHOW_MS);
     if (g !== gen) return;
     if (act.do === 'bbs-type' && act.text) type(act.text);
     else if (act.do === 'bbs-view') view(g);
@@ -190,7 +200,12 @@ export function deskTour(desk: HTMLElement, pc: DeskPc): () => void {
     // leaving: a script still waiting for the screen gives up at once
     if (act.do === 'bbs-end') gen++;
     const g = gen;
-    queue = queue.then(() => (act.do === 'bbs-end' ? tidy() : run(act, g))).catch((err: unknown) => console.warn('Tour BBS:', err));
+    // a held line must never wait on a script that gave up
+    if (act.do === 'bbs-end') act.ready?.();
+    queue = queue
+      .then(() => (act.do === 'bbs-end' ? tidy() : run(act, g)))
+      .catch((err: unknown) => console.warn('Tour BBS:', err))
+      .finally(() => act.ready?.());
   };
   window.addEventListener('gm-tour-act', onAct);
   return () => {
