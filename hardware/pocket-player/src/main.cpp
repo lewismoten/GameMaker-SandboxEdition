@@ -1944,7 +1944,16 @@ void loop() {
       }
       levelWhere(where, 'i', r == 'D' ? from : world.pendLevel);
       showCards(where);
-      world.finish();
+      if (!world.finish()) {
+        // The card may have gone away between levels. Loading can free/replace buffers;
+        // never build or fade a partially loaded world (its old pointers may be stale).
+        assets.release();
+        clearPrefetched();
+        message("Could not load", games[curGame].title);
+        delay(1500);
+        enterPicker();
+        return;
+      }
       world.buildDrawList();
       fadeLevelIn();
       t0 = millis();
