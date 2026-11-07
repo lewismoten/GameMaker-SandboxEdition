@@ -104,17 +104,27 @@ template<class G> void drawSmallIcon(G&g,int icon,int x,int y,bool panelOrder=fa
   uint16_t row[16];
   for(int sy=0;sy<16;sy++){for(int sx=0;sx<16;sx++){uint8_t v=ICONS[icon][sy*16+sx];uint16_t c=v?ICON_PALETTE[v]:C_DARK;if(panelOrder)c=(c<<8)|(c>>8);row[sx]=c;}g.pushImage(x,y+sy,16,1,row);}
 }
-// icon < 0: the name alone. The icon is dropped when the name needs its room.
-template<class G> void tileLabel(G&g,int W,int i,const char*label,bool selected=false,int icon=-1,bool panelOrder=false) {
-  auto r=tile(W,i);g.fillRect(r.x,r.y,r.w,r.h,C_DARK);g.drawRect(r.x,r.y,r.w,r.h,selected?C_YELLOW:C_GRAY);
-  int scale=W==320?1:2,cols=(r.w-8)/(6*scale),count=0;size_t at=0,len=strlen(label);char lines[4][25];
+// A label broken at spaces into up to four lines that fit a tile.
+inline int labelLines(const Tile&r,const char*label,int scale,char lines[4][25]) {
+  int cols=(r.w-8)/(6*scale),count=0;if(cols>24)cols=24;size_t at=0,len=strlen(label);
   while(count<4&&at<len) {size_t n=len-at<(size_t)cols?len-at:cols;
     if(at+n<len){size_t word=n;while(word&&label[at+word]!=' ')word--;if(word)n=word;}
     memcpy(lines[count],label+at,n);lines[count][n]=0;count++;at+=n;while(label[at]==' ')at++;
   }
+  return count;
+}
+// icon < 0: the name alone. The icon is dropped when the name needs its room.
+template<class G> void tileLabel(G&g,int W,int i,const char*label,bool selected=false,int icon=-1,bool panelOrder=false) {
+  auto r=tile(W,i);g.fillRect(r.x,r.y,r.w,r.h,C_DARK);g.drawRect(r.x,r.y,r.w,r.h,selected?C_YELLOW:C_GRAY);
+  int scale=W==320?1:2;char lines[4][25];int count=labelLines(r,label,scale,lines);
   int text=count*10*scale,icons=icon>=0&&icon<ICON_COUNT&&text+36<=r.h-4?36:0;
   int y=r.y+(r.h-text-icons)/2;
   if(icons){drawTileIcon(g,icon,r.x+r.w/2,y,panelOrder);y+=icons;}
+  for(int line=0;line<count;line++,y+=10*scale)clippedText(g,r,lines[line],r.x+(r.w-(int)strlen(lines[line])*6*scale)/2,y,scale,C_WHITE);
+}
+// A name centered in a tile, in up to four lines broken at spaces (a game with no title picture shows its title this way).
+template<class G> void tileName(G&g,const Tile&r,const char*name,int scale) {
+  char lines[4][25];int count=labelLines(r,name,scale,lines),y=r.y+(r.h-count*10*scale)/2;
   for(int line=0;line<count;line++,y+=10*scale)clippedText(g,r,lines[line],r.x+(r.w-(int)strlen(lines[line])*6*scale)/2,y,scale,C_WHITE);
 }
 template<class G> void clearTiles(G&g,int W) {g.fillRect(0,32,W,footer(W)-32,C_BLACK);}
@@ -143,7 +153,7 @@ template<class G> void thumbnail(G&g,int W,int i,const uint8_t*raw,const char*do
     for(int x=0;x<r.pw;x++){int idx=raw[524+(y*60/r.ph)*96+x*96/r.pw];uint16_t c=raw[12+idx*2]|(raw[13+idx*2]<<8);row[x]=panelOrder?(c<<8)|(c>>8):c;}
     g.pushImage(r.x,y0+y,r.pw,1,row);
   }if(caption)tileCaption(g,r,y0+shown+(r.w>=144?2:3),caption,course);
-  }else clippedText(g,r,dos,r.x+(r.w-(int)strlen(dos)*6)/2,r.y+r.h/2-4,1,C_WHITE);  // no title picture: the DOS name; a picture is shown whole
+  }else tileName(g,r,dos,1);  // no title picture: the name main.cpp gives (the title, else the DOS name), wrapped; a picture is shown whole
   g.drawRect(r.x,r.y,r.w,r.h,selected?C_YELLOW:C_GRAY);
   if(pinned)starMark(g,W,i);
 }

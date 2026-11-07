@@ -1047,7 +1047,7 @@ static void drawPicker(bool clear = true, bool paging = false) {
     if(browsingCategories){int c=categorySlots[at];
       if(!category&&c==CONTINUE_SLOT){int g=resumeGame();uint8_t*raw=nullptr;if(g>=0){if(games[g].sd&&haveSD)mountSD();raw=preview(games[g]);}pk::continueTile(tft,scr::W,r,raw,resumeRec.e.level,g<0,true);free(raw);}
       else pk::tileLabel(tft,scr::W,r,category?subLabel(category,c):rootLabel(c),false,tileIcon(category,c),true);}
-    else {int i=catalog->matches[at];pk::Meta m;gameMeta(games[i],m);uint8_t*raw=preview(games[i]);bool starter=games[i].category==1;pk::thumbnail(tft,scr::W,r,raw,m.dos,i==selected,true,catalog->pins.has(games[i].uid),starter?m.title:nullptr,starter?m.course:0);free(raw);}
+    else {int i=catalog->matches[at];pk::Meta m;gameMeta(games[i],m);uint8_t*raw=preview(games[i]);bool starter=games[i].category==1;pk::thumbnail(tft,scr::W,r,raw,m.title[0]?m.title:m.dos,i==selected,true,catalog->pins.has(games[i].uid),starter?m.title:nullptr,starter?m.course:0);free(raw);}
   }
   if(!was)unmountSD();
   if(!count&&searchText[0])pk::drawSmallIcon(tft,17,16,68,true);
@@ -1821,6 +1821,31 @@ static void pollSerial() {
         int g = atoi(buf + 2);
         if (g >= 0 && g < ngames && startGame(g)) wasDown = true;
         Serial.printf("G %d %s %s\n", g, g >= 0 && g < ngames ? activeGame.id : "?", mode == PLAYING ? "playing" : "failed");
+      } else if (buf[0] == 'M' && buf[1] == ' ' && mode == PICKER) {  // "M n": what the list knows of game n and whether its tile can be drawn
+        int g = atoi(buf + 2);
+        if (g >= 0 && g < ngames) {
+          const GameEntry& e = games[g];
+          pk::Meta m;
+          bool was = sdUp;
+          bool ok = gameMeta(e, m);
+          if (e.sd) mountSD();
+          uint8_t* raw = preview(e);
+          if (e.sd && !was) unmountSD();
+          Serial.printf("M %d id=%s file=%s sd=%d one=%d metadata=%d category=%d sub=%d pos=%lu len=%u meta=%d title=%s dos=%s thumb=%s picture=%d\n", g, e.id, e.file,
+                        e.sd, e.one, e.metadata, e.category, e.sub, (unsigned long)e.pos, e.len, ok, m.title, m.dos, m.thumb, raw != nullptr);
+          free(raw);
+          if (e.sd && mountSD()) {  // the card's index files (a card written before the library index has games.txt only)
+            char first[80] = "";
+            File f = SD.open("/pocket/library.jsonl", "r");
+            long li = f ? (long)f.size() : -1;
+            if (f) { lineAt(f, 0, first, sizeof first); f.close(); }
+            f = SD.open("/pocket/thumbs.pak", "r");
+            long th = f ? (long)f.size() : -1;
+            if (f) f.close();
+            if (!was) unmountSD();
+            Serial.printf("M card library.jsonl=%ld thumbs.pak=%ld first=%s\n", li, th, first);
+          }
+        }
       } else if (buf[0] == 'L' && mode == PICKER) {  // the game list: "L <index> <id> <on the card 0|1>" per game, then "L done <count>"
         for (int g = 0; g < ngames; g++) Serial.printf("L %d %s %d\n", g, games[g].id, games[g].sd ? 1 : 0);
         Serial.printf("L done %d\n", ngames);
