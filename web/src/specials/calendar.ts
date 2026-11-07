@@ -100,7 +100,8 @@ export function ruleDays(rule: DayRule, year: number): [number, number, number][
     }
     case 'weekday': {
       const out: [number, number, number][] = [];
-      for (let d = local(year, 1, 1); d.getFullYear() === year; d.setDate(d.getDate() + 1)) if (d.getDay() === rule.weekday) out.push([year, d.getMonth() + 1, d.getDate()]);
+      for (let d = local(year, 1, 1); d.getFullYear() === year; d.setDate(d.getDate() + 1))
+        if (d.getDay() === rule.weekday) out.push([year, d.getMonth() + 1, d.getDate()]);
       return out;
     }
     case 'week': {
@@ -151,7 +152,8 @@ export function isOpen(win: Window, now: Date, extraDays = 0): boolean {
 }
 
 /** The stretch of days open at `now`, or undefined. */
-export const openSpan = (win: Window, now: Date, extraDays = 0): Span | undefined => (isOpen(win, now, extraDays) ? spanAround(win, now, extraDays) : undefined);
+export const openSpan = (win: Window, now: Date, extraDays = 0): Span | undefined =>
+  isOpen(win, now, extraDays) ? spanAround(win, now, extraDays) : undefined;
 
 /** The first day the window opens after `now` (its first whole-day stretch starting later), or undefined within two years. */
 export function nextOpening(win: Window, now: Date): Date | undefined {
