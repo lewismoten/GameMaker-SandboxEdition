@@ -130,31 +130,46 @@ function puddle(pal: Pal, frame: number, part: number, ground: Pixels): Pixels {
 /** The splash where the hero steps, in the air cell above the puddle (his feet hide the middle). */
 function stepSplash(pal: Pal, stage: number): Pixels {
   const p = new Pixels(20, 20, pal.c('sky', 3));
+  const white = pal.c('white', 3);
   const hi = pal.c('blue', 4);
   const mid = pal.c('blue', 3);
   const lo = pal.c('blue', 2);
   for (const side of [-1, 1]) {
+    // mirrored: dx counts in from the cell's edge on each side of the feet
     const at = (dx: number, y: number, c: number) => p.set(side < 0 ? dx : 19 - dx, y, c);
     if (stage === 0) {
-      // the water jumps up around the feet
-      for (let y = 13; y < 20; y++) at(4 - Math.floor((19 - y) / 3), y, y < 15 ? hi : mid);
-      at(5, 19, mid);
-      at(2, 12, hi);
+      // the water jumps up beside the feet in two thick fans
+      for (let y = 10; y < 20; y++) {
+        const dx = 5 - Math.floor((19 - y) / 2);
+        at(dx, y, y < 13 ? white : hi);
+        at(dx + 1, y, y < 13 ? hi : mid);
+      }
+      at(1, 8, white);
+      at(3, 7, hi);
+      for (let dx = 0; dx < 6; dx++) at(dx, 19, mid);
     } else if (stage === 1) {
-      // a crown of drops flying out
-      at(3, 9, hi);
-      at(1, 11, hi);
-      at(4, 13, mid);
-      at(0, 14, mid);
-      at(6, 7, mid);
-      p.rect(0, 19, 20, 1, lo);
+      // a crown of drops flying up and out
+      for (const [dx, y, c] of [
+        [0, 6, white],
+        [2, 3, white],
+        [4, 6, hi],
+        [1, 9, hi],
+        [3, 11, mid],
+        [0, 13, mid],
+        [5, 2, hi],
+      ] as const)
+        at(dx, y, c);
+      for (let dx = 0; dx < 6; dx++) at(dx, 18 + (dx % 2), mid);
     } else {
       // the drops fall back, and a ring spreads on the water
-      at(0, 16, mid);
-      at(2, 15, lo);
-      at(5, 17, lo);
-      at(1, 19, mid);
-      at(2, 19, mid);
+      for (const [dx, y, c] of [
+        [0, 12, hi],
+        [2, 14, mid],
+        [4, 16, mid],
+        [1, 17, lo],
+      ] as const)
+        at(dx, y, c);
+      for (let dx = 0; dx < 7; dx++) at(dx, 19, dx % 3 === 0 ? white : mid);
     }
   }
   return p;
