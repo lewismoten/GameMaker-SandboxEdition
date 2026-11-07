@@ -15,5 +15,18 @@
     "band": "#2f6b4a",
     "ink": "#1d2a24",
     "logo": "SANDBOX SOFTWARE"
-  }
+  },
+  "acceptedFindings": [
+    "facing s3 The hero climbs side on",
+    "facing s11 Monster 4 paces left and right facing the player",
+    "facing s11 Monster 5 paces back and forth without turning round",
+    "flashing s2 Block 34 flashes light and dark about 0.0 times a second over 160 blocks of one screen, from (0, 0)",
+    "waits s2 Timed block 34 stays shut for 58.8 s at a time",
+    "flashing s2 Block 35 flashes light and dark about 0.0 times a second over 160 blocks of one screen, from (0, 0)",
+    "waits s2 Timed block 35 stays shut for 58.8 s at a time",
+    "flashing s2 Block 36 flashes light and dark about 0.0 times a second over 160 blocks of one screen, from (0, 0)",
+    "waits s2 Timed block 36 stays shut for 58.8 s at a time",
+    "flashing s2 Block 37 flashes light and dark about 0.0 times a second over 160 blocks of one screen, from (0, 0)",
+    "waits s2 Timed block 37 stays shut for 58.8 s at a time"
+  ]
 }

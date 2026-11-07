@@ -67,7 +67,7 @@ export function glowWorm(pal: Pal, frame: 0 | 1 | 2 | 3): Pixels {
   return p;
 }
 
-/** Wisp, the mountain's little cloud: two soft frames, `mood` sad (a few raindrops under it) or happy. */
+/** Wisp, the mountain's little cloud: two soft frames, `mood` sad (a few snowflakes falling under it) or happy. */
 export function wisp(pal: Pal, frame: 0 | 1, mood: 'sad' | 'happy'): Pixels {
   const p = new Pixels(20, 20, T);
   const w = pal.r('white');
@@ -80,13 +80,13 @@ export function wisp(pal: Pal, frame: 0 | 1, mood: 'sad' | 'happy'): Pixels {
   if (mood === 'happy') p.set(9, 11 + y, k).set(10, 12 + y, k).set(11, 11 + y, k);
   else {
     p.rect(9, 12 + y, 3, 1, k);
-    const d = pal.c('water', 3);
+    const d = pal.c('white', 3);
     for (const [x, dy] of [
       [6, frame ? 16 : 15],
       [11, frame ? 15 : 17],
       [15, frame ? 17 : 16],
     ])
-      p.rect(x, dy, 1, 2, d);
+      p.set(x, dy, d);
   }
   return ink(pal, p);
 }

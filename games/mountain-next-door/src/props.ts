@@ -107,7 +107,7 @@ export function addProps(book: Book, pal: Pal, groups: readonly string[], o: Pro
   if (has('trail')) {
     book.add('post', post(pal, false), { ...air, score: POINTS.blaze, touch: 'postBlazed' });
     book.add('postBlazed', post(pal, true), air);
-    book.add('trunk', trunk(pal, false), { ...air, score: POINTS.blaze, touch: 'trunkBlazed' });
+    book.add('trunk', trunk(pal, false, true), { ...air, score: POINTS.blaze, touch: 'trunkBlazed' });
     book.add('trunkBlazed', trunk(pal, true), air);
     book.add('bark', trunk(pal, false), air);
     book.add('logL', log(pal, 'L'), { solid: SOLID });

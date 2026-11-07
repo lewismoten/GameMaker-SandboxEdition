@@ -6,7 +6,7 @@
 //   4. Stepping Stones     rain; cross the stream four times on stones that sink and rise on a clock
 //   5. Nutmeg's Signposts  noon; three switchbacks; a squirrel turns the arrows, the blazes tell the truth
 //   6. The Empty Spot      (watch) sunset in the hollow where the mountain stood; stars come out; Wisp is missing
-//   7. Windy Ridge         dusk; an updraft and a gust carry Tess up and over, following Wisp's puddles
+//   7. Windy Ridge         dusk; an updraft and a gust carry Tess up and over, following Wisp's trail of snow
 //   8. The Low Tunnel      dark; light the lanterns, leave a trail of light; glow-worms; Wisp is hiding here
 //   9. The Zigzag Home     moonlight; five switchbacks up the hill, a blaze on every turn, Wisp following
 //  10. Summit Picnic      (watch) sunrise; the mountain home and sitting down; the neighbors climb up; the doormat

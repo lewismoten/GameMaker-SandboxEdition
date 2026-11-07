@@ -1,6 +1,6 @@
 // The dark and the way home as 20x20 blocks: the old tunnel (its stones, its floor dark or lit, a lantern unlit
 // or lit, and the light it throws), stars and the moon, signposts with arrows that a squirrel keeps turning, a
-// rain puddle the little cloud left behind, the picnic blanket and the doormat.
+// tiny snowdrift the little cloud left behind, the picnic blanket and the doormat.
 // Game-Maker has no lights: a lit block is only a picture painted brighter, and a lantern's glow is rings of
 // lighter blocks laid round it (the Lights Out Starter's trick).
 import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
@@ -100,17 +100,17 @@ export function signpost(pal: Pal, dir: 'L' | 'R' | 'U'): Pixels {
   return inked(pal, p);
 }
 
-/** A little rain puddle on the ground (the cloud left a trail of them). */
+/** A tiny snowdrift on the ground with a sparkle (the little cloud left a trail of them). */
 export function puddle(pal: Pal): Pixels {
   const p = clear(pal);
-  const w = pal.r('water');
-  p.rect(3, 17, 14, 3, w[2]).rect(5, 16, 10, 1, w[3]).rect(6, 18, 4, 1, w[4]);
+  const w = pal.r('white');
+  p.rect(4, 17, 12, 3, w[2]).rect(6, 16, 8, 1, w[3]).rect(8, 15, 3, 1, w[3]).rect(5, 19, 10, 1, w[1]);
   for (const [x, y] of [
-    [6, 9],
-    [12, 5],
-    [9, 13],
+    [6, 8],
+    [13, 5],
+    [10, 11],
   ])
-    p.rect(x, y, 1, 2, w[4]);
+    p.set(x, y, w[3]).set(x - 1, y, w[1]).set(x + 1, y, w[1]);
   return p;
 }
 

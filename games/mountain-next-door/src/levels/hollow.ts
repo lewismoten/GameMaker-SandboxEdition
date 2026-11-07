@@ -1,7 +1,7 @@
 // Level 6, THE EMPTY SPOT (a scene you watch, at sunset): the footprints end at a hollow as big as the town
 // square, where Old Mossback always stood. Tess walks down into it and reads what she finds while the sun sinks
 // behind the far ridge, step by step, and the first stars come out. Nutmeg sits on the rim and watches too. A
-// trail of little puddles, rain from a very small cloud, leads out the other side: the mountain's cloud, Wisp, is
+// trail of tiny snowdrifts, snow from a very small cloud, leads out the other side: the mountain's cloud, Wisp, is
 // missing too. That is why it left. Nothing to collect and nothing that hurts.
 import { StarterMap } from '../../../kit/starter/map';
 import type { Pal } from '../../../kit/starter/palette';
@@ -29,7 +29,7 @@ export const HOLLOW_AT = {
 const SIGNS = {
   hole: ['A HOLE AS BIG AS THE TOWN SQUARE.', 4, 3],
   here: ['OLD MOSSBACK STOOD HERE. ALWAYS.', 4, 3],
-  puddles: ['LITTLE PUDDLES? FROM A TINY CLOUD.', 4, 3],
+  puddles: ['A LITTLE SNOW? FROM A TINY CLOUD.', 4, 3],
   wisp: ['ITS CLOUD, WISP, SAT ON TOP.', 4, 3],
   gone: ['WISP IS GONE! IT WENT TO FIND WISP!', 4, 3],
 } as const;

@@ -188,13 +188,15 @@ export function post(pal: Pal, blazed: boolean): Pixels {
   return inked(pal, p);
 }
 
-/** A tree trunk (`blazed` with a yellow mark), and the round crown of leaves above it. */
-export function trunk(pal: Pal, blazed: boolean): Pixels {
+/** A tree trunk (`blazed` with a yellow mark; `marked` with a chalk outline where a blaze should go), and the round crown of leaves above it. */
+export function trunk(pal: Pal, blazed: boolean, marked = false): Pixels {
   const p = clear(pal);
   const w = pal.r('wood');
   p.rect(6, 0, 8, 20, w[1]).rect(7, 0, 3, 20, w[2]).rect(12, 0, 1, 20, w[0]);
   p.rect(5, 17, 10, 3, w[1]);
   if (blazed) p.rect(7, 6, 5, 7, pal.c('gold', 4)).rect(7, 6, 5, 1, pal.c('gold', 5));
+  else if (marked) p.rect(6, 5, 7, 9, pal.c('white', 3)).rect(7, 6, 5, 7, pal.c('wood', 4)).set(9, 9, pal.c('white', 3));
+  else p.disc(10, 13, 2, w[0]).set(9, 12, pal.c('ink', 0));
   return inked(pal, p);
 }
 

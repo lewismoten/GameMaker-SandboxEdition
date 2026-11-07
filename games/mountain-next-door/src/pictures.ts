@@ -88,17 +88,21 @@ export function street(p: Pixels, pal: Pal, ground: number, x0: number, x1: numb
 }
 
 /** The title: the name, a ribbon, the mountain sitting in the lot next door, Tess beside her house. */
-export function titlePicture(pal: Pal, book: Book, tess: Pixels, name: string[], tagline: string): Pixels {
+export function titlePicture(pal: Pal, book: Book, tess: Pixels, name: [string, number][], tagline: string): Pixels {
   const { c } = pal;
   const p = scene(pal, book, 170, 21);
-  bigMountain(p, pal, { cx: 214, ground: 170, half: 96, height: 112, eyes: 'open', gates: true, cloud: false });
+  bigMountain(p, pal, { cx: 222, ground: 170, half: 96, height: 104, eyes: 'open', gates: true, cloud: false });
   street(p, pal, 170, 2, 120);
-  name.forEach((line, i) => outlined(p, Math.round((W - textWidth(line, 3)) / 2), 6 + i * 26, line, c('gold', 4), c('ink', 0), 3, c('ink', 1)));
+  let y = 6;
+  for (const [line, size] of name) {
+    outlined(p, Math.round((W - textWidth(line, size)) / 2), y, line, c('gold', 4), c('ink', 0), size, c('ink', 1));
+    y += size * 8 + 4;
+  }
   const ribbon = textWidth(tagline) + 20;
   const rx = Math.round((W - ribbon) / 2);
-  bevel(p, rx, 6 + name.length * 26 + 2, ribbon, 14, pal.r('parch'), 3, 2);
-  text(p, rx + 10, 10 + name.length * 26 + 2, tagline, c('ink', 0));
-  scaleBlit(p, tess, 118, 170 - 80, 2);
+  bevel(p, rx, y + 2, ribbon, 14, pal.r('parch'), 3, 2);
+  text(p, rx + 10, y + 6, tagline, c('ink', 0));
+  scaleBlit(p, tess, 96, 170 - 80, 2);
   return p;
 }
 

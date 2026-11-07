@@ -1,6 +1,6 @@
 // THE MOUNTAIN MOVED NEXT DOOR's monsters: one picture set (mount.mbl) and four monster files, one for the
 // levels you play and one for each scene you watch (a scene's monsters are its actors).
-//   trail.mon    a rolling pebble (it bumps: a few hit points), Nutmeg the squirrel, three glow-worms that blink
+//   trail.mon    a pebble rolling about in a rut (harmless), Nutmeg the squirrel, three glow-worms that blink
 //                at their own times, Wisp hiding in the tunnel, Wisp following Tess, the hens
 //   next.mon     the prologue: fog that waits, then drifts off in four waves; Mr. Hale and Mrs. Okoro, each
 //                walking out, stopping to look (a bubble) and walking back; nothing hurts
@@ -9,7 +9,6 @@
 // An ACT is one monster; the next act is the monster it BECOMES when its path or lifetime runs out
 // (code/GM/PLAYGAME.C: MonEndPath and KillMon; see games/scripted/src/monsters.ts).
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
-import { SOLBOT, SOLLEF, SOLRIG } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { newMonsterSet, type Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { corner, mon, pace } from '@lewismoten/gamemaker-sandbox-tools/kit/actors';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
@@ -17,8 +16,6 @@ import { Book } from '../../kit/starter/book';
 import type { Pal } from '../../kit/starter/palette';
 import { HALE, OKORO, bigEye, bigMouth, bubble, fogPuff, mist, glowWorm, hen, neighborBottom, neighborTop, pebble, squirrel, sun, wisp } from './art/folk';
 
-/** Hit points a rolling pebble's bump takes. */
-export const BUMP = -5;
 /** Powers of 100 or more cannot be popped by touching Tess (PLAYGAME.C DoCollision). */
 const POWER = 150;
 /** Ticks a block takes at speed 1 (20 pixels at a pixel a tick). */
@@ -26,9 +23,9 @@ export const BLOCK_TICKS = 20;
 
 export function monsterPictures(pal: Pal): Book {
   const mb = new Book('mbl', 100);
-  const bump = { solid: SOLBOT | SOLLEF | SOLRIG, hp: BUMP };
-  mb.add('pebble0', pebble(pal, 0), bump);
-  mb.add('pebble1', pebble(pal, 1), bump);
+  // the pebbles only roll about in the ruts: nothing here hurts, so a slip into a rut is only a hop out again
+  mb.add('pebble0', pebble(pal, 0));
+  mb.add('pebble1', pebble(pal, 1));
   mb.add('nut0', squirrel(pal, 0));
   mb.add('nut1', squirrel(pal, 1));
   mb.add('nutSit', squirrel(pal, 'sit'));

@@ -1,9 +1,9 @@
-// Level 8, THE LOW TUNNEL (night, nearly dark): the puddles go into the old mill tunnel under the road. There are
+// Level 8, THE LOW TUNNEL (night, nearly dark): the snow trail goes into the old mill tunnel under the road. There are
 // no lights in Game-Maker, so light is paint (the Lights Out Starter's tricks): two old lamps glow on the wall,
 // painted in rings of brighter stone; every dark bit of air Tess walks through stays lit behind her, so she leaves
 // a trail of light; and each lantern she touches lights up. Glow-worms twinkle on the ceiling, each at its own
 // pace. Some stretches are so low there is only just room to walk. The low road goes in; a ladder at its end
-// climbs to the old mill race, which runs back. At its far end, a very small cloud is hiding, raining on itself: Wisp.
+// climbs to the old mill race, which runs back. At its far end, a very small cloud is hiding, snowing on itself: Wisp.
 import { StarterMap } from '../../../kit/starter/map';
 import type { Pal } from '../../../kit/starter/palette';
 import { addSigns, onGround, startBook, type Level } from '../level';

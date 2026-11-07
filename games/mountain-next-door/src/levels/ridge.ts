@@ -1,4 +1,4 @@
-// Level 7, WINDY RIDGE (dusk): Wisp's little puddles lead back over the ridge toward town, and the wind is up.
+// Level 7, WINDY RIDGE (dusk): Wisp's trail of tiny snowdrifts leads back over the ridge toward town, and the wind is up.
 // It is a help, not a hazard: an updraft lifts Tess up the rock to the next ledge, and a gust blows her across a
 // gap too wide to jump. Miss and it is only a walk back round. Blaze the posts, mind the rolling pebble.
 import { StarterMap } from '../../../kit/starter/map';
@@ -26,7 +26,7 @@ export const RIDGE_AT = {
 } as const;
 
 const SIGNS = {
-  puddles: ['THE PUDDLES GO OVER THE RIDGE.', 4, 3],
+  puddles: ['THE SNOW TRAIL GOES OVER THE RIDGE.', 4, 3],
   lift: ['STEP IN. THE WIND WILL LIFT YOU.', 4, 3],
   gust: ['THE GUST WILL CARRY YOU OVER.', 4, 3],
   town: ['THE LIGHTS OF TOWN, DOWN THERE.', 4, 3],

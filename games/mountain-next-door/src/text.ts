@@ -29,7 +29,7 @@ Touch a trail post or a tree to paint a yellow blaze on it.
 
 Touch a garden gate to take it. Touch a gateway with a wheelbarrow in it and the gate goes back.
 
-Rolling pebbles bump. Pie helps.
+Hop over the deep footprints. A chalk outline on a tree shows where a blaze goes.
 
 Some levels are stories: watch them happen.
 
@@ -67,7 +67,7 @@ export const LOST = wrap(`
 
 The mountain waits. It is good at waiting.
 
-Try again: let the pebbles roll past, time the stepping stones, and keep to the blazes.
+Try again: time the stepping stones, let the wind help, and keep to the blazes.
 `);
 
 /** The story pages that open each level. */
@@ -92,9 +92,9 @@ export const CARDS: Record<string, string[][]> = {
   ],
   ridge: [
     ['A MOUNTAIN HAS A CLOUD THAT', 'SITS ON TOP. OLD MOSSBACK', 'IS MISSING ITS CLOUD.', 'IT DID NOT WANDER OFF.'],
-    ['IT WENT LOOKING FOR WISP.', 'THE LITTLE RAIN PUDDLES LEAD', 'BACK OVER THE WINDY RIDGE,', 'TOWARD TOWN.'],
+    ['IT WENT LOOKING FOR WISP.', 'A TRAIL OF TINY SNOWDRIFTS', 'LEADS BACK OVER THE WINDY', 'RIDGE, TOWARD TOWN.'],
   ],
-  tunnel: [['THE PUDDLES GO INTO THE OLD', 'MILL TUNNEL UNDER THE ROAD.', 'IT IS DARK IN THERE.', 'LIGHT THE LANTERNS AS YOU GO.']],
+  tunnel: [['THE SNOW GOES INTO THE OLD', 'MILL TUNNEL UNDER THE ROAD.', 'IT IS DARK IN THERE.', 'LIGHT THE LANTERNS AS YOU GO.']],
   zigzag: [
     ['WISP FOLLOWED THE CHIMNEY', 'SMOKE TO TOWN ON THANKSGIVING', 'NIGHT. IT THOUGHT THE SMOKE', 'WAS OTHER LITTLE CLOUDS.'],
     ['NOW WISP WANTS TO GO HOME,', 'AND THE MOUNTAIN WILL FOLLOW', 'WISP. MARK A SAFE ZIGZAG', 'TRAIL UP. WISP WILL FOLLOW YOU.'],
