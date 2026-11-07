@@ -34,6 +34,34 @@ are their own downloads, and parts used only on demand are imported dynamically.
 front (the magazine, the desk, the level check's explorer, the engine…), walking imports with
 [`importWalk.ts`](importWalk.ts) (a test helper, also behind `dosPage/boundary.test.ts`).
 
+What kept pages small (2026-11-07, `npm run verify:perf` and its budgets):
+
+- A page that only reads a setting or asks a yes/no question must not import the module with
+  the heavy class or dialog beside it. Keep the small part in a file of its own:
+  `media/demoAudio.ts` (the sound choice) and `demoAudioEngine.ts` (the audio engine);
+  `player/touchWanted.ts` and `touch.ts`; `retro/bbs/warezList.ts` and `warezArea.ts` (the BBS
+  terminal); `editor/shell/downloadButton.ts` and `download.ts` (the chooser and every export).
+- A button imports what it opens when it is pressed (`(await import('./download')).chooseDownload`),
+  and a check imports its checker when it runs (`gameHealth.ts`).
+- The play page's code is in a few manual chunks (`player`, `shared-…`, `vite.config.ts`
+  `playChunks`). A page that statically imports one module of the `player` chunk downloads
+  the whole chunk (about 45 kB compressed): the Library did, for the demo sound choice.
+- A dynamic `import()` of a module keeps every export of it in the chunk where something else
+  loads it up front. The file picker's palette templates come through
+  `editor/widgets/palettePresets.ts` (two named exports) rather than `import()` of the tools
+  package's `./palettes`, which `editor/core/project.ts` loads for the default palette; and a
+  table built at load needs a lazy function or a `/* @__PURE__ */` call to be dropped
+  (`tools/src/palettePresets.ts`).
+- A picture shown minutes later (Doc Leo's glance on the desk) loads shortly before it shows,
+  not with the page.
+- `verify:perf` counts the bytes the page fetched from the network; a file the service worker
+  serves counts as a request of 0 bytes, so figures swing a few kB between runs. Measure the
+  same scratch build twice before and after a change.
+- `games/catalog.json` (about 77 kB compressed, on the home page, the desk and dos.html) and the
+  built `index.html` (about 22 kB) are written by `scripts/cdGames.ts` and `scripts/seoBuild.ts`,
+  which `vite.config.ts` imports: changing them restarts the dev server, so they need a quiet
+  moment.
+
 ## Modules at the top
 
 - [`challenges/`](challenges/README.md): reviewed challenge descriptors and the guest-state isolation design and storage seam.
