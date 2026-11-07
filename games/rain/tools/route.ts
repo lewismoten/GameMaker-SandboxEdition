@@ -48,7 +48,7 @@ export async function puddles(bot: StarterBot) {
   await watch(bot, 3, 'splash.0');
   await splashThrough(bot, 12, 'first puddle');
   await watch(bot, 3, 'pool1.0');
-  await must(bot.walk(16, 'the house'), 'house');
+  await must(bot.walk(15, 'the house'), 'house');
   await watch(bot, 3, 'house.10.0');
   await watch(bot, 3, 'house.52.0');
   await must(bot.wait(24), 'watch the spout');
@@ -61,7 +61,7 @@ export async function puddles(bot: StarterBot) {
 export async function storm(bot: StarterBot) {
   await splashThrough(bot, 12, 'storm puddle');
   await watch(bot, 4, 'pool1.0');
-  await must(bot.walk(17, 'the house in the storm'), 'storm house');
+  await must(bot.walk(15, 'the house in the storm'), 'storm house');
   await must(bot.wait(48), 'compare the colors');
   await leave(bot, 38);
 }
