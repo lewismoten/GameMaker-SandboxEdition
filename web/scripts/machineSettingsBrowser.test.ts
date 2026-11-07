@@ -23,7 +23,15 @@ it('opens by keyboard, applies and remembers hardware, preserves TURBO, and fits
       await dialog.waitFor();
       await dialog.getByLabel('CPU', { exact: true }).selectOption('ps1');
       await dialog.getByLabel('Hard drive timing').selectOption('286');
+      // drive sounds: one switch off, and the master switch holds the grid while it is off
+      await dialog.getByLabel('CD-ROM heads sounds').uncheck();
+      await dialog.getByLabel('All drive sounds').uncheck();
+      expect(await dialog.getByLabel('Floppy spin sounds').isDisabled()).toBe(true);
+      await dialog.getByLabel('All drive sounds').check();
+      expect(await dialog.getByLabel('Floppy spin sounds').isDisabled()).toBe(false);
       await dialog.getByRole('button', { name: 'Apply' }).click();
+      const saved = await page.evaluate(() => JSON.parse(localStorage.getItem('gm-desk-machine')!) as { sounds: Record<string, unknown> });
+      expect(saved.sounds).toMatchObject({ all: true, cd: { spin: true, heads: false, rw: true }, hdd: { heads: true } });
       expect(await button.getAttribute('aria-label')).toContain('10 MHz');
       expect(await button.evaluate((b) => document.activeElement === b)).toBe(true);
       await page.getByRole('button', { name: 'Turbo', exact: true }).click();
@@ -42,6 +50,8 @@ it('opens by keyboard, applies and remembers hardware, preserves TURBO, and fits
         await button.click();
         expect(await dialog.getByLabel('CPU', { exact: true }).inputValue()).toBe('ps1');
         expect(await dialog.getByLabel('Hard drive timing').inputValue()).toBe('286');
+        expect(await dialog.getByLabel('CD-ROM heads sounds').isChecked()).toBe(false);
+        expect(await dialog.getByLabel('Hard drive read/write sounds').isChecked()).toBe(true);
         await page.addScriptTag({ content: readFileSync('../node_modules/axe-core/axe.min.js', 'utf8') });
         const violations = await page.evaluate(async () => {
           // @ts-expect-error axe is injected above

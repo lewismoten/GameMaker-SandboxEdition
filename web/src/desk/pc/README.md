@@ -4,7 +4,7 @@ Part of [`desk/`](../README.md) and the [source map](../../README.md). The case 
 
 Entry points: `desk/deskPc.ts` switches the PC on and off and loads these; `desk/deskScene.ts` places them.
 
-- Hardware settings: `machineSettings.ts` remembers and composes the existing CPU/disk estimates; `machineDialog.ts` opens from the MHz button, with `machineDialog.css` for phone layout.
+- Hardware settings: `machineSettings.ts` remembers and composes the existing CPU/disk estimates and the drive sound switches; `driveSwitches.ts` defines those switches (Spin, Heads and Read/write for the hard drive, CD-ROM and floppy, plus All drive sounds); `machineDialog.ts` opens from the MHz button, with `machineDialog.css` for phone layout.
 - Case: `caseParts.ts` (drive cage, MHz display), `caseFace.ts` (key lock and printed parts), `bootSounds.ts`, `driveSounds.ts` (made on the spot with Web Audio).
 - Monitor: `crtWarmUp.ts` with `crtOn.css` and `crtOff.css` (switch on and off), `crtWarp.ts` (the tube's bulge), `screenGlow.ts`.
 - Input: `keyboard.ts`, `tray.ts` (slide-out shelf), `padChoice.ts`, `padChooser.ts`, `padPrints.ts` (mouse pad), `gamePad*.ts` (the GRAVITAS pad: art, SVG, panel, holds, TURBO switch).
@@ -15,6 +15,6 @@ Each `.ts` with a `.css` of the same name owns that style.
 
 Must not: be imported from outside `desk/` except through the dynamic load of `desk/desk.ts` (the desk is its own chunk), and never from `dos.html` or `retro/` (`dosPage/boundary.test.ts`).
 
-Tests: `cdTray.test.ts`, `driveSounds.test.ts`, `keyStrip.test.ts`, `padChoice.test.ts`.
+Tests: `bootSounds.test.ts`, `cdTray.test.ts`, `driveSounds.test.ts`, `machineSettings.test.ts`, `keyStrip.test.ts`, `padChoice.test.ts`.
 
 Check: `cd web && npx vitest run src/desk/pc`; then look at the desk at 1440 and 390 wide, light and dark.

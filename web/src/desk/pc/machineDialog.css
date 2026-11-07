@@ -20,3 +20,41 @@
   font-size: 0.85rem;
   line-height: 1.35;
 }
+.machine-sounds {
+  margin: 0;
+  padding: 6px 10px 8px;
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+.machine-sounds legend {
+  padding: 0 4px;
+}
+.machine-settings .machine-all {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-self: start;
+  gap: 8px;
+}
+.machine-sounds table {
+  border-collapse: collapse;
+  width: 100%;
+}
+.machine-sounds th,
+.machine-sounds td {
+  padding: 1px 4px;
+  text-align: center;
+  font-weight: normal;
+}
+.machine-sounds thead th {
+  font-size: 0.85rem;
+}
+.machine-sounds tbody th {
+  text-align: left;
+}
+.machine-sounds input[type='checkbox'] {
+  width: 24px;
+  height: 24px;
+  margin: 0;
+}
