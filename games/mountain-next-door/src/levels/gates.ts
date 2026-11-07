@@ -22,7 +22,10 @@ export const GATES_AT = {
   ],
   pie: 45,
   acorns: [25, 66, 84],
-  hens: [[23, 0], [79, 0]],
+  hens: [
+    [23, 0],
+    [79, 0],
+  ],
   exit: 87,
   signs: { four: 4, carry: 16, hens: 28, pie: 48, sorry: 79 },
 } as const;
@@ -62,7 +65,10 @@ export function levelGates(pal: Pal): Level {
       m.set(c.upper.gate, c.upper.row - 1, `gate.${c.color as GateColor}`);
     }
     // the gateway: an arbor too tall to hop, plugged with a wheelbarrow
-    m.set(c.way, G2 - 4, 'arborTop').set(c.way, G2 - 3, 'arborBeam').set(c.way, G2 - 2, 'arch').set(c.way, G2 - 1, `plug.${c.color as GateColor}`);
+    m.set(c.way, G2 - 4, 'arborTop')
+      .set(c.way, G2 - 3, 'arborBeam')
+      .set(c.way, G2 - 2, 'arch')
+      .set(c.way, G2 - 1, `plug.${c.color as GateColor}`);
     for (const dx of [-2, -1, 1, 2]) if (!'HXsSeE'.includes(g.rows()[G2 - 1][c.way + dx])) m.set(c.way + dx, G2 - 1, 'fence');
   }
   m.set(GATES_AT.pie, G2 - 1, 'pie');

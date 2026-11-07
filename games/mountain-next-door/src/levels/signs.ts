@@ -18,10 +18,24 @@ export const SIGNS_AT = {
   fork2: { arrow: 15, ladder: 12, blaze: 13, nookLadder: 5, nookWall: 9, stash: [2, 7] },
   // fork 3 on the top path: a hedge, two ladders to planks over it; the right way goes over, the other into a nook
   fork3: { arrow: 47, hedge: 62, good: { ladder: 57, plank: [58, 66] }, bad: { ladder: 52, plank: [46, 51] }, blaze: 56, stash: [47, 50] },
-  posts: [[10, 0], [44, 0], [66, 1], [30, 1], [24, 2], [74, 2]],
-  logs: [[36, 0], [40, 1]],
+  posts: [
+    [10, 0],
+    [44, 0],
+    [66, 1],
+    [30, 1],
+    [24, 2],
+    [74, 2],
+  ],
+  logs: [
+    [36, 0],
+    [40, 1],
+  ],
   pie: [58, 0],
-  nuts: [[20, 0], [55, 1], [32, 2]],
+  nuts: [
+    [20, 0],
+    [55, 1],
+    [32, 2],
+  ],
   exit: 86,
   signs: { turned: 4, trust: 28, stash: 81, noon: 69, top: 16 },
 } as const;
@@ -80,5 +94,15 @@ export function levelSigns(pal: Pal): Level {
   m.sign(at.stash, onGround(f1, s.stash), s.stash);
   m.sign(at.noon, onGround(f2, s.noon), s.noon);
   m.sign(at.top, onGround(f3, s.top), s.top);
-  return { file: 'signs', title: "Nutmeg's Signposts", hint: 'Trust the blazes, not the arrows.', look: 'noon', map: m, book, timed, mon: 'trail', song: 'trail' };
+  return {
+    file: 'signs',
+    title: "Nutmeg's Signposts",
+    hint: 'Trust the blazes, not the arrows.',
+    look: 'noon',
+    map: m,
+    book,
+    timed,
+    mon: 'trail',
+    song: 'trail',
+  };
 }

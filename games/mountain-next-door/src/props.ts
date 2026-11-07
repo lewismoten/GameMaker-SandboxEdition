@@ -18,7 +18,31 @@ import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { KEYS } from '../../kit/starter/blocks';
 import { LEDGE, PULL, SOLID, type Book } from '../../kit/starter/book';
 import type { Pal } from '../../kit/starter/palette';
-import { GATES, acorn, arbor, log, gate, gentle, toe, crown, fence, gateHome, gateOnRock, ledge, peak, pie, plug, post, print, rock, roof, slope, trunk, wall, windowOn } from './art/land';
+import {
+  GATES,
+  acorn,
+  arbor,
+  log,
+  gate,
+  gentle,
+  toe,
+  crown,
+  fence,
+  gateHome,
+  gateOnRock,
+  ledge,
+  peak,
+  pie,
+  plug,
+  post,
+  print,
+  rock,
+  roof,
+  slope,
+  trunk,
+  wall,
+  windowOn,
+} from './art/land';
 import { blanket, doormat, lantern, moon, puddle, signpost, star, tunnelAir, tunnelFloor, tunnelStone } from './art/night';
 import { bed, footbridge, gust, rain, stone, updraft, water } from './art/weather';
 

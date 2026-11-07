@@ -50,11 +50,17 @@ export function bigMountain(p: Pixels, pal: Pal, k: Peak): void {
   // the face
   const ey = top + Math.round(k.height * 0.5);
   for (const dx of [-22, 22]) {
-    if (k.eyes === 'open') p.disc(k.cx + dx, ey, 7, r[5]).disc(k.cx + dx, ey + 1, 5, ink).set(k.cx + dx - 2, ey - 2, r[5]).set(k.cx + dx - 1, ey - 3, r[5]);
-    else for (let x = -7; x <= 7; x++) p.set(k.cx + dx + x, ey + Math.round((x / 7) ** 2 * 3), ink).set(k.cx + dx + x, ey + 1 + Math.round((x / 7) ** 2 * 3), ink);
+    if (k.eyes === 'open')
+      p.disc(k.cx + dx, ey, 7, r[5])
+        .disc(k.cx + dx, ey + 1, 5, ink)
+        .set(k.cx + dx - 2, ey - 2, r[5])
+        .set(k.cx + dx - 1, ey - 3, r[5]);
+    else
+      for (let x = -7; x <= 7; x++) p.set(k.cx + dx + x, ey + Math.round((x / 7) ** 2 * 3), ink).set(k.cx + dx + x, ey + 1 + Math.round((x / 7) ** 2 * 3), ink);
     p.disc(k.cx + dx + (dx < 0 ? -4 : 4), ey + 12, 4, pal.c('pink', 1));
   }
-  for (let x = -12; x <= 12; x++) p.set(k.cx + x, ey + 16 + Math.round((1 - (x / 12) ** 2) * 5), ink).set(k.cx + x, ey + 17 + Math.round((1 - (x / 12) ** 2) * 5), ink);
+  for (let x = -12; x <= 12; x++)
+    p.set(k.cx + x, ey + 16 + Math.round((1 - (x / 12) ** 2) * 5), ink).set(k.cx + x, ey + 17 + Math.round((1 - (x / 12) ** 2) * 5), ink);
   if (k.gates) {
     const spots: [number, number, GateColor][] = [
       [-40, 0.62, 'white'],

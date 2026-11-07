@@ -13,4 +13,6 @@ const { sim } = await play();
 const ticks = LEVEL_TICKS;
 const mmss = (t: number) => `${Math.floor(t / 18.2 / 60)}:${String(Math.round(t / 18.2) % 60).padStart(2, '0')}`;
 console.log(levels.map((l, i) => `  ${i + 1}. ${l.title}: ${mmss(ticks[i] ?? 0)}`).join('\n'));
-console.log(`mountain-next-door: the bot played all ${levels.length} levels; score ${sim.ci.score}, ${sim.trail.length} scenes entered, ${mmss(ticks.reduce((a, b) => a + b, 0))} of play`);
+console.log(
+  `mountain-next-door: the bot played all ${levels.length} levels; score ${sim.ci.score}, ${sim.trail.length} scenes entered, ${mmss(ticks.reduce((a, b) => a + b, 0))} of play`,
+);

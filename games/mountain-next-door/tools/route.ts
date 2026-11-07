@@ -347,7 +347,10 @@ export async function zigzagHome(bot: StarterBot): Promise<void> {
     const stops: [number, () => Promise<void>][] = [
       ...p.posts.map((x): [number, () => Promise<void>] => [x, () => take(bot, x, POINTS.blaze, `a post on path ${k + 1}`)]),
       ...p.acorns.map((x): [number, () => Promise<void>] => [x, () => take(bot, x, POINTS.acorn, `an acorn on path ${k + 1}`)]),
-      ...p.ruts.map((x): [number, () => Promise<void>] => [x + (dir === 'right' ? -0.5 : 2.5), () => (dir === 'right' ? hop(bot, x, 2, 'a rut') : hopLeft(bot, x, 2, 'a rut'))]),
+      ...p.ruts.map((x): [number, () => Promise<void>] => [
+        x + (dir === 'right' ? -0.5 : 2.5),
+        () => (dir === 'right' ? hop(bot, x, 2, 'a rut') : hopLeft(bot, x, 2, 'a rut')),
+      ]),
       ...extra,
     ];
     stops.sort((a, b) => (dir === 'right' ? a[0] - b[0] : b[0] - a[0]));
@@ -370,7 +373,7 @@ export async function zigzagHome(bot: StarterBot): Promise<void> {
   await path(3, 'left', [[at.moon + 2, () => readAt(bot, at.moon + 2, 'the moon sign')]]);
   await up(3)();
   await path(4, 'right', [[at.top + 1, () => readAt(bot, at.top + 1, 'the top sign')]]);
-  score(bot, from, 10 * POINTS.blaze + 6 * POINTS.acorn, "level 9");
+  score(bot, from, 10 * POINTS.blaze + 6 * POINTS.acorn, 'level 9');
   await leave(bot, bot.walk(Z.exit + 1, 'the exit'), 'the exit');
 }
 

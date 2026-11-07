@@ -77,7 +77,10 @@ export function wisp(pal: Pal, frame: 0 | 1, mood: 'sad' | 'happy'): Pixels {
   blob(p, 10, 7 + y, 4.5, 4, w, 1, 3);
   const k = pal.c('ink', 0);
   p.set(8, 9 + y, k).set(12, 9 + y, k);
-  if (mood === 'happy') p.set(9, 11 + y, k).set(10, 12 + y, k).set(11, 11 + y, k);
+  if (mood === 'happy')
+    p.set(9, 11 + y, k)
+      .set(10, 12 + y, k)
+      .set(11, 11 + y, k);
   else {
     p.rect(9, 12 + y, 3, 1, k);
     const d = pal.c('white', 3);
@@ -183,13 +186,7 @@ export function bubble(pal: Pal, what: '!' | '?' | 'heart'): Pixels {
   p.disc(10, 8, 7.5, w).rect(6, 14, 3, 3, w).set(5, 17, w);
   const k = pal.c('ink', 0);
   if (what === '!') p.rect(9, 3, 2, 7, k).rect(9, 11, 2, 2, k);
-  else if (what === '?')
-    p.rect(8, 3, 4, 1, k)
-      .rect(12, 4, 1, 3, k)
-      .rect(10, 7, 2, 1, k)
-      .rect(10, 8, 1, 2, k)
-      .rect(10, 11, 1, 2, k)
-      .set(7, 4, k);
+  else if (what === '?') p.rect(8, 3, 4, 1, k).rect(12, 4, 1, 3, k).rect(10, 7, 2, 1, k).rect(10, 8, 1, 2, k).rect(10, 11, 1, 2, k).set(7, 4, k);
   else {
     const r = pal.c('red', 2);
     p.disc(8, 7, 2.5, r).disc(12, 7, 2.5, r);

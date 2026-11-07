@@ -46,7 +46,8 @@ export function tunnelAir(pal: Pal, lit: 0 | 1 | 2): Pixels {
   const p = clear(pal);
   if (!lit) return p;
   const g = pal.r('gold');
-  for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) if (lit === 2 ? (x + y) % 2 === 0 : x % 2 === 0 && y % 2 === 0) p.set(x, y, lit === 2 ? g[1] : g[0]);
+  for (let y = 0; y < 20; y++)
+    for (let x = 0; x < 20; x++) if (lit === 2 ? (x + y) % 2 === 0 : x % 2 === 0 && y % 2 === 0) p.set(x, y, lit === 2 ? g[1] : g[0]);
   return p;
 }
 
@@ -56,7 +57,9 @@ export function lantern(pal: Pal, lit: boolean): Pixels {
   const s = pal.r('stone');
   const g = pal.r('gold');
   p.rect(9, 0, 2, 4, s[2]);
-  p.rect(5, 4, 10, 2, s[3]).rect(6, 6, 8, 10, lit ? g[4] : s[0]).rect(5, 16, 10, 2, s[3]);
+  p.rect(5, 4, 10, 2, s[3])
+    .rect(6, 6, 8, 10, lit ? g[4] : s[0])
+    .rect(5, 16, 10, 2, s[3]);
   p.rect(6, 6, 1, 10, s[2]).rect(13, 6, 1, 10, s[2]);
   if (lit) p.rect(9, 9, 2, 5, pal.c('orange', 3)).rect(9, 8, 2, 2, g[5]).set(10, 7, g[5]);
   return inked(pal, p);
@@ -70,7 +73,12 @@ export function star(pal: Pal, how: 'off' | 'faint' | 'bright', seed: number): P
   const y = 3 + Math.floor(rand() * 14);
   const w = pal.r('white');
   if (how === 'faint') p.set(x, y, w[1]);
-  if (how === 'bright') p.set(x, y, w[3]).set(x - 1, y, w[1]).set(x + 1, y, w[1]).set(x, y - 1, w[1]).set(x, y + 1, w[1]);
+  if (how === 'bright')
+    p.set(x, y, w[3])
+      .set(x - 1, y, w[1])
+      .set(x + 1, y, w[1])
+      .set(x, y - 1, w[1])
+      .set(x, y + 1, w[1]);
   if (seed % 3 === 0) p.set((x + 9) % 20, (y + 7) % 20, w[0]);
   return p;
 }
@@ -110,7 +118,9 @@ export function puddle(pal: Pal): Pixels {
     [13, 5],
     [10, 11],
   ])
-    p.set(x, y, w[3]).set(x - 1, y, w[1]).set(x + 1, y, w[1]);
+    p.set(x, y, w[3])
+      .set(x - 1, y, w[1])
+      .set(x + 1, y, w[1]);
   return p;
 }
 

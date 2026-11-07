@@ -40,7 +40,16 @@ export function levelHollow(pal: Pal): Level {
   const W = 70;
   const g = new Grid(W, 18);
   // the rim, steps down into the hollow, its floor, steps up the far side
-  const ground = (x: number) => (x <= HOLLOW_AT.down[0] - 1 ? RIM : x <= HOLLOW_AT.down[1] ? RIM + (x - HOLLOW_AT.down[0] + 1) : x < HOLLOW_AT.up[0] ? FLOOR : x <= HOLLOW_AT.up[1] ? FLOOR - (x - HOLLOW_AT.up[0] + 1) : RIM);
+  const ground = (x: number) =>
+    x <= HOLLOW_AT.down[0] - 1
+      ? RIM
+      : x <= HOLLOW_AT.down[1]
+        ? RIM + (x - HOLLOW_AT.down[0] + 1)
+        : x < HOLLOW_AT.up[0]
+          ? FLOOR
+          : x <= HOLLOW_AT.up[1]
+            ? FLOOR - (x - HOLLOW_AT.up[0] + 1)
+            : RIM;
   for (let x = 0; x < W; x++) g.col(x, ground(x), 17, 'D').put(x, ground(x), 'G');
   g.col(0, 0, RIM - 1, 'X').col(W - 1, 0, RIM - 1, 'X');
   g.put(3, RIM - 2, 's').put(3, RIM - 1, 'S');
@@ -55,5 +64,16 @@ export function levelHollow(pal: Pal): Level {
   m.mon(HOLLOW.nutSit, HOLLOW_AT.nut, RIM - 1);
   const at = HOLLOW_AT.signs;
   for (const k of Object.keys(at) as (keyof typeof at)[]) m.sign(at[k], onGround(ground(at[k]), s[k]), s[k]);
-  return { file: 'hollow', title: 'The Empty Spot', hint: 'Watch the sun go down. Look around.', look: 'sunset', map: m, book, timed, mon: 'hollow', song: 'dusk', watch: true };
+  return {
+    file: 'hollow',
+    title: 'The Empty Spot',
+    hint: 'Watch the sun go down. Look around.',
+    look: 'sunset',
+    map: m,
+    book,
+    timed,
+    mon: 'hollow',
+    song: 'dusk',
+    watch: true,
+  };
 }

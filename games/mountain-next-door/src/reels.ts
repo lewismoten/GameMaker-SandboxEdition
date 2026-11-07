@@ -34,13 +34,20 @@ function stars(p: Pixels, pal: Pal, seed: number): void {
   }
 }
 
-/** Fog: dotted white over the lower part of the picture, `thick` 0..1. */
-function fog(p: Pixels, pal: Pal, thick: number, x0: number, x1: number): void {
+const BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
+
+/** Fog filling the lot: a soft bank, thickest low down and in the middle, dithered so it thins at the edges; `thick` 0..1. */
+function fog(p: Pixels, pal: Pal, thick: number, cx: number, rx: number): void {
   const f = pal.r('fog');
-  for (let y = 60; y < 170; y++)
-    for (let x = x0; x < x1; x++) {
-      const n = (Math.sin(x * 0.07 + y * 0.11) + Math.sin(x * 0.023 - y * 0.05)) * 0.25 + 0.5;
-      if (n < thick && (x + y) % 2 === 0) p.set(x, y, f[n < thick * 0.5 ? 3 : 2]);
+  const top = 70;
+  const ground = 170;
+  for (let y = top; y < ground; y++)
+    for (let x = Math.max(0, cx - rx); x < Math.min(320, cx + rx); x++) {
+      const d = ((x - cx) / rx) ** 2 + ((ground - y) / (ground - top)) ** 2;
+      if (d >= 1) continue;
+      const wave = 0.85 + 0.15 * Math.sin(x * 0.06 + y * 0.03);
+      const a = thick * (1 - d) * 1.6 * wave;
+      if (a * 16 > BAYER[(y % 4) * 4 + (x % 4)]) p.set(x, y, f[a > 0.9 ? 3 : a > 0.5 ? 2 : 1]);
     }
 }
 
@@ -78,11 +85,11 @@ export function introReel(pal: Pal, book: Book, tess: Pixels): Reel {
   sat.px.set(bg.px);
   bigMountain(sat, pal, { cx: 222, ground: 170, half: 92, height: 104, eyes: 'shut', gates: true, cloud: false });
   for (let i = 0; i <= 8; i++) reel.frame(sat, (p) => banner(p, pal, 'ZZZ...'), 2, 1 - i / 10, night);
-  for (let i = 0; i <= 10; i++) reel.frame(sat, (p) => (fog(p, pal, i / 10, 120, 330), banner(p, pal, 'THE NEXT MORNING')), 2, 1, dawn);
+  for (let i = 0; i <= 10; i++) reel.frame(sat, (p) => (fog(p, pal, i / 10, 222, 140), banner(p, pal, 'THE NEXT MORNING')), 2, 1, dawn);
   reel.frame(
     sat,
     (p) => {
-      fog(p, pal, 1, 120, 330);
+      fog(p, pal, 1, 222, 140);
       banner(p, pal, 'THE NEXT MORNING');
       scaleBlit(p, tess, 70, 90, 2);
     },

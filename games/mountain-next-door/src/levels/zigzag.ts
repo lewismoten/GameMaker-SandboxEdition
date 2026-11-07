@@ -55,9 +55,14 @@ export function levelZigzag(pal: Pal): Level {
   });
   const m = new StarterMap(book, g.rows());
   // stars all over the night sky, twinkling at two paces, and the moon
-  for (let y = 0; y < f0; y++) for (let x = 1; x < W - 1; x++) if (g.rows()[y][x] === ' ' && (x * 13 + y * 7) % 23 === 0) m.set(x, y, ['faint', 'bright', 'faint2', 'bright2'][(x + y) % 4]);
+  for (let y = 0; y < f0; y++)
+    for (let x = 1; x < W - 1; x++)
+      if (g.rows()[y][x] === ' ' && (x * 13 + y * 7) % 23 === 0) m.set(x, y, ['faint', 'bright', 'faint2', 'bright2'][(x + y) % 4]);
   const [mx, my] = Z.moon;
-  m.set(mx, my, 'moonTL').set(mx + 1, my, 'moonTR').set(mx, my + 1, 'moonBL').set(mx + 1, my + 1, 'moonBR');
+  m.set(mx, my, 'moonTL')
+    .set(mx + 1, my, 'moonTR')
+    .set(mx, my + 1, 'moonBL')
+    .set(mx + 1, my + 1, 'moonBR');
   Z.paths.forEach((p, k) => {
     const feet = ZFLOORS[k] - 1;
     for (const x of p.posts) m.set(x, feet, 'post');
@@ -75,5 +80,15 @@ export function levelZigzag(pal: Pal): Level {
   m.sign(at.steps, onGround(ZFLOORS[1], s.steps), s.steps);
   m.sign(at.moon, onGround(ZFLOORS[3], s.moon), s.moon);
   m.sign(at.top, onGround(ZFLOORS[4], s.top), s.top);
-  return { file: 'zigzag', title: 'The Zigzag Home', hint: 'Blaze every turn. Wisp will follow.', look: 'night', map: m, book, timed, mon: 'trail', song: 'home' };
+  return {
+    file: 'zigzag',
+    title: 'The Zigzag Home',
+    hint: 'Blaze every turn. Wisp will follow.',
+    look: 'night',
+    map: m,
+    book,
+    timed,
+    mon: 'trail',
+    song: 'home',
+  };
 }

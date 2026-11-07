@@ -70,7 +70,21 @@ const anim = (mb: Book, a: string, b: string, t: number): Pics => [
 const actor = { power: POWER, thru: 1 };
 
 /** trail.mon's slots. */
-export const TRAIL = { pebble: 0, nutmeg: 1, nutShort: 2, glowA: 3, glowB: 4, glowC: 5, wispHide: 6, wispFollow: 7, hens: 8, pebbleShort: 9, face: 10, mist: 16, nutBranch: 17 } as const;
+export const TRAIL = {
+  pebble: 0,
+  nutmeg: 1,
+  nutShort: 2,
+  glowA: 3,
+  glowB: 4,
+  glowC: 5,
+  wispHide: 6,
+  wispFollow: 7,
+  hens: 8,
+  pebbleShort: 9,
+  face: 10,
+  mist: 16,
+  nutBranch: 17,
+} as const;
 
 /** A glow-worm's blink: [frame, ticks] (dark a while, then a slow swell and fade). */
 function glowBlink(mb: Book, dark: number, bright: number): Pics {

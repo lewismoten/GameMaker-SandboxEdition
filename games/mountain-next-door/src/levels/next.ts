@@ -40,7 +40,9 @@ export function levelNext(pal: Pal): Level {
   m.set(32, 2, 'gate.green').set(26, 5, 'gate.white').set(39, 5, 'gate.blue').set(29, 3, 'gate.red');
   // the big toe across the sidewalk, four blocks high so nobody hops it
   const t = NEXT_AT.toe;
-  m.set(t, GROUND - 4, 'toeL').set(t + 1, GROUND - 4, 'toeM').set(t + 2, GROUND - 4, 'toeR');
+  m.set(t, GROUND - 4, 'toeL')
+    .set(t + 1, GROUND - 4, 'toeM')
+    .set(t + 2, GROUND - 4, 'toeR');
   for (let y = GROUND - 3; y < GROUND; y++) for (let x = t; x < t + 3; x++) m.set(x, y, 'toe');
   // Tess's house (she starts in its doorway) and her fence; Mrs. Okoro's house past the toe
   house(m, 1, 7, 'wall', 'windowLit');
@@ -54,7 +56,8 @@ export function levelNext(pal: Pal): Level {
   const cx = (f0 + f1) / 2;
   for (let y = fy; y < GROUND; y++)
     for (let x = f0; x <= f1; x++)
-      if (((x - cx) / ((f1 - f0) / 2 + 0.5)) ** 2 + ((y - GROUND) / (GROUND - fy + 0.5)) ** 2 <= 1) m.mon(NEXT.fogWait[Math.min(3, Math.floor(((x - f0) * 4) / (f1 - f0 + 1)))], x, y);
+      if (((x - cx) / ((f1 - f0) / 2 + 0.5)) ** 2 + ((y - GROUND) / (GROUND - fy + 0.5)) ** 2 <= 1)
+        m.mon(NEXT.fogWait[Math.min(3, Math.floor(((x - f0) * 4) / (f1 - f0 + 1)))], x, y);
   // the neighbors: Mr. Hale on his walk, Mrs. Okoro on her step (top, bottom, and the cue over where they stop)
   m.mon(NEXT.hale, NEXT_AT.hale, GROUND - 2).mon(NEXT.hale + 1, NEXT_AT.hale, GROUND - 1);
   m.mon(NEXT.hale + 8, NEXT_AT.hale + PROLOGUE.haleWalk, GROUND - 3);

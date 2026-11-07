@@ -23,7 +23,9 @@ export function rock(pal: Pal, seed: number): Pixels {
   if (seed % 2) for (let y = 4; y < 14; y++) p.set(cx + (y % 3 === 0 ? 1 : 0), y, r[0]);
   else {
     const m = pal.r('moss');
-    p.rect(cx, 12, 5, 2, m[2]).rect(cx + 1, 11, 3, 1, m[3]).set(cx + 2, 10, m[4]);
+    p.rect(cx, 12, 5, 2, m[2])
+      .rect(cx + 1, 11, 3, 1, m[3])
+      .set(cx + 2, 10, m[4]);
   }
   p.rect(2 + (seed % 5) * 3, 3, 3, 1, r[4]);
   return p;
@@ -147,7 +149,10 @@ export function roof(pal: Pal, part: 'L' | 'M' | 'R'): Pixels {
 export function fence(pal: Pal): Pixels {
   const p = clear(pal);
   const w = pal.r('white');
-  for (const x of [1, 7, 13]) p.rect(x, 4, 4, 16, w[2]).rect(x, 4, 1, 16, w[3]).rect(x + 1, 3, 2, 1, w[2]);
+  for (const x of [1, 7, 13])
+    p.rect(x, 4, 4, 16, w[2])
+      .rect(x, 4, 1, 16, w[3])
+      .rect(x + 1, 3, 2, 1, w[2]);
   p.rect(0, 8, 20, 2, w[1]).rect(0, 15, 20, 2, w[1]);
   return inked(pal, p);
 }
@@ -284,7 +289,8 @@ export function toe(pal: Pal, part: 'toeL' | 'toeM' | 'toeR' | 'toe'): Pixels {
   // moss on top, and a toenail at the front: it is a toe, after all
   const m = pal.r('moss');
   big.rect(10, 4, 14, 2, m[2]).rect(12, 3, 9, 1, m[3]);
-  for (let y = 9; y < 19; y++) for (let x = 44; x < 58; x++) if (((x - 52) / 6) ** 2 + ((y - 14) / 5) ** 2 <= 1) big.set(x, y, y < 11 ? pal.c('parch', 4) : pal.c('parch', 3));
+  for (let y = 9; y < 19; y++)
+    for (let x = 44; x < 58; x++) if (((x - 52) / 6) ** 2 + ((y - 14) / 5) ** 2 <= 1) big.set(x, y, y < 11 ? pal.c('parch', 4) : pal.c('parch', 3));
   const i = part === 'toeL' ? 0 : part === 'toeM' ? 1 : 2;
   return inked(pal, big.crop(i * 20, 0, 20, 20));
 }

@@ -120,6 +120,10 @@ export function mountain(m: StarterMap, peakX: number, top: number, steep = 3, g
 
 /** Places the mountain's face (monsters.ts face()): eyes at columns `eyeL` and `eyeR` (each 2x2, top row `eyeY`), the mouth (2x1) at (`mouthX`, `mouthY`). */
 export function placeFace(m: StarterMap, at: number, eyeL: number, eyeR: number, eyeY: number, mouthX: number, mouthY: number): void {
-  for (const x of [eyeL, eyeR]) m.mon(at, x, eyeY).mon(at + 1, x + 1, eyeY).mon(at + 2, x, eyeY + 1).mon(at + 3, x + 1, eyeY + 1);
+  for (const x of [eyeL, eyeR])
+    m.mon(at, x, eyeY)
+      .mon(at + 1, x + 1, eyeY)
+      .mon(at + 2, x, eyeY + 1)
+      .mon(at + 3, x + 1, eyeY + 1);
   m.mon(at + 4, mouthX, mouthY).mon(at + 5, mouthX + 1, mouthY);
 }

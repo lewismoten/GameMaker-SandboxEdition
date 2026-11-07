@@ -44,8 +44,13 @@ export function levelPicnic(pal: Pal): Level {
   for (let x = P.top[0]; x <= P.top[1]; x++) m.set(x, TOP, 'ledge');
   for (let x = P.top[0]; x <= P.top[1]; x++) for (let y = TOP - 3; y < TOP; y++) m.set(x, y, 'sky');
   for (let x = P.steps[0]; x <= P.steps[1]; x++) m.set(x, G10 - 1 - Math.floor((x - P.steps[0]) / 2), 'step');
-  m.set(P.blanket, TOP - 1, 'blanketL').set(P.blanket + 1, TOP - 1, 'blanketM').set(P.blanket + 2, TOP - 1, 'blanketR');
-  m.set(P.mat - 1, G10 - 1, 'matL').set(P.mat, G10 - 1, 'matM').set(P.mat + 1, G10 - 1, 'matR').set(P.mat + 2, G10 - 1, 'matR');
+  m.set(P.blanket, TOP - 1, 'blanketL')
+    .set(P.blanket + 1, TOP - 1, 'blanketM')
+    .set(P.blanket + 2, TOP - 1, 'blanketR');
+  m.set(P.mat - 1, G10 - 1, 'matL')
+    .set(P.mat, G10 - 1, 'matM')
+    .set(P.mat + 1, G10 - 1, 'matR')
+    .set(P.mat + 2, G10 - 1, 'matR');
   m.set(P.exit, TOP - 2, 'doorTop').set(P.exit, TOP - 1, 'doorBottom');
   m.exits.push({ from: [P.exit + 10, TOP - 1 + 10] });
   for (const [x, y] of [
@@ -55,11 +60,26 @@ export function levelPicnic(pal: Pal): Level {
     m.set(x, y, 'cloudL').set(x + 1, y, 'cloudR');
   placeFace(m, PICNIC.face, 36, 43, 9, 40, 12);
   m.mon(PICNIC.sunRise, P.sun[0], P.sun[1]);
-  m.mon(PICNIC.hale, P.neighbors.hale, G10 - 2).mon(PICNIC.hale + 1, P.neighbors.hale, G10 - 1).mon(PICNIC.hale + 6, P.neighbors.hale + 28, TOP - 3);
-  m.mon(PICNIC.okoro, P.neighbors.okoro, G10 - 2).mon(PICNIC.okoro + 1, P.neighbors.okoro, G10 - 1).mon(PICNIC.okoro + 6, P.neighbors.okoro + 36, TOP - 3);
+  m.mon(PICNIC.hale, P.neighbors.hale, G10 - 2)
+    .mon(PICNIC.hale + 1, P.neighbors.hale, G10 - 1)
+    .mon(PICNIC.hale + 6, P.neighbors.hale + 28, TOP - 3);
+  m.mon(PICNIC.okoro, P.neighbors.okoro, G10 - 2)
+    .mon(PICNIC.okoro + 1, P.neighbors.okoro, G10 - 1)
+    .mon(PICNIC.okoro + 6, P.neighbors.okoro + 36, TOP - 3);
   m.mon(PICNIC.wisp, P.wisp[0], P.wisp[1]);
   m.sign(P.signs.home, onGround(G10, s.home), s.home);
   m.sign(P.signs.mat, onGround(G10 - 1, s.mat) + 1, s.mat);
   m.sign(P.signs.end, onGround(TOP, s.end), s.end);
-  return { file: 'picnic', title: 'Summit Picnic', hint: 'Climb up. Watch who comes.', look: 'sunrise', map: m, book, timed, mon: 'picnic', song: 'home', watch: true };
+  return {
+    file: 'picnic',
+    title: 'Summit Picnic',
+    hint: 'Climb up. Watch who comes.',
+    look: 'sunrise',
+    map: m,
+    book,
+    timed,
+    mon: 'picnic',
+    song: 'home',
+    watch: true,
+  };
 }

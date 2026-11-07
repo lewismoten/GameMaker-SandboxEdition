@@ -26,6 +26,17 @@ import { levelNext } from './next';
 /** The base palette and every level. */
 export function buildLevels(): { pal: ReturnType<typeof buildMountainPalette>; levels: Level[] } {
   const pal = buildMountainPalette();
-  const levels: Level[] = [levelNext(pal), levelGates(pal), levelPrints(pal), levelStream(pal), levelSigns(pal), levelHollow(pal), levelRidge(pal), levelTunnel(pal), levelZigzag(pal), levelPicnic(pal)];
+  const levels: Level[] = [
+    levelNext(pal),
+    levelGates(pal),
+    levelPrints(pal),
+    levelStream(pal),
+    levelSigns(pal),
+    levelHollow(pal),
+    levelRidge(pal),
+    levelTunnel(pal),
+    levelZigzag(pal),
+    levelPicnic(pal),
+  ];
   return { pal, levels };
 }

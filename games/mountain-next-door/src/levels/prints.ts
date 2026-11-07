@@ -19,7 +19,13 @@ export const PRINTS_AT = {
   oak: { ladder: 33, row: 10, from: 34, to: 41, acorns: [36, 40] },
   log: 49,
   pie: 62,
-  mist: [[6, 4], [26, 3], [47, 5], [66, 4], [80, 3]],
+  mist: [
+    [6, 4],
+    [26, 3],
+    [47, 5],
+    [66, 4],
+    [80, 3],
+  ],
   canopy: { row: 5, from: 4, to: 85, ladder: 86, posts: [74, 50, 28, 12], acorns: [64, 40, 20], nuts: [56, 30] },
   exit: 5,
   signs: { follow: 4, blaze: 25, nut: 36, mist: 80, canopy: 78 },
@@ -55,7 +61,10 @@ export function levelPrints(pal: Pal): Level {
   scenery(g);
   const m = new StarterMap(book, g.rows());
   for (const x of PRINTS_AT.holes) m.set(x, G3 + 2, 'printL').set(x + 1, G3 + 2, 'printR');
-  for (const x of PRINTS_AT.dents) m.set(x, G3, 'printL').set(x + 1, G3, 'printM').set(x + 2, G3, 'printR');
+  for (const x of PRINTS_AT.dents)
+    m.set(x, G3, 'printL')
+      .set(x + 1, G3, 'printM')
+      .set(x + 2, G3, 'printR');
   for (const x of PRINTS_AT.posts) m.set(x, G3 - 1, 'post');
   for (const x of PRINTS_AT.trees) tree(m, x);
   // the oak: a crown along the branch, acorns on it
@@ -73,12 +82,25 @@ export function levelPrints(pal: Pal): Level {
   const at = PRINTS_AT.signs;
   for (const k of ['follow', 'blaze', 'nut', 'mist'] as const) m.sign(at[k], onGround(G3, s[k]), s[k]);
   m.sign(at.canopy, onGround(c.row, s.canopy), s.canopy);
-  return { file: 'prints', title: 'Footprints in the Park', hint: 'Blaze every post and tree.', look: 'mist', map: m, book, timed, mon: 'trail', song: 'trail' };
+  return {
+    file: 'prints',
+    title: 'Footprints in the Park',
+    hint: 'Blaze every post and tree.',
+    look: 'mist',
+    map: m,
+    book,
+    timed,
+    mon: 'trail',
+    song: 'trail',
+  };
 }
 
 /** A big tree at column x: bark, a trunk to blaze at Tess's height, a crown on top. */
 export function tree(m: StarterMap, x: number, ground = G3): void {
-  m.set(x, ground - 1, 'bark').set(x, ground - 2, 'trunk').set(x, ground - 3, 'bark').set(x, ground - 4, 'bark');
+  m.set(x, ground - 1, 'bark')
+    .set(x, ground - 2, 'trunk')
+    .set(x, ground - 3, 'bark')
+    .set(x, ground - 4, 'bark');
   for (let k = 0; k < 9; k++) m.set(x - 1 + (k % 3), ground - 7 + Math.floor(k / 3), `crown${k}`);
 }
 

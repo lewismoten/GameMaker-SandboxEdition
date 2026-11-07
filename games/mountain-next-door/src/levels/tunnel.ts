@@ -38,7 +38,18 @@ export const TUNNEL_AT = {
     [70, 'lower'],
     [44, 'upper'],
   ],
-  worms: [[24, 0, 'upper'], [34, 1, 'lower'], [37, 2, 'lower'], [40, 0, 'lower'], [58, 1, 'lower'], [78, 2, 'lower'], [72, 0, 'upper'], [54, 1, 'upper'], [40, 2, 'upper'], [12, 0, 'upper']],
+  worms: [
+    [24, 0, 'upper'],
+    [34, 1, 'lower'],
+    [37, 2, 'lower'],
+    [40, 0, 'lower'],
+    [58, 1, 'lower'],
+    [78, 2, 'lower'],
+    [72, 0, 'upper'],
+    [54, 1, 'upper'],
+    [40, 2, 'upper'],
+    [12, 0, 'upper'],
+  ],
   puddles: [
     [15, 'lower'],
     [29, 'lower'],
@@ -72,7 +83,15 @@ export function levelTunnel(pal: Pal): Level {
   // every block of the tunnels is set here; the grid only marks the way in (lower left) and out (upper left)
   const rows = Array.from({ length: H }, (_, y) =>
     Array.from({ length: W }, (_, x) =>
-      x === 3 && y === LOWER.floor - 2 ? 's' : x === 3 && y === LOWER.floor - 1 ? 'S' : x === T.exit && y === UPPER.floor - 2 ? 'e' : x === T.exit && y === UPPER.floor - 1 ? 'E' : ' ',
+      x === 3 && y === LOWER.floor - 2
+        ? 's'
+        : x === 3 && y === LOWER.floor - 1
+          ? 'S'
+          : x === T.exit && y === UPPER.floor - 2
+            ? 'e'
+            : x === T.exit && y === UPPER.floor - 1
+              ? 'E'
+              : ' ',
     ).join(''),
   );
   const m = new StarterMap(book, rows);

@@ -70,7 +70,10 @@ levels.forEach((l, i) => {
   const slides = [{ name: `${l.file}.gif`, pause: 4 }];
   disk.put(`${l.file}.gif`, gif(cardPicture(lp, base, tess, i + 1, levels.length, l.title, l.hint), lp));
   (CARDS[l.file] ?? []).forEach((lines, k) => {
-    const peak = l.file === 'next' && k === 1 ? undefined : { eyes: l.file === 'picnic' ? ('open' as const) : ('open' as const), gates: i < 2, cloud: l.file === 'picnic' };
+    const peak =
+      l.file === 'next' && k === 1
+        ? undefined
+        : { eyes: l.file === 'picnic' ? ('open' as const) : ('open' as const), gates: i < 2, cloud: l.file === 'picnic' };
     disk.put(`${l.file}s${k}.gif`, gif(storyCard(lp, base, tess, lines, 40 + i * 3 + k, l.file === 'next' && k === 0 ? undefined : peak), lp));
     slides.push({ name: `${l.file}s${k}.gif`, pause: 8 });
   });
@@ -83,7 +86,10 @@ const text = (name: string, heading: string, body: string) => {
   disk.put(`${name}.txt`, body);
   disk.put(`${name}.lst`, serializeSlideList([{ name: `${name}.gif`, pause: 0 }, { name: `${name}.txt` }]));
 };
-disk.put('title.gif', gif(titlePicture(
+disk.put(
+  'title.gif',
+  gif(
+    titlePicture(
       pal,
       base,
       tess,
@@ -92,7 +98,10 @@ disk.put('title.gif', gif(titlePicture(
         ['MOVED NEXT DOOR', 2],
       ],
       'A DAY-AFTER-THANKSGIVING SPECIAL',
-    ), pal));
+    ),
+    pal,
+  ),
+);
 disk.put(SANDLOGO, sandLogoFli());
 disk.put('intro.fli', introReel(pal, base, tess).fli(REEL_SPEED));
 disk.put(
@@ -117,12 +126,7 @@ disk.put('won.gif', gif(paper(pal, base, 'HOME AGAIN'), pal));
 disk.put('won.txt', WON);
 disk.put(
   'won.lst',
-  serializeSlideList([
-    { name: 'ending.fli', pause: 0 },
-    { name: 'wonpic.gif', pause: 6 },
-    { name: 'won.gif', pause: 0 },
-    { name: 'won.txt' },
-  ]),
+  serializeSlideList([{ name: 'ending.fli', pause: 0 }, { name: 'wonpic.gif', pause: 6 }, { name: 'won.gif', pause: 0 }, { name: 'won.txt' }]),
 );
 disk.put('lostpic.gif', gif(endPicture(pal, base, hurt, 'OH NO!', 'TRY AGAIN', 'lost'), pal));
 disk.put('lost.gif', gif(paper(pal, base, 'TRY AGAIN'), pal));
@@ -134,4 +138,6 @@ disk.put('mountain.gam', serializeGame(buildGame(levels)));
 disk.put('license.txt', licenseText('The Mountain Moved Next Door'));
 clipEveryList(disk.files);
 disk.write();
-console.log(`${TITLE}: ${levels.length} levels; blocks per set ${levels.map((l) => `${l.file} ${l.book.index.size}`).join(', ')}; ${heroBlocks.index.size} hero blocks, ${mb.index.size} monster pictures`);
+console.log(
+  `${TITLE}: ${levels.length} levels; blocks per set ${levels.map((l) => `${l.file} ${l.book.index.size}`).join(', ')}; ${heroBlocks.index.size} hero blocks, ${mb.index.size} monster pictures`,
+);
