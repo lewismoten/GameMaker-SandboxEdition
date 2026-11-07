@@ -22,6 +22,11 @@ export type ProgramRef =
   | { kind: 'playgame' }
   | { kind: 'menu' }
   | { kind: 'image' }
+  /** One of Game-Maker's designers (PALCHOS.EXE ... GRATOR.EXE, not IMAGE), run on its own or by GM. */
+  | { kind: 'designer'; exe: string }
+  | { kind: 'utility' }
+  /** The transferred-game player: it plays <its own name>.GAM, so in C:\GM it finds none. */
+  | { kind: 'xferplay' }
   | { kind: 'egg' }
   | { kind: 'terminal' }
   | { kind: 'scoot' }

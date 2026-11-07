@@ -243,6 +243,17 @@ export class Computer extends ComputerFolders {
           }
           break;
         }
+        case 'designer':
+          // a designer typed at the prompt, on its own: Main/Quit ends back here (gm.ts runDesigner)
+          this.opts.onDriveAccess?.(this.shell.drive);
+          await (await import('./gm')).runDesigner(this, ref.exe, _args);
+          break;
+        case 'utility':
+          await (await import('./gm')).runUtility(this, _args);
+          break;
+        case 'xferplay':
+          await (await import('./gm')).xferplay(this);
+          break;
         case 'terminal':
           await (await import('./bbs/bbs')).runTerminal(this, _args);
           break;
@@ -351,7 +362,7 @@ export class Computer extends ComputerFolders {
 
   /** Game-Maker (or one of its designers) is running. */
   get inGameMaker(): boolean {
-    return this.program === 'gm' || this.program === 'menu';
+    return this.program === 'gm' || this.program === 'menu' || this.program === 'designer' || this.program === 'utility';
   }
 
   /**

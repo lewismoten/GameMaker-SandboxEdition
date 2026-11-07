@@ -22,6 +22,7 @@ import { TTY_INFO } from '../bbs/ttyInfo';
 import { flagsBakNodes } from '../hacks/flagsBackup';
 import { deskFilesReady, gameDownloadNodes, imagesDiz, playgameReg, utilityFolders } from '../hacks/deskFiles';
 import { dosDir } from '../../project/dosDir';
+import { gmProgramRef } from '../dos/gmPrograms';
 
 export abstract class ComputerDrives {
   // Defined by a later layer (see the chain in the header comment).
@@ -366,17 +367,11 @@ export abstract class ComputerDrives {
   /** C:\GM (hard disk, with your games and changes) or D:\GM (the CD, as shipped). */
   protected async gmFolder(hardDisk: boolean): Promise<DosNode[]> {
     const index = await this.gmIndexList();
-    const runs: Record<string, ProgramRef> = {
-      'GM.EXE': { kind: 'gm' },
-      'MENU.EXE': { kind: 'menu' },
-      'IMAGE.EXE': { kind: 'image' },
-      'PLAYGAME.EXE': { kind: 'playgame' },
-    };
     const programs = index
       .filter((e) => !e.dir)
       .map((e) => {
         const text = /\.(hlp|txt)$/i.test(e.name);
-        return file(e.name, e.size, { run: runs[e.name], read: text ? async () => (await this.gmFile(e.name)) ?? new Uint8Array() : undefined });
+        return file(e.name, e.size, { run: gmProgramRef(e.name), read: text ? async () => (await this.gmFile(e.name)) ?? new Uint8Array() : undefined });
       });
     const games = hardDisk ? await this.hdGames() : (await this.hdGames()).filter((g) => g.source === 'installed');
     // your games and changed installed ones are dated when last saved
