@@ -1887,6 +1887,19 @@ static void chooseSetting(st::Item it, int chip) {
   setView.last = it;
   drawSettings();
 }
+// The Card tab's bottom line: where the glass says a finger is (raw, then screen, and the contact size), for checking a board.
+static void touchInfo() {
+  const int y = scr::H - 12;
+  tft.fillRect(0, y - 2, scr::W, 12, C_BLACK);
+  tft.setTextSize(1);
+  tft.setTextColor(C_GRAY, C_BLACK);
+  tft.setCursor(6, y);
+  char l[64];
+  if (pts.n) snprintf(l, sizeof l, "Touch: raw %d,%d > screen %d,%d size %d", gt.rawX[0], gt.rawY[0], pts.x[0], pts.y[0], pts.size[0]);
+  else snprintf(l, sizeof l, "Touch: none");
+  l[(scr::W - 12) / 6] = 0;
+  tft.print(l);
+}
 // Touches on the preview go to the real controls model, scaled up to the game view; what it presses lights up.
 static void previewTouch(uint32_t now) {
   st::Box b = st::previewBox();
@@ -2131,6 +2144,8 @@ void loop() {
       }
     }
     if (setView.tab == st::T_CONTROLS) previewTouch(now);
+    static uint32_t infoT = 0;
+    if (setView.tab == st::T_CARD && now - infoT > 100) { infoT = now; touchInfo(); }
     delay(5);
     return;
   }
