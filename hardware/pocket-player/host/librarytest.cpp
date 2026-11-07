@@ -3,6 +3,7 @@
 #include "library.h"
 #include "picker_draw.h"
 #include "splash.h"
+#include "cardmsg.h"
 #include "gmsmall.h"
 #include <assert.h>
 #include <string>
@@ -79,6 +80,41 @@ int main(int argc,char**argv) {
     }
     for(int i=0;i<6;i++)pk::thumbnail(fb,W,i,nullptr,"MALFORMED-LONG-NAME",false);
     assert(!fb.clipped);
+    // Card messages: the home page with each card state, the empty-page notices, loading, and each failure card.
+    {
+      using namespace pk;
+      const int footerY=footer(W);
+      struct Fake { const char*name;CardState s;int cardGamesFound;int flash; } fakes[]={
+        {"reading",CARD_READING,37,4},{"ready",CARD_READY,123,4},{"nocard",CARD_NONE,0,4},{"unreadable",CARD_UNREADABLE,0,4},{"nofolder",CARD_NOFOLDER,0,4},
+        {"empty-reading",CARD_READING,0,0},{"empty-nocard",CARD_NONE,0,0},{"empty-unreadable",CARD_UNREADABLE,0,0},{"empty-nofolder",CARD_NOFOLDER,0,0},{"empty-ready",CARD_READY,0,0}};
+      for(auto&k:fakes) {
+        pk::clearTiles(fb,W);libraryFrame(fb,W,fb.H,"Pocket Player",0,1,nullptr,false);
+        drawCardChip(fb,W,k.s,k.cardGamesFound);
+        if(k.flash) for(int i=0;i<6;i++)tileLabel(fb,W,i,labels[i],false,rootIcons[i]);
+        else assert(drawEmptyNotice(fb,W,k.s,k.cardGamesFound)>0&&drawEmptyNotice(fb,W,k.s,k.cardGamesFound)<=footerY);
+        assert(!fb.clipped);save(fb,out+"/card-"+k.name+"-"+std::to_string(W)+".ppm");
+        // no back arrow on the root page: the top-left 32x32 is plain title bar
+        for(int y=0;y<32;y++)assert(fb.px[y*W]!=C_WHITE);  // the arrow button's outline is not there
+      }
+      // the chip text, long counts included, never reaches the Search button
+      for(CardState s:{CARD_READING,CARD_READY,CARD_NONE,CARD_UNREADABLE,CARD_NOFOLDER}){char t[32];cardChipText(s,512,t,sizeof t);assert(t[0]&&strlen(t)<26);}
+      pk::clearTiles(fb,W);libraryFrame(fb,W,fb.H,"Starters",0,2,"Details");for(int y=0;y<32;y++)assert(fb.px[y*W]==C_WHITE);  // deeper pages keep their back arrow
+      const char*title="Moving and Pushing, a rather long game title that needs an ellipsis";
+      for(int step:{0,1,2,3}){drawLoading(fb,W,fb.H,title,step,3);assert(!fb.clipped);save(fb,out+"/loading"+std::to_string(step)+"-"+std::to_string(W)+".ppm");}
+      struct Failure { const char*name;LoadFail want;bool onCard,cardThere,missing;uint32_t largest; } failures[]={
+        {"memory",FAIL_MEMORY,false,true,true,30000},{"file",FAIL_FILE,true,true,true,150000},{"card",FAIL_CARD,true,false,false,150000},{"file-flash",FAIL_FILE,false,true,false,40000}};
+      for(auto&k:failures) {
+        assert(whyFailed(k.onCard,k.cardThere,k.missing,k.largest)==k.want);
+        drawFailCard(fb,W,fb.H,title,k.want);assert(!fb.clipped);
+        auto b=failButton(W,fb.H);assert(inFailButton(W,fb.H,b.x+1,b.y+1)&&!inFailButton(W,fb.H,b.x-1,b.y)&&b.x>=0&&b.x+b.w<=W&&b.y+b.h<=fb.H&&b.h>=44);
+        save(fb,out+"/failure-"+k.name+"-"+std::to_string(W)+".ppm");
+      }
+      drawFailCard(fb,W,fb.H,"",FAIL_FILE);assert(!fb.clipped);
+      {static Phys sp;sp.W=W;sp.H=fb.H;drawSplash(sp,W,sp.H);splashLine(sp,W,sp.H,"Looking for games");assert(!sp.clipped);save(sp,out+"/splash-line-"+std::to_string(W)+".ppm");}
+    }
   }
+  // what the boot scan makes of a card: the fakes behind each message
+  assert(pk::cardStateAfterMount(false,false,false)==pk::CARD_NONE);assert(pk::cardStateAfterMount(true,false,false)==pk::CARD_UNREADABLE);
+  assert(pk::cardStateAfterMount(true,true,false)==pk::CARD_NOFOLDER);assert(pk::cardStateAfterMount(true,true,true)==pk::CARD_READING);
   fclose(f);printf("librarytest: passed; entry=%zu catalog512=%zu scratch=%d bytes\n",sizeof(pk::Entry),sizeof(pk::Catalog),pk::THUMB_RAW+288);
 }

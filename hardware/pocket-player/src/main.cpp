@@ -23,6 +23,7 @@
 #include "screen.h"
 #include "picker_draw.h"
 #include "splash.h"
+#include "cardmsg.h"
 #include "library.h"
 #include <mbedtls/sha256.h>
 #ifdef POCKET_CYD28
@@ -285,6 +286,9 @@ static int ngames = 0, ncollections = 0;
 static bool restoreSelection = false;
 static bool catalogOverflow = false, uidConflict = false;
 static bool haveSD = false, cardProbePending = true;
+static pk::CardState cardState = pk::CARD_UNKNOWN;  // what the card said at boot or the last Rescan (cardmsg.h)
+static pk::LoadFail failWhy = pk::FAIL_FILE;
+static bool loadBarOn = false;
 static SPIClass sdSpi(VSPI);
 static bool mountSD() {
   if (sdUp) return true;
@@ -406,7 +410,7 @@ static void addGames(fs::FS& fsys,const char* base,bool sd) {
 }
 static bool scanCardBatch() {
   if(scanDone||!haveSD||!catalog)return false;
-  if(!scanDir){if(!mountSD()){scanDone=true;return true;}scanDir=SD.open("/pocket");if(!scanDir){scanDone=true;stopCardScan();return true;}scanStart=millis();scanFiles=0;
+  if(!scanDir){if(!mountSD()){scanDone=true;cardState=pk::CARD_NONE;return true;}scanDir=SD.open("/pocket");if(!scanDir){scanDone=true;cardState=pk::CARD_NOFOLDER;stopCardScan();return true;}scanStart=millis();scanFiles=0;
     cacheIn=SD.open("/pocket/LIBRARY.CCH","r");char magic[4];cacheValid=cacheIn&&cacheIn.size()>=4&&(cacheIn.size()-4)%sizeof(pk::Cached)==0&&cacheIn.size()<=4+MAXGAMES*sizeof(pk::Cached)&&cacheIn.read((uint8_t*)magic,4)==4&&!memcmp(magic,"PLC1",4);
     cacheOut=SD.open("/pocket/LIBRARY.NEW","w");if(cacheOut)cacheOut.write((const uint8_t*)"PLC1",4);
   }
@@ -433,7 +437,7 @@ static bool scanCardBatch() {
       if(!duplicate(g)){if(ngames==MAXGAMES){catalogOverflow=true;scanDone=true;}else games[ngames++]=g;}
     }f.close();if(scanDone)break;
   }
-  if(scanDone){cacheIn.close();if(cacheOut){cacheOut.close();SD.remove("/pocket/LIBRARY.CCH");SD.rename("/pocket/LIBRARY.NEW","/pocket/LIBRARY.CCH");}File dir=SD.open("/pocket");cardDirectoryStamp=dir?dir.getLastWrite():0;dir.close();cardScanKnown=true;Serial.printf("BOOT card-discovery ms=%lu entries=%lu games=%d\n",(unsigned long)(millis()-scanStart),(unsigned long)scanFiles,ngames);stopCardScan();}
+  if(scanDone){cacheIn.close();if(cacheOut){cacheOut.close();SD.remove("/pocket/LIBRARY.CCH");SD.rename("/pocket/LIBRARY.NEW","/pocket/LIBRARY.CCH");}File dir=SD.open("/pocket");cardDirectoryStamp=dir?dir.getLastWrite():0;dir.close();cardScanKnown=true;if(cardState==pk::CARD_READING)cardState=pk::CARD_READY;Serial.printf("BOOT card-discovery ms=%lu entries=%lu games=%d\n",(unsigned long)(millis()-scanStart),(unsigned long)scanFiles,ngames);stopCardScan();}
   return before!=ngames||scanDone;
 }
 // Rebuild released RAM from the disposable cache after play. A directory scan is only
@@ -460,12 +464,27 @@ static bool restoreCardCatalog() {
   }
   cache.close();Serial.printf("LIB card-cache ms=%lu games=%d\n",(unsigned long)(millis()-t),ngames);return true;
 }
+// Mounts the card and says what it found: no card, unreadable, no /pocket folder, or ready to read. Leaves the card mounted.
+static void probeCard() {
+  bool mounted = mountSD(), root = false, pocket = false;
+  if (mounted) {
+    File r = SD.open("/");
+    root = r && r.isDirectory();
+    r.close();
+    File d = SD.open("/pocket");
+    pocket = d && d.isDirectory();
+    d.close();
+  }
+  haveSD = mounted;
+  cardState = pk::cardStateAfterMount(mounted, root, pocket);
+}
+static int cardGames() { int n = 0; for (int i = 0; i < ngames; i++) if (games[i].sd) n++; return n; }
 static void loadGameList() {
   releaseCatalog();catalog=(pk::Catalog*)calloc(1,sizeof(pk::Catalog));games=catalog?catalog->games:nullptr;
   ngames=ncollections=0;catalogOverflow=uidConflict=false;scanDone=false;
   if(!catalog){catalogOverflow=true;scanDone=true;return;}
   addGames(LittleFS,"",false);
-  if(haveSD&&mountSD()){addGames(SD,"/pocket",true);scanDone=restoreCardCatalog();unmountSD();}
+  if(haveSD&&mountSD()){addGames(SD,"/pocket",true);scanDone=restoreCardCatalog();if(scanDone)cardState=pk::CARD_READY;unmountSD();}
 }
 static const char* fileOf(const GameEntry& g) { return g.sd && !g.one ? g.file : g.id; }  // the name of its .cfg (and .pak)
 // Points the file readers at game g.
@@ -869,16 +888,19 @@ static void drawPicker(bool clear = true, bool paging = false) {
   uint32_t t=millis();if(restoreSelection)selected=pk::selection(games,ngames,activeGame.uid);filterGames();categories();int count=browsingCategories?categoryCount:nmatch,pages=(count+5)/6;page=pk::clampPage(page,count,haveSD&&!scanDone);
   pk::clearTiles(tft,scr::W);
   const char*crumb=searchText[0]?(searchAll?"Search: All games":"Search: This category"):subcategory>=0?subLabel(category,subcategory):category?rootLabel(category):"Pocket Player";
-  pk::libraryFrame(tft,scr::W,scr::H,crumb,page,pages,searchText[0]&&!nmatch?"Clear":browsingCategories?"Rescan":"Details");
+  bool home=browsingCategories&&!category&&!searchText[0],none=home&&!ngames;  // the root page: no back arrow, a card chip; no games at all: a notice instead of tiles
+  pk::libraryFrame(tft,scr::W,scr::H,crumb,page,pages,searchText[0]&&!nmatch?"Clear":browsingCategories?nullptr:"Details",!home);
+  if(home)pk::drawCardChip(tft,scr::W,cardState,cardGames());
   bool was=sdUp;if(haveSD&&!browsingCategories)mountSD();
-  for(int r=0;r<6;r++) {
+  for(int r=0;r<6&&!none;r++) {
     int at=page*6+r;if(at>=count)continue;
     if(browsingCategories){int c=categorySlots[at];pk::tileLabel(tft,scr::W,r,category?subLabel(category,c):rootLabel(c),false,tileIcon(category,c),true);}
     else {int i=catalog->matches[at];pk::Meta m;gameMeta(games[i],m);uint8_t*raw=preview(games[i]);pk::thumbnail(tft,scr::W,r,raw,m.dos,i==selected,true);free(raw);}
   }
   if(!was)unmountSD();
   if(!count&&searchText[0])pk::drawSmallIcon(tft,17,16,68,true);
-  if(!count){tft.setTextColor(C_WHITE,C_BLACK);tft.setTextSize(1);tft.setCursor(16,90);tft.print(searchText[0]?"No matching titles":"No games found");}
+  if(none&&pk::drawEmptyNotice(tft,scr::W,cardState,cardGames())){}
+  else if(!count){tft.setTextColor(C_WHITE,C_BLACK);tft.setTextSize(1);tft.setCursor(16,90);tft.print(searchText[0]?"No matching titles":"No games found");}
   if(uidConflict){tft.setTextColor(C_YELLOW,C_BLACK);tft.setTextSize(1);tft.setCursor(4,188);tft.print("UID conflict: first copy kept");}
   if(catalogOverflow){tft.setTextColor(C_YELLOW,C_BLACK);tft.setTextSize(1);tft.setCursor(4,198);tft.print("Library limit: 512 games / 24 collections");}
   Serial.printf("LIB page ms=%lu catalog=%u free=%u largest=%u\n",(unsigned long)(millis()-t),(unsigned)sizeof(pk::Catalog),(unsigned)ESP.getFreeHeap(),(unsigned)heap_caps_get_largest_free_block(MALLOC_CAP_8BIT));
@@ -930,8 +952,29 @@ static const char* panelName(char* b) {  // "ILI", "ST inv", "ILI inv bgr", ...
   return b;
 }
 #endif
-constexpr int ST_ROWS = scr::SMALL ? 10 : 9;  // the 2.8 inch board's Settings also has Calibrate and Display
+constexpr int ST_ROWS = scr::SMALL ? 11 : 10;  // the 2.8 inch board's Settings also has Calibrate and Display
 static int setPage = 0;
+static void enterPicker();
+static bool settingsFromPause();  // defined with fromPause: Settings was opened from a paused game (its memory is in use)
+// Settings, Card, Rescan: forget the cache, look at the card again, and show the list (its chip counts the games as they are found).
+static void rescanCard() {
+  cardScanKnown = false;
+  stopCardScan();
+  if (mountSD()) { SD.remove("/pocket/LIBRARY.CCH"); SD.remove("/pocket/LIBRARY.NEW"); unmountSD(); }
+  probeCard();
+  unmountSD();
+  loadGameList();
+  if (haveSD && cardState == pk::CARD_READING && !scanDone) { /* the loop's scan reads it */ }
+  else scanDone = true;
+  selected = -1;
+  restoreSelection = false;
+  browsingCategories = true;
+  category = 0;
+  subcategory = -1;
+  page = 0;
+  searchText[0] = 0;
+  enterPicker();
+}
 static void drawSettings() {
   tft.fillScreen(C_BLACK);
   title("Settings");
@@ -946,7 +989,8 @@ static void drawSettings() {
                        {scr::SMALL ? "Palm reject" : "Palm rejection", PALM[settings.palm]},
                        {scr::SMALL ? "Status nums" : "Status numbers", ONOFF[settings.debug]},
                        {"Sound", VOLUME[settings.sound]},
-                       {"Sticky direction", ONOFF[settings.sticky]}
+                       {"Sticky direction", ONOFF[settings.sticky]},
+                       {"Card", settingsFromPause() ? "-" : "Rescan"}
 #ifdef POCKET_CYD28
                        ,
                        {"Calibrate", "tap 3"},
@@ -1194,20 +1238,39 @@ static void fadeLevelIn() {
 }
 static void levelWhere(char* out, char kind, int level) { snprintf(out, 8, "%c%d", kind, level); }
 
+static bool cardPresent() { bool was = sdUp, ok = mountSD(); if (!was) unmountSD(); return ok; }
+// A start that failed: say why (failWhy), and free every buffer the attempt took (the assets, the world's blocks, the prefetched
+// files, the card), so the list can load its catalog again. `missing` says a level buffer did not load.
+static bool startFailed(bool missing) {
+  failWhy = pk::whyFailed(activeGame.sd, !activeGame.sd || cardPresent(), missing, heap_caps_get_largest_free_block(MALLOC_CAP_8BIT));
+  Serial.printf("SG fail %s: why %d free %u largest %u\n", activeGame.id, (int)failWhy, (unsigned)ESP.getFreeHeap(), (unsigned)heap_caps_get_largest_free_block(MALLOC_CAP_8BIT));
+  assets.release();
+  world.releaseAll();
+  clearPrefetched();
+  stopCardScan();
+  loadBarOn = false;
+  return false;
+}
+static void loadStep(int n) { if (loadBarOn) pk::drawLoadingBar(tft, scr::W, scr::H, n, 3); }
+
 static bool startGame(int g, bool withCards = true) {
   curGame = g;
   if (games) activeGame = games[g];
   assets.release();  // whatever the last game (or a failed start) left; a card must be mounted with the heap at its emptiest
   assets.heroChr[0] = 0;
   clearPrefetched();
-  if (!selectGame(activeGame)) return false;
+  if (!selectGame(activeGame)) return startFailed(false);
+  loadStep(1);
   snprintf(assets.cfgName, sizeof assets.cfgName, "%s.cfg", fileOf(activeGame));
   releaseCatalog();
-  if (!gm::parseCfgFile(cfgLines, assets.cfgName, world, cfg)) return false;
+  if (!gm::parseCfgFile(cfgLines, assets.cfgName, world, cfg)) return startFailed(false);
+  loadStep(2);
   assets.attach(world, cfg, readFile, inflateRaw);
   assets.lines = &cfgLines;
   assets.beforeLoad = prefetchLevel;
   assets.palName[0] = 0;
+  loadStep(3);
+  loadBarOn = false;  // the intro card takes the screen
   if (withCards) {  // the intro card shows before the level's files load: a card needs a 64 KB block of its own
     char where[8];
     levelWhere(where, 'i', 0);
@@ -1217,7 +1280,7 @@ static bool startGame(int g, bool withCards = true) {
   world.seed = micros() ^ (millis() << 7);  // the monsters that wander pick differently each play
   if (!world.begin()) {
     Serial.printf("SG fail %s: nbl %d nmon %d nmbl %d have bbl%d mbl%d cbl%d chr%d mon%d free %u largest %u\n", activeGame.id, assets.files.nbl, assets.files.nmon, assets.files.nmbl, !!assets.bbl, !!assets.mbl, !!assets.cbl, !!assets.chr, !!assets.mon, (unsigned)ESP.getFreeHeap(), (unsigned)heap_caps_get_largest_free_block(MALLOC_CAP_8BIT));
-    return false;
+    return startFailed((assets.files.nbl && !assets.bbl) || !assets.cbl || !assets.chr || (assets.files.nmon && (!assets.mon || !assets.mbl)));
   }
   world.nsnd = 0;
   spk::stop();
@@ -1257,6 +1320,56 @@ static void enterPicker() {
   mode = PICKER;
   wasDown = true;
   drawPicker();
+}
+
+// A game or level that cannot load: the failure card (instead of a reset) until the button is tapped (or 30 seconds pass).
+// Everything the attempt allocated is already freed (startFailed, levelFailed).
+static bool settingsFromPause() { return fromPause; }
+static void showFailCard(const char* name) {
+  spk::stop();
+  pk::drawFailCard(tft, scr::W, scr::H, name, failWhy);
+  uint32_t t = millis();
+  wasDown = true;
+  while (millis() - t < 30000) {
+    uint32_t now = millis();
+    pollTouch(now);
+    int x, y;
+    if (freshTap(x, y) && pk::inFailButton(scr::W, scr::H, x, y)) break;
+    delay(5);
+  }
+  wasDown = true;
+}
+// The title (or DOS name) of a game, for the loading screen and the failure card.
+static void gameName(const GameEntry& g, char* out, size_t cap) {
+  pk::Meta m;
+  bool was = sdUp;
+  if (haveSD) mountSD();
+  bool ok = gameMeta(g, m);
+  if (!was) unmountSD();
+  snprintf(out, cap, "%s", ok && m.title[0] ? m.title : g.id);
+}
+// A tap on Play: the loading screen with its bar, the game, or the failure card. False: back to the list.
+static bool launchGame(int g) {
+  char name[96];
+  gameName(games[g], name, sizeof name);
+  pk::drawLoading(tft, scr::W, scr::H, name, 0, 3);
+  loadBarOn = true;
+  if (startGame(g)) return true;
+  loadBarOn = false;
+  showFailCard(name);
+  return false;
+}
+// The level the game is entering did not load (a file, the memory, or the card went away): free it and show the card.
+static void levelFailed() {
+  failWhy = pk::whyFailed(activeGame.sd, !activeGame.sd || cardPresent(), true, heap_caps_get_largest_free_block(MALLOC_CAP_8BIT));
+  Serial.printf("LV fail %s: why %d\n", activeGame.id, (int)failWhy);
+  assets.release();
+  world.releaseAll();
+  clearPrefetched();
+  stopCardScan();
+  char name[96];
+  gameName(activeGame, name, sizeof name);
+  showFailCard(name);
 }
 
 // ---- setup and loop ------------------------------------------------------------------------------
@@ -1578,6 +1691,7 @@ void setup() {
   if (dsState != 3) runDisplaySetup();  // first start (or one left unfinished): the display setup screen
 #endif
   pk::drawSplash(tft, scr::W, scr::H, true);  // the Sandbox logo first; the picker replaces it once the list is loaded
+  pk::splashLine(tft, scr::W, scr::H, "Starting up");
   spk::begin();
   haveGT = gt.probe();
   char line[64];
@@ -1599,6 +1713,7 @@ void setup() {
   }
   loadSettings();
   spk::setVolume(settings.sound);
+  pk::splashLine(tft, scr::W, scr::H, "Looking for games");
   loadGameList();
   Serial.printf("BOOT ms=%lu list-loaded games=%d\n", (unsigned long)millis(), ngames);
   if (!ngames) Serial.println("BOOT no flash games: card discovery is pending");
@@ -1628,10 +1743,10 @@ void loop() {
 
   if (mode == PICKER) {
     if(cardProbePending) {
-      uint32_t t=millis();cardProbePending=false;haveSD=mountSD();
+      uint32_t t=millis();cardProbePending=false;probeCard();
       Serial.printf("BOOT card-mount ms=%lu present=%d\n",(unsigned long)(millis()-t),haveSD);
-      if(haveSD)addGames(SD,"/pocket",true);
-      unmountSD();scanDone=!haveSD;drawPicker(false);
+      if(haveSD&&cardState==pk::CARD_READING)addGames(SD,"/pocket",true);
+      unmountSD();scanDone=cardState!=pk::CARD_READING;drawPicker(false);
     }
     if (scanCardBatch()) drawPicker(false);
 #ifdef POCKET_CYD28
@@ -1654,7 +1769,7 @@ void loop() {
       if(ty<32) {
         if(tx>=scr::W-32){stopCardScan();mode=SETTINGS_SCREEN;fromPause=false;setPage=0;drawSettings();}
         else if(tx>=scr::W-64){stopCardScan();strcpy(savedSearch,searchText);savedAll=searchAll;savedBrowsing=browsingCategories;mode=SEARCH_SCREEN;drawSearch();}
-        else if(tx<32){
+        else if(tx<32&&!(browsingCategories&&!category&&!searchText[0])){  // the root page has no back arrow
           if(searchText[0])searchText[0]=0;
           else if(!browsingCategories&&(category==1||category==5||category==6)){browsingCategories=true;subcategory=-1;}
           else {browsingCategories=true;category=0;subcategory=-1;}page=0;selected=-1;drawPicker();
@@ -1664,14 +1779,13 @@ void loop() {
         else if(tx>=50&&tx<98&&page+1<pages){page++;restoreSelection=false;selected=-1;drawPicker(false,true);}
         else if(tx>=scr::W-100){
           if(searchText[0]&&!nmatch){searchText[0]=0;drawPicker();}
-          else if(browsingCategories){cardScanKnown=false;stopCardScan();if(mountSD()){SD.remove("/pocket/LIBRARY.CCH");SD.remove("/pocket/LIBRARY.NEW");unmountSD();}haveSD=mountSD();unmountSD();loadGameList();selected=-1;restoreSelection=false;drawPicker();}
           else if(selected>=0&&selected<ngames){stopCardScan();mode=DETAILS_SCREEN;drawDetails();}
         }
       }else {
         int slot=pk::hitTile(scr::W,tx,ty),at=page*6+slot;
         if(slot>=0&&at<count){
           if(browsingCategories){if(!category){category=categorySlots[at];subcategory=-1;browsingCategories=category==1||category==5||category==6;}else{subcategory=categorySlots[at];browsingCategories=false;}page=0;selected=-1;drawPicker();}
-          else {int i=catalog->matches[at];if(selected!=i){restoreSelection=false;selected=i;drawPicker();}else{message("Loading");if(!startGame(i)){message("Could not load");delay(1500);enterPicker();}else wasDown=true;}}
+          else {int i=catalog->matches[at];if(selected!=i){restoreSelection=false;selected=i;drawPicker();}else{if(!launchGame(i))enterPicker();else wasDown=true;}}
         }
       }
     }
@@ -1679,7 +1793,7 @@ void loop() {
     return;
   }
   if(mode==DETAILS_SCREEN){
-    if(freshTap(tx,ty)&&ty>=scr::H-38){if(tx<scr::W/2){mode=PICKER;drawPicker();}else{message("Loading");if(!startGame(selected)){message("Could not load");delay(1500);enterPicker();}else wasDown=true;}}delay(5);return;
+    if(freshTap(tx,ty)&&ty>=scr::H-38){if(tx<scr::W/2){mode=PICKER;drawPicker();}else{if(!launchGame(selected))enterPicker();else wasDown=true;}}delay(5);return;
   }
   if (mode == SEARCH_SCREEN) {
     if (freshTap(tx, ty)) {
@@ -1729,11 +1843,14 @@ void loop() {
             spk::play(SAMPLE_TUNE);
             break;
           case 7: settings.sticky ^= 1; saveSettings(); break;
+          case 8:  // Card: read the card again (not while a game is paused: its memory is in use)
+            if (!fromPause) { saveSettings(); rescanCard(); return; }
+            break;
 #ifdef POCKET_CYD28
-          case 8: saveSettings(); if (runCalibration()) dsCalDone(); drawSettings(); wasDown = true; return;
-          case 9: saveSettings(); mode = DISPLAY_SCREEN; drawDisplayOptions(); wasDown = true; return;
+          case 9: saveSettings(); if (runCalibration()) dsCalDone(); drawSettings(); wasDown = true; return;
+          case 10: saveSettings(); mode = DISPLAY_SCREEN; drawDisplayOptions(); wasDown = true; return;
 #else
-          case 8: saveSettings(); mode = DISPLAY_SCREEN; drawDisplayOptions(); wasDown = true; return;
+          case 9: saveSettings(); mode = DISPLAY_SCREEN; drawDisplayOptions(); wasDown = true; return;
 #endif
         }
         drawSettings();
@@ -1827,7 +1944,7 @@ void loop() {
       }
       levelWhere(where, 'i', r == 'D' ? from : world.pendLevel);
       showCards(where);
-      world.finish();
+      if (!world.finish()) { levelFailed(); enterPicker(); return; }
       world.buildDrawList();
       fadeLevelIn();
       t0 = millis();
