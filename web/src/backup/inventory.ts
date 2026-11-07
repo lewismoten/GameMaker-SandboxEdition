@@ -78,6 +78,7 @@ export const LOCAL_KEYS: Record<SectionId, { keys: string[]; prefixes?: string[]
       'gm-desk-pad',
       'gm-desk-mouse',
       'gm-sound-blaster',
+      'gm-desk-buddy',
       'gm-desk-machine',
     ],
   },
