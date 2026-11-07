@@ -10,7 +10,7 @@ import { renderWorld } from '@lewismoten/gamemaker-sandbox-engine/engine/render'
 import { headlessCanvas } from '../../../web/src/walkthrough/runtime';
 import { StarterBot } from '../../kit/starter/bot';
 import { SCAN } from '../../kit/starter/ids';
-import { aNumber, itsOwn } from './route';
+import { aNumber } from './route';
 import { GameSim } from './sim';
 
 const out = process.argv[2];
