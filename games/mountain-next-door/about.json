@@ -1,0 +1,19 @@
+{
+  "title": "The Mountain Moved Next Door",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "special",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.0",
+  "blurb": "The day after Thanksgiving, Tess the trail marker wakes to find Old Mossback, the mountain outside town, sitting in the empty lot next door, wearing half the street's garden gates. Follow its footprints back through the park, cross a stream of wobbly stepping stones, outwit a squirrel who turns the signposts, and find out at sunset who the mountain was looking for. Then light the old tunnel, and mark a safe zigzag trail home by moonlight. A story to play and to watch, here for three days only.",
+  "exe": "MOUNTAIN.EXE",
+  "dosName": "MOUNTAIN",
+  "sound": "sb",
+  "label": {
+    "background": "#f3ead2",
+    "band": "#2f6b4a",
+    "ink": "#1d2a24",
+    "logo": "SANDBOX SOFTWARE"
+  }
+}
