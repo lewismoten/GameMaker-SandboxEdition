@@ -154,9 +154,9 @@ const NOTHING = 'nothing';
 /** next.mon's slots. */
 export const NEXT = { fogWait: [0, 1, 2, 3], fogDrift: 4, hale: 5, okoro: 15, face: 25 } as const;
 /** Ticks each wave of fog waits before it drifts off; the drift (6 blocks over, 3 up) takes about 140 ticks more. */
-export const FOG_WAVES = [100, 210, 320, 430] as const;
+export const FOG_WAVES = [280, 400, 520, 640] as const;
 /** The prologue's clock (ticks): when Mr. Hale and Mrs. Okoro step out, how far they walk, how long they look, and when the mountain wakes. */
-export const PROLOGUE = { hale: 60, haleWalk: 6, okoro: 760, okoroWalk: -3, look: 130, wake: 960 } as const;
+export const PROLOGUE = { hale: 60, haleWalk: 6, okoro: 1080, okoroWalk: -3, look: 130, wake: 1260 } as const;
 
 /**
  * A neighbor's visit as ten monsters from slot `at`: the top and the bottom of each act (standing where they are, walking

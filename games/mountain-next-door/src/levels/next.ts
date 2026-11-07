@@ -20,7 +20,7 @@ export const NEXT_AT = {
   okoro: 58,
   exit: 67,
   fog: [19, 46, 3],
-  signs: { up: 10, fog: 15, not: 22, gates: 41, polite: 53 },
+  signs: { up: 10, fog: 15, not: 22, gates: 40, polite: 53 },
 } as const;
 
 const SIGNS = {

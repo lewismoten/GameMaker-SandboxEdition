@@ -15,7 +15,7 @@ import { ZFLOORS, ZIGZAG_AT } from '../src/levels/zigzag';
 import { PICNIC_AT, TOP } from '../src/levels/picnic';
 import { buildLevels } from '../src/levels';
 import { GROUND } from '../src/level';
-import { PICNIC, PICNIC_WALK, PROLOGUE, WISP_HOME } from '../src/monsters';
+import { FOG_WAVES, PICNIC, PICNIC_WALK, PROLOGUE, WISP_HOME } from '../src/monsters';
 import { POINTS } from '../src/props';
 import { READ, climbUp, hop, hopLeft, leave, must, readAt, score, shownAt, solidNow, watchFor } from './routeKit';
 
@@ -28,8 +28,8 @@ export async function nextDoor(bot: StarterBot): Promise<void> {
   const at = NEXT_AT.signs;
   await readAt(bot, at.up + 1, 'the first sign');
   await readAt(bot, at.fog + 1, 'the fog sign');
-  await must(bot, bot.walk(at.not - 1, 'the mountain'), 'to the mountain');
-  await watchFor(bot, () => since(bot, t0) > 560, 'the fog lifting', 900);
+  await must(bot, bot.walk(at.not + 4, 'the mountain'), 'to the mountain');
+  await watchFor(bot, () => since(bot, t0) > FOG_WAVES[3] + 160, 'the fog lifting', 1200);
   await readAt(bot, at.not + 1, 'the not-fog sign');
   await readAt(bot, at.gates + 1, 'the gates sign');
   await must(bot, bot.walk(NEXT_AT.toe - 2, 'the toe'), 'to the toe');

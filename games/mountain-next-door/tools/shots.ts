@@ -24,7 +24,7 @@ t.px.set(title.pixels);
 writePng(join(out, 'title.png'), t, title.palette, 2);
 
 /** Ticks into each level when its screen is taken. */
-const AT = [1040, 700, 1500, 640, 1500, 900, 760, 1300, 1700, 1500];
+const AT = [1040, 700, 1500, 640, 1500, 900, 420, 1300, 1700, 1500];
 /** The first level's frames: one every this many ticks. */
 const EVERY = 8;
 

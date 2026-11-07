@@ -302,7 +302,8 @@ export function foot(pal: Pal, k: number): Pixels {
     [86, 63, 5, 4],
     [97, 69, 3, 3],
   ])
-    for (let y = -h; y <= h; y++) for (let x = -w; x <= w; x++) if ((x / w) ** 2 + (y / h) ** 2 <= 1) big.set(cx + x, cy + y, y < -h / 3 ? pal.c('parch', 4) : pal.c('parch', 3));
+    for (let y = -h; y <= h; y++)
+      for (let x = -w; x <= w; x++) if ((x / w) ** 2 + (y / h) ** 2 <= 1) big.set(cx + x, cy + y, y < -h / 3 ? pal.c('parch', 4) : pal.c('parch', 3));
   const out = outline(big, pal.c('ink', 0), { transparent: sky });
   return out.crop((k % FOOT.w) * 20, Math.floor(k / FOOT.w) * 20, 20, 20);
 }
