@@ -17,6 +17,15 @@ async function projectGame(id: string): Promise<DownloadGame | undefined> {
   const title = gameTitle(parseGame(p.files.get(p.record.gam)!)) || p.record.name;
   return {
     title,
+    pocketContext: async () => {
+      const { pocketProjectUid } = await import('../../export/pocketLibrary');
+      const c = parseCompanion(p.record.companion);
+      const uid = pocketProjectUid(c);
+      p.record.companion = c;
+      await saveProject(id, p.record.name, p.record.gam, p.files, c);
+      const { isImported } = await import('./homeOrigin');
+      return { uid, category: isImported(id) ? ['imported', 'unsorted'] : ['mine'] };
+    },
     gam: p.record.gam,
     files: async () => p.files,
     project: true,

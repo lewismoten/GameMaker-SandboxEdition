@@ -30,6 +30,7 @@ const POCKET_LEVEL_HEAP = 108_000;
 /** What a game is packed from: its files (case-insensitive names) and what its controls mean (controls.json's shape). */
 export interface PocketSource {
   title: string;
+  gam?: string;
   files: { get(name: string): Uint8Array | undefined; names(): string[] };
   controls?: { keys?: Record<string, { short: string }>; counters?: Record<string, string> };
 }
@@ -100,7 +101,7 @@ export async function packPocketGame(src: PocketSource, store: PocketStore, pak:
   const leftOut: Record<string, number> = {};
   const why: string[] = [];
   const warn: string[] = [];
-  const gam = names.find((d) => d.toLowerCase().endsWith('.gam'));
+  const gam = src.gam ?? names.find((d) => d.toLowerCase().endsWith('.gam'));
   if (!gam) throw new Error('no .gam file');
   const game = parseGame(file(gam));
   const play = game.scenes.map((s, i) => ({ s, i })).filter(({ s }) => s.gametype === 10);

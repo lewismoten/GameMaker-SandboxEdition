@@ -41,7 +41,10 @@ async function duplicate(p: ProjectSummary, refresh: () => Promise<void>, onMade
     p.name,
     (await listProjects()).map((x) => x.name),
   );
-  await saveProject(id, name, stored.record.gam, stored.files, stored.record.companion);
+  const companion = stored.record.companion ? structuredClone(stored.record.companion) : undefined;
+  // A deliberate duplicate is a distinct Pocket game; restoring a backup keeps its identity.
+  if (companion) delete companion.pocketUid;
+  await saveProject(id, name, stored.record.gam, stored.files, companion);
   rememberOrigin(id, originId(p.id));
   setImported(id, isImported(p.id));
   toast(`Made “${name}”.`);

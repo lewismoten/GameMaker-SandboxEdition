@@ -77,3 +77,48 @@ template <class G> void drawKeyboard(G& tft, int W, int H, int titleH, const cha
   for (int i = 0; i < 4; i++) drawButton(tft, i * W / 4 + 2, H - 36, (i + 1) * W / 4 - 2, H - 2, i == 0 ? "Space" : i == 1 ? "Del" : i == 2 ? "Clear" : "Done");
 }
 }  // namespace pk
+
+// Shared six-slot layout and clipped bitmap text: no font wrapping or page framebuffer.
+#include "softfont.h"
+namespace pk {
+struct Tile { int x,y,w,h,pw,ph; };
+inline Tile tile(int W,int i) { bool s=W==320;return {(s?12:16)+i%3*(s?100:152),(s?36:40)+i/3*(s?84:120),s?96:144,s?80:112,s?96:144,s?60:90}; }
+inline int footer(int W) {return W==320?208:280;}
+inline int hitTile(int W,int x,int y) {for(int i=0;i<6;i++){auto r=tile(W,i);if(x>=r.x&&x<r.x+r.w&&y>=r.y&&y<r.y+r.h)return i;}return -1;}
+template<class G> void clippedText(G&g,const Tile&r,const char*s,int x,int y,int scale,uint16_t color) {
+  for(;*s;s++,x+=6*scale)for(int yy=0;yy<8;yy++)for(int xx=0;xx<6;xx++)if(((unsigned char)*s>=32&&(unsigned char)*s<=126&&(SOFT_FONT[(unsigned char)*s-32][yy]&(1<<xx))))
+    for(int dy=0;dy<scale;dy++)for(int dx=0;dx<scale;dx++){int px=x+xx*scale+dx,py=y+yy*scale+dy;if(px>=r.x&&px<r.x+r.w&&py>=r.y&&py<r.y+r.h)g.fillRect(px,py,1,1,color);}
+}
+template<class G> void tileLabel(G&g,int W,int i,const char*label,bool selected=false) {
+  auto r=tile(W,i);g.fillRect(r.x,r.y,r.w,r.h,C_DARK);g.drawRect(r.x,r.y,r.w,r.h,selected?C_YELLOW:C_GRAY);
+  int scale=W==320?1:2,cols=(r.w-8)/(6*scale),count=0;size_t at=0,len=strlen(label);char lines[4][25];
+  while(count<4&&at<len) {size_t n=len-at<(size_t)cols?len-at:cols;
+    if(at+n<len){size_t word=n;while(word&&label[at+word]!=' ')word--;if(word)n=word;}
+    memcpy(lines[count],label+at,n);lines[count][n]=0;count++;at+=n;while(label[at]==' ')at++;
+  }
+  int y=r.y+(r.h-count*10*scale)/2;
+  for(int line=0;line<count;line++,y+=10*scale)clippedText(g,r,lines[line],r.x+(r.w-(int)strlen(lines[line])*6*scale)/2,y,scale,C_WHITE);
+}
+template<class G> void clearTiles(G&g,int W) {g.fillRect(0,32,W,footer(W)-32,C_BLACK);}
+template<class G> void thumbnail(G&g,int W,int i,const uint8_t*raw,const char*dos,bool selected,bool panelOrder=false) {
+  auto r=tile(W,i);g.fillRect(r.x,r.y,r.w,r.h,C_DARK);int y0=r.y+(r.h-r.ph)/2;
+  if(raw){uint16_t row[144];for(int y=0;y<r.ph;y++){
+    for(int x=0;x<r.pw;x++){int idx=raw[524+(y*60/r.ph)*96+x*96/r.pw];uint16_t c=raw[12+idx*2]|(raw[13+idx*2]<<8);row[x]=panelOrder?(c<<8)|(c>>8):c;}
+    g.pushImage(r.x,y0+y,r.pw,1,row);
+  }}else clippedText(g,r,"No preview",r.x+(r.w-60)/2,r.y+r.h/2-4,1,C_WHITE);
+  char name[9];size_t n=strlen(dos);if(n>8)n=8;memcpy(name,dos,n);name[n]=0;
+  int scale=W==320?1:2,x=r.x+(r.w-(int)n*6*scale)/2,y=y0+r.ph-8*scale-2;
+  for(int dy=-1;dy<=1;dy++)for(int dx=-1;dx<=1;dx++)if(dx||dy)clippedText(g,r,name,x+dx,y+dy,scale,C_BLACK);
+  clippedText(g,r,name,x,y,scale,C_WHITE);g.drawRect(r.x,r.y,r.w,r.h,selected?C_YELLOW:C_GRAY);
+}
+template<class G> void libraryFrame(G&g,int W,int H,const char*breadcrumb,int page,int pages,const char*action) {
+  g.fillRect(0,0,W,32,C_DARK);drawButton(g,0,0,32,32,"<");
+  Tile clip={36,0,W-104,32,0,0};clippedText(g,clip,breadcrumb,36,12,1,C_WHITE);
+  drawButton(g,W-64,0,W-32,32,"");drawButton(g,W-32,0,W,32,"");
+  g.fillCircle(W-51,12,7,C_WHITE);g.fillCircle(W-51,12,5,C_DARK);g.fillRect(W-47,18,9,3,C_WHITE);
+  g.fillCircle(W-16,16,9,C_WHITE);g.fillCircle(W-16,16,4,C_DARK);g.fillRect(W-18,3,4,4,C_WHITE);g.fillRect(W-18,25,4,4,C_WHITE);g.fillRect(W-29,14,4,4,C_WHITE);g.fillRect(W-7,14,4,4,C_WHITE);
+  int f=footer(W);g.fillRect(0,f,W,H-f,C_BLACK);drawButton(g,0,f,48,H,"<");drawButton(g,50,f,98,H,">");
+  char count[24];snprintf(count,sizeof count,"%d/%d",page+1,pages?pages:1);
+  Tile c={102,f,W-204,H-f,0,0};clippedText(g,c,count,108,f+(H-f-8)/2,1,C_WHITE);drawButton(g,W-100,f,W,H,action);
+}
+} // namespace pk

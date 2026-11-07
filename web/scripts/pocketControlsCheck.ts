@@ -35,4 +35,8 @@ const shotsDir = mkdtempSync(join(tmpdir(), 'pocket-shots-'));
 const shotsExe = join(shotsDir, 'setupshots');
 execFileSync('c++', ['-std=c++17', '-O1', '-Wall', '-I', here + 'src', here + 'host/setupshots.cpp', '-o', shotsExe], { stdio: 'inherit' });
 const e = spawnSync(shotsExe, [shotsDir], { stdio: 'inherit', cwd: here });
-process.exit((r.status ?? 1) || (small.status ?? 1) || (c.status ?? 1) || (d.status ?? 1) || (e.status ?? 1));
+// The six-thumbnail picker uses real packed title pictures, with bounded metadata/cache and RAM tests.
+const libraryExe = join(shotsDir, 'librarytest');
+execFileSync('c++', ['-std=c++17', '-O1', '-Wall', '-I', here + 'src', here + 'host/librarytest.cpp', '-lz', '-o', libraryExe], { stdio: 'inherit' });
+const library = spawnSync(libraryExe, [here + 'data', shotsDir], { stdio: 'inherit' });
+process.exit((library.status ?? 1) || (r.status ?? 1) || (small.status ?? 1) || (c.status ?? 1) || (d.status ?? 1) || (e.status ?? 1));
