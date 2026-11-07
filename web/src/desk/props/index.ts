@@ -9,6 +9,7 @@ import { clockProp } from './clock';
 import { wastebasketProp } from './wastebasket';
 import { doorProp } from './door';
 import { mailDropProp } from './mailDrop';
+import { specialFloppyProp } from './specialFloppy';
 import { windowProps } from './window';
 import { outsideWindow } from './outside';
 import { curtainProps } from './curtains';
@@ -32,6 +33,7 @@ export function deskProps(desk: HTMLElement, pc: { gamePlaying(): boolean } = { 
   add(wastebasketProp, '.waste-basket');
   add(doorProp, '.room-door');
   add(mailDropProp, '.room-door'); // RSD's reply, under the door
+  add(specialFloppyProp, '.desk-right'); // a Special's lone floppy, beside the Game-Maker box, on its days
   add(windowProps, '.snow-window');
   const win = q('.snow-window');
   if (win) offs.push(outsideWindow(win, pc)); // after windowProps: they ride in the window's hit layer

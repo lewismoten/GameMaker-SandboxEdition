@@ -20,7 +20,7 @@ interface Saved {
 function load(): Saved {
   try {
     const v = JSON.parse(localStorage.getItem(KEY) ?? '{}') as unknown;
-    return v && typeof v === 'object' ? (v as Saved) : {};
+    return v && typeof v === 'object' ? v : {};
   } catch {
     return {};
   }
