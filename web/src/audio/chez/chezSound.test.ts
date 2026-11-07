@@ -96,7 +96,6 @@ function fakeContext() {
   return { ctx, nodes, sources, until, as: ctx as unknown as BaseAudioContext, out: ctx.destination as unknown as AudioNode };
 }
 
-
 afterEach(() => setChezClipLoader(() => Promise.reject(new Error('no clips in tests'))));
 
 describe('CHEZ_SOUND', () => {
@@ -118,7 +117,7 @@ describe('the climb', () => {
 describe('the made-up voice', () => {
   it('is silent until go(); go() starts the motor and clunks; a second go() adds nothing', () => {
     const f = fakeContext();
-    const m = chezMotor(f.as, f.out, {}, 'synth');
+    const m = chezMotor(f.as, f.out, {});
     expect(f.sources()).toHaveLength(0);
     m.go();
     expect(m.moving).toBe(true);
@@ -130,7 +129,7 @@ describe('the made-up voice', () => {
 
   it('stop() winds down and frees the run; go() again starts a new one', () => {
     const f = fakeContext();
-    const m = chezMotor(f.as, f.out, {}, 'synth');
+    const m = chezMotor(f.as, f.out, {});
     m.go();
     f.until(3);
     m.stop();
@@ -154,7 +153,7 @@ describe('the made-up voice', () => {
 
   it('dispose() silences and frees everything at once, the output chain too', () => {
     const f = fakeContext();
-    const m = chezMotor(f.as, f.out, { outside: true }, 'synth');
+    const m = chezMotor(f.as, f.out, { outside: true });
     m.go();
     f.until(1);
     m.dispose();
@@ -169,7 +168,7 @@ describe('the made-up voice', () => {
 
   it('a pass-by runs at cruise for its time, with no clunks, and frees itself', () => {
     const f = fakeContext();
-    chezPassBy(f.as, f.out, 11, { outside: true }, 'synth');
+    chezPassBy(f.as, f.out, 11, { outside: true });
     const s = f.sources();
     expect(s.length).toBe(3); // the whine, its wobble, the noise
     expect(s.every((n) => n.stopped !== undefined && n.stopped > 10.9 && n.stopped < 11.2)).toBe(true);

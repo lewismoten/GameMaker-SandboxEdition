@@ -13,7 +13,7 @@ export const CHEZ_SOUND = 'synth' as const;
  * THE CHEZ's motor into `out`: go() closes the contactors (clunks) and the motor climbs through its
  * three speed steps to cruise; stop() lets them go and it winds down. Silent until go().
  */
-export function chezMotor(ctx: BaseAudioContext, out: AudioNode, opts: ChezOptions = {}, kind: 'synth' = CHEZ_SOUND): ChezMotor {
+export function chezMotor(ctx: BaseAudioContext, out: AudioNode, opts: ChezOptions = {}): ChezMotor {
   return new SynthMotor(ctx, out, opts);
 }
 
@@ -21,8 +21,8 @@ export function chezMotor(ctx: BaseAudioContext, out: AudioNode, opts: ChezOptio
  * THE CHEZ driving past at cruise for `seconds`: louder as it comes, its pitch dropping a little as
  * it passes (Doppler), then gone; it frees itself at the end.
  */
-export function chezPassBy(ctx: BaseAudioContext, out: AudioNode, seconds: number, opts: ChezOptions = {}, kind: 'synth' = CHEZ_SOUND): ChezMotor {
-  const m = chezMotor(ctx, out, opts, kind);
+export function chezPassBy(ctx: BaseAudioContext, out: AudioNode, seconds: number, opts: ChezOptions = {}): ChezMotor {
+  const m = chezMotor(ctx, out, opts);
   m.passBy(seconds);
   return m;
 }
