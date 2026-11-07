@@ -621,8 +621,6 @@ static void button(int x0, int y0, int x1, int y1, const char* label, bool hot =
 constexpr int TITLE_H = scr::SMALL ? 28 : 40;
 
 constexpr int ST_Y0 = scr::SMALL ? 30 : 42, ST_STEP = 34, ST_PER_PAGE = scr::SMALL ? 5 : 7, ST_FOOT_Y = scr::SMALL ? 200 : 288;
-constexpr int PA_BOX_X = scr::SMALL ? 50 : 100, PA_BOX_Y = scr::SMALL ? 8 : 40, PA_BOX_W = scr::SMALL ? 220 : 280, PA_BOX_H = scr::SMALL ? 184 : 236;
-constexpr int PA_X0 = PA_BOX_X + 12, PA_X1 = PA_BOX_X + PA_BOX_W - 12, PA_Y0 = scr::SMALL ? 18 : 52, PA_STEP = scr::SMALL ? 42 : 56, PA_H = scr::SMALL ? 36 : 48;
 static void title(const char* s) {
   tft.fillRect(0, 0, scr::W, TITLE_H, C_BLUE);
   tft.setTextColor(C_WHITE, C_BLUE);
@@ -816,7 +814,7 @@ static void drawStrip() {
 
 // ---- screens -------------------------------------------------------------------------------------
 
-enum Mode { PICKER, PLAYING, PAUSED, SETTINGS_SCREEN, SEARCH_SCREEN, DISPLAY_SCREEN, DETAILS_SCREEN, DONE };
+enum Mode { PICKER, PLAYING, PAUSED, HELP_SCREEN, SETTINGS_SCREEN, SEARCH_SCREEN, DISPLAY_SCREEN, DETAILS_SCREEN, DONE };
 static Mode mode = PICKER;
 static int page = 0, selected = -1, nmatch = 0;
 static char searchText[25] = "", savedSearch[25] = "";
@@ -824,7 +822,42 @@ static bool searchAll = true, savedAll = true, browsingCategories = true, savedB
 static int category = 0, subcategory = -1;
 constexpr int PK_BTN_Y = scr::SMALL ? 208 : 280;
 static int categorySlots[32], categoryCount = 0;
-static const char* rootLabel(int c) {const char*names[]={"All games","Starters","Sandbox","Bizarre","My games","Imported","CD","Good on touch"};return names[c];}
+static const char* rootLabel(int c) {const char*names[]={"All games","Starters","Sandbox","Bizarre","My games","Imported","CD","Good on touch","Continue"};return names[c];}
+// ---- Continue: the last level entered, kept in NVS (pocket/resume) ----------------------------------------------
+// Written as each level is entered (a fade is on screen, never mid-tick), cleared on a win or a game over. A board
+// convenience: DOS saves are untouched. `sd`: the game was on the card, so with the card out the home page says to put it back.
+struct ResumeRec { uint32_t magic; uint8_t uid[16]; uint8_t sd, pad[3]; gm::EntryState e; uint32_t crc; };
+constexpr uint32_t RESUME_MAGIC = 0x31534552;  // "RES1"
+constexpr int CONTINUE_SLOT = 8;               // the root page's category number for the Continue tile
+static ResumeRec resumeRec;
+static bool resumeValid = false;
+static void resumeLoad() {
+  Preferences p;
+  resumeValid = false;
+  if (!p.begin("pocket", true)) return;
+  resumeValid = p.getBytes("resume", &resumeRec, sizeof resumeRec) == sizeof resumeRec && resumeRec.magic == RESUME_MAGIC &&
+                resumeRec.e.magic == gm::ENTRY_MAGIC && resumeRec.crc == pk::crc32(&resumeRec, offsetof(ResumeRec, crc));
+  p.end();
+}
+static void resumeSave(const GameEntry& g) {
+  memset(&resumeRec, 0, sizeof resumeRec);
+  resumeRec.magic = RESUME_MAGIC;
+  memcpy(resumeRec.uid, g.uid, 16);
+  resumeRec.sd = g.sd;
+  resumeRec.e = world.entry;
+  resumeRec.crc = pk::crc32(&resumeRec, offsetof(ResumeRec, crc));
+  Preferences p;
+  if (p.begin("pocket", false)) { p.putBytes("resume", &resumeRec, sizeof resumeRec); p.end(); }
+  resumeValid = true;
+}
+static void resumeClear() {
+  if (!resumeValid) return;
+  resumeValid = false;
+  Preferences p;
+  if (p.begin("pocket", false)) { p.remove("resume"); p.end(); }
+}
+// The game of the resume point in the list (-1: not there, such as a card game with the card out).
+static int resumeGame() { return resumeValid && games ? pk::selection(games, ngames, resumeRec.uid) : -1; }
 static const char* subLabel(int c,int s) {
   static const char*stages[]={"All stages","1** First Steps","2** Moving and Pushing","3** Heroes and Foes","4** Story and Finish","5** Wiring and Worlds","6** Blocks and Showcase","Graduations","Other"};
   if(c==1)return stages[s>=0&&s<9?s:8];if(c==6)return s==2?"Shareware":"Gameware";
@@ -848,6 +881,7 @@ static void filterGames() {
 static void categories() {
   categoryCount=0;
   if(category==0) {
+    if(resumeValid&&(resumeGame()>=0||resumeRec.sd))categorySlots[categoryCount++]=CONTINUE_SLOT;  // first: what was being played
     for(int c=1;c<=7;c++){bool any=c<=6;for(int i=0;i<ngames;i++)if(c==7?games[i].scored:games[i].category==c)any=true;if(any)categorySlots[categoryCount++]=c;}
   }else if(category==1){for(int s=1;s<=8;s++)categorySlots[categoryCount++]=s;}
   else if(category==6){categorySlots[categoryCount++]=1;categorySlots[categoryCount++]=2;}
@@ -873,7 +907,9 @@ static void drawPicker(bool clear = true, bool paging = false) {
   bool was=sdUp;if(haveSD&&!browsingCategories)mountSD();
   for(int r=0;r<6;r++) {
     int at=page*6+r;if(at>=count)continue;
-    if(browsingCategories){int c=categorySlots[at];pk::tileLabel(tft,scr::W,r,category?subLabel(category,c):rootLabel(c),false,tileIcon(category,c),true);}
+    if(browsingCategories){int c=categorySlots[at];
+      if(!category&&c==CONTINUE_SLOT){int g=resumeGame();uint8_t*raw=nullptr;if(g>=0){if(games[g].sd&&haveSD)mountSD();raw=preview(games[g]);}pk::continueTile(tft,scr::W,r,raw,resumeRec.e.level,g<0,true);free(raw);}
+      else pk::tileLabel(tft,scr::W,r,category?subLabel(category,c):rootLabel(c),false,tileIcon(category,c),true);}
     else {int i=catalog->matches[at];pk::Meta m;gameMeta(games[i],m);uint8_t*raw=preview(games[i]);pk::thumbnail(tft,scr::W,r,raw,m.dos,i==selected,true);free(raw);}
   }
   if(!was)unmountSD();
@@ -1004,10 +1040,7 @@ static void settingsTouchInfo() {
   tft.print(l);
 }
 
-static const char* const PAUSE_ITEMS[] = {"Resume", "Restart game", "Games", "Settings"};
-static void drawPause() {
-  ovl::pauseMenu(tft, PA_BOX_X, PA_BOX_Y, PA_BOX_W, PA_BOX_H, PA_X0, PA_X1, PA_Y0, PA_STEP, PA_H, PAUSE_ITEMS, 4);
-}
+static void drawPause() { ovl::pauseMenu(tft, cfg.title, world.level); }
 
 static uint32_t t0 = 0, ticksRun = 0;
 static int curGame = -1;
@@ -1194,7 +1227,7 @@ static void fadeLevelIn() {
 }
 static void levelWhere(char* out, char kind, int level) { snprintf(out, 8, "%c%d", kind, level); }
 
-static bool startGame(int g, bool withCards = true) {
+static bool startGame(int g, bool withCards = true, const gm::EntryState* from = nullptr) {
   curGame = g;
   if (games) activeGame = games[g];
   assets.release();  // whatever the last game (or a failed start) left; a card must be mounted with the heap at its emptiest
@@ -1210,12 +1243,12 @@ static bool startGame(int g, bool withCards = true) {
   assets.palName[0] = 0;
   if (withCards) {  // the intro card shows before the level's files load: a card needs a 64 KB block of its own
     char where[8];
-    levelWhere(where, 'i', 0);
+    levelWhere(where, 'i', from ? from->level : 0);
     tft.fillScreen(C_BLACK);
     showCards(where);
   }
   world.seed = micros() ^ (millis() << 7);  // the monsters that wander pick differently each play
-  if (!world.begin()) {
+  if (from ? !world.restore(*from) : !world.begin()) {
     Serial.printf("SG fail %s: nbl %d nmon %d nmbl %d have bbl%d mbl%d cbl%d chr%d mon%d free %u largest %u\n", activeGame.id, assets.files.nbl, assets.files.nmon, assets.files.nmbl, !!assets.bbl, !!assets.mbl, !!assets.cbl, !!assets.chr, !!assets.mon, (unsigned)ESP.getFreeHeap(), (unsigned)heap_caps_get_largest_free_block(MALLOC_CAP_8BIT));
     return false;
   }
@@ -1229,6 +1262,7 @@ static bool startGame(int g, bool withCards = true) {
   applyControls();
   world.hold = withCards;  // a level change waits for the fade and the cards (the serial self-test has none)
   if (withCards) {
+    resumeSave(activeGame);  // the serial self-test leaves the resume point alone
     fadeLevelIn();
   } else {
     tft.fillScreen(C_BLACK);
@@ -1272,6 +1306,27 @@ static void message(const char* a, const char* b = nullptr) {
     pk::ellipsize(b, line, sizeof line, (scr::W - 40) / 12);
     tft.setCursor(20, 150); tft.print(line);
   }
+}
+// Restart level (the pause menu): the level as it was entered (gmcore.h EntryState), at no cost of a life, with its
+// intro cards as after a death.
+static void restartLevel() {
+  spk::stop();
+  world.releaseAll();
+  controls.reset();
+  tft.fillScreen(C_BLACK);
+  last.valid = false;
+  drawFrame(true);
+  fadeLevelOut();
+  assets.release();
+  char where[8];
+  levelWhere(where, 'i', world.entry.level);
+  showCards(where);
+  if (!world.restartLevel()) { message("Could not load"); delay(1500); enterPicker(); return; }
+  fadeLevelIn();
+  t0 = millis();
+  ticksRun = 0;
+  mode = PLAYING;
+  wasDown = true;
 }
 
 // ---- serial self-test ----------------------------------------------------------------------------
@@ -1598,6 +1653,7 @@ void setup() {
     for (;;) delay(1000);
   }
   loadSettings();
+  resumeLoad();
   spk::setVolume(settings.sound);
   loadGameList();
   Serial.printf("BOOT ms=%lu list-loaded games=%d\n", (unsigned long)millis(), ngames);
@@ -1670,7 +1726,8 @@ void loop() {
       }else {
         int slot=pk::hitTile(scr::W,tx,ty),at=page*6+slot;
         if(slot>=0&&at<count){
-          if(browsingCategories){if(!category){category=categorySlots[at];subcategory=-1;browsingCategories=category==1||category==5||category==6;}else{subcategory=categorySlots[at];browsingCategories=false;}page=0;selected=-1;drawPicker();}
+          if(browsingCategories&&!category&&categorySlots[at]==CONTINUE_SLOT){int g=resumeGame();if(g>=0){gm::EntryState e=resumeRec.e;message("Loading");if(!startGame(g,true,&e)){message("Could not load");delay(1500);enterPicker();}else wasDown=true;}}
+          else if(browsingCategories){if(!category){category=categorySlots[at];subcategory=-1;browsingCategories=category==1||category==5||category==6;}else{subcategory=categorySlots[at];browsingCategories=false;}page=0;selected=-1;drawPicker();}
           else {int i=catalog->matches[at];if(selected!=i){restoreSelection=false;selected=i;drawPicker();}else{message("Loading");if(!startGame(i)){message("Could not load");delay(1500);enterPicker();}else wasDown=true;}}
         }
       }
@@ -1746,16 +1803,24 @@ void loop() {
   }
   if (mode == PAUSED) {
     if (freshTap(tx, ty)) {
-      int i = (ty - PA_Y0) / PA_STEP;
-      if (tx >= PA_X0 && tx < PA_X1 && ty >= PA_Y0 && i >= 0 && i < 4 && (ty - PA_Y0) % PA_STEP < PA_H) {
-        if (i == 0) {
+      switch (ovl::pauseHit(tx, ty)) {
+        case ovl::PA_RESUME:
           mode = PLAYING; world.releaseAll(); controls.reset(); last.valid = false; drawFrame(true); drawStrip();
           t0 = millis(); ticksRun = 0; wasDown = true;
-        } else if (i == 1) startGame(curGame);
-        else if (i == 2) enterPicker();
-        else { mode = SETTINGS_SCREEN; fromPause = true; drawSettings(); }
+          break;
+        case ovl::PA_RESTART_LEVEL: restartLevel(); break;
+        case ovl::PA_RESTART_GAME: if (!startGame(curGame)) { message("Could not load"); delay(1500); enterPicker(); } break;
+        case ovl::PA_HELP: mode = HELP_SCREEN; ovl::helpPage(tft, cfg); wasDown = true; break;
+        case ovl::PA_SETTINGS: mode = SETTINGS_SCREEN; fromPause = true; drawSettings(); break;
+        case ovl::PA_QUIT: enterPicker(); break;  // the resume point stays: Continue on the home page
+        default: break;
       }
     }
+    delay(5);
+    return;
+  }
+  if (mode == HELP_SCREEN) {
+    if (freshTap(tx, ty)) { mode = PAUSED; tft.fillScreen(C_BLACK); last.valid = false; drawFrame(true); drawStrip(); drawPause(); wasDown = true; }
     delay(5);
     return;
   }
@@ -1810,6 +1875,7 @@ void loop() {
       fadeLevelOut();
       assets.release();  // the level's big buffers go while a card shows (the next level loads them again); a card needs a 64 KB block
       if (r == 'W') {
+        resumeClear();
         levelWhere(where, 'x', from);
         showCards(where);
         showCards("w");
@@ -1817,6 +1883,7 @@ void loop() {
         return;
       }
       if (lost) {
+        resumeClear();
         showCards("l");
         enterPicker();
         return;
@@ -1829,6 +1896,7 @@ void loop() {
       showCards(where);
       world.finish();
       world.buildDrawList();
+      resumeSave(activeGame);
       fadeLevelIn();
       t0 = millis();
       ticksRun = 0;

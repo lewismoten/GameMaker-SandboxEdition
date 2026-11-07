@@ -72,6 +72,16 @@ int main(int argc,char**argv) {
       pk::thumbnail(fb,W,i,raw.data(),m.dos,i==0);
     }
     assert(!fb.clipped);save(fb,out+"/thumbnails-"+std::to_string(W)+".ppm");
+    // The home page with Continue first (main.cpp CONTINUE_SLOT): the game's picture and level, then the card-out state.
+    for(int cardOut=0;cardOut<2;cardOut++) {
+      auto&m=records[2];uint32_t off,len;assert(pak.find(m.thumb,&off,&len));std::vector<uint8_t>b(len),raw(pk::THUMB_RAW);assert(readAt(f,off,b.data(),len));
+      z_stream z={};assert(inflateInit2(&z,-15)==Z_OK);z.next_in=b.data()+4;z.avail_in=len-4;z.next_out=raw.data();z.avail_out=raw.size();assert(inflate(&z,Z_FINISH)==Z_STREAM_END);inflateEnd(&z);
+      pk::clearTiles(fb,W);pk::libraryFrame(fb,W,fb.H,"Pocket Player",0,2,"Rescan");
+      pk::continueTile(fb,W,0,cardOut?nullptr:raw.data(),2,cardOut);
+      for(int i=1;i<6;i++)pk::tileLabel(fb,W,i,labels[i-1],false,rootIcons[i-1]);
+      assert(!fb.clipped);save(fb,out+(cardOut?"/continue-card-out-":"/continue-")+std::to_string(W)+".ppm");
+    }
+    pk::clearTiles(fb,W);pk::continueTile(fb,W,0,nullptr,11,false);assert(!fb.clipped);
     for(int count:{1,6,0,6}) {
       pk::clearTiles(fb,W);fresh.clear();pk::clearTiles(fresh,W);
       for(int i=0;i<count;i++){pk::tileLabel(fb,W,i,"Graduation: Blocks and Showcase");pk::tileLabel(fresh,W,i,"Graduation: Blocks and Showcase");}
