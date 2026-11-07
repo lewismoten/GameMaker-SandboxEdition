@@ -14,7 +14,7 @@ const W = 76;
 const TOP = 2;
 const ROWS = 16;
 const TEXT = attr(15, 1);
-const DIM = attr(7, 1);
+const DIM = attr(11, 1); // cyan: gray on blue is too dim in these colors
 const IN = W - 4;
 
 const fit = (s: string, n: number) => (s.length > n ? `${s.slice(0, n - 1)}.` : s).padEnd(n);

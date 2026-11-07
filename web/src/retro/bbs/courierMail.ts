@@ -8,8 +8,11 @@ import { commas } from '../dos/vfs';
 import { deskNow } from '../dos/deskClock';
 import { deliver, waitingLetter } from '../../courier/courierStore';
 import type { Letter } from '../../courier/tables';
-import type { Term } from './term';
+import { sleep, type Term } from './term';
 import { expectText, progress } from './transfer';
+
+/** Time to read the line before the board's own screen comes. */
+const READ_MS = 2500;
 
 /** A QWK packet's size: a 128-byte header block, then the letter in 128-byte blocks. */
 export function packetBytes(l: Letter): number {
@@ -28,10 +31,14 @@ export async function courierMail(t: Term, h: RetroHost, board: string): Promise
     t.line();
     t.line('|07Mail packet skipped. It will be here on your next call.');
     t.line();
+    await t.drain();
+    await sleep(READ_MS);
     return;
   }
   t.line();
   deliver(letter.id, deskNow().toLocaleDateString('en-CA'));
   t.line('|10Got it.|07 Scoot has a new letter: type |15SCOOT|07 at the DOS prompt to read it.');
   t.line();
+  await t.drain();
+  await sleep(READ_MS);
 }

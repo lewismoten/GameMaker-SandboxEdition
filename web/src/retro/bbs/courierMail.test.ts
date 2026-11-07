@@ -11,6 +11,8 @@ vi.mock('./transfer', () => ({
   },
 }));
 
+vi.mock('./term', () => ({ sleep: async () => {} }));
+
 import { courierMail, packetBytes } from './courierMail';
 import { loadCourier } from '../../courier/courierStore';
 import { LETTERS } from '../../courier/tables';
@@ -19,7 +21,7 @@ import type { RetroHost } from '../host';
 
 const stored = new Map<string, string>();
 const lines: string[] = [];
-const t = { line: (s = '') => lines.push(s) } as unknown as Term;
+const t = { line: (s = '') => lines.push(s), drain: async () => {} } as unknown as Term;
 const h = {} as RetroHost;
 
 beforeEach(() => {
