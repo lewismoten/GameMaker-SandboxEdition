@@ -13,6 +13,8 @@ import type { Pal } from '../../kit/starter/palette';
 import { clearVeil, type Density } from './light';
 
 const T = 255;
+/** Pixels a monster moves at a time (a speed of 2 moves it 2, 4, 6... pixels a step, never an odd number). Its checkerboard then keeps the same phase against the hills' and the wall's, so where the two overlap it can't blink between dots and solid. */
+const STEP = 2;
 
 /** The monsters by number (their place in the .MON file). Each is its own so the signs can stand beside each. */
 export const CRITTER = { lampSolid: 0, lampDither: 1, lampSoft: 2, puffFar: 3, puffNear: 4 } as const;
@@ -77,7 +79,7 @@ export function buildCritterBlocks(pal: Pal): Book {
   return book;
 }
 
-/** What each does (.MON). The lanterns drift to and fro; the far bank of fog is slow and the near one quicker. */
+/** What each does (.MON). The lanterns drift to and fro; the far bank of fog is slow and the near one twice as quick, always in even steps (see STEP). */
 export function buildCritters(mb: Book, run = 6): Monster[] {
   const set = newMonsterSet();
   const base = { power: 150, thru: 1, end: -2 };
@@ -86,8 +88,8 @@ export function buildCritters(mb: Book, run = 6): Monster[] {
     [CRITTER.lampDither, 'lamp.dither'],
     [CRITTER.lampSoft, 'lamp.soft'],
   ] as const)
-    set[id] = mon([[mb.n(name), 20]], base, pace(run, 1));
-  set[CRITTER.puffFar] = mon([[mb.n('puff'), 20]], base, pace(10, 1));
-  set[CRITTER.puffNear] = mon([[mb.n('puff'), 20]], base, pace(10, 2));
+    set[id] = mon([[mb.n(name), 20]], base, pace(run, STEP));
+  set[CRITTER.puffFar] = mon([[mb.n('puff'), 20]], base, pace(10, STEP));
+  set[CRITTER.puffNear] = mon([[mb.n('puff'), 20]], base, pace(10, STEP * 2));
   return set;
 }

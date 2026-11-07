@@ -52,8 +52,7 @@ disk.put('shadows.snd', serializeSoundSet(buildSounds()));
 disk.put('shadows.cmf', song());
 
 // the pictures that differ: Kit and the critters with a solid shadow or a dithered one, and the yard's signs
-disk.put('solid.cbl', serializeBlocks(assets.solid.hero.finish()));
-disk.put('dither.cbl', serializeBlocks(assets.dither.hero.finish()));
+disk.put('hero.cbl', serializeBlocks(assets.plain.finish()));
 disk.put('solid.mbl', serializeBlocks(assets.solid.critters.finish()));
 disk.put('dither.mbl', serializeBlocks(assets.dither.critters.finish()));
 disk.put('solid.bbl', serializeBlocks(yardSolid.book.finish()));
@@ -89,7 +88,7 @@ disk.put(
   gif(
     titlePicture(
       pal,
-      heroPicture(assets.dither.hero, 'stand.top', 'stand'),
+      heroPicture(assets.plain, 'stand.top', 'stand'),
       pic(assets.dither.critters, 'pip0'),
       pic(assets.dither.critters, 'bee0'),
       pic(assets.dither.critters, 'shade1'),
@@ -128,4 +127,4 @@ disk.put('shadows.gam', serializeGame(buildGame({ solid: yardSolid, dither: yard
 disk.put('license.txt', licenseText('Little Shadows'));
 clipEveryList(disk.files);
 disk.write();
-console.log(`${TITLE}: 4 background block sets, critters ${assets.dither.critters.index.size}, hero ${assets.dither.hero.index.size}`);
+console.log(`${TITLE}: 4 background block sets, critters ${assets.dither.critters.index.size}, hero ${assets.plain.index.size}`);

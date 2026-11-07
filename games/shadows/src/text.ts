@@ -51,7 +51,7 @@ export const CARDS = {
 export const STORY = wrap(`
 |LITTLE SHADOWS
 
-Mara finds a courtyard where everything has a shadow, and one where nothing does.
+Mara finds a courtyard where the little critters have shadows, and one where nothing does.
 
 A shadow tells you where the ground is, how high something is and how far it is from you. In a game with no see-through colors, a shadow is just more pixels, painted where it will do the most good.
 
