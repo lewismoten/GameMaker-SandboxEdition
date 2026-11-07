@@ -24,7 +24,7 @@ afterEach(() => {
 
 describe('courier mail store', () => {
   it('starts empty, and no letter arrives on its own, however long it waits', () => {
-    expect(loadCourier()).toEqual({ mail: [], got: [], postcards: [], packages: [] });
+    expect(loadCourier()).toEqual({ mail: [], got: [], postcards: [], packages: [], welcomed: [], hosted: [] });
     vi.advanceTimersByTime(30 * 24 * 3600_000);
     expect(loadCourier().mail).toEqual([]);
     expect(hasNewMail()).toBe(false);
