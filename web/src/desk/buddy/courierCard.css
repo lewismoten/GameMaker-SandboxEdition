@@ -214,3 +214,22 @@
 .buddy-envelope[hidden] {
   display: none;
 }
+
+/* Setup's trips: where Scoot is, the trip file buttons, and what happened */
+.courier-trips {
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid #b9b08f;
+}
+
+.courier-trips p {
+  margin: 0 0 6px;
+}
+
+.courier-said:empty {
+  display: none;
+}
+
+.courier-said {
+  font-weight: 700;
+}
