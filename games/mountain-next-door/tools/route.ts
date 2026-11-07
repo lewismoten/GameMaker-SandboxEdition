@@ -6,6 +6,7 @@ import { G2, GATES_AT } from '../src/levels/gates';
 import { NEXT_AT } from '../src/levels/next';
 import { G3, PRINTS_AT } from '../src/levels/prints';
 import { G4, STREAM_AT } from '../src/levels/stream';
+import { FLOORS, SIGNS_AT } from '../src/levels/signs';
 import { buildLevels } from '../src/levels';
 import { GROUND } from '../src/level';
 import { PROLOGUE } from '../src/monsters';
@@ -178,5 +179,55 @@ export async function steppingStones(bot: StarterBot): Promise<void> {
   await must(bot, bot.walk(S.bridge[1] + 2, 'over the footbridge'), 'over the footbridge');
   await readAt(bot, at.hill + 1, 'the hill sign');
   score(bot, from, 4 * POINTS.blaze + 2 * POINTS.acorn, 'level 4');
+  await leave(bot, bot.walk(S.exit + 1, 'the exit'), 'the exit');
+}
+
+/** Climbs from where Tess stands on ladder column `col` up or down until her feet are on row `row` + 1's floor. */
+async function ladder(bot: StarterBot, col: number, dir: 'up' | 'down', row: number, what: string): Promise<void> {
+  await must(bot, bot.walk(col, what), `onto ${what}`);
+  await must(bot, bot.climb(dir, row, `${dir} ${what}`), `${dir} ${what}`);
+}
+
+/** 5. Nutmeg's Signposts: three switchbacks; at each fork, a look at the turning arrow, Nutmeg's stash, then the blazed way. */
+export async function signposts(bot: StarterBot): Promise<void> {
+  const from = bot.sim.ci.score;
+  const S = SIGNS_AT;
+  const at = S.signs;
+  const feet = (t: number) => FLOORS[t] - 1;
+  const post = (t: number) => S.posts.filter(([, k]) => k === t).map(([x]) => x);
+  // the bottom path, to the right
+  await readAt(bot, at.turned + 1, 'the turned-signs sign');
+  await take(bot, post(0)[0], POINTS.blaze, 'a post');
+  await readAt(bot, at.trust + 1, 'the trust sign');
+  await take(bot, post(0)[1], POINTS.blaze, 'a post');
+  await must(bot, bot.walk(S.pie[0], 'the pie'), 'to the pie');
+  await must(bot, bot.walk(S.fork1.arrow - 1, 'the first signpost'), 'to the signpost');
+  await must(bot, bot.wait(READ), 'watching the arrow turn');
+  await readAt(bot, at.stash + 1, "Nutmeg's sign");
+  for (const x of S.fork1.stash) await take(bot, x, POINTS.acorn, 'an acorn from the stash');
+  await climbUp(bot, S.fork1.ladder, feet(1), 'the blazed ladder');
+  // the middle path, to the left
+  await readAt(bot, at.noon + 1, 'the noon sign');
+  await take(bot, post(1)[0], POINTS.blaze, 'a post');
+  await take(bot, post(1)[1], POINTS.blaze, 'a post');
+  await must(bot, bot.walk(S.fork2.arrow + 1, 'the second signpost'), 'to the signpost');
+  await must(bot, bot.wait(READ / 2), 'watching the arrow turn');
+  await ladder(bot, S.fork2.nookLadder, 'up', feet(2), 'the ladder into the nook');
+  for (const x of S.fork2.stash) await take(bot, x, POINTS.acorn, 'an acorn in the nook');
+  await ladder(bot, S.fork2.nookLadder, 'down', feet(1), 'the ladder out of the nook');
+  await ladder(bot, S.fork2.ladder, 'up', feet(2), 'the blazed ladder');
+  // the top path, to the right
+  await readAt(bot, at.top + 1, 'the nearly-there sign');
+  await take(bot, post(2)[0], POINTS.blaze, 'a post');
+  await must(bot, bot.walk(S.fork3.arrow + 1, 'the third signpost'), 'to the signpost');
+  await must(bot, bot.wait(READ / 2), 'watching the arrow turn');
+  await ladder(bot, S.fork3.bad.ladder, 'up', FLOORS[2] - 6, 'the ladder to the left planks');
+  for (const x of [...S.fork3.stash].reverse()) await take(bot, x, POINTS.acorn, 'an acorn on the planks');
+  await ladder(bot, S.fork3.bad.ladder, 'down', feet(2), 'back down');
+  await ladder(bot, S.fork3.good.ladder, 'up', FLOORS[2] - 6, 'the blazed ladder over the hedge');
+  await must(bot, bot.walk(S.fork3.good.plank[1] + 2, 'over the hedge'), 'over the hedge');
+  await must(bot, bot.land(), 'landing');
+  await take(bot, post(2)[1], POINTS.blaze, 'a post');
+  score(bot, from, 6 * POINTS.blaze + 6 * POINTS.acorn, 'level 5');
   await leave(bot, bot.walk(S.exit + 1, 'the exit'), 'the exit');
 }
