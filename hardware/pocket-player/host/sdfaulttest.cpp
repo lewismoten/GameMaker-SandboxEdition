@@ -9,7 +9,7 @@
 #include "gmcards.h"
 #include "stdiolines.h"
 
-static std::string root;
+static std::string root, pakName = "cards.pak";
 static int fault = 0, calls = 0, failAt = 1;
 static uint8_t* reader(const char* name, size_t* n) {
   calls++;
@@ -39,20 +39,60 @@ static bool inflateRaw(const uint8_t* src, size_t n, uint8_t* dst, size_t cap) {
 }
 static uint8_t* rangeRead(size_t off, size_t len) {
   if (fault == 1 || fault == 2) return nullptr; // adapter must reject a failed/short exact range
-  FILE* f = fopen((root + "/cards.pak").c_str(), "rb"); if (!f) return nullptr;
   uint8_t* p = (uint8_t*)malloc(len + 1); assert(p);
-  bool ok = off <= 0x7fffffff && fseek(f, (long)off, SEEK_SET) == 0 && fread(p, 1, len, f) == len;
-  fclose(f); if (!ok) { free(p); return nullptr; }
+  bool ok = false;
+  if (isGmp(root)) {
+    std::vector<uint8_t> pak;
+    ok = pakSlurp(root + "/cards.pak", pak) && off <= pak.size() && len <= pak.size() - off;
+    if (ok) memcpy(p, pak.data() + off, len);
+  } else {
+    FILE* f = fopen((root + "/" + pakName).c_str(), "rb");
+    if (f) {
+      ok = off <= 0x7fffffff && fseek(f, (long)off, SEEK_SET) == 0 && fread(p, 1, len, f) == len;
+      fclose(f);
+    }
+  }
+  if (!ok) { free(p); return nullptr; }
   if (fault == 3 && len > 4) memset(p + 4, 0xff, len - 4);
   if (fault == 4 && len >= 4) p[3] = 0x7f;
   return p;
+}
+struct BundleProbe {
+  std::vector<uint8_t> bytes;
+  int calls = 0, failAt = 0;
+  static bool readAt(void* user, uint32_t off, void* out, uint32_t n) {
+    auto& p = *(BundleProbe*)user;
+    if (++p.calls == p.failAt || off > p.bytes.size() || n > p.bytes.size() - off) return false;
+    memcpy(out, p.bytes.data() + off, n); return true;
+  }
+};
+static void bundleChecks(const std::string& name) {
+  FILE* f = fopen((isGmp(root) ? root : root + "/small.pak").c_str(), "rb");
+  if (!f) { puts("N/A bundle: loose files"); return; }
+  BundleProbe probe; uint8_t buf[4096]; size_t n;
+  while ((n = fread(buf, 1, sizeof buf, f))) probe.bytes.insert(probe.bytes.end(), buf, buf + n);
+  assert(!ferror(f)); fclose(f);
+  gm::SmallPak pak; pak.user = &probe; pak.readAt = BundleProbe::readAt;
+  assert(pak.begin());
+  uint32_t off, len; assert(pak.find(name.c_str(), &off, &len));
+  uint8_t magic = probe.bytes[0]; probe.bytes[0] ^= 255;
+  assert(!pak.begin()); probe.bytes[0] = magic;
+  auto saved = probe.bytes; probe.bytes.resize(7); assert(!pak.begin()); probe.bytes = saved;
+  probe.calls = 0; probe.failAt = 1; assert(!pak.begin()); probe.failAt = 0;
+  assert(pak.begin()); probe.failAt = probe.calls + 1; assert(!pak.find(name.c_str(), &off, &len)); probe.failAt = 0;
+  gm::SmallLines lines; assert(lines.open(&pak, name.c_str()));
+  probe.failAt = probe.calls + 1; char line[128]; assert(!lines.next(line, sizeof line));
+  probe.failAt = 0; assert(lines.open(&pak, name.c_str())); assert(lines.next(line, sizeof line));
+  puts("PASS bundle bad magic, short header, failed header/index/cfg range read; retry=ok");
 }
 static void* unavailable(void*, const char*) { return nullptr; }
 static bool noLine(void*, char*, int) { assert(false); return false; }
 static void noClose(void*) { assert(false); }
 int main(int argc, char** argv) {
   assert(argc >= 2); root = argv[1]; linesDir = root;
+  if (argc > 3) pakName = argv[3];
   std::string id = argc > 2 ? argv[2] : "first-steps", name = id + ".cfg";
+  bundleChecks(name);
   static gm::World w; gm::Cfg cfg; gm::Assets a;
   gm::Lines missing = {unavailable, noLine, noClose, nullptr};
   assert(!gm::parseCfgFile(missing, name.c_str(), w, cfg));
@@ -79,7 +119,19 @@ int main(int argc, char** argv) {
     printf("PASS asset mode=%d read=%d outcome=%s retry=ok\n", mode, at, ok ? "optional-sound" : "rejected");
   }
   fault = 0; gm::Card cards[10];
-  int count = gm::cardsOfFile(stdioLines, name.c_str(), "i0", cards, 10);
+  int count = 0;
+  std::vector<std::string> wheres;
+  for (int lv = 0; lv < w.nlevels; lv++) {
+    wheres.push_back("i" + std::to_string(lv));
+    wheres.push_back("x" + std::to_string(lv));
+  }
+  wheres.push_back("w"); wheres.push_back("l");
+  for (const auto& where : wheres) {
+    count = gm::cardsOfFile(stdioLines, name.c_str(), where.c_str(), cards, 10);
+    bool picture = false;
+    for (int i = 0; i < count; i++) if (cards[i].kind == 'g') picture = true;
+    if (picture) break;
+  }
   int checked = 0;
   for (int i = 0; i < count; i++) if (cards[i].kind == 'g') {
     uint8_t* p = gm::loadPicture(a, rangeRead, cards[i].file); assert(p); free(p);

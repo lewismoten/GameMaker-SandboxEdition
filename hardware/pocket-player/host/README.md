@@ -17,6 +17,17 @@ python3 hardware/pocket-player/host/transitiontest.py
 python3 hardware/pocket-player/host/boardcardtest.py
 ```
 
+The same probe accepts a loose microSD cfg's short name and its card pack filename:
+
+```sh
+"$TMPDIR/pocket-faults/sdfaulttest" CARD_ROOT/pocket SHORTNAME SHORTNAME.pak
+# One-file bundle (use the id stored inside its cfg, not the DOS .GMP filename):
+"$TMPDIR/pocket-faults/sdfaulttest" CARD_ROOT/pocket/NAME.GMP game-id
+```
+
+It chooses the first picture-bearing intro/exit/won/lost card list; a fixture without
+any picture fails rather than pretending that corruption was exercised.
+
 The C++ probe runs the real shared `Assets`/card decoders with callback-level faults:
 unavailable/open failure, a three-byte packed read, a truncated stream, invalid deflate,
 and excessive unpacked length. It fails each asset-reader call in turn, releases partial
