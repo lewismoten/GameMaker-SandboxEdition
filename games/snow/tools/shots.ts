@@ -9,7 +9,7 @@ import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { writePng } from '@lewismoten/gamemaker-sandbox-tools/kit/png';
 import { headlessCanvas } from '../../../web/src/walkthrough/runtime';
 import { StarterBot } from '../../kit/starter/bot';
-import { snowyWalk } from './route';
+import { snowyWalk, pilesUp } from './route';
 import { GameSim } from './sim';
 
 const out = process.argv[2];
@@ -34,11 +34,11 @@ await bot.walk(6);
 shot('one-snow-t0.png');
 await bot.wait(5);
 shot('one-snow-t5.png');
-await bot.walk(12);
-await bot.jump('right', 16);
+await bot.walk(15);
+await bot.jump('right', 19);
 shot('one-hop-gap.png');
-await bot.walk(20);
-await bot.walk(12);
+await bot.walk(22);
+await bot.walk(15);
 shot('one-footprints.png');
 // Replay the first route from a clean game so level 2 starts on the normal door link.
 const start = new GameSim();
@@ -51,4 +51,28 @@ shot('two-drift-deep.png');
 await bot.walk(19);
 await bot.walk(14);
 shot('two-snow-drift-footprints.png');
-console.log(`snow: 8 real-render PNGs in ${out}`);
+// Level 3 from a clean game: the first two lessons, then the open field.
+sim.restore(start.snapshot());
+await snowyWalk(bot);
+await pilesUp(bot);
+await bot.wait(40);
+shot('three-start.png');
+await bot.walk(12);
+shot('three-right.png');
+await bot.climb('up', 5);
+shot('three-up.png');
+await bot.walk(14);
+shot('three-top.png');
+await bot.climb('down', 8);
+shot('three-far-side.png');
+await bot.walk(12);
+shot('three-loop-done.png');
+await bot.climb('down', 12);
+shot('three-down.png');
+// a frame strip of the fade: the trail one beat after he stops, then every ~1.5 s until it is gone
+await bot.wait(2);
+for (let i = 0; i < 6; i++) {
+  shot(`three-fade-${i}.png`);
+  await bot.wait(28);
+}
+console.log(`snow: real-render PNGs in ${out}`);

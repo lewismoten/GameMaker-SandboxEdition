@@ -27,7 +27,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 7128,
+  "frames": 7137,
   "chapters": [
    {
     "title": "Opening",
@@ -36,28 +36,28 @@
    },
    {
     "title": "Story",
-    "frame": 913,
-    "time": 15216.666666666471
+    "frame": 922,
+    "time": 15366.666666666466
    },
    {
     "title": "The Lab Yard",
-    "frame": 1661,
-    "time": 27683.333333333918
+    "frame": 1670,
+    "time": 27833.33333333393
    },
    {
     "title": "The Lab",
-    "frame": 3031,
-    "time": 50516.66666666504
+    "frame": 3040,
+    "time": 50666.66666666502
    },
    {
     "title": "Ending",
-    "frame": 4329,
-    "time": 72149.99999999811
+    "frame": 4338,
+    "time": 72299.99999999815
    },
    {
     "title": "Credits",
-    "frame": 6056,
-    "time": 100933.33333333982
+    "frame": 6065,
+    "time": 101083.33333333986
    }
   ]
  }

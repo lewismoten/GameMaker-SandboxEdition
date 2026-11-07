@@ -27,7 +27,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 7121,
+  "frames": 7130,
   "chapters": [
    {
     "title": "Opening",
@@ -36,28 +36,28 @@
    },
    {
     "title": "Story",
-    "frame": 913,
-    "time": 15216.666666666471
+    "frame": 922,
+    "time": 15366.666666666466
    },
    {
     "title": "The Castle Path",
-    "frame": 1661,
-    "time": 27683.333333333918
+    "frame": 1670,
+    "time": 27833.33333333393
    },
    {
     "title": "The Great Hall",
-    "frame": 3024,
-    "time": 50399.99999999839
+    "frame": 3033,
+    "time": 50549.99999999837
    },
    {
     "title": "Ending",
-    "frame": 4322,
-    "time": 72033.33333333141
+    "frame": 4331,
+    "time": 72183.33333333145
    },
    {
     "title": "Credits",
-    "frame": 6049,
-    "time": 100816.66666667312
+    "frame": 6058,
+    "time": 100966.66666667316
    }
   ]
  }

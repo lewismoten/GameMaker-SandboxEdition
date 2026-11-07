@@ -68,6 +68,7 @@ game folder opens in the browser unchanged.
   and the Sound Designer's digitized speech with Andy Stone (`code/GM/SNDEDIT.C`).
 - **This fork**: Lewis Moten.
 - **Pocket Player text-page redraw and resistive slide fixes**: OpenAI Codex, directed by Lewis Moten, implemented the firmware changes and host regressions.
+- **Pocket Player boot splash, category icons and title-screen previews** (`web/scripts/pocketArt.ts`, `hardware/pocket-player/src/splash*.h`, `icons_data.h`, `web/src/export/pocketThumbnail.ts`): **Claude** (Sonnet 5.5, Anthropic), directed by Lewis Moten, drew the 19 small category icons in code and wrote the generator and the boxed-down preview scaler. The splash is the last full frame of this project's own Sandbox sting (`games/kit/sandlogo.ts`); no third-party art was added.
 - **PLAYGAME 286 audio measurements** (`tools/dosbox-286/measure_*.py` and
   `docs/research/playgame-music-286-results.md`): Hermes Agent using **OpenAI Codex
   GPT-6.1 Sol**, directed by Lewis Moten. The measurement tools use external NumPy
@@ -1102,7 +1103,10 @@ maker "ZORP" is invented. The shell is untested: nothing has been printed.
 - **Player Patching Manual** (`web/src/programmersGuide/patching1994.md`, `web/src/manual/printables/patchingManual.ts`, `patchingPlates.ts`): original words, byte-layout figures, booklet integration and verification written with **OpenAI Codex (GPT-6)**, directed by Lewis Moten. References are this project's Programmer's Guide, player patch tables, Sandbox game metadata and the original RSD source and CD executables; the existing RSD MIT credit remains. No text from the printed RSD manual was copied.
 
 - **Livestream game follow-up (November 2026):** OpenAI Codex (GPT-6), directed by Lewis Moten, implemented Colors That Work’s playable palette lesson, removed unused Beat the Clock monster templates, drew the paper cube’s intermediate folding diagram, revised the Stage Box assembly and lock diagrams, and added the phone BOM’s numeric cost export and regressions. Existing game art, music, source data, and color-vision algorithm credits remain.
+
+- **Desk machine settings** (`web/src/desk/pc/machine*.ts`): OpenAI Codex (GPT-6), directed by Lewis Moten, implemented the hardware dialog, remembered CPU and disk timing, accessibility checks and regression tests using the existing engine estimates. No new third-party assets or game content were added.
 - **Livestream Desk, Editor, Site and Library follow-up**: OpenAI Codex (GPT-6), directed by Lewis Moten, implemented navigation, asset filtering, scene-panel layout, creation labels, download discoverability, cached-search scheduling, and regression checks. Existing game data and artwork retain their credits.
 
+- **Full-window player snapshots**: OpenAI Codex (GPT-6), directed by Lewis Moten, implemented the camera control, DOS crop metadata, PNG regressions and documentation using this project’s existing PNG encoder. Original game artwork retains its existing credits.
 - **CYD friendliness check** (`web/scripts/cyd*.ts`): OpenAI Codex (GPT-6), directed by Lewis Moten, implemented the recorded-route measurements, engine probes, scoring, tests, and documentation. No game content or third-party material was added.
 - **Try Again plank landing** (`games/one-more-try/`): OpenAI Codex (GPT-6), directed by Lewis Moten, widened the upper plank and added headless jump checks against the original PLAYGAME collision rules. Existing Starter art and music retain their credits.
