@@ -1,0 +1,19 @@
+{
+  "title": "The Noodle Observatory",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "special",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.0",
+  "blurb": "It is Monkey Day, and Nell's tin monkey just rolled a loose lens into the old kitchen telescope. Then her giant pasta ring rolled up the wall and framed a round, cheese-colored moon in the window. Nell builds a proper observatory to find out what it really is: telescope parts from the wobbly cupboards, a ride up the pantry in the ring, lenses carried one at a time, nine shutters set in the loft, a runaway colander across the roof garden, and supper set where the view is best. A kitchen-sky mystery to play and to watch, here for three days only.",
+  "exe": "NOODLE.EXE",
+  "dosName": "NOODLE",
+  "sound": "sb",
+  "label": {
+    "background": "#fbf0c8",
+    "band": "#3a3f8a",
+    "ink": "#22201c",
+    "logo": "SANDBOX SOFTWARE"
+  }
+}
