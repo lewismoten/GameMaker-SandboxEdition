@@ -76,6 +76,24 @@ export const LOOKS: Record<string, Record<string, Tint>> = {
       [100, 140, 120],
     ],
   },
+  // high on the mountain's back: a deep, clear blue sky and cool gray rock
+  high: {
+    sky: [
+      [40, 110, 210],
+      [200, 236, 255],
+      [96, 170, 240],
+    ],
+    rock: [
+      [44, 50, 70],
+      [220, 222, 226],
+      [120, 126, 140],
+    ],
+    moss: [
+      [24, 70, 50],
+      [180, 230, 130],
+      [70, 150, 80],
+    ],
+  },
   // a gray, misty park
   mist: {
     sky: [

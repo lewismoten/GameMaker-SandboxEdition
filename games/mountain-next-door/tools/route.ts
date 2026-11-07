@@ -61,7 +61,7 @@ async function returnGate(bot: StarterBot, way: number, what: string): Promise<v
 }
 
 /** Walks to an acorn (or any treasure) at column `x` and checks it scored `points`. */
-async function take(bot: StarterBot, x: number, points: number, what: string): Promise<void> {
+export async function take(bot: StarterBot, x: number, points: number, what: string): Promise<void> {
   const before = bot.sim.ci.score;
   await must(bot, bot.walk(x, what), `to ${what}`);
   score(bot, before, points, what);
@@ -147,8 +147,15 @@ const blocks = (file: string) => {
  * Crosses a stream on its runs of stones like a person: waits on the bank (or the last stone) until the next run
  * has just come up, then walks across it.
  */
-async function cross(bot: StarterBot, runs: readonly (readonly [number, number, string])[], ground: number, what: string): Promise<void> {
-  const up = blocks('stream').n('stoneUp');
+export async function cross(
+  bot: StarterBot,
+  runs: readonly (readonly [number, number, ...unknown[]])[],
+  ground: number,
+  what: string,
+  file = 'stream',
+  upName = 'stoneUp',
+): Promise<void> {
+  const up = blocks(file).n(upName);
   const isUp = (x: number) => shownAt(bot, x, ground) === up;
   await must(bot, bot.walk(runs[0][0] - 1, what), `to ${what}`);
   const dry = () => {
@@ -194,7 +201,7 @@ export async function steppingStones(bot: StarterBot): Promise<void> {
 }
 
 /** Climbs from where Tess stands on ladder column `col` up or down until her feet are on row `row` + 1's floor. */
-async function ladder(bot: StarterBot, col: number, dir: 'up' | 'down', row: number, what: string): Promise<void> {
+export async function ladder(bot: StarterBot, col: number, dir: 'up' | 'down', row: number, what: string): Promise<void> {
   await must(bot, bot.walk(col, what), `onto ${what}`);
   await must(bot, bot.climb(dir, row, `${dir} ${what}`), `${dir} ${what}`);
 }
@@ -259,7 +266,7 @@ export async function emptySpot(bot: StarterBot): Promise<void> {
 }
 
 /** Holds an arrow key for `ticks` (a step into the wind, where walking to a spot would never land). */
-async function step(bot: StarterBot, dir: 'left' | 'right', ticks: number, what: string): Promise<void> {
+export async function step(bot: StarterBot, dir: 'left' | 'right', ticks: number, what: string): Promise<void> {
   const key = dir === 'left' ? SCAN.left : SCAN.right;
   bot.sim.press(key);
   try {
@@ -270,7 +277,7 @@ async function step(bot: StarterBot, dir: 'left' | 'right', ticks: number, what:
 }
 
 /** Steps into an updraft at column `x`, rides it up, and steps off onto the ledge to the right (feet on row `row` - 1). */
-async function rideUp(bot: StarterBot, x: number, row: number, what: string): Promise<void> {
+export async function rideUp(bot: StarterBot, x: number, row: number, what: string): Promise<void> {
   await must(bot, bot.walk(x - 1, what), `to ${what}`);
   await step(bot, 'right', 5, `into ${what}`);
   await watchFor(bot, () => bot.px.y / 20 <= row - 1.5, `riding ${what}`, 300);

@@ -3,10 +3,11 @@
 import { StarterBot } from '../../kit/starter/bot';
 import { playLevels } from '../../kit/levelRun';
 import { emptySpot, footprints, lowTunnel, gateHunt, nextDoor, signposts, steppingStones, summitPicnic, windyRidge, zigzagHome } from './route';
+import { mossbackBack } from './routeMore';
 import { GameSim } from './sim';
 
 export const SEED = 1;
-const ROUTES = [nextDoor, gateHunt, footprints, steppingStones, signposts, emptySpot, windyRidge, lowTunnel, zigzagHome, summitPicnic];
+const ROUTES = [nextDoor, gateHunt, mossbackBack, footprints, steppingStones, signposts, emptySpot, windyRidge, lowTunnel, zigzagHome, summitPicnic];
 
 /** Ticks the bot spent in each level (filled in as it plays). */
 export const LEVEL_TICKS: number[] = [];

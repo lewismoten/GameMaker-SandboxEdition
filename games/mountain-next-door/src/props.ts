@@ -14,6 +14,7 @@
 //   stars      starA/B/C (dark sky that lights a star at three times), faint, bright (twinkle), moonTL/TR/BL/BR
 //   tunnel     tStone (solid), tAir (dark; touched, it stays lit: tAirLit), tAirFaint (a lamp's far edge, lit the same), tFloor, lantern (light it), glow2
 //   picnic     blanketL/M/R, matL/M/R
+//   high       screeUp/screeHalf/screeUnder/screeRise (wobbly rocks in a path, on the stones' clock), dent0..2 (the summit's damp dent: a ledge)
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { KEYS } from '../../kit/starter/blocks';
 import { LEDGE, PULL, SOLID, type Book } from '../../kit/starter/book';
@@ -46,6 +47,7 @@ import {
 } from './art/land';
 import { blanket, doormat, lantern, moon, puddle, signpost, star, tunnelAir, tunnelFloor, tunnelStone } from './art/night';
 import { bed, footbridge, gust, rain, stone, updraft, water } from './art/weather';
+import { dent, scree } from './art/high';
 
 /** Points: a painted blaze, an acorn, a gate taken off the mountain, a gate put back home. */
 export const POINTS = { blaze: 10, acorn: 5, gate: 25, home: 25, lantern: 10 } as const;
@@ -210,6 +212,14 @@ export function addProps(book: Book, pal: Pal, groups: readonly string[], o: Pro
     book.add('tFloorLit', tunnelFloor(pal, true), { solid: SOLID });
     book.add('lantern', lantern(pal, false), { ...air, score: POINTS.lantern, touch: 'lanternLit' });
     book.add('lanternLit', lantern(pal, true), air);
+  }
+  if (has('high')) {
+    book.add('screeUp', scree(pal, 'up'), { solid: LEDGE, grav: PULL.down });
+    book.add('screeHalf', scree(pal, 'half'), air);
+    book.add('screeUnder', scree(pal, 'under'), air);
+    book.add('screeRise', scree(pal, 'half'), air);
+    loop(['screeUp', 'screeHalf', 'screeUnder', 'screeRise'], [STONE_TICKS.up, STONE_TICKS.half, STONE_TICKS.under, STONE_TICKS.rise]);
+    for (const k of [0, 1, 2] as const) book.add(`dent${k}`, dent(pal, k), { solid: LEDGE, grav: PULL.down });
   }
   if (has('picnic')) {
     for (const part of ['L', 'M', 'R'] as const) book.add(`blanket${part}`, blanket(pal, part), air);

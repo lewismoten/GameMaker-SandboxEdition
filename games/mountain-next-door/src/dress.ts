@@ -8,6 +8,7 @@ import { PULL } from '../../kit/starter/book';
 import { ORIGIN } from '../../kit/starter/map';
 import type { Pal } from '../../kit/starter/palette';
 import { birds, dirtVariant, farHill, grassShade, grassVariant, leaf, wisp } from './art/dress';
+import { ladderOnRock } from './art/high';
 import { crown, rock } from './art/land';
 import type { Level } from './level';
 
@@ -49,6 +50,25 @@ export function dress(l: Level, pal: Pal, o: DressOptions = {}): void {
   const W = l.map.width;
   const H = l.map.height;
 
+  // small props standing in front of rock (a cliff above them, or rock both sides) get the rock behind them, not sky;
+  // what they turn into when touched does too (an acorn taken leaves rock)
+  const rockish = (n: string) => /^(rock|ledge|scree|slope|gentle|ladderRock)/.test(n);
+  const sky = pal.c('sky', 3);
+  const onRock = (name: string): number => {
+    const v = `${name}@rock`;
+    if (book.has(v)) return book.n(v);
+    const r = book.rulesOf(name);
+    if (r.touch) r.touch = r.touch === 'sky' ? 'rock' : (onRock(r.touch), `${r.touch}@rock`);
+    const back = book.pics.get('rock') as Pixels;
+    const pic = (book.pics.get(name) as Pixels).map((x, y, c) => (c === sky ? back.get(x, y) : c));
+    return book.add(v, pic, r);
+  };
+  for (let y = 0; y < H; y++)
+    for (let x = 1; x < W - 1; x++) {
+      const n = nameAt(x, y);
+      if (/^(post|acorn|pie)$/.test(n) && (rockish(nameAt(x, y - 1)) || (rockish(nameAt(x - 1, y)) && rockish(nameAt(x + 1, y))))) put(x, y, onRock(n));
+    }
+
   // the ground and the rock, cell by cell (the level's first and last columns stay plain: the ground carries on past them)
   for (let y = 0; y < H; y++)
     for (let x = 1; x < W - 1; x++) {
@@ -86,6 +106,14 @@ export function dress(l: Level, pal: Pal, o: DressOptions = {}): void {
             x,
             y,
             add('dirtRoot', () => dirtVariant(pal, dirt, 'root', 6), 'dirt'),
+          );
+      } else if (n === 'ladder' && /^(rock|ledge|scree)/.test(nameAt(x - 1, y)) && /^(rock|ledge|scree)/.test(nameAt(x + 1, y))) {
+        const lad = book.pics.get('ladder');
+        if (lad)
+          put(
+            x,
+            y,
+            add('ladderRock', () => ladderOnRock(pal, lad, 40), 'ladder'),
           );
       } else if ((n === 'rock' || n === 'rock2') && book.has('rock')) {
         const k = Math.floor(hash(x, y, 1) * 4);

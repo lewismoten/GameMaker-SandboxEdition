@@ -12,6 +12,7 @@
 //  10. Summit Picnic      (watch) sunrise; the mountain home and sitting down; the neighbors climb up; the doormat
 import { buildMountainPalette } from '../palette';
 import type { Level } from '../level';
+import { levelBack } from './back';
 import { levelGates } from './gates';
 import { levelPicnic } from './picnic';
 import { levelPrints } from './prints';
@@ -27,6 +28,7 @@ import { dress, type DressOptions } from '../dress';
 /** How each level is dressed (dress.ts): birds in the day, distant hills where the sky is wide. */
 const DRESS: Record<string, DressOptions> = {
   gates: { birds: true },
+  back: { birds: true },
   prints: { birds: true, maples: true, far: { row: 9 } },
   stream: { maples: true, far: { row: 9 } },
   signs: { birds: true },
@@ -41,6 +43,7 @@ export function buildLevels(): { pal: ReturnType<typeof buildMountainPalette>; l
   const levels: Level[] = [
     levelNext(pal),
     levelGates(pal),
+    levelBack(pal),
     levelPrints(pal),
     levelStream(pal),
     levelSigns(pal),
