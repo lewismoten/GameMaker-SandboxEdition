@@ -10,6 +10,7 @@
 //           (the Level check's static findings, new ones only, against levelCheck.baseline.json)
 //   player  kit/playerCheck.ts (games/<id>/player.json, its DOS player look, keeps the rules)
 //   pal     kit/palCheck.ts (no two .pal files in disk/ are byte-identical; the shared writer merges them)
+//   leap    kit/leapCheck.ts (no locked door or gate can be jumped over without its key)
 //   controls kit/controlsCheck.ts (games/<id>/controls.json describes exactly the keys, joystick buttons and counters the game uses)
 // then once: kit/tinHearts.ts check, kit/saveSignCheck.ts (one save sign per felt-egg game, none
 // elsewhere), kit/syncCheck.ts (levelSecrets.json and box hours) and kit/versionCheck.ts (a game
@@ -153,7 +154,7 @@ async function rebuild(id: string, log: string[]): Promise<Status> {
   }
 }
 
-const COLS = ['build', 'bounds', 'check', 'walk', 'text', 'hidden', 'level', 'player', 'controls', 'pal'] as const;
+const COLS = ['build', 'bounds', 'check', 'walk', 'text', 'hidden', 'level', 'player', 'controls', 'leap', 'pal'] as const;
 type Row = Record<(typeof COLS)[number], Status> & { sec: number };
 const rows = new Map<string, Row>();
 const t0 = Date.now();
@@ -224,6 +225,7 @@ async function checkGame(id: string): Promise<void> {
     level: flag('--no-level') ? 'skip' : await step(log, 'level', '../games/kit/levelCheck.ts', [id]),
     player: has(id, 'player.json') ? await step(log, 'player', '../games/kit/playerCheck.ts', [id]) : 'skip',
     controls: has(id, 'controls.json') ? await step(log, 'controls', '../games/kit/controlsCheck.ts', [id]) : 'skip',
+    leap: await step(log, 'leap', '../games/kit/leapCheck.ts', [id]),
     pal: await step(log, 'pal', '../games/kit/palCheck.ts', [id]),
     sec: 0,
   };
