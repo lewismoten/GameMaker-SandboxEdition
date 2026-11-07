@@ -8,6 +8,10 @@ export const SIZEX = 320;
 export const SIZEY = 200;
 
 export class Screen {
+  /** Observer metadata only: PLAYGAME's CropScreen is active (no effect on rendering). */
+  dosCropped = false;
+  /** Level number for screen captures; retained during function-key screens. */
+  sceneNumber = 0;
   readonly pixels = new Uint8Array(SIZEX * SIZEY);
   /** Palette currently shown by the "DAC" (6-bit components). */
   readonly palette = new Uint8Array(PALETTE_SIZE);
