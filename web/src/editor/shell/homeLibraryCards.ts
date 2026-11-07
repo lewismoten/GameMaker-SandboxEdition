@@ -5,7 +5,7 @@ import { walkTile } from './homeWalkBadge';
 import { h } from '../core/ui';
 import { byCollection } from '../../project/bizarre';
 import { byStarterGroup } from '../../project/starter';
-import { isCeremony } from '../../project/ceremonies';
+import { isCeremony, nextCertificateLine, diplomaNudge } from '../../project/ceremonies';
 import type { Grades } from '../../project/grades';
 import { levelShown, levelShowsCeremony } from './homeLevel';
 import { gradShowFor, graduationCards, readyCeremonies, readyStrip } from './homeGraduations';
@@ -135,7 +135,8 @@ export function libraryCards(
             }),
           ])
         : (c === 'imported' ? rated : lib.gamesOf(c)).map(tile);
-    cards = [...ready, ...cards, ...graduations];
+    const next = c === 'starter' ? (nextCertificateLine(grades, starters.finished) ?? diplomaNudge(grades, starters.finished)) : undefined;
+    cards = [...(next ? [h('p', { class: 'next-certificate', role: 'status' }, next)] : []), ...ready, ...cards, ...graduations];
   }
   if (!cards.length)
     cards = [

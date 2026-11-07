@@ -5,11 +5,12 @@ import { StarterBot } from '../../kit/starter/bot';
 import { buildLevels } from '../src/levels';
 import { GameSim } from './sim';
 import { play } from './play';
+import { printsNow } from './route';
 
 const { pal, levels } = buildLevels();
 for (const l of levels) assertNoInvisibleWalls({ pal, book: l.book, levels: [l] });
 const { sim } = await play();
-if (sim.deaths || sim.ended !== 'won') throw new Error('the two lessons did not finish safely');
+if (sim.deaths || sim.ended !== 'won') throw new Error('the three lessons did not finish safely');
 const { book } = levels[0];
 const untouched = new GameSim().w.map.slice();
 for (let n = 0; n < 4; n++) {
@@ -29,4 +30,19 @@ for (let n = 0; n < 4; n++) {
   for (let tick = 0; tick < 100 && !fresh.deaths; tick++) await fresh.tick();
   if (!fresh.deaths || !fresh.w.map.every((v, i) => v === untouched[i])) throw new Error('scene reload retained footprints');
 }
-console.log(`snow: falling snow, jump gap, footprints, growing drift, win; four new games, repeated walks and four scene reloads reset cleanly`);
+// Level 3: one long hold of an arrow makes a print a step; they must stay well under the engine's 200 monster slots.
+{
+  const { sim: field, bot: walker } = await play(1, 2);
+  await walker.wait(40);
+  field.press(77);
+  let most = 0;
+  for (let t = 0; t < 200; t++) {
+    await walker.tick();
+    most = Math.max(most, printsNow(walker).length);
+  }
+  field.release(77);
+  if (most < 20 || most > 100) throw new Error(`a held arrow should keep a trail of dozens of prints, got ${most}`);
+}
+console.log(
+  `snow: falling snow, jump gap, footprints, growing drift, prints facing four ways that fade, win; four new games, repeated walks and four scene reloads reset cleanly`,
+);

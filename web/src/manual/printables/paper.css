@@ -1115,6 +1115,9 @@
   max-width: 100%;
   min-height: 28px;
   min-width: 0;
+  /* fixed ink on paper white: the site's light theme otherwise gave it pale text on a pale field */
+  color: #182630;
+  background: #fff;
   font:
     13px system-ui,
     sans-serif;

@@ -30,6 +30,17 @@ export const swatchRamps = (b: { ramp: (n: string, k: number, a: RGB, z: RGB) =>
   for (const s of SWATCHES) b.ramp(`sw-${s.word}`, 1, s.rgb, s.rgb);
   b.ramp('sw-amber', 1, [255, 190, 20], [255, 190, 20]);
   b.ramp('sw-limeGreen', 1, [130, 210, 40], [130, 210, 40]);
+  // the title's three lights and their mixes
+  const lights: [string, RGB][] = [
+    ['red', [255, 40, 40]],
+    ['green', [40, 255, 40]],
+    ['blue', [50, 70, 255]],
+    ['yellow', [255, 255, 40]],
+    ['cyan', [40, 255, 255]],
+    ['magenta', [255, 50, 255]],
+    ['white', [255, 255, 255]],
+  ];
+  for (const [n, rgb] of lights) b.ramp(`lt-${n}`, 1, rgb, rgb);
 };
 
 const lower = (w: string): string => w.toLowerCase();

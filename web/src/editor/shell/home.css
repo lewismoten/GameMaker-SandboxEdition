@@ -1279,3 +1279,14 @@ a.button.with-ico {
     min-height: 44px;
   }
 }
+
+/* "One more B ... until your next certificate!": one line above the Starters tab's tiles */
+.lib-tiles > .next-certificate {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: 6px 8px;
+  border-left: 4px solid #d4a017;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}

@@ -16,7 +16,11 @@ const { pal } = buildLevels();
 const mark = pal.c('purple', 4);
 const wall = wallPicture(pal);
 /** A clear-pixel picture shown on the wall, so the reader sees what a monster looks like in place. */
-const onWall = (pic: Pixels) => new Pixels(20, 20).blit(wall, 0, 0).blit(pic, 0, 0, 255);
+const onWall = (pic: Pixels) => {
+  const p = new Pixels(pic.w, pic.h);
+  for (let y = 0; y < pic.h; y += 20) for (let x = 0; x < pic.w; x += 20) p.blit(wall, x, y);
+  return p.blit(pic, 0, 0, 255);
+};
 const figures = {
   wall: framesFigure(
     pal,
@@ -61,7 +65,7 @@ const figures = {
       { pic: haloPicture(pal, h, mark), label: `lamp.${h}: halo marked` },
       { pic: onWall(lampPicture(pal, h)), label: `lamp.${h} over a wall` },
     ]),
-    3,
+    2,
   ),
 };
 const file = new URL('../manual.json', import.meta.url);

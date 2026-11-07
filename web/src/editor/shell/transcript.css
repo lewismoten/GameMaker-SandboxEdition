@@ -119,6 +119,61 @@
 .cert figcaption button {
   min-height: 28px;
 }
+/* With the Sandbox Diploma earned: the diploma large in the middle, three honors each side (phone: diploma on top, honors in a 3 x 2 grid below). */
+.cert-grid.with-diploma {
+  grid-template-columns: 1fr 2fr 1fr;
+  align-items: start;
+}
+.cert-grid.with-diploma .cert-diploma {
+  grid-column: 2;
+  grid-row: 1 / span 3;
+}
+.cert-grid.with-diploma .cert-left {
+  grid-column: 1;
+}
+.cert-grid.with-diploma .cert-right {
+  grid-column: 3;
+}
+/* Size by the window's height so the whole diploma and the side honors are in view without scrolling (the dialog stops near 73% of the window height and its heading, name box and note take about 235px). */
+.cert-grid.with-diploma .cert-diploma .cert-canvas {
+  width: auto;
+  max-width: 100%;
+  max-height: max(200px, calc(73vh - 280px));
+  margin-inline: auto;
+}
+.cert-grid.with-diploma .cert-left .cert-canvas,
+.cert-grid.with-diploma .cert-right .cert-canvas {
+  width: auto;
+  max-width: 100%;
+  max-height: max(60px, calc((73vh - 255px) / 3 - 45px));
+  margin-inline: auto;
+}
+.cert-grid.with-diploma .cert-diploma figcaption {
+  font-size: 15px;
+}
+.cert-grid.with-diploma .cert-left figcaption,
+.cert-grid.with-diploma .cert-right figcaption {
+  font-size: 11px;
+}
+@media (max-width: 600px) {
+  .cert-grid.with-diploma {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+  .cert-grid.with-diploma .cert-canvas {
+    width: 100% !important;
+    max-height: none !important;
+  }
+  .cert-grid.with-diploma .cert-diploma {
+    grid-column: 1 / -1;
+    grid-row: 1 !important;
+  }
+  .cert-grid.with-diploma .cert-left,
+  .cert-grid.with-diploma .cert-right {
+    grid-column: auto;
+    grid-row: auto !important;
+  }
+}
 .cert.locked .cert-lock {
   display: grid;
   place-items: center;

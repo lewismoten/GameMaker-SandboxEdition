@@ -8,7 +8,7 @@ type Words = Record<string, [string, number, number]>;
 /** The signs of each room: name → [words, blocks wide, blocks high]. */
 export const SIGNS = {
   beams: {
-    start: ['THREE LAMPS, THREE BEAMS.', 4, 2],
+    start: ['GOAL: SEE HOW EACH BEAM IS MADE.', 4, 3],
     solid: ['SOLID: THE BRICKS ARE GONE.', 4, 2],
     checker: ['CHECKER: BRICKS STAY.', 4, 2],
     soft: ['THREE CHECKERS: SOFT EDGE.', 4, 2],
@@ -18,8 +18,8 @@ export const SIGNS = {
     start: ['FOG, TWO WAYS.', 4, 2],
     flat: ['SOLID FOG: NO TREES.', 4, 2],
     dither: ['CHECKER FOG: TREES STAY.', 4, 2],
-    thick: ['75, 50, 25 PERCENT.', 4, 2],
-    drift: ['A MONSTER OF HOLES.', 4, 2],
+    thick: ['FAR 75, MID 50, NEAR 25.', 4, 2],
+    drift: ['MOVING FOG IS A MONSTER.', 4, 2],
     next: ['NEXT: GLOWS.', 4, 2],
   },
   glow: {

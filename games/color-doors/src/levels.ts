@@ -18,6 +18,12 @@ import { SWATCHES, addColorBlocks, swatchBlock, swatchRamps, wallColor } from '.
 import { VIEWS } from './views';
 
 export const GROUND = 10;
+/**
+ * The first map row of anything the player must read. After a jump the view comes to rest with the grass about 76
+ * pixels from the top of the picture, so the picture then starts at map row 6.2 (viewShots.ts measures it); a board
+ * or a swatch higher up scrolls out of sight. Row 6 loses only its top 4 pixels, which is frame, not words or color.
+ */
+export const SIGN_ROW = 6;
 
 export type SignName = 'welcome' | 'door0' | 'door1' | 'door2' | 'door3' | 'door4' | 'finish' | 'same' | 'light' | 'fruit' | 'back' | `name${number}`;
 
@@ -74,9 +80,9 @@ function hall(book: Book, signs: Record<string, Sign>): Level {
   m.set(3, 8, 'doorwayTopW').set(3, 9, 'doorwayBottomW');
   for (const x of [...HALL_DOORS, HALL_FINISH]) m.set(x, 8, 'doorTopW').set(x, 9, 'doorBottomW');
   const board = (s: Sign, x: number, y: number) => s.board.forEach((row, dy) => row.forEach((name, dx) => m.set(x + dx, y + dy, name)));
-  board(signs.welcome, 5, 2);
-  HALL_DOORS.forEach((x, i) => board(signs[`door${i}`], x - 1, 5));
-  board(signs.finish, HALL_FINISH - 1, 6);
+  board(signs.welcome, 5, SIGN_ROW);
+  HALL_DOORS.forEach((x, i) => board(signs[`door${i}`], x - 1, SIGN_ROW));
+  board(signs.finish, HALL_FINISH - 1, SIGN_ROW + 1);
   return { file: 'hall', title: 'The Hall', map: m };
 }
 
@@ -111,21 +117,20 @@ function gallery(book: Book, signs: Record<string, Sign>): Level {
   for (let y = 2; y < GROUND; y++) for (let x = 12; x < 45; x++) m.set(x, y, 'wall');
   SWATCHES.forEach((s, i) => {
     const x = SWATCH_X + i * SWATCH_STRIDE - 1;
-    for (let dy = 0; dy < 2; dy++) for (let dx = 0; dx < 3; dx++) m.set(x + dx, 4 + dy, swatchBlock(s.word));
-    signs[`name${s.word}`].board[0].forEach((name, dx) => m.set(x + dx, 6, name));
+    for (let dy = 0; dy < 2; dy++) for (let dx = 0; dx < 3; dx++) m.set(x + dx, SIGN_ROW + dy, swatchBlock(s.word));
+    signs[`name${s.word}`].board[0].forEach((name, dx) => m.set(x + dx, SIGN_ROW + 2, name));
   });
   m.sign(5, onGround(signs.same), signs.same);
   // the traffic light, on its pole (the lamps are one block each: red, amber, green from the top)
-  m.set(LIGHT_X, 4, 'lampTop').set(LIGHT_X, 5, 'lampMid').set(LIGHT_X, 6, 'lampBottom');
-  for (let y = 7; y < GROUND; y++) m.set(LIGHT_X, y, 'pole');
+  m.set(LIGHT_X, SIGN_ROW, 'lampTop')
+    .set(LIGHT_X, SIGN_ROW + 1, 'lampMid')
+    .set(LIGHT_X, SIGN_ROW + 2, 'lampBottom');
+  for (let y = SIGN_ROW + 3; y < GROUND; y++) m.set(LIGHT_X, y, 'pole');
   m.sign(LIGHT_X + 2, onGround(signs.light), signs.light);
   // the table and its fruit
-  for (let i = 0; i < 5; i++) m.set(TABLE_X + i, GROUND - 3, 'tableTop');
-  m.set(TABLE_X, GROUND - 2, 'tableLeg')
-    .set(TABLE_X, GROUND - 1, 'tableLeg')
-    .set(TABLE_X + 4, GROUND - 2, 'tableLeg')
-    .set(TABLE_X + 4, GROUND - 1, 'tableLeg');
-  ['apple', 'banana', 'lime', 'grapes', 'orange'].forEach((f, i) => m.set(TABLE_X + i, GROUND - 4, f));
+  for (let i = 0; i < 5; i++) m.set(TABLE_X + i, GROUND - 2, 'tableTop');
+  m.set(TABLE_X, GROUND - 1, 'tableLeg').set(TABLE_X + 4, GROUND - 1, 'tableLeg');
+  ['apple', 'banana', 'lime', 'grapes', 'orange'].forEach((f, i) => m.set(TABLE_X + i, GROUND - 3, f));
   m.sign(TABLE_X + 6, onGround(signs.fruit), signs.fruit);
   // the garden bed
   ['rose', 'sun', 'iris', 'bluebell'].forEach((f, i) => m.set(FLOWERS_X + i, GROUND - 1, f));
@@ -143,3 +148,13 @@ export function buildLevels(): { book: Book; pal: Pal; hall: Level; gallery: Lev
 }
 
 export { VIEWS };
+
+/** Rows (map rows, first and last) that must stay on screen. */
+export const LANDMARK_ROWS = {
+  hall: [['welcome and door signs', SIGN_ROW, SIGN_ROW + 1]] as [string, number, number][],
+  gallery: [
+    ['swatches and names', SIGN_ROW, SIGN_ROW + 2],
+    ['traffic light', SIGN_ROW, SIGN_ROW + 2],
+    ['fruit', GROUND - 3, GROUND - 2],
+  ] as [string, number, number][],
+};

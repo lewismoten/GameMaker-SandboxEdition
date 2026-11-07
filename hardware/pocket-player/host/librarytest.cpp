@@ -2,7 +2,11 @@
 #include "framebuffer.h"
 #include "library.h"
 #include "picker_draw.h"
+#include "splash.h"
+#include "cardmsg.h"
 #include "gmsmall.h"
+namespace textdatum_t { constexpr int middle_center = 4, top_left = 0; }  // the names LovyanGFX has on the board (pressrect.h includes overlaydraw.h)
+#include "pressrect.h"
 #include <assert.h>
 #include <string>
 #include <vector>
@@ -50,8 +54,26 @@ int main(int argc,char**argv) {
   for(int W:{320,480}) {
     static Phys fb, fresh;fb.W=fresh.W=W;fb.H=fresh.H=W==320?240:320;
     const char* labels[]={"Starters","Sandbox","Bizarre","My games","Imported","CD"};
-    pk::clearTiles(fb,W);pk::libraryFrame(fb,W,fb.H,"Pocket Player",0,2,"Rescan");for(int i=0;i<6;i++)pk::tileLabel(fb,W,i,labels[i]);
+    pk::clearTiles(fb,W);pk::libraryFrame(fb,W,fb.H,"Pocket Player",0,2,nullptr,false);pk::drawCardChip(fb,W,pk::CARD_READY,104);const int rootIcons[]={6,9,10,11,12,13};pk::continueTile(fb,W,0,nullptr,2,false);for(int i=1;i<6;i++)pk::tileLabel(fb,W,i,labels[i-1],false,rootIcons[i-1]);
     assert(!fb.clipped);save(fb,out+"/categories-"+std::to_string(W)+".ppm");
+    {  // pressed looks: a tile, then the gear and the next-page button (each drawn over the idle page; the frame sits inside the button)
+      static Phys base;base=fb;
+      prs::Rect t=prs::tileRect(W,1);prs::drawPressed(fb,t);assert(!fb.clipped);save(fb,out+"/pressed-tile-"+std::to_string(W)+".ppm");
+      fb=base;prs::Ctx c;c.W=W;c.H=fb.H;c.next=true;prs::Rect g,n;assert(prs::under(c,W-10,10,g)&&g.x1==W&&g.y1==32);assert(prs::under(c,60,fb.H-5,n)&&n.x0==50);assert(!prs::under(c,20,fb.H-5,n));  // Previous is off on the first page
+prs::drawPressed(fb,g);prs::drawPressed(fb,n);assert(!fb.clipped);save(fb,out+"/pressed-gear-next-"+std::to_string(W)+".ppm");
+      fb=base;
+    }
+    pk::clearTiles(fb,W);pk::libraryFrame(fb,W,fb.H,"Starters",0,2,nullptr);
+    const char* stages[]={"1** First Steps","2** Moving and Pushing","3** Heroes and Foes","4** Story and Finish","5** Wiring and Worlds","6** Blocks and Showcase"};
+    for(int i=0;i<6;i++)pk::tileLabel(fb,W,i,stages[i],i==1,i+1);
+    assert(!fb.clipped);save(fb,out+"/stages-"+std::to_string(W)+".ppm");
+    pk::clearTiles(fb,W);pk::libraryFrame(fb,W,fb.H,"Pocket Player",1,2,nullptr,false);
+    const char* more[]={"Good on touch","Graduations","Other","Gameware","Shareware","Unsorted"};const int moreIcons[]={16,7,8,14,15,8};
+    for(int i=0;i<6;i++)pk::tileLabel(fb,W,i,more[i],false,moreIcons[i]);
+    assert(!fb.clipped);save(fb,out+"/more-"+std::to_string(W)+".ppm");
+    pk::tileLabel(fb,W,0,"A collection name of four lines",false,18);assert(!fb.clipped);
+    for(int i=0;i<pk::ICON_COUNT;i++){pk::tileLabel(fb,W,0,"All games",false,i);assert(!fb.clipped);}
+    {static Phys sp;sp.W=W;sp.H=fb.H;pk::drawSplash(sp,W,sp.H);assert(!sp.clipped);save(sp,out+"/splash-"+std::to_string(W)+".ppm");}
     pk::clearTiles(fb,W);pk::libraryFrame(fb,W,fb.H,"Starters / 1** First Steps",0,18,"Details");
     for(int i=0;i<6;i++) {
       auto r=pk::tile(W,i);assert(pk::hitTile(W,r.x,r.y)==i);assert(pk::hitTile(W,r.x+r.w,r.y)==-1);assert(pk::hitTile(W,r.x,r.y+r.h)==-1);
@@ -60,6 +82,16 @@ int main(int argc,char**argv) {
       pk::thumbnail(fb,W,i,raw.data(),m.dos,i==0);
     }
     assert(!fb.clipped);save(fb,out+"/thumbnails-"+std::to_string(W)+".ppm");
+    // The home page with Continue first (main.cpp CONTINUE_SLOT): the game's picture and level, then the card-out state.
+    for(int cardOut=0;cardOut<2;cardOut++) {
+      auto&m=records[2];uint32_t off,len;assert(pak.find(m.thumb,&off,&len));std::vector<uint8_t>b(len),raw(pk::THUMB_RAW);assert(readAt(f,off,b.data(),len));
+      z_stream z={};assert(inflateInit2(&z,-15)==Z_OK);z.next_in=b.data()+4;z.avail_in=len-4;z.next_out=raw.data();z.avail_out=raw.size();assert(inflate(&z,Z_FINISH)==Z_STREAM_END);inflateEnd(&z);
+      pk::clearTiles(fb,W);pk::libraryFrame(fb,W,fb.H,"Pocket Player",0,2,"Rescan");
+      pk::continueTile(fb,W,0,cardOut?nullptr:raw.data(),2,cardOut);
+      for(int i=1;i<6;i++)pk::tileLabel(fb,W,i,labels[i-1],false,rootIcons[i-1]);
+      assert(!fb.clipped);save(fb,out+(cardOut?"/continue-card-out-":"/continue-")+std::to_string(W)+".ppm");
+    }
+    pk::clearTiles(fb,W);pk::continueTile(fb,W,0,nullptr,11,false);assert(!fb.clipped);
     for(int count:{1,6,0,6}) {
       pk::clearTiles(fb,W);fresh.clear();pk::clearTiles(fresh,W);
       for(int i=0;i<count;i++){pk::tileLabel(fb,W,i,"Graduation: Blocks and Showcase");pk::tileLabel(fresh,W,i,"Graduation: Blocks and Showcase");}
@@ -67,6 +99,41 @@ int main(int argc,char**argv) {
     }
     for(int i=0;i<6;i++)pk::thumbnail(fb,W,i,nullptr,"MALFORMED-LONG-NAME",false);
     assert(!fb.clipped);
+    // Card messages: the home page with each card state, the empty-page notices, loading, and each failure card.
+    {
+      using namespace pk;
+      const int footerY=footer(W);
+      struct Fake { const char*name;CardState s;int cardGamesFound;int flash; } fakes[]={
+        {"reading",CARD_READING,37,4},{"ready",CARD_READY,123,4},{"nocard",CARD_NONE,0,4},{"unreadable",CARD_UNREADABLE,0,4},{"nofolder",CARD_NOFOLDER,0,4},
+        {"empty-reading",CARD_READING,0,0},{"empty-nocard",CARD_NONE,0,0},{"empty-unreadable",CARD_UNREADABLE,0,0},{"empty-nofolder",CARD_NOFOLDER,0,0},{"empty-ready",CARD_READY,0,0}};
+      for(auto&k:fakes) {
+        pk::clearTiles(fb,W);libraryFrame(fb,W,fb.H,"Pocket Player",0,1,nullptr,false);
+        drawCardChip(fb,W,k.s,k.cardGamesFound);
+        if(k.flash) for(int i=0;i<6;i++)tileLabel(fb,W,i,labels[i],false,rootIcons[i]);
+        else assert(drawEmptyNotice(fb,W,k.s,k.cardGamesFound)>0&&drawEmptyNotice(fb,W,k.s,k.cardGamesFound)<=footerY);
+        assert(!fb.clipped);save(fb,out+"/card-"+k.name+"-"+std::to_string(W)+".ppm");
+        // no back arrow on the root page: the top-left 32x32 is plain title bar
+        for(int y=0;y<32;y++)assert(fb.px[y*W]!=C_WHITE);  // the arrow button's outline is not there
+      }
+      // the chip text, long counts included, never reaches the Search button
+      for(CardState s:{CARD_READING,CARD_READY,CARD_NONE,CARD_UNREADABLE,CARD_NOFOLDER}){char t[32];cardChipText(s,512,t,sizeof t);assert(t[0]&&strlen(t)<26);}
+      pk::clearTiles(fb,W);libraryFrame(fb,W,fb.H,"Starters",0,2,"Details");for(int y=0;y<32;y++)assert(fb.px[y*W]==C_WHITE);  // deeper pages keep their back arrow
+      const char*title="Moving and Pushing, a rather long game title that needs an ellipsis";
+      for(int step:{0,1,2,3}){drawLoading(fb,W,fb.H,title,step,3);assert(!fb.clipped);save(fb,out+"/loading"+std::to_string(step)+"-"+std::to_string(W)+".ppm");}
+      struct Failure { const char*name;LoadFail want;bool onCard,cardThere,missing;uint32_t largest; } failures[]={
+        {"memory",FAIL_MEMORY,false,true,true,30000},{"file",FAIL_FILE,true,true,true,150000},{"card",FAIL_CARD,true,false,false,150000},{"file-flash",FAIL_FILE,false,true,false,40000}};
+      for(auto&k:failures) {
+        assert(whyFailed(k.onCard,k.cardThere,k.missing,k.largest)==k.want);
+        drawFailCard(fb,W,fb.H,title,k.want);assert(!fb.clipped);
+        auto b=failButton(W,fb.H);assert(inFailButton(W,fb.H,b.x+1,b.y+1)&&!inFailButton(W,fb.H,b.x-1,b.y)&&b.x>=0&&b.x+b.w<=W&&b.y+b.h<=fb.H&&b.h>=44);
+        save(fb,out+"/failure-"+k.name+"-"+std::to_string(W)+".ppm");
+      }
+      drawFailCard(fb,W,fb.H,"",FAIL_FILE);assert(!fb.clipped);
+      {static Phys sp;sp.W=W;sp.H=fb.H;drawSplash(sp,W,sp.H);splashLine(sp,W,sp.H,"Looking for games");assert(!sp.clipped);save(sp,out+"/splash-line-"+std::to_string(W)+".ppm");}
+    }
   }
+  // what the boot scan makes of a card: the fakes behind each message
+  assert(pk::cardStateAfterMount(false,false,false)==pk::CARD_NONE);assert(pk::cardStateAfterMount(true,false,false)==pk::CARD_UNREADABLE);
+  assert(pk::cardStateAfterMount(true,true,false)==pk::CARD_NOFOLDER);assert(pk::cardStateAfterMount(true,true,true)==pk::CARD_READING);
   fclose(f);printf("librarytest: passed; entry=%zu catalog512=%zu scratch=%d bytes\n",sizeof(pk::Entry),sizeof(pk::Catalog),pk::THUMB_RAW+288);
 }

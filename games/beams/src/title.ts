@@ -7,6 +7,7 @@ import type { Book } from '../../kit/starter/book';
 import type { Pal } from '../../kit/starter/palette';
 import { W } from '../../kit/starter/screens';
 import { backdrop, frameOf, lookOf } from '../../kit/starter/titleStyles';
+import { lampPicture } from './critters';
 import { painted } from './light';
 
 /** `hero` is Lian; `critters` holds the lanterns and the puff. A beam of dots falls on Lian; a lantern and a puff of fog float beside him. */
@@ -27,7 +28,7 @@ export function titlePicture(pal: Pal, hero: Pixels, critters: Book, name: strin
     for (let x = Math.ceil(78 - half); x <= 78 + half; x++) if (painted(Math.abs(x - 78) > half - 8 ? 25 : 50, x, y)) p.set(x, y, light);
   }
   scaleBlit(p, hero, 46, ground - 80, 2);
-  scaleBlit(p, critters.pics.get('lamp.soft')!, 190, ground - 90, 3);
+  scaleBlit(p, lampPicture(pal, 'soft', undefined, 20), 190, ground - 90, 3);
   scaleBlit(p, critters.pics.get('puff')!, 232, ground - 50, 3);
   frameOf(p, pal, 'stage');
   return p;

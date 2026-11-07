@@ -43,7 +43,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 10517,
+  "frames": 10999,
   "chapters": [
    {
     "title": "Opening",
@@ -57,33 +57,33 @@
    },
    {
     "title": "The yard, solid shadows",
-    "frame": 1661,
-    "time": 27683.333333333918
+    "frame": 2142,
+    "time": 35700.00000000053
    },
    {
     "title": "The yard, dithered shadows",
-    "frame": 3130,
-    "time": 52166.6666666648
+    "frame": 3612,
+    "time": 60199.999999996966
    },
    {
     "title": "The hop",
-    "frame": 4534,
-    "time": 75566.66666666577
+    "frame": 5016,
+    "time": 83600.00000000144
    },
    {
     "title": "The hover",
-    "frame": 6319,
-    "time": 105316.66666667443
+    "frame": 6801,
+    "time": 113350.0000000101
    },
    {
     "title": "Ending",
-    "frame": 7712,
-    "time": 128533.33333334785
+    "frame": 8194,
+    "time": 136566.66666667874
    },
    {
     "title": "Credits",
-    "frame": 9443,
-    "time": 157383.33333333328
+    "frame": 9925,
+    "time": 165416.66666666194
    }
   ]
  }

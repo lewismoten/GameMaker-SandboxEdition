@@ -1,21 +1,16 @@
-// Draws the pictures the manual's "How this level is made" pages show (Kit and a pip with each kind of shadow, the hop's six pictures,
+// Draws the pictures the manual's "How this level is made" pages show (a pip with each kind of shadow, the hop's six pictures,
 // the bee's four and its shadow's) into manual.json, in the figures marked <figure data-frames="name">, with the shadow's pixels in
 // purple so a reader can see which ones they are. Run it again whenever the art changes (it replaces what the figures hold), then format the file.
 //   cd web && npx vite-node ../games/shadows/tools/manual.ts
 import { readFileSync, writeFileSync } from 'node:fs';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { fillFigures, framesFigure } from '../../kit/starter/framesSvg';
-import { heroPicture } from '../../kit/starter/hero';
-import { buildAssets } from '../src/assets';
 import { BOB_DOWN, BOB_SHADOW, BOB_TICKS, HOP_LIFT, HOP_SAME, HOP_SHRINK, HOP_TICKS, beeBody, hopPicture, pipBody, shadePicture } from '../src/critters';
 import { buildLevels } from '../src/levels';
-import { shadowedHero, withShadow } from '../src/shadow';
+import { withShadow } from '../src/shadow';
 
 const { pal } = buildLevels();
-const assets = buildAssets(pal);
 const mark = pal.c('purple', 4);
-const hero = (book: typeof assets.plain, bottom = 'stand') => heroPicture(book, 'stand.top', bottom);
-const kit = (shade: 'solid' | 'dither', marked: boolean) => hero(shadowedHero(assets.plain, shade, pal, marked ? mark : undefined));
 const stack = (top: Pixels, bottom: Pixels) => {
   const p = new Pixels(20, 40, 255);
   p.px.set(top.px, 0);
@@ -23,17 +18,6 @@ const stack = (top: Pixels, bottom: Pixels) => {
   return p;
 };
 const figures = {
-  kit: framesFigure(
-    pal,
-    [
-      { pic: hero(assets.plain), label: 'stand, as the Starters draw them' },
-      { pic: kit('solid', false), label: 'stand in solid.cbl' },
-      { pic: kit('solid', true), label: 'the shadow pixels marked' },
-      { pic: kit('dither', false), label: 'stand in dither.cbl' },
-      { pic: kit('dither', true), label: 'the shadow pixels marked' },
-    ],
-    3,
-  ),
   pip: framesFigure(
     pal,
     [

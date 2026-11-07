@@ -1,7 +1,7 @@
 // The way through the game, as orders for the bot (kit/starter/bot.ts): the keys a person would press.
 //   the yard with solid shadows: a look at the sign, along the three grounds past a pip on each, to the door;
 //   the same yard with dithered shadows: the same walk, then the door;
-//   the hop: a pause at each of the three hoppers, one jump of Kit's own (his shadow is part of his standing and walking pictures, so it goes while he is in the air), the door;
+//   the hop: a pause at each of the three hoppers, one jump of Kit's own (his shadow is part of his standing and walking pictures, so the jump has its own pictures with none), the door;
 //   the hover: a pause under each bee, the door, which ends the game.
 // The checks fail if a door leads to the wrong scene, a scene loads the wrong pictures, or the yard's two scenes do not share one map file.
 import type { Result, StarterBot } from '../../kit/starter/bot';
@@ -26,8 +26,8 @@ export async function journey(bot: StarterBot): Promise<void> {
   await must(bot, bot.wait(LOOK), 'reading the first sign');
   // the yard, twice: past each pip, to the door
   for (const [scene, bbl, cbl, mbl] of [
-    [2, 'solid.bbl', 'solid.cbl', 'solid.mbl'],
-    [3, 'dither.bbl', 'dither.cbl', 'dither.mbl'],
+    [2, 'solid.bbl', 'hero.cbl', 'solid.mbl'],
+    [3, 'dither.bbl', 'hero.cbl', 'dither.mbl'],
   ] as const) {
     if (bot.sim.scene !== scene) throw new Error(`the bot should be in scene ${scene}, not ${bot.sim.scene}`);
     const f = files(bot);

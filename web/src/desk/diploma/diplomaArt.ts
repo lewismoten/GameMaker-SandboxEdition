@@ -14,9 +14,27 @@ const METALS: Record<Metal, [dark: string, light: string]> = {
 };
 
 /** The picture for a frame look. */
-export function diplomaSvg(look: Pick<FrameLook, 'metal' | 'ribbon'>): string {
+export function diplomaSvg(look: Pick<FrameLook, 'metal' | 'ribbon'> & { tier?: 'highest' | 'perfect' }): string {
   const [dark, light] = METALS[look.metal];
   const id = `dpl-${look.metal}`;
+  // Highest Honors: a second gold seal (bottom left) and a red ribbon banner under the title line
+  const star = (cx: number, cy: number) => {
+    const pts = Array.from({ length: 10 }, (_, i) => {
+      const r = i % 2 ? 1 : 2.1;
+      const a = -Math.PI / 2 + (i * Math.PI) / 5;
+      return `${(cx + Math.cos(a) * r).toFixed(2)},${(cy + Math.sin(a) * r).toFixed(2)}`;
+    });
+    return `<polygon points="${pts.join(' ')}" fill="#fff3b0" stroke="#9a7120" stroke-width="0.3"/>`;
+  };
+  const extra = look.tier
+    ? `<rect x="14" y="39.4" width="60" height="2.4" fill="#b3261e"/><circle cx="24" cy="64" r="4.6" fill="#d8a21c"/><circle cx="24" cy="64" r="2.4" fill="#f6eed8"/>`
+    : '';
+  // perfect 4.0: gold foil (a bright gold ring inside the frame) and a gold star on each seal
+  const foil =
+    look.tier === 'perfect'
+      ? `<rect x="2.5" y="22.5" width="83" height="59" fill="none" stroke="#ffe27a" stroke-width="1.6"/><rect x="4" y="24" width="80" height="56" fill="none" stroke="#7a5510" stroke-width="0.6"/>`
+      : '';
+  const stars = look.tier === 'perfect' ? star(64, 64) + star(24, 64) : '';
   // the frame hangs from y 20 (the wire's nail at the top), 88 x 64
   const lines = [36, 42, 48, 54]
     .map(
@@ -41,6 +59,6 @@ export function diplomaSvg(look: Pick<FrameLook, 'metal' | 'ribbon'>): string {
 ${lines}
 <path d="M61 66 L58 76 L61.5 74 L63 77 Z M67 66 L70 76 L66.5 74 L65 77 Z" fill="#8c1d17"/>
 ${petals}<circle cx="64" cy="64" r="4.6" fill="#d8443a"/><circle cx="64" cy="64" r="2.4" fill="#f2c94c"/>
-${ribbon}
+${foil}${extra}${stars}${ribbon}
 </svg>`;
 }
