@@ -1,5 +1,5 @@
 // All Mine is a predicate over one game's persisted DOS table, never a count of play events.
-import { normalize, loadCatalogList } from '../project/files';
+import { normalize, loadLeanCatalogList as loadCatalogList } from '../project/files';
 import { listProjects, loadSaveData } from '../project/storage';
 import { loadAchievements, unlockAchievement } from './store';
 

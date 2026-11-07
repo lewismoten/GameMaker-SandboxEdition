@@ -275,7 +275,7 @@ through `fetchGameFile` (`project/files.ts`), which shares each request and read
 already at hand. The build also puts in the catalog what pages would otherwise fetch files to work
 out (the quick health check, a box's captions). Lists load `games/catalog.json`
 (`loadCatalogList`), and a game's notice, manual and printables come from
-`games/details/<id>.json` when it is opened (`withDetails`; every original game's controls and player look, and a Starter's blurb, label and box art, so `catalog.json` keeps only what the home page and dos.html read at load, `pageCatalog` in `scripts/cdGames.ts`); pictures of listed games are prebuilt
+`games/details/<id>.json` when it is opened (`withDetails`; every original game's controls and player look, and a Starter's blurb, label and box art, so `catalog.json` keeps only what the home page and dos.html read at load, `pageCatalog` in `scripts/cdGames.ts`; each game's file names and sizes are in `games/catalog-files.json`, fetched when something needs them: `loadGameList` fills them in, `loadLeanGameList` leaves them out, and `withFiles` / `hydrateFiles` fill an entry in place); pictures of listed games are prebuilt
 in `games/shots/` (`gfx/levelPicture.ts`; the tiles' title screens, `gfx/titlePicture.ts`).
 `main.ts` starts one or the other and switches between them; the desk's PC can also open today's
 editors full screen on its monitor (`retro/computer.ts` `openEditor`, through the same editor

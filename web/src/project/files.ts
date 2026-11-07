@@ -34,9 +34,12 @@ export interface CatalogEntry {
   /** Registration price as its author stated it ("Freeware" for free games). */
   price?: string;
   gam: string | null;
-  files: string[];
+  /** The game's DOS files. Missing from an entry of games/catalog.json until hydrateFiles / withFiles fill it in (games/catalog-files.json). */
+  files?: string[];
   /** Size of each file in `files`, in bytes (missing from older catalogs). */
   sizes?: number[];
+  /** games/catalog.json: the game has a recorded demo (.rec) among its files, which the home page asks before `files` is loaded. */
+  rec?: boolean;
   /** Palette identities and precomputed sound groups for lazy asset pickers. */
   fileFacts?: Record<string, LibraryFileFact>;
   /** Original games made for this project: label, box art, manual, sound card. */
@@ -116,7 +119,14 @@ async function fetchJson<T>(url: string): Promise<T | undefined> {
  * an eighth of index.json): for a page that only needs the list, such as the play page.
  * The full catalog when it is loaded already, or there is no short one.
  */
-export function loadCatalogList(base = './games/'): Promise<CatalogEntry[]> {
+export async function loadCatalogList(base = './games/'): Promise<CatalogEntry[]> {
+  const list = await loadLeanCatalogList(base);
+  await hydrateFiles(list, base);
+  return list;
+}
+
+/** loadCatalogList without the file lists (`files` and `sizes` are filled in by hydrateFiles or withFiles when something needs them). */
+export function loadLeanCatalogList(base = './games/'): Promise<CatalogEntry[]> {
   const full = catalogs.get(base);
   if (full) return full;
   const key = `${base}catalog.json`;
@@ -137,6 +147,46 @@ export function loadCatalogList(base = './games/'): Promise<CatalogEntry[]> {
  */
 export function loadGameList(base = './games/'): Promise<CatalogEntry[]> {
   return import.meta.env?.DEV ? loadCatalog(base) : loadCatalogList(base);
+}
+
+/** loadGameList without the file lists: for a page that only draws the list (the home page), which asks withFiles for a game it opens. */
+export function loadLeanGameList(base = './games/'): Promise<CatalogEntry[]> {
+  return import.meta.env?.DEV ? loadCatalog(base) : loadLeanCatalogList(base);
+}
+
+type FileLists = Record<string, { files: string[]; sizes: number[] }>;
+const fileLists = new Map<string, Promise<FileLists>>();
+
+/** games/catalog-files.json, fetched once; the full catalog's lists when the page has no such file. */
+function loadFileLists(base: string): Promise<FileLists> {
+  let p = fileLists.get(base);
+  if (!p) {
+    p = fetchJson<FileLists>(`${base}catalog-files.json`)
+      .then(async (lists) => lists ?? Object.fromEntries((await loadCatalog(base)).map((e) => [e.id, { files: e.files ?? [], sizes: e.sizes ?? [] }])))
+      .catch((e) => {
+        fileLists.delete(base);
+        throw e;
+      });
+    fileLists.set(base, p);
+  }
+  return p;
+}
+
+/** Fills in `files` and `sizes` of each entry that lacks them (a lean list's), in place, so every holder of the entry sees them. */
+export async function hydrateFiles(list: { id: string; files?: string[]; sizes?: number[] }[], base = './games/'): Promise<void> {
+  if (list.every((e) => e.files)) return;
+  const lists = await loadFileLists(base);
+  for (const e of list)
+    if (!e.files) {
+      e.files = lists[e.id]?.files ?? [];
+      e.sizes = lists[e.id]?.sizes;
+    }
+}
+
+/** The entry with its `files` and `sizes` (games/catalog-files.json), filled in on the entry itself. */
+export async function withFiles<T extends { id: string; files?: string[]; sizes?: number[] }>(entry: T, base = './games/'): Promise<T & { files: string[] }> {
+  await hydrateFiles([entry], base);
+  return entry as T & { files: string[] };
 }
 
 /** An entry with its shareware notice, manual and printables (games/details/<id>.json), for one from loadCatalogList. */
@@ -398,13 +448,23 @@ async function packAtHand(entry: Pick<CatalogEntry, 'path' | 'pack'>, base: stri
   }
 }
 
+/** What fetching a game's file needs of its entry; `id` lets a lean entry (no `files` yet) look its list up. */
+type FiledEntry = Pick<CatalogEntry, 'path' | 'gz' | 'pack'> & { id?: string; files?: string[] };
+
+/** The entry's file names: its own, or (a lean entry) from games/catalog-files.json. */
+async function filesOf(entry: FiledEntry, base: string): Promise<string[]> {
+  if (entry.files) return entry.files;
+  return entry.id ? (await withFiles(entry as FiledEntry & { id: string }, `${base}games/`)).files : [];
+}
+
 /**
  * One file of a hosted game, by the name a game uses for it (A-J.BKD finds the CD's
  * a_j.bkd); undefined when the game has no such file or it could not be fetched. From the
  * ZIP-only sites always share the archive request. Legacy catalogs can fetch loose files.
  */
-export async function fetchGameFile(entry: Pick<CatalogEntry, 'path' | 'files' | 'gz' | 'pack'>, name: string, base = './'): Promise<Uint8Array | undefined> {
-  const n = [name.toLowerCase(), cdName(name)].find((x) => entry.files.includes(x));
+export async function fetchGameFile(entry: FiledEntry, name: string, base = './'): Promise<Uint8Array | undefined> {
+  const files = await filesOf(entry, base);
+  const n = [name.toLowerCase(), cdName(name)].find((x) => files.includes(x));
   if (!n) return undefined;
   if (entry.pack?.endsWith('.zip')) return fromPack(entry, n, base);
   if (await packAtHand(entry, base)) {
@@ -438,10 +498,11 @@ function trimPeekedZips(): void {
  * when the zip has no such file (a game that renames its extensions, found only after reading
  * its player) or is not a zip.
  */
-export async function peekGameFile(entry: Pick<CatalogEntry, 'path' | 'files' | 'gz' | 'pack'>, name: string, base = './'): Promise<Uint8Array | undefined> {
+export async function peekGameFile(entry: FiledEntry, name: string, base = './'): Promise<Uint8Array | undefined> {
   const url = packUrl(entry, base);
   if (!url || !/\.zip$/i.test(url) || packs.has(url)) return fetchGameFile(entry, name, base);
-  if (![name.toLowerCase(), cdName(name)].some((x) => entry.files.includes(x))) return undefined; // as fetchGameFile: not one of its files
+  const files = await filesOf(entry, base);
+  if (![name.toLowerCase(), cdName(name)].some((x) => files.includes(x))) return undefined; // as fetchGameFile: not one of its files
   let zip = peekedZips.get(url);
   if (!zip) {
     const got = (zip = fetchArchive(url).then(
@@ -470,9 +531,10 @@ export async function peekGameFile(entry: Pick<CatalogEntry, 'path' | 'files' | 
  */
 export async function loadHostedGame(entry: CatalogEntry, base = './', onProgress?: (done: number, total: number) => void): Promise<GameFiles> {
   const files = new GameFiles();
-  const total = entry.files.length;
+  const names = (await withFiles(entry, `${base}games/`)).files;
+  const total = names.length;
   let done = 0;
-  const wanted = new Set(entry.files);
+  const wanted = new Set(names);
   const h = openPack(entry, base, (name, bytes) => {
     if (!wanted.has(name) || files.has(name)) return;
     files.set(name, bytes.slice());
@@ -482,11 +544,11 @@ export async function loadHostedGame(entry: CatalogEntry, base = './', onProgres
   h?.stop();
   // ZIP-only deployments have no loose-file fallback. Report one failed archive, not many 404s.
   if (entry.pack?.endsWith('.zip')) {
-    if (!complete || entry.files.some((name) => !files.has(name))) throw new Error(`Could not load the game archive for ${entry.title}. Please try again.`);
+    if (!complete || names.some((name) => !files.has(name))) throw new Error(`Could not load the game archive for ${entry.title}. Please try again.`);
     return files;
   }
   await Promise.all(
-    entry.files
+    names
       .filter((name) => !files.has(name))
       .map(async (name) => {
         const bytes = await fetchSiteFile(`${base}${entry.path}${name}`, entry.gz);

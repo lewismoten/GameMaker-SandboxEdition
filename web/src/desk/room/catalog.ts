@@ -38,8 +38,8 @@ const DISK_PRICE = '$5 a disk';
 
 /** What the game needs for sound: Sound Blaster only if it has .voc samples or .cmf music. */
 export function soundLine(g: CatalogEntry): string {
-  const voc = g.files.some((f) => f.endsWith('.voc'));
-  const cmf = g.files.some((f) => f.endsWith('.cmf'));
+  const voc = (g.files ?? []).some((f) => f.endsWith('.voc'));
+  const cmf = (g.files ?? []).some((f) => f.endsWith('.cmf'));
   if (voc && cmf) return 'VGA · Sound Blaster sound & music optional';
   if (voc) return 'VGA · Sound Blaster sound optional';
   if (cmf) return 'VGA · Sound Blaster music optional';

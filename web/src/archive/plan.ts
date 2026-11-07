@@ -18,9 +18,9 @@ const PART_BYTES = 12_000_000;
 /** Code the home page and the desk start from, by chunk name (assets/<name>-<hash>.<ext>). */
 const FIRST_CODE = /^assets\/(main|site|ui|offline|preload-helper|tourButton|desk|designers|tinHearts|modernUi|web|dos|shared-[a-z-]+)[-.]/;
 /** Data the desk and its PC read as they start. */
-const FIRST_DATA = /^((desk|frames|opening|dos|gm)\/|games\/(catalog|index)\.json$)/;
+const FIRST_DATA = /^((desk|frames|opening|dos|gm)\/|games\/(catalog|catalog-files|index)\.json$)/;
 /** The game lists the build writes after offline.json is made: the page asks for them, so they are listed here. */
-const LISTS = ['games/catalog.json', 'games/index.json'];
+const LISTS = ['games/catalog.json', 'games/catalog-files.json', 'games/index.json'];
 /** The big packs: games, the phone's files and the 3D-print and laser kits. */
 const LAST = /^(games\/.*\.(zip|gmpak)$|phone\/|trinkets\/|laser\/)/;
 /** Never fetched: the gate lists, which name the secret games. The build leaves them out too; this is the second lock. */

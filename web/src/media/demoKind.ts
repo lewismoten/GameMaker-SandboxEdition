@@ -47,10 +47,10 @@ export function catalogDemoKind(g: CatalogEntry, base = './'): Promise<DemoKind 
     known = peekGameFile(g, g.gam, base)
       .then(async (gam): Promise<DemoKind | undefined> => {
         if (!gam) return undefined;
-        if (demoFileName(gam, g.files)) return 'recorded';
+        if (demoFileName(gam, g.files ?? [])) return 'recorded';
         const extra = extraDemoForGam(await loadExtraDemos(base), gam);
         // a game's own file lives in its archive (no loose file to fetch), so its file list answers
-        if (extra && (extra.inGame ? g.files.includes(extra.file) : await fetchExtraDemo(extra, g, base))) return 'added';
+        if (extra && (extra.inGame ? g.files?.includes(extra.file) : await fetchExtraDemo(extra, g, base))) return 'added';
         return 'attract';
       })
       .catch(() => undefined);

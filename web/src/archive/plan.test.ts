@@ -27,6 +27,7 @@ describe('fetchOrder', () => {
     expect(paths.indexOf('desk/y.png')).toBeLessThan(paths.indexOf('bbs/x.bin'));
     expect(paths.some((p) => /^(games\/.*\.zip$|phone\/)/.test(p))).toBe(false);
     expect(paths).toContain('games/catalog.json');
+    expect(paths).toContain('games/catalog-files.json');
     expect(paths).toContain('pocket/fw/a.bin');
     expect(paths).not.toContain('games/extra-1.json');
     expect(new Set(paths).size).toBe(paths.length);

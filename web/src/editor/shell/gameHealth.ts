@@ -4,7 +4,7 @@
 // graphic scripts for the badge, everything for the report) and shows the result.
 import { h } from '../core/ui';
 import type { FileSource, Issue } from '../../project/health';
-import { peekGameFile, loadHostedGame, type CatalogEntry } from '../../project/files';
+import { peekGameFile, loadHostedGame, withFiles, type CatalogEntry } from '../../project/files';
 import { loadProject } from '../../project/storage';
 import { splitInherited } from './homeOrigin';
 import { icon } from './homeIcons';
@@ -49,7 +49,8 @@ export function catalogTarget(g: CatalogEntry): HealthTarget {
   const quick = async (): Promise<Issue[]> => {
     if (g.health) return g.health; // checked when the site was built
     const { QUICK_CHECK_FILE } = await health();
-    const wanted = g.files.filter((n) => QUICK_CHECK_FILE.test(n));
+    const files = (await withFiles(g)).files; // a lean entry (the home page's) has its list fetched now
+    const wanted = files.filter((n) => QUICK_CHECK_FILE.test(n));
     const loaded = new Map<string, Uint8Array>();
     await Promise.all(
       wanted.map(async (n) => {
@@ -58,9 +59,9 @@ export function catalogTarget(g: CatalogEntry): HealthTarget {
       }),
     );
     const src: FileSource = {
-      names: () => [...g.files].sort(),
+      names: () => [...files].sort(),
       get: (n) => loaded.get(n),
-      byteSize: (n) => (g.sizes ? g.sizes[g.files.indexOf(n)] : undefined),
+      byteSize: (n) => (g.sizes ? g.sizes[files.indexOf(n)] : undefined),
     };
     return (await health()).checkGame(src, g.gam ?? undefined);
   };
@@ -71,7 +72,7 @@ export function catalogTarget(g: CatalogEntry): HealthTarget {
     deep: async () => {
       const files = await loadHostedGame(g);
       // Listed files that did not load are reported as unreadable.
-      const src: FileSource = { names: () => [...g.files].sort(), get: (n) => files.get(n) };
+      const src: FileSource = { names: () => [...(g.files ?? [])].sort(), get: (n) => files.get(n) };
       return (await health()).checkGame(src, g.gam ?? undefined, { deep: true });
     },
   };

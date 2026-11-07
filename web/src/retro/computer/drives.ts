@@ -154,7 +154,7 @@ export abstract class ComputerDrives {
       folder(
         g.id,
         async () => {
-          const nodes = g.files.map((f) => file(f, 0, { date, read: async () => (await this.catalogFiles(g)).get(f) ?? new Uint8Array() }));
+          const nodes = (g.files ?? []).map((f) => file(f, 0, { date, read: async () => (await this.catalogFiles(g)).get(f) ?? new Uint8Array() }));
           // Sizes come from the files themselves, loaded when the folder is opened.
           const files = await this.catalogFiles(g);
           for (const n of nodes) n.size = files.get(n.name.toLowerCase())?.length ?? 0;

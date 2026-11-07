@@ -7,7 +7,7 @@ import { sandboxMarkEl } from './sandboxMark';
 import { h } from '../../editor/core/ui';
 import { parseCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { scanName } from '@lewismoten/gamemaker-sandbox-engine/input/scancodes';
-import { peekGameFile, type CatalogEntry } from '../../project/files';
+import { peekGameFile, withFiles, type CatalogEntry } from '../../project/files';
 import { storageLine } from '../../project/diskFacts';
 import { shotCache, sheet, fictionalNote, sandboxLogo, sandboxBanner, splitTitle, html, BBS_PHONE, mapPicture, type PrintContext, type Sheet } from './kit';
 import { fnv1a } from '../../seededRandom';
@@ -44,7 +44,7 @@ function price(g: CatalogEntry): string {
 
 /** The keys bound in the game's .CHR files, as PLAYGAME names them, with the moves they run. */
 async function boundKeys(entry: CatalogEntry): Promise<BoundKey[]> {
-  const names = entry.files.filter((f) => f.endsWith('.chr'));
+  const names = (await withFiles(entry)).files.filter((f) => f.endsWith('.chr'));
   const keys: BoundKey[] = [];
   for (const n of names) {
     const bytes = await peekGameFile(entry, n);
