@@ -6,7 +6,7 @@
   "hero": "MIA",
   "year": 1994,
   "price": "Free",
-  "version": "1.2",
+  "version": "1.3",
   "blurb": "A dark cave with no lights at all, because Game-Maker has none. Light is only paint: a block drawn in five brightnesses, laid in rings round a lamp. Level 1 has three lamps that stay where they are. Level 2 is a tunnel where every dark block turns lit when Mia touches it, so they leave light behind them. Level 3 is a hall that starts dark, and a clock lights every block of it in one tick. Signs say how. Play it, then open it in Game-Maker and light a cave of your own.",
   "exe": "LIGHTOUT.EXE",
   "dosName": "LIGHTOUT",

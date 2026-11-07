@@ -19,6 +19,7 @@ import { icon } from '../editor/shell/homeIcons';
 import { heartHook } from '../tinHearts/tinHearts';
 import { scoreHook } from '../scoreTrophies/hook';
 import { piggyBankHook } from '../fortKnox/hook';
+import { snapshotButton } from './snapshot';
 
 interface PlayerOptions extends RunOptions {
   /** Shown on the start overlay. */
@@ -39,6 +40,8 @@ interface PlayerOptions extends RunOptions {
   autoStart?: boolean;
   /** Leave out the ⌨ Keys button (the 1994 desk's monitor has no such thing). */
   noKeysButton?: boolean;
+  /** Full-window play page: enable PNG snapshots named with this game identity. */
+  snapshotId?: string;
   /** Draw at exactly the device size shown so every pixel is the same size (player/exactScale.ts). */
   exactPixels?: boolean;
   /** Where the sound goes (a demo preview passes a quieter engine; media/demoPreview.ts). */
@@ -167,6 +170,7 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
     const corner = document.createElement('div');
     corner.className = 'gm-corner';
     corner.append(keys);
+    if (opts.snapshotId) snapshotButton(corner, machine.screen, opts.snapshotId, canvas);
     container.append(corner);
     speedPick(corner, speed, canvas);
     unkeys = screenKeys(container, corner, canvas);

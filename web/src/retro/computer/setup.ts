@@ -19,6 +19,9 @@ export type MonitorMode = 'off' | 'text' | 'game' | 'gfx' | 'vga';
 export interface ComputerOptions {
   /** The turbo switch: the host sets slowPc (engine/slowPc.ts TURBO_OFF) and the PC reads it as it runs. */
   speed: SpeedSetting;
+  /** Hosts with independent CPU/disk costs supply the physical TURBO switch and CPU label. */
+  turbo?: () => boolean;
+  cpuName?: () => string;
   /** The monitor shows something else: 'gfx' (today's editors) wants the whole window. */
   onModeChange?: (mode: MonitorMode) => void;
   /** The disks changed (a download, a new game); `insert` names one to put in drive A:. */
