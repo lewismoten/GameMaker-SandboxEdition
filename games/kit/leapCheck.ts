@@ -21,13 +21,19 @@ interface Lock {
   y: number;
 }
 
+/** True when something solid stands in the column above (y, x): a gate in a wall. A lock in the floor (a hatch the hero walks over) has open sky above and is skipped. */
+function wallAbove(sim: GameSim, x: number, y: number): boolean {
+  for (let r = y - 1; r >= 0; r--) if (sim.solidAt(x, r)) return true;
+  return false;
+}
+
 /** The scene's lock blocks, as the engine shows them now. */
 function locksIn(sim: GameSim): Lock[] {
   const out: Lock[] = [];
   for (let y = 0; y < MLEN; y++)
     for (let x = 0; x < MLEN; x++) {
       const b = sim.shown(x, y);
-      if (b.solid && b.effect >= 20 && b.effect <= 29 && b.eamt < 0 && b.eamt > -100) out.push({ x, y });
+      if (b.solid && b.effect >= 20 && b.effect <= 29 && b.eamt < 0 && b.eamt > -100 && wallAbove(sim, x, y)) out.push({ x, y });
     }
   return out;
 }
