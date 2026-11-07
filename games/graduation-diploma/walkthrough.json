@@ -27,7 +27,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 9246,
+  "frames": 9255,
   "chapters": [
    {
     "title": "Opening",
@@ -36,28 +36,28 @@
    },
    {
     "title": "Story",
-    "frame": 913,
-    "time": 15216.666666666471
+    "frame": 922,
+    "time": 15366.666666666466
    },
    {
     "title": "The Long Walk",
-    "frame": 1661,
-    "time": 27683.333333333918
+    "frame": 1670,
+    "time": 27833.33333333393
    },
    {
     "title": "The Long Aisle",
-    "frame": 4576,
-    "time": 76266.66666666597
+    "frame": 4585,
+    "time": 76416.66666666602
    },
    {
     "title": "Ending",
-    "frame": 6444,
-    "time": 107400.00000000837
+    "frame": 6453,
+    "time": 107550.00000000841
    },
    {
     "title": "Credits",
-    "frame": 8172,
-    "time": 136200.00000001228
+    "frame": 8181,
+    "time": 136350.0000000122
    }
   ]
  }

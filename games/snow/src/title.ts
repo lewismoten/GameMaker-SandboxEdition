@@ -18,6 +18,6 @@ export function snowTitle(pal: Pal, book: Book, hero: Pixels, door: Pixels): Pix
   scaleBlit(p, door, 244, 90, 2);
   outlined(p, (320 - textWidth('SNOW TRAILS', 3)) / 2, 17, 'SNOW TRAILS', pal.c('white', 3), pal.c('ink', 0), 3, pal.c('sky', 0));
   centered(p, 54, 'A STARTER GAME', pal.c('gold', 4));
-  centered(p, 73, 'FALLING SNOW, DRIFTS, FOOTPRINTS', pal.c('white', 3));
+  centered(p, 73, 'FLAKES, DRIFTS, FADING PRINTS', pal.c('white', 3));
   return p;
 }
