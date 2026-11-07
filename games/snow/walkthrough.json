@@ -1,77 +1,77 @@
 {
- "version": 1,
- "game": "snow",
- "rand": {
-  "seed": 1,
-  "per": "scene"
- },
- "segments": [
-  {
-   "scene": 2,
-   "keys": "AU0UzSdNLc0DOQK5AE0UzQRND80fSyPLH00="
+  "version": 1,
+  "game": "snow",
+  "rand": {
+    "seed": 1,
+    "per": "scene"
   },
-  {
-   "scene": 3,
-   "keys": "AU0ZzTlNPM0DSxnLIU0="
-  },
-  {
-   "scene": 4,
-   "keys": "KU0ozQtIGcgLSw/LC1At0ClNVc0LSBTIhwFN"
-  }
- ],
- "chapters": [
-  {
-   "scene": 2,
-   "title": "Level 1: A Snowy Walk"
-  },
-  {
-   "scene": 3,
-   "title": "Level 2: Snow Piles Up"
-  },
-  {
-   "scene": 4,
-   "title": "Level 3: Open Snow"
-  }
- ],
- "timeline": {
-  "fps": 60,
-  "frames": 10334,
+  "segments": [
+    {
+      "scene": 2,
+      "keys": "AU0UzSdNLc0DOQK5AE0UzQRND80fSyPLH00="
+    },
+    {
+      "scene": 3,
+      "keys": "AU0ZzTlNPM0DSxnLIU0="
+    },
+    {
+      "scene": 4,
+      "keys": "KU0ozQtIGcgLSw/LC1At0ClNVc0LSBTIhwFN"
+    }
+  ],
   "chapters": [
-   {
-    "title": "Opening",
-    "frame": 0,
-    "time": 0
-   },
-   {
-    "title": "Story",
-    "frame": 913,
-    "time": 15216.666666666471
-   },
-   {
-    "title": "Level 1: A Snowy Walk",
-    "frame": 2142,
-    "time": 35700.00000000053
-   },
-   {
-    "title": "Level 2: Snow Piles Up",
-    "frame": 3434,
-    "time": 57233.33333333073
-   },
-   {
-    "title": "Level 3: Open Snow",
-    "frame": 4604,
-    "time": 76733.33333333278
-   },
-   {
-    "title": "Ending",
-    "frame": 6570,
-    "time": 109500.00000000898
-   },
-   {
-    "title": "Credits",
-    "frame": 8779,
-    "time": 146316.66666667306
-   }
-  ]
- }
+    {
+      "scene": 2,
+      "title": "Level 1: A Snowy Walk"
+    },
+    {
+      "scene": 3,
+      "title": "Level 2: Snow Piles Up"
+    },
+    {
+      "scene": 4,
+      "title": "Level 3: Open Snow"
+    }
+  ],
+  "timeline": {
+    "fps": 60,
+    "frames": 10334,
+    "chapters": [
+      {
+        "title": "Opening",
+        "frame": 0,
+        "time": 0
+      },
+      {
+        "title": "Story",
+        "frame": 913,
+        "time": 15216.666666666471
+      },
+      {
+        "title": "Level 1: A Snowy Walk",
+        "frame": 2142,
+        "time": 35700.00000000053
+      },
+      {
+        "title": "Level 2: Snow Piles Up",
+        "frame": 3434,
+        "time": 57233.33333333073
+      },
+      {
+        "title": "Level 3: Open Snow",
+        "frame": 4604,
+        "time": 76733.33333333278
+      },
+      {
+        "title": "Ending",
+        "frame": 6570,
+        "time": 109500.00000000898
+      },
+      {
+        "title": "Credits",
+        "frame": 8779,
+        "time": 146316.66666667306
+      }
+    ]
+  }
 }

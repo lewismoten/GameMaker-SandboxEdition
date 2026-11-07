@@ -33,25 +33,11 @@
       "Short signs and editable lessons"
     ],
     "shots": [
-      [
-        "one.map",
-        18,
-        15
-      ],
-      [
-        "two.map",
-        18,
-        15
-      ],
-      [
-        "three.map",
-        16,
-        15
-      ]
+      ["one.map", 18, 15],
+      ["two.map", 18, 15],
+      ["three.map", 16, 15]
     ],
     "rating": "Everyone"
   },
-  "acceptedFindings": [
-    "facing s3 The hero climbs side on"
-  ]
+  "acceptedFindings": ["facing s3 The hero climbs side on"]
 }
