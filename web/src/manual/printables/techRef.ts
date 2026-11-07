@@ -78,10 +78,38 @@ async function techRefPages(): Promise<BookPage[]> {
   document.body.append(host);
   try {
     const next = measurer(host);
-    const pages: BookPage[] = [{ kind: 'cover', body: [techRefCover()] }];
-    for (const c of techRefChapters(markdown))
-      for (const body of paginate([h('h2', null, c.head), ...c.blocks.map(elementWith(numberedDiagrams(markdown)))], next))
-        pages.push({ kind: 'text', head: ['GAME-MAKER 3.0', TECHREF_TITLE], body });
+    const chapters: BookPage[] = [];
+    const starts: { title: string; page: number }[] = [];
+    const diagrams = numberedDiagrams(markdown);
+    for (const c of techRefChapters(markdown)) {
+      starts.push({ title: c.head, page: chapters.length + 1 });
+      for (const body of paginate([h('h2', null, c.head), ...c.blocks.map(elementWith(diagrams))], next))
+        chapters.push({ kind: 'text', head: ['GAME-MAKER 3.0', TECHREF_TITLE], body });
+    }
+    // Fixed column widths keep pagination independent of the number of digits in a folio.
+    const contents = (offset: number) =>
+      paginate(
+        [
+          h('h2', null, 'Contents'),
+          h(
+            'table',
+            { style: 'table-layout:fixed;width:100%;font-size:.85em' },
+            h('thead', null, h('tr', null, h('th', { scope: 'col', style: 'width:88%' }, 'Chapter'), h('th', { scope: 'col', style: 'width:12%' }, 'Page'))),
+            h(
+              'tbody',
+              null,
+              ...starts.map((c) => h('tr', null, h('td', null, c.title), h('td', { style: 'text-align:right;white-space:nowrap' }, String(c.page + offset)))),
+            ),
+          ),
+        ],
+        next,
+      );
+    const count = contents(0).length;
+    const pages: BookPage[] = [
+      { kind: 'cover', body: [techRefCover()] },
+      ...contents(count).map((body): BookPage => ({ kind: 'text', head: ['GAME-MAKER 3.0', 'Contents'], body })),
+      ...chapters,
+    ];
     const pads = bookletPageCount(pages.length + 1) - pages.length - 1;
     for (let i = 0; i < pads; i++)
       pages.push({ kind: 'notes', head: ['GAME-MAKER 3.0', 'Notes'], body: [h('h2', null, 'Notes'), h('div', { class: 'mp-ruled' })] });

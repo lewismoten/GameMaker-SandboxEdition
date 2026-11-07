@@ -144,3 +144,10 @@ appends start, wait, duration, exit code, cwd and command to `log.tsv` there. En
 `hooks.PreToolUse`. `noMainCheckoutMerge.mjs` blocks `git merge`, `git pull` and `git rebase` in the main
 checkout while something listens on 5173. `noSymlinkedDiskBuild.mjs` blocks game builds while any
 `games/*/disk` is a symlink. `commitTrailer.mjs` blocks `git commit -m` with no `Co-Authored-By: Claude` line.
+
+Development refreshes (`dev-games.mjs`) use the shared heavy-job slots too. The console
+shows each public game as it starts, the remaining public queue, completions and the final
+ready message; stdout also stays in `node_modules/.cache/games-dev.log`. Admission waits
+and errors stay visible in the console. `web/test/devGames.test.mjs` checks both
+fresh and existing disks; `web/test/buildGames.test.mjs` checks progress before completion. The development page labels generated disk,
+walk-path and printable updates as rebuilt game files, with source updates labeled separately.
