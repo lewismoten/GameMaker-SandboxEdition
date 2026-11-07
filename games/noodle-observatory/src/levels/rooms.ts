@@ -29,7 +29,7 @@ interface RoomSpec {
   plan: Step[];
   decor: Decor;
   tilt?: boolean;
-  /** Which colander run (monsters.ts COLANDER_RUNS) rolls along the rail at row 2. */
+  /** Which colander run (monsters.ts COLANDER_RUNS) rolls along the rail (row 4) at row 3. */
   colander?: number;
 }
 
@@ -64,7 +64,7 @@ export function buildRoom(pal: Pal, r: RoomSpec): Level {
   const { book, timed } = startBook(pal, r.place, { parts, pads, tilt: r.tilt });
   const signs = addSigns(book, pal, r.signs);
   const map = paintRoom(book, r.width, r.plan, r.decor, r.place === 'roof', signs);
-  if (r.colander !== undefined) map.mon(ROOF.colander[r.colander], COLANDER_FROM, 2);
+  if (r.colander !== undefined) map.mon(ROOF.colander[r.colander], COLANDER_FROM, 3);
   return { file: r.file, title: r.title, hint: r.hint, look: r.look, map, book, timed, mon: r.mon ?? 'kitchen', song: r.song, hero: 'nell', plan: r.plan };
 }
 
@@ -359,7 +359,7 @@ export const ROOMS: Record<string, RoomSpec> = {
       { t: 'gate', x: 47, part: rattle },
       { t: 'gate', x: 49, part: rattle },
     ],
-    decor: { rails: [[3, 4, 54]], moon: [30, 0] },
+    decor: { rails: [[4, 4, 54]], moon: [26, 3] },
   },
   garden: {
     file: 'garden',
@@ -390,7 +390,7 @@ export const ROOMS: Record<string, RoomSpec> = {
       { t: 'gate', x: 49, part: rattle },
       { t: 'gate', x: 51, part: rattle },
     ],
-    decor: { rails: [[3, 4, 54]], moon: [20, 0] },
+    decor: { rails: [[4, 4, 54]], moon: [24, 3] },
   },
   roofrim: {
     file: 'roofrim',
@@ -420,7 +420,7 @@ export const ROOMS: Record<string, RoomSpec> = {
       { t: 'gate', x: 48, part: rattle },
       { t: 'sign', x: 49, key: 'cart' },
     ],
-    decor: { rails: [[3, 4, 54]], moon: [12, 0] },
+    decor: { rails: [[4, 4, 54]], moon: [29, 3] },
   },
   setwest: {
     file: 'setwest',
@@ -448,7 +448,7 @@ export const ROOMS: Record<string, RoomSpec> = {
       { t: 'gate', x: 41, part: plate },
       { t: 'sign', x: 43, key: 'view' },
     ],
-    decor: { moon: [34, 0] },
+    decor: { moon: [31, 3] },
   },
   seteast: {
     file: 'seteast',
@@ -474,7 +474,7 @@ export const ROOMS: Record<string, RoomSpec> = {
       { t: 'gate', x: 43, part: cup },
       { t: 'sign', x: 44, key: 'sill' },
     ],
-    decor: { moon: [40, 0] },
+    decor: { moon: [40, 3] },
   },
   moonmeal: {
     file: 'moonmeal',
@@ -500,6 +500,6 @@ export const ROOMS: Record<string, RoomSpec> = {
       { t: 'gate', x: 38, part: mat },
       { t: 'sign', x: 40, key: 'spot' },
     ],
-    decor: { moon: [44, 0] },
+    decor: { moon: [44, 3] },
   },
 };

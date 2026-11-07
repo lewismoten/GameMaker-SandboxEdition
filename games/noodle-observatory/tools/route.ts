@@ -180,11 +180,12 @@ async function bakery(bot: StarterBot): Promise<void> {
   const A = BAKERY_AT;
   await readAt(bot, A.signs.set + 1, 'the supper sign');
   await readAt(bot, A.signs.look + 1, 'the one-more-look sign');
-  await must(bot, bot.walk(A.table[0] + 2, 'the table'), 'to the table');
+  await must(bot, bot.walk(A.table[1], 'the end of the table'), 'to the table');
   if (since(bot, t0) > BAKERY.reveal) throw new Error('the window lit before Nell looked');
   await watchFor(bot, () => since(bot, t0) > BAKERY.reveal + 60, 'the window lighting up', 600);
   await readAt(bot, A.signs.sill + 1, 'the sill sign');
   await readAt(bot, A.signs.bakery + 1, 'the bakery sign');
+  await must(bot, bot.walk(A.table[1] + 2, 'back by the table'), 'back to the table');
   if (since(bot, t0) > SUPPER.ring) throw new Error('the ring came before Nell turned round');
   await watchFor(bot, () => since(bot, t0) > CLOTH_GONE + 40, 'the ring rolling off with the cloth', 900);
   await watchFor(bot, () => since(bot, t0) > SUPPER.open, 'the way on opening', 900);

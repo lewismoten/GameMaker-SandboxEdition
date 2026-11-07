@@ -131,7 +131,7 @@ export const LENSROLL = {
   roll: 10,
   /** The ring waits, then rolls up the wall `rise` blocks to frame the moon. */
   ring: 760,
-  rise: 6,
+  rise: 5,
   /** The way on opens. */
   open: 1020,
 } as const;

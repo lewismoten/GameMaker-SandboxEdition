@@ -37,7 +37,7 @@ function shutUntil(pal: Pal, book: Place['book'], timed: Timed[], ticks: number)
 const signs = (keys: [string, number][]): Step[] => keys.map(([key, x]) => ({ t: 'sign', x, key }));
 
 /** Where things are in the first scene (columns and rows). */
-export const LENSROLL_AT = { width: 44, desk: [9, 22], toy: 10, lens: 11, scope: 22, deskTop: 6, window: [29, 2], ring: [30, 8], door: 40, signs: { monkey: 4, rolled: 24, ring: 31, closer: 35 } } as const;
+export const LENSROLL_AT = { width: 44, desk: [9, 22], toy: 10, lens: 11, scope: 22, deskTop: 6, window: [29, 4], ring: [30, 9], door: 40, signs: { monkey: 4, rolled: 24, ring: 31, closer: 35 } } as const;
 
 export function levelLensroll(pal: Pal): Level {
   const A = LENSROLL_AT;
@@ -94,11 +94,11 @@ export function levelLensroll(pal: Pal): Level {
 /** The loft scene's clock: each shape of stars lights up, then the way on opens. */
 export const STARVIEW = { spoon: 240, fork: 440, col: 640, open: 840 } as const;
 export const STARVIEW_AT = {
-  width: 46,
-  shapes: { spoon: [13, 1, 2, 4], fork: [22, 1, 2, 4], col: [32, 1, 3, 3] } as Record<'spoon' | 'fork' | 'col', [number, number, number, number]>,
+  width: 50,
+  shapes: { spoon: [13, 4, 2, 4], fork: [22, 4, 2, 4], col: [32, 4, 3, 3] } as Record<'spoon' | 'fork' | 'col', [number, number, number, number]>,
   shafts: { spoon: 11, fork: 20, col: 30 },
-  door: 42,
-  signs: { set: 3, spoon: 15, fork: 24, col: 32, drawer: 37 },
+  door: 46,
+  signs: { set: 3, spoon: 16, fork: 25, col: 36, drawer: 41 },
 } as const;
 
 /** A shape drawn in stars on the dark: points of light and a faint dotted line between them. */
@@ -190,10 +190,10 @@ export const BAKERY = { reveal: 360 } as const;
 export const BAKERY_AT = {
   width: 46,
   table: [16, 21],
-  moon: [31, 1],
+  moon: [26, 4],
   ring: 21 - SUPPER.toTable,
   door: 42,
-  signs: { set: 3, look: 8, sill: 23, bakery: 29 },
+  signs: { set: 3, look: 8, sill: 23, bakery: 30 },
 } as const;
 
 /** The glow around the window once its light is up: dim bricks, brighter near the window, dithered into the night. */
