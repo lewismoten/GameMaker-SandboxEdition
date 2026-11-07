@@ -202,7 +202,7 @@
   }
 }
 
-/* phones: at the end of the desk top beside the Game-Maker box; the card sits at the foot of the window */
+/* phones: at the end of the desk top beside the Game-Maker box; the card sits at the top of the window, clear of the achievement notes at the foot */
 @media (max-width: 960px) {
   .desk-buddy {
     margin-left: auto;
@@ -223,7 +223,7 @@
   .desk-buddy-card {
     position: fixed;
     right: 16px;
-    bottom: 16px;
+    top: 16px;
     left: 16px;
     z-index: 50;
     width: auto;
