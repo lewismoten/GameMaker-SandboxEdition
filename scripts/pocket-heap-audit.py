@@ -132,7 +132,7 @@ def main():
     # Preserve the requested command's absence/failure; do not invent an npm alias.
     cyd_code, _ = run(['npm', 'run', 'check:cyd'], 'check-cyd')
     env = dict(platform=platform.platform(), python=platform.python_version(),
-               base_commit=subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip(),
+               checkout_commit=subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip(),
                node=subprocess.check_output(['node', '--version'], text=True).strip(),
                cxx=subprocess.check_output(['c++', '--version'], text=True).splitlines()[0],
                npm=subprocess.check_output(['npm', '--version'], text=True).strip())
