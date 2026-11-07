@@ -27,7 +27,8 @@ vi.mock('../tinHearts/tinHearts', () => ({ huntStates: async () => [] }));
 vi.mock('../eggs/eggState', () => ({ eggStates: async () => [] }));
 import { playSaves } from './playSaves';
 import { achievementsWritten, forgetForTests, loadAchievements, resetAchievements, FILE, SAVE_ID } from './store';
-import { scanHighScores, wholeTable } from './highScores';
+import { scanHighScores } from './highScores';
+import { wholeTable } from './highScoreTable';
 import { achievements as backupAchievements } from '../backup/sections/achievements';
 import { emptyWorld } from '../backup/world';
 
