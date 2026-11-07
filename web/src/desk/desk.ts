@@ -367,6 +367,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   prefetchWhenIdle([
     pc.pcCode, // so switching it on is instant
     pc.captureCode,
+    pc.machineCode, // the Machine settings dialog
     () => fetch('./gm/index.json'), // C:\GM's listing, so GM starts offline too
   ]);
   void loadGameList().then((cat) => shelf.fill(cat.filter(hasRetailBox)));

@@ -38,8 +38,12 @@ export function deskPc(scene: Scene, hooks: PcHooks) {
   }
   let machine = loadMachine();
   const speed: SpeedSetting = { slowPc: machineCosts(machine, turbo) };
+  // the dialog's code: fetched when the desk is idle and when the pointer or focus comes to the lights
+  const machineCode = () => import('./pc/machineDialog');
+  machineBtn.addEventListener('pointerenter', () => void machineCode(), { once: true });
+  machineBtn.addEventListener('focus', () => void machineCode(), { once: true });
   machineBtn.addEventListener('click', () => {
-    void import('./pc/machineDialog').then(({ openMachineDialog }) =>
+    void machineCode().then(({ openMachineDialog }) =>
       openMachineDialog(
         machine,
         (value) => {
@@ -264,6 +268,7 @@ export function deskPc(scene: Scene, hooks: PcHooks) {
     /** What to fetch ahead while the desk is idle. */
     pcCode,
     captureCode,
+    machineCode,
     /** The desk is left: the PC goes with it. */
     dispose(): void {
       removeWarp();
