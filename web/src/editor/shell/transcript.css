@@ -134,6 +134,20 @@
 .cert-grid.with-diploma .cert-right {
   grid-column: 3;
 }
+/* Size by the window's height so the whole diploma and the side honors are in view without scrolling (the dialog stops near 73% of the window height and its heading, name box and note take about 235px). */
+.cert-grid.with-diploma .cert-diploma .cert-canvas {
+  width: auto;
+  max-width: 100%;
+  max-height: max(200px, calc(73vh - 280px));
+  margin-inline: auto;
+}
+.cert-grid.with-diploma .cert-left .cert-canvas,
+.cert-grid.with-diploma .cert-right .cert-canvas {
+  width: auto;
+  max-width: 100%;
+  max-height: max(60px, calc((73vh - 255px) / 3 - 45px));
+  margin-inline: auto;
+}
 .cert-grid.with-diploma .cert-diploma figcaption {
   font-size: 15px;
 }
@@ -145,6 +159,10 @@
   .cert-grid.with-diploma {
     grid-template-columns: repeat(3, 1fr);
     gap: 6px;
+  }
+  .cert-grid.with-diploma .cert-canvas {
+    width: 100% !important;
+    max-height: none !important;
   }
   .cert-grid.with-diploma .cert-diploma {
     grid-column: 1 / -1;

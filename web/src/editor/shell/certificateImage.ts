@@ -190,12 +190,12 @@ export function drawCertificate(canvas: HTMLCanvasElement, c: Ceremony, name: st
     ctx.fillText(row, CERT_W / 2, sy);
     sy += 34;
   }
-  const ry = CERT_H - 150;
+  const ry = CERT_H - (tier ? 185 : 150);
   const mark = c === DIPLOMA ? '★' : String(CEREMONIES.indexOf(c) + 1);
   const gold = tier === 'perfect' && c === DIPLOMA;
   if (t.banner) {
-    drawSeal(ctx, CERT_W / 2 - 54, ry, color, mark, gold);
-    drawSeal(ctx, CERT_W / 2 + 54, ry, color, mark, gold);
+    drawSeal(ctx, CERT_W / 2 - 50, ry, color, mark, gold);
+    drawSeal(ctx, CERT_W / 2 + 50, ry, color, mark, gold);
   } else drawSeal(ctx, CERT_W / 2, ry, color, mark, false);
   ctx.fillStyle = '#3a2f1d';
   ctx.font = '22px Georgia, serif';
