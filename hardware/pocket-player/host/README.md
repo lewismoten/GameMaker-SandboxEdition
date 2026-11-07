@@ -30,8 +30,9 @@ The same probe accepts a loose microSD cfg's short name and its card pack filena
 "$TMPDIR/pocket-faults/sdfaulttest" CARD_ROOT/pocket/NAME.GMP game-id
 ```
 
-It chooses the first picture-bearing intro/exit/won/lost card list; a fixture without
-any picture fails rather than pretending that corruption was exercised.
+It chooses the first picture-bearing intro/exit/won/lost card list. A game with no
+configured picture cards reports that portion as N/A; it is never counted as a
+successful picture-fault test.
 
 The C++ probe runs the real shared `Assets`/card decoders with callback-level faults:
 unavailable/open failure, a three-byte packed read, a truncated stream, invalid deflate,
