@@ -87,18 +87,21 @@ async function techRefPages(): Promise<BookPage[]> {
         chapters.push({ kind: 'text', head: ['GAME-MAKER 3.0', TECHREF_TITLE], body });
     }
     // Fixed column widths keep pagination independent of the number of digits in a folio.
+    const cell = 'padding:.12em .3em;border-bottom:1px dotted currentColor';
     const contents = (offset: number) =>
       paginate(
         [
           h('h2', null, 'Contents'),
           h(
             'table',
-            { style: 'table-layout:fixed;width:100%;font-size:.85em' },
+            { style: 'table-layout:fixed;width:100%;font-size:.78em;line-height:1.15' },
             h('thead', null, h('tr', null, h('th', { scope: 'col', style: 'width:88%' }, 'Chapter'), h('th', { scope: 'col', style: 'width:12%' }, 'Page'))),
             h(
               'tbody',
               null,
-              ...starts.map((c) => h('tr', null, h('td', null, c.title), h('td', { style: 'text-align:right;white-space:nowrap' }, String(c.page + offset)))),
+              ...starts.map((c) =>
+                h('tr', null, h('td', { style: cell }, c.title), h('td', { style: `${cell};text-align:right;white-space:nowrap` }, String(c.page + offset))),
+              ),
             ),
           ),
         ],
