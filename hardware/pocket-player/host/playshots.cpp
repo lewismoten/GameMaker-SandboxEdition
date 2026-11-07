@@ -3,7 +3,8 @@
 // MENU and KEYS chips on top, and the pause menu. Cells: both hands, the three pad sizes, Smaller picture off and on.
 //   playshots <data dir> <out dir> [game id ...]      build with -lz; add -DPOCKET_CYD28 for the 320 x 240 board
 // Writes <out>/play-<w>-<id>-<smaller|full>.png (a montage: right hand pad 0, 1, 2 over left hand pad 0, 1, 2) and
-// <out>/pause-<w>-<id>.png and <out>/help-<w>-<id>.png (How to play), and prints "SHOT <name> <hash>" per cell for web/scripts/pocketControlsCheck.ts to compare.
+// <out>/pause-<w>-<id>.png and <out>/help-<w>-<id>.png (How to play), <out>/float-<w>-<id>.png (the floating pad: a clear picture,
+// a thumb held and sliding right (faint), just lifted (dim); right hand over left hand), and prints "SHOT <name> <hash>" per cell for web/scripts/pocketControlsCheck.ts to compare.
 // Text is the 6 x 8 bitmap font (softgfx.h's glyphs, scaled), so words differ a little from the board's font.
 #include <algorithm>
 #include <stdio.h>
@@ -146,15 +147,25 @@ static uint32_t hashOf(const Canvas& c) {
 constexpr int VIEW_W = scr::W, VIEW_H = scr::VIEW_H;
 
 // The play screen as drawFrame(true) draws it: the game's rows through the picture, the overlay on top.
-static Canvas playScreen(World& w, const ctl::Need& need, const ctl::Settings& st, bool smaller, bool pause) {
+// A touch for the floating pad's frames: a thumb lands at (x, y) and slides by (dx, dy); `lifted`: it has just let go.
+struct Thumb { int x = -1, y = 0, dx = 0, dy = 0; bool lifted = false; };
+static Canvas playScreen(World& w, const ctl::Need& need, const ctl::Settings& st, bool smaller, bool pause, Thumb th = Thumb()) {
   ctl::Controls controls;
   controls.configure(st, need);
+  uint32_t now = 1000;
+  if (th.x >= 0) {
+    int id = 1, x = th.x, y = th.y, size = 40;
+    controls.update(&id, &x, &y, &size, 1, now);
+    x += th.dx; y += th.dy; now += 100;
+    controls.update(&id, &x, &y, &size, 1, now);
+    if (th.lifted) for (int k = 0; k < 2; k++) { now += 100; controls.update(nullptr, nullptr, nullptr, nullptr, 0, now); }  // past the 60 ms grace
+  }
   uint16_t pal[256];
   for (int i = 0; i < 256; i++) {
     auto v8 = [](uint8_t c) { c &= 63; return (uint8_t)((c << 2) | (c >> 4)); };
     pal[i] = (uint16_t)(((v8(assets.pal[i * 3]) & 0xF8) << 8) | ((v8(assets.pal[i * 3 + 1]) & 0xFC) << 3) | (v8(assets.pal[i * 3 + 2]) >> 3));
   }
-  const auto& pad = controls.L.pad;
+  const auto& pad = controls.L.home;
   int edge = st.lefty ? VIEW_W - pad.cx + pad.r : pad.cx + pad.r;
   scr::Picture view{VIEW_W, VIEW_H, smaller, st.lefty != 0, edge + 14};
   Canvas screen(scr::W, scr::H);
@@ -174,6 +185,7 @@ static Canvas playScreen(World& w, const ctl::Need& need, const ctl::Settings& s
   for (int i = 0; i < ctl::MAXEXTRA; i++) icons[2 + i] = i < need.nextra ? iconForKey(w, need.extra[i]) : BtnIcon();
   ovl::Overlay<Canvas> ov(spr, spr.px.data(), pal, cfg, controls, icons);
   ov.bandX = 0; ov.bandY = 0; ov.bandW = VIEW_W; ov.bandH = VIEW_H;
+  ov.padLook = controls.padLook(now);
   ov.drawControls();
   for (int Y = 0; Y < VIEW_H; Y++) for (int X = 0; X < VIEW_W; X++) screen.px[(size_t)Y * scr::W + X] = spr.px[(size_t)Y * VIEW_W + X];
   if (pause) ovl::pauseMenu(screen, cfg.title, w.level, 1);  // with the Favorite star filled
@@ -226,6 +238,23 @@ int main(int argc, char** argv) {
         printf("SHOT play-%s-%s-%s-%s-pad%d %08x\n", wname, id.c_str(), smaller ? "smaller" : "full", hand ? "left" : "right", size, hashOf(c));
       }
       writePng(out + "/play-" + wname + "-" + id + (smaller ? "-smaller" : "-full") + ".png", 3 * cw, 2 * ch, img);
+    }
+    {  // the floating pad: nothing drawn, a thumb held sliding right, just lifted; right hand, then left
+      const int cw = scr::W + 8, ch = scr::H + 8;
+      std::vector<uint8_t> img((size_t)3 * cw * 2 * ch * 3, 40);
+      for (int hand = 0; hand < 2; hand++) for (int k = 0; k < 3; k++) {
+        ctl::Settings st;
+        st.lefty = (uint8_t)hand; st.floatPad = 1; st.debug = 0;
+        Thumb t;
+        if (k) {
+          int zx = scr::W * 40 / 100 * 2 / 5;
+          t.x = hand ? scr::W - 1 - zx : zx; t.y = VIEW_H * 3 / 5; t.dx = VIEW_W / 12; t.lifted = k == 2;
+        }
+        Canvas c = playScreen(w, need, st, false, false, t);
+        blit(img, 3 * cw, k * cw + 4, hand * ch + 4, c);
+        printf("SHOT float-%s-%s-%s-%s %08x\n", wname, id.c_str(), hand ? "left" : "right", k == 0 ? "clear" : k == 1 ? "held" : "lifted", hashOf(c));
+      }
+      writePng(out + "/float-" + wname + "-" + id + ".png", 3 * cw, 2 * ch, img);
     }
     ctl::Settings st;
     Canvas c = playScreen(w, need, st, false, true);

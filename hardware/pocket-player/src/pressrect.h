@@ -91,9 +91,12 @@ inline bool under(const Ctx& c, int x, int y, Rect& r) {
 // ---- the press itself ----
 enum Ev : uint8_t { NONE, PRESS, CANCEL, ACT };
 constexpr uint32_t MIN_SHOW_MS = 80;  // a pressed button stays drawn at least this long, however short the tap
+constexpr uint32_t REPEAT_DELAY_MS = 400, REPEAT_EVERY_MS = 125;  // hold a page arrow or Backspace: after 400 ms, 8 per second
 constexpr int SLACK = 8;              // the finger may drift this far outside the button
 struct Press {
   bool down = false, shown = false, ignore = false;
+  bool repeatable = false, fired = false;  // the held button repeats; once it has, lifting is no further tap
+  uint32_t nextRep = 0;
   Rect r;
   int dx = 0, dy = 0;
   uint32_t at = 0;
@@ -102,8 +105,8 @@ struct Press {
   // `lookup(x, y, Rect&)` finds the button under a new touch. Call once per loop with the current touch.
   template <class F> Ev update(uint32_t now, bool touching, int x, int y, F lookup) {
     if (!touching) {
-      bool act = down && shown;
-      down = shown = ignore = false;
+      bool act = down && shown && !fired;
+      down = shown = ignore = fired = repeatable = false;
       return act ? ACT : NONE;
     }
     if (!down) {
@@ -111,6 +114,7 @@ struct Press {
       dx = x;
       dy = y;
       at = now;
+      fired = repeatable = false;
       shown = lookup(x, y, r);
       return shown ? PRESS : NONE;
     }
@@ -119,6 +123,15 @@ struct Press {
       return CANCEL;
     }
     return NONE;
+  }
+  // The caller says a just-pressed button repeats (a page arrow, Backspace).
+  void makeRepeatable() { repeatable = true; nextRep = at + REPEAT_DELAY_MS; }
+  // True once for each repeat that is due while the finger stays on the button (the first after REPEAT_DELAY_MS, then every REPEAT_EVERY_MS).
+  bool repeatDue(uint32_t now) {
+    if (!down || !shown || !repeatable || now < nextRep) return false;
+    fired = true;
+    nextRep = now - nextRep > REPEAT_EVERY_MS ? now + REPEAT_EVERY_MS : nextRep + REPEAT_EVERY_MS;
+    return true;
   }
   uint32_t showLeft(uint32_t now) const { uint32_t t = now - at; return t < MIN_SHOW_MS ? MIN_SHOW_MS - t : 0; }
 };

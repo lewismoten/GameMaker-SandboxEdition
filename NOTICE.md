@@ -394,6 +394,9 @@ game folder opens in the browser unchanged.
   dogs, cut into short clips for the guided tour. Five of the clips are Tune-Up's barks too
   (`games/tuneup/src/sound/barks`, as 8-bit WAVs for its VOCs). The whole recordings stay on
   his computer.
+- **THE CHEZ's sound** (`web/src/audio/chez`): tuned to Lewis Moten's own
+  recording of his CitiCar, from his YouTube video of a drive to the park. The sound used on the site
+  is synthesized in code to match it; no recorded clips ship. Claude (Anthropic) wrote the code.
 - **Tune-Up's slide whistle** (`games/tuneup/src/sound/notes.ts` `slideWhistleVoc`): synthesized
   in code for the game (a gliding tone with a breath of noise), not a recording.
 - **Tune-Up's traffic camera and siren** (`games/tuneup/src/sound/notes.ts` `ticketVoc`):
