@@ -9,7 +9,8 @@
 // edition (extraDemos.ts, kept apart from its files), and any other game an "attract
 // mode" (attractDemo.ts) that walks its hero back and forth. `kind` tells them apart so the
 // page can say which it is (demoSource.ts picks the recording).
-import { DemoAudioEngine, demoAudio, onDemoAudio, type DemoAudio } from './demoAudio';
+import { demoAudio, onDemoAudio, type DemoAudio } from './demoAudio';
+import { DemoAudioEngine } from './demoAudioEngine';
 import type { Session } from '@lewismoten/gamemaker-sandbox-engine/engine/scene';
 import { mountPlayer, type PlayerHandle } from '../player/player';
 import type { GameFiles } from '../project/files';
