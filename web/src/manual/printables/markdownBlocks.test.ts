@@ -39,6 +39,13 @@ describe('readMarkdown', () => {
     expect(blockText(steps[3])).toBe('raw text');
   });
 
+  it('reads a table whose separator cells have fewer than three dashes (Prettier aligns a narrow column to `--:`)', () => {
+    const narrow = '# T\n\n| Color | Red |\n| ----- | --: |\n| Blue  |  10 |\n';
+    const table = readMarkdown(narrow)[1].blocks[0];
+    expect(table).toMatchObject({ tag: 'table', head: [['Color'], ['Red']] });
+    expect(blockText(table)).toBe('Color Red Blue 10');
+  });
+
   it('keeps only the named columns of a table', () => {
     const table = readMarkdown(sample, ['Refs', 'Value'])[2].blocks[2];
     expect(table).toMatchObject({ tag: 'table', head: [['Refs'], ['Value']] });
