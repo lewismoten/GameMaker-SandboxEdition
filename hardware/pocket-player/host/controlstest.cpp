@@ -210,6 +210,18 @@ static void floatingCheck() {
       bool still = f.held[S_RIGHT] && f.c.padLook(f.now) == LOOK_DIM;
       f.touch(3, lx, ly); f.wait(60); f.up(3); f.wait(240);
       check(nm("float + sticky: a tap on the ring's side walks, the ring stays while walking, a tap in its middle stops").c_str(), walking && still && !f.held[S_RIGHT] && f.c.latch == 0, f.log); }
+#ifndef POCKET_CYD28
+    // The GT911 reports two fingers: a thumb held on the floating pad keeps steering while the other finger taps Jump, again and again.
+    { Run f(fs, n); int lx = lefty ? W - 60 : 60, ly = scr::VIEW_H / 2 + 20;
+      f.touch(1, lx, ly); f.wait(80);
+      f.touch(1, lx + f.c.L.pad.r / 2, ly); f.wait(120);
+      bool ok = f.held[S_RIGHT] && !f.held[S_SPACE];
+      for (int tap = 0; tap < 3; tap++) {
+        f.touch(2, f.c.L.space.cx, f.c.L.space.cy); f.wait(80); ok = ok && f.held[S_RIGHT] && f.held[S_SPACE];
+        f.up(2); f.wait(300); ok = ok && f.held[S_RIGHT] && !f.held[S_SPACE];
+      }
+      check(nm("float, two fingers: pad held while Jump taps three times, Right never lets go").c_str(), ok && f.log.find("-77") == std::string::npos, f.log); }
+#endif
 #ifdef POCKET_CYD28
     // One resistive contact: the jump arcs work from wherever the pad landed.
     { Run f(fs, n); int lx = lefty ? W - 60 : 60, ly = scr::VIEW_H / 2 + 20;
