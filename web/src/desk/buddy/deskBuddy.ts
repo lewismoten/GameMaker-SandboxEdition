@@ -25,17 +25,17 @@ export function deskBuddy(place: (el: HTMLElement) => void): () => void {
   let playing: string | undefined;
   let pose: Pose = 'idle';
 
-  const screen = h('span', { class: 'desk-buddy-art' });
-  const bubble = h('span', { class: 'desk-buddy-bubble', role: 'status', 'aria-live': 'polite' });
+  const screen = h('span', { class: 'buddy-art' });
+  const bubble = h('span', { class: 'buddy-bubble', role: 'status', 'aria-live': 'polite' });
   const press = h('button', {
-    class: 'desk-buddy-press',
+    class: 'buddy-press',
     'aria-label': 'Scoot, your desk buddy',
     title: 'Scoot: what it has seen',
     'aria-expanded': 'false',
-    'aria-controls': 'desk-buddy-card',
+    'aria-controls': 'buddy-card',
   });
   press.append(screen);
-  const card = h('div', { class: 'desk-buddy-card', id: 'desk-buddy-card', role: 'dialog', 'aria-labelledby': 'desk-buddy-title', hidden: true });
+  const card = h('div', { class: 'buddy-card', id: 'buddy-card', role: 'dialog', 'aria-labelledby': 'buddy-title', hidden: true });
   const el = h('div', { class: 'desk-buddy' }, bubble, press, card);
   place(el);
 
@@ -128,13 +128,13 @@ export function deskBuddy(place: (el: HTMLElement) => void): () => void {
     remember();
     if (mind.quiet) bubble.textContent = '';
   });
-  const facts = h('dl', { class: 'desk-buddy-facts' });
-  const close = h('button', { class: 'desk-buddy-close', 'aria-label': 'Close Scoot’s card' }, '×');
+  const facts = h('dl', { class: 'buddy-facts' });
+  const close = h('button', { class: 'buddy-close', 'aria-label': 'Close Scoot’s card' }, '×');
   card.append(
-    h('h2', { id: 'desk-buddy-title' }, 'Scoot'),
-    h('p', { class: 'desk-buddy-blurb' }, 'Your desk buddy. It sits here and watches the PC with you.'),
+    h('h2', { id: 'buddy-title' }, 'Scoot'),
+    h('p', { class: 'buddy-blurb' }, 'Your desk buddy. It sits here and watches the PC with you.'),
     facts,
-    h('label', { class: 'desk-buddy-quiet' }, quiet, ' Quiet (no words, just waves)'),
+    h('label', { class: 'buddy-quiet' }, quiet, ' Quiet (no words, just waves)'),
     close,
   );
   const fillCard = async () => {

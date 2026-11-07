@@ -11,11 +11,11 @@
 }
 
 /* its open card is read, not part of the room: above the room's dark (props.css, z-index 20) */
-.desk-buddy:has(> .desk-buddy-card:not([hidden])) {
+.desk-buddy:has(> .buddy-card:not([hidden])) {
   z-index: 25;
 }
 
-.desk-buddy-press {
+.buddy-press {
   display: block;
   width: 100%;
   height: 100%;
@@ -27,35 +27,35 @@
   filter: drop-shadow(0 6px 5px rgba(0, 0, 0, 0.45));
 }
 
-.desk-buddy-press:focus-visible {
+.buddy-press:focus-visible {
   outline: 3px solid #ffd84a;
   outline-offset: 3px;
 }
 
-.desk-buddy-art,
-.desk-buddy-art svg {
+.buddy-art,
+.buddy-art svg {
   display: block;
   width: 100%;
   height: 100%;
 }
 
 /* a little hop for good news, and a tilt while it waves */
-.desk-buddy[data-pose='cheer'] .desk-buddy-art,
-.desk-buddy[data-pose='happy'] .desk-buddy-art {
-  animation: desk-buddy-hop 0.45s ease-out 2;
+.desk-buddy[data-pose='cheer'] .buddy-art,
+.desk-buddy[data-pose='happy'] .buddy-art {
+  animation: buddy-hop 0.45s ease-out 2;
 }
 
-.desk-buddy[data-pose='wave'] .desk-buddy-art {
-  animation: desk-buddy-tilt 0.6s ease-in-out 2;
+.desk-buddy[data-pose='wave'] .buddy-art {
+  animation: buddy-tilt 0.6s ease-in-out 2;
 }
 
-@keyframes desk-buddy-hop {
+@keyframes buddy-hop {
   50% {
     transform: translateY(-7px);
   }
 }
 
-@keyframes desk-buddy-tilt {
+@keyframes buddy-tilt {
   33% {
     transform: rotate(-5deg);
   }
@@ -65,7 +65,7 @@
 }
 
 /* the speech bubble: one short line, gone again in a few seconds */
-.desk-buddy-bubble {
+.buddy-bubble {
   position: absolute;
   bottom: calc(100% + 10px);
   left: 50%;
@@ -90,7 +90,7 @@
   pointer-events: none;
 }
 
-.desk-buddy-bubble::after {
+.buddy-bubble::after {
   content: '';
   position: absolute;
   top: 100%;
@@ -99,14 +99,14 @@
   border-top-color: #2b2a26;
 }
 
-.desk-buddy.speaking .desk-buddy-bubble {
+.desk-buddy.speaking .buddy-bubble {
   visibility: visible;
   opacity: 1;
   transition: opacity 0.25s;
 }
 
 /* the card: what it has seen, and its Quiet switch */
-.desk-buddy-card {
+.buddy-card {
   position: absolute;
   right: calc(100% + 12px);
   bottom: 0;
@@ -125,39 +125,39 @@
   text-align: left;
 }
 
-.desk-buddy-card[hidden] {
+.buddy-card[hidden] {
   display: none;
 }
 
-.desk-buddy-card h2 {
+.buddy-card h2 {
   margin: 0 32px 4px 0;
   font-size: 17px;
 }
 
-.desk-buddy-blurb {
+.buddy-blurb {
   margin: 0 0 8px;
   color: #4a463c;
   font-size: 13px;
 }
 
-.desk-buddy-facts {
+.buddy-facts {
   display: grid;
   grid-template-columns: auto 1fr;
   gap: 3px 12px;
   margin: 0 0 10px;
 }
 
-.desk-buddy-facts dt {
+.buddy-facts dt {
   color: #4a463c;
 }
 
-.desk-buddy-facts dd {
+.buddy-facts dd {
   margin: 0;
   font-weight: 700;
   overflow-wrap: anywhere;
 }
 
-.desk-buddy-quiet {
+.buddy-quiet {
   display: flex;
   align-items: center;
   gap: 6px;
@@ -166,13 +166,13 @@
   cursor: pointer;
 }
 
-.desk-buddy-quiet input {
+.buddy-quiet input {
   width: 18px;
   height: 18px;
   margin: 0;
 }
 
-.desk-buddy-close {
+.buddy-close {
   position: absolute;
   top: 6px;
   right: 6px;
@@ -188,8 +188,8 @@
   cursor: pointer;
 }
 
-.desk-buddy-close:focus-visible,
-.desk-buddy-quiet input:focus-visible {
+.buddy-close:focus-visible,
+.buddy-quiet input:focus-visible {
   outline: 3px solid #1d5fd1;
   outline-offset: 2px;
 }
@@ -209,19 +209,19 @@
     margin-left: auto;
   }
 
-  .desk-buddy-bubble {
+  .buddy-bubble {
     left: auto;
     right: 0;
     max-width: min(220px, calc(100vw - 48px));
     transform: none;
   }
 
-  .desk-buddy-bubble::after {
+  .buddy-bubble::after {
     left: auto;
     right: 25px;
   }
 
-  .desk-buddy-card {
+  .buddy-card {
     position: fixed;
     right: 16px;
     top: 16px;
@@ -235,12 +235,12 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .desk-buddy .desk-buddy-art {
+  .desk-buddy .buddy-art {
     animation: none !important;
   }
 
-  .desk-buddy-bubble,
-  .desk-buddy.speaking .desk-buddy-bubble {
+  .buddy-bubble,
+  .desk-buddy.speaking .buddy-bubble {
     transition: none;
   }
 }
