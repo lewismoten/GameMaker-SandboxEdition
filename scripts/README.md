@@ -77,6 +77,9 @@ remotes and real merge/push mechanics; costly checks are stubbed. They never pub
 to a network remote or touch the maintainer's refs or servers. Git-backed tests inherit
 the host's signing policy; if sandbox restrictions block its signing agent, report that
 capability failure and run them on an authorized host rather than disabling signing.
+[`task-records/`](task-records/README.md) defines the validated private intake read
+model: client-key and board-ID lookup, distinct run summaries, adapter integration
+and SQLite regression tests. It does not publish the private intake or its data.
 
 `verify-changed.mjs` runs through `npm run verify:changed` (root or `web/`): the quick pre-merge check of only what the branch touched against `origin/develop` (or `--base <ref>`). `npm run verify` is the full check.
 
