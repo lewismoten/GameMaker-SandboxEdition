@@ -144,7 +144,7 @@ export function fog(pal: Pal): Level {
   m.set(3, BOTTOM - 1, 'doorwayTopH').set(3, BOTTOM, 'doorwayBottomH');
   m.set(exit, BOTTOM - 1, 'doorTopH').set(exit, BOTTOM, 'doorBottomH');
   const sign = (s: Sign, x: number) => m.sign(x, 6, s);
-  sign(signs.start, 7);
+  sign(signs.start, 6);
   sign(signs.flat, 12);
   sign(signs.dither, zoneB + 3);
   sign(signs.thick, zoneB + 9);
