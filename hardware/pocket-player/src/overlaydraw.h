@@ -19,21 +19,105 @@ namespace ovl {
 constexpr uint16_t C_WHITE = 0xFFFF, C_BLACK = 0, C_YELLOW = 0xFF2A, C_DARK = 0x2104;
 
 // A labeled rounded button on the screen (menus; the pause menu's rows).
-template <class G> void button(G& tft, int x0, int y0, int x1, int y1, const char* label, bool hot, uint16_t fill) {
+template <class G> void button(G& tft, int x0, int y0, int x1, int y1, const char* label, bool hot, uint16_t fill, float size = 2) {
   tft.fillRoundRect(x0, y0, x1 - x0, y1 - y0, 6, hot ? C_YELLOW : fill);
   tft.drawRoundRect(x0, y0, x1 - x0, y1 - y0, 6, C_WHITE);
   tft.setTextColor(hot ? C_BLACK : C_WHITE, hot ? C_YELLOW : fill);
-  tft.setTextSize(2);
+  tft.setTextSize(size);
   tft.setTextDatum(textdatum_t::middle_center);
   tft.drawString(label, (x0 + x1) / 2, (y0 + y1) / 2);
   tft.setTextDatum(textdatum_t::top_left);
 }
 
-// The pause menu box with its rows, in the screen's numbers (main.cpp PA_*).
-template <class G> void pauseMenu(G& tft, int boxX, int boxY, int boxW, int boxH, int x0, int x1, int y0, int step, int h, const char* const* items, int n) {
-  tft.fillRect(boxX, boxY, boxW, boxH, C_BLACK);
-  tft.drawRect(boxX, boxY, boxW, boxH, C_WHITE);
-  for (int i = 0; i < n; i++) button(tft, x0, y0 + i * step, x1, y0 + i * step + h, items[i], false, C_DARK);
+// ---- the pause menu: a title line (the game and its level), then six buttons in two columns of three ----
+enum { PA_RESUME, PA_RESTART_LEVEL, PA_RESTART_GAME, PA_HELP, PA_SETTINGS, PA_QUIT, PA_COUNT };
+inline const char* pauseItem(int i) {
+  static const char* const names[PA_COUNT] = {"Resume", "Restart level", "Restart game", "How to play", "Settings", "Quit to library"};
+  return names[i];
+}
+struct PauseGeom { int boxX, boxY, boxW, boxH, x0, y0, colW, colGap, step, h, titleY, titleSize; float textSize; };
+constexpr PauseGeom PAUSE = scr::SMALL ? PauseGeom{4, 4, 312, 232, 12, 28, 144, 8, 68, 60, 11, 1, 1.5f}
+                                       : PauseGeom{16, 16, 448, 288, 28, 54, 206, 12, 80, 70, 26, 2, 2.f};
+// Button i's rectangle: the left column is play (Resume, Restart level, Restart game), the right the rest.
+inline void pauseCell(int i, int& x0, int& y0, int& x1, int& y1) {
+  x0 = PAUSE.x0 + i / 3 * (PAUSE.colW + PAUSE.colGap);
+  y0 = PAUSE.y0 + i % 3 * PAUSE.step;
+  x1 = x0 + PAUSE.colW;
+  y1 = y0 + PAUSE.h;
+}
+// The button under (x, y), or -1.
+inline int pauseHit(int x, int y) {
+  for (int i = 0; i < PA_COUNT; i++) {
+    int x0, y0, x1, y1;
+    pauseCell(i, x0, y0, x1, y1);
+    if (x >= x0 && x < x1 && y >= y0 && y < y1) return i;
+  }
+  return -1;
+}
+// The menu over the paused game: `game` (its title, cut to fit) at the left of the title line and "Level n" at the right.
+template <class G> void pauseMenu(G& tft, const char* game, int level) {
+  const PauseGeom& p = PAUSE;
+  tft.fillRect(p.boxX, p.boxY, p.boxW, p.boxH, C_BLACK);
+  tft.drawRect(p.boxX, p.boxY, p.boxW, p.boxH, C_WHITE);
+  char lv[16], name[48];
+  snprintf(lv, sizeof lv, "Level %d", level + 1);
+  int cw = 6 * p.titleSize, room = (p.boxW - 2 * (p.x0 - p.boxX)) / cw - (int)strlen(lv) - 2;
+  snprintf(name, sizeof name, "%s", game ? game : "");
+  if ((int)strlen(name) > room && room > 3) { name[room - 3] = 0; strcat(name, "..."); }
+  else if (room <= 3) name[0] = 0;
+  tft.setTextSize(p.titleSize);
+  tft.setTextColor(C_WHITE, C_BLACK);
+  tft.setCursor(p.x0, p.titleY);
+  tft.print(name);
+  tft.setTextColor(C_YELLOW, C_BLACK);
+  tft.setCursor(p.boxX + p.boxW - (p.x0 - p.boxX) - (int)strlen(lv) * cw, p.titleY);
+  tft.print(lv);
+  for (int i = 0; i < PA_COUNT; i++) {
+    int x0, y0, x1, y1;
+    pauseCell(i, x0, y0, x1, y1);
+    button(tft, x0, y0, x1, y1, pauseItem(i), false, C_DARK, p.textSize);
+  }
+}
+
+// ---- How to play: the keys the game lists (its controls.json labels, packed as the .cfg's `key` lines) ----
+// A letter the controls treat as an arrow (A for Left) is left out when the arrow is listed too. Any tap goes back.
+constexpr int HELP_TOP = scr::SMALL ? 26 : 34, HELP_Y0 = scr::SMALL ? 34 : 44, HELP_BACK_Y = scr::SMALL ? 208 : 282;
+inline bool helpAlias(const gm::Cfg& cfg, int i) {
+  int s = cfg.keys[i].scan, as = ctl::needScan(s);
+  for (int j = 0; j < cfg.nkeys && as != s; j++) if (cfg.keys[j].scan == as) return true;
+  return false;
+}
+template <class G> void helpPage(G& tft, const gm::Cfg& cfg) {
+  int n = 0;
+  for (int i = 0; i < cfg.nkeys; i++) n += !helpAlias(cfg, i);
+  // Big letters while they fit (up to 9 keys on the small board), else small ones.
+  const int HELP_SIZE = !scr::SMALL || n * 18 <= HELP_BACK_Y - 4 - HELP_Y0 ? 2 : 1, HELP_STEP = HELP_SIZE == 2 ? (scr::SMALL ? 18 : 19) : 14;
+  tft.fillRect(0, 0, scr::W, scr::H, C_BLACK);
+  tft.fillRect(0, 0, scr::W, HELP_TOP, C_DARK);
+  tft.setTextSize(2);
+  tft.setTextColor(C_WHITE, C_DARK);
+  tft.setCursor(8, scr::SMALL ? 5 : 9);
+  tft.print("How to play");
+  int cw = 6 * HELP_SIZE, y = HELP_Y0, shown = 0;
+  tft.setTextSize(HELP_SIZE);
+  for (int i = 0; i < cfg.nkeys && y + 8 * HELP_SIZE <= HELP_BACK_Y - 4; i++) {
+    if (helpAlias(cfg, i)) continue;
+    const char* key = ctl::scanName(cfg.keys[i].scan);
+    tft.setTextColor(C_YELLOW, C_BLACK);
+    tft.setCursor(8 + (5 - (int)strlen(key)) * cw, y);
+    tft.print(key);
+    tft.setTextColor(C_WHITE, C_BLACK);
+    tft.setCursor(8 + 7 * cw, y);
+    tft.print(cfg.keys[i].label[0] ? cfg.keys[i].label : "(no label)");
+    y += HELP_STEP;
+    shown++;
+  }
+  if (!shown) {
+    tft.setTextColor(C_WHITE, C_BLACK);
+    tft.setCursor(8, y);
+    tft.print("No keys listed: walk with the pad.");
+  }
+  button(tft, 0, HELP_BACK_Y, scr::W, scr::H, "Back", false, C_DARK);
 }
 
 template <class Spr> struct Overlay {

@@ -19,10 +19,10 @@ for (const flags of [[], ['-DPOCKET_CYD28']]) {
   execFileSync(cardExe, { stdio: 'inherit' });
 }
 // Real play frames (a Starter's level through gmcore.h) with the overlay the board draws (src/overlaydraw.h): both hands,
-// three pad sizes, Smaller picture on and off, and the pause menu, at 480x320 and 320x240 (host/playshots.cpp). The
+// three pad sizes, Smaller picture on and off, the pause menu and How to play, at 480x320 and 320x240 (host/playshots.cpp). The
 // snapshot is a hash of every cell's picture; PNGs go to GM_PLAYSHOTS_OUT (default: a temp folder). After a deliberate
 // change to the overlay or to those Starters, look at the PNGs, then paste the printed hashes here.
-const playHashes: Record<string, string> = { '480': '2882dc1b1558ef6e', '320': '9184b780cf604e91' };
+const playHashes: Record<string, string> = { '480': '84a21b213f763e16', '320': 'a872f58995cfcc96' };
 const playDir = process.env.GM_PLAYSHOTS_OUT ?? mkdtempSync(join(tmpdir(), 'pocket-playshots-'));
 let playBad = 0;
 for (const [name, flags] of [

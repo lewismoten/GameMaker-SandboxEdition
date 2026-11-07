@@ -3,7 +3,7 @@
 // MENU and KEYS chips on top, and the pause menu. Cells: both hands, the three pad sizes, Smaller picture off and on.
 //   playshots <data dir> <out dir> [game id ...]      build with -lz; add -DPOCKET_CYD28 for the 320 x 240 board
 // Writes <out>/play-<w>-<id>-<smaller|full>.png (a montage: right hand pad 0, 1, 2 over left hand pad 0, 1, 2) and
-// <out>/pause-<w>-<id>.png, and prints "SHOT <name> <hash>" per cell for web/scripts/pocketControlsCheck.ts to compare.
+// <out>/pause-<w>-<id>.png and <out>/help-<w>-<id>.png (How to play), and prints "SHOT <name> <hash>" per cell for web/scripts/pocketControlsCheck.ts to compare.
 // Text is the 6 x 8 bitmap font (softgfx.h's glyphs, scaled), so words differ a little from the board's font.
 #include <algorithm>
 #include <stdio.h>
@@ -143,9 +143,6 @@ static uint32_t hashOf(const Canvas& c) {
 }
 
 constexpr int VIEW_W = scr::W, VIEW_H = scr::VIEW_H;
-constexpr int PA_BOX_X = scr::SMALL ? 50 : 100, PA_BOX_Y = scr::SMALL ? 8 : 40, PA_BOX_W = scr::SMALL ? 220 : 280, PA_BOX_H = scr::SMALL ? 184 : 236;
-constexpr int PA_X0 = PA_BOX_X + 12, PA_X1 = PA_BOX_X + PA_BOX_W - 12, PA_Y0 = scr::SMALL ? 18 : 52, PA_STEP = scr::SMALL ? 42 : 56, PA_H = scr::SMALL ? 36 : 48;
-static const char* const PAUSE_ITEMS[] = {"Resume", "Restart game", "Games", "Settings"};
 
 // The play screen as drawFrame(true) draws it: the game's rows through the picture, the overlay on top.
 static Canvas playScreen(World& w, const ctl::Need& need, const ctl::Settings& st, bool smaller, bool pause) {
@@ -178,7 +175,7 @@ static Canvas playScreen(World& w, const ctl::Need& need, const ctl::Settings& s
   ov.bandX = 0; ov.bandY = 0; ov.bandW = VIEW_W; ov.bandH = VIEW_H;
   ov.drawControls();
   for (int Y = 0; Y < VIEW_H; Y++) for (int X = 0; X < VIEW_W; X++) screen.px[(size_t)Y * scr::W + X] = spr.px[(size_t)Y * VIEW_W + X];
-  if (pause) ovl::pauseMenu(screen, PA_BOX_X, PA_BOX_Y, PA_BOX_W, PA_BOX_H, PA_X0, PA_X1, PA_Y0, PA_STEP, PA_H, PAUSE_ITEMS, 4);
+  if (pause) ovl::pauseMenu(screen, cfg.title, w.level);
   return screen;
 }
 
@@ -235,6 +232,11 @@ int main(int argc, char** argv) {
     blit(img, scr::W, 0, 0, c);
     writePng(out + "/pause-" + wname + "-" + id + ".png", scr::W, scr::H, img);
     printf("SHOT pause-%s-%s %08x\n", wname, id.c_str(), hashOf(c));
+    Canvas h(scr::W, scr::H);
+    ovl::helpPage(h, cfg);
+    blit(img, scr::W, 0, 0, h);
+    writePng(out + "/help-" + wname + "-" + id + ".png", scr::W, scr::H, img);
+    printf("SHOT help-%s-%s %08x\n", wname, id.c_str(), hashOf(h));
   }
   return fails ? 1 : 0;
 }
