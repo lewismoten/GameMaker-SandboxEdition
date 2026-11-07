@@ -1006,11 +1006,14 @@ static void categories() {
   if(category==0) {
     if(resumeValid&&(resumeGame()>=0||resumeRec.sd))categorySlots[categoryCount++]=CONTINUE_SLOT;  // first: what was being played
     if(pk::anyListed(games,ngames,catalog->recent))categorySlots[categoryCount++]=pk::CAT_RECENT;  // once a game here has been played
-    if(ngames)categorySlots[categoryCount++]=pk::CAT_FAVORITES;  // always: an empty one says how to star a game
-    for(int c=1;c<=7;c++){bool any=c<=6;for(int i=0;i<ngames;i++)if(c==7?games[i].scored:games[i].category==c)any=true;if(any)categorySlots[categoryCount++]=c;}
-  }else if(category==1){for(int s=1;s<=8;s++)categorySlots[categoryCount++]=s;}
-  else if(category==6){categorySlots[categoryCount++]=1;categorySlots[categoryCount++]=2;}
-  else if(category==5){for(int s=0;s<=ncollections;s++)categorySlots[categoryCount++]=s;}
+    // Only what holds something: Favorites once a game is starred (its page still explains a card that is out), and the
+    // categories with a game in them (a card's games add theirs as the scan finds them).
+    if(ngames&&catalog->pins.n)categorySlots[categoryCount++]=pk::CAT_FAVORITES;
+    for(int c=1;c<=7;c++){bool any=false;for(int i=0;i<ngames&&!any;i++)any=c==7?games[i].scored:games[i].category==c;if(any)categorySlots[categoryCount++]=c;}
+  }else{
+    int last=category==1?8:category==6?2:category==5?ncollections:-1;
+    for(int s=category==5?0:1;s<=last;s++){bool any=false;for(int i=0;i<ngames&&!any;i++)any=pk::belongs(games[i],category,s);if(any)categorySlots[categoryCount++]=s;}
+  }
 }
 static uint8_t* preview(const GameEntry&g) {
   if(!g.metadata)return nullptr;

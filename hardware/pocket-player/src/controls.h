@@ -50,7 +50,7 @@ struct Settings {
   uint8_t dead = 1;      // 0 small (18 px), 1 medium (26), 2 large (36)
   uint8_t palm = 0;      // 0 off, 1 size, 2 size + near
   uint8_t debug = 1;     // the numbers in the status strip
-  uint8_t sound = 2;     // PC speaker volume: 0 off, 1 low, 2 medium, 3 high
+  uint8_t sound = 0;     // PC speaker volume: 0 off (the default: most 2.8 inch boards have no speaker), 1 low, 2 medium, 3 high
   uint8_t raised = 0;    // pad position: 0 low, 1 raised (lifted 30 px, 20 on the 2.8 inch board, for a thumb that rests higher)
   uint8_t jumpNear = 0;  // Space (Jump): 0 in the corner, 1 just above and beside the pad, so one thumb rocks between them
 };
