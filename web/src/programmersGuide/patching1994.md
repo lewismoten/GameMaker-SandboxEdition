@@ -86,19 +86,19 @@ A format string takes values from the program. Keep each complete percent code u
 | ------ | ----- | ----------- | ------------------------- |
 | 257A0h | 4     | 51 75 69 74 | 0–4 characters; text rule |
 
-**str.menu.noInstructions** — menu: No instructions. Safe. Stock: `No game-specific instructions.`.
+**str.menu.noInstructions** — menu: No instructions. Safe. Stock: `No game-specific instructions.`
 
 | Offset | Width | Stock bytes                                                                               | Allowed                    |
 | ------ | ----- | ----------------------------------------------------------------------------------------- | -------------------------- |
 | 25700h | 30    | 4E 6F 20 67 61 6D 65 2D 73 70 65 63 69 66 69 63 20 69 6E 73 74 72 75 63 74 69 6F 6E 73 2E | 0–30 characters; text rule |
 
-**str.menu.noStoryline** — menu: No storyline. Safe. Stock: `No game-specific storyline.`.
+**str.menu.noStoryline** — menu: No storyline. Safe. Stock: `No game-specific storyline.`
 
 | Offset | Width | Stock bytes                                                                      | Allowed                    |
 | ------ | ----- | -------------------------------------------------------------------------------- | -------------------------- |
 | 2571Fh | 27    | 4E 6F 20 67 61 6D 65 2D 73 70 65 63 69 66 69 63 20 73 74 6F 72 79 6C 69 6E 65 2E | 0–27 characters; text rule |
 
-**str.menu.noCredits** — menu: No credits. Safe. Stock: `No game-specific credits given.`.
+**str.menu.noCredits** — menu: No credits. Safe. Stock: `No game-specific credits given.`
 
 | Offset | Width | Stock bytes                                                                                  | Allowed                    |
 | ------ | ----- | -------------------------------------------------------------------------------------------- | -------------------------- |
@@ -122,19 +122,19 @@ A format string takes values from the program. Keep each complete percent code u
 | ------ | ----- | -------------------------------- | -------------------------- |
 | 268FBh | 11    | 48 69 74 20 61 6E 79 20 6B 65 79 | 0–11 characters; text rule |
 
-**str.hiscore.congrats** — newHiscore: Congratulations. Safe. Stock: `Congratulations!`.
+**str.hiscore.congrats** — newHiscore: Congratulations. Safe. Stock: `Congratulations!`
 
 | Offset | Width | Stock bytes                                     | Allowed                    |
 | ------ | ----- | ----------------------------------------------- | -------------------------- |
 | 2690Fh | 16    | 43 6F 6E 67 72 61 74 75 6C 61 74 69 6F 6E 73 21 | 0–16 characters; text rule |
 
-**str.hiscore.place** — newHiscore: Place line. Caution. Stock: `You scored number %2d on the Top Ten!`.
+**str.hiscore.place** — newHiscore: Place line. Caution. Stock: `You scored number %2d on the Top Ten!`
 
 | Offset | Width | Stock bytes                                                                                                    | Allowed                      |
 | ------ | ----- | -------------------------------------------------------------------------------------------------------------- | ---------------------------- |
 | 26920h | 37    | 59 6F 75 20 73 63 6F 72 65 64 20 6E 75 6D 62 65 72 20 25 32 64 20 6F 6E 20 74 68 65 20 54 6F 70 20 54 65 6E 21 | 0–37 characters; format rule |
 
-**str.hiscore.enterName** — newHiscore: Name prompt. Safe. Stock: `Enter Your Name:`.
+**str.hiscore.enterName** — newHiscore: Name prompt. Safe. Stock: `Enter Your Name:`
 
 | Offset | Width | Stock bytes                                     | Allowed                    |
 | ------ | ----- | ----------------------------------------------- | -------------------------- |
@@ -176,13 +176,13 @@ A format string takes values from the program. Keep each complete percent code u
 | ------ | ----- | -------------------------- | ------------------------- |
 | 25821h | 9     | 4C 6F 61 64 20 47 61 6D 65 | 0–9 characters; text rule |
 
-**str.load.empty** — load: Empty slot. Safe. Stock: `This game has not been saved!`.
+**str.load.empty** — load: Empty slot. Safe. Stock: `This game has not been saved!`
 
 | Offset | Width | Stock bytes                                                                            | Allowed                    |
 | ------ | ----- | -------------------------------------------------------------------------------------- | -------------------------- |
 | 2582Eh | 29    | 54 68 69 73 20 67 61 6D 65 20 68 61 73 20 6E 6F 74 20 62 65 65 6E 20 73 61 76 65 64 21 | 0–29 characters; text rule |
 
-**str.load.done** — load: Loaded. Safe. Stock: `Old Game Loaded!`.
+**str.load.done** — load: Loaded. Safe. Stock: `Old Game Loaded!`
 
 | Offset | Width | Stock bytes                                     | Allowed                    |
 | ------ | ----- | ----------------------------------------------- | -------------------------- |
@@ -200,13 +200,13 @@ A format string takes values from the program. Keep each complete percent code u
 | ------ | ----- | ----------- | ------------------------- |
 | 25869h | 1     | 3E          | 0–1 characters; text rule |
 
-**str.save.done** — save: Saved. Safe. Stock: `Game Saved!`.
+**str.save.done** — save: Saved. Safe. Stock: `Game Saved!`
 
 | Offset | Width | Stock bytes                      | Allowed                    |
 | ------ | ----- | -------------------------------- | -------------------------- |
 | 25887h | 11    | 47 61 6D 65 20 53 61 76 65 64 21 | 0–11 characters; text rule |
 
-**str.save.failed** — save: Could not save (DOS only). Safe. Stock: `I cannot save your game!`.
+**str.save.failed** — save: Could not save (DOS only). Safe. Stock: `I cannot save your game!`
 
 | Offset | Width | Stock bytes                                                             | Allowed                    |
 | ------ | ----- | ----------------------------------------------------------------------- | -------------------------- |
@@ -230,25 +230,25 @@ A format string takes values from the program. Keep each complete percent code u
 | ------ | ----- | -------------------------------------------------------------------------- | -------------------------- |
 | 25DAFh | 25    | 3C 45 6E 74 65 72 3E 20 74 6F 20 61 63 63 65 70 74 2C 20 3C 45 53 43 3E 20 | 0–25 characters; text rule |
 
-**str.drop.help3** — drop: Help line 3. Safe. Stock: `to quit without dropping.`.
+**str.drop.help3** — drop: Help line 3. Safe. Stock: `to quit without dropping.`
 
 | Offset | Width | Stock bytes                                                                | Allowed                    |
 | ------ | ----- | -------------------------------------------------------------------------- | -------------------------- |
 | 25DC9h | 25    | 74 6F 20 71 75 69 74 20 77 69 74 68 6F 75 74 20 64 72 6F 70 70 69 6E 67 2E | 0–25 characters; text rule |
 
-**str.help.none** — help: No help (F1). Safe. Stock: `No game-specific help included.`.
+**str.help.none** — help: No help (F1). Safe. Stock: `No game-specific help included.`
 
 | Offset | Width | Stock bytes                                                                                  | Allowed                    |
 | ------ | ----- | -------------------------------------------------------------------------------------------- | -------------------------- |
 | 25B1Ch | 31    | 4E 6F 20 67 61 6D 65 2D 73 70 65 63 69 66 69 63 20 68 65 6C 70 20 69 6E 63 6C 75 64 65 64 2E | 0–31 characters; text rule |
 
-**str.text.more** — text: MORE.... Safe. Stock: `MORE...`.
+**str.text.more** — text: MORE.... Safe. Stock: `MORE...`
 
 | Offset | Width | Stock bytes          | Allowed                   |
 | ------ | ----- | -------------------- | ------------------------- |
 | 25BD8h | 7     | 4D 4F 52 45 2E 2E 2E | 0–7 characters; text rule |
 
-**str.text.missingTitle** — text: Missing file. Safe. Stock: `Missing File:`.
+**str.text.missingTitle** — text: Missing file. Safe. Stock: `Missing File:`
 
 | Offset | Width | Stock bytes                            | Allowed                    |
 | ------ | ----- | -------------------------------------- | -------------------------- |
@@ -260,19 +260,19 @@ A format string takes values from the program. Keep each complete percent code u
 | ------ | ----- | ----------------------------------------- | ---------------------------- |
 | 25BACh | 14    | 54 68 65 20 66 69 6C 65 20 25 73 20 69 73 | 0–14 characters; format rule |
 
-**str.text.missingTail** — text: Missing file, second line. Safe. Stock: `missing or cannot be opened.`.
+**str.text.missingTail** — text: Missing file, second line. Safe. Stock: `missing or cannot be opened.`
 
 | Offset | Width | Stock bytes                                                                         | Allowed                    |
 | ------ | ----- | ----------------------------------------------------------------------------------- | -------------------------- |
 | 25BBBh | 28    | 6D 69 73 73 69 6E 67 20 6F 72 20 63 61 6E 6E 6F 74 20 62 65 20 6F 70 65 6E 65 64 2E | 0–28 characters; text rule |
 
-**str.missing.title** — missing: Heading. Safe. Stock: `I am missing these game files:`.
+**str.missing.title** — missing: Heading. Safe. Stock: `I am missing these game files:`
 
 | Offset | Width | Stock bytes                                                                               | Allowed                    |
 | ------ | ----- | ----------------------------------------------------------------------------------------- | -------------------------- |
 | 25DE7h | 30    | 49 20 61 6D 20 6D 69 73 73 69 6E 67 20 74 68 65 73 65 20 67 61 6D 65 20 66 69 6C 65 73 3A | 0–30 characters; text rule |
 
-**str.missing.anyKey** — missing: Foot. Safe. Stock: `Hit any key...`.
+**str.missing.anyKey** — missing: Foot. Safe. Stock: `Hit any key...`
 
 | Offset | Width | Stock bytes                               | Allowed                    |
 | ------ | ----- | ----------------------------------------- | -------------------------- |

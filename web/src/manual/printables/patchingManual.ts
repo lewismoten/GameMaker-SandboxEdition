@@ -11,6 +11,13 @@ import { PATCHING_DIAGRAMS } from './patchingPlates';
 
 const PATCHING_TITLE = 'Player Patching Manual';
 
+/** One block as an element; an offset (the first column of a table) never breaks or hyphenates across lines. */
+function patchingElement(block: Block): HTMLElement {
+  const el = elementWith(PATCHING_DIAGRAMS)(block);
+  for (const cell of el.querySelectorAll<HTMLElement>('tr > :first-child')) cell.style.cssText += 'white-space:nowrap;hyphens:none';
+  return el;
+}
+
 /** The cover: the product's name, the booklet's, and its byline. */
 function patchingManualCover(): HTMLElement {
   return h(
@@ -40,6 +47,20 @@ function patchingManualBack(): HTMLElement {
   );
 }
 
+/** A bold setting line and the short table under it travel together, so a page never ends on the line and starts on its table. */
+function keepLabelsWithTables(els: HTMLElement[]): HTMLElement[] {
+  const label = (e?: HTMLElement) => e?.tagName === 'P' && e.firstElementChild?.tagName === 'STRONG';
+  const out: HTMLElement[] = [];
+  for (const el of els) {
+    const [p1, p2] = [out[out.length - 1], out[out.length - 2]];
+    const short = el.tagName === 'TABLE' && el.querySelectorAll('tr').length <= 10;
+    if (short && label(p2) && p1?.tagName === 'P') out.splice(-2, 2, h('div', { class: 'pm-setting' }, p2, p1, el));
+    else if (short && label(p1)) out.splice(-1, 1, h('div', { class: 'pm-setting' }, p1, el));
+    else out.push(el);
+  }
+  return out;
+}
+
 /** The booklet's chapters from its Markdown: the first-level and second-level headings are the cover's, and the rules between chapters are not text. */
 export function patchingManualChapters(markdown: string): { head: string; blocks: Block[] }[] {
   return readMarkdown(markdown)
@@ -60,7 +81,7 @@ async function patchingManualPages(): Promise<BookPage[]> {
     const next = measurer(host);
     const pages: BookPage[] = [{ kind: 'cover', body: [patchingManualCover()] }];
     for (const c of patchingManualChapters(markdown))
-      for (const body of paginate([h('h2', null, c.head), ...c.blocks.map(elementWith(PATCHING_DIAGRAMS))], next))
+      for (const body of paginate([h('h2', null, c.head), ...keepLabelsWithTables(c.blocks.map(patchingElement))], next))
         pages.push({ kind: 'text', head: ['GAME-MAKER 3.0', PATCHING_TITLE], body });
     const pads = bookletPageCount(pages.length + 1) - pages.length - 1;
     for (let i = 0; i < pads; i++)
