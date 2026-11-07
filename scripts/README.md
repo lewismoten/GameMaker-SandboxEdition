@@ -111,6 +111,41 @@ games keep their incremental cache entries before the parent fails. Tests: `web/
 (real readiness-gated external SIGTERM, tiny payloads) and `web/test/childSignalRetry.test.mjs`
 (fake elapsed-time boundaries and a native timeout). `heavy.mjs` gates admission only; it has no build-duration timeout.
 
+## Pocket host allocation audit
+
+`python3 scripts/pocket-heap-audit.py --card <card-root>/pocket --out <private-report-dir> --replay`
+reads the onboard and microSD indexes, records every game (even with missing assets),
+compiles `hardware/pocket-player/host/heaptest.cpp`, and measures every indexed level.
+Generate the card first from `web/` with `npx vite-node -c ../scripts/game-build.config.mjs scripts/pocketData.ts --out <card-root>`;
+build ignored game disks with `npm run build:games` first. Run the audit through
+`npm run heavy --` when replaying walkthroughs. It copies the card into the report
+and adds `<id>.cfg` aliases only there, leaving the real card untouched.
+
+Reports include `inventory.json` (disk/walkthrough/index hashes), per-command logs
+and durations, `heap.json`/`heap.csv`, environment and summary. A duplicate id is an
+error; a mismatch with `--expected-games` (default 121) is reported, not truncated.
+The full original `pocketHostCheck.ts` replays both sources separately with `--replay`.
+The requested `npm run check:cyd` is also attempted and its actual exit is retained;
+this tool does not invent an alias if that command is absent.
+
+Allocation numbers are **scoped host requested bytes**, not ESP32 free heap,
+headroom, fragmentation or RSS. Each level loads in config order through
+`Assets::load`, preserving inherited hero names but releasing buffers between levels
+(as for cards). `live_bytes` is retained core asset storage; `peak_bytes` includes
+those assets, their transient compressed input and zlib's explicitly instrumented
+work allocations. `largest_request_bytes` is one allocation, not a largest free
+block. Counts exclude stdio, C++ containers, allocator overhead, stack/static data,
+firmware display buffers, SD prefetch/mount state and ESP32's ROM inflater. This is a
+load audit, not gameplay-transition or interstitial-card memory coverage. The ten
+largest host peaks are a provisional proxy for the requested "10 tightest"; only
+board readings can establish the actual ten tightest CYD cases. The runner exits
+nonzero for inventory mismatch, failed heap loads, replay differences or check:cyd
+failure, while retaining completed results.
+
+Regressions: `python3 scripts/pocket-heap-test.py` and
+`python3 scripts/pocket-inventory-test.py` (C++17, zlib, Python stdlib).
+Implemented with Hermes Agent using OpenAI Codex GPT-6.1 Sol, directed by Lewis Moten.
+
 Site build-time tools remain in [`web/scripts`](../web/scripts/README.md).
 The [headless PLAYGAME capture harness](../tools/dosbox-286/README.md) records WAV
 and raw OPL audio under DOSBox-X's 286 instruction model at fixed cycles; it needs
