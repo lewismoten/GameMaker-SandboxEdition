@@ -144,7 +144,7 @@ This folder holds the build's Vite plugins and the scripts run by hand (from
   `sounds`, the intended sound such as `GRAV-ih-tass`, whole words in any case),
   or a step's own `spoken` where even that comes out wrong; the bubbles keep their written words,
   `npm run voice:words` (`narrate/words.ts`; `-- --only <word>[,<word>]`, `-- --compare` adds each
-  word as written, lexicon off) records each lexicon word alone in every voice whose lines say it,
+  word as written, lexicon off) records each lexicon word in a short frame in every voice whose lines say it,
   into `/.narrate/words/`, and lists what Whisper hears and what `narrate/letters.ts` spells (wav2vec2,
   no dictionary, so a misread made-up word shows; model outside the repo, `WAV2VEC2_MODEL`), in the
   terminal and `/.narrate/voice-words.md`; a changed respelling changes the spoken form's hash, so

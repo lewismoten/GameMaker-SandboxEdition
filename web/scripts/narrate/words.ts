@@ -98,7 +98,7 @@ async function main() {
   const report = [
     '# Voice words',
     '',
-    `Each lexicon word alone, in each voice that says it. Heard by Whisper / ${letters ? 'spelled by wav2vec2' : '(wav2vec2 not found: set WAV2VEC2_MODEL)'}. Clips are in \`.narrate/words/\`.`,
+    `Each lexicon word in the frame “This is …, again.”, in each voice that says it, one seeded take (a take can still slip: try the word in its real line too). Heard by Whisper / ${letters ? 'spelled by wav2vec2' : '(wav2vec2 not found: set WAV2VEC2_MODEL)'}. Clips are in \`.narrate/words/\`.`,
     '',
   ];
   for (const word of words) {
