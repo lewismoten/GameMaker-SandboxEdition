@@ -10,7 +10,8 @@ export type Section = (typeof SECTIONS)[number];
 
 export const EMPTY: Readonly<Record<Exclude<Section, 'Setup'>, string>> = {
   Mail: 'No letters yet. A call to a BBS on the PC can bring one home for Scoot.',
-  Postcards: 'No postcards yet. When Scoot rides along to another screen, it brings home a postcard from there.',
+  Postcards:
+    'No postcards yet. A game played to its end here puts the first stamp on this screen’s postcard, and each screen Scoot rides along to gives one of its own.',
   Packages: 'The satchel is empty. It holds up to three special deliveries, each a game from the catalog.',
 };
 
@@ -37,3 +38,21 @@ export function stampText(s: Stamp, title: (id: string) => string | undefined = 
 
 /** A postcard's heading: the world's name. */
 export const postcardTitle = (p: Postcard): string => `Greetings from ${worldName(p.world)}`;
+
+/** A postcard's stamps as text rows of two columns, `width` wide (SCOOT.EXE), each name cut to fit. */
+export function stampRows(p: Postcard, title: (id: string) => string | undefined, width: number): string[] {
+  const col = Math.floor((width - 2) / 2);
+  const cell = (st: Stamp) => {
+    const t = stampText(st, title);
+    return (t.length > col - 2 ? `${t.slice(0, col - 3)}.` : t).padEnd(col);
+  };
+  const rows: string[] = [];
+  for (let i = 0; i < p.stamps.length; i += 2)
+    rows.push(
+      `  ${p.stamps
+        .slice(i, i + 2)
+        .map(cell)
+        .join('')}`.trimEnd(),
+    );
+  return rows;
+}

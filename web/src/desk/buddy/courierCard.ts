@@ -4,8 +4,10 @@
 // and redraws when either side changes it.
 import './courierCard.css';
 import { h } from '../../editor/core/ui';
-import { COURIER_CHANGED, deleteLetter, loadCourier, markRead } from '../../courier/courierStore';
-import { letterById } from '../../courier/tables';
+import { COURIER_CHANGED, deleteLetter, loadCourier, markRead, type Stamp } from '../../courier/courierStore';
+import { PALETTES, letterById } from '../../courier/tables';
+import { stampSvg } from '../../courier/stampArt';
+import { catalogTitles } from '../../courier/stamps';
 import { EMPTY, SECTIONS, letterDate, postcardTitle, stampText, type Section } from '../../courier/courierText';
 
 export interface CourierCard {
@@ -26,7 +28,7 @@ export function courierCard(setup: HTMLElement): CourierCard {
     h('button', { class: 'courier-tab', role: 'tab', id: `courier-tab-${name}`, 'aria-controls': 'courier-panel', type: 'button' }, name),
   );
   const tablist = h('div', { class: 'courier-tabs', role: 'tablist', 'aria-label': 'Scoot’s satchel' }, ...tabs);
-  const panel = h('div', { class: 'courier-panel', id: 'courier-panel', role: 'tabpanel', tabindex: '-1' });
+  const panel = h('div', { class: 'courier-panel', id: 'courier-panel', role: 'tabpanel', tabindex: '0' });
   const el = h('div', { class: 'courier-sections' }, tablist, panel);
 
   const emptyNote = (text: string) => h('p', { class: 'courier-empty' }, text);
@@ -107,16 +109,40 @@ export function courierCard(setup: HTMLElement): CourierCard {
     ];
   };
 
+  // catalog games' titles for their stamps, looked up once the Postcards section first shows
+  let title: (id: string) => string | undefined = () => undefined;
+  let titles: Promise<void> | undefined;
+  const loadTitles = () =>
+    (titles ??= catalogTitles()
+      .then((t) => {
+        title = t;
+        if (open === 'Postcards' && el.isConnected) draw();
+      })
+      .catch(() => undefined));
+
+  const stamp = (s: Stamp) => {
+    const art = h('span', { class: 'courier-stamp-art' });
+    art.innerHTML = stampSvg(s.kind); // the stamps' own art (courier/stampArt.ts), no outside text
+    return h('li', { class: 'courier-stamp' }, art, h('span', { class: 'courier-stamp-words' }, stampText(s, title)));
+  };
+
   const postcards = () => {
     const c = loadCourier();
     if (!c.postcards.length) return [emptyNote(EMPTY.Postcards)];
+    void loadTitles();
     return [
       h(
         'ul',
         { class: 'courier-cards' },
-        ...c.postcards.map((p) =>
-          h('li', null, h('strong', null, postcardTitle(p)), ...p.stamps.map((s) => h('span', { class: 'courier-stamp' }, stampText(s)))),
-        ),
+        ...c.postcards.map((p) => {
+          const look = PALETTES[p.world % PALETTES.length];
+          return h(
+            'li',
+            { class: 'courier-postcard' },
+            h('strong', { class: 'courier-postcard-name', style: `background:${look.sky};color:${look.ink}` }, postcardTitle(p)),
+            p.stamps.length > 0 && h('ul', { class: 'courier-stamps', 'aria-label': 'Stamps' }, ...p.stamps.map(stamp)),
+          );
+        }),
       ),
     ];
   };
