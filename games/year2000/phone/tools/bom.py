@@ -52,12 +52,12 @@ GEN = {
 
 def key(p):
     r = p["ref"]
+    if r.startswith("RV"):
+        return ("RV", p["fp"], "")
     if r[0] in "RC":
         return (r[0] + ("E" if p["sym"].endswith("Polarized") else "0") if r[0] == "C" else "R", p["value"], p["fp"])
     if r.startswith("SW"):
         return ("SW", p["fp"], "")
-    if r.startswith("RV"):
-        return ("RV", p["fp"], "")
     if r.startswith("DS"):
         return ("DS", p["fp"], "")
     return (r, p["value"], p["fp"])
@@ -80,7 +80,7 @@ for k, ps in sorted(rows.items(), key=sortkey):
     refs = ",".join(sorted((p["ref"] for p in ps), key=lambda r: (r.rstrip("0123456789"), int("".join(c for c in r if c.isdigit())))))
     p0 = ps[0]
     r0 = p0["ref"]
-    if r0.startswith(("R", "C")):
+    if r0.startswith(("R", "C")) and not r0.startswith("RV"):
         if r0[0] == "R":
             tpl = GEN["R"]
         elif p0["sym"].endswith("Polarized"):
@@ -107,10 +107,17 @@ for refs, qty, value, desc, mpn, ord_ in (
 ):
     out.append(dict(Refs=refs, Qty=qty, Value=value, Description=desc, Footprint="-", Side="shell", MPN=mpn, Order_at=ord_, Stock_status="estimate, not checked at a shop"))
 
+# Historic listing snapshots, not live quotes. Unknowns must never become zero-cost parts.
+# Numeric cost columns and explicit unknown totals: OpenAI Codex (GPT-6), directed by Lewis Moten.
+from bom_costs import cost_fields, cost_totals
+for row in out:
+    row.update(cost_fields(row))
+csv_rows = out + cost_totals(out)
+
 with open(os.path.join(OUT, "bom.csv"), "w", newline="") as f:
-    w = csv.DictWriter(f, fieldnames=list(out[0]))
+    w = csv.DictWriter(f, fieldnames=list(out[0]), lineterminator="\n")
     w.writeheader()
-    w.writerows(out)
+    w.writerows(csv_rows)
 
 md = ["# Parts list: THE PHONE OF THE FUTURE (rev C)", "",
       "Untested design. Part numbers are examples to start a search; check each one's drawing against the footprint before buying. Prices and the full cost sheet: see the README.",

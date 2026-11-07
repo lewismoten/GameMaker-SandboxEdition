@@ -235,3 +235,5 @@ Level Maps scan results live in one JSON file per game under `levelViews/` and
 Regenerate after building matching disks; the existing Level Maps tests and
 `games/kit/syncCheck.ts` still reject stale hashes and secrets. These metadata files never
 change a game’s disk bytes.
+
+The balloon cube’s second folding step uses `balloonCubeLift.ts` to show the faces partly raised around the flat middle before the open cube view.

@@ -399,3 +399,18 @@ checked with `kicad-cli`). Firmware assembled with gputils/gpasm. The firmware s
 - KiCad stock symbols (CC-BY-SA 4.0 with the KiCad library exception) are embedded in the schematic. See `NOTICE.md`.
 
 No real phone brand is named. The game it goes with is `games/year2000`.
+
+## Numeric BOM costs
+
+`tools/bom.py` writes numeric USD `Unit_cost` and `Extended_cost` columns in
+`bom.csv`, with a supplier and price status for each line. These use only the
+November 3, 2026 listing evidence already recorded in the parts list; they are
+not current quotes. Resistors use the consumed share of a ten-part pack. The
+known subtotal excludes shipping, tax, sockets, board, batteries and shell.
+The total stays blank and reports the number of unknown lines until every
+listed part has a confirmed price. Unpriced or unavailable parts are never $0.
+`tools/bom_costs.py` holds this policy; run
+`python3 -m unittest discover -s tools -p test_bom_costs.py` from this folder.
+The thumbwheel potentiometer has its own listing rather than a resistor price.
+
+Numeric cost export and regressions made with OpenAI Codex (GPT-6), directed by Lewis Moten.
