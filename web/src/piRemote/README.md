@@ -19,7 +19,7 @@ https or localhost). Nothing on the site links to it.
 - `serialLink.ts`: the Web Serial port: ordered writes, a read loop of lines.
 - `soundSwitch.ts`: the **Pi sound** switch (off by default; its click starts the browser's
   audio). While on, the Pi's `SND` log lines (Game-Maker OS's sound events: `SND game`, `music
-  start|stop`, `voc`, `beep`, `stopall`, `end`; its `docs/play.md`) play here; off, a closed port
+start|stop`, `voc`, `beep`, `stopall`, `end`; its `docs/play.md`) play here; off, a closed port
   or `SND stopall` stops everything. A game the site does not have says so.
 - `soundLine.ts`: the `SND` line parser. `soundGame.ts`: the site game a Pi folder and `.GAM`
   name. `piSound.ts`: plays the events with the engine's `AudioEngine` (OPL2/CMF music, `.VOC`

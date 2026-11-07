@@ -8,7 +8,9 @@ import { h } from '../editor/core/ui';
 import { classify, INFO_LINE, keyLine, runLine, type Reply } from './protocol';
 import { ARROW_ROWS, EDIT_ROWS, LINUX_KEYS, MAIN_ROWS, NUMPAD_ROWS, type ScreenKey } from './keymap';
 import { HeldKeys, type KeyChange } from './heldKeys';
-import { SerialLink, webSerial } from './serialLink';
+import { SerialLink, webSerial, type SerialPortLike } from './serialLink';
+import { LogModel, stateLine } from './logModel';
+import { scrollKeyCode, targetKeepsKey } from './keyGuard';
 import { soundSwitch } from './soundSwitch';
 
 /** Lines kept in the log pane. */
@@ -26,11 +28,21 @@ export function renderPiRemote(el: HTMLElement): () => void {
   let infoWaiter: ((reply: Reply) => void) | undefined;
   /** A RUN is waiting for its OK or ERR. */
   let runAsked = false;
+  /** The Pi's port this site was already granted, so Connect needs no chooser. */
+  let granted: SerialPortLike | undefined;
+  /** The person has not pressed Disconnect: reconnect when the Pi is plugged back in. */
+  let wantOpen = false;
+  let showAll = false;
+  const model = new LogModel(LOG_LIMIT);
 
   const status = h('p', { class: 'pi-status', role: 'status' }, 'Not connected.');
+  const hint = h('p', { class: 'pi-hint' }, 'Press Connect, then choose “Zero W M0 recovery” in the list the browser shows.');
+  const piState = h('p', { class: 'pi-state' }, stateLine({}));
+  const hiddenNote = h('span', { class: 'pi-hidden-note' });
   const logList = h('ol', { class: 'pi-log-lines' });
   const logBox = h('div', { class: 'pi-log', role: 'log', 'aria-live': 'off', 'aria-label': 'Pi log', tabindex: '0' }, logList);
   const connectBtn = h('button', { type: 'button', class: 'pi-primary' }, 'Connect');
+  const otherBtn = h('button', { type: 'button', hidden: true }, 'Choose another port');
   const infoBtn = h('button', { type: 'button', disabled: true }, 'Info');
   const runBtn = h('button', { type: 'button', disabled: true }, 'Run Game-Maker OS');
   const forwardSwitch = h(
@@ -48,15 +60,17 @@ export function renderPiRemote(el: HTMLElement): () => void {
 
   const sound = soundSwitch();
 
+  sound.button.addEventListener('click', () => setTimeout(draw, 0));
+
   const link = new SerialLink(onLine, (error) => {
     sound.disconnected();
     for (const b of [infoBtn, runBtn, forwardSwitch]) b.disabled = true;
     setForwarding(false);
     held.releaseAll();
     paintKeys();
-    connectBtn.textContent = 'Connect';
-    connectBtn.disabled = !serial;
-    say(error ? `Disconnected: ${error}` : 'Disconnected.');
+    paintConnect();
+    if (wantOpen) say('The Pi went away. Plug it back in and this page reconnects by itself.');
+    else say(error ? `Disconnected: ${error}` : 'Disconnected.');
     log('note', error ? `Port closed: ${error}` : 'Port closed.');
   });
 
@@ -64,11 +78,45 @@ export function renderPiRemote(el: HTMLElement): () => void {
     status.textContent = text;
   }
 
-  function log(kind: string, text: string): void {
+  /** The log pane drawn again from the model (at most once a frame). */
+  let drawQueued = false;
+  function draw(): void {
+    drawQueued = false;
     const atEnd = logBox.scrollTop + logBox.clientHeight >= logBox.scrollHeight - 8;
-    logList.append(h('li', { class: `pi-line-${kind}` }, text));
-    while (logList.childElementCount > LOG_LIMIT) logList.firstElementChild?.remove();
+    const shown = model.visible(showAll, sound.isOn());
+    logList.replaceChildren(
+      ...shown.map((e) =>
+        h(
+          'li',
+          { class: `pi-line-${e.kind} pi-level-${e.level}` },
+          e.level !== 'info' ? h('strong', { class: 'pi-level-tag' }, e.level === 'error' ? 'Error ' : 'Warning ') : '',
+          e.text,
+          e.count > 1 ? h('span', { class: 'pi-count' }, ` ×${e.count}`) : '',
+        ),
+      ),
+    );
+    const hidden = model.entries.length - shown.length;
+    hiddenNote.textContent = showAll ? '' : hidden > 0 ? `${hidden} routine ${hidden === 1 ? 'line' : 'lines'} hidden` : '';
+    piState.textContent = stateLine(model.state);
     if (atEnd) logBox.scrollTop = logBox.scrollHeight;
+  }
+
+  function log(kind: string, text: string): void {
+    model.add(kind as 'ok', text);
+    if (!drawQueued) {
+      drawQueued = true;
+      requestAnimationFrame(draw);
+    }
+  }
+
+  function paintConnect(): void {
+    connectBtn.disabled = !serial;
+    connectBtn.textContent = link.open ? 'Disconnect' : granted ? 'Reconnect' : 'Connect';
+    otherBtn.hidden = link.open || !granted;
+    hint.hidden = link.open;
+    hint.textContent = granted
+      ? 'This computer remembers the Pi, so Reconnect needs no list. Plug it in first.'
+      : 'Press Connect, then choose “Zero W M0 recovery” in the list the browser shows.';
   }
 
   function onLine(line: string): void {
@@ -84,7 +132,10 @@ export function renderPiRemote(el: HTMLElement): () => void {
       runAsked = false;
       // RUN is refused while a program runs (sandbox-kernel core/protocol.c)
       if (reply.text === 'ERR not-ready') say('Not started: a program is already running on the Pi.');
-      else say(reply.kind === 'ok' ? 'Game-Maker OS is starting.' : `Not started: ${reply.text}`);
+      else {
+        say(reply.kind === 'ok' ? 'Game-Maker OS is starting.' : `Not started: ${reply.text}`);
+        if (reply.kind === 'ok') model.program(GMOS);
+      }
     } else if (reply.text === 'ERR not-ready') say('The Pi wants INFO first. Press Info, then try again.');
     if (reply.kind === 'log') sound.line(reply.text);
     log(reply.kind, reply.text);
@@ -210,8 +261,19 @@ export function renderPiRemote(el: HTMLElement): () => void {
     document.body.classList.toggle('pi-forwarding', on);
   }
 
+  /** The on-screen key lit while its physical key is down and nothing is sent. */
+  function mirror(code: string, down: boolean): void {
+    keyButtons.find((b) => b.dataset.code === code)?.classList.toggle('echo', down);
+  }
+
   const onKeyDown = (e: KeyboardEvent) => {
-    if (!forwarding || e.metaKey) return;
+    if (!forwarding) {
+      const code = scrollKeyCode(e);
+      if (code && !targetKeepsKey(e.target, code)) e.preventDefault();
+      if (!e.metaKey && LINUX_KEYS[e.code] !== undefined) mirror(e.code, true);
+      return;
+    }
+    if (e.metaKey) return;
     if (e.ctrlKey && e.altKey && e.code === 'KeyK') {
       e.preventDefault();
       setForwarding(false);
@@ -225,45 +287,88 @@ export function renderPiRemote(el: HTMLElement): () => void {
     if (!e.repeat) send([held.press(code, 'physical')]);
   };
   const onKeyUp = (e: KeyboardEvent) => {
-    if (!forwarding) return;
+    if (!forwarding) {
+      mirror(e.code, false);
+      return;
+    }
     const code = LINUX_KEYS[e.code];
     if (code === undefined) return;
     e.preventDefault();
     e.stopPropagation();
     send([held.release(code, 'physical')]);
   };
-  const onBlur = () => send(held.releaseAll('physical'));
+  const onBlur = () => {
+    send(held.releaseAll('physical'));
+    for (const b of keyButtons) b.classList.remove('echo');
+  };
   window.addEventListener('keydown', onKeyDown, true);
   window.addEventListener('keyup', onKeyUp, true);
   window.addEventListener('blur', onBlur);
 
   // ---- buttons ----------------------------------------------------------------------
 
-  connectBtn.addEventListener('click', () => {
+  function explain(e: unknown): string {
+    const message = e instanceof Error ? e.message : String(e);
+    if (/No port selected|cancel|NotFoundError/i.test(message))
+      return 'Not connected: no port was chosen. Press Connect and pick “Zero W M0 recovery”; if it is not listed, check the cable and that the Pi is on.';
+    if (/Failed to open|busy|in use|NetworkError|access denied/i.test(message))
+      return 'The port is busy: another program (a terminal, or another browser tab) has it open. Close that, then press Connect.';
+    if (/no longer|disconnect|unplug|device has been lost/i.test(message)) return 'The Pi is not plugged in. Plug it in, then press Connect.';
+    return `Could not connect: ${message}`;
+  }
+
+  /** Opens the remembered port, or asks for one (a click is needed for the list). */
+  function connect(chooser: boolean): void {
     if (!serial) return;
-    if (link.open) {
-      send(held.releaseAll());
-      void link.disconnect();
-      return;
-    }
     connectBtn.disabled = true;
-    say('Choose the Pi (“Zero W M0 recovery”) in the browser’s list…');
+    say(granted && !chooser ? 'Opening the remembered port…' : 'Choose “Zero W M0 recovery” in the browser’s list…');
     link
-      .connect(serial)
+      .connect(serial, chooser ? undefined : granted)
       .then(async () => {
-        connectBtn.textContent = 'Disconnect';
-        connectBtn.disabled = false;
+        wantOpen = true;
+        granted = link.current;
+        paintConnect();
         for (const b of [infoBtn, runBtn, forwardSwitch]) b.disabled = false;
         say('Port open; asking the Pi who it is…');
         log('note', 'Port open.');
         if (!(await handshake())) say('The port is open but the Pi did not answer INFO. Is the kernel running?');
       })
       .catch((e: unknown) => {
-        connectBtn.disabled = false;
-        const message = e instanceof Error ? e.message : String(e);
-        say(/No port selected|cancel/i.test(message) ? 'Not connected: no port was chosen.' : `Could not connect: ${message}`);
+        paintConnect();
+        say(explain(e));
       });
+  }
+
+  connectBtn.addEventListener('click', () => {
+    if (link.open) {
+      wantOpen = false;
+      send(held.releaseAll());
+      void link.disconnect();
+      return;
+    }
+    connect(!granted);
   });
+  otherBtn.addEventListener('click', () => connect(true));
+  const onPlug = () => {
+    if (!serial || link.open || !wantOpen) return;
+    void SerialLink.granted(serial).then((p) => {
+      if (!p || link.open || !wantOpen) return;
+      granted = p;
+      say('The Pi is back; reconnecting…');
+      connect(false);
+    });
+  };
+  const onUnplug = () => {
+    if (link.open) say('The Pi was unplugged. Plug it back in and this page reconnects by itself.');
+  };
+  serial?.addEventListener?.('connect', onPlug);
+  serial?.addEventListener?.('disconnect', onUnplug);
+  if (serial) {
+    void SerialLink.granted(serial).then((p) => {
+      granted = p;
+      paintConnect();
+    });
+  }
   infoBtn.addEventListener('click', () => void link.send(INFO_LINE));
   runBtn.addEventListener('click', () => {
     log('note', `RUN ${GMOS}`);
@@ -271,7 +376,28 @@ export function renderPiRemote(el: HTMLElement): () => void {
     void link.send(runLine(GMOS));
   });
   forwardSwitch.addEventListener('click', () => setForwarding(!forwarding));
-  const clearBtn = h('button', { type: 'button', onclick: () => logList.replaceChildren() }, 'Clear log');
+  const clearBtn = h(
+    'button',
+    {
+      type: 'button',
+      onclick: () => {
+        model.clear();
+        draw();
+      },
+    },
+    'Clear log',
+  );
+  const allSwitch = h(
+    'button',
+    { type: 'button', role: 'switch', 'aria-checked': 'false', class: 'pi-switch' },
+    h('span', { class: 'pi-switch-knob', 'aria-hidden': 'true' }),
+    'Show everything',
+  );
+  allSwitch.addEventListener('click', () => {
+    showAll = !showAll;
+    allSwitch.setAttribute('aria-checked', String(showAll));
+    draw();
+  });
 
   const support = !serial
     ? h(
@@ -295,7 +421,8 @@ export function renderPiRemote(el: HTMLElement): () => void {
         'A keyboard for the Raspberry Pi Zero W running Game-Maker OS, over its USB cable. Press a key with the mouse and it stays down on the Pi until you let go. Shift, Ctrl and Alt stay down for the next key.',
       ),
       support,
-      h('div', { class: 'pi-bar' }, connectBtn, infoBtn, runBtn, forwardSwitch, sound.button),
+      h('div', { class: 'pi-bar' }, connectBtn, otherBtn, infoBtn, runBtn, forwardSwitch, sound.button),
+      hint,
       status,
       sound.status,
       banner,
@@ -303,8 +430,10 @@ export function renderPiRemote(el: HTMLElement): () => void {
       h(
         'section',
         { class: 'pi-log-section', 'aria-labelledby': 'pi-log-title' },
-        h('div', { class: 'pi-log-head' }, h('h2', { id: 'pi-log-title' }, 'Pi log'), clearBtn),
+        h('div', { class: 'pi-log-head' }, h('h2', { id: 'pi-log-title' }, 'Pi log'), h('div', { class: 'pi-log-tools' }, allSwitch, clearBtn)),
+        piState,
         logBox,
+        hiddenNote,
       ),
     ),
   );
@@ -315,6 +444,9 @@ export function renderPiRemote(el: HTMLElement): () => void {
     window.removeEventListener('keydown', onKeyDown, true);
     window.removeEventListener('keyup', onKeyUp, true);
     window.removeEventListener('blur', onBlur);
+    serial?.removeEventListener?.('connect', onPlug);
+    serial?.removeEventListener?.('disconnect', onUnplug);
+    wantOpen = false;
     if (link.open) {
       send(held.releaseAll());
       void link.disconnect();

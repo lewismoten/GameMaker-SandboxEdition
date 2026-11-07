@@ -14,6 +14,8 @@ export interface SoundSwitch {
   line(text: string): void;
   /** The port closed: everything stops and the switch goes off. */
   disconnected(): void;
+  /** Whether the sounds play here now. */
+  isOn(): boolean;
   dispose(): void;
 }
 
@@ -84,6 +86,7 @@ export function soundSwitch(): SoundSwitch {
   });
 
   return {
+    isOn: () => on,
     button,
     status,
     line(text) {
