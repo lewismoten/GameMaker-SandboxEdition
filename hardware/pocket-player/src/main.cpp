@@ -21,6 +21,7 @@
 #include "gmcfg.h"
 #include "screen.h"
 #include "picker_draw.h"
+#include "splash.h"
 #include "library.h"
 #include <mbedtls/sha256.h>
 #ifdef POCKET_CYD28
@@ -1019,6 +1020,8 @@ static const char* subLabel(int c,int s) {
   if(c==1)return stages[s>=0&&s<9?s:8];if(c==6)return s==2?"Shareware":"Gameware";
   if(c==5)return s>0&&s<=ncollections?catalog->collections[s-1].label:"Unsorted";return rootLabel(c);
 }
+/** The icon (icons_data.h order) for a category tile: root slot c of All, or sub slot c of a category. */
+static int tileIcon(int cat,int c){static const int roots[]={0,6,9,10,11,12,13,16};if(!cat)return roots[c>=0&&c<8?c:0];if(cat==1)return c>=1&&c<=8?c:8;if(cat==6)return c==2?15:14;if(cat==5)return c>0?18:8;return -1;}
 static bool inCategory(const GameEntry&g) {return pk::belongs(g,category,subcategory);}
 static void filterGames() {
   nmatch=0;if(!catalog)return;
@@ -1060,10 +1063,11 @@ static void drawPicker(bool clear = true, bool paging = false) {
   bool was=sdUp;if(haveSD&&!browsingCategories)mountSD();
   for(int r=0;r<6;r++) {
     int at=page*6+r;if(at>=count)continue;
-    if(browsingCategories){int c=categorySlots[at];pk::tileLabel(tft,scr::W,r,category?subLabel(category,c):rootLabel(c));}
+    if(browsingCategories){int c=categorySlots[at];pk::tileLabel(tft,scr::W,r,category?subLabel(category,c):rootLabel(c),false,tileIcon(category,c),true);}
     else {int i=catalog->matches[at];pk::Meta m;gameMeta(games[i],m);uint8_t*raw=preview(games[i]);pk::thumbnail(tft,scr::W,r,raw,m.dos,i==selected,true);free(raw);}
   }
   if(!was)unmountSD();
+  if(!count&&searchText[0])pk::drawSmallIcon(tft,17,16,68,true);
   if(!count){tft.setTextColor(C_WHITE,C_BLACK);tft.setTextSize(1);tft.setCursor(16,90);tft.print(searchText[0]?"No matching titles":"No games found");}
   if(uidConflict){tft.setTextColor(C_YELLOW,C_BLACK);tft.setTextSize(1);tft.setCursor(4,188);tft.print("UID conflict: first copy kept");}
   if(catalogOverflow){tft.setTextColor(C_YELLOW,C_BLACK);tft.setTextSize(1);tft.setCursor(4,198);tft.print("Library limit: 512 games / 24 collections");}
@@ -1073,6 +1077,7 @@ static void drawSearch() {
   tft.fillScreen(C_BLACK);pk::drawKeyboard(tft,scr::W,scr::H,32,searchText);
   pk::drawButton(tft,0,0,40,32,"<");
   pk::drawButton(tft,42,0,scr::W,32,searchAll?"All games":"This category");
+  pk::drawSmallIcon(tft,searchAll?0:18,50,8,true);
 }
 static void drawDetails() {
   tft.fillScreen(C_BLACK);title("Game details");
@@ -1764,7 +1769,7 @@ void setup() {
   haveGT = gt.probe();
   if (dsState != 3) runDisplaySetup();  // first start (or one left unfinished): the display setup screen
 #endif
-  message("Game-Maker Pocket Player");
+  pk::drawSplash(tft, scr::W, scr::H, true);  // the Sandbox logo first; the picker replaces it once the list is loaded
   spk::begin();
   haveGT = gt.probe();
   char line[64];
@@ -1779,8 +1784,6 @@ void setup() {
   if (haveGT) snprintf(line, sizeof line, "Touch: GT911 at 0x%02X", gt.addr);
   else snprintf(line, sizeof line, "Touch: no GT911 found");
 #endif
-  tft.setCursor(20, 150);
-  tft.print(line);
   Serial.println(line);
   if (!LittleFS.begin(false)) {
     message("LittleFS mount failed");
