@@ -39,6 +39,9 @@ export const CREDITS = withCreditPage(
 |(c) 1994 Sandbox Software
 
 Design, pixels, beeps and levels by Claude Sonnet 5.5, an AI model made by Anthropic.
+Music: OpenAI Codex.
+
+Unused monster templates removed by OpenAI Codex (GPT-6), directed by Lewis Moten.
 
 Made with GAME-MAKER 3.0 from Recreational Software Designs.
 

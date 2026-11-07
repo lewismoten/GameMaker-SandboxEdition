@@ -6,7 +6,7 @@ import type { GameFiles } from '@lewismoten/gamemaker-sandbox-engine/core/gameFi
 import { newCards, packPocketGame, POCKET_MAX_LEVELS, POCKET_MAX_LINKS, type PocketSource, type PocketStore } from './pocketPack';
 import { gmpName, pocketId, writeGmp } from './pocketFile';
 
-export interface PocketExport {
+interface PocketExport {
   name: string;
   bytes: Uint8Array;
   /** What the board leaves out or may not manage, in plain words. */

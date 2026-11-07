@@ -4,8 +4,8 @@
 // keypad beside it.
 import type { FrameLook, Metal } from './frameLevel';
 
-export const ART_W = 88;
-export const ART_H = 84;
+const ART_W = 88;
+const ART_H = 84;
 
 const METALS: Record<Metal, [dark: string, light: string]> = {
   bronze: ['#7a4a24', '#d39a63'],

@@ -286,6 +286,7 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
     category: 'playing',
   },
   { id: 'play-save', title: 'Save point', desc: 'Saved a game while playing it.', icon: '📼', category: 'playing' },
+  { id: 'play-all-mine', title: 'All Mine', desc: 'Fill all ten high-score places in one game with the same name.', icon: '🏆', category: 'playing' },
   {
     id: 'play-sandbox',
     title: 'Sandbox regular',

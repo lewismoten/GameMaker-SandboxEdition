@@ -205,7 +205,7 @@ export function arrangements(game: Game, limit = 6): Arrangement[] {
   if (!g.nodes.length) return [{ kind: 'grid', positions: new Map(), cost: 0 }];
   const candidates: { cells: Cells; bias: number; kind: Arrangement['kind'] }[] = [];
   for (let leafRows = 1; leafRows <= 9; leafRows++)
-    for (const beside of [false, true]) {
+    for (const beside of [false, true, 'above', 'below'] as const) {
       const lr = treeCells(g, leafRows, beside);
       candidates.push({ cells: lr, bias: 0, kind: 'tree' }, { cells: transpose(lr), bias: 0.5, kind: 'tree-down' });
     }

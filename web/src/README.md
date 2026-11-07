@@ -36,6 +36,8 @@ front (the magazine, the desk, the level check's explorer, the engine…), walki
 
 ## Modules at the top
 
+- [`challenges/`](challenges/README.md): reviewed challenge descriptors and the guest-state isolation design and storage seam.
+
 - [`main.ts`](main.ts), [`modernUi.ts`](modernUi.ts): the site's entry and today's web interface
   (see Main flows).
 - `archive.html` → [`archive/archive.ts`](archive/archive.ts) ([README](archive/README.md); nothing links to it): fetches every file in `archive.json` (the build writes it from the whole built site: the offline copy plus link previews, the pocket firmware, crawler files, trinkets and laser kits; never a secret game's or the gate lists), four at a time with a progress bar, so a web archive's "Save page" records them ([`archive/plan.ts`](archive/plan.ts) orders them: shell, home and desk, the rest, then game packs with `?games=1`; `?part=N` slices). [`offline/replay.ts`](offline/replay.ts) spots a Wayback replay (its `__wm` / `_WBWombat` globals or a `/web/<14 digits>/` address); there `offline.ts` registers no service worker and a missing chunk gets a calm note, not the reload notice.
@@ -59,7 +61,7 @@ front (the magazine, the desk, the level check's explorer, the engine…), walki
   [`seededRandom.ts`](seededRandom.ts): the seeded random numbers (Mulberry32, xorshift32) and
   string hash (FNV-1a) that pictures, songs, maps and walkthroughs use to come out the same every
   time.
-- [`devReload.ts`](devReload.ts): development only, a Reload button in place of reloading the page; the dev server keeps serving the old code until it is pressed (`manualReload` in `vite.config.ts` holds back Vite's invalidation)
+- [`devReload.ts`](devReload.ts): development only, a Reload button in place of reloading the page, labeling generated game files separately from source changes; the dev server keeps serving the old code until it is pressed (`manualReload` in `vite.config.ts` holds back Vite's invalidation)
 - [`devLog/`](devLog/README.md): `interactionLog.ts`: development on localhost only, opt in with the 🙈/🐵 corner switch (remembered): logs screen size, pointer, clicks, keys (never what is typed in a field), routes, slow paints, long tasks and every JavaScript error to `.for-lewis/debug/interaction-log/<date>.jsonl` through `scripts/devLog.ts`; it pauses after 5 minutes with no mouse or keyboard
 - [`devLog/gameLog.ts`](devLog/gameLog.ts), [`devLog/replayCore.ts`](devLog/replayCore.ts): with the 🐵 switch on, a running game also logs `game-start` (game, .gam hash, random seed, hardware), `game-input` (the keys the game applied, `[clock, scan, ...]`), `game-snap` (scene, hero, hit points, lives, score, about every second and on scene change, hurt, death, pickup and win), `game-note` and `game-end`; `npm run replay:log -- <log.jsonl>` (`scripts/replayLog.ts`) replays it headless and checks each snapshot
   (which would switch off the desk's PC) whenever a source file changes.
@@ -129,6 +131,44 @@ SDK implementation lives in the packages below; the app imports their declared e
 
 - [`editor/`](editor/README.md): today's web interface: the home page, the workspace, the editors,
   the Level check and the Guide.
+  Subareas:
+  - [`editor/check/`](editor/check/README.md): level check orchestration, worker protocol, exploration and reporting.
+  - [`editor/check/checks/`](editor/check/checks/README.md): individual static and play-derived design checks.
+  - [`editor/check/generators/`](editor/check/generators/README.md): one-click fixes and maze setup using ordinary game data.
+  - [`editor/check/walk/`](editor/check/walk/README.md): walkthrough generation, replay verification and kept author/bot routes.
+  - [`editor/colorHelp/`](editor/colorHelp/README.md): optional color naming, look-alike warnings and simulated previews.
+  - [`editor/core/`](editor/core/README.md): shared editor project, history, DOM and indexed drawing helpers.
+  - [`editor/editors/`](editor/editors/README.md): file-kind dispatch and lazy editor registration.
+  - [`editor/editors/animation/`](editor/editors/animation/README.md): FLI frame editing and Scene/Frames workflows.
+  - [`editor/editors/animation/scene/`](editor/editors/animation/scene/README.md): companion-backed animation Scene maker and renderer.
+  - [`editor/editors/animation/shrink/`](editor/editors/animation/shrink/README.md): worker-backed FLI size reduction and real result preview.
+  - [`editor/editors/backdrop/`](editor/editors/backdrop/README.md): BKD picture-window editing and picture resolution.
+  - [`editor/editors/blocks/`](editor/editors/blocks/README.md): block-set pixel and behavior editor.
+  - [`editor/editors/character/`](editor/editors/character/README.md): hero starting values, sequences and character frames.
+  - [`editor/editors/highScores/`](editor/editors/highScores/README.md): HIS table editing.
+  - [`editor/editors/integrator/`](editor/editors/integrator/README.md): GAM scenes, links and boards.
+  - [`editor/editors/integrator/dosPlayer/`](editor/editors/integrator/dosPlayer/README.md): DOS player customization UI and preview.
+  - [`editor/editors/map/`](editor/editors/map/README.md): map painting, monsters, viewport and play entry.
+  - [`editor/editors/map/check/`](editor/editors/map/check/README.md): level-check UI, heat maps and author play sessions.
+  - [`editor/editors/map/generate/`](editor/editors/map/generate/README.md): seeded map-generation dialog and placement.
+  - [`editor/editors/map/links/`](editor/editors/map/links/README.md): integrator link markers and detail popover on maps.
+  - [`editor/editors/map/tools/`](editor/editors/map/tools/README.md): map selection, terrain, stamps and building tools.
+  - [`editor/editors/monsters/`](editor/editors/monsters/README.md): monster values, animation and movement-path UI.
+  - [`editor/editors/music/`](editor/editors/music/README.md): CMF tracks, instruments, piano-roll integration and playback.
+  - [`editor/editors/music/arrange/`](editor/editors/music/arrange/README.md): seeded accompaniment and melody-copy transforms.
+  - [`editor/editors/music/roll/`](editor/editors/music/roll/README.md): layered piano-roll input and cached rendering.
+  - [`editor/editors/picture/`](editor/editors/picture/README.md): GIF viewing/import and copying regions into blocks.
+  - [`editor/editors/recording/`](editor/editors/recording/README.md): REC demo recording, playback and trimming.
+  - [`editor/editors/sample/`](editor/editors/sample/README.md): VOC waveform editing and recording.
+  - [`editor/editors/slideShow/`](editor/editors/slideShow/README.md): LST media sequencing on a timeline.
+  - [`editor/editors/sounds/`](editor/editors/sounds/README.md): SND speaker and Sound Blaster effect editing.
+  - [`editor/editors/textScreen/`](editor/editors/textScreen/README.md): TXT page editing and game-accurate preview.
+  - [`editor/keymap/`](editor/keymap/README.md): computed game controls and reusable Keys dialog.
+  - [`editor/shell/`](editor/shell/README.md): home, workspace, asset browsing and project actions.
+  - [`editor/tools/`](editor/tools/README.md): file-maker registry, import/conversion and generators.
+  - [`editor/tools/cards/`](editor/tools/cards/README.md): instruction and level-card dialogs and generated files.
+  - [`editor/tools/opening/`](editor/tools/opening/README.md): opening-sting selection, previews and scene wiring.
+  - [`editor/widgets/`](editor/widgets/README.md): reusable editor controls, previews and check/play dialogs.
 - [`editor/disk/`](editor/disk/README.md): the disk-space tool: merges of monster files, block sets and palettes, and the floppy disks a game needs.
 - [`editor/editors/palette/`](editor/editors/palette/README.md): VGA palette editing, role reservations and contrast checks.
 - [`saves/`](saves/README.md): the home page's Saves & scores panel: saved games, high scores and
@@ -151,6 +191,8 @@ SDK implementation lives in the packages below; the app imports their declared e
 - [`tour/`](tour/README.md): the guided tour: characters from the games point at and press the
   page's controls while another explains them, with captions, a Sandbox game's music and a
   recording mode; started from the header's ? button, ⚙ Settings or `#/?tour=all`.
+  Subarea:
+  - [`tour/chapters/`](tour/chapters/README.md): guided-tour chapter data and shared targets.
 
 ### The assistant: AI tools working on a game
 
@@ -183,11 +225,18 @@ SDK implementation lives in the packages below; the app imports their declared e
   print shop's disk labels, CD labels and retail boxes, the site's videos and each game's walkthrough video.
 - [`manual/`](manual/README.md): the Owner's Guide, the web Guide, each game's manual and box
   contents, the zine, the Ultimate Owner's Guide and TURBO BUTTON.
+  Subareas:
+  - [`manual/epub/`](manual/epub/README.md): on-demand EPUB builders, packaging and validation.
+  - [`manual/magazine/`](manual/magazine/README.md): TURBO BUTTON issue assembly and reading/rendering.
+  - [`manual/magazine/sections/`](manual/magazine/sections/README.md): magazine article/ad section factories.
+  - [`manual/magazine/sections/spring93/`](manual/magazine/sections/spring93/README.md): spring 1993 issue-specific sections.
+  - [`manual/ultimate/`](manual/ultimate/README.md): ultimate Owner's Guide chapter content and booklet flow.
+  - [`manual/zine/`](manual/zine/README.md): NO CARRIER and Tiny Pockets Press paper items.
 
 ## Main flows
 
-**Desk or modern UI.** `main.ts` is a tiny entry: it loads `desk/desk.ts` or `modernUi.ts`
-(today's home and workspace; the Guide is its own download) only for the interface being shown,
+**Desk or modern UI.** `main.ts` loads `desk/desk.ts`, `editor/shell/home.ts` or `modernUi.ts`
+(opening a project; the Guide is its own download) only for the route being shown,
 and the editors (`editor/editors/registry.ts` `loadEditor`) one at a time, as files of each kind
 are opened, so each interface is its own download. `offline.ts` registers the service worker
 (`siteWorker.ts`), which precaches only the app shell and caches games as they are used; a new

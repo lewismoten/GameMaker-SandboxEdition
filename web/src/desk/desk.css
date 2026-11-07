@@ -223,6 +223,8 @@
 
 .monitor .enlarge {
   position: absolute;
+  min-width: 26px;
+  min-height: 26px;
   right: 13%;
   bottom: 1.6%;
   padding: 1px 6px;
@@ -367,6 +369,8 @@
 
 .monitor .enlarge {
   position: absolute;
+  min-width: 26px;
+  min-height: 26px;
   right: 13%;
   bottom: 1.6%;
   padding: 1px 6px;
@@ -851,15 +855,15 @@
 }
 
 .eject-btn::before {
-  inset: -9px -4px;
+  inset: -13px -8px;
 }
 
 .eject-btn.wide::before {
-  inset: -10px -6px;
+  inset: -13px -8px;
 }
 
 .case button.case-btn::before {
-  inset: -2px 0;
+  inset: -4px 0;
 }
 
 .monitor .enlarge::before {
@@ -968,6 +972,8 @@
 
 .drive.fdd .eject-btn.flat {
   position: absolute;
+  /* Keep the enlarged hit area above the decorative slot and A: label. */
+  z-index: 1;
   right: calc(7 * var(--mm));
   bottom: calc(2.6 * var(--mm));
   width: calc(11 * var(--mm));
@@ -979,7 +985,7 @@
 }
 
 .drive.fdd .eject-btn.flat::before {
-  inset: -10px -8px;
+  inset: -13px -10px;
 }
 
 /* pressed in: the button sinks into the face until the disk is out */

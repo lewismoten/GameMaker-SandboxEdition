@@ -58,15 +58,15 @@ async function main() {
   try {
     for (const theme of ['light', 'dark'] as const) {
       for (const width of [1440, 390]) {
-        const ctx = await browser.newContext({ viewport: { width, height: width === 390 ? 844 : 900 } });
+        const ctx = await browser.newContext({ viewport: { width, height: width === 390 ? 844 : 900 }, colorScheme: theme });
         await forceTheme(ctx, theme);
         const page = await ctx.newPage();
         const requests: string[] = [];
         page.on('request', (r) => requests.push(r.url()));
         await page.goto(`http://127.0.0.1:${port}/#/`, { waitUntil: 'load', timeout: 240000 });
-        await assertTheme(page, theme);
         const input = page.locator('input.lib-search');
         await input.waitFor({ timeout: 120000 });
+        await assertTheme(page, theme);
         const before = requests.length;
         // no deep reads before the box is used
         const early = requests.filter((u) => /deepIndex|deepExtract/.test(u)).length;

@@ -1,4 +1,4 @@
-// The music on a slow PC: a disk read holds the song, the timer interrupt's cost, and Today untouched.
+// Disk reads freeze gameplay, not the timer-driven song; interrupt costs and Today stay unchanged.
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { costsFor, musicHoldMs, SPEED_PRESETS, TURBO_OFF, vocStallMs } from '@lewismoten/gamemaker-sandbox-engine/engine/slowPc';
@@ -8,20 +8,22 @@ import { INTERRUPT_MS, songIsrMs, songLoad, songPeakIsrMs } from '@lewismoten/ga
 const glub = (name: string) => new Uint8Array(readFileSync(new URL(`../../../cd/gameware/glub/${name}.cmf`, import.meta.url)));
 const SONGS = ['gmopenin', 'gmsong1', 'gmsong2', 'gmsong4', 'gmsong5', 'gmsong6'];
 
-describe('a slow PC holds the music while it reads the disk', () => {
-  it('for the whole read on every slow preset, and never on Today or the desk turbo', () => {
+describe('a slow PC keeps the music timer running while it reads the disk', () => {
+  it('freezes the game for the unchanged read cost, but never holds music on a preset', () => {
+    const disks = { '286': [30, 400], '386': [18, 800], '486': [12, 1500], ps1: [80, 150] };
     for (const k of ['286', '386', '486', 'ps1'] as const) {
       const read = vocStallMs(SPEED_PRESETS[k], 23699);
-      expect(musicHoldMs(SPEED_PRESETS[k], read)).toBe(read);
+      const [open, bytesPerMs] = disks[k];
+      expect(read).toBe(open + 23699 / bytesPerMs);
+      expect(musicHoldMs(SPEED_PRESETS[k], read), k).toBe(0);
     }
     expect(musicHoldMs(costsFor('today'), 500)).toBe(0);
     expect(musicHoldMs(TURBO_OFF, 500)).toBe(0);
   });
 
-  it("holds Glubada Pond's level-start voice about a quarter second on the PS/1", () => {
-    const hold = musicHoldMs(SPEED_PRESETS.ps1, vocStallMs(SPEED_PRESETS.ps1, 23699)); // music.voc
-    expect(hold).toBeGreaterThan(160);
-    expect(hold).toBeLessThan(260);
+  it('retains an explicit timer-masked custom PC without imposing it on the presets', () => {
+    expect(musicHoldMs({ ...SPEED_PRESETS.ps1, readHoldsMusic: true }, 500)).toBe(500);
+    expect(musicHoldMs({ ...SPEED_PRESETS.ps1, readHoldsMusic: false }, 500)).toBe(0);
   });
 });
 

@@ -6,7 +6,7 @@
   "hero": "MARA",
   "year": 1994,
   "price": "Free",
-  "version": "1.1",
+  "version": "1.2",
   "blurb": "Two short levels about picking things up. In the first, three crates lie on the ground: P puts one in the pack, D puts one down where Mara stands, and three put down one on another are a stair up a wall too high to jump. In the second, a flame and a star wait on stands; Enter throws whichever you carry, the flame first, so putting the flame down is how you throw the star. Each throw is a sequence tied to a block. Signs explain each idea, and every level has a page on how it is made.",
   "exe": "PICKITUP.EXE",
   "dosName": "PICKITUP",

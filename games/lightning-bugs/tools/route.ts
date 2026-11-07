@@ -100,7 +100,7 @@ export async function inStep(bot: StarterBot): Promise<void> {
   if (own.inStep) throw new Error(`level 1: the six kinds should never be in step; they were at ${own.inStep} ticks`);
   if (own.mostLit === 1) throw new Error('level 1: the six kinds should never all be lit at once');
   if (own.overHalf > 220 * 0.1) throw new Error(`level 1: more than half the six kinds should be lit at only a few ticks, not ${own.overHalf} of 220`);
-  if (own.flashed.size < 5) throw new Error(`level 1: most of the six kinds should flash while Yana watches, not ${own.flashed.size}`);
+  if (own.flashed.size < 5) throw new Error(`level 1: most of the six kinds should flash while Rima watches, not ${own.flashed.size}`);
   bot.say(`the six kinds: never in step, at most ${pct(own.mostLit)} lit at once, over half lit at ${own.overHalf} of 220 ticks, ${own.flashed.size} flashed`);
   await must(bot, bot.walk(STEP_ROOM.signs[2] + 1, 'the last sign'), 'to the last sign');
   await must(bot, bot.wait(LOOK), 'reading');
@@ -127,6 +127,6 @@ export async function duskMeadow(bot: StarterBot): Promise<void> {
     await must(bot, bot.walk(x, 'a sign'), 'to a sign');
     await must(bot, bot.wait(LOOK), 'reading');
   }
-  if (flashed < 8) throw new Error(`level 2: the meadow's fireflies should flash while Yana watches; only ${flashed} did`);
+  if (flashed < 8) throw new Error(`level 2: the meadow's fireflies should flash while Rima watches; only ${flashed} did`);
   await leave(bot, bot.walk(DUSK_ROOM.exit, 'the door'), 'the door');
 }

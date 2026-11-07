@@ -108,6 +108,7 @@ const BOX_TYPES: Record<string, ShelfType> = {
   hintoffer: 'hintcard',
   stickers: 'stickers',
   'brief-story-zines': 'magazine',
+  'navigator-relay': 'letter',
 };
 
 /** A game's own piece (its printables.json), by its kind and, for a few kinds, its title. */

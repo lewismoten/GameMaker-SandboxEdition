@@ -1,12 +1,11 @@
 // Node only (scripts/levelViews.ts, levelViews.test.ts and games/kit/syncCheck.ts): reading a
 // game's disk for the Level Maps' seen areas (levelViewsPlay.ts finds them), the hash that says
-// levelViews.json is current for it, and the file as the script writes it.
+// levelViews/*.json is current for it, and the file as the script writes it.
 import { createHash } from 'node:crypto';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { BACKBL, CHARBL, MONBL, parseBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { parseGame, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
-import type { LevelViews } from '../src/manual/printables/levelViews';
 
 /** Bump when the scan itself changes what it finds, so every game reads as out of date. */
 const VERSION = 2;
@@ -49,10 +48,3 @@ export function levelViewsHash(gamesDir: string, id: string): string | undefined
   h.update(JSON.stringify([about.tinHeart, about.easterEgg]));
   return h.digest('hex').slice(0, 16);
 }
-
-/** levelViews.json as the script writes it: one game a line. */
-export const levelViewsJson = (v: LevelViews): string =>
-  `{\n${Object.entries(v)
-    .sort(([a], [b]) => a.localeCompare(b))
-    .map(([id, g]) => `  ${JSON.stringify(id)}: ${JSON.stringify(g)}`)
-    .join(',\n')}\n}\n`;

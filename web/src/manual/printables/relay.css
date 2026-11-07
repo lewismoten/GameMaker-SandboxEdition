@@ -1,0 +1,36 @@
+/* Letter-size relay activity: high-contrast ink, with no motion or game playback. */
+.pp-relay {
+  padding: 5.3cqw;
+  color: #182630;
+  background: #fff;
+  font:
+    1.7cqw / 1.42 system-ui,
+    sans-serif;
+}
+.pp-relay h1 {
+  margin: 0 0 2cqw;
+  font-size: 3.7cqw;
+}
+.pp-relay h2 {
+  margin: 2.1cqw 0 0.5cqw;
+  font-size: 2cqw;
+}
+.pp-relay p {
+  margin: 0 0 1cqw;
+}
+.pp-relay ol {
+  padding-left: 3cqw;
+  margin: 1cqw 0;
+}
+.pp-relay li {
+  margin-bottom: 0.6cqw;
+}
+.pp-relay .relay-kicker,
+.pp-relay footer {
+  font-size: 1.45cqw;
+}
+.pp-relay footer {
+  margin-top: 2cqw;
+  padding-top: 1.5cqw;
+  border-top: 1px solid currentColor;
+}

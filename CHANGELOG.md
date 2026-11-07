@@ -6,11 +6,36 @@ changelog: [engine](web/packages/engine/CHANGELOG.md), [archives](web/packages/a
 
 ## [Unreleased]
 
+- A printable navigator/player relay sheet in Teddy’s Library shelf helps two people explore the backyard and swap roles at the fedora.
+
+- Pocket Player keeps shared pictures steady between text pages and lets resistive-board fingers slide between steering and Jump without lifting.
+- The Technical Reference adds byte layouts, real-file examples and a utility architecture chapter, mirrored with source citations in the Programmer’s Guide.
+
+- Beat the Clock, Countdown, Warning First and all seven graduations have distinct, original 32-bar scores in their Starter groups’ bands.
+
+- 39 more Starters keep their original tunes in longer, 32-bar songs, with a new B section and their group’s band.
+
+- Pocket Player clears scene and text-page backgrounds across the whole panel on both boards and avoids stray pixels below pictures on the 2.8 inch board.
+
+- Pocket Player page arrows repaint only the game rows and page count, and the search icon has a round lens and diagonal handle. Resistive boards gain direction-plus-jump pad wedges; Sticky direction saves in NVS so a direction tap can keep walking while Jump is tapped separately.
+
+- Pocket Player title search redraws only the edited text and caret while typing, keeping the keyboard steady. The 3.5 inch board's Settings explains that its touch needs no calibration.
+
 The 1994 desk gets a fuller PC and a box of feelies, the editors become easier on touch screens and keyboards,
 the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to finish.
 
 ### Added
 
+- The Ultimate Owner’s Guide explains how to write a DOS 3.3 installation batch file for `C:\SANDBOX` or `C:\GAMES\SANDBOX`, with source-root `A:INSTALL` instructions, hard-drive launch commands, a clearly illustrative second disk, copy-error warnings and a rendered Snowbound floppy label.
+
+- Pocket Player shows its game list before discovering one-file card games, adds title search and compact icon buttons, keeps long titles inside their rows, brings Display options to both boards, reduces display setup to three steps, offers a saved smaller picture away from the touch pad, and preserves held touches across incomplete GT911 reads.
+
+- All Mine, an achievement for filling all ten high-score places in one game with the same name.
+- TURBO BUTTON's Mail Bag corrects the sound setup story (sound/music was set to None, with IRQ 7 already matching), gives the 220 / IRQ 7 / DMA 1 example, and adds help for holding Escape through the fade and choosing the right SVGA type in CONFIG.
+- The editors explain more DOS limits where they matter: New monster says why a 64-type set cannot take a copy, generated layouts report monsters omitted at 200 map slots, and block pickers explain their fixed 150/100/50-block sets without trimming imported extra records.
+- Lightning Bugs, Fireworks Night and Leaves in the Wind now draw and name the same helpers as their Cast entries: Rima, Lami and Mia.
+- Slow Computers brings both rows of bees into the playing view and puts its eight snails in a lit cutaway cave beneath the grass, without the floating plank. The crowd still has 36 friendly monsters.
+- Snow Trails, a Weather Starter with swaying falling snow, a drift that grows in three steps, and bootprints left in touched powder. Two short walks show the block loops and touch changes, with editable lesson pages.
 - 43 Starters that shared a song with another game now each have their own, 32 bars long instead of 8, and each group of Starters has its own band: a march for The Basics, a chip tune for Moving and Pushing, swing for Changing Your Hero, a minor-key drive for Foes and Bosses, a storybook for Telling a Story, calypso for Bigger Worlds, and more.
 - Quicksand, a Starter for the Worlds That Push Back group: sand that sinks only where you stand. Stand still and the sand under your feet ripples, then gives way, and you drop into a hole a block deep and jump out; keep walking and it holds. The second level has stepping stones that never sink and dark wet sand that gives way sooner. The manual says plainly how it is faked: each block of sand is a chain of blocks that change when touched, and the hero cannot really sink. Two levels, with signs and a "How this level is made" page each.
 - Lightning, a new Starter in the Weather group: a storm drawn with blocks, where the sky and a bolt swap to lighter twins for a moment on one clock, the thunder is written into the song, and the flash is kept gentle.
@@ -221,7 +246,9 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Changed
 
-- Both Pocket Player boards' flash images include all 104 Starters and Graduations, including Quicksand, Lightning, Heat Waves, and the rebuilt lessons.
+- Opening a game in the editor no longer downloads the home page's showcase, cards and styles.
+
+- Both Pocket Player boards' flash images include all 106 Starters and Graduations, including Snow Trails, Rain on the Path, Quicksand, Lightning, Heat Waves, and the rebuilt lessons.
 - Who Wins? shows who is stronger: the big red gumdrop now fills its block and the mint ones are half its size, POWER charts list each monster's picture beside its real power number (180, 140, 130, 110), an arrow sign says to watch the big red one, and a star used up on something stronger fizzles gray where you can see it, with a sign saying why (180 to 140).
 - The Game-Maker box's Technical Reference and Limits booklet is finished: a memory map with corrected figures (PLAYGAME holds about 420K before a scene), drawings of the screen's blocks (with the 8 pixels at the right and 4 rows at the bottom that PLAYGAME hides while you play, so 312 x 196 show), scrolling and the 64K block files, a table of sound sizes and monsters by machine, a glossary to end on and a printed back cover. It says pixels, and its stray closing note is gone. Italic written with underscores now shows as italic in the box's booklets.
 - The Programmer's Guide's screen chapter and limits table say that while you play, PLAYGAME shows 312 x 196 of the 320 x 200 screen, and why.
@@ -268,7 +295,16 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Fixed
 
-- Auto-arrange in the Game Integrator tries a clearer position for endings when return paths would otherwise cross other arrows, keeping every scene and link intact.
+- Imported game names and DOS text use the PC's CP437 characters outside DOS; menu frames no longer appear as superscript threes in titles. Previously derived imported names repair on load without changing chosen names or game files.
+- Auto-arrange can put an ending above or below its sources, keeping shortcut arrows clear of branches that leave a level and return to it.
+
+- Errors stay available to screen readers inside dialogs; saves, downloads and checks retain their final outcomes, rapid progress is quieter, and opening a transcript announces its loading state rather than the whole document. Error notices remain readable in both themes.
+- The desk’s screenshot, recording, enlarge-screen, power, disk-eject, speaker sound switch and keyboard tray controls have larger targets, including when the desktop PC is scaled down.
+- The character editor's links to Overview controls have a 24px touch target instead of a text-height strip.
+- Pop-up dialogs announce their visible title to screen readers, including when one dialog opens another.
+- The Community submission form keeps its required fields and actions visible on small portrait phones; the submission steps unfold when needed.
+- The information buttons in Saves & scores have 24-pixel targets instead of 18-pixel targets.
+- Graduation audiences sit together in two balcony tiers beside the lectern, a block below the top of the play view, and The Sandbox Diploma's confetti falls visibly past them.
 
 - Most Sandbox and Bard of Bizarre games draw their text pages in a dark purple their players choose, so story, how-to and level pages are easy to read on light paper. Quest for the Round Tuit uses its talk pages' dark plum on every page, and in Maximus: The Hundred Worlds the F2 status line, F9 words and high-score name are amber instead of a dim blue on black.
 - Graduation: the "wait for zero" countdown now starts at 9 and counts slowly enough that you reach the door with time left to watch it hit zero, and Brother Camel is shrunk to fit the balcony so his head is no longer off the top of the screen.
@@ -305,6 +341,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 - A game opened to look at only no longer shows an error notice when an editor tries to change it; the dialog offering a copy is enough.
 - The home search tells a screen reader how many games match a name as you type, after you pause, not only when the deeper search adds more.
 - Starters whose story, win or credits cards still carried another starter's words (water, mending, a different title) now speak for their own lesson: Kit's Moves, Slide and Drift, Slippery and Bouncy, Dig It, Take the Wheel, Score Popups and Who Wins?.
+- Both Phone of the Future kits now link their board QR codes to the kit page and use the current datasheet URLs.
 - Watch Your Step, level 2: walking up to the edge of the pool no longer costs a life before you can jump. Only falling in does, and a jump across now picks up all three coins.
 - The Loofah game's title and cover now show the friendly golden bath monster from its levels, with googly eyes and a wide smile, instead of the little horns (version 1.5).
 - Choosing the Starters tab twice in a quick keyboard burst no longer shows a second "How do I…?" list.

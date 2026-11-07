@@ -14,7 +14,7 @@ width, Fit page, Actual size at 96 pixels an inch, or zoomed 10–300%), with th
 Ctrl/Cmd with + and −, and a pinch; also kept per browser. The box viewer, the zine, TURBO BUTTON and the
 Level Maps read both ways.
 
-## `epub/`: every manual, hint book and magazine as an e-book
+## [`epub/`](epub/README.md): every manual, hint book and magazine as an e-book
 
 Each reader's bar has a ⤓ ePub button (`save.ts`: it loads the builder only when pressed and
 saves the file) that makes the piece shown into a self-contained EPUB 3 file to read offline:
@@ -56,8 +56,8 @@ their contents rows buttons that turn to the page; `gen.ts` makes what every San
   `worldMapGroundKit.ts`, `worldMapIndoors.ts`, `worldMapWays.ts`, `worldMapDecor.ts`,
   `worldMapTerrain.ts` and `worldMapArt.ts` drawing it; `worldMapLayout.ts` for the pages) and
   the Level Maps (`levelMaps.ts`, `levelMapLayout.ts`), which never show a tin heart or egg
-  (`levelSecrets.ts`, from `levelSecrets.json` written by `web/scripts/levelSecrets.ts`) and crop to
-  what the player sees (`levelViews.ts`, from `levelViews.json` written by
+  (`levelSecrets.ts`, from `levelSecrets/<id>.json` written by `web/scripts/levelSecrets.ts`) and crop to
+  what the player sees (`levelViews.ts`, from `levelViews/<id>.json` written by
   `web/scripts/levelViews.ts`; a map the hero walks off the edge of is laid out as the player goes
   through it, `editor/check/unroll.ts`, and goes round forever only if the hero got round; a
   course through the wrap, `editor/check/course.ts`, prints as the strip the way runs, turned
@@ -82,14 +82,14 @@ their contents rows buttons that turn to the page; `gen.ts` makes what every San
   `scoopIssue.ts` each box's newsletter number, in the order of the months the games shipped
   (`scoopIssues.ts`), so the issues read as the studio's story.
 
-## `zine/`: NO CARRIER #3
+## [`zine/`](zine/README.md): NO CARRIER #3
 
 NO CARRIER #3, the hacker zine under the desk's toy whistle:
 its pages (`zinePages.ts`), each on a quarter-letter leaf with its type fitted (`zineLeaf.ts`),
 and its piece in the box viewer (`zineItem.ts`: one leaf at a time on screen, four to a letter
 sheet in print), opened by the whistle and the Library.
 
-## `ultimate/`: The Ultimate Owner’s Guide
+## [`ultimate/`](ultimate/README.md): The Ultimate Owner’s Guide
 
 The Ultimate Owner's Guide in the Game-Maker box.
 
@@ -111,7 +111,7 @@ The Ultimate Owner's Guide in the Game-Maker box.
 - Figures are drawn from real files (`ultimateFigures.ts`, `paletteFigures.ts`).
   `openUltimate.ts` and `openInManual.ts` open it from outside the desk.
 
-## `magazine/`: TURBO BUTTON
+## [`magazine/`](magazine/README.md): TURBO BUTTON
 
 TURBO BUTTON, a mid-90s game magazine (`#/magazine`, and
 lying on the desk's left, `#/desk?open=turbobutton&vol=3&num=1&page=6-7`, which keeps the issue and the pages in view across a reload; `open=magazine` still opens it).

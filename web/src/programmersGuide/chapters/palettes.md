@@ -11,34 +11,32 @@
 | Per scene        | one palette in file slot 0; every picture in a scene shares it | `PG:4244`                                                         | [design] |
 | Transparent      | **255** (`TRANSCOL`) in sprite drawing and in the hit test     | `PG:58, 2850-2950`                                                | [design] |
 
-A palette file with 8-bit values (0..255) is not a valid file: the DAC keeps only the low 6 bits (`red = r & 63`), so values over 63 wrap, not clamp. [16-bit-style masking, VGA]. [not yet checked in DOSBox]
+Palette components are meant to be 0..63. `RGBdata::Set` masks constructor/setter inputs with 63 (`PH:13-17`), but the scene loader reads raw bytes (`PG:4245`) and `SetAllPal` sends them straight to the DAC (`PALA.ASM:98-117`). That setter is not proof of how a DOS palette file with high bits behaves: the DAC's handling of those invalid values is **[not yet checked in DOSBox]**. The web display explicitly masks with 63 (`engine/formats/palette.ts:18-28`).
 
 ### Why 255 is the transparent color
 
-The source states the number (`#define TRANSCOL 255`, `PG:58`) and the comment "the value that is transparent in `_pic` fns" and nothing else. **[inference]** 255 is the last entry, the one a palette editor is least likely to use for a real color, and `0` is already black for fades and screen clears.
+The source states the number (`#define TRANSCOL 255`, `PG:58`) and the comment "the value that is transparent in `_pic` fns" and nothing else. **[inference]** the last entry may have seemed a convenient color to reserve; the source says nothing about palette-editor usage or the authors' motive. Screen clears use index 0, which need not be black; fades use the separate true-black value `Black(0,0,0)` (`PG:287`, `PG:1591`, `PG:1533`).
 The price is exactly one of the 256 colors: **255 usable colors** in a hero or monster picture. Three consequences that follow from the code:
 
 - **Background blocks draw all 400 pixels, including 255**: it is a real color there (whatever entry 255 holds, often black), not a hole. Only sprite drawing (`BufDrawSpBlk`, `PG:2300-2310`) and the hit test skip 255.
 - A hero or monster pixel at 255 never touches anything (chapter 8): an all-255 frame is immune.
-- A picture imported from a GIF that uses color 255 as an ordinary color will show holes. The player does nothing to prevent it. **[not yet checked in DOSBox]** whether the image editor warns.
+- GIF pixels at 255 become holes **when used in hero or monster sprites**, not in background blocks or full-screen pictures. The released IMAGE path decodes the GIF and copies selected blocks without a 255-specific warning or remap (`IMAGE.C:224-249`, `IMAGE.C:368-385`, `IMAGE.C:387-484`; sprite sentinel `PG:58`). This is a source reading, not a live editor test.
 
 ## 11.2 Fades (`FadeTo`, `PC:62-117`)
 
-`FadeTo(dest, time = 65)` (`PH:65`) walks all 256 entries from the current palette to `dest` in **65 steps** (`PC:93`). Per step, for each of the 3 components of each of 256 colors, a Bresenham accumulator decides whether to move the component by one level
-(`PC:94-107`); a step is made once per **vertical retrace** (`while ((inport(0x03DA) & 8) == 0);`, `PC:109`), then `SetAllPal` writes all 768 bytes (`PC:110`).
+`FadeTo(dest, time = 65)` (`PH:65`) walks all 256 entries from the current palette to `dest` in **65 iterations** (`PC:94-113`). Per iteration, a Bresenham accumulator advances each component; its `while` can take multiple level changes if a shorter time is supplied (`PC:100-106`). It then waits until **vertical retrace is active** and writes the palette (`PC:111-112`). It does not first wait for a new retrace edge, so the source does not guarantee 65 distinct retraces.
 
-- Duration: 65 retraces / 70.09 Hz = **0.93 s** in mode 0x13 on a 70 Hz card; 65 / 60 = **1.08 s** on a 60 Hz one. It is tied to the display, **not** to the game clock. [VGA]
-- Why 65 and not 63: the largest possible change in a component is 63 levels; 65 is the first round-ish number above that, so no component needs more than one level change per step and the loop never has to take two.
-  **[inference]** the authors wanted the fastest smooth fade, one level at a time.
-- Cost per step: 768 `OUT`s to the DAC data port 0x3C9 (`SetAllPal`). At roughly 1 µs per ISA I/O write that is **0.8-1.5 ms on a 286**, and the vertical blanking interval of mode 0x13 is about 1.4-1.6 ms. **[estimate]** On a slow machine the last colors of each step can be written after the picture has started again: a faint shimmer in the fade. **[not yet checked in DOSBox]**
+- Duration **[estimate]**: if each iteration reaches a separate retrace, 65 / 70.09 Hz = **0.93 s** in mode 0x13; at 60 Hz it is **1.08 s**. Those are conditional figures, not measured DOS durations. The web deliberately uses `steps / 70` seconds (`engine/engine/machine.ts:254-275`).
+- Why 65 and not 63: with valid six-bit endpoints, the largest component change is 63, so 65 iterations give at most one level change per iteration (`PC:94-107`). **[inference]** smoothness may explain the choice; neither the number's historical reason nor a "fastest smooth fade" is established.
+- Cost per step: one index-port write followed by 768 byte outputs to DAC data port 0x3C9 (`PALA.ASM:98-117`). At roughly 1 µs per ISA I/O write that is **0.8-1.5 ms on a 286**, and the vertical blanking interval of mode 0x13 is about 1.4-1.6 ms. **[estimate]** On a slow machine the last colors of each step can be written after the picture has started again: a faint shimmer in the fade. **[not yet checked in DOSBox]**
 - Memory: `FadeTo` takes `256 x 12 + 256 x 3` = 3,840 bytes from the far heap (`PC:75-76`); if that fails it sets the palette at once (`PC:78`), a hard cut instead of a fade. A scene that fills memory cuts instead of fades. [64K] [DOS]
-- Every scene start: all colors set to black (`SetAllPalTo(&Black)`, `PG:1354`), the map is drawn **while black**, then `FadeTo(colors)` fades it in (`PG:1397-1399`): about **1 second of each scene entry** is the fade. Ending: `FadeAllTo(Black)` (`PG:1533`).
+- Every scene start: all colors set to black (`SetAllPalTo(&Black)`, `PG:1354`), the map is drawn **while black**, then `FadeTo(colors)` fades it in (`PG:1397-1399`). The roughly **1 second** is the retrace-based estimate above, not a guaranteed scene delay. Ending: `FadeAllTo(Black)` (`PG:1533`).
 - `FadeAllTo(color)` is the same loop toward a single color (`PC:119-`).
 
 ### Black-palette cut scenes
 
 A scene whose palette file is entirely black draws a picture nobody can see, and every `FadeTo(colors)` fades to black: the classic "pass-through" scene. Its intro or message screen uses its own palette (`ShowGraphic`, `PG:1258-1320`: GIF/FLI screens load their own palette and fade to it, `PG:1263, 1279`) and then returns.
-So a pass-through scene costs the two fades of the **message** (about 1 s each) and nothing for the black game screen's fade, which fades to the same black.
+The black game screen adds no visible color change, but `FadeTo` still runs its iteration and retrace-wait loop even when the endpoints match (`PC:94-116`). Do not budget it as a free fade. The message's two visible fades have the same unmeasured timing caveat.
 
 ## 11.3 The menu colors are matched, not fixed
 
@@ -53,12 +51,35 @@ Screens without a picture are filled with **color 0 of the palette that is up**,
 
 - Reserve entry 255 for transparency from the start; keep entry 0 black.
 - Put a clear blue, red and yellow in each scene's palette (inventory, error boxes).
-- For a "lights out" scene change the palette, not the blocks: a fade to a dimmed copy of the palette takes the same 0.93 s whatever is on screen.
+- For a "lights out" scene change the palette, not the blocks: the fade does the same palette work whatever is on screen; 0.93 s is a conditional estimate, not a guaranteed DOS duration.
 - The fade is tied to the display refresh, so a **timed** event cannot be counted in fade frames; count it in ticks.
 - Shorter fades are not available from a game file: the time is the C default (65). Changing it needs a different PLAYGAME.
 
 ## 11.5 Hazards
 
 - A palette that is not 768 bytes is a bad file.
-- 8-bit values wrap at 64.
+- Keep components in 0..63; high-bit file values are invalid, and their DOS display behavior still needs a VGA check.
 - A scene on a nearly full heap cuts instead of fading.
+
+## Booklet lookup table and six-bit/fade figures
+
+The VGA offers **256 colors out of 262,144**: each of red, green and blue has 64 levels. A scene has one palette of 256 colors, 768 bytes. **Color 255 is clear.** A hero or monster pixel of color 255 shows what is behind it and never touches anything.
+Background blocks draw every pixel, so there color 255 is just a color. Each channel has six meaningful bits: 64 × 64 × 64 = 262,144 possible colors, or 18 color bits per entry, stored in three bytes. There are 256 entries.
+
+PLAYGAME chooses the nearest palette entry to these six-bit RGB targets. There is **no fixed index** for any of them. Suggested author-assigned indexes below are a convention, not a player requirement; keep them consistent in every scene if convenient.
+
+| Color | Suggested index | Red | Green | Blue |
+| ----- | --------------: | --: | ----: | ---: |
+| Black background | 0 | 0 | 0 | 0 |
+| Blue | 1 | 10 | 10 | 63 |
+| Red | 2 | 63 | 10 | 10 |
+| Yellow | 3 | 63 | 63 | 0 |
+| Purple | 4 | 50 | 10 | 50 |
+
+Recommend color 0 be black. Without a backdrop, text pages and status, save, load and score screens use color 0 behind their matched colors. Include purple as well as blue, red and yellow so text stays readable.
+
+A normal fade performs **65 palette-update iterations**, each waiting for vertical retrace to be active. A six-bit component needs at most 63 level changes: an accumulator adds the difference each iteration, changes a level whenever it reaches 65, and keeps the remainder. From 0 to 63 the level after step k is floor(63k/65); step 65 reaches 63. The extra two iterations distribute unchanged steps, not extra color levels. Smoothness appears to explain the choice of 65, but that reason is inferred. If each update meets a separate refresh, 65/70 is about 0.93 second; the wait tests retrace's current state, so 65 separate refreshes are not guaranteed.
+
+Source: `code/GM/PALETTE.H:8-17` defines three one-byte components, masked to six bits by setters; `code/GM/PLAYGAME.C:287-291` gives the blue/red/yellow/purple targets; `code/GM/PALC.C:16-39` matches the closest palette color. The indexes 1–4 are recommendations, never a fixed DOS table. File offsets are 3c, 3c+1, 3c+2 for 256 entries (`engine/formats/palette.ts:7-15`). Clear-to-index-zero calls include `code/GM/PLAYGAME.C:1591`, `code/GM/PLAYGAME.C:2038`.
+
+Fade arithmetic and its conditional duration follow `code/GM/PALC.C:94-116` and default 65 in `code/GM/PALETTE.H:65`. [inference] The reason for choosing 65 remains unknown. [estimate] Separate 70 Hz retraces would give 0.93 second; the source waits for an active retrace, not a new edge. [not yet checked in DOSBox]

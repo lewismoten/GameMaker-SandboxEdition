@@ -45,6 +45,7 @@ export const CHAPTERS: Chapter[] = [
     title: 'Patching the player',
     about: 'XFERPLAY.EXE’s settings by offset, how a patch is applied and spotted, and the line it keeps.',
   },
+  { id: 'architecture', no: '18', title: 'The utility architecture', about: 'GM.EXE, separate editors, the cOoL command tail and exit-code dispatch.' },
   { id: 'limits', no: '', title: 'Appendix: limits at a glance', about: 'Every limit in one table: its value, its cause and where to read about it.' },
 ];
 

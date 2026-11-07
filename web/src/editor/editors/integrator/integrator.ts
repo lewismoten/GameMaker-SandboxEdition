@@ -11,6 +11,7 @@
 // its camera in boardCamera.ts and its pointer and keys in boardInput.ts; the layout
 // algorithms are in integratorLayout.ts and layoutCells.ts.
 import { overviewHash } from '../../shell/overviewLink';
+import { fromCp437, toCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import './integrator.css';
 import { gameProject } from '../../shell/gameProject';
 import { registerEditor } from '../registry';
@@ -653,7 +654,7 @@ registerEditor(['gam'], (host, owner, file) => {
     const files = new GameFiles(project.files.entries());
     files.set(project.gam, serializeGame(copy));
     let player: PlayerHandle | undefined;
-    void modal<void>(`Playing ${game.scenes[scene].desc || `level ${scene}`}`, (close) => {
+    void modal<void>(`Playing ${fromCp437(game.scenes[scene].desc) || `level ${scene}`}`, (close) => {
       const host = h('div', { class: 'player-host rec-player' });
       // the player loads when first used; not if the dialog has closed by then
       void Promise.all([import('../../../player/player'), import('../../../dosPlayer/playerRecord')]).then(([{ mountPlayer }, { companionPatches }]) => {
@@ -668,7 +669,7 @@ registerEditor(['gam'], (host, owner, file) => {
   function sceneOptions(): [number, string][] {
     return [
       [NOSCENE, '— no link —'],
-      ...game.scenes.map((s, i) => [i, `${i}: ${s.desc || '(untitled)'}`] as [number, string]).filter(([i]) => game.scenes[i].gametype !== NOSCENE),
+      ...game.scenes.map((s, i) => [i, `${i}: ${fromCp437(s.desc) || '(untitled)'}`] as [number, string]).filter(([i]) => game.scenes[i].gametype !== NOSCENE),
     ];
   }
 
@@ -702,8 +703,8 @@ registerEditor(['gam'], (host, owner, file) => {
         usesLine(project, s.files),
         textField(
           `Description (the start scene’s is the game title; ${upTo(SCENEDESCLEN - 1)})`,
-          () => s.desc,
-          (v) => ((s.desc = v.slice(0, SCENEDESCLEN - 1)), (s.descRaw = undefined), save(), draw(), renderSide()),
+          () => fromCp437(s.desc),
+          (v) => ((s.desc = toCp437(v).slice(0, SCENEDESCLEN - 1)), (s.descRaw = undefined), save(), draw(), renderSide()),
           { maxLength: SCENEDESCLEN - 1 },
         ),
         kind === 'start'
@@ -790,7 +791,7 @@ registerEditor(['gam'], (host, owner, file) => {
                 {
                   class: 'danger',
                   onclick: async () => {
-                    if (!(await confirmDialog('Delete scene', `Delete “${s.desc}” and every link to it?`, 'Delete'))) return;
+                    if (!(await confirmDialog('Delete scene', `Delete “${fromCp437(s.desc)}” and every link to it?`, 'Delete'))) return;
                     for (const other of game.scenes) for (const l of other.links) if (l.toScene === selected) l.toScene = NOSCENE;
                     game.scenes[selected] = emptyScene();
                     selected = 0;

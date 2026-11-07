@@ -10,7 +10,7 @@ describe('rain Starter registration', () => {
     expect(STARTER_GROUPS[drawing + 1].name).toBe('Weather');
     expect(STARTER_GROUPS.filter((g) => g.name === 'Weather')).toHaveLength(1);
     expect(STARTER_GROUPS[drawing + 1].tag).toBe('Rain, snow, lightning and heat, drawn and animated.');
-    expect(STARTER_GROUPS[drawing + 1].games).toEqual(['heat-waves', 'lightning', 'rain']);
+    expect(STARTER_GROUPS[drawing + 1].games).toEqual(['heat-waves', 'lightning', 'rain', 'snow']);
     expect(STARTER_GROUPS.find((g) => g.name === 'Worlds That Push Back')!.games).toContain('quicksand');
     expect(ADDED_LATER).toEqual([
       'under-the-hood',
@@ -23,6 +23,7 @@ describe('rain Starter registration', () => {
       'lightning',
       'heat-waves',
       'rain',
+      'snow',
     ]);
   });
   it('keeps existing heroes and course numbers, appending rain to stage six', () => {

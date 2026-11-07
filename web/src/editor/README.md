@@ -2,13 +2,13 @@
 
 Part of the [source map](../README.md).
 
-- `core/`: what everything in the editor uses: DOM helpers and downloads (`ui.ts`), the open
+- [`core/`](core/README.md): what everything in the editor uses: DOM helpers and downloads (`ui.ts`), the open
   project (`project.ts`) and a finished game kept read-only (`readOnly.ts`), Undo and Redo
   (`history.ts` snapshots; `fileUndo.ts` for editors that rewrite whole files), drawing indexed
   graphics (`draw.ts`), the CD library (`library.ts`), "what uses this?" (`uses.ts`), plain error
   messages (`plainError.ts`), and `fitPane.ts`, which keeps an editor's columns inside the window
   (each scrolls by itself, the pane never does).
-- `shell/`: the pages.
+- [`shell/`](shell/README.md): the pages.
   - Home: `home.ts` with `homeShowcase.ts` (the selected game at the top: its title picture first, its demo after the page is idle and a quiet 2.5 s, or at once when pointed at, touched or focused; reduced motion and data saver keep it still), `homeCategories.ts`
     (the tabs in order, the first one opened, and the random game featured when one is chosen), `homeCards.ts`,
     `homeBlurb.ts`, `homeAuthors.ts` and `homePack.ts` (the tabs' collections), `homeLibrary.ts`
@@ -42,7 +42,7 @@ Part of the [source map](../README.md).
     `firstStepsPanel.ts`), new-file templates (`templates.ts`; + New music's empty song is
     `audio/compose.ts` `blankSong`), Look inside (`released.ts`,
     `lookId.ts`), and the shared stylesheet `editor.css`.
-- `widgets/`: shared pieces: file picker (`filePicker.ts`), block chooser (`blockChooser.ts`), the
+- [`widgets/`](widgets/README.md): shared pieces: file picker (`filePicker.ts`), block chooser (`blockChooser.ts`), the
   Show with palette choice (`paletteChooser.ts`), thumbnails (`thumbs.ts`), previews (`preview.ts`),
   waveform (`waveform.ts`), roving grid (`rovingGrid.ts`), roving focus for lists that open or add (`rovingFocus.ts`), plain-words notes for a DOS limit (`limitNote.ts`), big-target color choice
   (`colorChoice.ts`), the ? shortcuts list (`shortcuts.ts`), and the game-accurate graphic previews
@@ -55,7 +55,7 @@ Part of the [source map](../README.md).
     that adds to the author's heat map and keeps their play for the walkthrough (`playScene.ts`),
     watching the bot's route or the author's play of a scene, and making the bot's route again
     (`watchScene.ts`), and links into the Ultimate guide (`guideLink.ts`).
-- `editors/`: one folder per file kind, each with its `.ts`, `.css` and helpers (a big editor's
+- [`editors/`](editors/README.md): one folder per file kind, each with its `.ts`, `.css` and helpers (a big editor's
   parts, such as the integrator's board camera and input, sit beside it). `registry.ts` maps a file
   kind to its editor and loads each editor the first time a file of its kind opens (`loadEditor`);
   the editor registers itself as it loads. The kinds: `palette/`, `blocks/`, `character/`,
@@ -74,7 +74,7 @@ Part of the [source map](../README.md).
   (`tiles.ts`, `paint.ts`) that an edit repaints only where it changed (`state.ts`), accompaniment in
   `music/arrange/`), `picture/`, `animation/` (the Scene maker in `animation/scene/`), `backdrop/`,
   `slideShow/`, `textScreen/` (Undo and Redo steps in `textUndo.ts`: a burst of typing is one step, a paste, cut or new line its own) , `recording/` and `highScores/`.
-- `tools/`: ways to make files beyond "new": importing pictures (`importPicture.ts`,
+- [`tools/`](tools/README.md): ways to make files beyond "new": importing pictures (`importPicture.ts`,
   `convert.ts`), composing songs (`songMaker.ts`), recording or synthesizing samples
   (`widgets/vocRuler.ts` draws a time ruler under the recorder's and the sample editor's waveform: seconds, game ticks, a yellow "may stutter" and a red "likely stutters" zone and a 64 KB line, from estimates in `audio/vocLimit.ts`; `vocMaker.ts`, `sfxMaker.ts`; a recording stops itself where the .VOC would reach 64 KB, with the
   `widgets/recordMeter.ts` meter), speaker effects (`speakerFx.ts`), textures (`textures.ts`), a
@@ -82,7 +82,7 @@ Part of the [source map](../README.md).
   words from the game's keys in `cardText.ts`, a plain backdrop in `cardBackdrop.ts`, the files in
   the scene's slot by `cardWire.ts`, and the dialogs in `cardDialog.ts`). `makers.ts` is their registry, offered by the file picker;
   `all.ts` imports them all.
-- `check/`: the level check and the walkthrough bot, with no DOM.
+- [`check/`](check/README.md): the level check and the walkthrough bot, with no DOM.
   - Playing: `sim.ts` plays a scene on the engine's own calls with small snapshots, `explore.ts`
     tries every move (`inputs.ts`, `drive.ts`) from every resting place for the heat map, `stuck.ts`
     finds places with no way out and `escape.ts` whether the hero can get out of harm;
@@ -159,7 +159,7 @@ Part of the [source map](../README.md).
     and legend; `myHeat.ts` and `myHeatControls.ts` keep the author's own heat map and compare it
     with the bot's, and `playSession.ts` is what a Play and record session keeps (heat and a
     take)); the badges, the Before You Upload checklist and Make a walkthrough are in `widgets/`.
-- `keymap/`: working out which keys a game uses (`keyMap.ts`, also behind the desk's key card) and
+- [`keymap/`](keymap/README.md): working out which keys a game uses (`keyMap.ts`, also behind the desk's key card) and
   the ⌨ Keys dialog (`keyMapView.ts`, also shown by the player).
 
 ## How the editors work
@@ -309,7 +309,7 @@ makes Ctrl+S save at once). Files are always written in the original binary form
   designer dismissed as meant to look alike, in the companion file on the `.pal`.
   `visionFallback.ts` supplies block artwork using the selected palette when the map is
   empty, then all 256 palette swatches when no suitable artwork is available.
-- **Color help.** `colorHelp/` holds three local preferences (`colorHelpPrefs.ts`, localStorage
+- **Color help.** [`colorHelp/`](colorHelp/README.md) holds three local preferences (`colorHelpPrefs.ts`, localStorage
   `gm-color-help`: show color names, warn about look-alike colors for red-green or blue-yellow,
   preview as others might see it), their small control (`colorHelpControl.ts`), plain color
   names (`colorNames.ts`), the look-alike pairing over the engine's `gfx/colorVision` (`alike.ts`),

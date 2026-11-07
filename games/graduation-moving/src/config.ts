@@ -3,6 +3,7 @@ import { wrap, creditsPage } from '../../kit/starter/graduationText';
 import type { Graduation } from '../../kit/starter/graduationConfig';
 import { GYM } from '../../kit/starter/graduationThemes';
 import about from '../about.json';
+import { song } from './song';
 
 export const cfg: Graduation = {
   id: 'graduation-moving',
@@ -26,7 +27,7 @@ export const cfg: Graduation = {
     nods: ['heart', 'ice', 'wind'],
   },
   level: { title: 'The Court', hint: 'Walk across the court to the stage.' },
-  song: { bpm: 96, lead: 'brass', transpose: 2 },
+  song,
   text: {
     story: wrap(`
 |GRADUATION

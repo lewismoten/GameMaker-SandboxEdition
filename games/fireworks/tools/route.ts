@@ -2,7 +2,7 @@
 // The fireworks are the lesson, so the bot stops under them and counts what the monsters do, tick by tick, from the
 // engine's own monster slots:
 //   level 1: each launcher's rockets climb and turn into their small burst at the top, the burst falls a block and is
-//            gone; the two launchers go up at different times; Enter launches a rocket from Nova's head that bursts too
+//            gone; the two launchers go up at different times; Enter launches a rocket from Lami's head that bursts too
 //   level 2: each big firework's nine blocks keep their square (same path, same speeds) and turn from rocket into burst
 //            and back, again and again; the rocket shows only while it climbs
 // Over both levels, watch() also checks that no monster is ever left behind: a small burst always goes out.
@@ -122,7 +122,7 @@ async function launchOne(bot: StarterBot): Promise<{ x: number; y: number } | un
   return seen.pops.find((p) => Math.abs(p.x - heroX) <= 1);
 }
 
-/** 1. Launch!: the two launchers, their bursts, their own times; then a rocket of Nova's own. */
+/** 1. Launch!: the two launchers, their bursts, their own times; then a rocket of Lami's own. */
 export async function launch(bot: StarterBot): Promise<void> {
   const l = levels[0];
   await must(bot, bot.wait(20), 'a beat');
@@ -154,8 +154,8 @@ export async function launch(bot: StarterBot): Promise<void> {
   await must(bot, bot.wait(LOOK), 'reading');
   await must(bot, bot.walk(36, 'the last sign'), 'to the last sign');
   const mine = await launchOne(bot);
-  if (!mine) throw new Error('Enter should launch a rocket that bursts over Nova');
-  bot.say(`Enter: a rocket from Nova burst at ${mine.x},${mine.y}`);
+  if (!mine) throw new Error('Enter should launch a rocket that bursts over Lami');
+  bot.say(`Enter: a rocket from Lami burst at ${mine.x},${mine.y}`);
   await must(bot, bot.wait(LOOK), 'watching it fade');
   await leave(bot, bot.walk(40, 'the door'), 'the door');
 }

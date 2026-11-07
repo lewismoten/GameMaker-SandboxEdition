@@ -8,6 +8,7 @@
 // and the toy box's 3D-printable trinkets (library/toyBox.ts). Game-Maker has no text box, so a
 // code check is a choice of place: links and look-alike blocks (chapters 2, 4 and 5).
 import { opening, tip, type Chapter } from './chapter';
+import { INSTALL_LESSON } from './installScript';
 
 export const BOX: Chapter = {
   id: 'box',
@@ -80,6 +81,7 @@ export const BOX: Chapter = {
   Look-alike blocks make the doors match (Chapter 2), and a counter can count a run of right
   answers before the last gate opens (Chapter 4).</p>
   ${tip('Test it without the paper.', 'Play the puzzle once with the wheel in a drawer. If it is only slower, it is fair. If it is impossible, add a way round: a longer road, or a hint in the level for players who look hard.')}
+  ${INSTALL_LESSON}
   <h2>Make it a keepsake</h2>
   <p>Write every piece in the world’s own voice: the king’s seal on the map, a stamp on the
   sheet, a note from the hero’s friend tucked into the manual. Long after the last level, the

@@ -639,6 +639,7 @@ export function checkPanel(host: CheckHost): {
   }
 
   async function run(): Promise<void> {
+    let terminal = '';
     runBtn.textContent = '■ Stop';
     bar.hidden = false;
     bar.removeAttribute('value');
@@ -694,8 +695,8 @@ export function checkPanel(host: CheckHost): {
       keep(report);
       unlockAchievement('check-run');
     } catch (e) {
-      if ((e as Error).name !== 'AbortError') toast(`The level check failed: ${(e as Error).message}`, 'error');
-      else status.textContent = 'Stopped.';
+      terminal = (e as Error).name === 'AbortError' ? 'Stopped.' : `The level check failed: ${(e as Error).message}`;
+      if (saved) terminal += ' Showing the previous result.';
     } finally {
       running = undefined;
       live = undefined;
@@ -706,6 +707,7 @@ export function checkPanel(host: CheckHost): {
       paint();
     }
     if (saved) render();
+    if (terminal) status.textContent = terminal;
   }
 
   function stop(): void {

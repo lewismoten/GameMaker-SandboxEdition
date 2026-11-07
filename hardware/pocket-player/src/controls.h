@@ -27,6 +27,7 @@
 #pragma once
 #include <stdint.h>
 #include <string.h>
+#include <strings.h>
 #include "screen.h"
 
 namespace ctl {
@@ -42,6 +43,7 @@ constexpr int ADOPT_PX = 70;       // a new id this near a ghost is the same fin
 enum Scan { S_ENTER = 28, S_SPACE = 57, S_UP = 72, S_LEFT = 75, S_RIGHT = 77, S_DOWN = 80 };
 
 struct Settings {
+  uint8_t sticky = 0;    // tap a horizontal direction to toggle walking (saved in NVS)
   uint8_t lefty = 0;     // 0 right-handed, 1 left-handed
   uint8_t stylus = 0;    // 0 off, 1 on (taps latch)
   uint8_t padSize = 1;   // 0 small (radius 64), 1 medium (76), 2 large (90)
@@ -54,6 +56,7 @@ struct Settings {
 // Which controls a game needs (from its controls.json): the arrows, Space, Enter, and any other keys.
 struct Need {
   bool left = false, right = false, up = false, down = false, space = false, enter = false;
+  bool jump = false;  // Space is labeled Jump or Hop; resistive pads can combine it with direction
   int nextra = 0;
   int extra[MAXEXTRA];
   // The key the pad's diagonal sectors send, per corner: 0 up-left, 1 up-right, 2 down-left, 3 down-right (0 = the game has none).
@@ -95,7 +98,11 @@ inline void needAdd(Need& n, int scan, const char* label = "") {
     case S_RIGHT: case 32: n.right = true; return;
     case S_UP: case 17: n.up = true; return;
     case S_DOWN: case 31: n.down = true; return;
-    case S_SPACE: n.space = true; return;
+    case S_SPACE:
+      n.space = true;
+      for (const char* c = label; c && *c; c++)
+        if (!strncasecmp(c, "jump", 4) || !strncasecmp(c, "hop", 3)) n.jump = true;
+      return;
     case S_ENTER: n.enter = true; return;
   }
   for (int i = 0; i < n.nextra; i++) if (n.extra[i] == scan) return;
@@ -217,7 +224,7 @@ class Controls {
     memset(sent, 0, sizeof sent);
     memset(holdUntil, 0, sizeof holdUntil);
     padDirs = 0; padDiag = 0; btnDown = 0; tileDown = 0; latch = 0; keysOpen = false;
-    ev = EV_NONE;
+    ev = EV_NONE; horiz = vert = false; diagHeld = -1;
   }
 
   // One poll: the contacts now on the glass (screen coordinates). `now` in ms.
@@ -280,7 +287,7 @@ class Controls {
 
  private:
   enum Role { NONE, PAD, SPACE, ENTER, MENU, KEYS, TILE, IGNORED };
-  struct Slot { int id = -1, role = NONE, tile = 0, x0 = 0, y0 = 0, x = 0, y = 0; uint32_t t0 = 0, lostAt = 0; bool moved = false, ghost = false; };
+  struct Slot { int id = -1, role = NONE, tile = 0, oldLatch = 0, x0 = 0, y0 = 0, x = 0, y = 0; uint32_t t0 = 0, lostAt = 0; bool moved = false, ghost = false; uint8_t slideDirs = 0; int slideDiag = 0; bool slideSpace = false; };
   Slot slot[MAXCONTACT];
   bool want[128], sent[128];
   uint32_t holdUntil[128];
@@ -320,7 +327,7 @@ class Controls {
     if (onEnter) { s.role = ENTER; return k; }
     bool padTaken = false;
     for (int i = 0; i < MAXCONTACT; i++) if (i != k && slot[i].id >= 0 && slot[i].role == PAD) padTaken = true;
-    if (!padTaken && inDisc(L.pad, x, y, 14)) { s.role = PAD; latch = 0; return k; }
+    if (!padTaken && inDisc(L.pad, x, y, 14)) { s.role = PAD; s.oldLatch = latch; latch = 0; return k; }
     return k;
   }
   // The chip's size units are not known until a board reports them; the debug strip shows what a finger gives.
@@ -333,12 +340,15 @@ class Controls {
       case MENU: if (inRect(L.menu, s.x, s.y, 8)) ev = EV_MENU; break;
       case KEYS: if (inRect(L.keys, s.x, s.y, 8)) { keysOpen = !keysOpen; ev = EV_KEYS; } break;
       case PAD:
-        if (set.stylus && tap) {
+        if ((set.stylus || set.sticky) && tap) {
           int dx = s.x - L.pad.cx, dy = s.y - L.pad.cy;
           if (dx * dx + dy * dy < L.deadR * L.deadR) latch = 0;
           else {
             int ax = dx < 0 ? -dx : dx, ay = dy < 0 ? -dy : dy;
-            if (ax >= ay) latch = dx < 0 ? -1 : 1;
+            if (ax >= ay) {
+              int direction = dx < 0 ? -1 : 1;
+              latch = set.sticky && s.oldLatch == direction ? 0 : direction;
+            }
             else latch = 0;  // a tap up or down is a short press, taken from the hold below
           }
         }
@@ -362,8 +372,28 @@ class Controls {
       Slot& s = slot[k];
       if (s.id < 0) continue;
       switch (s.role) {
-        case PAD: havePad = true; padDirs = padSector(s.x, s.y); break;
-        case SPACE: btnDown |= 1; if (!s.ghost) press(S_SPACE, now); break;
+        case PAD:
+          havePad = true;
+#ifdef POCKET_CYD28
+          // Single-contact steering can cross onto Space. Widen the exit by 6 px to reject edge noise.
+          if (need.space && inDisc(L.space, s.x, s.y, s.slideSpace ? 14 : 8)) {
+            s.slideSpace = true; padDirs = s.slideDirs; padDiag = s.slideDiag;
+            btnDown |= 1;
+            if (!s.ghost) press(S_SPACE, now);
+            break;
+          }
+          s.slideSpace = false;
+#endif
+          padDirs = padSector(s.x, s.y);
+          s.slideDirs = padDirs; s.slideDiag = padDiag;
+          break;
+        case SPACE:
+#ifdef POCKET_CYD28
+          if (inDisc(L.pad, s.x, s.y, 14)) {
+            s.role = PAD; havePad = true; padDirs = padSector(s.x, s.y); s.slideDirs = padDirs; s.slideDiag = padDiag; break;
+          }
+#endif
+          btnDown |= 1; if (!s.ghost) press(S_SPACE, now); break;
         case ENTER: btnDown |= 2; if (!s.ghost) press(S_ENTER, now); break;
         case MENU: btnDown |= 4; break;
         case KEYS: btnDown |= 8; break;
@@ -373,6 +403,15 @@ class Controls {
     if (!havePad) { horiz = vert = false; diagHeld = -1; }
     uint8_t d = padDirs;
     if (!havePad && latch) d |= latch < 0 ? 1 : 2;
+    padDirs = d;
+#ifdef POCKET_CYD28
+    // One resistive contact can steer and jump. Keep native diagonal bindings intact.
+    if (need.jump && !padDiag && (d & 4) && (d & 3)) {
+      down[S_SPACE] = true; btnDown |= 1;
+      if (!sent[S_SPACE]) press(S_SPACE, now);
+      d &= ~4;  // this wedge jumps instead of pressing Up
+    }
+#endif
     if (padDiag) down[padDiag] = true;   // a diagonal sector sends the game's own diagonal key, not two arrows
     else {
       if (d & 1 && need.left) down[S_LEFT] = true;
@@ -431,7 +470,12 @@ class Controls {
     bool h = ay * 100 <= ax * (horiz && !vert ? 70 : 50);
     bool v = ax * 100 <= ay * (vert && !horiz ? 70 : 50);
     bool useH = h || (!v), useV = v || (!h);
-    if (!need.up && !need.down) { useH = true; useV = false; }
+    if (!need.up && !need.down) {
+#ifdef POCKET_CYD28
+      if (!(need.jump && dy < 0 && useH && useV))
+#endif
+      { useH = true; useV = false; }
+    }
     if (!need.left && !need.right) { useH = false; useV = true; }
     horiz = useH; vert = useV;
     uint8_t m = 0;

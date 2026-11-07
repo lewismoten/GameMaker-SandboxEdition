@@ -4,6 +4,7 @@
 // arguments and result, and sums up a play-test or Level check; pictures as thumbnails that
 // enlarge; Apply/Skip on a change waiting for a yes; notes; and the whole of it as Markdown.
 import { h, clear } from '../../editor/core/ui';
+import { fromCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import type { Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { normalize } from '../../project/files';
 import type { ToolResult } from '../tools/types';
@@ -17,7 +18,7 @@ const PICTURES = new Set(['render_png', 'editor_screenshot', 'map_sketch']);
 /** Words for what a call works on: a scene's name, the level a map belongs to, or the file. */
 function target(c: ToolCall, game?: Game): string {
   const a = c.args;
-  const scene = (n: number) => game?.scenes[n]?.desc.trim() || `scene ${n}`;
+  const scene = (n: number) => fromCp437(game?.scenes[n]?.desc ?? '').trim() || `scene ${n}`;
   if (typeof a.scene === 'number') return scene(a.scene);
   if (typeof a.file === 'string') {
     const f = normalize(a.file);

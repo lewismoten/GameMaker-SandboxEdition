@@ -7,6 +7,7 @@
 // palette. A layout that only matches with its blocks renumbered (a level built alike from other
 // blocks) is another place. A course, a map that wraps, and a room with a cast stay their own.
 import type { Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { fromCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import { MLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { fillerBlock, markLabel, type Level } from './levelMapLayout';
 import type { Rect } from './worldMapLayout';
@@ -143,7 +144,7 @@ function merge(game: Game, states: Level[]): Level {
     area: states.map((l) => l.area).reduce(union),
     whole: states.map((l) => l.whole).reduce(union),
     marks: mergedMarks(game, states, names),
-    name: game.scenes[scenes[0]]?.desc || first.name,
+    name: fromCp437(game.scenes[scenes[0]]?.desc ?? '') || first.name,
     note: first.note ? `${first.note} · ${note}` : note,
     states: states.length,
   };

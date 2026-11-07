@@ -18,4 +18,4 @@ the words of the 1994 booklet in the Game-Maker box.
   (every chapter on one page; the Print button saves it as a PDF).
 - `booklet1994.md`: "Technical Reference and Limits", in the period voice, read by
   `manual/printables/techRef.ts` into a stapled booklet in the Game-Maker box (`gmItems.ts`). It has no
-  source lines and no quirks.
+  source lines and no quirks. The file-format atlas in `chapters/formats.md` mirrors its layouts and examples, adds source citations and marks codec differences; `chapters/architecture.md` covers the DOS launcher and its command-tail/exit-code protocol.

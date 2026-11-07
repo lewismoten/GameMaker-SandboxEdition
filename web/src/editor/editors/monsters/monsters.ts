@@ -5,7 +5,7 @@ import { rovingGrid } from '../../widgets/rovingGrid';
 import { History } from '../../core/history';
 import { registerEditor } from '../registry';
 import { viewState } from '../../../urlState';
-import { h, clear, numberField, selectField, checkField, debounce } from '../../core/ui';
+import { h, clear, numberField, selectField, checkField, debounce, toast } from '../../core/ui';
 import { blockCanvas, paintBlock } from '../../core/draw';
 import { paletteChooser } from '../../widgets/paletteChooser';
 import { blockButton } from '../../widgets/blockChooser';
@@ -19,7 +19,7 @@ import { normalize } from '../../../project/files';
 import { noteNewestMonster } from './newestMonster';
 import { fitToPane } from '../../core/fitPane';
 import { monsterName, setMonsterName } from './monsterNames';
-import { firstUnusedSlot } from './freeSlot';
+import { firstUnusedSlot, noFreeSlotText } from './freeSlot';
 import { blockLabel } from '../blocks/blockNames';
 
 type Motion = 'path' | 'toward' | 'away' | 'random';
@@ -115,7 +115,10 @@ registerEditor(['mon'], (host, project, file) => {
   const newBtn = h('button', { title: 'Copy this monster into the first unused slot and pick the copy', onclick: () => newMonster() }, '＋ New monster');
   function newMonster(): void {
     const free = firstUnusedSlot(mons, current);
-    if (free < 0) return;
+    if (free < 0) {
+      toast(noFreeSlotText(mons, current));
+      return;
+    }
     mons[free] = structuredClone(mons[current]);
     current = free;
     noteNewestMonster(project, free);

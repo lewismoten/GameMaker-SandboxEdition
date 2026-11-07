@@ -9,6 +9,7 @@
 // (StartSceneInits only fills those the first time). The save editors (the web's "Saves &
 // scores" panel and the desk PC's SAVEHACK.EXE) use it.
 import { loadScene, restoreSaved, savedState, startSceneInits, type Saved } from '@lewismoten/gamemaker-sandbox-engine/engine/scene';
+import { fromCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import { currentFrame, moveCharGrav, updateCharScreenPos } from '@lewismoten/gamemaker-sandbox-engine/engine/character';
 import { calcDraw, monPicNum } from '@lewismoten/gamemaker-sandbox-engine/engine/monsters';
 import { renderWorld, VISIBLE_H, VISIBLE_W } from '@lewismoten/gamemaker-sandbox-engine/engine/render';
@@ -60,7 +61,7 @@ export function saveLevels(game: Game): SaveLevel[] {
     (game.scenes[from]?.links ?? []).forEach((l, link) => {
       const sc = game.scenes[l.toScene];
       if (l.toScene === NOSCENE || !sc || sc.gametype !== ADVTYPE || out.has(l.toScene)) return;
-      out.set(l.toScene, { scene: l.toScene, name: sc.desc?.trim() ?? '', from, link, to: { ...l.to } });
+      out.set(l.toScene, { scene: l.toScene, name: fromCp437(sc.desc ?? '').trim(), from, link, to: { ...l.to } });
     });
   // breadth first from the title scene, as play() goes
   const queue = [0];

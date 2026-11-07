@@ -38,6 +38,7 @@ import { blockProperties } from './blockProperties';
 import { rolesPanel } from './rolesPanel';
 import { blockLabel } from './blockNames';
 import { blockNameField } from './blockNameField';
+import { blockCapacityText } from './blockCapacity';
 
 // erase and darken stand in for the right button, which a finger does not have
 type Tool = 'draw' | 'shade' | 'fill' | 'pick' | 'line' | 'rect' | 'erase' | 'darken';
@@ -821,6 +822,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
       names.el,
       chooser.el,
     ),
+    h('p', { class: 'hint limit-note', role: 'note' }, blockCapacityText(kind, blocks.length)),
     h('div', { class: 'blk' }, columns[0], columns[1], columns[2]),
   );
   // Keep the running preview near the painter on phones, beside it on desktop.

@@ -31,7 +31,7 @@ import { gameShots } from './gameShots';
 import { builtHeroPath, heroOf } from '../src/gfx/levelPicture';
 import { checkGame, QUICK_CHECK_FILE, type Issue } from '../src/project/health';
 import { boxGame, type BoxGame } from '../src/desk/boxes/boxFacts';
-import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { parseGame, gameTitle as displayGameTitle } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 
 export interface CdCatalogEntry {
   id: string;
@@ -169,15 +169,12 @@ const GAME_INFO: Record<string, GameInfo> = {
   zoom: { title: 'Zoom the Super Bear', company: AJ, price: '$20' },
 };
 
-function cString(bytes: Uint8Array): string {
-  const end = bytes.indexOf(0);
-  return new TextDecoder('latin1').decode(end < 0 ? bytes : bytes.subarray(0, end)).trim();
-}
-
 function gameTitle(gam: Uint8Array): string {
-  const isV3 = gam[0] === 0x47 && gam[1] === 0x4d; // "GM" header
-  // v3: 256 byte header + 6 byte grator header + scene0 { type 2, pos 4, scroll 16, links 1 } -> desc[20]
-  return isV3 ? cString(gam.subarray(285, 305)) : cString(gam.subarray(6, 21));
+  try {
+    return displayGameTitle(parseGame(gam));
+  } catch {
+    return ''; // A damaged menu keeps the catalog's directory-name fallback.
+  }
 }
 
 const CRC = (() => {

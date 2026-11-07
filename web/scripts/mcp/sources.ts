@@ -3,6 +3,7 @@
 // the CD's sample games (cd/gameware/<id>). Loading one gives its files, its .gam and its DOS
 // player patches (a folder's or zip's <game>.GMX companion, or a game's player.json).
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
+import { gameTitle } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { basename, join } from 'node:path';
 import { GameFiles } from '../../src/project/files';
 import { readZip } from '@lewismoten/gamemaker-sandbox-archives/zip';
@@ -50,7 +51,7 @@ function readFolder(dir: string): GameFiles {
 
 const titleOf = (files: GameFiles, gam: string) => {
   try {
-    return parseGame(files.get(gam)!).scenes[0]?.desc.trim() || gam;
+    return gameTitle(parseGame(files.get(gam)!)) || gam;
   } catch {
     return gam;
   }

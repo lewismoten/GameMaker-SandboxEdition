@@ -2,7 +2,8 @@
 // text pages (.txt, 31 columns as DOS shows them), slide lists (.lst) and backdrops (.bkd).
 import { defaultPalette, parsePalette, serializePalette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import { parseBackdrop, parseSlideList, serializeBackdrop, serializeSlideList, textLines } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
-import { latin1Text, textBytes } from '@lewismoten/gamemaker-sandbox-engine/formats/binary';
+import { textBytes } from '@lewismoten/gamemaker-sandbox-engine/formats/binary';
+import { cp437Text, fromCp437, toCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import { DRY_RUN, commit } from './run';
 import { FILE, clampInt, fileName, int, need } from './common';
 import { json, ToolError, type ToolDef } from './types';
@@ -55,10 +56,10 @@ const getText: ToolDef = {
   async run(a, ctx) {
     const b = need(ctx, a.file, 'txt');
     return json({
-      text: latin1Text(b)
+      text: cp437Text(b)
         .replace(/\x1a.*$/s, '')
         .replace(/\r\n/g, '\n'),
-      lines: textLines(b),
+      lines: textLines(b).map(fromCp437),
     });
   },
 };
@@ -70,7 +71,7 @@ const setText: ToolDef = {
   inputSchema: { type: 'object', properties: { file: FILE, text: { type: 'string' }, dry_run: DRY_RUN }, required: ['file', 'text'] },
   async run(a, ctx) {
     const name = fileName(a.file, 'txt');
-    const t = String(a.text).replace(/\r\n/g, '\n');
+    const t = toCp437(String(a.text)).replace(/\r\n/g, '\n');
     const long = t.split('\n').filter((l) => l.length > 31).length;
     return commit(
       ctx,

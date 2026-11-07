@@ -4,6 +4,7 @@
 // tabs, and keeps the counted achievements (tin hearts, felt eggs, every game played) in step
 // with the saves and the catalog as they change.
 import { refreshGoals } from './goals';
+import { scanHighScores } from './highScores';
 import { eggsAfter, heartsAfter } from './resetMark';
 import { currentAchievements, listenToOtherTabs, loadAchievements, progress, tally, unlockAchievement } from './store';
 
@@ -64,9 +65,11 @@ async function watchCounts(): Promise<void> {
   };
   const onHearts = settle(() => void hearts());
   const onEggs = settle(() => void eggs());
+  const onScores = settle(() => void scanHighScores());
   watchHearts(onHearts);
   window.addEventListener(EGGS_CHANGED, onEggs);
   window.addEventListener(SAVES_CHANGED, onEggs);
+  window.addEventListener(SAVES_CHANGED, onScores);
   window.addEventListener(CATALOG_CHANGED, () => void refreshGoals());
-  await Promise.all([hearts(), eggs(), refreshGoals()]);
+  await Promise.all([hearts(), eggs(), refreshGoals(), scanHighScores()]);
 }

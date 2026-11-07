@@ -113,6 +113,7 @@ export const CAST_GAMES = {
   shore: ['Waves on the Shore', 'starter'],
   twinkle: ['Twinkle, Twinkle', 'starter'],
   rain: ['Rain on the Path', 'starter'],
+  snow: ['Snow Trails', 'starter'],
   flicker: ['Flicker and Flow', 'starter'],
   'lights-out': ['Lights Out', 'starter'],
   'things-that-grow': ['Seeds and Nests', 'starter'],
@@ -291,6 +292,7 @@ const LISTED: CastMember[] = [
       { game: 'diagonal-wrap', as: 'follows a road down the map and out of the bottom, then round the map three times on a tilted one' },
       { game: 'shore', as: 'crosses a pier over a sea that turns itself, then walks a beach where the waves run up the sand and back' },
       { game: 'twinkle', as: 'walks a night meadow under stars that blink all at once, then under stars that twinkle in no step' },
+      { game: 'snow', as: 'leaves bootprints on two snowy walks under swaying flakes, beside a growing drift' },
       { game: 'lightning-bugs', as: 'walks a meadow at dusk past six fireflies that blink as one, then a meadow of fireflies that each keep their own time' },
       {
         game: 'flicker',

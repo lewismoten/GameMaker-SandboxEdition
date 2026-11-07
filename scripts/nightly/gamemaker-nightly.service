@@ -1,0 +1,14 @@
+[Unit]
+Description=Coalesced GameMaker nightly validation (local only)
+After=network-online.target
+
+[Service]
+Type=oneshot
+EnvironmentFile=%h/.config/gamemaker-nightly.env
+ExecStart=/usr/bin/python3 ${NIGHTLY_REPO}/scripts/nightly.py --repo ${NIGHTLY_REPO} --reports ${NIGHTLY_REPORTS}
+TimeoutStartSec=12h
+KillMode=control-group
+TimeoutStopSec=45s
+UMask=0077
+Nice=10
+NoNewPrivileges=true

@@ -16,7 +16,7 @@ export function refusedChange(reason: unknown): boolean {
   return reason instanceof Error && reason.name === 'ReadOnlyError';
 }
 
-export function report(info: ErrorInfo): void {
+function report(info: ErrorInfo): void {
   if (ignorable(info.message)) return;
   void import('./notice').then((m) => m.showError(info));
 }

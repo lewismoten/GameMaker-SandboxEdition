@@ -112,6 +112,8 @@ export const SHAREWARE: Chapter = {
   ${onCd('TWINKLE')}
   <p>Rain on the Path uses different starting pictures of one loop for scattered falling streaks, more loops for splashes and puddle rings, and a second scene palette for storm colors.</p>
   ${onCd('RAIN')}
+  <p>Snowflakes that sway in a loop, a drift that grows in steps and bootprints left by a touch:</p>
+  ${onCd('SNOW')}
   ${onCd('FLICKER')}
   ${onCd('HEATWAVE')}
   ${onCd('LIGHTOUT')}

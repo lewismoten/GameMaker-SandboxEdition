@@ -2,6 +2,7 @@
 // (GAMECLAS.H: a start scene's title, menu, storyline... screens; an end scene's won and
 // lost screens), named for the integrator's side panel and its cards.
 import { sceneKind, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { fromCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 
 /** Between-scene screens, by scene kind and slot. */
 const START_SCREENS: [number, string][] = [
@@ -48,7 +49,7 @@ export function screensAndSongs(game: Game): { screens: SideEntry[]; songs: Side
     if (kind === 'start') (add(screens, START_SCREENS), add(songs, START_SONGS));
     else if (kind === 'end') (add(screens, END_SCREENS), add(songs, END_SONGS));
     else if (kind === 'adventure') {
-      const name = s.desc || `Level ${i}`;
+      const name = fromCp437(s.desc) || `Level ${i}`;
       add(
         screens,
         [

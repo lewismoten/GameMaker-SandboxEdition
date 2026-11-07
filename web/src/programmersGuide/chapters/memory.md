@@ -3,7 +3,7 @@
 ## What PLAYGAME was built as
 
 PLAYGAME is a **real-mode DOS** program, so it sees the first 1 MB through 16-bit segment:offset pairs and has about 640 KB of conventional memory
-for code, data and heap. Nothing in the source touches EMS or XMS (`grep -in "ems\|xms\|himem" code/GM/PLAYGAME.C` finds nothing relevant; [not yet checked in DOSBox] with a repo-wide grep before printing).
+for code, data and heap. The checked-in `code/GM` C/C++, headers, assembly, makefiles and link lists contain no EMS, XMS, HIMEM, expanded-memory or extended-memory references. The visible allocation paths use `new` and `farmalloc` (`PG:611-625`, `DIRTRECT.C:82-94`, `SOUNDC.C:75-94`). That source check does not establish what an opaque driver or library does, or how much conventional memory is free on a particular machine; those remain **[not yet checked in DOSBox]**.
 It was compiled with Borland C++ `bcc -f- -c -C -ml -1 -P -O2` and assembled with TASM `/ml /jP286N /m2` (`code/GM/MAKERS.MAK:8-9`):
 
 | Flag           | Meaning                               | Consequence                                                                                                                      |
@@ -20,7 +20,7 @@ on the offset half. So `p++` past offset 0xFFFF **wraps within the segment** ins
 ## The 16-bit consequences
 
 - `int` is 16 bits: range -32,768..32,767. The cap on every counter, hit points and a sequence's repeat count is `INF_REPEAT 32767` (`CHAR.H:13`); the touch code has explicit wrap guards (`PG:3441-3443, 3493-3500`, "Stop any wrap-around").
-- Pixel positions fit easily, but `ulongi` (32-bit) is used for clocks (`PG:301-302, 308`), so a game can run 2^32 ticks / 18.2 = about 7.5 years before `clock` wraps.
+- Pixel positions fit easily, but `ulongi` (32-bit) is used for clocks (`PG:301-309`). A 32-bit counter at 18.2 ticks a second has about 7.5 years of capacity; that is arithmetic, not a safe-uptime promise. The main loop copies `TimerCounter` into `clock` (`PG:1453-1455`), while `SndClock` advances at eight times that rate (`PG:4423-4445`); deadline comparisons, save/load and the faster counter can meet wrap hazards sooner. **[not yet checked in DOSBox]** long-running behavior.
 - Block numbers, monster numbers, scene-link indexes are `unsigned char` (`BLOC.H` `blk`; `MAP.H:20`; `GRATOR.H:29` `NOLINK 0xFF`). That alone would allow 256; the authors stopped well short (below).
 
 ## What actually has to fit in 64 KB: the arithmetic
@@ -39,13 +39,11 @@ on the offset half. So `p++` past offset 0xFFFF **wraps within the segment** ins
 | Save-under for drawn monsters | 50 x 400           | 20,000                 | `PG:80, 617`                 | yes                                                            |
 | Screen scratch buffer         | 65,570 (farmalloc) | 65,570                 | `DIRTRECT.C:86`              | it IS the whole segment, plus 34 bytes to round to a paragraph |
 
-**Why the block file stops at 150.** One `new blkstruct[N]` must stay under 65,536 bytes: N <= floor(65,535 / 420) = **156**. The game also allocates one extra slot
-(`BACKBL+1`) because the value 150 itself is used as the "no block" marker (`PG:1983-1990` tests `ci.inv[..] != BACKBL`), so the true ceiling was **155**; the authors picked 150, a round number just under it.
-Monsters get `MONBL` 100 and characters `CHARBL` 50 for the same reason, scaled by need. **[inference]** The numbers were chosen as round numbers under a 64 KB ceiling, not computed to the byte.
-Going past 156 would have meant `huge` pointers (slow, and the library's `new` does not return them in this model).
+**The 150-block limit and the segment budget.** For 420-byte packed records, floor(65,535 / 420) = **156** slots before allowing for allocator overhead. The game allocates one extra slot (`PG:1347-1350`), and 150 itself marks an empty inventory entry (`PG:2203-2204`). A payload-only ceiling with that spare would be **155** usable blocks; the actual constants are 150 backgrounds, 100 monster blocks and 50 character blocks (`BLOC.H:6-8`).
+**[inference]** These round limits may have been chosen with the 64 KB budget in mind; the source does not explain why these particular numbers were chosen or how the authors balanced the three sets. The arithmetic does not establish a safe larger allocation or the speed of `huge` pointers. Nor does it prove the library lacks a larger `new`: the supplied link map lists both unsigned-int and unsigned-long overloads (`code/GM/PLAYGAME.MAP:459-460`).
 
 **Why the map is 100 x 100.** 64 KB / 2 bytes per cell = 32,768 cells, so a square map could have been 181 x 181 (181^2 = 32,761). The authors chose 100.
-The constants are written as `MLEN`/`MWID` in headers but the drawing code hard-codes 100 and 16/10: `PG:4346` uses `%100`, and `PG:4344-4345` loops 16 x 10. **[inference]** 100 is a round number that kept the .map file near 22 KB (20,000 + 2,000) on a floppy-sized budget, and a two-digit coordinate. It was **not** forced by segments (181 would have fit).
+The constants are written as `MLEN`/`MWID` in headers (`MAP.H:8-19`) but the drawing code hard-codes 100 and 16/10: `PG:4346` uses `%100`, and `PG:4344-4345` loops 16 x 10. A 100 x 100 map plus 200 placed monsters makes a 22,000-byte payload (`PG:4330-4337`, `engine/formats/map.ts:42-46`). **[inference]** A round number, floppy budget and two-digit coordinates may have influenced that choice; the source does not say. The grid alone was **not** at the segment ceiling (181 x 181 x 2 = 65,522 bytes), but that does not mean the rest of the engine supports a larger map unchanged.
 Also: a map cell holds one block byte and one monster-index byte, so a hit test on a cell is two byte reads.
 
 **Why the screen buffer is 65,570 bytes.** The software-scroll path keeps a full 64 KB ring (next chapter). 65,536 + 34 leaves room for the "round up to the next paragraph" step
@@ -54,8 +52,8 @@ Also: a map cell holds one block byte and one monster-index byte, so a hit test 
 ## What 640 KB means
 
 Add it up for a full-size game: blocks 63,420 + 42,420 + 21,420 = **127,260 bytes**, the screen 65,570, the map 20,000, monsters 19,200 + 20,000 + `mi` (200 x sizeof(minfo))
-plus the program image, the CMF song and the digitized sounds. That is roughly 300 KB of data, so a 640 KB machine had room, but not much on a PC with a mouse driver, network and a Sound Blaster driver loaded
-(`PG:617-629` shows the error box "NOT ENOUGH MEMORY!" when the 65 KB scratch buffer fails, with the comment that it is "the biggest" so earlier allocations succeeded). **[inference]** Hence the games ship "load a scene's blocks, free them at the scene's end" (`PG:1543-1545` deletes `blks[0..2]`).
+plus the program image, the CMF song and the digitized sounds. Any roughly 300 KB data total is an **[estimate]**, not proof that a particular game fits under DOS: the executable, allocator overhead, song, sounds and resident drivers also matter. `PG:617-625` shows the error box "NOT ENOUGH MEMORY!" when the 65 KB scratch buffer fails, with the comment that it is "the biggest".
+The block-set lifetime itself is explicit: allocate on scene entry (`PG:1347-1350`), load (`PG:1374`), then delete all three sets on ordinary scene exit (`PG:1541-1545`). **[inference]** Saving conventional memory may explain that design; the source does not establish the authors' motive or the free-memory margin on a real machine.
 
 ## Tips
 
@@ -65,4 +63,4 @@ plus the program image, the CMF song and the digitized sounds. That is roughly 3
 
 ## Hazards
 
-- **No bounds check** on the effect index: `ci.meter[blk->effect]` (`PG:3441, 3478`) with `effect` an unsigned char and `meter` holding 30 ints (`CHAR.H:50`). An effect of 30..255 reads and writes memory past the counter array. The editors never offer it, so a hand-edited .bbl is the only way in. **[not yet checked in DOSBox]** what sits after `ci.meter`.
+- **No bounds check** on the effect index: `ci.meter[blk->effect]` (`PG:3440-3442`, `PG:3478-3499`) with `effect` an unsigned char and `meter` holding 30 ints. An effect of 30..255 can read past the counter array; a write depends on the touch being accepted and the counter branch being taken. The declaration places `seqon[20]` after `meter` (`PG:150-172`), and the supplied link map places `chr` 135 bytes after `ci` (`code/GM/PLAYGAME.MAP:726-727`). That supports a layout calculation, not a guarantee of a shipped executable's out-of-bounds behavior: exact corruption is **[not yet checked in DOSBox]**. The web port bounds its counter writes (`engine/touch.ts:120-133`), so it cannot reproduce adjacent DOS memory corruption.

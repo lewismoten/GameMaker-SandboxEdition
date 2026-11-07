@@ -16,7 +16,7 @@ import { licenseText } from '../license';
 import { STARTER_STING, starterStingFli } from './sting';
 import { buildHeroBlocks, heroPicture } from './hero';
 import { buildHero } from './heroChar';
-import { buildMonsterBlocks, buildMonsters } from './monsters';
+import { graduationMonsters } from './graduationConfetti';
 import { cardPicture, endPicture, gif, menuPicture, paper, scoresPicture, slotsPicture, titlePicture } from './screens';
 import { skyOf } from './palette';
 import { SILVER_KEYS } from './locks';
@@ -26,7 +26,6 @@ import type { Graduation } from './graduationConfig';
 import { TITLE, buildGame } from './graduationGame';
 import { finishBlocks } from './graduationHall';
 import type { buildLevels } from './graduationLevel';
-import { song } from './graduationSong';
 import { HOWTO, LOST } from './graduationText';
 
 /** Writes the game's disk: `dir` is the game's folder, `built` its levels (buildLevels), `demo` its DEMO.REC bytes. */
@@ -36,7 +35,7 @@ export function buildGraduation(dir: string, cfg: Graduation, built: ReturnType<
   const { STORY, WON, CREDITS } = { STORY: cfg.text.story, WON: cfg.text.won, CREDITS: cfg.text.credits };
   const title = cfg.title ?? TITLE;
   const heroBlocks = buildHeroBlocks(pal);
-  const monsterBlocks = buildMonsterBlocks(pal);
+  const { monsterBlocks, monsters } = graduationMonsters(pal, book);
   const hero = heroPicture(heroBlocks, 'stand.top', 'stand');
   const cheer = heroPicture(heroBlocks, 'cheer.top', 'jump');
   // the exit door as a picture to stand in the scenes: its sky made clear
@@ -46,7 +45,7 @@ export function buildGraduation(dir: string, cfg: Graduation, built: ReturnType<
   disk.put('grad.pal', serializePalette(pal.pal));
   for (const l of levels) disk.put(`${l.bbl}.bbl`, serializeBlocks(finishBlocks({ book: l.book, timed: l.timed })));
   disk.put('grad.mbl', serializeBlocks(monsterBlocks.finish()));
-  disk.put('grad.mon', serializeMonsters(buildMonsters(monsterBlocks)));
+  disk.put('grad.mon', serializeMonsters(monsters));
   disk.put('hero.cbl', serializeBlocks(heroBlocks.finish()));
   const character = buildHero(heroBlocks);
   // the arrival's counting gates use these counters, which (like the key counter) start at 1: a count of none
@@ -54,7 +53,7 @@ export function buildGraduation(dir: string, cfg: Graduation, built: ReturnType<
   if (levels.some((l) => l.book.has('powerGate'))) character.meter[POWER] = 1;
   disk.put('hero.chr', serializeCharacter(character));
   disk.put('grad.snd', serializeSoundSet(buildSounds()));
-  disk.put('grad.cmf', song(cfg.song));
+  disk.put('grad.cmf', cfg.song());
 
   // each level's map and its card
   levels.forEach((l, i) => {

@@ -30,8 +30,8 @@ export interface Graduation {
   level: { title: string; hint: string };
   /** The first level, the outside arrival: its title and hint, the welcome sign and the nods (graduationNods.ts ids) along the path. */
   arrive: { title: string; hint: string; welcome: string; nods: string[] };
-  /** The song's tempo, lead voice and transposition (graduationSong.ts). */
-  song: { bpm: number; lead: 'lead' | 'brass' | 'organ' | 'bell' | 'strings'; transpose: number };
+  /** The graduation's own original song as a .CMF. */
+  song: () => Uint8Array;
   /** The pages: the story, the win and the credits (graduationText.ts). */
   text: { story: string; won: string; credits: string };
 }

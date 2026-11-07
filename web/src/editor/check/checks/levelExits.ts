@@ -4,7 +4,7 @@
 // because it isn't at the 146 ticks a second it needs, audio/cmfLoad.ts).
 import { parseCmf } from '@lewismoten/gamemaker-sandbox-engine/formats/cmf';
 import { MLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
-import { NOSCENE, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { NOSCENE, gameTitle, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { at, type Finding } from '../findings';
 import { blockUse, type SceneData } from '../sceneData';
 import type { FileSource } from '../sim';
@@ -61,12 +61,12 @@ export function noWayOut(d: SceneData, game: Game): Finding[] {
  * are not flagged. (DOS's own Clear() writes "UnTitled" and then blanks it, so a new scene is blank.)
  */
 export function untitledGame(d: SceneData, game: Game): Finding[] {
-  if (d.scene !== 0 || !/^untitled\s*\d*$/i.test(game.scenes[0]?.desc.trim() ?? '')) return [];
+  if (d.scene !== 0 || !/^untitled\s*\d*$/i.test(gameTitle(game))) return [];
   return [
     {
       check: 'untitled',
       severity: 'info',
-      title: `The game's menu calls it “${game.scenes[0].desc.trim()}”`,
+      title: `The game's menu calls it “${gameTitle(game)}”`,
       detail:
         'Players see the first scene’s name as the game’s name at the top of the menu. Give it the name you want on the box. (Other scenes’ names show only in the editor, so UnTitled there is harmless.)',
       where: { scene: 0 },

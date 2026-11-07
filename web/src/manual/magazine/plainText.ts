@@ -146,7 +146,7 @@ function blockText(b: Block, out: TextItem[]): void {
 }
 
 /** The items of a list of blocks, in reading order. */
-export function blocksText(blocks: Block[], out: TextItem[] = []): TextItem[] {
+function blocksText(blocks: Block[], out: TextItem[] = []): TextItem[] {
   for (const b of blocks) blockText(b, out);
   return out;
 }

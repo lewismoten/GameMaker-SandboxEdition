@@ -2,6 +2,7 @@
 // instruction screen (for descriptions) and, for shareware, the author's notice (readme /
 // order form). Used by the build's game catalog (scripts/cdGames.ts) and by the web
 // exports, which put them in the page's description tags and show the notice.
+import { cp437Text } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 
 /** The author's readme / order form, by name. */
 const NOTICE_FILES = ['readme.txt', 'order.doc', 'register.txt', 'order.txt'];
@@ -9,11 +10,10 @@ const NOTICE_WORDS = /shareware|freeware|regist/i;
 
 /** A DOS text file as plain text: up to the ^Z end mark, no CRs or control characters. */
 export function dosText(bytes: Uint8Array): string {
-  return new TextDecoder('latin1')
-    .decode(bytes)
+  return cp437Text(bytes)
     .replace(/\x1a[\s\S]*$/, '')
     .replace(/\r/g, '')
-    .replace(/[^\n\t\x20-\x7e]/g, '')
+    .replace(/[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]/g, '')
     .replace(/^\s*\n/, '')
     .trimEnd();
 }

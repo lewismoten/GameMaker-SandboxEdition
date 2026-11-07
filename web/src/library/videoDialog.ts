@@ -85,7 +85,8 @@ export function openVideo(id: string, title: string, picture: string | undefined
     );
 
     // the transcript: fetched the first time it is opened
-    const words = h('div', { class: 'lib-video-transcript', 'aria-live': 'polite' });
+    const words = h('div', { class: 'lib-video-transcript' });
+    const transcriptStatus = h('p', { class: 'lib-video-transcript-status', role: 'status', 'aria-live': 'polite' });
     const transcript = h(
       'details',
       { class: 'lib-video-section' },
@@ -97,19 +98,24 @@ export function openVideo(id: string, title: string, picture: string | undefined
           ? 'Transcript made from the video’s sound with Whisper speech recognition, lightly cleaned.'
           : 'Transcript from YouTube’s automatic captions, lightly cleaned.',
       ),
+      transcriptStatus,
       words,
     );
     let loaded = false;
     transcript.addEventListener('toggle', () => {
       if (!transcript.open || loaded) return;
       loaded = true;
-      words.textContent = 'Loading…';
+      words.replaceChildren();
+      transcriptStatus.textContent = 'Loading the transcript…';
       fetch(`./videos/${encodeURIComponent(id)}.transcript.json`)
         .then((r) => (r.ok ? (r.json() as Promise<{ t: number; text: string }[]>) : Promise.reject(new Error(String(r.status)))))
-        .then((paras) => words.replaceChildren(...paras.map((p) => h('p', null, timeButton(p.t), ' ', p.text))))
+        .then((paras) => {
+          words.replaceChildren(...paras.map((p) => h('p', null, timeButton(p.t), ' ', p.text)));
+          transcriptStatus.textContent = 'Transcript loaded. Choose a time to play from there.';
+        })
         .catch(() => {
           loaded = false;
-          words.textContent = 'The transcript could not be loaded.';
+          transcriptStatus.textContent = 'The transcript could not be loaded. Close and reopen Transcript to try again.';
         });
     });
 

@@ -11,7 +11,7 @@ export const FLOPPY_BYTES = 1_457_664; // 1.44 MB formatted capacity
 const RSD_GAMES = ['sample', 'pipemare', 'nebula', 'houses', 'tutor', 'terrain', 'penguin'];
 /** Up to 720 KB fit on a double density disk; more needs high density (1.44 MB). */
 const DD_BYTES = 737_280;
-export const SAMPLE_DISK_ID = 'sample-disk';
+const SAMPLE_DISK_ID = 'sample-disk';
 export const SAMPLE_DISK_TITLE = 'Game-Maker Sample Disk';
 
 /** original: the games made for this project, on professionally printed labels. */

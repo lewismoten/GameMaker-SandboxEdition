@@ -76,3 +76,7 @@ NO ORIGINAL.
 `readerAddress.ts` keeps the Game-Maker box's open piece and chapter in the address
 (`&gm=ultimate&ch=12`): a link opens it there, each chapter chosen is a history entry, and Back
 past the opening closes it.
+
+Teddy’s Navigator/player relay sheet (`manual/printables/relay.ts`) appears with Letters
+and papers and on Teddy’s shelf. It reuses the existing box-piece opening and real sheet
+thumbnail, with Level Maps and the hint book nearby.

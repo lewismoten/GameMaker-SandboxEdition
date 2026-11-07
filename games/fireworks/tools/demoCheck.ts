@@ -1,5 +1,5 @@
 // Plays the built title demo (disk/demo.rec) on the real engine and checks it shows level 1's lessons once: both
-// launchers going up, then Nova's own rocket (Enter), all within level 1. The recording's keys play as one unbroken
+// launchers going up, then Lami's own rocket (Enter), all within level 1. The recording's keys play as one unbroken
 // list, as the demo recorder counts game ticks across scene changes.
 //   cd web && npx vite-node ../games/fireworks/tools/demoCheck.ts
 import { readFileSync } from 'node:fs';

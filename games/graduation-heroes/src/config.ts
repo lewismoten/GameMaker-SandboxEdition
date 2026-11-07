@@ -3,6 +3,7 @@ import { wrap, creditsPage } from '../../kit/starter/graduationText';
 import type { Graduation } from '../../kit/starter/graduationConfig';
 import { CASTLE } from '../../kit/starter/graduationThemes';
 import about from '../about.json';
+import { song } from './song';
 
 export const cfg: Graduation = {
   id: 'graduation-heroes',
@@ -26,7 +27,7 @@ export const cfg: Graduation = {
     nods: ['hop', 'bug', 'flock'],
   },
   level: { title: 'The Great Hall', hint: 'Walk up the runner to the dais.' },
-  song: { bpm: 84, lead: 'brass', transpose: 5 },
+  song,
   text: {
     story: wrap(`
 |GRADUATION

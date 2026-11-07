@@ -6,7 +6,7 @@
 // one file is the whole install.
 
 /** The one-file game's format version (the first line of its game.txt); a firmware lists only the versions it reads. */
-export const GMP_VERSION = 1;
+const GMP_VERSION = 1;
 const ENTRY = 40;
 
 /** One bundle of the entries, sorted by name (byte order, as the firmware's strcmp). */
@@ -72,7 +72,7 @@ export function pocketId(id: string): string {
   );
 }
 
-export interface GmpParts {
+interface GmpParts {
   id: string;
   title: string;
   levels: number;
@@ -87,7 +87,7 @@ export interface GmpParts {
 export function writeGmp(p: GmpParts): Uint8Array {
   const text = (s: string) => new Uint8Array([...s].map((c) => (c.charCodeAt(0) < 256 ? c.charCodeAt(0) : 63)));
   const version = p.version?.replace(/[^\x21-\x7e]/g, '').slice(0, 16);
-  const title = p.title.replace(/[|\r\n]/g, ' ').slice(0, 39);
+  const title = p.title.replace(/[|\r\n]/g, ' ').slice(0, 95);
   const cards = new Uint8Array(p.cards.reduce((t, b) => t + b.length, 0));
   let at = 0;
   for (const b of p.cards) {

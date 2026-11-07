@@ -1,11 +1,11 @@
 # Slow Computers: tools
 
-- `check.ts`: the bot plays all three levels. `route.ts` watches every tick: in level 1 it walks into the first burr and checks the hit takes exactly 5 hit points, the burr is gone and the number -5 is rising and then gone, then jumps the other two without a scratch; in level 2 each lamp goes round its ring on the ticks its blocks say (the blink is 9 lit and 9 dark, the pulse eight ticks a step); in level 3 the sky goes lift, hold, settle, calm in order for 4, 22, 4 and 60 ticks. It asserts the coins (4, 4 and 4). The run wins with no life lost.
-- `flash.ts`: replays `walkthrough.json` on the real engine and counts, in every second, the large light changes WCAG 2.3.1 calls flashes (a general flash and a red flash, on each 320x200 frame; `games/kit/flashMeter.ts`). Exits 1 above 3 a second. `games/kit/flashCheckCli.ts` is the same for any game.
-- `walkthrough.ts`, `gendemo.ts`: re-record the walkthrough and the title demo (level 1: take the first burr's hit, jump the others).
-- `demoCheck.ts`: plays the built `demo.rec` on the real engine and checks it shows exactly one 5-point hit.
-- `preview.ts`: PNGs of the blocks, the hero, each level and every picture. `shots.ts`: pictures of the lessons for the progress shots (before and after a hit, the lamp dark and lit, the sky calm and held).
+Run from `web/` with `npx vite-node ../games/slow-computers/tools/<name>.ts`.
 
-## Starter rule: show the mistake once
-
-A Starter's demo and walkthrough show what each sign teaches, including the mistake once. Here the lesson is a hit shown without a flash, so the bot takes one hit on purpose; the wrong way (a flash) is only ever a still picture.
+- `check.ts`: the bot reads the signs and plays all three levels without losing a life. `route.ts` checks that each sound pad plays once, the crowd has 36 monsters and costs no hit points, and the last door wins.
+- `crowdCheck.ts [outDir]`: runs the built disk to the crowd and checks all 36 moving sprites against the actual 312×196 viewport across 480 standing frames, including three airborne double-jump/return cycles that exercise downward scrolling. Checks the visible grass roof, open cave, dirt floor, absent old platform collision and eight supported snails. Optional output is 2× gameplay PNGs and 73 consecutive frames at the engine's 18.2 Hz rate. This is a central crowd view, not a claim that the crowd stays on screen at the entrance and exit.
+- `walkthrough.ts`: re-records the complete walkthrough. The crowd pause keeps both bee rows and the cave on screen.
+- `gendemo.ts`: re-records the title demo from level 1's sound pads; rebuild afterward. `demoCheck.ts` verifies the built recording.
+- `preview.ts`: static PNGs of the blocks, hero and whole levels. `shots.ts <outDir>`: static lesson views. These overviews do not prove gameplay visibility; use `crowdCheck.ts` for that.
+- `games/kit/inViewCheck.ts slow-computers --scene 3 --standing 19 --rect 22,17,13,2`: checks the full bee-row envelope over standing walkthrough frames. Entry and exit views intentionally scroll the crowd off to the side; inspect the raw failures separately from the central moving-sprite check.
+- `games/kit/flashCheckCli.ts slow-computers`: checks the walkthrough's large light changes against the three-flashes-per-second limit.
