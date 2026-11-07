@@ -4,7 +4,8 @@
 // arrives) drawn as the engine draws them (gfx/levelPicture.ts, gfx/titlePicture.ts), with its
 // name, level count and whether the archive walk bot finished it. Copies of one game (the same
 // zip slug or folder name) share a tile. Writes sheet-NN.png and index.tsv to <out dir>.
-// Run (from web/): npx vite-node scripts/knownGamesSheets.ts <out dir> [--per 12] [--reference <dir>] [--archive <dir>]
+// Run (from web/): npx vite-node scripts/knownGamesSheets.ts <out dir> [--per 12] [--only slug,slug] [--reference <dir>] [--archive <dir>]
+// (--only draws just those games, as the index names them, for a second look)
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { chromium } from 'playwright-core';
@@ -21,14 +22,15 @@ const outDir = argv[0];
 if (!outDir) throw new Error('Usage: knownGamesSheets.ts <out dir> [--per 12]');
 const perArg = argv.indexOf('--per');
 const per = perArg > 0 ? Number(argv[perArg + 1]) : 12;
+const onlyArg = argv.indexOf('--only');
+const only = onlyArg > 0 ? new Set(argv[onlyArg + 1].split(',')) : undefined;
 mkdirSync(outDir, { recursive: true });
 
 /** Every level scene a link arrives in, with the first place it arrives. */
 function arrivals(game: Game): Map<number, Point> {
   const at = new Map<number, Point>();
   for (const s of game.scenes)
-    for (const l of s.links ?? [])
-      if (l.toScene !== NOSCENE && game.scenes[l.toScene]?.gametype === ADVTYPE && !at.has(l.toScene)) at.set(l.toScene, l.to);
+    for (const l of s.links ?? []) if (l.toScene !== NOSCENE && game.scenes[l.toScene]?.gametype === ADVTYPE && !at.has(l.toScene)) at.set(l.toScene, l.to);
   return at;
 }
 
@@ -64,7 +66,7 @@ for await (const src of knownSources(argv)) {
   if (!fp || seen.has(fp)) continue;
   seen.add(fp);
   const slug = slugOf(src.label);
-  const bot = won.get(slug);
+  const bot = won.get(slug.split(':')[0]);
   const tile = tiles.get(slug);
   if (tile) {
     tile.labels.push(src.label);
@@ -79,12 +81,16 @@ for await (const src of knownSources(argv)) {
     /* no title */
   }
   const f = tagFacts(src.gam, src.get);
-  const facts = f ? [`gravity ${f.gravScenes}/${f.scenes}`, f.jump && 'jump', f.shoots && 'fires', f.facing && 'faces up/down', `${f.monsters} monsters`].filter(Boolean).join(', ') : '';
+  const facts = f
+    ? [`gravity ${f.gravScenes}/${f.scenes}`, f.jump && 'jump', f.shoots && 'fires', f.facing && 'faces up/down', `${f.monsters} monsters`]
+        .filter(Boolean)
+        .join(', ')
+    : '';
   const pics = await Promise.all([title, ...views(game, src.get)].map(png));
   tiles.set(slug, { slug, labels: [src.label], levels: game.scenes.filter((s) => s.gametype === ADVTYPE).length, bot, facts, pics });
 }
 
-const list = [...tiles.values()];
+const list = [...tiles.values()].filter((t) => !only || only.has(t.slug));
 const index = ['sheet\ttile\tslug\tlevels\tbot\tlabels'];
 const esc = (s: string) => s.replace(/[<&]/g, (c) => (c === '<' ? '&lt;' : '&amp;'));
 const browser = await chromium.launch();

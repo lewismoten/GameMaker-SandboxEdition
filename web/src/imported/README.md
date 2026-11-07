@@ -22,6 +22,5 @@ stars as a radio group, Unrated first (`ratingStars.ts`), the "Rating and note" 
   `fingerprint.ts` stays for the removed-game check.
 - `gameTags.ts`: the deterministic tagger (gravity, a shot that births a monster, monster count,
   keys and whether the hero faces up and down). A tag has to be earned (rules in the file's header). No AI. Its tags are suggestions, never written to DOS files.
-- `knownGames.json`: content fingerprint to tags for the CD's games and the public archive's (about 340 games, 14 KB, 4 KB gzipped), built by
-  `web/scripts/knownGamesTable.ts` (a curated `knownGames.curated.json`, keyed by folder, replaces
-  a guess). Loaded only when the Imported tab reads tags (`editor/shell/homeTags.ts`).
+- `knownGames.json`: content fingerprint to a `knownGame.ts` row for the CD's games and the public archive's (340 games, about 22 KB, 5 KB gzipped): tags curated by looking at each game (`knownGames.curated.json`, keyed by folder or zip name: a view, a genre and up to three themes, from the contact sheets of `web/scripts/knownGamesSheets.ts`), else the rules' guesses; its level count and whether the archive walk bot finished it. Built by `web/scripts/knownGamesTable.ts`. Loaded only when the Imported tab reads tags (`editor/shell/homeTags.ts`).
+- `knownGame.ts`: a table row's shape, the curated words, and `tagInfo`: a curated row shows as "Tags", anything else as "Suggested tags".
