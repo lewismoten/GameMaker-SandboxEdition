@@ -46,7 +46,7 @@ describe('LogModel', () => {
   it('learns the game and screen mode', () => {
     const m = new LogModel();
     m.program('GMOS.ELF');
-    expect(m.add('log', 'SND game SANDBOX/QUEST.GAM')).toBe(true);
+    expect(m.add('log', 'SND game SANDBOX QUEST.GAM')).toBe(true);
     m.add('log', 'video mode: 320x200');
     expect(stateLine(m.state)).toBe('Running GMOS.ELF · game SANDBOX/QUEST.GAM · screen mode 320x200');
     m.add('log', 'SND end');
