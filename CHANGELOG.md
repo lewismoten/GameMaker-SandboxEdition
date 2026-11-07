@@ -245,6 +245,8 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Changed
 
+- Opening a game in the editor no longer downloads the home page's showcase, cards and styles.
+
 - Both Pocket Player boards' flash images include all 106 Starters and Graduations, including Snow Trails, Rain on the Path, Quicksand, Lightning, Heat Waves, and the rebuilt lessons.
 - Who Wins? shows who is stronger: the big red gumdrop now fills its block and the mint ones are half its size, POWER charts list each monster's picture beside its real power number (180, 140, 130, 110), an arrow sign says to watch the big red one, and a star used up on something stronger fizzles gray where you can see it, with a sign saying why (180 to 140).
 - The Game-Maker box's Technical Reference and Limits booklet is finished: a memory map with corrected figures (PLAYGAME holds about 420K before a scene), drawings of the screen's blocks (with the 8 pixels at the right and 4 rows at the bottom that PLAYGAME hides while you play, so 312 x 196 show), scrolling and the 64K block files, a table of sound sizes and monsters by machine, a glossary to end on and a printed back cover. It says pixels, and its stray closing note is gone. Italic written with underscores now shows as italic in the box's booklets.
