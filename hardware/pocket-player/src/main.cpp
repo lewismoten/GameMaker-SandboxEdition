@@ -28,6 +28,7 @@
 #include "idle.h"
 #include "statusled.h"
 #include "pressrect.h"
+#include "settingsdraw.h"
 #include <mbedtls/sha256.h>
 #ifdef POCKET_CYD28
 #include "xpt2046.h"
@@ -658,7 +659,10 @@ static void saveSettings() {
   }
   File f = LittleFS.open("/settings.txt", "w");
   if (!f) return;
-  f.printf("lefty=%d\nstylus=%d\npad=%d\ndead=%d\npalm=%d\ndebug=%d\nsound=%d\n", settings.lefty, settings.stylus, settings.padSize, settings.dead, settings.palm, settings.debug, settings.sound);
+  // Older firmware reads these lines by their first letters ("pad" ...), so the newer keys share no prefix with the old ones and
+  // come last: it skips them, and its own save drops them (the pad goes back to Low and Space to the corner).
+  f.printf("lefty=%d\nstylus=%d\npad=%d\ndead=%d\npalm=%d\ndebug=%d\nsound=%d\nraised=%d\njumpnear=%d\n", settings.lefty, settings.stylus, settings.padSize,
+           settings.dead, settings.palm, settings.debug, settings.sound, settings.raised, settings.jumpNear);
 }
 static void loadSettings() {
   settings = ctl::Settings();
@@ -670,14 +674,19 @@ static void loadSettings() {
   if (!f) return;
   while (f.available()) {
     String l = f.readStringUntil('\n');
-    int v = l.substring(l.indexOf('=') + 1).toInt();
-    if (l.startsWith("lefty")) settings.lefty = v ? 1 : 0;
-    else if (l.startsWith("stylus")) settings.stylus = v ? 1 : 0;
-    else if (l.startsWith("pad")) settings.padSize = v < 0 ? 0 : v > 2 ? 2 : v;
-    else if (l.startsWith("dead")) settings.dead = v < 0 ? 0 : v > 2 ? 2 : v;
-    else if (l.startsWith("palm")) settings.palm = v < 0 ? 0 : v > 2 ? 2 : v;
-    else if (l.startsWith("debug")) settings.debug = v ? 1 : 0;
-    else if (l.startsWith("sound")) settings.sound = v < 0 ? 0 : v > 3 ? 3 : v;
+    int eq = l.indexOf('=');
+    if (eq < 0) continue;
+    String k = l.substring(0, eq);  // whole keys: "pad" and a later "padX" must not be mixed up
+    int v = l.substring(eq + 1).toInt();
+    if (k == "lefty") settings.lefty = v ? 1 : 0;
+    else if (k == "stylus") settings.stylus = v ? 1 : 0;
+    else if (k == "pad") settings.padSize = v < 0 ? 0 : v > 2 ? 2 : v;
+    else if (k == "dead") settings.dead = v < 0 ? 0 : v > 2 ? 2 : v;
+    else if (k == "palm") settings.palm = v < 0 ? 0 : v > 2 ? 2 : v;
+    else if (k == "debug") settings.debug = v ? 1 : 0;
+    else if (k == "sound") settings.sound = v < 0 ? 0 : v > 3 ? 3 : v;
+    else if (k == "raised") settings.raised = v ? 1 : 0;
+    else if (k == "jumpnear") settings.jumpNear = v ? 1 : 0;
   }
 }
 
@@ -727,7 +736,6 @@ static void button(int x0, int y0, int x1, int y1, const char* label, bool hot =
 // Where the screens put things (the 480x320 numbers are the 3248S035's; the 320x240 ones are for the 2432S028).
 constexpr int TITLE_H = scr::SMALL ? 28 : 40;
 
-constexpr int ST_Y0 = scr::SMALL ? 30 : 42, ST_STEP = 34, ST_PER_PAGE = scr::SMALL ? 5 : 7, ST_FOOT_Y = scr::SMALL ? 200 : 288;
 static void title(const char* s) {
   tft.fillRect(0, 0, scr::W, TITLE_H, C_BLUE);
   tft.setTextColor(C_WHITE, C_BLUE);
@@ -765,10 +773,15 @@ static void refreshIcons() {
 }
 
 
-// Reduced view anchored at the top, completely past the pad and its 14 px touch slop.
+// Reduced view anchored at the top, completely past the pad (and Space when it sits near the pad) and its 14 px touch slop.
 static scr::Picture picture() {
   const auto& pad = controls.L.pad;
   int edge = settings.lefty ? VIEW_W - pad.cx + pad.r : pad.cx + pad.r;
+  if (settings.jumpNear) {  // Space beside the pad: the picture starts past it too
+    const auto& sp = controls.L.space;
+    int e2 = settings.lefty ? VIEW_W - sp.cx + sp.r : sp.cx + sp.r;
+    if (e2 > edge) edge = e2;
+  }
   return {VIEW_W, VIEW_H, smallerPicture, settings.lefty != 0, edge + 14};
 }
 static int gameX(int x) { return picture().toX(x); }
@@ -921,7 +934,7 @@ static void drawStrip() {
 
 // ---- screens -------------------------------------------------------------------------------------
 
-enum Mode { PICKER, PLAYING, PAUSED, HELP_SCREEN, SETTINGS_SCREEN, SEARCH_SCREEN, DISPLAY_SCREEN, DETAILS_SCREEN, DONE };
+enum Mode { PICKER, PLAYING, PAUSED, HELP_SCREEN, SETTINGS_SCREEN, SEARCH_SCREEN, DETAILS_SCREEN, DONE };
 static Mode mode = PICKER;
 static int page = 0, selected = -1, nmatch = 0;
 static char searchText[25] = "", savedSearch[25] = "";
@@ -1050,32 +1063,12 @@ static void drawDetails() {
   bool pinned=catalog&&catalog->pins.has(games[selected].uid);
   pk::detailsFooter(tft,scr::W,scr::H,pinned);if(pinned)pk::detailsNote(tft,scr::W,scr::H,"In Favorites");
 }
-// Board A has fixed ST7796 geometry and GT911 coordinates; no resistive calibration or driver guessing.
-// Display still exposes the picture size on both boards; the CYD also offers its hardware setup.
-static void drawDisplayOptions() {
-  tft.fillScreen(C_BLACK); title("Display");
-  button(6, TITLE_H + 12, scr::W - 6, TITLE_H + 52, smallerPicture ? "Smaller picture: On" : "Smaller picture: Off");
-#ifdef POCKET_CYD28
-  button(6, TITLE_H + 60, scr::W - 6, TITLE_H + 100, "Panel setup");
-#else
-  tft.setTextSize(1); tft.setTextColor(C_WHITE, C_BLACK);
-  tft.setCursor(12, TITLE_H + 70); tft.print("Touch needs no calibration.");
-#endif
-  button(6, scr::H - 38, 100, scr::H - 2, "Back");
-  banner::paint(tft, 0, 0);
-}
-
-static const char* const HAND[] = {"Right", "Left"};
-static const char* const ONOFF[] = {"Off", "On"};
-static const char* const SIZE3[] = {"Small", "Medium", "Large"};
 // A short rising beep to hear the volume with (36 steps of 1/145.6 s, little endian frequencies in Hz).
 static const uint8_t SAMPLE_TUNE[72] = {
     0xB8, 0x01, 0xB8, 0x01, 0xB8, 0x01, 0xB8, 0x01, 0xB8, 0x01, 0xB8, 0x01, 0xB8, 0x01, 0xB8, 0x01, 0xB8, 0x01,
     0x30, 0x02, 0x30, 0x02, 0x30, 0x02, 0x30, 0x02, 0x30, 0x02, 0x30, 0x02, 0x30, 0x02, 0x30, 0x02, 0x30, 0x02,
     0x88, 0x02, 0x88, 0x02, 0x88, 0x02, 0x88, 0x02, 0x88, 0x02, 0x88, 0x02, 0x88, 0x02, 0x88, 0x02, 0x88, 0x02,
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
-static const char* const VOLUME[] = {"Off", "Low", "Medium", "High"};
-static const char* const PALM[] = {"Off", "Size", "Size+near"};
 #ifdef POCKET_CYD28
 static uint8_t panelType = PANEL_ILI9341, turnIdx = 0, softIdx = 0;  // softIdx 0: the glass's own landscape turn, 1 and 2: turned in software
 static const char* panelName(char* b) {  // "ILI", "ST inv", "ILI inv bgr", ...
@@ -1083,12 +1076,7 @@ static const char* panelName(char* b) {  // "ILI", "ST inv", "ILI inv bgr", ...
   return b;
 }
 #endif
-constexpr int R_BRIGHT = 8, R_CLICKS = 9, R_LED = 10, R_CARD = scr::SMALL ? 11 : 10, R_CAL = 12, R_DISPLAY = scr::SMALL ? 13 : 11;
-static const char* const PERCENT[] = {"25%", "50%", "75%", "100%"};
-constexpr int ST_ROWS = scr::SMALL ? 14 : 12;  // the 2.8 inch board's Settings also has Status LED, Calibrate and Display
-static int setPage = 0;
 static void enterPicker();
-static bool settingsFromPause();  // defined with fromPause: Settings was opened from a paused game (its memory is in use)
 // Settings, Card, Rescan: forget the cache, look at the card again, and show the list (its chip counts the games as they are found).
 static void rescanCard() {
   cardScanKnown = false;
@@ -1108,82 +1096,34 @@ static void rescanCard() {
   searchText[0] = 0;
   enterPicker();
 }
-static void drawSettings() {
-  tft.fillScreen(C_BLACK);
-  title("Settings");
-  struct Row { const char* name; const char* value; };
-#ifdef POCKET_CYD28
-  char pname[16];
-#endif
-  Row rows[ST_ROWS] = {{"Hand", HAND[settings.lefty]},
-                       {scr::SMALL ? "Stylus latch" : "Stylus (taps latch)", ONOFF[settings.stylus]},
-                       {"Pad size", SIZE3[settings.padSize]},
-                       {scr::SMALL ? "Dead zone" : "Pad dead zone", SIZE3[settings.dead]},
-                       {scr::SMALL ? "Palm reject" : "Palm rejection", PALM[settings.palm]},
-                       {scr::SMALL ? "Status nums" : "Status numbers", ONOFF[settings.debug]},
-                       {"Sound", VOLUME[settings.sound]},
-                       {"Sticky direction", ONOFF[settings.sticky]},
-                       {"Brightness", PERCENT[brightStep]},
-                       {scr::SMALL ? "Clicks" : "Button clicks", ONOFF[clicksOn]},
-#ifdef POCKET_CYD28
-                       {"Status LED", ONOFF[ledOn]},
-#endif
-                       {"Card", settingsFromPause() ? "-" : "Rescan"}
-#ifdef POCKET_CYD28
-                       ,
-                       {"Calibrate", "tap 3"},
-                       {"Display", panelName(pname)}
-#else
-                       , {"Display", "options"}
-#endif
-  };
-  int pages = (ST_ROWS + ST_PER_PAGE - 1) / ST_PER_PAGE;
-  if (setPage >= pages) setPage = 0;
-  for (int k = 0; k < ST_PER_PAGE; k++) {
-    int i = setPage * ST_PER_PAGE + k;
-    if (i >= ST_ROWS) break;
-    int y = ST_Y0 + k * ST_STEP;
-    tft.fillRoundRect(6, y, scr::W - 12, 32, 6, C_DARK);
-    tft.drawRoundRect(6, y, scr::W - 12, 32, 6, C_GRAY);
-    tft.setTextSize(2);
-    tft.setTextColor(C_WHITE, C_DARK);
-    tft.setCursor(14, y + 8);
-    if (scr::SMALL && i == 7) tft.setTextSize(1);
-    tft.print(rows[i].name);
-    tft.setTextSize(2);
-    tft.setTextColor(C_YELLOW, C_DARK);
-    tft.setCursor(scr::SMALL ? 176 : 300, y + 8);
-    tft.print(rows[i].value);
-  }
-  if (scr::SMALL) {
-    button(6, ST_FOOT_Y + 2, 100, scr::H - 2, "Back");
-    button(108, ST_FOOT_Y + 2, 202, scr::H - 2, pages > 1 ? (setPage + 1 < pages ? "More >" : "< First") : "");
-    tft.setTextSize(1);
-    tft.setTextColor(C_GRAY, C_BLACK);
-    tft.setCursor(210, ST_FOOT_Y + 8);
-    tft.print("touch: x,y z");
-  } else {
-    button(6, 288, 150, 318, "Back");
-    tft.setTextSize(1);
-    tft.setTextColor(C_GRAY, C_BLACK);
-    button(160, 288, 280, 318, pages > 1 ? (setPage + 1 < pages ? "More >" : "< First") : "");
-    tft.setTextSize(1); tft.setTextColor(C_GRAY, C_BLACK);
-    tft.setCursor(290, 290); tft.print("Touch: no calibration needed");
-  }
-  banner::paint(tft, 0, 0);
+// ---- the Settings screen: settingsdraw.h draws it and finds what a tap is on -----------------------------------------
+static st::View setView;
+static char cardSpace[40] = "";  // the Card tab's free-space line, measured once a visit
+static uint8_t pvHeld = 0;       // the keys the preview's finger holds (bits as st::heldText)
+static ctl::Need previewNeed() {
+  ctl::Need n;
+  n.left = n.right = n.up = n.down = n.space = n.enter = n.jump = true;
+  return n;
 }
-static void settingsTouchInfo() {
-  int ix = scr::SMALL ? 210 : 290, iy = scr::SMALL ? ST_FOOT_Y + 22 : 308;
-  tft.fillRect(ix, iy - (scr::SMALL ? 2 : 2), scr::W - ix, 12, C_BLACK);
-  tft.setTextSize(1);
-  tft.setTextColor(C_WHITE, C_BLACK);
-  tft.setCursor(ix, iy);
-  char l[64];
-  if (pts.n && scr::SMALL) snprintf(l, sizeof l, "%d,%d z%d", pts.x[0], pts.y[0], pts.size[0]);
-  else if (pts.n) snprintf(l, sizeof l, "%d,%d > %d,%d z%d", gt.rawX[0], gt.rawY[0], pts.x[0], pts.y[0], pts.size[0]);
-  else snprintf(l, sizeof l, "no touch");
-  l[(scr::W - ix) / 6] = 0;
-  tft.print(l);
+static st::Values settingsValues() {
+  st::Values v;
+  v.s = settings; v.bright = brightStep; v.clicks = clicksOn; v.led = ledOn; v.smaller = smallerPicture;
+  return v;
+}
+// The whole screen. On Controls the controls model is set up for the preview (a game sets it up again as it starts or resumes).
+static void drawSettings() {
+  st::CardInfo card;
+  if (setView.tab == st::T_CARD) {
+    card.builtIn = ngames - cardGames();
+    pk::cardChipText(cardState, cardGames(), card.state, sizeof card.state);
+    memcpy(card.space, cardSpace, sizeof card.space);
+    st::sizeText(card.flash, sizeof card.flash, "Built-in", LittleFS.totalBytes() - LittleFS.usedBytes(), 0);
+    card.fromPause = setView.fromPause;
+  }
+  if (setView.tab == st::T_CONTROLS) controls.configure(settings, previewNeed());
+  pvHeld = 0;
+  st::screen(tft, setView, settingsValues(), card, controls.L, controls.need, 0, 0, 0);
+  banner::paint(tft, 0, 0);
 }
 
 static bool pausePinned = false;  // whether the paused game is a favorite (read from NVS as the game pauses)
@@ -1462,7 +1402,6 @@ static void enterPicker() {
 
 // A game or level that cannot load: the failure card (instead of a reset) until the button is tapped (or 30 seconds pass).
 // Everything the attempt allocated is already freed (startFailed, levelFailed).
-static bool settingsFromPause() { return fromPause; }
 static void showFailCard(const char* name) {
   spk::stop();
   statusLed.load(false);
@@ -1777,7 +1716,6 @@ static void bannerChanged(bool changed) {
     case PICKER: drawPicker(false); break;
     case SETTINGS_SCREEN: drawSettings(); break;
     case SEARCH_SCREEN: drawSearch(); break;
-    case DISPLAY_SCREEN: drawDisplayOptions(); break;
     case PLAYING: last.valid = false; break;
     case PAUSED: tft.fillScreen(C_BLACK); last.valid = false; drawFrame(true); drawStrip(); drawPause(); break;
     case HELP_SCREEN: ovl::helpPage(tft, cfg); break;
@@ -1904,6 +1842,80 @@ static void applyKeys(uint32_t now) {
   (void)now;
 }
 
+// ---- Settings: what a chip does, the Card tab's free space, the preview's touches -----------------------------------------
+// The card is mounted only here, and never under a paused game (its files may be open): the line says so instead.
+static void measureCard() {
+  if (setView.fromPause) { snprintf(cardSpace, sizeof cardSpace, "Free space: see it from the game list"); drawSettings(); return; }
+  if (cardState == pk::CARD_NONE) { snprintf(cardSpace, sizeof cardSpace, "Card: none in the slot"); drawSettings(); return; }
+  snprintf(cardSpace, sizeof cardSpace, "Card: measuring free space...");
+  drawSettings();
+  if (mountSD()) {
+    uint64_t total = SD.totalBytes(), used = SD.usedBytes();
+    unmountSD();
+    st::sizeText(cardSpace, sizeof cardSpace, "Card", total - used, total);
+  } else snprintf(cardSpace, sizeof cardSpace, "Card: could not be read");
+  drawSettings();
+}
+static void openSettings(bool paused) {
+  setView = st::View();
+  setView.fromPause = fromPause = paused;
+  cardSpace[0] = 0;
+  mode = SETTINGS_SCREEN;
+  drawSettings();
+}
+// A chip: an action runs, a value is chosen (its effect is heard or seen at once) and the row's hint shows under the preview.
+// Everything is saved once, on Back (or before an action leaves the screen).
+static void chooseSetting(st::Item it, int chip) {
+  switch (it) {
+    case st::I_RESCAN:
+      if (!fromPause) { saveSettings(); rescanCard(); return; }
+      drawSettings();
+      return;
+#ifdef POCKET_CYD28
+    case st::I_CAL: saveSettings(); if (runCalibration()) dsCalDone(); drawSettings(); return;
+    case st::I_PANEL: saveSettings(); runDisplaySetup(); drawSettings(); return;
+#endif
+    default: break;
+  }
+  st::Values v = settingsValues();
+  st::choose(it, chip, v);
+  settings = v.s; brightStep = v.bright; clicksOn = v.clicks; ledOn = v.led;
+  if (v.smaller != smallerPicture) { smallerPicture = v.smaller; last.valid = false; }
+  if (it == st::I_SOUND) { spk::setVolume(settings.sound); spk::play(SAMPLE_TUNE); }
+  if (it == st::I_BRIGHT) applyBacklight();
+  if (it == st::I_LED) statusLed.enabled = ledOn;
+  setView.last = it;
+  drawSettings();
+}
+// Touches on the preview go to the real controls model, scaled up to the game view; what it presses lights up.
+static void previewTouch(uint32_t now) {
+  st::Box b = st::previewBox();
+  int ids[5], xs[5], ys[5], sz[5], n = 0;
+  for (int i = 0; i < pts.n && n < 5; i++)
+    if (b.has(pts.x[i], pts.y[i])) {
+      ids[n] = pts.id[i];
+      xs[n] = (pts.x[i] - b.x0) * st::G.pvDen / st::G.pvNum;
+      ys[n] = (pts.y[i] - b.y0) * st::G.pvDen / st::G.pvNum;
+      sz[n] = pts.size[i];
+      n++;
+    }
+  uint8_t d0 = controls.padDirs, b0 = controls.btnDown, h0 = pvHeld;
+  controls.update(ids, xs, ys, sz, n, now);
+  controls.takeEvent();  // the little MENU chip does nothing here
+  ctl::Change ch[16];
+  int k = controls.flush(ch, 16);
+  for (int i = 0; i < k; i++) {
+    int s = ch[i].scan;
+    uint8_t bit = s == ctl::S_LEFT ? 1 : s == ctl::S_RIGHT ? 2 : s == ctl::S_UP ? 4 : s == ctl::S_DOWN ? 8 : s == ctl::S_SPACE ? 16 : s == ctl::S_ENTER ? 32 : 0;
+    if (ch[i].down) pvHeld |= bit;
+    else pvHeld &= ~bit;
+  }
+  if (controls.padDirs != d0 || controls.btnDown != b0 || pvHeld != h0) {
+    st::preview(tft, controls.L, controls.need, controls.padDirs, controls.btnDown);
+    st::previewNote(tft, setView, pvHeld);
+  }
+}
+
 // ---- buttons that act on release, and the idle timer -----------------------------------------------
 static prs::Press press;
 static pk::CardState lastCardState = pk::CARD_UNKNOWN;
@@ -1921,9 +1933,7 @@ static prs::Ctx ctxFor(prs::Screen sc) {
     c.action = (searchText[0] && !nmatch) || (selected >= 0 && selected < ngames && !browsingCategories);
     c.tiles = count - page * 6 < 0 ? 0 : count - page * 6 > 6 ? 6 : count - page * 6;
   } else if (sc == prs::SC_SETTINGS) {
-    c.stY0 = ST_Y0; c.stStep = ST_STEP; c.stPerPage = ST_PER_PAGE; c.stFootY = ST_FOOT_Y; c.stRows = ST_ROWS; c.setPage = setPage;
-    c.pages = (ST_ROWS + ST_PER_PAGE - 1) / ST_PER_PAGE;
-    c.smallBoard = scr::SMALL;
+    c.settings = setView;
   } else if (sc == prs::SC_DISPLAY) {
 #ifdef POCKET_CYD28
     c.displayRows = 2;
@@ -1935,7 +1945,7 @@ static void redrawMenu(prs::Screen sc) {
   switch (sc) {
     case prs::SC_PICKER: drawPicker(false); break;
     case prs::SC_DETAILS: drawDetails(); break;
-    case prs::SC_DISPLAY: drawDisplayOptions(); break;
+    case prs::SC_DISPLAY: break;  // the Display tab is part of Settings now
     case prs::SC_SETTINGS: drawSettings(); break;
     case prs::SC_PAUSE: drawPause(); break;
   }
@@ -2059,7 +2069,7 @@ void loop() {
     if (menuTap(prs::SC_PICKER, tx, ty)) {
       int count=browsingCategories?categoryCount:nmatch,pages=(count+5)/6;
       if(ty<32) {
-        if(tx>=scr::W-32){stopCardScan();mode=SETTINGS_SCREEN;fromPause=false;setPage=0;drawSettings();}
+        if(tx>=scr::W-32){stopCardScan();openSettings(false);}
         else if(tx>=scr::W-64){stopCardScan();strcpy(savedSearch,searchText);savedAll=searchAll;savedBrowsing=browsingCategories;mode=SEARCH_SCREEN;drawSearch();}
         else if(tx<32&&!(browsingCategories&&!category&&!searchText[0])){  // the root page has no back arrow
           if(searchText[0])searchText[0]=0;
@@ -2101,62 +2111,26 @@ void loop() {
       pk::drawSearchText(tft,32,searchText,previous);
     }delay(5);return;
   }
-  if (mode == DISPLAY_SCREEN) {
-    if (menuTap(prs::SC_DISPLAY, tx, ty)) {
-      if (ty >= scr::H - 38) { mode = SETTINGS_SCREEN; drawSettings(); }
-      else if (ty >= TITLE_H + 12 && ty < TITLE_H + 52) { smallerPicture = !smallerPicture; saveSettings(); last.valid = false; drawDisplayOptions(); }
-#ifdef POCKET_CYD28
-      else if (ty >= TITLE_H + 60 && ty < TITLE_H + 100) { runDisplaySetup(); drawDisplayOptions(); }
-#endif
-    }
-    delay(5); return;
-  }
   if (mode == SETTINGS_SCREEN) {
     if (menuTap(prs::SC_SETTINGS, tx, ty)) {
-      int pagesS = (ST_ROWS + ST_PER_PAGE - 1) / ST_PER_PAGE;
-      if (ty >= ST_FOOT_Y && tx >= (scr::SMALL ? 104 : 160) && tx < (scr::SMALL ? 208 : 280)) {
-        if (pagesS > 1) { setPage = (setPage + 1) % pagesS; drawSettings(); }
-        return;
-      }
-      if (ty >= ST_FOOT_Y && tx < (scr::SMALL ? 104 : 160)) {
-        saveSettings();
-        if (fromPause) { applyControls(); mode = PAUSED; tft.fillScreen(C_BLACK); last.valid = false; drawFrame(true); drawStrip(); drawPause(); }
-        else enterPicker();
-        return;
-      }
-      int row = (ty - ST_Y0) / ST_STEP;
-      if (ty >= ST_Y0 && row >= 0 && row < ST_PER_PAGE && setPage * ST_PER_PAGE + row < ST_ROWS) {
-        switch (setPage * ST_PER_PAGE + row) {
-          case 0: settings.lefty ^= 1; break;
-          case 1: settings.stylus ^= 1; break;
-          case 2: settings.padSize = (settings.padSize + 1) % 3; break;
-          case 3: settings.dead = (settings.dead + 1) % 3; break;
-          case 4: settings.palm = (settings.palm + 1) % 3; break;
-          case 5: settings.debug ^= 1; break;
-          case 6:
-            settings.sound = (settings.sound + 1) % 4;
-            spk::setVolume(settings.sound);
-            spk::play(SAMPLE_TUNE);
-            break;
-          case 7: settings.sticky ^= 1; saveSettings(); break;
-          case R_BRIGHT: brightStep = (brightStep + 1) % 4; applyBacklight(); saveSettings(); break;
-          case R_CLICKS: clicksOn = !clicksOn; saveSettings(); break;
-#ifdef POCKET_CYD28
-          case R_LED: ledOn = !ledOn; statusLed.enabled = ledOn; saveSettings(); break;
-#endif
-          case R_CARD:  // Card: read the card again (not while a game is paused: its memory is in use)
-            if (!fromPause) { saveSettings(); rescanCard(); return; }
-            break;
-#ifdef POCKET_CYD28
-          case R_CAL: saveSettings(); if (runCalibration()) dsCalDone(); drawSettings(); return;
-#endif
-          case R_DISPLAY: saveSettings(); mode = DISPLAY_SCREEN; drawDisplayOptions(); return;
-        }
-        drawSettings();
+      st::Hit h = st::hit(setView, tx, ty);
+      switch (h.kind) {
+        case st::K_BACK:
+          saveSettings();
+          if (fromPause) { applyControls(); mode = PAUSED; tft.fillScreen(C_BLACK); last.valid = false; drawFrame(true); drawStrip(); drawPause(); }
+          else enterPicker();
+          return;
+        case st::K_TAB:
+          if (h.tab != setView.tab) { setView.tab = (st::Tab)h.tab; setView.page = 0; setView.last = st::I_NONE; }
+          drawSettings();
+          if (setView.tab == st::T_CARD && !cardSpace[0]) measureCard();
+          return;
+        case st::K_MORE: setView.page = (setView.page + 1) % st::pages(setView.tab); drawSettings(); return;
+        case st::K_CHIP: chooseSetting(h.item, h.chip); return;
+        default: break;
       }
     }
-    static uint32_t infoT = 0;
-    if (now - infoT > 100) { infoT = now; settingsTouchInfo(); }
+    if (setView.tab == st::T_CONTROLS) previewTouch(now);
     delay(5);
     return;
   }
@@ -2170,7 +2144,7 @@ void loop() {
         case ovl::PA_RESTART_LEVEL: restartLevel(); break;
         case ovl::PA_RESTART_GAME: if (!launchGame(curGame)) enterPicker(); break;
         case ovl::PA_HELP: mode = HELP_SCREEN; ovl::helpPage(tft, cfg); wasDown = true; break;
-        case ovl::PA_SETTINGS: mode = SETTINGS_SCREEN; fromPause = true; drawSettings(); break;
+        case ovl::PA_SETTINGS: openSettings(true); break;
         case ovl::PA_QUIT: enterPicker(); break;  // the resume point stays: Continue on the home page
         case ovl::PA_STAR: {  // star or unstar this game; the title line says what happened until the next redraw
           int r = toggleFavorite(activeGame.uid);
