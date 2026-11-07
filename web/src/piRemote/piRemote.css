@@ -257,3 +257,8 @@ main.pi-remote .pi-key.pi-long {
   font-size: 12px;
   padding: 0 2px;
 }
+
+main.pi-remote .pi-sound-status {
+  margin: -6px 0 10px;
+  color: var(--muted);
+}
