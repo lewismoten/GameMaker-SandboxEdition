@@ -124,6 +124,7 @@ game folder opens in the browser unchanged.
   Codex made no new levels, art, music or story text for the games. The entries below that say
   "OpenAI Codex (GPT-6)" are part of the same work.
 
+- **Integrator return-path layout** (`web/src/editor/editors/integrator/integratorLayout.ts`): bounded ending placement and return-copy regression tests implemented with **Hermes / OpenAI Codex GPT-6.1 Sol** (OpenAI), directed by Lewis Moten. Game files and runtime scene links are unchanged.
 - **Build runner interruption recovery** (`scripts/build-games.mjs`, `scripts/child-signal-retry.mjs`)
   and its regression tests: implemented with **Hermes Agent running OpenAI Codex GPT-6.1 Sol**,
   directed by Lewis Moten. No game content or generated disk formats changed.

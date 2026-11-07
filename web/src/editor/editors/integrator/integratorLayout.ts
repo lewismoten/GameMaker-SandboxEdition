@@ -133,10 +133,69 @@ export interface Arrangement {
 }
 
 /**
+ * The forest puts endings after its deepest branch, but a return path can make an earlier
+ * branch's ending arrow cross that branch. Try free card-sized spots for the endings only;
+ * judge every link and card, not just the spanning tree. Keep the original if none is better.
+ */
+function refineEnds(g: Graph, candidate: Arrangement, area: Area, unit: { w: number; h: number }): Arrangement {
+  const positions = new Map(candidate.positions);
+  // Endings are outside the forest, so moving them leaves the backward-arrow and crowd
+  // penalties unchanged. Measure the length delta using this candidate's original spacing.
+  const measure = () => {
+    const { cross, under } = layoutCost(g.pairs, positions, { w: 22, h: 18 });
+    const { length } = layoutCost(g.pairs, positions, unit, false);
+    return cross * 4 + under * 3 + length * 0.35;
+  };
+  let best = measure();
+  const initial = best;
+  // Bound the full-graph work even for crowded games with many endings or links.
+  let budget = Math.floor(250_000 / Math.max(1, g.pairs.length * (g.pairs.length + g.nodes.length)));
+  // Include card-clearance boundaries as well as the grid: a free sliver beside a column
+  // may avoid an under-card arrow even when neither neighboring grid point does.
+  const axis = (lo: number, hi: number, size: number, values: number[]) => {
+    const points = new Set(values.flatMap((v) => [v + 2 - size, v + 2 + size]));
+    for (let v = lo; v <= hi; v += size) points.add(v);
+    return [...points].filter((v) => v >= lo && v <= hi).sort((a, b) => a - b);
+  };
+  const xs = axis(
+    area.x0,
+    area.x1,
+    CARD_UNITS.w,
+    [...positions.values()].map((p) => p.x),
+  );
+  const ys = axis(
+    area.y0,
+    area.y1,
+    CARD_UNITS.h,
+    [...positions.values()].map((p) => p.y),
+  );
+  for (const end of g.ends) {
+    if (budget <= 0) break;
+    const current = positions.get(end)!;
+    let chosen = current;
+    search: for (const y of ys)
+      for (const x of xs) {
+        const p = clampPos({ x: x - 2, y: y - 2 });
+        if ([...positions].some(([s, q]) => s !== end && Math.abs(p.x - q.x) < CARD_UNITS.w && Math.abs(p.y - q.y) < CARD_UNITS.h)) continue;
+        if (budget-- <= 0) break search;
+        positions.set(end, p);
+        const cost = measure();
+        if (cost < best - 1e-9) {
+          best = cost;
+          chosen = p;
+        }
+      }
+    positions.set(end, chosen);
+  }
+  return { kind: candidate.kind, positions, cost: candidate.cost + best - initial };
+}
+
+/**
  * Ways to lay out every used scene as a readable map of the game without overlaps, best first
  * (fewest crossing arrows, arrows under cards and long arrows):
  * - the game as a tree from the start, left to right or top to bottom (each scene next to the
- *   one that first leads there; dead ends packed in small grids; the end scene last),
+ *   one that first leads there; dead ends packed in small grids; endings initially last),
+ *   with an alternate ending placement when its arrows cross or run under cards,
  * - big games in parts, each branch packed together in a rectangle of its own, and
  * - every scene in play order along rows or columns that turn at each end.
  * Positions stay inside the DOS integrator's world (inside its frame when there is room).
@@ -157,7 +216,7 @@ export function arrangements(game: Game, limit = 6): Arrangement[] {
     const hc = hubCells(g, leafRows);
     if (hc) candidates.push({ cells: hc, bias: 0.5, kind: 'hubs' }, { cells: transpose(hc), bias: 1, kind: 'hubs' });
   }
-  const found: (Arrangement & { key: string })[] = [];
+  const found: (Arrangement & { key: string; area: Area; unit: { w: number; h: number } })[] = [];
   for (const area of [ROOMY, TIGHT]) {
     const gw = Math.floor((area.x1 - area.x0) / CARD_UNITS.w + 1e-9) + 1;
     const gh = Math.floor((area.y1 - area.y0) / CARD_UNITS.h + 1e-9) + 1;
@@ -175,14 +234,27 @@ export function arrangements(game: Game, limit = 6): Arrangement[] {
       const key = [...positions].map(([s, p]) => `${s}:${p.x},${p.y}`).join(' ');
       if (found.some((f) => f.key === key)) continue;
       // cards hanging over the world's frame look untidy: only when there's no other way
-      found.push({ kind: cand.kind, positions, cost: score(g, n.cells, positions, n.w, n.h, area) + cand.bias + (area === TIGHT ? 3 : 0), key });
+      const { dx, dy } = spacing(n.w, n.h, area);
+      found.push({
+        kind: cand.kind,
+        positions,
+        cost: score(g, n.cells, positions, n.w, n.h, area) + cand.bias + (area === TIGHT ? 3 : 0),
+        key,
+        area,
+        unit: { w: dx || MAX_GAP.x, h: dy || MAX_GAP.y },
+      });
     }
   }
-  if (found.length)
-    return found
+  if (found.length) {
+    found.sort((a, b) => a.cost - b.cost);
+    const best = found[0];
+    const { cross, under } = layoutCost(g.pairs, best.positions, { w: 22, h: 18 });
+    const refined = g.ends.length && (cross || under) ? refineEnds(g, best, best.area, best.unit) : undefined;
+    return [...(refined && refined.cost < best.cost - 1e-9 ? [refined] : []), ...found]
       .sort((a, b) => a.cost - b.cost)
       .slice(0, limit)
       .map(({ kind, positions, cost }) => ({ kind, positions, cost }));
+  }
   // More scenes than cells: plain reading order on the roomiest grid (cards may touch).
   const cols = Math.ceil(Math.sqrt((order.length * (TIGHT.x1 - TIGHT.x0)) / (TIGHT.y1 - TIGHT.y0)));
   const rows = Math.ceil(order.length / cols);
