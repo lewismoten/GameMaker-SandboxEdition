@@ -32,6 +32,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 - All Mine, an achievement for filling all ten high-score places in one game with the same name.
 - TURBO BUTTON's Mail Bag corrects the sound setup story (sound/music was set to None, with IRQ 7 already matching), gives the 220 / IRQ 7 / DMA 1 example, and adds help for holding Escape through the fade and choosing the right SVGA type in CONFIG.
+- The editors explain more DOS limits where they matter: New monster says why a 64-type set cannot take a copy, generated layouts report monsters omitted at 200 map slots, and block pickers explain their fixed 150/100/50-block sets without trimming imported extra records.
 - Lightning Bugs, Fireworks Night and Leaves in the Wind now draw and name the same helpers as their Cast entries: Rima, Lami and Mia.
 - Slow Computers brings both rows of bees into the playing view and puts its eight snails in a lit cutaway cave beneath the grass, without the floating plank. The crowd still has 36 friendly monsters.
 - Snow Trails, a Weather Starter with swaying falling snow, a drift that grows in three steps, and bootprints left in touched powder. Two short walks show the block loops and touch changes, with editable lesson pages.
