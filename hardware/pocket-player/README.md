@@ -110,9 +110,9 @@ The board's slot (TF_CS 5, TF_SPI_SCLK 18, TF_SPI_MISO 19, TF_SPI_MOSI 23, from 
 **To try it**
 
 1. Format a card FAT32 (cards over 32 GB come exFAT: use the Disk Utility "MS-DOS (FAT)" format with the MBR scheme, or `diskutil eraseDisk FAT32 POCKET MBR /dev/diskN`; 2 to 32 GB cards are the safe size).
-2. Build the card's files: `cd web && npx vite-node scripts/pocketData.ts --out /Volumes/POCKET` (this writes `/Volumes/POCKET/pocket/`, 15 games, about 7 MB: every public game that is not a Starter and passes the packer: four Sandbox games (Sandcastle Knight, In The Year 2000! and the first two Teddy games) and eleven Bizarre games). It deletes only `pocket/` on the card.
-3. Put the card in the slot (power off first) and power on. The list should show 121 games with SD on the last 15.
-4. No card reader at hand: with a blank FAT32 card in the board and the board on its game list, `~/.platformio/penv/bin/python web/scripts/pocketSdWrite.py /dev/cu.usbserial-XXXX /tmp/pocketcard/pocket` (after `pocketData.ts --out /tmp/pocketcard`) writes the files through the USB cable, about 10 KB/s (about 20 minutes for the 15 games), then resets the board.
+2. Load the library onto the card: `cd web && npx vite-node scripts/pocketData.ts --gmp /Volumes/POCKET` writes every public game that is not a Starter and passes the packer, one `.GMP` file each, into `/Volumes/POCKET/pocket/` (22 games, about 12 MB on 2026-11-07: ten Sandbox games (Virus Blaster, KEEP IT BRIEF!, Depth Perception, Maximus, Sandcastle Knight, Snowbound, In The Year 2000! and the three Teddy games) and twelve Bizarre games; four more Sandbox games wait on their host checks (`CARD_HOLD` in `pocketData.ts`)). It adds or replaces those files and deletes nothing, so `.GMP` downloads and the boards' saved display setups (`pocket/boards/`) stay. The older loose layout, `--out /Volumes/POCKET` (the same 22 games as about 1,400 shared files, about 16 MB), replaces its own files and also keeps `boards/` and `.GMP` files. Use one layout per card: a game in both is listed once.
+3. Put the card in the slot (power off first) and power on. The home page gains Sandbox and Bizarre (categories with no game are left off), and the list shows 128 games with SD on the 22.
+4. No card reader at hand: with a blank FAT32 card in the board and the board on its game list, `~/.platformio/penv/bin/python web/scripts/pocketSdWrite.py /dev/cu.usbserial-XXXX /tmp/pocketcard/pocket` (after `pocketData.ts --gmp /tmp/pocketcard`) writes the files through the USB cable, about 10 KB/s (about 20 minutes a 12 MB library, so a card reader is much quicker), then resets the board.
 
 **One game, one file (from the site).** On the site, a game's Download button has **Pocket Player (microSD)**: it saves `NAME.GMP` (an 8.3 name from the game's id). To copy it to the card:
 
@@ -346,10 +346,10 @@ existing build-id hook reads git. No board is needed to build firmware or Little
 
 Measured host build, Saturday, November 7, 2026 (before board testing):
 
-| Environment | Firmware file | Static RAM | Application headroom |
-| --- | ---: | ---: | ---: |
-| ESP32-3248S035 | 541,840 B | 100,840 B | 506,736 B |
-| CYD-2432S028 | 543,280 B | 112,200 B | 505,296 B |
+| Environment    | Firmware file | Static RAM | Application headroom |
+| -------------- | ------------: | ---------: | -------------------: |
+| ESP32-3248S035 |     541,840 B |  100,840 B |            506,736 B |
+| CYD-2432S028   |     543,280 B |  112,200 B |            505,296 B |
 
 Both filesystem images are 3,080,192 bytes. Their six source files total 2,545,021 bytes,
 including 29,232 bytes of metadata and 137,679 bytes of compressed previews. There are
