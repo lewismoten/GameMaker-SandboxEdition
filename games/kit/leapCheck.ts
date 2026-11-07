@@ -4,8 +4,8 @@
 // arrow held). The check fails when he gets past the lock's column above the lock (higher than its top).
 // A spot no one can reach (inside a wall) can give a false alarm; an author can dismiss it.
 // Started from your-first-game's wallCheck. A Starter's tall wall is StarterMap.wallToSky.
-//   npx vite-node ../games/kit/leapCheck.ts [<id>...]   (every game with an about.json when none; checkGames runs it)
-import { existsSync, readdirSync } from 'node:fs';
+//   npx vite-node ../games/kit/leapCheck.ts [<id>...]   (every Starter when none; other games are skipped: their locks are not one-block gates in walls; checkGames runs it)
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { GameSim, readDisk } from '@lewismoten/gamemaker-sandbox-tools/kit/gameSim';
 import { initScroll } from '@lewismoten/gamemaker-sandbox-engine/engine/scroll';
@@ -30,6 +30,39 @@ function locksIn(sim: GameSim): Lock[] {
       if (b.solid && b.effect >= 20 && b.effect <= 29 && b.eamt < 0 && b.eamt > -100) out.push({ x, y });
     }
   return out;
+}
+
+/**
+ * Where the hero can get to from where the scene puts him, with every lock shut: walking, falling, climbing
+ * ladders (blocks that pull no way) and jumps up to 3 blocks high and 4 across. Keys are not used.
+ */
+function reachable(sim: GameSim): Set<number> {
+  const free = (x: number, y: number) => x > 0 && y > 1 && x < MLEN - 1 && y < MLEN - 2 && !sim.solidAt(x, y) && !sim.solidAt(x, y - 1);
+  const ladder = (x: number, y: number) => sim.shown(x, y).solid === 0 && sim.shown(x, y).grav === 0;
+  const held = (x: number, y: number) => sim.solidAt(x, y + 1) || ladder(x, y);
+  const key = (x: number, y: number) => y * MLEN + x;
+  const seen = new Set<number>();
+  const todo: [number, number][] = [];
+  const add = (x: number, y: number) => {
+    while (free(x, y) && !held(x, y) && y < MLEN - 3) y++;
+    if (free(x, y) && !seen.has(key(x, y))) {
+      seen.add(key(x, y));
+      todo.push([x, y]);
+    }
+  };
+  add(sim.pos.x, sim.pos.y);
+  for (let c = todo.pop(); c; c = todo.pop()) {
+    const [x, y] = c;
+    for (const dx of [-1, 1]) add(x + dx, y);
+    if (ladder(x, y)) {
+      add(x, y - 1);
+      add(x, y + 1);
+    }
+    // a jump: straight up, then across, through free blocks only
+    for (let dy = 1; dy <= 3 && free(x, y - dy); dy++)
+      for (const sign of [-1, 1]) for (let dx = 0; dx <= 4 && free(x + sign * dx, y - dy); dx++) add(x + sign * dx, y - dy);
+  }
+  return seen;
 }
 
 /** Leaps from the current spot toward `dir`; true when the hero ends up past `lock.x` higher than the lock. */
@@ -72,15 +105,18 @@ async function leapProblems(dir: string): Promise<{ locks: number; problems: str
     } catch {
       continue;
     }
+    // no pull at the hero's start (a view from above): there is nothing to jump over
+    if (!(sim.shown(sim.pos.x, sim.pos.y).grav & 4)) continue;
     const found = locksIn(sim);
     if (!found.length) continue;
     locks += found.length;
     const base = sim.snapshot();
+    const reach = reachable(sim);
     for (const lock of found) {
       const spots: [number, number][] = [];
       for (let x = Math.max(1, lock.x - REACH); x <= lock.x + REACH; x++)
         for (let y = Math.max(2, lock.y - 14); y <= lock.y + 1; y++)
-          if (x !== lock.x && !sim.solidAt(x, y) && !sim.solidAt(x, y - 1) && sim.solidAt(x, y + 1)) spots.push([x, y]);
+          if (x !== lock.x && reach.has(y * MLEN + x) && !sim.solidAt(x, y) && !sim.solidAt(x, y - 1) && sim.solidAt(x, y + 1)) spots.push([x, y]);
       let hit: string | undefined;
       for (const [x, y] of spots) {
         if (hit) break;
@@ -99,7 +135,11 @@ async function leapProblems(dir: string): Promise<{ locks: number; problems: str
 
 {
   const args = process.argv.slice(2);
-  const ids = args.length ? args : readdirSync(gamesDir).filter((id) => existsSync(join(gamesDir, id, 'about.json')));
+  const starter = (id: string) => {
+    const about = join(gamesDir, id, 'about.json');
+    return existsSync(about) && (JSON.parse(readFileSync(about, 'utf8')) as { series?: string }).series === 'starter';
+  };
+  const ids = (args.length ? args : readdirSync(gamesDir)).filter(starter);
   let bad = 0;
   for (const id of ids) {
     const dir = join(gamesDir, id, 'disk');
