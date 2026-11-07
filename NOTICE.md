@@ -86,6 +86,7 @@ game folder opens in the browser unchanged.
   signs and bot). Notes kept for Lewis stay out of the repository.
 - **Hermes OpenAI Codex GPT-6.1 Sol** (OpenAI), directed by Lewis, revised Slow Computers' crowd layout and cutaway cave pixels, its lesson notes and its gameplay regression checks (`games/slow-computers/`). The original game credits remain.
 - **All Mine high-score achievement**: **Hermes Agent running OpenAI Codex GPT-6.1 Sol**, directed by Lewis Moten, implemented stored-table detection, player/desk integration, reset persistence and tests, and selected an existing checklist block through the badge generator. The source artwork retains its original credits; no new game artwork was drawn.
+- **DOS installation support**: **Hermes Agent running OpenAI Codex GPT-6.1 Sol**, directed by Lewis Moten, wrote the DOS batch installer, installation instructions, optional whole-file floppy layout script, export-only loading boundary, printable disk-label installation text and regression tests. Original game and DOS runtime files retain their existing credits.
 - **Reviews and a sounding board**: Lewis has also had **ChatGPT-6.1 Sol** (OpenAI) review
   the fork, TURBO BUTTON and the games' content, and talked ideas through with **Google
   Gemini 3** (Google): 1990s nostalgia and his own memories, the home-office supplies of the

@@ -450,6 +450,12 @@ ${list.map(item).join('\n')}
     <main class="seo-static">
       <h1>Download the games</h1>
       <p>${escapeHtml(ROUTES.downloads.description)} Each ZIP is free to keep and share.</p>
+      <p>Unzip first. On a DOS PC, read INSTALL.TXT and run INSTALL from the source
+      drive and folder to copy the game to the hard disk (INSTALL D: chooses D:
+      instead of C:). Check each COPY message, then run CONFIG once and the game’s
+      .EXE from its installed folder. INSTALL.TXT includes manual and floppy copying
+      instructions. A ZIP is not a floppy image. In DOSBox, the game can also run
+      directly from the unzipped folder.</p>
       ${body}
       <p class="seo-note"><a href="./">${escapeHtml(PRODUCT)}</a> · <a href="./play.html">play in your browser</a> · <a href="${REPO_URL}">source code</a> · ${escapeHtml(FORK_NOTE)}.</p>
     </main>

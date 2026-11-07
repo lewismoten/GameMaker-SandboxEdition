@@ -42,7 +42,13 @@ the original source in [`code/GM`](../code/GM). It can:
 - **Publish games for DOS**: Download → DOS builds a ZIP with the game's files in
   their original formats plus the CD's stand-alone player (`cd/gm/XFERPLAY.EXE`)
   renamed after the game (`MYGAME.GAM` gets `MYGAME.EXE`), `SNDBLAST.DRV` and a
-  `CONFIG.BAT`, so anyone can unzip it and run the game in DOSBox. File names must be
+  `CONFIG.BAT`, `INSTALL.BAT` and `INSTALL.TXT`. Unzip first; on a DOS PC run
+  `INSTALL` from the source directory to copy to `C:\MYGAME` (`INSTALL D:` uses
+  drive D:). Check every COPY message, then run `CONFIG` and `MYGAME.EXE` from
+  the hard-disk directory. The TXT includes manual copying and floppy disk
+  instructions; [the export README](src/export/README.md#installing-the-dos-download)
+  explains the optional multi-floppy layout script. DOSBox can still run the
+  game directly from the unzipped folder. File names must be
   DOS 8.3 names; the export lists any that aren't. Saved games made in the browser
   are left out because they use a different format.
 

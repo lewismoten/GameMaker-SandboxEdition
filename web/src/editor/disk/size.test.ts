@@ -5,6 +5,9 @@ import { GameFiles } from '../../project/files';
 import { serializeGame, newGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 
 describe('disk size', () => {
+  it('includes installation support in the export size estimate', () => {
+    expect(RUNTIME_FILES.map(([name]) => name)).toEqual(expect.arrayContaining(['INSTALL.BAT', 'INSTALL.TXT']));
+  });
   it('uses the sizes of the runtime files on the CD', () => {
     const size = (n: string) => readFileSync(new URL(`../../../../cd/gm/${n}`, import.meta.url)).length;
     for (const n of ['xferplay.exe', 'sndblast.drv', 'config.hlp']) expect(RUNTIME_FILES.find(([f]) => f.toLowerCase() === n)![1]).toBe(size(n));

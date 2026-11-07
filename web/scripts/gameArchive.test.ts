@@ -60,6 +60,8 @@ describe('catalog DOS distribution', () => {
     expect(files.get('CONFIG.HLP')).toEqual(new Uint8Array(readFileSync(join(cd, 'config.hlp'))));
     expect(files.get('FIXTURE.GAM')).toEqual(bytes);
     expect(files.get('README.TXT')).toEqual(ownReadme);
+    expect(files.has('INSTALL.BAT')).toBe(true);
+    expect(new TextDecoder().decode(files.get('INSTALL.TXT'))).toContain('FIXTURE.EXE');
     expect(new TextDecoder().decode(files.get('CONFIG.BAT'))).toContain('FIXTURE config');
     const notice = new TextDecoder().decode(files.get('PLAYER.TXT'));
     for (const credit of ['MIT License', 'Borland', 'Creative']) expect(notice).toContain(credit);
