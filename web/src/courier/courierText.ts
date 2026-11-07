@@ -3,7 +3,8 @@
 // is missing, no "of N", nothing that asks for more play.
 import { STAMP_WORDS, worldName } from './tables';
 import { deskDate } from '../retro/dos/vfs';
-import type { Postcard, Stamp } from './courierStore';
+import type { Courier, Postcard, Stamp } from './courierStore';
+import type { Arrival } from './trips';
 
 export const SECTIONS = ['Mail', 'Postcards', 'Packages', 'Setup'] as const;
 export type Section = (typeof SECTIONS)[number];
@@ -55,4 +56,44 @@ export function stampRows(p: Postcard, title: (id: string) => string | undefined
         .join('')}`.trimEnd(),
     );
   return rows;
+}
+
+export const SEND_WORDS = 'Send Scoot on a trip';
+export const LOAD_WORDS = 'Scoot is back / a visitor arrived';
+export const VISITOR_HOME_WORDS = 'Send the visitor home';
+export const CALL_HOME_WORDS = 'Call Scoot home';
+
+/** Where Scoot is, and any visiting courier, in a line or two. */
+export function tripStatus(c: Courier): string[] {
+  const lines: string[] = [];
+  if (c.out) lines.push('Scoot is on a trip. Open its trip file (SCOOT.SCT) on another screen, and bring it back here when Scoot comes home.');
+  else if (c.home) lines.push(`Scoot lives here, at ${worldName(c.home.world)}. A trip file takes it to another screen and back.`);
+  else lines.push('A trip file (SCOOT.SCT) takes Scoot to another screen and back.');
+  if (c.visitor) lines.push(`A courier from ${worldName(c.visitor.world)} is visiting. Games finished here stamp its postcard too.`);
+  return lines;
+}
+
+/** What happened when a trip file was opened. */
+export function arrivalText(a: Arrival): string {
+  if (a.kind === 'home') return a.postcards ? 'Welcome home, Scoot! Its new postcards are in Postcards.' : 'Welcome home, Scoot!';
+  if (a.kind === 'visitor') return `A courier from ${worldName(a.world)} arrived. It stays until it is sent home.`;
+  switch (a.why) {
+    case 'mine':
+      return 'That trip file was made on this screen. Open it on another screen for Scoot to visit there.';
+    case 'replay':
+      return 'Scoot has already delivered that trip here, so nothing changed.';
+    case 'busy':
+      return 'A visiting courier is already here. Send it home first.';
+    case 'full':
+      return 'That courier’s satchel is full. Send it home first.';
+    case 'catalog':
+      return 'The game list did not load, so Scoot cannot read its stamps yet. Try again in a moment.';
+    case 'version':
+      return 'That trip file is from a newer courier than this one.';
+    case 'size':
+    case 'not-capsule':
+      return 'That is not a courier’s trip file, so nothing changed.';
+    default:
+      return 'That trip file is damaged or was changed, so nothing changed.';
+  }
 }
