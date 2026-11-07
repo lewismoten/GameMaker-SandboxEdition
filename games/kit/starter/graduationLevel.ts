@@ -17,6 +17,7 @@ import type { Graduation } from './graduationConfig';
 import { addHallRamps, audienceOf } from './graduationCast';
 import { addHallBlocks, type Timed } from './graduationHall';
 import { ARRIVE, buildArrival } from './graduationArrive';
+import { addFriendBlocks, FRIENDS } from './graduationFriends';
 
 export const W = 48;
 export const H = 13;
@@ -44,7 +45,8 @@ export interface Level {
 export type SignName = 'start' | 'helpers' | 'cheer' | 'doc' | 'banner';
 
 /** The block set, the timed loops and the signs. */
-export function buildBlocks(pal: Pal, cfg: Graduation) {
+/** `withFriends` false leaves the gowned friends out (a hall that stands them itself and counts its blocks). */
+export function buildBlocks(pal: Pal, cfg: Graduation, withFriends = true) {
   const book = new Book('bbl');
   const timed: Timed[] = [];
   addStarterBlocks(book, pal);
@@ -54,7 +56,7 @@ export function buildBlocks(pal: Pal, cfg: Graduation) {
     book,
     pal,
     timed,
-    audienceOf(...cfg.groups),
+    cfg.noBalconyHelpers ? [] : audienceOf(...cfg.groups),
     pic('stand.top'),
     pic('cheer2.top'),
     pic('blink.top'),
@@ -62,18 +64,19 @@ export function buildBlocks(pal: Pal, cfg: Graduation) {
     cfg.cameos,
     cfg.stillGuests,
   );
+  const friends = withFriends ? addFriendBlocks(book, pal, timed) : [];
   const signs: Record<SignName, Sign> = {
-    start: addSign(book, pal, 'start', cfg.signs.start, 4, 2),
-    helpers: addSign(book, pal, 'helpers', cfg.signs.helpers, 4, 2),
-    cheer: addSign(book, pal, 'cheer', cfg.signs.cheer, 4, 2),
-    doc: addSign(book, pal, 'doc', cfg.signs.doc, 4, 2),
-    banner: addSign(book, pal, 'banner', cfg.signs.banner, 4, 2),
+    start: addSign(book, pal, 'start', cfg.signs.start, 4, 2, true),
+    helpers: addSign(book, pal, 'helpers', cfg.signs.helpers, 4, 2, true),
+    cheer: addSign(book, pal, 'cheer', cfg.signs.cheer, 4, 2, true),
+    doc: addSign(book, pal, 'doc', cfg.signs.doc, 4, 2, true),
+    banner: addSign(book, pal, 'banner', cfg.signs.banner, 4, 2, true),
   };
-  return { book, timed, hall, signs };
+  return { book, timed, hall, signs, friends };
 }
 
 export function buildPalette(cfg: Graduation): Pal {
-  return buildStarterPalette(addHallRamps(audienceOf(...cfg.groups)), cfg.id);
+  return buildStarterPalette(addHallRamps([...new Set([...audienceOf(...cfg.groups), ...FRIENDS.slice(1)])]), cfg.id);
 }
 
 export const stamp = (m: StarterMap, s: Sign, x: number, y: number, legs: boolean): void => {
@@ -105,11 +108,15 @@ export class HallMap extends StarterMap {
   }
 }
 
+/** The columns the nine friends stand in: Kit and the helpers, in the gaps between the signs (x 9..12 and 17..21). */
+const FRIENDS_AT = [9, 10, 11, 12, 17, 18, 19, 20, 21];
+
 /** The hall. */
 function aisle(
   book: Book,
   signs: Record<SignName, Sign>,
   hall: ReturnType<typeof buildBlocks>['hall'],
+  friends: [string, string][],
   theme: Graduation['theme'],
   _guests: number,
 ): StarterMap {
@@ -148,6 +155,11 @@ function aisle(
   stamp(m, signs.helpers, 13, FLOOR - 1 - 2, true);
   stamp(m, signs.cheer, 24, FLOOR - 1 - 2, true);
   stamp(m, signs.doc, 29, FLOOR - 1 - 2, true);
+  // the Starter friends in their gowns, clapping on the floor in the gaps between the signs (blocks you walk through)
+  friends.forEach(([top, bottom], i) => {
+    const x = FRIENDS_AT[i];
+    m.set(x, FLOOR - 2, top).set(x, FLOOR - 1, bottom);
+  });
   // the certificate is the door
   m.exits.push({ from: [LECTERN + ORIGIN, 9 + ORIGIN] });
   return m;
@@ -156,11 +168,11 @@ function aisle(
 /** The levels in order. */
 export function buildLevels(cfg: Graduation) {
   const pal = buildPalette(cfg);
-  const { book, timed, hall, signs } = buildBlocks(pal, cfg);
+  const { book, timed, hall, signs, friends } = buildBlocks(pal, cfg);
   const arrival = buildArrival(cfg, pal);
   const levels: Level[] = [
     { file: ARRIVE, title: cfg.arrive.title, hint: cfg.arrive.hint, map: arrival.map, book: arrival.book, timed: arrival.timed, bbl: ARRIVE },
-    { file: 'hall', title: cfg.level.title, hint: cfg.level.hint, map: aisle(book, signs, hall, cfg.theme, cfg.cameos.length), book, timed, bbl: 'grad' },
+    { file: 'hall', title: cfg.level.title, hint: cfg.level.hint, map: aisle(book, signs, hall, friends, cfg.theme, cfg.cameos.length), book, timed, bbl: 'grad' },
   ];
   return { book, pal, timed, levels };
 }

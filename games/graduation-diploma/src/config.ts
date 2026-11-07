@@ -23,6 +23,7 @@ export const cfg: Graduation = {
     'Showcase Tricks',
   ],
   stillGuests: true,
+  noBalconyHelpers: true,
   cameos: ['teddy', 'gwinn', 'chicken', 'lewie', 'joe', 'watt', 'carl', 'goat', 'will', 'camel', 'loaf', 'seed', 'egg', 'heart'],
   theme: {},
   upper: 'THE SANDBOX',

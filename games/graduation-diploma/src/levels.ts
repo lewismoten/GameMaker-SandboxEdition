@@ -16,6 +16,7 @@ import { skyOf, type Pal } from '../../kit/starter/palette';
 import { addSign, type Sign } from '../../kit/starter/sign';
 import type { Timed } from '../../kit/starter/graduationHall';
 import { CONFETTI } from '../../kit/starter/graduationConfetti';
+import { addFriendBlocks } from '../../kit/starter/graduationFriends';
 import { cfg } from './config';
 
 export const W = 88;
@@ -65,8 +66,10 @@ function tinyScroll(pal: Pal): Pixels {
 /** The levels (one) and the block set, palette and timers they share. */
 export function buildLevels() {
   const pal = buildPalette(cfg);
-  const { book, timed, hall, signs } = buildBlocks(pal, cfg);
-  const banners: Sign[] = STAGES.map((t, i) => addSign(book, pal, `stage${i}`, t, 4, 1));
+  const { book, timed, hall, signs } = buildBlocks(pal, cfg, false);
+  // a banner is as wide as its word needs (three blocks hold six letters), which leaves room for the gowned friends' blocks
+  const banners: Sign[] = STAGES.map((t, i) => addSign(book, pal, `stage${i}`, t, t.length > 6 ? 4 : 3, 1));
+  const friends = addFriendBlocks(book, pal, timed);
   const chain = confetti(book, pal, timed);
   book.add('tinyScroll', tinyScroll(pal), air);
   const car = chezBlocks(pal);
@@ -97,19 +100,21 @@ export function buildLevels() {
   }
   const crowd: (string | string[])[] = [];
   const guests = hall.cameos.slice();
-  hall.helpers.forEach((h, i) => {
-    crowd.push(h);
-    const guest = guests.shift();
-    if (guest) crowd.push(guest);
-    if (guest && guest[0].startsWith('cameo.teddy')) crowd.push('tinyScroll');
-    if (i === 3 && guests.length) crowd.push(guests.shift()!);
-  });
-  while (guests.length) crowd.push(guests.shift()!);
+  while (guests.length) {
+    const guest = guests.shift()!;
+    crowd.push(guest);
+    if (guest[0].startsWith('cameo.teddy')) crowd.push('tinyScroll');
+  }
   crowd.forEach((one, i) => {
     const x = 70 + (i % 12);
     const rail = BALCONY_RAIL + Math.floor(i / 12) * 2;
     const parts = typeof one === 'string' ? [one] : one;
     parts.forEach((name, k) => m.set(x, rail - parts.length + k, name));
+  });
+  // the gowned friends: Kit and the eight helpers, three together at each of three gaps in the aisle (blocks you walk through)
+  friends.forEach(([top, bottom], i) => {
+    const x = [12, 13, 14, 31, 32, 33, 49, 50, 51][i];
+    m.set(x, FLOOR - 2, top).set(x, FLOOR - 1, bottom);
   });
   // the stage
   for (let y = 2; y < FLOOR; y++) for (const x of [STAGE_FROM, STAGE_FROM + 1, W - 3, W - 2]) m.set(x, y, 'drape');
