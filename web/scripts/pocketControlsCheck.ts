@@ -8,8 +8,11 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
 const here = new URL('../../hardware/pocket-player/', import.meta.url).pathname;
-// Compare full and same-picture text redraw framebuffers, bounded bands and palette-0 clearing.
+// Check pad drawing snapshots, hands and turns, plus card redraws, bounded bands and palette-0 clearing.
 for (const flags of [[], ['-DPOCKET_CYD28']]) {
+  const padExe = join(mkdtempSync(join(tmpdir(), 'pocket-paddraw-')), 'paddrawtest');
+  execFileSync('c++', ['-std=c++17', '-O1', '-Wall', ...flags, '-I', here + 'src', here + 'host/paddrawtest.cpp', '-o', padExe], { stdio: 'inherit' });
+  execFileSync(padExe, { stdio: 'inherit' });
   const cardExe = join(mkdtempSync(join(tmpdir(), 'pocket-carddraw-')), 'carddrawtest');
   execFileSync('c++', ['-std=c++17', '-O1', '-Wall', ...flags, '-I', here + 'src', here + 'host/carddrawtest.cpp', '-o', cardExe], { stdio: 'inherit' });
   execFileSync(cardExe, { stdio: 'inherit' });
