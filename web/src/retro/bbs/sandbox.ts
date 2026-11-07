@@ -7,7 +7,7 @@ import { attr } from '../text/textScreen';
 import { readLine } from '../text/textInput';
 import { commas } from '../dos/vfs';
 import type { CatalogEntry } from '../../project/files';
-import { sandboxLogin, sandBanner, SANDBOX_ANSI } from './ansiArt';
+import { sandboxLogin, sandBanner, SANDBOX_ANSI, SANDBOX_WORD_ANSI } from './ansiArt';
 import { Term, boxBottom, boxRow, boxRule, boxTop, modemSignal, sleep, statusLine } from './term';
 import { gifGallery } from './gifArea';
 import { gameDiz, isSofaFile } from './fileId';
@@ -46,7 +46,7 @@ import { rsdLine } from './rsdLine';
 import { signup } from './signup';
 import { signupAccounts } from './signupAccounts';
 
-const BBS_NAME = 'THE -= S A N D B O X =- BBS';
+const BBS_NAME = `THE ${SANDBOX_ANSI} |14BBS`;
 export const PHONE = '1-412-555-SAND';
 
 export async function runSandbox(t: Term, h: RetroHost): Promise<void> {
@@ -88,7 +88,7 @@ export async function runSandbox(t: Term, h: RetroHost): Promise<void> {
   for (;;) {
     if (show) mainMenu(t);
     show = false;
-    t.print(`|06[|14Sandbox|06] |07Time left: |14${minutesLeft()}|07 min |06: |15`);
+    t.print(`|06[${SANDBOX_WORD_ANSI}|06] |07Time left: |14${minutesLeft()}|07 min |06: |15`);
     const k = await t.key();
     t.line(k.length === 1 ? k : '');
     if (k === 'F' || k === 'N') {
