@@ -27,7 +27,7 @@ export function diplomaSvg(look: Pick<FrameLook, 'metal' | 'ribbon'> & { tier?: 
     return `<polygon points="${pts.join(' ')}" fill="#fff3b0" stroke="#9a7120" stroke-width="0.3"/>`;
   };
   const extra = look.tier
-    ? `<rect x="14" y="33.4" width="60" height="4" fill="#b3261e"/><circle cx="24" cy="64" r="4.6" fill="#d8a21c"/><circle cx="24" cy="64" r="2.4" fill="#f6eed8"/>`
+    ? `<rect x="14" y="39.4" width="60" height="2.4" fill="#b3261e"/><circle cx="24" cy="64" r="4.6" fill="#d8a21c"/><circle cx="24" cy="64" r="2.4" fill="#f6eed8"/>`
     : '';
   // perfect 4.0: gold foil (a bright gold ring inside the frame) and a gold star on each seal
   const foil =
