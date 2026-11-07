@@ -23,6 +23,7 @@ import { hushDemos } from '../media/demoAudio';
 
 /** Asks the page's game preview to start or stop (homeShowcase.ts listens). */
 const tourDemo = (what: 'play' | 'stop') => window.dispatchEvent(new CustomEvent('gm-tour-demo', { detail: what }));
+import { askPage } from './pageAct';
 import { onDosPage, pageHere, pageOf } from './tourPages';
 import { parseHash, setHashParams } from '../urlState';
 import type { Sprite } from '../cast/castStageDraw';
@@ -42,7 +43,7 @@ const rectOf = (el: Element): Rect => {
 const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 const announce = (what: 'start' | 'end') => window.dispatchEvent(new CustomEvent('gm-tour', { detail: what }));
 /** Asks the page to do something for a step (steps.ts PageAct; the desk's deskTour.ts listens). */
-const pageAct = (act: PageAct) => window.dispatchEvent(new CustomEvent('gm-tour-act', { detail: act }));
+const pageAct = (act: PageAct) => askPage(act);
 
 /** A localStorage value, or null (none, or no storage). */
 const stored = (key: string): string | null => {
@@ -387,7 +388,7 @@ export class Tour {
     for (const m of this.opened.values()) this.closeKeepingFocus(m);
     this.opened.clear();
     const chapter = this.chapterShown;
-    if (chapter?.leave && this.actedIn.delete(chapter)) pageAct({ do: chapter.leave });
+    if (chapter?.leave && this.actedIn.delete(chapter)) void pageAct({ do: chapter.leave });
     const kept = this.kept;
     this.kept = undefined;
     if (!kept || kept.chapter !== chapter) return;
@@ -540,14 +541,18 @@ export class Tour {
         if (!this.live(token)) return;
       }
     } else this.sound.effect(step.sound);
+    let held: Promise<void> = Promise.resolve();
     if (step.act && !this.acted.has(step.id)) {
       this.acted.add(step.id);
       this.actedIn.add(chapter);
-      pageAct(step.act);
+      held = pageAct(step.act);
     }
     if (step.demo) tourDemo(step.demo);
     if (!this.live(token)) return;
     if (step.action === 'enter' && actor) await actor.hop(this.still);
+    if (!this.live(token)) return;
+    // a held line waits for the page (the BBS's handle prompt on the screen)
+    await held;
     if (!this.live(token)) return;
     this.say(step, speaker, box);
     speak();
