@@ -34,6 +34,8 @@ let disposeDesk: (() => void) | undefined;
 let ui: Ui = 'desk';
 /** The magazine at #/magazine, put away when the route moves on. */
 let disposeMagazine: (() => void) | undefined;
+/** The Pi remote at #/pi-remote (keys up, port closed), put away when the route moves on. */
+let disposePiRemote: (() => void) | undefined;
 
 function savedUi(): Ui {
   try {
@@ -72,6 +74,8 @@ async function startDesk(hash?: string): Promise<void> {
   workspace = undefined;
   disposeMagazine?.();
   disposeMagazine = undefined;
+  disposePiRemote?.();
+  disposePiRemote = undefined;
   document.title = 'Game-Maker 1994';
   // the desk keeps its own state in the address (#/desk?disk=…&run=…, see desk.ts)
   const deskHash = hash ?? (parseHash(location.hash).path[0] === 'desk' ? location.hash : '#/desk');
@@ -201,6 +205,8 @@ async function route(): Promise<void> {
     a.href = shown ? `#/library?by=game&only=${encodeURIComponent(shown)}` : '#/library';
   }
   content.removeAttribute('role');
+  disposePiRemote?.();
+  disposePiRemote = undefined;
   // Opening a project must not also fetch the home page's cards, showcase and styles.
   if (kind === 'p' && id) {
     const { openStored } = await modernUi();
@@ -237,6 +243,14 @@ async function route(): Promise<void> {
     const { params } = parseHash(location.hash);
     const { issueFor } = await import('./manual/magazine/masthead');
     disposeMagazine = renderMagazinePage(content, params.page, issueFor(Number(params.vol), Number(params.num)).which);
+    return;
+  }
+  if (kind === 'pi-remote') {
+    // unlisted: the Raspberry Pi's USB keyboard (piRemote/README.md)
+    const { renderPiRemote } = await import('./piRemote/piRemotePage');
+    if (ui !== 'modern') return;
+    document.title = `Pi remote · ${PRODUCT}`;
+    disposePiRemote = renderPiRemote(content);
     return;
   }
   if (kind === 'library') {
@@ -384,7 +398,22 @@ window.addEventListener('hashchange', () => {
 // #/help, the cast #/cast, the credits #/credits, the Mac, Windows and Linux pages #/mac, #/windows and #/linux, the magazine #/magazine, the library #/library, the home page #/) open it, #/desk the desk; otherwise use the last choice.
 // index.html makes the same choice for the page background before the first paint.
 /** The pages of today's web an address can name. */
-const MODERN_PATHS = ['p', 'game', 'help', 'cast', 'credits', 'privacy', 'achievements', 'mac', 'windows', 'linux', 'magazine', 'library', 'programmers-guide'];
+const MODERN_PATHS = [
+  'p',
+  'game',
+  'help',
+  'cast',
+  'credits',
+  'privacy',
+  'achievements',
+  'mac',
+  'windows',
+  'linux',
+  'magazine',
+  'library',
+  'programmers-guide',
+  'pi-remote',
+];
 const startHash = location.hash;
 const startPath = parseHash(startHash).path;
 const modernLink = /^#\/?(\?|$)/.test(startHash) ? !!startHash : MODERN_PATHS.includes(startPath[0] ?? '');
