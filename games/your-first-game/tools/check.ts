@@ -4,6 +4,7 @@
 import { assertNoInvisibleWalls } from '../../kit/starter/invisibleWalls';
 import { buildLevels } from '../src/levels';
 import { play } from './play';
+import './wallCheck';
 
 assertNoInvisibleWalls(buildLevels());
 const { sim } = await play();

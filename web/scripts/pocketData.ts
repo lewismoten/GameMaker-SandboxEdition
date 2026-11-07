@@ -17,7 +17,9 @@ import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync
 import { FONT8X8 } from '@lewismoten/gamemaker-sandbox-engine/gfx/font8x8';
 import { GameFiles } from '@lewismoten/gamemaker-sandbox-engine/core/gameFiles';
 import { newCards, packPocketGame, shortHash, type PocketStore } from '../src/export/pocketPack';
-import { gmpName, writeBundle, writeGmp } from '../src/export/pocketFile';
+import { pocketThumbnail } from '../src/export/pocketThumbnail';
+import { pocketCategory, gamCrc32, writeLibrary, uniqueGmpName, type PocketLibrary } from '../src/export/pocketLibrary';
+import { gmpName, readBundle, writeBundle, writeGmp } from '../src/export/pocketFile';
 
 const args = process.argv.slice(2);
 const opt = (n: string) => (args.includes(n) ? (args[args.indexOf(n) + 1] ?? '').split(',').filter(Boolean) : []);
@@ -68,6 +70,31 @@ const ids = readdirSync('../games')
     );
   });
 const index: { id: string; title: string; levels: number; short?: string }[] = [];
+const thumbnails = new Map<string, Uint8Array>();
+const records: object[] = [];
+const usedNames = new Map<string, string>();
+// Incremental card writes also protect downloads already on the card.
+if (gmpDir && existsSync(outDir))
+  for (const name of readdirSync(outDir).filter((n) => /\.gmp$/i.test(n))) {
+    try {
+      const entries = readBundle(new Uint8Array(readFileSync(outDir + name)));
+      const metadata = entries.get('library.json');
+      const uid = metadata ? JSON.parse(new TextDecoder().decode(metadata.bytes)).uid : `legacy:file:${name}`;
+      usedNames.set(name.toUpperCase(), String(uid));
+    } catch {
+      usedNames.set(name.toUpperCase(), `unreadable:${name}`);
+    }
+  }
+
+// A checkout-independent optional research input; --scores overrides the local maintainer path.
+const scoresFile = opt('--scores')[0] ?? '/Users/lewismoten/dev/GameMaker/.for-lewis/research/pocket/cyd-friendly.json';
+const scores = new Map<string, number>(
+  existsSync(scoresFile)
+    ? JSON.parse(readFileSync(scoresFile, 'utf8'))
+        .games.filter((g: { score?: number }) => Number.isInteger(g.score))
+        .map((g: { id: string; score: number }) => [g.id, g.score])
+    : [],
+);
 const cfgs = new Map<string, Uint8Array>();
 const utf8 = (t: string) => new TextEncoder().encode(t);
 
@@ -91,15 +118,48 @@ for (const id of ids) {
     console.log(`${id.padEnd(24)} ${ok ? 'pack' : 'left out: ' + [...new Set(why)].join(', ')}${packed.warn.length ? ' (' + packed.warn.join(' ') + ')' : ''}`);
     if (listOnly || !ok) continue;
     const cfg = utf8(packed.lines.join('\n') + '\n');
+    const gam = files.names().find((n) => /\.gam$/i.test(n))!;
+    const thumbnail = await pocketThumbnail(files, gam, deflate);
+    const library: PocketLibrary = {
+      schema: 'gmp-library',
+      version: 1,
+      uid: `catalog:${id}`,
+      title: about.title,
+      dosName: gam.replace(/\.gam$/i, '').toUpperCase(),
+      ...pocketCategory(id, about.series ?? (about.company === undefined || about.company === 'Sandbox Software' ? 'sandbox' : undefined)),
+      gamCrc32: gamCrc32(files.get(gam)!),
+      ...(thumbnail ? { thumbnail: 'thumb.pth' } : {}),
+      ...(scores.has(id) ? { touchScore: scores.get(id) } : {}),
+    };
+    writeLibrary(library); // enforce the same bounds as browser exports
+    const downloadName = uniqueGmpName(gmpName(id), library.uid, usedNames);
     if (gmpDir)
       writeFileSync(
-        outDir + gmpName(id),
-        writeGmp({ id, title: about.title, version: about.version, levels: packed.levels, cfg: packed.lines, files: gameStore, cards: gamePak.parts }),
+        outDir + downloadName,
+        writeGmp({
+          id,
+          title: about.title,
+          version: about.version,
+          levels: packed.levels,
+          cfg: packed.lines,
+          files: gameStore,
+          cards: gamePak.parts,
+          library,
+          thumbnail,
+        }),
       );
     else if (cardRoot) {
       writeFileSync(`${outDir}${short}.cfg`, cfg);
       writeFileSync(`${outDir}${short}.pak`, Buffer.concat(gamePak.parts));
     } else cfgs.set(`${id}.cfg`, cfg);
+    if (thumbnail && !gmpDir) thumbnails.set(`${id}.pth`, thumbnail);
+    records.push({
+      ...library,
+      id,
+      storage: gmpDir ? 'gmp' : cardRoot ? 'loose' : 'flash',
+      locator: gmpDir ? downloadName : cardRoot ? short : id,
+      ...(thumbnail ? { thumbnail: gmpDir ? 'thumb.pth' : `${id}.pth` } : {}),
+    });
     index.push({ id, title: about.title, levels: packed.levels, short });
   } catch (e) {
     console.log(`${id.padEnd(24)} left out: ${String(e).split('\n')[0].slice(0, 80)}`);
@@ -112,6 +172,15 @@ if (!listOnly) {
       outDir + 'games.txt',
       index.map((g) => `${g.id}|${g.title.replace(/[|\r\n]/g, ' ').slice(0, 95)}|${g.levels}${cardRoot ? '|' + g.short : ''}`).join('\n') + '\n',
     );
+  if (!gmpDir) {
+    const metadata = utf8([JSON.stringify({ schema: 'gmp-library-index', version: 1 }), ...records.map((r) => JSON.stringify(r))].join('\n') + '\n');
+    const thumbs = writeBundle(thumbnails, true);
+    if (!cardRoot && (metadata.length > 65536 || thumbs.length > 384 * 1024))
+      throw new Error(`Pocket flash budget exceeded: metadata ${metadata.length}, thumbnails ${thumbs.length}`);
+    writeFileSync(outDir + 'library.jsonl', metadata);
+    writeFileSync(outDir + 'thumbs.pak', thumbs);
+    console.log(`Library: ${metadata.length} metadata bytes, ${thumbs.length} thumbnail bytes`);
+  }
   if (cardRoot) for (const [n, b] of store) writeFileSync(outDir + n, b);
   if (!cardRoot && !gmpDir) {
     writeFileSync(outDir + 'cards.pak', Buffer.concat(pak.parts));

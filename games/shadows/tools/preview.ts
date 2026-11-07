@@ -26,10 +26,10 @@ const rooms = [
 /** A 16x10 block view (the size of the game screen) of a room, from level column `col`, with Kit standing at `kitX`. */
 export function view(r: (typeof rooms)[number], col: number, kitX: number, pose = 'stand') {
   const bbl = r.level.book.finish();
-  const hero = r.a.hero.finish();
+  const hero = assets.plain.finish();
   const kit = [
-    { pixels: hero[r.a.hero.n('stand.top')].pixels, x: ORIGIN + kitX, y: ORIGIN + LANE - 1 },
-    { pixels: hero[r.a.hero.n(pose)].pixels, x: ORIGIN + kitX, y: ORIGIN + LANE },
+    { pixels: hero[assets.plain.n('stand.top')].pixels, x: ORIGIN + kitX, y: ORIGIN + LANE - 1 },
+    { pixels: hero[assets.plain.n(pose)].pixels, x: ORIGIN + kitX, y: ORIGIN + LANE },
   ];
   const mons = buildCritters(r.a.critters);
   return renderRegion(r.level.map.done(), bbl, r.a.critters.finish(), mons, ORIGIN + col, ORIGIN + 1, 16, 10, kit);

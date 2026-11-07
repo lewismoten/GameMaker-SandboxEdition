@@ -15,13 +15,13 @@ struct SmallEntry { char name[32]; uint32_t off, len; };
 struct SmallPak {
   void* user = nullptr;
   bool (*readAt)(void* user, uint32_t off, void* buf, uint32_t n) = nullptr;
-  uint32_t count = 0;
+  uint32_t count = 0, size = 0;
 
   bool begin() {
     uint8_t h[8];
     if (!readAt(user, 0, h, 8) || memcmp(h, "GMS1", 4)) return false;
     count = h[4] | (h[5] << 8) | (h[6] << 16) | ((uint32_t)h[7] << 24);
-    return true;
+    return count <= 65536 && (!size || 8 + count * 40 <= size);
   }
   bool find(const char* name, uint32_t* off, uint32_t* len) const {
     if (strlen(name) > 31) return false;
@@ -32,7 +32,7 @@ struct SmallPak {
       if (!readAt(user, 8 + mid * sizeof(SmallEntry), &e, sizeof e)) return false;
       e.name[31] = 0;
       int c = strcmp(name, e.name);
-      if (!c) { *off = e.off; *len = e.len; return true; }
+      if (!c) { if (e.off < 8 + count * 40 || (size && (e.off > size || e.len > size - e.off))) return false; *off = e.off; *len = e.len; return true; }
       if (c < 0) hi = mid; else lo = mid + 1;
     }
     return false;

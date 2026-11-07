@@ -6,7 +6,7 @@
   "hero": "LIAN",
   "year": 1994,
   "price": "Free",
-  "version": "1.1",
+  "version": "1.2",
   "blurb": "Light and fog, painted in dots. A game has no see-through colors, so a beam, a haze or a glow is a color painted on every other pixel (or every fourth) and what is behind shows through the gaps. Level 1 is a dark hall with three lamps: a solid beam that hides the bricks, a checkerboard beam that lets them show, and one in three densities that fades at its edge. Level 2 is a valley of hills in solid fog and in dithered fog, thicker the farther away, with banks of fog that drift. Level 3 has three floating lanterns with a solid halo, a checkerboard halo and halos in rings. Play it, then open it in Game-Maker and look at the frames.",
   "exe": "BEAMS.EXE",
   "dosName": "BEAMS",

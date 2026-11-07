@@ -16,6 +16,7 @@
 // Catalog DOS downloads use the built ZIP; other downloads are built in the browser when the visitor presses Download. Which games
 // have the button is the caller's choice (export/downloadable.ts for the catalog's).
 import './download.css';
+import type { PocketContext } from '../../export/pocketLibrary';
 import { download, h, modal, notice, toast } from '../core/ui';
 import { plainError } from '../core/plainError';
 import { downloaded } from '../../achievements';
@@ -42,6 +43,7 @@ export interface DownloadGame {
   box?: { background?: string };
   /** A game of yours: its files can be downloaded as they are, too. */
   project?: boolean;
+  pocketContext?: () => Promise<PocketContext>;
   /** A game of yours: remembers the one-page export's "animation and sound previews" choice with the project (project/companion.ts). */
   setPreviews?: (on: boolean) => void;
   /** A game of yours: its editor-only extras, which only the "Game files" backup carries (project/companion.ts). */
@@ -454,9 +456,28 @@ async function build(game: DownloadGame, kind: DownloadKind, alt: boolean, previ
       });
       save(name, zip, 'application/zip', `In DOSBox, run ${exe} from the unzipped folder.`);
     } else if (kind === 'pocket') {
+      const { pocketCategory } = await import('../../export/pocketLibrary');
+      const library = game.pocketContext
+        ? await game.pocketContext()
+        : game.entry
+          ? {
+              uid: `catalog:${game.entry.id}`,
+              ...pocketCategory(
+                game.entry.id,
+                game.entry.series ?? ((await import('../../project/files')).isSandboxGame(game.entry) ? 'sandbox' : undefined),
+                game.entry.kind,
+              ),
+            }
+          : undefined;
       const { name, bytes, notes } = await (
         await import('../../export/exportPocket')
-      ).exportPocket(files, { title: game.title, gam: game.gam, id: game.id, controls: pocketControls(game) });
+      ).exportPocket(files, {
+        title: game.title,
+        gam: game.gam,
+        id: game.project ? library?.uid.replace(/^project:/, '') : game.id,
+        controls: pocketControls(game),
+        library,
+      });
       save(name, bytes, 'application/octet-stream', ['Copy it into the pocket folder on the microSD card, then restart the board.', ...notes].join(' '));
       return; // no achievement of its own
     } else {
