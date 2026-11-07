@@ -15,6 +15,7 @@
 namespace textdatum_t { constexpr int middle_center = 4, top_left = 0; }  // the names LovyanGFX has on the board
 #include "gmcfg.h"
 #include "overlaydraw.h"
+#include "pressrect.h"
 #include "softgfx.h"
 #include "stdiolines.h"
 
@@ -232,6 +233,13 @@ int main(int argc, char** argv) {
     blit(img, scr::W, 0, 0, c);
     writePng(out + "/pause-" + wname + "-" + id + ".png", scr::W, scr::H, img);
     printf("SHOT pause-%s-%s %08x\n", wname, id.c_str(), hashOf(c));
+    {  // the pause menu with "Restart level" held down (the frame sits inside the button)
+      Canvas pc = c;
+      prs::drawPausePressed(pc, ovl::PA_RESTART_LEVEL);
+      blit(img, scr::W, 0, 0, pc);
+      writePng(out + "/pause-pressed-" + wname + "-" + id + ".png", scr::W, scr::H, img);
+      printf("SHOT pause-pressed-%s-%s %08x\n", wname, id.c_str(), hashOf(pc));
+    }
     Canvas h(scr::W, scr::H);
     ovl::helpPage(h, cfg);
     blit(img, scr::W, 0, 0, h);

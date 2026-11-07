@@ -25,6 +25,9 @@
 #include "splash.h"
 #include "cardmsg.h"
 #include "library.h"
+#include "idle.h"
+#include "statusled.h"
+#include "pressrect.h"
 #include <mbedtls/sha256.h>
 #ifdef POCKET_CYD28
 #include "xpt2046.h"
@@ -567,9 +570,36 @@ static void prefetchLevel(int level) {
 // ---- settings ----------------------------------------------------------------------------------
 
 static bool smallerPicture = false;
+static uint8_t brightStep = 3;   // Settings, Brightness: 25 / 50 / 75 / 100 percent (NVS "bright")
+static bool clicksOn = false;    // optional button clicks (NVS "clicks"); never in a game
+static bool ledOn = true;        // the 2.8 inch board's status LED (NVS "led")
+// ---- idle, backlight, status LED, clicks ------------------------------------------------------------
+static idle::Machine idleM;
+static sled::Led statusLed;
+static void applyBacklight() { tftHw.setBrightness(idle::forState(idleM.state, brightStep)); }
+// The 2.8 inch board's LED: red is plain GPIO (active low), green is dim through its own LEDC channel (6; 4 is the speaker, 7 the backlight).
+static void ledWrite(uint32_t now) {
+#ifdef POCKET_CYD28
+  static uint8_t lastR = 255, lastG = 255;
+  uint8_t r, g;
+  statusLed.at(now, r, g);
+  if (idleM.state == idle::OFF) r = g = 0;
+  if (r != lastR) { digitalWrite(PIN_LED_R, r ? LOW : HIGH); lastR = r; }
+  if (g != lastG) { ledcWrite(6, 255 - g); lastG = g; }
+#else
+  (void)now;
+#endif
+}
+// A 2-step tick: 1.2 kHz then 1.8 kHz, 3 steps of 1/145.6 s each (36 steps in a tune).
+static const uint8_t CLICK_TUNE[72] = {0xB0, 0x04, 0xB0, 0x04, 0xB0, 0x04, 0x08, 0x07, 0x08, 0x07, 0x08, 0x07};
+static void clickSound() { if (clicksOn) spk::play(CLICK_TUNE); }  // only the menus call it, never a game in play
 static void saveSettings() {
   Preferences pref;
-  if (pref.begin("pocket", false)) { pref.putBool("smaller", smallerPicture); pref.putBool("sticky", settings.sticky); pref.end(); }
+  if (pref.begin("pocket", false)) {
+    pref.putBool("smaller", smallerPicture); pref.putBool("sticky", settings.sticky);
+    pref.putUChar("bright", brightStep); pref.putBool("clicks", clicksOn); pref.putBool("led", ledOn);
+    pref.end();
+  }
   File f = LittleFS.open("/settings.txt", "w");
   if (!f) return;
   f.printf("lefty=%d\nstylus=%d\npad=%d\ndead=%d\npalm=%d\ndebug=%d\nsound=%d\n", settings.lefty, settings.stylus, settings.padSize, settings.dead, settings.palm, settings.debug, settings.sound);
@@ -577,7 +607,9 @@ static void saveSettings() {
 static void loadSettings() {
   settings = ctl::Settings();
   Preferences pref;
-  if (pref.begin("pocket", true)) { smallerPicture = pref.getBool("smaller", false); settings.sticky = pref.getBool("sticky", false); pref.end(); }
+  if (pref.begin("pocket", true)) { smallerPicture = pref.getBool("smaller", false); settings.sticky = pref.getBool("sticky", false);
+    brightStep = pref.getUChar("bright", 3); if (brightStep > 3) brightStep = 3;
+    clicksOn = pref.getBool("clicks", false); ledOn = pref.getBool("led", true); pref.end(); }
   File f = LittleFS.open("/settings.txt", "r");
   if (!f) return;
   while (f.available()) {
@@ -988,7 +1020,9 @@ static const char* panelName(char* b) {  // "ILI", "ST inv", "ILI inv bgr", ...
   return b;
 }
 #endif
-constexpr int ST_ROWS = scr::SMALL ? 11 : 10;  // the 2.8 inch board's Settings also has Calibrate and Display
+constexpr int R_BRIGHT = 8, R_CLICKS = 9, R_LED = 10, R_CARD = scr::SMALL ? 11 : 10, R_CAL = 12, R_DISPLAY = scr::SMALL ? 13 : 11;
+static const char* const PERCENT[] = {"25%", "50%", "75%", "100%"};
+constexpr int ST_ROWS = scr::SMALL ? 14 : 12;  // the 2.8 inch board's Settings also has Status LED, Calibrate and Display
 static int setPage = 0;
 static void enterPicker();
 static bool settingsFromPause();  // defined with fromPause: Settings was opened from a paused game (its memory is in use)
@@ -1026,6 +1060,11 @@ static void drawSettings() {
                        {scr::SMALL ? "Status nums" : "Status numbers", ONOFF[settings.debug]},
                        {"Sound", VOLUME[settings.sound]},
                        {"Sticky direction", ONOFF[settings.sticky]},
+                       {"Brightness", PERCENT[brightStep]},
+                       {scr::SMALL ? "Clicks" : "Button clicks", ONOFF[clicksOn]},
+#ifdef POCKET_CYD28
+                       {"Status LED", ONOFF[ledOn]},
+#endif
                        {"Card", settingsFromPause() ? "-" : "Rescan"}
 #ifdef POCKET_CYD28
                        ,
@@ -1361,12 +1400,16 @@ static void enterPicker() {
 static bool settingsFromPause() { return fromPause; }
 static void showFailCard(const char* name) {
   spk::stop();
+  statusLed.load(false);
+  statusLed.error(millis());
+  ledWrite(millis());
   pk::drawFailCard(tft, scr::W, scr::H, name, failWhy);
   uint32_t t = millis();
   wasDown = true;
   while (millis() - t < 30000) {
     uint32_t now = millis();
     pollTouch(now);
+    ledWrite(now);  // the blinks run while the card waits
     int x, y;
     if (freshTap(x, y) && pk::inFailButton(scr::W, scr::H, x, y)) break;
     delay(5);
@@ -1388,7 +1431,11 @@ static bool launchGame(int g, const gm::EntryState* from = nullptr) {
   gameName(games[g], name, sizeof name);
   pk::drawLoading(tft, scr::W, scr::H, name, 0, 3);
   loadBarOn = true;
-  if (startGame(g, true, from)) return true;
+  statusLed.load(true);
+  ledWrite(millis());
+  bool started = startGame(g, true, from);
+  statusLed.load(false);
+  if (started) return true;
   loadBarOn = false;
   showFailCard(name);
   return false;
@@ -1729,6 +1776,9 @@ void setup() {
   banner::configure(scr::W, scr::SMALL ? 28 : 40);  // the 320 px bar must stay clear of the MENU and KEYS chips
 #ifdef POCKET_CYD28
   for (int pin : {PIN_LED_R, PIN_LED_G, PIN_LED_B}) { pinMode(pin, OUTPUT); digitalWrite(pin, HIGH); }  // the RGB LED is active low
+  ledcSetup(6, 5000, 8);  // green is dimmed with LEDC channel 6 (inverted: 255 is off)
+  ledcAttachPin(PIN_LED_G, 6);
+  ledcWrite(6, 255);
   pinMode(0, INPUT_PULLUP);  // BOOT
   dsBoot();  // chip id, the saved display setup (NVS, else this chip's file on the card)
   tftHw.choose(panelType);
@@ -1768,6 +1818,8 @@ void setup() {
     for (;;) delay(1000);
   }
   loadSettings();
+  applyBacklight();  // the saved brightness (the first screens above came up at full)
+  statusLed.enabled = ledOn;
   resumeLoad();
   spk::setVolume(settings.sound);
   pk::splashLine(tft, scr::W, scr::H, "Looking for games");
@@ -1787,10 +1839,127 @@ static void applyKeys(uint32_t now) {
   (void)now;
 }
 
+// ---- buttons that act on release, and the idle timer -----------------------------------------------
+static prs::Press press;
+static pk::CardState lastCardState = pk::CARD_UNKNOWN;
+static prs::Ctx ctxFor(prs::Screen sc) {
+  prs::Ctx c;
+  c.screen = sc;
+  c.W = scr::W;
+  c.H = scr::H;
+  c.titleH = TITLE_H;
+  if (sc == prs::SC_PICKER) {
+    int count = browsingCategories ? categoryCount : nmatch, pages = (count + 5) / 6;
+    c.back = !(browsingCategories && !category && !searchText[0]);
+    c.prev = page > 0;
+    c.next = page + 1 < pages;
+    c.action = (searchText[0] && !nmatch) || (selected >= 0 && selected < ngames && !browsingCategories);
+    c.tiles = count - page * 6 < 0 ? 0 : count - page * 6 > 6 ? 6 : count - page * 6;
+  } else if (sc == prs::SC_SETTINGS) {
+    c.stY0 = ST_Y0; c.stStep = ST_STEP; c.stPerPage = ST_PER_PAGE; c.stFootY = ST_FOOT_Y; c.stRows = ST_ROWS; c.setPage = setPage;
+    c.pages = (ST_ROWS + ST_PER_PAGE - 1) / ST_PER_PAGE;
+    c.smallBoard = scr::SMALL;
+  } else if (sc == prs::SC_DISPLAY) {
+#ifdef POCKET_CYD28
+    c.displayRows = 2;
+#endif
+  }
+  return c;
+}
+static void redrawMenu(prs::Screen sc) {
+  switch (sc) {
+    case prs::SC_PICKER: drawPicker(false); break;
+    case prs::SC_DETAILS: drawDetails(); break;
+    case prs::SC_DISPLAY: drawDisplayOptions(); break;
+    case prs::SC_SETTINGS: drawSettings(); break;
+    case prs::SC_PAUSE: drawPause(); break;
+  }
+}
+// A tap on a library, settings or pause button: the button shows pressed on touch-down and the tap counts when the finger lifts on
+// it; sliding off cancels. Returns true once, with the position the touch began at.
+static bool menuTap(prs::Screen sc, int& tx, int& ty) {
+  prs::Ctx c = ctxFor(sc);
+  uint32_t now = millis();
+  prs::Ev e = press.update(now, pts.n > 0, pts.n ? pts.x[0] : 0, pts.n ? pts.y[0] : 0, [&](int x, int y, prs::Rect& r) { return prs::under(c, x, y, r); });
+  if (e == prs::PRESS) {
+    if (sc == prs::SC_PAUSE) prs::drawPausePressed(tft, ovl::pauseHit(press.dx, press.dy));
+    else prs::drawPressed(tft, press.r);
+  }
+  else if (e == prs::CANCEL) redrawMenu(sc);
+  else if (e == prs::ACT) {
+    uint32_t wait = press.showLeft(now);
+    if (wait) delay(wait);  // a very short tap still shows its pressed look
+    tx = press.dx;
+    ty = press.dy;
+    clickSound();
+    return true;
+  }
+  return false;
+}
+static void pauseGame() {
+  spk::stop();
+  world.releaseAll();
+  applyKeys(millis());
+  controls.reset();
+  mode = PAUSED;
+  drawPause();
+  wasDown = true;
+}
+#ifdef POCKET_LIGHT_SLEEP
+// Optional (build with -DPOCKET_LIGHT_SLEEP): while the screen is off, sleep the CPU in 250 ms naps, woken early by the touch
+// interrupt (XPT2046 IRQ on the 2.8 inch board, GT911 INT on the 3.5 inch) or a serial byte. Not proved on either board.
+#include <esp_sleep.h>
+#include <driver/uart.h>
+#include <driver/gpio.h>
+static void napUntilTouch() {
+#ifdef POCKET_CYD28
+  const gpio_num_t irq = (gpio_num_t)PIN_XIRQ;
+#else
+  const gpio_num_t irq = (gpio_num_t)21;
+#endif
+  Serial.flush();
+  gpio_wakeup_enable(irq, GPIO_INTR_LOW_LEVEL);
+  esp_sleep_enable_gpio_wakeup();
+  uart_set_wakeup_threshold(UART_NUM_0, 3);
+  esp_sleep_enable_uart_wakeup(UART_NUM_0);
+  esp_sleep_enable_timer_wakeup(250000);
+  esp_light_sleep_start();
+}
+#endif
+
 void loop() {
   uint32_t now = millis();
   pollTouch(now);
   int tx, ty;
+  {  // the idle timer: dim, off, wake (the waking touch is swallowed) and, in a game, the auto-pause
+    static Mode seenMode = PICKER;
+    bool serialAct = Serial.available() > 0, bootAct = false;
+#ifdef POCKET_CYD28
+    bootAct = digitalRead(0) == LOW;
+#endif
+    if (mode != seenMode) { seenMode = mode; idleM.bump(now); press.screenChanged(pts.n > 0); }
+    idle::Act a = idleM.update(now, pts.n > 0 && !injOn, serialAct || bootAct || injOn, mode == PLAYING);
+    if (a == idle::DIM_NOW || a == idle::WAKE_NOW) applyBacklight();
+    if (a == idle::OFF_NOW) {
+      applyBacklight();
+#ifdef POCKET_LIGHT_SLEEP
+      tftHw.sleep();
+#endif
+    }
+#ifdef POCKET_LIGHT_SLEEP
+    if (a == idle::WAKE_NOW) tftHw.wakeup();
+    if (idleM.state == idle::OFF && !Serial.available() && pts.n == 0) napUntilTouch();
+#endif
+    if (a == idle::AUTOPAUSE) { pauseGame(); return; }
+    if (idleM.swallow(pts.n > 0)) pts.n = 0;
+    if (idleM.state == idle::OFF) delay(50);  // screen off: touch is polled at about 20 Hz
+    if (mode == PICKER && cardState != lastCardState) {
+      lastCardState = cardState;
+      if (cardState == pk::CARD_UNREADABLE || cardState == pk::CARD_NOFOLDER) statusLed.error(now);
+    }
+    statusLed.load(cardState == pk::CARD_READING && !scanDone && mode == PICKER);
+    ledWrite(now);
+  }
   if (Serial.available()) {
     Mode before = mode;
     pollSerial();
@@ -1821,7 +1990,7 @@ void loop() {
       if (dsOpenReq) { dsOpenReq = false; runDisplaySetup(); enterPicker(); return; }
     }
 #endif
-    if (freshTap(tx, ty)) {
+    if (menuTap(prs::SC_PICKER, tx, ty)) {
       int count=browsingCategories?categoryCount:nmatch,pages=(count+5)/6;
       if(ty<32) {
         if(tx>=scr::W-32){stopCardScan();mode=SETTINGS_SCREEN;fromPause=false;setPage=0;drawSettings();}
@@ -1851,7 +2020,7 @@ void loop() {
     return;
   }
   if(mode==DETAILS_SCREEN){
-    if(freshTap(tx,ty)&&ty>=scr::H-38){if(tx<scr::W/2){mode=PICKER;drawPicker();}else{if(!launchGame(selected))enterPicker();else wasDown=true;}}delay(5);return;
+    if(menuTap(prs::SC_DETAILS,tx,ty)){if(tx<scr::W/2){mode=PICKER;drawPicker();}else{if(!launchGame(selected))enterPicker();else wasDown=true;}}delay(5);return;
   }
   if (mode == SEARCH_SCREEN) {
     if (freshTap(tx, ty)) {
@@ -1864,7 +2033,7 @@ void loop() {
     }delay(5);return;
   }
   if (mode == DISPLAY_SCREEN) {
-    if (freshTap(tx, ty)) {
+    if (menuTap(prs::SC_DISPLAY, tx, ty)) {
       if (ty >= scr::H - 38) { mode = SETTINGS_SCREEN; drawSettings(); }
       else if (ty >= TITLE_H + 12 && ty < TITLE_H + 52) { smallerPicture = !smallerPicture; saveSettings(); last.valid = false; drawDisplayOptions(); }
 #ifdef POCKET_CYD28
@@ -1874,7 +2043,7 @@ void loop() {
     delay(5); return;
   }
   if (mode == SETTINGS_SCREEN) {
-    if (freshTap(tx, ty)) {
+    if (menuTap(prs::SC_SETTINGS, tx, ty)) {
       int pagesS = (ST_ROWS + ST_PER_PAGE - 1) / ST_PER_PAGE;
       if (ty >= ST_FOOT_Y && tx >= (scr::SMALL ? 104 : 160) && tx < (scr::SMALL ? 208 : 280)) {
         if (pagesS > 1) { setPage = (setPage + 1) % pagesS; drawSettings(); }
@@ -1901,15 +2070,18 @@ void loop() {
             spk::play(SAMPLE_TUNE);
             break;
           case 7: settings.sticky ^= 1; saveSettings(); break;
-          case 8:  // Card: read the card again (not while a game is paused: its memory is in use)
+          case R_BRIGHT: brightStep = (brightStep + 1) % 4; applyBacklight(); saveSettings(); break;
+          case R_CLICKS: clicksOn = !clicksOn; saveSettings(); break;
+#ifdef POCKET_CYD28
+          case R_LED: ledOn = !ledOn; statusLed.enabled = ledOn; saveSettings(); break;
+#endif
+          case R_CARD:  // Card: read the card again (not while a game is paused: its memory is in use)
             if (!fromPause) { saveSettings(); rescanCard(); return; }
             break;
 #ifdef POCKET_CYD28
-          case 9: saveSettings(); if (runCalibration()) dsCalDone(); drawSettings(); wasDown = true; return;
-          case 10: saveSettings(); mode = DISPLAY_SCREEN; drawDisplayOptions(); wasDown = true; return;
-#else
-          case 9: saveSettings(); mode = DISPLAY_SCREEN; drawDisplayOptions(); wasDown = true; return;
+          case R_CAL: saveSettings(); if (runCalibration()) dsCalDone(); drawSettings(); return;
 #endif
+          case R_DISPLAY: saveSettings(); mode = DISPLAY_SCREEN; drawDisplayOptions(); return;
         }
         drawSettings();
       }
@@ -1920,7 +2092,7 @@ void loop() {
     return;
   }
   if (mode == PAUSED) {
-    if (freshTap(tx, ty)) {
+    if (menuTap(prs::SC_PAUSE, tx, ty)) {
       switch (ovl::pauseHit(tx, ty)) {
         case ovl::PA_RESUME:
           mode = PLAYING; world.releaseAll(); controls.reset(); last.valid = false; drawFrame(true); drawStrip();
@@ -1953,13 +2125,7 @@ void loop() {
   controls.update(pts.id, pts.x, pts.y, pts.size, pts.n, now);
   int ev = controls.takeEvent();
   if (ev == ctl::EV_MENU) {
-    spk::stop();
-    world.releaseAll();
-    applyKeys(now);
-    controls.reset();
-    mode = PAUSED;
-    drawPause();
-    wasDown = true;
+    pauseGame();
     return;
   }
   if (ev == ctl::EV_KEYS) {

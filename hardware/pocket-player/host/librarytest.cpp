@@ -5,6 +5,8 @@
 #include "splash.h"
 #include "cardmsg.h"
 #include "gmsmall.h"
+namespace textdatum_t { constexpr int middle_center = 4, top_left = 0; }  // the names LovyanGFX has on the board (pressrect.h includes overlaydraw.h)
+#include "pressrect.h"
 #include <assert.h>
 #include <string>
 #include <vector>
@@ -54,6 +56,13 @@ int main(int argc,char**argv) {
     const char* labels[]={"Starters","Sandbox","Bizarre","My games","Imported","CD"};
     pk::clearTiles(fb,W);pk::libraryFrame(fb,W,fb.H,"Pocket Player",0,2,nullptr,false);pk::drawCardChip(fb,W,pk::CARD_READY,104);const int rootIcons[]={6,9,10,11,12,13};pk::continueTile(fb,W,0,nullptr,2,false);for(int i=1;i<6;i++)pk::tileLabel(fb,W,i,labels[i-1],false,rootIcons[i-1]);
     assert(!fb.clipped);save(fb,out+"/categories-"+std::to_string(W)+".ppm");
+    {  // pressed looks: a tile, then the gear and the next-page button (each drawn over the idle page; the frame sits inside the button)
+      static Phys base;base=fb;
+      prs::Rect t=prs::tileRect(W,1);prs::drawPressed(fb,t);assert(!fb.clipped);save(fb,out+"/pressed-tile-"+std::to_string(W)+".ppm");
+      fb=base;prs::Ctx c;c.W=W;c.H=fb.H;c.next=true;prs::Rect g,n;assert(prs::under(c,W-10,10,g)&&g.x1==W&&g.y1==32);assert(prs::under(c,60,fb.H-5,n)&&n.x0==50);assert(!prs::under(c,20,fb.H-5,n));  // Previous is off on the first page
+prs::drawPressed(fb,g);prs::drawPressed(fb,n);assert(!fb.clipped);save(fb,out+"/pressed-gear-next-"+std::to_string(W)+".ppm");
+      fb=base;
+    }
     pk::clearTiles(fb,W);pk::libraryFrame(fb,W,fb.H,"Starters",0,2,nullptr);
     const char* stages[]={"1** First Steps","2** Moving and Pushing","3** Heroes and Foes","4** Story and Finish","5** Wiring and Worlds","6** Blocks and Showcase"};
     for(int i=0;i<6;i++)pk::tileLabel(fb,W,i,stages[i],i==1,i+1);
