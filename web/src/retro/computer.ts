@@ -440,7 +440,7 @@ export class Computer extends ComputerFolders {
         const previous = s.onScene;
         s.onScene = (n) => {
           previous?.(n);
-          this.opts.onScene?.(n);
+          this.opts.onScene?.(n, s.rec.playing);
         };
       };
       const mount = () =>
