@@ -60,3 +60,26 @@ Screens without a picture are filled with **color 0 of the palette that is up**,
 - A palette that is not 768 bytes is a bad file.
 - Keep components in 0..63; high-bit file values are invalid, and their DOS display behavior still needs a VGA check.
 - A scene on a nearly full heap cuts instead of fading.
+
+## Booklet lookup table and six-bit/fade figures
+
+The VGA offers **256 colors out of 262,144**: each of red, green and blue has 64 levels. A scene has one palette of 256 colors, 768 bytes. **Color 255 is clear.** A hero or monster pixel of color 255 shows what is behind it and never touches anything.
+Background blocks draw every pixel, so there color 255 is just a color. Each channel has six meaningful bits: 64 × 64 × 64 = 262,144 possible colors, or 18 color bits per entry, stored in three bytes. There are 256 entries.
+
+PLAYGAME chooses the nearest palette entry to these six-bit RGB targets. There is **no fixed index** for any of them. Suggested author-assigned indexes below are a convention, not a player requirement; keep them consistent in every scene if convenient.
+
+| Color | Suggested index | Red | Green | Blue |
+| ----- | --------------: | --: | ----: | ---: |
+| Black background | 0 | 0 | 0 | 0 |
+| Blue | 1 | 10 | 10 | 63 |
+| Red | 2 | 63 | 10 | 10 |
+| Yellow | 3 | 63 | 63 | 0 |
+| Purple | 4 | 50 | 10 | 50 |
+
+Recommend color 0 be black. Without a backdrop, text pages and status, save, load and score screens use color 0 behind their matched colors. Include purple as well as blue, red and yellow so text stays readable.
+
+A normal fade performs **65 palette-update iterations**, each waiting for vertical retrace to be active. A six-bit component needs at most 63 level changes: an accumulator adds the difference each iteration, changes a level whenever it reaches 65, and keeps the remainder. From 0 to 63 the level after step k is floor(63k/65); step 65 reaches 63. The extra two iterations distribute unchanged steps, not extra color levels. Smoothness appears to explain the choice of 65, but that reason is inferred. If each update meets a separate refresh, 65/70 is about 0.93 second; the wait tests retrace's current state, so 65 separate refreshes are not guaranteed.
+
+Source: `code/GM/PALETTE.H:8-17` defines three one-byte components, masked to six bits by setters; `code/GM/PLAYGAME.C:287-291` gives the blue/red/yellow/purple targets; `code/GM/PALC.C:16-39` matches the closest palette color. The indexes 1–4 are recommendations, never a fixed DOS table. File offsets are 3c, 3c+1, 3c+2 for 256 entries (`engine/formats/palette.ts:7-15`). Clear-to-index-zero calls include `code/GM/PLAYGAME.C:1591`, `code/GM/PLAYGAME.C:2038`.
+
+Fade arithmetic and its conditional duration follow `code/GM/PALC.C:94-116` and default 65 in `code/GM/PALETTE.H:65`. [inference] The reason for choosing 65 remains unknown. [estimate] Separate 70 Hz retraces would give 0.93 second; the source waits for an active retrace, not a new edge. [not yet checked in DOSBox]

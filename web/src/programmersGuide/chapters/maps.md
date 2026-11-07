@@ -112,7 +112,7 @@ Verdict on the recollection from 1994: **plausible but only partly supported [in
 | `Pos` (x,y) |       4 | integrator (editor) position only                                                                                                |
 | `Scroll`    |      16 | up, down, left, right (0 no scroll, 0xFF scroll with character, other = constant speed); `Style` and 11 spare (`GRATOR.H:63-78`) |
 | `NumLinks`  |       1 | a `uchar` (`GRATOR.H:160`); the player ignores it and loops all 20                                                               |
-| `desc`      |      20 | `SCENEDESCLEN`, 19 characters and a NUL                                                                                          |
+| `desc`      |      20 | `SCENEDESCLEN`, 19 characters and a NULL                                                                                          |
 | `Files[20]` |      40 | 20 offsets into the name pool                                                                                                    |
 | `links[20]` |     200 | 10 bytes each: `ToScene` (2), `From` (4), `To` (4)                                                                               |
 | Total       | **283** | 2 + 4 + 16 + 1 + 20 + 40 + 200                                                                                                   |
@@ -126,8 +126,8 @@ The 20 file slots are assigned by position: 0 palette, 1 map, 2 background block
 | File slots per scene | 20                                                  | `SCENEFILES`; only 9 used by adventure scenes                                                                                            | [design]       |
 | Scene count          | the header says 20 (`OLDMAXSCENES`) but 60-101 ship | the 3.00 loader uses `NumScenes` as given with no 231-scene guard (`PG:5164-5169`); 232 packed records exceed 64 KB, but the allocation failure mode is unverified | [16-bit] [64K] |
 | Name-pool size       | 0xFFF0 = 65,520 bytes                               | `PG:5173-5174` clamps it                                                                                                                 | [16-bit]       |
-| File name            | 13 bytes (`SCENEFILENAMELEN`): 8 + dot + 3 + NUL    | DOS 8.3                                                                                                                                  | [DOS]          |
-| Digital sound name   | 9 bytes: 8 + NUL; `.voc` is appended                | `SOUND.H`, `SOUNDC.C:167`                                                                                                                | [DOS]          |
+| File name            | 13 bytes (`SCENEFILENAMELEN`): 8 + dot + 3 + NULL    | DOS 8.3                                                                                                                                  | [DOS]          |
+| Digital sound name   | 9 bytes: 8 + NULL; `.voc` is appended                | `SOUND.H`, `SOUNDC.C:167`                                                                                                                | [DOS]          |
 | Link coordinates     | `int`, but the map is 100 wide                      | no check                                                                                                                                 | [16-bit]       |
 
 Why mention 231: 231 packed records fit below 64 KB; 283 x 232 = 65,656 does not (`GRATOR.H:162-185`). **[inference]** Large scene arrays may hit a DOS allocation limit, but the source does not prove a 120-byte wrapped allocation or a 231-scene hard cap. The link map includes both `operator new(unsigned int)` and `operator new(unsigned long)` plus array helpers (`PLAYGAME.MAP:76-79`, `PLAYGAME.MAP:459-460`); exact compiler/RTL behavior needs build or binary evidence. **[not yet checked in DOSBox]** A 232-scene test could probe this hazard. The web parser has no matching 231 cap (`engine/formats/game.ts:178-198`).
@@ -151,3 +151,9 @@ Scrolling directions are stored per scene but **reversed on entry**: `scroll.up 
 
 - The name-pool clamp is explicit (`PG:5173-5180`); the large-scene-array allocation failure mode remains theoretical (`PG:5164-5169`, `PLAYGAME.MAP:459-460`). These are separate limits, not an exhaustive list of 16-bit hazards.
 - Anything that reads `mm[].status`, `xtra`, `extra` or `map[][].mon` from a file is reading nothing the player uses.
+
+## Scene arithmetic and MAP byte interpretation
+
+The booklet's wrap figure uses the actual 100 × 100 extent. Opposite edges join on both axes (`code/GM/MAP.H:8-10`, `code/GM/PLAYGAME.C:3386-3393`). MAP cells are two unsigned whole bytes, not sub-byte fields: BBL index followed by placement index. Placements are type u8, reserved i16, reserved u8, x i16, y i16, reserved i16; x and y are little-endian signed words (`code/GM/MAP.H:15-28`, `engine/formats/map.ts:28-51`). The mini grid's offset is 2 × (100y + x).
+
+[64K] [inference] A packed scene has 283 bytes: 2 + 4 + 16 + 1 + 20 + 40 + 200 (`code/GM/GRATOR.H:178-189`). The player allocates one `new Scene[MaxScenes]` array (`code/GM/PLAYGAME.C:5164-5169`). 231 × 283 = 65,373 fits in 65,536; 232 × 283 = 65,656 does not. This is an inferred single-segment planning limit, not an explicit checked scene-count limit or a tested allocation cutoff; the compiler may use a larger allocation path. Header and name pool do not belong in that multiplication. The editor's spare allocation (`EXTRASCENEBUFFER 30`, `code/GM/GRATOR.H:36`) and available heap can lower its usable count. Port record size: `engine/formats/game.ts:35`. [not yet checked in DOSBox]

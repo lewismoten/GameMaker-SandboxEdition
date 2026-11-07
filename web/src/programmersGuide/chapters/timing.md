@@ -114,3 +114,12 @@ The port's slow-PC model says a 286-16 with the **hardware** path "keeps full pa
 - The audio starts before the game clock does at scene start.
 - Function keys pause the game clock but not the music.
 - The programmed timer implies about 10.55 s/day nominal BIOS-clock gain under the stated baseline/no-loss assumptions; actual clock drift is not measured.
+
+## CPU MHz does not set the clock
+
+The game runs at **18.2 ticks a second**, about one tick every 54.9 milliseconds. This is the PIT timer chip's clock, independent of the CPU: a 10 MHz processor and a 66 MHz processor receive essentially the same timer rate. Everything that moves is counted in ticks: a hero's frame pause, a monster's step, a block's change time.
+Sequence keys are applied on processed ticks; a busy machine or an uninterruptible sequence can delay the response beyond one tick. Escape is checked to leave the scene and again after the fade to choose whether to return to the menu. Hold Escape through the fade until the menu appears: a short tap can end a scene yet be released before the second decision, causing the scene to restart.
+
+Eight of the timer chip's 146 steps make one tick, and PLAYGAME uses that interrupt for the game clock, the speaker and the music. Slow drawing can skip game updates while the interrupt clock keeps advancing.
+
+The interrupt divisor and one-in-eight forwarding are `code/GM/PLAYGAME.C:4421-4445`, `code/GM/PLAYGAME.C:4610-4624`; the crystal constant is `code/GM/SOUND.H:43-44`. CPU speed affects whether the main loop processes each tick, not that PIT input frequency. Pending sequence keys and link decisions occur at `code/GM/PLAYGAME.C:1471-1489`, `code/GM/PLAYGAME.C:1522-1525`. Escape's two held-key checks are `code/GM/PLAYGAME.C:1424`, `code/GM/PLAYGAME.C:1547`; a quick release before the second can restart the scene. Hold through the fade until the menu appears. [not yet checked in DOSBox]

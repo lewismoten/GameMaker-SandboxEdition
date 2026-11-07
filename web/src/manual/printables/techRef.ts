@@ -6,7 +6,7 @@ import { h } from '../../editor/core/ui';
 import { bookletPageCount } from './imposition';
 import { measurer, type BookPage } from './manualPages';
 import { paginate } from './paginate';
-import { elementWith, readMarkdown, type Block } from './markdownBlocks';
+import { elementWith, readMarkdown, type Block, type Diagrams } from './markdownBlocks';
 import type { BoxItem } from './viewer';
 import { sheet } from './kit';
 import { TECHREF_DIAGRAMS } from './techRefDiagrams';
@@ -53,6 +53,24 @@ export function techRefChapters(markdown: string): { head: string; blocks: Block
     .filter((c) => c.blocks.length);
 }
 
+/** The booklet's diagrams with consecutive figure numbers, in the order the Markdown places them. */
+function numberedDiagrams(markdown: string): Diagrams {
+  const out: Diagrams = {};
+  let n = 0;
+  for (const m of markdown.matchAll(/^\[diagram: (\w+)\]\s*$/gm)) {
+    const draw = TECHREF_DIAGRAMS[m[1]];
+    if (!draw) continue;
+    const num = ++n;
+    out[m[1]] = () => {
+      const el = draw();
+      const cap = el.querySelector('figcaption');
+      if (cap) cap.textContent = `Figure ${num}. ${cap.textContent}`;
+      return el;
+    };
+  }
+  return out;
+}
+
 /** The booklet as pages: a cover, the chapters, notes pages to fill the last sheet, a back cover. */
 async function techRefPages(): Promise<BookPage[]> {
   const markdown = (await import('../../programmersGuide/booklet1994.md?raw')).default;
@@ -62,7 +80,7 @@ async function techRefPages(): Promise<BookPage[]> {
     const next = measurer(host);
     const pages: BookPage[] = [{ kind: 'cover', body: [techRefCover()] }];
     for (const c of techRefChapters(markdown))
-      for (const body of paginate([h('h2', null, c.head), ...c.blocks.map(elementWith(TECHREF_DIAGRAMS))], next))
+      for (const body of paginate([h('h2', null, c.head), ...c.blocks.map(elementWith(numberedDiagrams(markdown)))], next))
         pages.push({ kind: 'text', head: ['GAME-MAKER 3.0', TECHREF_TITLE], body });
     const pads = bookletPageCount(pages.length + 1) - pages.length - 1;
     for (let i = 0; i < pads; i++)
