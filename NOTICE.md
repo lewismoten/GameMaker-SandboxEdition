@@ -941,7 +941,10 @@ developer's computer with ffmpeg, Pocket TTS's ONNX model and ONNX Runtime's WAS
 it makes are committed. Its check (`web/scripts/narrate/verify.ts`, `npm run voice:check`)
 hears each clip with OpenAI's Whisper (MIT; the large-v3 model, run by whisper.cpp, MIT, or
 openai-whisper's own command), on the developer's computer, to find words the voices said
-wrong; nothing of it ships.
+wrong; nothing of it ships. `npm run voice:words` (`web/scripts/narrate/words.ts`) checks the
+pronunciation lexicon the same way and also with facebook's **wav2vec2-base-960h** (Apache-2.0,
+a quantized ONNX copy kept outside the repository), which spells out the sounds it hears; it
+runs only on the developer's computer and nothing of it ships.
 
 `npm run video:transcript` (`web/scripts/videoTranscribe.ts`) runs on the developer's computer
 with yt-dlp (Unlicense), ffmpeg, and whisper.cpp (MIT) with OpenAI's Whisper large-v3 model

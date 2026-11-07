@@ -62,6 +62,7 @@
     "voice:phone": "vite-node scripts/narrate.ts -- --lines phone --out public/phone/voice",
     "voice:phone:check": "vite-node scripts/narrate/verify.ts -- --lines phone --out public/phone/voice",
     "voice:check": "vite-node scripts/narrate/verify.ts --",
+    "voice:words": "vite-node scripts/narrate/words.ts --",
     "voice:setup": "npm install --prefix ../.narrate --no-save kokoro-js@1.2.1",
     "dosbox:open": "../dosbox/DOSBOX.command",
     "mcp": "vite-node -c scripts/mcp/vite.config.ts scripts/mcp/main.ts --",
