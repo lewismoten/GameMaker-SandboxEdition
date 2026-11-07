@@ -10,6 +10,7 @@ import {
   highestLevel,
   isCeremony,
   needed,
+  nextCertificateLine,
   stageGames,
   transcript,
   unlockRule,
@@ -106,5 +107,32 @@ describe('ceremonies', () => {
       expect(STARTER_HEROES[c.id]).toBeUndefined();
     }
     expect(isCeremony('first-steps')).toBe(false);
+  });
+});
+
+describe('nextCertificateLine', () => {
+  const none = new Set<string>();
+  const stage = (n: number) => stageGames(CEREMONIES[n - 1]);
+  it('says nothing when no stage is within three Bs', () => {
+    expect(nextCertificateLine({}, none)).toBeUndefined();
+  });
+  it('counts what is missing and words it', () => {
+    const s5 = stage(5);
+    const need = needed(CEREMONIES[4]);
+    expect(nextCertificateLine(grade(s5.slice(0, need - 1), 'B'), none)).toBe('One more B in a 500 course until you earn your next certificate!');
+    expect(nextCertificateLine(grade(s5.slice(0, need - 2), 'B'), none)).toBe('Two more Bs in 500 courses until your next certificate!');
+    expect(nextCertificateLine(grade(s5.slice(0, need - 3), 'B'), none)).toBe('Three more Bs in 500 courses until your next certificate!');
+    expect(nextCertificateLine(grade(s5.slice(0, need - 1), 'C'), none)).toBeUndefined();
+  });
+  it('picks the fewest missing, the lower stage on a tie', () => {
+    const g = { ...grade(stage(2).slice(0, needed(CEREMONIES[1]) - 2), 'B'), ...grade(stage(4).slice(0, needed(CEREMONIES[3]) - 1), 'B') };
+    expect(nextCertificateLine(g, none)).toMatch(/^One more B in a 400 /);
+    const t = { ...grade(stage(2).slice(0, needed(CEREMONIES[1]) - 1), 'B'), ...grade(stage(4).slice(0, needed(CEREMONIES[3]) - 1), 'B') };
+    expect(nextCertificateLine(t, none)).toMatch(/a 200 course/);
+  });
+  it('leaves out a stage that is ready or earned', () => {
+    const c = CEREMONIES[4];
+    expect(nextCertificateLine(grade(stage(5).slice(0, needed(c)), 'B'), none)).toBeUndefined();
+    expect(nextCertificateLine({}, new Set([c.id]))).toBeUndefined();
   });
 });
