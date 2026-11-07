@@ -129,6 +129,17 @@ int main() {
             back.cal.v0 == 280 && back.cal.v1 == 3720 && back.full == 1 && back.cal.valid == 1, "record round trip");
   CHECK(ds::parse("pocket-board 1\npanel=1\nturn=3\nswap=0\nu0=1\nu1=2\nv0=3\nv1=4\nfull=1\n", back) && back.soft == 0 && back.turn == 3, "an old record (no soft line) reads as soft 0");
   CHECK(!ds::parse("pocket-board 1\npanel=1\nturn=0\nswap=0\nu0=1\nu1=2\nv0=3\nv1=4\nsoft=4\n", back), "soft 4 refused");
+  CHECK(back.gamma == 0 && back.tune == 0, "an old record (no gamma or tune line) reads as the driver's own picture");
+  {
+    ds::Record p = r;
+    p.gamma = 2;
+    p.tune = 3;
+    char pb[200];
+    ds::Record pback;
+    ds::format(p, pb, sizeof pb);
+    CHECK(ds::parse(pb, pback) && pback.gamma == 2 && pback.tune == 3 && pback.panel == 5, "the picture tuning survives a save and read");
+  }
+  CHECK(!ds::parse("pocket-board 1\npanel=1\nturn=0\nswap=0\nu0=1\nu1=2\nv0=3\nv1=4\ngamma=4\n", back), "gamma 5 refused");
   CHECK(!ds::parse("hello", back), "foreign file refused");
   CHECK(!ds::parse("pocket-board 1\npanel=9\nturn=0\nswap=0\nu0=1\nu1=2\nv0=3\nv1=4\n", back), "panel 9 refused");
   CHECK(!ds::parse("pocket-board 1\npanel=1\nturn=0\n", back), "a short record refused");

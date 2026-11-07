@@ -1,7 +1,7 @@
 // Checks the Pocket Player's between-level cards (hardware/pocket-player/src/gmcards.h) against the engine: for each
 // packed game, the pictures and text pages of every scene slot (intro, exit, won, lost) are drawn on the engine's
 // Screen the way ShowGraphic and Display_File do, and the board code's pixels, palette and wait times must match,
-// page by page. FLI animations (left out of the packing) are skipped on both sides. One line per game; exit 1 on a difference.
+// page by page; the game's own title, story and instructions pages (read from Details) too. FLI animations (left out of the packing) are skipped on both sides. One line per game; exit 1 on a difference.
 //   cd web && npx vite-node scripts/pocketCardsCheck.ts [id ...] [--data <dir with <id>.cfg, cards.pak and the files>]
 import { execFileSync } from 'node:child_process';
 import { mkdtempSync, readFileSync, readdirSync } from 'node:fs';
@@ -16,6 +16,7 @@ import { parseBackdrop, parseSlideList, textLines } from '@lewismoten/gamemaker-
 const here = new URL('../../hardware/pocket-player/', import.meta.url).pathname;
 const dataDir = process.argv.includes('--data') ? process.argv[process.argv.indexOf('--data') + 1] : here + 'data';
 const games = new URL('../../games/', import.meta.url).pathname;
+const flash = dataDir === here + 'data';
 let ids = process.argv.slice(2).filter((a, i, all) => a !== '--data' && all[i - 1] !== '--data');
 if (!ids.length)
   ids = readFileSync(here + 'data/games.txt', 'utf8')
@@ -111,6 +112,17 @@ for (const id of ids) {
   });
   if (game.scenes[1]?.files[0]) want.push(...expected(disk, dir, 'w', game.scenes[1].files[0]));
   if (game.scenes[1]?.files[2]) want.push(...expected(disk, dir, 'l', game.scenes[1].files[2]));
+  // the menu pages Details reads: the title (scene 0 slot 0), Read Storyline (slot 4) and Read Instructions (slot 6)
+  // (the title is packed only on a card: LittleFS has no room for the Starters' title animations)
+  for (const [where, slot] of [
+    ['t', 0],
+    ['s', 4],
+    ['h', 6],
+  ] as const) {
+    const f = game.scenes[0]?.files[slot];
+    if (where === 't' && flash) continue;
+    if (f) want.push(...expected(disk, dir, where, f));
+  }
   const got = execFileSync(exe, [dataDir, id], { encoding: 'utf8' }).trim().split('\n').filter(Boolean);
   // the board code lists i*, then x*, then w, l; the engine order above is by level: sort both the same way
   const key = (l: string) => l.split(' ')[1];

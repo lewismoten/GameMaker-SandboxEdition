@@ -2,7 +2,7 @@
 // played and finished, every Teddy game finished, every walkthrough watched. The catalog given out (loadGameList) already leaves out a
 // game that is kept out of sight until it is found, so such a game never counts, and is never
 // named, until the lists show it anyway.
-import { isSandboxGame, loadGameList, type CatalogEntry } from '../project/files';
+import { isSandboxGame, loadLeanGameList as loadGameList, type CatalogEntry } from '../project/files';
 import { isBizarreGame } from '../project/bizarre';
 import { isStarterGame } from '../project/starter';
 import { isCeremony } from '../project/ceremonies';

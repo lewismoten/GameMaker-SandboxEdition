@@ -20,7 +20,6 @@ import type { PocketContext } from '../../export/pocketLibrary';
 import { download, h, modal, notice, toast } from '../core/ui';
 import { plainError } from '../core/plainError';
 import { downloaded } from '../../achievements';
-import { icon } from './homeIcons';
 import type { CatalogEntry, GameFiles } from '../../project/files';
 import type { Companion } from '../../project/companion';
 import { aboutOf, isAboutEmpty, type AboutGame } from '../../project/aboutGame';
@@ -29,6 +28,8 @@ import type { PlayerPatches } from '@lewismoten/gamemaker-sandbox-engine/player/
 import { REPO_URL } from '../../seo/site';
 import { fetchArchive } from '../../project/archiveWait';
 import { companionCredits } from '../../assistant/chat/todo';
+
+export { downloadButton } from './downloadButton';
 
 export interface DownloadGame {
   title: string;
@@ -128,23 +129,6 @@ const CHOICES: Choice[] = [
  */
 const ENGINE_CAVEAT =
   'All but DOS and the Pocket Player still need a web engine, so a future system or browser update could break them; DOS, in DOSBox, is the most future-proof.';
-
-/** The Download button: `open` opens the chooser (chooseDownload) for the game. */
-export function downloadButton(title: string, open: () => unknown): HTMLElement {
-  return h(
-    'button',
-    {
-      type: 'button',
-      class: 'with-ico',
-      'aria-haspopup': 'dialog',
-      'aria-label': `Download ${title}`,
-      title: 'Download it to play on Windows, a Mac, Linux, the web or DOS',
-      onclick: () => void open(),
-    },
-    icon('inbox'),
-    'Download',
-  );
-}
 
 /** A download is being chosen or built: a second tap (a double tap, a click while it builds) does nothing instead of starting another file. */
 let downloading = false;

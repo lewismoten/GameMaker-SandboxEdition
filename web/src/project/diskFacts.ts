@@ -78,9 +78,10 @@ export const zipName = (g: Pick<CatalogEntry, 'exe' | 'id' | 'dosName'>) =>
 
 /** The ZIP's size on a BBS: the game's files (their real pack size when the build measured it), the release's extras, FILE_ID.DIZ and the ZIP's own headers. */
 export function zipBytes(g: Pick<CatalogEntry, 'bytes' | 'original' | 'exe' | 'files' | 'sizes' | 'packBytes' | 'id'>): number {
-  const files = g.packBytes ?? (g.sizes?.length === g.files.length ? g.files.reduce((n, f, i) => n + g.sizes![i] * shrink(f), 0) : (g.bytes ?? 0) * 0.4);
+  const listed = g.files ?? [];
+  const files = g.packBytes ?? (g.sizes?.length === listed.length ? listed.reduce((n, f, i) => n + g.sizes![i] * shrink(f), 0) : (g.bytes ?? 0) * 0.4);
   const extra = extraBytes(g) * SHRINK.exe;
-  const names = [...g.files, ...(g.exe || g.original ? [g.exe ?? `${g.id}.exe`] : []), 'FILE_ID.DIZ'];
+  const names = [...listed, ...(g.exe || g.original ? [g.exe ?? `${g.id}.exe`] : []), 'FILE_ID.DIZ'];
   return Math.round(files + extra + 450 + zipHeaders(names));
 }
 

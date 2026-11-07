@@ -77,6 +77,13 @@ export function helperHead(pal: Pal, top: Pixels, name: string, back: number): P
   return top.crop(0, 0, 20, 20).map((_x, _y, c) => (c === 255 ? back : (m.get(c) ?? c)));
 }
 
+/** A drawing made with Kit's ramps, as helper `name` (Kit himself is left as drawn); the clear color stays clear. */
+export function recolorFor(pal: Pal, px: Pixels, name: string): Pixels {
+  if (name === 'KIT') return px;
+  const m = remap(pal, name);
+  return px.map((_x, _y, c) => (c === 255 ? c : (m.get(c) ?? c)));
+}
+
 /** Doc Leo's colors, pointed at the Starter palette. */
 export function leoPal(pal: Pal): Pal {
   const ramp: Record<string, string> = {

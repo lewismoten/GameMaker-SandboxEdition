@@ -16,6 +16,7 @@ import { isReadOnlyError, makeReadOnly, restoreFiles } from '../core/readOnly';
 import { isStarterGame } from '../../project/starter';
 import { GameFiles, loadGameList, loadHostedGame, isSandboxGame, type CatalogEntry } from '../../project/files';
 import { isBizarreGame } from '../../project/bizarre';
+import { isSpecialGame } from '../../project/special';
 import { currentRoute, formatHash } from '../../urlState';
 import { copyCatalogGame, showNotice } from './homeCards';
 import { lookId } from './lookId';
@@ -24,7 +25,7 @@ import type { Workspace } from './workspace';
 import './released.css';
 
 /** Shareware by someone else: play and look only (as Edit a copy is left off its card). */
-const isPlayOnly = (e: CatalogEntry): boolean => e.kind === 'shareware' && !isSandboxGame(e) && !isBizarreGame(e) && !isStarterGame(e);
+const isPlayOnly = (e: CatalogEntry): boolean => e.kind === 'shareware' && !isSandboxGame(e) && !isBizarreGame(e) && !isStarterGame(e) && !isSpecialGame(e);
 
 interface Released {
   entry: CatalogEntry;

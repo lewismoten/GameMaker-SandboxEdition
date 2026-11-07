@@ -30,8 +30,8 @@ export interface ComputerOptions {
   onDriveAccess?: (drive: string, ms?: number) => void;
   /** A game starts on the monitor (its files), or stops (undefined): the desk sets out its key card. */
   onGame?: (game?: { files: GameFiles; gam: string; title: string; saveId?: string }) => void;
-  /** The game playing went to scene `n` (the desk lays a game's code wheel out on its puzzles' scenes). */
-  onScene?: (n: number) => void;
+  /** The game playing went to scene `n` (the desk lays a game's code wheel out on its puzzles' scenes); `demo` while its demo plays it. */
+  onScene?: (n: number, demo?: boolean) => void;
   /** A program starts (Game-Maker, a game, the terminal…, and the drive it started on) or ends (undefined). */
   onProgram?: (program?: { kind: string; drive: string }) => void;
   /** Which page the PC is on, for the achievements for finishing a game in each (the desk's by default). */

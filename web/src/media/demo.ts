@@ -11,7 +11,8 @@ import { parseRecording } from '@lewismoten/gamemaker-sandbox-engine/formats/rec
 import type { Session } from '@lewismoten/gamemaker-sandbox-engine/engine/scene';
 import { LiveRecorder, recorderFormat } from './video';
 import { AudioMix } from './audioTap';
-import { DemoAudioEngine, demoAudio, demoAudioPicker, onDemoAudio } from './demoAudio';
+import { demoAudio, demoAudioPicker, onDemoAudio } from './demoAudio';
+import { DemoAudioEngine } from './demoAudioEngine';
 import { attractRecording } from './attractDemo';
 import { ADDED_DEMO_NOTICE, extraDemoForGam, fetchExtraDemo, loadExtraDemos } from './extraDemos';
 import { claimMediaFocus } from './mediaFocus';

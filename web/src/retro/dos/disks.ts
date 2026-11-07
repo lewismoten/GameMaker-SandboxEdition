@@ -3,6 +3,8 @@
 import { isSandboxGame, loadGameList, loadHostedGame, type CatalogEntry, GameFiles } from '../../project/files';
 import { listProjects, loadProject } from '../../project/storage';
 import { isBizarreGame } from '../../project/bizarre';
+import { isSpecialGame } from '../../project/special';
+import { keptHow } from '../../specials/state';
 import { fnv1a } from '../../seededRandom';
 import { floppyFolders, type SampleFolder } from './sampleDisk';
 
@@ -102,8 +104,8 @@ export async function loadDisks(): Promise<Disk[]> {
       load: () => loadHostedGame(g),
     });
   });
-  // Our own games, on their printed shareware disks (open to change, unlike other shareware).
-  for (const g of catalog.filter(isSandboxGame)) {
+  // Our own games, on their printed shareware disks (open to change, unlike other shareware); a Special once it has reached the desk (or been played: specials/state.ts)
+  for (const g of catalog.filter((e) => isSandboxGame(e) || (isSpecialGame(e) && !!keptHow(e.id)))) {
     const label = g.original?.label;
     disks.push({
       id: `cd:${g.id}`,

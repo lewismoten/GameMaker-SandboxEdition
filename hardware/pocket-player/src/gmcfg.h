@@ -213,6 +213,18 @@ struct Assets {
     return true;
   }
   static bool info(void* user, int level, Level&) { return ((Assets*)user)->readInfo(level); }
+  // World::saveEntry / restore: the hero files the previous level left go with a level's entry state.
+  static void heroSync(void* user, EntryState& e, bool restore) {
+    Assets& a = *(Assets*)user;
+    if (!restore) {
+      memcpy(e.heroCbl, a.heroCbl, sizeof e.heroCbl); memcpy(e.heroChr, a.heroChr, sizeof e.heroChr); e.heroN = (int16_t)a.heroN;
+      return;
+    }
+    memcpy(a.heroCbl, e.heroCbl, sizeof a.heroCbl); memcpy(a.heroChr, e.heroChr, sizeof a.heroChr);
+    a.heroCbl[sizeof a.heroCbl - 1] = a.heroChr[sizeof a.heroChr - 1] = 0;
+    a.heroN = e.heroN;
+    a.filesLevel = -1;  // the level's record is read again with these hero files
+  }
   static bool load(void* user, int level, uint8_t* blocks, uint8_t* mons, uint8_t* mmBytes, bool* hasMons) {
     Assets& a = *(Assets*)user;
     if (a.beforeLoad) a.beforeLoad(level);
@@ -275,6 +287,7 @@ struct Assets {
     world.loadInfo = info;
     world.infoUser = this;
     world.lvlIdx = filesLevel = -1;
+    world.heroSync = heroSync;
   }
 };
 

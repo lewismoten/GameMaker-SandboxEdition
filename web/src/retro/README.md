@@ -71,6 +71,9 @@ picture; `host.ts` is what programs on it can use.
 The terminal (`term.ts`) and the BBSes; TERMINAL.EXE's dialing
 directory and calls are `bbs.ts`.
 
+The first call that connects to a board brings home a letter for Scoot (`courierMail.ts`), read
+with SCOOT.EXE in `C:\COMM` (`../courier/scootExe.ts`).
+
 - The boards: THE -= S A N D B O X =- BBS (`sandbox.ts`, its name in `bbsName.ts`, ANSI art in
   `ansiArt.ts`) and The Sofa (`sofa.ts`, its number in `sofaPhone.ts` for the printed pieces; its
   files, pictures and SPAM in `sofaFiles.ts`, `sofaPictures.ts` and `sofaSpam.ts`).
