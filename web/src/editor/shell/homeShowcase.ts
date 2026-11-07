@@ -13,7 +13,7 @@ import { isImported } from './homeOrigin';
 import type { HomeNav } from './home';
 import { walkthroughButton } from '../../walkthrough/button';
 import { savesButton } from '../../saves/button';
-import { chooseDownload, downloadButton } from './download';
+import { downloadButton } from './downloadButton';
 import { catalogDownloadable } from '../../export/downloadable';
 import { fictionNote } from '../../export/fiction';
 import { fillRating } from './homeRatings';
@@ -94,7 +94,7 @@ function catalogDownload(game: HomeGame): HTMLElement | null {
   const e = game.entry;
   if (!e || game.project || !catalogDownloadable(e)) return null;
   return downloadButton(game.title, async () =>
-    chooseDownload({
+    (await import('./download')).chooseDownload({
       title: e.title,
       gam: e.gam!,
       files: () => game.files(),

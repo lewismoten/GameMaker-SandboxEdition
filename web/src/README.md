@@ -34,6 +34,34 @@ are their own downloads, and parts used only on demand are imported dynamically.
 front (the magazine, the desk, the level check's explorer, the engine…), walking imports with
 [`importWalk.ts`](importWalk.ts) (a test helper, also behind `dosPage/boundary.test.ts`).
 
+What kept pages small (2026-11-07, `npm run verify:perf` and its budgets):
+
+- A page that only reads a setting or asks a yes/no question must not import the module with
+  the heavy class or dialog beside it. Keep the small part in a file of its own:
+  `media/demoAudio.ts` (the sound choice) and `demoAudioEngine.ts` (the audio engine);
+  `player/touchWanted.ts` and `touch.ts`; `retro/bbs/warezList.ts` and `warezArea.ts` (the BBS
+  terminal); `editor/shell/downloadButton.ts` and `download.ts` (the chooser and every export).
+- A button imports what it opens when it is pressed (`(await import('./download')).chooseDownload`),
+  and a check imports its checker when it runs (`gameHealth.ts`).
+- The play page's code is in a few manual chunks (`player`, `shared-…`, `vite.config.ts`
+  `playChunks`). A page that statically imports one module of the `player` chunk downloads
+  the whole chunk (about 45 kB compressed): the Library did, for the demo sound choice.
+- A dynamic `import()` of a module keeps every export of it in the chunk where something else
+  loads it up front. The file picker's palette templates come through
+  `editor/widgets/palettePresets.ts` (two named exports) rather than `import()` of the tools
+  package's `./palettes`, which `editor/core/project.ts` loads for the default palette; and a
+  table built at load needs a lazy function or a `/* @__PURE__ */` call to be dropped
+  (`tools/src/palettePresets.ts`).
+- A picture shown minutes later (Doc Leo's glance on the desk) loads shortly before it shows,
+  not with the page.
+- `verify:perf` counts the bytes the page fetched from the network; a file the service worker
+  serves counts as a request of 0 bytes, so figures swing a few kB between runs. Measure the
+  same scratch build twice before and after a change.
+- `games/catalog.json` (about 77 kB compressed, on the home page, the desk and dos.html) and the
+  built `index.html` (about 22 kB) are written by `scripts/cdGames.ts` and `scripts/seoBuild.ts`,
+  which `vite.config.ts` imports: changing them restarts the dev server, so they need a quiet
+  moment.
+
 ## Modules at the top
 
 - [`challenges/`](challenges/README.md): reviewed challenge descriptors and the guest-state isolation design and storage seam.
@@ -247,7 +275,7 @@ through `fetchGameFile` (`project/files.ts`), which shares each request and read
 already at hand. The build also puts in the catalog what pages would otherwise fetch files to work
 out (the quick health check, a box's captions). Lists load `games/catalog.json`
 (`loadCatalogList`), and a game's notice, manual and printables come from
-`games/details/<id>.json` when it is opened (`withDetails`; every original game's controls and player look, and a Starter's blurb, label and box art, so `catalog.json` keeps only what the home page and dos.html read at load, `pageCatalog` in `scripts/cdGames.ts`); pictures of listed games are prebuilt
+`games/details/<id>.json` when it is opened (`withDetails`; every original game's controls and player look, and a Starter's blurb, label and box art, so `catalog.json` keeps only what the home page and dos.html read at load, `pageCatalog` in `scripts/cdGames.ts`; each game's file names and sizes are in `games/catalog-files.json`, fetched when something needs them: `loadGameList` fills them in, `loadLeanGameList` leaves them out, and `withFiles` / `hydrateFiles` fill an entry in place); pictures of listed games are prebuilt
 in `games/shots/` (`gfx/levelPicture.ts`; the tiles' title screens, `gfx/titlePicture.ts`).
 `main.ts` starts one or the other and switches between them; the desk's PC can also open today's
 editors full screen on its monitor (`retro/computer.ts` `openEditor`, through the same editor

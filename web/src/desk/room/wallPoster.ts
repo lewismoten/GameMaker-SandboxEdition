@@ -34,7 +34,7 @@ export function setPosterWall(wall: HTMLElement, entries: CatalogEntry[]): void 
 function posterOf(entry: CatalogEntry): Poster | undefined {
   const box = entry.original?.box as (BoxExtras & { tagline?: string }) | undefined;
   if (box?.poster) return box.poster;
-  return entry.files.includes('title.gif') ? { gif: 'title.gif', caption: box?.tagline } : undefined;
+  return entry.files?.includes('title.gif') ? { gif: 'title.gif', caption: box?.tagline } : undefined;
 }
 
 function loadImage(src: string): Promise<HTMLImageElement | undefined> {

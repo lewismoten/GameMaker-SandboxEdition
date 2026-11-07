@@ -467,7 +467,7 @@ async function download(t: Term, h: RetroHost, g: CatalogEntry): Promise<void> {
   updateAccount((a) => recordDownload(a, size, isFree(g)));
   await pkunzip(t, h, zipName(g), dosDir(g), [
     ...(g.exe ? [[g.exe, PLAYER_EXE_BYTES] as const] : []),
-    ...g.files.map((f, i) => [f.toUpperCase(), g.sizes?.[i] ?? Math.round((g.bytes ?? 0) / g.files.length)] as const),
+    ...(g.files ?? []).map((f, i) => [f.toUpperCase(), g.sizes?.[i] ?? Math.round((g.bytes ?? 0) / g.files!.length)] as const),
     ['FILE_ID.DIZ', DIZ_BYTES] as const,
   ]);
   h.downloads.add(g.id);
