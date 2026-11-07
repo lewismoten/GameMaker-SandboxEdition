@@ -14,6 +14,9 @@ Entry points: `retro/computer.ts` starts `shell.ts`; the designers use `workArea
 - `workArea.ts`: the designers' file handling (WINDIO.C loadany, saveany, delany).
 - `picker.ts`: Game-Maker's file picker (getfname) with folders.
 - `okMsg.ts`: OKMSG, the secret word GM.EXE passes to MENU, PLAYGAME and IMAGE.
+- `gmPrograms.ts`: what each program in C:\GM runs as at the prompt. Typed by hand, the
+  designers, UTILITY, PLAYGAME and IMAGE run on their own and quit back to the prompt; MENU
+  refuses without OKMSG, and XFERPLAY finds no game of its own name there.
 
 Must not: import anything under `src/desk/`. The PC is shared with `dos.html`, and `dosPage/boundary.test.ts` walks every import reachable from `retro/computer.ts` and fails on a path into `desk/`.
 
