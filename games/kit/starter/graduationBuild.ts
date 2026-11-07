@@ -13,11 +13,12 @@ import { serializeSoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/
 import { clipEveryList } from '@lewismoten/gamemaker-sandbox-tools/kit/fliClips';
 import { Disk } from '../disk';
 import { licenseText } from '../license';
-import { STARTER_STING, starterStingFli } from './sting';
+import { GRADUATION_STING, graduationStingFli } from './graduationSting';
+import { graduationMenu, graduationTitle } from './graduationScreens';
 import { buildHeroBlocks, heroPicture } from './hero';
 import { buildHero } from './heroChar';
 import { graduationMonsters } from './graduationConfetti';
-import { cardPicture, endPicture, gif, menuPicture, paper, scoresPicture, slotsPicture, titlePicture } from './screens';
+import { cardPicture, endPicture, gif, paper, scoresPicture, slotsPicture } from './screens';
 import { skyOf } from './palette';
 import { SILVER_KEYS } from './locks';
 import { POWER } from './graduationNods';
@@ -68,16 +69,16 @@ export function buildGraduation(dir: string, cfg: Graduation, built: ReturnType<
     disk.put(`${base}.txt`, body);
     disk.put(`${base}.lst`, serializeSlideList([{ name: `${base}.gif`, pause: 0 }, { name: `${base}.txt` }]));
   };
-  disk.put('title.gif', gif(titlePicture(pal, book, hero, door, title, cfg.upper), pal));
-  disk.put(STARTER_STING, starterStingFli(cfg.id));
+  disk.put('title.gif', gif(graduationTitle(pal, cfg, title, hero, door), pal));
+  disk.put(GRADUATION_STING, graduationStingFli(cfg));
   disk.put(
     'title.lst',
     serializeSlideList([
-      { name: STARTER_STING, pause: 0 },
+      { name: GRADUATION_STING, pause: 0 },
       { name: 'title.gif', pause: 12 },
     ]),
   );
-  disk.put('menu.gif', gif(menuPicture(pal, book, hero, title), pal));
+  disk.put('menu.gif', gif(graduationMenu(pal, cfg, title, hero), pal));
   disk.put('scores.gif', gif(scoresPicture(pal, book, 'THE GRADUATES'), pal));
   disk.put('loadgame.gif', gif(slotsPicture(pal, book, 'LOAD GAME'), pal));
   disk.put('savegame.gif', gif(slotsPicture(pal, book, 'SAVE GAME'), pal));

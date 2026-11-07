@@ -14,8 +14,8 @@ export function graduationMonsters(pal: Pal, hall: Book) {
     for (const [i, id] of CONFETTI.entries()) {
       const pic = hall.pics.get(`confetti.${i}.0`)!.map((_x, _y, c) => (c === skyOf(pal) ? 255 : c));
       const n = monsterBlocks.add(`confetti.${i}`, pic);
-      // Down four rows slowly, then reset to the top in one tick. Both paths stay within the view.
-      monsters[id] = mon([[n, 1]], { power: 255, end: -2, thru: 0 }, [corner(0, 0, 1), corner(0, 4, 1 + i), corner(0, 0, 80)]);
+      // Starts a row above the view's top, falls six rows slowly (through the whole standing view), then resets in one tick.
+      monsters[id] = mon([[n, 1]], { power: 255, end: -2, thru: 0 }, [corner(0, 0, 1), corner(0, 6, 1 + i), corner(0, 0, 80)]);
     }
   }
   return { monsterBlocks, monsters };
