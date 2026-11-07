@@ -19,10 +19,10 @@ int main(int argc, char** argv) {
   std::string file = std::string(argv[1]) + "/fixture.GMP";
   std::vector<uint8_t> out;
   writeBundle(file, 48, 1); assert(pakSlurp(file + "/asset", out)); assert(out.size() == 1 && out[0] == 42);
-  out.clear(); writeBundle(file, 48, 1024 * 1024);
-  assert(!pakSlurp(file + "/asset", out)); assert(out.empty()); // no allocation for a physically impossible range
+  out.clear(); size_t capacity = out.capacity(); writeBundle(file, 48, 1024 * 1024);
+  assert(!pakSlurp(file + "/asset", out)); assert(out.empty() && out.capacity() == capacity); // no allocation for a physically impossible range
   writeBundle(file, 0xfffffff0u, 32);
-  assert(!pakSlurp(file + "/asset", out)); assert(out.empty()); // addition must not wrap
+  assert(!pakSlurp(file + "/asset", out)); assert(out.empty() && out.capacity() == capacity); // addition must not wrap
   writeBundle(file, 49, 0); assert(pakSlurp(file + "/asset", out)); assert(out.empty());
   assert(remove(file.c_str()) == 0);
   puts("PASS stdio bundle: valid bytes, impossible length rejected before allocation, overflow range, empty entry");
