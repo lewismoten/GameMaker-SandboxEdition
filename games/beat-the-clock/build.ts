@@ -8,7 +8,7 @@ import { INF_REPEAT, serializeCharacter } from '@lewismoten/gamemaker-sandbox-en
 import { serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { serializeSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
 import { serializeMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
-import { serializeMonsters } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { newMonsterSet, serializeMonsters } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { serializePalette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import { serializeSoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
 import { clipEveryList } from '@lewismoten/gamemaker-sandbox-tools/kit/fliClips';
@@ -17,7 +17,7 @@ import { licenseText } from '../kit/license';
 import { STARTER_STING, starterStingFli } from '../kit/starter/sting';
 import { buildHeroBlocks, heroPicture } from '../kit/starter/hero';
 import { KEYS } from '../kit/starter/blocks';
-import { buildMonsterBlocks, buildMonsters } from '../kit/starter/monsters';
+import { Book } from '../kit/starter/book';
 import { cardPicture, endPicture, gif, menuPicture, paper, scoresPicture, slotsPicture } from '../kit/starter/screens';
 import { skyOf } from '../kit/starter/palette';
 import { buildSounds } from '../kit/starter/sounds';
@@ -39,7 +39,8 @@ const disk = new Disk(join(here, 'disk'));
 const { pal, levels } = buildLevels();
 const book = levels[0].book;
 const heroBlocks = buildHeroBlocks(pal);
-const monsterBlocks = buildMonsterBlocks(pal);
+// No map places monsters: keep valid empty DOS sets rather than copied template actors.
+const monsterBlocks = new Book('mbl');
 const hero = heroPicture(heroBlocks, 'stand.top', 'stand');
 const cheer = heroPicture(heroBlocks, 'cheer.top', 'jump');
 // the exit door as a picture to stand in the scenes: its sky made clear
@@ -48,7 +49,7 @@ const door = heroPicture(book, 'doorTop', 'doorBottom').map((_x, _y, c) => (c ==
 // the game's shared data: one block set, one palette, one hero, an (empty) set of monsters, one song
 disk.put('beat.pal', serializePalette(pal.pal));
 disk.put('beat.mbl', serializeBlocks(monsterBlocks.finish()));
-disk.put('beat.mon', serializeMonsters(buildMonsters(monsterBlocks)));
+disk.put('beat.mon', serializeMonsters(newMonsterSet()));
 disk.put('hero.cbl', serializeBlocks(heroBlocks.finish()));
 const heroChar = buildHero(heroBlocks);
 heroChar.meter[KEYS] = INF_REPEAT; // no keys in this game

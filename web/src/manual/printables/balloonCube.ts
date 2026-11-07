@@ -2,6 +2,7 @@
 // art placed on the part of the paper that ends up as that face, then the fold steps drawn as small diagrams. The fold itself is
 // balloonCubeModel.ts; this only draws it (the art is drawn once and placed on the sheet and on the cube's faces in the diagrams).
 import './balloonCube.css';
+import { balloonCubeLiftSvg } from './balloonCubeLift';
 import { h } from '../../editor/core/ui';
 import { html, sheet, type Sheet } from './kit';
 import { CREASES, L, PLACEMENTS, TUCKS, type Frame2, type FaceId, type V2, type V3 } from './balloonCubeModel';
@@ -275,8 +276,8 @@ export async function balloonCubeSheets(it: BalloonCubeItem): Promise<Sheet[]> {
         step(1, 'Cut out the square along its solid edge.', sheetSvg(it, { plain: true, width: 100 })),
         step(
           2,
-          'Fold every dashed and dash-dot line the way the legend says, then unfold it, so each crease is sharp.',
-          sheetSvg(it, { plain: true, width: 101 }),
+          'Crease every dashed and dash-dot line the way the legend says, then unfold. Keep the middle square flat and start lifting the four faces, as shown.',
+          balloonCubeLiftSvg(),
         ),
         step(
           3,

@@ -30,6 +30,7 @@ import { song } from './src/song';
 import { titlePicture } from './src/title';
 import { viewPicture } from './src/views';
 import { simulatePalette } from '@lewismoten/gamemaker-sandbox-engine/gfx/colorVision';
+import { lessonPalette } from './src/colorBlocks';
 import { CREDITS, HOWTO, LOST, STORY, WON } from './src/text';
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -45,6 +46,8 @@ const door = heroPicture(book, 'doorTop', 'doorBottom').map((_x, _y, c) => (c ==
 
 // the game's shared data: one block set, one palette, one hero, an (empty) set of monsters, one song
 disk.put('colors.pal', serializePalette(pal.pal));
+// A DOS scene palette makes the lesson playable with the same ambiguity as the card.
+disk.put('alike.pal', serializePalette(lessonPalette(pal)));
 disk.put('colors.bbl', serializeBlocks(book.finish()));
 disk.put('colors.mbl', serializeBlocks(monsterBlocks.finish()));
 disk.put('colors.mon', serializeMonsters(buildMonsters(monsterBlocks)));
