@@ -27,7 +27,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 7810,
+  "frames": 7819,
   "chapters": [
    {
     "title": "Opening",
@@ -36,28 +36,28 @@
    },
    {
     "title": "Story",
-    "frame": 913,
-    "time": 15216.666666666471
+    "frame": 922,
+    "time": 15366.666666666466
    },
    {
     "title": "The Front Walk",
-    "frame": 1661,
-    "time": 27683.333333333918
+    "frame": 1670,
+    "time": 27833.33333333393
    },
    {
     "title": "The Aisle",
-    "frame": 3713,
-    "time": 61883.333333330054
+    "frame": 3722,
+    "time": 62033.33333333003
    },
    {
     "title": "Ending",
-    "frame": 5011,
-    "time": 83516.66666666808
+    "frame": 5020,
+    "time": 83666.66666666813
    },
    {
     "title": "Credits",
-    "frame": 6738,
-    "time": 112300.0000000098
+    "frame": 6747,
+    "time": 112450.00000000984
    }
   ]
  }

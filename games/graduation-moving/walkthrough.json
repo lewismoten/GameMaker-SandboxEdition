@@ -27,7 +27,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 7872,
+  "frames": 7881,
   "chapters": [
    {
     "title": "Opening",
@@ -36,28 +36,28 @@
    },
    {
     "title": "Story",
-    "frame": 913,
-    "time": 15216.666666666471
+    "frame": 922,
+    "time": 15366.666666666466
    },
    {
     "title": "The Green",
-    "frame": 1661,
-    "time": 27683.333333333918
+    "frame": 1670,
+    "time": 27833.33333333393
    },
    {
     "title": "The Court",
-    "frame": 3776,
-    "time": 62933.3333333299
+    "frame": 3785,
+    "time": 63083.33333332988
    },
    {
     "title": "Ending",
-    "frame": 5073,
-    "time": 84550.00000000172
+    "frame": 5082,
+    "time": 84700.00000000176
    },
    {
     "title": "Credits",
-    "frame": 6800,
-    "time": 113333.33333334343
+    "frame": 6809,
+    "time": 113483.33333334347
    }
   ]
  }
