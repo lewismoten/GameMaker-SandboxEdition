@@ -11,7 +11,7 @@ import { crtWarmUp } from './pc/crtWarmUp';
 import { tellDesk } from './buddy/deskPlay';
 import type { BootSounds } from './pc/bootSounds';
 import type { SpeedSetting } from '@lewismoten/gamemaker-sandbox-engine/engine/scene';
-import { TURBO_OFF } from '@lewismoten/gamemaker-sandbox-engine/engine/slowPc';
+import { CPU_CHOICES, loadMachine, saveMachine, machineCosts, machineMHz } from './pc/machineSettings';
 import type { viewState } from '../urlState';
 import type { deskScene } from './deskScene';
 
@@ -28,7 +28,7 @@ interface PcHooks {
 }
 
 export function deskPc(scene: Scene, hooks: PcHooks) {
-  const { desk, crt, floppy, cd, hdd, powerLed, turboLed, mhz, powerBtn, turboBtn, keyCard, wheelSpot, spk, modem } = scene;
+  const { desk, crt, floppy, cd, hdd, powerLed, turboLed, mhz, machineBtn, powerBtn, turboBtn, keyCard, wheelSpot, spk, modem } = scene;
   const { deskView } = hooks;
   // the PC starts in turbo every visit; the button slows it down until you leave
   let turbo = true;
@@ -37,9 +37,21 @@ export function deskPc(scene: Scene, hooks: PcHooks) {
   } catch {
     /* private mode */
   }
-  const speed: SpeedSetting = {
-    slowPc: turbo ? undefined : TURBO_OFF,
-  };
+  let machine = loadMachine();
+  const speed: SpeedSetting = { slowPc: machineCosts(machine, turbo) };
+  machineBtn.addEventListener('click', () => {
+    void import('./pc/machineDialog').then(({ openMachineDialog }) =>
+      openMachineDialog(
+        machine,
+        (value) => {
+          machine = value;
+          saveMachine(value);
+          setTurbo(turbo);
+        },
+        machineBtn,
+      ),
+    );
+  });
 
   let enlarged = false; // the user pressed the enlarge button
   // The PC's insides (DOS, Game-Maker, the BBS, the VGA): loaded when the PC is first needed
@@ -55,6 +67,8 @@ export function deskPc(scene: Scene, hooks: PcHooks) {
     (pcLoad ??= pcCode().then(({ Computer }) => {
       computer = new Computer(crt, {
         speed,
+        turbo: () => turbo,
+        cpuName: () => CPU_CHOICES.find((c) => c.id === machine.cpu)!.name,
         openModern: (projectId, file) => hooks.openModern(projectId, file),
         // The designers take the whole window; afterwards, go back to how the user had it.
         // vga stays in the monitor like the real thing.
@@ -119,10 +133,11 @@ export function deskPc(scene: Scene, hooks: PcHooks) {
 
   function setTurbo(on: boolean): void {
     turbo = on;
-    speed.slowPc = on ? undefined : TURBO_OFF;
+    speed.slowPc = machineCosts(machine, on);
     turboBtn.setAttribute('aria-pressed', String(on));
     turboLed.classList.toggle('on', on && !!computer?.powered);
-    mhz.show(computer?.powered ? (on ? '66' : '8') : '');
+    mhz.show(computer?.powered ? String(machineMHz(machine, on)) : '');
+    machineBtn.setAttribute('aria-label', `Machine settings, ${machineMHz(machine, on)} MHz${computer?.powered ? '' : ', power off'}`);
   }
 
   let poweringOn: Promise<void> | undefined;

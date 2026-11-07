@@ -423,3 +423,36 @@
 .gm-player .gm-loading[hidden] {
   display: none;
 }
+
+/* Save screenshot: a camera beside the transient player controls. */
+.gm-player .gm-snapshot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  min-height: 28px;
+  padding: 4px;
+  border: 1px solid #ffd400;
+  border-radius: 6px;
+  background: rgba(0, 0, 128, 0.7);
+  color: #ffd400;
+  cursor: pointer;
+  opacity: 0.75;
+  transition: opacity 0.2s;
+  touch-action: manipulation;
+}
+
+.gm-player.gm-cursor-hidden .gm-snapshot {
+  opacity: 0;
+}
+
+.gm-player .gm-snapshot:hover,
+.gm-player .gm-snapshot:focus-visible {
+  opacity: 1;
+  cursor: pointer;
+}
+
+.gm-player .gm-snapshot:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}

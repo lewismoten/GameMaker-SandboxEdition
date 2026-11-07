@@ -44,12 +44,12 @@ export class Computer extends ComputerFolders {
     s.resetPalette();
     s.clear(attr(7, 0));
     s.cursorVisible = false;
-    const turbo = !this.opts.speed.slowPc;
+    const turbo = this.turbo();
     // a quick boot (the DOS page, on its way to Game-Maker) says the same in a quarter of the time
     const pause = (ms: number) => sleep(this.opts.quickBoot ? ms / 4 : ms);
     // a drive read as the PC starts (its light, and on the desk its sound), as long as a quick boot's pauses
     const reads = (drive: string, ms: number) => this.opts.onDriveAccess?.(drive, this.opts.quickBoot ? ms / 4 : ms);
-    s.print(`AwkWard Modular BIOS v4.20  (C) 1993 AwkWard Software\n${turbo ? '486DX2-66 Turbo' : '486DX2-66 (Turbo off)'}\n\n`);
+    s.print(`AwkWard Modular BIOS v4.20  (C) 1993 AwkWard Software\n${this.opts.cpuName?.() ?? '486DX2-66'}${turbo ? ' Turbo' : ' (Turbo off)'}\n\n`);
     const postStart = Date.now();
     drawEnergySnore(s);
     // the BIOS ID string along the bottom, as POST screens had (its board code is the build's commit)
@@ -183,7 +183,7 @@ export class Computer extends ComputerFolders {
   }
 
   turbo(): boolean {
-    return !this.opts.speed.slowPc;
+    return this.opts.turbo?.() ?? !this.opts.speed.slowPc;
   }
 
   /** Types a command at the prompt, as if on the keyboard. */

@@ -108,3 +108,5 @@ with SCOOT.EXE in `C:\COMM` (`../courier/scootExe.ts`).
 - The Sandbox BBS's door game, TIC-TAC-TOE BY MODEM, is `ticTacToe.ts` (rules, the other caller,
   the saved game) and `ticTacToeDoor.ts` (its screen); its R)egister menu, `rsdLine.ts`, is RSD's
   registration line: a name and serial number get TELLREG's registration number.
+
+The desk can supply live `ComputerOptions.turbo` and `cpuName` callbacks separately from engine costs, so independent disk timing does not change the physical TURBO switch or BIOS CPU label. Other hosts retain their existing defaults.

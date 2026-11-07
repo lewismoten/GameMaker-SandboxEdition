@@ -1,17 +1,75 @@
 {
   "title": "Snow Trails",
   "howDoI": [
-    { "id": "snow", "q": "How do I make snowflakes sway as they fall?", "scene": 2, "x": 18, "y": 16, "level": 1 },
-    { "id": "prints", "q": "How do I leave footprints only where the hero walks?", "scene": 2, "x": 24, "y": 19, "level": 1 },
-    { "id": "drift", "q": "How do I make a snow drift grow and then stop?", "scene": 3, "x": 19, "y": 19, "level": 2 }
+    {
+      "id": "snow",
+      "q": "How do I make snowflakes sway as they fall?",
+      "scene": 2,
+      "x": 18,
+      "y": 16,
+      "level": 1
+    },
+    {
+      "id": "prints",
+      "q": "How do I leave footprints only where the hero walks?",
+      "scene": 2,
+      "x": 26,
+      "y": 19,
+      "level": 1
+    },
+    {
+      "id": "drift",
+      "q": "How do I make a snow drift grow and then stop?",
+      "scene": 3,
+      "x": 19,
+      "y": 19,
+      "level": 2
+    },
+    {
+      "id": "fade",
+      "q": "How do I leave prints that face the way I walk and fade away?",
+      "scene": 4,
+      "x": 15,
+      "y": 18,
+      "level": 3
+    }
   ],
   "pages": [
-    { "head": "Welcome", "html": "<h1>Snow Trails</h1><p>A Starter about falling snow, low drifts and footprints. Two short safe walks, each only 27 blocks wide. <kbd>Left</kbd> and <kbd>Right</kbd> walk, <kbd>Space</kbd> hops. A and D also walk. Walk into the door to go on; <kbd>Esc</kbd> opens the menu. Start a new game for fresh snow.</p><p>Play first, then choose <b>Edit a copy</b>. Nothing here can hurt you. The snowy ground stays level: the growing bank is scenery, not a new platform.</p>" },
-    { "head": "Level 1: A Snowy Walk", "html": "<h1>Level 1: A Snowy Walk</h1><p><b>SNOW SWAYS AS IT FALLS</b> stands under the flakes. Stop for a moment to see them move down and sideways. Walk through the white powder, hop across some, then walk back. <b>WALK BACK TO SEE YOUR BOOT MARKS</b> points out the pairs of dark boot soles behind you. A hop leaves a gap; walking back fills it. A low snow drift sits beside the trail.</p>" },
-    { "head": "How this level is made", "html": "<h1>How level 1 is made</h1><ul><li><b>Falling snow:</b> in <b>one.bbl</b>, flake0.0 through flake0.7 are eight pictures. Each turns into the next after 3 ticks; the last goes back to the first. The flake moves down two pixels a frame while swaying left and right, then wraps inside its tile. The second loop uses 4 ticks a frame and sways the other way. Different starting frames break up the rows.</li><li><b>The trail:</b> powder is a passable block with downward gravity above the solid floor. Its lower half is white snow. <b>Touch becomes</b> points to footprints, the same snow with two staggered boot soles. Only the touched map cell changes; untouched cells stay fresh. footprints has no timed change, so it stays marked.</li><li><b>The bank:</b> three neighboring drift blocks draw a rounded mound. They have downward gravity and no solid sides, so you walk in front of them without changing the floor.</li></ul><p>Try hopping across the powder at columns 13 to 15, then walking back. The gap is not a bug: a block only changes when you touch it.</p>" },
-    { "head": "Level 2: Snow Piles Up", "html": "<h1>Level 2: Snow Piles Up</h1><p><b>WATCH THE SNOW DRIFT GET DEEPER</b> stands beside the bank. Step just beyond the entrance so the whole bank is in view: it grows from shallow to medium to deep in about four seconds. Falling snow and the powder trail are still here. Make some boot marks, walk back and look at them. The last sign says <b>BOOT MARKS STAY UNTIL YOU RESTART</b>. Leave through the door whenever you like; there is no timed gate.</p>" },
-    { "head": "How this level is made", "html": "<h1>How level 2 is made</h1><ul><li><b>A short chain, not a loop:</b> in <b>two.bbl</b>, drift0.0 turns into drift0.1 after 36 ticks; drift0.1 turns into drift0.2 after another 36 ticks. drift0.2 points to itself. The other two columns use matching chains, so all three parts grow together and then stop.</li><li><b>The bank is only a picture:</b> none of its frames is solid. It gets taller inside the same row of blocks. The actual floor never moves and the bank does not bury you.</li><li><b>Same trail:</b> powder still becomes footprints on touch. No new object is created, no timer removes it, and restarting reloads the clean map and resets the drift's clock.</li></ul>" },
-    { "head": "What it cannot do", "html": "<h1>What it cannot do</h1><ul><li>There are no weather particles or snow physics. The flakes wrap inside their tiles, and a drift is three drawn stages.</li><li>Every copy of a block number shares its clock. Different cells of that number cannot start growing when you reach them; all start when the level loads.</li><li>Each touched powder tile stamps the same pair of soles, not the exact position or direction of each foot. The drift tiles and sign tiles are separate scenery, not part of the powder trail.</li><li>Footprints do not melt or get buried. A new game or a reloaded scene starts fresh; loading a saved game restores what that save contains.</li><li>It does not add slippery physics. See <b>Slippery and Bouncy</b> for ice. <b>Twinkle, Twinkle</b> shows clocks with different times; <b>Day and Night</b> shows palette changes. <b>Snowbound: The $89 Shovel</b> is a full snow game with its own artwork and rules.</li></ul>" },
-    { "head": "Make it yours", "html": "<h1>Make it yours</h1><p>Change one thing at a time and play again.</p><ul><li>Change a flake loop's Time from 3 to 6 ticks for slower snowfall.</li><li>Draw wider sideways sways, keeping the flake inside its 20-pixel tile.</li><li>Redraw footprints as wheel tracks or pawprints.</li><li>Make the deep drift point back to the shallow one to make it grow and shrink.</li></ul><p>New snow pixels, design, words and code by Hermes Agent using OpenAI GPT-6.1 Sol, directed by Lewis Moten. Hero, signs and screens reuse the Starter kit; music reuses Twinkle, Twinkle's arrangement. See the game's credits.</p>" }
+    {
+      "head": "Welcome",
+      "html": "<h1>Snow Trails</h1><p>A Starter about falling snow, low drifts and footprints. Two short safe walks, each only 27 blocks wide, then an open field to walk in every direction. <kbd>Left</kbd> and <kbd>Right</kbd> walk, <kbd>Space</kbd> hops, and in the open field <kbd>Up</kbd> and <kbd>Down</kbd> walk too. A, D, W and S also walk. Walk into the door or gate to go on; <kbd>Esc</kbd> opens the menu. Start a new game for fresh snow.</p><p>Play first, then choose <b>Edit a copy</b>. Nothing here can hurt you. The snowy ground stays level: the growing bank is scenery, not a new platform.</p>"
+    },
+    {
+      "head": "Level 1: A Snowy Walk",
+      "html": "<h1>Level 1: A Snowy Walk</h1><p><b>SNOW KEEPS YOUR BOOT MARKS</b> stands where the white powder starts. Walk through it and look behind you: each tile you touched has a pair of dark boot soles. <b>HOP OVER SNOW. THEN WALK BACK</b> tells you to leave a gap with a hop, then fill it by walking back. Snowflakes sway down the whole way, and a low snow drift sits beside the trail.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 1 is made</h1><ul><li><b>Falling snow:</b> in <b>one.bbl</b>, flake0.0 through flake0.7 are eight pictures. Each turns into the next after 3 ticks; the last goes back to the first. The flake moves down two pixels a frame while swaying left and right, then wraps inside its tile. The second loop uses 4 ticks a frame and sways the other way. Different starting frames break up the rows.</li><li><b>The trail:</b> powder is a passable block with downward gravity above the solid floor. Its lower half is white snow. <b>Touch becomes</b> points to footprints, the same snow with two staggered boot soles. Only the touched map cell changes; untouched cells stay fresh. footprints has no timed change, so it stays marked.</li><li><b>The bank:</b> three neighboring drift blocks draw a rounded mound. They have downward gravity and no solid sides, so you walk in front of them without changing the floor.</li></ul><p>Try hopping across the powder at columns 16 to 18, then walking back. The gap is not a bug: a block only changes when you touch it.</p>"
+    },
+    {
+      "head": "Level 2: Snow Piles Up",
+      "html": "<h1>Level 2: Snow Piles Up</h1><p><b>WATCH THE SNOW DRIFT GET DEEPER</b> stands beside the bank. Step just beyond the entrance so the whole bank is in view: it grows from shallow to medium to deep in about four seconds. Falling snow and the powder trail are still here. Make some boot marks, walk back and look at them. The last sign says <b>BOOT MARKS STAY UNTIL YOU RESTART</b>. Leave through the door whenever you like; there is no timed gate. It leads to an open field.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 2 is made</h1><ul><li><b>A short chain, not a loop:</b> in <b>two.bbl</b>, drift0.0 turns into drift0.1 after 36 ticks; drift0.1 turns into drift0.2 after another 36 ticks. drift0.2 points to itself. The other two columns use matching chains, so all three parts grow together and then stop.</li><li><b>The bank is only a picture:</b> none of its frames is solid. It gets taller inside the same row of blocks. The actual floor never moves and the bank does not bury you.</li><li><b>Same trail:</b> powder still becomes footprints on touch. No new object is created, no timer removes it, and restarting reloads the clean map and resets the drift's clock.</li></ul>"
+    },
+    {
+      "head": "Level 3: Open Snow",
+      "html": "<h1>Level 3: Open Snow</h1><p>The snow is seen from above now, and all four arrows walk. <b>WALK ANY WAY AND LEAVE PRINTS</b> stands by the start. Go up, down, left and right and look back: each boot sole points the way you walked. A friendly snowman stands in the middle; <b>WALK AROUND THE SNOWMAN</b> invites you to circle him, and the prints make a loop. <b>PRINTS FADE IN A FEW SECONDS</b> says what happens next: each print turns paler, step by step, until the snow is smooth again, so the trail behind you is only a few seconds long. The gate in the fence on the right ends the walk. Pines, boulders, the snowman and the fence are solid; the snow is not.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 3 is made</h1><ul><li><b>Seen from above:</b> every block in <b>three.bbl</b> has no gravity, so nothing pulls the hero. The hero is a second character file, <b>top.chr</b>, with four facing pictures and all four arrows walking.</li><li><b>Prints are monsters:</b> a map tile can only change one way, and every tile of a block changes together, so a print could not fade on its own clock. Instead each walking cycle in <b>top.chr</b> has two frames that give birth to a print under the hero's feet, one per foot. Eight monsters in <b>prints.mon</b> (four ways, two feet) each show four pictures from <b>prints.mbl</b>, 30, 28, 28 and 28 ticks long, and each has a lifetime of 114 ticks (about six seconds). The monster's own clock fades it, then it goes away and the snow is smooth.</li><li><b>Facing:</b> the walking sequence for each arrow gives birth to that arrow's prints, so the soles point the way you walked.</li></ul><p>Try a lifetime of 200 ticks and longer pictures for a trail that lasts, or draw paw prints.</p>"
+    },
+    {
+      "head": "What it cannot do",
+      "html": "<h1>What it cannot do</h1><ul><li>There are no weather particles or snow physics. The flakes wrap inside their tiles, and a drift is three drawn stages.</li><li>Every copy of a block number shares its clock. Different cells of that number cannot start growing when you reach them; all start when the level loads.</li><li>In levels 1 and 2 each touched powder tile stamps the same pair of soles, not the exact position or direction of each foot. The drift tiles and sign tiles are separate scenery, not part of the powder trail.</li><li>Boot marks in levels 1 and 2 do not melt or get buried; the prints in level 3 fade because they are monsters on a clock. A new game or a reloaded scene starts fresh; loading a saved game restores what that save contains.</li><li>It does not add slippery physics. See <b>Slippery and Bouncy</b> for ice. <b>Twinkle, Twinkle</b> shows clocks with different times; <b>Day and Night</b> shows palette changes. <b>Snowbound: The $89 Shovel</b> is a full snow game with its own artwork and rules.</li></ul>"
+    },
+    {
+      "head": "Make it yours",
+      "html": "<h1>Make it yours</h1><p>Change one thing at a time and play again.</p><ul><li>Change a flake loop's Time from 3 to 6 ticks for slower snowfall.</li><li>Draw wider sideways sways, keeping the flake inside its 20-pixel tile.</li><li>Redraw footprints as wheel tracks or pawprints.</li><li>Make the deep drift point back to the shallow one to make it grow and shrink.</li></ul><p>New snow pixels, design, words and code by Hermes Agent using OpenAI GPT-6.1 Sol, directed by Lewis Moten. Hero, signs and screens reuse the Starter kit; music reuses Twinkle, Twinkle's arrangement. See the game's credits.</p>"
+    }
   ]
 }

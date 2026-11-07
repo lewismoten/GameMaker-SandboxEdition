@@ -57,6 +57,8 @@ play.addEventListener('click', async () => {
 
 `Machine` owns the screen, keyboard and audio. Call `machine.destroy()` when play finishes or the containing page closes. `runGame` accepts `RunOptions` for callbacks, joystick input, playback and the optional DOS player appearance. The game may write saves or high scores into `GameFiles`; use `files.onChange` to persist those bytes. The package targets modern browsers and ES modules.
 
+`machine.screen.dosCropped` is observer metadata for PLAYGAME’s CropScreen state: true during level rendering and its fades, false for function-key screens and after a level. `sceneNumber` identifies the last rendered level. These fields do not change rendering or game timing.
+
 ## Read a game file in Node.js
 
 The format modules need no browser. This reads a `.GAM` file from the original CD (run it from the repository root) and lists its scene titles:

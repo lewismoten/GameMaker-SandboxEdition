@@ -22,7 +22,9 @@ export const W = 48;
 export const H = 13;
 /** The floor's top row. */
 export const FLOOR = 10;
-/** The standing camera starts at row 4: keep a clear row above the audience's heads. */
+/** The standing camera's top visible row (rows 0 to 3 are never seen while standing: nothing is hung there). */
+export const VIEW_TOP = 4;
+/** The balcony rail's row. */
 export const BALCONY_RAIL = 6;
 /** The lectern's column: touching it is the end of the walk. */
 export const LECTERN = 40;
@@ -121,8 +123,10 @@ function aisle(
   }
   // the ends of the hall: heavy drapes, solid
   for (let y = 0; y < H; y++) m.set(0, y, 'curtainEdge').set(W - 1, y, 'curtainEdge');
-  // the ceiling's valance and bunting
-  for (let x = 1; x < W - 1; x++) m.set(x, 0, 'valance').set(x, 1, x % 2 ? 'bunting0' : 'bunting1');
+  // the valance and bunting, hung in the player's view (the top visible row)
+  for (let x = 1; x < W - 1; x++) m.set(x, VIEW_TOP, 'valance');
+  // pennants hang under it along the aisle (the helpers' heads take the row over the stage)
+  for (let x = 1; x < STAGE_FROM; x++) m.set(x, VIEW_TOP + 1, x % 2 ? 'bunting0' : 'bunting1');
   // Two compact tiers at the lectern: the recorded final camera is world x=878..901.
   // Local columns 36..43 therefore fit together, with head rows 5 and 7 (20/60px below the view top).
   for (let x = 36; x < 44; x++) {
@@ -131,12 +135,12 @@ function aisle(
   }
   hall.helpers.forEach((name, i) => m.set(36 + i, BALCONY_RAIL - 1, name));
   hall.cameos.slice(0, hall.helpers.length).forEach((parts, i) => parts.forEach((name, k) => m.set(36 + i, BALCONY_RAIL + 2 - parts.length + k, name)));
-  // the stage's own wall pieces, hung high between the ceiling and the helpers' heads
+  // the stage's own wall pieces, hung in view, a row above the signs
   const order = theme.decorOrder ?? [];
-  if (order.length) for (let x = 3, i = 0; x < STAGE_FROM - 1; x += theme.decorEvery ?? 5, i++) m.set(x, 2, `decor.${order[i % order.length]}`);
+  if (order.length) for (let x = 3, i = 0; x < STAGE_FROM - 1; x += theme.decorEvery ?? 5, i++) m.set(x, VIEW_TOP + 2, `decor.${order[i % order.length]}`);
   // the stage: drapes at each side, a banner, the lectern with the certificate, Doc Leo
   for (let y = 2; y < FLOOR; y++) for (const x of [STAGE_FROM, STAGE_FROM + 1, W - 3, W - 2]) m.set(x, y, 'drape');
-  stamp(m, signs.banner, 37, 2, false);
+  stamp(m, signs.banner, STAGE_FROM - 4, VIEW_TOP, false);
   m.set(LECTERN, 8, 'scroll').set(LECTERN, 9, 'lectern');
   m.set(42, 8, hall.leoTop).set(42, 9, hall.leoBottom);
   // the signs along the carpet

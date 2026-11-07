@@ -2,7 +2,7 @@
 
 Part of the [desk](../README.md).
 
-A pocket LCD toy standing on the right speaker (on a phone, beside the Game-Maker box) with a
+A pocket LCD toy standing on the desk top between the PC and the Game-Maker box (on a phone, beside the Game-Maker box) with a
 little pixel courier on its screen. It follows what happens on the desk and answers with a pose
 and, now and then, one short line in a bubble. Pressing it opens a small card. It never pushes
 play: no reminders, streaks, grades or totals still to go, and nothing about losing.

@@ -90,7 +90,7 @@ export function buildArrival(cfg: Graduation, pal: Pal) {
       .set(px, 7, 'pole')
       .set(px, 8, 'pole')
       .set(px, 9, 'pole');
-    if (i % 2 === 0) m.set(p.x + 1, 1, 'cloudL').set(p.x + 2, 1, 'cloudR');
+    if (i % 2 === 0) m.set(p.x + 1, 4, 'cloudL').set(p.x + 2, 4, 'cloudR');
   });
   m.sign(4, 7, welcome);
   placed.forEach((p, i) => {
@@ -106,7 +106,7 @@ export function buildArrival(cfg: Graduation, pal: Pal) {
     if ([1, 2, 6, 7].includes(k)) m.set(x, 6, 'hallWindow');
   }
   m.set(hall + 4, 8, 'hallDoorTop').set(hall + 4, 9, 'hallDoorBottom');
-  banner.board.forEach((row, dy) => row.forEach((name, dx) => m.set(hall + 2 + dx, 3 + dy, name)));
+  banner.board.forEach((row, dy) => row.forEach((name, dx) => m.set(hall + 2 + dx, 4 + dy, name)));
   m.exits.push({ from: [hall + 4 + ORIGIN, 9 + ORIGIN] });
   return { book, timed, map: m, placed, hall, width };
 }

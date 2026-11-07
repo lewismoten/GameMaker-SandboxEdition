@@ -9,7 +9,7 @@ import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { Walkthrough } from '../../web/src/walkthrough/format';
-import { FlashMeter, MAX_FLASHES, type Worst } from './flashMeter';
+import { FlashMeter, LocalFlashMeter, MAX_FLASHES, type LocalWorst, type Worst } from './flashMeter';
 import { replay } from './walkthrough';
 
 const gamesDir = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -19,6 +19,10 @@ export interface FlashReport {
   seconds: number;
   general: Worst;
   red: Worst;
+  /** The busiest 20x20 spot (advisory: a small patch blinking, which the area rule lets through). */
+  local: LocalWorst;
+  /** The busiest spot blinks over three times a second. */
+  localOver: boolean;
   /** Over three a second, general or red. */
   fails: boolean;
 }
@@ -27,6 +31,7 @@ export interface FlashReport {
 export async function flashOfGame(id: string): Promise<FlashReport> {
   const walk = JSON.parse(readFileSync(join(gamesDir, id, 'walkthrough.json'), 'utf8')) as Walkthrough;
   const meter = new FlashMeter(walk.timeline.fps);
+  const local = new LocalFlashMeter(walk.timeline.fps);
   let scene = -1;
   const r = await replay(id, walk, {
     onFrame: (screen, n) => {
@@ -34,8 +39,10 @@ export async function flashOfGame(id: string): Promise<FlashReport> {
       if (n !== scene) {
         scene = n;
         meter.reset();
+        local.reset();
       }
       meter.push(screen.pixels, screen.palette);
+      local.push(screen.pixels, screen.palette);
     },
   });
   if (r.error) throw r.error;
@@ -44,6 +51,8 @@ export async function flashOfGame(id: string): Promise<FlashReport> {
     seconds: Math.round(r.frames / walk.timeline.fps),
     general: meter.general.worst,
     red: meter.red.worst,
+    local: local.worst,
+    localOver: local.worst.flashes > MAX_FLASHES,
     fails: meter.general.worst.flashes > MAX_FLASHES || meter.red.worst.flashes > MAX_FLASHES,
   };
 }

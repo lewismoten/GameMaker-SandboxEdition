@@ -382,7 +382,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     void refreshDisks();
   });
   const unWall = wallTrophies(desk);
-  // Scoot, the desk buddy, on the right speaker (beside the Game-Maker box on a phone), loaded on its own
+  // Scoot, the desk buddy, on the desk top between the PC and the Game-Maker box (beside it on a phone), loaded on its own
   let unBuddy: (() => void) | undefined;
   void import('./buddy/deskBuddy').then(({ deskBuddy }) => {
     if (!desk.isConnected) return;
