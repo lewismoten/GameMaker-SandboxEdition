@@ -150,6 +150,8 @@ template <class Spr> struct Overlay {
   const ctl::Controls& controls;
   const gm::BtnIcon* icons;  // 2 + MAXEXTRA pictures
   int bandX = 0, bandY = 0, bandW = 0, bandH = 0;  // the band's corner and size on the screen
+  int padLook = ctl::LOOK_FULL;  // how the pad shows this frame (controls.padLook; the floating pad is see-through or gone)
+  bool swapped = false;          // the band holds byte-swapped colors (the board's panel order)
   Overlay(Spr& s, uint16_t* b, const uint16_t* p, const gm::Cfg& c, const ctl::Controls& k, const gm::BtnIcon* i) : spr(s), band(b), pal(p), cfg(c), controls(k), icons(i) {}
 
   const char* labelOf(int scan, const char* fallback) {
@@ -326,8 +328,11 @@ template <class Spr> struct Overlay {
     const ctl::Layout& L = controls.L;
     const ctl::Need& nd = controls.need;
     const ctl::Disc& p = L.pad;
-    if (hitsDisc(p)) {
+    if (padLook == ctl::LOOK_FULL && hitsDisc(p)) {
       paddraw::pad(spr, L, nd, controls.padDirs, bandX, bandY);
+    } else if (padLook != ctl::LOOK_OFF && hitsDisc(p)) {
+      paddraw::Faint f{band, bandW, bandH, padLook, swapped};
+      paddraw::pad(f, L, nd, controls.padDirs, bandX, bandY);
     }
     if (nd.space && hitsDisc(L.space)) disc(L.space, controls.btnDown & 1, ctl::S_SPACE, "Space", icons[0]);
     if (nd.enter && hitsDisc(L.enter)) disc(L.enter, controls.btnDown & 2, ctl::S_ENTER, "Enter", icons[1]);

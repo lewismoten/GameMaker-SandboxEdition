@@ -663,8 +663,8 @@ static void saveSettings() {
   if (!f) return;
   // Older firmware reads these lines by their first letters ("pad" ...), so the newer keys share no prefix with the old ones and
   // come last: it skips them, and its own save drops them (the pad goes back to Low and Space to the corner).
-  f.printf("lefty=%d\nstylus=%d\npad=%d\ndead=%d\npalm=%d\ndebug=%d\nsound=%d\nraised=%d\njumpnear=%d\n", settings.lefty, settings.stylus, settings.padSize,
-           settings.dead, settings.palm, settings.debug, settings.sound, settings.raised, settings.jumpNear);
+  f.printf("lefty=%d\nstylus=%d\npad=%d\ndead=%d\npalm=%d\ndebug=%d\nsound=%d\nraised=%d\njumpnear=%d\nfloat=%d\n", settings.lefty, settings.stylus, settings.padSize,
+           settings.dead, settings.palm, settings.debug, settings.sound, settings.raised, settings.jumpNear, settings.floatPad);
 }
 static void loadSettings() {
   settings = ctl::Settings();
@@ -694,6 +694,7 @@ static void loadSettings() {
     else if (k == "sound") { if (nvsSound < 0) settings.sound = v < 0 ? 0 : v > 3 ? 3 : v; }
     else if (k == "raised") settings.raised = v ? 1 : 0;
     else if (k == "jumpnear") settings.jumpNear = v ? 1 : 0;
+    else if (k == "float") settings.floatPad = v ? 1 : 0;
   }
 }
 
@@ -781,8 +782,9 @@ static void refreshIcons() {
 
 
 // Reduced view anchored at the top, completely past the pad (and Space when it sits near the pad) and its 14 px touch slop.
+// The fixed pad's place (L.home): the floating pad moves, the picture does not.
 static scr::Picture picture() {
-  const auto& pad = controls.L.pad;
+  const auto& pad = controls.L.home;
   int edge = settings.lefty ? VIEW_W - pad.cx + pad.r : pad.cx + pad.r;
   if (settings.jumpNear) {  // Space beside the pad: the picture starts past it too
     const auto& sp = controls.L.space;
@@ -849,6 +851,13 @@ static R monRect(const gm::MonDraw& d) {
 }
 static uint8_t lastPad = 0, lastBtn = 0;
 static uint16_t lastTile = 0;
+static int lastLook = ctl::LOOK_FULL;   // how the pad showed last frame, and where (the floating pad comes, moves, fades and goes)
+static ctl::Disc lastPadDisc = {0, 0, 0};
+// Has the pad's look or place changed since the last frame (a redraw of the old and new place is due)?
+static bool padShowChanged(uint32_t now) {
+  const ctl::Disc& p = controls.L.pad;
+  return controls.padLook(now) != lastLook || p.cx != lastPadDisc.cx || p.cy != lastPadDisc.cy || p.r != lastPadDisc.r;
+}
 
 static void controlRects(R* out, int& n) {
   const ctl::Layout& L = controls.L;
@@ -862,6 +871,10 @@ static void controlRects(R* out, int& n) {
 
 static void drawFrame(bool forceFull) {
   const auto& s = world.sc;
+  const uint32_t nowMs = millis();
+  bool padMoved = padShowChanged(nowMs);
+  ov.swapped = true;  // the band holds the panel's byte order
+  ov.padLook = controls.padLook(nowMs);
   int oldSig[2 + ctl::MAXEXTRA];
   for (int i = 0; i < 2 + ctl::MAXEXTRA; i++) oldSig[i] = icons[i].sig;
   refreshIcons();
@@ -888,7 +901,7 @@ static void drawFrame(bool forceFull) {
       drawRegion(r.x0, r.y0, r.x1, r.y1);
     }
     // A control whose state changed is drawn again over the game behind it.
-    bool padCh = controls.padDirs != lastPad, btnCh = controls.btnDown != lastBtn, tileCh = controls.tileDown != lastTile;
+    bool padCh = controls.padDirs != lastPad || padMoved, btnCh = controls.btnDown != lastBtn, tileCh = controls.tileDown != lastTile;
     tileCh = tileCh || tileIconCh;
     if (padCh || btnCh || tileCh || iconCh) {
       R rs[5];
@@ -900,12 +913,16 @@ static void drawFrame(bool forceFull) {
         drawRegion(rs[i].x0, rs[i].y0, rs[i].x1, rs[i].y1);
       }
       if (tileCh && controls.keysOpen) drawRegion(0, ctl::CHIP_BOTTOM, VIEW_W, ctl::TILE_Y0 + ctl::TILE_STEP * controls.L.tileRows);
+      const ctl::Disc& o = lastPadDisc;  // the floating pad left this place: the picture comes back there
+      if (padMoved && (o.cx != controls.L.pad.cx || o.cy != controls.L.pad.cy)) drawRegion(o.cx - o.r - 2, o.cy - o.r - 2, o.cx + o.r + 3, o.cy + o.r + 3);
     }
   }
   last = {world.mx, world.my, s.nx, s.ny, s.lsx, s.lsy, world.gen, hero, true};
   for (int i = 0; i < nCurMon; i++) lastMon[i] = curMon[i];
   nLastMon = nCurMon;
   lastPad = controls.padDirs;
+  lastLook = ov.padLook;
+  lastPadDisc = controls.L.pad;
   lastBtn = controls.btnDown;
   lastTile = controls.tileDown;
 }
@@ -2011,6 +2028,8 @@ static void previewTouch(uint32_t now) {
       n++;
     }
   uint8_t d0 = controls.padDirs, b0 = controls.btnDown, h0 = pvHeld;
+  static int look0 = ctl::LOOK_OFF;  // as last drawn: a floating pad also changes as it fades, with no touch
+  static ctl::Disc p0 = {0, 0, 0};
   controls.update(ids, xs, ys, sz, n, now);
   controls.takeEvent();  // the little MENU chip does nothing here
   ctl::Change ch[16];
@@ -2021,8 +2040,11 @@ static void previewTouch(uint32_t now) {
     if (ch[i].down) pvHeld |= bit;
     else pvHeld &= ~bit;
   }
-  if (controls.padDirs != d0 || controls.btnDown != b0 || pvHeld != h0) {
-    st::preview(tft, controls.L, controls.need, controls.padDirs, controls.btnDown);
+  const int look = controls.padLook(now);
+  if (controls.padDirs != d0 || controls.btnDown != b0 || pvHeld != h0 || look != look0 || controls.L.pad.cx != p0.cx || controls.L.pad.cy != p0.cy) {
+    look0 = look;
+    p0 = controls.L.pad;
+    st::preview(tft, controls.L, controls.need, controls.padDirs, controls.btnDown, look);
     st::previewNote(tft, setView, pvHeld);
   }
 }
@@ -2393,7 +2415,7 @@ void loop() {
   if (ran) tickMsLast = (millis() - ts) / ran;
   if (oneLevelUp || assets.palChanged) { refreshPalette(); last.valid = false; }
 
-  if (ran || !last.valid || controls.padDirs != lastPad || controls.btnDown != lastBtn || controls.tileDown != lastTile) {
+  if (ran || !last.valid || controls.padDirs != lastPad || controls.btnDown != lastBtn || controls.tileDown != lastTile || padShowChanged(now)) {
     uint32_t ds = millis();
     drawFrame(false);
     drawMsLast = millis() - ds;

@@ -25,7 +25,7 @@ inline Info info(Item i) {
     case I_HAND: return {"Hand", "Right|Left", "Which side the pad sits on."};
     case I_PAD: return {"Pad size", "Small|Medium|Large", "How wide the pad is."};
     case I_DEAD: return {"Dead zone", "Small|Medium|Large", "The middle of the pad that presses nothing."};
-    case I_POS: return {"Pad position", "Low|Raised", "Raised lifts the pad for a thumb that rests higher."};
+    case I_POS: return {"Pad position", "Low|Raised|Float", "Raised lifts the pad. Float: no pad until your thumb lands on its side; it centers there."};
     case I_JUMP: return {"Jump button", "Corner|Near pad", "Near pad puts Space beside the pad: one thumb rocks between them."};
     case I_STYLUS: return {"Stylus latch", "Off|On", "A quick tap on the pad keeps walking until the next tap."};
     case I_STICKY: return {"Sticky direction", "Off|On", "Tap left or right to walk; tap again to stop."};
@@ -64,7 +64,7 @@ inline int value(Item i, const Values& v) {
     case I_HAND: return v.s.lefty;
     case I_PAD: return v.s.padSize;
     case I_DEAD: return v.s.dead;
-    case I_POS: return v.s.raised;
+    case I_POS: return v.s.floatPad ? 2 : v.s.raised;
     case I_JUMP: return v.s.jumpNear;
     case I_STYLUS: return v.s.stylus;
     case I_STICKY: return v.s.sticky;
@@ -84,7 +84,7 @@ inline void choose(Item i, int k, Values& v) {
     case I_HAND: v.s.lefty = b; break;
     case I_PAD: v.s.padSize = b; break;
     case I_DEAD: v.s.dead = b; break;
-    case I_POS: v.s.raised = b; break;
+    case I_POS: v.s.floatPad = k == 2; if (k < 2) v.s.raised = b; break;
     case I_JUMP: v.s.jumpNear = b; break;
     case I_STYLUS: v.s.stylus = b; break;
     case I_STICKY: v.s.sticky = b; break;
@@ -303,8 +303,9 @@ inline void heldText(uint8_t held, char* out, int cap) {
   for (int i = 0; i < 6; i++)
     if (held & (1 << i)) { if (out[0]) strncat(out, " + ", cap - strlen(out) - 1); strncat(out, nm[i], cap - strlen(out) - 1); }
 }
-// The game view at preview scale: the pad (its arrows lit by `dirs`, as in a game), Space, Enter and MENU (lit by `btn`).
-template <class G_> void preview(G_& g, const ctl::Layout& L, const ctl::Need& nd, uint8_t dirs, uint8_t btn) {
+// The game view at preview scale: the pad (its arrows lit by `dirs`, as in a game), Space, Enter and MENU (lit by `btn`). A floating
+// pad that is not showing (`look` ctl::LOOK_OFF) is a dotted outline of where a thumb may land instead.
+template <class G_> void preview(G_& g, const ctl::Layout& L, const ctl::Need& nd, uint8_t dirs, uint8_t btn, int look = ctl::LOOK_FULL) {
   Box p = previewBox();
   g.fillRect(p.x0, p.y0, p.x1 - p.x0, p.y1 - p.y0, C_VIEW);
   g.drawRect(p.x0 - 1, p.y0 - 1, p.x1 - p.x0 + 2, p.y1 - p.y0 + 2, C_GRAY);
@@ -321,7 +322,17 @@ template <class G_> void preview(G_& g, const ctl::Layout& L, const ctl::Need& n
     void fillTriangle(int a, int b, int c, int d, int e, int f, uint16_t k) { g.fillTriangle(a, b, c, d, e, f, k); }
     void drawTriangle(int a, int b, int c, int d, int e, int f, uint16_t k) { g.drawLine(a, b, c, d, k); g.drawLine(c, d, e, f, k); g.drawLine(e, f, a, b, k); }
   } pen{g};
-  paddraw::pad(pen, s, quiet, dirs, -p.x0, -p.y0);
+  if (look != ctl::LOOK_OFF) paddraw::pad(pen, s, quiet, dirs, -p.x0, -p.y0);
+  else {
+    int x0 = p.x0 + sc(L.zone.x0) + 2, y0 = p.y0 + sc(L.zone.y0) + 2, x1 = p.x0 + sc(L.zone.x1) - 3, y1 = p.y0 + sc(L.zone.y1) - 3;
+    for (int x = x0; x <= x1; x += 4) { g.drawPixel(x, y0, C_GRAY); g.drawPixel(x, y1, C_GRAY); }
+    for (int y = y0; y <= y1; y += 4) { g.drawPixel(x0, y, C_GRAY); g.drawPixel(x1, y, C_GRAY); }
+    g.setTextSize(1);
+    g.setTextColor(C_GRAY, C_VIEW);
+    g.setTextDatum(textdatum_t::middle_center);
+    g.drawString("Pad", (x0 + x1) / 2, (y0 + y1) / 2);
+    g.setTextDatum(textdatum_t::top_left);
+  }
   auto disc = [&](const ctl::Disc& d, bool lit, const char* name, const char* shortName) {
     int x = p.x0 + sc(d.cx), y = p.y0 + sc(d.cy), r = sc(d.r);
     g.fillCircle(x, y, r, lit ? C_YELLOW : C_DARK);
@@ -377,7 +388,7 @@ template <class G_> void screen(G_& g, const View& v, const Values& vals, const 
   for (int k = 0; k < n; k++) row(g, v.tab, k, it[k], vals, it[k] == I_RESCAN && v.fromPause);
   if (v.tab == T_CARD) cardLines(g, card);
   if (v.tab == T_CONTROLS) {
-    preview(g, L, nd, dirs, btn);
+    preview(g, L, nd, dirs, btn, vals.s.floatPad && !held && !dirs ? ctl::LOOK_OFF : ctl::LOOK_FULL);
     previewNote(g, v, held);
     if (pages(v.tab) > 1) {
       Box m = moreBox();

@@ -51,4 +51,41 @@ template <class G> void pad(G& spr, const ctl::Layout& L, const ctl::Need& nd, u
   }
 #endif
 }
+// The floating pad drawn see-through (ctl::LOOK_FAINT half, ctl::LOOK_DIM a quarter): every pixel is mixed with the picture
+// under it, straight in a band of panel colors (byte-swapped RGB565 on the board, plain on the Mac). It has the calls
+// pad() uses, clipped to the band; no buffer of its own.
+struct Faint {
+  uint16_t* px;
+  int w, h, look;
+  bool swapped;
+  static uint16_t sw(uint16_t c) { return (uint16_t)((c << 8) | (c >> 8)); }
+  static uint16_t half(uint16_t a, uint16_t b) { return (uint16_t)(((a & 0xF7DE) >> 1) + ((b & 0xF7DE) >> 1)); }
+  void drawPixel(int x, int y, uint16_t c) {
+    if (x < 0 || y < 0 || x >= w || y >= h) return;
+    uint16_t& d = px[y * w + x];
+    uint16_t under = swapped ? sw(d) : d, m = half(under, c);
+    if (look < ctl::LOOK_FAINT) m = half(under, m);
+    d = swapped ? sw(m) : m;
+  }
+  void drawCircle(int cx, int cy, int r, uint16_t c) {
+    int j0 = -r > -cy ? -r : -cy, j1 = r < h - 1 - cy ? r : h - 1 - cy;
+    for (int j = j0; j <= j1; j++)
+      for (int i = -r; i <= r; i++) { int d = i * i + j * j; if (d <= r * r && d > (r - 1) * (r - 1)) drawPixel(cx + i, cy + j, c); }
+  }
+  void drawLine(int x, int y, int x1, int y1, uint16_t c) {
+    int dx = x1 > x ? x1 - x : x - x1, sx = x < x1 ? 1 : -1, dy = -(y1 > y ? y1 - y : y - y1), sy = y < y1 ? 1 : -1, e = dx + dy;
+    for (;;) { drawPixel(x, y, c); if (x == x1 && y == y1) break; int e2 = 2 * e; if (e2 >= dy) { e += dy; x += sx; } if (e2 <= dx) { e += dx; y += sy; } }
+  }
+  void drawTriangle(int a, int b, int c, int d, int e, int f, uint16_t k) { drawLine(a, b, c, d, k); drawLine(c, d, e, f, k); drawLine(e, f, a, b, k); }
+  void fillTriangle(int a, int b, int c, int d, int e, int f, uint16_t k) {
+    auto cross = [](int x, int y, int u, int v, int p, int q) { return (u - x) * (q - y) - (v - y) * (p - x); };
+    auto mn = [](int p, int q, int r) { return p < q ? (p < r ? p : r) : (q < r ? q : r); };
+    auto mx = [](int p, int q, int r) { return p > q ? (p > r ? p : r) : (q > r ? q : r); };
+    for (int y = mn(b, d, f); y <= mx(b, d, f); y++)
+      for (int x = mn(a, c, e); x <= mx(a, c, e); x++) {
+        int s = cross(a, b, c, d, x, y), t = cross(c, d, e, f, x, y), u = cross(e, f, a, b, x, y);
+        if ((s >= 0 && t >= 0 && u >= 0) || (s <= 0 && t <= 0 && u <= 0)) drawPixel(x, y, k);
+      }
+  }
+};
 }  // namespace paddraw
