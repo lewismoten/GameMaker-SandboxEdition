@@ -52,7 +52,7 @@ static void shot(const std::string& dir, const std::string& name, const st::View
   st::CardInfo card;
   card.builtIn = 30;
   snprintf(card.state, sizeof card.state, "Card: 12 games");
-  snprintf(card.space, sizeof card.space, "Card: 14.2 GB free of 14.8 GB");
+  snprintf(card.space, sizeof card.space, v.fromPause ? "Free space: see it from the game list" : "Card: 14.2 GB free of 14.8 GB");  // main.cpp's words
   snprintf(card.flash, sizeof card.flash, "Built-in: 380 KB free");
   card.fromPause = v.fromPause;
   ctl::Layout L = ctl::makeLayout(vals.s, demoNeed());

@@ -285,7 +285,14 @@ template <class G_> void row(G_& g, Tab t, int k, Item it, const Values& vals, b
     chipLabel(it, j, lab, sizeof lab);
     float sz = G.chipSize;
     for (int q = 0; q < n; q++) { char o[24]; chipLabel(it, q, o, sizeof o); float f = fitSize(o, b.x1 - b.x0, G.chipSize); if (f < sz) sz = f; }
-    ovl::button(g, b.x0, b.y0, b.x1, b.y1, lab, j == sel, disabled ? C_BLACK : C_DARK, sz);
+    if (disabled) {  // gray outline and label: it does nothing here (the note under it says why)
+      g.drawRoundRect(b.x0, b.y0, b.x1 - b.x0, b.y1 - b.y0, 6, C_GRAY);
+      g.setTextSize(sz);
+      g.setTextColor(C_GRAY, C_BLACK);
+      g.setTextDatum(textdatum_t::middle_center);
+      g.drawString(lab, (b.x0 + b.x1) / 2, (b.y0 + b.y1) / 2);
+      g.setTextDatum(textdatum_t::top_left);
+    } else ovl::button(g, b.x0, b.y0, b.x1, b.y1, lab, j == sel, C_DARK, sz);
   }
 }
 // Names of the keys held now (bits: 1 left, 2 right, 4 up, 8 down, 16 Space (shown as Jump), 32 Enter).
