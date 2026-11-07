@@ -120,7 +120,7 @@ const dosEntries = (files: GameFiles) =>
     files
       .names()
       .filter((n) => !n.startsWith('.'))
-      .map((n) => [n, stored(files.get(n))]),
+      .map((n) => [n, stored(files.get(n)!)]),
   );
 /** --gmos: a game the Pocket Player can't play still goes on the card, as a .GMP only Game-Maker OS lists. */
 function writeOsOnly(id: string, about: { title: string; series?: string; company?: string }, files: GameFiles) {
@@ -133,7 +133,7 @@ function writeOsOnly(id: string, about: { title: string; series?: string; compan
     title: about.title,
     dosName: gam.replace(/\.gam$/i, '').toUpperCase(),
     ...pocketCategory(id, about.series ?? (about.company === undefined || about.company === 'Sandbox Software' ? 'sandbox' : undefined)),
-    gamCrc32: gamCrc32(files.get(gam)),
+    gamCrc32: gamCrc32(files.get(gam)!),
   };
   const name = uniqueGmpName(gmpName(id), library.uid, usedNames);
   writeFileSync(outDir + name, writeOsGmp(library, dosEntries(files)));
@@ -171,7 +171,7 @@ for (const id of ids) {
       title: about.title,
       dosName: gam.replace(/\.gam$/i, '').toUpperCase(),
       ...pocketCategory(id, about.series ?? (about.company === undefined || about.company === 'Sandbox Software' ? 'sandbox' : undefined)),
-      gamCrc32: gamCrc32(files.get(gam)),
+      gamCrc32: gamCrc32(files.get(gam)!),
       ...(thumbnail ? { thumbnail: 'thumb.pth' } : {}),
       ...(scores.has(id) ? { touchScore: scores.get(id) } : {}),
     };
@@ -190,16 +190,7 @@ for (const id of ids) {
           cards: gamePak.parts,
           library,
           thumbnail,
-          ...(withDos
-            ? {
-                dos: new Map(
-                  files
-                    .names()
-                    .filter((n) => !n.startsWith('.'))
-                    .map((n) => [n, stored(files.get(n))]),
-                ),
-              }
-            : {}),
+          ...(withDos ? { dos: dosEntries(files) } : {}),
         }),
       );
     else if (cardRoot) {
