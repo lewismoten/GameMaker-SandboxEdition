@@ -22,7 +22,7 @@ for (const flags of [[], ['-DPOCKET_CYD28']]) {
 // three pad sizes, Smaller picture on and off, the pause menu and How to play, at 480x320 and 320x240 (host/playshots.cpp). The
 // snapshot is a hash of every cell's picture; PNGs go to GM_PLAYSHOTS_OUT (default: a temp folder). After a deliberate
 // change to the overlay or to those Starters, look at the PNGs, then paste the printed hashes here.
-const playHashes: Record<string, string> = { '480': '181f8d5b7e1c2adb', '320': 'b82dde9f3c89914d' };
+const playHashes: Record<string, string> = { '480': '181f8d5b7e1c2adb', '320': 'b923b2a0a397e912' };
 const playDir = process.env.GM_PLAYSHOTS_OUT ?? mkdtempSync(join(tmpdir(), 'pocket-playshots-'));
 let playBad = 0;
 for (const [name, flags] of [

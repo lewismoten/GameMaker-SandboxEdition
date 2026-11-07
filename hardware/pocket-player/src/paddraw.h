@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include "controls.h"
 namespace paddraw {
-constexpr uint16_t C_BLACK = 0, C_WHITE = 0xffff, C_YELLOW = 0xff2a;
+constexpr uint16_t C_BLACK = 0, C_WHITE = 0xffff, C_YELLOW = 0xff2a, C_FILL = 0x7bef;  // C_FILL: a jump arc at rest is a solid mid gray with a white edge
 // Triangle pointing in direction d (0 left, 1 right, 2 up, 3 down) at (cx, cy), size s.
 template <class G> void arrow(G& spr, int cx, int cy, int d, int s, bool lit) {
   int x0 = cx, y0 = cy, x1, y1, x2, y2;
@@ -17,20 +17,21 @@ template <class G> void arrow(G& spr, int cx, int cy, int d, int s, bool lit) {
   spr.drawTriangle(x0, y0, x1, y1, x2, y2, lit ? C_BLACK : C_WHITE);
 }
 
-// A thick arch rises from the inner foot, crests, then points over toward the chosen side.
+// A thick half ring, open below, whose outer end carries a solid arrowhead pointing down: Left (or Right) and Jump together.
 // Work in a fixed small grid so the 42 px and 50 px pads retain a clear hump and arrowhead.
 inline bool arcPixel(int x, int y) {
-  int curve = -6 + (x * x + 4) / 8;
-  bool stem = x >= -8 && x <= 5 && y >= curve - 1 && y <= curve + 1;
-  bool head = y >= -3 && y <= 4 && x >= 2 + (y + 3) / 2 && x <= 9;
-  return stem || head;
+  int r2 = x * x + y * y;
+  bool ring = y <= 2 && r2 >= 13 && r2 <= 44;
+  int dx = x > 5 ? x - 5 : 5 - x;
+  bool head = y >= 2 && y <= 9 && dx <= (9 - y) / 2 + 1;
+  return ring || head;
 }
 template <class G> void jumpArc(G& g, int cx, int cy, int side, int size, bool lit) {
   auto on = [size](int x, int y) { return arcPixel(x * 10 / size, y * 10 / size); };
   for (int y = -size; y <= size; y++) for (int x = -size; x <= size; x++) {
     if (!on(x, y)) continue;
     bool edge = !on(x - 1, y) || !on(x + 1, y) || !on(x, y - 1) || !on(x, y + 1);
-    if (edge || lit) g.drawPixel(cx + side * x, cy + y, lit ? (edge ? C_BLACK : C_YELLOW) : C_WHITE);
+    g.drawPixel(cx + side * x, cy + y, edge ? (lit ? C_BLACK : C_WHITE) : (lit ? C_YELLOW : C_FILL));
   }
 }
 template <class G> void pad(G& spr, const ctl::Layout& L, const ctl::Need& nd, uint8_t d, int bandX = 0, int bandY = 0) {
@@ -44,12 +45,10 @@ template <class G> void pad(G& spr, const ctl::Layout& L, const ctl::Need& nd, u
   if (nd.right) arrow(spr, px + a, py, 1, s, d & 2);
   if (nd.up) arrow(spr, px, py - a, 2, s, d & 4);
   if (nd.down) arrow(spr, px, py + a, 3, s, d & 8);
-#ifdef POCKET_CYD28
-  if (nd.jump) for (int side : {-1, 1}) {
+  if (L.arcs) for (int side : {-1, 1}) {
     int x = px + side * p.r / 2, y = py - p.r / 2;
-    jumpArc(spr, x, y, side, s - 1, (d & 4) && (d & (side < 0 ? 1 : 2)));
+    jumpArc(spr, x, y, side, s, (d & 4) && (d & (side < 0 ? 1 : 2)));
   }
-#endif
 }
 // The floating pad drawn see-through (ctl::LOOK_FAINT half, ctl::LOOK_DIM a quarter): every pixel is mixed with the picture
 // under it, straight in a band of panel colors (byte-swapped RGB565 on the board, plain on the Mac). It has the calls
