@@ -2,11 +2,14 @@
 // read a sign like a person, jump a hazard, and check what a level scored.
 import type { Result, StarterBot } from '../../kit/starter/bot';
 import { SCAN } from '../../kit/starter/ids';
+import { ORIGIN } from '../../kit/starter/map';
 import { CHARM_POINTS } from '../src/props';
 
 /** Runs an order; anything but carrying on (a scene change, getting stuck) is an error. */
 export async function must(bot: StarterBot, r: Promise<Result>, what: string): Promise<void> {
+  const hp = bot.sim.ci.hitpts;
   const out = await r;
+  if (bot.sim.ci.hitpts !== hp) bot.say(`hit points ${hp} -> ${bot.sim.ci.hitpts} during ${what}`);
   if (out) throw new Error(`${what}: ${out}\n${bot.log.slice(-8).join('\n')}`);
 }
 
@@ -60,4 +63,21 @@ export async function mirrored<T>(bot: StarterBot, fn: () => Promise<T>): Promis
     sim.press = press;
     sim.release = release;
   }
+}
+
+/** A monster's top edge in level pixels: the one that started in column `x0` of the map. */
+export function monsterY(bot: StarterBot, x0: number): number {
+  const w = bot.sim.w;
+  const i = w.mm.findIndex((m) => m.curx - ORIGIN === x0);
+  if (i < 0) throw new Error(`no monster starts in column ${x0}`);
+  return (w.mi[i].cury[0] - ORIGIN) * 20 + w.mi[i].cury[1];
+}
+
+/** Waits like a person watching: ticks until `ready()` holds (a crow flew up, say). */
+export async function watchFor(bot: StarterBot, ready: () => boolean, what: string, max = 600): Promise<void> {
+  for (let t = 0; t < max; t++) {
+    if (ready()) return;
+    await must(bot, bot.wait(1), what);
+  }
+  throw new Error(`never saw ${what}`);
 }

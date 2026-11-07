@@ -72,21 +72,22 @@ function drip(pal: Pal, gone: boolean): Pixels {
   return inked(pal, p);
 }
 
-/** A raised paving slab with a crack, or the slab with the crack mended with a little dust. */
+/** A paving slab with a crack across it and one half heaved up a little, or the same slab mended (a bit of dust). */
 function crack(pal: Pal, dust: boolean): Pixels {
   const { c, r } = pal;
   const p = clear(pal);
   const s = r('stone');
-  p.rect(0, 12, 20, 8, s[2]).rect(0, 12, 20, 2, s[4]).rect(0, 18, 20, 2, s[1]);
-  if (!dust) {
-    const pts: [number, number][] = [[3, 12], [6, 15], [5, 17], [10, 16], [9, 19], [14, 17], [17, 13]];
-    for (let i = 1; i < pts.length; i++) p.line(pts[i - 1][0], pts[i - 1][1], pts[i][0], pts[i][1], c('ink', 0));
-    p.rect(5, 8, 10, 4, c('stone', 3)).rect(7, 5, 6, 3, c('stone', 3));
-    p.set(8, 6, c('ink', 0)).set(11, 6, c('ink', 0));
-    for (let x = 8; x < 13; x += 2) p.set(x, 9, c('ink', 0));
-  } else {
-    p.rect(2, 10, 5, 2, s[3]).rect(11, 11, 6, 1, s[3]);
+  if (dust) {
+    p.rect(0, 15, 20, 5, s[2]).rect(0, 15, 20, 1, s[4]).rect(0, 19, 20, 1, s[1]);
+    p.rect(3, 13, 4, 2, s[3]).rect(12, 14, 5, 1, s[3]);
+    return inked(pal, p);
   }
+  p.rect(0, 15, 10, 5, s[2]).rect(0, 15, 10, 1, s[4]);
+  p.rect(10, 10, 10, 10, s[3]).rect(10, 10, 10, 2, s[4]).rect(10, 10, 1, 10, s[2]);
+  const pts: [number, number][] = [[10, 10], [8, 13], [11, 15], [8, 17], [10, 19]];
+  for (let i = 1; i < pts.length; i++) p.line(pts[i - 1][0], pts[i - 1][1], pts[i][0], pts[i][1], c('ink', 0));
+  p.line(13, 13, 15, 15, c('ink', 1)).line(15, 15, 14, 18, c('ink', 1));
+  p.rect(2, 13, 2, 2, s[3]).rect(5, 14, 2, 1, s[4]);
   return inked(pal, p);
 }
 
@@ -303,10 +304,10 @@ function pip(pal: Pal, lit: boolean): Pixels {
 function fairGate(pal: Pal, shut: boolean): Pixels {
   const { c, r } = pal;
   if (!shut) {
+    // two striped posts with a gold ribbon between them: a gate standing open
     const p = clear(pal);
-    p.rect(0, 0, 3, 20, c('wood', 2)).rect(17, 0, 3, 20, c('wood', 2)).rect(0, 0, 3, 20, c('wood', 3));
-    p.rect(0, 0, 3, 1, c('wood', 4)).rect(17, 0, 3, 1, c('wood', 4));
-    p.rect(3, 0, 14, 1, c('gold', 3));
+    for (const x0 of [0, 16]) for (let y = 0; y < 20; y++) p.rect(x0, y, 4, 1, (y + (x0 ? 2 : 0)) % 6 < 3 ? c('red', 2) : c('white', 3));
+    p.rect(4, 0, 12, 1, c('gold', 3)).set(10, 1, c('gold', 4));
     return inked(pal, p);
   }
   const p = new Pixels(20, 20, r('wood')[2]);
@@ -400,7 +401,7 @@ export function addProps(book: Book, pal: Pal, groups: readonly string[], o: Pro
     book.add('saltArch', archOf(pal, 'wood'), air);
   }
   if (has('wood')) {
-    book.add('woodBox', woodBox(pal), { solid: SOLID });
+    book.add('woodBox', woodBox(pal), { solid: SOLID, score: 5, touch: 'sky' });
   }
   if (has('town')) {
     book.add('window', windowBlock(pal), { solid: SOLID });
@@ -424,9 +425,6 @@ export function addProps(book: Book, pal: Pal, groups: readonly string[], o: Pro
     book.add('rascalTop', rascal(pal, false), air);
     book.add('rascalBottom', rascal(pal, true), air);
     book.add('pulley', pulley(pal), air);
-  }
-  if (has('fairGate') || has('meter')) {
-    book.add('pipSpacer', pip(pal, false), { solid: SOLID });
   }
   for (const name of o.charms ?? []) {
     book.add(`charm.${name}`, charmPicture(pal, name), { ...air, score: CHARM_POINTS, effect: CHARM_COUNTER, eamt: 1, touch: 'sky' });
