@@ -22,7 +22,7 @@ for (const flags of [[], ['-DPOCKET_CYD28']]) {
 // three pad sizes, Smaller picture on and off, the pause menu and How to play, at 480x320 and 320x240 (host/playshots.cpp). The
 // snapshot is a hash of every cell's picture; PNGs go to GM_PLAYSHOTS_OUT (default: a temp folder). After a deliberate
 // change to the overlay or to those Starters, look at the PNGs, then paste the printed hashes here.
-const playHashes: Record<string, string> = { '480': 'a7b2c8a35348290b', '320': 'f2b7b9203b891855' };
+const playHashes: Record<string, string> = { '480': 'acd452f99933d350', '320': '4de190fa625e0b3b' };
 const playDir = process.env.GM_PLAYSHOTS_OUT ?? mkdtempSync(join(tmpdir(), 'pocket-playshots-'));
 let playBad = 0;
 for (const [name, flags] of [
@@ -63,6 +63,10 @@ const e = spawnSync(shotsExe, [shotsDir], { stdio: 'inherit', cwd: here });
 const libraryExe = join(shotsDir, 'librarytest');
 execFileSync('c++', ['-std=c++17', '-O1', '-Wall', '-I', here + 'src', here + 'host/librarytest.cpp', '-lz', '-o', libraryExe], { stdio: 'inherit' });
 const library = spawnSync(libraryExe, [here + 'data', shotsDir], { stdio: 'inherit' });
+// Recently played and Favorites (src/favorites.h): list rules, the 8 and 32 limits, the stored NVS form, virtual pages and renders
+const favoritesExe = join(shotsDir, 'favoritestest');
+execFileSync('c++', ['-std=c++17', '-O1', '-Wall', '-I', here + 'src', here + 'host/favoritestest.cpp', '-lz', '-o', favoritesExe], { stdio: 'inherit' });
+const favorites = spawnSync(favoritesExe, [here + 'data', shotsDir], { stdio: 'inherit' });
 // the idle timer on a fake clock, the status LED, the press state machine and the hit tables (host/idletest.cpp), for both boards
 const idleDir = mkdtempSync(join(tmpdir(), 'pocket-idle-'));
 let idleBad = 0;
@@ -74,4 +78,14 @@ for (const [name, flags] of [
   execFileSync('c++', ['-std=c++17', '-O1', '-Wall', ...flags, '-I', here + 'src', here + 'host/idletest.cpp', '-o', idleExe], { stdio: 'inherit' });
   idleBad ||= spawnSync(idleExe, { stdio: 'inherit' }).status ?? 1;
 }
-process.exit(idleBad || playBad || (library.status ?? 1) || (r.status ?? 1) || (small.status ?? 1) || (c.status ?? 1) || (d.status ?? 1) || (e.status ?? 1));
+process.exit(
+  idleBad ||
+    playBad ||
+    (library.status ?? 1) ||
+    (favorites.status ?? 1) ||
+    (r.status ?? 1) ||
+    (small.status ?? 1) ||
+    (c.status ?? 1) ||
+    (d.status ?? 1) ||
+    (e.status ?? 1),
+);

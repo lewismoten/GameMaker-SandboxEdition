@@ -321,7 +321,8 @@ add(
   const g = blank();
   disc(g, 7.5, 7.5, 7.4, 'l');
   disc(g, 7.5, 7.5, 6.2, 'w');
-  for (const [x, y] of [[7, 2], [8, 2], [13, 7], [13, 8], [7, 13], [8, 13], [2, 7], [2, 8]]) set(g, x, y, 'd');
+  const ticks = [7, 2, 8, 2, 13, 7, 13, 8, 7, 13, 8, 13, 2, 7, 2, 8]; // hour marks at 12, 3, 6 and 9
+  for (let i = 0; i < ticks.length; i += 2) set(g, ticks[i], ticks[i + 1], 'd');
   line(g, 7, 7, 7, 3, 'k');
   line(g, 8, 8, 11, 10, 'k');
   rect(g, 7, 7, 2, 2, 'r');
