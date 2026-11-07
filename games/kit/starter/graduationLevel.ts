@@ -172,7 +172,15 @@ export function buildLevels(cfg: Graduation) {
   const arrival = buildArrival(cfg, pal);
   const levels: Level[] = [
     { file: ARRIVE, title: cfg.arrive.title, hint: cfg.arrive.hint, map: arrival.map, book: arrival.book, timed: arrival.timed, bbl: ARRIVE },
-    { file: 'hall', title: cfg.level.title, hint: cfg.level.hint, map: aisle(book, signs, hall, friends, cfg.theme, cfg.cameos.length), book, timed, bbl: 'grad' },
+    {
+      file: 'hall',
+      title: cfg.level.title,
+      hint: cfg.level.hint,
+      map: aisle(book, signs, hall, friends, cfg.theme, cfg.cameos.length),
+      book,
+      timed,
+      bbl: 'grad',
+    },
   ];
   return { book, pal, timed, levels };
 }
