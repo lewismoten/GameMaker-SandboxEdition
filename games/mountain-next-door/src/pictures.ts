@@ -57,7 +57,13 @@ export function bigMountain(p: Pixels, pal: Pal, k: Peak): void {
         .set(k.cx + dx - 1, ey - 3, r[5]);
     else
       for (let x = -7; x <= 7; x++) p.set(k.cx + dx + x, ey + Math.round((x / 7) ** 2 * 3), ink).set(k.cx + dx + x, ey + 1 + Math.round((x / 7) ** 2 * 3), ink);
-    p.disc(k.cx + dx + (dx < 0 ? -4 : 4), ey + 12, 4, pal.c('pink', 1));
+    // a soft blush: solid in the middle, dithered out to the edge
+    const bx = k.cx + dx + (dx < 0 ? -4 : 4);
+    for (let y = -4; y <= 4; y++)
+      for (let x = -4; x <= 4; x++) {
+        const d = Math.hypot(x, y);
+        if (d <= 2.3 || (d <= 4.3 && (x + y) % 2 === 0)) p.set(bx + x, ey + 12 + y, pal.c('pink', 1));
+      }
   }
   for (let x = -12; x <= 12; x++)
     p.set(k.cx + x, ey + 16 + Math.round((1 - (x / 12) ** 2) * 5), ink).set(k.cx + x, ey + 17 + Math.round((1 - (x / 12) ** 2) * 5), ink);
