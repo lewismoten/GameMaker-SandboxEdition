@@ -11,22 +11,22 @@ import { addStreet } from './town';
 import { LEVEL3_SIGNS } from './text';
 
 export const AT3 = {
-  planksA: [12, 16],
-  key1: 14,
-  gate1: 26,
-  wheel: 36,
-  planksB: [40, 43],
-  silver: 41,
-  gate2: 52,
-  ladder: 60,
-  upper: [56, 78],
-  streamers: 66,
-  key2: 72,
-  gate3: 82,
-  flowers: 90,
-  float: 98,
-  exit: 104,
-  width: 110,
+  planksA: [10, 13],
+  key1: 11,
+  gate1: 20,
+  wheel: 28,
+  planksB: [31, 34],
+  silver: 32,
+  gate2: 41,
+  ladder: 48,
+  upper: [45, 62],
+  streamers: 52,
+  key2: 58,
+  gate3: 65,
+  flowers: 71,
+  float: 78,
+  exit: 83,
+  width: 88,
 } as const;
 
 /** A locked gate of the hall: brick up to the ceiling, an arch, the gate. */
@@ -52,7 +52,7 @@ export function level3(pal: Pal): Level {
   column(m, 'brick', AT3.width - 1, 0, GROUND - 1);
   m.set(3, 8, 'doorwayTop').set(3, 9, 'doorwayBottom').set(AT3.exit, 8, 'doorTop').set(AT3.exit, 9, 'doorBottom');
   // the crew at work
-  [[8, '0a'], [20, '1a'], [31, '0b'], [47, '1a'], [57, '0a'], [87, '1b'], [95, '0a']].forEach(([x, k]) => m.set(x as number, GROUND - 1, `crew${k}`));
+  [[7, '0a'], [16, '1a'], [24, '0b'], [37, '1a'], [44, '0a'], [68, '1b'], [75, '0a']].forEach(([x, k]) => m.set(x as number, GROUND - 1, `crew${k}`));
   // room 1: a gold key on a shelf (planks), then its gate
   run(m, 'plank', AT3.planksA[0], AT3.planksA[1], GROUND - 2);
   m.set(AT3.key1, GROUND - 3, 'key');
@@ -72,11 +72,11 @@ export function level3(pal: Pal): Level {
   column(m, 'brick', AT3.float, 2, GROUND - 3);
   m.set(AT3.float, GROUND - 2, 'bandArch').set(AT3.float, GROUND - 1, 'floatGate');
   // signs
-  m.sign(6, onGround(GROUND, s.start), s.start);
-  m.sign(17, onGround(GROUND, s.gold), s.gold);
-  m.sign(46, onGround(GROUND, s.silver), s.silver);
-  m.sign(54, onGround(GROUND, s.climb), s.climb);
-  m.sign(92, onGround(GROUND, s.parts), s.parts);
-  m.sign(100, onGround(GROUND, s.exit), s.exit);
+  m.sign(5, onGround(GROUND, s.start), s.start);
+  m.sign(15, onGround(GROUND, s.gold), s.gold);
+  m.sign(36, onGround(GROUND, s.silver), s.silver);
+  m.sign(43, onGround(GROUND, s.climb), s.climb);
+  m.sign(72, onGround(GROUND, s.parts), s.parts);
+  m.sign(80, onGround(GROUND, s.exit), s.exit);
   return { file: 'three', title: 'The Float', hint: 'The fire hall crew builds a float.', map: m, book, pal };
 }

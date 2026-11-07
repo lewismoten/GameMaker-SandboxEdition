@@ -12,21 +12,21 @@ import { addCard, addFlags, addNeighbors, addStreet } from './town';
 import { LEVEL5_SIGNS } from './text';
 
 export const AT5 = {
-  cards: [7, 14],
+  cards: [6, 13],
   vets: [
-    [26, 0],
-    [44, 1],
-    [63, 2],
-    [86, 3],
-    [108, 0],
-    [132, 1],
+    [19, 0],
+    [32, 1],
+    [44, 2],
+    [60, 3],
+    [72, 0],
+    [82, 1],
   ],
-  dog: 34,
-  geese: [70, 77],
-  balloon: 96,
-  puddle: [118, 120],
-  exit: 150,
-  width: 158,
+  dog: 24,
+  geese: [52],
+  balloon: 66,
+  puddle: [76, 78],
+  exit: 87,
+  width: 90,
 } as const;
 
 export function level5(pal: Pal): Level {
@@ -41,20 +41,20 @@ export function level5(pal: Pal): Level {
   const g = room(AT5.width, AT5.exit);
   const m = new StarterMap(book, g.rows());
   street(m, 1, AT5.width - 2);
-  const shops: [number, number, 'wallA' | 'wallB'][] = [[9, 10, 'wallB'], [21, 12, 'wallA'], [36, 9, 'wallB'], [48, 13, 'wallA'], [64, 10, 'wallB'], [80, 9, 'wallA'], [92, 12, 'wallB'], [108, 10, 'wallA'], [121, 11, 'wallB'], [136, 10, 'wallA']];
+  const shops: [number, number, 'wallA' | 'wallB'][] = [[8, 8, 'wallB'], [17, 9, 'wallA'], [27, 8, 'wallB'], [36, 10, 'wallA'], [47, 8, 'wallB'], [56, 9, 'wallA'], [66, 8, 'wallB'], [75, 9, 'wallA']];
   shops.forEach(([x, w, tone], i) => shop(m, x, w, tone, i % 3 === 0 ? 1 : w - 2));
-  bunting(m, 6, 152, 2);
-  for (const x of [20, 56, 100, 142]) flagpole(m, x, GROUND, 6);
+  bunting(m, 6, 84, 2);
+  for (const x of [30, 52, 68]) flagpole(m, x, GROUND, 6);
   for (let x = AT5.cards[0]; x <= AT5.cards[1]; x++) m.set(x, GROUND - 1, 'card');
   for (const [x, k] of AT5.vets) m.set(x, GROUND - 1, `vet${k}`);
   m.mon(MONS.dog, AT5.dog, GROUND - 1);
   for (const x of AT5.geese) m.mon(MONS.goose, x, GROUND - 1);
   m.mon(MONS.balloon, AT5.balloon, GROUND - 4);
   for (let x = AT5.puddle[0]; x <= AT5.puddle[1]; x++) m.set(x, GROUND - 1, 'puddleA');
-  m.sign(5, onGround(GROUND, s.start), s.start);
-  m.sign(31, onGround(GROUND, s.dog), s.dog);
-  m.sign(66, onGround(GROUND, s.geese), s.geese);
-  m.sign(112, onGround(GROUND, s.wave), s.wave);
-  m.sign(144, onGround(GROUND, s.exit), s.exit);
+  m.sign(14, onGround(GROUND, s.start), s.start);
+  m.sign(21, onGround(GROUND, s.dog), s.dog);
+  m.sign(40, onGround(GROUND, s.geese), s.geese);
+  m.sign(62, onGround(GROUND, s.wave), s.wave);
+  m.sign(83, onGround(GROUND, s.exit), s.exit);
   return { file: 'five', title: 'The Route', hint: 'Hand a card to every neighbor.', map: m, book, pal };
 }

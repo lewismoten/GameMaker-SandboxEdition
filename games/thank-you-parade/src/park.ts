@@ -65,7 +65,7 @@ export function addPark(book: PBook, pal: Pal): void {
   const pile = (glint: boolean, seed: number): Pixels => {
     const p = sky();
     const cols = [r('orange')[3], r('red')[3], r('gold')[4], r('brick')[3], r('orange')[2]];
-    blob(p, 10, 15, 10, 6.4, r('orange'), 0, 3);
+    blob(p, 10, 14, 9.6, 7.6, r('orange'), 0, 3);
     speckle(p, 0, 9, 20, 11, r('orange'), 1, 4, seed, 0.6);
     for (let i = 0; i < 16; i++) p.rect(1 + ((i * 7 + seed) % 17), 9 + ((i * 5 + seed) % 9), 2, 1, cols[i % cols.length]);
     if (glint) p.rect(9, 12, 3, 2, c('gold', 5)).set(10, 11, c('white', 3)).set(8, 13, c('white', 3));
@@ -109,9 +109,9 @@ export function addPark(book: PBook, pal: Pal): void {
     speckle(bed, 0, 0, 20, 20, r('dirt'), 0, 3, 17, 0.4);
     book.add('pondBed', bed, { solid: SOLID });
     const lily = sky();
-    lily.disc(10, 16, 8.4, c('green', 3)).disc(9, 15, 6, c('green', 4)).rect(10, 14, 10, 3, S).rect(0, 17, 20, 3, c('blue', 3));
-    lily.rect(0, 17, 20, 1, c('blue', 4)).rect(12, 12, 4, 3, c('pink', 3)).rect(13, 11, 2, 1, c('pink', 4));
-    book.add('lily', outline(lily.map((x, y, v) => (y < 10 ? S : v)), ink, { transparent: S }), { solid: LEDGE, grav: PULL.down });
+    blob(lily, 10, 16, 9.4, 3.4, r('green'), 1, 4);
+    lily.rect(11, 15, 9, 2, S).rect(0, 18, 20, 2, c('blue', 3)).rect(0, 18, 20, 1, c('blue', 4)).rect(5, 13, 3, 2, c('pink', 3)).rect(6, 12, 1, 1, c('pink', 4));
+    book.add('lily', outline(lily, ink, { transparent: S }), { solid: LEDGE, grav: PULL.down });
     const f = sky();
     f.line(1, 16, 18, 8, ink).line(1, 15, 18, 7, c('stone', 4)).line(1, 14, 18, 6, ink);
     for (const x of [6, 9, 12]) f.set(x, 12 - Math.round((x - 6) / 1.7), c('ink', 1));

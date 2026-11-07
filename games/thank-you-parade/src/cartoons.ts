@@ -42,8 +42,8 @@ export function introFli(pal: Pal, book: Book, penny: Pixels): Uint8Array {
   const F = 110;
   const draw = (f: number) => (p: Pixels) => {
     // Penny stands at the left with her baton; her plume leans when the gust arrives
-    scaleBlit(p, penny, 24, 164 - 120, 3, false, 255);
-    baton(p, pal, 24 + 47, 164 - 120 + 76, 24 + 74, 164 - 120 + 24);
+    scaleBlit(p, penny, 24, 98, 2, false, 255);
+    baton(p, pal, 24 + 31, 98 + 50, 24 + 58, 98 + 8);
     if (f > 28) {
       for (let k = 0; k < 4; k++) swoosh(p, pal, ((f * 9 + k * 83) % 380) - 40, 40 + k * 28, 46 + (k % 2) * 20);
       sheets.forEach((s, i) => {
@@ -102,9 +102,9 @@ export function endingFli(pal: Pal, book: Book, penny: Pixels): Uint8Array {
       const name = n.startsWith('vet') ? (wave === (i % 2) ? n : `${n}Tip`) : n;
       scaleBlit(p, book.pics.get(name)!, x, y + 22, 2, false, pal.c('sky', 3));
     });
-    scaleBlit(p, penny, 154, 164 - 120 + 12, 3, false, 255);
-    if (wave) baton(p, pal, 154 + 47, 164 - 120 + 88, 154 + 70, 164 - 120 + 40);
-    else baton(p, pal, 154 + 47, 164 - 120 + 88, 154 + 74, 164 - 120 + 60);
+    scaleBlit(p, penny, 140, 98, 2, false, 255);
+    if (wave) baton(p, pal, 140 + 31, 98 + 50, 140 + 58, 98 + 8);
+    else baton(p, pal, 140 + 31, 98 + 50, 140 + 62, 98 + 30);
     confetti(p, f);
     caption(p, pal, f < 60 ? 'THE WHOLE TOWN WAVES.' : 'THANK YOU, EVERYONE.');
   };

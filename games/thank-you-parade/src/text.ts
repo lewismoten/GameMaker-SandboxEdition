@@ -18,9 +18,8 @@ export const LEVEL1_SIGNS: Defs = {
 
 export const LEVEL2_SIGNS: Defs = {
   start: ['CARDS ARE BLOWING AWAY! CATCH FOUR.', 4, 3],
-  retry: ['OUT OF TIME? THIS DOOR STARTS OVER.', 4, 3],
+  retry: ['OUT OF TIME? GO BACK TO THE START DOOR.', 4, 3],
   meter: ['WATCH THE GUST. CARDS BLOW AWAY AS IT FADES.', 4, 3],
-  box: ['FOUR CARDS IN THE BOX OPEN THE STREET.', 4, 3],
   exit: EXIT,
 };
 
@@ -79,7 +78,7 @@ Band members, gates and boxes ask for something: bring it and walk into them.
 
 Cards are for neighbors on lawn chairs. Walk up to one with a card in hand.
 
-A squirting puddle costs a little. Geese peck. A dog may take a card.
+A squirting puddle costs a little. Geese are in the way. A dog may take a card.
 
 Watch the meters, the lamps and the clocks.
 

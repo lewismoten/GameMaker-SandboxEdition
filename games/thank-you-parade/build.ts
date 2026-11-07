@@ -26,8 +26,8 @@ import { paradeSounds, song } from './src/sound';
 import { CARD_NOTES, CREDITS, HOWTO, LOST, STORY, WON } from './src/text';
 import { titlePicture } from './src/title';
 
-/** Hit points and lives at the start (a goose peck takes 5, a squirt 10). */
-const HERO_HIT_POINTS = 50;
+/** Hit points and lives at the start (a goose costs 1 a moment, a squirt 10). */
+const HERO_HIT_POINTS = 80;
 const HERO_LIVES = 3;
 /** Counters 20 to 24 (the band's three things, the cards, the float's parts) start at 1: a counter shows one less than it holds. */
 const COUNTERS = [20, 21, 22, 23, 24];

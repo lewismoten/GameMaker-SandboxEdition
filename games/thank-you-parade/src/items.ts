@@ -15,8 +15,8 @@ export const PARTS = 24;
 /** Cards the card box wants, parts the float wants. */
 export const CARDS_WANTED = 4;
 export const PARTS_WANTED = 3;
-/** Ticks a beat lasts (nine ticks, about half a second: a march at 120 beats a minute is 9.1 ticks a beat). */
-export const BEAT = 9;
+/** Ticks a beat lasts (twelve ticks, about two thirds of a second: a march at 90 beats a minute). */
+export const BEAT = 12;
 
 /** The gust meter: GU ST, five segments that each go dark after their own number of ticks, and an end cap. */
 export function addGust(book: PBook, pal: Pal, ticksEach: number): void {

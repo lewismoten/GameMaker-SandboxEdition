@@ -11,18 +11,18 @@ import { addBandArch, addPark } from './park';
 import { MONS } from './monsters';
 
 export const AT1 = {
-  piles: [16, 21, 26],
-  mouthpiece: 21,
-  gates: { tuba: 34, drum: 60, flute: 112 },
-  trunk: 46,
-  branch: [47, 50],
-  sticks: 49,
-  geese: [66, 73],
-  pond: [87, 101],
-  lilies: [91, 95, 99],
-  flute: 95,
-  exit: 122,
-  width: 130,
+  piles: [12, 15, 18],
+  mouthpiece: 15,
+  gates: { tuba: 27, drum: 42, flute: 76 },
+  trunk: 33,
+  branch: [34, 37],
+  sticks: 36,
+  geese: [46, 56],
+  pond: [62, 72],
+  lilies: [64, 67, 70],
+  flute: 67,
+  exit: 83,
+  width: 88,
 } as const;
 
 /** A band member's gate: brick overhead to the sky, a banner arch, the member in the street. */
@@ -40,9 +40,9 @@ export function level1(pal: Pal): Level {
   const g = room(AT1.width, AT1.exit);
   const m = new StarterMap(book, g.rows());
   // scenery: clouds, bushes, flowers, a flagpole by the start, bunting over the street's end
-  for (const [x, y] of [[8, 2], [28, 4], [54, 1], [76, 3], [104, 2], [118, 4]]) m.set(x, y, 'cloudL').set(x + 1, y, 'cloudR');
-  for (const x of [11, 14, 30, 38, 52, 56, 82, 108]) m.set(x, GROUND - 1, 'bush');
-  for (const x of [9, 24, 40, 58, 80, 106, 116]) m.set(x, GROUND - 1, 'flower');
+  for (const [x, y] of [[8, 2], [22, 4], [40, 1], [54, 3], [70, 2], [80, 4]]) m.set(x, y, 'cloudL').set(x + 1, y, 'cloudR');
+  for (const x of [10, 22, 30, 39, 56, 74, 78]) m.set(x, GROUND - 1, 'bush');
+  for (const x of [8, 24, 31, 44, 60, 75, 85]) m.set(x, GROUND - 1, 'flower');
   // the leaf piles
   AT1.piles.forEach((x) => m.set(x, GROUND - 1, x === AT1.mouthpiece ? 'leafPile' : 'leafPileB'));
   // the three gates
@@ -66,11 +66,11 @@ export function level1(pal: Pal): Level {
   // geese: two lanes along the street, a gap between
   for (const x of AT1.geese) m.mon(MONS.goose, x, GROUND - 1);
   // signs
-  m.sign(6, onGround(GROUND, s.start), s.start);
-  m.sign(12, onGround(GROUND, s.piles), s.piles);
-  m.sign(29, onGround(GROUND, s.gates), s.gates);
-  m.sign(40, onGround(GROUND, s.tree), s.tree);
-  m.sign(80, onGround(GROUND, s.pond), s.pond);
-  m.sign(118, onGround(GROUND, s.exit), s.exit);
+  m.sign(5, onGround(GROUND, s.start), s.start);
+  m.sign(9, onGround(GROUND, s.piles), s.piles);
+  m.sign(21, onGround(GROUND, s.gates), s.gates);
+  m.sign(28, onGround(GROUND, s.tree), s.tree);
+  m.sign(51, onGround(GROUND, s.pond), s.pond);
+  m.sign(79, onGround(GROUND, s.exit), s.exit);
   return { file: 'one', title: 'Scattered', hint: 'The wind took the band apart.', map: m, book, pal };
 }

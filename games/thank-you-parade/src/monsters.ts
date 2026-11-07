@@ -1,10 +1,10 @@
 // The parade's three troublemakers (monster blocks, .MBL, and what each does, .MON):
-//   0  goose     waddles back and forth across the street; a peck costs 5 hit points (it is solid)
+//   0  goose     waddles back and forth across the street; a goose waddles across the way; run through it and every moment costs a hit point (hop over it, or wait for a gap)
 //   1  balloon   a runaway balloon that bobs up and down; touch it and it pops for 20 points
 //   2  dog       trots along the curb; touch it and it snatches one thank-you card and runs off with it
 // Power under 100 means a monster is gone when touched (Meet the Monsters explains it), which is how the balloon
 // pops and the dog goes away with its card.
-import { SOLBOT, SOLLEF, SOLRIG, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { newMonsterSet, type Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { corner, mon, pace } from '@lewismoten/gamemaker-sandbox-tools/kit/actors';
 import { outline } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
@@ -16,7 +16,7 @@ import { CARDS } from './town';
 
 export const MONS = { goose: 0, balloon: 1, dog: 2 } as const;
 export const POP_POINTS = 20;
-export const PECK = 5;
+export const PECK = 1;
 const T = 255;
 
 function goose(pal: Pal, step: boolean): Pixels {
@@ -70,9 +70,8 @@ function dog(pal: Pal, step: boolean): Pixels {
 /** The monster pictures (.MBL). */
 export function monsterPictures(pal: Pal): Book {
   const mb = new Book('mbl');
-  const solid = SOLBOT | SOLLEF | SOLRIG;
-  mb.add('goose0', goose(pal, false), { solid, hp: -PECK });
-  mb.add('goose1', goose(pal, true), { solid, hp: -PECK });
+  mb.add('goose0', goose(pal, false), { hp: -PECK });
+  mb.add('goose1', goose(pal, true), { hp: -PECK });
   mb.add('balloon0', balloon(pal, 0), { score: POP_POINTS });
   mb.add('balloon1', balloon(pal, 1), { score: POP_POINTS });
   mb.add('dog0', dog(pal, false), { effect: CARDS, eamt: -1 });

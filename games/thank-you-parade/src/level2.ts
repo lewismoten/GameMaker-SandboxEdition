@@ -15,15 +15,15 @@ import { LEVEL2_SIGNS } from './text';
 
 /** Where the cards lie, the row each lies on and the tick each is blown away (tuned to the bot's pace, with a human's slack). */
 export const CARDS_AT = [
-  { x: 16, y: 9, until: 300 },
-  { x: 28, y: 9, until: 400 },
-  { x: 41, y: 7, until: 520 },
-  { x: 55, y: 9, until: 640 },
-  { x: 67, y: 7, until: 760 },
-  { x: 82, y: 9, until: 880 },
-  { x: 98, y: 9, until: 1000 },
+  { x: 15, y: 9, until: 220 },
+  { x: 20, y: 9, until: 300 },
+  { x: 29, y: 7, until: 390 },
+  { x: 38, y: 9, until: 480 },
+  { x: 47, y: 7, until: 580 },
+  { x: 57, y: 9, until: 690 },
+  { x: 68, y: 9, until: 800 },
 ] as const;
-export const AT2 = { start: 6, retry: 2, box: 112, exit: 122, width: 130, balloon: 88, segments: 5, perSegment: 200, plankRuns: [[40, 42], [66, 69]] } as const;
+export const AT2 = { start: 6, retry: 2, box: 76, exit: 83, width: 88, balloon: 62, segments: 5, perSegment: 160, plankRuns: [[28, 30], [46, 48]] } as const;
 
 function timedCards(book: PBook): void {
   CARDS_AT.forEach((c, k) => {
@@ -47,11 +47,11 @@ export function level2(pal: Pal): Level {
   street(m, 1, AT2.width - 2);
   m.set(AT2.retry, GROUND - 2, 'doorTop').set(AT2.retry, GROUND - 1, 'doorBottom'); // the door that starts the level over
   // shop fronts along the street, with alleys between
-  const shops: [number, number, 'wallA' | 'wallB'][] = [[11, 9, 'wallA'], [22, 11, 'wallB'], [35, 9, 'wallA'], [47, 12, 'wallB'], [62, 10, 'wallA'], [76, 8, 'wallB'], [90, 11, 'wallA'], [103, 8, 'wallB']];
+  const shops: [number, number, 'wallA' | 'wallB'][] = [[10, 7, 'wallA'], [19, 8, 'wallB'], [29, 7, 'wallA'], [38, 9, 'wallB'], [49, 8, 'wallA'], [59, 7, 'wallB'], [68, 7, 'wallA']];
   shops.forEach(([x, w, tone], i) => shop(m, x, w, tone, i % 2 ? w - 3 : 2));
-  bunting(m, 8, 124, 2);
-  flagpole(m, 40, GROUND, 6);
-  flagpole(m, 100, GROUND, 6);
+  bunting(m, 8, 84, 2);
+  flagpole(m, 34, GROUND, 6);
+  flagpole(m, 66, GROUND, 6);
   // the gust meter, along the top, with a copy every nine blocks
   for (let x = 1; x + 8 <= AT2.width - 1; x += 9) {
     if (x <= AT2.box && AT2.box <= x + 7) continue;
@@ -70,9 +70,8 @@ export function level2(pal: Pal): Level {
   m.wallToSky(AT2.box);
   // signs
   m.sign(AT2.start + 3, onGround(GROUND, s.start), s.start);
-  m.sign(AT2.retry + 7, onGround(GROUND, s.retry), s.retry);
-  m.sign(30, onGround(GROUND, s.meter), s.meter);
-  m.sign(106, onGround(GROUND, s.box), s.box);
-  m.sign(117, onGround(GROUND, s.exit), s.exit);
+  m.sign(71, onGround(GROUND, s.retry), s.retry);
+  m.sign(24, onGround(GROUND, s.meter), s.meter);
+  m.sign(79, onGround(GROUND, s.exit), s.exit);
   return { file: 'two', title: 'Gust', hint: 'Cards are blowing down Main Street.', map: m, book, pal, retry: [AT2.retry, GROUND - 1] };
 }

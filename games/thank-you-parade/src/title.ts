@@ -71,15 +71,15 @@ export function titlePicture(pal: Pal, book: Book, penny: Pixels, name1: string,
   bevel(p, rx, 80, ribbon, 14, pal.r('blue'), 3, 2);
   text(p, rx + 10, 84, tagline, c('white', 3));
   // the band, left to right: the flute, the drum, the tuba (small, behind), then Penny big in front
-  const kids: [string, number][] = [['kid.flute.happy', 150], ['kid.drum.happy', 188], ['kid.tuba.happy', 226]];
-  for (const [n, kx] of kids) scaleBlit(p, book.pics.get(n)!, kx, 120, 2, false, c('sky', 3));
+  const kids: [string, number][] = [['kid.flute.happy', 128], ['kid.drum.happy', 172], ['kid.tuba.happy', 216]];
+  for (const [n, kx] of kids) scaleBlit(p, book.pics.get(n)!, kx, 138, 2, false, c('sky', 3));
   const flagL = book.pics.get('flagA0')!;
   const flagR = book.pics.get('flagA1')!;
   p.rect(285, 104, 3, 62, c('stone', 3)).rect(285, 104, 1, 62, c('white', 3)).disc(286, 102, 2.6, c('gold', 4));
   scaleBlit(p, flagL, 288, 104, 2, false, c('sky', 3));
   scaleBlit(p, flagR, 328 - 40, 104, 1, false, c('sky', 3));
-  p.rect(60, 163, 52, 3, c('ink', 1));
-  scaleBlit(p, penny, 62, 164 - 120, 3, false, 255);
-  baton(p, pal, 62 + 47, 164 - 120 + 76, 62 + 74, 164 - 120 + 24);
+  p.rect(52, 178, 50, 3, c('ink', 1));
+  scaleBlit(p, penny, 62, 98, 2, false, 255);
+  baton(p, pal, 62 + 31, 98 + 50, 62 + 58, 98 + 8);
   return p;
 }
