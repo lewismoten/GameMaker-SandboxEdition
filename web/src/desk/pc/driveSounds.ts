@@ -7,13 +7,20 @@
 //   tray-open / tray-close  the loading motor's whirr and the tray's clunk
 //   cd-spin        the disc spinning up and settling
 //   cd-read        the spindle's whine with the sled's clacks and the focus coil's ticks
-// Nothing plays before a click or key press, or when sound effects are off.
+// Nothing plays before a click or key press, or when sound effects are off. Each part is tagged with its
+// drive and kind (driveSwitches.ts) and plays only when the Machine settings' switch for it is on: the
+// motors are spin, the floppy's recalibration and the CD's spin-up sled and focus are heads, the steps
+// and clacks of a read are read/write, and the seat, eject and tray sounds follow the master switch.
 import { audioContext, soundUnlocked } from '@lewismoten/gamemaker-sandbox-engine/audio/context';
 import { channelGain } from '@lewismoten/gamemaker-sandbox-engine/audio/mix';
 import { pcOutput } from '../../retro/computer/pcAudio';
 import { mulberry32 } from '../../seededRandom';
+import type { Drive, SoundPart } from './driveSwitches';
+import { driveSoundOn } from './machineSettings';
 
 export type DriveSound = 'floppy-insert' | 'floppy-read' | 'floppy-eject' | 'tray-open' | 'tray-close' | 'cd-spin' | 'cd-read';
+/** Whether a drive's part of a sound may play. */
+export type SoundAllowed = (drive: Drive, part: SoundPart) => boolean;
 
 /** A resonance a knock rings at: Hz, Q, level. */
 type Band = readonly [number, number, number];
@@ -76,22 +83,36 @@ function sources(ctx: BaseAudioContext) {
 /**
  * Schedules one drive sound into `out`, starting at `at` seconds; returns how long it lasts.
  * `ms` is how long a read or spin-up lasts. `seed` varies the details so repeats don't sound alike.
+ * `allowed` leaves out the parts switched off; the length stays the same.
  */
-export function renderDriveSound(ctx: BaseAudioContext, out: AudioNode, kind: DriveSound, at: number, ms = 600, seed = 1): number {
+export function renderDriveSound(
+  ctx: BaseAudioContext,
+  out: AudioNode,
+  kind: DriveSound,
+  at: number,
+  ms = 600,
+  seed = 1,
+  allowed: SoundAllowed = () => true,
+): number {
   const { noise, click } = sources(ctx);
   const rnd = mulberry32(seed);
   const len = ms / 1000;
+  const drive: Drive = kind.startsWith('floppy') ? 'floppy' : 'cd';
+  const on = (part: SoundPart) => allowed(drive, part);
 
-  const knock = (t: number, bands: Band[], peak: number) => {
+  /** A knock; one switched off still draws its random numbers, so the parts after it sound the same. */
+  const knock = (t: number, bands: Band[], peak: number, play = true) => {
+    const tune = bands.map(() => 0.96 + rnd() * 0.08);
+    if (!play) return;
     const s = ctx.createBufferSource();
     s.buffer = click;
     const g = ctx.createGain();
     g.gain.value = peak;
     g.connect(out);
-    for (const [freq, q, lvl] of bands) {
+    for (const [i, [freq, q, lvl]] of bands.entries()) {
       const f = ctx.createBiquadFilter();
       f.type = 'bandpass';
-      f.frequency.value = freq * (0.96 + rnd() * 0.08);
+      f.frequency.value = freq * tune[i];
       f.Q.value = q;
       const l = ctx.createGain();
       l.gain.value = lvl;
@@ -141,43 +162,48 @@ export function renderDriveSound(ctx: BaseAudioContext, out: AudioNode, kind: Dr
     tone('triangle', t, dur, 95, 95, 0.02);
   };
   /** `n` head steps from `t`, `gap` seconds apart (a little uneven); returns the time after. */
-  const steps = (t: number, n: number, gap: number, peak = 3) => {
-    for (let i = 0; i < n; i++, t += gap * (0.85 + rnd() * 0.3)) knock(t, STEP, peak * (0.85 + rnd() * 0.15));
+  const steps = (t: number, n: number, gap: number, play: boolean, peak = 3) => {
+    for (let i = 0; i < n; i++, t += gap * (0.85 + rnd() * 0.3)) {
+      knock(t, STEP, peak * (0.85 + rnd() * 0.15), play);
+    }
     return t;
   };
 
   switch (kind) {
     case 'floppy-insert': {
       // the disk seats with a click and a second, lighter latch
-      knock(at, SEAT, 3.2);
-      knock(at + 0.045, LATCH, 1.6);
+      knock(at, SEAT, 3.2, on('load'));
+      knock(at + 0.045, LATCH, 1.6, on('load'));
       // the motor starts; the head recalibrates: a run of steps to track 0 and the thump at the stop
       const t = at + 0.3;
-      spin(t, 1.5);
-      let u = steps(t + 0.1, 7, 0.016);
-      knock(u + 0.02, THUMP, 3.5);
+      if (on('spin')) spin(t, 1.5);
+      let u = steps(t + 0.1, 7, 0.016, on('heads'));
+      knock(u + 0.02, THUMP, 3.5, on('heads'));
       // then the FAT: the head steps to the directory and reads, a few unhurried moves
       u += 0.2;
-      for (const n of [3, 2, 4]) u = steps(u, n, 0.022) + 0.12 + rnd() * 0.1;
+      for (const n of [3, 2, 4]) u = steps(u, n, 0.022, on('rw')) + 0.12 + rnd() * 0.1;
       return u - at;
     }
     case 'floppy-read': {
-      spin(at, len);
-      steps(at + 0.12, 3, 0.02);
-      if (len > 0.5) steps(at + len * 0.6, 2, 0.025);
+      if (on('spin')) spin(at, len);
+      steps(at + 0.12, 3, 0.02, on('rw'));
+      if (len > 0.5) steps(at + len * 0.6, 2, 0.025, on('rw'));
       return len;
     }
     case 'floppy-eject': {
-      knock(at, BUTTON, 3); // the push-button's thunk
-      knock(at + 0.03, LATCH, 1.4); // the spring lets go
-      hiss(at + 0.07, 0.26, 2400, 900, 1.2, 0.05); // the disk sliding out of the shutter
-      knock(at + 0.36, SEAT, 0.7); // its edge leaving the slot
+      if (on('load')) {
+        knock(at, BUTTON, 3); // the push-button's thunk
+        knock(at + 0.03, LATCH, 1.4); // the spring lets go
+        hiss(at + 0.07, 0.26, 2400, 900, 1.2, 0.05); // the disk sliding out of the shutter
+        knock(at + 0.36, SEAT, 0.7); // its edge leaving the slot
+      }
       return 0.45;
     }
     case 'tray-open':
     case 'tray-close': {
       const opening = kind === 'tray-open';
       const dur = 0.6;
+      if (!on('load')) return dur + 0.1;
       // the loading motor whirrs one way, then the other, with a soft belt hiss under it
       tone('sawtooth', at, dur, opening ? 130 : 210, opening ? 210 : 130, 0.007);
       tone('triangle', at, dur, opening ? 260 : 420, opening ? 420 : 260, 0.006);
@@ -187,18 +213,24 @@ export function renderDriveSound(ctx: BaseAudioContext, out: AudioNode, kind: Dr
     }
     case 'cd-spin': {
       // the disc comes up to speed: a rising whine, then settling to a hush
-      tone('sine', at, Math.min(len, 1.1), 90, 520, 0.012);
-      tone('triangle', at, Math.min(len, 1.1), 180, 1040, 0.004);
-      hiss(at, len, 400, 1800, 0.7, 0.03, 'highpass');
-      knock(at + 0.05, SLED, 0.6);
-      knock(at + Math.min(len, 1.1), FOCUS, 0.4);
+      if (on('spin')) {
+        tone('sine', at, Math.min(len, 1.1), 90, 520, 0.012);
+        tone('triangle', at, Math.min(len, 1.1), 180, 1040, 0.004);
+        hiss(at, len, 400, 1800, 0.7, 0.03, 'highpass');
+      }
+      if (on('heads')) {
+        knock(at + 0.05, SLED, 0.6);
+        knock(at + Math.min(len, 1.1), FOCUS, 0.4);
+      }
       return len;
     }
     case 'cd-read': {
-      tone('sine', at, len, 330, 330, 0.005);
-      hiss(at, len, 1200, 1200, 0.7, 0.015, 'highpass');
+      if (on('spin')) {
+        tone('sine', at, len, 330, 330, 0.005);
+        hiss(at, len, 1200, 1200, 0.7, 0.015, 'highpass');
+      }
       // the sled clacks a few times and the focus coil ticks
-      const n = 2 + Math.floor(len * 3);
+      const n = on('rw') ? 2 + Math.floor(len * 3) : 0;
       for (let i = 0; i < n; i++) knock(at + 0.05 + rnd() * Math.max(0.1, len - 0.1), rnd() < 0.7 ? SLED : FOCUS, 0.35 + rnd() * 0.25);
       return len;
     }
@@ -221,7 +253,7 @@ export function driveSound(kind: DriveSound, ms?: number): void {
   const master = ctx.createGain();
   master.gain.value = level;
   master.connect(pcOutput(ctx));
-  const dur = renderDriveSound(ctx, master, kind, now + 0.02, ms, 1000 + plays++);
+  const dur = renderDriveSound(ctx, master, kind, now + 0.02, ms, 1000 + plays++, driveSoundOn);
   // let go of the nodes once it has played
   setTimeout(() => master.disconnect(), (dur + 0.5) * 1000);
 }
