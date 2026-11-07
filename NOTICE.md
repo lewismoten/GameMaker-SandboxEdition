@@ -1105,3 +1105,4 @@ maker "ZORP" is invented. The shell is untested: nothing has been printed.
 - **Livestream Desk, Editor, Site and Library follow-up**: OpenAI Codex (GPT-6), directed by Lewis Moten, implemented navigation, asset filtering, scene-panel layout, creation labels, download discoverability, cached-search scheduling, and regression checks. Existing game data and artwork retain their credits.
 
 - **CYD friendliness check** (`web/scripts/cyd*.ts`): OpenAI Codex (GPT-6), directed by Lewis Moten, implemented the recorded-route measurements, engine probes, scoring, tests, and documentation. No game content or third-party material was added.
+- **Try Again plank landing** (`games/one-more-try/`): OpenAI Codex (GPT-6), directed by Lewis Moten, widened the upper plank and added headless jump checks against the original PLAYGAME collision rules. Existing Starter art and music retain their credits.

@@ -54,7 +54,7 @@ export const DEPTH = 4;
 export const L1 = { pit: 24, width: 4, post: 26, coin: 25 } as const;
 export const L2 = {
   ladder: { pit: 14, width: 4, rungs: 17 },
-  steps: { pit: 26, width: 4, low: [28, 29], high: 29 },
+  steps: { pit: 26, width: 4, low: [28, 29], high: 29, top: [28, 29] },
   stairs: { pit: 38, width: 4, tall: 41, short: 40 },
 } as const;
 
@@ -135,9 +135,10 @@ function waysBack(book: Book, signs: Record<SignName, Sign>): StarterMap {
   m.sign(21, onGround(GROUND, signs.steps), signs.steps);
   m.sign(33, onGround(GROUND, signs.stairs), signs.stairs);
   m.sign(44, onGround(GROUND, signs.exit), signs.exit);
-  // the plank steps: one a little way up, one level with the ground
+  // Two-block landings give a leftward jump from the cliff room to stop.
+  // PLAYGAME.C:3682-3690 snaps partial edge landings toward a one-block gap.
   for (const x of steps.low) m.set(x, floor - 1, 'plank');
-  m.set(steps.high, GROUND, 'plank');
+  for (const x of steps.top) m.set(x, GROUND, 'plank');
   return m;
 }
 
