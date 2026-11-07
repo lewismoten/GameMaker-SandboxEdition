@@ -1881,7 +1881,10 @@ static bool menuTap(prs::Screen sc, int& tx, int& ty) {
   prs::Ctx c = ctxFor(sc);
   uint32_t now = millis();
   prs::Ev e = press.update(now, pts.n > 0, pts.n ? pts.x[0] : 0, pts.n ? pts.y[0] : 0, [&](int x, int y, prs::Rect& r) { return prs::under(c, x, y, r); });
-  if (e == prs::PRESS) prs::drawPressed(tft, press.r);
+  if (e == prs::PRESS) {
+    if (sc == prs::SC_PAUSE) prs::drawPausePressed(tft, ovl::pauseHit(press.dx, press.dy));
+    else prs::drawPressed(tft, press.r);
+  }
   else if (e == prs::CANCEL) redrawMenu(sc);
   else if (e == prs::ACT) {
     uint32_t wait = press.showLeft(now);
