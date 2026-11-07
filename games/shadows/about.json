@@ -7,7 +7,7 @@
   "year": 1994,
   "price": "Free",
   "version": "1.1",
-  "blurb": "Shadows under things, painted with blocks. A game has no see-through colors, so a shadow is pixels drawn into the picture of whatever casts it. Level 1 is a yard of sand, grass and dark soil, played twice: once with a solid shadow under Mara and a walking pip, once with a dithered one, a checkerboard that lets the ground show through. Level 2 is three pips hopping: no shadow, a shadow that never changes, and one that shrinks at the top of the hop. Level 3 is a bee that is two blocks tall, the bee above and its shadow in a block of its own below. Play it, then open it in Game-Maker and look at the frames.",
+  "blurb": "Shadows under things, painted with blocks. A game has no see-through colors, so a shadow is pixels drawn into the picture of whatever casts it. Level 1 is a yard of sand, grass and dark soil, played twice: once with a solid shadow under a walking pip, once with a dithered one, a checkerboard that lets the ground show through. Level 2 is three pips hopping: no shadow, a shadow that never changes, and one that shrinks at the top of the hop. Level 3 is a bee that is two blocks tall, the bee above and its shadow in a block of its own below. Play it, then open it in Game-Maker and look at the frames.",
   "exe": "SHADOWS.EXE",
   "dosName": "SHADOWS",
   "sound": "sb",
@@ -24,7 +24,7 @@
     "accent": "#ffd23f",
     "ink": "#ffffff",
     "tagline": "A shadow is only pixels.",
-    "back": "A small explorer in a green beanie walks a courtyard where everything has a shadow. A game has no see-through colors, so a shadow is painted into the picture of the thing that casts it. A solid one is a dark patch. A dithered one is a checkerboard that lets the ground show through. A hop makes the shadow shrink, and a hovering bee gets a shadow block of its own. Read the signs, then open the game in Game-Maker and look at the frames.",
+    "back": "A small explorer in a green beanie walks a courtyard where the little critters have shadows. A game has no see-through colors, so a shadow is painted into the picture of the thing that casts it. A solid one is a dark patch. A dithered one is a checkerboard that lets the ground show through. A hop makes the shadow shrink, and a hovering bee gets a shadow block of its own. Read the signs, then open the game in Game-Maker and look at the frames.",
     "features": [
       "Level 1 paints the same yard with a solid shadow, then a dithered one",
       "Level 2 has three hops: no shadow, one that never changes, one that shrinks",

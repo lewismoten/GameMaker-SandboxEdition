@@ -26,8 +26,8 @@ export async function journey(bot: StarterBot): Promise<void> {
   await must(bot, bot.wait(LOOK), 'reading the first sign');
   // the yard, twice: past each pip, to the door
   for (const [scene, bbl, cbl, mbl] of [
-    [2, 'solid.bbl', 'solid.cbl', 'solid.mbl'],
-    [3, 'dither.bbl', 'dither.cbl', 'dither.mbl'],
+    [2, 'solid.bbl', 'hero.cbl', 'solid.mbl'],
+    [3, 'dither.bbl', 'hero.cbl', 'dither.mbl'],
   ] as const) {
     if (bot.sim.scene !== scene) throw new Error(`the bot should be in scene ${scene}, not ${bot.sim.scene}`);
     const f = files(bot);

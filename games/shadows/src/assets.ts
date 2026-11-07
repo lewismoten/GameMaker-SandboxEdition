@@ -1,24 +1,23 @@
-// The pictures that differ between the yard's two scenes, built once: Mara with a solid shadow or a dithered one, and the critters the same.
+// The pictures that differ between the yard's two scenes, built once: the critters with a solid shadow or a dithered one.
+// Mara has no shadow of her own: it would be painted into her standing and walking pictures, and the engine gives those back
+// while she is in the air (see the manual's "What it cannot do"), so it would go up with her.
 import { buildHeroBlocks } from '../../kit/starter/hero';
 import type { Book } from '../../kit/starter/book';
 import type { Pal } from '../../kit/starter/palette';
 import { buildCritterBlocks } from './critters';
-import { shadowedHero } from './shadow';
 
 export interface Assets {
-  /** Mara as the Starters draw her: no shadow (the screens use her). */
+  /** Mara as the Starters draw her (hero.cbl, the same in every scene). */
   plain: Book;
-  /** Mara's character blocks and the monster blocks for a scene whose shadows are solid, or dithered. */
-  solid: { hero: Book; critters: Book };
-  dither: { hero: Book; critters: Book };
+  /** The monster blocks for a scene whose shadows are solid, or dithered. */
+  solid: { critters: Book };
+  dither: { critters: Book };
 }
 
 export function buildAssets(pal: Pal): Assets {
-  const plain = buildHeroBlocks(pal);
-  plain.add('crouch', plain.pics.get('stand')!); // her takeoff and landing picture: shadowedHero gives it a small shadow
   return {
-    plain,
-    solid: { hero: shadowedHero(plain, 'solid', pal), critters: buildCritterBlocks(pal, 'solid') },
-    dither: { hero: shadowedHero(plain, 'dither', pal), critters: buildCritterBlocks(pal, 'dither') },
+    plain: buildHeroBlocks(pal),
+    solid: { critters: buildCritterBlocks(pal, 'solid') },
+    dither: { critters: buildCritterBlocks(pal, 'dither') },
   };
 }

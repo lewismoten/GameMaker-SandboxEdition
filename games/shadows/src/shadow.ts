@@ -1,7 +1,6 @@
 // THE SHADOW, the one trick of this game: a game has no see-through colors, so a shadow is pixels painted into the
 // picture of the thing that casts it. It is drawn behind the thing, in the bottom rows of its 20x20 block, and a
 // dithered one leaves every other pixel clear (color 255), so whatever is under the sprite shows through the holes.
-import { Book } from '../../kit/starter/book';
 import type { Pal } from '../../kit/starter/palette';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 
@@ -33,33 +32,4 @@ export function shadowLayer(kind: Shade, color: number, rx: number, h = 20): Pix
 export function withShadow(body: Pixels, kind: Shade, pal: Pal, rx: number, mark?: number): Pixels {
   const out = shadowLayer(kind, mark ?? shadowColor(pal), rx, body.h);
   return out.blit(body, 0, 0, T);
-}
-
-/** Mara with a shadow: her body made three pixels shorter, so there is room under her feet. Three torso rows come out (rows 4, 7 and 10 of her lower block). */
-function shorter(p: Pixels): Pixels {
-  const out = new Pixels(20, 20, T);
-  let to = 0; // (the last three rows stay clear)
-  for (let y = 0; y < 20; y++) {
-    if (y === 4 || y === 7 || y === 10) continue;
-    for (let x = 0; x < 20; x++) out.set(x, to, p.get(x, y));
-    to++;
-  }
-  return out;
-}
-
-/** The lower blocks where her feet are on the ground (she stands and walks); the others (jumping, falling) keep no shadow. */
-const GROUNDED = new Set(['stand', 'walk0', 'walk1', 'walk2', 'walk3']);
-
-/** The half-width of the small shadow at takeoff and landing (the pips' hop at its highest has 3.5). */
-const SMALL = 4;
-
-/** A copy of Mara's character blocks (in the same order, so the same numbers) where standing and walking carry a shadow of `kind`. */
-export function shadowedHero(hero: Book, kind: Shade, pal: Pal, mark?: number): Book {
-  const out = new Book('cbl');
-  for (const name of hero.index.keys()) {
-    const pic = hero.pics.get(name)!;
-    const rx = name === 'crouch' ? SMALL : 8;
-    out.add(name, GROUNDED.has(name) || name === 'crouch' ? withShadow(shorter(pic), kind, pal, rx, mark) : pic);
-  }
-  return out;
 }
