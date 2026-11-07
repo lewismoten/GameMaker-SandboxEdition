@@ -38,8 +38,8 @@ export interface CatalogEntry {
   files?: string[];
   /** Size of each file in `files`, in bytes (missing from older catalogs). */
   sizes?: number[];
-  /** games/catalog.json: the game has a recorded demo (.rec) among its files, which the home page asks before `files` is loaded. */
-  rec?: boolean;
+  /** games/catalog.json: the game names its recorded demos (.rec files), which the home page's preview asks before `files` is loaded. */
+  rec?: string[];
   /** Palette identities and precomputed sound groups for lazy asset pickers. */
   fileFacts?: Record<string, LibraryFileFact>;
   /** Original games made for this project: label, box art, manual, sound card. */
@@ -449,11 +449,13 @@ async function packAtHand(entry: Pick<CatalogEntry, 'path' | 'pack'>, base: stri
 }
 
 /** What fetching a game's file needs of its entry; `id` lets a lean entry (no `files` yet) look its list up. */
-type FiledEntry = Pick<CatalogEntry, 'path' | 'gz' | 'pack'> & { id?: string; files?: string[] };
+type FiledEntry = Pick<CatalogEntry, 'path' | 'gz' | 'pack'> & { id?: string; gam?: string | null; files?: string[] };
 
 /** The entry's file names: its own, or (a lean entry) from games/catalog-files.json. */
-async function filesOf(entry: FiledEntry, base: string): Promise<string[]> {
+async function filesOf(entry: FiledEntry, base: string, asking?: string): Promise<string[]> {
   if (entry.files) return entry.files;
+  // the game's own .gam is always one of its files: asking for it needs no list (the home page's preview does, at load)
+  if (asking && entry.gam && [asking.toLowerCase(), cdName(asking)].includes(entry.gam.toLowerCase())) return [entry.gam.toLowerCase()];
   return entry.id ? (await withFiles(entry as FiledEntry & { id: string }, `${base}games/`)).files : [];
 }
 
@@ -463,7 +465,7 @@ async function filesOf(entry: FiledEntry, base: string): Promise<string[]> {
  * ZIP-only sites always share the archive request. Legacy catalogs can fetch loose files.
  */
 export async function fetchGameFile(entry: FiledEntry, name: string, base = './'): Promise<Uint8Array | undefined> {
-  const files = await filesOf(entry, base);
+  const files = await filesOf(entry, base, name);
   const n = [name.toLowerCase(), cdName(name)].find((x) => files.includes(x));
   if (!n) return undefined;
   if (entry.pack?.endsWith('.zip')) return fromPack(entry, n, base);
@@ -501,7 +503,7 @@ function trimPeekedZips(): void {
 export async function peekGameFile(entry: FiledEntry, name: string, base = './'): Promise<Uint8Array | undefined> {
   const url = packUrl(entry, base);
   if (!url || !/\.zip$/i.test(url) || packs.has(url)) return fetchGameFile(entry, name, base);
-  const files = await filesOf(entry, base);
+  const files = await filesOf(entry, base, name);
   if (![name.toLowerCase(), cdName(name)].some((x) => files.includes(x))) return undefined; // as fetchGameFile: not one of its files
   let zip = peekedZips.get(url);
   if (!zip) {

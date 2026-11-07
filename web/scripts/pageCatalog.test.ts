@@ -42,8 +42,8 @@ describe('pageCatalog', () => {
     const [e, d] = pageCatalog([starter, { ...starter, id: 'demo', files: ['demo.gam', 'demo.rec'], sizes: [1, 2] }]);
     expect(e).not.toHaveProperty('files');
     expect(e).not.toHaveProperty('sizes');
-    expect(e.rec).toBeUndefined();
-    expect(d.rec).toBe(true);
+    expect(e.rec).toEqual([]);
+    expect(d.rec).toEqual(['demo.rec']);
     expect(pageFiles([starter])).toEqual({ jump: { files: ['jump.gam'], sizes: [10] } });
   });
 });

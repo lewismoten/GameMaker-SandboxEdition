@@ -330,7 +330,11 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
   const feature = (c: Category = current) => {
     // this collection's, else Sandbox's, else any collection that has a game (a removed game must not stay on show)
     const from = [c, FIRST_CATEGORY, ...CATEGORIES.map((x) => x.id)].find((x) => featurable(x).length) ?? c;
-    const pick = pickFeatured(featurable(from), top.game?.key, (g) => !!(g.entry?.rec ?? g.entry?.files?.some((f) => f.endsWith('.rec'))));
+    const pick = pickFeatured(
+      featurable(from),
+      top.game?.key,
+      (g) => !!(g.entry?.rec ? g.entry.rec.length > 0 : g.entry?.files?.some((f) => f.endsWith('.rec'))),
+    );
     if (!pick) return;
     top.show(pick, { featured: true, onAnother: () => feature(from) });
     showPath([]);

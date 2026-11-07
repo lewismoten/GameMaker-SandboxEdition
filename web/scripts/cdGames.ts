@@ -427,9 +427,9 @@ export function slimCatalog(catalog: CdCatalogEntry[]): CdCatalogEntry[] {
  */
 export function pageCatalog(catalog: CdCatalogEntry[]): LeanEntry[] {
   return slimCatalog(catalog).map((e) => {
-    // the file lists (games/catalog-files.json, pageFiles) only a play, a copy or a disk listing reads; `rec` says the one thing the home page asks of them
+    // the file lists (games/catalog-files.json, pageFiles) only a play, a copy or a disk listing reads; `rec` (the .rec files) is the one thing the home page's preview asks of them
     const { files, sizes: _sizes, ...head } = e;
-    const lean = { ...head, ...(files.some((f) => f.endsWith('.rec')) ? { rec: true } : {}) };
+    const lean = { ...head, rec: files.filter((f) => f.endsWith('.rec')) };
     if (!lean.details) return lean;
     // every original game: its controls and player look (only a copy, a play or a walkthrough reads them)
     const { controls: _controls, player: _player, ...rest } = lean;
@@ -440,7 +440,7 @@ export function pageCatalog(catalog: CdCatalogEntry[]): LeanEntry[] {
 }
 
 /** An entry in games/catalog.json: no `files` or `sizes` (see pageFiles). */
-export type LeanEntry = Omit<CdCatalogEntry, 'files' | 'sizes'> & { rec?: boolean };
+export type LeanEntry = Omit<CdCatalogEntry, 'files' | 'sizes'> & { rec?: string[] };
 
 /** games/catalog-files.json: each listed game's DOS files and their sizes, which games/catalog.json leaves out (a lazily fetched companion, withFiles in src/project/files.ts). */
 export function pageFiles(catalog: CdCatalogEntry[]): Record<string, { files: string[]; sizes: number[] }> {
