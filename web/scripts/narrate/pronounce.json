@@ -1,9 +1,44 @@
 {
   "words": {
     "Gravitas": {
-      "say": "Gravvitass",
-      "sounds": "GRAV-ih-tass",
-      "note": "said gruh-VEE-dis; the letter model heard GREVIDIS, GRIBITIS"
+      "say": "Gravitahss",
+      "sounds": "GRAV-ih-tahss",
+      "note": "Lewie said gruh-VEE-dis (wav2vec2 spelled GREVIDIS, GRIBITIS; eSpeak reads it ɡɹævˈiːɾəz); Whisper heard Gravitas either way"
+    },
+    "Round Tuit": {
+      "say": "Round To It",
+      "sounds": "ROUND TOO-it (the joke: a round to-it)",
+      "note": "the phone's Hint Giant said round two (Whisper, 3 takes of 3)"
+    },
+    "Anthill Keep": {
+      "say": "Ant Hill Keep",
+      "sounds": "ANT-hill KEEP",
+      "note": "the phone's Hint Giant said Ab Hill Key, Amphill Keep (Whisper)"
+    },
+    "Squeak": {
+      "say": "Squeek",
+      "sounds": "SKWEEK",
+      "note": "the phone's Hint Giant said sweet, or ran it into oil (Whisper, 2 takes of 3)"
+    },
+    "PNG": {
+      "say": "P N G",
+      "sounds": "PEE-en-JEE",
+      "note": "Max's Kokoro voice said P and G (Whisper, 3 of 3)"
+    },
+    "Ctrl+Z": {
+      "say": "Control Z",
+      "sounds": "con-TROLE Z",
+      "note": "Watt said Ctrl+Z as control plus C (Whisper); a key held with another is said without the plus"
+    },
+    "Ctrl+Y": {
+      "say": "Control Y",
+      "sounds": "con-TROLE Y",
+      "note": "Watt said Ctrl+Z as control plus C (Whisper); a key held with another is said without the plus"
+    },
+    "Ctrl+P": {
+      "say": "Control P",
+      "sounds": "con-TROLE P",
+      "note": "Watt said Ctrl+Z as control plus C (Whisper); a key held with another is said without the plus"
     }
   }
 }

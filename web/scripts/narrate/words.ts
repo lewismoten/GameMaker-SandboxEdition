@@ -1,5 +1,5 @@
 // Lists every word in the pronunciation lexicon (pronounce.json) with what the voices make of it:
-// each word is recorded alone, in the voice of every guide (and phone caller) whose lines say it,
+// each word is recorded in a short frame ("This is Gravitas, again."), in the voice of every guide (and phone caller) whose lines say it,
 // then heard twice, by Whisper (which snaps a made-up word to the nearest real one) and by
 // letters.ts (wav2vec2 spelling the sounds with no dictionary). Run from web/:
 //   npm run voice:words                       every entry
@@ -40,7 +40,13 @@ const slug = (s: string) =>
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-|-$/g, '');
 
-/** A test line per lexicon word and voice that says it: the word alone, in that voice. */
+/**
+ * The sentence a word is tested in. A word alone is too short for both engines (Pocket TTS mumbles
+ * it, and Whisper makes up words for a clip under a second), so it sits in the same short frame.
+ */
+const carrier = (word: string) => `This is ${word}, again.`;
+
+/** A test line per lexicon word and voice that says it: the word in its frame, in that voice. */
 function testLines(lines: Voiced[], words: string[]): (Line & { word: string; speakers: string[] })[] {
   const out = new Map<string, Line & { word: string; speakers: string[] }>();
   for (const word of words) {
@@ -48,7 +54,7 @@ function testLines(lines: Voiced[], words: string[]): (Line & { word: string; sp
     for (const l of lines.filter((l) => re.test(l.spoken ?? l.text))) {
       const v = l.voice ?? { sample: 'lewis', semitones: 0, tempo: 1 };
       const id = slug(`${word} ${v.sample} ${v.semitones} ${v.tempo}`);
-      const t = out.get(id) ?? { id, chapter: 'words', where: '', text: `${word}.`, voice: v, word, speakers: [] };
+      const t = out.get(id) ?? { id, chapter: 'words', where: '', text: carrier(word), voice: v, word, speakers: [] };
       if (!t.speakers.includes(l.speaker ?? '')) t.speakers.push(l.speaker ?? '');
       out.set(id, t);
     }
