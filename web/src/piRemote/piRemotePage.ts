@@ -1,13 +1,15 @@
 // The Pi remote (#/pi-remote, linked from nowhere): a keyboard for the Raspberry Pi Zero W
 // running sandbox-kernel and Game-Maker OS, over its USB serial port with Web Serial. Click a
 // key and it goes down on the Pi; let go (or slide off) and it comes up. The physical keyboard
-// is forwarded only while its switch is on. The Pi's log lines show below.
+// is forwarded only while its switch is on. The Pi's log lines show below, and the Pi sound
+// switch plays the games' sounds here (soundSwitch.ts).
 import './piRemote.css';
 import { h } from '../editor/core/ui';
 import { classify, INFO_LINE, keyLine, runLine, type Reply } from './protocol';
 import { ARROW_ROWS, EDIT_ROWS, LINUX_KEYS, MAIN_ROWS, NUMPAD_ROWS, type ScreenKey } from './keymap';
 import { HeldKeys, type KeyChange } from './heldKeys';
 import { SerialLink, webSerial } from './serialLink';
+import { soundSwitch } from './soundSwitch';
 
 /** Lines kept in the log pane. */
 const LOG_LIMIT = 400;
@@ -44,7 +46,10 @@ export function renderPiRemote(el: HTMLElement): () => void {
     ' To stop, turn the switch off or press Ctrl+Alt+K.',
   );
 
+  const sound = soundSwitch();
+
   const link = new SerialLink(onLine, (error) => {
+    sound.disconnected();
     for (const b of [infoBtn, runBtn, forwardSwitch]) b.disabled = true;
     setForwarding(false);
     held.releaseAll();
@@ -81,6 +86,7 @@ export function renderPiRemote(el: HTMLElement): () => void {
       if (reply.text === 'ERR not-ready') say('Not started: a program is already running on the Pi.');
       else say(reply.kind === 'ok' ? 'Game-Maker OS is starting.' : `Not started: ${reply.text}`);
     } else if (reply.text === 'ERR not-ready') say('The Pi wants INFO first. Press Info, then try again.');
+    if (reply.kind === 'log') sound.line(reply.text);
     log(reply.kind, reply.text);
   }
 
@@ -289,8 +295,9 @@ export function renderPiRemote(el: HTMLElement): () => void {
         'A keyboard for the Raspberry Pi Zero W running Game-Maker OS, over its USB cable. Press a key with the mouse and it stays down on the Pi until you let go. Shift, Ctrl and Alt stay down for the next key.',
       ),
       support,
-      h('div', { class: 'pi-bar' }, connectBtn, infoBtn, runBtn, forwardSwitch),
+      h('div', { class: 'pi-bar' }, connectBtn, infoBtn, runBtn, forwardSwitch, sound.button),
       status,
+      sound.status,
       banner,
       keyboard,
       h(
@@ -304,6 +311,7 @@ export function renderPiRemote(el: HTMLElement): () => void {
 
   return () => {
     setForwarding(false);
+    sound.dispose();
     window.removeEventListener('keydown', onKeyDown, true);
     window.removeEventListener('keyup', onKeyUp, true);
     window.removeEventListener('blur', onBlur);
