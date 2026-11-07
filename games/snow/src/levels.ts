@@ -1,19 +1,27 @@
 // Two small snowy walks. All motion is DOS block animation; touch changes only the visited map cell.
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
-import { MLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { MLEN, type GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { Book, PULL } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { ORIGIN, StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
 import { addSign } from '../../kit/starter/sign';
+import { openLevel } from './open';
+
+/** A level's map and where it starts and leaves (a StarterMap, or the top-down level's OverMap with the same two). */
+export interface LevelMap {
+  done(): GameMap;
+  start: [number, number];
+  exits: { from: [number, number] }[];
+}
 
 export interface Level {
   file: string;
   title: string;
   hint: string;
   book: Book;
-  map: StarterMap;
+  map: LevelMap;
 }
 
 export const GROUND = 10;
@@ -68,21 +76,30 @@ function flakes(book: Book, pal: Pal): void {
   }
 }
 
-/** Powder sits in the lower half of a passable tile, just above the solid floor. */
+/** Powder lies in the lower half of a passable tile, level with the bank; with `tracks`, a boot sole pressed into it. */
 function powder(pal: Pal, tracks: boolean): Pixels {
   const p = new Pixels(20, 20, skyOf(pal));
+  const g = pal.r('grass');
+  const d = pal.r('dirt');
   for (let x = 0; x < 20; x++) {
-    const top = 11 + (x % 7 === 0 ? 1 : 0);
-    p.rect(x, top, 1, 20 - top, pal.c('grass', 4)).set(x, top, pal.c('grass', 5));
+    const top = 10 + (x % 7 === 0 ? 1 : 0) + (x % 11 === 3 ? -1 : 0);
+    p.rect(x, top, 1, 20 - top, g[4]).set(x, top, g[5]);
+    p.set(x, 19, g[3]);
   }
   if (tracks) {
-    // Two staggered boot soles: rounded toes, dark tread and a separate heel.
+    // Two soles, toe to the right: a rim of light on top, the pressed hollow below, tread notches, and a heel.
     for (const [x, y] of [
-      [4, 12],
-      [12, 14],
+      [2, 12],
+      [11, 15],
     ]) {
-      p.rect(x + 1, y, 2, 1, pal.c('dirt', 1)).rect(x, y + 1, 4, 2, pal.c('dirt', 2));
-      p.rect(x, y + 4, 4, 2, pal.c('dirt', 1)).rect(x + 1, y + 1, 2, 1, pal.c('dirt', 0));
+      p.rect(x + 1, y - 1, 6, 1, g[5]);
+      p.rect(x + 4, y, 4, 3, d[3])
+        .rect(x + 5, y - 0, 2, 1, d[2])
+        .rect(x, y + 1, 3, 2, d[3]);
+      p.set(x + 5, y + 1, d[4])
+        .set(x + 7, y + 1, d[4])
+        .set(x + 3, y + 1, d[4]);
+      p.rect(x + 1, y + 3, 7, 1, g[3]);
     }
   }
   return p;
@@ -111,7 +128,7 @@ function level(pal: Pal, grow: boolean): Level {
   book.add('footprints', powder(pal, true), { grav: PULL.down });
   const words = grow
     ? ['WATCH THE SNOW DRIFT GET DEEPER', 'BOOT MARKS STAY UNTIL YOU RESTART']
-    : ['SNOW SWAYS AS IT FALLS', 'WALK BACK TO SEE YOUR BOOT MARKS'];
+    : ['SNOW KEEPS YOUR BOOT MARKS', 'HOP OVER SNOW. THEN WALK BACK'];
   const signs = words.map((s, i) => addSign(book, pal, `lesson${i}`, s, 4, 3));
   const g = new Grid(WIDTH, 14);
   g.row(GROUND, 0, WIDTH - 1, 'G').fill(0, GROUND + 1, WIDTH, 3, 'D');
@@ -121,7 +138,7 @@ function level(pal: Pal, grow: boolean): Level {
   const map = new StarterMap(book, g.rows());
   for (let x = 4; x < WIDTH - 3; x++) map.set(x, GROUND - 1, 'powder');
   for (let col = 0; col < 3; col++) map.set(8 + col, GROUND - 1, `drift${col}.${grow ? 0 : 2}`);
-  signs.forEach((s, i) => map.sign(i ? 17 : 4, GROUND - 1 - s.board.length, s));
+  signs.forEach((s, i) => map.sign(i ? (grow ? 17 : 11) : 4, GROUND - 1 - s.board.length, s));
   // Scatter only on remaining sky. Phase offsets and alternating loops break up rows of identical flakes.
   for (let y = 0; y < GROUND; y++)
     for (let x = 1; x < WIDTH - 1; x++) {
@@ -140,12 +157,13 @@ function level(pal: Pal, grow: boolean): Level {
 
 export function buildLevels(): { pal: Pal; levels: Level[] } {
   const pal = snowPalette();
-  return { pal, levels: [level(pal, false), level(pal, true)] };
+  return { pal, levels: [level(pal, false), level(pal, true), openLevel(pal)] };
 }
 
 /** PLAYGAME.C changeblks remaps each block number; really_checktouch changes the individual map cell. */
 export function finishBlocks(l: Level) {
   const blocks = l.book.finish();
+  if (l.file === 'three') return blocks; // the top-down field has nothing that changes on its own
   for (let type = 0; type < 2; type++)
     for (let frame = 0; frame < 8; frame++) {
       const b = blocks[l.book.n(`flake${type}.${frame}`)];
