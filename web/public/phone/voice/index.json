@@ -539,8 +539,8 @@
     "chapter": "giant",
     "where": "Hint line: game menu, page 1",
     "text": "For Quest for the Round Tuit, press 6.",
-    "seconds": 3.66,
-    "hash": "e7f8a1e74b9a",
+    "seconds": 4.46,
+    "hash": "d0117d1bc392",
     "voice": "aa1b97eeb811"
   },
   "giant-menu-1-7": {
@@ -707,8 +707,8 @@
     "chapter": "giant",
     "where": "Hint line: Quest for the Round Tuit, welcome",
     "text": "Hints for Quest for the Round Tuit.",
-    "seconds": 2.77,
-    "hash": "2963e94be334",
+    "seconds": 3.03,
+    "hash": "b08b1ab6e318",
     "voice": "aa1b97eeb811"
   },
   "giant-sandcast-1-1": {
@@ -731,8 +731,8 @@
     "chapter": "giant",
     "where": "Hint line: Sandcastle Knight, hint 2",
     "text": "To get into Anthill Keep, dig through the ring of dunes with the shovel.",
-    "seconds": 5.97,
-    "hash": "c50738f3b6b8",
+    "seconds": 5.79,
+    "hash": "c87310f1a4e4",
     "voice": "aa1b97eeb811"
   },
   "giant-sandcast-2-2": {
@@ -1067,8 +1067,8 @@
     "chapter": "giant",
     "where": "Hint line: Tune-Up, hint 1",
     "text": "Each door waits for something: a clamp, a pluck, enough notes, or every oiled Squeak.",
-    "seconds": 7.92,
-    "hash": "2dad2642896a",
+    "seconds": 5.97,
+    "hash": "18ca9b1697c1",
     "voice": "aa1b97eeb811"
   },
   "giant-tuneup-1-2": {
