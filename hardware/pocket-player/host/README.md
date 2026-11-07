@@ -15,6 +15,11 @@ timeout 30 "$TMPDIR/pocket-faults/sdfaulttest" hardware/pocket-player/data first
 timeout 30 "$TMPDIR/pocket-faults/sdfaulttest" hardware/pocket-player/data take-the-wheel
 python3 hardware/pocket-player/host/transitiontest.py
 python3 hardware/pocket-player/host/boardcardtest.py
+c++ -std=c++17 -O1 -g -Wall -Wextra -Wno-unused-function \
+  -fsanitize=address,undefined -fno-omit-frame-pointer \
+  -Ihardware/pocket-player/src hardware/pocket-player/host/hostpaktest.cpp \
+  -o "$TMPDIR/pocket-faults/hostpaktest"
+"$TMPDIR/pocket-faults/hostpaktest" "$TMPDIR/pocket-faults"
 ```
 
 The same probe accepts a loose microSD cfg's short name and its card pack filename:
@@ -34,6 +39,11 @@ and excessive unpacked length. It fails each asset-reader call in turn, releases
 loads twice, and retries successfully. Missing sound is intentionally nonfatal; other
 assets must fail the load. A missing configuration open, removed configuration at reload,
 and malformed header are rejected. It also checks picture-range failures and corruption.
+For bundles, malformed magic, a short header, and failed header/index/first streamed-cfg
+range reads are checked. `hostpaktest.cpp` uses tiny generated fixtures to ensure the stdio
+bundle adapter rejects impossible payload ranges **before allocation**, including an
+addition-overflow case, while still reading valid and empty entries. This does not impose
+an arbitrary file-size budget on valid bundles.
 
 The two Python probes compile the **actual selected routines from `main.cpp`** with
 panel/time stubs: a failed transition must return to the picker before drawing the partial
