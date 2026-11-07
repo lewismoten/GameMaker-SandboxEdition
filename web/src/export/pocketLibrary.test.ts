@@ -44,6 +44,7 @@ it('validates UTF-8 byte limits, paths, schema and corrupt metadata independentl
     { thumbnail: '../cards.pak' },
     { categoryLabel: 'é'.repeat(25) },
     { touchScore: 101 },
+    { touchQuick: 2 },
     { dosName: 1234 },
     { gamCrc32: 12345678 },
   ])
