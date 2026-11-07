@@ -2,6 +2,7 @@
 #include "framebuffer.h"
 #include "library.h"
 #include "picker_draw.h"
+#include "splash.h"
 #include "gmsmall.h"
 #include <assert.h>
 #include <string>
@@ -50,8 +51,19 @@ int main(int argc,char**argv) {
   for(int W:{320,480}) {
     static Phys fb, fresh;fb.W=fresh.W=W;fb.H=fresh.H=W==320?240:320;
     const char* labels[]={"Starters","Sandbox","Bizarre","My games","Imported","CD"};
-    pk::clearTiles(fb,W);pk::libraryFrame(fb,W,fb.H,"Pocket Player",0,2,"Rescan");for(int i=0;i<6;i++)pk::tileLabel(fb,W,i,labels[i]);
+    pk::clearTiles(fb,W);pk::libraryFrame(fb,W,fb.H,"Pocket Player",0,2,"Rescan");const int rootIcons[]={6,9,10,11,12,13};for(int i=0;i<6;i++)pk::tileLabel(fb,W,i,labels[i],false,rootIcons[i]);
     assert(!fb.clipped);save(fb,out+"/categories-"+std::to_string(W)+".ppm");
+    pk::clearTiles(fb,W);pk::libraryFrame(fb,W,fb.H,"Starters",0,2,"Rescan");
+    const char* stages[]={"1** First Steps","2** Moving and Pushing","3** Heroes and Foes","4** Story and Finish","5** Wiring and Worlds","6** Blocks and Showcase"};
+    for(int i=0;i<6;i++)pk::tileLabel(fb,W,i,stages[i],i==1,i+1);
+    assert(!fb.clipped);save(fb,out+"/stages-"+std::to_string(W)+".ppm");
+    pk::clearTiles(fb,W);pk::libraryFrame(fb,W,fb.H,"Pocket Player",1,2,"Rescan");
+    const char* more[]={"Good on touch","Graduations","Other","Gameware","Shareware","Unsorted"};const int moreIcons[]={16,7,8,14,15,8};
+    for(int i=0;i<6;i++)pk::tileLabel(fb,W,i,more[i],false,moreIcons[i]);
+    assert(!fb.clipped);save(fb,out+"/more-"+std::to_string(W)+".ppm");
+    pk::tileLabel(fb,W,0,"A collection name of four lines",false,18);assert(!fb.clipped);
+    for(int i=0;i<pk::ICON_COUNT;i++){pk::tileLabel(fb,W,0,"All games",false,i);assert(!fb.clipped);}
+    {static Phys sp;sp.W=W;sp.H=fb.H;pk::drawSplash(sp,W,sp.H);assert(!sp.clipped);save(sp,out+"/splash-"+std::to_string(W)+".ppm");}
     pk::clearTiles(fb,W);pk::libraryFrame(fb,W,fb.H,"Starters / 1** First Steps",0,18,"Details");
     for(int i=0;i<6;i++) {
       auto r=pk::tile(W,i);assert(pk::hitTile(W,r.x,r.y)==i);assert(pk::hitTile(W,r.x+r.w,r.y)==-1);assert(pk::hitTile(W,r.x,r.y+r.h)==-1);

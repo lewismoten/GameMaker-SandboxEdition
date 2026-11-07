@@ -80,6 +80,7 @@ template <class G> void drawKeyboard(G& tft, int W, int H, int titleH, const cha
 
 // Shared six-slot layout and clipped bitmap text: no font wrapping or page framebuffer.
 #include "softfont.h"
+#include "icons_data.h"
 namespace pk {
 struct Tile { int x,y,w,h,pw,ph; };
 inline Tile tile(int W,int i) { bool s=W==320;return {(s?12:16)+i%3*(s?100:152),(s?36:40)+i/3*(s?84:120),s?96:144,s?80:112,s?96:144,s?60:90}; }
@@ -89,14 +90,25 @@ template<class G> void clippedText(G&g,const Tile&r,const char*s,int x,int y,int
   for(;*s;s++,x+=6*scale)for(int yy=0;yy<8;yy++)for(int xx=0;xx<6;xx++)if(((unsigned char)*s>=32&&(unsigned char)*s<=126&&(SOFT_FONT[(unsigned char)*s-32][yy]&(1<<xx))))
     for(int dy=0;dy<scale;dy++)for(int dx=0;dx<scale;dx++){int px=x+xx*scale+dx,py=y+yy*scale+dy;if(px>=r.x&&px<r.x+r.w&&py>=r.y&&py<r.y+r.h)g.fillRect(px,py,1,1,color);}
 }
-template<class G> void tileLabel(G&g,int W,int i,const char*label,bool selected=false) {
+// A category icon (icons_data.h) at 2x, centered on cx, top at y; transparent pixels take the tile color. panelOrder swaps bytes for the panel.
+template<class G> void drawTileIcon(G&g,int icon,int cx,int y,bool panelOrder=false) {
+  uint16_t row[32];
+  for(int sy=0;sy<16;sy++) {
+    for(int sx=0;sx<16;sx++){uint8_t v=ICONS[icon][sy*16+sx];uint16_t c=v?ICON_PALETTE[v]:C_DARK;if(panelOrder)c=(c<<8)|(c>>8);row[sx*2]=row[sx*2+1]=c;}
+    g.pushImage(cx-16,y+sy*2,32,1,row);g.pushImage(cx-16,y+sy*2+1,32,1,row);
+  }
+}
+// icon < 0: the name alone. The icon is dropped when the name needs its room.
+template<class G> void tileLabel(G&g,int W,int i,const char*label,bool selected=false,int icon=-1,bool panelOrder=false) {
   auto r=tile(W,i);g.fillRect(r.x,r.y,r.w,r.h,C_DARK);g.drawRect(r.x,r.y,r.w,r.h,selected?C_YELLOW:C_GRAY);
   int scale=W==320?1:2,cols=(r.w-8)/(6*scale),count=0;size_t at=0,len=strlen(label);char lines[4][25];
   while(count<4&&at<len) {size_t n=len-at<(size_t)cols?len-at:cols;
     if(at+n<len){size_t word=n;while(word&&label[at+word]!=' ')word--;if(word)n=word;}
     memcpy(lines[count],label+at,n);lines[count][n]=0;count++;at+=n;while(label[at]==' ')at++;
   }
-  int y=r.y+(r.h-count*10*scale)/2;
+  int text=count*10*scale,icons=icon>=0&&icon<ICON_COUNT&&text+36<=r.h-4?36:0;
+  int y=r.y+(r.h-text-icons)/2;
+  if(icons){drawTileIcon(g,icon,r.x+r.w/2,y,panelOrder);y+=icons;}
   for(int line=0;line<count;line++,y+=10*scale)clippedText(g,r,lines[line],r.x+(r.w-(int)strlen(lines[line])*6*scale)/2,y,scale,C_WHITE);
 }
 template<class G> void clearTiles(G&g,int W) {g.fillRect(0,32,W,footer(W)-32,C_BLACK);}
