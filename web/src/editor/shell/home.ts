@@ -406,6 +406,8 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
   const select = async (c: Category, picked = false) => {
     // a Bizarre tab remembered from a catalog that had one: its games are with the shareware now
     if (c === 'bizarre' && !hasBizarreTab(lib.catalog)) c = 'cd';
+    // a Special tab remembered from a day one was out: none is listed now
+    if (c === 'special' && !lib.shownCats().some((x) => x.id === 'special')) c = FIRST_CATEGORY;
     const changed = c !== current;
     current = c;
     // another collection chosen: one of its games is featured at the top (an empty one keeps the game shown)
