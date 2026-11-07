@@ -15,7 +15,7 @@ import { corner, mon, pace } from '@lewismoten/gamemaker-sandbox-tools/kit/actor
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { Book } from '../../kit/starter/book';
 import type { Pal } from '../../kit/starter/palette';
-import { HALE, OKORO, bigEye, bigMouth, bubble, fogPuff, glowWorm, hen, neighborBottom, neighborTop, pebble, squirrel, sun, wisp } from './art/folk';
+import { HALE, OKORO, bigEye, bigMouth, bubble, fogPuff, mist, glowWorm, hen, neighborBottom, neighborTop, pebble, squirrel, sun, wisp } from './art/folk';
 
 /** Hit points a rolling pebble's bump takes. */
 export const BUMP = -5;
@@ -39,6 +39,8 @@ export function monsterPictures(pal: Pal): Book {
   mb.add('wispUp1', wisp(pal, 1, 'happy'));
   mb.add('fog0', fogPuff(pal, 0));
   mb.add('fog1', fogPuff(pal, 1));
+  mb.add('mist0', mist(pal, 0));
+  mb.add('mist1', mist(pal, 1));
   mb.add('sun', sun(pal));
   mb.add('hen0', hen(pal, 0));
   mb.add('hen1', hen(pal, 1));
@@ -71,7 +73,7 @@ const anim = (mb: Book, a: string, b: string, t: number): Pics => [
 const actor = { power: POWER, thru: 1 };
 
 /** trail.mon's slots. */
-export const TRAIL = { pebble: 0, nutmeg: 1, nutShort: 2, glowA: 3, glowB: 4, glowC: 5, wispHide: 6, wispFollow: 7, hens: 8, pebbleShort: 9, face: 10 } as const;
+export const TRAIL = { pebble: 0, nutmeg: 1, nutShort: 2, glowA: 3, glowB: 4, glowC: 5, wispHide: 6, wispFollow: 7, hens: 8, pebbleShort: 9, face: 10, mist: 16, nutBranch: 17 } as const;
 
 /** A glow-worm's blink: [frame, ticks] (dark a while, then a slow swell and fade). */
 function glowBlink(mb: Book, dark: number, bright: number): Pics {
@@ -88,7 +90,7 @@ function glowBlink(mb: Book, dark: number, bright: number): Pics {
 export function trailSet(mb: Book, o: { pebbleRun?: number; nutRun?: number } = {}): Monster[] {
   const set = newMonsterSet();
   set[TRAIL.pebble] = mon(anim(mb, 'pebble0', 'pebble1', 3), { power: POWER, thru: 0 }, pace(o.pebbleRun ?? 4, 1));
-  set[TRAIL.pebbleShort] = mon(anim(mb, 'pebble0', 'pebble1', 3), { power: POWER, thru: 0 }, pace(2, 1));
+  set[TRAIL.pebbleShort] = mon(anim(mb, 'pebble0', 'pebble1', 3), { power: POWER, thru: 0 }, pace(1, 1));
   set[TRAIL.nutmeg] = mon(anim(mb, 'nut0', 'nut1', 3), actor, pace(o.nutRun ?? 6, 2));
   set[TRAIL.nutShort] = mon(anim(mb, 'nut0', 'nut1', 4), actor, pace(2, 1));
   set[TRAIL.glowA] = mon(glowBlink(mb, 50, 14), { ...actor, end: -2 });
@@ -97,6 +99,8 @@ export function trailSet(mb: Book, o: { pebbleRun?: number; nutRun?: number } = 
   set[TRAIL.wispHide] = mon(anim(mb, 'wisp0', 'wisp1', 9), { ...actor, end: -2 });
   set[TRAIL.wispFollow] = mon(anim(mb, 'wispUp0', 'wispUp1', 9), { ...actor, end: -2, towards: 1 });
   set[TRAIL.hens] = mon(anim(mb, 'hen0', 'hen1', 7), actor, pace(2, 1));
+  set[TRAIL.mist] = mon(anim(mb, 'mist0', 'mist1', 14), { ...actor, end: -2 }, pace(5, 1));
+  set[TRAIL.nutBranch] = mon(anim(mb, 'nut0', 'nut1', 3), actor, pace(4, 1));
   face(set, mb, TRAIL.face);
   return set;
 }

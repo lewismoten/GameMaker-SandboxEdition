@@ -21,10 +21,10 @@ export const GATES_AT = {
     { ladder: 62, row: 9, end: 70, gate: 69, color: 'red', way: 76 },
   ],
   pie: 45,
-  acorns: [25, 66, 86],
+  acorns: [25, 66, 84],
   hens: [[23, 0], [79, 0]],
-  exit: 88,
-  signs: { four: 4, carry: 16, hens: 28, pie: 48, sorry: 80 },
+  exit: 87,
+  signs: { four: 4, carry: 16, hens: 28, pie: 48, sorry: 79 },
 } as const;
 
 const SIGNS = {
@@ -38,7 +38,7 @@ const SIGNS = {
 export function levelGates(pal: Pal): Level {
   const { book, timed } = startBook(pal, ['mountain', 'town', 'trail']);
   const s = addSigns(book, pal, SIGNS);
-  const W = 92;
+  const W = 90;
   const g = new Grid(W, 20);
   g.row(G2, 0, W - 1, 'G').fill(0, G2 + 1, W, 3, 'D');
   g.col(0, 0, G2 - 1, 'X').col(W - 1, 0, G2 - 1, 'X');

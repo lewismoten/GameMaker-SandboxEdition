@@ -6,7 +6,7 @@
 //   sleepy     the big toe across the sidewalk (toeL/M/R over toe): gone when the mountain wakes
 //   town       wall, wallB, window, windowLit, windowB, roofL/M/R, fence, plug.<color> (a wheelbarrow in a
 //              gateway; a gate puts it back as home.<color>), yardGate (opens when the mountain yawns)
-//   trail      post (paint it: postBlazed), trunk (trunkBlazed), crownL/R, printL/M/R, acorn, pie
+//   trail      post (paint it: postBlazed), trunk (trunkBlazed), bark (a trunk to leave be), logL/R (hop it), crown0..8 (a round crown, 3x3), printL/M/R, acorn, pie
 //   stream     waterTop, water, stoneUp/stoneHalf/stoneUnder/stoneRise (a loop), bed, footbridge
 //   rain       rain0..rain3 (a four-picture loop; start on different frames to scatter it), puddle
 //   wind       gustR0..2 (blows right) and gustL0..2 (left)
@@ -18,7 +18,7 @@ import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { KEYS } from '../../kit/starter/blocks';
 import { LEDGE, PULL, SOLID, type Book } from '../../kit/starter/book';
 import type { Pal } from '../../kit/starter/palette';
-import { GATES, acorn, arbor, gate, gentle, toe, crown, fence, gateHome, gateOnRock, ledge, peak, pie, plug, post, print, rock, roof, slope, trunk, wall, windowOn } from './art/land';
+import { GATES, acorn, arbor, log, gate, gentle, toe, crown, fence, gateHome, gateOnRock, ledge, peak, pie, plug, post, print, rock, roof, slope, trunk, wall, windowOn } from './art/land';
 import { blanket, doormat, lantern, moon, puddle, signpost, star, tunnelAir, tunnelFloor, tunnelStone } from './art/night';
 import { bed, footbridge, gust, rain, stone, water } from './art/weather';
 
@@ -37,7 +37,7 @@ export interface Timed {
 }
 
 /** Ticks a stepping stone stays up, half, under and rising (one loop is their sum). */
-export const STONE_TICKS = { up: 64, half: 10, under: 44, rise: 10 } as const;
+export const STONE_TICKS = { up: 80, half: 10, under: 30, rise: 10 } as const;
 /** Ticks each arrow points one way before the squirrel turns it. */
 export const ARROW_TICKS = 70;
 
@@ -108,8 +108,10 @@ export function addProps(book: Book, pal: Pal, groups: readonly string[], o: Pro
     book.add('postBlazed', post(pal, true), air);
     book.add('trunk', trunk(pal, false), { ...air, score: POINTS.blaze, touch: 'trunkBlazed' });
     book.add('trunkBlazed', trunk(pal, true), air);
-    book.add('crownL', crown(pal, 'L', true), air);
-    book.add('crownR', crown(pal, 'R', true), air);
+    book.add('bark', trunk(pal, false), air);
+    book.add('logL', log(pal, 'L'), { solid: SOLID });
+    book.add('logR', log(pal, 'R'), { solid: SOLID });
+    for (let k = 0; k < 9; k++) book.add(`crown${k}`, crown(pal, k), air);
     book.add('printL', print(pal, 'L'), { solid: SOLID });
     book.add('printM', print(pal, 'M'), { solid: SOLID });
     book.add('printR', print(pal, 'R'), { solid: SOLID });

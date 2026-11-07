@@ -2,11 +2,11 @@
 // (check.ts, walkthrough.ts and gendemo.ts run it).
 import { StarterBot } from '../../kit/starter/bot';
 import { playLevels } from '../../kit/levelRun';
-import { gateHunt, nextDoor } from './route';
+import { footprints, gateHunt, nextDoor, steppingStones } from './route';
 import { GameSim } from './sim';
 
 export const SEED = 1;
-const ROUTES = [nextDoor, gateHunt];
+const ROUTES = [nextDoor, gateHunt, footprints, steppingStones];
 
 /** Ticks the bot spent in each level (filled in as it plays). */
 export const LEVEL_TICKS: number[] = [];

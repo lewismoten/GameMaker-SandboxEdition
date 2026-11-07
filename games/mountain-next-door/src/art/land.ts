@@ -198,13 +198,28 @@ export function trunk(pal: Pal, blazed: boolean): Pixels {
   return inked(pal, p);
 }
 
-export function crown(pal: Pal, part: 'L' | 'R', autumn: boolean): Pixels {
-  const p = clear(pal);
-  const leaf = autumn ? pal.r('orange') : pal.r('green');
-  blob(p, part === 'L' ? 18 : 1, 11, 15, 9, leaf, 0, leaf.length - 1);
-  const rand = rng(part === 'L' ? 3 : 4);
-  for (let k = 0; k < 10; k++) p.set(Math.floor(rand() * 20), Math.floor(rand() * 20), p.get(0, 0) === skyOf(pal) ? p.get(0, 0) : leaf[1]);
-  return inked(pal, p);
+/** A big round crown of autumn leaves, 60x60, cut into nine blocks (0..8, left to right, top to bottom). */
+export function crown(pal: Pal, k: number): Pixels {
+  const big = new Pixels(60, 60, skyOf(pal));
+  const o = pal.r('orange');
+  const red = pal.r('brick');
+  const rand = rng(17);
+  for (const [cx, cy, r] of [
+    [30, 34, 22],
+    [16, 30, 13],
+    [44, 30, 13],
+    [24, 16, 12],
+    [38, 15, 12],
+    [30, 46, 14],
+  ])
+    blob(big, cx, cy, r, r * 0.9, o, 0, o.length - 1);
+  for (let i = 0; i < 70; i++) {
+    const x = Math.floor(rand() * 60);
+    const y = Math.floor(rand() * 60);
+    if (big.get(x, y) !== skyOf(pal)) big.rect(x, y, 2, 2, i % 3 ? red[2] : o[4]);
+  }
+  const p = inked(pal, big).crop((k % 3) * 20, Math.floor(k / 3) * 20, 20, 20);
+  return p;
 }
 
 /** Ground pressed into a footprint as long as a bathtub: grass edge (`part` L, M or R), a dent of mud with a toe line. */
@@ -298,5 +313,16 @@ export function arbor(pal: Pal, part: 'top' | 'beam' | 'posts'): Pixels {
     ])
       p.disc(x, y, 2, g[2]);
   }
+  return inked(pal, p);
+}
+
+/** A fallen log lying across the path (L and R ends), one block high: hop it. */
+export function log(pal: Pal, part: 'L' | 'R'): Pixels {
+  const p = clear(pal);
+  const w = pal.r('wood');
+  p.rect(0, 6, 20, 14, w[2]).rect(0, 6, 20, 2, w[3]).rect(0, 17, 20, 3, w[1]);
+  for (const x of [5, 13]) p.rect(x, 10, 4, 1, w[1]);
+  if (part === 'L') p.disc(4, 13, 6, w[3]).ring(4, 13, 4, w[1]).ring(4, 13, 2, w[1]);
+  else p.rect(14, 3, 2, 4, w[1]).rect(15, 2, 3, 2, pal.c('green', 3));
   return inked(pal, p);
 }

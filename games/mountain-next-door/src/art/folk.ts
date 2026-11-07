@@ -105,6 +105,18 @@ export function fogPuff(pal: Pal, frame: 0 | 1): Pixels {
   return p;
 }
 
+/** A wisp of mist: a soft round puff, dotted so the park shows through. */
+export function mist(pal: Pal, frame: 0 | 1): Pixels {
+  const p = new Pixels(20, 20, T);
+  const f = pal.r('fog');
+  for (let y = 0; y < 20; y++)
+    for (let x = 0; x < 20; x++) {
+      const d = ((x - 9.5) / 9.5) ** 2 + ((y - 11 + frame) / 6.5) ** 2;
+      if (d < 1 && ((x + y + frame) % 2 === 0 || d < 0.3)) p.set(x, y, f[d < 0.3 ? 3 : d < 0.7 ? 2 : 1]);
+    }
+  return p;
+}
+
 /** The sun: a warm disc with a soft rim. */
 export function sun(pal: Pal): Pixels {
   const p = new Pixels(20, 20, T);
