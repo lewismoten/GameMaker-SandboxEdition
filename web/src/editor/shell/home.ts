@@ -29,6 +29,7 @@ import { batchOf } from './importBatch';
 import { lastUsed } from '../../project/projectUse';
 import { NOTES_CHANGED } from '../../imported/gameNotes';
 import { ratingFilterBox, savedRatingFilter } from './homeRatings';
+import { loadTags, tagFilterBox } from './homeTags';
 import { levelFilterBox, savedLevel } from './homeLevel';
 import { doneFilterBox, loadFinished, savedDoneFilter } from './homeDone';
 import { loadGrades } from '../../achievements/courseGrades';
@@ -199,6 +200,12 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     ratingFilter = f;
     void select(current);
   });
+  const tagBox = tagFilterBox(() => void select(current));
+  // tags are worked out after the list is up, then the Imported list is drawn again
+  const readTags = () =>
+    void loadTags(lib.projects.filter((p) => lib.own('imported').includes(p))).then(() => {
+      if (current === 'imported') void select(current);
+    });
   // Starters narrowed to the ones not played to the ending yet, or the ones that were (homeDone.ts)
   let doneFilter = savedDoneFilter();
   const doneBox = doneFilterBox(doneFilter, (f) => {
@@ -410,6 +417,8 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
   const select = async (c: Category, picked = false) => {
     // a Bizarre tab remembered from a catalog that had one: its games are with the shareware now
     if (c === 'bizarre' && !hasBizarreTab(lib.catalog)) c = 'cd';
+    // a Special tab remembered from a day one was out: none is listed now
+    if (c === 'special' && !lib.shownCats().some((x) => x.id === 'special')) c = FIRST_CATEGORY;
     const changed = c !== current;
     current = c;
     // another collection chosen: one of its games is featured at the top (an empty one keeps the game shown)
@@ -449,6 +458,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
       void import('./howDoIIndex').then((m) => howDoI.append(m.howDoIIndex({ compact: true })));
     }
     ratingBox.hidden = c !== 'imported' || !lib.own(c).length;
+    tagBox.hidden = ratingBox.hidden;
     doneBox.hidden = c !== 'starter';
     levelBox.hidden = c !== 'starter';
     transcriptBtn.hidden = c !== 'starter';
@@ -485,6 +495,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
   const refreshProjects = async () => {
     lib.projects = await listProjects().catch(() => []);
     await lib.loadWalkBadges();
+    readTags();
     // renamed or saved since: made afresh
     lib.forgetOwn();
     const key = top.game?.key;
@@ -515,6 +526,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
           libLead,
           sortBox,
           ratingBox,
+          tagBox,
           doneBox,
           levelBox,
           transcriptBtn,
@@ -550,6 +562,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
   await pruneDamagedCopies();
   lib.projects = await listProjects().catch(() => []);
   await lib.loadWalkBadges();
+  readTags();
   if (!savedCategory() && lib.projects.length) current = lib.own('mine').length ? 'mine' : 'imported';
   renderCats();
   try {

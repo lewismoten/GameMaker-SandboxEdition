@@ -8,6 +8,7 @@ import type { MonitorMode } from '../retro/computer/setup';
 import { installCrtWarp } from './pc/crtWarp';
 import { captureStub } from './pc/captureStub';
 import { crtWarmUp } from './pc/crtWarmUp';
+import { tellDesk } from './buddy/deskPlay';
 import type { BootSounds } from './pc/bootSounds';
 import type { SpeedSetting } from '@lewismoten/gamemaker-sandbox-engine/engine/scene';
 import { CPU_CHOICES, loadMachine, saveMachine, machineCosts, machineMHz } from './pc/machineSettings';
@@ -74,10 +75,14 @@ export function deskPc(scene: Scene, hooks: PcHooks) {
         onModeChange: (mode: MonitorMode) => computer?.powered && setZoom(mode === 'gfx' ? 'gfx' : enlarged ? 'manual' : false),
         onDisksChanged: (insert) => hooks.disksChanged(insert),
         onGame: (game) => {
+          tellDesk(game ? { title: game.title } : { stop: true }); // the desk buddy follows the game (buddy/)
           keyCard.show(game);
           wheelSpot.game(game?.saveId); // its code wheel, on its puzzles' scenes (onScene)
         },
-        onScene: (n) => wheelSpot.scene(n),
+        onScene: (n, demo) => {
+          wheelSpot.scene(n);
+          tellDesk({ scene: n, demo: !!demo });
+        },
         // what the PC runs: a game (play), Game-Maker from a disk (design) or the hard disk / CD (gm), the BBS
         // (a PC switched off says nothing more)
         onProgram: (p) =>

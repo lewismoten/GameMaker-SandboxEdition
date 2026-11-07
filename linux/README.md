@@ -54,10 +54,10 @@ npx vite-node scripts/linuxTar.ts --html game.html --title "My Game" --id my-gam
 The players are committed to `web/public/linux/` (about 11 KB each). The build is
 reproducible.
 
-`.github/workflows/linux-tar.yml` first tries one game on Ubuntu: without WebKitGTK,
+`.github/workflows/linux-tar.yml` tries one game on Ubuntu (by hand): without WebKitGTK,
 `play.sh` must open the browser; with it (under `xvfb-run`), the game must load and keep a
-saved value between two launches. Then it builds every game and attaches them to a GitHub
-release.
+saved value between two launches. `.github/workflows/downloads.yml` builds every game's
+download, with the Mac and Windows ones, in one job and attaches them to a GitHub release.
 
 ## Testing the player
 

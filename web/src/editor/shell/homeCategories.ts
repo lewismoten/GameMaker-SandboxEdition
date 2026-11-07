@@ -49,6 +49,13 @@ export const CATEGORIES: { id: Category; icon: IconName; name: string; short: st
     lead: 'Big, heartfelt songs about all the wrong things (the goat nobody painted, the loaf nobody picked, a fly named Carl, the TV remote), made into games. The Bard of Bizarre is Lewis “Lewie” Moten III, with Doc Leo the hobo clown as his face: he dreams up each song, AI tools shape and record it, and you can play it, read its notice, or edit a copy (they’re MIT, except their voice clips: personal, non-commercial use only) to see how it was made.',
   },
   {
+    id: 'special',
+    icon: 'dice',
+    name: 'Special',
+    short: 'Here for a short while: games for today’s holiday or season. Play one and it stays.',
+    lead: 'Limited-time games from Sandbox Software, each out only for its day, week or season (a holiday, a town event, a funny day on the calendar). Play one, look inside or edit a copy and it stays here after its time is up; the rest leave when their day passes, and new ones turn up. On the 1994 desk they arrive their own way: a floppy left on the desk, a file on The Sandbox BBS.',
+  },
+  {
     id: 'community',
     icon: 'link',
     name: 'Community',

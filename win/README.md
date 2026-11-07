@@ -66,10 +66,10 @@ npx vite-node scripts/winExe.ts --all --zip --arm64    # every listed game, .exe
 npx vite-node scripts/winExe.ts --html game.html --title "My Game" --id my-game
 ```
 
-`.github/workflows/win-exe.yml` first plays one game on a GitHub Windows runner (it must
-load in WebView2 and keep a saved value between two launches), then builds every game and
-attaches the programs to a GitHub release (run it by hand from the Actions tab, or publish
-a release).
+`.github/workflows/win-exe.yml` plays one game on a GitHub Windows runner (it must
+load in WebView2 and keep a saved value between two launches; run it by hand from the Actions
+tab). `.github/workflows/downloads.yml` builds every game's program, with the Mac and Linux
+downloads, in one Linux job and attaches them to a GitHub release.
 
 ## Testing the player
 

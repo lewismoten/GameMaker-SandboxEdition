@@ -176,7 +176,7 @@ static Canvas playScreen(World& w, const ctl::Need& need, const ctl::Settings& s
   ov.bandX = 0; ov.bandY = 0; ov.bandW = VIEW_W; ov.bandH = VIEW_H;
   ov.drawControls();
   for (int Y = 0; Y < VIEW_H; Y++) for (int X = 0; X < VIEW_W; X++) screen.px[(size_t)Y * scr::W + X] = spr.px[(size_t)Y * VIEW_W + X];
-  if (pause) ovl::pauseMenu(screen, cfg.title, w.level);
+  if (pause) ovl::pauseMenu(screen, cfg.title, w.level, 1);  // with the Favorite star filled
   return screen;
 }
 

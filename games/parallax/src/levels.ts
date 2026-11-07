@@ -27,7 +27,7 @@ const SIGN = { w: 4, h: 3 } as const;
 const SIGN_AT = { left: [1, 0], right: [11, 0] } as const;
 const SIGN_WORDS: Record<SignName, string> = {
   speeds: 'FAR HILLS CRAWL, THE FENCE RACES',
-  ring: 'A BAND IS A RING OF BLOCKS',
+  ring: 'A BAND IS A RING OF BLOCKS, THE POSTS TOO',
   sky: 'CLOUDS DRIFT AT TWO SPEEDS',
   suns: 'THE DOOR OPENS WHEN THE SUNS FILL',
 };
@@ -69,6 +69,8 @@ export class Stage {
   readonly signs = {} as Record<SignName, Sign>;
   private readonly scratch = new Book('bbl');
   private readonly names = new Map<string, string>();
+  /** The bands this level slides, by name (ring() adds them). */
+  private readonly sliding = new Map<BandName, Band>();
 
   constructor(readonly pal: Pal) {
     addStarterBlocks(this.book, pal);
@@ -96,6 +98,7 @@ export class Stage {
   ring(name: BandName, band: Band): string {
     const n = ringSize(band);
     if (!Number.isInteger(n)) throw new Error(`${name}: a ${band.shift} px step never comes back round in 20 px`);
+    this.sliding.set(name, band);
     for (let k = 0; k < n; k++) {
       this.book.add(`${name}${k}`, this.at(name, k, band), AIR);
       this.timed.push({ name: `${name}${k}`, next: `${name}${(k + 1) % n}`, ticks: band.ticks });
@@ -122,13 +125,41 @@ export class Stage {
     return out.map((x, y, c) => (src.get(x, y) !== sky ? src.get(x, y) : c));
   }
 
-  /** The sign `n` stamped on the map with its top-left block at (x, y), and its posts under it. */
+  /**
+   * `src` (a sign post) over a sliding band, as a ring of its own that keeps step with the band's:
+   * the same number of pictures, the same wait, and it starts with the band, so the band slides
+   * on behind the post instead of standing still there. Both legs of both signs share it.
+   */
+  private ringOver(src: string, name: BandName, band: Band): string {
+    const pre = `${src}~${name}`;
+    if (!this.book.has(`${pre}0`)) {
+      const n = ringSize(band);
+      for (let k = 0; k < n; k++) {
+        this.book.add(`${pre}${k}`, this.over(this.scratch.pics.get(src)!, this.at(name, k, band)), AIR);
+        this.timed.push({ name: `${pre}${k}`, next: `${pre}${(k + 1) % n}`, ticks: band.ticks });
+      }
+    }
+    return `${pre}0`;
+  }
+
+  /**
+   * The sign `n` stamped on the map with its top-left block at (x, y), and its posts under it.
+   * A post on a sliding band is a ring that slides with it (ringOver). The board stays one
+   * picture: only a 1-pixel rim of it shows what is behind, and a ring for each of its cells
+   * would cost more blocks than a level may have.
+   */
   sign(m: StarterMap, n: SignName, at: readonly [number, number], bands: Partial<Record<number, BandName>>): void {
     const { board, legs } = this.signs[n];
     const put = (src: string, x: number, y: number) => m.set(x, y, this.plain(this.over(this.scratch.pics.get(src)!, this.under(y, bands))));
+    const post = (src: string, x: number, y: number) => {
+      const b = bands[y];
+      const band = b && this.sliding.get(b);
+      if (b && band) m.set(x, y, this.ringOver(src, b, band));
+      else put(src, x, y);
+    };
     board.forEach((row, dy) => row.forEach((name, dx) => put(name, at[0] + dx, at[1] + dy)));
-    put(legs[0], at[0], at[1] + board.length);
-    put(legs[1], at[0] + SIGN.w - 1, at[1] + board.length);
+    post(legs[0], at[0], at[1] + board.length);
+    post(legs[1], at[0] + SIGN.w - 1, at[1] + board.length);
   }
 
   /** A copy of a door block with two red and white bars across it. */

@@ -13,6 +13,15 @@ export const gameZipName = (g: { id: string; exe?: string; dosName?: string }): 
 
 /** The ZIP name a game had before it had a dosName (its id cut to 8): that old link still serves the same file. */
 export const legacyZipName = (id: string): string => `${id.slice(0, 8)}.zip`;
+/**
+ * The games whose old link was ever published: the only ones with an id over 8 characters on the site before dosName
+ * (pages-v3.1.0). Every later game only ever had its dosName link, so a second copy of its ZIP would be dead weight
+ * (about 14 MB across the Starters).
+ */
+const PUBLISHED_LEGACY = new Set(['reckoning', 'snowbound']);
+/** The extra ZIP name a game is also served under, or undefined when it has only its own. */
+export const legacyAlias = (g: { id: string; exe?: string; dosName?: string }): string | undefined =>
+  PUBLISHED_LEGACY.has(g.id) && legacyZipName(g.id) !== gameZipName(g) ? legacyZipName(g.id) : undefined;
 
 export async function gameArchive(entry: CdCatalogEntry, paths: ReadonlyMap<string, string>): Promise<Uint8Array> {
   const read = (path: string) => {

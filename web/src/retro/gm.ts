@@ -13,6 +13,7 @@ import { download } from '../editor/core/ui';
 import { prefetchWhenIdle } from '../prefetch';
 import type { Program } from '../vga/shared/designer';
 import { chk, offerCardAtMenu, registeredBox } from './gmReg/chk';
+import { hasOkMsg } from './dos/okMsg';
 
 /**
  * Designers ported to VGA graphics: they run their own menus, as the .EXEs did. Each .EXE is
@@ -344,4 +345,46 @@ export function paintMenuScreen(s: TextScreen, bar: 'main' | 'design' | 'utiliti
   s.write(0, 0, TITLEATTR, GMTOPBAR);
   s.write(0, 1, BARATTR, text);
   s.paint(xs[item - 1], 1, xs[item] - 1, 1, BARCURSOR);
+}
+
+/**
+ * A designer typed at the DOS prompt (BLOCEDIT, GRATOR.EXE, C:\GM\MAPMAKER ...): the same
+ * program GM chains to, run with no menu behind it, so its Main/Quit ends at the prompt.
+ * Each .C's main() sets RestorePal when argv[1] isn't OKMSG, and cleanup() then puts text
+ * mode back (clearing the screen); given cOoL by hand it leaves the screen for GM to redraw.
+ */
+export async function runDesigner(h: RetroHost, exe: string, args: string[]): Promise<void> {
+  const tool = TOOLS.find((t) => t.exe === exe);
+  if (!tool) return;
+  h.screen.cursorVisible = false;
+  await runTool(h, tool);
+  if (!hasOkMsg(args, 2)) {
+    h.screen.resetPalette();
+    h.screen.clear();
+  }
+}
+
+/** UTILITY.EXE typed at the prompt: its menu's Main ends at the prompt (UTILITY.C:64, RestorePal as above). */
+export async function runUtility(h: RetroHost, args: string[]): Promise<void> {
+  registeredTo = undefined;
+  h.screen.cursorVisible = false;
+  await utilities(h);
+  if (!hasOkMsg(args, 2)) {
+    h.screen.resetPalette();
+    h.screen.clear();
+  }
+}
+
+/**
+ * XFERPLAY.EXE in C:\GM: the transferred-game player loads <its own name>.GAM
+ * (PLAYGAME.C:665, ParseFileName of argv[0], which DOS gives in capitals), so here it says
+ * what's missing, waits PauseTimeKey(4) (four seconds or a key) and quits to text mode.
+ */
+export async function xferplay(h: RetroHost): Promise<void> {
+  const s = h.screen;
+  s.clear();
+  s.print("You are missing XFERPLAY.gam!  I can't do anything without it!");
+  for (let t = 0; t < 4000 && !h.keys.poll(); t += 50) await new Promise((r) => setTimeout(r, 50));
+  s.resetPalette();
+  s.clear();
 }

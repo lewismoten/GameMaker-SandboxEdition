@@ -25,6 +25,7 @@ const KIND_LABEL: Record<GameKind, string> = {
   sandbox: 'Sandbox',
   shareware: 'Shareware',
   bizarre: 'Bizarre',
+  special: 'Special',
   community: 'Community',
 };
 
@@ -194,7 +195,8 @@ export function showcase(nav: HomeNav, refresh: () => Promise<void>, life?: Abor
     title.textContent = game.title;
     clear(
       byline,
-      game.byline,
+      // an imported game shows its title only, like its card (no edited date or file name)
+      game.project && isImported(game.project.id) ? null : game.byline,
       // a finished game has an address of its own to share (yours live only in this browser)
       game.entry
         ? h(

@@ -7,10 +7,11 @@
 //   /pocket/boards/<chip id>.cfg, so a card moved between boards carries every board's setup. The card is read only when
 //   NVS has never held a setup for this chip.
 //   Serial (115200), for testing without seeing the screen: S st | S tap RX RY | S boot | S skip | S open | S forget nvs |
-//   S forget card.
+//   S forget card | S display (Settings, Display) | S pic open (its Picture screen) | S pic G T (gamma 1-4, tuning 0-3, live).
 #pragma once
 #include <math.h>
 #include "displaysetup.h"
+#include "picturetune.h"
 #include "setupdraw.h"
 #include "softgfx.h"
 
@@ -23,6 +24,7 @@ static uint8_t dsStep = 0;  // the step a restart resumes at (displaysetup.h Ste
 static bool dsSwapKnown = false;
 static sf::Flow dsLive;  // the setup in progress (S st prints it)
 static bool dsInjOn = false, dsBootReq = false, dsSkipReq = false, dsOpenReq = false;
+static uint8_t dsTabReq = 0;  // from the game list: 1 open Settings, Display; 2 its Picture screen
 static tc::Raw dsInjPt = {0, 0};
 
 static void dsNvsU8(const char* key, uint8_t v) {
@@ -36,6 +38,8 @@ static ds::Record dsRecord() {
   r.soft = softIdx;
   r.cal = XPT2046::cal();
   r.full = dsFull ? 1 : 0;
+  r.gamma = picGamma;
+  r.tune = picTune;
   return r;
 }
 // ---- the card file ----
@@ -95,6 +99,8 @@ static void dsNvsWrite(const ds::Record& r, uint8_t state) {
   p.putBytes("cal", &r.cal, sizeof r.cal);
   p.putUChar("setup", state);
   p.putUChar("full", r.full);
+  p.putUChar("pgam", r.gamma);
+  p.putUChar("ptun", r.tune);
   if (state == 3) { p.putUChar("swapk", 1); p.putUChar("sstep", 0); }
   p.end();
 }
@@ -114,6 +120,8 @@ static void dsBoot() {
       dsStep = pf.getUChar("sstep", 0);
       dsFull = pf.getUChar("full", 0) != 0;
       dsSwapKnown = pf.getUChar("swapk", 0) != 0;
+      picGamma = pf.getUChar("pgam", 0);
+      picTune = pf.getUChar("ptun", 0);
       pf.end();
     }
   }
@@ -123,6 +131,8 @@ static void dsBoot() {
       panelType = r.panel;
       turnIdx = r.turn;
       softIdx = r.soft;
+      picGamma = r.gamma;
+      picTune = r.tune;
       dsState = 3;
       dsFull = r.full != 0;
       dsSwapKnown = true;
@@ -134,6 +144,7 @@ static void dsBoot() {
   if (panelType >= PANEL_TYPES) panelType = PANEL_ILI9341;
   if (turnIdx >= TURNS) turnIdx = 0;
   if (softIdx > 3) softIdx = 0;
+  if (!pt::valid(picGamma, picTune)) picGamma = picTune = 0;
   if (dsStep != ds::STEP_CALIBRATE) dsStep = 0;  // only the calibration resumes; the three steps start again
 }
 // A display change that is not yet confirmed with OK: the next start comes back to setup. `geometry`: the touch no longer
@@ -192,9 +203,21 @@ static void dsSerial(const char* line) {  // "S ..."
   } else if (!strncmp(line, "S boot", 6)) dsBootReq = true;
   else if (!strncmp(line, "S skip", 6)) dsSkipReq = true;
   else if (!strncmp(line, "S open", 6)) dsOpenReq = true;
+  else if (!strncmp(line, "S display", 9)) dsTabReq = 1;
+  else if (!strncmp(line, "S pic open", 10)) dsTabReq = 2;
+  else if (!strncmp(line, "S pic ", 6)) {  // "S pic G T": gamma 1..4 and tuning 0..3 sent at once (not saved; Picture's Back saves)
+    int g = 0, t = 0;
+    if (sscanf(line + 6, "%d %d", &g, &t) == 2 && pt::valid(g - 1, t)) {
+      picGamma = (uint8_t)(g - 1);
+      picTune = (uint8_t)t;
+      applyPicture(true);
+      if (picOpen) pt::rows(tft, picGamma, picTune);
+      Serial.printf("picture gamma %d tune %d (live)\n", g, t);
+    }
+  }
   else if (!strncmp(line, "S forget nvs", 12)) {
     Preferences p;
-    if (p.begin("pocket", false)) { for (const char* k : {"setup", "sstep", "full", "swapk", "panel", "turn", "soft", "cal"}) p.remove(k); p.end(); }
+    if (p.begin("pocket", false)) { for (const char* k : {"setup", "sstep", "full", "swapk", "panel", "turn", "soft", "cal", "pgam", "ptun"}) p.remove(k); p.end(); }
     Serial.println("SETUP nvs forgotten (restart to see the first start: step 1, ILI driver, first turn)");
   } else if (!strncmp(line, "S forget card", 13)) { dsCardForget(); Serial.println("SETUP card file removed"); }
 }

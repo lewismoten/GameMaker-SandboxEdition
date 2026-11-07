@@ -2,11 +2,11 @@
 
 The browser engine, development tools, and archive utilities have separate tagged release workflows. All publish to GitHub Packages from this repository using the automatic `GITHUB_TOKEN` with `packages: write`.
 
-| Package | Workflow | Tag prefix |
-| --- | --- | --- |
-| `@lewismoten/gamemaker-sandbox-engine` | [Publish engine](../.github/workflows/publish-engine.yml) | `engine-v` |
+| Package                                  | Workflow                                                      | Tag prefix   |
+| ---------------------------------------- | ------------------------------------------------------------- | ------------ |
+| `@lewismoten/gamemaker-sandbox-engine`   | [Publish engine](../.github/workflows/publish-engine.yml)     | `engine-v`   |
 | `@lewismoten/gamemaker-sandbox-archives` | [Publish archives](../.github/workflows/publish-archives.yml) | `archives-v` |
-| `@lewismoten/gamemaker-sandbox-tools` | [Publish tools](../.github/workflows/publish-tools.yml) | `tools-v` |
+| `@lewismoten/gamemaker-sandbox-tools`    | [Publish tools](../.github/workflows/publish-tools.yml)       | `tools-v`    |
 
 The tag must point to a commit on `master`, and its version must exactly match that package's `package.json`. For example, `tools-v3.1.0` releases tools version `3.1.0`. Merge the package changes before pushing its tag. Ordinary branch pushes do not publish packages.
 
@@ -23,7 +23,7 @@ Every release target has a hand-written [Keep a Changelog](https://keepachangelo
 - **While you work:** a change that users or package consumers see adds one file at `changes/unreleased/<target>/<branch-or-slug>.md` (targets: `pages`, `engine`, `archives`, `tools`). Choose a unique slug. Use one category heading (`### Added`, `Changed`, `Fixed`, `Removed`, or `Security`), a blank line, then one `- ` bullet on a single line. Plain words, US English, one voice, no secret games. Do not edit the shared changelog on a feature branch. Internal tooling changes need no fragment. See [the fragment README](../changes/README.md).
 - **Before a release:** `npm run release:draft -- <pages|engine|archives|tools>` prints pending fragments (sorted by filename within categories) together with existing Unreleased notes, then separately labeled suggestions from the commits since the target's last tag (merges, formatting, tests-only, docs-only, agent-note and secret-game commits left out; commits sharing an "Area:" prefix become one line). Review the suggestions against the pending notes to avoid duplicates; the script never writes a file.
 - **Cutting:** `npm run release:cut -- <target> <version> [date]` combines the target’s fragments with existing Unreleased lines, turns that body into the dated version, fixes the link references and sets the package's `package.json` version. After successful writes it removes only the collected fragments for that target. Review and commit the changelog, manifest and fragment deletions together, merge to `master`, then tag. A rejected cut leaves fragments intact.
-- **Keeping it honest:** `npm run release:check` (part of root `npm run verify`) fails when a package's `src` changed since its last tag but neither fragments nor Unreleased list a change, or when the changelog's newest version is newer than `package.json`'s. For the site it only warns. A `package.json` version ahead of the changelog is fine: that is a bump waiting for its release.
+- **Keeping it honest:** `npm run release:check` (part of root `npm run verify`) fails when a package's `src` changed since its last tag but neither fragments nor Unreleased list a change, or when the changelog's newest version is newer than `package.json`'s. For the site it only warns. A `package.json` version ahead of the changelog is fine: that is a bump waiting for its release. A version cut but not yet tagged covers the commits since the last tag, so the check passes between `release:cut` and the tag.
 
 Each tag workflow ends by creating the GitHub Release: the body is that version's changelog section (`scripts/release/section.mjs`), and a CycloneDX SBOM of the runtime dependencies from npm's own `npm sbom` is attached. This runs in the existing job, needs `contents: write`, and is untested until the next tag. (`npm sbom` needs the root `package.json` to have a `version`, which is why it says `0.0.0`.)
 
@@ -36,3 +36,11 @@ gh release create engine-v3.1.0 --title "engine 3.1.0" --notes-file notes.md eng
 ```
 
 For the site use `CHANGELOG.md` and no `-w`. The SBOM then describes the lockfile as it is now, not as it was at the tag; check out the tag first for an exact one.
+
+## Sizes and the build seed
+
+`npm run release:sizes -- [--dist <site build>] [--packages] [--downloads <folder>]` checks what a release distributes against `scripts/release/size-budgets.json`: the Pages artifact (total, a few large folders, the biggest file and the biggest game ZIP), its offline copy (`offline.json`), each npm tarball, and the native downloads. It prints a table and exits 1 over a budget. The Pages workflow runs it on its build before uploading, the downloads workflow on its files, and `npm run verify:packages` holds each packed tarball to the same limits. Raise a budget only on purpose, with the reason in the commit.
+
+The Pages workflow has five minutes, and a site build from nothing spends far longer making the plastic trinkets (`web/public/trinkets/`), the laser nickels (`web/public/laser/`) and Depth Perception's rendered frames (`games/.render-cache/`). Those are packed from a finished local build as the **build seed**: `npm run release:seed -- upload` (after `npm run build:games`, with `gh` signed in) writes `site-seed.tar.gz` to the `build-seed` prerelease, and the Pages and downloads workflows fetch it (`release:seed -- fetch`) before building the games. Every trinket set, nickel and frame set keeps its own source key, so `build-games.mjs` still remakes anything whose sources changed after the seed was packed; the seed only saves time, and the site is the same without it. A stale seed shows as trinket or frame lines in the Build games step and a slower run, so upload a fresh one before a release tag.
+
+Native downloads (Mac, Windows, Linux) are one job, `.github/workflows/downloads.yml`, run by hand with a release tag. `win-exe.yml` and `linux-tar.yml` only try one game on a real Windows or Linux machine, by hand.

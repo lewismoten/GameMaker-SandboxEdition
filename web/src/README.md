@@ -151,6 +151,9 @@ SDK implementation lives in the packages below; the app imports their declared e
 - [`offline/`](offline/README.md): "Make available offline": the whole site in the service worker's cache at
   once (`offlineCopy.ts`), from the web's Offline dialog (`offlineDialog.ts`) or `OFFLINE.EXE` on
   the desk (`offlineExe.ts`); `loadFailure.ts` says so when a part of the site cannot load.
+- [`courier/`](courier/README.md): what Scoot, the desk buddy, carries: mail (a letter from each BBS
+  on its first call), postcards and packages, in one store read by its card on the desk and by
+  `SCOOT.EXE` on the PC.
 - [`seo/`](seo/README.md): page titles, descriptions and JSON-LD for the site and its game pages: `site.ts`
   (shared with the build), `route.ts` (keeps the tags in step at run time) and `siteSections.ts` (the home page's WebSite and
   magazine data and its links to the `#/…` pages, which `seoBuild.ts` writes in).
@@ -211,6 +214,8 @@ SDK implementation lives in the packages below; the app imports their declared e
   AI tools and the people.
 - [`errorNotice/`](errorNotice/README.md): the notice with Copy error details when something breaks.
 - [`programmersGuide/`](programmersGuide/README.md): The Programmer's Guide to Game-Maker 3.0 (`#/programmers-guide`) and the words of the 1994 Technical Reference booklet.
+- [`piRemote/`](piRemote/README.md): the Pi remote (`#/pi-remote`, unlisted): a keyboard for the Raspberry
+  Pi Zero W running Game-Maker OS, over its USB serial port with Web Serial.
 - [`privacy/`](privacy/README.md): the Privacy page: what the site keeps on the device, how to clear it,
   what is sent and when.
 - [`achievements/`](achievements/README.md): what the visitor has done: the catalog, the record, the
@@ -244,6 +249,7 @@ SDK implementation lives in the packages below; the app imports their declared e
 - [`eggs/`](eggs/README.md): the felt eggs hidden in the Sandbox games, their shadow box and
   EGG.EXE.
 - [`tinHearts/`](tinHearts/README.md): the tin heart hunt and its trophy.
+- [`specials/`](specials/README.md): the Specials, limited-time games: their calendar, registry, what a browser keeps, the desk's arrivals and SPECIALS.EXE.
 - [`scoreTrophies/`](scoreTrophies/README.md): the desk's two score trophies.
 - [`fortKnox/`](fortKnox/README.md): money left when a catalog game is won, and Teddy's toy safe with its treat store.
 

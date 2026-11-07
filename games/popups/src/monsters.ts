@@ -4,7 +4,7 @@
 //                      the points when Yana touches it (Score points, in the blocks editor), and its
 //                      power is under 100, so the touch also destroys it: it BECOMES (`newmon`) its popup.
 //   POP100, POP200, POP500   the number: a picture of "100", "200" or "500" that blinks (the picture
-//                      swaps with an empty one), rises two blocks along its path and is gone when the
+//                      swaps with an empty one), rises three blocks along its path and is gone when the
 //                      path ends (`end` -1). Power 150 and not solid, so Yana walks through it and
 //                      it pays nothing.
 //   STUCK, STUCKPOP    the mistake: a coin whose number never leaves. It has no path and `end` -2.
@@ -37,7 +37,7 @@ export const HERO_HIT_POINTS = 50;
 export const PRIZE_POWER = 50;
 export const NUMBER_POWER = 150;
 /** How far a number rises (blocks) and how fast (pixels a tick). */
-export const RISE = 2;
+export const RISE = 3;
 export const RISE_SPEED = 1;
 
 const T = 255;
@@ -132,8 +132,8 @@ export function monsterSet(mb: Book): Monster[] {
     [mb.n(`${name}1`), 3],
   ];
   const blink = (name: string): [number, number][] => [
-    [mb.n(name), 4],
-    [mb.n('empty'), 3],
+    [mb.n(name), 9],
+    [mb.n('empty'), 2],
   ];
   const up = [corner(0, -RISE, RISE_SPEED)];
   // a prize: hangs in the air (no path), under 100 so Yana's touch destroys it, and becomes its number

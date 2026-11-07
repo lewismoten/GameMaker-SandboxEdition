@@ -22,6 +22,7 @@ import { TTY_INFO } from '../bbs/ttyInfo';
 import { flagsBakNodes } from '../hacks/flagsBackup';
 import { deskFilesReady, gameDownloadNodes, imagesDiz, playgameReg, utilityFolders } from '../hacks/deskFiles';
 import { dosDir } from '../../project/dosDir';
+import { gmProgramRef } from '../dos/gmPrograms';
 
 export abstract class ComputerDrives {
   // Defined by a later layer (see the chain in the header comment).
@@ -238,6 +239,7 @@ export abstract class ComputerDrives {
           folder('COMM', () => [
             file('TERMINAL.EXE', 211_340, { run: { kind: 'terminal' } }),
             file('VPIC.EXE', 77_221, { run: { kind: 'vpic' } }),
+            file('SCOOT.EXE', 48_640, { run: { kind: 'scoot' } }),
             textFile(
               'PHONE.LST',
               'THE -= S A N D B O X =- BBS  1-412-555-SAND  14400 N81  Renegade\nTHE SOFA                     1-412-555-SOFA  14400 N81  Major BBS, 8 lines\nMRS. NOVAK NEXT DOOR         1-412-555-0156  45.45 TDD  TTY (Baudot)\n',
@@ -365,17 +367,11 @@ export abstract class ComputerDrives {
   /** C:\GM (hard disk, with your games and changes) or D:\GM (the CD, as shipped). */
   protected async gmFolder(hardDisk: boolean): Promise<DosNode[]> {
     const index = await this.gmIndexList();
-    const runs: Record<string, ProgramRef> = {
-      'GM.EXE': { kind: 'gm' },
-      'MENU.EXE': { kind: 'menu' },
-      'IMAGE.EXE': { kind: 'image' },
-      'PLAYGAME.EXE': { kind: 'playgame' },
-    };
     const programs = index
       .filter((e) => !e.dir)
       .map((e) => {
         const text = /\.(hlp|txt)$/i.test(e.name);
-        return file(e.name, e.size, { run: runs[e.name], read: text ? async () => (await this.gmFile(e.name)) ?? new Uint8Array() : undefined });
+        return file(e.name, e.size, { run: gmProgramRef(e.name), read: text ? async () => (await this.gmFile(e.name)) ?? new Uint8Array() : undefined });
       });
     const games = hardDisk ? await this.hdGames() : (await this.hdGames()).filter((g) => g.source === 'installed');
     // your games and changed installed ones are dated when last saved

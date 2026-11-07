@@ -3,6 +3,7 @@
 // (so its files load once). No DOM: home.ts draws it.
 import { byStarterOrder, isStarterGame } from '../../project/starter';
 import { isSandboxGame, type CatalogEntry } from '../../project/files';
+import { isSpecialGame } from '../../project/special';
 import { byCollection, hasBizarreTab, isBizarreGame } from '../../project/bizarre';
 import type { listProjects } from '../../project/storage';
 import { catalogGame, projectGame, type GameKind, type HomeGame } from './homeCards';
@@ -64,8 +65,11 @@ export function homeLibrary() {
         if (b) lib.walkBadges.set(p.id, b);
       }
     },
-    /** The collections this catalog has: Bizarre only with enough of the Bard's games. */
-    shownCats: () => CATEGORIES.filter((c) => c.id !== 'bizarre' || hasBizarreTab(lib.catalog)),
+    /** The collections this catalog has: Bizarre only with enough of the Bard's games, Special only while one is listed (the catalog holds only those, project/special.ts). */
+    shownCats: () =>
+      CATEGORIES.filter(
+        (c) => (c.id !== 'bizarre' || hasBizarreTab(lib.catalog)) && (c.id !== 'special' || lib.catalog.some((g) => isSpecialGame(g) && g.gam)),
+      ),
     // the Starters in learning order (First Steps first), every other list A to Z
     entriesOf: (c: Category): CatalogEntry[] => (c === 'starter' ? byStarterOrder(entriesIn(c)) : byTitle(entriesIn(c))),
     mine: (p: Projects[number]) => remember(projectGame(p, findOriginal(p, lib.catalog))),
@@ -99,7 +103,10 @@ export function homeLibrary() {
   };
   const gameware = () => lib.catalog.filter((g) => g.kind !== 'shareware' && !g.original);
   const shareware = () =>
-    lib.catalog.filter((g) => g.kind === 'shareware' && !isSandboxGame(g) && !isStarterGame(g) && g.gam && !(isBizarreGame(g) && hasBizarreTab(lib.catalog)));
+    lib.catalog.filter(
+      (g) =>
+        g.kind === 'shareware' && !isSandboxGame(g) && !isStarterGame(g) && !isSpecialGame(g) && g.gam && !(isBizarreGame(g) && hasBizarreTab(lib.catalog)),
+    );
   const entriesIn = (c: Category): CatalogEntry[] => {
     const { catalog } = lib;
     return c === 'cd'
@@ -108,9 +115,11 @@ export function homeLibrary() {
         ? catalog.filter((g) => isStarterGame(g) && g.gam)
         : c === 'sandbox'
           ? catalog.filter((g) => isSandboxGame(g) && g.gam)
-          : c === 'bizarre' && hasBizarreTab(catalog)
-            ? byCollection(catalog.filter((g) => isBizarreGame(g) && g.gam)).flatMap((s) => s.games)
-            : [];
+          : c === 'special'
+            ? catalog.filter((g) => isSpecialGame(g) && g.gam)
+            : c === 'bizarre' && hasBizarreTab(catalog)
+              ? byCollection(catalog.filter((g) => isBizarreGame(g) && g.gam)).flatMap((s) => s.games)
+              : [];
   };
   const sorted = () =>
     lib.sort === 'walk'

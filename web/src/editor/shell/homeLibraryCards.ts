@@ -2,6 +2,7 @@
 // Gameware and Shareware under who made them, Imported by stars when sorted so), each group
 // with a heading, or a few words when the collection is empty.
 import { walkTile } from './homeWalkBadge';
+import { tagShown, tagTile } from './homeTags';
 import { h } from '../core/ui';
 import { byCollection } from '../../project/bizarre';
 import { byStarterGroup } from '../../project/starter';
@@ -47,13 +48,16 @@ export function libraryCards(
       if (c === 'starter' && isDone(g)) doneTile(t);
       else if (c === 'starter' && grades[g.entry?.id ?? '']) doneTile(t, grades[g.entry?.id ?? '']);
       if (c === 'imported' && g.project) {
+        // title only: no edited date or file name (Lewis's notes, 2026-11-07)
+        t.querySelector('.tile-meta')?.remove();
         rateTile(t, notes[g.project.id]);
         walkTile(t, lib.walkBadges.get(g.project.id));
+        tagTile(t, g.project.id);
       }
       return t;
     };
     // Imported: only the rating picked, and grouped by stars when sorted by them
-    const rated = c === 'imported' ? lib.gamesOf(c).filter((g) => ratingShown(ratingFilter, ratingOf(g.project!.id, notes))) : [];
+    const rated = c === 'imported' ? lib.gamesOf(c).filter((g) => ratingShown(ratingFilter, ratingOf(g.project!.id, notes)) && tagShown(g.project!.id)) : [];
     // the Bard's games under his collections, in the flyer's order, and Gameware and
     // Shareware by who made them (homeAuthors.ts), packed into as few rows as they fit
     // (homeTilePack.ts), each tile telling its group

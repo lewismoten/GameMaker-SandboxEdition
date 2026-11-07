@@ -101,37 +101,33 @@ int main() {
     c.screen = prs::SC_SETTINGS;
     c.W = scr::W;
     c.H = scr::H;
-    c.stY0 = scr::SMALL ? 30 : 42;
-    c.stStep = 34;
-    c.stPerPage = scr::SMALL ? 5 : 7;
-    c.stFootY = scr::SMALL ? 200 : 288;
-    c.stRows = 12;
-    c.pages = 2;
-    c.smallBoard = scr::SMALL;
-    int y = c.stY0 + 5;
-    assert(p.update(0, true, 100, y, look) == prs::PRESS);
-    assert(p.update(10, true, 101, y, look) == prs::NONE);
+    c.settings.tab = st::T_DISPLAY;  // its first row's chips
+    const st::RowBox rb0 = st::rowBox(st::T_DISPLAY, 0);
+    const int top = rb0.chips.y0, bottom = rb0.chips.y1;
+    int y = top + 5, x0 = rb0.chips.x0 + 10;
+    assert(p.update(0, true, x0, y, look) == prs::PRESS);
+    assert(p.update(10, true, x0 + 1, y, look) == prs::NONE);
     assert(p.showLeft(20) == prs::MIN_SHOW_MS - 20 && p.showLeft(500) == 0);
-    assert(p.update(30, false, 0, 0, look) == prs::ACT && p.dx == 100 && p.dy == y);
+    assert(p.update(30, false, 0, 0, look) == prs::ACT && p.dx == x0 && p.dy == y);
     assert(p.update(40, false, 0, 0, look) == prs::NONE);
     // slide off the row: cancels once, and lifting does nothing
-    assert(p.update(100, true, 100, y, look) == prs::PRESS);
-    assert(p.update(110, true, 100, y + 60, look) == prs::CANCEL);
-    assert(p.update(120, true, 100, y + 60, look) == prs::NONE);
-    assert(p.update(130, true, 100, y, look) == prs::NONE);  // sliding back in does not press again
+    assert(p.update(100, true, x0, y, look) == prs::PRESS);
+    assert(p.update(110, true, x0, y + 60, look) == prs::CANCEL);
+    assert(p.update(120, true, x0, y + 60, look) == prs::NONE);
+    assert(p.update(130, true, x0, y, look) == prs::NONE);  // sliding back in does not press again
     assert(p.update(140, false, 0, 0, look) == prs::NONE);
     // a small drift stays on the button
-    assert(p.update(230, true, 100, y, look) == prs::PRESS);
-    assert(p.update(240, true, 100, c.stY0 + 32 + 4, look) == prs::NONE);  // inside the 8 pixel slack
+    assert(p.update(230, true, x0, y, look) == prs::PRESS);
+    assert(p.update(240, true, x0, bottom + 4, look) == prs::NONE);  // inside the 8 pixel slack
     assert(p.update(250, false, 0, 0, look) == prs::ACT);
     // touching a dead spot presses nothing
-    assert(p.update(300, true, 3, c.stY0 + 33, look) == prs::NONE);
+    assert(p.update(300, true, 3, bottom + 3, look) == prs::NONE);
     assert(p.update(310, false, 0, 0, look) == prs::NONE);
     // a finger already down when a screen opens presses nothing, even if it drags over a button
     p.screenChanged(true);
-    assert(p.update(400, true, 100, y, look) == prs::NONE);
+    assert(p.update(400, true, x0, y, look) == prs::NONE);
     assert(p.update(410, false, 0, 0, look) == prs::NONE);
-    assert(p.update(420, true, 100, y, look) == prs::PRESS);
+    assert(p.update(420, true, x0, y, look) == prs::PRESS);
   }
   {  // hit tables: every button found, none smaller than 32 x 32
     int found = 0;
@@ -171,31 +167,23 @@ int main() {
       assert(prs::under(c, (x0 + x1) / 2, (y0 + y1) / 2, r) && r.x0 == x0 && r.y1 == y1);
       found++;
     }
-    c.screen = prs::SC_SETTINGS;
-    c.stY0 = scr::SMALL ? 30 : 42;
-    c.stStep = 34;
-    c.stPerPage = scr::SMALL ? 5 : 7;
-    c.stFootY = scr::SMALL ? 200 : 288;
-    c.stRows = scr::SMALL ? 14 : 12;
-    c.pages = (c.stRows + c.stPerPage - 1) / c.stPerPage;
-    c.smallBoard = scr::SMALL;
-    for (int page = 0; page < c.pages; page++) {
-      c.setPage = page;
-      for (int k = 0; k < c.stPerPage; k++) {
-        prs::Rect r;
-        bool want = page * c.stPerPage + k < c.stRows;
-        assert(prs::under(c, 50, c.stY0 + k * c.stStep + 10, r) == want);
-        if (want) {
-          assert(r.y1 - r.y0 >= 32 && r.x1 - r.x0 > 200);
-          found++;
-        }
-      }
+    {  // the Favorite star on the title line: at least 24 x 24, inside the box, clear of the six buttons
+      int x0, y0, x1, y1;
+      ovl::pauseCell(ovl::PA_STAR, x0, y0, x1, y1);
+      prs::Rect r;
+      assert(x1 - x0 >= 24 && y1 - y0 >= 24 && x1 <= scr::W && y0 >= 0 && y1 <= ovl::PAUSE.y0);
+      assert(prs::under(c, (x0 + x1) / 2, (y0 + y1) / 2, r) && r.x0 == x0 && r.y1 == y1);
+      assert(ovl::pauseHit((x0 + x1) / 2, (y0 + y1) / 2) == ovl::PA_STAR && ovl::pauseHit((x0 + x1) / 2, (y0 + y1) / 2, false) == -1);
+    }
+    c.screen = prs::SC_SETTINGS;  // Back and the four tabs (host/settingstest.cpp checks every chip and More)
+    c.settings = st::View();
+    for (int t = -1; t < st::T_COUNT; t++) {
+      st::Box b = t < 0 ? st::backBox() : st::tabBox(t);
+      prs::Rect r;
+      assert(prs::under(c, (b.x0 + b.x1) / 2, (b.y0 + b.y1) / 2, r) && r.y1 - r.y0 >= 32 && r.x1 - r.x0 >= 32);
+      found++;
     }
     prs::Rect r;
-    assert(prs::under(c, 20, c.stFootY + 10, r) && r.y1 - r.y0 >= 30 && r.x1 - r.x0 >= 90);  // Back
-    assert(prs::under(c, c.smallBoard ? 150 : 200, c.stFootY + 10, r));                       // More
-    c.pages = 1;
-    assert(!prs::under(c, c.smallBoard ? 150 : 200, c.stFootY + 10, r));  // no More with one page
     c.screen = prs::SC_DISPLAY;
     c.titleH = scr::SMALL ? 28 : 40;
     assert(prs::under(c, 50, c.titleH + 20, r) && prs::under(c, 20, c.H - 10, r) && !prs::under(c, 50, c.titleH + 70, r));

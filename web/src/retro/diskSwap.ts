@@ -8,7 +8,7 @@ import type { ProgramRef } from './dos/vfs';
 
 type ProgramKind = ProgramRef['kind'];
 
-const SWAPS: ReadonlySet<ProgramKind> = new Set<ProgramKind>(['playhack', 'savehack', 'backup', 'gmcrack', 'vpic', 'egg', 'achieve', 'offline']);
+const SWAPS: ReadonlySet<ProgramKind> = new Set<ProgramKind>(['playhack', 'savehack', 'backup', 'gmcrack', 'vpic', 'egg', 'achieve', 'offline', 'scoot']);
 
 /** True when the disk in A: can change under `kind` without quitting it. */
 export function swapsDisks(kind: ProgramKind | undefined): boolean {
