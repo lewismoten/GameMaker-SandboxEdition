@@ -111,7 +111,8 @@
   right: calc(100% + 12px);
   bottom: 0;
   z-index: 6;
-  width: 230px;
+  width: 250px;
+  color-scheme: light;
   padding: 12px 14px 10px;
   border: 1px solid #b9b08f;
   border-radius: 4px;
