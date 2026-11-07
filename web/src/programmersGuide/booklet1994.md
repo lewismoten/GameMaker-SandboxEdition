@@ -157,13 +157,13 @@ Background blocks draw every pixel, so there color 255 is just a color. Each cha
 
 PLAYGAME chooses the nearest palette entry to these six-bit RGB targets. There is **no fixed index** for any of them. Suggested author-assigned indexes below are a convention, not a player requirement; keep them consistent in every scene if convenient.
 
-| Color | Suggested index | Red | Green | Blue |
-| ----- | --------------: | --: | ----: | ---: |
-| Black background | 0 | 0 | 0 | 0 |
-| Blue | 1 | 10 | 10 | 63 |
-| Red | 2 | 63 | 10 | 10 |
-| Yellow | 3 | 63 | 63 | 0 |
-| Purple | 4 | 50 | 10 | 50 |
+| Color            | Suggested index | Red | Green | Blue |
+| ---------------- | --------------: | --: | ----: | ---: |
+| Black background |               0 |   0 |     0 |    0 |
+| Blue             |               1 |  10 |    10 |   63 |
+| Red              |               2 |  63 |    10 |   10 |
+| Yellow           |               3 |  63 |    63 |    0 |
+| Purple           |               4 |  50 |    10 |   50 |
 
 Recommend color 0 be black. Without a backdrop, text pages and status, save, load and score screens use color 0 behind their matched colors. Include purple as well as blue, red and yellow so text stays readable.
 
@@ -192,14 +192,14 @@ Eight of the timer chip's 146 steps make one tick, and PLAYGAME uses that interr
 
 **Sizes by machine.** Running from a hard drive speeds up VOC reads and scene loads compared with floppy disk. CPU MHz alone cannot predict loading pauses. These are conservative authoring recommendations, not measured hardware limits:
 
-| Machine | Frequent effects on hard drive | Frequent effects on floppy |
-| ------- | ------------------------------ | -------------------------- |
-| 10–12 MHz 286 | aim for 4K or less | speaker preferred; try 1–2K |
-| 16–25 MHz 286 or 386SX | aim for 8–12K | try 2–4K |
-| 33 MHz 386DX | try 16–24K | keep near 4K |
-| 66 MHz 486 | try 24–32K | keep near 4K |
+| Machine                | Frequent effects on hard drive | Frequent effects on floppy  |
+| ---------------------- | ------------------------------ | --------------------------- |
+| 10–12 MHz 286          | aim for 4K or less             | speaker preferred; try 1–2K |
+| 16–25 MHz 286 or 386SX | aim for 8–12K                  | try 2–4K                    |
+| 33 MHz 386DX           | try 16–24K                     | keep near 4K                |
+| 66 MHz 486             | try 24–32K                     | keep near 4K                |
 
-For every machine, keep the complete VOC below 65,535 bytes, reserve longer clips for scene boundaries, and test the actual drive. A fast CPU does not make a floppy spin faster. These size recommendations are inferred from the blocking loader; they are not benchmark results.
+For every machine, keep the complete VOC below 65,535 bytes, reserve longer clips for scene boundaries, and test the actual drive. A fast CPU does not make a floppy spin faster. These sizes are inferred from the loader, not measured.
 
 ---
 
