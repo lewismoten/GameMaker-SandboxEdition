@@ -12,9 +12,9 @@ import { clear, inked } from './land';
 export function tunnelStone(pal: Pal, lit: 0 | 1 | 2): Pixels {
   const p = clear(pal);
   const s = pal.r('stone');
-  const g = pal.r('gold');
-  const base = lit === 2 ? g[1] : lit === 1 ? s[2] : s[0];
-  const line = lit === 2 ? g[0] : lit === 1 ? s[1] : pal.c('ink', 0);
+  const e = pal.r('ember');
+  const base = lit === 2 ? e[1] : lit === 1 ? s[1] : s[0];
+  const line = lit === 2 ? e[0] : pal.c('ink', 0);
   p.rect(0, 0, 20, 20, base);
   for (const y of [0, 10]) p.rect(0, y, 20, 1, line);
   for (const [x, y] of [
@@ -22,7 +22,7 @@ export function tunnelStone(pal: Pal, lit: 0 | 1 | 2): Pixels {
     [16, 10],
   ])
     p.rect(x, y, 1, 10, line);
-  if (lit) p.rect(1, 1, 4, 1, lit === 2 ? g[3] : s[3]).rect(8, 11, 5, 1, lit === 2 ? g[3] : s[3]);
+  if (lit) p.rect(1, 1, 4, 1, lit === 2 ? e[2] : s[2]).rect(8, 11, 5, 1, lit === 2 ? e[2] : s[2]);
   return p;
 }
 
@@ -41,19 +41,26 @@ export function tunnelFloor(pal: Pal, lit: boolean): Pixels {
   return p;
 }
 
-/** Air in the tunnel: black, or warm where a lantern glows (`lit` 1 far, 2 near). */
-export function tunnelAir(pal: Pal, lit: 0 | 1 | 2): Pixels {
+/** Air in the tunnel: dark, or warm where a lamp glows or Tess has walked (`lit` 1 far edge, 2 lit, 3 by a lamp). */
+export function tunnelAir(pal: Pal, lit: 0 | 1 | 2 | 3): Pixels {
   const p = clear(pal);
   if (!lit) return p;
-  const g = pal.r('gold');
+  // lamplight as a soft haze, not dots: an even checker of embers only a shade lighter than the dark air,
+  // fading with distance from a lamp (3 next to it, 2 the lit air and Tess's trail, 1 the far edge)
+  const e = pal.r('ember');
   for (let y = 0; y < 20; y++)
-    for (let x = 0; x < 20; x++) if (lit === 2 ? (x + y) % 2 === 0 : x % 2 === 0 && y % 2 === 0) p.set(x, y, lit === 2 ? g[1] : g[0]);
+    for (let x = 0; x < 20; x++) {
+      const on = (x + y) % 2 === 0;
+      if (lit === 3) p.set(x, y, on ? e[1] : e[0]);
+      else if (lit === 2 && on) p.set(x, y, e[0]);
+      else if (lit === 1 && on && y % 2 === 0) p.set(x, y, e[0]);
+    }
   return p;
 }
 
 /** A lantern on a hook: unlit (dark glass) or lit (a warm flame, glow dots round it). */
 export function lantern(pal: Pal, lit: boolean): Pixels {
-  const p = lit ? tunnelAir(pal, 2) : clear(pal);
+  const p = lit ? tunnelAir(pal, 3) : clear(pal);
   const s = pal.r('stone');
   const g = pal.r('gold');
   p.rect(9, 0, 2, 4, s[2]);

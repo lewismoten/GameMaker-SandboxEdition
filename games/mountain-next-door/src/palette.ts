@@ -1,5 +1,5 @@
 // THE MOUNTAIN MOVED NEXT DOOR's palette: the Starters' ramps with Tess's colors in the hero's ranges, the
-// mountain's own rock and moss, fog, water and a glow for the tunnel's glow-worms; and one look per time of the
+// mountain's own rock and moss, fog, water, a glow for the tunnel's glow-worms and a dim ember for its lamplight; and one look per time of the
 // day (the same blocks in other colors), from the foggy dawn to the next morning's sunrise.
 import { PaletteBuilder } from '@lewismoten/gamemaker-sandbox-tools/kit/palette';
 import { recolor, type Look } from '../../kit/starter/heroLook';
@@ -23,6 +23,8 @@ function extraRamps(b: PaletteBuilder): void {
   b.ramp('fog', 4, [170, 176, 196], [250, 252, 255], [214, 220, 236]);
   b.ramp('water', 5, [20, 60, 110], [190, 236, 250], [60, 140, 200]);
   b.ramp('glow', 5, [20, 60, 70], [230, 255, 220], [110, 220, 190]);
+  // lamplight in the dark tunnel: warm, but only a little lighter than the dark it falls on
+  b.ramp('ember', 3, [40, 26, 26], [120, 74, 40], [72, 44, 32]);
 }
 
 /** The base palette (the morning), with Tess in the hero's index ranges. */

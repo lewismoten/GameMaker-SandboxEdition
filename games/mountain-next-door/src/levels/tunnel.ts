@@ -104,16 +104,17 @@ export function levelTunnel(pal: Pal): Level {
   for (const [a, b, k] of T.low) for (let x = a; x <= b; x++) for (let y = tun[k].ceil + 1; y < tun[k].floor - 2; y++) m.set(x, y, 'tStone');
   // the ladder up from the low road to the mill race
   for (let y = UPPER.floor - 1; y < LOWER.floor; y++) m.set(T.ladder, y, 'ladder');
-  // old lamps on the wall, lit from the start, in rings of lit stone and warm air
+  // old lamps on the wall, lit from the start, in rings of warm air that fade with distance, and lit stone over them
   for (const [x, k] of T.lamps) {
     const { ceil, floor } = tun[k];
     m.set(x, ceil + 2, 'lanternLit');
-    for (let dx = -3; dx <= 3; dx++) m.set(x + dx, ceil, Math.abs(dx) <= 1 ? 'tStone2' : 'tStone1');
+    for (let dx = -2; dx <= 2; dx++) m.set(x + dx, ceil, Math.abs(dx) <= 1 ? 'tStone2' : 'tStone1');
     for (let dx = -3; dx <= 3; dx++)
       for (let y = ceil + 1; y < floor; y++) {
         const d = Math.hypot(dx, y - (ceil + 2));
         if (d > 0 && d <= 1.5) m.set(x + dx, y, 'glow2');
-        else if (d > 1.5 && d <= 3.2) m.set(x + dx, y, 'tAirLit');
+        else if (d > 1.5 && d <= 2.6) m.set(x + dx, y, 'tAirLit');
+        else if (d > 2.6 && d <= 3.7) m.set(x + dx, y, 'tAirFaint');
       }
   }
   for (const [x, k] of T.lanterns) m.set(x, tun[k].floor - 2, 'lantern');

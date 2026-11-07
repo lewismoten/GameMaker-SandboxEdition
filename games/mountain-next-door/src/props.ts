@@ -12,7 +12,7 @@
 //   wind       gustR0..2 (blows right), gustL0..2 (left) and gustU0..2 (an updraft)
 //   signs      arrowL/arrowR (a squirrel turns them: they swap on a clock), arrowU
 //   stars      starA/B/C (dark sky that lights a star at three times), faint, bright (twinkle), moonTL/TR/BL/BR
-//   tunnel     tStone (solid), tAir (dark; touched, it stays lit: tAirLit), tFloor, lantern (light it), glow1/2
+//   tunnel     tStone (solid), tAir (dark; touched, it stays lit: tAirLit), tAirFaint (a lamp's far edge, lit the same), tFloor, lantern (light it), glow2
 //   picnic     blanketL/M/R, matL/M/R
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { KEYS } from '../../kit/starter/blocks';
@@ -203,8 +203,9 @@ export function addProps(book: Book, pal: Pal, groups: readonly string[], o: Pro
     book.add('tStone1', tunnelStone(pal, 1), { solid: SOLID });
     book.add('tStone2', tunnelStone(pal, 2), { solid: SOLID });
     book.add('tAir', tunnelAir(pal, 0), { ...air, touch: 'tAirLit' });
-    book.add('tAirLit', tunnelAir(pal, 1), air);
-    book.add('glow2', tunnelAir(pal, 2), air);
+    book.add('tAirLit', tunnelAir(pal, 2), air);
+    book.add('glow2', tunnelAir(pal, 3), air);
+    book.add('tAirFaint', tunnelAir(pal, 1), { ...air, touch: 'tAirLit' });
     book.add('tFloor', tunnelFloor(pal, false), { solid: SOLID });
     book.add('tFloorLit', tunnelFloor(pal, true), { solid: SOLID });
     book.add('lantern', lantern(pal, false), { ...air, score: POINTS.lantern, touch: 'lanternLit' });
