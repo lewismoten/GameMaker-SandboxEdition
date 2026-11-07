@@ -664,8 +664,8 @@ static void saveSettings() {
   if (!f) return;
   // Older firmware reads these lines by their first letters ("pad" ...), so the newer keys share no prefix with the old ones and
   // come last: it skips them, and its own save drops them (the pad goes back to Low and Space to the corner).
-  f.printf("lefty=%d\nstylus=%d\npad=%d\ndead=%d\npalm=%d\ndebug=%d\nsound=%d\nraised=%d\njumpnear=%d\nfloat=%d\n", settings.lefty, settings.stylus, settings.padSize,
-           settings.dead, settings.palm, settings.debug, settings.sound, settings.raised, settings.jumpNear, settings.floatPad);
+  f.printf("lefty=%d\nstylus=%d\npad=%d\ndead=%d\npalm=%d\ndebug=%d\nsound=%d\nraised=%d\njumpnear=%d\nfloat=%d\narcs=%d\nwedge=%d\n", settings.lefty, settings.stylus, settings.padSize,
+           settings.dead, settings.palm, settings.debug, settings.sound, settings.raised, settings.jumpNear, settings.floatPad, settings.arcs, settings.wedge);
 }
 static void loadSettings() {
   settings = ctl::Settings();
@@ -696,6 +696,8 @@ static void loadSettings() {
     else if (k == "raised") settings.raised = v ? 1 : 0;
     else if (k == "jumpnear") settings.jumpNear = v ? 1 : 0;
     else if (k == "float") settings.floatPad = v ? 1 : 0;
+    else if (k == "arcs") settings.arcs = v ? 1 : 0;
+    else if (k == "wedge") settings.wedge = v < 0 ? 0 : v > 2 ? 2 : v;
   }
 }
 
@@ -1065,7 +1067,7 @@ static void drawPicker(bool clear = true, bool paging = false) {
     if(browsingCategories){int c=categorySlots[at];
       if(!category&&c==CONTINUE_SLOT){int g=resumeGame();uint8_t*raw=nullptr;if(g>=0){if(games[g].sd&&haveSD)mountSD();raw=preview(games[g]);}pk::continueTile(tft,scr::W,r,raw,resumeRec.e.level,g<0,true);free(raw);}
       else pk::tileLabel(tft,scr::W,r,category?subLabel(category,c):rootLabel(c),false,tileIcon(category,c),true);}
-    else {int i=catalog->matches[at];pk::Meta m;gameMeta(games[i],m);uint8_t*raw=preview(games[i]);bool starter=games[i].category==1;pk::thumbnail(tft,scr::W,r,raw,m.title[0]?m.title:m.dos,i==selected,true,catalog->pins.has(games[i].uid),starter?m.title:nullptr,starter?m.course:0);free(raw);}
+    else {int i=catalog->matches[at];pk::Meta m;gameMeta(games[i],m);uint8_t*raw=preview(games[i]);bool starter=games[i].category==1;pk::thumbnail(tft,scr::W,r,raw,m.title[0]?m.title:m.dos,i==selected,true,catalog->pins.has(games[i].uid),starter?m.title:nullptr,starter?m.course:0,games[i].scored&&games[i].score>=85);free(raw);}
   }
   if(!was)unmountSD();
   if(!count&&searchText[0])pk::drawSmallIcon(tft,17,16,68,true);
@@ -1089,6 +1091,10 @@ static void drawDetails() {
   pk::Tile clip={8,40,scr::W-16,pk::detailsPagesTop(scr::H)-44,0,0};
   size_t at=0,n=strlen(m.title);int y=44,cols=(scr::W-16)/6;
   while(at<n){char b[81];size_t take=n-at<(size_t)cols?n-at:cols;memcpy(b,m.title+at,take);b[take]=0;pk::clippedText(tft,clip,b,8,y,1,C_WHITE);at+=take;y+=12;}
+  if(games[selected].scored){  // a suggestion in plain words, never a verdict (the score is advisory)
+    const char*t=games[selected].score>=85?"Plays well on touch":games[selected].score<60&&games[selected].quick?"Needs quick, exact jumps":nullptr;
+    if(t&&y+18<=pk::detailsPagesTop(scr::H))pk::detailsTouch(tft,scr::W,y+2,t);
+  }
   bool pinned=catalog&&catalog->pins.has(games[selected].uid);
   pk::detailsPages(tft,scr::W,scr::H,detailsMask);
   pk::detailsFooter(tft,scr::W,scr::H,pinned);if(pinned)pk::detailsNote(tft,scr::W,scr::H,"In Favorites");
@@ -2208,10 +2214,16 @@ static bool menuTap(prs::Screen sc, int& tx, int& ty) {
   uint32_t now = millis();
   prs::Ev e = press.update(now, pts.n > 0, pts.n ? pts.x[0] : 0, pts.n ? pts.y[0] : 0, [&](int x, int y, prs::Rect& r) { return prs::under(c, x, y, r); });
   if (e == prs::PRESS) {
+    if (sc == prs::SC_PICKER && press.dy >= PK_BTN_Y && press.dx < 98) press.makeRepeatable();  // the page arrows
     if (sc == prs::SC_PAUSE) prs::drawPausePressed(tft, ovl::pauseHit(press.dx, press.dy));
     else prs::drawPressed(tft, press.r);
   }
   else if (e == prs::CANCEL) redrawMenu(sc);
+  else if (e == prs::NONE && press.repeatDue(now)) {  // a held page arrow turns pages (no click: it would rattle)
+    tx = press.dx;
+    ty = press.dy;
+    return true;
+  }
   else if (e == prs::ACT) {
     uint32_t wait = press.showLeft(now);
     if (wait) delay(wait);  // a very short tap still shows its pressed look
@@ -2363,13 +2375,20 @@ void loop() {
       else{if(!launchGame(selected))enterPicker();else wasDown=true;}}delay(5);return;
   }
   if (mode == SEARCH_SCREEN) {
+    static bool bkOn = false;
+    static uint32_t bkNext = 0;
     if (freshTap(tx, ty)) {
       char previous[sizeof searchText];memcpy(previous,searchText,sizeof previous);
       int n=strlen(searchText),top=58,step=(scr::H-top-38)/4;
       if(ty<32){if(tx<40){strcpy(searchText,savedSearch);searchAll=savedAll;browsingCategories=savedBrowsing;mode=PICKER;drawPicker();return;}searchAll=!searchAll;drawSearch();}
-      else if(ty>=scr::H-36){int b=tx*4/scr::W;if(b==0&&n<24){searchText[n]=' ';searchText[n+1]=0;}if(b==1&&n)searchText[n-1]=0;if(b==2)searchText[0]=0;if(b==3){page=0;selected=-1;browsingCategories=false;mode=PICKER;drawPicker();return;}}
+      else if(ty>=scr::H-36){int b=tx*4/scr::W;if(b==0&&n<24){searchText[n]=' ';searchText[n+1]=0;}if(b==1&&n){searchText[n-1]=0;bkOn=true;bkNext=now+prs::REPEAT_DELAY_MS;}if(b==2)searchText[0]=0;if(b==3){page=0;selected=-1;browsingCategories=false;mode=PICKER;drawPicker();return;}}
       else if(ty>=top&&ty<top+4*step&&n<24){searchText[n]="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"[(ty-top)/step*9+tx*9/scr::W];searchText[n+1]=0;}
       pk::drawSearchText(tft,32,searchText,previous);
+    }else if(bkOn){  // Backspace held: it repeats (400 ms, then 8 a second) while the finger stays on it
+      int n=strlen(searchText);
+      if(pts.n==0||pts.y[0]<scr::H-36||pts.x[0]*4/scr::W!=1)bkOn=false;
+      else if(now>=bkNext&&n){char previous[sizeof searchText];memcpy(previous,searchText,sizeof previous);searchText[n-1]=0;
+        bkNext=now-bkNext>prs::REPEAT_EVERY_MS?now+prs::REPEAT_EVERY_MS:bkNext+prs::REPEAT_EVERY_MS;pk::drawSearchText(tft,32,searchText,previous);}
     }delay(5);return;
   }
 #ifdef POCKET_CYD28

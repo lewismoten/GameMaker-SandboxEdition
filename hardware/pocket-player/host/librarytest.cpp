@@ -22,6 +22,17 @@ int main(int argc,char**argv) {
   assert(pk::cached(cache,100,123,"GAME.GMP"));assert(!pk::cached(cache,101,123,"GAME.GMP"));assert(!pk::cached(cache,100,124,"GAME.GMP"));assert(!pk::cached(cache,100,123,"OTHER.GMP"));
   cache.game.pos++;assert(!pk::cached(cache,100,123,"GAME.GMP"));
   assert(pk::crc32("123456789",9)==0xcbf43926);
+  {  // Hold to repeat (page arrows, Backspace): nothing until 400 ms, then every 125 ms; lifting after a repeat is no extra tap; sliding off stops it.
+    prs::Press p;bool on=true;auto look=[&](int,int,prs::Rect&r){r=prs::Rect(0,0,48,32);return on;};
+    assert(p.update(1000,true,10,10,look)==prs::PRESS);p.makeRepeatable();
+    assert(!p.repeatDue(1399)&&p.repeatDue(1400)&&!p.repeatDue(1524)&&p.repeatDue(1525)&&p.repeatDue(1650));
+    assert(!p.repeatDue(1700));assert(p.repeatDue(1775));  // a late poll does not fire a burst
+    assert(p.update(1800,false,0,0,look)==prs::NONE);  // the lift after repeating acts on nothing more
+    assert(p.update(2000,true,10,10,look)==prs::PRESS);  // a plain tap still acts on lift
+    assert(!p.repeatDue(5000));  // not repeatable: never
+    assert(p.update(2100,false,0,0,look)==prs::ACT);
+    assert(p.update(3000,true,10,10,look)==prs::PRESS);p.makeRepeatable();assert(p.update(3100,true,200,200,look)==prs::CANCEL&&!p.repeatDue(4000));
+  }
   std::string data=argv[1],out=argv[2];
   std::ifstream index(data+"/library.jsonl");std::string line;std::getline(index,line);
   std::vector<pk::Meta> records;
@@ -82,6 +93,21 @@ prs::drawPressed(fb,g);prs::drawPressed(fb,n);assert(!fb.clipped);save(fb,out+"/
       pk::thumbnail(fb,W,i,raw.data(),m.dos,i==0,false,false,m.title,m.course);  // Starters carry a text caption (main.cpp)
     }
     assert(!fb.clipped);save(fb,out+"/thumbnails-"+std::to_string(W)+".ppm");
+    // The hand mark (a score of 85 or more) sits top left of a tile, beside the favorite star top right; both are drawn over the picture.
+    for(int i=0;i<6;i++) {
+      auto&m=records[i];uint32_t off,len;assert(pak.find(m.thumb,&off,&len));std::vector<uint8_t>b(len),raw(pk::THUMB_RAW);assert(readAt(f,off,b.data(),len));
+      z_stream z={};assert(inflateInit2(&z,-15)==Z_OK);z.next_in=b.data()+4;z.avail_in=len-4;z.next_out=raw.data();z.avail_out=raw.size();assert(inflate(&z,Z_FINISH)==Z_STREAM_END);inflateEnd(&z);
+      pk::thumbnail(fb,W,i,raw.data(),m.dos,false,false,i==1,i==2?m.title:nullptr,i==2?m.course:0,i%2==0);
+    }
+    assert(!fb.clipped);save(fb,out+"/touch-marks-"+std::to_string(W)+".ppm");
+    for(int i:{0,2,4}){auto r=pk::tile(W,i);bool marked=true;for(int sy=0;sy<16;sy++)for(int sx=0;sx<16;sx++){uint8_t v=pk::ICONS[16][sy*16+sx];if(v&&fb.px[(r.y+3+sy)*W+r.x+3+sx]!=pk::ICON_PALETTE[v])marked=false;}assert(marked);}  // the hand's own colors, drawn over the picture
+    {auto r=pk::tile(W,3);bool same=true;for(int sy=0;sy<16;sy++)for(int sx=0;sx<16;sx++){uint8_t v=pk::ICONS[16][sy*16+sx];if(v&&fb.px[(r.y+3+sy)*W+r.x+3+sx]!=pk::ICON_PALETTE[v])same=false;}assert(!same);}  // an unmarked tile has no hand
+    // Details: the plain-words touch line (what main.cpp's drawDetails adds under the title).
+    for(const char*t:{"Plays well on touch","Needs quick, exact jumps"}){
+      fb.clear();pk::clearTiles(fb,W);fb.fillRect(0,0,W,fb.H,pk::C_BLACK);
+      pk::detailsTouch(fb,W,68,t);pk::detailsPages(fb,W,fb.H,7);pk::detailsFooter(fb,W,fb.H,false);assert(!fb.clipped);
+      save(fb,out+(t[0]=='P'?"/details-touch-good-":"/details-touch-quick-")+std::to_string(W)+".ppm");
+    }
     // The home page with Continue first (main.cpp CONTINUE_SLOT): the game's picture and level, then the card-out state.
     for(int cardOut=0;cardOut<2;cardOut++) {
       auto&m=records[2];uint32_t off,len;assert(pak.find(m.thumb,&off,&len));std::vector<uint8_t>b(len),raw(pk::THUMB_RAW);assert(readAt(f,off,b.data(),len));

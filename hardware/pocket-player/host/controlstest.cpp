@@ -224,6 +224,77 @@ static void floatingCheck() {
   }
 }
 
+
+// Touch comfort, second pass: jump arcs as a setting, the wedge widths, the dead strip at the glass edge.
+static void comfortCheck() {
+  Need jn = platformer(); needAdd(jn, S_SPACE, "Jump");
+  // The keys held by a thumb that lands `deg` degrees above level, at 3/4 of the pad's radius, on the Right (side 1) or Left (-1).
+  auto keysAt = [&](Settings s, int deg, int side) {
+    Run r(s, jn); auto p = r.c.L.pad;
+    int rad = p.r * 3 / 4;
+    r.touch(1, p.cx + side * (int)std::lround(rad * std::cos(deg * M_PI / 180)), p.cy - (int)std::lround(rad * std::sin(deg * M_PI / 180)));
+    r.wait(200);
+    std::string k = r.held[side > 0 ? S_RIGHT : S_LEFT] ? "H" : "";
+    if (r.held[S_SPACE]) k += "J";
+    if (r.held[S_UP]) k += "U";
+    return k;
+  };
+  const int degs[] = {15, 25, 33, 45, 50, 60, 65, 75};
+  const char* want[3][8] = {
+      {"H", "H", "H", "HJ", "HJ", "U", "U", "U"},      // Narrow: level to 35 degrees, upright from 55
+      {"H", "H", "HJ", "HJ", "HJ", "HJ", "U", "U"},    // Normal: 27 and 63 (today's)
+      {"H", "HJ", "HJ", "HJ", "HJ", "HJ", "HJ", "U"}}; // Wide: 20 and 70
+  for (int w = 0; w < 3; w++) for (int side : {-1, 1}) {
+    Settings s; s.arcs = 1; s.wedge = w; s.lefty = side < 0;
+    std::string got, exp;
+    for (int i = 0; i < 8; i++) { got += keysAt(s, degs[i], side) + " "; exp += std::string(want[w][i]) + " "; }
+    char name[96];
+    snprintf(name, sizeof name, "jump wedge %s, %s side: 15 25 33 45 50 60 65 75 degrees", w == 0 ? "Narrow" : w == 1 ? "Normal" : "Wide", side < 0 ? "left" : "right");
+    check(name, got == exp, "got " + got + "want " + exp);
+  }
+  {  // The setting: off, the upper corner is Right + Up; on, Right + Jump. Both boards, whichever the default.
+    Settings off; off.arcs = 0; Settings on; on.arcs = 1;
+    check("jump arcs off: upper corner presses the arrow and Up", keysAt(off, 45, 1) == "HU", keysAt(off, 45, 1));
+    check("jump arcs on: upper corner presses the arrow and Jump", keysAt(on, 45, 1) == "HJ", keysAt(on, 45, 1));
+    Run r(on, jn); check("layout shows the arcs only when the game jumps and the setting is on", r.c.L.arcs && !Run(off, jn).c.L.arcs && !Run(on, platformer()).c.L.arcs);
+    Settings dflt;
+#ifdef POCKET_CYD28
+    check("jump arcs default: on for the 2.8 inch board", dflt.arcs == 1);
+#else
+    check("jump arcs default: off for the 3.5 inch board", dflt.arcs == 0);
+#endif
+    check("jump wedge default is Normal", dflt.wedge == 1);
+    Settings wide = on; wide.wedge = 2; Need walk = needs(true, true, true, true, false, false);
+    Run noJump(wide, walk); auto p = noJump.c.L.pad;
+    noJump.touch(1, p.cx + p.r * 3 / 4 * 7 / 10, p.cy - p.r * 3 / 4 * 7 / 10); noJump.wait(200);
+    check("a game with no Jump label keeps two arrows at the corner, whatever the wedge", noJump.held[S_RIGHT] && noJump.held[S_UP] && !noJump.held[S_SPACE], noJump.log);
+  }
+#ifdef POCKET_CYD28
+  {  // The glass edge: a new touch in the outer 4 px is a drifting reading and presses nothing; a held finger is kept inside.
+    Settings s; Run r(s, jn); auto p = r.c.L.pad;
+    r.touch(1, 2, p.cy); r.wait(200);
+    check("a new touch at the glass edge presses nothing", !r.held[S_LEFT] && !r.held[S_RIGHT] && r.log.empty(), r.log);
+    r.up(1); r.wait(100);
+    r.touch(1, p.cx - p.r + 4, p.cy); r.wait(200);
+    check("a touch just inside the strip still works", r.held[S_LEFT], r.log);
+    r.touch(1, 1, p.cy); r.wait(200);
+    check("a held finger that drifts into the strip stays held", r.held[S_LEFT], r.log);
+    r.up(1); r.wait(300);
+    Run m(s, jn); m.touch(1, 3, 3); m.wait(100); m.up(1); m.wait(100);
+    check("a tap in the corner strip is not MENU", m.c.takeEvent() == EV_NONE);
+    m.touch(1, 12, 12); m.wait(100); m.up(1); m.wait(100);
+    check("a tap on MENU just inside the strip is MENU", m.c.takeEvent() == EV_MENU);
+    Run b(s, jn); b.touch(1, 160, H - 2); b.wait(100);
+    check("a new touch at the bottom edge is ignored", b.log.empty() && b.c.takeEvent() == EV_NONE, b.log);
+  }
+#else
+  { // The 3.5 inch panel is capacitive: no strip, a touch at the edge still counts (Menu is at 4,4).
+    Settings s; Run m(s, jn); m.touch(1, 4, 4); m.wait(100); m.up(1); m.wait(100);
+    check("the 3.5 inch board has no dead strip", m.c.takeEvent() == EV_MENU);
+  }
+#endif
+}
+
 int main() {
   {
     gtr::Report r; ReportBus bus;
@@ -327,6 +398,7 @@ int main() {
   }
 
   layoutCheck();
+  comfortCheck();
   { // Near pad and Raised: a thumb held on Right rocks up onto Space (Jump) and back, Right staying held throughout
     Settings s; s.jumpNear = 1; s.raised = 1;
     for (int lefty = 0; lefty < 2; lefty++) {

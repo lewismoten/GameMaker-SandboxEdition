@@ -65,7 +65,18 @@ struct Settings {
   uint8_t raised = 0;    // pad position: 0 low, 1 raised (lifted 30 px, 20 on the 2.8 inch board, for a thumb that rests higher)
   uint8_t jumpNear = 0;  // Space (Jump): 0 in the corner, 1 just above and beside the pad, so one thumb rocks between them
   uint8_t floatPad = 0;  // pad: 0 fixed (Low or Raised), 1 floating (centers where the thumb lands)
+#ifdef POCKET_CYD28
+  uint8_t arcs = 1;      // jump arcs: the upper wedges send Left or Right with Jump (on by default where one thumb does both)
+#else
+  uint8_t arcs = 0;      // the 3.5 inch board has two-finger touch, so the arcs are an option there
+#endif
+  uint8_t wedge = 1;     // how wide the jump wedge is: 0 narrow (about 20 degrees), 1 normal (37), 2 wide (50)
 };
+// The jump wedge's slopes (times 100): a finger is "level" within `level` of the horizontal, "upright" within `upright` of the
+// vertical, and in between is the wedge (Left or Right with Jump); a direction already held keeps to the wider `held` slope.
+struct WedgeSlope { int level, held; };
+inline WedgeSlope wedgeSlope(int w) { static const WedgeSlope t[3] = {{70, 80}, {50, 70}, {36, 52}}; return t[w > 2 ? 1 : w]; }
+constexpr int EDGE_PX = 4;  // resistive glass: a new touch this near the edge of the panel is a drifting reading, not a finger
 
 // Which controls a game needs (from its controls.json): the arrows, Space, Enter, and any other keys.
 struct Need {
@@ -163,6 +174,7 @@ struct Layout {
   Rect tile[MAXEXTRA];
   int deadR;
   int tileRows;
+  bool arcs = false;  // the pad shows jump arcs (the game has a Jump button and the setting is on)
 };
 
 // Where the chips end and the extra-key tiles begin and step (main.cpp redraws that strip when a tile changes).
@@ -208,6 +220,7 @@ inline Layout makeLayout(const Settings& s, const Need& need) {
     L.enter.cx = W - L.enter.cx;
   }
   L.home = L.pad;
+  L.arcs = s.arcs && need.jump;
   const int zoneW = W * 40 / 100;
   L.zone = s.lefty ? Rect{W - zoneW, 0, W, scr::VIEW_H} : Rect{0, 0, zoneW, scr::VIEW_H};
   L.tileRows = (need.nextra + 5) / 6;
@@ -256,7 +269,20 @@ class Controls {
   }
 
   // One poll: the contacts now on the glass (screen coordinates). `now` in ms.
-  void update(const int* ids, const int* xs, const int* ys, const int* sizes, int n, uint32_t now) {
+  void update(const int* ids0, const int* xs0, const int* ys0, const int* sizes0, int n0, uint32_t now) {
+    // On resistive glass a reading in the outer EDGE_PX drifts: it cannot start a touch, and a finger already down is held inside.
+    int ids[MAXCONTACT], xs[MAXCONTACT], ys[MAXCONTACT], sizes[MAXCONTACT], n = 0;
+    for (int i = 0; i < n0 && n < MAXCONTACT; i++) {
+      int x = xs0[i], y = ys0[i];
+#ifdef POCKET_CYD28
+      if (x < EDGE_PX || y < EDGE_PX || x >= W - EDGE_PX || y >= H - EDGE_PX) {
+        if (find(ids0[i]) < 0 && !nearGhost(x, y)) continue;
+        x = x < EDGE_PX ? EDGE_PX : x >= W - EDGE_PX ? W - EDGE_PX - 1 : x;
+        y = y < EDGE_PX ? EDGE_PX : y >= H - EDGE_PX ? H - EDGE_PX - 1 : y;
+      }
+#endif
+      ids[n] = ids0[i]; xs[n] = x; ys[n] = y; sizes[n] = sizes0[i]; n++;
+    }
     bool seen[MAXCONTACT] = {};
     int match[MAXCONTACT];  // the slot each contact belongs to
     // 1. Contacts the chip still reports under the same id (a ghost that comes back under its id is a held finger again).
@@ -340,6 +366,10 @@ class Controls {
     L.pad.cy = y < m ? m : y > scr::VIEW_H - m ? scr::VIEW_H - m : y;
   }
 
+  bool nearGhost(int x, int y) const {
+    for (const auto& g : slot) if (g.id >= 0 && g.ghost && (x - g.x) * (x - g.x) + (y - g.y) * (y - g.y) <= ADOPT_PX * ADOPT_PX) return true;
+    return false;
+  }
   int find(int id) const { for (int k = 0; k < MAXCONTACT; k++) if (slot[k].id == id) return k; return -1; }
 
   int open(int id, int x, int y, int size, uint32_t now) {
@@ -465,14 +495,12 @@ class Controls {
     uint8_t d = padDirs;
     if (!havePad && latch) d |= latch < 0 ? 1 : 2;
     padDirs = d;
-#ifdef POCKET_CYD28
-    // One resistive contact can steer and jump. Keep native diagonal bindings intact.
-    if (need.jump && !padDiag && (d & 4) && (d & 3)) {
+    // One contact can steer and jump (the 2.8 inch board's default, a setting on the 3.5 inch). Keep native diagonal bindings intact.
+    if (set.arcs && need.jump && !padDiag && (d & 4) && (d & 3)) {
       down[S_SPACE] = true; btnDown |= 1;
       if (!sent[S_SPACE]) press(S_SPACE, now);
       d &= ~4;  // this wedge jumps instead of pressing Up
     }
-#endif
     if (padDiag) down[padDiag] = true;   // a diagonal sector sends the game's own diagonal key, not two arrows
     else {
       if (d & 1 && need.left) down[S_LEFT] = true;
@@ -528,13 +556,12 @@ class Controls {
     }
     diagHeld = -1;
     // sector slopes: level within 27 degrees (tan 0.5), widened to 35 degrees (0.7) for the one already held
-    bool h = ay * 100 <= ax * (horiz && !vert ? 70 : 50);
-    bool v = ax * 100 <= ay * (vert && !horiz ? 70 : 50);
+    WedgeSlope ws = set.arcs && need.jump && dy < 0 ? wedgeSlope(set.wedge) : wedgeSlope(1);  // only the upper wedges are adjustable
+    bool h = ay * 100 <= ax * (horiz && !vert ? ws.held : ws.level);
+    bool v = ax * 100 <= ay * (vert && !horiz ? ws.held : ws.level);
     bool useH = h || (!v), useV = v || (!h);
     if (!need.up && !need.down) {
-#ifdef POCKET_CYD28
-      if (!(need.jump && dy < 0 && useH && useV))
-#endif
+      if (!(set.arcs && need.jump && dy < 0 && useH && useV))
       { useH = true; useV = false; }
     }
     if (!need.left && !need.right) { useH = false; useV = true; }
