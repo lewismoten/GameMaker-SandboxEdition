@@ -61,6 +61,12 @@ int main(int argc, char** argv) {
   a.attach(w, cfg, reader, inflateRaw); a.lines = &stdioLines;
   snprintf(a.cfgName, sizeof a.cfgName, "%s", name.c_str());
   assert(w.begin()); int normalCalls = calls; a.release();
+  a.lines = &missing; a.filesLevel = w.lvlIdx = -1;
+  assert(!w.begin()); a.release();
+  a.lines = &stdioLines; calls = 0; assert(w.begin()); a.release();
+  assert(!gm::parseCfg("title corrupt\nlevel invalid\n", w, cfg));
+  assert(gm::parseCfgFile(stdioLines, name.c_str(), w, cfg));
+  puts("PASS cfg removed at level reload and malformed header; retry=ok");
   // Every mandatory asset read, after successful initial load (removed card at the next load).
   // Sound is optional by design, so its failed read is permitted, but must not retain a stale pointer.
   for (int mode = 1; mode <= 5; mode++) for (int at = 1; at <= normalCalls; at++) {
