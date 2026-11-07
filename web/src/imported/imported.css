@@ -253,6 +253,7 @@ dialog.modal .ir-ratings .ir-rating {
   gap: 4px;
   overflow: hidden;
   white-space: nowrap;
+  padding-right: 28px; /* clear of the more button */
 }
 .tile-tag {
   flex: none;
