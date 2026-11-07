@@ -225,6 +225,7 @@
     position: fixed;
     right: 16px;
     top: 16px;
+    bottom: auto;
     left: 16px;
     z-index: 50;
     width: auto;
