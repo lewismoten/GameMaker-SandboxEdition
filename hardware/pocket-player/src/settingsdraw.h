@@ -35,7 +35,7 @@ inline Info info(Item i) {
     case I_SMALLER: return {"Smaller picture", "Off|On", ""};
     case I_DEBUG: return {"Status numbers", "Off|On", ""};
     case I_LED: return {"Status LED", "Off|On", ""};
-    case I_PANEL: return {"Panel", "Panel setup", ""};
+    case I_PANEL: return {"Panel", "Setup|Picture", ""};
     case I_SOUND: return {"Sound", "Off|Low|Medium|High", ""};
     case I_CLICKS: return {"Button clicks", "Off|On", ""};
     case I_RESCAN: return {"Library", "Rescan card", ""};

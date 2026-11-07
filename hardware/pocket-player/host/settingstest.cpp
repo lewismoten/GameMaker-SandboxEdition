@@ -10,6 +10,7 @@ namespace textdatum_t { constexpr int middle_center = 4, top_left = 0; }
 #include "canvas.h"
 #include "pressrect.h"
 #include "settingsdraw.h"
+#include "picturetune.h"
 
 static int failures = 0;
 static void fail(const std::string& m) { printf("FAIL  %s\n", m.c_str()); failures++; }
@@ -164,6 +165,46 @@ int main(int argc, char** argv) {
     shot(dir, std::string("settings-") + wn + "-Card-paused", v, st::Values());
     shots += 4;
   }
+#ifdef POCKET_CYD28
+  {  // Settings, Display, Panel, Picture (picturetune.h): chips 32 x 32 or more, apart, found by the hit table; the commands
+    std::vector<pt::Box> all = {pt::backBox()};
+    for (int r = 0; r < 2; r++) for (int k = 0; k < 4; k++) all.push_back(pt::chipBox(r, k));
+    for (size_t i = 0; i < all.size(); i++) {
+      const pt::Box& b = all[i];
+      buttons++;
+      if (b.x1 - b.x0 < 32 || b.y1 - b.y0 < 32) fail("picture: a button under 32 x 32");
+      if (b.x0 < 0 || b.y0 < 0 || b.x1 > scr::W || b.y1 > scr::H) fail("picture: a button off screen");
+      for (size_t j = 0; j < i; j++) if (all[j].x0 < b.x1 && b.x0 < all[j].x1 && all[j].y0 < b.y1 && b.y0 < all[j].y1) fail("picture: buttons overlap");
+      pt::Hit h = pt::hit((b.x0 + b.x1) / 2, (b.y0 + b.y1) / 2);
+      pt::Kind want = i == 0 ? pt::K_BACK : i <= 4 ? pt::K_GAMMA : pt::K_TUNE;
+      if (h.kind != want || (i && h.k != (int)((i - 1) % 4))) fail("picture: the hit table misses a button");
+    }
+    if (pt::cardBox().y1 > pt::rowY(0) || pt::cardBox().y0 < pt::BAR_H) fail("picture: the test card overlaps the bar or the rows");
+    if (!pt::isDefault(0, 0) || pt::isDefault(1, 0) || pt::isDefault(0, 2)) fail("picture: isDefault");
+    for (int d = 0; d < 2; d++)
+      for (int t = 0; t < pt::TUNES; t++)
+        for (int gm = 0; gm < pt::GAMMAS; gm++) {
+          uint8_t b[80];
+          int n = pt::commands(d != 0, gm, t, b), at = 0, gamSeen = 0;
+          while (at < n && b[at] != 0xFF) {
+            if (b[at] == 0xE0 || b[at] == 0xE1) { if (b[at + 1] != (d ? 14 : 15)) fail("picture: a gamma table of the wrong length for its driver"); }
+            if (b[at] == 0x26) { gamSeen = 1; if (b[at + 2] != (1 << gm)) fail("picture: GAMSET value"); }
+            at += 2 + b[at + 1];
+          }
+          if (at != n - 1 || !gamSeen) fail("picture: a command list does not end where it should or has no GAMSET");
+        }
+    static const char* const drv[2] = {"ILI9341", "ST7789"};
+    for (int gm : {0, 2})
+      for (int t : {0, 1}) {
+        Canvas c(scr::W, scr::H);
+        pt::screen(c, gm, t, drv[1]);
+        char name[64];
+        snprintf(name, sizeof name, "picture-%s-g%d-t%d", wn, gm + 1, t);
+        if (!dir.empty()) writePng(dir + "/" + name + ".png", c.W, c.H, rgbOf(c));
+        shots++;
+      }
+  }
+#endif
   printf("settingstest (%s): %s; %d buttons checked, %d renders%s%s\n", wn, failures ? "FAILURES" : "passed", buttons, shots, dir.empty() ? "" : " in ", dir.c_str());
   return failures ? 1 : 0;
 }
