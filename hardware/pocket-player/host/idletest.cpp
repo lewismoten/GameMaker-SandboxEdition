@@ -171,6 +171,14 @@ int main() {
       assert(prs::under(c, (x0 + x1) / 2, (y0 + y1) / 2, r) && r.x0 == x0 && r.y1 == y1);
       found++;
     }
+    {  // the Favorite star on the title line: at least 24 x 24, inside the box, clear of the six buttons
+      int x0, y0, x1, y1;
+      ovl::pauseCell(ovl::PA_STAR, x0, y0, x1, y1);
+      prs::Rect r;
+      assert(x1 - x0 >= 24 && y1 - y0 >= 24 && x1 <= scr::W && y0 >= 0 && y1 <= ovl::PAUSE.y0);
+      assert(prs::under(c, (x0 + x1) / 2, (y0 + y1) / 2, r) && r.x0 == x0 && r.y1 == y1);
+      assert(ovl::pauseHit((x0 + x1) / 2, (y0 + y1) / 2) == ovl::PA_STAR && ovl::pauseHit((x0 + x1) / 2, (y0 + y1) / 2, false) == -1);
+    }
     c.screen = prs::SC_SETTINGS;
     c.stY0 = scr::SMALL ? 30 : 42;
     c.stStep = 34;

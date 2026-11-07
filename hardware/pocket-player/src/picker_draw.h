@@ -81,6 +81,7 @@ template <class G> void drawKeyboard(G& tft, int W, int H, int titleH, const cha
 // Shared six-slot layout and clipped bitmap text: no font wrapping or page framebuffer.
 #include "softfont.h"
 #include "icons_data.h"
+#include "favorites.h"
 namespace pk {
 struct Tile { int x,y,w,h,pw,ph; };
 inline Tile tile(int W,int i) { bool s=W==320;return {(s?12:16)+i%3*(s?100:152),(s?36:40)+i/3*(s?84:120),s?96:144,s?80:112,s?96:144,s?60:90}; }
@@ -117,13 +118,36 @@ template<class G> void tileLabel(G&g,int W,int i,const char*label,bool selected=
   for(int line=0;line<count;line++,y+=10*scale)clippedText(g,r,lines[line],r.x+(r.w-(int)strlen(lines[line])*6*scale)/2,y,scale,C_WHITE);
 }
 template<class G> void clearTiles(G&g,int W) {g.fillRect(0,32,W,footer(W)-32,C_BLACK);}
-template<class G> void thumbnail(G&g,int W,int i,const uint8_t*raw,const char*dos,bool selected,bool panelOrder=false) {
+// A favorite's mark: a yellow star with a dark ring in the tile's top-right corner (over the picture's sky, never its middle).
+template<class G> void starMark(G&g,int W,int i) {auto r=tile(W,i);int R=W==320?7:9;drawStar(g,r.x+r.w-R-3,r.y+R+3,R+2,C_BLACK);drawStar(g,r.x+r.w-R-3,r.y+R+3,R,C_YELLOW);}
+template<class G> void thumbnail(G&g,int W,int i,const uint8_t*raw,const char*dos,bool selected,bool panelOrder=false,bool pinned=false) {
   auto r=tile(W,i);g.fillRect(r.x,r.y,r.w,r.h,C_DARK);int y0=r.y+(r.h-r.ph)/2;
   if(raw){uint16_t row[144];for(int y=0;y<r.ph;y++){
     for(int x=0;x<r.pw;x++){int idx=raw[524+(y*60/r.ph)*96+x*96/r.pw];uint16_t c=raw[12+idx*2]|(raw[13+idx*2]<<8);row[x]=panelOrder?(c<<8)|(c>>8):c;}
     g.pushImage(r.x,y0+y,r.pw,1,row);
   }}else clippedText(g,r,dos,r.x+(r.w-(int)strlen(dos)*6)/2,r.y+r.h/2-4,1,C_WHITE);  // no title picture: the DOS name; a picture is shown whole
   g.drawRect(r.x,r.y,r.w,r.h,selected?C_YELLOW:C_GRAY);
+  if(pinned)starMark(g,W,i);
+}
+// Details' footer: Back, the Favorite star (a toggle: outlined, or filled when the game is a favorite) and Play, in thirds.
+inline int detailsButton(int W,int x) {return x<W/3?0:x<2*W/3?1:2;}
+template<class G> void detailsFooter(G&g,int W,int H,bool pinned) {
+  int y0=H-38;drawButton(g,0,y0,W/3-2,H,"Back");drawButton(g,2*W/3,y0,W,H,"Play");drawButton(g,W/3,y0,2*W/3-2,H,"");
+  bool s=W==320;int scale=s?1:2,R=s?9:11,tw=8*6*scale,x=W/3+(W/3-2-(2*R+6+tw))/2,cy=(y0+H)/2;
+  drawStar(g,x+R,cy,R,C_YELLOW,!pinned,C_DARK);
+  Tile clip={W/3,y0,W/3-2,38,0,0};clippedText(g,clip,"Favorite",x+2*R+6,cy-4*scale,scale,pinned?C_YELLOW:C_WHITE);
+}
+// An empty Favorites page: how to star a game, or (hidden) that the starred games are on a card that is not in.
+template<class G> void emptyFavorites(G&g,int W,bool hidden) {
+  Tile clip={8,40,W-16,80,0,0};int scale=W==320?1:2;
+  drawStar(g,24,64,12,C_YELLOW,true,C_BLACK);
+  clippedText(g,clip,hidden?"Your favorites are on a card":"No favorites yet.",44,48,scale,C_WHITE);
+  clippedText(g,clip,hidden?"that is not in right now.":"Open a game's Details",44,48+10*scale,scale,C_WHITE);
+  if(!hidden)clippedText(g,clip,"and tap the star.",44,48+20*scale,scale,C_WHITE);
+}
+// A line under the title in Details: whether the game is a favorite, or that the list is full.
+template<class G> void detailsNote(G&g,int W,int H,const char*note) {
+  Tile clip={8,H-58,W-16,16,0,0};g.fillRect(8,H-58,W-16,16,C_BLACK);clippedText(g,clip,note,8,H-54,1,C_YELLOW);
 }
 // The home page's first tile, Continue: the game's title picture (raw: its thumbnail, or null), "Continue" and the level
 // (0 based). cardOut: the game is on a card that is not in, so the tile says to put it back instead.

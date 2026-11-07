@@ -55,9 +55,9 @@ inline bool under(const Ctx& c, int x, int y, Rect& r) {
       }
       return r.has(x, y);
     }
-    case SC_DETAILS:
+    case SC_DETAILS:  // Back, Favorite, Play (picker_draw.h detailsFooter)
       if (y < H - 38) return false;
-      r = x < W / 2 ? Rect{0, H - 38, W / 2 - 2, H} : Rect{W / 2, H - 38, W, H};
+      r = x < W / 3 ? Rect{0, H - 38, W / 3 - 2, H} : x < 2 * W / 3 ? Rect{W / 3, H - 38, 2 * W / 3 - 2, H} : Rect{2 * W / 3, H - 38, W, H};
       return r.has(x, y);
     case SC_DISPLAY:
       if (y >= H - 38) r = {6, H - 38, 100, H - 2};
@@ -128,6 +128,7 @@ struct Press {
 };
 // The pause menu's pressed look: the whole button yellow with its label in black (the same button, drawn hot).
 template <class G> void drawPausePressed(G& g, int i) {
+  if (i == ovl::PA_STAR) { ovl::pauseStar(g, false, true); return; }
   int x0, y0, x1, y1;
   ovl::pauseCell(i, x0, y0, x1, y1);
   ovl::button(g, x0, y0, x1, y1, ovl::pauseItem(i), true, ovl::C_DARK, ovl::PAUSE.textSize);
