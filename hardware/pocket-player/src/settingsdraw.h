@@ -105,6 +105,7 @@ struct CardInfo {
   char state[32] = "";     // the home page's card chip text: "Card: 12 games", "No card", ...
   char space[40] = "";     // "Card: 14.2 GB free of 14.8 GB", "Measuring free space..."
   char flash[40] = "";     // "Built-in: 380 KB free"
+  char board[40] = "";     // "Board C fw 1a2b3c4 2026-11-05": which board this is (its letter, set over serial with ID set)
   bool fromPause = false;  // Rescan waits for the game list
 };
 
@@ -363,6 +364,7 @@ template <class G_> void cardLines(G_& g, const CardInfo& c) {
   if (c.state[0]) { text(g, 6, y, c.state, sz, C_WHITE, C_BLACK); y += step; }
   if (c.space[0]) { text(g, 6, y, c.space, sz, C_WHITE, C_BLACK); y += step; }
   if (c.flash[0]) { text(g, 6, y, c.flash, sz, C_GRAY, C_BLACK); y += step; }
+  if (c.board[0]) { text(g, 6, y, c.board, sz, C_GRAY, C_BLACK); y += step; }
   if (c.fromPause) text(g, 6, G.cardRowY + G.lineChipH + 8, "Rescan from the game list (a game is paused).", 1, C_GRAY, C_BLACK);
 }
 // The whole screen. `L`, `nd`, `dirs`, `btn` and `held` are the preview's (Controls only).

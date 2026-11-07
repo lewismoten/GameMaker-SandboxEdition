@@ -54,6 +54,7 @@ static void shot(const std::string& dir, const std::string& name, const st::View
   snprintf(card.state, sizeof card.state, "Card: 12 games");
   snprintf(card.space, sizeof card.space, v.fromPause ? "Free space: see it from the game list" : "Card: 14.2 GB free of 14.8 GB");  // main.cpp's words
   snprintf(card.flash, sizeof card.flash, "Built-in: 380 KB free");
+  snprintf(card.board, sizeof card.board, "Board C fw 1a2b3c4 2026-11-07");
   card.fromPause = v.fromPause;
   ctl::Layout L = ctl::makeLayout(vals.s, demoNeed());
   st::screen(c, v, vals, card, L, demoNeed(), lit.dirs, lit.btn, lit.held);

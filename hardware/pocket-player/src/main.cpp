@@ -1130,6 +1130,7 @@ static void drawSettings() {
     memcpy(card.space, cardSpace, sizeof card.space);
     st::sizeText(card.flash, sizeof card.flash, "Built-in", LittleFS.totalBytes() - LittleFS.usedBytes(), 0);
     card.fromPause = setView.fromPause;
+    fwLabel(card.board, sizeof card.board, false);
   }
   if (setView.tab == st::T_CONTROLS) controls.configure(settings, previewNeed());
   pvHeld = 0;
@@ -1854,6 +1855,10 @@ void setup() {
   {
     char nb[16];
     Serial.printf("display mode %s turn %d soft %d\n", panelName(nb), turnIdx + 1, softIdx);
+    uint32_t dd = 0, d3 = 0;
+    uint8_t id[3];
+    tftHw.readIds(dd, id, d3);
+    Serial.printf("panel id 04=%08lX da=%02X db=%02X dc=%02X d3=%08lX\n", (unsigned long)dd, id[0], id[1], id[2], (unsigned long)d3);
   }
 #else
   if (haveGT) snprintf(line, sizeof line, "Touch: GT911 at 0x%02X", gt.addr);
