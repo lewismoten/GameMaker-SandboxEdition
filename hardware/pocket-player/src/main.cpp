@@ -655,6 +655,7 @@ static void saveSettings() {
   if (pref.begin("pocket", false)) {
     pref.putBool("smaller", smallerPicture); pref.putBool("sticky", settings.sticky);
     pref.putUChar("bright", brightStep); pref.putBool("clicks", clicksOn); pref.putBool("led", ledOn);
+    pref.putUChar("sound", settings.sound);  // also in NVS, so a reflash of the file system keeps the chosen volume
     pref.end();
   }
   File f = LittleFS.open("/settings.txt", "w");
@@ -667,9 +668,14 @@ static void saveSettings() {
 static void loadSettings() {
   settings = ctl::Settings();
   Preferences pref;
+  int nvsSound = -1;
   if (pref.begin("pocket", true)) { smallerPicture = pref.getBool("smaller", false); settings.sticky = pref.getBool("sticky", false);
     brightStep = pref.getUChar("bright", 3); if (brightStep > 3) brightStep = 3;
-    clicksOn = pref.getBool("clicks", false); ledOn = pref.getBool("led", true); pref.end(); }
+    clicksOn = pref.getBool("clicks", false); ledOn = pref.getBool("led", true);
+    if (pref.isKey("sound")) nvsSound = pref.getUChar("sound", 0);
+    pref.end(); }
+  // Sound: NVS first, then an older firmware's settings.txt line, else Off (the default, ctl::Settings).
+  if (nvsSound >= 0 && nvsSound <= 3) settings.sound = (uint8_t)nvsSound;
   File f = LittleFS.open("/settings.txt", "r");
   if (!f) return;
   while (f.available()) {
@@ -684,7 +690,7 @@ static void loadSettings() {
     else if (k == "dead") settings.dead = v < 0 ? 0 : v > 2 ? 2 : v;
     else if (k == "palm") settings.palm = v < 0 ? 0 : v > 2 ? 2 : v;
     else if (k == "debug") settings.debug = v ? 1 : 0;
-    else if (k == "sound") settings.sound = v < 0 ? 0 : v > 3 ? 3 : v;
+    else if (k == "sound") { if (nvsSound < 0) settings.sound = v < 0 ? 0 : v > 3 ? 3 : v; }
     else if (k == "raised") settings.raised = v ? 1 : 0;
     else if (k == "jumpnear") settings.jumpNear = v ? 1 : 0;
   }
@@ -1040,7 +1046,7 @@ static void drawPicker(bool clear = true, bool paging = false) {
     if(browsingCategories){int c=categorySlots[at];
       if(!category&&c==CONTINUE_SLOT){int g=resumeGame();uint8_t*raw=nullptr;if(g>=0){if(games[g].sd&&haveSD)mountSD();raw=preview(games[g]);}pk::continueTile(tft,scr::W,r,raw,resumeRec.e.level,g<0,true);free(raw);}
       else pk::tileLabel(tft,scr::W,r,category?subLabel(category,c):rootLabel(c),false,tileIcon(category,c),true);}
-    else {int i=catalog->matches[at];pk::Meta m;gameMeta(games[i],m);uint8_t*raw=preview(games[i]);pk::thumbnail(tft,scr::W,r,raw,m.dos,i==selected,true,catalog->pins.has(games[i].uid));free(raw);}
+    else {int i=catalog->matches[at];pk::Meta m;gameMeta(games[i],m);uint8_t*raw=preview(games[i]);bool starter=games[i].category==1;pk::thumbnail(tft,scr::W,r,raw,m.dos,i==selected,true,catalog->pins.has(games[i].uid),starter?m.title:nullptr,starter?m.course:0);free(raw);}
   }
   if(!was)unmountSD();
   if(!count&&searchText[0])pk::drawSmallIcon(tft,17,16,68,true);

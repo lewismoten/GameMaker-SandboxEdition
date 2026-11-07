@@ -120,12 +120,30 @@ template<class G> void tileLabel(G&g,int W,int i,const char*label,bool selected=
 template<class G> void clearTiles(G&g,int W) {g.fillRect(0,32,W,footer(W)-32,C_BLACK);}
 // A favorite's mark: a yellow star with a dark ring in the tile's top-right corner (over the picture's sky, never its middle).
 template<class G> void starMark(G&g,int W,int i) {auto r=tile(W,i);int R=W==320?7:9;drawStar(g,r.x+r.w-R-3,r.y+R+3,R+2,C_BLACK);drawStar(g,r.x+r.w-R-3,r.y+R+3,R,C_YELLOW);}
-template<class G> void thumbnail(G&g,int W,int i,const uint8_t*raw,const char*dos,bool selected,bool panelOrder=false,bool pinned=false) {
-  auto r=tile(W,i);g.fillRect(r.x,r.y,r.w,r.h,C_DARK);int y0=r.y+(r.h-r.ph)/2;
-  if(raw){uint16_t row[144];for(int y=0;y<r.ph;y++){
+// A Starter's caption under its picture: the course number in yellow, then the title in white, word-wrapped onto two lines
+// of the 6 x 8 font, doubled on the 3.5 inch board's wider tiles (the title picture's own lettering is too small to read at tile size). Lines are cut with "..." to fit.
+template<class G> void tileCaption(G&g,const Tile&r,int y,const char*title,int course) {
+  int k2=r.w>=144?2:1,cols=(r.w-4)/(6*k2),x=r.x+2;char num[8]="";if(course>0)snprintf(num,sizeof num,"%d ",course);
+  int used=(int)strlen(num);clippedText(g,r,num,x,y,k2,C_YELLOW);
+  const char*t=title;while(*t==' ')t++;int len=(int)strlen(t),first=cols-used;
+  if(first<1)first=1;
+  int cut=len<=first?len:first;  // the first line breaks at the last space that fits
+  if(len>first){for(int k=first;k>0;k--)if(t[k]==' '){cut=k;break;}}
+  char a[64];int n=cut<(int)sizeof a-1?cut:(int)sizeof a-1;memcpy(a,t,n);a[n]=0;
+  clippedText(g,r,a,x+used*6*k2,y,k2,C_WHITE);
+  const char*rest=t+cut;while(*rest==' ')rest++;
+  if(*rest){char b[64];ellipsize(rest,b,sizeof b,(size_t)cols);clippedText(g,r,b,x,y+9*k2,k2,C_WHITE);}
+}
+// caption: a Starter's title (with its course number, 0 for none) drawn as text under the picture, which then sits at the top.
+template<class G> void thumbnail(G&g,int W,int i,const uint8_t*raw,const char*dos,bool selected,bool panelOrder=false,bool pinned=false,
+                                 const char*caption=nullptr,int course=0) {
+  auto r=tile(W,i);g.fillRect(r.x,r.y,r.w,r.h,C_DARK);int y0=raw&&caption?r.y+1:r.y+(r.h-r.ph)/2;
+  int shown=caption?r.ph*5/6:r.ph;  // a caption covers the picture's bottom sixth (a Starter's own "COURSE nnn" band)
+  if(raw){uint16_t row[144];for(int y=0;y<shown;y++){
     for(int x=0;x<r.pw;x++){int idx=raw[524+(y*60/r.ph)*96+x*96/r.pw];uint16_t c=raw[12+idx*2]|(raw[13+idx*2]<<8);row[x]=panelOrder?(c<<8)|(c>>8):c;}
     g.pushImage(r.x,y0+y,r.pw,1,row);
-  }}else clippedText(g,r,dos,r.x+(r.w-(int)strlen(dos)*6)/2,r.y+r.h/2-4,1,C_WHITE);  // no title picture: the DOS name; a picture is shown whole
+  }if(caption)tileCaption(g,r,y0+shown+(r.w>=144?2:3),caption,course);
+  }else clippedText(g,r,dos,r.x+(r.w-(int)strlen(dos)*6)/2,r.y+r.h/2-4,1,C_WHITE);  // no title picture: the DOS name; a picture is shown whole
   g.drawRect(r.x,r.y,r.w,r.h,selected?C_YELLOW:C_GRAY);
   if(pinned)starMark(g,W,i);
 }
