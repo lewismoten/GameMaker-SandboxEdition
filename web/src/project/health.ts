@@ -19,10 +19,29 @@ import { parseCmf } from '@lewismoten/gamemaker-sandbox-engine/formats/cmf';
 import { decodeVoc } from '@lewismoten/gamemaker-sandbox-engine/formats/voc';
 import { parseRecording } from '@lewismoten/gamemaker-sandbox-engine/formats/recording';
 import { cdName, normalize } from './files';
-import type { FileSource, Issue } from './healthIssue';
 
-export type { FileSource, Issue } from './healthIssue';
-export { QUICK_CHECK_FILE, worstSeverity } from './healthIssue';
+type Severity = 'error' | 'warning';
+
+export interface Issue {
+  severity: Severity;
+  /** What kind of problem, for grouping in the report. */
+  kind: 'missing' | 'link' | 'name' | 'empty' | 'unreadable' | 'game' | 'dos';
+  /** The file the problem is in or about. */
+  file?: string;
+  message: string;
+}
+
+/** What the check needs to know about a game's files. Contents may be partial (see `get`). */
+export interface FileSource {
+  names(): string[];
+  /** Contents, when known. A quick check only loads the .gam, .lst and .bkd files. */
+  get(name: string): Uint8Array | undefined;
+  /** Size in bytes, when known without loading. */
+  byteSize?(name: string): number | undefined;
+}
+
+/** The files a game might need to be checked quickly: the .gam and graphic scripts. */
+export const QUICK_CHECK_FILE = /\.(gam|lst|bkd)$/i;
 
 /** DOS 8.3 names (the CD's underscore spellings are fine too). */
 export function validDosName(name: string): boolean {
@@ -222,4 +241,8 @@ export function checkGame(src: FileSource, gam: string | undefined, opts: { deep
   // The same missing file named in several places: keep one line per place, but no exact repeats.
   const seen = new Set<string>();
   return issues.filter((i) => !seen.has(i.message) && !!seen.add(i.message));
+}
+
+export function worstSeverity(issues: Issue[]): Severity | undefined {
+  return issues.some((i) => i.severity === 'error') ? 'error' : issues.length ? 'warning' : undefined;
 }

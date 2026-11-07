@@ -3,7 +3,7 @@
 // itself is in ../project/health.ts, loaded when a check runs; this loads the files it needs (just the .gam and
 // graphic scripts for the badge, everything for the report) and shows the result.
 import { h, modal } from '../core/ui';
-import { QUICK_CHECK_FILE, worstSeverity, type FileSource, type Issue } from '../../project/healthIssue';
+import type { FileSource, Issue } from '../../project/health';
 import { peekGameFile, loadHostedGame, type CatalogEntry } from '../../project/files';
 import { loadProject } from '../../project/storage';
 import { splitInherited } from './homeOrigin';
@@ -27,8 +27,8 @@ export interface HealthTarget {
   notes?(): Promise<string[]>;
 }
 
-/** The check (health.ts and every format reader it uses), loaded the first time one runs. */
-const checker = async () => (await import('../../project/health')).checkGame;
+/** The check (health.ts and every format reader it uses), loaded the first time one runs or is shown. */
+const health = () => import('../../project/health');
 
 const cache = new Map<string, Promise<Issue[]>>();
 
@@ -45,6 +45,7 @@ function cached(key: string, run: () => Promise<Issue[]>): Promise<Issue[]> {
 export function catalogTarget(g: CatalogEntry): HealthTarget {
   const quick = async (): Promise<Issue[]> => {
     if (g.health) return g.health; // checked when the site was built
+    const { QUICK_CHECK_FILE } = await health();
     const wanted = g.files.filter((n) => QUICK_CHECK_FILE.test(n));
     const loaded = new Map<string, Uint8Array>();
     await Promise.all(
@@ -58,7 +59,7 @@ export function catalogTarget(g: CatalogEntry): HealthTarget {
       get: (n) => loaded.get(n),
       byteSize: (n) => (g.sizes ? g.sizes[g.files.indexOf(n)] : undefined),
     };
-    return (await checker())(src, g.gam ?? undefined);
+    return (await health()).checkGame(src, g.gam ?? undefined);
   };
   return {
     title: g.title,
@@ -68,7 +69,7 @@ export function catalogTarget(g: CatalogEntry): HealthTarget {
       const files = await loadHostedGame(g);
       // Listed files that did not load are reported as unreadable.
       const src: FileSource = { names: () => [...g.files].sort(), get: (n) => files.get(n) };
-      return (await checker())(src, g.gam ?? undefined, { deep: true });
+      return (await health()).checkGame(src, g.gam ?? undefined, { deep: true });
     },
   };
 }
@@ -81,7 +82,7 @@ export function projectTarget(id: string, title: string, updated: number, origin
   const load = async (deep: boolean): Promise<Issue[]> => {
     const p = await loadProject(id);
     if (!p) return [];
-    return (await checker())(p.files, p.record.gam, { deep });
+    return (await health()).checkGame(p.files, p.record.gam, { deep });
   };
   const split = async (deep: boolean) => {
     const mine = await load(deep);
@@ -117,8 +118,8 @@ export function healthBadge(target: HealthTarget, focusable = false): HTMLElemen
     check?: () => void;
   };
   badge.check = () =>
-    void target.quick().then((issues) => {
-      const worst = worstSeverity(issues);
+    void target.quick().then(async (issues) => {
+      const worst = (await health()).worstSeverity(issues);
       if (!worst) return;
       badge.classList.remove('unknown');
       if (focusable) badge.tabIndex = 0;
@@ -226,6 +227,7 @@ export async function showHealthReport(target: HealthTarget): Promise<void> {
     );
   };
   const notes = (await target.notes?.().catch(() => [])) ?? [];
+  const { worstSeverity } = await health();
   body.replaceChildren(
     h('p', { class: `health-summary ${target.released ? (issues.length ? 'warning' : 'ok') : (worstSeverity(issues) ?? 'ok')}` }, summary),
     ...groups(issues, !!target.released),
