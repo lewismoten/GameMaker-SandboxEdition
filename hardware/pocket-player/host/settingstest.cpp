@@ -23,7 +23,7 @@ static ctl::Need demoNeed() {
   return n;
 }
 // The preview as main.cpp drives it: the controls model gets the touch scaled up to the game view.
-struct Lit { uint8_t dirs = 0, btn = 0, held = 0; };
+struct Lit { uint8_t dirs = 0, btn = 0, held = 0; ctl::Disc pad = {0, 0, 0}; };
 static Lit touchPreview(const ctl::Settings& s, int gx, int gy) {
   ctl::Controls c;
   c.configure(s, demoNeed());
@@ -33,6 +33,7 @@ static Lit touchPreview(const ctl::Settings& s, int gx, int gy) {
   int n = c.flush(ch, 16);
   Lit l;
   l.dirs = c.padDirs;
+  l.pad = c.L.pad;  // the floating pad centers where the finger landed
   l.btn = c.btnDown;
   for (int i = 0; i < n; i++) {
     if (!ch[i].down) continue;
@@ -58,6 +59,7 @@ static void shot(const std::string& dir, const std::string& name, const st::View
   snprintf(card.board, sizeof card.board, "Board C fw 1a2b3c4 2026-11-07");
   card.fromPause = v.fromPause;
   ctl::Layout L = ctl::makeLayout(vals.s, demoNeed());
+  if (lit.pad.r) L.pad = lit.pad;
   st::screen(c, v, vals, card, L, demoNeed(), lit.dirs, lit.btn, lit.held);
   if (!dir.empty()) writePng(dir + "/" + name + ".png", c.W, c.H, rgbOf(c));
 }
@@ -159,6 +161,31 @@ int main(int argc, char** argv) {
     Lit j = touchPreview(vals.s, L.space.cx, L.space.cy);
     if (!(j.held & 16)) fail("a touch on the preview's Jump near the pad pressed no Space");
     shot(dir, std::string("settings-") + wn + "-Controls-nearpad-raised", v, vals, j);
+    {  // Pad position: Float, before a touch (the dotted place a thumb may land) and with a thumb landed low in it, sliding up
+      st::Values fv;
+      fv.s.floatPad = 1;
+      st::View fview;
+      fview.last = st::I_POS;
+      if (st::value(st::I_POS, fv) != 2) fail("Float is not the third Pad position chip");
+      shot(dir, std::string("settings-") + wn + "-Controls-float", fview, fv);
+      ctl::Layout fl = ctl::makeLayout(fv.s, demoNeed());
+      int zx = (fl.zone.x0 + fl.zone.x1) / 2, zy = scr::VIEW_H * 2 / 3;
+      ctl::Controls fc;
+      fc.configure(fv.s, demoNeed());
+      int id = 1, sz = 30, x = zx, y = zy;
+      for (uint32_t t = 1000; t < 1100; t += 8) fc.update(&id, &x, &y, &sz, 1, t);
+      if (fc.L.pad.cx != zx || fc.L.pad.cy != zy) fail("the preview's floating pad did not center on the thumb");
+      y -= fl.pad.r / 2;
+      for (uint32_t t = 1100; t < 1300; t += 8) fc.update(&id, &x, &y, &sz, 1, t);
+      Lit fl2;
+      fl2.dirs = fc.padDirs; fl2.btn = fc.btnDown; fl2.held = (fc.padDirs & 4) ? 4 : 0; fl2.pad = fc.L.pad;
+      if (!fl2.held) fail("a slide up from where the floating pad landed pressed no Up");
+      shot(dir, std::string("settings-") + wn + "-Controls-float-touch", fview, fv, fl2);
+      st::Values back = fv;
+      st::choose(st::I_POS, 1, back);
+      if (back.s.floatPad || !back.s.raised) fail("choosing Raised after Float did not give a fixed raised pad");
+      shots += 2;
+    }
     v = st::View();
     v.tab = st::T_CARD;
     v.fromPause = true;

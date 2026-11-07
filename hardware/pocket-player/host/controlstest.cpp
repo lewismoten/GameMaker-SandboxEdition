@@ -116,6 +116,114 @@ static void layoutCheck() {
 
 }
 
+// Floating pad (Pad position: Float): the pad centers where a thumb lands in its zone, so the same slides press the same keys
+// wherever it lands; it stays put while it shows (held, latched, fading), and the fixed pad is unchanged with it off.
+static void floatingCheck() {
+  for (int lefty : {0, 1}) {
+    const char* hand = lefty ? " (left hand)" : " (right hand)";
+    auto nm = [&](const char* s) { return std::string(s) + hand; };
+    Settings fs; fs.lefty = lefty; fs.floatPad = 1;
+    Settings fixed; fixed.lefty = lefty;
+    Need n = platformer(); needAdd(n, S_SPACE, "Jump");
+    Layout L0 = makeLayout(fs, n);
+    const int zw = L0.zone.x1 - L0.zone.x0;
+    check(nm("float: the zone is the outer 40 % of the view on the pad's side").c_str(),
+          zw == W * 40 / 100 && (lefty ? L0.zone.x1 == W : L0.zone.x0 == 0) && L0.zone.y1 == scr::VIEW_H);
+    // The same relative slides from several landing points give the keys the fixed pad gives from its own center.
+    struct Mv { int dx, dy; } moves[] = {{30, 0}, {-30, 0}, {0, -30}, {0, 30}, {4, 3}, {22, 22}};
+    int lands[][2] = {{zw / 2, scr::VIEW_H / 2}, {zw / 3, scr::VIEW_H * 3 / 4}, {zw * 3 / 4, scr::VIEW_H / 3}, {zw / 2, scr::VIEW_H - 40}};
+    bool same = true, center = true;
+    std::string why;
+    for (auto& ld : lands) {
+      int lx = lefty ? W - 1 - ld[0] : ld[0], ly = ld[1];
+      for (auto& m : moves) {
+        Run f(fs, n);
+        f.touch(1, lx, ly); f.wait(80);
+        if (f.c.L.pad.cx != lx || f.c.L.pad.cy != ly) center = false;
+        f.touch(1, lx + m.dx, ly + m.dy); f.wait(200);
+        Run x(fixed, n);
+        const Disc h = x.c.L.pad;
+        x.touch(1, h.cx, h.cy); x.wait(80);
+        x.touch(1, h.cx + m.dx, h.cy + m.dy); x.wait(200);
+        for (int sc : {S_LEFT, S_RIGHT, S_UP, S_DOWN, S_SPACE})
+          if (f.held[sc] != x.held[sc]) { same = false; why += "at " + std::to_string(lx) + "," + std::to_string(ly) + " move " + std::to_string(m.dx) + "," + std::to_string(m.dy) + ": " + f.log + "vs " + x.log + "; "; break; }
+      }
+    }
+    check(nm("float: the pad centers where the thumb lands").c_str(), center);
+    check(nm("float: the same slides from anywhere in the zone press what the fixed pad presses").c_str(), same, why);
+    { Run f(fs, n); f.touch(1, lefty ? W - 2 : 1, scr::VIEW_H - 1); f.wait(80);
+      const Disc p = f.c.L.pad;
+      bool reach = p.cx - f.c.L.deadR > 0 && p.cx + f.c.L.deadR < W - 1 && p.cy + f.c.L.deadR < scr::VIEW_H - 1 && p.cy - f.c.L.deadR > 0;
+      check(nm("float: a thumb at the corner keeps the center inside, every direction in reach").c_str(), reach, std::to_string(p.cx) + "," + std::to_string(p.cy)); }
+    { Run f(fs, n); f.touch(1, W / 2, scr::VIEW_H / 3); f.wait(200);
+      check(nm("float: a touch outside the zone presses nothing and shows no pad").c_str(), f.log.empty() && f.c.padLook(f.now) == LOOK_OFF, f.log); }
+    { Run x(fixed, n); const Disc h = x.c.L.pad; int tx = lefty ? W - 1 - 10 : 10;
+      x.touch(1, tx, 50); x.wait(200);
+      check(nm("fixed (default): a touch in the zone off the pad does nothing; the pad always shows").c_str(), x.log.empty() && x.c.padLook(x.now) == LOOK_FULL && x.c.L.pad.cx == h.cx, x.log); }
+    { Run f(fs, n); f.touch(1, f.c.L.space.cx, f.c.L.space.cy); f.wait(200);
+      check(nm("float: Space is still Space").c_str(), f.held[S_SPACE] && f.c.padLook(f.now) == LOOK_OFF, f.log); }
+    { Run f(fs, n); int mx = (f.c.L.menu.x0 + f.c.L.menu.x1) / 2, my = (f.c.L.menu.y0 + f.c.L.menu.y1) / 2;
+      f.touch(1, mx, my); f.wait(80); f.up(1); f.wait(40);
+      check(nm("float: MENU still opens the menu, the pad stays away").c_str(), f.c.takeEvent() == EV_MENU && f.log.empty()); }
+    // Looks: faint while held, dim for half a second after the lift, then gone.
+    { Run f(fs, n); int lx = lefty ? W - 60 : 60, ly = scr::VIEW_H / 2;
+      bool off0 = f.c.padLook(f.now) == LOOK_OFF;
+      f.touch(1, lx, ly); f.wait(80);
+      bool faint = f.c.padLook(f.now) == LOOK_FAINT;
+      f.up(1); f.wait(120);
+      bool dim = f.c.padLook(f.now) == LOOK_DIM;
+      f.wait(500);
+      check(nm("float: hidden, faint while held, dim while it fades, then hidden").c_str(), off0 && faint && dim && f.c.padLook(f.now) == LOOK_OFF); }
+    // The first readings settle: a thumb drifting inside the dead zone for its first 50 ms carries the center, and the slide after it is relative.
+    { Run f(fs, n); int lx = lefty ? W - 60 : 60, ly = scr::VIEW_H / 2;
+      f.touch(1, lx, ly); f.wait(16);
+      f.touch(1, lx + 6, ly + 5); f.wait(16);
+      bool moved = f.c.L.pad.cx == lx + 6 && f.c.L.pad.cy == ly + 5;
+      f.wait(80);
+      f.touch(1, lx + 6 + 9, ly + 5); f.wait(80);  // later drift inside the dead zone no longer moves it
+      bool kept = f.c.L.pad.cx == lx + 6;
+      f.touch(1, lx + 6 + 30, ly + 5); f.wait(200);
+      check(nm("float: the first 50 ms of drift settle the center, then it holds").c_str(), moved && kept && f.held[S_RIGHT] && !f.held[S_UP] && !f.held[S_DOWN], f.log); }
+    // A noisy contact: a one-poll dropout and a new id beside it keep the held direction and the center (the 60 ms grace adopts it).
+    { Run f(fs, n); int lx = lefty ? W - 60 : 60, ly = scr::VIEW_H / 2;
+      f.touch(1, lx, ly); f.wait(80);
+      f.touch(1, lx + 30, ly); f.wait(200);
+      int cx = f.c.L.pad.cx, cy = f.c.L.pad.cy;
+      f.up(1); f.wait(8);
+      f.touch(2, lx + 33, ly + 2); f.wait(80);
+      check(nm("float: a dropout and a new id beside it keep Right and the center").c_str(), f.held[S_RIGHT] && f.c.L.pad.cx == cx && f.c.L.pad.cy == cy && f.log == "+77 ", f.log); }
+    // A touch inside the ring that still shows keeps its center; one elsewhere in the zone moves it.
+    { Run f(fs, n); int lx = lefty ? W - 60 : 60, ly = scr::VIEW_H / 2;
+      f.touch(1, lx, ly); f.wait(80); f.up(1); f.wait(100);
+      f.touch(2, lx + 30, ly); f.wait(120);
+      bool kept = f.c.L.pad.cx == lx && f.held[S_RIGHT];
+      f.up(2); f.wait(700);
+      f.touch(3, lx + 30, ly + 40); f.wait(120);
+      check(nm("float: back inside the fading ring keeps its center (Right); after it fades a touch re-centers").c_str(),
+            kept && f.c.L.pad.cy == ly + 40 && !f.held[S_RIGHT] && !f.held[S_DOWN], f.log); }
+    // Sticky direction: tap a side of the ring while it shows; it stays shown (dim) while walking; a tap in the middle stops.
+    { Settings ss = fs; ss.sticky = 1; Run f(ss, n); int lx = lefty ? W - 60 : 60, ly = scr::VIEW_H / 2;
+      f.touch(1, lx, ly); f.wait(60); f.up(1); f.wait(100);
+      f.touch(2, lx + 30, ly); f.wait(60); f.up(2); f.wait(240);
+      bool walking = f.held[S_RIGHT] && f.c.padLook(f.now) == LOOK_DIM;
+      f.wait(1000);
+      bool still = f.held[S_RIGHT] && f.c.padLook(f.now) == LOOK_DIM;
+      f.touch(3, lx, ly); f.wait(60); f.up(3); f.wait(240);
+      check(nm("float + sticky: a tap on the ring's side walks, the ring stays while walking, a tap in its middle stops").c_str(), walking && still && !f.held[S_RIGHT] && f.c.latch == 0, f.log); }
+#ifdef POCKET_CYD28
+    // One resistive contact: the jump arcs work from wherever the pad landed.
+    { Run f(fs, n); int lx = lefty ? W - 60 : 60, ly = scr::VIEW_H / 2 + 20;
+      f.touch(1, lx, ly); f.wait(80);
+      int r = f.c.L.pad.r;
+      f.touch(1, lx + r / 2, ly); f.wait(200);
+      f.touch(1, lx + r / 2, ly - r / 2); f.wait(200);
+      check(nm("float: the upper-right wedge still holds Right + Jump").c_str(), f.held[S_RIGHT] && f.held[S_SPACE] && !f.held[S_UP], f.log); }
+#endif
+    { Run f(fs, n); f.touch(1, lefty ? W - 60 : 60, 100); f.wait(80); f.c.reset();
+      check(nm("float: leaving play puts the pad back home, hidden").c_str(), f.c.L.pad.cx == f.c.L.home.cx && f.c.padLook(f.now) == LOOK_OFF); }
+  }
+}
+
 int main() {
   {
     gtr::Report r; ReportBus bus;
@@ -243,6 +351,7 @@ int main() {
     }
   }
 #ifdef POCKET_CYD28
+  floatingCheck();
   printf("resistive controls model: %s\n", failures ? "FAILURES" : "all passed");
   return failures ? 1 : 0;
 #endif
@@ -465,6 +574,7 @@ int main() {
       Run r2(def, up); at(r2, 315); check("Teddy: down-right has no diagonal, so Down and Right", r2.held[S_DOWN] && r2.held[S_RIGHT], r2.log); }
   }
 
+  floatingCheck();
   printf("%s\n", failures ? "controls model: FAILURES" : "controls model: all scenarios pass");
   return failures ? 1 : 0;
 }
