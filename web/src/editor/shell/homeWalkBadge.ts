@@ -44,15 +44,15 @@ function icon(b: WalkBadge): SVGElement {
 export function walkTile(tile: HTMLElement, b: WalkBadge | undefined): void {
   if (!b) return;
   const label = walkLabel(b);
+  // a pill in the picture's bottom-left corner, so the card gets no taller
   tile
-    .querySelector('.tile-select')
+    .querySelector('.tile-shot')
     ?.append(
       h(
         'span',
-        { class: `tile-walk ${b.complete ? 'tile-walk-done' : 'tile-walk-part'}`, title: label, 'aria-hidden': 'true' },
+        { class: `tile-walk ${b.complete ? 'tile-walk-done' : 'tile-walk-part'}`, title: label, role: 'img', 'aria-label': label },
         icon(b),
-        b.complete ? null : h('span', { class: 'tile-walk-n' }, `${b.won}/${b.total}`),
+        b.complete ? null : h('span', { class: 'tile-walk-n', 'aria-hidden': 'true' }, `${b.won}/${b.total}`),
       ),
-      h('span', { class: 'sr-only' }, `. ${label}`),
     );
 }
