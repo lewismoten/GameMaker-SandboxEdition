@@ -27,13 +27,13 @@ function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
   const signs = {
-    each: addSign(book, pal, 'each.sign', 'EACH LEVER ADDS 3 PLANKS', 4, 3),
+    each: addSign(book, pal, 'each.sign', '← EACH LEVER ADDS 3 PLANKS', 4, 3),
     six: addSign(book, pal, 'six.sign', 'THE BRIDGE NEEDS 6 PLANKS', 4, 3),
     soft: addSign(book, pal, 'soft.sign', 'A SOFT POOL: YOU JUST START OVER', 4, 3),
     blue: addSign(book, pal, 'blue.sign', 'BLUE LEVERS BUILD THE BRIDGE', 4, 3),
     upstairs: addSign(book, pal, 'up.sign', 'ONE BLUE LEVER IS UP THE LADDER', 4, 3),
     redOdd: addSign(book, pal, 'redodd.sign', 'RED LEVER OPENS THE HATCH', 4, 2),
-    hatch: addSign(book, pal, 'hatch.sign', 'A HATCH IN THE PATH', 4, 3),
+    hatch: addSign(book, pal, 'hatch.sign', '← A HATCH IN THE PATH', 4, 3),
     both: addSign(book, pal, 'both.sign', '6 PLANKS NEED BOTH BLUE LEVERS', 4, 3),
     exit: addSign(book, pal, 'exit.sign', 'EXIT →', 3),
   };
@@ -113,9 +113,9 @@ function twoLevers(book: Book, signs: Record<SignName, Sign>): { map: StarterMap
     [3, 5, 41],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(10, onGround(GROUND, signs.each), signs.each);
-  m.sign(14, onGround(GROUND, signs.soft), signs.soft);
-  m.sign(18, onGround(GROUND, signs.six), signs.six);
+  m.sign(18, onGround(GROUND, signs.each), signs.each);
+  m.sign(10, onGround(GROUND, signs.soft), signs.soft);
+  m.sign(14, onGround(GROUND, signs.six), signs.six);
   m.sign(36, onGround(GROUND, signs.exit), signs.exit);
   m.set(L1.leverA, GROUND - 1, 'leverRed');
   m.set(L1.leverB, LEDGE_ROW, 'leverRed');
