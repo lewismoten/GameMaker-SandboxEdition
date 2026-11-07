@@ -304,6 +304,11 @@ export async function packPocketGame(src: PocketSource, store: PocketStore, pak:
   }
   await cards('w', game.scenes[1]?.files[0]);
   await cards('l', game.scenes[1]?.files[2]);
+  // The game's own pages from its menu (scene 0: title, Read Storyline, Read Instructions), read from Details on the board.
+  // The title (often an FLI, every frame packed) only goes on a card: in LittleFS it would cost the Starters about 2.3 MB.
+  if (card) await cards('t', game.scenes[0]?.files[0]);
+  await cards('s', game.scenes[0]?.files[4]);
+  await cards('h', game.scenes[0]?.files[6]);
   play.forEach(({ s }, n) => {
     let count = 0;
     for (let l = 0; l < MAXSCENELINKS; l++) {
