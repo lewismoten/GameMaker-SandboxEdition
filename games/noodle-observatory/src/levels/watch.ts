@@ -10,7 +10,7 @@ import { Pixels, dither } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { SOLID } from '../../../kit/starter/book';
 import type { Pal } from '../../../kit/starter/palette';
 import { addSign } from '../../../kit/starter/sign';
-import { bricks, cabinet, icon, roundLight, shelf, table, type Icon } from '../art';
+import { bricks, cabinet, icon, roundLight, shaft, shelf, table, type Icon } from '../art';
 import { addSigns, startBook, type Level, type Timed } from '../level';
 import { BLOCK_TICKS, CLOTH_GONE, KITCHEN, LENSROLL, LENS_IN, ROOF, SUPPER } from '../monsters';
 import { G, paintRoom, type Place, type Step } from '../place';
@@ -98,7 +98,7 @@ export const STARVIEW_AT = {
   shapes: { spoon: [13, 1, 2, 4], fork: [22, 1, 2, 4], col: [32, 1, 3, 3] } as Record<'spoon' | 'fork' | 'col', [number, number, number, number]>,
   shafts: { spoon: 11, fork: 20, col: 30 },
   door: 42,
-  signs: { set: 3, spoon: 15, fork: 24, col: 34, drawer: 37 },
+  signs: { set: 3, spoon: 15, fork: 24, col: 32, drawer: 37 },
 } as const;
 
 /** A shape drawn in stars on the dark: points of light and a faint dotted line between them. */
@@ -138,11 +138,7 @@ export function levelStarview(pal: Pal): Level {
   const bg = book.pics.get('bg')!;
   shutUntil(pal, book, timed, STARVIEW.open);
   // each shape: dark tiles that light up together, and its shaft of light brightening
-  const shaftPic = (k: number) => {
-    const p = new Pixels(20, 20).blit(bg, 0, 0);
-    for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) if ((x + y) % 20 < 12 && dither(x, y, 0.15 + k * 0.3)) p.set(x, y, pal.c('warm', 1 + k));
-    return p;
-  };
+  const shaftPic = (k: number) => shaft(pal, bg, k);
   for (const name of ['spoon', 'fork', 'col'] as const) {
     const [, , w, h] = A.shapes[name];
     const lit = constellation(pal, name, w, h, bg);
@@ -264,7 +260,7 @@ export function levelBakery(pal: Pal): Level {
     ['bakery', "IT IS THE BAKERY'S ROUND WINDOW!"],
   ] as const) {
     const words = addSign(book, pal, k, text, 4, 2);
-    const blank = addSign(book, pal, `${k}0`, '', 4, 2);
+    const blank = addSign(book, pal, `${k}0`, '. . .', 4, 2);
     words.board.flat().forEach((n, i) => timed.push({ name: blank.board.flat()[i], next: n, ticks: BAKERY.reveal + 20 }));
     s[k] = blank;
   }

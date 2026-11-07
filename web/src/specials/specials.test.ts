@@ -62,6 +62,15 @@ describe('registry', () => {
     expect(isOpen(specialById('pass-the-pie')!.window, at(2026, 11, 29, 20))).toBe(true);
     expect(isOpen(specialById('pass-the-pie')!.window, at(2026, 11, 30))).toBe(false);
   });
+
+  it('opens the noodle observatory on Monkey Day (December 14), for three days', () => {
+    const w = specialById('noodle-observatory')!.window;
+    expect(isOpen(w, at(2026, 12, 13, 23))).toBe(false);
+    expect(isOpen(w, at(2026, 12, 14))).toBe(true);
+    expect(isOpen(w, at(2026, 12, 16, 23))).toBe(true);
+    expect(isOpen(w, at(2026, 12, 17))).toBe(false);
+    expect(isOpen(w, at(2027, 12, 14, 12))).toBe(true);
+  });
 });
 
 describe('listing and keeping', () => {

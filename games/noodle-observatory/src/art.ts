@@ -30,16 +30,15 @@ export function backdrop(pal: Pal, place: Place, v = 0): P {
     if (v === 2) p.rect(13, 12, 3, 1, b[2]).set(14, 11, b[2]);
   } else if (place === 'pantry') {
     const b = r('butter');
-    p.rect(0, 0, 20, 20, b[1]);
-    p.rect(0, 14, 20, 2, b[3]).rect(0, 16, 20, 1, b[0]);
-    // jars on the back shelf: two short, one tall, lids in different colors
+    p.rect(0, 0, 20, 20, b[2]);
+    p.rect(0, 15, 20, 2, b[4]).rect(0, 17, 20, 1, b[1]);
+    // jars on the back shelf now and then: short and tall, lids in different colors
     const jar = (x: number, h: number, lid: number) => {
-      p.rect(x, 14 - h, 5, h, c('glass', 1)).rect(x + 1, 15 - h, 1, h - 2, c('glass', 3)).rect(x, 13 - h, 5, 2, lid);
+      p.rect(x, 15 - h, 5, h, c('glass', 1)).rect(x + 1, 16 - h, 1, h - 2, c('glass', 3)).rect(x, 14 - h, 5, 2, lid);
     };
-    if (v % 2 === 0) jar(2, 6, c('red', 2));
-    if (v !== 1) jar(12, v === 3 ? 9 : 5, c('teal', 2));
-    if (v === 1) jar(7, 8, c('gold', 3));
-    p.rect(0, 0, 20, 1, b[2]);
+    if (v === 1) jar(3, 6, c('red', 2));
+    if (v === 2) jar(11, 8, c('teal', 2));
+    if (v === 3) jar(7, 5, c('gold', 3));
   } else if (place === 'lens') {
     const w = r('white');
     p.rect(0, 0, 20, 20, w[1]);
@@ -273,8 +272,8 @@ export function icon(pal: Pal, p: P, kind: Icon, cx: number, cy: number, how: 't
       p.line(cx, cy - 6, cx, cy + 6, col(1, r('wood'))).rect(cx - 2, cy - 7, 5, 2, col(2));
       break;
     case 'lens':
-      p.disc(cx, cy, 6, o ? ink : c('glass', 1)).disc(cx, cy, o ? 4.5 : 5, o ? under : c('glass', 2));
-      if (!o) p.line(cx - 3, cy - 1, cx - 1, cy - 3, c('glass', 3)).set(cx + 2, cy + 2, c('glass', 3));
+      p.disc(cx, cy, 6.5, o ? ink : c('gold', 1)).disc(cx, cy, 5.2, o ? ink : c('gold', 3)).disc(cx, cy, o ? 4.5 : 4.2, o ? under : c('glass', 1));
+      if (!o) p.disc(cx, cy, 3, c('glass', 2)).line(cx - 2, cy, cx, cy - 2, c('glass', 3)).set(cx + 2, cy + 2, c('glass', 3));
       break;
     case 'circle':
       p.ring(cx, cy, 5, col(4, r('gold'))).ring(cx, cy, 4, col(3, r('gold')));
@@ -288,18 +287,16 @@ export function icon(pal: Pal, p: P, kind: Icon, cx: number, cy: number, how: 't
         .line(cx - 6, cy + 5, cx + 6, cy + 5, col(4, r('gold')))
         .line(cx, cy - 4, cx - 5, cy + 4, col(3, r('gold')));
       break;
-    case 'rattle':
-      // a little round tag with wavy rattle marks: the colander went this way
-      p.disc(cx, cy, 5.5, col(2)).disc(cx, cy, 4, o ? under : st[3]);
-      for (const [dx, dy] of [
-        [-2, -1],
-        [1, -2],
-        [2, 1],
-        [-1, 2],
-      ])
-        p.set(cx + dx, cy + dy, o ? ink : st[0]);
-      p.line(cx + 6, cy - 3, cx + 7, cy - 5, col(1)).line(cx + 7, cy, cx + 9, cy, col(1)).line(cx + 6, cy + 3, cx + 7, cy + 5, col(1));
+    case 'rattle': {
+      // a brass luggage tag with a string hole, and three wavy rattle marks beside it: the colander went this way
+      const g = r('gold');
+      p.rect(cx - 6, cy - 4, 9, 9, o ? ink : g[1]).rect(cx - 5, cy - 3, 7, 7, o ? under : g[3]);
+      p.line(cx + 3, cy - 4, cx + 5, cy, o ? ink : g[1]).line(cx + 3, cy + 4, cx + 5, cy, o ? ink : g[1]);
+      p.disc(cx - 2, cy, 1.2, o ? ink : g[0]);
+      if (!o) p.rect(cx - 5, cy - 3, 7, 1, g[5]);
+      p.line(cx + 7, cy - 5, cx + 8, cy - 3, col(1)).line(cx + 7, cy - 1, cx + 9, cy - 1, col(1)).line(cx + 7, cy + 3, cx + 8, cy + 5, col(1));
       break;
+    }
     case 'plate':
       p.disc(cx, cy, 6, o ? ink : r('white')[1]).disc(cx, cy, 4.5, o ? under : r('white')[3]).ring(cx, cy, 3, o ? ink : r('white')[1]);
       break;
@@ -389,8 +386,8 @@ export function shaft(pal: Pal, bg: P, k: number): P {
   const w = pal.r('warm');
   for (let y = 0; y < 20; y++)
     for (let x = 0; x < 20; x++) {
-      const band = (x + y) % 20 < 12;
-      if (band && dither(x, y, 0.25 + k * 0.2)) p.set(x, y, w[Math.min(3, k + 1)]);
+      const edge = 1 - Math.abs(x - 9.5) / 8;
+      if (edge > 0 && dither(x, y, edge * (0.3 + k * 0.2))) p.set(x, y, w[Math.min(3, k + (edge > 0.6 ? 1 : 0))]);
     }
   return p;
 }
