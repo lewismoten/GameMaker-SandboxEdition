@@ -1,0 +1,19 @@
+{
+  "title": "The Thank-You Parade",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "special",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.0",
+  "blurb": "The wind has scattered the school band and the class's thank-you cards on the morning of the town's parade. Penny, the drum major in the tall plumed hat, sets it right: find the tuba player's mouthpiece in a leaf pile, the drummer's sticks up a tree and a flute in the duck pond, catch the cards before the gust runs out, help the fire hall crew build the float, keep in step with the squirting puddles, hand a card to every neighbor on the curb, and climb the stage as the whole town waves. A Special from Sandbox Software, around Veterans Day.",
+  "exe": "PARADE.EXE",
+  "dosName": "PARADE",
+  "sound": "sb",
+  "label": {
+    "background": "#fff2d6",
+    "band": "#c8283a",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  }
+}
