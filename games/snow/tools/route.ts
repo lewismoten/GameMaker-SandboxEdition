@@ -1,7 +1,9 @@
 // Human-paced routes: pause under the snow, make a gap with a hop, then fill it by walking back.
 import type { StarterBot, Result } from '../../kit/starter/bot';
 import { ORIGIN } from '../../kit/starter/map';
+import { LASTMON } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { buildLevels } from '../src/levels';
+import { FACINGS, PRINT_LIFE } from '../src/prints';
 
 const { levels } = buildLevels();
 async function must(r: Promise<Result>, what: string): Promise<void> {
@@ -20,13 +22,13 @@ export async function snowyWalk(bot: StarterBot): Promise<void> {
     await must(bot.tick(), 'snow falling');
   }
   if (shown.size < 6) throw new Error('the falling snow did not animate');
-  await must(bot.walk(12), 'fresh powder');
-  await must(bot.jump('right', 16), 'hop over powder');
-  if (bot.sim.w.map[at(14, 9)] !== book.n('powder')) throw new Error('jumping should leave fresh powder at column 14');
-  await must(bot.walk(20), 'the boot marks sign');
+  await must(bot.walk(15), 'fresh powder');
+  await must(bot.jump('right', 19), 'hop over powder');
+  if (bot.sim.w.map[at(17, 9)] !== book.n('powder')) throw new Error('jumping should leave fresh powder at column 17');
+  await must(bot.walk(22), 'past the gap');
   await must(bot.wait(28), 'look behind');
-  await must(bot.walk(12), 'fill the gap');
-  if (bot.sim.w.map[at(14, 9)] !== book.n('footprints')) throw new Error('walking back did not stamp the gap');
+  await must(bot.walk(15), 'fill the gap');
+  if (bot.sim.w.map[at(17, 9)] !== book.n('footprints')) throw new Error('walking back did not stamp the gap');
   await must(bot.wait(28), 'compare the trail');
   const r = await bot.walk(25, 'the door');
   if (r !== 'link') throw new Error(`first door: ${r}`);
@@ -44,6 +46,39 @@ export async function pilesUp(bot: StarterBot): Promise<void> {
   await must(bot.walk(14), 'look back at the trail');
   await must(bot.wait(30), 'read the sign');
   const r = await bot.walk(25, 'the last door');
-  if (r !== 'end') throw new Error(`last door: ${r}`);
-  bot.say('drift grew and stopped; footprints stayed; second door won');
+  if (r !== 'link') throw new Error(`second door: ${r}`);
+  bot.say('drift grew and stopped; footprints stayed; second door linked to the open field');
+}
+
+/** Which prints are in the snow now: monster numbers (facing * 2 + foot), one entry per print. */
+export const printsNow = (bot: StarterBot): number[] => (bot.sim.w.mm as { monnum: number }[]).filter((m) => m.monnum !== LASTMON).map((m) => m.monnum);
+
+/** Level 3: walk right, up, left, down, right, up and out; each leg leaves prints that face that way, and they fade. */
+export async function openSnow(bot: StarterBot): Promise<void> {
+  const seen = new Set<string>();
+  const note = () => {
+    for (const n of printsNow(bot)) seen.add(FACINGS[n >> 1]);
+  };
+  const leg = async (go: Promise<Result>, what: string) => {
+    await must(go, what);
+    note();
+    await must(bot.wait(8), 'a beat');
+  };
+  await must(bot.wait(40), 'read the first sign');
+  await leg(bot.walk(10, 'right along the trail'), 'right');
+  await leg(bot.climb('up', 3, 'up'), 'up');
+  await leg(bot.walk(7, 'left'), 'left');
+  await leg(bot.climb('down', 12, 'down'), 'down');
+  // look back along the trail: the oldest prints are already fainter or gone
+  await must(bot.wait(30), 'look back');
+  const early = printsNow(bot).length;
+  await leg(bot.walk(24, 'right along the bottom'), 'right again');
+  await leg(bot.climb('up', 8, 'up to the gate row'), 'up');
+  if (seen.size !== 4) throw new Error(`prints should face all four ways; saw ${[...seen].join(', ')}`);
+  if (early < 4) throw new Error(`the trail should still show prints behind him, got ${early}`);
+  await must(bot.wait(PRINT_LIFE + 10), 'watch the last prints fade');
+  if (printsNow(bot).length) throw new Error('the prints should all have faded to smooth snow');
+  const r = await bot.walk(25, 'the gate');
+  if (r !== 'end') throw new Error(`gate: ${r}`);
+  bot.say(`prints faced ${[...seen].join(', ')} and faded away; the gate won`);
 }
