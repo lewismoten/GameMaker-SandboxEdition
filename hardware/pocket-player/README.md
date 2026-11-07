@@ -66,6 +66,8 @@ Serial (115200) for testing without seeing the screen: `S st` prints the state (
 
 **Not yet seen by a person:** the drawing (the screens above, and the software turn on a real glass) was checked in a host frame buffer and by serial, not by eye on the board.
 
+**Picture (two glasses that look different).** Settings, Display, Panel, Picture shows a test card (the selected-chip yellow, a dark and a blue chip, white and black, then gray, yellow and blue ramps) over two rows: Gamma 1 to 4 (the controller's GAMSET, 26h, on both drivers) and Tuning Std, Alt 1, Alt 2, Alt 3 (voltage and E0h/E1h gamma-table sets for the running driver; `src/picturetune.h` lists them and where they come from). Each tap is sent to the glass at once; Back saves it with the display setup (NVS `pgam`/`ptun`, and `gamma=`/`tune=` lines in the card's board file; older files read as gamma 1, Std). Gamma 1 with Std is what the driver's start writes, so nothing is sent then and a board that never opens Picture is unchanged. Serial: `S display` opens Settings, Display from the game list, `S pic open` its Picture screen, `S pic G T` sends gamma G (1-4) and tuning T (0-3) live without saving. The boot line prints `picture gamma G tune T` after the display mode, and `panel id ...` (the controller's 04h, DAh-DCh and D3h reads, raw). Settings, Card names the board and its firmware ("Board C fw 1a2b3c4 2026-11-07"); the letter is still set over serial with `ID set C`.
+
 **Calibrate (under a minute).** Display setup above ends with this. To redo only the calibration: Settings, Calibrate. Tap the cross at the top left, the top right, then the bottom left, pressing firmly and lifting. The screen then shows a dot that follows your finger: Done saves it (NVS key `pocket/cal`, it survives a reflash of the program), Redo starts over. The BOOT button cancels at any point. Taps that don't line up (two on one spot, the wrong corner) are refused and you tap again. `src/touchcal.h` works out swapped and flipped axes from the three taps; `host/touchcaltest.cpp` (run by `pocketControlsCheck.ts`) checks all eight wirings and three ranges.
 
 **Not yet checked by a person.** What a finger does (calibration, the pad and buttons, how firm a press has to be), and how the picture and colors look on each panel. Settings, Display is the knob if colors are wrong.
@@ -106,6 +108,8 @@ The board shows categories and six game thumbnails per page. Select a game, then
 Report: which games feel wrong, any picture glitch, the pad numbers that felt right (size and dead zone), and the palm and fingertip sizes.
 
 ## The microSD card
+
+A card written before the library index (only `games.txt` in `/pocket/`) lists its games under Imported, Unsorted, with their titles but no pictures. Writing the index again (`pocketData.ts --out`, then copy `library.jsonl` and `thumbs.pak`, or all of it, to the card) puts them in their own categories with their title screens. Over serial, `M n` (on the game list) prints what the list knows of game n (from `L`), whether its tile has a picture, and whether the card has `library.jsonl` and `thumbs.pak`.
 
 The board's slot (TF_CS 5, TF_SPI_SCLK 18, TF_SPI_MISO 19, TF_SPI_MOSI 23, from rzeldent's `esp32-3248S035C.json`, re-read on 2026-11-05; `src/board.h`) holds more games than the 3 MB LittleFS can. Games on the card follow the Starters in the picker with a yellow **SD** tag. With no card, or a card with no `/pocket` folder, the board behaves exactly as without the slot (the serial line `microSD: no card` is the only sign).
 
