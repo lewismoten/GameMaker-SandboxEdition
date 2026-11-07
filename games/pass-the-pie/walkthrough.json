@@ -1,0 +1,116 @@
+{
+ "version": 1,
+ "game": "pass-the-pie",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU0ZzSdND80DTRTNJ00ozQNNAzkCuRTNBE0KzQNLBcsDSEXIA00ozQNLI8sDSwPLA1A70ANNLc0nTSE5ArkUzQRNSTkCuRTNBE0UzQNNHs0XTQ/NA00="
+  },
+  {
+   "scene": 3,
+   "keys": "AU0ZzSdND80DTRnNJ00ezQM5ArkATRnNA00UzQNLBcsDSEXIA00ZzQNLFMsDSwPLA1A70ANNHs0DOQK5AE0ZzQNNLc0DOQK5AE0ZzQNNI80DOQK5AE0ZzQNNFM0XTQ/NA00="
+  },
+  {
+   "scene": 4,
+   "keys": "AU0ZzSdND80DTTLNJ00PzQM5ArkATRnNA00FzQNLBcsDSEXIA00ezQNLGcsDSwPLA1A70ANNLc0DOQK5AE0ZzQNNLc0DOQK5AE0ZzQNNI80DOQK5AE0ZzQNNKM0XTQ/NA00="
+  },
+  {
+   "scene": 5,
+   "keys": "AU0ZzSdND80DTSjNJ00FzQM5ArkATR7NA0sAywNLBcsDSEXIA00ezQNLGcsDSwPLA1A70ANNI80DOQK5AE0ezQNNHs0DOQK5AE0ezQNNHs0DOQK5AE0ezQNNQc0XTQ/NA00="
+  },
+  {
+   "scene": 6,
+   "keys": "AU0ZzSdND80DTRnNJ02HAc0hS27LA0sFywNIRcgDTR7NA0sZywNLA8sDUDvQA01fzSdNI80rTVXNF00PzQNN"
+  },
+  {
+   "scene": 7,
+   "keys": "AU0ozQNND80DTUbNAzkCuQBNGc0DTTfNAzkCuQBNGc0DTSPNAzkCuQBNGc0DTTfNA00ezRdND80DTQ=="
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Street 1: Pumpkin Yard"
+  },
+  {
+   "scene": 3,
+   "title": "Street 2: Gravy Slide"
+  },
+  {
+   "scene": 4,
+   "title": "Street 3: Windy Park"
+  },
+  {
+   "scene": 5,
+   "title": "Street 4: Cranberry Roll"
+  },
+  {
+   "scene": 6,
+   "title": "Street 5: Hungry Dog"
+  },
+  {
+   "scene": 7,
+   "title": "Street 6: Parade Dash"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 24498,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 1449,
+    "time": 24150.000000000327
+   },
+   {
+    "title": "Street 1: Pumpkin Yard",
+    "frame": 2679,
+    "time": 44649.99999999923
+   },
+   {
+    "title": "Street 2: Gravy Slide",
+    "frame": 5721,
+    "time": 95350.00000000486
+   },
+   {
+    "title": "Street 3: Windy Park",
+    "frame": 8465,
+    "time": 141083.33333334277
+   },
+   {
+    "title": "Street 4: Cranberry Roll",
+    "frame": 11342,
+    "time": 189033.33333331486
+   },
+   {
+    "title": "Street 5: Hungry Dog",
+    "frame": 14186,
+    "time": 236433.33333328727
+   },
+   {
+    "title": "Street 6: Parade Dash",
+    "frame": 17831,
+    "time": 297183.3333333131
+   },
+   {
+    "title": "Ending",
+    "frame": 19728,
+    "time": 328800.0000000166
+   },
+   {
+    "title": "Credits",
+    "frame": 23426,
+    "time": 390433.3333334217
+   }
+  ]
+ }
+}

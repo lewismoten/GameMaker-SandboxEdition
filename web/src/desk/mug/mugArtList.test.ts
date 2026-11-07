@@ -8,7 +8,8 @@ const games = new URL('../../../../games/', import.meta.url);
 const about = (id: string) => JSON.parse(readFileSync(new URL(`${id}/about.json`, games), 'utf8')) as { secret?: boolean; series?: string };
 const ids = readdirSync(games).filter((id) => existsSync(new URL(`${id}/about.json`, games)));
 // (the Starters have no mug: they are not boxed games)
-const publicIds = ids.filter((id) => !about(id).secret && about(id).series !== 'starter');
+// a Special comes and goes, so it has no mug badge
+const publicIds = ids.filter((id) => !about(id).secret && about(id).series !== 'starter' && about(id).series !== 'special');
 
 describe('mug designs', () => {
   it('has a design for every public game, and for no other', () => {

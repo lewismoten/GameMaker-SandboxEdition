@@ -25,6 +25,7 @@ const KIND_LABEL: Record<GameKind, string> = {
   sandbox: 'Sandbox',
   shareware: 'Shareware',
   bizarre: 'Bizarre',
+  special: 'Special',
   community: 'Community',
 };
 

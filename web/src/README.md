@@ -249,6 +249,7 @@ SDK implementation lives in the packages below; the app imports their declared e
 - [`eggs/`](eggs/README.md): the felt eggs hidden in the Sandbox games, their shadow box and
   EGG.EXE.
 - [`tinHearts/`](tinHearts/README.md): the tin heart hunt and its trophy.
+- [`specials/`](specials/README.md): the Specials, limited-time games: their calendar, registry, what a browser keeps, the desk's arrivals and SPECIALS.EXE.
 - [`scoreTrophies/`](scoreTrophies/README.md): the desk's two score trophies.
 - [`fortKnox/`](fortKnox/README.md): money left when a catalog game is won, and Teddy's toy safe with its treat store.
 

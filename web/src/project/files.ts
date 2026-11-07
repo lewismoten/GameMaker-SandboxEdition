@@ -5,6 +5,8 @@ export { GameFiles, cdName, normalize, IGNORED_FILE, type FileStream } from '@le
 import type { OriginalExtras } from '../../scripts/cdGames';
 import type { LibraryFileFact } from '../../scripts/libraryFacts';
 import { withSecretGames } from './secretGames';
+import { isSpecialGame, withSpecials } from './special';
+import { SPECIALS_EVENT } from '../specials/state';
 import { fetchArchive } from './archiveWait';
 import { PackReader } from '@lewismoten/gamemaker-sandbox-archives/pack';
 import type { Issue } from './health';
@@ -80,7 +82,7 @@ const SANDBOX_COMPANY = 'Sandbox Software';
  * are listed with the shareware instead.
  */
 export function isSandboxGame(g: Pick<CatalogEntry, 'original' | 'company'> & { series?: string }): boolean {
-  return !!g.original && (g.company ?? SANDBOX_COMPANY) === SANDBOX_COMPANY && g.series !== 'starter';
+  return !!g.original && (g.company ?? SANDBOX_COMPANY) === SANDBOX_COMPANY && g.series !== 'starter' && !isSpecialGame(g);
 }
 
 const catalogs = new Map<string, Promise<CatalogEntry[]>>();
@@ -91,6 +93,8 @@ export function forgetCatalog(): void {
 }
 // EGG.EXE adding or breaking an egg can reveal (or hide again) a secret game.
 if (typeof window !== 'undefined') window.addEventListener('gm-eggs-changed', forgetCatalog);
+// a Special kept, locked, unlocked or reset (specials/state.ts) is listed or hidden again
+if (typeof window !== 'undefined') window.addEventListener(SPECIALS_EVENT, forgetCatalog);
 
 /**
  * The games catalog (games/index.json, about 300 kB). Many parts of the page ask for it;
@@ -101,7 +105,8 @@ export function loadCatalog(base = './games/'): Promise<CatalogEntry[]> {
   if (!p) {
     p = fetch(`${base}index.json`)
       .then((res) => (res.ok ? (res.json() as Promise<CatalogEntry[]>) : []))
-      .then((list) => withSecretGames(list, base));
+      .then((list) => withSecretGames(list, base))
+      .then((list) => withSpecials(list));
     p.catch(() => catalogs.delete(base));
     catalogs.set(base, p);
   }
@@ -132,7 +137,7 @@ export function loadLeanCatalogList(base = './games/'): Promise<CatalogEntry[]> 
   const key = `${base}catalog.json`;
   let p = catalogs.get(key);
   if (!p) {
-    p = fetchJson<CatalogEntry[]>(key).then((list) => (list ? withSecretGames(list, base) : loadCatalog(base)));
+    p = fetchJson<CatalogEntry[]>(key).then((list) => (list ? withSecretGames(list, base).then((l) => withSpecials(l)) : loadCatalog(base)));
     p.catch(() => catalogs.delete(key));
     catalogs.set(key, p);
   }

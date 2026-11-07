@@ -7,6 +7,7 @@ import { EGGS_CHANGED, OVERRIDES_KEY } from '../eggs/eggState';
 import { forgetCatalog } from './files';
 import { secretsListed, secretsRevealed } from './secretGames';
 import { SAVES_CHANGED } from './storage';
+import { SPECIALS_EVENT } from '../specials/state';
 
 /** Fired on window (a CustomEvent whose detail is { revealed }: the open gates, 0 for none) when the catalog's list changes. */
 export const CATALOG_CHANGED = 'gm-catalog-changed';
@@ -53,6 +54,9 @@ function start(): () => void {
   window.addEventListener('focus', onChange);
   document.addEventListener('visibilitychange', onVisible);
   window.addEventListener(CATALOG_CHANGED, onCatalog);
+  // a Special kept, locked or reset (specials/state.ts, SPECIALS.EXE): files.ts forgot the catalog already; the lists follow
+  const onSpecials = () => window.dispatchEvent(new CustomEvent(CATALOG_CHANGED, { detail: { revealed: told ?? 0 } }));
+  window.addEventListener(SPECIALS_EVENT, onSpecials);
   const poll = setInterval(() => document.visibilityState === 'visible' && onChange(), POLL_MS);
   // a tin heart found or changed (the hearts' own event and EGG.EXE's page for them)
   let stopHearts: (() => void) | undefined;
@@ -70,6 +74,7 @@ function start(): () => void {
     window.removeEventListener('focus', onChange);
     document.removeEventListener('visibilitychange', onVisible);
     window.removeEventListener(CATALOG_CHANGED, onCatalog);
+    window.removeEventListener(SPECIALS_EVENT, onSpecials);
   };
 }
 

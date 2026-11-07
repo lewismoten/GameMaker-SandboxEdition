@@ -1,7 +1,7 @@
 // Which games hide a tin heart, and where: hearts.json, written by games/kit/tinHearts.ts from
 // each game's about.json "tinHeart" field ({ "map": "port.map", "at": [10, 33] }: the map file
 // and the cell the heart's block sits on in the built disk). The games that count are every
-// Sandbox Software game and every Bard of Bizarre game (about.json "series": "bizarre"); a game
+// Sandbox Software game (not a Starter or a Special) and every Bard of Bizarre game (about.json "series": "bizarre"); a game
 // whose about.json says "secret": true is left out altogether, heart or not. `pending` lists
 // the games that count but have no heart declared yet (for EGG.EXE in development only).
 // Plain data, no DOM: the generator, the tests and the web all read it from here.
@@ -30,7 +30,7 @@ const SANDBOX = 'Sandbox Software';
 
 /** Does a game count toward the tin hearts at all (a Sandbox or Bard of Bizarre game, not secret)? */
 export const heartsCount = (a: AboutForHearts): boolean =>
-  a.secret !== true && a.series !== 'starter' && ((a.company ?? SANDBOX) === SANDBOX || a.series === 'bizarre');
+  a.secret !== true && a.series !== 'starter' && a.series !== 'special' && ((a.company ?? SANDBOX) === SANDBOX || a.series === 'bizarre');
 
 /** The about.json "tinHeart" field checked, or an error saying what is wrong with it. */
 export function heartPlace(a: AboutForHearts): HeartPlace | string | undefined {

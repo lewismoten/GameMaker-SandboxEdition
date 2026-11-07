@@ -25,6 +25,8 @@ import { projectDownloadButton } from './projectExport';
 import { chooseCopy } from './homeCopies';
 import { plainError } from '../core/plainError';
 import { isBizarreGame } from '../../project/bizarre';
+import { isSpecialGame } from '../../project/special';
+import { keepSpecial } from '../../specials/state';
 import { lookId } from './lookId';
 import { gameVersion } from '../../project/gameVersion';
 import type { CommunityGame } from '../../community/catalog';
@@ -83,7 +85,7 @@ export function playLink(id: string): string {
 /** How much of a game a demo in the panel fetches before it is asked for, in bytes. */
 const PREVIEW_AHEAD = 192 * 1024;
 
-export type GameKind = 'mine' | 'gameware' | 'sandbox' | 'shareware' | 'bizarre' | 'starter' | 'community';
+export type GameKind = 'mine' | 'gameware' | 'sandbox' | 'shareware' | 'bizarre' | 'starter' | 'special' | 'community';
 
 type ProjectSummary = Awaited<ReturnType<typeof listProjects>>[number];
 
@@ -132,7 +134,7 @@ export function catalogGame(g: CatalogEntry, kind: GameKind): HomeGame {
   // the CD's library of parts has no game, nor a title of its own
   const title = g.gam ? g.title : 'Parts library';
   const made =
-    kind === 'sandbox' || kind === 'starter'
+    kind === 'sandbox' || kind === 'starter' || kind === 'special'
       ? [g.company ?? 'Sandbox Software', g.year].filter(Boolean).join(' · ')
       : kind === 'shareware' || kind === 'bizarre'
         ? creditLine(g) || (isBizarreGame(g) ? 'The Bard of Bizarre · free to change' : 'Shareware · play only')
@@ -419,6 +421,8 @@ export async function copyCatalogGame(
   name = title,
 ): Promise<string | undefined> {
   // already have a copy? offer it first, so a second one is made only on purpose
+  // a Special copied to My games is kept for good (specials/state.ts), as is its copy
+  if (entry && isSpecialGame(entry)) keepSpecial(entry.id, 'copied');
   if (entry) {
     const pick = await chooseCopy(title, entry.id, gam);
     if (!pick) return;
@@ -488,7 +492,10 @@ export function gameActions(game: HomeGame, nav: HomeNav, refresh: () => Promise
     if (entry.sourceUrl) actions.push(link(entry.sourceUrl, 'Source & credits'));
     return actions;
   }
-  const play = (href: string) => h('a', { class: 'button primary with-ico sc-play', href, 'aria-label': `Play ${game.title}` }, svgIcon('play'), 'Play');
+  // a Special played or opened from here sticks around once its window passes (specials/state.ts)
+  const keepIt = (how: 'played' | 'opened') => (game.entry && isSpecialGame(game.entry) ? keepSpecial(game.entry.id, how) : undefined);
+  const play = (href: string) =>
+    h('a', { class: 'button primary with-ico sc-play', href, 'aria-label': `Play ${game.title}`, onclick: () => keepIt('played') }, svgIcon('play'), 'Play');
   const keys = h('button', { class: 'with-ico', title: 'What each key does in this game', onclick: () => openKeys(game) }, svgIcon('keys'), 'Keys');
   const e = game.entry;
   if (game.project) {
@@ -542,7 +549,10 @@ function lookInside(game: HomeGame, id: string, nav: HomeNav): HTMLElement {
       class: 'with-ico',
       title: 'Open its files in the editor as released, without making a copy',
       'aria-label': `Look inside ${game.title}: its files as released, without making a copy`,
-      onclick: () => nav.openProject(lookId(id)),
+      onclick: () => {
+        if (game.entry && isSpecialGame(game.entry)) keepSpecial(game.entry.id, 'opened');
+        nav.openProject(lookId(id));
+      },
     },
     svgIcon('search'),
     'Look inside',
