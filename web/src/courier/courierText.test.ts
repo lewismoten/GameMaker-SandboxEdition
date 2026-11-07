@@ -3,8 +3,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { letterDate, mailDay } from './courierText';
-import { deliver } from './courierStore';
+import { letterDate, mailDay, stampRows } from './courierText';
+import { addStamp, deliver } from './courierStore';
+import { STAMP_WORDS } from './tables';
 import { runScootExe } from './scootExe';
 import type { Ui } from '../retro/text/textUi';
 
@@ -61,5 +62,28 @@ describe('a letter’s date', () => {
     expect(card).toContain('letterDate(item.day)');
     expect(card).toContain('letterDate(m.day)');
     for (const src of [card, readFileSync(resolve(__dirname, 'scootExe.ts'), 'utf8')]) expect(src).not.toMatch(/toLocaleDateString|getFullYear|new Date\(/);
+  });
+});
+
+describe('stamps in SCOOT.EXE', () => {
+  it('two to a row, a catalog game by its title, a long name cut to fit', () => {
+    const p = { world: 0, stamps: [{ kind: 'sample-cd' as const }, { kind: 'game' as const, game: 'g' }, { kind: 'mystery' as const }] };
+    const rows = stampRows(p, (id) => (id === 'g' ? 'A Very Long Title That Goes On And On Past The Column' : undefined), 72);
+    expect(rows).toHaveLength(2);
+    expect(rows[0]).toMatch(/^ {2}Sample CD +A Very Long Title.*\.$/);
+    expect(rows[1].trim()).toBe(STAMP_WORDS.mystery);
+    for (const r of rows) expect(r.length).toBeLessThanOrEqual(72);
+    expect(stampRows(p, () => undefined, 72)[0]).toContain('A game');
+  });
+
+  it('the Postcards section lists them, and a long rack scrolls with the arrows', async () => {
+    addStamp({ kind: 'sample-cd' }, () => 0);
+    addStamp({ kind: 'graduation' }, () => 0);
+    addStamp({ kind: 'mystery' }, () => 0);
+    const shown = await exeText(['ArrowRight']);
+    for (const w of Object.values(STAMP_WORDS)) expect(shown).toContain(w);
+    expect(shown).not.toContain('Scroll');
+    for (let i = 0; i < 40; i++) addStamp({ kind: 'game', game: `g${i}` }, () => 0);
+    expect(await exeText(['ArrowRight'])).toContain('Scroll');
   });
 });

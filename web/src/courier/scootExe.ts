@@ -7,7 +7,8 @@ import { MENUATTR, SHADATTR, TITLEATTR, BARATTR, CURATTR, type Ui } from '../ret
 import { toCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import { deleteLetter, loadCourier, loadQuiet, markRead, saveQuiet, MAX_PACKAGES } from './courierStore';
 import { letterById } from './tables';
-import { EMPTY, QUIET_WORDS, SECTIONS, letterDate, postcardTitle, stampText } from './courierText';
+import { EMPTY, QUIET_WORDS, SECTIONS, letterDate, postcardTitle, stampRows } from './courierText';
+import { catalogTitles } from './stamps';
 
 const X = 2;
 const W = 76;
@@ -42,6 +43,8 @@ export async function runScootExe(ui: Ui): Promise<void> {
   /** The letter open in Mail, if any. */
   let reading: string | undefined;
   let asking = false;
+  // catalog games' titles for their stamps (none if the list is slow to come: the stamp says "A game")
+  const title = (await Promise.race([catalogTitles().catch(() => undefined), new Promise<undefined>((r) => setTimeout(r, 1500))])) ?? (() => undefined);
 
   const frame = (keys: string) => {
     s.fill(0, 0, 79, 24, attr(7, 0), 176);
@@ -98,12 +101,14 @@ export async function runScootExe(ui: Ui): Promise<void> {
         });
         if (c.mail.some((m) => !m.read)) s.write(X + 2, TOP + 2 + ROWS - 1, DIM, toCp437(fit('* new letter', IN)));
       } else if (section === 'Postcards') {
-        frame(' ←→ Section  Esc Quit');
+        // each postcard's name, then its stamps two to a row; ↑↓ scroll a long rack (cur is the top row)
+        const rows = c.postcards.flatMap(
+          (p, i) => [...(i ? [['']] : []), [postcardTitle(p)], ...stampRows(p, title, IN).map((r) => [r, DIM])] as [string, number?][],
+        );
+        cur = Math.max(0, Math.min(cur, rows.length - ROWS));
+        frame(rows.length > ROWS ? ' ←→ Section  ↑↓ Scroll  Esc Quit' : ' ←→ Section  Esc Quit');
         if (!c.postcards.length) lines([[EMPTY.Postcards]]);
-        else
-          lines(
-            c.postcards.flatMap((p) => [[postcardTitle(p)], ...p.stamps.map((st) => [`  ${stampText(st)}`, DIM] as [string, number])] as [string, number?][]),
-          );
+        else lines(rows.slice(cur, cur + ROWS));
       } else if (section === 'Packages') {
         frame(' ←→ Section  Esc Quit');
         lines(c.packages.length ? [[`In the satchel (${MAX_PACKAGES} at most):`], ...c.packages.map((p) => [`  ${p}`] as [string])] : [[EMPTY.Packages]]);
@@ -141,7 +146,8 @@ export async function runScootExe(ui: Ui): Promise<void> {
           reading = c.mail[cur].id;
           markRead(reading);
         } else if (key === 'Delete' || key === 'D') asking = true;
-      } else if (section === 'Setup' && (key === 'Enter' || key === ' ')) saveQuiet(!loadQuiet());
+      } else if (section === 'Postcards' && (key === 'ArrowDown' || key === 'ArrowUp')) cur += key === 'ArrowDown' ? 1 : -1;
+      else if (section === 'Setup' && (key === 'Enter' || key === ' ')) saveQuiet(!loadQuiet());
     }
   } finally {
     s.resetPalette();
