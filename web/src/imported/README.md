@@ -21,7 +21,7 @@ stars as a radio group, Unrated first (`ratingStars.ts`), the "Rating and note" 
   it names (by lowercased name and CRC-32); saves, scores and players are left out. The CRC-only
   `fingerprint.ts` stays for the removed-game check.
 - `gameTags.ts`: the deterministic tagger (gravity, a shot that births a monster, monster count,
-  keys, scrolling and level count). No AI. Its tags are suggestions, never written to DOS files.
-- `knownGames.json`: content fingerprint to tags for the CD's games, built by
+  keys and whether the hero faces up and down). A tag has to be earned (rules in the file's header). No AI. Its tags are suggestions, never written to DOS files.
+- `knownGames.json`: content fingerprint to tags for the CD's games and the public archive's (about 340 games, 14 KB, 4 KB gzipped), built by
   `web/scripts/knownGamesTable.ts` (a curated `knownGames.curated.json`, keyed by folder, replaces
   a guess). Loaded only when the Imported tab reads tags (`editor/shell/homeTags.ts`).
