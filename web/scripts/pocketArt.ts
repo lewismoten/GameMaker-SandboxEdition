@@ -171,15 +171,29 @@ add(
     '................',
   ]),
 );
-// 10 Bizarre: a spiral
-{
-  const g = blank();
-  for (let a = 0; a < 15; a += 0.04) {
-    const r = 0.5 + a * 0.5;
-    set(g, 7.5 + Math.cos(a) * r, 7.5 + Math.sin(a) * r, a < 5 ? 'y' : a < 10 ? 'p' : 'c');
-  }
-  add('Bizarre', g);
-}
+// 10 Bizarre: the rooster in blue spectacles from the top of the Bard of Bizarre's logo (public/bbs/BARDLOGO.GIF, made with
+// DeepAI), redrawn as 16x16 pixel art: red comb, white head, blue glasses, orange beak and red wattle.
+add(
+  'Bizarre',
+  art([
+    '......r.r.r.....',
+    '.....rrrrrrr....',
+    '....rrrrrrrr....',
+    '....kwwwwwwwk...',
+    '...kwwwwwwwwwk..',
+    '..bbbbb.bbbbbwk.',
+    '.bwwkwbbbwkwwbbk',
+    '.bwwkwb.bwkwwbwk',
+    '..bbbbbwwbbbbbwk',
+    'ooo.wwwwwwwwwwwk',
+    'ooooowwwwwwwwwk.',
+    '.yyyywwwwwwwwwk.',
+    '..rr.kwwwwwwwk..',
+    '..rrr.wwwwwwwwk.',
+    '...r..wwwwwwwwwk',
+    '......wwwwwwwwww',
+  ]),
+);
 // 11 My games: a blue folder with a gold star
 {
   const g = blank();
@@ -314,6 +328,40 @@ add(
     '................',
     '................',
     '................',
+  ]),
+);
+// 19 Recently played: a clock face at ten past ten
+{
+  const g = blank();
+  disc(g, 7.5, 7.5, 7.4, 'l');
+  disc(g, 7.5, 7.5, 6.2, 'w');
+  const ticks = [7, 2, 8, 2, 13, 7, 13, 8, 7, 13, 8, 13, 2, 7, 2, 8]; // hour marks at 12, 3, 6 and 9
+  for (let i = 0; i < ticks.length; i += 2) set(g, ticks[i], ticks[i + 1], 'd');
+  line(g, 7, 7, 7, 3, 'k');
+  line(g, 8, 8, 11, 10, 'k');
+  rect(g, 7, 7, 2, 2, 'r');
+  add('Recently played', g);
+}
+// 20 Favorites: a five-pointed star, point up
+add(
+  'Favorites',
+  art([
+    '.......yy.......',
+    '.......yy.......',
+    '......yyyy......',
+    '......yyyy......',
+    '.....yyyyyy.....',
+    'yyyyyyyyyyyyyyyy',
+    '.yyyyyyyyyyyyyy.',
+    '..yyyyyyyyyyyy..',
+    '...yyyyyyyyyy...',
+    '....yyyyyyyy....',
+    '....yyyyyyyy....',
+    '...yyyyyyyyyy...',
+    '...yyyy..yyyy...',
+    '..yyyy....yyyy..',
+    '..yyy......yyy..',
+    '.yy..........yy.',
   ]),
 );
 // (Unsorted uses the Other drawer in the firmware, and the Imported tray stands for the root.)

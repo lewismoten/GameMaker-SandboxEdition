@@ -53,7 +53,11 @@ function bundleSmallFiles(cfgs: Map<string, Uint8Array>) {
   writeFileSync(outDir + 'small.pak', writeBundle([...store, ...cfgs]));
 }
 if (!listOnly) {
-  if (!gmpDir) rmSync(outDir, { recursive: true, force: true }); // --gmp only adds or replaces NAME.GMP files
+  // --gmp only adds or replaces NAME.GMP files. --out replaces its own loose files but keeps what a board or a person put on the
+  // card: the boards' display setups (boards/) and downloaded .GMP games.
+  if (cardRoot && existsSync(outDir)) {
+    for (const n of readdirSync(outDir)) if (n !== 'boards' && !/\.gmp$/i.test(n)) rmSync(outDir + n, { recursive: true, force: true });
+  } else if (!gmpDir) rmSync(outDir, { recursive: true, force: true });
   mkdirSync(outDir, { recursive: true });
   writeFileSync(outDir + 'font.bin', FONT8X8.subarray(32 * 8, 127 * 8)); // the 8x8 PC font for the text pages: 95 glyphs (' ' to '~') of 8 rows, bit 0 leftmost.
 }
