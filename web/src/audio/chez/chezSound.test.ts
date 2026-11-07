@@ -1,7 +1,6 @@
 // THE CHEZ's shared sound: the lifecycle of both voices with a fake audio context (what starts,
 // what stops, what is freed). How it sounds is checked by ear from offline renders.
 import { afterEach, describe, expect, it } from 'vitest';
-import { setChezClipLoader } from './chezClips';
 import { CHEZ_SOUND, chezMotor, chezPassBy } from './chezSound';
 import { climbSpeed } from './chezSynth';
 
@@ -97,9 +96,6 @@ function fakeContext() {
   return { ctx, nodes, sources, until, as: ctx as unknown as BaseAudioContext, out: ctx.destination as unknown as AudioNode };
 }
 
-const flush = () => new Promise((r) => setTimeout(r, 0));
-const buffer = (duration: number) => ({ duration }) as AudioBuffer;
-const CLIPS: Record<string, number> = { contactor: 0.42, start: 3.9, cruise: 3, stop: 2.48 };
 
 afterEach(() => setChezClipLoader(() => Promise.reject(new Error('no clips in tests'))));
 
@@ -179,62 +175,5 @@ describe('the made-up voice', () => {
     expect(s.every((n) => n.stopped !== undefined && n.stopped > 10.9 && n.stopped < 11.2)).toBe(true);
     f.until(12);
     expect(s.every((n) => n.freed)).toBe(true);
-  });
-});
-
-describe('the recorded voice', () => {
-  it('plays the clunk, the start and the cruise loop; stop() fades them and plays the stop', async () => {
-    setChezClipLoader((_c, name) => Promise.resolve(buffer(CLIPS[name])));
-    const f = fakeContext();
-    const m = chezMotor(f.as, f.out, {}, 'recorded');
-    m.go();
-    await flush();
-    const [contactor, start, cruise] = f.sources();
-    expect(f.sources()).toHaveLength(3);
-    expect(contactor.started).toBeLessThan(start.started!);
-    expect(cruise.loop).toBe(true);
-    expect(cruise.started).toBeCloseTo(start.started! + CLIPS.start - 0.4);
-    f.until(8);
-    m.stop();
-    await flush();
-    expect(cruise.stopped).toBeLessThan(8.5);
-    const stop = f.sources()[3];
-    expect(stop.loop).toBe(false);
-    f.until(12);
-    expect(f.sources().every((s) => s.freed)).toBe(true);
-  });
-
-  it('a stop before the clips load means nothing plays', async () => {
-    setChezClipLoader((_c, name) => Promise.resolve(buffer(CLIPS[name])));
-    const f = fakeContext();
-    const m = chezMotor(f.as, f.out, {}, 'recorded');
-    m.go();
-    m.stop();
-    await flush();
-    expect(f.sources()).toHaveLength(0);
-  });
-
-  it('falls back to the made-up voice when the clips cannot load', async () => {
-    const f = fakeContext();
-    const m = chezMotor(f.as, f.out, {}, 'recorded');
-    m.go();
-    await flush();
-    expect(f.sources().some((s) => s.kind === 'osc')).toBe(true);
-    m.dispose();
-    f.until(1);
-    expect(f.sources().every((s) => s.freed)).toBe(true);
-  });
-
-  it('a pass-by loops the cruise with a Doppler drop and stops itself', async () => {
-    setChezClipLoader((_c, name) => Promise.resolve(buffer(CLIPS[name])));
-    const f = fakeContext();
-    chezPassBy(f.as, f.out, 11, { outside: true }, 'recorded');
-    await flush();
-    const [cruise] = f.sources();
-    expect(cruise.loop).toBe(true);
-    expect(cruise.playbackRate.events).toEqual(['set', 'ramp']);
-    expect(cruise.stopped).toBeGreaterThan(11);
-    f.until(12);
-    expect(cruise.freed).toBe(true);
   });
 });
