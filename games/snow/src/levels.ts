@@ -87,19 +87,16 @@ function powder(pal: Pal, tracks: boolean): Pixels {
     p.set(x, 19, g[3]);
   }
   if (tracks) {
-    // Two soles, toe to the right: a rim of light on top, the pressed hollow below, tread notches, and a heel.
+    // Two soles, toe to the right: a heel, a gap and the ball of the foot, pressed into the powder under a rim of light.
+    const sole = ['........', '..XXXXX.', 'XX.XXXXX', 'XX.XXXXX', '..XXXXX.'];
     for (const [x, y] of [
-      [2, 12],
-      [11, 15],
+      [1, 10],
+      [11, 14],
     ]) {
-      p.rect(x + 1, y - 1, 6, 1, g[5]);
-      p.rect(x + 4, y, 4, 3, d[3])
-        .rect(x + 5, y - 0, 2, 1, d[2])
-        .rect(x, y + 1, 3, 2, d[3]);
-      p.set(x + 5, y + 1, d[4])
-        .set(x + 7, y + 1, d[4])
-        .set(x + 3, y + 1, d[4]);
-      p.rect(x + 1, y + 3, 7, 1, g[3]);
+      p.rect(x + 2, y - 0, 5, 1, g[5]);
+      sole.forEach((row, dy) => [...row].forEach((ch, dx) => ch === 'X' && p.set(x + dx, y + dy, d[3])));
+      p.rect(x + 3, y + 4, 4, 1, d[4]);
+      p.rect(x, y + 5, 8, 1, g[3]);
     }
   }
   return p;
