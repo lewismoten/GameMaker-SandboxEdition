@@ -1,5 +1,5 @@
-/* Scoot, the desk buddy (desk/buddy/deskBuddy.ts): a pocket LCD toy standing on the right
-   speaker on the stage (stage px, desk/deskStage.css), beside the Game-Maker box on a phone.
+/* Scoot, the desk buddy (desk/buddy/deskBuddy.ts): a pocket LCD toy standing on the desk top
+   between the PC and the Game-Maker box on the stage (stage px, desk/deskStage.css), beside the Game-Maker box on a phone.
    Its bubble and card are paper, the same in light and dark, like the rest of the room. */
 .desk-buddy {
   position: relative;
@@ -194,12 +194,24 @@
   outline-offset: 2px;
 }
 
-/* on the stage: standing on top of the right speaker (left 1026, top 384, 78 wide) */
+/* on the stage: standing on the desk top between the PC and the Game-Maker box, where the mug of pens stood (left 1040, 90 wide, its base at 698) */
 @media (min-width: 961px) {
   .desk-scene .desk-buddy {
     position: absolute;
-    left: 1033px;
-    top: 306px;
+    left: 1053px;
+    top: 618px;
+  }
+
+  /* its bubble grows leftward over the PC's front, clear of the Game-Maker box */
+  .desk-scene .buddy-bubble {
+    left: auto;
+    right: -4px;
+    transform: none;
+  }
+
+  .desk-scene .buddy-bubble::after {
+    left: auto;
+    right: 18px;
   }
 }
 

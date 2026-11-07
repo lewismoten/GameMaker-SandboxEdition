@@ -1,4 +1,4 @@
-// Scoot, the desk buddy: a pocket LCD toy on the right speaker (on a phone, beside the Game-Maker
+// Scoot, the desk buddy: a pocket LCD toy on the desk top between the PC and the Game-Maker box (on a phone, beside the Game-Maker
 // box). It hears what happens on the desk (the PC's game and scenes, `DESK_PLAY` from deskPc.ts;
 // new badges; a new certificate frame; quiet time) and answers with a pose and, now and then, one
 // short line in a bubble (buddyLines.ts has the rules). Pressing it opens a small card with what
