@@ -49,7 +49,6 @@ import { BOARD_WORLD } from './boardLayout';
 import type { Stub } from './boardPaint';
 import { viewState } from '../../../urlState';
 import { onViewChange } from '../../shell/viewSync';
-import { usesLine } from '../../shell/usedBy';
 import { startingAt } from './startAt';
 import { fileUndo } from '../../core/fileUndo';
 import { screensAndSongs } from './sceneSlots';
@@ -544,13 +543,13 @@ registerEditor(['gam'], (host, owner, file) => {
           'button',
           { class: 'grator-side-open', title: 'Show the side panel', 'aria-expanded': 'false', onclick: () => setCollapsed(false) },
           h('span', { 'aria-hidden': 'true' }, '‹'),
-          h('span', { class: 'grator-side-open-label' }, `${wide?.matches ? 'Scene · ' : ''}Screens ${screens.length} · Music ${songs.length}`),
+          h('span', { class: 'grator-side-open-label' }, `${wide?.matches ? 'Scene · ' : ''}Screens · Music`),
         ),
       );
       return;
     }
     const now = shownTab();
-    const tab = (id: typeof sideTab, label: string, n?: number) =>
+    const tab = (id: typeof sideTab, label: string) =>
       h(
         'button',
         {
@@ -567,7 +566,6 @@ registerEditor(['gam'], (host, owner, file) => {
           },
         },
         label,
-        n === undefined ? null : h('span', { class: 'grator-count' }, String(n)),
       );
     sideBody.id = 'grator-side-body';
     sideBody.setAttribute('role', 'tabpanel');
@@ -578,8 +576,8 @@ registerEditor(['gam'], (host, owner, file) => {
         'div',
         { class: 'grator-tabs', role: 'tablist', 'aria-label': 'Side panel' },
         panelInSide() ? tab('scene', 'Scene') : null,
-        tab('screens', 'Screens', screens.length),
-        tab('music', 'Music', songs.length),
+        tab('screens', 'Screens'),
+        tab('music', 'Music'),
       ),
       h(
         'button',
@@ -700,13 +698,23 @@ registerEditor(['gam'], (host, owner, file) => {
           { style: 'margin:0' },
           kind === 'start' ? 'Start scene (title & menu)' : kind === 'end' ? 'End scene (game won / lost)' : `Level scene #${selected}`,
         ),
-        usesLine(project, s.files),
         textField(
           `Description (the start scene’s is the game title; ${upTo(SCENEDESCLEN - 1)})`,
           () => fromCp437(s.desc),
           (v) => ((s.desc = toCp437(v).slice(0, SCENEDESCLEN - 1)), (s.descRaw = undefined), save(), draw(), renderSide()),
           { maxLength: SCENEDESCLEN - 1 },
         ),
+        kind === 'adventure' && s.files[1]
+          ? h(
+              'a',
+              {
+                class: 'button',
+                href: `#/p/${project.id}/${encodeURIComponent(s.files[1].toLowerCase())}?generate=1`,
+                title: 'Open this level’s map and generate a layout from its background blocks',
+              },
+              'Generate level layout…',
+            )
+          : null,
         kind === 'start'
           ? h(
               'div',
@@ -725,7 +733,7 @@ registerEditor(['gam'], (host, owner, file) => {
                   onclick: () => void import('../../widgets/walkDialog').then((m) => m.walkDialog(project)),
                   title: 'Let a bot play the whole game and keep it as a walkthrough to watch or save as a video',
                 },
-                '🤖 Make a walkthrough…',
+                '🤖 Record a walkthrough…',
               ),
               h(
                 'button',
@@ -741,7 +749,7 @@ registerEditor(['gam'], (host, owner, file) => {
                   title:
                     'Add, swap or remove the opening that plays before the title: a “Made with Game-Maker: Sandbox Edition” intro or the classic RSD one, and a “presents” card',
                 },
-                '🎬 Opening sting…',
+                '🎬 Create opening files…',
               ),
               h(
                 'button',
@@ -755,7 +763,7 @@ registerEditor(['gam'], (host, owner, file) => {
                   },
                   title: 'Make the instructions from the game’s own keys, with the goal, the dangers and the items, on a backdrop that always reads well',
                 },
-                '📝 Instruction card…',
+                '📝 Create instructions…',
               ),
             )
           : null,
@@ -783,7 +791,7 @@ registerEditor(['gam'], (host, owner, file) => {
                       },
                       title: 'Make the card shown as the level starts: its name, “level 3 of 10”, the goal and a hint (it shows again after every death)',
                     },
-                    '🪧 Level card…',
+                    '🪧 Create level intro…',
                   )
                 : null,
               h(

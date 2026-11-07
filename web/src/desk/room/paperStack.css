@@ -284,7 +284,8 @@
     #f6f0dc;
 }
 
-.ps-choice-magazine .ps-icon {
+.ps-choice-magazine .ps-icon,
+.ps-choice-backIssue .ps-icon {
   background:
     linear-gradient(#d61f26, #d61f26) 2px 2px / 16px 5px no-repeat,
     radial-gradient(circle, #ffd31a 0 3px, transparent 3.5px) 10px 14px / 8px 8px no-repeat,

@@ -6,8 +6,8 @@ export const FILE_ORDER: FileKind[] = [
   'pal',
   'bbl',
   'mbl',
-  'cbl',
   'mon',
+  'cbl',
   'chr',
   'map',
   'snd',
@@ -23,7 +23,7 @@ export const FILE_ORDER: FileKind[] = [
   'other',
 ];
 /** The kinds always listed and offered in "Add a file" (4 x 4). */
-export const ADD_KINDS: FileKind[] = ['pal', 'bbl', 'mbl', 'cbl', 'mon', 'chr', 'map', 'snd', 'gif', 'fli', 'cmf', 'voc', 'txt', 'lst', 'bkd', 'rec'];
+export const ADD_KINDS: FileKind[] = ['pal', 'bbl', 'mbl', 'mon', 'cbl', 'chr', 'map', 'snd', 'gif', 'fli', 'cmf', 'voc', 'txt', 'lst', 'bkd', 'rec'];
 export const FILE_KIND_HELP: Partial<Record<FileKind, string>> = {
   pal: '256 colors to paint with',
   bbl: 'the scenery, 150 blocks',

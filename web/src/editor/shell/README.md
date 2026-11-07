@@ -28,3 +28,5 @@ From `web/`:
 ```sh
 npx vitest run src/editor/shell
 ```
+
+File categories keep monster blocks beside monsters and character blocks beside characters. Deep search restores cached entries without waiting for an idle callback for each game; uncached extraction still yields before reading.
