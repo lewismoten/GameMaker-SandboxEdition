@@ -212,7 +212,8 @@ export function courierCard(setup: HTMLElement): CourierCard {
             }),
         ),
     );
-    return h('div', { class: 'courier-trips' }, ...tripStatus(c).map((t) => h('p', null, t)), actions, h('p', { class: 'courier-said', role: 'status' }, said));
+    // what just happened comes first, so it shows without scrolling the panel
+    return h('div', { class: 'courier-trips' }, h('p', { class: 'courier-said', role: 'status' }, said), ...tripStatus(c).map((t) => h('p', null, t)), actions);
   };
 
   const draw = () => {

@@ -69,10 +69,7 @@ export function tripStatus(c: Courier): string[] {
   if (c.out) lines.push('Scoot is on a trip. Open its trip file (SCOOT.SCT) on another screen, and bring it back here when Scoot comes home.');
   else if (c.home) lines.push(`Scoot lives here, at ${worldName(c.home.world)}. A trip file takes it to another screen and back.`);
   else lines.push('A trip file (SCOOT.SCT) takes Scoot to another screen and back.');
-  if (c.visitor)
-    lines.push(
-      `A courier from ${worldName(c.visitor.world)} is visiting. Games played to their end here go on its postcard${c.home ? ` from ${worldName(c.home.world)}` : ''} too.`,
-    );
+  if (c.visitor) lines.push(`A courier from ${worldName(c.visitor.world)} is visiting. Games finished here stamp its postcard too.`);
   return lines;
 }
 
