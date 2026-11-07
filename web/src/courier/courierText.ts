@@ -10,7 +10,8 @@ export type Section = (typeof SECTIONS)[number];
 
 export const EMPTY: Readonly<Record<Exclude<Section, 'Setup'>, string>> = {
   Mail: 'No letters yet. A call to a BBS on the PC can bring one home for Scoot.',
-  Postcards: 'No postcards yet. When Scoot rides along to another screen, it brings home a postcard from there.',
+  Postcards:
+    'No postcards yet. A game played to its end here puts the first stamp on this screen’s postcard, and each screen Scoot rides along to gives one of its own.',
   Packages: 'The satchel is empty. It holds up to three special deliveries, each a game from the catalog.',
 };
 
