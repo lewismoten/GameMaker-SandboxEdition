@@ -4,7 +4,8 @@
 // postcard never travels; a secret game reaches the visitor's postcard only as the mystery stamp.
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { addStamp, loadCourier, COURIER_KEY } from './courierStore';
-import { UUID_V4, decodeCapsule, encodeCapsule, gameHash } from './capsule';
+import { decodeCapsule, encodeCapsule, gameHash } from './capsule';
+import { isCourierId } from './courierId';
 import { callHome, receive, sendScoot, sendVisitorHome } from './trips';
 import { readdirSync, readFileSync, existsSync } from 'node:fs';
 import { resolve } from 'node:path';
@@ -32,8 +33,8 @@ describe('trips', () => {
     addStamp({ kind: 'game', game: 'snowbound' });
     const out = sendScoot();
     const a = loadCourier();
-    expect(a.out).toMatch(UUID_V4);
-    expect(a.home!.id).toMatch(UUID_V4);
+    expect(isCourierId(a.out)).toBe(true);
+    expect(isCourierId(a.home!.id)).toBe(true);
     expect(decodeCapsule(out, game).postcards).toEqual([]); // the home postcard never travels
 
     at('B');

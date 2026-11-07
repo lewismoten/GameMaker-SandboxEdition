@@ -5,13 +5,10 @@
 // stamps. A catalog game's stamp is a 32-bit hash of its id, looked up in the receiver's public
 // catalog; one it does not know arrives as the mystery stamp.
 //
-// Every id (home, from, trip) is a UUID version 4: 122 random bits from crypto.randomUUID or
-// crypto.getRandomValues, derived from nothing (no time, MAC, hardware or serial number, user agent
-// or world name), so two screens in one household cannot be linked by their ids. Other versions
-// (v1 holds a time and a MAC, v6/v7 a time, v3/v5 a hash of a name) are refused. A port (CYD, Pi)
-// makes its ids the same way from its hardware random number generator: on an ESP32, esp_random()
-// with the radio on or bootloader_random_enable(); on a Pi, its hardware RNG (/dev/hwrng or
-// getrandom). Never from the efuse MAC or a serial number.
+// Every id (home, from, trip) is a courier id (courierId.ts): a UUID version 4 of random bits with a
+// courier mark and a check digit, derived from nothing (no time, MAC, hardware or serial number,
+// user agent or world name), so two screens in one household cannot be linked by their ids. Any
+// other id, other UUID versions among them, is refused.
 //
 // Little-endian, 512 bytes at most:
 //
@@ -22,6 +19,7 @@
 //
 // decodeCapsule checks all of it before anything is written, so a bad file changes nothing.
 import { TABLE_VERSION, WORLDS, type StampKind } from './tables';
+import { isCourierId } from './courierId';
 
 export const CAPSULE_VERSION = 1;
 export const CAPSULE_MAX = 512;
@@ -45,7 +43,7 @@ export interface TripCard {
 }
 
 export interface Capsule {
-  /** A UUID v4, one per trip. */
+  /** A courier id, one per trip. */
   trip: string;
   /** The courier's home: its UUID and world id. */
   home: string;
@@ -90,10 +88,8 @@ export function gameHash(id: string): number {
   return h >>> 0;
 }
 
-/** A UUID version 4 (version nibble 4, variant 8 to b), lowercase: the only ids a courier keeps or carries. */
-export const UUID_V4 = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
 const uuidBytes = (id: string): number[] => {
-  if (!UUID_V4.test(id)) throw new CapsuleError('malformed');
+  if (!isCourierId(id)) throw new CapsuleError('malformed');
   return id
     .replace(/-/g, '')
     .match(/../g)!
@@ -104,15 +100,6 @@ const uuid = (b: Uint8Array) => {
   const s = hex(b);
   return `${s.slice(0, 8)}-${s.slice(8, 12)}-${s.slice(12, 16)}-${s.slice(16, 20)}-${s.slice(20)}`;
 };
-
-/** A new UUID v4, all random; crypto.randomUUID where the page allows it (a secure context), else from crypto.getRandomValues. */
-export function newId(useRandomUUID = typeof crypto.randomUUID === 'function'): string {
-  if (useRandomUUID) return crypto.randomUUID();
-  const b = crypto.getRandomValues(new Uint8Array(16));
-  b[6] = (b[6] & 0x0f) | 0x40;
-  b[8] = (b[8] & 0x3f) | 0x80;
-  return uuid(b);
-}
 
 const u32 = (out: number[], n: number) => out.push(n & 0xff, (n >>> 8) & 0xff, (n >>> 16) & 0xff, (n >>> 24) & 0xff);
 
@@ -180,7 +167,7 @@ export function decodeCapsule(bytes: Uint8Array, game: (hash: number) => string 
   };
   const id = () => {
     const u = uuid(take(16));
-    if (!UUID_V4.test(u)) throw new CapsuleError('malformed');
+    if (!isCourierId(u)) throw new CapsuleError('malformed');
     return u;
   };
   take(6);

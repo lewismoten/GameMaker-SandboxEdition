@@ -4,9 +4,10 @@
 // home merges the postcards it brought. A capsule this screen wrote is refused politely, a trip is
 // welcomed home or hosted once only, and every check runs before the one write, so a refused file
 // changes nothing. The home postcard never travels and no postcard from this screen comes back to it.
-import { CapsuleError, capsuleSize, decodeCapsule, encodeCapsule, gameHash, newId, type CapsuleProblem } from './capsule';
+import { CapsuleError, capsuleSize, decodeCapsule, encodeCapsule, gameHash, type CapsuleProblem } from './capsule';
 import { addTo, ensureHome, loadCourier, saveCourier, type Courier } from './courierStore';
 import { publicCatalog } from './stamps';
+import { makeCourierId } from './courierId';
 
 /** Why an arriving capsule was turned away: one this screen wrote, a trip that came before, a visitor already here, a full satchel, no catalog to read it with, or a bad file. */
 export type Refusal = 'mine' | 'replay' | 'busy' | 'full' | 'catalog' | CapsuleProblem;
@@ -17,7 +18,7 @@ export type Arrival = { kind: 'home'; postcards: number } | { kind: 'visitor'; w
 export function sendScoot(): Uint8Array {
   const c = loadCourier();
   const home = ensureHome(c);
-  c.out ??= newId();
+  c.out ??= makeCourierId();
   const bytes = encodeCapsule({ trip: c.out, home: home.id, world: home.world, from: home.id, packages: [], postcards: [] });
   saveCourier(c);
   return bytes;

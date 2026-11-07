@@ -5,7 +5,8 @@
 // timer. Every change is announced (`COURIER_CHANGED`) so an open card or envelope follows at once.
 import { LETTERS, WORLDS, letterById, type Letter, type StampKind } from './tables';
 import { isOldSecret } from '../project/secretGames';
-import { UUID_V4, capsuleSize, newId, type TripCard } from './capsule';
+import { capsuleSize, type TripCard } from './capsule';
+import { isCourierId, makeCourierId } from './courierId';
 
 export const COURIER_KEY = 'gm-courier';
 const KEY = COURIER_KEY;
@@ -35,7 +36,7 @@ export interface Postcard {
   stamps: Stamp[];
 }
 
-/** This screen's home: a UUID v4 (all random, derived from nothing; capsule.ts), made once, and its world (rolled once from the curated names). */
+/** This screen's home: a courier id (courierId.ts: UUID v4 in shape, random, derived from nothing), made once, and its world (rolled once from the curated names). */
 export interface Home {
   id: string;
   world: number;
@@ -72,7 +73,7 @@ export const MAX_PACKAGES = 3;
 
 const empty = (): Courier => ({ mail: [], got: [], postcards: [], packages: [], welcomed: [], hosted: [] });
 const strings = (v: unknown): string[] => (Array.isArray(v) ? v.filter((x): x is string => typeof x === 'string') : []);
-const isId = (v: unknown): v is string => typeof v === 'string' && UUID_V4.test(v);
+const isId = isCourierId;
 const isWorld = (v: unknown): v is number => Number.isInteger(v) && (v as number) >= 0 && (v as number) < WORLDS.length;
 const obj = (v: unknown): Record<string, unknown> | undefined => (v && typeof v === 'object' ? (v as Record<string, unknown>) : undefined);
 
@@ -172,7 +173,7 @@ export function addTo(card: { stamps: Stamp[] }, s: Stamp): boolean {
  */
 export function ensureHome(c: Courier, roll: () => number = Math.random): Home {
   c.home ??= {
-    id: newId(),
+    id: makeCourierId(),
     world: c.postcards.find((p) => p.here)?.world ?? Math.min(WORLDS.length - 1, Math.floor(roll() * WORLDS.length)),
   };
   return c.home;

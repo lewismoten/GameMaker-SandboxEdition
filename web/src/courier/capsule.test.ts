@@ -2,15 +2,17 @@
 // as the mystery stamp, and a file that is too big, not a capsule, from a newer version, changed or
 // malformed is refused. The format has no text at all, so a world's name never rides along.
 import { describe, expect, it } from 'vitest';
-import { CAPSULE_MAX, CapsuleError, UUID_V4, crc32, decodeCapsule, encodeCapsule, gameHash, newId, type Capsule } from './capsule';
+import { CAPSULE_MAX, CapsuleError, crc32, decodeCapsule, encodeCapsule, gameHash, type Capsule } from './capsule';
+import { makeCourierId } from './courierId';
 import { WORLDS } from './tables';
 
-const A = '11111111-2222-4333-8444-555555555555';
-const B = 'aaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee';
+const A = makeCourierId();
+const B = makeCourierId();
+const TRIP = makeCourierId();
 const known = new Map([[gameHash('snowbound'), 'snowbound']]);
 const game = (h: number) => known.get(h);
 const cap = (over: Partial<Capsule> = {}): Capsule => ({
-  trip: '01234567-89ab-4cde-9f01-23456789abcd',
+  trip: TRIP,
   home: A,
   world: 3,
   from: B,
@@ -48,27 +50,11 @@ describe('capsule', () => {
   it('carries no text: no world name or game id appears in the bytes', () => {
     const text = new TextDecoder('latin1').decode(encodeCapsule(cap()));
     for (const w of WORLDS) expect(text).not.toContain(w);
+    expect(() => encodeCapsule(cap({ from: A.replace(/.$/, (d) => (d === '0' ? '1' : '0')) }))).toThrow(CapsuleError); // a typo'd id
     expect(text).not.toContain('snowbound');
   });
 
-  it('makes UUID v4 ids, random in every bit but the six fixed ones, both ways', () => {
-    for (const viaRandomUUID of [true, false]) {
-      const ids = Array.from({ length: 400 }, () => newId(viaRandomUUID));
-      for (const id of ids) expect(id).toMatch(UUID_V4);
-      expect(new Set(ids).size).toBe(ids.length);
-      // every bit outside the version nibble and the two variant bits is seen as both 0 and 1, so no
-      // part of the id is a constant (a time, a MAC, a name) shared between two screens
-      const bits = (id: string) => [...id.replace(/-/g, '')].flatMap((d) => [...parseInt(d, 16).toString(2).padStart(4, '0')]);
-      const fixed = new Set([48, 49, 50, 51, 64, 65]);
-      const all = ids.map(bits);
-      for (let i = 0; i < 128; i++) {
-        const seen = new Set(all.map((b) => b[i]));
-        expect(seen.size, `bit ${i}`).toBe(fixed.has(i) ? 1 : 2);
-      }
-    }
-  });
-
-  it('refuses ids that are not version 4 (v1 holds a time and a MAC)', () => {
+  it('refuses ids that are not courier ids (a v1 UUID holds a time and a MAC)', () => {
     expect(() => encodeCapsule(cap({ home: 'c232ab00-9414-11ec-b3c8-9f6bdeced846' }))).toThrow(CapsuleError);
     const b = encodeCapsule(cap());
     b[8 + 6] = (b[8 + 6] & 0x0f) | 0x10; // the trip id made version 1
@@ -77,7 +63,7 @@ describe('capsule', () => {
 
   it('will not write one past 512 bytes', () => {
     const many = Array.from({ length: 8 }, (_, i) => ({
-      from: `${String(i).repeat(8)}-0000-4000-8000-000000000000`,
+      from: makeCourierId(),
       world: i,
       stamps: Array.from({ length: 20 }, () => ({ kind: 'game' as const, game: 'snowbound' })),
     }));
