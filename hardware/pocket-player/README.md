@@ -194,6 +194,8 @@ It also compares the sound schedule: the engine's PC speaker effects (tick, effe
 
 `cd web && npx vite-node scripts/pocketControlsCheck.ts` runs the touch-event replay of the controls (scenarios for both board sizes: slides, two fingers, taps, stylus latch, palm rejection, left-handed layout, the key menu, minimum target sizes).
 
+The same command also renders real play frames (`host/playshots.cpp`): three Starters' levels through `gmcore.h`, with the overlay code the board runs (`src/overlaydraw.h`, moved out of `main.cpp`) on top, at 480 by 320 and 320 by 240: both hands, the three pad sizes, Smaller picture on and off, and the pause menu. It compares a hash of the pictures with the one in the script and writes PNGs to `GM_PLAYSHOTS_OUT` (default a temp folder). After a deliberate change to the overlay, look at the PNGs and paste the new hashes. Text uses the 6 by 8 bitmap font, so words differ a little from the board's.
+
 After rebuilding a game: `cd web && npx vite-node scripts/pocketData.ts` repacks `data/` (it also writes `games.txt`).
 
 ## Check the board itself (serial self-test)
