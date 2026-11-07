@@ -76,6 +76,46 @@ struct ReportBus {
   int read() { return bytes[pos++]; }
 };
 
+static void layoutCheck() {
+  { // Layout: every size, both hands, pad low or raised, Space in the corner or near the pad, every key set: targets at least
+    // 48 px (32 on the 2.8 inch board's 2/3 layout), inside the game view, none overlapping, and the pad and Space apart by more than their touch slop.
+    const int MIN = scr::SMALL ? 32 : 48;  // the 2.8 inch layout is the big one at 2/3
+    bool ok = true;
+    std::string why;
+    for (int opt = 0; opt < 4; opt++)
+    for (int lefty = 0; lefty < 2; lefty++)
+      for (int ps = 0; ps < 3; ps++)
+        for (int ne = 0; ne < 3; ne++) {
+          Settings s; s.lefty = lefty; s.padSize = ps; s.raised = opt & 1; s.jumpNear = opt >> 1;
+          Need n = needs(true, true, true, true, true, true);
+          for (int i = 0; i < ne * 3; i++) needAdd(n, 20 + i);  // none, 3, 6 extra keys (more than six go in a second row over the pad: that menu is modal)
+          Layout l = makeLayout(s, n);
+          struct D { Disc d; const char* nm; } ds[] = {{l.pad, "pad"}, {l.space, "space"}, {l.enter, "enter"}};
+          for (auto& a : ds) {
+            if (a.d.r * 2 < MIN || a.d.cx - a.d.r < 0 || a.d.cx + a.d.r > W || a.d.cy - a.d.r < 0 || a.d.cy + a.d.r > scr::VIEW_H) { ok = false; why += std::string(a.nm) + " out of bounds or small; "; }
+          }
+          for (int i = 0; i < 3; i++) for (int j = i + 1; j < 3; j++) {
+            int dx = ds[i].d.cx - ds[j].d.cx, dy = ds[i].d.cy - ds[j].d.cy, rr = ds[i].d.r + ds[j].d.r;
+            if (i == 0 && j == 1) rr += 8;  // Space's 8 px slop must not reach the pad
+            if (dx * dx + dy * dy < rr * rr) { ok = false; why += std::string(ds[i].nm) + " overlaps " + ds[j].nm + "; "; }
+          }
+          Rect chips[] = {l.menu, l.keys};
+          for (auto& c : chips) {
+            if (c.x1 - c.x0 < MIN || c.y1 - c.y0 < MIN) { ok = false; why += "chip small; "; }
+            for (auto& a : ds) if (inDisc(a.d, (c.x0 + c.x1) / 2, (c.y0 + c.y1) / 2) || inDisc(a.d, c.x0, c.y1, 0)) { ok = false; why += "chip over a control; "; }
+          }
+          for (int t = 0; t < n.nextra; t++) {
+            Rect r = l.tile[t];
+            if (r.x1 - r.x0 < MIN || r.y1 - r.y0 < MIN || r.x0 < 0 || r.x1 > W) { ok = false; why += "tile small or off screen; "; }
+            for (auto& a : ds)  // a raised pad or Space near it may sit under the Keys menu's tiles: they open on demand and take the touch first
+              if (!(s.raised || s.jumpNear) && inDisc(a.d, (r.x0 + r.x1) / 2, (r.y0 + r.y1) / 2)) { ok = false; why += "tile over a control; "; }
+          }
+        }
+    check((std::string("layout: targets ") + (scr::SMALL ? "32" : "48") + " px or more, on screen, not overlapping (both hands, three pad sizes, low or raised, Space in the corner or near)").c_str(), ok, why);
+  }
+
+}
+
 int main() {
   {
     gtr::Report r; ReportBus bus;
@@ -178,6 +218,30 @@ int main() {
     check("only Jump or Hop labels enable jump wedges", n.jump && !action.jump);
   }
 
+  layoutCheck();
+  { // Near pad and Raised: a thumb held on Right rocks up onto Space (Jump) and back, Right staying held throughout
+    Settings s; s.jumpNear = 1; s.raised = 1;
+    for (int lefty = 0; lefty < 2; lefty++) {
+      s.lefty = lefty;
+      Need n = needs(true, true, true, true, true, true);
+      Layout l = makeLayout(s, n);
+#ifdef POCKET_CYD28  // one resistive contact slides; the GT911 keeps a finger that began on the pad on the pad
+      Run r(s, n);
+      int side = lefty ? -1 : 1, scan = lefty ? S_LEFT : S_RIGHT;
+      int x0 = l.pad.cx + side * l.pad.r * 2 / 3, y0 = l.pad.cy;
+      r.touch(1, x0, y0); r.wait(100);
+      for (int k = 1; k <= 8; k++) { r.touch(1, x0 + (l.space.cx - x0) * k / 8, y0 + (l.space.cy - y0) * k / 8); r.wait(24); }
+      r.wait(100);
+      check(lefty ? "near pad (left hand): slide from Left onto Jump keeps Left and adds Jump" : "near pad: slide from Right onto Jump keeps Right and adds Jump",
+            r.held[scan] && r.held[S_SPACE], r.log);
+      r.up(1); r.wait(300);
+      check("near pad: lifting releases both", !r.held[scan] && !r.held[S_SPACE], r.log);
+#endif
+      Run t(s, n);
+      t.touch(2, l.space.cx, l.space.cy); t.wait(60); t.up(2); t.wait(300);
+      check("near pad: a tap on Jump presses Space only", t.log.find("+57") != std::string::npos && t.log.find("+75") == std::string::npos && t.log.find("+77") == std::string::npos, t.log);
+    }
+  }
 #ifdef POCKET_CYD28
   printf("resistive controls model: %s\n", failures ? "FAILURES" : "all passed");
   return failures ? 1 : 0;
@@ -399,38 +463,6 @@ int main() {
     { Need up = needs(true, true, true, true, true, false, {16, 18});   // Teddy: only up diagonals bound
       Run r(def, up); at(r, 45); check("Teddy: up-right sends Q/E diagonal (E)", r.held[18] && !r.held[S_UP], r.log);
       Run r2(def, up); at(r2, 315); check("Teddy: down-right has no diagonal, so Down and Right", r2.held[S_DOWN] && r2.held[S_RIGHT], r2.log); }
-  }
-
-  { // Layout: every size, both hands, every key set: targets at least 48 px, inside the game view, none overlapping.
-    bool ok = true;
-    std::string why;
-    for (int lefty = 0; lefty < 2; lefty++)
-      for (int ps = 0; ps < 3; ps++)
-        for (int ne = 0; ne < 3; ne++) {
-          Settings s; s.lefty = lefty; s.padSize = ps;
-          Need n = needs(true, true, true, true, true, true);
-          for (int i = 0; i < ne * 3; i++) needAdd(n, 20 + i);  // none, 3, 6 extra keys (more than six go in a second row over the pad: that menu is modal)
-          Layout l = makeLayout(s, n);
-          struct D { Disc d; const char* nm; } ds[] = {{l.pad, "pad"}, {l.space, "space"}, {l.enter, "enter"}};
-          for (auto& a : ds) {
-            if (a.d.r * 2 < 48 || a.d.cx - a.d.r < 0 || a.d.cx + a.d.r > W || a.d.cy - a.d.r < 0 || a.d.cy + a.d.r > 300) { ok = false; why += std::string(a.nm) + " out of bounds or small; "; }
-          }
-          for (int i = 0; i < 3; i++) for (int j = i + 1; j < 3; j++) {
-            int dx = ds[i].d.cx - ds[j].d.cx, dy = ds[i].d.cy - ds[j].d.cy, rr = ds[i].d.r + ds[j].d.r;
-            if (dx * dx + dy * dy < rr * rr) { ok = false; why += std::string(ds[i].nm) + " overlaps " + ds[j].nm + "; "; }
-          }
-          Rect chips[] = {l.menu, l.keys};
-          for (auto& c : chips) {
-            if (c.x1 - c.x0 < 48 || c.y1 - c.y0 < 48) { ok = false; why += "chip small; "; }
-            for (auto& a : ds) if (inDisc(a.d, (c.x0 + c.x1) / 2, (c.y0 + c.y1) / 2) || inDisc(a.d, c.x0, c.y1, 0)) { ok = false; why += "chip over a control; "; }
-          }
-          for (int t = 0; t < n.nextra; t++) {
-            Rect r = l.tile[t];
-            if (r.x1 - r.x0 < 48 || r.y1 - r.y0 < 48 || r.x0 < 0 || r.x1 > W) { ok = false; why += "tile small or off screen; "; }
-            for (auto& a : ds) if (inDisc(a.d, (r.x0 + r.x1) / 2, (r.y0 + r.y1) / 2)) { ok = false; why += "tile over a control; "; }
-          }
-        }
-    check("layout: targets 48 px or more, on screen, not overlapping (both hands, three pad sizes)", ok, why);
   }
 
   printf("%s\n", failures ? "controls model: FAILURES" : "controls model: all scenarios pass");

@@ -51,6 +51,8 @@ struct Settings {
   uint8_t palm = 0;      // 0 off, 1 size, 2 size + near
   uint8_t debug = 1;     // the numbers in the status strip
   uint8_t sound = 2;     // PC speaker volume: 0 off, 1 low, 2 medium, 3 high
+  uint8_t raised = 0;    // pad position: 0 low, 1 raised (lifted 30 px, 20 on the 2.8 inch board, for a thumb that rests higher)
+  uint8_t jumpNear = 0;  // Space (Jump): 0 in the corner, 1 just above and beside the pad, so one thumb rocks between them
 };
 
 // Which controls a game needs (from its controls.json): the arrows, Space, Enter, and any other keys.
@@ -168,6 +170,7 @@ inline Layout makeLayout(const Settings& s, const Need& need) {
   L.enter = {W - 8 - 24 - 24 - 21 - 8, B - 21 - 6, 21};
   L.menu = {2, 2, 46, 36};
   L.keys = {W - 46, 2, W - 2, 36};
+  const int lift = 20, gap = 10;
 #else
   static const int padR[3] = {64, 76, 90}, dead[3] = {18, 26, 36};
   int R = padR[s.padSize > 2 ? 1 : s.padSize];
@@ -177,7 +180,14 @@ inline Layout makeLayout(const Settings& s, const Need& need) {
   L.enter = {W - 12 - 34 - 34 - 30 - 12, 296 - 30 - 8, 30};
   L.menu = {4, 4, 64, 56};
   L.keys = {W - 68, 4, W - 4, 56};
+  const int lift = 30, gap = 14;
 #endif
+  if (s.raised) L.pad.cy -= lift;
+  if (s.jumpNear) {  // up and out from the pad at about 35 degrees, a gap clear of both touch slops
+    int d = L.pad.r + gap + L.space.r;
+    L.space.cx = L.pad.cx + d * 82 / 100;
+    L.space.cy = L.pad.cy - d * 57 / 100;
+  }
   if (s.lefty) {
     L.pad.cx = W - L.pad.cx;
     L.space.cx = W - L.space.cx;
