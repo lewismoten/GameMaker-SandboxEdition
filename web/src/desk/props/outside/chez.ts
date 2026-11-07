@@ -1,5 +1,5 @@
 // THE CHEZ drives by: Lewis's red CitiCar goes past along the street, Doc Leo at the wheel,
-// with an electric motor's quiet whirr (drawn to the kit's side view: ../chezArt.ts). Press
+// with its motor's whine through the window (audio/chez/; drawn to the kit's side view: ../chezArt.ts). Press
 // it for a honk of Doc Leo's bike horn.
 import { drawChez } from '../chezArt';
 import { roomSound } from '../propSound';
