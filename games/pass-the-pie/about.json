@@ -1,0 +1,19 @@
+{
+  "title": "Pass the Pie",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "special",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.0",
+  "blurb": "Grandma's oven broke on Thanksgiving morning, so the whole street cooks in its own kitchens and Rory, in a striped scarf and a cap with ear flaps, runs every dish to the long table at the town hall. Six streets, six dishes: a pie across the leaf piles, gravy past the robot vacuums, a casserole through the backyard football game, loose cranberry sauce, a hungry dog and a dash before the rolls go cold. Then everybody says what they are thankful for.",
+  "exe": "PASSPIE.EXE",
+  "dosName": "PASSPIE",
+  "sound": "sb",
+  "label": {
+    "background": "#fff0d0",
+    "band": "#c8581a",
+    "ink": "#2a1408",
+    "logo": "SANDBOX SOFTWARE"
+  }
+}
