@@ -1,0 +1,19 @@
+{
+  "title": "Lucky Cat",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "special",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.0",
+  "blurb": "It is Friday the 13th, and the whole town blames Midnight, the black cat, for every bit of bad luck. So she sets out to prove she is lucky: thirteen lucky charms, a mirror maze that swaps left and right, umbrellas that pop open indoors, a race to the fair before the clock strikes thirteen, and a crow who keeps knocking on wood. A short special that only stops by for a few days.",
+  "exe": "LUCKYCAT.EXE",
+  "dosName": "LUCKYCAT",
+  "sound": "sb",
+  "label": {
+    "background": "#fff2c8",
+    "band": "#3a2f6b",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  }
+}
