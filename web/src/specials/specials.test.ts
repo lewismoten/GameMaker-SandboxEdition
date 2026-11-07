@@ -118,10 +118,10 @@ describe('desk arrivals', () => {
   it('leaves the parade floppy on the desk around Veterans Day, once', () => {
     expect(deskFloppy(at(2026, 11, 7))).toBeUndefined();
     expect(deskFloppy(at(2026, 11, 10))?.id).toBe('thank-you-parade');
-    expect(arrive('thank-you-parade', 'desk-floppy', at(2026, 11, 10))).toBe(true);
+    expect(arrive('thank-you-parade', 'floppy', at(2026, 11, 10))).toBe(true);
     expect(keptHow('thank-you-parade')).toBe('desk');
     expect(deskFloppy(at(2026, 11, 11))).toBeUndefined();
-    expect(arrive('thank-you-parade', 'desk-floppy', at(2026, 11, 11))).toBe(false);
+    expect(arrive('thank-you-parade', 'floppy', at(2026, 11, 11))).toBe(false);
   });
 
   it('keeps the Friday the 13th file on the BBS three days more', () => {

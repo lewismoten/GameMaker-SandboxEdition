@@ -11,7 +11,7 @@ import type { Window } from './calendar';
  * wall phone's subscription offer (which keeps it for good). 'library' only: it is in the
  * Special tab and nowhere on the desk.
  */
-export type Arrival = 'desk-floppy' | 'bbs' | 'watch' | 'window' | 'phone' | 'library';
+export type Arrival = 'floppy' | 'bbs' | 'watch' | 'window' | 'phone' | 'library';
 
 export interface Special {
   /** The game's folder under games/, and its catalog id. */
@@ -28,7 +28,7 @@ export const SPECIALS: readonly Special[] = [
   {
     id: 'thank-you-parade',
     window: { day: { on: 'date', month: 11, day: 11 }, offset: -1, days: 3 },
-    arrival: 'desk-floppy',
+    arrival: 'floppy',
     theme: 'Veterans Day: the hometown thank-you parade',
   },
   {

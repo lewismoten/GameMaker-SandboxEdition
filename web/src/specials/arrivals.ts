@@ -17,7 +17,7 @@ export function waiting(how: Arrival, now: Date): Special[] {
   });
 }
 
-const KEPT_AS: Record<Exclude<Arrival, 'library'>, KeptHow> = { 'desk-floppy': 'desk', bbs: 'bbs', watch: 'watch', window: 'window', phone: 'phone' };
+const KEPT_AS: Record<Exclude<Arrival, 'library'>, KeptHow> = { floppy: 'desk', bbs: 'bbs', watch: 'watch', window: 'window', phone: 'phone' };
 
 /** Takes a waiting Special by `how`: kept for good. False when it was not waiting. */
 export function arrive(id: string, how: Exclude<Arrival, 'library'>, now: Date): boolean {
@@ -27,7 +27,7 @@ export function arrive(id: string, how: Exclude<Arrival, 'library'>, now: Date):
 }
 
 /** The floppy lying in an empty spot on the desk today, if any. */
-export const deskFloppy = (now: Date): Special | undefined => waiting('desk-floppy', now)[0];
+export const deskFloppy = (now: Date): Special | undefined => waiting('floppy', now)[0];
 
 /** The Special a tap on the wristwatch would shake loose today (a hook for the watch prop). */
 export const watchShake = (now: Date): Special | undefined => waiting('watch', now)[0];

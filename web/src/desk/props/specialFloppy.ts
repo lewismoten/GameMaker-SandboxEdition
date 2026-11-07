@@ -1,5 +1,5 @@
 // A lone floppy in the empty spot beside the Game-Maker box: a Special whose arrival is
-// 'desk-floppy' (specials/registry.ts), lying there only during its window until it is picked
+// 'floppy' (specials/registry.ts), lying there only during its window until it is picked
 // up. Picking it up keeps the Special for good (specials/arrivals.ts) and puts it in the disk box
 // (retro/dos/disks.ts lists a kept Special), where it can go in drive A. The room looks again when
 // the desk's clock or the Specials change (SPECIALS.EXE). Drawn with CSS (specialFloppy.css).
@@ -42,7 +42,7 @@ export function specialFloppyProp(spot: HTMLElement): () => void {
     disk = el;
     if (!stillMotion()) flash(el, 'sf-new', 1600);
     off = pressable(el, `A floppy disk nobody remembers leaving here: ${entry.title}. Pick it up`, () => {
-      if (!arrive(s.id, 'desk-floppy', specialsNow())) return clear();
+      if (!arrive(s.id, 'floppy', specialsNow())) return clear();
       roomSound.slide();
       const anchor = document.querySelector('.disk-box') ?? spot;
       clear();
