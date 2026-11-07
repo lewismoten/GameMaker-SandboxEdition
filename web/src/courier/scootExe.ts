@@ -43,8 +43,11 @@ export async function runScootExe(ui: Ui): Promise<void> {
   /** The letter open in Mail, if any. */
   let reading: string | undefined;
   let asking = false;
-  // catalog games' titles for their stamps (none if the list is slow to come: the stamp says "A game")
-  const title = (await Promise.race([catalogTitles().catch(() => undefined), new Promise<undefined>((r) => setTimeout(r, 1500))])) ?? (() => undefined);
+  // catalog games' titles for their stamps, in by the time Postcards is reached (until then a stamp says "A game")
+  let title: (id: string) => string | undefined = () => undefined;
+  void catalogTitles()
+    .then((t) => (title = t))
+    .catch(() => undefined);
 
   const frame = (keys: string) => {
     s.fill(0, 0, 79, 24, attr(7, 0), 176);
@@ -60,10 +63,11 @@ export async function runScootExe(ui: Ui): Promise<void> {
     s.write(X + 2, TOP + 1, MENUATTR, 'Ä'.repeat(IN));
     s.write(0, 24, BARATTR, toCp437(keys).padEnd(80).slice(0, 80));
   };
-  /** Text rows in the window, from its second row, clipped to fit. */
+  /** Text rows in the window, from its second row, clipped to fit; a row too long is wrapped at its words (a short one keeps its spacing). */
   const lines = (rows: [string, number?][], from = 0) => {
     let y = TOP + 2 + from;
-    for (const [text, a] of rows) for (const l of text ? wrap(text, IN) : ['']) if (y < TOP + 2 + ROWS) s.write(X + 2, y++, a ?? TEXT, toCp437(l.padEnd(IN)));
+    for (const [text, a] of rows)
+      for (const l of text.length > IN ? wrap(text, IN) : [text]) if (y < TOP + 2 + ROWS) s.write(X + 2, y++, a ?? TEXT, toCp437(l.padEnd(IN)));
   };
 
   try {
