@@ -21,6 +21,8 @@
 #include "gmcfg.h"
 #include "screen.h"
 #include "picker_draw.h"
+#include "library.h"
+#include <mbedtls/sha256.h>
 #ifdef POCKET_CYD28
 #include "xpt2046.h"
 using Touch = XPT2046;
@@ -113,6 +115,7 @@ static bool packOpen(fs::FS& fsys, const char* path, File& f, gm::SmallPak& pak)
   f = fsys.open(path, "r");
   if (!f) return false;
   pak.user = &f;
+  pak.size = f.size();
   pak.readAt = smallReadAt;
   if (pak.begin()) return true;
   f.close();
@@ -122,7 +125,7 @@ static bool smallOpen(File& f, gm::SmallPak& pak) { return packOpen(LittleFS, "/
 // The entry `name` of an open bundle (malloc'd, with a spare byte), or nullptr.
 static uint8_t* packRead(File& pf, gm::SmallPak& pak, const char* name, size_t* n) {
   uint32_t off, len;
-  if (!pak.find(name, &off, &len)) return nullptr;
+  if (!pak.find(name, &off, &len) || len > 1024 * 1024) return nullptr;
   uint8_t* p = (uint8_t*)malloc(len + 1);
   if (p && !smallReadAt(&pf, off, p, len)) { free(p); p = nullptr; }
   if (p) *n = len;
@@ -270,12 +273,16 @@ static bool inflateRaw(const uint8_t* src, size_t n, uint8_t* dst, size_t cap) {
   return st == TINFL_STATUS_DONE && out == cap;
 }
 
-// file: the 8 character name of an SD game's .cfg and .pak, or (one: true) the name of its .GMP in /pocket
-struct GameEntry { char id[28]; char* title; int levels; bool sd; bool one; char file[16]; };
-constexpr int MAXGAMES = 128;  // the Starters (101 in the current build) and the card's games
-static GameEntry games[MAXGAMES];
-static int ngames = 0;
-static bool haveSD = false;  // a card was found at start (it is mounted only while it is read: a mounted card holds about 33 KB of heap)
+// Menu records live in one bounded allocation, released before loading game buffers.
+using GameEntry = pk::Entry;
+constexpr int MAXGAMES = pk::MAX_GAMES;
+static pk::Catalog* catalog = nullptr;
+static GameEntry* games = nullptr;
+static GameEntry activeGame;
+static int ngames = 0, ncollections = 0;
+static bool restoreSelection = false;
+static bool catalogOverflow = false, uidConflict = false;
+static bool haveSD = false, cardProbePending = true;
 static SPIClass sdSpi(VSPI);
 static bool mountSD() {
   if (sdUp) return true;
@@ -284,128 +291,190 @@ static bool mountSD() {
   if (!sdUp) sdSpi.end();
   return sdUp;
 }
-static void unmountSD() {
-  if (!sdUp) return;
-  SD.end();
-  sdSpi.end();
-  sdUp = false;
+static void unmountSD() { if (sdUp) { SD.end(); sdSpi.end(); sdUp = false; } }
+static File scanDir, cacheIn, cacheOut;
+static bool cacheValid = false, cardScanKnown = false;
+static uint32_t cardDirectoryStamp = 0;
+static bool cachedGame(File& f,const char* name,GameEntry&g) {
+  if(!cacheValid||!cacheIn.seek(4))return false;
+  pk::Cached row;
+  while(cacheIn.read((uint8_t*)&row,sizeof row)==sizeof row) {
+    if(pk::cached(row,f.size(),f.getLastWrite(),name)) {
+      // Collection numbers depend on this boot's user labels, so reclassify those from JSON.
+      if(row.game.category==5&&row.game.sub)return false;
+      if(row.game.pos>f.size()||row.game.len>f.size()-row.game.pos)return false;
+      g=row.game;return true;
+    }
+  }return false;
 }
-
-// Fills g from one list line, id|title|levels (and for the card's games.txt also |<file>); false if it is not one.
-static bool parseGameLine(char* p, bool withFile, GameEntry& g) {
-  char* a = strchr(p, '|');
-  char* b = a ? strchr(a + 1, '|') : nullptr;
-  char* c = b ? strchr(b + 1, '|') : nullptr;
-  if (c) *c = 0;
-  if (!a || !b || (withFile && !c)) return false;
-  *a = 0; *b = 0;
-  strncpy(g.id, p, sizeof g.id - 1); g.id[sizeof g.id - 1] = 0;
-  // Keep full searchable titles without reserving 96 bytes for every one of 128 slots in static DRAM.
-  size_t titleLen = strlen(a + 1);
-  if (titleLen > 95) titleLen = 95;
-  char* title = (char*)malloc(titleLen + 1);
-  if (!title) return false;
-  memcpy(title, a + 1, titleLen); title[titleLen] = 0;
-  free(g.title); g.title = title;
-  g.levels = atoi(b + 1);
-  g.sd = withFile;
-  g.one = false;
-  if (withFile) { strncpy(g.file, c + 1, sizeof g.file - 1); g.file[sizeof g.file - 1] = 0; }
-  else g.file[0] = 0;
-  return true;
+static void cacheGame(const GameEntry&g,File& f) {
+  if(!cacheOut||cacheOut.size()>=4+MAXGAMES*sizeof(pk::Cached))return;pk::Cached row={};row.game=g;row.size=f.size();row.modified=f.getLastWrite();row.checksum=pk::crc32(&row,offsetof(pk::Cached,checksum));
+  if(cacheOut.write((const uint8_t*)&row,sizeof row)!=sizeof row){cacheOut.close();SD.remove("/pocket/LIBRARY.NEW");}
 }
-// Adds the games of a list file (lines id|title|levels, and for the card also |<file>) to the picker.
-static void addGames(fs::FS& fsys, const char* base, bool sd) {
-  size_t n = 0;
-  uint8_t* t = readFileIn(fsys, base, "games.txt", &n);
-  if (!t) return;
-  t[n] = 0;
-  char* p = (char*)t;
-  while (*p && ngames < MAXGAMES) {
-    char* e = strchr(p, '\n');
-    if (e) *e = 0;
-    if (parseGameLine(p, sd, games[ngames])) ngames++;
-    if (!e) break;
-    p = e + 1;
-  }
-  free(t);
-}
-// The one-file games in /pocket (card mounted): every NAME.GMP whose game.txt is "GMP 1" then id|title|levels, and whose id the
-// list doesn't hold yet. A later format version is left out (this firmware can't read it).
-static File scanDir;
 static bool scanDone = false;
 static uint32_t scanStart = 0, scanFiles = 0;
-static void stopCardScan() { scanDir.close(); unmountSD(); }
-// Read names without opening every loose asset. At most eight directory entries per UI loop;
-// only GMP candidates need a file open. Leaving the picker releases the card's 33 KB of heap.
-static bool scanCardBatch() {
-  if (scanDone || !haveSD) return false;
-  if (!scanDir) {
-    if (!mountSD()) { scanDone = true; return true; }
-    scanDir = SD.open("/pocket");
-    if (!scanDir) { scanDone = true; stopCardScan(); return true; }
-    scanStart = millis(); scanFiles = 0;
+static void stopCardScan() { scanDir.close(); cacheIn.close(); cacheOut.close(); unmountSD(); }
+static void releaseCatalog() { stopCardScan(); free(catalog); catalog = nullptr; games = nullptr; }
+static bool lineAt(File& f, uint32_t pos, char* out, size_t cap) {
+  if (!f.seek(pos)) return false;
+  size_t n=0; bool overflow=false;
+  while(f.available()) { int c=f.read();if(c=='\n')break;if(n+1<cap)out[n++]=(char)c;else overflow=true; }
+  out[n]=0;return n&&!overflow;
+}
+static bool field(const char* s, const char* name, char* out, size_t cap) {
+  pk::Json j(s,strlen(s)); if(!j.take('{'))return false;
+  do {char key[64];if(!j.str(key,sizeof key)||!j.take(':'))return false;if(!strcmp(key,name))return j.str(out,cap);if(!j.skip())return false;}while(j.take(','));return false;
+}
+static void identify(GameEntry& g,const char* uid) { uint8_t hash[32];mbedtls_sha256_ret((const unsigned char*)uid,strlen(uid),hash,0);memcpy(g.uid,hash,16); }
+static bool gameMeta(const GameEntry&g,pk::Meta&m);
+static bool duplicate(const GameEntry& g) {
+  for(int i=0;i<ngames;i++)if(!memcmp(games[i].uid,g.uid,16)) {
+    if(g.metadata&&games[i].metadata){pk::Meta a,b;if(gameMeta(g,a)&&gameMeta(games[i],b)&&(strcmp(a.uid,b.uid)||strcmp(a.crc,b.crc))){uidConflict=true;Serial.println("LIB conflicting UID: first installed copy retained");}}
+    return true;
   }
-  int before = ngames;
-  for (int batch = 0; batch < 8 && ngames < MAXGAMES; batch++) {
-    bool dir = false;
-    String path = scanDir.getNextFileName(&dir);
-    if (!path.length()) { scanDone = true; break; }
-    scanFiles++;
-    const char* nm = strrchr(path.c_str(), '/');
-    nm = nm ? nm + 1 : path.c_str();
-    size_t len = strlen(nm), tn = 0;
-    if (dir || len <= 4 || len >= sizeof games[0].file || strcasecmp(nm + len - 4, ".gmp")) continue;
-    File f;
-    gm::SmallPak pak;
-    if (!packOpen(SD, path.c_str(), f, pak)) continue;
-    uint8_t* t = packRead(f, pak, "game.txt", &tn);
-    if (t) {
-      t[tn] = 0;
-      char* line2 = strchr((char*)t, '\n');
-      if (line2) *line2++ = 0;
-      char* e = line2 ? strchr(line2, '\n') : nullptr;
-      if (e) *e = 0;
-      GameEntry& g = games[ngames];
-      bool dup = false;
-      if (!strcmp((char*)t, "GMP 1") && line2 && parseGameLine(line2, false, g)) {
-        for (int i = 0; i < ngames && !dup; i++) dup = !strcmp(games[i].id, g.id);
-        if (!dup) { g.sd = g.one = true; strcpy(g.file, nm); ngames++; }
-      }
-      free(t);
+  return false;
+}
+static void classify(GameEntry& g,const pk::Meta& m) {
+  pk::categorize(g,m);
+  if(g.category==5 && m.sub[0] && strcmp(m.sub,"unsorted")) {
+    int at=0;while(at<ncollections&&strcmp(catalog->collections[at].slug,m.sub))at++;
+    if(at==ncollections) {
+      if(ncollections==pk::MAX_COLLECTIONS){catalogOverflow=true;return;}
+      strcpy(catalog->collections[at].slug,m.sub);strcpy(catalog->collections[at].label,m.label[0]?m.label:m.sub);ncollections++;
+    }
+    g.sub=at+1;
+  }
+}
+// Retrieve only bounded metadata/title; a search never opens cfg, cards or thumbnails.
+static bool gameMeta(const GameEntry& g,pk::Meta& m) {
+  bool was=sdUp;if(g.sd&&!mountSD())return false;
+  File f;char path[48];char b[1025];bool ok=false;
+  if(g.one)snprintf(path,sizeof path,"/pocket/%s",g.file);
+  else snprintf(path,sizeof path,"%s/%s",g.sd?"/pocket":"",g.metadata?"library.jsonl":"games.txt");
+  f=(g.sd?(fs::FS&)SD:(fs::FS&)LittleFS).open(path,"r");
+  if(f) {
+    if(g.metadata){if(g.len<=1024&&f.seek(g.pos)&&f.read((uint8_t*)b,g.len)==g.len){b[g.len]=0;ok=pk::metadata(b,g.len,m,true);}}
+    else {
+      bool got=g.one&&g.len?g.len<sizeof b&&f.seek(g.pos)&&f.read((uint8_t*)b,g.len)==g.len:lineAt(f,g.pos,b,sizeof b);
+      if(g.one&&g.len&&g.len<sizeof b)b[g.len]=0;
+      char*a=got?strchr(b,'|'):nullptr,*e=a?strchr(a+1,'|'):nullptr;
+      if(a&&e){*e=0;strncpy(m.title,a+1,128);m.title[128]=0;ok=true;}
     }
     f.close();
   }
-  if (ngames >= MAXGAMES) scanDone = true;
-  if (scanDone) {
-    Serial.printf("BOOT ms=%lu card-discovery elapsed=%lu entries=%lu games=%d\n", (unsigned long)millis(), (unsigned long)(millis() - scanStart), (unsigned long)scanFiles, ngames);
-    stopCardScan();
-  }
-  return before != ngames || scanDone;
+  if(!ok)strcpy(m.title,g.id);
+  if(g.sd&&!was)unmountSD();return ok;
 }
-// The Starters from LittleFS, then (when a card is in) the games on it. With no card the list is the Starters alone.
-static void loadGameList() {
-  stopCardScan();
-  scanDone = false;
-  for (auto& g : games) { free(g.title); g.title = nullptr; }
-  ngames = 0;
-  addGames(LittleFS, "", false);
-  if (haveSD && mountSD()) {
-    addGames(SD, "/pocket", true);
-    scanDone = false;
-    unmountSD();
+static bool parseGameLine(char* p,bool sd,GameEntry& g) {
+  char*a=strchr(p,'|'),*b=a?strchr(a+1,'|'):nullptr,*c=b?strchr(b+1,'|'):nullptr;
+  if(!a||!b||(sd&&!c)||a-p>27||a==p)return false;
+  *a=0;*b=0;if(c)*c=0;
+  for(char*q=p;*q;q++)if(!(*q>='a'&&*q<='z')&&!pk::digit(*q)&&*q!='-')return false;
+  strcpy(g.id,p);g.sd=sd;g.category=5;g.metadata=false;
+  if(sd){if(strlen(c+1)>8)return false;for(char*q=c+1;*q;q++)if(!pk::alnum(*q))return false;strcpy(g.file,c+1);}
+  char uid[128];snprintf(uid,sizeof uid,"legacy:%s:%s:%s",sd?"sd":"flash",g.file,g.id);identify(g,uid);return true;
+}
+// Indexes are acceleration caches: invalid/missing headers fall back to games.txt/GMP discovery.
+static bool addIndex(fs::FS& fsys,bool sd) {
+  File f=fsys.open(sd?"/pocket/library.jsonl":"/library.jsonl","r");if(!f)return false;
+  char b[1025];bool valid=lineAt(f,0,b,sizeof b)&&pk::indexHeader(b,strlen(b));
+  if(!valid){f.close();return false;}
+  while(f.available()) {
+    uint32_t pos=f.position();if(!lineAt(f,pos,b,sizeof b))continue;
+    pk::Meta m;if(!pk::metadata(b,strlen(b),m,true))continue;
+    GameEntry g={};char storage[12],locator[32];
+    if(!field(b,"id",g.id,sizeof g.id)||!pk::segment(g.id)||!field(b,"storage",storage,sizeof storage)||!field(b,"locator",locator,sizeof locator))continue;
+    if(strcmp(storage,sd?"loose":"flash")||!pk::segment(locator)||(sd&&strlen(locator)>8))continue;
+    g.sd=sd;g.metadata=true;g.pos=pos;g.len=strlen(b);strcpy(g.file,sd?locator:"");identify(g,m.uid);classify(g,m);
+    if(duplicate(g))continue;
+    if(ngames==MAXGAMES){catalogOverflow=true;break;}games[ngames++]=g;
   }
+  f.close();return ngames>0;
+}
+static void addGames(fs::FS& fsys,const char* base,bool sd) {
+  addIndex(fsys,sd);
+  char path[48];snprintf(path,sizeof path,"%s/games.txt",base);File f=fsys.open(path,"r");if(!f)return;
+  char b[256];while(f.available()) {
+    uint32_t pos=f.position();if(!lineAt(f,pos,b,sizeof b))continue;
+    GameEntry g={};if(!parseGameLine(b,sd,g))continue;g.pos=pos;
+    bool indexed=false;for(int i=0;i<ngames;i++)if(games[i].metadata&&games[i].sd==sd&&!games[i].one&&!strcmp(games[i].id,g.id)&&!strcmp(games[i].file,g.file))indexed=true;
+    if(indexed)continue;
+    if(duplicate(g))continue;if(ngames==MAXGAMES){catalogOverflow=true;break;}games[ngames++]=g;
+  }f.close();
+}
+static bool scanCardBatch() {
+  if(scanDone||!haveSD||!catalog)return false;
+  if(!scanDir){if(!mountSD()){scanDone=true;return true;}scanDir=SD.open("/pocket");if(!scanDir){scanDone=true;stopCardScan();return true;}scanStart=millis();scanFiles=0;
+    cacheIn=SD.open("/pocket/LIBRARY.CCH","r");char magic[4];cacheValid=cacheIn&&cacheIn.size()>=4&&(cacheIn.size()-4)%sizeof(pk::Cached)==0&&cacheIn.size()<=4+MAXGAMES*sizeof(pk::Cached)&&cacheIn.read((uint8_t*)magic,4)==4&&!memcmp(magic,"PLC1",4);
+    cacheOut=SD.open("/pocket/LIBRARY.NEW","w");if(cacheOut)cacheOut.write((const uint8_t*)"PLC1",4);
+  }
+  int before=ngames;
+  for(int batch=0;batch<8;batch++) {
+    bool dir=false;String path=scanDir.getNextFileName(&dir);if(!path.length()){scanDone=true;break;}scanFiles++;
+    const char*nm=strrchr(path.c_str(),'/');nm=nm?nm+1:path.c_str();size_t len=strlen(nm);
+    if(dir||len<=4||len>=16||strcasecmp(nm+len-4,".gmp"))continue;
+    bool safe=true;for(size_t i=0;i<len-4;i++)if(!pk::alnum(nm[i])&&nm[i]!='_'&&nm[i]!='-')safe=false;if(!safe)continue;
+    File f=SD.open(path.c_str(),"r");if(!f)continue;
+    GameEntry hit={};if(cachedGame(f,nm,hit)){cacheGame(hit,f);if(!duplicate(hit)){if(ngames==MAXGAMES){catalogOverflow=true;scanDone=true;}else games[ngames++]=hit;}f.close();if(scanDone)break;continue;}
+    gm::SmallPak pak;pak.user=&f;pak.readAt=smallReadAt;pak.size=f.size();if(!pak.begin()){f.close();continue;}
+    uint32_t off,n;if(!pak.find("game.txt",&off,&n)||n>256){f.close();continue;}
+    char b[1025];if(!smallReadAt(&f,off,b,n)||!pk::gmp1(b,n)){f.close();continue;}b[n]=0;
+    char*line=b+6;char*end=strchr(line,'\n');if(end)*end=0;
+    GameEntry g={};strcpy(g.file,nm);
+    if(parseGameLine(line,false,g)) {
+      g.sd=g.one=true;g.pos=off+6;g.len=end?end-line:n-6;g.category=5;
+      char uid[128];snprintf(uid,sizeof uid,"legacy:gmp:%s:%s",nm,g.id);identify(g,uid);
+      if(pak.find("library.json",&off,&n)&&n<=1024&&smallReadAt(&f,off,b,n)) {
+        b[n]=0;pk::Meta m;if(pk::metadata(b,n,m)){g.metadata=true;g.pos=off;g.len=n;identify(g,m.uid);classify(g,m);}
+      }
+      cacheGame(g,f);
+      if(!duplicate(g)){if(ngames==MAXGAMES){catalogOverflow=true;scanDone=true;}else games[ngames++]=g;}
+    }f.close();if(scanDone)break;
+  }
+  if(scanDone){cacheIn.close();if(cacheOut){cacheOut.close();SD.remove("/pocket/LIBRARY.CCH");SD.rename("/pocket/LIBRARY.NEW","/pocket/LIBRARY.CCH");}File dir=SD.open("/pocket");cardDirectoryStamp=dir?dir.getLastWrite():0;dir.close();cardScanKnown=true;Serial.printf("BOOT card-discovery ms=%lu entries=%lu games=%d\n",(unsigned long)(millis()-scanStart),(unsigned long)scanFiles,ngames);stopCardScan();}
+  return before!=ngames||scanDone;
+}
+// Rebuild released RAM from the disposable cache after play. A directory scan is only
+// needed on boot, explicit Rescan, changed directory stamp or an invalid/missing target.
+static bool restoreCardCatalog() {
+  if(!cardScanKnown)return false;
+  File dir=SD.open("/pocket");if(!dir)return false;uint32_t stamp=dir.getLastWrite();dir.close();
+  if(stamp!=cardDirectoryStamp)return false;
+  File cache=SD.open("/pocket/LIBRARY.CCH","r");char magic[4];
+  if(!cache||cache.size()<4||(cache.size()-4)%sizeof(pk::Cached)||cache.size()>4+MAXGAMES*sizeof(pk::Cached)||cache.read((uint8_t*)magic,4)!=4||memcmp(magic,"PLC1",4)){cache.close();return false;}
+  uint32_t t=millis();
+  while(cache.available()) {
+    pk::Cached row;if(cache.read((uint8_t*)&row,sizeof row)!=sizeof row){cache.close();return false;}
+    if(row.game.file[15]||!row.game.file[0]){cache.close();return false;}
+    const char* name=row.game.file;size_t n=strlen(name);bool safe=n>4&&!strcasecmp(name+n-4,".gmp");
+    for(size_t i=0;i+4<n;i++)if(!pk::alnum(name[i])&&name[i]!='_'&&name[i]!='-')safe=false;
+    if(!safe){cache.close();return false;}
+    char path[40];snprintf(path,sizeof path,"/pocket/%s",name);File f=SD.open(path,"r");
+    bool valid=f&&pk::cached(row,f.size(),f.getLastWrite(),name)&&row.game.pos<=f.size()&&row.game.len<=f.size()-row.game.pos;f.close();
+    if(!valid){cache.close();return false;}
+    GameEntry g=row.game;
+    if(g.category==5&&g.sub){pk::Meta m;if(!gameMeta(g,m)){cache.close();return false;}classify(g,m);}
+    if(!duplicate(g)){if(ngames==MAXGAMES){catalogOverflow=true;break;}games[ngames++]=g;}
+  }
+  cache.close();Serial.printf("LIB card-cache ms=%lu games=%d\n",(unsigned long)(millis()-t),ngames);return true;
+}
+static void loadGameList() {
+  releaseCatalog();catalog=(pk::Catalog*)calloc(1,sizeof(pk::Catalog));games=catalog?catalog->games:nullptr;
+  ngames=ncollections=0;catalogOverflow=uidConflict=false;scanDone=false;
+  if(!catalog){catalogOverflow=true;scanDone=true;return;}
+  addGames(LittleFS,"",false);
+  if(haveSD&&mountSD()){addGames(SD,"/pocket",true);scanDone=restoreCardCatalog();unmountSD();}
 }
 static const char* fileOf(const GameEntry& g) { return g.sd && !g.one ? g.file : g.id; }  // the name of its .cfg (and .pak)
 // Points the file readers at game g.
-static bool selectGame(int g) {
+static bool selectGame(const GameEntry& game) {
   stopCardScan();
   curOne[0] = 0;
   curPakBase = 0;
-  if (games[g].one) {  // one file: the cards are its cards.pak entry
+  if (game.one) {  // one file: the cards are its cards.pak entry
     curFs = &SD;
     strcpy(curBase, "/pocket");
-    snprintf(curOne, sizeof curOne, "/pocket/%s", games[g].file);
+    snprintf(curOne, sizeof curOne, "/pocket/%s", game.file);
     strcpy(curPak, curOne);
     bool wasUp = sdUp, ok = false;
     if (!mountSD()) return false;
@@ -413,16 +482,18 @@ static bool selectGame(int g) {
     gm::SmallPak pak;
     uint32_t len = 0;
     if (packOpen(SD, curOne, pf, pak)) {
-      ok = pak.find("cards.pak", &curPakBase, &len);
+      uint32_t at, n;
+      char header[6];
+      ok = pak.find("game.txt", &at, &n) && n >= 6 && n <= 256 && smallReadAt(&pf, at, header, sizeof header) && pk::gmp1(header, sizeof header) && pak.find("cards.pak", &curPakBase, &len);
       pf.close();
     }
     if (!wasUp) unmountSD();
     return ok;
   }
-  if (games[g].sd) {
+  if (game.sd) {
     curFs = &SD;
     strcpy(curBase, "/pocket");
-    snprintf(curPak, sizeof curPak, "/pocket/%s.pak", fileOf(games[g]));
+    snprintf(curPak, sizeof curPak, "/pocket/%s.pak", fileOf(game));
   } else {
     curFs = &LittleFS;
     curBase[0] = 0;
@@ -552,7 +623,7 @@ static void button(int x0, int y0, int x1, int y1, const char* label, bool hot =
 }
 // Where the screens put things (the 480x320 numbers are the 3248S035's; the 320x240 ones are for the 2432S028).
 constexpr int TITLE_H = scr::SMALL ? 28 : 40;
-constexpr int PK_Y0 = scr::SMALL ? 30 : 44, PK_STEP = scr::SMALL ? 42 : 46, PK_H = scr::SMALL ? 38 : 42, PK_BTN_Y = scr::SMALL ? 200 : 276;
+
 constexpr int ST_Y0 = scr::SMALL ? 30 : 42, ST_STEP = 34, ST_PER_PAGE = scr::SMALL ? 5 : 7, ST_FOOT_Y = scr::SMALL ? 200 : 288;
 constexpr int PA_BOX_X = scr::SMALL ? 50 : 100, PA_BOX_Y = scr::SMALL ? 8 : 40, PA_BOX_W = scr::SMALL ? 220 : 280, PA_BOX_H = scr::SMALL ? 184 : 236;
 constexpr int PA_X0 = PA_BOX_X + 12, PA_X1 = PA_BOX_X + PA_BOX_W - 12, PA_Y0 = scr::SMALL ? 18 : 52, PA_STEP = scr::SMALL ? 42 : 56, PA_H = scr::SMALL ? 36 : 48;
@@ -934,56 +1005,82 @@ static void drawStrip() {
 
 // ---- screens -------------------------------------------------------------------------------------
 
-enum Mode { PICKER, PLAYING, PAUSED, SETTINGS_SCREEN, SEARCH_SCREEN, DISPLAY_SCREEN, DONE };
+enum Mode { PICKER, PLAYING, PAUSED, SETTINGS_SCREEN, SEARCH_SCREEN, DISPLAY_SCREEN, DETAILS_SCREEN, DONE };
 static Mode mode = PICKER;
-static int page = 0;
-static char searchText[25] = "";
-static int matches[MAXGAMES], nmatch = 0;
-static void filterGames() {
-  nmatch = 0;
-  for (int i = 0; i < ngames; i++) if (pk::matches(games[i].title, searchText)) matches[nmatch++] = i;
+static int page = 0, selected = -1, nmatch = 0;
+static char searchText[25] = "", savedSearch[25] = "";
+static bool searchAll = true, savedAll = true, browsingCategories = true, savedBrowsing = true;
+static int category = 0, subcategory = -1;
+constexpr int PK_BTN_Y = scr::SMALL ? 208 : 280;
+static int categorySlots[32], categoryCount = 0;
+static const char* rootLabel(int c) {const char*names[]={"All games","Starters","Sandbox","Bizarre","My games","Imported","CD","Good on touch"};return names[c];}
+static const char* subLabel(int c,int s) {
+  static const char*stages[]={"All stages","1** First Steps","2** Moving and Pushing","3** Heroes and Foes","4** Story and Finish","5** Wiring and Worlds","6** Blocks and Showcase","Graduations","Other"};
+  if(c==1)return stages[s>=0&&s<9?s:8];if(c==6)return s==2?"Shareware":"Gameware";
+  if(c==5)return s>0&&s<=ncollections?catalog->collections[s-1].label:"Unsorted";return rootLabel(c);
 }
-constexpr int ROWS = scr::SMALL ? 4 : 5;
-
+static bool inCategory(const GameEntry&g) {return pk::belongs(g,category,subcategory);}
+static void filterGames() {
+  nmatch=0;if(!catalog)return;
+  bool was=sdUp;if(haveSD)mountSD();uint32_t t=millis();
+  for(int i=0;i<ngames;i++) {
+    if(!(searchText[0]&&searchAll)&&!inCategory(games[i]))continue;
+    if(searchText[0]){pk::Meta m;gameMeta(games[i],m);if(!pk::matches(m.title,searchText))continue;}
+    catalog->matches[nmatch++]=i;
+  }
+  // Stable insertion order is title order from games.txt; courses and score are explicit ranks.
+  if(category==1||category==7)for(int i=1;i<nmatch;i++){uint16_t g=catalog->matches[i];int j=i;while(j>0){auto&a=games[catalog->matches[j-1]];bool before=pk::before(games[g],a,category);if(!before)break;catalog->matches[j]=catalog->matches[j-1];j--;}catalog->matches[j]=g;}
+  if(!was)unmountSD();Serial.printf("LIB search ms=%lu results=%d\n",(unsigned long)(millis()-t),nmatch);
+}
+static void categories() {
+  categoryCount=0;
+  if(category==0) {
+    for(int c=1;c<=7;c++){bool any=c<=6;for(int i=0;i<ngames;i++)if(c==7?games[i].scored:games[i].category==c)any=true;if(any)categorySlots[categoryCount++]=c;}
+  }else if(category==1){for(int s=1;s<=8;s++)categorySlots[categoryCount++]=s;}
+  else if(category==6){categorySlots[categoryCount++]=1;categorySlots[categoryCount++]=2;}
+  else if(category==5){for(int s=0;s<=ncollections;s++)categorySlots[categoryCount++]=s;}
+}
+static uint8_t* preview(const GameEntry&g) {
+  if(!g.metadata)return nullptr;
+  char path[48],name[32];snprintf(path,sizeof path,g.one?"/pocket/%s":g.sd?"/pocket/thumbs.pak":"/thumbs.pak",g.file);
+  snprintf(name,sizeof name,g.one?"thumb.pth":"%s.pth",g.id);
+  File f;gm::SmallPak pak;uint32_t off,len;uint8_t*raw=nullptr;
+  if(packOpen(g.sd?(fs::FS&)SD:(fs::FS&)LittleFS,path,f,pak)&&pak.find(name,&off,&len)&&len>=5&&len<=sizeof band) {
+    uint8_t*compressed=(uint8_t*)band;
+    if(smallReadAt(&f,off,compressed,len)&&(uint32_t(compressed[0])|uint32_t(compressed[1])<<8|uint32_t(compressed[2])<<16|uint32_t(compressed[3])<<24)==pk::THUMB_RAW){raw=(uint8_t*)malloc(pk::THUMB_RAW);if(raw&&(!inflateRaw(compressed+4,len-4,raw,pk::THUMB_RAW)||!pk::thumb(raw,pk::THUMB_RAW))){free(raw);raw=nullptr;}}
+  }f.close();return raw;
+}
 static void drawPicker(bool clear = true, bool paging = false) {
-  filterGames();
-  int pages = (nmatch + ROWS - 1) / ROWS;
-  if (page >= pages) page = 0;
-  if (clear) tft.fillScreen(C_BLACK);
-  // Include the gaps between buttons: erase text left by older firmware's wrapping.
-  if (!paging) tft.fillRect(0, TITLE_H, scr::W, PK_BTN_Y - TITLE_H, C_BLACK);
-  char t[48];
-  snprintf(t, sizeof t, "%s %d/%d%s", searchText[0] ? "Search" : "Pocket Player", page + 1, pages ? pages : 1, haveSD && !scanDone ? " ..." : "");
-  static size_t previousTitleLength = 0;
-  if (!paging) title(t);
-  else {
-    // The prefix, firmware label and footer stay untouched. Print opaque text over
-    // the previous page count; reserve enough width for a shorter final page.
-    int prefix = searchText[0] ? 7 : 14;
-    tft.setTextSize(2); tft.setTextColor(C_WHITE, C_BLUE);
-    tft.setCursor(8 + prefix * 12, scr::SMALL ? 6 : 12);
-    tft.print(t + prefix);
-    for (size_t i = strlen(t); i < previousTitleLength; i++) tft.print(" ");
+  (void)clear;(void)paging;
+  if(!catalog){assets.release();world.releaseAll();loadGameList();}
+  uint32_t t=millis();if(restoreSelection)selected=pk::selection(games,ngames,activeGame.uid);filterGames();categories();int count=browsingCategories?categoryCount:nmatch,pages=(count+5)/6;page=pk::clampPage(page,count,haveSD&&!scanDone);
+  pk::clearTiles(tft,scr::W);
+  const char*crumb=searchText[0]?(searchAll?"Search: All games":"Search: This category"):subcategory>=0?subLabel(category,subcategory):category?rootLabel(category):"Pocket Player";
+  pk::libraryFrame(tft,scr::W,scr::H,crumb,page,pages,searchText[0]&&!nmatch?"Clear":browsingCategories?"Rescan":"Details");
+  bool was=sdUp;if(haveSD&&!browsingCategories)mountSD();
+  for(int r=0;r<6;r++) {
+    int at=page*6+r;if(at>=count)continue;
+    if(browsingCategories){int c=categorySlots[at];pk::tileLabel(tft,scr::W,r,category?subLabel(category,c):rootLabel(c));}
+    else {int i=catalog->matches[at];pk::Meta m;gameMeta(games[i],m);uint8_t*raw=preview(games[i]);pk::thumbnail(tft,scr::W,r,raw,m.dos,i==selected,true);free(raw);}
   }
-  previousTitleLength = strlen(t);
-  for (int r = 0; r < ROWS; r++) {
-    int at = page * ROWS + r, y = PK_Y0 + r * PK_STEP;
-    int i = at < nmatch ? matches[at] : -1;
-    pk::drawPageRow(tft, i >= 0 ? games[i].title : nullptr, i >= 0 && games[i].sd, scr::W, y, PK_H);
-  }
-  if (!nmatch) {
-    tft.setTextSize(2); tft.setTextColor(C_WHITE, C_BLACK); tft.setCursor(16, PK_Y0 + 12);
-    tft.print(haveSD && !scanDone ? "Reading card..." : searchText[0] ? "No titles match" : "No games found");
-  }
-  if (!paging) {
-    for (int i = 0; i < 4; i++) pk::drawIcon(tft, i, scr::W, scr::H, PK_BTN_Y);
-    banner::paint(tft, 0, 0);
-  }
+  if(!was)unmountSD();
+  if(!count){tft.setTextColor(C_WHITE,C_BLACK);tft.setTextSize(1);tft.setCursor(16,90);tft.print(searchText[0]?"No matching titles":"No games found");}
+  if(uidConflict){tft.setTextColor(C_YELLOW,C_BLACK);tft.setTextSize(1);tft.setCursor(4,188);tft.print("UID conflict: first copy kept");}
+  if(catalogOverflow){tft.setTextColor(C_YELLOW,C_BLACK);tft.setTextSize(1);tft.setCursor(4,198);tft.print("Library limit: 512 games / 24 collections");}
+  Serial.printf("LIB page ms=%lu catalog=%u free=%u largest=%u\n",(unsigned long)(millis()-t),(unsigned)sizeof(pk::Catalog),(unsigned)ESP.getFreeHeap(),(unsigned)heap_caps_get_largest_free_block(MALLOC_CAP_8BIT));
 }
 static void drawSearch() {
-  tft.fillScreen(C_BLACK); title("Search titles");
-  pk::drawKeyboard(tft, scr::W, scr::H, TITLE_H, searchText);
-  banner::paint(tft, 0, 0);
+  tft.fillScreen(C_BLACK);pk::drawKeyboard(tft,scr::W,scr::H,32,searchText);
+  pk::drawButton(tft,0,0,40,32,"<");
+  pk::drawButton(tft,42,0,scr::W,32,searchAll?"All games":"This category");
+}
+static void drawDetails() {
+  tft.fillScreen(C_BLACK);title("Game details");
+  pk::Meta m;gameMeta(games[selected],m);
+  pk::Tile clip={8,40,scr::W-16,scr::H-90,0,0};
+  size_t at=0,n=strlen(m.title);int y=44,cols=(scr::W-16)/6;
+  while(at<n){char b[81];size_t take=n-at<(size_t)cols?n-at:cols;memcpy(b,m.title+at,take);b[take]=0;pk::clippedText(tft,clip,b,8,y,1,C_WHITE);at+=take;y+=12;}
+  pk::drawButton(tft,0,scr::H-38,scr::W/2-2,scr::H,"Back");pk::drawButton(tft,scr::W/2,scr::H-38,scr::W,scr::H,"Play");
 }
 // Board A has fixed ST7796 geometry and GT911 coordinates; no resistive calibration or driver guessing.
 // Display still exposes the picture size on both boards; the CYD also offers its hardware setup.
@@ -1286,11 +1383,13 @@ static void levelWhere(char* out, char kind, int level) { snprintf(out, 8, "%c%d
 
 static bool startGame(int g, bool withCards = true) {
   curGame = g;
+  if (games) activeGame = games[g];
   assets.release();  // whatever the last game (or a failed start) left; a card must be mounted with the heap at its emptiest
   assets.heroChr[0] = 0;
   clearPrefetched();
-  if (!selectGame(g)) return false;
-  snprintf(assets.cfgName, sizeof assets.cfgName, "%s.cfg", fileOf(games[g]));
+  if (!selectGame(activeGame)) return false;
+  snprintf(assets.cfgName, sizeof assets.cfgName, "%s.cfg", fileOf(activeGame));
+  releaseCatalog();
   if (!gm::parseCfgFile(cfgLines, assets.cfgName, world, cfg)) return false;
   assets.attach(world, cfg, readFile, inflateRaw);
   assets.lines = &cfgLines;
@@ -1304,7 +1403,7 @@ static bool startGame(int g, bool withCards = true) {
   }
   world.seed = micros() ^ (millis() << 7);  // the monsters that wander pick differently each play
   if (!world.begin()) {
-    Serial.printf("SG fail %s: nbl %d nmon %d nmbl %d have bbl%d mbl%d cbl%d chr%d mon%d free %u largest %u\n", games[g].id, assets.files.nbl, assets.files.nmon, assets.files.nmbl, !!assets.bbl, !!assets.mbl, !!assets.cbl, !!assets.chr, !!assets.mon, (unsigned)ESP.getFreeHeap(), (unsigned)heap_caps_get_largest_free_block(MALLOC_CAP_8BIT));
+    Serial.printf("SG fail %s: nbl %d nmon %d nmbl %d have bbl%d mbl%d cbl%d chr%d mon%d free %u largest %u\n", activeGame.id, assets.files.nbl, assets.files.nmon, assets.files.nmbl, !!assets.bbl, !!assets.mbl, !!assets.cbl, !!assets.chr, !!assets.mon, (unsigned)ESP.getFreeHeap(), (unsigned)heap_caps_get_largest_free_block(MALLOC_CAP_8BIT));
     return false;
   }
   world.nsnd = 0;
@@ -1341,6 +1440,7 @@ static void refreshPalette() {
 static void enterPicker() {
   spk::stop();
   stopCardScan();
+  if (!catalog) { assets.release(); world.releaseAll(); loadGameList(); restoreSelection=true; }
   mode = PICKER;
   wasDown = true;
   drawPicker();
@@ -1494,7 +1594,7 @@ static void selfTestOne(int g, int ticks, bool cards) {
     drawFrame(false);
     if ((i & 15) == 0) delay(1);  // let the watchdog and idle task breathe
   }
-  Serial.printf("ST id=%s ok=%d free=%u largest=%u min=%u stack=%u\n", games[g].id, ok ? 1 : 0, (unsigned)ESP.getFreeHeap(),
+  Serial.printf("ST id=%s ok=%d free=%u largest=%u min=%u stack=%u\n", activeGame.id, ok ? 1 : 0, (unsigned)ESP.getFreeHeap(),
                 (unsigned)heap_caps_get_largest_free_block(MALLOC_CAP_8BIT), (unsigned)ESP.getMinFreeHeap(),
                 (unsigned)uxTaskGetStackHighWaterMark(nullptr));
   if (ok && cards) {
@@ -1513,12 +1613,15 @@ static void selfTestOne(int g, int ticks, bool cards) {
     showCards("w");
     showCards("l");
     cardsDry = false;
-    Serial.printf("SC id=%s ok=%d shown=%d failed=%d ms=%u free=%u largest=%u min=%u stack=%u\n", games[g].id, cardsFailed == 0 ? 1 : 0, cardsShown,
+    Serial.printf("SC id=%s ok=%d shown=%d failed=%d ms=%u free=%u largest=%u min=%u stack=%u\n", activeGame.id, cardsFailed == 0 ? 1 : 0, cardsShown,
                   cardsFailed, (unsigned)(millis() - t0c), (unsigned)ESP.getFreeHeap(), (unsigned)heap_caps_get_largest_free_block(MALLOC_CAP_8BIT),
                   (unsigned)ESP.getMinFreeHeap(), (unsigned)uxTaskGetStackHighWaterMark(nullptr));
   }
   spk::stop();
   world.releaseAll();
+  assets.release();
+  loadGameList();
+  while(haveSD&&!scanDone) { scanCardBatch(); delay(1); }
 }
 
 static void serialCommand(const char* cmd) {
@@ -1626,7 +1729,7 @@ static void pollSerial() {
       } else if (buf[0] == 'G' && mode == PICKER) {
         int g = atoi(buf + 2);
         if (g >= 0 && g < ngames && startGame(g)) wasDown = true;
-        Serial.printf("G %d %s %s\n", g, g >= 0 && g < ngames ? games[g].id : "?", mode == PLAYING ? "playing" : "failed");
+        Serial.printf("G %d %s %s\n", g, g >= 0 && g < ngames ? activeGame.id : "?", mode == PLAYING ? "playing" : "failed");
       } else if (buf[0] == 'L' && mode == PICKER) {  // the game list: "L <index> <id> <on the card 0|1>" per game, then "L done <count>"
         for (int g = 0; g < ngames; g++) Serial.printf("L %d %s %d\n", g, games[g].id, games[g].sd ? 1 : 0);
         Serial.printf("L done %d\n", ngames);
@@ -1683,21 +1786,11 @@ void setup() {
     message("LittleFS mount failed");
     for (;;) delay(1000);
   }
-  {  // the microSD slot (TF_CS 5, TF_SPI_SCLK 18, TF_SPI_MISO 19, TF_SPI_MOSI 23 in board.h); no card is no error
-    uint32_t sdStart = millis();
-    haveSD = mountSD();
-    unmountSD();
-    Serial.printf("BOOT ms=%lu card-probe elapsed=%lu\n", (unsigned long)millis(), (unsigned long)(millis() - sdStart));
-    Serial.printf("microSD: %s\n", haveSD ? "card found" : "no card");
-  }
   loadSettings();
   spk::setVolume(settings.sound);
   loadGameList();
   Serial.printf("BOOT ms=%lu list-loaded games=%d\n", (unsigned long)millis(), ngames);
-  if (!ngames && !haveSD) {
-    message("No games on the board", "flash the LittleFS image");
-    for (;;) delay(1000);
-  }
+  if (!ngames) Serial.println("BOOT no flash games: card discovery is pending");
 
   Serial.printf("ready: %d games (microSD %s), heap %u, largest %u\n", ngames, haveSD ? "in" : "out", (unsigned)ESP.getFreeHeap(), (unsigned)heap_caps_get_largest_free_block(MALLOC_CAP_8BIT));
   enterPicker();
@@ -1723,6 +1816,12 @@ void loop() {
   if (banner::shown() && ((pts.n > 0 && !injOn) || now - banner::st.seen > banner::IDLE_MS)) { bool a = banner::set(""), b = banner::setId(""); bannerChanged(a || b); }  // Lewis takes over, or the agent is gone
 
   if (mode == PICKER) {
+    if(cardProbePending) {
+      uint32_t t=millis();cardProbePending=false;haveSD=mountSD();
+      Serial.printf("BOOT card-mount ms=%lu present=%d\n",(unsigned long)(millis()-t),haveSD);
+      if(haveSD)addGames(SD,"/pocket",true);
+      unmountSD();scanDone=!haveSD;drawPicker(false);
+    }
     if (scanCardBatch()) drawPicker(false);
 #ifdef POCKET_CYD28
     {  // BOOT: a short press opens the display setup, 2 seconds changes the display mode (for a screen that is unreadable)
@@ -1740,46 +1839,46 @@ void loop() {
     }
 #endif
     if (freshTap(tx, ty)) {
-      int pages = (nmatch + ROWS - 1) / ROWS;
-#ifdef POCKET_CYD28
-      if (ty < TITLE_H && tx < 208) { runDisplaySetup(); enterPicker(); return; }  // the list's top-left corner: display setup
-#endif
-      if (ty >= PK_BTN_Y) {
-        if (tx < scr::W / 4 && page > 0) { page--; drawPicker(false, true); }
-        else if (tx >= scr::W / 4 && tx < scr::W / 2 && page + 1 < pages) { page++; drawPicker(false, true); }
-        else if (tx >= scr::W / 2 && tx < scr::W * 3 / 4) { stopCardScan(); mode = SEARCH_SCREEN; drawSearch(); }
-        else if (tx >= scr::W * 3 / 4) { stopCardScan(); mode = SETTINGS_SCREEN; fromPause = false; setPage = 0; drawSettings(); }
-      } else if (ty >= PK_Y0) {
-        int r = (ty - PK_Y0) / PK_STEP, at = page * ROWS + r;
-        if (r < ROWS && at < nmatch && (ty - PK_Y0) % PK_STEP < PK_H) {
-          int i = matches[at];
-          message("Loading", games[i].title);
-          if (!startGame(i)) { message("Could not load", games[i].title); delay(1500); enterPicker(); }
-          else wasDown = true;
+      int count=browsingCategories?categoryCount:nmatch,pages=(count+5)/6;
+      if(ty<32) {
+        if(tx>=scr::W-32){stopCardScan();mode=SETTINGS_SCREEN;fromPause=false;setPage=0;drawSettings();}
+        else if(tx>=scr::W-64){stopCardScan();strcpy(savedSearch,searchText);savedAll=searchAll;savedBrowsing=browsingCategories;mode=SEARCH_SCREEN;drawSearch();}
+        else if(tx<32){
+          if(searchText[0])searchText[0]=0;
+          else if(!browsingCategories&&(category==1||category==5||category==6)){browsingCategories=true;subcategory=-1;}
+          else {browsingCategories=true;category=0;subcategory=-1;}page=0;selected=-1;drawPicker();
+        }
+      }else if(ty>=PK_BTN_Y) {
+        if(tx<48&&page>0){page--;restoreSelection=false;selected=-1;drawPicker(false,true);}
+        else if(tx>=50&&tx<98&&page+1<pages){page++;restoreSelection=false;selected=-1;drawPicker(false,true);}
+        else if(tx>=scr::W-100){
+          if(searchText[0]&&!nmatch){searchText[0]=0;drawPicker();}
+          else if(browsingCategories){cardScanKnown=false;stopCardScan();if(mountSD()){SD.remove("/pocket/LIBRARY.CCH");SD.remove("/pocket/LIBRARY.NEW");unmountSD();}haveSD=mountSD();unmountSD();loadGameList();selected=-1;restoreSelection=false;drawPicker();}
+          else if(selected>=0&&selected<ngames){stopCardScan();mode=DETAILS_SCREEN;drawDetails();}
+        }
+      }else {
+        int slot=pk::hitTile(scr::W,tx,ty),at=page*6+slot;
+        if(slot>=0&&at<count){
+          if(browsingCategories){if(!category){category=categorySlots[at];subcategory=-1;browsingCategories=category==1||category==5||category==6;}else{subcategory=categorySlots[at];browsingCategories=false;}page=0;selected=-1;drawPicker();}
+          else {int i=catalog->matches[at];if(selected!=i){restoreSelection=false;selected=i;drawPicker();}else{message("Loading");if(!startGame(i)){message("Could not load");delay(1500);enterPicker();}else wasDown=true;}}
         }
       }
     }
     delay(5);
     return;
   }
+  if(mode==DETAILS_SCREEN){
+    if(freshTap(tx,ty)&&ty>=scr::H-38){if(tx<scr::W/2){mode=PICKER;drawPicker();}else{message("Loading");if(!startGame(selected)){message("Could not load");delay(1500);enterPicker();}else wasDown=true;}}delay(5);return;
+  }
   if (mode == SEARCH_SCREEN) {
     if (freshTap(tx, ty)) {
-      char previous[sizeof searchText];
-      memcpy(previous, searchText, sizeof previous);
-      int n = strlen(searchText), top = TITLE_H + 26, step = (scr::H - top - 38) / 4;
-      if (ty >= scr::H - 36) {
-        int b = tx * 4 / scr::W;
-        if (b == 0 && n < 24) { searchText[n] = ' '; searchText[n + 1] = 0; }
-        if (b == 1 && n) searchText[n - 1] = 0;
-        if (b == 2) searchText[0] = 0;
-        if (b == 3) { page = 0; mode = PICKER; drawPicker(); return; }
-      } else if (ty >= top && ty < top + 4 * step && n < 24) {
-        searchText[n] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"[(ty - top) / step * 9 + tx * 9 / scr::W];
-        searchText[n + 1] = 0;
-      }
-      pk::drawSearchText(tft, TITLE_H, searchText, previous);
-    }
-    delay(5); return;
+      char previous[sizeof searchText];memcpy(previous,searchText,sizeof previous);
+      int n=strlen(searchText),top=58,step=(scr::H-top-38)/4;
+      if(ty<32){if(tx<40){strcpy(searchText,savedSearch);searchAll=savedAll;browsingCategories=savedBrowsing;mode=PICKER;drawPicker();return;}searchAll=!searchAll;drawSearch();}
+      else if(ty>=scr::H-36){int b=tx*4/scr::W;if(b==0&&n<24){searchText[n]=' ';searchText[n+1]=0;}if(b==1&&n)searchText[n-1]=0;if(b==2)searchText[0]=0;if(b==3){page=0;selected=-1;browsingCategories=false;mode=PICKER;drawPicker();return;}}
+      else if(ty>=top&&ty<top+4*step&&n<24){searchText[n]="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"[(ty-top)/step*9+tx*9/scr::W];searchText[n+1]=0;}
+      pk::drawSearchText(tft,32,searchText,previous);
+    }delay(5);return;
   }
   if (mode == DISPLAY_SCREEN) {
     if (freshTap(tx, ty)) {

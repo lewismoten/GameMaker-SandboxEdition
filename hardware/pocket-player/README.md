@@ -1,6 +1,6 @@
 # Pocket Player
 
-Firmware for two boards: the ESP32-3248S035 (3.5 inch, 480 by 320, ST7796, GT911 capacitive touch) and the smaller ESP32-2432S028 (2.8 inch, 320 by 240, resistive touch; see "The 2.8 inch board" below). The rest of this README describes the first board unless it says otherwise. It plays **all 106 Starters (the 99 lessons and the 7 Graduations)** from the games' real DOS files, packed small into LittleFS (`web/scripts/pocketData.ts`), with a game list, touch controls for fingers and a stylus, a settings screen and a status strip. It plays each game's **PC speaker sounds** (no Sound Blaster clips or music yet).
+Firmware for two boards: the ESP32-3248S035 (3.5 inch, 480 by 320, ST7796, GT911 capacitive touch) and the smaller ESP32-2432S028 (2.8 inch, 320 by 240, resistive touch; see "The 2.8 inch board" below). The rest of this README describes the first board unless it says otherwise. It plays **all 106 Starters (the 99 lessons and the 7 Graduations)** from the games' real DOS files, packed small into LittleFS (`web/scripts/pocketData.ts`), with a category library, touch controls for fingers and a stylus, a settings screen and a status strip. It plays each game's **PC speaker sounds** (no Sound Blaster clips or music yet).
 
 The flashed firmware binaries' third-party notices are in [`web/public/pocket/fw/NOTICES.txt`](../../web/public/pocket/fw/NOTICES.txt). Keep that file with the firmware image set when redistributing it.
 
@@ -8,15 +8,12 @@ The play rules are `src/gmcore.h`, a port of the web engine's character, touch, 
 
 Card drawing (`src/carddraw.h`) clears the full panel to palette 0 between scenes and when a text page uses a different picture, keeps the status-strip margin at palette 0 for pictures and fades, and bounds the final band to the remaining image rows. `host/carddrawtest.cpp`, run at both board sizes by `pocketControlsCheck.ts`, checks a text page after a level, palette byte order and margins. Consecutive text pages on the same packed scene picture (including its palette) restore only the previous text rectangle and draw the new text region; host checks compare these framebuffers byte for byte with full redraws, including MORE and empty pages.
 
-Files: `src/gmcore.h` (play loop), `src/gmcards.h` (the pictures and text pages between levels, no board code), `src/gmmon.h` (monsters), `src/gmcfg.h` (a game's `.cfg` and the level file loader), `src/controls.h` (touch controls model), `src/pcspeaker.h` (the PC speaker tune player, no board code), `src/speaker.h` (GPIO 26 and the task that drives it), `src/gt911.h` (touch chip, up to 5 fingers with ids and sizes), `src/gt911report.h` (I²C reports, host-tested for interrupted reads), `src/picker.h` (bounded titles and search), `src/picker_draw.h` (rows, icons and keyboard shared with host renders), `src/screen.h` (play viewport), `src/main.cpp` (files, panel, screens, drawing), `src/btnicon.h` (which picture a key's button shows: the shot or item it throws or uses), `host/hosttest.cpp`, `host/controlstest.cpp`, `host/cardstest.cpp` (Mac tests) and `host/iconsdump.cpp` (lists the picture each button gets; `web/scripts/pocketIconsShot.py` draws them). The controls are drawn into each band of the picture before it is pushed once (`drawControls` in `main.cpp`), so they never blink; a button shows its key's name big and under it the picture or the game's label, wrapped to two lines, shrunk, then cut with "...".
+Files: `src/gmcore.h` (play loop), `src/gmcards.h` (the pictures and text pages between levels, no board code), `src/gmmon.h` (monsters), `src/gmcfg.h` (a game's `.cfg` and the level file loader), `src/library.h` (bounded optional metadata and compact catalog/cache records), `src/picker_draw.h` (six-slot geometry and rendering), `src/controls.h` (touch controls model), `src/pcspeaker.h` (the PC speaker tune player, no board code), `src/speaker.h` (GPIO 26 and the task that drives it), `src/gt911.h` (touch chip, up to 5 fingers with ids and sizes), `src/gt911report.h` (I²C reports, host-tested for interrupted reads), `src/picker.h` (bounded titles and search), `src/picker_draw.h` (rows, icons and keyboard shared with host renders), `src/screen.h` (play viewport), `src/main.cpp` (files, panel, screens, drawing), `src/btnicon.h` (which picture a key's button shows: the shot or item it throws or uses), `host/hosttest.cpp`, `host/controlstest.cpp`, `host/cardstest.cpp` (Mac tests) and `host/iconsdump.cpp` (lists the picture each button gets; `web/scripts/pocketIconsShot.py` draws them). The controls are drawn into each band of the picture before it is pushed once (`drawControls` in `main.cpp`), so they never blink; a button shows its key's name big and under it the picture or the game's label, wrapped to two lines, shrunk, then cut with "...".
 
-## Phase 1 picker, display and input updates (November 6, 2026)
+## Display and input updates (November 6, 2026)
 
-The picker appears after reading the small `games.txt` indexes. One-file card games are discovered afterward, eight directory names per UI loop; only `.GMP` candidates are opened. The old scan opened every loose asset before showing anything. A trailing `...` in the title means discovery is still running. Discovery releases its directory and the card mount before play or Settings; if interrupted, it resumes with a fresh scan and skips already listed ids. The existing 128-game limit remains. No cache file is written.
-
-Serial boot timing is in milliseconds since reset: `BOOT ... start`, `card-probe elapsed=`, `list-loaded`, `picker-ready`, and `card-discovery elapsed= entries= games=`. Compare `picker-ready` on the same card before judging a speed improvement; host tests cannot measure an SD controller. No new board measurements were taken in the sandbox.
-
-The bottom buttons are left/right arrows, a spyglass (case-insensitive substring search of titles) and a smaller gear for Settings. Search offers letters, digits, Space, Del, Clear and Done. Clear then Done restores every title. Titles occupy one line with an ellipsis, have no level counts, and page changes repaint only the rows and page indicator, preserving the title and footer. The search button has a round three-pixel lens ring and a short diagonal handle at both sizes. New packers preserve up to 95 title characters for search; older files with shortened titles still work.
+The Phase 1 row picker has been replaced by the [library browser](#library-browser-library-metadata-version-1).
+The display and input changes below remain.
 
 Typing in Search redraws only the edited suffix and caret, leaving the keyboard and title in place. Results appear after Done. Host frame-buffer checks compare edits, deletion, Clear and a full 24-character query with fresh renders at both screen sizes, and reject any write outside the text field. The 3.5 inch board's Settings also says that touch needs no calibration.
 
@@ -77,9 +74,9 @@ The install window can also offer "Connect to Wi-Fi" (Improv Wi-Fi over the same
 
 ## What to try (and what to report back)
 
-The board shows a list of games, five to a page (arrows, search and Settings along the bottom). Tap a game to play it. A MENU chip in the top-left corner pauses (Resume, Restart game, Games, Settings).
+The board shows categories and six game thumbnails per page. Select a game, then tap it again to play; the header has Search and Settings. A MENU chip in the top-left corner pauses (Resume, Restart game, Games, Settings).
 
-1. **Colors and touch position.** Tap through the list. Does a tap land on the row you touched? Settings shows `raw x,y screen x,y size` under your finger. If it is mirrored or swapped, tell me which way (one line in `GT911::toScreen`, `src/gt911.h`).
+1. **Colors and touch position.** Tap through the list. Does a tap land on the tile you touched? Settings shows `raw x,y screen x,y size` under your finger. If it is mirrored or swapped, tell me which way (one line in `GT911::toScreen`, `src/gt911.h`).
 2. **First Steps** (first in the list). Walk with your left thumb on the round pad, jump with the right one on the Space circle. Slide a held thumb from the left side of the pad to the right side: the hero should turn around without stopping on the way. Does the pad feel too big, too small, too touchy in the middle? (Settings: Pad size, Pad dead zone.)
 3. **Two fingers.** On Keys and Doors, Beat the Clock or Momentum: hold right on the pad and tap Space with the other thumb. Run and jump.
 4. **A ladder game.** First Steps level 2 (the pad's up and down arrows), Swim, Slippery and Bouncy (up and down are shown only on games that use them).
@@ -230,7 +227,7 @@ The browser installer covers both boards (see "Flash it from the browser"); `pio
 
 ## What only a board can tell
 
-Whether the touch orientation guess is right, whether the pad sizes and dead zones feel good under a thumb, what size numbers a fingertip and a palm give (so the palm threshold of 160 is a guess), how a capacitive stylus behaves on the glass, the frame rate while scrolling, whether the picker's rows are easy to hit, and whether the new `rom/miniz.h` decoder links and runs on the board (it compiles and links; the Mac test uses zlib for the same bytes).
+Whether the touch orientation guess is right, whether the pad sizes and dead zones feel good under a thumb, what size numbers a fingertip and a palm give (so the palm threshold of 160 is a guess), how a capacitive stylus behaves on the glass, the frame rate while scrolling, whether the picker's tiles are easy to hit, and whether the new `rom/miniz.h` decoder links and runs on the board (it compiles and links; the Mac test uses zlib for the same bytes).
 
 ## Pins (board.h)
 
@@ -257,5 +254,95 @@ Firmware and board id (`src/fwid.h`, `fwid.py`): every build carries its short g
 Test banner: `S <text>` on Serial (any screen, game included) shows a slim yellow bar with a small robot and up to 40 characters at the top edge, between the MENU and KEYS chips (`src/banner.h`; drawn into the game's bands with the controls, so it does not flicker); `S off` clears it. `ID <x>` (1 to 3 characters) adds a bold board badge at the left of the bar, and shows the bar with the robot alone when no text is set; `ID off` removes it (RAM only: gone after a reset). It also clears when a real finger touches the screen (a made-up `I` finger does not) and after 2 minutes with no serial traffic. `web/scripts/pocketStatus.py <port> "<text>"|off` sends it; the other `pocket*.py` scripts that open the port do it themselves, with the board's letter from the table in `pocketStatus.py`: **A** = /dev/cu.usbserial-1140 (3.5" 480x320, GT911 touch), **B** = usbserial-1130 and **C** = usbserial-120 (2.8" 320x240, ESP32-2432S028). A flash can't show one (the chip is in its bootloader): show "Flashing new firmware" first.
 
 The touch model (`controls.h`) lets a finger the chip stops reporting keep pressing for 60 ms, and a new contact within 70 px of it takes its place, so a dropped frame or a re-numbered thumb does not release a held direction.
+
+## Library browser (library metadata version 1)
+
+The library opens on categories, six tiles per page on both boards. Starters has the site's
+six numbered stages, followed by Graduations and Other. Sandbox, Bizarre, My games,
+Imported collections and CD (Gameware / Shareware) keep the site's classification. Empty
+categories remain reachable. Good on touch is an additional view of installed games with
+an advisory recorded-route score of at least 85, highest first. This score does not promise
+that a game is easy to play on hardware.
+
+Tap a game once to select it and again to play, or select Details for its full title and Play.
+The picture's outlined name is the source DOS `.GAM` basename. Back returns to the parent;
+the spyglass searches human titles, initially across All games, with a This category toggle.
+The search header's back arrow cancels changes. Done keeps the query; empty results offer
+Clear. Selection, page, category and query return after play. The gear opens Settings.
+On the CYD, Panel setup is still in Settings → Display and on a short BOOT press.
+The agent banner is kept off library navigation.
+
+`GMP 1` and the `GMS1` container are unchanged. A GMP may additionally carry `library.json`
+(`gmp-library`, version 1, UTF-8 without BOM, at most 1,024 bytes) and `thumb.pth`.
+Metadata holds `uid`, human `title` (128 UTF-8 bytes), validated `dosName`, one or two stable
+category segments, source `gamCrc32`, optional `course`, imported `categoryLabel`, thumbnail
+name and optional `touchScore`. Unknown keys are ignored. Missing, corrupt or future
+metadata uses the legacy title, Imported → Unsorted and no preview; unsupported gameplay
+versions are still rejected. Conflicting UIDs are reported, keeping the first installed copy.
+Distinct legacy GMP filenames with the same truncated game id remain distinct games.
+
+Catalog identities are `catalog:<id>`. Personal projects receive a `project:<UUID>` in the
+companion, preserved by game-file backups; copies use My games even when copied from a
+published game. Export options accept a chosen imported collection slug/label; the current
+site download uses Unsorted for imports without a chosen collection. No private import path
+is exported. Long browser download names and packer filename collisions get deterministic
+hash suffixes. Incremental `--gmp` writes also protect other UIDs already on the card.
+
+Flash and loose-card packs have streaming `library.jsonl`, headed by
+`{"schema":"gmp-library-index","version":1}`, with storage, id, safe locator and preview
+entry names. They retain `games.txt` for old firmware. Previews share one `thumbs.pak` with
+identical payloads deduplicated. Title/menu pictures use the site's indexed title renderer,
+falling back to the first playable level; unreadable pictures get a labeled No preview tile.
+PTH1 stores 96×60 indices and 256 RGB565 colors (6,284 raw bytes), wrapped in the existing
+raw-length + deflate format. The large board enlarges to 144×90. The board draws one row
+at a time, never a whole-page framebuffer.
+
+The packer optionally reads the maintainer's `.for-lewis/research/pocket/cyd-friendly.json`;
+`--scores <file>` overrides it. Missing scores omit Good on touch. Secret games are filtered
+before preview generation, indexing and counts. Build gates cap compressed thumbnails at
+384 KiB and the flash index at 64 KiB. The 512-game catalog uses 41,904 bytes, including
+filters and 24 imported collection labels; preview scratch is 6,572 bytes. Compressed preview
+input reuses the existing game band; decompression reuses the engine's existing ROM inflater.
+The entire catalog and all preview buffers are released before a normal game launch. Excess
+games/collections produce a visible limit message (extra collections fall under Unsorted).
+
+Card discovery reads bounded gameplay headers and metadata, never game assets. Disposable
+`/pocket/LIBRARY.CCH` cache rows use basename/size/mtime and CRC32. Bad rows are ignored,
+removed files are not listed, and replacements are read again. Named imported collections
+are reclassified from metadata each scan. A completed directory scan replaces the cache;
+interrupted `LIBRARY.NEW` files are ignored. Rescan discards both cache files and probes the
+card again. Returning from play rebuilds the released catalog from cache rows after checking
+the directory stamp and each target's size/mtime; a changed directory or bad target triggers
+a new directory scan. Gameplay never requires the cache. Card write failures do not block browsing.
+
+Host checks: `cd web && npx vite-node scripts/pocketControlsCheck.ts` includes `host/librarytest.cpp`
+for both exact layouts, real packed previews, touch gaps, partial/empty pages, clipped DOS
+names, metadata/cache corruption, UTF-8 bounds and memory limits. To retain the renders,
+compile that host test with `-std=c++17 -I hardware/pocket-player/src -lz`, then run
+`librarytest hardware/pocket-player/data <output-directory>`; it writes PPM files convertible
+to PNG. `src/export/pocketLibrary.test.ts` checks package compatibility, stages, identity,
+collisions, secret exclusion and generated preview/index budgets.
+
+Set `POCKET_BUILD_ID=<label>` for PlatformIO builds that must not invoke git; otherwise the
+existing build-id hook reads git. No board is needed to build firmware or LittleFS.
+
+Measured host build, Saturday, November 7, 2026 (before board testing):
+
+| Environment | Firmware file | Static RAM | Application headroom |
+| --- | ---: | ---: | ---: |
+| ESP32-3248S035 | 541,840 B | 100,840 B | 506,736 B |
+| CYD-2432S028 | 543,280 B | 112,200 B | 505,296 B |
+
+Both filesystem images are 3,080,192 bytes. Their six source files total 2,545,021 bytes,
+including 29,232 bytes of metadata and 137,679 bytes of compressed previews. There are
+507,904 bytes of fully erased blocks, a conservative free-space floor that leaves the
+128 KiB personal-data reserve and 64 KiB headroom intact. Firmware growth over the served
+binaries at the start of this task is below 64 KiB on each board.
+
+Next: personal lists, counted/recent launches, ratings, the power-failure-safe journal and
+explicit portable snapshot/import UI (design section 3). Before release, boards must verify
+real touch, SD removal/full-card behavior, tight-level heap and largest block, and reset,
+cold/warm discovery, page and search timings. Serial `BOOT` / `LIB` lines report the latter;
+host tests cannot establish those hardware timings.
 
 The pad drawing is shared by `src/paddraw.h` and `host/paddrawtest.cpp`. `web/scripts/pocketControlsCheck.ts` checks its framebuffer snapshots on both boards, all three sizes, both hands, idle/held states and both software turns. To inspect it, compile the host test with `-DPOCKET_CYD28 -I hardware/pocket-player/src` and pass an output PPM path: rows are small, medium and large; columns are right-handed idle/held, then left-handed idle/held.
