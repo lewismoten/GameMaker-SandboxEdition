@@ -50,12 +50,16 @@ function shorter(p: Pixels): Pixels {
 /** The lower blocks where her feet are on the ground (she stands and walks); the others (jumping, falling) keep no shadow. */
 const GROUNDED = new Set(['stand', 'walk0', 'walk1', 'walk2', 'walk3']);
 
+/** The half-width of the small shadow at takeoff and landing (the pips' hop at its highest has 3.5). */
+const SMALL = 4;
+
 /** A copy of Mara's character blocks (in the same order, so the same numbers) where standing and walking carry a shadow of `kind`. */
 export function shadowedHero(hero: Book, kind: Shade, pal: Pal, mark?: number): Book {
   const out = new Book('cbl');
   for (const name of hero.index.keys()) {
     const pic = hero.pics.get(name)!;
-    out.add(name, GROUNDED.has(name) ? withShadow(shorter(pic), kind, pal, 8, mark) : pic);
+    const rx = name === 'crouch' ? SMALL : 8;
+    out.add(name, GROUNDED.has(name) || name === 'crouch' ? withShadow(shorter(pic), kind, pal, rx, mark) : pic);
   }
   return out;
 }

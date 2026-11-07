@@ -4,6 +4,7 @@
 - `walkthrough.ts`, `gendemo.ts`: re-record the walkthrough and the title demo. The demo is the bot's whole run.
 - `demoCheck.ts`: plays the built `demo.rec` headless and checks it enters scenes `2 3 4 5 1`.
 - `preview.ts`: PNGs of the blocks, 16x10 views of each room with Kit in it (the size of the game's screen) and every picture on the built disk.
+- `jumpProbe.ts`: plays a standing and a running jump and prints each tick's sequence, picture and height; with an output folder it writes `jump-strip.png`, one picture per tick.
 - `manual.ts`: draws the frames the manual's "How this level is made" pages show (Kit and a pip with each shadow, the hop's six pictures, the bee's four) into `manual.json`, with the shadow pixels in purple.
 
 ## Starter rule: show the mistake once

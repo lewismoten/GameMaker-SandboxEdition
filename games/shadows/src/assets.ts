@@ -15,6 +15,7 @@ export interface Assets {
 
 export function buildAssets(pal: Pal): Assets {
   const plain = buildHeroBlocks(pal);
+  plain.add('crouch', plain.pics.get('stand')!); // her takeoff and landing picture: shadowedHero gives it a small shadow
   return {
     plain,
     solid: { hero: shadowedHero(plain, 'solid', pal), critters: buildCritterBlocks(pal, 'solid') },

@@ -20,6 +20,7 @@ import { Book } from '../kit/starter/book';
 import { addStarterBlocks } from '../kit/starter/blocks';
 import { heroPicture } from '../kit/starter/hero';
 import { buildHero } from '../kit/starter/heroChar';
+import { shadowJump } from './src/jump';
 import { cardPicture, endPicture, gif, menuPicture, paper, scoresPicture, slotsPicture } from '../kit/starter/screens';
 import { buildSounds } from '../kit/starter/sounds';
 import { buildAssets } from './src/assets';
@@ -46,6 +47,7 @@ const cheer = heroPicture(assets.plain, 'cheer.top', 'jump');
 disk.put('shadows.pal', serializePalette(pal.pal));
 disk.put('shadows.mon', serializeMonsters(buildCritters(assets.dither.critters)));
 const heroChar = buildHero(assets.plain);
+shadowJump(heroChar, assets.plain);
 heroChar.meter[0] = 3; // nothing here takes any
 disk.put('hero.chr', serializeCharacter(heroChar));
 disk.put('shadows.snd', serializeSoundSet(buildSounds()));
