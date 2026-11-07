@@ -29,6 +29,7 @@
 #include "statusled.h"
 #include "pressrect.h"
 #include "settingsdraw.h"
+#include "picturetune.h"
 #include <mbedtls/sha256.h>
 #ifdef POCKET_CYD28
 #include "xpt2046.h"
@@ -1082,6 +1083,16 @@ static const uint8_t SAMPLE_TUNE[72] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 #ifdef POCKET_CYD28
 static uint8_t panelType = PANEL_ILI9341, turnIdx = 0, softIdx = 0;  // softIdx 0: the glass's own landscape turn, 1 and 2: turned in software
+static uint8_t picGamma = 0, picTune = 0;  // the picture tuning (picturetune.h; saved with the display setup)
+static bool picOpen = false;  // Settings is showing the Picture screen
+// Sends the picture tuning to the glass; at start only when it is not the driver's own (`always` for a choice made live).
+static void applyPicture(bool always) {
+  if (!always && pt::isDefault(picGamma, picTune)) return;
+  uint8_t l[80];
+  pt::commands(panelType & 1, picGamma, picTune, l);
+  tftHw.sendList(l);
+}
+static void drawPicture() { pt::screen(tft, picGamma, picTune, (panelType & 1) ? "ST7789" : "ILI9341"); }
 static const char* panelName(char* b) {  // "ILI", "ST inv", "ILI inv bgr", ...
   snprintf(b, 16, "%s%s%s", (panelType & 1) ? "ST" : "ILI", (panelType & 2) ? " inv" : "", (panelType & 4) ? " bgr" : "");
   return b;
@@ -1123,6 +1134,9 @@ static st::Values settingsValues() {
 }
 // The whole screen. On Controls the controls model is set up for the preview (a game sets it up again as it starts or resumes).
 static void drawSettings() {
+#ifdef POCKET_CYD28
+  if (picOpen) { drawPicture(); return; }
+#endif
   st::CardInfo card;
   if (setView.tab == st::T_CARD) {
     card.builtIn = ngames - cardGames();
@@ -1770,7 +1784,7 @@ static void bannerChanged(bool changed) {
 
 /** "S st", "S tap …" and the other display-setup words go to the setup; any other "S <text>" is the test banner. */
 static bool isSetupCommand(const char* buf) {
-  static const char* const words[] = {"st", "tap", "btn", "boot", "skip", "open", "forget"};
+  static const char* const words[] = {"st", "tap", "btn", "boot", "skip", "open", "forget", "pic", "display"};
   for (const char* w : words) {
     size_t n = strlen(w);
     if (!strncmp(buf + 2, w, n) && (buf[2 + n] == 0 || buf[2 + n] == ' ')) return true;
@@ -1835,6 +1849,7 @@ void setup() {
 #ifdef POCKET_CYD28
   tft.setBandBuffer(tband);
   applyDisplay();
+  applyPicture(false);  // nothing for the driver's own (gamma 1, Std)
 #else
   tftHw.setRotation(1);
 #endif
@@ -1854,7 +1869,7 @@ void setup() {
   else snprintf(line, sizeof line, "Touch: no XPT2046 found");
   {
     char nb[16];
-    Serial.printf("display mode %s turn %d soft %d\n", panelName(nb), turnIdx + 1, softIdx);
+    Serial.printf("display mode %s turn %d soft %d picture gamma %d tune %d\n", panelName(nb), turnIdx + 1, softIdx, picGamma + 1, picTune);
     uint32_t dd = 0, d3 = 0;
     uint8_t id[3];
     tftHw.readIds(dd, id, d3);
@@ -1907,6 +1922,9 @@ static void measureCard() {
 }
 static void openSettings(bool paused) {
   setView = st::View();
+#ifdef POCKET_CYD28
+  picOpen = false;
+#endif
   setView.fromPause = fromPause = paused;
   cardSpace[0] = 0;
   mode = SETTINGS_SCREEN;
@@ -1922,7 +1940,13 @@ static void chooseSetting(st::Item it, int chip) {
       return;
 #ifdef POCKET_CYD28
     case st::I_CAL: saveSettings(); if (runCalibration()) dsCalDone(); drawSettings(); return;
-    case st::I_PANEL: saveSettings(); runDisplaySetup(); drawSettings(); return;
+    case st::I_PANEL:
+      saveSettings();
+      if (chip == 1) { picOpen = true; drawSettings(); return; }  // Picture
+      runDisplaySetup();
+      applyPicture(false);
+      drawSettings();
+      return;
 #endif
     default: break;
   }
@@ -2128,6 +2152,15 @@ void loop() {
         bootActed = false;
       }
       if (dsOpenReq) { dsOpenReq = false; runDisplaySetup(); enterPicker(); return; }
+      if (dsTabReq) {  // "S display" / "S pic open": Settings, Display (and its Picture screen)
+        openSettings(false);
+        setView.tab = st::T_DISPLAY;
+        picOpen = dsTabReq == 2;
+        Serial.printf("SETTINGS display%s\n", picOpen ? " picture" : "");
+        dsTabReq = 0;
+        drawSettings();
+        return;
+      }
     }
 #endif
     if (menuTap(prs::SC_PICKER, tx, ty)) {
@@ -2176,6 +2209,25 @@ void loop() {
       pk::drawSearchText(tft,32,searchText,previous);
     }delay(5);return;
   }
+#ifdef POCKET_CYD28
+  if (mode == SETTINGS_SCREEN && picOpen) {  // Picture: every chip is sent to the glass at once; Back saves it with the setup
+    if (freshTap(tx, ty)) {
+      pt::Hit h = pt::hit(tx, ty);
+      if (h.kind == pt::K_BACK) {
+        picOpen = false;
+        dsSave();
+        Serial.printf("picture gamma %d tune %d\n", picGamma + 1, picTune);
+        drawSettings();
+      } else if (h.kind == pt::K_GAMMA || h.kind == pt::K_TUNE) {
+        (h.kind == pt::K_GAMMA ? picGamma : picTune) = (uint8_t)h.k;
+        applyPicture(true);
+        pt::rows(tft, picGamma, picTune);
+      }
+    }
+    delay(5);
+    return;
+  }
+#endif
   if (mode == SETTINGS_SCREEN) {
     if (menuTap(prs::SC_SETTINGS, tx, ty)) {
       st::Hit h = st::hit(setView, tx, ty);
