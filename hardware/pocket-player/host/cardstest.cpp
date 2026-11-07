@@ -94,16 +94,16 @@ int main(int argc, char** argv) {
       if (bit && !!(menuPagesOfFile(stdioLines, name.c_str()) & bit) != (n > 0)) { fprintf(stderr, "menuPagesOfFile differs for %s\n", wh.c_str()); return 3; }
     }
     uint8_t* pic = nullptr;
-    char picFile[20] = "";
+    Card picCard = {};
     bool dirty = false;
     for (int i = 0; i < n; i++) {
       const Card& c = cards[i];
-      if (c.kind == 'g') {
+      if (c.kind == 'g' || c.kind == 'p') {  // a patch picture prints as the picture it makes
         free(pic);
-        pic = loadPicture(assets, readRange, c.file);
+        pic = loadCardPicture(assets, readRange, c);
         dirty = false;
         if (!pic) { printf("C %s g ERR\n", wh.c_str()); continue; }
-        strcpy(picFile, c.file);
+        picCard = c;
         printf("C %s g 0 %u %u %d\n", wh.c_str(), fnv(pic + 768, PIC_PIXELS), fnv(pic, 768), c.pause);
       } else if (c.kind == 'f') {
         size_t tn = 0;
@@ -125,7 +125,7 @@ int main(int argc, char** argv) {
         uint8_t* t = readCard(assets, readRange, c.file, &tn);
         int pages = textPageCount(t, tn);
         for (int pg = 0; pg < pages; pg++) {
-          if (dirty) { free(pic); pic = loadPicture(assets, readRange, picFile); }
+          if (dirty) { free(pic); pic = loadCardPicture(assets, readRange, picCard); }
           dirty = true;
           drawTextPage(pic + 768, font, t, tn, pg, c.color, c.more);
           printf("C %s t %d %u %u %d\n", wh.c_str(), pg, fnv(pic + 768, PIC_PIXELS), fnv(pic, 768), c.pause);
