@@ -45,8 +45,14 @@
   font-size: 13px;
 }
 
+/* the panel takes focus so a long list scrolls from the keyboard */
 .courier-panel:focus {
   outline: none;
+}
+
+.courier-panel:focus-visible {
+  outline: 3px solid #1d5fd1;
+  outline-offset: 1px;
 }
 
 .courier-empty {
@@ -145,10 +151,46 @@
   margin: 0 0 6px;
 }
 
-.courier-stamp {
+/* a postcard: its world's name on its palette's sky, then its stamps */
+.courier-postcard {
+  border: 1px solid #b9b08f;
+  border-radius: 4px;
+  background: #fffaf0;
+  overflow: hidden;
+}
+
+.courier-postcard-name {
   display: block;
-  padding-left: 12px;
+  padding: 4px 8px;
+}
+
+.courier-stamps {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
+  gap: 8px 6px;
+  margin: 0;
+  padding: 8px;
+  list-style: none;
+}
+
+.courier-stamp {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
   color: #4a463c;
+  font-size: 12px;
+  line-height: 1.25;
+  text-align: center;
+}
+
+.courier-cards .courier-stamp {
+  margin: 0;
+}
+
+.courier-stamp-art {
+  display: block;
+  line-height: 0;
 }
 
 .courier-tab:focus-visible,
