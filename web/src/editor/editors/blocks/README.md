@@ -8,6 +8,7 @@ Paints BBL, MBL and CBL block sets and exposes their kind-specific behavior, gro
 
 - [`blocks.ts`](blocks.ts): Registers the BBL/MBL/CBL painter, coordinates native block serialization, pixel-history scopes, tools, palettes, groups, behavior panels, and character-frame painting.
 - [`blockProperties.ts`](blockProperties.ts): Builds behavior fields for the selected native block: BBL walking/touch/time settings, MBL contact effects, and a picture-only explanation for CBL.
+- [`blockCapacity.ts`](blockCapacity.ts): Explains the fixed DOS 150/100/50-block sets at the picker, distinguishing preserved extended records from DOS-usable pictures; `blockCapacity.test.ts` checks below, exact and over-capacity files for all three kinds.
 - [`groupsPanel.ts`](groupsPanel.ts): Manages companion-backed groups, assembled previews, explicit group suggestions, and requests to paint groups as one picture.
 - [`characterFramesPanel.ts`](characterFramesPanel.ts): Selects linked CHR animation frames for oriented one-/two-block painting and live CBL previews.
 

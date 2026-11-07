@@ -3,6 +3,7 @@ import { wrap, creditsPage } from '../../kit/starter/graduationText';
 import type { Graduation } from '../../kit/starter/graduationConfig';
 import { LAB } from '../../kit/starter/graduationThemes';
 import about from '../about.json';
+import { song } from './song';
 
 export const cfg: Graduation = {
   id: 'graduation-wiring',
@@ -26,7 +27,7 @@ export const cfg: Graduation = {
     nods: ['lever', 'tokens', 'fakeWall'],
   },
   level: { title: 'The Lab', hint: 'Walk across the lab to the stage.' },
-  song: { bpm: 92, lead: 'bell', transpose: 7 },
+  song,
   text: {
     story: wrap(`
 |GRADUATION

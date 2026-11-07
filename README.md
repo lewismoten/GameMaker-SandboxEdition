@@ -265,3 +265,5 @@ lyrics were shaped with ChatGPT from Lewis's prompts and their music made with R
 for full credits, the story behind this fork and third-party trademarks.
 
 Released under the [MIT License](LICENSE).
+
+The [native SDL host prototype](hardware/pi-player/README.md) compiles the Pocket Player core for macOS and prepares the Raspberry Pi OS Lite player.

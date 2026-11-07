@@ -6,6 +6,7 @@ import { parseBlocks, serializeBlocks, BLOCK_COUNTS, BLOCK_SIZE, type BlockKind 
 import { parseCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { isFli, parseFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
 import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { fromCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import { decodeGif, isGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
 import { MLEN, MWID, parseMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { parseMonsters } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
@@ -193,7 +194,7 @@ function describe(kind: string, a: Uint8Array, b: Uint8Array): string[] {
         const what: string[] = [];
         if (!sa || !sb) what.push(sa ? 'removed' : 'added');
         else {
-          if (sa.desc !== sb.desc) what.push(`description "${sa.desc}" -> "${sb.desc}"`);
+          if (sa.desc !== sb.desc) what.push(`description "${fromCp437(sa.desc)}" -> "${fromCp437(sb.desc)}"`);
           const fl = indexDiff(sa.files, sb.files);
           if (fl.length) what.push(`files ${fl.map((k) => `${sa.files[k] || '-'} -> ${sb.files[k] || '-'}`).join(', ')}`);
           if (stable(sa.links) !== stable(sb.links)) what.push(`links ${sa.numLinks} -> ${sb.numLinks} (changed)`);

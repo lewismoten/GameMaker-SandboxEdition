@@ -42,6 +42,7 @@ embroidery and 3D-printable and laser models.
 
 ### Fixed
 
+- Disk-diff reports show DOS scene descriptions as CP437 Unicode without changing byte comparisons.
 - `kit/levelGen` keeps jump headroom inside generated side views and does not prove routes through the unknown map above them. Some seeded layouts change.
 - `kit/gameSim`: a scene with a blank character or character-blocks slot keeps the last scene's, as PLAYGAME's loadscene does.
 - Indexed-pixel shifts that are invalid are rejected, and fractional flood-fill seeds are ignored.

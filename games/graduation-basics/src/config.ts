@@ -3,6 +3,7 @@
 import { wrap, creditsPage } from '../../kit/starter/graduationText';
 import type { Graduation } from '../../kit/starter/graduationConfig';
 import about from '../about.json';
+import { song } from './song';
 
 export const cfg: Graduation = {
   id: 'graduation-basics',
@@ -26,7 +27,7 @@ export const cfg: Graduation = {
     nods: ['ladder', 'keyGate', 'coins', 'crates'],
   },
   level: { title: 'The Aisle', hint: 'Walk up to the stage.' },
-  song: { bpm: 88, lead: 'lead', transpose: 0 },
+  song,
   text: {
     story: wrap(`
 |GRADUATION

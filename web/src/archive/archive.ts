@@ -2,6 +2,7 @@
 // "save page" records them. Nothing links here. It registers no service worker, writes no storage and
 // shows counts only: never a file's or a game's name.
 import { fetchOrder, partCount, takePart, type Manifest } from './plan';
+import { progressAnnouncements } from '../editor/core/progressAnnouncements';
 
 const AT_ONCE = 4;
 
@@ -47,9 +48,12 @@ async function run(): Promise<void> {
   let done = 0;
   let failed = 0;
   let next = 0;
+  const speech = progressAnnouncements(say);
   const update = () => {
     bar.value = done + failed;
-    say(`${done + failed} of ${list.length} files${failed ? `, ${failed} not available` : ''}`);
+    const text = `${done + failed} of ${list.length} files${failed ? `, ${failed} not available` : ''}`;
+    $('counts').textContent = text;
+    speech.progress(text);
   };
   update();
   const worker = async () => {
@@ -64,6 +68,7 @@ async function run(): Promise<void> {
   const end = $('done');
   end.hidden = false;
   end.textContent = failed ? `Done. ${failed} of ${list.length} files could not be fetched.` : `Done. All ${list.length} files were fetched.`;
+  speech.finish(end.textContent);
 }
 
 void run();

@@ -21,9 +21,3 @@ export function scanLevelSecrets(gamesDir: string): Record<string, SecretBlocks>
   }
   return out;
 }
-
-/** levelSecrets.json as the script writes it: one game a line. */
-export const levelSecretsJson = (s: Record<string, SecretBlocks>): string =>
-  `{\n${Object.entries(s)
-    .map(([id, v]) => `  ${JSON.stringify(id)}: ${JSON.stringify(v)}`)
-    .join(',\n')}\n}\n`;

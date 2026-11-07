@@ -9,6 +9,7 @@ import type { Delta } from '@lewismoten/gamemaker-sandbox-tools/delta';
 import { GameFiles } from './files';
 import type { Companion } from './companion';
 import { recoverRecord, type Damage } from './recover';
+import { repairedTitle } from './importedTitle';
 import { DAMAGED_SUFFIX, isDamagedCopy, redundantCopies } from './damagedCopies';
 
 const DB_NAME = 'gamemaker-web';
@@ -71,23 +72,46 @@ function db(): Promise<IDBDatabase> {
   return dbPromise;
 }
 
-function request<T>(store: string, mode: IDBTransactionMode, run: (s: IDBObjectStore) => IDBRequest<T>): Promise<T> {
+function request<T>(
+  store: string,
+  mode: IDBTransactionMode,
+  run: (s: IDBObjectStore) => IDBRequest<T>,
+  read?: (value: T, store: IDBObjectStore) => T,
+): Promise<T> {
   return db().then(
     (d) =>
       new Promise<T>((resolve, reject) => {
         const tx = d.transaction(store, mode);
         const req = run(tx.objectStore(store));
-        req.onsuccess = () => resolve(req.result);
+        req.onsuccess = () => resolve(read ? read(req.result, tx.objectStore(store)) : req.result);
         req.onerror = () => reject(req.error);
       }),
   );
+}
+
+// Read and name-only put share a transaction: a concurrent rename cannot be overwritten.
+// No schema bump, DOS file rewrite, timestamp change, or damage-backup modification.
+function repairName<T extends ProjectRecord | undefined>(row: T, store: IDBObjectStore): T {
+  if (!row || typeof row !== 'object' || typeof row.id !== 'string' || isDamagedCopy(row.id)) return row;
+  const name = repairedTitle(row);
+  if (!name) return row;
+  const next = { ...row, name };
+  store.put(next);
+  return next;
 }
 
 type Summary = Omit<ProjectRecord, 'files'>;
 
 // every stored record that has an id, files and all
 async function allRecords(): Promise<ProjectRecord[]> {
-  return (await request<ProjectRecord[]>(PROJECTS, 'readonly', (s) => s.getAll())).filter((r) => r && typeof r === 'object' && typeof r.id === 'string');
+  return (
+    await request<ProjectRecord[]>(
+      PROJECTS,
+      'readwrite',
+      (s) => s.getAll(),
+      (rows, s) => rows.map((r) => repairName(r, s)),
+    )
+  ).filter((r) => r && typeof r === 'object' && typeof r.id === 'string');
 }
 
 const summaries = (rows: ProjectRecord[]): Summary[] => rows.map(({ files: _files, ...rest }) => rest).sort((a, b) => b.updated - a.updated);
@@ -135,7 +159,7 @@ export async function loadProject(
   id: string,
   o: { keepCopy?: boolean } = {},
 ): Promise<{ record: ProjectRecord; files: GameFiles; damage: Damage[] } | undefined> {
-  const raw = await request<unknown>(PROJECTS, 'readonly', (s) => s.get(id));
+  const raw = await loadRecord(id);
   if (raw === undefined || raw === null) return undefined;
   const { record, files, damage } = recoverRecord(id, raw);
   if (o.keepCopy && damage.length && !isDamagedCopy(id)) await keepDamagedCopy(id, raw, record.name);
@@ -186,7 +210,7 @@ export function withCompanion(next: ProjectRecord, stored: ProjectRecord | undef
 
 /** The project's stored record. */
 export async function loadRecord(id: string): Promise<ProjectRecord | undefined> {
-  return request<ProjectRecord | undefined>(PROJECTS, 'readonly', (s) => s.get(id));
+  return request<ProjectRecord | undefined>(PROJECTS, 'readwrite', (s) => s.get(id), repairName);
 }
 
 /** Stores the project's checkpoints (none: removes them, and the old single one), leaving the rest of its record as it is. */

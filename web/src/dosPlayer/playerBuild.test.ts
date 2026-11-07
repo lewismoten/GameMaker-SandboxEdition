@@ -56,6 +56,15 @@ describe('identifying a player', () => {
     expect(id.reasons.join(' ')).toMatch(/replaced/);
   });
 
+  it('decodes author fragments in reasons without changing raw player evidence', () => {
+    const accented = stock.slice();
+    b300.about.forEach((o) => put(accented, o, ' '.repeat(stringLen(accented, o))));
+    put(accented, b300.about[1], 'copyright 1994 by Caf\x82');
+    const identified = identifyPlayer(accented);
+    expect(identified.aboutAuthor).toBe('Caf\x82'); // raw evidence remains raw
+    expect(identified.reasons.join(' ')).toContain('Café');
+  });
+
   it('reads the version line of a player of no known size', () => {
     const exe = new Uint8Array(5000);
     put(exe, 1000, '          Version 2.02   \0Recreational Software Designs\0');

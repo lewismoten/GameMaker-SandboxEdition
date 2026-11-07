@@ -1,7 +1,7 @@
 // The editor's save note, under Download in the file list: changes autosave to this browser,
 // and this says so ("Saving…", "Saved in this browser", or why it couldn't, with what to do).
 // Ctrl+S / ⌘S saves at once and says so, instead of the browser saving the web page.
-import { h, toast } from '../core/ui';
+import { h } from '../core/ui';
 import type { Project } from '../core/project';
 import { quietly, savedText, savedTime } from './saveState';
 import './saveFlash.css';
@@ -18,6 +18,14 @@ export function saveNote(project: Project): { el: HTMLElement; dispose: () => vo
   // One polite, visually hidden announcer, quiet until edits pause, so keystrokes don't chatter.
   const announcer = h('p', { class: 'sr-only', role: 'status', 'aria-live': 'polite' });
   const announce = quietly((t) => (announcer.textContent = t), 1500);
+  let failure = '';
+  let explicit = false;
+  let latestState = '';
+  let disposed = false;
+  const say = (text: string) => {
+    announce.cancel();
+    if (!disposed) announcer.textContent = text;
+  };
   let fade = 0;
   const flashIt = (text: string, failed: boolean, pending = false) => {
     window.clearTimeout(fade);
@@ -35,6 +43,7 @@ export function saveNote(project: Project): { el: HTMLElement; dispose: () => vo
   };
   show('✓ Changes save in this browser');
   const stop = project.onSaveState((state, error, savedAt) => {
+    latestState = state;
     if (state === 'dirty' || state === 'saving') {
       const text = state === 'dirty' ? 'Unsaved changes…' : 'Saving…';
       show(text);
@@ -44,25 +53,49 @@ export function saveNote(project: Project): { el: HTMLElement; dispose: () => vo
       const now = savedAt ?? new Date();
       show(savedText(undefined, now));
       flashIt(`✓ Saved ${savedTime(now)}`, false);
-      announce.tell(`Saved ${savedTime(now)}`);
+      if (!explicit) {
+        if (failure) say('Saved in this browser again after the save problem. Download a .zip to keep a copy.');
+        else announce.tell(`Saved ${savedTime(now)}`);
+      }
+      failure = '';
     } else {
       show(savedText(error ?? new Error(''), new Date()), true);
       flashIt('Not saved. Download a .zip', true);
-      announce.tell(`Not saved: ${error?.message || 'the browser refused'}`);
+      const reason = error?.message || 'the browser refused';
+      if (!explicit && reason !== failure) say(`Not saved: ${reason}. Download a .zip to keep your work.`);
+      failure = reason;
     }
   });
   const onKey = (e: KeyboardEvent) => {
     if (!(e.ctrlKey || e.metaKey) || e.altKey || e.shiftKey || e.key.toLowerCase() !== 's') return;
     if (!el.isConnected || document.querySelector('dialog[open]')) return;
     e.preventDefault();
-    project.saveNow().then(
-      () => toast('Saved in this browser. Download keeps a copy on your computer.'),
-      (err: unknown) => toast(`Not saved: ${(err as Error).message}. Download a .zip to keep your work.`, 'error'),
-    );
+    if (explicit) return;
+    explicit = true;
+    announce.cancel();
+    void project
+      .saveNow()
+      .then(
+        () => {
+          if (latestState === 'saved') say('Saved in this browser. Download keeps a copy on your computer.');
+        },
+        (err: unknown) => {
+          if (latestState === 'failed') say(`Not saved: ${(err as Error).message}. Download a .zip to keep your work.`);
+        },
+      )
+      .finally(() => (explicit = false));
   };
   document.addEventListener('keydown', onKey);
   return {
     el,
-    dispose: () => (stop(), window.clearTimeout(fade), announce.cancel(), flash.remove(), announcer.remove(), document.removeEventListener('keydown', onKey)),
+    dispose: () => (
+      (disposed = true),
+      stop(),
+      window.clearTimeout(fade),
+      announce.cancel(),
+      flash.remove(),
+      announcer.remove(),
+      document.removeEventListener('keydown', onKey)
+    ),
   };
 }

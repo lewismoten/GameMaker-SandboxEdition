@@ -2,6 +2,9 @@
 // setting (localStorage `gm-theme`, default dark), so Playwright's `colorScheme` alone changes nothing.
 // Call forceTheme on a browser context before newPage(), and assertTheme after a page has loaded.
 
+import type { Page } from 'playwright-core';
+import { assertRenderedTheme } from './renderedTheme';
+
 /** The part of a Playwright BrowserContext this needs. */
 interface ThemeContext {
   addInitScript: (script: (theme: string) => void, arg: string) => Promise<unknown>;
@@ -30,8 +33,18 @@ export async function pageTheme(page: ThemePage): Promise<string | undefined> {
   return page.evaluate(() => document.documentElement.dataset.theme);
 }
 
-/** Throws when the loaded page isn't in the theme asked for (pages that don't theme themselves pass). */
-export async function assertTheme(page: ThemePage, theme: 'light' | 'dark'): Promise<void> {
-  const got = await pageTheme(page);
-  if (got !== undefined && got !== theme) throw new Error(`Expected the ${theme} theme but the page has data-theme="${got}".`);
+/** Check the resolved preference AND a painted pixel; the fixed-color retro desk is explicitly not theme coverage. */
+export async function assertTheme(page: Page, theme: 'light' | 'dark'): Promise<void> {
+  const state = await page.evaluate(() => ({
+    preference: document.documentElement.dataset.theme,
+    ui: document.documentElement.dataset.ui,
+    dark: matchMedia('(prefers-color-scheme: dark)').matches,
+  }));
+  const got = state.preference === 'auto' ? (state.dark ? 'dark' : 'light') : state.preference;
+  if (got !== theme) throw new Error(`Expected the ${theme} theme but the page has data-theme="${state.preference}" (resolved ${got}).`);
+  if (state.ui === 'desk' && (await page.locator('.desk-scene').isVisible())) {
+    console.log('[theme] SKIP rendered theme: fixed-color retro desk, not light/dark coverage.');
+    return;
+  }
+  await assertRenderedTheme(page, theme);
 }

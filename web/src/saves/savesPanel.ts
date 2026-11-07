@@ -90,6 +90,7 @@ export async function openSaves(target: SavesTarget, initial?: string): Promise<
   const anyDirty = () => [...p.work.keys()].some((slot) => p.dirtySlot(slot)) || p.dirtyScores();
 
   clear(main, h('p', { class: 'sv-empty' }, 'Loading the saves…'));
+  sayEl.textContent = 'Loading the saves…';
   const stopWatch = watchBackups(async () => {
     p.backups = await listBackups(target.saveId);
     if (p.view === 'backups') p.render();
@@ -126,13 +127,19 @@ export async function openSaves(target: SavesTarget, initial?: string): Promise<
         keepView();
       }
       p.render();
-    })().catch((e) => clear(main, h('p', { class: 'sv-empty' }, `Could not read the saves: ${(e as Error).message}`)));
+      sayEl.textContent = 'Saves loaded.';
+    })().catch((e) => {
+      const message = `Could not read the saves: ${(e as Error).message}`;
+      clear(main, h('p', { class: 'sv-empty' }, message));
+      sayEl.textContent = message;
+    });
     return [body, h('div', { class: 'buttons sv-close' }, sayEl, h('button', { type: 'button', onclick: () => void guard.tryClose(close) }, 'Close'))];
   });
   const dlg = body.closest('dialog');
   dlg?.classList.add('sv-dialog');
   guard.attach(dlg);
   await done;
+  clearTimeout(sayTimer);
   stopWatch();
   window.removeEventListener(SAVES_CHANGED, onSaves);
   if (target.key) setHashParams({ saves: undefined }, ['game', target.key]);

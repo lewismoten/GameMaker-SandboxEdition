@@ -5,6 +5,7 @@ it('loads the audited Project source in an isolated browser fixture and closes i
   const fixture = await editorBrowser();
   const url = fixture.page.url();
   try {
+    expect(new URL(url).port).not.toBe('5173');
     expect(
       await fixture.page.evaluate(`(async () => {
         const { Project } = await import('/src/editor/core/project.ts');

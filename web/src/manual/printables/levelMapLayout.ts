@@ -3,6 +3,7 @@
 // hidden (levelSecrets.ts), the marks for where you arrive and the ways out, and how the maps
 // pack onto printed pages. No DOM, so it is tested on the real disks.
 import { BACKBL, parseBlocks, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { fromCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import { ADVTYPE, ENDTYPE, NOSCENE, STARTTYPE, type Game, type Point } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { MLEN, MWID, parseMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import type { Rect } from './worldMapLayout';
@@ -126,7 +127,7 @@ export function hideSecrets(cells: ArrayLike<number>, blocks: Block[], secret: R
 }
 
 /**
- * The used area cut down to what the player sees (`seen`, from levelViews.json) with `pad` cells
+ * The used area cut down to what the player sees (`seen`, from levelViews/*.json) with `pad` cells
  * round it, but never so far that a mark (an arrival or a way out) is cut off. Given the map's
  * `cells`, an edge that would cut through a room or a wall goes on to where it ends, so the
  * picture never shows half a room.
@@ -671,7 +672,7 @@ function intersect(a: Rect, b: Rect): Rect | undefined {
 
 /**
  * The levels to map: one per map file and block set, secrets hidden, cropped and marked. `views`
- * (levelViews.json's boxes by "map|bbl") crops each to what the player sees; `unrolled` lays out
+ * (levelViews/*.json's boxes by "map|bbl") crops each to what the player sees; `unrolled` lays out
  * a map the hero walks off the edge of as the player goes through it. A map the hero never walks
  * around in (every scene starts him on its way out) is left out, and a map of separate rooms
  * (levelRooms.ts; `rooms`, levelRoomHints.ts, says how a map's maker wants it cut) prints each
@@ -698,7 +699,7 @@ export function levelsOf(
     const { cells, hidden } = hideSecrets(map.blocks, blocks, new Set(secret[group.bbl] ?? []));
     const marks = levelMarks(game, group.scenes, hidden);
     const first = game.scenes[group.scenes[0]];
-    const name = group.scenes.length > 1 ? `${first.desc || 'Untitled'} and ${group.scenes.length - 1} more` : first.desc || 'Untitled';
+    const name = group.scenes.length > 1 ? `${fromCp437(first.desc) || 'Untitled'} and ${group.scenes.length - 1} more` : fromCp437(first.desc) || 'Untitled';
     const whole = usedArea(cells, marks);
     const key = `${group.map}|${group.bbl}`;
     const seen = views[key];

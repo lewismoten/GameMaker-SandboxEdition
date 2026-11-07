@@ -6,7 +6,7 @@
   "hero": "NOVA",
   "year": 1994,
   "price": "Free",
-  "version": "1.1",
+  "version": "1.2",
   "blurb": "Two short levels about plays made of monsters. Little actors wait behind a stage curtain; when the level starts, each peeks out, walks in, says hello and walks off, one act becoming the next. Then a cameo waves hello once and is gone. The show never waits for you, so a door after the stage plays it again. Signs in the levels say how. Play it, then open it in Game-Maker and change who becomes whom.",
   "exe": "SHOW.EXE",
   "dosName": "SHOW",

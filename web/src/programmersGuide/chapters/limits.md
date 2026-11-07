@@ -30,7 +30,7 @@ One row per limit. Chapter numbers point to the reason. Cause tags: 16-bit, 64K,
 | Links per scene           |                                                     20 | design       | `GRATOR.H:29`          |      4 |
 | File slots per scene      |                                            20 (9 used) | design       | `GRATOR.H:28`          |      4 |
 | Scene name pool           |                                           65,520 bytes | 16-bit       | `PG:5173`              |  4, 13 |
-| File name                 |                                8.3 (13 bytes with NUL) | DOS          | `GRATOR.H:27`          |      4 |
+| File name                 |                                8.3 (13 bytes with NULL) | DOS          | `GRATOR.H:27`          |      4 |
 | Digital sound name        |                                 8 characters (9 bytes) | DOS          | `SOUND.H`              |     10 |
 | Sound effects             |                30 (36 steps each, 145.67 Hz = 0.247 s) | PIT, design  | `SOUND.H:11-14`        |     10 |
 | Digital sound size        |                      under 65,536 bytes, one at a time | 16-bit       | `SOUNDC.C:204`         |    10b |

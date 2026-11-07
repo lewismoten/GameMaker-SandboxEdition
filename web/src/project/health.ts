@@ -4,6 +4,7 @@
 // can't play (formats/fliLimits.ts). Used by the home page's
 // ⚠ badges and report; pure, so it is tested in test/health.test.ts.
 import { fileSlotsFor, GRAPHIC_EXTS, NOSCENE, parseGame, sceneKind, slotExtensions, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { fromCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import { parseBackdrop, parseSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
 import { parsePalette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import { parseBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
@@ -83,7 +84,7 @@ function sceneName(game: Game, i: number): string {
   const kind = sceneKind(s);
   if (kind === 'start') return 'the title scene';
   if (kind === 'end') return 'the game-over scene';
-  return `scene ${i}${s.desc ? ` “${s.desc}”` : ''}`;
+  return `scene ${i}${s.desc ? ` “${fromCp437(s.desc)}”` : ''}`;
 }
 
 /**

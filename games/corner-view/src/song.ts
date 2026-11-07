@@ -1,35 +1,20 @@
-// CORNER VIEW's one song, "Round the Corner": eight bars of a steady, slightly sideways tune in A minor for the
-// Sound Blaster (a lead, a bass and a plucked arpeggio, each its own FM channel). The lead goes up in steps and
-// comes back down in steps, like walking up a stair. It plays on the title, the menu, the levels and the
-// endings. Note strings are the kit's (kit/tune.ts): a note, an octave and a length (w h q e), as in "E5 q".
-import { INSTRUMENTS } from '@lewismoten/gamemaker-sandbox-tools/kit/music';
-import { join, tune, v } from '@lewismoten/gamemaker-sandbox-tools/kit/tune';
-
-const MELODY = join(
-  'A4 q, C5 q, E5 q, C5 q',
-  'A4 q, D5 q, F5 q, D5 q',
-  'B4 q, D5 q, G5 q, D5 q',
-  'C5 q, E5 q, A5 h',
-  'A5 q, G5 q, E5 q, C5 q',
-  'F5 q, E5 q, D5 q, A4 q',
-  'G4 q, B4 q, D5 q, B4 q',
-  'A4 h, A4 h',
-);
-
-/** One bar of each chord: its three notes for the arpeggio, and its root and fifth for the bass. */
-const CHORDS = {
-  Am: { arp: ['A2', 'C3', 'E3'], bass: ['A1', 'E2'] },
-  Dm: { arp: ['D3', 'F3', 'A3'], bass: ['D2', 'A2'] },
-  G: { arp: ['B2', 'D3', 'G3'], bass: ['G1', 'D2'] },
-  C: { arp: ['C3', 'E3', 'G3'], bass: ['C2', 'G2'] },
-  F: { arp: ['C3', 'F3', 'A3'], bass: ['F2', 'C3'] },
-} as const;
-const BARS: (keyof typeof CHORDS)[] = ['Am', 'Dm', 'G', 'C', 'Am', 'F', 'G', 'Am'];
-
-const arp = join(...BARS.map((b) => [0, 1, 2, 1, 0, 1, 2, 1].map((i) => `${CHORDS[b].arp[i]} e`).join(', ')));
-const bass = join(...BARS.map((b) => CHORDS[b].bass.map((n) => `${n} h`).join(', ')));
+// CORNER VIEW's one song, "Round the Corner" in A minor, played by its group's band (kit/starter/songStyle.ts: brass
+// doubled below, a pumping bass, string stabs and a crash on every section): its first eight bars are section A, with
+// a B section added, played AABA, 32 bars before it loops. It plays on the title, the menu, the levels and the
+// endings.
+import { starterSong } from '../../kit/starter/songStyle';
 
 /** The song as a .CMF file. */
 export function song(): Uint8Array {
-  return tune(100, [v(0, INSTRUMENTS.lead, MELODY, 100), v(1, INSTRUMENTS.bass, bass, 90), v(2, INSTRUMENTS.pluck, arp, 60)]);
+  return starterSong('showcase', {
+    bpm: 100,
+    A: {
+      chords: 'Am | Dm | G | C | Am | F | G | Am',
+      tune: 'A4 q, C5 q, E5 q, C5 q | A4 q, D5 q, F5 q, D5 q | B4 q, D5 q, G5 q, D5 q | C5 q, E5 q, A5 h | A5 q, G5 q, E5 q, C5 q | F5 q, E5 q, D5 q, A4 q | G4 q, B4 q, D5 q, B4 q | A4 h, A4 h',
+    },
+    B: {
+      chords: 'F | G | C | Am | F | G | E | E',
+      tune: 'A5 q, C6 e., F6 s, C6 h | B5 q, D6 e., G6 s, D6 h | E6 q, C6 q, G5 q, C6 q | A5 h, E5 h | F5 q, A5 e., C6 s, F6 q, C6 q | D6 q, B5 e., G5 s, D5 h | E5 q, G#5 q, B5 q, D6 q | E6 h, B5 h',
+    },
+  });
 }

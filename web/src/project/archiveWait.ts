@@ -7,7 +7,7 @@ export function retryDelayMs(n: number, retryAfter = 0): number {
 }
 
 let region: HTMLElement | undefined;
-let waiting = 0;
+const waiting = new Map<symbol, string>();
 
 /** Shows (or clears) the short pending message for one waiting request. */
 function say(label: string | undefined): void {
@@ -21,7 +21,8 @@ function say(label: string | undefined): void {
     region.hidden = true;
     document.body.append(region);
   }
-  region.textContent = label ? `Preparing ${label}… (still building)` : '';
+  const text = label ? `Preparing ${label}… (still building)` : '';
+  if (region.textContent !== text) region.textContent = text;
   region.hidden = !label;
 }
 
@@ -35,19 +36,23 @@ export async function fetchArchive(
   wait: (ms: number) => Promise<void> = (ms) => new Promise((r) => setTimeout(r, ms)),
 ): Promise<Response> {
   let shown = false;
+  const id = Symbol();
   try {
     for (let n = 0; ; n++) {
       const res = await fetch(url, init);
       if (res.status !== 202) return res;
       if (!shown) {
         shown = true;
-        waiting++;
+        waiting.set(id, archiveLabel(url));
+        say(archiveLabel(url));
       }
-      say(archiveLabel(url));
       await wait(retryDelayMs(n, Number(res.headers.get('retry-after')) || 0));
       if (init?.signal?.aborted) return res;
     }
   } finally {
-    if (shown && --waiting === 0) say(undefined);
+    if (shown) {
+      waiting.delete(id);
+      say([...waiting.values()].at(-1));
+    }
   }
 }

@@ -26,7 +26,6 @@ import type { Graduation } from './graduationConfig';
 import { TITLE, buildGame } from './graduationGame';
 import { finishBlocks } from './graduationHall';
 import type { buildLevels } from './graduationLevel';
-import { song } from './graduationSong';
 import { HOWTO, LOST } from './graduationText';
 
 /** Writes the game's disk: `dir` is the game's folder, `built` its levels (buildLevels), `demo` its DEMO.REC bytes. */
@@ -54,7 +53,7 @@ export function buildGraduation(dir: string, cfg: Graduation, built: ReturnType<
   if (levels.some((l) => l.book.has('powerGate'))) character.meter[POWER] = 1;
   disk.put('hero.chr', serializeCharacter(character));
   disk.put('grad.snd', serializeSoundSet(buildSounds()));
-  disk.put('grad.cmf', song(cfg.song));
+  disk.put('grad.cmf', cfg.song());
 
   // each level's map and its card
   levels.forEach((l, i) => {

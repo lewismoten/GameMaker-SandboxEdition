@@ -206,6 +206,7 @@ export const picks: Record<string, [string, string]> = {
   'record-video': ['remote', 'camcorder'],
   'desk-bbs-file': ['remote', 'diskDrive'],
   'mag-disc': ['remote', 'discSleeve'],
+  'play-all-mine': ['sleuthParlor', 'checklist'],
   'play-save': ['remote', 'saveTape'],
   'blaster-big-name': ['carl', 'speaker'],
   'desk-curtains': ['sleuthParlor', 'curtain0'],

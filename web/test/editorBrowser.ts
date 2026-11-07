@@ -1,6 +1,7 @@
 // Source-bound DOM fixtures for editor regression tests, without games or the app shell.
 import { readFileSync, mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
+import { createServer as createPortServer } from 'node:net';
 import { resolve, join } from 'node:path';
 import { createServer } from 'vite';
 import { chromium } from 'playwright-core';
@@ -25,13 +26,23 @@ export async function editorBrowser() {
         : [],
     );
   });
+  // Vite treats port 0 as its default, so ask the OS for a port before starting Vite.
+  const reservation = createPortServer();
+  await new Promise<void>((resolve, reject) => {
+    reservation.once('error', reject);
+    reservation.listen(0, '127.0.0.1', resolve);
+  });
+  const reserved = reservation.address();
+  if (!reserved || typeof reserved === 'string') throw new Error('Fixture port unavailable');
+  const port = reserved.port;
+  await new Promise<void>((resolve, reject) => reservation.close((error) => (error ? reject(error) : resolve())));
   const server = await createServer({
     configFile: false,
     root,
     cacheDir,
     resolve: { alias },
     optimizeDeps: { noDiscovery: true, entries: [] },
-    server: { host: '127.0.0.1', port: 0 },
+    server: { host: '127.0.0.1', port, strictPort: true },
   });
   let browser: Awaited<ReturnType<typeof chromium.launch>> | undefined;
   try {

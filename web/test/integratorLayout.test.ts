@@ -93,6 +93,26 @@ describe('integrator layout', () => {
     for (let i = 1; i < list.length; i++) expect(list[i].cost).toBeGreaterThanOrEqual(list[i - 1].cost);
   });
 
+  it('routes an ending shortcut around two branches that rejoin', () => {
+    const g = newGame('Returning branches');
+    for (let i = 0; i < 5; i++) g.scenes.push(emptyScene(ADVTYPE));
+    const pairs: [number, number][] = [
+      [0, 2],
+      [2, 3],
+      [3, 4],
+      [3, 5],
+      [3, 1],
+      [4, 6],
+      [5, 6],
+      [6, 1],
+    ];
+    for (const [from, to] of pairs) g.scenes[from].links.find((l) => l.toScene === NOSCENE)!.toScene = to;
+    const pos = autoArrange(g);
+    checkNoOverlap(g, pos);
+    const centers = new Map([...pos].map(([s, p]) => [s, { x: p.x + 2, y: p.y + 2 }]));
+    expect(layoutCost(pairs, centers, { w: 22, h: 18 })).toMatchObject({ cross: 0, under: 0 });
+  });
+
   // every game on the CD and in games/: clean layouts, fast
   const DENSE = new Set(['games/sleuth/disk/final.gam']);
   const root = resolve(__dirname, '../..');

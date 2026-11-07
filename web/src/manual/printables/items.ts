@@ -15,6 +15,7 @@ import { levelMaps } from './levelMaps';
 import { codeWheelLive } from './codeWheel';
 import { codeSheetLive } from './codeSheet';
 import { postcardGrilleLive } from './postcardGrille';
+import { relayItem } from './relay';
 import { briefStoryZineItem } from '../zine/briefStoryZine';
 
 /** The own items that count as feelies: copy protection, the spyglass, the fingerprint card and other things to handle. */
@@ -135,5 +136,5 @@ export function boxItems(ctx: PrintContext): BoxItem[] {
       : []),
     { kind: 'stickers', id: 'stickers', title: 'Sticker sheet', note: 'Cut them out', icon: '⭐', render: () => stickers(ctx), screen: stickerScreen },
   ];
-  return [...items, ...gen.filter((g) => !skip.has(g.kind)), ...(ctx.entry.id === 'brief' ? [briefStoryZineItem()] : [])];
+  return [...items, ...gen.filter((g) => !skip.has(g.kind)), ...relayItem(ctx.entry), ...(ctx.entry.id === 'brief' ? [briefStoryZineItem()] : [])];
 }

@@ -55,7 +55,7 @@ try {
   for (const theme of themes)
     for (const [sz, width, height, portrait] of selectedSizes) {
       for (const scene of todo) {
-        const ctx = await browser.newContext({ viewport: { width, height }, hasTouch: true, isMobile: !useWebkit, deviceScaleFactor: 1 });
+        const ctx = await browser.newContext({ viewport: { width, height }, hasTouch: true, isMobile: !useWebkit, deviceScaleFactor: 1, colorScheme: theme });
         await forceTheme(ctx, theme);
         await ctx.addInitScript(() => localStorage.setItem('gm-ui', 'modern'));
         const page = await ctx.newPage();

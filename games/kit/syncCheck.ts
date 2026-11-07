@@ -1,6 +1,6 @@
 // Checks that the files made from the games are current, without writing them: the Level Maps'
-// hidden blocks (web/src/manual/printables/levelSecrets.json, web/scripts/levelSecrets.ts), the
-// disks their seen areas were scanned from (levelViews.json, web/scripts/levelViews.ts) and
+// hidden blocks (web/src/manual/printables/levelSecrets/<id>.json, web/scripts/levelSecrets.ts), the
+// disks their seen areas were scanned from (levelViews/<id>.json, web/scripts/levelViews.ts) and
 // each box's play hours (about.json box.hours, kit/playtime.ts). Names only the games given.
 //
 //   cd web && npx vite-node ../games/kit/syncCheck.ts <id>...
@@ -8,26 +8,27 @@ import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { claimedHours, playMinutes, type Timeline } from '../../web/src/desk/boxes/playtime';
-import { levelSecretsJson, scanLevelSecrets } from '../../web/scripts/levelSecretsScan';
+import { scanLevelSecrets } from '../../web/scripts/levelSecretsScan';
+import { readMetadata } from '../../web/scripts/levelMetadataFiles';
 import { levelViewsHash } from '../../web/scripts/levelViewsScan';
 
 const gamesDir = join(dirname(fileURLToPath(import.meta.url)), '..');
 const ids = process.argv.slice(2);
 const problems: string[] = [];
 
-const secretsPath = join(gamesDir, '../web/src/manual/printables/levelSecrets.json');
-const fresh = JSON.parse(levelSecretsJson(scanLevelSecrets(gamesDir))) as Record<string, unknown>;
-const saved = JSON.parse(readFileSync(secretsPath, 'utf8')) as Record<string, unknown>;
+const secretsPath = join(gamesDir, '../web/src/manual/printables/levelSecrets');
+const fresh = scanLevelSecrets(gamesDir);
+const saved = readMetadata<unknown>(secretsPath);
 const keys = new Set([...Object.keys(fresh), ...Object.keys(saved)]);
 const stale = [...keys].filter((k) => JSON.stringify(fresh[k]) !== JSON.stringify(saved[k]));
-for (const id of stale.filter((k) => ids.includes(k))) problems.push(`${id}: levelSecrets.json is out of date`);
-if (stale.some((k) => !ids.includes(k))) problems.push('levelSecrets.json is out of date');
+for (const id of stale.filter((k) => ids.includes(k))) problems.push(`${id}: levelSecrets/<id>.json is out of date`);
+if (stale.some((k) => !ids.includes(k))) problems.push('levelSecrets/<id>.json is out of date');
 
-const views = JSON.parse(readFileSync(join(gamesDir, '../web/src/manual/printables/levelViews.json'), 'utf8')) as Record<string, { hash: string }>;
+const views = readMetadata<{ hash: string }>(join(gamesDir, '../web/src/manual/printables/levelViews'));
 const staleViews: string[] = [];
 for (const id of ids)
   if (fresh[id] && views[id]?.hash !== levelViewsHash(gamesDir, id)) {
-    problems.push(`${id}: levelViews.json is out of date`);
+    problems.push(`${id}: levelViews/<id>.json is out of date`);
     staleViews.push(id);
   }
 

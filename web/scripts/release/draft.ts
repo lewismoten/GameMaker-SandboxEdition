@@ -1,6 +1,9 @@
 // npm run release:draft -- <pages|engine|archives|tools>
-// Prints a draft "Unreleased" body from the commits since the target's last tag, for a person to edit
-// into its CHANGELOG.md. It never writes a file, so hand-written text is safe.
+// Prints fragments with legacy Unreleased notes, then commit suggestions since the last tag.
+// Review suggestions for overlap with authored notes. Never writes files.
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { pendingNotes, readFragments } from './fragments';
 import { TARGETS, commitsSince, filtersFor, lastTag, repoRoot } from './git';
 import { groupCommits, renderDraft, skipReason } from './classify';
 
@@ -17,4 +20,7 @@ const kept = all.filter((c) => !skipReason(c, filters));
 console.error(
   `${target.name}: ${all.length} commits since ${tag || 'the start'}, ${kept.length} kept (merges, formatting, tests, docs, agent notes and secret games left out).`,
 );
+const pending = pendingNotes(readFileSync(join(root, target.changelog), 'utf8'), readFragments(root, target.name));
+console.log(pending);
+console.log('\n<!-- Commit suggestions below may overlap the notes above; review before using. -->\n');
 console.log(renderDraft(groupCommits(kept)));

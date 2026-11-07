@@ -10,6 +10,7 @@
       body { font: 16px/1.5 system-ui, sans-serif; max-width: 36rem; margin: 0 auto; padding: 24px 16px; }
       progress { width: 100%; height: 1.5rem; }
       #done { font-weight: bold; }
+      .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
     </style>
   </head>
   <body>
@@ -18,8 +19,9 @@
       <p>This page asks for every file of the site, a few at a time, so a web archive can save them. Leave it open until it says Done.</p>
       <p id="part"></p>
       <progress id="bar" value="0" max="1" aria-label="Files fetched"></progress>
-      <p id="status" role="status" aria-live="polite">Starting.</p>
-      <p id="done" role="status" hidden></p>
+      <p id="counts" aria-live="off">Starting.</p>
+      <p id="status" class="sr-only" role="status" aria-live="polite"></p>
+      <p id="done" hidden></p>
     </main>
     <script type="module" src="/src/archive/archive.ts"></script>
   </body>

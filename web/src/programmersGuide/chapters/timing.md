@@ -9,7 +9,7 @@ PLAYGAME writes a divisor of `65535/8` = **8,191** to channel 0 (`FastTimer`, `P
 | ----------------------------------- | ------------- | ------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
 | Timer interrupt (`NewTimer`)        | **145.67 Hz** | 1,193,180 / 8,191 = 145.67; period 6.865 ms                                                 | the speaker step, `PlayIt()` (music), `SndClock`, the scroll step |
 | Game tick (`TimerCounter`, `clock`) | **18.21 Hz**  | every 8th interrupt (`(SndClock & 7) == 0`, `PG:4423-4430`) = 65,528 PIT counts = 54.92 ms  | everything that moves: hero, monsters, blocks, births             |
-| DOS time of day                     | 18.2 Hz       | the old BIOS handler is called on **every 8th** interrupt only (`(*OldTimer)()`, `PG:4425`) | approximately preserves the BIOS clock rate (nominal drift below)                                       |
+| DOS time of day                     | 18.2 Hz       | the old BIOS handler is called on **every 8th** interrupt only (`(*OldTimer)()`, `PG:4425`) | approximately preserves the BIOS clock rate (nominal drift below) |
 
 Nominal drift: with the usual 65,536-count BIOS baseline and no lost interrupts, forwarding once per 8 x 8,191 = 65,528 counts gives `86400 * (65536/65528 - 1)` = **10.55 seconds/day fast** (`PG:4421-4427`, `PG:4618-4624`). This is calculated from the programmed divisor, not measured wall-clock drift. [PIT]
 **One divisor serves all three.** The file is written for 146 music ticks/s (`HDRCLK 146`, `SOUND.H:43`), while the programmed timer is about 145.67 Hz. The speaker advances on that interrupt and the BIOS/game clock on every eighth one (`PG:4421-4445`). Thus 1 game tick = **8** music-service calls exactly; 8,191 is close to, not exactly, an eighth of the usual BIOS divisor. The source does not explain the historical choice. [PIT]
@@ -42,6 +42,10 @@ Skipped ticks are not replayed (`PG:1453-1455`). **Monster movement is elapsed-s
 
 Keys arrive on the keyboard interrupt into a pending list (`KeysPending[30]`, `PG:321`) and are applied once per tick (`PG:1471-1489`); resolution is **one tick, 54.9 ms**, latency 0 to 1 tick. A pending key waits while the running sequence is `ground` (uninterruptible), unless it is on its first frame.
 The held-key table is `keydn[128]`, indexed by scan code (`PG:340`). A sequence ends early when its key is released (`keydn[key>>8] == 0`, chapter 7).
+
+**Why does Escape restart the level?** Escape is checked twice, not latched as a quit request. The first held-key check, `if (keydn[1]) done=TRUE`, ends the scene (`PLAYGAME.C:1424`). After `FadeAllTo(Black)` (`PLAYGAME.C:1533`), a second check sets the quit link only if Escape is still held (`PLAYGAME.C:1547`). If you tap Escape and release it during the fade, the scene can keep its restart link instead of quitting. On a slow computer, **hold Escape until the screen goes black**, then release it. [DOS] [not yet checked in DOSBox]
+
+The web engine preserves this sequence for **DOS fidelity**: held Escape ends the scene loop (`engine/engine/scene.ts:668-671`), then the engine awaits the black fade before checking the held key again for the quit link (`engine/engine/scene.ts:715-721`). This is the original behavior, not a web-only restart shortcut.
 
 ## 12.4 Cost of one tick
 
@@ -110,3 +114,12 @@ The port's slow-PC model says a 286-16 with the **hardware** path "keeps full pa
 - The audio starts before the game clock does at scene start.
 - Function keys pause the game clock but not the music.
 - The programmed timer implies about 10.55 s/day nominal BIOS-clock gain under the stated baseline/no-loss assumptions; actual clock drift is not measured.
+
+## CPU MHz does not set the clock
+
+The game runs at **18.2 ticks a second**, about one tick every 54.9 milliseconds. This is the PIT timer chip's clock, independent of the CPU: a 10 MHz processor and a 66 MHz processor receive essentially the same timer rate. Everything that moves is counted in ticks: a hero's frame pause, a monster's step, a block's change time.
+Sequence keys are applied on processed ticks; a busy machine or an uninterruptible sequence can delay the response beyond one tick. Escape is checked to leave the scene and again after the fade to choose whether to return to the menu. Hold Escape through the fade until the menu appears: a short tap can end a scene yet be released before the second decision, causing the scene to restart.
+
+Eight of the timer chip's 146 steps make one tick, and PLAYGAME uses that interrupt for the game clock, the speaker and the music. Slow drawing can skip game updates while the interrupt clock keeps advancing.
+
+The interrupt divisor and one-in-eight forwarding are `code/GM/PLAYGAME.C:4421-4445`, `code/GM/PLAYGAME.C:4610-4624`; the crystal constant is `code/GM/SOUND.H:43-44`. CPU speed affects whether the main loop processes each tick, not that PIT input frequency. Pending sequence keys and link decisions occur at `code/GM/PLAYGAME.C:1471-1489`, `code/GM/PLAYGAME.C:1522-1525`. Escape's two held-key checks are `code/GM/PLAYGAME.C:1424`, `code/GM/PLAYGAME.C:1547`; a quick release before the second can restart the scene. Hold through the fade until the menu appears. [not yet checked in DOSBox]

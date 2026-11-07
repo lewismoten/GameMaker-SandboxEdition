@@ -1,0 +1,37 @@
+# DOSBox-X only. Generated copies and capture files live in the output directory.
+[sdl]
+output=surface
+showmenu=false
+[dosbox]
+machine=svga_s3
+memsize=4
+captures=@CAPTURES@
+quit warning=false
+[cpu]
+core=normal
+cputype=286
+cycles=fixed @CYCLES@
+[mixer]
+rate=48000
+nosound=false
+[sblaster]
+sbtype=sb2
+sbbase=220
+irq=7
+dma=1
+oplmode=opl2
+oplemu=default
+oplrate=48000
+[midi]
+mididevice=none
+[joystick]
+joysticktype=none
+[autoexec]
+@echo off
+mount c "@GAME_DIR@"
+c:
+set BLASTER=A220 I7 D1 T3
+autotype -w @WAIT@ -p 0.2 @SELECT_KEYS@
+@EXTRA_KEYS@
+dx-capture /A /O PLAYGAME.EXE
+exit

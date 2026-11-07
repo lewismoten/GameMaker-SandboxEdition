@@ -201,7 +201,7 @@ async function route(): Promise<void> {
     a.href = shown ? `#/library?by=game&only=${encodeURIComponent(shown)}` : '#/library';
   }
   content.removeAttribute('role');
-  // the home page's chunk (modernUi) is fetched only by the routes that use it: a project and the game list
+  // Opening a project must not also fetch the home page's cards, showcase and styles.
   if (kind === 'p' && id) {
     const { openStored } = await modernUi();
     if (ui !== 'modern') return;
@@ -315,7 +315,7 @@ async function route(): Promise<void> {
   document.title = PRODUCT;
   // on the game list, the bar carries the short tagline (the page's own heading is for screen readers)
   clear(titleSlot, h('span', { class: 'topbar-tagline hide-narrow', title: FORK_NOTE }, 'Make 1994 DOS games. No programming.'));
-  const { renderHome } = await modernUi();
+  const { renderHome } = await import('./editor/shell/home');
   if (ui !== 'modern') return;
   await renderHome(content, nav);
 }
