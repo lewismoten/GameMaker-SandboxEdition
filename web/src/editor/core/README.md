@@ -28,3 +28,5 @@ From `web/`:
 ```sh
 npx vitest run src/editor/core
 ```
+
+`libraryCatalog.ts` separates CD, Sandbox & Bizarre, and Starter assets and excludes secret entries. The file picker can filter each source by game before choosing an asset. The picker retains per-game palette copies so deduplication cannot remove a game from that filter.

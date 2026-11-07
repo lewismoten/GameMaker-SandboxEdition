@@ -40,7 +40,7 @@ const cells = (line: string): string[] =>
     .split(/(?<!\\)\|/)
     .map((c) => c.trim().replace(/\\\|/g, '|'));
 
-const isRule = (line: string) => /^\s*\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)*\|?\s*$/.test(line);
+const isRule = (line: string) => /^\s*\|?\s*:?-+:?\s*(\|\s*:?-+:?\s*)*\|?\s*$/.test(line);
 const bullet = /^(\s*)([-*]|\d+\.)\s+(.*)$/;
 
 interface Section {

@@ -30,10 +30,10 @@ export function blockProperties(o: {
   blocks: Block[];
   current: () => number;
   pal: () => Palette;
-  changed: () => void;
+  edit: (change: () => void) => void;
   walkPaths?: { el: HTMLElement };
 }) {
-  const { project, file, kind, blocks, current, pal, changed, walkPaths } = o;
+  const { project, file, kind, blocks, current, pal, edit, walkPaths } = o;
   const counterOptions = () => namedCounterOptions(EFFECTS, gameControls(project).counters);
   const props = h('div', { class: 'panel stack' });
   const walkingProps = h('div', { class: 'panel stack' });
@@ -41,10 +41,6 @@ export function blockProperties(o: {
   const timeProps = h('div', { class: 'panel stack' });
   function renderProps(): void {
     const b = blocks[current()];
-    const edit = (fn: () => void) => {
-      fn();
-      changed();
-    };
     const sides = (labelText: string, get: () => number, set: (v: number) => void, title: string) =>
       h(
         'fieldset',

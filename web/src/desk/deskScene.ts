@@ -40,7 +40,7 @@ interface DeskActions {
   /** Types a command at the DOS prompt. */
   command(cmd: string): void;
   catalog(): void;
-  magazine(): void;
+  magazine(issue?: 1 | 2): void;
   /** The mug's closer look (open=mug). */
   mug(): void;
   /** The disk box: pick a disk for drive A:. */
@@ -151,7 +151,7 @@ export function deskScene(on: DeskActions) {
       h(
         'div',
         { class: 'desk-left' },
-        paperStack({ catalog: () => on.catalog(), magazine: () => on.magazine() }),
+        paperStack({ catalog: () => on.catalog(), magazine: () => on.magazine(2), backIssue: () => on.magazine(1) }),
         withCover(
           h('div', { class: 'prop disk-box', onclick: () => on.flip() }, box, h('span', { class: 'caption', 'aria-hidden': 'true' }, 'Disk box — pick a game')),
           'Disk box: pick a game to put in drive A',

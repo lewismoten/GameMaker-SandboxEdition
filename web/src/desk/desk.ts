@@ -84,7 +84,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     ejectCd: () => void ejectCd(),
     command: (cmd) => void pc.command(cmd),
     catalog: () => void catalog(),
-    magazine: () => void magazine(),
+    magazine: (issue) => void magazine(issue),
     mug: () => void mugViewer(),
     flip: () => void flip(),
     openGmBox: () => void openGmBox(),
@@ -298,8 +298,9 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   }
 
   /** The magazine lying on the desk with the catalog: open=turbobutton&vol=3&num=1&page=6-7 (vol=1&num=4 is the spring 1993 back issue) keeps the issue and the pages in view, so a reload comes back to them. Its links play disks, call the BBS and look at the props. */
-  const magazine = async () => {
+  const magazine = async (issue?: 1 | 2) => {
     const [{ openMagazine }, { issueFor }] = await Promise.all([import('../manual/magazine/viewer'), import('../manual/magazine/masthead')]);
+    if (issue) deskView.set({ vol: issue === 1 ? '1' : '3', num: issue === 1 ? '4' : '1', page: undefined });
     // vol=1&num=4 is the back issue; the old vol=1&num=1 and a bare address open No. 2 (vol=3&num=1)
     const MAG = issueFor(deskView.num('vol'), deskView.num('num'));
     const legacy = deskView.num('vol') === 1 && deskView.num('num') === 1;

@@ -20,6 +20,7 @@ type Change = 'song' | 'view' | 'track' | 'play';
 interface Step {
   song: Uint8Array;
   order: number[];
+  extra: number[];
 }
 
 const ORDER_SECTION = 'trackOrder';
@@ -95,6 +96,7 @@ export class MusicDoc {
 
   private undoStack: Step[] = [];
   private redoStack: Step[] = [];
+  private pendingStep?: Step;
   private listeners = new Set<(c: Change) => void>();
   private saveTimer?: ReturnType<typeof setTimeout>;
   private preview?: { p: Preview; t0: number };
@@ -194,13 +196,18 @@ export class MusicDoc {
 
   /** Call before changing the song (once per gesture). */
   begin(): void {
-    this.undoStack.push(this.step());
-    if (this.undoStack.length > 200) this.undoStack.shift();
-    this.redoStack = [];
+    // Do not consume history (or redo) until this gesture is accepted.
+    this.pendingStep = this.step();
   }
 
   /** Call after changing the song. */
   commit(): void {
+    if (this.pendingStep) {
+      this.undoStack.push(this.pendingStep);
+      if (this.undoStack.length > 200) this.undoStack.shift();
+      this.pendingStep = undefined;
+      this.redoStack = [];
+    }
     extendEnd(this.song);
     this.scheduleSave();
     this.emit('song');
@@ -212,7 +219,7 @@ export class MusicDoc {
 
   /** A gesture that changed nothing: forget its undo step. */
   undoDiscard(): void {
-    this.undoStack.pop();
+    this.pendingStep = undefined;
   }
 
   edit(fn: () => void): void {
@@ -244,7 +251,7 @@ export class MusicDoc {
   }
 
   private step(): Step {
-    return { song: writeSong(this.song), order: [...this.tracks()] };
+    return { song: writeSong(this.song), order: [...this.tracks()], extra: [...this.extra] };
   }
 
   /** Lists the tracks in this order (one undo step; the song file is not touched). */
@@ -252,6 +259,7 @@ export class MusicDoc {
     const now = this.tracks();
     if (order.length === now.length && order.every((c, i) => c === now[i])) return;
     this.undoStack.push(this.step());
+    if (this.undoStack.length > 200) this.undoStack.shift();
     this.redoStack = [];
     this.storeOrder(order);
     this.emit('song');
@@ -269,6 +277,7 @@ export class MusicDoc {
   private restore(step: Step): void {
     if (step.order.join() !== this.tracks().join()) this.storeOrder(step.order);
     this.song = readSong(step.song);
+    this.extra = new Set(step.extra);
     this.selection.clear();
     this.commit();
     this.emit('track');

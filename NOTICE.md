@@ -124,6 +124,7 @@ game folder opens in the browser unchanged.
   Codex made no new levels, art, music or story text for the games. The entries below that say
   "OpenAI Codex (GPT-6)" are part of the same work.
 
+- **Integrator return-path layout** (`web/src/editor/editors/integrator/integratorLayout.ts`): bounded ending placement and return-copy regression tests implemented with **Hermes / OpenAI Codex GPT-6.1 Sol** (OpenAI), directed by Lewis Moten. Game files and runtime scene links are unchanged.
 - **Build runner interruption recovery** (`scripts/build-games.mjs`, `scripts/child-signal-retry.mjs`)
   and its regression tests: implemented with **Hermes Agent running OpenAI Codex GPT-6.1 Sol**,
   directed by Lewis Moten. No game content or generated disk formats changed.
@@ -887,7 +888,7 @@ frame-dump hook and kept the results. This fork uses two things from it:
 
 ## The Pocket Player (hardware/pocket-player)
 
-OpenAI Codex (GPT-6), directed by Lewis Moten, revised the Pocket Player's card discovery, picker search and labels (including incremental search and paging redraws, the search icon and the calibration explanation), display options and setup flow, touch packet handling, single-touch jump wedges, saved sticky direction, packers, full-panel scene and text-page clearing, bounded picture bands and regression checks. Existing game assets retain their own credits.
+OpenAI Codex (GPT-6), directed by Lewis Moten, revised the Pocket Player's card discovery, picker search and labels (including incremental search and paging redraws, the search icon and the calibration explanation), display options and setup flow, touch packet handling, single-touch jump wedges and their curved pad arrows and host drawing checks, saved sticky direction, packers, full-panel scene and text-page clearing, bounded picture bands and regression checks. Existing game assets retain their own credits.
 
 A firmware for the ESP32-3248S035 board that plays the Starter games, and an install page (`web/public/pocket/`). Claude Sonnet 5.5 wrote the firmware and the page. The firmware binaries' complete third-party notices are in [`web/public/pocket/fw/NOTICES.txt`](web/public/pocket/fw/NOTICES.txt).
 
@@ -1101,3 +1102,6 @@ maker "ZORP" is invented. The shell is untested: nothing has been printed.
 - **Livestream game follow-up (November 2026):** OpenAI Codex (GPT-6), directed by Lewis Moten, implemented Colors That Work’s playable palette lesson, removed unused Beat the Clock monster templates, drew the paper cube’s intermediate folding diagram, revised the Stage Box assembly and lock diagrams, and added the phone BOM’s numeric cost export and regressions. Existing game art, music, source data, and color-vision algorithm credits remain.
 
 - **Desk machine settings** (`web/src/desk/pc/machine*.ts`): OpenAI Codex (GPT-6), directed by Lewis Moten, implemented the hardware dialog, remembered CPU and disk timing, accessibility checks and regression tests using the existing engine estimates. No new third-party assets or game content were added.
+- **Livestream Desk, Editor, Site and Library follow-up**: OpenAI Codex (GPT-6), directed by Lewis Moten, implemented navigation, asset filtering, scene-panel layout, creation labels, download discoverability, cached-search scheduling, and regression checks. Existing game data and artwork retain their credits.
+
+- **CYD friendliness check** (`web/scripts/cyd*.ts`): OpenAI Codex (GPT-6), directed by Lewis Moten, implemented the recorded-route measurements, engine probes, scoring, tests, and documentation. No game content or third-party material was added.

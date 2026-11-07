@@ -66,7 +66,7 @@ export function floppyElement(d: Disk, small = false, n = 1): HTMLElement {
     d.kind === 'original'
       ? printedLabel(d, n)
       : d.kind === 'sample'
-        ? rsdDiskLabel(undefined, label, '', undefined, d.folders?.[0]?.entry)
+        ? rsdDiskLabel(undefined, label, '')
         : d.kind === 'rsd' || d.kind === 'gameware'
           ? // the CD's disks have printed labels; hand-written ones (with a scribbled note) are the user's
             rsdDiskLabel(g, label, diskTag(d, n), d.kind === 'gameware' ? { name: g?.company ?? g?.author ?? 'CD Library', band: d.color } : undefined)
@@ -157,6 +157,29 @@ export function openDiskBox(disks: Disk[], startId: string | undefined, onPick: 
       return el;
     });
 
+    const visible = (i: number) => !items[i].hidden;
+    const search = h('input', {
+      type: 'search',
+      'aria-label': 'Find a disk',
+      placeholder: 'Find a disk by title or author',
+      oninput: () => {
+        const query = search.value.trim().toLocaleLowerCase();
+        items.forEach((item, i) => {
+          item.hidden = !`${disks[i].title} ${disks[i].catalog?.author ?? ''} ${disks[i].catalog?.company ?? ''}`.toLocaleLowerCase().includes(query);
+        });
+        items.forEach((item) => {
+          item.style.marginBottom = '';
+        });
+        for (const row of Object.values(rows)) for (const spare of row.querySelectorAll<HTMLElement>('.spare')) spare.hidden = !!query;
+        for (const row of Object.values(rows)) {
+          const last = [...row.querySelectorAll<HTMLElement>('.floppy:not([hidden])')].at(-1);
+          if (last) last.style.marginBottom = '0';
+        }
+        const first = disks.findIndex((_, i) => visible(i));
+        if (first >= 0) select(visible(index) ? index : first, false);
+        else clear(info, h('p', { role: 'status' }, 'No matching disks. Try another title or author.'));
+      },
+    });
     let back = () => {};
     const close = () => {
       window.removeEventListener('keydown', onKey, true);
@@ -184,17 +207,20 @@ export function openDiskBox(disks: Disk[], startId: string | undefined, onPick: 
 
     const onKey = (e: KeyboardEvent) => {
       e.stopImmediatePropagation(); // not for the PC underneath
+      if (e.target === search && e.key !== 'Escape') return;
       const side = (i: number) => mine(disks[i]);
-      if (e.key === 'ArrowUp' && index > 0 && side(index - 1) === side(index)) select(index - 1);
-      else if (e.key === 'ArrowDown' && index < disks.length - 1 && side(index + 1) === side(index)) select(index + 1);
+      const same = disks.flatMap((_, i) => (visible(i) && side(i) === side(index) ? [i] : []));
+      const at = same.indexOf(index);
+      if (e.key === 'ArrowUp' && at > 0) select(same[at - 1]);
+      else if (e.key === 'ArrowDown' && at >= 0 && at < same.length - 1) select(same[at + 1]);
       else if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
         // the other window: its first disk
         const want = e.key === 'ArrowRight';
-        const j = disks.findIndex((d) => mine(d) === want);
+        const j = disks.findIndex((d, i) => mine(d) === want && visible(i));
         if (j >= 0) select(j);
       } else if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
         /* at the end of a window */
-      } else if (e.key === 'Enter') pick(index);
+      } else if (e.key === 'Enter' && visible(index)) pick(index);
       else if (e.key === 'Escape') close();
       else return;
       e.preventDefault();
@@ -206,6 +232,7 @@ export function openDiskBox(disks: Disk[], startId: string | undefined, onPick: 
       // focused itself on opening (the arrow keys and Enter pick a disk; a focused button would take Enter)
       { class: 'desk-overlay', role: 'dialog', 'aria-label': 'Disk box', tabindex: -1 },
       h('button', { class: 'close', onclick: close }, 'Close (Esc)'),
+      search,
       h(
         'div',
         { class: 'disk-cases' },

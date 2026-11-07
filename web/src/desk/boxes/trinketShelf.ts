@@ -23,7 +23,7 @@ export function trinketShelf(id: string, paper: Promise<BoxItem[]> = Promise.res
   const shelf = h('section', { class: 'bc-trinkets', hidden: '', 'aria-label': 'Feelies' });
   void Promise.all([loadFeelies(id), paper.catch((): BoxItem[] => [])]).then(([list, sheets]) => {
     if (!list.length && !sheets.length) return;
-    shelf.append(...strip(list, paperFeelieTiles(sheets, open)));
+    shelf.append(...strip(list, paperFeelieTiles(sheets, open)), h('button', { type: 'button', onclick: open }, 'Build instructions & downloads…'));
     shelf.hidden = false;
   });
   return shelf;

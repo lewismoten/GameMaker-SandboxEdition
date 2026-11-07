@@ -26,3 +26,5 @@ From `web/`:
 ```sh
 npx vitest run src/editor/tools/cards
 ```
+
+Creation buttons explicitly create card files. The editable Keys field can be selected and copied for reuse in other text.

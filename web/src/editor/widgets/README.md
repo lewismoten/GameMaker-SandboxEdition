@@ -28,3 +28,5 @@ From `web/`:
 ```sh
 npx vitest run src/editor/widgets
 ```
+
+The asset picker separates Starters from Sandbox & Bizarre and offers an explicit source-game filter alongside filename search.

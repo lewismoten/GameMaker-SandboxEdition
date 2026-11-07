@@ -389,9 +389,10 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
     // A multi-block operation may include pictures outside the visible group.
     for (const [id, px] of snap.pixels) if (pickerCanvases[id]) paintBlock(pickerCanvases[id], px, pal(), { transparent: sprites });
     changed();
+    renderProps();
     markPicker();
   }
-  const undoBtn = h('button', { title: 'Undo the last paint (Ctrl+Z)', disabled: true, onclick: () => step(true) }, '↶ Undo');
+  const undoBtn = h('button', { title: 'Undo the last change (Ctrl+Z)', disabled: true, onclick: () => step(true) }, '↶ Undo');
   const redoBtn = h('button', { title: 'Redo (Ctrl+Shift+Z or Ctrl+Y)', disabled: true, onclick: () => step(false) }, '↷ Redo');
   function refreshUndo(): void {
     const available = history.available(scope());
@@ -692,9 +693,13 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
     current: () => current,
     pal,
     walkPaths,
-    changed: () => {
+    edit: (change) => {
+      finishStroke(false);
+      history.recordBehavior(scope(), current, group);
+      change();
       save();
       insight.refresh(true);
+      refreshUndo();
     },
   });
 

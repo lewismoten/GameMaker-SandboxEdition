@@ -20,18 +20,21 @@ export function saveNote(project: Project): { el: HTMLElement; dispose: () => vo
   const announce = quietly((t) => (announcer.textContent = t), 1500);
   let failure = '';
   let explicit = false;
+  let latestState = '';
   let disposed = false;
   const say = (text: string) => {
     announce.cancel();
     if (!disposed) announcer.textContent = text;
   };
   let fade = 0;
-  const flashIt = (text: string, failed: boolean) => {
+  const flashIt = (text: string, failed: boolean, pending = false) => {
     window.clearTimeout(fade);
     flash.textContent = text;
     flash.classList.toggle('failed', failed);
+    flash.classList.toggle('pending', pending);
     flash.classList.add('on');
-    if (!failed) fade = window.setTimeout(() => (flash.classList.remove('on'), (fade = window.setTimeout(() => (flash.textContent = ''), 600))), 2200);
+    if (!failed && !pending)
+      fade = window.setTimeout(() => (flash.classList.remove('on'), (fade = window.setTimeout(() => (flash.textContent = ''), 600))), 2200);
   };
   document.body.append(flash, announcer);
   const show = (text: string, failed = false) => {
@@ -39,12 +42,15 @@ export function saveNote(project: Project): { el: HTMLElement; dispose: () => vo
     el.classList.toggle('failed', failed);
   };
   show('✓ Changes save in this browser');
-  let shown = 0;
-  const stop = project.onSaveState((state, error) => {
-    window.clearTimeout(shown);
-    if (state === 'saving') shown = window.setTimeout(() => show('Saving…'), 300);
-    else if (state === 'saved') {
-      const now = new Date();
+  const stop = project.onSaveState((state, error, savedAt) => {
+    latestState = state;
+    if (state === 'dirty' || state === 'saving') {
+      const text = state === 'dirty' ? 'Unsaved changes…' : 'Saving…';
+      show(text);
+      flashIt(text, false, true);
+      announce.cancel();
+    } else if (state === 'saved') {
+      const now = savedAt ?? new Date();
       show(savedText(undefined, now));
       flashIt(`✓ Saved ${savedTime(now)}`, false);
       if (!explicit) {
@@ -70,8 +76,12 @@ export function saveNote(project: Project): { el: HTMLElement; dispose: () => vo
     void project
       .saveNow()
       .then(
-        () => say('Saved in this browser. Download keeps a copy on your computer.'),
-        (err: unknown) => say(`Not saved: ${(err as Error).message}. Download a .zip to keep your work.`),
+        () => {
+          if (latestState === 'saved') say('Saved in this browser. Download keeps a copy on your computer.');
+        },
+        (err: unknown) => {
+          if (latestState === 'failed') say(`Not saved: ${(err as Error).message}. Download a .zip to keep your work.`);
+        },
       )
       .finally(() => (explicit = false));
   };
@@ -81,7 +91,6 @@ export function saveNote(project: Project): { el: HTMLElement; dispose: () => vo
     dispose: () => (
       (disposed = true),
       stop(),
-      window.clearTimeout(shown),
       window.clearTimeout(fade),
       announce.cancel(),
       flash.remove(),
