@@ -14,7 +14,9 @@ if (pal.pal.every((v, i) => v === storm[i])) throw new Error('storm palette is u
 const blocks = finishBlocks(levels[1]);
 for (const t of levels[1].timed) {
   const b = blocks[levels[1].book.n(t.name)];
-  if (b.chHitPt || b.scorePts || b.effect) throw new Error(`${t.name}: weather must not hurt or reward`);
+  if (b.chHitPt || b.effect) throw new Error(`${t.name}: weather must not hurt`);
+  // only the armed puddle air gives a point: that is what plays the splash sound
+  if (b.scorePts !== (t.name.startsWith('wet.') ? 1 : 0)) throw new Error(`${t.name}: score ${b.scorePts}`);
   if (t.name.startsWith('pool') && !b.solid) throw new Error(`${t.name}: puddle footing disappeared`);
 }
 const { sim } = await play();

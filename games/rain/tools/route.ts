@@ -35,18 +35,33 @@ export async function falling(bot: StarterBot) {
   await must(bot.wait(48), 'read the offset sign');
   await leave(bot, 34);
 }
+/** Walks through a puddle and checks the real engine swapped in splash blocks: one point per column stepped in. */
+async function splashThrough(bot: StarterBot, x: number, label: string) {
+  const before = bot.sim.ci.score;
+  await must(bot.walk(x, label), label);
+  const splashes = bot.sim.ci.score - before;
+  if (splashes !== 3) throw new Error(`${label}: ${splashes} splashes instead of one for each of the three cells`);
+  bot.say(`${label}: three splashes`);
+}
 export async function puddles(bot: StarterBot) {
   await must(bot.walk(7, 'splashes'), 'first sign');
   await watch(bot, 3, 'splash.0');
-  await must(bot.walk(12, 'rippling puddles'), 'puddles');
+  await splashThrough(bot, 12, 'first puddle');
   await watch(bot, 3, 'pool1.0');
-  await must(bot.walk(18, 'palette sign'), 'second sign');
+  await must(bot.walk(16, 'the house'), 'house');
+  await watch(bot, 3, 'house.10.0');
+  await watch(bot, 3, 'house.52.0');
+  await must(bot.wait(24), 'watch the spout');
+  await splashThrough(bot, 25, 'second puddle');
+  await must(bot.wait(48), 'read the splash sign');
+  await splashThrough(bot, 34, 'third puddle');
   await must(bot.wait(48), 'read the palette sign');
-  await leave(bot, 24);
+  await leave(bot, 38);
 }
 export async function storm(bot: StarterBot) {
-  await must(bot.walk(12, 'same puddles, darker colors'), 'storm puddles');
+  await splashThrough(bot, 12, 'storm puddle');
   await watch(bot, 4, 'pool1.0');
+  await must(bot.walk(17, 'the house in the storm'), 'storm house');
   await must(bot.wait(48), 'compare the colors');
-  await leave(bot, 24);
+  await leave(bot, 38);
 }
