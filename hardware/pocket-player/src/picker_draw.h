@@ -165,13 +165,21 @@ template<class G> void continueTile(G&g,int W,int i,const uint8_t*raw,int level,
   clippedText(g,r,lv,r.x+(r.w-(int)strlen(lv)*6*scale)/2,y+10*scale,scale,C_WHITE);
   g.drawRect(r.x,r.y,r.w,r.h,C_GRAY);
 }
+// The title bar's Search and Settings icons, 20 x 20 one-bit pictures (bit 19 is the left column), the same on both boards:
+// a magnifier (a round lens with a thick handle at 45 degrees) and a gear with eight teeth and a round hole.
+constexpr uint32_t MAGNIFIER20[20] = {0x00000,0x07E00,0x1FF80,0x3C3C0,0x381C0,0x700E0,0x700E0,0x700E0,0x700E0,0x700E0,
+  0x700E0,0x381C0,0x3C3C0,0x1FFF0,0x07E78,0x0003C,0x0001E,0x0000F,0x00007,0x00003};
+constexpr uint32_t GEAR20[20] = {0x00F00,0x00F00,0x18F18,0x3CF3C,0x3FFFC,0x1FFF8,0x0FFF0,0x0F0F0,0xFE07F,0xFE07F,
+  0xFE07F,0xFE07F,0x0F0F0,0x0FFF0,0x1FFF8,0x3FFFC,0x3CF3C,0x18F18,0x00F00,0x00F00};
+template<class G> void drawBits20(G&g,int x0,int y0,const uint32_t*rows,uint16_t c=C_WHITE) {
+  for(int y=0;y<20;y++)for(int x=0;x<20;){if(!(rows[y]>>(19-x)&1)){x++;continue;}int e=x;while(e<20&&(rows[y]>>(19-e)&1))e++;g.fillRect(x0+x,y0+y,e-x,1,c);x=e;}
+}
 template<class G> void libraryFrame(G&g,int W,int H,const char*breadcrumb,int page,int pages,const char*action,bool back=true) {
   // back=false on the root page (nothing above it); action=nullptr leaves the right-hand footer button off
   g.fillRect(0,0,W,32,C_DARK);if(back)drawButton(g,0,0,32,32,"<");
   int bx=back?36:8;Tile clip={bx,0,W-68-bx,32,0,0};clippedText(g,clip,breadcrumb,bx,12,1,C_WHITE);
   drawButton(g,W-64,0,W-32,32,"");drawButton(g,W-32,0,W,32,"");
-  g.fillCircle(W-51,12,7,C_WHITE);g.fillCircle(W-51,12,5,C_DARK);g.fillRect(W-47,18,9,3,C_WHITE);
-  g.fillCircle(W-16,16,9,C_WHITE);g.fillCircle(W-16,16,4,C_DARK);g.fillRect(W-18,3,4,4,C_WHITE);g.fillRect(W-18,25,4,4,C_WHITE);g.fillRect(W-29,14,4,4,C_WHITE);g.fillRect(W-7,14,4,4,C_WHITE);
+  drawBits20(g,W-58,6,MAGNIFIER20);drawBits20(g,W-26,6,GEAR20);
   int f=footer(W);g.fillRect(0,f,W,H-f,C_BLACK);drawButton(g,0,f,48,H,"<");drawButton(g,50,f,98,H,">");
   char count[24];snprintf(count,sizeof count,"%d/%d",page+1,pages?pages:1);
   Tile c={102,f,W-204,H-f,0,0};clippedText(g,c,count,108,f+(H-f-8)/2,1,C_WHITE);if(action)drawButton(g,W-100,f,W,H,action);
