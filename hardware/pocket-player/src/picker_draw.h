@@ -125,14 +125,31 @@ template<class G> void thumbnail(G&g,int W,int i,const uint8_t*raw,const char*do
   }}else clippedText(g,r,dos,r.x+(r.w-(int)strlen(dos)*6)/2,r.y+r.h/2-4,1,C_WHITE);  // no title picture: the DOS name; a picture is shown whole
   g.drawRect(r.x,r.y,r.w,r.h,selected?C_YELLOW:C_GRAY);
 }
-template<class G> void libraryFrame(G&g,int W,int H,const char*breadcrumb,int page,int pages,const char*action) {
-  g.fillRect(0,0,W,32,C_DARK);drawButton(g,0,0,32,32,"<");
-  Tile clip={36,0,W-104,32,0,0};clippedText(g,clip,breadcrumb,36,12,1,C_WHITE);
+// The home page's first tile, Continue: the game's title picture (raw: its thumbnail, or null), "Continue" and the level
+// (0 based). cardOut: the game is on a card that is not in, so the tile says to put it back instead.
+template<class G> void continueTile(G&g,int W,int i,const uint8_t*raw,int level,bool cardOut,bool panelOrder=false) {
+  if(cardOut){tileLabel(g,W,i,"Put the card back to continue",false,-1,panelOrder);return;}
+  auto r=tile(W,i);bool s=W==320;int scale=s?1:2,pw=s?64:96,ph=s?40:60,px0=r.x+(r.w-pw)/2,y=r.y+4;
+  g.fillRect(r.x,r.y,r.w,r.h,C_DARK);
+  if(raw){uint16_t row[144];for(int yy=0;yy<ph;yy++){
+    for(int x=0;x<pw;x++){int idx=raw[524+(yy*60/ph)*96+x*96/pw];uint16_t c=raw[12+idx*2]|(raw[13+idx*2]<<8);row[x]=panelOrder?(c<<8)|(c>>8):c;}
+    g.pushImage(px0,y+yy,pw,1,row);
+  }}else{int cx=r.x+r.w/2,cy=y+ph/2,h=ph/3;g.fillTriangle(cx-h/2,cy-h,cx-h/2,cy+h,cx+h,cy,C_WHITE);}  // no picture: a play sign
+  g.drawRect(px0-1,y-1,pw+2,ph+2,C_GRAY);
+  y+=ph+4;char lv[16];snprintf(lv,sizeof lv,"Level %d",level+1);
+  clippedText(g,r,"Continue",r.x+(r.w-8*6*scale)/2,y,scale,C_YELLOW);
+  clippedText(g,r,lv,r.x+(r.w-(int)strlen(lv)*6*scale)/2,y+10*scale,scale,C_WHITE);
+  g.drawRect(r.x,r.y,r.w,r.h,C_GRAY);
+}
+template<class G> void libraryFrame(G&g,int W,int H,const char*breadcrumb,int page,int pages,const char*action,bool back=true) {
+  // back=false on the root page (nothing above it); action=nullptr leaves the right-hand footer button off
+  g.fillRect(0,0,W,32,C_DARK);if(back)drawButton(g,0,0,32,32,"<");
+  int bx=back?36:8;Tile clip={bx,0,W-68-bx,32,0,0};clippedText(g,clip,breadcrumb,bx,12,1,C_WHITE);
   drawButton(g,W-64,0,W-32,32,"");drawButton(g,W-32,0,W,32,"");
   g.fillCircle(W-51,12,7,C_WHITE);g.fillCircle(W-51,12,5,C_DARK);g.fillRect(W-47,18,9,3,C_WHITE);
   g.fillCircle(W-16,16,9,C_WHITE);g.fillCircle(W-16,16,4,C_DARK);g.fillRect(W-18,3,4,4,C_WHITE);g.fillRect(W-18,25,4,4,C_WHITE);g.fillRect(W-29,14,4,4,C_WHITE);g.fillRect(W-7,14,4,4,C_WHITE);
   int f=footer(W);g.fillRect(0,f,W,H-f,C_BLACK);drawButton(g,0,f,48,H,"<");drawButton(g,50,f,98,H,">");
   char count[24];snprintf(count,sizeof count,"%d/%d",page+1,pages?pages:1);
-  Tile c={102,f,W-204,H-f,0,0};clippedText(g,c,count,108,f+(H-f-8)/2,1,C_WHITE);drawButton(g,W-100,f,W,H,action);
+  Tile c={102,f,W-204,H-f,0,0};clippedText(g,c,count,108,f+(H-f-8)/2,1,C_WHITE);if(action)drawButton(g,W-100,f,W,H,action);
 }
 } // namespace pk
