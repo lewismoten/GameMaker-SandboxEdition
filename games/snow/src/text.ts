@@ -21,7 +21,7 @@ export const HOWTO = wrap(`
 
 |LEFT, RIGHT   walk
 |SPACE         jump
-|UP, DOWN      walk, in the open snow
+|UP, DOWN      walk (open snow)
 
 Walk into the door or the gate to go on. Nothing here hurts you.
 
