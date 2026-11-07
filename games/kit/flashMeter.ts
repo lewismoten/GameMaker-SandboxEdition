@@ -143,12 +143,11 @@ export interface LocalWorst {
  * last high or low it reached (so a zigzag of small steps in one direction counts once, and a back-and-forth
  * counts every turn); two swings are a flash; more than three in a second is advice to look at that spot.
  * The WCAG area rule does not apply to it, so a small blink that WCAG lets through is also listed: a
- * suggestion, not a verdict.
+ * suggestion, not a verdict. A walking hero swings the light and dark of a 20x20 spot at the feet and arms about six times a second, so the busiest spot is often the player: look at what it is before acting on it.
  */
 export class LocalFlashMeter {
   worst: LocalWorst = { flashes: 0, at: 0, x: 0, y: 0 };
   frames = 0;
-  private level = new Float32Array(CELLS_X * CELLS_Y);
   private ext = new Float32Array(CELLS_X * CELLS_Y);
   private dir = new Int8Array(CELLS_X * CELLS_Y);
   private legs: number[][] = Array.from({ length: CELLS_X * CELLS_Y }, () => []);

@@ -28,6 +28,9 @@ const line = (r: FlashReport) =>
     }
   }
   if (process.argv.includes('--json')) console.log(JSON.stringify(out));
-  else console.log(`\n${out.length} games, ${out.filter((r) => r.fails).length} over ${MAX_FLASHES} a second, ${out.filter((r) => r.localOver).length} with a small spot over (advice only)`);
+  else
+    console.log(
+      `\n${out.length} games, ${out.filter((r) => r.fails).length} over ${MAX_FLASHES} a second, ${out.filter((r) => r.localOver).length} with a small spot over (advice only)`,
+    );
   process.exit(named.length && out.some((r) => r.fails) ? 1 : 0);
 }
