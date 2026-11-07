@@ -26,10 +26,10 @@ import { finishBlocks } from './src/level';
 import { buildLevels } from './src/levels';
 import { finishMonsterPictures, monsterPictures, monsterSet } from './src/monsters';
 import { LOOKS, swapped } from './src/palette';
-import { storyCard, titlePicture } from './src/pictures';
+import { rascalPicture, revealCard, storyCard, titlePicture } from './src/pictures';
 import { endingReel, introReel, REEL_SPEED } from './src/reels';
 import { SONGS, song } from './src/song';
-import { CARDS, CREDITS, HOWTO, LOST, STORY, WON } from './src/text';
+import { CARDS, CREDITS, HOWTO, LOST, REVEAL, STORY, WON } from './src/text';
 import { demoRecording } from './src/demo';
 import { SANDLOGO, sandLogoFli } from '../kit/sandlogo';
 
@@ -98,7 +98,20 @@ const text = (name: string, heading: string, body: string) => {
   disk.put(`${name}.txt`, body);
   disk.put(`${name}.lst`, serializeSlideList([{ name: `${name}.gif`, pause: 0 }, { name: `${name}.txt` }]));
 };
-disk.put('title.gif', gif(titlePicture(pal, base, cat, CHARMS.map((n) => charmSprite(pal, n)), TITLE, 'A FRIDAY THE 13TH SPECIAL'), pal));
+disk.put(
+  'title.gif',
+  gif(
+    titlePicture(
+      pal,
+      base,
+      cat,
+      CHARMS.map((n) => charmSprite(pal, n)),
+      TITLE,
+      'A FRIDAY THE 13TH SPECIAL',
+    ),
+    pal,
+  ),
+);
 disk.put(SANDLOGO, sandLogoFli());
 disk.put('intro.fli', introReel(pal, base, cat).fli(REEL_SPEED));
 disk.put(
@@ -116,13 +129,21 @@ disk.put('savegame.gif', gif(slotsPicture(pal, base, 'SAVE GAME'), pal));
 text('story', 'LUCKY CAT', STORY);
 text('howto', 'HOW TO PLAY', HOWTO);
 text('credits', 'CREDITS', CREDITS);
-disk.put('ending.fli', endingReel(pal, base, cheer).fli(REEL_SPEED));
+const rascal = rascalPicture(pal, levels[levels.length - 1].book);
+REVEAL.forEach((lines, k) => disk.put(`reveal${k}.gif`, gif(revealCard(pal, base, cat, rascal, lines, 60 + k), pal)));
+disk.put('ending.fli', endingReel(pal, base, cheer, rascal).fli(REEL_SPEED));
 disk.put('wonpic.gif', gif(endPicture(pal, base, cheer, 'LUCKY CAT!', 'THE TOWN CHEERS', 'won'), pal));
 disk.put('won.gif', gif(paper(pal, base, 'LUCKIEST CAT'), pal));
 disk.put('won.txt', WON);
 disk.put(
   'won.lst',
-  serializeSlideList([{ name: 'ending.fli', pause: 0 }, { name: 'wonpic.gif', pause: 6 }, { name: 'won.gif', pause: 0 }, { name: 'won.txt' }]),
+  serializeSlideList([
+    ...REVEAL.map((_l, k) => ({ name: `reveal${k}.gif`, pause: 6 })),
+    { name: 'ending.fli', pause: 0 },
+    { name: 'wonpic.gif', pause: 6 },
+    { name: 'won.gif', pause: 0 },
+    { name: 'won.txt' },
+  ]),
 );
 disk.put('lostpic.gif', gif(endPicture(pal, base, hurt, 'OH NO!', 'TRY AGAIN', 'lost'), pal));
 disk.put('lost.gif', gif(paper(pal, base, 'TRY AGAIN'), pal));

@@ -35,7 +35,9 @@ function stepLeg(pal: Pal, left: boolean): Pixels {
   const wood = pal.r('orange');
   for (let y = 0; y < 20; y++) {
     const x = left ? 2 + Math.floor(y / 5) : 14 - Math.floor(y / 5);
-    p.rect(x, y, 4, 1, wood[3]).set(left ? x : x + 3, y, wood[4]).set(left ? x + 3 : x, y, wood[1]);
+    p.rect(x, y, 4, 1, wood[3])
+      .set(left ? x : x + 3, y, wood[4])
+      .set(left ? x + 3 : x, y, wood[1]);
   }
   for (const y of [4, 12]) p.rect(left ? 2 + Math.floor(y / 5) : 0, y, left ? 18 : 18 - Math.floor(y / 5) * 1, 2, c('wood', 3));
   return inked(pal, p);
@@ -46,7 +48,9 @@ function stepTop(pal: Pal, part: 'L' | 'M' | 'R'): Pixels {
   const { c, r } = pal;
   const p = clear(pal);
   const o = r('orange');
-  p.rect(part === 'L' ? 2 : 0, 8, part === 'R' ? 16 : 20, 8, o[3]).rect(0, 8, 20, 2, o[4]).rect(0, 15, 20, 1, o[1]);
+  p.rect(part === 'L' ? 2 : 0, 8, part === 'R' ? 16 : 20, 8, o[3])
+    .rect(0, 8, 20, 2, o[4])
+    .rect(0, 15, 20, 1, o[1]);
   p.rect(0, 12, 20, 1, c('orange', 2));
   if (part === 'M') {
     // a can of blue paint on the beam
@@ -84,7 +88,13 @@ function crack(pal: Pal, dust: boolean): Pixels {
   }
   p.rect(0, 15, 10, 5, s[2]).rect(0, 15, 10, 1, s[4]);
   p.rect(10, 10, 10, 10, s[3]).rect(10, 10, 10, 2, s[4]).rect(10, 10, 1, 10, s[2]);
-  const pts: [number, number][] = [[10, 10], [8, 13], [11, 15], [8, 17], [10, 19]];
+  const pts: [number, number][] = [
+    [10, 10],
+    [8, 13],
+    [11, 15],
+    [8, 17],
+    [10, 19],
+  ];
   for (let i = 1; i < pts.length; i++) p.line(pts[i - 1][0], pts[i - 1][1], pts[i][0], pts[i][1], c('ink', 0));
   p.line(13, 13, 15, 15, c('ink', 1)).line(15, 15, 14, 18, c('ink', 1));
   p.rect(2, 13, 2, 2, s[3]).rect(5, 14, 2, 1, s[4]);
@@ -170,7 +180,13 @@ function shaker(pal: Pal): Pixels {
   const p = clear(pal);
   p.rect(5, 7, 10, 12, c('white', 2)).rect(5, 7, 3, 12, c('white', 3)).rect(12, 9, 3, 10, c('white', 1));
   blob(p, 10, 5, 5, 4, pal.r('stone'), 2, 4);
-  for (const [x, y] of [[8, 3], [10, 2], [12, 3], [10, 5]]) p.set(x, y, c('ink', 0));
+  for (const [x, y] of [
+    [8, 3],
+    [10, 2],
+    [12, 3],
+    [10, 5],
+  ])
+    p.set(x, y, c('ink', 0));
   p.rect(5, 12, 10, 3, c('blue', 2));
   return inked(pal, p);
 }
@@ -239,7 +255,10 @@ function fence(pal: Pal): Pixels {
   const { c } = pal;
   const p = clear(pal);
   p.rect(0, 11, 20, 2, c('white', 2)).rect(0, 16, 20, 2, c('white', 2));
-  for (const x of [1, 8, 15]) p.rect(x, 7, 4, 13, c('white', 3)).rect(x + 1, 6, 2, 1, c('white', 3)).rect(x, 7, 1, 13, c('white', 4));
+  for (const x of [1, 8, 15])
+    p.rect(x, 7, 4, 13, c('white', 3))
+      .rect(x + 1, 6, 2, 1, c('white', 3))
+      .rect(x, 7, 1, 13, c('white', 4));
   return inked(pal, p);
 }
 
@@ -328,39 +347,28 @@ function pulley(pal: Pal): Pixels {
   return inked(pal, p);
 }
 
-/** Rascal: a raccoon in a mask of fur and a ringed tail, a cap of gadgets on his head; sheepish, friendly. */
+/** Rascal: a raccoon with a dark mask, round ears, a ringed tail and a sheepish smile (two blocks: head, body). */
 function rascal(pal: Pal, bottom: boolean): Pixels {
   const { c, r } = pal;
   const p = clear(pal);
   const g = r('stone');
   if (!bottom) {
-    blob(p, 10, 12, 8, 7, g, 1, 4);
-    tri2(p, 3, 8, 6, 2, 9, 8, g[2]);
-    tri2(p, 11, 8, 14, 2, 17, 8, g[2]);
-    blob(p, 10, 12, 8, 6.6, g, 1, 4);
-    p.rect(3, 10, 14, 4, c('ink', 1));
-    p.rect(5, 11, 3, 2, c('white', 3)).rect(12, 11, 3, 2, c('white', 3));
-    p.set(6, 12, c('ink', 0)).set(13, 12, c('ink', 0));
-    p.rect(9, 15, 3, 2, c('ink', 0));
-    p.rect(8, 17, 5, 1, c('pink', 2));
-    p.rect(7, 4, 6, 3, c('gold', 3)).rect(8, 3, 4, 1, c('gold', 4));
+    p.disc(4, 5, 3.4, g[2]).disc(16, 5, 3.4, g[2]).disc(4, 5, 1.6, c('pink', 2)).disc(16, 5, 1.6, c('pink', 2));
+    blob(p, 10, 12, 8.6, 6.8, g, 1, 4);
+    p.rect(2, 9, 16, 5, c('ink', 1));
+    p.rect(5, 10, 3, 3, c('white', 3)).rect(12, 10, 3, 3, c('white', 3));
+    p.set(6, 11, c('ink', 0)).set(7, 11, c('ink', 0)).set(13, 11, c('ink', 0)).set(14, 11, c('ink', 0));
+    p.rect(9, 14, 3, 2, c('ink', 0));
+    p.set(7, 17, c('ink', 0)).set(8, 18, c('ink', 0)).set(9, 18, c('ink', 0)).set(10, 18, c('ink', 0)).set(11, 18, c('ink', 0)).set(12, 17, c('ink', 0));
   } else {
-    blob(p, 10, 8, 7, 8, g, 1, 4);
-    for (let i = 0; i < 4; i++) p.rect(1, 3 + i * 3, 4, 2, i % 2 ? c('ink', 1) : g[3]);
-    p.rect(6, 14, 3, 6, g[2]).rect(11, 14, 3, 6, g[2]);
-    p.rect(5, 18, 5, 2, c('ink', 1)).rect(10, 18, 5, 2, c('ink', 1));
-    p.rect(7, 4, 6, 6, c('white', 3));
-    p.disc(5, 9, 2, c('white', 3)).disc(15, 9, 2, c('white', 3));
+    for (let i = 0; i < 5; i++) p.rect(0, 3 + i * 3, 5, 2, i % 2 ? c('ink', 1) : g[3]);
+    blob(p, 11, 8, 7, 8, g, 1, 4);
+    p.rect(8, 3, 6, 8, c('white', 3));
+    p.rect(6, 14, 3, 6, g[2]).rect(12, 14, 3, 6, g[2]);
+    p.rect(5, 18, 5, 2, c('ink', 1)).rect(11, 18, 5, 2, c('ink', 1));
+    p.disc(5, 9, 2, g[3]).disc(17, 9, 2, g[3]);
   }
   return inked(pal, p);
-}
-
-/** Fills the triangle (x0,y0) (x1,y1) (x2,y2). */
-function tri2(p: Pixels, x0: number, y0: number, x1: number, y1: number, x2: number, color: number): void {
-  for (let y = Math.min(y0, y1); y <= y0; y++) {
-    const t = (y - y1) / (y0 - y1);
-    p.rect(Math.round(x1 + (x0 - x1) * t), y, Math.max(1, Math.round(x1 + (x2 - x1) * t) - Math.round(x1 + (x0 - x1) * t) + 1), 1, color);
-  }
 }
 
 export interface PropOptions {
@@ -393,7 +401,12 @@ export function addProps(book: Book, pal: Pal, groups: readonly string[], o: Pro
     book.add('mirrorArch', archOf(pal, 'stone'), air);
   }
   if (has('brolly')) {
-    for (const [n, ramp] of [['brollyRed', 'red'], ['brollyGold', 'gold'], ['brollyTeal', 'teal']] as const) book.add(n, brolly(pal, ramp), { grav: PULL.up });
+    for (const [n, ramp] of [
+      ['brollyRed', 'red'],
+      ['brollyGold', 'gold'],
+      ['brollyTeal', 'teal'],
+    ] as const)
+      book.add(n, brolly(pal, ramp), { grav: PULL.up });
   }
   if (has('salt')) {
     book.add('shaker', shaker(pal), { ...air, score: 25, effect: KEYS, eamt: 1, touch: 'sky' });

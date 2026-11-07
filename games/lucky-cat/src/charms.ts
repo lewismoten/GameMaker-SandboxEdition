@@ -36,14 +36,34 @@ const DRAW: Record<Charm, Draw> = {
         p.set(x, y, d < 5.4 ? s[1] : d > 6.8 ? s[2] : s[3]);
       }
     p.rect(3, 4, 4, 5, s[3]).rect(13, 4, 4, 5, s[3]).rect(3, 4, 4, 1, s[4]).rect(13, 4, 4, 1, s[4]);
-    for (const [x, y] of [[4, 6], [15, 6], [5, 12], [14, 12], [7, 15], [12, 15]]) p.set(x, y, c('ink', 0));
+    for (const [x, y] of [
+      [4, 6],
+      [15, 6],
+      [5, 12],
+      [14, 12],
+      [7, 15],
+      [12, 15],
+    ])
+      p.set(x, y, c('ink', 0));
     p.set(6, 11, s[4]).set(7, 14, s[4]);
   },
   clover(p, { c, r }) {
     const g = r('green');
-    for (const [x, y] of [[7, 6], [13, 6], [7, 12], [13, 12]]) blob(p, x, y, 4.2, 4.2, g, 0, 4);
+    for (const [x, y] of [
+      [7, 6],
+      [13, 6],
+      [7, 12],
+      [13, 12],
+    ])
+      blob(p, x, y, 4.2, 4.2, g, 0, 4);
     p.line(10, 12, 13, 18, g[1]).line(11, 12, 14, 18, g[1]);
-    for (const [x, y] of [[7, 6], [13, 6], [7, 12], [13, 12]]) p.line(x, y, 10, 9, g[1]);
+    for (const [x, y] of [
+      [7, 6],
+      [13, 6],
+      [7, 12],
+      [13, 12],
+    ])
+      p.line(x, y, 10, 9, g[1]);
     p.set(9, 9, c('green', 4)).set(10, 9, c('green', 3));
   },
   ladybug(p, { c, r }) {
@@ -51,7 +71,15 @@ const DRAW: Record<Charm, Draw> = {
     blob(p, 10, 6, 4.2, 3.4, r('ink'), 0, 2);
     blob(p, 10, 12, 7.4, 6.2, red, 0, 4);
     p.rect(10, 7, 1, 11, c('ink', 0));
-    for (const [x, y] of [[7, 10], [13, 10], [6, 14], [14, 14], [9, 16], [12, 16]]) p.disc(x, y, 1.1, c('ink', 0));
+    for (const [x, y] of [
+      [7, 10],
+      [13, 10],
+      [6, 14],
+      [14, 14],
+      [9, 16],
+      [12, 16],
+    ])
+      p.disc(x, y, 1.1, c('ink', 0));
     p.set(8, 5, c('white', 3)).set(12, 5, c('white', 3));
     p.line(8, 3, 6, 1, c('ink', 1)).line(12, 3, 14, 1, c('ink', 1));
     p.set(7, 9, c('red', 4));
@@ -112,13 +140,24 @@ const DRAW: Record<Charm, Draw> = {
   },
   dice(p, { c }) {
     const die = (x: number, y: number, pips: [number, number][]) => {
-      p.rect(x, y, 9, 9, c('white', 3)).rect(x, y + 8, 9, 1, c('white', 1)).rect(x + 8, y, 1, 9, c('white', 1));
+      p.rect(x, y, 9, 9, c('white', 3))
+        .rect(x, y + 8, 9, 1, c('white', 1))
+        .rect(x + 8, y, 1, 9, c('white', 1));
       p.frame(x, y, 9, 9, c('white', 0));
       for (const [px, py] of pips) p.rect(x + px, y + py, 2, 2, c('red', 2));
     };
     // a three and a four: seven
-    die(1, 3, [[1, 1], [3, 3], [5, 5]]);
-    die(10, 8, [[1, 1], [5, 1], [1, 5], [5, 5]]);
+    die(1, 3, [
+      [1, 1],
+      [3, 3],
+      [5, 5],
+    ]);
+    die(10, 8, [
+      [1, 1],
+      [5, 1],
+      [1, 5],
+      [5, 5],
+    ]);
   },
   feather(p, { c, r }) {
     const t = r('teal');

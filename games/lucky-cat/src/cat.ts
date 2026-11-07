@@ -49,7 +49,10 @@ export function head(pal: Pal, face: Face): Pixels {
   const eyeAt = (x: number, dx = 0) => {
     if (face === 'blink' || face === 'cheer') {
       // a closed, upturned eye
-      p.set(x, 12, gold[3]).set(x + 1, 11, gold[4]).set(x + 2, 11, gold[4]).set(x + 3, 12, gold[3]);
+      p.set(x, 12, gold[3])
+        .set(x + 1, 11, gold[4])
+        .set(x + 2, 11, gold[4])
+        .set(x + 3, 12, gold[3]);
       return;
     }
     const big = face === 'oh' || face === 'ouch' ? 1 : 0;

@@ -61,7 +61,10 @@ export function levelFour(pal: Pal): Level {
   // the gate before the door: four blocks tall
   for (let y = GROUND - 4; y < GROUND; y++) m.set(FOUR.gate, y, 'gateOpen');
   // the stepladder, with its drip
-  m.set(FOUR.ladder, 7, 'stepTopL').set(FOUR.ladder + 1, 7, 'stepTop').set(FOUR.ladder + 2, 7, 'stepTop').set(FOUR.ladder + 3, 7, 'stepTopR');
+  m.set(FOUR.ladder, 7, 'stepTopL')
+    .set(FOUR.ladder + 1, 7, 'stepTop')
+    .set(FOUR.ladder + 2, 7, 'stepTop')
+    .set(FOUR.ladder + 3, 7, 'stepTopR');
   for (const y of [8, 9]) m.set(FOUR.ladder, y, 'stepL').set(FOUR.ladder + 3, y, 'stepR');
   m.set(FOUR.ladder + 2, 8, 'drip');
   m.set(FOUR.star, 6, 'charm.star');
@@ -82,7 +85,6 @@ export function levelFour(pal: Pal): Level {
     map: m,
     book,
     timed,
-    story: [],
     charms: [...charms],
   };
 }

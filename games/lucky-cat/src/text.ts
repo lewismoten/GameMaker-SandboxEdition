@@ -79,3 +79,9 @@ export const CARDS: Record<string, string[][]> = {
   five: [['A CROW KEEPS KNOCKING ON WOOD.', 'KNOCK BACK TO OPEN THE BOXES.', 'MIND THE CROWS.']],
   six: [['WHO IS PULLING THE ROPES?', 'THE PRANKS ALL TRACE BACK TO', 'ONE WORKSHOP ON THE ROOF.']],
 };
+
+/** The reveal after the last door: Rascal owns up, Midnight forgives. */
+export const REVEAL: string[][] = [
+  ['"IT WAS ME," SAYS RASCAL THE RACCOON.', '"I BUILT A MACHINE OF ROPES AND', 'PULLEYS FOR FRIDAY THE 13TH', 'PRANKS. IT GOT OUT OF HAND."'],
+  ['"THE LADDER, THE UMBRELLAS, THE', 'SALT... AND THE BLAME FELL ON YOU.', 'I AM SORRY, MIDNIGHT."', '"NO HARD PAWS," SAYS MIDNIGHT.'],
+];

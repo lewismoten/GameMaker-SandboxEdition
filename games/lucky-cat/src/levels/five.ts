@@ -66,8 +66,6 @@ export function levelFive(pal: Pal): Level {
     map: m,
     book,
     timed: [],
-    story: [],
-    crows: { run: 5, bob: 3 },
     charms: [...charms],
   };
 }

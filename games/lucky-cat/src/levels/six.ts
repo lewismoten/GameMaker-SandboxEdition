@@ -34,7 +34,13 @@ export function levelSix(pal: Pal): Level {
   const s = addSigns(book, pal, SIGNS);
   const g = room(80, SIX.exit);
   g.row(4, SIX.gallery[0], SIX.gallery[1], '=');
-  for (const [x, y] of [[10, 2], [30, 1], [52, 2], [70, 1]]) g.put(x, y, '(').put(x + 1, y, ')');
+  for (const [x, y] of [
+    [10, 2],
+    [30, 1],
+    [52, 2],
+    [70, 1],
+  ])
+    g.put(x, y, '(').put(x + 1, y, ')');
   const m = new StarterMap(book, g.rows());
   // the workshop: a line of pulleys hung under the sky
   for (let x = 6; x < 76; x += 5) m.set(x, 0, 'pulley');
@@ -63,8 +69,6 @@ export function levelSix(pal: Pal): Level {
     map: m,
     book,
     timed: [],
-    story: [],
-    crows: { run: 5, bob: 3 },
     charms: [...charms],
   };
 }

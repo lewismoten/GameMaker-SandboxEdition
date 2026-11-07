@@ -30,10 +30,6 @@ export interface Level {
   map: StarterMap;
   book: Book;
   timed: Timed[];
-  /** The story pages shown after the card (picture file names are made by build.ts from these). */
-  story: string[][];
-  /** The monster set's run and bob. */
-  crows?: { run: number; bob: number };
   /** The charms in this level, in the order the route takes them. */
   charms: Charm[];
 }

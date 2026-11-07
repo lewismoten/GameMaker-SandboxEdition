@@ -55,7 +55,10 @@ export function levelOne(pal: Pal): Level {
   );
   const m = new StarterMap(book, g.rows());
   // the stepladder: top beam on row 7, a leg either side, a paint drip hanging in the gap
-  m.set(ONE.ladder, 7, 'stepTopL').set(ONE.ladder + 1, 7, 'stepTop').set(ONE.ladder + 2, 7, 'stepTop').set(ONE.ladder + 3, 7, 'stepTopR');
+  m.set(ONE.ladder, 7, 'stepTopL')
+    .set(ONE.ladder + 1, 7, 'stepTop')
+    .set(ONE.ladder + 2, 7, 'stepTop')
+    .set(ONE.ladder + 3, 7, 'stepTopR');
   for (const y of [8, 9]) m.set(ONE.ladder, y, 'stepL').set(ONE.ladder + 3, y, 'stepR');
   m.set(ONE.ladder + 2, 8, 'drip');
   // the plank rows are awnings (stand on them, jump up through them)
@@ -83,7 +86,6 @@ export function levelOne(pal: Pal): Level {
     map: m,
     book,
     timed: [],
-    story: [],
     charms: [...charms],
   };
 }

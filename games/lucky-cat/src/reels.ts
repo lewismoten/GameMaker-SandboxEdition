@@ -78,7 +78,13 @@ export function introReel(pal: Pal, book: Book, cat: Pixels): Reel {
         }
         for (let r = 1; r < 8; r++) {
           const f = r / 8;
-          p.line(Math.round(bx + Math.sin(a) * 80 * f), Math.round(152 - Math.cos(a) * 80 * f), Math.round(bx + 9 * Math.cos(a) + Math.sin(a) * 80 * f), Math.round(152 - 9 * Math.sin(a) * 0.3 - Math.cos(a) * 80 * f), c('wood', 3));
+          p.line(
+            Math.round(bx + Math.sin(a) * 80 * f),
+            Math.round(152 - Math.cos(a) * 80 * f),
+            Math.round(bx + 9 * Math.cos(a) + Math.sin(a) * 80 * f),
+            Math.round(152 - 9 * Math.sin(a) * 0.3 - Math.cos(a) * 80 * f),
+            c('wood', 3),
+          );
         }
       },
       i === 10 ? 4 : 1,
@@ -160,11 +166,16 @@ export function endingReel(pal: Pal, book: Book, cheer: Pixels, rascal?: Pixels)
   const reel = new Reel(pal.pal);
   const bg = street(pal, book, 24);
   const rand = rng(11);
-  const confetti = Array.from({ length: 70 }, () => ({ x: Math.floor(rand() * 320), y: Math.floor(rand() * 200), v: 3 + Math.floor(rand() * 3), col: [c('red', 2), c('gold', 4), c('blue', 3), c('pink', 2), c('green', 3)][Math.floor(rand() * 5)] }));
+  const confetti = Array.from({ length: 70 }, () => ({
+    x: Math.floor(rand() * 320),
+    y: Math.floor(rand() * 200),
+    v: 3 + Math.floor(rand() * 3),
+    col: [c('red', 2), c('gold', 4), c('blue', 3), c('pink', 2), c('green', 3)][Math.floor(rand() * 5)],
+  }));
   const draw = (p: Pixels, t: number) => {
     // the podium and its banner
     p.rect(110, 128, 100, 24, c('wood', 2)).frame(110, 128, 100, 24, c('wood', 0)).rect(110, 128, 100, 3, c('wood', 4));
-    centered(p, 138, 'No. 1', c('gold', 4));
+    centered(p, 138, '1ST', c('gold', 4));
     bevel(p, 30, 22, 260, 24, pal.r('parch'), 3, 2);
     p.rect(34, 26, 252, 16, c('parch', 4));
     centered(p, 30, 'OFFICIAL LUCKY MASCOT', c('red', 1));

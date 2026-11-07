@@ -61,7 +61,6 @@ export function levelTwo(pal: Pal): Level {
     map: m,
     book,
     timed: [],
-    story: [],
     charms: [...charms],
   };
 }
