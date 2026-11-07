@@ -26,16 +26,16 @@ A file of the wrong size is a good first test of a bad import. The slot position
 
 ## 13.2 `.gam` (the integrator)
 
-|     Offset |      Size | Field          | Notes                                                                                                                                     |
-| ---------: | --------: | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-|          0 |         2 | `GMId`         | ASCII "GM"; the only thing PLAYGAME checks (`GMGEN.H:100`, `PG:5156-5169`)                                                                |
-|          2 |         2 | `Ver`          | file version; not checked                                                                                                                 |
-|          4 |         1 | `Encrypt`      | unused; written 0                                                                                                                         |
-|          5 |         1 | `FileType`     | unused                                                                                                                                    |
-|          6 |       250 | filler         | filled with the letters "RSD" repeated (`GMGEN.H:92`)                                                                                     |
-|        256 |         6 | `GratorHeader` | `NumScenes`, `FilesPerScene` (always 20), `LinksPerScene` (always 20); only `NumScenes` is read (`PG:5164`)                               |
-|        262 |   283 x N | `Scene[N]`     | see chapter 4                                                                                                                             |
-| 262 + 283N |         2 | `FreePtr`      | length of the name pool; clamped to 0xFFF0 (`PG:5173-5174`)                                                                               |
+|     Offset |      Size | Field          | Notes                                                                                                                                       |
+| ---------: | --------: | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+|          0 |         2 | `GMId`         | ASCII "GM"; the only thing PLAYGAME checks (`GMGEN.H:100`, `PG:5156-5169`)                                                                  |
+|          2 |         2 | `Ver`          | file version; not checked                                                                                                                   |
+|          4 |         1 | `Encrypt`      | unused; written 0                                                                                                                           |
+|          5 |         1 | `FileType`     | unused                                                                                                                                      |
+|          6 |       250 | filler         | filled with the letters "RSD" repeated (`GMGEN.H:92`)                                                                                       |
+|        256 |         6 | `GratorHeader` | `NumScenes`, `FilesPerScene` (always 20), `LinksPerScene` (always 20); only `NumScenes` is read (`PG:5164`)                                 |
+|        262 |   283 x N | `Scene[N]`     | see chapter 4                                                                                                                               |
+| 262 + 283N |         2 | `FreePtr`      | length of the name pool; clamped to 0xFFF0 (`PG:5173-5174`)                                                                                 |
 |            | `FreePtr` | name pool      | NULLL-terminated names; a scene's `Files[i]` is an offset into it; offset 0 holds an empty string = "no file" (`GRATOR.H:116-118, 134-147`) |
 
 Example size: 60 scenes, 3,000-byte pool = 256 + 6 + 16,980 + 2 + 3,000 = **20,244 bytes**.
@@ -318,18 +318,18 @@ GRATOR writes the integrator file. PLAYGAME reads it to find the start, ending a
 
 **GAM 3.00: header, scenes, names**
 
-| Offset | Bytes | Type    | Contents                  |
-| ------ | ----- | ------- | ------------------------- |
-| 0      | 2     | ASCII   | GM signature              |
-| 2      | 2     | i16     | Version: 300              |
-| 4      | 1     | u8      | Encryption flag           |
-| 5      | 1     | u8      | File type: 8              |
-| 6      | 250   | bytes   | Filler                    |
-| 256    | 2     | i16     | Number of scenes N        |
-| 258    | 2     | i16     | Files per scene: 20       |
-| 260    | 2     | i16     | Links per scene: 20       |
-| 262    | 283N  | records | Scenes in index order     |
-| P      | 2     | u16     | Name-pool length L        |
+| Offset | Bytes | Type    | Contents                    |
+| ------ | ----- | ------- | --------------------------- |
+| 0      | 2     | ASCII   | GM signature                |
+| 2      | 2     | i16     | Version: 300                |
+| 4      | 1     | u8      | Encryption flag             |
+| 5      | 1     | u8      | File type: 8                |
+| 6      | 250   | bytes   | Filler                      |
+| 256    | 2     | i16     | Number of scenes N          |
+| 258    | 2     | i16     | Files per scene: 20         |
+| 260    | 2     | i16     | Links per scene: 20         |
+| 262    | 283N  | records | Scenes in index order       |
+| P      | 2     | u16     | Name-pool length L          |
 | P + 2  | L     | strings | NULLL-terminated file names |
 
 P = 262 + 283N. File pointers are offsets from P + 2, not from the start of the GAM. Pool byte 0 is an empty name.
@@ -369,11 +369,11 @@ SNDEDIT writes a set of thirty effects; PLAYGAME loads it from adventure slot 7.
 
 **SND: 2,430 bytes; no header**
 
-| Offset   | Bytes | Type    | Contents                 |
-| -------- | ----- | ------- | ------------------------ |
-| 0        | 2,160 | 30 × 72 | Speaker frequency rows   |
-| 2,160    | 270   | 30 × 9  | Digital sound stems      |
-| 72e + 2t | 2     | u16     | Effect e, step t: hertz  |
+| Offset   | Bytes | Type    | Contents                   |
+| -------- | ----- | ------- | -------------------------- |
+| 0        | 2,160 | 30 × 72 | Speaker frequency rows     |
+| 2,160    | 270   | 30 × 9  | Digital sound stems        |
+| 72e + 2t | 2     | u16     | Effect e, step t: hertz    |
 | 2160+9e  | 9     | chars   | Effect e: VOC stem + NULLL |
 
 e = 0 to 29; t = 0 to 35. A zero frequency is silence. The effect number addresses both tables; the VOC bytes live in another file.
@@ -450,10 +450,10 @@ IMAGE writes a BKD to select a 320 × 200 window of a GIF. Its normal output is 
 
 **BKD: IMAGE writes 44 bytes**
 
-| Offset | Bytes | Type  | Contents                |
-| ------ | ----- | ----- | ----------------------- |
-| 0      | 2     | i16   | Left edge of GIF window |
-| 2      | 2     | i16   | Top edge of GIF window  |
+| Offset | Bytes | Type  | Contents                  |
+| ------ | ----- | ----- | ------------------------- |
+| 0      | 2     | i16   | Left edge of GIF window   |
+| 2      | 2     | i16   | Top edge of GIF window    |
 | 4      | 40    | chars | GIF name, LF, NULLL, tail |
 
 No signature. The player reads two words, then at most 39 name bytes. Shorter name-only tails also occur in shipped files.
@@ -493,7 +493,7 @@ PLAYGAME writes REC demonstrations and reads them from the start scene's demo sl
 | REC 3e  | 2     | u16     | Elapsed game ticks        |
 | 3e + 2  | 1     | u8 bits | Scan code; bit 7 releases |
 | HIS 34r | 4     | i32     | Score for rank r          |
-| 34r + 4 | 30    | chars   | Name, NULLL, unused tail    |
+| 34r + 4 | 30    | chars   | Name, NULLL, unused tail  |
 
 REC holds at most 1,000 events (3,000 bytes). HIS always has ten ranks (340 bytes). Neither embeds a game file name.
 
@@ -511,17 +511,17 @@ The utilities share GM.CFG so they can reopen the working directory. It is a 51-
 
 **Configuration: no headers**
 
-| Offset   | Bytes | Type   | Contents                |
-| -------- | ----- | ------ | ----------------------- |
+| Offset   | Bytes | Type   | Contents                  |
+| -------- | ----- | ------ | ------------------------- |
 | GM.CFG 0 | 51    | chars  | Working directory + NULLL |
-| DAT 0    | 10    | i16[5] | Joystick x calibration  |
-| 10       | 10    | i16[5] | Joystick y calibration  |
-| 20       | 2     | enum16 | Video selection         |
-| 22       | 2     | enum16 | Sound selection         |
-| 24       | 2     | u16    | Sound interrupt         |
-| 26       | 2     | u16    | Sound I/O port          |
+| DAT 0    | 10    | i16[5] | Joystick x calibration    |
+| 10       | 10    | i16[5] | Joystick y calibration    |
+| 20       | 2     | enum16 | Video selection           |
+| 22       | 2     | enum16 | Sound selection           |
+| 24       | 2     | u16    | Sound interrupt           |
+| 26       | 2     | u16    | Sound I/O port            |
 | 28       | 41    | chars  | Driver path + NULLL       |
-| 69       | 431   | bytes  | Reserved; total 500     |
+| 69       | 431   | bytes  | Reserved; total 500       |
 
 DAT means CONFIG.DAT here. Enum sizes follow the shipped 500-byte file and the 16-bit build; there is no web format codec for either configuration file.
 
@@ -591,5 +591,3 @@ The saved clock at byte 7 is the fast sound clock, not the 18.2 Hz game clock. I
 The saved value is `SaveGame(SndClock)`, not `clock` (`code/GM/PLAYGAME.C:1609`, `code/GM/PLAYGAME.C:1878`). Load derives `clock = SavedTime >> 3` (`code/GM/PLAYGAME.C:1825-1826`); new-game initialization resets all clocks (`code/GM/PLAYGAME.C:4627-4631`); scene entry preserves a clock snapshot (`code/GM/PLAYGAME.C:1337-1341`, `code/GM/PLAYGAME.C:1403-1404`). At the programmed rate the computed wrap period is 2^32 × 8191 / 1193180 = 29,484,300 seconds = 341.253 days. [inference] Unsigned wrap is certain; gameplay effects at overflow depend on the pending comparisons (`code/GM/PLAYGAME.C:1454`, `code/GM/PLAYGAME.C:3141`). [not yet checked in DOSBox] No engine format codec implements these compiler-object DOS saves.
 
 Old per-extension transfer is commented out (`code/GM/UTILITY.C:619-638`); active transfer copies all game-area files and the supplied player, and writes CONFIG.BAT (`code/GM/UTILITY.C:276-311`). The older registration writer embeds a 34-byte distribution-information stamp in executables (`code/GM/REGIST.C:125-148`); it is obsolete player/distribution information, not a GAM field or a header to add to imported media. GIF/FLI/VOC stay external inputs. No transferred EXE, DOS save, HIS or local configuration is claimed as an observed Sandbox disk example.
-
-**May these formats be described here?** Yes: original explanations of a file layout are appropriate; copying Creative's prose or diagrams would be a different matter. U.S. copyright law separates methods and systems from their written expression ([17 USC 102(b)](https://www.copyright.gov/title17/92chap1.html#102)). The format names and origins are credited to Creative Technology Ltd.; the CMF header is independently checked against `code/GM/SBCMUSIC.H:30-52` and `engine/formats/cmf.ts:25-38`, and VOC framing against `code/GM/SOUNDC.C:164-212` and `engine/formats/voc.ts:1-20`. Creative's original reference is the Sound Blaster Developer Kit's **Creative Music File (CMF)** and **Creative Voice File (VOC)** format documentation. No prose or diagrams from those specifications are reproduced here; NOTICE.md records this attribution and the documentation work.
