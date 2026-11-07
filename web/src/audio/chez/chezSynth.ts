@@ -78,6 +78,8 @@ interface Run {
   beds: GainNode[];
   /** When the contactor closed (context time). */
   t0: number;
+  /** Clunks still to come (the speed steps), with when they start: a stop cancels them. */
+  pending: [AudioScheduledSourceNode, number][];
 }
 
 export class SynthMotor implements ChezMotor {
@@ -101,8 +103,8 @@ export class SynthMotor implements ChezMotor {
     const t0 = t + SWITCH_LEAD;
     this.clunk(t, 0.45);
     this.clunk(t0, 1);
-    for (const s of STEPS) this.clunk(t0 + s, 1.6);
     const r = this.start(t, t0, this.chain[0]);
+    r.pending = STEPS.flatMap((s) => this.clunk(t0 + s, 1.6).map((n): [AudioScheduledSourceNode, number] => [n, t0 + s]));
     for (const [s, v] of CLIMB) this.at(r, t0 + s, v, s ? 'ramp' : 'set');
     this.run = r;
   }
@@ -114,6 +116,7 @@ export class SynthMotor implements ChezMotor {
     this.run = undefined;
     const t = this.ctx.currentTime + 0.01;
     const v = climbSpeed(t - r.t0);
+    for (const [n, at] of r.pending) if (at > t) n.stop(t);
     this.clunk(t, 1.6);
     for (const p of [r.whine.frequency, r.whineGain.gain, ...r.beds.map((b) => b.gain)]) p.cancelScheduledValues(t);
     this.at(r, t, v, 'set');
@@ -197,14 +200,14 @@ export class SynthMotor implements ChezMotor {
       from.connect(g).connect(input);
       return g;
     });
-    const r: Run = { sources: [whine, lfo, noise], nodes, whine, whineGain, beds, t0 };
+    const r: Run = { sources: [whine, lfo, noise], nodes, whine, whineGain, beds, t0, pending: [] };
     for (const p of [whineGain.gain, ...beds.map((b) => b.gain)]) p.setValueAtTime(0, t);
     for (const s of r.sources) s.start(t);
     return r;
   }
 
   /** A contactor at `t`: a snap with a metallic ring (centered near 2 kHz, as recorded), then the armature's thump. */
-  private clunk(t: number, k: number): void {
+  private clunk(t: number, k: number): AudioScheduledSourceNode[] {
     const c = this.ctx;
     const input = this.chain[0];
     const src = c.createBufferSource();
@@ -239,6 +242,7 @@ export class SynthMotor implements ChezMotor {
     thump.onended = () => {
       for (const n of [src, thump, snap, ring, gs, gr, gt]) n.disconnect();
     };
+    return [src, thump];
   }
 
   /** `r` stops at `end` and frees itself then. */
@@ -252,7 +256,7 @@ export class SynthMotor implements ChezMotor {
   }
 
   private free(r: Run, now: boolean): void {
-    for (const s of r.sources) {
+    for (const s of [...r.sources, ...(now ? r.pending.map(([n]) => n) : [])]) {
       if (now) {
         try {
           s.stop();
