@@ -171,15 +171,29 @@ add(
     '................',
   ]),
 );
-// 10 Bizarre: a spiral
-{
-  const g = blank();
-  for (let a = 0; a < 15; a += 0.04) {
-    const r = 0.5 + a * 0.5;
-    set(g, 7.5 + Math.cos(a) * r, 7.5 + Math.sin(a) * r, a < 5 ? 'y' : a < 10 ? 'p' : 'c');
-  }
-  add('Bizarre', g);
-}
+// 10 Bizarre: the rooster in blue spectacles from the top of the Bard of Bizarre's logo (public/bbs/BARDLOGO.GIF, made with
+// DeepAI), redrawn as 16x16 pixel art: red comb, white head, blue glasses, orange beak and red wattle.
+add(
+  'Bizarre',
+  art([
+    '......r.r.r.....',
+    '.....rrrrrrr....',
+    '....rrrrrrrr....',
+    '....kwwwwwwwk...',
+    '...kwwwwwwwwwk..',
+    '..bbbbb.bbbbbwk.',
+    '.bwwkwbbbwkwwbbk',
+    '.bwwkwb.bwkwwbwk',
+    '..bbbbbwwbbbbbwk',
+    'ooo.wwwwwwwwwwwk',
+    'ooooowwwwwwwwwk.',
+    '.yyyywwwwwwwwwk.',
+    '..rr.kwwwwwwwk..',
+    '..rrr.wwwwwwwwk.',
+    '...r..wwwwwwwwwk',
+    '......wwwwwwwwww',
+  ]),
+);
 // 11 My games: a blue folder with a gold star
 {
   const g = blank();

@@ -120,12 +120,30 @@ template<class G> void tileLabel(G&g,int W,int i,const char*label,bool selected=
 template<class G> void clearTiles(G&g,int W) {g.fillRect(0,32,W,footer(W)-32,C_BLACK);}
 // A favorite's mark: a yellow star with a dark ring in the tile's top-right corner (over the picture's sky, never its middle).
 template<class G> void starMark(G&g,int W,int i) {auto r=tile(W,i);int R=W==320?7:9;drawStar(g,r.x+r.w-R-3,r.y+R+3,R+2,C_BLACK);drawStar(g,r.x+r.w-R-3,r.y+R+3,R,C_YELLOW);}
-template<class G> void thumbnail(G&g,int W,int i,const uint8_t*raw,const char*dos,bool selected,bool panelOrder=false,bool pinned=false) {
-  auto r=tile(W,i);g.fillRect(r.x,r.y,r.w,r.h,C_DARK);int y0=r.y+(r.h-r.ph)/2;
-  if(raw){uint16_t row[144];for(int y=0;y<r.ph;y++){
+// A Starter's caption under its picture: the course number in yellow, then the title in white, word-wrapped onto two lines
+// of the 6 x 8 font, doubled on the 3.5 inch board's wider tiles (the title picture's own lettering is too small to read at tile size). Lines are cut with "..." to fit.
+template<class G> void tileCaption(G&g,const Tile&r,int y,const char*title,int course) {
+  int k2=r.w>=144?2:1,cols=(r.w-4)/(6*k2),x=r.x+2;char num[8]="";if(course>0)snprintf(num,sizeof num,"%d ",course);
+  int used=(int)strlen(num);clippedText(g,r,num,x,y,k2,C_YELLOW);
+  const char*t=title;while(*t==' ')t++;int len=(int)strlen(t),first=cols-used;
+  if(first<1)first=1;
+  int cut=len<=first?len:first;  // the first line breaks at the last space that fits
+  if(len>first){for(int k=first;k>0;k--)if(t[k]==' '){cut=k;break;}}
+  char a[64];int n=cut<(int)sizeof a-1?cut:(int)sizeof a-1;memcpy(a,t,n);a[n]=0;
+  clippedText(g,r,a,x+used*6*k2,y,k2,C_WHITE);
+  const char*rest=t+cut;while(*rest==' ')rest++;
+  if(*rest){char b[64];ellipsize(rest,b,sizeof b,(size_t)cols);clippedText(g,r,b,x,y+9*k2,k2,C_WHITE);}
+}
+// caption: a Starter's title (with its course number, 0 for none) drawn as text under the picture, which then sits at the top.
+template<class G> void thumbnail(G&g,int W,int i,const uint8_t*raw,const char*dos,bool selected,bool panelOrder=false,bool pinned=false,
+                                 const char*caption=nullptr,int course=0) {
+  auto r=tile(W,i);g.fillRect(r.x,r.y,r.w,r.h,C_DARK);int y0=raw&&caption?r.y+1:r.y+(r.h-r.ph)/2;
+  int shown=caption?r.ph*5/6:r.ph;  // a caption covers the picture's bottom sixth (a Starter's own "COURSE nnn" band)
+  if(raw){uint16_t row[144];for(int y=0;y<shown;y++){
     for(int x=0;x<r.pw;x++){int idx=raw[524+(y*60/r.ph)*96+x*96/r.pw];uint16_t c=raw[12+idx*2]|(raw[13+idx*2]<<8);row[x]=panelOrder?(c<<8)|(c>>8):c;}
     g.pushImage(r.x,y0+y,r.pw,1,row);
-  }}else clippedText(g,r,dos,r.x+(r.w-(int)strlen(dos)*6)/2,r.y+r.h/2-4,1,C_WHITE);  // no title picture: the DOS name; a picture is shown whole
+  }if(caption)tileCaption(g,r,y0+shown+(r.w>=144?2:3),caption,course);
+  }else clippedText(g,r,dos,r.x+(r.w-(int)strlen(dos)*6)/2,r.y+r.h/2-4,1,C_WHITE);  // no title picture: the DOS name; a picture is shown whole
   g.drawRect(r.x,r.y,r.w,r.h,selected?C_YELLOW:C_GRAY);
   if(pinned)starMark(g,W,i);
 }
@@ -173,13 +191,21 @@ template<class G> void continueTile(G&g,int W,int i,const uint8_t*raw,int level,
   clippedText(g,r,lv,r.x+(r.w-(int)strlen(lv)*6*scale)/2,y+10*scale,scale,C_WHITE);
   g.drawRect(r.x,r.y,r.w,r.h,C_GRAY);
 }
+// The title bar's Search and Settings icons, 20 x 20 one-bit pictures (bit 19 is the left column), the same on both boards:
+// a magnifier (a round lens with a thick handle at 45 degrees) and a gear with eight teeth and a round hole.
+constexpr uint32_t MAGNIFIER20[20] = {0x00000,0x07E00,0x1FF80,0x3C3C0,0x381C0,0x700E0,0x700E0,0x700E0,0x700E0,0x700E0,
+  0x700E0,0x381C0,0x3C3C0,0x1FFF0,0x07E78,0x0003C,0x0001E,0x0000F,0x00007,0x00003};
+constexpr uint32_t GEAR20[20] = {0x00F00,0x00F00,0x18F18,0x3CF3C,0x3FFFC,0x1FFF8,0x0FFF0,0x0F0F0,0xFE07F,0xFE07F,
+  0xFE07F,0xFE07F,0x0F0F0,0x0FFF0,0x1FFF8,0x3FFFC,0x3CF3C,0x18F18,0x00F00,0x00F00};
+template<class G> void drawBits20(G&g,int x0,int y0,const uint32_t*rows,uint16_t c=C_WHITE) {
+  for(int y=0;y<20;y++)for(int x=0;x<20;){if(!(rows[y]>>(19-x)&1)){x++;continue;}int e=x;while(e<20&&(rows[y]>>(19-e)&1))e++;g.fillRect(x0+x,y0+y,e-x,1,c);x=e;}
+}
 template<class G> void libraryFrame(G&g,int W,int H,const char*breadcrumb,int page,int pages,const char*action,bool back=true) {
   // back=false on the root page (nothing above it); action=nullptr leaves the right-hand footer button off
   g.fillRect(0,0,W,32,C_DARK);if(back)drawButton(g,0,0,32,32,"<");
   int bx=back?36:8;Tile clip={bx,0,W-68-bx,32,0,0};clippedText(g,clip,breadcrumb,bx,12,1,C_WHITE);
   drawButton(g,W-64,0,W-32,32,"");drawButton(g,W-32,0,W,32,"");
-  g.fillCircle(W-51,12,7,C_WHITE);g.fillCircle(W-51,12,5,C_DARK);g.fillRect(W-47,18,9,3,C_WHITE);
-  g.fillCircle(W-16,16,9,C_WHITE);g.fillCircle(W-16,16,4,C_DARK);g.fillRect(W-18,3,4,4,C_WHITE);g.fillRect(W-18,25,4,4,C_WHITE);g.fillRect(W-29,14,4,4,C_WHITE);g.fillRect(W-7,14,4,4,C_WHITE);
+  drawBits20(g,W-58,6,MAGNIFIER20);drawBits20(g,W-26,6,GEAR20);
   int f=footer(W);g.fillRect(0,f,W,H-f,C_BLACK);drawButton(g,0,f,48,H,"<");drawButton(g,50,f,98,H,">");
   char count[24];snprintf(count,sizeof count,"%d/%d",page+1,pages?pages:1);
   Tile c={102,f,W-204,H-f,0,0};clippedText(g,c,count,108,f+(H-f-8)/2,1,C_WHITE);if(action)drawButton(g,W-100,f,W,H,action);

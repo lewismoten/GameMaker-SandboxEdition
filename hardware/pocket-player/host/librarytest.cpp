@@ -79,7 +79,7 @@ prs::drawPressed(fb,g);prs::drawPressed(fb,n);assert(!fb.clipped);save(fb,out+"/
       auto r=pk::tile(W,i);assert(pk::hitTile(W,r.x,r.y)==i);assert(pk::hitTile(W,r.x+r.w,r.y)==-1);assert(pk::hitTile(W,r.x,r.y+r.h)==-1);
       auto&m=records[i];uint32_t off,len;assert(pak.find(m.thumb,&off,&len));std::vector<uint8_t>b(len),raw(pk::THUMB_RAW);assert(readAt(f,off,b.data(),len));
       z_stream z={};assert(inflateInit2(&z,-15)==Z_OK);z.next_in=b.data()+4;z.avail_in=len-4;z.next_out=raw.data();z.avail_out=raw.size();assert(inflate(&z,Z_FINISH)==Z_STREAM_END&&z.total_out==pk::THUMB_RAW);inflateEnd(&z);assert(pk::thumb(raw.data(),raw.size()));
-      pk::thumbnail(fb,W,i,raw.data(),m.dos,i==0);
+      pk::thumbnail(fb,W,i,raw.data(),m.dos,i==0,false,false,m.title,m.course);  // Starters carry a text caption (main.cpp)
     }
     assert(!fb.clipped);save(fb,out+"/thumbnails-"+std::to_string(W)+".ppm");
     // The home page with Continue first (main.cpp CONTINUE_SLOT): the game's picture and level, then the card-out state.
