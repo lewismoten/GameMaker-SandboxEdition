@@ -163,3 +163,5 @@ ready message; stdout also stays in `node_modules/.cache/games-dev.log`. Admissi
 and errors stay visible in the console. `web/test/devGames.test.mjs` checks both
 fresh and existing disks; `web/test/buildGames.test.mjs` checks progress before completion. The development page labels generated disk,
 walk-path and printable updates as rebuilt game files, with source updates labeled separately.
+
+`decl-preflight.mjs` compares each SDK package's newest `src` mtime (plus `package.json` and `tsconfig.json`; test files ignored) with the newest `dist/types/*.d.ts`, in build order (engine, archives, tools; a stale package makes the later ones stale). It exits 1 with "run `npm run build:packages`" when any is stale or missing, or rebuilds only those with `--fix`. It runs as web's `pretypecheck` and `prelint` and as the merge gate's `declarations` step before `tsc`. A checkout or merge touches source mtimes, so it can report stale when nothing changed; rebuilding is harmless. Tests: `web/test/declPreflight.test.mjs`.
