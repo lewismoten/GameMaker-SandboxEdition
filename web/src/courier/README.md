@@ -37,7 +37,8 @@ the desk and SCOOT.EXE on the PC, so it loads nothing from `src/desk/` (the PC i
 - `capsuleFile.ts`: saving SCOOT.SCT through the browser's download and opening one through its
   file picker (the card's Setup and SCOOT.EXE's Setup).
 - `scootExe.ts`: SCOOT.EXE in `C:\COMM`, a text-mode reader with Mail, Postcards, Packages and
-  Setup.
+  Setup (the Quiet switch, and Send Scoot on a trip / Scoot is back, which save and open SCOOT.SCT
+  through the browser, as the card does).
 
 Letters come from BBS calls: `retro/bbs/courierMail.ts` sends a board's letter as a mail packet
 the first time a call to it connects. The card is `desk/buddy/courierCard.ts`.
