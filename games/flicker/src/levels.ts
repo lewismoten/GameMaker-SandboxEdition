@@ -209,24 +209,25 @@ function falls(): Level {
   g.put(12, GROUND - 1, 'b')
     .put(35, GROUND - 1, 'f')
     .put(53, GROUND - 1, 'b')
-    .put(44, 1, '(')
-    .put(45, 1, ')');
+    .put(44, 5, '(')
+    .put(45, 5, ')');
   const m = new StarterMap(book, g.rows());
   const L = 15;
   const R = 31;
   const F = 21;
-  for (let y = 3; y <= 10; y++)
+  // the view keeps the hero about 5 rows down, so rows above 5 are never on screen (ground row 11, view clamped to the map bottom): the cliff and lip start at row 5
+  for (let y = 5; y <= 10; y++)
     for (let x = L; x <= R; x++) {
       const side = x === L ? 'L' : x === R ? 'R' : '';
-      m.set(x, y, y === 3 ? (side ? `rockTop${side}` : `rockTop.${x % 2}`) : side ? `rock${side}` : `rock.${(x + y) % 3}`);
+      m.set(x, y, y === 5 ? (side ? `rockTop${side}` : `rockTop.${x % 2}`) : side ? `rock${side}` : `rock.${(x + y) % 3}`);
     }
   COLS.forEach((col, i) => {
-    m.set(F + i, 3, `lip${col}.0`);
-    for (let y = 4; y <= 9; y++) m.set(F + i, y, `fall${col}.0`);
+    m.set(F + i, 5, `lip${col}.0`);
+    for (let y = 6; y <= 9; y++) m.set(F + i, y, `fall${col}.0`);
     m.set(F + i, 10, `splash${col}.0`);
     things.push(
-      { ring: `lip${col}`, x: F + i, y: 3, kind: 'lip' },
-      { ring: `fall${col}`, x: F + i, y: 6, kind: 'fall' },
+      { ring: `lip${col}`, x: F + i, y: 5, kind: 'lip' },
+      { ring: `fall${col}`, x: F + i, y: 7, kind: 'fall' },
       { ring: `splash${col}`, x: F + i, y: 10, kind: 'splash' },
     );
   });
