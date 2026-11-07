@@ -1,0 +1,22 @@
+/* Keep the hardware form readable and entirely visible on a portrait phone. */
+.machine-settings {
+  width: min(380px, 100%);
+  display: grid;
+  gap: 10px;
+}
+.machine-settings p {
+  margin: 0;
+}
+.machine-settings label {
+  display: grid;
+  gap: 4px;
+}
+.machine-settings select {
+  width: 100%;
+  min-width: 0;
+  min-height: 32px;
+}
+.machine-settings .machine-note {
+  font-size: 0.85rem;
+  line-height: 1.35;
+}
