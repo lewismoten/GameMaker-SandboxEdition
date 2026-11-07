@@ -86,18 +86,18 @@ function crack(pal: Pal, dust: boolean): Pixels {
     p.rect(3, 13, 4, 2, s[3]).rect(12, 14, 5, 1, s[3]);
     return inked(pal, p);
   }
-  p.rect(0, 15, 10, 5, s[2]).rect(0, 15, 10, 1, s[4]);
-  p.rect(10, 10, 10, 10, s[3]).rect(10, 10, 10, 2, s[4]).rect(10, 10, 1, 10, s[2]);
+  p.rect(0, 11, 10, 9, s[2]).rect(0, 11, 10, 1, s[4]);
+  p.rect(10, 6, 10, 14, s[3]).rect(10, 6, 10, 2, s[4]).rect(10, 6, 1, 14, s[2]);
   const pts: [number, number][] = [
-    [10, 10],
-    [8, 13],
-    [11, 15],
-    [8, 17],
+    [10, 6],
+    [8, 9],
+    [11, 12],
+    [8, 15],
     [10, 19],
   ];
   for (let i = 1; i < pts.length; i++) p.line(pts[i - 1][0], pts[i - 1][1], pts[i][0], pts[i][1], c('ink', 0));
-  p.line(13, 13, 15, 15, c('ink', 1)).line(15, 15, 14, 18, c('ink', 1));
-  p.rect(2, 13, 2, 2, s[3]).rect(5, 14, 2, 1, s[4]);
+  p.line(13, 10, 15, 13, c('ink', 1)).line(15, 13, 14, 17, c('ink', 1));
+  p.rect(2, 13, 2, 2, s[3]).rect(5, 15, 2, 1, s[4]);
   return inked(pal, p);
 }
 

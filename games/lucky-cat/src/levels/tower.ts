@@ -10,20 +10,20 @@ import { Grid } from '../../../kit/starter/grid';
 import { CROW } from '../monsters';
 import { addSigns, onGround, startBook, type Level } from '../level';
 
-/** The tower's size: 30 blocks wide and tall, its street on row 27. */
+/** The tower's size: 30 blocks wide, 33 tall, its street on row 30. */
 const W = 30;
-const H = 30;
-const STREET = 27;
+const H = 33;
+const STREET = 30;
 
 /** The rows of the four floors' planks, bottom to top (a person stands on the row above). */
-export const FLOORS = [22, 17, 12, 6] as const;
+export const FLOORS = [25, 20, 15, 7] as const;
 
 export const TOWER = {
   ladder: 4,
   liftRight: 26,
   box: 14,
   crow: 15,
-  crowRow: 7,
+  crowRow: 10,
   bell: 12,
   exit: 6,
 } as const;
@@ -54,7 +54,7 @@ export function levelTower(pal: Pal): Level {
   g.put(TOWER.exit, FLOORS[3] - 2, 'e').put(TOWER.exit, FLOORS[3] - 1, 'E');
   const m = new StarterMap(book, g.rows());
   // a brick ceiling over the top floor
-  for (let x = 1; x < W - 1; x++) m.set(x, 1, 'brick');
+  for (let x = 1; x < W - 1; x++) m.set(x, 2, 'brick');
   // the two umbrella lifts (right end): floor 1 to 2, floor 3 to 4
   const colors = ['brollyRed', 'brollyGold', 'brollyTeal'];
   for (const [low, top] of [
@@ -70,7 +70,7 @@ export function levelTower(pal: Pal): Level {
   m.mon(CROW.bobbing, TOWER.crow, TOWER.crowRow);
   m.set(TOWER.bell, FLOORS[3] - 1, 'charm.bell');
   // the clock's face on the wall of the bell chamber
-  m.set(18, 2, 'clockTL').set(19, 2, 'clockTR').set(18, 3, 'clockBL').set(19, 3, 'clockBR');
+  m.set(18, 3, 'clockTL').set(19, 3, 'clockTR').set(18, 4, 'clockBL').set(19, 4, 'clockBR');
   m.sign(8, onGround(FLOORS[0], s.tower), s.tower);
   m.sign(17, onGround(FLOORS[1], s.boxes), s.boxes);
   m.sign(8, onGround(FLOORS[2], s.crow), s.crow);

@@ -34,7 +34,7 @@ const cat = catPicture(buildCatBlocks(pal), 'stand.top', 'stand');
 view.blit(cat, 4 * 20, 60, 255);
 writePng(join(out, 'lucky-cat-level.png'), view, swapped(pal, LOOKS[l.look]), 2);
 
-const reel = endingReel(pal, levels[0].book, catPicture(buildCatBlocks(pal), 'cheer.top', 'jump'), rascalPicture(pal, levels[5].book));
+const reel = endingReel(pal, levels[0].book, catPicture(buildCatBlocks(pal), 'cheer.top', 'jump'), rascalPicture(pal, levels[levels.length - 1].book));
 const frame = new Pixels(320, 200);
 frame.px.set(reel.frames[24]);
 writePng(join(out, 'lucky-cat-ending.png'), frame, reel.palettes[24], 2);

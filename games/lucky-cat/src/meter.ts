@@ -12,7 +12,7 @@ import { fairGate, pip } from './props';
 
 /** Ticks the gate stays open, and the bells' share of it. */
 export const BELLS = 7;
-export const OPEN_TICKS = BELLS * 100;
+export const OPEN_TICKS = BELLS * 130;
 /** Ticks the gate stays shut. */
 export const SHUT_TICKS = 150;
 export const CYCLE = OPEN_TICKS + SHUT_TICKS;

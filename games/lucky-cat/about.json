@@ -15,5 +15,6 @@
     "band": "#3a2f6b",
     "ink": "#1a1830",
     "logo": "SANDBOX SOFTWARE"
-  }
+  },
+  "acceptedFindings": ["facing s2 The hero climbs side on", "facing s3 The hero climbs side on"]
 }

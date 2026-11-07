@@ -87,7 +87,7 @@ levels.forEach((l, i) => {
   disk.put(`${l.file}.gif`, gif(cardPicture(lp, base, cat, i + 1, levels.length, l.title, l.hint), lp));
   (CARDS[l.file] ?? []).forEach((lines, k) => {
     disk.put(`${l.file}s${k}.gif`, gif(storyCard(lp, base, cat, lines, 40 + i * 3 + k), lp));
-    slides.push({ name: `${l.file}s${k}.gif`, pause: 7 });
+    slides.push({ name: `${l.file}s${k}.gif`, pause: 8 });
   });
   disk.put(`${l.file}.lst`, serializeSlideList(slides));
 });
@@ -119,7 +119,7 @@ disk.put(
   serializeSlideList([
     { name: SANDLOGO, pause: 0 },
     { name: 'intro.fli', pause: 0 },
-    { name: 'title.gif', pause: 12 },
+    { name: 'title.gif', pause: 14 },
   ]),
 );
 disk.put('menu.gif', gif(menuPicture(pal, base, cat, TITLE), pal));
