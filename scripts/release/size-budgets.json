@@ -1,12 +1,12 @@
 {
   "about": "npm run release:sizes. Limits for what a release distributes, set on 2026-11-07 a little above that day's sizes; raise one only on purpose, with the reason in the commit.",
   "pages": {
-    "totalMB": 999,
-    "fileMB": 999,
-    "gameZipMB": 999,
-    "foldersMB": {}
+    "totalMB": 160,
+    "fileMB": 5,
+    "gameZipMB": 4,
+    "foldersMB": { "games/originals": 55, "trinkets": 42, "laser": 12, "assets": 10, "pocket": 9 }
   },
-  "offline": { "transferMB": 999 },
+  "offline": { "transferMB": 85 },
   "packages": {
     "engine": { "tarballKB": 256, "unpackedKB": 768 },
     "archives": { "tarballKB": 96, "unpackedKB": 256 },
