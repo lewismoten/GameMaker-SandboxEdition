@@ -100,12 +100,26 @@ export class TextKeys {
     this.queue.length = 0;
   }
 
+  /** Uses up a waiting Ctrl+C or Ctrl+Break (DOS looks for one between a batch file's lines). */
+  takeBreak(): boolean {
+    if (this.aborting) throw new ProgramAborted();
+    const i = this.queue.findIndex(isBreak);
+    if (i < 0) return false;
+    this.queue.splice(i, 1);
+    return true;
+  }
+
   /** Rejects pending waits by handing them Escape (used when a program is cut short). */
   cancel(): void {
     const w = this.waiters;
     this.waiters = [];
     w.forEach((f) => f.resolve(key('Escape')));
   }
+}
+
+/** Ctrl+C, or Ctrl+Break (Ctrl+Pause). */
+export function isBreak(k: Key): boolean {
+  return k.ctrl && (k.key === 'c' || k.key === 'C' || k.key === 'Pause' || k.key === 'Cancel');
 }
 
 export function key(k: string): Key {
