@@ -1,6 +1,9 @@
 // WIRED ROOM's two levels. Each is painted on a Grid (a block a character, see
 // games/kit/starter/map.ts for what the letters mean), then given its signs, levers and bridge.
 //
+// The screen is 16 blocks wide and the view starts centered on the entrance, so each level puts its pool
+// (the goal) in that first view, a few steps right of the entrance, with the signs about it beside the
+// entrance. The levers are behind the player, to the left: the way back is walked after seeing the bridge.
 //   1. Two Levers: two red levers on the path and a pool across it with six dotted planks over it.
 //      Each lever puts 3 on counter 22 and each plank takes 1 off, so one lever builds half the
 //      bridge and both build all of it. The pool is soft: a link at its bottom sends Lian back to the way in.
@@ -53,17 +56,19 @@ const onGround = (ground: number, s: Sign) => ground - 1 - s.board.length;
 
 export const GROUND = 10;
 /** Where each level's levers, ladder, pool and hatch are (columns), for the bot's route and the shots. */
-export const L1 = { leverA: 10, ladder: 13, ledge: [14, 19], leverB: 17, pool: 31 } as const;
-export const L2 = { leverA: 9, ladder: 15, ledge: [16, 28], leverB: 18, leverC: 26, hatch: 36, pool: 44 } as const;
+// The entrance is where the view starts: its 16 columns run from entrance - 8 to entrance + 7. The ladders are at the
+// east end of each ledge, so the levers are met walking west from the entrance and the way down is the same ladder.
+export const L1 = { entrance: 22, leverA: 9, ladder: 8, ledge: [2, 7], leverB: 4, pool: 24 } as const;
+export const L2 = { entrance: 44, leverA: 25, ladder: 18, ledge: [5, 17], leverB: 16, leverC: 8, hatch: 36, pool: 47 } as const;
 /** The row a lever stands in on the ledge in level 2: the ledge's top. */
 export const LEDGE_ROW = 5;
 
-/** The ground, the side walls, the entrance on the left (x 3) and the exit door at `exitX`. */
-function base(width: number, exitX: number): Grid {
+/** The ground, the side walls, the entrance at `entranceX` and the exit door at `exitX`. */
+function base(width: number, entranceX: number, exitX: number): Grid {
   const g = new Grid(width, 15);
   g.row(GROUND, 0, width - 1, 'G').fill(0, GROUND + 1, width, 4, 'D');
   g.col(0, 0, 9, 'X').col(width - 1, 0, 9, 'X');
-  g.put(3, 8, 's').put(3, 9, 'S');
+  g.put(entranceX, 8, 's').put(entranceX, 9, 'S');
   g.put(exitX, 8, 'e').put(exitX, 9, 'E');
   return g;
 }
@@ -86,66 +91,66 @@ function fillPool(m: StarterMap, x0: number, color: 'Red' | 'Blue'): [number, nu
   return drops;
 }
 
-/** Level 1: a lever on the path, a ladder to a second one on a ledge, then a pool with six dotted planks over it. 52 blocks wide. */
+/** Level 1: the pool with six dotted planks beside the entrance, then (to the left) a lever on the path and a ladder to a second one on a ledge. 44 blocks wide. */
 function twoLevers(book: Book, signs: Record<SignName, Sign>): { map: StarterMap; drops: [number, number][] } {
-  const g = base(52, 48);
+  const g = base(44, L1.entrance, 40);
   g.fill(L1.pool, GROUND, PLANKS, 3, ' ');
   g.row(LEDGE_ROW + 1, L1.ledge[0], L1.ledge[1], 'G').row(LEDGE_ROW + 2, L1.ledge[0], L1.ledge[1], 'D');
   g.col(L1.ladder, LEDGE_ROW, GROUND - 1, 'H');
   g.row(9, L1.pool, L1.pool + PLANKS - 1, 'c')
-    .row(9, 38, 41, 'c')
-    .row(LEDGE_ROW, 15, 15, 'c')
-    .row(LEDGE_ROW, 19, 19, 'c');
+    .row(9, 31, 34, 'c')
+    .row(LEDGE_ROW, 2, 2, 'c')
+    .row(LEDGE_ROW, 6, 6, 'c');
   scenery(
     g,
     [
-      [7, 2],
-      [22, 1],
-      [34, 3],
-      [44, 1],
+      [5, 2],
+      [17, 1],
+      [30, 3],
+      [38, 1],
     ],
-    [12, 30, 37],
-    [20, 25, 47],
+    [1, 23, 35],
+    [3, 5, 41],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(5, onGround(GROUND, signs.each), signs.each);
-  m.sign(21, onGround(GROUND, signs.six), signs.six);
-  m.sign(26, onGround(GROUND, signs.soft), signs.soft);
-  m.sign(44, onGround(GROUND, signs.exit), signs.exit);
+  m.sign(10, onGround(GROUND, signs.each), signs.each);
+  m.sign(14, onGround(GROUND, signs.soft), signs.soft);
+  m.sign(18, onGround(GROUND, signs.six), signs.six);
+  m.sign(36, onGround(GROUND, signs.exit), signs.exit);
   m.set(L1.leverA, GROUND - 1, 'leverRed');
   m.set(L1.leverB, LEDGE_ROW, 'leverRed');
   return { map: m, drops: fillPool(m, L1.pool, 'Red') };
 }
 
-/** Level 2: a blue lever on the path, a ladder to a ledge (blue lever, odd red lever), a hatch, then a blue pool. 62 blocks wide. */
+/** Level 2: the blue pool beside the entrance and a hatch in the path to its left, then (further left) a blue lever on the path and a ladder to a ledge (blue lever, odd red lever). 64 blocks wide. */
 function wiredRoom(book: Book, signs: Record<SignName, Sign>): { map: StarterMap; drops: [number, number][] } {
-  const g = base(62, 58);
+  const g = base(64, L2.entrance, 60);
   g.fill(L2.pool, GROUND, PLANKS, 3, ' ');
   g.fill(L2.hatch, GROUND + 1, HATCH_CELLS, 2, ' ');
-  // the ledge for the second blue lever and the odd red one, with a ladder up its near end
+  // the ledge for the second blue lever and the odd red one, with a ladder up its east end
   g.row(LEDGE_ROW + 1, L2.ledge[0], L2.ledge[1], 'G').row(LEDGE_ROW + 2, L2.ledge[0], L2.ledge[1], 'D');
   g.col(L2.ladder, LEDGE_ROW, GROUND - 1, 'H');
   g.row(9, L2.pool, L2.pool + PLANKS - 1, 'c')
-    .row(9, 56, 57, 'c')
-    .row(LEDGE_ROW, 16, 17, 'c');
+    .row(9, 54, 55, 'c')
+    .row(LEDGE_ROW, 14, 15, 'c');
   scenery(
     g,
     [
-      [7, 2],
-      [32, 1],
-      [48, 3],
-      [53, 1],
+      [3, 2],
+      [22, 1],
+      [40, 3],
+      [58, 2],
     ],
-    [10, 29, 38, 51],
-    [17, 30, 39],
+    [2, 24, 42],
+    [19, 45, 46],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(5, onGround(GROUND, signs.blue), signs.blue);
-  m.sign(11, onGround(GROUND, signs.upstairs), signs.upstairs);
-  m.sign(22, LEDGE_ROW - signs.redOdd.board.length, signs.redOdd);
-  m.sign(31, onGround(GROUND, signs.hatch), signs.hatch);
-  m.sign(40, onGround(GROUND, signs.both), signs.both);
-  m.sign(53, onGround(GROUND, signs.exit), signs.exit);
+  m.sign(38, onGround(GROUND, signs.hatch), signs.hatch);
+  m.sign(31, onGround(GROUND, signs.both), signs.both);
+  m.sign(27, onGround(GROUND, signs.blue), signs.blue);
+  m.sign(20, onGround(GROUND, signs.upstairs), signs.upstairs);
+  m.sign(10, LEDGE_ROW - signs.redOdd.board.length, signs.redOdd);
+  m.sign(56, onGround(GROUND, signs.exit), signs.exit);
   m.set(L2.leverA, GROUND - 1, 'leverBlue');
   m.set(L2.leverB, LEDGE_ROW, 'leverBlue');
   m.set(L2.leverC, LEDGE_ROW, 'leverHatch');

@@ -49,11 +49,11 @@ function counter(bot: StarterBot, which: number, want: number, what: string): vo
 const LOOK = 40;
 
 /** After a soft drop: a link took Kit back to the way in, with every life still there. */
-async function softDrop(bot: StarterBot, out: Result, lives: number, what: string): Promise<void> {
+async function softDrop(bot: StarterBot, out: Result, lives: number, what: string, entrance: number): Promise<void> {
   if (out !== 'link') throw new Error(`${what} should drop into the soft hole and link back; got ${out ?? 'nothing'}`);
   await must(bot, bot.wait(LOOK), 'watching the room start again');
   if (bot.sim.ci.lives !== lives) throw new Error(`${what}: lives ${lives} -> ${bot.sim.ci.lives}; a soft drop costs none`);
-  if (Math.abs(bot.px.x - 60) > 24) throw new Error(`${what}: back at x ${bot.px.x}, not at the way in`);
+  if (Math.abs(bot.px.x - entrance * 20) > 24) throw new Error(`${what}: back at x ${bot.px.x}, not at the way in`);
   bot.say(`${what}: back at the way in, ${lives} lives`);
 }
 
@@ -62,28 +62,30 @@ export async function twoLevers(bot: StarterBot): Promise<void> {
   let score = bot.sim.ci.score;
   const lives = bot.sim.ci.lives;
   counter(bot, ONE, 0, 'before the levers');
-  await must(bot, bot.walk(L1.leverA + 1, 'through the first lever'), 'into the first lever');
+  // the pool is in the first view; the levers are behind Kit, to the west
+  await must(bot, bot.walk(L1.leverA - 1, 'through the first lever'), 'into the first lever');
   await must(bot, bot.wait(LOOK), 'watching the lever');
   counter(bot, ONE, HALF, 'after one lever');
   await must(bot, bot.walk(L1.pool - 1, 'the dotted planks'), 'to the planks');
   // what THE BRIDGE NEEDS 6 teaches, once, on purpose: three planks are not enough, and the pool is soft
-  await softDrop(bot, await bot.walk(L1.pool + PLANKS + 1, 'across the short bridge'), lives, 'one lever');
+  await softDrop(bot, await bot.walk(L1.pool + PLANKS + 1, 'across the short bridge'), lives, 'one lever', L1.entrance);
   counter(bot, ONE, 0, 'after the three planks');
   score = bot.sim.ci.score; // the score is kept; the room's coins are back, so count them from here
-  await must(bot, bot.walk(L1.leverA + 1, 'through the first lever again'), 'into the first lever again');
-  await must(bot, bot.walk(L1.ladder - 1, 'the ladder'), 'to the ladder');
+  await must(bot, bot.walk(L1.leverA - 1, 'through the first lever again'), 'into the first lever again');
   await must(bot, bot.walk(L1.ladder, 'the ladder'), 'onto the ladder');
   await must(bot, bot.climb('up', LEDGE_ROW, 'up the ladder'), 'climb');
-  await must(bot, bot.walk(L1.leverB + 1, 'through the second lever'), 'into the second lever');
+  await must(bot, bot.walk(L1.leverB - 1, 'through the second lever'), 'into the second lever');
   await must(bot, bot.wait(LOOK), 'watching the lever');
   counter(bot, ONE, PLANKS, 'after both levers');
-  await must(bot, bot.walk(L1.ledge[1] + 1, 'off the ledge'), 'off the ledge');
+  await must(bot, bot.walk(L1.ledge[0], 'the far coin'), 'the far coin');
+  await must(bot, bot.walk(L1.ladder, 'back to the ladder'), 'back to the ladder');
+  await must(bot, bot.climb('down', GROUND - 1, 'down the ladder'), 'climb down');
   await must(bot, bot.walk(L1.pool - 1, 'the dotted planks'), 'to the planks');
   await must(bot, bot.walk(L1.pool + PLANKS + 1, 'across the planks'), 'across the planks');
   counter(bot, ONE, 0, 'after the planks');
-  await must(bot, bot.walk(41, 'the coins'), 'the coins');
+  await must(bot, bot.walk(35, 'the coins'), 'the coins');
   coins(bot, score, PLANKS + 6, 'level 1 before the exit');
-  await leave(bot, bot.walk(49, 'the exit'), 'the exit');
+  await leave(bot, bot.walk(41, 'the exit'), 'the exit');
 }
 
 /** 2. Wired Room: the blue pair and the odd red lever, a hatch that drops Kit, then the blue pair alone. */
@@ -92,34 +94,33 @@ export async function wiredRoom(bot: StarterBot): Promise<void> {
   const lives = bot.sim.ci.lives;
   counter(bot, TWO, 0, 'before the levers');
   counter(bot, HATCH, 0, 'before the red lever');
-  await must(bot, bot.walk(L2.leverA + 1, 'through the first blue lever'), 'into the blue lever');
-  await must(bot, bot.walk(L2.ladder - 1, 'the ladder'), 'to the ladder');
+  // the pool and the hatch are in the first view; the levers are to the west, past the hatch (shut)
+  await must(bot, bot.walk(L2.leverA - 1, 'through the first blue lever'), 'into the blue lever');
   await must(bot, bot.walk(L2.ladder, 'the ladder'), 'onto the ladder');
   await must(bot, bot.climb('up', LEDGE_ROW, 'up the ladder'), 'climb');
-  await must(bot, bot.walk(L2.leverB + 1, 'through the second blue lever'), 'into the second blue lever');
+  await must(bot, bot.walk(L2.leverB - 1, 'through the second blue lever'), 'into the second blue lever');
   counter(bot, TWO, PLANKS, 'after both blue levers');
   // what RED LEVER OPENS THE HATCH teaches, once, on purpose: the hatch is wired to the red lever
-  await must(bot, bot.walk(L2.leverC + 1, 'through the red lever'), 'into the red lever');
+  await must(bot, bot.walk(L2.leverC - 1, 'through the red lever'), 'into the red lever');
   counter(bot, HATCH, HATCH_CELLS, 'after the red lever');
-  await must(bot, bot.walk(L2.ledge[1] + 1, 'off the ledge'), 'off the ledge');
+  await must(bot, bot.walk(L2.ledge[0], 'the far coin'), 'the far coin');
+  await must(bot, bot.walk(L2.ladder, 'back to the ladder'), 'back to the ladder');
+  await must(bot, bot.climb('down', GROUND - 1, 'down the ladder'), 'climb down');
   await must(bot, bot.walk(L2.hatch - 2, 'the hatch'), 'to the hatch');
-  await softDrop(bot, await bot.walk(L2.hatch + HATCH_CELLS + 2, 'over the hatch'), lives, 'the hatch');
+  await softDrop(bot, await bot.walk(L2.hatch + HATCH_CELLS + 2, 'over the hatch'), lives, 'the hatch', L2.entrance);
   counter(bot, HATCH, 0, 'after the hatch opened');
   score = bot.sim.ci.score;
   // the room starts again: this time only the blue pair (the six held over are not needed, but the hatch is shut)
-  await must(bot, bot.walk(L2.leverA + 1, 'through the first blue lever again'), 'into the blue lever again');
-  await must(bot, bot.walk(L2.ladder - 1, 'the ladder'), 'to the ladder');
+  await must(bot, bot.walk(L2.leverA - 1, 'through the first blue lever again'), 'into the blue lever again');
   await must(bot, bot.walk(L2.ladder, 'the ladder'), 'onto the ladder');
   await must(bot, bot.climb('up', LEDGE_ROW, 'up the ladder'), 'climb');
-  await must(bot, bot.walk(L2.leverB + 1, 'through the second blue lever again'), 'into the second blue lever again');
+  await must(bot, bot.walk(L2.leverB - 1, 'through the second blue lever again'), 'into the second blue lever again');
+  await must(bot, bot.walk(L2.leverB - 2, 'the coins before the red lever'), 'the coins');
   await must(bot, bot.walk(L2.ladder, 'back to the ladder (not on to the red lever)'), 'back to the ladder');
   await must(bot, bot.climb('down', GROUND - 1, 'down the ladder'), 'climb down');
-  await must(bot, bot.walk(L2.hatch - 1, 'the hatch'), 'to the hatch');
-  await must(bot, bot.walk(L2.hatch + HATCH_CELLS + 1, 'across the shut hatch'), 'across the hatch');
-  counter(bot, HATCH, 0, 'after the shut hatch');
   await must(bot, bot.walk(L2.pool - 1, 'the blue planks'), 'to the blue planks');
   await must(bot, bot.walk(L2.pool + PLANKS + 1, 'across the blue planks'), 'across the blue planks');
-  await must(bot, bot.walk(57, 'the coins'), 'the coins');
+  await must(bot, bot.walk(55, 'the coins'), 'the coins');
   coins(bot, score, PLANKS + 4, 'level 2 before the exit');
-  await leave(bot, bot.walk(59, 'the exit'), 'the exit');
+  await leave(bot, bot.walk(61, 'the exit'), 'the exit');
 }
