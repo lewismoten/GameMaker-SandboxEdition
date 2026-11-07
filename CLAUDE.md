@@ -24,7 +24,9 @@ Vite, vitest and vite-node resolve the SDKs straight from `src/` through the
 `gamemaker-source` export condition (`web/vite.config.ts`, `scripts/game-build.config.mjs`).
 `tsc` has no such condition, so it appears to read each package's `dist/types`. After
 changing a package's exports, run `npm run build:packages` from the root before the
-typecheck.
+typecheck. `scripts/decl-preflight.mjs` guards this: `npm run typecheck`, `npm run lint` (web)
+and the merge gate fail with that instruction when a package's `src` is newer than its
+`dist/types` (`--fix` rebuilds only the stale ones). A bare `npx tsc` skips the check.
 
 The app has three HTML entry points (`web/src/README.md` maps the details):
 
