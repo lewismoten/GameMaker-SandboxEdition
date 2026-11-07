@@ -4,7 +4,7 @@
 import { recordedDemo } from '@lewismoten/gamemaker-sandbox-tools/kit/recordedDemo';
 
 const RECORDED: number[] = [
-  1, 77, 40, 205, 103, 77, 25, 205, 103, 77, 25, 205, 265, 77, 10, 205, 103, 77, 95, 205, 103, 77, 25, 205, 223, 77, 35, 205, 103, 77,
+  1, 77, 40, 205, 103, 77, 25, 205, 103, 77, 50, 205, 480, 75, 15, 203, 103, 77, 90, 205, 103, 77, 15, 205, 293, 77, 50, 205, 103, 77,
 ];
 
 export function demoRecording(): Uint8Array {
