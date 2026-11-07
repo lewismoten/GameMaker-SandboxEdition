@@ -1067,6 +1067,7 @@ static void drawPicker(bool clear = true, bool paging = false) {
     else {int i=catalog->matches[at];pk::Meta m;gameMeta(games[i],m);uint8_t*raw=preview(games[i]);pk::thumbnail(tft,scr::W,r,raw,m.dos,i==selected,true);free(raw);}
   }
   if(!was)unmountSD();
+  if(!count&&searchText[0])pk::drawSmallIcon(tft,17,16,68,true);
   if(!count){tft.setTextColor(C_WHITE,C_BLACK);tft.setTextSize(1);tft.setCursor(16,90);tft.print(searchText[0]?"No matching titles":"No games found");}
   if(uidConflict){tft.setTextColor(C_YELLOW,C_BLACK);tft.setTextSize(1);tft.setCursor(4,188);tft.print("UID conflict: first copy kept");}
   if(catalogOverflow){tft.setTextColor(C_YELLOW,C_BLACK);tft.setTextSize(1);tft.setCursor(4,198);tft.print("Library limit: 512 games / 24 collections");}
@@ -1076,6 +1077,7 @@ static void drawSearch() {
   tft.fillScreen(C_BLACK);pk::drawKeyboard(tft,scr::W,scr::H,32,searchText);
   pk::drawButton(tft,0,0,40,32,"<");
   pk::drawButton(tft,42,0,scr::W,32,searchAll?"All games":"This category");
+  pk::drawSmallIcon(tft,searchAll?0:18,50,8,true);
 }
 static void drawDetails() {
   tft.fillScreen(C_BLACK);title("Game details");

@@ -180,14 +180,23 @@ add(
   }
   add('Bizarre', g);
 }
-// 11 My games: a pencil
+// 11 My games: a blue folder with a gold star
 {
   const g = blank();
-  line(g, 4, 11, 12, 3, 'y', 3);
-  line(g, 5, 12, 13, 4, 'o', 1);
-  rect(g, 2, 11, 3, 3, 't');
-  rect(g, 2, 13, 2, 2, 'k');
-  rect(g, 12, 2, 3, 3, 'r');
+  rect(g, 1, 2, 6, 2, 'b');
+  rect(g, 1, 4, 14, 10, 'b');
+  rect(g, 2, 5, 12, 8, 'l');
+  for (const [x, y, w] of [
+    [7, 5, 2],
+    [7, 6, 2],
+    [4, 7, 8],
+    [5, 8, 6],
+    [6, 9, 4],
+    [5, 10, 6],
+    [5, 11, 2],
+    [9, 11, 2],
+  ])
+    rect(g, x, y, w, 1, 'y');
   add('My games', g);
 }
 // 12 Imported: a tray with an arrow coming down into it

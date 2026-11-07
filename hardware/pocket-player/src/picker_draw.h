@@ -98,6 +98,11 @@ template<class G> void drawTileIcon(G&g,int icon,int cx,int y,bool panelOrder=fa
     g.pushImage(cx-16,y+sy*2,32,1,row);g.pushImage(cx-16,y+sy*2+1,32,1,row);
   }
 }
+// The same icon at 1x on the dark button backing, top left at x, y.
+template<class G> void drawSmallIcon(G&g,int icon,int x,int y,bool panelOrder=false) {
+  uint16_t row[16];
+  for(int sy=0;sy<16;sy++){for(int sx=0;sx<16;sx++){uint8_t v=ICONS[icon][sy*16+sx];uint16_t c=v?ICON_PALETTE[v]:C_DARK;if(panelOrder)c=(c<<8)|(c>>8);row[sx]=c;}g.pushImage(x,y+sy,16,1,row);}
+}
 // icon < 0: the name alone. The icon is dropped when the name needs its room.
 template<class G> void tileLabel(G&g,int W,int i,const char*label,bool selected=false,int icon=-1,bool panelOrder=false) {
   auto r=tile(W,i);g.fillRect(r.x,r.y,r.w,r.h,C_DARK);g.drawRect(r.x,r.y,r.w,r.h,selected?C_YELLOW:C_GRAY);
@@ -117,11 +122,8 @@ template<class G> void thumbnail(G&g,int W,int i,const uint8_t*raw,const char*do
   if(raw){uint16_t row[144];for(int y=0;y<r.ph;y++){
     for(int x=0;x<r.pw;x++){int idx=raw[524+(y*60/r.ph)*96+x*96/r.pw];uint16_t c=raw[12+idx*2]|(raw[13+idx*2]<<8);row[x]=panelOrder?(c<<8)|(c>>8):c;}
     g.pushImage(r.x,y0+y,r.pw,1,row);
-  }}else clippedText(g,r,"No preview",r.x+(r.w-60)/2,r.y+r.h/2-4,1,C_WHITE);
-  char name[9];size_t n=strlen(dos);if(n>8)n=8;memcpy(name,dos,n);name[n]=0;
-  int scale=W==320?1:2,x=r.x+(r.w-(int)n*6*scale)/2,y=y0+r.ph-8*scale-2;
-  for(int dy=-1;dy<=1;dy++)for(int dx=-1;dx<=1;dx++)if(dx||dy)clippedText(g,r,name,x+dx,y+dy,scale,C_BLACK);
-  clippedText(g,r,name,x,y,scale,C_WHITE);g.drawRect(r.x,r.y,r.w,r.h,selected?C_YELLOW:C_GRAY);
+  }}else clippedText(g,r,dos,r.x+(r.w-(int)strlen(dos)*6)/2,r.y+r.h/2-4,1,C_WHITE);  // no title picture: the DOS name; a picture is shown whole
+  g.drawRect(r.x,r.y,r.w,r.h,selected?C_YELLOW:C_GRAY);
 }
 template<class G> void libraryFrame(G&g,int W,int H,const char*breadcrumb,int page,int pages,const char*action) {
   g.fillRect(0,0,W,32,C_DARK);drawButton(g,0,0,32,32,"<");
