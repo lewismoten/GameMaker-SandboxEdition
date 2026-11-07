@@ -41,7 +41,16 @@ export function level5(pal: Pal): Level {
   const g = room(AT5.width, AT5.exit);
   const m = new StarterMap(book, g.rows());
   street(m, 1, AT5.width - 2);
-  const shops: [number, number, 'wallA' | 'wallB'][] = [[8, 8, 'wallB'], [17, 9, 'wallA'], [27, 8, 'wallB'], [36, 10, 'wallA'], [47, 8, 'wallB'], [56, 9, 'wallA'], [66, 8, 'wallB'], [75, 9, 'wallA']];
+  const shops: [number, number, 'wallA' | 'wallB'][] = [
+    [8, 8, 'wallB'],
+    [17, 9, 'wallA'],
+    [27, 8, 'wallB'],
+    [36, 10, 'wallA'],
+    [47, 8, 'wallB'],
+    [56, 9, 'wallA'],
+    [66, 8, 'wallB'],
+    [75, 9, 'wallA'],
+  ];
   shops.forEach(([x, w, tone], i) => shop(m, x, w, tone, i % 3 === 0 ? 1 : w - 2));
   bunting(m, 6, 84, 2);
   for (const x of [30, 52, 68]) flagpole(m, x, GROUND, 6);

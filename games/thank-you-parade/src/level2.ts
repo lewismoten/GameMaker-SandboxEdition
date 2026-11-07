@@ -6,7 +6,7 @@ import { StarterMap } from '../../kit/starter/map';
 import type { Pal } from '../../kit/starter/palette';
 import { PULL } from '../../kit/starter/book';
 import { baseBook, type PBook } from './base';
-import { addCardBox, addGust, CARDS_WANTED } from './items';
+import { addCardBox, addGust } from './items';
 import { Level, GROUND, addSigns, bunting, column, flagpole, onGround, room, shop, street } from './lay';
 import { MONS } from './monsters';
 import { addBandArch } from './park';
@@ -23,7 +23,20 @@ export const CARDS_AT = [
   { x: 57, y: 9, until: 690 },
   { x: 68, y: 9, until: 800 },
 ] as const;
-export const AT2 = { start: 6, retry: 2, box: 76, exit: 83, width: 88, balloon: 62, segments: 5, perSegment: 160, plankRuns: [[28, 30], [46, 48]] } as const;
+export const AT2 = {
+  start: 6,
+  retry: 2,
+  box: 76,
+  exit: 83,
+  width: 88,
+  balloon: 62,
+  segments: 5,
+  perSegment: 160,
+  plankRuns: [
+    [28, 30],
+    [46, 48],
+  ],
+} as const;
 
 function timedCards(book: PBook): void {
   CARDS_AT.forEach((c, k) => {
@@ -47,7 +60,15 @@ export function level2(pal: Pal): Level {
   street(m, 1, AT2.width - 2);
   m.set(AT2.retry, GROUND - 2, 'doorTop').set(AT2.retry, GROUND - 1, 'doorBottom'); // the door that starts the level over
   // shop fronts along the street, with alleys between
-  const shops: [number, number, 'wallA' | 'wallB'][] = [[10, 7, 'wallA'], [19, 8, 'wallB'], [29, 7, 'wallA'], [38, 9, 'wallB'], [49, 8, 'wallA'], [59, 7, 'wallB'], [68, 7, 'wallA']];
+  const shops: [number, number, 'wallA' | 'wallB'][] = [
+    [10, 7, 'wallA'],
+    [19, 8, 'wallB'],
+    [29, 7, 'wallA'],
+    [38, 9, 'wallB'],
+    [49, 8, 'wallA'],
+    [59, 7, 'wallB'],
+    [68, 7, 'wallA'],
+  ];
   shops.forEach(([x, w, tone], i) => shop(m, x, w, tone, i % 2 ? w - 3 : 2));
   bunting(m, 8, 84, 2);
   flagpole(m, 34, GROUND, 6);

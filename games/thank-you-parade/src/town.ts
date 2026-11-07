@@ -38,7 +38,10 @@ export function addStreet(book: PBook, pal: Pal): void {
     book.add('walk', w, { solid: SOLID });
   }
   // ---- shop fronts: a wall (two colors), a window, an awning, a shop door, a roof trim
-  for (const [name, ramp] of [['wallA', 'parch'], ['wallB', 'teal']] as const) {
+  for (const [name, ramp] of [
+    ['wallA', 'parch'],
+    ['wallB', 'teal'],
+  ] as const) {
     const w = r(ramp);
     const p = new Pixels(20, 20, w[2]);
     for (let y = 4; y < 20; y += 5) p.rect(0, y, 20, 1, w[1]);
@@ -47,7 +50,12 @@ export function addStreet(book: PBook, pal: Pal): void {
     book.add(name, p, air);
     const win = new Pixels(20, 20, w[2]);
     win.rect(0, 0, 1, 20, w[3]);
-    win.rect(3, 3, 14, 14, c('ink', 0)).rect(4, 4, 12, 12, c('sky', 2)).rect(4, 4, 12, 3, c('sky', 4)).rect(9, 4, 2, 12, c('ink', 0)).rect(4, 10, 12, 1, c('ink', 0));
+    win
+      .rect(3, 3, 14, 14, c('ink', 0))
+      .rect(4, 4, 12, 12, c('sky', 2))
+      .rect(4, 4, 12, 3, c('sky', 4))
+      .rect(9, 4, 2, 12, c('ink', 0))
+      .rect(4, 10, 12, 1, c('ink', 0));
     win.rect(2, 17, 16, 2, w[4]);
     book.add(`${name}Win`, win, air);
   }
@@ -72,7 +80,15 @@ export function addStreet(book: PBook, pal: Pal): void {
     const t = new Pixels(20, 20, w[3]);
     t.rect(0, 14, 20, 6, w[2]).rect(0, 12, 20, 2, c('brick', 3)).rect(0, 11, 20, 1, c('brick', 5));
     for (let x = 1; x < 20; x += 4) t.rect(x, 15, 2, 4, w[1]);
-    book.add('cornice', outline(t.map((x, y, v) => (y < 11 ? S : v)), ink, { transparent: S }), air);
+    book.add(
+      'cornice',
+      outline(
+        t.map((_x, y, v) => (y < 11 ? S : v)),
+        ink,
+        { transparent: S },
+      ),
+      air,
+    );
   }
 }
 
@@ -84,7 +100,10 @@ export function addFlags(book: PBook, pal: Pal): void {
   const sky = () => new Pixels(20, 20, S);
 
   // ---- bunting: a string of little flags along the top of a block
-  for (const [name, a, b] of [['bunting0', 'red', 'blue'], ['bunting1', 'blue', 'red']] as const) {
+  for (const [name, a, b] of [
+    ['bunting0', 'red', 'blue'],
+    ['bunting1', 'blue', 'red'],
+  ] as const) {
     const p = sky();
     p.line(0, 1, 9, 5, ink).line(10, 5, 19, 1, ink);
     for (let k = 0; k < 4; k++) {
@@ -131,9 +150,8 @@ export function addFlags(book: PBook, pal: Pal): void {
 
 /** The thank-you card on the ground. */
 export function addCard(book: PBook, pal: Pal): void {
-  const { c, r } = pal;
+  const { c } = pal;
   const S = skyOf(pal);
-  const ink = c('ink', 0);
   const sky = () => new Pixels(20, 20, S);
 
   // ---- the thank-you card: a white card with a red ribbon and a few written lines, on the ground
@@ -142,12 +160,10 @@ export function addCard(book: PBook, pal: Pal): void {
     p.rect(3, 4, 14, 11, c('ink', 0)).rect(4, 5, 12, 9, c('white', 3)).rect(4, 5, 12, 1, c('white', 4));
     p.rect(6, 8, 8, 1, c('blue', 2)).rect(6, 10, 6, 1, c('blue', 2)).rect(6, 12, 7, 1, c('blue', 2));
     p.rect(2, 8, 16, 2, c('red', 3)).rect(2, 8, 16, 1, c('red', 4)); // a red ribbon across
-    p.rect(8, 6, 4, 2, c('red', 4)).rect(8, 10, 4, 2, c('red', 2)); // its bow
+    p.rect(3, 6, 3, 2, c('red', 4)).rect(3, 10, 3, 2, c('red', 2)); // its bow, at one end (never a cross)
     book.add('card', p, { ...air, score: CARD_POINTS, effect: CARDS, eamt: 1, touch: 'sky' });
   }
 }
-
-
 
 /** The neighbors on lawn chairs: waving a little flag, tipping a cap, and smiling with the card. */
 export function addNeighbors(book: PBook, pal: Pal): void {
@@ -176,7 +192,7 @@ export function addNeighbors(book: PBook, pal: Pal): void {
       if (state === 'done') {
         p.set(7, 8, ink).set(8, 9, ink).set(9, 9, ink).set(10, 9, ink).set(11, 8, ink);
         p.set(6, 7, c('pink', 2)).set(12, 7, c('pink', 2));
-        p.rect(7, 12, 6, 4, c('white', 3)).rect(7, 12, 6, 1, c('red', 3)).rect(9, 12, 2, 4, c('red', 3));
+        p.rect(7, 12, 6, 4, c('white', 3)).rect(7, 12, 6, 1, c('red', 3)).rect(8, 14, 4, 1, c('blue', 2));
         p.disc(6, 14, 1.6, skin[2]).disc(13, 14, 1.6, skin[2]);
       } else {
         p.set(8, 8, ink).set(9, 9, ink).set(10, 9, ink).set(11, 8, ink);

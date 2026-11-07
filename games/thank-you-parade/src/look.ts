@@ -50,7 +50,9 @@ function pennyHead(pal: Pal, face: Face, front = false, look = 0, raised: 'left'
   for (let y = 3; y <= 7; y++) {
     const half = y === 7 ? 5 : 4;
     p.rect(cx - half, y, half * 2 + 1, 1, hat[3]);
-    p.set(cx - half, y, hat[4]).set(cx + half, y, hat[1]).set(cx + half - 1, y, hat[2]);
+    p.set(cx - half, y, hat[4])
+      .set(cx + half, y, hat[1])
+      .set(cx + half - 1, y, hat[2]);
   }
   p.rect(cx - 4, 3, 9, 1, hat[4]);
   p.rect(cx - 6, 8, 13, 1, gold[4]);
@@ -58,8 +60,15 @@ function pennyHead(pal: Pal, face: Face, front = false, look = 0, raised: 'left'
   const vx = front ? 0 : 2;
   p.rect(cx - 7, 9, 15 + vx, 2, hat[0]).rect(cx - 7, 9, 15 + vx, 1, hat[1]);
   // the plume: a tall red feather rising from the crown and curling back
-  p.rect(cx - 1, 0, 5, 1, red[3]).rect(cx, 1, 4, 1, red[3]).rect(cx + 1, 2, 2, 1, red[3]).set(cx + 1, 3, red[2]);
-  p.set(cx, 0, red[4]).set(cx + 1, 1, red[4]).set(cx - 2, 0, red[2]).set(cx + 4, 0, red[2]).set(cx + 3, 1, red[2]);
+  p.rect(cx - 1, 0, 5, 1, red[3])
+    .rect(cx, 1, 4, 1, red[3])
+    .rect(cx + 1, 2, 2, 1, red[3])
+    .set(cx + 1, 3, red[2]);
+  p.set(cx, 0, red[4])
+    .set(cx + 1, 1, red[4])
+    .set(cx - 2, 0, red[2])
+    .set(cx + 4, 0, red[2])
+    .set(cx + 3, 1, red[2]);
   return p;
 }
 

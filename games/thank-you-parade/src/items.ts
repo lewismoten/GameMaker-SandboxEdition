@@ -92,19 +92,37 @@ export function addHall(book: PBook, pal: Pal): void {
     return outline(p, ink, { transparent: S });
   };
   const pickup = { ...air, effect: PARTS, eamt: 1, score: 25, touch: 'sky' };
-  book.add('partWheel', part((p) => {
-    p.disc(10, 10, 7.5, c('stone', 1)).disc(10, 10, 6, c('stone', 4));
-    for (let k = 0; k < 6; k++) p.line(10, 10, Math.round(10 + 5.5 * Math.cos((k * Math.PI) / 3 + 0.3)), Math.round(10 + 5.5 * Math.sin((k * Math.PI) / 3 + 0.3)), c('stone', 1));
-    p.disc(10, 10, 2.2, c('stone', 1)).disc(10, 10, 1, c('gold', 4));
-  }), pickup);
-  book.add('partStreamers', part((p) => {
-    p.disc(10, 10, 6.5, c('pink', 3)).disc(10, 10, 3, c('white', 3)).disc(10, 10, 1.2, c('pink', 1));
-    p.line(15, 14, 18, 19, c('gold', 4)).line(5, 14, 2, 19, c('teal', 3)).line(10, 16, 10, 20, c('red', 3));
-  }), pickup);
-  book.add('partFlowers', part((p) => {
-    p.rect(9, 10, 2, 9, c('green', 2));
-    for (const [x, y, k] of [[6, 7, 'red'], [14, 7, 'gold'], [10, 4, 'pink']] as const) p.disc(x, y, 3.2, r(k)[3]).disc(x, y, 1.2, c('white', 3));
-  }), pickup);
+  book.add(
+    'partWheel',
+    part((p) => {
+      p.disc(10, 10, 7.5, c('stone', 1)).disc(10, 10, 6, c('stone', 4));
+      for (let k = 0; k < 6; k++)
+        p.line(10, 10, Math.round(10 + 5.5 * Math.cos((k * Math.PI) / 3 + 0.3)), Math.round(10 + 5.5 * Math.sin((k * Math.PI) / 3 + 0.3)), c('stone', 1));
+      p.disc(10, 10, 2.2, c('stone', 1)).disc(10, 10, 1, c('gold', 4));
+    }),
+    pickup,
+  );
+  book.add(
+    'partStreamers',
+    part((p) => {
+      p.disc(10, 10, 6.5, c('pink', 3)).disc(10, 10, 3, c('white', 3)).disc(10, 10, 1.2, c('pink', 1));
+      p.line(15, 14, 18, 19, c('gold', 4)).line(5, 14, 2, 19, c('teal', 3)).line(10, 16, 10, 20, c('red', 3));
+    }),
+    pickup,
+  );
+  book.add(
+    'partFlowers',
+    part((p) => {
+      p.rect(9, 10, 2, 9, c('green', 2));
+      for (const [x, y, k] of [
+        [6, 7, 'red'],
+        [14, 7, 'gold'],
+        [10, 4, 'pink'],
+      ] as const)
+        p.disc(x, y, 3.2, r(k)[3]).disc(x, y, 1.2, c('white', 3));
+    }),
+    pickup,
+  );
   const float = (done: boolean): Pixels => {
     const p = new Pixels(20, 20, S);
     p.rect(0, 6, 20, 11, c('wood', 3)).rect(0, 6, 20, 2, c('wood', 4)).rect(0, 15, 20, 2, c('wood', 1));
@@ -130,7 +148,16 @@ export function addBeat(book: PBook, pal: Pal): void {
     p.rect(5, 17, 3, 1, c('white', 3));
     if (splash) {
       // a crown of drops thrown up in an arch, no two in a line
-      for (const [x, y] of [[3, 12], [6, 7], [10, 4], [14, 7], [17, 12], [8, 12], [12, 12]] as const) p.disc(x, y, 1.6, c('blue', 4)).set(x, y - 1, c('white', 3));
+      for (const [x, y] of [
+        [3, 12],
+        [6, 7],
+        [10, 4],
+        [14, 7],
+        [17, 12],
+        [8, 12],
+        [12, 12],
+      ] as const)
+        p.disc(x, y, 1.6, c('blue', 4)).set(x, y - 1, c('white', 3));
     }
     return outline(p, ink, { transparent: S });
   };
@@ -141,7 +168,10 @@ export function addBeat(book: PBook, pal: Pal): void {
   book.add('puddleB0', puddle(false), air);
   book.add('puddleB!', puddle(true), { ...air, hp: -10, touch: 'puddleB' });
   book.add('puddleB', puddle(false), air);
-  book.time('puddleB0', 'puddleB!', BEAT).time('puddleB!', 'puddleB', BEAT).time('puddleB', 'puddleB!', BEAT * 3);
+  book
+    .time('puddleB0', 'puddleB!', BEAT)
+    .time('puddleB!', 'puddleB', BEAT)
+    .time('puddleB', 'puddleB!', BEAT * 3);
   // the beat meter: four drums, each lit on its own beat of four
   const lamp = (on: boolean, k: number): Pixels => {
     const p = new Pixels(20, 20, S);
@@ -159,10 +189,19 @@ export function addBeat(book: PBook, pal: Pal): void {
   book.time('lamp0on', 'lamp0', BEAT).time('lamp0', 'lamp0on', BEAT * 3);
   for (let k = 1; k < 4; k++) {
     book.add(`lamp${k}start`, lamp(false, k), air);
-    book.time(`lamp${k}start`, `lamp${k}on`, BEAT * k).time(`lamp${k}on`, `lamp${k}`, BEAT).time(`lamp${k}`, `lamp${k}on`, BEAT * 3);
+    book
+      .time(`lamp${k}start`, `lamp${k}on`, BEAT * k)
+      .time(`lamp${k}on`, `lamp${k}`, BEAT)
+      .time(`lamp${k}`, `lamp${k}on`, BEAT * 3);
   }
   const note = new Pixels(20, 20, S);
-  note.disc(7, 14, 3.4, ink).disc(7, 14, 2.4, c('gold', 4)).rect(9, 3, 2, 12, ink).rect(10, 3, 1, 11, c('gold', 4)).rect(10, 3, 6, 3, ink).rect(11, 4, 4, 1, c('gold', 4));
+  note
+    .disc(7, 14, 3.4, ink)
+    .disc(7, 14, 2.4, c('gold', 4))
+    .rect(9, 3, 2, 12, ink)
+    .rect(10, 3, 1, 11, c('gold', 4))
+    .rect(10, 3, 6, 3, ink)
+    .rect(11, 4, 4, 1, c('gold', 4));
   book.add('note', note, { ...air, score: 10, touch: 'sky' });
 }
 
@@ -184,7 +223,11 @@ export function addFinale(book: PBook, pal: Pal): void {
   const bal = (sway: number): Pixels => {
     const p = new Pixels(20, 20, S);
     p.line(10, 12, 10 + sway, 19, pal.c('stone', 2));
-    for (const [x, y, k] of [[5, 6, 'red'], [10, 4, 'gold'], [15, 6, 'blue']] as const) {
+    for (const [x, y, k] of [
+      [5, 6, 'red'],
+      [10, 4, 'gold'],
+      [15, 6, 'blue'],
+    ] as const) {
       blob(p, x + sway / 2, y, 4, 5, r(k), 0, 4);
       p.set(x - 1 + sway / 2, y - 2, pal.c('white', 3));
       p.line(x + sway / 2, y + 5, 10, 12, pal.c('stone', 2));

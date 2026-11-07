@@ -38,7 +38,12 @@ export function introFli(pal: Pal, book: Book, penny: Pixels): Uint8Array {
   const bg = streetBackdrop(pal, book);
   const reel = new Reel(pal.pal);
   const rand = rng(12);
-  const sheets = Array.from({ length: 14 }, (_, i) => ({ y: 30 + Math.floor(rand() * 110), v: 3 + Math.floor(rand() * 5), x0: -20 - i * 18, card: i % 2 === 0 }));
+  const sheets = Array.from({ length: 14 }, (_, i) => ({
+    y: 30 + Math.floor(rand() * 110),
+    v: 3 + Math.floor(rand() * 5),
+    x0: -20 - i * 18,
+    card: i % 2 === 0,
+  }));
   const F = 110;
   const draw = (f: number) => (p: Pixels) => {
     // Penny stands at the left with her baton; her plume leans when the gust arrives
@@ -67,23 +72,36 @@ export function endingFli(pal: Pal, book: Book, penny: Pixels): Uint8Array {
   const street = streetBackdrop(pal, book);
   const reel = new Reel(pal.pal);
   const rand = rng(77);
-  const bits = Array.from({ length: 60 }, () => ({ x: Math.floor(rand() * W), y: Math.floor(rand() * H), v: 1 + Math.floor(rand() * 3), c: Math.floor(rand() * 5) }));
+  const bits = Array.from({ length: 60 }, () => ({
+    x: Math.floor(rand() * W),
+    y: Math.floor(rand() * H),
+    v: 1 + Math.floor(rand() * 3),
+    c: Math.floor(rand() * 5),
+  }));
   const cols = [pal.c('red', 3), pal.c('gold', 4), pal.c('blue', 3), pal.c('pink', 2), pal.c('green', 3)];
-  const confetti = (p: Pixels, f: number) => bits.forEach((b) => p.rect((b.x + f * (b.c - 2)) % W < 0 ? 0 : (b.x + f * (b.c - 2)) % W, (b.y + f * b.v) % 170, 3, 2, cols[b.c]));
+  const confetti = (p: Pixels, f: number) =>
+    bits.forEach((b) => p.rect((b.x + f * (b.c - 2)) % W < 0 ? 0 : (b.x + f * (b.c - 2)) % W, (b.y + f * b.v) % 170, 3, 2, cols[b.c]));
   // the plane and its banner, flying to the right: the banner trails behind it, left to right
   const plane = (p: Pixels, x: number, y: number) => {
     const ink = pal.c('ink', 0);
     const y1 = pal.r('gold');
-    p.rect(x, y + 6, 30, 8, ink).rect(x + 1, y + 7, 28, 6, y1[4]).rect(x + 1, y + 7, 28, 1, y1[5]);
+    p.rect(x, y + 6, 30, 8, ink)
+      .rect(x + 1, y + 7, 28, 6, y1[4])
+      .rect(x + 1, y + 7, 28, 1, y1[5]);
     p.rect(x + 6, y + 2, 14, 4, ink).rect(x + 7, y + 3, 12, 2, pal.c('red', 3)); // wing
     p.rect(x - 4, y + 3, 6, 6, ink).rect(x - 3, y + 4, 4, 4, pal.c('red', 3)); // tail fin
-    p.rect(x + 30, y + 8, 3, 4, ink).rect(x + 22, y + 4, 6, 3, ink).rect(x + 23, y + 5, 4, 1, pal.c('sky', 5)); // nose, cockpit
+    p.rect(x + 30, y + 8, 3, 4, ink)
+      .rect(x + 22, y + 4, 6, 3, ink)
+      .rect(x + 23, y + 5, 4, 1, pal.c('sky', 5)); // nose, cockpit
     p.rect(x + 33, y + 2 + ((x >> 1) % 2) * 6, 2, 6, pal.c('stone', 4)); // a whirring propeller
   };
   const banner = (p: Pixels, x: number, y: number) => {
     const w = 190;
     p.line(x - 4, y + 8, x - 40, y + 10, pal.c('ink', 0));
-    p.rect(x - 40 - w, y, w, 24, pal.c('ink', 0)).rect(x - 39 - w, y + 1, w - 2, 22, pal.c('white', 3)).rect(x - 39 - w, y + 1, w - 2, 2, pal.c('red', 3)).rect(x - 39 - w, y + 21, w - 2, 2, pal.c('red', 3));
+    p.rect(x - 40 - w, y, w, 24, pal.c('ink', 0))
+      .rect(x - 39 - w, y + 1, w - 2, 22, pal.c('white', 3))
+      .rect(x - 39 - w, y + 1, w - 2, 2, pal.c('red', 3))
+      .rect(x - 39 - w, y + 21, w - 2, 2, pal.c('red', 3));
     outlined(p, x - 40 - w + 10, y + 5, 'THANK YOU', pal.c('blue', 2), pal.c('white', 3), 2, pal.c('white', 3));
   };
   const flyover = (f: number) => (p: Pixels) => {
@@ -95,11 +113,19 @@ export function endingFli(pal: Pal, book: Book, penny: Pixels): Uint8Array {
   reel.fadeIn(sky, 4);
   for (let f = 0; f < 70; f++) reel.frame(sky, flyover(f), 1);
   // the town waves: neighbors along the street, the band, Penny in the middle
-  const folks: [string, number, number][] = [['vet0', 14, 100], ['vet1', 52, 100], ['vet2', 90, 100], ['kid.flute.happy', 128, 100], ['kid.drum.happy', 190, 100], ['vet3', 232, 100], ['vet0', 268, 100]];
+  const folks: [string, number, number][] = [
+    ['vet0', 14, 100],
+    ['vet1', 52, 100],
+    ['vet2', 90, 100],
+    ['kid.flute.happy', 128, 100],
+    ['kid.drum.happy', 190, 100],
+    ['vet3', 232, 100],
+    ['vet0', 268, 100],
+  ];
   const crowd = (f: number) => (p: Pixels) => {
     const wave = Math.floor(f / 5) % 2;
     folks.forEach(([n, x, y], i) => {
-      const name = n.startsWith('vet') ? (wave === (i % 2) ? n : `${n}Tip`) : n;
+      const name = n.startsWith('vet') ? (wave === i % 2 ? n : `${n}Tip`) : n;
       scaleBlit(p, book.pics.get(name)!, x, y + 22, 2, false, pal.c('sky', 3));
     });
     scaleBlit(p, penny, 140, 98, 2, false, 255);

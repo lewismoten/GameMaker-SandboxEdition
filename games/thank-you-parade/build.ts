@@ -71,7 +71,14 @@ const text = (base: string, heading: string, body: string) => {
 disk.put(SANDLOGO, sandLogoFli());
 disk.put('parade.fli', introFli(pal, gallery, hero));
 disk.put('title.gif', gif(titlePicture(pal, gallery, hero, 'THE THANK-YOU', 'PARADE', 'A SPECIAL FROM SANDBOX SOFTWARE'), pal));
-disk.put('title.lst', serializeSlideList([{ name: SANDLOGO, pause: 0 }, { name: 'parade.fli', pause: 0 }, { name: 'title.gif', pause: 12 }]));
+disk.put(
+  'title.lst',
+  serializeSlideList([
+    { name: SANDLOGO, pause: 0 },
+    { name: 'parade.fli', pause: 0 },
+    { name: 'title.gif', pause: 12 },
+  ]),
+);
 disk.put('menu.gif', gif(menuPicture(pal, book, hero, TITLE), pal));
 disk.put('scores.gif', gif(scoresPicture(pal, book, 'PARADE MARSHALS'), pal));
 disk.put('loadgame.gif', gif(slotsPicture(pal, book, 'LOAD GAME'), pal));
@@ -83,7 +90,10 @@ disk.put('ending.fli', endingFli(pal, gallery, hero));
 disk.put('wonpic.gif', gif(endPicture(pal, book, cheer, 'THANK YOU!', 'THE WHOLE TOWN WAVES', 'won'), pal));
 disk.put('won.gif', gif(paper(pal, book, 'THE PARADE'), pal));
 disk.put('won.txt', WON);
-disk.put('won.lst', serializeSlideList([{ name: 'ending.fli', pause: 0 }, { name: 'wonpic.gif', pause: 6 }, { name: 'won.gif', pause: 0 }, { name: 'won.txt' }]));
+disk.put(
+  'won.lst',
+  serializeSlideList([{ name: 'ending.fli', pause: 0 }, { name: 'wonpic.gif', pause: 6 }, { name: 'won.gif', pause: 0 }, { name: 'won.txt' }]),
+);
 disk.put('lostpic.gif', gif(endPicture(pal, book, heroPicture(heroBlocks, 'hurt.top', 'hurt'), 'OH NO!', 'TRY AGAIN', 'lost'), pal));
 disk.put('lost.gif', gif(paper(pal, book, 'TRY AGAIN'), pal));
 disk.put('lost.txt', LOST);

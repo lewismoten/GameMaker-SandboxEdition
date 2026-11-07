@@ -1,7 +1,6 @@
 // The way through the game, as orders for the bot (kit/starter/bot.ts): the keys a person would press, level by level,
 // with a look at each sign, jumps over geese, waits for the puddles and the drums. Each level checks what it took.
 import type { Result, StarterBot } from '../../kit/starter/bot';
-import { SCAN } from '../../kit/starter/ids';
 import { ORIGIN } from '../../kit/starter/map';
 import { AT1 } from '../src/level1';
 import { AT2, CARDS_AT } from '../src/level2';
@@ -144,7 +143,18 @@ async function cross(bot: StarterBot, levelIdx: number, kind: string, a: number,
   const hp = bot.sim.ci.hitpts;
   await must(bot, bot.walk(a - 1, 'a puddle zone'), 'to the zone');
   await afterSplash(bot, levelIdx, kind, a);
-  if (process.env.HOPLOG) console.log('cross', a, [a, a + 1, a + 2].map((x) => bot.sim.blockAt(x + ORIGIN, 9 + ORIGIN)).join(','), 'hero', bot.px.x, 'tick', bot.sim.ticks, levels[levelIdx].book.n('puddleB!'), levels[levelIdx].book.n('puddleB'));
+  if (process.env.HOPLOG)
+    console.log(
+      'cross',
+      a,
+      [a, a + 1, a + 2].map((x) => bot.sim.blockAt(x + ORIGIN, 9 + ORIGIN)).join(','),
+      'hero',
+      bot.px.x,
+      'tick',
+      bot.sim.ticks,
+      levels[levelIdx].book.n('puddleB!'),
+      levels[levelIdx].book.n('puddleB'),
+    );
   await must(bot, bot.walk(b + 2, 'across the puddles'), 'across');
   if (bot.sim.ci.hitpts !== hp) throw new Error(`a squirt hit: hit points ${hp} -> ${bot.sim.ci.hitpts} at ${a}`);
 }

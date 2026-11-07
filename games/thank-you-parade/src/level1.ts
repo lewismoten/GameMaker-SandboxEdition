@@ -40,7 +40,15 @@ export function level1(pal: Pal): Level {
   const g = room(AT1.width, AT1.exit);
   const m = new StarterMap(book, g.rows());
   // scenery: clouds, bushes, flowers, a flagpole by the start, bunting over the street's end
-  for (const [x, y] of [[8, 2], [22, 4], [40, 1], [54, 3], [70, 2], [80, 4]]) m.set(x, y, 'cloudL').set(x + 1, y, 'cloudR');
+  for (const [x, y] of [
+    [8, 2],
+    [22, 4],
+    [40, 1],
+    [54, 3],
+    [70, 2],
+    [80, 4],
+  ])
+    m.set(x, y, 'cloudL').set(x + 1, y, 'cloudR');
   for (const x of [10, 22, 30, 39, 56, 74, 78]) m.set(x, GROUND - 1, 'bush');
   for (const x of [8, 24, 31, 44, 60, 75, 85]) m.set(x, GROUND - 1, 'flower');
   // the leaf piles
@@ -55,7 +63,9 @@ export function level1(pal: Pal): Level {
   run(m, 'crown', AT1.trunk - 2, AT1.branch[1] + 1, 0);
   run(m, 'crown', AT1.trunk - 2, AT1.trunk - 1, 1);
   run(m, 'crown', AT1.branch[0] + 1, AT1.branch[1] + 1, 1);
-  m.set(AT1.trunk - 2, 2, 'crown').set(AT1.trunk - 1, 2, 'crown').set(AT1.branch[1] + 1, 2, 'crown');
+  m.set(AT1.trunk - 2, 2, 'crown')
+    .set(AT1.trunk - 1, 2, 'crown')
+    .set(AT1.branch[1] + 1, 2, 'crown');
   m.set(AT1.sticks, 2, 'sticks');
   // the pond: water to wade through, a bed under it, three lily pads and the flute on the middle one
   run(m, 'waterTop', AT1.pond[0], AT1.pond[1], GROUND);

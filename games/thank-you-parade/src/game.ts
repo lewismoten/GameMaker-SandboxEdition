@@ -11,7 +11,21 @@ export const TITLE = 'THANK-YOU PARADE';
 export function buildGame(levels: Level[]): Game {
   const game = newGame(TITLE);
   const [title, end] = game.scenes;
-  title.files = ['title.lst', 'parade.cmf', 'menu.gif', 'parade.cmf', 'story.lst', 'parade.cmf', 'howto.lst', 'credits.lst', 'scores.gif', 'loadgame.gif', 'savegame.gif', '', ...new Array(8).fill('')];
+  title.files = [
+    'title.lst',
+    'parade.cmf',
+    'menu.gif',
+    'parade.cmf',
+    'story.lst',
+    'parade.cmf',
+    'howto.lst',
+    'credits.lst',
+    'scores.gif',
+    'loadgame.gif',
+    'savegame.gif',
+    '',
+    ...new Array(8).fill(''),
+  ];
   end.desc = 'The End';
   end.files = ['won.lst', 'parade.cmf', 'lost.lst', 'parade.cmf', ...new Array(16).fill('')];
 
@@ -19,7 +33,20 @@ export function buildGame(levels: Level[]): Game {
     const scene = emptyScene(ADVTYPE);
     scene.desc = l.title.slice(0, 19);
     scene.pos = { x: 60 + i * 80, y: 110 };
-    scene.files = [`${l.file}.pal`, `${l.file}.map`, `${l.file}.bbl`, 'parade.mon', 'parade.mbl', 'hero.chr', 'hero.cbl', 'parade.snd', 'parade.cmf', `${l.file}.lst`, '', ...new Array(9).fill('')];
+    scene.files = [
+      `${l.file}.pal`,
+      `${l.file}.map`,
+      `${l.file}.bbl`,
+      'parade.mon',
+      'parade.mbl',
+      'hero.chr',
+      'hero.cbl',
+      'parade.snd',
+      'parade.cmf',
+      `${l.file}.lst`,
+      '',
+      ...new Array(9).fill(''),
+    ];
     scene.links = Array.from({ length: MAXSCENELINKS }, () => ({ toScene: NOSCENE, from: { x: 0, y: 0 }, to: { x: 0, y: 0 } }));
     const next = levels[i + 1];
     const [fx, fy] = l.map.exits[0].from;

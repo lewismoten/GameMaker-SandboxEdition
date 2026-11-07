@@ -69,7 +69,11 @@ export function addPark(book: PBook, pal: Pal): void {
     speckle(p, 0, 9, 20, 11, r('orange'), 1, 4, seed, 0.6);
     for (let i = 0; i < 16; i++) p.rect(1 + ((i * 7 + seed) % 17), 9 + ((i * 5 + seed) % 9), 2, 1, cols[i % cols.length]);
     if (glint) p.rect(9, 12, 3, 2, c('gold', 5)).set(10, 11, c('white', 3)).set(8, 13, c('white', 3));
-    return outline(p.map((x, y, v) => (y < 8 ? S : v)), ink, { transparent: S });
+    return outline(
+      p.map((_x, y, v) => (y < 8 ? S : v)),
+      ink,
+      { transparent: S },
+    );
   };
   book.add('leafPile', pile(true, 3), { ...air, effect: MOUTHPIECE, eamt: 1, score: 25, touch: 'leafFlat' });
   book.add('leafPileB', pile(false, 11), { ...air, score: 5, touch: 'leafFlat' });
@@ -83,7 +87,13 @@ export function addPark(book: PBook, pal: Pal): void {
     const p = sky();
     const w = r('wood');
     p.rect(5, 0, 10, 20, w[2]).rect(5, 0, 2, 20, w[3]).rect(13, 0, 2, 20, w[1]);
-    for (const [x, y] of [[8, 3], [10, 9], [7, 14], [11, 17]] as const) p.rect(x, y, 1, 3, w[0]);
+    for (const [x, y] of [
+      [8, 3],
+      [10, 9],
+      [7, 14],
+      [11, 17],
+    ] as const)
+      p.rect(x, y, 1, 3, w[0]);
     p.rect(4, 0, 1, 20, ink).rect(15, 0, 1, 20, ink);
     book.add('trunk', p, { grav: PULL.none });
     const e = sky();
@@ -91,8 +101,19 @@ export function addPark(book: PBook, pal: Pal): void {
     for (const x of [3, 9, 15]) e.disc(x, 1, 3.6, r('green')[3]).disc(x - 1, 0, 2, r('green')[4]);
     book.add('branch', e, { solid: LEDGE, grav: PULL.down });
     const crown = sky();
-    for (const [x, y, rad] of [[4, 8, 6], [11, 5, 7], [16, 12, 6], [7, 15, 6]] as const) crown.disc(x, y, rad, r('green')[2]);
-    for (const [x, y, rad] of [[3, 6, 4], [10, 3, 4], [15, 10, 4]] as const) crown.disc(x, y, rad, r('green')[3]);
+    for (const [x, y, rad] of [
+      [4, 8, 6],
+      [11, 5, 7],
+      [16, 12, 6],
+      [7, 15, 6],
+    ] as const)
+      crown.disc(x, y, rad, r('green')[2]);
+    for (const [x, y, rad] of [
+      [3, 6, 4],
+      [10, 3, 4],
+      [15, 10, 4],
+    ] as const)
+      crown.disc(x, y, rad, r('green')[3]);
     book.add('crown', crown, air);
     const s = sky();
     s.line(2, 15, 14, 5, w[0]).line(3, 16, 15, 6, w[3]).line(5, 17, 17, 8, w[0]).line(6, 18, 18, 9, w[3]);
@@ -110,14 +131,23 @@ export function addPark(book: PBook, pal: Pal): void {
     book.add('pondBed', bed, { solid: SOLID });
     const lily = sky();
     blob(lily, 10, 16, 9.4, 3.4, r('green'), 1, 4);
-    lily.rect(11, 15, 9, 2, S).rect(0, 18, 20, 2, c('blue', 3)).rect(0, 18, 20, 1, c('blue', 4)).rect(5, 13, 3, 2, c('pink', 3)).rect(6, 12, 1, 1, c('pink', 4));
+    lily
+      .rect(11, 15, 9, 2, S)
+      .rect(0, 18, 20, 2, c('blue', 3))
+      .rect(0, 18, 20, 1, c('blue', 4))
+      .rect(5, 13, 3, 2, c('pink', 3))
+      .rect(6, 12, 1, 1, c('pink', 4));
     book.add('lily', outline(lily, ink, { transparent: S }), { solid: LEDGE, grav: PULL.down });
     const f = sky();
     f.line(1, 16, 18, 8, ink).line(1, 15, 18, 7, c('stone', 4)).line(1, 14, 18, 6, ink);
     for (const x of [6, 9, 12]) f.set(x, 12 - Math.round((x - 6) / 1.7), c('ink', 1));
     book.add('flute', f, { ...air, effect: FLUTE, eamt: 1, score: 25, touch: 'sky' });
     const reed = sky();
-    for (const x of [4, 9, 14]) reed.rect(x, 4 + (x % 3) * 2, 2, 16, c('green', 2)).rect(x, 2 + (x % 3) * 2, 2, 5, c('wood', 3)).rect(x, 2 + (x % 3) * 2, 2, 1, c('wood', 4));
+    for (const x of [4, 9, 14])
+      reed
+        .rect(x, 4 + (x % 3) * 2, 2, 16, c('green', 2))
+        .rect(x, 2 + (x % 3) * 2, 2, 5, c('wood', 3))
+        .rect(x, 2 + (x % 3) * 2, 2, 1, c('wood', 4));
     book.add('reeds', reed, air);
   }
   // ---- the band members: sitting in the street, each a one-block gate for his or her own thing

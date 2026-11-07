@@ -25,7 +25,10 @@ function goose(pal: Pal, step: boolean): Pixels {
   const ink = c('ink', 0);
   // feet, then the round white body, the neck rising to a small head and an orange bill
   const o = r('orange');
-  p.rect(6 + (step ? 1 : 0), 17, 3, 2, o[3]).rect(11 - (step ? 1 : 0), 17, 3, 2, o[3]).rect(5 + (step ? 1 : 0), 18, 4, 1, o[2]).rect(11 - (step ? 1 : 0), 18, 4, 1, o[2]);
+  p.rect(6 + (step ? 1 : 0), 17, 3, 2, o[3])
+    .rect(11 - (step ? 1 : 0), 17, 3, 2, o[3])
+    .rect(5 + (step ? 1 : 0), 18, 4, 1, o[2])
+    .rect(11 - (step ? 1 : 0), 18, 4, 1, o[2]);
   blob(p, 9, 13, 7.4, 4.6, r('white'), 0, 3);
   p.rect(2, 9, 3, 3, c('white', 2)).set(1, 9, c('white', 1)); // the tail
   p.rect(13, 5, 3, 8, c('white', 3)).rect(13, 5, 1, 8, c('white', 2));
@@ -40,7 +43,9 @@ function balloon(pal: Pal, sway: number): Pixels {
   const { c, r } = pal;
   const p = new Pixels(20, 20, T);
   blob(p, 10 + sway, 8, 6, 7, r('red'), 0, 4);
-  p.set(7 + sway, 5, c('white', 3)).set(7 + sway, 6, c('white', 3)).set(8 + sway, 4, c('white', 3));
+  p.set(7 + sway, 5, c('white', 3))
+    .set(7 + sway, 6, c('white', 3))
+    .set(8 + sway, 4, c('white', 3));
   p.rect(9 + sway, 15, 3, 2, c('red', 1));
   p.line(10 + sway, 17, 10 - sway, 19, c('stone', 2));
   return outline(p, c('ink', 0), { transparent: T });

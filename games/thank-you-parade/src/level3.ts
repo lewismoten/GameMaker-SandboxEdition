@@ -52,7 +52,15 @@ export function level3(pal: Pal): Level {
   column(m, 'brick', AT3.width - 1, 0, GROUND - 1);
   m.set(3, 8, 'doorwayTop').set(3, 9, 'doorwayBottom').set(AT3.exit, 8, 'doorTop').set(AT3.exit, 9, 'doorBottom');
   // the crew at work
-  [[7, '0a'], [16, '1a'], [24, '0b'], [37, '1a'], [44, '0a'], [68, '1b'], [75, '0a']].forEach(([x, k]) => m.set(x as number, GROUND - 1, `crew${k}`));
+  [
+    [7, '0a'],
+    [16, '1a'],
+    [24, '0b'],
+    [37, '1a'],
+    [44, '0a'],
+    [68, '1b'],
+    [75, '0a'],
+  ].forEach(([x, k]) => m.set(x as number, GROUND - 1, `crew${k}`));
   // room 1: a gold key on a shelf (planks), then its gate
   run(m, 'plank', AT3.planksA[0], AT3.planksA[1], GROUND - 2);
   m.set(AT3.key1, GROUND - 3, 'key');

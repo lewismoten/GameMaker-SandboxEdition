@@ -63,7 +63,9 @@ export function shop(m: StarterMap, x: number, w: number, tone: 'wallA' | 'wallB
 export function flagpole(m: StarterMap, x: number, ground: number, h: number): void {
   const top = ground - h;
   for (let y = top + 1; y < ground; y++) m.set(x, y, 'pole');
-  m.set(x, top, 'poleTop').set(x + 1, top, 'flagA0').set(x + 2, top, 'flagA1');
+  m.set(x, top, 'poleTop')
+    .set(x + 1, top, 'flagA0')
+    .set(x + 2, top, 'flagA1');
 }
 
 /** Bunting strung along row y from x0 to x1. */

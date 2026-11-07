@@ -29,10 +29,18 @@ export function level4(pal: Pal): Level {
   const s = addSigns(book, pal, LEVEL4_SIGNS);
   const g = room(AT4.width, AT4.exit);
   const m = new StarterMap(book, g.rows());
-  for (const [x, y] of [[9, 2], [30, 4], [52, 1], [70, 3]]) m.set(x, y, 'cloudL').set(x + 1, y, 'cloudR');
+  for (const [x, y] of [
+    [9, 2],
+    [30, 4],
+    [52, 1],
+    [70, 3],
+  ])
+    m.set(x, y, 'cloudL').set(x + 1, y, 'cloudR');
   for (const x of [16, 26, 44, 56, 68]) m.set(x, GROUND - 1, 'flower');
   for (const x of [20, 38, 72]) m.set(x, GROUND - 1, 'bush');
-  m.set(9, GROUND - 1, 'kid.tuba.happy').set(11, GROUND - 1, 'kid.drum.happy').set(13, GROUND - 1, 'kid.flute.happy');
+  m.set(9, GROUND - 1, 'kid.tuba.happy')
+    .set(11, GROUND - 1, 'kid.drum.happy')
+    .set(13, GROUND - 1, 'kid.flute.happy');
   for (const x of [18, 40, 58, 70]) flagpole(m, x, GROUND, 5);
   bunting(m, 6, 84, 2);
   // the beat meter: four drums, repeated every twelve blocks (so one set is always on screen)

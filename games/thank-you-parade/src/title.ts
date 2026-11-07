@@ -47,7 +47,9 @@ export function streetBackdrop(pal: Pal, book: Book): Pixels {
     const w = 36 + Math.floor(rand() * 22);
     const h = 36 + Math.floor(rand() * 20);
     const tone = rand() < 0.5 ? 'parch' : 'teal';
-    p.rect(x, 164 - h, w, h, c(tone, 2)).rect(x, 164 - h, w, 3, c('brick', 3)).rect(x, 164 - h, 1, h, c(tone, 3));
+    p.rect(x, 164 - h, w, h, c(tone, 2))
+      .rect(x, 164 - h, w, 3, c('brick', 3))
+      .rect(x, 164 - h, 1, h, c(tone, 3));
     for (let wx = x + 6; wx + 10 < x + w; wx += 16) p.rect(wx, 164 - h + 12, 10, 12, c('ink', 0)).rect(wx + 1, 164 - h + 13, 8, 10, c('sky', 2));
     p.rect(x + 3, 164 - h + 26, w - 6, 5, c('red', 3)).rect(x + 3, 164 - h + 26, w - 6, 1, c('red', 4));
     x += w + 3;
@@ -71,7 +73,11 @@ export function titlePicture(pal: Pal, book: Book, penny: Pixels, name1: string,
   bevel(p, rx, 80, ribbon, 14, pal.r('blue'), 3, 2);
   text(p, rx + 10, 84, tagline, c('white', 3));
   // the band, left to right: the flute, the drum, the tuba (small, behind), then Penny big in front
-  const kids: [string, number][] = [['kid.flute.happy', 128], ['kid.drum.happy', 172], ['kid.tuba.happy', 216]];
+  const kids: [string, number][] = [
+    ['kid.flute.happy', 128],
+    ['kid.drum.happy', 172],
+    ['kid.tuba.happy', 216],
+  ];
   for (const [n, kx] of kids) scaleBlit(p, book.pics.get(n)!, kx, 138, 2, false, c('sky', 3));
   const flagL = book.pics.get('flagA0')!;
   const flagR = book.pics.get('flagA1')!;
