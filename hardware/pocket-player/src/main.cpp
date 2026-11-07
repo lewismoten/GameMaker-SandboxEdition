@@ -324,6 +324,61 @@ static bool scanDone = false;
 static uint32_t scanStart = 0, scanFiles = 0;
 static void stopCardScan() { scanDir.close(); cacheIn.close(); cacheOut.close(); unmountSD(); }
 static void releaseCatalog() { stopCardScan(); free(catalog); catalog = nullptr; games = nullptr; }
+// ---- Recently played and Favorites (favorites.h): NVS pocket/recent and pocket/pins ----------------------------------
+// Written only when a game launches (recent) and on a star tap (pins), never mid-play. The lists live in the catalog while
+// the library is open; a pause reads and writes NVS directly, through a short-lived heap buffer.
+template <int N> static bool listRead(const char* key, uint32_t magic, pk::UidList<N>& l) {
+  l.n = 0;
+  uint8_t* b = (uint8_t*)malloc(pk::blobSize(N));
+  if (!b) return false;
+  Preferences p;
+  bool ok = false;
+  if (p.begin("pocket", true)) {
+    size_t n = p.isKey(key) ? p.getBytesLength(key) : 0;
+    ok = n && n <= pk::blobSize(N) && p.getBytes(key, b, n) == n && pk::unpackUids(b, n, magic, l);
+    p.end();
+  }
+  free(b);
+  return ok;
+}
+template <int N> static bool listWrite(const char* key, uint32_t magic, const pk::UidList<N>& l) {
+  uint8_t* b = (uint8_t*)malloc(pk::blobSize(N));
+  if (!b) return false;
+  size_t n = pk::packUids(l, magic, b);
+  Preferences p;
+  bool ok = p.begin("pocket", false);
+  if (ok) { ok = p.putBytes(key, b, n) == n; p.end(); }
+  free(b);
+  return ok;
+}
+// A launch from the library (not the serial self-test): the game goes first in Recently played.
+static void noteRecent(const uint8_t* uid) {
+  pk::RecentList l;
+  listRead("recent", pk::RECENT_MAGIC, l);
+  if (pk::recentPlayed(l, uid)) listWrite("recent", pk::RECENT_MAGIC, l);
+}
+constexpr int PIN_NOT_SAVED = 3;  // after pk::PIN_ADDED, PIN_REMOVED, PIN_FULL: NVS refused the write, so nothing changed
+// Star or unstar a game: the catalog's list while the library is open, else (paused) the stored one.
+static int toggleFavorite(const uint8_t* uid) {
+  pk::PinList* l = catalog ? &catalog->pins : (pk::PinList*)malloc(sizeof(pk::PinList));
+  if (!l) return PIN_NOT_SAVED;
+  if (!catalog) listRead("pins", pk::PINS_MAGIC, *l);
+  int r = pk::togglePin(*l, uid);
+  if (r != pk::PIN_FULL && !listWrite("pins", pk::PINS_MAGIC, *l)) { pk::togglePin(*l, uid); r = PIN_NOT_SAVED; }
+  if (!catalog) free(l);
+  return r;
+}
+static bool storedFavorite(const uint8_t* uid) {
+  pk::PinList* l = (pk::PinList*)malloc(sizeof(pk::PinList));
+  if (!l) return false;
+  listRead("pins", pk::PINS_MAGIC, *l);
+  bool has = l->has(uid);
+  free(l);
+  return has;
+}
+static const char* pinMessage(int r) {
+  return r == pk::PIN_ADDED ? "Added to Favorites" : r == pk::PIN_REMOVED ? "Removed from Favorites" : r == pk::PIN_FULL ? "Favorites are full (32): unstar one first" : "Changes not saved";
+}
 static bool lineAt(File& f, uint32_t pos, char* out, size_t cap) {
   if (!f.seek(pos)) return false;
   size_t n=0; bool overflow=false;
@@ -486,6 +541,7 @@ static void loadGameList() {
   releaseCatalog();catalog=(pk::Catalog*)calloc(1,sizeof(pk::Catalog));games=catalog?catalog->games:nullptr;
   ngames=ncollections=0;catalogOverflow=uidConflict=false;scanDone=false;
   if(!catalog){catalogOverflow=true;scanDone=true;return;}
+  listRead("recent",pk::RECENT_MAGIC,catalog->recent);listRead("pins",pk::PINS_MAGIC,catalog->pins);
   addGames(LittleFS,"",false);
   if(haveSD&&mountSD()){addGames(SD,"/pocket",true);scanDone=restoreCardCatalog();if(scanDone)cardState=pk::CARD_READY;unmountSD();}
 }
@@ -873,7 +929,7 @@ static bool searchAll = true, savedAll = true, browsingCategories = true, savedB
 static int category = 0, subcategory = -1;
 constexpr int PK_BTN_Y = scr::SMALL ? 208 : 280;
 static int categorySlots[32], categoryCount = 0;
-static const char* rootLabel(int c) {const char*names[]={"All games","Starters","Sandbox","Bizarre","My games","Imported","CD","Good on touch","Continue"};return names[c];}
+static const char* rootLabel(int c) {const char*names[]={"All games","Starters","Sandbox","Bizarre","My games","Imported","CD","Good on touch","Continue","Recently played","Favorites"};return names[c];}
 // ---- Continue: the last level entered, kept in NVS (pocket/resume) ----------------------------------------------
 // Written as each level is entered (a fade is on screen, never mid-tick), cleared on a win or a game over. A board
 // convenience: DOS saves are untouched. `sd`: the game was on the card, so with the card out the home page says to put it back.
@@ -915,12 +971,15 @@ static const char* subLabel(int c,int s) {
   if(c==5)return s>0&&s<=ncollections?catalog->collections[s-1].label:"Unsorted";return rootLabel(c);
 }
 /** The icon (icons_data.h order) for a category tile: root slot c of All, or sub slot c of a category. */
-static int tileIcon(int cat,int c){static const int roots[]={0,6,9,10,11,12,13,16};if(!cat)return roots[c>=0&&c<8?c:0];if(cat==1)return c>=1&&c<=8?c:8;if(cat==6)return c==2?15:14;if(cat==5)return c>0?18:8;return -1;}
+static int tileIcon(int cat,int c){static const int roots[]={0,6,9,10,11,12,13,16,0,19,20};if(!cat)return roots[c>=0&&c<11?c:0];if(cat==1)return c>=1&&c<=8?c:8;if(cat==6)return c==2?15:14;if(cat==5)return c>0?18:8;return -1;}
 static bool inCategory(const GameEntry&g) {return pk::belongs(g,category,subcategory);}
 static void filterGames() {
   nmatch=0;if(!catalog)return;
   bool was=sdUp;if(haveSD)mountSD();uint32_t t=millis();
-  for(int i=0;i<ngames;i++) {
+  bool virt=(category==pk::CAT_RECENT||category==pk::CAT_FAVORITES)&&!(searchText[0]&&searchAll);  // the list's installed games, newest first
+  if(virt){int n=category==pk::CAT_RECENT?pk::listGames(games,ngames,catalog->recent,catalog->matches):pk::listGames(games,ngames,catalog->pins,catalog->matches);
+    for(int k=0;k<n;k++){int i=catalog->matches[k];if(searchText[0]){pk::Meta m;gameMeta(games[i],m);if(!pk::matches(m.title,searchText))continue;}catalog->matches[nmatch++]=i;}}
+  else for(int i=0;i<ngames;i++) {
     if(!(searchText[0]&&searchAll)&&!inCategory(games[i]))continue;
     if(searchText[0]){pk::Meta m;gameMeta(games[i],m);if(!pk::matches(m.title,searchText))continue;}
     catalog->matches[nmatch++]=i;
@@ -933,6 +992,8 @@ static void categories() {
   categoryCount=0;
   if(category==0) {
     if(resumeValid&&(resumeGame()>=0||resumeRec.sd))categorySlots[categoryCount++]=CONTINUE_SLOT;  // first: what was being played
+    if(pk::anyListed(games,ngames,catalog->recent))categorySlots[categoryCount++]=pk::CAT_RECENT;  // once a game here has been played
+    if(ngames)categorySlots[categoryCount++]=pk::CAT_FAVORITES;  // always: an empty one says how to star a game
     for(int c=1;c<=7;c++){bool any=c<=6;for(int i=0;i<ngames;i++)if(c==7?games[i].scored:games[i].category==c)any=true;if(any)categorySlots[categoryCount++]=c;}
   }else if(category==1){for(int s=1;s<=8;s++)categorySlots[categoryCount++]=s;}
   else if(category==6){categorySlots[categoryCount++]=1;categorySlots[categoryCount++]=2;}
@@ -963,11 +1024,12 @@ static void drawPicker(bool clear = true, bool paging = false) {
     if(browsingCategories){int c=categorySlots[at];
       if(!category&&c==CONTINUE_SLOT){int g=resumeGame();uint8_t*raw=nullptr;if(g>=0){if(games[g].sd&&haveSD)mountSD();raw=preview(games[g]);}pk::continueTile(tft,scr::W,r,raw,resumeRec.e.level,g<0,true);free(raw);}
       else pk::tileLabel(tft,scr::W,r,category?subLabel(category,c):rootLabel(c),false,tileIcon(category,c),true);}
-    else {int i=catalog->matches[at];pk::Meta m;gameMeta(games[i],m);uint8_t*raw=preview(games[i]);pk::thumbnail(tft,scr::W,r,raw,m.dos,i==selected,true);free(raw);}
+    else {int i=catalog->matches[at];pk::Meta m;gameMeta(games[i],m);uint8_t*raw=preview(games[i]);pk::thumbnail(tft,scr::W,r,raw,m.dos,i==selected,true,catalog->pins.has(games[i].uid));free(raw);}
   }
   if(!was)unmountSD();
   if(!count&&searchText[0])pk::drawSmallIcon(tft,17,16,68,true);
   if(none&&pk::drawEmptyNotice(tft,scr::W,cardState,cardGames())){}
+  else if(!count&&category==pk::CAT_FAVORITES&&!searchText[0])pk::emptyFavorites(tft,scr::W,catalog->pins.n>0);
   else if(!count){tft.setTextColor(C_WHITE,C_BLACK);tft.setTextSize(1);tft.setCursor(16,90);tft.print(searchText[0]?"No matching titles":"No games found");}
   if(uidConflict){tft.setTextColor(C_YELLOW,C_BLACK);tft.setTextSize(1);tft.setCursor(4,188);tft.print("UID conflict: first copy kept");}
   if(catalogOverflow){tft.setTextColor(C_YELLOW,C_BLACK);tft.setTextSize(1);tft.setCursor(4,198);tft.print("Library limit: 512 games / 24 collections");}
@@ -985,7 +1047,8 @@ static void drawDetails() {
   pk::Tile clip={8,40,scr::W-16,scr::H-90,0,0};
   size_t at=0,n=strlen(m.title);int y=44,cols=(scr::W-16)/6;
   while(at<n){char b[81];size_t take=n-at<(size_t)cols?n-at:cols;memcpy(b,m.title+at,take);b[take]=0;pk::clippedText(tft,clip,b,8,y,1,C_WHITE);at+=take;y+=12;}
-  pk::drawButton(tft,0,scr::H-38,scr::W/2-2,scr::H,"Back");pk::drawButton(tft,scr::W/2,scr::H-38,scr::W,scr::H,"Play");
+  bool pinned=catalog&&catalog->pins.has(games[selected].uid);
+  pk::detailsFooter(tft,scr::W,scr::H,pinned);if(pinned)pk::detailsNote(tft,scr::W,scr::H,"In Favorites");
 }
 // Board A has fixed ST7796 geometry and GT911 coordinates; no resistive calibration or driver guessing.
 // Display still exposes the picture size on both boards; the CYD also offers its hardware setup.
@@ -1123,7 +1186,8 @@ static void settingsTouchInfo() {
   tft.print(l);
 }
 
-static void drawPause() { ovl::pauseMenu(tft, cfg.title, world.level); }
+static bool pausePinned = false;  // whether the paused game is a favorite (read from NVS as the game pauses)
+static void drawPause() { ovl::pauseMenu(tft, cfg.title, world.level, pausePinned ? 1 : 0); }
 
 static uint32_t t0 = 0, ticksRun = 0;
 static int curGame = -1;
@@ -1332,6 +1396,7 @@ static bool startGame(int g, bool withCards = true, const gm::EntryState* from =
   assets.heroChr[0] = 0;
   clearPrefetched();
   if (!selectGame(activeGame)) return startFailed(false);
+  if (withCards) noteRecent(activeGame.uid);  // a launch, before the level's memory is taken (the serial self-test leaves it alone)
   loadStep(1);
   snprintf(assets.cfgName, sizeof assets.cfgName, "%s.cfg", fileOf(activeGame));
   releaseCatalog();
@@ -1902,6 +1967,7 @@ static void pauseGame() {
   applyKeys(millis());
   controls.reset();
   mode = PAUSED;
+  pausePinned = storedFavorite(activeGame.uid);
   drawPause();
   wasDown = true;
 }
@@ -2020,7 +2086,10 @@ void loop() {
     return;
   }
   if(mode==DETAILS_SCREEN){
-    if(menuTap(prs::SC_DETAILS,tx,ty)){if(tx<scr::W/2){mode=PICKER;drawPicker();}else{if(!launchGame(selected))enterPicker();else wasDown=true;}}delay(5);return;
+    if(menuTap(prs::SC_DETAILS,tx,ty)){int b=pk::detailsButton(scr::W,tx);
+      if(b==0){mode=PICKER;drawPicker();}
+      else if(b==1){int r=toggleFavorite(games[selected].uid);drawDetails();pk::detailsNote(tft,scr::W,scr::H,pinMessage(r));}
+      else{if(!launchGame(selected))enterPicker();else wasDown=true;}}delay(5);return;
   }
   if (mode == SEARCH_SCREEN) {
     if (freshTap(tx, ty)) {
@@ -2103,6 +2172,20 @@ void loop() {
         case ovl::PA_HELP: mode = HELP_SCREEN; ovl::helpPage(tft, cfg); wasDown = true; break;
         case ovl::PA_SETTINGS: mode = SETTINGS_SCREEN; fromPause = true; drawSettings(); break;
         case ovl::PA_QUIT: enterPicker(); break;  // the resume point stays: Continue on the home page
+        case ovl::PA_STAR: {  // star or unstar this game; the title line says what happened until the next redraw
+          int r = toggleFavorite(activeGame.uid);
+          if (r == pk::PIN_ADDED || r == pk::PIN_REMOVED) pausePinned = r == pk::PIN_ADDED;
+          drawPause();
+          const ovl::PauseGeom& p = ovl::PAUSE;
+          int sx0, sy0, sx1, sy1;
+          ovl::pauseCell(ovl::PA_STAR, sx0, sy0, sx1, sy1);
+          tft.fillRect(p.x0, sy0 + 1, sx0 - 2 - p.x0, sy1 - sy0 - 2, C_BLACK);
+          tft.setTextSize(1);
+          tft.setTextColor(C_YELLOW, C_BLACK);
+          tft.setCursor(p.x0, p.titleY);
+          tft.print(pinMessage(r));
+          break;
+        }
         default: break;
       }
     }
