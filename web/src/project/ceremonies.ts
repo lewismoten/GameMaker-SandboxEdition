@@ -149,3 +149,21 @@ export function highestLevel(finished: ReadonlySet<string>): Level | undefined {
   if (n === 0) return undefined;
   return n <= 2 ? 'Beginner' : n <= 4 ? 'Maker' : n === 5 ? 'Designer' : 'Master';
 }
+
+const COUNT_WORDS = ['', 'One', 'Two', 'Three'];
+
+/** The line at the top of the Starters tab when a stage's honors are only 1 to 3 Bs away: "One more B in a 500 course until you earn your next certificate!". The stage with the fewest missing wins (the lower stage on a tie); undefined when none is that close, or when only the diploma is left. A stage whose Bs are all there is the "Ready to graduate" strip's, not this line's. */
+export function nextCertificateLine(grades: Readonly<Grades>, finished: ReadonlySet<string>): string | undefined {
+  let best: { stage: number; missing: number } | undefined;
+  for (const [i, c] of CEREMONIES.entries()) {
+    const s = ceremonyState(c, grades, finished);
+    if (s.state !== 'locked') continue;
+    const missing = s.needed - s.done;
+    if (missing >= 1 && missing <= 3 && (!best || missing < best.missing)) best = { stage: i + 1, missing };
+  }
+  if (!best) return undefined;
+  const hundreds = best.stage * 100;
+  return best.missing === 1
+    ? `One more B in a ${hundreds} course until you earn your next certificate!`
+    : `${COUNT_WORDS[best.missing]} more Bs in ${hundreds} courses until your next certificate!`;
+}

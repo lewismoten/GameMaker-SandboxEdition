@@ -8,7 +8,7 @@
 
 ## The speaker effect: 36 steps
 
-Every effect is a table of `NUMFREQ 36` unsigned 16-bit frequencies (`SOUND.H:10`, `SOUND.H:26-29`): `freq[36]` = 72 bytes; 30 effects (`LASTSND 30`, `SOUND.H:13`) = 2,160 bytes; plus 30 digital names of 9 bytes (8 characters + NUL, the 8.3 rule without the dot) = 270 bytes; the `.snd` file is **2,430 bytes** (the port's `SND_FILE_SIZE`, `web/packages/engine/src/formats/sound.ts:9`).
+Every effect is a table of `NUMFREQ 36` unsigned 16-bit frequencies (`SOUND.H:10`, `SOUND.H:26-29`): `freq[36]` = 72 bytes; 30 effects (`LASTSND 30`, `SOUND.H:13`) = 2,160 bytes; plus 30 digital names of 9 bytes (8 characters + NULL, the 8.3 rule without the dot) = 270 bytes; the `.snd` file is **2,430 bytes** (the port's `SND_FILE_SIZE`, `web/packages/engine/src/formats/sound.ts:9`).
 
 The player is four lines in the timer interrupt (`NewTimer`, `PG:4421-4445`):
 
@@ -85,7 +85,7 @@ The wrapper loads the configured `cs->SndDrvr` file (`SC:75-105`); detection def
 | --------------------- | ------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
 | Voice buffer          | retained allocation capacity, requested as `(uint)`                                         | `SC:184-204`                                                                                                                                                                        | [16-bit] [64K] |
 | VOC size hazard       | **keep under 64 KB; no safe whole-play maximum proved here**                                | retained `ulongi vocfilesize` is cast to `uint` for `read` (`SC:24`, `SC:184-209`); intended 16-bit count wraps at 65,536; allocation/compiler/driver limits remain **[inference]** | [16-bit]       |
-| Name                  | 8 characters + NUL = 9 bytes                                                                | `SOUND.H`, `SC:167`                                                                                                                                                                 | [DOS]          |
+| Name                  | 8 characters + NULL = 9 bytes                                                                | `SOUND.H`, `SC:167`                                                                                                                                                                 | [DOS]          |
 | Sample rates          | the driver's: an 8-bit mono Sound Blaster plays 4 kHz to about 23 kHz; a 2.0 up to 44.1 kHz | hardware **[estimate]**                                                                                                                                                             |                |
 | Voices at once        | **1** (a new voice stops the old)                                                           | `SC:164`                                                                                                                                                                            | [design]       |
 | Where the sample sits | any conventional-memory address                                                             |                                                                                                                                                                                     | [DOS]          |
@@ -147,3 +147,24 @@ The web player's **Run like a** menu has one machine built from a real one: an I
 - Put long voices in cut scenes and on scene changes; the stall does not matter between scenes.
 - Use the speaker table for repeated game sounds and digital sound for voice (chapter 10: one name per slot decides).
 - Leave a gap of at least two ticks between two digital sounds that should both be heard.
+
+## Authoring budgets, channels and event switching
+
+ A song is a `.CMF` file made for **146 steps a second**, with eight music-service calls per game tick (the actual timer rate is about 145.67 calls a second). The Sound Blaster's FM chip plays up to nine melodic notes at once. A file has sixteen logical channels, not sixteen hardware voices or separate track chunks. Use at most 128 instrument definitions. To play a chord with one instrument, assign that instrument to several channels and start one note on each; that avoids depending on the driver's same-channel voice allocation. Rhythm mode divides the chip between six melodic voices and five percussion sounds.
+
+Complex rhythms use event delays at the fixed 146-step file clock; several zero-delay events can sound together. Program changes switch a channel's instrument. Pitch bend and tempo meta-events are not a way to change this player's clock: pitch bend is skipped, and a system/meta event can restart the song. Keep the event block under 65,536 bytes and header offsets within 65,535. Dense bursts of notes and instrument changes take interrupt time, so audition them on the slowest intended machine. A new scene's song replaces the previous song; GAM links do not provide beat-synchronized branching.
+
+ Running from a hard drive speeds up VOC reads and scene loads compared with floppy disk. CPU MHz alone cannot predict loading pauses. These are conservative authoring recommendations, not measured hardware limits:
+
+| Machine | Frequent effects on hard drive | Frequent effects on floppy |
+| ------- | ------------------------------ | -------------------------- |
+| 10–12 MHz 286 | aim for 4K or less | speaker preferred; try 1–2K |
+| 16–25 MHz 286 or 386SX | aim for 8–12K | try 2–4K |
+| 33 MHz 386DX | try 16–24K | keep near 4K |
+| 66 MHz 486 | try 24–32K | keep near 4K |
+
+For every machine, keep the complete VOC below 65,535 bytes, reserve longer clips for scene boundaries, and test the actual drive. A fast CPU does not make a floppy spin faster. These size recommendations are inferred from the blocking loader; they are not benchmark results.
+
+[estimate] [inference] These KB recommendations are authoring targets, not CPU benchmark results. The blocking read is `code/GM/SOUNDC.C:164-212`; scene asset reads are `code/GM/PLAYGAME.C:4239-4253`. Use a hard disk for faster VOC and scene loading; MHz alone cannot predict either.
+
+CMF header and 16 logical channels: `code/GM/SBCMUSIC.H:30-52`, `engine/formats/cmf.ts:25-38`. Instrument limit 128: `code/GM/SBMUSIC.C:127-133`; note/program dispatch and rhythm-mode switch: `code/GM/SBMUSIC.C:145-203`. The external Creative driver decides voice allocation; chords distributed over channels are a compatibility recommendation, not proof of an exact same-channel DOS allocation rule. Nine melodic voices or six plus five percussion are OPL2 hardware capacities, reflected by `engine/audio/cmfPlayer.ts:194-216`; that driver implementation is absent from code/GM. The file clock is fixed by `code/GM/SBMUSIC.C:80-86`, variable-length delay parsing by `code/GM/SBMUSIC.C:207-225`; the event read uses a 16-bit count and unchecked length (`code/GM/SBMUSIC.C:87-102`). Pitch bend is skipped and system/meta events restart (`code/GM/SBMUSIC.C:188-203`), rather than providing arbitrary tempo changes. Song replacement is `code/GM/PLAYGAME.C:749-780`. [not yet checked in DOSBox]

@@ -10,7 +10,7 @@ Some players see colors differently. Red and green can look alike to them.
 
 A small explorer in a pink beanie crosses two short levels. The first one tells things apart by color alone. If the plates look the same to you, that is the point of that level, and a sting only costs a little. The second one tells them apart by shape and brightness, so it works in any color.
 
-Each level card has a second picture that shows how that level can look to some players.
+Both levels use a palette that makes red and green look alike. Try crossing the plates without a color clue, then read the shapes in level two. The cards compare the original colors with this view.
 
 Then open this game in Game-Maker and look at the plates.
 `);
@@ -24,7 +24,7 @@ export const HOWTO = wrap(`
 
 Plates and spikes in this game can sting a little. A sting takes 5 hit points, once.
 
-Read the signs. The level cards show how the level can look to a player who sees red and green alike.
+Read the signs. Red and green look alike during play in both levels. The first row hides which plates sting; the second gives you shapes and stripes.
 
 Nothing here can take a life.
 
@@ -37,6 +37,8 @@ export const CREDITS = withCreditPage(
 |(c) 1994 Sandbox Software
 
 Design, pixels, beeps and levels by Claude Sonnet 5.5, an AI model made by Anthropic.
+
+Playable palette lesson by OpenAI Codex (GPT-6), directed by Lewis Moten.
 
 Color-vision pictures use the matrices of Machado, Oliveira and Fernandes (2009).
 

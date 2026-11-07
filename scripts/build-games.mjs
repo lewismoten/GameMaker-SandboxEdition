@@ -9,6 +9,11 @@ import { gameKeys, logoUsers } from './game-import-keys.mjs';
 import { bundleEntry } from './game-bundle.mjs';
 import { retrySignal } from './child-signal-retry.mjs';
 import { promisify } from 'node:util';
+// Keep progress in the build log and mirror it to npm dev's console when requested.
+function progress(message) {
+  console.log(message);
+  if (process.env.GM_BUILD_PROGRESS === '1') console.error(message);
+}
 const games = join(root, 'games');
 const cacheFile = join(games, '.build-cache.json');
 const run = promisify(execFile);
@@ -96,12 +101,14 @@ const stale = ids.filter(
       !cached?.outputs?.[id] ||
       cached.outputs[id] !== outputs(id)),
 );
+const publicGames = new Set(ids.filter((id) => !JSON.parse(readFileSync(join(games, id, 'about.json'), 'utf8')).secret));
 // slowest first keeps the last workers busy; GM_BUILD_JOBS sets the worker count (CI uses every core, a desk keeps two)
 const slowFirst = ['depth', 'realm', 'blaster', 'maximus'];
 const pending = [
   ...stale.filter((id) => slowFirst.includes(id)).sort((a, b) => slowFirst.indexOf(a) - slowFirst.indexOf(b)),
   ...stale.filter((id) => !slowFirst.includes(id)),
 ];
+progress('Checking game disks and preparing refresh work.');
 // the Sand logo sting is the same in the 17 games that use it and takes about 7 s of ray tracing, so it is
 // rendered once per run (in step with the depth frame shards) and the games read the file
 const logoFile = join(frames, `sandlogo-${gameSourceHash('games/kit/sandlogo.ts').slice(0, 16)}.fli`);
@@ -160,8 +167,9 @@ async function worker() {
     const next = pending.findIndex((id) => !logoUsers.has(id));
     const id = pending.splice(logoReady && next >= 0 && !existsSync(logoFile) ? next : 0, 1)[0];
     if (!id) return;
-    const secret = JSON.parse(readFileSync(join(games, id, 'about.json'), 'utf8')).secret;
+    const secret = !publicGames.has(id);
     const started = Date.now();
+    if (!secret) progress(`Building ${id}; ${pending.filter((next) => publicGames.has(next)).length} public games still queued.`);
     try {
       if (id === 'depth') {
         const shards = Array.from({ length: 8 }, (_, i) => i).filter((i) => !existsSync(join(frames, `shard-${i}.json`)));
@@ -210,6 +218,7 @@ async function worker() {
       );
     } catch (error) {
       stop();
+      // eslint-disable-next-line preserve-caught-error -- A cause could expose a secret game's original paths and stderr.
       throw new Error(
         secret
           ? 'A game build failed.'
@@ -224,7 +233,7 @@ async function worker() {
     built.add(id);
     save();
     times.push([secret ? 'a game' : id, (Date.now() - started) / 1000]);
-    if (!secret) console.log(`Built ${id}${timing ? ` in ${times.at(-1)[1].toFixed(1)} s` : ''}`);
+    if (!secret) progress(`Built ${id}${timing ? ` in ${times.at(-1)[1].toFixed(1)} s` : ''}`);
   }
 }
 // The phone kit's 3D parts (games/year2000/phone/viewer, committed) reach the site beside the trinkets, where the box viewer's
@@ -360,4 +369,4 @@ if (timing)
   );
 if (fallbacks.length) console.log(`Ran under vite-node (bundle failed): ${fallbacks.join(', ')}`);
 save(true);
-console.log('Game build outputs are ready.');
+progress('Game build outputs are ready.');

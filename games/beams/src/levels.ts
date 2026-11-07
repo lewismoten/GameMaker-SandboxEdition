@@ -11,6 +11,7 @@ import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
 import { addSign, type Sign } from '../../kit/starter/sign';
+import { addBeams } from './beam';
 import { CRITTER } from './critters';
 import { addHallBlocks, wallPicture } from './hall';
 import { LAYERS, addHillBlocks, hillBlock, hillName, meadow, onHill, type Zone } from './hills';
@@ -86,31 +87,18 @@ function hall(book: Book, width: number, exit: number): StarterMap {
 
 const board = (m: StarterMap, s: Sign, x: number, y: number) => s.board.forEach((row, dy) => row.forEach((name, dx) => m.set(x + dx, y + dy, name)));
 
-/** How wide a beam is (blocks either side of its middle) on each row from the row below the lamp: 1, 1, 2, 2, 3, 3, 3 and the floor. */
-const BEAM_HALF = [1, 1, 2, 2, 3, 3, 3, 3];
-export const BEAM_TOP = 2;
-/** Which density of light the block `dx` blocks from a beam's middle gets, for the beam's kind. */
-export function tier(kind: 'solid' | 'checker' | 'soft', half: number, dx: number): 25 | 50 | 75 | 100 {
-  if (kind === 'solid') return 100;
-  if (kind === 'checker') return 50;
-  const edge = half - Math.abs(dx);
-  return edge === 0 ? 25 : edge === 1 ? 50 : 75;
-}
-
 /** The beams: three lamps, each with its beam of lit twins of the wall (rows 2 to 8) and the floor (row 9). */
 export function beams(pal: Pal): Level {
   const { book, signs } = bookFor(pal, SIGNS.beams, wallPicture(pal).get(0, 1), (b) => addHallBlocks(b, pal, true));
   const m = hall(book, BEAMS.width, BEAMS.exit);
   board(m, signs.start, 4, 4);
   const kinds = ['solid', 'checker', 'soft'] as const;
-  BEAMS.lamps.forEach((lx, i) => {
-    m.set(lx, 1, 'lamp');
-    for (let k = 0; k < BEAM_HALF.length; k++) {
-      const y = BEAM_TOP + k;
-      for (let dx = -BEAM_HALF[k]; dx <= BEAM_HALF[k]; dx++) m.set(lx + dx, y, `${y === FLOOR ? 'floor' : 'wall'}Lit${tier(kinds[i], BEAM_HALF[k], dx)}`);
-    }
-    board(m, signs[kinds[i]], lx - 5, 2);
-  });
+  const lit = addBeams(book, pal, BEAMS.lamps, kinds, [1, FLOOR]);
+  for (const [at, name] of lit) {
+    const [x, y] = at.split(',').map(Number);
+    m.set(x, y, name);
+  }
+  BEAMS.lamps.forEach((lx, i) => board(m, signs[kinds[i]], lx - 5, 2));
   board(m, signs.next, BEAMS.exit - 5, 4);
   return { file: 'beams', title: 'The Beams', map: m, book, exit: BEAMS.exit };
 }

@@ -27,7 +27,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 7306,
+  "frames": 7315,
   "chapters": [
    {
     "title": "Opening",
@@ -36,28 +36,28 @@
    },
    {
     "title": "Story",
-    "frame": 913,
-    "time": 15216.666666666471
+    "frame": 922,
+    "time": 15366.666666666466
    },
    {
     "title": "The Plaza",
-    "frame": 1661,
-    "time": 27683.333333333918
+    "frame": 1670,
+    "time": 27833.33333333393
    },
    {
     "title": "The Theater",
-    "frame": 3209,
-    "time": 53483.33333333128
+    "frame": 3218,
+    "time": 53633.333333331255
    },
    {
     "title": "Ending",
-    "frame": 4507,
-    "time": 75116.66666666564
+    "frame": 4516,
+    "time": 75266.66666666568
    },
    {
     "title": "Credits",
-    "frame": 6234,
-    "time": 103900.00000000735
+    "frame": 6243,
+    "time": 104050.00000000739
    }
   ]
  }

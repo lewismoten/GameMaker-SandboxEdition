@@ -56,6 +56,8 @@ game folder opens in the browser unchanged.
 
 ## Credits
 
+- **Livestream follow-up tools and booklet contents**: **OpenAI Codex (GPT-6)**, directed by Lewis Moten, implemented measured Technical Reference contents, development refresh progress and admission control, update labels and regression checks. No new game assets or third-party material were added.
+
 - **Cooperative relay and challenge foundations**: **OpenAI Codex (GPT-6)**, directed by Lewis Moten, wrote the printable activity, descriptor, guest-state seam, design and tests. The relay uses this project’s existing Teddy manual and hint-book route; no new game content or third-party assets were added.
 
 - **RSD Game-Maker 1.0–3.0** (1991–1995): Recreational Software Designs: G. Andrew Stone,
@@ -85,7 +87,16 @@ game folder opens in the browser unchanged.
   bank. It also built the Starter Ride Along (`games/ride-along/`: its pictures, levels, song,
   signs and bot). Notes kept for Lewis stay out of the repository.
 - **Hermes OpenAI Codex GPT-6.1 Sol** (OpenAI), directed by Lewis, revised Slow Computers' crowd layout and cutaway cave pixels, its lesson notes and its gameplay regression checks (`games/slow-computers/`). The original game credits remain.
+- **First-load boundaries and regression checks**: **Hermes Agent running OpenAI Codex GPT-6.1 Sol**, directed by Lewis Moten, separated editor routes from the home page. No game content, patch values or export formats changed.
 - **All Mine high-score achievement**: **Hermes Agent running OpenAI Codex GPT-6.1 Sol**, directed by Lewis Moten, implemented stored-table detection, player/desk integration, reset persistence and tests, and selected an existing checklist block through the badge generator. The source artwork retains its original credits; no new game artwork was drawn.
+- **Technical Reference review**: **OpenAI Codex (GPT-6)**, directed by Lewis Moten,
+  revised the booklet and cited Programmer's Guide chapters, drew static inline SVG byte,
+  bit, wrapping and fade figures, and checked worked examples against non-secret Sandbox
+  game files and the original source. Pixel grids reproduce this project's TEDDY artwork.
+  CMF and VOC are Creative Technology Ltd. formats; original references are the Sound
+  Blaster Developer Kit's Creative Music File and Creative Voice File documentation.
+  The descriptions and figures here are original; no specification prose or diagrams
+  are quoted or reproduced.
 - **Reviews and a sounding board**: Lewis has also had **ChatGPT-6.1 Sol** (OpenAI) review
   the fork, TURBO BUTTON and the games' content, and talked ideas through with **Google
   Gemini 3** (Google): 1990s nostalgia and his own memories, the home-office supplies of the
@@ -95,6 +106,7 @@ game folder opens in the browser unchanged.
   to the project as notes and ideas, through Lewis.
 - **Dialog accessibility checks and fixes**: **Hermes Agent running OpenAI Codex GPT-6.1 Sol**, directed by Lewis Moten, added dialog naming, phone-layout regressions, expanded browser audit coverage, and live-announcement routing, progress and terminal-outcome fixes with regression tests.
 - **Headless PLAYGAME audio capture** (`tools/dosbox-286/`): capture scripts, tests, and documentation implemented and verified with **Hermes Agent using OpenAI Codex GPT-6.1 Sol**, directed by Lewis Moten. DOSBox-X is an external tool by the DOSBox-X Team; no emulator binaries or source are bundled.
+- **Dialog accessibility checks and fixes**: **Hermes Agent running OpenAI Codex GPT-6.1 Sol**, directed by Lewis Moten, added dialog naming, phone-layout regressions, and expanded browser audit coverage. The same agent added contextual DOS-capacity explanations and regression checks for monster sets, generated map monsters, and block sets.
 - **OpenAI Codex** (through Visual Studio Code, directed by Lewis): from October 27 to 30,
   2026, while Claude was out of its weekly tokens, Codex worked on the fork with four OpenAI
   models, by Lewis's account of when he switched between them (the commits carry only a
@@ -112,6 +124,7 @@ game folder opens in the browser unchanged.
   Codex made no new levels, art, music or story text for the games. The entries below that say
   "OpenAI Codex (GPT-6)" are part of the same work.
 
+- **Integrator return-path layout** (`web/src/editor/editors/integrator/integratorLayout.ts`): bounded ending placement and return-copy regression tests implemented with **Hermes / OpenAI Codex GPT-6.1 Sol** (OpenAI), directed by Lewis Moten. Game files and runtime scene links are unchanged.
 - **Build runner interruption recovery** (`scripts/build-games.mjs`, `scripts/child-signal-retry.mjs`)
   and its regression tests: implemented with **Hermes Agent running OpenAI Codex GPT-6.1 Sol**,
   directed by Lewis Moten. No game content or generated disk formats changed.
@@ -189,6 +202,8 @@ game folder opens in the browser unchanged.
   pad prints. Like everything else added here they are under
   the MIT License, so the games they open can carry them anywhere.
 - **TURBO BUTTON’s sound IRQ tip** (`web/src/manual/magazine/sections/mailBag.ts`): written with **Hermes Agent running OpenAI Codex GPT-6.1 Sol**, directed by Lewis Moten, from his report of music playing while .VOC effects stayed silent until the game’s IRQ matched the Sound Blaster’s. Existing magazine credits remain.
+- **DOS installation lesson** (`web/src/manual/ultimate/installScript.ts`): the original Chapter 18 prose, DOS 3.3 batch example, SANDBOX/source-root `A:INSTALL` follow-up and listing guards were written with **Hermes Agent running OpenAI Codex GPT-6.1 Sol**, directed by Lewis Moten. Its Snowbound label figure is a Chromium render of the existing `desk/disks/diskLabel.ts` label with an installation footer, using that nonsecret game’s own scene and hero; existing game artwork credits remain. Compatibility was exercised with MS-DOS 3.30 in Jeff Parsons’s MIT-licensed PCjs emulator; no emulator or DOS binaries are distributed here.
+- **TURBO BUTTON’s Help Desk tips** (`web/src/manual/magazine/sections/mailBag.ts`): written and corrected with **Hermes Agent running OpenAI Codex GPT-6.1 Sol**, directed by Lewis Moten. His sound setup already used IRQ 7 on both sides; sound/music set to None was the cause. The Escape advice follows PLAYGAME’s checks before and after the fade, and the video advice concerns CONFIG’s SVGA type. Existing magazine credits remain.
 - **DOS installation lesson** (`web/src/manual/ultimate/installScript.ts`): the original Chapter 18 prose, DOS 3.3 batch example and listing guards were written with **Hermes Agent running OpenAI Codex GPT-6.1 Sol**, directed by Lewis Moten. Compatibility was exercised with MS-DOS 3.30 in Jeff Parsons’s MIT-licensed PCjs emulator; no emulator or DOS binaries are distributed here.
 - **Lewis's DOSBox screenshot** of A Fly Named Carl's garbled title (his own capture, taken while
   testing the games in real DOS) illustrates "Where Game-Maker Runs Out" in The Ultimate Owner's
@@ -873,6 +888,8 @@ frame-dump hook and kept the results. This fork uses two things from it:
 
 ## The Pocket Player (hardware/pocket-player)
 
+OpenAI Codex (GPT-6), directed by Lewis Moten, implemented the category and six-thumbnail library browser, optional version-1 package/index metadata, source-name overlays, title search scope, disposable card metadata cache, stable project identities, preview packing, host renders and regression checks. The previews reuse existing game artwork and this project's title/level renderers; their original credits remain.
+
 OpenAI Codex (GPT-6), directed by Lewis Moten, revised the Pocket Player's card discovery, picker search and labels (including incremental search and paging redraws, the search icon and the calibration explanation), display options and setup flow, touch packet handling, single-touch jump wedges, saved sticky direction, packers, full-panel scene and text-page clearing, bounded picture bands and regression checks. Existing game assets retain their own credits.
 
 A firmware for the ESP32-3248S035 board that plays the Starter games, and an install page (`web/public/pocket/`). Claude Sonnet 5.5 wrote the firmware and the page. The firmware binaries' complete third-party notices are in [`web/public/pocket/fw/NOTICES.txt`](web/public/pocket/fw/NOTICES.txt).
@@ -1075,3 +1092,19 @@ by this repository's trinket tools, designed by Claude Sonnet 5.5 (Anthropic) un
 maker "ZORP" is invented. The shell is untested: nothing has been printed.
 
 - **Embroidery generator and Maximus's patch** (`web/packages/tools/src/embroidery/`, `games/maximus/patch/`, `web/src/desk/boxes/patchModel.ts`): the stitch generator, the DST, EXP and PES writers, the single-line lettering, the stitch simulation and the patch design were written by **Claude Sonnet 5.5** (Anthropic), directed by Lewis Moten. The file layouts follow the public descriptions of the Tajima DST, Melco EXP and Brother PES/PEC formats kept by the open embroidery projects (Embroidermodder's libembroidery, MIT, and pyembroidery, MIT); no code or data was copied, and the PES thread-chart indices are approximate. The patch uses only the game's own colors and words. Nothing has been sewn on a real machine.
+
+## Native SDL host prototype
+
+- **OpenAI Codex**, directed by Lewis Moten, implemented the SDL launcher, file/input/display/timing adapters, PCM VOC first cut, replay checks and documentation in `hardware/pi-player/`. It compiles the existing Pocket C++ core and font directly; their existing credits remain. The VOC implementation follows this project's own decoder and the original RSD file-format behavior. No original DOS source is modified.
+- **SDL2**, by Sam Lantinga and contributors, is linked as an external library under the **zlib license** ([upstream license](https://www.libsdl.org/license.php)); no SDL source is copied. The host was built against Homebrew SDL2 2.32.70.
+- **zlib**, by Jean-loup Gailly and Mark Adler, is linked externally for raw-deflate asset loading under the **zlib license** ([upstream license](https://zlib.net/zlib_license.html)). Neither library is relicensed by this project; retain their license notices when distributing binaries and dependencies.
+- **ymfm**, by Aaron Giles and contributors, **BSD-3-Clause** ([upstream](https://github.com/aaronsgiles/ymfm)), is the planned OPL2 backend documented in `hardware/pi-player/MUSIC.md`. No ymfm code or binary is included or linked yet.
+- **Player Patching Manual** (`web/src/programmersGuide/patching1994.md`, `web/src/manual/printables/patchingManual.ts`, `patchingPlates.ts`): original words, byte-layout figures, booklet integration and verification written with **OpenAI Codex (GPT-6)**, directed by Lewis Moten. References are this project's Programmer's Guide, player patch tables, Sandbox game metadata and the original RSD source and CD executables; the existing RSD MIT credit remains. No text from the printed RSD manual was copied.
+
+- **Livestream game follow-up (November 2026):** OpenAI Codex (GPT-6), directed by Lewis Moten, implemented Colors That Work’s playable palette lesson, removed unused Beat the Clock monster templates, drew the paper cube’s intermediate folding diagram, revised the Stage Box assembly and lock diagrams, and added the phone BOM’s numeric cost export and regressions. Existing game art, music, source data, and color-vision algorithm credits remain.
+
+- **Desk machine settings** (`web/src/desk/pc/machine*.ts`): OpenAI Codex (GPT-6), directed by Lewis Moten, implemented the hardware dialog, remembered CPU and disk timing, accessibility checks and regression tests using the existing engine estimates. No new third-party assets or game content were added.
+- **Livestream Desk, Editor, Site and Library follow-up**: OpenAI Codex (GPT-6), directed by Lewis Moten, implemented navigation, asset filtering, scene-panel layout, creation labels, download discoverability, cached-search scheduling, and regression checks. Existing game data and artwork retain their credits.
+
+- **CYD friendliness check** (`web/scripts/cyd*.ts`): OpenAI Codex (GPT-6), directed by Lewis Moten, implemented the recorded-route measurements, engine probes, scoring, tests, and documentation. No game content or third-party material was added.
+- **Try Again plank landing** (`games/one-more-try/`): OpenAI Codex (GPT-6), directed by Lewis Moten, widened the upper plank and added headless jump checks against the original PLAYGAME collision rules. Existing Starter art and music retain their credits.

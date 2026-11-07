@@ -61,7 +61,7 @@ front (the magazine, the desk, the level check's explorer, the engine…), walki
   [`seededRandom.ts`](seededRandom.ts): the seeded random numbers (Mulberry32, xorshift32) and
   string hash (FNV-1a) that pictures, songs, maps and walkthroughs use to come out the same every
   time.
-- [`devReload.ts`](devReload.ts): development only, a Reload button in place of reloading the page; the dev server keeps serving the old code until it is pressed (`manualReload` in `vite.config.ts` holds back Vite's invalidation)
+- [`devReload.ts`](devReload.ts): development only, a Reload button in place of reloading the page, labeling generated game files separately from source changes; the dev server keeps serving the old code until it is pressed (`manualReload` in `vite.config.ts` holds back Vite's invalidation)
 - [`devLog/`](devLog/README.md): `interactionLog.ts`: development on localhost only, opt in with the 🙈/🐵 corner switch (remembered): logs screen size, pointer, clicks, keys (never what is typed in a field), routes, slow paints, long tasks and every JavaScript error to `.for-lewis/debug/interaction-log/<date>.jsonl` through `scripts/devLog.ts`; it pauses after 5 minutes with no mouse or keyboard
 - [`devLog/gameLog.ts`](devLog/gameLog.ts), [`devLog/replayCore.ts`](devLog/replayCore.ts): with the 🐵 switch on, a running game also logs `game-start` (game, .gam hash, random seed, hardware), `game-input` (the keys the game applied, `[clock, scan, ...]`), `game-snap` (scene, hero, hit points, lives, score, about every second and on scene change, hurt, death, pickup and win), `game-note` and `game-end`; `npm run replay:log -- <log.jsonl>` (`scripts/replayLog.ts`) replays it headless and checks each snapshot
   (which would switch off the desk's PC) whenever a source file changes.
@@ -235,8 +235,8 @@ SDK implementation lives in the packages below; the app imports their declared e
 
 ## Main flows
 
-**Desk or modern UI.** `main.ts` is a tiny entry: it loads `desk/desk.ts` or `modernUi.ts`
-(today's home and workspace; the Guide is its own download) only for the interface being shown,
+**Desk or modern UI.** `main.ts` loads `desk/desk.ts`, `editor/shell/home.ts` or `modernUi.ts`
+(opening a project; the Guide is its own download) only for the route being shown,
 and the editors (`editor/editors/registry.ts` `loadEditor`) one at a time, as files of each kind
 are opened, so each interface is its own download. `offline.ts` registers the service worker
 (`siteWorker.ts`), which precaches only the app shell and caches games as they are used; a new

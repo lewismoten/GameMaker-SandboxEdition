@@ -1,16 +1,18 @@
 // Chapter 18's DOS 3.3 installer lesson. Short listing parts fit the measured booklet pages.
+// Snowbound label: the existing desk printedDiskLabel renderer, with an installation footer.
+import installLabel from './installLabel.png';
 const parts = [
   String.raw`@ECHO OFF
 IF NOT "%2"=="" GOTO usage
-SET GMIDIR=C:\DEMO
-IF NOT "%GMIDIR%"=="C:\DEMO" GOTO failed
+SET GMIDIR=C:\SANDBOX
+IF NOT "%GMIDIR%"=="C:\SANDBOX" GOTO failed
 IF "%1"=="" GOTO begin
 IF "%1"=="GAMES" GOTO games
 IF "%1"=="games" GOTO games
 GOTO usage
 :games
-SET GMIDIR=C:\GAMES\DEMO
-IF NOT "%GMIDIR%"=="C:\GAMES\DEMO" GOTO failed
+SET GMIDIR=C:\GAMES\SANDBOX
+IF NOT "%GMIDIR%"=="C:\GAMES\SANDBOX" GOTO failed
 :begin
 ECHO Installing to %GMIDIR%
 ECHO Same-name files will be overwritten. Back up saves first.
@@ -53,7 +55,7 @@ ECHO Only then type these commands:
 ECHO C:
 ECHO CD %GMIDIR%
 ECHO CONFIG
-ECHO DEMO.EXE
+ECHO SANDBOX.EXE
 GOTO end
 :failed
 ECHO INSTALL STOPPED. Check environment, drive, space and disk errors.
@@ -72,8 +74,8 @@ const listing = (i: number) => `<pre><code>${parts[i]}</code></pre>`;
 export const INSTALL_LESSON = String.raw`
   <h2>Give the player an INSTALL command</h2>
   <p>Don’t make the player copy a game by hand. Put an <code>INSTALL.BAT</code> beside the
-  game’s files and offer a short directory such as <code>C:\DEMO</code>, or
-  <code>C:\GAMES\DEMO</code> for someone who keeps games together. Replace <code>DEMO</code>
+  game’s files and offer a short directory such as <code>C:\SANDBOX</code>, or
+  <code>C:\GAMES\SANDBOX</code> for someone who keeps games together. Replace <code>SANDBOX</code>
   with your game’s DOS name, one to eight plain letters or digits. Keep the player and all its
   resources together in that directory; the game itself does not swap installation disks.</p>
   <p><b>Disk two below is only an example of multi-disk installation.</b> A game that fits on
@@ -85,14 +87,14 @@ export const INSTALL_LESSON = String.raw`
   <table>
     <tr><th>Disk</th><th>Files in its root directory</th></tr>
     <tr><td>1</td><td><code>INSTALL.BAT</code>, <code>INSTALL.TXT</code>, <code>DISK1.ID</code>,
-    <code>DEMO.EXE</code> (the transferred player), <code>SNDBLAST.DRV</code>,
-    <code>CONFIG.BAT</code>, <code>CONFIG.HLP</code> when supplied, <code>DEMO.GAM</code>,
+    <code>SANDBOX.EXE</code> (the transferred player), <code>SNDBLAST.DRV</code>,
+    <code>CONFIG.BAT</code>, <code>CONFIG.HLP</code> when supplied, <code>SANDBOX.GAM</code>,
     and the first group of game resources.</td></tr>
     <tr><td>2 (example only)</td><td>An identical <code>INSTALL.BAT</code>, <code>DISK2.ID</code>,
     and the remaining resources.</td></tr>
   </table>
-  <p>The marker files must contain a short line, such as <code>DEMO disk 1</code> or
-  <code>DEMO disk 2</code>: old DOS COPY skips empty files. Make them in a text editor and check their exact names.
+  <p>The marker files must contain a short line, such as <code>SANDBOX disk 1</code> or
+  <code>SANDBOX disk 2</code>: old DOS COPY skips empty files. Make them in a text editor and check their exact names.
   Put only <code>DISK1.ID</code> on disk 1 and only <code>DISK2.ID</code> on disk 2. They identify
   a disk number, not a game or release, so label the disks and never mix sets. Divide complete
   files, not pieces of a file. Every resource named by the game must appear on one disk; only
@@ -100,10 +102,20 @@ export const INSTALL_LESSON = String.raw`
   first be unpacked; copying the ZIP alone does not install a game.</p>
   <h3>Start from disk 1</h3>
   <p>Tell the player to put disk 1 in A:, type <code>A:</code>, then <code>CD \</code>, then
-  <code>INSTALL</code> for <code>C:\DEMO</code> or <code>INSTALL GAMES</code> for
-  <code>C:\GAMES\DEMO</code>. For B:, type <code>B:</code> instead. Keep that source drive
-  current and swap disks in that same drive. Do not start with <code>A:\INSTALL</code> while
-  C: is current: the relative source names would read C: instead of the floppy.</p>
+  <code>A:INSTALL</code> for <code>C:\SANDBOX</code> or <code>A:INSTALL GAMES</code> for
+  <code>C:\GAMES\SANDBOX</code>. For B:, select <code>B:</code>, type <code>CD \</code>,
+  then <code>B:INSTALL</code> or <code>B:INSTALL GAMES</code>. Keep that source drive current
+  and swap disks in that same drive. A:INSTALL does not change the current drive or A:'s
+  remembered directory. Selecting the floppy and its root first makes the relative source
+  names read the floppy, not C:. Do not skip those first two commands, even if the label
+  only has room for the install line. Starting <code>A:INSTALL</code> or <code>A:\INSTALL</code>
+  while C: is current is not equivalent.</p>
+  <figure class="ug-install-label">
+    <img src="${installLabel}" alt="Snowbound: The $89 Shovel floppy label, with its snowy game scene, shovel-carrying hero, and To install: A:INSTALL footer">
+    <figcaption>Figure 18-1. Snowbound: The $89 Shovel’s label, rendered with the disk box’s
+    normal label artwork and an installation footer. This is a label example, not the SANDBOX example’s game files.
+    Select A: and its root first, as above; the short footer is a reminder, not the whole procedure.</figcaption>
+  </figure>
   <p>Save the following five parts, in order, as <b>one</b> plain ASCII file named
   <code>INSTALL.BAT</code>, with DOS CRLF line endings. Copy the finished file byte for byte
   onto both disks: COMMAND.COM may reopen it after a swap and must find the same listing at
@@ -134,7 +146,7 @@ export const INSTALL_LESSON = String.raw`
   <h3>5. Explain what to do next</h3>
   <p>The script only prints the launch commands; it does not run the game after an unchecked
   copy. After both passes have copied without errors, change to C: and the chosen directory,
-  run <code>CONFIG</code> once for sound and video, then <code>DEMO.EXE</code>. Remove the
+  run <code>CONFIG</code> once for sound and video, then <code>SANDBOX.EXE</code>. Remove the
   installation disk and test that the whole game plays from the hard disk.</p>
   ${listing(4)}
   <h3>Do not hide a copy error</h3>
@@ -148,7 +160,7 @@ export const INSTALL_LESSON = String.raw`
   <p>Put those warnings, the two destination choices, the disk order and the launch commands
   in <code>INSTALL.TXT</code> too. Include a manual fallback: make the chosen directory
   (and <code>C:\GAMES</code> first if needed), then type
-  <code>COPY /B A:\*.* C:\DEMO /V</code> for each disk, substituting the chosen directory
+  <code>COPY /B A:\*.* C:\SANDBOX /V</code> for each disk, substituting the chosen directory
   and B: when needed. Check each copy before going on. Do not copy from the destination onto
   itself. Try the script on a clean DOS 3.3 machine: both choices, a wrong disk, an existing
   directory and a full hard disk. This listing uses COMMAND.COM commands, not later

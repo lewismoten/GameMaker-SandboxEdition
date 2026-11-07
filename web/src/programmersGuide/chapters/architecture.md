@@ -2,19 +2,23 @@
 
 Game-Maker is a family of separate DOS programs. Only the small GM launcher stays in memory while another program runs. Files on disk carry the work from one editor to the next; there is no shared in-memory project object between utilities.
 
-| Program   | Job and files                                          |
-| --------- | ------------------------------------------------------ |
-| GM / MENU | Launch programs and choose the next one                |
-| PALCHOS   | Read and write PAL colors                              |
-| BLOCEDIT  | Read and write BBL, MBL and CBL blocks                 |
-| MONEDIT   | Read and write MON behavior; preview MBL pictures      |
-| MAPMAKER  | Read and write MAP placement; read blocks and monsters |
-| CHAREDIT  | Read and write CHR sequences; read CBL pictures        |
-| IMAGE     | Read GIF pictures; extract PAL, BBL and BKD data       |
-| SNDEDIT   | Read and write SND effects; convert CMF timing         |
-| GRATOR    | Read and write GAM scenes and file-name references     |
-| UTILITY   | Copy a game's files and its transfer player            |
-| PLAYGAME  | Read the game; write recordings, scores and saves      |
+| Number | Letter | Program  | Job and files                                            |
+| -----: | :----: | -------- | -------------------------------------------------------- |
+|      — |   —    | GM       | Launch programs and choose the next one                  |
+|      0 |   A    | (quit)   | Leave Game-Maker and return to DOS                       |
+|      1 |   B    | UTILITY  | Copy a game's files and its transfer player              |
+|      2 |   C    | PALCHOS  | Read and write PAL colors                                |
+|      3 |   D    | BLOCEDIT | Read and write BBL, MBL and CBL blocks                   |
+|      4 |   E    | MONEDIT  | Read and write MON behavior; preview MBL pictures        |
+|      5 |   F    | MAPMAKER | Read and write MAP placement; read blocks and monsters   |
+|      6 |   G    | CHAREDIT | Read and write CHR sequences; read CBL pictures          |
+|      7 |   H    | IMAGE    | Read GIF pictures; extract PAL, BBL and BKD data         |
+|      8 |   I    | SNDEDIT  | Read and write SND effects; convert CMF timing           |
+|      9 |   J    | GRATOR   | Read and write GAM scenes and file-name references       |
+|     10 |   K    | PLAYGAME | Read the game; write recordings, scores and saves        |
+|     11 |   L    | MENU     | Show the menus and return the number of the next program |
+
+Numbers come from GM's program table, 16 bytes per name (`code/GM/GM.ASM:26-37`); the selection letter is `'A'` plus the number (`code/GM/GM.ASM:41`, defaulting to `'A'+10`, PLAYGAME).
 
 GM → MENU → utility → GM → MENU, until a zero exit code returns to DOS.
 

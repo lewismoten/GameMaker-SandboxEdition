@@ -6,29 +6,36 @@
   "hero": "YANA",
   "year": 1994,
   "price": "Free",
-  "version": "1.0",
-  "blurb": "Two short snowy walks: flakes sway as they fall, low drifts sit beside the trail, and walking through fresh powder leaves pairs of bootprints. In the second walk a drift grows in three steps over a few seconds. Read the signs, hop across some powder, then walk back and compare the gaps with your footprints. Open the blocks to see the loops, timed changes and touch changes.",
+  "version": "2.1",
+  "blurb": "Three short snowy walks: flakes sway as they fall, low drifts sit beside the trail, and walking through fresh powder leaves pairs of bootprints. In the second walk a drift grows in three steps over a few seconds. The third is an open field seen from above: walk any of four ways and your prints face the way you went, then fade away. Read the signs, hop across some powder, then walk back and compare the gaps with your footprints. Open the blocks to see the loops, timed changes, touch changes and the prints that are born at your feet.",
   "exe": "SNOW.EXE",
   "dosName": "SNOW",
   "sound": "sb",
-  "label": { "background": "#e4f0f8", "band": "#3c5274", "ink": "#182030", "logo": "SANDBOX SOFTWARE" },
+  "label": {
+    "background": "#e4f0f8",
+    "band": "#3c5274",
+    "ink": "#182030",
+    "logo": "SANDBOX SOFTWARE"
+  },
   "box": {
-    "levels": "2 short levels",
+    "levels": "3 short levels",
     "hours": 1,
     "background": "#3c5274",
     "accent": "#dcecf8",
     "ink": "#ffffff",
     "tagline": "Look behind you.",
-    "back": "Snowflakes drift down a blue winter sky. Walk through fresh snow to leave two little bootprints in each tile you touch. Hop over it and leave a gap. A drift grows in three steps, but the floor stays put: these are pictures and touch-changed blocks, not a snow simulator.",
+    "back": "Snowflakes drift down a blue winter sky. Walk through fresh snow to leave two little bootprints in each tile you touch. Hop over it and leave a gap. A drift grows in three steps, and then an open field lets you walk any way you like: your prints point the way you went and fade away. The floor stays put: these are pictures and timed changes, not a snow simulator.",
     "features": [
       "Swaying snowflake loops",
       "Three stages of a growing drift",
       "Bootprints only where you touch the powder",
+      "Open snow: prints that face your way and fade",
       "Short signs and editable lessons"
     ],
     "shots": [
       ["one.map", 18, 15],
-      ["two.map", 18, 15]
+      ["two.map", 18, 15],
+      ["three.map", 16, 15]
     ],
     "rating": "Everyone"
   },

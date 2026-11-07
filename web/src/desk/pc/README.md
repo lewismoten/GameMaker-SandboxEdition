@@ -4,6 +4,7 @@ Part of [`desk/`](../README.md) and the [source map](../../README.md). The case 
 
 Entry points: `desk/deskPc.ts` switches the PC on and off and loads these; `desk/deskScene.ts` places them.
 
+- Hardware settings: `machineSettings.ts` remembers and composes the existing CPU/disk estimates; `machineDialog.ts` opens from the MHz button, with `machineDialog.css` for phone layout.
 - Case: `caseParts.ts` (drive cage, MHz display), `caseFace.ts` (key lock and printed parts), `bootSounds.ts`, `driveSounds.ts` (made on the spot with Web Audio).
 - Monitor: `crtWarmUp.ts` with `crtOn.css` and `crtOff.css` (switch on and off), `crtWarp.ts` (the tube's bulge), `screenGlow.ts`.
 - Input: `keyboard.ts`, `tray.ts` (slide-out shelf), `padChoice.ts`, `padChooser.ts`, `padPrints.ts` (mouse pad), `gamePad*.ts` (the GRAVITAS pad: art, SVG, panel, holds, TURBO switch).

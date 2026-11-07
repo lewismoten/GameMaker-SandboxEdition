@@ -49,7 +49,8 @@
     "badges:similar": "npm run badges:similar -w gamemaker-web --",
     "merge:gate": "node scripts/merge-gate.mjs",
     "worker:bootstrap": "node scripts/worker-bootstrap.mjs",
-    "branches:triage": "node scripts/branch-triage.mjs"
+    "branches:triage": "node scripts/branch-triage.mjs",
+    "check:cyd": "npm run check:cyd -w gamemaker-web --"
   },
   "engines": {
     "node": ">=22.12.0"

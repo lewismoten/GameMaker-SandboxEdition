@@ -109,3 +109,9 @@
     animation: none;
   }
 }
+
+/* A source game's full title must fit within the phone's picker width. */
+.pick-bar select {
+  max-width: 100%;
+  min-width: 0;
+}

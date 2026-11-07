@@ -77,6 +77,18 @@ remotes and real merge/push mechanics; costly checks are stubbed. They never pub
 to a network remote or touch the maintainer's refs or servers. Git-backed tests inherit
 the host's signing policy; if sandbox restrictions block its signing agent, report that
 capability failure and run them on an authorized host rather than disabling signing.
+[`task-records/`](task-records/README.md) defines the validated private intake read
+model: client-key and board-ID lookup, distinct run summaries, adapter integration
+and SQLite regression tests. It does not publish the private intake or its data.
+`nightly.py` is the Linux local validation entry point (Python 3.11+ standard library).
+Run `python3 scripts/nightly.py --reports /path/to/shared/.for-lewis/nightly`.
+It fetches and pins `origin/develop`, coalesces requests under a kernel lock, builds every
+DOS game twice in separate clean clones, compares every disk file's actual bytes, runs
+full Vitest, replays every recorded walkthrough, and checks changed games' clips against
+the pinned baseline. Reports and failure evidence stay private and Git-ignored.
+Use `--revision HEAD` for a feature candidate and `--force` for an explicit retry.
+Tests: `python3 -m unittest discover -s scripts -p nightly_test.py -v`.
+Scheduling, timezone, retention, and recovery: [nightly validation](../docs/nightly-validation.md).
 
 `verify-changed.mjs` runs through `npm run verify:changed` (root or `web/`): the quick pre-merge check of only what the branch touched against `origin/develop` (or `--base <ref>`). `npm run verify` is the full check.
 
@@ -144,3 +156,10 @@ appends start, wait, duration, exit code, cwd and command to `log.tsv` there. En
 `hooks.PreToolUse`. `noMainCheckoutMerge.mjs` blocks `git merge`, `git pull` and `git rebase` in the main
 checkout while something listens on 5173. `noSymlinkedDiskBuild.mjs` blocks game builds while any
 `games/*/disk` is a symlink. `commitTrailer.mjs` blocks `git commit -m` with no `Co-Authored-By: Claude` line.
+
+Development refreshes (`dev-games.mjs`) use the shared heavy-job slots too. The console
+shows each public game as it starts, the remaining public queue, completions and the final
+ready message; stdout also stays in `node_modules/.cache/games-dev.log`. Admission waits
+and errors stay visible in the console. `web/test/devGames.test.mjs` checks both
+fresh and existing disks; `web/test/buildGames.test.mjs` checks progress before completion. The development page labels generated disk,
+walk-path and printable updates as rebuilt game files, with source updates labeled separately.

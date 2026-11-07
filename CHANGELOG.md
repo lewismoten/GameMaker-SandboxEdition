@@ -26,12 +26,13 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Added
 
-- The Ultimate Owner’s Guide explains how to write a DOS 3.3 installation batch file for a game in `C:\NAME` or `C:\GAMES\NAME`, with disk prompts, a clearly illustrative second disk, and copy-error warnings.
+- The Ultimate Owner’s Guide explains how to write a DOS 3.3 installation batch file for `C:\SANDBOX` or `C:\GAMES\SANDBOX`, with source-root `A:INSTALL` instructions, hard-drive launch commands, a clearly illustrative second disk, copy-error warnings and a rendered Snowbound floppy label.
 
 - Pocket Player shows its game list before discovering one-file card games, adds title search and compact icon buttons, keeps long titles inside their rows, brings Display options to both boards, reduces display setup to three steps, offers a saved smaller picture away from the touch pad, and preserves held touches across incomplete GT911 reads.
 
 - All Mine, an achievement for filling all ten high-score places in one game with the same name.
-- TURBO BUTTON's Mail Bag has a sound troubleshooting tip: music can play while digitized effects stay silent when the game's Sound Blaster IRQ does not match the card.
+- TURBO BUTTON's Mail Bag corrects the sound setup story (sound/music was set to None, with IRQ 7 already matching), gives the 220 / IRQ 7 / DMA 1 example, and adds help for holding Escape through the fade and choosing the right SVGA type in CONFIG.
+- The editors explain more DOS limits where they matter: New monster says why a 64-type set cannot take a copy, generated layouts report monsters omitted at 200 map slots, and block pickers explain their fixed 150/100/50-block sets without trimming imported extra records.
 - Lightning Bugs, Fireworks Night and Leaves in the Wind now draw and name the same helpers as their Cast entries: Rima, Lami and Mia.
 - Slow Computers brings both rows of bees into the playing view and puts its eight snails in a lit cutaway cave beneath the grass, without the floating plank. The crowd still has 36 friendly monsters.
 - Snow Trails, a Weather Starter with swaying falling snow, a drift that grows in three steps, and bootprints left in touched powder. Two short walks show the block loops and touch changes, with editable lesson pages.
@@ -244,6 +245,8 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 - The Starters' opening sting is easier to read: STARTER is built from letters five blocks wide and seven tall with a gap between them, and the words STARTER GAMES are lettered in plain type across the top from the first frame.
 
 ### Changed
+
+- Opening a game in the editor no longer downloads the home page's showcase, cards and styles.
 
 - Both Pocket Player boards' flash images include all 106 Starters and Graduations, including Snow Trails, Rain on the Path, Quicksand, Lightning, Heat Waves, and the rebuilt lessons.
 - Who Wins? shows who is stronger: the big red gumdrop now fills its block and the mint ones are half its size, POWER charts list each monster's picture beside its real power number (180, 140, 130, 110), an arrow sign says to watch the big red one, and a star used up on something stronger fizzles gray where you can see it, with a sign saying why (180 to 140).

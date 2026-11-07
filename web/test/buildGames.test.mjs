@@ -89,6 +89,7 @@ async function fixture({ extra, vite = false, secret = false, args = ['--force']
     env: {
       ...process.env,
       FIXTURE_ROOT: root,
+      GM_BUILD_PROGRESS: '1',
       GM_BUILD_JOBS: '2',
       GM_VITE_NODE: vite ? '1' : '0',
       GM_SKIP_GAME_BUILD: skip ? '1' : '0',
@@ -198,6 +199,8 @@ async function drain(f) {
 function success(result, ids) {
   expect(result.code).toBe(0);
   expect(result.stdout).toContain('Game build outputs are ready.');
+  expect(result.stderr).toContain('Building beta;');
+  expect(result.stderr).toContain('Game build outputs are ready.');
   expect(Object.keys(result.cache.keys).sort()).toEqual([...ids].sort());
   expect(Object.values(result.cache.keys)).toEqual(ids.map(() => 'key'));
   expect(Object.values(result.cache.outputs).every(Boolean)).toBe(true);
@@ -317,6 +320,11 @@ it('retries in vite-node mode without revealing a secret game label', async () =
     success(result, f.ids);
     expect(result.stderr).toContain('Retrying a game');
     expect(result.stderr + result.stdout).not.toContain('alpha');
+    expect(result.stdout).toMatch(/Building beta; \d+ public games still queued/);
+    expect(result.stdout).toContain('Built beta');
+    expect(result.stdout).toContain('Game build outputs are ready.');
+    expect(result.stderr).toContain('Building beta;');
+    expect(result.stderr).toContain('Game build outputs are ready.');
   });
 });
 
@@ -367,5 +375,15 @@ it('honors the global skip without launching children', async () => {
     expect(result.code).toBe(0);
     expect(result.events).toEqual([]);
     expect(result.cache).toBeUndefined();
+  });
+});
+
+it('announces the active public game and queue before any child finishes', async () => {
+  await fixture({}, async (f) => {
+    await f.wait(() => f.ready('alpha').length && f.ready('beta').length, 'concurrent readiness');
+    expect(f.events().filter((e) => e.event === 'done')).toEqual([]);
+    expect(f.logs()).toContain('Building alpha; 2 public games still queued.');
+    expect(f.logs()).toContain('Building beta; 1 public games still queued.');
+    success(await drain(f), f.ids);
   });
 });

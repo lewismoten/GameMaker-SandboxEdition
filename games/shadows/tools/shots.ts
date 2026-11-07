@@ -1,5 +1,5 @@
 // Pictures of the lessons (never on the disk), for the progress shots and a stranger's look at the art, zoomed:
-//   compare.png   Kit and a pip standing on sand, grass and soil: a solid shadow on the top row, a dithered one on the bottom
+//   compare.png   a pip standing on sand, grass and soil: a solid shadow on the top row, a dithered one on the bottom
 //   hop.png       the hop's six pictures for each of the three pips, on grass
 //   hover.png     the bee's four pictures over its shadow block: right under it, and three blocks up
 //   plus views of every room (what preview.ts writes as view-*.png)
@@ -8,7 +8,6 @@ import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { writePng } from '@lewismoten/gamemaker-sandbox-tools/kit/png';
-import { heroPicture } from '../../kit/starter/hero';
 import { buildAssets } from '../src/assets';
 import { GROUNDS, groundColors } from '../src/blocks';
 import { BOB_DOWN, HOP_LIFT, beeBody, hopPicture, shadePicture } from '../src/critters';
@@ -34,7 +33,6 @@ const put = (p: Pixels, pic: Pixels, x: number, y: number) => p.blit(pic, x, y, 
     GROUNDS.forEach((g, i) => {
       p.rect(i * 80, row * 60, 80, 60, groundColors(pal, g).base);
       for (let k = 0; k < 30; k++) p.set(i * 80 + ((k * 37) % 80), row * 60 + ((k * 53) % 60), groundColors(pal, g).dark);
-      put(p, heroPicture(look.hero, 'stand.top', 'stand'), i * 80 + 8, row * 60 + 18 - 0);
       put(p, look.critters.pics.get('pip0')!, i * 80 + 44, row * 60 + 38);
     });
   writePng(join(out, 'compare.png'), p, pal.pal, 5);

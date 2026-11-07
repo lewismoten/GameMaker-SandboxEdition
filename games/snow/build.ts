@@ -17,6 +17,8 @@ import { licenseText } from '../kit/license';
 import { STARTER_STING, starterStingFli } from '../kit/starter/sting';
 import { buildHeroBlocks, heroPicture } from '../kit/starter/hero';
 import { buildHero } from '../kit/starter/heroChar';
+import { buildTopHeroBlocks } from '../kit/starter/topHero';
+import { buildPrintBlocks, buildPrintHero, buildPrints } from './src/prints';
 import { buildMonsterBlocks, buildMonsters } from '../kit/starter/monsters';
 import { cardPicture, endPicture, gif, menuPicture, paper, scoresPicture, slotsPicture } from '../kit/starter/screens';
 import { skyOf } from '../kit/starter/palette';
@@ -49,6 +51,13 @@ disk.put('hero.cbl', serializeBlocks(heroBlocks.finish()));
 const character = buildHero(heroBlocks);
 character.meter[20] = INF_REPEAT; // no keys or locked doors
 disk.put('hero.chr', serializeCharacter(character));
+// level 3 is seen from above: its own hero (four facings), and prints that are monsters born at his feet
+const topBlocks = buildTopHeroBlocks(pal);
+const printBlocks = buildPrintBlocks(pal);
+disk.put('top.cbl', serializeBlocks(topBlocks.finish()));
+disk.put('top.chr', serializeCharacter(buildPrintHero(topBlocks)));
+disk.put('prints.mbl', serializeBlocks(printBlocks.finish()));
+disk.put('prints.mon', serializeMonsters(buildPrints(printBlocks)));
 disk.put('snow.snd', serializeSoundSet(buildSounds()));
 disk.put('snow.cmf', song());
 

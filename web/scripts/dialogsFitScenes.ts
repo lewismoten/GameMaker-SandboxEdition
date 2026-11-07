@@ -69,6 +69,13 @@ const toolButton = (id: string, label: string | RegExp): Scene => ({
 export const scenes: Scene[] = [
   ...extraScenes,
   {
+    id: 'desk-machine-settings',
+    route: '/#/desk',
+    open: async (p) => {
+      await p.getByRole('button', { name: /^Machine settings/ }).click({ timeout: 15000 });
+    },
+  },
+  {
     id: 'optimize',
     open: async (p) => {
       await newProject(p);
