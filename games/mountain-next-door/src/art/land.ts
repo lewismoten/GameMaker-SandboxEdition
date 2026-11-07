@@ -271,3 +271,32 @@ export function toe(pal: Pal, part: 'toeL' | 'toeM' | 'toeR' | 'toe'): Pixels {
   const i = part === 'toeL' ? 0 : part === 'toeM' ? 1 : 2;
   return inked(pal, big.crop(i * 20, 0, 20, 20));
 }
+
+/** A garden arbor over a gateway, in three parts: `top` (a leafy roof), `beam` (the cross beam) and `posts` (walk between them). */
+export function arbor(pal: Pal, part: 'top' | 'beam' | 'posts'): Pixels {
+  const p = clear(pal);
+  const w = pal.r('wood');
+  const g = pal.r('green');
+  if (part === 'top') {
+    for (let x = 0; x < 20; x++) for (let y = 6 + Math.round(Math.sin(x * 0.5) * 2); y < 20; y++) p.set(x, y, (x + y) % 5 ? g[2] : g[1]);
+    for (const [x, y] of [
+      [4, 10],
+      [11, 8],
+      [16, 12],
+    ])
+      p.disc(x, y, 2, pal.c('pink', 2)).set(x, y, pal.c('gold', 4));
+  } else if (part === 'beam') {
+    p.rect(0, 0, 20, 20, g[1]);
+    p.rect(0, 8, 20, 6, w[2]).rect(0, 8, 20, 1, w[4]).rect(0, 13, 20, 1, w[0]);
+    for (const x of [3, 9, 15]) p.disc(x, 6, 3, g[3]);
+  } else {
+    p.rect(0, 0, 3, 20, w[2]).rect(17, 0, 3, 20, w[2]).rect(0, 0, 1, 20, w[3]).rect(17, 0, 1, 20, w[3]);
+    for (const [x, y] of [
+      [2, 3],
+      [18, 8],
+      [1, 14],
+    ])
+      p.disc(x, y, 2, g[2]);
+  }
+  return inked(pal, p);
+}

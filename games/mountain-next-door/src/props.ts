@@ -18,7 +18,7 @@ import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { KEYS } from '../../kit/starter/blocks';
 import { LEDGE, PULL, SOLID, type Book } from '../../kit/starter/book';
 import type { Pal } from '../../kit/starter/palette';
-import { GATES, acorn, gate, gentle, toe, crown, fence, gateHome, gateOnRock, ledge, peak, pie, plug, post, print, rock, roof, slope, trunk, wall, windowOn } from './art/land';
+import { GATES, acorn, arbor, gate, gentle, toe, crown, fence, gateHome, gateOnRock, ledge, peak, pie, plug, post, print, rock, roof, slope, trunk, wall, windowOn } from './art/land';
 import { blanket, doormat, lantern, moon, puddle, signpost, star, tunnelAir, tunnelFloor, tunnelStone } from './art/night';
 import { bed, footbridge, gust, rain, stone, water } from './art/weather';
 
@@ -89,6 +89,9 @@ export function addProps(book: Book, pal: Pal, groups: readonly string[], o: Pro
     book.add('roofM', roof(pal, 'M'), air);
     book.add('roofR', roof(pal, 'R'), air);
     book.add('fence', fence(pal), air);
+    book.add('arborTop', arbor(pal, 'top'), { solid: SOLID });
+    book.add('arborBeam', arbor(pal, 'beam'), { solid: SOLID });
+    book.add('arch', arbor(pal, 'posts'), air);
     for (const c of GATES) {
       book.add(`plug.${c}`, plug(pal), { solid: SOLID, effect: GATE_COUNTER, eamt: -1, score: POINTS.home, touch: `home.${c}` });
       book.add(`home.${c}`, gateHome(pal, c), air);
