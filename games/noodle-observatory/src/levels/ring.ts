@@ -48,7 +48,7 @@ export const SHAFTS: Shaft[] = [
     gaps: [4, 15, 7, 14, 4, 10],
     washers: [53, 35, 26, 17],
     signs: { zig: ['THE GAPS ZIGZAG. STEER EARLY.', 4, 3] },
-    signAt: { zig: [3, 62] },
+    signAt: { zig: [16, 62] },
     window: [17, 26],
   },
   {
@@ -88,6 +88,9 @@ export function pathAt(path: [number, number][], y: number): number {
 export function buildShaft(pal: Pal, s: Shaft): Level {
   const { book, timed } = startBook(pal, 'pantry', { still: true });
   const signs = addSigns(book, pal, s.signs);
+  // signs here hang on the still air too (the ring would be pulled down passing in front of one)
+  const blocks = book.finish();
+  for (const name of book.index.keys()) if (name.startsWith('sign')) blocks[book.n(name)].grav = 0;
   const { width: W, height: H } = SHAFT;
   const m = new Place(book, W, H, 'wall', 'wall');
   for (let y = 0; y < H; y++)

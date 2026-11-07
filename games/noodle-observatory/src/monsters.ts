@@ -127,13 +127,13 @@ const anim = (mb: Book, a: string, b: string, t: number): Pics => [
 export const KITCHEN = { toy: 0, lens: 3, cue: 6, ring: 8 } as const;
 export const LENSROLL = {
   /** The toy and the lens wait this long, then roll `roll` blocks right (the toy one less: it pushes). */
-  start: 140,
+  start: 300,
   roll: 10,
   /** The ring waits, then rolls up the wall `rise` blocks to frame the moon. */
-  ring: 520,
+  ring: 760,
   rise: 6,
   /** The way on opens. */
-  open: 760,
+  open: 1020,
 } as const;
 /** The lens is in the scope (its block changes) when it gets there. */
 export const LENS_IN = LENSROLL.start + LENSROLL.roll * BLOCK_TICKS;
@@ -184,7 +184,7 @@ export const COLANDER_RUNS: [number, number][][] = [
 ];
 
 /** The last scene's clock: the ring rolls in, reaches the table at `catch`, and rolls away with the cloth. */
-export const SUPPER = { ring: 640, toTable: 9, away: 30, open: 1080 } as const;
+export const SUPPER = { ring: 840, toTable: 9, away: 30, open: 1300 } as const;
 export const CLOTH_GONE = SUPPER.ring + (SUPPER.toTable + 8) * BLOCK_TICKS;
 
 export function roofSet(mb: Book): Monster[] {

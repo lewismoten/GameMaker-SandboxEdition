@@ -23,32 +23,29 @@ export const CHANNELS = [KEYS, KEYS + 1, KEYS + 2, KEYS + 3, KEYS + 4, KEYS + 5]
 
 /** Nell's head: the Starter head, the cap swapped for hair up in a bun, a scrunchie and a pencil. */
 function nellHead(pal: Pal, face: Face, front = false, look = 0, raised: Raised = ''): Pixels {
+  const face0 = face;
   const p = head(pal, face, front, look, raised);
+  const skin = kitRamp(pal, 'skin');
   const hat = kitRamp(pal, 'hat');
   const hair = kitRamp(pal, 'hair');
   const white = pal.r('white');
   const cap = new Set([...hat, white[1], white[2], white[3]]);
   for (let y = 0; y <= 11; y++) for (let x = 0; x < 20; x++) if (cap.has(p.get(x, y))) p.set(x, y, T);
   const cx = front ? 10 : 9.5;
-  // the hair over the top of the head, a little lighter where the lamp catches it
-  for (let y = 3; y <= 11; y++)
+  // the hair over the top of the head, where the cap was, a little lighter where the lamp catches it
+  for (let y = 2; y <= 11; y++)
     for (let x = 1; x < 20; x++) {
-      const d = ((x - cx) / 8.6) ** 2 + ((y - 11) / 7.6) ** 2;
-      if (d < 1 && (p.get(x, y) === T || y <= 10)) p.set(x, y, d < 0.45 && y < 7 && x > cx - 3 ? hair[2] : y < 6 ? hair[1] : hair[0]);
+      const d = ((x - cx) / 8.6) ** 2 + ((y - 11) / 8) ** 2;
+      if (d >= 1 || p.get(x, y) !== T) continue;
+      const face = face0 !== 'back' && y >= 9 && x >= cx - 3;
+      p.set(x, y, face ? skin[3] : d < 0.5 && y < 7 && x > cx - 3 ? hair[2] : y < 8 ? hair[1] : hair[0]);
     }
-  if (face !== 'back') {
-    // a side part and a few strands over the forehead
-    p.rect(front ? 6 : 9, 9, 6, 1, hair[1]).set(front ? 13 : 15, 10, hair[0]).set(front ? 7 : 11, 10, hair[0]);
-  }
-  // the bun on top toward the back, its scrunchie, and a pencil through it
+  // a soft fringe across the forehead
+  if (face0 !== 'back') for (let x = Math.round(cx - 3); x <= Math.round(cx + (front ? 4 : 6)); x++) p.set(x, 8, hair[1]).set(x, 9, x % 3 === 0 ? hair[0] : p.get(x, 9));
+  // the bun on top, toward the back, and a mustard scrunchie round its base
   const bx = front ? 10 : 6;
-  p.disc(bx, 3, 2.9, hair[1]).set(bx - 1, 2, hair[2]).set(bx, 1, hair[2]);
-  p.rect(bx - 3, 5, 7, 2, hat[3]).rect(bx - 3, 5, 7, 1, hat[4]).set(bx - 3, 6, hat[1]).set(bx + 3, 6, hat[1]);
-  if (face !== 'back' || front) {
-    const wood = pal.r('wood');
-    p.line(bx - 4, 0, bx + 3, 4, wood[4]).line(bx - 4, 1, bx + 3, 5, wood[2]);
-    p.set(bx + 4, 5, pal.c('ink', 0)).set(bx - 5, 0, pal.c('red', 2));
-  }
+  p.disc(bx, 2.5, 2.6, hair[1]).set(bx - 1, 1, hair[2]).set(bx, 1, hair[2]);
+  p.rect(bx - 2, 4, 5, 1, hat[3]).set(bx - 2, 4, hat[4]);
   return p;
 }
 
@@ -113,13 +110,14 @@ export function ringPicture(pal: Pal, turn: number, withNell = false): Pixels {
       }
     }
   if (withNell) {
-    // her sweater and hands inside the ring, gripping it on both sides
+    // inside the ring: her sweater, arms out to grip it on both sides, her cords tucked up
     const hood = kitRamp(pal, 'hood');
     const skin = kitRamp(pal, 'skin');
-    p.rect(7, 6, 6, 8, hood[2]).rect(7, 6, 6, 1, hood[4]).rect(12, 7, 1, 7, hood[1]);
-    p.rect(5, 9, 2, 2, skin[2]).rect(13, 9, 2, 2, skin[2]);
     const pants = kitRamp(pal, 'pants');
-    p.rect(7, 14, 2, 1, pants[2]).rect(11, 14, 2, 1, pants[2]);
+    p.rect(8, 5, 4, 6, hood[2]).rect(8, 5, 4, 1, hood[4]).rect(11, 6, 1, 5, hood[1]);
+    p.line(8, 6, 6, 9, hood[2]).line(11, 6, 13, 9, hood[2]);
+    p.rect(5, 9, 2, 2, skin[2]).rect(13, 9, 2, 2, skin[2]);
+    p.rect(8, 11, 2, 3, pants[2]).rect(10, 11, 2, 3, pants[1]);
   }
   return p;
 }

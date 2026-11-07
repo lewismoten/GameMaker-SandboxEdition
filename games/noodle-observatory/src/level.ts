@@ -176,7 +176,11 @@ export function addSigns(book: Book, pal: Pal, defs: SignDefs): Record<string, S
   }
   const bg = book.pics.get('bg')!;
   const sky = skyOf(pal);
+  const blocks = book.finish();
   for (const [name, p] of book.pics)
-    if (name.startsWith('sign.') || name.startsWith('signPost')) p.map((x, y, c) => (c === sky ? bg.get(x, y) : c));
+    if (name.startsWith('sign.') || name.startsWith('signPost')) {
+      p.map((x, y, c) => (c === sky ? bg.get(x, y) : c));
+      blocks[book.n(name)].pixels = Uint8Array.from(p.px);
+    }
   return out;
 }
