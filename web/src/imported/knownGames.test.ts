@@ -4,7 +4,10 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { contentFingerprint } from './contentFingerprint';
-import table from './knownGames.json';
+import knownTable from './knownGames.json';
+import { tagInfo, VIEWS, GENRES, THEMES, type KnownGame } from './knownGame';
+
+const table = knownTable as unknown as Record<string, KnownGame>;
 
 const dir = join(__dirname, '../../../cd/gameware/volume');
 const read = (n: string) => new Uint8Array(readFileSync(join(dir, n)));
@@ -20,7 +23,18 @@ describe('known games', () => {
   };
   it('matches a CD game', async () => {
     const fp = await contentFingerprint(gam, get);
-    expect(fp && (table as Record<string, string[]>)[fp]).toBeTruthy();
+    expect(fp && table[fp]).toBeTruthy();
+  });
+  it("gives a curated CD game its curated tags, not the rules' guesses", async () => {
+    const fp = await contentFingerprint(gam, get);
+    const info = tagInfo(fp ? table[fp] : undefined, () => ['guess']);
+    expect(info.known).toBe(true);
+    expect(info.tags).toEqual(['mixed', 'adventure']);
+    expect(info.levels).toBe(18);
+  });
+  it('curated rows use only the view, genre and theme words', () => {
+    const words = new Set<string>([...VIEWS, ...GENRES, ...THEMES]);
+    for (const row of Object.values(table)) if (row.c) for (const t of row.t) expect(words, t).toContain(t);
   });
   it('does not match when a data file differs', async () => {
     const same = await contentFingerprint(gam, get);

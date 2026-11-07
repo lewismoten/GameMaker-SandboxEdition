@@ -1,17 +1,15 @@
 // Tags on the Imported list's cards and the "Tag" picker beside the rating picker. A game found
-// in the known-games table (imported/knownGames.json, matched by content fingerprint) shows its
-// tags as "Tags"; any other game shows the deterministic tagger's guesses as "Suggested tags"
-// (imported/gameTags.ts). Worked out once per saved version of a game, kept in this browser
+// in the known-games table (imported/knownGames.json, matched by content fingerprint) with tags
+// curated by eye shows them as "Tags", with its level count (and "finished by the bot") in the
+// label; any other game shows the deterministic tagger's guesses as "Suggested tags"
+// (imported/gameTags.ts, imported/knownGame.ts tagInfo). Worked out once per saved version of a game, kept in this browser
 // only (never in the DOS files), and read after the list is up.
 import { clear, h } from '../core/ui';
+import type { GameTagInfo, KnownGame } from '../../imported/knownGame';
 
-export interface TagInfo {
-  tags: string[];
-  /** Found in the known-games table; otherwise the tags are guesses. */
-  known: boolean;
-}
+type TagInfo = GameTagInfo;
 
-const KEY = 'gm-imported-tags-v1';
+const KEY = 'gm-imported-tags-v2';
 const FILTER_KEY = 'gm-imported-tag-filter';
 const infos = new Map<string, TagInfo>();
 let filter = '';
@@ -34,7 +32,7 @@ function stored(): Record<string, TagInfo & { v: number }> {
 export async function loadTags(list: { id: string; updated: number; gam: string }[]): Promise<void> {
   const cache = stored();
   const next: typeof cache = {};
-  let table: Record<string, string[]> | undefined;
+  let table: Record<string, KnownGame> | undefined;
   for (const p of list) {
     const hit = cache[p.id];
     if (hit && hit.v === p.updated) {
@@ -50,9 +48,10 @@ export async function loadTags(list: { id: string; updated: number; gam: string 
       const get = (n: string) => stored.files.get(n);
       const { contentFingerprint } = await import('../../imported/contentFingerprint');
       const fp = await contentFingerprint(gam, get);
-      table ??= ((await import('../../imported/knownGames.json')) as { default: Record<string, string[]> }).default;
-      const known = fp ? table[fp] : undefined;
-      const info: TagInfo = known ? { tags: known, known: true } : { tags: (await import('../../imported/gameTags')).suggestTags(gam, get), known: false };
+      table ??= ((await import('../../imported/knownGames.json')) as unknown as { default: Record<string, KnownGame> }).default;
+      const { tagInfo } = await import('../../imported/knownGame');
+      const { suggestTags } = await import('../../imported/gameTags');
+      const info = tagInfo(fp ? table[fp] : undefined, () => suggestTags(gam, get));
       infos.set(p.id, info);
       next[p.id] = { ...info, v: p.updated };
     } catch {
@@ -74,7 +73,8 @@ export const tagShown = (id: string): boolean => !filter || !!infos.get(id)?.tag
 export function tagTile(tile: HTMLElement, id: string): void {
   const info = infos.get(id);
   if (!info?.tags.length) return;
-  const label = `${info.known ? 'Tags' : 'Suggested tags'}: ${info.tags.join(', ')}`;
+  const facts = [info.levels && `${info.levels} level${info.levels === 1 ? '' : 's'}`, info.bot && 'finished by the bot'].filter(Boolean);
+  const label = `${info.known ? 'Tags' : 'Suggested tags'}: ${info.tags.join(', ')}${facts.length ? `; ${facts.join(', ')}` : ''}`;
   tile
     .querySelector('.tile-select')
     ?.append(
