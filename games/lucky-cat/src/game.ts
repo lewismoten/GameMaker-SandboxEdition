@@ -9,7 +9,7 @@ import type { SongName } from './song';
 export const TITLE = 'LUCKY CAT';
 
 /** The song each level plays (the title, menu and endings use the theme and the finale). */
-export const LEVEL_SONGS: SongName[] = ['theme', 'mirror', 'theme', 'fair', 'theme', 'finale'];
+export const LEVEL_SONGS: SongName[] = ['theme', 'mirror', 'theme', 'fair', 'mirror', 'theme', 'finale'];
 
 export function buildGame(levels: Level[]): Game {
   const game = newGame(TITLE);

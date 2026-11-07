@@ -1,7 +1,7 @@
 // Level 6, RASCAL'S ROOF: the finale. Ropes and pulleys hang over the town hall's roof, and every trick of the
 // day is here again: cracks, a lift of floating umbrellas, a heap of spilled salt and a crow. At the end of the
 // roof stands the one who has been pulling the ropes: Rascal the raccoon, a friendly prankster (the story cards
-// that follow the door tell the rest). Three charms: the bell, the ribbon and the marble.
+// that follow the door tell the rest). Two charms: the ribbon and the marble.
 import { StarterMap } from '../../../kit/starter/map';
 import type { Pal } from '../../../kit/starter/palette';
 import { CROW } from '../monsters';
@@ -11,7 +11,6 @@ export const SIX = {
   cracks: 14,
   lift: 22,
   gallery: [23, 40],
-  bell: 27,
   shaker: 34,
   wall: 48,
   ribbon: 51,
@@ -29,7 +28,7 @@ const SIGNS = {
 } as const;
 
 export function levelSix(pal: Pal): Level {
-  const charms = ['bell', 'ribbon', 'marble'] as const;
+  const charms = ['ribbon', 'marble'] as const;
   const book = startBook(pal, ['crack', 'brolly', 'salt', 'town', 'rascal'], charms);
   const s = addSigns(book, pal, SIGNS);
   const g = room(80, SIX.exit);
@@ -49,7 +48,7 @@ export function levelSix(pal: Pal): Level {
   const colors = ['brollyRed', 'brollyGold', 'brollyTeal'];
   for (let y = 3; y < GROUND; y++) m.set(SIX.lift, y, colors[y % 3]);
   for (const x of [SIX.cracks, SIX.cracks + 1]) m.set(x, GROUND - 1, 'crack');
-  m.set(SIX.bell, 3, 'charm.bell').set(SIX.shaker, 3, 'shaker');
+  m.set(SIX.shaker, 3, 'shaker');
   for (let y = -10; y < GROUND - 2; y++) m.set(SIX.wall, y, 'brick');
   m.set(SIX.wall, GROUND - 2, 'saltArch').set(SIX.wall, GROUND - 1, 'saltPile');
   m.set(SIX.ribbon, GROUND - 1, 'charm.ribbon').set(SIX.marble, GROUND - 1, 'charm.marble');

@@ -56,7 +56,7 @@ export function startBook(pal: Pal, groups: readonly string[], charms: readonly 
 }
 
 /** Signs by name: [text, width, height] (the words wrap to the board). */
-export type SignDefs = Record<string, [string, number, number]>;
+export type SignDefs = Record<string, readonly [string, number, number]>;
 
 export function addSigns<D extends SignDefs>(book: Book, pal: Pal, defs: D): Record<keyof D, Sign> {
   const out = {} as Record<keyof D, Sign>;

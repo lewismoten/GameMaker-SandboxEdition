@@ -7,6 +7,7 @@ import { FIVE } from '../src/levels/five';
 import { FOUR } from '../src/levels/four';
 import { SIX } from '../src/levels/six';
 import { THREE } from '../src/levels/three';
+import { FLOORS, TOWER } from '../src/levels/tower';
 import { OPEN_TICKS } from '../src/meter';
 import { TWO } from '../src/levels/two';
 import { READ, climbUp, hop, leave, mirrored, monsterY, must, readAt, score, watchFor } from './routeKit';
@@ -117,7 +118,7 @@ export async function raceToTheFair(bot: StarterBot): Promise<void> {
   await leave(bot, bot.walk(FOUR.exit + 1, 'the exit'), 'the exit');
 }
 
-/** 5. Knock on Wood: watch each crow fly up and slip by, knock on the boxes, climb to the rainbow. */
+/** 6. Knock on Wood: watch each crow fly up and slip by, knock on the boxes, climb to the rainbow. */
 export async function knockOnWood(bot: StarterBot): Promise<void> {
   const from = bot.sim.ci.score;
   const hp = bot.sim.ci.hitpts;
@@ -141,11 +142,11 @@ export async function knockOnWood(bot: StarterBot): Promise<void> {
   await watchFor(bot, up(FIVE.crowC, FIVE.crowRow), 'the last crow flying up');
   await must(bot, bot.walk(FIVE.crowC + 3, 'past the last crow'), 'past the last crow');
   score(bot, from, 2, 10, 'level 5');
-  if (bot.sim.ci.hitpts !== hp) throw new Error(`level 5 cost hit points: ${hp} -> ${bot.sim.ci.hitpts}`);
+  if (bot.sim.ci.hitpts !== hp) throw new Error(`level 6 cost hit points: ${hp} -> ${bot.sim.ci.hitpts}`);
   await leave(bot, bot.walk(FIVE.exit + 1, 'the exit'), 'the exit');
 }
 
-/** 6. Rascal's Roof: the cracks, the umbrella lift, the bell and the shaker, the salt, the ribbon, the crow, the marble, and Rascal. */
+/** 7. Rascal's Roof: the cracks, the umbrella lift, the bell and the shaker, the salt, the ribbon, the crow, the marble, and Rascal. */
 export async function rascalsRoof(bot: StarterBot): Promise<void> {
   const from = bot.sim.ci.score;
   const hp = bot.sim.ci.hitpts;
@@ -155,7 +156,6 @@ export async function rascalsRoof(bot: StarterBot): Promise<void> {
   await must(bot, bot.walk(SIX.lift, 'into the umbrellas'), 'into the umbrellas');
   await must(bot, bot.wait(30), 'rising');
   await must(bot, bot.walk(SIX.lift + 2, 'off the umbrellas'), 'onto the gallery');
-  await must(bot, bot.walk(SIX.bell, 'the bell'), 'to the bell');
   await must(bot, bot.walk(SIX.shaker - 4, 'the shaker sign'), 'to the shaker sign');
   await must(bot, bot.wait(READ), 'reading the sign');
   await must(bot, bot.walk(SIX.shaker, 'the shaker'), 'to the shaker');
@@ -170,7 +170,41 @@ export async function rascalsRoof(bot: StarterBot): Promise<void> {
   await readAt(bot, 63, 'the last sign');
   await must(bot, bot.walk(SIX.rascal - 2, 'Rascal'), 'up to Rascal');
   await must(bot, bot.wait(READ), 'a hello');
-  score(bot, from, 3, 25, 'level 6');
-  if (bot.sim.ci.hitpts !== hp) throw new Error(`level 6 cost hit points: ${hp} -> ${bot.sim.ci.hitpts}`);
+  score(bot, from, 2, 25, 'level 7');
+  if (bot.sim.ci.hitpts !== hp) throw new Error(`level 7 cost hit points: ${hp} -> ${bot.sim.ci.hitpts}`);
   await leave(bot, bot.walk(SIX.exit + 1, 'the exit'), 'the exit');
+}
+
+/** 5. The Clock Tower: ladder, long plank and the first umbrella lift; knock through the boxes and climb; wait for the crow; the last lift; the bell. */
+export async function clockTower(bot: StarterBot): Promise<void> {
+  const from = bot.sim.ci.score;
+  const hp = bot.sim.ci.hitpts;
+  const [f1, f2, f3, f4] = FLOORS;
+  const lift = async (floorRow: number, what: string): Promise<void> => {
+    await must(bot, bot.walk(TOWER.liftRight - 1, `the ${what} lift`), `to the ${what} lift`);
+    await must(bot, bot.walk(TOWER.liftRight, `into the ${what} lift`), `into the ${what} lift`);
+    await must(bot, bot.wait(40), 'rising');
+    await must(bot, bot.walk(TOWER.liftRight - 2, `off the ${what} lift`), `onto floor ${floorRow}`);
+  };
+  await climbUp(bot, TOWER.ladder, f1 - 1, 'the tower ladder');
+  await readAt(bot, 7, 'the tower sign');
+  await must(bot, bot.walk(TOWER.liftRight - 1, 'the end of the first floor'), 'along the first floor');
+  await lift(f2, 'first');
+  await readAt(bot, 21, 'the boxes sign');
+  await must(bot, bot.walk(TOWER.box + 3, 'the wooden boxes'), 'to the boxes');
+  await must(bot, bot.walk(TOWER.box - 2, 'through the boxes'), 'knocking through the boxes');
+  await must(bot, bot.walk(TOWER.ladder + 1, 'the second ladder'), 'to the second ladder');
+  await must(bot, bot.walk(TOWER.ladder, 'onto the second ladder'), 'onto the second ladder');
+  await must(bot, bot.climb('up', f3 - 1, 'up the second ladder'), 'up the second ladder');
+  await readAt(bot, 9, 'the crow sign');
+  await must(bot, bot.walk(TOWER.crow - 3, 'before the crow'), 'to the crow');
+  await watchFor(bot, () => monsterY(bot, TOWER.crow) <= TOWER.crowRow * 20 + 4, 'the crow flying up');
+  await must(bot, bot.walk(TOWER.crow + 3, 'past the crow'), 'past the crow');
+  await must(bot, bot.walk(TOWER.liftRight - 1, 'the end of the third floor'), 'along the third floor');
+  await lift(f4, 'second');
+  await readAt(bot, 22, 'the bell sign');
+  await must(bot, bot.walk(TOWER.bell, 'the bell'), 'to the bell');
+  score(bot, from, 1, 10, 'level 5');
+  if (bot.sim.ci.hitpts !== hp) throw new Error(`level 5 cost hit points: ${hp} -> ${bot.sim.ci.hitpts}`);
+  await leave(bot, bot.walk(TOWER.exit - 1, 'the exit'), 'the exit');
 }

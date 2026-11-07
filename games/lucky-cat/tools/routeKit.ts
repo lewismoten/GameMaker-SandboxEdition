@@ -19,8 +19,8 @@ export async function leave(bot: StarterBot, r: Promise<Result>, what: string): 
   if (out !== 'link' && out !== 'end') throw new Error(`${what}: ${out ?? 'still here'}\n${bot.log.slice(-8).join('\n')}`);
 }
 
-/** A person's look at a sign, in ticks (about two seconds). */
-export const READ = 36;
+/** A person's look at a sign, in ticks (about four seconds). */
+export const READ = 70;
 
 /** Walks to `col` and reads the sign beside it. */
 export async function readAt(bot: StarterBot, col: number, what: string): Promise<void> {

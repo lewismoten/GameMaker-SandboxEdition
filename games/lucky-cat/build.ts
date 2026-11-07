@@ -83,11 +83,11 @@ levels.forEach((l, i) => {
   disk.put(`${l.file}.pal`, serializePalette(look));
   disk.put(`${l.file}.map`, serializeMap(l.map.done()));
   disk.put(`${l.file}.bbl`, serializeBlocks(finishBlocks(l)));
-  const slides = [{ name: `${l.file}.gif`, pause: 3 }];
+  const slides = [{ name: `${l.file}.gif`, pause: 4 }];
   disk.put(`${l.file}.gif`, gif(cardPicture(lp, base, cat, i + 1, levels.length, l.title, l.hint), lp));
   (CARDS[l.file] ?? []).forEach((lines, k) => {
     disk.put(`${l.file}s${k}.gif`, gif(storyCard(lp, base, cat, lines, 40 + i * 3 + k), lp));
-    slides.push({ name: `${l.file}s${k}.gif`, pause: 5 });
+    slides.push({ name: `${l.file}s${k}.gif`, pause: 7 });
   });
   disk.put(`${l.file}.lst`, serializeSlideList(slides));
 });
@@ -138,7 +138,7 @@ disk.put('won.txt', WON);
 disk.put(
   'won.lst',
   serializeSlideList([
-    ...REVEAL.map((_l, k) => ({ name: `reveal${k}.gif`, pause: 6 })),
+    ...REVEAL.map((_l, k) => ({ name: `reveal${k}.gif`, pause: 8 })),
     { name: 'ending.fli', pause: 0 },
     { name: 'wonpic.gif', pause: 6 },
     { name: 'won.gif', pause: 0 },

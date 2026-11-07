@@ -109,6 +109,24 @@ export const LOOKS: Record<string, Record<string, Tint>> = {
       [110, 150, 210],
     ],
   },
+  // inside the clock tower: dark teal and warm amber
+  tower: {
+    sky: [
+      [30, 50, 80],
+      [150, 190, 220],
+      [70, 100, 140],
+    ],
+    brick: [
+      [90, 60, 40],
+      [240, 190, 120],
+      [170, 110, 70],
+    ],
+    grass: [
+      [70, 50, 30],
+      [210, 170, 100],
+      [140, 100, 60],
+    ],
+  },
   // sunset over the town for the finale
   dusk: {
     sky: [

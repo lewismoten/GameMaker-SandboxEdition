@@ -9,7 +9,7 @@
 //   woodBox      a wooden knock-on-wood box that opens when touched
 //   town         window, awning, lamp, fence, tent, clock face, rascal's workshop
 import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
-import { blob, bevel } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
+import { blob } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
 import { outline } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 import { PULL, SOLID, LEDGE, type Book } from '../../kit/starter/book';
 import { KEYS } from '../../kit/starter/blocks';
