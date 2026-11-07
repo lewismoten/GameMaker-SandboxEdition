@@ -5,7 +5,7 @@ import { deskDate, file, DOS_DATE, type DosNode, type ProgramRef } from '../dos/
 import type { Downloads } from '../host';
 import type { CatalogEntry } from '../../project/files';
 import { DIZ_NAME, dizBytes, gameDiz, newestPicture, pictureDiz } from '../bbs/fileId';
-import { WAREZ, fileSize, textBytes } from '../bbs/warezArea';
+import { WAREZ, fileSize, textBytes } from '../bbs/warezList';
 import { pcExtras } from './pcExtras';
 import { bakName } from './gmcrackText';
 
