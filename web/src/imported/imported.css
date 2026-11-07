@@ -230,13 +230,19 @@ dialog.modal .ir-ratings .ir-rating {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  margin-top: 2px;
-  color: var(--accent);
+  position: absolute;
+  left: 6px;
+  bottom: 6px;
+  padding: 2px 6px 2px 4px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.78);
+  color: #fff;
   font-size: 12px;
+  line-height: 1.2;
 }
 .tile-walk svg {
   flex: none;
 }
 .tile-walk-done {
-  --walk-badge-ink: var(--accent-text, #fff);
+  --walk-badge-ink: #000;
 }

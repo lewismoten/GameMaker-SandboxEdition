@@ -47,6 +47,8 @@ export function libraryCards(
       if (c === 'starter' && isDone(g)) doneTile(t);
       else if (c === 'starter' && grades[g.entry?.id ?? '']) doneTile(t, grades[g.entry?.id ?? '']);
       if (c === 'imported' && g.project) {
+        // title only: no edited date or file name (Lewis's notes, 2026-11-07)
+        t.querySelector('.tile-meta')?.remove();
         rateTile(t, notes[g.project.id]);
         walkTile(t, lib.walkBadges.get(g.project.id));
       }
