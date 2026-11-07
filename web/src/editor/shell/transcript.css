@@ -119,6 +119,43 @@
 .cert figcaption button {
   min-height: 28px;
 }
+/* With the Sandbox Diploma earned: the diploma large in the middle, three honors each side (phone: diploma on top, honors in a 3 x 2 grid below). */
+.cert-grid.with-diploma {
+  grid-template-columns: 1fr 2fr 1fr;
+  align-items: start;
+}
+.cert-grid.with-diploma .cert-diploma {
+  grid-column: 2;
+  grid-row: 1 / span 3;
+}
+.cert-grid.with-diploma .cert-left {
+  grid-column: 1;
+}
+.cert-grid.with-diploma .cert-right {
+  grid-column: 3;
+}
+.cert-grid.with-diploma .cert-diploma figcaption {
+  font-size: 15px;
+}
+.cert-grid.with-diploma .cert-left figcaption,
+.cert-grid.with-diploma .cert-right figcaption {
+  font-size: 11px;
+}
+@media (max-width: 600px) {
+  .cert-grid.with-diploma {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+  .cert-grid.with-diploma .cert-diploma {
+    grid-column: 1 / -1;
+    grid-row: 1 !important;
+  }
+  .cert-grid.with-diploma .cert-left,
+  .cert-grid.with-diploma .cert-right {
+    grid-column: auto;
+    grid-row: auto !important;
+  }
+}
 .cert.locked .cert-lock {
   display: grid;
   place-items: center;
