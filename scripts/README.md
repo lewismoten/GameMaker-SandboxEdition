@@ -1,5 +1,15 @@
 # Repository scripts
 
+`nightly.py` is the Linux local validation entry point (Python 3.11+ standard library).
+Run `python3 scripts/nightly.py --reports /path/to/shared/.for-lewis/nightly`.
+It fetches and pins `origin/develop`, coalesces requests under a kernel lock, builds every
+DOS game twice in separate clean clones, compares every disk file's actual bytes, runs
+full Vitest, replays every recorded walkthrough, and checks changed games' clips against
+the pinned baseline. Reports and failure evidence stay private and Git-ignored.
+Use `--revision HEAD` for a feature candidate and `--force` for an explicit retry.
+Tests: `python3 -m unittest discover -s scripts -p nightly_test.py -v`.
+Scheduling, timezone, retention, and recovery: [nightly validation](../docs/nightly-validation.md).
+
 `verify-changed.mjs` runs through `npm run verify:changed` (root or `web/`): the quick pre-merge check of only what the branch touched against `origin/develop` (or `--base <ref>`). `npm run verify` is the full check.
 
 `verify-packages.mjs` runs through root `npm run verify:packages`. It copies each SDK
