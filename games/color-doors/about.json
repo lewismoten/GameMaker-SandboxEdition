@@ -6,7 +6,7 @@
   "hero": "LENA",
   "year": 1994,
   "price": "Free",
-  "version": "1.0",
+  "version": "1.1",
   "blurb": "A hall with five doors, and one room behind all of them. Each door shows the same gallery of color swatches, a traffic light, a fruit table and a garden the way one kind of eyes might see it: as you see it, red and green close together (two kinds), blue and yellow mixed up, or no color at all. The name under each swatch stays easy to read in every room. Behind the doors there is one map file and five palettes; a palette is only 768 bytes. Play it, then open it in Game-Maker and look at the scenes.",
   "exe": "COLRDOOR.EXE",
   "dosName": "COLRDOOR",
