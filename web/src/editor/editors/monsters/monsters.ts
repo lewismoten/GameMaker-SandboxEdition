@@ -93,10 +93,10 @@ registerEditor(['mon'], (host, project, file) => {
           'button',
           {
             class: i === current ? 'selected' : '',
-            title: name ? `Monster ${i}: ${name}` : `Monster ${i}`,
+            title: !m.used ? `Monster ${i}: unused slot` : name ? `Monster ${i}: ${name}` : `Monster ${i}`,
             onclick: () => ((current = i), (anim = 0), render()),
           },
-          p >= 0 ? blockCanvas(mblk[p].pixels, chooser.palette, { transparent: true }) : h('span', { class: 'meta' }, '·'),
+          m.used && p >= 0 ? blockCanvas(mblk[p].pixels, chooser.palette, { transparent: true }) : h('span', { class: 'meta' }, '·'),
           h('small', null, i),
         );
       }),
@@ -190,8 +190,14 @@ registerEditor(['mon'], (host, project, file) => {
         h(
           'div',
           { class: 'mon-who' },
-          preview,
-          h('div', { class: 'mon-name' }, h('h2', null, `Monster ${current}`), h('div', { class: 'meta' }, m.used ? 'In use' : 'Unused slot'), nameField()),
+          m.used ? preview : h('span', { class: 'meta' }, 'No active monster'),
+          h(
+            'div',
+            { class: 'mon-name' },
+            h('h2', null, `Monster ${current}`),
+            h('div', { class: 'meta' }, m.used ? 'In use' : 'Unused slot · frames below are retained template data, not an active monster'),
+            nameField(),
+          ),
         ),
         h(
           'div',

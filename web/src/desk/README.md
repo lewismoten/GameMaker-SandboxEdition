@@ -78,3 +78,5 @@ calls The Sandbox BBS and types for the tour, then puts back what the call chang
   (`eggGlow.ts`), the toy whistle with the zine under it (`props/zine/`, the zine itself in `manual/zine/`), and the room after dark with its
   overhead light (`roomLight.ts`). `chezArt.ts` draws THE CHEZ from `games/kit/chez.ts`'s side
   view.
+
+The paper-stack menu opens either TURBO BUTTON issue explicitly. Passive desk navigation clears missing disk hints silently; explicit PC actions still explain missing disks. The disk box filters by title or author without changing its collections, and the Sample Disk uses a neutral label. The Feelies strip links to build instructions and downloads in the box contents.

@@ -321,3 +321,8 @@
 .desk-overlay.uv-night .floppy :is(.label:not(.printed), .label.rsd) {
   filter: grayscale(1) sepia(1) hue-rotate(215deg) saturate(2.2) brightness(0.95);
 }
+
+/* Search hides both the label and any later disks of a nonmatching set. */
+.disk-row .floppy[hidden] {
+  display: none;
+}

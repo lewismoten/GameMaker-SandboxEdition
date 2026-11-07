@@ -1381,6 +1381,11 @@ registerEditor(['map'], (host, project, file) => {
     },
     '✨ Generate…',
   );
+  if (view.get('generate') === '1') {
+    view.set({ generate: undefined });
+    if (!generateBtn.disabled) queueMicrotask(() => generateBtn.click());
+    else toast('Choose background blocks for this map before generating a layout.');
+  }
   const blockPanel = h('div', { class: 'stack' }, filter.el, generateBtn, picker);
   const monsterPanel = h('div', { class: 'stack' }, monPicker, monCount);
   const optionsPanel = h(
