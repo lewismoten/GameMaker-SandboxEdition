@@ -113,7 +113,7 @@ function snowmanTiles(snow: Pixels, pal: Pal): { head: Pixels; body: Pixels } {
   // twig arms, a red scarf at the top and two coal buttons
   body.line(0, 8, 4, 10, wood[2]).line(19, 8, 15, 10, wood[2]);
   body.rect(3, 0, 14, 3, red[2]).rect(3, 0, 14, 1, red[3]).rect(11, 3, 3, 4, red[2]);
-  body.disc(10, 11, 1.2, coal).disc(10, 15, 1.2, coal);
+  body.rect(9, 10, 2, 2, coal).rect(9, 14, 2, 2, coal);
   return { head, body };
 }
 
