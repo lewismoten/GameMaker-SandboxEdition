@@ -214,6 +214,8 @@ SDK implementation lives in the packages below; the app imports their declared e
   AI tools and the people.
 - [`errorNotice/`](errorNotice/README.md): the notice with Copy error details when something breaks.
 - [`programmersGuide/`](programmersGuide/README.md): The Programmer's Guide to Game-Maker 3.0 (`#/programmers-guide`) and the words of the 1994 Technical Reference booklet.
+- [`piRemote/`](piRemote/README.md): the Pi remote (`#/pi-remote`, unlisted): a keyboard for the Raspberry
+  Pi Zero W running Game-Maker OS, over its USB serial port with Web Serial.
 - [`privacy/`](privacy/README.md): the Privacy page: what the site keeps on the device, how to clear it,
   what is sent and when.
 - [`achievements/`](achievements/README.md): what the visitor has done: the catalog, the record, the
