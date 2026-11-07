@@ -8,6 +8,7 @@
 //   6. The Empty Spot      (watch) sunset in the hollow where the mountain stood; stars come out; Wisp is missing
 //   7. Windy Ridge         dusk; an updraft and a gust carry Tess up and over, following Wisp's puddles
 //   8. The Low Tunnel      dark; light the lanterns, leave a trail of light; glow-worms; Wisp is hiding here
+//   9. The Zigzag Home     moonlight; five switchbacks up the hill, a blaze on every turn, Wisp following
 import { buildMountainPalette } from '../palette';
 import type { Level } from '../level';
 import { levelGates } from './gates';
@@ -17,11 +18,12 @@ import { levelRidge } from './ridge';
 import { levelSigns } from './signs';
 import { levelStream } from './stream';
 import { levelTunnel } from './tunnel';
+import { levelZigzag } from './zigzag';
 import { levelNext } from './next';
 
 /** The base palette and every level. */
 export function buildLevels(): { pal: ReturnType<typeof buildMountainPalette>; levels: Level[] } {
   const pal = buildMountainPalette();
-  const levels: Level[] = [levelNext(pal), levelGates(pal), levelPrints(pal), levelStream(pal), levelSigns(pal), levelHollow(pal), levelRidge(pal), levelTunnel(pal)];
+  const levels: Level[] = [levelNext(pal), levelGates(pal), levelPrints(pal), levelStream(pal), levelSigns(pal), levelHollow(pal), levelRidge(pal), levelTunnel(pal), levelZigzag(pal)];
   return { pal, levels };
 }

@@ -34,6 +34,14 @@ export async function hop(bot: StarterBot, col: number, n = 1, what = 'the hazar
   if (bot.sim.ci.hitpts !== hp) throw new Error(`${what} hurt: hit points ${hp} -> ${bot.sim.ci.hitpts}`);
 }
 
+/** Jumps the hazards at `col` .. `col + n - 1` going left, from two blocks past them. */
+export async function hopLeft(bot: StarterBot, col: number, n = 1, what = 'the hazard'): Promise<void> {
+  const hp = bot.sim.ci.hitpts;
+  await must(bot, bot.walk(col + n + 1, what), `to ${what}`);
+  await must(bot, bot.jump('left', col - 2), `over ${what}`);
+  if (bot.sim.ci.hitpts !== hp) throw new Error(`${what} hurt: hit points ${hp} -> ${bot.sim.ci.hitpts}`);
+}
+
 /** Climbs the ladder in column `col` up to level row `row` (its top block), starting from the ground beside it. */
 export async function climbUp(bot: StarterBot, col: number, row: number, what: string): Promise<void> {
   await must(bot, bot.walk(col + 1, what), `beside ${what}`);
