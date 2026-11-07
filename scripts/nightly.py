@@ -252,13 +252,18 @@ def main(argv=None, execute=None):
         run = Validation(root, 'unresolved', 'unresolved', execute=execute or execute_command)
         validator = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
         state_file = reports / 'state.json'
+        record_file = None
         completed = False
         try:
             if not run.step('fetch-develop', ['git', 'fetch', 'origin', '+refs/heads/develop:refs/remotes/origin/develop'], repo):
                 raise RuntimeError('Cannot fetch baseline origin/develop; all required checks unavailable')
             run.baseline = git_text(repo, 'rev-parse', '--verify', '--end-of-options', 'origin/develop^{commit}')
             run.revision = git_text(repo, 'rev-parse', '--verify', '--end-of-options', args.revision + '^{commit}')
-            state = json.loads(state_file.read_text()) if state_file.exists() else {}
+            key = hashlib.sha256(json.dumps([run.revision, run.baseline, validator]).encode()).hexdigest()
+            records = reports / 'completed'
+            records.mkdir(exist_ok=True)
+            record_file = records / f'{key}.json'
+            state = json.loads(record_file.read_text()) if record_file.exists() else {}
             if coalesced(state, run.revision, run.baseline, validator, args.force):
                 run.reused = state
                 text = (f'# Coalesced nightly request\n\nRevision `{run.revision}`, origin/develop `{run.baseline}` already checked.\n'
@@ -310,8 +315,11 @@ def main(argv=None, execute=None):
             if completed or any(s['status'] in ('FAIL', 'UNAVAILABLE') for s in run.steps):
                 append_report(report, run.report())
                 if completed:
-                    atomic_text(state_file, json.dumps({'revision': run.revision, 'baseline': run.baseline,
-                        'validator': validator, 'status': run.status(), 'diagnostics': str(root)}, indent=2) + '\n')
+                    result = json.dumps({'revision': run.revision, 'baseline': run.baseline,
+                        'validator': validator, 'status': run.status(), 'diagnostics': str(root)}, indent=2) + '\n'
+                    assert record_file is not None
+                    atomic_text(record_file, result)
+                    atomic_text(state_file, result)
                 print(f'nightly: {run.status()}; report {report}; diagnostics {root}', flush=True)
             LOCK_FD = None
         return 0 if completed and run.status() == 'PASS' else 1
