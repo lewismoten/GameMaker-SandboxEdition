@@ -72,7 +72,7 @@ for (const bx of spots) {
     sim.releaseAll();
     await bot.wait(60);
     const top = mapRow(topPx());
-    const cut = rows.filter(([name, a, b]) => a < top - 0.25 || b + 1 > top + VISIBLE_H / 20).map(([name]) => name);
+    const cut = rows.filter(([, a, b]) => a < top - 0.25 || b + 1 > top + VISIBLE_H / 20).map(([name]) => name);
     console.log(
       `x ${bx} ${label}: view top at map row ${top.toFixed(2)}, shows rows ${top.toFixed(1)} to ${(top + VISIBLE_H / 20).toFixed(1)}${cut.length ? '  CUT: ' + cut.join(', ') : ''}`,
     );
