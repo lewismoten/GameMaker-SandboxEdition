@@ -82,6 +82,8 @@ class Validation:
         self.revision, self.baseline = revision, baseline
         self.execute = execute
         self.steps, self.comparisons = [], {}
+        self.complete = False
+        self.reused: dict | None = None
         self.environment = {'host': platform.node(), 'platform': platform.platform(), 'python': platform.python_version(),
                             'load': os.getloadavg(), 'started': dt.datetime.now(dt.timezone.utc).isoformat()}
         self.selection = {}
@@ -107,12 +109,16 @@ class Validation:
         self.save()
 
     def status(self):
-        return 'FAIL' if not self.steps or any(s['status'] not in ('PASS', 'NOT_APPLICABLE') for s in self.steps) else 'PASS'
+        if self.reused is not None:
+            return 'COALESCED'
+        if any(s['status'] not in ('PASS', 'NOT_APPLICABLE') for s in self.steps):
+            return 'FAIL'
+        return 'PASS' if self.complete else 'RUNNING'
 
     def save(self):
-        (self.root / 'result.json').write_text(json.dumps({'revision': self.revision, 'baseline': self.baseline,
+        atomic_text(self.root / 'result.json', json.dumps({'revision': self.revision, 'baseline': self.baseline,
             'status': self.status(), 'environment': self.environment, 'selection': self.selection,
-            'steps': self.steps, 'comparisons': self.comparisons}, indent=2) + '\n')
+            'steps': self.steps, 'comparisons': self.comparisons, 'reused': self.reused}, indent=2) + '\n')
 
     def report(self):
         lines = ['# Nightly validation', '', f'Overall: **{self.status()}**', '',
@@ -129,7 +135,7 @@ class Validation:
                 lines.append(step.get('reason', step.get('error', '')))
             if step['status'] == 'FAIL' and step.get('log') and Path(step['log']).exists():
                 lines += ['```text', '\n'.join(Path(step['log']).read_text(errors='replace').splitlines()[-40:]), '```']
-        lines += ['', '## Artifact comparison evidence', 'Every disk file compared as raw bytes; no normalization or exclusions.',
+        lines += ['', '## Artifact comparison evidence', 'Rule: every disk file must be compared as raw bytes; no normalization or exclusions.',
                   'Full filename/size/SHA256 manifests and first differing byte offsets are in result.json.']
         for game, result in self.comparisons.items():
             lines.append(f"- {game}: {result['status']}; A={len(result['a'])}, B={len(result['b'])} files; differences: {json.dumps(result['differences'])}")
@@ -181,6 +187,7 @@ class Validation:
                 self.skip(f'replay-{game}', 'No recorded walkthrough or clean A build failed')
         if not games:
             self.skip('game-inventory', 'No games discovered; refusing empty validation')
+        self.complete = True
         self.save()
 
 
@@ -253,6 +260,7 @@ def main(argv=None, execute=None):
             run.revision = git_text(repo, 'rev-parse', '--verify', '--end-of-options', args.revision + '^{commit}')
             state = json.loads(state_file.read_text()) if state_file.exists() else {}
             if coalesced(state, run.revision, run.baseline, validator, args.force):
+                run.reused = state
                 text = (f'# Coalesced nightly request\n\nRevision `{run.revision}`, origin/develop `{run.baseline}` already checked.\n'
                         f"Prior result: **{state['status']}**; `{state['diagnostics']}`. No checks rerun.\n")
                 append_report(report, text)
