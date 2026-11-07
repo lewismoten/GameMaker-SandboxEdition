@@ -80,6 +80,7 @@ export const LOCAL_KEYS: Record<SectionId, { keys: string[]; prefixes?: string[]
       'gm-sound-blaster',
       'gm-desk-buddy',
       'gm-desk-machine',
+      'gm-courier',
     ],
   },
   notes: { keys: ['gm-imported-notes', 'gm-removed-games'] },

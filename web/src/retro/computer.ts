@@ -246,6 +246,9 @@ export class Computer extends ComputerFolders {
         case 'terminal':
           await (await import('./bbs/bbs')).runTerminal(this, _args);
           break;
+        case 'scoot':
+          await (await import('../courier/scootExe')).runScootExe(this);
+          break;
         case 'vpic':
           await (await import('./view/vpic')).runVpic(this, _args);
           break;

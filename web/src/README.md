@@ -151,6 +151,9 @@ SDK implementation lives in the packages below; the app imports their declared e
 - [`offline/`](offline/README.md): "Make available offline": the whole site in the service worker's cache at
   once (`offlineCopy.ts`), from the web's Offline dialog (`offlineDialog.ts`) or `OFFLINE.EXE` on
   the desk (`offlineExe.ts`); `loadFailure.ts` says so when a part of the site cannot load.
+- [`courier/`](courier/README.md): what Scoot, the desk buddy, carries: mail (a letter from each BBS
+  on its first call), postcards and packages, in one store read by its card on the desk and by
+  `SCOOT.EXE` on the PC.
 - [`seo/`](seo/README.md): page titles, descriptions and JSON-LD for the site and its game pages: `site.ts`
   (shared with the build), `route.ts` (keeps the tags in step at run time) and `siteSections.ts` (the home page's WebSite and
   magazine data and its links to the `#/…` pages, which `seoBuild.ts` writes in).
