@@ -246,3 +246,23 @@ dialog.modal .ir-ratings .ir-rating {
 .tile-walk-done {
   --walk-badge-ink: #000;
 }
+
+/* tags on an imported tile (editor/shell/homeTags.ts): one row, cut off rather than wrapped */
+.tile-tags {
+  display: flex;
+  gap: 4px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.tile-tag {
+  flex: none;
+  padding: 0 6px;
+  border: 1px solid var(--border, currentColor);
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.5;
+}
+.tile-tags-guess .tile-tag {
+  border-style: dashed;
+}
