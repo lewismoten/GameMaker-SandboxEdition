@@ -46,21 +46,24 @@ export function glowWorm(pal: Pal, frame: 0 | 1 | 2 | 3): Pixels {
   const p = new Pixels(20, 20, T);
   const g = pal.r('glow');
   p.rect(10, 0, 1, 9, pal.c('stone', 1));
-  const rings: [number, number, number][][] = [
-    [],
-    [[1.2, 1, 1]],
+  type Ring = [number, number, number];
+  const rings = (
     [
-      [1.4, 3, 1],
-      [3, 2, 2],
-      [4.6, 1, 3],
-    ],
-    [
-      [1.4, 4, 1],
-      [2.6, 3, 1],
-      [4.2, 2, 2],
-      [6.4, 1, 3],
-    ],
-  ][frame];
+      [],
+      [[1.2, 1, 1]],
+      [
+        [1.4, 3, 1],
+        [3, 2, 2],
+        [4.6, 1, 3],
+      ],
+      [
+        [1.4, 4, 1],
+        [2.6, 3, 1],
+        [4.2, 2, 2],
+        [6.4, 1, 3],
+      ],
+    ] as Ring[][]
+  )[frame];
   for (const [r, shade, every] of [...rings].reverse())
     p.map((x, y, c) => ((x + 0.5 - 10.5) ** 2 + (y + 0.5 - 11) ** 2 <= r * r && (x + y) % every === 0 ? g[shade] : c));
   p.set(10, 10, pal.c('ink', 1));

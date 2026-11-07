@@ -279,7 +279,6 @@ export function toe(pal: Pal, part: 'toeL' | 'toeM' | 'toeR' | 'toe'): Pixels {
       if (d <= 1) big.set(x, y, d > 0.8 ? r[2] : x < 26 ? r[4] : r[3]);
     }
   big.rect(14, 8, 8, 2, r[5]).rect(36, 14, 10, 1, r[2]);
-  const ink = pal.c('ink', 0);
   if (part === 'toe') {
     const p = clear(pal);
     p.rect(0, 0, 20, 20, r[3]).rect(0, 0, 3, 20, r[4]).rect(17, 0, 3, 20, r[2]);
