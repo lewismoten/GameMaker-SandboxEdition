@@ -132,10 +132,9 @@ export function endingReel(pal: Pal, book: Book, cheer: Pixels): Reel {
   const { c } = pal;
   // the picnic blanket on the summit
   for (let x = 128; x < 192; x++) for (let y = 80; y < 88; y++) home.set(x, y, (Math.floor(x / 6) + Math.floor(y / 4)) % 2 ? c('red', 2) : c('white', 3));
-  // the doormat and its sign
-  home.rect(118, 172, 84, 8, c('wood', 3)).frame(118, 172, 84, 8, c('ink', 0));
-  bevel(home, 72, 146, 176, 20, pal.r('parch'), 3, 2);
-  centered(home, 152, 'PLEASE WIPE YOUR FOOTHILLS', c('ink', 0));
+  // the doormat at its foot, lettered (below the face, so the smile stays clear)
+  bevel(home, 48, 178, 224, 20, pal.r('wood'), 3, 2);
+  centered(home, 184, 'PLEASE WIPE YOUR FOOTHILLS', c('ink', 0));
   for (let i = 0; i <= 6; i++) reel.frame(home, () => undefined, 2, i / 6, sunrise);
   for (let i = 0; i < 12; i++) reel.frame(home, (p) => scaleBlit(p, cheer, 24, 100 - (i % 4 < 2 ? 6 : 0), 2), 2, 1, sunrise);
   reel.frame(home, (p) => (scaleBlit(p, cheer, 24, 100, 2), banner(p, pal, 'HOME AGAIN!')), 16, 1, sunrise);
