@@ -1,12 +1,13 @@
 // Level 1, NEXT DOOR (a scene you watch, at a foggy dawn): Tess steps out of her house the morning after
 // Thanksgiving. Fog fills the empty lot next door, and it lifts in four waves to show a mountain, asleep, with
 // garden gates caught all over it. Mr. Hale stops on his morning walk and stares; Mrs. Okoro comes out on her
-// step. Then the mountain wakes: it opens its eyes, yawns, and lifts its big toe off the sidewalk so Tess can
+// step. Then the mountain wakes: it opens its eyes, yawns, and lifts its big foot off the sidewalk so Tess can
 // get by. Nothing to collect and nothing that hurts: walk along, read, watch.
 import { StarterMap } from '../../../kit/starter/map';
 import type { Pal } from '../../../kit/starter/palette';
 import { GROUND, addSigns, mountain, onGround, placeFace, room, startBook, type Level } from '../level';
 import { NEXT, PROLOGUE } from '../monsters';
+import { FOOT } from '../art/land';
 
 /** Where things are (columns; rows count down from the sky). */
 export const NEXT_AT = {
@@ -14,7 +15,7 @@ export const NEXT_AT = {
   top: 0,
   eyes: [28, 36, 5],
   mouth: [32, 8],
-  toe: 49,
+  toe: 46,
   hale: 14,
   okoro: 58,
   exit: 67,
@@ -38,12 +39,8 @@ export function levelNext(pal: Pal): Level {
   mountain(m, NEXT_AT.peak, NEXT_AT.top);
   // gates caught high on the rock (out of reach today)
   m.set(32, 2, 'gate.green').set(26, 5, 'gate.white').set(39, 5, 'gate.blue').set(29, 3, 'gate.red');
-  // the big toe across the sidewalk, four blocks high so nobody hops it
-  const t = NEXT_AT.toe;
-  m.set(t, GROUND - 4, 'toeL')
-    .set(t + 1, GROUND - 4, 'toeM')
-    .set(t + 2, GROUND - 4, 'toeR');
-  for (let y = GROUND - 3; y < GROUND; y++) for (let x = t; x < t + 3; x++) m.set(x, y, 'toe');
+  // the big foot across the sidewalk, four blocks high so nobody hops it
+  for (let k = 0; k < FOOT.w * FOOT.h; k++) m.set(NEXT_AT.toe + (k % FOOT.w), GROUND - FOOT.h + Math.floor(k / FOOT.w), `foot${k}`);
   // Tess's house (she starts in its doorway) and her fence; Mrs. Okoro's house past the toe
   house(m, 1, 7, 'wall', 'windowLit');
   m.set(3, GROUND - 2, 'doorwayTop').set(3, GROUND - 1, 'doorwayBottom');

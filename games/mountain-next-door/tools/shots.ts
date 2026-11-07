@@ -10,6 +10,7 @@ import { writePng } from '@lewismoten/gamemaker-sandbox-tools/kit/png';
 import { StarterBot } from '../../kit/starter/bot';
 import { playLevels } from '../../kit/levelRun';
 import { buildLevels } from '../src/levels';
+import { lookOf } from '../src/palette';
 import { LEVELS, SEED } from './play';
 import { GameSim } from './sim';
 
@@ -34,7 +35,7 @@ function screen(sim: GameSim): Pixels {
   const hx = w.chr.x[0] * 20 + w.chr.x[1];
   const hy = w.chr.y[0] * 20 + w.chr.y[1];
   const x0 = hx - 150;
-  const y0 = hy - 100;
+  const y0 = hy - 130;
   const put = (pix: Uint8Array, sx: number, sy: number, flip = false) => {
     for (let y = 0; y < 20; y++)
       for (let x = 0; x < 20; x++) {
@@ -65,10 +66,9 @@ function screen(sim: GameSim): Pixels {
   return p;
 }
 
-/** The scene's palette as 8-bit color (a .PAL holds VGA's 6-bit values). */
-const pal8 = (pal: Uint8Array) => (pal.every((v) => v < 64) ? pal.map((v) => (v << 2) | (v >> 4)) : pal);
-
-const { levels } = buildLevels();
+const { pal, levels } = buildLevels();
+/** A level's palette (its time of day), as the build writes it. */
+const look = (level: number) => lookOf(pal, levels[level].look);
 const sim = new GameSim(undefined, SEED);
 const bot = new StarterBot(sim);
 let scene = -1;
@@ -84,10 +84,10 @@ sim.tick = async () => {
     entered = sim.w.clock;
   }
   const since = sim.w.clock - entered;
-  if (level === 0 && since % EVERY === 0) writePng(join(out, 'frames', `next-${String(frame++).padStart(4, '0')}.png`), screen(sim), pal8(sim.w.palette), 1);
+  if (level === 0 && since % EVERY === 0) writePng(join(out, 'frames', `next-${String(frame++).padStart(4, '0')}.png`), screen(sim), look(0), 1);
   if (level >= 0 && level < levels.length && since >= AT[level] && !taken.has(level)) {
     taken.add(level);
-    writePng(join(out, `level-${String(level + 1).padStart(2, '0')}-${levels[level].file}.png`), screen(sim), pal8(sim.w.palette), 2);
+    writePng(join(out, `level-${String(level + 1).padStart(2, '0')}-${levels[level].file}.png`), screen(sim), look(level), 2);
   }
   return r;
 };

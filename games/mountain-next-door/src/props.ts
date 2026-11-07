@@ -3,7 +3,7 @@
 // the mountain's eyes) come back as Timed entries: the block, the one it turns into, and after how many ticks.
 //   mountain   rock, rock2, slopeL/R (steep), gentleL1/L2/R1/R2 (two blocks a row), peakL/R, ledge (stand on
 //              it), step (a solid rocky stair), gate.<color> (take it). The face is monsters (monsters.ts), so it can blink and wake.
-//   sleepy     the big toe across the sidewalk (toeL/M/R over toe): gone when the mountain wakes
+//   sleepy     the mountain's big foot across the sidewalk (foot0 .. foot19, 5 x 4): gone when the mountain wakes
 //   town       wall, wallB, window, windowLit, windowB, roofL/M/R, fence, plug.<color> (a wheelbarrow in a
 //              gateway; a gate puts it back as home.<color>), yardGate (opens when the mountain yawns)
 //   trail      post (paint it: postBlazed), trunk (trunkBlazed), bark (a trunk to leave be), logL/R (hop it), crown0..8 (a round crown, 3x3), printL/M/R, acorn, pie
@@ -19,13 +19,14 @@ import { KEYS } from '../../kit/starter/blocks';
 import { LEDGE, PULL, SOLID, type Book } from '../../kit/starter/book';
 import type { Pal } from '../../kit/starter/palette';
 import {
+  FOOT,
   GATES,
   acorn,
   arbor,
   log,
+  foot,
   gate,
   gentle,
-  toe,
   crown,
   fence,
   gateHome,
@@ -98,10 +99,11 @@ export function addProps(book: Book, pal: Pal, groups: readonly string[], o: Pro
   }
   if (has('sleepy')) {
     const wake = o.wake ?? 600;
-    const toes = ['toeL', 'toeM', 'toeR', 'toe'] as const;
-    for (const t of toes) {
-      book.add(t, toe(pal, t), { solid: SOLID });
-      timed.push({ name: t, next: 'sky', ticks: wake + TOE_AFTER });
+    for (let k = 0; k < FOOT.w * FOOT.h; k++) {
+      const pic = foot(pal, k);
+      // a part with no rock in it is only sky: not solid, so there is no invisible wall
+      book.add(`foot${k}`, pic, pic.px.every((c) => c === pic.px[0]) ? air : { solid: SOLID });
+      timed.push({ name: `foot${k}`, next: 'sky', ticks: wake + TOE_AFTER });
     }
   }
   if (has('town')) {

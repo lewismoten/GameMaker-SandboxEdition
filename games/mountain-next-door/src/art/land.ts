@@ -269,29 +269,42 @@ export function pie(pal: Pal): Pixels {
 
 export const GATES = GATE_COLORS;
 
-/** The mountain's big toe across the sidewalk: a smooth rounded boulder, three blocks wide (toeL, toeM, toeR on top, toe below). */
-export function toe(pal: Pal, part: 'toeL' | 'toeM' | 'toeR' | 'toe'): Pixels {
-  const big = new Pixels(60, 20, skyOf(pal));
+/** The size of the mountain's foot, in blocks. */
+export const FOOT = { w: 5, h: 4 } as const;
+
+/**
+ * The mountain's big foot across the sidewalk, seen from the side: a rounded mound of rock coming out of the
+ * mountain, with three toes at the front, each with a toenail. Part `k` (0 .. FOOT.w * FOOT.h - 1) is one block,
+ * left to right, top to bottom.
+ */
+export function foot(pal: Pal, k: number): Pixels {
+  const W = FOOT.w * 20;
+  const H = FOOT.h * 20;
+  const sky = skyOf(pal);
+  const big = new Pixels(W, H, sky);
   const r = pal.r('rock');
-  for (let y = 0; y < 20; y++)
-    for (let x = 0; x < 60; x++) {
-      const d = ((x - 30) / 30) ** 2 + ((y - 20) / 18) ** 2;
-      if (d <= 1) big.set(x, y, d > 0.8 ? r[2] : x < 26 ? r[4] : r[3]);
-    }
-  big.rect(14, 8, 8, 2, r[5]).rect(36, 14, 10, 1, r[2]);
-  if (part === 'toe') {
-    const p = clear(pal);
-    p.rect(0, 0, 20, 20, r[3]).rect(0, 0, 3, 20, r[4]).rect(17, 0, 3, 20, r[2]);
-    p.rect(5, 6, 6, 1, r[2]).rect(9, 14, 5, 1, r[2]);
-    return p;
-  }
-  // moss on top, and a toenail at the front: it is a toe, after all
+  const inside = (x: number, y: number) =>
+    ((x - 30) / 52) ** 2 + ((y - H) / 66) ** 2 <= 1 ||
+    [
+      [62, 62, 16],
+      [80, 68, 12],
+      [93, 72, 8],
+    ].some(([cx, cy, rr]) => (x - cx) ** 2 + (y - cy) ** 2 <= rr * rr) ||
+    (x >= 60 && y >= 70);
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (inside(x, y)) big.set(x, y, x < 30 ? r[4] : (x + y * 3) % 17 === 0 ? r[1] : r[3]);
+  // shading under the toes, a few cracks, moss on top
+  for (let x = 0; x < W; x++) for (let y = H - 4; y < H; y++) if (big.get(x, y) !== sky) big.set(x, y, r[2]);
   const m = pal.r('moss');
-  big.rect(10, 4, 14, 2, m[2]).rect(12, 3, 9, 1, m[3]);
-  for (let y = 9; y < 19; y++)
-    for (let x = 44; x < 58; x++) if (((x - 52) / 6) ** 2 + ((y - 14) / 5) ** 2 <= 1) big.set(x, y, y < 11 ? pal.c('parch', 4) : pal.c('parch', 3));
-  const i = part === 'toeL' ? 0 : part === 'toeM' ? 1 : 2;
-  return inked(pal, big.crop(i * 20, 0, 20, 20));
+  big.rect(18, 18, 22, 3, m[2]).rect(22, 16, 12, 2, m[3]);
+  // toenails, pale and rounded, at the front of each toe
+  for (const [cx, cy, w, h] of [
+    [70, 56, 7, 5],
+    [86, 63, 5, 4],
+    [97, 69, 3, 3],
+  ])
+    for (let y = -h; y <= h; y++) for (let x = -w; x <= w; x++) if ((x / w) ** 2 + (y / h) ** 2 <= 1) big.set(cx + x, cy + y, y < -h / 3 ? pal.c('parch', 4) : pal.c('parch', 3));
+  const out = outline(big, pal.c('ink', 0), { transparent: sky });
+  return out.crop((k % FOOT.w) * 20, Math.floor(k / FOOT.w) * 20, 20, 20);
 }
 
 /** A garden arbor over a gateway, in three parts: `top` (a leafy roof), `beam` (the cross beam) and `posts` (walk between them). */
