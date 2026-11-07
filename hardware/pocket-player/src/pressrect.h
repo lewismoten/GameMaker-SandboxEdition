@@ -4,6 +4,7 @@
 #pragma once
 #include <stdint.h>
 #include "overlaydraw.h"
+#include "settingsdraw.h"
 namespace prs {
 struct Rect {
   int x0, y0, x1, y1;  // x1 and y1 are one past the last pixel
@@ -17,8 +18,7 @@ struct Ctx {
   int W = 480, H = 320, titleH = 40;
   bool back = true, prev = false, next = false, action = false;  // library: which controls are live
   int tiles = 0;                                                // library: tiles on this page
-  int stY0 = 42, stStep = 34, stPerPage = 7, stFootY = 288, stRows = 10, setPage = 0, pages = 1;  // settings
-  bool smallBoard = false;
+  st::View settings;     // settings: the tab and page showing
   int displayRows = 1;  // display options: 1 or 2 buttons
 };
 inline Rect tileRect(int W, int i) {
@@ -65,23 +65,11 @@ inline bool under(const Ctx& c, int x, int y, Rect& r) {
       else if (c.displayRows > 1 && y >= c.titleH + 60 && y < c.titleH + 100) r = {6, c.titleH + 60, W - 6, c.titleH + 100};
       else return false;
       return r.has(x, y);
-    case SC_SETTINGS: {
-      if (y >= c.stFootY) {
-        if (c.smallBoard) {
-          if (x < 104) r = {6, c.stFootY + 2, 100, H - 2};
-          else if (x < 208 && c.pages > 1) r = {108, c.stFootY + 2, 202, H - 2};
-          else return false;
-        } else {
-          if (x < 160) r = {6, 288, 150, 318};
-          else if (x < 280 && c.pages > 1) r = {160, 288, 280, 318};
-          else return false;
-        }
-        return r.has(x, y);
-      }
-      int row = (y - c.stY0) / c.stStep;
-      if (y < c.stY0 || row >= c.stPerPage || c.setPage * c.stPerPage + row >= c.stRows) return false;
-      r = {6, c.stY0 + row * c.stStep, W - 6, c.stY0 + row * c.stStep + 32};
-      return r.has(x, y);
+    case SC_SETTINGS: {  // Back, the tabs, the chips and More (settingsdraw.h); the pad preview is not a button
+      st::Hit h = st::hit(c.settings, x, y);
+      if (h.kind == st::K_NONE || h.kind == st::K_PREVIEW) return false;
+      r = {h.box.x0, h.box.y0, h.box.x1, h.box.y1};
+      return true;
     }
     case SC_PAUSE: {
       int i = ovl::pauseHit(x, y);
