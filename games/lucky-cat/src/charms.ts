@@ -85,16 +85,26 @@ const DRAW: Record<Charm, Draw> = {
     p.set(7, 9, c('red', 4));
   },
   wishbone(p, { r }) {
+    // a Y of bone: two thick arms from a joint at the bottom, a knob on every end
     const w = r('parch');
-    for (let y = 1; y < 19; y++)
-      for (let x = 0; x < 20; x++) {
-        const d = Math.hypot(x + 0.5 - 10, (y + 0.5 - 6) * 0.9);
-        const inRing = d > 4.2 && d < 7.2 && y > 6;
-        const stalk = y <= 7 && ((x >= 2 && x <= 4) || (x >= 15 && x <= 17));
-        if (inRing || stalk) p.set(x, y, d > 6 ? w[2] : w[3]);
+    for (const [x0, x1] of [
+      [10, 3],
+      [10, 17],
+    ] as const) {
+      for (let t = 0; t <= 1; t += 0.04) {
+        const x = x0 + (x1 - x0) * t;
+        const y = 16 - 13 * t;
+        p.rect(Math.round(x) - 1, Math.round(y) - 1, 3, 3, w[3]);
+        p.set(Math.round(x) - 1, Math.round(y) - 1, w[4]);
       }
-    p.rect(8, 15, 4, 3, w[3]).rect(9, 17, 2, 2, w[2]);
-    p.rect(2, 1, 3, 1, w[4]).rect(15, 1, 3, 1, w[4]);
+    }
+    for (const [x, y] of [
+      [3, 3],
+      [17, 3],
+      [10, 16],
+    ] as const)
+      p.disc(x, y, 2.3, w[3]).set(x - 1, y - 1, w[4]);
+    p.rect(9, 12, 3, 4, w[2]);
   },
   acorn(p, { c, r }) {
     const nut = r('orange');
