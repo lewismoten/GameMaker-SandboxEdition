@@ -1,116 +1,116 @@
 {
-  "version": 1,
-  "game": "thank-you-parade",
-  "rand": {
-    "seed": 1,
-    "per": "scene"
+ "version": 1,
+ "game": "thank-you-parade",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU0ZzSdNGc0DTQ/NA00PzQNNFM0nTRnNA00ZzQNIRcgDTQ/NA0sKywNLA8sDUDvQA00yzQNNEDkCuUg5ArkHzTVNCM0JTQXNAzkCuQBNBc0POQK5AE0PzQg5ArkATQ/NC00LOQK5D80JTQrNA00="
   },
-  "segments": [
-    {
-      "scene": 2,
-      "keys": "AU0ZzSdNGc0DTQ/NA00PzQNNFM0nTRnNA00ZzQNIRcgDTQ/NA0sKywNLA8sDUDvQA00yzQNNEDkCuUg5ArkHzTVNCM0JTQXNAzkCuQBNBc0POQK5AE0PzQg5ArkATQ/NC00LOQK5D80JTQrNA00="
-    },
-    {
-      "scene": 3,
-      "keys": "AU0KzRdNKM0DTRnNA00ezQM5ArkATQ/NBU0IzQdNI80DTR7NAzkCuQBND80FTQjNB00ozQNNN80DTQ/NJ00ZzQNN"
-    },
-    {
-      "scene": 4,
-      "keys": "AU0ZzSdLBcsDOQK5AE0ZzQNNDc0HTR7NA00ozQNLBcsDOQK5AE0ZzQNNDc0HTR7NA00ezQNIMcgDTRnNA00ezQNLMssDSwPLA1An0ANNWs0DTR7NJ00jzQNN"
-    },
-    {
-      "scene": 5,
-      "keys": "AU0ZzSdNI80nTR7NGE0ZzQNNI80JTRnNA00jzQlNFM0DSwDLMU0UzQNNKM0JTRnNA00jzQlNGc0DTQ=="
-    },
-    {
-      "scene": 6,
-      "keys": "AU0KzQNNN80nTRTNF01BzRdNPM0XTSs5ArktzQNLBcsDTSPNA00ZzQNNCs0eTRnNA00PzQNN"
-    },
-    {
-      "scene": 7,
-      "keys": "AU0yzQNNEDkCuRvNA00tzQNNLc0DTS3NA00jzQNNBc0wTRnNA00PzSdNCDkCuRI5Ark="
-    }
-  ],
-  "chapters": [
-    {
-      "scene": 2,
-      "title": "Level 1: Scattered"
-    },
-    {
-      "scene": 3,
-      "title": "Level 2: Gust"
-    },
-    {
-      "scene": 4,
-      "title": "Level 3: The Float"
-    },
-    {
-      "scene": 5,
-      "title": "Level 4: In Step"
-    },
-    {
-      "scene": 6,
-      "title": "Level 5: The Route"
-    },
-    {
-      "scene": 7,
-      "title": "Level 6: Finale"
-    }
-  ],
-  "timeline": {
-    "fps": 60,
-    "frames": 21119,
-    "chapters": [
-      {
-        "title": "Opening",
-        "frame": 0,
-        "time": 0
-      },
-      {
-        "title": "Story",
-        "frame": 1542,
-        "time": 25700.00000000044
-      },
-      {
-        "title": "Level 1: Scattered",
-        "frame": 2772,
-        "time": 46199.999999999
-      },
-      {
-        "title": "Level 2: Gust",
-        "frame": 5741,
-        "time": 95683.33333333829
-      },
-      {
-        "title": "Level 3: The Float",
-        "frame": 7707,
-        "time": 128450.0000000145
-      },
-      {
-        "title": "Level 4: In Step",
-        "frame": 10534,
-        "time": 175566.66666665603
-      },
-      {
-        "title": "Level 5: The Route",
-        "frame": 12864,
-        "time": 214399.99999996676
-      },
-      {
-        "title": "Level 6: Finale",
-        "frame": 15158,
-        "time": 252633.33333327784
-      },
-      {
-        "title": "Ending",
-        "frame": 17106,
-        "time": 285099.9999999657
-      },
-      {
-        "title": "Credits",
-        "frame": 20047,
-        "time": 334116.66666668945
-      }
-    ]
+  {
+   "scene": 3,
+   "keys": "AU0KzRdNKM0DTRnNA00ezQM5ArkATQ/NBU0IzQdNI80DTR7NAzkCuQBND80FTQjNB00ozQNNN80DTQ/NJ00ZzQNN"
+  },
+  {
+   "scene": 4,
+   "keys": "AU0ZzSdLBcsDOQK5AE0ZzQNNDc0HTR7NA00ozQNLBcsDOQK5AE0ZzQNNDc0HTR7NA00ezQNIMcgDTRnNA00ezQNLMssDSwPLA1An0ANNWs0DTR7NJ00jzQNN"
+  },
+  {
+   "scene": 5,
+   "keys": "AU0ZzSdNI80nTR7NGE0ZzQNNI80JTRnNA00jzQlNFM0DSwDLMU0UzQNNKM0JTRnNA00jzQlNGc0DTQ=="
+  },
+  {
+   "scene": 6,
+   "keys": "AU0KzQNNN80nTRTNF01BzRdNPM0XTSs5ArktzQNLBcsDTSPNA00ZzQNNCs0eTRnNA00PzQNN"
+  },
+  {
+   "scene": 7,
+   "keys": "AU0yzQNNEDkCuRvNA00tzQNNLc0DTS3NA00jzQNNBc0wTRnNA00PzSdNCDkCuRI5Ark="
   }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: Scattered"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: Gust"
+  },
+  {
+   "scene": 4,
+   "title": "Level 3: The Float"
+  },
+  {
+   "scene": 5,
+   "title": "Level 4: In Step"
+  },
+  {
+   "scene": 6,
+   "title": "Level 5: The Route"
+  },
+  {
+   "scene": 7,
+   "title": "Level 6: Finale"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 21119,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 1542,
+    "time": 25700.00000000044
+   },
+   {
+    "title": "Level 1: Scattered",
+    "frame": 2772,
+    "time": 46199.999999999
+   },
+   {
+    "title": "Level 2: Gust",
+    "frame": 5741,
+    "time": 95683.33333333829
+   },
+   {
+    "title": "Level 3: The Float",
+    "frame": 7707,
+    "time": 128450.0000000145
+   },
+   {
+    "title": "Level 4: In Step",
+    "frame": 10534,
+    "time": 175566.66666665603
+   },
+   {
+    "title": "Level 5: The Route",
+    "frame": 12864,
+    "time": 214399.99999996676
+   },
+   {
+    "title": "Level 6: Finale",
+    "frame": 15158,
+    "time": 252633.33333327784
+   },
+   {
+    "title": "Ending",
+    "frame": 17106,
+    "time": 285099.9999999657
+   },
+   {
+    "title": "Credits",
+    "frame": 20047,
+    "time": 334116.66666668945
+   }
+  ]
+ }
 }
