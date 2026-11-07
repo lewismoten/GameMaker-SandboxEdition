@@ -120,3 +120,86 @@ export class FlashMeter {
     if (Math.abs(rup - rdown) / PIXELS >= AREA) this.red.add(this.frames, rup > rdown ? 1 : -1, Math.abs(rup - rdown) / PIXELS);
   }
 }
+
+const CELL = 20;
+const STRIDE = 10;
+const CELLS_X = (320 - CELL) / STRIDE + 1;
+const CELLS_Y = (200 - CELL) / STRIDE + 1;
+
+/** The worst small spot: flashes in its busiest second, and where. */
+export interface LocalWorst {
+  flashes: number;
+  /** Seconds into the run. */
+  at: number;
+  /** Top-left pixel of the 20x20 spot. */
+  x: number;
+  y: number;
+}
+
+/**
+ * A small patch blinking. The whole-screen test above needs a tenth of the screen to change, so a lantern
+ * or a patch of fog that blinks on its own stays under it. This one looks at the mean luminance of
+ * 20x20 spots (every 10 pixels) and counts each spot's own swings: a swing is a move of 0.1 or more from the
+ * last high or low it reached (so a zigzag of small steps in one direction counts once, and a back-and-forth
+ * counts every turn); two swings are a flash; more than three in a second is advice to look at that spot.
+ * The WCAG area rule does not apply to it, so a small blink that WCAG lets through is also listed: a
+ * suggestion, not a verdict.
+ */
+export class LocalFlashMeter {
+  worst: LocalWorst = { flashes: 0, at: 0, x: 0, y: 0 };
+  frames = 0;
+  private level = new Float32Array(CELLS_X * CELLS_Y);
+  private ext = new Float32Array(CELLS_X * CELLS_Y);
+  private dir = new Int8Array(CELLS_X * CELLS_Y);
+  private legs: number[][] = Array.from({ length: CELLS_X * CELLS_Y }, () => []);
+  private started = false;
+
+  constructor(readonly fps = 60) {}
+
+  /** A new scene starts from a fade; forget what came before. */
+  reset(): void {
+    this.started = false;
+  }
+
+  push(pixels: Uint8Array, palette: Uint8Array): void {
+    this.frames++;
+    const luma = tables(palette).luma;
+    const start = !this.started;
+    this.started = true;
+    for (let cy = 0; cy < CELLS_Y; cy++) {
+      for (let cx = 0; cx < CELLS_X; cx++) {
+        let sum = 0;
+        for (let y = 0; y < CELL; y++) {
+          const row = (cy * STRIDE + y) * 320 + cx * STRIDE;
+          for (let x = 0; x < CELL; x++) sum += luma[pixels[row + x]];
+        }
+        const c = cy * CELLS_X + cx;
+        const v = sum / (CELL * CELL);
+        if (start) {
+          this.ext[c] = v;
+          this.dir[c] = 0;
+          this.legs[c].length = 0;
+        } else this.step(c, v, cx, cy);
+      }
+    }
+  }
+
+  private step(c: number, v: number, cx: number, cy: number): void {
+    const ext = this.ext[c];
+    const dir = this.dir[c];
+    const swing = (to: number) => Math.abs(v - ext) >= LUMA_STEP && Math.min(v, ext) < DARK_LIMIT && (to > 0 ? v > ext : v < ext);
+    if (dir <= 0 && swing(1)) this.leg(c, 1, v, cx, cy);
+    else if (dir >= 0 && swing(-1)) this.leg(c, -1, v, cx, cy);
+    else if ((dir === 1 && v > ext) || (dir === -1 && v < ext)) this.ext[c] = v;
+  }
+
+  private leg(c: number, dir: number, v: number, cx: number, cy: number): void {
+    this.dir[c] = dir;
+    this.ext[c] = v;
+    const legs = this.legs[c];
+    legs.push(this.frames);
+    while (legs[0] <= this.frames - this.fps) legs.shift();
+    const flashes = Math.floor(legs.length / 2);
+    if (flashes > this.worst.flashes) this.worst = { flashes, at: this.frames / this.fps, x: cx * STRIDE, y: cy * STRIDE };
+  }
+}

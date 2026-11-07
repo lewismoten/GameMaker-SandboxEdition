@@ -10,7 +10,7 @@ import { flashOfGame, type FlashReport } from './flashCheck';
 const gamesDir = join(dirname(fileURLToPath(import.meta.url)), '..');
 
 const line = (r: FlashReport) =>
-  `${r.id.padEnd(22)} ${String(r.seconds).padStart(5)}s  general ${String(r.general.flashes).padStart(2)} a second (biggest change ${(r.general.area * 100).toFixed(0)}% of the screen${r.general.flashes ? `, at ${r.general.at.toFixed(1)}s` : ''})  red ${String(r.red.flashes).padStart(2)}${r.fails ? '  OVER 3' : ''}`;
+  `${r.id.padEnd(22)} ${String(r.seconds).padStart(5)}s  general ${String(r.general.flashes).padStart(2)} a second (biggest change ${(r.general.area * 100).toFixed(0)}% of the screen${r.general.flashes ? `, at ${r.general.at.toFixed(1)}s` : ''})  red ${String(r.red.flashes).padStart(2)}${r.fails ? '  OVER 3' : ''}\n${' '.repeat(22)} small spot ${r.local.flashes} a second${r.local.flashes ? ` (20x20 at ${r.local.x},${r.local.y}, ${r.local.at.toFixed(1)}s)` : ''}${r.localOver ? '  SPOT OVER 3 (advice)' : ''}`;
 
 {
   const named = process.argv.slice(2).filter((a) => !a.startsWith('--'));
@@ -28,6 +28,6 @@ const line = (r: FlashReport) =>
     }
   }
   if (process.argv.includes('--json')) console.log(JSON.stringify(out));
-  else console.log(`\n${out.length} games, ${out.filter((r) => r.fails).length} over ${MAX_FLASHES} a second`);
+  else console.log(`\n${out.length} games, ${out.filter((r) => r.fails).length} over ${MAX_FLASHES} a second, ${out.filter((r) => r.localOver).length} with a small spot over (advice only)`);
   process.exit(named.length && out.some((r) => r.fails) ? 1 : 0);
 }
