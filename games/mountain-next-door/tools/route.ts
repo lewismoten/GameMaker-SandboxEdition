@@ -10,6 +10,7 @@ import { G4, STREAM_AT } from '../src/levels/stream';
 import { FLOORS, SIGNS_AT } from '../src/levels/signs';
 import { HOLLOW_AT, STARS } from '../src/levels/hollow';
 import { G7, LEDGES, RIDGE_AT } from '../src/levels/ridge';
+import { TUNNEL_AT } from '../src/levels/tunnel';
 import { buildLevels } from '../src/levels';
 import { GROUND } from '../src/level';
 import { PROLOGUE } from '../src/monsters';
@@ -300,4 +301,26 @@ export async function windyRidge(bot: StarterBot): Promise<void> {
   score(bot, from, 6 * POINTS.blaze, 'level 7');
   void G7;
   await leave(bot, bot.walk(R.exit + 1, 'the exit'), 'the exit');
+}
+
+/** 8. The Low Tunnel: every lantern lit on the way through, a look up at the glow-worms, and Wisp found. */
+export async function lowTunnel(bot: StarterBot): Promise<void> {
+  const from = bot.sim.ci.score;
+  const T = TUNNEL_AT;
+  const at = T.signs;
+  const [l1, l2, l3, l4, l5] = T.lanterns;
+  await readAt(bot, at.dark + 1, 'the dark sign');
+  await take(bot, l1, POINTS.lantern, 'the first lantern');
+  await readAt(bot, at.low + 2, 'the low sign');
+  await take(bot, l2, POINTS.lantern, 'the second lantern');
+  await readAt(bot, at.worms + 1, 'the glow-worm sign');
+  await must(bot, bot.wait(READ), 'watching the glow-worms');
+  await take(bot, l3, POINTS.lantern, 'the third lantern');
+  await take(bot, l4, POINTS.lantern, 'the fourth lantern');
+  await take(bot, l5, POINTS.lantern, 'the fifth lantern');
+  await readAt(bot, at.wisp + 1, 'the Wisp sign');
+  await must(bot, bot.walk(T.wisp - 1, 'Wisp'), 'to Wisp');
+  await must(bot, bot.wait(READ), 'a moment with Wisp');
+  score(bot, from, 5 * POINTS.lantern, 'level 8');
+  await leave(bot, bot.walk(T.exit + 1, 'the exit'), 'the exit');
 }
