@@ -32,7 +32,9 @@
 }
 .machine-settings .machine-all {
   display: flex;
+  flex-direction: row;
   align-items: center;
+  justify-self: start;
   gap: 8px;
 }
 .machine-sounds table {
