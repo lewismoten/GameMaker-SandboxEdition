@@ -12,6 +12,7 @@
 #include <rom/miniz.h>
 #include "board.h"
 #include "controls.h"
+#include "paddraw.h"
 #include "banner.h"
 #include "btnicon.h"
 #include "gmcards.h"
@@ -705,19 +706,6 @@ static void drawIcon(const uint8_t* px, int x0, int y0, int S, bool backing = tr
   }
 }
 
-// Triangle pointing in direction d (0 left, 1 right, 2 up, 3 down) at (cx, cy), size s.
-static void arrow(int cx, int cy, int d, int s, bool lit) {
-  int x0 = cx, y0 = cy, x1, y1, x2, y2;
-  switch (d) {
-    case 0: x0 = cx - s; y0 = cy; x1 = cx + s / 2; y1 = cy - s; x2 = cx + s / 2; y2 = cy + s; break;
-    case 1: x0 = cx + s; y0 = cy; x1 = cx - s / 2; y1 = cy - s; x2 = cx - s / 2; y2 = cy + s; break;
-    case 2: x0 = cx; y0 = cy - s; x1 = cx - s; y1 = cy + s / 2; x2 = cx + s; y2 = cy + s / 2; break;
-    default: x0 = cx; y0 = cy + s; x1 = cx - s; y1 = cy - s / 2; x2 = cx + s; y2 = cy - s / 2; break;
-  }
-  x0 -= bandX; x1 -= bandX; x2 -= bandX; y0 -= bandY; y1 -= bandY; y2 -= bandY;
-  if (lit) spr.fillTriangle(x0, y0, x1, y1, x2, y2, C_YELLOW);
-  spr.drawTriangle(x0, y0, x1, y1, x2, y2, lit ? C_BLACK : C_WHITE);
-}
 // A round button: the key's name big, and under it the picture of what it throws or uses, else the game's label.
 static void disc(const ctl::Disc& d, bool down, int scan, const char* fallback, const gm::BtnIcon& ic) {
   int cx = d.cx - bandX, cy = d.cy - bandY;
@@ -778,22 +766,7 @@ static void drawControls() {
   const ctl::Need& nd = controls.need;
   const ctl::Disc& p = L.pad;
   if (hitsDisc(p)) {
-    int px = p.cx - bandX, py = p.cy - bandY;
-    spr.drawCircle(px, py, p.r + 1, C_BLACK);
-    spr.drawCircle(px, py, p.r, C_WHITE);
-    spr.drawCircle(px, py, L.deadR, C_WHITE);
-    uint8_t d = controls.padDirs;
-    int a = p.r * 2 / 3, s = p.r / 6 + 4;
-    if (nd.left) arrow(p.cx - a, p.cy, 0, s, d & 1);
-    if (nd.right) arrow(p.cx + a, p.cy, 1, s, d & 2);
-    if (nd.up) arrow(p.cx, p.cy - a, 2, s, d & 4);
-    if (nd.down) arrow(p.cx, p.cy + a, 3, s, d & 8);
-#ifdef POCKET_CYD28
-    if (nd.jump) for (int side : {-1, 1}) {
-      int x = p.cx + side * p.r / 2, y = p.cy - p.r / 2;
-      arrow(x, y, 2, s / 2, (d & 4) && (d & (side < 0 ? 1 : 2)));
-    }
-#endif
+    paddraw::pad(spr, L, nd, controls.padDirs, bandX, bandY);
   }
   if (nd.space && hitsDisc(L.space)) disc(L.space, controls.btnDown & 1, ctl::S_SPACE, "Space", icons[0]);
   if (nd.enter && hitsDisc(L.enter)) disc(L.enter, controls.btnDown & 2, ctl::S_ENTER, "Enter", icons[1]);
