@@ -121,7 +121,7 @@ function memory(): HTMLElement {
     `0 0 450 ${base + 20}`,
     markup,
     'A memory map of 640K in three parts: DOS and a mouse driver at the start of memory; PLAYGAME with its program, screen buffer, three block files, monster tables, voice driver and the scene; and free memory at the top.',
-    'Figure 1. A full-size game in 640K. The scene’s share changes from scene to scene; what is left is free.',
+    'A full-size game in 640K. The scene’s share changes from scene to scene; what is left is free.',
   );
 }
 
@@ -177,7 +177,7 @@ function screen(): HTMLElement {
     `0 0 450 ${oy + H + 28}`,
     markup,
     'The 320 by 200 screen as a grid of 16 by 10 blocks of 20 by 20 pixels, with one block and the two-block hero marked. A strip 8 pixels wide at the right and 4 pixels tall at the bottom is hatched: while playing it is not shown and takes the border color, color 0, so 312 by 196 pixels show.',
-    'Figure 2. The screen is 16 blocks across and 10 down; while you play, the hatched edges are border and 312 x 196 pixels show.',
+    'The screen is 16 blocks across and 10 down; while you play, the hatched edges are border and 312 x 196 pixels show.',
   );
 }
 
@@ -210,7 +210,7 @@ function pieces(): HTMLElement {
     '0 0 440 146',
     markup.join(''),
     'Three bars, each one 64K piece of memory: 150 background blocks fill almost all of it, 100 monster blocks about two thirds, 50 hero blocks about one third.',
-    'Figure 4. Each block file is held in one 64K piece; 150 background blocks fill nearly all of it.',
+    'Each block file is held in one 64K piece; 150 background blocks fill nearly all of it.',
   );
 }
 
@@ -244,7 +244,7 @@ function scrolling(): HTMLElement {
     `0 0 440 ${100 + H + 18}`,
     markup,
     'The screen as a window on a wider picture in video memory; one step later the window has moved 4 pixels and only the new strip at its edge is drawn, in the hidden border where it is out of sight.',
-    'Figure 3. How the screen scrolls (the step is drawn wider than it is).',
+    'How the screen scrolls (the step is drawn wider than it is).',
   );
 }
 

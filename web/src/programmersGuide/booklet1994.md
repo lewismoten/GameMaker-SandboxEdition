@@ -382,8 +382,6 @@ For effect e, the digital name lives at 2,160 + 9e. It holds at most eight chara
 
 ### 23. VOC: sampled effects
 
-Yes, VOC and CMF layouts may be described in a reference like this one, in original words and drawings. These are Creative Technology formats; their original references are the Sound Blaster Developer Kit's Creative Voice File and Creative Music File documentation. Describing the layout does not require copying those manuals.
-
 VOC is imported sound, recorded or converted with an external audio tool; SNDEDIT assigns its name and can audition it. Game-Maker does not record a VOC. PLAYGAME reads it through the Sound Blaster voice driver. The standard header is 26 bytes, followed by typed blocks. Each nonzero type has a three-byte payload length; type zero is the one-byte terminator.
 
 [diagram: vocbits]
