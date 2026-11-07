@@ -421,19 +421,30 @@ export function slimCatalog(catalog: CdCatalogEntry[]): CdCatalogEntry[] {
 
 /**
  * games/catalog.json: slimCatalog, and each Starter down to what the home page and dos.html
- * read at load (id, title, DOS files and sizes, its pictures' flags, the manual's title). Its
+ * read at load (id, title, its pictures' flags, the manual's title). Its
  * blurb, label and box art go to games/details/<id>.json (withDetails), as do every original
  * game's controls and player look, so forty or more Starters do not weigh down every page that loads the catalog.
  */
-export function pageCatalog(catalog: CdCatalogEntry[]): CdCatalogEntry[] {
+export function pageCatalog(catalog: CdCatalogEntry[]): LeanEntry[] {
   return slimCatalog(catalog).map((e) => {
-    if (!e.details) return e;
+    // the file lists (games/catalog-files.json, pageFiles) only a play, a copy or a disk listing reads; `rec` (the .rec files) is the one thing the home page's preview asks of them
+    const { files, sizes: _sizes, ...head } = e;
+    const lean = { ...head, rec: files.filter((f) => f.endsWith('.rec')) };
+    if (!lean.details) return lean;
     // every original game: its controls and player look (only a copy, a play or a walkthrough reads them)
-    const { controls: _controls, player: _player, ...rest } = e;
+    const { controls: _controls, player: _player, ...rest } = lean;
     if (e.series !== 'starter') return rest;
-    const { blurb: _blurb, original, ...lean } = rest;
-    return { ...lean, ...(original ? { original: { sound: original.sound, ...(original.manual ? { manual: original.manual } : {}) } } : {}) };
+    const { blurb: _blurb, original, ...slim } = rest;
+    return { ...slim, ...(original ? { original: { sound: original.sound, ...(original.manual ? { manual: original.manual } : {}) } } : {}) };
   });
+}
+
+/** An entry in games/catalog.json: no `files` or `sizes` (see pageFiles). */
+export type LeanEntry = Omit<CdCatalogEntry, 'files' | 'sizes'> & { rec?: string[] };
+
+/** games/catalog-files.json: each listed game's DOS files and their sizes, which games/catalog.json leaves out (a lazily fetched companion, withFiles in src/project/files.ts). */
+export function pageFiles(catalog: CdCatalogEntry[]): Record<string, { files: string[]; sizes: number[] }> {
+  return Object.fromEntries(catalog.map((e) => [e.id, { files: e.files, sizes: e.sizes }]));
 }
 
 /**
@@ -560,6 +571,11 @@ export function cdGames(cdRoot: string): Plugin {
           res.end(JSON.stringify(get().gm));
           return;
         }
+        if (url === 'games/catalog-files.json') {
+          res.setHeader('Content-Type', 'application/json');
+          res.end(JSON.stringify(pageFiles(served().catalog)));
+          return;
+        }
         if (url === 'games/index.json' || url === 'games/catalog.json' || (extra && GATES.includes(Number(extra[1])))) {
           res.setHeader('Content-Type', 'application/json');
           const { catalog, secret } = served();
@@ -668,6 +684,7 @@ export function cdGames(cdRoot: string): Plugin {
       // Catalogs keep precomputed previews and health; game data lives only in each ZIP.
       this.emitFile({ type: 'asset', fileName: 'games/index.json', source: JSON.stringify(indexCatalog(catalog).map((e) => ({ ...e, gz: true }))) });
       this.emitFile({ type: 'asset', fileName: 'games/catalog.json', source: JSON.stringify(pageCatalog(catalog).map((e) => ({ ...e, gz: true }))) });
+      this.emitFile({ type: 'asset', fileName: 'games/catalog-files.json', source: JSON.stringify(pageFiles(catalog)) });
       for (const e of catalog) {
         const details = catalogDetails(e);
         if (details) this.emitFile({ type: 'asset', fileName: `games/details/${e.id}.json`, source: JSON.stringify(details) });

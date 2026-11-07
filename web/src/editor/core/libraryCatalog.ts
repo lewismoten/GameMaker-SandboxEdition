@@ -39,7 +39,9 @@ export function selectLibraryItems(catalog: readonly CatalogEntry[], kind: FileK
         (source === 'starters' ? isStarterGame(game) : source === 'originals' ? !!game.original && !isStarterGame(game) : !game.original),
     )
     .flatMap((game) =>
-      game.files.flatMap((name, i) => (kindOf(name) === kind ? [{ game, name, size: game.sizes?.[i] ?? 0, group: game.fileFacts?.[name]?.soundGroup }] : [])),
+      (game.files ?? []).flatMap((name, i) =>
+        kindOf(name) === kind ? [{ game, name, size: game.sizes?.[i] ?? 0, group: game.fileFacts?.[name]?.soundGroup }] : [],
+      ),
     )
     .sort(compare);
   if (kind !== 'pal' || !uniquePalettes) return items;

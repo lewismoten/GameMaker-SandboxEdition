@@ -190,6 +190,7 @@ async function main(): Promise<void> {
       back: game.back ? { href: game.back, label: '← All games' } : undefined,
       ...playSaves(game.id, game.gam),
       saveId: game.id,
+      snapshotId: game.id,
       ...playAchievements(game.id, 'web'),
       onQuit: () => !game.back, // stand-alone apps go back to their menu
       onExit: () => {

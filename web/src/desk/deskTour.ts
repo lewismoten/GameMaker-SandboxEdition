@@ -4,12 +4,14 @@
 // running something of the visitor's is left alone, and the chapter says how to call instead.
 // When the chapter is left the call is put back as found: the program stopped, the line speed,
 // the board's user file and its door game as they were, and the file it downloaded taken off
-// C: again (nothing counts toward an achievement while a tour plays: achievements/store.ts).
+// C: again, and Scoot's mail as it was (a letter the call brought taken back). Nothing counts
+// toward an achievement while a tour plays (achievements/store.ts).
 import { key } from '../retro/text/textInput';
 import { SPEED_KEY, lineSpeed, setLineSpeed } from '../retro/bbs/lineSpeed';
 import { restoreAccount, storedAccount } from '../retro/bbs/ratio';
 import { DOOR_KEY } from '../retro/bbs/ticTacToe';
 import type { deskPc } from './deskPc';
+import { COURIER_CHANGED, COURIER_KEY } from '../courier/courierStore';
 
 type DeskPc = ReturnType<typeof deskPc>;
 interface Act {
@@ -43,7 +45,7 @@ const putBack = (k: string, v: string | null) => {
 /** Listens for the tour's acts while the desk is up; returns what stops listening. */
 export function deskTour(desk: HTMLElement, pc: DeskPc): () => void {
   /** What the call found, to put back. */
-  let found: { speed: string | null; account: string | null; door: string | null; downloads: Set<string> } | undefined;
+  let found: { speed: string | null; account: string | null; door: string | null; mail: string | null; downloads: Set<string> } | undefined;
   /** Bumped when the chapter is left: a script still waiting gives up. */
   let gen = 0;
   /** The acts in order: each waits for the one before. */
@@ -101,6 +103,7 @@ export function deskTour(desk: HTMLElement, pc: DeskPc): () => void {
       speed: stored(SPEED_KEY),
       account: storedAccount(),
       door: stored(DOOR_KEY),
+      mail: stored(COURIER_KEY),
       downloads: new Set(computer?.downloads.list() ?? []),
     };
     desk.dataset.tourBbs = 'on';
@@ -158,6 +161,8 @@ export function deskTour(desk: HTMLElement, pc: DeskPc): () => void {
     const computer = pc.computer;
     const restore = () => {
       putBack(DOOR_KEY, was.door);
+      putBack(COURIER_KEY, was.mail);
+      dispatchEvent(new Event(COURIER_CHANGED));
       restoreAccount(was.account);
       const speed = was.speed === 'unlimited' ? 'unlimited' : Number(was.speed);
       if (was.speed !== null && (speed === 'unlimited' || Number.isFinite(speed))) setLineSpeed(speed as Parameters<typeof setLineSpeed>[0]);

@@ -8,6 +8,7 @@ import { h } from '../../editor/core/ui';
 import { cover, pressable } from '../props/propKit';
 import { loadFinished } from '../../editor/shell/homeDone';
 import { ACHIEVEMENTS_CHANGED } from '../../achievements/store';
+import { loadGrades } from '../../achievements/courseGrades';
 import { frameLook } from './frameLevel';
 import { diplomaSvg } from './diplomaArt';
 
@@ -20,10 +21,10 @@ export function diplomaFrame(place: (el: HTMLElement) => void): () => void {
   place(frame);
   let shown = '';
   const refresh = async () => {
-    const look = frameLook(await loadFinished());
+    const look = frameLook(await loadFinished(), loadGrades());
     frame.hidden = !look;
     if (!look) return;
-    const key = `${look.metal}:${look.ribbon}`;
+    const key = `${look.metal}:${look.ribbon}:${look.tier}`;
     if (key !== shown) art.innerHTML = diplomaSvg(look);
     shown = key;
     frame.dataset.level = look.level;

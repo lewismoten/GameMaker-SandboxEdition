@@ -76,6 +76,26 @@ class LGFX : public lgfx::LGFX_Device {
     else { pi_.config(c); setPanel(&pi_); }
   }
 
+  // The controller's id registers, read over MISO (GPIO 12) with the running driver's read timing (after init()):
+  // 04h RDDID (3 bytes; the ILI9341 sends a dummy byte first, so 4 are read), DAh/DBh/DCh RDID1..3, D3h RDID4 (ILI9341:
+  // a dummy, then 00 93 41). A glass whose MISO is not wired reads all zeros or all ones.
+  void readIds(uint32_t& rddid, uint8_t id[3], uint32_t& rdid4) {
+    auto& p = *getPanel();
+    rddid = p.readCommand(0x04, 0, 4);
+    for (int i = 0; i < 3; i++) id[i] = (uint8_t)p.readCommand(0xDA + i, 0, 1);
+    rdid4 = p.readCommand(0xD3, 0, 4);
+  }
+  // Sends a list of panel commands (cmd, length, bytes..., ending 0xFF): the picture tuning (picturetune.h).
+  void sendList(const uint8_t* l) {
+    startWrite();
+    while (*l != 0xFF) {
+      writeCommand(l[0]);
+      for (int i = 0; i < l[1]; i++) writeData(l[2 + i]);
+      l += 2 + l[1];
+    }
+    endWrite();
+  }
+
   // 320 x 240 (a glass wired the other way round, setup's third landscape way) or 240 x 320 as usual; call setRotation after.
   void setWide(bool w) {
     dims(pi_, w);

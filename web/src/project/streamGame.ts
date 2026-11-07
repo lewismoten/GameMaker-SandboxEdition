@@ -131,7 +131,7 @@ export function streamHostedGame(entry: CatalogEntry, base = './', concurrency =
     files.stream = { need: () => ready, want: () => undefined };
     return { files, started: ready, done: ready };
   }
-  const names = entry.files;
+  const names = entry.files ?? []; // legacy loose files only: a catalog game has a ZIP pack, handled above
   const waiting = new Map<string, { promise: Promise<void>; resolve: () => void }>();
   for (const n of names) {
     let resolve!: () => void;

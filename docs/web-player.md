@@ -133,3 +133,7 @@ their makers; the player only plays the files beside it.
 
 To open a game on this site instead (with the editor, the desk and DOS Game-Maker), see
 [Opening games from your site](embed.md).
+
+## Full-window play page snapshots
+
+On the site’s `play.html` full-window player, the camera button (**Save screenshot**) saves an unscaled PNG using the current DOS palette. Levels use 312 × 196 pixels, matching PLAYGAME’s crop of the right 8 pixels and bottom 4 rows. Pictures, animations, text pages, menus and function-key screens use 320 × 200. Press F12 to save and focus the camera during play; Enter or Space saves again, and Escape returns focus to the game. Tab reaches it before play starts. It also works by click or tap. The button fades when the pointer rests and returns with movement or keyboard focus. File names contain the game id, `scene-<number>` or `screen`, and local `YYYYMMDD-HHMMSS` time.

@@ -319,7 +319,7 @@ export function pickFile(project: Project, kind: FileKind, opts: PickOptions = {
       search.disabled = true;
       io?.disconnect();
       layout([], h('p', { class: 'hint' }, 'Loading palette templates…'));
-      const { PALETTE_PRESETS, createPalettePreset } = await import('@lewismoten/gamemaker-sandbox-tools/palettes');
+      const { PALETTE_PRESETS, createPalettePreset } = await import('./palettePresets');
       if (me !== shown || !grid.isConnected) return;
       search.disabled = false;
       layout(

@@ -406,6 +406,7 @@ export class Shell {
       'GM          Start Game-Maker SE',
       'PLAYGAME    Play a Game-Maker game',
       'TERMINAL    Dial BBSes to download shareware',
+      "SCOOT       Read your courier's mail (BBS calls bring letters)",
       'VPIC        View a GIF or JPEG picture (VPIC \\IMAGES\\TEDDY.GIF)',
       'BACKUP      Back up and restore saved games (BACKUP /? for help)',
       'HEXEDIT     Look inside a file byte by byte (HEXEDIT \\GM\\SAMPLE\\SAMPLE.GAM)',

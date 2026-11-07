@@ -14,6 +14,6 @@ describe('walk badge', () => {
   it('sorts complete first, then by share won, then none', () => {
     const list = [undefined, { complete: false, won: 1, total: 4 }, { complete: true, won: 3, total: 3 }, { complete: false, won: 3, total: 4 }];
     expect([...list].sort(byWalkPercent).map(walkPercent)).toEqual([100, 75, 25, -1]);
-    expect(walkLabel(list[1]!)).toBe('Walkthrough: 1 of 4 scenes');
+    expect(walkLabel(list[1]!)).toBe('Recorded walkthrough reaches 1 of 4 scenes');
   });
 });

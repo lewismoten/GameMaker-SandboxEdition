@@ -6,6 +6,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <initializer_list>
+#include "favorites.h"
 namespace pk {
 inline bool digit(char c) { return c>='0'&&c<='9'; }
 inline bool alnum(char c) { return digit(c)||(c>='A'&&c<='Z')||(c>='a'&&c<='z'); }
@@ -25,7 +26,10 @@ inline bool cached(const Cached&r,uint32_t size,uint32_t modified,const char*nam
   return r.checksum==crc32(&r,offsetof(Cached,checksum))&&r.game.file[15]==0&&r.game.id[27]==0&&r.game.category<=6&&r.size==size&&r.modified==modified&&r.game.one&&r.game.sd&&!strcmp(r.game.file,name);
 }
 struct Collection { char slug[33], label[49]; };
-struct Catalog { Entry games[MAX_GAMES]; uint16_t matches[MAX_GAMES]; Collection collections[MAX_COLLECTIONS]; };
+// recent and pins: the NVS lists (favorites.h), read with the catalog and freed with it for play.
+struct Catalog { Entry games[MAX_GAMES]; uint16_t matches[MAX_GAMES]; Collection collections[MAX_COLLECTIONS]; RecentList recent; PinList pins; };
+// The home page's virtual categories (after 1-6 the roots, 7 Good on touch, 8 Continue in main.cpp).
+constexpr int CAT_RECENT = 9, CAT_FAVORITES = 10;
 static_assert(sizeof(Catalog) <= 48 * 1024, "menu budget");
 constexpr int THUMB_RAW = 6284;
 static_assert(THUMB_RAW + 144 * 2 < 8192, "preview scratch budget");

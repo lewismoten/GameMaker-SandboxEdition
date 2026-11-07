@@ -1,10 +1,11 @@
 // Downloading a game of yours from the home page: its Download button and its ⋯ More menu's
-// Download… item open the chooser (download.ts) for the stored project.
+// Download… item open the chooser (download.ts, loaded when pressed) for the stored project.
 import { h, toast } from '../core/ui';
 import { loadProject, saveProject } from '../../project/storage';
 import { parseCompanion, setExportPreviews } from '../../project/companion';
 import { parseGame, gameTitle } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
-import { chooseDownload, downloadButton, type DownloadGame } from './download';
+import type { DownloadGame } from './download';
+import { downloadButton } from './downloadButton';
 
 /** The project as the chooser takes it, or undefined when it is gone from this browser. */
 async function projectGame(id: string): Promise<DownloadGame | undefined> {
@@ -43,7 +44,7 @@ async function projectGame(id: string): Promise<DownloadGame | undefined> {
 /** Opens the chooser for a game of yours. */
 async function downloadProject(id: string): Promise<void> {
   const game = await projectGame(id);
-  if (game) await chooseDownload(game);
+  if (game) await (await import('./download')).chooseDownload(game);
 }
 
 /** The Download button for a game of yours (the panel at the top of the home page). */

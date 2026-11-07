@@ -1,9 +1,9 @@
-// Tests: the Sandbox BBS's W)arez area (retro/bbs/warezArea.ts): its releases' FILE_ID.DIZ and
+// Tests: the Sandbox BBS's W)arez area (retro/bbs/warezArea.ts, its releases in warezList.ts): its releases' FILE_ID.DIZ and
 // .NFO fit the period limits, warez costs a file point a ZIP, the access code, and GM30's
 // INSTALL.EXE reading the registration as CHK.EXE does.
 import { describe, expect, it } from 'vitest';
 import { DIZ_LINES, DIZ_WIDTH } from '../src/retro/bbs/fileId';
-import { ACCESS_CODE, WAREZ, accessOk, fileSize, pointsFor, zipsOf } from '../src/retro/bbs/warezArea';
+import { ACCESS_CODE, WAREZ, accessOk, fileSize, pointsFor, zipsOf } from '../src/retro/bbs/warezList';
 import { GM30_NFO, GM30_REG_NAME, GM30_REG_NUMBER, GM30_SERIAL } from '../src/retro/hacks/gm30Text';
 import { GMCRACK_NFO } from '../src/retro/hacks/gmcrackText';
 import { PLAYHACK_NFO } from '../src/retro/hacks/playHackText';

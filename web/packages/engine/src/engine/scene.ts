@@ -482,6 +482,8 @@ export async function playScene(s: Session, dosc: number, prev: number, linkIn: 
   initScroll(w, game.scenes[doscene].scroll);
   s.colors = w.palette;
 
+  m.screen.dosCropped = true;
+  m.screen.sceneNumber = doscene;
   renderWorld(m.screen, w);
   await m.fadeTo(w.palette, w.tune.fadeSteps);
   m.keyboard.attach();
@@ -581,6 +583,7 @@ export async function playScene(s: Session, dosc: number, prev: number, linkIn: 
   const funcKey = async (n: number) => {
     const clockPause = s.sndClock;
     m.audio.stopSpeaker();
+    m.screen.dosCropped = false; // UnCropScreen before DoFunKy (PLAYGAME.C:1595).
     m.screen.clear();
     w.keydn.fill(0);
     m.flushKeys();
@@ -703,6 +706,8 @@ export async function playScene(s: Session, dosc: number, prev: number, linkIn: 
         s.vocLate = undefined;
       }
     }
+    m.screen.dosCropped = true;
+    m.screen.sceneNumber = doscene;
     renderWorld(m.screen, w);
     s.onFrame?.(w);
     // Development aid for timing checks from the browser console / tests.
@@ -713,6 +718,7 @@ export async function playScene(s: Session, dosc: number, prev: number, linkIn: 
   m.audio.stopSong();
   m.audio.stopSpeaker();
   await m.fadeAllTo(0, 0, 0, w.tune.fadeSteps);
+  m.screen.dosCropped = false; // UnCropScreen after the exit fade (PLAYGAME.C:1534).
   m.keyboard.detach();
   m.keyboard.chordable = undefined;
   m.keyboard.attach();

@@ -49,11 +49,11 @@ export function deepSourceOf(game: HomeGame): DeepSource | undefined {
   if (e) {
     return {
       key: game.key,
-      version: String(e.pack ?? e.gamCrc ?? e.bytes ?? e.files.length),
-      names: e.files,
+      version: String(e.pack ?? e.gamCrc ?? e.bytes ?? (e.files ?? []).length),
+      names: e.files ?? [],
       readFiles: async () => {
         const out: [string, Uint8Array][] = [];
-        for (const name of e.files.filter(worthReading)) {
+        for (const name of (e.files ?? []).filter(worthReading)) {
           const bytes = (await peekGameFile(e, name)) ?? (await fetchGameFile(e, name));
           if (bytes) out.push([name, bytes]);
         }

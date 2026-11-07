@@ -24,6 +24,7 @@ export type ProgramRef =
   | { kind: 'image' }
   | { kind: 'egg' }
   | { kind: 'terminal' }
+  | { kind: 'scoot' }
   | { kind: 'vpic' }
   | {
       kind: 'game';
