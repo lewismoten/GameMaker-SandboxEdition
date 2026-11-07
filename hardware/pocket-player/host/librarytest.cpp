@@ -52,13 +52,13 @@ int main(int argc,char**argv) {
   for(int W:{320,480}) {
     static Phys fb, fresh;fb.W=fresh.W=W;fb.H=fresh.H=W==320?240:320;
     const char* labels[]={"Starters","Sandbox","Bizarre","My games","Imported","CD"};
-    pk::clearTiles(fb,W);pk::libraryFrame(fb,W,fb.H,"Pocket Player",0,2,"Rescan");const int rootIcons[]={6,9,10,11,12,13};for(int i=0;i<6;i++)pk::tileLabel(fb,W,i,labels[i],false,rootIcons[i]);
+    pk::clearTiles(fb,W);pk::libraryFrame(fb,W,fb.H,"Pocket Player",0,2,nullptr,false);pk::drawCardChip(fb,W,pk::CARD_READY,104);const int rootIcons[]={6,9,10,11,12,13};pk::continueTile(fb,W,0,nullptr,2,false);for(int i=1;i<6;i++)pk::tileLabel(fb,W,i,labels[i-1],false,rootIcons[i-1]);
     assert(!fb.clipped);save(fb,out+"/categories-"+std::to_string(W)+".ppm");
-    pk::clearTiles(fb,W);pk::libraryFrame(fb,W,fb.H,"Starters",0,2,"Rescan");
+    pk::clearTiles(fb,W);pk::libraryFrame(fb,W,fb.H,"Starters",0,2,nullptr);
     const char* stages[]={"1** First Steps","2** Moving and Pushing","3** Heroes and Foes","4** Story and Finish","5** Wiring and Worlds","6** Blocks and Showcase"};
     for(int i=0;i<6;i++)pk::tileLabel(fb,W,i,stages[i],i==1,i+1);
     assert(!fb.clipped);save(fb,out+"/stages-"+std::to_string(W)+".ppm");
-    pk::clearTiles(fb,W);pk::libraryFrame(fb,W,fb.H,"Pocket Player",1,2,"Rescan");
+    pk::clearTiles(fb,W);pk::libraryFrame(fb,W,fb.H,"Pocket Player",1,2,nullptr,false);
     const char* more[]={"Good on touch","Graduations","Other","Gameware","Shareware","Unsorted"};const int moreIcons[]={16,7,8,14,15,8};
     for(int i=0;i<6;i++)pk::tileLabel(fb,W,i,more[i],false,moreIcons[i]);
     assert(!fb.clipped);save(fb,out+"/more-"+std::to_string(W)+".ppm");
