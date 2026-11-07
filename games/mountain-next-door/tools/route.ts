@@ -2,12 +2,14 @@
 // level, with a look at each sign and a stop to watch whatever is happening. The checks here fail if a treasure is
 // missed, a bump hurts when it should not, or a scene moves on before it has been watched.
 import type { StarterBot } from '../../kit/starter/bot';
+import { SCAN } from '../../kit/starter/ids';
 import { G2, GATES_AT } from '../src/levels/gates';
 import { NEXT_AT } from '../src/levels/next';
 import { G3, PRINTS_AT } from '../src/levels/prints';
 import { G4, STREAM_AT } from '../src/levels/stream';
 import { FLOORS, SIGNS_AT } from '../src/levels/signs';
 import { HOLLOW_AT, STARS } from '../src/levels/hollow';
+import { G7, LEDGES, RIDGE_AT } from '../src/levels/ridge';
 import { buildLevels } from '../src/levels';
 import { GROUND } from '../src/level';
 import { PROLOGUE } from '../src/monsters';
@@ -246,4 +248,56 @@ export async function emptySpot(bot: StarterBot): Promise<void> {
   await must(bot, bot.walk(HOLLOW_AT.puddles[5], 'the last puddle in the hollow'), 'along the puddles');
   await watchFor(bot, () => since(bot, t0) > STARS[2] + 60, 'the last stars coming out', 1400);
   await leave(bot, bot.walk(HOLLOW_AT.exit + 1, 'the exit'), 'the exit');
+}
+
+/** Holds an arrow key for `ticks` (a step into the wind, where walking to a spot would never land). */
+async function step(bot: StarterBot, dir: 'left' | 'right', ticks: number, what: string): Promise<void> {
+  const key = dir === 'left' ? SCAN.left : SCAN.right;
+  bot.sim.press(key);
+  try {
+    await must(bot, bot.wait(ticks), what);
+  } finally {
+    bot.sim.release(key);
+  }
+}
+
+/** Steps into an updraft at column `x`, rides it up, and steps off onto the ledge to the right (feet on row `row` - 1). */
+async function rideUp(bot: StarterBot, x: number, row: number, what: string): Promise<void> {
+  await must(bot, bot.walk(x - 1, what), `to ${what}`);
+  await step(bot, 'right', 5, `into ${what}`);
+  await watchFor(bot, () => bot.px.y / 20 <= row - 1.5, `riding ${what}`, 300);
+  await must(bot, bot.walk(x + 2, `off ${what}`), `off ${what}`);
+  await must(bot, bot.land(), 'landing');
+  if (Math.round(bot.px.y / 20) !== row - 1) throw new Error(`${what}: not on the ledge (row ${bot.px.y / 20})`);
+}
+
+/** 7. Windy Ridge: up on the updraft, across on the gust, up again; every post blazed. */
+export async function windyRidge(bot: StarterBot): Promise<void> {
+  const from = bot.sim.ci.score;
+  const R = RIDGE_AT;
+  const at = R.signs;
+  const posts = R.posts.map(([x]) => x);
+  await readAt(bot, at.puddles + 2, 'the puddles sign');
+  await take(bot, posts[0], POINTS.blaze, 'a post');
+  await hop(bot, R.hole, 2, 'the deep print');
+  await take(bot, posts[1], POINTS.blaze, 'a post');
+  await readAt(bot, at.lift + 2, 'the lift sign');
+  await rideUp(bot, R.lift1.x, LEDGES.mid, 'the first updraft');
+  await readAt(bot, at.gust + 2, 'the gust sign');
+  await take(bot, posts[2], POINTS.blaze, 'a post');
+  await must(bot, bot.walk(R.mid[1], 'the edge'), 'to the edge');
+  await must(bot, bot.wait(READ / 4), 'a breath at the edge');
+  await step(bot, 'right', 6, 'into the gust');
+  await watchFor(bot, () => bot.px.x / 20 >= R.mid2[0], 'the gust carrying Tess over', 200);
+  await must(bot, bot.wait(20), 'landing after the gust');
+  if (bot.px.x / 20 < R.mid2[0] || Math.round(bot.px.y / 20) !== LEDGES.mid - 1) throw new Error(`the gust left Tess at ${bot.px.x / 20}, ${bot.px.y / 20}`);
+  await take(bot, posts[3], POINTS.blaze, 'a post');
+  await must(bot, bot.walk(R.pie[0], 'the pie'), 'to the pie');
+  await rideUp(bot, R.lift2.x, LEDGES.top, 'the second updraft');
+  await take(bot, posts[4], POINTS.blaze, 'a post');
+  await readAt(bot, at.town + 1, 'the town sign');
+  await take(bot, posts[5], POINTS.blaze, 'a post');
+  score(bot, from, 6 * POINTS.blaze, 'level 7');
+  void G7;
+  await leave(bot, bot.walk(R.exit + 1, 'the exit'), 'the exit');
 }

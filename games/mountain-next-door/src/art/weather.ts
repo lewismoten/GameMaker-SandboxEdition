@@ -103,3 +103,15 @@ export function footbridge(pal: Pal): Pixels {
   for (const x of [0, 10]) p.rect(x + 1, 6, 2, 14, w[1]);
   return inked(pal, p);
 }
+
+/** An updraft: thin streaks rising, in three frames. */
+export function updraft(pal: Pal, frame: number): Pixels {
+  const p = clear(pal);
+  const c = pal.c('white', 3);
+  const c2 = pal.c('fog', 2);
+  for (const x of [3, 10, 16]) {
+    const y0 = (((x * 5 - frame * 7) % 20) + 20) % 20;
+    for (let k = 0; k < 7; k++) p.set(x + (k === 0 ? 1 : 0), (y0 + k) % 20, k < 2 ? c : c2);
+  }
+  return p;
+}

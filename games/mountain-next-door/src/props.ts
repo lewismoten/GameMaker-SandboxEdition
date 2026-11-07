@@ -9,7 +9,7 @@
 //   trail      post (paint it: postBlazed), trunk (trunkBlazed), bark (a trunk to leave be), logL/R (hop it), crown0..8 (a round crown, 3x3), printL/M/R, acorn, pie
 //   stream     waterTop, water, stoneUp/stoneHalf/stoneUnder/stoneRise (a loop), bed, footbridge
 //   rain       rain0..rain3 (a four-picture loop; start on different frames to scatter it), puddle
-//   wind       gustR0..2 (blows right) and gustL0..2 (left)
+//   wind       gustR0..2 (blows right), gustL0..2 (left) and gustU0..2 (an updraft)
 //   signs      arrowL/arrowR (a squirrel turns them: they swap on a clock), arrowU
 //   stars      starA/B/C (dark sky that lights a star at three times), faint, bright (twinkle), moonTL/TR/BL/BR
 //   tunnel     tStone (solid), tAir (dark; touched, it stays lit: tAirLit), tFloor, lantern (light it), glow1/2
@@ -20,7 +20,7 @@ import { LEDGE, PULL, SOLID, type Book } from '../../kit/starter/book';
 import type { Pal } from '../../kit/starter/palette';
 import { GATES, acorn, arbor, log, gate, gentle, toe, crown, fence, gateHome, gateOnRock, ledge, peak, pie, plug, post, print, rock, roof, slope, trunk, wall, windowOn } from './art/land';
 import { blanket, doormat, lantern, moon, puddle, signpost, star, tunnelAir, tunnelFloor, tunnelStone } from './art/night';
-import { bed, footbridge, gust, rain, stone, water } from './art/weather';
+import { bed, footbridge, gust, rain, stone, updraft, water } from './art/weather';
 
 /** Points: a painted blaze, an acorn, a gate taken off the mountain, a gate put back home. */
 export const POINTS = { blaze: 10, acorn: 5, gate: 25, home: 25, lantern: 10 } as const;
@@ -147,6 +147,9 @@ export function addProps(book: Book, pal: Pal, groups: readonly string[], o: Pro
       names.forEach((n, f) => book.add(n, gust(pal, dir, f), { grav: dir > 0 ? PULL.right : PULL.left }));
       loop(names, 3);
     }
+    const ups = [0, 1, 2].map((f) => `gustU${f}`);
+    ups.forEach((n, f) => book.add(n, updraft(pal, f), { grav: PULL.up }));
+    loop(ups, 3);
   }
   if (has('signs')) {
     book.add('arrowL', signpost(pal, 'L'), air);
