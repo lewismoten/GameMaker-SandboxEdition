@@ -208,9 +208,9 @@ Package isolation verification lives in [`../../scripts/`](../../scripts/README.
 
 `../../scripts/game-build-inputs.mjs` fingerprints build inputs and ignores generated output.
 `../../scripts/render-game-frames.mjs <0..7>` renders an independent eighth of Depth
-Perception's animation frames. The reusable `game-frames.yml` workflow runs these in parallel,
-with each job capped at five minutes, and passes the lossless frame artifacts to the Pages
-and native-download builds. All disks and render caches remain untracked. Local builds
+Perception's animation frames, for splitting the render by hand. CI does not render them: the
+Pages and native-download workflows start from the build seed (`../../scripts/release/seed.mjs`),
+which carries a local build's frames, and remake them only when their key changed. All disks and render caches remain untracked. Local builds
 prepare missing frame shards with two processes at a time. `GM_SKIP_GAME_BUILD=1` defers game
 output generation for these rendering jobs; normal installs and builds generate it.
 SDK-only package checks and publication jobs set `GM_SKIP_GAME_BUILD=1` for all steps,

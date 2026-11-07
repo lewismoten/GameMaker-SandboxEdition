@@ -21,7 +21,7 @@ import type { Plugin } from 'vite';
 import { createReadStream, existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { gzipSync } from 'node:zlib';
-import { gameArchive, gameZipName, legacyZipName } from './gameArchive';
+import { gameArchive, gameZipName, legacyAlias } from './gameArchive';
 import { createArchiveQueue } from './archiveQueue';
 import { archiveWorker } from './archiveWorker';
 import { libraryFacts, type LibraryFileFact } from './libraryFacts';
@@ -604,8 +604,7 @@ export function cdGames(cdRoot: string): Plugin {
           return;
         }
         const packed = /^(games\/[a-z]+\/[a-z0-9_-]+\/)([^/]+\.zip)$/.exec(url);
-        const owner =
-          packed && [...get().catalog, ...get().secret].find((e) => e.path === packed[1] && (e.pack === packed[2] || legacyZipName(e.id) === packed[2]));
+        const owner = packed && [...get().catalog, ...get().secret].find((e) => e.path === packed[1] && (e.pack === packed[2] || legacyAlias(e) === packed[2]));
         if (owner) {
           // built in a worker process: until it is ready, 202 and ask again (the client retries, client/archiveWait.ts)
           const bytes = archives.request(`${owner.path}${owner.pack}`);
@@ -655,9 +654,9 @@ export function cdGames(cdRoot: string): Plugin {
         const name = gameZipName(e);
         archives.set(e.path, name);
         packs.set(`${e.path}${name}`, zips[i]);
-        // the name it had before dosName: old permanent links keep working
-        const old = legacyZipName(e.id);
-        if (old !== name) packs.set(`${e.path}${old}`, zips[i]);
+        // the name it had before dosName, for the games whose old link was published: those links keep working
+        const old = legacyAlias(e);
+        if (old) packs.set(`${e.path}${old}`, zips[i]);
       });
       // what the pages would otherwise fetch game files to work out: the quick check, the box's facts, the pack's size
       const known = (e: CdCatalogEntry): CdCatalogEntry => {

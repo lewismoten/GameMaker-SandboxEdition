@@ -51,7 +51,17 @@ jobs:
           echo "| npm ci | $((SECONDS - start)) |" >> "$GITHUB_STEP_SUMMARY"
         env:
           GM_SKIP_GAME_BUILD: '1'
-      # every game from its source, on every core (Depth's animation frames included)
+      # the trinkets, laser nickels and Depth's frames made by a local build (scripts/release/seed.mjs; npm run
+      # release:seed -- upload). Each keeps its source key, so the next step still remakes whatever changed since.
+      - name: Fetch the build seed
+        working-directory: .
+        run: |
+          start=$SECONDS
+          node scripts/release/seed.mjs fetch
+          echo "| build seed | $((SECONDS - start)) |" >> "$GITHUB_STEP_SUMMARY"
+        env:
+          GH_TOKEN: ${{ github.token }}
+      # every game disk from its source, on every core; trinkets, nickels and frames only where the seed is out of date
       - name: Build games
         run: |
           start=$SECONDS
@@ -62,6 +72,14 @@ jobs:
           start=$SECONDS
           npx vite build
           echo "| vite build | $((SECONDS - start)) |" >> "$GITHUB_STEP_SUMMARY"
+      # the artifact, the offline copy and each game ZIP within scripts/release/size-budgets.json, or no deploy
+      - name: Size budgets
+        run: |
+          status=0
+          node ../scripts/release/sizes.mjs --dist dist > "$RUNNER_TEMP/sizes.txt" || status=$?
+          cat "$RUNNER_TEMP/sizes.txt"
+          { echo; echo '```'; cat "$RUNNER_TEMP/sizes.txt"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          exit $status
       - if: github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v5
         with:
