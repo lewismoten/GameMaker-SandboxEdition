@@ -326,3 +326,16 @@
 .disk-row .floppy[hidden] {
   display: none;
 }
+
+/* The Find a disk field: wide enough to read its whole prompt, and never wider than a phone. */
+.desk-overlay > input[type='search'] {
+  box-sizing: border-box;
+  width: min(26rem, calc(100vw - 32px));
+  min-height: 32px;
+  padding: 4px 10px;
+  font: inherit;
+  color: #1a1a1a;
+  background: #f6f0dc;
+  border: 2px solid #8a7a50;
+  border-radius: 4px;
+}
