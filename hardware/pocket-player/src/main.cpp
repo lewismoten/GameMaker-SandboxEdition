@@ -1555,6 +1555,7 @@ static void bannerChanged(bool changed) {
     case DISPLAY_SCREEN: drawDisplayOptions(); break;
     case PLAYING: last.valid = false; break;
     case PAUSED: tft.fillScreen(C_BLACK); last.valid = false; drawFrame(true); drawStrip(); drawPause(); break;
+    case HELP_SCREEN: ovl::helpPage(tft, cfg); break;
     default: break;
   }
 }
@@ -1726,7 +1727,7 @@ void loop() {
       }else {
         int slot=pk::hitTile(scr::W,tx,ty),at=page*6+slot;
         if(slot>=0&&at<count){
-          if(browsingCategories&&!category&&categorySlots[at]==CONTINUE_SLOT){int g=resumeGame();if(g>=0){gm::EntryState e=resumeRec.e;message("Loading");if(!startGame(g,true,&e)){message("Could not load");delay(1500);enterPicker();}else wasDown=true;}}
+          if(browsingCategories&&!category&&categorySlots[at]==CONTINUE_SLOT){int g=resumeGame();if(g>=0){gm::EntryState e=resumeRec.e;message("Loading");if(!startGame(g,true,&e)){resumeClear();message("Could not load");delay(1500);enterPicker();}else wasDown=true;}}
           else if(browsingCategories){if(!category){category=categorySlots[at];subcategory=-1;browsingCategories=category==1||category==5||category==6;}else{subcategory=categorySlots[at];browsingCategories=false;}page=0;selected=-1;drawPicker();}
           else {int i=catalog->matches[at];if(selected!=i){restoreSelection=false;selected=i;drawPicker();}else{message("Loading");if(!startGame(i)){message("Could not load");delay(1500);enterPicker();}else wasDown=true;}}
         }
