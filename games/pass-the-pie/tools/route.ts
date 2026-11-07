@@ -47,6 +47,17 @@ async function hop(bot: StarterBot, at: number, what: string, width = 1): Promis
   if (bot.sim.ci.hitpts < hp) throw new Error(`${what} hurt: hit points ${hp} -> ${bot.sim.ci.hitpts}`);
 }
 
+/** Climbs the ladder to a shelf of coins, walks along it and comes back down (a treat a person would take). */
+async function shelfTrip(bot: StarterBot, [ladder, , to]: readonly [number, number, number]): Promise<void> {
+  await must(bot, bot.walk(ladder + 1, 'the ladder'), 'to the ladder');
+  await must(bot, bot.walk(ladder, 'the ladder'), 'onto the ladder');
+  await must(bot, bot.climb('up', 2, 'up the ladder'), 'up the ladder');
+  await must(bot, bot.walk(to, 'the end of the shelf'), 'along the shelf');
+  await must(bot, bot.walk(ladder + 1, 'the ladder again'), 'back along the shelf');
+  await must(bot, bot.walk(ladder, 'the ladder'), 'onto the ladder');
+  await must(bot, bot.climb('down', 8, 'down the ladder'), 'down the ladder');
+}
+
 /** The dish counter must have been taken: the neighbor's door opens only for it. */
 async function door(bot: StarterBot, gate: number, exit: number, what: string): Promise<void> {
   await cross(bot, gate - 1, `${what}'s door`);
@@ -62,6 +73,7 @@ export async function pumpkinYard(bot: StarterBot): Promise<void> {
   await read(bot, 15, 'leaf');
   await cross(bot, AT.yard.fences[0] - 1, 'the first fence');
   await cross(bot, AT.yard.fences[0] + 3, 'over the first fence');
+  await shelfTrip(bot, AT.yard.shelf);
   await read(bot, 37, 'squirrel');
   await cross(bot, AT.yard.fences[1] + 3, 'the squirrels and the second fence');
   await cross(bot, AT.yard.fences[2] + 3, 'the third fence');
@@ -74,7 +86,9 @@ export async function gravySlide(bot: StarterBot): Promise<void> {
   await read(bot, 8, 'gravy');
   await cross(bot, AT.gravy.dish + 1, 'the gravy boat');
   await read(bot, 16, 'vacuum');
-    for (const v of AT.gravy.vacuums) await hop(bot, v, `the vacuum at ${v}`);
+  await hop(bot, AT.gravy.vacuums[0], 'the first vacuum');
+  await shelfTrip(bot, AT.gravy.shelf);
+  for (const v of AT.gravy.vacuums.slice(1)) await hop(bot, v, `the vacuum at ${v}`);
   await door(bot, AT.gravy.gate, AT.gravy.exit, 'Mr. Okafor');
 }
 
@@ -83,7 +97,9 @@ export async function windyPark(bot: StarterBot): Promise<void> {
   await read(bot, 8, 'park');
   await cross(bot, AT.park.dish + 1, 'the casserole');
   await read(bot, 21, 'football');
-  for (const b of AT.park.balls) await hop(bot, b, `the football at ${b}`);
+  await hop(bot, AT.park.balls[0], 'the first football');
+  await shelfTrip(bot, AT.park.shelf);
+  for (const b of AT.park.balls.slice(1)) await hop(bot, b, `the football at ${b}`);
   await door(bot, AT.park.gate, AT.park.exit, 'the Lopez family');
 }
 
@@ -92,7 +108,9 @@ export async function cranberryRoll(bot: StarterBot): Promise<void> {
   await read(bot, 8, 'cranberry');
   await cross(bot, AT.berry.dish + 1, 'the cranberry sauce');
   await read(bot, 19, 'rolling');
-  for (const b of AT.berry.berries) await hop(bot, b, `the berry at ${b}`, 2);
+  await hop(bot, AT.berry.berries[0], 'the first berry', 2);
+  await shelfTrip(bot, AT.berry.shelf);
+  for (const b of AT.berry.berries.slice(1)) await hop(bot, b, `the berry at ${b}`, 2);
   await door(bot, AT.berry.gate, AT.berry.exit, 'Ms. Tanaka');
 }
 

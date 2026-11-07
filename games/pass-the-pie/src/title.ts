@@ -28,9 +28,10 @@ export function titlePicture(pal: Pal, rory: Pixels): Pixels {
   }
   for (let y = 150; y < 200; y++) p.rect(0, y, W, 1, y < 156 ? c('grass', 2) : c('dirt', y < 172 ? 3 : 2));
   const rand = rng(11);
-  for (let i = 0; i < 34; i++) p.rect(Math.floor(rand() * W), 6 + Math.floor(rand() * 160), 3, 2, [c('red', 3), c('orange', 3), c('gold', 3), c('orange', 2)][i % 4]);
+  for (let i = 0; i < 34; i++)
+    p.rect(Math.floor(rand() * W), 6 + Math.floor(rand() * 160), 3, 2, [c('red', 3), c('orange', 3), c('gold', 3), c('orange', 2)][i % 4]);
   const name = 'PASS THE PIE';
-  outlined(p, Math.round((W - textWidth(name, 4)) / 2), 12, name, c('white', 3), c('brick', 0), 4, c('ink', 0));
+  outlined(p, Math.round((W - textWidth(name, 3)) / 2), 14, name, c('white', 3), c('brick', 0), 3, c('ink', 0));
   const tag = 'A THANKSGIVING SPECIAL';
   const rw = textWidth(tag) + 20;
   bevel(p, Math.round((W - rw) / 2), 54, rw, 14, pal.r('parch'), 3, 2);

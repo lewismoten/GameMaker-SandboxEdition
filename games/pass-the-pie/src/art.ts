@@ -60,7 +60,12 @@ export function cranberry(pal: Pal): Pixels {
 export function rolls(pal: Pal): Pixels {
   const { c, r } = pal;
   const p = sky(pal);
-  for (const [x, y] of [[5, 7], [10, 6], [14, 8]] as const) blob(p, x, y, 4, 3.5, r('gold'), 0, 4);
+  for (const [x, y] of [
+    [5, 7],
+    [10, 6],
+    [14, 8],
+  ] as const)
+    blob(p, x, y, 4, 3.5, r('gold'), 0, 4);
   p.rect(1, 11, 18, 7, c('wood', 3)).rect(1, 11, 18, 1, c('wood', 4));
   for (let x = 2; x < 18; x += 4) p.rect(x, 12, 2, 5, c('wood', 2));
   p.rect(1, 17, 18, 1, c('wood', 1));
@@ -97,7 +102,10 @@ export function fence(pal: Pal): Pixels {
   const { c } = pal;
   const p = sky(pal);
   p.rect(0, 11, 20, 2, c('white', 2)).rect(0, 16, 20, 2, c('white', 2));
-  for (const x of [1, 7, 13]) p.rect(x, 5, 5, 15, c('white', 3)).rect(x, 5, 5, 1, c('white', 4)).rect(x + 4, 5, 1, 15, c('white', 1));
+  for (const x of [1, 7, 13])
+    p.rect(x, 5, 5, 15, c('white', 3))
+      .rect(x, 5, 5, 1, c('white', 4))
+      .rect(x + 4, 5, 1, 15, c('white', 1));
   return inked(pal, p);
 }
 
@@ -106,7 +114,13 @@ export function bone(pal: Pal): Pixels {
   const { c } = pal;
   const p = sky(pal);
   p.rect(5, 9, 10, 3, c('white', 3)).rect(5, 9, 10, 1, c('white', 4));
-  for (const [x, y] of [[4, 8], [4, 12], [15, 8], [15, 12]] as const) p.disc(x, y, 2, c('white', 3));
+  for (const [x, y] of [
+    [4, 8],
+    [4, 12],
+    [15, 8],
+    [15, 12],
+  ] as const)
+    p.disc(x, y, 2, c('white', 3));
   return inked(pal, p);
 }
 
@@ -256,7 +270,10 @@ export function floatCar(pal: Pal, wheel: boolean): Pixels {
   const p = new Pixels(20, 20, T);
   p.rect(1, 11, 18, 5, c('blue', 3)).rect(1, 11, 18, 1, c('blue', 4));
   p.rect(3, 6, 14, 5, c('white', 3)).rect(3, 6, 14, 1, c('gold', 3));
-  p.disc(5, 17, 2.5, c('ink', 1)).disc(15, 17, 2.5, c('ink', 1)).set(5, wheel ? 16 : 18, c('white', 3)).set(15, wheel ? 18 : 16, c('white', 3));
+  p.disc(5, 17, 2.5, c('ink', 1))
+    .disc(15, 17, 2.5, c('ink', 1))
+    .set(5, wheel ? 16 : 18, c('white', 3))
+    .set(15, wheel ? 18 : 16, c('white', 3));
   blob(p, 6, 3, 3, 3, r('red'), 0, 3);
   blob(p, 14, 3, 3, 3, r('green'), 0, 3);
   return outline(p, c('ink', 0), { transparent: T });

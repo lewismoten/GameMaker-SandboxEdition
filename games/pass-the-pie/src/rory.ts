@@ -67,4 +67,3 @@ export function buildRoryBlocks(pal: Pal): Book {
   add('back.top', 'climb1', head(pal, 'back', true), body(pal, { arms: 'upB', legs: 'climbB', front: true, back: true }));
   return book;
 }
-

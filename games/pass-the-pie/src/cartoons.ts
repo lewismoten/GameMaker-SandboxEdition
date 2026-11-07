@@ -37,16 +37,32 @@ function figure(p: Pixels, pal: Pal, who: Who, x: number, y: number, mouth = fal
     blob(p, x, y + 18, 13, 14, r('dirt'), 1, 4);
     blob(p, x, y, 12, 11, r('dirt'), 1, 4);
     p.rect(x - 15, y - 8, 6, 14, c('dirt', 0)).rect(x + 9, y - 8, 6, 14, c('dirt', 0));
-    p.disc(x - 4, y - 2, 1.5, ink).disc(x + 4, y - 2, 1.5, ink).rect(x - 3, y + 3, 6, 4, c('dirt', 3)).rect(x - 1, y + 3, 2, 2, ink);
+    p.disc(x - 4, y - 2, 1.5, ink)
+      .disc(x + 4, y - 2, 1.5, ink)
+      .rect(x - 3, y + 3, 6, 4, c('dirt', 3))
+      .rect(x - 1, y + 3, 2, 2, ink);
     if (mouth) p.rect(x - 2, y + 7, 4, 4, c('red', 3));
     return;
   }
   if (who === 'turkey') {
     // a friendly turkey: a round brown body with a fan of feathers behind
-    for (let i = -3; i <= 3; i++) blob(p, x + i * 7, y - 6 + Math.abs(i) * 2, 5, 14, [c('red', 2), c('orange', 3), c('gold', 3), c('green', 2), c('blue', 2), c('red', 1), c('orange', 2)], 1, 4);
+    for (let i = -3; i <= 3; i++)
+      blob(
+        p,
+        x + i * 7,
+        y - 6 + Math.abs(i) * 2,
+        5,
+        14,
+        [c('red', 2), c('orange', 3), c('gold', 3), c('green', 2), c('blue', 2), c('red', 1), c('orange', 2)],
+        1,
+        4,
+      );
     blob(p, x, y + 18, 14, 14, r('dirt'), 1, 4);
     blob(p, x, y + 2, 8, 9, r('dirt'), 1, 4);
-    p.disc(x - 3, y, 1.5, c('white', 3)).disc(x + 3, y, 1.5, c('white', 3)).set(x - 3, y, ink).set(x + 3, y, ink);
+    p.disc(x - 3, y, 1.5, c('white', 3))
+      .disc(x + 3, y, 1.5, c('white', 3))
+      .set(x - 3, y, ink)
+      .set(x + 3, y, ink);
     p.rect(x - 2, y + 3, 4, 4, c('gold', 3)).rect(x - 1, y + 7, 2, 6, c('red', 3));
     return;
   }
@@ -59,7 +75,9 @@ function figure(p: Pixels, pal: Pal, who: Who, x: number, y: number, mouth = fal
     p.ring(x - 5, y - 1, 3, ink).ring(x + 5, y - 1, 3, ink); // glasses
   }
   if (who === 'rory') {
-    p.rect(x - 12, y - 14, 24, 8, c('gold', 3)).rect(x - 12, y - 8, 24, 3, c('gold', 4)).disc(x, y - 16, 3, c('white', 3)); // the cap
+    p.rect(x - 12, y - 14, 24, 8, c('gold', 3))
+      .rect(x - 12, y - 8, 24, 3, c('gold', 4))
+      .disc(x, y - 16, 3, c('white', 3)); // the cap
     p.rect(x - 14, y - 6, 4, 10, c('gold', 3)).rect(x + 10, y - 6, 4, 10, c('gold', 3)); // its ear flaps
     for (let i = 0; i < 18; i += 6) p.rect(x - 8 + i, y + 11, 4, 5, c('red', 3)); // the scarf
   }
@@ -79,10 +97,19 @@ function bubble(p: Pixels, pal: Pal, lines: string[], tx: number, top: number): 
   const h = lines.length * 10 + 8;
   let x = Math.max(4, Math.min(W - w - 4, tx - w / 2));
   x = Math.round(x);
-  p.rect(x + 2, top, w - 4, h, pal.c('white', 3)).rect(x, top + 2, w, h - 4, pal.c('white', 3)).rect(x + 1, top + 1, w - 2, h - 2, pal.c('white', 3));
-  p.rect(x + 2, top, w - 4, 1, pal.c('ink', 0)).rect(x + 2, top + h - 1, w - 4, 1, pal.c('ink', 0)).rect(x, top + 2, 1, h - 4, pal.c('ink', 0)).rect(x + w - 1, top + 2, 1, h - 4, pal.c('ink', 0));
-  p.set(x + 1, top + 1, pal.c('ink', 0)).set(x + w - 2, top + 1, pal.c('ink', 0)).set(x + 1, top + h - 2, pal.c('ink', 0)).set(x + w - 2, top + h - 2, pal.c('ink', 0));
-  for (let i = 0; i < 6; i++) p.rect(tx - 5 + Math.floor(i / 2), top + h + i - 1, 10 - i, 1, pal.c('white', 3)).set(tx - 5 + Math.floor(i / 2), top + h + i - 1, pal.c('ink', 0));
+  p.rect(x + 2, top, w - 4, h, pal.c('white', 3))
+    .rect(x, top + 2, w, h - 4, pal.c('white', 3))
+    .rect(x + 1, top + 1, w - 2, h - 2, pal.c('white', 3));
+  p.rect(x + 2, top, w - 4, 1, pal.c('ink', 0))
+    .rect(x + 2, top + h - 1, w - 4, 1, pal.c('ink', 0))
+    .rect(x, top + 2, 1, h - 4, pal.c('ink', 0))
+    .rect(x + w - 1, top + 2, 1, h - 4, pal.c('ink', 0));
+  p.set(x + 1, top + 1, pal.c('ink', 0))
+    .set(x + w - 2, top + 1, pal.c('ink', 0))
+    .set(x + 1, top + h - 2, pal.c('ink', 0))
+    .set(x + w - 2, top + h - 2, pal.c('ink', 0));
+  for (let i = 0; i < 6; i++)
+    p.rect(tx - 5 + Math.floor(i / 2), top + h + i - 1, 10 - i, 1, pal.c('white', 3)).set(tx - 5 + Math.floor(i / 2), top + h + i - 1, pal.c('ink', 0));
   lines.forEach((l, i) => text(p, x + 7, top + 5 + i * 10, l, pal.c('ink', 0)));
 }
 
@@ -92,14 +119,20 @@ function kitchen(pal: Pal): Pixels {
   const p = new Pixels(W, H);
   for (let y = 0; y < 130; y++) p.rect(0, y, W, 1, c('parch', y < 90 ? 3 : 2));
   for (let y = 130; y < H; y++) p.rect(0, y, W, 1, c('wood', (y >> 4) % 2 ? 2 : 3));
-  for (let x = 20; x < W; x += 70) p.rect(x, 24, 40, 40, c('wood', 3)).rect(x + 3, 27, 34, 34, c('sky', 4)).rect(x + 19, 27, 2, 34, c('wood', 3)).rect(x + 3, 43, 34, 2, c('wood', 3));
+  for (let x = 20; x < W; x += 70)
+    p.rect(x, 24, 40, 40, c('wood', 3))
+      .rect(x + 3, 27, 34, 34, c('sky', 4))
+      .rect(x + 19, 27, 2, 34, c('wood', 3))
+      .rect(x + 3, 43, 34, 2, c('wood', 3));
   p.rect(0, 126, W, 6, c('wood', 1));
   return p;
 }
 
 function oven(p: Pixels, pal: Pal, x: number, y: number, lit: boolean, shake = 0): void {
   const { c } = pal;
-  p.rect(x + shake, y, 70, 70, c('stone', 2)).rect(x + shake, y, 70, 3, c('stone', 4)).frame(x + shake, y, 70, 70, c('ink', 0));
+  p.rect(x + shake, y, 70, 70, c('stone', 2))
+    .rect(x + shake, y, 70, 3, c('stone', 4))
+    .frame(x + shake, y, 70, 70, c('ink', 0));
   p.rect(x + 8 + shake, y + 20, 54, 38, c('ink', 1)).rect(x + 10 + shake, y + 22, 50, 34, lit ? c('orange', 3) : c('stone', 0));
   if (lit) p.rect(x + 10 + shake, y + 22, 50, 6, c('gold', 4));
   for (let i = 0; i < 3; i++) p.disc(x + 14 + i * 20 + shake, y + 10, 3, i === 1 && lit ? c('green', 3) : c('red', 3));
@@ -145,7 +178,7 @@ function hall(pal: Pal): Pixels {
   for (let x = 0; x < W; x += 24) p.rect(x, 0, 1, 100, c('brick', 0));
   for (let y = 150; y < H; y++) p.rect(0, y, W, 1, c('wood', 1));
   p.rect(60, 12, 200, 14, c('gold', 3)).frame(60, 12, 200, 14, c('ink', 0));
-  centered(p, 15, 'THE LONG TABLE AT THE TOWN HALL', c('red', 1), 1);
+  centered(p, 15, 'TOWN HALL DINNER', c('red', 1), 1);
   return p;
 }
 
@@ -153,7 +186,13 @@ function table(p: Pixels, pal: Pal): void {
   const { c } = pal;
   p.rect(6, 122, 308, 44, c('white', 3)).rect(6, 122, 308, 3, c('white', 4)).frame(6, 122, 308, 44, c('ink', 0));
   for (const x of [24, 62, 100, 138, 176, 214, 252, 290]) p.disc(x, 140, 8, c('white', 2)).ring(x, 140, 8, c('stone', 2)).disc(x, 140, 4, c('white', 3));
-  for (const [x, col] of [[44, 'orange'], [120, 'blue'], [196, 'red'], [272, 'green']] as const) p.rect(x, 150, 14, 8, c(col, 3)).rect(x, 150, 14, 2, c(col, 4)).frame(x, 150, 14, 8, c('ink', 0));
+  for (const [x, col] of [
+    [44, 'orange'],
+    [120, 'blue'],
+    [196, 'red'],
+    [272, 'green'],
+  ] as const)
+    p.rect(x, 150, 14, 8, c(col, 3)).rect(x, 150, 14, 2, c(col, 4)).frame(x, 150, 14, 8, c('ink', 0));
 }
 
 const SPEAKERS: { who: Who; x: number; lines: string[] }[] = [
