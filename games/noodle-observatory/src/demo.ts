@@ -3,7 +3,9 @@
 // code; +128 = released], ending with Esc.
 import { recordedDemo } from '@lewismoten/gamemaker-sandbox-tools/kit/recordedDemo';
 
-const RECORDED: number[] = [1, 77, 40, 205];
+const RECORDED: number[] = [
+  1, 77, 15, 205, 103, 77, 35, 205, 208, 77, 45, 205, 155, 77, 20, 205, 103, 77, 15, 205, 192, 77, 20, 205, 103, 77, 20, 205, 103, 77,
+];
 
 export function demoRecording(): Uint8Array {
   return recordedDemo(RECORDED, 25, 2);

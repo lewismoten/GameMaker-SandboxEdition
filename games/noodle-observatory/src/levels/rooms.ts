@@ -189,7 +189,14 @@ export const ROOMS: Record<string, RoomSpec> = {
       { t: 'washer', x: 48 },
       { t: 'gate', x: 50, part: lens },
     ],
-    decor: { lamps: [[14, 2], [29, 2], [44, 2]], windows: [[7, 2, true]] },
+    decor: {
+      lamps: [
+        [14, 2],
+        [29, 2],
+        [44, 2],
+      ],
+      windows: [[7, 2, true]],
+    },
   },
   lensrise: {
     file: 'lensrise',
@@ -213,7 +220,13 @@ export const ROOMS: Record<string, RoomSpec> = {
       { t: 'pocket', ladder: 36, row: 6, to: 40, up: { ladder: 39, row: 3, to: 44, part: at(lens, 44), washer: 42 }, back: 'drop' },
       { t: 'gate', x: 47, part: lens },
     ],
-    decor: { lamps: [[15, 2], [33, 2]], windows: [[49, 2, true]] },
+    decor: {
+      lamps: [
+        [15, 2],
+        [33, 2],
+      ],
+      windows: [[49, 2, true]],
+    },
   },
   rimwalk: {
     file: 'rimwalk',
@@ -238,7 +251,13 @@ export const ROOMS: Record<string, RoomSpec> = {
       { t: 'pocket', ladder: 41, row: 6, to: 45, pillar: [42, 44], up: { ladder: 44, row: 3, to: 47, washer: 47 }, back: 'drop' },
       { t: 'gate', x: 49, part: lens },
     ],
-    decor: { lamps: [[20, 2], [37, 2]], windows: [[7, 2, true]] },
+    decor: {
+      lamps: [
+        [20, 2],
+        [37, 2],
+      ],
+      windows: [[7, 2, true]],
+    },
   },
   slitone: {
     file: 'slitone',

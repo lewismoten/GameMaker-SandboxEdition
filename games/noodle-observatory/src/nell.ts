@@ -41,10 +41,13 @@ function nellHead(pal: Pal, face: Face, front = false, look = 0, raised: Raised 
       p.set(x, y, face ? skin[3] : d < 0.5 && y < 7 && x > cx - 3 ? hair[2] : y < 8 ? hair[1] : hair[0]);
     }
   // a soft fringe across the forehead
-  if (face0 !== 'back') for (let x = Math.round(cx - 3); x <= Math.round(cx + (front ? 4 : 6)); x++) p.set(x, 8, hair[1]).set(x, 9, x % 3 === 0 ? hair[0] : p.get(x, 9));
+  if (face0 !== 'back')
+    for (let x = Math.round(cx - 3); x <= Math.round(cx + (front ? 4 : 6)); x++) p.set(x, 8, hair[1]).set(x, 9, x % 3 === 0 ? hair[0] : p.get(x, 9));
   // the bun on top, toward the back, and a mustard scrunchie round its base
   const bx = front ? 10 : 6;
-  p.disc(bx, 2.5, 2.6, hair[1]).set(bx - 1, 1, hair[2]).set(bx, 1, hair[2]);
+  p.disc(bx, 2.5, 2.6, hair[1])
+    .set(bx - 1, 1, hair[2])
+    .set(bx, 1, hair[2]);
   p.rect(bx - 2, 4, 5, 1, hat[3]).set(bx - 2, 4, hat[4]);
   return p;
 }

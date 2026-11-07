@@ -37,7 +37,18 @@ function shutUntil(pal: Pal, book: Place['book'], timed: Timed[], ticks: number)
 const signs = (keys: [string, number][]): Step[] => keys.map(([key, x]) => ({ t: 'sign', x, key }));
 
 /** Where things are in the first scene (columns and rows). */
-export const LENSROLL_AT = { width: 44, desk: [9, 22], toy: 10, lens: 11, scope: 22, deskTop: 6, window: [29, 4], ring: [30, 9], door: 40, signs: { monkey: 4, rolled: 24, ring: 31, closer: 35 } } as const;
+export const LENSROLL_AT = {
+  width: 44,
+  desk: [9, 22],
+  toy: 10,
+  lens: 11,
+  scope: 22,
+  deskTop: 6,
+  window: [29, 4],
+  ring: [30, 9],
+  door: 40,
+  signs: { monkey: 4, rolled: 24, ring: 31, closer: 35 },
+} as const;
 
 export function levelLensroll(pal: Pal): Level {
   const A = LENSROLL_AT;
@@ -105,7 +116,11 @@ export const STARVIEW_AT = {
 function constellation(pal: Pal, shape: 'spoon' | 'fork' | 'col', w: number, h: number, bg: Pixels): Pixels {
   const p = new Pixels(w * 20, h * 20);
   for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) p.blit(bg, x * 20, y * 20);
-  const star = (x: number, y: number) => p.rect(x - 1, y, 3, 1, pal.c('warm', 3)).rect(x, y - 1, 1, 3, pal.c('warm', 3)).set(x, y, pal.c('white', 3));
+  const star = (x: number, y: number) =>
+    p
+      .rect(x - 1, y, 3, 1, pal.c('warm', 3))
+      .rect(x, y - 1, 1, 3, pal.c('warm', 3))
+      .set(x, y, pal.c('white', 3));
   const pts: [number, number][] = [];
   if (shape === 'spoon') {
     for (let k = 0; k < 8; k++) pts.push([20 + Math.cos((k / 8) * Math.PI * 2) * 11, 16 + Math.sin((k / 8) * Math.PI * 2) * 13]);
@@ -222,7 +237,9 @@ export function levelBakery(pal: Pal): Level {
   shutUntil(pal, book, timed, SUPPER.open);
   // the table: clothed and laid, then bare and still laid when the cloth has gone
   const top = (cloth: boolean) => {
-    const p = cloth ? table(pal, bg, 'top') : new Pixels(20, 20).blit(bg, 0, 0).rect(0, 8, 20, 4, pal.c('wood', 3)).rect(0, 8, 20, 1, pal.c('wood', 4)).rect(0, 12, 20, 1, pal.c('wood', 0));
+    const p = cloth
+      ? table(pal, bg, 'top')
+      : new Pixels(20, 20).blit(bg, 0, 0).rect(0, 8, 20, 4, pal.c('wood', 3)).rect(0, 8, 20, 1, pal.c('wood', 4)).rect(0, 12, 20, 1, pal.c('wood', 0));
     const things: Icon[] = ['plate', 'cup'];
     const sm = new Pixels(20, 20, 255);
     icon(pal, sm, things[0], 7, 7, 'thing');

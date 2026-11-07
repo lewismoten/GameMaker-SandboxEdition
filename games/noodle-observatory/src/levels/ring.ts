@@ -108,7 +108,10 @@ export function buildShaft(pal: Pal, s: Shaft): Level {
     m.exit(x, SHAFT.dock, false);
     m.set(x, SHAFT.dock, 'outBot');
   }
-  m.set(s.window[0], s.window[1], 'win0').set(s.window[0] + 1, s.window[1], 'win1moon').set(s.window[0], s.window[1] + 1, 'win2').set(s.window[0] + 1, s.window[1] + 1, 'win3');
+  m.set(s.window[0], s.window[1], 'win0')
+    .set(s.window[0] + 1, s.window[1], 'win1moon')
+    .set(s.window[0], s.window[1] + 1, 'win2')
+    .set(s.window[0] + 1, s.window[1] + 1, 'win3');
   for (const [k, [x, y]] of Object.entries(s.signAt)) {
     const sg = signs[k];
     sg.board.forEach((row, dy) => row.forEach((name, dx) => m.set(x + dx, y + dy, name)));

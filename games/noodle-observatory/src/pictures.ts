@@ -33,8 +33,16 @@ function bigWindow(p: Pixels, pal: Pal, x0: number, y0: number, w: number, h: nu
 /** The round light, the "moon": warm, with darker cheese spots (or, `sill`, the window it really is). */
 export function moonDisc(p: Pixels, pal: Pal, cx: number, cy: number, r: number, sill = false): void {
   const w = pal.r('warm');
-  p.disc(cx, cy, r, w[1]).disc(cx, cy, r * 0.9, w[2]).disc(cx - r * 0.15, cy - r * 0.15, r * 0.66, w[3]);
-  if (!sill) for (const [dx, dy, rr] of [[0.35, -0.2, 0.14], [-0.3, 0.35, 0.12], [0.2, 0.45, 0.1]] as const) p.disc(cx + dx * r, cy + dy * r, rr * r, w[2]);
+  p.disc(cx, cy, r, w[1])
+    .disc(cx, cy, r * 0.9, w[2])
+    .disc(cx - r * 0.15, cy - r * 0.15, r * 0.66, w[3]);
+  if (!sill)
+    for (const [dx, dy, rr] of [
+      [0.35, -0.2, 0.14],
+      [-0.3, 0.35, 0.12],
+      [0.2, 0.45, 0.1],
+    ] as const)
+      p.disc(cx + dx * r, cy + dy * r, rr * r, w[2]);
   else {
     p.ring(cx, cy, r + 1, pal.c('stone', 3)).ring(cx, cy, r + 2, pal.c('stone', 2));
     p.rect(cx - 1, cy - r, 3, r * 2, pal.c('cab', 1));
@@ -46,7 +54,9 @@ export function moonDisc(p: Pixels, pal: Pal, cx: number, cy: number, r: number,
 function telescope(p: Pixels, pal: Pal, x: number, ground: number): void {
   const st = pal.r('steel');
   const b = pal.r('blue');
-  p.line(x + 20, ground - 30, x + 6, ground, st[1]).line(x + 20, ground - 30, x + 34, ground, st[1]).line(x + 20, ground - 30, x + 21, ground, st[0]);
+  p.line(x + 20, ground - 30, x + 6, ground, st[1])
+    .line(x + 20, ground - 30, x + 34, ground, st[1])
+    .line(x + 20, ground - 30, x + 21, ground, st[0]);
   for (let k = 0; k < 7; k++) p.line(x + 2, ground - 32 + k, x + 44, ground - 54 + k, k === 0 ? b[4] : k === 6 ? b[0] : b[2]);
   p.rect(x + 42, ground - 58, 6, 10, b[1]).rect(x + 43, ground - 57, 4, 8, pal.c('glass', 3));
   p.rect(x - 2, ground - 32, 6, 6, st[2]);

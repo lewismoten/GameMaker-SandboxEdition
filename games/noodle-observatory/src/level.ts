@@ -141,7 +141,11 @@ export function startBook(pal: Pal, place: PlaceName, o: BookOptions = {}): { bo
     book.add('tilt0', tiltShelf(pal, bg, 0), { solid: LEDGE, grav: PULL.down });
     book.add('tilt1', tiltShelf(pal, bg, 1), { solid: LEDGE, grav: PULL.down });
     book.add('tilt2', tiltShelf(pal, bg, 2), air);
-    timed.push({ name: 'tilt0', next: 'tilt1', ticks: TILT.level }, { name: 'tilt1', next: 'tilt2', ticks: TILT.wobble }, { name: 'tilt2', next: 'tilt0', ticks: TILT.tipped });
+    timed.push(
+      { name: 'tilt0', next: 'tilt1', ticks: TILT.level },
+      { name: 'tilt1', next: 'tilt2', ticks: TILT.wobble },
+      { name: 'tilt2', next: 'tilt0', ticks: TILT.tipped },
+    );
   }
   for (const [ic, ch] of o.parts ?? []) {
     book.add(`tok.${ic}`, thing(pal, bg, ic), { ...bgRule, score: POINTS.part, effect: ch, eamt: 1, touch: 'bg' });

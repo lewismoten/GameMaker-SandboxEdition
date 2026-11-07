@@ -34,7 +34,9 @@ export function backdrop(pal: Pal, place: Place, v = 0): P {
     p.rect(0, 15, 20, 2, b[4]).rect(0, 17, 20, 1, b[1]);
     // jars on the back shelf now and then: short and tall, lids in different colors
     const jar = (x: number, h: number, lid: number) => {
-      p.rect(x, 15 - h, 5, h, c('glass', 1)).rect(x + 1, 16 - h, 1, h - 2, c('glass', 3)).rect(x, 14 - h, 5, 2, lid);
+      p.rect(x, 15 - h, 5, h, c('glass', 1))
+        .rect(x + 1, 16 - h, 1, h - 2, c('glass', 3))
+        .rect(x, 14 - h, 5, 2, lid);
     };
     if (v === 1) jar(3, 6, c('red', 2));
     if (v === 2) jar(11, 8, c('teal', 2));
@@ -51,11 +53,21 @@ export function backdrop(pal: Pal, place: Place, v = 0): P {
     const k = r('cab');
     p.rect(0, 0, 20, 20, k[1]);
     for (const y of [0, 7, 14]) p.rect(0, y, 20, 1, k[0]);
-    p.set((v * 7 + 3) % 20, 3, k[2]).set((v * 5 + 11) % 20, 10, k[2]).set((v * 3 + 6) % 20, 17, k[0]);
+    p.set((v * 7 + 3) % 20, 3, k[2])
+      .set((v * 5 + 11) % 20, 10, k[2])
+      .set((v * 3 + 6) % 20, 17, k[0]);
   } else {
     const s = r('sky');
     p.rect(0, 0, 20, 20, s[1]);
-    const stars: [number, number][][] = [[[4, 5]], [[14, 3], [6, 15]], [[11, 12]], []];
+    const stars: [number, number][][] = [
+      [[4, 5]],
+      [
+        [14, 3],
+        [6, 15],
+      ],
+      [[11, 12]],
+      [],
+    ];
     for (const [x, y] of stars[v % 4]) p.set(x, y, c('white', 3)).set(x + 1, y, c('white', 1));
   }
   return p;
@@ -244,7 +256,10 @@ export function icon(pal: Pal, p: P, kind: Icon, cx: number, cy: number, how: 't
   switch (kind) {
     case 'bracket':
       p.rect(cx - 5, cy - 5, 3, 11, col(2)).rect(cx - 5, cy + 3, 11, 3, col(2));
-      if (!o) p.rect(cx - 5, cy - 5, 1, 11, st[4]).set(cx - 4, cy - 2, st[0]).set(cx + 2, cy + 4, st[0]);
+      if (!o)
+        p.rect(cx - 5, cy - 5, 1, 11, st[4])
+          .set(cx - 4, cy - 2, st[0])
+          .set(cx + 2, cy + 4, st[0]);
       break;
     case 'knob':
       p.disc(cx, cy, 5, col(2, r('wood'))).disc(cx, cy, o ? 3.5 : 2.5, o ? under : r('wood')[4]);
@@ -272,8 +287,13 @@ export function icon(pal: Pal, p: P, kind: Icon, cx: number, cy: number, how: 't
       p.line(cx, cy - 6, cx, cy + 6, col(1, r('wood'))).rect(cx - 2, cy - 7, 5, 2, col(2));
       break;
     case 'lens':
-      p.disc(cx, cy, 6.5, o ? ink : c('gold', 1)).disc(cx, cy, 5.2, o ? ink : c('gold', 3)).disc(cx, cy, o ? 4.5 : 4.2, o ? under : c('glass', 1));
-      if (!o) p.disc(cx, cy, 3, c('glass', 2)).line(cx - 2, cy, cx, cy - 2, c('glass', 3)).set(cx + 2, cy + 2, c('glass', 3));
+      p.disc(cx, cy, 6.5, o ? ink : c('gold', 1))
+        .disc(cx, cy, 5.2, o ? ink : c('gold', 3))
+        .disc(cx, cy, o ? 4.5 : 4.2, o ? under : c('glass', 1));
+      if (!o)
+        p.disc(cx, cy, 3, c('glass', 2))
+          .line(cx - 2, cy, cx, cy - 2, c('glass', 3))
+          .set(cx + 2, cy + 2, c('glass', 3));
       break;
     case 'circle':
       p.ring(cx, cy, 5, col(4, r('gold'))).ring(cx, cy, 4, col(3, r('gold')));
@@ -294,11 +314,15 @@ export function icon(pal: Pal, p: P, kind: Icon, cx: number, cy: number, how: 't
       p.line(cx + 3, cy - 4, cx + 5, cy, o ? ink : g[1]).line(cx + 3, cy + 4, cx + 5, cy, o ? ink : g[1]);
       p.disc(cx - 2, cy, 1.2, o ? ink : g[0]);
       if (!o) p.rect(cx - 5, cy - 3, 7, 1, g[5]);
-      p.line(cx + 7, cy - 5, cx + 8, cy - 3, col(1)).line(cx + 7, cy - 1, cx + 9, cy - 1, col(1)).line(cx + 7, cy + 3, cx + 8, cy + 5, col(1));
+      p.line(cx + 7, cy - 5, cx + 8, cy - 3, col(1))
+        .line(cx + 7, cy - 1, cx + 9, cy - 1, col(1))
+        .line(cx + 7, cy + 3, cx + 8, cy + 5, col(1));
       break;
     }
     case 'plate':
-      p.disc(cx, cy, 6, o ? ink : r('white')[1]).disc(cx, cy, 4.5, o ? under : r('white')[3]).ring(cx, cy, 3, o ? ink : r('white')[1]);
+      p.disc(cx, cy, 6, o ? ink : r('white')[1])
+        .disc(cx, cy, 4.5, o ? under : r('white')[3])
+        .ring(cx, cy, 3, o ? ink : r('white')[1]);
       break;
     case 'cup':
       p.rect(cx - 4, cy - 4, 8, 8, col(2, r('teal'))).rect(cx + 4, cy - 2, 3, 4, col(1, r('teal')));
@@ -374,7 +398,10 @@ export function shutter(pal: Pal, open: boolean): P {
   const k = pal.r('cab');
   const p = new Pixels(20, 20, k[0]);
   for (let y = 1; y < 20; y += 4) {
-    if (open) p.rect(1, y, 18, 1, pal.c('warm', 3)).rect(1, y + 1, 18, 2, k[2]).rect(1, y + 3, 18, 1, k[1]);
+    if (open)
+      p.rect(1, y, 18, 1, pal.c('warm', 3))
+        .rect(1, y + 1, 18, 2, k[2])
+        .rect(1, y + 3, 18, 1, k[1]);
     else p.rect(1, y, 18, 3, k[2]).rect(1, y, 18, 1, k[3]);
   }
   return p;

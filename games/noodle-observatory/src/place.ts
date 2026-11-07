@@ -153,7 +153,10 @@ export function paintRoom(book: Book, w: number, plan: Step[], decor: Decor, ope
   // keep the backdrop plain behind the doors and the signs
   m.entrance(2, G - 1).exit(w - 3, G - 1);
   for (const [x, y] of decor.windows ?? []) {
-    m.set(x, y, 'win0').set(x + 1, y, decor.windows!.find((d) => d[0] === x)![2] ? 'win1moon' : 'win1').set(x, y + 1, 'win2').set(x + 1, y + 1, 'win3');
+    m.set(x, y, 'win0')
+      .set(x + 1, y, decor.windows!.find((d) => d[0] === x)![2] ? 'win1moon' : 'win1')
+      .set(x, y + 1, 'win2')
+      .set(x + 1, y + 1, 'win3');
   }
   for (const [x, y0, y1, k] of decor.shafts ?? []) {
     m.set(x, 0, 'shutO');
@@ -161,7 +164,8 @@ export function paintRoom(book: Book, w: number, plan: Step[], decor: Decor, ope
   }
   for (const [y, x0, x1] of decor.rails ?? []) for (let x = x0; x <= x1; x++) m.set(x, y, 'rail');
   if (decor.moon) for (let q = 0; q < 4; q++) m.set(decor.moon[0] + (q % 2), decor.moon[1] + (q >> 1), `moon${q}`);
-  for (const [x, y] of decor.lamps ?? []) for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) m.set(x + dx, y + dy, dx || dy ? `glow${dx + 1}${dy + 1}` : 'lamp');
+  for (const [x, y] of decor.lamps ?? [])
+    for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) m.set(x + dx, y + dy, dx || dy ? `glow${dx + 1}${dy + 1}` : 'lamp');
   for (const s of plan) paintStep(m, s, open, signs);
   return m;
 }

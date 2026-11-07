@@ -28,7 +28,8 @@ async function take(bot: StarterBot, x: number, points: number, what: string): P
 async function untilLevel(bot: StarterBot, l: Level, x: number, row: number): Promise<void> {
   const level = l.book.n('tilt0');
   const tipped = l.book.n('tilt2');
-  if (shownAt(bot, x, row) !== tipped) await watchFor(bot, () => shownAt(bot, x, row) === tipped, 'the shelf tipping', TILT.level + TILT.wobble + TILT.tipped + 20);
+  if (shownAt(bot, x, row) !== tipped)
+    await watchFor(bot, () => shownAt(bot, x, row) === tipped, 'the shelf tipping', TILT.level + TILT.wobble + TILT.tipped + 20);
   await watchFor(bot, () => shownAt(bot, x, row) === level, 'the shelf coming level', TILT.tipped + 20);
 }
 
