@@ -1,9 +1,9 @@
 /* The Pi remote (#/pi-remote): a full keyboard of mouse-sized keys, its bar and the log. */
 
 main.pi-remote {
-  --u: 44px;
+  --u: 42px;
   --gap: 5px;
-  max-width: 72rem;
+  max-width: 1120px;
   margin: 0 auto;
   padding: 20px 16px 48px;
   line-height: 1.5;
@@ -119,7 +119,7 @@ main.pi-remote .pi-banner {
 main.pi-remote .pi-keyboard {
   display: flex;
   flex-wrap: wrap;
-  gap: 18px;
+  gap: 12px;
   align-items: flex-start;
   padding: 14px;
   border: 1px solid var(--border);
@@ -228,12 +228,12 @@ main.pi-remote .pi-log-lines {
   overflow-wrap: anywhere;
 }
 
-main.pi-remote .pi-log-lines .pi-error {
+main.pi-remote .pi-log-lines .pi-line-error {
   color: var(--danger);
 }
 
-main.pi-remote .pi-log-lines .pi-ok,
-main.pi-remote .pi-log-lines .pi-note {
+main.pi-remote .pi-log-lines .pi-line-ok,
+main.pi-remote .pi-log-lines .pi-line-note {
   color: var(--muted);
 }
 
@@ -251,4 +251,9 @@ main.pi-remote .pi-log-lines .pi-note {
   main.pi-remote .pi-key {
     font-size: 13px;
   }
+}
+
+main.pi-remote .pi-key.pi-long {
+  font-size: 12px;
+  padding: 0 2px;
 }

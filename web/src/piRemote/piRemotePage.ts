@@ -22,6 +22,8 @@ export function renderPiRemote(el: HTMLElement): () => void {
   const held = new HeldKeys();
   let forwarding = false;
   let infoWaiter: ((reply: Reply) => void) | undefined;
+  /** A RUN is waiting for its OK or ERR. */
+  let runAsked = false;
 
   const status = h('p', { class: 'pi-status', role: 'status' }, 'Not connected.');
   const logList = h('ol', { class: 'pi-log-lines' });
@@ -59,7 +61,7 @@ export function renderPiRemote(el: HTMLElement): () => void {
 
   function log(kind: string, text: string): void {
     const atEnd = logBox.scrollTop + logBox.clientHeight >= logBox.scrollHeight - 8;
-    logList.append(h('li', { class: `pi-${kind}` }, text));
+    logList.append(h('li', { class: `pi-line-${kind}` }, text));
     while (logList.childElementCount > LOG_LIMIT) logList.firstElementChild?.remove();
     if (atEnd) logBox.scrollTop = logBox.scrollHeight;
   }
@@ -73,7 +75,12 @@ export function renderPiRemote(el: HTMLElement): () => void {
       infoWaiter?.(reply);
     }
     if (reply.kind === 'error' && reply.text.includes('no-device')) say('The Pi has no input device right now (ERR input no-device).');
-    if (reply.kind === 'error' && reply.text.includes('not-ready')) say('The Pi wants INFO first. Press Info, then try again.');
+    if (runAsked && (reply.text.startsWith('OK run') || reply.text.startsWith('ERR '))) {
+      runAsked = false;
+      // RUN is refused while a program runs (sandbox-kernel core/protocol.c)
+      if (reply.text === 'ERR not-ready') say('Not started: a program is already running on the Pi.');
+      else say(reply.kind === 'ok' ? 'Game-Maker OS is starting.' : `Not started: ${reply.text}`);
+    } else if (reply.text === 'ERR not-ready') say('The Pi wants INFO first. Press Info, then try again.');
     log(reply.kind, reply.text);
   }
 
@@ -125,7 +132,7 @@ export function renderPiRemote(el: HTMLElement): () => void {
       'button',
       {
         type: 'button',
-        class: 'pi-key',
+        class: key.label.length > 3 && !key.width ? 'pi-key pi-long' : 'pi-key',
         dataset: { code: key.code },
         style: key.width ? `--w:${key.width}` : undefined,
         'aria-label': key.name,
@@ -254,6 +261,7 @@ export function renderPiRemote(el: HTMLElement): () => void {
   infoBtn.addEventListener('click', () => void link.send(INFO_LINE));
   runBtn.addEventListener('click', () => {
     log('note', `RUN ${GMOS}`);
+    runAsked = true;
     void link.send(runLine(GMOS));
   });
   forwardSwitch.addEventListener('click', () => setForwarding(!forwarding));

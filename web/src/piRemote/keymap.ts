@@ -126,8 +126,8 @@ export const MAIN_ROWS: ScreenKey[][] = [
 
 /** Insert to Page Down, three by two. */
 export const EDIT_ROWS: ScreenKey[][] = [
-  [k('Insert', 'Ins', { name: 'Insert' }), k('Home', 'Home'), k('PageUp', 'PgUp', { name: 'Page Up' })],
-  [k('Delete', 'Del', { name: 'Delete' }), k('End', 'End'), k('PageDown', 'PgDn', { name: 'Page Down' })],
+  [k('Insert', 'Ins', { name: 'Ins (Insert)' }), k('Home', 'Home'), k('PageUp', 'PgUp', { name: 'PgUp (Page Up)' })],
+  [k('Delete', 'Del', { name: 'Del (Delete)' }), k('End', 'End'), k('PageDown', 'PgDn', { name: 'PgDn (Page Down)' })],
 ];
 
 /** The arrows, as an upside-down T (null is a gap). */
@@ -149,7 +149,7 @@ export const NUMPAD_ROWS: ScreenKey[][] = [
     k('Numpad4', '4', { name: 'Pad 4' }),
     k('Numpad5', '5', { name: 'Pad 5' }),
     k('Numpad6', '6', { name: 'Pad 6' }),
-    k('NumpadEnter', 'Ent', { name: 'Pad Enter' }),
+    k('NumpadEnter', 'Ent', { name: 'Ent (pad Enter)' }),
   ],
   [
     k('Numpad1', '1', { name: 'Pad 1' }),
