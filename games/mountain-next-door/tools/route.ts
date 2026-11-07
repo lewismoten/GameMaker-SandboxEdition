@@ -7,6 +7,7 @@ import { NEXT_AT } from '../src/levels/next';
 import { G3, PRINTS_AT } from '../src/levels/prints';
 import { G4, STREAM_AT } from '../src/levels/stream';
 import { FLOORS, SIGNS_AT } from '../src/levels/signs';
+import { HOLLOW_AT, STARS } from '../src/levels/hollow';
 import { buildLevels } from '../src/levels';
 import { GROUND } from '../src/level';
 import { PROLOGUE } from '../src/monsters';
@@ -230,4 +231,19 @@ export async function signposts(bot: StarterBot): Promise<void> {
   await take(bot, post(2)[1], POINTS.blaze, 'a post');
   score(bot, from, 6 * POINTS.blaze + 6 * POINTS.acorn, 'level 5');
   await leave(bot, bot.walk(S.exit + 1, 'the exit'), 'the exit');
+}
+
+/** 6. The Empty Spot: down into the hollow, every sign read while the sun goes down, then the stars, then on. */
+export async function emptySpot(bot: StarterBot): Promise<void> {
+  const t0 = bot.sim.w.clock;
+  const at = HOLLOW_AT.signs;
+  await readAt(bot, at.hole + 1, 'the hole sign');
+  await must(bot, bot.wait(READ / 2), 'a look at Nutmeg on the rim');
+  await readAt(bot, at.here + 1, 'the stood-here sign');
+  await readAt(bot, at.puddles + 1, 'the puddles sign');
+  await readAt(bot, at.wisp + 1, 'the Wisp sign');
+  await readAt(bot, at.gone + 1, 'the gone sign');
+  await must(bot, bot.walk(HOLLOW_AT.puddles[5], 'the last puddle in the hollow'), 'along the puddles');
+  await watchFor(bot, () => since(bot, t0) > STARS[2] + 60, 'the last stars coming out', 1400);
+  await leave(bot, bot.walk(HOLLOW_AT.exit + 1, 'the exit'), 'the exit');
 }
