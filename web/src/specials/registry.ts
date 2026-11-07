@@ -44,6 +44,12 @@ export const SPECIALS: readonly Special[] = [
     arrival: 'library',
     theme: 'Thanksgiving: the street cooks the dinner and you carry it',
   },
+  {
+    id: 'mountain-next-door',
+    window: { day: { on: 'nth', month: 11, weekday: 4, n: 4 }, offset: 1, days: 3 },
+    arrival: 'floppy',
+    theme: 'The day after Thanksgiving: a mountain moves in next door, and Tess marks its trail home',
+  },
 ];
 
 /** The Special with this catalog id, or undefined. */

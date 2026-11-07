@@ -62,6 +62,18 @@ describe('registry', () => {
     expect(isOpen(specialById('pass-the-pie')!.window, at(2026, 11, 29, 20))).toBe(true);
     expect(isOpen(specialById('pass-the-pie')!.window, at(2026, 11, 30))).toBe(false);
   });
+
+  it('opens the mountain the day after Thanksgiving, for three days', () => {
+    const w = specialById('mountain-next-door')!.window;
+    expect(isOpen(w, at(2026, 11, 26, 23))).toBe(false);
+    expect(isOpen(w, at(2026, 11, 27))).toBe(true);
+    expect(isOpen(w, at(2026, 11, 29, 23))).toBe(true);
+    expect(isOpen(w, at(2026, 11, 30))).toBe(false);
+    // 2027: Thanksgiving is November 25, so the mountain is out the 26th to the 28th
+    expect(isOpen(w, at(2027, 11, 25, 12))).toBe(false);
+    expect(isOpen(w, at(2027, 11, 26))).toBe(true);
+    expect(isOpen(w, at(2027, 11, 29))).toBe(false);
+  });
 });
 
 describe('listing and keeping', () => {
