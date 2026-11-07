@@ -76,7 +76,9 @@ for (const [name, flags] of [
   ['320', ['-DPOCKET_CYD28']],
 ] as const) {
   const settingsExe = join(shotsDir, 'settingstest' + name);
-  execFileSync('c++', ['-std=c++17', '-O1', '-Wall', ...flags, '-I', here + 'src', here + 'host/settingstest.cpp', '-lz', '-o', settingsExe], { stdio: 'inherit' });
+  execFileSync('c++', ['-std=c++17', '-O1', '-Wall', ...flags, '-I', here + 'src', here + 'host/settingstest.cpp', '-lz', '-o', settingsExe], {
+    stdio: 'inherit',
+  });
   settingsBad ||= spawnSync(settingsExe, [settingsDir], { stdio: 'inherit' }).status ?? 1;
 }
 // the idle timer on a fake clock, the status LED, the press state machine and the hit tables (host/idletest.cpp), for both boards
