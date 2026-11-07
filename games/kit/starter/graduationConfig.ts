@@ -14,8 +14,6 @@ export interface Graduation {
   cameos: CameoName[];
   /** Every guest one frame, to save blocks (the crowded finale). */
   stillGuests?: boolean;
-  /** The balcony keeps only the Cast's guests: the helpers stand gowned on the floor instead (a hall short of blocks). */
-  noBalconyHelpers?: boolean;
   /** The hall's look. */
   theme: HallTheme;
   /** The game's title as the .GAM and the cards name it (19 characters at most); GRADUATION when left out. */

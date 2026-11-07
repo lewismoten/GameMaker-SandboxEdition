@@ -52,18 +52,7 @@ export function buildBlocks(pal: Pal, cfg: Graduation, withFriends = true) {
   addStarterBlocks(book, pal);
   const heroBlocks = buildHeroBlocks(pal);
   const pic = (n: string) => heroBlocks.pics.get(n)!;
-  const hall = addHallBlocks(
-    book,
-    pal,
-    timed,
-    cfg.noBalconyHelpers ? [] : audienceOf(...cfg.groups),
-    pic('stand.top'),
-    pic('cheer2.top'),
-    pic('blink.top'),
-    cfg.theme,
-    cfg.cameos,
-    cfg.stillGuests,
-  );
+  const hall = addHallBlocks(book, pal, timed, [], pic('stand.top'), pic('cheer2.top'), pic('blink.top'), cfg.theme, cfg.cameos, cfg.stillGuests);
   const friends = withFriends ? addFriendBlocks(book, pal, timed) : [];
   const signs: Record<SignName, Sign> = {
     start: addSign(book, pal, 'start', cfg.signs.start, 4, 2, true),
@@ -140,8 +129,7 @@ function aisle(
     m.set(x, BALCONY_RAIL, 'rail');
     m.set(x, BALCONY_RAIL + 2, 'rail').set(x, BALCONY_RAIL + 3, 'riser');
   }
-  hall.helpers.forEach((name, i) => m.set(36 + i, BALCONY_RAIL - 1, name));
-  hall.cameos.slice(0, hall.helpers.length).forEach((parts, i) => parts.forEach((name, k) => m.set(36 + i, BALCONY_RAIL + 2 - parts.length + k, name)));
+  hall.cameos.slice(0, 8).forEach((parts, i) => parts.forEach((name, k) => m.set(36 + i, BALCONY_RAIL + 2 - parts.length + k, name)));
   // the stage's own wall pieces, hung in view, a row above the signs
   const order = theme.decorOrder ?? [];
   if (order.length) for (let x = 3, i = 0; x < STAGE_FROM - 1; x += theme.decorEvery ?? 5, i++) m.set(x, VIEW_TOP + 2, `decor.${order[i % order.length]}`);
