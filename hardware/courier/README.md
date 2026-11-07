@@ -9,7 +9,10 @@ and actual target builds are not part of this library's host evidence.
 ## Source and compatibility
 
 The interoperability reference is this repository's `feature/courier-visits`
-commit **`56e048a715be2028187a64cfe278ee765122a816`**:
+commit **`93880e054f164ac47ba934c30ab58c1691c4d139`** (fetched and remote-confirmed
+November 7, 2026, 19:20 UTC). Its three protocol modules below are byte-identical
+to implementation reference `56e048a715be2028187a64cfe278ee765122a816`; only a
+release note was added between those revisions:
 
 - `web/src/courier/courierId.ts`: generation, shape and Luhn algorithm.
 - `web/src/courier/capsule.ts`: layout, counts, CRC, encode/decode behavior.
