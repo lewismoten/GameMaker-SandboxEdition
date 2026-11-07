@@ -44,7 +44,6 @@ export interface Level {
 
 export const GROUND = 10;
 const AIR = { grav: PULL.down };
-type Rules = Parameters<Book['add']>[2];
 
 /** Where things are, for the bot: [dish, house door (the gate's column), exit, ...]. */
 export const AT = {
@@ -159,6 +158,7 @@ function yard(pal: Pal): Level {
   for (const x of AT.yard.piles) m.set(x, 9, 'leaf');
   for (const x of [8, 36, 58, 73]) if (!AT.yard.piles.includes(x as never)) m.set(x, 9, 'pumpkin');
   for (const x of AT.yard.squirrels) m.mon(MONS.squirrel, x, 9);
+  m.mon(MONS.plume, 12, 9); // Mrs. Pettigrew's pet turkey
   m.sign(5, onGround(s.hello), s.hello);
   m.sign(13, onGround(s.leaf), s.leaf);
   m.sign(40, onGround(s.squirrel), s.squirrel);
@@ -205,7 +205,7 @@ function park(pal: Pal): Level {
   book.add('dish', art.casserole(pal), { ...AIR, score: 25, effect: KEYS, eamt: 1, touch: 'sky' });
   const s = signs(book, pal, {
     hello: ['THE PARK IS WINDY AND THE BIG GAME IS ON', 4, 4],
-    balls: ['LOOSE FOOTBALLS ARE EVERYWHERE. HOP OVER THEM', 4, 4],
+    balls: ['FOOTBALLS ALL OVER. HOP OVER THEM', 4, 4],
     ref: ['NO TACKLING THE CASSEROLE', 4, 3],
     door: ['THE LOPEZ FAMILY IS HUNGRY', 4, 3],
     exit: ['NEXT HOUSE →', 4, 2],

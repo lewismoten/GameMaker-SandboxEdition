@@ -10,7 +10,7 @@ import type { Pal } from '../../kit/starter/palette';
 import * as art from './art';
 
 /** Monster numbers (the map's `mon`). */
-export const MONS = { squirrel: 0 } as const;
+export const MONS = { squirrel: 0, plume: 3 } as const;
 /** Points for popping a squirrel. */
 export const POP_POINTS = 50;
 
@@ -19,6 +19,9 @@ export function monsterPictures(pal: Pal): Book {
   const mb = buildMonsterBlocks(pal);
   mb.add('squirrel0', art.squirrel(pal, false), { score: POP_POINTS });
   mb.add('squirrel1', art.squirrel(pal, true), { score: POP_POINTS });
+  // Mr. Plume: not solid, hurts nobody
+  mb.add('plume0', art.turkey(pal, false), {});
+  mb.add('plume1', art.turkey(pal, true), {});
   return mb;
 }
 
@@ -32,5 +35,7 @@ export function monsterSet(mb: Book): Monster[] {
     [mb.n(`${n}1`), t],
   ];
   set[MONS.squirrel] = mon(anim('squirrel', 4), { power: 1, thru: 1 }, pace(4, 2));
+  // Mr. Plume follows Rory about, slowly (`towards`: the speed it moves straight toward the hero), and stops at solid blocks
+  set[MONS.plume] = mon(anim('plume', 5), { power: 150, thru: 1, end: -2, towards: 1 });
   return set;
 }

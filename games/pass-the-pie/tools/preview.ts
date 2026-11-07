@@ -50,6 +50,13 @@ for (const f of readdirSync(disk)) {
       k++;
       if (k === 12) break;
     }
+    // one frame from the middle of the cartoon, at 2x, for the progress shots
+    const mid = parseFli(readFileSync(new URL(f, disk)));
+    const midCanvas = newFliCanvas(mid);
+    const shot = new Pixels(320, 200);
+    for (let n = 0; n <= Math.floor(mid.frameCount * 0.55); n++) applyFliFrame(mid, n, midCanvas);
+    shot.px.set(midCanvas.pixels);
+    writePng(join(out, `${f}-mid.png`), shot, pal.pal, 2);
     writePng(join(out, `${f}-sheet.png`), sheet, pal.pal, 1);
   }
 }

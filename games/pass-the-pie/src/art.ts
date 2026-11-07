@@ -278,3 +278,18 @@ export function floatCar(pal: Pal, wheel: boolean): Pixels {
   blob(p, 14, 3, 3, 3, r('green'), 0, 3);
   return outline(p, c('ink', 0), { transparent: T });
 }
+
+/** Mr. Plume, a neighbor's pet turkey (frame 0/1, he bobs): a round brown body, a little fan of tail feathers, a red wattle. Friendly: nothing about him hurts. */
+export function turkey(pal: Pal, bob: boolean): Pixels {
+  const { c, r } = pal;
+  const p = new Pixels(20, 20, T);
+  const y = bob ? 1 : 0;
+  for (let i = 0; i < 4; i++) blob(p, 4 + i * 2, 7 + y + (i % 2), 2.5, 5, [c('red', 2), c('orange', 3), c('gold', 3), c('green', 2)], 0, 3);
+  blob(p, 9, 12 + y, 6.5, 5.5, r('dirt'), 1, 4);
+  blob(p, 15, 7 + y, 3, 3.5, r('dirt'), 1, 4);
+  p.set(16, 6 + y, c('ink', 0))
+    .rect(17, 7 + y, 2, 1, c('gold', 3))
+    .rect(16, 9 + y, 1, 2, c('red', 3));
+  p.rect(7, 17, 1, 2, c('gold', 3)).rect(11, 17, 1, 2, c('gold', 3));
+  return outline(p, c('ink', 0), { transparent: T });
+}
