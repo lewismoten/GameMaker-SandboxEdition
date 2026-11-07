@@ -7,6 +7,8 @@ import {
   ceremonyTitle,
   courseGame,
   courseNumber,
+  diplomaNudge,
+  diplomaTier,
   highestLevel,
   isCeremony,
   needed,
@@ -106,5 +108,33 @@ describe('ceremonies', () => {
       expect(STARTER_HEROES[c.id]).toBeUndefined();
     }
     expect(isCeremony('first-steps')).toBe(false);
+  });
+
+  describe('diploma tiers', () => {
+    const all = () => CEREMONIES.flatMap(stageGames);
+    const done = new Set([...CEREMONIES.map((c) => c.id), DIPLOMA.id]);
+    it('is undefined before the diploma, plain with no grades', () => {
+      expect(diplomaTier({}, new Set())).toBeUndefined();
+      expect(diplomaTier({}, done)).toBe('diploma');
+    });
+    it('Highest Honors needs a B in every course; a perfect 4.0 needs an A in every course', () => {
+      expect(diplomaTier(grade(all(), 'B'), done)).toBe('highest');
+      expect(diplomaTier(grade(all(), 'A'), done)).toBe('perfect');
+      expect(diplomaTier({ ...grade(all(), 'A'), [all()[0]]: 'C' }, done)).toBe('diploma');
+      expect(diplomaTier(grade(all(), 'B'), new Set(CEREMONIES.map((c) => c.id)))).toBeUndefined();
+    });
+    it('the desk title follows the tier', () => {
+      expect(highestLevel(done, {})).toBe('Graduate');
+      expect(highestLevel(done, grade(all(), 'B'))).toBe('Honor Graduate');
+      expect(highestLevel(done, grade(all(), 'A'))).toBe('Valedictorian');
+    });
+    it('nudges only toward Highest Honors, one to three courses out, never toward the 4.0', () => {
+      const g = grade(all(), 'B');
+      expect(diplomaNudge({ ...g, [all()[0]]: 'C' }, done)).toBe('One course left for Highest Honors!');
+      expect(diplomaNudge({ ...g, [all()[0]]: 'C', [all()[1]]: 'C', [all()[2]]: 'C' }, done)).toBe('Three courses left for Highest Honors!');
+      expect(diplomaNudge(grade(all().slice(4), 'B'), done)).toBeUndefined();
+      expect(diplomaNudge(g, done)).toBeUndefined();
+      expect(diplomaNudge(grade(all(), 'A'), done)).toBeUndefined();
+    });
   });
 });
