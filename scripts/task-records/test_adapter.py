@@ -107,6 +107,9 @@ class AdapterTest(unittest.TestCase):
         self.assertIsNone(task['branch'])
         self.assertIsNone(task['latest_summary'])
         self.assertEqual(task['result'], 'Legacy result')
+        with closing(sqlite3.connect(self.home / 'hermes' / 'kanban.db')) as db, db:
+            db.execute("UPDATE tasks SET branch_name=''")
+        self.assertIsNone(self.read(self.task_id)['task']['branch'])
 
     def test_unknown_keys_return_not_found(self):
         self.read('unknown', 'not_found')
@@ -155,6 +158,24 @@ class AdapterTest(unittest.TestCase):
                            [(1,self.task_id,'done',1,5,'Old'), (2,self.task_id,'done',2,5,'New'),
                             (3,self.task_id,'done',8,9,''), (4,self.task_id,'running',10,None,None)])
         self.assertEqual(self.read(self.task_id)['task']['latest_summary'], 'New')
+    def test_branch_uses_latest_summary_structured_metadata_when_not_configured(self):
+        with closing(sqlite3.connect(self.home / 'hermes' / 'kanban.db')) as db, db:
+            db.execute('ALTER TABLE task_runs ADD COLUMN metadata TEXT')
+            db.execute('INSERT INTO task_runs (task_id,status,started_at,ended_at,summary,metadata) VALUES (?,?,?,?,?,?)',
+                       (self.task_id,'done',1,2,'Handoff','{"branch":"feature/reported"}'))
+            db.execute('INSERT INTO task_runs (task_id,status,started_at,metadata) VALUES (?,?,?,?)',
+                       (self.task_id,'running',3,'{"branch":"feature/unrelated"}'))
+        self.assertEqual(self.read(self.task_id)['task']['branch'], 'feature/reported')
+        with closing(sqlite3.connect(self.home / 'hermes' / 'kanban.db')) as db, db:
+            db.execute('UPDATE tasks SET branch_name=?', ('feature/configured',))
+        self.assertEqual(self.read(self.task_id)['task']['branch'], 'feature/configured')
+
+    def test_malformed_optional_summary_metadata_does_not_invent_a_branch(self):
+        with closing(sqlite3.connect(self.home / 'hermes' / 'kanban.db')) as db, db:
+            db.execute('ALTER TABLE task_runs ADD COLUMN metadata TEXT')
+            db.execute('INSERT INTO task_runs (task_id,status,started_at,summary,metadata) VALUES (?,?,?,?,?)',
+                       (self.task_id,'done',1,'Handoff','malformed'))
+        self.assertIsNone(self.read(self.task_id)['task']['branch'])
 
 
 if __name__ == '__main__':

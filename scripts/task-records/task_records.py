@@ -2,6 +2,7 @@
 
 from contextlib import closing
 import hashlib
+import json
 from pathlib import Path
 import re
 import sqlite3
@@ -49,16 +50,28 @@ def read_record(board, client_key, row):
         if found is None:
             raise Failure('not_found')
         source = dict(zip((column[0] for column in cursor.description), found))
-        summary = board.execute(
-            "SELECT summary FROM task_runs WHERE task_id=? "
+        summary_cursor = board.execute(
+            "SELECT * FROM task_runs WHERE task_id=? "
             "AND summary IS NOT NULL AND summary != '' "
             "ORDER BY COALESCE(ended_at,started_at) DESC,id DESC LIMIT 1",
             (row[1],)
-        ).fetchone()
+        )
+        summary_row = summary_cursor.fetchone()
+        summary = dict(zip((column[0] for column in summary_cursor.description), summary_row)) if summary_row else {}
+        branch = source.get('branch_name')
+        if branch == '':
+            branch = None
+        if not branch:
+            try:
+                metadata = json.loads(summary.get('metadata') or '{}')
+            except (ValueError, TypeError, RecursionError):
+                metadata = {}
+            if isinstance(metadata, dict) and isinstance(metadata.get('branch'), str):
+                branch = metadata['branch'] or None
         task = {field: source.get(field) for field in TASK_FIELDS}
         task.update(schema_version=1, client_key=client_key,
-                    branch=source.get('branch_name'),
-                    latest_summary=summary[0] if summary else None)
+                    branch=branch,
+                    latest_summary=summary.get('summary'))
         validate_task(task)
         original = {'title': row[3], 'body': row[4]} if row[3] is not None else None
         return {'task': task, 'original_request': original,

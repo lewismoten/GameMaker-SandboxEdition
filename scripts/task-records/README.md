@@ -24,7 +24,7 @@ schema. Version 1 retains `id`, `title`, `body`, `status`, `created_at`, `assign
 | --- | --- |
 | `schema_version` | Integer `1`. |
 | `client_key` | Original canonical intake key, even on board-ID reads. |
-| `branch` | The board's structured `tasks.branch_name`, or JSON `null`. |
+| `branch` | Structured `tasks.branch_name`; if absent, `metadata.branch` on the latest summary's run; otherwise JSON `null`. |
 
 `status` is a nonempty string, permitting future board states without a second
 status enum. Timestamps are integer epoch seconds or, for `completed_at`, `null`.
@@ -41,8 +41,11 @@ handoff, **not** proof that the current run completed or the work was accepted;
 always read `status` too. With no summary it is JSON `null`, even if events or a
 legacy `tasks.result` exist. `result` remains available separately for old clients.
 A missing branch is `null`: never guess it from prose, a title, an event, a Git
-checkout or an unrelated child's branch. Parent records are not aggregated from
-children. Event history remains in the board/audit tables and is not returned as
+checkout or an unrelated child's branch. A configured branch wins over a reported
+branch. Only a string `branch` in the latest summary run's JSON metadata is a
+fallback; malformed optional metadata is ignored, and a newer run without a
+summary cannot contribute a different reported branch. Parent records are not
+aggregated from children. Event history remains in the board/audit tables and is not returned as
 a summary or copied into the task record.
 
 ## Storage and compatibility
