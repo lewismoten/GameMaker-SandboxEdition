@@ -316,6 +316,39 @@ add(
     '................',
   ]),
 );
+// 19 Recently played: a clock face at ten past ten
+{
+  const g = blank();
+  disc(g, 7.5, 7.5, 7.4, 'l');
+  disc(g, 7.5, 7.5, 6.2, 'w');
+  for (const [x, y] of [[7, 2], [8, 2], [13, 7], [13, 8], [7, 13], [8, 13], [2, 7], [2, 8]]) set(g, x, y, 'd');
+  line(g, 7, 7, 7, 3, 'k');
+  line(g, 8, 8, 11, 10, 'k');
+  rect(g, 7, 7, 2, 2, 'r');
+  add('Recently played', g);
+}
+// 20 Favorites: a five-pointed star, point up
+add(
+  'Favorites',
+  art([
+    '.......yy.......',
+    '.......yy.......',
+    '......yyyy......',
+    '......yyyy......',
+    '.....yyyyyy.....',
+    'yyyyyyyyyyyyyyyy',
+    '.yyyyyyyyyyyyyy.',
+    '..yyyyyyyyyyyy..',
+    '...yyyyyyyyyy...',
+    '....yyyyyyyy....',
+    '....yyyyyyyy....',
+    '...yyyyyyyyyy...',
+    '...yyyy..yyyy...',
+    '..yyyy....yyyy..',
+    '..yyy......yyy..',
+    '.yy..........yy.',
+  ]),
+);
 // (Unsorted uses the Other drawer in the firmware, and the Imported tray stands for the root.)
 
 const paletteRGB = [[0, 0, 0], ...KEYS.map((k) => PAL[k])];
