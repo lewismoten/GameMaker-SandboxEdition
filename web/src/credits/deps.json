@@ -2100,7 +2100,7 @@
     },
     {
       "name": "postcss",
-      "version": "8.5.31",
+      "version": "8.5.32",
       "license": "MIT",
       "runtime": false,
       "direct": false,
