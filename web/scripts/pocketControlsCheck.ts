@@ -67,6 +67,18 @@ const library = spawnSync(libraryExe, [here + 'data', shotsDir], { stdio: 'inher
 const favoritesExe = join(shotsDir, 'favoritestest');
 execFileSync('c++', ['-std=c++17', '-O1', '-Wall', '-I', here + 'src', here + 'host/favoritestest.cpp', '-lz', '-o', favoritesExe], { stdio: 'inherit' });
 const favorites = spawnSync(favoritesExe, [here + 'data', shotsDir], { stdio: 'inherit' });
+// The tabbed Settings screen (src/settingsdraw.h): every button 32 x 32 or more, found by the hit table, labels that fit, every row
+// on a page; renders of every tab and page at both hands, the lit preview and Near pad + Raised (PNGs to GM_SETTINGSSHOTS_OUT).
+const settingsDir = process.env.GM_SETTINGSSHOTS_OUT ?? mkdtempSync(join(tmpdir(), 'pocket-settings-'));
+let settingsBad = 0;
+for (const [name, flags] of [
+  ['480', []],
+  ['320', ['-DPOCKET_CYD28']],
+] as const) {
+  const settingsExe = join(shotsDir, 'settingstest' + name);
+  execFileSync('c++', ['-std=c++17', '-O1', '-Wall', ...flags, '-I', here + 'src', here + 'host/settingstest.cpp', '-lz', '-o', settingsExe], { stdio: 'inherit' });
+  settingsBad ||= spawnSync(settingsExe, [settingsDir], { stdio: 'inherit' }).status ?? 1;
+}
 // the idle timer on a fake clock, the status LED, the press state machine and the hit tables (host/idletest.cpp), for both boards
 const idleDir = mkdtempSync(join(tmpdir(), 'pocket-idle-'));
 let idleBad = 0;
@@ -80,6 +92,7 @@ for (const [name, flags] of [
 }
 process.exit(
   idleBad ||
+    settingsBad ||
     playBad ||
     (library.status ?? 1) ||
     (favorites.status ?? 1) ||
