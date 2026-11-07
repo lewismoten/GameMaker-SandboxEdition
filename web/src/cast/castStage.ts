@@ -204,9 +204,10 @@ export function castStage(cast: CastMember[], state: ViewState): HTMLElement {
     const { n, moving } = drawn;
     if (n !== lastFrame && playing) {
       if (drawn.sprite.tick) sound.tick(n);
-      else if (moving && m.id === 'chez') sound.whirr();
-      else if (moving && n % 2 === 0) sound.step();
+      else if (moving && m.id !== 'chez' && n % 2 === 0) sound.step();
     }
+    // the electric motor is continuous: told every frame, it starts and stops itself
+    sound.motor(playing && m.id === 'chez' && moving && !drawn.sprite.tick);
     lastFrame = n;
   }
 
