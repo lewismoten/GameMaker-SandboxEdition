@@ -1,9 +1,9 @@
 // The ⚠ badge on a game of your own in the home page's list, a quiet note for a finished
 // game as it was released (problems there are no call to action), and the report both open. The checking
-// itself is in ../project/health.ts; this loads the files it needs (just the .gam and
+// itself is in ../project/health.ts, loaded when a check runs; this loads the files it needs (just the .gam and
 // graphic scripts for the badge, everything for the report) and shows the result.
 import { h, modal } from '../core/ui';
-import { checkGame, QUICK_CHECK_FILE, worstSeverity, type FileSource, type Issue } from '../../project/health';
+import { QUICK_CHECK_FILE, worstSeverity, type FileSource, type Issue } from '../../project/healthIssue';
 import { peekGameFile, loadHostedGame, type CatalogEntry } from '../../project/files';
 import { loadProject } from '../../project/storage';
 import { splitInherited } from './homeOrigin';
@@ -26,6 +26,9 @@ export interface HealthTarget {
   /** Plain notes about the game that aren't file problems (e.g. a demo added in place of a missing one). */
   notes?(): Promise<string[]>;
 }
+
+/** The check (health.ts and every format reader it uses), loaded the first time one runs. */
+const checker = async () => (await import('../../project/health')).checkGame;
 
 const cache = new Map<string, Promise<Issue[]>>();
 
@@ -55,7 +58,7 @@ export function catalogTarget(g: CatalogEntry): HealthTarget {
       get: (n) => loaded.get(n),
       byteSize: (n) => (g.sizes ? g.sizes[g.files.indexOf(n)] : undefined),
     };
-    return checkGame(src, g.gam ?? undefined);
+    return (await checker())(src, g.gam ?? undefined);
   };
   return {
     title: g.title,
@@ -65,7 +68,7 @@ export function catalogTarget(g: CatalogEntry): HealthTarget {
       const files = await loadHostedGame(g);
       // Listed files that did not load are reported as unreadable.
       const src: FileSource = { names: () => [...g.files].sort(), get: (n) => files.get(n) };
-      return checkGame(src, g.gam ?? undefined, { deep: true });
+      return (await checker())(src, g.gam ?? undefined, { deep: true });
     },
   };
 }
@@ -78,7 +81,7 @@ export function projectTarget(id: string, title: string, updated: number, origin
   const load = async (deep: boolean): Promise<Issue[]> => {
     const p = await loadProject(id);
     if (!p) return [];
-    return checkGame(p.files, p.record.gam, { deep });
+    return (await checker())(p.files, p.record.gam, { deep });
   };
   const split = async (deep: boolean) => {
     const mine = await load(deep);
