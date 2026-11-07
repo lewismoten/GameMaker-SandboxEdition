@@ -75,7 +75,8 @@
     "prebuild": "node ../scripts/build-games.mjs",
     "pretest": "node ../scripts/build-games.mjs",
     "pretest:fast": "node ../scripts/build-games.mjs",
-    "precheck:games": "node ../scripts/build-games.mjs"
+    "precheck:games": "node ../scripts/build-games.mjs",
+    "check:cyd": "vite-node scripts/cydFriendly.ts --"
   },
   "dependencies": {
     "@lewismoten/gamemaker-sandbox-archives": "3.2.0",
