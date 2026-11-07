@@ -6,8 +6,8 @@
   "hero": "LIAN",
   "year": 1994,
   "price": "Free",
-  "version": "1.0",
-  "blurb": "Thin blue-white rain falls along a little path. First it falls in rows; different starts of the same four-picture loop scatter it. Then drops splash at the ground and shallow puddles ripple. Walk through the door to see the very same map in darker storm colors. Nothing hurts: these are pictures, not real water. Signs explain the tricks, and the pages show how to copy them.",
+  "version": "1.1",
+  "blurb": "Thin rain falls along a little path, near drops bright and far ones dim. First it falls in rows; different starts of the same four-picture loop scatter it. Then drops splash on the ground, on a cottage roof and into a rain barrel under the gutter's spout, puddles ripple, and stepping in one makes a splash. Walk through the door to see the very same map in darker storm colors. Nothing hurts: these are pictures, not real water. Signs explain the tricks, and the pages show how to copy them.",
   "exe": "RAIN.EXE",
   "dosName": "RAIN",
   "sound": "sb",
@@ -19,12 +19,12 @@
     "accent": "#c0e0f4",
     "ink": "#ffffff",
     "tagline": "A little rain, all pictures.",
-    "back": "Lian walks a rain-soaked path. Four pictures make rain fall, different starts scatter the drops, and more pictures make splashes and ripples. Then the same map loads a darker palette. Play, then edit a copy and change the rain.",
+    "back": "Lian walks a rain-soaked path. Four pictures make rain fall, different starts scatter the drops, and more pictures make splashes, a pouring spout and ripples. Step in a puddle and touch blocks splash it. Then the same map loads a darker palette. Play, then edit a copy and change the rain.",
     "features": [
       "Falling streaks made from animated blocks",
-      "Landing splashes and rippling puddles",
-      "The same map in a rainy palette",
-      "Made to be copied and taken apart"
+      "Rain on a roof and a spout into a barrel",
+      "Puddles that splash when you step in",
+      "The same map in a rainy palette"
     ],
     "shots": [
       ["one.map", 34, 19],
