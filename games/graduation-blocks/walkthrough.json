@@ -27,7 +27,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 7135,
+  "frames": 7144,
   "chapters": [
    {
     "title": "Opening",
@@ -36,28 +36,28 @@
    },
    {
     "title": "Story",
-    "frame": 913,
-    "time": 15216.666666666471
+    "frame": 922,
+    "time": 15366.666666666466
    },
    {
     "title": "The Sculpture Walk",
-    "frame": 1661,
-    "time": 27683.333333333918
+    "frame": 1670,
+    "time": 27833.33333333393
    },
    {
     "title": "The Gallery",
-    "frame": 3038,
-    "time": 50633.33333333169
+    "frame": 3047,
+    "time": 50783.33333333167
    },
    {
     "title": "Ending",
-    "frame": 4336,
-    "time": 72266.66666666481
+    "frame": 4345,
+    "time": 72416.66666666485
    },
    {
     "title": "Credits",
-    "frame": 6063,
-    "time": 101050.00000000652
+    "frame": 6072,
+    "time": 101200.00000000656
    }
   ]
  }
