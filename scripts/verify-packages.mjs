@@ -9,6 +9,8 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const scratch = mkdtempSync(join(tmpdir(), 'gamemaker-package-isolation-'));
 const artifacts = [];
 const names = ['engine', 'archives', 'tools'];
+// the tarball limits npm run release:sizes also checks (scripts/release/size-budgets.json)
+const sizeBudgets = JSON.parse(readFileSync(join(root, 'scripts/release/size-budgets.json'), 'utf8')).packages;
 const run = (cwd, args) => execFileSync('npm', args, { cwd, stdio: 'inherit' });
 function inspect(dir, pkg) {
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
@@ -51,6 +53,12 @@ try {
     assert.ok(
       pack.files.some((f) => f.path === 'CHANGELOG.md'),
       `${manifest.name} tarball lacks CHANGELOG.md`,
+    );
+    const limit = sizeBudgets[name];
+    assert.ok(pack.size <= limit.tarballKB * 1024, `${manifest.name} tarball is ${Math.round(pack.size / 1024)} kB, over its ${limit.tarballKB} kB budget`);
+    assert.ok(
+      pack.unpackedSize <= limit.unpackedKB * 1024,
+      `${manifest.name} unpacks to ${Math.round(pack.unpackedSize / 1024)} kB, over its ${limit.unpackedKB} kB budget`,
     );
     artifacts.push(join(scratch, pack.filename));
     process.stdout.write(`${manifest.name}: independent source build and packed consumer passed\n`);
