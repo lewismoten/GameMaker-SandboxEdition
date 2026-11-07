@@ -29,12 +29,12 @@ Lowercase UUID text is exactly 36 characters, `8-4-4-4-12`, plus a terminating
 NUL when this library writes text. Number the **32 hex digits**, excluding
 hyphens, from zero:
 
-| Digit | Meaning |
-| --- | --- |
-| 12 | `4` (UUID version) |
-| 13 | `c` (courier mark) |
-| 16 | `8` through `b` (UUID variant) |
-| 24 | Luhn mod 16, fifth digit of the fifth group |
+| Digit | Meaning                                     |
+| ----- | ------------------------------------------- |
+| 12    | `4` (UUID version)                          |
+| 13    | `c` (courier mark)                          |
+| 16    | `8` through `b` (UUID variant)              |
+| 24    | Luhn mod 16, fifth digit of the fifth group |
 
 Remove digit 24 entirely. Starting at the right of the remaining 31 digits,
 double the first, alternate double/single moving left, sum each product's
@@ -62,21 +62,21 @@ No text, struct padding, native-endian integers or platform pointers go on wire.
 All multi-byte integers are **little-endian**. All IDs are 16 bytes in the
 UUID text's hex order, not a platform UUID struct's endian-swapped layout.
 
-| Offset | Bytes | Field |
-| --- | --- | --- |
-| 0 | 4 | ASCII `SCT1` |
-| 4 | 1 | Version `1` |
-| 5 | 1 | Table version `1` |
-| 6 | 1 | Flags `0` |
-| 7 | 1 | Courier's home world |
-| 8 | 16 | Trip ID |
-| 24 | 16 | Home screen ID |
-| 40 | 16 | Sending screen ID |
-| 56 | 1 | Package count, 0..3 |
-| 57 | 4 each | Package game hashes |
-| variable | 1 | Postcard count, 0..8 |
+| Offset   | Bytes    | Field                                                            |
+| -------- | -------- | ---------------------------------------------------------------- |
+| 0        | 4        | ASCII `SCT1`                                                     |
+| 4        | 1        | Version `1`                                                      |
+| 5        | 1        | Table version `1`                                                |
+| 6        | 1        | Flags `0`                                                        |
+| 7        | 1        | Courier's home world                                             |
+| 8        | 16       | Trip ID                                                          |
+| 24       | 16       | Home screen ID                                                   |
+| 40       | 16       | Sending screen ID                                                |
+| 56       | 1        | Package count, 0..3                                              |
+| 57       | 4 each   | Package game hashes                                              |
+| variable | 1        | Postcard count, 0..8                                             |
 | variable | per card | Origin screen ID (16), world (1), stamp count (1, 0..64), stamps |
-| last 4 | 4 | CRC-32 of all preceding bytes |
+| last 4   | 4        | CRC-32 of all preceding bytes                                    |
 
 Stamp kind `0` is followed by a u32 game hash. Kinds `1` (Sample CD), `2`
 (graduation), and `3` (mystery) have no payload. The CRC is reflected
@@ -198,14 +198,82 @@ on the stack to guarantee atomic output. Encode stages 512 bytes. These are
 **not** claims of a sub-2-KiB stack/static-RAM budget: measure stack, object
 size, entropy and transport/storage integration on each target.
 
-Initial implementation checks used GCC 15.2.0 on Linux: strict C99 compilation,
-deterministic TS ID generation, minimal and mixed-stamp/package byte vectors
-from the actual TS source, round trips, unknown-catalog filtering, capacity
-failures, byte tampering and every prefix truncation of the mixed fixture.
-The smoke checks also passed ASan/UBSan. Comprehensive host tests, reproducible
-`make test`, committed TS vectors and randomized acceptance are supplied by the
-separate host-verification phase; they must pass before this is treated as
-fully host-accepted. No CYD or Pi build/run is claimed here.
+Initial implementation smoke checks and independent host acceptance used GCC 15.2.0
+on Linux. Host acceptance compares against the actual pinned TypeScript modules,
+not expected bytes produced by the C library. The checked-in JSON records the
+oracle inputs, exact wire bytes, expected errors and post-catalog canonical bytes;
+`tests/vectors.h` is the same corpus in C initializers, so the normal test run
+needs **only make and a C99 compiler**, not Node, Python, npm or a JSON parser.
+
+```sh
+make -C hardware/courier test
+make -C hardware/courier sanitize   # compiler/runtime support for ASan + UBSan required
+# Optional test-sensitivity check; Python 3 stdlib, make and the same C99 compiler:
+python3 hardware/courier/tests/check_mutations.py
+```
+
+The test runner covers:
+
+- 32 deterministic TypeScript ID vectors, including zero/all-one entropy and
+  all four UUID variants; the actual TS `randomUUID` and `getRandomValues` paths
+  agree on each supplied entropy fixture.
+- Every single-nibble replacement (15,360 rejected), all 256 byte possibilities
+  at each text position, length/separator/case failures, check digit at textual
+  index 28 (hex index 24), binary/text round trips, RNG failure, NULL arguments,
+  exact allocations, capacity canaries, and input/output overlap.
+- Adjacent hex-digit swaps, including across dashes: **839 of 873** changed pairs
+  rejected. The 34 accepted swaps illustrate why this check is not authentication;
+  the protocol promises “most,” not all. Equal neighbors are not counted as typos.
+- 29 TS capsule encode cases: empty/minimal, all 16 world IDs, mixed stamp kinds,
+  Unicode UTF-16 catalog hashes, missing/empty GAME fallback, unknown-kind fallback,
+  3/4 packages, 8/9 postcards, 64/65 stamps, exact 512-byte fit and size overflow.
+  Encoder-permitted worlds/duplicates are rejected by both decoders as specified.
+- 336 TS rejection vectors: every prefix truncation and per-byte corruption of
+  the mixed capsule, CRC-repaired structural truncations, magic/version/table/flags,
+  invalid IDs/worlds/kinds/counts, trailing bytes and oversize. Exact error categories
+  agree, with output bytes/struct/length unchanged on failure. The C callback is not
+  invoked on rejected input (deliberately stronger than TS callback timing).
+- Known-catalog and NULL-catalog canonical serialization, unknown GAME hash clearing,
+  zero-valued hashes, unaligned/exact-size input, overlapping encode/decode, every
+  insufficient output capacity and maximal `size_t` in-memory counts.
+- 12,000 deterministic bounded capsule inputs (2,277 valid raw-hash round trips)
+  plus 12,000 arbitrary ID inputs; no crash or sanitizer finding. This is bounded
+  fuzz coverage, not exhaustive proof.
+
+Both ordinary and ASan/UBSan runs pass. Eight disposable, independently compiled
+source mutations are caught by assertions: marker, check position, check validation,
+CRC, world range, capacity, premature output mutation and unknown-hash clearing.
+No production implementation defect was demonstrated, so the four library files
+remain byte-identical to the implementation handoff.
+
+### Regenerating the TypeScript corpus
+
+From a checkout containing the referenced commit and the repository's installed
+TypeScript development dependency (normally installed with root `npm ci`):
+
+```sh
+make -C hardware/courier vectors
+# Or use another fetched revision / an explicit existing TypeScript module:
+make -C hardware/courier vectors TS_REF=<full-commit-sha> TS_MODULE=/absolute/path/to/typescript.js
+make -C hardware/courier test
+```
+
+The generator runs `git show <revision>:web/src/courier/{tables,courierId,capsule}.ts`,
+transpiles those actual modules without changing their algorithms (only local import
+suffixes become `.mjs`), injects deterministic entropy and executes their real
+encode/decode functions. It writes `tests/vectors.json` and `tests/vectors.h`.
+It uses temporary files, removed on completion; `TMPDIR` can select their parent.
+The C test consumes the header directly; JSON remains a readable interoperability
+artifact. Regenerating against another revision is an explicit compatibility audit,
+not permission to silently change the protocol. Refresh/regenerate twice and compare
+both output files before committing an updated oracle corpus.
+
+No CYD, ESP32 or Pi build/run is claimed. Host freestanding object inspection finds
+only standard memory-routine dependencies, not RNG/OS/clock/heap symbols. A target
+must supply its C runtime memory routines and secure entropy adapter. Host-only
+stack measurements do not establish a hardware memory budget, and the codec still
+needs the application checks listed above. The whole web suite was not run for this
+C-only test integration.
 
 Written with Hermes Agent running OpenAI Codex GPT-6.1 Sol, directed by Lewis
 Moten. Original C implementation of this project's format and standard

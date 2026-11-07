@@ -1,0 +1,4204 @@
+{
+  "revision": "56e048a715be2028187a64cfe278ee765122a816",
+  "idVectors": [
+    {
+      "random": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "id": "00010203-0405-4c07-8809-0a0bfc0d0e0f"
+    },
+    {
+      "random": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "id": "00000000-0000-4c00-8000-0000b0000000"
+    },
+    {
+      "random": [
+        255,
+        255,
+        255,
+        255,
+        255,
+        255,
+        255,
+        255,
+        255,
+        255,
+        255,
+        255,
+        255,
+        255,
+        255,
+        255
+      ],
+      "id": "ffffffff-ffff-4cff-bfff-ffff1fffffff"
+    },
+    {
+      "random": [
+        111,
+        128,
+        145,
+        162,
+        179,
+        196,
+        213,
+        230,
+        247,
+        8,
+        25,
+        42,
+        59,
+        76,
+        93,
+        110
+      ],
+      "id": "6f8091a2-b3c4-4ce6-b708-192a5b4c5d6e"
+    },
+    {
+      "random": [
+        148,
+        165,
+        182,
+        199,
+        216,
+        233,
+        250,
+        11,
+        28,
+        45,
+        62,
+        79,
+        96,
+        113,
+        130,
+        147
+      ],
+      "id": "94a5b6c7-d8e9-4c0b-9c2d-3e4fb0718293"
+    },
+    {
+      "random": [
+        185,
+        202,
+        219,
+        236,
+        253,
+        14,
+        31,
+        48,
+        65,
+        82,
+        99,
+        116,
+        133,
+        150,
+        167,
+        184
+      ],
+      "id": "b9cadbec-fd0e-4c30-8152-63748596a7b8"
+    },
+    {
+      "random": [
+        222,
+        239,
+        0,
+        17,
+        34,
+        51,
+        68,
+        85,
+        102,
+        119,
+        136,
+        153,
+        170,
+        187,
+        204,
+        221
+      ],
+      "id": "deef0011-2233-4c55-a677-8899dabbccdd"
+    },
+    {
+      "random": [
+        3,
+        20,
+        37,
+        54,
+        71,
+        88,
+        105,
+        122,
+        139,
+        156,
+        173,
+        190,
+        207,
+        224,
+        241,
+        2
+      ],
+      "id": "03142536-4758-4c7a-8b9c-adbe1fe0f102"
+    },
+    {
+      "random": [
+        40,
+        57,
+        74,
+        91,
+        108,
+        125,
+        142,
+        159,
+        176,
+        193,
+        210,
+        227,
+        244,
+        5,
+        22,
+        39
+      ],
+      "id": "28394a5b-6c7d-4c9f-b0c1-d2e384051627"
+    },
+    {
+      "random": [
+        77,
+        94,
+        111,
+        128,
+        145,
+        162,
+        179,
+        196,
+        213,
+        230,
+        247,
+        8,
+        25,
+        42,
+        59,
+        76
+      ],
+      "id": "4d5e6f80-91a2-4cc4-95e6-f708192a3b4c"
+    },
+    {
+      "random": [
+        114,
+        131,
+        148,
+        165,
+        182,
+        199,
+        216,
+        233,
+        250,
+        11,
+        28,
+        45,
+        62,
+        79,
+        96,
+        113
+      ],
+      "id": "728394a5-b6c7-4ce9-ba0b-1c2dae4f6071"
+    },
+    {
+      "random": [
+        151,
+        168,
+        185,
+        202,
+        219,
+        236,
+        253,
+        14,
+        31,
+        48,
+        65,
+        82,
+        99,
+        116,
+        133,
+        150
+      ],
+      "id": "97a8b9ca-dbec-4c0e-9f30-4152c3748596"
+    },
+    {
+      "random": [
+        188,
+        205,
+        222,
+        239,
+        0,
+        17,
+        34,
+        51,
+        68,
+        85,
+        102,
+        119,
+        136,
+        153,
+        170,
+        187
+      ],
+      "id": "bccddeef-0011-4c33-8455-66779899aabb"
+    },
+    {
+      "random": [
+        225,
+        242,
+        3,
+        20,
+        37,
+        54,
+        71,
+        88,
+        105,
+        122,
+        139,
+        156,
+        173,
+        190,
+        207,
+        224
+      ],
+      "id": "e1f20314-2536-4c58-a97a-8b9c0dbecfe0"
+    },
+    {
+      "random": [
+        6,
+        23,
+        40,
+        57,
+        74,
+        91,
+        108,
+        125,
+        142,
+        159,
+        176,
+        193,
+        210,
+        227,
+        244,
+        5
+      ],
+      "id": "06172839-4a5b-4c7d-8e9f-b0c152e3f405"
+    },
+    {
+      "random": [
+        43,
+        60,
+        77,
+        94,
+        111,
+        128,
+        145,
+        162,
+        179,
+        196,
+        213,
+        230,
+        247,
+        8,
+        25,
+        42
+      ],
+      "id": "2b3c4d5e-6f80-4ca2-b3c4-d5e67708192a"
+    },
+    {
+      "random": [
+        80,
+        97,
+        114,
+        131,
+        148,
+        165,
+        182,
+        199,
+        216,
+        233,
+        250,
+        11,
+        28,
+        45,
+        62,
+        79
+      ],
+      "id": "50617283-94a5-4cc7-98e9-fa0b2c2d3e4f"
+    },
+    {
+      "random": [
+        117,
+        134,
+        151,
+        168,
+        185,
+        202,
+        219,
+        236,
+        253,
+        14,
+        31,
+        48,
+        65,
+        82,
+        99,
+        116
+      ],
+      "id": "758697a8-b9ca-4cec-bd0e-1f3001526374"
+    },
+    {
+      "random": [
+        154,
+        171,
+        188,
+        205,
+        222,
+        239,
+        0,
+        17,
+        34,
+        51,
+        68,
+        85,
+        102,
+        119,
+        136,
+        153
+      ],
+      "id": "9aabbccd-deef-4c11-a233-4455d6778899"
+    },
+    {
+      "random": [
+        191,
+        208,
+        225,
+        242,
+        3,
+        20,
+        37,
+        54,
+        71,
+        88,
+        105,
+        122,
+        139,
+        156,
+        173,
+        190
+      ],
+      "id": "bfd0e1f2-0314-4c36-8758-697aab9cadbe"
+    },
+    {
+      "random": [
+        228,
+        245,
+        6,
+        23,
+        40,
+        57,
+        74,
+        91,
+        108,
+        125,
+        142,
+        159,
+        176,
+        193,
+        210,
+        227
+      ],
+      "id": "e4f50617-2839-4c5b-ac7d-8e9f80c1d2e3"
+    },
+    {
+      "random": [
+        9,
+        26,
+        43,
+        60,
+        77,
+        94,
+        111,
+        128,
+        145,
+        162,
+        179,
+        196,
+        213,
+        230,
+        247,
+        8
+      ],
+      "id": "091a2b3c-4d5e-4c80-91a2-b3c445e6f708"
+    },
+    {
+      "random": [
+        46,
+        63,
+        80,
+        97,
+        114,
+        131,
+        148,
+        165,
+        182,
+        199,
+        216,
+        233,
+        250,
+        11,
+        28,
+        45
+      ],
+      "id": "2e3f5061-7283-4ca5-b6c7-d8e97a0b1c2d"
+    },
+    {
+      "random": [
+        83,
+        100,
+        117,
+        134,
+        151,
+        168,
+        185,
+        202,
+        219,
+        236,
+        253,
+        14,
+        31,
+        48,
+        65,
+        82
+      ],
+      "id": "53647586-97a8-4cca-9bec-fd0e9f304152"
+    },
+    {
+      "random": [
+        120,
+        137,
+        154,
+        171,
+        188,
+        205,
+        222,
+        239,
+        0,
+        17,
+        34,
+        51,
+        68,
+        85,
+        102,
+        119
+      ],
+      "id": "78899aab-bccd-4cef-8011-223394556677"
+    },
+    {
+      "random": [
+        157,
+        174,
+        191,
+        208,
+        225,
+        242,
+        3,
+        20,
+        37,
+        54,
+        71,
+        88,
+        105,
+        122,
+        139,
+        156
+      ],
+      "id": "9daebfd0-e1f2-4c14-a536-4758c97a8b9c"
+    },
+    {
+      "random": [
+        194,
+        211,
+        228,
+        245,
+        6,
+        23,
+        40,
+        57,
+        74,
+        91,
+        108,
+        125,
+        142,
+        159,
+        176,
+        193
+      ],
+      "id": "c2d3e4f5-0617-4c39-8a5b-6c7dfe9fb0c1"
+    },
+    {
+      "random": [
+        231,
+        248,
+        9,
+        26,
+        43,
+        60,
+        77,
+        94,
+        111,
+        128,
+        145,
+        162,
+        179,
+        196,
+        213,
+        230
+      ],
+      "id": "e7f8091a-2b3c-4c5e-af80-91a283c4d5e6"
+    },
+    {
+      "random": [
+        12,
+        29,
+        46,
+        63,
+        80,
+        97,
+        114,
+        131,
+        148,
+        165,
+        182,
+        199,
+        216,
+        233,
+        250,
+        11
+      ],
+      "id": "0c1d2e3f-5061-4c83-94a5-b6c748e9fa0b"
+    },
+    {
+      "random": [
+        49,
+        66,
+        83,
+        100,
+        117,
+        134,
+        151,
+        168,
+        185,
+        202,
+        219,
+        236,
+        253,
+        14,
+        31,
+        48
+      ],
+      "id": "31425364-7586-4ca8-b9ca-dbecad0e1f30"
+    },
+    {
+      "random": [
+        86,
+        103,
+        120,
+        137,
+        154,
+        171,
+        188,
+        205,
+        222,
+        239,
+        0,
+        17,
+        34,
+        51,
+        68,
+        85
+      ],
+      "id": "56677889-9aab-4ccd-9eef-0011e2334455"
+    },
+    {
+      "random": [
+        123,
+        140,
+        157,
+        174,
+        191,
+        208,
+        225,
+        242,
+        3,
+        20,
+        37,
+        54,
+        71,
+        88,
+        105,
+        122
+      ],
+      "id": "7b8c9dae-bfd0-4cf2-8314-25369758697a"
+    }
+  ],
+  "catalog": [
+    {
+      "id": "test-public",
+      "hash": 419406601
+    },
+    {
+      "id": "another-public",
+      "hash": 2423274854
+    },
+    {
+      "id": "café",
+      "hash": 856211068
+    },
+    {
+      "id": "星🌍",
+      "hash": 1744349249
+    }
+  ],
+  "encoded": [
+    {
+      "name": "minimal",
+      "input": {
+        "trip": "00010203-0405-4c07-8809-0a0bfc0d0e0f",
+        "home": "00000000-0000-4c00-8000-0000b0000000",
+        "from": "ffffffff-ffff-4cff-bfff-ffff1fffffff",
+        "world": 0,
+        "packages": [],
+        "postcards": []
+      },
+      "hex": "53435431010100000001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0000313dcc4f",
+      "encodeError": null,
+      "decodeError": null,
+      "canonical": "53435431010100000001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0000313dcc4f",
+      "unknown": "53435431010100000001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0000313dcc4f"
+    },
+    {
+      "name": "mixed-known-unknown-unicode",
+      "input": {
+        "trip": "00010203-0405-4c07-8809-0a0bfc0d0e0f",
+        "home": "00000000-0000-4c00-8000-0000b0000000",
+        "from": "ffffffff-ffff-4cff-bfff-ffff1fffffff",
+        "world": 15,
+        "packages": [
+          "test-public",
+          "unknown",
+          "星🌍"
+        ],
+        "postcards": [
+          {
+            "from": "6f8091a2-b3c4-4ce6-b708-192a5b4c5d6e",
+            "world": 0,
+            "stamps": [
+              {
+                "kind": "game",
+                "game": "café"
+              },
+              {
+                "kind": "sample-cd"
+              },
+              {
+                "kind": "graduation"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "game",
+                "game": "unknown"
+              }
+            ]
+          },
+          {
+            "from": "94a5b6c7-d8e9-4c0b-9c2d-3e4fb0718293",
+            "world": 1,
+            "stamps": [
+              {
+                "kind": "game"
+              },
+              {
+                "kind": "game",
+                "game": ""
+              },
+              {
+                "kind": "invalid-kind"
+              }
+            ]
+          }
+        ]
+      },
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "encodeError": null,
+      "decodeError": null,
+      "canonical": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0209a3ff1841a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe08330102030394a5b6c7d8e94c0b9c2d3e4fb0718293010303030362ab9264",
+      "unknown": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff00026f8091a2b3c44ce6b708192a5b4c5d6e0005030102030394a5b6c7d8e94c0b9c2d3e4fb07182930103030303428b77ea"
+    },
+    {
+      "name": "world-0",
+      "input": {
+        "trip": "00010203-0405-4c07-8809-0a0bfc0d0e0f",
+        "home": "00000000-0000-4c00-8000-0000b0000000",
+        "from": "ffffffff-ffff-4cff-bfff-ffff1fffffff",
+        "world": 0,
+        "packages": [],
+        "postcards": [
+          {
+            "from": "6f8091a2-b3c4-4ce6-b708-192a5b4c5d6e",
+            "world": 0,
+            "stamps": []
+          }
+        ]
+      },
+      "hex": "53435431010100000001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff00016f8091a2b3c44ce6b708192a5b4c5d6e0000613e42b1",
+      "encodeError": null,
+      "decodeError": null,
+      "canonical": "53435431010100000001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff00016f8091a2b3c44ce6b708192a5b4c5d6e0000613e42b1",
+      "unknown": "53435431010100000001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff00016f8091a2b3c44ce6b708192a5b4c5d6e0000613e42b1"
+    },
+    {
+      "name": "world-1",
+      "input": {
+        "trip": "00010203-0405-4c07-8809-0a0bfc0d0e0f",
+        "home": "00000000-0000-4c00-8000-0000b0000000",
+        "from": "ffffffff-ffff-4cff-bfff-ffff1fffffff",
+        "world": 1,
+        "packages": [],
+        "postcards": [
+          {
+            "from": "94a5b6c7-d8e9-4c0b-9c2d-3e4fb0718293",
+            "world": 1,
+            "stamps": []
+          }
+        ]
+      },
+      "hex": "53435431010100010001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff000194a5b6c7d8e94c0b9c2d3e4fb07182930100fe4c13ce",
+      "encodeError": null,
+      "decodeError": null,
+      "canonical": "53435431010100010001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff000194a5b6c7d8e94c0b9c2d3e4fb07182930100fe4c13ce",
+      "unknown": "53435431010100010001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff000194a5b6c7d8e94c0b9c2d3e4fb07182930100fe4c13ce"
+    },
+    {
+      "name": "world-2",
+      "input": {
+        "trip": "00010203-0405-4c07-8809-0a0bfc0d0e0f",
+        "home": "00000000-0000-4c00-8000-0000b0000000",
+        "from": "ffffffff-ffff-4cff-bfff-ffff1fffffff",
+        "world": 2,
+        "packages": [],
+        "postcards": [
+          {
+            "from": "b9cadbec-fd0e-4c30-8152-63748596a7b8",
+            "world": 2,
+            "stamps": []
+          }
+        ]
+      },
+      "hex": "53435431010100020001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0001b9cadbecfd0e4c30815263748596a7b8020085902c59",
+      "encodeError": null,
+      "decodeError": null,
+      "canonical": "53435431010100020001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0001b9cadbecfd0e4c30815263748596a7b8020085902c59",
+      "unknown": "53435431010100020001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0001b9cadbecfd0e4c30815263748596a7b8020085902c59"
+    },
+    {
+      "name": "world-3",
+      "input": {
+        "trip": "00010203-0405-4c07-8809-0a0bfc0d0e0f",
+        "home": "00000000-0000-4c00-8000-0000b0000000",
+        "from": "ffffffff-ffff-4cff-bfff-ffff1fffffff",
+        "world": 3,
+        "packages": [],
+        "postcards": [
+          {
+            "from": "deef0011-2233-4c55-a677-8899dabbccdd",
+            "world": 3,
+            "stamps": []
+          }
+        ]
+      },
+      "hex": "53435431010100030001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0001deef001122334c55a6778899dabbccdd030095b9d21f",
+      "encodeError": null,
+      "decodeError": null,
+      "canonical": "53435431010100030001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0001deef001122334c55a6778899dabbccdd030095b9d21f",
+      "unknown": "53435431010100030001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0001deef001122334c55a6778899dabbccdd030095b9d21f"
+    },
+    {
+      "name": "world-4",
+      "input": {
+        "trip": "00010203-0405-4c07-8809-0a0bfc0d0e0f",
+        "home": "00000000-0000-4c00-8000-0000b0000000",
+        "from": "ffffffff-ffff-4cff-bfff-ffff1fffffff",
+        "world": 4,
+        "packages": [],
+        "postcards": [
+          {
+            "from": "03142536-4758-4c7a-8b9c-adbe1fe0f102",
+            "world": 4,
+            "stamps": []
+          }
+        ]
+      },
+      "hex": "53435431010100040001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff00010314253647584c7a8b9cadbe1fe0f1020400ebf3fa0d",
+      "encodeError": null,
+      "decodeError": null,
+      "canonical": "53435431010100040001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff00010314253647584c7a8b9cadbe1fe0f1020400ebf3fa0d",
+      "unknown": "53435431010100040001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff00010314253647584c7a8b9cadbe1fe0f1020400ebf3fa0d"
+    },
+    {
+      "name": "world-5",
+      "input": {
+        "trip": "00010203-0405-4c07-8809-0a0bfc0d0e0f",
+        "home": "00000000-0000-4c00-8000-0000b0000000",
+        "from": "ffffffff-ffff-4cff-bfff-ffff1fffffff",
+        "world": 5,
+        "packages": [],
+        "postcards": [
+          {
+            "from": "28394a5b-6c7d-4c9f-b0c1-d2e384051627",
+            "world": 5,
+            "stamps": []
+          }
+        ]
+      },
+      "hex": "53435431010100050001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff000128394a5b6c7d4c9fb0c1d2e3840516270500040a5be8",
+      "encodeError": null,
+      "decodeError": null,
+      "canonical": "53435431010100050001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff000128394a5b6c7d4c9fb0c1d2e3840516270500040a5be8",
+      "unknown": "53435431010100050001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff000128394a5b6c7d4c9fb0c1d2e3840516270500040a5be8"
+    },
+    {
+      "name": "world-6",
+      "input": {
+        "trip": "00010203-0405-4c07-8809-0a0bfc0d0e0f",
+        "home": "00000000-0000-4c00-8000-0000b0000000",
+        "from": "ffffffff-ffff-4cff-bfff-ffff1fffffff",
+        "world": 6,
+        "packages": [],
+        "postcards": [
+          {
+            "from": "4d5e6f80-91a2-4cc4-95e6-f708192a3b4c",
+            "world": 6,
+            "stamps": []
+          }
+        ]
+      },
+      "hex": "53435431010100060001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff00014d5e6f8091a24cc495e6f708192a3b4c060068ab4d44",
+      "encodeError": null,
+      "decodeError": null,
+      "canonical": "53435431010100060001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff00014d5e6f8091a24cc495e6f708192a3b4c060068ab4d44",
+      "unknown": "53435431010100060001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff00014d5e6f8091a24cc495e6f708192a3b4c060068ab4d44"
+    },
+    {
+      "name": "world-7",
+      "input": {
+        "trip": "00010203-0405-4c07-8809-0a0bfc0d0e0f",
+        "home": "00000000-0000-4c00-8000-0000b0000000",
+        "from": "ffffffff-ffff-4cff-bfff-ffff1fffffff",
+        "world": 7,
+        "packages": [],
+        "postcards": [
+          {
+            "from": "728394a5-b6c7-4ce9-ba0b-1c2dae4f6071",
+            "world": 7,
+            "stamps": []
+          }
+        ]
+      },
+      "hex": "53435431010100070001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0001728394a5b6c74ce9ba0b1c2dae4f60710700db8a212b",
+      "encodeError": null,
+      "decodeError": null,
+      "canonical": "53435431010100070001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0001728394a5b6c74ce9ba0b1c2dae4f60710700db8a212b",
+      "unknown": "53435431010100070001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0001728394a5b6c74ce9ba0b1c2dae4f60710700db8a212b"
+    },
+    {
+      "name": "world-8",
+      "input": {
+        "trip": "00010203-0405-4c07-8809-0a0bfc0d0e0f",
+        "home": "00000000-0000-4c00-8000-0000b0000000",
+        "from": "ffffffff-ffff-4cff-bfff-ffff1fffffff",
+        "world": 8,
+        "packages": [],
+        "postcards": [
+          {
+            "from": "97a8b9ca-dbec-4c0e-9f30-4152c3748596",
+            "world": 8,
+            "stamps": []
+          }
+        ]
+      },
+      "hex": "53435431010100080001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff000197a8b9cadbec4c0e9f304152c37485960800f84c0455",
+      "encodeError": null,
+      "decodeError": null,
+      "canonical": "53435431010100080001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff000197a8b9cadbec4c0e9f304152c37485960800f84c0455",
+      "unknown": "53435431010100080001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff000197a8b9cadbec4c0e9f304152c37485960800f84c0455"
+    },
+    {
+      "name": "world-9",
+      "input": {
+        "trip": "00010203-0405-4c07-8809-0a0bfc0d0e0f",
+        "home": "00000000-0000-4c00-8000-0000b0000000",
+        "from": "ffffffff-ffff-4cff-bfff-ffff1fffffff",
+        "world": 9,
+        "packages": [],
+        "postcards": [
+          {
+            "from": "bccddeef-0011-4c33-8455-66779899aabb",
+            "world": 9,
+            "stamps": []
+          }
+        ]
+      },
+      "hex": "53435431010100090001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0001bccddeef00114c33845566779899aabb09009bf6734d",
+      "encodeError": null,
+      "decodeError": null,
+      "canonical": "53435431010100090001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0001bccddeef00114c33845566779899aabb09009bf6734d",
+      "unknown": "53435431010100090001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0001bccddeef00114c33845566779899aabb09009bf6734d"
+    },
+    {
+      "name": "world-10",
+      "input": {
+        "trip": "00010203-0405-4c07-8809-0a0bfc0d0e0f",
+        "home": "00000000-0000-4c00-8000-0000b0000000",
+        "from": "ffffffff-ffff-4cff-bfff-ffff1fffffff",
+        "world": 10,
+        "packages": [],
+        "postcards": [
+          {
+            "from": "e1f20314-2536-4c58-a97a-8b9c0dbecfe0",
+            "world": 10,
+            "stamps": []
+          }
+        ]
+      },
+      "hex": "534354310101000a0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0001e1f2031425364c58a97a8b9c0dbecfe00a00d348e909",
+      "encodeError": null,
+      "decodeError": null,
+      "canonical": "534354310101000a0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0001e1f2031425364c58a97a8b9c0dbecfe00a00d348e909",
+      "unknown": "534354310101000a0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0001e1f2031425364c58a97a8b9c0dbecfe00a00d348e909"
+    },
+    {
+      "name": "world-11",
+      "input": {
+        "trip": "00010203-0405-4c07-8809-0a0bfc0d0e0f",
+        "home": "00000000-0000-4c00-8000-0000b0000000",
+        "from": "ffffffff-ffff-4cff-bfff-ffff1fffffff",
+        "world": 11,
+        "packages": [],
+        "postcards": [
+          {
+            "from": "06172839-4a5b-4c7d-8e9f-b0c152e3f405",
+            "world": 11,
+            "stamps": []
+          }
+        ]
+      },
+      "hex": "534354310101000b0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0001061728394a5b4c7d8e9fb0c152e3f4050b00eb2811ff",
+      "encodeError": null,
+      "decodeError": null,
+      "canonical": "534354310101000b0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0001061728394a5b4c7d8e9fb0c152e3f4050b00eb2811ff",
+      "unknown": "534354310101000b0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0001061728394a5b4c7d8e9fb0c152e3f4050b00eb2811ff"
+    },
+    {
+      "name": "world-12",
+      "input": {
+        "trip": "00010203-0405-4c07-8809-0a0bfc0d0e0f",
+        "home": "00000000-0000-4c00-8000-0000b0000000",
+        "from": "ffffffff-ffff-4cff-bfff-ffff1fffffff",
+        "world": 12,
+        "packages": [],
+        "postcards": [
+          {
+            "from": "2b3c4d5e-6f80-4ca2-b3c4-d5e67708192a",
+            "world": 12,
+            "stamps": []
+          }
+        ]
+      },
+      "hex": "534354310101000c0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff00012b3c4d5e6f804ca2b3c4d5e67708192a0c0058a80922",
+      "encodeError": null,
+      "decodeError": null,
+      "canonical": "534354310101000c0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff00012b3c4d5e6f804ca2b3c4d5e67708192a0c0058a80922",
+      "unknown": "534354310101000c0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff00012b3c4d5e6f804ca2b3c4d5e67708192a0c0058a80922"
+    },
+    {
+      "name": "world-13",
+      "input": {
+        "trip": "00010203-0405-4c07-8809-0a0bfc0d0e0f",
+        "home": "00000000-0000-4c00-8000-0000b0000000",
+        "from": "ffffffff-ffff-4cff-bfff-ffff1fffffff",
+        "world": 13,
+        "packages": [],
+        "postcards": [
+          {
+            "from": "50617283-94a5-4cc7-98e9-fa0b2c2d3e4f",
+            "world": 13,
+            "stamps": []
+          }
+        ]
+      },
+      "hex": "534354310101000d0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff00015061728394a54cc798e9fa0b2c2d3e4f0d00a050a6f2",
+      "encodeError": null,
+      "decodeError": null,
+      "canonical": "534354310101000d0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff00015061728394a54cc798e9fa0b2c2d3e4f0d00a050a6f2",
+      "unknown": "534354310101000d0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff00015061728394a54cc798e9fa0b2c2d3e4f0d00a050a6f2"
+    },
+    {
+      "name": "world-14",
+      "input": {
+        "trip": "00010203-0405-4c07-8809-0a0bfc0d0e0f",
+        "home": "00000000-0000-4c00-8000-0000b0000000",
+        "from": "ffffffff-ffff-4cff-bfff-ffff1fffffff",
+        "world": 14,
+        "packages": [],
+        "postcards": [
+          {
+            "from": "758697a8-b9ca-4cec-bd0e-1f3001526374",
+            "world": 14,
+            "stamps": []
+          }
+        ]
+      },
+      "hex": "534354310101000e0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0001758697a8b9ca4cecbd0e1f30015263740e0041d058d5",
+      "encodeError": null,
+      "decodeError": null,
+      "canonical": "534354310101000e0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0001758697a8b9ca4cecbd0e1f30015263740e0041d058d5",
+      "unknown": "534354310101000e0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0001758697a8b9ca4cecbd0e1f30015263740e0041d058d5"
+    },
+    {
+      "name": "world-15",
+      "input": {
+        "trip": "00010203-0405-4c07-8809-0a0bfc0d0e0f",
+        "home": "00000000-0000-4c00-8000-0000b0000000",
+        "from": "ffffffff-ffff-4cff-bfff-ffff1fffffff",
+        "world": 15,
+        "packages": [],
+        "postcards": [
+          {
+            "from": "9aabbccd-deef-4c11-a233-4455d6778899",
+            "world": 15,
+            "stamps": []
+          }
+        ]
+      },
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff00019aabbccddeef4c11a2334455d67788990f00faa288dd",
+      "encodeError": null,
+      "decodeError": null,
+      "canonical": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff00019aabbccddeef4c11a2334455d67788990f00faa288dd",
+      "unknown": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff00019aabbccddeef4c11a2334455d67788990f00faa288dd"
+    },
+    {
+      "name": "max-packages",
+      "input": {
+        "trip": "00010203-0405-4c07-8809-0a0bfc0d0e0f",
+        "home": "00000000-0000-4c00-8000-0000b0000000",
+        "from": "ffffffff-ffff-4cff-bfff-ffff1fffffff",
+        "world": 0,
+        "packages": [
+          "test-public",
+          "another-public",
+          "café"
+        ],
+        "postcards": []
+      },
+      "hex": "53435431010100000001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18663d70907cbe0833008efb9955",
+      "encodeError": null,
+      "decodeError": null,
+      "canonical": "53435431010100000001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18663d70907cbe0833008efb9955",
+      "unknown": "53435431010100000001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0000313dcc4f"
+    },
+    {
+      "name": "too-many-packages",
+      "input": {
+        "trip": "00010203-0405-4c07-8809-0a0bfc0d0e0f",
+        "home": "00000000-0000-4c00-8000-0000b0000000",
+        "from": "ffffffff-ffff-4cff-bfff-ffff1fffffff",
+        "world": 0,
+        "packages": [
+          "test-public",
+          "another-public",
+          "café",
+          "星🌍"
+        ],
+        "postcards": []
+      },
+      "hex": null,
+      "encodeError": "size",
+      "decodeError": null,
+      "canonical": null,
+      "unknown": null
+    },
+    {
+      "name": "eight-cards",
+      "input": {
+        "trip": "00010203-0405-4c07-8809-0a0bfc0d0e0f",
+        "home": "00000000-0000-4c00-8000-0000b0000000",
+        "from": "ffffffff-ffff-4cff-bfff-ffff1fffffff",
+        "world": 0,
+        "packages": [],
+        "postcards": [
+          {
+            "from": "6f8091a2-b3c4-4ce6-b708-192a5b4c5d6e",
+            "world": 0,
+            "stamps": []
+          },
+          {
+            "from": "94a5b6c7-d8e9-4c0b-9c2d-3e4fb0718293",
+            "world": 1,
+            "stamps": []
+          },
+          {
+            "from": "b9cadbec-fd0e-4c30-8152-63748596a7b8",
+            "world": 2,
+            "stamps": []
+          },
+          {
+            "from": "deef0011-2233-4c55-a677-8899dabbccdd",
+            "world": 3,
+            "stamps": []
+          },
+          {
+            "from": "03142536-4758-4c7a-8b9c-adbe1fe0f102",
+            "world": 4,
+            "stamps": []
+          },
+          {
+            "from": "28394a5b-6c7d-4c9f-b0c1-d2e384051627",
+            "world": 5,
+            "stamps": []
+          },
+          {
+            "from": "4d5e6f80-91a2-4cc4-95e6-f708192a3b4c",
+            "world": 6,
+            "stamps": []
+          },
+          {
+            "from": "728394a5-b6c7-4ce9-ba0b-1c2dae4f6071",
+            "world": 7,
+            "stamps": []
+          }
+        ]
+      },
+      "hex": "53435431010100000001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff00086f8091a2b3c44ce6b708192a5b4c5d6e000094a5b6c7d8e94c0b9c2d3e4fb07182930100b9cadbecfd0e4c30815263748596a7b80200deef001122334c55a6778899dabbccdd03000314253647584c7a8b9cadbe1fe0f102040028394a5b6c7d4c9fb0c1d2e38405162705004d5e6f8091a24cc495e6f708192a3b4c0600728394a5b6c74ce9ba0b1c2dae4f6071070091a26bb1",
+      "encodeError": null,
+      "decodeError": null,
+      "canonical": "53435431010100000001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff00086f8091a2b3c44ce6b708192a5b4c5d6e000094a5b6c7d8e94c0b9c2d3e4fb07182930100b9cadbecfd0e4c30815263748596a7b80200deef001122334c55a6778899dabbccdd03000314253647584c7a8b9cadbe1fe0f102040028394a5b6c7d4c9fb0c1d2e38405162705004d5e6f8091a24cc495e6f708192a3b4c0600728394a5b6c74ce9ba0b1c2dae4f6071070091a26bb1",
+      "unknown": "53435431010100000001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff00086f8091a2b3c44ce6b708192a5b4c5d6e000094a5b6c7d8e94c0b9c2d3e4fb07182930100b9cadbecfd0e4c30815263748596a7b80200deef001122334c55a6778899dabbccdd03000314253647584c7a8b9cadbe1fe0f102040028394a5b6c7d4c9fb0c1d2e38405162705004d5e6f8091a24cc495e6f708192a3b4c0600728394a5b6c74ce9ba0b1c2dae4f6071070091a26bb1"
+    },
+    {
+      "name": "nine-cards",
+      "input": {
+        "trip": "00010203-0405-4c07-8809-0a0bfc0d0e0f",
+        "home": "00000000-0000-4c00-8000-0000b0000000",
+        "from": "ffffffff-ffff-4cff-bfff-ffff1fffffff",
+        "world": 0,
+        "packages": [],
+        "postcards": [
+          {
+            "from": "6f8091a2-b3c4-4ce6-b708-192a5b4c5d6e",
+            "world": 0,
+            "stamps": []
+          },
+          {
+            "from": "94a5b6c7-d8e9-4c0b-9c2d-3e4fb0718293",
+            "world": 1,
+            "stamps": []
+          },
+          {
+            "from": "b9cadbec-fd0e-4c30-8152-63748596a7b8",
+            "world": 2,
+            "stamps": []
+          },
+          {
+            "from": "deef0011-2233-4c55-a677-8899dabbccdd",
+            "world": 3,
+            "stamps": []
+          },
+          {
+            "from": "03142536-4758-4c7a-8b9c-adbe1fe0f102",
+            "world": 4,
+            "stamps": []
+          },
+          {
+            "from": "28394a5b-6c7d-4c9f-b0c1-d2e384051627",
+            "world": 5,
+            "stamps": []
+          },
+          {
+            "from": "4d5e6f80-91a2-4cc4-95e6-f708192a3b4c",
+            "world": 6,
+            "stamps": []
+          },
+          {
+            "from": "728394a5-b6c7-4ce9-ba0b-1c2dae4f6071",
+            "world": 7,
+            "stamps": []
+          },
+          {
+            "from": "97a8b9ca-dbec-4c0e-9f30-4152c3748596",
+            "world": 8,
+            "stamps": []
+          }
+        ]
+      },
+      "hex": null,
+      "encodeError": "size",
+      "decodeError": null,
+      "canonical": null,
+      "unknown": null
+    },
+    {
+      "name": "64-stamps",
+      "input": {
+        "trip": "00010203-0405-4c07-8809-0a0bfc0d0e0f",
+        "home": "00000000-0000-4c00-8000-0000b0000000",
+        "from": "ffffffff-ffff-4cff-bfff-ffff1fffffff",
+        "world": 0,
+        "packages": [],
+        "postcards": [
+          {
+            "from": "6f8091a2-b3c4-4ce6-b708-192a5b4c5d6e",
+            "world": 0,
+            "stamps": [
+              {
+                "kind": "graduation"
+              },
+              {
+                "kind": "graduation"
+              },
+              {
+                "kind": "graduation"
+              },
+              {
+                "kind": "graduation"
+              },
+              {
+                "kind": "graduation"
+              },
+              {
+                "kind": "graduation"
+              },
+              {
+                "kind": "graduation"
+              },
+              {
+                "kind": "graduation"
+              },
+              {
+                "kind": "graduation"
+              },
+              {
+                "kind": "graduation"
+              },
+              {
+                "kind": "graduation"
+              },
+              {
+                "kind": "graduation"
+              },
+              {
+                "kind": "graduation"
+              },
+              {
+                "kind": "graduation"
+              },
+              {
+                "kind": "graduation"
+              },
+              {
+                "kind": "graduation"
+              },
+              {
+                "kind": "graduation"
+              },
+              {
+                "kind": "graduation"
+              },
+              {
+                "kind": "graduation"
+              },
+              {
+                "kind": "graduation"
+              },
+              {
+                "kind": "graduation"
+              },
+              {
+                "kind": "graduation"
+              },
+              {
+                "kind": "graduation"
+              },
+              {
+                "kind": "graduation"
+              },
+              {
+                "kind": "graduation"
+              },
+              {
+                "kind": "graduation"
+              },
+              {
+                "kind": "graduation"
+              },
+              {
+                "kind": "graduation"
+              },
+              {
+                "kind": "graduation"
+              },
+              {
+                "kind": "graduation"
+              },
+              {
+                "kind": "graduation"
+              },
+              {
+                "kind": "graduation"
+              },
+              {
+                "kind": "graduation"
+              },
+              {
+                "kind": "graduation"
+              },
+              {
+                "kind": "graduation"
+              },
+              {
+                "kind": "graduation"
+              },
+              {
+                "kind": "graduation"
+              },
+              {
+                "kind": "graduation"
+              },
+              {
+                "kind": "graduation"
+              },
+              {
+                "kind": "graduation"
+              },
+              {
+                "kind": "graduation"
+              },
+              {
+                "kind": "graduation"
+              },
+              {
+                "kind": "graduation"
+              },
+              {
+                "kind": "graduation"
+              },
+              {
+                "kind": "graduation"
+              },
+              {
+                "kind": "graduation"
+              },
+              {
+                "kind": "graduation"
+              },
+              {
+                "kind": "graduation"
+              },
+              {
+                "kind": "graduation"
+              },
+              {
+                "kind": "graduation"
+              },
+              {
+                "kind": "graduation"
+              },
+              {
+                "kind": "graduation"
+              },
+              {
+                "kind": "graduation"
+              },
+              {
+                "kind": "graduation"
+              },
+              {
+                "kind": "graduation"
+              },
+              {
+                "kind": "graduation"
+              },
+              {
+                "kind": "graduation"
+              },
+              {
+                "kind": "graduation"
+              },
+              {
+                "kind": "graduation"
+              },
+              {
+                "kind": "graduation"
+              },
+              {
+                "kind": "graduation"
+              },
+              {
+                "kind": "graduation"
+              },
+              {
+                "kind": "graduation"
+              },
+              {
+                "kind": "graduation"
+              }
+            ]
+          }
+        ]
+      },
+      "hex": "53435431010100000001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff00016f8091a2b3c44ce6b708192a5b4c5d6e0040020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202025082d6a3",
+      "encodeError": null,
+      "decodeError": null,
+      "canonical": "53435431010100000001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff00016f8091a2b3c44ce6b708192a5b4c5d6e0040020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202025082d6a3",
+      "unknown": "53435431010100000001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff00016f8091a2b3c44ce6b708192a5b4c5d6e0040020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202025082d6a3"
+    },
+    {
+      "name": "65-stamps",
+      "input": {
+        "trip": "00010203-0405-4c07-8809-0a0bfc0d0e0f",
+        "home": "00000000-0000-4c00-8000-0000b0000000",
+        "from": "ffffffff-ffff-4cff-bfff-ffff1fffffff",
+        "world": 0,
+        "packages": [],
+        "postcards": [
+          {
+            "from": "6f8091a2-b3c4-4ce6-b708-192a5b4c5d6e",
+            "world": 0,
+            "stamps": [
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              }
+            ]
+          }
+        ]
+      },
+      "hex": null,
+      "encodeError": "size",
+      "decodeError": null,
+      "canonical": null,
+      "unknown": null
+    },
+    {
+      "name": "exact-512",
+      "input": {
+        "trip": "00010203-0405-4c07-8809-0a0bfc0d0e0f",
+        "home": "00000000-0000-4c00-8000-0000b0000000",
+        "from": "ffffffff-ffff-4cff-bfff-ffff1fffffff",
+        "world": 0,
+        "packages": [],
+        "postcards": [
+          {
+            "from": "6f8091a2-b3c4-4ce6-b708-192a5b4c5d6e",
+            "world": 0,
+            "stamps": [
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              }
+            ]
+          },
+          {
+            "from": "94a5b6c7-d8e9-4c0b-9c2d-3e4fb0718293",
+            "world": 1,
+            "stamps": [
+              {
+                "kind": "game",
+                "game": "another-public"
+              },
+              {
+                "kind": "game",
+                "game": "another-public"
+              },
+              {
+                "kind": "game",
+                "game": "another-public"
+              },
+              {
+                "kind": "game",
+                "game": "another-public"
+              },
+              {
+                "kind": "game",
+                "game": "another-public"
+              },
+              {
+                "kind": "game",
+                "game": "another-public"
+              },
+              {
+                "kind": "game",
+                "game": "another-public"
+              },
+              {
+                "kind": "game",
+                "game": "another-public"
+              },
+              {
+                "kind": "game",
+                "game": "another-public"
+              },
+              {
+                "kind": "game",
+                "game": "another-public"
+              },
+              {
+                "kind": "game",
+                "game": "another-public"
+              },
+              {
+                "kind": "game",
+                "game": "another-public"
+              },
+              {
+                "kind": "game",
+                "game": "another-public"
+              },
+              {
+                "kind": "game",
+                "game": "another-public"
+              },
+              {
+                "kind": "game",
+                "game": "another-public"
+              },
+              {
+                "kind": "game",
+                "game": "another-public"
+              },
+              {
+                "kind": "game",
+                "game": "another-public"
+              },
+              {
+                "kind": "game",
+                "game": "another-public"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              }
+            ]
+          }
+        ]
+      },
+      "hex": "53435431010100000001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff00026f8091a2b3c44ce6b708192a5b4c5d6e00400009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff1894a5b6c7d8e94c0b9c2d3e4fb0718293011600663d709000663d709000663d709000663d709000663d709000663d709000663d709000663d709000663d709000663d709000663d709000663d709000663d709000663d709000663d709000663d709000663d709000663d709003030303d5358bbd",
+      "encodeError": null,
+      "decodeError": null,
+      "canonical": "53435431010100000001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff00026f8091a2b3c44ce6b708192a5b4c5d6e00400009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff180009a3ff1894a5b6c7d8e94c0b9c2d3e4fb0718293011600663d709000663d709000663d709000663d709000663d709000663d709000663d709000663d709000663d709000663d709000663d709000663d709000663d709000663d709000663d709000663d709000663d709000663d709003030303d5358bbd",
+      "unknown": "53435431010100000001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff00026f8091a2b3c44ce6b708192a5b4c5d6e00400303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030394a5b6c7d8e94c0b9c2d3e4fb0718293011603030303030303030303030303030303030303030303b0b2203b"
+    },
+    {
+      "name": "over-512",
+      "input": {
+        "trip": "00010203-0405-4c07-8809-0a0bfc0d0e0f",
+        "home": "00000000-0000-4c00-8000-0000b0000000",
+        "from": "ffffffff-ffff-4cff-bfff-ffff1fffffff",
+        "world": 0,
+        "packages": [],
+        "postcards": [
+          {
+            "from": "6f8091a2-b3c4-4ce6-b708-192a5b4c5d6e",
+            "world": 0,
+            "stamps": [
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              }
+            ]
+          },
+          {
+            "from": "94a5b6c7-d8e9-4c0b-9c2d-3e4fb0718293",
+            "world": 1,
+            "stamps": [
+              {
+                "kind": "game",
+                "game": "another-public"
+              },
+              {
+                "kind": "game",
+                "game": "another-public"
+              },
+              {
+                "kind": "game",
+                "game": "another-public"
+              },
+              {
+                "kind": "game",
+                "game": "another-public"
+              },
+              {
+                "kind": "game",
+                "game": "another-public"
+              },
+              {
+                "kind": "game",
+                "game": "another-public"
+              },
+              {
+                "kind": "game",
+                "game": "another-public"
+              },
+              {
+                "kind": "game",
+                "game": "another-public"
+              },
+              {
+                "kind": "game",
+                "game": "another-public"
+              },
+              {
+                "kind": "game",
+                "game": "another-public"
+              },
+              {
+                "kind": "game",
+                "game": "another-public"
+              },
+              {
+                "kind": "game",
+                "game": "another-public"
+              },
+              {
+                "kind": "game",
+                "game": "another-public"
+              },
+              {
+                "kind": "game",
+                "game": "another-public"
+              },
+              {
+                "kind": "game",
+                "game": "another-public"
+              },
+              {
+                "kind": "game",
+                "game": "another-public"
+              },
+              {
+                "kind": "game",
+                "game": "another-public"
+              },
+              {
+                "kind": "game",
+                "game": "another-public"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "mystery"
+              },
+              {
+                "kind": "game",
+                "game": "test-public"
+              }
+            ]
+          }
+        ]
+      },
+      "hex": null,
+      "encodeError": "size",
+      "decodeError": null,
+      "canonical": null,
+      "unknown": null
+    },
+    {
+      "name": "encode-world-255-decode-reject",
+      "input": {
+        "trip": "00010203-0405-4c07-8809-0a0bfc0d0e0f",
+        "home": "00000000-0000-4c00-8000-0000b0000000",
+        "from": "ffffffff-ffff-4cff-bfff-ffff1fffffff",
+        "world": 255,
+        "packages": [],
+        "postcards": []
+      },
+      "hex": "53435431010100ff0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0000ef64c975",
+      "encodeError": null,
+      "decodeError": "malformed",
+      "canonical": null,
+      "unknown": null
+    },
+    {
+      "name": "encode-card-world-16-decode-reject",
+      "input": {
+        "trip": "00010203-0405-4c07-8809-0a0bfc0d0e0f",
+        "home": "00000000-0000-4c00-8000-0000b0000000",
+        "from": "ffffffff-ffff-4cff-bfff-ffff1fffffff",
+        "world": 0,
+        "packages": [],
+        "postcards": [
+          {
+            "from": "6f8091a2-b3c4-4ce6-b708-192a5b4c5d6e",
+            "world": 16,
+            "stamps": []
+          }
+        ]
+      },
+      "hex": "53435431010100000001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff00016f8091a2b3c44ce6b708192a5b4c5d6e1000302c80fb",
+      "encodeError": null,
+      "decodeError": "malformed",
+      "canonical": null,
+      "unknown": null
+    },
+    {
+      "name": "encode-duplicate-decode-reject",
+      "input": {
+        "trip": "00010203-0405-4c07-8809-0a0bfc0d0e0f",
+        "home": "00000000-0000-4c00-8000-0000b0000000",
+        "from": "ffffffff-ffff-4cff-bfff-ffff1fffffff",
+        "world": 0,
+        "packages": [],
+        "postcards": [
+          {
+            "from": "6f8091a2-b3c4-4ce6-b708-192a5b4c5d6e",
+            "world": 0,
+            "stamps": []
+          },
+          {
+            "from": "6f8091a2-b3c4-4ce6-b708-192a5b4c5d6e",
+            "world": 0,
+            "stamps": []
+          }
+        ]
+      },
+      "hex": "53435431010100000001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff00026f8091a2b3c44ce6b708192a5b4c5d6e00006f8091a2b3c44ce6b708192a5b4c5d6e000098dfa222",
+      "encodeError": null,
+      "decodeError": "malformed",
+      "canonical": null,
+      "unknown": null
+    }
+  ],
+  "malformed": [
+    {
+      "name": "truncate-0",
+      "hex": "",
+      "error": "size"
+    },
+    {
+      "name": "truncate-1",
+      "hex": "53",
+      "error": "size"
+    },
+    {
+      "name": "truncate-2",
+      "hex": "5343",
+      "error": "size"
+    },
+    {
+      "name": "truncate-3",
+      "hex": "534354",
+      "error": "size"
+    },
+    {
+      "name": "truncate-4",
+      "hex": "53435431",
+      "error": "size"
+    },
+    {
+      "name": "truncate-5",
+      "hex": "5343543101",
+      "error": "size"
+    },
+    {
+      "name": "truncate-6",
+      "hex": "534354310101",
+      "error": "size"
+    },
+    {
+      "name": "truncate-7",
+      "hex": "53435431010100",
+      "error": "size"
+    },
+    {
+      "name": "truncate-8",
+      "hex": "534354310101000f",
+      "error": "size"
+    },
+    {
+      "name": "truncate-9",
+      "hex": "534354310101000f00",
+      "error": "size"
+    },
+    {
+      "name": "truncate-10",
+      "hex": "534354310101000f0001",
+      "error": "size"
+    },
+    {
+      "name": "truncate-11",
+      "hex": "534354310101000f000102",
+      "error": "size"
+    },
+    {
+      "name": "truncate-12",
+      "hex": "534354310101000f00010203",
+      "error": "size"
+    },
+    {
+      "name": "truncate-13",
+      "hex": "534354310101000f0001020304",
+      "error": "size"
+    },
+    {
+      "name": "truncate-14",
+      "hex": "534354310101000f000102030405",
+      "error": "size"
+    },
+    {
+      "name": "truncate-15",
+      "hex": "534354310101000f0001020304054c",
+      "error": "size"
+    },
+    {
+      "name": "truncate-16",
+      "hex": "534354310101000f0001020304054c07",
+      "error": "size"
+    },
+    {
+      "name": "truncate-17",
+      "hex": "534354310101000f0001020304054c0788",
+      "error": "size"
+    },
+    {
+      "name": "truncate-18",
+      "hex": "534354310101000f0001020304054c078809",
+      "error": "size"
+    },
+    {
+      "name": "truncate-19",
+      "hex": "534354310101000f0001020304054c0788090a",
+      "error": "size"
+    },
+    {
+      "name": "truncate-20",
+      "hex": "534354310101000f0001020304054c0788090a0b",
+      "error": "size"
+    },
+    {
+      "name": "truncate-21",
+      "hex": "534354310101000f0001020304054c0788090a0bfc",
+      "error": "size"
+    },
+    {
+      "name": "truncate-22",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d",
+      "error": "size"
+    },
+    {
+      "name": "truncate-23",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e",
+      "error": "size"
+    },
+    {
+      "name": "truncate-24",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f",
+      "error": "size"
+    },
+    {
+      "name": "truncate-25",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f00",
+      "error": "size"
+    },
+    {
+      "name": "truncate-26",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000",
+      "error": "size"
+    },
+    {
+      "name": "truncate-27",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f000000",
+      "error": "size"
+    },
+    {
+      "name": "truncate-28",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f00000000",
+      "error": "size"
+    },
+    {
+      "name": "truncate-29",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000",
+      "error": "size"
+    },
+    {
+      "name": "truncate-30",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f000000000000",
+      "error": "size"
+    },
+    {
+      "name": "truncate-31",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c",
+      "error": "size"
+    },
+    {
+      "name": "truncate-32",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c00",
+      "error": "size"
+    },
+    {
+      "name": "truncate-33",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080",
+      "error": "size"
+    },
+    {
+      "name": "truncate-34",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c008000",
+      "error": "size"
+    },
+    {
+      "name": "truncate-35",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c00800000",
+      "error": "size"
+    },
+    {
+      "name": "truncate-36",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000",
+      "error": "size"
+    },
+    {
+      "name": "truncate-37",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0",
+      "error": "size"
+    },
+    {
+      "name": "truncate-38",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b000",
+      "error": "size"
+    },
+    {
+      "name": "truncate-39",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b00000",
+      "error": "size"
+    },
+    {
+      "name": "truncate-40",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000",
+      "error": "size"
+    },
+    {
+      "name": "truncate-41",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ff",
+      "error": "size"
+    },
+    {
+      "name": "truncate-42",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffff",
+      "error": "size"
+    },
+    {
+      "name": "truncate-43",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffff",
+      "error": "size"
+    },
+    {
+      "name": "truncate-44",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffff",
+      "error": "size"
+    },
+    {
+      "name": "truncate-45",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffff",
+      "error": "size"
+    },
+    {
+      "name": "truncate-46",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff",
+      "error": "size"
+    },
+    {
+      "name": "truncate-47",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4c",
+      "error": "size"
+    },
+    {
+      "name": "truncate-48",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cff",
+      "error": "size"
+    },
+    {
+      "name": "truncate-49",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbf",
+      "error": "size"
+    },
+    {
+      "name": "truncate-50",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfff",
+      "error": "size"
+    },
+    {
+      "name": "truncate-51",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffff",
+      "error": "size"
+    },
+    {
+      "name": "truncate-52",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff",
+      "error": "size"
+    },
+    {
+      "name": "truncate-53",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1f",
+      "error": "size"
+    },
+    {
+      "name": "truncate-54",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fff",
+      "error": "size"
+    },
+    {
+      "name": "truncate-55",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffff",
+      "error": "size"
+    },
+    {
+      "name": "truncate-56",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff",
+      "error": "size"
+    },
+    {
+      "name": "truncate-57",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff03",
+      "error": "size"
+    },
+    {
+      "name": "truncate-58",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309",
+      "error": "size"
+    },
+    {
+      "name": "truncate-59",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3",
+      "error": "size"
+    },
+    {
+      "name": "truncate-60",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff",
+      "error": "size"
+    },
+    {
+      "name": "truncate-61",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18",
+      "error": "size"
+    },
+    {
+      "name": "truncate-62",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b9",
+      "error": "tampered"
+    },
+    {
+      "name": "truncate-63",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f",
+      "error": "tampered"
+    },
+    {
+      "name": "truncate-64",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f75",
+      "error": "tampered"
+    },
+    {
+      "name": "truncate-65",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b",
+      "error": "tampered"
+    },
+    {
+      "name": "truncate-66",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41",
+      "error": "tampered"
+    },
+    {
+      "name": "truncate-67",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8",
+      "error": "tampered"
+    },
+    {
+      "name": "truncate-68",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f8",
+      "error": "tampered"
+    },
+    {
+      "name": "truncate-69",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867",
+      "error": "tampered"
+    },
+    {
+      "name": "truncate-70",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f86702",
+      "error": "tampered"
+    },
+    {
+      "name": "truncate-71",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f",
+      "error": "tampered"
+    },
+    {
+      "name": "truncate-72",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f80",
+      "error": "tampered"
+    },
+    {
+      "name": "truncate-73",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091",
+      "error": "tampered"
+    },
+    {
+      "name": "truncate-74",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2",
+      "error": "tampered"
+    },
+    {
+      "name": "truncate-75",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3",
+      "error": "tampered"
+    },
+    {
+      "name": "truncate-76",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c4",
+      "error": "tampered"
+    },
+    {
+      "name": "truncate-77",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44c",
+      "error": "tampered"
+    },
+    {
+      "name": "truncate-78",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6",
+      "error": "tampered"
+    },
+    {
+      "name": "truncate-79",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b7",
+      "error": "tampered"
+    },
+    {
+      "name": "truncate-80",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708",
+      "error": "tampered"
+    },
+    {
+      "name": "truncate-81",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b70819",
+      "error": "tampered"
+    },
+    {
+      "name": "truncate-82",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a",
+      "error": "tampered"
+    },
+    {
+      "name": "truncate-83",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b",
+      "error": "tampered"
+    },
+    {
+      "name": "truncate-84",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c",
+      "error": "tampered"
+    },
+    {
+      "name": "truncate-85",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d",
+      "error": "tampered"
+    },
+    {
+      "name": "truncate-86",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e",
+      "error": "tampered"
+    },
+    {
+      "name": "truncate-87",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e00",
+      "error": "tampered"
+    },
+    {
+      "name": "truncate-88",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005",
+      "error": "tampered"
+    },
+    {
+      "name": "truncate-89",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e000500",
+      "error": "tampered"
+    },
+    {
+      "name": "truncate-90",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007c",
+      "error": "tampered"
+    },
+    {
+      "name": "truncate-91",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe",
+      "error": "tampered"
+    },
+    {
+      "name": "truncate-92",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe08",
+      "error": "tampered"
+    },
+    {
+      "name": "truncate-93",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe0833",
+      "error": "tampered"
+    },
+    {
+      "name": "truncate-94",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301",
+      "error": "tampered"
+    },
+    {
+      "name": "truncate-95",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe08330102",
+      "error": "tampered"
+    },
+    {
+      "name": "truncate-96",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe0833010203",
+      "error": "tampered"
+    },
+    {
+      "name": "truncate-97",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300",
+      "error": "tampered"
+    },
+    {
+      "name": "truncate-98",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b9",
+      "error": "tampered"
+    },
+    {
+      "name": "truncate-99",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f",
+      "error": "tampered"
+    },
+    {
+      "name": "truncate-100",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f75",
+      "error": "tampered"
+    },
+    {
+      "name": "truncate-101",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b",
+      "error": "tampered"
+    },
+    {
+      "name": "truncate-102",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94",
+      "error": "tampered"
+    },
+    {
+      "name": "truncate-103",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5",
+      "error": "tampered"
+    },
+    {
+      "name": "truncate-104",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6",
+      "error": "tampered"
+    },
+    {
+      "name": "truncate-105",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7",
+      "error": "tampered"
+    },
+    {
+      "name": "truncate-106",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8",
+      "error": "tampered"
+    },
+    {
+      "name": "truncate-107",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e9",
+      "error": "tampered"
+    },
+    {
+      "name": "truncate-108",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c",
+      "error": "tampered"
+    },
+    {
+      "name": "truncate-109",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b",
+      "error": "tampered"
+    },
+    {
+      "name": "truncate-110",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c",
+      "error": "tampered"
+    },
+    {
+      "name": "truncate-111",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d",
+      "error": "tampered"
+    },
+    {
+      "name": "truncate-112",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e",
+      "error": "tampered"
+    },
+    {
+      "name": "truncate-113",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4f",
+      "error": "tampered"
+    },
+    {
+      "name": "truncate-114",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb0",
+      "error": "tampered"
+    },
+    {
+      "name": "truncate-115",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb071",
+      "error": "tampered"
+    },
+    {
+      "name": "truncate-116",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182",
+      "error": "tampered"
+    },
+    {
+      "name": "truncate-117",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb0718293",
+      "error": "tampered"
+    },
+    {
+      "name": "truncate-118",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb071829301",
+      "error": "tampered"
+    },
+    {
+      "name": "truncate-119",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103",
+      "error": "tampered"
+    },
+    {
+      "name": "truncate-120",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb0718293010303",
+      "error": "tampered"
+    },
+    {
+      "name": "truncate-121",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb071829301030303",
+      "error": "tampered"
+    },
+    {
+      "name": "truncate-122",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303",
+      "error": "tampered"
+    },
+    {
+      "name": "truncate-123",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e7",
+      "error": "tampered"
+    },
+    {
+      "name": "truncate-124",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772",
+      "error": "tampered"
+    },
+    {
+      "name": "truncate-125",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d2",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-0",
+      "hex": "524354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "not-capsule"
+    },
+    {
+      "name": "tamper-1",
+      "hex": "534254310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "not-capsule"
+    },
+    {
+      "name": "tamper-2",
+      "hex": "534355310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "not-capsule"
+    },
+    {
+      "name": "tamper-3",
+      "hex": "534354300101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "not-capsule"
+    },
+    {
+      "name": "tamper-4",
+      "hex": "534354310001000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "version"
+    },
+    {
+      "name": "tamper-5",
+      "hex": "534354310100000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "version"
+    },
+    {
+      "name": "tamper-6",
+      "hex": "534354310101010f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-7",
+      "hex": "534354310101000e0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-8",
+      "hex": "534354310101000f0101020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-9",
+      "hex": "534354310101000f0000020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-10",
+      "hex": "534354310101000f0001030304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-11",
+      "hex": "534354310101000f0001020204054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-12",
+      "hex": "534354310101000f0001020305054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-13",
+      "hex": "534354310101000f0001020304044c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-14",
+      "hex": "534354310101000f0001020304054d0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-15",
+      "hex": "534354310101000f0001020304054c0688090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-16",
+      "hex": "534354310101000f0001020304054c0789090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-17",
+      "hex": "534354310101000f0001020304054c0788080a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-18",
+      "hex": "534354310101000f0001020304054c0788090b0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-19",
+      "hex": "534354310101000f0001020304054c0788090a0afc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-20",
+      "hex": "534354310101000f0001020304054c0788090a0bfd0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-21",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0c0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-22",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0f0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-23",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0e0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-24",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0100000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-25",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0001000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-26",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000010000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-27",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000100004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-28",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000001004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-29",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000014c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-30",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004d0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-31",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0180000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-32",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0081000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-33",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080010000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-34",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000100b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-35",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000001b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-36",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b1000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-37",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0010000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-38",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000100ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-39",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000001ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-40",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000feffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-41",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000fffeffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-42",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000fffffeffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-43",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000fffffffeffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-44",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000fffffffffeff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-45",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000fffffffffffe4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-46",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4dffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-47",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cfebfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-48",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbeffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-49",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbffeffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-50",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbffffeff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-51",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbffffffe1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-52",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1effffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-53",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1ffeffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-54",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1ffffeff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-55",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1ffffffe0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-56",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0209a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-57",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0308a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-58",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a2ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-59",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3fe18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-60",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff19b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-61",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b89f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-62",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99e759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-63",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f749b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-64",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759a41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-65",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b40a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-66",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a9f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-67",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f967026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-68",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f866026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-69",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867036f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-70",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026e8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-71",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8191a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-72",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8090a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-73",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a3b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-74",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b2c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-75",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c54ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-76",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44de6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-77",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce7b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-78",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b608192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-79",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b709192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-80",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708182a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-81",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192b5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-82",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5a4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-83",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4d5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-84",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5c6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-85",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6f0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-86",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0105007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-87",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0004007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-88",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005017cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-89",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007dbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-90",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbf083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-91",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe093301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-92",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083201020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-93",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083300020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-94",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301030300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-95",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020200b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-96",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020301b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-97",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b89f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-98",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99e759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-99",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f749b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-100",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759a94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-101",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b95a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-102",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a4b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-103",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b7c7d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-104",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c6d8e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-105",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d9e94c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-106",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e84c0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-107",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94d0b9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-108",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0a9c2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-109",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9d2d3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-110",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2c3e4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-111",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3f4fb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-112",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4eb07182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-113",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb17182930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-114",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07082930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-115",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07183930103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-116",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182920103030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-117",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930003030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-118",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930102030303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-119",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103020303e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-120",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030203e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-121",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030302e772d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-122",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e672d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-123",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e773d25b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-124",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d35b",
+      "error": "tampered"
+    },
+    {
+      "name": "tamper-125",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb07182930103030303e772d25a",
+      "error": "tampered"
+    },
+    {
+      "name": "recrc-magic",
+      "hex": "00435431010100000001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0000ab75f9e1",
+      "error": "not-capsule"
+    },
+    {
+      "name": "recrc-version-0",
+      "hex": "53435431000100000001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff00008794694e",
+      "error": "version"
+    },
+    {
+      "name": "recrc-version-2",
+      "hex": "53435431020100000001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0000ebc7224d",
+      "error": "version"
+    },
+    {
+      "name": "recrc-table-0",
+      "hex": "53435431010000000001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0000708d1431",
+      "error": "version"
+    },
+    {
+      "name": "recrc-table-2",
+      "hex": "53435431010200000001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0000f2eda5cc",
+      "error": "version"
+    },
+    {
+      "name": "recrc-flags",
+      "hex": "53435431010101000001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff00003cc10026",
+      "error": "malformed"
+    },
+    {
+      "name": "recrc-world",
+      "hex": "53435431010100100001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0000ca3c385a",
+      "error": "malformed"
+    },
+    {
+      "name": "recrc-trip-id",
+      "hex": "5343543101010000000102030405000788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0000e626fce7",
+      "error": "malformed"
+    },
+    {
+      "name": "recrc-home-id",
+      "hex": "53435431010100000001020304054c0788090a0bfc0d0e0f000000000000000080000000b0000000ffffffffffff4cffbfffffff1fffffff0000ed66cb29",
+      "error": "malformed"
+    },
+    {
+      "name": "recrc-from-id",
+      "hex": "53435431010100000001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff00ffbfffffff1fffffff000040c7a57a",
+      "error": "malformed"
+    },
+    {
+      "name": "recrc-package-count",
+      "hex": "53435431010100000001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff040035f8a02b",
+      "error": "malformed"
+    },
+    {
+      "name": "recrc-card-count",
+      "hex": "53435431010100000001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff000995851036",
+      "error": "malformed"
+    },
+    {
+      "name": "recrc-card-id",
+      "hex": "53435431010100000001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff00016f8091a2b3c400e6b708192a5b4c5d6e000010c42b84",
+      "error": "malformed"
+    },
+    {
+      "name": "recrc-card-world",
+      "hex": "53435431010100000001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff00016f8091a2b3c44ce6b708192a5b4c5d6e1000302c80fb",
+      "error": "malformed"
+    },
+    {
+      "name": "recrc-stamp-count",
+      "hex": "53435431010100000001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff00016f8091a2b3c44ce6b708192a5b4c5d6e0041674f99b0",
+      "error": "malformed"
+    },
+    {
+      "name": "recrc-stamp-kind",
+      "hex": "53435431010100000001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff00016f8091a2b3c44ce6b708192a5b4c5d6e000104250970f6",
+      "error": "malformed"
+    },
+    {
+      "name": "structural-truncate-58",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309b18554e1",
+      "error": "malformed"
+    },
+    {
+      "name": "structural-truncate-59",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a340ca5a21",
+      "error": "malformed"
+    },
+    {
+      "name": "structural-truncate-60",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff5a1bfd89",
+      "error": "malformed"
+    },
+    {
+      "name": "structural-truncate-61",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff182a32594a",
+      "error": "malformed"
+    },
+    {
+      "name": "structural-truncate-62",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b941744ebb",
+      "error": "malformed"
+    },
+    {
+      "name": "structural-truncate-63",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f2a5ed2b3",
+      "error": "malformed"
+    },
+    {
+      "name": "structural-truncate-64",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f75b6716529",
+      "error": "malformed"
+    },
+    {
+      "name": "structural-truncate-65",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b89d6f497",
+      "error": "malformed"
+    },
+    {
+      "name": "structural-truncate-66",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41d9512a47",
+      "error": "malformed"
+    },
+    {
+      "name": "structural-truncate-67",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8768447f5",
+      "error": "malformed"
+    },
+    {
+      "name": "structural-truncate-68",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f82e06f7d8",
+      "error": "malformed"
+    },
+    {
+      "name": "structural-truncate-69",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867bfe1dadd",
+      "error": "malformed"
+    },
+    {
+      "name": "structural-truncate-70",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867025dfa0f67",
+      "error": "malformed"
+    },
+    {
+      "name": "structural-truncate-71",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026ff7b1b21a",
+      "error": "malformed"
+    },
+    {
+      "name": "structural-truncate-72",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f80a3b9791c",
+      "error": "malformed"
+    },
+    {
+      "name": "structural-truncate-73",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091b4c7c91a",
+      "error": "malformed"
+    },
+    {
+      "name": "structural-truncate-74",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a21b93cc26",
+      "error": "malformed"
+    },
+    {
+      "name": "structural-truncate-75",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c408290a",
+      "error": "malformed"
+    },
+    {
+      "name": "structural-truncate-76",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c485c608d2",
+      "error": "malformed"
+    },
+    {
+      "name": "structural-truncate-77",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44c5f9d6830",
+      "error": "malformed"
+    },
+    {
+      "name": "structural-truncate-78",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6388c8f60",
+      "error": "malformed"
+    },
+    {
+      "name": "structural-truncate-79",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b7b0fe65af",
+      "error": "malformed"
+    },
+    {
+      "name": "structural-truncate-80",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708cdb11717",
+      "error": "malformed"
+    },
+    {
+      "name": "structural-truncate-81",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b70819f1eeab53",
+      "error": "malformed"
+    },
+    {
+      "name": "structural-truncate-82",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a3f4f50c3",
+      "error": "malformed"
+    },
+    {
+      "name": "structural-truncate-83",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b831a1e98",
+      "error": "malformed"
+    },
+    {
+      "name": "structural-truncate-84",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4cb62e41d9",
+      "error": "malformed"
+    },
+    {
+      "name": "structural-truncate-85",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d539503e5",
+      "error": "malformed"
+    },
+    {
+      "name": "structural-truncate-86",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e09a08f8a",
+      "error": "malformed"
+    },
+    {
+      "name": "structural-truncate-87",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0089d854ab",
+      "error": "malformed"
+    },
+    {
+      "name": "structural-truncate-88",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e00055e74a736",
+      "error": "malformed"
+    },
+    {
+      "name": "structural-truncate-89",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005000a34e75e",
+      "error": "malformed"
+    },
+    {
+      "name": "structural-truncate-90",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cb0dc3a6b",
+      "error": "malformed"
+    },
+    {
+      "name": "structural-truncate-91",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe56f8d135",
+      "error": "malformed"
+    },
+    {
+      "name": "structural-truncate-92",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe088642e45e",
+      "error": "malformed"
+    },
+    {
+      "name": "structural-truncate-93",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe0833cc4c5769",
+      "error": "malformed"
+    },
+    {
+      "name": "structural-truncate-94",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301cc06be37",
+      "error": "malformed"
+    },
+    {
+      "name": "structural-truncate-95",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301023cbee9ae",
+      "error": "malformed"
+    },
+    {
+      "name": "structural-truncate-96",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe08330102030e2bca64",
+      "error": "malformed"
+    },
+    {
+      "name": "structural-truncate-97",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300a108de35",
+      "error": "malformed"
+    },
+    {
+      "name": "structural-truncate-98",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b9d3a95bc1",
+      "error": "malformed"
+    },
+    {
+      "name": "structural-truncate-99",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f9fb9a9ad",
+      "error": "malformed"
+    },
+    {
+      "name": "structural-truncate-100",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f75524d7092",
+      "error": "malformed"
+    },
+    {
+      "name": "structural-truncate-101",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759bd4e52830",
+      "error": "malformed"
+    },
+    {
+      "name": "structural-truncate-102",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94f886eea4",
+      "error": "malformed"
+    },
+    {
+      "name": "structural-truncate-103",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5422c7cc7",
+      "error": "malformed"
+    },
+    {
+      "name": "structural-truncate-104",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6a4a51568",
+      "error": "malformed"
+    },
+    {
+      "name": "structural-truncate-105",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7cacad106",
+      "error": "malformed"
+    },
+    {
+      "name": "structural-truncate-106",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d80f4fbd21",
+      "error": "malformed"
+    },
+    {
+      "name": "structural-truncate-107",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e98f154a9b",
+      "error": "malformed"
+    },
+    {
+      "name": "structural-truncate-108",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c9236f4d0",
+      "error": "malformed"
+    },
+    {
+      "name": "structural-truncate-109",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b5b30015b",
+      "error": "malformed"
+    },
+    {
+      "name": "structural-truncate-110",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9caeb959d7",
+      "error": "malformed"
+    },
+    {
+      "name": "structural-truncate-111",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2dae6464a6",
+      "error": "malformed"
+    },
+    {
+      "name": "structural-truncate-112",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3ead18ab22",
+      "error": "malformed"
+    },
+    {
+      "name": "structural-truncate-113",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fc1c7249c",
+      "error": "malformed"
+    },
+    {
+      "name": "structural-truncate-114",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb0e08a9cf5",
+      "error": "malformed"
+    },
+    {
+      "name": "structural-truncate-115",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb071d5d0ff55",
+      "error": "malformed"
+    },
+    {
+      "name": "structural-truncate-116",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb071820ad45827",
+      "error": "malformed"
+    },
+    {
+      "name": "structural-truncate-117",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb0718293b99cf65b",
+      "error": "malformed"
+    },
+    {
+      "name": "structural-truncate-118",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb071829301af22e317",
+      "error": "malformed"
+    },
+    {
+      "name": "structural-truncate-119",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb071829301036ce3750d",
+      "error": "malformed"
+    },
+    {
+      "name": "structural-truncate-120",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb0718293010303a7e6020f",
+      "error": "malformed"
+    },
+    {
+      "name": "structural-truncate-121",
+      "hex": "534354310101000f0001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0309a3ff18b99f759b41a8f867026f8091a2b3c44ce6b708192a5b4c5d6e0005007cbe083301020300b99f759b94a5b6c7d8e94c0b9c2d3e4fb0718293010303039a8ab603",
+      "error": "malformed"
+    },
+    {
+      "name": "trailing-size-63",
+      "hex": "53435431010100000001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0000008a239383",
+      "error": "malformed"
+    },
+    {
+      "name": "trailing-size-512",
+      "hex": "53435431010100000001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000021e15aad",
+      "error": "malformed"
+    },
+    {
+      "name": "trailing-size-513",
+      "hex": "53435431010100000001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000032a5c69e",
+      "error": "size"
+    },
+    {
+      "name": "trailing-size-1024",
+      "hex": "53435431010100000001020304054c0788090a0bfc0d0e0f0000000000004c0080000000b0000000ffffffffffff4cffbfffffff1fffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000070483b4f",
+      "error": "size"
+    }
+  ]
+}
