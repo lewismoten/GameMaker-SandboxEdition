@@ -48,11 +48,102 @@ export function swapped(pal: Pal, tints: Record<string, Tint>): Uint8Array {
   return out;
 }
 
-/** The palette bytes of a look ('' is the base). */
-export const lookOf = (pal: Pal, look: string): Uint8Array => (look ? swapped(pal, LOOKS[look]) : pal.pal);
+/** The palette bytes of a look ('' is the morning). */
+export const lookOf = (pal: Pal, look: string): Uint8Array => swapped(pal, { ...LOOKS[look || 'morning'], ink: PRINT_INK[look || 'morning'] });
 
-/** Each time of the day. The morning keeps the base palette. */
+/**
+ * The printer's ink for each time of the day: every outline, gouge and hatch in the game is cut in the ink ramp, so
+ * one tinted ink per look makes each level read as one print (sepia by day, plum at dusk, indigo by night).
+ */
+const PRINT_INK: Record<string, Tint> = {
+  morning: [
+    [34, 30, 36],
+    [104, 96, 100],
+  ],
+  dawn: [
+    [44, 26, 66],
+    [120, 96, 150],
+  ],
+  high: [
+    [18, 30, 62],
+    [84, 104, 150],
+  ],
+  library: [
+    [52, 22, 18],
+    [130, 80, 60],
+  ],
+  mist: [
+    [36, 44, 58],
+    [110, 120, 140],
+  ],
+  rain: [
+    [16, 34, 58],
+    [80, 110, 140],
+  ],
+  noon: [
+    [56, 34, 16],
+    [140, 100, 60],
+  ],
+  sunset: [
+    [66, 18, 30],
+    [150, 70, 80],
+  ],
+  gloaming: [
+    [54, 18, 52],
+    [130, 80, 130],
+  ],
+  dusk: [
+    [30, 18, 62],
+    [100, 84, 150],
+  ],
+  tunnel: [
+    [14, 8, 8],
+    [70, 50, 40],
+  ],
+  night: [
+    [8, 12, 40],
+    [60, 70, 120],
+  ],
+  town: [
+    [18, 14, 44],
+    [80, 70, 130],
+  ],
+  sunrise: [
+    [66, 30, 20],
+    [160, 90, 60],
+  ],
+};
+
+/** Each time of the day. */
 export const LOOKS: Record<string, Record<string, Tint>> = {
+  // the morning, printed: a cool teal sky, olive turf, warm gray stone and red-brown earth (no Starter blue or green)
+  morning: {
+    sky: [
+      [70, 140, 160],
+      [226, 242, 228],
+      [128, 192, 196],
+    ],
+    grass: [
+      [40, 84, 40],
+      [214, 222, 126],
+      [110, 158, 70],
+    ],
+    moss: [
+      [34, 70, 40],
+      [200, 214, 120],
+      [96, 140, 66],
+    ],
+    rock: [
+      [52, 48, 58],
+      [226, 216, 200],
+      [134, 124, 124],
+    ],
+    dirt: [
+      [78, 40, 24],
+      [232, 172, 112],
+      [150, 88, 50],
+    ],
+  },
   // first light through the fog: lavender and peach, everything soft
   dawn: {
     sky: [
