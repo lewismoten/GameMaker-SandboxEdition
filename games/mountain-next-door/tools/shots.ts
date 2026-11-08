@@ -41,6 +41,7 @@ const AT: Record<string, number> = {
   zigzag: 1700,
   picnic: 1500,
   ford: 1800,
+  clock: 1500,
 };
 /** The first level's frames: one every this many ticks. */
 const EVERY = 8;
