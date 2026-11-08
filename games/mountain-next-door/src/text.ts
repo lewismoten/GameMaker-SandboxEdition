@@ -1,5 +1,6 @@
 // Every word THE MOUNTAIN MOVED NEXT DOOR shows on a text page (30 columns, 16 lines a page) and on its story
-// pages (lines of at most 34 letters at 8x8, four to a page).
+// pages (lines of at most 34 letters at 8x8, four to a page). The voice is dry and grown-up: a trail crew lead
+// with a deadline, neighbors with opinions, and a very old mountain that is deeply embarrassed.
 import { withCreditPage } from '../../kit/license';
 import { wrap } from '../../kit/starter/text';
 import about from '../about.json';
@@ -8,13 +9,15 @@ export const STORY = wrap(`
 |THE MOUNTAIN
 |MOVED NEXT DOOR
 
-The day after Thanksgiving, Tess is up before the sun. She paints the yellow blazes that mark the trails on Old Mossback, the mountain outside town, and the trail crew meets at eight.
+Tess runs the trail crew on Old Mossback, the mountain outside town. Six years of yellow blazes, painted by hand. She knows every switchback by heart.
 
-But the empty lot next door is full of fog this morning.
+The day after Thanksgiving she wakes to fog in the empty lot next door. By breakfast the fog has lifted, and the lot is no longer empty.
 
-And the fog is full of mountain.
+The mountain has come to town. It is wearing half the street's garden gates, and it is very, very sorry.
 
-Old Mossback has walked into town in the night, wearing half the street's garden gates. Somebody has to find out why, and somebody has to show it the way home.
+Mr. Hale has already phoned the county. The survey crew comes at sunrise, and a mountain in a residential lot is, legally, a structure without a permit.
+
+Tess has one day to find out why it came, and one night to walk it home.
 `);
 
 export const HOWTO = wrap(`
@@ -27,11 +30,11 @@ export const HOWTO = wrap(`
 
 Touch a trail post or a tree to paint a yellow blaze on it.
 
-Touch a garden gate to take it. Touch a gateway with a wheelbarrow in it and the gate goes back.
+Touch a garden gate or a lost book to carry it. Touch the gap where it belongs and it goes back.
 
-Hop over the deep footprints. A chalk outline on a tree shows where a blaze goes.
+Anything that sinks, swings or blows does it on a clock. Watch one whole turn before you trust it.
 
-Some levels are stories: watch them happen.
+Some levels are scenes: stop and watch them happen.
 
 |ESC for the menu.
 `);
@@ -53,59 +56,59 @@ A special for the day after Thanksgiving: it only stops by for a few days.
 export const WON = wrap(`
 |HOME AGAIN
 
-Old Mossback sat down where it always stood, a little lower than before, so the summit is the height of a bungalow now.
+Old Mossback sat down in its hollow with the care of something very large that has been very embarrassed. It settled a little lower than before.
 
-The whole street came up for a picnic of leftovers. Wisp the cloud floated on top, right where a cloud belongs.
+The survey crew arrived at sunrise, found an empty lot and a picnic, and stayed for pie.
 
-Every gate went home. Every turn of the trail has a fresh yellow blaze.
+Wisp sits on the summit, where a cloud belongs. It has stopped following chimney smoke. Mostly.
 
-And at the foot of the mountain there is a new doormat.
+Every gate is home. Every turn has a fresh blaze. And at the foot of the mountain there is a new doormat, from the whole street.
 `);
 
 export const LOST = wrap(`
 |OUT OF LIVES
 
-The mountain waits. It is good at waiting.
+The mountain waits. It is very good at waiting. The county is not.
 
-Try again: time the stepping stones, let the wind help, and keep to the blazes.
+Try again: watch one whole turn of anything on a clock, let the wind do the work, and trust paint over arrows.
 `);
 
 /** The story pages that open each level. */
 export const CARDS: Record<string, string[][]> = {
   next: [
-    ['THE DAY AFTER THANKSGIVING.', 'TESS IS UP BEFORE THE SUN.', 'TRAIL CREW MEETS AT EIGHT', 'ON OLD MOSSBACK.'],
-    ['SHE PAINTS THE YELLOW BLAZES', 'THAT SHOW HIKERS THE WAY.', 'BUT THIS MORNING, THE EMPTY', 'LOT NEXT DOOR IS FULL OF FOG.'],
+    ['THE DAY AFTER THANKSGIVING.', 'TESS RUNS THE TRAIL CREW', 'ON OLD MOSSBACK. SIX YEARS', 'OF BLAZES, PAINTED BY HAND.'],
+    ['THIS MORNING THE EMPTY LOT', 'NEXT DOOR IS FULL OF FOG.', 'FOG, AS A RULE,', 'DOES NOT SNORE.'],
   ],
   gates: [
-    ['OLD MOSSBACK IS NEXT DOOR.', 'IT IS VERY SORRY. IT IS ALSO', 'WEARING FOUR GARDEN GATES', 'IT PICKED UP IN THE NIGHT.'],
-    ['UNHOOK EACH GATE AND BRING IT', 'HOME. THE NEIGHBORS PLUGGED', 'THE GAPS WITH WHEELBARROWS', 'TO KEEP THE HENS IN.'],
+    ['MR. HALE HAS CALLED THE', 'COUNTY. THE SURVEY CREW', 'COMES AT SUNRISE. A MOUNTAIN', 'IN A LOT IS A "STRUCTURE."'],
+    ['FIRST, THE GATES. IT PICKED', 'UP FOUR IN THE NIGHT, LIKE', 'BURRS. THE NEIGHBORS PLUGGED', 'THE GAPS WITH WHEELBARROWS.'],
   ],
   back: [
-    ['EVERY GATE IS HOME. STILL,', 'THE MOUNTAIN WILL NOT SAY', 'WHY IT CAME. IT ONLY LOOKS', 'UP, AND SIGHS.'],
-    ['SO TESS WILL GO AND LOOK', 'FOR HERSELF. NOBODY HAS', "EVER CLIMBED MOSSBACK'S", 'BACK FROM THIS SIDE.'],
+    ['EVERY GATE IS HOME. THE', 'MOUNTAIN APOLOGIZES TO EACH', 'NEIGHBOR BY NAME, BUT IT', 'WILL NOT SAY WHY IT CAME.'],
+    ['SO TESS GOES UP TO LOOK.', 'NOBODY HAS CLIMBED ITS BACK', 'FROM THIS SIDE. NOBODY HAD', 'TO. IT WAS NEVER HERE.'],
   ],
   prints: [
-    ['"WHY DID YOU COME TO TOWN?"', 'THE MOUNTAIN ONLY SIGHS.', 'SO TESS FOLLOWS ITS FOOTPRINTS', 'BACK THE WAY IT CAME.'],
-    ['A TRAIL MARKER MARKS THE WAY.', 'PAINT A BLAZE ON EVERY POST,', 'SO THE MOUNTAIN CAN FIND', 'ITS WAY HOME AGAIN.'],
+    ['NO CLOUD ON TOP. ONLY A', 'DAMP DENT, AS IF SOMETHING', 'SOFT SAT THERE FOR A', 'THOUSAND YEARS, THEN LEFT.'],
+    ['THE FOOTPRINTS LEAD BACK', 'THROUGH THE PARK. BLAZE', 'EVERY POST: TONIGHT THE', 'MOUNTAIN WILL NEED THE WAY.'],
   ],
   books: [
-    ['THE FOOTPRINTS GO RIGHT PAST', 'THE LIBRARY. ONE BIG STEP', 'KNOCKED THE BOOK DROP FLAT,', 'AND BOOKS WENT EVERYWHERE.'],
-    ['MRS. LIN WAVES TESS IN.', '"PUT THEM BACK, AND YOU MAY', 'READ THE OLD ALMANAC. IT', 'KNOWS ABOUT MOUNTAINS."'],
+    ['THE PRINTS PASS THE LIBRARY.', 'ONE STEP FLATTENED THE BOOK', 'DROP. OVERDUE BOOKS ARE', 'ON ALL FOUR FLOORS.'],
+    ['MRS. LIN DOES NOT PANIC.', 'SHE HAS SURVIVED TWO FLOODS', 'AND A SUMMER READING', 'CHALLENGE. SHE MAKES A LIST.'],
   ],
-  stream: [['THE FOOTPRINTS GO RIGHT', 'THROUGH THE STREAM. IT IS', 'RAINING, AND THE STEPPING', 'STONES WOBBLE. WATCH THEM.']],
-  signs: [['AT THE CROSSROADS SOMEBODY', 'KEEPS TURNING THE SIGNPOSTS.', 'SOMEBODY WITH A BUSHY TAIL.', 'TRUST THE YELLOW BLAZES.']],
+  stream: [['THE PRINTS WADE THE STREAM', 'FOUR TIMES, IN THE RAIN.', 'THE STEPPING STONES SINK', 'AND RISE ON A SCHEDULE.']],
+  signs: [['AT THE CROSSROADS SOMEONE', 'HAS BEEN TURNING SIGNPOSTS.', 'SOMEONE WITH A BUSHY TAIL', 'AND NO REMORSE.']],
   hollow: [
-    ['THE FOOTPRINTS END AT A HOLE', 'AS BIG AS THE WHOLE TOWN', 'SQUARE. THIS IS WHERE', 'OLD MOSSBACK USED TO STAND.'],
-    ['THE SUN IS GOING DOWN.', 'LOOK AROUND. LISTEN.', 'SOMETHING IS MISSING HERE,', 'AND NOT ONLY THE MOUNTAIN.'],
+    ['THE PRINTS END AT A HOLE', 'THE SIZE OF THE TOWN SQUARE.', 'OLD MOSSBACK STOOD HERE', 'LONGER THAN THE TOWN HAS.'],
+    ['THE SUN IS GOING DOWN.', 'THE CREW COMES AT SUNRISE.', 'AND SOMETHING HERE IS', 'MISSING. NOT JUST A MOUNTAIN.'],
   ],
   ridge: [
-    ['A MOUNTAIN HAS A CLOUD THAT', 'SITS ON TOP. OLD MOSSBACK', 'IS MISSING ITS CLOUD.', 'IT DID NOT WANDER OFF.'],
-    ['IT WENT LOOKING FOR WISP.', 'A TRAIL OF TINY SNOWDRIFTS', 'LEADS BACK OVER THE WINDY', 'RIDGE, TOWARD TOWN.'],
+    ['THE MOUNTAIN DID NOT WANDER.', 'IT WAS FOLLOWING SOMEONE:', 'WISP, ITS CLOUD, WHO LEFT', 'A TRAIL OF TINY SNOWDRIFTS.'],
+    ['THE TRAIL GOES BACK OVER', 'THE RIDGE, TOWARD TOWN.', 'THE WIND IS UP. FOR ONCE', 'IT IS ON YOUR SIDE.'],
   ],
-  tunnel: [['THE SNOW GOES INTO THE OLD', 'MILL TUNNEL UNDER THE ROAD.', 'IT IS DARK IN THERE.', 'LIGHT THE LANTERNS AS YOU GO.']],
+  tunnel: [['THE SNOW GOES INTO THE OLD', 'MILL TUNNEL UNDER THE ROAD.', 'NO LIGHTS. JUST LANTERNS', 'NOBODY HAS LIT IN YEARS.']],
   zigzag: [
-    ['WISP FOLLOWED THE CHIMNEY', 'SMOKE TO TOWN ON THANKSGIVING', 'NIGHT. IT THOUGHT THE SMOKE', 'WAS OTHER LITTLE CLOUDS.'],
-    ['NOW WISP WANTS TO GO HOME,', 'AND THE MOUNTAIN WILL FOLLOW', 'WISP. MARK A SAFE ZIGZAG', 'TRAIL UP. WISP WILL FOLLOW YOU.'],
+    ['WISP FOLLOWED THE CHIMNEY', 'SMOKE TO TOWN. IT THOUGHT', 'IT HAD FOUND OTHER CLOUDS.', 'SMOKE IS POOR COMPANY.'],
+    ['NOW WISP WANTS TO GO HOME,', 'AND THE MOUNTAIN FOLLOWS', 'WISP ANYWHERE. MARK THE WAY', 'UP. WISP WILL FOLLOW YOU.'],
   ],
-  picnic: [['STEP BY ENORMOUS STEP,', 'OLD MOSSBACK WALKED HOME', 'IN THE NIGHT, SAYING', '"EXCUSE ME" TO EVERY HOUSE.']],
+  picnic: [['ALL NIGHT, STEP BY ENORMOUS', 'STEP, OLD MOSSBACK WALKED', 'HOME, SAYING "EXCUSE ME"', 'TO EVERY HOUSE IT PASSED.']],
 };

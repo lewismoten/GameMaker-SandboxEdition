@@ -66,11 +66,11 @@ export const TUNNEL_AT = {
 } as const;
 
 const SIGNS = {
-  dark: ['SO DARK! LIGHT THE LANTERNS.', 4, 2],
-  low: ['LOW BIT. IT IS JUST TALL ENOUGH.', 4, 3],
-  worms: ['LOOK UP: GLOW WORMS LIKE THE DARK.', 4, 3],
+  dark: ['DARK. LIGHT EVERY LANTERN.', 4, 2],
+  low: ['LOW BIT. MIND YOUR HAT.', 4, 3],
+  worms: ['GLOW WORMS. THEY LIKE IT DARK.', 4, 3],
   race: ['UP THE LADDER TO THE OLD MILL RACE.', 4, 3],
-  wisp: ['A SNIFFLE. THERE YOU ARE, WISP!', 4, 3],
+  wisp: ['A SNIFFLE. THERE YOU ARE, WISP.', 4, 3],
 } as const;
 
 export function levelTunnel(pal: Pal): Level {

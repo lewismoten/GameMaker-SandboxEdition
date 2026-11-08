@@ -24,11 +24,11 @@ export const NEXT_AT = {
 } as const;
 
 const SIGNS = {
-  up: ['TRAIL CREW AT 8. TESS IS UP EARLY.', 4, 3],
-  fog: ['SO MUCH FOG IN THE LOT NEXT DOOR...', 4, 3],
-  not: ['WAIT. THAT IS NOT FOG.', 4, 3],
-  gates: ['IT HAS ON HALF THE GARDEN GATES!', 4, 3],
-  polite: ['IT SAID EXCUSE ME!', 4, 2],
+  up: ['CREW AT EIGHT. COFFEE FIRST. ALWAYS.', 4, 3],
+  fog: ['THAT IS A LOT OF FOG FOR ONE LOT.', 4, 3],
+  not: ['FOG DOES NOT GROW MOSS.', 4, 3],
+  gates: ['IT IS WEARING HALF THE GARDEN GATES.', 4, 3],
+  polite: ['IT SAID EXCUSE ME.', 4, 2],
 } as const;
 
 export function levelNext(pal: Pal): Level {

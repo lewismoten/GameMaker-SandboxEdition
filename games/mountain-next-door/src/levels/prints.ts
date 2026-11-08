@@ -33,10 +33,10 @@ export const PRINTS_AT = {
 
 const SIGNS = {
   follow: ['THE BIG PRINTS GO BACK THE WAY IT CAME.', 4, 3],
-  blaze: ['PAINT A BLAZE ON EVERY POST AND TREE.', 4, 3],
-  nut: ['THAT IS NUTMEG. SHE IS NOSY.', 4, 2],
-  mist: ['KEEP TO THE BLAZES IN THE MIST.', 4, 3],
-  canopy: ['THE CANOPY WALK: SEE THE PRINTS!', 4, 3],
+  blaze: ['BLAZE EVERY POST. IT WILL NEED THEM.', 4, 3],
+  nut: ['NUTMEG. SHE IS NOT HELPING.', 4, 2],
+  mist: ['IN MIST, TRUST PAINT, NOT EYES.', 4, 3],
+  canopy: ['THE CANOPY WALK: THE PRINTS FROM ABOVE.', 4, 3],
 } as const;
 
 export function levelPrints(pal: Pal): Level {

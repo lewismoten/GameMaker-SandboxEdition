@@ -47,10 +47,10 @@ export const BACK_AT = {
 } as const;
 
 const SIGNS = {
-  hens: ['THE HENS CAME UP TO SEE THE VIEW.', 4, 3],
-  view: ['YOU CAN SEE YOUR HOUSE FROM HERE.', 4, 3],
-  up: ['WOBBLY ROCKS. WAIT TILL THEY ARE UP.', 4, 3],
-  dent: ['NO CLOUD. ONLY A DAMP DENT IN THE MOSS.', 4, 3],
+  hens: ['THE HENS CAME UP FOR THE VIEW. TRAITORS.', 4, 3],
+  view: ['YOU CAN SEE YOUR HOUSE. AND THE MESS.', 4, 3],
+  up: ['THESE ROCKS SINK ON A CLOCK. COUNT.', 4, 3],
+  dent: ['NO CLOUD. JUST A DENT WHERE ONE SAT.', 4, 3],
 } as const;
 
 export function levelBack(pal: Pal): Level {

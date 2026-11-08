@@ -48,12 +48,12 @@ export const LIBRARY_AT = {
 } as const;
 
 const SIGNS = {
-  lin: ['MRS. LIN: THE MOUNTAIN KNOCKED OVER MY BOOK DROP!', 4, 4],
-  overdue: ['A BOOK ON A SHELF GAP GOES BACK.', 4, 3],
+  lin: ['MRS. LIN: IT DOES NOT EVEN HAVE A LIBRARY CARD.', 4, 4],
+  overdue: ['ANY GAP TAKES ANY BOOK. SHE WILL SORT IT.', 4, 3],
   page1: ['ALMANAC: EVERY MOUNTAIN KEEPS A CLOUD ON TOP.', 4, 4],
-  page2: ['A MOUNTAIN WITHOUT ITS CLOUD CANNOT REST.', 4, 3],
-  page3: ['SOME CLOUDS ARE SMALL AND SHY.', 4, 3],
-  chute: ['BOOK RETURN CHUTE. HOLD ON TO YOUR HAT.', 4, 3],
+  page2: ['A CLOUDLESS MOUNTAIN CANNOT SIT STILL.', 4, 3],
+  page3: ['SMALL CLOUDS WANDER. THEY GET LONELY.', 4, 3],
+  chute: ['BOOK RETURN CHUTE. NOT FOR PEOPLE. GO ON.', 4, 3],
 } as const;
 
 /** Columns on each floor kept clear of shelves (wall shows there): for the ladders, the window, the signs, the books. */
