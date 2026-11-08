@@ -68,7 +68,8 @@ export function levelFord(pal: Pal): Level {
   const m = new MountainMap(book, g.rows());
   // stars and the moon (in the sky only, not in the upper terrace's earth)
   for (let y = 0; y < G9 - 4; y++)
-    for (let x = 1; x < W - 1; x++) if ((x * 13 + y * 7) % 23 === 0 && !(y >= GU && x >= U.left && x <= U.right)) m.set(x, y, ['faint', 'bright', 'faint2', 'bright2'][(x + y) % 4]);
+    for (let x = 1; x < W - 1; x++)
+      if ((x * 13 + y * 7) % 23 === 0 && !(y >= GU && x >= U.left && x <= U.right)) m.set(x, y, ['faint', 'bright', 'faint2', 'bright2'][(x + y) % 4]);
   const [mx, my] = A.moon;
   m.set(mx, my, 'moonTL')
     .set(mx + 1, my, 'moonTR')
