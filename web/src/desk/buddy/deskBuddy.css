@@ -10,6 +10,11 @@
   height: 80px;
 }
 
+/* while it speaks, its bubble is read: in front of the PC's case (deskStage.css, z-index 5) and the desk's edge (4), not hidden behind them */
+.desk-buddy.speaking {
+  z-index: 8;
+}
+
 /* its open card is read, not part of the room: above the room's dark (props.css, z-index 20) */
 .desk-buddy:has(> .buddy-card:not([hidden])) {
   z-index: 25;
