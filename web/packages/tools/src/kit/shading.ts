@@ -10,9 +10,25 @@ export function shadeAt(ramp: number[], lo: number, hi: number, level: number, x
   return ramp[Math.max(0, Math.min(ramp.length - 1, idx))];
 }
 
-/** A vertical gradient across a rectangle. */
-export function gradient(p: Pixels, x0: number, y0: number, w: number, h: number, ramp: number[], lo: number, hi: number): Pixels {
-  for (let y = y0; y < y0 + h; y++) for (let x = x0; x < x0 + w; x++) p.set(x, y, shadeAt(ramp, lo, hi, (y - y0) / Math.max(1, h - 1), x, y));
+/** An 8-row ordered pattern: row y takes the lighter color when level * 8 is over its threshold. */
+const ROWS = [0, 4, 6, 2, 7, 3, 5, 1];
+
+/**
+ * A vertical gradient across a rectangle. With `rows`, the blend between two ramp steps is
+ * dithered by whole rows (each row one color) instead of the 4x4 pattern: it reads as fine
+ * horizontal lines, and a GIF of it is far smaller, because a row of one color packs into a
+ * few LZW codes while a dither pattern costs codes all along the row.
+ */
+export function gradient(p: Pixels, x0: number, y0: number, w: number, h: number, ramp: number[], lo: number, hi: number, rows = false): Pixels {
+  for (let y = y0; y < y0 + h; y++) {
+    const level = (y - y0) / Math.max(1, h - 1);
+    if (rows) {
+      const v = lo + Math.max(0, Math.min(1, level)) * (hi - lo);
+      const base = Math.floor(v);
+      const idx = (v - base) * 8 > ROWS[y & 7] ? base + 1 : base;
+      p.rect(x0, y, w, 1, ramp[Math.max(0, Math.min(ramp.length - 1, idx))]);
+    } else for (let x = x0; x < x0 + w; x++) p.set(x, y, shadeAt(ramp, lo, hi, level, x, y));
+  }
   return p;
 }
 
