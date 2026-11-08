@@ -39,7 +39,7 @@ export const CREDITS = withCreditPage(
 |LUCKY CAT  v${about.version}
 |(c) 1994 Sandbox Software
 
-First made by Claude Sonnet 5.5. Redrawn as a woodcut, rewritten and rescored by Claude Opus 5.5. Four more levels by Claude Sonnet 5.5. All three are AI models made by Anthropic.
+First made by Claude Sonnet 5.5. Redrawn as a woodcut, rewritten and rescored by Claude Opus 5.5. Seven more levels by Claude Sonnet 5.5. All three are AI models made by Anthropic.
 
 Made with GAME-MAKER 3.0 from Recreational Software Designs.
 
@@ -103,6 +103,10 @@ export const CARDS: Record<string, string[][]> = {
   still: [
     ['EARLIER STILL. 12:40 PM. THE TOWN', 'HALL IS CLOSED FOR LUNCH, AND', 'A CLOSED HALL IS AN EMPTY HALL.'],
     ['UP TO THE GALLERY. THEN UP TO THE', 'RAFTERS. SOMEWHERE UP THERE IS A', 'KEY, AND A VERY LONG ROPE.'],
+  ],
+  wash: [
+    ['EARLIER STILL. 4:05 PM. THE COMMITTEE', 'HAS HUNG ITS BANNER ON THE WASH LINE:', '"LUCK TO ALL. EXCEPT CATS."'],
+    ['IT IS DRYING. IT WOULD LOOK BETTER', 'TIED TO SOMETHING. TIE FOUR KNOTS,', 'THEN SEE THE BINS ABOUT THEIR KEY.'],
   ],
   four: [['BACK TO 7:40 PM. THE FAIR GATE', 'SHUTS ON THE 13TH CHIME. EACH', 'BELL STILL LIT IS A CHIME LEFT.', 'RUN.']],
   tower: [['THE CLOCK TOWER. WHOEVER RIGGED', 'THE BELLS LEFT ROPE ON EVERY', 'FLOOR. GOOD ROPE. NEAT KNOTS.', 'MIDNIGHT IS TAKING NOTES.']],

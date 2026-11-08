@@ -2,6 +2,7 @@
 import type { StarterBot } from '../../kit/starter/bot';
 import { ALLEY } from '../src/levels/alley';
 import { GLASS } from '../src/levels/glass';
+import { LAUNDRY, STAIR_W } from '../src/levels/laundry';
 import { MARKET } from '../src/levels/market';
 import { OPEN_TICKS } from '../src/meter';
 import { SHOP } from '../src/levels/shop';
@@ -190,4 +191,31 @@ export async function theOtherSide(bot: StarterBot): Promise<void> {
     await readAt(bot, GLASS.exit + 2, 'the last sign');
     await leave(bot, bot.walk(GLASS.exit - 1, 'the exit'), 'the exit');
   });
+}
+
+/** Wash Day, as Rascal: a saucer, the cracks, three awnings up like stairs, the line, the key, the lock, the last steps. */
+export async function washDay(bot: StarterBot): Promise<void> {
+  const from = bot.sim.ci.score;
+  const hp = bot.sim.ci.hitpts;
+  await readAt(bot, 5, 'the banner sign');
+  await must(bot, bot.walk(LAUNDRY.step1 + 1, 'the first doorstep'), 'to the first doorstep');
+  await hop(bot, LAUNDRY.cracks, 2, 'the cracks');
+  for (const { x } of LAUNDRY.stairs) {
+    await must(bot, bot.walk(x - 2, 'the next awning'), 'to the next awning');
+    await must(bot, bot.jump('right', x + 1), 'onto the awning');
+    await must(bot, bot.walk(x + STAIR_W - 1, 'the awning'), 'along the awning');
+  }
+  await must(bot, bot.jump('right', LAUNDRY.line[0] + 1), 'up onto the line');
+  await readAt(bot, LAUNDRY.line[0] + 2, 'the line sign');
+  await must(bot, bot.walk(LAUNDRY.cleatLine + 1, 'the fourth cleat'), 'to the fourth cleat');
+  await must(bot, bot.walk(LAUNDRY.key + 1, 'the key'), 'to the key');
+  await must(bot, bot.walk(LAUNDRY.line[1] + 2, 'the end of the line'), 'off the line');
+  await must(bot, bot.walk(LAUNDRY.step2 + 1, 'the second doorstep'), 'to the second doorstep');
+  await readAt(bot, 59, 'the bins sign');
+  await hop(bot, LAUNDRY.cracks2, 2, 'the last cracks');
+  await must(bot, bot.walk(LAUNDRY.wall + 2, 'through the padlock'), 'through the padlock');
+  await must(bot, bot.walk(LAUNDRY.step3 + 1, 'the last doorstep'), 'to the last doorstep');
+  score(bot, from, 0, 7 * CHORE_POINTS + 25, 'Wash Day');
+  if (bot.sim.ci.hitpts !== hp) throw new Error(`Wash Day cost hit points: ${hp} -> ${bot.sim.ci.hitpts}`);
+  await leave(bot, bot.walk(LAUNDRY.exit + 1, 'the exit'), 'the exit');
 }
