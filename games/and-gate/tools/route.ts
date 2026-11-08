@@ -140,7 +140,7 @@ export async function allThree(bot: StarterBot): Promise<void> {
   await must(bot, bot.climb('up', 2, 'up the ladder'), 'up the ladder');
   await must(bot, bot.walk(16.6, 'along the ledge'), 'along the ledge');
   if (alive(bot, DIAL_ON) !== 2 || alive(bot, DIAL_OFF) !== 1) throw new Error('level 2: two dials should be on, one off');
-  await must(bot, bot.walk(20, 'the third dial'), 'to the third dial');
+  await must(bot, bot.walk(22, 'the third dial'), 'to the third dial');
   await must(bot, bot.wait(READ), 'reading the sign about staying on');
   if (alive(bot, LAMP) !== 1) throw new Error('level 2: the lamp should still be dark with a dial off');
   await bump(bot, 'bumping the third dial');

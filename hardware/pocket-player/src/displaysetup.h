@@ -14,8 +14,8 @@ namespace ds {
 constexpr int PANELS = 8, TURNS = 4;
 // Display modes (panel bits): 1 ST7789 driver (else ILI9341), 2 colors inverted, 4 red and blue swapped.
 // The steps of the first-boot setup (setupflow.h), kept in NVS so a restart in the middle resumes at the right one.
-// The four steps (setupflow.h: flip, rotate, orient, colors) are 0..3, then the calibration.
-enum Step { STEP_FLIP = 0, STEP_ROTATE = 1, STEP_ORIENT = 2, STEP_COLORS = 3, STEP_CALIBRATE = 4 };
+// Display has three live steps. Saved calibration stage stays 4 for compatibility with older NVS records.
+enum Step { STEP_FLIP = 0, STEP_ORIENT = 1, STEP_COLORS = 2, STEP_CALIBRATE = 4 };
 // The BOOT button held on the setup screen steps the driver only (the one fault a picture can't show its way out of): the other
 // color bits are cleared so the colors step starts fresh.
 inline uint8_t nextDriver(uint8_t panel) { return (uint8_t)((panel ^ 1) & 1); }
@@ -33,14 +33,15 @@ struct Record {
   uint8_t panel = 0, turn = 0, soft = 0;
   tc::Cal cal;
   uint8_t full = 0;  // 1 when the 3-tap calibration was done after the last display change
+  uint8_t gamma = 0, tune = 0;  // the picture tuning (picturetune.h): 0 and 0 are the driver's own start
 };
 inline bool valid(const Record& r) {
   auto in = [](int v) { return v >= 0 && v <= 4095; };
-  return r.panel < PANELS && r.turn < TURNS && r.soft <= 3 && r.cal.swap <= 1 && in(r.cal.u0) && in(r.cal.u1) && in(r.cal.v0) && in(r.cal.v1);
+  return r.panel < PANELS && r.turn < TURNS && r.soft <= 3 && r.gamma <= 3 && r.tune <= 3 && r.cal.swap <= 1 && in(r.cal.u0) && in(r.cal.u1) && in(r.cal.v0) && in(r.cal.v1);
 }
 inline int format(const Record& r, char* out, int n) {
-  return snprintf(out, n, "pocket-board 1\npanel=%d\nturn=%d\nswap=%d\nu0=%d\nu1=%d\nv0=%d\nv1=%d\nfull=%d\nsoft=%d\n", r.panel, r.turn, r.cal.swap,
-                  r.cal.u0, r.cal.u1, r.cal.v0, r.cal.v1, r.full, r.soft);
+  return snprintf(out, n, "pocket-board 1\npanel=%d\nturn=%d\nswap=%d\nu0=%d\nu1=%d\nv0=%d\nv1=%d\nfull=%d\nsoft=%d\ngamma=%d\ntune=%d\n", r.panel, r.turn,
+                  r.cal.swap, r.cal.u0, r.cal.u1, r.cal.v0, r.cal.v1, r.full, r.soft, r.gamma, r.tune);
 }
 // Parses a record; false for anything that is not one of ours or has values out of range.
 inline bool parse(const char* text, Record& out) {
@@ -68,6 +69,8 @@ inline bool parse(const char* text, Record& out) {
         else if (!strcmp(line, "v1")) { r.cal.v1 = (int16_t)v; seen |= 64; }
         else if (!strcmp(line, "full")) r.full = v ? 1 : 0;
         else if (!strcmp(line, "soft")) r.soft = (uint8_t)v;  // optional: old files have none (soft 0)
+        else if (!strcmp(line, "gamma")) r.gamma = (uint8_t)v;  // optional, like the tune (0: the driver's own)
+        else if (!strcmp(line, "tune")) r.tune = (uint8_t)v;
       }
     }
     if (!e) break;

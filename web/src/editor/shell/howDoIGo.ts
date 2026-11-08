@@ -10,7 +10,7 @@ import { formatHash } from '../../urlState';
 import { lookId } from './lookId';
 
 /** The file's name as the game lists it (the catalog keeps them lowercase). */
-const listed = (e: Pick<CatalogEntry, 'files'>, name: string): string => e.files.find((f) => f.toLowerCase() === name.toLowerCase()) ?? name;
+const listed = (e: Pick<CatalogEntry, 'files'>, name: string): string => e.files?.find((f) => f.toLowerCase() === name.toLowerCase()) ?? name;
 
 async function gameOf(e: CatalogEntry) {
   const bytes = e.gam ? await fetchGameFile(e, e.gam) : undefined;

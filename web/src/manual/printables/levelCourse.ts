@@ -1,4 +1,4 @@
-// A course through the wrap (editor/check/course.ts finds one; levelViews.json keeps its path),
+// A course through the wrap (editor/check/course.ts finds one; levelViews/*.json keeps its path),
 // laid out for the printed Level Maps as one long strip the way the ship flies it: the map
 // unrolled through every wrap seam, turned in steps of 45 degrees so the way on points up the
 // page, start at the bottom. A way straight down the map (a downhill run, such as Snowbound's

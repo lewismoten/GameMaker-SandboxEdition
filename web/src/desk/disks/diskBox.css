@@ -182,7 +182,7 @@
   filter: brightness(0.7) drop-shadow(0 -3px 4px rgba(0, 0, 0, 0.55));
 }
 
-.disk-row .floppy:last-child {
+.disk-list .floppy:last-child {
   margin-bottom: 0;
 }
 
@@ -289,6 +289,16 @@
   align-items: center;
   gap: 6px;
   min-width: 0;
+  /* the box's own width, never its contents': a search that empties a case leaves it as wide */
+  flex: 0 0 auto;
+  width: min(412px, calc(100vw - 32px));
+}
+
+.disk-col .disk-case {
+  /* positioned, so a group's offsetTop is measured from the case (a tab scrolls to it) */
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
 }
 
 .disk-col h2 {
@@ -320,4 +330,153 @@
    RSD's printed ones) glow a light purple, dark ink staying dark, as the desk's white paper does */
 .desk-overlay.uv-night .floppy :is(.label:not(.printed), .label.rsd) {
   filter: grayscale(1) sepia(1) hue-rotate(215deg) saturate(2.2) brightness(0.95);
+}
+
+/* Search hides both the label and any later disks of a nonmatching set. */
+.disk-row .floppy[hidden] {
+  display: none;
+}
+
+/* The Find a disk field: wide enough to read its whole prompt, and never wider than a phone. */
+.desk-overlay > input[type='search'] {
+  box-sizing: border-box;
+  width: min(26rem, calc(100vw - 32px));
+  min-height: 32px;
+  padding: 4px 10px;
+  font: inherit;
+  color: #1a1a1a;
+  background: #f6f0dc;
+  border: 2px solid #8a7a50;
+  border-radius: 4px;
+}
+
+/* ---- index-card dividers (desk/disks/diskDividers.ts) ---- */
+
+/* the tabs above a case: the dividers' tops seen over the disks, each going to its group */
+.index-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px;
+  width: 100%;
+}
+
+.index-tab,
+.divider-tab {
+  --tab: #1565c0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 28px;
+  padding: 2px 10px;
+  border: 1px solid #a8925c;
+  border-top: 5px solid var(--tab);
+  border-radius: 6px 6px 0 0;
+  background: #ecd9a4;
+  color: #2b2210;
+  font:
+    700 13px/1.1 system-ui,
+    sans-serif;
+  cursor: pointer;
+}
+
+.index-tab:hover,
+.divider-tab:hover {
+  background: #f4e4b6;
+}
+
+.index-tab:focus-visible,
+.divider-tab:focus-visible {
+  outline: 3px solid #ffd23f;
+  outline-offset: 2px;
+}
+
+.divider-count {
+  min-width: 1.6em;
+  padding: 1px 5px;
+  border-radius: 8px;
+  background: rgba(43, 34, 16, 0.14);
+  font-weight: 600;
+  font-size: 12px;
+  text-align: center;
+}
+
+.disk-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.disk-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* a manila index card, a little wider than the disks, its tab staggered along the top */
+.divider {
+  position: relative;
+  width: 272px;
+  max-width: 100%;
+  margin: 0 0 -54px;
+  z-index: 0;
+}
+
+.disk-group + .disk-group .divider {
+  margin-top: 18px;
+}
+
+.divider .divider-tab {
+  position: relative;
+  z-index: 1;
+  max-width: 100%;
+  /* staggered along the card's top, as a box of dividers is cut */
+  margin-left: calc(var(--place, 0) * 14%);
+}
+
+.divider-card {
+  height: 88px;
+  margin-top: -1px;
+  border: 1px solid #a8925c;
+  border-radius: 0 3px 3px 3px;
+  background:
+    linear-gradient(180deg, var(--tab) 0 3px, transparent 3px), repeating-linear-gradient(180deg, transparent 0 15px, rgba(70, 110, 170, 0.28) 15px 16px),
+    #ecd9a4;
+  box-shadow: 0 -3px 5px rgba(0, 0, 0, 0.45);
+}
+
+/* folded shut: just the card, standing flush */
+.disk-group.folded .divider {
+  margin-bottom: 0;
+}
+
+.disk-group.folded .divider-card {
+  height: 22px;
+}
+
+.disk-group .no-match {
+  position: relative;
+  z-index: 1;
+  margin: 62px 0 0;
+  padding: 2px 8px;
+  border-radius: 3px;
+  background: #ecd9a4;
+  color: #2b2210;
+  font:
+    600 13px system-ui,
+    sans-serif;
+}
+
+.disk-group .no-match[hidden] {
+  display: none;
+}
+
+.disk-list .floppy {
+  position: relative;
+  z-index: 1;
+}
+
+/* a folded group's disks (its list keeps display: flex otherwise) */
+.disk-list[hidden] {
+  display: none;
 }

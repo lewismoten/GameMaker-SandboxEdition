@@ -16,6 +16,7 @@ import {
   gameTitle,
 } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { DRY_RUN, commit } from './run';
+import { fromCp437, toCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import { FILE, SCENE, fileName, gameOf, int, sceneOf } from './common';
 import { json, ToolError, type GameContext, type JsonSchema, type ToolDef } from './types';
 
@@ -53,7 +54,7 @@ const summary: ToolDef = {
               {
                 scene: i,
                 kind: kindName(s.gametype),
-                name: s.desc.trim(),
+                name: fromCp437(s.desc).trim(),
                 ...(s.gametype === ADVTYPE ? { map: s.files[1] || null } : {}),
                 links: s.links.filter((l) => l.toScene !== NOSCENE).length,
               },
@@ -91,7 +92,7 @@ const getScene: ToolDef = {
     const game = gameOf(ctx);
     const s = sceneOf(game, a.scene);
     const n = a.scene as number;
-    return json({ scene: n, kind: kindName(s.gametype), name: s.desc.trim(), files: slots(game, n), links: linksOf(game, n), scroll: s.scroll });
+    return json({ scene: n, kind: kindName(s.gametype), name: fromCp437(s.desc).trim(), files: slots(game, n), links: linksOf(game, n), scroll: s.scroll });
   },
 };
 
@@ -160,7 +161,7 @@ const setScene: ToolDef = {
   async run(a, ctx) {
     const game = gameOf(ctx);
     const s = sceneOf(game, a.scene);
-    if (typeof a.name === 'string') s.desc = a.name.slice(0, SCENEDESCLEN - 1);
+    if (typeof a.name === 'string') s.desc = toCp437(a.name).slice(0, SCENEDESCLEN - 1);
     if (typeof a.scroll === 'boolean') {
       if (s.gametype !== ADVTYPE) throw new ToolError(`Scene ${String(a.scene)} is not a level; only levels scroll.`);
       const v = a.scroll ? 0xff : 0;
@@ -168,7 +169,7 @@ const setScene: ToolDef = {
     }
     const moved = setSlots(game, a.scene as number, a.files, ctx);
     const note = moved.length ? `${moved.join('; ')}. The slots are: ${slotList(s)}.` : '';
-    return commit(ctx, a, { summary: `Scene ${String(a.scene)} (${s.desc.trim()}) changed`, files: { [ctx.gam]: serializeGame(game) } }, note);
+    return commit(ctx, a, { summary: `Scene ${String(a.scene)} (${fromCp437(s.desc).trim()}) changed`, files: { [ctx.gam]: serializeGame(game) } }, note);
   },
 };
 
@@ -190,7 +191,7 @@ const addScene: ToolDef = {
   async run(a, ctx) {
     const game = gameOf(ctx);
     const s = emptyScene(ADVTYPE);
-    s.desc = String(a.name).slice(0, SCENEDESCLEN - 1);
+    s.desc = toCp437(String(a.name)).slice(0, SCENEDESCLEN - 1);
     s.pos = { x: (a.x as number) ?? 40 + ((game.scenes.length * 37) % 240), y: (a.y as number) ?? 110 };
     // an unused scene's place is taken first, as the Integrator does
     const free = game.scenes.findIndex((x, i) => i > 1 && x.gametype === NOSCENE);
@@ -199,7 +200,12 @@ const addScene: ToolDef = {
     const n = free >= 0 ? free : game.scenes.length - 1;
     const moved = setSlots(game, n, a.files, ctx);
     const note = moved.length ? ` ${moved.join('; ')}. The slots are: ${slotList(s)}.` : '';
-    return commit(ctx, a, { summary: `Added scene ${n} (${s.desc})`, files: { [ctx.gam]: serializeGame(game) } }, `The new scene is number ${n}.${note}`);
+    return commit(
+      ctx,
+      a,
+      { summary: `Added scene ${n} (${fromCp437(s.desc)})`, files: { [ctx.gam]: serializeGame(game) } },
+      `The new scene is number ${n}.${note}`,
+    );
   },
 };
 

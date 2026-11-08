@@ -1,6 +1,7 @@
 // The MCP server's own tools, around the shared ones (src/assistant/tools): finding and opening
 // games, starting a new one, saving to the working folder and building the downloads.
 import { mkdirSync, writeFileSync } from 'node:fs';
+import { gameTitle } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { join } from 'node:path';
 import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { DRY_RUN, argsProblem } from '../../src/assistant/tools/run';
@@ -28,7 +29,7 @@ export interface ServerTool extends Omit<ToolDef, 'run'> {
 const opened = (g: OpenGame) => ({
   source: g.source,
   gam: g.ctx.gam,
-  title: parseGame(g.ctx.files.get(g.ctx.gam)!).scenes[0]?.desc.trim() ?? '',
+  title: gameTitle(parseGame(g.ctx.files.get(g.ctx.gam)!)),
   files: g.ctx.files.size,
   workdir: g.workdir,
   read_only: g.ctx.readOnly,
@@ -140,7 +141,7 @@ const exportTool: ServerTool = {
   async run(a, s) {
     const g = need(s);
     const dir = s.roots.writable(typeof a.out_dir === 'string' ? a.out_dir : join(s.roots.scratch, 'exports'));
-    const title = (a.title as string) || parseGame(g.ctx.files.get(g.ctx.gam)!).scenes[0]?.desc.trim() || g.ctx.gam;
+    const title = (a.title as string) || gameTitle(parseGame(g.ctx.files.get(g.ctx.gam)!)) || g.ctx.gam;
     const r = await buildExport({
       files: g.ctx.files,
       gam: g.ctx.gam,

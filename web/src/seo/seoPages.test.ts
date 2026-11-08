@@ -15,7 +15,8 @@ import { isStarterGame } from '../project/starter';
 const cdRoot = join(__dirname, '../../../cd');
 const catalog = cdCatalog(cdRoot);
 const secret = cdSecretCatalog(cdRoot);
-const playable = catalog.filter((g) => g.gam);
+// a Special is out only on its days, so the build gives it no page (seoBuild.ts playable)
+const playable = catalog.filter((g) => g.gam && g.series !== 'special');
 const plugin = seoPages(cdRoot);
 
 /** The files the build writes beside the pages (play.html is left out, so no game pages or pictures). */

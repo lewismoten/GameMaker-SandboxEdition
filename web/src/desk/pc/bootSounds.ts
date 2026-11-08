@@ -6,11 +6,16 @@
 // (no files), through the PC's own line (retro/computer/pcAudio.ts), so switching off cuts them at
 // once. Once DOS is at its prompt (settle) they fade away slowly: a moment of nostalgia, not a hum
 // under everything that follows. They follow the Sound effects setting, and play only after a
-// click or key press: a desk restored as the page loads switches its PC on in silence.
+// click or key press: a desk restored as the page loads switches its PC on in silence. Each drive's
+// parts check the Machine settings' drive sound switches (driveSwitches.ts): the hard disk's motor and
+// fan, the floppy's motor (spin); the heads unparking, the floppy's seek test, the CD driver's focus
+// test (heads); the hard disk's seeks, the floppy's and CD's reads (read/write). The case fan is no drive.
 import { audioContext, soundUnlocked } from '@lewismoten/gamemaker-sandbox-engine/audio/context';
 import { channelGain } from '@lewismoten/gamemaker-sandbox-engine/audio/mix';
 import { pcOutput } from '../../retro/computer/pcAudio';
 import { mulberry32 } from '../../seededRandom';
+import type { SoundAllowed } from './driveSounds';
+import { driveSoundOn } from './machineSettings';
 
 /** Seconds: the fans and the hard disk reach speed (the heads unpark then). */
 const SPIN_UP = 1.8;
@@ -65,8 +70,8 @@ function sources(ctx: BaseAudioContext) {
   return buffers;
 }
 
-/** Starts the boot's sounds. Undefined when there is no sound to make. */
-export function bootSounds(): BootSounds | undefined {
+/** Starts the boot's sounds. Undefined when there is no sound to make. `allowed` defaults to the saved switches. */
+export function bootSounds(allowed: SoundAllowed = driveSoundOn): BootSounds | undefined {
   const ctx = audioContext();
   const level = channelGain('sfx');
   // a press of the power switch that was the page's first gesture: the context is resuming
@@ -119,16 +124,19 @@ export function bootSounds(): BootSounds | undefined {
     return { s, f };
   };
   /** One knock at `at`: the click ringing through `bands`. */
-  const knock = (at: number, bands: Band[], peak: number) => {
+  /** One switched off still draws its random numbers, so the knocks after it sound the same. */
+  const knock = (at: number, bands: Band[], peak: number, play = true) => {
+    const tune = bands.map(() => 0.97 + rnd() * 0.06);
+    if (!play) return;
     const s = ctx.createBufferSource();
     s.buffer = click;
     const g = ctx.createGain();
     g.gain.value = peak;
     g.connect(master);
-    for (const [freq, q, lvl] of bands) {
+    for (const [i, [freq, q, lvl]] of bands.entries()) {
       const f = ctx.createBiquadFilter();
       f.type = 'bandpass';
-      f.frequency.value = freq * (0.97 + rnd() * 0.06);
+      f.frequency.value = freq * tune[i];
       f.Q.value = q;
       const l = ctx.createGain();
       l.gain.value = lvl;
@@ -155,48 +163,56 @@ export function bootSounds(): BootSounds | undefined {
   air.f.frequency.setValueAtTime(120, t0);
   air.f.frequency.exponentialRampToValueAtTime(500, t0 + SPIN_UP);
   air.f.connect(swell(t0, SPIN_UP, 0.09));
-  // the hard disk's own little fan: the high whine, rising to pitch and wavering a little
-  const diskFan = tone('triangle', 120, 700, t0, SPIN_UP, 6);
-  diskFan.connect(swell(t0, SPIN_UP, 0.014));
-  const diskFanOvertone = tone('sine', 240, 1400, t0, SPIN_UP, 9);
-  diskFanOvertone.connect(swell(t0, SPIN_UP, 0.004));
-  // the hard disk's motor winding up: a low hum and a faint high whine above it
-  const spindle = tone('triangle', 40, 90, t0, SPIN_UP);
-  spindle.connect(swell(t0, SPIN_UP, 0.012));
-  const whine = tone('sine', 300, 1800, t0, SPIN_UP);
-  whine.connect(swell(t0, SPIN_UP, 0.004));
-  for (const s of [caseFan, air.s, diskFan, diskFanOvertone, spindle, whine]) (s.start(t0), running.push(s));
+  for (const s of [caseFan, air.s]) (s.start(t0), running.push(s));
+  if (allowed('hdd', 'spin')) {
+    // the hard disk's own little fan: the high whine, rising to pitch and wavering a little
+    const diskFan = tone('triangle', 120, 700, t0, SPIN_UP, 6);
+    diskFan.connect(swell(t0, SPIN_UP, 0.014));
+    const diskFanOvertone = tone('sine', 240, 1400, t0, SPIN_UP, 9);
+    diskFanOvertone.connect(swell(t0, SPIN_UP, 0.004));
+    // the hard disk's motor winding up: a low hum and a faint high whine above it
+    const spindle = tone('triangle', 40, 90, t0, SPIN_UP);
+    spindle.connect(swell(t0, SPIN_UP, 0.012));
+    const whine = tone('sine', 300, 1800, t0, SPIN_UP);
+    whine.connect(swell(t0, SPIN_UP, 0.004));
+    for (const s of [diskFan, diskFanOvertone, spindle, whine]) (s.start(t0), running.push(s));
+  } else (rnd(), rnd()); // the two fan tones' waver, so the knocks after sound the same
   // up to speed, the heads unpark with a clunk
-  knock(t0 + SPIN_UP, [...SEEK, [300, 4, 1]], 2.2);
+  knock(t0 + SPIN_UP, [...SEEK, [300, 4, 1]], 2.2, allowed('hdd', 'heads'));
 
   /** The hard disk reading: single knocks, pairs and quick runs of seeks (trrrk), for `len` s. */
-  const hardDisk = (at: number, len: number) => {
+  const hardDisk = (at: number, len: number, play: boolean) => {
     for (let t = at; t < at + len;) {
       const run = rnd() < 0.35 ? 4 + Math.floor(rnd() * 7) : 1 + Math.floor(rnd() * 2);
-      for (let i = 0; i < run; i++, t += run > 2 ? 0.01 + rnd() * 0.008 : 0.03 + rnd() * 0.03) knock(t, SEEK, (run > 2 ? 0.9 : 1.4) * (0.7 + rnd() * 0.3));
+      for (let i = 0; i < run; i++, t += run > 2 ? 0.01 + rnd() * 0.008 : 0.03 + rnd() * 0.03)
+        knock(t, SEEK, (run > 2 ? 0.9 : 1.4) * (0.7 + rnd() * 0.3), play);
       t += 0.04 + rnd() * 0.1;
     }
   };
 
   /** The floppy, the loudest thing in the boot: its motor, and the head stepping out 40 tracks and back (the BIOS's seek test) or a few (a read). */
   const floppy = (at: number, len: number) => {
-    const m = hiss('bandpass', 180, 1.5);
-    motor(m.s, m.f, at, len, 0.15);
-    const hum = tone('triangle', 95, 95, at, 0.01);
-    motor(hum, hum, at, len, 0.02);
+    if (allowed('floppy', 'spin')) {
+      const m = hiss('bandpass', 180, 1.5);
+      motor(m.s, m.f, at, len, 0.15);
+      const hum = tone('triangle', 95, 95, at, 0.01);
+      motor(hum, hum, at, len, 0.02);
+    }
     const tracks = len >= 0.9 ? 40 : 3;
+    // the seek test moves the heads; a short access is a read
+    const play = allowed('floppy', tracks > 3 ? 'heads' : 'rw');
     let t = at + 0.15;
     for (const dir of [0, 1]) {
-      for (let i = 0; i < tracks; i++, t += tracks > 3 ? 0.007 : 0.02) knock(t, STEP, 3.2);
+      for (let i = 0; i < tracks; i++, t += tracks > 3 ? 0.007 : 0.02) knock(t, STEP, 3.2, play);
       t += 0.1;
-      if (!dir && tracks > 3) knock(t - 0.05, STEP, 4); // the head stops at the last track
+      if (!dir && tracks > 3) knock(t - 0.05, STEP, 4, play); // the head stops at the last track
     }
   };
 
   /** The CD-ROM, barely heard: the sled's soft clack and, in the driver's test, the focus coil's ticks (no disc to spin). */
   const cdRom = (at: number, len: number) => {
-    knock(at + 0.05, SLED, 0.5);
-    if (len >= 1) for (const dt of [0.22, 0.32, 0.42, 0.6]) knock(at + dt, FOCUS, 0.25);
+    knock(at + 0.05, SLED, 0.5, allowed('cd', 'rw'));
+    if (len >= 1) for (const dt of [0.22, 0.32, 0.42, 0.6]) knock(at + dt, FOCUS, 0.25, allowed('cd', 'heads'));
   };
 
   const fadeAt = (at: number) => {
@@ -213,7 +229,7 @@ export function bootSounds(): BootSounds | undefined {
       if (settled || now >= t0 + FADE_BY) return;
       const len = ms / 1000;
       if (drive === 'A') floppy(now + 0.02, len);
-      else if (drive === 'C') hardDisk(Math.max(now + 0.02, t0 + SPIN_UP + 0.15), len);
+      else if (drive === 'C') hardDisk(Math.max(now + 0.02, t0 + SPIN_UP + 0.15), len, allowed('hdd', 'rw'));
       else if (drive === 'D') cdRom(now + 0.02, len);
     },
     settle() {

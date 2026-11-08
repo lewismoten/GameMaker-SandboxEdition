@@ -21,7 +21,7 @@ picture; `host.ts` is what programs on it can use.
   midnight (00:00), dawn/sunrise (07:15), morning (09:00), day/noon (12:00),
   afternoon (14:00), dusk/sunset (16:54), evening (18:00), and night (22:00).
   These keep the current date and update the room immediately; `TIME RESET` restores local time.
-- `text/`: 80×25 text mode (`textScreen.ts`, `textInput.ts`, `cp437.ts`) and Game-Maker's text UI
+- `text/`: 80×25 text mode (`textScreen.ts`, `textInput.ts`, CP437 (from the engine package, `gamemaker-sandbox-engine/text/cp437`)) and Game-Maker's text UI
   (`textUi.ts`).
 - `gm.ts`: GM.EXE's menus. `gmReg/`: Game-Maker's registration and copy check (`chk.ts`,
   `registration.ts`, `copyCheck.ts`; `tourPretend.ts` makes the PC pretend to be unregistered while the guided tour plays); `regSide.ts` (loaded by `regSideLater.ts`, asked for by
@@ -71,6 +71,9 @@ picture; `host.ts` is what programs on it can use.
 The terminal (`term.ts`) and the BBSes; TERMINAL.EXE's dialing
 directory and calls are `bbs.ts`.
 
+The first call that connects to a board brings home a letter for Scoot (`courierMail.ts`), read
+with SCOOT.EXE in `C:\COMM` (`../courier/scootExe.ts`).
+
 - The boards: THE -= S A N D B O X =- BBS (`sandbox.ts`, its name in `bbsName.ts`, ANSI art in
   `ansiArt.ts`) and The Sofa (`sofa.ts`, its number in `sofaPhone.ts` for the printed pieces; its
   files, pictures and SPAM in `sofaFiles.ts`, `sofaPictures.ts` and `sofaSpam.ts`).
@@ -105,3 +108,5 @@ directory and calls are `bbs.ts`.
 - The Sandbox BBS's door game, TIC-TAC-TOE BY MODEM, is `ticTacToe.ts` (rules, the other caller,
   the saved game) and `ticTacToeDoor.ts` (its screen); its R)egister menu, `rsdLine.ts`, is RSD's
   registration line: a name and serial number get TELLREG's registration number.
+
+The desk can supply live `ComputerOptions.turbo` and `cpuName` callbacks separately from engine costs, so independent disk timing does not change the physical TURBO switch or BIOS CPU label. Other hosts retain their existing defaults.

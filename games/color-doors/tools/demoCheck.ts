@@ -20,12 +20,14 @@ const r = await replay(
   },
   { maxMinutes: 8 },
 );
-const WANT = '2 3 2 4 2 5 2 6 2 7 2 1';
+const WANT = '2 3 8 4 8 5 8 6 8 7 8 1';
 const seen = r.scenes.slice(0, 12).join(' ');
 if (r.error) console.log(r.error);
 console.log(`demo: scenes entered ${r.scenes.join(' ')}; ${r.keysLeft} keys unplayed`);
 if (seen !== WANT || r.keysLeft) {
-  console.error(`demoCheck: expected scenes ${WANT} (the hall, five rooms with the hall between, the ending) with every key played; got ${seen}`);
+  console.error(
+    `demoCheck: expected scenes ${WANT} (the hall, five rooms with the hall's copy without its card between, the ending) with every key played; got ${seen}`,
+  );
   process.exit(1);
 }
 console.log('demoCheck ok: tried all five doors and came back each time, then the last door of the hall ended the game');

@@ -3,10 +3,12 @@
 //
 //   1. The Big One: two small mint gumdrops sit in a low tunnel through a brick wall and block it.
 //      A big red gumdrop (stronger) walks back and forth through the tunnel and pops them by
-//      itself. Lami waits, then walks through.
-//   2. Your Star: the big one stands still in front of the tunnel. A star thrown at it is used up
-//      (it is stronger than the star). Lami steps past the big one, which is friendly, and throws:
-//      the star (stronger than a mint pip and a purple grump) pops both, one star each.
+//      itself. A chart shows the two and their powers (180 and 110), and an arrow sign points at
+//      the big one: watch it. Lami waits, then walks through.
+//   2. Your Star: the big one stands still in front of the tunnel. A chart lists all four powers
+//      (big 180, star 140, grump 130, pip 110). A star thrown at the big one fizzles (180 beats
+//      140, as the sign beside it says). Lami steps past the big one, which is friendly, and
+//      throws: the star (stronger than a mint pip and a purple grump) pops both, one star each.
 // Both rooms are closed in by brick walls you can see, so Lami is never stopped by something she can't.
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
@@ -14,20 +16,32 @@ import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
 import { addSign, type Sign } from '../../kit/starter/sign';
-import { BIG, BIG_STILL, MID, PIP } from './monsters';
+import { addChart } from './chartSign';
+import { BIG, BIG_STILL, MID, PIP, POWER, monsterPictures } from './monsters';
+import { drawStar } from './starArt';
 
-export type SignName = 'stronger' | 'wait' | 'star' | 'step' | 'exit';
+export type SignName = 'stronger' | 'chart1' | 'watch' | 'chart2' | 'step' | 'exit';
 
 /** The block set both levels share: the Starter blocks, then this game's signs. */
 function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
+  const exit = addSign(book, pal, 'exit.sign', 'EXIT →', 3);
+  // the charts show the monsters' own pictures beside their real powers
+  const pics = monsterPictures(pal).pics;
+  const row = (name: string, power: number) => ({ pic: pics.get(name)!, power });
   const signs = {
-    stronger: addSign(book, pal, 'stronger.sign', 'THE STRONGER ONE POPS THE WEAKER', 4, 4),
-    wait: addSign(book, pal, 'wait.sign', 'WAIT FOR THE BIG ONE', 4, 3),
-    star: addSign(book, pal, 'star.sign', 'YOUR STAR BEATS THE SMALL ONES', 4, 4),
-    step: addSign(book, pal, 'step.sign', 'THE BIG ONE BEATS YOUR STAR. STEP PAST', 4, 4),
-    exit: addSign(book, pal, 'exit.sign', 'EXIT →', 3),
+    stronger: addSign(book, pal, 'stronger.sign', 'WHEN TWO MEET, HIGHER POWER WINS', 4, 3),
+    chart1: addChart(book, pal, 'chart1', [row('big0', POWER.big), row('pip0', POWER.pip)]),
+    watch: addSign(book, pal, 'watch.sign', 'WATCH THE BIG RED ONE →', 4, 3),
+    chart2: addChart(book, pal, 'chart2', [
+      row('big0', POWER.big),
+      { pic: drawStar(pal, 0), power: POWER.star },
+      row('mid0', POWER.mid),
+      row('pip0', POWER.pip),
+    ]),
+    step: addSign(book, pal, 'step.sign', 'THE BIG ONE BEATS YOUR STAR, 180 TO 140. STEP PAST IT →', 4, 4),
+    exit,
   };
   return { book, signs };
 }
@@ -91,11 +105,12 @@ function theBigOne(book: Book, signs: Record<SignName, Sign>): StarterMap {
       [39, 4],
     ],
     [9, 20, 37],
-    [13, 31, 40],
+    [31, 40],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(6, onGround(GROUND, signs.stronger), signs.stronger);
-  m.sign(14, onGround(GROUND, signs.wait), signs.wait);
+  m.sign(5, onGround(GROUND, signs.stronger), signs.stronger);
+  m.sign(10, onGround(GROUND, signs.chart1), signs.chart1);
+  m.sign(15, onGround(GROUND, signs.watch), signs.watch);
   m.sign(38, onGround(GROUND, signs.exit), signs.exit);
   for (const x of PIPS_1) m.mon(PIP, x, STAND);
   m.mon(BIG, BIG_X, STAND);
@@ -119,7 +134,7 @@ function yourStar(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [18, 34, 40],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(6, onGround(GROUND, signs.star), signs.star);
+  m.sign(6, onGround(GROUND, signs.chart2), signs.chart2);
   m.sign(12, onGround(GROUND, signs.step), signs.step);
   m.sign(39, onGround(GROUND, signs.exit), signs.exit);
   m.mon(BIG_STILL, BIG_X, STAND);
@@ -133,8 +148,8 @@ export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
   const pal = buildStarterPalette(undefined, 'who-wins');
   const { book, signs } = buildBlocks(pal);
   const levels: Level[] = [
-    { file: 'one', title: 'The Big One', hint: 'The stronger one pops the weaker.', map: theBigOne(book, signs) },
-    { file: 'two', title: 'Your Star', hint: 'Know what your star can pop.', map: yourStar(book, signs) },
+    { file: 'one', title: 'The Big One', hint: 'Higher power wins. Watch!', map: theBigOne(book, signs) },
+    { file: 'two', title: 'Your Star', hint: 'Your star is 140. What can it pop?', map: yourStar(book, signs) },
   ];
   return { book, pal, levels };
 }

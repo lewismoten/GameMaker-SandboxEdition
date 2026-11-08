@@ -17,7 +17,7 @@ export interface Damage {
   message: string;
 }
 
-export interface Recovered {
+interface Recovered {
   record: ProjectRecord;
   files: GameFiles;
   damage: Damage[];

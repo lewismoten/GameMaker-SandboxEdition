@@ -27,7 +27,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 10896,
+  "frames": 11432,
   "chapters": [
    {
     "title": "Opening",
@@ -46,18 +46,18 @@
    },
    {
     "title": "Level 2: A Demo That Plays Itself",
-    "frame": 5053,
-    "time": 84216.66666666829
+    "frame": 5589,
+    "time": 93150.00000000422
    },
    {
     "title": "Ending",
-    "frame": 7610,
-    "time": 126833.33333334736
+    "frame": 8146,
+    "time": 135766.6666666792
    },
    {
     "title": "Credits",
-    "frame": 9822,
-    "time": 163699.99999999627
+    "frame": 10358,
+    "time": 172633.3333333244
    }
   ]
  }

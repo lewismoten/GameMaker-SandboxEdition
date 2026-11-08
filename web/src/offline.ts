@@ -7,11 +7,14 @@
 // reload (a game on the desk's PC, or one being played, is never switched off by itself).
 
 import { reloadForNewest, watchLoadFailures } from './offline/loadFailure';
+import { inArchiveReplay, REPLAY_MISSING } from './offline/replay';
 import { fadeOutLater, isPlayPage, setPendingUpdate } from './offline/updateState';
 
 const HOUR = 60 * 60 * 1000;
 
 export function registerServiceWorker(): void {
+  // a Wayback replay: no worker, no update or offline notices, and a calm note for a part that was not saved
+  if (inArchiveReplay()) return watchLoadFailures(() => showNotice(REPLAY_MISSING, true));
   watchLoadFailures(showNotice);
   if (!('serviceWorker' in navigator) || !import.meta.env.PROD) return;
   const sw = navigator.serviceWorker;
@@ -101,7 +104,7 @@ export function offerUpdate(worker: ServiceWorker | undefined): void {
 }
 
 /** A short status notice (dismissible), for a part of the site that would not load. */
-function showNotice(message: string): void {
+function showNotice(message: string, calm = false): void {
   if (notice?.isConnected) notice.remove();
   const text = document.createElement('span');
   text.textContent = message;
@@ -127,7 +130,7 @@ function showNotice(message: string): void {
     'position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:2147483000;display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;' +
     'max-width:calc(100vw - 32px);box-sizing:border-box;padding:10px 14px;border-radius:6px;background:#000080;color:#fff;' +
     'font:14px/1.3 system-ui,-apple-system,"Segoe UI",sans-serif;box-shadow:0 4px 16px rgba(0,0,0,.45)';
-  notice.append(text, ...(navigator.onLine === false ? [] : [reload]), close);
+  notice.append(text, ...(navigator.onLine === false || calm ? [] : [reload]), close);
   // first in the page, so a keyboard user's first Tab reaches it (it is fixed at the bottom, so
   // the order on screen is unchanged); at the end of the body it took every control to get there
   document.body.prepend(notice);

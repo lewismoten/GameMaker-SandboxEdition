@@ -6,7 +6,7 @@
   "hero": "RIMA",
   "year": 1994,
   "price": "Free",
-  "version": "1.1",
+  "version": "1.2",
   "blurb": "Three short levels about things that hurt. Spikes cost a few hit points, and only once. A pool in the ground costs a whole life, and the room starts again where you came in. The third level has a safe way past both. Signs say how. Play it, then open it in Game-Maker and change a hazard.",
   "exe": "STEP.EXE",
   "dosName": "HAZARDS",

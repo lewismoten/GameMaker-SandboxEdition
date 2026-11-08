@@ -2,40 +2,69 @@
 // round clearings, only the biggest open region kept (the rest becomes trees), then a winding path
 // (the cheapest walk over noisy costs) from the entry to the farthest open cell, rocks and flowers
 // in the open. Cells beside the path stay open, so the path never has to squeeze.
-import { DECOR, FLOOR, PATH, ROCK, TREE, closed, distances, farthest, newArea, openAround, type Area, type Stream } from './grid';
+import { DECOR, FLOOR, PATH, ROCK, TREE, closed, farthest, newArea, openAround, type Area, type Stream } from './grid';
 
 function smooth(a: Area): void {
-  const next = a.cells.slice();
-  for (let y = 0; y < a.h; y++)
-    for (let x = 0; x < a.w; x++) {
+  const { w, h, cells } = a;
+  const next = cells.slice();
+  for (let y = 0; y < h; y++) {
+    const inY = y > 0 && y < h - 1;
+    for (let x = 0; x < w; x++) {
       let trees = 0;
-      for (let dy = -1; dy <= 1; dy++)
-        for (let dx = -1; dx <= 1; dx++) {
-          if (!dx && !dy) continue;
-          const nx = x + dx,
-            ny = y + dy;
-          if (nx < 0 || ny < 0 || nx >= a.w || ny >= a.h || a.cells[ny * a.w + nx] === TREE) trees++;
-        }
-      next[y * a.w + x] = trees >= 4 ? TREE : FLOOR;
+      if (inY && x > 0 && x < w - 1) {
+        // inside the area: all eight neighbors exist, so no bounds tests
+        const i = y * w + x;
+        trees =
+          +(cells[i - w - 1] === TREE) +
+          +(cells[i - w] === TREE) +
+          +(cells[i - w + 1] === TREE) +
+          +(cells[i - 1] === TREE) +
+          +(cells[i + 1] === TREE) +
+          +(cells[i + w - 1] === TREE) +
+          +(cells[i + w] === TREE) +
+          +(cells[i + w + 1] === TREE);
+      } else {
+        for (let dy = -1; dy <= 1; dy++)
+          for (let dx = -1; dx <= 1; dx++) {
+            if (!dx && !dy) continue;
+            const nx = x + dx,
+              ny = y + dy;
+            if (nx < 0 || ny < 0 || nx >= w || ny >= h || cells[ny * w + nx] === TREE) trees++;
+          }
+      }
+      next[y * w + x] = trees >= 4 ? TREE : FLOOR;
     }
-  a.cells.set(next);
+  }
+  cells.set(next);
 }
 
-/** Every open cell outside the biggest open region becomes a tree. Returns the open cells left. */
+/** Every open cell outside the biggest open region becomes a tree. Returns the open cells left. One shared flood fill, so a map of many small pockets costs no more than one pass. */
 function keepBiggest(a: Area): number {
-  const seen = new Int32Array(a.cells.length).fill(-1);
+  const { w, h, cells } = a;
+  const seen = new Int32Array(cells.length).fill(-1);
+  const queue = new Int32Array(cells.length);
   let best = -1,
     bestSize = 0,
     id = 0;
-  for (let s = 0; s < a.cells.length; s++) {
-    if (closed(a.cells[s]) || seen[s] >= 0) continue;
-    const d = distances(a, s);
-    let size = 0;
-    for (let i = 0; i < d.length; i++) if (d[i] >= 0) ((seen[i] = id), size++);
-    if (size > bestSize) ((best = id), (bestSize = size));
+  for (let s = 0; s < cells.length; s++) {
+    if (closed(cells[s]) || seen[s] >= 0) continue;
+    let head = 0,
+      tail = 0;
+    queue[tail++] = s;
+    seen[s] = id;
+    while (head < tail) {
+      const c = queue[head++];
+      const x = c % w,
+        y = (c / w) | 0;
+      if (x + 1 < w && seen[c + 1] < 0 && !closed(cells[c + 1])) ((seen[c + 1] = id), (queue[tail++] = c + 1));
+      if (x > 0 && seen[c - 1] < 0 && !closed(cells[c - 1])) ((seen[c - 1] = id), (queue[tail++] = c - 1));
+      if (y + 1 < h && seen[c + w] < 0 && !closed(cells[c + w])) ((seen[c + w] = id), (queue[tail++] = c + w));
+      if (y > 0 && seen[c - w] < 0 && !closed(cells[c - w])) ((seen[c - w] = id), (queue[tail++] = c - w));
+    }
+    if (tail > bestSize) ((best = id), (bestSize = tail));
     id++;
   }
-  for (let i = 0; i < a.cells.length; i++) if (!closed(a.cells[i]) && seen[i] !== best) a.cells[i] = TREE;
+  for (let i = 0; i < cells.length; i++) if (!closed(cells[i]) && seen[i] !== best) cells[i] = TREE;
   return bestSize;
 }
 

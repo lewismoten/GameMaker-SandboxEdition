@@ -1,0 +1,104 @@
+# Publish the engine, archives and development tools to GitHub Packages for a version tag on master.
+# One workflow for all three tag prefixes, so the install and the type check are paid for once. Pushing
+# several package tags at the same commit starts one run per tag; the run for the first of them (engine,
+# then archives, then tools) publishes every package tagged at that commit that has no GitHub Release yet,
+# and the others finish in seconds. A tag pushed later, alone, publishes itself.
+name: Publish packages to GitHub Packages
+
+on:
+  push:
+    tags:
+      - 'engine-v*'
+      - 'archives-v*'
+      - 'tools-v*'
+
+permissions:
+  contents: write # the GitHub Releases
+  packages: write
+
+concurrency:
+  group: publish-packages-${{ github.sha }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      GM_SKIP_GAME_BUILD: '1'
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '26'
+          registry-url: 'https://npm.pkg.github.com/'
+          scope: '@lewismoten'
+      - name: Pick the packages to publish
+        id: pick
+        run: |
+          git fetch --no-tags origin +refs/heads/master:refs/remotes/origin/master
+          if ! git merge-base --is-ancestor HEAD refs/remotes/origin/master; then
+            echo '::error::The tagged commit is not on master.'
+            exit 1
+          fi
+          # this run's own tag must be its package's current version
+          mine="${GITHUB_REF_NAME%%-v*}"
+          version=$(node -p "require('./web/packages/$mine/package.json').version")
+          if [[ "$GITHUB_REF_NAME" != "$mine-v$version" ]]; then
+            echo "::error::Tag must be $mine-v$version."
+            exit 1
+          fi
+          todo=''
+          for pkg in engine archives tools; do
+            version=$(node -p "require('./web/packages/$pkg/package.json').version")
+            tag="$pkg-v$version"
+            git tag --points-at HEAD | grep -qx "$tag" || continue
+            gh release view "$tag" >/dev/null 2>&1 && continue
+            todo="$todo $pkg"
+          done
+          todo="${todo# }"
+          echo "Packages to publish: ${todo:-none}"
+          if [[ -n "$todo" && "$mine" == "${todo%% *}" ]]; then
+            echo "todo=$todo" >> "$GITHUB_OUTPUT"
+          else
+            echo 'Another run of this commit publishes them, or they are already released.'
+          fi
+      - name: Install dependencies
+        if: steps.pick.outputs.todo
+        run: |
+          npm ci --ignore-scripts --no-audit --no-fund
+          npm run build:packages
+      # Format and lint run locally before tagging (root npm run verify); here only types and tests.
+      - name: Check source
+        if: steps.pick.outputs.todo
+        working-directory: web
+        run: |
+          npx tsc --noEmit -p .
+          tests=''
+          for pkg in ${{ steps.pick.outputs.todo }}; do
+            case "$pkg" in
+              engine) tests="$tests src/engine src/audio src/project/dosNames.test.ts test/formats.test.ts" ;;
+              archives) tests="$tests test/archives.test.ts test/zip.test.ts src/project/importScan.test.ts src/project/importPlayer.test.ts" ;;
+              tools) tests="$tests src/formats src/engine src/audio src/gfx src/project/zip.test.ts test/toolsDrawing.test.ts" ;;
+            esac
+          done
+          npm run test:fast -- $tests
+      # Dependencies first: engine, then archives, then tools. Each gets its GitHub Release (the changelog
+      # section as the body, npm's own CycloneDX SBOM of the runtime dependencies attached).
+      - name: Publish and release
+        if: steps.pick.outputs.todo
+        run: |
+          for pkg in ${{ steps.pick.outputs.todo }}; do
+            version=$(node -p "require('./web/packages/$pkg/package.json').version")
+            tag="$pkg-v$version"
+            (cd "web/packages/$pkg" && npm publish --ignore-scripts)
+            node scripts/release/section.mjs "web/packages/$pkg/CHANGELOG.md" "$version" > "$RUNNER_TEMP/$pkg-notes.md"
+            sbom="$RUNNER_TEMP/$pkg-$version.sbom.cdx.json"
+            npm sbom --sbom-format cyclonedx --package-lock-only --omit=dev -w "@lewismoten/gamemaker-sandbox-$pkg" > "$sbom"
+            gh release create "$tag" --title "$pkg $version" --notes-file "$RUNNER_TEMP/$pkg-notes.md" "$sbom"
+          done
+        env:
+          NODE_AUTH_TOKEN: ${{ github.token }}

@@ -2,7 +2,7 @@
 // (0 to 1). Pure, so it is tested without a DOM. Drawn by vocRuler.ts.
 import { TICK_MS, VOC_LIKELY_BYTES, VOC_MAX_BYTES, VOC_MAYBE_BYTES, vocBytesFor } from '../../audio/vocLimit';
 
-export interface RulerPlan {
+interface RulerPlan {
   /** Start of the yellow zone and of the red zone (1 = not reached). */
   yellowAt: number;
   redAt: number;

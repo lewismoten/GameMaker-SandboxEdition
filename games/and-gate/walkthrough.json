@@ -8,11 +8,11 @@
  "segments": [
   {
    "scene": 2,
-   "keys": "FU0PzStNHM0rOQK5P00ZzTU5ArmgAU0WzQNNEs0oSwjLA00PzStNI80DTQ=="
+   "keys": "FU0PzStNHM0rOQK5P00ZzTU5ArmgAU0WzQNNEs0DSwjLA00PzStNI80DTQ=="
   },
   {
    "scene": 3,
-   "keys": "FU0KzSs5Ark/TRTNK0hFyANNJM0STRHNKzkCubMBTRLNQU0CzQNND80rTTDNA00="
+   "keys": "FU0KzSs5Ark/TRTNK0hFyANNJM0STRvNKzkCub4BTQjNDU0CzQNND80rTTDNA00="
   }
  ],
  "chapters": [
@@ -27,7 +27,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 10797,
+  "frames": 10540,
   "chapters": [
    {
     "title": "Opening",
@@ -46,18 +46,18 @@
    },
    {
     "title": "Level 2: All Three",
-    "frame": 4633,
-    "time": 77216.66666666625
+    "frame": 4511,
+    "time": 75183.33333333232
    },
    {
     "title": "Ending",
-    "frame": 7512,
-    "time": 125200.00000001355
+    "frame": 7255,
+    "time": 120916.66666667897
    },
    {
     "title": "Credits",
-    "frame": 9723,
-    "time": 162049.99999999724
+    "frame": 9466,
+    "time": 157766.6666666664
    }
   ]
  }

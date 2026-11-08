@@ -9,7 +9,7 @@ import { courseNumber } from '../project/ceremonies';
 
 export const GRADES_KEY = 'gm-course-grades';
 /** Fired on window when a grade changes (the transcript and Done marks listen). */
-export const GRADES_CHANGED = 'course-grades-changed';
+const GRADES_CHANGED = 'course-grades-changed';
 
 /** The saved grades (none when nothing is kept or storage is off). */
 export function loadGrades(): Grades {

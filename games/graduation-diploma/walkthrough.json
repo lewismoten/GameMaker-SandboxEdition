@@ -8,18 +8,26 @@
  "segments": [
   {
    "scene": 2,
-   "keys": "AU0ezQNNWs0DTVrNA01azQNNMs0DTQ=="
+   "keys": "AU08zRtNBc0DSCfIA00SzQNQJ9ADTQrNA00UzRtNCs15TQ3NA00KzQ5NFM0bTQg5ArkczQRND80bTSPNA00UzRtNHs0DTRTNG00jzQNNCs0DTQ=="
+  },
+  {
+   "scene": 3,
+   "keys": "AU0ezQNNWs0DTVrNA01azQNNMs1dTQ=="
   }
  ],
  "chapters": [
   {
    "scene": 2,
+   "title": "The Long Walk"
+  },
+  {
+   "scene": 3,
    "title": "The Long Aisle"
   }
  ],
  "timeline": {
   "fps": 60,
-  "frames": 6032,
+  "frames": 9255,
   "chapters": [
    {
     "title": "Opening",
@@ -28,23 +36,28 @@
    },
    {
     "title": "Story",
-    "frame": 913,
-    "time": 15216.666666666471
+    "frame": 922,
+    "time": 15366.666666666466
+   },
+   {
+    "title": "The Long Walk",
+    "frame": 1670,
+    "time": 27833.33333333393
    },
    {
     "title": "The Long Aisle",
-    "frame": 1661,
-    "time": 27683.333333333918
+    "frame": 4585,
+    "time": 76416.66666666602
    },
    {
     "title": "Ending",
-    "frame": 3232,
-    "time": 53866.666666664554
+    "frame": 6453,
+    "time": 107550.00000000841
    },
    {
     "title": "Credits",
-    "frame": 4960,
-    "time": 82666.66666666784
+    "frame": 8181,
+    "time": 136350.0000000122
    }
   ]
  }

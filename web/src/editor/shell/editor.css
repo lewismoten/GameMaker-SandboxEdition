@@ -784,7 +784,7 @@ dialog.modal .buttons {
 
 .toast.error {
   background: var(--danger);
-  color: #fff;
+  color: var(--bg);
 }
 
 /* Phones (up to 900px): the Files bar stays at the top and the editor below it scrolls by

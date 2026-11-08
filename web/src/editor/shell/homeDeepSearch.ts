@@ -3,6 +3,7 @@
 // which games a query also finds, and where. Nothing starts at page load. No DOM.
 import { createDeepIndex, hintOf, type DeepIndex, type DeepStore } from './deepIndex';
 import { deepSourceOf } from './deepSources';
+import { hydrateFiles } from '../../project/files';
 import { queryWords } from './searchMatch';
 import type { HomeGame } from './homeCards';
 import type { DeepJob, DeepPart } from './deepExtract';
@@ -47,6 +48,7 @@ export function homeDeepSearch(w: Wiring) {
     /** The search box got focus: start (or widen) the background read. */
     async focus(): Promise<void> {
       const i = await ensure();
+      await hydrateFiles(w.games().flatMap((g) => g.entry ?? [])).catch(() => undefined); // the lean list's file names, which the read lists
       i.start(w.games().flatMap((g) => deepSourceOf(g) ?? []));
     },
     /** Game key to the words found inside it, for a query. */

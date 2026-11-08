@@ -3,12 +3,13 @@ import { wrap, creditsPage } from '../../kit/starter/graduationText';
 import type { Graduation } from '../../kit/starter/graduationConfig';
 import { CASTLE } from '../../kit/starter/graduationThemes';
 import about from '../about.json';
+import { song } from './song';
 
 export const cfg: Graduation = {
   id: 'graduation-heroes',
   stage: 'Heroes and Foes',
   groups: ['Changing Your Hero', 'Foes and Bosses'],
-  cameos: ['chicken', 'will', 'watt'],
+  cameos: ['chicken', 'teddy', 'will', 'joe', 'goat', 'gwinn', 'watt', 'camel'],
   theme: CASTLE,
   upper: 'HEROES AND FOES',
   honors: 'IN HEROES AND FOES',
@@ -19,8 +20,14 @@ export const cfg: Graduation = {
     doc: 'DOC LEO HAS A SCROLL FOR YOU',
     banner: 'HEROES AND FOES',
   },
+  arrive: {
+    title: 'The Castle Path',
+    hint: 'Cross the grounds to the castle.',
+    welcome: 'THE CASTLE IS AHEAD',
+    nods: ['hop', 'bug', 'flock'],
+  },
   level: { title: 'The Great Hall', hint: 'Walk up the runner to the dais.' },
-  song: { bpm: 84, lead: 'brass', transpose: 5 },
+  song,
   text: {
     story: wrap(`
 |GRADUATION

@@ -50,20 +50,20 @@ export const TALE_ONE = wrap(`
 
 Mara folded a paper boat on the kitchen table and carried it to the garden pond.
 
-It sailed once round the lily pad and came back to the bank, as if it knew the way.
+It sailed once around the lily pad and came back to the bank, as if it knew the way.
 
 Mara took a bow. The frogs did not clap, but they did not leave, either.
 `);
 
 /** Tale two's words. */
 export const TALE_TWO = wrap(`
-|THE LONG WAY ROUND
+|THE LONG WAY AROUND
 
 Mara set out to walk to the hill, and the path went left, and then right, and then left again.
 
 By the time they got there the sun was up and the grass was warm.
 
-It was the longest way round, and the best one.
+It was the longest way around, and the best one.
 `);
 
 /** Level 1's opening words, shown over its picture. */

@@ -2,7 +2,7 @@
 import { describe, expect, it } from 'vitest';
 import { toCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import { DIZ_LINES, DIZ_WIDTH } from '../bbs/fileId';
-import { WAREZ } from '../bbs/warezArea';
+import { WAREZ } from '../bbs/warezList';
 import { PATCHING_DIZ, PATCHING_TXT } from './patchingText';
 
 const all = PATCHING_TXT.join('\n');

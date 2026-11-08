@@ -3,6 +3,8 @@
 // pages as PLAYGAME shows them. The card is saved as the game's own files (cardWire.ts), so DOS
 // and every export show it; the integrator saves the scene afterwards.
 import './cards.css';
+import { fromCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
+import { gameTitle } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { h, modal, toast } from '../../core/ui';
 import type { Project } from '../../core/project';
 import type { Game, Scene } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
@@ -62,7 +64,7 @@ export async function instructionCardDialog(project: Project, start: Scene): Pro
   const view = preview();
   const lines = () =>
     instructionLines({
-      title: start.desc ? `How to play ${start.desc.trim()}` : 'How to play',
+      title: start.desc ? `How to play ${gameTitle(project.game())}` : 'How to play',
       goal: goal.get(),
       keys: keys.get(),
       dangers: dangers.get(),
@@ -73,7 +75,7 @@ export async function instructionCardDialog(project: Project, start: Scene): Pro
   const keys = box(
     'Keys',
     keyLines(project.files).join('\n'),
-    'From the game’s characters. Name the keys as the player knows them; leave out any secret.',
+    'From the game’s characters. Select and copy this text to reuse it elsewhere. Name the keys as the player knows them; leave out any secret.',
     5,
     update,
   );
@@ -102,7 +104,7 @@ export async function instructionCardDialog(project: Project, start: Scene): Pro
         'div',
         { class: 'buttons' },
         h('button', { type: 'button', onclick: () => close(undefined) }, 'Cancel'),
-        h('button', { type: 'submit', class: 'primary' }, 'Make the card'),
+        h('button', { type: 'submit', class: 'primary' }, 'Create card files'),
       ),
     ),
   );
@@ -118,7 +120,7 @@ export async function levelCardDialog(project: Project, game: Game, n: number): 
   const view = preview();
   const lines = () => levelCardLines({ name: name.get(), number: Number(num.value) || 0, total: Number(total.value) || 0, goal: goal.get(), hint: hint.get() });
   const update = () => view.show(lines(), 1);
-  const name = box('Level name', scene.desc.trim(), 'The card’s heading.', 1, update);
+  const name = box('Level name', fromCp437(scene.desc).trim(), 'The card’s heading.', 1, update);
   const num = h('input', { type: 'number', min: 0, max: 99, value: String(at), oninput: update });
   const total = h('input', { type: 'number', min: 0, max: 99, value: String(order.length), oninput: update });
   const goal = box('Goal', '', 'What to do here, in a line or two.', 2, update);
@@ -166,7 +168,7 @@ export async function levelCardDialog(project: Project, game: Game, n: number): 
         'div',
         { class: 'buttons' },
         h('button', { type: 'button', onclick: () => close(undefined) }, 'Cancel'),
-        h('button', { type: 'submit', class: 'primary' }, 'Make the card'),
+        h('button', { type: 'submit', class: 'primary' }, 'Create card files'),
       ),
     ),
   );

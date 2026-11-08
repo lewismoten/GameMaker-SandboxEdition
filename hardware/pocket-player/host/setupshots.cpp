@@ -11,54 +11,9 @@
 #include <vector>
 #include "setupdraw.h"
 #include "softgfx.h"
+#include "picker_draw.h"
 
-struct Phys {  // the glass: 240 x 320 (W, H), or 320 x 240 for the wide way (sf::WIDE), stored as it is seen
-  uint16_t px[320 * 320];
-  int W = 240, H = 320;
-  int tc = 0xFFFF, bgc = 0, ts = 1, cx = 0, cy = 0;
-  bool hasBg = false;
-  int fx = 0, fy = 0;   // MADCTL mirror bits
-  int clipped = 0;      // writes of a non-black pixel outside the panel
-  int outside = 0;      // lit pixels outside the logical square (set by the caller's region test)
-  Phys() { clear(); }
-  void clear() { memset(px, 0, sizeof px); clipped = 0; }
-  void set(int x, int y, uint16_t c) {
-    if (x < 0 || y < 0 || x >= W || y >= H) { if (c) clipped++; return; }
-    if (fx) x = W - 1 - x;
-    if (fy) y = H - 1 - y;
-    px[y * W + x] = c;
-  }
-  uint16_t color565(int r, int g, int b) { return (uint16_t)((r >> 3) << 11 | (g >> 2) << 5 | b >> 3); }
-  void fillScreen(uint16_t c) { for (int y = 0; y < H; y++) for (int x = 0; x < W; x++) set(x, y, c); }
-  void fillRect(int x, int y, int w, int h, uint16_t c) { for (int j = 0; j < h; j++) for (int i = 0; i < w; i++) set(x + i, y + j, c); }
-  void drawRect(int x, int y, int w, int h, uint16_t c) { fillRect(x, y, w, 1, c); fillRect(x, y + h - 1, w, 1, c); fillRect(x, y, 1, h, c); fillRect(x + w - 1, y, 1, h, c); }
-  void fillRoundRect(int x, int y, int w, int h, int, uint16_t c) { fillRect(x, y, w, h, c); }
-  void drawRoundRect(int x, int y, int w, int h, int, uint16_t c) { drawRect(x, y, w, h, c); }
-  void fillCircle(int x, int y, int r, uint16_t c) { for (int j = -r; j <= r; j++) for (int i = -r; i <= r; i++) if (i * i + j * j <= r * r) set(x + i, y + j, c); }
-  void drawCircle(int x, int y, int r, uint16_t c) { for (int j = -r; j <= r; j++) for (int i = -r; i <= r; i++) { int d = i * i + j * j; if (d <= r * r && d > (r - 1) * (r - 1)) set(x + i, y + j, c); } }
-  void drawLine(int, int, int, int, uint16_t) {}
-  void fillTriangle(int x0, int y0, int x1, int y1, int x2, int y2, uint16_t c) {
-    int minx = std::min({x0, x1, x2}), maxx = std::max({x0, x1, x2}), miny = std::min({y0, y1, y2}), maxy = std::max({y0, y1, y2});
-    auto e = [](int ax, int ay, int bx, int by, int x, int y) { return (long)(bx - ax) * (y - ay) - (long)(by - ay) * (x - ax); };
-    for (int y = miny; y <= maxy; y++) for (int x = minx; x <= maxx; x++) {
-      long a = e(x0, y0, x1, y1, x, y), b = e(x1, y1, x2, y2, x, y), d = e(x2, y2, x0, y0, x, y);
-      if ((a >= 0 && b >= 0 && d >= 0) || (a <= 0 && b <= 0 && d <= 0)) set(x, y, c);
-    }
-  }
-  void pushImage(int x, int y, int w, int h, const uint16_t* d) { for (int j = 0; j < h; j++) for (int i = 0; i < w; i++) set(x + i, y + j, d[j * w + i]); }
-  void setTextSize(int s) { ts = s; }
-  void setTextColor(uint16_t f) { tc = f; hasBg = false; }
-  void setTextColor(uint16_t f, uint16_t g) { tc = f; bgc = g; hasBg = true; }
-  void setCursor(int x, int y) { cx = x; cy = y; }
-  void setTextDatum(int) {}
-  void drawString(const char*, int, int) {}
-  void print(const char* t) {
-    for (; *t; t++, cx += 6 * ts) {
-      if (hasBg) fillRect(cx, cy, 6 * ts, 8 * ts, (uint16_t)bgc);
-      for (int j = 0; j < 8; j++) for (int i = 0; i < 6; i++) if (sg::glyphOn(*t, i, j)) fillRect(cx + i * ts, cy + j * ts, ts, ts, (uint16_t)tc);
-    }
-  }
-};
+#include "framebuffer.h"
 
 static int fails = 0;
 #define CHECK(c, ...) do { if (!(c)) { fails++; printf("FAIL: " __VA_ARGS__); printf("\n"); } } while (0)
@@ -114,8 +69,8 @@ int main(int argc, char** argv) {
   std::string out = argc > 1 ? argv[1] : ".";
   static Phys fb;
   sg::SoftGfx<Phys> g(fb);
-  const char* names[4] = {"step1-flip", "step2-rotate", "step3-orient", "step4-colors"};
-  for (int step = 0; step < 4; step++) {
+  const char* names[sf::STEPS] = {"step1-flip", "step2-orient", "step3-colors"};
+  for (int step = 0; step < sf::STEPS; step++) {
     int modes = step == sf::ORIENT ? 3 : 1;
     Montage m(4, modes);
     for (int mi = 0; mi < modes; mi++) {
@@ -136,6 +91,67 @@ int main(int argc, char** argv) {
       }
     }
     m.save(out + "/" + names[step] + ".ppm");
+  }
+  // The picker and keyboard use the firmware's own drawing routines at both board sizes.
+  for (int w : {320, 480}) for (int keyboard : {0, 1}) {
+    fb.W = w; fb.H = w == 320 ? 240 : 320; fb.fx = fb.fy = 0; fb.clear();
+    int titleH = w == 320 ? 28 : 40;
+    if (keyboard) pk::drawKeyboard(fb, w, fb.H, titleH, "CARL");
+    else {
+      int top = w == 320 ? 30 : 44, step = w == 320 ? 42 : 46, height = w == 320 ? 38 : 42, footer = w == 320 ? 200 : 276;
+      for (int i = 0; i < (w == 320 ? 4 : 5); i++)
+        pk::drawRow(fb, i ? "A Fly Named Carl" : "Graduation: Blocks and showcase beyond the edge", i % 2, w, top + i * step, height);
+      for (int i = 0; i < 4; i++) pk::drawIcon(fb, i, w, fb.H, footer);
+    }
+    CHECK(fb.clipped == 0, "picker/keyboard at %d clips %d pixels", w, fb.clipped);
+    std::string path = out + (keyboard ? "/keyboard-" : "/picker-") + std::to_string(w) + ".ppm";
+    FILE* f = fopen(path.c_str(), "wb");
+    fprintf(f, "P6\n%d %d\n255\n", fb.W, fb.H);
+    for (int i = 0; i < fb.W * fb.H; i++) { unsigned char c[3]; rgb(fb.px[i], 0, 0, c); fwrite(c, 1, 3, f); }
+    fclose(f);
+  }
+  // Paging must remove old rows, including a short/empty page and return to a full page.
+  for (int w : {320, 480}) {
+    static Phys paged, fresh;
+    paged.W = fresh.W = w; paged.H = fresh.H = w == 320 ? 240 : 320;
+    int top = w == 320 ? 30 : 44, step = w == 320 ? 42 : 46, height = w == 320 ? 38 : 42, rows = w == 320 ? 4 : 5;
+    paged.clear(); fresh.clear();
+    for (int count : {rows, 1, rows, 0, rows}) {
+      fresh.clear();
+      for (int r = 0; r < rows; r++) {
+        const char* text = r < count ? "Next page" : nullptr;
+        paged.rowY = top + r * step; paged.rowH = height;
+        paged.rowOutside = paged.rowBlack = 0;
+        pk::drawPageRow(paged, text, false, w, top + r * step, height);
+        CHECK(!paged.rowOutside, "paging at %d writes outside row %d", w, r);
+        if (text) CHECK(!paged.rowBlack, "paging at %d blanks a populated row", w);
+        paged.rowY = -1;
+        pk::drawPageRow(fresh, text, false, w, top + r * step, height);
+      }
+      CHECK(!memcmp(paged.px, fresh.px, w * paged.H * sizeof(uint16_t)), "paging at %d leaves old rows", w);
+    }
+  }
+  // Every edit must match a fresh render, without touching the keyboard/title even with black.
+  for (int w : {320, 480}) {
+    static Phys edited, fresh;
+    edited.W = fresh.W = w; edited.H = fresh.H = w == 320 ? 240 : 320;
+    edited.searchY = -1; edited.clear(); fresh.clear();
+    int titleH = w == 320 ? 28 : 40;
+    pk::drawKeyboard(edited, w, edited.H, titleH, "");
+    std::string previous;
+    std::vector<std::string> edits = {"", "C", "CA", "CAR", "CARL", "CAR", "CA", "C", "", "", "A", "A ", "A FLY", "", "012345678901234567890123", "01234567890123456789012", "", "Z"};
+    for (const auto& text : edits) {
+      edited.searchY = titleH + 4; edited.searchOutside = edited.writes = 0;
+      pk::drawSearchText(edited, titleH, text.c_str(), previous.c_str());
+      CHECK(edited.searchOutside == 0, "search edit at %d writes outside its field", w);
+      if (text == previous) CHECK(edited.writes == 0, "unchanged search at %d repaints", w);
+      if (!previous.empty() && text.size() == previous.size() + 1 && text.compare(0, previous.size(), previous) == 0)
+        CHECK(edited.writes < 700, "search append at %d repaints the prefix (%d writes)", w, edited.writes);
+      fresh.clear(); pk::drawKeyboard(fresh, w, fresh.H, titleH, text.c_str());
+      CHECK(!memcmp(edited.px, fresh.px, w * edited.H * sizeof(uint16_t)), "incremental search at %d differs for '%s'", w, text.c_str());
+      CHECK(edited.clipped == 0, "search edit at %d clips", w);
+      previous = text;
+    }
   }
   // step 4 on a glass whose colors are off: what each of the four modes shows when the glass is inverted and swapped (mode 3)
   {

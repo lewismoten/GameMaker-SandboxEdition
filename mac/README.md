@@ -59,8 +59,8 @@ npx vite-node scripts/macDmg.ts --html game.html --title "My Game" --id my-game
 ```
 
 `scripts/macDmg.ts` uses the same code as the web page, so it also runs on Linux.
-`.github/workflows/mac-dmg.yml` runs it for every game and attaches the images to a GitHub
-release (run it by hand from the Actions tab, or publish a release); nothing needs to be
+`.github/workflows/downloads.yml` runs it for every game, with the Windows and Linux builders, and
+attaches the images to a GitHub release (run it by hand from the Actions tab, naming the tag); nothing needs to be
 hosted for the web page's own download, which is built in the visitor's browser.
 
 ### Signing and notarizing later

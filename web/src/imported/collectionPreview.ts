@@ -1,14 +1,14 @@
 // The counts the import chooser shows before anything is imported: how many games, files and
 // bytes a collection holds, and for the ticked ones. No DOM.
 
-export interface PreviewGame {
+interface PreviewGame {
   fileCount: number;
   bytes?: number;
   /** Files its .gam names that are not here. */
   missing?: number;
 }
 
-export interface Totals {
+interface Totals {
   games: number;
   files: number;
   bytes: number;

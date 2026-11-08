@@ -1,6 +1,7 @@
 // One slot of the Saves & scores panel: its name, level and size, the tools (Save, Undo, Max all,
 // download, import, delete) and its values in groups, or what to do with a slot that is empty.
 import { h, clear } from '../editor/core/ui';
+import { fromCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import {
   changedFields,
   cloneSave,
@@ -61,7 +62,7 @@ export function renderSlot(p: Panel, slot: number): void {
   const nameInput = h('input', {
     type: 'text',
     id: `sv-name-${slot}`,
-    value: w.name,
+    value: fromCp437(w.name),
     maxlength: SLOT_NAME_LENGTH,
     placeholder: 'Unnamed',
     spellcheck: false,

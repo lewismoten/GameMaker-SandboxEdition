@@ -29,10 +29,10 @@ const COIN = 10;
 
 const { levels } = buildLevels();
 
-/** The mood a kind of block is showing right now (its name's last part: start, rest, rumble, puff, solid, flicker, gone). */
+/** The mood a kind of block is showing right now (its name's last part, less a step number: start, rest, rumble, puff, solid, flicker, gone). */
 function moodOf(bot: StarterBot, l: Level, name: string): string {
   const shown = bot.sim.w.blkmap[l.book.n(name)];
-  for (const [n, i] of l.book.index) if (i === shown) return n.split('.').pop() as string;
+  for (const [n, i] of l.book.index) if (i === shown) return (n.split('.').pop() as string).replace(/\d+$/, '');
   return '?';
 }
 

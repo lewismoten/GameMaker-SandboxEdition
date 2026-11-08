@@ -8,6 +8,7 @@
 //
 // A sting takes 5 hit points, once, then the block lies flat and gray (the "touch" rule, as a coin
 // goes). None of these is solid, so nothing holds the hero while it stings.
+import { simulatePalette } from '@lewismoten/gamemaker-sandbox-engine/gfx/colorVision';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { outline } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 import { PULL, type Book } from '../../kit/starter/book';
@@ -78,4 +79,14 @@ export function addColorBlocks(book: Book, pal: Pal): void {
   book.add('spikeRed', spikes(pal), { ...air, hp: STING, touch: 'spent' });
   book.add('plateStripe', stripes(pal), air);
   book.add('spent', spent(pal), air);
+}
+
+/** Simulate the scene, then match the two plate ramps exactly so VGA rounding gives no clue. */
+export function lessonPalette(pal: Pal): Uint8Array {
+  const colors = simulatePalette(pal.pal, 'deutan');
+  pal.r('safepad').forEach((safe, i) => {
+    const hot = pal.r('hotpad')[i];
+    colors.set(colors.slice(hot * 3, hot * 3 + 3), safe * 3);
+  });
+  return colors;
 }

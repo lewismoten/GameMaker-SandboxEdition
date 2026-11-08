@@ -52,7 +52,7 @@ export const V: [number, number][] = [
   [8, 0],
 ];
 /** The V's left top corner in each level: block column and row. */
-export const FLOCK_AT: [number, number] = [12, 4];
+export const FLOCK_AT: [number, number] = [12, 6];
 
 /** The ground, brick walls at both ends (rows 0 to 9, so the room is closed in), the entrance on the left (x 3) and the exit door at `exitX`. */
 function base(width: number, exitX: number, entrance = true): Grid {

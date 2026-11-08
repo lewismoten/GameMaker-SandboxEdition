@@ -3,6 +3,7 @@
 // monsters, objects a sequence needs, limited uses) plus PLAYGAME's own function keys.
 // Games often describe their keys in their instructions but leave some out; this does not.
 import { BACKBL, MONBL, parseBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { cp437Text, fromCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import {
   DROPSEQ,
   INF_REPEAT,
@@ -264,8 +265,7 @@ function instructionsOf(files: GameFiles, name: string | undefined, depth = 0): 
       {
         name,
         kind: 'text',
-        text: new TextDecoder('latin1')
-          .decode(bytes)
+        text: cp437Text(bytes)
           .replace(/\x1a[\s\S]*$/, '')
           .replace(/\r\n/g, '\n'),
       },
@@ -288,7 +288,7 @@ export function gameKeyMap(files: GameFiles, gamFile?: string): GameKeyMap {
   game?.scenes.forEach((s, scene) => {
     const f = (i: number) => (s.files[i] ? (files.resolve(s.files[i]) ?? s.files[i].toLowerCase()) : undefined);
     if (s.gametype === ADVTYPE && s.files[5])
-      levels.push({ scene, name: s.desc.trim() || `Scene ${scene}`, chr: f(5)!, pal: f(0), map: f(1), bbl: f(2), mon: f(3), mbl: f(4) });
+      levels.push({ scene, name: fromCp437(s.desc).trim() || `Scene ${scene}`, chr: f(5)!, pal: f(0), map: f(1), bbl: f(2), mon: f(3), mbl: f(4) });
   });
   // Without a game file (or levels), fall back to every character in the folder.
   if (!levels.length) for (const c of files.byExtension('chr')) levels.push({ scene: -1, name: c, chr: c });

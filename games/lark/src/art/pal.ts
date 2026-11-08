@@ -43,7 +43,7 @@ const MORE: [string, number, RGB, RGB, RGB?][] = [
 ];
 
 const SYSTEM: [string, RGB][] = [
-  ['sysPurple', [176, 0, 176]],
+  ['sysPurple', [200, 40, 200]], // exactly RGBPurple (50,10,50): text pages print in true purple
   ['sysBlue', [40, 40, 252]],
   ['sysRed', [252, 40, 40]],
   ['sysYellow', [252, 252, 0]],

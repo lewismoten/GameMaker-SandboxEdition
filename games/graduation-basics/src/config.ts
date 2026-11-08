@@ -3,12 +3,13 @@
 import { wrap, creditsPage } from '../../kit/starter/graduationText';
 import type { Graduation } from '../../kit/starter/graduationConfig';
 import about from '../about.json';
+import { song } from './song';
 
 export const cfg: Graduation = {
   id: 'graduation-basics',
   stage: 'First Steps',
   groups: ['The Basics'],
-  cameos: ['teddy', 'lewie'],
+  cameos: ['teddy', 'joe', 'loaf', 'gwinn', 'will', 'chicken', 'seed', 'lewie'],
   theme: {},
   upper: 'FIRST STEPS',
   honors: 'IN FIRST STEPS',
@@ -19,8 +20,14 @@ export const cfg: Graduation = {
     doc: 'DOC LEO HAS A SCROLL FOR YOU',
     banner: 'FIRST STEPS',
   },
+  arrive: {
+    title: 'The Front Walk',
+    hint: 'Stroll up to the hall doors.',
+    welcome: 'WELCOME GRADUATES',
+    nods: ['ladder', 'keyGate', 'coins', 'crates'],
+  },
   level: { title: 'The Aisle', hint: 'Walk up to the stage.' },
-  song: { bpm: 88, lead: 'lead', transpose: 0 },
+  song,
   text: {
     story: wrap(`
 |GRADUATION

@@ -6,13 +6,10 @@
 #include <Arduino.h>
 #include <Wire.h>
 #include "board.h"
+#include "gt911report.h"
 
-struct GT911 {
+struct GT911 : gtr::Report {
   uint8_t addr = 0;
-  int n = 0;  // points in the last report
-  int rawX[5], rawY[5], id[5], size[5];  // size: the contact area the chip reports
-  bool fresh = false;  // the last poll() read a new report (for the serial trace)
-
   bool ping(uint8_t a) {
     Wire.beginTransmission(a);
     return Wire.endTransmission() == 0;
@@ -35,44 +32,7 @@ struct GT911 {
     }
     return false;
   }
-  // Reads a new report if the chip has one; otherwise keeps the last. Returns the point count.
-  int poll() {
-    fresh = false;
-    Wire.beginTransmission(addr);
-    Wire.write(0x81);
-    Wire.write(0x4E);
-    if (Wire.endTransmission() != 0) return n;
-    Wire.requestFrom((int)addr, 1);
-    if (!Wire.available()) return n;
-    uint8_t st = Wire.read();
-    if (!(st & 0x80)) return n;
-    fresh = true;
-    int cnt = st & 0x0F;
-    if (cnt > 5) cnt = 5;
-    n = 0;
-    if (cnt > 0) {
-      Wire.beginTransmission(addr);
-      Wire.write(0x81);
-      Wire.write(0x4F);  // point i: id, x lo, x hi, y lo, y hi, size lo, size hi, reserved
-      Wire.endTransmission();
-      Wire.requestFrom((int)addr, cnt * 8);
-      for (int i = 0; i < cnt && Wire.available() >= 8; i++) {
-        uint8_t b[8];
-        for (auto& v : b) v = Wire.read();
-        rawX[n] = b[1] | (b[2] << 8);
-        rawY[n] = b[3] | (b[4] << 8);
-        id[n] = b[0] & 0x0F;
-        size[n] = b[5] | (b[6] << 8);
-        n++;
-      }
-    }
-    Wire.beginTransmission(addr);
-    Wire.write(0x81);
-    Wire.write(0x4E);
-    Wire.write(0);
-    Wire.endTransmission();
-    return n;
-  }
+  int poll() { return pollReport(Wire, addr); }
   static void toScreen(int rx, int ry, int& x, int& y) {
     x = ry;
     y = 319 - rx;

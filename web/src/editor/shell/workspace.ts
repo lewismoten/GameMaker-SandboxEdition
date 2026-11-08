@@ -1070,6 +1070,17 @@ export class Workspace implements AssistantHost {
       title,
       gam: this.project.gam,
       files: async () => this.project.files,
+      pocketContext: async () => {
+        const [{ pocketProjectUid }, { parseCompanion }, { isImported }] = await Promise.all([
+          import('../../export/pocketLibrary'),
+          import('../../project/companion'),
+          import('./homeOrigin'),
+        ]);
+        this.project.companion ??= parseCompanion(undefined);
+        const uid = pocketProjectUid(this.project.companion);
+        await this.project.saveNow();
+        return { uid, category: isImported(this.project.id) ? ['imported', 'unsorted'] : ['mine'] };
+      },
       project: true,
       companion: () => this.project.companion,
       setPreviews: (on) => this.project.setExportPreviews(on),

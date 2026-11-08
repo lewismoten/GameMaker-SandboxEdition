@@ -3,11 +3,10 @@
 // (where it came from, Imported or My games, its import, its rating and note), and the count that
 // shows or hides the "Recently deleted…" button.
 import { loadRecord, putRecord } from '../../project/storage';
-import { browserShelf, keepDeleted, listDeleted, restoreDeleted, discardDeleted } from '../../project/recentlyDeleted';
+import { browserShelf, keepDeleted, listDeleted, restoreDeleted } from '../../project/recentlyDeleted';
 import { secretsRevealed } from '../../project/secretGames';
 import { isImported, originId, rememberOrigin, setImported } from './homeOrigin';
 import { batchOf, markBatch } from './importBatch';
-import { undoRemoval } from '../../imported/noteMoves';
 
 /** Keeps the game on the shelf; call before deleting it. Never throws: the game is then deleted as before. */
 export async function shelve(id: string): Promise<void> {
@@ -18,11 +17,6 @@ export async function shelve(id: string): Promise<void> {
   } catch {
     /* no room, or no storage: deleted without a week's grace */
   }
-}
-
-/** Lets go of the shelf's copy of a game that was brought back another way (the Undo button). */
-export async function unshelve(id: string): Promise<void> {
-  await discardDeleted(browserShelf, id).catch(() => undefined);
 }
 
 /** The games on the shelf that may be listed now. */
@@ -37,7 +31,7 @@ export async function bringBack(id: string): Promise<string | undefined> {
     rememberOrigin(id, kept.origin);
     setImported(id, kept.imported);
     if (kept.batch) markBatch([id], kept.batch);
-    if (kept.imported) undoRemoval(id);
+    if (kept.imported) (await import('../../imported/noteMoves')).undoRemoval(id);
   });
   return g?.name;
 }

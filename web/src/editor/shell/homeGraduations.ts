@@ -1,12 +1,14 @@
 // The Graduations section of the Starters tab: one tile per graduation game (project/ceremonies.ts). One that is
 // still locked is a padlock tile with its one-line rule and how far the player has got; one that is open or earned
 // is the game's own tile. Clicking a padlock tile lists the courses still short of a B. Nothing here is stored:
-// the states are worked out from the grades and the finished set each time.
+// the states are worked out from the grades and the finished set each time. Under the Show picker's Done the
+// section has only the earned ones, under Not done yet only the locked ones (the open ones are in readyStrip).
 import { h, modal } from '../core/ui';
 import { CEREMONIES, DIPLOMA, ceremonyState, ceremonyTitle, courseNumber, unlockRule, type Ceremony, type CeremonyState } from '../../project/ceremonies';
 import type { Grades } from '../../project/grades';
 import { withFinished } from '../../project/grades';
 import type { HomeGame } from './homeCards';
+import type { DoneFilter } from './homeDone';
 
 const SVG = 'http://www.w3.org/2000/svg';
 
@@ -105,31 +107,53 @@ export function readyStrip(
   ];
 }
 
-/** The heading and tiles of the Graduations section. `tile` makes the real tile of a game that is earned; one that is ready is in readyStrip until then. */
+/** Which graduations the section shows: every one, only the earned ones (the Done filter) or only the locked ones (Not done yet). */
+export type GradShow = 'all' | 'earned' | 'locked';
+
+/** The Graduations section's graduations for the Starters tab's Show filter (homeDone.ts DoneFilter); an open one is always in readyStrip instead. */
+export const gradShowFor = (f: DoneFilter): GradShow => (f === 'done' ? 'earned' : f === 'todo' ? 'locked' : 'all');
+
+/** The graduations in the Graduations section (earned or locked, and whose game is on this site), in stage order, the diploma last; `show` keeps one kind. */
+export function sectionCeremonies(
+  games: readonly HomeGame[],
+  finished: ReadonlySet<string>,
+  grades: Grades,
+  show: GradShow,
+): { ceremony: Ceremony; game: HomeGame; state: CeremonyState }[] {
+  return [...CEREMONIES, DIPLOMA].flatMap((ceremony) => {
+    const game = games.find((g) => g.entry?.id === ceremony.id); // missing: left out by the Level filter, or not on this site yet
+    const state = ceremonyState(ceremony, grades, finished);
+    return game && state.state !== 'open' && (show === 'all' || state.state === show) ? [{ ceremony, game, state }] : [];
+  });
+}
+
+/** The heading and tiles of the Graduations section. `tile` makes the real tile of a game that is earned; one that is ready is in readyStrip until then. `show` leaves out the earned or the locked ones. */
 export function graduationCards(
   games: readonly HomeGame[],
   finished: ReadonlySet<string>,
   grades: Grades,
   tile: (g: HomeGame) => HTMLElement,
   titles: Map<string, string>,
+  show: GradShow = 'all',
 ): HTMLElement[] {
   const all = withFinished(grades, finished);
   const out: HTMLElement[] = [];
-  for (const c of [...CEREMONIES, DIPLOMA]) {
-    const game = games.find((g) => g.entry?.id === c.id);
-    if (!game) continue; // left out by the Level filter, or not on this site yet
-    const state = ceremonyState(c, grades, finished);
+  for (const { ceremony: c, game, state } of sectionCeremonies(games, finished, grades, show)) {
     if (state.state === 'earned') {
       const t = tile(game);
       t.dataset.grad = state.state;
       t.querySelector('.tile-select')?.setAttribute('aria-describedby', 'lib-sub-grad');
       out.push(t);
     } else if (state.state === 'locked') out.push(lockedTile(c, state, () => keepGoing(c, state, titles, all)));
-    // open: shown in readyStrip
   }
   if (!out.length) return out;
   return [
-    h('h3', { class: 'lib-sub', id: 'lib-sub-grad' }, 'Graduations', h('span', { class: 'lib-sub-count' }, ' · Each opens when you have earned it')),
+    h(
+      'h3',
+      { class: 'lib-sub', id: 'lib-sub-grad' },
+      'Graduations',
+      h('span', { class: 'lib-sub-count' }, show === 'earned' ? ` · ${out.length} earned` : ' · Each opens when you have earned it'),
+    ),
     ...out,
   ];
 }

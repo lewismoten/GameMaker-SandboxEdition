@@ -1,0 +1,83 @@
+{
+  "title": "Heat Waves",
+  "howDoI": [
+    {
+      "id": "wobble",
+      "q": "How do I make far scenery wobble in the heat?",
+      "scene": 2,
+      "x": 21,
+      "y": 15,
+      "level": 1
+    },
+    {
+      "id": "start",
+      "q": "How do I start a loop of blocks on a different picture?",
+      "scene": 2,
+      "x": 21,
+      "y": 14,
+      "level": 1
+    },
+    {
+      "id": "mirage",
+      "q": "How do I make something vanish when the hero comes near?",
+      "scene": 3,
+      "x": 34,
+      "y": 18,
+      "level": 2
+    },
+    {
+      "id": "oneway",
+      "q": "How do I make a level scroll only one way?",
+      "scene": 3,
+      "x": 18,
+      "y": 18,
+      "level": 2
+    },
+    {
+      "id": "cool",
+      "q": "How do I make the same pictures look cooler or warmer?",
+      "scene": 4,
+      "x": 21,
+      "y": 15,
+      "level": 3
+    }
+  ],
+  "pages": [
+    {
+      "head": "Welcome",
+      "html": "<h1>Welcome</h1><p><b>Heat Waves</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has three short levels and takes a few minutes to finish. It is in the Weather group, because it draws the heat over a desert road: far hills that wobble, a puddle that is not there, and an evening that cools it all down.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each thing in the levels is made.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. <kbd>Space</kbd> jumps. <kbd>F2</kbd> shows your lives, hit points and score. Walk into the door to go on.</p><p>Levels 1 and 3 are one screen that never scrolls; level 2 is a long road. Nothing in this game hurts you.</p>"
+    },
+    {
+      "head": "Level 1: The Wobble",
+      "html": "<h1>Level 1: The Wobble</h1><p>Kit drops onto a desert road at noon. Behind him, three rows of far hills sway a pixel or two left and right, and back, over and over. A rock stands in the middle of the road's edge.</p><p>The <b>ALL ROWS SWAY TOGETHER. IT LOOKS LIKE JELLY</b> sign hangs on the left. Watch the hills under it: the three rows move as one, like a picture on a wobbly plate. That is the wrong way to draw heat.</p><p>The <b>EACH ROW SWAYS AFTER THE ROW UNDER IT, LIKE HOT AIR</b> sign hangs on the right. There the bottom row moves first, the row above follows a moment later, and the top row last, so the wobble climbs up from the ground the way hot air rises. Same pictures, same speed; only where each row starts is different.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 1 is made</h1><ul><li><b>A wobble is a ring of blocks.</b> Open <b>hw1.bbl</b>. Each hills block is followed by five more, each the same picture moved 1, 2, 1, -1, -2 and -1 pixels from where the hills rest. Each has a <b>Next block</b> and a <b>Time</b> of 4 ticks, and the last points back to the first, so the hills sway once in 24 ticks, a little over a second.</li><li><b>Every block of a ring is a starting point.</b> The engine keeps one clock for each block number and changes every cell of that block at once. So a cell that starts on the third block of the ring is always two pictures ahead of a cell that starts on the first.</li><li><b>Jelly.</b> Open <b>one.map</b>. Left of the rock, rows 4, 5 and 6 all start on the ring's first block, so all three rows show the same picture at every moment.</li><li><b>Hot air.</b> Right of the rock, the bottom row starts on the first block, the middle row on the last, and the top row on the one before that. Each row is one picture behind the row under it, so the sway climbs.</li><li><b>Why the rock.</b> Where the two halves meet, their rows would not line up. The near rock covers the join. It is close, so it does not wobble: heat only bends what is far away.</li><li><b>Blocks it costs.</b> The hills repeat every 4 blocks, so 11 cells of them (one is only sky and does not need to move) make 66 ring blocks. With the sky, sand, road, rocks and signs the level uses 147 of the 150 blocks it may have.</li><li><b>The signs.</b> They hang in the sky, above the rows that wobble, so the words never move.</li></ul>"
+    },
+    {
+      "head": "Level 2: The Mirage",
+      "html": "<h1>Level 2: The Mirage</h1><p>A long road this time; the screen moves on as Kit walks right. The <b>A PUDDLE ON THE ROAD? WALK UP TO IT</b> sign hangs at the start.</p><p>Walk on. A shiny pool of water comes into sight on the road ahead. Walk up to it, and before you get there it is gone.</p><p>The <b>A MIRAGE! A MONSTER THAT HIDES WHEN YOU COME NEAR</b> sign says what happened. Farther on, another puddle shines on the road, and it does the same. A real mirage is the sky's light, bent by the hot air over a road, so it looks like water; it is never there when you arrive.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 2 is made</h1><ul><li><b>The puddle is two monsters.</b> Open <b>hw.mon</b>. Monsters 3 and 4 are the left and right halves of the pool, each with three pictures whose glints shift every 6 ticks. Neither is solid or takes hit points, and their power is too high for Kit to pop them.</li><li><b>They stand still.</b> Each one's path is one corner where it already is.</li><li><b>Then they hide.</b> Each has an <b>attack path</b>, and PLAYGAME switches a monster to its attack path when the hero comes closer than 8 blocks across and 5 up or down. The puddle's attack path is one jump 20 blocks straight down, at 200 pixels a tick, into the ground under the road where the screen never looks. It is there one tick and gone the next.</li><li><b>Why a long road.</b> On a screen 16 blocks wide everything is within 8 blocks of a hero in the middle, so a puddle there would hide at once. On a road that scrolls, the screen runs on ahead of a walking hero, about 11 blocks, so a puddle comes into view a few steps before it hides.</li><li><b>One way.</b> In <b>hw.gam</b> the scene scrolls only as Kit walks right, so it never shows past the start.</li><li><b>The hills.</b> They wobble the climbing way all along the road, from the same 66 ring blocks as level 1; the road is just longer.</li></ul>"
+    },
+    {
+      "head": "Level 3: Cool Evening",
+      "html": "<h1>Level 3: Cool Evening</h1><p>The sun has gone down. The same road, the same hills and the same sand, but the sky is deep blue, the hills are purple and the sand is gray.</p><p>The <b>SAME PICTURES, COOL COLORS: A NEW PALETTE</b> sign hangs on the left. The <b>NO HEAT TONIGHT: THE HILL BLOCKS STAY STILL</b> sign hangs on the right. Without the heat the hills hold still.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 3 is made</h1><ul><li><b>A palette per scene.</b> In <b>hw.gam</b> levels 1 and 2 load <b>hot.pal</b> and level 3 loads <b>cool.pal</b>. The two palettes have the same 256 slots in the same order. Only the colors of this game's own slots differ: the sky, the hills, the far flat, the sand, the road and the rock are warm in one and cool in the other.</li><li><b>The same pictures.</b> The blocks in <b>hw3.bbl</b> are drawn with the same slots as level 1's, so the warm sand of noon is the gray sand of evening.</li><li><b>Kit and the signs keep their colors.</b> Their slots are the same in both palettes, so they look the same by day and by evening.</li><li><b>Still hills.</b> Here the hills are plain blocks with no Next block, so nothing wobbles.</li></ul><p>Day and Night shows the same trick with three palettes, a sunset in steps.</p>"
+    },
+    {
+      "head": "What it cannot do",
+      "html": "<h1>What it cannot do</h1><ul><li>A wobble moves whole rows of blocks, 20 pixels tall. Real heat bends every line of pixels a little differently; to get closer, draw the bend inside each picture.</li><li>The engine keeps one clock for each block number. A cell cannot start its own wobble; it can only start on a different block of the ring, and every cell of that block changes with it.</li><li>The timers start when the level does. A wobble cannot start or stop when something happens, such as the sun going down: level 3 is its own scene with its own blocks.</li><li>A ring costs a block for each picture, out of the 150 a level may have. Level 1 uses 147.</li><li>The mirage hides at PLAYGAME's attack distance, 8 blocks across and 5 down. That number is the same for every monster in every game and cannot be changed.</li><li>A hidden puddle does not come back. To have it shine again, the level has to start over.</li><li>A scene loads one palette. The screen cannot fade from noon to evening while Kit walks; each look is its own scene.</li></ul>"
+    },
+    {
+      "head": "Make it yours",
+      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>In <b>one.map</b>, lay the right-hand hills with every row on the ring's first block. The heat turns to jelly.</li><li>In <b>hw1.bbl</b> change the Time of the hills' blocks from 4 to 2. The air gets hotter.</li><li>In <b>two.map</b> put a puddle monster on the first screen. It hides as soon as the level starts.</li><li>In Game-Maker's palette editor, change the evening's sky in <b>cool.pal</b> to a sunset pink.</li></ul><p>The home page's <b>Starters</b> tab has more small games like this one. Waves on the Shore, Twinkle, Twinkle and Flicker and Flow use rings of blocks too.</p>"
+    }
+  ]
+}

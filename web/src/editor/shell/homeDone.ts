@@ -1,7 +1,8 @@
 // The Starters tab's "done" marks: a check pill over the thumbnail of each Starter played to its
 // ending (the achievements record's 'finished' set, which the web player, play.html, the desk and
 // the DOS page all fill when the Game Won scene shows), a count in each group heading, and a
-// "Show" picker (All, Not done yet, Done, Graduations) remembered in this browser. A Starter not done yet but
+// "Show" picker (All, Not done yet, Done, Graduations) remembered in this browser; Done also shows the earned
+// graduations and Not done yet the open and locked ones (homeGraduations.ts gradShowFor). A Starter not done yet but
 // started shows its letter grade (project/grades.ts) in the same pill, in place of "Done".
 import { h } from '../core/ui';
 import { loadAchievements } from '../../achievements/store';

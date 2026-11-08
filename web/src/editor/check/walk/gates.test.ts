@@ -166,10 +166,13 @@ describe('another scene adds to it', () => {
     expect(otherScenesAdding(t.game, t, 2, [20]).size).toBe(0);
   });
 
-  it('words it as a suggestion', () => {
+  it('words it as a suggestion that need not hold', () => {
     const why = lockedWhy(locksOf(doorWorld()), new Set(), new Map([[20, ['Cave', 'Pit', 'Lake', 'Top']]]))!;
-    expect(why).toContain('needs counter 20: another scene adds to it: Cave, Pit, Lake (and 1 more).');
-    expect(why).toContain('dismiss this');
+    expect(why).toBe(
+      "The door at (10, 3) needs counter 20: another scene adds to it: Cave, Pit, Lake (and 1 more). Counters carry from scene to scene, but a player can bring it only if that scene can be played before this door and its key reached there; the bot plays one scene at a time and can't tell either, so the door may also never open. If a player can bring it, dismiss this.",
+    );
+    // the 2026-11-05 counter-door audit found doors this wording once promised a player could open
+    expect(why).not.toContain('a player may bring it from there');
     expect(why).not.toContain('nothing in this scene');
   });
 });

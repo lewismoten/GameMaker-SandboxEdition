@@ -18,6 +18,7 @@ import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import type { Book } from '../../kit/starter/book';
 import { buildMonsterBlocks, buildMonsters } from '../../kit/starter/monsters';
 import type { Pal } from '../../kit/starter/palette';
+import { sparkle } from '../../kit/starter/sparkle';
 import { drawStar } from './starArt';
 import { drawFlame } from './flameArt';
 
@@ -39,8 +40,6 @@ export const STAR_LIFE = 30;
 export const FLAME_LIFE = 10;
 /** Points for popping a target or melting a frosty one. */
 export const POP_SCORE = 50;
-
-const T = 255;
 
 /** The kit's gumdrop picture with its purple turned mint green. */
 function mint(pal: Pal, pic: Pixels): Pixels {
@@ -81,32 +80,6 @@ function frosty(pal: Pal, pic: Pixels, tall: boolean): Pixels {
   p.set(5, y - 1, white)
     .set(5, y, white)
     .set(6, y - 2, white);
-  return p;
-}
-
-/** A little four-point sparkle, upright (a plus) or turned (an x). */
-function sparkle(pal: Pal, turned: boolean): Pixels {
-  const p = new Pixels(20, 20, T);
-  const gold = pal.r('gold');
-  const white = pal.c('white', 3);
-  const arm = (dx: number, dy: number, len: number) => {
-    for (let i = 1; i <= len; i++) p.set(10 + dx * i, 10 + dy * i, i < 3 ? gold[4] : gold[3]);
-  };
-  const dirs: [number, number][] = turned
-    ? [
-        [-1, -1],
-        [1, -1],
-        [-1, 1],
-        [1, 1],
-      ]
-    : [
-        [0, -1],
-        [0, 1],
-        [-1, 0],
-        [1, 0],
-      ];
-  for (const [dx, dy] of dirs) arm(dx, dy, turned ? 4 : 6);
-  p.set(10, 10, white).set(9, 10, gold[4]).set(11, 10, gold[4]).set(10, 9, gold[4]).set(10, 11, gold[4]);
   return p;
 }
 

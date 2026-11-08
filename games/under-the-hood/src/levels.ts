@@ -123,7 +123,8 @@ function sameSize(book: Book, signs: Record<SignName, Sign>): StarterMap {
   for (const x of [32, 37]) g.put(x, GROUND - 1, 'c');
   const m = new StarterMap(book, g.rows());
   walls(m, W, [25]);
-  for (let x = 19; x <= 29; x++) if (x !== 25) m.set(x, LEDGE, 'panel');
+  // left of the wall only: a ledge on both sides would draw a plus sign
+  for (let x = 19; x <= 24; x++) m.set(x, LEDGE, 'panel');
   m.set(25, LEDGE - 2, 'arch').set(25, LEDGE - 1, 'goPlate');
   m.set(25, GROUND - 2, 'arch').set(25, GROUND - 1, 'startPlate');
   m.sign(5, onGround(GROUND, signs.slot), signs.slot);

@@ -208,8 +208,10 @@ export function colorBodies(mesh: Mesh, palette: Rgb[], field: (x: number, y: nu
           return Math.max(f, distance(x, y, z, index) + index * TIE - other);
         }, o);
         if (body.indices.length) out.push({ color, mesh: body });
-      } catch {
-        /* a color with no solid of its own */
+      } catch (e) {
+        // only an empty color is left out; any other failure (an allocation under memory pressure, say) must stop the build,
+        // or the color vanishes silently and the grow-to-volume step below inflates the rest out of the box
+        if (!/surface leaves the box/.test(String(e))) throw e;
       }
     });
     return out;
@@ -218,7 +220,11 @@ export function colorBodies(mesh: Mesh, palette: Rgb[], field: (x: number, y: nu
   if (o.volume) {
     // marching tetrahedra on a coarse grid cut a little off the surface: grow every body by what the surface area makes up the volume
     const have = bodies.reduce((n, b) => n + triangleVolume(b.mesh), 0);
-    if (Math.abs(have / o.volume - 1) > 0.004) bodies = make((o.volume - have) / triangleArea(mesh));
+    if (Math.abs(have / o.volume - 1) > 0.004) {
+      const grown = make((o.volume - have) / triangleArea(mesh));
+      // a growth that loses a color (a body pushed out of the box) is worse than a hair too thin
+      if (grown.length >= bodies.length) bodies = grown;
+    }
   }
   return o.simplify ? bodies.map((b) => ({ color: b.color, mesh: decimate(b.mesh, { maxError: o.simplify! }) })) : bodies;
 }

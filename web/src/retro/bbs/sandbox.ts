@@ -2,15 +2,19 @@
 // the bulletins, the CD's shareware games to read about and "download" into C:\DOWNLOAD under the
 // file ratio (ratio.ts), uploads, the door games, the GIF gallery, the warez area and paging the
 // sysop.
+import { isStarterGame } from '../../project/starter';
 import type { RetroHost } from '../host';
 import { attr } from '../text/textScreen';
 import { readLine } from '../text/textInput';
 import { commas } from '../dos/vfs';
 import type { CatalogEntry } from '../../project/files';
-import { sandboxLogin, sandBanner, SANDBOX_ANSI } from './ansiArt';
+import { sandboxLogin, sandBanner, SANDBOX_ANSI, SANDBOX_WORD_ANSI } from './ansiArt';
 import { Term, boxBottom, boxRow, boxRule, boxTop, modemSignal, sleep, statusLine } from './term';
 import { gifGallery } from './gifArea';
 import { gameDiz, isSofaFile } from './fileId';
+import { isSpecialGame, specialEntry } from '../../project/special';
+import { arrive, waiting } from '../../specials/arrivals';
+import { specialsNow } from '../../specials/clock';
 import { WAREZ, warezArea, zipsOf } from './warezArea';
 import { dizSummary, Pager, pageLabel, readNumber, releaseKey, uploadDate } from './pager';
 import { GALLERY } from './gallery';
@@ -43,7 +47,7 @@ import { rsdLine } from './rsdLine';
 import { signup } from './signup';
 import { signupAccounts } from './signupAccounts';
 
-const BBS_NAME = 'THE -= S A N D B O X =- BBS';
+const BBS_NAME = `THE ${SANDBOX_ANSI} |14BBS`;
 export const PHONE = '1-412-555-SAND';
 
 export async function runSandbox(t: Term, h: RetroHost): Promise<void> {
@@ -69,9 +73,11 @@ export async function runSandbox(t: Term, h: RetroHost): Promise<void> {
     await readLine(s, h.keys, [], 16, attr(0, 0)); // typed in black: nobody sees it
     t.line();
   }
-  const catalog = (await h.catalog()).filter(
-    (g) => g.kind === 'shareware' && g.gam && !isSofaFile(g), // The Sofa's own uploads are only there
-  );
+  const catalog = [
+    // a Special whose arrival is this board, first, on its days and the few after (specials/arrivals.ts)
+    ...bbsSpecials(),
+    ...sandboxLibrary(await h.catalog()),
+  ];
   // the board's user file: started from what this PC already downloaded
   account(() => seedAccount(h, catalog));
   updateAccount((a) => ({ ...a, calls: a.calls + 1 }));
@@ -81,7 +87,7 @@ export async function runSandbox(t: Term, h: RetroHost): Promise<void> {
   for (;;) {
     if (show) mainMenu(t);
     show = false;
-    t.print(`|06[|14Sandbox|06] |07Time left: |14${minutesLeft()}|07 min |06: |15`);
+    t.print(`|06[${SANDBOX_WORD_ANSI}|06] |07Time left: |14${minutesLeft()}|07 min |06: |15`);
     const k = await t.key();
     t.line(k.length === 1 ? k : '');
     if (k === 'F' || k === 'N') {
@@ -135,6 +141,8 @@ export function takeOverheard(): Overheard | undefined {
 
 /** The SysOp's own uploads (his Sandbox Software games) are FREE: the ratio skips them. */
 const isFree = (g: CatalogEntry) => !!g.original;
+/** The mark after a file: a Special's TODAY (out only for its days), else FREE for the SysOp's own. */
+const tag = (g: CatalogEntry) => (isSpecialGame(g) ? '|13TODAY' : isFree(g) ? '|10FREE' : '');
 
 /** A record for a caller this board hasn't seen, counting what is on C: already. */
 function seedAccount(h: RetroHost, catalog: CatalogEntry[]): BbsAccount {
@@ -376,6 +384,11 @@ async function bulletins(t: Term, catalog: CatalogEntry[]): Promise<void> {
   }
 }
 
+/** The Sandbox BBS's own file area: shareware with a .gam, but not The Sofa's uploads, a Special off its days or a Starter (those live on the Sample CD). */
+export function sandboxLibrary(cat: CatalogEntry[]): CatalogEntry[] {
+  return cat.filter((g) => g.kind === 'shareware' && g.gam && !isSofaFile(g) && !isSpecialGame(g) && !isStarterGame(g));
+}
+
 async function files(t: Term, h: RetroHost, catalog: CatalogEntry[], title: string): Promise<void> {
   const entries = () =>
     catalog.map((g, i) => {
@@ -384,7 +397,7 @@ async function files(t: Term, h: RetroHost, catalog: CatalogEntry[], title: stri
       const desc = gameDiz(g).filter((l) => !/^-+$/.test(l));
       return desc.map((l, j) =>
         j === 0
-          ? `|11${String(i + 1).padStart(2)} ${got}|15${zipName(g).padEnd(12)}|14${commas(zipSize(g)).padStart(9)} |07${l.padEnd(46)}${isFree(g) ? '|10FREE' : ''}`
+          ? `|11${String(i + 1).padStart(2)} ${got}|15${zipName(g).padEnd(12)}|14${commas(zipSize(g)).padStart(9)} |07${l.padEnd(46)}${tag(g)}`
           : `${' '.repeat(26)}|${j === desc.length - 1 ? '08' : '07'}${l}`,
       );
     });
@@ -399,10 +412,11 @@ async function files(t: Term, h: RetroHost, catalog: CatalogEntry[], title: stri
     compact: () =>
       catalog.map(
         (g, i) =>
-          `|11${String(i + 1).padStart(2)} ${h.downloads.has(g.id) ? '|10*' : ' '}|15${zipName(g).padEnd(12)}|14${commas(zipSize(g)).padStart(9)} |03${uploadDate(g.id, g.year)} |07${dizSummary(gameDiz(g)).padEnd(40)}${isFree(g) ? '|10FREE' : ''}`,
+          `|11${String(i + 1).padStart(2)} ${h.downloads.has(g.id) ? '|10*' : ' '}|15${zipName(g).padEnd(12)}|14${commas(zipSize(g)).padStart(9)} |03${uploadDate(g.id, g.year)} |07${dizSummary(gameDiz(g)).padEnd(40)}${tag(g)}`,
       ),
     footer: () => [
       `|10*|07 = already downloaded to C:\\DOWNLOAD   |10FREE|07 = doesn't count against your ratio`,
+      ...(catalog.some(isSpecialGame) ? ['|13TODAY|07 = up for a few days only: grab it while it lasts!'] : []),
       `|12LEECHES WILL BE DELETED! |07Ratio |141:${RATIO}|07. File points left: |14${filePoints(account())}|07   |15U|07 to upload.`,
     ],
   });
@@ -426,6 +440,11 @@ async function files(t: Term, h: RetroHost, catalog: CatalogEntry[], title: stri
     if (dl) await download(t, h, g);
     else await readAbout(t, g);
   }
+}
+
+/** The Specials this board has up for download now (a BBS keeps one a few days after its day), as catalog entries. */
+function bbsSpecials(): CatalogEntry[] {
+  return waiting('bbs', specialsNow()).flatMap((s) => specialEntry<CatalogEntry>(s.id) ?? []);
 }
 
 async function readAbout(t: Term, g: CatalogEntry): Promise<void> {
@@ -467,10 +486,12 @@ async function download(t: Term, h: RetroHost, g: CatalogEntry): Promise<void> {
   updateAccount((a) => recordDownload(a, size, isFree(g)));
   await pkunzip(t, h, zipName(g), dosDir(g), [
     ...(g.exe ? [[g.exe, PLAYER_EXE_BYTES] as const] : []),
-    ...g.files.map((f, i) => [f.toUpperCase(), g.sizes?.[i] ?? Math.round((g.bytes ?? 0) / g.files.length)] as const),
+    ...(g.files ?? []).map((f, i) => [f.toUpperCase(), g.sizes?.[i] ?? Math.round((g.bytes ?? 0) / g.files!.length)] as const),
     ['FILE_ID.DIZ', DIZ_BYTES] as const,
   ]);
   h.downloads.add(g.id);
+  // a Special downloaded is kept for good: in the Special games and the disk box (specials/state.ts)
+  if (isSpecialGame(g) && arrive(g.id, 'bbs', specialsNow())) t.line(`|14${g.title}|07 is yours to keep, after its day is over too.`);
   if (pcExtras().cracked(g.id) !== undefined) pcExtras().setCracked(g.id, false); // a fresh copy, as its author made it
   t.line(`|07Type |15CD \\DOWNLOAD\\${dosDir(g)}|07 then |15${(g.exe ?? '').replace(/\.EXE$/i, '')}|07 after you log off to play.`);
   t.line();

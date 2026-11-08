@@ -10,7 +10,10 @@
 // The engine's only clock is a block turning into another block after some ticks (18.2 a second).
 // Every block of one kind turns at the same moment, which is why a bar is five different kinds of
 // block, one a segment, and why the same bar can be stamped along the whole level and still tick as
-// one. Each level has its own block file, so a kind can mean one timing here and another there.
+// one. The bars sit on the top row the screen shows (the camera never scrolls up or down here), close
+// enough together that one whole bar is always in view (games/kit/inViewCheck.ts checks it on the
+// walkthrough); the first hangs on the left-hand brick wall, its clock face set into the brick.
+// Each level has its own block file, so a kind can mean one timing here and another there.
 // Both rooms are closed in by brick walls you can see, so Kit is never stopped by something he can't.
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { Book, PULL, SOLID } from '../../kit/starter/book';
@@ -58,11 +61,12 @@ const AIR = { grav: PULL.down };
 /** The gate's three columns. */
 const PARTS = ['l', 'm', 'r'] as const;
 export const GROUND = 10;
-/** The row the bars sit on. */
-export const BAR_ROW = 1;
+/** The row the bars sit on: the top row in view while Kit walks the ground. */
+export const BAR_ROW = 4;
 export const WIDTH = 48;
-/** Where each stamp of the bar starts (it is 6 blocks wide: the clock and five segments). */
-export const BAR_AT = [2, 14, 26, 38] as const;
+/** Where each stamp of the bar starts in each level (it is 6 blocks wide: the clock and five segments), clear of the gate wall. At 0 the clock face is in the wall. */
+export const RACE_BARS = [0, 10, 20, 29, 38] as const;
+export const LOOP_BARS = [0, 10, 17, 27, 37] as const;
 export const EXIT_X = 42;
 /** The race's gate and the looping gate: the middle of a wall three blocks thick (brick from row 3 down to a two-block tunnel that the gate fills). */
 export const RACE_GATE = 36;
@@ -96,9 +100,13 @@ function buildBlocks(pal: Pal, loop: boolean, names: SignName[]): { book: Book; 
   const seg = loop ? LOOP_SEG : RACE_SEG;
   const round = loop ? LOOP_ROUND : 0;
   // the clock face: its hand moves a quarter turn every second, round and round
+  // and the same face set into the brick wall, which turns with it (the same ticks from the same start)
+  const brick = book.pics.get('brick')!;
   for (let q = 0; q < 4; q++) {
     book.add(`face${q}`, face(pal, q), AIR);
     timed.push({ name: `face${q}`, next: `face${(q + 1) % 4}`, ticks: HAND });
+    book.add(`wallFace${q}`, face(pal, q, brick), { solid: SOLID });
+    timed.push({ name: `wallFace${q}`, next: `wallFace${(q + 1) % 4}`, ticks: HAND });
   }
   // the segments, each its own kind of block so each can go out at its own time. A segment is green,
   // then thin and orange for the last second, then out; on the loop it lights again when the round ends.
@@ -119,8 +127,8 @@ function buildBlocks(pal: Pal, loop: boolean, names: SignName[]): { book: Book; 
       timed.push({ name: `gate.open.${p}.${part}`, next: `gate.shut.${p}.${part}`, ticks: open });
       if (loop) timed.push({ name: `gate.shut.${p}.${part}`, next: `gate.open.${p}.${part}`, ticks: round - open });
     }
-  book.add('lamp.open', lamp(pal, book.pics.get('brick')!, false), { solid: SOLID });
-  book.add('lamp.shut', lamp(pal, book.pics.get('brick')!, true), { solid: SOLID });
+  book.add('lamp.open', lamp(pal, brick, false), { solid: SOLID });
+  book.add('lamp.shut', lamp(pal, brick, true), { solid: SOLID });
   timed.push({ name: 'lamp.open', next: 'lamp.shut', ticks: open });
   if (loop) timed.push({ name: 'lamp.shut', next: 'lamp.open', ticks: round - open });
   if (!loop) {
@@ -157,7 +165,7 @@ function wall(g: Grid, x: number): void {
 
 /** Stamps a bar (clock face, five segments) at (x, BAR_ROW), and a gate with its lamp in column x. */
 function stampBar(m: StarterMap, x: number): void {
-  m.set(x, BAR_ROW, 'face0');
+  m.set(x, BAR_ROW, x === 0 ? 'wallFace0' : 'face0');
   for (let i = 0; i < SEGMENTS; i++) m.set(x + 1 + i, BAR_ROW, `seg${i}.on`);
 }
 function stampGate(m: StarterMap, x: number): void {
@@ -175,10 +183,10 @@ function race(pal: Pal): Level {
   scenery(
     g,
     [
-      [6, 4],
+      [2, 6],
       [18, 5],
-      [29, 4],
-      [44, 4],
+      [31, 6],
+      [44, 6],
     ],
     [16, 25, 30],
     [19, 26, 34],
@@ -189,7 +197,7 @@ function race(pal: Pal): Level {
   m.sign(26, onGround(GROUND, s.gate), s.gate);
   m.sign(39, onGround(GROUND, s.exit), s.exit);
   m.set(RESTART_X, 8, 'restartTop').set(RESTART_X, 9, 'restartBottom');
-  for (const x of BAR_AT) stampBar(m, x);
+  for (const x of RACE_BARS) stampBar(m, x);
   stampGate(m, RACE_GATE);
   return {
     file: 'one',
@@ -213,10 +221,10 @@ function loopLevel(pal: Pal): Level {
   scenery(
     g,
     [
-      [7, 4],
-      [20, 5],
-      [33, 4],
-      [45, 5],
+      [10, 6],
+      [28, 5],
+      [33, 6],
+      [44, 6],
     ],
     [8, 21, 34],
     [14, 28, 36],
@@ -225,7 +233,7 @@ function loopLevel(pal: Pal): Level {
   m.sign(5, onGround(GROUND, s.loop), s.loop);
   m.sign(17, onGround(GROUND, s.wait), s.wait);
   m.sign(39, onGround(GROUND, s.exit), s.exit);
-  for (const x of BAR_AT) stampBar(m, x);
+  for (const x of LOOP_BARS) stampBar(m, x);
   stampGate(m, LOOP_GATE);
   return { file: 'two', title: 'Round and Round', hint: 'The clock starts itself over.', map: m, book, timed, gateX: LOOP_GATE };
 }

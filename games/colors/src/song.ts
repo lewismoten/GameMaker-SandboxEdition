@@ -1,35 +1,21 @@
-// COLORS THAT WORK's one song, "Mend and Go": eight bars of a warm, steady tune in F major for the
-// Sound Blaster (a lead, a bass and a plucked arpeggio, each its own FM channel). It plays on the
-// title, the menu, the levels and the endings. Note strings are the kit's (kit/tune.ts): a note,
-// an octave and a length (w h q e), as in "E5 q".
-import { INSTRUMENTS } from '@lewismoten/gamemaker-sandbox-tools/kit/music';
-import { join, tune, v } from '@lewismoten/gamemaker-sandbox-tools/kit/tune';
-
-const MELODY = join(
-  'F5 q, A5 q, C6 q, A5 e, F5 e',
-  'G5 q, Bb5 q, D6 h',
-  'A5 q, C6 q, F6 q, E6 e, C6 e',
-  'D6 q, C6 q, A5 h',
-  'Bb5 q, D6 q, F6 q, D6 e, Bb5 e',
-  'A5 q, C6 q, E6 h',
-  'D6 q, C6 q, Bb5 q, A5 e, G5 e',
-  'F5 h, F5 h',
-);
-
-/** One bar of each chord: its three notes for the arpeggio, and its root and fifth for the bass. */
-const CHORDS = {
-  F: { arp: ['F3', 'A3', 'C4'], bass: ['F2', 'C3'] },
-  C: { arp: ['E3', 'G3', 'C4'], bass: ['C3', 'G2'] },
-  Bb: { arp: ['Bb3', 'D4', 'F4'], bass: ['Bb2', 'F3'] },
-  Dm: { arp: ['D3', 'F3', 'A3'], bass: ['D3', 'A2'] },
-  Gm: { arp: ['G3', 'Bb3', 'D4'], bass: ['G2', 'D3'] },
-} as const;
-const BARS: (keyof typeof CHORDS)[] = ['F', 'C', 'F', 'Dm', 'Bb', 'C', 'Gm', 'F'];
-
-const arp = join(...BARS.map((b) => [0, 1, 2, 1, 0, 1, 2, 1].map((i) => `${CHORDS[b].arp[i]} e`).join(', ')));
-const bass = join(...BARS.map((b) => CHORDS[b].bass.map((n) => `${n} h`).join(', ')));
+// COLORS THAT WORK's one song, "Paint Box": a storybook tune in A major in its group's band
+// (kit/starter/songStyle.ts: a music box doubled by a flute over soft strings, no drums) (here with a bell lead), an
+// A and a B section played ABAB, 32 bars before it loops. It plays on the title, the menu, the levels and the
+// endings.
+import { starterSong } from '../../kit/starter/songStyle';
 
 /** The song as a .CMF file. */
 export function song(): Uint8Array {
-  return tune(120, [v(0, INSTRUMENTS.lead, MELODY, 100), v(1, INSTRUMENTS.bass, bass, 90), v(2, INSTRUMENTS.pluck, arp, 60)]);
+  return starterSong('story', {
+    bpm: 100,
+    lead: 'bell',
+    A: {
+      chords: 'A | D | A | E | F#m | D | B | E',
+      tune: 'E5 q, A5 q, C#6 q, B5 q | A5 q, F#5 q, D5 h | C#5 e, E5 e, A5 e, C#6 e, E6 q, C#6 q | B5 h., r q | A5 q, C#6 q, F#6 q, E6 q | D6 q, A5 q, F#5 h | D#5 q, F#5 q, B5 q, D#6 q | E6 h, B5 h',
+    },
+    B: {
+      chords: 'D | A | D | E | C#m | F#m | D E | A',
+      tune: 'F#5 q., A5 e, D6 h | C#6 q., B5 e, A5 h | F#5 e, A5 e, D6 e, F#6 e, E6 q, D6 q | B5 w | G#5 q, C#6 q, E6 q, C#6 q | A5 q, C#6 q, F#6 h | F#6 q, D6 q, E6 q, B5 q | A5 w',
+    },
+  });
 }

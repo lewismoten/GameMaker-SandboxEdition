@@ -2,7 +2,7 @@
 // behind a How it works button in the library's header that opens it in a dialog.
 import { h, modal } from '../core/ui';
 import { icon } from './homeIcons';
-import { wantsTouchControls } from '../../player/touch';
+import { wantsTouchControls } from '../../player/touchWanted';
 
 export function gettingStarted() {
   const touch = wantsTouchControls();

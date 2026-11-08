@@ -4,7 +4,8 @@
 // (they are solid), waits, and walks on when the time is up. The checks here fail if anything else happens.
 import type { Result, StarterBot } from '../../kit/starter/bot';
 import { ORIGIN } from '../../kit/starter/map';
-import { AWAKE, BUBBLE, SLEEPER, TWINKLE } from '../src/monsters';
+import { BUBBLE_X, SLEEPER_X } from '../src/levels';
+import { AWAKE, BUBBLES, SLEEPERS, TWINKLE } from '../src/monsters';
 
 /** Runs an order; anything but carrying on (a scene change, getting stuck) is an error. */
 async function must(bot: StarterBot, r: Promise<Result>, what: string): Promise<void> {
@@ -18,9 +19,10 @@ async function leave(bot: StarterBot, r: Promise<Result>, what: string): Promise
   if (out !== 'link' && out !== 'end') throw new Error(`${what}: ${out ?? 'still here'}\n${bot.log.slice(-8).join('\n')}`);
 }
 
-/** How many monsters number `n` are alive. */
-export function alive(bot: StarterBot, n: number): number {
-  return bot.sim.w.mm.filter((m) => m.monnum === n).length;
+/** How many monsters number `n` (or any of the numbers `n`) are alive. */
+export function alive(bot: StarterBot, n: number | number[]): number {
+  const ns = typeof n === 'number' ? [n] : n;
+  return bot.sim.w.mm.filter((m) => ns.includes(m.monnum)).length;
 }
 
 /** Every coin is 10 points: a level that should give `n` coins must have. */
@@ -45,44 +47,42 @@ async function waitUntil(bot: StarterBot, gone: () => boolean, what: string): Pr
   bot.say(`${what}: ${ticks} ticks`);
 }
 
-/** 1. A Bubble: read the signs, walk up to the bubble (it holds Kit back), wait for it to pop, then walk through. */
+/** 1. A Bubble: read the signs (both in view from the start), walk up to the bubble (it holds Kit back), watch it shrink and pop, then walk through. */
 export async function aBubble(bot: StarterBot): Promise<void> {
   const score = bot.sim.ci.score;
-  await must(bot, bot.walk(8, 'the first sign'), 'to the first sign');
-  await must(bot, bot.wait(READ), 'reading');
-  await must(bot, bot.walk(16, 'the second sign'), 'to the second sign');
-  await must(bot, bot.wait(READ), 'reading');
-  await must(bot, bot.walk(21, 'the bubble'), 'to the bubble');
-  if (alive(bot, BUBBLE) !== 1) throw new Error(`level 1: expected the bubble when Kit arrives; ${alive(bot, BUBBLE)}`);
+  await must(bot, bot.wait(READ), 'reading the first sign');
+  await must(bot, bot.walk(8, 'the second sign'), 'to the second sign');
+  await must(bot, bot.wait(READ / 2), 'reading');
+  await must(bot, bot.walk(BUBBLE_X - 2, 'the bubble'), 'to the bubble');
+  if (alive(bot, BUBBLES) !== 1) throw new Error(`level 1: expected the bubble when Kit arrives; ${alive(bot, BUBBLES)}`);
   bot.say(`at the bubble`);
   let sparkle = false;
-  await waitUntil(bot, () => ((sparkle ||= alive(bot, TWINKLE) > 0), alive(bot, BUBBLE) === 0), 'waiting for the bubble');
+  await waitUntil(bot, () => ((sparkle ||= alive(bot, TWINKLE) > 0), alive(bot, BUBBLES) === 0), 'waiting for the bubble');
   sparkle ||= alive(bot, TWINKLE) > 0;
   if (!sparkle) throw new Error('level 1: the bubble should leave a sparkle');
   bot.say('the bubble popped by itself');
-  await must(bot, bot.wait(40), 'letting the sparkle fade');
-  await must(bot, bot.walk(36, 'through the tunnel'), 'through the tunnel');
+  await must(bot, bot.wait(20), 'letting the sparkle fade');
+  await must(bot, bot.walk(20, 'through the tunnel'), 'through the tunnel');
   coins(bot, score, 6, 'level 1 before the exit');
-  await leave(bot, bot.walk(43, 'the exit'), 'the exit');
+  await leave(bot, bot.walk(25, 'the exit'), 'the exit');
 }
 
-/** 2. Wake Up: the sleeper holds Kit back; when its time is up it becomes the awake one, which Kit walks through. */
+/** 2. Wake Up: the sleeper holds Kit back; it opens its eyes and becomes the awake one, which Kit walks through. */
 export async function wakeUp(bot: StarterBot): Promise<void> {
   const score = bot.sim.ci.score;
-  await must(bot, bot.walk(8, 'the first sign'), 'to the first sign');
-  await must(bot, bot.wait(READ), 'reading');
-  await must(bot, bot.walk(16, 'the second sign'), 'to the second sign');
-  await must(bot, bot.wait(READ), 'reading');
-  await must(bot, bot.walk(23, 'the sleeper'), 'to the sleeper');
-  if (alive(bot, SLEEPER) !== 1 || alive(bot, AWAKE) !== 0) throw new Error('level 2: the sleeper should be asleep when Kit arrives');
-  await waitUntil(bot, () => alive(bot, SLEEPER) === 0, 'waiting for the sleeper');
+  await must(bot, bot.wait(READ), 'reading the first sign');
+  await must(bot, bot.walk(8, 'the second sign'), 'to the second sign');
+  await must(bot, bot.wait(READ / 2), 'reading');
+  await must(bot, bot.walk(SLEEPER_X - 2, 'the sleeper'), 'to the sleeper');
+  if (alive(bot, SLEEPERS) !== 1 || alive(bot, AWAKE) !== 0) throw new Error('level 2: the sleeper should not be awake yet when Kit arrives');
+  await waitUntil(bot, () => alive(bot, SLEEPERS) === 0, 'waiting for the sleeper');
   if (alive(bot, AWAKE) !== 1) throw new Error('level 2: the sleeper should have become the awake one');
   bot.say('the sleeper woke up');
-  await must(bot, bot.wait(30), 'a moment');
-  await must(bot, bot.walk(40, 'through the tunnel'), 'through the tunnel');
+  await must(bot, bot.wait(20), 'a moment');
+  await must(bot, bot.walk(22, 'through the tunnel'), 'through the tunnel');
   if (alive(bot, AWAKE) !== 1) throw new Error('level 2: the awake one should still be there');
   coins(bot, score, 6, 'level 2 before the exit');
-  await leave(bot, bot.walk(43, 'the exit'), 'the exit');
+  await leave(bot, bot.walk(27, 'the exit'), 'the exit');
 }
 
 export { ORIGIN };

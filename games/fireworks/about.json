@@ -1,0 +1,40 @@
+{
+  "title": "Fireworks Night",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "hero": "LAMI",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.1",
+  "blurb": "Fireworks drawn with monsters. A monster can turn into another monster when its path ends, so a rocket that flies up turns into a burst at the top, and the burst turns back into the rocket: two monsters taking turns make a firework that never stops. Level 1 has two launchers, each on its own time, and Enter launches a rocket of your own. Level 2 is a show over a sleeping town: rings, peonies and willows, each burst nine monsters on one path, each launcher with its own time so no two go off together. Play it, then open it in Game-Maker and change a burst.",
+  "exe": "FIREWORK.EXE",
+  "dosName": "FIREWORK",
+  "sound": "sb",
+  "label": {
+    "background": "#dfe3ff",
+    "band": "#0e1238",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "2 short levels",
+    "hours": 1,
+    "background": "#0e1238",
+    "accent": "#ff5a6e",
+    "ink": "#ffffff",
+    "tagline": "Up, pop, and down again.",
+    "back": "An explorer in a red beanie watches the night sky. A rocket is a monster on a path up; when the path ends it turns into a burst, and when the burst has fallen it turns back into the rocket. Nine bursts on one path make one big one, and launchers with their own times seldom go off together. Read the signs, press Enter to launch your own, then open the game in Game-Maker and change a burst.",
+    "features": [
+      "Level 1 shows one firework as two monsters taking turns",
+      "Level 2 is a show of rings, peonies and willows over a town",
+      "Press Enter to launch a rocket of your own",
+      "Made to be copied and taken apart"
+    ],
+    "shots": [
+      ["one.map", 22, 6],
+      ["two.map", 30, 6]
+    ],
+    "rating": "Everyone"
+  }
+}

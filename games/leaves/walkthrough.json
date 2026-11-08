@@ -1,0 +1,64 @@
+{
+ "version": 1,
+ "game": "leaves",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "KU0wzStND817TS3NK00PzXtNLc0rTQ/N8wFN"
+  },
+  {
+   "scene": 3,
+   "keys": "KU06za0BTUHNaU1BzWlN"
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "The tumble"
+  },
+  {
+   "scene": 3,
+   "title": "The gust"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 10830,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 913,
+    "time": 15216.666666666471
+   },
+   {
+    "title": "The tumble",
+    "frame": 1661,
+    "time": 27683.333333333918
+   },
+   {
+    "title": "The gust",
+    "frame": 4949,
+    "time": 82483.33333333445
+   },
+   {
+    "title": "Ending",
+    "frame": 7545,
+    "time": 125750.00000001371
+   },
+   {
+    "title": "Credits",
+    "frame": 9756,
+    "time": 162599.99999999691
+   }
+  ]
+ }
+}

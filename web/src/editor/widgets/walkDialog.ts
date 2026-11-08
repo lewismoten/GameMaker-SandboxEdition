@@ -12,7 +12,9 @@
 // said so, and the bot plays that scene. In a scene with walking paths (marked in the block
 // editor, check/walk/walkPaths.ts) it says how much of the route keeps to them.
 import { gameTitle } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { fromCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import { h, clear, modal, selectField, toast } from '../core/ui';
+import { progressAnnouncements } from '../core/progressAnnouncements';
 import type { Project } from '../core/project';
 import type { CatalogEntry } from '../../project/files';
 import type { Walkthrough } from '../../walkthrough/format';
@@ -115,7 +117,7 @@ export async function walkDialog(project: Project, given: WalkDialogOptions = {}
     const now = project.extras<SavedWalk | undefined>(project.gam, WALK_SECTION, undefined);
     if (before && scene !== undefined && now?.walk) {
       const later = changedAfter(before, now.walk, scene);
-      const names = later.map((n) => project.game().scenes[n]?.desc.trim() || `Scene ${n}`);
+      const names = later.map((n) => fromCp437(project.game().scenes[n]?.desc ?? '').trim() || `Scene ${n}`);
       toast(
         later.length
           ? `Redone. The levels after it that the bot had to play again, because they no longer carried on from the new play: ${names.join(', ')}.`
@@ -134,13 +136,14 @@ async function makeDialog(project: Project, opt: WalkDialogOptions, redoing?: Re
   let finished = false;
   let closeModal: ((v: undefined) => void) | undefined;
   const game = () => project.game();
-  const sceneName = (n: number) => game().scenes[n]?.desc.trim() || `Scene ${n}`;
+  const sceneName = (n: number) => fromCp437(game().scenes[n]?.desc ?? '').trim() || `Scene ${n}`;
   /** The scene's map, when it has one to play on. */
   const mapOf = (n: number) => {
     const m = game().scenes[n]?.files[1];
     return m && project.files.has(m) ? (project.files.resolve(m) ?? m) : undefined;
   };
   const status = h('p', { class: 'meta', role: 'status', 'aria-live': 'polite' });
+  const progressLine = h('p', { class: 'meta wd-progress', hidden: true, 'aria-live': 'off' });
   const far = h('p', { class: 'wd-far', hidden: true });
   const list = h('ol', { class: 'wd-list', 'aria-label': 'Scenes the bot played' });
   const playsBox = h('div', { class: 'wd-plays' });
@@ -366,6 +369,8 @@ async function makeDialog(project: Project, opt: WalkDialogOptions, redoing?: Re
   async function run(): Promise<void> {
     runBtn.textContent = '■ Stop';
     status.textContent = 'Starting the bot…';
+    let terminal = '';
+    const speech = progressAnnouncements((text) => (status.textContent = text));
     stopping = false;
     let ok = false;
     // one level to redo: the bot plays it fresh, the other scenes try their old keys first
@@ -382,7 +387,13 @@ async function makeDialog(project: Project, opt: WalkDialogOptions, redoing?: Re
         paths: allWalkPaths(project, project.game()),
         reuse,
       },
-      (what) => (status.textContent = stopping ? `Stopping: ${what}` : what),
+      (what) => {
+        const text = stopping ? `Stopping: ${what}` : what;
+        progressLine.hidden = false;
+        progressLine.textContent = text;
+        status.classList.add('sr-only');
+        speech.progress(text);
+      },
     );
     try {
       const { result, verified } = await running.done;
@@ -403,11 +414,15 @@ async function makeDialog(project: Project, opt: WalkDialogOptions, redoing?: Re
         stoppedMap = mapName;
       }
     } catch (e) {
-      if ((e as Error).name !== 'AbortError') toast(`The walkthrough bot failed: ${(e as Error).message}`, 'error');
+      terminal = (e as Error).name === 'AbortError' ? 'Stopped.' : `The walkthrough bot failed: ${(e as Error).message}`;
+      if (saved) terminal += ' Showing the previous walkthrough.';
     } finally {
       running = undefined;
       stopping = false;
       renderAll();
+      progressLine.hidden = true;
+      status.classList.remove('sr-only');
+      speech.finish(terminal || status.textContent || 'Walkthrough finished.');
       // where it stopped: the way on is the person's play of that scene
       if (saved && !saved.won) list.querySelector<HTMLElement>('.wd-stop .wd-myself')?.focus();
     }
@@ -481,6 +496,7 @@ async function makeDialog(project: Project, opt: WalkDialogOptions, redoing?: Re
           runBtn,
         ),
         status,
+        progressLine,
         far,
         list,
         playsBox,

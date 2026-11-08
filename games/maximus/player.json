@@ -1,0 +1,11 @@
+{
+  "base": "xferplay-3.00",
+  "patches": {
+    "color.rgb.hsGreen": [63, 45, 14],
+    "color.select.status": "hsGreen",
+    "color.select.dropFrame": "hsGreen",
+    "color.select.aboutFrame": "hsGreen",
+    "color.select.joyText": "hsGreen",
+    "color.select.hsName": "hsGreen"
+  }
+}

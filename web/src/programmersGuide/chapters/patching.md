@@ -20,10 +20,10 @@ The patch table is written for **XFERPLAY.EXE**: 160,598 bytes, MD5 `fcaf47d50ec
 
 ## 3. What a patch is
 
-An `.EXE` is a file. A patch is "go to offset X and replace N bytes with these". The menu word "Play" is the smallest example. `str.menu.play` is at `0x2575b`, four bytes, `50 6C 61 79`, and the byte after it (`0x2575f`) is `00`, the NUL that ends the string. The player prints whatever characters lie between the offset and the next NUL.
+An `.EXE` is a file. A patch is "go to offset X and replace N bytes with these". The menu word "Play" is the smallest example. `str.menu.play` is at `0x2575b`, four bytes, `50 6C 61 79`, and the byte after it (`0x2575f`) is `00`, the NULL that ends the string. The player prints whatever characters lie between the offset and the next NULL.
 
 - Write `47 6F 21 21` and the menu says "Go!!". Same length, the string still ends where it did.
-- Write a five-letter word and the fifth letter lands on the NUL and the next byte on the first letter of "Read Instructions" (`0x25760`). The word grows into its neighbor and the neighbor loses a letter. That is why a string never grows (`patchRules.ts:1-5`) and a shorter word is padded with spaces: GWrite draws a space as nothing and the NUL after it is never touched (`patchRules.ts:84-91`).
+- Write a five-letter word and the fifth letter lands on the NULL and the next byte on the first letter of "Read Instructions" (`0x25760`). The word grows into its neighbor and the neighbor loses a letter. That is why a string never grows (`patchRules.ts:1-5`) and a shorter word is padded with spaces: GWrite draws a space as nothing and the NULL after it is never touched (`patchRules.ts:84-91`).
 - Write a byte under 0x20 or over 0x7E and GPutChar draws something that is not in its ROM font; the table's text rule is 0x20-0x7E only (`patchRules.ts:29-40`).
 
 Numbers are patched the same way, but they live in the _code_. A screen position such as `layout.menu.play.x` (80, at `0xb6be`) is the operand of a `push imm8` or `push imm16`: the compiler turned `GWrite(80, 120, ...)` into two pushes of constants. Changing the operand changes the constant. A one-byte operand is sign-extended, so it stops at 127 (`frameLimit`, `patchRules.ts:59-62`); a two-byte one is a little-endian word.
@@ -48,7 +48,7 @@ The kind says how a value becomes bytes (`writePatch`, `patchRules.ts:84-109`). 
 
 | kind     | count | what is written                                                                                                                              | rule (`patchProblem`, `patchRules.ts:29-57`)                                |
 | -------- | ----: | -------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
-| `text`   |    30 | the characters of a NUL-ended string, space-padded to the slot's length                                                                      | no longer than the slot, characters 0x20-0x7E                               |
+| `text`   |    30 | the characters of a NULL-ended string, space-padded to the slot's length                                                                      | no longer than the slot, characters 0x20-0x7E                               |
 | `format` |     8 | a printf string such as `Score:     %ld`                                                                                                     | as text, and the same `%` codes in the same order, and no stray `%`         |
 | `number` |    56 | one immediate, or the same value in each of several immediates patched together (`border.marker.width` writes two)                           | a whole number from the entry's `min` to `max`                              |
 | `rgb`    |    11 | three bytes, red then green then blue (listed red, green, blue; the three bytes are not next to each other and may run backward in the file) | each 0-63: the VGA DAC is six bits                                          |
@@ -118,7 +118,7 @@ The editor's **DOS player** panel (`web/src/editor/editors/integrator/dosPlayer/
 
 ## 9. Experimental: the gameplay constants
 
-These change how every scene of the game plays, not how a screen looks, so the panel shows them on a tab of their own, **Gameplay**, each marked Experimental, under the warning "these change how every scene plays; test the patched game in DOSBox before you share it". The web player plays by the same values when the game has them (`playTuning`, `web/packages/engine/src/engine/playerLook.ts`), so a playtest in the editor matches the patched `XFERPLAY.EXE`. With none set, both play exactly as the CD's player does. **[not yet checked in DOSBox]**
+These change how every scene of the game plays, not how a screen looks, so the panel shows them on a tab of their own, **Gameplay**, each marked Experimental, under the warning "these change how every scene plays; test the patched game in DOSBox before you share it". The web player reads the same tuning values through `playTuning` (`engine/playerLook.ts:60-94`), installed when the scene loads (`engine/scene.ts:159-165`); with none set it uses the table's stock values. Matching constants does not make an editor playtest proof of patched DOS behavior. For example, the web port bounds monster-slot searches where DOS can probe outside the array (`engine/monsters.ts:218-255`, `PG:3327-3342`). Patched-executable behavior and exact agreement remain **[not yet checked in DOSBox]**.
 
 Each is a `#define` in `PLAYGAME.C` (lines 65-80), or for the fade the default step count of FadeTo and FadeAllTo (`PALETTE.H:65-66`), and the compiler copied it into the code wherever it is used. A patch writes the new value into every one of those copies and into nothing else: a constant whose copies cannot all be found, or that shares its bytes with some other number, is not offered. A clamp such as `if (tx < -MAXGRAV) tx = -MAXGRAV` holds the value negated, and the table marks those copies `negate` so they get minus the value (`ImmField`).
 
@@ -132,9 +132,9 @@ Each is a `#define` in `PLAYGAME.C` (lines 65-80), or for the fade the default s
 | `play.scrollSpeedX` | `SCRSPDX`       |    40 | 1-100 | the scroll speed when the character reaches the screen's side (`PG:3935, 3943`); a move still stops at 28 pixels (`PG:3956-3959`) |
 | `play.scrollSpeedY` | `SCRSPDY`       |    40 | 1-100 | the same, top and bottom (`PG:3948, 3953`)                                                                                        |
 | `play.scrollSteps`  | `SCROLLPERMOVE` |     6 | 1-60  | timer ticks one scroll move is spread over (`PG:3963, 3967`); more is slower and smoother                                         |
-| `play.fadeSteps`    | FadeTo's `tim`  |    65 | 0-65  | steps of every fade in and out, one a screen refresh (70 a second); 0 cuts at once                                                |
+| `play.fadeSteps`    | FadeTo's `tim`  |    65 | 0-65  | palette-update iterations with retrace-status polling, not guaranteed distinct refreshes; 0 skips the loop (`PALC.C:94-116`) |
 
-The ranges keep each copy inside its instruction. A one-byte copy (`imm8`) is sign-extended, so it holds -128 to 127, and the negated copies of `play.gravityCap` stay inside that at 127. Other limits come from the code around the copies: the scroll speed is multiplied by a distance of up to a screen width in 16-bit math, which overflows past about 100; `SCROLLPERMOVE` divides a move, so 0 would hang the scroll; and FadeTo counts in signed bytes that reach the step count plus 62, so 65, the stock value, is the most that works.
+The ranges keep each copy inside its instruction. A one-byte copy (`imm8`) is sign-extended, so it holds -128 to 127, and the negated copies of `play.gravityCap` stay inside that at 127. The scroll-speed range 1-100 is a table limit (`engine/player/patchTable.ts:1806-1839`), not an overflow-proof threshold: DOS multiplies distance by speed in 16-bit math **before** dividing and clamping the move to 28 pixels (`PG:3932-3967`). Overflow depends on the actual distance, not speed alone; even stock 40 can overflow at a large enough distance. The web helper explicitly wraps that product (`engine/scroll.ts:53-102`). Other limits come from the surrounding code: `SCROLLPERMOVE` supplies the accumulator increment; at 0 with nonzero displacement the scroll loop cannot advance (`PG:3961-3967`, `PG:4149-4155`). FadeTo's byte accumulators can reach `tim + 62` with valid six-bit endpoints, so a signed-byte implementation needs `tim <= 65` to keep that intermediate at or below 127 (`PALC.C:65-68`, `PALC.C:83-106`).
 
 ### 9.1 Where each one is
 
@@ -166,7 +166,7 @@ The player's own waits (`PauseTimeKey`) are in the `times` group already: the 10
 ## 10. Limits
 
 - 160,598-byte XFERPLAY 3.00 only: size and MD5 are checked before any write (section 5).
-- Strings never grow; shorter ones are space-padded; the NUL after one is never touched (section 3).
+- Strings never grow; shorter ones are space-padded; the NULL after one is never touched (section 3).
 - Numbers keep their operand's range: 0-255 or -128..127 for one byte, 0-65,535 for two (section 3).
 - `keep` and `unsafe` entries of the patch map (credits, copyright, file names, the menu item count, the scan-code table) are not offered (section 1).
 - Not a reason to trust a patched `.EXE` that arrived from somewhere else. Run nothing you did not make.

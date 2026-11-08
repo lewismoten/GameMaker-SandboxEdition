@@ -55,7 +55,22 @@ export function taskTitle(meta: { description?: unknown; agentType?: unknown }, 
   return `${type ? `${type} task` : 'Untitled task'} (${id || 'unknown id'})`;
 }
 
-export const usageHead = ['started', 'ended', 'session', 'agent', 'title', 'model', 'type', 'task', 'state', 'input', 'cache_write', 'cache_read', 'output', 'total'];
+export const usageHead = [
+  'started',
+  'ended',
+  'session',
+  'agent',
+  'title',
+  'model',
+  'type',
+  'task',
+  'state',
+  'input',
+  'cache_write',
+  'cache_read',
+  'output',
+  'total',
+];
 
 // One CSV row (values, not yet quoted) for a sub-agent log file name, its optional meta.json and its counted usage.
 export function usageRow(session: string, file: string, meta: Record<string, string | boolean>, u: Usage): (string | number)[] {

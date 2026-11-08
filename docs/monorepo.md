@@ -64,10 +64,9 @@ The [package check workflow](../.github/workflows/packages.yml) builds the SDKs 
 when started by hand (workflow_dispatch); the same tests run locally in `npm run verify`. It does not
 publish anything.
 
-GitHub Actions only builds and publishes: the Pages workflow runs on a `pages-v*` tag, builds
-every game and the site, and deploys, in one job (aimed at under five minutes). A pull request into
-master runs the same job without the upload and deploy steps, so its total time is a release's cost
-(a per-stage table is in the run summary). Format, lint, typecheck,
+GitHub Actions only builds and publishes packages and native downloads. The site is built on the
+maintainer's computer and served from the `gh-pages` branch (`npm run release:pages`,
+`docs/package-releases.md`). Format, lint, typecheck,
 the tests and `npm run verify:packages` run locally: `npm run verify` from the root runs them
 all before a push. `npm run test:fast` leaves out the tests measured over 50 ms in
 `web/test/slowTests.json`. See `web/scripts/slowTests.ts` to refresh the timing list.

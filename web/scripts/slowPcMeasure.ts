@@ -3,7 +3,11 @@
 // game ticks actually run per second (18.2 is full speed; a skipped tick is not counted), over all the
 // one-second windows and over the windows with 10 or more monsters on screen (level 2's crowd), the longest
 // time the game ran no tick, the longest frame gap, and each voice: its size, how long after the game asked
-// for it the audio started, and how many ms later the game's next tick ran.
+// for it the audio started, and how many ms later the game's next tick ran. Then the level changes: for
+// each room the game entered, the scene-load pause the preset charged (Session.sceneLoad: files opened,
+// bytes read, ms) and the measured wall time from the last tick of the room before to the first frame of
+// play in this one (fade-out, the black screen and the fade-in; Today's gap is the baseline, so the
+// difference from Today's is the measured pause).
 //   cd web && npx vite-node scripts/slowPcMeasure.ts [port=5191] [speeds=today,286] [seconds per run=75]
 //   (SHOT=<path prefix> saves a PNG at the end of each run)
 import { launch } from './perfLib';
@@ -29,7 +33,13 @@ interface Room {
   frameGap: number;
   wins: Win[];
   voc: Voc[];
+  /** The scene-load charge for this room (Session.sceneLoad), absent when nothing was charged. */
+  load?: { files: number; bytes: number; ms: number };
+  /** Wall ms from the room before's last tick to this room's first frame of play; absent for the first room. */
+  gap?: number;
 }
+
+const changes: string[] = [];
 
 const b = await launch();
 try {
@@ -79,6 +89,9 @@ try {
               return sp(n);
             };
             cur = { t0: t, t1: t, stall: 0, frameGap: 0, wins: [], voc: [] };
+            const load = g.session.sceneLoad as Room['load'];
+            if (load) cur.load = { ...load };
+            if (lastTickAt) cur.gap = t - lastTickAt;
             rooms.push(cur);
             lastClock = -1;
             winStart = t;
@@ -145,8 +158,16 @@ try {
         `${speed} | #${n} ${kind} | ${((r.t1 - r.t0) / 1000).toFixed(1)} | ${avg(r.wins)} | ${avg(crowd)} (${crowd.length}) | ${r.stall.toFixed(0)} | ${r.frameGap.toFixed(0)} | ${v}`,
       );
     });
+    rooms.forEach((r, n) => {
+      const kind = r.voc.length ? '1 pads' : r.wins.some((w) => w.shown > 0) ? '2 crowd' : 'other';
+      const load = r.load ? `${r.load.files} | ${r.load.bytes} | ${r.load.ms.toFixed(1)}` : '0 | 0 | 0';
+      changes.push(`${speed} | #${n} ${kind} | ${load} | ${r.gap === undefined ? '-' : r.gap.toFixed(0)}`);
+    });
     await page.close();
   }
+  console.log('\nlevel changes');
+  console.log('speed | room | files read | bytes | charged pause ms | wall ms from the last tick before to the first frame of play');
+  for (const line of changes) console.log(line);
 } finally {
   await b.close();
 }

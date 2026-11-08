@@ -47,7 +47,7 @@ const WORDS: Record<string, [string, number]> = {
   slot: ['MENU.GIF GOES IN THE MENU GRAPHIC SLOT', 3],
   ontop: ['THE GAME WRITES ON TOP', 2],
   plain: ['KEEP THE BOARD PLAIN', 2],
-  record: ['PLAY FROM THE MENU TO RECORD', 2],
+  record: ['A DEMO IS YOUR KEYS PLAYED BACK', 2],
   idle: ['DEMO SLOT: IT PLAYS AFTER 30 QUIET SECONDS', 3],
   limit: ['EACH PRESS OR RELEASE COUNTS. 1,000 AT MOST', 3],
 };

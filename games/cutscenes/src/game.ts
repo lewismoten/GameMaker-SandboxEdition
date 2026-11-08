@@ -3,7 +3,9 @@
 // levels.ts). A scene lists the files it loads in slots (palette, map, blocks, monsters,
 // monster blocks, character, character blocks, sounds, song, a list shown before it) and
 // carries its links: touch the From block and you are in the To scene, standing on the To block.
+// Last comes the menu room again without its card, for the tales to come back to.
 import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, newGame, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { addReturnScenes } from '../../kit/starter/returnScenes';
 import type { Scene } from './levels';
 
 /** The title of the game, as the .GAM names it (19 characters at most). */
@@ -64,6 +66,9 @@ export function buildGame(scenes: Scene[]): Game {
     });
     game.scenes.push(scene);
   });
+
+  // a tale comes back to the menu room's copy without its card (kit/starter/returnScenes.ts), so the card shows once
+  addReturnScenes(game, [sceneOf(scenes, 'hall')]);
 
   const first = scenes[0].map.start;
   title.links[0] = { toScene: 2, from: { x: 0, y: 0 }, to: { x: first[0], y: first[1] } };

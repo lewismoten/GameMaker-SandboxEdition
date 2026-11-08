@@ -17,16 +17,16 @@ function inside(poly: [number, number][], x: number, y: number): boolean {
   return hit;
 }
 
-/** The star at turn 0 (one point up) or turn 1 (turned half a point, a little narrower). */
-export function drawStar(pal: Pal, turn: 0 | 1): Pixels {
+/** The star at turn 0 (one point up) or turn 1 (turned half a point, a little narrower); `scale` under 1 draws it smaller (the fizzle). */
+export function drawStar(pal: Pal, turn: 0 | 1, scale = 1): Pixels {
   const gold = pal.r('gold');
   const p = new Pixels(20, 20, T);
-  const outer = turn ? 8.2 : 8.8;
+  const outer = (turn ? 8.2 : 8.8) * scale;
   const spin = turn ? Math.PI / 10 : 0;
   const poly: [number, number][] = [];
   for (let i = 0; i < 10; i++) {
     const a = -Math.PI / 2 + spin + (i * Math.PI) / 5;
-    const r = i % 2 ? 3.9 : outer;
+    const r = i % 2 ? 3.9 * scale : outer;
     poly.push([10 + Math.cos(a) * r, 10.5 + Math.sin(a) * r]);
   }
   for (let y = 0; y < 20; y++)
@@ -36,6 +36,6 @@ export function drawStar(pal: Pal, turn: 0 | 1): Pixels {
       const light = (x + y) / 38;
       p.set(x, y, light < 0.42 ? gold[4] : light < 0.6 ? gold[3] : gold[2]);
     }
-  p.set(8, 8, pal.c('white', 3)).set(9, 8, pal.c('white', 3));
+  if (scale === 1) p.set(8, 8, pal.c('white', 3)).set(9, 8, pal.c('white', 3));
   return outline(p, pal.c('ink', 0), { transparent: T });
 }

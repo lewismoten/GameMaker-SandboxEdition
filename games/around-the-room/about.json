@@ -1,0 +1,40 @@
+{
+  "title": "Around the Room",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "hero": "YANA",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.0",
+  "blurb": "Four short levels that go once around a room: the floor, up the left wall, along the ceiling upside down, and down the right wall. The hero is drawn turned on each one and jumps the same blocks and trenches every time. Nothing in Game-Maker turns a room. Each block has a setting for which way it pulls, and the arrows are the hero's own keys. Signs say how. Play it, then open it in Game-Maker and change one block's Gravity.",
+  "exe": "ROOM.EXE",
+  "dosName": "AROUNDRM",
+  "sound": "sb",
+  "label": {
+    "background": "#efe8ff",
+    "band": "#3a7fa0",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "4 short levels",
+    "hours": 1,
+    "background": "#3a7fa0",
+    "accent": "#ffd23f",
+    "ink": "#ffffff",
+    "tagline": "Four walls, one lap.",
+    "back": "A small explorer walks once around a room: along the floor, up the left wall, along the ceiling upside down and down the right wall. Each turn of the room is another level, with the same blocks to jump and trenches to cross, and your hands have to keep up. The trick is a setting on each block: which way it pulls. Read the signs, then open the game in Game-Maker and change a block's Gravity.",
+    "features": [
+      "Four levels: the floor, the left wall, the ceiling and the right wall",
+      "The hero is drawn turned to face each wall",
+      "Gravity is a setting of each block",
+      "Made to be copied and taken apart"
+    ],
+    "shots": [
+      ["two.map", 12, 24],
+      ["three.map", 24, 6]
+    ],
+    "rating": "Everyone"
+  }
+}

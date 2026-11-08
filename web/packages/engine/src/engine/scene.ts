@@ -43,7 +43,8 @@ import { parsePalette } from '../formats/palette';
 import { parseSoundSet, type SoundSet } from '../formats/sound';
 import { MAXSCENELINKS, NOSCENE, type Game } from '../formats/game';
 import { TICK_RATE } from '../audio/cmfPlayer';
-import { scrollCost, SlowCpu, tickCost, vocStallMs, vocWontFit, type PcCosts } from './slowPc';
+import { musicHoldMs, sceneLoadMs, scrollCost, SlowCpu, tickCost, vocStallMs, vocWontFit, type PcCosts } from './slowPc';
+import { songIsrMs, songLoad, type SongLoad } from './slowPcMusic';
 import { gainAtLoad, newPlayGain, type PlayGain } from './playGain';
 
 const DEAD = 2;
@@ -73,6 +74,8 @@ export interface Session {
   speed: SpeedSetting;
   /** Milliseconds a voice read still owes the emulated PC (SpeedSetting.slowPc); playscene charges it. */
   vocStall?: number;
+  /** The last scene load the emulated slow disk was charged for (sceneLoadMs): files opened, bytes read, milliseconds. Cleared by a load that costs nothing. */
+  sceneLoad?: { files: number; bytes: number; ms: number };
   /** A voice read from the emulated slow disk that has not started yet: the last one asked for, its total wait, the time it is due. */
   vocLate?: { bytes: Uint8Array; wait: number; due?: number };
   /** RunOptions.gmHelp: Game-Maker's own GMHELP.TXT, which F1 shows first (PLAYGAME.EXE only). */
@@ -174,6 +177,50 @@ export function loadScene(
   return { world, sounds: sndBytes ? parseSoundSet(sndBytes) : undefined, song: songName ? m.files.get(songName) : undefined };
 }
 
+/** The scene file slots loadscene opens (PLAYGAME.C 4239), the song aside; LoadGame's (1798-1806) skip the map and character, which the save holds. */
+const LOADSCENE_SLOTS: readonly number[] = [0, 1, 2, 3, 4, 5, 6, 7];
+export const LOADGAME_SLOTS: readonly number[] = [0, 2, 3, 4, 6, 7];
+
+/**
+ * The byte count of each file a scene load reads from disk, in the order it reads them: every named slot of
+ * `slots`, then the song when there is a card to play it on (loadscene only calls InitMusic with CARDEXIST).
+ * A blank slot opens nothing. A named file the disk does not have costs its directory search (0 bytes).
+ * The .snd counts whole (loadspecsnd reads its 2,430 byte table, which is the whole file). Nothing is cached:
+ * PLAYGAME reads a scene afresh every time it starts one, after a lost life too.
+ */
+export function sceneReads(
+  s: { game: Game; m: { files: { get(name: string): Uint8Array | undefined } } },
+  scnum: number,
+  card: boolean,
+  slots: readonly number[] = LOADSCENE_SLOTS,
+): number[] {
+  const reads: number[] = [];
+  for (const slot of card ? [...slots, 8] : slots) {
+    const f = sceneFile(s.game, scnum, slot);
+    if (f) reads.push(s.m.files.get(f)?.length ?? 0);
+  }
+  return reads;
+}
+
+/**
+ * Charges a scene load to the emulated slow PC's disk (PcCosts.vocOpenMs and vocBytesPerMs): the screen stays
+ * as it is for the read time. Does nothing at all, not even a frame's wait, on Today or a PC without disk figures.
+ */
+async function chargeSceneReads(s: Session, scnum: number, slots: readonly number[]): Promise<void> {
+  const pc = s.speed.slowPc;
+  if (!pc || pc.vocOpenMs === undefined || !pc.vocBytesPerMs) {
+    if (s.sceneLoad) s.sceneLoad = undefined;
+    return;
+  }
+  const reads = sceneReads(s, scnum, s.m.audio.musicEnabled, slots);
+  const ms = sceneLoadMs(pc, reads);
+  s.sceneLoad = { files: reads.length, bytes: reads.reduce((a, b) => a + b, 0), ms };
+  if (ms > 0) {
+    holdMusicForRead(s, ms);
+    await s.m.sleep(ms);
+  }
+}
+
 /**
  * A hosted game may still be loading (project/streamGame.ts): waits for a scene's files and
  * its sound set's samples if they are on their way, and asks for what can come after it
@@ -199,6 +246,20 @@ async function sceneReady(s: Session, scnum: number): Promise<void> {
   m.want(files[10], ...next);
 }
 
+/**
+ * A read from the emulated slow PC's disk (SpeedSetting.slowPc): game time stops for it (playscene
+ * charges s.vocStall) and, on a PC whose disk read holds the timer, the music stands still too.
+ */
+function diskRead(s: Session, ms: number): void {
+  s.vocStall = (s.vocStall ?? 0) + ms;
+  holdMusicForRead(s, ms);
+}
+
+/** The music's share of a disk read (diskRead's second half): a scene load uses it alone, as it waits out its own black screen. */
+function holdMusicForRead(s: Session, ms: number): void {
+  s.m.audio.holdMusic(musicHoldMs(s.speed.slowPc, ms));
+}
+
 function attachSound(s: Session, w: World, sounds: SoundSet | undefined): void {
   w.sound = {
     play: (n) => {
@@ -213,7 +274,7 @@ function attachSound(s: Session, w: World, sounds: SoundSet | undefined): void {
           // the read happens on the game's own thread: an emulated slow PC is frozen for it, and the
           // sound (which PlaySbVocFile cut off first) only starts when the read is done
           s.m.audio.stopVoc();
-          s.vocStall = (s.vocStall ?? 0) + stall;
+          diskRead(s, stall);
           if (vocWontFit(pc, bytes.length)) s.vocLate = undefined;
           else s.vocLate = { bytes, wait: (s.vocLate?.wait ?? 0) + stall };
         }
@@ -404,6 +465,8 @@ export async function playScene(s: Session, dosc: number, prev: number, linkIn: 
     await missingFiles(s, loaded);
     return { ok: false, link: MAXSCENELINKS + 1 };
   }
+  // loadscene's reads, with the screen black; game time is set back once they are over (PLAYGAME.C 1404)
+  await chargeSceneReads(s, doscene, LOADSCENE_SLOTS);
   let w = loaded.world;
   s.lastWorld = w;
   w.ci = s.ci;
@@ -419,6 +482,8 @@ export async function playScene(s: Session, dosc: number, prev: number, linkIn: 
   initScroll(w, game.scenes[doscene].scroll);
   s.colors = w.palette;
 
+  m.screen.dosCropped = true;
+  m.screen.sceneNumber = doscene;
   renderWorld(m.screen, w);
   await m.fadeTo(w.palette, w.tune.fadeSteps);
   m.keyboard.attach();
@@ -438,6 +503,11 @@ export async function playScene(s: Session, dosc: number, prev: number, linkIn: 
   // costs that interrupt's pass of the loop. A late game tick runs on the next free pass;
   // one that is a whole tick late is skipped, not queued (OldClock = TimerCounter).
   const cpu = new SlowCpu(tickMs);
+  let costOf: { song: Uint8Array | undefined; load: SongLoad | undefined } | undefined;
+  const songCost = (bytes: Uint8Array | undefined) => {
+    if (!costOf || costOf.song !== bytes) costOf = { song: bytes, load: songLoad(bytes) };
+    return costOf.load;
+  };
   const monstersOnScreen = () => {
     let n = 0;
     for (let l = 0; l < LASTMM && n < 50; l++) if (w.mm[l].monnum < LASTMON && w.mi[l].scrPos.x !== OFFSCRN) n++; // MaxMonsShown
@@ -513,6 +583,7 @@ export async function playScene(s: Session, dosc: number, prev: number, linkIn: 
   const funcKey = async (n: number) => {
     const clockPause = s.sndClock;
     m.audio.stopSpeaker();
+    m.screen.dosCropped = false; // UnCropScreen before DoFunKy (PLAYGAME.C:1595).
     m.screen.clear();
     w.keydn.fill(0);
     m.flushKeys();
@@ -588,7 +659,11 @@ export async function playScene(s: Session, dosc: number, prev: number, linkIn: 
       s.sndClock++;
       const pc = s.speed.slowPc;
       if (!pc) cpu.reset();
-      else if (cpu.busy()) continue;
+      else {
+        // NewTimer's own time, with PlayIt's share when a song plays (slowPcMusic.ts)
+        cpu.spend(songIsrMs(pc, s.musicOn && m.audio.musicEnabled ? songCost(song) : undefined));
+        if (cpu.busy()) continue;
+      }
       if (doScroll) {
         const strips = drawScroll(w);
         if (pc) cpu.spend(scrollCost(pc, strips));
@@ -631,6 +706,8 @@ export async function playScene(s: Session, dosc: number, prev: number, linkIn: 
         s.vocLate = undefined;
       }
     }
+    m.screen.dosCropped = true;
+    m.screen.sceneNumber = doscene;
     renderWorld(m.screen, w);
     s.onFrame?.(w);
     // Development aid for timing checks from the browser console / tests.
@@ -641,6 +718,7 @@ export async function playScene(s: Session, dosc: number, prev: number, linkIn: 
   m.audio.stopSong();
   m.audio.stopSpeaker();
   await m.fadeAllTo(0, 0, 0, w.tune.fadeSteps);
+  m.screen.dosCropped = false; // UnCropScreen after the exit fade (PLAYGAME.C:1534).
   m.keyboard.detach();
   m.keyboard.chordable = undefined;
   m.keyboard.attach();
@@ -772,6 +850,8 @@ async function loadGame(s: Session, w: World): Promise<{ w: World; prevscene: nu
   const nw = loaded.world;
   attachSound(s, nw, loaded.sounds);
   m.screen.write(88, 185, blue, look.text('str.load.done'));
+  // LoadGame writes "Old Game Loaded!", then reads the level's unchanging files; the saved clock comes back after
+  await chargeSceneReads(s, data.doscene, LOADGAME_SLOTS);
   await m.pauseTimeKey(wait);
   if (s.musicOn) void m.audio.playSong(loaded.song);
   return { w: nw, prevscene: data.prevscene, doscene: data.doscene, linkin: data.linkin, song: loaded.song };

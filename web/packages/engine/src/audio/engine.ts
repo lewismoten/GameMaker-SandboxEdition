@@ -185,6 +185,11 @@ export class AudioEngine {
     this.post({ type: 'stop' });
   }
 
+  /** The song stands still for `ms` (its notes keep sounding), then goes on from where it was: a slow PC's disk read. */
+  holdMusic(ms: number): void {
+    if (ms > 0) this.post({ type: 'hold', ms });
+  }
+
   pauseMusic(paused: boolean): void {
     this.post({ type: 'pause', paused });
   }

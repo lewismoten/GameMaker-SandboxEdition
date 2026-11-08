@@ -16,7 +16,7 @@ export interface MapView {
   h?: number;
 }
 
-export const MAP_VIEWS_KEY = 'gm-map-views';
+const MAP_VIEWS_KEY = 'gm-map-views';
 export const MAX_MAP_VIEWS = 200;
 
 interface Saved {

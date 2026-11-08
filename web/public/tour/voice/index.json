@@ -239,6 +239,14 @@
     "hash": "527077262e37",
     "voice": "f969522e51c0"
   },
+  "box-confess": {
+    "chapter": "box",
+    "where": "Box: Inspector Penn points at the list of what else came in the box",
+    "text": "A confession: these boxes hold more than any store box did, even a deluxe edition. They’re packed for your entertainment.",
+    "seconds": 8.2,
+    "hash": "9283636dabe9",
+    "voice": "f969522e51c0"
+  },
   "box-disks": {
     "chapter": "box",
     "where": "Box: Inspector Penn points at the disks in the box",
@@ -373,6 +381,14 @@
     "text": "A sheet of stickers. Cut them out, if you dare.",
     "seconds": 3.65,
     "hash": "d051be1d5a6b",
+    "voice": "f969522e51c0"
+  },
+  "box-why": {
+    "chapter": "box",
+    "where": "Box: Inspector Penn points at the list of what else came in the box",
+    "text": "Why so much? Three motives. A code wheel stopped copying, a map pulled you into the story, and a full box beat a copied disk from a friend or a BBS.",
+    "seconds": 9.82,
+    "hash": "af1ba7f9d2dc",
     "voice": "f969522e51c0"
   },
   "box-worldmap": {
@@ -627,8 +643,8 @@
     "chapter": "desk",
     "where": "Desk: Lewie points at the game pad",
     "text": "The GRAVITAS pad is the PC’s joystick. A real gamepad works too, and a click opens big buttons.",
-    "seconds": 6.48,
-    "hash": "2aeec260977e",
+    "seconds": 7.68,
+    "hash": "1156838b8e11",
     "voice": "9af0a3c00d49"
   },
   "desk-pad-panel": {
@@ -1099,16 +1115,16 @@
     "chapter": "edit-around",
     "where": "Editor: Watt points at the Open a file by name button",
     "text": "The magnifier opens any file by its name. Ctrl+P does the same, from anywhere in the editor.",
-    "seconds": 7,
-    "hash": "1de1a8fa5e3b",
+    "seconds": 6.47,
+    "hash": "de3bc3def3c0",
     "voice": "131d8cb8ad55"
   },
   "edit-around-undo": {
     "chapter": "edit-around",
     "where": "Editor: Watt points at the Undo button",
     "text": "Undo and Redo step back and forward through your edits in this file. Ctrl+Z and Ctrl+Y work too. Nothing to undo here.",
-    "seconds": 9.29,
-    "hash": "ffa0f2c57a00",
+    "seconds": 7.61,
+    "hash": "0d31983c8183",
     "voice": "131d8cb8ad55"
   },
   "edit-around-used": {
@@ -1467,8 +1483,8 @@
     "chapter": "edit-export",
     "where": "Editor: Max says goodbye and walks off",
     "text": "Pictures and papers go out too: the map picture saves a PNG, a Level check report a CSV, and a walkthrough an MP4. Happy trails!",
-    "seconds": 11.92,
-    "hash": "2bbc62a0942b",
+    "seconds": 11.99,
+    "hash": "d0091319c181",
     "voice": "3705d98401bd"
   },
   "edit-export-caveat": {
@@ -1651,8 +1667,8 @@
     "chapter": "edit-integrator",
     "where": "Editor: Inspector Penn points at the board’s tools",
     "text": "Add level scene starts a new level beside the last. Auto-arrange tidies the cards. PNG saves a picture of the whole board.",
-    "seconds": 8.8,
-    "hash": "8c5643b2069b",
+    "seconds": 8.93,
+    "hash": "c9864e1b5e84",
     "voice": "f969522e51c0"
   },
   "edit-integrator-zoom": {

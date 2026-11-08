@@ -3,7 +3,7 @@
 // companion (playerRecord.ts), which scripts/cdGames.ts carries on its catalog entry as `player`.
 // Its Play, demos, walkthrough, downloads, the desk's copies and Transfer, and the editor (Look
 // inside, Edit a copy) read it here. A catalog without the field plays the CD player's look.
-import { loadGameList, withDetails, type CatalogEntry } from '../project/files';
+import { loadLeanGameList, withDetails, type CatalogEntry } from '../project/files';
 import { emptyCompanion, isEmptyCompanion, setSection, type Companion } from '../project/companion';
 import { putControls } from '../editor/core/gameControls';
 import { PLAYER_SECTION, playerRecord, recordPatches } from './playerRecord';
@@ -19,7 +19,7 @@ export function catalogPatches(entry: WithPlayer | undefined): PlayerPatches {
 
 // with its details: a Starter's player look and controls are in games/details/<id>.json, not in the list
 const listed = async (id: string) => {
-  const entry = (await loadGameList().catch(() => [])).find((g) => g.id === id);
+  const entry = (await loadLeanGameList().catch(() => [])).find((g) => g.id === id);
   return entry && (await withDetails(entry).catch(() => entry));
 };
 

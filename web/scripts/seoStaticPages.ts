@@ -40,7 +40,7 @@ function castHtml(listed: Map<string, CdCatalogEntry>): string {
 }
 
 function libraryHtml(games: CdCatalogEntry[]): string {
-  const boxed = games.filter((g) => g.original && !isStarterGame(g));
+  const boxed = games.filter((g) => g.original && !isStarterGame(g) && g.series !== 'special'); // a Special is out only on its days
   return `<p>The Library gathers everything to read and print in one place. Browse it by game or by type; each piece opens to read page by page or to print.</p>
       <h2>What is on the shelves</h2>
       <ul>

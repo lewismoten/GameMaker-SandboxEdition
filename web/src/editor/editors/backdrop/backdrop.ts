@@ -43,7 +43,7 @@ function fadeInFrames(pic: ScreenPicture, holdMs = 2000): GifFrame[] {
 async function libraryMatches(gif: string, bkdName: string): Promise<LibraryItem[]> {
   const want = new Set([normalize(gif), cdName(gif)]);
   const items = (await libraryItems('gif')).filter((i) => want.has(normalize(i.name)));
-  const hasBkd = (i: LibraryItem) => i.game.files.some((f) => normalize(f) === normalize(bkdName));
+  const hasBkd = (i: LibraryItem) => (i.game.files ?? []).some((f) => normalize(f) === normalize(bkdName));
   return items.sort((a, b) => Number(hasBkd(b)) - Number(hasBkd(a)));
 }
 
@@ -156,7 +156,7 @@ registerEditor(['bkd'], (host, project, file) => {
       }
       const first = items[0];
       // The library game this backdrop came from has the picture: bring it in.
-      if (first.game.files.some((f) => normalize(f) === normalize(file)) || items.length === 1) {
+      if ((first.game.files ?? []).some((f) => normalize(f) === normalize(file)) || items.length === 1) {
         const name = await bring(project, first, gif);
         if (name) {
           toast(`Brought ${name.toUpperCase()} from ${first.game.title} into this game.`);

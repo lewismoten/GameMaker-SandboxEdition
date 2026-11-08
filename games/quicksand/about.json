@@ -1,0 +1,40 @@
+{
+  "title": "Quicksand",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "hero": "LENA",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.0",
+  "blurb": "Two short levels about sand that sinks. Each block of sand is a chain of blocks that turn into the next one when touched, and standing on a block touches it on every tick. Stand still and the sand under Lena dimples, swirls and gives way, and she drops into a hole a block deep and jumps out. Keep walking and it holds. The second level has stepping stones that never sink and dark wet sand that sinks faster. Signs say how. Play it, then open it in Game-Maker and change how fast the sand sinks.",
+  "exe": "QUIKSAND.EXE",
+  "dosName": "QUIKSAND",
+  "sound": "sb",
+  "label": {
+    "background": "#fff4dc",
+    "band": "#c8902e",
+    "ink": "#2a1a0c",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "2 short levels",
+    "hours": 1,
+    "background": "#c8902e",
+    "accent": "#ffd23f",
+    "ink": "#ffffff",
+    "tagline": "Keep your feet moving.",
+    "back": "A small explorer in a red beanie finds a patch of quicksand. Stand still and the sand under her feet dimples, swirls and gives way, and she drops into a hole she can jump out of. Keep walking and it holds. Stepping stones never sink, and wet sand sinks faster. Read the signs, then open the game in Game-Maker and change how fast the sand sinks.",
+    "features": [
+      "Sand that sinks only where you stand",
+      "Stepping stones to rest on, with a coin on each",
+      "Wet sand that gives way sooner",
+      "Made to be copied and taken apart"
+    ],
+    "shots": [
+      ["one.map", 14, 1],
+      ["two.map", 14, 1]
+    ],
+    "rating": "Everyone"
+  }
+}

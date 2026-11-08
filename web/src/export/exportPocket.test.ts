@@ -56,6 +56,13 @@ describe('exportPocket', () => {
 });
 
 describe('pocketFile', () => {
+  it('preserves a long title for search while bounding firmware metadata', () => {
+    const title = 'Graduation: Blocks and showcase beyond the old forty character limit';
+    const bundle = (title: string) => readBundle(writeGmp({ id: 'x', title, levels: 2, cfg: [], files: new Map(), cards: [] }));
+    expect(text(bundle(title).get('game.txt')!.bytes).split('\n')[1]).toBe(`x|${title}|2`);
+    expect(text(bundle('x'.repeat(120)).get('game.txt')!.bytes).split('\n')[1]).toBe(`x|${'x'.repeat(95)}|2`);
+  });
+
   it('sorts names as the firmware searches them and reads them back', () => {
     const b = writeBundle([
       ['b.txt', new Uint8Array([2])],

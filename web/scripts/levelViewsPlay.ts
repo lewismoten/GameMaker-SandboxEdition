@@ -18,7 +18,7 @@
 // or that change (doors), with half a screen round each: a room behind a locked door or off the
 // bots' way is still the level's. A tin heart or an Easter egg
 // (about.json) adds the screen round it. Only the games
-// levelSecrets.json lists are scanned, so a secret game never is.
+// levelSecrets/*.json lists are scanned, so a secret game never is.
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { BACKBL, parseBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
@@ -33,7 +33,7 @@ import { startCharInfo } from '../src/editor/check/sim';
 import { GameFiles } from '../src/project/files';
 import { headlessCanvas, WalkRun } from '../src/walkthrough/runtime';
 import type { Walkthrough } from '../src/walkthrough/format';
-import SECRETS from '../src/manual/printables/levelSecrets.json';
+import { SECRETS } from '../src/manual/printables/levelMetadata';
 import type { LevelViews, SeenRect, UnrolledMap } from '../src/manual/printables/levelViews';
 import { levelViewsHash, readDisk } from './levelViewsScan';
 
@@ -241,7 +241,7 @@ function floodViews(game: Game, files: Map<string, Uint8Array>, seen: Seen): voi
   });
 }
 
-/** Scans the games given (all levelSecrets.json lists when none are). */
+/** Scans the games given (all levelSecrets/*.json lists when none are). */
 export async function scanLevelViews(gamesDir: string, ids?: string[], log?: (s: string) => void): Promise<LevelViews> {
   const out: LevelViews = {};
   for (const id of Object.keys(SECRETS).filter((k) => !ids?.length || ids.includes(k))) {

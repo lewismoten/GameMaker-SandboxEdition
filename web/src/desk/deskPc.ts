@@ -8,9 +8,10 @@ import type { MonitorMode } from '../retro/computer/setup';
 import { installCrtWarp } from './pc/crtWarp';
 import { captureStub } from './pc/captureStub';
 import { crtWarmUp } from './pc/crtWarmUp';
+import { tellDesk } from './buddy/deskPlay';
 import type { BootSounds } from './pc/bootSounds';
 import type { SpeedSetting } from '@lewismoten/gamemaker-sandbox-engine/engine/scene';
-import { TURBO_OFF } from '@lewismoten/gamemaker-sandbox-engine/engine/slowPc';
+import { CPU_CHOICES, loadMachine, saveMachine, machineCosts, machineMHz } from './pc/machineSettings';
 import type { viewState } from '../urlState';
 import type { deskScene } from './deskScene';
 
@@ -27,7 +28,7 @@ interface PcHooks {
 }
 
 export function deskPc(scene: Scene, hooks: PcHooks) {
-  const { desk, crt, floppy, cd, hdd, powerLed, turboLed, mhz, powerBtn, turboBtn, keyCard, wheelSpot, spk, modem } = scene;
+  const { desk, crt, floppy, cd, hdd, powerLed, turboLed, mhz, machineBtn, powerBtn, turboBtn, keyCard, wheelSpot, spk, modem } = scene;
   const { deskView } = hooks;
   // the PC starts in turbo every visit; the button slows it down until you leave
   let turbo = true;
@@ -36,9 +37,25 @@ export function deskPc(scene: Scene, hooks: PcHooks) {
   } catch {
     /* private mode */
   }
-  const speed: SpeedSetting = {
-    slowPc: turbo ? undefined : TURBO_OFF,
-  };
+  let machine = loadMachine();
+  const speed: SpeedSetting = { slowPc: machineCosts(machine, turbo) };
+  // the dialog's code: fetched when the desk is idle and when the pointer or focus comes to the lights
+  const machineCode = () => import('./pc/machineDialog');
+  machineBtn.addEventListener('pointerenter', () => void machineCode(), { once: true });
+  machineBtn.addEventListener('focus', () => void machineCode(), { once: true });
+  machineBtn.addEventListener('click', () => {
+    void machineCode().then(({ openMachineDialog }) =>
+      openMachineDialog(
+        machine,
+        (value) => {
+          machine = value;
+          saveMachine(value);
+          setTurbo(turbo);
+        },
+        machineBtn,
+      ),
+    );
+  });
 
   let enlarged = false; // the user pressed the enlarge button
   // The PC's insides (DOS, Game-Maker, the BBS, the VGA): loaded when the PC is first needed
@@ -54,16 +71,22 @@ export function deskPc(scene: Scene, hooks: PcHooks) {
     (pcLoad ??= pcCode().then(({ Computer }) => {
       computer = new Computer(crt, {
         speed,
+        turbo: () => turbo,
+        cpuName: () => CPU_CHOICES.find((c) => c.id === machine.cpu)!.name,
         openModern: (projectId, file) => hooks.openModern(projectId, file),
         // The designers take the whole window; afterwards, go back to how the user had it.
         // vga stays in the monitor like the real thing.
         onModeChange: (mode: MonitorMode) => computer?.powered && setZoom(mode === 'gfx' ? 'gfx' : enlarged ? 'manual' : false),
         onDisksChanged: (insert) => hooks.disksChanged(insert),
         onGame: (game) => {
+          tellDesk(game ? { title: game.title } : { stop: true }); // the desk buddy follows the game (buddy/)
           keyCard.show(game);
           wheelSpot.game(game?.saveId); // its code wheel, on its puzzles' scenes (onScene)
         },
-        onScene: (n) => wheelSpot.scene(n),
+        onScene: (n, demo) => {
+          wheelSpot.scene(n);
+          tellDesk({ scene: n, demo: !!demo });
+        },
         // what the PC runs: a game (play), Game-Maker from a disk (design) or the hard disk / CD (gm), the BBS
         // (a PC switched off says nothing more)
         onProgram: (p) =>
@@ -114,10 +137,11 @@ export function deskPc(scene: Scene, hooks: PcHooks) {
 
   function setTurbo(on: boolean): void {
     turbo = on;
-    speed.slowPc = on ? undefined : TURBO_OFF;
+    speed.slowPc = machineCosts(machine, on);
     turboBtn.setAttribute('aria-pressed', String(on));
     turboLed.classList.toggle('on', on && !!computer?.powered);
-    mhz.show(computer?.powered ? (on ? '66' : '8') : '');
+    mhz.show(computer?.powered ? String(machineMHz(machine, on)) : '');
+    machineBtn.setAttribute('aria-label', `Machine settings, ${machineMHz(machine, on)} MHz${computer?.powered ? '' : ', power off'}`);
   }
 
   let poweringOn: Promise<void> | undefined;
@@ -249,6 +273,7 @@ export function deskPc(scene: Scene, hooks: PcHooks) {
     /** What to fetch ahead while the desk is idle. */
     pcCode,
     captureCode,
+    machineCode,
     /** The desk is left: the PC goes with it. */
     dispose(): void {
       removeWarp();

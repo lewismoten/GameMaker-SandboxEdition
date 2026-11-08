@@ -2,6 +2,7 @@
 // the open project (editorContext.ts), and the tab's own (editorTools.ts): what is open,
 // opening a file, a screenshot of the editor area and a watched play test.
 import { normalize } from '../../project/files';
+import { fromCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import { currentRoute } from '../../urlState';
 import { GAME_TOOL_DEFS } from '../tools/index';
 import { runTool } from '../tools/run';
@@ -67,7 +68,7 @@ async function playAndWatch(host: AssistantHost, args: Record<string, unknown>):
   await Promise.race([ended, new Promise((r) => setTimeout(r, seconds * 1000))]);
   if (session) Object.assign(seen, { score: session.ci.score, lives: session.ci.lives, hitPoints: session.ci.hitpts });
   const game = host.project.game();
-  const name = (n: number) => game.scenes[n]?.desc.trim() || `scene ${n}`;
+  const name = (n: number) => fromCp437(game.scenes[n]?.desc ?? '').trim() || `scene ${n}`;
   return json({
     started: seen.started,
     ...(seen.started ? {} : { note: 'The play test is waiting for the person to press Play in the tab.' }),

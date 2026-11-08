@@ -4,8 +4,9 @@
 # Built npm engine package (npm pack rebuilds it).
 /web/packages/engine/dist/
 
-# the Borland compiler, copied in from the original repository to build the DOS source
-/tools/
+# Keep the copied Borland compiler private; track only the headless capture harness.
+/tools/*
+!/tools/dosbox-286/
 
 # macOS Finder
 .DS_Store
@@ -35,6 +36,7 @@ __pycache__/
 
 # Games are built from source; DOS disks and derived path metadata never ship in Git.
 /games/*/disk/
+/games/kit/testdisks/*/disk/
 /games/*/walkPaths.json
 /games/.build-cache.json
 /games/.render-cache/

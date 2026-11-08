@@ -1,5 +1,5 @@
 // DON'T GET SEEN's light: a friendly lamp that hangs from a rail and looks around, and the cone of pale
-// light under it, drawn as four blocks that widen toward the floor. Each is 20 by 20 in two frames
+// light under it, drawn as two blocks that widen toward the floor. Each is 20 by 20 in two frames
 // (the lamp's eye looks one way, then the other; the light's stripes slide). The light is pale blue-white,
 // like a searchlight, and stops at the bottom of the cone.
 import { outline } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
@@ -10,7 +10,7 @@ import type { Pal } from '../../kit/starter/palette';
 const T = 255;
 
 /** How many blocks of cone hang under the lamp. */
-export const CONE = 4;
+export const CONE = 2;
 
 /** The lamp: a clip on the rail, a round stone body with two eyes that glance left, then right, and a smile, and a bright lens underneath where the light comes out. */
 export function drawLamp(pal: Pal, look: 0 | 1): Pixels {

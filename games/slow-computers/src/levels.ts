@@ -17,7 +17,7 @@ import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
 import { MON } from '../../kit/starter/ids';
 import { addSign, type Sign } from '../../kit/starter/sign';
-import { breeze, pad } from './props';
+import { breeze, cave, pad } from './props';
 import { BREEZE_FRAMES, CROWD } from './timing';
 
 /** A block that turns into another after some ticks. */
@@ -148,7 +148,7 @@ function shortAndLong(pal: Pal): Level {
   return { file: 'one', title: 'Short and Long', hint: 'Step on each pad. Hear the music.', map: m, book, timed: [] };
 }
 
-/** Level 2: 36 friendly monsters on one screen: 10 gumdrops on the ground, 8 snails on a plank and 18 bees in three rows. */
+/** Level 2: 36 friendly monsters: gumdrops on grass, snails in a cutaway cave and two low rows of bees. */
 function aCrowd(pal: Pal): Level {
   const { book, signs } = startBook(pal, ['crowd', 'fewer']);
   const g = room(34, 32);
@@ -167,11 +167,19 @@ function aCrowd(pal: Pal): Level {
   m.sign(5, onGround(GROUND, signs.crowd), signs.crowd);
   m.sign(28, onGround(GROUND, signs.fewer), signs.fewer);
   let n = 0;
-  // snails creep along a plank, gumdrops waddle on the ground, bees bob in three rows above
-  for (let x = CROWD_X[0]; x < CROWD_X[0] + 12; x++) m.set(x, 6, 'plank');
+  // The visible grass roof stays solid. Beneath it, two lit rows are cut out of the dirt;
+  // the untouched dirt at row 13 supports every snail over its whole three-cell pace.
+  book.add('cave', cave(pal, false), AIR);
+  book.add('cave.lamp', cave(pal, true), AIR);
+  for (let y = 11; y <= 12; y++) for (let x = 11; x <= 27; x++) m.set(x, y, y === 11 && [13, 19, 25].includes(x) ? 'cave.lamp' : 'cave');
   for (let x = CROWD_X[0]; x < CROWD_X[0] + 10; x++, n++) m.mon(MON.gumdrop, x, GROUND - 1);
-  for (let x = CROWD_X[0]; x < CROWD_X[0] + 16; x += 2, n++) m.mon(MON.shelly, x, 5);
-  for (const row of [0, 1, 2]) for (let k = 0; k < 6; k++, n++) m.mon(MON.buzzer, CROWD_X[0] + k * 2 + (row === 1 ? 1 : 0), row);
+  for (let x = CROWD_X[0]; x < CROWD_X[0] + 8; x++, n++) m.mon(MON.shelly, x, 12);
+  // Both rows remain below the worst standing camera top after a jump and return.
+  for (const row of [7, 8])
+    for (const x of [12, 13, 15, 16, 18, 19, 21, 22, 24]) {
+      m.mon(MON.buzzer, x, row);
+      n++;
+    }
   if (n !== CROWD) throw new Error(`the crowd should be ${CROWD}, not ${n}`);
   return { file: 'two', title: 'A Crowd', hint: 'Walk through. Count the monsters.', map: m, book, timed: [] };
 }

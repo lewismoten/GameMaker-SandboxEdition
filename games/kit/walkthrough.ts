@@ -5,6 +5,7 @@
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import type { World } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
 import { GameFiles } from '../../web/src/project/files';
 import { headlessCanvas, WalkRun } from '../../web/src/walkthrough/runtime';
 import { encodeKeys, WALKTHROUGH_FPS, type Walkthrough } from '../../web/src/walkthrough/format';
@@ -43,7 +44,13 @@ interface ReplayResult {
 export async function replay(
   id: string,
   walk: Walkthrough,
-  opts: { maxMinutes?: number; log?: boolean; clips?: boolean; onFrame?: (screen: { pixels: Uint8Array; palette: Uint8Array }, scene: number) => void } = {},
+  opts: {
+    maxMinutes?: number;
+    log?: boolean;
+    clips?: boolean;
+    onFrame?: (screen: { pixels: Uint8Array; palette: Uint8Array }, scene: number) => void;
+    onWorld?: (w: World, scene: number, frame: number) => void;
+  } = {},
 ): Promise<ReplayResult> {
   const files = diskFiles(id);
   const gam = [...files.names()].find((n) => n.endsWith('.gam'))!;
@@ -72,6 +79,7 @@ export async function replay(
   s.onFrame = (w) => {
     if (!started) log.starts.push({ t: run.m.time, n: scenes[scenes.length - 1] });
     started = true;
+    opts.onWorld?.(w, scenes[scenes.length - 1], run.frame);
     onFrame?.(w);
   };
   const limit = (opts.maxMinutes ?? 90) * 60 * WALKTHROUGH_FPS;

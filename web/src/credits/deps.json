@@ -294,7 +294,7 @@
     },
     {
       "name": "@modelcontextprotocol/sdk",
-      "version": "1.32.1",
+      "version": "1.32.2",
       "license": "MIT",
       "runtime": false,
       "direct": true,
@@ -497,7 +497,7 @@
     },
     {
       "name": "@vitest/mocker",
-      "version": "5.0.5",
+      "version": "5.1.0",
       "license": "MIT",
       "runtime": false,
       "direct": false,
@@ -508,7 +508,7 @@
     },
     {
       "name": "@vitest/spy",
-      "version": "5.0.5",
+      "version": "5.1.0",
       "license": "MIT",
       "runtime": false,
       "direct": false,
@@ -1019,7 +1019,7 @@
     },
     {
       "name": "eslint",
-      "version": "10.13.0",
+      "version": "10.14.0",
       "license": "MIT",
       "runtime": false,
       "direct": true,
@@ -1412,7 +1412,7 @@
     },
     {
       "name": "globals",
-      "version": "17.13.0",
+      "version": "17.14.0",
       "license": "MIT",
       "runtime": false,
       "direct": true,
@@ -1758,7 +1758,7 @@
     },
     {
       "name": "magic-string",
-      "version": "1.4.4",
+      "version": "1.4.5",
       "license": "MIT",
       "runtime": false,
       "direct": false,
@@ -2100,7 +2100,7 @@
     },
     {
       "name": "postcss",
-      "version": "8.5.31",
+      "version": "8.5.32",
       "license": "MIT",
       "runtime": false,
       "direct": false,
@@ -2588,7 +2588,7 @@
     },
     {
       "name": "vitest",
-      "version": "5.0.5",
+      "version": "5.1.0",
       "license": "MIT",
       "runtime": false,
       "direct": true,
@@ -2647,7 +2647,7 @@
     },
     {
       "name": "ws",
-      "version": "8.22.0",
+      "version": "8.22.1",
       "license": "MIT",
       "runtime": false,
       "direct": true,

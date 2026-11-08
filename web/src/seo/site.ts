@@ -77,6 +77,11 @@ export const ROUTES = {
     description:
       'Download any game for Linux: how to extract and play it, the WebKitGTK package it needs on Debian, Ubuntu, Fedora and Arch, the web browser fallback, adding it to the applications menu, what the program does and how to remove it.',
   },
+  artCourses: {
+    title: `Art courses · ${PRODUCT}`,
+    description:
+      'How to draw the art for a Game-Maker game: cutting pictures into blocks, edges that meet, reusing blocks and keeping grass from showing a pattern, with real blocks drawn in code.',
+  },
   programmersGuide: {
     title: `The Programmer’s Guide to Game-Maker 3.0 · ${PRODUCT}`,
     description:

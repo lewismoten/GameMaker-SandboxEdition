@@ -11,7 +11,7 @@ cd web && npx vite-node ../games/sleuth/laser/stageBox.ts [--kerf 0.2] [--out DI
 
 It writes `web/public/laser/sleuth/stage-box/` (ignored by version control): `sheet-1-box.svg`, `sheet-2-inside.svg`,
 `sheet-3-drawer.svg` (each with a `.png` preview), `assembly.svg` and `manifest.json` (`kind: "kit"`, with the sheets,
-previews, parts and checks). The tests are `web/test/laserStageBox.test.ts`.
+previews, parts and checks). `assembly.svg` starts with six ordered assembly cards showing the actual named cut parts (`stageBoxSteps.ts`), followed by four below-floor plan views: all three locks engaged, then the dagger, front curtain and rear curtain released, using the actual skirt and comb dimensions (`stageBoxOperation.ts`). The tests are `web/test/laserStageBox.test.ts`.
 
 ## Laser rules it follows
 
@@ -72,7 +72,7 @@ the back. The playbill is engraved on the left wall (raven, rose, moon, left to 
 
 1. Glue the box: P, K, L, R, B (finger joints), leaving the lid off. Put FLOOR into the wall slots (its tabs go in the
    slots at the floor line) and glue W into its slots. Glue nothing to a plate or into a floor slot.
-2. Lever: glue PIN into the hole in P, DAGGER to its front face (pommel over the pin) and ARM to its back face, so the arm
+2. Lever: fit PIN freely into the hole in P (do not glue PIN to P), then glue DAGGER to PIN’s front face (pommel over the pin) and ARM to its back face, so the arm
    points the same way as the dagger. Glue POST to the arm tip. Check that it turns freely; rub a candle on the edges.
 3. Drawer: glue DB, DF, DK, DL, DR (finger joints). Glue COMB into the notch in DF's top edge, fingers toward the
    left as seen from the back, lying flat on the notch floor.
@@ -96,3 +96,5 @@ Make a scrap test first (a floor slot with a plate skirt, a finger joint, the pi
 - The gaps in front of the plates are 3.6 mm and the comb fingers 3 mm, so a finger stops 0.5 mm short of its plate. If the
   drawer catches early, file the fingers a little.
 - Not checked by a real cut yet: friction between plates and floor, and how the lever feels.
+
+Assembly cards and lock diagrams revised with OpenAI Codex (GPT-6), directed by Lewis Moten. No physical cut or assembly is claimed.

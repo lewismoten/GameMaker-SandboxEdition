@@ -10,7 +10,8 @@ import { ARC_TICKS, Flight, arcVariants, type HeroPhysics } from './jumpModel';
 
 const FREE = 0,
   BLOCKED = 1,
-  DEADLY = 2;
+  DEADLY = 2,
+  OUTSIDE = 3;
 
 /** One move of a route: from the node (X pixels, feet row) before it to the node it leads to. */
 export interface Step {
@@ -57,7 +58,8 @@ export function reachFrom(a: Area, p: HeroPhysics, start: number, locksOpen: boo
       for (let cx = Math.floor(X / BLEN); cx <= Math.floor((X + BLEN - 1) / BLEN); cx++) {
         const c = cell(cx, cy);
         if (c === HAZARD) return DEADLY;
-        if (c === 0xff) continue;
+        // The map above the generated rectangle is unknown, not open sky.
+        if (c === 0xff) return OUTSIDE;
         if (solid(c)) r = BLOCKED;
       }
     return r;
@@ -152,7 +154,7 @@ export function reachFrom(a: Area, p: HeroPhysics, start: number, locksOpen: boo
       const s = f.step();
       if (s.dx) {
         const r = body(X + s.dx, py);
-        if (r === DEADLY || (r === FREE && inLedge(X + s.dx, py))) return;
+        if (r === DEADLY || r === OUTSIDE || (r === FREE && inLedge(X + s.dx, py))) return;
         if (r === FREE) X += s.dx;
       }
       const ny = py + s.dy;
@@ -184,21 +186,23 @@ export function reachFrom(a: Area, p: HeroPhysics, start: number, locksOpen: boo
           }
         }
         const b = body(X, ny);
-        if (b === DEADLY) return;
+        if (b === DEADLY || b === OUTSIDE) return;
         if (b === BLOCKED && [Math.floor((ny - BLEN) / BLEN), Math.floor((ny + BLEN - 1) / BLEN)].some((cy) => solid(cell(cm, cy)))) return;
         py = ny;
       } else if (s.dy < 0) {
-        if (body(X, ny) === BLOCKED) {
+        const b = body(X, ny);
+        if (b === OUTSIDE) return;
+        if (b === BLOCKED) {
           f.bump();
           // up to the ceiling
           let top = py;
           while (body(X, top - 1) === FREE) top--;
           py = top;
-        } else if (body(X, ny) === DEADLY) return;
+        } else if (b === DEADLY) return;
         else py = ny;
       }
       mark(X, py);
-      if (py < -BLEN) return;
+
       // a ladder holds him (its block has no gravity): in the air, he catches on the first one his body is mostly in,
       // and the speed he had fades away (5/6 a tick) while he slides on
       const mid = () => Math.floor((X + BLEN / 2) / BLEN);
@@ -209,7 +213,7 @@ export function reachFrom(a: Area, p: HeroPhysics, start: number, locksOpen: boo
           const s = f.slide();
           if (s.dx) {
             const r = body(X + s.dx, py);
-            if (r === DEADLY) return;
+            if (r === DEADLY || r === OUTSIDE) return;
             if (r === FREE) X += s.dx;
           }
           if (s.dy) {

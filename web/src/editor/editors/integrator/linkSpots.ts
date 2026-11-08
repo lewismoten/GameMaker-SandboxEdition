@@ -6,6 +6,7 @@
 // that one link is where the game starts. A link to scene 1 wins the game; nothing links to
 // "lost" (that is running out of lives, MAXSCENELINKS+2 in engine/game.ts).
 import { ADVTYPE, MAXSCENELINKS, NOSCENE, STARTTYPE, type Game, type Point } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { fromCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 
 /** A way into a level: link `link` of scene `from` lands the hero at `at` in scene `to`. */
 export interface WayIn {
@@ -84,7 +85,7 @@ export function exitsOf(game: Game, scenes: readonly number[]): Exit[] {
 /** A scene's name as the editor shows it: its description, else "Scene n"; scene 1 is "Game won". */
 export function sceneName(game: Game, i: number): string {
   if (i === 1 && !isLevel(game, 1)) return 'Game won';
-  return game.scenes[i]?.desc.trim() || `Scene ${i}`;
+  return fromCp437(game.scenes[i]?.desc ?? '').trim() || `Scene ${i}`;
 }
 
 /** Where a way in comes from: "the title", "Level 1's exit", or "Level 1's exit 2" when the level has several. */

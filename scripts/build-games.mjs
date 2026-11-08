@@ -1,13 +1,19 @@
 // Rebuild ignored game outputs before development, tests, and releases; cache source and output hashes.
 import { createHash } from 'node:crypto';
 import { execFile } from 'node:child_process';
-import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { availableParallelism } from 'node:os';
 import { gameSourceHash, root } from './game-build-inputs.mjs';
 import { gameKeys, logoUsers } from './game-import-keys.mjs';
 import { bundleEntry } from './game-bundle.mjs';
+import { retrySignal } from './child-signal-retry.mjs';
 import { promisify } from 'node:util';
+// Keep progress in the build log and mirror it to npm dev's console when requested.
+function progress(message) {
+  console.log(message);
+  if (process.env.GM_BUILD_PROGRESS === '1') console.error(message);
+}
 const games = join(root, 'games');
 const cacheFile = join(games, '.build-cache.json');
 const run = promisify(execFile);
@@ -17,17 +23,40 @@ const viteNode = [join(root, 'node_modules/vite-node/vite-node.mjs'), '-c', join
 // or one that fails (a non-signal exit) means vite-node runs it as before, so a game needing a vite-only feature still builds
 const useBundles = process.env.GM_VITE_NODE !== '1';
 const fallbacks = [];
-async function runEntry(name, entry, viteFile, args, options, label) {
-  const bundle = useBundles ? await bundleEntry(name, entry) : undefined;
-  if (bundle) {
-    try {
-      return await run(process.execPath, ['--enable-source-maps', bundle, ...args], options);
-    } catch (error) {
-      if (error.signal) throw error;
-      fallbacks.push(label);
+async function runEntry(name, entry, viteFile, args, options, label, retryBefore = Infinity) {
+  const runOnce = async () => {
+    const bundle = useBundles ? await bundleEntry(name, entry) : undefined;
+    if (bundle) {
+      try {
+        return await run(process.execPath, ['--enable-source-maps', bundle, ...args], options);
+      } catch (error) {
+        if (error.signal) throw error;
+        fallbacks.push(label);
+      }
     }
-  }
-  return run(process.execPath, [...viteNode, viteFile, ...args], options);
+    return run(process.execPath, [...viteNode, viteFile, ...args], options);
+  };
+  // One signal retry, including a timed-out extra stage. Disk builds keep their early-signal cutoff.
+  // Numeric failures retain the bundle -> vite-node fallback, never a signal retry.
+  return retrySignal(runOnce, label, retryBefore);
+}
+// Join running siblings before propagating failure; never orphan them via Promise.all's early rejection.
+async function joined(work) {
+  const results = await Promise.allSettled(
+    work.map((job) =>
+      job.catch((error) => {
+        stop();
+        throw error;
+      }),
+    ),
+  );
+  const failed = results.find((result) => result.status === 'rejected');
+  if (failed) throw failed.reason;
+}
+let stopped = false;
+function stop() {
+  if (!stopped) console.error('Build failed; draining active work. Queued game builds will not be started.');
+  stopped = true;
 }
 if (process.env.GM_SKIP_GAME_BUILD === '1') {
   console.log('Game output generation deferred to the build job.');
@@ -72,12 +101,14 @@ const stale = ids.filter(
       !cached?.outputs?.[id] ||
       cached.outputs[id] !== outputs(id)),
 );
+const publicGames = new Set(ids.filter((id) => !JSON.parse(readFileSync(join(games, id, 'about.json'), 'utf8')).secret));
 // slowest first keeps the last workers busy; GM_BUILD_JOBS sets the worker count (CI uses every core, a desk keeps two)
 const slowFirst = ['depth', 'realm', 'blaster', 'maximus'];
 const pending = [
   ...stale.filter((id) => slowFirst.includes(id)).sort((a, b) => slowFirst.indexOf(a) - slowFirst.indexOf(b)),
   ...stale.filter((id) => !slowFirst.includes(id)),
 ];
+progress('Checking game disks and preparing refresh work.');
 // the Sand logo sting is the same in the 17 games that use it and takes about 7 s of ray tracing, so it is
 // rendered once per run (in step with the depth frame shards) and the games read the file
 const logoFile = join(frames, `sandlogo-${gameSourceHash('games/kit/sandlogo.ts').slice(0, 16)}.fli`);
@@ -98,6 +129,7 @@ function logo() {
           killSignal: 'SIGKILL',
         },
         'logo',
+        -1, // Optional shared renders keep their existing no-retry behavior.
       ).then(
         () => undefined,
         () => undefined, // a failed shared render only means each game renders its own
@@ -130,18 +162,19 @@ function save(all = false) {
   );
 }
 async function worker() {
-  for (;;) {
+  for (; !stopped;) {
     // a game that needs the logo waits for it only if no game that doesn't is queued
     const next = pending.findIndex((id) => !logoUsers.has(id));
     const id = pending.splice(logoReady && next >= 0 && !existsSync(logoFile) ? next : 0, 1)[0];
     if (!id) return;
-    const secret = JSON.parse(readFileSync(join(games, id, 'about.json'), 'utf8')).secret;
+    const secret = !publicGames.has(id);
     const started = Date.now();
+    if (!secret) progress(`Building ${id}; ${pending.filter((next) => publicGames.has(next)).length} public games still queued.`);
     try {
       if (id === 'depth') {
         const shards = Array.from({ length: 8 }, (_, i) => i).filter((i) => !existsSync(join(frames, `shard-${i}.json`)));
         async function renderWorker() {
-          for (;;) {
+          for (; !stopped;) {
             const shard = shards.shift();
             if (shard === undefined) return;
             await runEntry(
@@ -157,39 +190,35 @@ async function worker() {
                 maxBuffer: 64 << 20,
               },
               'depth frames',
+              -1,
             );
           }
         }
         // the shards are independent, so a local build with no cached frames uses the cores it has
-        await Promise.all(Array.from({ length: Math.min(shards.length, Math.max(2, availableParallelism())) }, renderWorker));
+        await joined(Array.from({ length: Math.min(shards.length, Math.max(2, availableParallelism())) }, renderWorker));
       }
       if (logoUsers.has(id)) await logo();
-      // a build killed from outside well before its timeout (memory pressure, a stray pkill) is tried once more
-      for (let attempt = 1; ; attempt++) {
-        const began = Date.now();
-        try {
-          await runEntry(
-            id,
-            {
-              contents: `import ${JSON.stringify(join(games, id, 'build.ts'))};\nawait new Promise((done) => process.stdout.write('', done));\nprocess.exit(0);\n`,
-            },
-            '../scripts/game-build-entry.mjs',
-            [id],
-            {
-              cwd: join(root, 'web'),
-              maxBuffer: 64 << 20,
-              timeout: 240_000,
-              killSignal: 'SIGKILL',
-              env: { ...process.env, GAME_DISK_OUT: '', TEXT_BOUNDS: '', DEPTH_FRAME_CACHE: frames, SANDLOGO_FLI: logoFile },
-            },
-            secret ? 'a game' : id,
-          );
-          break;
-        } catch (error) {
-          if (attempt > 1 || !error.signal || Date.now() - began > 230_000) throw error;
-        }
-      }
+      if (stopped) return;
+      await runEntry(
+        id,
+        {
+          contents: `import ${JSON.stringify(join(games, id, 'build.ts'))};\nawait new Promise((done) => process.stdout.write('', done));\nprocess.exit(0);\n`,
+        },
+        '../scripts/game-build-entry.mjs',
+        [id],
+        {
+          cwd: join(root, 'web'),
+          maxBuffer: 64 << 20,
+          timeout: 240_000,
+          killSignal: 'SIGKILL',
+          env: { ...process.env, GAME_DISK_OUT: '', TEXT_BOUNDS: '', DEPTH_FRAME_CACHE: frames, SANDLOGO_FLI: logoFile },
+        },
+        secret ? 'a game' : id,
+        230_000, // Preserve the existing disk policy: retry only an early signal.
+      );
     } catch (error) {
+      stop();
+      // eslint-disable-next-line preserve-caught-error -- A cause could expose a secret game's original paths and stderr.
       throw new Error(
         secret
           ? 'A game build failed.'
@@ -204,24 +233,12 @@ async function worker() {
     built.add(id);
     save();
     times.push([secret ? 'a game' : id, (Date.now() - started) / 1000]);
-    if (!secret) console.log(`Built ${id}${timing ? ` in ${times.at(-1)[1].toFixed(1)} s` : ''}`);
+    if (!secret) progress(`Built ${id}${timing ? ` in ${times.at(-1)[1].toFixed(1)} s` : ''}`);
   }
 }
-// The phone kit's 3D parts (games/year2000/phone/viewer, committed) reach the site beside the trinkets, where the box viewer's
-// phone viewer loads them (web/src/desk/boxes/phone/). Copied on every run (about 1.8 MB).
-// Two builds: the cheap one (Junior Lab Edition) in phone/, the deluxe one in phone/deluxe/.
-for (const [from, to] of [
-  ['viewer', 'phone'],
-  ['deluxe/viewer', 'phone/deluxe'],
-]) {
-  const src = join(root, 'games/year2000/phone', from);
-  if (!existsSync(join(src, 'parts.json'))) continue;
-  const out = join(root, 'web/public/trinkets', to);
-  mkdirSync(out, { recursive: true });
-  for (const f of ['parts.json', 'parts.bin']) copyFileSync(join(src, f), join(out, f));
-}
-// The kit's downloads (ZIPs of the printer parts and of the circuit board files, the parts lists, the README the box reads as
-// its instructions book) are made beside them (games/kit/phoneDownloads.ts).
+// The Phone of the Future kit's files for the box (games/kit/phoneDownloads.ts): the viewer's 3D parts (games/year2000/phone/
+// viewer, committed) packed into trinkets/phone/ and phone/deluxe/, the printer parts as a pack the site zips, the circuit
+// board ZIP, the parts lists and the README the box reads as its instructions book.
 if (existsSync(join(root, 'games/year2000/phone/kicad')) && (!only.length || only.includes('year2000'))) {
   const phoneStarted = Date.now();
   await runEntry(
@@ -258,25 +275,30 @@ const fieldTrinketGames = [
   ['blaster', 'Blaster'],
 ];
 // GM_SKIP_FIELD_TRINKETS=1 leaves them out (the Mac, Windows and Linux download jobs only need the disks).
-const trinkets = Promise.all(
-  (process.env.GM_SKIP_FIELD_TRINKETS ? [] : fieldTrinketGames)
-    .filter(([id]) => ids.includes(id) && (!only.length || only.includes(id)))
-    .map(async ([id, name]) => {
-      const started = Date.now();
-      const made = await runEntry(
-        `${id}-trinkets`,
-        { file: join(root, `games/${id}/tools/trinkets.ts`) },
-        `../games/${id}/tools/trinkets.ts`,
-        ['--workers', String(Math.min(3, jobs)), ...(forceExtras ? ['--force'] : [])],
-        { cwd: join(root, 'web'), maxBuffer: 16 << 20, timeout: 240_000 },
-        `${id}-trinkets`,
-      );
-      if (timing) console.log(`${name} trinkets: ${made.stdout.trim().split('\n').at(-1)} (${((Date.now() - started) / 1000).toFixed(1)} s)`);
-    }),
-);
+// Fifteen jobs started at once shared the CPU: on a cold Mac every one ran past the 240 s limit, was killed and
+// retried into the same crowd (2026-11-07). A small pool runs them a few at a time instead, and each job's limit
+// counts from its own start; the slowest (Goat's) takes about 230 s on a crowded machine, so the limit has room.
+const trinketQueue = (process.env.GM_SKIP_FIELD_TRINKETS ? [] : fieldTrinketGames).filter(([id]) => ids.includes(id) && (!only.length || only.includes(id)));
+const trinketPool = Math.max(1, Math.min(2, jobs));
+const trinketRun = async () => {
+  for (let next = trinketQueue.shift(); next && !stopped; next = trinketQueue.shift()) {
+    const [id, name] = next;
+    const started = Date.now();
+    const made = await runEntry(
+      `${id}-trinkets`,
+      { file: join(root, `games/${id}/tools/trinkets.ts`) },
+      `../games/${id}/tools/trinkets.ts`,
+      ['--workers', String(Math.min(3, jobs)), ...(forceExtras ? ['--force'] : [])],
+      { cwd: join(root, 'web'), maxBuffer: 16 << 20, timeout: 600_000 },
+      `${id}-trinkets`,
+    );
+    if (timing) console.log(`${name} trinkets: ${made.stdout.trim().split('\n').at(-1)} (${((Date.now() - started) / 1000).toFixed(1)} s)`);
+  }
+};
+const trinkets = joined(Array.from({ length: trinketPool }, trinketRun));
 if (pending.some((id) => logoUsers.has(id))) void logo();
 const gamesStarted = Date.now();
-await Promise.all([trinkets, ...Array.from({ length: Math.min(jobs, pending.length) }, worker)]);
+await joined([trinkets, ...Array.from({ length: Math.min(jobs, pending.length) }, worker), ...(logoReady ? [logoReady] : [])]);
 stage('games + field trinkets', gamesStarted);
 // The pixel-figure trinkets of the other games (games/kit/pixelTrinkets.ts: web/public/trinkets/<game>/) are meshed from the
 // built disks, so they run after the games; each game is skipped when its figures and the mesh code are unchanged (a key
@@ -293,6 +315,22 @@ if (!process.env.GM_SKIP_PIXEL_TRINKETS && (!only.length || only.some((id) => id
   );
   stage('pixel trinkets', started);
   if (timing) console.log(`Pixel trinkets: ${made.stdout.trim().split('\n').length} lines (${((Date.now() - started) / 1000).toFixed(1)} s)`);
+}
+// The site serves the trinkets' STLs and 3MFs packed (games/kit/trinketPacks.ts: <file>.pack, made back into the real
+// file in the browser), which keeps the Pages deploy small; a folder already packed costs one manifest read. Left out
+// when both trinket stages are. (The phone kit's 3D parts are packed with its downloads, phoneDownloads.ts, above.)
+if (!(process.env.GM_SKIP_FIELD_TRINKETS && process.env.GM_SKIP_PIXEL_TRINKETS)) {
+  const started = Date.now();
+  const made = await runEntry(
+    'trinket-packs',
+    { file: join(root, 'games/kit/trinketPacks.ts') },
+    '../games/kit/trinketPacks.ts',
+    [],
+    { cwd: join(root, 'web'), maxBuffer: 16 << 20, timeout: 240_000 },
+    'trinket packs',
+  );
+  stage('trinket packs', started);
+  if (timing) console.log(made.stdout.trim().split('\n').at(-1));
 }
 // The laser wooden nickels (games/kit/laserNickels.ts: SVGs and PNG previews in web/public/laser/<game>/) are drawn from the
 // built disks too; a game whose figures, words and builder code are unchanged (a key in its manifest.json) is skipped. A
@@ -340,4 +378,4 @@ if (timing)
   );
 if (fallbacks.length) console.log(`Ran under vite-node (bundle failed): ${fallbacks.join(', ')}`);
 save(true);
-console.log('Game build outputs are ready.');
+progress('Game build outputs are ready.');

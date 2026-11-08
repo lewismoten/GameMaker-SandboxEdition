@@ -48,7 +48,22 @@ describe('agent usage', () => {
   });
 
   it('puts title right after agent and keeps the other columns in order', () => {
-    expect(usageHead).toEqual(['started', 'ended', 'session', 'agent', 'title', 'model', 'type', 'task', 'state', 'input', 'cache_write', 'cache_read', 'output', 'total']);
+    expect(usageHead).toEqual([
+      'started',
+      'ended',
+      'session',
+      'agent',
+      'title',
+      'model',
+      'type',
+      'task',
+      'state',
+      'input',
+      'cache_write',
+      'cache_read',
+      'output',
+      'total',
+    ]);
     const row = usageRow('s1', 'agent-a1.jsonl', { agentType: 'general', description: 'Do it', finished: true }, u);
     expect(row).toHaveLength(usageHead.length);
     expect(row.slice(0, 5)).toEqual([u.first, u.last, 's1', 'a1', 'Do it']);
@@ -56,10 +71,7 @@ describe('agent usage', () => {
   });
 
   it('writes a non-empty, correctly quoted title in every CSV row', () => {
-    const csv = usageCsv([
-      usageRow('s1', 'agent-a1.jsonl', { description: 'Fix "doors", then\nwalls' }, u),
-      usageRow('s1', 'agent-a2.jsonl', {}, u),
-    ]);
+    const csv = usageCsv([usageRow('s1', 'agent-a1.jsonl', { description: 'Fix "doors", then\nwalls' }, u), usageRow('s1', 'agent-a2.jsonl', {}, u)]);
     expect(csv).toContain('"Fix ""doors"", then walls"');
     expect(csv).toContain(',Untitled task (a2),');
     // Raw description keeps its newline, quoted.

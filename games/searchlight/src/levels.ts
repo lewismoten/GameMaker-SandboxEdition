@@ -66,8 +66,9 @@ const onGround = (ground: number, s: Sign) => ground - 1 - s.board.length;
 export const GROUND = 10;
 /** Where Mara stands: the row above the ground. */
 export const STAND = GROUND - 1;
-/** The row of the rail, and of the lamp under it; the cone fills the rows down to STAND. */
-export const RAIL = 4;
+/** The row of the rail, and of the lamp under it; the cone fills the rows down to STAND. Low enough that the lamp stays in view
+ * when the camera settles after a fall (it keeps the hero about three rows below the top, and PLAYGAME skips a monster in the top row). */
+export const RAIL = 6;
 export const LAMP_ROW = RAIL + 1;
 
 /** Where each light starts (its leftmost block), its run is monsters.ts SWEEP, and the trenches dug under it (left block of each, two wide). */

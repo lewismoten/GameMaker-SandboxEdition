@@ -1,10 +1,12 @@
 // Asset sources, deterministic media ordering, and palette deduplication using catalog metadata.
 import type { CatalogEntry } from '../../project/files';
+import { isOldSecret } from '../../project/secretGames';
+import { isStarterGame } from '../../project/starter';
 import type { SoundGroup } from '../../audio/soundProfile';
 import { RSD_COMPANY } from '../../export/downloadable';
 import { kindOf, type FileKind } from './project';
 
-export type LibrarySource = 'cd' | 'originals';
+export type LibrarySource = 'cd' | 'originals' | 'starters';
 export interface LibraryItem {
   game: CatalogEntry;
   name: string;
@@ -29,14 +31,20 @@ function compare(a: LibraryItem, b: LibraryItem): number {
 }
 const paletteSource = (item: LibraryItem) => (item.game.id === 'library' ? 0 : item.game.kind === 'gameware' ? 1 : 2);
 
-export function selectLibraryItems(catalog: readonly CatalogEntry[], kind: FileKind, source: LibrarySource): LibraryItem[] {
+export function selectLibraryItems(catalog: readonly CatalogEntry[], kind: FileKind, source: LibrarySource, uniquePalettes = true): LibraryItem[] {
   const items = catalog
-    .filter((game) => !!game.original === (source === 'originals'))
+    .filter(
+      (game) =>
+        !isOldSecret(game.id) &&
+        (source === 'starters' ? isStarterGame(game) : source === 'originals' ? !!game.original && !isStarterGame(game) : !game.original),
+    )
     .flatMap((game) =>
-      game.files.flatMap((name, i) => (kindOf(name) === kind ? [{ game, name, size: game.sizes?.[i] ?? 0, group: game.fileFacts?.[name]?.soundGroup }] : [])),
+      (game.files ?? []).flatMap((name, i) =>
+        kindOf(name) === kind ? [{ game, name, size: game.sizes?.[i] ?? 0, group: game.fileFacts?.[name]?.soundGroup }] : [],
+      ),
     )
     .sort(compare);
-  if (kind !== 'pal') return items;
+  if (kind !== 'pal' || !uniquePalettes) return items;
   const palettes = new Map<string, LibraryItem>();
   for (const item of items) {
     const identity = item.game.fileFacts?.[item.name]?.paletteHash ?? `${item.game.id}/${item.name}`;

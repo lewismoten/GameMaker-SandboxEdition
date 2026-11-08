@@ -24,9 +24,16 @@
 // - Palm rejection (off by default): "size" drops contacts the chip reports bigger than a fingertip;
 //   "size + near" also drops a new contact that lands within 70 px of a contact already held (the heel
 //   of the hand resting beside a thumb). A rejected contact stays rejected until it lifts.
+// - Floating pad (Pad position: Float, off by default): nothing is drawn until a thumb lands in the pad's side of the view
+//   (the outer 40 %). The pad centers where it lands, so the thumb starts in the dead zone and the same slides press the same
+//   keys wherever it lands. For its first 50 ms a thumb still in the dead zone carries the center with it (a resistive
+//   panel's first readings settle). The center stays put while the ring can be seen: held, latched by Sticky or Stylus,
+//   or for half a second after the thumb lifts; a touch inside that ring uses it like the fixed pad (so a tap there
+//   latches), a touch elsewhere in the zone moves it. Main draws it faint while held and dimmer while it fades.
 #pragma once
 #include <stdint.h>
 #include <string.h>
+#include <strings.h>
 #include "screen.h"
 
 namespace ctl {
@@ -38,22 +45,43 @@ constexpr int TAP_MS = 300, TAP_PX = 10;
 constexpr int NEAR_PX = 70;
 constexpr int GRACE_MS = 60;       // a held finger the chip stops reporting keeps pressing this long (about one tick)
 constexpr int ADOPT_PX = 70;       // a new id this near a ghost is the same finger
+constexpr int FADE_MS = 500;       // the floating pad stays (dimmer) this long after the thumb lifts
+constexpr int SETTLE_MS = 50;      // the floating pad's center follows a thumb still in the dead zone this long
+
+// How the pad is drawn: the fixed pad always in full; the floating one faint while held, dim while it fades or a latch walks.
+enum Look { LOOK_OFF = 0, LOOK_DIM = 1, LOOK_FAINT = 2, LOOK_FULL = 3 };
 
 enum Scan { S_ENTER = 28, S_SPACE = 57, S_UP = 72, S_LEFT = 75, S_RIGHT = 77, S_DOWN = 80 };
 
 struct Settings {
+  uint8_t sticky = 0;    // tap a horizontal direction to toggle walking (saved in NVS)
   uint8_t lefty = 0;     // 0 right-handed, 1 left-handed
   uint8_t stylus = 0;    // 0 off, 1 on (taps latch)
   uint8_t padSize = 1;   // 0 small (radius 64), 1 medium (76), 2 large (90)
   uint8_t dead = 1;      // 0 small (18 px), 1 medium (26), 2 large (36)
   uint8_t palm = 0;      // 0 off, 1 size, 2 size + near
   uint8_t debug = 1;     // the numbers in the status strip
-  uint8_t sound = 2;     // PC speaker volume: 0 off, 1 low, 2 medium, 3 high
+  uint8_t sound = 0;     // PC speaker volume: 0 off (the default: most 2.8 inch boards have no speaker), 1 low, 2 medium, 3 high
+  uint8_t raised = 0;    // pad position: 0 low, 1 raised (lifted 30 px, 20 on the 2.8 inch board, for a thumb that rests higher)
+  uint8_t jumpNear = 0;  // Space (Jump): 0 in the corner, 1 just above and beside the pad, so one thumb rocks between them
+  uint8_t floatPad = 0;  // pad: 0 fixed (Low or Raised), 1 floating (centers where the thumb lands)
+#ifdef POCKET_CYD28
+  uint8_t arcs = 1;      // jump arcs: the upper wedges send Left or Right with Jump (on by default where one thumb does both)
+#else
+  uint8_t arcs = 0;      // the 3.5 inch board has two-finger touch, so the arcs are an option there
+#endif
+  uint8_t wedge = 1;     // how wide the jump wedge is: 0 narrow (about 20 degrees), 1 normal (37), 2 wide (50)
 };
+// The jump wedge's slopes (times 100): a finger is "level" within `level` of the horizontal, "upright" within `upright` of the
+// vertical, and in between is the wedge (Left or Right with Jump); a direction already held keeps to the wider `held` slope.
+struct WedgeSlope { int level, held; };
+inline WedgeSlope wedgeSlope(int w) { static const WedgeSlope t[3] = {{70, 80}, {50, 70}, {36, 52}}; return t[w > 2 ? 1 : w]; }
+constexpr int EDGE_PX = 4;  // resistive glass: a new touch this near the edge of the panel is a drifting reading, not a finger
 
 // Which controls a game needs (from its controls.json): the arrows, Space, Enter, and any other keys.
 struct Need {
   bool left = false, right = false, up = false, down = false, space = false, enter = false;
+  bool jump = false;  // Space is labeled Jump or Hop; resistive pads can combine it with direction
   int nextra = 0;
   int extra[MAXEXTRA];
   // The key the pad's diagonal sectors send, per corner: 0 up-left, 1 up-right, 2 down-left, 3 down-right (0 = the game has none).
@@ -95,7 +123,11 @@ inline void needAdd(Need& n, int scan, const char* label = "") {
     case S_RIGHT: case 32: n.right = true; return;
     case S_UP: case 17: n.up = true; return;
     case S_DOWN: case 31: n.down = true; return;
-    case S_SPACE: n.space = true; return;
+    case S_SPACE:
+      n.space = true;
+      for (const char* c = label; c && *c; c++)
+        if (!strncasecmp(c, "jump", 4) || !strncasecmp(c, "hop", 3)) n.jump = true;
+      return;
     case S_ENTER: n.enter = true; return;
   }
   for (int i = 0; i < n.nextra; i++) if (n.extra[i] == scan) return;
@@ -136,10 +168,13 @@ inline bool inDisc(const Disc& d, int x, int y, int slop = 0) {
 
 struct Layout {
   Disc pad, space, enter;
+  Disc home;  // the fixed pad's place (the floating pad's center moves; the Smaller picture and Space keep to this one)
+  Rect zone;  // the floating pad: where a thumb may land (the outer 40 % of the view on the pad's side)
   Rect menu, keys;
   Rect tile[MAXEXTRA];
   int deadR;
   int tileRows;
+  bool arcs = false;  // the pad shows jump arcs (the game has a Jump button and the setting is on)
 };
 
 // Where the chips end and the extra-key tiles begin and step (main.cpp redraws that strip when a tile changes).
@@ -161,6 +196,7 @@ inline Layout makeLayout(const Settings& s, const Need& need) {
   L.enter = {W - 8 - 24 - 24 - 21 - 8, B - 21 - 6, 21};
   L.menu = {2, 2, 46, 36};
   L.keys = {W - 46, 2, W - 2, 36};
+  const int lift = 20, gap = 10;
 #else
   static const int padR[3] = {64, 76, 90}, dead[3] = {18, 26, 36};
   int R = padR[s.padSize > 2 ? 1 : s.padSize];
@@ -170,12 +206,23 @@ inline Layout makeLayout(const Settings& s, const Need& need) {
   L.enter = {W - 12 - 34 - 34 - 30 - 12, 296 - 30 - 8, 30};
   L.menu = {4, 4, 64, 56};
   L.keys = {W - 68, 4, W - 4, 56};
+  const int lift = 30, gap = 14;
 #endif
+  if (s.raised) L.pad.cy -= lift;
+  if (s.jumpNear) {  // up and out from the pad at about 35 degrees, a gap clear of both touch slops
+    int d = L.pad.r + gap + L.space.r;
+    L.space.cx = L.pad.cx + d * 82 / 100;
+    L.space.cy = L.pad.cy - d * 57 / 100;
+  }
   if (s.lefty) {
     L.pad.cx = W - L.pad.cx;
     L.space.cx = W - L.space.cx;
     L.enter.cx = W - L.enter.cx;
   }
+  L.home = L.pad;
+  L.arcs = s.arcs && need.jump;
+  const int zoneW = W * 40 / 100;
+  L.zone = s.lefty ? Rect{W - zoneW, 0, W, scr::VIEW_H} : Rect{0, 0, zoneW, scr::VIEW_H};
   L.tileRows = (need.nextra + 5) / 6;
   for (int i = 0; i < MAXEXTRA; i++) {
     int row = i / 6, col = i % 6;
@@ -213,15 +260,29 @@ class Controls {
   }
   void reset() {
     for (auto& c : slot) c.id = -1;
+    L.pad = L.home; fading = false; goneAt = 0;
     memset(want, 0, sizeof want);
     memset(sent, 0, sizeof sent);
     memset(holdUntil, 0, sizeof holdUntil);
     padDirs = 0; padDiag = 0; btnDown = 0; tileDown = 0; latch = 0; keysOpen = false;
-    ev = EV_NONE;
+    ev = EV_NONE; horiz = vert = false; diagHeld = -1;
   }
 
   // One poll: the contacts now on the glass (screen coordinates). `now` in ms.
-  void update(const int* ids, const int* xs, const int* ys, const int* sizes, int n, uint32_t now) {
+  void update(const int* ids0, const int* xs0, const int* ys0, const int* sizes0, int n0, uint32_t now) {
+    // On resistive glass a reading in the outer EDGE_PX drifts: it cannot start a touch, and a finger already down is held inside.
+    int ids[MAXCONTACT], xs[MAXCONTACT], ys[MAXCONTACT], sizes[MAXCONTACT], n = 0;
+    for (int i = 0; i < n0 && n < MAXCONTACT; i++) {
+      int x = xs0[i], y = ys0[i];
+#ifdef POCKET_CYD28
+      if (x < EDGE_PX || y < EDGE_PX || x >= W - EDGE_PX || y >= H - EDGE_PX) {
+        if (find(ids0[i]) < 0 && !nearGhost(x, y)) continue;
+        x = x < EDGE_PX ? EDGE_PX : x >= W - EDGE_PX ? W - EDGE_PX - 1 : x;
+        y = y < EDGE_PX ? EDGE_PX : y >= H - EDGE_PX ? H - EDGE_PX - 1 : y;
+      }
+#endif
+      ids[n] = ids0[i]; xs[n] = x; ys[n] = y; sizes[n] = sizes0[i]; n++;
+    }
     bool seen[MAXCONTACT] = {};
     int match[MAXCONTACT];  // the slot each contact belongs to
     // 1. Contacts the chip still reports under the same id (a ghost that comes back under its id is a held finger again).
@@ -270,24 +331,45 @@ class Controls {
     return n;
   }
   int takeEvent() { int e = ev; ev = EV_NONE; return e; }
+  // How to draw the pad now (Look). The fixed pad is always LOOK_FULL.
+  int padLook(uint32_t now) const {
+    if (!set.floatPad) return LOOK_FULL;
+    for (const auto& s : slot) if (s.id >= 0 && s.role == PAD) return LOOK_FAINT;
+    return padVisible(now) ? LOOK_DIM : LOOK_OFF;
+  }
   // Tick the time forward with no new contacts (a key's minimum hold ending).
   void idle(uint32_t now) { update(nullptr, nullptr, nullptr, nullptr, 0, now); }
   // Is a touch at (x, y) over a control? (The picker and menus use their own hit tests.)
   bool overControl(int x, int y) const {
-    return inDisc(L.pad, x, y) || (need.space && inDisc(L.space, x, y, 8)) || (need.enter && inDisc(L.enter, x, y, 8)) || inRect(L.menu, x, y) ||
+    return inDisc(L.pad, x, y) || (set.floatPad && inRect(L.zone, x, y)) || (need.space && inDisc(L.space, x, y, 8)) || (need.enter && inDisc(L.enter, x, y, 8)) || inRect(L.menu, x, y) ||
            (need.nextra && inRect(L.keys, x, y));
   }
 
  private:
   enum Role { NONE, PAD, SPACE, ENTER, MENU, KEYS, TILE, IGNORED };
-  struct Slot { int id = -1, role = NONE, tile = 0, x0 = 0, y0 = 0, x = 0, y = 0; uint32_t t0 = 0, lostAt = 0; bool moved = false, ghost = false; };
+  struct Slot { int id = -1, role = NONE, tile = 0, oldLatch = 0, x0 = 0, y0 = 0, x = 0, y = 0; uint32_t t0 = 0, lostAt = 0; bool moved = false, ghost = false; uint8_t slideDirs = 0; int slideDiag = 0; bool slideSpace = false, settle = false; };
   Slot slot[MAXCONTACT];
   bool want[128], sent[128];
   uint32_t holdUntil[128];
   int ev = EV_NONE;
   bool horiz = false, vert = false;   // the pad's last sectors (hysteresis)
   int diagHeld = -1;                  // the corner of the diagonal sector the finger is in (hysteresis), -1 none
+  bool fading = false;                // the floating pad: lifted at goneAt, still shown for FADE_MS
+  uint32_t goneAt = 0;
 
+  // The floating pad, not held: can the player still see it (latched, or fading)? A touch inside it keeps its center.
+  bool padVisible(uint32_t now) const { return set.floatPad && (latch != 0 || (fading && now - goneAt < (uint32_t)FADE_MS)); }
+  // Centers the floating pad on (x, y), kept far enough inside the view that every direction can still be reached.
+  void anchor(int x, int y) {
+    const int m = L.deadR + 6;
+    L.pad.cx = x < m ? m : x > W - m ? W - m : x;
+    L.pad.cy = y < m ? m : y > scr::VIEW_H - m ? scr::VIEW_H - m : y;
+  }
+
+  bool nearGhost(int x, int y) const {
+    for (const auto& g : slot) if (g.id >= 0 && g.ghost && (x - g.x) * (x - g.x) + (y - g.y) * (y - g.y) <= ADOPT_PX * ADOPT_PX) return true;
+    return false;
+  }
   int find(int id) const { for (int k = 0; k < MAXCONTACT; k++) if (slot[k].id == id) return k; return -1; }
 
   int open(int id, int x, int y, int size, uint32_t now) {
@@ -320,7 +402,17 @@ class Controls {
     if (onEnter) { s.role = ENTER; return k; }
     bool padTaken = false;
     for (int i = 0; i < MAXCONTACT; i++) if (i != k && slot[i].id >= 0 && slot[i].role == PAD) padTaken = true;
-    if (!padTaken && inDisc(L.pad, x, y, 14)) { s.role = PAD; latch = 0; return k; }
+    if (padTaken) return k;
+    if (set.floatPad) {
+      if (!(padVisible(now) && inDisc(L.pad, x, y, 14))) {  // not on the ring still showing: the pad comes to the thumb
+        if (!inRect(L.zone, x, y)) return k;
+        anchor(x, y);
+        s.settle = true;
+      }
+      fading = false;
+      s.role = PAD; s.oldLatch = latch; latch = 0; return k;
+    }
+    if (inDisc(L.pad, x, y, 14)) { s.role = PAD; s.oldLatch = latch; latch = 0; return k; }
     return k;
   }
   // The chip's size units are not known until a board reports them; the debug strip shows what a finger gives.
@@ -333,15 +425,19 @@ class Controls {
       case MENU: if (inRect(L.menu, s.x, s.y, 8)) ev = EV_MENU; break;
       case KEYS: if (inRect(L.keys, s.x, s.y, 8)) { keysOpen = !keysOpen; ev = EV_KEYS; } break;
       case PAD:
-        if (set.stylus && tap) {
+        if ((set.stylus || set.sticky) && tap) {
           int dx = s.x - L.pad.cx, dy = s.y - L.pad.cy;
           if (dx * dx + dy * dy < L.deadR * L.deadR) latch = 0;
           else {
             int ax = dx < 0 ? -dx : dx, ay = dy < 0 ? -dy : dy;
-            if (ax >= ay) latch = dx < 0 ? -1 : 1;
+            if (ax >= ay) {
+              int direction = dx < 0 ? -1 : 1;
+              latch = set.sticky && s.oldLatch == direction ? 0 : direction;
+            }
             else latch = 0;  // a tap up or down is a short press, taken from the hold below
           }
         }
+        if (set.floatPad) { fading = true; goneAt = now; }
         if (set.stylus && tap && latch == 0) {  // tapped up or down: a short press
           int dx = s.x - L.pad.cx, dy = s.y - L.pad.cy;
           int ax = dx < 0 ? -dx : dx, ay = dy < 0 ? -dy : dy;
@@ -362,8 +458,33 @@ class Controls {
       Slot& s = slot[k];
       if (s.id < 0) continue;
       switch (s.role) {
-        case PAD: havePad = true; padDirs = padSector(s.x, s.y); break;
-        case SPACE: btnDown |= 1; if (!s.ghost) press(S_SPACE, now); break;
+        case PAD:
+          havePad = true;
+          if (s.settle) {  // the floating pad's first readings: a thumb still in the dead zone carries the center
+            int dx = s.x - L.pad.cx, dy = s.y - L.pad.cy;
+            if (now - s.t0 < (uint32_t)SETTLE_MS && dx * dx + dy * dy < L.deadR * L.deadR) anchor(s.x, s.y);
+            else s.settle = false;
+          }
+#ifdef POCKET_CYD28
+          // Single-contact steering can cross onto Space. Widen the exit by 6 px to reject edge noise.
+          if (need.space && inDisc(L.space, s.x, s.y, s.slideSpace ? 14 : 8)) {
+            s.slideSpace = true; padDirs = s.slideDirs; padDiag = s.slideDiag;
+            btnDown |= 1;
+            if (!s.ghost) press(S_SPACE, now);
+            break;
+          }
+          s.slideSpace = false;
+#endif
+          padDirs = padSector(s.x, s.y);
+          s.slideDirs = padDirs; s.slideDiag = padDiag;
+          break;
+        case SPACE:
+#ifdef POCKET_CYD28
+          if (inDisc(L.pad, s.x, s.y, 14) && (!set.floatPad || padVisible(now))) {  // a floating pad only while it shows
+            s.role = PAD; havePad = true; padDirs = padSector(s.x, s.y); s.slideDirs = padDirs; s.slideDiag = padDiag; break;
+          }
+#endif
+          btnDown |= 1; if (!s.ghost) press(S_SPACE, now); break;
         case ENTER: btnDown |= 2; if (!s.ghost) press(S_ENTER, now); break;
         case MENU: btnDown |= 4; break;
         case KEYS: btnDown |= 8; break;
@@ -373,6 +494,13 @@ class Controls {
     if (!havePad) { horiz = vert = false; diagHeld = -1; }
     uint8_t d = padDirs;
     if (!havePad && latch) d |= latch < 0 ? 1 : 2;
+    padDirs = d;
+    // One contact can steer and jump (the 2.8 inch board's default, a setting on the 3.5 inch). Keep native diagonal bindings intact.
+    if (set.arcs && need.jump && !padDiag && (d & 4) && (d & 3)) {
+      down[S_SPACE] = true; btnDown |= 1;
+      if (!sent[S_SPACE]) press(S_SPACE, now);
+      d &= ~4;  // this wedge jumps instead of pressing Up
+    }
     if (padDiag) down[padDiag] = true;   // a diagonal sector sends the game's own diagonal key, not two arrows
     else {
       if (d & 1 && need.left) down[S_LEFT] = true;
@@ -428,10 +556,14 @@ class Controls {
     }
     diagHeld = -1;
     // sector slopes: level within 27 degrees (tan 0.5), widened to 35 degrees (0.7) for the one already held
-    bool h = ay * 100 <= ax * (horiz && !vert ? 70 : 50);
-    bool v = ax * 100 <= ay * (vert && !horiz ? 70 : 50);
+    WedgeSlope ws = set.arcs && need.jump && dy < 0 ? wedgeSlope(set.wedge) : wedgeSlope(1);  // only the upper wedges are adjustable
+    bool h = ay * 100 <= ax * (horiz && !vert ? ws.held : ws.level);
+    bool v = ax * 100 <= ay * (vert && !horiz ? ws.held : ws.level);
     bool useH = h || (!v), useV = v || (!h);
-    if (!need.up && !need.down) { useH = true; useV = false; }
+    if (!need.up && !need.down) {
+      if (!(set.arcs && need.jump && dy < 0 && useH && useV))
+      { useH = true; useV = false; }
+    }
     if (!need.left && !need.right) { useH = false; useV = true; }
     horiz = useH; vert = useV;
     uint8_t m = 0;

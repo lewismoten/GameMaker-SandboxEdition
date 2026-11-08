@@ -19,17 +19,18 @@ import { LASTSND, NUMFREQ } from '@lewismoten/gamemaker-sandbox-engine/formats/s
 import { LASTMON, LASTSL, MONSTER_SIZE, parseMonsters } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 
 /** Raw deflate (no zlib header). The command line passes zlib at level 9; the browser CompressionStream. */
-export type Deflate = (bytes: Uint8Array) => Uint8Array | Promise<Uint8Array>;
+type Deflate = (bytes: Uint8Array) => Uint8Array | Promise<Uint8Array>;
 
 /** The firmware's limits (src/gmcfg.h). */
 export const POCKET_MAX_LEVELS = 128;
 export const POCKET_MAX_LINKS = 24;
 /** The heap's one long free stretch on the board (README "Memory"): a level's blocks, monster pictures and hero blocks must fit in it. */
-export const POCKET_LEVEL_HEAP = 108_000;
+const POCKET_LEVEL_HEAP = 108_000;
 
 /** What a game is packed from: its files (case-insensitive names) and what its controls mean (controls.json's shape). */
 export interface PocketSource {
   title: string;
+  gam?: string;
   files: { get(name: string): Uint8Array | undefined; names(): string[] };
   controls?: { keys?: Record<string, { short: string }>; counters?: Record<string, string> };
 }
@@ -38,14 +39,14 @@ export interface PocketSource {
 export type PocketStore = Map<string, Uint8Array>;
 
 /** The cards' pictures and pages in one pak; a reference is "<offset>.<length>". */
-export interface PocketCards {
+interface PocketCards {
   parts: Uint8Array[];
   at: Map<string, string>;
   size: number;
 }
 export const newCards = (): PocketCards => ({ parts: [], at: new Map(), size: 0 });
 
-export interface PocketPacked {
+interface PocketPacked {
   /** The .cfg's lines. */
   lines: string[];
   levels: number;
@@ -100,7 +101,7 @@ export async function packPocketGame(src: PocketSource, store: PocketStore, pak:
   const leftOut: Record<string, number> = {};
   const why: string[] = [];
   const warn: string[] = [];
-  const gam = names.find((d) => d.toLowerCase().endsWith('.gam'));
+  const gam = src.gam ?? names.find((d) => d.toLowerCase().endsWith('.gam'));
   if (!gam) throw new Error('no .gam file');
   const game = parseGame(file(gam));
   const play = game.scenes.map((s, i) => ({ s, i })).filter(({ s }) => s.gametype === 10);
@@ -223,6 +224,38 @@ export async function packPocketGame(src: PocketSource, store: PocketStore, pak:
   }
   lines.push(...cblN);
   // The cards between scenes (ShowGraphic's pictures and text pages, in the order the engine shows them).
+  /** This game's pictures packed so far (768 palette bytes, then 64000 indices) and their pak references. */
+  const pictures: { buf: Uint8Array; ref: string }[] = [];
+  const menu = (where: string) => where === 't' || where === 's' || where === 'h';
+  // A menu page's picture as a patch over a picture already packed (src/gmcards.h `p`): a Starter's story picture is its
+  // instructions picture with another heading, about 150 bytes packed instead of 1.6 KB. Undefined when no picture is close.
+  const patchOf = async (buf: Uint8Array): Promise<{ ref: string; base: string } | undefined> => {
+    let best: { area: number; base: string; x0: number; y0: number; w: number; h: number } | undefined;
+    for (const p of pictures) {
+      if (p.buf.subarray(0, 768).some((v, i) => v !== buf[i])) continue;
+      let x0 = 320,
+        y0 = 200,
+        x1 = -1,
+        y1 = -1;
+      for (let y = 0; y < 200; y++)
+        for (let x = 0; x < 320; x++)
+          if (p.buf[768 + y * 320 + x] !== buf[768 + y * 320 + x]) {
+            x0 = Math.min(x0, x);
+            x1 = Math.max(x1, x);
+            y0 = Math.min(y0, y);
+            y1 = Math.max(y1, y);
+          }
+      if (x1 < 0) return undefined; // the same picture: inPak finds it
+      const area = (x1 - x0 + 1) * (y1 - y0 + 1);
+      if (area <= 16000 && (!best || area < best.area)) best = { area, base: p.ref, x0, y0, w: x1 - x0 + 1, h: y1 - y0 + 1 };
+    }
+    if (!best) return undefined;
+    const patch = new Uint8Array(8 + best.area);
+    const v = new DataView(patch.buffer);
+    [best.x0, best.y0, best.w, best.h].forEach((n, i) => v.setUint16(i * 2, n, true));
+    for (let r = 0; r < best.h; r++) patch.set(buf.subarray(768 + (best.y0 + r) * 320 + best.x0, 768 + (best.y0 + r) * 320 + best.x0 + best.w), 8 + r * best.w);
+    return { ref: await inPak(patch), base: best.base.replace('.', ' ') };
+  };
   const cards = async (where: string, name: string | undefined) => {
     if (!name) return;
     const find = (n: string) => names.find((d) => d.toLowerCase() === n.toLowerCase());
@@ -244,7 +277,13 @@ export async function packPocketGame(src: PocketSource, store: PocketStore, pak:
         const buf = new Uint8Array(768 + 64000);
         buf.set(im.palette, 0);
         buf.set(im.pixels, 768);
-        lines.push(`card ${where} g ${await inPak(buf)} ${pause ?? dflt}`);
+        const patch = menu(where) ? await patchOf(buf) : undefined;
+        if (patch) lines.push(`card ${where} p ${patch.ref} ${pause ?? dflt} ${patch.base}`);
+        else {
+          const ref = await inPak(buf);
+          pictures.push({ buf, ref });
+          lines.push(`card ${where} g ${ref} ${pause ?? dflt}`);
+        }
       } else if (e === 'bkd') {
         // A backdrop is a 320 x 200 window of a bigger GIF, from (x, y): packed as the window itself (outside the GIF: black).
         const b = parseBackdrop(file(real));
@@ -303,6 +342,11 @@ export async function packPocketGame(src: PocketSource, store: PocketStore, pak:
   }
   await cards('w', game.scenes[1]?.files[0]);
   await cards('l', game.scenes[1]?.files[2]);
+  // The game's own pages from its menu (scene 0: title, Read Storyline, Read Instructions), read from Details on the board.
+  // The title (often an FLI, every frame packed) only goes on a card: in LittleFS it would cost the Starters about 2.3 MB.
+  if (card) await cards('t', game.scenes[0]?.files[0]);
+  await cards('h', game.scenes[0]?.files[6]); // before the story, whose picture is often a patch over this one
+  await cards('s', game.scenes[0]?.files[4]);
   play.forEach(({ s }, n) => {
     let count = 0;
     for (let l = 0; l < MAXSCENELINKS; l++) {

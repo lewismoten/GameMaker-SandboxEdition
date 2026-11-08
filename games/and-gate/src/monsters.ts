@@ -38,7 +38,7 @@ export const POWER = { spark: 80, off: 90, on: 80, lamp: 70, light: 200 } as con
 export const HERO_HIT_POINTS = 50;
 /** The spark's speed, and the falling light's. */
 export const SPARK_SPEED = 2;
-export const FALL_SPEED = 2;
+export const FALL_SPEED = 6;
 /** How far the light slides down from the lamp to the foot of the post, in blocks. */
 export const FALL = 8;
 
@@ -143,7 +143,11 @@ export function monsterSet(mb: Book, route: Route): Monster[] {
   set[DIAL_OFF] = still(pics('dialOff', 9), { power: POWER.off, end: 0, newmon: DIAL_ON });
   set[DIAL_ON] = still(pics('dialOn', 9), { power: POWER.on, end: -2 });
   set[LAMP] = still([[mb.n('lamp'), 8]], { power: POWER.lamp, end: 0, newmon: FALLING });
-  set[FALLING] = mon(pics('fall', 4), { power: POWER.light, thru: 0, end: -1, newmon: LIGHT }, [corner(0, 0, FALL_SPEED), corner(0, FALL, FALL_SPEED)]);
+  set[FALLING] = mon(pics('fall', 4), { power: POWER.light, thru: 0, end: -1, newmon: LIGHT }, [
+    corner(0, 0, FALL_SPEED),
+    corner(0, 4, FALL_SPEED * 3),
+    corner(0, FALL, FALL_SPEED),
+  ]);
   set[LIGHT] = still(pics('light', 8), { power: POWER.light, end: -2 });
   return set;
 }

@@ -76,6 +76,9 @@ function loadImage(src: string): Promise<HTMLImageElement> {
 type Glow = string | HTMLCanvasElement;
 
 async function makeSide(entry: CatalogEntry, faces: BoxFaces, side: Side): Promise<Glow | undefined> {
+  // the job waited in the queue: if the box was replaced meanwhile (releaseUv), its picture's
+  // object URL is revoked and asking for it now would be a failed request
+  if (!games.has(faces)) return undefined;
   const spine = side === 'left' ? spineOf(faces) : undefined;
   const [letters, img] = await Promise.all([lettersOf(entry), spine ?? loadImage(faces[side])]);
   const mask = letters?.[side];
@@ -107,6 +110,7 @@ async function makeSide(entry: CatalogEntry, faces: BoxFaces, side: Side): Promi
   uvLettering(pic.data, maskPx.data);
   ctx.putImageData(pic, 0, 0);
   if (small) return c;
+  if (!games.has(faces)) return undefined; // released while it was drawn: no URL to leak
   const blob = await new Promise<Blob | null>((done) => c.toBlob(done, 'image/webp', 0.9));
   return blob ? URL.createObjectURL(blob) : undefined;
 }

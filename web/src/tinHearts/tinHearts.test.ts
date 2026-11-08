@@ -150,7 +150,7 @@ describe('tin hearts', () => {
   });
 
   it('counts the clock heart in the hunt’s total', async () => {
-    vi.doMock('../project/files', () => ({ loadGameList: async () => games.map((g) => ({ ...g, original: {} })) }));
+    vi.doMock('../project/files', () => ({ loadLeanGameList: async () => games.map((g) => ({ ...g, original: {} })) }));
     const c = await heartCount();
     expect(c.total).toBe(3);
     expect(c.found).toBe(0);

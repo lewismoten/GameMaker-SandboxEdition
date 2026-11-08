@@ -4,7 +4,7 @@
 import type { FileKind } from '../core/project';
 import { FILE_ORDER } from './fileKinds';
 
-export interface AssetGroup {
+interface AssetGroup {
   id: string;
   title: string;
   kinds: FileKind[];

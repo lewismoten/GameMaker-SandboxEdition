@@ -3,6 +3,7 @@
 import { wrap, creditsPage } from '../../kit/starter/graduationText';
 import type { Graduation } from '../../kit/starter/graduationConfig';
 import about from '../about.json';
+import { song } from './song';
 
 export const cfg: Graduation = {
   id: 'graduation-diploma',
@@ -21,7 +22,8 @@ export const cfg: Graduation = {
     'Drawing with Blocks',
     'Showcase Tricks',
   ],
-  cameos: ['teddy', 'gwinn', 'chicken', 'lewie', 'joe', 'watt', 'carl', 'goat', 'will', 'camel', 'loaf', 'seed'],
+  stillGuests: true,
+  cameos: ['teddy', 'gwinn', 'chicken', 'lewie', 'joe', 'watt', 'carl', 'goat', 'will', 'camel', 'loaf', 'seed', 'egg', 'heart'],
   theme: {},
   upper: 'THE SANDBOX',
   endTitle: 'DIPLOMA!',
@@ -33,8 +35,14 @@ export const cfg: Graduation = {
     doc: 'DOC LEO HAS YOUR DIPLOMA',
     banner: 'THE SANDBOX DIPLOMA',
   },
+  arrive: {
+    title: 'The Long Walk',
+    hint: 'Walk to the hall one last time.',
+    welcome: 'ONE LAST WALK',
+    nods: ['ladder', 'wind', 'hop', 'pads', 'fakeWall', 'popups'],
+  },
   level: { title: 'The Long Aisle', hint: 'Walk up to the stage.' },
-  song: { bpm: 76, lead: 'brass', transpose: 0 },
+  song,
   text: {
     story: wrap(`
 |THE SANDBOX DIPLOMA

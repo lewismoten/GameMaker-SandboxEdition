@@ -1,6 +1,6 @@
 # Kit's Moves: tools
 
-- `check.ts`: the bot plays both levels. `route.ts` asserts what each sign teaches: in level 1 a held Space is still one hop of about three blocks, a tap of Up lifts Kit a little and drops him, and a held Up lifts him above the nine-block cliff; in level 2 a held Enter is one dash of about three blocks, and the three gaps need one, two and three presses. Every coin is taken and no life is lost.
+- `check.ts`: the bot plays both levels. `route.ts` asserts what each sign teaches: in level 1 a held Space is still one hop of about three blocks, a tap of Up lifts Kit a little and drops him, and a held Up lifts him above the nine-block cliff; in level 2 a held Enter is one dash of about three blocks, and the three gaps (1, 5 and 7 blocks) need a dash, a hop with a dash, and a hop with two dashes; each time the move before is tried first from a saved state and must fall short. Every coin is taken and no life is lost.
 - `walkthrough.ts`, `gendemo.ts`: re-record the walkthrough and the title demo. The demo is both levels as one unbroken list of keys (the demo recorder counts game ticks across scene changes), stopped before the last door.
 - `demoCheck.ts`: plays the built `demo.rec` on the real engine and checks it enters scenes 2 and 3 with no game over.
 - `preview.ts`: PNGs of the blocks, the hero, each level and every picture. `shots.ts`: pictures of the lessons for the progress shots.

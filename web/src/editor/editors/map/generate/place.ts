@@ -72,6 +72,13 @@ export function placeMonsters(map: Pick<GameMap, 'monsters' | 'mons'>, result: G
   return { placed, dropped: result.monsters.length - placed };
 }
 
+/** Final feedback after placement finishes, not a promise made while the dialog is closing. */
+export function placementText(result: { placed: number; dropped: number }): string {
+  const { placed, dropped } = result;
+  const count = `${placed} monster${placed === 1 ? '' : 's'} placed`;
+  return `Layout drawn. ${count}${dropped ? `; ${dropped} omitted because DOS Game-Maker holds ${LASTMM} monster slots per map, including monsters born during play` : ''}. Undo takes it back in one step.`;
+}
+
 export interface Offer {
   seed: number;
   outcome: GenOutcome;

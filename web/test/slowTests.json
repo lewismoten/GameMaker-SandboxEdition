@@ -2,6 +2,7 @@
   "limitMs": 50,
   "files": [
     "scripts/versionDisksFiles.test.ts",
+    "scripts/zipShare.test.ts",
     "src/assistant/chat/makeGame.test.ts",
     "src/desk/boxes/phone/phoneClearance.test.ts",
     "src/dosPage/boundary.test.ts",

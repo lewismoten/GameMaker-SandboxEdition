@@ -13,6 +13,10 @@
   "joystick": {
     "1": { "short": "Jump", "long": "Jump." }
   },
-  "counters": { "20": "Keys carried: a key adds one, a door takes one." },
+  "counters": {
+    "20": "Keys carried: a key adds one, a door takes one.",
+    "21": "Tokens carried: each token adds one, the token gate takes three.",
+    "22": "The lever: flipping it adds one, the gate beside it takes one."
+  },
   "sounds": { "9": "The jump", "10": "Getting hurt", "11": "Falling over" }
 }

@@ -8,10 +8,10 @@ import { skyOf, type Pal } from '../../kit/starter/palette';
 /** How a bar segment looks: lit (green, full height), warning (orange, thin), or out (dim). */
 export type Fill = 'on' | 'warn' | 'off';
 
-/** The board the bar and clock sit on: a dark panel on the sky, with a wooden frame. `ends` says which sides close. */
-function panel(pal: Pal, left: boolean, right: boolean): Pixels {
+/** The board the bar and clock sit on: a dark panel on the sky (or on `back`, such as brick), with a wooden frame. `ends` says which sides close. */
+function panel(pal: Pal, left: boolean, right: boolean, back?: Pixels): Pixels {
   const { c } = pal;
-  const p = new Pixels(20, 20, skyOf(pal));
+  const p = back ? back.crop(0, 0, 20, 20) : new Pixels(20, 20, skyOf(pal));
   p.rect(0, 3, 20, 14, c('wood', 1)).rect(0, 3, 20, 1, c('wood', 3)).rect(0, 16, 20, 1, c('wood', 0));
   p.rect(0, 4, 20, 12, c('ink', 0));
   if (left) p.rect(0, 3, 2, 14, c('wood', 2)).rect(0, 3, 1, 14, c('wood', 3));
@@ -36,10 +36,10 @@ export function segment(pal: Pal, fill: Fill, last: boolean): Pixels {
   return p;
 }
 
-/** The clock face at the bar's left end, its hand at 12, 3, 6 or 9 o'clock. */
-export function face(pal: Pal, quarter: number): Pixels {
+/** The clock face at the bar's left end, its hand at 12, 3, 6 or 9 o'clock; on `back` (the brick wall) when given. */
+export function face(pal: Pal, quarter: number, back?: Pixels): Pixels {
   const { c } = pal;
-  const p = panel(pal, true, false);
+  const p = panel(pal, true, false, back);
   const cx = 11;
   const cy = 10;
   p.disc(cx, cy, 7.5, c('wood', 4)).disc(cx, cy, 6.5, c('parch', 4));
@@ -58,6 +58,8 @@ export function face(pal: Pal, quarter: number): Pixels {
       [-5, 0],
     ] as const
   )[quarter];
+  // a short hour hand that stays at about four o'clock, so the face reads as a clock at every quarter
+  p.line(cx, cy, cx + 3, cy + 2, c('ink', 0)).line(cx, cy + 1, cx + 2, cy + 2, c('ink', 0));
   p.line(cx, cy, cx + Math.round(hx * 0.8), cy + Math.round(hy * 0.8), c('red', 2));
   p.disc(cx, cy, 1, c('ink', 0));
   return p;

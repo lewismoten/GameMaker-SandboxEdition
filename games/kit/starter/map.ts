@@ -96,6 +96,16 @@ export class StarterMap {
     return this;
   }
 
+  /**
+   * Bricks column `x` through the ORIGIN sky rows above map row 0 (map rows -ORIGIN to -1), up to the top of the
+   * world, so a wall that guards a locked door cannot be jumped from a ledge or step beside it. Call it for each
+   * locked wall (games/kit/leapCheck.ts jumps at every lock and fails the game if one can be cleared).
+   */
+  wallToSky(x: number): this {
+    for (let y = -ORIGIN; y < 0; y++) this.set(x, y, 'brick');
+    return this;
+  }
+
   /** A monster, standing on level block (x, y). */
   mon(monnum: number, x: number, y: number): this {
     if (this.monsters >= 200) throw new Error('Too many monsters');

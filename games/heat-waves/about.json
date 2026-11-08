@@ -1,0 +1,41 @@
+{
+  "title": "Heat Waves",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "hero": "KIT",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.0",
+  "blurb": "Three short levels about heat over a desert road, drawn with blocks. Far hills wobble because each hills block turns into the same picture moved a pixel or two and back. In level 1 every row sways at once, like jelly, then each row sways a little after the one under it, so the wobble climbs like hot air. In level 2 a shiny puddle on the road is a monster that hides when Kit comes near. In level 3 the evening palette cools the same pictures and the hills hold still. Signs in the levels say how. Play it, then open it in Game-Maker and change a row's start.",
+  "exe": "HEATWAVE.EXE",
+  "dosName": "HEATWAVE",
+  "sound": "sb",
+  "label": {
+    "background": "#fcf4d4",
+    "band": "#cc785e",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "3 short levels",
+    "hours": 1,
+    "background": "#cc785e",
+    "accent": "#ffd23f",
+    "ink": "#ffffff",
+    "tagline": "The hills wobble in the heat.",
+    "back": "A small explorer in a teal beanie walks a desert road at noon. The far hills wobble in the hot air, a puddle shines on the road and is gone before you reach it, and then the evening cools it all down. Every wobble is a block that turns into the next. Play, then open the game in Game-Maker and make some heat of your own.",
+    "features": [
+      "Signs in the levels explain each idea",
+      "Rows of blocks that sway one after another, so the wobble climbs",
+      "A mirage that is a monster with an attack path",
+      "Made to be copied and taken apart"
+    ],
+    "shots": [
+      ["one.map", 8, 5],
+      ["two.map", 8, 5],
+      ["three.map", 8, 5]
+    ],
+    "rating": "Everyone"
+  }
+}

@@ -4,8 +4,9 @@ import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { STARTER_GROUPS } from '../../../web/src/project/starter';
 import { HELPER_NAMES } from '../../../web/src/project/starterHeroes';
-import { heroFor } from './heroFor';
-import { helperPalettes } from './heroLook';
+import { heroFor, lookOf } from './heroFor';
+import { helperPalettes, recolor } from './heroLook';
+import { buildStarterPalette } from './palette';
 
 const G = join(__dirname, '..', '..');
 const starters = readdirSync(G).flatMap((id) => {
@@ -23,6 +24,11 @@ describe('heroFor', () => {
   });
   it('matches about.json for every Starter', () => {
     for (const s of starters) expect(s.hero, s.id).toBe(heroFor(s.id));
+  });
+  it.each(starters)('$id builds the palette of its dealt hero', ({ id }) => {
+    // The real builder reads about.json; comparing with the table catches a drawn-hero mismatch, not just a label.
+    const pal = buildStarterPalette(undefined, id);
+    expect(pal.pal).toEqual(recolor(pal, lookOf(heroFor(id))));
   });
   it('gives Kit the first game of each group', () => {
     for (const g of STARTER_GROUPS) expect(heroFor(g.games[0]), g.name).toBe('KIT');
