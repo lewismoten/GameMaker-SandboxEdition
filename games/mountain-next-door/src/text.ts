@@ -47,6 +47,8 @@ export const CREDITS = withCreditPage(
 
 Story, pixels, beeps, songs and levels by Claude Sonnet 5.5, an AI model made by Anthropic.
 
+Old Mossback's voice: Pocket TTS by Kyutai (CC BY 4.0), in a cloned voice.
+
 Made with GAME-MAKER 3.0 from Recreational Software Designs.
 
 A special for the day after Thanksgiving: it only stops by for a few days.
