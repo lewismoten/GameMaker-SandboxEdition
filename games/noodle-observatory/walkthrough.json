@@ -1,0 +1,311 @@
+{
+ "version": 1,
+ "game": "noodle-observatory",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU0PzWdNI83QAU0tzZsBTRTNZ00PzcABTRTNZ00UzWdN"
+  },
+  {
+   "scene": 3,
+   "keys": "AU0KzWdNHs0DSwXLA0gnyAdNHs0DSxzLA1An0ANNLc1nTR7NA0sFywNIMcg4TR7NA00DzRVNFM0DSwXLA0gnyANNFM0DSB3IA00UzQNLEssDUB3QA00IzRNNGc0DTQrNA00KzQNN"
+  },
+  {
+   "scene": 4,
+   "keys": "AU0KzWdNHs0DSwXLA0hFyANNFM0DSxLLA1BF0ANNLc0DSwXLA0gxyANNGc0DSxfLA1Ax0ANNMs0DSwXLA0g7yANNGc0DSxfLA1A70ANNI80DTQ/NZ00ZzQNNCs0DTQrNA00="
+  },
+  {
+   "scene": 5,
+   "keys": "AU0KzWdNHs0DSwXLA0gnyANNCs0DTQ/NA0gdyANNFM0DSxLLA1Ad0ANNCM0TTR7NA0sFywNIMcgDTR7NA0scywNQMdADTTfNA0sFywNIJ8gDTQrNA00PzQNIHcgDTRnNA0sXywNQHdADTQjNE00jzQNLBcsDSDvIA00UzQNNA80WTQrNA00FzQNNBc0DTQXNA00FzQNNBc0DTQ=="
+  },
+  {
+   "scene": 6,
+   "keys": "WUsBywFLAcsBSwHLAUsBywFLAssBSwPLAUsBywFLAcsBSwHLAUsBywFLAcsBSwHLAUsCywFLAcsBSwHLAUsBywFLAcsBSwHLAUsBywFLAssBSwHLLU0BzQFNAc0BTQHNAU0CzQFNA80BTQHNAU0BzQFNAc0BTQHNAU0BzQFNAc0BTQLNAU0BzQFNAc0BTQHNAU0BzQFNAc0BTQHNAU0CzQFNAc0pTQHNAU0BzQFNAc0BTQHNAU0BzQFNAs0BTQPNAU0BzQFNAc0BTQHNAU0BzQFNAc0BTQHNAU0CzQFNAc0BTQHNAU0BzQFNAc0BTQHNAU0BzQFNAs0BTQHNLUsBywFLAcsBSwHLAUsCywFLA8sBSwHLAUsBywFLAcsBSwHLAUsBywFLAcsBSwLLAUsBywFLAcsBSwHLAUsBywFLAcsBSwHLAUsCywFLAcs="
+  },
+  {
+   "scene": 7,
+   "keys": "AUsaywFLA8sBSwLLAUsBywFLAssBSwPLAUsBywFLAcspTUzNCks4yx9NMM0lS0XLEk0BzQFNBM0BTRrNAU0EzQFNBM0="
+  },
+  {
+   "scene": 8,
+   "keys": "AU0KzQFNAc0BTQHNAk0BzQFNAc0BTQHNAU0BzQFNAc0CTQHNAU0BzQFNAc0CTQHNAU0BzQFNAc0BTQHNAU0BzQJNAc0pSz7LGU09zRlLPcsbTQLNAU0CzQFNCs0BTQLNAU0CzQFNAs0BTQPNAU0BzQFNAs0BTQLNAU0CzQFNAs0="
+  },
+  {
+   "scene": 9,
+   "keys": "AU0KzWdNFM0DTQrNA0sAywM5ArkATRnNA0sFywM5ArkATRnNA00KzQNNBc1nTQXNA00FzQM5ArkATRnNA00FzQNLBcsDOQK5AE0ZzQNNCs0DTQrNA0sAywM5ArkATRnNA0sFywM5ArkATRnNA00FzQNND80DTQ=="
+  },
+  {
+   "scene": 10,
+   "keys": "AU0KzWdNGc0DSwXLA0gnyANNGc0DTQPNE00UzQNND80DSwXLA0g7yANNGc0DTQPNFk0UzQNNCs1nTRnNA0sFywNIJ8gDTQ/NA0gdyANNGc0DSxfLA1Ad0ANNCM0TTSPNA00="
+  },
+  {
+   "scene": 11,
+   "keys": "AU0KzWdNFM0DTRI5ArkTOQK5Bc0NSwPLA0gAyANNCs0DTQ3NE00UzQNNCs0DSwDLAzkCuQBNGc0DTQXNA00IOQK5EzkCuQXNDUsDywNIAMgDTRfNE00PzQNNCs0DTQ05ArkTOQK5Bc0NSwPLA0gAyANND80DSB3IA00PzQNLDcsDUB3QA00IzRNNFM0DTQ=="
+  },
+  {
+   "scene": 12,
+   "keys": "AU0KzWdNHs0DSwXLA0gdyANNGc0DTQPNEU0ZzQNLBcsDSDHIA00ezQNLHMsDUDHQA00tzQNNFM0DSwXLA0g7yANNGc0DTQPNFk0UzQNNCs0DTQrNA00="
+  },
+  {
+   "scene": 13,
+   "keys": "AU0KzWdNFM0DTQrNA00ZzQNLBcsDSEXIA00ezQNLHMsDUEXQA00yzWdNHs0DSwXLA0gdyANNHs0DTQPNEU0UzQNNCs0DTQrNA00="
+  },
+  {
+   "scene": 14,
+   "keys": "AU0KzWdNGc0DSwXLA0gdyANND80DSB3IA00UzQNLEssDUB3QA00IzRFNGc0DTRTNA0sFywNIO8gDTRnNA00DzRZNGc0DSwXLA0gdyANND80DTQXNA0gdyANNFM0DSxLLA1Ad0ANNCM0RTR7NA00KzQNNCs0DTQXNZ00="
+  },
+  {
+   "scene": 15,
+   "keys": "AU0KzWdNLc17TRTNZ00ZzTRNFM1nTR7NL00ZzWdNGc1nTQ=="
+  },
+  {
+   "scene": 16,
+   "keys": "AU0KzWdNFM0DTQrNA0sAywM5ArkATRTNBE0FzQNND80DSwXLA0gnyANNGc0DTQPNE00KzQNLAMsDOQK5AE0UzQRNCs0DSwXLA0gxyANNHs0DSxzLA1Ax0ANNLc0DTQrNZ00ZzQNNCs0DTQrNA00="
+  },
+  {
+   "scene": 17,
+   "keys": "AU0KzWdNFM0DTQrNA00UzQNLBcsDSDHIA00jzQNNA80VTQrNA0sAywM5ArkATRTNBE0FzQNND80DSwXLA0gnyANNCs0DTQXNA0gdyANNFM0DSxLLA1Ad0ANNCM0TTRnNA00PzWdNGc0DTQrNA00KzQNN"
+  },
+  {
+   "scene": 18,
+   "keys": "AU0KzWdNGc0DSwXLA0gdyANNGc0DTQPNEU0KzQNLAMsDOQK5AE0UzQRNCs0DSwXLA0gnyANNGc0DTQPNE00KzQNNFM0DSwXLA0gxyANNHs0DSxzLA1Ax0ANNLc0DTRTNA00KzQNNCs0DTQXNZ00="
+  },
+  {
+   "scene": 19,
+   "keys": "AU0KzWdNGc0DSwXLA0gnyANNGc0DTQPNE00UzQNND80DSwXLA0gxyANNGc0DSxfLA1Ax0ANNI80DTRTNA0sAywM5ArkATRTNBE0FzQNNCs0DTRTNA00KzWdN"
+  },
+  {
+   "scene": 20,
+   "keys": "AU0KzWdNGc0DSwXLA0gdyANNFM0DTQjNEU0UzQNND80DSwXLA0g7yANNHs0DTQPNFk0UzQNNBc0DTQ/NA0sFywNIJ8gDTRnNA0sXywNQJ9ADTTLNA00FzWdN"
+  },
+  {
+   "scene": 21,
+   "keys": "AU0KzWdNFM0DTQrNA00UzQNND80DSwXLA0gnyANNGc0DTQPNE00UzQNND80DSwXLA0gxyANNHs0DSxzLA1Ax0ANNN80DTQrNZ00="
+  },
+  {
+   "scene": 22,
+   "keys": "AU0KzWdNGc1nTTzNeE0PzWdNI81nSyjLyARN"
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: First Lens"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: Wobbly Shelves"
+  },
+  {
+   "scene": 4,
+   "title": "Level 3: Three Shapes"
+  },
+  {
+   "scene": 5,
+   "title": "Level 4: Six Parts"
+  },
+  {
+   "scene": 6,
+   "title": "Level 5: Uphill. Of Course."
+  },
+  {
+   "scene": 7,
+   "title": "Level 6: Zigzag Pantry"
+  },
+  {
+   "scene": 8,
+   "title": "Level 7: Top Shelf"
+  },
+  {
+   "scene": 9,
+   "title": "Level 8: Soft Steps"
+  },
+  {
+   "scene": 10,
+   "title": "Level 9: Up High"
+  },
+  {
+   "scene": 11,
+   "title": "Level 10: Round the Pillars"
+  },
+  {
+   "scene": 12,
+   "title": "Level 11: Circle Pads"
+  },
+  {
+   "scene": 13,
+   "title": "Level 12: Square Pads"
+  },
+  {
+   "scene": 14,
+   "title": "Level 13: Triangle Pads"
+  },
+  {
+   "scene": 15,
+   "title": "Level 14: Kitchen in the Stars"
+  },
+  {
+   "scene": 16,
+   "title": "Level 15: Rattle Tags"
+  },
+  {
+   "scene": 17,
+   "title": "Level 16: The Roof Garden"
+  },
+  {
+   "scene": 18,
+   "title": "Level 17: Three Terraces"
+  },
+  {
+   "scene": 19,
+   "title": "Level 18: Plates"
+  },
+  {
+   "scene": 20,
+   "title": "Level 19: Cups"
+  },
+  {
+   "scene": 21,
+   "title": "Level 20: Mats"
+  },
+  {
+   "scene": 22,
+   "title": "Level 21: A Most Local Moon"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 83583,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 1028,
+    "time": 17133.33333333315
+   },
+   {
+    "title": "Level 1: First Lens",
+    "frame": 2257,
+    "time": 37616.66666666692
+   },
+   {
+    "title": "Level 2: Wobbly Shelves",
+    "frame": 7019,
+    "time": 116983.33333334449
+   },
+   {
+    "title": "Level 3: Three Shapes",
+    "frame": 11071,
+    "time": 184516.66666665082
+   },
+   {
+    "title": "Level 4: Six Parts",
+    "frame": 15349,
+    "time": 255816.66666660932
+   },
+   {
+    "title": "Level 5: Uphill. Of Course.",
+    "frame": 19804,
+    "time": 330066.66666668473
+   },
+   {
+    "title": "Level 6: Zigzag Pantry",
+    "frame": 23252,
+    "time": 387533.3333334183
+   },
+   {
+    "title": "Level 7: Top Shelf",
+    "frame": 26111,
+    "time": 435183.33333347377
+   },
+   {
+    "title": "Level 8: Soft Steps",
+    "frame": 28986,
+    "time": 483100.0000001962
+   },
+   {
+    "title": "Level 9: Up High",
+    "frame": 32318,
+    "time": 538633.3333335441
+   },
+   {
+    "title": "Level 10: Round the Pillars",
+    "frame": 35986,
+    "time": 599766.6666667351
+   },
+   {
+    "title": "Level 11: Circle Pads",
+    "frame": 39213,
+    "time": 653549.9999999432
+   },
+   {
+    "title": "Level 12: Square Pads",
+    "frame": 42423,
+    "time": 707049.9999998186
+   },
+   {
+    "title": "Level 13: Triangle Pads",
+    "frame": 45814,
+    "time": 763566.6666663537
+   },
+   {
+    "title": "Level 14: Kitchen in the Stars",
+    "frame": 49762,
+    "time": 829366.6666662005
+   },
+   {
+    "title": "Level 15: Rattle Tags",
+    "frame": 53865,
+    "time": 897749.9999993746
+   },
+   {
+    "title": "Level 16: The Roof Garden",
+    "frame": 57352,
+    "time": 955866.666665906
+   },
+   {
+    "title": "Level 17: Three Terraces",
+    "frame": 60865,
+    "time": 1014416.6666657696
+   },
+   {
+    "title": "Level 18: Plates",
+    "frame": 64520,
+    "time": 1075333.3333324813
+   },
+   {
+    "title": "Level 19: Cups",
+    "frame": 67824,
+    "time": 1130399.9999994044
+   },
+   {
+    "title": "Level 20: Mats",
+    "frame": 71306,
+    "time": 1188433.333333008
+   },
+   {
+    "title": "Level 21: A Most Local Moon",
+    "frame": 74636,
+    "time": 1243933.3333332664
+   },
+   {
+    "title": "Ending",
+    "frame": 80184,
+    "time": 1336400.0000003637
+   },
+   {
+    "title": "Credits",
+    "frame": 82511,
+    "time": 1375183.3333338776
+   }
+  ]
+ }
+}

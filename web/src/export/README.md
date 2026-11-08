@@ -55,4 +55,8 @@ Pocket library metadata (`pocketLibrary.ts`) is independently versioned from GMP
 callers preserve a UUID in the companion. `pocketThumbnail.ts` shares indexed title/level
 rendering and produces one deflated PTH1 preview without PNG decoding. `pocketFile.ts` adds
 these optional entries while retaining legacy gameplay data. See the Pocket Player README
-for bounds, the JSONL/thumbnail index and firmware compatibility.
+for bounds, the JSONL/thumbnail index and firmware compatibility. A `.GMP` may also carry the
+game's DOS files as `dos/<NAME>` entries (deflated), which Game-Maker OS on the Raspberry Pi plays
+and the Pocket Player skips; `writeOsGmp` writes one with only those (no `game.txt`, so the board
+does not list it) for a game the packer leaves out. `scripts/pocketData.ts --gmp <card> --gmos`
+writes a card both players read.

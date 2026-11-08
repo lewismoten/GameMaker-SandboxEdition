@@ -50,6 +50,12 @@ export const SPECIALS: readonly Special[] = [
     arrival: 'floppy',
     theme: 'The day after Thanksgiving: a mountain moves in next door, and Tess marks its trail home',
   },
+  {
+    id: 'noodle-observatory',
+    window: { day: { on: 'date', month: 12, day: 14 }, days: 3 },
+    arrival: 'floppy',
+    theme: 'Monkey Day: Nell builds a kitchen observatory to look at a very odd moon',
+  },
 ];
 
 /** The Special with this catalog id, or undefined. */
