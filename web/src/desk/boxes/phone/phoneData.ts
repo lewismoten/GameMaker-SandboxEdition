@@ -104,7 +104,7 @@ const loading: Partial<Record<PhoneVariant, Promise<PhoneSet>>> = {};
 /** parts.bin from the site's pack of it (games/kit/trinketPacks.ts), byte for byte. */
 async function unpack(res: Response): Promise<ArrayBuffer> {
   const [{ unpackFloatsAndIndices }, data] = await Promise.all([
-    import('@lewismoten/gamemaker-sandbox-tools/mesh/meshPack'),
+    import('@lewismoten/gamemaker-sandbox-tools/pack/meshPack'),
     new Response(res.body!.pipeThrough(new DecompressionStream('deflate-raw'))).arrayBuffer(),
   ]);
   return unpackFloatsAndIndices(new Uint8Array(data)).buffer as ArrayBuffer;
@@ -154,7 +154,7 @@ export async function phonePrinterZip(): Promise<Uint8Array> {
   const res = await fetch(`${phoneBase}phone-3d-printer-parts.pack`);
   if (!res.ok || !res.body) throw new Error(`printer parts: ${res.status}`);
   const [{ unpackFiles }, { createZip }, data] = await Promise.all([
-    import('@lewismoten/gamemaker-sandbox-tools/mesh/meshPack'),
+    import('@lewismoten/gamemaker-sandbox-tools/pack/meshPack'),
     import('@lewismoten/gamemaker-sandbox-archives/zip'),
     new Response(res.body.pipeThrough(new DecompressionStream('deflate-raw'))).arrayBuffer(),
   ]);

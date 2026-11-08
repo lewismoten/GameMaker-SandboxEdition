@@ -1,5 +1,5 @@
 // The Phone of the Future kit's downloads for the box (web/public/trinkets/phone/, git-ignored build output): a pack of
-// the 3D-printer parts (the shell STLs of both builds, mesh/meshPack's packFiles, which the site zips on a download), a ZIP of the circuit board files (each build's KiCad project, with
+// the 3D-printer parts (the shell STLs of both builds, pack/meshPack's packFiles, which the site zips on a download), a ZIP of the circuit board files (each build's KiCad project, with
 // its Gerbers, which tools/export.sh writes to the tracked gerbers/, and the PIC firmware: phone.asm and its tracked phone.hex
 // to assemble it, which the book's "Programming the PIC" chapter loads), the two parts lists (CSV) and the
 // kit's README and parts lists as Markdown, which the box reads as its instructions book (manual/printables/phoneBook.ts).
@@ -8,7 +8,7 @@ import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, wri
 import { join, relative, resolve } from 'node:path';
 import { deflateRawSync } from 'node:zlib';
 import { createZip, type ZipEntry } from '@lewismoten/gamemaker-sandbox-archives/zip';
-import { packFiles } from '@lewismoten/gamemaker-sandbox-tools/mesh/meshPack';
+import { packFiles } from '@lewismoten/gamemaker-sandbox-tools/pack/meshPack';
 
 const root = resolve(import.meta.dirname, '../..');
 const phone = join(root, 'games/year2000/phone');

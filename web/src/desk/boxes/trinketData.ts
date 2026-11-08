@@ -47,7 +47,7 @@ export async function trinketFile(base: string, item: Pick<TrinketItem, 'packed'
   const bytes = new Uint8Array(await res.arrayBuffer());
   if (!packed) return bytes;
   const data = await transform(bytes, new DecompressionStream('deflate-raw'));
-  if (name.endsWith('.stl')) return (await import('@lewismoten/gamemaker-sandbox-tools/mesh/meshPack')).unpackStl(data);
+  if (name.endsWith('.stl')) return (await import('@lewismoten/gamemaker-sandbox-tools/pack/meshPack')).unpackStl(data);
   if (name.endsWith('.3mf')) return make3mf(data);
   throw new Error(`${name}: no way to unpack it`);
 }
@@ -58,9 +58,8 @@ async function transform(data: Uint8Array, stream: CompressionStream | Decompres
 
 /** A 3MF from its pack: the same files inside as the build's, zipped with the browser's deflate (stored where there is none). */
 async function make3mf(pack: Uint8Array): Promise<Uint8Array> {
-  const [{ unpack3mf }, { threeMfEntries }, { writeZip }] = await Promise.all([
-    import('@lewismoten/gamemaker-sandbox-tools/mesh/threeMfPack'),
-    import('@lewismoten/gamemaker-sandbox-tools/mesh/threeMf'),
+  const [{ unpack3mf, threeMfEntries }, { writeZip }] = await Promise.all([
+    import('@lewismoten/gamemaker-sandbox-tools/pack/threeMfPack'),
     import('@lewismoten/gamemaker-sandbox-tools/mesh/zipFile'),
   ]);
   const { title, parts } = unpack3mf(pack);

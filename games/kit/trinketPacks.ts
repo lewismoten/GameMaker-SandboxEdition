@@ -1,7 +1,7 @@
 // Packs the trinket files the site serves (web/public/trinkets/<game>/), so the Pages deploy carries a few MB
 // instead of tens: each STL a manifest lists (the print, its colored preview, its supports) becomes <file>.pack, a
-// lossless pack (web/packages/tools/src/mesh/meshPack.ts) raw-deflated, and the STL goes; each 3MF likewise
-// (mesh/threeMfPack.ts). The manifest's `packed` names them; the site makes the real file back in the browser
+// lossless pack (web/packages/tools/src/pack/meshPack.ts) raw-deflated, and the STL goes; each 3MF likewise
+// (pack/threeMfPack.ts). The manifest's `packed` names them; the site makes the real file back in the browser
 // (desk/boxes/trinketData.ts): an STL byte for byte, a 3MF with the same files inside (its own deflate may differ).
 // Run by scripts/build-games.mjs after the trinkets are made; a folder already packed costs one manifest read.
 // The trinket builders' own up-to-date checks accept a packed file (trinketTool.ts keys on its sources;
@@ -12,8 +12,8 @@ import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { deflateRawSync, inflateRawSync } from 'node:zlib';
-import { packFloatsAndIndices, packStl } from '@lewismoten/gamemaker-sandbox-tools/mesh/meshPack';
-import { pack3mf } from '@lewismoten/gamemaker-sandbox-tools/mesh/threeMfPack';
+import { packFloatsAndIndices, packStl } from '@lewismoten/gamemaker-sandbox-tools/pack/meshPack';
+import { pack3mf } from '@lewismoten/gamemaker-sandbox-tools/pack/threeMfPack';
 
 const root = resolve(import.meta.dirname, '../..');
 const trinkets = join(root, 'web/public/trinkets');

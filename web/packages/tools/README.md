@@ -275,9 +275,9 @@ closed mesh does not need out by quadric edge collapse (`decimate(mesh, { maxErr
 borders between a triangle color and the next stay put); `mesh/sampledField` samples a field once on a grid and reads it back
 by trilinear interpolation, for the many passes over one figure (`sampledField`); `mesh/threeMf` writes and reads multi-color 3MF files (`write3mf(parts,
 title, codec)`, `read3mf`: parts are a mesh and a color), over the small ZIP writer `mesh/zipFile` (pass Node's
-`deflateRawSync` as `codec.deflate` to compress). `mesh/meshPack` packs a binary STL losslessly into a much smaller file
+`deflateRawSync` as `codec.deflate` to compress). `pack/meshPack` packs a binary STL losslessly into a much smaller file
 (`packStl`, `unpackStl`: a table of distinct corners in byte planes, corner numbers as varints, normals worked out again;
-deflate the result) and gives the pieces (`toPlanes`, `packIndices`) for other mesh files; `mesh/threeMfPack` does the same
+deflate the result) and gives the pieces (`toPlanes`, `packIndices`) for other mesh files; `pack/threeMfPack` does the same
 for a 3MF `write3mf` wrote (`pack3mf`, `unpack3mf`: corners in thousandths, as the file has them; `threeMfEntries` makes
 its inner files again, the same bytes, to zip with any deflate). `mesh/voxel` meshes filled voxels (`voxelMesh`: coplanar faces merged into
 rectangles, no T-junctions, so it stays closed) and `mesh/pixelFigure` turns a pixel sprite into a standee on a base with at

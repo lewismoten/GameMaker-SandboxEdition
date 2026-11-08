@@ -1,4 +1,4 @@
-// Tests: the tools package's mesh packs (mesh/meshPack): a binary STL packed and unpacked is the same file byte
+// Tests: the tools package's mesh packs (pack/meshPack, pack/threeMfPack): a binary STL packed and unpacked is the same file byte
 // for byte, and the vertex-number and byte-plane pieces read back what they wrote.
 import { describe, expect, it } from 'vitest';
 import {
@@ -12,11 +12,11 @@ import {
   unpackStl,
   fromPlanes,
   toPlanes,
-} from '@lewismoten/gamemaker-sandbox-tools/mesh/meshPack';
+} from '@lewismoten/gamemaker-sandbox-tools/pack/meshPack';
 import { writeStl } from '@lewismoten/gamemaker-sandbox-tools/mesh/stl';
 import type { Mesh } from '@lewismoten/gamemaker-sandbox-tools/mesh/mesh';
-import { pack3mf, unpack3mf } from '@lewismoten/gamemaker-sandbox-tools/mesh/threeMfPack';
-import { threeMfEntries, write3mf } from '@lewismoten/gamemaker-sandbox-tools/mesh/threeMf';
+import { pack3mf, threeMfEntries, unpack3mf } from '@lewismoten/gamemaker-sandbox-tools/pack/threeMfPack';
+import { write3mf } from '@lewismoten/gamemaker-sandbox-tools/mesh/threeMf';
 import { readZip, writeZip } from '@lewismoten/gamemaker-sandbox-tools/mesh/zipFile';
 import { deflateRawSync, inflateRawSync } from 'node:zlib';
 

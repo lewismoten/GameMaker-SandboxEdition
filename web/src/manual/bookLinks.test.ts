@@ -7,7 +7,7 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { inflateRawSync } from 'node:zlib';
 import { listZip } from '@lewismoten/gamemaker-sandbox-archives/zip';
-import { unpackFiles } from '@lewismoten/gamemaker-sandbox-tools/mesh/meshPack';
+import { unpackFiles } from '@lewismoten/gamemaker-sandbox-tools/pack/meshPack';
 import { GUIDE_SECTIONS } from './guideSections';
 import { CHAPTERS } from './ultimate/plan';
 import { STARTER_ORDER } from '../project/starter';

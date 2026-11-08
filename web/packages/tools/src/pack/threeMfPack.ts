@@ -1,11 +1,16 @@
-// A 3MF that write3mf wrote (threeMf.ts), packed so a site can serve a small file and make the 3MF in the browser:
+// A 3MF that write3mf wrote (mesh/threeMf.ts), packed so a site can serve a small file and make the 3MF in the browser:
 // its title, and each part's name, color, corners and triangles. write3mf writes every corner in thousandths of a
 // millimeter, so a corner is three whole numbers here (each axis as varint steps from the corner before), and the
 // triangles' corner numbers are meshPack's varints. `pack3mf` refuses a file whose inner files it cannot make again
 // byte for byte; zipped again, the 3MF's deflate may differ from the first one's, its contents do not.
 import { packIndices, unpackIndices } from './meshPack';
-import { threeMfEntries, type Part } from './threeMf';
-import { readZip, type ZipCodec, type ZipEntry } from './zipFile';
+import { write3mf, type Part } from '../mesh/threeMf';
+import { readZip, type ZipCodec, type ZipEntry } from '../mesh/zipFile';
+
+/** The files inside the 3MF write3mf writes for these parts, before any deflate (write3mf stores them when given no codec). */
+export function threeMfEntries(parts: Part[], title: string): ZipEntry[] {
+  return readZip(write3mf(parts, title));
+}
 
 const MAGIC = 0x4d334d47; // "GM3M"
 const unesc = (s: string) =>
