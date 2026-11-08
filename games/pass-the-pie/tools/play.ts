@@ -2,11 +2,11 @@
 // at the last door (check.ts, walkthrough.ts and gendemo.ts run it).
 import { StarterBot } from '../../kit/starter/bot';
 import { playLevels } from '../../kit/levelRun';
-import { cranberryRoll, gravySlide, hungryDog, paradeDash, pumpkinYard, windyPark } from './route';
+import { bigGobble, gravySlide, hungryDog, payback, pumpkinYard, windyPark } from './route';
 import { GameSim } from './sim';
 
 export const SEED = 1;
-const LEVELS = [pumpkinYard, gravySlide, windyPark, cranberryRoll, hungryDog, paradeDash];
+const LEVELS = [pumpkinYard, payback, gravySlide, windyPark, hungryDog, bigGobble];
 
 export async function play(seed = SEED, upTo = LEVELS.length): Promise<{ sim: GameSim; bot: StarterBot }> {
   const sim = new GameSim(undefined, seed);

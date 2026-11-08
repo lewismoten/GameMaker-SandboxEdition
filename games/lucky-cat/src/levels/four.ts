@@ -6,7 +6,7 @@
 //   - the gate is four blocks tall: late means waiting a few seconds for it to open again and the bells to relight.
 // Two charms: the shooting star and the dice.
 import { StarterMap } from '../../../kit/starter/map';
-import type { Pal } from '../../../kit/starter/palette';
+import type { Pal } from '../print';
 import { GROUND, addSigns, onGround, room, scenery, startBook, type Level } from '../level';
 import { addMeter } from '../meter';
 
@@ -27,10 +27,10 @@ export const FOUR = {
 export const METER_ROW = 4;
 
 const SIGNS = {
-  race: ['THE FAIR GATE SHUTS AT THE 13TH CHIME. WATCH THE BELLS!', 4, 4],
-  wall: ['OVER THE WALL: A SHOOTING STAR!', 4, 3],
+  race: ['THE GATE SHUTS ON THE 13TH CHIME. EACH BELL IS A CHIME LEFT.', 4, 4],
+  wall: ['A SHOOTING STAR. OVER THE WALL.', 4, 3],
   seven: ['SEVEN IS LUCKY. TAKE THE DICE.', 4, 3],
-  gate: ['THE LAST BELL, THE GATE SHUTS.', 4, 3],
+  gate: ['LAST BELL GOES DARK, GATE SHUTS.', 4, 3],
 } as const;
 
 export function levelFour(pal: Pal): Level {
@@ -79,7 +79,7 @@ export function levelFour(pal: Pal): Level {
   return {
     file: 'four',
     title: 'Race to the Fair',
-    hint: 'Beat the 13th chime. Watch the bells.',
+    hint: 'Beat the 13th chime.',
     look: 'fair',
     chr: 'hero',
     map: m,

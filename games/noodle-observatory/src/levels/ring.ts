@@ -7,9 +7,11 @@
 //   uphill    wide swings with stairs painted along the fronts, the window's moon in view
 import { ORIGIN } from '../../../kit/starter/map';
 import type { Pal } from '../../../kit/starter/palette';
+import { castShadows, varyWalls } from '../dress';
 import { addSigns, startBook, type Level } from '../level';
 import type { LookName } from '../palette';
 import { Place } from '../place';
+import type { SongName } from '../song';
 
 export const SHAFT = { width: 24, height: 70, start: [11, 67] as [number, number], rows: [58, 49, 40, 31, 22, 13], dock: 5, gap: 3 } as const;
 
@@ -26,6 +28,9 @@ interface Shaft {
   /** Where each sign's board goes (top-left), and the window. */
   signAt: Record<string, [number, number]>;
   window: [number, number];
+  /** Where the shaft is (the pantry unless said) and its song. */
+  place?: 'pantry' | 'bakery';
+  song?: SongName;
 }
 
 export const SHAFTS: Shaft[] = [
@@ -62,6 +67,30 @@ export const SHAFTS: Shaft[] = [
     signAt: { top: [3, 62] },
     window: [4, 8],
   },
+  {
+    file: 'larder',
+    title: 'The Larder Shelf',
+    hint: 'The last shaft. Steer hard.',
+    look: 'pantry',
+    gaps: [3, 16, 6, 15, 4, 12],
+    washers: [51, 42, 33, 24, 15],
+    signs: { last: ['THE LAST SHAFT. NOBODY SAYS THIS IS NORMAL.', 4, 4] },
+    signAt: { last: [3, 61] },
+    window: [17, 20],
+  },
+  {
+    file: 'chute',
+    title: 'The Flour Chute',
+    hint: 'Up to the drying rack.',
+    look: 'bakery',
+    place: 'bakery',
+    song: 'oven',
+    gaps: [4, 15, 9, 3, 16, 10],
+    washers: [51, 42, 33, 24, 15],
+    signs: { chute: ['THE FLOUR CHUTE. THE RING HAS DONE THIS BEFORE.', 4, 3] },
+    signAt: { chute: [3, 62] },
+    window: [17, 30],
+  },
 ];
 
 /** The column the ring aims for at each row, bottom to top: the start, then the middle of each gap. */
@@ -86,7 +115,7 @@ export function pathAt(path: [number, number][], y: number): number {
 }
 
 export function buildShaft(pal: Pal, s: Shaft): Level {
-  const { book, timed } = startBook(pal, 'pantry', { still: true });
+  const { book, timed } = startBook(pal, s.place ?? 'pantry', { still: true });
   const signs = addSigns(book, pal, s.signs);
   // signs here hang on the still air too (the ring would be pulled down passing in front of one)
   const blocks = book.finish();
@@ -118,7 +147,10 @@ export function buildShaft(pal: Pal, s: Shaft): Level {
   }
   const path = shaftPath(s);
   for (const y of s.washers) m.set(Math.round(pathAt(path, y)), y, 'washer');
+  // cupboard fronts of mixed kinds, each row of fronts casting its shadow
+  castShadows(m, ['wall'], 3, W - 4, 1, H - 1);
+  varyWalls(m, -ORIGIN, W + ORIGIN, -ORIGIN, H + ORIGIN);
   m.start = [SHAFT.start[0] + ORIGIN, SHAFT.start[1] + ORIGIN];
   m.set(SHAFT.start[0], SHAFT.start[1], 'inBot').set(SHAFT.start[0], SHAFT.start[1] - 1, 'inTop');
-  return { file: s.file, title: s.title, hint: s.hint, look: s.look, map: m, book, timed, mon: 'kitchen', song: 'orbit', hero: 'ring' };
+  return { file: s.file, title: s.title, hint: s.hint, look: s.look, map: m, book, timed, mon: 'kitchen', song: s.song ?? 'orbit', hero: 'ring' };
 }

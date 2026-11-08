@@ -92,6 +92,22 @@ export function speckle(
   return p;
 }
 
+/**
+ * Steps every pixel that belongs to one of `ramps` by `steps` along its own ramp (negative darkens, positive
+ * lightens), where `level(x, y)` (0..1) is ordered-dithered in: a cast shadow, or a painted pool of light, that
+ * keeps the colors of whatever it falls on. Pixels in no ramp are left alone.
+ */
+export function rampShift(p: Pixels, ramps: number[][], steps: number, level: (x: number, y: number) => number): Pixels {
+  const to = new Map<number, number>();
+  for (const ramp of ramps) ramp.forEach((v, i) => to.set(v, ramp[Math.max(0, Math.min(ramp.length - 1, i + steps))]));
+  for (let y = 0; y < p.h; y++)
+    for (let x = 0; x < p.w; x++) {
+      const t = to.get(p.get(x, y));
+      if (t !== undefined && dither(x, y, level(x, y))) p.set(x, y, t);
+    }
+  return p;
+}
+
 export function pool(p: Pixels, cx: number, cy: number, rx: number, ry: number, r: number[], lo: number, hi: number): Pixels {
   for (let y = Math.floor(cy - ry); y <= cy + ry; y++)
     for (let x = Math.floor(cx - rx); x <= cx + rx; x++) {

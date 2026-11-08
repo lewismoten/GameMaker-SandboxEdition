@@ -4,6 +4,10 @@
       "short": "Climb up",
       "long": "Same as the Up arrow."
     },
+    "28": {
+      "short": "Kick",
+      "long": "Mr. Plume's jujitsu kick (his streets only): a wind-up, then a kick about a block and a half ahead."
+    },
     "30": {
       "short": "Walk left",
       "long": "Same as the Left arrow."
@@ -41,15 +45,20 @@
     "1": {
       "short": "Jump",
       "long": "Jump."
+    },
+    "2": {
+      "short": "Kick",
+      "long": "Mr. Plume's kick."
     }
   },
   "sounds": {
     "9": "The jump",
     "10": "Getting hurt",
-    "11": "Falling over"
+    "11": "Falling over",
+    "13": "Mr. Plume's kick"
   },
   "counters": {
-    "20": "Keys carried: a key adds one, a locked door takes one.",
-    "21": "Silver keys carried: not used here, but a copy can add them."
+    "20": "Dishes carried: a dish adds one, the neighbor's door takes it.",
+    "21": "Steel keys and bones carried: a garden gate takes a key, the dog takes a bone."
   }
 }

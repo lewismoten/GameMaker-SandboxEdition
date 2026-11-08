@@ -8,6 +8,8 @@ import { FOUR } from '../src/levels/four';
 import { SIX } from '../src/levels/six';
 import { THREE } from '../src/levels/three';
 import { FLOORS, TOWER } from '../src/levels/tower';
+import { MORNING } from '../src/levels/morning';
+import { CHORE_POINTS } from '../src/props';
 import { OPEN_TICKS } from '../src/meter';
 import { TWO } from '../src/levels/two';
 import { READ, climbUp, hop, leave, mirrored, monsterY, must, readAt, score, watchFor } from './routeKit';
@@ -113,8 +115,8 @@ export async function raceToTheFair(bot: StarterBot): Promise<void> {
   await must(bot, bot.walk(FOUR.dice, 'the dice'), 'to the dice');
   bot.say(`at the gate after ${bot.sim.ticks} ticks of ${OPEN_TICKS}`);
   if (bot.sim.ticks > OPEN_TICKS * 0.8) throw new Error(`the run is too slow for the fair: ${bot.sim.ticks} ticks of ${OPEN_TICKS}`);
-  score(bot, from, 2, 0, 'level 4');
-  if (bot.sim.ci.hitpts !== hp - 5) throw new Error(`level 4 cost more than the drip: ${hp} -> ${bot.sim.ci.hitpts}`);
+  score(bot, from, 2, 0, 'level 5');
+  if (bot.sim.ci.hitpts !== hp - 5) throw new Error(`level 5 cost more than the drip: ${hp} -> ${bot.sim.ci.hitpts}`);
   await leave(bot, bot.walk(FOUR.exit + 1, 'the exit'), 'the exit');
 }
 
@@ -141,8 +143,8 @@ export async function knockOnWood(bot: StarterBot): Promise<void> {
   await must(bot, bot.walk(FIVE.crowC - 3, 'before the last crow'), 'to the last crow');
   await watchFor(bot, up(FIVE.crowC, FIVE.crowRow), 'the last crow flying up');
   await must(bot, bot.walk(FIVE.crowC + 3, 'past the last crow'), 'past the last crow');
-  score(bot, from, 2, 10, 'level 5');
-  if (bot.sim.ci.hitpts !== hp) throw new Error(`level 6 cost hit points: ${hp} -> ${bot.sim.ci.hitpts}`);
+  score(bot, from, 2, 10, 'level 7');
+  if (bot.sim.ci.hitpts !== hp) throw new Error(`level 7 cost hit points: ${hp} -> ${bot.sim.ci.hitpts}`);
   await leave(bot, bot.walk(FIVE.exit + 1, 'the exit'), 'the exit');
 }
 
@@ -170,8 +172,8 @@ export async function rascalsRoof(bot: StarterBot): Promise<void> {
   await readAt(bot, 63, 'the last sign');
   await must(bot, bot.walk(SIX.rascal - 2, 'Rascal'), 'up to Rascal');
   await must(bot, bot.wait(READ), 'a hello');
-  score(bot, from, 2, 25, 'level 7');
-  if (bot.sim.ci.hitpts !== hp) throw new Error(`level 7 cost hit points: ${hp} -> ${bot.sim.ci.hitpts}`);
+  score(bot, from, 2, 25, 'level 8');
+  if (bot.sim.ci.hitpts !== hp) throw new Error(`level 8 cost hit points: ${hp} -> ${bot.sim.ci.hitpts}`);
   await leave(bot, bot.walk(SIX.exit + 1, 'the exit'), 'the exit');
 }
 
@@ -204,7 +206,36 @@ export async function clockTower(bot: StarterBot): Promise<void> {
   await lift(f4, 'second');
   await readAt(bot, 22, 'the bell sign');
   await must(bot, bot.walk(TOWER.bell, 'the bell'), 'to the bell');
-  score(bot, from, 1, 10, 'level 5');
-  if (bot.sim.ci.hitpts !== hp) throw new Error(`level 5 cost hit points: ${hp} -> ${bot.sim.ci.hitpts}`);
+  score(bot, from, 1, 10, 'level 6');
+  if (bot.sim.ci.hitpts !== hp) throw new Error(`level 6 cost hit points: ${hp} -> ${bot.sim.ci.hitpts}`);
   await leave(bot, bot.walk(TOWER.exit - 1, 'the exit'), 'the exit');
+}
+
+/** 4. Earlier That Morning, as Rascal: the chores (three ropes, three saucers), the crates, the awning and the key, the cracks, the crow, the padlock. */
+export async function earlierThatMorning(bot: StarterBot): Promise<void> {
+  const from = bot.sim.ci.score;
+  const hp = bot.sim.ci.hitpts;
+  await readAt(bot, 5, 'the Committee notice');
+  await must(bot, bot.walk(MORNING.cleat1, 'the first rope'), 'tying off the first rope');
+  await readAt(bot, 14, 'the to-do list');
+  await must(bot, bot.walk(MORNING.step1, 'the first doorstep'), 'setting out the first saucer');
+  await must(bot, bot.walk(MORNING.crates - 1, 'the crates'), 'to the crates');
+  await must(bot, bot.walk(MORNING.crates + 3, 'over the crates'), 'over the crates');
+  await climbUp(bot, MORNING.ladder, 5, 'the awning ladder');
+  await must(bot, bot.walk(MORNING.cleat2, 'the awning rope'), 'tying off the awning rope');
+  await must(bot, bot.walk(MORNING.key, 'the bin key'), 'to the bin key');
+  await must(bot, bot.walk(MORNING.awning[1] + 2, 'the end of the awning'), 'off the awning');
+  await hop(bot, MORNING.cracks, 2, 'the cracks');
+  await must(bot, bot.walk(MORNING.step2, 'the second doorstep'), 'setting out the second saucer');
+  await readAt(bot, 47, 'the crow notice');
+  await must(bot, bot.walk(MORNING.crow - 3, 'before the crow'), 'to the crow');
+  await watchFor(bot, () => monsterY(bot, MORNING.crow) <= MORNING.crowRow * 20 + 4, 'the crow flying up');
+  await must(bot, bot.walk(MORNING.crow + 3, 'past the crow'), 'past the crow');
+  await must(bot, bot.walk(MORNING.cleat3, 'the last rope'), 'tying off the last rope');
+  await must(bot, bot.walk(MORNING.wall + 2, 'through the padlock'), 'through the padlock');
+  await must(bot, bot.walk(MORNING.step3, 'the last doorstep'), 'setting out the last saucer');
+  score(bot, from, 0, 6 * CHORE_POINTS + 25, 'level 4');
+  if (bot.sim.ci.hitpts !== hp) throw new Error(`level 4 cost hit points: ${hp} -> ${bot.sim.ci.hitpts}`);
+  await must(bot, bot.wait(READ / 2), 'a look back at the work');
+  await leave(bot, bot.walk(MORNING.exit + 1, 'the exit'), 'the exit');
 }

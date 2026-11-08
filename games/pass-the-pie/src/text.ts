@@ -1,4 +1,5 @@
-// Every word PASS THE PIE shows on a text page (30 columns, 16 lines a page).
+// Every word PASS THE PIE shows on a text page (30 columns, 16 lines a page). The story page starts as the
+// storybook and the how-to page admits there is more to it.
 import { withCreditPage } from '../../kit/license';
 import { wrap } from '../../kit/starter/text';
 import about from '../about.json';
@@ -6,15 +7,13 @@ import about from '../about.json';
 export const STORY = wrap(`
 |PASS THE PIE
 
-It is Thanksgiving morning, and Grandma's oven has gone KA-CLUNK.
+It is Thanksgiving morning. Grandma's oven has gone KA-CLUNK, so every house on the street is cooking one dish, and Rory is carrying them all to the long table at the town hall.
 
-So the whole street is cooking the big dinner in its own kitchens, and somebody has to carry every dish to the long table at the town hall.
+Mr. Plume, Grandma's turkey, is a guest. He has been a guest for twelve years. He has led the town parade for twelve years.
 
-That somebody is Rory, in a striped scarf and a cap with ear flaps.
+He has not seen this year's parade flyer.
 
-A pie. A gravy boat. A casserole. The cranberry sauce. The rolls. House to house, one dish at a time.
-
-Mind the leaf piles, the vacuums, the footballs and one very hungry dog.
+Somebody should probably tell him gently.
 `);
 
 export const HOWTO = wrap(`
@@ -23,13 +22,14 @@ export const HOWTO = wrap(`
 |LEFT, RIGHT   walk
 |SPACE         jump
 |UP, DOWN      climb a ladder
+|ENTER         kick (Mr. Plume)
 |F2            lives, score
 
-Pick up the dish at the start of each street. A neighbor's door opens only for a dish, and takes it.
+Pick up the dish; the neighbor's door opens for it.
 
-Bumps spill the gravy (they take hit points). Hop over what rolls.
+Rory hops what is in the way. Mr. Plume does not hop.
 
-Leaf piles hide snacks. Touch a squirrel and it hops away.
+Steel keys open garden gates.
 
 |ESC for the menu.
 `);
@@ -39,7 +39,7 @@ export const CREDITS = withCreditPage(
 |PASS THE PIE  v${about.version}
 |(c) 1994 Sandbox Software
 
-Design, pixels, beeps, songs and levels by Claude Sonnet 5.5, an AI model made by Anthropic.
+Design, pixels, beeps, songs, words and levels by Claude Sonnet 5.5, an AI model made by Anthropic.
 
 Made with GAME-MAKER 3.0 from Recreational Software Designs.
 
@@ -50,19 +50,21 @@ A Special: a game that visits for a few days of the year.
 export const WON = wrap(`
 |PASS THE PIE
 
-Every dish is on the long table, and Grandma's oven is fixed just in time for dessert.
+Grandma's oven was never broken. It was unplugged, to run a thirty-foot turkey.
 
-Nobody asked who ate the second pie. Mr. Plume the turkey is a guest, and guests get dessert.
+Big Gobble is folded in Uncle Dale's garage, next to his feelings.
 
-Thank you for carrying dinner across town.
+Aunt Marjorie called the gravy "fine." Rory has a screenshot.
 
-Next year, the oven is NOT allowed to go KA-CLUNK.
+Mr. Plume leads the parade next year. Today he sits at the kids' table. They have the good rolls.
 `);
 
 export const LOST = wrap(`
-|OH NO!
+|NOT LIKE THIS
 
-The gravy boat is empty and Rory is out of hit points.
+Out of hit points.
 
-Everybody on the street is still hungry. Try again: hop the vacuums, wait for gaps, and keep the dish in hand.
+The dinner is still out there. So is Big Gobble.
+
+Rory: hop the vacuums, wait for a gap. Mr. Plume: kick first, ask later.
 `);

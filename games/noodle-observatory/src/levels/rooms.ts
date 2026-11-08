@@ -8,7 +8,8 @@
 //   5 The Colander Has Other Plans   rattle, garden, roofrim (rattle tags, the colander rolling on ahead)
 //   6 Supper Under the Window        setwest (plates), seteast (cups), moonmeal (mats)
 import type { Pal } from '../../../kit/starter/palette';
-import type { Icon, Place as PlaceName } from '../art';
+import { isOpen, type Icon, type Place as PlaceName } from '../art';
+import { dressRoom } from '../dress';
 import { addSigns, startBook, type Level, type MonFile, type SignDefs } from '../level';
 import { ROOF } from '../monsters';
 import { CHANNELS } from '../nell';
@@ -16,7 +17,7 @@ import type { LookName } from '../palette';
 import { paintRoom, type Decor, type Part, type Step } from '../place';
 import type { SongName } from '../song';
 
-interface RoomSpec {
+export interface RoomSpec {
   file: string;
   title: string;
   hint: string;
@@ -37,8 +38,8 @@ interface RoomSpec {
 export const COLANDER_FROM = 5;
 
 const [C0, C1, C2, C3, C4, C5] = CHANNELS;
-const P = (icon: Icon, ch: number, pad = false): Part => ({ icon, ch, ...(pad ? { pad } : {}) });
-const at = (p: Part, x: number) => ({ ...p, x });
+export const P = (icon: Icon, ch: number, pad = false): Part => ({ icon, ch, ...(pad ? { pad } : {}) });
+export const at = (p: Part, x: number) => ({ ...p, x });
 
 /** Every icon a plan uses, with its counter (sockets, parts and pads). */
 function iconsOf(plan: Step[]): { parts: [Icon, number][]; pads: [Icon, number][] } {
@@ -63,7 +64,8 @@ export function buildRoom(pal: Pal, r: RoomSpec): Level {
   const { parts, pads } = iconsOf(r.plan);
   const { book, timed } = startBook(pal, r.place, { parts, pads, tilt: r.tilt });
   const signs = addSigns(book, pal, r.signs);
-  const map = paintRoom(book, r.width, r.plan, r.decor, r.place === 'roof', signs);
+  const map = paintRoom(book, r.width, r.plan, r.decor, isOpen(r.place), signs);
+  dressRoom(map, r.place, r.width);
   if (r.colander !== undefined) map.mon(ROOF.colander[r.colander], COLANDER_FROM, 3);
   return { file: r.file, title: r.title, hint: r.hint, look: r.look, map, book, timed, mon: r.mon ?? 'kitchen', song: r.song, hero: 'nell', plan: r.plan };
 }
@@ -94,7 +96,7 @@ export const ROOMS: Record<string, RoomSpec> = {
     width: 52,
     tilt: true,
     signs: {
-      brackets: ['THREE BRACKETS ARE UP ON THE SHELVES.', 4, 3],
+      brackets: ['THREE BRACKETS, SIX WOBBLY SHELVES. FAIR.', 4, 3],
       wobble: ['SHELVES WOBBLE, THEN TIP. WAIT TILL LEVEL.', 4, 3],
     },
     plan: [
@@ -119,7 +121,7 @@ export const ROOMS: Record<string, RoomSpec> = {
     width: 50,
     signs: {
       shapes: ['A KNOB, A FOOT AND A TUBE. MATCH EACH SHAPE.', 4, 3],
-      round: ['A ROUND MOON. AS ROUND AS A WINDOW.', 4, 3],
+      round: ['A ROUND MOON. AS ROUND AS A WINDOW. HM.', 4, 3],
     },
     plan: [
       { t: 'sign', x: 3, key: 'shapes' },
@@ -142,7 +144,7 @@ export const ROOMS: Record<string, RoomSpec> = {
     place: 'cupboard',
     song: 'theme',
     width: 60,
-    signs: { six: ['SIX PARTS. SIX SOCKETS. ONE SCOPE.', 4, 3] },
+    signs: { six: ['SIX PARTS. SIX SOCKETS. NO SPARES.', 4, 3] },
     plan: [
       { t: 'sign', x: 3, key: 'six' },
       { t: 'pocket', ladder: 9, row: 6, to: 15, part: at(sTube, 11), up: { ladder: 14, row: 3, to: 18, part: at(sEye, 18), washer: 16 }, back: 'drop' },
@@ -296,7 +298,7 @@ export const ROOMS: Record<string, RoomSpec> = {
     width: 52,
     signs: {
       squares: ['NOW THE SQUARE PADS.', 4, 2],
-      spoons: ['THOSE SPOTS OF LIGHT LOOK LIKE SPOONS.', 4, 3],
+      spoons: ['THOSE STARS LOOK LIKE SPOONS. FINE.', 4, 3],
     },
     plan: [
       { t: 'sign', x: 3, key: 'squares' },
@@ -359,7 +361,7 @@ export const ROOMS: Record<string, RoomSpec> = {
     mon: 'roof',
     width: 58,
     signs: {
-      rolled: ['THE COLANDER ROLLED OUT ONTO THE ROOF!', 4, 3],
+      rolled: ['THE COLANDER HAS LEFT THE KITCHEN.', 4, 3],
       tags: ['RATTLE TAGS OPEN THE GARDEN ARCHES.', 4, 3],
     },
     plan: [
@@ -452,7 +454,7 @@ export const ROOMS: Record<string, RoomSpec> = {
     width: 52,
     signs: {
       supper: ['SUPPER ON THE ROOF. ONE PLATE AT A TIME.', 4, 3],
-      view: ['WHAT A VIEW OF THE MOON.', 4, 2],
+      view: ['WHAT A MOON. SO TO SPEAK.', 4, 2],
     },
     plan: [
       { t: 'sign', x: 3, key: 'supper' },

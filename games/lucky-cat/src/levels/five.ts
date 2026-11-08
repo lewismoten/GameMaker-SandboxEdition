@@ -5,7 +5,7 @@
 //   - a ladder up to a high roof with a rainbow.
 // Two charms: the feather and the rainbow.
 import { StarterMap } from '../../../kit/starter/map';
-import type { Pal } from '../../../kit/starter/palette';
+import type { Pal } from '../print';
 import { CROW } from '../monsters';
 import { GROUND, addSigns, onGround, room, scenery, startBook, type Level } from '../level';
 
@@ -23,9 +23,9 @@ export const FIVE = {
 } as const;
 
 const SIGNS = {
-  crow: ['A CROW! WAIT TILL IT FLIES UP, THEN GO.', 4, 3],
+  crow: ['CROW ON DUTY. WAIT TILL IT FLIES UP.', 4, 3],
   knock: ['KNOCK ON WOOD: TOUCH THE BOXES.', 4, 3],
-  roof: ['CLIMB TO THE HIGH ROOF FOR A RAINBOW.', 4, 3],
+  roof: ["RAINBOW UP ON THE ROOF. DON'T ASK HOW.", 4, 3],
 } as const;
 
 export function levelFive(pal: Pal): Level {
@@ -60,7 +60,7 @@ export function levelFive(pal: Pal): Level {
   return {
     file: 'five',
     title: 'Knock on Wood',
-    hint: 'Wait for the crows. Knock on wood.',
+    hint: 'Let the crows pass. Knock.',
     look: 'roof',
     chr: 'hero',
     map: m,

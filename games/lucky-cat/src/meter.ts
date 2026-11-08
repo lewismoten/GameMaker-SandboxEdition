@@ -6,7 +6,7 @@
 // level change together and are always in view.
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { PULL, SOLID, type Book } from '../../kit/starter/book';
-import type { Pal } from '../../kit/starter/palette';
+import type { Pal } from './print';
 import type { Timed } from './level';
 import { fairGate, pip } from './props';
 
@@ -17,13 +17,19 @@ export const OPEN_TICKS = BELLS * 130;
 export const SHUT_TICKS = 150;
 export const CYCLE = OPEN_TICKS + SHUT_TICKS;
 
-/** The little clock face that starts each row of bells. */
+/** The little clock face that starts each row of bells: paper dial on ink, the hands a minute from 13. */
 function cap(pal: Pal): Pixels {
   const { c } = pal;
-  const p = new Pixels(20, 20, pal.r('brick')[1]);
-  p.frame(0, 0, 20, 20, c('brick', 0));
-  p.disc(10, 10, 7.4, c('stone', 4)).disc(10, 10, 6.2, c('white', 3)).ring(10, 10, 7, c('gold', 2));
-  p.line(10, 10, 10, 5, c('ink', 0)).line(10, 10, 14, 8, c('red', 1)).disc(10, 10, 1, c('gold', 3));
+  const p = new Pixels(20, 20, c('ink', 0));
+  p.disc(10, 10, 7.6, c('paper', 3)).disc(10, 10, 6.4, c('paper', 4));
+  p.line(10, 10, 10, 5, c('ink', 0)).line(10, 10, 13, 6, c('red', 1)).disc(10, 10, 1, c('gold', 3));
+  for (const [x, y] of [
+    [10, 4],
+    [16, 10],
+    [10, 16],
+    [4, 10],
+  ])
+    p.set(x, y, c('ink', 1));
   return p;
 }
 

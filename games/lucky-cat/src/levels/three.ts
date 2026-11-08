@@ -5,7 +5,7 @@
 //   - behind it, a lucky sock, and the exit.
 // Two charms: the acorn and the sock.
 import { StarterMap } from '../../../kit/starter/map';
-import type { Pal } from '../../../kit/starter/palette';
+import type { Pal } from '../print';
 import { GROUND, addSigns, onGround, room, startBook, type Level } from '../level';
 
 export const THREE = {
@@ -20,10 +20,10 @@ export const THREE = {
 } as const;
 
 const SIGNS = {
-  umb: ['UMBRELLAS OPENED INDOORS! THEY FLOAT UP.', 4, 3],
-  ride: ['STEP IN AND RISE. THEN STEP OFF.', 4, 3],
-  salt: ['SPILLED SALT! TOSS A PINCH OVER YOUR SHOULDER.', 4, 4],
-  shaker: ['THE SHAKER IS UP HERE', 4, 2],
+  umb: ['UMBRELLAS OPEN INDOORS. THEY FLOAT UP.', 4, 3],
+  ride: ['STEP IN TO RISE. STEP OFF AT THE TOP.', 4, 3],
+  salt: ['SPILLED SALT. A PINCH OVER THE SHOULDER FIXES IT. EVERYONE KNOWS.', 4, 4],
+  shaker: ['SALT SHAKER: UP HERE.', 4, 2],
 } as const;
 
 export function levelThree(pal: Pal): Level {
@@ -52,7 +52,7 @@ export function levelThree(pal: Pal): Level {
   return {
     file: 'three',
     title: 'Town Hall',
-    hint: 'Float up. Toss the salt.',
+    hint: 'Ride the umbrellas. Fix the salt.',
     look: 'hall',
     chr: 'hero',
     map: m,

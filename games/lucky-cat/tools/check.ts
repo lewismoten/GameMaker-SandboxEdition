@@ -11,7 +11,7 @@ const { pal, levels } = buildLevels();
 const problems = levels.flatMap((l) => invisibleWalls(l.book, finishBlocks(l), pal, [{ name: l.file, map: l.map.done() }]));
 if (problems.length) throw new Error(`Invisible walls:\n${problems.join('\n')}`);
 const charms = levels.reduce((n, l) => n + l.charms.length, 0);
-if (levels.length === 7 && charms !== 13) throw new Error(`The levels hold ${charms} charms, not 13`);
+if (charms !== 13) throw new Error(`The levels hold ${charms} charms, not 13`);
 const { sim } = await play();
 console.log(
   `lucky-cat: the bot played all ${levels.length} levels; score ${sim.ci.score} (${charms} charms of ${CHARM_POINTS} points, counter ${CHARM_COUNTER}), ${sim.trail.length} scenes entered`,

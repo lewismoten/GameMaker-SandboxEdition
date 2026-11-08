@@ -1,18 +1,13 @@
-// LUCKY CAT's palette: the Starters' bright ramps, plus Midnight's fur and a few sky and wall tints, and a way to
-// give each level its own look by recoloring named ramps (the same blocks, a different time and place).
+// LUCKY CAT's palette (the woodcut's inks, print.ts), and each level's look: the same blocks printed with a
+// different plate (the `sky` ramp) and spot color (`gold`), the way a printer changes inks between runs.
 import { PaletteBuilder } from '@lewismoten/gamemaker-sandbox-tools/kit/palette';
-import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
+import { buildPrintPalette, type Pal } from './print';
 
 type RGB = [number, number, number];
 
-/** Midnight's fur: a dark ramp with a violet sheen, light enough to read against the ink outline. */
-function furRamp(b: PaletteBuilder): void {
-  b.ramp('fur', 5, [26, 22, 48], [104, 94, 164], [48, 42, 86]);
-}
-
-/** The game's palette (index 0 is black; the shared ramps keep their indices). */
+/** The game's palette (index 0 is black). */
 export function buildCatPalette(): Pal {
-  return buildStarterPalette(furRamp);
+  return buildPrintPalette();
 }
 
 /** A ramp's new look: [darkest, lightest, middle]. */
@@ -30,119 +25,92 @@ export function swapped(pal: Pal, tints: Record<string, Tint>): Uint8Array {
   return out;
 }
 
-/** Each level's look. Level 1 keeps the base palette. */
+/** Each level's inks. Level 1 keeps the base: a blue-black night and gold. */
 export const LOOKS: Record<string, Record<string, Tint>> = {
-  // a funhouse of mirrors: lilac sky, purple walls, teal floor
+  // the funhouse: a cold teal plate, silver-blue spot
   mirror: {
     sky: [
-      [96, 80, 190],
-      [226, 214, 255],
-      [160, 140, 236],
+      [10, 34, 40],
+      [96, 170, 170],
+      [26, 70, 78],
     ],
-    brick: [
-      [60, 40, 120],
-      [230, 190, 250],
-      [140, 90, 200],
-    ],
-    grass: [
-      [20, 90, 110],
-      [150, 245, 235],
-      [50, 170, 170],
-    ],
-    dirt: [
-      [40, 30, 90],
-      [150, 130, 220],
-      [90, 70, 170],
+    gold: [
+      [40, 80, 110],
+      [220, 246, 255],
+      [130, 196, 230],
     ],
   },
-  // the town hall: warm cream walls, wooden floor
+  // the town hall at an emergency meeting: oxblood walls, gold
   hall: {
     sky: [
-      [220, 180, 120],
-      [255, 246, 214],
-      [244, 214, 160],
-    ],
-    brick: [
-      [120, 60, 40],
-      [250, 190, 140],
-      [200, 110, 80],
-    ],
-    grass: [
-      [110, 60, 30],
-      [240, 190, 110],
-      [180, 120, 60],
-    ],
-    dirt: [
-      [80, 44, 28],
-      [200, 140, 90],
-      [140, 88, 56],
+      [40, 12, 18],
+      [170, 90, 90],
+      [84, 28, 34],
     ],
   },
-  // the afternoon of the fair: peach sky
+  // earlier that morning: the print turned over, a pale dawn plate and a tangerine spot (Rascal's hour)
+  morning: {
+    sky: [
+      [196, 178, 170],
+      [255, 248, 230],
+      [238, 222, 200],
+    ],
+    gold: [
+      [130, 50, 10],
+      [255, 210, 130],
+      [246, 130, 40],
+    ],
+  },
+  // the race to the fair: a violet dusk, gold and hot red
   fair: {
     sky: [
-      [250, 150, 90],
-      [255, 240, 190],
-      [255, 196, 130],
+      [36, 16, 50],
+      [180, 110, 170],
+      [74, 34, 90],
     ],
-    brick: [
-      [150, 40, 60],
-      [255, 170, 130],
-      [220, 80, 80],
-    ],
-  },
-  // rooftops and wind: mint sky
-  roof: {
-    sky: [
-      [60, 170, 170],
-      [220, 255, 240],
-      [140, 220, 210],
-    ],
-    brick: [
-      [90, 50, 70],
-      [230, 160, 150],
-      [170, 90, 100],
-    ],
-    grass: [
-      [60, 90, 140],
-      [190, 220, 255],
-      [110, 150, 210],
+    red: [
+      [130, 10, 40],
+      [255, 120, 110],
+      [236, 40, 60],
     ],
   },
-  // inside the clock tower: dark teal and warm amber
+  // inside the clock tower: sepia and brass
   tower: {
     sky: [
-      [30, 50, 80],
-      [150, 190, 220],
-      [70, 100, 140],
+      [30, 20, 12],
+      [170, 130, 90],
+      [64, 44, 28],
     ],
-    brick: [
-      [90, 60, 40],
-      [240, 190, 120],
-      [170, 110, 70],
-    ],
-    grass: [
-      [70, 50, 30],
-      [210, 170, 100],
-      [140, 100, 60],
+    gold: [
+      [110, 80, 20],
+      [250, 230, 150],
+      [210, 170, 70],
     ],
   },
-  // sunset over the town for the finale
+  // the rooftops: a slate plate and a moon-green spot
+  roof: {
+    sky: [
+      [16, 24, 30],
+      [120, 150, 150],
+      [36, 52, 60],
+    ],
+    gold: [
+      [60, 90, 40],
+      [230, 255, 190],
+      [170, 220, 110],
+    ],
+  },
+  // payback: a red-black plate and the hottest gold
   dusk: {
     sky: [
-      [120, 70, 170],
-      [255, 214, 190],
-      [236, 130, 160],
+      [30, 6, 12],
+      [190, 70, 70],
+      [72, 14, 24],
     ],
-    brick: [
-      [80, 30, 70],
-      [240, 150, 130],
-      [180, 70, 100],
-    ],
-    grass: [
-      [30, 90, 70],
-      [150, 220, 120],
-      [60, 150, 90],
+    gold: [
+      [140, 80, 0],
+      [255, 246, 150],
+      [255, 196, 30],
     ],
   },
 };

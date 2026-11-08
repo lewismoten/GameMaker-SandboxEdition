@@ -1,6 +1,6 @@
-// PASS THE PIE's three songs (starterSong, the Starters' band): "Street Walk" (swing, G major) for the streets,
-// "Rolls Are Cooling" (a quick run, C major) for the timed dash, and "Long Table" (a music box, F major) for the
-// ending.
+// PASS THE PIE's three songs (starterSong, the Starters' band): "Street Walk" (swing, G major) for Rory's storybook
+// streets, "Payback" (brass over a driving beat, E minor, 160) for Mr. Plume's, and "Long Table" (a music box,
+// F major) for the ending.
 import { starterSong } from '../../kit/starter/songStyle';
 
 export const streetWalk = (): Uint8Array =>
@@ -16,16 +16,17 @@ export const streetWalk = (): Uint8Array =>
     },
   });
 
-export const rollsCooling = (): Uint8Array =>
-  starterSong('moving', {
-    bpm: 150,
+export const payback = (): Uint8Array =>
+  starterSong('foes', {
+    bpm: 160,
+    lead: 'brass',
     A: {
-      chords: 'C | F | G | C | C | F | G | C',
-      tune: 'C5 e, E5 e, G5 e, E5 e, C6 q, G5 q | A5 e, G5 e, F5 e, A5 e, C6 h | B5 e, A5 e, G5 e, B5 e, D6 h | C6 q, G5 q, E5 q, C5 q | E5 e, G5 e, C6 e, G5 e, E6 q, C6 q | F6 e, E6 e, D6 e, C6 e, A5 h | G5 q, B5 q, D6 q, G6 q | C6 h., r q',
+      chords: 'Em | Em | C | D | Em | Em | C B | Em',
+      tune: 'E5 e, E5 e, G5 e, E5 e, B5 q, A5 q | G5 e, F#5 e, E5 e, D5 e, E5 h | C6 q, B5 q, G5 q, E5 q | D5 e, E5 e, F#5 e, A5 e, D6 h | E5 e, E5 e, G5 e, E5 e, B5 q, E6 q | D6 e, B5 e, G5 e, B5 e, E6 h | C6 q, G5 q, B5 q, D#6 q | E6 h., r q',
     },
     B: {
-      chords: 'Am | F | C | G | Am | F | G | C',
-      tune: 'A5 q, E5 q, A5 q, C6 q | A5 e, C6 e, F6 q, C6 h | G5 q, C6 q, E6 q, C6 q | D6 q, B5 q, G5 h | A5 e, B5 e, C6 e, E6 e, A6 q, E6 q | F6 q, A5 q, C6 h | D6 e, B5 e, G5 e, D6 e, G6 h | C6 w',
+      chords: 'Am | Em | Am | B | C | G | Am B | Em',
+      tune: 'A5 q, C6 q, E6 q, C6 q | B5 e, A5 e, G5 e, B5 e, E5 h | A5 e, B5 e, C6 e, E6 e, A6 h | F#6 q, D#6 q, B5 h | G6 e, E6 e, C6 e, E6 e, G6 q, E6 q | D6 e, B5 e, G5 e, B5 e, D6 h | C6 q, A5 q, B5 q, D#6 q | E6 w',
     },
   });
 

@@ -5,7 +5,7 @@
 //   - a ladder up to a high awning with a horseshoe, and a crate wall to hop.
 // Two charms: the clover and the horseshoe.
 import { StarterMap } from '../../../kit/starter/map';
-import type { Pal } from '../../../kit/starter/palette';
+import type { Pal } from '../print';
 import { GROUND, addSigns, onGround, room, scenery, startBook, type Level } from '../level';
 
 /** Where things are, for the bot and the shots (columns; rows count down from the sky). */
@@ -23,11 +23,11 @@ export const ONE = {
 } as const;
 
 const SIGNS = {
-  start: ['13 CHARMS TO FIND. TWO ARE HERE.', 4, 3],
-  ladder: ['A LADDER! GO AROUND, NOT UNDER.', 4, 3],
-  crack: ['MIND THE CRACKS. JUMP!', 4, 3],
-  shoe: ['CLIMB UP FOR A HORSESHOE', 4, 3],
-  blame: ['A BLACK CAT? BAD LUCK, SAYS THE TOWN. NOT SO!', 4, 4],
+  start: ['NOTICE: BLACK CAT AT LARGE. AVOID EYE CONTACT.', 4, 3],
+  ladder: ['LADDER: DO NOT WALK UNDER. USE THE SCAFFOLD.', 4, 3],
+  crack: ["STEP ON A CRACK? DON'T. JUMP.", 4, 3],
+  shoe: ['LOST: ONE LUCKY SHOE. LAST SEEN ON AN AWNING.', 4, 3],
+  blame: ['CATS ARE BAD LUCK. THIS IS A FACT. SIGNED, THE COMMITTEE', 4, 4],
 } as const;
 
 export function levelOne(pal: Pal): Level {
@@ -80,7 +80,7 @@ export function levelOne(pal: Pal): Level {
   return {
     file: 'one',
     title: 'Ladder Lane',
-    hint: 'Go around the ladder. Mind the cracks.',
+    hint: 'Go over the ladder. Hop the cracks.',
     look: '',
     chr: 'hero',
     map: m,

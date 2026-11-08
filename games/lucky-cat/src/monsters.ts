@@ -1,32 +1,56 @@
-// LUCKY CAT's one monster kind: the crow who keeps knocking on wood. A round, glossy blue-black bird with a big
-// white eye and an orange beak, wings up and wings down. It does not chase; it flaps along a path, and bumping it
-// is a little bad luck (5 hit points). Slot 0 patrols sideways, slot 1 bobs up and down.
+// LUCKY CAT's one monster kind: the crow, the town's lookout, who keeps knocking on wood. Cut in the game's woodcut
+// (print.ts): an ink bird with a paper cut line, a gold eye and a sharp beak, wings up and wings down. It does not
+// chase; it flaps along a path, and bumping it is a little bad luck (5 hit points). Slot 0 patrols sideways, slot 1
+// bobs up and down.
 import { SOLBOT, SOLLEF, SOLRIG, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { newMonsterSet, type Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { corner, mon, pace } from '@lewismoten/gamemaker-sandbox-tools/kit/actors';
-import { outline } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
-import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
-import { blob } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
+import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { Book } from '../../kit/starter/book';
-import type { Pal } from '../../kit/starter/palette';
+import { art, cut, type Pal } from './print';
 import { BAD_LUCK } from './props';
-
-const T = 255;
 
 /** The crow's picture, wings up or down, facing right. */
 function crow(pal: Pal, up: boolean): Pixels {
-  const { c, r } = pal;
-  const p = new Pixels(20, 20, T);
-  const body = r('stone');
-  const wy = up ? 1 : 9;
-  blob(p, 7, wy + 3, 3.6, 4.6, body, 0, 2);
-  blob(p, 9, 11, 7.4, 5.2, body, 0, 2);
-  blob(p, 14, 9, 4.2, 4, body, 0, 3);
-  p.rect(17, 9, 3, 2, c('orange', 3)).set(19, 10, c('orange', 2));
-  p.disc(15, 8, 1.8, c('white', 3)).set(15, 8, c('ink', 0)).set(16, 8, c('ink', 0));
-  p.rect(1, 12, 3, 2, body[1]).rect(0, 14, 3, 1, body[1]);
-  p.rect(8, 16, 1, 3, c('orange', 2)).rect(11, 16, 1, 3, c('orange', 2));
-  return outline(p, c('ink', 0), { transparent: T });
+  const wings = up
+    ? [
+        '....KK..............',
+        '....KKK.............',
+        '.....KKK............',
+        '.....KKKK...........',
+        '......KKKK..........',
+        '......KKKKK.........',
+        '.......KKKKK........',
+      ]
+    : [
+        '....................',
+        '....................',
+        '....................',
+        '....................',
+        '....................',
+        '....................',
+        '....................',
+      ];
+  const low = up
+    ? ['....................', '....................', '....................']
+    : ['.......KKKKK........', '......KKKKK.........', '.....KKKK...........'];
+  return cut(
+    pal,
+    art(pal, [
+      ...wings,
+      '............KKK.....',
+      '...........KKGKK....',
+      '..........KKKKKKYY..',
+      '...KK....KKKKKKKKYY.',
+      '..KKKKKKKKKKKKKK....',
+      '.KKKnKKKKKKKKKK.....',
+      'KKKKKnnKKKKKKK......',
+      ...low,
+      '.........K..K.......',
+      '.........Y..Y.......',
+      '........YY.YY.......',
+    ]),
+  );
 }
 
 /** The monster pictures (.MBL). */

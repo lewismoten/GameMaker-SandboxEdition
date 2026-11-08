@@ -1,17 +1,18 @@
-// Level 2, Gust: the class's thank-you cards are blowing down Main Street. A gust meter (GU ST and five teal bars,
-// repeated along the street so one is always on screen) drains by itself; each card is blown off the street after its
-// own number of ticks. Four cards open the card box at the end of the street. Out of time? A door at the start of
-// the street begins the level again. A runaway balloon bobs over the sidewalk (touch it and it pops).
+// Level 2, Gust: someone has aimed six leaf blowers down Main Street, and the class's thank-you cards are airborne. A gust
+// meter (GU ST and five bars, repeated along the street so one is always on screen) drains by itself; each card is blown
+// off the street after its own number of ticks. Four cards open the card box at the end of the street (the rest go in
+// Penny's pocket for the route). Out of time? A door at the start of the street begins the level again. A runaway
+// balloon bobs over the sidewalk. Past the last card, a fire escape climbs to Gigi's second playbook page.
 import { StarterMap } from '../../kit/starter/map';
-import type { Pal } from '../../kit/starter/palette';
+import type { Pal } from './print';
 import { PULL } from '../../kit/starter/book';
-import { baseBook, type PBook } from './base';
+import { addPage, baseBook, type PBook } from './base';
 import { addCardBox, addGust } from './items';
-import { Level, GROUND, addSigns, bunting, column, flagpole, onGround, room, shop, street } from './lay';
+import { Level, GROUND, addSigns, bunting, column, flagpole, onGround, room, run, skyline, street } from './lay';
 import { MONS } from './monsters';
 import { addBandArch } from './park';
 import { addCard, addFlags, addStreet, CARD_POINTS, CARDS } from './town';
-import { LEVEL2_SIGNS } from './text';
+import { GUST_SIGNS } from './text';
 
 /** Where the cards lie, the row each lies on and the tick each is blown away (tuned to the bot's pace, with a human's slack). */
 export const CARDS_AT = [
@@ -36,6 +37,12 @@ export const AT2 = {
     [28, 30],
     [46, 48],
   ],
+  /** The fire escape: [first x, last x, row] steps up, and the page at the top. */
+  escape: [
+    [72, 73, 8],
+    [74, 75, 6],
+  ] as [number, number, number][],
+  page: [75, 5] as [number, number],
 } as const;
 
 function timedCards(book: PBook): void {
@@ -54,25 +61,16 @@ export function level2(pal: Pal): Level {
   addGust(book, pal, AT2.perSegment);
   addCardBox(book, pal);
   timedCards(book);
-  const s = addSigns(book, pal, LEVEL2_SIGNS);
+  addPage(book, pal);
+  const s = addSigns(book, pal, GUST_SIGNS);
   const g = room(AT2.width, AT2.exit, AT2.start);
   const m = new StarterMap(book, g.rows());
   street(m, 1, AT2.width - 2);
   m.set(AT2.retry, GROUND - 2, 'doorTop').set(AT2.retry, GROUND - 1, 'doorBottom'); // the door that starts the level over
   // shop fronts along the street, with alleys between
-  const shops: [number, number, 'wallA' | 'wallB'][] = [
-    [10, 7, 'wallA'],
-    [19, 8, 'wallB'],
-    [29, 7, 'wallA'],
-    [38, 9, 'wallB'],
-    [49, 8, 'wallA'],
-    [59, 7, 'wallB'],
-    [68, 7, 'wallA'],
-  ];
-  shops.forEach(([x, w, tone], i) => shop(m, x, w, tone, i % 2 ? w - 3 : 2));
+  skyline(m, 9, 65, [34, 35, 36]);
   bunting(m, 8, 84, 2);
   flagpole(m, 34, GROUND, 6);
-  flagpole(m, 66, GROUND, 6);
   // the gust meter, along the top, with a copy every nine blocks
   for (let x = 1; x + 8 <= AT2.width - 1; x += 9) {
     if (x <= AT2.box && AT2.box <= x + 7) continue;
@@ -89,10 +87,14 @@ export function level2(pal: Pal): Level {
   column(m, 'brick', AT2.box, 0, GROUND - 3);
   m.set(AT2.box, GROUND - 2, 'bandArch').set(AT2.box, GROUND - 1, 'cardBox');
   m.wallToSky(AT2.box);
-  // signs
+  // the fire escape and the page
+  for (const [a, b, y] of AT2.escape) run(m, 'plank', a, b, y);
+  m.set(AT2.page[0], AT2.page[1], 'page');
+  // placards
   m.sign(AT2.start + 3, onGround(GROUND, s.start), s.start);
-  m.sign(71, onGround(GROUND, s.retry), s.retry);
-  m.sign(24, onGround(GROUND, s.meter), s.meter);
+  m.sign(22, onGround(GROUND, s.meter), s.meter);
+  m.sign(66, onGround(GROUND, s.retry), s.retry);
+  m.sign(69, 3, s.secret);
   m.sign(79, onGround(GROUND, s.exit), s.exit);
-  return { file: 'two', title: 'Gust', hint: 'Cards are blowing down Main Street.', map: m, book, pal, retry: [AT2.retry, GROUND - 1] };
+  return { file: 'gust', title: 'Gust', hint: 'Main Street. Leaf blowers.', map: m, book, pal, retry: [AT2.retry, GROUND - 1] };
 }
