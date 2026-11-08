@@ -394,6 +394,7 @@ editors are easier on phones, touch screens and keyboards, and pages and the off
 - Music Undo keeps Redo after a canceled gesture, restores empty tracks, and limits track-order history to 200 steps.
 - The Falls (Flicker and Flow) now keeps the whole waterfall, its top included, on screen.
 - The Mountain Moved Next Door 2.1: houses, sign posts, fences and ladders show the mountain, wall or earth behind them instead of sky; each place has its own way out (a blazed cairn, the library's oak door, the tunnel's far mouth); the signs are down to the ones with a story or a joke; and the mountain says "Oh. Excuse me." as you pass under its toe.
+- The Mountain Moved Next Door 2.2: the two houses in the first level have a plain pitched roof with a flat ridge, not two pointed tips like horns.
 - Widened Try Again's upper plank so jumps back from the right cliff have more room to land.
 - Parallax: the far hills now keep sliding behind the sign posts instead of standing still there, and a sign says the posts move too.
 - Make the colors lesson playable with similar colors, remove unused clock-game monsters, and clarify paper folding, puzzle-box assembly, and phone parts costs.
