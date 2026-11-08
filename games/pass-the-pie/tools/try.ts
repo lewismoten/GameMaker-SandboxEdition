@@ -7,4 +7,6 @@ import { LEVELS } from './route';
 const from = Number(process.env.FROM ?? 0);
 const upTo = Number(process.env.UPTO ?? LEVELS.length);
 const { sim } = await play(SEED, upTo, from);
-console.log(`played levels ${from + 1} to ${upTo}: score ${sim.ci.score}, hit points ${sim.ci.hitpts}, ${(sim.clock / 18.2).toFixed(0)} s`);
+console.log(
+  `played levels ${from + 1} to ${upTo}: score ${sim.ci.score}, hit points ${sim.ci.hitpts}, ${([...sim.segmentTicks, sim.ticks].reduce((a, b) => a + b, 0) / 18.2).toFixed(0)} s`,
+);

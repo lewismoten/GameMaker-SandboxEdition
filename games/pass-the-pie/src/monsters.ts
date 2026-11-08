@@ -2,17 +2,17 @@
 // person, and nothing anyone fights is alive: Mr. Plume kicks gadgets and vinyl, Rory outsmarts them.
 //   SQUIRREL     friendly; catches a tossed roll (or a touch) and scampers off, for points
 //   LITTLE       street 1: little Mr. Plume, before the hat, following Rory about
-//   WHAP, POW    Mr. Plume's kick: each press is a three-hit combo (WHAP, WHAP, then the bigger POW that reaches
-//                further), born in front of him by the kick's frames (plumeChar.ts)
+//   WHAP, POW    Mr. Plume's combo: each press is a WHAP and then the bigger POW that reaches further, each
+//                striking high and low, so a thing on the street takes two hits a press (plumeChar.ts)
 //   ROLL         Rory's toss: a dinner roll that flies a few blocks
 //   INFLATABLE   a lawn turkey of vinyl: solid, harmless, in the way; one hit and it goes FLAT
 //   VAC_*        robot vacuums pacing a stretch of floor; they bump. A roll in the mouth makes one a FED_VAC: stalled,
 //                solid, and a step to stand on. Mr. Plume just kicks them.
 //   MOWER        Dale's robot mower, quicker; fed, it is a FED_MOWER (a step too)
 //   DRONE_*      leaf-blower drones: a patrol in the air, or a swoop (down and back up) that is read and ducked
-//   BAG          a canvas kick bag on a stand: three hits (BAG, BAG_1, BAG_2), so one full combo
-//   BLOWER       Big Gobble's blower: nine hits (three combos), a light of its gauge going out every hit or so
-//   STAKE        Big Gobble's tether stakes: three hits each
+//   BAG          a canvas kick bag on a stand: two hits (BAG, BAG_1), so one combo
+//   BLOWER       Big Gobble's blower: six hits (three combos), a light of its gauge going out each hit or so
+//   STAKE        Big Gobble's tether stakes: two hits each (one combo)
 //   GOBBLET      a little balloon turkey Big Gobble's beak puffs out; it drifts toward Mr. Plume
 //   CHASER_*     Big Gobble loose on Main Street: four pieces of one face rolling right along the same path
 //   PUFF         what a kicked gadget leaves
@@ -134,11 +134,7 @@ export function monsterSet(mb: Book): Monster[] {
   set[MONS.drone] = mon(anim('drone', 1), { ...hit, newmon: MONS.puff, thru: 0 }, pace(5, 2));
   set[MONS.droneHigh] = mon(anim('drone', 1), { ...hit, newmon: MONS.puff, thru: 0 }, pace(8, 3));
   // the swoop: it hovers three blocks up and drops to the ground, quick, then climbs back slowly; kick it while it is down
-  set[MONS.droneSwoop] = mon(
-    anim('drone', 1),
-    { ...hit, newmon: MONS.puff, thru: 0 },
-    [corner(0, 0, 2), corner(0, 3, 3, 0), corner(0, 0, 1, 0)],
-  );
+  set[MONS.droneSwoop] = mon(anim('drone', 1), { ...hit, newmon: MONS.puff, thru: 0 }, [corner(0, 0, 2), corner(0, 3, 3, 0), corner(0, 0, 1, 0)]);
   for (let h = 0; h < BAG_HITS; h++) set[MONS.bag + h] = mon(anim(`bag${h}_`, 10 - h * 3), { ...hit, newmon: h + 1 < BAG_HITS ? MONS.bag + h + 1 : MONS.puff });
   for (let i = 0; i < BLOWER_HITS; i++) {
     const lit = 5 - Math.floor((i * 5) / BLOWER_HITS);
@@ -148,10 +144,16 @@ export function monsterSet(mb: Book): Monster[] {
       upscore: KICK_POINTS * 2,
     });
   }
-  for (let h = 0; h < STAKE_HITS; h++) set[MONS.stake + h] = mon(anim(`stake${h}_`, 6), { ...hit, newmon: h + 1 < STAKE_HITS ? MONS.stake + h + 1 : MONS.puff });
+  for (let h = 0; h < STAKE_HITS; h++)
+    set[MONS.stake + h] = mon(anim(`stake${h}_`, 6), { ...hit, newmon: h + 1 < STAKE_HITS ? MONS.stake + h + 1 : MONS.puff });
   set[MONS.gobblet] = mon(anim('gobblet', 5), { ...hit, newmon: MONS.puff, thru: 0, towards: 1, end: 160 });
   // the loose balloon: four pieces on one path, so they roll as one face; nothing knocks it over. A corner is counted
   // from where the path began, and the world wraps at 100 blocks, so the run goes in two legs (each the short way round)
-  for (let i = 0; i < 4; i++) set[MONS.chaser + i] = mon(anim(`chaser${i}_`, 3), { power: 250, thru: 0, end: -1 }, [corner(0, 0, CHASE_SPEED), corner(CHASE_RUN / 2, 0, CHASE_SPEED), corner(CHASE_RUN, 0, CHASE_SPEED)]);
+  for (let i = 0; i < 4; i++)
+    set[MONS.chaser + i] = mon(anim(`chaser${i}_`, 3), { power: 250, thru: 0, end: -1 }, [
+      corner(0, 0, CHASE_SPEED),
+      corner(CHASE_RUN / 2, 0, CHASE_SPEED),
+      corner(CHASE_RUN, 0, CHASE_SPEED),
+    ]);
   return set;
 }

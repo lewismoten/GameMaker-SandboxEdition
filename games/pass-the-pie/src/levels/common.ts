@@ -193,7 +193,10 @@ export class Stage {
 
   /** A wall from the top down to a gate standing on `floor`: gold (opens for the dish) or steel (a steel key). */
   gate(x: number, floor: number, steel = false, top = 0, wall = 'B'): this {
-    this.g.col(x, top, floor - 3, wall).put(x, floor - 2, steel ? 'm' : 'l').put(x, floor - 1, steel ? 'M' : 'L');
+    this.g
+      .col(x, top, floor - 3, wall)
+      .put(x, floor - 2, steel ? 'm' : 'l')
+      .put(x, floor - 1, steel ? 'M' : 'L');
     return this;
   }
 

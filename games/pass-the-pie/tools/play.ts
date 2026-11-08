@@ -24,4 +24,3 @@ export async function play(seed = SEED, upTo = LEVELS.length, from = 0): Promise
   await playLevels(bot, LEVELS.slice(from), upTo - from);
   return { sim, bot };
 }
-

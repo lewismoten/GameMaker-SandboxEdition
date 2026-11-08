@@ -29,10 +29,24 @@ export function chase(pal: Pal): Level {
   const G = GROUND - 1;
   for (const x of AT.turkeys) st.g.put(x, G, '9');
   for (const x of AT.bags) st.g.put(x, G, '8');
-  st.g.put(AT.crates[0], G, 'C').put(AT.crates[1], G, 'C').put(AT.crates[1], G - 1, 'C').put(20, G, 'C').put(20, G - 1, 'C');
+  st.g
+    .put(AT.crates[0], G, 'C')
+    .put(AT.crates[1], G, 'C')
+    .put(AT.crates[1], G - 1, 'C')
+    .put(20, G, 'C')
+    .put(20, G - 1, 'C');
   st.g.row(13, 17, 21, 'c');
-  st.g.row(14, AT.awning[0], AT.awning[1], 'A').row(13, AT.awning[0] + 1, AT.awning[1] - 1, 'c').put(AT.quickVac, G, '4');
-  st.g.put(AT.stairs[0], G, 'C').put(AT.stairs[1], G, 'C').put(AT.stairs[1], G - 1, 'C').put(AT.stairs[2], G, 'C').put(AT.stairs[2], G - 1, 'C').put(AT.stairs[2], G - 2, 'C');
+  st.g
+    .row(14, AT.awning[0], AT.awning[1], 'A')
+    .row(13, AT.awning[0] + 1, AT.awning[1] - 1, 'c')
+    .put(AT.quickVac, G, '4');
+  st.g
+    .put(AT.stairs[0], G, 'C')
+    .put(AT.stairs[1], G, 'C')
+    .put(AT.stairs[1], G - 1, 'C')
+    .put(AT.stairs[2], G, 'C')
+    .put(AT.stairs[2], G - 1, 'C')
+    .put(AT.stairs[2], G - 2, 'C');
   st.g.row(11, 55, 60, 'c');
   // shop fronts along Main Street, behind everything
   for (const [x0, x1] of [

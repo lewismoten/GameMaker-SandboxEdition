@@ -124,7 +124,15 @@ export async function stepUp(bot: StarterBot, nums: readonly number[], dir: 'lef
  * Mr. Plume walks up to the thing standing at column `x` (row `row`) and lets combos go until nothing of `nums` is
  * left there; `combos` presses expected (a combo is three hits).
  */
-export async function smash(bot: StarterBot, x: number, nums: readonly number[], combos: number, what: string, row: number, dir: 'left' | 'right' = 'right'): Promise<void> {
+export async function smash(
+  bot: StarterBot,
+  x: number,
+  nums: readonly number[],
+  combos: number,
+  what: string,
+  row: number,
+  dir: 'left' | 'right' = 'right',
+): Promise<void> {
   await must(bot, bot.walk(dir === 'right' ? x - 1 : x + 1, what, 900), `to ${what}`);
   const there = () => monsters(bot, nums).some((m) => m.y === row && Math.abs(m.x - x * 20) < 24);
   let n = 0;
@@ -132,7 +140,7 @@ export async function smash(bot: StarterBot, x: number, nums: readonly number[],
     if (++n > combos + 1) throw new Error(`${what}: still standing after ${n - 1} combos\n${bot.log.slice(-6).join('\n')}`);
     await face(bot, dir);
     await enter(bot, 22);
-    if (process.env.DEBUG_SMASH) bot.say(`after combo ${n}: me ${bot.px.x},${bot.px.y} seq ${bot.sim.w.ci.cseq} ${JSON.stringify(monsters(bot, [...nums, 2, 34]))}`);
+    if (process.env.DEBUG_SMASH) bot.say(`after combo ${n}: me ${bot.px.x},${bot.px.y} ${JSON.stringify(monsters(bot, [...nums, 2, 34]))}`);
   }
   if (n !== combos) bot.say(`${what}: took ${n} combos, not ${combos}`);
   bot.say(`smashed ${what} (${n}), score ${bot.sim.ci.score}, hit points ${bot.sim.ci.hitpts}`);

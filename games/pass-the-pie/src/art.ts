@@ -186,7 +186,9 @@ export function deflated(pal: Pal, more: boolean): Pixels {
     s.rect(x, top, 1, 20 - top, x % 4 === 0 ? fan[1] : fan[2]);
   }
   s.rect(8, 19 - h - 2, 3, 2, fan[3]); // the head, flopped
-  s.set(8, 19 - h - 2, ink[0]).rect(11, 19 - h - 1, 2, 1, R(pal, 'tBeak')[1]).rect(10, 19 - h, 1, 2, R(pal, 'tRed')[1]);
+  s.set(8, 19 - h - 2, ink[0])
+    .rect(11, 19 - h - 1, 2, 1, R(pal, 'tBeak')[1])
+    .rect(10, 19 - h, 1, 2, R(pal, 'tRed')[1]);
   if (!more) s.line(15, 8, 18, 5, ink[1]).line(16, 11, 19, 10, ink[1]).line(13, 7, 14, 3, ink[1]);
   return cut(pal, s);
 }

@@ -5,8 +5,8 @@
       "long": "Same as the Up arrow."
     },
     "28": {
-      "short": "Kick",
-      "long": "Mr. Plume's jujitsu kick (his streets only): a wind-up, then a kick about a block and a half ahead."
+      "short": "Toss or combo",
+      "long": "Rory tosses a dinner roll (a vacuum or mower that catches it stalls, and you can stand on it). Mr. Plume lets go a combo: a WHAP and a POW, each striking high and low."
     },
     "30": {
       "short": "Walk left",
@@ -47,15 +47,17 @@
       "long": "Jump."
     },
     "2": {
-      "short": "Kick",
-      "long": "Mr. Plume's kick."
+      "short": "Toss or combo",
+      "long": "Rory tosses a roll; Mr. Plume lets go a combo."
     }
   },
   "sounds": {
+    "1": "Something kicked over, or a vacuum fed",
     "9": "The jump",
-    "10": "Getting hurt",
+    "10": "A bump",
     "11": "Falling over",
-    "13": "Mr. Plume's kick"
+    "13": "Mr. Plume's combo",
+    "14": "Rory's toss"
   },
   "counters": {
     "20": "Dishes carried: a dish adds one, the neighbor's door takes it.",

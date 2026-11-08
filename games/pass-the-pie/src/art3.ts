@@ -65,7 +65,9 @@ export function fedVac(pal: Pal, frame: boolean): Pixels {
   oval(s, 17, 15, 2.5, 2, cr[2]);
   s.set(18, 14, cr[1]);
   const z = frame ? 1 : 0;
-  s.line(12, 2 - z, 15, 2 - z, ink[1]).line(15, 2 - z, 12, 5 - z, ink[1]).line(12, 5 - z, 15, 5 - z, ink[1]);
+  s.line(12, 2 - z, 15, 2 - z, ink[1])
+    .line(15, 2 - z, 12, 5 - z, ink[1])
+    .line(12, 5 - z, 15, 5 - z, ink[1]);
   return cut(pal, s);
 }
 
@@ -238,7 +240,11 @@ export function cider(pal: Pal): Pixels {
   const s = sheet();
   s.rect(5, 9, 9, 10, acc2[1]).rect(14, 11, 3, 1, acc2[1]).rect(16, 11, 1, 5, acc2[1]).rect(14, 15, 3, 1, acc2[1]);
   s.rect(6, 10, 7, 2, acc[2]);
-  for (const x of [7, 11]) s.set(x, 7, paper[3]).set(x + 1, 6, paper[3]).set(x, 5, paper[3]).set(x + 1, 4, paper[3]);
+  for (const x of [7, 11])
+    s.set(x, 7, paper[3])
+      .set(x + 1, 6, paper[3])
+      .set(x, 5, paper[3])
+      .set(x + 1, 4, paper[3]);
   return onPaper(pal, s);
 }
 

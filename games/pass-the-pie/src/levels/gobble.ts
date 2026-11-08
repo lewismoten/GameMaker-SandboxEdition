@@ -70,10 +70,17 @@ export function gobble(pal: Pal): Level {
   st.g.put(AT.drone, G, '6').put(AT.turkey, G, '9');
   st.g.put(AT.stake1, G, '!');
   // the parade stand: a ladder up to its ledge, a hedge too tall to jump under it, the second stake on top
-  st.g.col(AT.ladder, 11, G, 'H').row(12, AT.ledge[0] + 1, AT.ledge[1], '=').col(AT.hedge, 13, G, 'X').put(AT.stake2, 11, '!');
+  st.g
+    .col(AT.ladder, 11, G, 'H')
+    .row(12, AT.ledge[0] + 1, AT.ledge[1], '=')
+    .col(AT.hedge, 13, G, 'X')
+    .put(AT.stake2, 11, '!');
   st.g.row(11, 48, 51, 'c').put(42, 11, 'N');
   st.g.put(AT.stake3, G, '!').put(AT.swoop, 13, '7');
-  st.g.put(AT.blower, G, '@').put(AT.guard, G, '6').col(AT.hall, 0, G - 2, 'B');
+  st.g
+    .put(AT.blower, G, '@')
+    .put(AT.guard, G, '6')
+    .col(AT.hall, 0, G - 2, 'B');
   st.g.row(13, 62, 72, 'c');
   for (const [x, y] of [
     [9, 3],

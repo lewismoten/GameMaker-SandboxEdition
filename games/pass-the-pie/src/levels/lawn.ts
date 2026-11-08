@@ -28,7 +28,7 @@ export function lawn(pal: Pal): Level {
   const book = newBook(pal);
   const timed: Timed[] = [];
   const s = signs(book, pal, {
-    flyer: ["NEW PARADE MASCOT: BIG GOBBLE. 30 FT OF VINYL.", 4, 3],
+    flyer: ['NEW PARADE MASCOT: BIG GOBBLE. 30 FT OF VINYL.', 4, 3],
     kick: ['ENTER: WHAP, WHAP, POW.', 3, 2],
     chat: ['GRANDMA: WHO TOOK MY KITCHEN OUTLET?', 4, 3],
     gate: ['GARDEN GATE. DALE KEEPS A SPARE.', 4, 3],
@@ -39,7 +39,10 @@ export function lawn(pal: Pal): Level {
   for (const x of AT.turkeys) st.g.put(x, G, '9');
   st.g.put(AT.bag, G, '8');
   // the shed: siding, a ladder, a roof with the key at the far end and a drone patrolling it
-  st.g.fill(30, 11, 9, G - 10, 'Z').col(AT.shedLadder, 9, G, 'H').row(10, AT.shedRoof[0], AT.shedRoof[1], 'R');
+  st.g
+    .fill(30, 11, 9, G - 10, 'Z')
+    .col(AT.shedLadder, 9, G, 'H')
+    .row(10, AT.shedRoof[0], AT.shedRoof[1], 'R');
   st.g.put(AT.roofDrone, 9, '6').put(AT.key, 9, 'K').put(33, 13, 'W').put(36, 13, 'W');
   for (let x = 30; x < 37; x += 2) st.g.put(x, 8, 'c');
   // the swooping drone over open lawn, then a wall of turkeys
@@ -48,8 +51,15 @@ export function lawn(pal: Pal): Level {
   st.g.row(G - 3, 46, 52, 'c');
   st.g.put(AT.bag2, G, '8').put(AT.vac, G, '3');
   // crates up to the garage roof (four blocks up), a drone on it and the gold acorn at its far end
-  st.g.put(AT.crates[0], G, 'C').put(AT.crates[1], G, 'C').put(AT.crates[1], G - 1, 'C');
-  st.g.fill(65, 14, 10, G - 13, 'Z').row(13, AT.garageRoof[0], AT.garageRoof[1], 'R').put(68, 15, 'W').put(72, 15, 'W');
+  st.g
+    .put(AT.crates[0], G, 'C')
+    .put(AT.crates[1], G, 'C')
+    .put(AT.crates[1], G - 1, 'C');
+  st.g
+    .fill(65, 14, 10, G - 13, 'Z')
+    .row(13, AT.garageRoof[0], AT.garageRoof[1], 'R')
+    .put(68, 15, 'W')
+    .put(72, 15, 'W');
   st.g.put(AT.garageDrone, 12, '6').put(AT.gold, 12, '$').put(70, 12, 'N');
   for (let x = 66; x < 74; x += 2) st.g.put(x, 11, 'c');
   for (const [x, y] of [
@@ -66,5 +76,16 @@ export function lawn(pal: Pal): Level {
   m.sign(40, board(s.chat), s.chat);
   m.sign(AT.gate - 4, board(s.gate), s.gate);
   m.wallToSky(AT.gate);
-  return { file: 'lawn', title: 'Payback', hero: 'plume', hint: 'He has read the flyer.', mood: 'lawn', song: 'payback.cmf', book, map: m, timed, before: 'payback.fli' };
+  return {
+    file: 'lawn',
+    title: 'Payback',
+    hero: 'plume',
+    hint: 'He has read the flyer.',
+    mood: 'lawn',
+    song: 'payback.cmf',
+    book,
+    map: m,
+    timed,
+    before: 'payback.fli',
+  };
 }

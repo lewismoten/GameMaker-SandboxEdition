@@ -47,13 +47,28 @@ export function cord(pal: Pal): Level {
   st.g.col(AT.ladder, 8, G, 'H').put(18, 12, 'W').put(20, 12, 'W');
   st.g.row(8, AT.bakery[0] + 1, AT.ladder - 1, 'c').put(AT.bone, 8, 'O');
   // Biscuit, in the gap between two hedges
-  st.g.col(AT.dog, 0, G - 2, 'X').put(AT.dog, G - 1, 'l').put(AT.dog, G, 'Q');
+  st.g
+    .col(AT.dog, 0, G - 2, 'X')
+    .put(AT.dog, G - 1, 'l')
+    .put(AT.dog, G, 'Q');
   // the florist's awning four blocks up, a quick vacuum under it
-  st.g.put(AT.quickVac, G, '4').row(13, AT.awning[0], AT.awning[1], 'A').row(12, AT.awning[0] + 1, AT.awning[1] - 1, 'c').put(AT.awning[1] - 1, 12, 'N');
+  st.g
+    .put(AT.quickVac, G, '4')
+    .row(13, AT.awning[0], AT.awning[1], 'A')
+    .row(12, AT.awning[0] + 1, AT.awning[1] - 1, 'c')
+    .put(AT.awning[1] - 1, 12, 'N');
   // the mower, and the hardware store's roof (a ladder up, a squirrel, the gold acorn at the far end)
   st.g.put(AT.mower, G, '5');
-  st.g.fill(AT.store[0] + 1, 11, AT.store[1] - AT.store[0] - 1, G - 10, 'Z').row(10, AT.store[0], AT.store[1], 'R').col(AT.storeLadder, 9, G, 'H');
-  st.g.row(9, AT.store[0] + 2, AT.store[1] - 2, 'c').put(AT.store[0] + 3, 9, '1').put(AT.gold, 9, '$').put(66, 13, 'W').put(69, 13, 'W');
+  st.g
+    .fill(AT.store[0] + 1, 11, AT.store[1] - AT.store[0] - 1, G - 10, 'Z')
+    .row(10, AT.store[0], AT.store[1], 'R')
+    .col(AT.storeLadder, 9, G, 'H');
+  st.g
+    .row(9, AT.store[0] + 2, AT.store[1] - 2, 'c')
+    .put(AT.store[0] + 3, 9, '1')
+    .put(AT.gold, 9, '$')
+    .put(66, 13, 'W')
+    .put(69, 13, 'W');
   for (const [x, y] of [
     [9, 3],
     [30, 2],

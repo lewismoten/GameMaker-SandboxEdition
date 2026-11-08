@@ -48,8 +48,15 @@ export function park(pal: Pal): Level {
   for (const x of AT.turkeys) st.g.put(x, G, '9');
   // the grate and its warm air up to the bandstand roof: the casserole behind a kick bag, a ladder down
   st.g.put(AT.lift, GROUND, 'U').col(AT.lift, 2, G, 'u');
-  st.g.row(4, AT.roof[0], AT.roof[1], 'R').row(3, AT.roof[0] + 1, AT.roof[1] - 1, 'c').put(AT.roofBag, 3, '8').put(AT.casserole, 3, 'P');
-  st.g.fill(AT.roof[0] + 1, 5, AT.roof[1] - AT.roof[0] - 1, G - 4, 'Z').put(45, 8, 'W').put(48, 8, 'W');
+  st.g
+    .row(4, AT.roof[0], AT.roof[1], 'R')
+    .row(3, AT.roof[0] + 1, AT.roof[1] - 1, 'c')
+    .put(AT.roofBag, 3, '8')
+    .put(AT.casserole, 3, 'P');
+  st.g
+    .fill(AT.roof[0] + 1, 5, AT.roof[1] - AT.roof[0] - 1, G - 4, 'Z')
+    .put(45, 8, 'W')
+    .put(48, 8, 'W');
   st.g.col(AT.ladder, 3, G, 'H');
   // two swooping drones, read them and kick as they come down
   for (const x of AT.swoops) st.g.put(x, 13, '7');

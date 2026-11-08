@@ -42,7 +42,12 @@ export function yard(pal: Pal): Level {
   st.g.fill(AT.roof[0], 11, AT.roof[1] - AT.roof[0] + 1, GROUND - 12, 'Z');
   st.g.col(AT.porchLadder, 9, GROUND - 1, 'H').row(10, AT.roof[0], AT.roof[1], 'R');
   for (let x = AT.roof[0] + 1; x < AT.roof[1]; x += 2) st.g.put(x, 9, 'c');
-  st.g.put(32, 13, 'W').put(38, 13, 'W').put(30, GROUND - 1, 'p').put(34, GROUND - 1, 'p').put(26, GROUND - 1, 'F');
+  st.g
+    .put(32, 13, 'W')
+    .put(38, 13, 'W')
+    .put(30, GROUND - 1, 'p')
+    .put(34, GROUND - 1, 'p')
+    .put(26, GROUND - 1, 'F');
   st.g.put(36, GROUND - 1, 'h').put(37, GROUND - 1, 'h');
   st.g.put(AT.pie, GROUND - 1, 'P').put(8, GROUND - 1, '&');
   for (const x of AT.piles) st.g.put(x, GROUND - 1, 'h');
@@ -57,10 +62,18 @@ export function yard(pal: Pal): Level {
   // the hedge, too tall to cross on the grass; its far side is only leaves, and inside is a stash
   st.g.fill(AT.hedge[0], 10, AT.hedge[1] - AT.hedge[0] + 1, GROUND - 10, 'X').fill(AT.hedge[0] + 1, 14, 5, 3, 'Y');
   st.g.put(AT.hedge[1], 14, 'Y').put(AT.hedge[1], 15, 'Y').put(AT.hedge[1], 16, 'Y');
-  st.g.put(AT.secretGold, GROUND - 1, '$').put(67, GROUND - 1, 'c').put(68, GROUND - 1, 'c').put(70, GROUND - 1, 'N');
+  st.g
+    .put(AT.secretGold, GROUND - 1, '$')
+    .put(67, GROUND - 1, 'c')
+    .put(68, GROUND - 1, 'c')
+    .put(70, GROUND - 1, 'N');
   st.g.row(9, AT.hedge[0], AT.hedge[1], 'c');
   // past the hedge: squirrels, acorns and the gate
-  st.g.put(74, GROUND - 1, '1').row(GROUND - 3, 73, 75, 'c').put(83, GROUND - 1, 'p').put(84, GROUND - 1, 'p');
+  st.g
+    .put(74, GROUND - 1, '1')
+    .row(GROUND - 3, 73, 75, 'c')
+    .put(83, GROUND - 1, 'p')
+    .put(84, GROUND - 1, 'p');
   for (const [x, y] of [
     [7, 3],
     [36, 2],

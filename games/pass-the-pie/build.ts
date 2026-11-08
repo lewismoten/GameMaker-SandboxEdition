@@ -1,7 +1,7 @@
 // PASS THE PIE (Sandbox Software, 1994, a Special): builds every file of the game into games/pass-the-pie/disk/.
 //   cd web && npx vite-node ../games/pass-the-pie/build.ts
-// Six streets, two heroes taking turns (Rory's storybook, Mr. Plume's payback), every picture printed in the game's
-// own block-print inks (src/print.ts, src/palette.ts), three cartoons, a card for each street, three songs.
+// Seven levels, two heroes taking turns (Rory's storybook, Mr. Plume's payback), every picture printed in the game's
+// own block-print inks (src/print.ts, src/palette.ts), three cartoons, a card for each level, five songs and sampled sounds.
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { serializeBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
@@ -121,8 +121,9 @@ disk.put(
   'won.lst',
   serializeSlideList([{ name: 'ending.fli', pause: 3 }, { name: 'wonpic.gif', pause: 5 }, { name: 'won.gif', pause: 0 }, { name: 'won.txt' }]),
 );
-const hurt = [heroPicture(roryBlocks, 'hurt.top', 'hurt'), heroPicture(plumeBlocks, 'hurt.top', 'hurt')];
-disk.put('lostpic.gif', gif(endPicture(pal, hurt, 'NOT LIKE THIS', 'BIG GOBBLE STANDS TALL. FOR NOW.', false), base));
+// the game over: both of them caught out, never hurt (surprised poses, a plan for next time)
+const caught = [heroPicture(roryBlocks, 'look.top', 'stand'), heroPicture(plumeBlocks, 'oh.top', 'fall')];
+disk.put('lostpic.gif', gif(endPicture(pal, caught, 'NOT LIKE THIS', 'BIG GOBBLE STANDS TALL. FOR NOW.', false), base));
 disk.put('lost.gif', gif(paper(pal, 'TRY AGAIN'), base));
 disk.put('lost.txt', LOST);
 disk.put('lost.lst', serializeSlideList([{ name: 'lostpic.gif', pause: 5 }, { name: 'lost.gif', pause: 0 }, { name: 'lost.txt' }]));

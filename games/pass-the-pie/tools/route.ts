@@ -126,7 +126,7 @@ export async function gravyRelay(bot: StarterBot): Promise<void> {
   await cross(bot, R.AT.gold, 'the gold acorn');
   await climb(bot, R.AT.ladder, 7, 'the ladder again');
   await must(bot, bot.climb('down', G, 'down the ladder'), 'down the ladder');
-  bot.say(`bar left: ${(((R.SECONDS * 18.2 - bot.sim.ticks) / 18.2) | 0)} s`);
+  bot.say(`bar left: ${((R.SECONDS * 18.2 - bot.sim.ticks) / 18.2) | 0} s`);
   await read(bot, 76, 'dinner');
   await leave(bot, bot.walk(R.AT.exit + 1, 'the exit'), 'the dining room');
 }
@@ -268,7 +268,14 @@ export async function bigGobble(bot: StarterBot): Promise<void> {
   await smash(bot, B.AT.stake3, stake, 1, 'the third stake', G);
   await cross(bot, B.AT.swoop - 2, 'before the dropping drone');
   await meet(bot, [MONS.droneSwoop], G, 'the dropping drone', 50, 120, 1200);
-  await smash(bot, B.AT.blower, Array.from({ length: BLOWER_HITS }, (_, i) => MONS.blower + i), 3, 'the blower', G);
+  await smash(
+    bot,
+    B.AT.blower,
+    Array.from({ length: BLOWER_HITS }, (_, i) => MONS.blower + i),
+    3,
+    'the blower',
+    G,
+  );
   await cross(bot, B.AT.guard - 2, 'up to the guard drone');
   await meet(bot, [MONS.drone], G, 'the guard drone', 60, 260);
   bot.say(`bar left: ${((B.SECONDS * 18.2 - bot.sim.ticks) / 18.2) | 0} s`);
