@@ -254,13 +254,13 @@ export function addProps(book: Book, pal: Pal, groups: readonly string[], o: Pro
     book.add('boardUp', landing(pal, 3), { solid: LEDGE, grav: PULL.down });
     book.add(
       'boardHalf',
-      landing(pal, 4).map((x, y, c) => (y < 3 ? pal.c('sky', 3) : c)),
+      landing(pal, 4).map((_x, y, c) => (y < 3 ? pal.c('sky', 3) : c)),
       air,
     );
     book.add('boardGone', calm(pal), air);
     book.add(
       'boardBack',
-      landing(pal, 4).map((x, y, c) => (y < 3 ? pal.c('sky', 3) : c)),
+      landing(pal, 4).map((_x, y, c) => (y < 3 ? pal.c('sky', 3) : c)),
       air,
     );
     loop(['boardUp', 'boardHalf', 'boardGone', 'boardBack'], [STONE_TICKS.up, STONE_TICKS.half, STONE_TICKS.under, STONE_TICKS.rise]);

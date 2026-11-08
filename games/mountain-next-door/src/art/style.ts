@@ -134,7 +134,7 @@ function inkCloud(pal: Pal): Pixels {
   p.rect(5, 11, 30, 5, hi);
   for (let y = 11; y < 16; y++) for (let x = 5; x < 35; x++) if (p.get(x, y) === hi && (x + y) % 3 === 0) p.set(x, y, lo);
   p.rect(5, 15, 30, 1, lo);
-  return inked(pal, p).map((x, y, c) => (y > 16 && c !== sky ? sky : c));
+  return inked(pal, p).map((_x, y, c) => (y > 16 && c !== sky ? sky : c));
 }
 
 /** A juniper shrub: a dark rounded mass with inked edges and frosty berries. */
@@ -218,7 +218,7 @@ function routed(pal: Pal, pic: Pixels): Pixels {
     [parch[2], wood[0]],
     [ink, pal.c('parch', 4)],
   ]);
-  return pic.map((x, y, c) => to.get(c) ?? c);
+  return pic.map((_x, _y, c) => to.get(c) ?? c);
 }
 
 /** Gives a block set the game's own look: the shared blocks drawn again, the signs routed. */
