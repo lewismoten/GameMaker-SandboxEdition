@@ -1,6 +1,6 @@
 # The Noodle Observatory: tools
 
-A Special (a limited-time game for Monkey Day): twenty-one scenes, three of them scenes you watch unfold.
+A Special (a limited-time game for Monkey Day): thirty-nine scenes, five of them scenes you watch unfold (the last two are played from a list of stops in `src/levels/watch2.ts`).
 
 Each room is painted from a plan (`src/place.ts`): the things Nell meets from left to right. The bot plays the same
 plan, so a room's map and its route cannot drift apart.
