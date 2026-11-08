@@ -1,6 +1,7 @@
 // The way through PASS THE PIE, as orders for the bot (kit/starter/bot.ts, routeKit.ts): the keys a person would
 // press, level by level, with human timing, every acorn a person would see taken and every fight finished.
 import type { StarterBot } from '../../kit/starter/bot';
+import * as C from '../src/levels/cord';
 import * as R from '../src/levels/gravy';
 import * as L from '../src/levels/lawn';
 import * as P from '../src/levels/park';
@@ -174,4 +175,37 @@ export async function windyPark(bot: StarterBot): Promise<void> {
   await leave(bot, bot.walk(P.AT.exit + 1, 'the exit'), 'the exit');
 }
 
-export const LEVELS = [pumpkinYard, payback, gravyRelay, windyPark];
+/** 5. The Cord (Rory). */
+export async function theCord(bot: StarterBot): Promise<void> {
+  const G = C.GROUND - 1;
+  await cross(bot, C.AT.rolls + 1, 'the rolls');
+  await read(bot, 8, 'cord');
+  await meet(bot, [MONS.vacLong], G, 'the curb vacuum', 100, 200);
+  await cross(bot, C.AT.ladder - 1, 'past the stalled vacuum');
+  await climb(bot, C.AT.ladder, 8, 'the bakery ladder');
+  await cross(bot, C.AT.bakery[0] + 2, 'the bakery roof, left');
+  await cross(bot, C.AT.bone, 'the bone');
+  await cross(bot, C.AT.bakery[1] + 2, 'off the bakery roof');
+  await read(bot, 31, 'Biscuit');
+  await cross(bot, C.AT.dog - 1, 'Biscuit');
+  await must(bot, bot.wait(20), 'giving Biscuit the bone');
+  await cross(bot, C.AT.dog + 1, 'past Biscuit');
+  await meet(bot, [MONS.vacQuick], G, 'the quick vacuum', 100, 300);
+  await must(bot, bot.wait(10), 'watching it stall');
+  await stepUp(bot, [MONS.fedVac], 'right', C.AT.awning[0] + 4, 'the stalled vacuum');
+  await cross(bot, C.AT.awning[1] + 1, "along the florist's awning");
+  await must(bot, bot.land(), 'down from the awning');
+  await cross(bot, C.AT.mower - 3, 'up to the mower');
+  await meet(bot, [MONS.mower], G, 'the mower', 110, 300);
+  await cross(bot, C.AT.storeLadder - 1, 'over the stalled mower');
+  await climb(bot, C.AT.storeLadder, 9, 'the hardware store ladder');
+  await cross(bot, C.AT.store[0] + 1, 'onto the store roof');
+  await meet(bot, [MONS.squirrel], 9, 'the squirrel', 100, 140);
+  await cross(bot, C.AT.gold, 'the gold acorn');
+  await cross(bot, C.AT.store[1] + 2, 'off the store roof');
+  await through(bot, C.AT.gate, 'the town hall kitchen door');
+  await read(bot, C.AT.plug + 2, 'plug');
+  await leave(bot, bot.walk(C.AT.exit + 1, 'the exit'), 'the exit');
+}
+
+export const LEVELS = [pumpkinYard, payback, gravyRelay, windyPark, theCord];
