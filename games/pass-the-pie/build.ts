@@ -1,6 +1,7 @@
 // PASS THE PIE (Sandbox Software, 1994, a Special): builds every file of the game into games/pass-the-pie/disk/.
 //   cd web && npx vite-node ../games/pass-the-pie/build.ts
-// Six streets, a palette mood each (src/palette.ts), a hero named Rory (src/rory.ts), two cartoons, three songs.
+// Six streets, two heroes taking turns (Rory's storybook, Mr. Plume's payback), every picture printed in the game's
+// own block-print inks (src/print.ts, src/palette.ts), three cartoons, a card for each street, three songs.
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { serializeBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
@@ -18,64 +19,80 @@ import { SANDLOGO, sandLogoFli } from '../kit/sandlogo';
 import { heroPicture } from '../kit/starter/hero';
 import { buildHero } from '../kit/starter/heroChar';
 import { SILVER_KEYS } from '../kit/starter/locks';
-import { cardPicture, endPicture, gif, menuPicture, paper, scoresPicture, slotsPicture } from '../kit/starter/screens';
-import { buildSounds } from '../kit/starter/sounds';
-import { endingFli, introFli } from './src/cartoons';
+import * as art from './src/art';
+import { endingFli, introFli, paybackFli } from './src/cartoons';
 import { TITLE, buildGame } from './src/game';
 import { buildLevels, finishBook } from './src/levels';
 import { finishMonsterPictures, monsterPictures, monsterSet } from './src/monsters';
-import { buildPalette, moodBytes } from './src/palette';
+import { basePal, buildPalette, moodBytes } from './src/palette';
+import { buildPlumeBlocks } from './src/plume';
+import { buildGameSounds, buildPlume } from './src/plumeChar';
 import { buildRoryBlocks } from './src/rory';
-import { longTable, rollsCooling, streetWalk } from './src/song';
+import { cardFli, endPicture, gif, menuPicture, paper, scoresPicture, slotsPicture, titlePicture } from './src/screens';
+import { longTable, payback, streetWalk } from './src/song';
 import { CREDITS, HOWTO, LOST, STORY, WON } from './src/text';
-import { titlePicture } from './src/title';
 
-/** Hit points (the gravy boat) and lives at the start. */
+/** Hit points and lives at the start. */
 const HERO_HIT_POINTS = 100;
 const HERO_LIVES = 3;
 
 const here = dirname(fileURLToPath(import.meta.url));
 const disk = new Disk(join(here, 'disk'));
 
-const pal = buildPalette();
+const pal = basePal(buildPalette());
+const base = pal.pal;
 const levels = buildLevels(pal);
-const heroBlocks = buildRoryBlocks(pal);
+const roryBlocks = buildRoryBlocks(pal);
+const plumeBlocks = buildPlumeBlocks(pal);
 const mb = monsterPictures(pal);
-const rory = heroPicture(heroBlocks, 'stand.top', 'stand');
-const cheer = heroPicture(heroBlocks, 'cheer2.top', 'cheer');
-const base = levels[0].book; // the Starter blocks, for the screens' scenery
+const rory = heroPicture(roryBlocks, 'stand.top', 'stand');
+const plume = heroPicture(plumeBlocks, 'stand.top', 'stand');
+const plumeKick = heroPicture(plumeBlocks, 'kick1.top', 'throw1');
 
-disk.put('rory.cbl', serializeBlocks(heroBlocks.finish()));
-const hero = buildHero(heroBlocks);
-hero.meter[0] = HERO_HIT_POINTS;
-hero.meter[1] = HERO_LIVES;
-hero.meter[SILVER_KEYS] = 1; // the bone counter (it shows one less)
-disk.put('rory.chr', serializeCharacter(hero));
+// the two heroes: each starts with the hit points, the lives and the steel-key counter at 1 (it shows one less)
+const heroes = [
+  ['rory', roryBlocks, buildHero(roryBlocks)],
+  ['plume', plumeBlocks, buildPlume(plumeBlocks)],
+] as const;
+for (const [name, blocks, ch] of heroes) {
+  ch.meter[0] = HERO_HIT_POINTS;
+  ch.meter[1] = HERO_LIVES;
+  ch.meter[SILVER_KEYS] = 1;
+  disk.put(`${name}.cbl`, serializeBlocks(blocks.finish()));
+  disk.put(`${name}.chr`, serializeCharacter(ch));
+}
 disk.put('pass.mbl', serializeBlocks(finishMonsterPictures(mb)));
 disk.put('pass.mon', serializeMonsters(monsterSet(mb)));
-disk.put('pass.snd', serializeSoundSet(buildSounds()));
+disk.put('pass.snd', serializeSoundSet(buildGameSounds()));
 disk.put('pie.cmf', streetWalk());
-disk.put('dash.cmf', rollsCooling());
+disk.put('payback.cmf', payback());
 disk.put('table.cmf', longTable());
 
-// each level: its palette mood, map, blocks and card
-levels.forEach((l, i) => {
+// each level: its inks, map, blocks and its card (Mr. Plume's first is led in by the PAYBACK cartoon)
+let chapter = 0;
+let part = 0;
+levels.forEach((l) => {
   const bytes = moodBytes(pal, l.mood);
+  const n = l.hero === 'rory' ? ++chapter : ++part;
+  const pose = l.hero === 'rory' ? rory : plumeKick;
   disk.put(`${l.file}.pal`, serializePalette(bytes));
   disk.put(`${l.file}.map`, serializeMap(l.map.done()));
   disk.put(`${l.file}.bbl`, serializeBlocks(finishBook(l)));
-  disk.put(`${l.file}.gif`, gif(cardPicture(pal, base, rory, i + 1, levels.length, l.title, l.hint), { ...pal, pal: bytes }));
-  disk.put(`${l.file}.lst`, serializeSlideList([{ name: `${l.file}.gif`, pause: 3 }]));
+  disk.put(`${l.file}.fli`, cardFli(pal, bytes, l.hero, n, l.title, l.hint, pose));
+  const slides = [{ name: `${l.file}.fli`, pause: 0 }];
+  if (l.file === 'lawn') slides.unshift({ name: 'payback.fli', pause: 0 });
+  disk.put(`${l.file}.lst`, serializeSlideList(slides));
 });
 
 const text = (name: string, heading: string, body: string) => {
-  disk.put(`${name}.gif`, gif(paper(pal, base, heading), pal));
+  disk.put(`${name}.gif`, gif(paper(pal, heading), base));
   disk.put(`${name}.txt`, body);
   disk.put(`${name}.lst`, serializeSlideList([{ name: `${name}.gif`, pause: 0 }, { name: `${name}.txt` }]));
 };
-disk.put('title.gif', gif(titlePicture(pal, rory), pal));
+disk.put('title.gif', gif(titlePicture(pal, rory, plumeKick, art.pie(pal)), base));
 disk.put(SANDLOGO, sandLogoFli());
 disk.put('intro.fli', introFli(pal));
+disk.put('payback.fli', paybackFli(pal));
 disk.put(
   'title.lst',
   serializeSlideList([
@@ -84,23 +101,24 @@ disk.put(
     { name: 'title.gif', pause: 12 },
   ]),
 );
-disk.put('menu.gif', gif(menuPicture(pal, base, rory, TITLE), pal));
-disk.put('scores.gif', gif(scoresPicture(pal, base, 'HUNGRY GUESTS'), pal));
-disk.put('loadgame.gif', gif(slotsPicture(pal, base, 'LOAD GAME'), pal));
-disk.put('savegame.gif', gif(slotsPicture(pal, base, 'SAVE GAME'), pal));
+disk.put('menu.gif', gif(menuPicture(pal, plume, TITLE), base));
+disk.put('scores.gif', gif(scoresPicture(pal, 'BEST PAYBACKS'), base));
+disk.put('loadgame.gif', gif(slotsPicture(pal, 'LOAD GAME'), base));
+disk.put('savegame.gif', gif(slotsPicture(pal, 'SAVE GAME'), base));
 text('story', 'PASS THE PIE', STORY);
 text('howto', 'HOW TO PLAY', HOWTO);
 text('credits', 'CREDITS', CREDITS);
 disk.put('ending.fli', endingFli(pal));
-disk.put('wonpic.gif', gif(endPicture(pal, base, cheer, 'THANK YOU!', 'EVERY DISH ON THE TABLE', 'won'), pal));
-disk.put('won.gif', gif(paper(pal, base, 'FULL TABLE'), pal));
+disk.put('wonpic.gif', gif(endPicture(pal, [rory, plume], 'FULL TABLE', 'THE OVEN WAS NEVER BROKEN', true), base));
+disk.put('won.gif', gif(paper(pal, 'THE NEXT MORNING'), base));
 disk.put('won.txt', WON);
 disk.put(
   'won.lst',
   serializeSlideList([{ name: 'ending.fli', pause: 3 }, { name: 'wonpic.gif', pause: 5 }, { name: 'won.gif', pause: 0 }, { name: 'won.txt' }]),
 );
-disk.put('lostpic.gif', gif(endPicture(pal, base, heroPicture(heroBlocks, 'hurt.top', 'hurt'), 'OH NO!', 'THE GRAVY BOAT IS EMPTY', 'lost'), pal));
-disk.put('lost.gif', gif(paper(pal, base, 'TRY AGAIN'), pal));
+const hurt = [heroPicture(roryBlocks, 'hurt.top', 'hurt'), heroPicture(plumeBlocks, 'hurt.top', 'hurt')];
+disk.put('lostpic.gif', gif(endPicture(pal, hurt, 'NOT LIKE THIS', 'BIG GOBBLE STANDS TALL. FOR NOW.', false), base));
+disk.put('lost.gif', gif(paper(pal, 'TRY AGAIN'), base));
 disk.put('lost.txt', LOST);
 disk.put('lost.lst', serializeSlideList([{ name: 'lostpic.gif', pause: 5 }, { name: 'lost.gif', pause: 0 }, { name: 'lost.txt' }]));
 
@@ -108,4 +126,4 @@ disk.put('pass.gam', serializeGame(buildGame(levels)));
 disk.put('license.txt', licenseText(TITLE));
 clipEveryList(disk.files);
 disk.write();
-console.log(`${TITLE}: ${levels.map((l) => l.book.index.size).join('/')} blocks, ${heroBlocks.index.size} hero blocks`);
+console.log(`${TITLE}: ${levels.map((l) => l.book.index.size).join('/')} blocks, ${roryBlocks.index.size}/${plumeBlocks.index.size} hero blocks`);
