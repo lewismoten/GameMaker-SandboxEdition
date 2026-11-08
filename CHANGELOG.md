@@ -9,7 +9,7 @@ changelog: [engine](web/packages/engine/CHANGELOG.md), [archives](web/packages/a
 ## [3.2.1] - 2026-11-08
 
 Four games grow or get a new look: The Mountain Moved Next Door (3.0), Pass the Pie (3.0, then 3.1 with inked art), Lucky Cat
-(3.0, twelve levels) and The Thank-You Parade (3.0, twelve levels). The Library pauses its music while a video plays, and
+(3.0, twelve levels) and The Thank-You Parade (3.0, twelve levels, then 3.1). The Library pauses its music while a video plays, and
 two small desk and phone fixes come along.
 
 ### Changed
@@ -17,7 +17,7 @@ two small desk and phone fixes come along.
 - The Mountain Moved Next Door 3.0: a bolder printed look (carved stone, hand-cut titles and level cards, a palette for each time of day, Old Mossback's eyes following Tess), ladders and the lookout's braces that meet what they join, three new levels (Gathering Mist, Excuse Me, The Ford) and longer Stepping Stones, Empty Spot and Windy Ridge.
 - Pass the Pie 3.0: seven rebuilt levels with climbs, rooftops, secrets, a timed dish relay, a chase down Main Street and a three-part fight with Big Gobble before the parade starts. Version 3.1 adds inked halftone skies, textured ground and shadowed props.
 - Lucky Cat 3.0: four new levels (Saucer Alley, Thirteen Steps, The Mirror Shop, Earlier Still, where you play Rascal again), 12 levels in all.
-- The Thank-You Parade 3.0 grows from seven levels to twelve, with a page of story after every level card and a Cannon Truck boss.
+- The Thank-You Parade 3.0 grows from seven levels to twelve, with a page of story after every level card and a Cannon Truck boss. Version 3.1 spaces the Bakery Row shutter meter's SHUT label evenly and gives the Cannon Truck its own dusk street and fuse-glow colors.
 - The Library's background music pauses while a video or walkthrough is open, and the AV cart's TV looks like a 1990s set (a wide 4:3 tube) with a blue-cyan vacuum fluorescent clock on the VCR.
 
 ### Fixed
