@@ -46,7 +46,12 @@ export function dress(l: Level, pal: Pal, o: DressOptions = {}): void {
   const names = new Map<number, string>([...book.index].map(([n, i]) => [i, n]));
   const blocks = l.map.map.blocks;
   const at = (x: number, y: number) => (y + ORIGIN) * MLEN + x + ORIGIN;
-  const nameAt = (x: number, y: number) => (x < 0 || y < 0 || x >= l.map.width || y >= l.map.height ? 'sky' : (names.get(blocks[at(x, y)]) ?? ''));
+  // a block added while dressing is looked up (and remembered) the first time it is met
+  const nameOf = (i: number): string => {
+    if (!names.has(i)) names.set(i, [...book.index].find(([, j]) => j === i)?.[0] ?? '');
+    return names.get(i) as string;
+  };
+  const nameAt = (x: number, y: number) => (x < 0 || y < 0 || x >= l.map.width || y >= l.map.height ? 'sky' : nameOf(blocks[at(x, y)]));
   const solid = (name: string) => (book.has(name) ? (book.rulesOf(name).solid ?? 0) !== 0 : false);
   const put = (x: number, y: number, n: number) => (blocks[at(x, y)] = n);
   const W = l.map.width;
@@ -109,7 +114,11 @@ export function dress(l: Level, pal: Pal, o: DressOptions = {}): void {
             y,
             add('dirtRoot', () => dirtVariant(pal, dirt, 'root', 6), 'dirt'),
           );
-      } else if (n === 'ladder' && /^(rock|ledge|scree)/.test(nameAt(x - 1, y)) && /^(rock|ledge|scree)/.test(nameAt(x + 1, y))) {
+      } else if (
+        n === 'ladder' &&
+        (rockish(nameAt(x - 1, y)) || rockish(nameAt(x + 1, y))) &&
+        ![nameAt(x - 1, y), nameAt(x + 1, y)].some((s) => SKYISH.test(s))
+      ) {
         const lad = book.pics.get('ladder');
         if (lad)
           put(

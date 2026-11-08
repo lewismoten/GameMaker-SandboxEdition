@@ -21,7 +21,7 @@ function shadeIn(pal: Pal, p: Pixels, ramps: string[], cx: number, cy: number, r
 }
 
 /** Grass in a prop's shadow: a soft dark oval along its top. */
-export const grassShade = (pal: Pal, grass: Pixels): Pixels => shadeIn(pal, grass.crop(0, 0, 20, 20), ['grass', 'dirt'], 10, 1, 11, 5);
+export const grassShade = (pal: Pal, grass: Pixels): Pixels => shadeIn(pal, grass.crop(0, 0, 20, 20), ['grass', 'moss', 'dirt'], 10, 1, 11, 5);
 
 /** Grass with a few fallen leaves (the day after Thanksgiving) or a pebble sunk in it. */
 export function grassVariant(pal: Pal, grass: Pixels, kind: 'leaves' | 'pebble', seed: number): Pixels {
