@@ -6,6 +6,25 @@ changelog: [engine](web/packages/engine/CHANGELOG.md), [archives](web/packages/a
 
 ## [Unreleased]
 
+## [3.2.1] - 2026-11-08
+
+Four games grow or get a new look: The Mountain Moved Next Door (3.0), Pass the Pie (3.0, then 3.1 with inked art), Lucky Cat
+(3.0, twelve levels) and The Thank-You Parade (3.0, twelve levels). The Library pauses its music while a video plays, and
+two small desk and phone fixes come along.
+
+### Changed
+
+- The Mountain Moved Next Door 3.0: a bolder printed look (carved stone, hand-cut titles and level cards, a palette for each time of day, Old Mossback's eyes following Tess), ladders and the lookout's braces that meet what they join, three new levels (Gathering Mist, Excuse Me, The Ford) and longer Stepping Stones, Empty Spot and Windy Ridge.
+- Pass the Pie 3.0: seven rebuilt levels with climbs, rooftops, secrets, a timed dish relay, a chase down Main Street and a three-part fight with Big Gobble before the parade starts. Version 3.1 adds inked halftone skies, textured ground and shadowed props.
+- Lucky Cat 3.0: four new levels (Saucer Alley, Thirteen Steps, The Mirror Shop, Earlier Still, where you play Rascal again), 12 levels in all.
+- The Thank-You Parade 3.0 grows from seven levels to twelve, with a page of story after every level card and a Cannon Truck boss.
+- The Library's background music pauses while a video or walkthrough is open, and the AV cart's TV looks like a 1990s set (a wide 4:3 tube) with a blue-cyan vacuum fluorescent clock on the VCR.
+
+### Fixed
+
+- The phone's Hint Giant says Gwinn, THE CHEZ and the Round Tuit more clearly in the clips that name them.
+- On the 1994 desk, Scoot's speech bubble now shows in front of the PC instead of being cut off behind it.
+
 ## [3.2.0] - 2026-11-07
 
 Specials arrive: limited-time games that come out only on their day or season, on the home page and on the 1994 desk.
@@ -59,6 +78,7 @@ for every Game-Maker file type; the web player; and the set of new games built i
 - Exports to a web page, a DOS ZIP and native players, and opening a game another site links to.
 - Achievements, a guided tour with voice clips, and offline use as an installable app.
 
-[Unreleased]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/pages-v3.2.0...HEAD
+[Unreleased]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/pages-v3.2.1...HEAD
+[3.2.1]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/pages-v3.2.0...pages-v3.2.1
 [3.2.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/pages-v3.1.0...pages-v3.2.0
 [3.1.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/releases/tag/pages-v3.1.0
