@@ -1,0 +1,51 @@
+# @lewismoten/gamemaker-sandbox-tools 3.4.0 - 2026-11-07
+
+Every change in this version (tag `tools-v3.4.0`). The [changelog](../../web/packages/tools/CHANGELOG.md) has the summary and the most important ones.
+
+Most of the game-building kit moves into the package: a seeded level generator for dungeons, forests, towns, castles
+and side views, block roles, nonsense-talk voices, and tools for FLI shrinking, palettes, disk diffs, embroidery, and
+3D-printable and laser models.
+
+### Added
+
+- `kit/levelGen`: a seeded level generator with no DOM. `generate` draws a dungeon (rooms and corridors) or a forest (trees, clearings, a winding path) from the blocks that hold roles, `checkNeeds` says which roles a kind needs, and `verifyReach` checks every open cell can be reached from the proposed entry.
+- `kit/levelGen` props: locked doors with their keys (each key is reachable before its own lock; `proveResult` checks it again by playing the keys out), treasure and a heart in corners and dead ends, and monster spots from the monster numbers you pass (`GenParams.monsters`, returned as `monsters` with their start cells). Without the roles or monsters a layout is unchanged.
+- `kit/levelGen` interiors and castle: `generate` also draws a `home` (one to three rooms) or `shop` (counter across the room, shopkeeper spot behind it) and a `castle` (outer wall, corner towers, gate, courtyard, a keep built by the dungeon generator). Furniture goes by rules (`furnish.ts`): beds, shelves, counters and stoves stand against a wall with their front to the room, chairs sit next to a table and look at it, and a lane two cells wide runs in from the door. A piece is put down only if every open cell stays reachable, and the result lists each piece's role, facing and block (`furniture`). Roles with no block, or no block facing the right way, are skipped with a note. `proveResult` also reports `furnished`, and each kind has its own smallest area (`kindInfo(kind).min`); a building is drawn in the middle of a larger area.
+- `kit/levelGen` town and overworld: `generate` also draws a `town` (winding main street between two gates, one-sided cross streets, a plaza, houses with roof and wall rows and a door on the street) and an `overworld` (sea, grass, forest and mountains from seeded noise that lines up across the seam when `GenParams.wrap` is set, with a road cut between towns, dungeon entrances and a castle). Results carry `links`, proposed doors and sites (`SceneLink`) for the person to link; nothing is linked. `proveResult` also reports `linked`, and `terrainCells.water` gives the water cells for a shore brush.
+- `kit/levelGen` platform: `generatePlatform({ roles, hero, seed, rect, difficulty?, monsters? })` (or `generate` with kind `platform` and `GenParams.hero`) draws a side view for a game's `build.ts`: ground with pits no wider than the hero clears, steps no higher than he jumps, ladder towers, spikes, stepping stones, ledges, coins along the jumps, a heart, a locked door and monsters. Sizes come from the character file (`heroPhysics` reads his walk, jump push and climb with the engine's gravity; `capability` measures the widest pit and highest step with the reach model), times `difficulty` (percent, 80 by default). `reachFrom` plays his walks, jumps, falls and ladders tick by tick against the cells and keeps the route (`routeTo`); a result's `platform.proof` says the exit, every pickup and the lock were proven, and `proveResult` reports it. The same seed always draws the same layout.
+- `kit/levelGen` platform reach now follows the engine's ground check: he lands on a footing under either column he is in, is nudged off a footing's edge when he is mostly over the next block (and falls again from rest), cannot stand over a spike, and slides down a ladder as the engine does (the speed fades twice a tick, and the walk key steers on). The model and the engine now land in the same place on the sampled seeds.
+- `kit/blockRoles`: block roles (wall, door, key, chair with a facing and more) with `suggestRoles`, which guesses them from a block's behavior and picture, and helpers to clean and pack them for an editor's companion data.
+- `kit/mumble`: nonsense talk as a .VOC. `mumble` and `mumbleVoc` voice a list of syllables, `syllablesFromText` turns a line of text into syllables the same way every time, and `MUMBLE_VOICES` has bright, deep and small voices.
+- `kit/levelGrid`: a character grid to paint a level in code (fill, row, column, put) before it becomes rows of text.
+- `image/animatedGif`: a looping animated GIF from indexed frames that each carry their own VGA palette, as an FLI's do.
+- Shared game-building APIs: DOS disk writing, native character and text-screen builders, FLI clipping fades, route checks and the engine-backed simulator, perspective roads, photo processing, level previews, CMF arrangement effects and synthesis pieces.
+- Text-fit audit: `levelCards` and `cardOverflow` find words baked into a Starter level card that run past its parchment box.
+- Audio: native PCM WAV decoding and Node-only conversion of source audio to native VOC files.
+- Color: the original Library palette, reusable palette templates with hardware references, pixel-based color reduction, RGB and HSV helpers, and configurable ramps.
+- Indexed surface painting and transforms, plus palette reservation planning that scores colors by delta E.
+- `diskDiff`, a summary of what changed between two game disks by file type.
+- `kit/fliShrink`: a per-chunk size report and shrink steps, with a shrink option in `fliClips`.
+- Mesh tools: surface nets, binary STL read and write and a closed-mesh check, with a pixel-figure builder and a field-to-print trinket pipeline.
+- Embroidery: a stitch generator, DST, EXP and PES writers and readers, and a simulation.
+- Laser kit helpers: finger-joint panels, kerf offsets, part and sheet layout, and a wooden-nickel builder.
+- Disks merge byte-identical palettes, and optimizing shrinks picture color tables losslessly.
+- Added a headless CYD friendliness advisory with recorded-route input measurements, jump timing probes, landing checks, and JSON and Markdown reports.
+- `kit/shading` `gradient()` takes a `rows` flag that blends between ramp steps in whole rows instead of the 4x4 dither, for much smaller GIFs.
+- Added `rampShift` to the shading kit: a dithered cast shadow or pool of light that steps each color along its own palette ramp.
+
+### Changed
+
+- Game builds replace `disk/` files in place, so a running dev server never finds one missing.
+- `kit/tar` is browser-safe, so the web app's production build can import it.
+- Text-fit audits and level rendering live in the package.
+- Merging two background sets is much faster: finding blank block slots no longer re-serializes a block for every byte.
+- The forest level generator is about three times faster (same maps, byte for byte).
+- `palettes`: the palette presets are built when first used, so a bundle that imports `libraryDefaultPalette` alone leaves the presets and their color tables out.
+
+### Fixed
+
+- Disk-diff reports show DOS scene descriptions as CP437 Unicode without changing byte comparisons.
+- `kit/levelGen` keeps jump headroom inside generated side views and does not prove routes through the unknown map above them. Some seeded layouts change.
+- `kit/gameSim`: a scene with a blank character or character-blocks slot keeps the last scene's, as PLAYGAME's loadscene does.
+- Indexed-pixel shifts that are invalid are rejected, and fractional flood-fill seeds are ignored.
+- `kit/audioEvents` is types only, so it no longer builds an empty chunk.
