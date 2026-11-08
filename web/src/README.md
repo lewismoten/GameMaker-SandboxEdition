@@ -213,6 +213,7 @@ SDK implementation lives in the packages below; the app imports their declared e
 - [`credits/`](credits/README.md): the Credits page: software, the original, the games' authors, the
   AI tools and the people.
 - [`errorNotice/`](errorNotice/README.md): the notice with Copy error details when something breaks.
+- [`artCourses/`](artCourses/README.md): the art courses (`#/art-courses`): drawing blocks, tiles and scenery, with real blocks drawn in code.
 - [`programmersGuide/`](programmersGuide/README.md): The Programmer's Guide to Game-Maker 3.0 (`#/programmers-guide`) and the words of the 1994 Technical Reference booklet.
 - [`piRemote/`](piRemote/README.md): the Pi remote (`#/pi-remote`, unlisted): a keyboard for the Raspberry
   Pi Zero W running Game-Maker OS, over its USB serial port with Web Serial.
