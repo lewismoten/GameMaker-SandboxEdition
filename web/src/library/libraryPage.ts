@@ -44,6 +44,7 @@ import { makeSpine } from './spines';
 import { lSpaceTrip } from './lSpace';
 import { startAmbience } from './ambience';
 import { startLibraryMusic } from './libraryMusic';
+import { whileWatching } from './libraryMedia';
 
 /** Stops the last Library page's watch on the catalog (a secret game revealed or hidden again). */
 let unwatchShelf: (() => void) | undefined;
@@ -94,13 +95,10 @@ async function openPiece(item: ShelfItem, games: Map<string, CatalogEntry>, from
       const entry = games.get(o.game);
       if (!entry) return;
       const { watchWalkthrough } = await import('../walkthrough/player');
-      await whenShown(
-        watchWalkthrough(entry, () => loadHostedGame(entry)),
-        '.wt-screen',
-      );
+      await whenShown(whileWatching(watchWalkthrough(entry, () => loadHostedGame(entry))), '.wt-screen');
     } else if (o.via === 'video') {
       const { openVideo } = await import('./videoDialog');
-      await whenShown(openVideo(o.id, item.title, item.picture), '.lib-video');
+      await whenShown(whileWatching(openVideo(o.id, item.title, item.picture)), '.lib-video');
     } else {
       const { openZine } = await import('../manual/zine/zineItem');
       await whenShown(openZine());
