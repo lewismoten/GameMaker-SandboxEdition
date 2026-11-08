@@ -21,7 +21,9 @@ export interface Course {
 }
 
 import { CHARACTERS } from './courseCharacters';
+import { SCREENS } from './courseScreens';
 import { SHADOWS } from './courseShadows';
+import { WORDS } from './courseWords';
 
 export const BOOK_TITLE = 'Art courses';
 
@@ -165,6 +167,8 @@ export const COURSES: Course[] = [
   },
   SHADOWS,
   CHARACTERS,
+  WORDS,
+  SCREENS,
 ];
 
 export const courseById = (id: string): Course | undefined => COURSES.find((c) => c.id === id);
@@ -173,6 +177,4 @@ export const courseById = (id: string): Course | undefined => COURSES.find((c) =
 export const COMING: { title: string; about: string }[] = [
   { title: 'Palettes', about: 'Colors in a ramp, one palette to a scene, and how a game spends its 256 colors.' },
   { title: 'Block animation', about: 'Water, torches and doors from a few frames, looping without a jump.' },
-  { title: 'Words as monsters', about: 'Letters drawn as foes, and what to do when they walk the other way and mirror.' },
-  { title: 'Screens with words', about: 'Title pictures, cartoons and talk, with room left for the game’s own words.' },
 ];
