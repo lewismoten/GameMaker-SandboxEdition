@@ -261,7 +261,8 @@ export function dress(l: Level, pal: Pal, o: DressOptions = {}): void {
     const x = (k % MLEN) - ORIGIN;
     const y = Math.floor(k / MLEN) - ORIGIN;
     const n = nameAt(x, y);
-    if (!n || n.includes('@') || OPEN.test(n) || !showsSky(n) || !book.has(base) || showsSky(base)) continue;
+    // (not a block on a clock: stepping stones, lamps and loose boards keep the pictures their routes know them by)
+    if (!n || n.includes('@') || OPEN.test(n) || !showsSky(n) || !book.has(base) || showsSky(base) || l.timed.some((t) => t.name === n)) continue;
     let back = base;
     if ((base === 'rock' || base === 'rock2') && x > 0 && x < W - 1) {
       const v = Math.floor(hash(x, y, 1) * 4);

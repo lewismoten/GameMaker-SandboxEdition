@@ -61,7 +61,7 @@ export function levelNext(pal: Pal): Level {
   return {
     file: 'next',
     title: 'Next Door',
-    hint: 'Watch the fog lift. Read the signs.',
+    hint: 'Walk along. Watch the fog lift.',
     look: 'dawn',
     map: m,
     book,

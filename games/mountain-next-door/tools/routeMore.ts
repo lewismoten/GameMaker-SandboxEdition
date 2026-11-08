@@ -20,7 +20,7 @@ export async function mossbackBack(bot: StarterBot): Promise<void> {
     await cross(bot, [[a, b]], T[k].row, `the wobbly rocks on terrace ${k + 1}`, 'back', 'screeUp');
   };
   await ladder(bot, B.ladders[0], 'up', feet(0), 'the first ladder');
-  await readAt(bot, at.view + 1, 'the view sign');
+  await must(bot, bot.walk(at.view + 1, 'the view spot'), 'to the view spot');
   await take(bot, B.posts[0][0], POINTS.blaze, 'a post');
   await rocks(0);
   await take(bot, B.acorns[0][1], POINTS.acorn, 'an acorn');
@@ -32,7 +32,7 @@ export async function mossbackBack(bot: StarterBot): Promise<void> {
   await take(bot, B.posts[1][1], POINTS.blaze, 'a post');
   await readAt(bot, at.hens + 1, 'the hens sign');
   await ladder(bot, B.ladders[2], 'up', feet(2), 'the third ladder');
-  await readAt(bot, at.up + 1, 'the wobbly rocks sign');
+  await must(bot, bot.walk(at.up + 1, 'the wobbly rocks spot'), 'to the wobbly rocks spot');
   await take(bot, B.posts[2][0], POINTS.blaze, 'a post');
   await rocks(2);
   await take(bot, B.posts[2][1], POINTS.blaze, 'a post');
@@ -65,7 +65,7 @@ export async function library(bot: StarterBot): Promise<void> {
   await must(bot, bot.walk(gaps(0)[0], 'the first gap'), 'past a gap with no book yet');
   score(bot, from, 0, 'a gap with no book in hand');
   await ladder(bot, L.ladders[0], 'up', feet(1), 'the first ladder');
-  await readAt(bot, at.overdue[1] + 1, 'the overdue sign');
+  await must(bot, bot.walk(at.overdue[1] + 1, 'the overdue spot'), 'to the overdue spot');
   await take(bot, books(1)[0], POINTS.book, 'a book');
   await take(bot, gaps(1)[0], POINTS.shelved, 'a book back on its shelf');
   await take(bot, books(1)[1], POINTS.book, 'a book');
@@ -74,12 +74,12 @@ export async function library(bot: StarterBot): Promise<void> {
   await take(bot, books(2)[0], POINTS.book, 'a book');
   await take(bot, gaps(2)[1], POINTS.shelved, 'a book back on its shelf');
   await ladder(bot, L.ladders[2], 'up', feet(3), 'the third ladder');
-  await readAt(bot, at.chute[1] + 1, 'the chute sign');
+  await must(bot, bot.walk(at.chute[1] + 1, 'the chute spot'), 'to the chute spot');
   await take(bot, books(3)[0], POINTS.book, 'a book');
   await readAt(bot, at.page1[1] + 1, 'the almanac, page one');
   await take(bot, books(3)[1], POINTS.book, 'a book');
   await readAt(bot, at.page2[1] + 1, 'the almanac, page two');
-  await readAt(bot, at.page3[1] + 1, 'the almanac, page three');
+  await must(bot, bot.walk(at.page3[1] + 1, 'the almanac, page three'), 'to the almanac, page three');
   await take(bot, books(3)[2], POINTS.book, 'a book');
   await must(bot, bot.walk(L.chute, 'the chute'), 'down the chute');
   await must(bot, bot.land(), 'landing at the bottom of the chute');

@@ -17,26 +17,30 @@ import { buildLevels } from '../src/levels';
 import { GROUND } from '../src/level';
 import { FOG_WAVES, PICNIC, PICNIC_WALK, PROLOGUE, WISP_HOME } from '../src/monsters';
 import { POINTS } from '../src/props';
-import { READ, climbUp, hop, hopLeft, leave, must, readAt, score, shownAt, solidNow, watchFor } from './routeKit';
+import { READ, climbUp, hop, hopLeft, leave, lookAt, must, readAt, score, shownAt, solidNow, watchFor } from './routeKit';
 
 /** Ticks since the scene began. */
 const since = (bot: StarterBot, t0: number) => bot.sim.w.clock - t0;
 
-/** 1. Next Door: read along the street while the fog lifts, watch the mountain wake and lift its toe, then go. */
+/** 1. Next Door: along the street while the fog lifts, watch the mountain wake and lift its toe, hear it, then go. */
 export async function nextDoor(bot: StarterBot): Promise<void> {
   const t0 = bot.sim.w.clock;
   const at = NEXT_AT.signs;
-  await readAt(bot, at.up + 1, 'the first sign');
+  await lookAt(bot, at.up + 1, 'the street');
   await readAt(bot, at.fog + 1, 'the fog sign');
   await must(bot, bot.walk(at.not + 4, 'the mountain'), 'to the mountain');
   await watchFor(bot, () => since(bot, t0) > FOG_WAVES[3] + 160, 'the fog lifting', 1200);
-  await readAt(bot, at.not + 1, 'the not-fog sign');
-  await readAt(bot, at.gates + 1, 'the gates sign');
+  await lookAt(bot, at.not + 1, 'the mountain');
+  await lookAt(bot, at.gates + 1, 'the gates caught on it');
   await must(bot, bot.walk(NEXT_AT.toe - 2, 'the toe'), 'to the toe');
   if (since(bot, t0) > PROLOGUE.wake) throw new Error('the mountain woke before Tess got to watch');
   await watchFor(bot, () => !solidNow(bot, NEXT_AT.toe, GROUND - 1), 'the mountain lifting its toe', 900);
   await must(bot, bot.wait(READ / 2), 'a look up at the mountain');
-  await readAt(bot, at.polite + 1, 'the polite sign');
+  // under the lifted toe the mountain says its line; Tess stops to hear it out
+  await must(bot, bot.walk(NEXT_AT.toe + 1, 'under the toe'), 'under the toe');
+  if (!bot.sim.clipTicksLeft) throw new Error('the mountain said nothing as Tess passed under its toe');
+  await must(bot, bot.sim.waitForClip(), 'the mountain saying excuse me');
+  await lookAt(bot, at.polite + 1, 'Mrs. Okoro on her step', READ / 2);
   await leave(bot, bot.walk(NEXT_AT.exit + 1, 'the exit'), 'the exit');
 }
 
@@ -72,12 +76,12 @@ export async function gateHunt(bot: StarterBot): Promise<void> {
   const from = bot.sim.ci.score;
   const [a, b, c, d] = GATES_AT.climbs;
   const at = GATES_AT.signs;
-  await readAt(bot, at.four + 1, 'the four gates sign');
+  await must(bot, bot.walk(at.four + 1, 'the four gates spot'), 'to the four gates spot');
   await fetchGate(bot, a, 'the white gate');
-  await readAt(bot, at.carry + 1, 'the one-at-a-time sign');
+  await must(bot, bot.walk(at.carry + 1, 'the one-at-a-time spot'), 'to the one-at-a-time spot');
   await returnGate(bot, a.way, 'the first garden');
   await take(bot, GATES_AT.acorns[0], POINTS.acorn, 'acorn 1');
-  await readAt(bot, at.hens + 1, 'the hens sign');
+  await must(bot, bot.walk(at.hens + 1, 'the hens spot'), 'to the hens spot');
   await fetchGate(bot, b, 'the blue gate');
   await returnGate(bot, b.way, 'the second garden');
   await must(bot, bot.walk(GATES_AT.pie, 'the pie'), 'to the pie');
@@ -103,11 +107,11 @@ export async function footprints(bot: StarterBot): Promise<void> {
   const at = P.signs;
   const [p1, p2, p3, p4, p5] = P.posts;
   const [h1, h2, h3] = P.holes;
-  await readAt(bot, at.follow + 1, 'the footprints sign');
+  await must(bot, bot.walk(at.follow + 1, 'the footprints spot'), 'to the footprints spot');
   await take(bot, p1, POINTS.blaze, 'the first post');
   await take(bot, P.trees[0], POINTS.blaze, 'the first tree');
   await hop(bot, h1, 2, 'the first deep print');
-  await readAt(bot, at.blaze + 2, 'the blaze sign');
+  await must(bot, bot.walk(at.blaze + 2, 'the blaze spot'), 'to the blaze spot');
   await take(bot, p2, POINTS.blaze, 'the second post');
   await readAt(bot, at.nut + 1, 'the Nutmeg sign');
   await climbUp(bot, P.oak.ladder, P.oak.row - 1, "the oak's ladder");
@@ -125,10 +129,10 @@ export async function footprints(bot: StarterBot): Promise<void> {
   await take(bot, P.trees[2], POINTS.blaze, 'the third tree');
   await hop(bot, h3, 2, 'the third deep print');
   await take(bot, p5, POINTS.blaze, 'the fifth post');
-  await readAt(bot, at.mist + 1, 'the mist sign');
+  await must(bot, bot.walk(at.mist + 1, 'the mist spot'), 'to the mist spot');
   const c = P.canopy;
   await climbUp(bot, c.ladder, c.row - 1, 'the ladder to the canopy walk');
-  await readAt(bot, at.canopy + 2, 'the canopy sign');
+  await must(bot, bot.walk(at.canopy + 2, 'the canopy spot'), 'to the canopy spot');
   const stops = [...c.posts.map((x) => [x, POINTS.blaze] as const), ...c.acorns.map((x) => [x, POINTS.acorn] as const)].sort((a, b) => b[0] - a[0]);
   for (const [x, pts] of stops) await take(bot, x, pts, 'something on the canopy walk');
   score(bot, from, 13 * POINTS.blaze + 5 * POINTS.acorn, 'level 3');
@@ -180,10 +184,10 @@ export async function steppingStones(bot: StarterBot): Promise<void> {
   const S = STREAM_AT;
   const at = S.signs;
   const [c1, c2, c3, c4] = S.crossings;
-  await readAt(bot, at.stones + 1, 'the stones sign');
+  await must(bot, bot.walk(at.stones + 1, 'the stones spot'), 'to the stones spot');
   await cross(bot, c1, G4, 'the first crossing');
   await take(bot, S.trees[0], POINTS.blaze, 'the first tree');
-  await readAt(bot, at.two + 2, 'the rise-and-sink sign');
+  await must(bot, bot.walk(at.two + 2, 'the rise-and-sink spot'), 'to the rise-and-sink spot');
   await cross(bot, c2, G4, 'the second crossing');
   await must(bot, bot.walk(S.pie, 'the pie'), 'to the pie');
   await take(bot, S.trees[1], POINTS.blaze, 'the second tree');
@@ -195,7 +199,7 @@ export async function steppingStones(bot: StarterBot): Promise<void> {
   await cross(bot, c4, G4, 'the fourth crossing');
   await take(bot, S.trees[3], POINTS.blaze, 'the fourth tree');
   await must(bot, bot.walk(S.bridge[1] + 2, 'over the footbridge'), 'over the footbridge');
-  await readAt(bot, at.hill + 1, 'the hill sign');
+  await must(bot, bot.walk(at.hill + 1, 'the hill spot'), 'to the hill spot');
   score(bot, from, 4 * POINTS.blaze + 2 * POINTS.acorn, 'level 4');
   await leave(bot, bot.walk(S.exit + 1, 'the exit'), 'the exit');
 }
@@ -214,9 +218,9 @@ export async function signposts(bot: StarterBot): Promise<void> {
   const feet = (t: number) => FLOORS[t] - 1;
   const post = (t: number) => S.posts.filter(([, k]) => k === t).map(([x]) => x);
   // the bottom path, to the right
-  await readAt(bot, at.turned + 1, 'the turned-signs sign');
+  await must(bot, bot.walk(at.turned + 1, 'the turned-signs spot'), 'to the turned-signs spot');
   await take(bot, post(0)[0], POINTS.blaze, 'a post');
-  await readAt(bot, at.trust + 1, 'the trust sign');
+  await must(bot, bot.walk(at.trust + 1, 'the trust spot'), 'to the trust spot');
   await take(bot, post(0)[1], POINTS.blaze, 'a post');
   await must(bot, bot.walk(S.pie[0], 'the pie'), 'to the pie');
   await must(bot, bot.walk(S.fork1.arrow - 1, 'the first signpost'), 'to the signpost');
@@ -235,7 +239,7 @@ export async function signposts(bot: StarterBot): Promise<void> {
   await ladder(bot, S.fork2.nookLadder, 'down', feet(1), 'the ladder out of the nook');
   await ladder(bot, S.fork2.ladder, 'up', feet(2), 'the blazed ladder');
   // the top path, to the right
-  await readAt(bot, at.top + 1, 'the nearly-there sign');
+  await must(bot, bot.walk(at.top + 1, 'the nearly-there spot'), 'to the nearly-there spot');
   await take(bot, post(2)[0], POINTS.blaze, 'a post');
   await must(bot, bot.walk(S.fork3.arrow + 1, 'the third signpost'), 'to the signpost');
   await must(bot, bot.wait(READ / 2), 'watching the arrow turn');
@@ -254,10 +258,10 @@ export async function signposts(bot: StarterBot): Promise<void> {
 export async function emptySpot(bot: StarterBot): Promise<void> {
   const t0 = bot.sim.w.clock;
   const at = HOLLOW_AT.signs;
-  await readAt(bot, at.hole + 1, 'the hole sign');
+  await lookAt(bot, at.hole + 1, 'the hole view');
   await must(bot, bot.wait(READ / 2), 'a look at Nutmeg on the rim');
-  await readAt(bot, at.here + 1, 'the stood-here sign');
-  await readAt(bot, at.puddles + 1, 'the puddles sign');
+  await lookAt(bot, at.here + 1, 'the stood-here view');
+  await lookAt(bot, at.puddles + 1, 'the puddles view');
   await readAt(bot, at.wisp + 1, 'the Wisp sign');
   await readAt(bot, at.gone + 1, 'the gone sign');
   await must(bot, bot.walk(HOLLOW_AT.puddles[5], 'the last puddle in the hollow'), 'along the puddles');
@@ -292,13 +296,13 @@ export async function windyRidge(bot: StarterBot): Promise<void> {
   const R = RIDGE_AT;
   const at = R.signs;
   const posts = R.posts.map(([x]) => x);
-  await readAt(bot, at.puddles + 2, 'the puddles sign');
+  await must(bot, bot.walk(at.puddles + 2, 'the puddles spot'), 'to the puddles spot');
   await take(bot, posts[0], POINTS.blaze, 'a post');
   await hop(bot, R.hole, 2, 'the deep print');
   await take(bot, posts[1], POINTS.blaze, 'a post');
-  await readAt(bot, at.lift + 2, 'the lift sign');
+  await must(bot, bot.walk(at.lift + 2, 'the lift spot'), 'to the lift spot');
   await rideUp(bot, R.lift1.x, LEDGES.mid, 'the first updraft');
-  await readAt(bot, at.gust + 2, 'the gust sign');
+  await must(bot, bot.walk(at.gust + 2, 'the gust spot'), 'to the gust spot');
   await take(bot, posts[2], POINTS.blaze, 'a post');
   await must(bot, bot.walk(R.mid[1], 'the edge'), 'to the edge');
   await must(bot, bot.wait(READ / 4), 'a breath at the edge');
@@ -324,14 +328,14 @@ export async function lowTunnel(bot: StarterBot): Promise<void> {
   const at = T.signs;
   const lower = T.lanterns.filter(([, k]) => k === 'lower').map(([x]) => x);
   const upper = T.lanterns.filter(([, k]) => k === 'upper').map(([x]) => x);
-  await readAt(bot, at.dark + 1, 'the dark sign');
+  await must(bot, bot.walk(at.dark + 1, 'the dark spot'), 'to the dark spot');
   await take(bot, lower[0], POINTS.lantern, 'a lantern');
   await readAt(bot, at.low + 2, 'the low sign');
   await take(bot, lower[1], POINTS.lantern, 'a lantern');
-  await readAt(bot, at.worms + 1, 'the glow-worm sign');
+  await must(bot, bot.walk(at.worms + 1, 'the glow-worm spot'), 'to the glow-worm spot');
   await must(bot, bot.wait(READ), 'watching the glow-worms');
   for (const x of lower.slice(2)) await take(bot, x, POINTS.lantern, 'a lantern');
-  await readAt(bot, at.race + 1, 'the mill race sign');
+  await must(bot, bot.walk(at.race + 1, 'the mill race spot'), 'to the mill race spot');
   await must(bot, bot.walk(T.ladder, 'the ladder'), 'onto the ladder');
   await must(bot, bot.climb('up', UPPER.floor - 1, 'up the ladder'), 'up the ladder');
   for (const x of upper) await take(bot, x, POINTS.lantern, 'a lantern on the mill race');
@@ -368,18 +372,15 @@ export async function zigzagHome(bot: StarterBot): Promise<void> {
     await must(bot, bot.walk(x, 'the ladder'), 'onto the ladder');
     await must(bot, bot.climb('up', feet(k + 1), 'up the ladder'), 'up the ladder');
   };
-  await path(0, 'right', [
-    [at.follow + 1, () => readAt(bot, at.follow + 1, 'the follow sign')],
-    [at.blaze + 1, () => readAt(bot, at.blaze + 1, 'the blaze sign')],
-  ]);
+  await path(0, 'right', [[at.follow + 1, () => readAt(bot, at.follow + 1, 'the follow sign')]]);
   await up(0)();
-  await path(1, 'left', [[at.steps + 2, () => readAt(bot, at.steps + 2, 'the footsteps sign')]]);
+  await path(1, 'left', []);
   await up(1)();
   await path(2, 'right', [[Z.pie[1], async () => must(bot, bot.walk(Z.pie[1], 'the pie'), 'to the pie')]]);
   await up(2)();
-  await path(3, 'left', [[at.moon + 2, () => readAt(bot, at.moon + 2, 'the moon sign')]]);
+  await path(3, 'left', []);
   await up(3)();
-  await path(4, 'right', [[at.top + 1, () => readAt(bot, at.top + 1, 'the top sign')]]);
+  await path(4, 'right', []);
   score(bot, from, 10 * POINTS.blaze + 6 * POINTS.acorn, 'level 9');
   await leave(bot, bot.walk(Z.exit + 1, 'the exit'), 'the exit');
 }
@@ -389,7 +390,7 @@ export async function summitPicnic(bot: StarterBot): Promise<void> {
   const t0 = bot.sim.w.clock;
   const P = PICNIC_AT;
   const at = P.signs;
-  await readAt(bot, at.home + 1, 'the home sign');
+  await lookAt(bot, at.home + 1, 'the home view');
   await readAt(bot, at.mat + 1, 'the doormat sign');
   await must(bot, bot.walk(P.steps[0] - 1, 'the steps'), 'to the steps');
   await must(bot, bot.walk(P.top[0] + 1, 'up the steps'), 'up the steps');
