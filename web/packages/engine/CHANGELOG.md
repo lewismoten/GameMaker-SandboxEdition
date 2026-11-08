@@ -5,7 +5,11 @@ Changes to `@lewismoten/gamemaker-sandbox-engine`, released as `engine-v*` tags.
 
 ## [Unreleased]
 
-Live sound control, a hook for life losses, and fixes to scrolling and picture decoding.
+## [3.3.0] - 2026-11-07
+
+Slow-PC presets that play a game at the pace of a 486, 386, 286 or IBM PS/1, experimental gameplay patches, live
+control of the sound mix and sound card, and a hook for life losses. Fixes cover scroll speed, JPEG and FLI decoding,
+short CMF files, and a recorded Enter on key screens.
 
 ### Added
 
@@ -18,6 +22,7 @@ Live sound control, a hook for life losses, and fixes to scrolling and picture d
 - Player life-loss events, so a caller can watch for them without counting recorded playback.
 - Play's F10 shows an imported player's own About page and the build it was first made with.
 - Sparse FLI palette changes (only the colors a frame draws), and FLI clip options that leave out the ring frame or cut where a whole frame adds the fewest bytes.
+- The DOS screen's gameplay crop and the last scene it drew, for screenshot tools, without changing rendering or timing.
 
 ### Changed
 
@@ -31,9 +36,9 @@ Live sound control, a hook for life losses, and fixes to scrolling and picture d
 - CP437 display decoding recovers the Windows-1252 aliases produced by the binary reader; `cp437Text` decodes DOS text files while retaining their line endings and end markers for callers.
 - Slow-PC presets keep FM music advancing during disk reads while preserving the full gameplay freeze and delayed digital-sound start. Explicit custom timer holds and interrupt/FM costs are unchanged.
 - A too-short or oversized-header FLI, and a CMF cut short, give a clear error (or play) instead of a RangeError or a huge allocation.
-
 - Scroll speed wraps like DOS's 16-bit integers.
 - Progressive JPEG prefixes decode only from complete MCU data.
+- A recording that waits on a key screen (such as a drop picker) gets one recorder poll per tick, so a recorded Enter reaches it instead of hanging.
 
 ## [3.1.0] - 2026-10-29
 
@@ -44,5 +49,6 @@ for every Game-Maker file format, OPL2 and CMF audio, screen, input and fonts.
 
 - The engine, scoped as `@lewismoten/gamemaker-sandbox-engine` and published to GitHub Packages from version tags.
 
-[Unreleased]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/engine-v3.1.0...HEAD
+[Unreleased]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/engine-v3.3.0...HEAD
+[3.3.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/engine-v3.1.0...engine-v3.3.0
 [3.1.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/releases/tag/engine-v3.1.0

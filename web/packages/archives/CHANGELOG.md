@@ -5,7 +5,10 @@ Changes to `@lewismoten/gamemaker-sandbox-archives`, released as `archives-v*` t
 
 ## [Unreleased]
 
-The first release: portable game discovery, ZIP and SFX extraction, and ZIP creation for Game-Maker files.
+## [3.2.0] - 2026-11-07
+
+The first release: game discovery, ZIP and SFX extraction, ZIP creation and a full import scanner, with no Node-only
+code. Imports check what FLI, GIF and VOC files really hold and keep the player's build and author bytes.
 
 ### Added
 
@@ -20,4 +23,5 @@ The first release: portable game discovery, ZIP and SFX extraction, and ZIP crea
 
 - Imported player identification reasons decode DOS author text as CP437 for display while retaining the original author and About-page byte strings.
 
-[Unreleased]: https://github.com/lewismoten/GameMaker-SandboxEdition/commits/develop/web/packages/archives
+[Unreleased]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/archives-v3.2.0...HEAD
+[3.2.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/releases/tag/archives-v3.2.0

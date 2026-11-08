@@ -5,8 +5,11 @@ Changes to `@lewismoten/gamemaker-sandbox-tools`, released as `tools-v*` tags. T
 
 ## [Unreleased]
 
-Most of the game-building kit moves into the package, with new tools for FLI shrinking, palettes, disk diffs,
-embroidery and 3D-printable and laser models.
+## [3.4.0] - 2026-11-07
+
+Most of the game-building kit moves into the package: a seeded level generator for dungeons, forests, towns, castles
+and side views, block roles, nonsense-talk voices, and tools for FLI shrinking, palettes, disk diffs, embroidery, and
+3D-printable and laser models.
 
 ### Added
 
@@ -31,14 +34,18 @@ embroidery and 3D-printable and laser models.
 - Embroidery: a stitch generator, DST, EXP and PES writers and readers, and a simulation.
 - Laser kit helpers: finger-joint panels, kerf offsets, part and sheet layout, and a wooden-nickel builder.
 - Disks merge byte-identical palettes, and optimizing shrinks picture color tables losslessly.
+- Added a headless CYD friendliness advisory with recorded-route input measurements, jump timing probes, landing checks, and JSON and Markdown reports.
+- `kit/shading` `gradient()` takes a `rows` flag that blends between ramp steps in whole rows instead of the 4x4 dither, for much smaller GIFs.
+- Added `rampShift` to the shading kit: a dithered cast shadow or pool of light that steps each color along its own palette ramp.
 
 ### Changed
 
 - Game builds replace `disk/` files in place, so a running dev server never finds one missing.
 - `kit/tar` is browser-safe, so the web app's production build can import it.
 - Text-fit audits and level rendering live in the package.
-
 - Merging two background sets is much faster: finding blank block slots no longer re-serializes a block for every byte.
+- The forest level generator is about three times faster (same maps, byte for byte).
+- `palettes`: the palette presets are built when first used, so a bundle that imports `libraryDefaultPalette` alone leaves the presets and their color tables out.
 
 ### Fixed
 
@@ -58,5 +65,6 @@ The first release of the development tools as an npm package: drawing, palettes,
 - CP437 and micro text drawn as indexed game pixels, with documented font, text-effect and lighting APIs.
 - Reusable color ramps and time-of-day VGA lighting.
 
-[Unreleased]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/tools-v3.1.0...HEAD
+[Unreleased]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/tools-v3.4.0...HEAD
+[3.4.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/tools-v3.1.0...tools-v3.4.0
 [3.1.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/releases/tag/tools-v3.1.0

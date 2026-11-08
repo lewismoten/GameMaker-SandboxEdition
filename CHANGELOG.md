@@ -6,30 +6,17 @@ changelog: [engine](web/packages/engine/CHANGELOG.md), [archives](web/packages/a
 
 ## [Unreleased]
 
-- A printable navigator/player relay sheet in Teddy’s Library shelf helps two people explore the backyard and swap roles at the fedora.
+## [3.2.0] - 2026-11-07
 
-- Pocket Player keeps shared pictures steady between text pages and lets resistive-board fingers slide between steering and Jump without lifting.
-- The Technical Reference adds byte layouts, real-file examples and a utility architecture chapter, mirrored with source citations in the Programmer’s Guide.
-
-- Beat the Clock, Countdown, Warning First and all seven graduations have distinct, original 32-bar scores in their Starter groups’ bands.
-
-- 39 more Starters keep their original tunes in longer, 32-bar songs, with a new B section and their group’s band.
-
-- Pocket Player clears scene and text-page backgrounds across the whole panel on both boards and avoids stray pixels below pictures on the 2.8 inch board.
-
-- Pocket Player page arrows repaint only the game rows and page count, and the search icon has a round lens and diagonal handle. Resistive boards gain direction-plus-jump pad wedges; Sticky direction saves in NVS so a direction tap can keep walking while Jump is tapped separately.
-
-- Pocket Player title search redraws only the edited text and caret while typing, keeping the keyboard steady. The 3.5 inch board's Settings explains that its touch needs no calibration.
-
-The 1994 desk gets a fuller PC and a box of feelies, the editors become easier on touch screens and keyboards,
-the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to finish.
+Specials arrive: limited-time games that come out only on their day or season, on the home page and on the 1994 desk.
+106 Starters, small games that each teach one idea, fill a new tab and the desk's Sample CD, and the Pocket Player plays
+games from a microSD card on two small touch-screen boards. The desk gets a fuller PC and a disk box with dividers, the
+editors are easier on phones, touch screens and keyboards, and pages and the offline copy download less.
 
 ### Added
 
 - The Ultimate Owner’s Guide explains how to write a DOS 3.3 installation batch file for `C:\SANDBOX` or `C:\GAMES\SANDBOX`, with source-root `A:INSTALL` instructions, hard-drive launch commands, a clearly illustrative second disk, copy-error warnings and a rendered Snowbound floppy label.
-
 - Pocket Player shows its game list before discovering one-file card games, adds title search and compact icon buttons, keeps long titles inside their rows, brings Display options to both boards, reduces display setup to three steps, offers a saved smaller picture away from the touch pad, and preserves held touches across incomplete GT911 reads.
-
 - All Mine, an achievement for filling all ten high-score places in one game with the same name.
 - TURBO BUTTON's Mail Bag corrects the sound setup story (sound/music was set to None, with IRQ 7 already matching), gives the 220 / IRQ 7 / DMA 1 example, and adds help for holding Escape through the fade and choosing the right SVGA type in CONFIG.
 - The editors explain more DOS limits where they matter: New monster says why a 64-type set cannot take a copy, generated layouts report monsters omitted at 200 map slots, and block pickers explain their fixed 150/100/50-block sets without trimming imported extra records.
@@ -62,14 +49,12 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 - On every "Run like a" machine (486, 386, 286 and IBM PS/1), a level now takes time to load from the disk: the screen stays black while the files the level names are read, with each machine's own disk figures (an open per file, then the bytes at the disk's speed). A level of nine files and 197 KB takes about 0.24 s on the 486, 0.41 s on the 386, 0.76 s on the 286 and 2.0 s on the PS/1; the manual of Slow Computers lists its own levels' times. Loading a saved game with F6 reads the level's files again, all but the map and character. The game clock waits, as in DOS Game-Maker, and Today loads at once, as before. Estimates, not timed on a real PC.
 - The Programmer's Guide to Game-Maker 3.0 is a book in the Library (`#/programmers-guide`): a chapter for each part of the player (memory, the screen, blocks, monsters, sound, timing, file formats and more), why each limit is what it is, a table of every limit, links from each citation to the original source line, and one page to print or save as PDF. The Game-Maker box on the desk also holds its 1994 cousin, Technical Reference and Limits.
 - Dig It now feels like digging: Nova carries a small shovel, soil crumbles in five steps (cracked, split open, half dug, nearly dug, a hole with a heap of crumbs) with a crunch instead of vanishing at once, and the Down arrow scoops with the shovel.
-
 - The Starters tab lists the graduations in their own Graduations section (also a choice in Show): a padlock tile shows what it takes and how far you are, and the game's own tile appears once it is open. A Transcript button opens your grades by course with a GPA for each stage, and an Honors tab draws each honors you have earned as a certificate, with an optional name kept only in this browser and a Save picture button. A Starter you have started but not finished shows its letter grade in the corner, and every Starter's title screen says its course number (COURSE 101).
 - The 1994 desk hangs a framed certificate above the wall phone once you finish a graduation. Its frame shows the highest level you have reached (bronze, silver or gold, with a ribbon for The Sandbox Diploma), it appears while the desk is open, and pressing it opens your honors.
 - A Starter, Lightning Bugs, about fireflies that blink by themselves: a firefly is a monster with a mostly clear picture and a glow of dots, a list of frames that keep it dark for a while and then flash, and a path that loops. Every monster starts at the same tick, so level 1 shows six copies of one firefly blinking and flying as one, then six that are each their own monster; level 2 is a meadow at dusk with ten kinds, no two of a kind side by side.
 - The sound recorder and sample editor show a time ruler under the waveform: seconds, game ticks, a yellow "may stutter" zone, a red "likely stutters" zone and a line at 64 KB, and the Level check and the Before You Upload list suggest shorter sounds that DOS would load slowly or replay every tick. The times are estimates, and long sounds still record and play in full.
 - Run like a 286, 386 or 486: the web player has a small **Run like a** menu (Today is the normal setting) that makes any game run as a slower PC would. A tick that takes too long is skipped, so walking and animation slow down; a sound is read from the disk whole while the game waits, as DOS Game-Maker did, and the music keeps its own time. The numbers are estimates. A new Starter, Slow Computers, has a short pad and a long pad, a crowd of 36 monsters and a sky that moves every tick to try it on.
 - The Starters have eight more explorers beside Kit: Mia, Lena, Mara, Lian, Yana, Nova, Rima and Lami (the last three are aliens), the same character in other colors. Kit leads the first game of each group; the helpers lead the rest in turn, name themselves in the games' text and have their own cards on the Cast page. The slim top-down Kit is narrower, with a bigger head.
-
 - A new Starter, Fireworks Night: fireworks drawn with monsters. A rocket is a monster on a path up that turns into its burst at the top. Level 1 has two launcher blocks that each send up a rocket on their own time, and Enter launches one of your own. Level 2 is a show over a sleeping town: a ring, a peony and a willow, each burst nine monsters wide, that go up again and again. Its pages say how each is made, with the frames enlarged.
 - A new Starter, Heat Waves, the first in a new Weather group: far hills wobble over a desert road. Level 1 lays the same loop of blocks two ways, every row together (it sways like jelly) and each row a picture behind the one under it (the wobble climbs like hot air). Level 2 is a long road where a shiny puddle ahead hides when Kit comes near, a monster with an attack path. Level 3 loads an evening palette over the same pictures, and the hills hold still.
 - A new Starter, Leaves in the Wind: autumn leaves that are monsters. Level 1 drops three maple leaves side by side, one picture going straight down, eight turning frames going straight down, and the frames rocking on a zigzag path that swoops and glides, so only the last one floats. Level 2 has a maple, an oak and a birch, each dropping its own kind of leaf on its own timers, and a gust every nine seconds that bends all three crowns at once and blows leaves far across the meadow. A leaf that lands lies on the grass for a moment. Its pages say how each level is made, with the frames and paths drawn out.
@@ -127,7 +112,6 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 - The Pocket Player also runs on the smaller 2.8 inch 320 by 240 boards with resistive touch: the game is drawn at full size, the controls and screens are laid out for the small screen, and a three-tap calibration (BOOT button or Settings) is kept on the board. Settings can switch the display driver if a screen shows garbage or wrong colors.
 - The Pocket Player plays the games' PC speaker sounds (pickups, hurt, kills, jumps and the other effects each game sets), timed like the original, with a Sound setting for off, low, medium and high. Sound Blaster clips and music are not on the board yet.
 - Colors That Work, a Starter for the Telling a Story group: two levels about colors everyone can tell apart. In the first, a plate that stings and a plate that is safe differ only by red against green, and a second picture on the level card shows how that can look to a player who sees red and green alike. In the second, spikes look like spikes and the safe path is light and striped, so it reads in any color.
-
 - Spend It, a Starter for the Putting It Together group: coins add to Money, a stall sells a gold key for three of them and says SOLD, and with too few coins nothing happens.
 - Kit's Shop, a Starter for the Putting It Together group: coins from the street buy a gold key, a silver key or a heart from three stalls with prices on their roofs, each stall says SOLD once bought, and the exit needs both keys.
 - Wired Room, a Starter for the Putting It Together group: two levers add up to one bridge, a third lever is wired to a trap door instead, and every fall is a soft drop back to the start.
@@ -142,13 +126,11 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 - Corner View has a third room, The Diamond Floor, where every arrow walks one diagonal of a diamond-shaped floor (each step of its walk moves the hero across and down at once), and its hero is redrawn to face only the four diagonals, never the camera, so he is no longer wider than he is tall.
 - The Pocket Player now runs monsters, tick for tick like the web player (paths, chasing, wandering, births, shots, solid monsters and monster against monster), so the Starters about foes and bosses play on it too.
 - Roll the Dice, a Starter for the Wiring and Puzzles group: a die is a ring of six blocks that each turn into the next after a few ticks, and a touch turns the face showing into a still copy of itself and hands over a key, gold for an odd face and silver for an even one. Two doors wait ahead, so the face picks the door. The game has no random number: the tick decides the roll.
-
 - The Clown Club Face Dial in Teddy's Little Biggest Adventure box now has line-art clown faces (a corgi, a shaggy pup, Doc Leo in his fedora, a curly-haired clown, and the rest) instead of 12 by 12 pixel pictures, so each half-face is easy to read on the big and small discs. The pixel faces stay for the game's own screens, and the code each face shows is unchanged.
 - Try Again, a Starter for the Putting It Together group: a pit too deep for Kit to climb out of has a post at the bottom, and touching it starts the level over, because it is a scene link from the post's square back to the same scene (the coins come back, the score stays). The next level gives three pits a way back, a ladder, planks and solid blocks. Two levels, with signs and a "How this level is made" page each.
 - The Guide's "How do I…?" part, and a few other parts, now point to the Starter that shows each technique, with Try it boxes that open it at the right level. The Owner's Guide on the desk names the Sample CD folders (D:\SAMPLES) for the same techniques.
 - The printed Ultimate Owner's Guide now points to the Sample CD folder of the Starter that shows each technique it teaches, and every Starter is named in one of the guides.
 - The Starters tab splits Game Feel into Moving and Pushing, Worlds That Push Back (a new windy sky with leaves and a wavy water line) and Changing Your Hero (a new dressing room with a mirror and hooks); Switches moves to Wiring and Puzzles, and Score Popups and The Show move to Showcase Tricks.
-
 - The home page's search also finds words inside games: file names, text screens, descriptions, box text, the Starters' How do I questions, and the notes in your own games. It reads them in the background once you click the search box, remembers what it read, and says where it found a match.
 - Looks Like a Wall, a Starter for the Wiring and Puzzles group: a wall and a picture of a wall can be drawn exactly alike, and only the block's Solid setting says which stops Kit. A touch can turn a block into a cracked one and that into chips, and coins showing in a wall hint at a secret. Three levels, with signs and a "How this level is made" page each.
 - Out Loud, a Starter for the Telling a Story group: a game that talks. A voice is a sound file, and a key's move or a counter going up or down can play it. Only one voice plays at a time, and a new scene cuts it off, so a speaker stands far enough from the door for the whole line. Three levels, with signs and a "How this level is made" page each.
@@ -243,11 +225,38 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 - Level check: the hidden-exit finding suggests a door, sign or arrow where a link leaves plain background.
 - `npm run editor:touch`, `smoke:engines` and `editor:shots` for checking the editors on phones and across browsers.
 - The Starters' opening sting is easier to read: STARTER is built from letters five blocks wide and seven tall with a gap between them, and the words STARTER GAMES are lettered in plain type across the top from the first frame.
+- A printable navigator/player relay sheet in Teddy’s Library shelf helps two people explore the backyard and swap roles at the fedora.
+- The Technical Reference adds byte layouts, real-file examples and a utility architecture chapter, mirrored with source citations in the Programmer’s Guide.
+- Scoot, the desk buddy, now carries mail: the first call to each BBS on the 1994 PC brings home a letter for Scoot as a mail packet, read on Scoot's card (Mail, Postcards, Packages and Setup) or with the new SCOOT.EXE at the DOS prompt, and a small envelope beside Scoot shows when a letter is new.
+- Scoot now collects stamps on a postcard from this screen: a game played to its end stamps its title, the Starters share one Sample CD stamp, a graduation gives one "Attended a graduation" stamp, and a game Scoot doesn't know gets a plain "Saw a mystery game" stamp. Scoot's card shows them as small pixel-art stamps, and SCOOT.EXE lists them under Postcards.
+- Scoot can visit another screen: Send Scoot on a trip (on Scoot's card under Setup, or in SCOOT.EXE) saves a small trip file, SCOOT.SCT; opening it in another browser makes Scoot a visitor there, the games finished there stamp a postcard from that place, and sending it home brings that postcard back. A trip file holds only random ids, curated world numbers and stamps, never a name, and a file made on the same screen, opened twice or damaged is turned away with nothing changed. The graduation stamp also has a light outline now, so it reads at small sizes.
+- The 1994 desk has a buddy: Scoot, a pocket LCD toy on the desk top beside the Game-Maker box, waves hello, watches the game on the PC, cheers a finished game, a new badge or a certificate, dozes when the room is quiet, and opens a small card with games played, badges and what is on the PC (with a Quiet switch).
+- Open machine settings from the desk PC’s MHz display to remember CPU and hard-drive timing choices while keeping TURBO control.
+- Desk: the disk box files its floppies behind index-card dividers (My games, Imported, Sandbox, Bizarre, Specials, Starters, Gameware, Shareware), each with a tab that shows its count, goes to the group and folds it shut (remembered in this browser); a search keeps the box the same width and shows "No disks match" under an empty group.
+- The desk PC runs batch files: GMMENU, DE, BL, PA, PL and the rest of RSD's .BAT files in C:\GM now work as they did on a real PC, with Ctrl+C asking "Terminate batch job (Y/N)?".
+- A card of Pocket Player games made with `pocketData.ts --gmp` now carries each game's DOS files too, so the same `.GMP` file plays in Game-Maker OS on the Raspberry Pi; `--gmos` writes every public game for a card both players read.
+- The Library room has an AV cart with a big old TV and a blinking VCR; the TV opens the site's videos and walkthroughs.
+- The desk PC's Machine settings can switch off its drive sounds: spinning, head movement and reading for the hard drive, CD-ROM and floppy, or all of them at once.
+- The Starters tab says how close you are to your next certificate, such as "One more B in a 500 course until you earn your next certificate!".
+- Added a printable Player Patching Manual to the Game-Maker box, with byte offsets, limits, diagrams and Sandbox examples.
+- A native SDL2 host prototype plays compatible Pocket bundles with keyboard or controller input, PC speaker sound, optional PCM VOC effects, and headless frame checks.
+- The Pi remote has a Pi sound switch, off by default: while it is on, the music, clips and PC speaker effects of the game the Raspberry Pi is playing come out of this computer, played from the site's own copy of the game.
+- A Pi remote page at `#/pi-remote`: a full on-screen keyboard (and, when switched on, your own keyboard) for a Raspberry Pi Zero W running Game-Maker OS, over its USB cable in Chrome or Edge.
+- Save pixel-exact PNG screenshots from the full-window player’s camera button, with the DOS gameplay crop and current palette.
+- Browse Pocket Player games by category, preview six games per page, and search titles, with optional compatible library metadata and a Good on touch collection when route scores are available.
+- Pocket Player: every library, settings and pause button shows a pressed look when touched and acts when the finger lifts on it (sliding off cancels). Settings gains Brightness (25, 50, 75 or 100 percent, kept across restarts), optional Button clicks (off by default, never in a game) and, on the 2.8 inch board, a Status LED (dim green while loading, red blinks after an error). The screen dims after a minute untouched in the library or paused and turns off after three minutes; a game pauses itself after three minutes untouched. The touch that wakes the screen only wakes it.
+- Pocket Player: Settings, Controls, Pad position has a Float choice that keeps the pad off the game picture until a thumb lands on its side; the pad centers there, shows faintly while held and fades out after. A first start now shows how to hold the board, asks which hand steers, and opens a practice field where each key lights up and says its name (also in Settings as Try the controls).
+- Pocket Player’s pause menu can restart just the level (no life lost) and shows How to play with the game’s own key labels, and the home page’s first tile continues the last game at the level it was on, even after the board is switched off.
+- Pocket Player: Recently played and Favorites on the home page; star a game from its Details or the pause menu, and starred games keep their star on the list after a restart.
+- Pocket Player: a game's Details page has Story and Instructions buttons (and Title for a game on the microSD card) that show the game's own story, instructions and title pages, as its DOS menu did, one touch per page.
+- Pocket Player: Jump arcs and a Jump wedge width (Narrow, Normal, Wide) in Settings, bigger solid jump arcs on the pad, a held page arrow or Backspace that repeats, a 4 px dead strip at the edge of the resistive glass, and a small hand on library tiles of games that suit touch with a plain-words note in Details.
+- A new Special for the three days after Thanksgiving, The Mountain Moved Next Door: Tess the trail marker finds a mountain in the lot next door and marks the trail to lead it home, over ten levels, three of them scenes you watch unfold.
+- A new Special for Monkey Day (December 14, for three days), The Noodle Observatory: Nell builds a kitchen observatory, rides a pasta ring up the pantry and follows a runaway colander across the roof to find out what the cheese-colored moon in her window really is, over twenty-one scenes, three of them scenes you watch unfold.
+- Specials: limited-time games that are out only on their day or season, in a new Special tab on the home page and arriving on the 1994 desk as a floppy left on the desk or a file on The Sandbox BBS; one played, opened or copied stays for good. The first three are The Thank-You Parade (Veterans Day), Lucky Cat (Friday the 13th) and Pass the Pie (Thanksgiving).
 
 ### Changed
 
 - Opening a game in the editor no longer downloads the home page's showcase, cards and styles.
-
 - Both Pocket Player boards' flash images include all 106 Starters and Graduations, including Snow Trails, Rain on the Path, Quicksand, Lightning, Heat Waves, and the rebuilt lessons.
 - Who Wins? shows who is stronger: the big red gumdrop now fills its block and the mint ones are half its size, POWER charts list each monster's picture beside its real power number (180, 140, 130, 110), an arrow sign says to watch the big red one, and a star used up on something stronger fizzles gray where you can see it, with a sign saying why (180 to 140).
 - The Game-Maker box's Technical Reference and Limits booklet is finished: a memory map with corrected figures (PLAYGAME holds about 420K before a scene), drawings of the screen's blocks (with the 8 pixels at the right and 4 rows at the bottom that PLAYGAME hides while you play, so 312 x 196 show), scrolling and the 64K block files, a table of sound sizes and monsters by machine, a glossary to end on and a printed back cover. It says pixels, and its stray closing note is gone. Italic written with underscores now shows as italic in the box's booklets.
@@ -270,18 +279,15 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 - Removing imported games together (all, some ratings, or one import's) now ends with an Undo button that stays for a minute and brings every one of them back, with its ratings and notes.
 - The Starters no longer have download buttons or ZIP links: not on the game tiles, in the Download chooser, on the downloads page or in the Windows, Mac and Linux release lists. They are simple examples, so they stay to play on the site, edit a copy of, and find on the Sample CD and Sample Disk.
 - Pip, the friend in Say Something and Everybody Talks, has a new look of his own: a bee-striped sweater, round glasses and a headband with two bobbles, with no hat and no beard.
-
 - Home: the Gameware and Shareware tabs are now one CD tab, Gameware first and then Shareware, each by maker. Old Gameware and Shareware links open it, and every game is still on the desk, in DOS, in Credits and in search.
 - The Starters no longer stand as retail boxes on the desk shelf (or in the box picker or the paper catalog). They live on the Sample CD and the Sample Disk, and on the Starters tab, with Play and "How this level is made".
 - The game list that the home page and the DOS page load is smaller again: each Starter's blurb, label and box art, and every original game's controls and player look, come with it only when the game is opened, so more Starters can be added without slowing those pages.
 - The desk loads less as games are added: each box on the wall shelf is drawn when its slot is near the screen, its spine is a small picture at the size it stands (no separate request per box), and a box standing spine out no longer makes its front under black light.
 - On the Starters tab the "How do I…?" list is one button that opens a dialog with a search box (focused), a count of the matches and the questions, each with Play this level and See how it's made. The list scrolls inside the dialog, with a scrollbar you can see, so the tab no longer loses a third of its height to it and there is no Show all button to miss. Closing the dialog (Esc or Close) puts the keyboard back on the button: 1 Tab stop instead of 14. The Guide's index is unchanged.
 - The Starters tab and its "How do I…?" list show the games in learning order, First Steps first, not A to Z.
-
 - Pictures redrawn after a "what would a child point out?" pass: the sword on I Screamed, She Smirked's title is a fat orange foam sword; the Cleanse Me, O Loofah sponge is a golden, fuzzy, goofy-faced bath monster with no horns; Veni, Vidi, Risi's Rufus is plainly a dog; Tippy in KEEP IT BRIEF!'s The Scissor Situation card sits up crying; and Final Curtain's umbrella man tips his hat.
 - Dialogs fit a phone screen without scrolling: New game (the opening's descriptions become tooltips and its preview sits beside the list, the three starts are shorter cards), and the dialogs with a long list or a form keep their title and actions in place while only the list scrolls: Optimize, Before You Upload, keyboard shortcuts, Back up or restore, Saves & scores, the file pickers, the instruction and level cards, the sound effect maker, the health check, the library's dialogs and the Keys map (the 256-color chooser fits at once). Each scrolling area can be reached with the keyboard. `npm run check:dialogs` opens the dialogs at 375×812, 390×844, 360×740 and 844×390, in light and dark, and fails when one needs scrolling.
 - Map editor on iPhone: two fingers over the map pinch the map, not Safari's page, and never leave a stray stroke; a Zoom tool (tap to zoom in) and visible + and − buttons beside the zoom menu; the block highlighter is now "Find block".
-
 - Editors: 44 px touch targets throughout, one Tab stop with arrow keys for the file list, slide tray and path tabs, and a small Saved pill where the file list folds away.
 - PC games ask for setup on PLAYGAME's own Configure screen, as the DOS program does.
 - Box viewer on a phone: the Feelies strip sits above the disks and manual, and dragging always turns the model.
@@ -292,12 +298,39 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 - Opening a game and the shelf are faster: zips are peeked for the files asked for, four zips build at a time, and the home page lets go of what it watches.
 - Games revised: Final Curtain 1.5, Teddy's Little Biggest Adventure 1.6, Quest for the Round Tuit 1.5, Tune-Up's Beltway and Timing Beat, with visible doorways at the ends of several levels.
 - The Starters have no invisible walls: each room ends in a hedge you can see, and a check fails if a solid block is ever drawn as sky. Room to Room's second room now leaves by an open archway with a THIS WAY OUT sign instead of an invisible edge.
+- Pocket Player keeps shared pictures steady between text pages and lets resistive-board fingers slide between steering and Jump without lifting.
+- Beat the Clock, Countdown, Warning First and all seven graduations have distinct, original 32-bar scores in their Starter groups’ bands.
+- 39 more Starters keep their original tunes in longer, 32-bar songs, with a new B section and their group’s band.
+- Pocket Player page arrows repaint only the game rows and page count, and the search icon has a round lens and diagonal handle. Resistive boards gain direction-plus-jump pad wedges; Sticky direction saves in NVS so a direction tap can keep walking while Jump is tapped separately.
+- Pocket Player title search redraws only the edited text and caret while typing, keeping the keyboard steady. The 3.5 inch board's Settings explains that its touch needs no calibration.
+- The Sandbox BBS and The Sofa no longer list the Starters in any file area or the New Files Scan; they stay on the desk's Sample CD.
+- Beams and Fog: each beam in the hall is a cone of light whose edges run at an angle, not a staircase of squares, and the drifting fog and lanterns move in even pixel steps so their dots never blink against the hills and the wall.
+- Beams and Fog 1.3: the lanterns in the last room carry a big glow (a 60-pixel halo, nine monsters drifting together), the fog room's first sign no longer sits under Lian at the start, and the first room's sign says the goal.
+- THE CHEZ sounds like the real car wherever it drives, on the cast page and past the desk window: its motor whine, contactor clunks and road noise are tuned to a recording of it.
+- With the Sandbox Diploma earned, the Honors tab shows it large in the middle with the six stage honors beside it, and a course grade of B or better in every course adds "With Highest Honors" to the diploma (a perfect 4.0 adds gold foil), with the desk frame titled Honor Graduate or Valedictorian.
+- The Starters, Realm and Depth pictures are smaller downloads: skies blend in fine lines instead of a dot pattern, and pages other than the titles drop their dither.
+- Imported list: cards show only the title, the recorded-walkthrough badge sits in the picture corner with a plain label, and each card shows small tag chips (a known game's view, genre and setting, tagged by looking at it, or dashed suggestions guessed from its files) with a Tag picker to narrow the list.
+- Lucky Cat 2.0: redrawn as a night-time woodcut with its own songs, sharper writing, a new level played as Rascal the raccoon halfway through, and a payback ending.
+- The Mountain Moved Next Door grows from ten levels to fourteen (Up Mossback's Back, The Library, The Lookout and Rooftops are new), with sharper writing, real stakes, harder timed puzzles and its own woodcut look on every tile and picture.
+- The Noodle Observatory grew to thirty-nine scenes and about an hour of play: three new chapters after the reveal (the snowy yards, the night bakery, the real sky), two new scenes to watch, a harder last room in six chapters, sharper writing, and richer art in every room.
+- The Thank-You Parade (a Special) is rebuilt as version 2.0: a screen-printed parade-poster look of its own, a rival band with a plan, a level played as Marge the crop duster pilot, a drum-off against confetti cannons that fire on the beat, veterans judging from the curb, four hidden playbook pages, three new songs and a new ending.
+- Pages open with less to download: the home page loads the Download chooser, the game check and the imported games' records only when used, the palette templates no longer come with every page that can start a new game, the Library no longer brings in the game audio engine to read the demo sound setting, dos.html lists the BBS downloads without the BBS terminal, and the desk loads Doc Leo's glance pictures just before he glances. The home page and dos.html no longer download every game's file names and sizes; a game's list is fetched when it is played, copied, checked or searched.
+- Pass the Pie 2.0: the storybook dinner run now cuts to Mr. Plume, Grandma's turkey, who puts on a pilgrim hat and a black belt to settle a grudge with Big Gobble, the parade's new thirty-foot inflatable. Rory and Mr. Plume take turns across six reworked streets (Enter is his kick), every picture is redrawn in the game's own block-print look, and the ending explains the oven.
+- Pocket Player: the screen now says what the card is doing (reading with a count, no card, can't read it, no pocket folder) in a chip on the home page and in a notice when no games are listed. Loading a game shows a progress bar, and a game or level that can't load (memory, a missing file, the card pulled) shows a card with a Back button instead of resetting. Rescan moved to Settings, Card, the home page has no back arrow, and the splash has a line of text under the logo.
+- Pocket Player’s 2.8-inch pad marks its upper jump wedges with curved arrows that show a jump toward either side.
+- Pocket Player: sharper Search and Settings icons, Starter tiles that print their course number and title in clear text, a Bizarre icon taken from the Bard of Bizarre's rooster, no empty categories on the home page, and sound that starts off on a new board (a saved volume stays).
+- Pocket Player game previews are a game's title screen boxed down with its lettering kept readable, and its boot shows the Sandbox logo.
+- Pocket Player: Settings is split into Controls, Display, Sound and Card tabs, and every value is a row of chips instead of a row you tap to cycle. Controls shows a small copy of the play screen that redraws as you change the pad and lights up what your thumb presses on it. New options: Pad position (Low or Raised) and Jump button (Corner or Near pad). The Card tab shows how many games were found, free space and Rescan.
+- Rain on the Path: finer rain with near and far drops, a little house whose roof catches the rain and whose spout pours into a rain barrel, and puddles that splash with a sound when you step in.
+- The site and its offline copy are smaller: each Starter's ZIP now shares the DOS player and the kit's pictures with the others and is put back together in the browser, byte for byte the same ZIP as before.
+- Snow Trails 2.0: clearer boot marks and signs, and a third walk, "Open Snow", seen from above, where prints face the way you walked and fade away in about six seconds.
+- The player's "Run like a" menu now starts with "modern computer" instead of "Today".
+- Expand the Technical Reference with bit diagrams, Sandbox file examples, and clearer answers about timing, colors, sound, monsters, and file limits.
 
 ### Fixed
 
 - Imported game names and DOS text use the PC's CP437 characters outside DOS; menu frames no longer appear as superscript threes in titles. Previously derived imported names repair on load without changing chosen names or game files.
 - Auto-arrange can put an ending above or below its sources, keeping shortcut arrows clear of branches that leave a level and return to it.
-
 - Errors stay available to screen readers inside dialogs; saves, downloads and checks retain their final outcomes, rapid progress is quieter, and opening a transcript announces its loading state rather than the whole document. Error notices remain readable in both themes.
 - The desk’s screenshot, recording, enlarge-screen, power, disk-eject, speaker sound switch and keyboard tray controls have larger targets, including when the desktop PC is scaled down.
 - The character editor's links to Overview controls have a 24px touch target instead of a text-height strip.
@@ -305,30 +338,24 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 - The Community submission form keeps its required fields and actions visible on small portrait phones; the submission steps unfold when needed.
 - The information buttons in Saves & scores have 24-pixel targets instead of 18-pixel targets.
 - Graduation audiences sit together in two balcony tiers beside the lectern, a block below the top of the play view, and The Sandbox Diploma's confetti falls visibly past them.
-
 - Most Sandbox and Bard of Bizarre games draw their text pages in a dark purple their players choose, so story, how-to and level pages are easy to read on light paper. Quest for the Round Tuit uses its talk pages' dark plum on every page, and in Maximus: The Hundred Worlds the F2 status line, F9 words and high-score name are amber instead of a dim blue on black.
 - Graduation: the "wait for zero" countdown now starts at 9 and counts slowly enough that you reach the door with time left to watch it hit zero, and Brother Camel is shrunk to fit the balcony so his head is no longer off the top of the screen.
-
 - Warning First's warnings move as the signs say: a plank bridge really flickers before it goes (it cracks and blinks gold, a gentle two or three times a second, in place of a still striped picture whose stripes broke at each plank), and a fog vent's grate shakes from side to side while it rumbles.
 - A Starter's page heading too long for its paper (Cutscenes' "The Long Way Around") now goes onto two lines instead of running off the paper; the game check measures headings against their paper, and Cutscenes says "around" where it said "round".
 - On the Starters tab, Show: Done also lists the graduations you have earned, after the Starters you have finished, and Show: Not done yet lists the locked ones as well as the ones ready to graduate, so an earned graduation no longer disappears under a filter.
 - Say Something, Everybody Talks, Cutscenes, Color Doors and The Same House: coming back from a talk, a tale, a gallery or a room no longer shows the level card again. It shows only when you first arrive.
-
 - Teddy's Little Big, Little Bigger and Little Biggest Adventure and Final Curtain print their text pages in Game-Maker's own purple, as the player intends, not a nearby plum; the Programmer's Guide and the Technical Reference booklet note that text pages match that purple and that screens without a picture fill with palette color 0.
 - In the Starter Countdown the numbers are on screen while you wait: level 1's big number also sits on top of each sign, and level 2's two digits hang lower, once over each sign. The trapdoor's nail heads are square.
 - In the Starter Beat the Clock the countdown bar is on screen while you play: it sits along the top of the view, placed often enough that one whole bar is always in sight, with the first clock set into the brick wall at the start.
 - Two Starters had art a child could read the wrong way: Ride Along's title stars no longer climb out of the hero like a stream, and Under the Hood's second level no longer has a plus sign made of green panels
-
 - Kit's Moves: the three dash gaps are sized to the moves their signs name (one dash, a hop with a dash, a hop with two dashes), and the signs now say to keep Right held.
 - My games no longer fills with “(damaged copy)” games. A game that names a file it never had is no longer called damaged, a copy of a damaged save is kept only when you open that game in the editor, copies that match their sound game byte for byte are cleared on the next visit, and any that remain are under “Damaged copies…”, where each can be kept as a game or deleted.
 - Seeds and Nests (a Starter): the yellow birds no longer fly into the top row of the screen, where Game-Maker does not draw a monster, so level 1's bird stays in sight. The blue birds in level 2 stay about five seconds, so two are in the air at a time (not three) and the last one leaves soon after the nest is stopped.
 - The walkthrough bot keeps going back for keys to a door that takes many of them (up to 400 trips, where it stopped at 6) and, when it stops short, says whether it ran out of time or reached that limit. Its note on a key that only another scene adds no longer suggests a player can surely bring it: that scene may come only after the door.
 - Five Starters keep their monsters out of the screen's edge rows, where Game-Maker does not draw one: Birds of a Feather's V flies two rows lower, Take the Wheel's second bird sits a block nearer, Don't Get Seen's light hangs lower with a shorter cone so the lamp stays in sight after the light bumps Mara into the air, Beams and Fog's far fog drifts a row lower, and Both Together's third dial sits a row lower past its sign.
-
 - The Slow Computers level 1 card no longer lets its hint run outside its box ("Step on each pad. Hear the music."). The text-fit check now measures such cards correctly, so it flags words that spill over a card's edge.
 - Smash It's gems now turn like cut stones, eight frames that narrow to a thin edge and widen again, and a smashed crate plays a crunch.
 - Pick It Up, level 2: the spikes were a solid strip in the ground that stung Kit every moment he stood on top of it. They now stand at his height and sting once when touched, so there is a run-up and a jump over them.
-
 - Round and Round: the little car no longer disappears for a quarter of each lap at the top of the loop. The engine draws a monster only when the block it is in is not the screen's top row (as DOS did), so the track and the car's path moved down one block. The game is version 1.1.
 - The Level check's slower-hands play no longer stays silent when its bot finds no way through a level: it says slower hands were not checked, suggests playing it unhurried, and, where the hero can tap jump again in the air, that chained air taps need each press within about the jump's air time.
 - While the PC screen has the keyboard, a small line by the screen says "Shift+Tab leaves the screen" (on the desk and on the DOS page). A command the PC types after booting (the modem, say) no longer pulls focus back to the screen if you have moved on, so closing the mug returns to the mug.
@@ -360,6 +387,26 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 - Tune-Up's Clown Club parade follows THE CHEZ in level 16, and its clock tower stands on its building.
 - The music editor no longer freezes on a big song.
 - A numbered list in the Owner's Guide that a table splits keeps its number.
+- Pocket Player clears scene and text-page backgrounds across the whole panel on both boards and avoids stray pixels below pictures on the 2.8 inch board.
+- Both Together: the light that drops from the lamp now slides into view quickly, so you see it fall.
+- The Sandbox BBS main menu header and prompt show each letter of the name in its own color, like the login screen.
+- Honors: the certificates now fit the window on a desktop screen, centered and as large as the height allows, with every Save picture button in view and no scrolling.
+- The PC's DOS prompt runs Game-Maker's designers, UTILITY and XFERPLAY when you type their names in C:\GM, as the 1994 programs ran on their own: quitting one goes back to the prompt.
+- Auto-arrange in the Game Integrator tries a clearer position for endings when return paths would otherwise cross other arrows, keeping every scene and link intact.
+- The save note and narrow-screen pill show unsaved and saving changes immediately once they reach the project; old save completions cannot clear newer edits, and remounting keeps the last save state.
+- Background and monster block behavior changes now join painting Undo and Redo, including scores, counters, solidity and timed changes.
+- Character Undo keeps block files and mirror links bound to their own names when the preview block set changes.
+- Sample Undo and Revert restore the original VOC bytes exactly; undoing a sound-maker replacement restores its settings too.
+- Music Undo keeps Redo after a canceled gesture, restores empty tracks, and limits track-order history to 200 steps.
+- The Falls (Flicker and Flow) now keeps the whole waterfall, its top included, on screen.
+- The Mountain Moved Next Door 2.1: houses, sign posts, fences and ladders show the mountain, wall or earth behind them instead of sky; each place has its own way out (a blazed cairn, the library's oak door, the tunnel's far mouth); the signs are down to the ones with a story or a joke; and the mountain says "Oh. Excuse me." as you pass under its toe.
+- Widened Try Again's upper plank so jumps back from the right cliff have more room to land.
+- Parallax: the far hills now keep sliding behind the sign posts instead of standing still there, and a sign says the posts move too.
+- Make the colors lesson playable with similar colors, remove unused clock-game monsters, and clarify paper folding, puzzle-box assembly, and phone parts costs.
+- Add contents with generated page numbers to the Technical Reference booklet and distinguish background game refreshes from source updates, with visible development build progress and shared build scheduling.
+- Clarified desk magazine and download access, added disk and asset filtering, and improved scene-panel scrolling, layout generation access, unused monster labels, palette feedback, and cached search loading.
+- In the guided tour's BBS chapter, Dex now waits until the modem has connected and the board's prompt is on the screen before talking about it, instead of speaking while the modem is still dialing.
+- The guided tour's voices say made-up names, such as the GRAVITAS pad, the way they're meant to sound, and Inspector Penn explains why old game boxes came so full.
 
 ### Removed
 
@@ -381,5 +428,6 @@ for every Game-Maker file type; the web player; and the set of new games built i
 - Exports to a web page, a DOS ZIP and native players, and opening a game another site links to.
 - Achievements, a guided tour with voice clips, and offline use as an installable app.
 
-[Unreleased]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/pages-v3.1.0...HEAD
+[Unreleased]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/pages-v3.2.0...HEAD
+[3.2.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/pages-v3.1.0...pages-v3.2.0
 [3.1.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/releases/tag/pages-v3.1.0
