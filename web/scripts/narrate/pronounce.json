@@ -6,9 +6,14 @@
       "note": "Lewie said gruh-VEE-dis (wav2vec2 spelled GREVIDIS, GRIBITIS; eSpeak reads it ɡɹævˈiːɾəz); Whisper heard Gravitas either way"
     },
     "Round Tuit": {
-      "say": "Round To It",
-      "sounds": "ROUND TOO-it (the joke: a round to-it)",
-      "note": "the phone's Hint Giant said round two (Whisper, 3 takes of 3)"
+      "say": "Round, To It",
+      "sounds": "ROUND, TOO-it (the joke: a round to-it)",
+      "note": "the phone's Hint Giant said round two (Whisper, 3 takes of 3); Lewis could not make out tuit in the Quest for the Round Tuit intro, and only the comma form (a small pause before To It) was heard as round to it"
+    },
+    "Gwinn": {
+      "say": "Gwin",
+      "sounds": "GWIN (hard G, one syllable)",
+      "note": "the phone's Hint Giant said Lynn, Glenn, wind (Whisper); Gwin gave wav2vec2 'won' for the vowel, Guwin and Guh-win made it worse (Whisper has no G sound for it, so it hears Wynn at best)"
     },
     "Anthill Keep": {
       "say": "Ant Hill Keep",
