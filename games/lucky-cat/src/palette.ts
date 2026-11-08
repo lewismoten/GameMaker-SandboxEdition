@@ -61,6 +61,19 @@ export const LOOKS: Record<string, Record<string, Tint>> = {
       [236, 216, 150],
     ],
   },
+  // the granary stair: a green-gray plate and a lantern-orange spot
+  steps: {
+    sky: [
+      [14, 24, 22],
+      [128, 160, 140],
+      [34, 56, 50],
+    ],
+    gold: [
+      [120, 50, 0],
+      [255, 220, 150],
+      [240, 140, 40],
+    ],
+  },
   // earlier that morning: the print turned over, a pale dawn plate and a tangerine spot (Rascal's hour)
   morning: {
     sky: [

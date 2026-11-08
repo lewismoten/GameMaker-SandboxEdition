@@ -16,7 +16,7 @@ export const LEVEL_SONGS: Record<string, SongName> = {
   steps: 'tower',
   three: 'theme',
   rascal: 'rascal',
-  rigging: 'rascal',
+  still: 'rascal',
   four: 'fair',
   market: 'fair',
   tower: 'tower',

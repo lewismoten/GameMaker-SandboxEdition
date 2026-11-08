@@ -1,6 +1,9 @@
 // The way through the levels added for the hour-long cut (2.0 -> 3.0), as orders for the bot (see route.ts).
 import type { StarterBot } from '../../kit/starter/bot';
 import { ALLEY } from '../src/levels/alley';
+import { RIGGING } from '../src/levels/rigging';
+import { STEPS } from '../src/levels/steps';
+import { GROUND } from '../src/level';
 import { CHORE_POINTS } from '../src/props';
 import { READ, climbUp, hop, leave, monsterY, must, readAt, score, watchFor } from './routeKit';
 
@@ -32,4 +35,59 @@ export async function saucerAlley(bot: StarterBot): Promise<void> {
   if (bot.sim.ci.hitpts !== hp) throw new Error(`Saucer Alley cost hit points: ${hp} -> ${bot.sim.ci.hitpts}`);
   await must(bot, bot.wait(READ / 2), 'a thoughtful look at the empty saucer');
   await leave(bot, bot.walk(ALLEY.exit + 1, 'the exit'), 'the exit');
+}
+
+/** 4. Thirteen Steps: up the stairs (a person jumps each tread), the sign, the crow, the cracks, the shaker, down the ladder, the salt. */
+export async function thirteenSteps(bot: StarterBot): Promise<void> {
+  const from = bot.sim.ci.score;
+  const hp = bot.sim.ci.hitpts;
+  await readAt(bot, 5, 'the stairs sign');
+  await must(bot, bot.walk(STEPS.landing[0], 'the top of the stairs'), 'up the thirteen steps');
+  await readAt(bot, STEPS.landing[0] + 1, 'the landing sign');
+  await hop(bot, STEPS.cracks, 2, 'the cracks');
+  await must(bot, bot.walk(STEPS.shaker, 'the shaker'), 'to the shaker');
+  await watchFor(bot, () => monsterY(bot, STEPS.crow) <= STEPS.crowRow * 20 + 4, 'the crow flying up');
+  await must(bot, bot.walk(STEPS.ladder - 1, 'past the crow'), 'past the crow');
+  await must(bot, bot.walk(STEPS.ladder, 'the ladder'), 'to the ladder');
+  await must(bot, bot.climb('down', GROUND - 1, 'down the ladder'), 'down the ladder');
+  await readAt(bot, 53, 'the salt sign');
+  await must(bot, bot.walk(STEPS.wall + 2, 'through the salt'), 'through the salt');
+  score(bot, from, 0, 25, 'Thirteen Steps');
+  if (bot.sim.ci.hitpts !== hp) throw new Error(`Thirteen Steps cost hit points: ${hp} -> ${bot.sim.ci.hitpts}`);
+  await leave(bot, bot.walk(STEPS.exit + 1, 'the exit'), 'the exit');
+}
+
+/** 7. Earlier Still, as Rascal: two umbrella lifts, three ropes, the key in the rafters, three saucers, the cracks, the crow, the padlock. */
+export async function earlierStill(bot: StarterBot): Promise<void> {
+  const from = bot.sim.ci.score;
+  const hp = bot.sim.ci.hitpts;
+  await readAt(bot, 5, 'the Committee notice');
+  await must(bot, bot.walk(RIGGING.cleat1, 'the first rope'), 'tying off the first rope');
+  await must(bot, bot.walk(RIGGING.step1, 'the first doorstep'), 'setting out the first saucer');
+  await must(bot, bot.walk(RIGGING.crates - 1, 'the crates'), 'to the crates');
+  await must(bot, bot.walk(RIGGING.crates + 3, 'over the crates'), 'over the crates');
+  await must(bot, bot.walk(RIGGING.lift - 1, 'the first umbrellas'), 'to the first umbrellas');
+  await must(bot, bot.walk(RIGGING.lift, 'into the umbrellas'), 'into the first umbrellas');
+  await must(bot, bot.wait(30), 'rising');
+  await must(bot, bot.walk(RIGGING.lift + 2, 'off the umbrellas'), 'onto the gallery');
+  await readAt(bot, RIGGING.lift + 3, 'the trust sign');
+  await must(bot, bot.walk(RIGGING.cleatA, 'the gallery rope'), 'tying off the gallery rope');
+  await must(bot, bot.walk(RIGGING.lift2 - 1, 'the second umbrellas'), 'to the second umbrellas');
+  await must(bot, bot.walk(RIGGING.lift2, 'into the second umbrellas'), 'into the second umbrellas');
+  await must(bot, bot.wait(45), 'rising to the rafters');
+  await must(bot, bot.walk(RIGGING.lift2 + 2, 'off the umbrellas'), 'onto the rafters');
+  await must(bot, bot.walk(RIGGING.cleatB, 'the rafter rope'), 'tying off the rafter rope');
+  await readAt(bot, RIGGING.cleatB + 3, 'the rafters sign');
+  await must(bot, bot.walk(RIGGING.key, 'the bin key'), 'to the bin key');
+  await must(bot, bot.walk(RIGGING.rafters[1] + 2, 'the end of the rafters'), 'off the rafters');
+  await must(bot, bot.walk(RIGGING.step2, 'the second doorstep'), 'setting out the second saucer');
+  await hop(bot, RIGGING.cracks, 2, 'the cracks');
+  await readAt(bot, 55, 'the crow sign');
+  await must(bot, bot.walk(RIGGING.crow - 3, 'before the crow'), 'to the crow');
+  await watchFor(bot, () => monsterY(bot, RIGGING.crow) <= RIGGING.crowRow * 20 + 4, 'the crow flying up');
+  await must(bot, bot.walk(RIGGING.wall + 2, 'through the padlock'), 'through the padlock');
+  await must(bot, bot.walk(RIGGING.step3, 'the last doorstep'), 'setting out the last saucer');
+  score(bot, from, 0, 6 * CHORE_POINTS + 25, 'Earlier Still');
+  if (bot.sim.ci.hitpts !== hp) throw new Error(`Earlier Still cost hit points: ${hp} -> ${bot.sim.ci.hitpts}`);
+  await leave(bot, bot.walk(RIGGING.exit + 1, 'the exit'), 'the exit');
 }

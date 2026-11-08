@@ -27,7 +27,7 @@ for (const l of levels) {
   const bbl = finishBlocks(l);
   const look = l.look ? swapped(pal, LOOKS[l.look]) : pal.pal;
   writePng(join(out, `blocks-${l.file}.png`), blockSheet(bbl.slice(0, l.book.index.size), 14, 0), look, 3);
-  const pic = renderRegion(l.map.done(), bbl, finishMonsterPictures(mb), monsterSet(mb), ORIGIN, ORIGIN, l.map.width, l.map.height);
+  const pic = renderRegion(l.map.done(), bbl, finishMonsterPictures(mb), monsterSet(mb), ORIGIN, ORIGIN - 10, l.map.width, l.map.height + 10);
   writePng(join(out, `map-${l.file}.png`), pic, look, 1);
 }
 const disk = new URL('../disk/', import.meta.url);
