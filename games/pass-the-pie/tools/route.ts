@@ -2,6 +2,7 @@
 // press, level by level, with human timing, every acorn a person would see taken and every fight finished.
 import type { StarterBot } from '../../kit/starter/bot';
 import * as C from '../src/levels/cord';
+import * as D from '../src/levels/dojo';
 import * as B from '../src/levels/gobble';
 import * as S from '../src/levels/chase';
 import * as R from '../src/levels/gravy';
@@ -177,6 +178,39 @@ export async function windyPark(bot: StarterBot): Promise<void> {
   await leave(bot, bot.walk(P.AT.exit + 1, 'the exit'), 'the exit');
 }
 
+/** Sensei's Dojo (Mr. Plume): kick a quick vacuum, stand on it, three tiers up; then the boards and the drones. */
+export async function senseisDojo(bot: StarterBot): Promise<void> {
+  const G = D.GROUND - 1;
+  const bag = [MONS.bag, MONS.bag + 1, MONS.bag + 2];
+  await read(bot, 6, 'dojo');
+  await smash(bot, D.AT.warmBag, bag, 1, 'the warm-up bag', G);
+  await read(bot, 14, 'nap');
+  const tier = async (row: number, ledge: readonly number[], what: string, at: number) => {
+    await cross(bot, at - 2, `up to ${what}`);
+    await meet(bot, [MONS.vacQuick], row, what, 50, 200);
+    await must(bot, bot.wait(10), `watching ${what} nap`);
+    await stepUp(bot, [MONS.fedVac], 'right', ledge[0] + 6, what);
+  };
+  await tier(G, D.AT.ledgeA, 'the first vacuum', D.AT.vacA);
+  await tier(G - 4, D.AT.ledgeB, 'the second vacuum', D.AT.vacB);
+  await cross(bot, D.AT.gold, 'the gold acorn');
+  await tier(G - 8, D.AT.ledgeC, 'the third vacuum', D.AT.vacC);
+  await cross(bot, D.AT.ledgeC[1], 'along the roof');
+  await climb(bot, D.AT.ladder, 4, 'the pagoda ladder');
+  await must(bot, bot.climb('down', G, 'down the ladder'), 'down the ladder');
+  await read(bot, 52, 'boards');
+  for (const x of D.AT.bags) await smash(bot, x, bag, 1, `the board at ${x}`, G);
+  await read(bot, 63, 'drones');
+  for (const x of D.AT.swoops) {
+    await cross(bot, x - 2, 'before a swooping drone');
+    await meet(bot, [MONS.droneSwoop], G, 'the swooping drone', 50, 120, 1200);
+  }
+  await read(bot, D.AT.door - 6, 'door');
+  bot.say(`bar left: ${((D.SECONDS * 18.2 - bot.sim.ticks) / 18.2) | 0} s`);
+  await cross(bot, D.AT.door + 2, 'through the dojo door');
+  await leave(bot, bot.walk(D.AT.exit + 1, 'the exit'), 'the exit');
+}
+
 /** 5. The Cord (Rory). */
 export async function theCord(bot: StarterBot): Promise<void> {
   const G = C.GROUND - 1;
@@ -296,4 +330,4 @@ export async function bigGobble(bot: StarterBot): Promise<void> {
   await leave(bot, bot.walk(B.AT.exit + 1, 'the long table'), 'the long table');
 }
 
-export const LEVELS = [pumpkinYard, payback, gravyRelay, windyPark, theCord, mainStreet, bigGobble];
+export const LEVELS = [pumpkinYard, payback, gravyRelay, windyPark, senseisDojo, theCord, mainStreet, bigGobble];
