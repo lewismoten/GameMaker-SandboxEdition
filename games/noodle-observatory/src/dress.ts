@@ -124,7 +124,6 @@ export function castShadows(m: Place, casters: string[], x0: number, x1: number,
 /** Dresses a room painted from a plan, `w` blocks wide. */
 export function dressRoom(m: Place, place: PlaceName, w: number): void {
   const b = m.book;
-  const has = (n: string) => b.pics.has(n);
   const plain = new Set(['bg', 'bg1', 'bg2', 'bg3'].map((n) => b.n(n)));
   const isPlain = (x: number, y: number) => plain.has(m.get(x, y));
   const x0 = -ORIGIN;
