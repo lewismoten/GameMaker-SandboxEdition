@@ -200,7 +200,7 @@ export function bubble(pal: Pal, what: '!' | '?' | 'heart'): Pixels {
 }
 
 /** The mountain's eye, 40x40 cut into four 20x20 parts (TL, TR, BL, BR): open (white, a dark pupil, a shine), a blink, or shut asleep. */
-export function bigEye(pal: Pal, how: 'open' | 'blink' | 'shut'): Pixels[] {
+export function bigEye(pal: Pal, how: 'open' | 'blink' | 'shut' | 'white'): Pixels[] {
   const p = new Pixels(40, 40, T);
   const ink = pal.c('ink', 0);
   const r = pal.r('rock');
@@ -210,6 +210,13 @@ export function bigEye(pal: Pal, how: 'open' | 'blink' | 'shut'): Pixels[] {
     // a heavy, sleepy lid
     for (let x = 4; x <= 35; x++) {
       const y = 21 - Math.round(Math.sqrt(Math.max(0, 1 - ((x - 19.5) / 15.5) ** 2)) * 13);
+      p.rect(x, y, 1, 3, r[0]);
+    }
+  } else if (how === 'white') {
+    // wide awake, the pupil a monster of its own (pupil()): a big round white under a heavy lid
+    p.disc(20, 20, 18, pal.c('white', 3));
+    for (let x = 3; x <= 36; x++) {
+      const y = 20 - Math.round(Math.sqrt(Math.max(0, 1 - ((x - 19.5) / 17) ** 2)) * 17);
       p.rect(x, y, 1, 3, r[0]);
     }
   } else if (how === 'blink') {
@@ -223,6 +230,13 @@ export function bigEye(pal: Pal, how: 'open' | 'blink' | 'shut'): Pixels[] {
   }
   const out = outline(p, ink, { transparent: T });
   return [out.crop(0, 0, 20, 20), out.crop(20, 0, 20, 20), out.crop(0, 20, 20, 20), out.crop(20, 20, 20, 20)];
+}
+
+/** A pupil to slide about inside a white eye (bigEye 'white'): a dark disc with a glint, on clear. */
+export function pupil(pal: Pal): Pixels {
+  const p = new Pixels(20, 20, T);
+  p.disc(10, 10, 6, pal.c('ink', 0)).disc(10, 10, 3, pal.c('ink', 1)).rect(7, 7, 2, 2, pal.c('white', 3));
+  return p;
 }
 
 /** The mountain's mouth, 40x20 cut into two parts (L, R): a gentle smile, or a big round yawn. */

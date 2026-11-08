@@ -19,17 +19,17 @@ Somebody should probably tell him gently.
 export const HOWTO = wrap(`
 |HOW TO PLAY
 
-|LEFT, RIGHT   walk
-|SPACE         jump
-|UP, DOWN      climb a ladder
-|ENTER         kick (Mr. Plume)
-|F2            lives, score
+|ARROWS    walk, climb
+|SPACE     jump
+|ENTER     Rory: toss a roll
+|          Mr. Plume: combo
+|F2        lives, score
 
-Pick up the dish; the neighbor's door opens for it.
+Pick up the dish; its door opens for it.
 
-Rory hops what is in the way. Mr. Plume does not hop.
+A vacuum that catches a roll stalls. Stand on it.
 
-Steel keys open garden gates.
+Bars run out. Grandma's oven door starts a street over.
 
 |ESC for the menu.
 `);
@@ -39,7 +39,7 @@ export const CREDITS = withCreditPage(
 |PASS THE PIE  v${about.version}
 |(c) 1994 Sandbox Software
 
-Design, pixels, beeps, songs, words and levels by Claude Sonnet 5.5, an AI model made by Anthropic.
+Design, pixels, beeps, songs, words and levels by Claude Sonnet 5.5 and Claude Opus 5.5, AI models made by Anthropic.
 
 Made with GAME-MAKER 3.0 from Recreational Software Designs.
 
@@ -50,7 +50,7 @@ A Special: a game that visits for a few days of the year.
 export const WON = wrap(`
 |PASS THE PIE
 
-Grandma's oven was never broken. It was unplugged, to run a thirty-foot turkey.
+Grandma's oven was never broken. Rory followed the cord.
 
 Big Gobble is folded in Uncle Dale's garage, next to his feelings.
 
@@ -66,5 +66,5 @@ Out of hit points.
 
 The dinner is still out there. So is Big Gobble.
 
-Rory: hop the vacuums, wait for a gap. Mr. Plume: kick first, ask later.
+Rory: feed the vacuums, then stand on them. Mr. Plume: read the drones, then kick.
 `);

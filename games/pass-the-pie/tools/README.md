@@ -1,10 +1,12 @@
 # Pass the Pie: tools
 
-- `route.ts`: the bot's orders, street by street, for both heroes. Rory reads the signs, hops what is in the way (a vacuum that moves is watched and hopped as it comes, so it passes under the top of the jump), takes the counter over the long vacuum and fetches the bone for the dog. Mr. Plume kicks: he walks up to a lawn turkey, dummy or the blower and presses Enter until it is down (each must take exactly its number of kicks), and waits where a vacuum turns to kick it as it comes. The last street is run before the town hall doors shut.
-- `play.ts`, `sim.ts`: the headless player on the built `disk/`, level after level.
-- `check.ts`: the bot plays all six streets and must win without losing a life, with at most 40 hit points lost to bumps.
-- `walkthrough.ts`: re-records `walkthrough.json` (one key segment a street).
-- `preview.ts`: PNGs of every block set, each street's whole map in its inks, every picture on the disk and a contact sheet of each cartoon.
-- `heroPreview.ts`: Rory's and Mr. Plume's poses (his kick too) at 6x, on a street's paper: `heroPreview.ts [out.png] [mood]`.
+- `route.ts`: the bot's orders, level by level, for both heroes, built from the moves in `routeKit.ts`. Rory reads the signs, climbs trunks and ladders, tosses a roll at a vacuum or mower as it comes (`meet`) and jumps onto it once it has stalled and on up to the ledge above (`stepUp`), and fetches the bone for the dog. Mr. Plume walks up to a lawn turkey, kick bag, stake or the blower and lets combos go until it is down (`smash`), waits for drones and balloons to come into reach (`meet`), rides warm air up (`ride`), and runs Main Street ahead of the loose balloon (`lead` is logged at each stretch). The timed levels log the seconds left on their bar.
+- `play.ts`, `sim.ts`: the headless player on the built `disk/`, level after level; `play(seed, upTo, from)` can start at a later level.
+- `try.ts`: plays some of the levels and prints the score, hit points and time: `BOT_LOG=1 FROM=2 UPTO=3 npx vite-node ../games/pass-the-pie/tools/try.ts`.
+- `check.ts`: the bot plays all seven levels and must win without losing a life.
+- `walkthrough.ts`: re-records `walkthrough.json` (one key segment a level).
+- `preview.ts`: PNGs of every block set, each level's whole map in its inks, every picture on the disk and a contact sheet of each cartoon (`MAPS_ONLY=1` stops after the maps).
+- `heroPreview.ts`: Rory's and Mr. Plume's poses at 6x, on a street's paper: `heroPreview.ts [out.png] [mood]`.
+- `jumpProbe.ts`: how high and how far the hero jumps (66 pixels up, about four blocks across at a run), which sets the level rules below.
 
-Rules the levels keep: a level is at most 90 blocks wide (the world is 100 blocks and the level starts at block 10), every hazard block takes 10 hit points once, the neighbor's door is a gate that takes the dish, and a garden gate takes a steel key. Every picture is drawn in `src/` for this game (`print.ts` holds the block-print look); nothing comes from the Starters' block art.
+Rules the levels keep (`src/levels/common.ts` has the letters a map is painted in): a level is at most 90 blocks wide (the world is 100 blocks and the level starts at block 10) and 20 tall, the street's grass on row 17. A ledge three blocks up can be jumped to; four blocks up needs a ladder, a trunk, warm air or a stalled vacuum to stand on, and anything a stalled vacuum must reach spans the whole stretch the vacuum paces, so wherever it is fed it works. A hedge four blocks tall cannot be jumped. A monster's path corners count from where its path began, and the world wraps at 100 blocks, so a long run goes in legs. The neighbor's door is a gate that takes the dish, a garden gate takes a steel key, the dog takes a bone. Every picture is drawn in `src/` for this game (`print.ts` holds the block-print look); nothing comes from the Starters' block art.
