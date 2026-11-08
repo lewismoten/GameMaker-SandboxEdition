@@ -42,8 +42,15 @@ static bool pakSlurp(const std::string& path, std::vector<uint8_t>& out) {
   uint32_t off, len;
   bool ok = hp.pak.find(path.substr(cut == std::string::npos ? 0 : cut + 1).c_str(), &off, &len);
   if (ok) {
-    out.resize(len);
-    ok = pakReadAt(hp.f, off, out.data(), len);
+    // Entry lengths are untrusted. Reject a truncated/corrupt bundle before resize can
+    // allocate the advertised size; subtraction also avoids offset + length overflow.
+    ok = fseek(hp.f, 0, SEEK_END) == 0;
+    long end = ok ? ftell(hp.f) : -1;
+    ok = end >= 0 && (uint64_t)off <= (uint64_t)end && (uint64_t)len <= (uint64_t)end - off;
+    if (ok) {
+      out.resize(len);
+      ok = pakReadAt(hp.f, off, out.data(), len);
+    }
   }
   hp.close();
   return ok;

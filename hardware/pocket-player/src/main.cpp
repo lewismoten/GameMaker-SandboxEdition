@@ -1297,7 +1297,9 @@ static void playFli(const gm::Card& c) {
 
 // ShowGraphic for one scene slot (where: i<level>, x<level>, w, l): the pictures fade in from black, the text
 // pages are written over the picture before them. A card that can't be read is left out (the engine cleared the screen).
+static void message(const char* a, const char* b);
 static void showCards(const char* where) {
+  int failuresBefore = cardsFailed;
   bool cardWasUp = sdUp, card = curFs == &SD;
   if (card) mountSD();  // held while the cards show (the level's buffers are already freed)
   carddraw::clear(tft, pal[0]);
@@ -1345,6 +1347,11 @@ static void showCards(const char* where) {
   }
   free(pic);
   if (card && !cardWasUp) unmountSD();
+  if (cardsFailed > failuresBefore && !cardsDry) {
+    // A missing/corrupt scene card is nonfatal, but must not disappear silently or wait for a key.
+    message("Could not read card", "Skipping this screen");
+    delay(1500);
+  }
 }
 // FadeAllTo black from what is on screen (the playing level).
 static void fadeLevelOut() {
