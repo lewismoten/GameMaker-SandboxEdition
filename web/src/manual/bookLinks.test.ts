@@ -5,7 +5,9 @@
 import { describe, expect, it } from 'vitest';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
+import { inflateRawSync } from 'node:zlib';
 import { listZip } from '@lewismoten/gamemaker-sandbox-archives/zip';
+import { unpackFiles } from '@lewismoten/gamemaker-sandbox-tools/mesh/meshPack';
 import { GUIDE_SECTIONS } from './guideSections';
 import { CHAPTERS } from './ultimate/plan';
 import { STARTER_ORDER } from '../project/starter';
@@ -190,9 +192,10 @@ describe.skipIf(!existsSync(join(pub, 'laser')))('the files the Feelies offer (b
   });
 
   it('exist for the phone kit, and its ZIPs hold both builds’ printer parts and board projects', () => {
-    for (const a of phoneAttachments()) expect(existsSync(join(pub, a.href.replace(/^\.\//, ''))), a.href).toBe(true);
+    // the printer-parts ZIP is made in the browser from its pack (phoneData.ts phonePrinterZip)
+    for (const a of phoneAttachments()) if (!a.link) expect(existsSync(join(pub, a.href.replace(/^\.\//, ''))), a.href).toBe(true);
     const zip = (f: string) => listZip(new Uint8Array(readFileSync(join(pub, 'trinkets/phone', f)))).map((e) => e.name);
-    const parts = zip('phone-3d-printer-parts.zip');
+    const parts = unpackFiles(new Uint8Array(inflateRawSync(readFileSync(join(pub, 'trinkets/phone/phone-3d-printer-parts.pack'))))).map((e) => e.name);
     const board = zip('phone-circuit-board.zip');
     for (const b of ['junior-lab', 'deluxe']) {
       expect(

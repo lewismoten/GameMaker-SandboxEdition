@@ -1,7 +1,18 @@
 // Tests: the tools package's mesh packs (mesh/meshPack): a binary STL packed and unpacked is the same file byte
 // for byte, and the vertex-number and byte-plane pieces read back what they wrote.
 import { describe, expect, it } from 'vitest';
-import { packIndices, packStl, unpackIndices, unpackStl, fromPlanes, toPlanes } from '@lewismoten/gamemaker-sandbox-tools/mesh/meshPack';
+import {
+  packFiles,
+  packFloatsAndIndices,
+  packIndices,
+  packStl,
+  unpackFiles,
+  unpackFloatsAndIndices,
+  unpackIndices,
+  unpackStl,
+  fromPlanes,
+  toPlanes,
+} from '@lewismoten/gamemaker-sandbox-tools/mesh/meshPack';
 import { writeStl } from '@lewismoten/gamemaker-sandbox-tools/mesh/stl';
 import type { Mesh } from '@lewismoten/gamemaker-sandbox-tools/mesh/mesh';
 import { pack3mf, unpack3mf } from '@lewismoten/gamemaker-sandbox-tools/mesh/threeMfPack';
@@ -60,5 +71,19 @@ describe('meshPack', () => {
     expect(writeZip(threeMfEntries(back, title), codec)).toEqual(file);
     const other = writeZip([...readZip(file, codec), { name: 'extra.txt', data: new Uint8Array(3) }]);
     expect(() => pack3mf(other, codec)).toThrow(/made again/);
+  });
+
+  it('packs a set of files (STLs packed, the rest kept) and a floats-then-indices file, each back byte for byte', () => {
+    const files = [
+      { name: 'READ-ME.txt', data: new TextEncoder().encode('hello') },
+      { name: 'a/part.stl', data: writeStl(tetra, { name: 'part' }) },
+      { name: 'b/text.stl', data: new TextEncoder().encode('solid t\nendsolid t\n') },
+    ];
+    expect(unpackFiles(packFiles(files))).toEqual(files);
+    const bin = new Uint8Array(4 * 12 + 4 * 6);
+    const view = new DataView(bin.buffer);
+    tetra.positions.forEach((v, i) => view.setFloat32(i * 4, v, true));
+    [0, 1, 2, 0, 1, 3].forEach((v, i) => view.setUint32(48 + i * 4, v, true));
+    expect(unpackFloatsAndIndices(packFloatsAndIndices(bin, 12, [0, 3]))).toEqual(bin);
   });
 });

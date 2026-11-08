@@ -5,6 +5,7 @@
 // cached mesh load. Shared by the box's shelf (trinketShelf.ts), its downloads (manual/printables/feelieItems.ts)
 // and the Library's toy box (library/toyBox.ts), so all of them read the files one way.
 import type { Mesh } from '@lewismoten/gamemaker-sandbox-tools/mesh/mesh';
+import { madeDownload } from './madeDownload';
 
 export interface TrinketItem {
   id: string;
@@ -89,27 +90,10 @@ export async function trinketMesh(base: string, item: TrinketItem, colors: boole
   return colors || !mesh.colors ? mesh : { positions: mesh.positions, indices: mesh.indices };
 }
 
-/** A link that saves file `name` of a trinket: a packed file is made into the real one on the first click, then saved from memory. */
+/** A link that saves file `name` of a trinket: a packed file is made into the real one on the first click (madeDownload.ts). */
 export function trinketDownload(link: HTMLAnchorElement, base: string, item: Pick<TrinketItem, 'packed'>, name: string): HTMLAnchorElement {
+  if (item.packed?.includes(name)) return madeDownload(link, name.split('/').pop() ?? name, () => trinketFile(base, item, name));
   link.download = name.split('/').pop() ?? name;
-  if (!item.packed?.includes(name)) {
-    link.href = `${base}${name}`;
-    return link;
-  }
-  link.href = '#';
-  let made: Promise<string> | undefined;
-  link.addEventListener('click', (e) => {
-    if (link.href.startsWith('blob:')) return;
-    e.preventDefault();
-    made ??= trinketFile(base, item, name).then((bytes) => URL.createObjectURL(new Blob([bytes as BlobPart], { type: 'application/octet-stream' })));
-    link.setAttribute('aria-busy', 'true');
-    void made
-      .then((url) => {
-        link.href = url;
-        link.click();
-      })
-      .catch(() => (made = undefined))
-      .finally(() => link.removeAttribute('aria-busy'));
-  });
+  link.href = `${base}${name}`;
   return link;
 }

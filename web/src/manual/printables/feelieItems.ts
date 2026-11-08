@@ -6,7 +6,8 @@ import './feelieItems.css';
 import { h } from '../../editor/core/ui';
 import { loadFeelies, fileSize, sizeText, PHONE_TITLE, type Feelie } from '../../desk/boxes/feelies';
 import { thumbnail } from '../../desk/boxes/feelieThumbs';
-import { phoneBase, variantBase } from '../../desk/boxes/phone/phoneData';
+import { phoneBase, phonePrinterZip, variantBase } from '../../desk/boxes/phone/phoneData';
+import { madeDownload } from '../../desk/boxes/madeDownload';
 import { trinketDownload } from '../../desk/boxes/trinketData';
 import { sheet, type Sheet } from './kit';
 import type { BoxItem } from './viewer';
@@ -49,7 +50,12 @@ function kitAttachments(f: Extract<Feelie, { kind: 'nickel' | 'box' | 'kit' | 'p
 /** The phone kit's downloads: the printer parts and board files as ZIPs, the parts lists as CSV. */
 export function phoneAttachments(): Attachment[] {
   return [
-    { href: `${phoneBase}phone-3d-printer-parts.zip`, file: 'phone-3d-printer-parts.zip', label: '3D printer parts (ZIP of the STLs, both builds)' },
+    {
+      href: '#',
+      file: 'phone-3d-printer-parts.zip',
+      label: '3D printer parts (ZIP of the STLs, both builds)',
+      link: (a) => madeDownload(a, 'phone-3d-printer-parts.zip', phonePrinterZip),
+    },
     {
       href: `${phoneBase}phone-circuit-board.zip`,
       file: 'phone-circuit-board.zip',
@@ -67,7 +73,7 @@ function attachmentList(list: Attachment[]): HTMLElement {
     { class: 'fe-files', 'aria-label': 'Attachments' },
     ...list.map((a) => {
       const size = h('span', { class: 'fe-size' }, a.bytes ? sizeText(a.bytes) : '');
-      if (!a.bytes) void fileSize(a.href).then((n) => (size.textContent = n ? sizeText(n) : ''));
+      if (!a.bytes && !a.link) void fileSize(a.href).then((n) => (size.textContent = n ? sizeText(n) : ''));
       const link = h('a', { class: 'fe-dl', href: a.href, download: a.file }, a.label);
       return h('li', null, a.link ? a.link(link) : link, size);
     }),

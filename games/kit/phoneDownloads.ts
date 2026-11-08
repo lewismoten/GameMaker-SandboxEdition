@@ -1,12 +1,14 @@
-// The Phone of the Future kit's downloads for the box (web/public/trinkets/phone/, git-ignored build output): a ZIP of
-// the 3D-printer parts (the shell STLs of both builds), a ZIP of the circuit board files (each build's KiCad project, with
+// The Phone of the Future kit's downloads for the box (web/public/trinkets/phone/, git-ignored build output): a pack of
+// the 3D-printer parts (the shell STLs of both builds, mesh/meshPack's packFiles, which the site zips on a download), a ZIP of the circuit board files (each build's KiCad project, with
 // its Gerbers, which tools/export.sh writes to the tracked gerbers/, and the PIC firmware: phone.asm and its tracked phone.hex
 // to assemble it, which the book's "Programming the PIC" chapter loads), the two parts lists (CSV) and the
 // kit's README and parts lists as Markdown, which the box reads as its instructions book (manual/printables/phoneBook.ts).
 // Run by scripts/build-games.mjs; `cd web && npx vite-node ../games/kit/phoneDownloads.ts` by hand.
-import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
+import { deflateRawSync } from 'node:zlib';
 import { createZip, type ZipEntry } from '@lewismoten/gamemaker-sandbox-archives/zip';
+import { packFiles } from '@lewismoten/gamemaker-sandbox-tools/mesh/meshPack';
 
 const root = resolve(import.meta.dirname, '../..');
 const phone = join(root, 'games/year2000/phone');
@@ -66,7 +68,10 @@ async function main() {
     }
   }
   writeFileSync(join(out, 'README.md'), readFileSync(join(phone, 'README.md')));
-  writeFileSync(join(out, 'phone-3d-printer-parts.zip'), await createZip(stl, new Date(2026, 0, 1)));
+  // the printer parts are served packed (the site zips them on a download: manual/printables/feelieItems.ts), every STL
+  // the same bytes; the board files are not meshes, so their ZIP is served as it is
+  writeFileSync(join(out, 'phone-3d-printer-parts.pack'), deflateRawSync(packFiles(stl), { level: 9 }));
+  rmSync(join(out, 'phone-3d-printer-parts.zip'), { force: true });
   writeFileSync(join(out, 'phone-circuit-board.zip'), await createZip(board, new Date(2026, 0, 1)));
   console.log(`Phone downloads: ${stl.length} printer files, ${board.length} board files`);
 }

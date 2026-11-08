@@ -232,3 +232,82 @@ export function unpackStl(pack: Uint8Array): Uint8Array {
   }
   return stl;
 }
+
+const FILES_MAGIC = 0x31464d47; // "GMF1"
+
+/** Several named files in one pack (a ZIP's worth, to zip in the browser): each binary STL packed by `packStl`, the rest as they are. */
+export function packFiles(files: { name: string; data: Uint8Array }[]): Uint8Array {
+  const out = new Out();
+  const enc = new TextEncoder();
+  out.u32(FILES_MAGIC);
+  out.u32(files.length);
+  for (const f of files) {
+    let data = f.data;
+    let kind = 0;
+    if (/\.stl$/i.test(f.name))
+      try {
+        data = packStl(f.data);
+        kind = 1;
+      } catch {
+        // a text STL, kept as it is
+      }
+    const name = enc.encode(f.name);
+    out.u32(name.length);
+    out.bytes(name);
+    out.bytes(Uint8Array.of(kind));
+    out.u32(data.length);
+    out.bytes(data);
+  }
+  return out.done();
+}
+
+/** The files `packFiles` packed, each byte for byte. */
+export function unpackFiles(pack: Uint8Array): { name: string; data: Uint8Array }[] {
+  const src = new In(pack);
+  if (src.u32() !== FILES_MAGIC) throw new Error('Not packed files');
+  const dec = new TextDecoder();
+  return Array.from({ length: src.u32() }, () => {
+    const name = dec.decode(src.bytes(src.u32()));
+    const kind = src.bytes(1)[0];
+    const data = src.bytes(src.u32());
+    return { name, data: kind === 1 ? unpackStl(data) : data.slice() };
+  });
+}
+
+const ARRAYS_MAGIC = 0x31414d47; // "GMA1"
+
+/** A file of float32s then uint32 vertex numbers (little-endian, as the phone kit's parts.bin), packed: the floats in byte planes, the numbers as varints counted afresh at each of `starts` (a part's first number). */
+export function packFloatsAndIndices(bin: Uint8Array, floats: number, starts: number[]): Uint8Array {
+  const indices = (bin.length - floats * 4) / 4;
+  if (!Number.isInteger(indices) || indices < 0) throw new Error('The file is not float32s then uint32s');
+  const view = new DataView(bin.buffer, bin.byteOffset, bin.byteLength);
+  const ix = new Uint32Array(indices);
+  for (let i = 0; i < indices; i++) ix[i] = view.getUint32(floats * 4 + i * 4, true);
+  const out = new Out();
+  out.u32(ARRAYS_MAGIC);
+  out.u32(floats);
+  out.u32(indices);
+  out.u32(starts.length);
+  for (const s of starts) out.u32(s);
+  out.bytes(toPlanes(bin.subarray(0, floats * 4), 4));
+  out.bytes(packIndices(ix, new Set(starts)));
+  const packed = out.done();
+  const back = unpackFloatsAndIndices(packed);
+  if (back.length !== bin.length || back.some((b, i) => b !== bin[i])) throw new Error('The packed arrays do not read back the same');
+  return packed;
+}
+
+/** The file `packFloatsAndIndices` packed, byte for byte. */
+export function unpackFloatsAndIndices(pack: Uint8Array): Uint8Array {
+  const src = new In(pack);
+  if (src.u32() !== ARRAYS_MAGIC) throw new Error('Not packed arrays');
+  const floats = src.u32();
+  const indices = src.u32();
+  const starts = new Set(Array.from({ length: src.u32() }, () => src.u32()));
+  const out = new Uint8Array(floats * 4 + indices * 4);
+  out.set(fromPlanes(src.bytes(floats * 4), 4), 0);
+  const ix = readIndices(src, indices, starts);
+  const view = new DataView(out.buffer);
+  for (let i = 0; i < indices; i++) view.setUint32(floats * 4 + i * 4, ix[i], true);
+  return out;
+}

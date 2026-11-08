@@ -1,7 +1,7 @@
 // Rebuild ignored game outputs before development, tests, and releases; cache source and output hashes.
 import { createHash } from 'node:crypto';
 import { execFile } from 'node:child_process';
-import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { availableParallelism } from 'node:os';
 import { gameSourceHash, root } from './game-build-inputs.mjs';
@@ -236,19 +236,6 @@ async function worker() {
     if (!secret) progress(`Built ${id}${timing ? ` in ${times.at(-1)[1].toFixed(1)} s` : ''}`);
   }
 }
-// The phone kit's 3D parts (games/year2000/phone/viewer, committed) reach the site beside the trinkets, where the box viewer's
-// phone viewer loads them (web/src/desk/boxes/phone/). Copied on every run (about 1.8 MB).
-// Two builds: the cheap one (Junior Lab Edition) in phone/, the deluxe one in phone/deluxe/.
-for (const [from, to] of [
-  ['viewer', 'phone'],
-  ['deluxe/viewer', 'phone/deluxe'],
-]) {
-  const src = join(root, 'games/year2000/phone', from);
-  if (!existsSync(join(src, 'parts.json'))) continue;
-  const out = join(root, 'web/public/trinkets', to);
-  mkdirSync(out, { recursive: true });
-  for (const f of ['parts.json', 'parts.bin']) copyFileSync(join(src, f), join(out, f));
-}
 // The kit's downloads (ZIPs of the printer parts and of the circuit board files, the parts lists, the README the box reads as
 // its instructions book) are made beside them (games/kit/phoneDownloads.ts).
 if (existsSync(join(root, 'games/year2000/phone/kicad')) && (!only.length || only.includes('year2000'))) {
@@ -323,9 +310,11 @@ if (!process.env.GM_SKIP_PIXEL_TRINKETS && (!only.length || only.some((id) => id
   stage('pixel trinkets', started);
   if (timing) console.log(`Pixel trinkets: ${made.stdout.trim().split('\n').length} lines (${((Date.now() - started) / 1000).toFixed(1)} s)`);
 }
-// The site serves the trinkets' STLs packed (games/kit/trinketPacks.ts: <file>.pack, made back into the real file in the
-// browser), which keeps the Pages deploy small; a folder already packed costs one manifest read.
-if (existsSync(join(root, 'web/public/trinkets'))) {
+// The site serves the trinkets' STLs and 3MFs packed (games/kit/trinketPacks.ts: <file>.pack, made back into the real
+// file in the browser), which keeps the Pages deploy small; a folder already packed costs one manifest read. The same
+// script packs the phone kit's 3D parts (games/year2000/phone/viewer, committed) into trinkets/phone/ and phone/deluxe/,
+// where the box's phone viewer loads them (web/src/desk/boxes/phone/).
+{
   const started = Date.now();
   const made = await runEntry(
     'trinket-packs',
