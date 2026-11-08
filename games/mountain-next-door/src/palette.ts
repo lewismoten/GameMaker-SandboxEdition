@@ -114,6 +114,11 @@ const PRINT_INK: Record<string, Tint> = {
     [66, 30, 20],
     [160, 90, 60],
   ],
+  // the cold hour: steel-blue ink
+  frost: [
+    [30, 48, 74],
+    [140, 170, 198],
+  ],
   // the blue hour: gaslight yellow-brown ink
   lamplit: [
     [40, 36, 10],
@@ -441,6 +446,39 @@ export const LOOKS: Record<string, Record<string, Tint>> = {
       [20, 20, 40],
       [110, 100, 140],
       [56, 50, 80],
+    ],
+  },
+  // the cold hour before dawn: pale ice-blue sky, frosted turf, glassy water
+  frost: {
+    sky: [
+      [96, 128, 176],
+      [240, 246, 255],
+      [176, 206, 232],
+    ],
+    grass: [
+      [60, 94, 84],
+      [210, 232, 226],
+      [136, 176, 164],
+    ],
+    dirt: [
+      [60, 46, 56],
+      [190, 164, 170],
+      [118, 92, 100],
+    ],
+    rock: [
+      [50, 58, 80],
+      [226, 234, 244],
+      [140, 150, 176],
+    ],
+    water: [
+      [46, 86, 140],
+      [236, 248, 255],
+      [150, 196, 230],
+    ],
+    stone: [
+      [64, 84, 120],
+      [240, 248, 255],
+      [170, 196, 224],
     ],
   },
   // the blue hour on the hill: a deep blue sky going amber at the rim, the terraces dim
