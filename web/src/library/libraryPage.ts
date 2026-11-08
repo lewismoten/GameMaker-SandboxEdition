@@ -299,7 +299,29 @@ export function renderLibrary(el: HTMLElement): void {
     const { makeToyBox } = await import('./toyBox');
     return dialog('toybox', 'Toy box: 3D-printable trinkets', [makeToyBox()], fromRoom('toybox'), 'lib-toy');
   };
-  const dialogs: Record<string, () => unknown> = { stacks: showStacks, catalog: showCatalog, copier: showCopier, toybox: showToyBox };
+  // the TV: the site's videos, then every listed game's walkthroughs (by length) and walkthrough videos, the same cards as the shelves
+  const showTv = () => {
+    const items = (shelf?.items ?? []).filter((i) => i.type === 'video' || i.type === 'walkthrough');
+    const section = (heading: string, of: ShelfItem[]) =>
+      of.length
+        ? h(
+            'section',
+            { class: 'lib-group' },
+            h('div', { class: 'lib-plate-row' }, h('h2', null, ...onlineNote(heading, of))),
+            h('ul', { class: 'lib-grid' }, ...of.map((it) => card(it, shelf!, 'type', false))),
+          )
+        : null;
+    const groups = groupShelf(items, 'type');
+    const parts = groups.flatMap((g) => g.parts.map((p) => section(p.heading ?? g.heading, p.items)));
+    return dialog(
+      'tv',
+      'TV: videos and walkthroughs',
+      [h('div', { class: 'lib-shelf' }, ...(parts.some(Boolean) ? parts : [h('p', { class: 'lead' }, 'Nothing is on the TV yet.')]))],
+      fromRoom('tv'),
+      'lib-stacks lib-tv',
+    );
+  };
+  const dialogs: Record<string, () => unknown> = { stacks: showStacks, catalog: showCatalog, copier: showCopier, toybox: showToyBox, tv: showTv };
   const room = makeRoom({
     status: () => count.textContent ?? '',
     mark,
@@ -308,6 +330,7 @@ export function renderLibrary(el: HTMLElement): void {
       else if (where === 'catalog') void showCatalog();
       else if (where === 'copier') void showCopier();
       else if (where === 'toybox') void showToyBox();
+      else if (where === 'tv') void showTv();
       else if (shelf)
         void lSpaceTrip(groupShelf(shelf.items, 'game').map(pickOf), (id) => {
           order = 'game';
