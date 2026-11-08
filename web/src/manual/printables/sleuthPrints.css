@@ -1,0 +1,200 @@
+/* Final Curtain's evidence sheet and paper spyglass (sleuthPrints.ts, spyglass.ts) */
+
+.pp-sgp,
+.pp-sgs {
+  padding: 5cqw 6cqw;
+  display: flex;
+  flex-direction: column;
+  gap: 1.6cqw;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.sgp-head {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 0.5cqw double #18150f;
+  padding-bottom: 1cqw;
+  font-size: 2cqw;
+  letter-spacing: 0.12em;
+}
+
+.pp-sgp h2,
+.pp-sgs h2 {
+  margin: 0;
+  font:
+    700 4.4cqw/1.1 'Times New Roman',
+    Times,
+    serif;
+  text-align: center;
+}
+
+.sgp-intro,
+.sgp-foot {
+  margin: 0;
+  font-size: 2.1cqw;
+  line-height: 1.35;
+}
+
+.sgp-foot {
+  font-style: italic;
+}
+
+.sgp-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2.4cqw 2.4cqw;
+}
+
+.sgp-cell {
+  margin: 0;
+  border: 0.35cqw solid #18150f;
+  background: #fffdf5;
+  padding: 1cqw;
+}
+
+.sgp-lifted {
+  border-style: dashed;
+}
+
+.sgp-cell .rf-code {
+  display: block;
+  width: 100%;
+  padding: 0;
+  line-height: 0;
+}
+
+.sgp-cell .rf-word {
+  width: 100%;
+  height: auto;
+}
+
+.sgp-cell figcaption {
+  display: flex;
+  flex-direction: column;
+  margin-top: 0.8cqw;
+  font-size: 1.8cqw;
+  line-height: 1.25;
+}
+
+.sgp-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1cqw;
+  font-size: 2.1cqw;
+}
+
+.sgp-tell {
+  min-height: 24px;
+  padding: 0.5em 1em;
+  border: 2px solid #18150f;
+  border-radius: 4px;
+  background: #e8b830;
+  color: #18150f;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.sgp-tell:focus-visible {
+  outline: 3px solid #1d3f7a;
+  outline-offset: 2px;
+}
+
+.sgp-answer {
+  margin: 0;
+  max-width: 62ch;
+}
+
+.sgp-answer[hidden] {
+  display: none;
+}
+
+@media print {
+  .sgp-screen {
+    display: none;
+  }
+}
+
+/* the spyglass sheet */
+.sgs-body {
+  display: grid;
+  grid-template-columns: 50cqw 1fr;
+  gap: 4cqw;
+  align-items: start;
+}
+
+.sgs-art svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.sgs-steps {
+  margin: 0;
+  padding-left: 1.4em;
+  font-size: 2.1cqw;
+  line-height: 1.45;
+}
+
+.sgs-steps li {
+  margin-bottom: 1.2cqw;
+}
+
+/* the spyglass on screen: the red film in the viewer */
+.sg-glass {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 10;
+  width: min(250px, 55vw);
+  aspect-ratio: 200 / 340;
+  cursor: grab;
+  touch-action: none;
+}
+
+.sg-glass[hidden] {
+  display: none;
+}
+
+.sg-glass:active {
+  cursor: grabbing;
+}
+
+.sg-glass > svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.45));
+}
+
+/* the lens sits in the ring's hole: 78 of 200 units across from (100, 100) of 340 high */
+.sg-lens {
+  position: absolute;
+  left: 11%;
+  top: 6.47%;
+  width: 78%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  /* only the red channel, its light end stretched (redFilm.ts ensureRedView); a parent that is
+     a stacking context would keep a blend from reaching the page, so the filter alone does it */
+  backdrop-filter: url(#rf-red-view);
+}
+
+@supports not (backdrop-filter: url(#rf-red-view)) {
+  .sg-lens {
+    background: rgba(255, 0, 0, 0.45);
+  }
+}
+
+.rf-picture {
+  display: block;
+}
+
+@media (max-width: 720px) {
+  .sg-glass {
+    width: min(170px, 50vw);
+  }
+}

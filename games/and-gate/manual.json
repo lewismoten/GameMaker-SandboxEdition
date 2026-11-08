@@ -1,0 +1,83 @@
+{
+  "title": "Both Together",
+  "howDoI": [
+    {
+      "id": "and",
+      "q": "How do I make an AND, so two things must both happen before something opens?",
+      "scene": 2,
+      "x": 22,
+      "y": 16,
+      "level": 1
+    },
+    {
+      "id": "power",
+      "q": "How do I make one monster stop another?",
+      "scene": 2,
+      "x": 22,
+      "y": 16,
+      "level": 1
+    },
+    {
+      "id": "becomes",
+      "q": "How do I make a monster turn into another when Lami touches it?",
+      "scene": 2,
+      "x": 22,
+      "y": 16,
+      "level": 1
+    },
+    {
+      "id": "birth",
+      "q": "How do I make a block that sends out a monster every few seconds?",
+      "scene": 2,
+      "x": 10,
+      "y": 16,
+      "level": 1
+    },
+    {
+      "id": "counter",
+      "q": "How do I make a monster add to a counter when Lami touches it?",
+      "scene": 2,
+      "x": 33,
+      "y": 19,
+      "level": 1
+    },
+    {
+      "id": "three",
+      "q": "How do I make a puzzle where three things must all be on?",
+      "scene": 3,
+      "x": 23,
+      "y": 11,
+      "level": 2
+    }
+  ],
+  "pages": [
+    {
+      "head": "Welcome",
+      "html": "<h1>Welcome</h1><p><b>Both Together</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has two short levels and takes a few minutes to finish.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each thing in the levels is made.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. <kbd>Space</kbd> jumps. <kbd>Up</kbd> and <kbd>Down</kbd> climb a ladder. <kbd>F2</kbd> shows your lives, hit points and score. Walk into the gate at the end of a level to go on.</p><p>A spark runs along a wire in the sky, with dials hanging on it. Nothing in this game hurts you.</p>"
+    },
+    {
+      "head": "Level 1: Both Together",
+      "html": "<h1>Level 1: Both Together</h1><p>The <b>A SPARK RUNS THE WIRE</b> sign stands near the start. The box in the left wall sends a spark along the wire every few seconds. Two dials hang on the wire, both off, and a dark lamp sits on a post at the far end.</p><p>The <b>JUMP TO BUMP A DIAL ON</b> sign says what to do. Jump under a dial and it flips on, from a red lamp to a green one.</p><p>The <b>ONE DIAL OFF STOPS THE SPARK</b> sign says what you will see if you turn on only one. The spark runs through the dial that is on, and dies at the dial that is off.</p><p>Turn on both and a spark reaches the lamp. The lamp lights, and its light slides down the post. The <b>THE LIGHT DROPS. TOUCH IT</b> sign says to pick it up. The <b>THE LIGHT OPENS THIS GATE</b> sign stands by the gate, which is the way out. There are five coins.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 1 is made</h1><ul><li><b>The spark box.</b> In <b>gate.bbl</b> the box is a solid block with a monster to give birth to (the spark) and a number of ticks between births. Open <b>one.map</b> to see it set into the left wall.</li><li><b>The spark.</b> Open <b>one.mon</b> in the monsters editor and pick the spark. Its <b>Power</b> is 80, and its <b>Lives</b> is <b>Until the end of its path</b>, so it disappears after it reaches the lamp. Its path runs 23 blocks right and then up the post, following the wire you can see.</li><li><b>The dials.</b> A dial that is off has <b>Power</b> 90, stronger than the spark. When they meet, the weaker one is destroyed, so the spark dies. A dial that is on has <b>Power</b> 80, the same as the spark, and monsters of the same power pass through each other. Both dials are placed on the map as the one that is off.</li><li><b>Turning a dial on.</b> The dial that is off has a <b>Power</b> under 100, which means Lami destroys it by touching it. <b>When destroyed it becomes</b> the dial that is on. The dial that is on has <b>Lives</b> <b>Forever (indestructible)</b>, so touching it again does nothing, and it stays on.</li><li><b>The lamp.</b> The dark lamp has <b>Power</b> 70, weaker than the spark, and it becomes the falling light when destroyed. A spark is the only thing that can reach it: it hangs higher than Lami can jump.</li><li><b>The light.</b> The falling light has <b>Power</b> 200 and its path runs 8 blocks down. At the end of its path it becomes the resting light, which is indestructible. In <b>gate.mbl</b> the resting light's picture adds 1 to counter 22 when Lami touches it.</li><li><b>The gate.</b> In <b>gate.bbl</b> the gate takes 1 from counter 22. With none to spend, the gate stays shut. Lami starts with 1 and a counter shows one less than it holds, so they need the light to open it.</li><li><b>The signs.</b> Each sign is a few ordinary blocks side by side, with the words drawn in their pictures.</li></ul>"
+    },
+    {
+      "head": "Level 2: All Three",
+      "html": "<h1>Level 2: All Three</h1><p>The <b>ALL THREE MUST BE ON</b> sign stands near the start. The wire has three dials now, and it does not run straight: it climbs up past a ladder, along over a grass ledge, and comes down again before it runs on to the lamp.</p><p>The <b>THE WIRE CLIMBS. SO DOES LAMI</b> sign stands by the ladder. One dial hangs over the ledge, so Lami has to climb up and walk into it.</p><p>The <b>A DIAL STAYS ON</b> sign says that a dial you have turned on stays on. Turn them on in any order, take your time, and the next spark that passes all three lights the lamp. The <b>ALL ON? LAMP LIGHTS</b> sign says so. There are eight coins.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 2 is made</h1><ul><li><b>One more dial.</b> Open <b>two.map</b>. Three monsters of the dial that is off are placed along the wire. Nothing else changes: the spark has to get past every one of them, and one that is off is enough to stop it.</li><li><b>A wire that bends.</b> Open <b>two.mon</b> and pick the spark. Its path has seven corners: right, up, right, down, right, and up to the lamp. The wire pictures on the map only show where the path goes. A spark follows its path, not the wire.</li><li><b>The dial on the ledge.</b> The third dial is placed at the top of the wire, over a ledge of grass and dirt blocks. It is the same monster as the others. Lami touches it by walking along the ledge, because its picture is not solid.</li><li><b>Why the order does not matter.</b> A dial that has been turned on never turns off. So it makes no difference which dial Lami turns on first.</li><li><b>The exit.</b> The gate links to the <b>The End</b> scene in <b>gate.gam</b>, which plays the ending.</li></ul>"
+    },
+    {
+      "head": "What it cannot do",
+      "html": "<h1>What it cannot do</h1><p>An AND here is monsters meeting, and that is all it is:</p><ul><li>There is no OR. Any dial that is off kills the spark. For an OR you would run a second wire with its own spark to the same lamp, and the lamp needs one spark from either.</li><li>There is no NOT, and a dial cannot be turned off again. A monster turns into another one only when it is destroyed, and the dial that is on cannot be destroyed.</li><li>A spark does not stop and wait for a dial. It is born on a timer and runs its path, so a dial turned on just after a spark passed has to wait for the next one.</li><li>Nothing counts how many dials are on. The lamp lights only because a spark got to it.</li><li>A monster never touches background blocks, so the lamp has to be a monster. Only a background block can open a gate, so the lamp's light is a monster picture that adds to a counter, and the gate takes it from there.</li><li>A path has at most 10 corners, so a wire cannot bend more than that. The monster file holds 64 monsters.</li><li>The wire pictures are only pictures. The spark runs the monster's path, whatever is drawn on the map.</li></ul>"
+    },
+    {
+      "head": "Make it yours",
+      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>Change the power of the dial that is on to 70. The spark kills it, and nothing ever passes it.</li><li>Change the power of the dial that is off to 80. The spark passes through, and the dial is no use.</li><li>In <b>gate.bbl</b>, change the spark box's number of ticks between births. A shorter time sends sparks more often.</li><li>Place a fourth dial on the map, and lengthen the spark's path to match.</li><li>Place a second wire with its own box, its own spark and its own path to the same lamp, and you have an OR.</li></ul><p>The home page's <b>Starters</b> tab has more small games like this one.</p>"
+    }
+  ]
+}

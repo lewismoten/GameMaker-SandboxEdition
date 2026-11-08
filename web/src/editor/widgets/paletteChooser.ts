@@ -6,7 +6,7 @@ import { fileField } from './filePicker';
 import { parsePalette, type Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 
 /** The companion section that holds the picked palette's file name. */
-export const PALETTE_SECTION = 'showPalette';
+const PALETTE_SECTION = 'showPalette';
 
 export function paletteChooser(
   project: Project,

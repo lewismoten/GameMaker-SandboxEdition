@@ -73,7 +73,8 @@ async function wantedFiles(m: OfflineManifest): Promise<OfflineFile[]> {
   const catalog = await loadCatalogList().catch(() => []);
   for (const g of catalog) {
     if (!g.pack) continue;
-    const path = `${g.path}${g.pack}`;
+    // a game shipped split lists its .zpart file and shared data in offline.json already (project/sharedZip.ts)
+    const path = `${g.path}${g.parts ?? g.pack}`;
     if (!listed.has(path)) files.push({ path, wire: g.packBytes ?? g.bytes ?? 0, stored: g.packBytes ?? g.bytes ?? 0 });
     const walk = g.walkthrough && `${g.walkthrough}.gz`;
     if (walk && !listed.has(walk)) files.push({ path: walk, wire: 0, stored: 0 });
@@ -163,9 +164,9 @@ export interface OfflineProgress {
 
 type OfflineResult = { ok: true } | { ok: false; reason: 'canceled' | 'quota' | 'network' | 'space'; message: string };
 
-/** How many games the copy holds: each is one pack (.zip; .gmpak for older builds) under games/. */
+/** How many games the copy holds: each is one pack (.zip, or a split one's .zpart; .gmpak for older builds) under games/. */
 export function gameCount(status: Pick<OfflineStatus, 'files'>): number {
-  return status.files.filter((f) => /^games\/.*\.(zip|gmpak)$/.test(f.path)).length;
+  return status.files.filter((f) => /^games\/.*\.(zip|zpart|gmpak)$/.test(f.path)).length;
 }
 
 /** Room for this many more bytes, as far as the browser tells (true when it does not say). */

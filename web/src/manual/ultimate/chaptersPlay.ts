@@ -2,7 +2,7 @@
 // scenes and links. Checked against PLAYGAME (code/GM/PLAYGAME.C) and web/src/engine
 // (CharBirthMon turns a fired shot to its way, movechars gives an empty Idle block 0,
 // StartSceneInits takes the starting values from the first scene's character only).
-import { opening, tip, type Chapter } from './chapter';
+import { opening, tip, type Chapter, onCd } from './chapter';
 
 export const ACTORS: Chapter = {
   id: 'actors',
@@ -20,6 +20,7 @@ export const ACTORS: Chapter = {
   <p>Monster blocks have solid sides too. A solid monster pushes the hero instead of passing
   through him: a sliding wall, a shove, a crowd. Give it power 100 or more, or it vanishes at
   the first touch.</p>
+  ${onCd('WHOWINS', 'POWERUP')}
   <h2>Ways to move</h2>
   <table>
     <tr><th>Movement</th><th>Good for</th></tr>
@@ -31,12 +32,14 @@ export const ACTORS: Chapter = {
   <p>Monsters keep moving everywhere on the map, on screen or not, but only one on screen can
   touch the hero. A scene holds 200 monsters at once; when every place is taken, birth blocks
   and shots simply make nothing until one leaves.</p>
+  ${onCd('MONSTERS', 'FOLLOWME', 'SEEN', 'FLOCK')}
   <h2>Lifetimes and “becomes”</h2>
   <p>A monster can live forever and never be killed, live until killed, last until its
   path runs out, or live a set number of ticks. When it dies it can turn into another monster on the
   same spot. Chains of these make a monster with stages. In Third Goat from the Left, a lamb
   you bump gives you wool and turns into a shorn lamb that runs away; after 240 ticks (about
   13 seconds) the shorn lamb turns back into a woolly one, ready to be bumped again.</p>
+  ${onCd('HERETODY')}
   <h2>Scripted-looking scenes</h2>
   <p>Game-Maker has no cutscene tool, but monsters, paths and timers fake one well:</p>
   <ol>
@@ -50,6 +53,7 @@ export const ACTORS: Chapter = {
     <li><b>Hold</b> the audience: give the hero a reason to stand and watch, such as a ledge
     whose way on is a block that animates open when the show is over.</li>
   </ol>
+  ${onCd('SHOW')}
   <h2>The hero’s own tricks</h2>
   <p>A character has 20 sequences of up to 10 frames: Idle, Die, Hurt, Pick up and Drop, and
   15 of your own, each on a key or a joystick move. A sequence can be marked so it can’t be
@@ -67,6 +71,7 @@ export const ACTORS: Chapter = {
     <li><b>A voice of his own.</b> Each sequence plays one sound from the scene’s set when it
     starts, so a “talk” key can say a line.</li>
   </ul>
+  ${onCd('KITMOVES', 'HOMEKEYS', 'KITDUCK', 'THROWIT', 'MANYWEAP', 'PICKITUP')}
   <h2>Facing four ways, and mirroring</h2>
   <p>Chapter 11 says why a hero should face the way he walks. Here is how, in the Character
   Maker’s Sequences tab:</p>
@@ -100,7 +105,8 @@ export const ACTORS: Chapter = {
     conversation: a <code>.TXT</code> page or a <code>.LST</code> slide show. The map loads
     fresh, so keep such visits to places with nothing to collect. Chapter 5’s pass-through
     scene makes the visit seamless.</li>
-  </ul>`,
+  </ul>
+  ${onCd('SAYSOMTH', 'EVRYTALK')}`,
 };
 
 export const LOGIC: Chapter = {
@@ -127,6 +133,7 @@ export const LOGIC: Chapter = {
   counter is the one exception: a later character’s counter counts for a sequence the first
   character never had. So heroes chosen at a select screen can differ in speed, jump, weapons
   and voice, but not in how much they can take.</p>
+  ${onCd('COINS', 'KEYSDOOR')}
   <h2>Showing a count</h2>
   <p>Nothing is on the screen while the game plays. <kbd>F2</kbd> shows hit points, lives, score
   and money, and nothing shows the special or sequence counters at all. Players who can’t see
@@ -159,6 +166,7 @@ export const LOGIC: Chapter = {
   hit points (or points) in the same touch, and becomes an empty shelf.</p>
   <p>Lives, hit points and the sequence counters are never checked this way; only money and
   the special counters can say no.</p>
+  ${onCd('THREETOK')}
   <h2>Try it: a three-token gate</h2>
   <p>Any game with a floor to walk on will do. Draw two spare background blocks, a token and
   a door, then:</p>
@@ -178,6 +186,12 @@ export const LOGIC: Chapter = {
   <p>Now set special counter 1 to start at <b>1</b> and play again. Two tokens open the gate.
   It never counted tokens; it only asks whether the counter can pay 3 without going below
   zero.</p>
+  <h2>Showing a count</h2>
+  <p>The engine cannot print a counter as a number, so show it with pictures. Make each pickup
+  <b>Become</b> a lit version of itself instead of the sky, and a row of them is a meter: lit
+  bulbs are the count. Each value needs its own picture, and the bulbs do not read the counter, so
+  keep the gate's price equal to the number of bulbs in the map.</p>
+  ${onCd('SHOWCNT')}
   <h2>Switches and wiring</h2>
   <ul>
     <li><b>A switch</b> is a block that becomes its “on” picture when bumped. Make switches go
@@ -190,6 +204,7 @@ export const LOGIC: Chapter = {
     (Chapter 2): a door that opens and shuts every few seconds, a level that changes at
     the one-minute mark.</li>
   </ul>
+  ${onCd('SWITCHES', 'WIREDRM')}
   <h2>The gate is the exit</h2>
   <p>A “collect them all” level needs no key. Put the level’s only link on the cell of a gate
   that takes exactly as many as the map holds: 70 dots, 10 rings, 25 coins. Each pickup adds 1;
@@ -219,6 +234,7 @@ export const LOGIC: Chapter = {
     to a special counter when he touches it. The door is a gate on that counter.</li>
     <li>An OR is two rows that each send a checker to the same lamp.</li>
   </ul>
+  ${onCd('ANDGATE')}
   <h2>A worked example: Ohm Sweet Ohm</h2>
   <p>The whole game is wiring made of blocks. Batteries are birth blocks that send sparks
   (monsters) along copper traces. A pulsed battery animates between a birth block and a
@@ -245,6 +261,7 @@ export const SCENES: Chapter = {
   scene can have 20 links. A link to scene 1 wins the game.</p>
   <p>When the hero dies and has lives left, the scene starts over and he enters again by the
   same link he came in by, intro picture and all.</p>
+  ${onCd('ROOMS')}
   <h2>Links that misfire</h2>
   <p>PLAYGAME checks a scene’s links in order, link 1 first, and takes the first one on a cell
   the hero touches. The games in the Internet Archive’s Game-Maker Archive collection trip on
@@ -309,6 +326,7 @@ export const SCENES: Chapter = {
   <p>Quest for the Round Tuit talks to every townsperson this way, Keep It Brief shows its
   thirty-third book’s card and its chapter-done pages, and Final Curtain gives its answers and
   wrong verdicts.</p>
+  ${onCd('PICTURES')}
   <h2>What the camera sees first</h2>
   <p>The screen shows 16 by 10 blocks of a 100 by 100 map. A scene opens with the landing spot
   8 blocks from the left edge and 5 from the top; everything else is out of sight until the
@@ -321,6 +339,7 @@ export const SCENES: Chapter = {
   single-screen rooms, puzzle boards and shops. Then the screen stays where the scene opened,
   set by the landing spot, so every link into that room must land in the same place. A room
   with doors on both sides is easier as a scene that scrolls sideways only.</p>
+  ${onCd('SCROLL')}
   <h2>Many rooms on one map</h2>
   <p>Nothing says each scene needs its own map. In the archive’s games, a dozen one-screen
   houses behind a town’s doors share a single map, a strip of four stages is one map with up
@@ -338,12 +357,21 @@ export const SCENES: Chapter = {
     <li><b>The map comes back fresh</b> on every visit. What the hero took in one room is back
     when he returns, so keep prizes where he only goes once.</li>
   </ul>
+  ${onCd('ONEMAP')}
+  <p>An overhead map is the same grid with gravity off. Each area of an overworld can be its own scene on one map with scrolling off, and a road off the edge is a link on every block it crosses, landing the hero in the middle of the next area. A door is the same kind of link.</p>
+  ${onCd('OVERHEAD')}
+  <p>A world can hold a town and a town can hold a house, each its own scene with its own map file and its own pictures, so a town is one block on the world map and houses are streets wide in the town. Each way in needs a link back whose landing cell is where the hero came from, and the hero keeps his counters from scene to scene, so a key found in one can open a gate in another.</p>
+  ${onCd('TOWNLINK')}
   <h2>Laps round the wrap</h2>
   <p>The map wraps: off the right edge is the left edge, off the bottom is the top. Racing games
   in the archive put the finish line just behind the start, so the only way to reach it is all
   the way round; an endless fall is a shaft that wraps top to bottom with scrolling only down; and
   traffic that drives off one side comes back on the other forever. Put a one-way wall just
-  behind the start, or the player turns round and crosses the finish line at once.</p>
+  behind the start, or the player turns round and crosses the finish line at once. Lay a road a
+  little crooked, one block over every few rows, and it wraps again and again, so a long road
+  fits on one map.</p>
+  ${onCd('DIAGWRAP', 'BELTWAY')}
+  ${onCd('ROADTILE')}
   <h2>Between scenes</h2>
   <p>Leaving by a link, the game fades out and shows the old scene’s exit picture, if it has
   one, then the new scene’s intro picture, and fades the new scene in. The music stops at the
@@ -355,7 +383,10 @@ export const SCENES: Chapter = {
   <p>The fix is a <b>walk-off</b>: put the link a few blocks <i>past</i> the gate, so the clip
   finishes while the hero walks there. Shakespeare in Sweatpants plays each monologue’s punch
   line at its last gate, and every stage runs on for several more blocks before the exit,
-  up to eighteen of them.</p>
+  up to eighteen of them. End the walk at a door the player can see, and put the link on
+  the door itself, so touching it is leaving. A link on a bare cell beyond the door leaves the
+  hero standing in the doorway wondering why nothing happens. And walk it yourself at an
+  ordinary pace: a player who strolls takes longer than a tester who runs.</p>
   <figure data-fig="walkoff"></figure>
   <p>The same goes for a scene’s first line. A voice that starts as a level opens is cut by
   the first digital sound after it, often the hero’s own first jump. Keep the opening seconds

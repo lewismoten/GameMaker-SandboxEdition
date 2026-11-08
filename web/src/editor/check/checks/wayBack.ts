@@ -8,6 +8,7 @@ import { BACKBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { scanName } from '@lewismoten/gamemaker-sandbox-engine/input/scancodes';
 import { MLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import type { CharInfo } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
+import { characterActions } from '../../keymap/keyMap';
 import { at, type Finding } from '../findings';
 import type { Exploration, ExitReach } from '../explore';
 import type { Move } from '../inputs';
@@ -18,6 +19,34 @@ import { TICK_S } from './blockChecks';
 
 /** One-way findings shown at most per scene, the first the hero comes to. */
 const MAX_ONE_WAY = 3;
+
+/** The hero has a jump that works in the air too, so taps can be chained (a jump that needs the ground doesn't count). */
+function hasAirTaps(d: SceneData): boolean {
+  return characterActions(
+    d.chr,
+    d.bbl.some((b) => b.grav),
+  ).some(({ scan, action }) => !!scan && action.kind === 'jump' && !d.chr.sequences[action.seq].ground);
+}
+
+/**
+ * What to say when the ordinary bot found no way through a scene, so a run with slower hands has
+ * nothing to be compared with: plainly that it was not checked, a suggestion to play it unhurried,
+ * and (where the hero can tap again in the air) that chaining those taps needs each press within
+ * about the jump's air time of the last. `complete`: the bot searched everything it could reach.
+ */
+export function noRouteNote(ms: number, airTaps: boolean, complete = true): { title: string; detail: string } {
+  const parts = [
+    `The bot found no way through this scene${complete ? '' : ' in the time it had'}, so a run with slower hands (at least ${ms} ms between key changes) had nothing to be compared with. This says nothing about whether a person can get through.`,
+    'Suggestion: play it once at an unhurried pace yourself.',
+  ];
+  if (airTaps) {
+    parts.push(
+      'The hero can tap jump again in the air. Chaining those taps needs each press within about the jump’s air time of the last, so a player who needs long gaps between presses may not manage a climb that depends on them.',
+    );
+  }
+  parts.push('The tool can’t see how long a jump lasts in this game, monsters’ timing, or a person’s own rhythm.');
+  return { title: 'Slower hands were not checked here: no route was found', detail: parts.join(' ') };
+}
 
 /**
  * The cells that count as where the scene began: round the entry, and round where a hero who
@@ -179,7 +208,14 @@ function chainTo(ex: Exploration, i: number): number[] {
  */
 export function steadyFindings(main: SceneRun, steady: SceneRun, d: SceneData | undefined, minTicks: number): Finding[] {
   const ways = onward(main, main.ex.exits).sort((a, b) => a.tick - b.tick);
-  if (!ways.length || onward(steady, steady.ex.exits).length) return [];
+  if (!ways.length) {
+    // only where the scene has a way out the bot didn't reach: none for an ending, a win scene or a scene the game leaves
+    // another way (no link to touch), where there's nothing to compare slower hands with by design
+    if (!d || !d.links.length) return [];
+    const note = noRouteNote(Math.round(minTicks * TICK_S * 1000), hasAirTaps(d), main.ex.complete);
+    return [{ check: 'steady', severity: 'info', ...note, where: { scene: main.scene, map: d?.names.map } }];
+  }
+  if (onward(steady, steady.ex.exits).length) return [];
   const e = ways[0];
   const chain = [...chainTo(main.ex, e.via.parent)];
   let spot = chain[chain.length - 1];

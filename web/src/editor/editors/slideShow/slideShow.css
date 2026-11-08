@@ -567,3 +567,31 @@
     animation: none;
   }
 }
+
+/* Touch: clip inspector, transport, "then" markers and media bin buttons are 44 px. */
+@media (hover: none) and (pointer: coarse) {
+  .sl-top button,
+  .sl-top a.sl-edit,
+  .sl-top input:not([type='checkbox'], [type='radio'], [type='range']),
+  .sl-top select,
+  .sl-transport button,
+  .sl-bin button,
+  .sl-bin select,
+  .sl-bin summary {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  .sl-top a.sl-edit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .sl-zoom input {
+    min-height: 44px;
+  }
+  button.sl-then {
+    min-width: 44px;
+    height: 44px;
+    border-radius: 22px;
+  }
+}

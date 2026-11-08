@@ -32,6 +32,9 @@ function streamingModel(log: string[], stopAfter?: { piece: number; stop: AbortC
     if (turn++ > 0) return { content: 'All done.', toolCalls: [] };
     let soFar = '';
     for (const [i, piece] of REPLY.entries()) {
+      // render_png does real work, so on a loaded machine give it a bounded number of turns to
+      // finish before the last piece; calls that only ran after the stream would still fail
+      for (let n = 0; i === 6 && !stopAfter && n < 200 && !log.includes('ran render_png'); n++) await tick();
       req.signal?.throwIfAborted();
       soFar += piece;
       log.push(`piece ${i}`);

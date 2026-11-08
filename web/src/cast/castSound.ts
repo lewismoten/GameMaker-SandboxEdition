@@ -1,24 +1,41 @@
 // The cast stage's sound: Teddy's Little Big Adventure's title song on the OPL2 (its own .CMF,
 // played by the site's music worklet, so it is always the Teddy games' shared theme from
 // games/kit/teddyTheme.ts), its digitized effects (a bark, a yip, the chicken's squeak, the
-// horn, a giggle, things landing) and a few made here (footsteps, the tin heart's tick-tock,
-// THE CHEZ's electric whirr). It follows the site's demo sound choice (media/demoAudio.ts:
-// "None" keeps it quiet) and only starts from a gesture on the stage.
+// horn, a giggle, things landing), a few made here (footsteps, the tin heart's tick-tock) and
+// THE CHEZ's motor (audio/chez/, shared with the desk window). It follows the site's demo sound choice (media/demoAudio.ts:
+// "None" keeps it quiet) and only starts from a gesture on the stage. It is hushed while the guided
+// tour plays (the tour has its own song and effects; tour/, its 'gm-tour' events and `tour-on` class).
 import { AudioEngine } from '@lewismoten/gamemaker-sandbox-engine/audio/engine';
 import { demoAudio, setDemoAudio } from '../media/demoAudio';
-import { fetchGameFile, loadGameList } from '../project/files';
+import { peekGameFile, loadGameList } from '../project/files';
+import { chezMotor, type ChezMotor } from '../audio/chez/chezSound';
 
 const SONG = 'title.cmf';
 /** A digitized effect: Teddy's own by name, or another game's as 'game/name' (goat/scream). */
 export type Effect = string;
+
+const MOTOR_LEVEL = 0.04;
+const tourOn = () => document.documentElement.classList.contains('tour-on');
 
 export class StageSound {
   private engine = new AudioEngine();
   private files = new Map<string, Promise<Uint8Array | undefined>>();
   private started = false;
   private paused = false;
+  private chez?: ChezMotor;
+  /** The stage's music follows the tour: hushed from its start to its end. */
+  private onTour = () => this.engine.pauseMusic(this.hushed);
   /** Wanted: the demo sound choice isn't "None". */
   wanted = demoAudio() !== 'none';
+
+  constructor() {
+    window.addEventListener('gm-tour', this.onTour);
+  }
+
+  /** Paused by the Pause button or the tour. */
+  private get hushed(): boolean {
+    return this.paused || tourOn();
+  }
 
   private file(name: string, game = 'teddy'): Promise<Uint8Array | undefined> {
     const key = `${game}/${name}`;
@@ -26,7 +43,7 @@ export class StageSound {
     if (!p) {
       p = loadGameList()
         .then((list) => list.find((g) => g.id === game))
-        .then((entry) => (entry ? fetchGameFile(entry, name) : undefined))
+        .then((entry) => (entry ? peekGameFile(entry, name) : undefined))
         .catch(() => undefined);
       this.files.set(key, p);
     }
@@ -45,7 +62,7 @@ export class StageSound {
     void this.engine.resume().then(async () => {
       if (!this.started) return;
       await this.engine.playSong(await this.file(SONG));
-      if (this.paused) this.engine.pauseMusic(true);
+      if (this.hushed) this.engine.pauseMusic(true);
     });
   }
 
@@ -55,6 +72,7 @@ export class StageSound {
     setDemoAudio(on ? 'blaster' : 'none');
     if (on) this.start();
     else {
+      this.stopMotor();
       this.started = false;
       this.engine.stopAll();
     }
@@ -62,12 +80,12 @@ export class StageSound {
 
   pause(paused: boolean): void {
     this.paused = paused;
-    if (this.started) this.engine.pauseMusic(paused);
+    if (this.started) this.engine.pauseMusic(this.hushed);
   }
 
   private get live(): AudioContext | undefined {
     const c = this.engine.context;
-    return this.started && c && c.state === 'running' ? c : undefined;
+    return this.started && !tourOn() && c && c.state === 'running' ? c : undefined;
   }
 
   effect(name: Effect): void {
@@ -102,12 +120,29 @@ export class StageSound {
     this.blip('square', n % 2 ? 1500 : 1050, n % 2 ? 1400 : 1000, 0.04, 0.05);
   }
 
-  whirr(): void {
-    this.blip('sawtooth', 220, 330, 0.16, 0.03);
+  /**
+   * THE CHEZ's motor, the same sound as everywhere else it drives (audio/chez/). Call it every frame
+   * with whether the car is moving: it starts with the contactors' clunks when the car begins to move
+   * and winds down when it stops. Quiet, so voices stay clear.
+   */
+  motor(moving: boolean): void {
+    const c = this.live;
+    const out = this.engine.node;
+    if (!c || !out) return this.stopMotor();
+    if (!moving) return this.chez?.stop();
+    this.chez ??= chezMotor(c, out, { level: MOTOR_LEVEL });
+    this.chez.go();
+  }
+
+  private stopMotor(): void {
+    this.chez?.dispose();
+    this.chez = undefined;
   }
 
   dispose(): void {
+    this.stopMotor();
     this.started = false;
+    window.removeEventListener('gm-tour', this.onTour);
     this.engine.dispose();
   }
 }

@@ -4,6 +4,8 @@
 // -= S A N D B O X =- BBS hands out comes with one: the shareware games (C:\DOWNLOAD\<GAME>),
 // the GIF Gallery's pictures (C:\IMAGES keeps the newest picture's, as each unzip wrote over
 // the last) and the Warez area's releases, which a courier signs instead.
+import { isStarterGame } from '../../project/starter';
+import { isSpecialGame } from '../../project/special';
 import { isSandboxGame, type CatalogEntry } from '../../project/files';
 import { installedBytes, sizeText } from '../../project/diskFacts';
 import type { GalleryFile } from './gallery';
@@ -21,7 +23,7 @@ const SIGNOFF = 'Uploaded by %s to THE SANDBOX BBS';
 
 /** The Sofa's own upload: a game from ../games under another publisher (The Bard of Bizarre's). */
 const SOFA_UPLOADER = 'DOC LEO';
-export const isSofaFile = (g: CatalogEntry) => !!g.original && !isSandboxGame(g);
+export const isSofaFile = (g: CatalogEntry) => !!g.original && !isSandboxGame(g) && !isStarterGame(g) && !isSpecialGame(g);
 
 /** The last line of a Warez release's DIZ: who couriered it to which board (the scene's way). */
 export const warezSignoff = (courier = SYSOP_HANDLE): string => `Couriered by ${courier} * SANDBOX BBS WHQ`;

@@ -6,10 +6,12 @@
 //
 // No text here names a game that the catalog keeps out of sight, or says how many there are.
 
+import { chickenWords } from '../chicken/chickenWords';
 import type { AchievementRecord } from './store';
 import { EDIT_KINDS } from './editKinds';
 import { REPEAT_TIERS, type RepeatGoal } from './repeatGoals';
 import { COUNT_LEVELS, type Level } from './levels';
+import { CEREMONIES, DIPLOMA, certificateTitle } from '../project/ceremonies';
 
 export type Category = 'making' | 'playing' | 'watching' | 'desk' | 'fun' | 'found';
 
@@ -28,6 +30,8 @@ export type Goal =
   | 'bizarre'
   | 'sandboxDone'
   | 'bizarreDone'
+  | 'starters'
+  | 'startersDone'
   | 'teddy'
   | 'walkthroughs'
   | 'hearts'
@@ -80,6 +84,7 @@ const MODEM_SPEEDS = ['300', '1200', '2400', '4800', '9600', '14400', '28800', '
 export const LIBRARY_KINDS = [
   'manual',
   'hintbook',
+  'codewheel',
   'worldmap',
   'levelmap',
   'map',
@@ -135,6 +140,16 @@ export const DESK_PROPS = [
   'desk-egg-uv',
 ] as const;
 
+/** One badge for each honors and one for the diploma: earned when that graduation game is finished (goals.ts). */
+const HONORS: Achievement[] = [...CEREMONIES, DIPLOMA].map((c) => ({
+  id: `honor-${c.id}`,
+  title: certificateTitle(c),
+  desc: c === DIPLOMA ? 'Earned the honors of every stage and graduated.' : `Finished the graduation for ${c.stage} and earned its honors.`,
+  icon: '📜',
+  category: 'playing' as const,
+  hard: true,
+}));
+
 export const ACHIEVEMENTS: readonly Achievement[] = [
   // making
   { id: 'make-new', title: 'Blank slate', desc: 'Started a new game of your own.', icon: '🆕', category: 'making' },
@@ -185,6 +200,13 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
     unit: 'cards',
   },
   { id: 'make-opening', title: 'Presenting…', desc: 'Gave a game an Opening sting on its start scene.', icon: '🎬', category: 'making' },
+  {
+    id: 'learn-lesson',
+    title: 'Learn by looking',
+    desc: 'Used See how it’s made on a “How do I…?” question to look at the map.',
+    icon: '🔍',
+    category: 'making',
+  },
   { id: 'make-heat', title: 'Feeling the heat', desc: 'Played your own map with Play and record, and grew your heat map.', icon: '🔥', category: 'making' },
   { id: 'make-take', title: 'Take one', desc: 'Kept your own play of a scene for its walkthrough.', icon: '⏺️', category: 'making' },
   { id: 'palette-vision', title: 'Seen by everyone', desc: 'Applied a ✨ fix from the palette’s Color vision check.', icon: '👓', category: 'making' },
@@ -275,6 +297,7 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
     category: 'playing',
   },
   { id: 'play-save', title: 'Save point', desc: 'Saved a game while playing it.', icon: '📼', category: 'playing' },
+  { id: 'play-all-mine', title: 'All Mine', desc: 'Fill all ten high-score places in one game with the same name.', icon: '🏆', category: 'playing' },
   {
     id: 'play-sandbox',
     title: 'Sandbox regular',
@@ -291,6 +314,25 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
     icon: '🎻',
     category: 'playing',
     from: 'bizarre',
+    unit: 'games',
+  },
+  {
+    id: 'play-starters',
+    title: 'Show and tell',
+    desc: 'Played every Starter.',
+    icon: '🧩',
+    category: 'playing',
+    from: 'starters',
+    unit: 'games',
+  },
+  {
+    id: 'finish-starters',
+    hard: true,
+    title: 'Honor roll',
+    desc: 'Played every Starter all the way to its ending.',
+    icon: '🎓',
+    category: 'playing',
+    from: 'startersDone',
     unit: 'games',
   },
   {
@@ -446,7 +488,7 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
   {
     id: 'bbs-download-every-speed',
     hard: true,
-    title: 'The long way round',
+    title: 'The long way around',
     desc: 'Downloaded a whole file from a BBS at every modem speed, start to finish, without skipping.',
     icon: '🐢',
     category: 'desk',
@@ -721,7 +763,10 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
   {
     id: 'desk-chicken',
     title: 'Fowl flight',
-    desc: 'Caught Sir Reginald Cluckington III flying past the window.',
+    // (read each time, so it follows who the chicken is now: chicken/chickenState.ts)
+    get desc() {
+      return `Caught ${chickenWords().full} flying past the window.`;
+    },
     icon: '🐔',
     category: 'found',
     hidden: true,
@@ -798,7 +843,7 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
     icon: '😉',
     category: 'found',
     hidden: true,
-    hint: 'Keep an eye on the velvet poster. Now and then it looks back.',
+    hint: 'Keep an eye on the velvet poster. Now and then it looks back: catch him at it.',
   },
   {
     id: 'desk-lume',
@@ -828,6 +873,7 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
     hidden: true,
     hint: 'The underground press runs more than one page.',
   },
+  ...HONORS,
 ];
 
 const BY_ID = new Map(ACHIEVEMENTS.map((a) => [a.id, a]));

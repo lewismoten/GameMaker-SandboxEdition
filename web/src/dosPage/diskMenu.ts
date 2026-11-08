@@ -17,7 +17,7 @@ interface DiskMenuHost {
 }
 
 const GROUPS: [string, (d: Disk) => boolean][] = [
-  ['Games', (d) => d.kind === 'original' || d.kind === 'rsd' || d.kind === 'gameware'],
+  ['Games', (d) => d.kind === 'sample' || d.kind === 'original' || d.kind === 'rsd' || d.kind === 'gameware'],
   ['My disks', (d) => d.kind === 'project' || d.kind === 'blank'],
 ];
 

@@ -5,18 +5,21 @@ import { rovingGrid } from '../../widgets/rovingGrid';
 import { History } from '../../core/history';
 import { registerEditor } from '../registry';
 import { viewState } from '../../../urlState';
-import { h, clear, numberField, selectField, checkField, debounce } from '../../core/ui';
+import { h, clear, numberField, selectField, checkField, debounce, toast } from '../../core/ui';
 import { blockCanvas, paintBlock } from '../../core/draw';
 import { paletteChooser } from '../../widgets/paletteChooser';
 import { blockButton } from '../../widgets/blockChooser';
 import { fileField } from '../../widgets/filePicker';
+import { fullNote } from '../../widgets/limitNote';
 import { MONBL, newBlockSet, parseBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { LASTMON, LASTSL, parseMonsters, serializeMonsters, type Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { monsterPathEditor } from './monsterPathEditor';
 import { checkBadges } from '../../widgets/checkBadges';
 import { normalize } from '../../../project/files';
+import { noteNewestMonster } from './newestMonster';
 import { fitToPane } from '../../core/fitPane';
 import { monsterName, setMonsterName } from './monsterNames';
+import { firstUnusedSlot, noFreeSlotText } from './freeSlot';
 import { blockLabel } from '../blocks/blockNames';
 
 type Motion = 'path' | 'toward' | 'away' | 'random';
@@ -90,10 +93,10 @@ registerEditor(['mon'], (host, project, file) => {
           'button',
           {
             class: i === current ? 'selected' : '',
-            title: name ? `Monster ${i}: ${name}` : `Monster ${i}`,
+            title: !m.used ? `Monster ${i}: unused slot` : name ? `Monster ${i}: ${name}` : `Monster ${i}`,
             onclick: () => ((current = i), (anim = 0), render()),
           },
-          p >= 0 ? blockCanvas(mblk[p].pixels, chooser.palette, { transparent: true }) : h('span', { class: 'meta' }, '·'),
+          m.used && p >= 0 ? blockCanvas(mblk[p].pixels, chooser.palette, { transparent: true }) : h('span', { class: 'meta' }, '·'),
           h('small', null, i),
         );
       }),
@@ -105,6 +108,23 @@ registerEditor(['mon'], (host, project, file) => {
     mons[current].used = 1;
     committed();
     save();
+  }
+
+  // New monster: a copy of the picked one in the first unused slot, picked in turn, so a new kind starts from a working one
+  // (animation, strength, movement) instead of an unused slot's leftovers. Undo takes it back.
+  const newBtn = h('button', { title: 'Copy this monster into the first unused slot and pick the copy', onclick: () => newMonster() }, '＋ New monster');
+  function newMonster(): void {
+    const free = firstUnusedSlot(mons, current);
+    if (free < 0) {
+      toast(noFreeSlotText(mons, current));
+      return;
+    }
+    mons[free] = structuredClone(mons[current]);
+    current = free;
+    noteNewestMonster(project, free);
+    anim = 0;
+    edit(() => undefined);
+    render();
   }
 
   // Undo: each change records the state before it (changes less than half a second apart, like a drag, are one step).
@@ -173,8 +193,14 @@ registerEditor(['mon'], (host, project, file) => {
         h(
           'div',
           { class: 'mon-who' },
-          preview,
-          h('div', { class: 'mon-name' }, h('h2', null, `Monster ${current}`), h('div', { class: 'meta' }, m.used ? 'In use' : 'Unused slot'), nameField()),
+          m.used ? preview : h('span', { class: 'meta' }, 'No active monster'),
+          h(
+            'div',
+            { class: 'mon-name' },
+            h('h2', null, `Monster ${current}`),
+            h('div', { class: 'meta' }, m.used ? 'In use' : 'Unused slot · frames below are retained template data, not an active monster'),
+            nameField(),
+          ),
         ),
         h(
           'div',
@@ -187,6 +213,7 @@ registerEditor(['mon'], (host, project, file) => {
             h(
               'div',
               { class: 'mon-frame-tools' },
+              shown >= LASTSL && fullNote(LASTSL, 'frames', 'a monster'),
               shown < LASTSL &&
                 h(
                   'button',
@@ -348,7 +375,7 @@ registerEditor(['mon'], (host, project, file) => {
         { class: 'hint' },
         'Pick a monster, then set its animation, strength and movement. Place monsters on maps with the map editor, or let blocks and character sequences give birth to them.',
       ),
-      h('div', { class: 'toolbar' }, undoBtn, redoBtn),
+      h('div', { class: 'toolbar' }, newBtn, undoBtn, redoBtn),
       badges.el,
       fileField(
         project,

@@ -6,7 +6,7 @@
 // browser whose demo sound is "None" starts muted.
 import { AudioEngine } from '@lewismoten/gamemaker-sandbox-engine/audio/engine';
 import { channelGain, onMix } from '@lewismoten/gamemaker-sandbox-engine/audio/mix';
-import { fetchGameFile, loadGameList } from '../project/files';
+import { peekGameFile, loadGameList } from '../project/files';
 import { BARKS, MUSIC, SOUNDS, barkUrl, type MusicId, type SoundId } from './steps';
 
 const KEY = 'gm-tour-sound';
@@ -42,7 +42,7 @@ export class TourSound {
       const [game, name] = path.split('/');
       p = loadGameList()
         .then((list) => list.find((g) => g.id === game))
-        .then((entry) => (entry ? fetchGameFile(entry, name) : undefined))
+        .then((entry) => (entry ? peekGameFile(entry, name) : undefined))
         .catch(() => undefined);
       this.files.set(path, p);
     }
@@ -119,8 +119,8 @@ export class TourSound {
   }
 
   /** Starts loading a coming step's clip while the current one plays, so it is ready to start at once. */
-  prefetch(url: string): void {
-    if (!this.on || this.warm.has(url)) return;
+  prefetch(url: string | undefined): void {
+    if (!url || !this.on || this.warm.has(url)) return;
     const a = new Audio();
     a.preload = 'auto';
     a.src = url;
@@ -137,8 +137,10 @@ export class TourSound {
    * A step's recorded line, if there is one: resolves with its length in ms once it is ready
    * to play (and plays it), or 0 when there is none (the bubble's own timing is used).
    */
-  speak(url: string): Promise<number> {
+  speak(url: string | undefined): Promise<number> {
     this.stopVoice();
+    // a step with no recorded line: nothing to ask for
+    if (!url) return Promise.resolve(0);
     // Voice off in the sound settings: the bubble's own timing is used, as with a step that has no clip
     if (!this.on || channelGain('voice') === 0) return Promise.resolve(0);
     const early = this.warm.get(url);

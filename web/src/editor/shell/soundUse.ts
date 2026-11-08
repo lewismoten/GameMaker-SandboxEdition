@@ -5,7 +5,7 @@ import { parseCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/cha
 import { LASTSND, parseSoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
 import type { Project } from '../core/project';
 
-export interface SoundUse {
+interface SoundUse {
   /** Sound-set files that have the slot: "NEBULA.SND". */
   sets: string[];
   /** Characters whose sequences play it: "HERO.CHR (sequences 3, 4)". */

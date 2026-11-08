@@ -8,6 +8,8 @@ import * as S from '../screens/screens';
 import { introFli } from '../screens/intro';
 import { INSTRUCTIONS, CREDITS, readme } from '../screens/text';
 import { INK } from '../screens/talk';
+import { carvingScreen, plateScreen } from '../screens/carving';
+import { CARVINGS, MINE_DOORS } from '../wheel/wheel';
 import type { AreaFile } from './world';
 
 export function screenFiles(price: string): AreaFile[] {
@@ -18,7 +20,7 @@ export function screenFiles(price: string): AreaFile[] {
   // the intro in clips of about 4 seconds, so Esc can skip it between them
   const intro = fliClips('intro.fli', introFli());
   for (const [name, bytes] of Object.entries(intro)) put(name, bytes);
-  put('title.gif', S.titleScreen().gif());
+  put('title.gif', S.titleScreen().gif({}, 6));
   lst('title.lst', [{ name: SANDLOGO, pause: 0 }, ...clipEntries(intro, 0), { name: 'title.gif', pause: 12 }]);
   // the pages shown from the menu (and the ending) write MORE... in the menu palette's nearest
   // red: reserve it in the menu at the same index (2) as in the pages' backdrops
@@ -43,6 +45,10 @@ export function screenFiles(price: string): AreaFile[] {
   put('lost.gif', S.lostScreen().gif());
   lst('lost.lst', [{ name: 'lost.gif' }]);
   put('eggshow.gif', S.eggScreen().gif());
+  // close-ups of the Royal Code Wheel's puzzles, before their talks
+  put('carve1.gif', carvingScreen(CARVINGS.barrows, 'THE SNOOZE BARROWS').gif());
+  put('carve2.gif', carvingScreen(CARVINGS.keep, 'DEADLINE KEEP').gif());
+  put('plate.gif', plateScreen(MINE_DOORS.key, MINE_DOORS.doors, 'THE PUTOFF MINES').gif());
   put('readme.txt', readme(price));
   put('license.txt', licenseText('Quest for the Round Tuit'));
   return out;

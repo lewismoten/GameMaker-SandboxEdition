@@ -7,7 +7,8 @@
 // (media/mediaFocus.ts).
 import './walkthrough.css';
 import { download, h, modal, toast } from '../editor/core/ui';
-import { fetchSiteFile, type CatalogEntry, type GameFiles } from '../project/files';
+import { progressAnnouncements } from '../editor/core/progressAnnouncements';
+import { fetchSiteFile, withDetails, type CatalogEntry, type GameFiles } from '../project/files';
 import { SITE_URL } from '../seo/site';
 import { TICK_RATE } from '@lewismoten/gamemaker-sandbox-engine/audio/cmfPlayer';
 import { clock, WALKTHROUGH_FPS, youtubeText, type Walkthrough } from './format';
@@ -135,7 +136,7 @@ async function watch(
   }
   const gam = entry.gam;
   // a catalog game's own DOS player look (an original game's player.json) unless a project's was handed in
-  player ??= catalogPatches(entry);
+  player ??= catalogPatches(await withDetails(entry).catch(() => entry));
   const tl = walk.timeline;
   const total = tl.frames;
   /** Played to the end: the game's, or where a bot's walkthrough that stopped partway stops. */
@@ -175,6 +176,7 @@ async function watch(
   const soundPick = demoAudioPicker({ label: 'Sound', className: 'wt-sound' });
   const chapterList = h('ol', { class: 'wt-chapters' });
   const status = h('p', { class: 'meta wt-status', role: 'status' });
+  const exportLine = h('p', { class: 'meta wt-export-line', 'aria-live': 'off', hidden: true });
 
   const exportSel = h(
     'select',
@@ -511,6 +513,9 @@ async function watch(
     exportBar.hidden = false;
     exportBar.value = 0;
     const began = performance.now();
+    const speech = progressAnnouncements((text) => (status.textContent = text));
+    status.classList.add('sr-only');
+    exportLine.hidden = false;
     try {
       const res = await exportWalkthrough({
         files,
@@ -525,21 +530,27 @@ async function watch(
           exportBar.value = done / all;
           const secs = (performance.now() - began) / 1000;
           const left = done > 0 ? (secs / done) * (all - done) : 0;
-          status.textContent = done
+          const text = done
             ? `Making the video: ${Math.round((100 * done) / all)}% (${clock(done / WALKTHROUGH_FPS)} of ${clock(all / WALKTHROUGH_FPS)}), about ${clock(left)} to go.`
             : 'Making the video: getting to the start…';
+          exportLine.textContent = text;
+          speech.progress(text);
         },
       });
       download(name, res.blob);
       unlockAchievement('download-mp4');
-      status.textContent = `Saved ${name}: ${clock(res.frames / WALKTHROUGH_FPS)}, 320×200 at 60 fps, ${(res.blob.size / 1e6).toFixed(1)} MB${res.audio !== 'none' ? ` with ${DEMO_AUDIO_LABEL[mode]} sound (${res.audio.toUpperCase()})` : mode === 'none' ? ', without sound' : ', without sound (this browser has no audio encoder)'}.`;
+      speech.finish(
+        `Saved ${name}: ${clock(res.frames / WALKTHROUGH_FPS)}, 320×200 at 60 fps, ${(res.blob.size / 1e6).toFixed(1)} MB${res.audio !== 'none' ? ` with ${DEMO_AUDIO_LABEL[mode]} sound (${res.audio.toUpperCase()})` : mode === 'none' ? ', without sound' : ', without sound (this browser has no audio encoder)'}.`,
+      );
     } catch (e) {
-      status.textContent = (e as Error).name === 'AbortError' ? 'Video canceled.' : `The video could not be made: ${(e as Error).message}`;
+      speech.finish((e as Error).name === 'AbortError' ? 'Video canceled.' : `The video could not be made: ${(e as Error).message}`);
     } finally {
       making = undefined;
       exportBtn.textContent = '⬇ Download MP4';
       exportSel.disabled = false;
       exportBar.hidden = true;
+      exportLine.hidden = true;
+      status.classList.remove('sr-only');
     }
   });
 
@@ -610,6 +621,7 @@ async function watch(
         ),
         h('div', { class: 'wt-actions', role: 'group', 'aria-label': 'Download and share' }, exportSel, exportBtn, copyBtn),
         exportBar,
+        exportLine,
         redo
           ? redoMenu(walk, redo, (c) => {
               picked = c;

@@ -85,17 +85,34 @@ export function openMugViewer(): Promise<void> {
       paintPicks();
     };
 
+    // Drawing a design's picture costs tens of milliseconds (the BBS badges render a text screen),
+    // so the pictures are filled in one per task after the viewer is up, not all inside the click.
+    const queue: (() => void)[] = [];
+    const drain = () => {
+      queue.shift()?.();
+      if (queue.length) setTimeout(drain, 0);
+    };
+    const fill = (img: HTMLImageElement, art: HTMLCanvasElement) => {
+      img.src = art.toDataURL();
+      img.width = art.width;
+      img.height = art.height;
+    };
     const designPick = (d: MugDesign) => {
-      const art = designCanvas(d.id);
-      const img = h('img', { src: art.toDataURL(), alt: '', width: art.width, height: art.height });
-      // a game's picture comes from its files on the CD
-      void loadDesign(d.id).then((c) => {
-        if (c === art) return;
-        img.src = c.toDataURL();
-        img.width = c.width;
-        img.height = c.height;
-        if (d.id === choice.design) retexture();
-      });
+      const img = h('img', { alt: '' });
+      const first = d.id === choice.design;
+      const draw = () => {
+        if (!img.isConnected) return;
+        const art = designCanvas(d.id);
+        fill(img, art);
+        // a game's picture comes from its files on the CD
+        void loadDesign(d.id).then((c) => {
+          if (c === art) return;
+          fill(img, c);
+          if (d.id === choice.design) retexture();
+        });
+      };
+      if (first) queueMicrotask(draw);
+      else queue.push(draw);
       return h(
         'button',
         { type: 'button', class: 'mugv-design', dataset: { id: d.id, group: d.group }, onclick: () => update({ design: d.id }), title: d.note },
@@ -104,6 +121,7 @@ export function openMugViewer(): Promise<void> {
       );
     };
     const designPicks = MUG_DESIGNS.map(designPick);
+    setTimeout(drain, 0);
     const sizePicks = MUG_SIZES.map((s) =>
       h('button', { type: 'button', class: 'mugv-chip', dataset: { id: s.id }, onclick: () => update({ size: s.id }) }, s.name),
     );

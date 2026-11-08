@@ -236,6 +236,8 @@ export class Machine {
   keyPoll?: (polls: number) => number[];
   /** Demo playback: a key-reading screen ended; returns recorded keys it must have taken. */
   keyPollEnd?: () => number[];
+  /** Demo playback: one GetKey poll by a screen (tick-counted recordings); returns the recorded keys now due. */
+  keyPollOnce?: () => number[];
 
   /** Clears keyboard input (while (GetKey(1)) GetKey(0)). */
   flushKeys(): void {
@@ -250,6 +252,11 @@ export class Machine {
    * at every step.
    */
   async fadeTo(dest: ArrayLike<number>, steps = 65): Promise<void> {
+    if (steps <= 0) {
+      // a patched player's 0-step fade (play.fadeSteps): FadeTo's loop runs no times, then SetAllPal
+      this.screen.setPalette(dest);
+      return;
+    }
     const from = this.screen.palette.slice();
     const start = this.now();
     const duration = (steps / 70) * 1000;

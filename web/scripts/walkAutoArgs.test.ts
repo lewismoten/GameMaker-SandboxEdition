@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { DEFAULT_BUDGET_S, parseArgs, pickGam, sceneLine } from './walkAutoArgs';
+import type { Walkthrough } from '../src/walkthrough/format';
+import { DEFAULT_BUDGET_S, parseArgs, pickGam, sceneLine, walkOutput } from './walkAutoArgs';
 
 describe('walk:auto arguments', () => {
   it('defaults to the editor budget', () => {
@@ -12,6 +13,10 @@ describe('walk:auto arguments', () => {
     expect(parseArgs(['d', '--budget', 'x'])).toMatch(/milliseconds/);
     expect(parseArgs(['d', '--wat'])).toMatch(/Unknown/);
     expect(parseArgs(['a', 'b'])).toMatch(/Unexpected/);
+  });
+  it('reads --basic-keys, the keyboard accessibility run', () => {
+    expect(parseArgs(['d', '--basic-keys'])).toMatchObject({ source: 'd', basicKeys: true });
+    expect(parseArgs(['d'])).not.toHaveProperty('basicKeys');
   });
 });
 
@@ -28,5 +33,67 @@ describe('pickGam', () => {
 describe('sceneLine', () => {
   it('shows a stop', () => {
     expect(sceneLine({ scene: 3, name: 'Cave', tried: ['runner', 'search'] }, (i) => i)).toMatch(/runner > search.*STOPPED/);
+  });
+
+  it('adds one concise failed-keys diagnostic line', () => {
+    expect(
+      sceneLine(
+        {
+          scene: 3,
+          name: 'Cave',
+          tried: ['runner', 'search', 'keys'],
+          keys: {
+            cutoff: 'no-reachable-state',
+            rounds: [
+              {
+                kind: 'key',
+                source: { counter: 20, cell: 301 },
+                candidates: [{ counter: 20, cell: 301 }],
+                complete: true,
+                budgetMs: 1000,
+                ms: 10,
+                places: 12,
+                nearestGoalDistance: 3,
+                exits: 0,
+                deaths: 0,
+                incidents: 0,
+                cutoff: 'no-reachable-state',
+              },
+            ],
+          },
+        },
+        (i) => i,
+      ),
+    ).toMatch(/\n\s*keys: no-reachable-state \(key c20 @ 301; 12 places\)$/);
+  });
+});
+
+describe('walk:auto output', () => {
+  it('keeps the walkthrough shape and serializes failed-keys diagnostics', () => {
+    const walk = {
+      version: 1,
+      game: 'test',
+      rand: { seed: 1, per: 'scene' },
+      segments: [],
+      chapters: [],
+      timeline: { fps: 60, frames: 0, chapters: [] },
+    } as Walkthrough;
+    const output = JSON.parse(
+      JSON.stringify(
+        walkOutput(walk, [
+          {
+            scene: 3,
+            name: 'Cave',
+            tried: ['keys'],
+            keys: { cutoff: 'budget', rounds: [] },
+          },
+        ]),
+      ),
+    );
+    expect(output).toMatchObject({
+      version: 1,
+      game: 'test',
+      diagnostics: { keys: [{ scene: 3, name: 'Cave', cutoff: 'budget', rounds: [] }] },
+    });
   });
 });

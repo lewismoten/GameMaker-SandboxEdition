@@ -11,7 +11,10 @@ import type { SetBuilder } from './blocks/blockset';
 import { courier, vehicle, type CharSet } from './characters/chars';
 import { heartMap, maelstromMap } from './levels/core';
 import { tidyUnreachable } from './levels/tidy';
-import { homeMap } from './levels/home';
+import { putCoolSign } from '../../kit/coolSign';
+import { GATE, homeMap } from './levels/home';
+import { homeSet } from './blocks/homeSet';
+import { WHEEL_SCENES } from './wheel/wheel';
 import { harder, landFauna, mechFauna, seaFauna, spaceFauna } from './characters/fauna';
 import { heartFauna } from './characters/fauna/heart';
 import { Grid, W, reachable } from './levels/mapkit';
@@ -59,6 +62,18 @@ export interface Built {
   problems: string[];
 }
 
+/** Places in world 41 where soil:1 is swapped for soil:2 (see the DAST note where it is used). */
+const SOIL_SWAPS: [number, number][] = [
+  [50, 34],
+  [45, 35],
+  [57, 37],
+  [39, 38],
+  [18, 39],
+  [6, 42],
+  [96, 43],
+  [95, 47],
+];
+
 const link = (toScene: number, from: { x: number; y: number }, to: { x: number; y: number }): Link => ({ toScene, from: { ...from }, to: { ...to } });
 
 export function buildGame(): Built {
@@ -67,7 +82,7 @@ export function buildGame(): Built {
   const put = (name: string, bytes: Uint8Array) => files.set(name.toLowerCase(), bytes);
 
   // ---------------------------------------------------------------- block sets
-  const sets = { surface: surfaceSet(), ocean: oceanSet(), station: stationSet(), space: spaceSet(), heart: heartSet() };
+  const sets = { surface: surfaceSet(), ocean: oceanSet(), station: stationSet(), space: spaceSet(), heart: heartSet(), home: homeSet() };
 
   // ---------------------------------------------------------------- monsters (two editions per family)
   const fam = {
@@ -153,7 +168,7 @@ export function buildGame(): Built {
   const chrOf = (kind: WorldKind) => (kind === 'ocean' ? 'diver' : kind === 'rover' ? 'rover' : kind === 'surface' ? 'courier' : 'courier');
 
   // home: the training deck of Maxima Station
-  const home = homeMap(sets.station, monsters.mech1);
+  const home = homeMap(sets.home, monsters.mech1);
   // galaxy
   const galaxy = galaxyMap(sets.space);
   // star whales: thirteen in a ring on the galaxy chart, and a pod in The Cradle that spells a name
@@ -194,8 +209,17 @@ export function buildGame(): Built {
 
   // home scene
   {
-    const sc = setup(SCENE.home, 'Maxima Station', { pal: 'home.pal', map: 'home.map', bbl: 'station.bbl', mon: 'mech1.mon', mbl: 'mech.mbl', chr: 'courier' });
+    const sc = setup(SCENE.home, 'Maxima Station', { pal: 'home.pal', map: 'home.map', bbl: 'home.bbl', mon: 'mech1.mon', mbl: 'mech.mbl', chr: 'courier' });
     sc.links[0] = link(SCENE.galaxy, home.uplink, galaxy.arriveHome);
+    // the clearance gate (wheel/wheel.ts): the clerk's window shows the form; each wrong hatch has its say.
+    // Their scenes (below) start Max on the galaxy chart's knot beacon, where their one link sends him back.
+    const gate = galaxy.knot.beacon;
+    const cells = (x: number, y0: number) => [y0, y0 + 1].map((y) => ({ x, y }));
+    [
+      [cells(GATE.desk.x, GATE.desk.rows[0]), WHEEL_SCENES.form],
+      [cells(GATE.wall, GATE.hatchRows[0]), WHEEL_SCENES.wrong[0]],
+      [cells(GATE.wall, GATE.hatchRows[2]), WHEEL_SCENES.wrong[1]],
+    ].forEach(([at, scene], k) => (at as { x: number; y: number }[]).forEach((from, j) => (sc.links[1 + k * 2 + j] = link(scene as number, from, gate))));
     sc.pos = { x: 30, y: 60 };
     record({
       scene: SCENE.home,
@@ -205,11 +229,17 @@ export function buildGame(): Built {
       biome: 'station',
       arrive: home.arrive,
       map: home.grid,
-      bbl: 'station',
+      bbl: 'home',
       chr: 'courier',
       palette: buildPalette(ROLES, themeFor('station', 1995)).pal,
     });
     game.scenes[0].links[0] = link(SCENE.home, { x: 0, y: 0 }, home.arrive);
+    // the tip of the hat (kit/coolSign.ts): a plaque on the wall just past where Max arrives. The
+    // training deck's block set gets its own copy for it, in blocks the deck never shows.
+    const deck = home.grid.toMap();
+    const deckSet = putCoolSign(bbl.home, deck, buildPalette(ROLES, themeFor('station', 1995)).pal, home.arrive.x + 3, home.arrive.y - 2);
+    put('home.bbl', serializeBlocks(deckSet));
+    put('home.map', serializeMap(deck));
   }
   // galaxy scene
   const maelstrom = maelstromMap(sets.space, monsters.space2);
@@ -293,6 +323,9 @@ export function buildGame(): Built {
             (nm) => s.has(nm) && s.id(nm) === b,
           );
         if (world.kind !== 'rover') tidyUnreachable(p.grid, s, bbl[setName], p.arrive, world.kind !== 'ocean', p.caveFloor);
+        // The DAST tool read a dark speckle of soil:1 beside its neighbors in world 41 as swastika-like (a
+        // pinwheel of speckles, 8 places). The same solid soil, another variant, plays exactly the same.
+        if (w.scene === 41) for (const [x, y] of SOIL_SWAPS) p.grid.set(x, y, s.id('soil:2'));
         const bad = checkPlanet(p, bbl[setName], passable, world.kind === 'surface' || world.kind === 'station');
         if (bad.length) problems.push(`${world.name}: ${bad.join(', ')}`);
         const famName = famOf(world.kind);
@@ -428,7 +461,18 @@ export function buildGame(): Built {
     sc.links[0] = link(SCENE.galaxy, galaxy.knot.beacon, galaxy.knot.out);
     sc.pos = { x: 157, y: 30 };
   }
-  if (game.scenes.length !== 101) problems.push(`${game.scenes.length} scenes`);
+  // the clearance gate's pages: the clerk's form and the two wrong hatches (each shows a slide show, then
+  // sends Max back to the pod bay, as Between Worlds does)
+  [
+    [WHEEL_SCENES.form, 'Clearance Desk', GATE.back.desk],
+    [WHEEL_SCENES.wrong[0], 'Hatch One', GATE.back.bottom],
+    [WHEEL_SCENES.wrong[1], 'Hatch Three', GATE.back.top],
+  ].forEach(([n, name, back], k) => {
+    const sc = setup(n as number, name as string, { pal: 'dark.pal', map: 'galaxy.map', bbl: 'galaxy.bbl', chr: 'pod' });
+    sc.links[0] = link(SCENE.home, galaxy.knot.beacon, back as { x: number; y: number });
+    sc.pos = { x: 157, y: 30 + (k + 1) * 8 };
+  });
+  if (game.scenes.length !== 104) problems.push(`${game.scenes.length} scenes`);
   put('maximus.gam', serializeGame(game));
   return { files, game, scenes, sets, monsters, chars, problems };
 }

@@ -2,6 +2,7 @@
 // copy of the whole site costs, downloads it with a progress bar that can be stopped, then
 // says it is ready, with a way to remove it again (offlineCopy.ts does the work).
 import './offline.css';
+import { inArchiveReplay } from './replay';
 import { h, clear, modal } from '../editor/core/ui';
 import { gameCount, hasRoom, makeOffline, offlineStatus, removeOffline, sizeText, type OfflineStatus } from './offlineCopy';
 
@@ -11,12 +12,14 @@ function storageLine(s: OfflineStatus): string | null {
 }
 
 export async function openOfflineDialog(): Promise<void> {
+  if (inArchiveReplay()) return; // an archived copy cannot be kept offline from
   let stop = new AbortController();
   let busy = false;
   await modal<void>('Play offline', (close) => {
     const body = h('div', { class: 'offline-copy' });
     const status = h('p', { class: 'offline-status', role: 'status', 'aria-live': 'polite' }, 'Checking what is here already…');
-    clear(body, status);
+    const content = h('div');
+    body.append(status, content);
 
     const buttons = (...list: (HTMLElement | null)[]) => h('div', { class: 'buttons' }, ...list);
     const closeButton = (label = 'Close') => h('button', { type: 'button', onclick: () => close(undefined) }, label);
@@ -24,7 +27,7 @@ export async function openOfflineDialog(): Promise<void> {
     const show = (s: OfflineStatus, note?: string) => {
       if (!s.supported) {
         status.textContent = s.reason ?? 'An offline copy cannot be made here.';
-        clear(body, status, buttons(closeButton()));
+        clear(content, buttons(closeButton()));
         return;
       }
       const n = gameCount(s);
@@ -37,13 +40,19 @@ export async function openOfflineDialog(): Promise<void> {
             onclick: async () => {
               remove.setAttribute('disabled', '');
               status.textContent = 'Removing the offline copy…';
-              await removeOffline(s).catch(() => undefined);
-              show(await offlineStatus(), 'Removed. Parts you use are kept for offline use again as you use them.');
+              try {
+                await removeOffline(s);
+                show(await offlineStatus(), 'Removed. Parts you use are kept for offline use again as you use them.');
+              } catch (e) {
+                status.textContent = `The offline copy could not be removed: ${(e as Error).message}. Try again.`;
+                remove.removeAttribute('disabled');
+              }
             },
           },
           'Remove offline copies',
         );
-        clear(body, status, note ? h('p', null, note) : null, h('p', { class: 'meta' }, storageLine(s)), buttons(remove, closeButton()));
+        if (note) status.textContent = `${note} ${status.textContent}`;
+        clear(content, h('p', { class: 'meta' }, storageLine(s)), buttons(remove, closeButton()));
         return;
       }
       const partial = s.missing.length < s.files.length;
@@ -53,7 +62,7 @@ export async function openOfflineDialog(): Promise<void> {
           : s.copy === 'unfinished' && partial
             ? `Your offline copy is not finished: ${s.missing.length} files (${sizeText(s.wireMissing)}) still to come.`
             : `Download everything once, and the whole site works with no connection: all ${n} games, the 1994 desk, the editors, the manuals and the boxes.`;
-      status.textContent = lead;
+      status.textContent = note ? `${note} ${lead}` : lead;
       const room = hasRoom(s, s.storedMissing);
       const go = h(
         'button',
@@ -62,9 +71,7 @@ export async function openOfflineDialog(): Promise<void> {
       );
       if (!room) go.setAttribute('disabled', '');
       clear(
-        body,
-        status,
-        note ? h('p', { class: 'offline-note' }, note) : null,
+        content,
         h(
           'p',
           { class: 'meta' },
@@ -85,22 +92,32 @@ export async function openOfflineDialog(): Promise<void> {
       const line = h('p', { class: 'meta', 'aria-live': 'off' });
       const cancel = h('button', { type: 'button', onclick: () => stop.abort() }, 'Cancel');
       status.textContent = 'Downloading the offline copy…';
-      clear(body, status, bar, line, buttons(cancel));
+      clear(content, bar, line, buttons(cancel));
       cancel.focus();
-      const result = await makeOffline(
-        s,
-        (p) => {
-          bar.value = p.bytes;
-          line.textContent = `${sizeText(p.bytes)} of ${sizeText(p.totalBytes)} · ${p.done} of ${p.total} files`;
-        },
-        stop.signal,
-      );
-      busy = false;
-      const next = await offlineStatus();
-      show(next, result.ok ? undefined : result.message);
+      try {
+        const result = await makeOffline(
+          s,
+          (p) => {
+            bar.value = p.bytes;
+            line.textContent = `${sizeText(p.bytes)} of ${sizeText(p.totalBytes)} · ${p.done} of ${p.total} files`;
+          },
+          stop.signal,
+        );
+        const next = await offlineStatus();
+        show(next, result.ok ? undefined : result.message);
+      } catch (e) {
+        show(s, `The offline copy could not be downloaded: ${(e as Error).message}. Try again.`);
+      } finally {
+        busy = false;
+      }
     };
 
-    void offlineStatus().then((s) => show(s));
+    void offlineStatus()
+      .then((s) => show(s))
+      .catch((e: unknown) => {
+        status.textContent = `The offline copy could not be checked: ${(e as Error).message}. Close and try again.`;
+        clear(content, buttons(closeButton()));
+      });
     return body;
   });
   // closed (Esc too): a download still going stops; what came in is kept

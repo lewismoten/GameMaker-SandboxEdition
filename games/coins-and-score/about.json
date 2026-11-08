@@ -1,0 +1,55 @@
+{
+  "title": "Coins and Score",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "hero": "LIAN",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.0",
+  "blurb": "Three short levels about points. Coins add to your score, gems are worth more and a rock takes points away, and a heart adds a life. Game-Maker has no extra life at a certain score, so the last level says so plainly. Signs in the levels say how. Play it, then open it in Game-Maker and change what a gem is worth.",
+  "exe": "COINS.EXE",
+  "dosName": "COINS",
+  "sound": "sb",
+  "label": {
+    "background": "#e8f6ff",
+    "band": "#d89a10",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "3 short levels",
+    "hours": 1,
+    "background": "#d89a10",
+    "accent": "#1a1830",
+    "ink": "#1a1830",
+    "tagline": "Gold does not do much on its own.",
+    "back": "A small explorer in a blue beanie is out collecting. Coins add to the score, gems pay more, and a rock takes a little away. A heart adds a life, which no score can do. Read the signs, press F2 to look at the score, then open the game in Game-Maker and change what a pickup is worth.",
+    "features": [
+      "Signs in the levels explain each idea",
+      "Every pickup is a block with a number on it",
+      "Made to be copied and taken apart"
+    ],
+    "shots": [
+      [
+        "one.map",
+        22,
+        6
+      ],
+      [
+        "two.map",
+        22,
+        6
+      ],
+      [
+        "three.map",
+        24,
+        6
+      ]
+    ],
+    "rating": "Everyone"
+  },
+  "acceptedFindings": [
+    "facing s2 The hero climbs side on"
+  ]
+}

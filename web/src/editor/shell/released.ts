@@ -13,16 +13,19 @@
 import { h, modal, toast, confirmDialog } from '../core/ui';
 import { Project } from '../core/project';
 import { isReadOnlyError, makeReadOnly, restoreFiles } from '../core/readOnly';
+import { isStarterGame } from '../../project/starter';
 import { GameFiles, loadGameList, loadHostedGame, isSandboxGame, type CatalogEntry } from '../../project/files';
 import { isBizarreGame } from '../../project/bizarre';
+import { isSpecialGame } from '../../project/special';
 import { currentRoute, formatHash } from '../../urlState';
 import { copyCatalogGame, showNotice } from './homeCards';
 import { lookId } from './lookId';
+import { lessonButton } from './lessonButton';
 import type { Workspace } from './workspace';
 import './released.css';
 
 /** Shareware by someone else: play and look only (as Edit a copy is left off its card). */
-export const isPlayOnly = (e: CatalogEntry): boolean => e.kind === 'shareware' && !isSandboxGame(e) && !isBizarreGame(e);
+const isPlayOnly = (e: CatalogEntry): boolean => e.kind === 'shareware' && !isSandboxGame(e) && !isBizarreGame(e) && !isStarterGame(e) && !isSpecialGame(e);
 
 interface Released {
   entry: CatalogEntry;
@@ -48,13 +51,13 @@ export async function openReleased(catalogId: string, host: HTMLElement, file?: 
   if (!entry?.gam) return undefined;
   const original = await loadHostedGame(entry, './', (done, total) => (status.textContent = `Opening ${entry.title}: ${done} of ${total} files…`));
   // its DOS player look (an original game's player.json) shows in the integrator's DOS player panel and its Play
-  const { catalogCompanion } = await import('../../dosPlayer/catalogPatches');
+  const { catalogCompanionOf } = await import('../../dosPlayer/catalogPatches');
   const project = Project.fromFiles(
     new GameFiles(original.entries().map(([n, b]) => [n, b.slice()])),
     entry.title,
     lookId(entry.id),
     // …and the boards its author arranged its scenes into (games/<id>/integrator.json)
-    await (await import('../editors/integrator/shippedBoards')).withShippedBoards(catalogCompanion(entry, entry.gam), entry.id, entry.gam),
+    await (await import('../editors/integrator/shippedBoards')).withShippedBoards(await catalogCompanionOf(entry, entry.gam), entry.id, entry.gam),
   );
   project.gam = entry.gam;
   const r: Released = { entry, original };
@@ -130,7 +133,12 @@ export function readOnlyBar(project: Project): HTMLElement | null {
     'div',
     { class: 'released-bar', role: 'region', 'aria-label': 'Read-only' },
     h('strong', { class: 'released-tag' }, playOnly ? 'Look only' : 'Read-only'),
-    h('span', { class: 'released-text' }, playOnly ? `${title} is its author’s shareware: play it and look inside.` : `${title} as released.`),
+    h(
+      'span',
+      { class: 'released-text' },
+      playOnly ? `${title} is its author’s shareware: play it and look inside.` : [h('span', { class: 'released-title' }, `${title} `), 'as released.'],
+    ),
+    lessonButton(r.entry),
     playOnly
       ? h('button', { onclick: () => void showNotice(r.entry) }, 'Notice')
       : h(

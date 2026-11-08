@@ -70,16 +70,27 @@ scanner and also perform customized-player recovery.
 ```ts
 import { createZip, readZip, listZip } from '@lewismoten/gamemaker-sandbox-archives/zip';
 
-const bytes = await createZip([
-  { name: 'GAME/DEMO.GAM', data: gameBytes },
-  { name: 'GAME/README.TXT', data: new TextEncoder().encode('How to play…') },
-], new Date(2000, 0, 1, 12));
-// A fixed date and stable entry order make repeatable distribution builds.
+const gameBytes = new Uint8Array([71, 77]); // stand-in for a real .GAM file's bytes
+const bytes = await createZip(
+  [
+    { name: 'GAME/DEMO.GAM', data: gameBytes },
+    { name: 'GAME/README.TXT', data: new TextEncoder().encode('How to play') },
+  ],
+  new Date(2000, 0, 1, 12), // a fixed date and stable entry order make repeatable distribution builds
+);
 const entries = await readZip(bytes);
 const listing = listZip(bytes); // lazy entry.read()
+console.log(entries.map((e) => `${e.name} ${e.data.length}`).join(', '), listing.length);
+// prints: GAME/DEMO.GAM 2, GAME/README.TXT 11 2
 ```
 
+A test (`web/test/readmeExamples.test.ts`) runs this block and the engine's in Node against the built package and compares what they print with the `// prints:` line.
+
 ZIP creation uses deflate when available and smaller; otherwise it stores entries. It shares the reader's CRC code and adds no dependency. Consumers that only import unpacking can tree-shake the writer. Entry data is returned in memory; this package writes nothing to the filesystem. For the existing streaming game-pack format, `/pack` exports `encodePack`, `decodePack`, and `PackReader`.
+
+## Subpath exports
+
+`zip` (above), `pack` and `scan` are the main entry points. `project/zip`, `project/gamePack` and `project/importScan` are the same modules under their source names. The other subpaths are `project/importPlayer`, `project/importLeftovers`, `project/extensionNames`, `player/applyPatches` and `player/md5`.
 
 ## License and notices
 

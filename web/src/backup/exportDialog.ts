@@ -105,11 +105,11 @@ export async function exportDialog(): Promise<'restore' | undefined> {
           try {
             const file = await makeBackup(snaps, ids);
             saveFile(file.name, file.bytes);
-            toast(`Saved ${file.name}.`);
+            toast(`Saved ${file.name}.`, 'info', { repeat: true });
             close(undefined);
           } catch (err) {
             go.disabled = false;
-            toast(`The backup could not be made: ${(err as Error).message}`, 'error');
+            toast(`The backup could not be made: ${(err as Error).message}`, 'error', { repeat: true });
           }
         },
       },
@@ -128,7 +128,7 @@ export async function exportDialog(): Promise<'restore' | undefined> {
           h('button', { type: 'button', onclick: () => setAll(true) }, 'Everything'),
           h('button', { type: 'button', onclick: () => setAll(false) }, 'Nothing'),
         ),
-        h('div', { class: 'backup-scroll' }, h('ul', { class: 'backup-list' }, ...rows)),
+        h('div', { class: 'backup-scroll', 'data-list-area': 'what to back up' }, h('ul', { class: 'backup-list' }, ...rows)),
       ),
       h(
         'div',

@@ -26,7 +26,7 @@ interface SaveBackupRow {
   [k: string]: unknown;
 }
 
-export interface SavesPayload {
+interface SavesPayload {
   /** Save id ('game:<id>', 'project:<id>') -> its files. */
   saves: Record<string, Files>;
   backups: Record<string, SaveBackupRow>;
@@ -46,7 +46,7 @@ const withoutHeart = (files: Files): Files => Object.fromEntries(Object.entries(
 const remap = (id: string, map: Record<string, string>): string => (id.startsWith('project:') && map[id.slice(8)] ? `project:${map[id.slice(8)]}` : id);
 
 /** Two high-score tables as one: the best ten, an entry both hold counted once. */
-export function mergeHighScores(a: Uint8Array, b: Uint8Array): Uint8Array {
+function mergeHighScores(a: Uint8Array, b: Uint8Array): Uint8Array {
   const seen = new Set<string>();
   const all = [...parseHighScoreTable(a).entries, ...parseHighScoreTable(b).entries].filter((e) => {
     const k = `${e.score}|${e.name}`;

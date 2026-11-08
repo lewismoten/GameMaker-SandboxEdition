@@ -374,7 +374,7 @@ function searchBytes(a: string): Uint8Array {
 }
 
 /** Where `want` is next found after `from` (wrapping around), or -1. */
-export function findNext(buf: Uint8Array, want: Uint8Array, from: number): number {
+function findNext(buf: Uint8Array, want: Uint8Array, from: number): number {
   if (!want.length || want.length > buf.length) return -1;
   const n = buf.length;
   for (let k = 1; k <= n; k++) {

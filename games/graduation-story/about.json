@@ -1,0 +1,42 @@
+{
+  "title": "Graduation: Story and Finish",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "ceremony": "graduation-story",
+  "hero": "KIT",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.3",
+  "blurb": "A theater holds the helpers from Telling a Story and Putting It Together, and a few friends. Doc Leo is in the spotlight with your honors.",
+  "exe": "GRADSTRY.EXE",
+  "dosName": "GRADSTRY",
+  "sound": "sb",
+  "label": {
+    "background": "#fbe9e9",
+    "band": "#b02a3a",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "1 short walk",
+    "hours": 1,
+    "background": "#b02a3a",
+    "accent": "#ffd23f",
+    "ink": "#ffffff",
+    "tagline": "You took the stage.",
+    "back": "A small explorer in a teal beanie walks down the aisle of a theater full of friends to a stage, where Doc Leo is holding your honors.",
+    "features": [
+      "The helpers of Story and Finish clap for you",
+      "Doc Leo hands you your honors"
+    ],
+    "shots": [
+      [
+        "hall.map",
+        20,
+        6
+      ]
+    ],
+    "rating": "Everyone"
+  }
+}

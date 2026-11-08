@@ -96,6 +96,17 @@ export function buildBlocks(pal: Pal): BlockBook {
   };
   book.add('dirt', dirt(6, 3));
   book.add('leaves', dirt(7, 12));
+  /** The doorway at the far end of each walk-in hall (the link sits in it): a wooden frame round an open dark door with a gold arrow, on that hall's own floor, so it reads as the way out. */
+  const doorway = (floor: Pixels) => {
+    const p = floor.map((_x, _y, v) => v);
+    p.rect(3, 1, 14, 19, c('board', 0)).rect(3, 1, 14, 1, c('board', 3)).rect(3, 1, 1, 19, c('board', 3));
+    for (let y = 3; y < 20; y++) p.rect(5, y, 10, 1, c('black', y % 4 ? 0 : 1));
+    p.rect(7, 10, 5, 1, c('gold', 2)).rect(11, 8, 1, 5, c('gold', 2)).rect(12, 9, 1, 3, c('gold', 2)).set(13, 10, c('gold', 2));
+    return p;
+  };
+  book.add('hallDoorBoards', doorway(boards(1)));
+  book.add('hallDoorFlags', doorway(flags(4)));
+  book.add('hallDoorDirt', doorway(dirt(6, 3)));
   /** The last hall's carpet: red with a gold diamond (the gift shop's). */
   const carpet = (seed: number) => {
     const p = P();

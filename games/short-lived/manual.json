@@ -1,0 +1,83 @@
+{
+  "title": "Here Today",
+  "howDoI": [
+    {
+      "id": "vanish",
+      "q": "How do I make a monster go away by itself after a while?",
+      "scene": 2,
+      "x": 21,
+      "y": 19,
+      "level": 1
+    },
+    {
+      "id": "sparkle",
+      "q": "How do I leave a sparkle where a monster was?",
+      "scene": 2,
+      "x": 21,
+      "y": 19,
+      "level": 1
+    },
+    {
+      "id": "block",
+      "q": "How do I make a monster that Mia cannot walk through?",
+      "scene": 2,
+      "x": 21,
+      "y": 19,
+      "level": 1
+    },
+    {
+      "id": "becomes",
+      "q": "How do I make one monster turn into another after a while?",
+      "scene": 3,
+      "x": 21,
+      "y": 19,
+      "level": 2
+    },
+    {
+      "id": "unblock",
+      "q": "How do I make a monster stop blocking the way when it changes?",
+      "scene": 3,
+      "x": 21,
+      "y": 19,
+      "level": 2
+    },
+    {
+      "id": "stroll",
+      "q": "How do I make the new monster walk about?",
+      "scene": 3,
+      "x": 21,
+      "y": 19,
+      "level": 2
+    }
+  ],
+  "pages": [
+    {
+      "head": "Welcome",
+      "html": "<h1>Welcome</h1><p><b>Here Today</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has two short levels and takes a couple of minutes to finish.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each thing in the levels is made.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. <kbd>Space</kbd> jumps. <kbd>F2</kbd> shows your lives, hit points and score. Walk into the door at the end of a level to go on.</p><p>Some monsters have a <b>lifetime</b>: a number of ticks (about 18 a second). When it is up, the monster is gone, or it becomes another monster. Nothing in this game hurts you.</p>"
+    },
+    {
+      "head": "Level 1: A Bubble",
+      "html": "<h1>Level 1: A Bubble</h1><p>Mia starts between two signs. Behind her, <b>THIS BUBBLE POPS ON ITS OWN</b>; ahead, <b>WATCH IT SHRINK</b>, in front of a brick wall with a low tunnel through it. A clear bubble sits in the tunnel. Walk into it and Mia stops: the bubble is solid. It does not hurt, it just does not move.</p><p>Watch it: every two seconds it gets smaller, and the smallest one wobbles fast. About six and a half seconds after the level starts, it pops into a sparkle and the way is clear. Walk through.</p><p>There are six coins, two in the tunnel and four past it, worth ten points each.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 1 is made</h1><ul><li><b>A lifetime.</b> Open <b>here.mon</b> in the monsters editor and pick the bubble. Under <b>Lives</b> it says <b>For a set time</b>, and the <b>Lifetime (ticks)</b> is 40: about two seconds at 18.2 ticks a second. When the time is up, the bubble is destroyed on its own, with no help from Mia.</li><li><b>A countdown you can see.</b> The big bubble's <b>When destroyed it becomes</b> is a smaller bubble, and that one's is a smaller one still, with quicker frames so it wobbles fast. Each lives 40 ticks, and each new one starts its clock afresh, so three stages add up to 120 ticks. The shrinking shows how long is left.</li><li><b>The clock.</b> A monster is born when its scene starts, so the lifetime counts from the start of the level, not from the moment Mia gets there. That is why the bubble is in view from the first moment: the whole countdown can be watched. Mia gets there in about a second and waits about five.</li><li><b>The sparkle.</b> The smallest bubble's <b>When destroyed it becomes</b> is the sparkle, a short-lived monster of its own, so the pop leaves a twinkle for half a second and then that is gone too.</li><li><b>Monsters that block.</b> Monsters are not solid unless their picture is. Open <b>here.mbl</b> in the blocks editor: the <b>Solid</b> boxes of every bubble picture (<b>bubble0</b>, <b>bubble1</b> and the smaller ones) are checked on every side, which holds the hero back, and they take no hit points. The bubble's power is 110, because a monster under 100 is also destroyed when the hero touches it.</li><li><b>The tunnel.</b> Open <b>one.map</b> in the map editor. It is two blocks high, the hero's own height, cut through a wall of brick that goes up to the top of the room, so there is no way over the bubble.</li><li><b>The signs.</b> Each sign is a few ordinary blocks side by side, with the words drawn in their pictures.</li></ul>"
+    },
+    {
+      "head": "Level 2: Wake Up",
+      "html": "<h1>Level 2: Wake Up</h1><p>The <b>THIS ONE WAKES UP AS ANOTHER</b> sign stands behind Mia, and <b>WATCH ITS EYES</b> ahead of her. In the tunnel sits a blue gumdrop with closed eyes and a little z. It is solid, just like the bubble.</p><p>This time the monster does not vanish. Its eyes show the time: first one eye peeks open, then it blinks fast with both, and about six and a half seconds after the level starts it wakes up and becomes a different monster: orange, eyes open, and not solid. It strolls back and forth a few blocks, and Mia can walk right through it.</p><p>There are six coins, two before the tunnel and four after it.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 2 is made</h1><ul><li><b>Becomes another.</b> Open <b>here.mon</b> and pick the sleeper. It lives <b>For a set time</b> (40 ticks), and its <b>When destroyed it becomes</b> is a sleeper with one eye peeking, which becomes one blinking fast, which becomes the awake one, instead of nothing. Each time a lifetime is up, the game puts the next one in the same place and starts it afresh.</li><li><b>A new start.</b> The awake one has its own picture, its own solid setting, its own path and its own lifetime. The sleeper's solid picture is swapped for a picture that is not solid, which is why the tunnel opens.</li><li><b>Stays.</b> The awake one's <b>Lives</b> is <b>Forever (indestructible)</b>, so it keeps strolling.</li><li><b>The stroll.</b> Its <b>Movement</b> path is three blocks to the right and back at a slow speed. It starts from where the sleeper was.</li><li><b>One clock.</b> Everything put on a map starts its clock when the level starts. A chain of monsters, one becoming the next, can run a whole little story that way, with no help from the hero.</li><li><b>The exit.</b> The last door links to the <b>The End</b> scene in <b>here.gam</b>, which plays the ending.</li></ul>"
+    },
+    {
+      "head": "What Game-Maker cannot do",
+      "html": "<h1>What Game-Maker cannot do</h1><p>A lifetime is a plain timer, and that is all it is:</p><ul><li>The clock cannot start on a trigger. A monster's lifetime starts when the monster is born, and monsters put on the map are born when the level starts. Mia arriving or touching something starts nothing. To start a timer later, give birth to the monster later, for example from a block.</li><li>Going out through a door and back into the same scene starts the level again, and every clock with it.</li><li>The time is a number of ticks, at most 32,767 (about half an hour). It is the same every time, with no randomness.</li><li>A monster that becomes another cannot pass anything along: the new one starts from its own settings, with its own picture, path and lifetime.</li></ul>"
+    },
+    {
+      "head": "Make it yours",
+      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>Change the big bubble's <b>Lifetime (ticks)</b> to 5. It shrinks almost at once. Try 300, and Mia waits a long while before the shrinking starts.</li><li>Change what the smallest bubble becomes to the awake one. Now the bubble turns into an orange gumdrop where it pops.</li><li>Make the awake one <b>Lives</b> <b>For a set time</b> too, and have it become the sleeper. They take turns forever.</li><li>Put a second sleeper a little further into the tunnel with a longer lifetime.</li><li>Make the awake one solid in the blocks editor, and see the way stay blocked.</li></ul><p>The home page's <b>Starters</b> tab has more small games like this one.</p>"
+    }
+  ]
+}

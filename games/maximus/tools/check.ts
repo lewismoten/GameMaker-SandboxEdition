@@ -12,6 +12,7 @@ import { reachable } from '../src/levels/mapkit';
 import { buildGame } from '../src/game';
 import { autoWalk, navigate, simFor, standStill } from './verify';
 import { misaligned } from './align';
+import { crossDeck, throughGate, visitDesk } from './gate';
 
 const only = process.argv.slice(2);
 const b = buildGame();
@@ -60,8 +61,22 @@ for (const info of b.scenes) {
   if (info.kind === 'home') {
     const sim = simFor(b, info, 1);
     await sim.run(5);
-    const r = await autoWalk(sim, 'right', 1500);
-    if (r.link !== 0) report.push(`${info.name}: the training deck bot did not reach the airlock (x ${r.x})`);
+    // the deck crosses by "hold right, hop when stuck" up to the pod bay, where the clearance gate is
+    if (!(await crossDeck(sim))) report.push(`${info.name}: the training deck bot did not reach the pod bay (x ${sim.pos.bx})`);
+    // a bot that never climbs walks into the bottom hatch (a wrong one: a joke page, not a wall)
+    const wrong = await autoWalk(sim, 'right', 600, { hop: false });
+    if (wrong.link !== 3 && wrong.link !== 4) report.push(`${info.name}: the bottom hatch was not a wrong one with a page of its own (link ${wrong.link})`);
+    // the right hatch, by the ledge, opens on to the airlock
+    const right = simFor(b, info, 1);
+    await right.run(5);
+    await crossDeck(right);
+    await throughGate(right);
+    if (right.link !== 0) report.push(`${info.name}: the right hatch did not lead to the airlock (link ${right.link}, x ${right.pos.bx})`);
+    // the clerk's window gives its form
+    const desk = simFor(b, info, 1);
+    await desk.run(5);
+    await crossDeck(desk);
+    if (!(await visitDesk(desk)) || ![1, 2].includes(desk.link)) report.push(`${info.name}: the clerk's window did not show its form (link ${desk.link})`);
   }
 }
 // the galaxy: which warps can the pod reach with which shards?

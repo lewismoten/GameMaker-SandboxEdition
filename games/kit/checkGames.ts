@@ -9,6 +9,8 @@
 //   text    kit/textfitCheck.ts      hidden  kit/hiddenView.ts      level  kit/levelCheck.ts
 //           (the Level check's static findings, new ones only, against levelCheck.baseline.json)
 //   player  kit/playerCheck.ts (games/<id>/player.json, its DOS player look, keeps the rules)
+//   pal     kit/palCheck.ts (no two .pal files in disk/ are byte-identical; the shared writer merges them)
+//   leap    kit/leapCheck.ts (no locked door or gate can be jumped over without its key)
 //   controls kit/controlsCheck.ts (games/<id>/controls.json describes exactly the keys, joystick buttons and counters the game uses)
 // then once: kit/tinHearts.ts check, kit/saveSignCheck.ts (one save sign per felt-egg game, none
 // elsewhere), kit/syncCheck.ts (levelSecrets.json and box hours) and kit/versionCheck.ts (a game
@@ -34,6 +36,10 @@ import { cpus, tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, readBounds } from '@lewismoten/gamemaker-sandbox-tools/kit/textBounds';
+import { pairsOfGame } from './colorCues';
+import { vocCuesOfGame } from './vocCues';
+import { hiddenMonstersOfGame } from './viewCheck';
+import { inkFlagged, textPurpleOfGame } from './textPurple';
 
 const gamesDir = join(dirname(fileURLToPath(import.meta.url)), '..');
 const webDir = join(gamesDir, '../web');
@@ -148,7 +154,7 @@ async function rebuild(id: string, log: string[]): Promise<Status> {
   }
 }
 
-const COLS = ['build', 'bounds', 'check', 'walk', 'text', 'hidden', 'level', 'player', 'controls'] as const;
+const COLS = ['build', 'bounds', 'check', 'walk', 'text', 'hidden', 'level', 'player', 'controls', 'leap', 'pal'] as const;
 type Row = Record<(typeof COLS)[number], Status> & { sec: number };
 const rows = new Map<string, Row>();
 const t0 = Date.now();
@@ -219,6 +225,8 @@ async function checkGame(id: string): Promise<void> {
     level: flag('--no-level') ? 'skip' : await step(log, 'level', '../games/kit/levelCheck.ts', [id]),
     player: has(id, 'player.json') ? await step(log, 'player', '../games/kit/playerCheck.ts', [id]) : 'skip',
     controls: has(id, 'controls.json') ? await step(log, 'controls', '../games/kit/controlsCheck.ts', [id]) : 'skip',
+    leap: await step(log, 'leap', '../games/kit/leapCheck.ts', [id]),
+    pal: await step(log, 'pal', '../games/kit/palCheck.ts', [id]),
     sec: 0,
   };
   row.sec = Math.round((Date.now() - t) / 1000) + (buildSec.get(id) ?? 0);
@@ -266,6 +274,47 @@ for (const id of games) {
   console.log(`${pad(id, 10)} ${COLS.map((c) => pad(r[c], 6)).join(' ')} ${String(r.sec).padStart(5)}s`);
 }
 console.log(`tin hearts: ${hearts}   save signs: ${signs}   levelSecrets and box hours: ${sync}   versions: ${versions}`);
+// Advisory, never a failure: pairs a player must tell apart that differ by hue alone (kit/colorCues.ts; `colorCuesCli.ts <id> --pairs` lists them).
+const cues = games.flatMap((id) => {
+  try {
+    const n = pairsOfGame(id).filter((p) => p.hueOnly).length;
+    return n ? [`${id} ${n}`] : [];
+  } catch {
+    return [];
+  }
+});
+console.log(`color cues (advisory): ${cues.length ? `hue-alone pairs in ${cues.join(', ')}` : 'none'}`);
+// Advisory, never a failure: sounds that may stall play on a slow PC, or replay on a block touched for several ticks (kit/vocCues.ts; estimates).
+const vocs = games.flatMap((id) => {
+  try {
+    const n = vocCuesOfGame(id).length;
+    return n ? [`${id} ${n}`] : [];
+  } catch {
+    return [];
+  }
+});
+console.log(`voc stutter (advisory): ${vocs.length ? `sounds that may stall slow PCs in ${vocs.join(', ')}` : 'none'}`);
+// Advisory, never a failure: monsters PLAYGAME skips drawing (and so can't hurt) because their map cell is in the screen's edge row or column while they are mostly in view (kit/viewCheck.ts; `viewCheckCli.ts <id>` lists them). It can't see a monster meant to hide.
+const hidden: string[] = [];
+for (const id of games) {
+  try {
+    const n = (await hiddenMonstersOfGame(id)).length;
+    if (n) hidden.push(`${id} ${n}`);
+  } catch {
+    // unreadable: nothing to say
+  }
+}
+console.log(`view edge (advisory): ${hidden.length ? `monsters hidden at the screen edge in ${hidden.join(', ')}` : 'none'}`);
+// Advisory, never a failure: text pages whose ink isn't PLAYGAME's purple because the palette lacks it, or, when the game's player.json chooses the color, reads under 4.5:1 (kit/textPurple.ts; `textPurpleCheck.ts <id>` lists them).
+const offPurple = games.flatMap((id) => {
+  try {
+    const n = textPurpleOfGame(id, gamesDir).filter(inkFlagged).length;
+    return n ? [`${id} ${n}`] : [];
+  } catch {
+    return [];
+  }
+});
+console.log(`text ink (advisory): ${offPurple.length ? `text pages to look at in ${offPurple.join(', ')}` : 'none'}`);
 const failed =
   [...rows.values()].filter((r) => COLS.some((c) => r[c] === 'FAIL')).length +
   (hearts === 'FAIL' ? 1 : 0) +

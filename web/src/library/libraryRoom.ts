@@ -1,9 +1,10 @@
 // The Library's room (libraryPage.ts), the page's main view: a small octagonal library drawn in SVG
 // (roomArt.ts). Every object is a real button, and each opens a dialog (libraryPage.ts): the stacks,
 // the card catalog, the copier, Mystery Robot Joe the librarian behind the circulation desk (help),
-// the composition notebook on the desk (ratings and notes of imported games here), the trash can
-// (removed games' records, which can be forgotten) and L-Space, a dim gap between two stacks that
-// leads somewhere else. The open drawer's items stand on the far wall as spines (buttons). Joe is
+// the toy box on the floor (every game's 3D-printable trinkets, toyBox.ts), the composition notebook on the desk (ratings and notes of imported games here), the trash can
+// (removed games' records, which can be forgotten), L-Space, a dim gap between two stacks that
+// leads somewhere else, and a folded note on the floor by the reading table, unlabeled, that holds
+// the only key to Sandscript, the Sandbox games' secret alphabet (sandNote.ts). The open drawer's items stand on the far wall as spines (buttons). Joe is
 // Keep It Brief!'s tin robot, drawn by tinHearts/joeArt.ts. On small windows the room is a row of
 // labeled buttons.
 import './libraryRoom.css';
@@ -12,11 +13,13 @@ import { drawJoe } from '../tinHearts/joeArt';
 import { removedGames } from '../imported/removedGames';
 import { aisle, ICONS, lspaceBox, svgOf, trashIcon } from './roomArt';
 import { pctX, pctY, proj } from './roomGeo';
+import { noteArt, showSandKey } from './sandNote';
+import { avCartArt } from './roomAvCart';
 import { catalogArt, copierArt, deskArt, DESK, place, spineBox, tableArt, stoolsArt, lampArt, cartArt, type Spot } from './roomObjects';
 
-export interface RoomActions {
+interface RoomActions {
   /** Takes the visitor to the shelves, the card catalog or the copier. */
-  go(where: 'stacks' | 'catalog' | 'copier' | 'lspace'): void;
+  go(where: 'stacks' | 'catalog' | 'copier' | 'toybox' | 'tv' | 'lspace'): void;
   /** The dialog now open (the address keeps it, so a reload opens it again), or none. */
   mark(name: string | undefined): void;
   /** What is on the shelves right now (the count line). */
@@ -77,7 +80,7 @@ function joeHelp(status: string, from: HTMLElement, mark: RoomActions['mark']): 
 }
 
 /** What the room needs to stand a spine on its far wall. */
-export interface RoomShelf {
+interface RoomShelf {
   items: HTMLElement[];
   /** The last spine: opens the whole list. */
   more(): HTMLElement;
@@ -135,6 +138,21 @@ export function makeRoom(actions: RoomActions): { el: HTMLElement; refresh(): vo
   const joe = thing('lib-o-joe', 'Joe', 'Mystery Robot Joe, the librarian: help with the library', joeCanvas(), (from) =>
     joeHelp(actions.status(), from, mark),
   );
+  const toybox = thing('lib-o-toybox', 'Toy box', 'Toy box: 3D-printable trinkets from every game', svgOf(ICONS.toybox), () => actions.go('toybox'));
+  const tvSpot = avCartArt();
+  const tv = thing('lib-o-tv', 'TV', 'TV: videos and walkthroughs', tvSpot.svg, () => actions.go('tv'));
+  box(tv, tvSpot);
+  // the note has no name tag: it is something to find
+  const note = thing('lib-o-note', '', 'A folded note on the floor, half under the reading table', noteArt(), (from) => {
+    mark('note');
+    void showSandKey().then(() => {
+      mark(undefined);
+      from.focus();
+    });
+  });
+  openers.set('note', () => note.click());
+  openers.set('toybox', () => toybox.click());
+  openers.set('tv', () => tv.click());
   openers.set('trash', () => trashBtn.click());
   openers.set('notebook', () => notebook.click());
   openers.set('joe', () => joe.click());
@@ -181,6 +199,8 @@ export function makeRoom(actions: RoomActions): { el: HTMLElement; refresh(): vo
   const [outX, outY] = proj(DESK.x + DESK.w / 2 + 0.35, 0, DESK.z + 0.85);
   joe.dataset.out = `${pctX(outX).toFixed(2)},${pctY(outY).toFixed(2)}`;
   place(trashBtn, DESK.x + 1.35, DESK.z - 0.05, 0.5);
+  place(toybox, 0.3, -2.62, 0.5);
+  place(note, -1.45, -0.08, 0.3);
   place(notebook, DESK.x - 0.35, DESK.z - 0.02, 0.42, DESK.h);
   const el = h(
     'section',
@@ -191,9 +211,12 @@ export function makeRoom(actions: RoomActions): { el: HTMLElement; refresh(): vo
     lspace,
     joe,
     table,
+    note,
     ...props,
     desk,
     notebook,
+    toybox,
+    tv,
     trashBtn,
     h('div', { class: 'lib-visitors', 'aria-hidden': 'true' }),
     catalog,

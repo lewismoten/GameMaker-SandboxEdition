@@ -78,6 +78,7 @@ export function linkMarkers(host: MarkersHost) {
   const place = (el: HTMLElement, at: Point, stack: number) => {
     const b = markerBox(host.point?.(at) ?? at, host.block(), stack);
     Object.assign(el.style, { left: `${b.left}px`, top: `${b.top}px`, width: `${b.size}px`, height: `${b.size}px` });
+    el.style.setProperty('--lk-size', `${b.size}px`);
   };
 
   /** Moves a marker's block: a way in's To, an exit's From. */
@@ -281,6 +282,13 @@ export function linkMarkers(host: MarkersHost) {
       const el = els.get(`out:${scene}:${link}`);
       el?.focus();
       if (el) void open(`out:${scene}:${link}`, el);
+    },
+    /** Whether the map has an exit to move. */
+    hasExit: () => marks.some((m) => m.kind === 'out'),
+    /** Moves the first exit's block to `at` (the long-press menu's "Use as the exit's place"). */
+    moveExit(at: Point): void {
+      const m = marks.find((x) => x.kind === 'out');
+      if (m) moveTo(m, at);
     },
     dispose(): void {
       off();

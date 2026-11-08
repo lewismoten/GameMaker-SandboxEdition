@@ -3,8 +3,10 @@
 import { toast } from '../editor/core/ui';
 import type { Disk } from '../retro/dos/disks';
 import type { DiskAction } from './disks/diskBox';
-import { loadCatalog, type CatalogEntry } from '../project/files';
+import { loadCatalog, loadGameList, type CatalogEntry } from '../project/files';
+import { missingDiskNote } from './missingDisk';
 import type { viewState } from '../urlState';
+import { hasRetailBox } from '../project/starter';
 
 /** What the address asked for when the desk was drawn. */
 interface Wanted {
@@ -42,7 +44,8 @@ export async function restoreDesk(wanted: Wanted, deskView: ReturnType<typeof vi
   const d = disk ? disks.find((x) => x.id === disk) : undefined;
   if (disk && !d) {
     deskView.set({ disk: undefined });
-    toast(disk.startsWith('project:') ? 'That disk holds a game made in another browser, so it isn’t in this disk box.' : 'That disk isn’t in the disk box.');
+    // says where that game really is (a Starter is on the Sample Disk or the CD), not just "not in the box"
+    if (run) toast(missingDiskNote(disk, await loadGameList().catch(() => [])));
   }
   if (d) await on.insert(d);
   if (run === 'play' && d?.gam) await on.onDisk(d, 'play');
@@ -57,7 +60,7 @@ export async function restoreDesk(wanted: Wanted, deskView: ReturnType<typeof vi
   else if (open === 'gm-box') void on.openGmBox();
   else if (open === 'gm-manual') void on.dosManual();
   else if (open?.startsWith('manual:')) {
-    const g = (await loadCatalog().catch(() => [])).find((x) => x.id === open.slice(7) && x.original?.manual);
+    const g = (await loadCatalog().catch(() => [])).find((x) => x.id === open.slice(7) && x.original?.manual && hasRetailBox(x));
     if (g) void on.gameManual(g);
   }
 }

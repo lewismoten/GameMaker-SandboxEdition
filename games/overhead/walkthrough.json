@@ -1,0 +1,140 @@
+{
+ "version": 1,
+ "game": "overhead",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "KVAM0AtNDM0LSAzIC0sMywtQBdADSAXIA0sAywM5ArkoTS7NKEgKyANLBcsDUA/QA00ZzQNID8gLUArQA00tzQNN"
+  },
+  {
+   "scene": 3,
+   "keys": "KUg="
+  },
+  {
+   "scene": 4,
+   "keys": "KVAK0ANLHssDTR7NA1A="
+  },
+  {
+   "scene": 3,
+   "keys": "KU0="
+  },
+  {
+   "scene": 6,
+   "keys": "AVAP0ANNGc0LSxnLA0g="
+  },
+  {
+   "scene": 5,
+   "keys": "KUsFywNIEMgoTQXNA0g="
+  },
+  {
+   "scene": 7,
+   "keys": "AVAF0ANLGcsDUAXQA00yzQNIGcgDUBnQA0sZywNQ"
+  },
+  {
+   "scene": 5,
+   "keys": "KUg="
+  },
+  {
+   "scene": 7,
+   "keys": "AU0="
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: The Room"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: The Four Roads (the meadow)"
+  },
+  {
+   "scene": 4,
+   "title": "Level 2: The Four Roads (the woods)"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: The Four Roads (the meadow)"
+  },
+  {
+   "scene": 6,
+   "title": "Level 2: The Four Roads (the pond)"
+  },
+  {
+   "scene": 5,
+   "title": "Level 2: The Four Roads (the village)"
+  },
+  {
+   "scene": 7,
+   "title": "Level 2: The Four Roads (the shop)"
+  },
+  {
+   "scene": 5,
+   "title": "Level 2: The Four Roads (the village)"
+  },
+  {
+   "scene": 7,
+   "title": "Level 2: The Four Roads (the shop)"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 10805,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 913,
+    "time": 15216.666666666471
+   },
+   {
+    "title": "Level 1: The Room",
+    "frame": 2142,
+    "time": 35700.00000000053
+   },
+   {
+    "title": "Level 2: The Four Roads (the meadow)",
+    "frame": 4158,
+    "time": 69299.99999999728
+   },
+   {
+    "title": "Level 2: The Four Roads (the woods)",
+    "frame": 4455,
+    "time": 74249.99999999872
+   },
+   {
+    "title": "Level 2: The Four Roads (the pond)",
+    "frame": 5325,
+    "time": 88750.00000000294
+   },
+   {
+    "title": "Level 2: The Four Roads (the village)",
+    "frame": 5810,
+    "time": 96833.33333333863
+   },
+   {
+    "title": "Level 2: The Four Roads (the shop)",
+    "frame": 6295,
+    "time": 104916.66666667431
+   },
+   {
+    "title": "Ending",
+    "frame": 7520,
+    "time": 125333.33333334692
+   },
+   {
+    "title": "Credits",
+    "frame": 9731,
+    "time": 162183.3333333305
+   }
+  ]
+ }
+}

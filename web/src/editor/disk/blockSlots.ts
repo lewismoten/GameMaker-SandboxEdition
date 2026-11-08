@@ -3,7 +3,7 @@
 import { BLOCK_SIZE, emptyBlock, parseBlocks, serializeBlocks, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 
 /** Both blank looks: opaque (background blocks) and transparent (sprites). */
-export function isBlank(b: Block, index: number): boolean {
+function isBlank(b: Block, index: number): boolean {
   const s = serializeBlocks([b]);
   return [false, true].some((t) => serializeBlocks([emptyBlock(index, t)]).every((v, i) => v === s[i]));
 }
@@ -11,7 +11,7 @@ export function isBlank(b: Block, index: number): boolean {
 export const readBlocks = (bytes: Uint8Array, count: number): Block[] => parseBlocks(bytes.subarray(0, count * BLOCK_SIZE), count);
 
 /** A block's bytes with its two "points at itself" links normalized, to find a twin elsewhere. */
-export function twinKey(b: Block, index: number): string | undefined {
+function twinKey(b: Block, index: number): string | undefined {
   if (b.nextBl !== index || b.touchBl !== index) return undefined;
   return serializeBlocks([{ ...b, nextBl: 0, touchBl: 0 }]).join(',');
 }

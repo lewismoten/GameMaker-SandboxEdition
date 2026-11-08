@@ -1,0 +1,364 @@
+status	old_addr	old_lin	old_size	new_addr	new_lin	new_size	norm_sim	method	confidence	name	string_hint
+constants	0000:0000	00000	289	0000:0000	00000	289	0.961	shape	high		
+constants	0000:0107	00107	32	0000:0107	00107	32	0.800	shape	high		
+identical	0000:0127	00127	47	0000:0127	00127	47	1.000	bytes	high		Divide error\r\nAbnormal program termination\r\n
+identical	0000:0142	00142	67	0000:0142	00142	67	1.000	bytes	high		
+identical	0000:0185	00185	45	0000:0185	00185	45	1.000	bytes	high		
+identical	0000:01B2	001B2	67	0000:01B2	001B2	67	1.000	bytes	high		
+identical	0000:01F5	001F5	8	0000:01F5	001F5	8	1.000	bytes	high		
+identical	0000:0217	00217	59	0000:0217	00217	59	1.000	bytes	high		
+relocated	0000:0252	00252	45	0000:0252	00252	45	1.000	norm	high		
+relocated	0000:027F	0027F	45	0000:027F	0027F	45	1.000	norm	high		
+relocated	0000:02AC	002AC	292	0000:02AC	002AC	292	1.000	norm	high		
+relocated	0000:03DE	003DE	28	0000:03DE	003DE	28	1.000	norm	high		
+relocated	0000:03FA	003FA	258	0000:03FA	003FA	258	1.000	norm	high		
+relocated	0000:04FC	004FC	331	0000:04FC	004FC	331	1.000	norm	high		
+relocated	0000:0648	00648	37	0000:0648	00648	37	1.000	norm	high		
+relocated	0000:066D	0066D	128	0000:066D	0066D	128	1.000	norm	high		
+relocated	0000:06ED	006ED	63	0000:06ED	006ED	63	1.000	norm	high		
+relocated	0000:072C	0072C	109	0000:072C	0072C	109	1.000	norm	high		
+relocated	0000:0799	00799	175	0000:0799	00799	175	1.000	norm	high		
+identical	0000:0848	00848	203	0000:0848	00848	203	1.000	bytes	high		
+identical	0000:0913	00913	165	0000:0913	00913	165	1.000	bytes	high		
+data-moved	0000:09B8	009B8	67	0000:09B8	009B8	67	0.967	shape	high		
+identical	0000:09FB	009FB	87	0000:09FB	009FB	87	1.000	bytes	high		
+identical	0000:0A52	00A52	63	0000:0A52	00A52	63	1.000	bytes	high		Unable to Save!
+identical	0000:0AB0	00AB0	196	0000:0AB0	00AB0	196	1.000	bytes	high		
+relocated	0000:0CAE	00CAE	204	0000:0CAE	00CAE	204	1.000	norm	high		
+identical	0000:0D7A	00D7A	205	0000:0D7A	00D7A	205	1.000	bytes	high		
+data-moved	0000:0E47	00E47	62	0000:0E47	00E47	62	0.913	shape	high		
+identical	0000:0E85	00E85	50	0000:0E85	00E85	50	1.000	bytes	high		
+identical	0000:0EB7	00EB7	57	0000:0EB7	00EB7	57	1.000	bytes	high		
+identical	0000:0EF0	00EF0	66	0000:0EF0	00EF0	66	1.000	bytes	high		
+identical	0000:0F32	00F32	243	0000:0F32	00F32	243	1.000	bytes	high		
+relocated	0000:1025	01025	144	0000:1025	01025	144	1.000	norm	high		
+identical	0000:10B5	010B5	132	0000:10B5	010B5	132	1.000	bytes	high		
+identical	0000:1139	01139	130	0000:1139	01139	130	1.000	bytes	high		
+identical	0000:11BB	011BB	80	0000:11BB	011BB	80	1.000	bytes	high		
+relocated	0000:120B	0120B	144	0000:120B	0120B	144	1.000	norm	high		
+identical	0000:129B	0129B	19	0000:129B	0129B	19	1.000	bytes	high		
+identical	0000:12AE	012AE	19	0000:12AE	012AE	19	1.000	bytes	high		
+relocated	0000:12C1	012C1	80	0000:12C1	012C1	80	1.000	norm	high		
+relocated	0000:1311	01311	87	0000:1311	01311	87	1.000	norm	high		
+relocated	0000:1368	01368	66	0000:1368	01368	66	1.000	norm	high		
+relocated	0000:13AA	013AA	207	0000:13AA	013AA	207	1.000	norm	high		
+relocated	0000:1479	01479	166	0000:1479	01479	166	1.000	norm	high		
+data-moved	0000:151F	0151F	27	0000:151F	0151F	27	0.929	shape	high		
+identical	0000:153A	0153A	30	0000:153A	0153A	30	1.000	bytes	high		
+data-moved	0000:1558	01558	344	0000:1558	01558	344	0.983	shape	high		
+data-moved	0000:16B0	016B0	23	0000:16B0	016B0	23	0.929	shape	high		
+relocated	0000:16C7	016C7	418	0000:16C7	016C7	418	1.000	norm	high		
+identical	0000:1869	01869	23	0000:1869	01869	23	1.000	bytes	high		
+relocated	0000:1880	01880	17	0000:1880	01880	17	1.000	norm	high		
+relocated	0000:1891	01891	38	0000:1891	01891	38	1.000	norm	high		
+relocated	0000:18B7	018B7	57	0000:18B7	018B7	57	1.000	norm	high		
+relocated	0000:18F0	018F0	52	0000:18F0	018F0	52	1.000	norm	high		
+relocated	0000:1924	01924	202	0000:1924	01924	202	1.000	norm	high		
+relocated	0000:19EE	019EE	62	0000:19EE	019EE	62	1.000	norm	high		
+relocated	0000:1A2C	01A2C	67	0000:1A2C	01A2C	67	1.000	norm	high		
+data-moved	0000:1AE8	01AE8	287	0000:1AE8	01AE8	287	0.979	shape	high		
+constants	0000:1C07	01C07	81	0000:1C07	01C07	81	0.949	shape	high		
+identical	0000:1C58	01C58	64	0000:1C58	01C58	64	1.000	bytes	high		
+relocated	0000:1C98	01C98	34	0000:1C98	01C98	34	1.000	norm	high		
+relocated	0000:1CBA	01CBA	33	0000:1CBA	01CBA	33	1.000	norm	high		
+identical	0000:1CDB	01CDB	64	0000:1CDB	01CDB	64	1.000	bytes	high		
+identical	0000:1D1B	01D1B	88	0000:1D1B	01D1B	88	1.000	bytes	high		
+identical	0000:1D73	01D73	52	0000:1D73	01D73	52	1.000	bytes	high		
+identical	0000:1DA7	01DA7	26	0000:1DA7	01DA7	26	1.000	bytes	high		
+relocated	0000:1DC1	01DC1	301	0000:1DC1	01DC1	301	1.000	norm	high		     Congratulations!
+relocated	0000:1EEE	01EEE	516	0000:1EEE	01EEE	516	1.000	norm	high		
+data-moved	0000:20F2	020F2	102	0000:20F2	020F2	102	0.947	strings	high		.$$$
+relocated	0000:2158	02158	71	0000:2158	02158	71	1.000	norm	high		
+identical	0000:219F	0219F	10	0000:219F	0219F	10	1.000	bytes	high		
+relocated	0000:21CB	021CB	300	0000:21CB	021CB	300	1.000	norm	high		
+data-moved	0000:22F9	022F9	58	0000:22F9	022F9	58	0.958	shape	high		
+data-moved	0000:2333	02333	58	0000:2333	02333	58	0.958	shape	high		
+identical	0000:236D	0236D	14	0000:236D	0236D	14	1.000	bytes	high		
+data-moved	0000:237B	0237B	117	0000:237B	0237B	117	0.984	shape	high		
+identical	0000:23F0	023F0	17	0000:23F0	023F0	17	1.000	bytes	high		
+identical	0000:2401	02401	37	0000:2401	02401	37	1.000	bytes	high		
+identical	0000:2426	02426	24	0000:2426	02426	24	1.000	bytes	high		
+identical	0000:243E	0243E	6	0000:243E	0243E	6	1.000	bytes	high		
+identical	0000:2444	02444	13	0000:2444	02444	13	1.000	bytes	high		
+identical	0000:2451	02451	29	0000:2451	02451	29	1.000	bytes	high		
+relocated	0000:246E	0246E	30	0000:246E	0246E	30	1.000	norm	high		
+identical	0000:248C	0248C	45	0000:248C	0248C	45	1.000	bytes	high		
+identical	0000:24B9	024B9	14	0000:24B9	024B9	14	1.000	bytes	high		
+identical	0000:24C7	024C7	132	0000:24C7	024C7	132	1.000	bytes	high		
+relocated	0000:2568	02568	219	0000:2568	02568	219	1.000	norm	high		COMPAQ
+identical	0000:2643	02643	60	0000:2643	02643	60	1.000	bytes	high		
+relocated	0000:267F	0267F	65	0000:267F	0267F	65	1.000	norm	high		
+relocated	0000:26C0	026C0	104	0000:26C0	026C0	104	1.000	norm	high		
+identical	0000:2728	02728	51	0000:2728	02728	51	1.000	bytes	high		
+identical	0000:275B	0275B	45	0000:275B	0275B	45	1.000	bytes	high		
+data-moved	0000:2788	02788	64	0000:2788	02788	64	0.963	shape	high		
+identical	0000:27C8	027C8	120	0000:27C8	027C8	120	1.000	bytes	high		
+identical	0000:2840	02840	23	0000:2840	02840	23	1.000	bytes	high		
+data-moved	0000:285A	0285A	230	0000:285A	0285A	230	0.988	shape	high		
+relocated	0000:294E	0294E	25	0000:294E	0294E	25	1.000	norm	high		
+relocated	0000:298E	0298E	28	0000:298E	0298E	28	1.000	norm	high		
+identical	0000:29AA	029AA	29	0000:29AA	029AA	29	1.000	bytes	high		
+relocated	0000:29C7	029C7	112	0000:29C7	029C7	112	1.000	norm	high		
+identical	0000:2A37	02A37	15	0000:2A37	02A37	15	1.000	bytes	high		
+identical	0000:2A46	02A46	17	0000:2A46	02A46	17	1.000	bytes	high		
+identical	0000:2A57	02A57	9	0000:2A57	02A57	9	1.000	bytes	high		
+identical	0000:2A60	02A60	11	0000:2A60	02A60	11	1.000	bytes	high		
+identical	0000:2A6B	02A6B	49	0000:2A6B	02A6B	49	1.000	bytes	high		
+identical	0000:2A9C	02A9C	153	0000:2A9C	02A9C	153	1.000	bytes	high		
+identical	0000:2B35	02B35	41	0000:2B35	02B35	41	1.000	bytes	high		
+relocated	0000:2B5E	02B5E	61	0000:2B5E	02B5E	61	1.000	norm	high		
+identical	0000:2B9B	02B9B	17	0000:2B9B	02B9B	17	1.000	bytes	high		
+relocated	0000:2BAC	02BAC	41	0000:2BAC	02BAC	41	1.000	norm	high		
+identical	0000:2BD5	02BD5	130	0000:2BD5	02BD5	130	1.000	bytes	high		
+identical	0000:2C57	02C57	47	0000:2C57	02C57	47	1.000	bytes	high		
+identical	0000:2C86	02C86	29	0000:2C86	02C86	29	1.000	bytes	high		
+identical	0000:2CA3	02CA3	42	0000:2CA3	02CA3	42	1.000	bytes	high		
+identical	0000:2CCD	02CCD	36	0000:2CCD	02CCD	36	1.000	bytes	high		
+identical	0000:2CF1	02CF1	36	0000:2CF1	02CF1	36	1.000	bytes	high		
+identical	0000:2D15	02D15	31	0000:2D15	02D15	31	1.000	bytes	high		
+identical	0000:2D34	02D34	27	0000:2D34	02D34	27	1.000	bytes	high		
+identical	0000:2D4F	02D4F	18	0000:2D4F	02D4F	18	1.000	bytes	high		
+relocated	0000:2D61	02D61	332	0000:2D61	02D61	332	1.000	norm	high		
+relocated	0000:2EAD	02EAD	78	0000:2EAD	02EAD	78	1.000	norm	high		
+relocated	0000:2EFB	02EFB	190	0000:2EFB	02EFB	190	1.000	norm	high		
+identical	0000:2FB9	02FB9	28	0000:2FB9	02FB9	28	1.000	bytes	high		
+identical	0000:2FD5	02FD5	24	0000:2FD5	02FD5	24	1.000	bytes	high		
+identical	0000:2FED	02FED	40	0000:2FED	02FED	40	1.000	bytes	high		
+identical	0000:3015	03015	295	0000:3015	03015	295	1.000	bytes	high		
+data-moved	0000:313C	0313C	416	0000:313C	0313C	416	0.911	strings	high		PATH
+identical	0000:32DC	032DC	18	0000:32DC	032DC	18	1.000	bytes	high		
+identical	0000:32EE	032EE	32	0000:32EE	032EE	32	1.000	bytes	high		
+identical	0000:330E	0330E	28	0000:330E	0330E	28	1.000	bytes	high		
+identical	0000:332A	0332A	21	0000:332A	0332A	21	1.000	bytes	high		
+identical	0000:333F	0333F	21	0000:333F	0333F	21	1.000	bytes	high		
+identical	0000:3354	03354	44	0000:3354	03354	44	1.000	bytes	high		
+identical	0000:3380	03380	7	0000:3380	03380	7	1.000	bytes	high		
+identical	0000:3387	03387	63	0000:3387	03387	63	1.000	bytes	high		
+identical	0000:33C6	033C6	48	0000:33C6	033C6	48	1.000	bytes	high		
+identical	0000:33F6	033F6	41	0000:33F6	033F6	41	1.000	bytes	high		
+identical	0000:341F	0341F	65	0000:341F	0341F	65	1.000	bytes	high		
+identical	0000:3460	03460	31	0000:3460	03460	31	1.000	bytes	high		
+identical	0000:347F	0347F	49	0000:347F	0347F	49	1.000	bytes	high		
+data-moved	0000:34B0	034B0	492	0000:34F4	034F4	492	0.989	shape	high		EST
+relocated	0000:369C	0369C	223	0000:36E0	036E0	223	1.000	norm	high		
+relocated	0000:377B	0377B	24	0000:37BF	037BF	24	1.000	norm	high		
+relocated	0000:37AB	037AB	193	0000:37EF	037EF	193	1.000	norm	high		
+identical	0000:37D2	037D2	10	0000:3816	03816	10	1.000	bytes	high		
+identical	0000:37DB	037DB	52	0000:381F	0381F	52	1.000	bytes	high		
+relocated	0000:3C7A	03C7A	38	0000:3CBE	03CBE	38	1.000	norm	high		
+relocated	0000:3CA0	03CA0	121	0000:3CE4	03CE4	121	1.000	norm	high		COPYRIGHTED and may be copied 
+relocated	0000:3D19	03D19	75	0000:3D5D	03D5D	75	1.000	norm	high		
+constants	0000:3ECB	03ECB	528	0000:3F0F	03F0F	528	0.986	shape	high		
+relocated	0000:40E7	040E7	98	0000:412B	0412B	98	1.000	norm	high		
+relocated	0000:4149	04149	113	0000:418D	0418D	113	1.000	norm	high		
+relocated	0000:41BA	041BA	41	0000:41FE	041FE	41	1.000	norm	high		Borland C++ - Copyright 1991 Borland Intl.
+relocated	0000:41E3	041E3	54	0000:4227	04227	54	1.000	norm	high		Borland C++ - Copyright 1991 Borland Intl.
+relocated	0000:4219	04219	41	0000:425D	0425D	41	1.000	norm	high		
+relocated	0000:4242	04242	97	0000:4286	04286	97	1.000	norm	high		
+relocated	0000:42A3	042A3	57	0000:42E7	042E7	57	1.000	norm	high		
+identical	0000:42DC	042DC	35	0000:4320	04320	35	1.000	bytes	high		
+relocated	0000:42FF	042FF	126	0000:4343	04343	126	1.000	norm	high		
+relocated	0000:4309	04309	125	0000:434D	0434D	125	1.000	norm	high		
+relocated	0000:4386	04386	122	0000:43CA	043CA	122	1.000	norm	high		
+relocated	0000:4400	04400	98	0000:4444	04444	98	1.000	norm	high		
+relocated	0000:4462	04462	111	0000:44A6	044A6	111	1.000	norm	high		
+relocated	0000:4469	04469	110	0000:44AD	044AD	110	1.000	norm	high		
+identical	0000:44D7	044D7	23	0000:451B	0451B	23	1.000	bytes	high		
+identical	0000:44EE	044EE	3	0000:4532	04532	3	1.000	callgraph	medium		
+identical	0000:44F1	044F1	149	0000:4535	04535	149	1.000	bytes	high		
+identical	0000:44F8	044F8	150	0000:453C	0453C	150	1.000	bytes	high		
+identical	0000:44FD	044FD	3	0000:4541	04541	3	1.000	callgraph	medium		
+identical	0000:4500	04500	150	0000:4544	04544	150	1.000	bytes	high		
+identical	0000:4508	04508	148	0000:454C	0454C	148	1.000	bytes	high		
+identical	0000:459C	0459C	77	0000:45E0	045E0	77	1.000	bytes	high		
+identical	0000:45FF	045FF	28	0000:4643	04643	28	1.000	bytes	high		
+identical	0000:461B	0461B	23	0000:465F	0465F	23	1.000	bytes	high		
+identical	0000:4632	04632	33	0000:4676	04676	33	1.000	bytes	high		
+relocated	0000:47D4	047D4	177	0000:4818	04818	177	1.000	norm	high		
+relocated	0000:4885	04885	36	0000:48C9	048C9	36	1.000	norm	high		
+relocated	0000:48A9	048A9	364	0000:48ED	048ED	364	1.000	norm	high		
+identical	04A1:0005	04A15	100	04A5:82EF	0CD3F	100	1.000	bytes	high		
+changed	04A1:0069	04A79	419	04A5:0009	04A59	524	0.806	callgraph	medium		ShowVideoMemory
+changed	04A1:020C	04C1C	486	04A5:0215	04C65	496	0.904	callgraph	medium		GMtitle.gif
+relocated	04A1:05AC	04FBC	434	04A5:05BF	0500F	434	1.000	norm	high		You are missing %s.gam!  I can't do anything with…
+constants	04A1:075E	0516E	173	04A5:0771	051C1	173	0.973	strings	high		Play
+changed	04A1:080B	0521B	450	04A5:081E	0526E	476	0.731	callgraph	medium		.txt
+data-moved	04A1:09CD	053DD	793	04A5:09FA	0544A	793	0.978	shape	high		
+data-moved	04A1:0CF2	05702	406	04A5:0D1F	0576F	406	0.977	shape	high		
+changed	04A1:0E9C	058AC	1524	04A5:0EC9	05919	1529	0.952	strings	high		.sav
+constants	04A1:1493	05EA3	349	04A5:14C2	05F12	349	0.917	strings	high		.sav
+changed	04A1:15F0	06000	529	04A5:161F	0606F	548	0.903	callgraph	medium		      G A M E - M A K E R
+data-moved	04A1:1801	06211	175	04A5:1843	06293	175	0.942	shape	high		gam\gmhelp.txt
+data-moved	04A1:18B0	062C0	707	04A5:18F2	06342	707	0.990	shape	high		Score:     %ld
+changed	04A1:1B73	06583	352	04A5:1BB5	06605	365	0.949	callgraph	medium		Missing File:
+data-moved	04A1:1CD3	066E3	757	04A5:1D22	06772	757	0.990	strings	high		This machine does not have a  
+relocated	04A1:1FC8	069D8	50	04A5:2017	06A67	50	1.000	norm	high		
+relocated	04A1:1FFA	06A0A	205	04A5:2049	06A99	205	1.000	norm	high		
+data-moved	04A1:20C7	06AD7	1034	04A5:2116	06B66	1034	0.988	strings	high		Choose object to drop
+relocated	04A1:24E3	06EF3	44	04A5:2532	06F82	44	1.000	norm	high		
+data-moved	04A1:250F	06F1F	270	04A5:255E	06FAE	270	0.979	shape	high		
+relocated	04A1:261D	0702D	89	04A5:266C	070BC	89	1.000	norm	high		
+relocated	04A1:2676	07086	471	04A5:26C5	07115	471	1.000	norm	high		
+relocated	04A1:284D	0725D	196	04A5:289C	072EC	196	1.000	norm	high		
+data-moved	04A1:2911	07321	500	04A5:2960	073B0	500	0.995	shape	high		
+changed	04A1:2B05	07515	1610	04A5:2B54	075A4	1570	0.947	callgraph	medium		
+relocated	04A1:314F	07B5F	100	04A5:3176	07BC6	100	1.000	norm	high		
+data-moved	04A1:31B3	07BC3	507	04A5:31DA	07C2A	507	0.995	shape	high		
+relocated	04A1:33AE	07DBE	122	04A5:33D5	07E25	122	1.000	norm	high		
+data-moved	04A1:342A	07E3A	435	04A5:3451	07EA1	435	0.994	shape	high		
+relocated	04A1:35DD	07FED	619	04A5:3604	08054	619	1.000	norm	high		
+relocated	04A1:3848	08258	625	04A5:386F	082BF	625	1.000	norm	high		OH NO!
+changed	04A1:3AB9	084C9	3460	04A5:3AE0	08530	4003	0.862	callgraph	medium		
+relocated	04A1:483D	0924D	901	04A5:4A83	094D3	901	1.000	norm	high		
+relocated	04A1:4BC2	095D2	54	04A5:4E08	09858	54	1.000	norm	high		
+relocated	04A1:4BF8	09608	465	04A5:4E3E	0988E	465	1.000	norm	high		
+relocated	04A1:4DC9	097D9	264	04A5:500F	09A5F	264	1.000	norm	high		
+relocated	04A1:4ED1	098E1	427	04A5:5117	09B67	427	1.000	norm	high		
+relocated	04A1:507C	09A8C	637	04A5:52C2	09D12	637	1.000	norm	high		
+relocated	04A1:52F9	09D09	53	04A5:553F	09F8F	53	1.000	norm	high		
+relocated	04A1:532E	09D3E	314	04A5:5574	09FC4	314	1.000	norm	high		
+constants	04A1:5338	09D48	304	04A5:557E	09FCE	304	0.992	shape	high		
+changed	04A1:5468	09E78	576	04A5:56AE	0A0FE	576	0.994	callgraph	medium		
+relocated	04A1:56A8	0A0B8	119	04A5:58EE	0A33E	119	1.000	norm	high		
+data-moved	04A1:571F	0A12F	241	04A5:5965	0A3B5	241	0.990	shape	high		
+relocated	04A1:5813	0A223	98	04A5:5A59	0A4A9	98	1.000	norm	high		
+relocated	04A1:5875	0A285	359	04A5:5ABB	0A50B	359	1.000	norm	high		
+relocated	04A1:59DC	0A3EC	336	04A5:5C22	0A672	336	1.000	norm	high		
+relocated	04A1:5B2C	0A53C	336	04A5:5D72	0A7C2	336	1.000	norm	high		
+relocated	04A1:5C7C	0A68C	416	04A5:5EC2	0A912	416	1.000	norm	high		
+data-moved	04A1:5E1C	0A82C	271	04A5:6062	0AAB2	271	0.990	shape	high		
+data-moved	04A1:5F2B	0A93B	441	04A5:6171	0ABC1	441	0.976	shape	high		
+data-moved	04A1:60E4	0AAF4	576	04A5:632A	0AD7A	576	0.972	shape	high		
+relocated	04A1:6324	0AD34	204	04A5:656A	0AFBA	204	1.000	norm	high		
+changed	04A1:63F0	0AE00	221	04A5:6636	0B086	240	0.596	callgraph	low		
+relocated	04A1:64CD	0AEDD	113	04A5:6726	0B176	113	1.000	norm	high		
+relocated	04A1:6725	0B135	320	04A5:697E	0B3CE	320	1.000	norm	high		
+relocated	04A1:6865	0B275	588	04A5:6ABE	0B50E	588	1.000	norm	high		You are missing %s.gam!  I can't do anything with…
+relocated	04A1:6AB1	0B4C1	102	04A5:6D0A	0B75A	102	1.000	norm	high		
+data-moved	04A1:6B17	0B527	145	04A5:6D70	0B7C0	145	0.982	shape	high		
+data-moved	04A1:6BA8	0B5B8	145	04A5:6E01	0B851	145	0.965	shape	high		You are missing %s.gam!  I can't do anything with…
+relocated	04A1:6C39	0B649	415	04A5:6E92	0B8E2	415	1.000	norm	high		
+data-moved	04A1:6DD8	0B7E8	491	04A5:7031	0BA81	491	0.944	strings	high		map\
+changed	04A1:6FC3	0B9D3	118	04A5:721C	0BC6C	114	0.941	callgraph	medium		
+changed	04A1:7039	0BA49	116	04A5:728E	0BCDE	112	0.941	callgraph	medium		
+data-moved	04A1:70AD	0BABD	132	04A5:72FE	0BD4E	132	0.940	shape	high		
+data-moved	04A1:7131	0BB41	111	04A5:7382	0BDD2	111	0.981	shape	high		
+data-moved	04A1:71A0	0BBB0	176	04A5:73F1	0BE41	176	0.968	shape	high		
+data-moved	04A1:7250	0BC60	456	04A5:74A1	0BEF1	456	0.994	shape	high		
+relocated	04A1:76F3	0C103	63	04A5:7944	0C394	63	1.000	norm	high		
+relocated	04A1:7732	0C142	202	04A5:7983	0C3D3	202	1.000	norm	high		
+changed	04A1:77FC	0C20C	125	04A5:7A4D	0C49D	138	0.911	callgraph	medium		
+identical	04A1:7879	0C289	14	04A5:7AD7	0C527	14	1.000	bytes	high		
+identical	04A1:7887	0C297	14	04A5:7AE5	0C535	14	1.000	bytes	high		
+relocated	04A1:7895	0C2A5	39	04A5:7AF3	0C543	39	1.000	norm	high		
+identical	04A1:78BC	0C2CC	23	04A5:7B1A	0C56A	23	1.000	bytes	high		
+identical	04A1:78D3	0C2E3	23	04A5:7B31	0C581	23	1.000	bytes	high		
+relocated	04A1:78EA	0C2FA	139	04A5:7B48	0C598	139	1.000	norm	high		
+changed	04A1:7975	0C385	1666	04A5:7BD3	0C623	1686	0.927	callgraph	medium		
+changed	0CA0:0007	0CA07	79	0CDA:0003	0CDA3	149	0.463	callgraph	low		
+relocated	0CA0:0056	0CA56	84	0CDA:0098	0CE38	84	1.000	norm	high		
+changed	0CA0:00AA	0CAAA	59	0CDA:00EC	0CE8C	83	0.815	callgraph	medium		
+changed	0CA0:00E5	0CAE5	74	0CDA:013F	0CEDF	86	0.833	callgraph	medium		
+changed	0CA0:012F	0CB2F	157	0CDA:0195	0CF35	177	0.905	callgraph	medium		
+relocated	0CA0:01CC	0CBCC	57	0CDA:0246	0CFE6	57	1.000	norm	high		
+relocated	0CA0:0207	0CC07	41	0CDA:0281	0D021	41	1.000	norm	high		
+changed	0CC3:0000	0CC30	2602	0D04:000A	0D04A	2509	0.951	strings	high		                              
+changed	0CC3:0339	0CF69	1897	0D04:0BD3	0DC13	1814	0.939	callgraph	medium		(R)eenter name (E)xit
+changed	0CC3:0D95	0D9C5	288	0D04:0D1B	0DD5B	291	0.971	strings	high		%s*.*
+constants	0CC3:0EB5	0DAE5	216	0D04:0E3E	0DE7E	216	0.989	shape	high		
+relocated	0CC3:0FE0	0DC10	168	0D04:0F69	0DFA9	168	1.000	norm	high		
+changed	0CC3:1088	0DCB8	561	0D04:1011	0E051	567	0.651	callgraph	low		
+changed	0CC3:12B9	0DEE9	602	0D04:1248	0E288	538	0.867	callgraph	medium		
+changed	0CC3:1513	0E143	568	0D04:1462	0E4A2	534	0.924	callgraph	medium		
+relocated	0CC3:1815	0E445	95	0D04:1734	0E774	95	1.000	norm	high		
+relocated	0CC3:1874	0E4A4	59	0D04:1793	0E7D3	59	1.000	norm	high		
+constants	0CC3:18AF	0E4DF	84	0D04:17CE	0E80E	82	0.949	shape	high		
+changed	0CC3:1903	0E533	196	0D04:1820	0E860	178	0.968	callgraph	medium		
+changed	0CC3:19C7	0E5F7	173	0D04:18D2	0E912	176	0.922	strings	high		Can't Find file!
+changed	0CC3:1A74	0E6A4	447	0D04:1982	0E9C2	453	0.910	strings	high		(C)ontinue save    (D)o not save
+changed	0CC3:1C33	0E863	160	0D04:1B47	0EB87	163	0.952	strings	high		Are you sure you want to delete %s
+relocated	0CC3:1CD5	0E905	60	0D04:1BEC	0EC2C	60	1.000	norm	high		%s%s
+data-moved	0E94:0003	0E943	44	0EC6:000A	0EC6A	44	0.889	shape	high		
+identical	0E94:002F	0E96F	140	0EC6:0036	0EC96	140	1.000	bytes	high		
+relocated	0E94:00BB	0E9FB	78	0EC6:00C2	0ED22	78	1.000	norm	high		
+relocated	0E94:0109	0EA49	398	0EC6:0110	0ED70	398	1.000	norm	high		
+identical	0E94:0297	0EBD7	27	0EC6:029E	0EEFE	27	1.000	bytes	high		
+identical	0E94:02B2	0EBF2	27	0EC6:02B9	0EF19	27	1.000	bytes	high		
+data-moved	0E94:02CD	0EC0D	185	0EC6:02D4	0EF34	185	0.986	shape	high		
+relocated	0E94:04CE	0EE0E	66	0EC6:038D	0EFED	66	1.000	norm	high		
+relocated	0E94:0510	0EE50	153	0EC6:03CF	0F02F	153	1.000	norm	high		
+relocated	0E94:05A9	0EEE9	288	0EC6:0468	0F0C8	288	1.000	norm	high		
+changed	0E94:0A94	0F3D4	70	0EC6:0588	0F1E8	139	0.741	callgraph	medium		
+changed	0E94:0ADA	0F41A	70	0EC6:0613	0F273	139	0.741	callgraph	medium		
+data-moved	0E94:0B20	0F460	110	0EC6:069E	0F2FE	110	0.977	shape	high		
+identical	0E94:0B8E	0F4CE	36	0EC6:070C	0F36C	36	1.000	bytes	high		
+relocated	0E94:0BB2	0F4F2	102	0EC6:0730	0F390	102	1.000	norm	high		
+changed	0E94:0C18	0F558	131	0EC6:0796	0F3F6	138	0.585	callgraph	low		
+data-moved	0E94:0C9B	0F5DB	49	0EC6:0820	0F480	49	0.955	callgraph	medium		
+data-moved	0E94:0CCC	0F60C	49	0EC6:0851	0F4B1	49	0.955	callgraph	medium		
+changed	0F63:000D	0F63D	533	0F4E:0002	0F4E2	542	0.918	strings	high		(R)eturn to Menu
+relocated	0F63:0222	0F852	461	0F4E:0220	0F700	461	1.000	norm	high		
+relocated	0F63:03EF	0FA1F	91	0F4E:03ED	0F8CD	91	1.000	norm	high		Extension!
+relocated	0F63:044A	0FA7A	199	0F4E:0448	0F928	199	1.000	norm	high		
+relocated	0F63:0511	0FB41	105	0F4E:050F	0F9EF	105	1.000	norm	high		
+relocated	0F63:057A	0FBAA	209	0F4E:0578	0FA58	209	1.000	norm	high		
+relocated	0F63:064B	0FC7B	383	0F4E:0649	0FB29	383	1.000	norm	high		
+relocated	0F63:07D8	0FE08	135	0F4E:07D6	0FCB6	135	1.000	norm	high		
+relocated	0F63:085F	0FE8F	41	0F4E:085D	0FD3D	41	1.000	norm	high		
+changed	0F63:0888	0FEB8	467	0F4E:0886	0FD66	476	0.917	callgraph	medium		.bkd
+data-moved	0F63:0A5B	1008B	148	0F4E:0A62	0FF42	148	0.960	shape	high		You are missing %s.gam!  I can't do anything with…
+identical	1011:000F	1011F	227	0FFD:0006	0FFD6	227	1.000	bytes	high		
+relocated	1011:00F2	10202	741	0FFD:00E9	100B9	741	1.000	norm	high		
+identical	1011:03D7	104E7	49	0FFD:03CE	1039E	49	1.000	bytes	high		COPYRIGHTED and may be copied 
+identical	1011:0408	10518	228	0FFD:03FF	103CF	228	1.000	bytes	high		COPYRIGHTED and may be copied 
+identical	1011:04EC	105FC	314	0FFD:04E3	104B3	314	1.000	bytes	high		
+changed	1073:0008	10738	225	105E:000F	105EF	259	0.531	callgraph	low		Standard
+changed	1073:00E9	10819	186	105E:0126	10706	121	0.449	callgraph	low		No super Vga card detected! Assuming standard vga…
+changed	1073:01A3	108D3	135	105E:0317	108F7	92	0.614	strings	high		VGA=
+changed	1073:022A	1095A	58	105E:0373	10953	99	0.710	callgraph	medium		Trident 8800 VGA chip detected!\n
+changed	1073:0264	10994	149	105E:02B8	10898	95	0.667	similarity	low		Tseng Super VGA chip detected!\n
+changed	1073:02F9	10A29	122	105E:0425	10A05	69	0.493	similarity	low		ATI Super VGA chip Detected!\n
+changed	1073:0373	10AA3	93	105E:0480	10A60	89	0.892	callgraph	medium		
+changed	1073:03D0	10B00	266	105E:04D9	10AB9	279	0.945	callgraph	medium		
+relocated	1073:04DA	10C0A	287	105E:05F0	10BD0	287	1.000	norm	high		
+identical	1073:05F9	10D29	27	105E:070F	10CEF	27	1.000	bytes	high		COPYRIGHTED and may be copied 
+changed	10D4:0004	10D44	851	10D0:000A	10D0A	854	0.972	callgraph	medium		.his
+relocated	1109:0007	11097	733	1106:0000	11060	733	1.000	norm	high		
+data-moved	1109:02E4	11374	83	1106:02DD	1133D	83	0.968	callgraph	medium		gamemake.opt
+data-moved	1109:0337	113C7	83	1106:0330	11390	83	0.968	callgraph	medium		gamemake.opt
+relocated	1109:038A	1141A	126	1106:0383	113E3	126	1.000	norm	high		joysetup.exe
+relocated	1109:0408	11498	43	1106:0401	11461	43	1.000	norm	high		
+identical	114C:0004	114C4	95	1148:000C	1148C	95	1.000	bytes	high		
+identical	1152:0004	11524	33	114E:000C	114EC	33	1.000	bytes	high		
+identical	1152:0025	11545	55	114E:002D	1150D	55	1.000	bytes	high		COPYRIGHTED and may be copied 
+relocated	1157:000C	1157C	96	1154:0004	11544	96	1.000	norm	high		
+identical	1157:006C	115DC	102	1154:0064	115A4	102	1.000	bytes	high		
+identical	1157:00D2	11642	91	1154:00CA	1160A	91	1.000	bytes	high		
+identical	1157:012D	1169D	93	1154:0125	11665	93	1.000	bytes	high		
+changed	1157:01A4	11714	359	1154:019C	116DC	337	0.808	callgraph	medium		
+identical	1157:030B	1187B	56	1154:02ED	1182D	56	1.000	bytes	high		
+identical	1157:0343	118B3	79	1154:0325	11865	79	1.000	bytes	high		
+identical	1157:0392	11902	71	1154:0374	118B4	71	1.000	bytes	high		
+identical	1157:03DA	1194A	38	1154:03BC	118FC	38	1.000	bytes	high		
+relocated	1197:0015	11985	101	1192:0017	11937	101	1.000	norm	high	_Point	You are missing %s.gam!  I can't do anything with…
+changed	1197:007C	119EC	212	1192:007E	1199E	220	0.913	callgraph	medium		You are missing %s.gam!  I can't do anything with…
+changed	1197:0154	11AC4	212	1192:015E	11A7E	220	0.922	callgraph	medium		You are missing %s.gam!  I can't do anything with…
+relocated	1197:022C	11B9C	86	1192:023E	11B5E	86	1.000	norm	high		You are missing %s.gam!  I can't do anything with…
+relocated	1197:0283	11BF3	102	1192:0295	11BB5	102	1.000	norm	high		You are missing %s.gam!  I can't do anything with…
+changed	1197:02EE	11C5E	200	1192:0300	11C20	208	0.890	callgraph	medium	_SetPage	
+changed	1197:03BC	11D2C	60	1192:03D6	11CF6	71	0.933	callgraph	medium	_SetTridentStart	
+identical	1197:03F8	11D68	31	1192:041D	11D3D	31	1.000	bytes	high	_SetTrident	
+identical	1197:0417	11D87	33	1192:043C	11D5C	33	1.000	bytes	high	_Gwritestr	
+identical	1197:0438	11DA8	70	1192:045D	11D7D	70	1.000	bytes	high	_BoxFill	You are missing %s.gam!  I can't do anything with…
+removed	0000:3EDB	03EDB	512								
+removed	0E94:0386	0ECC6	169								COPYRIGHTED and may be copied 
+removed	0E94:042F	0ED6F	159								
+removed	0E94:06C9	0F009	971								
+added				0000:34B0	034B0	68					
+added				04A5:8269	0CCB9	105					
+added				04A5:82D2	0CD22	29					
+added				0D04:02BF	0D2FF	1816					(R)eenter name (E)xit
+added				0D04:0AE9	0DB29	1814					(R)eenter name (E)xit
+added				105E:019F	1077F	265					761295520
+added				105E:03D6	109B6	79					Game-Maker software, documen- 
+added				105E:046A	10A4A	22					

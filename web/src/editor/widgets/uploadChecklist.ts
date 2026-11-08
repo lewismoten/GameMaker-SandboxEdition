@@ -16,7 +16,7 @@ import { guideLink } from './guideLink';
 import { unlockAchievement } from '../../achievements';
 
 /** One line of Appendix B, and the checks that can speak for it. */
-export interface ChecklistItem {
+interface ChecklistItem {
   text: string;
   checks: CheckId[];
   /** The checks cover all of it (else the designer ticks it once they agree). */
@@ -60,7 +60,7 @@ export const APPENDIX_B: ChecklistItem[] = [
   },
   {
     text: 'Nothing shown can’t be used: no doors or links that lead nowhere, no prizes out of reach, none your own shots destroy',
-    checks: ['fake-exit', 'prize-in-view', 'shot-prize', 'link-shadow', 'start-on-link', 'link-corner', 'link-solid', 'off-map'],
+    checks: ['fake-exit', 'hidden-exit', 'prize-in-view', 'shot-prize', 'link-shadow', 'start-on-link', 'link-corner', 'link-solid', 'off-map'],
     play: true,
     full: true,
   },
@@ -85,7 +85,7 @@ export const APPENDIX_B: ChecklistItem[] = [
   },
   { text: 'Nothing flashes faster than three times a second', checks: ['flashing'] },
   { text: 'The title screen shows the game you’ll play', checks: [] },
-  { text: 'Frequent sounds are short; no voice line is cut off; music fits', checks: ['sounds', 'music', 'voc-missing', 'voc-size'] },
+  { text: 'Frequent sounds are short; no voice line is cut off; music fits', checks: ['sounds', 'music', 'voc-missing', 'voc-size', 'voc-stutter'] },
   { text: 'Storyline, instructions, credits, won and lost screens are filled in', checks: ['ending'], full: true },
   {
     text: 'The first scene’s hero sets the starting hit points, lives and counters for every hero; every hero has a standing picture',
@@ -208,7 +208,7 @@ export async function uploadChecklist(project: Project): Promise<void> {
       ),
       h(
         'ol',
-        { class: 'upl-list' },
+        { class: 'upl-list', 'data-list-area': 'checklist' },
         ...APPENDIX_B.map((item, i) => {
           const st = itemState(item, findings, played);
           const auto = st.kind === 'clear' && item.full;

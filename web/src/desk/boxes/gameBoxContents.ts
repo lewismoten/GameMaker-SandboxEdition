@@ -14,6 +14,7 @@ import { floppyElement, disksIn } from '../disks/diskBox';
 import { printContext } from './printContext';
 import { boxList } from './boxList';
 import { manualCover } from '../../manual/printables/manualCover';
+import { trinketShelf } from './trinketShelf';
 import '../../manual/booklet.css';
 
 let disks: Promise<Disk[]> | undefined;
@@ -68,12 +69,21 @@ export function sandboxBoxContents(entry: CatalogEntry, _front: string | undefin
     : null;
 
   // the printed pieces, as the manual's box lists them
-  const items = printContext(entry).then((ctx) => (ctx ? boxItems(ctx) : []));
+  // the paper, then the feelies' words and files (manual/printables/feelieItems.ts, loaded with the list)
+  const items = Promise.all([
+    printContext(entry).then((ctx) => (ctx ? boxItems(ctx) : [])),
+    import('../../manual/printables/feelieItems').then((m) => m.feelieItems(entry.id)).catch(() => []),
+  ]).then(([paper, feelies]) => [...paper, ...feelies]);
 
   return h(
     'div',
     { class: 'box-contents' },
     h('div', { class: 'bc-left' }, diskSet, manual),
+    trinketShelf(
+      entry.id,
+      items.then((all) => all.filter((i) => i.feelie)),
+      open,
+    ),
     entry.original?.manual ? boxList({ label: `What’s in the ${entry.title} box`, items, open, class: 'bc-list' }) : null,
   );
 }

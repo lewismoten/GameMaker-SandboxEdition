@@ -36,7 +36,7 @@ const roundTrip = (ext: string, parse: (b: Uint8Array) => Uint8Array) => {
         const out = parse(bytes);
         // Short files (older .snd without digital names, a trimmed .cbl) are written at full size.
         expect(out.length, f).toBeGreaterThanOrEqual(bytes.length);
-        expect(out.subarray(0, bytes.length), f).toEqual(bytes);
+        expect(Buffer.compare(out.subarray(0, bytes.length), bytes) === 0, f).toBe(true); // toEqual on big arrays is slow
         expect(
           out.subarray(bytes.length).every((v) => v === 0),
           f,

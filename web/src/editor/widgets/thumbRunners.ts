@@ -12,7 +12,7 @@ import { GameFiles } from '../../project/files';
 import { audio } from './mediaShared';
 import { soundAuditions } from './soundAuditions';
 
-export interface PreviewContext {
+interface PreviewContext {
   box: HTMLElement;
   file: string;
   project: Project;

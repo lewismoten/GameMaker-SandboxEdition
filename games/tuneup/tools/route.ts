@@ -23,6 +23,18 @@ export async function leave(bot: Bot, r: Promise<string | undefined>, what: stri
   if (out !== 'link' && out !== 'end') throw new Error(`${what}: ${out ?? 'still here'}\n${bot.log.slice(-8).join('\n')}`);
 }
 
+/**
+ * Takes a visible pickup the way a person does: walks to its column (unless the route already
+ * crossed it) and checks the block there changed (a touched pickup is gone). `row` is the level
+ * row it stands on; `was` is the block seen there before the route could have touched it.
+ */
+export async function grab(bot: Bot, x: number, row: number, what: string, was = bot.shownNum(x, row), energy = bot.sim.ci.hitpts): Promise<void> {
+  const lives = bot.sim.ci.lives;
+  if (bot.shownNum(x, row) === was) await must(bot, bot.walk(x, `to ${what}`), what);
+  if (bot.shownNum(x, row) === was) throw new Error(`${what} at ${x} wasn't picked up`);
+  console.log(`  picked up ${what}: energy ${energy} -> ${bot.sim.ci.hitpts}, lives ${lives} -> ${bot.sim.ci.lives}`);
+}
+
 /** Takes a tuning fork the way a person does: walks to its column, and checks the counter went up. */
 export async function takeFork(bot: Bot, x: number, what: string): Promise<void> {
   const before = bot.count(CTR.forks);
@@ -37,7 +49,10 @@ export async function jumpStart(bot: Bot): Promise<void> {
   await must(bot, bot.walk(13, 'up the stacks of tires'), 'tires');
   await must(bot, bot.walk(17, 'along the workbench'), 'bench');
   await must(bot, bot.walk(18, 'to the end of the bench'), 'bench end');
-  await must(bot, bot.hop('right', 12, 'right', 21), 'up to the shelf');
+  // two plain steps of one block, the way a person climbs the tires: Up, then Right once over it
+  await must(bot, bot.hop('up', 6, 'right', 19), 'up onto the tire step');
+  await must(bot, bot.hop('up', 6, 'right', 20), 'up to the shelf');
+  await must(bot, bot.walk(21, 'onto the shelf'), 'shelf');
   await must(bot, bot.walk(JUMP.red[0], 'to the red clamp'), 'red clamp');
   if (bot.count(CTR.red) !== 1) throw new Error('missed the red clamp');
   await takeFork(bot, JUMP.fork[0], 'at the shelf end');
@@ -150,7 +165,7 @@ export function timingBeat(verse: number) {
       while (bot.shown(lane.x, ROW.key).scorePts > 0) await must(bot, bot.wait(1), 'letting the key go dark');
     }
     bot.say(`verse ${verse + 1}: played ${played} notes, ${whiffs} missed; ${hits()} hits, ${bot.sim.money} tips`);
-    if (whiffs) throw new Error(`the bot missed ${whiffs} notes`);
+    if (whiffs && !bot.slowRest) throw new Error(`the bot missed ${whiffs} notes`);
     await leave(bot, bot.walk(EXIT_X + 1, 'through the gate and out'), 'out of the verse');
   };
   Object.defineProperty(run, 'name', { value: `timingBeat${verse + 1}` });

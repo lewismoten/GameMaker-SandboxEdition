@@ -61,7 +61,8 @@ game, that game's music and its sound effects:
 | `dos`: DOS Game-Maker                          | `dos.html`                                     | Professor Fiddlesticks, Quest for the Round Tuit (snooty-wiz)                          | Round Tuit's menu         |
 
 Home presses each collection's tab in turn (Imported's ratings, notes, Show and Sort by when it
-has games; the import tile when it has none; what shareware was), and puts the visitor's own
+has games, then its Import history and Recently deleted buttons when they show; the import tile when it has none;
+the Starters tab and its How do I…? button; what shareware was), and puts the visitor's own
 tab, and the collection it remembered, back at the end (the chapter's `keep`). The Guide chapter
 opens the Owner's Guide (a page turned) and The Ultimate Owner's Guide and shuts them again. The
 Settings chapter opens the menu to show each item and shuts it again, and starts nothing
@@ -87,7 +88,7 @@ while a tour plays (`achievements/store.ts`).
 
 The editor's thirteen sub-chapters follow the overview and look inside Ohm Sweet Ohm the same way (read-only,
 in memory, each `always` at its own address, with `go` to its next file): getting around (the
-file list and its filter, Game assets, Used by, Undo, the map's zoom, the Play Level menu, the
+file list and its filter, Game assets with its group headings and each card's used-by line, Used by, Undo, the map's zoom, the Play Level menu, the
 shortcuts and where help is), the map editor (side tabs, the paint, Select, Terrain and Stamp
 tools, grid, wrap, exit and way-in markers, Find and Replace), the block editors (picker, name,
 paint tools, mirror, palette and its preview, behavior tabs, groups, then the character
@@ -155,7 +156,7 @@ as a plain tour (pointer and buttons back).
   step's id, action (enter, walk, point, press, say, exit), target, bubble, caption, sound,
   duration, whether a press really clicks (only where harmless) and whether it is optional; the
   hosts, props, sounds and music the tour may use, and the bubble and caption limits.
-- `chapters/`: one file per chapter (above), `targets.ts` (the header's links and the Settings
+- [`chapters/`](chapters/README.md): one file per chapter (above), `targets.ts` (the header's links and the Settings
   menu's items, which more than one chapter points at) and `index.ts`, the whole tour in order with
   the chapters still to write.
 - `lines.ts`: every line as `{ id, chapter, where, speaker, text }` (`tourLines()`, no DOM) for the
@@ -194,3 +195,5 @@ its page's controls in `tourData.test.ts` `SOURCES`. A new host is a sprite in
 Sandbox games' own. Check what each control really does before describing it, and play it with `npm run tour:check -- <chapter>` (`scripts/README.md`): it reports each step's control found or missing at 1440 and 390, light and dark, with axe. A page outside
 today's web needs the ? button in its own header (the desk's and the DOS page's have it), and a
 `pageHere` for its address; one outside `index.html` names its `file`.
+
+- `whatsNew.ts`: the steps with a `since` day (steps.ts) newer than the visitor's last visit (localStorage `gm-tour-seen`, this browser only), at most 8, newest first. Data only; no menu entry yet (design: .for-lewis/research/tour/2026-11-05-whats-new.md).

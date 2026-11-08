@@ -6,6 +6,7 @@ import { h } from '../../editor/core/ui';
 import { designCanvas, isDesign, loadDesign, type MugDesignId } from './mugArt';
 import { MUG_SIZES, printPlacement, type MugSize } from './mugSizes';
 import { MUG_COLORS, drawMug, wrapAngle, wrapCanvas, type MugColors } from './mug3d';
+import { deskLifetime } from '../lifetime';
 
 export interface MugChoice {
   design: MugDesignId;
@@ -46,10 +47,10 @@ const W = 90;
 const H = 150;
 
 const PENCILS = `<g stroke="#1a1a1a" stroke-width="0.6">
-  <g transform="rotate(-14 30 70)"><rect x="24" y="8" width="7" height="70" fill="#f2c200"/><polygon points="24,8 31,8 27.5,0" fill="#e8c9a0"/><polygon points="26.5,2.5 28.5,2.5 27.5,0" fill="#333"/><rect x="24" y="72" width="7" height="6" fill="#d33"/></g>
-  <g transform="rotate(8 50 70)"><rect x="46" y="4" width="6" height="74" fill="#1f4fbf"/><rect x="46" y="4" width="6" height="12" fill="#e9e9e9"/><rect x="51" y="8" width="1.6" height="16" fill="#c0c0c0"/></g>
-  <g transform="rotate(-3 40 70)"><rect x="37" y="14" width="6" height="64" fill="#c22"/><rect x="37" y="14" width="6" height="8" fill="#222"/></g>
-  <g transform="rotate(18 62 70)"><rect x="58" y="12" width="7" height="66" fill="#2c8a3c"/><polygon points="58,12 65,12 61.5,4" fill="#e8c9a0"/><polygon points="60.5,6.5 62.5,6.5 61.5,4" fill="#333"/></g>
+  <g transform="rotate(-14 30 70)"><rect x="24" y="8" width="7" height="84" fill="#f2c200"/><polygon points="24,8 31,8 27.5,0" fill="#e8c9a0"/><polygon points="26.5,2.5 28.5,2.5 27.5,0" fill="#333"/><rect x="24" y="86" width="7" height="6" fill="#d33"/></g>
+  <g transform="rotate(8 50 70)"><rect x="46" y="4" width="6" height="88" fill="#1f4fbf"/><rect x="46" y="4" width="6" height="12" fill="#e9e9e9"/><rect x="51" y="8" width="1.6" height="16" fill="#c0c0c0"/></g>
+  <g transform="rotate(-3 40 70)"><rect x="37" y="14" width="6" height="78" fill="#c22"/><rect x="37" y="14" width="6" height="8" fill="#222"/></g>
+  <g transform="rotate(18 62 70)"><rect x="58" y="12" width="7" height="80" fill="#2c8a3c"/><polygon points="58,12 65,12 61.5,4" fill="#e8c9a0"/><polygon points="60.5,6.5 62.5,6.5 61.5,4" fill="#333"/></g>
 </g>`;
 
 /** The mug as it stands on the desk: handle round to the right, a little behind. */
@@ -102,7 +103,7 @@ export function deskMug(open: () => void): HTMLElement {
   // a game's picture comes from its files: paint again once it's here
   void loadDesign(loadMug().design).then(() => el.isConnected && paint());
   const changed = () => (el.isConnected ? paint() : window.removeEventListener(CHANGED, changed));
-  window.addEventListener(CHANGED, changed);
+  window.addEventListener(CHANGED, changed, { signal: deskLifetime() });
   el.addEventListener('click', open);
   el.addEventListener('keydown', (e) => (e.key === 'Enter' || e.key === ' ') && (e.preventDefault(), open()));
   return el;

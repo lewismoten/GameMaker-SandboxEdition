@@ -1,0 +1,36 @@
+/* The Privacy page (#/privacy). */
+
+main.privacy-page {
+  max-width: 46rem;
+  margin: 0 auto;
+  padding: 24px 16px 64px;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+
+main.privacy-page h1 {
+  margin: 0 0 8px;
+  font-size: clamp(26px, 4vw, 34px);
+}
+
+main.privacy-page .lead {
+  margin: 0 0 24px;
+  font-size: 17px;
+}
+
+main.privacy-page .privacy-back {
+  margin: 0 0 12px;
+}
+
+main.privacy-page section {
+  margin: 0 0 28px;
+}
+
+main.privacy-page h2 {
+  margin: 0 0 8px;
+  font-size: 21px;
+}
+
+main.privacy-page li {
+  margin: 0 0 6px;
+}

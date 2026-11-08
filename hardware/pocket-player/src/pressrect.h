@@ -1,0 +1,152 @@
+// Which button a touch is on, and the press state machine behind "act on release", with no board code in it
+// (host/librarytest.cpp checks both). A button shows a yellow frame on touch-down and acts when the finger lifts
+// on the same button; sliding off cancels, so a brush or a drag never presses anything.
+#pragma once
+#include <stdint.h>
+#include "overlaydraw.h"
+#include "picker.h"
+#include "settingsdraw.h"
+namespace prs {
+struct Rect {
+  int x0, y0, x1, y1;  // x1 and y1 are one past the last pixel
+  Rect(int a = 0, int b = 0, int c = 0, int d = 0) : x0(a), y0(b), x1(c), y1(d) {}
+  bool has(int x, int y, int slack = 0) const { return x >= x0 - slack && x < x1 + slack && y >= y0 - slack && y < y1 + slack; }
+};
+enum Screen : uint8_t { SC_PICKER, SC_DETAILS, SC_DISPLAY, SC_SETTINGS, SC_PAUSE };
+// What the screen shows right now (the board's main.cpp fills it in).
+struct Ctx {
+  Screen screen = SC_PICKER;
+  int W = 480, H = 320, titleH = 40;
+  bool back = true, prev = false, next = false, action = false;  // library: which controls are live
+  int tiles = 0;                                                // library: tiles on this page
+  st::View settings;     // settings: the tab and page showing
+  int displayRows = 1;  // display options: 1 or 2 buttons
+  int pages = 0;        // details: the game's own pages (picker.h detailsPageSpan mask)
+};
+inline Rect tileRect(int W, int i) {
+  bool s = W == 320;
+  Rect r;
+  r.x0 = (s ? 12 : 16) + i % 3 * (s ? 100 : 152);
+  r.y0 = (s ? 36 : 40) + i / 3 * (s ? 84 : 120);
+  r.x1 = r.x0 + (s ? 96 : 144);
+  r.y1 = r.y0 + (s ? 80 : 112);
+  return r;
+}
+// The button under (x, y), or false. Only live controls count.
+inline bool under(const Ctx& c, int x, int y, Rect& r) {
+  const int W = c.W, H = c.H;
+  switch (c.screen) {
+    case SC_PICKER: {
+      int f = W == 320 ? 208 : 280;
+      if (y < 32) {
+        if (x >= W - 32) r = {W - 32, 0, W, 32};
+        else if (x >= W - 64) r = {W - 64, 0, W - 32, 32};
+        else if (x < 32 && c.back) r = {0, 0, 32, 32};
+        else return false;
+      } else if (y >= f) {
+        if (x < 48 && c.prev) r = {0, f, 48, H};
+        else if (x >= 50 && x < 98 && c.next) r = {50, f, 98, H};
+        else if (x >= W - 100 && c.action) r = {W - 100, f, W, H};
+        else return false;
+      } else {
+        for (int i = 0; i < c.tiles; i++) {
+          r = tileRect(W, i);
+          if (r.has(x, y)) return true;
+        }
+        return false;
+      }
+      return r.has(x, y);
+    }
+    case SC_DETAILS: {  // Title, Story, Instructions (picker_draw.h detailsPages), then Back, Favorite, Play (detailsFooter)
+      int k = pk::detailsPageAt(W, H, c.pages, x, y), x0, x1;
+      if (k >= 0 && pk::detailsPageSpan(W, c.pages, k, x0, x1)) {
+        r = {x0, pk::detailsPagesTop(H), x1, pk::detailsPagesBottom(H)};
+        return true;
+      }
+    }
+      if (y < H - 38) return false;
+      r = x < W / 3 ? Rect{0, H - 38, W / 3 - 2, H} : x < 2 * W / 3 ? Rect{W / 3, H - 38, 2 * W / 3 - 2, H} : Rect{2 * W / 3, H - 38, W, H};
+      return r.has(x, y);
+    case SC_DISPLAY:
+      if (y >= H - 38) r = {6, H - 38, 100, H - 2};
+      else if (y >= c.titleH + 12 && y < c.titleH + 52) r = {6, c.titleH + 12, W - 6, c.titleH + 52};
+      else if (c.displayRows > 1 && y >= c.titleH + 60 && y < c.titleH + 100) r = {6, c.titleH + 60, W - 6, c.titleH + 100};
+      else return false;
+      return r.has(x, y);
+    case SC_SETTINGS: {  // Back, the tabs, the chips and More (settingsdraw.h); the pad preview is not a button
+      st::Hit h = st::hit(c.settings, x, y);
+      if (h.kind == st::K_NONE || h.kind == st::K_PREVIEW) return false;
+      r = {h.box.x0, h.box.y0, h.box.x1, h.box.y1};
+      return true;
+    }
+    case SC_PAUSE: {
+      int i = ovl::pauseHit(x, y);
+      if (i < 0) return false;
+      ovl::pauseCell(i, r.x0, r.y0, r.x1, r.y1);
+      return true;
+    }
+  }
+  return false;
+}
+// ---- the press itself ----
+enum Ev : uint8_t { NONE, PRESS, CANCEL, ACT };
+constexpr uint32_t MIN_SHOW_MS = 80;  // a pressed button stays drawn at least this long, however short the tap
+constexpr uint32_t REPEAT_DELAY_MS = 400, REPEAT_EVERY_MS = 125;  // hold a page arrow or Backspace: after 400 ms, 8 per second
+constexpr int SLACK = 8;              // the finger may drift this far outside the button
+struct Press {
+  bool down = false, shown = false, ignore = false;
+  bool repeatable = false, fired = false;  // the held button repeats; once it has, lifting is no further tap
+  uint32_t nextRep = 0;
+  Rect r;
+  int dx = 0, dy = 0;
+  uint32_t at = 0;
+  // A finger already down when a screen opens (the one that opened it) presses nothing: call this then.
+  void screenChanged(bool touching) { shown = false; down = touching; ignore = touching; }
+  // `lookup(x, y, Rect&)` finds the button under a new touch. Call once per loop with the current touch.
+  template <class F> Ev update(uint32_t now, bool touching, int x, int y, F lookup) {
+    if (!touching) {
+      bool act = down && shown && !fired;
+      down = shown = ignore = fired = repeatable = false;
+      return act ? ACT : NONE;
+    }
+    if (!down) {
+      down = true;
+      dx = x;
+      dy = y;
+      at = now;
+      fired = repeatable = false;
+      shown = lookup(x, y, r);
+      return shown ? PRESS : NONE;
+    }
+    if (shown && !r.has(x, y, SLACK)) {
+      shown = false;
+      return CANCEL;
+    }
+    return NONE;
+  }
+  // The caller says a just-pressed button repeats (a page arrow, Backspace).
+  void makeRepeatable() { repeatable = true; nextRep = at + REPEAT_DELAY_MS; }
+  // True once for each repeat that is due while the finger stays on the button (the first after REPEAT_DELAY_MS, then every REPEAT_EVERY_MS).
+  bool repeatDue(uint32_t now) {
+    if (!down || !shown || !repeatable || now < nextRep) return false;
+    fired = true;
+    nextRep = now - nextRep > REPEAT_EVERY_MS ? now + REPEAT_EVERY_MS : nextRep + REPEAT_EVERY_MS;
+    return true;
+  }
+  uint32_t showLeft(uint32_t now) const { uint32_t t = now - at; return t < MIN_SHOW_MS ? MIN_SHOW_MS - t : 0; }
+};
+// The pause menu's pressed look: the whole button yellow with its label in black (the same button, drawn hot).
+template <class G> void drawPausePressed(G& g, int i) {
+  if (i == ovl::PA_STAR) { ovl::pauseStar(g, false, true); return; }
+  int x0, y0, x1, y1;
+  ovl::pauseCell(i, x0, y0, x1, y1);
+  ovl::button(g, x0, y0, x1, y1, ovl::pauseItem(i), true, ovl::C_DARK, ovl::PAUSE.textSize);
+}
+// The pressed look of the other buttons: a thick yellow frame inside the button (their labels and pictures stay readable).
+template <class G> void drawPressed(G& g, const Rect& r) {
+  const uint16_t Y = 0xFF2A;
+  int w = r.x1 - r.x0, h = r.y1 - r.y0;
+  for (int i = 0; i < 3; i++) g.drawRoundRect(r.x0 + i, r.y0 + i, w - 2 * i, h - 2 * i, 6, Y);
+  g.drawRect(r.x0 + 3, r.y0 + 3, w - 6, h - 6, 0);
+}
+}  // namespace prs

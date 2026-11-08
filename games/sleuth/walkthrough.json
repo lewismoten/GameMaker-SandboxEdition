@@ -1,79 +1,97 @@
 {
- "version": 1,
- "game": "sleuth",
- "rand": {
-  "seed": 7,
-  "per": "game"
- },
- "hold": 15,
- "segments": [
-  {
-   "scene": 2,
-   "keys": "AVAE0AFLEMsBUATQAUtAywFIBMgBSAjIAU0EzQFICMgBTQTNAVAM0AFLEMsBOQK5CE0IzQFQCNABTRTNAUgQyAFNCM0BSATIAU0EzQFIDMgBSyTLAUg8yAFNCM0BSATIAUgUyAFLBMsBSBzIAUgIyAFNcM0BSATIAUgMyAFNBM0BOQK5CCwCrBBQCNABSwTLAVAM0AFNNM0BUATQAVAI0AFNBM0BUAjQAUsIywE5ArkITQzNATkCuQhIDMgBSwTLAUgMyAFLGMsBSALIBkgKyAFNCM0BOQK5CFAE0AFLCMsBUAjQAUs0ywFIEkgMyAFLDMsBSATIAUsBSAzIAUsEywFIBMgBSwFIDUgMyAFNBM0BSATIAU0BSAzIAU0MzQFIBMgBTQFICMgBSxVIBMgBSwzLAVABTQVQBVAE0AFLCMsBUAjQAUsNUATQAUsVSATIAUsMywFQAU0FUAVQBNABSwjLAVAI0AFLDUgIyAFNEUgEyAFLDMsBUAFNBVAFUATQAUsIywFQCNABSw1QBNABTRFIBMgBSwzLAVABTQVQBVAE0AFLCMsBUAjQAUsNUAjQAU0FSATIAUsMywFQAU0FUAVQBNABSwjLAVAI0AFLDVAM0AFLFU1MzQFIEMgBTQTNATkCuQhQCNABSwTLAVAI0AFLGMsBSBTIAUgByANNBM0BSAHIA0gByANNBM0BSAHIA0gByANIAcgDTQTNAUgCyAQ5ArkIUA7QAUsMywFQCNABS5ABywFQCNABUCzQAU0EzQFQBNABUBDQAU1MzQFQNNABTTTNAVAQ0AFNDM0BTRjNATkCuQhLHMsBUBDQAU0EzQFNHM0BOQK5CEsgywFIFMgBSwjLAUgEyAFLLMsBSALIBE0IzQFIAsgESxTLAUgCyARIAsgETTjNAUgMyAFNJM0BSDDIAUskywFIBMgBSATIAU0IzQFNMM0BSAjIAU0UzQFQENABSwTLAVAI0AFNGM0BUAjQAU0QzQFIBMgBTRDNAUgcyAFNMM0BOQK5CEsEywFQCNABSwTLAVAU0AFLNMsBUATQAUsUywFICMgBSxjLAUgIyAFNBM0BSBDIAUsQywFIDMgBSwTLAUsMywFIIMgBSwjLAUgEyAFLBMsBSAjIAUtIywFIEkgMyAFLFMsBSAFIDMgBSxDLAUgBSAzIAUsMywFIAUgMyAFLCMsBSAFIDMgBSwTLAUgBSA1IDMgBTQTNAUgBSAzIAU0IzQFIAUgMyAFNDM0BSAFICMgBSxVIBMgBSwzLAVABTQVQBVAE0AFLCMsBUAjQAUsNUATQAUsVSATIAUsMywFQAU0FUAVQBNABSwjLAVAI0AFLDUgIyAFNEUgEyAFLDMsBUAFNBVAFUATQAUsIywFQCNABSw1QBNABTRFIBMgBSwzLAVABTQVQBVAE0AFLCMsBUAjQAUsNUAjQAU0FSATIAUsMywFQAU0FUAVQBNABSwjLAVAI0AFLDVAM0AFLFUgFSATIAUsYywFIAUgEyAFNFM0BSA=="
-  }
- ],
- "chapters": [
-  {
-   "scene": 2,
-   "title": "Act One: The Paragon Theatre"
+  "version": 1,
+  "game": "sleuth",
+  "rand": {
+    "seed": 7,
+    "per": "game"
   },
-  {
-   "scene": 4,
-   "title": "The Green Room, Midnight"
-  },
-  {
-   "scene": 3,
-   "title": "Act Two: The Theater at Night"
-  },
-  {
-   "scene": 11,
-   "title": "The Green Room, 2 AM"
-  },
-  {
-   "scene": 62,
-   "title": "Dawn: The Accusation"
-  }
- ],
- "timeline": {
-  "fps": 60,
-  "frames": 107971,
+  "hold": 15,
+  "segments": [
+    {
+      "scene": 77,
+      "keys": "KUsQywFIH0scywFIH1AM0AFLFVAE0AFLEMsBUATQAUtAywFIBMgBSAjIAU0EzQFICMgBTQTNAVAM0AFLEMsBOQK5CE0IzQFQCNABTRTNAUgQyAFNCM0BSATIAU0EzQFIDMgBSyTLAUg8yAFNCM0BSATIAUgUyAFLBMsBSBzIAUgIyAFNcM0BSATIAUgMyAFNBM0BOQK5CCwCrBBQCNABSwTLAVAM0AFNNM0BUATQAVAI0AFNBM0BUAjQAUsIywE5ArkITQzNATkCuQhIDMgBSwTLAUgMyAFLGMsBSALIBkgKyAFNCM0BOQK5CFAE0AFLCMsBUAjQAUs0ywFIEkgMyAFLDMsBSATIAUsBSAzIAUsEywFIBMgBSwFIDUgMyAFNBM0BSATIAU0BSAzIAU0MzQFIBMgBTQFICMgBSxVIBMgBSwzLAVABTQVQBVAE0AFLCMsBUAjQAUsNUATQAUsVSATIAUsMywFQAU0FUAVQBNABSwjLAVAI0AFLDUgIyAFNEUgEyAFLDMsBUAFNBVAFUATQAUsIywFQCNABSw1QBNABTRFIBMgBSwzLAVABTQVQBVAE0AFLCMsBUAjQAUsNUAjQAU0FSATIAUsMywFQAU0FUAVQBNABSwjLAVAI0AFLDVAM0AFLFU1MzQFIEMgBTQTNATkCuQhQCNABSwTLAVAI0AFLGMsBSBTIAUgByANNBM0BSAHIA0gByANNBM0BSAHIA0gByANIAcgDTQTNAUgCyAQ5ArkIUA7QAUsMywFQCNABS5ABywFQCNABUCzQAU0EzQFQBNABUBDQAU1MzQFQNNABTTTNAVAQ0AFNDM0BTRjNATkCuQhLHMsBUBDQAU0EzQFNHM0BOQK5CEsgywFIFMgBSwjLAUgEyAFLLMsBSALIBE0IzQFIAsgESxTLAUgCyARIAsgETTjNAUgMyAFNJM0BSDDIAUskywFIBMgBSATIAU0IzQFNMM0BSAjIAU0UzQFQENABSwTLAVAI0AFNGM0BUAjQAU0QzQFIBMgBTRDNAUgcyAFNMM0BOQK5CEsEywFQCNABSwTLAVAU0AFLNMsBUATQAUsUywFICMgBSxjLAUgIyAFNBM0BSBDIAUsQywFIDMgBSwTLAUsMywFIIMgBSwjLAUgEyAFLBMsBSAjIAUtIywFIEkgMyAFLFMsBSAFIDMgBSxDLAUgBSAzIAUsMywFIAUgMyAFLCMsBSAFIDMgBSwTLAUgBSA1IDMgBTQTNAUgBSAzIAU0IzQFIAUgMyAFNDM0BSAFICMgBSxVIBMgBSwzLAVABTQVQBVAE0AFLCMsBUAjQAUsNUATQAUsVSATIAUsMywFQAU0FUAVQBNABSwjLAVAI0AFLDUgIyAFNEUgEyAFLDMsBUAFNBVAFUATQAUsIywFQCNABSw1QBNABTRFIBMgBSwzLAVABTQVQBVAE0AFLCMsBUAjQAUsNUAjQAU0FSATIAUsMywFQAU0FUAVQBNABSwjLAVAI0AFLDVAM0AFLFUgFSATIAUsYywFIAUgEyAFNFM0BSA=="
+    }
+  ],
   "chapters": [
-   {
-    "title": "Opening",
-    "frame": 0
-   },
-   {
-    "title": "Story",
-    "frame": 1507
-   },
-   {
-    "title": "Act One: The Paragon Theatre",
-    "frame": 5707
-   },
-   {
-    "title": "The Green Room, Midnight",
-    "frame": 9792
-   },
-   {
-    "title": "Act Two: The Theater at Night",
-    "frame": 43007
-   },
-   {
-    "title": "The Green Room, 2 AM",
-    "frame": 55267
-   },
-   {
-    "title": "Dawn: The Accusation",
-    "frame": 93776
-   },
-   {
-    "title": "Ending",
-    "frame": 98205
-   },
-   {
-    "title": "Credits",
-    "frame": 104259
-   }
-  ]
- }
+    {
+      "scene": 77,
+      "title": "The Stage Door"
+    },
+    {
+      "scene": 2,
+      "title": "Act One: The Paragon Theatre"
+    },
+    {
+      "scene": 4,
+      "title": "The Green Room, Midnight"
+    },
+    {
+      "scene": 3,
+      "title": "Act Two: The Theater at Night"
+    },
+    {
+      "scene": 11,
+      "title": "The Green Room, 2 AM"
+    },
+    {
+      "scene": 62,
+      "title": "Dawn: The Accusation"
+    }
+  ],
+  "timeline": {
+    "fps": 60,
+    "frames": 112674,
+    "chapters": [
+      {
+        "title": "Opening",
+        "frame": 0,
+        "time": 0
+      },
+      {
+        "title": "Story",
+        "frame": 1507,
+        "time": 25116.666666667064
+      },
+      {
+        "title": "The Stage Door",
+        "frame": 5707,
+        "time": 95116.66666667146
+      },
+      {
+        "title": "Act One: The Paragon Theatre",
+        "frame": 10414,
+        "time": 173566.6666666572
+      },
+      {
+        "title": "The Green Room, Midnight",
+        "frame": 14500,
+        "time": 241666.66666661756
+      },
+      {
+        "title": "Act Two: The Theater at Night",
+        "frame": 47714,
+        "time": 795233.3333329466
+      },
+      {
+        "title": "The Green Room, 2 AM",
+        "frame": 59974,
+        "time": 999566.6666658042
+      },
+      {
+        "title": "Dawn: The Accusation",
+        "frame": 98479,
+        "time": 1641316.6666684502
+      },
+      {
+        "title": "Ending",
+        "frame": 102908,
+        "time": 1715133.3333354606
+      },
+      {
+        "title": "Credits",
+        "frame": 108962,
+        "time": 1816033.3333359305
+      }
+    ]
+  }
 }

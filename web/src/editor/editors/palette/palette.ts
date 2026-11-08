@@ -14,6 +14,11 @@ import { fitToPane } from '../../core/fitPane';
 import { PALETTE_RESERVATIONS, paletteReservations, reservationAt, type PaletteReservation } from './paletteReservations';
 import { paletteReservationFields, ROLE_LABELS } from './paletteReservationFields';
 import { detectPaletteRoles } from './paletteRoleDetect';
+import { alikeTo, previewViews } from '../../colorHelp/alike';
+import { paletteColorName } from '../../colorHelp/colorNames';
+import { colorHelpControl } from '../../colorHelp/colorHelpControl';
+import { getColorHelp, onColorHelp } from '../../colorHelp/colorHelpPrefs';
+import { simulatePalette } from '@lewismoten/gamemaker-sandbox-engine/gfx/colorVision';
 import './palette.css';
 
 registerEditor(['pal'], (host, project, file) => {
@@ -96,6 +101,8 @@ registerEditor(['pal'], (host, project, file) => {
   let backgrounds: { el: HTMLElement; refresh(): void } | undefined;
   let disposed = false;
   const label = h('div', { class: 'meta' });
+  const seenRow = h('div', { class: 'seen-row', role: 'group', 'aria-label': 'The selected color as others might see it' });
+  const alikeNote = h('p', { class: 'alike-note', role: 'status' });
   const sliders = ['Red', 'Green', 'Blue'].map((name, c) => {
     const range = h('input', { type: 'range', min: 0, max: 63, step: 1, 'aria-label': name, style: 'flex:1;min-width:0' });
     const num = h('input', { type: 'number', min: 0, max: 63, 'aria-label': `${name} (0 to 63)`, style: 'width:64px' });
@@ -156,11 +163,48 @@ registerEditor(['pal'], (host, project, file) => {
       const role = reservationAt(roles, i);
       if (role) b.dataset.reservation = role;
       else delete b.dataset.reservation;
-      const name = `Color ${i}${role === 'menu' ? ': the background color' : role ? `: reserved for ${ROLE_LABELS[role].toLowerCase()}` : roles.length ? ': global' : ''}`;
+      // one outline round each reserved range: a side is drawn only where the next cell is outside it
+      const out = (n: number | undefined) => n === undefined || reservationAt(roles, n) !== role;
+      const col = i % 16;
+      b.style.boxShadow = role
+        ? [
+            out(i >= 16 ? i - 16 : undefined) && 'inset 0 3px 0 0 var(--res)',
+            out(i < 240 ? i + 16 : undefined) && 'inset 0 -3px 0 0 var(--res)',
+            out(col ? i - 1 : undefined) && 'inset 3px 0 0 0 var(--res)',
+            out(col < 15 ? i + 1 : undefined) && 'inset -3px 0 0 0 var(--res)',
+          ]
+            .filter(Boolean)
+            .join(', ')
+        : '';
+      const cname = getColorHelp().names ? `: ${paletteColorName(pal, i)}` : '';
+      const name = `Color ${i}${cname}${role === 'menu' ? ': the background color' : role ? `: reserved for ${ROLE_LABELS[role].toLowerCase()}` : roles.length ? ': global' : ''}`;
       b.setAttribute('aria-label', name);
       b.title = name;
     });
     preview.style.background = paletteCss(pal, selected);
+    // Color help: swatches that look like the selected one, and the color as others might see it
+    const help = getColorHelp();
+    const alike = alikeTo(pal, selected, help.warn);
+    buttons.forEach((b, i) => (alike.includes(i) ? (b.dataset.alike = '1') : delete b.dataset.alike));
+    alike.forEach((i) => buttons[i].setAttribute('aria-label', `${buttons[i].getAttribute('aria-label')}; may look like color ${selected} to some eyes`));
+    alikeNote.hidden = !alike.length;
+    alikeNote.textContent = alike.length
+      ? `Color ${selected} may look like ${alike.length} other ${alike.length === 1 ? 'color' : 'colors'} to some eyes (dashed outlines): ${alike.slice(0, 6).join(', ')}${alike.length > 6 ? ', ...' : ''}.`
+      : '';
+    const views = previewViews(help.preview);
+    seenRow.hidden = views.length < 2;
+    clear(
+      seenRow,
+      ...views.map((v) => {
+        const p = v.vision ? simulatePalette(pal, v.vision) : pal;
+        return h(
+          'figure',
+          { class: 'seen-view' },
+          h('div', { class: 'seen-chip', style: `background:${paletteCss(p, selected)}`, role: 'img', 'aria-label': `${v.label} view` }),
+          h('figcaption', null, v.label),
+        );
+      }),
+    );
     if (!backgroundPane.hidden) backgrounds?.refresh();
     colorBox.refresh();
     view.set({ color: selected });
@@ -176,6 +220,7 @@ registerEditor(['pal'], (host, project, file) => {
     clear(
       label,
       h('strong', null, `Color ${selected}${rangeEnd !== undefined ? ` to ${rangeEnd}` : ''}`),
+      help.names && rangeEnd === undefined ? h('span', null, ` · ${paletteColorName(pal, selected)}`) : null,
       h('br'),
       h('span', { style: 'font-family:ui-monospace,monospace' }, hex),
       selected === 255 ? h('span', null, ' · see-through in monster and character blocks') : null,
@@ -253,7 +298,10 @@ registerEditor(['pal'], (host, project, file) => {
     'div',
     { class: 'stack', id: 'pal-pane-edit', role: 'tabpanel', 'aria-labelledby': 'pal-tab-edit' },
     h('div', { class: 'row', style: 'align-items:center' }, preview, label),
+    seenRow,
+    alikeNote,
     colorBox.el,
+    colorHelpControl(),
     ...sliders.map((s) => s.row),
     h(
       'div',
@@ -419,7 +467,7 @@ registerEditor(['pal'], (host, project, file) => {
     h(
       'p',
       { class: 'hint' },
-      'Click a color to edit it. Shift-click a second color to select a range, then “Spread” to blend between them. Color 255 is drawn as transparent in monster and character blocks. Color 0 is drawn as menu ',
+      'DOS has 256 colors, and each of red, green and blue goes from 0 to 63 (the VGA palette), so a value outside that is held at 0 or 63. Click a color to edit it. Shift-click a second color to select a range, then “Spread” to blend between them. Color 255 is drawn as transparent in monster and character blocks. Color 0 is drawn as menu ',
       zeroLink(),
       '.',
     ),
@@ -439,7 +487,9 @@ registerEditor(['pal'], (host, project, file) => {
     }
   };
   window.addEventListener('keydown', onKey);
+  const stopHelp = onColorHelp(refresh);
   return () => {
+    stopHelp();
     disposed = true;
     window.removeEventListener('keydown', onKey);
     tools.dispose();

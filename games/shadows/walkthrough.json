@@ -1,0 +1,90 @@
+{
+ "version": 1,
+ "game": "shadows",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "KU0KzStNPM0rTUHNK00="
+  },
+  {
+   "scene": 3,
+   "keys": "FU0KzStNPM0rTUHNK00="
+  },
+  {
+   "scene": 4,
+   "keys": "FU0ozVNNKM1TTSjNUzkCuQBNFM0ETQ=="
+  },
+  {
+   "scene": 5,
+   "keys": "AU0jzVNNQc1TTQ=="
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "The yard, solid shadows"
+  },
+  {
+   "scene": 3,
+   "title": "The yard, dithered shadows"
+  },
+  {
+   "scene": 4,
+   "title": "The hop"
+  },
+  {
+   "scene": 5,
+   "title": "The hover"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 10999,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 913,
+    "time": 15216.666666666471
+   },
+   {
+    "title": "The yard, solid shadows",
+    "frame": 2142,
+    "time": 35700.00000000053
+   },
+   {
+    "title": "The yard, dithered shadows",
+    "frame": 3612,
+    "time": 60199.999999996966
+   },
+   {
+    "title": "The hop",
+    "frame": 5016,
+    "time": 83600.00000000144
+   },
+   {
+    "title": "The hover",
+    "frame": 6801,
+    "time": 113350.0000000101
+   },
+   {
+    "title": "Ending",
+    "frame": 8194,
+    "time": 136566.66666667874
+   },
+   {
+    "title": "Credits",
+    "frame": 9925,
+    "time": 165416.66666666194
+   }
+  ]
+ }
+}

@@ -13,9 +13,9 @@ function sourceCatalog(): Promise<CatalogEntry[]> {
   return (catalog ??= loadCatalog().catch(() => []));
 }
 
-/** Ordered assets from the requested source, with matching palettes shown once. */
-export async function libraryItems(kind: FileKind, source: LibrarySource = 'cd'): Promise<LibraryItem[]> {
-  return selectLibraryItems(await sourceCatalog(), kind, source);
+/** Ordered assets; keep per-game palette copies when a picker filters by source game. */
+export async function libraryItems(kind: FileKind, source: LibrarySource = 'cd', uniquePalettes = true): Promise<LibraryItem[]> {
+  return selectLibraryItems(await sourceCatalog(), kind, source, uniquePalettes);
 }
 
 /** All the files of a library game (fetched once). */

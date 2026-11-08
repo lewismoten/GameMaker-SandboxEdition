@@ -19,14 +19,19 @@ export type MonitorMode = 'off' | 'text' | 'game' | 'gfx' | 'vga';
 export interface ComputerOptions {
   /** The turbo switch: the host sets slowPc (engine/slowPc.ts TURBO_OFF) and the PC reads it as it runs. */
   speed: SpeedSetting;
+  /** Hosts with independent CPU/disk costs supply the physical TURBO switch and CPU label. */
+  turbo?: () => boolean;
+  cpuName?: () => string;
   /** The monitor shows something else: 'gfx' (today's editors) wants the whole window. */
   onModeChange?: (mode: MonitorMode) => void;
   /** The disks changed (a download, a new game); `insert` names one to put in drive A:. */
   onDisksChanged?: (insert?: string) => void;
-  /** A drive is being read (DIR, loading a game or Game-Maker, ...): light its LED. */
-  onDriveAccess?: (drive: string) => void;
+  /** A drive is being read (DIR, loading a game or Game-Maker, the boot's drive tests...): light its LED, for `ms` if given. */
+  onDriveAccess?: (drive: string, ms?: number) => void;
   /** A game starts on the monitor (its files), or stops (undefined): the desk sets out its key card. */
-  onGame?: (game?: { files: GameFiles; gam: string; title: string }) => void;
+  onGame?: (game?: { files: GameFiles; gam: string; title: string; saveId?: string }) => void;
+  /** The game playing went to scene `n` (the desk lays a game's code wheel out on its puzzles' scenes); `demo` while its demo plays it. */
+  onScene?: (n: number, demo?: boolean) => void;
   /** A program starts (Game-Maker, a game, the terminal…, and the drive it started on) or ends (undefined). */
   onProgram?: (program?: { kind: string; drive: string }) => void;
   /** Which page the PC is on, for the achievements for finishing a game in each (the desk's by default). */

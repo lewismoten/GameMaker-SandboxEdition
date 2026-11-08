@@ -18,7 +18,7 @@ export interface Problem {
   fix: string[];
 }
 
-export interface Page {
+interface Page {
   protocol: string;
   origin: string;
 }

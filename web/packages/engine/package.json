@@ -12,6 +12,7 @@
   "files": [
     "dist",
     "README.md",
+    "CHANGELOG.md",
     "LICENSE",
     "NOTICE.md"
   ],
@@ -136,6 +137,11 @@
       "gamemaker-source": "./src/engine/slowPc.ts",
       "import": "./dist/engine/slowPc.js"
     },
+    "./engine/slowPcMusic": {
+      "types": "./dist/types/engine/slowPcMusic.d.ts",
+      "gamemaker-source": "./src/engine/slowPcMusic.ts",
+      "import": "./dist/engine/slowPcMusic.js"
+    },
     "./engine/touch": {
       "types": "./dist/types/engine/touch.d.ts",
       "gamemaker-source": "./src/engine/touch.ts",
@@ -255,6 +261,11 @@
       "types": "./dist/types/formats/voc.d.ts",
       "gamemaker-source": "./src/formats/voc.ts",
       "import": "./dist/formats/voc.js"
+    },
+    "./gfx/colorVision": {
+      "types": "./dist/types/gfx/colorVision.d.ts",
+      "gamemaker-source": "./src/gfx/colorVision.ts",
+      "import": "./dist/gfx/colorVision.js"
     },
     "./gfx/cp437Glyphs": {
       "types": "./dist/types/gfx/cp437Glyphs.d.ts",

@@ -13,6 +13,7 @@ If your registry requires authentication or a scope mapping, configure npm using
 ## APIs
 
 - `formats/blocks`, `character`, `game`, `map`, `monster`, `palette`, `gif`, `graphicScripts`, `sound`, `fli`, `fliLimits`, `voc`, `recording`, and `cmf`: native readers, writers, types, and limits. Each is a separate `formats/<name>` subpath.
+- `gif-shrink`: `shrinkGif(bytes)` returns a smaller GIF with a trimmed color table, or `undefined` when it can't shrink without changing what PLAYGAME shows.
 - `drawing`: indexed pixels, VGA palette builders, font drawing, shading, compositing, and cartoon reels.
 - `audio`: original FM instrument presets, CMF composition, PC speaker effects, and VOC synthesis.
 - `images`: indexed PNG encoding, CRC-32, color reduction, indexed drawing and picture transforms.
@@ -38,7 +39,7 @@ const data = serializeBlocks(blocks);
 
 `medianCutRgba` from `images` chooses up to a requested 1–256 eight-bit RGB colors from portable RGBA image buffers. It needs no canvas or DOM; flatten transparency onto the intended background before calling it. The palette is based on pixel colors and their frequency, not unused color-table entries.
 
-Keep drawing and simulation imports in Node build scripts and tests; those entry points reject browser imports. Browser-safe `audio`, `images`, `text`, `colors`, `microFont`, `music/compose`, `image/png`, `kit/tar` and `menu-version` (stamps "v1.0" on a game menu picture) entry points also support the web editor. Playback through the engine and archives packages does not load this toolkit. Generated game data and your own copied assets belong in the consuming project.
+Keep drawing and simulation imports in Node build scripts and tests; those entry points reject browser imports. Browser-safe `audio`, `images`, `text`, `colors`, `microFont`, `music/compose`, `image/png`, `kit/tar`, `kit/blockRoles` and `menu-version` (stamps "v1.0" on a game menu picture) entry points also support the web editor. Playback through the engine and archives packages does not load this toolkit. Generated game data and your own copied assets belong in the consuming project.
 
 ## Fonts, text images, and lighting
 
@@ -146,12 +147,26 @@ The stroke glyphs, implementation provenance and method references are in NOTICE
 
 ### Archives for downloads
 
+`kit/blockRoles` is the block-role vocabulary (wall, door, locked door and key with a lock number, furniture with a facing...), `suggestRoles` (guesses from a block's behavior and picture; it never decides) and `cleanRoles`/`packRoles` for editor companion data; it needs no DOM and changes no game bytes.
+
+`kit/levelGen` draws a dungeon (binary space partition: rooms joined by corridors) or a forest (cellular automata on a tree mask, clearings, a winding path) into a rectangle of a map from the blocks that hold roles. `checkNeeds(kind, roles)` says which roles a kind needs and which it uses when present; `generate(roles, { kind, seed, rect })` returns block numbers, the plain kind of each cell, the cells a terrain brush should give edges to, and a proposed entry and exit (never applied or linked), or a plain message when a needed role is missing; `offerSeed` gives the four seeds of a set of offers; `verifyReach` checks every open cell can be reached from the entry. Dungeons also get locked doors (a one-wide passage that cuts the entry from the exit, with the matching key placed in the part still reachable with that lock and every later one shut), treasure and a heart in corners and dead ends, and `monsters` (pass monster numbers in `params.monsters`; spread out, five or more steps from the entry); forests get treasure, a heart and monsters. `proveResult` plays the keys out and checks reach, key-before-lock and that everything can be collected. It needs no DOM, runs in a Worker, and the same seed always gives the same blocks. It writes no game data: the map editor places the cells. `town` (a winding main street between two gates, cross streets that end on one side only, a plaza, and houses with a door on the street) and `overworld` (value noise for sea level, mountains and forest, periodic when `GenParams.wrap` is set so the land lines up across the seam; a road cut between three to five sites) also return `links`: doors and sites a person could link to other scenes (`SceneLink`: cell, kind, label). They are proposals only; nothing creates a scene or a link, and `proveResult` checks each can be reached from the entry (`linked`).
+
+`generatePlatform({ roles, hero, seed, rect, difficulty, monsters })` draws a **side view** (platform) level and is meant for a game's `build.ts` as well as the editor. `hero` is the parsed character file (`hero.chr`): `heroPhysics(chr)` reads his walk speed, the jump's upward push (the momentum sequence) and whether he climbs, and plays them with the engine's gravity (one pixel a tick back, at most 11 pixels a tick). Nothing about the hero is written in the generator, so a game with a bigger or smaller jump gets bigger or smaller pits. `capability(physics)` measures, with the reach model, the highest step he jumps onto and the widest pit he clears on level ground (and spikes); `difficulty` (percent, 80 by default) is the share of those the layout asks. The layout has ground with pits (spiked at the bottom with a hazard block), steps up and down, towers with a ladder (only with a ladder block and a hero who climbs), spikes to jump over, stepping stones across wide pits, ledges to jump up to (`platform` blocks, solid on top only), coins where the jumps pass, a heart at the highest place he can stand, one tall locked door with its key on an earlier stretch, and monsters on the long stretches. It needs wall and sky blocks; every other role is optional. The entry is on the left and the exit on the right (proposals; nothing is linked). The result's `platform.proof` says whether the reach model (`reachFrom`: walks, jumps with every steering length, falls off edges and ladders tick by tick against the cells) proved the exit reachable, every coin, heart and key touchable, and the locked door a real barrier (the exit unreachable until the key); a layout that cannot be proven is drawn again, easier. The same seed always draws the same layout; `proveResult` and the Generate dialog's chip use the proof. The editor goes one step further (`editors/map/generate/platformBot.ts`): a bot presses the hero's own keys along the model's route on the real engine and the chip says "Bot won". Monsters and fun are not judged.
+
 `kit/tar` writes and reads POSIX ustar archives (`createTar`, `createTarGz`, `readTar`). Entries keep
 their Unix mode, so a game folder's programs and scripts unpack executable, and names over 100
 bytes use the header's prefix field. It has no dependencies and runs in Node and browsers
 (`.tar.gz` uses the platform's `CompressionStream`).
 
 ### Native object builders
+
+`kit/laserJoints` makes flat wooden-box panel outlines for the laser kits: finger (box) joints whose two sides mesh,
+rectilinear outlines from rectangles, and mitered kerf offsets (`jointOutline`, `outlineFromRects`, `offsetPoly`).
+`kit/laserLayout` has `Part` (one flat piece with named elements, kerf applied, spacing-checked with
+`kit/laserClearance`) and `packRows`, which lays parts out on a Glowforge-bed sheet and throws if they do not fit.
+Games' laser kits (`games/sleuth/laser/`) build on them with `kit/laserSvg`, `laserPixels` and `laserPreview`.
+
+`embroidery/*` turns a vector design into machine-embroidery files. A `Design` is color blocks of items: `fill` (polygons), `satin` (a center line and a width) and `run`. `compile` sews each item with an underlay (an edge walk inside the shape, loose rows under big shapes, a center walk and zigzag under satin) and then its top stitching, and adds the jumps, trims, small tie stitches, color stops and an end, capping every stitch at 7 mm (`Params`: fill rows 0.4 mm apart with 3.5 mm stitches whose holes are staggered in thirds, satin 0.4 mm apart, 0.3 mm of pull compensation on satin and 0.15 mm on fills, a satin wider than 7 mm sewn as lanes). `fill` makes the tatami rows (a notched shape becomes several chains), `satin` the zigzag columns and their underlay, `strokeFont` a single-line capital alphabet that `arcText` bends around a circle for satin lettering (draw it 5 mm tall or more), and `geom` the outlines (`circle`, `star`, `inset`). `dst` (Tajima: a text header and 3-byte ternary records, a trim written as tiny jumps), `exp` (Melco, Bernina) and `pes` (Brother, Baby Lock: PES v1 written by hand, its PEC section with 7- and 12-bit moves, thread-chart indices and bitmaps) each write and read a `Pattern` (the readers are for checks). `units` turns a pattern into 0.1 mm moves and splits long jumps, `validate` reports stitch count, longest stitch, extents, jumps and color changes against a hoop, `simulate` draws the stitches thread by thread, and `svg` writes the design as a vector drawing in millimeters. None of it has been run on a real machine; sew a test on scrap first. `games/maximus/patch/` is the first design.
 
 `kit/actors` builds character sequences and monster paths. `kit/screenText` validates
 30-column, 16-line DOS text pages and looks up caller-supplied named sprites.
@@ -165,7 +180,7 @@ These helpers take the consuming game's data and palette.
 `kit/photo` reads a caller-supplied JPEG (`readScan`) and provides resampling, toning,
 quantization, dithering and indexed photo composition. No photographs are included.
 `kit/png` writes synchronous RGB preview PNGs with a checkerboard for transparent pixels
-and builds block sheets. `kit/levelPicture` renders a level region with its placed monsters.
+and builds block sheets. `kit/levelPicture` renders a level region with its placed monsters, and `kit/levelGrid` is a character grid to paint a level in code.
 These Node build helpers complement the browser-safe `images` API.
 
 ### Sound and arrangement helpers
@@ -175,12 +190,31 @@ These Node build helpers complement the browser-safe `images` API.
 CMF swells, arpeggios, glides, echoes and rhythm effects. Instrument presets are original
 project data under the MIT License; recordings and complete songs are not included.
 
+### Mumble-speak (nonsense talk as VOC)
+
+`kit/mumble` is a small formant synthesizer that says nonsense, the way a game of 1994 might hum a character's
+talk. A line is a list of syllables `[vowel, fromHz, toHz, seconds, restSeconds?]`. `mumble(line, { rate, gain })`
+returns samples in -1..1, `mumbleVoc(line)` returns an 8-bit mono 11 kHz .VOC, and `syllablesFromText(text, { pitch, speed, seed })`
+turns a line of text into syllables (vowels from its letters, so the same line and seed mumble the same way;
+a question rises, a sentence falls). `MUMBLE_VOICES` has `bright`, `deep` and `small` settings.
+
+```ts
+import { MUMBLE_VOICES, mumbleVoc, syllablesFromText } from '@lewismoten/gamemaker-sandbox-tools/kit/mumble';
+
+const voc = mumbleVoc(syllablesFromText('Welcome to the show!', MUMBLE_VOICES.bright)); // write it as HELLO.VOC
+```
+
 ### Native animations and demos
 
 `kit/fadeOut` adds palette-only FLI fades. `kit/fliClips` splits long animations at stable
 palette boundaries and builds their slide-list entries; its opt-in `ClipOptions` leave out
 the closing ring frame no player shows (`noLoopFrame`, also an `encodeFli` option) and put
-cuts where a whole frame costs the fewest extra bytes (`cheapCuts`). `kit/recordedDemo` turns delta/key
+cuts where a whole frame costs the fewest extra bytes (`cheapCuts`), and run `shrink` steps first.
+`kit/fliShrink` is the size report (`fliReport`: bytes per chunk type per frame, and why) and the shrink
+steps (`sparsePalettesStep` lossless; `holdStillStep`, `snapColorsStep`, `maxColorsStep`,
+`flattenDitherStep`, `dropFramesStep` lossy), each returning the new frames, the bytes saved and how
+visible the change is (`Visibility`: mean, worst, changed share); `decodeFli`/`encodeFrames` convert,
+`shrinkFrames` chains steps. `kit/recordedDemo` turns delta/key
 pairs into a native title demo with configurable Escape press and release delays.
 
 ### Shared block sets
@@ -225,6 +259,39 @@ in delta E. Import from `@lewismoten/gamemaker-sandbox-tools/palette-reserve`.
 identical block already there) and renumbers the moved set's maps; the kept set is not renumbered.
 Pickups, required and starting items and block 0 keep their number or the join is refused.
 Import from `@lewismoten/gamemaker-sandbox-tools/block-merge`.
+
+### Meshes for 3D printing
+
+`mesh/surfaceNets` turns a signed distance field (negative inside) into a closed triangle mesh
+(`surfaceNets(field, { min, max, cell })`; it retries with a shifted grid until every edge is in exactly two
+triangles), `mesh/stl` writes and reads binary STL (`writeStl`, `readStl`; a color per triangle goes in the
+attribute bytes the VisCAM way, which slicers ignore) and `mesh/meshCheck` reports whether a mesh is closed,
+how many pieces it has, its size and volume (`inspectMesh`). `mesh/tetraMesh` is the other mesher (four times
+the triangles, but closed for any field, and neighbors meet on the same vertices); `mesh/overhang` measures what
+an FDM printer cannot print (`overhang`) and builds the support pillars as a body of their own (`supportBody`);
+`mesh/colorBodies` picks at most four colors from a colored mesh (`pickPalette`) and splits the solid into one
+closed body per color (`colorBodies`, thinned and grown to the volume you give it); `mesh/decimate` takes the triangles a
+closed mesh does not need out by quadric edge collapse (`decimate(mesh, { maxError })`: stays closed and in one piece, and the
+borders between a triangle color and the next stay put); `mesh/sampledField` samples a field once on a grid and reads it back
+by trilinear interpolation, for the many passes over one figure (`sampledField`); `mesh/threeMf` writes and reads multi-color 3MF files (`write3mf(parts,
+title, codec)`, `read3mf`: parts are a mesh and a color), over the small ZIP writer `mesh/zipFile` (pass Node's
+`deflateRawSync` as `codec.deflate` to compress). `pack/meshPack` packs a binary STL losslessly into a much smaller file
+(`packStl`, `unpackStl`: a table of distinct corners in byte planes, corner numbers as varints, normals worked out again;
+deflate the result) and gives the pieces (`toPlanes`, `packIndices`) for other mesh files; `pack/threeMfPack` does the same
+for a 3MF `write3mf` wrote (`pack3mf`, `unpack3mf`: corners in thousandths, as the file has them; `threeMfEntries` makes
+its inner files again, the same bytes, to zip with any deflate). `mesh/voxel` meshes filled voxels (`voxelMesh`: coplanar faces merged into
+rectangles, no T-junctions, so it stays closed) and `mesh/pixelFigure` turns a pixel sprite into a standee on a base with at
+most four color bodies (`pixelFigure`). They are browser safe, except `mesh/trinketTool`.
+
+Trinkets made of distance fields (Depth Perception's, Quest for the Round Tuit's) share one pipeline, all in millimeters
+with the floor at z = 0: `mesh/sdfShapes` has the 2D shapes (circle, rounded rectangle, polygon, ring, capsule and
+`pixelText2`, lettering in the 3x5 micro font), `extrude` and the solid combiners; `mesh/strokeText` (`strokeText2`, `ringText2`) letters raised or sunk text in smooth capsule strokes (capitals, digits, marks; use it instead of the stair-stepped `pixelText2` for anything printed); `mesh/figureShapes` has ellipsoids, round cones, a smooth union and `place3` for 3D figures; `mesh/trinketKinds` builds a `plate` (coin,
+token, key-chain tag or badge: outline, raised rim, raised relief, sunk art, holes, a pin-back `pocket` from `pinBack`), a key-chain `ringTab`, a faceted `gem` (also a crystal shard) and a `die`; `mesh/fieldTrinket`
+(`meshFieldTrinket`) meshes a field with a color per triangle and gives the checks (eroded pieces and specks, overhang),
+up to four color bodies and supports; `mesh/trinketTool` (`runTrinketTool`, Node only) writes the STL, 3MF and manifest.json
+of a game's trinkets, with a source key so an unchanged game is skipped, in worker threads when `--workers N` runs a bundle.
+A game keeps its designs in `games/<id>/src/trinkets/` (`TRINKETS` and `makeTrinket`) and a four-line `tools/trinkets.ts`.
+Surface nets need a cell smaller than half of any gap between pieces (a 0.6 mm kerf wants a 0.26 mm cell).
 
 ### Disk comparison
 

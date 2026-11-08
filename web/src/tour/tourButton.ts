@@ -8,11 +8,13 @@ import { h } from '../editor/core/ui';
 import { currentRoute, withParams } from '../urlState';
 import { CHAPTER_PAGES, guidesOn, onDosPage, pageHere, setGuidesOn, tourRequest } from './tourPages';
 import type { PageKey } from './steps';
+import { pageLife } from '../pageLife';
+import { readSeen, seenOnFirstVisit, writeSeen } from './seenDay';
 
 const tour = () => import('./tourStart');
 
 /** Starts the whole tour (Settings' item, the menu's). */
-export const watchWholeTour = (record = false): void => void tour().then((m) => m.startTour('all', { record }));
+const watchWholeTour = (record = false): void => void tour().then((m) => m.startTour('all', { record }));
 
 /** The Settings menu's item for the whole tour. */
 export const wholeTourItem = (attrs: Record<string, string> = {}): HTMLElement =>
@@ -31,6 +33,7 @@ const hasChapter = (page: PageKey | undefined) => !!page && CHAPTER_PAGES.includ
  */
 export function tourButton(look = 'topbar-gear'): HTMLElement {
   watchPages();
+  seenOnFirstVisit();
   const button = h(
     'button',
     {
@@ -63,7 +66,14 @@ export function tourButton(look = 'topbar-gear'): HTMLElement {
     },
     'Record the whole tour',
   );
-  const items = [here, wait, whole, record];
+  // "What's new" and "Not now" are in the menu only while steps newer than the last visit wait (found when it opens)
+  const news = h(
+    'button',
+    { type: 'button', role: 'menuitem', tabindex: '-1', hidden: true, onclick: () => void tour().then((m) => m.startTour('new')) },
+    'What’s new',
+  );
+  const notNow = h('button', { type: 'button', role: 'menuitem', tabindex: '-1', hidden: true, onclick: () => writeSeen() }, 'Not now: hide What’s new');
+  const items = [here, news, notNow, wait, whole, record];
   const menu = h('div', { id: 'tour-menu', class: 'topbar-menu', role: 'menu', 'aria-label': 'Guides', hidden: true }, ...items);
   const wrap = h('div', { class: 'tour-wrap' }, button, menu);
 
@@ -85,14 +95,21 @@ export function tourButton(look = 'topbar-gear'): HTMLElement {
     wait.textContent = `${can && guidesOn(p) ? '☑' : '☐'} Guides wait on this page`;
   };
 
-  const usable = () => items.filter((b) => !b.disabled);
+  const usable = () => items.filter((b) => !b.disabled && !b.hidden);
   const isOpen = () => !menu.hidden;
   const focusItem = (i: number) => {
     const list = usable();
     list[(i + list.length) % list.length]?.focus();
   };
+  const showNews = async () => {
+    const seen = readSeen();
+    const count = seen ? (await import('./whatsNew')).whatsNew(seen).length : 0;
+    news.hidden = notNow.hidden = !count;
+    news.textContent = `What’s new since ${seen} (${count})`;
+  };
   const open = (at: number) => {
     showWait();
+    void showNews();
     menu.hidden = false;
     // the DOS page's bar scrolls sideways on a phone and would cut it off: placed by the window there (and on the desk's wall)
     if (button.closest('.dos-bar, .desk-bar')) {
@@ -135,7 +152,7 @@ export function tourButton(look = 'topbar-gear'): HTMLElement {
     if (!wrap.isConnected) document.removeEventListener('click', outside);
     else if (!wrap.contains(e.target as Node)) close(false);
   };
-  document.addEventListener('click', outside);
+  document.addEventListener('click', outside, { signal: pageLife() });
   return wrap;
 }
 

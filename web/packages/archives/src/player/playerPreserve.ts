@@ -63,7 +63,7 @@ function revertExact(exe: Uint8Array, patches: PlayerPatches): Uint8Array {
   return out;
 }
 
-export interface PreservedPlayer {
+interface PreservedPlayer {
   patches: PlayerPatches;
   regions: PreservedRegion[];
 }

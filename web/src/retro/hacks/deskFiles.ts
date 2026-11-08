@@ -5,7 +5,7 @@ import { deskDate, file, DOS_DATE, type DosNode, type ProgramRef } from '../dos/
 import type { Downloads } from '../host';
 import type { CatalogEntry } from '../../project/files';
 import { DIZ_NAME, dizBytes, gameDiz, newestPicture, pictureDiz } from '../bbs/fileId';
-import { WAREZ, fileSize, textBytes } from '../bbs/warezArea';
+import { WAREZ, fileSize, textBytes } from '../bbs/warezList';
 import { pcExtras } from './pcExtras';
 import { bakName } from './gmcrackText';
 
@@ -50,7 +50,7 @@ export function gameDownloadNodes(g: CatalogEntry, date: Date, run: ProgramRef &
     );
   }
   // the CD's games kept their CONFIG.HLP (or, like ORB, came without one) with their files
-  const has = (n: string) => g.files.some((f) => f.toLowerCase() === n);
+  const has = (n: string) => (g.files ?? []).some((f) => f.toLowerCase() === n);
   if (!has('config.hlp') && !has('gmhelp.txt')) nodes.push(file('CONFIG.HLP', CONFIG_HLP_SIZE, { date }));
   nodes.push(file('SNDBLAST.DRV', SNDBLAST_SIZE, { date }));
   nodes.push(bytesNode(DIZ_NAME, dizBytes(gameDiz(g)), { date }));

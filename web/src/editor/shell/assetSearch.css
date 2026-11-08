@@ -88,3 +88,40 @@
 .sr-item > .sr-card {
   flex: 1;
 }
+
+/* a phone (≤ 430 px): the field waits behind a 🔍 button beside the heading, so the cards get the room */
+.asset-search-toggle {
+  display: none;
+}
+@media (max-width: 430px) {
+  .asset-search-toggle {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0;
+    font-size: 18px;
+  }
+  .asset-search-toggle[aria-expanded='true'] {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+  }
+  .asset-search:not(.open) {
+    display: none;
+  }
+  .asset-search label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .asset-search input[type='search'] {
+    min-height: 44px;
+    flex-basis: 100%;
+  }
+}

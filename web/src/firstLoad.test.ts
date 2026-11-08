@@ -13,8 +13,8 @@ const RULES: [entry: string, mustNot: [what: string, match: RegExp][]][] = [
     [
       ['the desk, the magazine or the level check', /^(desk|manual\/magazine|editor\/check)\//],
       ['the Library or the paper in the boxes', /^(library|manual\/printables)\//],
-      // only the ? button and its page list: the tour itself loads when one starts
-      ['the guided tour', /^tour\/(?!tourButton\.|tourPages\.|steps\.)/],
+      // only the ? button, its page list and the last-visit day: the tour itself loads when one starts
+      ['the guided tour', /^tour\/(?!tourButton\.|tourPages\.|steps\.|seenDay\.)/],
     ],
   ],
   [
@@ -24,6 +24,7 @@ const RULES: [entry: string, mustNot: [what: string, match: RegExp][]][] = [
       ['the Library', /^library\//],
       ['new game and importing', /^editor\/shell\/homeImport\.ts$/],
       ['the engine', /^engine\//],
+      ['the home page on a direct project route', /^editor\/shell\/home\.ts$/],
     ],
   ],
   [
@@ -31,6 +32,15 @@ const RULES: [entry: string, mustNot: [what: string, match: RegExp][]][] = [
     [
       ['the magazine or the level check', /^(manual\/magazine|editor\/check)\//],
       ['the felt eggs’ art', /^eggs\/eggArt\.ts$/],
+    ],
+  ],
+  [
+    'editor/shell/home.ts',
+    [
+      ['the desk, the magazine or the level check', /^(desk|manual\/magazine|editor\/check)\//],
+      ['the Library', /^library\//],
+      ['new game and importing', /^editor\/shell\/homeImport\.ts$/],
+      ['the engine', /^engine\//],
     ],
   ],
   // a new game's opening: its fields and preview up front, the cards' renderer when the game is made

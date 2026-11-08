@@ -19,7 +19,7 @@ const gamesDir = join(__dirname, '../../../../games');
 const games = readdirSync(gamesDir)
   .filter((id) => existsSync(join(gamesDir, id, 'about.json')) && existsSync(join(gamesDir, id, 'manual.json')))
   .map((id) => ({ id, ...(JSON.parse(readFileSync(join(gamesDir, id, 'about.json'), 'utf8')) as About) }))
-  .filter((g) => g.series !== 'bizarre');
+  .filter((g) => g.series !== 'bizarre' && g.series !== 'starter');
 const sandbox = games.filter((g) => !g.secret);
 const secret = games.filter((g) => g.secret);
 const inOrder = [...sandbox].sort((a, b) => scoopIssue(a.id, sandbox) - scoopIssue(b.id, sandbox));

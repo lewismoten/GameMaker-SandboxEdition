@@ -8,6 +8,7 @@
 // menu, where the walkthrough reads the storyline and then picks Play, every level through
 // play() as a demo plays them, the ending and score table, and back on the menu the credits.
 import { mulberry32 } from '../seededRandom';
+import { fromCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import { Machine } from '@lewismoten/gamemaker-sandbox-engine/engine/machine';
 import { Recorder } from '@lewismoten/gamemaker-sandbox-engine/engine/recorder';
 import { gameNameOf, loadGameFile, play } from '@lewismoten/gamemaker-sandbox-engine/engine/game';
@@ -210,6 +211,18 @@ export class SegmentRecorder extends Recorder {
   override doPlayback(): number[] {
     const out = super.doPlayback();
     if (this.halted || !this.playing) return out;
+    return out.concat(this.segmentTick());
+  }
+
+  /** A key screen waiting for keys (the drop picker) polls once a tick, as a recording made in the tick-counted sim expects. */
+  override pollOnce(): number[] {
+    if (this.halted || !this.playing) return [];
+    return this.segmentTick();
+  }
+
+  /** One tick of the segment's keys: those that have become due. */
+  private segmentTick(): number[] {
+    const out: number[] = [];
     this.segTicks++;
     while (this.segIndex < this.segKeys.length && this.segLast + this.segKeys[this.segIndex].delta <= this.segTicks) {
       out.push(this.segKeys[this.segIndex].key);
@@ -239,6 +252,7 @@ const FRONT_CHAPTERS = { opening: 'Opening', story: 'Story', ending: 'Ending', c
 async function runWalkthrough(m: WalkMachine, gamFile: string, walk: Walkthrough, hooks: WalkHooks, look: PlayerLook): Promise<void> {
   const game = loadGameFile(m, gamFile);
   const rec = new SegmentRecorder(walk);
+  m.keyPollOnce = () => rec.pollOnce(); // the drop picker's keys come from the segment
   const shared = mulberry32(walk.rand.seed);
   const marks = new Map(walk.chapters.map((c) => [c.scene, c.title]));
   const chapter = (title: string) => hooks.onChapter?.(title);
@@ -272,12 +286,12 @@ async function runWalkthrough(m: WalkMachine, gamFile: string, walk: Walkthrough
       if (scene > 1 && scene !== levelAt) {
         levelAt = scene;
         if (!levelNo.has(scene)) levelNo.set(scene, levelNo.size + 1);
-        hooks.onItem?.('level', marks.get(scene) || game.scenes[scene]?.desc || '', levelNo.get(scene));
+        hooks.onItem?.('level', marks.get(scene) || fromCp437(game.scenes[scene]?.desc ?? ''), levelNo.get(scene));
       }
       const title = marks.get(scene);
       if (title !== undefined) {
         marks.delete(scene);
-        chapter(title || game.scenes[scene]?.desc || `Scene ${scene}`);
+        chapter(title || fromCp437(game.scenes[scene]?.desc ?? '') || `Scene ${scene}`);
       }
     },
   };

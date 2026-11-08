@@ -17,7 +17,7 @@ export default defineConfig(
       ecmaVersion: 2022,
       sourceType: 'module',
       globals: { ...globals.browser, ...globals.node },
-      parserOptions: { projectService: { allowDefaultProject: ['eslint.config.js'] }, tsconfigRootDir: import.meta.dirname },
+      parserOptions: { projectService: { allowDefaultProject: ['eslint.config.js', 'test/*.mjs'] }, tsconfigRootDir: import.meta.dirname },
     },
     linterOptions: { reportUnusedDisableDirectives: 'error' },
     rules: {
@@ -59,6 +59,7 @@ export default defineConfig(
     files: ['scripts/**'],
     rules: { 'no-console': 'off' },
   },
-  { files: ['**/*.js'], ...tseslint.configs.disableTypeChecked },
+  // plain .js and .mjs scripts are outside the TypeScript project: lint them without type information
+  { files: ['**/*.js', '**/*.mjs'], ...tseslint.configs.disableTypeChecked },
   prettier,
 );

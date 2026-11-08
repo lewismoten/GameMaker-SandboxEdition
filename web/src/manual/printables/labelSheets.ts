@@ -31,7 +31,7 @@ export const DISK_CASE = {
 } as const;
 
 /** The labels' grid on the sheet. */
-export const DISK_GRID = { cols: 2, rows: 3, gap: 0.5 } as const;
+const DISK_GRID = { cols: 2, rows: 3, gap: 0.5 } as const;
 
 /** The CD label: 117 mm across, a 41 mm hole. */
 export const CD_LABEL = { outer: 117 / 25.4, hole: 41 / 25.4 } as const;

@@ -551,7 +551,7 @@ export function openChat(focus: 'input' | 'describe' = 'input'): void {
   target.focus();
 }
 
-export function closeChat(): void {
+function closeChat(): void {
   if (panel.hidden) return;
   panel.hidden = true;
   dock();

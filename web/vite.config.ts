@@ -7,12 +7,22 @@ import { hashText } from './src/export/serviceWorker';
 import { groupKey, groupOf, isHashed, siteWorkerSource } from './src/siteWorker';
 import { cdGames, cdSecretCatalog } from './scripts/cdGames';
 import { gzipSync } from 'node:zlib';
+import { execFileSync } from 'node:child_process';
 import { singlePagePlayer } from './scripts/singlePageBuild';
 import { hostedPlayer } from './scripts/hostedPlayerBuild';
 import { seoPages } from './scripts/seoBuild';
 import { devLog } from './scripts/devLog';
 
 const publicDir = resolve(__dirname, 'public');
+
+/** The commit this build comes from, for the boot screen's BIOS ID line (src/retro/biosId.ts). */
+function gitCommit(): string {
+  try {
+    return execFileSync('git', ['rev-parse', 'HEAD'], { cwd: __dirname, encoding: 'utf8' }).trim();
+  } catch {
+    return process.env.GITHUB_SHA ?? '';
+  }
+}
 
 /** Top-level public files (icons, manifest). */
 function publicFiles(): string[] {
@@ -92,6 +102,9 @@ function appShell(bundle: Bundle): string[] {
   return [...new Set(['./', ...pageGraph(bundle, 'index.html', false).filter((f) => f !== 'index.html'), ...icons])];
 }
 
+/** Generated notes for developers (the voice clip lists): in the repository, not on the site or in the offline copy. */
+const DEV_ONLY = /^(tour|phone)\/voice\/README\.md$/;
+
 const TEXT_FILE = /\.(html|js|css|json|svg|txt|xml|webmanifest)$/i;
 
 /**
@@ -101,16 +114,24 @@ const TEXT_FILE = /\.(html|js|css|json|svg|txt|xml|webmanifest)$/i;
  * has revealed one adds its pack itself). Each as [path, bytes on the wire, bytes stored]:
  * GitHub Pages gzips text.
  */
-function offlineFiles(bundle: Bundle): [string, number, number][] {
+function offlineFiles(bundle: Bundle, forArchive = false): [string, number, number][] {
   const secret = cdSecretCatalog(resolve(__dirname, '../cd')).map((e) => e.path);
   const sources = new Map<string, () => Uint8Array | string>();
   for (const f of publicTree()) sources.set(f, () => readFileSync(resolve(publicDir, f)));
   for (const [f, item] of Object.entries(bundle)) sources.set(f, () => (item.type === 'chunk' ? item.code : item.source));
   const wanted = (f: string) =>
     !secret.some((dir) => f.startsWith(dir)) &&
-    // the web player plays loose game folders from a web server, never from the offline copy
-    !/^(og\/|og-image\.|robots\.txt$|sitemap\.xml$|llms\.txt$|sw\.js$|index\.html$|web-player\.html$|player\/)/.test(f) &&
-    (!/^games\/(gameware|shareware|originals)\//.test(f) || /\.(zip|gmpak)$|\/walkthrough\.json\.gz$/.test(f));
+    // the web player plays loose game folders from a web server, never from the offline copy; the 3D-print trinkets (several
+    // megabytes of STL and 3MF) download when a box or link asks for one; pocket/ is the handheld's firmware.
+    // archive.html (src/archive) wants those too, but never the service worker, its own lists or the gate lists
+    // (games/extra-N.json), which name the secret games
+    !(
+      forArchive
+        ? /^(sw\.js$|offline\.json$|archive\.json$|games\/extra-\d+\.json$)/
+        : /^(og\/|og-image\.|robots\.txt$|sitemap\.xml$|llms\.txt$|sw\.js$|index\.html$|archive\.html$|web-player\.html$|player\/|trinkets\/|laser\/|pocket\/)/
+    ).test(f) &&
+    !DEV_ONLY.test(f) &&
+    (!/^games\/(gameware|shareware|originals)\//.test(f) || /\.(zip|zpart|gmpak)$|\/walkthrough\.json\.gz$/.test(f));
   return [...sources]
     .filter(([f]) => wanted(f))
     .sort(([a], [b]) => (a < b ? -1 : 1))
@@ -145,6 +166,8 @@ function offline(): Plugin {
         const version = hashText(JSON.stringify([groups, assets]));
         this.emitFile({ type: 'asset', fileName: 'sw.js', source: siteWorkerSource({ version, precache, groups, assets }) });
         this.emitFile({ type: 'asset', fileName: 'offline.json', source: JSON.stringify({ version, shell: precache, files: offlineFiles(bundle) }) });
+        // every file for archive.html: the offline copy's list and what it leaves out (previews, firmware, crawler files)
+        this.emitFile({ type: 'asset', fileName: 'archive.json', source: JSON.stringify({ version, shell: precache, files: offlineFiles(bundle, true) }) });
         const player = playerGraph(bundle);
         this.emitFile({ type: 'asset', fileName: 'player-files.json', source: JSON.stringify({ version, files: player }) });
       },
@@ -170,6 +193,7 @@ function noDotfiles(): Plugin {
     },
     closeBundle() {
       if (existsSync(outDir)) sweep(outDir);
+      for (const f of publicTree().filter((p) => DEV_ONLY.test(p))) rmSync(resolve(outDir, f), { force: true });
     },
   };
 }
@@ -243,7 +267,8 @@ function playChunks(): Rollup.GetManualChunk {
   const pages: [name: string, entries: string[]][] = [
     ['main', ['src/main.ts', 'src/seo/route.ts']], // index.html's two scripts
     ['desk', ['src/desk/desk.ts']],
-    ['web', ['src/modernUi.ts']],
+    ['web', ['src/modernUi.ts', 'src/editor/shell/home.ts']], // independent project and home routes
+
     ['play', ['src/play.ts']],
     ['dos', ['src/dosPage/dosPage.ts']], // so the DOS page shares the PC's code, not the whole player chunk
   ];
@@ -269,6 +294,7 @@ function playChunks(): Rollup.GetManualChunk {
     // the tin hearts' list and saves: the player reads them, but so do pages that never play
     // (achievements counting hearts at start-up, the desk's trophy), which shouldn't fetch the engine for them
     if (/\/src\/tinHearts\/(tinHearts\.ts|manifest\.ts|hearts\.json)/.test(id)) return 'tinHearts';
+
     if (pages.some(([, entries]) => entries.some((e) => id === resolve(__dirname, e)))) return undefined; // each page's own chunk
     const users = pages.filter((_, i) => closures![i].has(id)).map(([name]) => name);
     if (!users.includes('play') || users.includes('main')) return undefined;
@@ -282,6 +308,8 @@ export default defineConfig({
   resolve: { conditions: ['gamemaker-source', 'module', 'browser', 'development|production'] },
   ssr: { noExternal: [/^@lewismoten\/gamemaker-sandbox-/], resolve: { conditions: ['gamemaker-source', 'module', 'node', 'development|production'] } },
   base: './',
+  // VITE_REPO_ROOT: only the dev server's devLocalWalk.ts reads it (a production build drops that module)
+  define: { 'import.meta.env.VITE_COMMIT': JSON.stringify(gitCommit()), 'import.meta.env.VITE_REPO_ROOT': JSON.stringify(resolve(__dirname, '..')) },
   plugins: [
     cdGames(resolve(__dirname, '../cd')),
     seoPages(resolve(__dirname, '../cd')),
@@ -299,6 +327,7 @@ export default defineConfig({
         main: resolve(__dirname, 'index.html'),
         play: resolve(__dirname, 'play.html'),
         dos: resolve(__dirname, 'dos.html'), // the PC on its own (src/dosPage)
+        archive: resolve(__dirname, 'archive.html'), // fetches every file for a web archive; nothing links to it (src/archive)
       },
       output: { manualChunks: playChunks(), onlyExplicitManualChunks: true },
     },

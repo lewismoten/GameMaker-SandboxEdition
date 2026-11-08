@@ -1,6 +1,7 @@
 // The level check still finds the real bugs it found in the Sandbox games, on their disks from
 // before each fix (read with git: gitDisk.ts), and not on the fixed ones. Skipped where git or
 // those commits aren't there (CI's shallow clone).
+// Stays slow: each case plays the real Level check over a real game's disk.
 import { describe, expect, it } from 'vitest';
 import { GameFiles } from '../../project/files';
 import { landings } from './checks/landings';
@@ -63,7 +64,8 @@ async function exploreFrom(id: string, rev: string, scene: number, x: number, y:
 describe.skipIf(!has)('the level check on the Sandbox games’ old bugs', () => {
   it('finds Teddy 2’s Midway softlock behind THE BIG DROP (d3701bd9), gone at 128c0619', async () => {
     // a dog who dropped off the deck past the entry card lands beyond the tower's far wall
-    const old = await exploreFrom('teddy2', 'd3701bd9', 8, 58, 39, 20_000);
+    // (the budgets are ceilings: each search stops at its answer, about 30 s here, but a loaded machine ran the old 50 s one dry)
+    const old = await exploreFrom('teddy2', 'd3701bd9', 8, 58, 39, 60_000);
     expect(old.ex.complete).toBe(true);
     expect(old.ex.exits).toHaveLength(0);
     const run = {
@@ -81,9 +83,9 @@ describe.skipIf(!has)('the level check on the Sandbox games’ old bugs', () => 
         old.g.scenes.find((s) => s.scene === 8),
       ).some((f) => f.severity === 'error' && f.check === 'link-unreached'),
     ).toBe(true);
-    const fixed = await exploreFrom('teddy2', '128c0619', 8, 58, 39, 50_000);
+    const fixed = await exploreFrom('teddy2', '128c0619', 8, 58, 39, 150_000);
     expect(fixed.ex.exits.length).toBeGreaterThan(0);
-  }, 120_000);
+  }, 300_000);
 
   it('finds Loaf’s brook that held the loaf while it bit (before 298c8e05), gone after', async () => {
     const brook = async (rev: string) => {

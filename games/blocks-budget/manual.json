@@ -1,0 +1,75 @@
+{
+  "title": "150 Blocks",
+  "howDoI": [
+    {
+      "id": "big-picture",
+      "q": "How do I draw a picture bigger than one block?",
+      "scene": 2,
+      "x": 30,
+      "y": 15,
+      "level": 1
+    },
+    {
+      "id": "walk-through",
+      "q": "How do I make scenery Lena can walk through?",
+      "scene": 2,
+      "x": 30,
+      "y": 17,
+      "level": 1
+    },
+    {
+      "id": "reuse",
+      "q": "How do I use one block in many places?",
+      "scene": 3,
+      "x": 26,
+      "y": 18,
+      "level": 2
+    },
+    {
+      "id": "solid-wall",
+      "q": "How do I make a wall Lena cannot walk through?",
+      "scene": 3,
+      "x": 48,
+      "y": 18,
+      "level": 2
+    },
+    {
+      "id": "count",
+      "q": "How do I see how many blocks a game has used?",
+      "scene": 3,
+      "x": 54,
+      "y": 17,
+      "level": 2
+    }
+  ],
+  "pages": [
+    {
+      "head": "Welcome",
+      "html": "<h1>Welcome</h1><p><b>150 Blocks</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has two short levels about the 150 blocks a game gets, and takes a few minutes to finish.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each idea is made.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. <kbd>Space</kbd> jumps. <kbd>F2</kbd> shows your lives and score. Walk into the door at the end of a level to go on.</p><h2>The one idea</h2><p>Every picture in a level is made of <b>blocks</b>, 20 by 20 pixels each, and a game has room for 150 of them. A picture bigger than one block is cut up like tiles, and a block can be used in as many places as you like. So the way to draw a lot is to draw a little, and use it again.</p>"
+    },
+    {
+      "head": "Level 1: One Big Picture",
+      "html": "<h1>Level 1: One Big Picture</h1><p>Three signs stand before a stone tower. <b>ONE BIG PICTURE IS MANY BLOCKS</b> says what it is. <b>THIS TOWER TOOK 18 BLOCKS</b> counts them: it is four blocks wide and five high, which is twenty places, but the empty corners are plain sky and use the sky block that was already there. <b>A PICTURE IS NOT SOLID. WALK IN</b> asks Lena to try it, and they walk right in through the door and out the other side.</p><p>Four coins lie past the tower, and two more are up in the air. Jump for those.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 1 is made</h1><ul><li><b>Cut into tiles.</b> Open <b>blocks.bbl</b> in the blocks editor and find the blocks named <b>tower</b>. The tower was drawn once as one picture, 80 by 100 pixels, then cut into twenty 20 by 20 squares. Each square is a block, and the editor shows them in order.</li><li><b>Laid in the map.</b> Open <b>one.map</b> in the map editor and find the tower: its blocks are set in a rectangle, four across and five down, in the same order they were cut. Put them anywhere in that shape and the picture comes back together.</li><li><b>Empty corners cost nothing.</b> The four squares at the top corners are only sky, so the map uses the plain <b>sky</b> block there. No new block was needed.</li><li><b>Not solid.</b> Every tower block has <b>Gravity</b> down and no <b>Solid</b> sides, like sky, so Lena walks through and falls through. A picture is only a wall if you check Solid on its blocks.</li><li><b>The count.</b> The sign beside it is a picture too, made of its own blocks. Signs spend blocks as well, so a game with many signs has fewer left for art.</li></ul>"
+    },
+    {
+      "head": "Level 2: Use It Again",
+      "html": "<h1>Level 2: Use It Again</h1><p>The <b>ONE BLOCK CAN BE USED AGAIN</b> sign comes first, then <b>8 HOUSES, ONLY 6 BLOCKS</b>. Eight little houses stand in a row, red roofs and blue roofs taking turns, and they are made from six blocks between them. Past them, <b>EVERY COPY ACTS THE SAME</b> stands before a brick wall. Lena walks into it and stops, then jumps over.</p><p>The last sign counts every block in the game against the 150. Nine coins in all, some of them above the houses and above the sign.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 2 is made</h1><ul><li><b>Six blocks, thirty-two places.</b> A house is two blocks wide and two high, and each has a roof on top and a wall with a window and a door below. The red and the blue house have different roofs but the <b>same walls</b>, so the walls are the same two blocks in both. That makes six blocks: four roof pieces and two wall pieces. Open <b>two.map</b> and see the same names again and again.</li><li><b>Used again.</b> A block costs one of the 150 however many times the map uses it. A thousand copies and one copy cost the same. What takes room is a picture that is different in every place.</li><li><b>Every copy acts the same.</b> The rules of a block (solid, gravity, points) belong to the block, not to the place it is put. The brick wall is the brick block, so every brick of it is solid. A look-alike that Lena could walk through would need to be a block of its own, with its own rules.</li><li><b>The count.</b> Count the blocks in <b>blocks.bbl</b>. The last sign says how many there are.</li></ul>"
+    },
+    {
+      "head": "What it cannot do",
+      "html": "<h1>What it cannot do</h1><p>These are the engine&rsquo;s limits, so you can plan around them.</p><ul><li><b>More than 150 blocks.</b> The background set has 150 places and no more. The editor stops you at the end, and a game cannot swap blocks in and out while it runs.</li><li><b>A block cannot be flipped or turned.</b> A mirror image of a block is a second block, drawn by hand. A symmetric picture still needs both halves, unless its halves are the same.</li><li><b>A block cannot act differently in two places.</b> Solid, gravity, points and what it turns into all belong to the block. A tree that is solid at the trunk and not at the leaves needs different blocks.</li><li><b>A picture cannot be larger than the map.</b> A big picture is only ever a group of blocks, and the game has no idea they belong together. Nothing moves them as one.</li><li><b>Blocks are 20 by 20 pixels.</b> There is no other size and no scaling.</li></ul>"
+    },
+    {
+      "head": "Make it yours",
+      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>In <b>one.map</b>, swap two of the tower&rsquo;s blocks and see the picture break.</li><li>Check <b>Solid</b> on one tower block and walk into it.</li><li>Draw a third house color in <b>blocks.bbl</b> by changing only a roof, and see how few blocks it takes.</li><li>Remove the brick wall by painting sky over it, or build a taller one.</li><li>Count the blocks in <b>blocks.bbl</b> before and after you add a sign.</li></ul><p>The home page&rsquo;s <b>Starters</b> tab has more small games like this one.</p>"
+    }
+  ]
+}

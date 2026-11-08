@@ -9,11 +9,13 @@
 // The other authors' games on the CD (A-J Games, GameLynk, KD Software and the shareware)
 // remain theirs and are offered play-only, so they have no download.
 import type { CatalogEntry } from '../project/files';
+import { isStarterGame } from '../project/starter';
 
 export const RSD_COMPANY = 'Recreational Software Designs';
 
-export function catalogDownloadable(e: Pick<CatalogEntry, 'gam' | 'kind' | 'original' | 'company'>): boolean {
+export function catalogDownloadable(e: Pick<CatalogEntry, 'gam' | 'kind' | 'original' | 'company' | 'series'>): boolean {
   if (!e.gam) return false;
+  if (isStarterGame(e)) return false; // the Starters are simple examples: play them, or edit a copy
   if (e.original) return true;
   return e.kind === 'gameware' && e.company === RSD_COMPANY;
 }

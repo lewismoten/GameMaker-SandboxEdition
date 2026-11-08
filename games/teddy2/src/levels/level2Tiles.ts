@@ -10,7 +10,7 @@ import { bricks, c, canvas, cloud, copy, cut, dirt, grassTop, hedge, leaves, pic
 import { dogHouseLibrary } from '../sprites/library';
 import { halves } from '../sprites/people';
 import { townCrier } from '../sprites/townfolk';
-import { propOn } from '../sprites/klown';
+import { propOn } from '../sprites/clown';
 import { road, sidewalk, sign } from './common';
 import { CTR } from '../ids';
 

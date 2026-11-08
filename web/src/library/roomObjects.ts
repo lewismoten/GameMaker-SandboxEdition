@@ -18,7 +18,7 @@ const LINE = 'stroke="var(--wood-dark)" stroke-width="1.5" stroke-linejoin="roun
 const mix = (a: Pt, b: Pt, k: number): Pt => [a[0] + (b[0] - a[0]) * k, a[1] + (b[1] - a[1]) * k];
 
 /** A rectangle on a box's front face, `fx`/`fy` as fractions of its width and height from the lower left. */
-function onFront(f: Faces, fx0: number, fy0: number, fx1: number, fy1: number): { x: number; y: number; w: number; h: number } {
+export function onFront(f: Faces, fx0: number, fy0: number, fx1: number, fy1: number): { x: number; y: number; w: number; h: number } {
   const [bl, br, , tl] = f.front;
   const x0 = mix(bl, br, fx0)[0];
   const x1 = mix(bl, br, fx1)[0];
@@ -26,11 +26,11 @@ function onFront(f: Faces, fx0: number, fy0: number, fx1: number, fy1: number): 
   const yt = mix(bl, tl, fy1)[1];
   return { x: x0, y: yt, w: x1 - x0, h: yb - yt };
 }
-const rect = (r: { x: number; y: number; w: number; h: number }, attrs: string) =>
+export const rect = (r: { x: number; y: number; w: number; h: number }, attrs: string) =>
   `<rect x="${r.x.toFixed(1)}" y="${r.y.toFixed(1)}" width="${r.w.toFixed(1)}" height="${r.h.toFixed(1)}" ${attrs}/>`;
 
 /** One box as drawn faces: the front, top and side in the given fills (the side a little darker). */
-function faces(f: Faces, front: string, top: string, side?: string): string {
+export function faces(f: Faces, front: string, top: string, side?: string): string {
   return (
     (f.side ? `<polygon points="${pts(f.side)}" fill="${side ?? front}" ${LINE}/><polygon points="${pts(f.side)}" fill="#000" opacity=".28"/>` : '') +
     `<polygon points="${pts(f.front)}" fill="${front}" ${LINE}/>` +
@@ -39,7 +39,7 @@ function faces(f: Faces, front: string, top: string, side?: string): string {
 }
 
 /** Wraps drawn parts in an SVG that fits their bounds (a floor shadow included) and says where that is in the room. */
-function spot(body: string, all: Pt[], shadow: Pt[]): Spot {
+export function spot(body: string, all: Pt[], shadow: Pt[]): Spot {
   const xs = [...all, ...shadow].map((p) => p[0]);
   const ys = [...all, ...shadow].map((p) => p[1]);
   const x0 = Math.min(...xs) - 2;
@@ -54,7 +54,7 @@ function spot(body: string, all: Pt[], shadow: Pt[]): Spot {
 }
 
 /** The floor under a box, a little bigger than the box. */
-const footprint = (x0: number, x1: number, z0: number, z1: number): Pt[] => [
+export const footprint = (x0: number, x1: number, z0: number, z1: number): Pt[] => [
   proj(x0 - 0.08, 0, z0 - 0.08),
   proj(x1 + 0.08, 0, z0 - 0.08),
   proj(x1 + 0.08, 0, z1 + 0.08),
@@ -120,7 +120,7 @@ export function deskArt(): Spot {
 }
 
 /** A reading table to the left of the desk, with an open book on it: a slab on four legs, drawn back to front. */
-export const TABLE = { x0: -2.0, x1: -1.15, z0: 0.0, z1: 0.6, h: 0.74 };
+const TABLE = { x0: -2.0, x1: -1.15, z0: 0.0, z1: 0.6, h: 0.74 };
 
 export function tableArt(): Spot {
   const { x0, x1, z0, z1, h } = TABLE;
@@ -142,12 +142,12 @@ export function tableArt(): Spot {
 }
 
 /** Two stools left of the reading table, a floor lamp beside them and a book cart on the right: plain props, clear of the desk and the lane in front of it. */
-export const STOOLS: [number, number][] = [
+const STOOLS: [number, number][] = [
   [-1.85, -0.72],
   [-1.4, -0.72],
 ];
-export const LAMP = { x: 1.8, z: 0.25 };
-export const CART = { x0: 2.15, x1: 2.8, z0: -1.2, z1: -0.92 };
+const LAMP = { x: 1.8, z: 0.25 };
+const CART = { x0: 2.15, x1: 2.8, z0: -1.2, z1: -0.92 };
 
 export function stoolsArt(): Spot {
   const body = STOOLS.map(([cx, cz]) => {

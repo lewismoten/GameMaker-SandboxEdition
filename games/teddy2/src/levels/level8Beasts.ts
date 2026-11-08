@@ -15,7 +15,7 @@ import { scent } from './common';
 import { askBubble } from '../sprites/folks';
 import { bell, ding } from '../sprites/townfolk';
 import { GWINN } from '../sprites/gwinn';
-import { gwinnSits } from '../sprites/klubfolk';
+import { gwinnSits } from '../sprites/clubfolk';
 
 const c = (n: string, k: number) => P.c(n, k);
 

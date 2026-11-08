@@ -81,7 +81,10 @@ export const dogs: OutsideEvent = {
   label: 'Dogs running loose',
   when: 'day',
   ms: 6_500,
-  start: () => roomSound.woof(3),
+  // Gwinn out in front, Teddy right behind her (real barks once sound is unlocked, else the synthesized woofs)
+  start: () => {
+    if (!roomSound.bark('gwinn', 'teddy')) roomSound.woof(3);
+  },
   draw(c, p, t) {
     const x = across(p, 80);
     const g = STREET;
@@ -96,7 +99,7 @@ export const dogs: OutsideEvent = {
     return [x - 8, g - 26, 70, 26];
   },
   press() {
-    roomSound.woof(2);
+    if (!roomSound.bark('gwinn')) roomSound.woof(2);
     return 'Gwinn tears past with somebody’s red mitten, Teddy right behind her, both ears up. Loose again! It wasn’t her. (It was her.)';
   },
 };

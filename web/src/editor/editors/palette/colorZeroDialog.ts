@@ -67,7 +67,7 @@ export function colorZeroPreviews(project: Project, file: string, pal: Uint8Arra
   return { el, refresh };
 }
 
-export function colorZeroDialog(project: Project, file: string, pal: Uint8Array): Promise<void> {
+function colorZeroDialog(project: Project, file: string, pal: Uint8Array): Promise<void> {
   const patches = companionPatches(project.companion, project.gam);
   const look = playerLook(patches);
   const zero = luminance(pal, 0);

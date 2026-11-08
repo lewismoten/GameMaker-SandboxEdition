@@ -73,9 +73,9 @@ export const ROUTES: Route[] = [
   { file: 'road1', w: 94, signals: [stop(80), light(68, 9), light(57, 4), stop(46), light(35, 11), light(24, 1), light(12, 7)], fork: 55, tower: 48 },
   { file: 'road2', w: 94, signals: [light(81, 6), light(71, 10), light(61, 2), light(51, 8), stop(40), light(29, 5), light(18, 0), light(8, 9)], tower: 45 },
 ];
-/** Where the car starts (level x) and where the street leaves the scene. */
+/** Where the car starts (level x) and where the street leaves the scene: the last shop door, touched. */
 export const startX = (r: Route) => r.w - 9;
-export const EXIT_X = 1;
+export const EXIT_X = 2;
 
 /** A light's phase at ring member `m`. */
 export const phaseOf = (m: number) => LIGHT[m % LIGHT.length];
@@ -103,9 +103,29 @@ export function driveBlocks(pal: Pal): Kit {
     return p;
   };
   book.add('brick', brick(), AIR);
-  const win = brick();
-  win.rect(4, 3, 12, 14, c('paint', 3)).rect(5, 4, 10, 12, c('siding', 1)).rect(5, 4, 4, 5, c('siding', 3)).rect(9, 4, 1, 12, c('paint', 3));
-  book.add('window', win, AIR);
+  // three windows, so a row of shops doesn't repeat one pane: a glint top left, a glint top right with a
+  // paler low pane, and a shade half drawn over a glint at the bottom right
+  const glass = (glints: (w: Pixels) => void) => {
+    const w = brick();
+    w.rect(4, 3, 12, 14, c('paint', 3)).rect(5, 4, 10, 12, c('siding', 1));
+    glints(w);
+    return w.rect(9, 4, 1, 12, c('paint', 3));
+  };
+  book.add(
+    'window',
+    glass((w) => w.rect(5, 4, 4, 5, c('siding', 3))),
+    AIR,
+  );
+  book.add(
+    'window2',
+    glass((w) => w.rect(10, 4, 5, 5, c('siding', 3)).rect(5, 11, 4, 5, c('siding', 2))),
+    AIR,
+  );
+  book.add(
+    'window3',
+    glass((w) => w.rect(5, 4, 10, 5, c('paint', 2)).rect(5, 8, 10, 1, c('paint', 1)).rect(10, 11, 5, 5, c('siding', 3))),
+    AIR,
+  );
   for (const [y, name] of [
     [2, 'cornice2'],
     [3, 'cornice3'],
@@ -152,6 +172,13 @@ export function driveBlocks(pal: Pal): Kit {
     book.add(`tower${i}.l`, l, AIR);
     book.add(`tower${i}.r`, r, AIR);
   });
+  // where the tower meets the shops: the cornice with the stone shaft carried down through its sky rows to the ledge
+  const base = new Pixels(40, 20, 0);
+  for (const x of [0, 20]) base.blit(skyRow(4), x, 0).blit(brick().crop(0, 0, 20, 14), x, 6);
+  base.rect(0, 4, 40, 3, c('stone', 3)).rect(0, 7, 40, 1, c('stone', 1));
+  stone(base, 0, 4);
+  book.add('towerbase.l', base.crop(0, 0, 20, 20), AIR);
+  book.add('towerbase.r', base.crop(20, 0, 20, 20), AIR);
   const awning = brick();
   for (let x = 0; x < 20; x += 6) awning.rect(x, 0, 3, 12, c('accent', 2)).rect(x + 3, 0, 3, 12, c('paint', 3));
   for (let x = 0; x < 20; x += 3) awning.rect(x, 12, 2, 2, c('accent', 1));
@@ -246,6 +273,9 @@ export function driveBlocks(pal: Pal): Kit {
   return k;
 }
 
+/** Which of the three windows a cell gets: mixed along the street and up each shop, never the same all the way down a column. */
+const windowAt = (x: number, y: number): string => ['window', 'window2', 'window3'][(Math.floor(x / 3) * 2 + y) % 3];
+
 /** One of the drives: the street, the shops along it, a corner at every signal. */
 export const drive = (r: Route) =>
   function drive(book: Kit['book']): Level {
@@ -266,17 +296,17 @@ export const drive = (r: Route) =>
       if (tx === 0 || tx === 1) {
         // the clock tower rises over the shops (a spire in the sky rows above the shops' wall)
         for (let y = 0; y < 4; y++) m.set(x, y, `tower${y}.${tx ? 'r' : 'l'}`);
-        for (let y = 4; y < top - 1; y++) m.set(x, y, y === 4 ? 'cornice4' : x % 3 === 1 ? 'window' : 'brick');
+        for (let y = 4; y < top - 1; y++) m.set(x, y, y === 4 ? `towerbase.${tx ? 'r' : 'l'}` : x % 3 === 1 ? windowAt(x, y) : 'brick');
         m.set(x, top - 1, 'brick')
           .set(x, top, 'awning')
           .set(x, row, 'shop');
         continue;
       }
       m.set(x, roof, `cornice${roof}`);
-      for (let y = roof + 1; y < top - 1; y++) m.set(x, y, x % 3 === 1 ? 'window' : 'brick');
+      for (let y = roof + 1; y < top - 1; y++) m.set(x, y, x % 3 === 1 ? windowAt(x, y) : 'brick');
       // every other shop hangs out its sign over the awning (what it sells, in pictures)
       const sign = x % 12 === 3 ? SHOP_SIGNS[(Math.floor(x / 12) + w) % SHOP_SIGNS.length] : undefined;
-      m.set(x, top - 1, sign ? `sign.${sign}` : x % 3 === 1 ? 'window' : 'brick');
+      m.set(x, top - 1, sign ? `sign.${sign}` : x % 3 === 1 ? windowAt(x, top - 1) : 'brick');
       m.set(x, top, 'awning');
       m.set(x, row, x % 6 === 2 ? 'door' : 'shop');
     }

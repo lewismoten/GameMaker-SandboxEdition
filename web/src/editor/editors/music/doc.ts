@@ -9,7 +9,7 @@ import { readSong, RHYTHM_CHANNELS, writeSong, type CmfSong, type Note, DRUM_NAM
 import { presetName } from './sbi';
 import { presetPreview } from '../../../audio/oplPresetPreview';
 import type { OplPreset } from '../../../audio/oplPatch';
-import { instrumentLook } from './instrumentLook';
+import { groupColor, instrumentLook } from './instrumentLook';
 import { orderTracks } from './trackOrder';
 import { isReadOnlyError } from '../../core/readOnly';
 
@@ -20,12 +20,13 @@ type Change = 'song' | 'view' | 'track' | 'play';
 interface Step {
   song: Uint8Array;
   order: number[];
+  extra: number[];
 }
 
 const ORDER_SECTION = 'trackOrder';
 
 /** One color per MIDI channel, from the EGA palette. */
-export const TRACK_COLORS = [
+const TRACK_COLORS = [
   '#55ffff',
   '#ff55ff',
   '#ffff55',
@@ -62,12 +63,6 @@ export const SNAPS: [number, string][] = [
   [0, 'Off'],
 ];
 
-/** A track's color: its instrument's group color, else its channel's own. */
-export function trackColorOf(song: CmfSong, ch: number): string {
-  const inst = song.instruments[startProgram(song, ch)];
-  return instrumentLook(inst).color ?? TRACK_COLORS[ch];
-}
-
 /** Resolves just after the next paint (or soon, when no frames are being drawn). */
 function afterPaint(): Promise<void> {
   return new Promise((done) => {
@@ -101,6 +96,7 @@ export class MusicDoc {
 
   private undoStack: Step[] = [];
   private redoStack: Step[] = [];
+  private pendingStep?: Step;
   private listeners = new Set<(c: Change) => void>();
   private saveTimer?: ReturnType<typeof setTimeout>;
   private preview?: { p: Preview; t0: number };
@@ -157,8 +153,13 @@ export class MusicDoc {
     return orderTracks([...set], this.order);
   }
 
+  /** The track's family color; a later track of the same family is a shade apart. */
   trackColor(ch: number): string {
-    return trackColorOf(this.song, ch);
+    const inst = this.song.instruments[startProgram(this.song, ch)];
+    const family = instrumentLook(inst).family;
+    if (!family) return TRACK_COLORS[ch];
+    const same = this.tracks().filter((c) => instrumentLook(this.song.instruments[startProgram(this.song, c)]).family === family);
+    return groupColor(family, Math.max(0, same.indexOf(ch)));
   }
 
   trackName(ch: number): string {
@@ -195,13 +196,18 @@ export class MusicDoc {
 
   /** Call before changing the song (once per gesture). */
   begin(): void {
-    this.undoStack.push(this.step());
-    if (this.undoStack.length > 200) this.undoStack.shift();
-    this.redoStack = [];
+    // Do not consume history (or redo) until this gesture is accepted.
+    this.pendingStep = this.step();
   }
 
   /** Call after changing the song. */
   commit(): void {
+    if (this.pendingStep) {
+      this.undoStack.push(this.pendingStep);
+      if (this.undoStack.length > 200) this.undoStack.shift();
+      this.pendingStep = undefined;
+      this.redoStack = [];
+    }
     extendEnd(this.song);
     this.scheduleSave();
     this.emit('song');
@@ -213,7 +219,7 @@ export class MusicDoc {
 
   /** A gesture that changed nothing: forget its undo step. */
   undoDiscard(): void {
-    this.undoStack.pop();
+    this.pendingStep = undefined;
   }
 
   edit(fn: () => void): void {
@@ -245,7 +251,7 @@ export class MusicDoc {
   }
 
   private step(): Step {
-    return { song: writeSong(this.song), order: [...this.tracks()] };
+    return { song: writeSong(this.song), order: [...this.tracks()], extra: [...this.extra] };
   }
 
   /** Lists the tracks in this order (one undo step; the song file is not touched). */
@@ -253,6 +259,7 @@ export class MusicDoc {
     const now = this.tracks();
     if (order.length === now.length && order.every((c, i) => c === now[i])) return;
     this.undoStack.push(this.step());
+    if (this.undoStack.length > 200) this.undoStack.shift();
     this.redoStack = [];
     this.storeOrder(order);
     this.emit('song');
@@ -270,6 +277,7 @@ export class MusicDoc {
   private restore(step: Step): void {
     if (step.order.join() !== this.tracks().join()) this.storeOrder(step.order);
     this.song = readSong(step.song);
+    this.extra = new Set(step.extra);
     this.selection.clear();
     this.commit();
     this.emit('track');

@@ -8,7 +8,7 @@ import { sceneUses, type SceneUse } from './refs';
 
 const COLS = 15;
 const COUNT = { bbl: BACKBL, mbl: MONBL, cbl: CHARBL } as const;
-export type SheetKind = keyof typeof COUNT;
+type SheetKind = keyof typeof COUNT;
 
 /** The extension of a block file name if it is one. */
 export const sheetKind = (name: string): SheetKind | undefined => {

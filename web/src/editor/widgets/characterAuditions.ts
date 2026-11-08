@@ -21,7 +21,7 @@ export interface CharacterAudition {
   monsters?: Monster[];
   monsterBlocks?: Block[];
 }
-export interface CharacterAuditions {
+interface CharacterAuditions {
   blocks: Block[];
   sequences: CharacterAudition[];
   pose?: Frame;

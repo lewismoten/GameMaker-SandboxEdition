@@ -13,6 +13,7 @@ import { Actor, loadSprites } from './actor';
 import { findTarget, revealer, visible, waitFor } from './findTarget';
 import { menuHandle, overlayHandle, type Opened } from './tourOpen';
 import { barOnTop, steadyRect, offStage, placeBubble, standBy, type Point, type Rect } from './place';
+import { hasClip, loadClipIndex, type ClipIndex } from './voiceIndex';
 import { HOSTS, PROPS, captionOf, cssList, stepMs, voiceUrl, type Chapter, type HostId, type PageAct, type TourStep } from './steps';
 import { TourSound } from './tourSound';
 import { TourRecorder } from './tourRecorder';
@@ -22,11 +23,12 @@ import { hushDemos } from '../media/demoAudio';
 
 /** Asks the page's game preview to start or stop (homeShowcase.ts listens). */
 const tourDemo = (what: 'play' | 'stop') => window.dispatchEvent(new CustomEvent('gm-tour-demo', { detail: what }));
+import { askPage } from './pageAct';
 import { onDosPage, pageHere, pageOf } from './tourPages';
 import { parseHash, setHashParams } from '../urlState';
 import type { Sprite } from '../cast/castStageDraw';
 
-export interface TourOptions {
+interface TourOptions {
   record?: boolean;
   /** Carrying on from another page: no Start card when the sound can start without a click. */
   cont?: boolean;
@@ -41,7 +43,7 @@ const rectOf = (el: Element): Rect => {
 const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 const announce = (what: 'start' | 'end') => window.dispatchEvent(new CustomEvent('gm-tour', { detail: what }));
 /** Asks the page to do something for a step (steps.ts PageAct; the desk's deskTour.ts listens). */
-const pageAct = (act: PageAct) => window.dispatchEvent(new CustomEvent('gm-tour-act', { detail: act }));
+const pageAct = (act: PageAct) => askPage(act);
 
 /** A localStorage value, or null (none, or no storage). */
 const stored = (key: string): string | null => {
@@ -90,6 +92,8 @@ export class Tour {
   private props: Actor[] = [];
   /** Menus and overlays the tour opened, by their handle's key (tourOpen.ts). */
   private opened = new Map<unknown, Opened>();
+  /** Openers whose control was not on the page, so later steps behind them wait less for it. */
+  private unopenable = new Set<unknown>();
   /** Where the keyboard goes back once a menu that kept it for a press is done with (focusBack). */
   private focusLater?: HTMLElement;
   /** Steps whose page act was asked for (once a tour), and the chapters they were in. */
@@ -146,7 +150,16 @@ export class Tour {
   }
 
   /** Starts from a click (the sound may start), or from the address (recording mode asks for a click first). */
+  /** Which steps have a recorded clip (voiceIndex.ts); every step is assumed to until it has loaded. */
+  private clips?: ClipIndex;
+
+  /** A step's clip address, or none when the index says there is none. */
+  private clipUrl(chapter: Chapter, step: TourStep): string | undefined {
+    return hasClip(this.clips, chapter.id, step.id) ? voiceUrl(chapter, step) : undefined;
+  }
+
   async start(): Promise<void> {
+    void loadClipIndex().then((index) => (this.clips = index));
     now.tour?.end();
     now.tour = this;
     document.documentElement.classList.toggle('tour-recording', !!this.opts.record);
@@ -261,16 +274,19 @@ export class Tour {
     for (const [k, m] of this.opened) if (k !== need?.key) (this.closeKeepingFocus(m), this.opened.delete(k));
     let target = step.target ? findTarget(step.target) : undefined;
     this.focusBack();
+    // an opener that failed already is tried briefly, not for the full wait again
+    const patience = step.target?.in && this.unopenable.has(step.target.in) ? 300 : 3000;
     if (need && step.target && (!target || !need.isOpen())) {
       await this.openKeepingFocus(need, step.action === 'press' && !!step.click);
       if (!this.live(token)) return;
       // a menu opens at once; a panel may load first
-      for (let t = 0; t < 3000 && !(target = findTarget(step.target)); t += 100) {
+      for (let t = 0; t < patience && !(target = findTarget(step.target)); t += 100) {
         await sleep(100);
         if (!this.live(token)) return;
       }
     }
     if (step.target && !target) {
+      if (step.target.in) this.unopenable.add(step.target.in);
       console.warn(`Tour: nothing on the page for ${step.id} (${cssList(step.target.css).join(', ')})`);
       this.bar.dataset.missing = step.id;
       if (step.optional) return this.go(this.i + 1);
@@ -281,9 +297,9 @@ export class Tour {
     this.caption.textContent = captionOf(chapter, step);
     // the clip starts with the bubble (after the hosts have walked), never before it
     let voice: Promise<number> = Promise.resolve(0);
-    const speak = () => (voice = this.sound.speak(voiceUrl(chapter, step)));
+    const speak = () => (voice = this.sound.speak(this.clipUrl(chapter, step)));
     // the next steps' clips load while this one plays (a clip that is late stays silent)
-    for (const up of this.flat.slice(this.i + 1, this.i + 3)) this.sound.prefetch(voiceUrl(up.chapter, up.step));
+    for (const up of this.flat.slice(this.i + 1, this.i + 3)) this.sound.prefetch(this.clipUrl(up.chapter, up.step));
     await this.act(chapter, step, target, token, speak);
     if (!this.live(token)) return;
     const said = await voice;
@@ -372,7 +388,7 @@ export class Tour {
     for (const m of this.opened.values()) this.closeKeepingFocus(m);
     this.opened.clear();
     const chapter = this.chapterShown;
-    if (chapter?.leave && this.actedIn.delete(chapter)) pageAct({ do: chapter.leave });
+    if (chapter?.leave && this.actedIn.delete(chapter)) void pageAct({ do: chapter.leave });
     const kept = this.kept;
     this.kept = undefined;
     if (!kept || kept.chapter !== chapter) return;
@@ -461,9 +477,14 @@ export class Tour {
           a.place({ x: room.left + (room.width * out[0]) / 100 - a.size.w / 2, y: room.top + (room.height * out[1]) / 100 - a.size.h });
         else a.place({ x: r.left + r.width / 2 - a.size.w / 2, y: r.bottom - a.size.h });
         visitor?.remove();
-        // Joe starts as big as he stands in the room, then shrinks to tour size as he slides to his spot
-        if (!visitor && r.width > a.size.w && !this.still) a.startAt({ w: r.width, h: (r.width * a.size.h) / a.size.w });
-      } else a.place(offStage(a.size, this.view(), this.floor(), false));
+        // Joe or the visitor starts as big as they stand in the room (a visitor is drawn bigger than a tour
+        // host), then shrinks to tour size as they walk to their spot, never popping smaller where they stood
+        if (r.width > a.size.w && !this.still) a.startAt({ w: r.width, h: (r.width * a.size.h) / a.size.w });
+      } else {
+        a.place(offStage(a.size, this.view(), this.floor(), false));
+        // a visitor still walking in from the edge is the same person: the host takes their place, never a second copy
+        visitor?.remove();
+      }
       a.el.dataset.host = id;
       this.layer.append(a.el);
       this.hosts.set(id, a);
@@ -520,14 +541,18 @@ export class Tour {
         if (!this.live(token)) return;
       }
     } else this.sound.effect(step.sound);
+    let held: Promise<void> = Promise.resolve();
     if (step.act && !this.acted.has(step.id)) {
       this.acted.add(step.id);
       this.actedIn.add(chapter);
-      pageAct(step.act);
+      held = pageAct(step.act);
     }
     if (step.demo) tourDemo(step.demo);
     if (!this.live(token)) return;
     if (step.action === 'enter' && actor) await actor.hop(this.still);
+    if (!this.live(token)) return;
+    // a held line waits for the page (the BBS's handle prompt on the screen)
+    await held;
     if (!this.live(token)) return;
     this.say(step, speaker, box);
     speak();

@@ -156,6 +156,7 @@
 
 .lib-o-joe,
 .lib-o-notebook,
+.lib-o-toybox,
 .lib-o-trash {
   left: var(--l);
   bottom: var(--b);
@@ -164,6 +165,7 @@
 
 .lib-o-catalog,
 .lib-o-copier,
+.lib-o-tv,
 .lib-o-lspace {
   left: var(--l);
   top: var(--t);
@@ -194,7 +196,8 @@
   z-index: 4;
 }
 
-.lib-o-trash {
+.lib-o-trash,
+.lib-o-toybox {
   z-index: 3;
 }
 
@@ -203,8 +206,14 @@
   z-index: 3;
 }
 
+/* the cart stands in front of the stools and the reading table */
+.lib-o-tv {
+  z-index: 4;
+}
+
 .lib-o-catalog svg,
-.lib-o-copier svg {
+.lib-o-copier svg,
+.lib-o-tv svg {
   height: 100%;
 }
 
@@ -370,5 +379,18 @@
   .lib-obj svg,
   .lib-obj canvas {
     transition: filter 0.15s;
+  }
+}
+
+/* the VCR's display blinks 12:00, about a second on and a second off; steady for anyone who asks for less motion */
+@media (prefers-reduced-motion: no-preference) {
+  .av-blink {
+    animation: av-blink 2s steps(1, end) infinite;
+  }
+}
+
+@keyframes av-blink {
+  50% {
+    opacity: 0.08;
   }
 }

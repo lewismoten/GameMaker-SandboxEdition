@@ -175,5 +175,6 @@ export function printables(): unknown {
         html: "<p>We were asked not to print anything about <b>BAKER'S DOZEN</b>. So we will only say that it has thirteen rooms, a rubber chicken, and a recipe the British would very much like back. If you have a copy, you found it. Count the eggs again.</p>",
       },
     ],
+    worldMap: { regions: [] },
   };
 }

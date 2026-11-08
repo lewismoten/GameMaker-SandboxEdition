@@ -40,6 +40,8 @@ export class TextKeys {
     const k = e as KeyboardEvent;
     if (!this.enabled || k.metaKey) return;
     if (k.key === 'Shift' || k.key === 'Control' || k.key === 'Alt' || k.key === 'CapsLock') return;
+    // Shift+Tab is the way out of the screen for a keyboard (the DOS programs here never read it), so focus is not trapped
+    if (k.key === 'Tab' && k.shiftKey && !k.ctrlKey && !k.altKey) return;
     k.preventDefault();
     this.push({ key: k.key, code: k.code, ctrl: k.ctrlKey, shift: k.shiftKey, alt: k.altKey });
   };
@@ -98,12 +100,26 @@ export class TextKeys {
     this.queue.length = 0;
   }
 
+  /** Uses up a waiting Ctrl+C or Ctrl+Break (DOS looks for one between a batch file's lines). */
+  takeBreak(): boolean {
+    if (this.aborting) throw new ProgramAborted();
+    const i = this.queue.findIndex(isBreak);
+    if (i < 0) return false;
+    this.queue.splice(i, 1);
+    return true;
+  }
+
   /** Rejects pending waits by handing them Escape (used when a program is cut short). */
   cancel(): void {
     const w = this.waiters;
     this.waiters = [];
     w.forEach((f) => f.resolve(key('Escape')));
   }
+}
+
+/** Ctrl+C, or Ctrl+Break (Ctrl+Pause). */
+export function isBreak(k: Key): boolean {
+  return k.ctrl && (k.key === 'c' || k.key === 'C' || k.key === 'Pause' || k.key === 'Cancel');
 }
 
 export function key(k: string): Key {

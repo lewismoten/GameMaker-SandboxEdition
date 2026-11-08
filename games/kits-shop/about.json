@@ -1,0 +1,33 @@
+{
+  "title": "Kit's Shop",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "hero": "KIT",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.0",
+  "blurb": "One level about a shop. Coins in the street add to your Money, and in the shop each thing on the shelf has a price on its roof: a gold key for three, a silver key for three and a heart for two. Pay and you get it, and the stall says SOLD; with too few coins, nothing happens. The exit is locked with two gates, so you need both keys. Signs say how. Play it, then open it in Game-Maker and set a price of your own.",
+  "exe": "KITSSHOP.EXE",
+  "dosName": "KITSSHOP",
+  "sound": "sb",
+  "label": {
+    "background": "#e8f6ff",
+    "band": "#c9892a",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "1 short level",
+    "hours": 1,
+    "background": "#c9892a",
+    "accent": "#ffd23f",
+    "ink": "#ffffff",
+    "tagline": "Everything on the shelf has a price.",
+    "back": "A small explorer in a teal beanie gathers coins in the street and walks into a shop. A gold key and a silver key cost three each, a heart costs two, and the exit wants both keys. Each thing can be bought once, and then the stall says SOLD. Read the signs, then open the game in Game-Maker and set a price of your own.",
+    "features": ["Signs in the level explain each idea", "Three stalls, each with its price on the roof", "Made to be copied and taken apart"],
+    "shots": [["one.map", 22, 6]],
+    "rating": "Everyone"
+  },
+  "acceptedFindings": ["facing s2 The hero climbs side on"]
+}

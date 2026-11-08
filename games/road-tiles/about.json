@@ -1,0 +1,39 @@
+{
+  "title": "Road Tiles",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "hero": "KIT",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.1",
+  "blurb": "Three short levels about drawing roads out of blocks. Level 1 is straight pieces and round corners that curve the road into the grass. Level 2 is a road that bends up onto a diagonal and down onto another, made of a band block and the corner triangles beside it. Level 3 lays one road across grass, sand and water, with a crossroads, a T, a blend block where grass runs into sand and a bridge. Signs name each piece, and the pages say how many blocks a set needs and how to draw each once and flip or turn it. Play it, then open it in Game-Maker and look at the blocks.",
+  "exe": "ROADTILE.EXE",
+  "dosName": "ROADTILE",
+  "sound": "sb",
+  "label": {
+    "background": "#e8f0e0",
+    "band": "#4a5a68",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "3 short levels",
+    "hours": 1,
+    "background": "#4a5a68",
+    "accent": "#ffd23f",
+    "ink": "#ffffff",
+    "tagline": "Draw it once, turn it, flip it.",
+    "back": "A small explorer in a teal beanie follows three roads seen from above: straight pieces and round corners, a road that climbs a diagonal, and a road across grass, sand and water with a crossroads and a bridge. Every piece is one block. Read the signs, then open the game in Game-Maker and look at the blocks.",
+    "features": [
+      "Signs in the levels name each piece",
+      "Level 1 round corners, level 2 diagonals, level 3 crossroads, blends and a bridge",
+      "Made to be copied and taken apart"
+    ],
+    "shots": [
+      ["one.map", 16, 10],
+      ["three.map", 16, 10]
+    ],
+    "rating": "Everyone"
+  }
+}

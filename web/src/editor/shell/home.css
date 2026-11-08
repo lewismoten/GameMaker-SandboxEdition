@@ -140,6 +140,8 @@
 .lib-about {
   /* tall enough for its tallest state (the how-it-works button shown, 29px), so the tiles below don't jump while the collection loads */
   min-height: 29px;
+  /* in the library's column it must not shrink to that when Sort, Show and the buttons wrap onto more lines (they sat over the tiles) */
+  flex-shrink: 0;
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
@@ -260,11 +262,6 @@
   outline: none;
 }
 
-.lib-drop-tile:has(.lib-drop-pick:focus-visible) {
-  outline: 3px solid var(--focus);
-  outline-offset: 2px;
-}
-
 .lib-drop-hint {
   margin: 0;
   padding: 0 10px 5px;
@@ -347,6 +344,13 @@
 /* under a maker's heading, the tiles leave the maker out (home.ts pack()) */
 .lib-by-maker .tile-meta {
   display: none;
+}
+
+/* a Starters group's line about itself, after its name (one row of the grid, so the line has room) */
+.lib-sub-tag {
+  font-weight: 400;
+  letter-spacing: normal;
+  text-transform: none;
 }
 
 /* a maker's game count, after the name */
@@ -705,9 +709,12 @@
   outline: none;
 }
 
-.game-tile:has(.tile-select:focus-visible) {
-  outline: 3px solid var(--focus);
-  outline-offset: 2px;
+/* two bands: an orange one next to the tile and the text color outside it, so it shows on any page color in light and dark, and looks nothing like the primary button */
+.game-tile:has(.tile-select:focus-visible),
+.lib-drop-tile:has(.lib-drop-pick:focus-visible) {
+  outline: 3px solid var(--text);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 3px var(--focus);
 }
 
 .tile-title {
@@ -909,7 +916,7 @@ a.button.with-ico {
   overflow: auto;
 }
 
-.health-report h4 {
+.health-report h3 {
   margin: 14px 0 4px;
 }
 
@@ -1099,4 +1106,187 @@ a.button.with-ico {
   padding: 3px 6px;
   font: inherit;
   color: var(--text);
+}
+
+/* a game the search found by words inside it says where (homeDeepSearch.ts) */
+.tile-hint {
+  display: block;
+  font-size: 0.8em;
+  font-style: italic;
+  overflow-wrap: anywhere;
+}
+
+/* Recently deleted (recentlyDeletedDialog.ts) */
+.rd-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 6px 0;
+  border-top: 1px solid var(--border);
+}
+
+.rd-what {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.rd-what small {
+  color: var(--muted);
+}
+
+/* Damaged copies (damagedCopiesDialog.ts): a long list scrolls inside the dialog */
+.dc-list {
+  max-height: 45vh;
+  overflow-y: auto;
+}
+
+.dc-acts {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+/* a Starter played to its ending: a check pill at the bottom right of its picture (homeDone.ts);
+   dark green with white words and a white edge, so it reads over any picture, light or dark */
+.tile-done {
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px 2px 6px;
+  border: 1.5px solid #fff;
+  border-radius: 999px;
+  background: #0b5c2e;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.3;
+  pointer-events: none;
+}
+/* a letter grade in place of "Done": letters, so the grade never rests on color; blue-gray to tell it from the green */
+.tile-grade {
+  padding: 2px 9px;
+  background: #1f4e79;
+  font-variant-numeric: tabular-nums;
+}
+.lib-done select {
+  padding: 3px 6px;
+  font: inherit;
+  color: var(--text);
+}
+
+/* Graduations: a padlock tile while locked (gray scroll and padlock, a rule, a progress bar), a gold ring once open */
+.grad-tile .grad-art {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 9px 9px 0 0;
+}
+.grad-rule {
+  white-space: normal;
+}
+.grad-progress {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+  font-size: 12px;
+}
+.grad-bar {
+  flex: 1;
+  height: 8px;
+  border-radius: 4px;
+  background: var(--border);
+  overflow: hidden;
+}
+.grad-bar > span {
+  display: block;
+  height: 100%;
+  background: #8a6a00;
+}
+.game-tile[data-grad='open'] {
+  outline: 3px solid #d4a017;
+  outline-offset: -1px;
+}
+.grad-missing {
+  margin: 0;
+  padding-left: 20px;
+  max-height: 50vh;
+  overflow: auto;
+}
+.grad-missing li {
+  margin: 4px 0;
+}
+
+/* "Ready to graduate": a gold strip above every group on the Starters tab, one row per open graduation */
+.lib-tiles > .grad-ready {
+  grid-column: 1 / -1;
+  padding: 10px 14px;
+  border: 3px solid #d4a017;
+  border-radius: 10px;
+  background: color-mix(in srgb, #d4a017 14%, var(--surface, transparent));
+}
+.grad-ready h3 {
+  margin: 0 0 6px;
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.grad-ready ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.grad-ready li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 4px 0;
+}
+.grad-ready-title {
+  flex: 1 1 8em;
+  font-weight: 700;
+}
+.grad-ready-pic {
+  flex: none;
+  padding: 0;
+  border: 2px solid #d4a017;
+  border-radius: 6px;
+  background: #000;
+  line-height: 0;
+  cursor: pointer;
+}
+.grad-ready-shot {
+  display: block;
+  width: 96px;
+  height: 60px;
+  border-radius: 4px;
+}
+.grad-ready .button {
+  min-height: 32px;
+  min-width: 96px;
+}
+@media (pointer: coarse) {
+  .grad-ready .button {
+    min-height: 44px;
+  }
+}
+
+/* "One more B ... until your next certificate!": one line above the Starters tab's tiles */
+.lib-tiles > .next-certificate {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: 6px 8px;
+  border-left: 4px solid #d4a017;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  overflow-wrap: anywhere;
 }

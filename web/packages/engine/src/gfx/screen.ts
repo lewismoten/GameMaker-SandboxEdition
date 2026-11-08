@@ -8,6 +8,10 @@ export const SIZEX = 320;
 export const SIZEY = 200;
 
 export class Screen {
+  /** Observer metadata only: PLAYGAME's CropScreen is active (no effect on rendering). */
+  dosCropped = false;
+  /** Level number for screen captures; retained during function-key screens. */
+  sceneNumber = 0;
   readonly pixels = new Uint8Array(SIZEX * SIZEY);
   /** Palette currently shown by the "DAC" (6-bit components). */
   readonly palette = new Uint8Array(PALETTE_SIZE);
@@ -161,13 +165,15 @@ export class Screen {
 
   /** drawblk / BufDrawBlk: opaque 20x20 block, clipped. */
   drawBlock(x: number, y: number, pixels: Uint8Array): void {
-    for (let yy = 0; yy < BLEN; yy++) {
-      const sy = y + yy;
-      if (sy < 0 || sy >= SIZEY) continue;
-      for (let xx = 0; xx < BLEN; xx++) {
-        const sx = x + xx;
-        if (sx < 0 || sx >= SIZEX) continue;
-        this.pixels[sy * SIZEX + sx] = pixels[yy * BLEN + xx];
+    // clip once, then copy each row (this runs for every cell of every frame of a replay)
+    const x0 = Math.max(0, -x);
+    const x1 = Math.min(BLEN, SIZEX - x);
+    if (x1 > x0) {
+      const y1 = Math.min(BLEN, SIZEY - y);
+      for (let yy = Math.max(0, -y); yy < y1; yy++) {
+        let from = yy * BLEN + x0;
+        let to = (y + yy) * SIZEX + x + x0;
+        for (let n = x1 - x0; n > 0; n--) this.pixels[to++] = pixels[from++];
       }
     }
     this.dirty = true;

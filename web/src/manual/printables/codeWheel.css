@@ -1,0 +1,244 @@
+/* a game's paper code wheel (codeWheel.ts): card-stock discs, printed or turning on screen */
+.cw-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  font-family: Georgia, 'Times New Roman', serif;
+}
+
+.cw-paper {
+  fill: #f4ecd8;
+  stroke: #3b2f1f;
+  stroke-width: 0.6;
+}
+
+.cw-inner-paper {
+  fill: #fbf5e6;
+  filter: drop-shadow(0 0.8px 1.2px rgba(0, 0, 0, 0.35));
+}
+
+.cw-cell {
+  fill: none;
+  stroke: #8a7556;
+  stroke-width: 0.3;
+}
+
+.cw-hidden-cell {
+  fill: #e8dcc0;
+}
+
+.cw-sym text,
+.cw-center,
+.cw-label {
+  fill: #2a2016;
+}
+
+.cw-glyph {
+  fill: #2a2016;
+}
+
+.cw-nose {
+  fill: #e0262b;
+  stroke: #2a2016;
+  stroke-width: 0.35;
+}
+
+.cw-nose-shine {
+  fill: #fff;
+  opacity: 0.8;
+}
+
+.cw-emblem-text {
+  fill: #2a2016;
+  font-weight: bold;
+}
+
+.cw-emblem-text .cw-nose-o {
+  fill: #e0262b;
+}
+
+.cw-rim {
+  fill: #6b1f12;
+  letter-spacing: 0.6px;
+}
+
+.cw-pointer {
+  fill: #a32a18;
+}
+
+.cw-hub {
+  fill: #efe3c6;
+  stroke: #8a7556;
+  stroke-width: 0.4;
+}
+
+.cw-pin {
+  fill: #b08a3a;
+}
+
+/* printed: cut lines are dashed and the paper is plain white */
+.cw-print .cw-paper {
+  fill: #fff;
+  filter: none;
+}
+
+.cw-print .cw-cut {
+  stroke-dasharray: 2 1.4;
+}
+
+.cw-print .cw-hidden-cell {
+  fill: #f2f2f2;
+}
+
+.cw-sheet {
+  display: flex;
+  flex-direction: column;
+  gap: 2cqw;
+  padding: 5cqw;
+}
+
+.cw-head {
+  display: flex;
+  justify-content: space-between;
+  font-size: 2.4cqw;
+}
+
+.cw-sheet .cw-svg {
+  width: 82cqw;
+  margin: 0 auto;
+}
+
+.cw-sheet .cw-howto,
+.cw-sheet .cw-steps {
+  font-size: 2cqw;
+  line-height: 1.4;
+}
+
+/* on screen: the wheel to turn, and how to use it beside it */
+/* a grid, not a wrapping row: the columns keep their widths whatever the answer line says */
+.cw-live {
+  display: grid;
+  grid-template-columns: minmax(0, 560px) minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+@media (max-width: 640px) {
+  .cw-live {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.cw-dial {
+  width: 100%;
+  max-width: 560px;
+  border-radius: 50%;
+  cursor: grab;
+  touch-action: none;
+  /* turning the disc must not select the lettering under the pointer */
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.cw-dial:active {
+  cursor: grabbing;
+}
+
+/* either disc turns (a slider each); the one with the focus has its edge lit */
+.cw-turn {
+  transition: transform 0.35s ease-out;
+  outline: none;
+}
+
+.cw-turn:focus-visible > .cw-paper {
+  stroke: #e0a000;
+  stroke-width: 1.8;
+}
+
+.cw-side {
+  min-width: 0;
+  font-size: 0.95rem;
+  line-height: 1.45;
+}
+
+.cw-side p {
+  margin: 0 0 0.6em;
+  font-size: inherit;
+}
+
+.cw-asks {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-left: 1.2em;
+}
+
+.cw-asks li span {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.cw-tell {
+  min-height: 32px;
+}
+
+/* what each window shows, upright, beside the wheel */
+.cw-readout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  margin: 0 0 0.8em;
+}
+
+.cw-read-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cw-read-row dt {
+  font-weight: 600;
+}
+
+.cw-read-row dd {
+  margin: 0;
+}
+
+.cw-read-row .cw-answer-sym {
+  width: 2.2em;
+  height: 2.2em;
+}
+
+/* a window's outline, lit when it holds the answer */
+.cw-win {
+  fill: none;
+  stroke: none;
+}
+
+.cw-win.on {
+  stroke: #e0a000;
+  stroke-width: 1.6;
+}
+
+/* the answer's symbol, drawn as on the wheel */
+.cw-answer-sym {
+  display: inline-block;
+  width: 1.8em;
+  height: 1.8em;
+  vertical-align: middle;
+  background: #fbf5e6;
+  border: 1px solid #8a7556;
+  border-radius: 3px;
+}
+
+/* room for a two-line answer kept, so a shorter or longer one doesn't move what's under it */
+.cw-answer {
+  min-height: 2.9em;
+  font-weight: 600;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cw-turn {
+    transition: none;
+  }
+}

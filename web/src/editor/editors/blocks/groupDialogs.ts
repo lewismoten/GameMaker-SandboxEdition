@@ -94,7 +94,7 @@ export function suggestDialog(o: {
       h('label', { class: 'check recolor-check' }, all, h('span', null, 'All of them')),
       h(
         'ul',
-        { class: 'group-suggest-list' },
+        { class: 'group-suggest-list', dataset: { listArea: '' } },
         ...o.suggestions.map((s, i) =>
           h(
             'li',

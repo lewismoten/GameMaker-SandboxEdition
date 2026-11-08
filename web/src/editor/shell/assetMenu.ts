@@ -10,10 +10,10 @@ export interface AssetAction {
 }
 let active: ((focus?: boolean) => void) | undefined;
 
-export function assetMenu(anchor: HTMLElement, actions: AssetAction[], point?: { x: number; y: number }): () => void {
+export function assetMenu(anchor: HTMLElement, actions: AssetAction[], point?: { x: number; y: number }, label = 'File actions'): () => void {
   active?.(false);
   let closed = false;
-  const menu = h('div', { class: 'asset-menu', role: 'menu', 'aria-label': 'File actions', popover: 'auto' });
+  const menu = h('div', { class: 'asset-menu', role: 'menu', 'aria-label': label, popover: 'auto' });
   const close = (focus = true) => {
     if (closed) return;
     closed = true;

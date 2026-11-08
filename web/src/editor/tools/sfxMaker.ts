@@ -14,9 +14,9 @@ import { PRESETS, anyRandom, mutate, randomParams } from '../../audio/sfxPresets
 import { unlockAchievement } from '../../achievements';
 
 /** The companion section that keeps a .VOC's maker settings. */
-export const SFX_SECTION = 'sfx';
+const SFX_SECTION = 'sfx';
 
-export interface SfxMade {
+interface SfxMade {
   /** The .VOC file's name. */
   name: string;
   params: SfxParams;
@@ -36,7 +36,7 @@ interface Options {
 }
 
 /** The settings a .VOC was made with, if the maker made it. */
-export function savedParams(project: Project, file: string): SfxParams | undefined {
+function savedParams(project: Project, file: string): SfxParams | undefined {
   const v = project.extras<unknown>(file, SFX_SECTION, undefined);
   return v ? cleanParams(v) : undefined;
 }
@@ -170,7 +170,7 @@ export function sfxMaker(project: Project, opts: Options = {}): Promise<SfxMade 
       let name = normalize(nameInput.value.trim());
       if (!name.includes('.')) name += '.voc';
       if (!validDosName(name) || !name.endsWith('.voc')) {
-        toast('Use a DOS name: up to 8 letters or digits, then .VOC.', 'error');
+        toast('Use a DOS name: up to 8 letters or digits, then .VOC.', 'error', { repeat: true });
         nameInput.focus();
         return;
       }
@@ -188,7 +188,7 @@ export function sfxMaker(project: Project, opts: Options = {}): Promise<SfxMade 
       presetBar,
       h(
         'div',
-        { class: 'sfxm-body' },
+        { class: 'sfxm-body', dataset: { listArea: '' } },
         h('div', { class: 'sfxm-left' }, waveSeg, wave, info, h('button', { type: 'button', class: 'primary', onclick: () => play(samples) }, '▶ Listen')),
         grid,
       ),

@@ -8,6 +8,8 @@
 //   Story: the game's story text, a page at a time, typed over its levels' pictures.
 // Each gives an ordinary scene, so everything it made can be changed afterwards.
 import { BLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { gameTitle } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { fromCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import { parseMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { parseMonsters } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { textLines } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
@@ -55,7 +57,7 @@ function mapView(l: Level, start = 0): Background {
 
 /** The game's title, as the title screen's scene names it. */
 function titleOf(src: GenerateSource): string {
-  const t = src.game().scenes[0]?.desc?.trim();
+  const t = gameTitle(src.game());
   return (t || src.name || 'MY GAME').toUpperCase();
 }
 
@@ -193,7 +195,7 @@ export function storyText(src: SceneSource): string | undefined {
   const bytes = name ? src.files.get(name) : undefined;
   if (!bytes) return undefined;
   const text = textLines(bytes)
-    .map((l) => l.trim())
+    .map((l) => fromCp437(l).trim())
     .join('\n')
     .replace(/\n{2,}/g, '\n\n')
     .trim();

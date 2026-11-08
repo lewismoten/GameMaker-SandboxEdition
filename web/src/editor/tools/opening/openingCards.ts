@@ -61,7 +61,7 @@ export function presentsText(name: string): { name: TextItem; presents: TextItem
 }
 
 /** The card as a scene: about three seconds, fading in and out like the sting. */
-export function presentsScene(name: string): Scene {
+function presentsScene(name: string): Scene {
   const s = emptyScene();
   s.frames = 40;
   s.speed = 6;

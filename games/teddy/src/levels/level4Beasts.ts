@@ -8,7 +8,7 @@ import { POWER } from '../ids';
 import { newBestiary } from './level';
 import { askBubble, pin } from '../sprites/folks';
 import { dove, marcher, split } from '../sprites/magic';
-import { CK } from '../sprites/klown';
+import { CK } from '../sprites/clown';
 import { c } from '../blocks/tiles';
 
 /** Revolving doors: solid until a spin sets one turning for a while; then it stops again. */

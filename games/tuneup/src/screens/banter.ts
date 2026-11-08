@@ -25,6 +25,7 @@ export const INTRO: Record<number, Card> = {
       ['reggie', 'The spark plugs are out of tune. Pluck them.'],
       ['leo', "Spark plugs don't have strings."],
       ['reggie', 'These do now. Climb the wires, and mind the sparks. They frizz.'],
+      ['leo', 'Hop sideways with Q and E.'],
     ],
   },
   3: {
@@ -50,7 +51,7 @@ export const INTRO: Record<number, Card> = {
     lines: [
       ['leo', 'First, the warm air. It comes up a vent from the motor, through a flap we open under the windshield.'],
       ['reggie', 'The vent is full of little fans. Playing kazoos.'],
-      ['leo', 'A fan band! Ride the warm air up, and reach each fan with Space.'],
+      ['leo', 'A fan band! Ride the warm air up, hop with Q and E, and reach each fan with Space.'],
     ],
   },
   6: {
@@ -86,6 +87,7 @@ export const INTRO: Record<number, Card> = {
       ['reggie', 'Gwinn took the 8-track tapes to bed. She is asleep on the moving blanket.'],
       ['leo', 'Teddy, fetch them. Quietly.'],
       ['reggie', 'Each squeaky toy wakes her a little. A blanket corner tucked in settles her.'],
+      ['leo', 'Teddy hops sideways with Q and E.'],
     ],
   },
   10: {
@@ -103,7 +105,7 @@ export const INTRO: Record<number, Card> = {
     lines: [
       ['leo', 'The horn quit on me once. Now it has its own 10 amp circuit.'],
       ['regina', 'And it honks like a kazoo. The Clown Club horn section will teach it a call.'],
-      ['leo', 'Watch the board, then reach up under each pad in turn. A wrong one blows a raspberry.'],
+      ['leo', 'Watch the board, then reach up under each pad in turn (Space). A wrong one blows a raspberry.'],
     ],
   },
   12: {

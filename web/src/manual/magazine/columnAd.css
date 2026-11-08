@@ -1,0 +1,124 @@
+/* The column ad (sections/columnAd.ts): a tall salmon-pink strip down the left of an article page,
+   after the Game-Maker ads of 1992. Bold condensed serif headlines in small capitals (the serif is
+   condensed by scaling it across, set wider than its box first so it fills the line), plain
+   black-edged screens, a plain sans pitch, a huge toll-free number and small print. It is paper:
+   its colors do not change with the theme. */
+.mag-beside.ad-column {
+  grid-template-columns: 0.8fr 2fr;
+  align-items: stretch;
+}
+
+.mag-halfad.look-column {
+  margin-top: 0;
+  --ink: #0d0a0b;
+}
+
+.look-column .mag-halfad-label {
+  text-align: left;
+  font-size: 0.55em;
+}
+
+.look-column .mag-halfad-frame {
+  justify-content: flex-start;
+  gap: 0.4em;
+  padding: 0.6em 0.6em 0.7em;
+  border: 0;
+  background: #f58d80;
+  color: var(--ink);
+  font-size: 0.8em;
+  line-height: 1.22;
+}
+
+.look-column .mag-halfad-frame h3,
+.look-column .mag-head h3 {
+  width: 128.2%;
+  margin: 0;
+  transform: scaleX(0.78);
+  transform-origin: 0 0;
+  color: var(--ink);
+  font:
+    800 2.7em/0.86 'Times New Roman',
+    Times,
+    serif;
+  font-variant: small-caps;
+  letter-spacing: -0.03em;
+  text-align: center;
+  text-transform: none;
+  white-space: pre-line;
+}
+
+.look-column .mag-head {
+  margin: 0.3em 0 0;
+}
+
+.look-column .mag-head h3 {
+  font-size: 2.7em;
+}
+
+.look-column .mag-bevel {
+  padding: 0;
+  border: 0.14em solid var(--ink);
+  background: var(--ink);
+  box-shadow: none;
+}
+
+.look-column .mag-shot {
+  transform: none;
+}
+
+.look-column .mag-shot img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.look-column p {
+  margin: 0;
+  font:
+    0.95em/1.25 Helvetica,
+    Arial,
+    sans-serif;
+}
+
+.look-column .mag-big {
+  justify-content: center;
+}
+
+.look-column .mag-big-text {
+  font-size: 2.45em;
+  letter-spacing: -0.06em;
+}
+
+.look-column .mag-big + p {
+  text-align: center;
+  font-style: italic;
+  font-size: 0.8em;
+}
+
+.look-column .mag-small {
+  margin-top: auto;
+  padding-top: 0.5em;
+  font:
+    italic 0.74em/1.25 Helvetica,
+    Arial,
+    sans-serif;
+  opacity: 1;
+}
+
+.look-column .mag-small a {
+  color: var(--ink);
+  font-style: normal;
+  font-weight: 700;
+}
+
+.look-column a:focus-visible {
+  outline: 0.2em solid var(--ink);
+  outline-offset: 0.1em;
+}
+
+/* a phone: the ad stacks over the story, its pictures side by side so it is not a mile tall */
+@container (max-width: 560px) {
+  .mag-beside.ad-column {
+    grid-template-columns: 1fr;
+  }
+}

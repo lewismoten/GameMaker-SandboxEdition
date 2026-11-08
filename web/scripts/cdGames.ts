@@ -13,6 +13,8 @@
 //                                published as shareware, with box, label and manual data
 //   games/<kind>/<id>/<game>.zip           each game's DOS distribution, what the built site
 //                                fetches to play or open a game (src/project/gamePack.ts)
+//   games/originals/<id>/<game>.zpart, games/shared/<hash>.bin   a Starter's ZIP, split: what only it has,
+//                                and the data several share, joined back in the browser (scripts/zipShare.ts)
 //   dos/xferplay.exe, dos/sndblast.drv   the DOS stand-alone player for "Export for DOS"
 //   dos/config.hlp                       its setup screen's help, which a Transfer put beside it
 //   gm/index.json, gm/<file>     the installed C:\GM folder (runtime/run/GM) for the retro
@@ -21,7 +23,8 @@ import type { Plugin } from 'vite';
 import { createReadStream, existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { gzipSync } from 'node:zlib';
-import { gameArchive, gameZipName } from './gameArchive';
+import { gameArchive, gameZipName, legacyAlias } from './gameArchive';
+import { partName, shareZips } from './zipShare';
 import { createArchiveQueue } from './archiveQueue';
 import { archiveWorker } from './archiveWorker';
 import { libraryFacts, type LibraryFileFact } from './libraryFacts';
@@ -31,7 +34,7 @@ import { gameShots } from './gameShots';
 import { builtHeroPath, heroOf } from '../src/gfx/levelPicture';
 import { checkGame, QUICK_CHECK_FILE, type Issue } from '../src/project/health';
 import { boxGame, type BoxGame } from '../src/desk/boxes/boxFacts';
-import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { parseGame, gameTitle as displayGameTitle } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 
 export interface CdCatalogEntry {
   id: string;
@@ -53,6 +56,8 @@ export interface CdCatalogEntry {
   bytes: number;
   /** Shareware: the name of its DOS program (listed on the retro PC; never served). */
   exe?: string;
+  /** Original games: the 8.3 name of the ZIP and folders in DOS (about.json), when the id is longer. */
+  dosName?: string;
   /** A few lines from the game's own story or instruction screen. */
   blurb?: string;
   author?: string;
@@ -81,6 +86,8 @@ export interface CdCatalogEntry {
   health?: Issue[];
   /** Built sites: the size of its pack in bytes (what downloading it for offline use costs, src/offline). */
   packBytes?: number;
+  /** Built sites: its ZIP ships split, as this .zpart file and games/shared/ data (scripts/zipShare.ts); `pack` names the joined ZIP. */
+  parts?: string;
   /** Built sites, games with a box: what the box reads from the .gam (src/desk/boxes/boxFacts.ts). */
   boxGame?: BoxGame;
 }
@@ -167,15 +174,12 @@ const GAME_INFO: Record<string, GameInfo> = {
   zoom: { title: 'Zoom the Super Bear', company: AJ, price: '$20' },
 };
 
-function cString(bytes: Uint8Array): string {
-  const end = bytes.indexOf(0);
-  return new TextDecoder('latin1').decode(end < 0 ? bytes : bytes.subarray(0, end)).trim();
-}
-
 function gameTitle(gam: Uint8Array): string {
-  const isV3 = gam[0] === 0x47 && gam[1] === 0x4d; // "GM" header
-  // v3: 256 byte header + 6 byte grator header + scene0 { type 2, pos 4, scroll 16, links 1 } -> desc[20]
-  return isV3 ? cString(gam.subarray(285, 305)) : cString(gam.subarray(6, 21));
+  try {
+    return displayGameTitle(parseGame(gam));
+  } catch {
+    return ''; // A damaged menu keeps the catalog's directory-name fallback.
+  }
 }
 
 const CRC = (() => {
@@ -202,7 +206,7 @@ export interface GmInstallEntry {
 
 // Text files of the installed Game-Maker the retro desk shows (help screens are raw
 // 80x25 text-mode dumps); programs are listed but never served.
-const GM_TEXT = /\.(hlp|txt)$/i;
+const GM_TEXT = /\.(hlp|txt|bat)$/i;
 
 /** First lines of a story/instruction screen, joined. */
 function blurbFor(names: string[], disk: Map<string, string>): string | undefined {
@@ -219,9 +223,9 @@ function quickHealth(e: Pick<CdCatalogEntry, 'gam' | 'files' | 'sizes' | 'path'>
 }
 
 /** What a game's box reads from its .gam (levels, screenshot captions), so the desk's shelf fetches none. */
-function boxGameOf(e: Pick<CdCatalogEntry, 'gam' | 'path' | 'original'>, files: ReadonlyMap<string, string>): BoxGame | undefined {
+function boxGameOf(e: Pick<CdCatalogEntry, 'gam' | 'path' | 'original' | 'series'>, files: ReadonlyMap<string, string>): BoxGame | undefined {
   const at = e.gam && files.get(`${e.path}${e.gam}`);
-  if (!e.original?.box || !at) return undefined;
+  if (!e.original?.box || !at || e.series === 'starter') return undefined; // a Starter has no retail box on the desk (hasRetailBox)
   try {
     return boxGame(parseGame(new Uint8Array(readFileSync(at))), e.original.box.shots);
   } catch {
@@ -297,7 +301,7 @@ function scan(cdRoot: string): Scan {
         sizes: names.map((n) => statSync(disk.get(n)!).size),
         bytes: [...disk.values()].reduce((n, p) => n + statSync(p).size, 0),
         blurb: blurbFor(names, disk),
-        pack: gameZipName(id),
+        pack: gameZipName({ id }),
       };
       if (kind === 'shareware' && exe) entry.exe = exe.toUpperCase();
       if (kind === 'shareware') {
@@ -339,6 +343,8 @@ function scan(cdRoot: string): Scan {
 
 /** The gates whose files the build writes: every felt egg, every tin heart. */
 const GATES = [1, 2];
+/** Built sites ship these games' ZIPs split (scripts/zipShare.ts): the Starters, whose ZIPs were never on a downloads list. */
+const isSplit = (e: CdCatalogEntry) => e.series === 'starter' && !legacyAlias(e);
 /** The secret games behind one gate. */
 const behind = (s: Scan, gate: number) => s.secret.filter((e) => (s.gates.get(e.id) ?? 1) === gate);
 
@@ -353,7 +359,7 @@ function scanOriginals(root: string, catalog: CdCatalogEntry[], secret: CdCatalo
     const diskDir = join(base, 'disk');
     if (!existsSync(join(base, 'about.json')) || !existsSync(diskDir)) continue;
     const about = JSON.parse(readFileSync(join(base, 'about.json'), 'utf8')) as GameInfo &
-      OriginalExtras & { blurb?: string; exe?: string; secret?: boolean; series?: string; unlock?: string };
+      OriginalExtras & { blurb?: string; exe?: string; dosName?: string; secret?: boolean; series?: string; unlock?: string };
     const manual = existsSync(join(base, 'manual.json')) ? JSON.parse(readFileSync(join(base, 'manual.json'), 'utf8')) : undefined;
     const printables = existsSync(join(base, 'printables.json')) ? JSON.parse(readFileSync(join(base, 'printables.json'), 'utf8')) : undefined;
     // its DOS player look (games/kit/player.ts): the catalog carries it, never the game's files
@@ -400,7 +406,8 @@ function scanOriginals(root: string, catalog: CdCatalogEntry[], secret: CdCatalo
       ...(walkthrough ? { walkthrough } : {}),
       ...(player ? { player } : {}),
       ...(controls ? { controls } : {}),
-      pack: gameZipName(id),
+      pack: gameZipName({ id, exe: about.exe, dosName: about.dosName }),
+      ...(about.dosName ? { dosName: about.dosName.toUpperCase() } : {}),
     });
     for (const [name, p] of disk) files.set(`${path}${name}`, p);
   }
@@ -417,6 +424,34 @@ export function slimCatalog(catalog: CdCatalogEntry[]): CdCatalogEntry[] {
     ...(original ? { original: slimOriginal(original) } : {}),
     ...(catalogDetails(catalog[i]) ? { details: true } : {}),
   }));
+}
+
+/**
+ * games/catalog.json: slimCatalog, and each Starter down to what the home page and dos.html
+ * read at load (id, title, its pictures' flags, the manual's title). Its
+ * blurb, label and box art go to games/details/<id>.json (withDetails), as do every original
+ * game's controls and player look, so forty or more Starters do not weigh down every page that loads the catalog.
+ */
+export function pageCatalog(catalog: CdCatalogEntry[]): LeanEntry[] {
+  return slimCatalog(catalog).map((e) => {
+    // the file lists (games/catalog-files.json, pageFiles) only a play, a copy or a disk listing reads; `rec` (the .rec files) is the one thing the home page's preview asks of them
+    const { files, sizes: _sizes, ...head } = e;
+    const lean = { ...head, rec: files.filter((f) => f.endsWith('.rec')) };
+    if (!lean.details) return lean;
+    // every original game: its controls and player look (only a copy, a play or a walkthrough reads them)
+    const { controls: _controls, player: _player, ...rest } = lean;
+    if (e.series !== 'starter') return rest;
+    const { blurb: _blurb, original, ...slim } = rest;
+    return { ...slim, ...(original ? { original: { sound: original.sound, ...(original.manual ? { manual: original.manual } : {}) } } : {}) };
+  });
+}
+
+/** An entry in games/catalog.json: no `files` or `sizes` (see pageFiles). */
+export type LeanEntry = Omit<CdCatalogEntry, 'files' | 'sizes'> & { rec?: string[] };
+
+/** games/catalog-files.json: each listed game's DOS files and their sizes, which games/catalog.json leaves out (a lazily fetched companion, withFiles in src/project/files.ts). */
+export function pageFiles(catalog: CdCatalogEntry[]): Record<string, { files: string[]; sizes: number[] }> {
+  return Object.fromEntries(catalog.map((e) => [e.id, { files: e.files, sizes: e.sizes }]));
 }
 
 /**
@@ -438,10 +473,39 @@ function slimOriginal(o: OriginalExtras): OriginalExtras {
   };
 }
 
+/**
+ * games/index.json: every entry whole, except the Starters', which are as slim as in catalog.json
+ * (a manual holding only its title, details: true). Forty of them carried 300 kB of "How do I…?"
+ * questions and lessons that only the Starters tab and a manual open read (via withDetails), and
+ * the Library, the desk and the magazine loaded all of it with the full catalog.
+ */
+export function indexCatalog(catalog: CdCatalogEntry[]): CdCatalogEntry[] {
+  const slim = slimCatalog(catalog);
+  return catalog.map((e, i) => (e.series === 'starter' && slim[i].details ? { ...e, original: slim[i].original, details: true } : e));
+}
+
 /** An entry's games/details/<id>.json, or undefined when it has nothing slimCatalog leaves out. */
-function catalogDetails(e: CdCatalogEntry): { notice?: string; original?: OriginalExtras } | undefined {
-  const original = e.original && (e.original.manual || e.original.printables) ? { manual: e.original.manual, printables: e.original.printables } : undefined;
-  return e.notice || original ? { notice: e.notice, original } : undefined;
+function catalogDetails(e: CdCatalogEntry): Details | undefined {
+  const o = e.original;
+  const original = o && (o.manual || o.printables) ? { manual: o.manual, printables: o.printables } : undefined;
+  const more = { ...(e.controls ? { controls: e.controls } : {}), ...(e.player ? { player: e.player } : {}) };
+  if (e.series !== 'starter') return e.notice || original || e.controls || e.player ? { notice: e.notice, original, ...more } : undefined;
+  // a Starter's catalog.json entry also lacks these (pageCatalog)
+  return {
+    notice: e.notice,
+    original: { ...original, label: o?.label, box: o?.box },
+    ...(e.blurb ? { blurb: e.blurb } : {}),
+    ...more,
+  };
+}
+
+/** A games/details/<id>.json. */
+interface Details {
+  notice?: string;
+  original?: OriginalExtras;
+  blurb?: string;
+  controls?: unknown;
+  player?: unknown;
 }
 
 /** Every playable game on the CD and in ../games but the secret ones (what games/index.json lists, and every page, sitemap and picture the build makes). */
@@ -469,7 +533,8 @@ export function cdGames(cdRoot: string): Plugin {
       server.watcher.add([cdRoot, gamesRoot]);
       let preview: { catalog: CdCatalogEntry[]; secret: CdCatalogEntry[]; shots: Map<string, Uint8Array> } | undefined;
       const worker = archiveWorker(cdRoot);
-      const archives = createArchiveQueue(worker);
+      // the worker deflates on libuv's threads, so four at once is faster with the same bytes
+      const archives = createArchiveQueue(worker, 4);
       const listed = () => [...get().catalog, ...get().secret].map((e) => `${e.path}${e.pack}`);
       // build every archive in the background so most are ready before they are asked for
       server.httpServer?.once('listening', () => setTimeout(() => archives.enqueue(listed()), 500));
@@ -513,12 +578,21 @@ export function cdGames(cdRoot: string): Plugin {
           res.end(JSON.stringify(get().gm));
           return;
         }
+        if (url === 'games/catalog-files.json') {
+          res.setHeader('Content-Type', 'application/json');
+          res.end(JSON.stringify(pageFiles(served().catalog)));
+          return;
+        }
         if (url === 'games/index.json' || url === 'games/catalog.json' || (extra && GATES.includes(Number(extra[1])))) {
           res.setHeader('Content-Type', 'application/json');
           const { catalog, secret } = served();
           res.end(
             JSON.stringify(
-              url.endsWith('catalog.json') ? slimCatalog(catalog) : extra ? secret.filter((e) => (get().gates.get(e.id) ?? 1) === Number(extra[1])) : catalog,
+              url.endsWith('catalog.json')
+                ? pageCatalog(catalog)
+                : extra
+                  ? secret.filter((e) => (get().gates.get(e.id) ?? 1) === Number(extra[1]))
+                  : indexCatalog(catalog),
             ),
           );
           return;
@@ -537,10 +611,10 @@ export function cdGames(cdRoot: string): Plugin {
           return;
         }
         const packed = /^(games\/[a-z]+\/[a-z0-9_-]+\/)([^/]+\.zip)$/.exec(url);
-        const owner = packed && [...get().catalog, ...get().secret].find((e) => e.path === packed[1] && e.pack === packed[2]);
+        const owner = packed && [...get().catalog, ...get().secret].find((e) => e.path === packed[1] && (e.pack === packed[2] || legacyAlias(e) === packed[2]));
         if (owner) {
           // built in a worker process: until it is ready, 202 and ask again (the client retries, client/archiveWait.ts)
-          const bytes = archives.request(url);
+          const bytes = archives.request(`${owner.path}${owner.pack}`);
           res.setHeader('Cache-Control', 'no-store');
           if (!bytes) {
             res.statusCode = 202;
@@ -570,13 +644,36 @@ export function cdGames(cdRoot: string): Plugin {
       // A standard ZIP replaces both custom GMPK and duplicate loose/gzip game payloads.
       const packs = new Map<string, Uint8Array>();
       const archives = new Map<string, string>();
-      for (const e of [...get().catalog, ...get().secret]) {
-        const zip = await gameArchive(e, files);
+      // four zips at a time; their bytes don't depend on order (fixed dates), and the maps keep catalog order
+      const entries = [...get().catalog, ...get().secret];
+      const zips = new Array<Uint8Array>(entries.length);
+      let next = 0;
+      await Promise.all(
+        Array.from({ length: 4 }, async () => {
+          while (next < entries.length) {
+            const i = next++;
+            zips[i] = await gameArchive(entries[i], files);
+          }
+        }),
+      );
+      entries.forEach((e, i) => {
         // Stable public links: service-worker group hashes version changed ZIP contents.
-        const name = gameZipName(e.id);
+        const name = gameZipName(e);
         archives.set(e.path, name);
-        packs.set(`${e.path}${name}`, zip);
-      }
+        packs.set(`${e.path}${name}`, zips[i]);
+        // the name it had before dosName, for the games whose old link was published: those links keep working
+        const old = legacyAlias(e);
+        if (old) packs.set(`${e.path}${old}`, zips[i]);
+      });
+      // the Starters' ZIPs share most of their bytes (the DOS player, the kit's pictures): each ships as
+      // a .zpart file plus shared data the browser joins back into the same ZIP (src/project/sharedZip.ts)
+      const split = shareZips(
+        new Map(
+          get()
+            .catalog.filter(isSplit)
+            .map((e) => [`${e.path}${gameZipName(e)}`, packs.get(`${e.path}${gameZipName(e)}`)!]),
+        ),
+      );
       // what the pages would otherwise fetch game files to work out: the quick check, the box's facts, the pack's size
       const known = (e: CdCatalogEntry): CdCatalogEntry => {
         const box = boxGameOf(e, files);
@@ -585,6 +682,7 @@ export function cdGames(cdRoot: string): Plugin {
         return {
           ...e,
           pack,
+          ...(isSplit(e) ? { parts: partName(pack) } : {}),
           fileFacts: libraryFacts(entryFiles(e, files)),
           health: quickHealth(e, files),
           ...(box ? { boxGame: box } : {}),
@@ -600,8 +698,9 @@ export function cdGames(cdRoot: string): Plugin {
       });
       const secret = (gate: number) => behind(get(), gate).map(known);
       // Catalogs keep precomputed previews and health; game data lives only in each ZIP.
-      this.emitFile({ type: 'asset', fileName: 'games/index.json', source: JSON.stringify(catalog.map((e) => ({ ...e, gz: true }))) });
-      this.emitFile({ type: 'asset', fileName: 'games/catalog.json', source: JSON.stringify(slimCatalog(catalog).map((e) => ({ ...e, gz: true }))) });
+      this.emitFile({ type: 'asset', fileName: 'games/index.json', source: JSON.stringify(indexCatalog(catalog).map((e) => ({ ...e, gz: true }))) });
+      this.emitFile({ type: 'asset', fileName: 'games/catalog.json', source: JSON.stringify(pageCatalog(catalog).map((e) => ({ ...e, gz: true }))) });
+      this.emitFile({ type: 'asset', fileName: 'games/catalog-files.json', source: JSON.stringify(pageFiles(catalog)) });
       for (const e of catalog) {
         const details = catalogDetails(e);
         if (details) this.emitFile({ type: 'asset', fileName: `games/details/${e.id}.json`, source: JSON.stringify(details) });
@@ -611,7 +710,11 @@ export function cdGames(cdRoot: string): Plugin {
       for (const gate of GATES)
         this.emitFile({ type: 'asset', fileName: `games/extra-${gate}.json`, source: JSON.stringify(secret(gate).map((e) => ({ ...e, gz: true }))) });
       this.emitFile({ type: 'asset', fileName: 'gm/index.json', source: JSON.stringify(gm) });
-      for (const [fileName, source] of packs) this.emitFile({ type: 'asset', fileName, source });
+      for (const [fileName, source] of packs) {
+        const part = split.parts.get(fileName);
+        this.emitFile(part ? { type: 'asset', fileName: partName(fileName), source: part } : { type: 'asset', fileName, source });
+      }
+      for (const [fileName, source] of split.blobs) this.emitFile({ type: 'asset', fileName, source });
       for (const [site, disk] of files) {
         // Walkthroughs are browser metadata, not native DOS resources.
         if (site.startsWith('games/') && !site.endsWith('/walkthrough.json')) continue;

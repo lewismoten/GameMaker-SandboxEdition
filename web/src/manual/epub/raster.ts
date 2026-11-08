@@ -35,7 +35,7 @@ async function asDataUrl(src: string): Promise<string | undefined> {
   });
 }
 
-export interface Raster {
+interface Raster {
   type: string;
   data: Uint8Array;
   w: number;

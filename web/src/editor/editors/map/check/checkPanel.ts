@@ -37,7 +37,7 @@ import { COMPARE_COLORS, combineSteps, compareSteps } from './myHeat';
 import { myHeatControls } from './myHeatControls';
 import { checkExtras } from './checkExtras';
 
-export interface CheckHost {
+interface CheckHost {
   project: Project;
   /** The map file being edited. */
   file: string;
@@ -79,7 +79,7 @@ const LABEL: Record<Kind, string> = { error: 'Problem', warning: 'Warning', sugg
 const ICON: Record<Kind, string> = { error: '⛔', warning: '⚠', suggestion: '💡', info: 'ℹ' };
 
 /** Heat as steps: how often (log of ticks spent) or how soon (first tick reached). */
-export function heatSteps(run: Pick<RunSummary, 'heat' | 'first'>, soon: boolean): Uint8Array {
+function heatSteps(run: Pick<RunSummary, 'heat' | 'first'>, soon: boolean): Uint8Array {
   const out = new Uint8Array(run.heat.length);
   const n = HEAT_COLORS.length;
   if (soon) {
@@ -639,6 +639,7 @@ export function checkPanel(host: CheckHost): {
   }
 
   async function run(): Promise<void> {
+    let terminal = '';
     runBtn.textContent = '■ Stop';
     bar.hidden = false;
     bar.removeAttribute('value');
@@ -694,8 +695,8 @@ export function checkPanel(host: CheckHost): {
       keep(report);
       unlockAchievement('check-run');
     } catch (e) {
-      if ((e as Error).name !== 'AbortError') toast(`The level check failed: ${(e as Error).message}`, 'error');
-      else status.textContent = 'Stopped.';
+      terminal = (e as Error).name === 'AbortError' ? 'Stopped.' : `The level check failed: ${(e as Error).message}`;
+      if (saved) terminal += ' Showing the previous result.';
     } finally {
       running = undefined;
       live = undefined;
@@ -706,6 +707,7 @@ export function checkPanel(host: CheckHost): {
       paint();
     }
     if (saved) render();
+    if (terminal) status.textContent = terminal;
   }
 
   function stop(): void {

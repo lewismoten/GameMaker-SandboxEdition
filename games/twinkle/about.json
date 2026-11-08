@@ -1,0 +1,41 @@
+{
+  "title": "Twinkle, Twinkle",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "hero": "RIMA",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.0",
+  "blurb": "Stars that twinkle by themselves, drawn with blocks. A loop of four blocks makes a star blink, but the game keeps one clock for each block, so every star drawn with it blinks at the same moment. Level 1 shows that sky first, with every star in step, and then the fix: the same star in six loops with different times, laid so that no two neighbors share one. Level 2 is a night meadow with a moon and hills under that sky. Play it, then open it in Game-Maker and change a star's time.",
+  "exe": "TWINKLE.EXE",
+  "dosName": "TWINKLE",
+  "sound": "sb",
+  "label": {
+    "background": "#dfe3ff",
+    "band": "#1c2260",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "2 short levels",
+    "hours": 1,
+    "background": "#1c2260",
+    "accent": "#ffd23f",
+    "ink": "#ffffff",
+    "tagline": "The sky that never blinks twice the same.",
+    "back": "A small explorer in a teal beanie walks a night meadow. A block can turn into another block a few ticks later, so a loop of four makes a star blink. But one block means one clock: every star drawn with it blinks at once. Six star blocks, each in a loop with its own times, laid so that no neighbors match, make a sky that feels random though it repeats. Read the signs, then open the game in Game-Maker and change a star's time.",
+    "features": [
+      "Level 1 shows a sky where every star blinks together, then the fixed one",
+      "Level 2 is a night meadow with a moon and hills under that sky",
+      "Signs in the levels say how it is done",
+      "Made to be copied and taken apart"
+    ],
+    "shots": [
+      ["one.map", 22, 6],
+      ["two.map", 30, 6]
+    ],
+    "rating": "Everyone"
+  },
+  "acceptedFindings": ["facing s3 The hero climbs side on"]
+}

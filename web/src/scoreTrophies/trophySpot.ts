@@ -19,7 +19,7 @@ const num = (n: number) => n.toLocaleString('en-US');
 const tierWord = (t: number) => TIER_NAMES[t].toLowerCase();
 
 /** What a trophy says: its tier, its sum, and what the next tier needs. */
-export function trophyText(kind: TrophyKind, r: ScoreRecord, shown: number): string {
+function trophyText(kind: TrophyKind, r: ScoreRecord, shown: number): string {
   const points = kind === 'best' ? bestSum(r) : r.total;
   const earned = tierOf(kind, points);
   const name = TROPHY_NAMES[kind];

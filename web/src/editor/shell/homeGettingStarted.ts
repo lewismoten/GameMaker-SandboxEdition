@@ -2,7 +2,7 @@
 // behind a How it works button in the library's header that opens it in a dialog.
 import { h, modal } from '../core/ui';
 import { icon } from './homeIcons';
-import { wantsTouchControls } from '../../player/touch';
+import { wantsTouchControls } from '../../player/touchWanted';
 
 export function gettingStarted() {
   const touch = wantsTouchControls();
@@ -71,14 +71,17 @@ export function gettingStarted() {
     section: () =>
       h('section', { class: 'home-start', 'aria-labelledby': 'home-start-title' }, h('h2', { id: 'home-start-title' }, 'Getting started'), ...startBody()),
     /** On a wide window Getting started fills the space under the game only when it fits there. */
-    fit(start: HTMLElement, game: HTMLElement): void {
+    fit(start: HTMLElement, game: HTMLElement, life?: AbortSignal): void {
       const fitStart = () => {
         start.classList.remove('clipped');
         start.classList.toggle('clipped', start.scrollHeight > start.clientHeight + 1);
         howBtn.hidden = !start.classList.contains('clipped');
       };
-      new ResizeObserver(fitStart).observe(start.parentElement!);
-      new ResizeObserver(fitStart).observe(game);
+      const watch = new ResizeObserver(fitStart);
+      watch.observe(start.parentElement!);
+      watch.observe(game);
+      if (life?.aborted) watch.disconnect();
+      else life?.addEventListener('abort', () => watch.disconnect(), { once: true }); // or it holds the page for good
     },
   };
 }

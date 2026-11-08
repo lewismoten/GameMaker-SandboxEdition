@@ -4,6 +4,7 @@ import './blasterSwitch.css';
 import { h } from '../../editor/core/ui';
 import { setSoundBlaster, soundBlaster, SOUND_CARD_CHANGED } from '../../retro/computer/soundBlaster';
 import { unlockAchievement } from '../../achievements';
+import { deskLifetime } from '../lifetime';
 
 /** What the switch needs from the desk PC. */
 export interface BlasterPc {
@@ -63,7 +64,7 @@ function blasterNote(sw: HTMLElement): { open(text: string): void; focusFirst():
   const closeBtn = h('button', { type: 'button', class: 'sb-note-close', 'aria-label': 'Close', title: 'Close (Esc)' }, '×');
   const panel = h(
     'div',
-    { class: 'sb-note', role: 'group', 'aria-label': 'Sound Boaster', hidden: true },
+    { class: 'sb-note', role: 'region', 'aria-label': 'Sound Boaster', hidden: true },
     text,
     h('div', { class: 'sb-note-buttons' }, closeBtn),
   );
@@ -123,7 +124,9 @@ function blasterNote(sw: HTMLElement): { open(text: string): void; focusFirst():
     close();
     sw.focus();
   });
-  window.addEventListener('resize', () => panel.hidden || place());
+  window.addEventListener('resize', () => panel.hidden || place(), { signal: deskLifetime() });
+  // the panel waits on the page's body once opened: it goes with this desk
+  deskLifetime().addEventListener('abort', () => (panel.remove(), live.remove()));
 
   return {
     open(message) {

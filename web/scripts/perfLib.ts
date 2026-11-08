@@ -5,12 +5,30 @@ import { spawn, type ChildProcess } from 'node:child_process';
 import { existsSync, readdirSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { join, resolve } from 'node:path';
-import { chromium, type Browser } from 'playwright-core';
+import { chromium, type Browser, type CDPSession } from 'playwright-core';
 
 export const arg = (name: string) => {
   const i = process.argv.indexOf(`--${name}`);
   return i > 0 ? process.argv[i + 1] : undefined;
 };
+
+/** Network profiles for --network (Chrome DevTools' own figures: throughput in bytes/s, latency in ms). */
+const NETWORKS: Record<string, { downloadThroughput: number; uploadThroughput: number; latency: number }> = {
+  '4g': { downloadThroughput: (9 * 1024 * 1024) / 8, uploadThroughput: (9 * 1024 * 1024) / 8, latency: 170 },
+  'slow-4g': { downloadThroughput: (1.6 * 1024 * 1024) / 8, uploadThroughput: (750 * 1024) / 8, latency: 562.5 },
+};
+
+/** Applies --throttle N (CPU N times slower) and --network 4g|slow-4g to a page's CDP session. */
+export async function applySlowdown(cdp: CDPSession): Promise<void> {
+  const rate = Number(arg('throttle') ?? 1);
+  if (rate > 1) await cdp.send('Emulation.setCPUThrottlingRate', { rate });
+  const name = arg('network');
+  if (!name) return;
+  const net = NETWORKS[name];
+  if (!net) throw new Error(`--network ${name}: use ${Object.keys(NETWORKS).join(' or ')}`);
+  await cdp.send('Network.enable');
+  await cdp.send('Network.emulateNetworkConditions', { offline: false, ...net });
+}
 
 /** Playwright's bundled headless shell: GM_CHROMIUM, else the newest one installed. */
 export function headlessShell(): string | undefined {

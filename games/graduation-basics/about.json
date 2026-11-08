@@ -1,0 +1,33 @@
+{
+  "title": "Graduation: First Steps",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "ceremony": "graduation-basics",
+  "hero": "KIT",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.3",
+  "blurb": "The helpers from The Basics Starters are in the hall, Doc Leo is at the podium and your honors are waiting. Walk up the aisle and pick it up.",
+  "exe": "GRADBASC.EXE",
+  "dosName": "GRADBASC",
+  "sound": "sb",
+  "label": {
+    "background": "#f3e8ff",
+    "band": "#7a3fc4",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "1 short walk",
+    "hours": 1,
+    "background": "#7a3fc4",
+    "accent": "#ffd23f",
+    "ink": "#ffffff",
+    "tagline": "You made it up the aisle.",
+    "back": "A small explorer in a teal beanie walks up the aisle of a hall full of friends to a stage, where Doc Leo is holding your honors.",
+    "features": ["The helpers of The Basics cheer you on", "Doc Leo hands you your honors"],
+    "shots": [["hall.map", 20, 6]],
+    "rating": "Everyone"
+  }
+}

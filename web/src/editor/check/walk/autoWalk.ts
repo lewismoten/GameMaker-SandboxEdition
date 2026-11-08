@@ -14,6 +14,7 @@
 // quickly on to where it stopped. A walkthrough that stops partway keeps the scenes it got
 // through and says on its closing card where it stopped (`ending`).
 import { encodeKeys, keysAt, WALKTHROUGH_FPS, type Walkthrough } from '../../../walkthrough/format';
+import { fromCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import type { Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { bestAttempt } from './bestAttempt';
 import { MLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
@@ -21,7 +22,7 @@ import { explore, type Entry, type Exploration, type ExploreOptions } from '../e
 import type { Move } from '../inputs';
 import { SceneSim, startCharInfo, type FileSource } from '../sim';
 import { replayMine } from './replayMine';
-import { fetchKeys, locksAtEntry } from './fetchKeys';
+import { fetchKeys, locksAtEntry, tripCapReached, type FetchKeysDiagnostics } from './fetchKeys';
 import { lockedWhy } from './gates';
 import { otherScenesAdding } from './otherScenes';
 import { scenePaths } from './walkPaths';
@@ -73,6 +74,8 @@ export interface SceneOutcome {
   mine?: 'used' | 'broke';
   /** The scene has walking paths: the share of the route's walking on them, and whether a second search keeping to them gave the route. */
   paths?: { share: number; kept: boolean };
+  /** Why fetching keys for a still-locked way on failed. */
+  keys?: FetchKeysDiagnostics;
 }
 
 export interface AutoWalk {
@@ -168,7 +171,7 @@ export async function autoWalk(game: Game, files: FileSource, gameId: string, op
   });
   for (let guard = 0; guard < 200 && scene !== 1; guard++) {
     const s = game.scenes[scene];
-    const name = s.desc.trim() || `Scene ${scene}`;
+    const name = fromCp437(s.desc).trim() || `Scene ${scene}`;
     const level = (l: { toScene: number }) => l.toScene === 1 || (l.toScene > 1 && l.toScene < game.scenes.length);
     // a scene not played yet (or the won scene); else back the way a hub game goes (a side room
     // returns to the hub), each way taken at most twice so the bot can't go round for ever
@@ -306,10 +309,11 @@ export async function autoWalk(game: Game, files: FileSource, gameId: string, op
     if (!found && !canceled) {
       const locks = locksAtEntry(game, files, scene, entry);
       const unreached = new Set<number>();
+      let tripCap: number | undefined;
       if (locks.wanted.size) {
         outcome.tried.push('keys');
         if (opt.progress?.(scene, 'Fetch the keys, then go on', 0)) canceled = true;
-        const replay =
+        const keys =
           !canceled &&
           (await fetchKeys(game, files, scene, entry, locks, {
             goal,
@@ -320,9 +324,13 @@ export async function autoWalk(game: Game, files: FileSource, gameId: string, op
             unreached,
             progress: (places) => (opt.progress?.(scene, 'Fetch the keys, then go on', places) ? (canceled = true) : canceled),
           }));
-        if (replay) found = { replay, strategy: STRATEGIES.find((x) => x.id === 'keys')! };
+        if (keys && keys.replay) found = { replay: keys.replay, strategy: STRATEGIES.find((x) => x.id === 'keys')! };
+        else if (keys) {
+          outcome.keys = keys.diagnostics;
+          tripCap = tripCapReached(keys.diagnostics);
+        }
       }
-      lockWhy = lockedWhy(locks, unreached, otherScenesAdding(game, files, scene, locks.missing));
+      lockWhy = lockedWhy(locks, unreached, otherScenesAdding(game, files, scene, locks.missing), tripCap);
     }
     if (!found && !canceled && !backOnly) await collect();
     if (canceled) {
@@ -365,7 +373,7 @@ export async function autoWalk(game: Game, files: FileSource, gameId: string, op
     scene = link.toScene;
     // what is kept if it is stopped in the next scene
     if (opt.onScene) {
-      const nextName = game.scenes[scene]?.desc.trim() || `Scene ${scene}`;
+      const nextName = fromCp437(game.scenes[scene]?.desc ?? '').trim() || `Scene ${scene}`;
       opt.onScene({
         scenes: [...out.scenes.map(({ heat: _h, ...o }) => ({ ...o, tried: o.tried.slice() })), { scene, name: nextName, tried: [] }],
         won: false,

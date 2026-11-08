@@ -4,6 +4,7 @@
 // the selection and the canvas; this owns which board is showing and keeps boardLayout.ts's data
 // in the project's companion (editor-only: the .gam and DOS export are never touched).
 import type { Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { fromCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import { NOSCENE, type Point } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { arrangements, closeGaps, spreadOut, type Arrangement } from './integratorLayout';
 import { h, clear, toast } from '../../core/ui';
@@ -184,7 +185,7 @@ export function boardsController(c: Host) {
                   closePop(true);
                 },
               },
-              `${i}  ${c.game.scenes[i].desc || '(untitled)'}`,
+              `${i}  ${fromCp437(c.game.scenes[i].desc) || '(untitled)'}`,
             ),
           ),
         ),
@@ -324,8 +325,8 @@ export function boardsController(c: Host) {
         ),
         tool('Spread out', 'Move cards apart so none hides another, keeping your arrangement', () => arrange('spread'), '✥ Spread out'),
         tool('Close gaps', 'Bring cards closer together, keeping your arrangement', () => arrange('gaps'), '⇲ Close gaps'),
-        tool('Undo', 'Undo the last change to the boards (Ctrl+Z on the board)', undoBoards, '↶'),
-        tool('Redo', 'Redo (Ctrl+Shift+Z on the board)', redoBoards, '↷'),
+        tool('Undo board layout', 'Undo the last change to the boards: cards moved, boards added (Ctrl+Z on the board)', undoBoards, '↶ Layout'),
+        tool('Redo board layout', 'Redo the last undone change to the boards (Ctrl+Shift+Z on the board)', redoBoards, '↷ Layout'),
         data.boards.length > 1
           ? h(
               'button',

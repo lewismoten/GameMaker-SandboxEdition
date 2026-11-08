@@ -13,7 +13,7 @@ export async function openDataBackup(): Promise<void> {
 }
 
 /** Asks for a backup file, then shows the Restore dialog (or why the file can't be used). */
-export async function restoreFromFile(): Promise<void> {
+async function restoreFromFile(): Promise<void> {
   const [file] = await pickFiles({ multiple: false, accept: `${EXTENSION},.zip` });
   if (!file) return;
   let backup;

@@ -1,0 +1,89 @@
+{
+  "title": "Graduation: First Steps",
+  "howDoI": [
+    {
+      "id": "arrive-ladder",
+      "q": "How do I make a ladder to climb?",
+      "scene": 2,
+      "x": 15,
+      "y": 8,
+      "level": 1
+    },
+    {
+      "id": "arrive-keyGate",
+      "q": "How do I make a gate that needs the key lying just before it?",
+      "scene": 2,
+      "x": 26,
+      "y": 8,
+      "level": 1
+    },
+    {
+      "id": "arrive-coins",
+      "q": "How do I make coins that add to the score?",
+      "scene": 2,
+      "x": 37,
+      "y": 8,
+      "level": 1
+    },
+    {
+      "id": "cheer",
+      "q": "How do I make people who cheer, each out of step with the others?",
+      "scene": 3,
+      "x": 4,
+      "y": 4,
+      "level": 2
+    },
+    {
+      "id": "swap",
+      "q": "How do I make several different people from one drawing?",
+      "scene": 3,
+      "x": 8,
+      "y": 4,
+      "level": 2
+    },
+    {
+      "id": "scroll",
+      "q": "How do I make a pickup that ends the level?",
+      "scene": 3,
+      "x": 40,
+      "y": 8,
+      "level": 2
+    }
+  ],
+  "pages": [
+    {
+      "head": "Welcome",
+      "html": "<h1>Welcome</h1><p><b>Graduation: First Steps</b> is a Starter of a different kind. It is a short walk, not a lesson. You have been through The Basics; now the helpers who led those Starters are on the balcony, Doc Leo is on the stage, and your honors are on the lectern.</p><p>It takes a couple of minutes. Play it first, then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below.</p><p>There are two levels. First you cross campus to the hall, with a few small nods to lessons you took on the way. Then you walk the aisle to the stage.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk, <kbd>Space</kbd> hops, and <kbd>Up</kbd> and <kbd>Down</kbd> climb a ladder. There is nothing to fight and nothing that hurts. Walk into the scroll on the lectern and the game ends with your honors.</p>"
+    },
+    {
+      "head": "Level 1: The Front Walk",
+      "html": "<h1>Level 1: The Front Walk</h1><p>Stroll up to the hall doors. You start on the path with a welcome sign beside you, and the hall's doors are at the far end. Along the way are 4 small moments. Each one is a nod to a Starter you took in this stage, and each has a sign that gives its course number. Nothing here hurts, and nothing can trap you: every climb has a way back down.</p><ul><li><b>Course 101, First Steps.</b> A tower with a ladder up one side and down the other, and coins on top.</li><li><b>Course 102, Keys and Doors.</b> A key lies on the path just before a gate in a wall; the gate takes the key.</li><li><b>Course 105, Coins and Score.</b> A little arc of coins to walk and hop through; each is worth ten points.</li><li><b>Course 106, Smash It.</b> A stack of crates in the way: bump one and it turns to rubble.</li></ul><p>Walk through the doors under the banner to go inside.</p>",
+      "from": "arrive"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How the arrival is made</h1><ul><li><b>The path.</b> Open <b>arrive.map</b> in the map editor. The path is a row of solid <b>paving</b> blocks over two rows of <b>dirt</b>. The trees, banner poles and the hall's front are plain blocks you walk in front of; the hedge at each end is solid. This level has its own block set, <b>arrive.bbl</b>, beside the hall's <b>grad.bbl</b>: open <b>grad.gam</b> in the scenes editor and look at the block slot of each scene.</li><li><b>Course 101, First Steps.</b> <b>ladder</b> blocks stacked in a column. The ladder has no gravity, so the hero holds on and climbs with Up and Down. Here a ladder stands on each side of a brick tower, so what you climb you can climb back down.</li><li><b>Course 102, Keys and Doors.</b> The <b>key</b> block adds one to counter 20 when you touch it. The <b>gate</b> is solid, but its rule takes one from that counter when touched, so with a key it becomes sky. The brick wall above it goes up out of reach, and the arch is plain scenery.</li><li><b>Course 105, Coins and Score.</b> Each <b>coin</b> has Score points 10 and becomes <b>sky</b> when touched, so it is gone after you take it. The high one needs a hop.</li><li><b>Course 106, Smash It.</b> A <b>crate</b> is solid, and its Becomes block is <b>rubble</b>, which is not solid. Bumping a crate breaks only that crate.</li></ul>",
+      "from": "arrive"
+    },
+    {
+      "head": "Level 2: The Aisle",
+      "html": "<h1>Level 2: The Aisle</h1><p>You start in the doorway at the back of the hall. Four signs along the red carpet say what is going on: <b>WALK UP TO THE STAGE</b>, <b>YOUR HELPERS ARE HERE</b>, <b>THEY CHEER FOR YOU</b> and <b>DOC LEO HAS A SCROLL FOR YOU</b>. Up on the balcony the eight helpers of The Basics wave and blink, each out of step with the others. Doc Leo waits beside the lectern, under the banner.</p><p>Walk up the carpet and onto the stage. The rolled-up scroll on the lectern is worth a hundred points, and touching it takes you to the ending.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How the aisle is made</h1><ul><li><b>The hall.</b> Open <b>hall.map</b> in the map editor. The wall is the plain <b>sky</b> block. The floor is a row of <b>carpet</b> blocks, then <b>stage</b> blocks; two rows of <b>subfloor</b> sit under both. The two ends of the hall are the solid <b>curtainEdge</b> block, so you cannot walk out.</li><li><b>The crowd.</b> Each helper is a ring of three blocks (<b>hall.mia.0</b>, <b>.1</b> and <b>.2</b>, and so on) in <b>grad.bbl</b>: smiling, hands up, then a blink. Open a block in the blocks editor, and on its <b>Animation</b> tab you will see the <b>Next block</b> and the <b>Time</b>. Each helper has different times, so no two cheer together. A crowd that moves in step looks like a machine.</li><li><b>One drawing, many people.</b> All eight are the hero's head, painted again in other skin, hair and beanie colors. In the editor you can do the same by copying a block and recoloring it. The Starters' Cast page lists the helpers.</li><li><b>Doc Leo.</b> Two blocks, one over the other, standing on the stage. His top block is a ring like the helpers' (standing, grinning, blinking).</li><li><b>The scroll.</b> The <b>scroll</b> block is the lectern's top with the scroll on it. Its <b>Score points</b> are 100 and <b>Becomes block</b> is <b>lecternTop</b>, the same lectern without the scroll. A scene link at the lectern joins it to the ending: open <b>grad.gam</b> in the scenes editor and look at the links of The Aisle.</li><li><b>The banner.</b> Four ordinary blocks side by side with the words drawn in them, hung on the wall with no posts. The signs along the carpet are the same, with posts.</li></ul>"
+    },
+    {
+      "head": "What the honors mean",
+      "html": "<h1>What the honors mean</h1><p>A graduation comes after a group of Starters and gives you honors for what they taught. <b>Honors in First Steps</b> is for The Basics:</p><ul><li><b>First Steps</b>: walking, jumping, gravity and ladders.</li><li><b>Keys and Doors</b> and <b>Room to Room</b>: keys, doors and getting from one room to the next.</li><li><b>Meet the Monsters</b> and <b>Watch Your Step</b>: things that move and things that hurt.</li><li><b>Coins and Score</b>: pickups that give points.</li><li><b>Smash It</b> and <b>Dig It</b>: blocks that break and soil that turns into a tunnel.</li><li><b>Seeds and Nests</b>: blocks that hatch things.</li></ul><p>You do not have to finish every one. The graduation opens when you have finished most of them.</p>"
+    },
+    {
+      "head": "What it cannot do",
+      "html": "<h1>What it cannot do</h1><ul><li>A DOS game cannot ask your name, so the honors here do not have one. It says what you did.</li><li>The crowd cheers all the time. A block's animation runs on its own clock; it cannot wait until you walk past.</li><li>A block's loop is the same everywhere it is on the map, so every cell of one helper's block blinks together. Each helper is one cell here, so that does not show.</li></ul>"
+    },
+    {
+      "head": "Make it yours",
+      "html": "<h1>Make it yours</h1><ul><li>Change the words on a sign, or the banner, in the blocks editor.</li><li>Change a helper's <b>Time</b> to make the crowd cheer in step. Does it look better or worse?</li><li>Draw a new person in the <b>hall.mia</b> blocks and put them in the hall.</li><li>Move the lectern, or put a second scroll on the stage.</li></ul><p>The home page's <b>Starters</b> tab has more small games like this one.</p>"
+    }
+  ]
+}

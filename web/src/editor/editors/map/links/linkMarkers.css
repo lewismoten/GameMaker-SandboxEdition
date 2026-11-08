@@ -148,3 +148,12 @@
   min-width: 32px;
   min-height: 32px;
 }
+
+/* Touch: a marker is at least 44 px, grown evenly around its block's center. */
+@media (hover: none) and (pointer: coarse) {
+  .lk-mark {
+    min-width: 44px;
+    min-height: 44px;
+    margin: min(0px, calc((var(--lk-size, 44px) - 44px) / 2)) 0 0 min(0px, calc((var(--lk-size, 44px) - 44px) / 2));
+  }
+}

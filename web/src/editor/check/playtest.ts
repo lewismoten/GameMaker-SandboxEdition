@@ -5,6 +5,7 @@
 // (one key at a time, unhurried), or go on into each scene carrying the least the hero could
 // have left the last one with (what a player who skips things brings).
 import { parseBlocks, BACKBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { fromCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import { NOSCENE, parseGame, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { parseMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { explore, type Entry, type Exploration, type ExploreLive } from './explore';
@@ -150,5 +151,5 @@ async function checkScene(
   const mapBytes = files.get(s.files[1]);
   const bblBytes = s.files[2] ? files.get(s.files[2]) : undefined;
   const stuck = mapBytes && bblBytes ? stuckAreas(ex, parseMap(mapBytes).blocks, parseBlocks(bblBytes, BACKBL)) : [];
-  return { scene, name: s.desc.trim() || `Scene ${scene}`, from, ex, stuck, hpIn: entry.ci.hitpts, entry };
+  return { scene, name: fromCp437(s.desc).trim() || `Scene ${scene}`, from, ex, stuck, hpIn: entry.ci.hitpts, entry };
 }

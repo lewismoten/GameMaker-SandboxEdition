@@ -1,0 +1,6 @@
+(footprint "MountingHole_3.2mm_M3" (version 20241229) (generator "pcbnew") (generator_version "9.0") (layer "F.Cu") (descr "M3 hole, no pad copper")
+  (property "Reference" "REF**" (at 0 -4.2 0) (layer "F.SilkS") (uuid "7becec11-0b75-5976-9125-71b2690c67b3") (effects (font (size 0.8 0.8) (thickness 0.12))))
+  (property "Value" "M3" (at 0 4.2 0) (layer "F.Fab") (uuid "ebfb1cf1-d7fa-5e3e-a5c7-d4a71a0872d9") (effects (font (size 0.8 0.8) (thickness 0.12))))
+  (attr exclude_from_pos_files exclude_from_bom)
+  (pad "" np_thru_hole circle (at 0 0) (size 3.2 3.2) (drill 3.2) (layers "*.Cu" "*.Mask") (uuid "5d507390-9b1b-5770-9758-93844995081c"))
+)

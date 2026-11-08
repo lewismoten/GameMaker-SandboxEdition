@@ -20,7 +20,7 @@ import { analyze, fixFor, warnings, whereTouch, type Analysis, type Warning } fr
 import { dismissKey, dismissed, setDismissed, splitDismissed } from './visionDismissed';
 import { includesColors, visiblePicture, visionFallback } from './visionFallback';
 
-export interface VisionContext {
+interface VisionContext {
   project: Project;
   file: string;
   pal: Palette;

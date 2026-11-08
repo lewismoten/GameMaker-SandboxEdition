@@ -1,0 +1,83 @@
+{
+  "title": "Score Popups",
+  "howDoI": [
+    {
+      "id": "pay",
+      "q": "How do I make a monster pay points when Yana touches it?",
+      "scene": 2,
+      "x": 28,
+      "y": 19,
+      "level": 1
+    },
+    {
+      "id": "becomes",
+      "q": "How do I make a touched monster turn into a number?",
+      "scene": 2,
+      "x": 28,
+      "y": 19,
+      "level": 1
+    },
+    {
+      "id": "rise",
+      "q": "How do I make a number float up and go away?",
+      "scene": 2,
+      "x": 28,
+      "y": 19,
+      "level": 1
+    },
+    {
+      "id": "blink",
+      "q": "How do I make a number blink?",
+      "scene": 2,
+      "x": 28,
+      "y": 19,
+      "level": 1
+    },
+    {
+      "id": "digits",
+      "q": "How do I draw a number like 200 or 500?",
+      "scene": 3,
+      "x": 21,
+      "y": 19,
+      "level": 2
+    },
+    {
+      "id": "stay",
+      "q": "How do I stop a number from staying on the screen?",
+      "scene": 3,
+      "x": 34,
+      "y": 19,
+      "level": 2
+    }
+  ],
+  "pages": [
+    {
+      "head": "Welcome",
+      "html": "<h1>Welcome</h1><p><b>Score Popups</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has two short levels and takes a couple of minutes to finish.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each thing in the levels is made.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. <kbd>Space</kbd> jumps. <kbd>F2</kbd> shows your lives, hit points and score. Walk into the door at the end of a level to go on.</p><p>When you score, a number rises and fades. Game-Maker has no command for that. It is a monster, and this game builds it. Nothing here hurts you.</p>"
+    },
+    {
+      "head": "Level 1: A Number Appears",
+      "html": "<h1>Level 1: A Number Appears</h1><p>The first sign says <b>PLAIN COINS JUST VANISH</b>. Walk over the two coins on the ground: each pays 10 points and is gone, and nothing else happens.</p><p>The <b>THESE COINS ARE MONSTERS</b> sign points at three spinning gold coins. Touch one. It pays 100 points, and a blinking <b>100</b> floats up where it was, then goes. The next sign says what you just saw.</p><p>One of the three coins hangs at Yana's head and two stand at their feet. All of them are taken just by walking.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 1 is made</h1><ul><li><b>A prize that is a monster.</b> Open <b>pop.mon</b> in the monsters editor and pick the coin. It has no path, so it hangs in the air and spins between two pictures. Its <b>Power</b> is 50. A monster under 100 is destroyed when Yana touches it; at 100 or more Yana walks through it and nothing happens.</li><li><b>The points.</b> Open <b>pop.mbl</b> in the blocks editor and pick <b>coin0</b>. Its <b>Score points</b> is 100, and so is <b>coin1</b>'s, so it pays on either frame. The score comes from the picture that is touched. The monster's own <b>Score when destroyed by a weapon</b> is for thrown things and does nothing here.</li><li><b>The number.</b> The coin's <b>When destroyed it becomes</b> is <b>POP100</b>. The new monster is born in the same place, the same tick.</li><li><b>Blinking.</b> <b>POP100</b> shows two pictures one after the other: <b>num100</b> for 4 ticks and <b>empty</b>, a picture with nothing in it, for 3. The eye sees a blink.</li><li><b>Rising and leaving.</b> Its <b>Movement</b> path is one corner, two blocks up at speed 1, and its <b>Lives</b> is <b>Until the end of its path</b>. When it has risen two blocks it is destroyed. Power 150 keeps Yana's touch from doing anything to it.</li><li><b>The map.</b> Open <b>one.map</b>: the three coins are monsters put on the map, and the two plain coins are blocks.</li></ul>"
+    },
+    {
+      "head": "Level 2: Its Own Picture",
+      "html": "<h1>Level 2: Its Own Picture</h1><p>The <b>EACH NUMBER IS ITS OWN PICTURE</b> sign stands before a blue gem and an orange box. The gem pays 200 and shows a <b>200</b>. The box pays 500 and shows a <b>500</b>. They are three different pictures.</p><p>The <b>THIS 100 NEVER GOES AWAY</b> sign points at one more coin. It pays 100, but its number blinks in place and does not leave. That is the mistake to learn from. Walk on through it: it is not solid and pays nothing.</p><p>The <b>LET ITS PATH END TO CLEAR IT</b> sign comes before the last coin, which is built the right way and rises and goes.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 2 is made</h1><ul><li><b>Three numbers, three pictures.</b> A number is a 20 by 20 picture in <b>pop.mbl</b>: <b>num100</b>, <b>num200</b> and <b>num500</b>. Game-Maker has no way to print the score, so every number you want to float up must be drawn. The digits in this game are five pixels wide with a one-pixel outline.</li><li><b>Three prizes.</b> The gem and box are made like the coin, each with its own <b>Score points</b> and its own <b>When destroyed it becomes</b>.</li><li><b>The mistake.</b> The stuck coin is a second coin monster that becomes <b>STUCKPOP</b>. Its <b>Lives</b> is <b>Forever (indestructible)</b> and it has no <b>Movement</b> path, so nothing ever removes it.</li><li><b>The fix.</b> The last coin becomes <b>POP100</b>, whose <b>Lives</b> is <b>Until the end of its path</b>. Either a path that ends or <b>For a set time</b> clears a number.</li><li><b>The exit.</b> The last door links to the <b>The End</b> scene in <b>pop.gam</b>, which plays the ending.</li></ul>"
+    },
+    {
+      "head": "What Game-Maker cannot do",
+      "html": "<h1>What Game-Maker cannot do</h1><p>A popup is a picture, and that is all it can be:</p><ul><li>It cannot draw a number. It cannot show the score, a count or the points a prize happened to pay. Every number is a picture you draw, one monster each, and a game that pays 10, 20 and 50 draws three.</li><li>It cannot take a value from the touch. The prize pays what its picture's <b>Score points</b> says and becomes the one monster you named.</li><li>A monster is born on the spot of the thing it replaces, never beside it or above it. To start a number higher, give it a path that begins by moving.</li><li>At most 200 monsters are alive at once, popups included, so a crowd of them can leave no room for a new one.</li></ul>"
+    },
+    {
+      "head": "Make it yours",
+      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>Change the number's path from 2 blocks up to 4. It floats higher.</li><li>Make <b>num100</b>'s picture show for 8 ticks. It blinks more slowly.</li><li>Draw a <b>1000</b> in the blocks editor, add a monster that shows it, and make the box become it.</li><li>Give a prize a set <b>Score points</b> of 1000 and leave its number at 100, and see how a number can lie. Better to match them.</li><li>Fix the stuck coin: set the stuck number's <b>Lives</b> to <b>Until the end of its path</b> and give it a path.</li></ul><p>The home page's <b>Starters</b> tab has more small games like this one.</p>"
+    }
+  ]
+}

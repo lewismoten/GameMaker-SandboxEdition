@@ -1,0 +1,64 @@
+{
+ "version": 1,
+ "game": "throw-it",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU0jzQMcA5w8TTzNAxwDnDxNI80DHAOcPE0="
+  },
+  {
+   "scene": 3,
+   "keys": "AU1LzQNLBcsDHAOcPE0UzQMcA5w8TUvNA00="
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: Throw a Star"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: The Narrow Way"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 8519,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 913,
+    "time": 15216.666666666471
+   },
+   {
+    "title": "Level 1: Throw a Star",
+    "frame": 2142,
+    "time": 35700.00000000053
+   },
+   {
+    "title": "Level 2: The Narrow Way",
+    "frame": 3773,
+    "time": 62883.33333332991
+   },
+   {
+    "title": "Ending",
+    "frame": 5239,
+    "time": 87316.66666666919
+   },
+   {
+    "title": "Credits",
+    "frame": 7446,
+    "time": 124100.00000001323
+   }
+  ]
+ }
+}

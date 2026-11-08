@@ -379,5 +379,17 @@ export function buildParlorBlocks(): BlockSet {
   [...sign.board, ...sign.posts!].forEach((p, k) => add(`saveSign${k}`, p));
   // scenery for the site's achievement badges, after everything else so no block moves
   addBadgeBlocks(add, { rug: RUG, stage: ST, curtain: velvetCurtain });
+  // the stage door at the start, added after everything else so no block before it moves
+  for (const who of SUSPECTS) cardBlocks(`d_${who.toUpperCase()}`, who.toUpperCase());
+  add(
+    'stagedoor',
+    ((): Pixels => {
+      const p = clone(RUG);
+      p.rect(2, 4, 16, 12, c('navy', 1)).frame(2, 4, 16, 12, c('gold', 2));
+      microC(p, 10, 6, 'GO', c('gold', 4));
+      microC(p, 10, 12, 'IN', c('gold', 4));
+      return p;
+    })(),
+  );
   return bs;
 }

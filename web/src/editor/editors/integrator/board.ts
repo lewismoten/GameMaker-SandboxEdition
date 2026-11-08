@@ -3,6 +3,7 @@
 // curved arrows for the links between scenes (one per pair, with a count). Used for the
 // live board and for Export PNG.
 import type { Project } from '../../core/project';
+import { fromCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import { NOSCENE, sceneKind, type Game, type Point, gameTitle } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { WORLD, CARD_UNITS, arrival } from './layoutCells';
 import { START_SONGS } from './sceneSlots';
@@ -37,7 +38,7 @@ export function roundRect(ctx: CanvasRenderingContext2D, r: Rect, rad: number): 
 }
 
 /** Where a line from the center of `r` towards (tx, ty) leaves the rectangle. */
-export function edgePoint(r: Rect, tx: number, ty: number, pad = 4): Point {
+function edgePoint(r: Rect, tx: number, ty: number, pad = 4): Point {
   const cx = r.x + r.w / 2;
   const cy = r.y + r.h / 2;
   const dx = tx - cx;
@@ -122,7 +123,7 @@ function drawThumb(ctx: CanvasRenderingContext2D, img: HTMLCanvasElement | undef
 }
 
 /** A group's card stands for its members: shown as a stack, with the group's name and size. */
-export interface GroupFace {
+interface GroupFace {
   name: string;
   count: number;
   /** Any member is the selected scene. */
@@ -175,10 +176,10 @@ export function drawCard(ctx: CanvasRenderingContext2D, i: number, forExport: bo
   const title = group
     ? `${group.name} (${group.count})`
     : kind === 'start'
-      ? `★ ${s.desc || 'Untitled'}`
+      ? `★ ${fromCp437(s.desc) || 'Untitled'}`
       : kind === 'end'
-        ? `⚑ ${s.desc || 'Game over'}`
-        : `${i}  ${s.desc || '(untitled)'}`;
+        ? `⚑ ${fromCp437(s.desc) || 'Game over'}`
+        : `${i}  ${fromCp437(s.desc) || '(untitled)'}`;
   ctx.fillText(title, r.x + 6, r.y + 13, r.w - 12);
   // picture
   const box = { x: r.x + THUMB.x, y: r.y + THUMB.y, w: THUMB.w, h: THUMB.h };

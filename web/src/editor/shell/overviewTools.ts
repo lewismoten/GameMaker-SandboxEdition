@@ -10,10 +10,12 @@ import { fileThumb } from '../widgets/thumbs';
 import { uploadSummary } from '../widgets/uploadChecklist';
 import { howFar, WALK_SECTION, type SavedWalk } from '../check/walk/keptWalk';
 import { firstStepsState, stepsDone, STEPS } from './firstSteps';
-import { projectTarget, showHealthReport } from './gameHealth';
+import { projectTarget } from './gameHealth';
+import { showHealthReport } from './gameHealthReport';
 import { visionPalette } from './visionPalette';
 import { versionCard } from './overviewVersion';
-import { diskStatus, floppyFor } from '../disk/diskCard';
+import { aboutCard } from './overviewAbout';
+import { diskStatus, floppyFor, openOptimize } from '../disk/diskCard';
 
 interface ToolsHost {
   open: (file: string) => void;
@@ -156,7 +158,7 @@ export function overviewTools(project: Project, host: ToolsHost): { el: HTMLElem
       diskStatus(project),
       'What the game takes to run as a DOS game, how many 3.5″ disks that is, files (monster files, block sets, palettes) that could share one, blocks that look the same, colors outside their range, and checkpoints to compare against.',
       'Open Optimize…',
-      () => void import('../disk/diskTool').then((m) => m.diskTool(project)),
+      () => openOptimize(project),
     ),
   );
 
@@ -194,7 +196,7 @@ export function overviewTools(project: Project, host: ToolsHost): { el: HTMLElem
     );
   }
 
-  if (!project.readOnly) cards.push(versionCard(project));
+  if (!project.readOnly) cards.push(versionCard(project), aboutCard(project));
 
   cards.push(
     card('play', 'Play the game', null, 'From the title screen', 'Plays the whole game as a player would; Esc or Stop comes back.', 'Play Game', host.play),

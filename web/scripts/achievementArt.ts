@@ -1,14 +1,19 @@
 // Extract selected public-game blocks for achievement badges; no game code enters the browser bundle.
-// Run from web/: npx vite-node scripts/achievementArt.ts
+// Run from web/: npx vite-node scripts/achievementArt.ts [--adopt <id>[,<id>...]]
+//
+// Hand-drawn badges are safe: only entries marked "generator": "scripts/achievementArt.ts" are ever refreshed or
+// removed, and anything unmarked (or listed in HAND_DRAWN) is copied through byte for byte, with a "kept" line
+// logged for each one a pick also names. --adopt <id> hands an unmarked, non-hand-drawn entry to the generator.
+// The rules and the list are in achievementArtKeep.ts.
 import { writeFileSync } from 'node:fs';
-import { createHash } from 'node:crypto';
 import { ACHIEVEMENTS } from '../src/achievements/catalog';
 import { encodeIndexedPng } from './gameShots';
 import { picks as selections, sets } from './achievementSets';
+import { isGenerated, parseArgs, updateBadgeFile, type MadeBadge } from './achievementArtKeep';
 import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 
-const badges: Record<string, { image: string; game: string; set: string; block: string }> = {};
-const seen = new Set<string>();
+const { adopt } = parseArgs(process.argv.slice(2));
+const made: Record<string, MadeBadge> = {};
 for (const [id, [set, name]] of Object.entries(selections)) {
   if (!ACHIEVEMENTS.some((a) => a.id === id)) throw new Error(`Unknown achievement ${id}`);
   const source = sets[set];
@@ -16,24 +21,20 @@ for (const [id, [set, name]] of Object.entries(selections)) {
   const pic: Pixels | undefined = source.blocks.get(name);
   if (!pic || pic.w !== 20 || pic.h !== 20) throw new Error(`Not a 20x20 block: ${set}/${name}`);
   const png = encodeIndexedPng({ width: 20, height: 20, pixels: pic.px, palette: source.palette }, 255);
-  const hash = createHash('sha256').update(png).digest('hex');
-  if (seen.has(hash)) throw new Error(`Duplicate badge art: ${id}`);
-  seen.add(hash);
-  badges[id] = { image: `data:image/png;base64,${Buffer.from(png).toString('base64')}`, game: source.game, set, block: name };
+  made[id] = { image: `data:image/png;base64,${Buffer.from(png).toString('base64')}`, game: source.game, set, block: name };
 }
-writeFileSync(
+const result = updateBadgeFile(
   new URL('../src/achievements/blockArt.json', import.meta.url),
-  JSON.stringify(
-    {
-      notice:
-        'Project-owned game art by Lewis Moten using Anthropic Claude; the Teddy tier badges, the Certified Rat Tickler, Final Curtain, A Fly Named Carl, Great Dairy Reckoning, Needle, Risi, Loaf, Goat and Smirked badge blocks (and later blocks for the lab, the tailor shop, the hillside and the yard), the sprite frames (snowplow, sled, turtle, Gwinn, book) and the extraction by Claude Sonnet 5.5 (earlier extraction with OpenAI Codex). See NOTICE.md and docs/achievement-art.md.',
-      badges,
-    },
-    null,
-    2,
-  ) + '\n',
+  'Project-owned game art by Lewis Moten using Anthropic Claude; the Teddy tier badges, the Certified Rat Tickler, Final Curtain, A Fly Named Carl, Great Dairy Reckoning, Needle, Risi, Loaf, Goat and Smirked badge blocks (and later blocks for the lab, the tailor shop, the hillside and the yard), the sprite frames (snowplow, sled, turtle, Gwinn, book) and the extraction by Claude Sonnet 5.5 (earlier extraction with OpenAI Codex). See NOTICE.md and docs/achievement-art.md.',
+  made,
+  { adopt },
 );
-console.log(`Extracted ${Object.keys(badges).length} unique 20x20 badge blocks.`);
+const badges = result.badges;
+for (const line of result.log) console.log(line);
+console.log(
+  `Badges: ${result.created.length} created, ${result.refreshed.length} refreshed, ${result.unchanged.length} unchanged, ` +
+    `${result.adopted.length} adopted, ${result.removed.length} removed, ${result.kept.length} kept untouched (not generated).`,
+);
 
 const props: Record<string, string> = {
   '🆕': 'a blank sheet of paper with one folded corner',
@@ -144,6 +145,11 @@ const proposal = (a: (typeof ACHIEVEMENTS)[number]): string => {
   return `20×20 block: ${props[a.icon] ?? `a small trophy inspired by “${a.title}”`}, with a dark outline and one clear focal shape.`;
 };
 const existing = Object.entries(badges)
+  .filter(([, b]) => isGenerated(b))
+  .map(([id, b]) => `| ${id} | ${b.game} | ${b.set} / ${b.block} |`)
+  .join('\n');
+const drawn = Object.entries(badges)
+  .filter(([, b]) => !isGenerated(b))
   .map(([id, b]) => `| ${id} | ${b.game} | ${b.set} / ${b.block} |`)
   .join('\n');
 const missing = ACHIEVEMENTS.filter((a) => !badges[a.id])
@@ -179,12 +185,26 @@ Run \`npx vite-node scripts/achievementArt.ts\` from \`web/\` to regenerate
 \`src/achievements/blockArt.json\` and this inventory. The sources and selections are in
 \`scripts/achievementSets.ts\` and the tier badges in \`scripts/achievementTiers.ts\`; the generator rejects
 duplicate image bytes.
+It never touches a badge it did not make: it marks each entry it writes with
+\`"generator": "scripts/achievementArt.ts"\` and refreshes or removes only marked entries. An entry without the
+mark (a badge drawn by hand, or of unknown origin) is kept byte for byte, and a \`kept\` line is logged when a pick
+names it. Hand-drawn badges are also listed in \`HAND_DRAWN\` in \`scripts/achievementArtKeep.ts\`, which no option
+overrides; \`--adopt <id>\` is the one deliberate way to replace another unmarked entry with its pick.
 
 ## Selected blocks
 
 | Achievement | Public game | Source set / block |
 | --- | --- | --- |
 ${existing}
+
+## Badges the generator keeps as they are
+
+Entries without the generator's mark, copied through unchanged: badges drawn by hand for the badge, and any entry
+the generator cannot prove it made (\`--adopt <id>\` hands one that is not hand-drawn back to it).
+
+| Achievement | Source | Set / block |
+| --- | --- | --- |
+${drawn}
 
 ## Art still needed
 

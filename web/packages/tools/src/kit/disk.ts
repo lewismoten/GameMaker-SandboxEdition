@@ -1,6 +1,7 @@
 // Portable DOS disk output: callers own destination, metadata, and version-stamping policy.
 import { mkdirSync, readdirSync, renameSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { mergeIdenticalPalettes } from './palMerge';
 export class Disk {
   readonly files = new Map<string, Uint8Array>();
   constructor(readonly dir: string) {}
@@ -16,6 +17,7 @@ export class Disk {
    * the folder during a rebuild never finds a file missing or half written.
    */
   write(dir = this.dir): number {
+    mergeIdenticalPalettes(this.files);
     mkdirSync(dir, { recursive: true });
     let total = 0;
     for (const [name, bytes] of this.files) {

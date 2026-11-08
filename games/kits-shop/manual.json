@@ -1,0 +1,59 @@
+{
+  "title": "Kit's Shop",
+  "howDoI": [
+    {
+      "id": "shelf",
+      "q": "How do I make a shop with things for sale, each with a price?",
+      "scene": 2,
+      "x": 40,
+      "y": 19,
+      "level": 1
+    },
+    {
+      "id": "once",
+      "q": "How do I make something that can be bought only once?",
+      "scene": 2,
+      "x": 44,
+      "y": 19,
+      "level": 1
+    },
+    {
+      "id": "needs-purchase",
+      "q": "How do I make an exit that needs something bought?",
+      "scene": 2,
+      "x": 58,
+      "y": 19,
+      "level": 1
+    },
+    {
+      "id": "cheap-or-dear",
+      "q": "How do I make things that cost different amounts?",
+      "scene": 2,
+      "x": 48,
+      "y": 19,
+      "level": 1
+    }
+  ],
+  "pages": [
+    {
+      "head": "Welcome",
+      "html": "<h1>Welcome</h1><p><b>Kit's Shop</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the level that say what you are looking at. It has one level and takes a few minutes to finish.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each thing in the level is made.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. <kbd>Space</kbd> jumps. <kbd>Up</kbd> and <kbd>Down</kbd> climb a ladder. <kbd>F2</kbd> shows your Money.</p><p>For the basic idea of paying, see <b>Spend It</b>, which has one stall. For points, see <b>Coins and Score</b>. For a door with a price, see <b>Stronger Keys</b>.</p>"
+    },
+    {
+      "head": "Level 1: Kit's Shop",
+      "html": "<h1>Level 1: Kit's Shop</h1><p>Eight coins are in the street: six on the path and two up the ladder. Inside the shop three stalls stand in a row, each with its price on a card on its roof: a gold key (3), a silver key (3) and a heart (2). Walk into a stall to pay. It takes its price, hands over the item, and turns into a SOLD counter that does nothing more. Two gates in the far wall (silver, then gold) take a key each, so both keys are needed to leave. All three things cost eight, which is every coin, so the heart needs the two up the ladder.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How the level is made</h1><ul><li><b>The coins.</b> Open <b>kitshop.bbl</b> in the blocks editor and pick the <b>cash</b> block. On its <b>Touch</b> tab, <b>Effect counter</b> is 3 (Money) and <b>Effect amount</b> is 1. It has no score.</li><li><b>Three stalls, three prices.</b> <b>stall.key.3</b>, <b>stall.silver.3</b> and <b>stall.heart.2</b> each have <b>Effect counter</b> 3 and an <b>Effect amount</b> of &minus;3, &minus;3 and &minus;2. The picture on the roof (<b>awning3</b>, <b>awning2</b>) shows the price; the rule takes it. A touch is allowed only if the counter stays above zero, and a counter holds one more than the coins carried, so exactly three coins pay a price of three.</li><li><b>Too few.</b> Walk into a stall with nothing left and nothing happens. The way through is to jump over it, or fetch more coins.</li><li><b>What you get.</b> A block has one <b>Effect counter</b> and the price uses it, so each stall turns into another block when it is paid: <b>give.key</b> (adds 1 to counter 20), <b>give.silver</b> (adds 1 to counter 21) or <b>give.heart</b> (adds a life). They look like the SOLD counter and can be walked through, and they turn into <b>sold</b> as you take the item.</li><li><b>Bought once.</b> A stall that has turned into <b>sold</b> has no rule left, so it cannot be bought again.</li><li><b>The exit.</b> The blue silver gate takes one key from counter 21 and the brown gold gate takes one from counter 20, the same gates as in <b>Stronger Keys</b>. Both are in the way, so both keys must be bought.</li><li><b>The start.</b> Open <b>hero.chr</b> in the character editor. Money (3) and the two key counters (20, 21) start at 1, which the game shows as none.</li><li><b>Choosing.</b> Six coins on the path pay for both keys, but not the heart. The player buys the keys first and then climbs for the last two coins, or climbs first. The level does not say which.</li></ul>"
+    },
+    {
+      "head": "What it cannot do",
+      "html": "<h1>What it cannot do</h1><ul><li>Nothing shows the number of coins left while you play. Money is counter 3, the one counter Game-Maker prints as a number, and only on the status page (<kbd>F2</kbd>). The prices are pictures you draw yourself.</li><li>A block has one <b>Effect counter</b>. The price uses it, so what you get has to come from the block the stall turns into. Each stall makes its own pair of blocks, a stall and a hand-over.</li><li>A shelf item cannot go back. There is no refund and no restocking in one visit; a stall is <b>sold</b> until you start the level again.</li><li>A price is fixed. There is no sale and no change given for a note.</li><li>Nothing stops a player jumping over a stall to reach the next one, which is why the level pays for the keys first and puts the heart last.</li><li>The heart gives a life, which the game shows only on the status page.</li></ul>"
+    },
+    {
+      "head": "Make it yours",
+      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>In <b>kitshop.bbl</b>, change <b>stall.heart.2</b>'s <b>Effect amount</b> to &minus;1. The heart is cheaper, though its card still says 2.</li><li>Copy <b>stall.key.3</b>, set its <b>Effect amount</b> to &minus;5 and put it on the map. A more expensive key.</li><li>Take the ladder coins out of the map. Both keys can still be bought, and the heart cannot.</li><li>Change <b>give.heart</b>'s <b>Effect counter</b> to counter 20. The heart stall now sells a gold key.</li></ul><p>The home page's <b>Starters</b> tab has more small games like this one.</p>"
+    }
+  ]
+}

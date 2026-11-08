@@ -1,31 +1,21 @@
-name: Windows programs
+name: Try a Windows program
 
-# Builds a Windows program (.exe, and a .zip of it) of every listed game with
-# web/scripts/winExe.ts (plain JavaScript, so it runs on Linux), first trying one on a real
+# Builds one game's Windows program (.exe) with web/scripts/winExe.ts and tries it on a real
 # Windows machine: it must open the game in WebView2 and keep a saved value between two
-# launches. Then attaches them to a GitHub release. Run it by hand (Actions → Windows
-# programs → Run workflow; with no tag it only builds and tries them) or by publishing a release.
+# launches. Run it by hand (Actions → Try a Windows program → Run workflow). Every game's
+# program is built and attached to a release by downloads.yml, in one Linux job.
 on:
-  release:
-    types: [published]
   workflow_dispatch:
-    inputs:
-      tag:
-        description: Release tag to attach the programs to (created if missing); empty to only build and test
-        required: false
 
 permissions:
-  contents: write
+  contents: read
 
 defaults:
   run:
     working-directory: web
 
 jobs:
-  frames:
-    uses: ./.github/workflows/game-frames.yml
   try:
-    needs: frames
     runs-on: windows-latest
     timeout-minutes: 5
     steps:
@@ -35,12 +25,15 @@ jobs:
           node-version: 26
           cache: npm
           cache-dependency-path: package-lock.json
-      - uses: actions/download-artifact@v8
-        with:
-          pattern: game-frames-*
-          path: games/.render-cache
-          merge-multiple: true
-      - run: npm ci
+      # only the one game this tries: no other disks, trinkets or laser nickels
+      - run: npm ci --no-audit --no-fund
+        env:
+          GM_SKIP_GAME_BUILD: '1'
+      - run: node ../scripts/build-games.mjs --game teddy
+        env:
+          GM_SKIP_FIELD_TRINKETS: '1'
+          GM_SKIP_PIXEL_TRINKETS: '1'
+          GM_SKIP_LASER_NICKELS: '1'
       - run: npx vite-node scripts/winExe.ts teddy --out ../dist/win
       - name: Play it twice
         shell: pwsh
@@ -60,34 +53,3 @@ jobs:
             if ($run -eq 2 -and -not $r.test) { throw 'The saved value did not survive a relaunch' }
           }
           Get-ChildItem "$env:LOCALAPPDATA\GameMaker"
-
-  build:
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    needs: [frames, try]
-    steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-node@v7
-        with:
-          node-version: 26
-          cache: npm
-          cache-dependency-path: package-lock.json
-      - uses: actions/download-artifact@v8
-        with:
-          pattern: game-frames-*
-          path: games/.render-cache
-          merge-multiple: true
-      - run: npm ci
-      - run: npx vite-node scripts/winExe.ts --all --zip --out ../dist/win
-      - uses: actions/upload-artifact@v7
-        with:
-          name: windows-programs
-          path: dist/win/*.zip
-      - name: Attach to the release
-        if: github.event.release.tag_name || inputs.tag
-        env:
-          GH_TOKEN: ${{ github.token }}
-          TAG: ${{ github.event.release.tag_name || inputs.tag }}
-        run: |
-          gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --title "$TAG" --notes "Windows programs of the games (not code-signed: see win/README.md)."
-          gh release upload "$TAG" ../dist/win/*.exe ../dist/win/*.zip --clobber

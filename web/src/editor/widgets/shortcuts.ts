@@ -207,7 +207,7 @@ export function showShortcuts(kind?: FileKind): Promise<void> {
     h(
       'div',
       // it scrolls on small screens, so it takes focus for the arrow keys
-      { class: 'keys-list', role: 'region', 'aria-label': 'Shortcuts', tabIndex: 0 },
+      { class: 'keys-list', 'data-list-area': 'shortcuts', role: 'region', 'aria-label': 'Shortcuts', tabIndex: 0 },
       kind && kind !== 'other'
         ? h(
             'p',

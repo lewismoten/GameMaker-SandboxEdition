@@ -5,7 +5,9 @@
 // RGB. Also each view's CIELAB colors, to measure how far apart two colors look (CIE76 ΔE).
 import type { Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import { luminance } from '../../check/sceneData';
-import { MACHADO } from './machadoMatrices';
+import { MACHADO, lab, linearToSrgb, simulateLinear, srgbToLinear, unlab, type Rgb } from '@lewismoten/gamemaker-sandbox-engine/gfx/colorVision';
+
+export { lab, unlab };
 
 export type View = 'normal' | 'gray' | 'protan' | 'deutan' | 'tritan';
 
@@ -17,18 +19,11 @@ export const VIEWS: { id: View; name: string; about: string }[] = [
   { id: 'tritan', name: 'Tritanopia', about: 'Blue and green look alike, and so do yellow and pink' },
 ];
 
-type RGB = [number, number, number];
+type RGB = Rgb;
 
 /** A 6-bit VGA component (0..63) as linear light (0..1). */
-const toLinear = (v: number) => {
-  const c = (v & 63) / 63;
-  return c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
-};
-/** Linear light (0..1) as an sRGB value (0..1). */
-const toSrgb = (l: number) => {
-  const c = Math.max(0, Math.min(1, l));
-  return c <= 0.0031308 ? c * 12.92 : 1.055 * c ** (1 / 2.4) - 0.055;
-};
+const toLinear = (v: number) => srgbToLinear((v & 63) / 63);
+const toSrgb = linearToSrgb;
 
 /** Palette color `i` in linear RGB as `view` sees it. */
 export function seen(pal: Palette, i: number, view: View): RGB {
@@ -38,9 +33,7 @@ export function seen(pal: Palette, i: number, view: View): RGB {
   }
   const rgb: RGB = [toLinear(pal[i * 3]), toLinear(pal[i * 3 + 1]), toLinear(pal[i * 3 + 2])];
   if (view === 'normal') return rgb;
-  const m = MACHADO[view];
-  const out = [0, 1, 2].map((r) => Math.max(0, Math.min(1, m[r * 3] * rgb[0] + m[r * 3 + 1] * rgb[1] + m[r * 3 + 2] * rgb[2])));
-  return out as RGB;
+  return simulateLinear(rgb, MACHADO[view]);
 }
 
 /** The whole palette as `view` sees it, as ordinary 6-bit palette data (for drawing). */
@@ -48,25 +41,6 @@ export function simulate(pal: Palette, view: View): Palette {
   const out = new Uint8Array(768);
   for (let i = 0; i < 256; i++) seen(pal, i, view).forEach((l, c) => (out[i * 3 + c] = Math.round(toSrgb(l) * 63)));
   return out;
-}
-
-/** Linear RGB to CIELAB (D65 white). */
-export function lab([r, g, b]: RGB): RGB {
-  const x = (0.4124 * r + 0.3576 * g + 0.1805 * b) / 0.95047;
-  const y = 0.2126 * r + 0.7152 * g + 0.0722 * b;
-  const z = (0.0193 * r + 0.1192 * g + 0.9505 * b) / 1.08883;
-  const f = (t: number) => (t > 216 / 24389 ? Math.cbrt(t) : ((24389 / 27) * t + 16) / 116);
-  return [116 * f(y) - 16, 500 * (f(x) - f(y)), 200 * (f(y) - f(z))];
-}
-
-/** CIELAB back to linear RGB (unclamped). */
-export function unlab([L, a, b]: RGB): RGB {
-  const fy = (L + 16) / 116;
-  const inv = (t: number) => (t ** 3 > 216 / 24389 ? t ** 3 : (116 * t - 16) / (24389 / 27));
-  const x = inv(fy + a / 500) * 0.95047;
-  const y = inv(fy);
-  const z = inv(fy - b / 200) * 1.08883;
-  return [3.2406 * x - 1.5372 * y - 0.4986 * z, -0.9689 * x + 1.8758 * y + 0.0415 * z, 0.0557 * x - 0.204 * y + 1.057 * z];
 }
 
 /** Every color of the palette in CIELAB as `view` sees it (L, a, b per color). */

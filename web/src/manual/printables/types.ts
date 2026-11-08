@@ -2,6 +2,9 @@
 // its paper extras ("printables"). Every game gets a set of generated extras; a game adds its
 // own in games/<id>/printables.json (see README.md in this folder for the full guide).
 
+import type { PrintsItem, SpyglassItem } from './sleuthTypes';
+import type { BalloonCubeItem } from './balloonCubeTypes';
+
 /** Extras every game gets, made from its catalog entry, manual and disk files. */
 export type GeneratedKind =
   | 'postcard' // registration postcard
@@ -37,7 +40,7 @@ export interface MapPanel {
   course?: boolean;
 }
 
-interface ItemBase {
+export interface ItemBase {
   /** The name in the "What's in the box" tray. */
   title: string;
   /** True when the manual promises it to registered players (it shows a "Registered" seal). */
@@ -196,7 +199,152 @@ export interface RecipeItem extends ItemBase {
   back?: string;
 }
 
-export type PrintableItem = MapItem | HintBookItem | LetterItem | NewspaperItem | JournalItem | IdCardItem | ChartItem | StarChartItem | RecipeItem;
+/**
+ * A paper code wheel (codeWheel.ts): an outer disc with a ring of symbols, and a smaller disc pinned over it
+ * that turns, with a ring of its own facing the outer one and windows cut through it onto a ring printed on
+ * the outer disc underneath. It decodes the game's lettering (runes, an alien script, symbols) and answers its
+ * puzzles; printed, it is two discs to cut out and pin together; on screen it turns.
+ */
+export interface CodeWheelItem extends ItemBase {
+  kind: 'codewheel';
+  /** Round the outer disc's rim. */
+  heading: string;
+  /** In the middle of the turning disc. */
+  center?: string;
+  /** A picture on the turning disc's hub: 'nose' is "CLOWN CLUB" round a red rubber nose (the center text is then left out). */
+  emblem?: 'nose';
+  /** Colors for glyphs: a glyph's name and 12 rows of letters over its picture (`fillColors` has the colors; a capital also covers ink). */
+  fills?: Record<string, string[]>;
+  /** Line-art faces for glyphs of the same name: shapes in a 48 by 48 box (path, fill color or '', line width (0: none), line color); drawn instead of the pixel rows. */
+  faceArt?: Record<string, [d: string, fill: string, width: number, line: string][]>;
+  /** A letter's color, for `fills`. */
+  fillColors?: Record<string, string>;
+  /** The outer disc's ring, clockwise from the top: letters, words, or glyph names (`glyphs`). */
+  outer: string[];
+  /** The turning disc's ring, as many as `outer`, each facing one of them. */
+  inner: string[];
+  /**
+   * A third disc between the two, turning on its own, with a ring of its own (as many as `outer`); the hidden
+   * rings are then printed on it, under the small disc's windows.
+   */
+  middle?: string[];
+  /**
+   * Split pictures: the big disc's ring holds the top half of each picture in `glyphs` and the next disc's ring
+   * (the middle one, or else the small one) the bottom half, drawn flush to the edge they share, so the halves of
+   * a picture join into one when the same name lines up.
+   */
+  split?: boolean;
+  /**
+   * Rings on the outer disc under the turning one, seen only through its windows (each as many as `outer`): one
+   * ring, or several, outermost first, each at its own distance from the pin so each window shows its own.
+   */
+  hidden?: string[] | string[][];
+  /**
+   * Three-disc wheels: a cell of a hidden ring that is '' is a hole cut through the middle disc, so the window
+   * above it looks straight through to the big disc. `behind` holds the rings printed there, on the big disc
+   * (one per hidden ring, each as many as `outer`), seen only through a window over a hole.
+   */
+  behind?: string[][];
+  /** Windows cut through the turning disc: the place in its ring each is beside, its label, and the hidden ring it opens on (0 by default). */
+  windows?: { at: number; label?: string; ring?: number }[];
+  /** Pictures for symbols: a name, and rows of '#' (ink) and '.' (paper), every row as wide. */
+  glyphs?: Record<string, string[]>;
+  /** How to use it, printed with the discs and shown beside the wheel on screen. */
+  howto?: string[];
+  /**
+   * The puzzles it solves: the scenes they are on (the 1994 desk lays the wheel beside the monitor there), the
+   * question, and the setting (the turning disc's `inner` symbol and the outer disc's `outer` one, and on a
+   * three-disc wheel the middle disc's `middle` one, together under the arrow). The answer is what the wheel shows then: the symbol in window `window` (an index into `windows`), or, with `windowsRead`, the symbols in those windows read in order,
+   * or, for decoding a word, a short `answer`.
+   */
+  puzzles?: {
+    scenes: number[];
+    ask: string;
+    turn: { inner: string; outer: string; middle?: string };
+    window?: number;
+    windowsRead?: number[];
+    answer?: string;
+  }[];
+}
+
+/**
+ * A look-up code sheet (codeSheet.ts): a card printed black on dark red (or light cyan), the old paper a
+ * photocopier turns to mud, with one or more grids of squares read by row and column (a place and a number, a
+ * name and a letter). It answers the game's puzzles; printed, it is one letter sheet; on screen a click lights a
+ * square's row and column, and each puzzle has a "Tell me the answer" that lights its square.
+ */
+export interface CodeSheetItem extends ItemBase {
+  kind: 'codesheet';
+  /** Across the top of the card. */
+  heading: string;
+  /** The card's color: dark red (the default) or light cyan. */
+  paper?: 'red' | 'cyan';
+  /** Lines under the heading: how to read it. */
+  howto?: string[];
+  /** The grids: a title, the row and column headings, and a square for every row and column (`cells[row][col]`). */
+  grids: { title: string; rowHead?: string; colHead?: string; rows: string[]; cols: string[]; cells: string[][] }[];
+  /** Pictures for squares and headings: a name, and rows of '#' (ink) and '.' (paper), every row as wide. */
+  glyphs?: Record<string, string[]>;
+  /** A last line along the bottom. */
+  foot?: string;
+  /**
+   * The puzzles it solves: the scenes they are on (the 1994 desk lays the sheet beside the monitor there), the
+   * question, and the square that answers it (grid index, row and column headings), with a short `answer` to say.
+   */
+  puzzles?: { scenes: number[]; ask: string; grid: number; row: string; col: string; answer?: string }[];
+}
+
+/**
+ * A postcard and a grille card (postcardGrille.ts, math in postcardMath.ts): a postcard whose message is a grid of
+ * ordinary words with small pictures printed along its border, and a card with a few numbered holes to lay over it.
+ * Two marks on the grille's edges each look along their row or column out to the border; where both meet their own
+ * picture, the holes read the code. Printed: the card's two sides and the grille's two faces (cut out and glue);
+ * on screen the grille is dragged, turned and flipped over the card.
+ */
+export interface PostcardGrilleItem extends ItemBase {
+  kind: 'postcardgrille';
+  /** Across the picture side, and the line under it. */
+  heading: string;
+  caption: string;
+  /** The address lines on the right of the message side (obviously fake). */
+  address?: string[];
+  /** The message: lines of cells (a multiple of three across); a word sits in its first cell, the cells it spills over are ''. */
+  rows: string[][];
+  border: import('./postcardMath').Border;
+  grille: import('./postcardMath').Grille;
+  /** Pictures for the border and the marks: a name, and rows of '#' (ink) and '.' (paper), every row as wide. */
+  glyphs: Record<string, string[]>;
+  howto?: string[];
+  /** The puzzles: the scenes they are on, the question, the placement that answers it and what it reads. */
+  puzzles?: { scenes: number[]; ask: string; place: import('./postcardMath').Place; answer?: string }[];
+}
+
+/**
+ * A school science report in a character's hand (dexReport.ts): a cover and twenty pages of pencil on lined and
+ * graph paper, with sketches, taped-in photos, a teacher's red pen and a grade sticker. Its text is in
+ * dexReportPages*.ts; the item only names it for the box.
+ */
+export interface DexReportItem extends ItemBase {
+  kind: 'dexreport';
+}
+
+export type PrintableItem =
+  | DexReportItem
+  | SpyglassItem
+  | PrintsItem
+  | MapItem
+  | HintBookItem
+  | LetterItem
+  | NewspaperItem
+  | JournalItem
+  | IdCardItem
+  | ChartItem
+  | StarChartItem
+  | RecipeItem
+  | CodeWheelItem
+  | CodeSheetItem
+  | PostcardGrilleItem
+  | BalloonCubeItem;
 
 /** A sticker on the sticker sheet. */
 export interface StickerSpec {
@@ -216,6 +364,10 @@ export interface StickerSpec {
   sprite?: SpriteArt;
   /** A character from his .CHR file, standing (drawn instead of `sprite`). */
   hero?: Portrait;
+  /** A picture drawn in code, not from the game's files: Lady Regina's tiara, in silver (stickerDrawn.ts). */
+  drawn?: 'tiara';
+  /** What changes once the rubber chicken is Lady Regina (chicken/chickenState.ts): this sticker's fields, replaced. */
+  lady?: Partial<StickerSpec>;
   /** A die-cut's size: each pixel of its picture prints this many 1/150 inch (default: about 1.3" tall). */
   px?: number;
   /** Leave it out of the little cut-outs that fill the sheet's gaps. */
@@ -227,6 +379,8 @@ export interface SpriteArt {
   blocks: string;
   pal: string;
   grid: number[][];
+  /** Only this part of the picture, in pixels: [x, y, width, height] (Doc Leo's hat from his front block). */
+  crop?: [number, number, number, number];
   /**
    * The plain ground block a background thing is drawn on (or a grid of them, like `grid`): its
    * pixels round the thing are cut away. "edge" cuts away the colors along the picture's edge instead
@@ -259,6 +413,12 @@ export interface WorldMapHints {
     /** What its land lists (default: the folded scenes' numbers and names). */
     labels?: string[];
   }[];
+  /**
+   * The game's regions, drawn as one land each (scene numbers, "9-18" or names), instead of the ones
+   * worldMapRegions.ts finds. Palette files that are the same are one file in a built game, so what
+   * a level's own palette once told is not in the disk: a game says where its levels are here.
+   */
+  regions?: (number | string)[][];
 }
 
 /** games/<id>/printables.json */

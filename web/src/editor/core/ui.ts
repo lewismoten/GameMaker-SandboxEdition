@@ -63,28 +63,79 @@ export function toastMs(message: string, kind: 'info' | 'error' = 'info'): numbe
   return Math.min(30000, Math.max(kind === 'error' ? 8000 : 4000, 2000 + message.length * 65));
 }
 
-let toastHost: HTMLElement | undefined;
-export function toast(message: string, kind: 'info' | 'error' = 'info'): void {
-  toastHost ??= document.body.appendChild(h('div', { class: 'toasts', role: 'status', 'aria-live': 'polite' }));
+// Each native modal owns its notices: body siblings are inert while showModal() is active.
+const toastHosts = new WeakMap<Element, HTMLElement>();
+const recentNotices = new WeakMap<HTMLElement, Map<string, { at: number; el: HTMLElement; close: () => void }>>();
+function noticesIn(parent: Element): HTMLElement {
+  let host = toastHosts.get(parent);
+  if (!host) {
+    host = parent.appendChild(h('div', { class: 'toasts' }));
+    toastHosts.set(parent, host);
+    recentNotices.set(host, new Map());
+  }
+  return host;
+}
+/** Shows a message for a while. */
+export function toast(message: string, kind: 'info' | 'error' = 'info', opts: { repeat?: boolean } = {}): void {
+  // An action may close its dialog immediately after toast(); choose the surviving destination after that action.
+  queueMicrotask(() => void notice(message, kind, opts));
+}
+
+/** Like toast, and the returned function closes the message early. Rapid identical bursts coalesce for one second, not forever. */
+export function notice(message: string, kind: 'info' | 'error' = 'info', opts: { persistent?: boolean; repeat?: boolean } = {}): () => void {
+  const toastHost = noticesIn([...document.querySelectorAll(':modal')].at(-1) ?? document.body);
+  const recent = recentNotices.get(toastHost)!;
+  const key = `${kind}:${!!opts.persistent}:${message}`;
+  const now = performance.now();
+  const previous = recent.get(key);
+  if (!opts.repeat && !opts.persistent && previous?.el.isConnected && now - previous.at < 1000) return previous.close;
+  for (const [k, v] of recent) if (!v.el.isConnected || now - v.at >= 1000) recent.delete(k);
   const close = h('button', { class: 'toast-close', 'aria-label': 'Dismiss', title: 'Dismiss' }, '×');
-  const t = h('div', { class: `toast ${kind}` }, h('span', null, message), close);
+  // Only the message is live, not the other toasts or their Dismiss controls. Populate after attachment.
+  const spoken = h('span', { class: 'sr-only', role: 'status', 'aria-live': 'polite' });
+  const t = h(
+    'div',
+    { class: `toast ${kind}`, dataset: { persistent: String(!!opts.persistent) } },
+    h('span', { 'aria-hidden': 'true' }, message),
+    spoken,
+    close,
+  );
   toastHost.append(t);
-  // the clock stops while the pointer or focus is on the toast, and starts over when it leaves
   let timer = 0;
-  const start = () => (timer = window.setTimeout(() => t.remove(), toastMs(message, kind)));
+  const announced = window.setTimeout(() => {
+    if (t.isConnected) spoken.textContent = message;
+  }, 0);
   const stop = () => clearTimeout(timer);
-  close.addEventListener('click', () => (stop(), t.remove()));
+  const remove = () => {
+    stop();
+    clearTimeout(announced);
+    t.remove();
+  };
+  recent.set(key, { at: now, el: t, close: remove });
+  // never a tall pile over the page: the newest three stay, on a phone only the newest
+  const keep = window.matchMedia('(max-width: 430px)').matches ? 1 : 3;
+  const transient = [...toastHost.querySelectorAll('.toast[data-persistent="false"]')];
+  for (const old of transient.slice(0, -keep)) old.remove();
+  const start = () => {
+    stop();
+    if (!opts.persistent) timer = window.setTimeout(remove, toastMs(message, kind));
+  };
+  close.addEventListener('click', remove);
   t.addEventListener('pointerenter', stop);
   t.addEventListener('pointerleave', start);
   t.addEventListener('focusin', stop);
   t.addEventListener('focusout', start);
   start();
+  return remove;
 }
+
+let modalHeadingId = 0;
 
 /** A modal <dialog>. Resolves with the value passed to close(). */
 export function modal<T>(title: string, build: (close: (v: T | undefined) => void) => Child): Promise<T | undefined> {
   return new Promise((resolve) => {
-    const dlg = h('dialog', { class: 'modal' });
+    const headingId = `modal-heading-${++modalHeadingId}`;
+    const dlg = h('dialog', { class: 'modal', 'aria-labelledby': headingId });
     const close = (v: T | undefined) => {
       dlg.close();
       dlg.remove();
@@ -98,14 +149,26 @@ export function modal<T>(title: string, build: (close: (v: T | undefined) => voi
       h(
         'header',
         { class: 'modal-head' },
-        h('h2', null, title),
+        h('h2', { id: headingId }, title),
         h('button', { class: 'modal-close', 'aria-label': 'Close', title: 'Close (Esc)', onclick: () => close(undefined) }, '×'),
       ),
       build(close),
     ]);
     document.body.append(dlg);
+    focusableListAreas(dlg, title);
     dlg.showModal();
   });
+}
+
+/** A scrolling list area of a phone-sized dialog (data-list-area) takes the keyboard, so arrow keys can scroll it. */
+function focusableListAreas(dlg: HTMLElement, title: string): void {
+  for (const area of dlg.querySelectorAll<HTMLElement>('[data-list-area]')) {
+    if (!area.hasAttribute('tabindex')) area.tabIndex = 0;
+    if (area.tagName === 'DIV' && !area.hasAttribute('role') && !area.hasAttribute('aria-label')) {
+      area.setAttribute('role', 'region');
+      area.setAttribute('aria-label', title);
+    }
+  }
 }
 
 export async function promptText(title: string, label: string, value = '', pattern?: string): Promise<string | undefined> {

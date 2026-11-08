@@ -82,7 +82,8 @@ describe('TURBO BUTTON jumps', async () => {
     const small = issue.pages.flatMap((pg) => halfAds(pg.blocks).map((ad) => ({ pg, ad })));
     expect(small.length).toBeGreaterThanOrEqual(4);
     for (const { pg, ad } of small) {
-      expect(pg.kind, ad.advertiser).toBe('article');
+      // the column ad (Game-Maker's, down the side of a department page) may stand on either kind
+      expect(['article', ad.look === 'column' ? 'dept' : 'article'], ad.advertiser).toContain(pg.kind);
       expect(
         issue.ads.some((e) => e.title === ad.advertiser && e.folio === pg.folio),
         ad.advertiser,
@@ -90,7 +91,8 @@ describe('TURBO BUTTON jumps', async () => {
       const words = JSON.stringify(ad);
       for (const n of words.match(/\b\d{3}-\d{4}\b/g) ?? []) expect(n, ad.advertiser).toMatch(/^555-01\d\d$/);
       for (const box of words.match(/P\.O\. Box \d+/g) ?? []) expect(box, ad.advertiser).toBe('P.O. Box 000');
-      expect(words, ad.advertiser).not.toMatch(/™/);
+      // only the column ad wears Game-Maker's own ™, as RSD's 1992 ads did
+      if (ad.look !== 'column') expect(words, ad.advertiser).not.toMatch(/™/);
     }
     // every jumped page shares its page with a small ad, as the space it gave up
     for (const { pg, j } of ons) {

@@ -3,6 +3,7 @@
 import './sounds.css';
 import { registerEditor } from '../registry';
 import { viewState } from '../../../urlState';
+import { dosStem } from '../../widgets/limitNote';
 import { h, clear, numberField, debounce, toast } from '../../core/ui';
 import { AudioEngine } from '@lewismoten/gamemaker-sandbox-engine/audio/engine';
 import { LASTSND, NUMFREQ, SOUND_NAMES, parseSoundSet, serializeSoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
@@ -334,7 +335,7 @@ registerEditor(['snd'], (host, project, file) => {
           const made = await sfxMaker(project, { file: remake, preset: SLOT_PRESET[current], speaker: true, stem: SLOT_PRESET[current] ?? 'effect' });
           if (!made) return;
           remember();
-          snd.digital[current] = made.name.replace(/\.voc$/, '').slice(0, 8);
+          snd.digital[current] = dosStem(made.name.replace(/\.voc$/, ''), toast);
           if (made.speaker) f.set(made.speaker);
           save();
           render();
@@ -377,7 +378,7 @@ registerEditor(['snd'], (host, project, file) => {
           () => (digital ? `${digital.trim().toLowerCase()}.voc` : ''),
           (v) => {
             remember();
-            snd.digital[current] = v.replace(/\.voc$/, '').slice(0, 8);
+            snd.digital[current] = dosStem(v.replace(/\.voc$/, ''), toast);
             save();
             renderList();
             renderDetail();

@@ -11,7 +11,7 @@ import './paper.css'; // first: this piece's own styles build on the paper's
 import './levelMaps.css';
 import { h } from '../../editor/core/ui';
 import { paintIndexed } from '../../editor/core/draw';
-import { GameFiles, fetchGameFile, type CatalogEntry } from '../../project/files';
+import { GameFiles, peekGameFile, type CatalogEntry } from '../../project/files';
 import { parseGame, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { scenePixels } from '../../gfx/levelPicture';
 import { sheet, type PrintContext, type Sheet } from './kit';
@@ -30,6 +30,7 @@ import { panZoom } from './panZoom';
 import type { Reader, ReaderOptions, ReadView } from '../readView';
 import { percentOf, widthAt, type ReadSize } from '../readSize';
 import { scrollPages, type ScrollPages } from '../scrollPages';
+import { yieldNow } from './yieldNow';
 
 /** A printed page (landscape letter, tenths of an inch), its margin, header and footer. */
 const PAGE = { w: 105, h: 80 };
@@ -53,7 +54,7 @@ const COURSE_AREA = { w: AREA.w, h: AREA.h - CAPTION - 2 };
 /** The game and every level's files (palette, map, blocks, monsters). */
 export async function loadLevels(entry: CatalogEntry): Promise<{ game: Game; files: GameFiles } | undefined> {
   if (!entry.gam) return undefined;
-  const gam = await fetchGameFile(entry, entry.gam);
+  const gam = await peekGameFile(entry, entry.gam);
   if (!gam) return undefined;
   const game = parseGame(gam);
   const files = new GameFiles();
@@ -61,7 +62,7 @@ export async function loadLevels(entry: CatalogEntry): Promise<{ game: Game; fil
   for (const s of game.scenes) if (s.gametype === 10) for (const k of [0, 1, 2, 3, 4]) if (s.files[k]) want.add(s.files[k].toLowerCase());
   await Promise.all(
     [...want].map(async (n) => {
-      const b = await fetchGameFile(entry, n).catch(() => undefined);
+      const b = await peekGameFile(entry, n).catch(() => undefined);
       if (b) files.set(n, b);
     }),
   );
@@ -512,7 +513,11 @@ async function printSheets(
   const boxes = levels.map((l) => levelBox(game, l));
   const placed = packPages(boxes, AREA, GAP);
   // a first-sheet picture paints only the levels on page 0
-  for (const [i, l] of levels.entries()) if (!l.course && (!firstOnly || placed[i].page === 0)) urls.set(l, await paint(l));
+  for (const [i, l] of levels.entries())
+    if (!l.course && (!firstOnly || placed[i].page === 0)) {
+      urls.set(l, await paint(l));
+      await yieldNow(); // a level at a time, so a key pressed meanwhile is not kept waiting for them all
+    }
   const pages = new Map<number, SVGElement[]>();
   const out: Sheet[] = [];
   const pageCount = firstOnly ? Math.min(1, placed.length) : placed.length ? Math.max(...placed.map((p) => p.page)) + 1 : 0;
@@ -673,6 +678,9 @@ async function courseSheets(entry: CatalogEntry, game: Game, l: Level, paint: Co
   return out;
 }
 
+/** Each game's levels as laid out (courses and all), shared by the thumbnail and the reader, which both want them. */
+const laidOut = new WeakMap<Game, Level[]>();
+
 /** The Level Maps of a game: printed pages, and the on-screen viewer. Undefined when it gets none. */
 export function levelMaps(ctx: PrintContext):
   | {
@@ -694,9 +702,9 @@ export function levelMaps(ctx: PrintContext):
     (source ??= loadLevels(ctx.entry)).then((x) => {
       if (!x) return undefined;
       // the states of one place (near and far planes) print as one map
-      const seen = mergeStates(
-        x.game,
-        levelsOf(
+      let laid = laidOut.get(x.game);
+      if (!laid) {
+        laid = levelsOf(
           x.game,
           x.files,
           secret,
@@ -706,8 +714,10 @@ export function levelMaps(ctx: PrintContext):
           listedCourses(ctx.entry.id),
           // the biggest blocks that fit, up to twice full size, so a course's details read, on at most half as many pages again
           { pageW: COURSE_AREA.w, pageH: COURSE_AREA.h, padW: 2 * GUTTER + PANEL_GAP, padH: 2 * PANEL_HEAD + PANEL_GAP, most: 2, least: FULL, growth: 1.5 },
-        ),
-      );
+        );
+        laidOut.set(x.game, laid);
+      }
+      const seen = mergeStates(x.game, laid);
       // every block of the map as it is on the map, not as the player goes through it
       const every = seen.map((l) => ({ ...l, area: l.whole, marks: l.mapMarks ?? l.marks, unrolled: undefined, course: undefined }));
       return {

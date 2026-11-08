@@ -1,0 +1,53 @@
+{
+  "title": "Beams and Fog",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "hero": "LIAN",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.3",
+  "blurb": "Light and fog, painted in dots. A game has no see-through colors, so a beam, a haze or a glow is a color painted on every other pixel (or every fourth) and what is behind shows through the gaps. Level 1 is a dark hall with three lamps: a solid beam that hides the bricks, a checkerboard beam that lets them show, and one in three densities that fades at its edge. Level 2 is a valley of hills in solid fog and in dithered fog, thicker the farther away, with banks of fog that drift. Level 3 has three floating lanterns with a solid halo, a checkerboard halo and halos in rings. Play it, then open it in Game-Maker and look at the frames.",
+  "exe": "BEAMS.EXE",
+  "dosName": "BEAMS",
+  "sound": "sb",
+  "label": {
+    "background": "#e8e4f4",
+    "band": "#3a3a64",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "3 short levels",
+    "hours": 1,
+    "background": "#3a3a64",
+    "accent": "#ffd23f",
+    "ink": "#ffffff",
+    "tagline": "Light is only dots.",
+    "back": "A small explorer in a blue beanie walks a dark hall hung with lamps, a valley of hazy hills and a corridor of floating lanterns. A game has no see-through colors, so light and fog are painted in a checkerboard that lets what is behind show through. A solid beam hides the bricks. A dithered one does not. Far hills get more fog than near ones, a bank of fog is a monster, and a lantern is a monster with a glow. Read the signs, then open the game in Game-Maker and look at the frames.",
+    "features": [
+      "Level 1 has three beams: solid, checkerboard and three densities",
+      "Level 2 has solid fog and dithered fog, thicker the farther away, with banks that drift",
+      "Level 3 has three lanterns that carry their glow with them",
+      "Made to be copied and taken apart"
+    ],
+    "shots": [
+      [
+        "beams.map",
+        0,
+        0
+      ],
+      [
+        "fog.map",
+        26,
+        0
+      ]
+    ],
+    "rating": "Everyone"
+  },
+  "sameEverySide": [
+    "beams.mon#0",
+    "beams.mon#1",
+    "beams.mon#2"
+  ]
+}

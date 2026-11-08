@@ -8,7 +8,7 @@ import { FLIP } from '../characters/mons';
 import { CTR, POWER } from '../ids';
 import { newBestiary } from './level';
 import { askBubble, flyingDisc } from '../sprites/folks';
-import { propSprite } from '../sprites/klown';
+import { propSprite } from '../sprites/clown';
 
 export function parkBeasts() {
   const b = newBestiary();

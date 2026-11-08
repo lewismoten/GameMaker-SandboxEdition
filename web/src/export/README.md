@@ -3,9 +3,10 @@
 Part of the [source map](../README.md).
 
 Publishing a game: as an offline web app (`exportWebApp.ts`), a single web
-page (`exportSinglePage.ts`, `singlePage.ts`, played by `standalonePlayer.ts`), the web player
-(`exportWebPlayer.ts`), or a DOS folder with PLAYGAME (`exportDos.ts`); plus the service worker
-(`serviceWorker.ts`). How a download is made is below.
+page (`exportSinglePage.ts`, `singlePage.ts` (its no-script view: `pageSeo.ts`, `titleImage.ts`), played by `standalonePlayer.ts`), the web player
+(`exportWebPlayer.ts`), a DOS folder with PLAYGAME (`exportDos.ts`), or one file for the Pocket Player's
+microSD card (`exportPocket.ts`, packed by `pocketPack.ts`, which `web/scripts/pocketData.ts` shares, and bundled as
+NAME.GMP by `pocketFile.ts`); plus the service worker (`serviceWorker.ts`). How a download is made is below.
 
 ## How a download is made
 
@@ -31,3 +32,31 @@ Play's does. The Mac, Windows and Linux downloads embed that same single page, s
 Only those lines travel; the companion never does, and a game that wasn't imported exports byte for
 byte as before (`exportPlayerAbout.test.ts`). The web player download plays a folder with no per-game
 record, so it has none.
+
+## Inside this game (the one-page export's content)
+
+`insideGame.ts` builds a visible, folded section after the player (never hidden text; the player
+hides it while the game runs) so a game is found by more than its title:
+
+- **Kept once, read back:** a GIF is an `<img>` whose data: URL is the file; a `.txt` is a `<pre>` with
+  its code page and line ends in `data-gm-*` attributes (`insideText.ts`, only when the rebuilt
+  bytes match). Their names are in the record's `ext` (version 2) instead of the gzip data; the
+  player (`insideRead.ts` `readExternalDom`), the importer and the link-in unpacker
+  (`readExternalHtml`) read the bytes back, byte for byte (`test/exportInside.test.ts`).
+- **Preview plus original:** an FLI gets a half-size animated GIF (at most 45 KB), a VOC a WAV
+  `<audio preload="none">`, a CMF a line of text. The originals stay in the data. There is no ogg
+  or MIDI preview (no encoder in the repo).
+- **From "About this game"** (`project/aboutGame.ts`, the companion's `about`): visible credits and
+  `gameLd.ts`, the site's `gameJsonLd` plus genre, license, version, abstract, contributors and
+  screenshots. The DOS download writes a `FILE_ID.DIZ` from the same fields (`project/fileIdDiz.ts`).
+
+Pocket library metadata (`pocketLibrary.ts`) is independently versioned from GMP 1.
+`exportPocket` accepts explicit site category/UID/course/collection context; project download
+callers preserve a UUID in the companion. `pocketThumbnail.ts` shares indexed title/level
+rendering and produces one deflated PTH1 preview without PNG decoding. `pocketFile.ts` adds
+these optional entries while retaining legacy gameplay data. See the Pocket Player README
+for bounds, the JSONL/thumbnail index and firmware compatibility. A `.GMP` may also carry the
+game's DOS files as `dos/<NAME>` entries (deflated), which Game-Maker OS on the Raspberry Pi plays
+and the Pocket Player skips; `writeOsGmp` writes one with only those (no `game.txt`, so the board
+does not list it) for a game the packer leaves out. `scripts/pocketData.ts --gmp <card> --gmos`
+writes a card both players read.

@@ -3,11 +3,11 @@
 // thread's time (script / layout / style), the heap, and what the page allocated (blob URLs left
 // alive and their bytes, workers, audio contexts, bitmaps). Writes JSON, and with --trace a
 // Chrome trace per page that opens in DevTools. Runs its own server; never 5173.
-//   npm run perf:trace -- [--dist <scratch vite build>] [--port 5195] [--url http://…] [--only desk,help] [--trace <folder>] [--out <folder>]
+//   npm run perf:trace -- [--dist <scratch vite build>] [--port 5195] [--url http://…] [--throttle 4] [--network 4g|slow-4g] [--only desk,help] [--trace <folder>] [--profile <folder>] [--out <folder>]
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import type { CDPSession, Page } from 'playwright-core';
-import { arg, launch, OBSERVE, target } from './perfLib';
+import { applySlowdown, arg, launch, OBSERVE, target } from './perfLib';
 
 const PAGES: [string, string][] = [
   ['home', '/#/'],
@@ -57,7 +57,26 @@ const metric = async (cdp: CDPSession) => {
   return (n: string) => metrics.find((m) => m.name === n)?.value ?? 0;
 };
 
-async function trace(page: Page, cdp: CDPSession, name: string, url: string, traceDir?: string): Promise<Row> {
+interface CpuProfile {
+  nodes: { id: number; callFrame: { functionName: string; url: string; lineNumber: number } }[];
+  samples?: number[];
+  timeDeltas?: number[];
+}
+
+/** Prints the 15 functions with the most self time in a V8 CPU profile (ms). */
+function topSelf(name: string, profile: CpuProfile) {
+  const frames = new Map(profile.nodes.map((n) => [n.id, n.callFrame]));
+  const self = new Map<string, number>();
+  (profile.samples ?? []).forEach((id, i) => {
+    const f = frames.get(id)!;
+    const key = `${f.functionName || '(anonymous)'} ${f.url.split('/').pop() ?? ''}:${f.lineNumber}`;
+    self.set(key, (self.get(key) ?? 0) + (profile.timeDeltas?.[i] ?? 0) / 1000);
+  });
+  const top = [...self].sort((a, b) => b[1] - a[1]).slice(0, 15);
+  console.log(`\n${name}: top self time\n` + top.map(([k, ms]) => `  ${ms.toFixed(1).padStart(7)} ms  ${k}`).join('\n'));
+}
+
+async function trace(page: Page, cdp: CDPSession, name: string, url: string, traceDir?: string, profileDir?: string): Promise<Row> {
   const reqs = new Map<string, { url: string; type: string; bytes: number }>();
   cdp.on('Network.requestWillBeSent', (e: { requestId: string; request: { url: string }; type?: string }) =>
     reqs.set(e.requestId, { url: e.request.url, type: e.type ?? '', bytes: 0 }),
@@ -67,9 +86,15 @@ async function trace(page: Page, cdp: CDPSession, name: string, url: string, tra
     if (r) r.bytes = e.encodedDataLength;
   });
   await cdp.send('Network.enable');
+  await applySlowdown(cdp);
   await cdp.send('Performance.enable');
   if (traceDir)
     await cdp.send('Tracing.start', { categories: 'devtools.timeline,v8.execute,disabled-by-default-devtools.timeline', transferMode: 'ReturnAsStream' });
+  if (profileDir) {
+    await cdp.send('Profiler.enable');
+    await cdp.send('Profiler.setSamplingInterval', { interval: 200 });
+    await cdp.send('Profiler.start');
+  }
   const t0 = Date.now();
   await page.goto(url);
   // quiet: no request for 1 s and no long task for 1 s (at most 40 s)
@@ -84,6 +109,12 @@ async function trace(page: Page, cdp: CDPSession, name: string, url: string, tra
       }),
   );
   const readyMs = Date.now() - t0 - 1000;
+  if (profileDir) {
+    const { profile } = await cdp.send('Profiler.stop');
+    mkdirSync(profileDir, { recursive: true });
+    writeFileSync(join(profileDir, `${name.replace(/\W+/g, '-')}.cpuprofile`), JSON.stringify(profile));
+    topSelf(name, profile);
+  }
   await page.waitForTimeout(1500); // idle work (sound warm-up, prefetch) runs after the page is quiet
   const p = await page.evaluate(() => {
     const m = (
@@ -151,6 +182,7 @@ async function trace(page: Page, cdp: CDPSession, name: string, url: string, tra
 const srv = await target(5195);
 const browser = await launch();
 const only = arg('only')?.split(',');
+const profileDir = arg('profile') ? resolve(arg('profile')!) : undefined;
 const traceDir = arg('trace') ? resolve(arg('trace')!) : undefined;
 const rows: Row[] = [];
 try {
@@ -161,7 +193,9 @@ try {
     await page.addInitScript(OBSERVE);
     const cdp = await context.newCDPSession(page);
     rows.push(
-      await trace(page, cdp, name, srv.base + path, traceDir).catch((e: Error) => ({ page: name, biggest: `FAILED ${e.message.slice(0, 80)}` }) as Row),
+      await trace(page, cdp, name, srv.base + path, traceDir, profileDir).catch(
+        (e: Error) => ({ page: name, biggest: `FAILED ${e.message.slice(0, 80)}` }) as Row,
+      ),
     );
     console.log(JSON.stringify(rows[rows.length - 1]));
     await context.close();

@@ -456,7 +456,7 @@ export function theWild(book: BlockBook): Level {
   // past it the wild goes on into tall grass: Carl flies straight on through the broken clock,
   // long enough for "Carl has broken time" to play before the scene ends
   m.fill(68, 5, 5, 7, 'tall');
-  m.link(71, 6, 'next');
+  m.set(71, 6, 'timeRift').link(71, 6, 'next');
   return { m, start: at(3, 6), size: [W, H] };
 }
 

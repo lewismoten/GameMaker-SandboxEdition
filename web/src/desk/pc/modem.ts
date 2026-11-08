@@ -9,6 +9,7 @@ import type { ModemSignal } from '../../retro/bbs/term';
 import { hintText, SPEED_TEXT, speedLabel, speedWords, timeWarp, WARP_TEXT } from '../../retro/bbs/lineSpeed';
 import { speedRadios } from '../../retro/bbs/lineSpeedControls';
 import { cover } from '../props/propKit';
+import { deskLifetime } from '../lifetime';
 
 const LIGHTS = ['HS', 'AA', 'CD', 'OH', 'RD', 'SD', 'TR', 'MR'] as const;
 type Light = (typeof LIGHTS)[number];
@@ -45,7 +46,7 @@ export function deskModem(onClick: () => void): DeskModem {
   // the speed on the front: its own button, opening a little menu of speeds
   const brand = h('span', null);
   const speed = h('button', { type: 'button', class: 'modem-speed', 'aria-haspopup': 'true', 'aria-expanded': 'false' }, brand);
-  const menu = h('div', { class: 'modem-menu', hidden: true }, speedRadios());
+  const menu = h('div', { class: 'modem-menu', hidden: true }, speedRadios(deskLifetime()));
   // the hint: how slow this really was, and two ways out: skip this wait, or change the speed
   const hintWords = h('p', null);
   const warpBtn = h('button', { type: 'button', class: 'modem-hint-warp' }, `⏩ ${WARP_TEXT}`);
@@ -115,9 +116,13 @@ export function deskModem(onClick: () => void): DeskModem {
     }
   });
   const inside = (n: Node | null) => !!n && (el.contains(n) || menu.contains(n) || hint.contains(n));
-  document.addEventListener('click', (e) => {
-    if (!menu.hidden && !inside(e.target as Node)) open(false, false);
-  });
+  document.addEventListener(
+    'click',
+    (e) => {
+      if (!menu.hidden && !inside(e.target as Node)) open(false, false);
+    },
+    { signal: deskLifetime() },
+  );
   menu.addEventListener('focusout', (e) => {
     if (!menu.hidden && e.relatedTarget && !inside(e.relatedTarget as Node)) open(false, false);
   });
@@ -126,23 +131,23 @@ export function deskModem(onClick: () => void): DeskModem {
     if (!menu.hidden) open(false, false);
     hideHint();
   };
-  addEventListener('resize', away);
-  addEventListener('scroll', away, true);
-  addEventListener('gm-line-speed', showSpeed);
-  addEventListener('gm-line-hint', () => {
-    if (!el.isConnected) {
-      // this desk is gone: its pop-ups go too
-      menu.remove();
-      hintLive.remove();
-      return;
-    }
-    if (!menu.hidden) return;
-    hintWords.textContent = hintText();
-    hint.hidden = false;
-    place(hint);
-    clearTimeout(hintTimer);
-    hintTimer = window.setTimeout(hideHint, HINT_MS);
-  });
+  addEventListener('resize', away, { signal: deskLifetime() });
+  addEventListener('scroll', away, { capture: true, signal: deskLifetime() });
+  addEventListener('gm-line-speed', showSpeed, { signal: deskLifetime() });
+  // this desk is gone: its pop-ups go too
+  deskLifetime().addEventListener('abort', () => (menu.remove(), hintLive.remove()));
+  addEventListener(
+    'gm-line-hint',
+    () => {
+      if (!menu.hidden) return;
+      hintWords.textContent = hintText();
+      hint.hidden = false;
+      place(hint);
+      clearTimeout(hintTimer);
+      hintTimer = window.setTimeout(hideHint, HINT_MS);
+    },
+    { signal: deskLifetime() },
+  );
 
   const set = (name: Light, on: boolean) => leds.get(name)?.classList.toggle('on', on);
   const flash = (name: Light) => {
@@ -178,7 +183,7 @@ export function deskModem(onClick: () => void): DeskModem {
         break;
     }
   };
-  window.addEventListener('gm-modem', onSignal);
+  window.addEventListener('gm-modem', onSignal, { signal: deskLifetime() });
   return {
     el,
     power(on) {

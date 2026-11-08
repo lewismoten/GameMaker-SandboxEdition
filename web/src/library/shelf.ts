@@ -10,6 +10,7 @@ import type { PrintableItem } from '../manual/printables/types';
 export const SHELF_TYPES = [
   ['manual', 'Manuals'],
   ['hintbook', 'Hint books'],
+  ['codewheel', 'Code wheels'],
   ['worldmap', 'World Maps'],
   ['levelmap', 'Level Maps'],
   ['map', 'Other maps and plans'],
@@ -106,6 +107,8 @@ const BOX_TYPES: Record<string, ShelfType> = {
   bbs: 'catalog',
   hintoffer: 'hintcard',
   stickers: 'stickers',
+  'brief-story-zines': 'magazine',
+  'navigator-relay': 'letter',
 };
 
 /** A game's own piece (its printables.json), by its kind and, for a few kinds, its title. */
@@ -127,7 +130,17 @@ function ownType(kind: PrintableItem['kind'], title: string): ShelfType {
       return /hint book postcard/i.test(title) ? 'hintcard' : /postcard/i.test(title) ? 'registration' : 'letter';
     case 'journal':
     case 'recipe':
+    case 'dexreport': // a school report: with the letters and papers
       return 'letter';
+    case 'ballooncube': // a cut-and-fold paper toy: with the box inserts too
+    case 'spyglass': // a cut-out tool: with the box inserts
+      return 'insert';
+    case 'prints': // an evidence sheet: with the letters and papers
+      return 'letter';
+    case 'codewheel':
+    case 'postcardgrille':
+    case 'codesheet': // on the wheels' shelf until a game ships a code sheet (its own shelf would add an achievement kind nobody can finish)
+      return 'codewheel';
   }
 }
 

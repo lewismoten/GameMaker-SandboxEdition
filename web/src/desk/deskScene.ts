@@ -2,7 +2,8 @@
 // disk box on the left, the Game-Maker box on the right, and the PC (case, drives, lights,
 // keyboard, monitor). desk.ts gives it what the buttons do and works the parts it hands back.
 import { h } from '../editor/core/ui';
-import { sevenSegment, floppyDrive, cdDrive } from './pc/caseParts';
+import { sevenSegment, floppyDrive, cdDrive, hddLight } from './pc/caseParts';
+import { keyLock, brandBadge } from './pc/caseFace';
 import { keyboard } from './pc/keyboard';
 import { keyboardTray } from './pc/tray';
 import { speakers } from './pc/speakers';
@@ -14,6 +15,7 @@ import { snowyWindow } from './room/snowWindow';
 import './boxes/gmBox.css';
 import { SANDBOX_SHOTS, sandboxShots } from '../gfx/sandboxShots';
 import { keyCardSpot } from './pc/keyCard';
+import { codeWheelSpot } from './pc/codeWheelSpot';
 import { newsClipping } from './room/newsClipping';
 import { phoneNotes } from './room/phoneNotes';
 import { wallClock } from './room/wallClock';
@@ -32,12 +34,13 @@ const withCover = (el: HTMLElement, name: string): HTMLElement => (cover(el, nam
 interface DeskActions {
   power(onlyOn?: boolean): void;
   toggleTurbo(): void;
+  reset(): void;
   eject(): void;
   ejectCd(): void;
   /** Types a command at the DOS prompt. */
   command(cmd: string): void;
   catalog(): void;
-  magazine(): void;
+  magazine(issue?: 1 | 2): void;
   /** The mug's closer look (open=mug). */
   mug(): void;
   /** The disk box: pick a disk for drive A:. */
@@ -60,7 +63,14 @@ export function deskScene(on: DeskActions) {
   const cd = cdDrive(() => on.ejectCd());
   const powerLed = h('span', { class: 'led green' });
   const turboLed = h('span', { class: 'led amber' });
+  const hdd = hddLight();
   const mhz = sevenSegment(2);
+  const machineBtn = h(
+    'button',
+    { type: 'button', class: 'mhz', 'aria-label': 'Machine settings', title: 'Machine settings' },
+    mhz,
+    h('small', { 'aria-hidden': 'true' }, 'MHz'),
+  );
   const powerBtn = h(
     'button',
     {
@@ -72,15 +82,21 @@ export function deskScene(on: DeskActions) {
     '⏻',
   );
   const turboBtn = h('button', {
-    class: 'case-btn',
+    class: 'case-btn round',
     'aria-label': 'Turbo',
     onclick: () => on.toggleTurbo(),
+  });
+  const resetBtn = h('button', {
+    class: 'case-btn round reset',
+    'aria-label': 'Reset',
+    onclick: () => on.reset(),
   });
   const box = h('div', { class: 'box' });
   // the playing game's key card, taped to the monitor
   // the PC's keyboard, and (on a phone) the strip of large keys under the PC
   const keys = keyboard(() => on.power(true));
   const keyCard = keyCardSpot(() => crt.querySelector<HTMLElement>('.crt-game canvas[tabindex]')?.focus());
+  const wheelSpot = codeWheelSpot(() => crt.querySelector<HTMLElement>('.crt-game canvas[tabindex]')?.focus());
   const soundCardControls = {
     gamePlaying: () => on.gamePlaying(),
     setSoundCard: (enabled: boolean) => on.setSoundCard(enabled),
@@ -135,7 +151,7 @@ export function deskScene(on: DeskActions) {
       h(
         'div',
         { class: 'desk-left' },
-        paperStack({ catalog: () => on.catalog(), magazine: () => on.magazine() }),
+        paperStack({ catalog: () => on.catalog(), magazine: () => on.magazine(2), backIssue: () => on.magazine(1) }),
         withCover(
           h('div', { class: 'prop disk-box', onclick: () => on.flip() }, box, h('span', { class: 'caption', 'aria-hidden': 'true' }, 'Disk box — pick a game')),
           'Disk box: pick a game to put in drive A',
@@ -174,15 +190,21 @@ export function deskScene(on: DeskActions) {
           { class: 'case' },
           // the modem sits on top of the case, beside the monitor stand
           modem.el,
-          h('div', { class: 'case-buttons' }, h('label', null, powerBtn, 'POWER'), h('label', null, turboBtn, 'TURBO')),
+          brandBadge(),
+          // the three lights in a row above the strip, each with its name beside it (as on the 1990s case)
+          h('div', { class: 'led-row' }, h('span', null, powerLed, 'POWER'), h('span', null, turboLed, 'TURBO'), h('span', null, hdd.led, 'H.D.D.')),
           h(
             'div',
-            { class: 'leds' },
-            h('span', null, powerLed, 'POWER'),
-            h('span', null, turboLed, 'TURBO'),
-            h('span', { class: 'mhz' }, mhz, h('small', null, 'MHz')),
+            { class: 'case-strip' },
+            // the speed it shows, TURBO beside it and RESET to the right of TURBO
+            machineBtn,
+            h('label', { class: 'case-label' }, turboBtn, 'TURBO'),
+            h('label', { class: 'case-label' }, resetBtn, 'RESET'),
+            // POWER with the key lock next to it (the key is long lost: it stays unlocked)
+            h('label', { class: 'case-label' }, powerBtn, 'POWER'),
+            h('span', { class: 'keylock-label', 'aria-hidden': 'true' }, keyLock()),
           ),
-          h('span'),
+          // the drive cage: the CD-ROM and floppy bays side by side, touching
           h('div', { class: 'drives' }, cd.el, floppy.el),
           driveActions,
         ),
@@ -206,8 +228,10 @@ export function deskScene(on: DeskActions) {
             '⤢',
           ),
           keyCard.el,
+          wheelSpot.el,
           h('div', { class: 'screen-bezel' }, crt),
           h('span', { class: 'brand' }, 'PIXELMAX 14" SVGA'),
+          h('span', { class: 'screen-hint', 'aria-hidden': 'true' }, 'Shift+Tab leaves the screen'),
           h('span', { class: 'monitor-led' }),
         ),
         h('div', { class: 'monitor-stand' }),
@@ -216,7 +240,27 @@ export function deskScene(on: DeskActions) {
     ),
     h('button', { class: 'zoom-exit primary', onclick: () => on.setZoom(false) }, 'Back to the desk'),
   );
-  return { desk, crt, floppy, driveActions, cd, powerLed, turboLed, mhz, powerBtn, turboBtn, box, keyCard, spk, lamp, modem, boxTiles };
+  return {
+    desk,
+    crt,
+    floppy,
+    driveActions,
+    cd,
+    hdd,
+    powerLed,
+    turboLed,
+    mhz,
+    machineBtn,
+    powerBtn,
+    turboBtn,
+    box,
+    keyCard,
+    wheelSpot,
+    spk,
+    lamp,
+    modem,
+    boxTiles,
+  };
 }
 
 /** Homage: the winter of 1992-93, shoveling snow to buy Game-Maker. */

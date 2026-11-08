@@ -1,0 +1,40 @@
+{
+  "title": "Diagonal Wrap",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "hero": "MIA",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.1",
+  "blurb": "One map, one road, laid two ways. The map wraps: walk off the bottom and you come in at the top. In level 1 the road runs straight down and wraps once. In level 2 it is tilted a little, so it wraps three times and is three times as far on the very same map. Signs in the levels say how. Play it, then open it in Game-Maker and tilt a road of your own.",
+  "exe": "DIAGWRAP.EXE",
+  "dosName": "DIAGWRAP",
+  "sound": "sb",
+  "label": {
+    "background": "#f3e6c4",
+    "band": "#8a5a2b",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "2 short levels",
+    "hours": 1,
+    "background": "#8a5a2b",
+    "accent": "#ffd23f",
+    "ink": "#ffffff",
+    "tagline": "The long way round.",
+    "back": "A small explorer in a purple beanie follows a road between hedges. The map wraps at every edge: walk off the bottom and you come in at the top. Laid straight, the road wraps once. Tilted a little, the same road goes round three times and is three times as far. Read the signs, then open the game in Game-Maker and tilt a road of your own.",
+    "features": [
+      "Level 1 runs straight down the map and wraps once; level 2 is the same road tilted, so it wraps three times",
+      "A dashed line marks the map's edge on the road",
+      "Signs in the levels count the laps and the length",
+      "Made to be copied and taken apart"
+    ],
+    "shots": [
+      ["one.map", 16, 11],
+      ["two.map", 16, 11]
+    ],
+    "rating": "Everyone"
+  }
+}

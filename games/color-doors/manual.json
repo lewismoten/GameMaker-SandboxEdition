@@ -1,0 +1,75 @@
+{
+  "title": "Color Doors",
+  "howDoI": [
+    {
+      "id": "palettes",
+      "q": "How do I show one map in different colors?",
+      "scene": 4,
+      "x": 22,
+      "y": 14,
+      "level": 2
+    },
+    {
+      "id": "palette-slot",
+      "q": "How do I give a scene its own palette?",
+      "scene": 3,
+      "x": 22,
+      "y": 14,
+      "level": 2
+    },
+    {
+      "id": "doors",
+      "q": "How do I make a door that goes to a scene and back to the door it came from?",
+      "scene": 2,
+      "x": 23,
+      "y": 19,
+      "level": 1
+    },
+    {
+      "id": "names",
+      "q": "How do I make a name that stays easy to read in every color?",
+      "scene": 7,
+      "x": 25,
+      "y": 16,
+      "level": 2
+    },
+    {
+      "id": "view",
+      "q": "How do I make a palette that shows how some people see?",
+      "scene": 5,
+      "x": 22,
+      "y": 14,
+      "level": 2
+    }
+  ],
+  "pages": [
+    {
+      "head": "Welcome",
+      "html": "<h1>Welcome</h1><p><b>Color Doors</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has a hall with five doors. Each door opens into the same room, and the room is drawn in different colors each time: as you see it, then the way some people might see it. It takes a few minutes to finish.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each idea is made.</p><p>Seeing color is not the same for everyone, and these views are a rough guess, not the real thing. Another Starter, <b>Colors That Work</b>, is about what to do in your own game: say it with shape and brightness as well as color, so every player can tell things apart. This one only lets you look.</p><h2>The keys</h2><p>The <kbd>Left</kbd> and <kbd>Right</kbd> arrows walk Lena, and <kbd>Space</kbd> jumps. Walk into a door to go through it. Nothing in this game hurts Lena.</p>"
+    },
+    {
+      "head": "Level 1: The Hall",
+      "html": "<h1>Level 1: The Hall</h1><p>A long hall with a stone wall, five doors and a sign over each. The first says <b>AS YOU SEE IT</b>. Two say <b>RED-GREEN</b>, one for each of the two kinds of eyes that run red and green together (<b>ONE KIND</b> and <b>THE OTHER</b>). One says <b>BLUE AND YELLOW</b> and one says <b>NO COLOR</b>, only light and dark. The sixth door, at the far end, says <b>ALL DONE?</b> and ends the game.</p><p>Walk into a door. A card names the view for a moment, drawn in that view's own colors, and then you are in the gallery. At the end of the gallery a door brings you back to the hall, standing beside the door you went through.</p><p>The hall itself is always drawn as it is, so the signs here read the same for everyone.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How the hall is made</h1><ul><li><b>The doors.</b> A door is a block in <b>hall.map</b>, but what makes it go anywhere is the scene's <b>links</b>. Open the scene in the Game scenes view: link 1 says touch this block (the foot of the first door) and you arrive in scene 3, standing on the gallery's first cell. Links 2 to 5 do the same for scenes 4 to 7. Link 6 goes to the ending.</li><li><b>The way back.</b> Each gallery scene has one link, from the door at the end of the gallery back to the hall. Its landing cell is one block to the right of the door that scene was entered by, so Lena comes back beside the door they used and does not walk straight back in. That is why there are five gallery scenes and not one: a link has one landing cell.</li><li><b>The wall.</b> The stone behind the signs is a plain block. The doors in the hall are the Starter doors drawn again with the wall color behind them (<b>doorTopW</b> and <b>doorBottomW</b> in <b>doors.bbl</b>), because the usual door is drawn on sky.</li><li><b>The signs.</b> Each is a few blocks that spell its words, as in every Starter. A background block file holds 150 blocks, so each board is as small as its words allow.</li></ul><p>See <b>Rooms on One Map</b> and <b>Maps Within Maps</b> for more on links.</p>"
+    },
+    {
+      "head": "Level 2: The Gallery",
+      "html": "<h1>Level 2: The Gallery</h1><p>One long room, and every door opens into it. Along a stone wall hang eight swatches: red, orange, yellow, green, blue, purple, pink and brown, each with its name on a small board beneath. Past the wall there is a traffic light with red on top and green below, a table of fruit (an apple, a banana, a lime, grapes and an orange) and a bed of four flowers on green stems. A door at the far end goes back to the hall.</p><p>Walk the whole room in one view, then go back and try another. Some swatches that you can tell apart in one view run together in another. The names under them do not: dark letters on cream paper stay easy to read in all five. The traffic light is still red on top and green below, so its position tells you which is which. The fruit still has its shapes.</p><p>That is the useful part of the idea: <b>color alone is easy to lose, shape, position and a written name are not</b>. Colors That Work shows how to build a game that way.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How the gallery is made</h1><ul><li><b>One map.</b> The whole room is <b>gallery.map</b>, made once. Five scenes of the game list that same file in their <b>Map</b> slot.</li><li><b>Five palettes.</b> The only slot in which those scenes differ is <b>Palette</b>: <b>as.pal</b>, <b>red1.pal</b>, <b>red2.pal</b>, <b>blue.pal</b> and <b>gray.pal</b>. Every block, the hero and the signs use the same color numbers in all five. PLAYGAME loads each scene's palette file when it enters the scene, so the same numbers show different colors. A palette is 256 colors of three bytes each, 768 bytes in all, so a whole new look costs less than a paragraph of text.</li><li><b>How the four palettes were made.</b> <b>as.pal</b> is the palette the game is drawn with. The others are that palette with every color passed through a published color-vision model (it is credited in NOTICE.md and used in the palette editor and in Colors That Work too). <b>gray.pal</b> keeps only each color's brightness. The build does this in code (<b>src/views.ts</b>), but you can do the same by hand: open a copy of the palette in the Palette editor and change colors.</li><li><b>Plain swatches.</b> Each swatch is one flat block, <b>swatch.red</b> and so on, laid three across and two down. Each has its own color number so a palette can move it on its own.</li><li><b>The names.</b> Each name is a small board in <b>doors.bbl</b>. Dark ink on cream paper keeps about 13 to 1 contrast in every palette (<b>tools/viewCheck.ts</b> measures it), so the words never depend on the color around them.</li><li><b>The card.</b> The picture shown before each scene is drawn with the scene's own palette, so the view announces itself before the map appears.</li></ul>"
+    },
+    {
+      "head": "What it cannot do",
+      "html": "<h1>What it cannot do</h1><ul><li><b>It is a guess.</b> The views follow a published model of how some eyes see. Real eyes vary a great deal: two people with the same name for their condition can see colors differently, and the model cannot say how it feels. It says \"might see\", never \"sees\".</li><li><b>It cannot recolor one picture.</b> A palette is all or nothing for a scene. If a scene needs a color to stay as drawn, say a sign you want exactly as is, it must keep its own color numbers, and a palette cannot swap just some of them. Here the signs shift a little with the rest; their words stay readable.</li><li><b>The card and menus.</b> A picture file carries its own palette, so the card before each room is drawn in that room's palette on purpose. The title, the menu and the end screens use the usual one.</li><li><b>Palettes change at a scene.</b> The palette is loaded when a scene starts, so Lena cannot walk through a doorway and see the color change in one room. Each view needs its own scene, and a way back that names the right landing cell for each, as the hall does.</li><li><b>Blocks are limited.</b> A background block file holds 150 blocks, which is why the signs here are brief.</li></ul>"
+    },
+    {
+      "head": "Make it yours",
+      "html": "<h1>Make it yours</h1><p>Open a copy in Game-Maker. In the Palette editor, open <b>red1.pal</b> and look at the colors; the editor can show a palette as some eyes might see it. Change a swatch in <b>doors.bbl</b>, or repaint a fruit, and every scene shows your change in its own colors. Add a sixth door: copy a gallery scene in the scenes view, give it a new palette file, and point a new hall link at it.</p><p>Then try your own levels with the same views. A level that works in all five is a level more of your players can enjoy.</p>"
+    }
+  ]
+}

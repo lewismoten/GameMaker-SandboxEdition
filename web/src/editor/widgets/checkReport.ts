@@ -13,7 +13,7 @@ import { acceptedFindings, findingKey, setAccepted } from '../check/accepted';
 import { guideLink } from './guideLink';
 import { cellOf, csvName, findingRows, groupRows, guideSection, KIND_LABEL, KIND_PLURAL, KINDS, toCsv, type FindingRow } from './checkRows';
 
-export interface ReportSource {
+interface ReportSource {
   project: Project;
   /** The map the report is of (undefined: every map of the game). */
   map?: string;
@@ -28,7 +28,7 @@ export interface ReportSource {
 const ICON: Record<Kind, string> = { error: '⛔', warning: '⚠', suggestion: '💡', info: 'ℹ' };
 
 /** "Scene 2 · DESERT.MAP (12, 40)": where a finding is, in words. */
-export function placeOf(f: Finding, map?: string): string {
+function placeOf(f: Finding, map?: string): string {
   const w = f.where;
   const cell = cellOf(f);
   const file = w.map ?? map ?? w.file ?? w.block?.file ?? w.monster?.file ?? w.sound?.file;
@@ -172,7 +172,7 @@ export async function openReport(src: ReportSource): Promise<void> {
 }
 
 /** Prints the findings as a checklist: a box by each, grouped by kind (the browser's Print can save it as a PDF). */
-export function printChecklist(game: string, map: string | undefined, rows: FindingRow[]): void {
+function printChecklist(game: string, map: string | undefined, rows: FindingRow[]): void {
   const root = h(
     'div',
     { class: 'lcr-print' },

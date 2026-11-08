@@ -1,0 +1,55 @@
+{
+  "title": "Room to Room",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "hero": "MARA",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.1",
+  "blurb": "Three short levels about getting from one room to another. A door leads out of one room and into the next, a house has doors that go back the way you came, and a fork has two doors to two rooms. Signs in the rooms say how. Play it, then open it in Game-Maker and move a door.",
+  "exe": "ROOM.EXE",
+  "dosName": "ROOMS",
+  "sound": "sb",
+  "label": {
+    "background": "#e8f6ff",
+    "band": "#e0662f",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "3 short levels",
+    "hours": 1,
+    "background": "#e0662f",
+    "accent": "#ffd23f",
+    "ink": "#ffffff",
+    "tagline": "Every door goes somewhere.",
+    "back": "A small explorer in a green beanie walks out of one room and into the next. First a door, then an open archway, then a house with doors that go there and back, and last a fork with two doors to choose from. Read the signs, then open the game in Game-Maker and move where a door lands.",
+    "features": [
+      "Signs in the rooms explain each idea",
+      "A door is a link: touch it, and you arrive in another room",
+      "Made to be copied and taken apart"
+    ],
+    "shots": [
+      [
+        "start.map",
+        0,
+        6
+      ],
+      [
+        "hall.map",
+        8,
+        6
+      ],
+      [
+        "fork.map",
+        8,
+        6
+      ]
+    ],
+    "rating": "Everyone"
+  },
+  "acceptedFindings": [
+    "facing s3 The hero climbs side on"
+  ]
+}

@@ -1,0 +1,77 @@
+{
+ "version": 1,
+ "game": "beams",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "KU0tzVNNN81TTTfNU00="
+  },
+  {
+   "scene": 3,
+   "keys": "KU1fzVNNKM17TTzNe00="
+  },
+  {
+   "scene": 4,
+   "keys": "AU0tzVNNN81TTTfNU00="
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "The beams"
+  },
+  {
+   "scene": 3,
+   "title": "The fog"
+  },
+  {
+   "scene": 4,
+   "title": "The glow"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 11117,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 913,
+    "time": 15216.666666666471
+   },
+   {
+    "title": "The beams",
+    "frame": 1661,
+    "time": 27683.333333333918
+   },
+   {
+    "title": "The fog",
+    "frame": 3624,
+    "time": 60399.99999999694
+   },
+   {
+    "title": "The glow",
+    "frame": 5967,
+    "time": 99450.00000000605
+   },
+   {
+    "title": "Ending",
+    "frame": 7831,
+    "time": 130516.66666668176
+   },
+   {
+    "title": "Credits",
+    "frame": 10043,
+    "time": 167383.33333332746
+   }
+  ]
+ }
+}

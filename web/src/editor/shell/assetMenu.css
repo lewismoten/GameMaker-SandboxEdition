@@ -28,3 +28,8 @@
 .asset-menu button:focus-visible {
   background: var(--panel-2);
 }
+@media (pointer: coarse) {
+  .asset-menu button {
+    min-height: 44px;
+  }
+}

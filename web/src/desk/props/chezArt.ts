@@ -5,7 +5,7 @@
 // the short BLACK roof, one door window (no quarter window behind it), the dark racing stripes
 // with red between and a white pinstripe round them, stepping up in an S curve over the rear
 // quarter, white wheels with chrome caps, plain square bumpers. Facing left it shows the
-// passenger side, with the charge port at the rear, and Doc Leo at the wheel through the
+// passenger side, with the charge port at the rear, Teddy in the front passenger seat looking out and Doc Leo at the wheel behind him, both through the
 // door window. The plate, THE CHEZ, is on the back.
 type Pt = [number, number];
 
@@ -58,6 +58,57 @@ const path = (c: CanvasRenderingContext2D, pts: Pt[]) => {
   pts.forEach(([x, y], i) => (i ? c.lineTo(x, y) : c.moveTo(x, y)));
   c.closePath();
 };
+
+/** Where Teddy's head sits in the door window: his ears' tips (top) and his middle (x), in the kit's units. */
+const TEDDY_SEAT: Pt = [14.9, 3.4];
+
+/** For a close-up (the mouse pad, the magazine): Doc Leo moved back from the windshield so his face and hat show whole, and Teddy beside him toward the rear. */
+export const CHEZ_CLOSE_UP: { driver: Pt; teddy: Pt } = { driver: [-1.4, 0.5], teddy: [14.2, 3.4] };
+
+/**
+ * Teddy in the front passenger seat, his head in the door window looking out: the same red-gold corgi with a
+ * white blaze and two matching ears as the door's visitor (props/door.ts), drawn on the 120-unit grid that
+ * drawing uses. He sits in front of Doc Leo (the passenger side is the near one), toward the rear so Doc Leo's
+ * hat and face stay readable beyond him.
+ */
+function teddy(c: CanvasRenderingContext2D, at: Pt): void {
+  const s = 0.048;
+  c.save();
+  path(c, CHEZ_WINDOW);
+  c.clip();
+  c.translate(at[0] - 60 * s, at[1] - 4 * s);
+  c.scale(s, s);
+  const fill = (d: string, col: string, stroke?: string) => {
+    const p = new Path2D(d);
+    c.fillStyle = col;
+    c.fill(p);
+    if (stroke) {
+      c.strokeStyle = stroke;
+      c.lineWidth = 2;
+      c.stroke(p);
+    }
+  };
+  // two ears, each the other's mirror
+  fill('M22 52 L30 4 L56 40 Z', '#d98b3a', '#7a4518');
+  fill('M31 16 L48 40 L28 46 Z', '#f2c6a0');
+  fill('M98 52 L90 4 L64 40 Z', '#d98b3a', '#7a4518');
+  fill('M89 16 L72 40 L92 46 Z', '#f2c6a0');
+  // the head, the white blaze down the middle and the muzzle
+  fill('M20 68 a40 36 0 1 0 80 0 a40 36 0 1 0 -80 0 Z', '#d98b3a', '#7a4518');
+  fill('M54 34 q6 -4 12 0 l6 40 q-12 6 -24 0 z', '#fbf6ec');
+  fill('M38 88 a22 16 0 1 0 44 0 a22 16 0 1 0 -44 0 Z', '#fbf6ec');
+  // eyes with a glint, the nose, the smile and a little tongue
+  for (const ex of [44, 76]) {
+    fill(`M${ex - 5} 62 a5 5 0 1 0 10 0 a5 5 0 1 0 -10 0 Z`, '#1a120b');
+    fill(`M${ex - 1.1} 60.5 a1.6 1.6 0 1 0 3.2 0 a1.6 1.6 0 1 0 -3.2 0 Z`, '#ffffff');
+  }
+  fill('M53 80 a7 5 0 1 0 14 0 a7 5 0 1 0 -14 0 Z', '#1a120b');
+  c.strokeStyle = '#1a120b';
+  c.lineWidth = 2;
+  c.stroke(new Path2D('M50 90 q10 8 20 0'));
+  fill('M56 93 q4 10 8 0', '#e8687a');
+  c.restore();
+}
 
 /** Doc Leo at the wheel, seen through the door window: his chewed fedora, white face paint round
  * his eye and his grin, his own nose sunburned pink. */
@@ -117,9 +168,10 @@ function docLeo(c: CanvasRenderingContext2D, seat: Pt = [0, 0]): void {
  * Draws THE CHEZ with its box's bottom left on the ground at (x, ground), `k` pixels to the
  * kit's unit, facing left (driving right to left, the passenger side showing). `seat` moves Doc
  * Leo in the kit's units (back is negative x): a close-up sits him back from the windshield so
- * his face and hat show whole in the door window.
+ * his face and hat show whole in the door window. Teddy rides in the front passenger seat, his head in the window
+ * (`teddyAt` moves him, `false` leaves him out).
  */
-export function drawChez(c: CanvasRenderingContext2D, x: number, ground: number, k: number, seat?: Pt): void {
+export function drawChez(c: CanvasRenderingContext2D, x: number, ground: number, k: number, seat?: Pt, teddyAt: Pt | false = TEDDY_SEAT): void {
   c.save();
   // mirrored: the kit's x runs nose-right; facing left, unit u lands at x + (40 - u) * k
   c.translate(x + 40 * k, ground - 20 * k);
@@ -188,6 +240,7 @@ export function drawChez(c: CanvasRenderingContext2D, x: number, ground: number,
   path(c, CHEZ_WINDOW);
   c.fill();
   docLeo(c, seat);
+  if (teddyAt) teddy(c, teddyAt);
   c.strokeStyle = '#d8eef8';
   c.lineWidth = 0.35;
   c.beginPath();

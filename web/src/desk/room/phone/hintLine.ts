@@ -1,27 +1,43 @@
-// Teddy's fictional 900-number hint service. Only confirmed listening time is metered.
+// Teddy's Hint Kennel, the fictional 900-number hint service, answered by the Hint Giant: live counselors
+// are never in, so a slow automated phone tree (hintTree.ts) gives a few hints per game. The pretend bill
+// is metered per minute and paid up front (hintBill.ts): only a confirmed call is charged.
 import type { CallLine } from './calls';
 import { progress } from '../../../achievements/store';
 import { VOICES } from '../../../audio/voices';
-import { HintBill, HINT_CENTS_PER_MINUTE } from './hintBill';
+import { HintBill } from './hintBill';
+import { START, nodeText, press, type HintNode } from './hintTree';
+import {
+  HINT_AWAY,
+  HINT_BAD_KEY,
+  HINT_BILL_TAIL,
+  HINT_BYE,
+  HINT_GIANT,
+  HINT_KENNEL,
+  HINT_LONG_BREAK,
+  HINT_RATE,
+  billSentence,
+} from '../../../audio/phone/phoneScript';
 
 const bill = new HintBill(() => localStorage);
-const teddy = { ...VOICES.recording, who: 'Teddy', pitch: 1.05, rate: 1.05 };
+// the browser's fallback speech when a clip is missing: low and slow
+const giant = { ...VOICES.recording, who: 'The Hint Giant', pitch: 0.6, rate: 0.8 };
 const recordBill = (cents: number) => {
   if (cents > 0) progress('hint-phone-bill', Math.min(cents, 1000), 1000);
   return cents;
 };
 const dollars = (cents: number) => `$${(cents / 100).toFixed(2)}`;
-const HINTS: Record<string, string> = {
-  '1': 'Save with F5 before trying a tricky stretch. Use different save slots so one unfortunate landing does not become family history. Teddy saves before jumping. Gwinn saves after saying, watch this.',
-  '2': 'Open the game box and choose Level Maps. Follow the marked start and exits. Dashed wrap edges join: leaving one side can bring you back on the other. Teddy calls this geography with a revolving door.',
-  '3': 'Watch an enemy before charging in. Look for a gap in its movement, keep an escape route, and check whether your character can shoot. A boss may have another stage. Teddy recommends waiting until the victory is actually victorious.',
-  '4': 'The game box may include a hint book, and the walkthrough shows a route through the game. Those are free. Asking for help is clever. Paying a corgi to tell you where the free help lives is extremely 1994.',
-};
+/**
+ * The Giant waits this long without a key after he finishes a prompt before he hangs up. He talks slowly
+ * (about half a second a word), so the wait is counted from the end of what he says.
+ */
+const SILENCE_SECONDS = 45;
+const speakingSeconds = (text: string): number => Math.ceil(text.split(/\s+/).length * 0.55);
 
 /** Listen for a menu key while speaking; there is exactly one awaited key reader per prompt. */
-async function ask(line: CallLine, text: string): Promise<string> {
-  const key = line.nextKey(45);
-  const speech = line.say(teddy, text).then(() => undefined);
+async function ask(line: CallLine, text: string, afterStart?: () => void): Promise<string> {
+  const key = line.nextKey(SILENCE_SECONDS + speakingSeconds(text));
+  const speech = line.say(giant, text).then(() => undefined);
+  afterStart?.(); // say() puts "Connected" on the LCD; the bill goes back on it
   const first = await Promise.race([key, speech]);
   if (first !== undefined) {
     line.hush();
@@ -35,39 +51,62 @@ export async function hintLine(line: CallLine): Promise<void> {
   line.sounds.ringback();
   await line.wait(2);
   line.sounds.stop();
-  const choice = await ask(
-    line,
-    `Teddy's Hint Kennel! Your parents' pretend phone bill is ${dollars(recordBill(bill.cents))}. This game charges a fictional ${dollars(HINT_CENTS_PER_MINUTE)} per minute, never real money. Press 1 to start the meter, or 0 to leave free. Teddy accepts neither credit cards nor stolen sandwiches.`,
-  );
+  const choice = await ask(line, `${HINT_KENNEL} ${HINT_GIANT} ${billSentence(dollars(recordBill(bill.cents)))} ${HINT_AWAY} ${HINT_RATE}`);
   if (choice !== '1' || line.signal.aborted) {
-    line.ended('No charge. Teddy waves one very small paw.');
+    line.ended('No charge. The Hint Giant waves one very large hand.');
     return;
   }
+  // connected: a full minute is billed now, and another the instant each new minute begins
   const meter = bill.start();
   let stopped = false;
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const show = () => line.status(`Pretend phone bill: ${dollars(recordBill(meter.checkpoint()))}`);
   const finish = () => {
     if (stopped) return;
     stopped = true;
-    clearInterval(timer);
+    clearTimeout(timer);
     recordBill(meter.finish());
   };
+  const nextMinute = () => {
+    timer = setTimeout(() => {
+      if (stopped) return;
+      show();
+      nextMinute();
+    }, meter.msToNextMinute());
+  };
   line.signal.addEventListener('abort', finish, { once: true });
-  const timer = setInterval(() => {
-    if (!stopped) line.status(`Pretend phone bill: ${dollars(recordBill(meter.checkpoint()))}`);
-  }, 1000);
+  show();
+  nextMinute();
   try {
-    for (let round = 0; round < 6 && !line.signal.aborted; round++) {
-      const key = await ask(line, 'Press 1 for saving, 2 for maps, 3 for enemies, 4 for free help, 5 for the pretend bill, or 0 to hang up.');
-      if (!key || key === '0') break;
-      if (key === '5')
-        await line.say(
-          teddy,
-          `Your parents' pretend phone bill is ${dollars(recordBill(meter.checkpoint()))}. Gwinn has offered to pay in lint. The telephone company is considering it.`,
-        );
-      else await line.say(teddy, HINTS[key] ?? 'That key leads to the biscuit cupboard. The cupboard has declined to comment. Try 1 through 5, or 0 to leave.');
+    let node: HintNode = START;
+    let spoken: string | undefined = nodeText(node);
+    for (let round = 0; round < 500 && !line.signal.aborted; round++) {
+      const key = await ask(line, spoken, show);
+      if (!key) {
+        finish();
+        await line.say(giant, HINT_LONG_BREAK).catch(() => undefined);
+        break;
+      }
+      const move = press(node, key);
+      if ('hangup' in move) {
+        finish();
+        await line.say(giant, HINT_BYE);
+        break;
+      }
+      if ('node' in move) {
+        node = move.node;
+        spoken = nodeText(node);
+      } else if ('bill' in move) {
+        const saying = line.say(giant, `${billSentence(dollars(recordBill(meter.checkpoint())))} ${HINT_BILL_TAIL}`);
+        show();
+        await saying;
+        spoken = nodeText(node);
+      } else {
+        spoken = `${HINT_BAD_KEY} ${nodeText(node)}`;
+      }
     }
     finish();
-    if (!line.signal.aborted) line.ended(`Teddy's biscuit break. Pretend phone bill: ${dollars(recordBill(bill.cents))}.`);
+    if (!line.signal.aborted) line.ended(`The Hint Giant says goodbye. Pretend phone bill: ${dollars(recordBill(bill.cents))}.`);
   } finally {
     finish();
     line.signal.removeEventListener('abort', finish);

@@ -4,11 +4,12 @@
 import '../retro/computer/monitor.css';
 import './desk.css';
 import './deskStage.css';
+import './pc/crtOn.css';
 import './pc/crtOff.css';
 import { clear, toast } from '../editor/core/ui';
 import { loadDisks, type Disk } from '../retro/dos/disks';
 import { openDiskBox, type DiskAction } from './disks/diskBox';
-import { openTray } from './pc/caseParts';
+import { closeTray, openTray, trayState } from './pc/caseParts';
 // the room, the box and the PC as drawn (with the box's gmBox.css ribbon)
 import { deskScene, drawBoxTiles } from './deskScene';
 import { onCatalogChanged } from '../project/catalogWatch';
@@ -17,6 +18,7 @@ import { regSideLater } from '../retro/gmReg/regSideLater';
 // the PC switched on and off (with the capture buttons' capture.css)
 import { deskPc } from './deskPc';
 import { deskProps } from './props';
+import { warmDeskAudio } from './deskAudioWarm';
 import { loadCatalog, loadGameList, type CatalogEntry } from '../project/files';
 import { Project } from '../editor/core/project';
 import { viewState } from '../urlState';
@@ -30,6 +32,9 @@ import { pointOut } from './deskLook';
 import { restoreDesk } from './deskRestore';
 import { wallTrophies } from './wallTrophies';
 import { deskTour } from './deskTour';
+import { beginDesk, endDesk } from './lifetime';
+import { ejectRefusal } from './ejectRule';
+import { hasRetailBox } from '../project/starter';
 
 // What is opened or read on the desk loads when it first is: the manuals and the catalog (the
 // boxes' insides, deskGmBox.ts and deskShelf.ts).
@@ -64,18 +69,22 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     try {
       await open();
     } finally {
-      if (deskView.get('open') === name) deskView.set({ open: undefined });
+      const now = deskView.get('open');
+      // a game's box switched to another game by its picker keeps the address on the new one
+      if (now === name || (name.startsWith('manual:') && now?.startsWith('manual:'))) deskView.set({ open: undefined });
     }
   };
 
+  beginDesk();
   const scene = deskScene({
     power: (onlyOn) => void pc.power(onlyOn),
     toggleTurbo: () => pc.toggleTurbo(),
+    reset: () => void pc.reset(),
     eject: () => eject(),
     ejectCd: () => void ejectCd(),
     command: (cmd) => void pc.command(cmd),
     catalog: () => void catalog(),
-    magazine: () => void magazine(),
+    magazine: (issue) => void magazine(issue),
     mug: () => void mugViewer(),
     flip: () => void flip(),
     openGmBox: () => void openGmBox(),
@@ -155,9 +164,11 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
 
   function eject(): void {
     const computer = pc.computer;
-    // a utility like PLAYHACK carries on with the drive empty (retro/diskSwap.ts)
-    if (computer?.busy && !computer.diskSwappable) {
-      toast('The drive light is on — quit the running program first.');
+    // the button is mechanical: it works any time but while A:'s light is really on. A game
+    // already loaded plays on; a later read of A: gets "Not ready reading drive A" (ejectRule.ts)
+    const refusal = ejectRefusal(floppy.isBusy());
+    if (refusal) {
+      toast(refusal);
       return;
     }
     computer?.eject();
@@ -210,7 +221,10 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   }
 
   /** A game's manual, kept in the address while it is open (open=manual:<game>). */
-  const gameManual = (g: CatalogEntry, front?: string) => opened(`manual:${g.id}`, async () => (await lazy.gameManual()).openGameManual(g, front));
+  const gameManual = (g: CatalogEntry, front?: string) =>
+    opened(`manual:${g.id}`, async () =>
+      (await lazy.gameManual()).openGameManual(g, front, undefined, undefined, (id) => deskView.set({ open: `manual:${id}` })),
+    );
   /** Game-Maker's own Owner's Guide (open=gm-manual). */
   const dosManual = () => opened('gm-manual', async () => (await lazy.dosManual()).openDosManual());
 
@@ -233,7 +247,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   async function startGameMaker(): Promise<void> {
     const computer = await pc.load();
     if (!computer.cdInserted) {
-      await openTray(cd);
+      await openTray(cd, 1000);
       computer.insertCd();
       cd.setDisc('Game-Maker SE 3.0');
       desk.querySelector('.gm-box')?.classList.add('cd-in');
@@ -244,6 +258,10 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
 
   /** The CD-ROM's eject button: out comes the tray (and the Game-Maker CD, back to its box). */
   async function ejectCd(): Promise<void> {
+    // the tray is out: this press pushes it back in; a press while it closes does nothing
+    const tray = trayState(cd);
+    if (tray === 'closing') return;
+    if (tray !== 'closed') return closeTray(cd);
     const computer = pc.computer;
     if (computer?.busy && computer.cdInserted) {
       toast('The CD-ROM is in use — quit the running program first.');
@@ -256,7 +274,11 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   }
 
   /** The shelf on the wall: a box for each original game (desk/boxes/shelf.ts). */
-  const shelf = deskShelf(desk, { insert: (id) => void insertOriginal(id), manual: (g, front) => gameManual(g, front) });
+  const shelf = deskShelf(desk, {
+    insert: (id) => void insertOriginal(id),
+    manual: (g, front) => gameManual(g, front),
+    restoreBox: wanted.open?.startsWith('box:') ? wanted.open : undefined, // even a malformed one, so it is cleared
+  });
 
   async function insertOriginal(id: string): Promise<void> {
     const d = (await diskList()).find((x) => x.id === `cd:${id}`);
@@ -276,8 +298,9 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   }
 
   /** The magazine lying on the desk with the catalog: open=turbobutton&vol=3&num=1&page=6-7 (vol=1&num=4 is the spring 1993 back issue) keeps the issue and the pages in view, so a reload comes back to them. Its links play disks, call the BBS and look at the props. */
-  const magazine = async () => {
+  const magazine = async (issue?: 1 | 2) => {
     const [{ openMagazine }, { issueFor }] = await Promise.all([import('../manual/magazine/viewer'), import('../manual/magazine/masthead')]);
+    if (issue) deskView.set({ vol: issue === 1 ? '1' : '3', num: issue === 1 ? '4' : '1', page: undefined });
     // vol=1&num=4 is the back issue; the old vol=1&num=1 and a bare address open No. 2 (vol=3&num=1)
     const MAG = issueFor(deskView.num('vol'), deskView.num('num'));
     const legacy = deskView.num('vol') === 1 && deskView.num('num') === 1;
@@ -344,9 +367,10 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   prefetchWhenIdle([
     pc.pcCode, // so switching it on is instant
     pc.captureCode,
+    pc.machineCode, // the Machine settings dialog
     () => fetch('./gm/index.json'), // C:\GM's listing, so GM starts offline too
   ]);
-  void loadGameList().then((cat) => shelf.fill(cat.filter((g) => g.original?.box)));
+  void loadGameList().then((cat) => shelf.fill(cat.filter(hasRetailBox)));
   // a secret game revealed or hidden again (13 felt eggs found, or EGG.EXE): the shelf
   // and the disk box follow, and the box of a game no longer listed is put back
   const unCatalog = onCatalogChanged(async () => {
@@ -355,14 +379,22 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     const viewer = document.querySelector<HTMLElement>('.box-viewer');
     const showing = viewer?.getAttribute('aria-label');
     if (showing && !cat.some((g) => `${g.title} box` === showing)) viewer!.querySelector<HTMLButtonElement>('.box-viewer-bar button:last-child')?.click();
-    void shelf.fill(cat.filter((g) => g.original?.box));
+    void shelf.fill(cat.filter(hasRetailBox));
     void refreshDisks();
   });
   const unWall = wallTrophies(desk);
+  // Scoot, the desk buddy, on the desk top between the PC and the Game-Maker box (beside it on a phone), loaded on its own
+  let unBuddy: (() => void) | undefined;
+  void import('./buddy/deskBuddy').then(({ deskBuddy }) => {
+    if (!desk.isConnected) return;
+    unBuddy = deskBuddy((el) => (desk.querySelector('.desk-right') ?? desk.querySelector('.desk-scene'))?.append(el));
+  });
   // the guided tour's BBS chapter calls the board on this PC, and puts everything back after
   const unTour = deskTour(desk, pc);
   drawBoxTiles(boxTiles);
+  const unWarm = warmDeskAudio();
   return () => {
+    unWarm();
     window.dispatchEvent(new Event('gm-desk-close'));
     window.removeEventListener('keydown', onKey);
     reg.dispose();
@@ -372,7 +404,9 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     shelf.dispose();
     unCatalog();
     unWall();
+    unBuddy?.();
     unTour();
     pc.dispose();
+    endDesk();
   };
 }

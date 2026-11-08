@@ -18,5 +18,9 @@ export function overviewHash(project: Pick<Project, 'id'>, tab: OverviewTab): st
 }
 
 export function overviewLink(project: Pick<Project, 'id'>, tab: OverviewTab, label: string): HTMLElement {
-  return h('p', { class: 'meta' }, h('a', { href: overviewHash(project, tab) }, label));
+  return h(
+    'p',
+    { class: 'meta' },
+    h('a', { href: overviewHash(project, tab), style: 'display:inline-flex;align-items:center;min-width:24px;min-height:24px' }, label),
+  );
 }

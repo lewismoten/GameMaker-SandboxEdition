@@ -1,6 +1,7 @@
 // Where games come into My games and Imported: the import tile (drop files on it, or click to
 // pick them or a folder), and files dropped anywhere in the library, which light the tile up.
 import { h, pickFiles } from '../core/ui';
+import { openImportPanel, pickedLabel } from './importPanel';
 import { icon } from './homeIcons';
 import type { HomeNav } from './home';
 
@@ -10,7 +11,10 @@ export const homeImport = () => import('./homeImport');
 /** Picks a game's files (or a folder of them, or of games or zips) and opens them; `onAdded` hears of several imported at once. */
 function pickAndImport(nav: HomeNav, directory?: boolean, onAdded?: () => void): void {
   void pickFiles({ multiple: true, directory }).then(async (list) => {
-    if (list.length) await (await homeImport()).importPicked(nav, list, onAdded);
+    if (!list.length) return;
+    // a response at once, before the importer has loaded; none while another import runs
+    const panel = openImportPanel(pickedLabel(list.map((f) => f.name)));
+    if (panel) await (await homeImport()).importPicked(nav, list, onAdded, panel);
   });
 }
 
@@ -53,6 +57,7 @@ export function libraryDrops(library: HTMLElement, dropTile: HTMLElement, open: 
     const dt = e.dataTransfer!;
     const entries = [...dt.items].map((i) => i.webkitGetAsEntry?.()).filter((x): x is FileSystemEntry => !!x);
     const files = [...dt.files];
-    void homeImport().then((m) => m.importDropped(nav, entries, files, refresh));
+    const panel = openImportPanel(pickedLabel(files.map((f) => f.name)));
+    if (panel) void homeImport().then((m) => m.importDropped(nav, entries, files, refresh, panel));
   });
 }

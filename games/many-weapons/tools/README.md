@@ -1,0 +1,10 @@
+# Many Weapons: tools
+
+- `check.ts`: the bot plays both levels. `route.ts` asserts what each sign teaches: in level 1 Enter with empty hands starts the shrug (sequence 17) and throws nothing, a pouch gives two stars, two stars pop two gumdrops, the third press shrugs, and the pouch has filled up again when Kit is back; in level 2 a star is used up on the frosty grump without melting it, the flame pouch on the ledge gives two flames, the first two presses throw flames (though a star is in his pocket) and melt both grumps, and the next press throws a star. Every coin is taken and no life is lost.
+- `walkthrough.ts`, `gendemo.ts`: re-record the walkthrough and the title demo. The demo is both levels as one unbroken list of keys (the demo recorder counts game ticks across scene changes), stopped before the last door.
+- `demoCheck.ts`: plays the built `demo.rec` on the real engine and checks it enters scenes 2 and 3, presses Enter nine times and has no game over.
+- `preview.ts`: PNGs of the blocks, the hero, each level and every picture. `shots.ts`: pictures of the lessons for the progress shots.
+
+## What the engine does here, and what it does not
+
+Several sequences can share one key. When it is pressed, `SimKeyPress` in `PLAYGAME.C` walks the sequences in order and starts the first that is switched on and has uses left (its repetition counter, numbered like the sequence, is above 0). Each throw takes one off the counter. A block's Effect and Amount add to any counter, and a monster's picture block does the same when the hero touches it (and a monster weaker than the hero's power of 100 is used up by the touch, becoming its `newmon`). A monster's lifetime (`end`) counts from its birth, so a sack that is empty for 72 ticks and then becomes full again refills on its own clock, which a timed block cannot do: every copy of a timed block shares one clock. A weapon is a monster born by a frame whose second picture is `MONBL`; the stronger one in a collision survives, and a thrown one is always used up.

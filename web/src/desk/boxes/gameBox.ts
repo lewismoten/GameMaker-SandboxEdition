@@ -5,7 +5,7 @@
 // turns it are in boxViewer.ts. On the shelf the boxes lean against the wall; click one and
 // it comes forward in the viewer.
 import { drawSandboxMark } from '../../manual/printables/sandboxMark';
-import { fetchGameFile, type CatalogEntry } from '../../project/files';
+import { peekGameFile, type CatalogEntry } from '../../project/files';
 import { splitTitle } from '../../project/gameTitle';
 import { gameDisks, installedBytes, sizeText } from '../../project/diskFacts';
 import { renderShot } from '../../gfx/gameShots';
@@ -15,6 +15,7 @@ import { boxAward, boxClaims, boxGame, boxReviews, disksLine, hoursLine, planBac
 import { wear } from './boxWear';
 import { diskIcons, laurel, onePlayer, platformBadge, platformBadgeHeight, priceSticker, RATING_NOTE, ratingSeal, starburst } from './boxSeals';
 import { coverArt, SEALS } from './covers';
+import { setSpine } from './boxSpine';
 import { gameVersion } from '../../project/gameVersion';
 import {
   type Box,
@@ -51,7 +52,7 @@ export interface BoxFaces {
 }
 
 async function readGame(entry: CatalogEntry): Promise<Game | undefined> {
-  const gam = entry.gam ? await fetchGameFile(entry, entry.gam) : undefined;
+  const gam = entry.gam ? await peekGameFile(entry, entry.gam) : undefined;
   try {
     return gam && parseGame(gam);
   } catch {
@@ -119,18 +120,20 @@ const BACK_TEXT = 'rgba(0, 0, 0, 0.55)';
  * false the cover painting is left off too, so its code isn't loaded for a box seen edge on.
  */
 export async function drawBox(entry: CatalogEntry, { shots = true, cover = true, blobs = false } = {}): Promise<BoxFaces | undefined> {
-  const sides = await paintBox(entry, shots, false, cover);
+  const sides = await paintBox(entry, shots, false, cover, undefined, blobs);
   if (!sides) return undefined;
-  // `blobs`: for the shelf. Only the sides that show there (the spine, and the front when it
-  // is turned out) are encoded, off the main thread, into addresses good for this page only
-  // (released by releaseFaces); the other four are blank until the box is drawn whole.
+  // `blobs`: for the shelf. Only the sides that show there are made: the spine, as a small
+  // canvas at the size it stands on the shelf (spineOf: no request, nothing to release), and the
+  // front when it is turned out, which is the one drawn with its cover (encoded off the main
+  // thread into an address good for this page only, released by releaseFaces). The others are
+  // blank until the box is drawn whole.
   // Otherwise data addresses, which a manual or a saved page can carry away.
   const url = Object.fromEntries(
-    await Promise.all(
-      Object.entries(sides).map(async ([k, c]) => [k, !blobs ? c.toDataURL() : k === 'left' || k === 'front' ? await blobUrl(c) : BLANK] as const),
-    ),
+    await Promise.all(Object.entries(sides).map(async ([k, c]) => [k, !blobs ? c.toDataURL() : k === 'front' && cover ? await blobUrl(c) : BLANK] as const)),
   );
-  return url as unknown as BoxFaces;
+  const faces = url as unknown as BoxFaces;
+  if (blobs) setSpine(faces, sides.left);
+  return faces;
 }
 
 const BLANK = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
@@ -160,7 +163,7 @@ type BoxSides = Record<keyof BoxFaces, HTMLCanvasElement>;
  * `w` x `h` inches of the desk's layout (PPI to the inch), drawn `scale` times finer, fresh from
  * the printer: no shelf wear and no store's price sticker.
  */
-export interface PrintSize {
+interface PrintSize {
   w: number;
   h: number;
   scale: number;
@@ -172,7 +175,14 @@ export async function drawPrintFaces(entry: CatalogEntry, size: PrintSize): Prom
 }
 
 /** The six sides on canvases; with `letters`, only what is lettered (drawBoxLetters); with `print`, fresh at that size. */
-async function paintBox(entry: CatalogEntry, withShots: boolean, letters: boolean, cover = true, print?: PrintSize): Promise<BoxSides | undefined> {
+async function paintBox(
+  entry: CatalogEntry,
+  withShots: boolean,
+  letters: boolean,
+  cover = true,
+  print?: PrintSize,
+  lean = false,
+): Promise<BoxSides | undefined> {
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion -- the catalog's box type lacks `sticker`, which Box has
   const box = entry.original?.box as Box | undefined;
   if (!box) return undefined;
@@ -262,150 +272,157 @@ async function paintBox(entry: CatalogEntry, withShots: boolean, letters: boolea
   if (!print) priceSticker(f, fw - 134, 6, sticker.store ?? 'Bits & Bytes Software', sticker.price ?? '$4.99');
 
   // ---- back: the story, and real screenshots of the game with captions
-  const [back, b] = canvas(faceW, faceH, k);
-  const bw = back.width / k;
-  const bh = back.height / k;
-  ground(b, bw, bh);
-  // the cover painting, faint behind the title and the screenshots
-  if (art) {
-    b.save();
-    b.globalAlpha = 0.3;
-    b.drawImage(art, 0, 160 * k, art.width, 300 * k, 0, 34, bw, 300);
-    b.restore();
-    const fadeOut = b.createLinearGradient(0, 154, 0, 334);
-    fadeOut.addColorStop(0, 'rgba(0,0,0,0)');
-    fadeOut.addColorStop(1, shade(box.background, -0.2));
-    b.fillStyle = fadeOut;
-    b.fillRect(0, 154, bw, 181);
-  }
-  publisherBand(b, entry, bw, 0, 34);
-  titleText(b, box, title.toUpperCase(), bw / 2, 96, bw - 60, 52);
-  // the screenshots in a row, each captioned with its level
-  const gap = 16;
-  const shotW = Math.min(210, (bw - 56 - gap * (shots.length - 1)) / shots.length);
-  const shotTop = 118;
-  const shotH = shotW * 0.625;
-  const shotX = (bw - shotW * shots.length - gap * (shots.length - 1)) / 2;
-  b.textAlign = 'center';
-  b.lineJoin = 'round';
-  shots.forEach((s, i) => {
-    const x = shotX + i * (shotW + gap);
-    if (!letters) framedShot(b, s.shot, x, shotTop + (i % 2) * 4, shotW, [-0.025, 0.02, -0.012][i]);
-    if (!s.caption) return;
+  // `lean` (the shelf): only the spine and front are shown, so the other four sides are 1 px stand-ins
+  const stand = (): HTMLCanvasElement => canvas(1 / PPI, 1 / PPI)[0];
+  const paintBack = (): HTMLCanvasElement => {
+    const [back, b] = canvas(faceW, faceH, k);
+    const bw = back.width / k;
+    const bh = back.height / k;
+    ground(b, bw, bh);
+    // the cover painting, faint behind the title and the screenshots
+    if (art) {
+      b.save();
+      b.globalAlpha = 0.3;
+      b.drawImage(art, 0, 160 * k, art.width, 300 * k, 0, 34, bw, 300);
+      b.restore();
+      const fadeOut = b.createLinearGradient(0, 154, 0, 334);
+      fadeOut.addColorStop(0, 'rgba(0,0,0,0)');
+      fadeOut.addColorStop(1, shade(box.background, -0.2));
+      b.fillStyle = fadeOut;
+      b.fillRect(0, 154, bw, 181);
+    }
+    publisherBand(b, entry, bw, 0, 34);
+    titleText(b, box, title.toUpperCase(), bw / 2, 96, bw - 60, 52);
+    // the screenshots in a row, each captioned with its level
+    const gap = 16;
+    const shotW = Math.min(210, (bw - 56 - gap * (shots.length - 1)) / shots.length);
+    const shotTop = 118;
+    const shotH = shotW * 0.625;
+    const shotX = (bw - shotW * shots.length - gap * (shots.length - 1)) / 2;
+    b.textAlign = 'center';
+    b.lineJoin = 'round';
+    shots.forEach((s, i) => {
+      const x = shotX + i * (shotW + gap);
+      if (!letters) framedShot(b, s.shot, x, shotTop + (i % 2) * 4, shotW, [-0.025, 0.02, -0.012][i]);
+      if (!s.caption) return;
+      b.font = SANS(
+        fit(b, s.caption, (px) => SANS(px, 700), shotW + 8, 13),
+        700,
+      );
+      b.strokeStyle = 'rgba(0,0,0,0.7)';
+      b.lineWidth = 4;
+      b.fillStyle = box.ink;
+      boxText(b, s.caption, x + shotW / 2, shotTop + shotH + 26, undefined, true);
+    });
+    b.textAlign = 'left';
+
+    // the bottom: claims checklist, requirements, barcode and rating, then the copyright
+    const claims = info.claims.slice(0, 8);
+    const claimRows = Math.ceil(claims.length / 2);
+    const claimH = 18;
+    const reqH = 112;
+    const copyY = bh - 14;
+    const reqY = copyY - 20 - reqH;
+    const claimsY = reqY - 12 - claimRows * claimH;
+    const textX = 40;
+    const textW = bw - 80;
+    const top = shotTop + shotH + 40;
+    const reviews = info.reviews;
+    const features = box.features;
+    const layout = (p: { bodyPx: number; features: number; reviews: number; shots: number }, draw: boolean): number => {
+      // the screenshots have their own row above: plans that make room for more don't fit
+      if (p.shots) return Infinity;
+      let y = top + 12 + p.bodyPx;
+      b.font = BODY_FONT(p.bodyPx);
+      b.fillStyle = box.ink;
+      const lh = Math.round(p.bodyPx * 1.27);
+      if (draw) y = wrap(b, box.back, textX, y, textW, lh);
+      else y += wrapLines(b, box.back, textW) * lh;
+      for (const r of reviews.slice(0, p.reviews)) {
+        b.font = `italic 700 ${p.bodyPx}px Georgia, serif`;
+        b.fillStyle = box.accent;
+        const q = `“${r.quote}”`;
+        if (draw) y = wrap(b, q, textX + 14, y, textW - 28, lh) - lh * 0.4;
+        else y += (wrapLines(b, q, textW - 28) - 0.4) * lh;
+        b.font = SANS(Math.round(p.bodyPx * 0.72), 900);
+        b.fillStyle = box.ink;
+        if (draw) {
+          b.textAlign = 'right';
+          b.fillText(`— ${r.source.toUpperCase()}`, textX + textW - 14, y);
+          b.textAlign = 'left';
+        }
+        y += lh;
+      }
+      const fpx = Math.round(p.bodyPx * 0.88);
+      b.font = SANS(fpx, 700);
+      const flh = Math.round(fpx * 1.24);
+      for (const feat of features.slice(0, p.features)) {
+        if (draw) {
+          b.fillStyle = box.accent;
+          b.fillText('★', textX, y);
+          b.fillStyle = box.ink;
+          y = wrap(b, feat, textX + 24, y, textW - 30, flh) - flh * 0.4 + 2;
+        } else y += (wrapLines(b, feat, textW - 30) - 0.4) * flh + 2;
+      }
+      return y - top;
+    };
+    const plan = planBack(claimsY - 10 - top, features.length, reviews.length, (p) => layout(p, false));
+    // a dark panel so the story reads over the background
+    b.fillStyle = BACK_TEXT;
+    roundRect(b, textX - 14, top, textW + 28, plan.height, 10);
+    if (!letters) b.fill();
+    layout(plan, true);
+    // what the box promises, every bit of it true
+    b.fillStyle = BACK_TEXT;
+    roundRect(b, textX - 14, claimsY - 15, textW + 28, claimRows * claimH + 8, 8);
+    if (!letters) b.fill();
+    b.font = SANS(12.5, 700);
+    claims.forEach((c, i) => {
+      const cx = textX + (i % 2) * (textW / 2);
+      const cy = claimsY + Math.floor(i / 2) * claimH;
+      b.fillStyle = box.accent;
+      b.fillText('✔', cx, cy);
+      b.fillStyle = box.ink;
+      boxText(b, c, cx + 18, cy, textW / 2 - 24);
+    });
+    // system requirements
+    b.fillStyle = 'rgba(0,0,0,0.6)';
+    if (!letters) b.fillRect(24, reqY, bw - 244, reqH);
+    b.fillStyle = '#fff';
+    b.font = SANS(14, 900);
+    b.fillText('SYSTEM REQUIREMENTS', 36, reqY + 20);
+    // what it needs, then (in bold) what a buyer checked first: the disks and the room on the hard disk
+    const req = `IBM PC/AT or compatible, 286 or better · 640K RAM · VGA · ${sb ? 'Sound Blaster or compatible (PC speaker also supported)' : 'PC speaker sound'} · keyboard, joystick optional · 1 player`;
+    const storage = `${disksLine(info.disks)} · ${sizeText(info.installed)} free on hard disk`;
+    let reqPx = 12.5;
+    for (; reqPx > 10; reqPx -= 0.5) {
+      b.font = SANS(reqPx, 400);
+      if (wrapLines(b, req, bw - 272) * reqPx * 1.28 <= reqH - 44) break;
+    }
+    const storageY = wrap(b, req, 36, reqY + 40, bw - 272, reqPx * 1.28);
     b.font = SANS(
-      fit(b, s.caption, (px) => SANS(px, 700), shotW + 8, 13),
+      fit(b, storage, (px) => SANS(px, 700), bw - 272, reqPx),
       700,
     );
-    b.strokeStyle = 'rgba(0,0,0,0.7)';
-    b.lineWidth = 4;
+    b.fillText(storage, 36, storageY);
+    barcode(b, bw - 208, reqY, 128, 64, entry.id);
+    ratingSeal(b, bw - 68, reqY, 48, box.rating);
     b.fillStyle = box.ink;
-    boxText(b, s.caption, x + shotW / 2, shotTop + shotH + 26, undefined, true);
-  });
-  b.textAlign = 'left';
+    b.font = SANS(11, 700);
+    b.fillText(box.rating ?? 'All ages', bw - 208, reqY + 82);
+    b.font = SANS(9, 400);
+    wrap(b, RATING_NOTE, bw - 208, reqY + 96, 184, 11);
+    b.font = SANS(
+      fit(b, copyright(entry), (px) => SANS(px, 400), bw - 48, 12),
+      400,
+    );
+    b.fillStyle = box.ink;
+    b.fillText(copyright(entry), 24, copyY);
+    worn(b, bw, bh, `${entry.id}/back`, { creases: 1 });
 
-  // the bottom: claims checklist, requirements, barcode and rating, then the copyright
-  const claims = info.claims.slice(0, 8);
-  const claimRows = Math.ceil(claims.length / 2);
-  const claimH = 18;
-  const reqH = 112;
-  const copyY = bh - 14;
-  const reqY = copyY - 20 - reqH;
-  const claimsY = reqY - 12 - claimRows * claimH;
-  const textX = 40;
-  const textW = bw - 80;
-  const top = shotTop + shotH + 40;
-  const reviews = info.reviews;
-  const features = box.features;
-  const layout = (p: { bodyPx: number; features: number; reviews: number; shots: number }, draw: boolean): number => {
-    // the screenshots have their own row above: plans that make room for more don't fit
-    if (p.shots) return Infinity;
-    let y = top + 12 + p.bodyPx;
-    b.font = BODY_FONT(p.bodyPx);
-    b.fillStyle = box.ink;
-    const lh = Math.round(p.bodyPx * 1.27);
-    if (draw) y = wrap(b, box.back, textX, y, textW, lh);
-    else y += wrapLines(b, box.back, textW) * lh;
-    for (const r of reviews.slice(0, p.reviews)) {
-      b.font = `italic 700 ${p.bodyPx}px Georgia, serif`;
-      b.fillStyle = box.accent;
-      const q = `“${r.quote}”`;
-      if (draw) y = wrap(b, q, textX + 14, y, textW - 28, lh) - lh * 0.4;
-      else y += (wrapLines(b, q, textW - 28) - 0.4) * lh;
-      b.font = SANS(Math.round(p.bodyPx * 0.72), 900);
-      b.fillStyle = box.ink;
-      if (draw) {
-        b.textAlign = 'right';
-        b.fillText(`— ${r.source.toUpperCase()}`, textX + textW - 14, y);
-        b.textAlign = 'left';
-      }
-      y += lh;
-    }
-    const fpx = Math.round(p.bodyPx * 0.88);
-    b.font = SANS(fpx, 700);
-    const flh = Math.round(fpx * 1.24);
-    for (const feat of features.slice(0, p.features)) {
-      if (draw) {
-        b.fillStyle = box.accent;
-        b.fillText('★', textX, y);
-        b.fillStyle = box.ink;
-        y = wrap(b, feat, textX + 24, y, textW - 30, flh) - flh * 0.4 + 2;
-      } else y += (wrapLines(b, feat, textW - 30) - 0.4) * flh + 2;
-    }
-    return y - top;
+    return back;
   };
-  const plan = planBack(claimsY - 10 - top, features.length, reviews.length, (p) => layout(p, false));
-  // a dark panel so the story reads over the background
-  b.fillStyle = BACK_TEXT;
-  roundRect(b, textX - 14, top, textW + 28, plan.height, 10);
-  if (!letters) b.fill();
-  layout(plan, true);
-  // what the box promises, every bit of it true
-  b.fillStyle = BACK_TEXT;
-  roundRect(b, textX - 14, claimsY - 15, textW + 28, claimRows * claimH + 8, 8);
-  if (!letters) b.fill();
-  b.font = SANS(12.5, 700);
-  claims.forEach((c, i) => {
-    const cx = textX + (i % 2) * (textW / 2);
-    const cy = claimsY + Math.floor(i / 2) * claimH;
-    b.fillStyle = box.accent;
-    b.fillText('✔', cx, cy);
-    b.fillStyle = box.ink;
-    boxText(b, c, cx + 18, cy, textW / 2 - 24);
-  });
-  // system requirements
-  b.fillStyle = 'rgba(0,0,0,0.6)';
-  if (!letters) b.fillRect(24, reqY, bw - 244, reqH);
-  b.fillStyle = '#fff';
-  b.font = SANS(14, 900);
-  b.fillText('SYSTEM REQUIREMENTS', 36, reqY + 20);
-  // what it needs, then (in bold) what a buyer checked first: the disks and the room on the hard disk
-  const req = `IBM PC/AT or compatible, 286 or better · 640K RAM · VGA · ${sb ? 'Sound Blaster or compatible (PC speaker also supported)' : 'PC speaker sound'} · keyboard, joystick optional · 1 player`;
-  const storage = `${disksLine(info.disks)} · ${sizeText(info.installed)} free on hard disk`;
-  let reqPx = 12.5;
-  for (; reqPx > 10; reqPx -= 0.5) {
-    b.font = SANS(reqPx, 400);
-    if (wrapLines(b, req, bw - 272) * reqPx * 1.28 <= reqH - 44) break;
-  }
-  const storageY = wrap(b, req, 36, reqY + 40, bw - 272, reqPx * 1.28);
-  b.font = SANS(
-    fit(b, storage, (px) => SANS(px, 700), bw - 272, reqPx),
-    700,
-  );
-  b.fillText(storage, 36, storageY);
-  barcode(b, bw - 208, reqY, 128, 64, entry.id);
-  ratingSeal(b, bw - 68, reqY, 48, box.rating);
-  b.fillStyle = box.ink;
-  b.font = SANS(11, 700);
-  b.fillText(box.rating ?? 'All ages', bw - 208, reqY + 82);
-  b.font = SANS(9, 400);
-  wrap(b, RATING_NOTE, bw - 208, reqY + 96, 184, 11);
-  b.font = SANS(
-    fit(b, copyright(entry), (px) => SANS(px, 400), bw - 48, 12),
-    400,
-  );
-  b.fillStyle = box.ink;
-  b.fillText(copyright(entry), 24, copyY);
-  worn(b, bw, bh, `${entry.id}/back`, { creases: 1 });
+  const back = lean ? stand() : paintBack();
 
   // ---- spines (title runs along them) and ends; the spine faces out on the shelf, so it is the most sun-faded
   const spine = (sub: string, side: string): HTMLCanvasElement => {
@@ -458,13 +475,15 @@ async function paintBox(entry: CatalogEntry, withShots: boolean, letters: boolea
     front,
     back,
     left: spine(entry.price ? `MSRP ${entry.price}` : 'SHAREWARE', 'left'),
-    right: spine(sb ? 'SOUND BLASTER' : 'PC SPEAKER', 'right'),
-    top: end([title.toUpperCase(), company.toUpperCase()], 'top'),
-    bottom: end(
-      [title.toUpperCase(), `VGA · ${sb ? 'SOUND BLASTER' : 'PC SPEAKER'} · 1 PLAYER · ${info.disks} DISK${info.disks === 1 ? '' : 'S'}`],
-      'bottom',
-      true,
-    ),
+    right: lean ? stand() : spine(sb ? 'SOUND BLASTER' : 'PC SPEAKER', 'right'),
+    top: lean ? stand() : end([title.toUpperCase(), company.toUpperCase()], 'top'),
+    bottom: lean
+      ? stand()
+      : end(
+          [title.toUpperCase(), `VGA · ${sb ? 'SOUND BLASTER' : 'PC SPEAKER'} · 1 PLAYER · ${info.disks} DISK${info.disks === 1 ? '' : 'S'}`],
+          'bottom',
+          true,
+        ),
   };
 }
 

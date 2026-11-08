@@ -11,12 +11,14 @@ function routeOf(hash: string, modern: boolean): RouteName {
   if (hash.startsWith('#/help')) return 'guide';
   if (hash.startsWith('#/cast')) return 'cast';
   if (hash.startsWith('#/credits')) return 'credits';
+  if (hash.startsWith('#/privacy')) return 'privacy';
   if (hash.startsWith('#/magazine')) return 'magazine';
   if (hash.startsWith('#/library')) return 'library';
   if (hash.startsWith('#/achievements')) return 'achievements';
   if (hash.startsWith('#/mac')) return 'mac';
   if (hash.startsWith('#/windows')) return 'windows';
   if (hash.startsWith('#/linux')) return 'linux';
+  if (hash.startsWith('#/programmers-guide')) return 'programmersGuide';
   if (hash.startsWith('#/p/')) return 'editor';
   return 'home';
 }

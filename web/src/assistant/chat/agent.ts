@@ -31,7 +31,7 @@ export type AgentEvent =
   | { type: 'compacted'; how: 'model' | 'fixed'; summary: string; putAway: number }
   | { type: 'tools'; loaded: string[] };
 
-export interface AgentOptions {
+interface AgentOptions {
   chat(req: ChatRequest): Promise<ChatReply>;
   /** Every tool there is (the groups decide which are offered). */
   tools: AgentTool[];
@@ -72,7 +72,7 @@ export const SKIPPED = 'The person skipped this change, so nothing was changed. 
 const STOPPED = 'Stopped by the person before this ran.';
 const PICTURE_TOOLS = new Set(['render_png', 'editor_screenshot']);
 /** A request that asks to see something. */
-export const asksForPicture = (t: string) => /\b(pictures?|screenshots?|images?|render|draw|png|show me|looks? like|see (it|the|what))\b/i.test(t);
+const asksForPicture = (t: string) => /\b(pictures?|screenshots?|images?|render|draw|png|show me|looks? like|see (it|the|what))\b/i.test(t);
 /** Changes before another picture may be drawn unasked. */
 const EDITS_PER_PICTURE = 3;
 

@@ -1,7 +1,7 @@
 // The Ultimate Owner's Guide, chapters 6 to 8: sound sets, digitized voice and FM music.
 // Checked against PLAYGAME and SBMUSIC (code/GM), web/src/engine/touch.ts, web/src/audio
 // (cmfPlayer.ts, oplPresets.ts, sfxSynth.ts) and the games' kit (games/kit/songFx.ts, song/cutclips.py).
-import { opening, tip, type Chapter } from './chapter';
+import { opening, tip, type Chapter, onCd } from './chapter';
 
 export const SOUND_SETS: Chapter = {
   id: 'sounds',
@@ -13,6 +13,7 @@ export const SOUND_SETS: Chapter = {
   second), and, if you like, the name of a Sound Blaster <code>.VOC</code> file. With a Sound
   Blaster, a slot that names a <code>.VOC</code> plays it; otherwise the speaker tune plays.
   Players without a card hear only the speaker, so fill in both.</p>
+  ${onCd('SOUNDS', 'SNDBOARD', 'OUTLOUD')}
   <h2>A block can’t choose its sound</h2>
   <p>There is no “sound” setting on a block. The first nine slots belong to events, and
   PLAYGAME picks the slot by what the touch did:</p>
@@ -98,7 +99,11 @@ export const VOICE: Chapter = {
   <ul>
     <li>A clip that starts as a level opens is cut by the next digital sound. Leave the first
     second or so quiet (Chapter 5).</li>
-    <li>A clip at a gate needs a walk-off before the next link (Chapter 5).</li>
+    <li>A clip at a gate needs a walk-off before the next link (Chapter 5): a visible door a
+    few blocks on, with the link on the door itself.</li>
+    <li>Players walk at their own pace, and some stop to look. A line they have to hear (a
+    clue, a joke’s punch line) is safer when the hero can’t reach the exit until it is nearly
+    done.</li>
     <li>A clip on a sequence the player can start again before it ends cuts itself off; keep
     the sounds of repeatable moves short.</li>
   </ul>

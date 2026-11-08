@@ -5,12 +5,14 @@
 import './sample.css';
 import { registerEditor } from '../registry';
 import { h, clear, download, toast } from '../../core/ui';
+import { windowUndoKeys } from '../../core/windowUndoKeys';
 import { encodeWav, toPcm8 } from '../../../media/wav';
 import { decodeVoc, encodeVoc } from '@lewismoten/gamemaker-sandbox-engine/formats/voc';
 import { audio } from '../../widgets/mediaShared';
 import { drawWave } from '../../widgets/waveform';
 import { startRecording } from '../../tools/vocMaker';
 import { recordMeter } from '../../widgets/recordMeter';
+import { vocRuler } from '../../widgets/vocRuler';
 import { VOC_MAX_BYTES, VOC_MAX_SAMPLES, vocBytesFor, vocTooBig } from '../../../audio/vocLimit';
 import {
   applyEffect,
@@ -32,11 +34,18 @@ import {
 import { classifySound, SOUND_GROUPS } from '../../../audio/soundProfile';
 
 registerEditor(['voc'], (host, project, file) => {
-  const original = decodeVoc(project.files.get(file)!);
+  const originalBytes = project.files.get(file)!.slice();
+  const original = decodeVoc(originalBytes);
   const rate = original.sampleRate;
   let samples = original.samples;
-  const undo: Float32Array[] = [];
-  const redo: Float32Array[] = [];
+  interface Snap {
+    samples: Float32Array;
+    bytes: Uint8Array;
+    sfx?: string;
+  }
+  const snapshot = (): Snap => ({ samples, bytes: project.files.get(file)!.slice(), sfx: JSON.stringify(project.extras(file, 'sfx', undefined)) });
+  const undo: Snap[] = [];
+  const redo: Snap[] = [];
   let sel: Span | undefined;
   let cursor = 0;
   let playing: { src: AudioBufferSourceNode; from: number; started: number } | undefined;
@@ -67,6 +76,7 @@ registerEditor(['voc'], (host, project, file) => {
   };
 
   const meter = recordMeter(rate);
+  const ruler = vocRuler(rate);
   const cutToFit = h(
     'button',
     { class: 'voc-fit', title: 'Keep the first part that fits under 64 KB and cut the rest', onclick: () => commit(samples.slice(0, VOC_MAX_SAMPLES)) },
@@ -95,35 +105,37 @@ registerEditor(['voc'], (host, project, file) => {
       : `Cursor at ${secs(cursor)} · nothing selected: tools change the whole sound`;
     undoBtn.disabled = !undo.length;
     redoBtn.disabled = !redo.length;
+    ruler.set(samples.length);
     draw();
   };
 
   /** Replaces the sound (remembering the old one for undo) and saves it. */
-  const commit = (next: Float32Array, nextSel?: Span) => {
+  const commit = (next: Float32Array, nextSel?: Span, bytes = encodeVoc(next, rate), before = snapshot()) => {
     stop();
     if (!next.length) {
       toast('That would leave no sound at all.', 'error');
       return;
     }
-    undo.push(samples);
+    undo.push(before);
     if (undo.length > 50) undo.shift();
     redo.length = 0;
     samples = next;
     sel = nextSel;
     cursor = Math.min(cursor, samples.length);
-    project.files.set(file, encodeVoc(samples, rate));
+    project.files.set(file, bytes);
     refresh();
   };
 
-  const history = (from: Float32Array[], to: Float32Array[]) => {
+  const history = (from: Snap[], to: Snap[]) => {
     const prev = from.pop();
     if (!prev) return;
     stop();
-    to.push(samples);
-    samples = prev;
+    to.push(snapshot());
+    samples = prev.samples;
     sel = undefined;
     cursor = Math.min(cursor, samples.length);
-    project.files.set(file, encodeVoc(samples, rate));
+    project.files.set(file, prev.bytes);
+    if (prev.sfx !== JSON.stringify(project.extras(file, 'sfx', undefined))) project.setExtras(file, 'sfx', prev.sfx ? JSON.parse(prev.sfx) : undefined);
     refresh();
   };
 
@@ -309,7 +321,7 @@ registerEditor(['voc'], (host, project, file) => {
       info,
       sizeNote,
       meter.el,
-      h('div', { class: 'voc-edit-scope' }, wave),
+      h('div', { class: 'voc-edit-scope' }, wave, ruler.el),
       h(
         'div',
         { class: 'toolbar voc-edit-transport' },
@@ -320,7 +332,11 @@ registerEditor(['voc'], (host, project, file) => {
         h('span', { class: 'spacer' }),
         undoBtn,
         redoBtn,
-        h('button', { title: 'Back to the sound as it was when you opened it', onclick: () => commit(original.samples.slice()) }, 'Revert'),
+        h(
+          'button',
+          { title: 'Back to the sound as it was when you opened it', onclick: () => commit(original.samples.slice(), undefined, originalBytes) },
+          'Revert',
+        ),
         h(
           'button',
           {
@@ -337,11 +353,11 @@ registerEditor(['voc'], (host, project, file) => {
                 title: 'Change it with the sliders it was made with (this replaces any edits made here; Undo brings them back)',
                 onclick: async () => {
                   const { sfxMaker } = await import('../../tools/sfxMaker'); // loaded when first used
-                  const before = samples;
+                  const before = snapshot();
                   const made = await sfxMaker(project, { file });
                   if (!made) return;
-                  samples = before;
-                  commit(decodeVoc(project.files.get(file)!).samples);
+                  const bytes = project.files.get(file)!;
+                  commit(decodeVoc(bytes).samples, undefined, bytes, before);
                 },
               },
               '🎛 Sound effect maker…',
@@ -405,7 +421,13 @@ registerEditor(['voc'], (host, project, file) => {
   const ro = new ResizeObserver(() => draw());
   ro.observe(wave);
   refresh();
+  const offKeys = windowUndoKeys(
+    host,
+    () => history(undo, redo),
+    () => history(redo, undo),
+  );
   return () => {
+    offKeys();
     stop();
     ro.disconnect();
     if (recording) void recording.stop().catch(() => undefined);

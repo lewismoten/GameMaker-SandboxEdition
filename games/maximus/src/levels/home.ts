@@ -6,6 +6,19 @@ import type { SetBuilder } from '../blocks/blockset';
 import type { MonsterSet } from '../characters/bestiary';
 import type { PlanetResult } from './planet';
 
+/**
+ * The pod bay's clearance gate (wheel/wheel.ts): the clerk's window (x 78), a ledge up to the middle hatch
+ * (x 80..87, row 43) and a smaller one up to the top hatch (x 85..87, row 41), and the wall of three
+ * hatches at x 88, two rows each, bottom to top. Cells are block columns and rows; a `back` is where
+ * Max stands again after the clerk's page or a wrong hatch's.
+ */
+export const GATE = {
+  wall: 88,
+  hatchRows: [43, 41, 39],
+  desk: { x: 78, rows: [41, 42] },
+  back: { desk: { x: 80, y: 42 }, bottom: { x: 83, y: 44 }, top: { x: 85, y: 40 } },
+};
+
 export function homeMap(s: SetBuilder, ms: MonsterSet): PlanetResult {
   const id = (n: string) => s.id(n);
   const g = new Grid();
@@ -84,6 +97,16 @@ export function homeMap(s: SetBuilder, ms: MonsterSet): PlanetResult {
   // Will the playwright, visiting, between the pod bay's consoles
   g.set(L + 75, uy, id('will'));
   // pod bay: the airlock
+  // the clearance gate: the hatches wall off the airlock; the ledges lead up to the middle and top ones
+  if (GATE.wall !== R - 4) throw new Error('the clearance gate has moved off the pod bay wall');
+  for (let x = GATE.desk.x + 2; x <= GATE.wall - 1; x++) g.set(x, 43, id('deck:grate'));
+  for (let x = GATE.wall - 3; x < GATE.wall; x++) g.set(x, 41, id('deck:grate'));
+  GATE.hatchRows.forEach((row, k) => {
+    g.set(GATE.wall, row, id(`hatch:${k}:t`));
+    g.set(GATE.wall, row + 1, id(`hatch:${k}:b`));
+  });
+  g.set(GATE.desk.x, GATE.desk.rows[0], id('clerk:t'));
+  g.set(GATE.desk.x, GATE.desk.rows[1], id('clerk:b'));
   const uplink = { x: R - 2, y: uy };
   g.set(uplink.x, uplink.y, id('airlock'), true);
   g.set(uplink.x, uplink.y - 1, id('airlock'), true);

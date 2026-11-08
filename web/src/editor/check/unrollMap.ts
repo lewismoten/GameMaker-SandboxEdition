@@ -1,6 +1,6 @@
 // One map as the player goes through it, found by the explorer (explore.ts) playing each scene
 // that uses it from every way in, with Unroll (unroll.ts) following the hero. For the map
-// editor's "As players see it" picture; the printed Level Maps get theirs from levelViews.json,
+// editor's "As players see it" picture; the printed Level Maps get theirs from levelViews/*.json,
 // which also replays the walkthrough. No DOM (it runs in unrollWorker.ts).
 import { ADVTYPE, NOSCENE, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { explore } from './explore';

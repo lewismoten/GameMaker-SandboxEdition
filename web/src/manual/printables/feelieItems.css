@@ -1,0 +1,94 @@
+/* the feelies in "What's in the box" (manual/printables/feelieItems.ts): a small sheet for the tray's picture, a page of words and attachments */
+.pp-fe-thumb {
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at 50% 38%, #3a3150, #14101c 85%);
+}
+
+.pp-fe-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.fe-card {
+  box-sizing: border-box;
+  max-width: 44rem;
+  margin: 0 auto;
+  padding: 18px 20px 28px;
+  color: #efe5cc;
+  font:
+    15px/1.45 system-ui,
+    sans-serif;
+}
+
+.fe-card h2 {
+  margin: 0 0 8px;
+  font-size: 22px;
+}
+
+.fe-card h3 {
+  margin: 18px 0 6px;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.fe-words {
+  margin: 0 0 8px;
+}
+
+.fe-pics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0 0;
+}
+
+.fe-pic {
+  width: 160px;
+  height: 160px;
+  border-radius: 8px;
+  background: #efe5cc;
+  object-fit: contain;
+}
+
+.fe-files {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fe-files li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 12px;
+}
+
+.fe-dl {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  color: #ffd84a;
+  text-decoration: underline;
+}
+
+.fe-dl:focus-visible {
+  outline: 2px solid #ffd84a;
+  outline-offset: 2px;
+}
+
+.fe-size {
+  opacity: 0.75;
+  white-space: nowrap;
+}
+
+@media (pointer: coarse) {
+  .fe-dl {
+    min-height: 44px;
+  }
+}

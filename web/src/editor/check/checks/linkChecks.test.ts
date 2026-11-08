@@ -12,7 +12,7 @@ import { runChecks } from '../report';
 import { scenesOf } from '../sceneData';
 import { testGame, type TestGame } from '../testGame';
 import { cornerLinks, offMap, shadowedLinks, solidLinks, startsOnLink, wonRoute } from './linkChecks';
-import { bigVocs, missingFiles, missingVocs, outOfRange } from './missingParts';
+import { bigVocs, stutterVocs, missingFiles, missingVocs, outOfRange } from './missingParts';
 import { counters, opposites } from './blockChecks';
 import { mentions, speedCap } from './gameChecks';
 import { monsterChecks } from './monsterChecks';
@@ -126,6 +126,23 @@ describe('the missing-part checks', () => {
     expect(f[0].detail).toContain('BIG.VOC');
     expect(f[0].detail).toContain('PLAYGAME');
     expect(f[0].detail).toContain('You could');
+  });
+
+  it('suggests a shorter .VOC when it may stutter on a slow PC, as an estimate', () => {
+    const t = testGame(ROWS);
+    t.game.scenes[2].files[7] = 'test.snd';
+    const snd = newSoundSet();
+    snd.digital[1] = 'MID';
+    snd.digital[2] = 'TINY';
+    t.files.set('mid.voc', new Uint8Array(20_000));
+    t.files.set('tiny.voc', new Uint8Array(3000));
+    const d = { ...sceneOf(t), sounds: snd, names: { ...sceneOf(t).names, snd: 'test.snd' } };
+    const f = stutterVocs(d, t);
+    expect(f).toHaveLength(1);
+    expect(f[0].check).toBe('voc-stutter');
+    expect(f[0].severity).toBe('info');
+    expect(f[0].detail).toContain('estimated');
+    expect(f[0].detail).toContain("can't see");
   });
 
   it('finds files a level needs that aren’t there', () => {

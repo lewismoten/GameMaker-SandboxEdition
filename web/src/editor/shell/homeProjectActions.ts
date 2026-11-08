@@ -5,7 +5,7 @@ import { h, promptText, toast } from '../core/ui';
 import { deleteProject, listProjects, loadProject, newId, saveProject } from '../../project/storage';
 import { projectDownloadItem } from './projectExport';
 import { forgetOrigin, isImported, originId, rememberOrigin, setImported } from './homeOrigin';
-import { noteRemoval, undoRemoval } from '../../imported/noteMoves';
+import { bringBack, shelve } from './deletedShelf';
 import { forgetUsed } from '../../project/projectUse';
 
 type ProjectSummary = Awaited<ReturnType<typeof listProjects>>[number];
@@ -40,7 +40,10 @@ async function duplicate(p: ProjectSummary, refresh: () => Promise<void>, onMade
     p.name,
     (await listProjects()).map((x) => x.name),
   );
-  await saveProject(id, name, stored.record.gam, stored.files, stored.record.companion);
+  const companion = stored.record.companion ? structuredClone(stored.record.companion) : undefined;
+  // A deliberate duplicate is a distinct Pocket game; restoring a backup keeps its identity.
+  if (companion) delete companion.pocketUid;
+  await saveProject(id, name, stored.record.gam, stored.files, companion);
   rememberOrigin(id, originId(p.id));
   setImported(id, isImported(p.id));
   toast(`Made “${name}”.`);
@@ -48,23 +51,28 @@ async function duplicate(p: ProjectSummary, refresh: () => Promise<void>, onMade
   onMade?.(id);
 }
 
+/** The imported games' records (fingerprints, notes), loaded when a game is deleted or brought back. */
+const noteMoves = () => import('../../imported/noteMoves');
+
 async function remove(p: ProjectSummary, refresh: () => Promise<void>): Promise<void> {
   const stored = await loadProject(p.id);
   if (!stored) return refresh();
   const origin = originId(p.id);
   const imported = isImported(p.id);
+  await shelve(p.id); // kept 7 days (Recently deleted…), whatever the Undo below does
   await deleteProject(p.id);
   forgetOrigin(p.id);
   setImported(p.id, false);
   forgetUsed(p.id);
   // an imported game leaves a record: its fingerprint, rating and note (imported/removedGames.ts)
-  if (imported) noteRemoval(p, stored.record.files);
+  if (imported) (await noteMoves()).noteRemoval(p, stored.record.files);
   await refresh();
-  undoToast(`Deleted “${p.name}”.`, async () => {
+  undoToast(`Deleted “${p.name}”. It stays under Recently deleted for 7 days.`, async () => {
+    if (await bringBack(p.id)) return refresh();
     await saveProject(p.id, stored.record.name, stored.record.gam, stored.files, stored.record.companion);
     rememberOrigin(p.id, origin);
     setImported(p.id, imported);
-    if (imported) undoRemoval(p.id);
+    if (imported) (await noteMoves()).undoRemoval(p.id);
     await refresh();
   });
 }
@@ -76,22 +84,37 @@ async function move(p: ProjectSummary, imported: boolean, refresh: () => Promise
   await refresh();
 }
 
-/** A notice with an Undo button, for a few seconds. */
-function undoToast(message: string, undo: () => Promise<void>): void {
+/**
+ * A notice with an Undo button, for a few seconds. It waits while the pointer is over it or focus
+ * is in it, and a screen reader hears it (the live region is in the page before its words are).
+ */
+export function undoToast(message: string, undo: () => Promise<void>, ms = UNDO_MS, onExpire?: () => void): void {
   document.querySelector('.home-undo')?.remove();
+  let timer: ReturnType<typeof setTimeout> | undefined;
   const done = () => {
     clearTimeout(timer);
     note.remove();
+    onExpire?.();
   };
+  const wait = () => {
+    clearTimeout(timer);
+    timer = setTimeout(done, ms);
+  };
+  const text = h('span', null);
   const note = h(
     'div',
     { class: 'home-undo', role: 'status' },
-    h('span', null, message),
+    text,
     h('button', { type: 'button', onclick: () => void undo().then(done) }, 'Undo'),
     h('button', { type: 'button', class: 'home-undo-close', 'aria-label': 'Dismiss', title: 'Dismiss', onclick: done }, '×'),
   );
-  const timer = setTimeout(done, UNDO_MS);
+  note.addEventListener('pointerenter', () => clearTimeout(timer));
+  note.addEventListener('pointerleave', () => !note.contains(document.activeElement) && wait());
+  note.addEventListener('focusin', () => clearTimeout(timer));
+  note.addEventListener('focusout', () => !note.matches(':hover') && wait());
+  wait();
   document.body.append(note);
+  setTimeout(() => (text.textContent = message), 50);
 }
 
 /** The items of a game of yours' ⋯ More menu. `onMade`: a duplicate was made (its id). */

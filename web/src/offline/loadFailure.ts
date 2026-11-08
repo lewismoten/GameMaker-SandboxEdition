@@ -12,3 +12,17 @@ export function loadFailureText(online: boolean): string {
 export function watchLoadFailures(show: (text: string) => void): void {
   window.addEventListener('vite:preloadError', () => show(loadFailureText(navigator.onLine !== false)));
 }
+
+/**
+ * "Reload" on a notice: a new version waiting in the wings takes over first (reloading alone would
+ * be served the old version again, whose parts the deploy may have removed); otherwise just reload.
+ * Returns true when the page should reload by itself once the new version has taken over.
+ */
+export function reloadForNewest(waiting: Pick<ServiceWorker, 'postMessage'> | undefined, reload: () => void): boolean {
+  if (!waiting) {
+    reload();
+    return false;
+  }
+  waiting.postMessage({ type: 'skip-waiting' });
+  return true;
+}

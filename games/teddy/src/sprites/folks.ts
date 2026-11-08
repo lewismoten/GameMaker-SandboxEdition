@@ -2,7 +2,7 @@
 // "sit!", the mail carrier and his truck, balloons tied to boxes.
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, micro, sprite } from '../art/draw';
-import { CK } from './klown';
+import { CK } from './clown';
 import { P } from '../art/pal';
 
 const K: Record<string, number> = {

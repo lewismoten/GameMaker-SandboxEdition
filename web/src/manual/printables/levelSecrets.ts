@@ -2,13 +2,13 @@
 // and its Easter egg (the block at the cell its about.json names, and every block it animates
 // through) and its felt egg (the pickup block, or the blocks that move the counter, its
 // about.json "egg" says the egg is). The Level Map draws the ground in their place, and never
-// marks their cells. levelSecrets.json holds the answer for every game that may show Level
+// marks their cells. levelSecrets/*.json holds the answer for every game that may show Level
 // Maps, written by web/scripts/levelSecrets.ts; a game that isn't in it gets no Level Maps.
 import { BACKBL, parseBlocks, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { ADVTYPE, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { MLEN, parseMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import type { FileSource } from '../../gfx/levelPicture';
-import SECRETS from './levelSecrets.json';
+import { SECRETS } from './levelMetadata';
 
 /** The about.json fields that say where the secrets are. */
 export interface AboutForSecrets {
@@ -67,7 +67,7 @@ export function secretBlocksOf(game: Game, files: FileSource, about: AboutForSec
   return Object.fromEntries([...sets].sort(([a], [b]) => a.localeCompare(b)).map(([k, v]) => [k, [...v].sort((a, b) => a - b)]));
 }
 
-const LISTED = SECRETS as Record<string, SecretBlocks>;
+const LISTED = SECRETS;
 
 /** The secret blocks of a game that may show Level Maps, or undefined: then it shows none. */
 export const listedSecrets = (id: string): SecretBlocks | undefined => LISTED[id];

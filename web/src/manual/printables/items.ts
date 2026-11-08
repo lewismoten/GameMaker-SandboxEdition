@@ -12,6 +12,14 @@ import { bbsAd, catalog, hintOffer, keycard, newsletter, postcard, warranty } fr
 import { stickerScreen, stickers } from './stickers';
 import { worldMap, worldMapScreen } from './worldMap';
 import { levelMaps } from './levelMaps';
+import { codeWheelLive } from './codeWheel';
+import { codeSheetLive } from './codeSheet';
+import { postcardGrilleLive } from './postcardGrille';
+import { relayItem } from './relay';
+import { briefStoryZineItem } from '../zine/briefStoryZine';
+
+/** The own items that count as feelies: copy protection, the spyglass, the fingerprint card and other things to handle. */
+const FEELIE_KINDS = new Set<PrintableItem['kind']>(['codewheel', 'codesheet', 'postcardgrille', 'spyglass', 'prints', 'ballooncube']);
 
 const ICONS: Record<PrintableItem['kind'], string> = {
   map: '🗺️',
@@ -23,6 +31,13 @@ const ICONS: Record<PrintableItem['kind'], string> = {
   chart: '📋',
   starchart: '🌌',
   recipe: '🥄',
+  spyglass: '🔎',
+  prints: '🖐️',
+  codewheel: '🎡',
+  codesheet: '🟥',
+  postcardgrille: '💌',
+  ballooncube: '🎲',
+  dexreport: '✏️',
 };
 
 export function boxItems(ctx: PrintContext): BoxItem[] {
@@ -34,10 +49,21 @@ export function boxItems(ctx: PrintContext): BoxItem[] {
     note: it.note,
     promised: it.promised,
     icon: ICONS[it.kind],
+    feelie: FEELIE_KINDS.has(it.kind) || undefined,
     render: () => renderItem(ctx, it),
     first: it.kind === 'hintbook' ? () => hintBookCover(ctx, it) : undefined,
     screen: it.kind === 'starchart' ? foldOut : undefined,
+    // a code wheel turns and a code sheet lights its squares on screen; their sheets (render) are for printing
+    live:
+      it.kind === 'codewheel'
+        ? () => Promise.resolve(codeWheelLive(it))
+        : it.kind === 'codesheet'
+          ? () => Promise.resolve(codeSheetLive(it))
+          : it.kind === 'postcardgrille'
+            ? () => Promise.resolve(postcardGrilleLive(it))
+            : undefined,
     redFilm: it.kind === 'hintbook',
+    glass: it.kind === 'spyglass' || it.kind === 'prints',
     epub:
       it.kind === 'hintbook'
         ? { file: `${ctx.entry.id}-hint-book.epub`, make: () => import('../epub/hintBook').then((m) => m.hintBookEpub(ctx, it)) }
@@ -110,5 +136,5 @@ export function boxItems(ctx: PrintContext): BoxItem[] {
       : []),
     { kind: 'stickers', id: 'stickers', title: 'Sticker sheet', note: 'Cut them out', icon: '⭐', render: () => stickers(ctx), screen: stickerScreen },
   ];
-  return [...items, ...gen.filter((g) => !skip.has(g.kind))];
+  return [...items, ...gen.filter((g) => !skip.has(g.kind)), ...relayItem(ctx.entry), ...(ctx.entry.id === 'brief' ? [briefStoryZineItem()] : [])];
 }

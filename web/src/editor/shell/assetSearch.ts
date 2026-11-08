@@ -8,9 +8,10 @@ import { h, clear } from '../core/ui';
 import type { FileKind, Project } from '../core/project';
 import { searchMove } from './searchNav';
 import { queryWords } from './searchMatch';
-import { GROUP_TITLES, type SearchEntry, type SearchGroup } from './searchIndex';
+import { GROUP_TITLES, type SearchGroup } from './searchGroups';
+import type { SearchEntry } from './searchIndex';
 
-export interface SearchHost {
+interface SearchHost {
   project: Project;
   /** Where results go (the file grid, so thumbnails draw as they scroll into view). */
   grid: HTMLElement;
@@ -27,7 +28,7 @@ export interface SearchHost {
 const DEBOUNCE = 180;
 const GROUPS: SearchGroup[] = ['files', 'text', 'controls', 'player'];
 
-export function assetSearch(host: SearchHost): { el: HTMLElement; refresh(): void; dispose(): void } {
+export function assetSearch(host: SearchHost): { el: HTMLElement; button: HTMLElement; refresh(): void; dispose(): void } {
   const input = h('input', {
     type: 'search',
     id: 'asset-search',
@@ -37,6 +38,28 @@ export function assetSearch(host: SearchHost): { el: HTMLElement; refresh(): voi
   });
   const status = h('p', { class: 'meta sr-status', role: 'status', 'aria-live': 'polite' });
   const el = h('div', { class: 'asset-search', role: 'search' }, h('label', { for: 'asset-search' }, 'Search this game'), input, status);
+  // on a phone (≤ 430 px, assetSearch.css) the field waits behind a 🔍 button; wider screens show it always
+  const button = h(
+    'button',
+    {
+      type: 'button',
+      class: 'asset-search-toggle',
+      'aria-label': 'Search this game',
+      'aria-controls': 'asset-search',
+      'aria-expanded': 'false',
+      title: 'Search this game',
+    },
+    '🔍',
+  );
+  const setOpen = (on: boolean) => {
+    el.classList.toggle('open', on);
+    button.setAttribute('aria-expanded', String(on));
+  };
+  button.addEventListener('click', () => {
+    if (el.classList.contains('open') && !input.value) return setOpen(false);
+    setOpen(true);
+    input.focus();
+  });
   let index: SearchEntry[] | undefined;
   let building: Promise<SearchEntry[]> | undefined;
   let signal = { stale: false };
@@ -68,6 +91,7 @@ export function assetSearch(host: SearchHost): { el: HTMLElement; refresh(): voi
     input.value = '';
     status.textContent = '';
     host.active(false);
+    setOpen(false);
     if (focus) input.focus();
   }
 
@@ -139,9 +163,11 @@ export function assetSearch(host: SearchHost): { el: HTMLElement; refresh(): voi
     timer = window.setTimeout(() => void go(), DEBOUNCE);
   });
   input.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && input.value) {
+    if (e.key === 'Escape') {
+      if (!input.value && !el.classList.contains('open')) return;
       e.preventDefault();
       reset(false);
+      if (getComputedStyle(button).display !== 'none') button.focus();
     } else if (e.key === 'Enter') {
       e.preventDefault();
       clearTimeout(timer);
@@ -156,6 +182,7 @@ export function assetSearch(host: SearchHost): { el: HTMLElement; refresh(): voi
   });
   return {
     el,
+    button,
     refresh() {
       invalidate();
       if (input.value.trim()) {

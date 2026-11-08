@@ -70,3 +70,19 @@
 .wd-part > p {
   margin: 0;
 }
+
+/* a phone held sideways: the file and watch parts on the left, making one on the right, so less scrolling */
+@media (max-height: 500px) and (min-width: 700px) {
+  .wd {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr);
+    align-items: start;
+    gap: 8px 16px;
+    max-width: 800px;
+  }
+
+  .wd > .wd-part:last-child {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+  }
+}

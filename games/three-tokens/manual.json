@@ -1,0 +1,83 @@
+{
+  "title": "Three Tokens",
+  "howDoI": [
+    {
+      "id": "token",
+      "q": "How do I make a pickup that adds to a count?",
+      "scene": 2,
+      "x": 21,
+      "y": 19,
+      "level": 1
+    },
+    {
+      "id": "gate",
+      "q": "How do I make a gate that needs three tokens?",
+      "scene": 2,
+      "x": 38,
+      "y": 19,
+      "level": 1
+    },
+    {
+      "id": "start",
+      "q": "How do I make the count start at zero?",
+      "scene": 2,
+      "x": 13,
+      "y": 19,
+      "level": 1
+    },
+    {
+      "id": "no-jump",
+      "q": "How do I stop the hero jumping over a gate?",
+      "scene": 2,
+      "x": 38,
+      "y": 18,
+      "level": 1
+    },
+    {
+      "id": "exit-gate",
+      "q": "How do I make a gate the level's exit?",
+      "scene": 3,
+      "x": 50,
+      "y": 19,
+      "level": 2
+    },
+    {
+      "id": "exact",
+      "q": "How do I make a gate take exactly as many tokens as the level holds?",
+      "scene": 3,
+      "x": 50,
+      "y": 19,
+      "level": 2
+    }
+  ],
+  "pages": [
+    {
+      "head": "Welcome",
+      "html": "<h1>Welcome</h1><p><b>Three Tokens</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has two short levels and takes a couple of minutes to finish.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each thing in the levels is made.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. <kbd>Space</kbd> jumps. <kbd>Up</kbd> and <kbd>Down</kbd> climb a ladder. <kbd>F2</kbd> shows your lives, hit points and score. Walk into the door at the end of a level to go on.</p><p>A purple token adds one to a counter you carry. A gate takes its price from that count. Nothing in this game hurts you.</p>"
+    },
+    {
+      "head": "Level 1: Three for the Gate",
+      "html": "<h1>Level 1: Three for the Gate</h1><p>The <b>TOKENS ADD UP. GET 3</b> sign stands at the start. Two purple tokens lie on the ground ahead, and a brick wall with a small blue gate in it stands further on. The <b>THIS GATE TAKES 3 TOKENS</b> sign is in front of it.</p><p>Pick up both tokens and walk into the gate. It does not open: two is not enough, and you keep your two tokens. A third token sits on a ledge you can see from the gate, up a ladder. Climb up, take it, come back down and walk into the gate again. It opens, and all three tokens are used up.</p><p>There are eight coins on the way, worth ten points each.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 1 is made</h1><ul><li><b>The token.</b> Open <b>tokens.bbl</b> in the blocks editor and pick the purple token. It is not solid, so Rima walks into it. Its <b>Changes counter</b> is <b>Special counter 3</b> by <b>1</b>, and <b>Becomes</b> is the sky, so the token is gone once you touch it. Special counters are numbers 20 to 29 in the engine, free for a game to use.</li><li><b>The gate.</b> Pick the three-slot gate. It is <b>solid on all four sides</b>. Its <b>Changes counter</b> is <b>Special counter 3</b> by <b>-3</b>, and <b>Becomes</b> is the sky. A touch is refused if the counter cannot pay: with only two tokens the gate does nothing, and with three it opens and the counter goes back to zero. The gate never counts tokens. It only asks whether it can take 3.</li><li><b>The start.</b> Open <b>hero.chr</b> in the Character Maker. The counter's <b>Starts at</b> is 0. A counter that starts at 1 would let two tokens open the gate.</li><li><b>No way over.</b> The gate is one block high, so it sits under an arch in a brick wall that goes up to the top of the room. The hero cannot jump over it.</li><li><b>The third token.</b> It sits on a ledge in plain sight of the gate, so you know what you are missing. The ladder is the <b>Ladder</b> block, which has no pull.</li><li><b>The signs.</b> Each sign is a few ordinary blocks side by side, with the words drawn in their pictures.</li></ul>"
+    },
+    {
+      "head": "Level 2: The Gate Is the Exit",
+      "html": "<h1>Level 2: The Gate Is the Exit</h1><p>The <b>FIVE TOKENS ARE HERE</b> sign says how many to collect. Two lie on the ground, and three more sit along a ledge up the ladder. At the far end of the room the <b>THE GATE IS THE EXIT</b> sign stands by a brick wall with a purple gate with five slots in it.</p><p>There is no door in this room. Take all five tokens, and walk into the gate: it opens, takes all five and you walk straight on into the ending. With four tokens it stays shut.</p><p>There are six coins along the ground, worth ten points each.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 2 is made</h1><ul><li><b>The gate takes five.</b> Pick the five-slot gate in <b>tokens.bbl</b>. It is the same as the first level's gate, with <b>Changes counter</b> of <b>Special counter 3</b> by <b>-5</b> because this map holds exactly five tokens. A gate that took six could never open, and the Level check's <i>Counters that run out</i> would say so.</li><li><b>The gate is the door.</b> Open <b>tokens.gam</b> in the game editor. The level's only link starts on the gate's own block. A gate is solid until it is paid, then it becomes sky, and the next step into that block is the link to the next scene.</li><li><b>A fresh count.</b> Counters travel from level to level, but level 1 spent all three of its tokens, so this level starts at zero. If level 1 had left one token over, five here would have been four.</li><li><b>The tokens.</b> Two on the ground and three on a ledge reached by a ladder, all in plain sight from the start.</li><li><b>The wall.</b> The gate sits under an arch in a brick wall to the top of the room, as in level 1, so it cannot be jumped over.</li></ul>"
+    },
+    {
+      "head": "What Game-Maker cannot do",
+      "html": "<h1>What Game-Maker cannot do</h1><p>A counter is simple, and that is all it is:</p><ul><li>There is no OR. A gate has one price in one counter. Two kinds of token that both open a gate need two gates, or a different trick.</li><li>The player does not see the counter. The status line shows hit points, lives and score, not a special counter. To show it, draw it into the level (a sign with the right number, or a block that changes as the counter rises).</li><li>A gate cannot say how many it needs, or how many you are short. Its price is only in the Blocks editor. Put the price in the picture, as these gates do with slots.</li><li>A counter cannot go below zero. That is how a gate says no, and it also means you cannot owe a gate anything.</li><li>A counter has a number, not a name. Special counter 3 is the same number in every block that uses it, so keep a list of what each counter means.</li></ul>"
+    },
+    {
+      "head": "Make it yours",
+      "html": "<h1>Make it yours</h1><ul><li>Change level 1's gate to take 2 in the blocks editor. The first bump now opens it.</li><li>Move the first token away from the ground and onto the ledge, and see the gate stay shut for longer.</li><li>Take one token out of level 2's map. The five-slot gate can never open, and the Level check says so.</li><li>Start the counter at 1 in <b>hero.chr</b>. In level 1 two tokens now open the gate, and level 2 needs only four.</li><li>Put a second gate in level 1 that takes 2 more. Four tokens on the whole map would be needed, and the map holds three. Add one.</li></ul><p>The home page's <b>Starters</b> tab has more small games like this one.</p>"
+    }
+  ]
+}

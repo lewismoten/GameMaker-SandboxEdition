@@ -15,7 +15,7 @@ const COUNT = 256;
 const GROUPS = 'groups';
 
 /** The names and groups of these files, as plain data. */
-export type ExtrasSnapshot = Map<string, { names: unknown; groups: unknown }>;
+type ExtrasSnapshot = Map<string, { names: unknown; groups: unknown }>;
 
 export function snapshotExtras(store: Store, files: Iterable<string>): ExtrasSnapshot {
   const out: ExtrasSnapshot = new Map();
@@ -33,9 +33,6 @@ export function restoreExtras(store: Store, snap: ExtrasSnapshot): void {
     store.setExtras(f, GROUPS, structuredClone(s.groups));
   }
 }
-
-/** The files a list of moves can change the extras of. */
-export const movedFiles = (moves: readonly BlockMove[]): string[] => [...new Set(moves.flatMap((m) => [m.file, m.into]))];
 
 /** Follows one step's moves; returns how many names and groups changed (for the dialog to say so). */
 export function remapExtras(store: Store, moves: readonly BlockMove[]): { names: number; groups: number } {

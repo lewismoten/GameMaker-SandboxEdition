@@ -1,454 +1,454 @@
 {
-  "version": 1,
-  "game": "tuneup",
-  "rand": {
-    "seed": 1,
-    "per": "scene"
+ "version": 1,
+ "game": "tuneup",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "DU0ISArICEgKyAhICsgKzQZNFM0GTQXNBkgGyABNBc0DSAbIAE0FzQNNBc0GTQrNBk0ZzQZNCM0QSwNICshEywZNUM0GOR25Bk0ISArI"
   },
-  "segments": [
-    {
-      "scene": 2,
-      "keys": "DU0ISArICEgKyAhICsgKzQZNFM0GTQXNBhIMkgBNA80DTQrNBk0ZzQZNCM0QSwNICshEywZNUM0GOR25Bk0ISArI"
-    },
-    {
-      "scene": 3,
-      "keys": "DUsUyxRNBc0GSArIAE0KzQZNCM0TTQjNJk0FzQZICsgATQrNBk0IzRVNFM0TTQXNBkgKyABNCs0GTQjNEU0IzRRNBc0GSArIAE0KzQZNBc0GTQ=="
-    },
-    {
-      "scene": 4,
-      "keys": "D0sKywE5AbkETQXNDzkBuQNNBs0OOQG5A00GzQ45AbkDSxDLBDkBuQNNBs0NOQG5BE0FzQ85AbkDTQbNDTkBuQRLD8sEOQG5BE0FzQ45AbkETQXNDjkBuQRNBc0OOQG5BE0="
-    },
-    {
-      "scene": 5,
-      "keys": "D0sKyyw5AbkDTRDNAzkBuQRLD8sEOQG5BE0FzQ45AbkESwXLDzkBuQNNEM0DOQG5BEsPywU5AbkDTQbNDTkBuQRLBcsPOQG5A00QzQM5AbkETQ=="
-    },
-    {
-      "scene": 6,
-      "keys": "GjkBuQRNBc0COQG5BEsFywI5AbkESwXLAzkBuQNLBssCOQG5A00GzQI5AbkDTQbNATkBuQRNBc0COQG5BEsFywI5AbkESwXLAzkBuQNLBssCOQG5A00GzQI5AbkDTQbNAjkBuQNNBs0BOQG5BEsFywI5AbkESwXLAjkBuQRLBcsDOQG5A00GzQE5AbkETQXNAzkBuQNNBs0BOQG5BEsFywI5AbkESwXLAjkBuQRLBcsDOQG5A00="
-    },
-    {
-      "scene": 7,
-      "keys": "D00ZzQkSAZILIgGiCjABsAsgAaALIQGhDSEBoZgBEgGSCSIBogswAbAKIAGgCyEBoYgBEgGSCyIBogswAbAKIAGgCyEBoVdL"
-    },
-    {
-      "scene": 8,
-      "keys": ""
-    },
-    {
-      "scene": 9,
-      "keys": "D0sZywg5AbkETQ/NNE0NzQc5AbkETQ/NCDkBuQRNA80TTQXNCTkBuQRNA0gKyA3NK00NzQg5AbkETRTNCTkBuQRNA80TTQ=="
-    },
-    {
-      "scene": 10,
-      "keys": "D0seywg5AbkETQ/NMk0NzQk5AbkETQ/NCTkBuQRNCM0TTQXNME0UzQc5AbkETQ3NE00FzQg5AbkbTQNICsgNzSxND80HOQG5BE0PzQc5AbkETQPNE00="
-    },
-    {
-      "scene": 11,
-      "keys": "D00MzQgsAaweTQNICsgHzQxNA0gKyAdICsgHSArICM0GTQPNEUsAywktAa0eTQNICsgHzQxNC0gKyAvNCy4Brh5NA0gKyAfNDE0LSArIC80KLwGvHk0DSArIB80MTQ=="
-    },
-    {
-      "scene": 12,
-      "keys": "bU0UzQc5AbkESw=="
-    },
-    {
-      "scene": 13,
-      "keys": "bU0ezQc5AbkESw=="
-    },
-    {
-      "scene": 14,
-      "keys": "Tk0KzQk5AbkESw=="
-    },
-    {
-      "scene": 15,
-      "keys": "P00KzQkwAbBNTRTNBk0DzSJND80JMAGwTk0PzQZNA80iTQXNBzABsE5NBc0GTRfNBjkduQZNEs0WTQ=="
-    },
-    {
-      "scene": 16,
-      "keys": "D00EzQZNAs0DEgiSAE0EzQRNAs0DEgiSAE0EzQRNBM0DSwHLA00BzQNLAcsDEgaSAE0EzQNNBM0tEgiSAE0BzQRNEM0GTQPNE00AzQMSCJIATQXNA00EzQYSCJIATQDNB00DzQxNAs0BEgiSAE0EzQNNAM0DEgiSAE0CzQZN"
-    },
-    {
-      "scene": 17,
-      "keys": "D00PzR5NCs0GTQXNG00KzQZNBc0ZTQrNBk0KzQpNCs0GTQXND00KzQZNBc0PTQrNBk0="
-    },
-    {
-      "scene": 18,
-      "keys": "D00ozQ9NCs0GTQXNKU0KzQZNBc0mTQrNBk0FzQZN"
-    },
-    {
-      "scene": 19,
-      "keys": "S00ZzQk5AbkESAzICUgMyARNK80WTSjNCDkBuQRIDMgLSAzIBE0hzRZNMs0IOQG5BEgMyApIDMgETRfNFk0="
-    },
-    {
-      "scene": 20,
-      "keys": "V00tzQc5AbkESAzICkgMyARNF80WTSjNCDkBuQRIDMgLSAzIBE0hzRZNHs0JOQG5BEgMyAtIDMgETSvNFk08zQk5AbkESAzIC0gMyARNDc0WTQ=="
-    },
-    {
-      "scene": 21,
-      "keys": "Y00ZzQk5AbkESAzIC0gMyARNK80WTTLNCDkBuQRIDMgJSAzIBE0XzRZNKM0HOQG5BEgMyApIDMgETSHNFk08zQk5AbkESAzICUgMyARNDc0WTTLNCTkBuQRIDMgJSAzIBE0XzRZN"
-    },
-    {
-      "scene": 22,
-      "keys": "D00PzSZIDMgGSAzIA00SzRZNCs0LSAzIB0gMyANNEs0WTQrNLE0="
-    },
-    {
-      "scene": 23,
-      "keys": "D00PzSVIDMgGSAzIA00SzRZNCs0NSAzIBUgMyANNEs0WTQrNL00="
-    },
-    {
-      "scene": 24,
-      "keys": "D00PzSVIDMgGSAzIA00SzRZNCs0MSAzIB0gMyANNEs0WTQrNNE0="
-    },
-    {
-      "scene": 25,
-      "keys": "D00PzSRIDMgHSAzIA00SzRZNCs0NSAzIB0gMyANNEs0WTQrNO00="
-    },
-    {
-      "scene": 26,
-      "keys": "D0sQyzRICMgITRDNQUgIyAhNDM0+SAjIGk0="
-    },
-    {
-      "scene": 27,
-      "keys": "D0sQywdICMgMTQzNCUgIyAxNDM0ISAjIDE0IzRRN"
-    },
-    {
-      "scene": 28,
-      "keys": "fksBy4sBTQHN+wFLActYTQHN2wFNAc1iSwHLH0sByw=="
-    },
-    {
-      "scene": 29,
-      "keys": "D0sAywBLDMsFSwXLBUsDywdLDMsASwnLAEsPywBLA8sASwfLB0sFywNLA8sgSwzLAEsHywBLB8sISwTLAksDy0FLDMsASwfLAEsPywBLBMsASwbLCUsFywVLA8tfSwzLAEsJywBLBssGSwbLBEsEyzxLDMsASw=="
-    },
-    {
-      "scene": 30,
-      "keys": "D0sAywBLCcsESwXLBEsDy0dLDMsASwXLAEsHywdLBMsDSwPLaEsMywBLBcsASwfLB0sFy2pLDcsASwTLAEsHywhLBcsESwPLQEsMywBLB8sASwbLCEsGywVLBMspSwzLAEsHywBLB8sISwTLA0sDywRLDMsASwfLAEsPywBLAssASwfLCEsEywNLA8sDSwzLAEs="
-    },
-    {
-      "scene": 31,
-      "keys": "D0sSywVLBssFSwTLAksDywI5AbkGSxvLBksGywRLA8sEOQG5BksbywhLBssESwTLAzkBuQZLG8sGSwbLA0sEywI5AbkGSw=="
-    },
-    {
-      "scene": 32,
-      "keys": "D0sPywdLBcsDOQG5BksaywdLBcsDSwPLAzkBuQZLHcsHSwXLBUsDywM5AbkGSxvLCEsGywRLA8sEOQG5Bks="
-    },
-    {
-      "scene": 33,
-      "keys": "D0sUywdLBssESwTLAzkBuQZLG8sGSwbLBUsEywM5AbkGSxvLCEsGywVLBMsEOQG5BksbywZLBssESwTLBDkBuQZLC8sFSwTLAksDywM5AbkGSwfLA0sFywNLA8sCOQG5BksHywRLBcsDOQG5Bks="
-    }
-  ],
-  "chapters": [
-    {
-      "scene": 2,
-      "title": "Level 1: Jump Start"
-    },
-    {
-      "scene": 3,
-      "title": "Level 2: Spark Plucks"
-    },
-    {
-      "scene": 4,
-      "title": "Level 3: The Timing Beat, the straight verse"
-    },
-    {
-      "scene": 5,
-      "title": "Level 3: The Timing Beat, the syncopated verse"
-    },
-    {
-      "scene": 6,
-      "title": "Level 3: The Timing Beat, the double-time verse"
-    },
-    {
-      "scene": 7,
-      "title": "Level 4: Oil's Well"
-    },
-    {
-      "scene": 8,
-      "title": "Level 4: Oil's Well, the swim"
-    },
-    {
-      "scene": 9,
-      "title": "Level 5: The Fan Band, the cool verse"
-    },
-    {
-      "scene": 10,
-      "title": "Level 5: The Fan Band, the hot verse"
-    },
-    {
-      "scene": 11,
-      "title": "Level 6: Brake Dance"
-    },
-    {
-      "scene": 12,
-      "title": "Level 7: Hubcaps and Balls, round 1"
-    },
-    {
-      "scene": 13,
-      "title": "Level 7: Hubcaps and Balls, round 2"
-    },
-    {
-      "scene": 14,
-      "title": "Level 7: Hubcaps and Balls, round 3"
-    },
-    {
-      "scene": 15,
-      "title": "Level 8: Pump Up the Volume"
-    },
-    {
-      "scene": 16,
-      "title": "Level 9: Muffled"
-    },
-    {
-      "scene": 17,
-      "title": "Level 10: The Rain Delay, the two and the three"
-    },
-    {
-      "scene": 18,
-      "title": "Level 10: The Rain Delay, the tricky five"
-    },
-    {
-      "scene": 19,
-      "title": "Level 11: The Horn Section, round 1"
-    },
-    {
-      "scene": 20,
-      "title": "Level 11: The Horn Section, round 2"
-    },
-    {
-      "scene": 21,
-      "title": "Level 11: The Horn Section, round 3"
-    },
-    {
-      "scene": 22,
-      "title": "Level 12: Key Change, first gear"
-    },
-    {
-      "scene": 23,
-      "title": "Level 12: Key Change, second gear"
-    },
-    {
-      "scene": 24,
-      "title": "Level 12: Key Change, third gear"
-    },
-    {
-      "scene": 25,
-      "title": "Level 12: Key Change, top gear"
-    },
-    {
-      "scene": 26,
-      "title": "Level 13: The Instrument Panel, the radio"
-    },
-    {
-      "scene": 27,
-      "title": "Level 13: The Instrument Panel, the gauges"
-    },
-    {
-      "scene": 28,
-      "title": "Level 14: The Beltway"
-    },
-    {
-      "scene": 29,
-      "title": "Level 15: The Test Drive, round the block"
-    },
-    {
-      "scene": 30,
-      "title": "Level 15: The Test Drive, Main Street"
-    },
-    {
-      "scene": 31,
-      "title": "Level 16: The Parade Route, the morning"
-    },
-    {
-      "scene": 32,
-      "title": "Level 16: The Parade Route, sunset"
-    },
-    {
-      "scene": 33,
-      "title": "Level 16: The Parade Route, the fireworks"
-    }
-  ],
-  "timeline": {
-    "fps": 60,
-    "frames": 94274,
-    "chapters": [
-      {
-        "title": "Opening",
-        "frame": 0,
-        "time": 0
-      },
-      {
-        "title": "Story",
-        "frame": 1028,
-        "time": 17133.33333333315
-      },
-      {
-        "title": "Level 1: Jump Start",
-        "frame": 2257,
-        "time": 37616.66666666692
-      },
-      {
-        "title": "Level 2: Spark Plucks",
-        "frame": 7389,
-        "time": 123150.00000001295
-      },
-      {
-        "title": "Level 3: The Timing Beat, the straight verse",
-        "frame": 10613,
-        "time": 176883.33333332193
-      },
-      {
-        "title": "Level 3: The Timing Beat, the syncopated verse",
-        "frame": 13610,
-        "time": 226833.33333329286
-      },
-      {
-        "title": "Level 3: The Timing Beat, the double-time verse",
-        "frame": 15393,
-        "time": 256549.99999994223
-      },
-      {
-        "title": "Level 4: Oil's Well",
-        "frame": 17248,
-        "time": 287466.66666663514
-      },
-      {
-        "title": "Level 4: Oil's Well, the swim",
-        "frame": 21164,
-        "time": 352733.3333333778
-      },
-      {
-        "title": "Level 5: The Fan Band, the cool verse",
-        "frame": 22501,
-        "time": 375016.66666673706
-      },
-      {
-        "title": "Level 5: The Fan Band, the hot verse",
-        "frame": 27151,
-        "time": 452516.6666668273
-      },
-      {
-        "title": "Level 6: Brake Dance",
-        "frame": 29496,
-        "time": 491600.0000002061
-      },
-      {
-        "title": "Level 7: Hubcaps and Balls, round 1",
-        "frame": 32848,
-        "time": 547466.6666668569
-      },
-      {
-        "title": "Level 7: Hubcaps and Balls, round 2",
-        "frame": 35286,
-        "time": 588100.0000000956
-      },
-      {
-        "title": "Level 7: Hubcaps and Balls, round 3",
-        "frame": 36631,
-        "time": 610516.66666671
-      },
-      {
-        "title": "Level 8: Pump Up the Volume",
-        "frame": 37748,
-        "time": 629133.3333333334
-      },
-      {
-        "title": "Level 9: Muffled",
-        "frame": 41531,
-        "time": 692183.3333331866
-      },
-      {
-        "title": "Level 10: The Rain Delay, the two and the three",
-        "frame": 44351,
-        "time": 739183.3333330771
-      },
-      {
-        "title": "Level 10: The Rain Delay, the tricky five",
-        "frame": 49240,
-        "time": 820666.6666662208
-      },
-      {
-        "title": "Level 11: The Horn Section, round 1",
-        "frame": 50641,
-        "time": 844016.6666661664
-      },
-      {
-        "title": "Level 11: The Horn Section, round 2",
-        "frame": 54143,
-        "time": 902383.3333326972
-      },
-      {
-        "title": "Level 11: The Horn Section, round 3",
-        "frame": 57017,
-        "time": 950283.3333325856
-      },
-      {
-        "title": "Level 12: Key Change, first gear",
-        "frame": 60398,
-        "time": 1006633.3333324544
-      },
-      {
-        "title": "Level 12: Key Change, second gear",
-        "frame": 63161,
-        "time": 1052683.3333323759
-      },
-      {
-        "title": "Level 12: Key Change, third gear",
-        "frame": 64788,
-        "time": 1079799.9999991688
-      },
-      {
-        "title": "Level 12: Key Change, top gear",
-        "frame": 66435,
-        "time": 1107249.9999992966
-      },
-      {
-        "title": "Level 13: The Instrument Panel, the radio",
-        "frame": 68108,
-        "time": 1135133.3333327598
-      },
-      {
-        "title": "Level 13: The Instrument Panel, the gauges",
-        "frame": 70407,
-        "time": 1173449.999999605
-      },
-      {
-        "title": "Level 14: The Beltway",
-        "frame": 71619,
-        "time": 1193649.999999699
-      },
-      {
-        "title": "Level 15: The Test Drive, round the block",
-        "frame": 77505,
-        "time": 1291750.0000001558
-      },
-      {
-        "title": "Level 15: The Test Drive, Main Street",
-        "frame": 81137,
-        "time": 1352283.333333771
-      },
-      {
-        "title": "Level 16: The Parade Route, the morning",
-        "frame": 84191,
-        "time": 1403183.333334008
-      },
-      {
-        "title": "Level 16: The Parade Route, sunset",
-        "frame": 86910,
-        "time": 1448500.0000008857
-      },
-      {
-        "title": "Level 16: The Parade Route, the fireworks",
-        "frame": 88438,
-        "time": 1473966.666667671
-      },
-      {
-        "title": "Ending",
-        "frame": 90269,
-        "time": 1504483.3333344797
-      },
-      {
-        "title": "Credits",
-        "frame": 92722,
-        "time": 1545366.6666680034
-      }
-    ]
+  {
+   "scene": 3,
+   "keys": "DUsUyxRNBc0GSArIAE0KzQZNCM0TTQjNJk0FzQZICsgATQrNBk0IzRVNFM0TTQXNBkgKyABNCs0GTQjNEU0IzRRNBc0GSArIAE0KzQZNBc0GTQ=="
+  },
+  {
+   "scene": 4,
+   "keys": "D0sKywE5AbkETQXNDzkBuQNNBs0OOQG5A00GzQ45AbkDSxDLBDkBuQNNBs0NOQG5BE0FzQ85AbkDTQbNDTkBuQRLD8sEOQG5BE0FzQ45AbkETQXNDjkBuQRNBc0OOQG5BE0="
+  },
+  {
+   "scene": 5,
+   "keys": "D0sKyyw5AbkDTRDNAzkBuQRLD8sEOQG5BE0FzQ45AbkESwXLDzkBuQNNEM0DOQG5BEsPywU5AbkDTQbNDTkBuQRLBcsPOQG5A00QzQM5AbkETQ=="
+  },
+  {
+   "scene": 6,
+   "keys": "GjkBuQRNBc0COQG5BEsFywI5AbkESwXLAzkBuQNLBssCOQG5A00GzQI5AbkDTQbNATkBuQRNBc0COQG5BEsFywI5AbkESwXLAzkBuQNLBssCOQG5A00GzQI5AbkDTQbNAjkBuQNNBs0BOQG5BEsFywI5AbkESwXLAjkBuQRLBcsDOQG5A00GzQE5AbkETQXNAzkBuQNNBs0BOQG5BEsFywI5AbkESwXLAjkBuQRLBcsDOQG5A00="
+  },
+  {
+   "scene": 7,
+   "keys": "D00ZzQkSAZILIgGiCjABsAsgAaALIQGhDSEBoZgBEgGSCSIBogswAbAKIAGgCyEBoYgBEgGSCyIBogswAbAKIAGgCyEBoVdL"
+  },
+  {
+   "scene": 8,
+   "keys": ""
+  },
+  {
+   "scene": 9,
+   "keys": "D0sZywg5AbkETQ/NNE0NzQc5AbkETQ/NCDkBuQRNA80TTQXNCTkBuQRNA0gKyA3NK00NzQg5AbkETRTNCTkBuQRNA80TTQ=="
+  },
+  {
+   "scene": 10,
+   "keys": "D0seywg5AbkETQ/NMk0NzQk5AbkETQ/NCTkBuQRNCM0TTQXNME0UzQc5AbkETQ3NE00FzQg5AbkbTQNICsgNzSxND80HOQG5BE0PzQc5AbkETQPNE0sPywZN"
+  },
+  {
+   "scene": 11,
+   "keys": "D00MzQgsAaweTQNICsgHzQxNA0gKyAdICsgHSArICM0GTQPNEUsAywktAa0eTQNICsgHzQxNC0gKyAvNCy4Brh5NA0gKyAfNDE0LSArIC80KLwGvHk0DSArIB80MTQ=="
+  },
+  {
+   "scene": 12,
+   "keys": "bU0UzQc5AbkESw=="
+  },
+  {
+   "scene": 13,
+   "keys": "bU0ezQc5AbkESw=="
+  },
+  {
+   "scene": 14,
+   "keys": "Tk0KzQk5AbkESw=="
+  },
+  {
+   "scene": 15,
+   "keys": "P00KzQkwAbBNTRTNBk0DzSJND80JMAGwTk0PzQZNA80iTQXNBzABsE5NBc0GTRfNBjkduQZNEs0WTQ=="
+  },
+  {
+   "scene": 16,
+   "keys": "D00EzQZNAs0DEgiSAE0EzQRNAs0DEgiSAE0EzQRNBM0DSwHLA00BzQNLAcsDEgaSAE0EzQNNBM0tEgiSAE0BzQRNEM0GTQPNE00AzQMSCJIATQXNA00EzQYSCJIATQDNB00DzQxNAs0BEgiSAE0EzQNNAM0DEgiSAE0CzQZN"
+  },
+  {
+   "scene": 17,
+   "keys": "D00PzR5NCs0GTQXNG00KzQZNBc0ZTQrNBk0KzQpNCs0GTQXND00KzQZNBc0PTQrNBk0="
+  },
+  {
+   "scene": 18,
+   "keys": "D00ozQ9NCs0GTQXNKU0KzQZNBc0mTQrNBk0FzQZN"
+  },
+  {
+   "scene": 19,
+   "keys": "S00ZzQk5AbkESAzICUgMyARNK80WTSjNCDkBuQRIDMgLSAzIBE0hzRZNMs0IOQG5BEgMyApIDMgETRfNFk0="
+  },
+  {
+   "scene": 20,
+   "keys": "V00tzQc5AbkESAzICkgMyARNF80WTSjNCDkBuQRIDMgLSAzIBE0hzRZNHs0JOQG5BEgMyAtIDMgETSvNFk08zQk5AbkESAzIC0gMyARNDc0WTQ=="
+  },
+  {
+   "scene": 21,
+   "keys": "Y00ZzQk5AbkESAzIC0gMyARNK80WTTLNCDkBuQRIDMgJSAzIBE0XzRZNKM0HOQG5BEgMyApIDMgETSHNFk08zQk5AbkESAzICUgMyARNDc0WTTLNCTkBuQRIDMgJSAzIBE0XzRZN"
+  },
+  {
+   "scene": 22,
+   "keys": "D00PzSZIDMgGSAzIA00SzRZNCs0LSAzIB0gMyANNEs0WTQrNLE0="
+  },
+  {
+   "scene": 23,
+   "keys": "D00PzSVIDMgGSAzIA00SzRZNCs0NSAzIBUgMyANNEs0WTQrNL00="
+  },
+  {
+   "scene": 24,
+   "keys": "D00PzSVIDMgGSAzIA00SzRZNCs0MSAzIB0gMyANNEs0WTQrNNE0="
+  },
+  {
+   "scene": 25,
+   "keys": "D00PzSRIDMgHSAzIA00SzRZNCs0NSAzIB0gMyANNEs0WTQrNO00="
+  },
+  {
+   "scene": 26,
+   "keys": "D0sEywZLDMsuSAjICE0QzUFICMgITQzNPkgIyBpN"
+  },
+  {
+   "scene": 27,
+   "keys": "D0sQywdICMgMTQzNCUgIyAxNDM0ISAjIDE0IzRRN"
+  },
+  {
+   "scene": 28,
+   "keys": "fksBy4sBTQHN+wFLActYTQHN2wFNAc1iSwHLH0sByw=="
+  },
+  {
+   "scene": 29,
+   "keys": "D0sAywBLDMsFSwXLBUsDywdLDMsASwnLAEsPywBLA8sASwfLB0sFywNLA8sgSwzLAEsHywBLB8sISwTLAksDy0FLDMsASwfLAEsPywBLBMsASwbLCUsFywVLA8tfSwzLAEsJywBLBssGSwbLBEsEyzxLDMsASw=="
+  },
+  {
+   "scene": 30,
+   "keys": "D0sAywBLCcsESwXLBEsDy0dLDMsASwXLAEsHywdLBMsDSwPLaEsMywBLBcsASwfLB0sFy2pLDcsASwTLAEsHywhLBcsESwPLQEsMywBLB8sASwbLCEsGywVLBMspSwzLAEsHywBLB8sISwTLA0sDywRLDMsASwfLAEsPywBLAssASwfLCEsEywNLA8sDSwzLAEs="
+  },
+  {
+   "scene": 31,
+   "keys": "D0sSywVLBssFSwTLAksDywI5AbkGSxvLBksGywRLA8sEOQG5BksbywhLBssESwTLAzkBuQZLG8sGSwbLA0sEywI5AbkGSw=="
+  },
+  {
+   "scene": 32,
+   "keys": "D0sPywdLBcsDOQG5BksaywdLBcsDSwPLAzkBuQZLHcsHSwXLBUsDywM5AbkGSxvLCEsGywRLA8sEOQG5Bks="
+  },
+  {
+   "scene": 33,
+   "keys": "D0sUywdLBssESwTLAzkBuQZLG8sGSwbLBUsEywM5AbkGSxvLCEsGywVLBMsEOQG5BksbywZLBssESwTLBDkBuQZLC8sFSwTLAksDywM5AbkGSwfLA0sFywNLA8sCOQG5BksHywRLBcsDOQG5Bks="
   }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: Jump Start"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: Spark Plucks"
+  },
+  {
+   "scene": 4,
+   "title": "Level 3: The Timing Beat, the straight verse"
+  },
+  {
+   "scene": 5,
+   "title": "Level 3: The Timing Beat, the syncopated verse"
+  },
+  {
+   "scene": 6,
+   "title": "Level 3: The Timing Beat, the double-time verse"
+  },
+  {
+   "scene": 7,
+   "title": "Level 4: Oil's Well"
+  },
+  {
+   "scene": 8,
+   "title": "Level 4: Oil's Well, the swim"
+  },
+  {
+   "scene": 9,
+   "title": "Level 5: The Fan Band, the cool verse"
+  },
+  {
+   "scene": 10,
+   "title": "Level 5: The Fan Band, the hot verse"
+  },
+  {
+   "scene": 11,
+   "title": "Level 6: Brake Dance"
+  },
+  {
+   "scene": 12,
+   "title": "Level 7: Hubcaps and Balls, round 1"
+  },
+  {
+   "scene": 13,
+   "title": "Level 7: Hubcaps and Balls, round 2"
+  },
+  {
+   "scene": 14,
+   "title": "Level 7: Hubcaps and Balls, round 3"
+  },
+  {
+   "scene": 15,
+   "title": "Level 8: Pump Up the Volume"
+  },
+  {
+   "scene": 16,
+   "title": "Level 9: Muffled"
+  },
+  {
+   "scene": 17,
+   "title": "Level 10: The Rain Delay, the two and the three"
+  },
+  {
+   "scene": 18,
+   "title": "Level 10: The Rain Delay, the tricky five"
+  },
+  {
+   "scene": 19,
+   "title": "Level 11: The Horn Section, round 1"
+  },
+  {
+   "scene": 20,
+   "title": "Level 11: The Horn Section, round 2"
+  },
+  {
+   "scene": 21,
+   "title": "Level 11: The Horn Section, round 3"
+  },
+  {
+   "scene": 22,
+   "title": "Level 12: Key Change, first gear"
+  },
+  {
+   "scene": 23,
+   "title": "Level 12: Key Change, second gear"
+  },
+  {
+   "scene": 24,
+   "title": "Level 12: Key Change, third gear"
+  },
+  {
+   "scene": 25,
+   "title": "Level 12: Key Change, top gear"
+  },
+  {
+   "scene": 26,
+   "title": "Level 13: The Instrument Panel, the radio"
+  },
+  {
+   "scene": 27,
+   "title": "Level 13: The Instrument Panel, the gauges"
+  },
+  {
+   "scene": 28,
+   "title": "Level 14: The Beltway"
+  },
+  {
+   "scene": 29,
+   "title": "Level 15: The Test Drive, round the block"
+  },
+  {
+   "scene": 30,
+   "title": "Level 15: The Test Drive, Main Street"
+  },
+  {
+   "scene": 31,
+   "title": "Level 16: The Parade Route, the morning"
+  },
+  {
+   "scene": 32,
+   "title": "Level 16: The Parade Route, sunset"
+  },
+  {
+   "scene": 33,
+   "title": "Level 16: The Parade Route, the fireworks"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 94235,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 1028,
+    "time": 17133.33333333315
+   },
+   {
+    "title": "Level 1: Jump Start",
+    "frame": 2257,
+    "time": 37616.66666666692
+   },
+   {
+    "title": "Level 2: Spark Plucks",
+    "frame": 7458,
+    "time": 124300.00000001329
+   },
+   {
+    "title": "Level 3: The Timing Beat, the straight verse",
+    "frame": 10682,
+    "time": 178033.33333332126
+   },
+   {
+    "title": "Level 3: The Timing Beat, the syncopated verse",
+    "frame": 13679,
+    "time": 227983.3333332922
+   },
+   {
+    "title": "Level 3: The Timing Beat, the double-time verse",
+    "frame": 15462,
+    "time": 257699.99999994156
+   },
+   {
+    "title": "Level 4: Oil's Well",
+    "frame": 17317,
+    "time": 288616.6666666365
+   },
+   {
+    "title": "Level 4: Oil's Well, the swim",
+    "frame": 21233,
+    "time": 353883.3333333791
+   },
+   {
+    "title": "Level 5: The Fan Band, the cool verse",
+    "frame": 22570,
+    "time": 376166.6666667384
+   },
+   {
+    "title": "Level 5: The Fan Band, the hot verse",
+    "frame": 27204,
+    "time": 453400.00000016164
+   },
+   {
+    "title": "Level 6: Brake Dance",
+    "frame": 29652,
+    "time": 494200.00000020914
+   },
+   {
+    "title": "Level 7: Hubcaps and Balls, round 1",
+    "frame": 32991,
+    "time": 549850.0000001846
+   },
+   {
+    "title": "Level 7: Hubcaps and Balls, round 2",
+    "frame": 35412,
+    "time": 590200.0000000907
+   },
+   {
+    "title": "Level 7: Hubcaps and Balls, round 3",
+    "frame": 36740,
+    "time": 612333.3333333725
+   },
+   {
+    "title": "Level 8: Pump Up the Volume",
+    "frame": 37841,
+    "time": 630683.3333333298
+   },
+   {
+    "title": "Level 9: Muffled",
+    "frame": 41608,
+    "time": 693466.6666665169
+   },
+   {
+    "title": "Level 10: The Rain Delay, the two and the three",
+    "frame": 44415,
+    "time": 740249.9999997413
+   },
+   {
+    "title": "Level 10: The Rain Delay, the tricky five",
+    "frame": 49304,
+    "time": 821733.3333328849
+   },
+   {
+    "title": "Level 11: The Horn Section, round 1",
+    "frame": 50705,
+    "time": 845083.3333328306
+   },
+   {
+    "title": "Level 11: The Horn Section, round 2",
+    "frame": 54207,
+    "time": 903449.9999993613
+   },
+   {
+    "title": "Level 11: The Horn Section, round 3",
+    "frame": 57081,
+    "time": 951349.9999992498
+   },
+   {
+    "title": "Level 12: Key Change, first gear",
+    "frame": 60462,
+    "time": 1007699.9999991186
+   },
+   {
+    "title": "Level 12: Key Change, second gear",
+    "frame": 63208,
+    "time": 1053466.6666657128
+   },
+   {
+    "title": "Level 12: Key Change, third gear",
+    "frame": 64819,
+    "time": 1080316.6666658379
+   },
+   {
+    "title": "Level 12: Key Change, top gear",
+    "frame": 66449,
+    "time": 1107483.333332631
+   },
+   {
+    "title": "Level 13: The Instrument Panel, the radio",
+    "frame": 68106,
+    "time": 1135099.9999994263
+   },
+   {
+    "title": "Level 13: The Instrument Panel, the gauges",
+    "frame": 70391,
+    "time": 1173183.333332937
+   },
+   {
+    "title": "Level 14: The Beltway",
+    "frame": 71590,
+    "time": 1193166.6666663634
+   },
+   {
+    "title": "Level 15: The Test Drive, round the block",
+    "frame": 77476,
+    "time": 1291266.6666668202
+   },
+   {
+    "title": "Level 15: The Test Drive, Main Street",
+    "frame": 81105,
+    "time": 1351750.0000004352
+   },
+   {
+    "title": "Level 16: The Parade Route, the morning",
+    "frame": 84152,
+    "time": 1402533.333334005
+   },
+   {
+    "title": "Level 16: The Parade Route, sunset",
+    "frame": 86871,
+    "time": 1447850.0000008827
+   },
+   {
+    "title": "Level 16: The Parade Route, the fireworks",
+    "frame": 88399,
+    "time": 1473316.666667668
+   },
+   {
+    "title": "Ending",
+    "frame": 90230,
+    "time": 1503833.3333344767
+   },
+   {
+    "title": "Credits",
+    "frame": 92683,
+    "time": 1544716.6666680004
+   }
+  ]
+ }
 }

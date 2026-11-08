@@ -228,7 +228,7 @@ class Pictures {
 // ---- the view -------------------------------------------------------------------------------
 
 /** The key map of a game as an element (keyboard, list, joystick, global keys, instructions). */
-export function keyMapView(files: GameFiles, gamFile?: string, km: GameKeyMap = gameKeyMap(files, gamFile), controls?: GameControls): HTMLElement {
+function keyMapView(files: GameFiles, gamFile?: string, km: GameKeyMap = gameKeyMap(files, gamFile), controls?: GameControls): HTMLElement {
   const pics = new Pictures(files);
   const chrs = [...new Set(km.levels.map((l) => l.chr))].filter((c) => !km.missing.includes(c));
   let only = ''; // '' = every character
@@ -441,6 +441,10 @@ export function showKeyMap(
   controls?: GameControls | Promise<GameControls | undefined>,
 ): HTMLDialogElement {
   const body = el('div', 'km-body', el('p', 'km-note', 'Reading the game…'));
+  body.dataset.listArea = '';
+  body.tabIndex = 0;
+  body.setAttribute('role', 'region');
+  body.setAttribute('aria-label', `Keys · ${title}`); // on a phone the body is the one scrolling area; the title and the close button stay
   const close = el('button', 'km-close', '×');
   close.title = 'Close (Esc)';
   close.setAttribute('aria-label', 'Close');

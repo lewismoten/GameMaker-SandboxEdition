@@ -28,7 +28,7 @@ interface Removed {
   removed: number;
 }
 
-export interface NotesPayload {
+interface NotesPayload {
   notes: Record<string, Note>;
   removed: Removed[];
 }

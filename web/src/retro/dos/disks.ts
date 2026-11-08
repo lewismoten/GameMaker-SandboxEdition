@@ -3,16 +3,21 @@
 import { isSandboxGame, loadGameList, loadHostedGame, type CatalogEntry, GameFiles } from '../../project/files';
 import { listProjects, loadProject } from '../../project/storage';
 import { isBizarreGame } from '../../project/bizarre';
+import { isSpecialGame } from '../../project/special';
+import { keptHow } from '../../specials/state';
 import { fnv1a } from '../../seededRandom';
+import { floppyFolders, type SampleFolder } from './sampleDisk';
 
 export const FLOPPY_BYTES = 1_457_664; // 1.44 MB formatted capacity
 /** The games RSD made to show off Game-Maker. */
 const RSD_GAMES = ['sample', 'pipemare', 'nebula', 'houses', 'tutor', 'terrain', 'penguin'];
 /** Up to 720 KB fit on a double density disk; more needs high density (1.44 MB). */
 const DD_BYTES = 737_280;
+const SAMPLE_DISK_ID = 'sample-disk';
+export const SAMPLE_DISK_TITLE = 'Game-Maker Sample Disk';
 
 /** original: the games made for this project, on professionally printed labels. */
-type DiskKind = 'rsd' | 'gameware' | 'original' | 'project' | 'blank';
+type DiskKind = 'rsd' | 'gameware' | 'original' | 'sample' | 'project' | 'blank';
 
 export interface Disk {
   id: string;
@@ -38,6 +43,8 @@ export interface Disk {
   /** The user's disks: when the game was last saved (Date.now()). */
   updated?: number;
   catalog?: CatalogEntry;
+  /** The Sample Disk: a folder for each Starter on it (sampleDisk.ts); the disk's own root holds no files. */
+  folders?: SampleFolder[];
   load: () => Promise<GameFiles>;
 }
 
@@ -97,8 +104,8 @@ export async function loadDisks(): Promise<Disk[]> {
       load: () => loadHostedGame(g),
     });
   });
-  // Our own games, on their printed shareware disks (open to change, unlike other shareware).
-  for (const g of catalog.filter(isSandboxGame)) {
+  // Our own games, on their printed shareware disks (open to change, unlike other shareware); a Special once it has reached the desk (or been played: specials/state.ts)
+  for (const g of catalog.filter((e) => isSandboxGame(e) || (isSpecialGame(e) && !!keptHow(e.id)))) {
     const label = g.original?.label;
     disks.push({
       id: `cd:${g.id}`,
@@ -137,6 +144,23 @@ export async function loadDisks(): Promise<Disk[]> {
       load: async () => (await loadProject(p.id))?.files ?? new GameFiles(),
     });
   }
+  // The Sample Disk with the Starters, once there are any (secret games are never on it)
+  const folders = floppyFolders(catalog);
+  if (folders.length) {
+    disks.push({
+      id: SAMPLE_DISK_ID,
+      kind: 'sample',
+      title: SAMPLE_DISK_TITLE,
+      label: SAMPLE_DISK_TITLE,
+      color: '#3a8ee6',
+      stripe: '#ffd23f',
+      density: 'HD',
+      bytes: 0, // the first three Starters, about 950 KB of a 1.44 MB diskette
+      writeProtected: true,
+      folders,
+      load: async () => new GameFiles(),
+    });
+  }
   disks.push({
     id: 'blank',
     kind: 'blank',
@@ -152,11 +176,12 @@ export async function loadDisks(): Promise<Disk[]> {
   // Sandbox Software's games at the front, then RSD's and the other gameware, then the
   // user's own disks (newest first, as listProjects gives them) and a blank one.
   const rank: Record<DiskKind, number> = {
-    original: 0,
-    rsd: 1,
-    gameware: 2,
-    project: 3,
-    blank: 4,
+    sample: 0,
+    original: 1,
+    rsd: 2,
+    gameware: 3,
+    project: 4,
+    blank: 5,
   };
   return disks.sort((a, b) => rank[a.kind] - rank[b.kind]);
 }

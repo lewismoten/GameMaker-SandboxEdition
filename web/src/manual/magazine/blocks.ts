@@ -1,6 +1,6 @@
 // Builders for the magazine's blocks (types.ts Block), so a section reads like the page it
 // makes: head('…'), p('…'), side('…', [...]), shot('teddy', 'level', '…'), card(…), ad(…).
-import type { Block, Callout, HalfAd, Inline, ListingRow, MagPage, MiniCover, ShelfItem, Tone, ArtId, ShotView } from './types';
+import type { Block, Callout, PcNewsItem, HalfAd, Inline, ListingRow, MagPage, MiniCover, ShelfItem, Tone, ArtId, ShotView } from './types';
 import type { Go } from './go';
 
 type HeadOpts = { kicker?: string; deck?: Inline; size?: 'xl' | 'l' | 'm' | 's'; level?: 1 | 2 | 3 };
@@ -97,3 +97,6 @@ export const beside = (blocks: Block[], ad: HalfAd): Block => ({ t: 'beside', bl
 
 /** A full-page ad: no running head, listed in the advertiser index under `advertiser`. */
 export const adPage = (id: string, advertiser: string, blocks: Block[], tone: Tone = 'white'): MagPage => ({ id, kind: 'ad', title: advertiser, tone, blocks });
+
+/** A page of short news items in columns under a ruled, outlined banner (the style of a 1993 PC news page). */
+export const pcNews = (banner: string, items: PcNewsItem[]): Block => ({ t: 'pcnews', banner, items });

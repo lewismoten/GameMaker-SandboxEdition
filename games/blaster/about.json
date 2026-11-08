@@ -4,7 +4,7 @@
   "company": "Sandbox Software",
   "year": 1994,
   "price": "$15",
-  "version": "2.3",
+  "version": "2.4",
   "blurb": "GLITCH, a virus off a bad BBS download, is eating the family 486. Shrink down, launch the BLASTER nano-fighter and blast your way up the motherboard, through memory, the sound card and the hard disk into the CPU itself.",
   "exe": "BLASTER.EXE",
   "sound": "sb",
@@ -47,7 +47,7 @@
       ["s5c.map", 2, 45]
     ],
     "rating": "Ages 8 and up",
-    "hours": 10,
+    "hours": 11,
     "reviews": [
       {
         "quote": "We did not think Game-Maker could scroll like this. Then GLITCH ate our high scores and we stopped thinking at all.",

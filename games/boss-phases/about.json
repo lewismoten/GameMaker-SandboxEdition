@@ -1,0 +1,35 @@
+{
+  "title": "Three Phases",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "hero": "NOVA",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.0",
+  "blurb": "Two short levels about a boss that changes as it is hurt. Big Bug paces a long tunnel and a star does not stop it. Hit it twice and it turns into a quicker orange bug, which is a different monster with its own picture and path. In the second level the last hit brings a tiny third one. Signs in the levels say how. Play it, then open it in Game-Maker and change when it changes.",
+  "exe": "PHASES.EXE",
+  "dosName": "PHASES",
+  "sound": "sb",
+  "label": {
+    "background": "#fff1e0",
+    "band": "#d94b3a",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "2 short levels",
+    "hours": 1,
+    "background": "#d94b3a",
+    "accent": "#ffd23f",
+    "ink": "#ffffff",
+    "tagline": "Three faces, one bug.",
+    "back": "A small explorer in a gold beanie has a pocketful of gold stars and two short levels to cross. Big Bug, round and very cheerful, paces a long tunnel through a brick wall, and it does not stay the same: hit it twice and it turns quicker, and the last hit brings a tiny new face. Read the signs, wait for it to come close, then open the game in Game-Maker and change when it changes.",
+    "features": ["Signs in the levels explain each idea", "A boss that changes is a chain of different monsters", "Made to be copied and taken apart"],
+    "shots": [
+      ["one.map", 24, 6],
+      ["two.map", 32, 6]
+    ],
+    "rating": "Everyone"
+  }
+}

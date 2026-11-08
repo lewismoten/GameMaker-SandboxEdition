@@ -7,6 +7,7 @@ import { METERS, parseCharacter, type Character } from '@lewismoten/gamemaker-sa
 import { parseGame, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { parsePalette, type Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import type { SaveLabels } from './saveGame';
+import { fromCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 
 /** Anything files can be read from by name (GameFiles, a Map with a get, the desk's drive…). */
 export interface FileSource {
@@ -73,7 +74,7 @@ export function gameLabels(files: FileSource, gam: string, counterNames?: Record
     game,
     counterUse,
     counterNames,
-    sceneName: (scene) => game.scenes[scene]?.desc?.trim() || undefined,
+    sceneName: (scene) => fromCp437(game.scenes[scene]?.desc ?? '').trim() || undefined,
     character: (scene) => read(scene, CHR, parseCharacter),
     blocks: (scene) => read(scene, BBL, (x) => parseBlocks(x, BACKBL)),
     palette: (scene) => read(scene, PAL, parsePalette),

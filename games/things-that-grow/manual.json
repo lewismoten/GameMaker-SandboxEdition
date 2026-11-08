@@ -1,0 +1,75 @@
+{
+  "title": "Seeds and Nests",
+  "howDoI": [
+    {
+      "id": "hatch",
+      "q": "How do I make a block hatch a monster?",
+      "scene": 2,
+      "x": 34,
+      "y": 16,
+      "level": 1
+    },
+    {
+      "id": "often",
+      "q": "How do I choose how often a block hatches?",
+      "scene": 2,
+      "x": 34,
+      "y": 16,
+      "level": 1
+    },
+    {
+      "id": "leave",
+      "q": "How do I make a hatched monster fly away after a while?",
+      "scene": 2,
+      "x": 34,
+      "y": 16,
+      "level": 1
+    },
+    {
+      "id": "stop",
+      "q": "How do I make a nest stop hatching when it is touched?",
+      "scene": 3,
+      "x": 41,
+      "y": 19,
+      "level": 2
+    },
+    {
+      "id": "kinds",
+      "q": "How do I make two nests hatch different monsters?",
+      "scene": 3,
+      "x": 41,
+      "y": 19,
+      "level": 2
+    }
+  ],
+  "pages": [
+    {
+      "head": "Welcome",
+      "html": "<h1>Welcome</h1><p><b>Seeds and Nests</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has two short levels and takes a couple of minutes to finish.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each thing in the levels is made.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. <kbd>Space</kbd> jumps. <kbd>F2</kbd> shows your lives, hit points and score. Walk into the door at the end of a level to go on.</p><p>A <b>nest</b> is a block that gives birth to a monster again and again. Nothing in this game hurts you.</p>"
+    },
+    {
+      "head": "Level 1: A Nest",
+      "html": "<h1>Level 1: A Nest</h1><p>The <b>THIS NEST HATCHES A BIRD</b> sign stands before a brick shelf over the path. A nest with two eggs sits on the shelf. About four seconds after the level starts, a small yellow bird hatches from it and flutters about, and a few seconds later another follows.</p><p>The <b>WAIT AND WATCH THE NEST</b> sign says what to do: stand under the shelf and look up. Each bird flies off by itself after about eight seconds.</p><p>There are six coins on the way, worth ten points each.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 1 is made</h1><ul><li><b>The nest is a block.</b> Open <b>nests.bbl</b> in the blocks editor and pick <b>nestShelf</b>. In its Time section, the monster it gives birth to is the yellow bird, and it does so <b>every 73 ticks</b>: about four seconds at 18.2 ticks a second. A block with 0 ticks never gives birth.</li><li><b>Where the bird appears.</b> A bird is born at the place of the nest block itself. Put the nest on the map in <b>one.map</b> and the bird hatches there. There is nothing to place for the bird.</li><li><b>It goes on.</b> The timer repeats for as long as the level runs, so a nest is a bird maker, not a one-time egg. The nest has no touch rule, so nothing Lami does stops it.</li><li><b>Leaving.</b> Open <b>nests.mon</b> and pick the yellow bird. Its <b>Lives</b> is <b>For a set time</b> (150 ticks, about eight seconds), so each bird goes by itself. Without that, the sky would fill up.</li><li><b>Fluttering.</b> Its <b>Movement</b> path goes five blocks across and one up, and back. It is not solid and its power is 110, so it neither blocks Lami nor can be popped by touching it. Its monster picture has two wing frames.</li><li><b>The shelf.</b> Three ordinary brick blocks, one row above Lami's head, so they walk under it.</li></ul>"
+    },
+    {
+      "head": "Level 2: Empty Nest",
+      "html": "<h1>Level 2: Empty Nest</h1><p>The <b>IT HATCHES ONE AFTER ANOTHER</b> sign points at the shelf nest again: yellow birds, a new one every few seconds.</p><p>On the path further along lies a second nest, and it hatches blue birds. The <b>TOUCH A NEST AND IT STOPS</b> sign says what to do: walk over it. The nest becomes an empty one (no eggs), and from then on no more blue birds come. The ones in the air stay a little longer and then go. The shelf nest, out of reach, keeps going.</p><p>There are six coins, two before the nests and four after them.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 2 is made</h1><ul><li><b>Two kinds of nest.</b> The timer is kept for each kind of block, not for each square: every square of one nest block hatches at the same moment. To have two nests with their own rhythm and their own bird, they are two blocks. <b>nestShelf</b> hatches the yellow bird every 73 ticks; <b>nestPath</b> hatches the blue bird every 55 ticks.</li><li><b>Stopping.</b> Open <b>nestPath</b> in the blocks editor. Its <b>Becomes block</b> (what it turns into when touched) is <b>nestEmpty</b>, a block with the same picture without eggs and no birth. Touch it once and that one square is an empty nest for good. Other squares of <b>nestPath</b> would still hatch.</li><li><b>No help from the shelf.</b> <b>nestShelf</b> has no touch rule, so it keeps hatching for the whole level.</li><li><b>Leaving.</b> The blue bird lives 100 ticks (about five and a half seconds), shorter than the yellow one's. The path nest hatches one every 55 ticks, so about two blue birds are in the air at a time until Lami steps on the path nest. After that the last one is gone in a few seconds.</li><li><b>Touching.</b> The nest is an ordinary passable block on the path. Walking over it is a touch; the engine does not know or care which way Lami came.</li><li><b>The exit.</b> The last door links to the <b>The End</b> scene in <b>nests.gam</b>, which plays the ending.</li></ul>"
+    },
+    {
+      "head": "What Game-Maker cannot do",
+      "html": "<h1>What Game-Maker cannot do</h1><p>A nest is a plain timer on a block, and that is all it is:</p><ul><li>It hatches only near the hero: in the screen they see and a half screen around it. A nest far away is silent until they come back.</li><li>The timer is one per kind of block. Two squares of the same nest cannot hatch at different times, and each hatches when the timer comes round, with no way to start it from a touch.</li><li>A monster can only be born on the nest's own square. A nest cannot give birth to a monster at some other place, or to a block.</li><li>There are 200 places for monsters in all and only 50 are drawn at a time. A nest that hatches faster than its monsters leave fills them up, and then it hatches nothing until a place is free.</li><li>The birth time is at most 16,383 ticks (about fifteen minutes), and the same every time: there is no chance in it.</li><li>The first monster comes one birth time after the level starts, not at the start. Going out through a door and back in starts the level, and the timer, again.</li></ul>"
+    },
+    {
+      "head": "Make it yours",
+      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>Change <b>nestShelf</b> to hatch every 20 ticks. The sky fills with birds.</li><li>Change the monster it gives birth to: a gumdrop, a buzzer or a snail, from the kit's three monsters in <b>nests.mon</b>.</li><li>Change the yellow bird's <b>Lives</b> to <b>Forever (indestructible)</b>, and watch the birds pile up.</li><li>Make the touch rule of <b>nestShelf</b> <b>nestEmpty</b> as well, and place it low enough for Lami to reach.</li><li>Change the blue bird's lifetime to 60 ticks, so the stop shows at once.</li></ul><p>The home page's <b>Starters</b> tab has more small games like this one.</p>"
+    }
+  ]
+}

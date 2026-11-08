@@ -784,7 +784,7 @@ dialog.modal .buttons {
 
 .toast.error {
   background: var(--danger);
-  color: #fff;
+  color: var(--bg);
 }
 
 /* Phones (up to 900px): the Files bar stays at the top and the editor below it scrolls by
@@ -1456,4 +1456,28 @@ main:focus,
   line-height: 1.3;
   white-space: normal;
   overflow-wrap: anywhere;
+}
+
+/* a phone (≤ 430 px): one notice at a time (ui.ts), full width at the bottom edge and out of the way of taps
+   around it (the container ignores them; the notice and its 44px × take them). Download's "Building…" and
+   "Saved…" used to pile up over the game's own buttons. */
+@media (max-width: 430px) {
+  .toasts {
+    right: 8px;
+    bottom: calc(8px + env(safe-area-inset-bottom));
+    left: 8px;
+    pointer-events: none;
+  }
+  .toast {
+    pointer-events: auto;
+    max-width: none;
+    font-size: 14px;
+  }
+  .toast .toast-close {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    margin: -10px 0;
+  }
 }

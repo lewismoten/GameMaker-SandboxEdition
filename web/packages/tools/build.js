@@ -21,10 +21,37 @@ const sources = {
   palettes: 'palettes',
   drawing: 'drawing',
   'image/png': 'image/png',
+  'mesh/surfaceNets': 'mesh/surfaceNets',
+  'mesh/stl': 'mesh/stl',
+  'mesh/meshCheck': 'mesh/meshCheck',
+  'mesh/tetraMesh': 'mesh/tetraMesh',
+  'mesh/overhang': 'mesh/overhang',
+  'mesh/zipFile': 'mesh/zipFile',
+  'mesh/threeMf': 'mesh/threeMf',
+  'mesh/colorBodies': 'mesh/colorBodies',
+  'mesh/decimate': 'mesh/decimate',
+  'embroidery/types': 'embroidery/types',
+  'embroidery/geom': 'embroidery/geom',
+  'embroidery/fill': 'embroidery/fill',
+  'embroidery/satin': 'embroidery/satin',
+  'embroidery/compile': 'embroidery/compile',
+  'embroidery/strokeFont': 'embroidery/strokeFont',
+  'embroidery/units': 'embroidery/units',
+  'embroidery/dst': 'embroidery/dst',
+  'embroidery/exp': 'embroidery/exp',
+  'embroidery/pes': 'embroidery/pes',
+  'embroidery/validate': 'embroidery/validate',
+  'embroidery/simulate': 'embroidery/simulate',
+  'embroidery/svg': 'embroidery/svg',
+  'mesh/sampledField': 'mesh/sampledField',
+  'pack/meshPack': 'pack/meshPack',
+  'pack/threeMfPack': 'pack/threeMfPack',
   images: 'images',
   'kit/blit': 'kit/blit',
+  'kit/blockRoles': 'kit/blockRoles',
   'kit/clips': 'kit/clips',
   'kit/gameSim': 'kit/gameSim',
+  'kit/levelGen': 'kit/levelGen/index',
   'kit/music': 'kit/music',
   'kit/palette': 'kit/palette',
   'kit/pcText': 'kit/pcText',
@@ -33,6 +60,7 @@ const sources = {
   'kit/sceneSim': 'kit/sceneSim',
   'kit/shading': 'kit/shading',
   'kit/sound': 'kit/sound',
+  'kit/mumble': 'kit/mumble',
   'kit/textBounds': 'kit/textBounds',
   'kit/tune': 'kit/tune',
   'kit/microText': 'kit/microText',
@@ -55,6 +83,8 @@ const sources = {
   'kit/songFx': 'kit/songFx',
   'kit/fadeOut': 'kit/fadeOut',
   'kit/fliClips': 'kit/fliClips',
+  'kit/fliShrink': 'kit/fliShrink',
+  'kit/levelGrid': 'kit/levelGrid',
   'kit/recordedDemo': 'kit/recordedDemo',
   'kit/hopBot': 'kit/hopBot',
   'kit/align': 'kit/align',
@@ -117,3 +147,8 @@ function finish(dir) {
   }
 }
 finish(resolve(here, 'dist/types'));
+// Every export without a wildcard must name a file the build made, or the published package breaks on import.
+const missing = Object.entries(JSON.parse(readFileSync(resolve(here, 'package.json'), 'utf8')).exports)
+  .filter(([key, v]) => !key.includes('*') && v && typeof v === 'object' && v.import && !existsSync(resolve(here, v.import)))
+  .map(([key]) => key);
+if (missing.length) throw new Error(`Exports with no built file (add them to build.js): ${missing.join(', ')}`);

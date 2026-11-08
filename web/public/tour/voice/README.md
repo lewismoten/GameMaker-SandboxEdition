@@ -34,10 +34,14 @@ records every clip again.
 | [home-show.ogg](home/home-show.ogg) | Show narrows the list to one rating, or to the games you haven’t rated yet. | Home: Teddy points at the Show rating picker | 5.22 |
 | [home-sort.ogg](home/home-sort.ogg) | Sort by Rating puts your five-star games first, with the unrated ones last. | Home: Teddy points at the Sort by picker | 5.50 |
 | [home-notes-search.ogg](home/home-notes-search.ogg) | And the search box finds the words in your notes, too. | Home: Teddy points at the Find a game box | 3.97 |
+| [home-import-history.ogg](home/home-import-history.ogg) | Import history keeps the last twenty imports: what came in, what was left out, and anything that failed. | Home: Teddy points at the Import history button | 7.07 |
+| [home-recently-deleted.ogg](home/home-recently-deleted.ogg) | Delete a game by mistake? It waits in Recently deleted for seven days, and Restore brings it back just as it was. | Home: Teddy points at the Recently deleted button | 7.89 |
+| [home-tab-starters.ogg](home/home-tab-starters.ogg) | Starters: small games that each show one idea, with signs in the levels. Play one, then edit a copy. | Home: Teddy presses the Starters tab | 6.84 |
+| [home-how-do-i.ogg](home/home-how-do-i.ogg) | How do I asks the question in your own words, and points to the Starter that answers it. | Home: Teddy points at the How do I button | 5.54 |
 | [home-tab-sandbox.ogg](home/home-tab-sandbox.ogg) | Sandbox: new games made with Game-Maker in its original formats, so they play in real DOS too. | Home: Teddy presses the Sandbox tab | 6.90 |
 | [home-tab-bizarre.ogg](home/home-tab-bizarre.ogg) | Bizarre: big, heartfelt songs about all the wrong things, each one made into a game. | Home: Teddy presses the Bizarre tab | 5.75 |
-| [home-tab-gameware.ogg](home/home-tab-gameware.ogg) | Gameware: the free games that came with Game-Maker. Play one, or edit a copy to see how it works. | Home: Teddy presses the Gameware tab | 6.82 |
-| [home-tab-shareware.ogg](home/home-tab-shareware.ogg) | Shareware: games other people made with Game-Maker, from the CD and the BBSes. | Home: Teddy presses the Shareware tab | 5.94 |
+| [home-tab-gameware.ogg](home/home-tab-gameware.ogg) | Gameware: the free games that came with Game-Maker. Play one, or edit a copy to see how it works. | Home: Teddy presses the CD tab | 6.82 |
+| [home-tab-shareware.ogg](home/home-tab-shareware.ogg) | Shareware: games other people made with Game-Maker, from the CD and the BBSes. | Home: Teddy presses the CD tab | 5.94 |
 | [home-shareware-what.ogg](home/home-shareware-what.ogg) | Shareware meant try it free. If you kept playing, you sent the author a fee. Games got around on floppy disks and BBSes. | Home: Teddy points at the shareware games | 8.35 |
 | [home-shareware-notice.ogg](home/home-shareware-notice.ogg) | They’re other people’s games, so most just play here, exactly as released. Each keeps its author’s notice. | Home: Teddy points at the shareware games | 6.97 |
 | [home-search.ogg](home/home-search.ogg) | Looking for one game? Type part of its name here. | Home: Teddy points at the Find a game box | 3.82 |
@@ -170,11 +174,13 @@ records every clip again.
 | [edit-around-hello.ogg](edit-around/edit-around-hello.ogg) | Beep beep! Watt here again. Let’s find our way around: files, undo, play-testing and help. | Editor: Watt comes on | 6.54 |
 | [edit-around-files.ogg](edit-around/edit-around-files.ogg) | Files sit in this list by kind, with how many of each. Press a kind’s heading to fold it away or open it again. | Editor: Watt points at the list of the game’s files | 7.08 |
 | [edit-around-find.ogg](edit-around/edit-around-find.ogg) | Type part of a name here and the list narrows to match. Handy in a game with a hundred files. | Editor: Watt points at the Find a file box | 5.78 |
-| [edit-around-quick.ogg](edit-around/edit-around-quick.ogg) | The magnifier opens any file by its name. Ctrl+P does the same, from anywhere in the editor. | Editor: Watt points at the Open a file by name button | 7.00 |
+| [edit-around-quick.ogg](edit-around/edit-around-quick.ogg) | The magnifier opens any file by its name. Ctrl+P does the same, from anywhere in the editor. | Editor: Watt points at the Open a file by name button | 6.47 |
 | [edit-around-assets.ogg](edit-around/edit-around-assets.ogg) | In the file list, Game assets shows the whole game at once: a card for each kind of file. Press a card to browse those files as pictures. | Editor: Watt points at the Game assets button | 9.29 |
+| [edit-around-groups.ogg](edit-around/edit-around-groups.ogg) | The cards sit under headings: Levels, Heroes, Monsters, Pictures and movies, Sounds and music, and Words and screens. | Editor: Watt points at the first group heading | 8.45 |
+| [edit-around-card-used.ogg](edit-around/edit-around-card-used.ogg) | A card also says how many scenes use its files, so you can see what matters before you open it. | Editor: Watt points at a card’s used-by line | 5.40 |
 | [edit-around-assets-back.ogg](edit-around/edit-around-assets-back.ogg) | Back in a file, Assets jumps to that kind’s gallery, so you can try another map or block set. | Editor: Watt points at the Assets button | 6.24 |
 | [edit-around-used.ogg](edit-around/edit-around-used.ogg) | Here is every scene that uses this file. Press one to open it in the game’s own scene list. | Editor: Watt points at the Used by links | 6.39 |
-| [edit-around-undo.ogg](edit-around/edit-around-undo.ogg) | Undo and Redo step back and forward through your edits in this file. Ctrl+Z and Ctrl+Y work too. Nothing to undo here. | Editor: Watt points at the Undo button | 9.29 |
+| [edit-around-undo.ogg](edit-around/edit-around-undo.ogg) | Undo and Redo step back and forward through your edits in this file. Ctrl+Z and Ctrl+Y work too. Nothing to undo here. | Editor: Watt points at the Undo button | 7.61 |
 | [edit-around-zoom.ogg](edit-around/edit-around-zoom.ogg) | Zoom sets how big the map looks, from 10% to 200%. The mouse wheel zooms around the pointer; Shift and wheel scrolls. | Editor: Watt points at the Zoom list | 8.68 |
 | [edit-around-playmenu.ogg](edit-around/edit-around-playmenu.ogg) | Play-test a level without the title screen. This arrow opens every way the game’s links bring the hero in; pick one to start there. | Editor: Watt presses the arrow beside Play Level | 7.46 |
 | [edit-around-keys.ogg](edit-around/edit-around-keys.ogg) | The keyboard button lists every shortcut: B, L, R and F choose map tools, G shows the grid. The question mark key shows it anywhere. | Editor: Watt presses the Keyboard shortcuts button | 10.89 |
@@ -301,7 +307,7 @@ records every clip again.
 | --- | --- | --- | ---: |
 | [edit-integrator-hello.ogg](edit-integrator/edit-integrator-hello.ogg) | A game is a case with many scenes. The Integrator is the board where I pin them all up and see how they connect. | Editor: Inspector Penn comes on | 7.10 |
 | [edit-integrator-board.ogg](edit-integrator/edit-integrator-board.ogg) | Each card is a scene, as the player first sees it: the start with its title and menu, every level, and the ending. Drag a card to move it. | Editor: Inspector Penn points at the board of scene cards | 8.88 |
-| [edit-integrator-tools.ogg](edit-integrator/edit-integrator-tools.ogg) | Add level scene starts a new level beside the last. Auto-arrange tidies the cards. PNG saves a picture of the whole board. | Editor: Inspector Penn points at the board’s tools | 8.80 |
+| [edit-integrator-tools.ogg](edit-integrator/edit-integrator-tools.ogg) | Add level scene starts a new level beside the last. Auto-arrange tidies the cards. PNG saves a picture of the whole board. | Editor: Inspector Penn points at the board’s tools | 8.93 |
 | [edit-integrator-key.ogg](edit-integrator/edit-integrator-key.ogg) | The question mark explains the board. The arrows are links: gold ones leave the chosen scene, green ones lead into it. | Editor: Inspector Penn points at the question mark key | 8.07 |
 | [edit-integrator-zoom.ogg](edit-integrator/edit-integrator-zoom.ogg) | Zoom in and out, or Fit to see every scene. Scroll or pinch works too, and the arrow keys step from one scene to the next. | Editor: Inspector Penn points at the zoom buttons | 8.28 |
 | [edit-integrator-scene.ogg](edit-integrator/edit-integrator-scene.ogg) | Click a card to work on that scene. Rename it here, play from it, make its level card, or delete it. | Editor: Inspector Penn points at the chosen scene’s panel | 6.65 |
@@ -367,7 +373,7 @@ records every clip again.
 | [edit-export-caveat.ogg](edit-export/edit-export-caveat.ogg) | All but DOS still need a web engine, so a future update could break them. DOS, in DOSBox, is the most future-proof. | Editor: Max points at the note under the list | 8.85 |
 | [edit-export-buttons.ogg](edit-export/edit-export-buttons.ogg) | Download builds the chosen file, and the button beside it picks the second format. Cancel shuts this with nothing made. I’ll leave them be. | Editor: Max points at the chooser’s buttons | 9.33 |
 | [edit-export-file.ogg](edit-export/edit-export-file.ogg) | The three dots on any file have Download file, which saves just that one file to your computer. | Editor: Max points at the file’s more actions menu | 6.60 |
-| [edit-export-bye.ogg](edit-export/edit-export-bye.ogg) | Pictures and papers go out too: the map picture saves a PNG, a Level check report a CSV, and a walkthrough an MP4. Happy trails! | Editor: Max says goodbye and walks off | 11.92 |
+| [edit-export-bye.ogg](edit-export/edit-export-bye.ogg) | Pictures and papers go out too: the map picture saves a PNG, a Level check report a CSV, and a walkthrough an MP4. Happy trails! | Editor: Max says goodbye and walks off | 11.99 |
 
 ## edit-assistant
 
@@ -413,7 +419,7 @@ records every clip again.
 | [desk-drive.ogg](desk/desk-drive.ogg) | That’s drive A:. With a disk in, buttons beside it play it, design it, or open it in today’s web. | Desk: Lewie points at drive A: | 8.16 |
 | [desk-gmbox.ogg](desk/desk-gmbox.ogg) | The Game-Maker box: turn it over, read the Owner’s Guide, or put the CD in and start Game-Maker. | Desk: Lewie points at the Game-Maker box | 7.91 |
 | [desk-keyboard.ogg](desk/desk-keyboard.ogg) | Type on your own keyboard, or click the keys here to press them on the PC. | Desk: Lewie points at the keyboard | 5.28 |
-| [desk-pad.ogg](desk/desk-pad.ogg) | The GRAVITAS pad is the PC’s joystick. A real gamepad works too, and a click opens big buttons. | Desk: Lewie points at the game pad | 6.48 |
+| [desk-pad.ogg](desk/desk-pad.ogg) | The GRAVITAS pad is the PC’s joystick. A real gamepad works too, and a click opens big buttons. | Desk: Lewie points at the game pad | 7.68 |
 | [desk-pad-panel.ogg](desk/desk-pad-panel.ogg) | Big buttons for the d-pad’s eight ways and all four buttons. Game-Maker games read the d-pad and the red and yellow buttons. | Desk: Lewie points at the game pad’s large controls | 8.40 |
 | [desk-shelf.ogg](desk/desk-shelf.ogg) | My shelf has a box for every game. Take one down to turn it over, read its manual, or play it. | Desk: Lewie points at the shelf of game boxes | 7.27 |
 | [desk-box-open.ogg](desk/desk-box-open.ogg) | Like this one. Down it comes! | Desk: Lewie presses the box standing face out | 2.79 |
@@ -442,6 +448,7 @@ records every clip again.
 | [box-hello.ogg](box/box-hello.ogg) | Inspector Ada Penn, on a new case: what a 1994 software box held. Far more than a disk, as you’ll see. | Box: Inspector Penn comes on | 7.80 |
 | [box-shelf.ogg](box/box-shelf.ogg) | Take a box down off the shelf, and the whole thing turns up in your hands. | Box: Inspector Penn presses the box standing face out | 5.15 |
 | [box-outside.ogg](box/box-outside.ogg) | Outside, art up front. The back sells the game with its features, reviews and pictures. | Box: Inspector Penn points at the box, turning | 6.00 |
+| [box-feelies.ogg](box/box-feelies.ogg) | Feelies are extras packed in a game box. Infocom started that. Some were copy protection, like a code wheel. Click one. | Box: Inspector Penn points at the Feelies under the box | 8.20 |
 | [box-disks.ogg](box/box-disks.ogg) | The disks, fanned out as a set. Click them and disk one goes in drive A: to play. | Box: Inspector Penn points at the disks in the box | 5.98 |
 | [box-manual.ogg](box/box-manual.ogg) | The manual, stapled, with a cover of its own. Click it to read. | Box: Inspector Penn points at the manual in the box | 4.63 |
 | [box-list.ogg](box/box-list.ogg) | Then the paper. Each piece has a little picture; click one to look closer. So much, and on purpose! | Box: Inspector Penn points at the list of what else came in the box | 6.93 |
@@ -453,6 +460,8 @@ records every clip again.
 | [box-catalog.ogg](box/box-catalog.ogg) | And the Sandbox Software catalog, with every game in the family. | Box: Inspector Penn points at the Sandbox Software catalog in the list | 4.75 |
 | [box-bbs.ogg](box/box-bbs.ogg) | An ad for the BBS. Call in and download more. | Box: Inspector Penn points at the BBS ad in the list | 4.30 |
 | [box-stickers.ogg](box/box-stickers.ogg) | A sheet of stickers. Cut them out, if you dare. | Box: Inspector Penn points at the Sticker sheet in the list | 3.65 |
+| [box-why.ogg](box/box-why.ogg) | Why so much? Three motives. A code wheel stopped copying, a map pulled you into the story, and a full box beat a copied disk from a friend or a BBS. | Box: Inspector Penn points at the list of what else came in the box | 9.82 |
+| [box-confess.ogg](box/box-confess.ogg) | A confession: these boxes hold more than any store box did, even a deluxe edition. They’re packed for your entertainment. | Box: Inspector Penn points at the list of what else came in the box | 8.20 |
 | [box-buttons.ogg](box/box-buttons.ogg) | Below, buttons: put the disk in drive A:, read the manual, or close. The arrows pick the next box. | Box: Inspector Penn points at the box viewer’s buttons | 6.88 |
 | [box-hint-open.ogg](box/box-hint-open.ogg) | Stuck? This postcard is about the hint book. Let’s have a look. | Box: Inspector Penn presses the hint book postcard in the list | 4.45 |
 | [box-hint-answer.ogg](box/box-hint-answer.ogg) | A hint book answer, and all I see is a tangle of lines. I can’t read a word of it. | Box: Inspector Penn points at the hidden answer on the postcard | 5.98 |

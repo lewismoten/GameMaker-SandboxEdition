@@ -268,7 +268,7 @@ export function renderLibrary(el: HTMLElement): void {
     await modal<void>(title, (close) => {
       closeDialog = () => close(undefined);
       return [
-        h('div', { class: `lib-dlg ${cls}`.trim() }, ...nodes),
+        h('div', { class: `lib-dlg ${cls}`.trim(), dataset: { listArea: '' } }, ...nodes),
         // a long shelf starts at its top: there the dialog's own × takes the focus, not Close at the foot
         h('div', { class: 'buttons' }, h('button', { type: 'button', autofocus: !cls, onclick: () => close(undefined) }, 'Close')),
       ];
@@ -294,7 +294,34 @@ export function renderLibrary(el: HTMLElement): void {
       fromRoom('catalog'),
     );
   const showCopier = () => dialog('copier', 'Copier', [copier.el], fromRoom('copier'));
-  const dialogs: Record<string, () => unknown> = { stacks: showStacks, catalog: showCatalog, copier: showCopier };
+  // the toy box (toyBox.ts) loads when opened
+  const showToyBox = async () => {
+    const { makeToyBox } = await import('./toyBox');
+    return dialog('toybox', 'Toy box: 3D-printable trinkets', [makeToyBox()], fromRoom('toybox'), 'lib-toy');
+  };
+  // the TV: the site's videos, then every listed game's walkthroughs (by length) and walkthrough videos, the same cards as the shelves
+  const showTv = () => {
+    const items = (shelf?.items ?? []).filter((i) => i.type === 'video' || i.type === 'walkthrough');
+    const section = (heading: string, of: ShelfItem[]) =>
+      of.length
+        ? h(
+            'section',
+            { class: 'lib-group' },
+            h('div', { class: 'lib-plate-row' }, h('h2', null, ...onlineNote(heading, of))),
+            h('ul', { class: 'lib-grid' }, ...of.map((it) => card(it, shelf!, 'type', false))),
+          )
+        : null;
+    const groups = groupShelf(items, 'type');
+    const parts = groups.flatMap((g) => g.parts.map((p) => section(p.heading ?? g.heading, p.items)));
+    return dialog(
+      'tv',
+      'TV: videos and walkthroughs',
+      [h('div', { class: 'lib-shelf' }, ...(parts.some(Boolean) ? parts : [h('p', { class: 'lead' }, 'Nothing is on the TV yet.')]))],
+      fromRoom('tv'),
+      'lib-stacks lib-tv',
+    );
+  };
+  const dialogs: Record<string, () => unknown> = { stacks: showStacks, catalog: showCatalog, copier: showCopier, toybox: showToyBox, tv: showTv };
   const room = makeRoom({
     status: () => count.textContent ?? '',
     mark,
@@ -302,6 +329,8 @@ export function renderLibrary(el: HTMLElement): void {
       if (where === 'stacks') void showStacks();
       else if (where === 'catalog') void showCatalog();
       else if (where === 'copier') void showCopier();
+      else if (where === 'toybox') void showToyBox();
+      else if (where === 'tv') void showTv();
       else if (shelf)
         void lSpaceTrip(groupShelf(shelf.items, 'game').map(pickOf), (id) => {
           order = 'game';

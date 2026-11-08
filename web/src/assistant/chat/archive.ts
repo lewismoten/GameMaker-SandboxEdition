@@ -4,7 +4,7 @@
 // in the game's files, the companion data or backups), with the oldest entries let go past a cap.
 import type { JsonSchema } from '../tools/types';
 
-export interface ArchiveEntry {
+interface ArchiveEntry {
   turn: number;
   role: 'user' | 'assistant' | 'tool' | 'summary';
   /** A tool's name. */
@@ -12,7 +12,7 @@ export interface ArchiveEntry {
   text: string;
 }
 
-export interface ArchiveStore {
+interface ArchiveStore {
   load(): ArchiveEntry[] | undefined;
   save(entries: ArchiveEntry[]): void;
 }

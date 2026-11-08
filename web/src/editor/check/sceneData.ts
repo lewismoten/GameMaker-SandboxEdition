@@ -10,6 +10,7 @@ import { defaultPalette, parsePalette } from '@lewismoten/gamemaker-sandbox-engi
 import { parseSoundSet, type SoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
 import { levelScenes, linksInto } from './sceneLinks';
 import type { FileSource } from './sim';
+import { fromCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 
 export interface SceneData {
   scene: number;
@@ -63,7 +64,7 @@ export function scenesOf(game: Game, files: FileSource): SceneData[] {
     };
     out.push({
       scene,
-      name: s.desc.trim() || `Scene ${scene}`,
+      name: fromCp437(s.desc).trim() || `Scene ${scene}`,
       names: { ...names },
       map: tryParse(names.map, parseMap, newMap),
       bbl: padPastSet(

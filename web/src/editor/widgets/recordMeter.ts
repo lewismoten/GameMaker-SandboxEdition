@@ -3,7 +3,7 @@
 import './recordMeter.css';
 import { h } from '../core/ui';
 
-export interface RecordMeter {
+interface RecordMeter {
   el: HTMLElement;
   /** Shows the room for a new recording (before it starts), in samples. */
   arm(maxSamples: number): void;

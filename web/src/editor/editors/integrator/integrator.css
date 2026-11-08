@@ -66,7 +66,8 @@
     12px ui-monospace,
     Menlo,
     monospace;
-  color: var(--muted);
+  /* sits over the board's dark corner in both themes, so not the theme's muted gray */
+  color: #c4cbe6;
 }
 .grator-board-wrap {
   position: relative;
@@ -240,4 +241,80 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 6px;
+}
+
+/* Touch: the board's buttons, fields, menus and the side lists are 44 px. */
+@media (hover: none) and (pointer: coarse) {
+  html .grator-side button,
+  html .grator-side select,
+  html .grator-side input:not([type='checkbox'], [type='radio'], [type='range']),
+  html .grator-panel button,
+  html .grator-panel select,
+  html .grator-panel input:not([type='checkbox'], [type='radio'], [type='range']),
+  html .grator button,
+  html .grator select,
+  html .grator summary,
+  html .grator input:not([type='checkbox'], [type='radio'], [type='range']) {
+    min-height: 44px;
+  }
+  html .grator button,
+  html .grator-panel button {
+    min-width: 44px;
+  }
+  /* the scene panel sits beside the board or, on a phone, under it (outside .grator); its Edit links are text links, so they grow into a 44 px tap area */
+  html .grator-panel a.grator-edit,
+  html .grator-side a.grator-edit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
+
+/* Touch: the side panel's drag handle is a 10 px bar; its grab area reaches 44 px wide. */
+@media (hover: none) and (pointer: coarse) {
+  .grator-resize::before {
+    inset: 0 -17px;
+  }
+}
+
+/* Keep scene fields reachable inside the bounded side panel at every resize width. */
+.grator-side-body {
+  min-height: 0;
+  min-width: 0;
+  overflow: auto;
+  flex: 1;
+  padding: 8px;
+  overscroll-behavior: contain;
+}
+.grator-side-head {
+  flex: none;
+}
+.grator-side-head .grator-tabs {
+  min-width: 0;
+  margin: 0;
+  flex: 1;
+}
+.grator-side-close {
+  flex: none;
+  margin-left: auto;
+  align-self: flex-start;
+  min-width: 24px;
+  min-height: 28px;
+}
+.grator-side-open {
+  min-width: 24px;
+  min-height: 36px;
+}
+@media (min-width: 761px) {
+  .grator-side-open {
+    writing-mode: vertical-rl;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 4px;
+  }
 }

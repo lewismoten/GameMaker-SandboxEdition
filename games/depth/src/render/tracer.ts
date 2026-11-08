@@ -79,34 +79,61 @@ const tmpHit = new HitRec();
 
 // A cheap box test in front of every shape that has bounds. The bounds are padded, so it only rejects
 // rays that cannot hit the shape: what is drawn is exactly what testing every shape would draw.
+/** Shapes are tested in runs of GROUP; a run's box is the union of its members' padded boxes. */
+const GROUP = 4;
 interface BoundsTable {
   n: number;
   /** Per shape: lo x, y, z then hi x, y, z, or NaN when the shape has no bounds. */
   b: Float64Array;
+  /** Per run of GROUP shapes: the union box, or NaN when any member has no bounds. */
+  g: Float64Array;
 }
 const tables = new WeakMap<Shape[], BoundsTable>();
+let lastShapes: Shape[] | undefined;
+let lastTable: BoundsTable | undefined;
 
-function boundsOf(shapes: Shape[]): Float64Array {
+function boundsOf(shapes: Shape[]): BoundsTable {
+  if (shapes === lastShapes && lastTable!.n === shapes.length) return lastTable!;
   let t = tables.get(shapes);
-  if (t && t.n === shapes.length) return t.b;
-  const b = new Float64Array(shapes.length * 6).fill(NaN);
-  shapes.forEach((s, i) => {
-    if (!s.bounds) return;
-    for (let a = 0; a < 3; a++) {
-      const lo = s.bounds[0][a];
-      const hi = s.bounds[1][a];
-      b[i * 6 + a] = lo - 1e-6 - Math.abs(lo) * 1e-9;
-      b[i * 6 + 3 + a] = hi + 1e-6 + Math.abs(hi) * 1e-9;
+  if (!t || t.n !== shapes.length) {
+    const b = new Float64Array(shapes.length * 6).fill(NaN);
+    shapes.forEach((s, i) => {
+      if (!s.bounds) return;
+      for (let a = 0; a < 3; a++) {
+        const lo = s.bounds[0][a];
+        const hi = s.bounds[1][a];
+        b[i * 6 + a] = lo - 1e-6 - Math.abs(lo) * 1e-9;
+        b[i * 6 + 3 + a] = hi + 1e-6 + Math.abs(hi) * 1e-9;
+      }
+    });
+    const runs = Math.ceil(shapes.length / GROUP);
+    const g = new Float64Array(runs * 6).fill(NaN);
+    for (let r = 0; r < runs; r++) {
+      const end = Math.min(shapes.length, (r + 1) * GROUP);
+      let ok = true;
+      for (let i = r * GROUP; i < end; i++) if (b[i * 6] !== b[i * 6]) ok = false;
+      if (!ok) continue;
+      for (let a = 0; a < 3; a++) {
+        let lo = Infinity;
+        let hi = -Infinity;
+        for (let i = r * GROUP; i < end; i++) {
+          lo = Math.min(lo, b[i * 6 + a]);
+          hi = Math.max(hi, b[i * 6 + 3 + a]);
+        }
+        g[r * 6 + a] = lo;
+        g[r * 6 + 3 + a] = hi;
+      }
     }
-  });
-  t = { n: shapes.length, b };
-  tables.set(shapes, t);
-  return b;
+    t = { n: shapes.length, b, g };
+    tables.set(shapes, t);
+  }
+  lastShapes = shapes;
+  lastTable = t;
+  return t;
 }
 
 /** False only when the ray certainly misses the padded bounds of shape `i` before `tmax`. */
-function reaches(b: Float64Array, i: number, o: V, d: V, tmax: number): boolean {
-  const k = i * 6;
+function reaches(b: Float64Array, k: number, o: V, d: V, tmax: number): boolean {
   if (b[k] !== b[k]) return true;
   let t0 = 0;
   let t1 = tmax * (1 + 1e-9) + 1e-9;
@@ -138,29 +165,40 @@ export function intersect(world: World, o: V, d: V, h: HitRec, ghost = false): b
   h.shape = undefined;
   let any = false;
   const shapes = world.shapes;
-  const b = boundsOf(shapes);
-  for (let i = 0; i < shapes.length; i++) {
-    const s = shapes[i];
-    if (!!s.ghost === ghost && reaches(b, i, o, d, h.t) && s.hit(o, d, h)) any = true;
+  const { b, g } = boundsOf(shapes);
+  const n = shapes.length;
+  for (let r = 0; r * GROUP < n; r++) {
+    // h.t only shrinks, so a run missed before h.t at the start is missed after it too
+    if (!reaches(g, r * 6, o, d, h.t)) continue;
+    const end = Math.min(n, (r + 1) * GROUP);
+    for (let i = r * GROUP; i < end; i++) {
+      const s = shapes[i];
+      if (!!s.ghost === ghost && reaches(b, i * 6, o, d, h.t) && s.hit(o, d, h)) any = true;
+    }
   }
   return any;
 }
 
 function occluded(world: World, o: V, d: V, tmax: number): boolean {
   const shapes = world.shapes;
-  const b = boundsOf(shapes);
-  for (let i = 0; i < shapes.length; i++) {
-    const s = shapes[i];
-    if (s.ghost || !reaches(b, i, o, d, tmax)) continue;
-    if (s.occludes) {
-      if (s.occludes(o, d, tmax)) {
-        return true;
+  const { b, g } = boundsOf(shapes);
+  const n = shapes.length;
+  for (let r = 0; r * GROUP < n; r++) {
+    if (!reaches(g, r * 6, o, d, tmax)) continue;
+    const end = Math.min(n, (r + 1) * GROUP);
+    for (let i = r * GROUP; i < end; i++) {
+      const s = shapes[i];
+      if (s.ghost || !reaches(b, i * 6, o, d, tmax)) continue;
+      if (s.occludes) {
+        if (s.occludes(o, d, tmax)) {
+          return true;
+        }
+        continue;
       }
-      continue;
+      tmpHit.t = tmax;
+      tmpHit.shape = undefined;
+      if (s.hit(o, d, tmpHit) && !tmpHit.mat.noShadow) return true;
     }
-    tmpHit.t = tmax;
-    tmpHit.shape = undefined;
-    if (s.hit(o, d, tmpHit) && !tmpHit.mat.noShadow) return true;
   }
   return false;
 }

@@ -13,7 +13,7 @@ import { kb } from './diskCard';
 
 const when = (t: number) => new Date(t).toLocaleString([], { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
 
-export interface CheckpointPanel {
+interface CheckpointPanel {
   el: HTMLElement;
   /** The "Make a checkpoint first" choice the person can tick (off until they do). */
   option: HTMLElement;

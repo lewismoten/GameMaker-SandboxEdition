@@ -3,6 +3,7 @@
 // come out alike sharing one; then the tricks, all plain block timers:
 //  - the far skyline (row 2) and the roadside trees (row 3's shoulders) are rings that shift their
 //    strip left a few pixels a frame (as the swim's layers do): the skyline slowly, the trees fast;
+//    Teddy's door window has the roadside racing right in five-pixel steps (art/cabInterior.ts DOOR);
 //  - the speedometer's needle is pinned at 25, the 8-track's PLAY lamp blinks, Teddy pants, and the
 //    trip meter counts the miles to the exit down;
 //  - the lane strip (row 5): the driver walks it (sprites/driver.ts), its air pulling down onto the
@@ -17,7 +18,8 @@
 //    edge, the dashes' and posts' spawners give birth forever.
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { spawnChains } from '@lewismoten/gamemaker-sandbox-tools/kit/road3d';
-import { chevrons, exitLamp, gauge, laneIcon, paintCab, playPic, skylineTile, teddyPant, treeTile, tripPic, GAUGE } from '../art/cab';
+import { DOOR } from '../art/cabInterior';
+import { chevrons, exitLamp, gauge, laneIcon, paintCab, playPic, skylineTile, treeTile, tripPic, GAUGE } from '../art/cab';
 import type { Pal } from '../art/palette';
 import { BELTMON } from '../beltMonsters';
 import { GRAV, SOLID, kit, type Kit } from '../blocks/common';
@@ -31,8 +33,10 @@ export const HONK = -25;
 /** The 8-track's PLAY lamp: ticks lit, ticks dark (about a beat of the song). */
 const PLAY_BLINK = [6, 3];
 /** The skyline's strip: pixels a frame and ticks a frame; the trees'. */
-const SKYLINE = { shift: 5, ntime: 15 } as const;
+const SKYLINE = { shift: 5, ntime: 12 } as const;
 const TREES = { shift: 5, ntime: 3 } as const;
+/** The car's rumble: frames in a lap (up on the odd ones; Teddy's tongue out on the second half) and ticks a frame. */
+const RUMBLE = { frames: 4, ntime: 2 } as const;
 /** Row 3's shoulder cells where the trees go by. */
 const TREE_COLS = [2, 3, 4, 5, 10, 11];
 
@@ -47,9 +51,9 @@ type Special = (x: number, y: number) => string | undefined;
 export function beltwayBlocks(pal: Pal): Kit {
   const k = kit(pal);
   const { book } = k;
-  const still = paintCab(k);
-  const panting = paintCab(k);
-  teddyPant(k, panting);
+  // the car's rumble: the people lift 1-2 px and drop every few ticks, and Teddy's tongue is out for half of each pant
+  const rumble = Array.from({ length: RUMBLE.frames }, (_, f) => paintCab(k, 0, f % 2 === 1, f >= RUMBLE.frames / 2));
+  const still = rumble[0];
   const cell = (p: Pixels, x: number, y: number) => p.crop(x * 20, y * 20, 20, 20);
   // a strip moving left `shift` pixels a frame: a ring per column of the tile
   const stream = (name: string, tile: Pixels, shift: number, ntime: number) => {
@@ -62,18 +66,44 @@ export function beltwayBlocks(pal: Pal): Kit {
   };
   stream('skyline', skylineTile(k), SKYLINE.shift, SKYLINE.ntime);
   stream('trees', treeTile(k), TREES.shift, TREES.ntime);
+  // the door window's roadside racing right: each racing cell a ring of DOOR.phases, alike frames sharing a block
+  const doorFrames = Array.from({ length: DOOR.phases }, (_, f) => paintCab(k, f * DOOR.step));
+  const doorSeen = new Map<string, string>();
+  const doorHead = new Map<string, string>();
+  DOOR.cells.forEach(([x, y]) => {
+    const names = doorFrames.map((fr, f) => {
+      const p = cell(fr, x, y);
+      const key = `${f}:${Buffer.from(p.px).toString('base64')}`;
+      if (!doorSeen.has(key)) doorSeen.set(key, `door${x}.${y}.${f}`);
+      return doorSeen.get(key)!;
+    });
+    doorHead.set(`${x},${y}`, names[0]);
+    names.forEach((n, f) => {
+      if (n === `door${x}.${y}.${f}`) book.add(n, cell(doorFrames[f], x, y), { ntime: 1, next: `door${x}.${y}.${(f + 1) % DOOR.phases}` });
+    });
+  });
   // the instruments
   book.add('speedo', gauge(k, 0.5, 'MPH'));
   for (let m = MILES; m >= 0; m--) book.add(`trip${m}`, tripPic(k, m), m ? { ntime: MILE, next: `trip${m - 1}` } : {});
   book.add('play0', playPic(k, true), { ntime: PLAY_BLINK[0], next: 'play1' });
   book.add('play1', playPic(k, false), { ntime: PLAY_BLINK[1], next: 'play0' });
-  // Teddy pants now and then: only the cells his tongue changes are a ring
-  const pantCells: [number, number][] = [];
-  for (let y = 0; y < H; y++) for (let x = 13; x < W; x++) if (cell(still, x, y).px.some((v, i) => v !== cell(panting, x, y).px[i])) pantCells.push([x, y]);
-  pantCells.forEach(([x, y]) => {
-    book.add(`teddy${x}.${y}.0`, cell(still, x, y), { ntime: 40, next: `teddy${x}.${y}.1` });
-    book.add(`teddy${x}.${y}.1`, cell(panting, x, y), { ntime: 24, next: `teddy${x}.${y}.0` });
-  });
+  // Doc Leo and Teddy bounce with the car: only the cells a lift changes are a ring (two frames, or the pant's whole lap for Teddy's tongue)
+  const bobHead = new Map<string, string>();
+  for (let y = 0; y < H; y++)
+    for (let x = 0; x < W; x++) {
+      const frames = rumble.map((fr) => cell(fr, x, y));
+      if (frames.every((p) => p.px.every((v, i) => v === frames[0].px[i])) || doorHead.has(`${x},${y}`)) continue;
+      // the lap as runs of alike frames (a block each, as long as its run)
+      const same = (a: Pixels, b: Pixels) => a.px.every((v, i) => v === b.px[i]);
+      const runs: { pic: Pixels; len: number }[] = [];
+      // a pair (up, down) when the lap is only that repeated, else runs
+      const pair = frames.every((p, f) => same(p, frames[f % 2]));
+      frames
+        .slice(0, pair ? 2 : frames.length)
+        .forEach((p, f) => (f && !pair && same(p, runs[runs.length - 1].pic) ? runs[runs.length - 1].len++ : runs.push({ pic: p, len: 1 })));
+      runs.forEach((r, i) => book.add(`bob${x}.${y}.${i}`, r.pic, { ntime: r.len * RUMBLE.ntime, next: `bob${x}.${y}.${(i + 1) % runs.length}` }));
+      bobHead.set(`${x},${y}`, `bob${x}.${y}.0`);
+    }
   // the lane strip: all its lanes one block, pulling down onto the controls till the flip, then right
   const strip = cell(still, STRIP.lanes[1], STRIP.row);
   book.add('strip', strip, { grav: GRAV.down, ntime: FLIP_AT, next: 'strip.flip' });
@@ -130,9 +160,14 @@ export function beltwayBlocks(pal: Pal): Kit {
     book.add(`postSpawn${i}`, blank, { birthMon: BELTMON.post(side), birthTime: POST_EVERY });
   });
   // every other cell: a plain cut of the painting, alike cells sharing a block
-  const special = specials(pantCells);
+  const special = specials(bobHead, doorHead);
   const seen = new Map<string, string>();
   const cells = new Map<string, string>();
+  const pic = (x: number, y: number) => Buffer.from(cell(still, x, y).px).toString('base64');
+  // the control row is the floor (the lane walker never gets below it or off its ends): any picture it uses is solid wherever it
+  // appears (nobody reaches those places), so the dash's face under it and the floor's alike cells share blocks
+  const floor = new Set<string>();
+  for (let x = STRIP.capL; x <= STRIP.exit; x++) if (!special(x, STRIP.control)) floor.add(pic(x, STRIP.control));
   for (let y = 0; y < H; y++)
     for (let x = 0; x < W; x++) {
       const ring = special(x, y);
@@ -140,12 +175,10 @@ export function beltwayBlocks(pal: Pal): Kit {
         cells.set(`${x},${y}`, ring);
         continue;
       }
-      const p = cell(still, x, y);
-      const solid = y >= STRIP.control && x >= STRIP.capL && x <= STRIP.exit;
-      const key = `${solid}:${Buffer.from(p.px).toString('base64')}`;
+      const key = pic(x, y);
       if (!seen.has(key)) {
         seen.set(key, `cab${x}.${y}`);
-        book.add(`cab${x}.${y}`, p, solid ? { solid: SOLID } : {});
+        book.add(`cab${x}.${y}`, cell(still, x, y), floor.has(key) ? { solid: SOLID } : {});
       }
       cells.set(`${x},${y}`, seen.get(key)!);
     }
@@ -165,16 +198,17 @@ const mirrorChains = () =>
   );
 
 /** The cells that are rings or chains, and their first block. */
-function specials(pantCells: [number, number][]): Special {
+function specials(bobHead: Map<string, string>, doorHead: Map<string, string>): Special {
   const chains = mirrorChains();
   return (x, y) => {
     if (y === MIRROR.row && (MIRROR.cols as readonly number[]).includes(x)) return chains[x - MIRROR.cols[0]].first;
-    if (y === 2 && x >= 2 && x <= 11) return `skyline${x % 2}.0`;
+    if (y === 2 && x >= 2 && x <= 11) return 'skyline0.0';
     if (y === 3 && TREE_COLS.includes(x)) return 'trees0.0';
+    if (doorHead.has(`${x},${y}`)) return doorHead.get(`${x},${y}`);
     if (x === GAUGE.speedo[0] && y === GAUGE.speedo[1]) return 'speedo';
     if (x === GAUGE.trip[0] && y === GAUGE.trip[1]) return `trip${MILES}`;
     if (x === GAUGE.play[0] && y === GAUGE.play[1]) return 'play0';
-    if (pantCells.some(([px, py]) => px === x && py === y)) return `teddy${x}.${y}.0`;
+    if (bobHead.has(`${x},${y}`)) return bobHead.get(`${x},${y}`);
     if (y === STRIP.row) {
       if ((STRIP.lanes as readonly number[]).includes(x)) return 'strip';
       if (x === STRIP.capL) return 'cap';

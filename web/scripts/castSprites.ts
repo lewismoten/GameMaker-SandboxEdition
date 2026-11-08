@@ -22,7 +22,7 @@ import { chezPicture } from '../../games/kit/chez';
 import type { CastSprite } from '../src/cast/castSprite';
 import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { docLeo, DRESSED } from '../../games/teddy/src/sprites/people';
-import { propSprite } from '../../games/teddy/src/sprites/klown';
+import { propSprite } from '../../games/teddy/src/sprites/clown';
 import { docLeoWalk } from './castLeoSide';
 import { NEEDLE_PAL, camelFront, needlePicture } from './castNeedle';
 import { EGG_PAL, eggShine, eggTurning } from './castEgg';
@@ -85,7 +85,7 @@ const CAST_SPRITES: Record<string, Source> = {
   // Doc Leo as Teddy's games draw him, in the whole costume: a waddle on, a wave hello
   leo: {
     game: 'teddy',
-    pal: 'klub.pal',
+    pal: 'club.pal',
     walk: [0, 1, 2, 3].map((n) => docLeoWalk(n)),
     front: [docLeo(DRESSED), docLeo(DRESSED, true)],
     // hatless (Gwinn has it) until Teddy brings it back
@@ -98,8 +98,8 @@ const CAST_SPRITES: Record<string, Source> = {
   chicken: { game: 'teddy2', file: 'river.mbl', pal: 'river.pal', frames: [[[45]], [[46]]], ms: 200, mirror: true },
   rootbeer: {
     game: 'teddy',
-    file: 'klub.bbl',
-    pal: 'klub.pal',
+    file: 'club.bbl',
+    pal: 'club.pal',
     frames: [
       [
         [76, 77],
@@ -116,10 +116,10 @@ const CAST_SPRITES: Record<string, Source> = {
   tinHeart: { tinHeart: true },
   easterEgg: { paint: eggTurning(), front: eggShine(), colors: EGG_PAL, wobble: true, ms: 160 },
   // the costume Gwinn runs off with on stage (Teddy's Little Big Adventure's intro)
-  'prop:hat': { game: 'teddy', pal: 'klub.pal', walk: [propSprite('hat')], still: true },
-  'prop:tie': { game: 'teddy', pal: 'klub.pal', walk: [propSprite('tie')], still: true },
-  'prop:shoes': { game: 'teddy', pal: 'klub.pal', walk: [propSprite('shoes')], still: true },
-  'prop:chicken': { game: 'teddy', pal: 'klub.pal', walk: [propSprite('chicken')], still: true },
+  'prop:hat': { game: 'teddy', pal: 'club.pal', walk: [propSprite('hat')], still: true },
+  'prop:tie': { game: 'teddy', pal: 'club.pal', walk: [propSprite('tie')], still: true },
+  'prop:shoes': { game: 'teddy', pal: 'club.pal', walk: [propSprite('shoes')], still: true },
+  'prop:chicken': { game: 'teddy', pal: 'club.pal', walk: [propSprite('chicken')], still: true },
   // the child who carries Loaf #13 home (Loaf #13's home level), and the needle Brother Camel
   // tries (the eye level's needle, its eye and a little of its shaft)
   'prop:girl': {
@@ -133,7 +133,7 @@ const CAST_SPRITES: Record<string, Source> = {
     ms: 180,
   },
   'prop:needle': { paint: [needlePicture()], colors: NEEDLE_PAL, still: true },
-  'prop:nose': { game: 'teddy', pal: 'klub.pal', walk: [propSprite('nose')], still: true },
+  'prop:nose': { game: 'teddy', pal: 'club.pal', walk: [propSprite('nose')], still: true },
   doghouse: {
     game: 'teddy',
     file: 'street.bbl',

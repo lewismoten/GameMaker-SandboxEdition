@@ -26,25 +26,27 @@ Run `npx vite-node scripts/achievementArt.ts` from `web/` to regenerate
 `src/achievements/blockArt.json` and this inventory. The sources and selections are in
 `scripts/achievementSets.ts` and the tier badges in `scripts/achievementTiers.ts`; the generator rejects
 duplicate image bytes.
+It never touches a badge it did not make: it marks each entry it writes with
+`"generator": "scripts/achievementArt.ts"` and refreshes or removes only marked entries. An entry without the
+mark (a badge drawn by hand, or of unknown origin) is kept byte for byte, and a `kept` line is logged when a pick
+names it. Hand-drawn badges are also listed in `HAND_DRAWN` in `scripts/achievementArtKeep.ts`, which no option
+overrides; `--adopt <id>` is the one deliberate way to replace another unmarked entry with its pick.
 
 ## Selected blocks
 
 | Achievement | Public game | Source set / block |
 | --- | --- | --- |
-| make-edit | remote | remote / pen |
 | export-windows | goat | goat / window |
 | export-mac | teddy | city / apples |
 | export-files | goat | goat / crate |
 | first-steps | goat | goat / sandal |
 | make-cards | teddy | city / poster |
-| play-first | remote | remote / handheld |
 | play-sandbox | teddy | park / bucket |
 | play-teddy | teddy | teddy / stand |
 | heart-first | goat | goat / tinHeart |
 | egg-first | goat | goat / easterEgg |
 | watch-one | tickle | tickle / tv1 |
 | desk-bbs | remote | remote / phone |
-| desk-copycheck | remote | remote / guide |
 | desk-clock | remote | remote / clock |
 | desk-wastebasket | remote | remote / trash |
 | desk-door | goat | goat / door |
@@ -70,6 +72,7 @@ duplicate image bytes.
 | blaster-big-name | carl | carl / speaker |
 | desk-curtains | sleuth | sleuthParlor / curtain0 |
 | cast-parade | sleuth | sleuthParlor / footlights |
+| play-all-mine | sleuth | sleuthParlor / checklist |
 | desk-time-reset | carl | carl / alarm |
 | bbs-time-travel | reckoning | reckoning / clock0 |
 | library-kinds | reckoning | reckoning / books |
@@ -151,6 +154,13 @@ duplicate image bytes.
 | zine-read | teddy | teddyToys / book |
 | play-bizarre | smirked | smirked / violin |
 | library-visit | risi | risiCampus / libraryFront |
+| honor-graduation-basics | the Starters | honors / honors-1 |
+| honor-graduation-moving | the Starters | honors / honors-2 |
+| honor-graduation-heroes | the Starters | honors / honors-3 |
+| honor-graduation-story | the Starters | honors / honors-4 |
+| honor-graduation-wiring | the Starters | honors / honors-5 |
+| honor-graduation-blocks | the Starters | honors / honors-6 |
+| honor-graduation-diploma | the Starters | honors / honors-diploma |
 | every-life-1 | teddy | tiers / every-life-1 |
 | every-life-3 | teddy | tiers / every-life-3 |
 | every-life-10 | teddy | tiers / every-life-10 |
@@ -169,6 +179,20 @@ duplicate image bytes.
 | walks-watched-3 | remote and tickle | levels / walks-watched-3 |
 | walks-watched-10 | remote and tickle | levels / walks-watched-10 |
 | walks-watched-20 | remote and tickle | levels / walks-watched-20 |
+
+## Badges the generator keeps as they are
+
+Entries without the generator's mark, copied through unchanged: badges drawn by hand for the badge, and any entry
+the generator cannot prove it made (`--adopt <id>` hands one that is not hand-drawn back to it).
+
+| Achievement | Source | Set / block |
+| --- | --- | --- |
+| make-edit | remote | remote / pen |
+| play-first | remote | remote / handheld |
+| desk-copycheck | remote | remote / guide |
+| play-starters | drawn for the badge | badge art / show-and-tell |
+| finish-starters | drawn for the badge | badge art / honor-roll |
+| learn-lesson | drawn for the badge | badge art / learn-by-looking |
 
 ## Art still needed
 

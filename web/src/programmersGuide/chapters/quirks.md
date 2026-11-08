@@ -1,0 +1,106 @@
+# Quirks kept for fidelity, and fields PLAYGAME ignores
+
+The rule for the book: describe the DOS program's quirks and distinguish what the web port reproduces. It is not a claim that every bug matches. Tags: [16-bit] [64K] [file] [DOS] [design]; [inference]; [not yet checked in DOSBox].
+
+## 14.1 Quirks of behavior
+
+|   # | Quirk                                                                                                                                                                                                                                                                                                                                                           | Where                                | Port matches?                                               | Status                                               |
+| --: | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ | ----------------------------------------------------------- | ---------------------------------------------------- |
+| 1 | **Stale animated edge cells.** `changeblks` excludes the left column and top row; touches use the current frame. Other drawing, such as scrolling or a full map redraw after a function-key screen, can refresh a stale picture. | `PG:2330-2354`, `PG:3788-3799`, `PG:1632-1642` | no: full-frame repaint (`engine/engine/render.ts:37-44`) | mechanism sourced; visible scenario [not yet checked in DOSBox]; taste call |
+| 2 | **Hidden band is a block, not a pixel.** At scroll offsets 0 the left/top cells fail `CalcDraw` before subcell offsets are added; the resulting `OFFSCRN` sentinel prevents contact. Final draw bounds can reject an otherwise contact-eligible monster in the last allowed cell: invisible need not mean harmless. | `PG:193-201`, `PG:2281-2308`, `PG:2729`, `PG:3104-3119`, `PG:3819-3829` | same cell and contact gates (`engine/engine/monsters.ts:72-79`, `engine/engine/monsters.ts:598-605`) | mechanism sourced; invisible-hazard demonstration [not yet checked in DOSBox] |
+| 3 | **Counter index not checked.** `ci.meter[effect]` with effect 30..255 can access past the 30-element array. `seqon` follows it in `cinfo`; exact later corruption depends on the compiler/link layout, not just the next global declaration. | `PG:150-172`, `PG:3440-3442`, `PG:3478-3499` | no: update is bounds-guarded, though the first test can read `undefined` (`engine/engine/touch.ts:89`, `engine/engine/touch.ts:120-121`) | corruption details [not yet checked in DOSBox] |
+|   4 | **Two "empty inventory" markers.** The inventory screen and pickup test for 150 (`BACKBL`); a new game fills the live inventory with 151 until a scene copies the character's own                                                                                                                                                                               | `PG:1959-1966, 2123, 4638, 4649`     | yes (`character.ts:145`)                                    | harmless                                             |
+| 5 | **Slot-0 search-hint underflow.** Killing slot 0 when `FirstEmptyMM > 0` stores unsigned -1. `BirthMon` copies that hint into signed `int t` and probes `mm[t]` before wrapping. This is an invalid-access hazard, not proof of an unconditional full-table hang. | `PG:296`, `PG:3251-3258`, `PG:3327-3339` | no: clamps the hint and bounds the scan (`engine/engine/monsters.ts:218-255`) | exact failure/hang [not yet checked in DOSBox] |
+| 6 | **Keep `Birthtime` below 16,384 ticks.** DOS clears bit 14 and reuses it as the "birth now" flag. Only positive signed intervals enter the spawner list; bit patterns 32,768 and up are not positive intervals. | `PG:3281-3301`, `PG:4220-4234`, `BLOC.H:39` | no: separate flags (`engine/engine/monsters.ts:269-288`) | bit mechanism sourced; malformed-value timing [not yet checked in DOSBox] |
+| 7 | **CMF signature check uses `&&`.** The ID condition rejects only when all four letters mismatch; a separate check still requires the right clock rate. | `SBMUSIC.C:71-84` | no: strict signature (`engine/formats/cmf.ts:20-25`, `engine/audio/cmfLoad.ts:18-24`) | Boolean mechanism sourced; malformed playback [not yet checked in DOSBox] |
+| 8 | **Oversized VOC/CMF count hazards.** VOC narrows retained buffer capacity to `uint`; CMF passes a long music-data count to `fread`. Keep under 64 KB, but do not assume every oversized file merely plays a shorter sample. Allocation, compiler counts and driver handling matter. | `SC:184-209`, `SBMUSIC.C:87-100` | byte-array parsers are not DOS narrow-count paths (`engine/formats/voc.ts:32-68`, `engine/formats/cmf.ts:20-25`) | exact oversized-file results [not yet checked in DOSBox] |
+| 9 | **Repeated qualifying touches restart digital sounds.** Executed successful score/heal touches can request the sound again; the next digital play stops an active voice. Touch checks are gated, not guaranteed every overlap tick. | `PG:2475-2500`, `PG:3437-3506`, `PG:4591-4607`, `SC:164` | same restart path (`engine/audio/engine.ts:238-263`, `engine/engine/scene.ts:267-278`) | cadence/audible chop [not yet checked in DOSBox]; chapter 10b |
+| 10 | **Short data reads are not detected.** Loaders ignore `fread` results, so unread bytes can retain earlier contents; not all data is preserved, since digital names are cleared first. | `PG:4294-4337`, `PG:4301`, `GENC.C:295-307` | no: fresh `Reader` paths zero-pad EOF (`engine/formats/binary.ts:33-68`) | visible malformed-file consequences [not yet checked in DOSBox] |
+| 11 | **Monsters scale movement after a late tick; the hero does not.** Character displacement/gravity are not elapsed-tick scaled; the character loop can retry while `cframe==-1`. Rings and births also do not replay all missed transitions. | `PG:2997-3000`, `PG:1491-1498`, `PG:2460-2492`, `PG:2330-2341`, `PG:3283-3290` | elapsed monster movement matches (`engine/engine/monsters.ts:498-501`) | source reading |
+| 12 | **Nominal BIOS-clock gain** is about 10.55 s/day with the usual 65,536-count baseline and no lost interrupts: divisor 8,191, forwarding every eighth interrupt. | `PG:4421-4427`, `PG:4618-4624` | n/a | calculated, not measured clock drift |
+| 13 | **`KillMon` conditionally stores `MMnum - 1` as the search hint** when a killed slot precedes the hint. Slot 0 is the underflow case in row 5. | `PG:3251-3258` | clamped at 0 (`engine/engine/monsters.ts:247-255`) | distinguish the slot-0 hazard |
+| 14 | **Pickup needs the last inventory slot empty** (`inv[9] == 150`), before searching earlier slots. | `PG:2123-2124`, `BLOC.H:6` | yes (`engine/engine/character.ts:301-305`) | source-confirmed prerequisite |
+| 15 | **A persistent touch can repeat whenever checked.** Refusal returns before effects; success has no per-cell latch. Checks depend on movement/gravity/solid/update, not overlap alone. | `PG:2475-2500`, `PG:3440-3442`, `PG:3512-3547` | same effect/rejection path (`engine/engine/touch.ts:86-141`) | chapter 8 |
+| 16 | **A one-block plank under a reverse jump does not reliably hold the hero.** When only one of the two cells under his feet is solid, `chkdowns` snaps him sideways into the corridor: to the left cell's edge if only the left cell is solid and he is past a half block, to the right edge if only the right cell is solid. A hero landing near a one-block plank's end is pulled off it and can fall. The side checks (`chklefts`, `chkrights`) snap vertically the same way. The design answer is a plank two blocks wide, as One More Try's Ways Back does (commit 715c389fd). | `PG:3682-3690`, `PG:3562-3624` | same snaps, unchanged | source reading; design answer [design] |
+
+## 14.2 Fields that are written but ignored
+
+All rows are from the audit unless marked **(mine)**. "Ignored" means PLAYGAME's play path never consumes the value; an editor may still use it.
+
+### `.mon` (300 bytes)
+
+| Field                 | Offset | Status                                                                                                                                                                   |
+| --------------------- | -----: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `used`                |      0 | editor bookkeeping; existence is `mm[].monnum < LASTMON` (`PG:2976-2978`)                                                                                                |
+| `fly`                 |      2 | unused anywhere                                                                                                                                                          |
+| `jump`, `stick`       |   4, 6 | unused ("not currently used", `MON.H:25-26`)                                                                                                                             |
+| `thru`                |      9 | **a visible no-op:** MONEDIT offers "Monster blocked by solid blocks" (`MONEDIT.C:719, 774`) and PLAYGAME never reads it; solidity comes from the block (`PG:2754-2778`) |
+| `lasttime`            |     94 | editor preview clock                                                                                                                                                     |
+| `xtra[21]`            |    101 | filler                                                                                                                                                                   |
+| `cur`                 |    292 | editor preview cursor                                                                                                                                                    |
+| `close[2]` **(mine)** |    128 | not read by name; reached only through `march[0][-1]` overlap (chapter 6)                                                                                                |
+
+### Blocks (420 bytes)
+
+| Field                                                         | Offset | Status                                                                                                                                                                                                                            |
+| ------------------------------------------------------------- | -----: | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Xtra[2]`                                                     |    403 | filler                                                                                                                                                                                                                            |
+| `hitpt`                                                       |    406 | declared as "hurt side mask"; **not read** (`PG:3444-3467` uses `chhitpt`); no editor control found                                                                                                                               |
+| `.mbl` behavior fields **(a correction to the source audit)** |        | `Birthmon`, `Birthtime`, `nextbl`, `ntime`, `touchbl`, `grav`, `obj` do nothing in a monster block; `scorepts`, `chhitpt`, `effect`, `eamt` **do** apply when an eligible monster touches the hero (`PG:3113-3118`); `solid` stops monsters |
+| `.cbl` behavior fields                                        |        | do nothing (pixels only)                                                                                                                                                                                                          |
+
+### `.map`
+
+| Field                                    | Status                                         |
+| ---------------------------------------- | ---------------------------------------------- |
+| per-cell `mon`                           | live occupancy scratch; the player rebuilds it |
+| placed monster `status`, `xtra`, `extra` | filler (`MAP.H:21-28`)                         |
+
+### `.chr` (3,784 bytes, two records)
+
+| Field                                  | Status                                      |
+| -------------------------------------- | ------------------------------------------- |
+| frame `extra[5]`, sequence `xtra[5]`   | filler                                      |
+| saved `x[3]`, `y[3]`, `cframe`, `cseq` | overwritten on scene entry (`PG:4673-4678`) |
+| the whole **second** record            | never read (`PG:4252`)                      |
+
+### `.gam`
+
+| Field                                                                     | Status                                                                                                                |
+| ------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| header `Ver`, `Encrypt`, `FileType`, the 250-byte filler ("RSD" repeated) | only "GM" is checked                                                                                                  |
+| `GratorHeader.FilesPerScene`, `LinksPerScene`                             | always 20; not read                                                                                                   |
+| scene `Pos`                                                               | integrator layout only                                                                                                |
+| scene `Scroll.Style`, `Xtra[11]`                                          | not read; the four direction bytes are used, and **swapped** on entry (up with down, left with right, `PG:1380-1383`) |
+| scene `NumLinks`                                                          | not read; all 20 slots are scanned                                                                                    |
+| pre-3.00 `PinChar`, `red`, `green`, `blue`                                | dropped by the converter                                                                                              |
+
+### Constants: player use versus editor use
+
+| Constant             | Where           | Status                                                |
+| -------------------- | --------------- | ----------------------------------------------------- |
+| `FREQL`, `FREQH`     | `SOUND.H:11-12` | used by sound editor graph generation (`SNDEDIT.C:418-428`); not player validation |
+| `DELAY 7`            | `SOUND.H:14`    | used by sound editor preview (`SNDEDIT.C:306-324`), nominal 7 ms per step |
+| `ATTACKX`, `ATTACKY` | `PG:72-73`      | **used** (monster attack window)                      |
+| `JSTICKKEY 1`        | `PG:71`         | used as a stack marker                                |
+
+## 14.3 What the port does not reproduce (a summary)
+
+Known differences include stale edge repainting (1), bounds-guarded counter updates (3), the slot-0 hint (5), separate birth flags (6), strict CMF signatures (7) and fresh-parser short-read handling (10). The row citations establish these mechanisms; they do not certify that every other malformed input or quirk matches.
+Whether a fidelity change helps or harms a particular game is a taste call and needs game-specific evidence. The relevant visible/failure scenarios are **[not yet checked in DOSBox]**; source differences alone do not establish what authors relied on.
+
+## 14.4 Tips
+
+- Do not rely on a field in the ignored list: a future PLAYGAME could read it. Use a field that does something.
+- Do not put `thru` expectations in a game's notes: a monster is stopped by solid blocks always.
+- Set `Birthtime` under 16,384.
+- Keep every digital sound off blocks that stay touched.
+
+## 14.5 What real games did with the ignored fields (a survey of shareware games)
+
+- Coverage: **408 of 413** unique shareware game archives could be measured. Counts are field instances and say bytes were stored, **not** that they changed play.
+- **`thru = 0` (the "Monster blocked by solid blocks" checkbox) was set in 14,113 monster records, 648 asset files and 313 games.** Authors turned on a control that PLAYGAME never reads: monsters in those games are stopped by solid blocks anyway
+  (`PG:2754-2778`). This is the one exposed no-op, and the strongest reason chapter 14 exists.
+- **No readable monster had a nonzero `fly`, `jump` or `stick`.** So `fly` never marked a monster that was meant to fall, and no game in the collection needs a fall-intent list. `fly` cannot make a monster fall.
+- Large non-default counts in `.mbl`/`.cbl` behavior fields (`Birthmon`, `Birthtime`, `touchbl`, ...) were found in the survey. **[inference]** some may be record reuse or editor residue; stored values alone do not prove their origin. Do not apply that explanation to the live monster-frame effects below.
+- **One disagreement:** a first reading of the files called every behavior field of a monster block a no-op. An eligible colliding monster passes its current frame block to `DoBlockTouchChar` (`PG:3113-3118`), which reads `scorepts`, `chhitpt`, `effect` and `eamt` (`PG:3437-3509`); the web mirrors the call (`engine/engine/monsters.ts:598-609`). Those four fields are live in `.mbl` (chapters 5 and 6), subject to frame, collision, `fromchar`, death and counter gates. The survey's counts for them should be read as "used", not "ignored". The demonstration with a 10-point monster frame is still **[not yet checked in DOSBox]**; field liveness itself is source-established.

@@ -3,11 +3,13 @@
 // per step, INP, long tasks, time until quiet, frames while playing, and the hottest functions from
 // a CPU profile of every step that ran long. --throttle N slows the CPU N times (4 is a middling
 // laptop; Lewis's reported INP was 6.9 s). Never 5173.
-//   npm run perf:tasks -- [--dist <scratch vite build>] [--port 5195] [--url http://…] [--throttle 4] [--out <folder>]
+//   (add --desk-only 1 to run only the desk steps; --budget 1 for the short set; --repeat N opens and closes each desk overlay N times; --profiles <folder> keeps slow steps' CPU profiles verifyPerf.ts uses:
+//    home, the map editor and its tabs, the desk, the Virus Blaster box)
+//   npm run perf:tasks -- [--dist <scratch vite build>] [--port 5195] [--url http://…] [--throttle 4] [--network 4g|slow-4g] [--out <folder>]
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import type { CDPSession, Page } from 'playwright-core';
-import { arg, launch, OBSERVE, target } from './perfLib';
+import { applySlowdown, arg, launch, OBSERVE, target } from './perfLib';
 
 interface Hot {
   fn: string;
@@ -72,6 +74,7 @@ async function measure(page: Page, step: string, action: () => Promise<unknown>)
       }),
   );
   const { profile } = await cdp.send('Profiler.stop');
+  const keepDir = arg('profiles');
   const r = await page.evaluate(() => {
     const m = (window as unknown as { __perf: PerfState }).__perf;
     return { inp: Math.max(0, ...m.events.values()), long: m.long };
@@ -86,6 +89,11 @@ async function measure(page: Page, step: string, action: () => Promise<unknown>)
     heapMb: Math.round((metrics.find((m) => m.name === 'JSHeapUsedSize')?.value ?? 0) / 1048576),
   };
   if (out.inpMs > SLOW || out.longestMs > SLOW || out.readyMs > 600) out.hot = hottest(profile);
+  // --profiles <folder>: keep the whole CPU profile (open in DevTools) of every slow step
+  if (keepDir && out.inpMs > SLOW) {
+    mkdirSync(keepDir, { recursive: true });
+    writeFileSync(join(keepDir, `${steps.length}-${step.replace(/\W+/g, '-')}.cpuprofile`), JSON.stringify(profile));
+  }
   console.log(`  ${step}: ready ${out.readyMs} ms, INP ${out.inpMs}, longest ${out.longestMs}`);
   steps.push(out);
   return out;
@@ -113,6 +121,7 @@ const frames = (page: Page, ms: number) =>
     ms,
   );
 
+const budget = Boolean(arg('budget'));
 const srv = await target(5195);
 const browser = await launch();
 try {
@@ -122,8 +131,7 @@ try {
   cdp = await context.newCDPSession(page);
   await cdp.send('Performance.enable');
   await cdp.send('Profiler.enable');
-  const rate = Number(arg('throttle') ?? 1);
-  if (rate > 1) await cdp.send('Emulation.setCPUThrottlingRate', { rate });
+  await applySlowdown(cdp);
   const go = (hash: string) => page.goto(`${srv.base}/${hash}`);
   // a real mouse click at the element's middle (the page's own animations keep Playwright's
   // "stable" wait from ever finishing, and its hit-testing would show up in the profiles)
@@ -138,78 +146,105 @@ try {
 
   await measure(page, 'home: first load', () => go('#/'));
   await page.waitForTimeout(1500);
-  await measure(page, 'home: Another featured game', click(page.getByRole('button', { name: /^Another/ })));
-  await measure(page, 'home: Look inside', click(page.getByRole('button', { name: /^Look inside/ })));
-  await measure(page, 'home: open the Sandbox shelf', click(page.getByRole('button', { name: /^Sandbox\d+ games/ })));
-  // the walkthrough player: open, play, step items, chapters, close
-  await measure(page, 'walkthrough: open', click(page.getByRole('button', { name: /^Walkthrough of/ })));
-  await page.waitForTimeout(1500);
-  await measure(page, 'walkthrough: play', click(page.locator('.wt-play')));
-  await measure(page, 'walkthrough: 8 x next item', async () => {
-    for (let i = 0; i < 8; i++) await click(page.locator('.wt-item-btn[aria-label="Next item"]'))();
-  });
-  await measure(page, 'walkthrough: chapter click', click(page.locator('.wt-chapter').nth(3)));
-  await measure(page, 'walkthrough: close', () => page.keyboard.press('Escape'));
-  for (const [name, href] of [
-    ['Guide', '#/help'],
-    ['Library', '#/library'],
-    ['What you’ve done', '#/achievements'],
-    ['Cast', '#/cast'],
-  ])
-    await measure(page, `nav: ${name}`, click(page.locator(`a[href="${href}"]:visible`)));
-  for (const [what, path] of [
-    ['song', 'carl/menu.cmf'],
-    ['map', 'blaster/bus2.map'],
-    ['blocks', 'blaster/b1.bbl'],
-    ['character', 'blaster/virus.chr'],
-  ]) {
-    await measure(page, `editor: open ${what} (${path})`, async () => {
-      await go(`#/p/look:${path}`);
-      await page.locator('main.editor [role=tab]:visible, main.editor canvas:visible').first().waitFor({ timeout: 30_000 });
-    });
-    const labels = (await page.locator('main.editor [role=tab]:visible').allTextContents()).map((t) => t.trim()).filter(Boolean);
-    for (const label of [...new Set(labels)])
-      await measure(page, `editor ${what}: tab ${label.slice(0, 24)}`, click(page.locator('main.editor [role=tab]:visible', { hasText: label })));
-    if (what === 'song') {
-      const play = await measure(page, 'editor song: play', click(page.getByRole('button', { name: /^▶ Play/ })));
-      play.frames = await frames(page, 4000);
-      await measure(page, 'editor song: stop', click(page.getByRole('button', { name: /Stop/ })));
-    }
-    if (what === 'map') {
-      await measure(page, 'editor map: zoom x10', async () => {
-        await page.locator('canvas').first().hover();
-        for (let i = 0; i < 10; i++) await page.mouse.wheel(0, i < 5 ? -120 : 120);
+  if (!arg('desk-only')) {
+    if (!budget) {
+      await measure(page, 'home: Another featured game', click(page.getByRole('button', { name: /^Another/ })));
+      await measure(page, 'home: Look inside', click(page.getByRole('button', { name: /^Look inside/ })));
+      await measure(page, 'home: open the Sandbox shelf', click(page.getByRole('button', { name: /^Sandbox\d+ games/ })));
+      // the walkthrough player: open, play, step items, chapters, close
+      await measure(page, 'walkthrough: open', click(page.getByRole('button', { name: /^Walkthrough of/ })));
+      await page.waitForTimeout(1500);
+      await measure(page, 'walkthrough: play', click(page.locator('.wt-play')));
+      await measure(page, 'walkthrough: 8 x next item', async () => {
+        for (let i = 0; i < 8; i++) await click(page.locator('.wt-item-btn[aria-label="Next item"]'))();
       });
-      await measure(page, 'editor map: paint stroke', async () => {
-        const box = await page.locator('canvas').first().boundingBox();
-        if (!box) return;
-        await page.getByRole('button', { name: 'Paint', exact: true }).click();
-        await page.mouse.move(box.x + 60, box.y + 60);
-        await page.mouse.down();
-        for (let i = 0; i < 40; i++) await page.mouse.move(box.x + 60 + i * 8, box.y + 60 + (i % 5) * 6);
-        await page.mouse.up();
-      });
-      for (const file of ['BUS2.BBL', 'BUS2.MON'])
-        await measure(page, `editor map: file ${file}`, click(page.getByRole('button', { name: new RegExp(`^${file}`) })));
+      await measure(page, 'walkthrough: chapter click', click(page.locator('.wt-chapter').nth(3)));
+      await measure(page, 'walkthrough: close', () => page.keyboard.press('Escape'));
+      for (const [name, href] of [
+        ['Guide', '#/help'],
+        ['Library', '#/library'],
+        ['What you’ve done', '#/achievements'],
+        ['Cast', '#/cast'],
+      ])
+        await measure(page, `nav: ${name}`, click(page.locator(`a[href="${href}"]:visible`)));
     }
+    for (const [what, path] of [
+      ['song', 'carl/menu.cmf'],
+      ['map', 'blaster/bus2.map'],
+      ['blocks', 'blaster/b1.bbl'],
+      ['character', 'blaster/virus.chr'],
+    ].filter(([what]) => !budget || what === 'map')) {
+      await measure(page, `editor: open ${what} (${path})`, async () => {
+        await go(`#/p/look:${path}`);
+        await page.locator('main.editor [role=tab]:visible, main.editor canvas:visible').first().waitFor({ timeout: 30_000 });
+      });
+      const labels = (await page.locator('main.editor [role=tab]:visible').allTextContents()).map((t) => t.trim()).filter(Boolean);
+      for (const label of [...new Set(labels)])
+        await measure(page, `editor ${what}: tab ${label.slice(0, 24)}`, click(page.locator('main.editor [role=tab]:visible', { hasText: label })));
+      if (what === 'song') {
+        const play = await measure(page, 'editor song: play', click(page.getByRole('button', { name: /^▶ Play/ })));
+        play.frames = await frames(page, 4000);
+        await measure(page, 'editor song: stop', click(page.getByRole('button', { name: /Stop/ })));
+      }
+      if (what === 'map' && !budget) {
+        await measure(page, 'editor map: zoom x10', async () => {
+          await page.locator('canvas').first().hover();
+          for (let i = 0; i < 10; i++) await page.mouse.wheel(0, i < 5 ? -120 : 120);
+        });
+        await measure(page, 'editor map: paint stroke', async () => {
+          const box = await page.locator('canvas').first().boundingBox();
+          if (!box) return;
+          await page.getByRole('button', { name: 'Paint', exact: true }).click();
+          await page.mouse.move(box.x + 60, box.y + 60);
+          await page.mouse.down();
+          for (let i = 0; i < 40; i++) await page.mouse.move(box.x + 60 + i * 8, box.y + 60 + (i % 5) * 6);
+          await page.mouse.up();
+        });
+        for (const file of ['BUS2.BBL', 'BUS2.MON'])
+          await measure(page, `editor map: file ${file}`, click(page.getByRole('button', { name: new RegExp(`^${file}`) })));
+      }
+    }
+    await measure(page, 'leave editor: home', () => go('#/'));
   }
-  await measure(page, 'leave editor: home', () => go('#/'));
   await measure(page, 'desk: open', async () => {
     await go('#/desk');
     await page.locator('[aria-label="The 1994 desk"]').waitFor({ timeout: 30_000 });
+    // the shelf draws its boxes one per task, with a fetch between: a gap of 600 ms is not "quiet",
+    // so wait until the count of boxes has not changed for 3 s (this made "ready" swing from 1.3 s to 13 s)
+    let last = -1;
+    let since = Date.now();
+    while (Date.now() - since < 3000) {
+      const n = await page.locator('.shelf-box').count();
+      if (n !== last) {
+        last = n;
+        since = Date.now();
+      }
+      await page.waitForTimeout(250);
+    }
   });
   await page.waitForTimeout(2000);
-  for (const [name, sel] of [
-    ['Virus Blaster box', '[aria-label="Virus Blaster box"]'],
-    ['Shareware catalog', '[aria-label^="Shareware catalog"]'],
-    ['Disk box', '[aria-label^="Disk box"]'],
-    ['Notes under the phone', '[aria-label^="Notes under the phone"]'],
-    ['Newspaper clipping', '[aria-label^="Newspaper clipping"]'],
-    ['Sandbox mug', '[aria-label^="The Sandbox mug"]'],
-    ['TURBO BUTTON magazine', '[aria-label^="TURBO BUTTON magazine"]'],
-  ]) {
-    await measure(page, `desk: open ${name}`, click(page.locator(`[aria-label="The 1994 desk"] ${sel}`)));
-    await measure(page, `desk: close ${name}`, () => page.keyboard.press('Escape'));
+  for (const [name, sel, then] of (
+    [
+      ['Virus Blaster box', '[aria-label="Virus Blaster box"]'],
+      ['Shareware catalog', '.ps-toggle', '.ps-choice-catalog'],
+      ['Disk box', '[aria-label^="Disk box"]'],
+      ['Notes under the phone', '[aria-label^="Notes under the phone"]'],
+      ['Newspaper clipping', '[aria-label^="Newspaper clipping"]'],
+      ['Sandbox mug', '[aria-label^="The Sandbox mug"]'],
+      ['TURBO BUTTON magazine', '.ps-toggle', '.ps-choice-magazine'],
+    ] as [string, string, string?][]
+  ).slice(0, budget ? 1 : 99)) {
+    // the catalog and the magazine lie in a stack: its menu opens first (not timed), then the choice
+    if (then) await click(page.locator(`[aria-label="The 1994 desk"] ${sel}`))();
+    // --repeat N: open and close it N times, waiting a different extra time (0 to 6 s) after each open
+    const waits = [0, 400, 1000, 2000, 3500, 6000];
+    for (let i = 0; i < Number(arg('repeat') ?? 1); i++) {
+      const tag = Number(arg('repeat') ?? 1) > 1 ? ` #${i + 1}` : '';
+      await measure(page, `desk: open ${name}${tag}`, click(page.locator(`[aria-label="The 1994 desk"] ${then ?? sel}`)));
+      const extra = Number(arg('repeat') ?? 1) > 1 ? waits[i % waits.length] : 0;
+      if (extra) await page.waitForTimeout(extra);
+      await measure(page, `desk: close ${name}${tag}${extra ? ` (+${extra} ms after open)` : ''}`, () => page.keyboard.press('Escape'));
+    }
   }
   await measure(page, 'desk: leave to home', () => go('#/'));
 } finally {

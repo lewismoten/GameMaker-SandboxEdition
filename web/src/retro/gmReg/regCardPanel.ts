@@ -11,7 +11,8 @@ import { PRODUCT } from '../../edition';
 import type { RegSideOptions } from './regSide';
 
 /** The name already on the card, so it can be mailed as it comes. */
-const SAMPLE_NAME = 'John Smith';
+// The same stand-in name the graduation certificates use when none is entered (editor/shell/certificateImage.ts).
+const SAMPLE_NAME = 'A Game Maker';
 
 /** What the card needs from the side panels (regSide.ts). */
 interface CardHost extends RegSideOptions {

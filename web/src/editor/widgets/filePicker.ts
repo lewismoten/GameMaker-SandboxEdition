@@ -14,6 +14,7 @@ import { parseBackdrop } from '@lewismoten/gamemaker-sandbox-engine/formats/grap
 import { decodeVoc, isVoc } from '@lewismoten/gamemaker-sandbox-engine/formats/voc';
 import { classifySound, SOUND_GROUPS, type SoundGroup } from '../../audio/soundProfile';
 import { paintIndexed } from '../core/draw';
+import { dosStem } from './limitNote';
 
 interface PickOptions {
   title?: string;
@@ -60,14 +61,23 @@ export function pickFile(project: Project, kind: FileKind, opts: PickOptions = {
       stopPreview();
       close0(v);
     };
-    const grid = h('div', { class: 'pick-grid' });
+    const grid = h('div', { class: 'pick-grid', dataset: { listArea: '' } });
     const filters = h('div', { class: 'pick-filters', role: 'group', 'aria-label': 'Sound groups' });
     const tabs = h('div', { class: 'pick-tabs', role: 'tablist' });
     let filter: SoundGroup | 'all' = 'all';
     let io: IntersectionObserver | undefined;
     let shown = 0; // which listing is current, so a slow library load doesn't land on another tab
     let query = '';
-    type Cell = { el: HTMLElement; group?: SoundGroup; none?: boolean };
+    let sourceGame = '';
+    const gameFilter = h('select', {
+      'aria-label': 'Filter by source game',
+      hidden: '',
+      onchange: () => {
+        sourceGame = gameFilter.value;
+        layout(listed, emptyMessage);
+      },
+    });
+    type Cell = { el: HTMLElement; group?: SoundGroup; none?: boolean; game?: string };
     let listed: Cell[] = [];
     let emptyMessage: HTMLElement | null = null;
     const search = h('input', {
@@ -101,7 +111,11 @@ export function pickFile(project: Project, kind: FileKind, opts: PickOptions = {
     const layout = (cells: Cell[], empty: HTMLElement | null) => {
       listed = cells;
       emptyMessage = empty;
-      const visible = cells.filter((cell) => cell.none || !query || (cell.el.dataset.search ?? cell.el.textContent)?.toLocaleLowerCase().includes(query));
+      const visible = cells.filter(
+        (cell) =>
+          (!sourceGame || cell.game === sourceGame || cell.none) &&
+          (cell.none || !query || (cell.el.dataset.search ?? cell.el.textContent)?.toLocaleLowerCase().includes(query)),
+      );
       const message = query ? h('p', { class: 'hint' }, 'No matching files. Try another file name or game title.') : empty;
       if (!grouped) {
         clear(grid, ...visible.map((c) => c.el), visible.length ? null : message);
@@ -191,7 +205,7 @@ export function pickFile(project: Project, kind: FileKind, opts: PickOptions = {
       io?.disconnect();
       clear(filters);
       clear(grid, h('p', { class: 'hint' }, source === 'originals' ? 'Loading Sandbox & Bizarre assets…' : 'Loading the CD library…'));
-      const items = (await Promise.all(kinds.map((k) => libraryItems(k, source)))).flat();
+      const items = (await Promise.all(kinds.map((k) => libraryItems(k, source, false)))).flat();
       if (me !== shown) return;
       search.disabled = false;
       // Draw each thumbnail when it scrolls into view: library games load on demand.
@@ -242,8 +256,11 @@ export function pickFile(project: Project, kind: FileKind, opts: PickOptions = {
             () => el.querySelector<HTMLElement>('.pick-card small'),
           ) ?? '',
         );
-        return { el, item, group: grouped ? item.group : undefined };
+        return { el, item, game: item.game.id, group: grouped ? item.group : undefined };
       });
+      const games = [...new Map(items.map((item) => [item.game.id, item.game])).values()];
+      clear(gameFilter, h('option', { value: '' }, 'All games'), ...games.map((game) => h('option', { value: game.id }, game.title)));
+      gameFilter.hidden = false;
       const empty = h('p', { class: 'hint' }, 'Nothing of this kind in the library.');
       layout(cells, empty);
       for (const c of cells) io.observe(c.el);
@@ -293,6 +310,7 @@ export function pickFile(project: Project, kind: FileKind, opts: PickOptions = {
       if (!t) return;
       const name = project.freeName(project.gam.replace(/\.gam$/, ''), kind);
       project.files.set(name, t.make(project));
+      if (kind === 'map') toast('To generate a level layout, open this map and choose Generate in its Blocks panel.');
       close(name);
     };
 
@@ -301,7 +319,7 @@ export function pickFile(project: Project, kind: FileKind, opts: PickOptions = {
       search.disabled = true;
       io?.disconnect();
       layout([], h('p', { class: 'hint' }, 'Loading palette templates…'));
-      const { PALETTE_PRESETS, createPalettePreset } = await import('@lewismoten/gamemaker-sandbox-tools/palettes');
+      const { PALETTE_PRESETS, createPalettePreset } = await import('./palettePresets');
       if (me !== shown || !grid.isConnected) return;
       search.disabled = false;
       layout(
@@ -334,14 +352,17 @@ export function pickFile(project: Project, kind: FileKind, opts: PickOptions = {
       const f = list[0];
       if (!f) return;
       const name = normalize(f.name);
+      dosStem(f.name, toast); // normalize cuts a long file name to 8 letters; say so
       const bytes = new Uint8Array(await f.arrayBuffer());
       project.files.set(name, bytes);
       (await import('./bigVocWarning')).warnBigVocs([[name, bytes]]);
       close(name);
     };
 
-    const setTab = (t: 'mine' | 'library' | 'originals' | 'presets') => {
+    const setTab = (t: 'mine' | 'library' | 'originals' | 'starters' | 'presets') => {
       stopPreview();
+      sourceGame = '';
+      gameFilter.hidden = true;
       [...tabs.children].forEach((b) => {
         const selected = (b as HTMLElement).dataset.source === t;
         b.setAttribute('aria-selected', String(selected));
@@ -349,13 +370,14 @@ export function pickFile(project: Project, kind: FileKind, opts: PickOptions = {
       });
       if (t === 'mine') showMine();
       else if (t === 'presets') void showPresets();
-      else void showLibrary(t === 'originals' ? 'originals' : 'cd');
+      else void showLibrary(t === 'library' ? 'cd' : t);
     };
     if (!opts.adding) tabs.append(h('button', { role: 'tab', 'data-source': 'mine', onclick: () => setTab('mine') }, 'This game'));
     const presets = kind === 'pal' && kinds.length === 1;
     if (presets) tabs.append(h('button', { role: 'tab', 'data-source': 'presets', onclick: () => setTab('presets') }, 'Ready-made palettes'));
     tabs.append(h('button', { role: 'tab', 'data-source': 'library', onclick: () => setTab('library') }, '📀 Library (CD samples)'));
     tabs.append(h('button', { role: 'tab', 'data-source': 'originals', onclick: () => setTab('originals') }, 'Sandbox & Bizarre'));
+    tabs.append(h('button', { role: 'tab', 'data-source': 'starters', onclick: () => setTab('starters') }, 'Starters'));
     tabs.addEventListener('keydown', (event) => {
       const buttons = [...tabs.querySelectorAll<HTMLButtonElement>('[role=tab]')];
       const current = buttons.findIndex((button) => button === document.activeElement);
@@ -383,6 +405,7 @@ export function pickFile(project: Project, kind: FileKind, opts: PickOptions = {
         'div',
         { class: 'pick-bar' },
         tabs,
+        gameFilter,
         h('span', { class: 'spacer' }),
         templateFor(kind) ? h('button', { class: 'primary', onclick: makeNew }, `+ New ${KIND_LABELS[kind].toLowerCase().replace(/s$/, '')}`) : null,
         h('button', { onclick: () => void upload() }, '⬆ From my computer…'),

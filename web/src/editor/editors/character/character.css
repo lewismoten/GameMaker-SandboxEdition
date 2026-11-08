@@ -468,6 +468,12 @@
   line-height: 1;
 }
 
+/* Full list: dimmed like a disabled button but still focusable, so its reason can be read. */
+.chr-tool[aria-disabled='true'] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 /* The 20x40 sprite and persistent transform buttons, reachable by mouse, touch and keyboard. */
 .chr-sprite {
   padding-right: 52px;
@@ -826,4 +832,20 @@
   flex-direction: row;
   align-items: center;
   gap: 6px;
+}
+
+/* a finger (44px targets in touch mode): tabs, Undo/Redo, the buttons, menus and number boxes */
+@media (hover: none) and (pointer: coarse) {
+  .chr-editor .chr-tab,
+  .chr-editor button,
+  .chr-groups .panel-tabs-list button,
+  .chr-editor select,
+  .chr-editor input:not([type='checkbox'], [type='radio'], [type='range']) {
+    min-height: 44px;
+  }
+  .chr-editor .chr-tab,
+  .chr-groups .panel-tabs-list button,
+  .chr-editor button {
+    min-width: 44px;
+  }
 }

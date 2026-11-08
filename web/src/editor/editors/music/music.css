@@ -1029,3 +1029,33 @@ dialog.modal .mus-acc label.check {
 .mus-pick-tracks button {
   min-height: 28px;
 }
+
+/* Touch: every control 44 px; the track tools wrap onto a second row. */
+@media (hover: none) and (pointer: coarse) {
+  .mus button,
+  .mus select,
+  .mus input:not([type='checkbox'], [type='radio'], [type='range']) {
+    min-height: 44px;
+  }
+  .mus button {
+    min-width: 44px;
+  }
+  .mus summary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+  }
+  .mus .mus-ms {
+    width: 44px;
+    min-height: 44px;
+  }
+  .mus .mus-track-tools {
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  .mus .mus-track-tools select {
+    flex: 1 1 120px;
+  }
+}

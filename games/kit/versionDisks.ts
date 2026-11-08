@@ -31,7 +31,9 @@ export class VersionDisks {
   private async sources(): Promise<string> {
     if (this.snapshot) return this.snapshot;
     this.snapshot = mkdtempSync(join(tmpdir(), 'gm-version-'));
-    const files = await readZip(this.git('archive', '--format=zip', this.base, 'games', 'web'), { maxBytes: 512 << 20, maxEntries: 32768 });
+    // scripts/ holds game-build.config.mjs, the package-source config a game build needs since the SDKs left web/src
+    const paths = ['games', 'web', ...(this.git('ls-tree', '--name-only', this.base, 'scripts').length ? ['scripts'] : [])];
+    const files = await readZip(this.git('archive', '--format=zip', this.base, ...paths), { maxBytes: 512 << 20, maxEntries: 32768 });
     for (const file of files) {
       const target = join(this.snapshot, file.name);
       if (file.name.endsWith('/')) mkdirSync(target, { recursive: true });
@@ -57,6 +59,9 @@ export class VersionDisks {
   private async build(id: string): Promise<string> {
     const snapshot = await this.sources();
     const out = join(snapshot, 'comparison-disk');
+    // without it vite-node loads that revision's web/vite.config.ts, whose plugins import the SDKs' unbuilt dist/
+    const config = join(snapshot, 'scripts/game-build.config.mjs');
+    const viteNode = [join(this.root, 'node_modules/vite-node/vite-node.mjs'), ...(existsSync(config) ? ['-c', config] : [])];
     let frames = '';
     if (id === 'depth' && existsSync(join(snapshot, 'games/depth/tools/renderFrames.ts'))) {
       const inputs = ['games/depth/src', 'games/kit', 'web/packages/engine/src', 'web/packages/tools/src', 'package-lock.json'];
@@ -71,7 +76,7 @@ export class VersionDisks {
           for (;;) {
             const shard = pending.shift();
             if (shard === undefined) return;
-            await run(process.execPath, [join(this.root, 'node_modules/vite-node/vite-node.mjs'), '../games/depth/tools/renderFrames.ts', `${shard}/8`], {
+            await run(process.execPath, [...viteNode, '../games/depth/tools/renderFrames.ts', `${shard}/8`], {
               cwd: join(snapshot, 'web'),
               env: { ...process.env, DEPTH_FRAME_CACHE: frames },
               timeout: 240_000,
@@ -83,7 +88,7 @@ export class VersionDisks {
         await Promise.all([worker(), worker()]);
       }
     }
-    execFileSync(process.execPath, [join(this.root, 'node_modules/vite-node/vite-node.mjs'), `../games/${id}/build.ts`], {
+    execFileSync(process.execPath, [...viteNode, `../games/${id}/build.ts`], {
       cwd: join(snapshot, 'web'),
       env: { ...process.env, GAME_DISK_OUT: out, TEXT_BOUNDS: '', DEPTH_FRAME_CACHE: frames },
       stdio: 'pipe',

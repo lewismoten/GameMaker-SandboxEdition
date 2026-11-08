@@ -94,6 +94,18 @@ settings** to bypass it by default, including autoplay. Saved per-game choices s
 **Video & audio…** on the Play screen lets you change them later. These browser preferences
 do not alter the game files on the host; clearing site data resets them.
 
+## Run like a slow PC
+
+The **Run like a** menu in the player's top corner (modern computer, 486, 386, 286, IBM PS/1) runs any game
+the way an old PC would, for trying how a game feels on slow machines. A round of the game that
+takes longer than a tick (1/18 second) is skipped, as PLAYGAME skips it, so walking and animation
+slow down. A digital sound (.VOC) is read from disk whole while the game waits, as PLAYGAME does;
+the music keeps its own time. A level also takes time to load: the screen stays black while its
+files are read from disk (each file costs an open, then its bytes at the disk's speed; for a big
+level about 0.24 s on the 486, 0.4 s on the 386, 0.8 s on the 286 and 2 s on the PS/1), and the
+game clock waits. The
+costs are estimates, not measurements, and "modern computer" (the default) charges nothing. It changes nothing in the game's files or the host.
+
 ## Saves and high scores
 
 Everything a game writes (its high scores, saved games and their names) is kept in the
@@ -121,3 +133,7 @@ their makers; the player only plays the files beside it.
 
 To open a game on this site instead (with the editor, the desk and DOS Game-Maker), see
 [Opening games from your site](embed.md).
+
+## Full-window play page snapshots
+
+On the site’s `play.html` full-window player, the camera button (**Save screenshot**) saves an unscaled PNG using the current DOS palette. Levels use 312 × 196 pixels, matching PLAYGAME’s crop of the right 8 pixels and bottom 4 rows. Pictures, animations, text pages, menus and function-key screens use 320 × 200. Press F12 to save and focus the camera during play; Enter or Space saves again, and Escape returns focus to the game. Tab reaches it before play starts. It also works by click or tap. The button fades when the pointer rests and returns with movement or keyboard focus. File names contain the game id, `scene-<number>` or `screen`, and local `YYYYMMDD-HHMMSS` time.

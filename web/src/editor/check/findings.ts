@@ -199,6 +199,11 @@ export const CHECKS = {
     why: 'PLAYGAME loads a whole .VOC with a 16-bit size (SOUNDC.C PlaySbVocFile), so a sound of 64 KB or more is likely to play nothing or cut off in DOS. The web player plays it either way.',
     guide: { chapter: 'sounds', section: 'Two sounds in every slot' },
   },
+  'voc-stutter': {
+    name: 'Sounds that may stutter on slower PCs',
+    why: 'PLAYGAME reads a whole .VOC from disk while the game waits, so a long sound stalls play on a slow PC, and one played on a block touched for several ticks is cut and restarted. Estimates, not measurements.',
+    guide: { chapter: 'sounds', section: 'Two sounds in every slot' },
+  },
   'out-of-range': {
     name: 'Blocks and monsters that aren’t there',
     why: 'A number past the end of a block set or the counters makes DOS read stray memory; a monster from an empty slot never appears.',
@@ -420,9 +425,21 @@ export const CHECKS = {
     taste: true,
     guide: L('Footing you can trust'),
   },
+  'hidden-exit': {
+    name: 'Exits the player can’t see',
+    why: 'A link on plain wallpaper or floor ends the level when a player wanders onto it, and a player looking for the way out has nothing to find. A door, sign or arrow shows where to go.',
+    taste: true,
+    guide: L('Footing you can trust'),
+  },
   music: {
     name: 'Levels without music',
     why: 'A level with no song, or one DOS won’t play, is silent. Quiet can set a mood; players may take it for a problem.',
+    guide: C('Polish that players notice'),
+  },
+  untitled: {
+    name: 'Game name on the menu',
+    why: 'The first scene’s name is the game’s name on its menu. “UnTitled” there is the first thing a player reads.',
+    taste: true,
     guide: C('Polish that players notice'),
   },
   flashing: {

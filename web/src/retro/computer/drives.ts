@@ -11,6 +11,7 @@ import { FileSystem, file, folder, liveFolder, textFile, deskDate, DOS_DATE, typ
 import { hardDiskGames, hdFiles, type HdGame } from '../dos/hardDisk';
 import { Downloads, type InsertedDisk } from '../host';
 import type { Disk } from '../dos/disks';
+import { sampleFolders, type SampleFolder } from '../dos/sampleDisk';
 import { loadCatalog, loadHostedGame, type CatalogEntry, GameFiles } from '../../project/files';
 import { Vga } from '../../vga/shared/vga';
 import { h } from '../../editor/core/ui';
@@ -21,6 +22,7 @@ import { TTY_INFO } from '../bbs/ttyInfo';
 import { flagsBakNodes } from '../hacks/flagsBackup';
 import { deskFilesReady, gameDownloadNodes, imagesDiz, playgameReg, utilityFolders } from '../hacks/deskFiles';
 import { dosDir } from '../../project/dosDir';
+import { gmProgramRef } from '../dos/gmPrograms';
 
 export abstract class ComputerDrives {
   // Defined by a later layer (see the chain in the header comment).
@@ -48,7 +50,7 @@ export abstract class ComputerDrives {
     readonly monitor: HTMLElement,
     protected opts: ComputerOptions,
   ) {
-    this.textEl = h('canvas', { class: 'crt-text', tabIndex: 0, 'aria-label': 'Computer screen' });
+    this.textEl = h('canvas', { class: 'crt-text', tabIndex: 0, 'aria-label': 'Computer screen. The program reads your keys; Shift+Tab leaves it' });
     this.layer = h('div', { class: 'crt-layer' });
     // .crt-picture: what the tube shows, which the desk curves like the glass
     monitor.append(h('div', { class: 'crt-picture' }, this.textEl, this.layer));
@@ -153,13 +155,33 @@ export abstract class ComputerDrives {
       folder(
         g.id,
         async () => {
-          const nodes = g.files.map((f) => file(f, 0, { date, read: async () => (await this.catalogFiles(g)).get(f) ?? new Uint8Array() }));
+          const nodes = (g.files ?? []).map((f) => file(f, 0, { date, read: async () => (await this.catalogFiles(g)).get(f) ?? new Uint8Array() }));
           // Sizes come from the files themselves, loaded when the folder is opened.
           const files = await this.catalogFiles(g);
           for (const n of nodes) n.size = files.get(n.name.toLowerCase())?.length ?? 0;
           return nodes;
         },
         date,
+      );
+
+    /** A folder for each Starter (the Sample Disk's, or the Sample CD's D:\SAMPLES), holding its files as the transfer left a game. */
+    const starterFolders = (list: readonly SampleFolder[]): DosNode[] =>
+      list.map(({ dir, entry: g }) =>
+        folder(
+          dir,
+          async () => {
+            const own = gameDownloadNodes(g, DOS_DATE, {
+              kind: 'game',
+              title: g.title,
+              gam: g.gam!,
+              files: () => this.catalogFiles(g),
+              saveId: `game:${g.id}`,
+            });
+            const files = (await gameFolder(g).list!()).filter((n) => !own.some((o) => o.name === n.name));
+            return [...own, ...files];
+          },
+          DOS_DATE,
+        ),
       );
 
     this.fs.addDrive({
@@ -169,6 +191,8 @@ export abstract class ComputerDrives {
       root: async () => {
         const d = this.inserted;
         if (!d || d.disk.kind === 'blank') return null;
+        // the Sample Disk: a folder for each Starter, holding its files as the transfer left a game
+        if (d.disk.folders) return starterFolders(d.disk.folders);
         const nodes = d.files.entries().map(([n, b]) => file(n, b.length, { read: async () => b }));
         if (d.disk.gam) {
           const exe = d.disk.gam.replace(/\.gam$/i, '.exe');
@@ -215,6 +239,7 @@ export abstract class ComputerDrives {
           folder('COMM', () => [
             file('TERMINAL.EXE', 211_340, { run: { kind: 'terminal' } }),
             file('VPIC.EXE', 77_221, { run: { kind: 'vpic' } }),
+            file('SCOOT.EXE', 48_640, { run: { kind: 'scoot' } }),
             textFile(
               'PHONE.LST',
               'THE -= S A N D B O X =- BBS  1-412-555-SAND  14400 N81  Renegade\nTHE SOFA                     1-412-555-SOFA  14400 N81  Major BBS, 8 lines\nMRS. NOVAK NEXT DOOR         1-412-555-0156  45.45 TDD  TTY (Baudot)\n',
@@ -297,11 +322,27 @@ export abstract class ComputerDrives {
         const cat = await this.catalog();
         return [
           folder('GM', () => this.gmFolder(false)),
+          folder('SAMPLES', () => starterFolders(sampleFolders(cat))),
           folder('GAMEWARE', () => cat.filter((g) => g.kind === 'gameware').map((g) => gameFolder(g))),
           file('INSTALL.EXE', 61_421, { run: { kind: 'install' } }),
           textFile(
             'README.TXT',
-            'Game-Maker: Sandbox Edition 3.00\nBased on Game-Maker 3.00 by\nRecreational Software Designs, 1994\n\nGame-Maker is already installed in C:\\GM. Type GM to start it.\n',
+            [
+              'GAME-MAKER: SANDBOX EDITION 3.00  -  THE SAMPLE CD',
+              'Based on Game-Maker 3.00 by Recreational Software Designs, 1994',
+              '',
+              '  GM         Game-Maker, as shipped (already installed in C:\\GM;',
+              '             type GM to start it)',
+              '  SAMPLES    the Starters: small games, one idea each, one',
+              '             folder apiece (FIRSTSTP is the place to begin)',
+              '  GAMEWARE   games to play, from RSD and friends',
+              '',
+              'Open a sample in Game-Maker to play it or change it. The CD',
+              "can't be written to; copies of a sample go to C:\\GM.",
+              '',
+              'Sandbox Software',
+              '',
+            ].join('\n'),
           ),
         ];
       },
@@ -326,12 +367,11 @@ export abstract class ComputerDrives {
   /** C:\GM (hard disk, with your games and changes) or D:\GM (the CD, as shipped). */
   protected async gmFolder(hardDisk: boolean): Promise<DosNode[]> {
     const index = await this.gmIndexList();
-    const runs: Record<string, ProgramRef> = { 'GM.EXE': { kind: 'gm' }, 'MENU.EXE': { kind: 'gm' }, 'PLAYGAME.EXE': { kind: 'playgame' } };
     const programs = index
       .filter((e) => !e.dir)
       .map((e) => {
-        const text = /\.(hlp|txt)$/i.test(e.name);
-        return file(e.name, e.size, { run: runs[e.name], read: text ? async () => (await this.gmFile(e.name)) ?? new Uint8Array() : undefined });
+        const text = /\.(hlp|txt|bat)$/i.test(e.name);
+        return file(e.name, e.size, { run: gmProgramRef(e.name), read: text ? async () => (await this.gmFile(e.name)) ?? new Uint8Array() : undefined });
       });
     const games = hardDisk ? await this.hdGames() : (await this.hdGames()).filter((g) => g.source === 'installed');
     // your games and changed installed ones are dated when last saved

@@ -1,4 +1,35 @@
 {
+ "beams": [
+  "warning facing s2 Monster 10 paces back and forth without turning round",
+  "warning facing s2 Monster 11 paces back and forth without turning round",
+  "warning facing s2 Monster 12 paces back and forth without turning round",
+  "warning facing s2 Monster 13 paces back and forth without turning round",
+  "warning facing s2 Monster 14 paces back and forth without turning round",
+  "warning facing s2 Monster 15 paces back and forth without turning round",
+  "warning facing s2 Monster 16 paces back and forth without turning round",
+  "warning facing s2 Monster 17 paces back and forth without turning round",
+  "warning facing s2 Monster 18 paces back and forth without turning round",
+  "warning facing s2 Monster 19 paces back and forth without turning round",
+  "warning facing s2 Monster 20 paces back and forth without turning round",
+  "warning facing s2 Monster 21 paces back and forth without turning round",
+  "warning facing s2 Monster 22 paces back and forth without turning round",
+  "warning facing s2 Monster 23 paces back and forth without turning round",
+  "warning facing s2 Monster 24 paces left and right facing the player",
+  "warning facing s2 Monster 25 paces back and forth without turning round",
+  "warning facing s2 Monster 26 paces back and forth without turning round",
+  "warning facing s2 Monster 27 paces back and forth without turning round",
+  "warning facing s2 Monster 28 paces back and forth without turning round",
+  "warning facing s2 Monster 3 paces left and right facing the player",
+  "warning facing s2 Monster 4 paces back and forth without turning round",
+  "warning facing s2 Monster 5 paces left and right facing the player",
+  "warning facing s2 Monster 6 paces left and right facing the player",
+  "warning facing s2 Monster 7 paces left and right facing the player",
+  "warning facing s2 Monster 8 paces back and forth without turning round",
+  "warning facing s2 Monster 9 paces left and right facing the player"
+ ],
+ "beltway": [
+  "warning waits s3 Timed block 98 stays shut for 18.5 s at a time"
+ ],
  "blaster": [
   "warning births s10 Block 31 gives birth to monster 15 every 0.7 s",
   "warning births s10 Block 33 gives birth to monster 14 every 0.7 s",
@@ -107,9 +138,15 @@
  ],
  "depth": [
   "warning hazard-art s17 Block 0 hurts through its whole cell, but its art fills 19% of it",
+  "warning hazard-art s17 Block 18 hurts through its whole cell, but its art fills 7% of it",
   "warning hazard-art s17 Block 28 hurts through its whole cell, but its art fills 19% of it",
+  "warning hazard-art s17 Block 39 hurts through its whole cell, but its art fills 8% of it",
+  "warning hazard-art s17 Block 40 hurts through its whole cell, but its art fills 7% of it",
   "warning hazard-art s19 Block 0 hurts through its whole cell, but its art fills 19% of it",
+  "warning hazard-art s19 Block 18 hurts through its whole cell, but its art fills 7% of it",
   "warning hazard-art s19 Block 28 hurts through its whole cell, but its art fills 19% of it",
+  "warning hazard-art s19 Block 39 hurts through its whole cell, but its art fills 8% of it",
+  "warning hazard-art s19 Block 40 hurts through its whole cell, but its art fills 7% of it",
   "warning start-threat s10 Monster 8 starts 2 blocks from where the hero comes in",
   "warning start-threat s16 Monster 2 starts 2 blocks from where the hero comes in",
   "warning start-threat s18 Monster 2 starts 3 blocks from where the hero comes in",
@@ -121,9 +158,33 @@
   "warning start-threat s7 Monster 2 starts 3 blocks from where the hero comes in",
   "warning start-threat s7 Monster 20 starts 2 blocks from where the hero comes in"
  ],
+ "dice": [
+  "warning facing s2 The hero climbs side on"
+ ],
+ "drop-down": [
+  "warning counters s2 Counter 21: the gate needs 1; this scene gives 0; no other scene gives any: not enough in the whole game as drawn",
+  "warning counters s3 Counter 21: the gate needs 2; this scene gives 0; no other scene gives any: not enough in the whole game as drawn"
+ ],
  "goat": [
   "warning shot-prize s2 The hero’s shots destroy prize monster 2 (power 60, shots up to 120)",
   "warning shot-prize s5 The hero’s shots destroy prize monster 2 (power 60, shots up to 120)"
+ ],
+ "graduation-basics": [
+  "warning facing s2 The hero climbs side on"
+ ],
+ "graduation-diploma": [
+  "warning facing s2 The hero climbs side on"
+ ],
+ "graduation-story": [
+  "warning flashing s2 Block 96 flashes light and dark about 0.1 times a second over 160 blocks of one screen, from (0, 0)",
+  "warning waits s2 Timed block 96 stays shut for 17.8 s at a time"
+ ],
+ "horizon": [
+  "warning waits s3 Timed block 142 stays shut for 19.2 s at a time"
+ ],
+ "inventory": [
+  "warning facing s3 The hero climbs side on",
+  "warning reach s- P (pick up) makes the right hand leave the arrows"
  ],
  "loaf": [],
  "logic": [
@@ -434,8 +495,14 @@
  "needle": [
   "warning start-threat s2 The hero starts with nothing to fire, and 2 enemies are on the first screen"
  ],
+ "one-more-try": [
+  "warning facing s3 The hero climbs side on"
+ ],
+ "parallax": [
+  "warning waits s3 Timed block 110 stays shut for 16.5 s at a time"
+ ],
  "realm": [
-  "warning density s36 6 enemies on one screen at (42, 24)",
+  "warning density s37 6 enemies on one screen at (42, 24)",
   "warning start-threat s2 Monster 11 starts 2 blocks from where the hero comes in",
   "warning start-threat s2 Monster 9 starts 1 blocks from where the hero comes in"
  ],
@@ -505,6 +572,10 @@
  "tickle": [
   "warning hazard-art s2 Block 34 hurts through its whole cell, but its art fills 20% of it",
   "warning start-threat s5 Monster 9 starts 2 blocks from where the hero comes in"
+ ],
+ "watch-your-step": [
+  "warning hazard-art s3 Block 62 hurts through its whole cell, but its art fills 17% of it",
+  "warning hazard-art s4 Block 62 hurts through its whole cell, but its art fills 17% of it"
  ],
  "year2000": [
   "warning start-threat s6 Monster 21 starts 2 blocks from where the hero comes in",

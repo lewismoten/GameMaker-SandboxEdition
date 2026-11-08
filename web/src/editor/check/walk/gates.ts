@@ -12,7 +12,7 @@ import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { INF_REPEAT, LASTMM, LASTMON, type World } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
 
 /** A locked door: its cells (touching blocks of one kind side by side are one door), the counter it reads and what it takes. */
-export interface Gate {
+interface Gate {
   cells: number[];
   block: number;
   counter: number;
@@ -34,10 +34,10 @@ interface Source {
 }
 
 /** A block that refuses its touch while its counter is short, and opens (turns into another block) when it takes. */
-export const isGate = (b: Block | undefined, n: number): boolean => !!b && b.solid !== 0 && (b.effect >= 20 || b.effect === 3) && b.eamt < 0 && b.touchBl !== n;
+const isGate = (b: Block | undefined, n: number): boolean => !!b && b.solid !== 0 && (b.effect >= 20 || b.effect === 3) && b.eamt < 0 && b.touchBl !== n;
 
 /** The scene's locked doors still shut, from the map as it is (block numbers as drawn: blkmap). */
-export function gatesOf(map: ArrayLike<number>, bg: Block[], shown: (n: number) => number = (n) => n): Gate[] {
+function gatesOf(map: ArrayLike<number>, bg: Block[], shown: (n: number) => number = (n) => n): Gate[] {
   const seen = new Uint8Array(MLEN * MWID);
   const out: Gate[] = [];
   for (let c = 0; c < MLEN * MWID; c++) {
@@ -229,7 +229,7 @@ export function locksOf(w: World): Locks {
 }
 
 /** A counter's name as the editor shows it. */
-export const counterName = (c: number): string => (c === 3 ? 'money' : `counter ${c}`);
+const counterName = (c: number): string => (c === 3 ? 'money' : `counter ${c}`);
 
 /** The door a counter is for: its own, or the one the key it buys opens. */
 function doorFor(l: Locks, c: number): Gate | undefined {
@@ -248,9 +248,17 @@ const NAMES = 3;
 
 /**
  * Says which door the bot couldn't open and why, in a sentence (undefined: no door it couldn't
- * open). `elsewhere` names, per counter, the other scenes that add to it (otherScenes.ts).
+ * open). `elsewhere` names, per counter, the other scenes that add to it (otherScenes.ts);
+ * `tripCap` is set when fetchKeys stopped at its trip cap (MAX_KEY_TRIPS) rather than its time.
+ * A counter added only in another scene is no promise the door opens: that scene may come only
+ * after this door, or its key may be out of reach (the 2026-11-05 counter-door audit found both).
  */
-export function lockedWhy(l: Locks, unreached: ReadonlySet<number> = new Set(), elsewhere: ReadonlyMap<number, string[]> = new Map()): string | undefined {
+export function lockedWhy(
+  l: Locks,
+  unreached: ReadonlySet<number> = new Set(),
+  elsewhere: ReadonlyMap<number, string[]> = new Map(),
+  tripCap?: number,
+): string | undefined {
   const at = (cell: number) => `(${cell % MLEN}, ${Math.floor(cell / MLEN)})`;
   for (const c of l.missing) {
     const g = doorFor(l, c);
@@ -259,13 +267,16 @@ export function lockedWhy(l: Locks, unreached: ReadonlySet<number> = new Set(), 
     const names = elsewhere.get(c) ?? [];
     if (!names.length) return `The door at ${at(g.cells[0])} needs ${needs}: nothing in this scene adds to it.`;
     const list = names.slice(0, NAMES).join(', ') + (names.length > NAMES ? ` (and ${names.length - NAMES} more)` : '');
-    return `The door at ${at(g.cells[0])} needs ${needs}: another scene adds to it: ${list}. Counters carry from scene to scene, so a player may bring it from there. The bot plays one scene at a time and can't tell whether that scene can be reached before this door; if it can, dismiss this.`;
+    return `The door at ${at(g.cells[0])} needs ${needs}: another scene adds to it: ${list}. Counters carry from scene to scene, but a player can bring it only if that scene can be played before this door and its key reached there; the bot plays one scene at a time and can't tell either, so the door may also never open. If a player can bring it, dismiss this.`;
   }
   for (const c of unreached) {
     const g = l.gates.find((x) => x.counter === c);
     const s = l.sources.find((x) => x.counter === c);
-    if (g && s)
-      return `The door at ${at(g.cells[0])} needs ${counterName(c)}: a key for it is on the map (first at ${at(s.cell)}), but the bot never got to enough of it in its time. That is only what the bot saw: it cannot judge a jump or a trick a player could make, so if you can reach it, dismiss this.`;
+    if (!g || !s) continue;
+    const short = tripCap
+      ? `the bot stopped at its limit of ${tripCap} trip${tripCap === 1 ? '' : 's'} for keys before it had enough`
+      : 'the bot never got to enough of it in its time';
+    return `The door at ${at(g.cells[0])} needs ${counterName(c)}: a key for it is on the map (first at ${at(s.cell)}), but ${short}. That is only what the bot saw: it cannot judge a jump or a trick a player could make, so if you can reach it, dismiss this.`;
   }
   return undefined;
 }

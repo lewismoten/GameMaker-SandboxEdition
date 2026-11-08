@@ -7,6 +7,7 @@ import { migrateCounterNames } from '../core/gameControls';
 import { h, clear, download, pickFiles, toast, promptText, confirmDialog, modal } from '../core/ui';
 import { Project, kindOf, KIND_LABELS, validDosName, type FileKind } from '../core/project';
 import { pickFile } from '../widgets/filePicker';
+import { rovingFocus } from '../widgets/rovingFocus';
 import { MAKERS } from '../tools/makers';
 import { KIND_ICON } from '../widgets/thumbs';
 import { keyboardIcon, showShortcuts, wantsShortcuts } from '../widgets/shortcuts';
@@ -23,17 +24,22 @@ import { playButtons } from './playButtons';
 import { currentPick, gameFor, parsePick, pickParam, playChoices, type PlayPick } from './playLevel';
 import { keepPick, lastPick } from './playPickStore';
 import './workspace.css';
+import './shellTouch.css';
 import { noteLastPlace, resumeLastPlace, watchLastPlace } from './lastPlace';
 import { FILE_ORDER as ORDER, ADD_KINDS as SECTIONS, FILE_KIND_HELP as KIND_HELP } from './fileKinds';
 import { fileActions } from './fileActions';
 import { foldHint } from './hintFold';
 import { SHORT } from '../../edition';
 import { noteOpened, quickOpen } from './quickOpen';
-import { usedByLine, deleteMessage } from './usedBy';
+import { usedByLine, mapUsesLine, deleteMessage } from './usedBy';
+import { viewChanged } from './viewSync';
 import { firstStepsState, notePlayed } from './firstSteps';
 import type { FirstStepsPanel } from './firstStepsPanel';
 import { readOnlyBar } from './released';
 import { saveNote } from './saveNote';
+import { crumbs } from './crumbs';
+import { keepScroll } from './keepScroll';
+import { restoreScroll, savedScroll, stampEntry, watchScroll } from './scrollMemory';
 import { assistantHost, setAssistantHost, type AssistantHost } from '../../assistant/hostSlot';
 import type { RunOptions } from '@lewismoten/gamemaker-sandbox-engine/engine/game';
 
@@ -120,6 +126,7 @@ export class Workspace implements AssistantHost {
   private sidebar = h('nav', { class: 'sidebar', 'aria-label': 'Game files' });
   private main = h('main', { class: 'editor', 'aria-label': 'Editor' });
   private current?: string;
+  private readonly unwatchScroll: () => void;
   private assetView?: { kind?: FileKind; tab: OverviewTab };
   private assetReturn?: { kind?: FileKind; tab: OverviewTab };
   private cleanup?: () => void;
@@ -135,7 +142,10 @@ export class Workspace implements AssistantHost {
 
   constructor(root: HTMLElement, project: Project, file?: string) {
     this.project = project;
+    this.unwatchScroll = watchScroll(this.main);
     this.bar = readOnlyBar(project);
+    // the map editor's Play here: a play test from a spot of the open level, without changing the game's links
+    project.playAt = (to, at) => this.play({ to, at, from: 0, link: 0 });
     this.saved = project.readOnly ? undefined : saveNote(project);
     clear(root, h('div', { class: 'workspace' }, this.sidebar, this.main));
     if (storedFolded()) root.querySelector('.workspace')?.classList.add('rail-folded');
@@ -289,7 +299,9 @@ export class Workspace implements AssistantHost {
   }
 
   dispose(): void {
+    this.project.playAt = undefined;
     this.disposed = true;
+    this.unwatchScroll();
     this.saved?.dispose();
     this.firstSteps?.dispose();
     this.cleanup?.();
@@ -300,6 +312,11 @@ export class Workspace implements AssistantHost {
   }
 
   private renderSidebar(): void {
+    // the list keeps its place (the phone's drop-down list is the other scroller)
+    keepScroll(this.sidebar, '.side-files', () => this.drawSidebar());
+  }
+
+  private drawSidebar(): void {
     const p = this.project;
     const names = p.files.names();
     this.listed = new Set(names);
@@ -370,6 +387,25 @@ export class Workspace implements AssistantHost {
       ),
     );
     this.filter();
+    this.roveFiles();
+  }
+
+  /** The file buttons are one Tab stop: arrows, Home/End and typed letters move between them; Delete removes the focused file. */
+  private roveFiles(): void {
+    const box = this.sidebar.querySelector<HTMLElement>('.side-files');
+    if (!box) return;
+    rovingFocus(box, '.file-row .file', { list: true, label: (el) => el.closest<HTMLElement>('.file-row')?.dataset.name ?? '' });
+    // the focused row's Delete button joins the Tab order (it is visible then), the others stay out
+    box.addEventListener('focusin', () => {
+      for (const b of box.querySelectorAll<HTMLElement>('.file-row .icon-btn.danger'))
+        b.tabIndex = b.closest('.file-row')?.contains(document.activeElement) ? 0 : -1;
+    });
+    box.addEventListener('keydown', (e) => {
+      const t = e.target as HTMLElement;
+      if (e.key !== 'Delete' || !t.matches('.file-row .file')) return;
+      e.preventDefault();
+      t.closest('.file-row')?.querySelector<HTMLElement>('.icon-btn.danger')?.click();
+    });
   }
 
   /** Wide screens: the button that folds the file list into a thin bar and back (remembered per browser). */
@@ -514,10 +550,15 @@ export class Workspace implements AssistantHost {
           'div',
           { class: `file-row ${n === this.current ? 'active' : ''}`, 'data-name': n },
           h('button', { class: 'file', onclick: () => this.open(n), title: `Edit ${n}` }, ...fileLabel(n, k)),
-          h('button', { class: 'icon-btn', title: `Edit ${n}`, 'aria-label': `Edit ${n}`, onclick: () => this.open(n) }, '✎'),
+          // a pointer shortcut to the same action as the file button beside it: out of the Tab order and the reading order
+          h('button', { class: 'icon-btn', title: `Edit ${n}`, tabindex: '-1', 'aria-hidden': 'true', onclick: () => this.open(n) }, '✎'),
           n === p.gam || this.looking
             ? null
-            : h('button', { class: 'icon-btn danger', title: `Delete ${n}`, 'aria-label': `Delete ${n}`, onclick: () => void this.remove(n) }, '🗑'),
+            : h(
+                'button',
+                { class: 'icon-btn danger', title: `Delete ${n}`, tabindex: '-1', 'aria-label': `Delete ${n}`, onclick: () => void this.remove(n) },
+                '🗑',
+              ),
         ),
       ),
     ];
@@ -564,6 +605,7 @@ export class Workspace implements AssistantHost {
   navigate(file?: string): void {
     if (file && this.project.files.has(file)) {
       if (this.current !== file) this.open(file);
+      else viewChanged(); // same file, other settings (?scene=…): the editor follows the address
       return;
     }
     const raw = currentRoute().params.assets;
@@ -586,6 +628,7 @@ export class Workspace implements AssistantHost {
     this.assetView = { kind, tab };
     this.sidebar.classList.remove('open');
     this.main.classList.add('asset-editor');
+    const left = savedScroll();
     this.main.scrollTop = 0;
     window.scrollTo(0, 0);
     const at = currentRoute();
@@ -598,9 +641,12 @@ export class Workspace implements AssistantHost {
       else history.replaceState(null, '', href);
     }
     document.title = `${kind ? `${KIND_LABELS[kind]} · ` : tab !== 'files' ? `${TAB_TITLES[tab]} · ` : ''}${this.project.name} · ${SHORT}`;
+    // Back to a page of the Overview lands where it was left
+    const shown = stampEntry();
     this.renderSidebar();
     const slot = h('div', { role: 'status' }, 'Opening the overview…');
-    clear(this.main, this.bar, slot);
+    this.bar?.classList.add('released-inline'); // the Overview carries it in its heading
+    clear(this.main, slot);
     void import('./overview')
       .then(({ overview }) => {
         if (this.disposed || !slot.isConnected || !this.assetView) return;
@@ -608,6 +654,7 @@ export class Workspace implements AssistantHost {
           project: this.project,
           tab,
           kind,
+          bar: this.bar,
           all: () => this.openAssets(),
           category: (k) => this.openAssets(k),
           open: (file) => this.open(file),
@@ -624,6 +671,7 @@ export class Workspace implements AssistantHost {
         });
         slot.replaceWith(page.el);
         this.cleanup = () => page.dispose();
+        if (shown) restoreScroll(this.main, left);
       })
       .catch((error: unknown) => {
         if (slot.isConnected) clear(slot, h('p', { class: 'hint' }, `The overview could not open: ${(error as Error).message}`));
@@ -632,6 +680,8 @@ export class Workspace implements AssistantHost {
 
   open(file: string): void {
     const fromAssets = !!this.assetView;
+    const prev = this.current;
+    const left = savedScroll();
     this.assetView = this.assetReturn = undefined;
     this.main.classList.remove('asset-editor');
     this.cleanup?.();
@@ -654,19 +704,30 @@ export class Workspace implements AssistantHost {
       else history.replaceState(null, '', next);
     }
     setHashParams({ play: undefined });
+    // the entry remembers which file opened this one (Back to it is offered above the title)
+    const stamp = stampEntry(!fromAssets && prev && prev !== file ? prev : undefined);
+    const from = stamp ? stamp.from : !fromAssets && prev && prev !== file ? prev : undefined;
+    if (stamp) restoreScroll(this.main, left);
     // the tab names the open file first (phones show little of a tab's title)
     document.title = `${file} · ${this.project.name} · ${SHORT}`;
     this.renderSidebar();
     const body = h('div');
     const isGam = file === this.project.gam;
     const changes = !this.looking;
+    this.bar?.classList.add('released-inline'); // beside the file's title
     clear(
       this.main,
-      this.bar,
+      crumbs(file, {
+        overview: () => this.openAssets(),
+        category: () => this.openAssets(kindOf(file)),
+        from: from && this.project.files.has(from) ? from : undefined,
+        back: () => history.back(),
+      }),
       h(
         'div',
-        { class: 'row', style: 'justify-content:space-between;align-items:center;margin-bottom:8px' },
+        { class: 'row', style: 'justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:8px' },
         h('h1', { class: 'file-title' }, file),
+        this.bar,
         h(
           'div',
           { class: 'toolbar' },
@@ -708,6 +769,7 @@ export class Workspace implements AssistantHost {
         ),
       ),
       isGam ? this.nextSteps() : usedByLine(this.project, file),
+      kindOf(file) === 'map' ? mapUsesLine(this.project, file) : null,
       body,
     );
     void this.mountEditor(body, file);
@@ -855,6 +917,7 @@ export class Workspace implements AssistantHost {
     const host = h('div', { class: 'player-host' });
     const game = parseGame(this.project.files.get(this.project.gam)!);
     const where = level ? `${sceneName(game, level.to)} at ${level.at.x},${level.at.y}` : '';
+    this.bar?.classList.remove('released-inline');
     clear(
       this.main,
       this.bar,
@@ -1003,6 +1066,24 @@ export class Workspace implements AssistantHost {
   /** The Download chooser (download.ts) for this game, as it is now. */
   private chooseDownload(): Promise<void> {
     const title = gameTitle(this.project.game()) || this.project.name;
-    return chooseDownload({ title, gam: this.project.gam, files: async () => this.project.files, project: true, companion: () => this.project.companion });
+    return chooseDownload({
+      title,
+      gam: this.project.gam,
+      files: async () => this.project.files,
+      pocketContext: async () => {
+        const [{ pocketProjectUid }, { parseCompanion }, { isImported }] = await Promise.all([
+          import('../../export/pocketLibrary'),
+          import('../../project/companion'),
+          import('./homeOrigin'),
+        ]);
+        this.project.companion ??= parseCompanion(undefined);
+        const uid = pocketProjectUid(this.project.companion);
+        await this.project.saveNow();
+        return { uid, category: isImported(this.project.id) ? ['imported', 'unsorted'] : ['mine'] };
+      },
+      project: true,
+      companion: () => this.project.companion,
+      setPreviews: (on) => this.project.setExportPreviews(on),
+    });
   }
 }

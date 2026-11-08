@@ -70,6 +70,14 @@ export const boxChapter: Chapter = {
       optional: true,
     },
     {
+      id: 'box-feelies',
+      action: 'point',
+      // under the box, only for a game that has trinkets, laser kits or the phone kit
+      target: { label: 'the Feelies under the box', css: '.box-viewer .bc-trinkets', in: box },
+      say: 'Feelies are extras packed in a game box. Infocom started that. Some were copy protection, like a code wheel. Click one.',
+      optional: true,
+    },
+    {
       id: 'box-disks',
       action: 'point',
       target: { label: 'the disks in the box', css: '.box-viewer .bc-disks', in: box },
@@ -102,6 +110,21 @@ export const boxChapter: Chapter = {
       spoken: 'An ad for the bee bee ess. Call in and download more.',
     }),
     piece('stickers', 'the Sticker sheet in the list', 'A sheet of stickers. Cut them out, if you dare.'),
+    // why boxes of the day were so full, and why these are fuller still
+    {
+      id: 'box-why',
+      action: 'point',
+      target: { label: 'the list of what else came in the box', css: '.box-viewer .bc-list', in: box },
+      say: 'Why so much? Three motives. A code wheel stopped copying, a map pulled you into the story, and a full box beat a copied disk from a friend or a BBS.',
+      optional: true,
+    },
+    {
+      id: 'box-confess',
+      action: 'point',
+      target: { label: 'the list of what else came in the box', css: '.box-viewer .bc-list', in: box },
+      say: 'A confession: these boxes hold more than any store box did, even a deluxe edition. They’re packed for your entertainment.',
+      optional: true,
+    },
     {
       id: 'box-buttons',
       action: 'point',

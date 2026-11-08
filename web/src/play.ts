@@ -8,12 +8,14 @@
 import { mountPlayer } from './player/player';
 import { unlock } from '@lewismoten/gamemaker-sandbox-engine/audio/context';
 import { watchForUpdates } from './devReload';
+import { watchErrors } from './errorNotice/watch';
 import { GameFiles, loadCatalogList, withDetails, type CatalogEntry } from './project/files';
 import { streamHostedGame } from './project/streamGame';
-import { loadProject, loadSaveData, writeSaveFile } from './project/storage';
+import { loadProject, loadSaveData } from './project/storage';
 import { markUsed } from './project/projectUse';
 import { registerServiceWorker } from './offline';
-import { playAchievements, playWrote } from './achievements';
+import { playAchievements } from './achievements';
+import { playSaves } from './achievements/playSaves';
 import { catalogPatches } from './dosPlayer/catalogPatches';
 import { companionPatches } from './dosPlayer/playerRecord';
 import type { PlayerPatches } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
@@ -119,6 +121,8 @@ async function choose(): Promise<
     const listed = (await loadCatalogList()).find((g) => g.id === gameId && g.gam);
     const entry = listed?.kind === 'shareware' ? await withDetails(listed) : listed;
     if (entry) {
+      // a Special played here is kept once its window passes (specials/state.ts)
+      if (entry.series === 'special') void import('./specials/state').then((m) => m.keepSpecial(entry.id, 'played'));
       // the game starts once its .gam is in; the rest arrive while it plays, as needed (streamGame.ts)
       const streamed = streamHostedGame(entry);
       await streamed.started;
@@ -184,8 +188,9 @@ async function main(): Promise<void> {
       playerAbout: game.playerAbout,
       poster: game.poster,
       back: game.back ? { href: game.back, label: '← All games' } : undefined,
-      onFileWrite: (name, bytes) => (playWrote(game.id, name), void writeSaveFile(game.id, name, bytes)),
+      ...playSaves(game.id, game.gam),
       saveId: game.id,
+      snapshotId: game.id,
       ...playAchievements(game.id, 'web'),
       onQuit: () => !game.back, // stand-alone apps go back to their menu
       onExit: () => {
@@ -202,4 +207,5 @@ void main();
 
 registerServiceWorker();
 
+watchErrors();
 watchForUpdates();

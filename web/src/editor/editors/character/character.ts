@@ -11,6 +11,7 @@ import './character.css';
 import { registerEditor } from '../registry';
 import { fileField } from '../../widgets/filePicker';
 import { blockButton } from '../../widgets/blockChooser';
+import { fullNote } from '../../widgets/limitNote';
 import { h, clear, numberField, selectField, checkField, debounce } from '../../core/ui';
 import { History } from '../../core/history';
 import { drawBlockTo } from '../../core/draw';
@@ -32,7 +33,7 @@ import { LASTSND, parseSoundSet, SOUND_NAMES } from '@lewismoten/gamemaker-sandb
 import { scanName } from '@lewismoten/gamemaker-sandbox-engine/input/scancodes';
 import { viewState } from '../../../urlState';
 import { bottomOrient, firesMonster, insertFrame, normalOrient, topOrient, travel } from './characterLogic';
-import { blockLinks, mirrorPanel, seqLinks, type MirrorContext } from './characterMirrorPanel';
+import { mirrorPanel, type MirrorContext } from './characterMirrorPanel';
 import { frameCard, keyPicker, type FrameContext } from './characterFrames';
 import { blockLabel } from '../blocks/blockNames';
 import { stageBackdrop } from './characterStage';
@@ -86,16 +87,21 @@ registerEditor(['chr'], (host, project, file) => {
   let withSound = false;
   const save = debounce(() => project.files.set(file, serializeCharacter(chr)), 250);
   // Undo: each change records the state before it (changes less than half a second apart, like typing a number, are one step).
-  // A snapshot holds the hero, its block set (mirroring can draw new blocks) and the mirror links.
+  // Capture block files by identity, independently of the view-only preview chooser.
+  // More than one CBL can be edited by mirroring during this mounted history.
   interface Snap {
     chr: Uint8Array;
-    cbl?: Uint8Array;
-    links: string;
+    cbl: { name: string; bytes: Uint8Array; links?: string }[];
+    links?: string;
   }
   const snapshot = (): Snap => ({
     chr: serializeCharacter(chr),
-    cbl: cblName ? project.files.get(cblName) : undefined,
-    links: JSON.stringify([seqLinks({ project, file }), blockLinks(project, cblName)]),
+    cbl: project.files.byExtension('cbl').map((name) => ({
+      name,
+      bytes: project.files.get(name)!,
+      links: JSON.stringify(project.extras(name, 'mirrors', undefined)),
+    })),
+    links: JSON.stringify(project.extras(file, 'mirrors', undefined)),
   });
   const history = new History<Snap>();
   let base = snapshot();
@@ -120,15 +126,13 @@ registerEditor(['chr'], (host, project, file) => {
     if (!to) return;
     const nativeChanged = !sameBytes(to.chr, base.chr);
     Object.assign(chr, parseCharacter(to.chr));
-    if (to.cbl && cblName && !sameBytes(to.cbl, project.files.get(cblName))) {
-      project.files.set(cblName, to.cbl);
-      cbl = parseBlocks(to.cbl, CHARBL);
+    for (const set of to.cbl) {
+      if (!sameBytes(set.bytes, project.files.get(set.name))) project.files.set(set.name, set.bytes);
+      if (set.name === cblName) cbl = parseBlocks(set.bytes, CHARBL);
+      if (set.links !== JSON.stringify(project.extras(set.name, 'mirrors', undefined)))
+        project.setExtras(set.name, 'mirrors', set.links ? JSON.parse(set.links) : undefined);
     }
-    if (to.links !== base.links) {
-      const [seqs, blocks] = JSON.parse(to.links) as [unknown[], unknown[]];
-      project.setExtras(file, 'mirrors', seqs.length ? seqs : undefined);
-      if (cblName) project.setExtras(cblName, 'mirrors', blocks.length ? blocks : undefined);
-    }
+    if (to.links !== base.links) project.setExtras(file, 'mirrors', to.links ? JSON.parse(to.links) : undefined);
     base = to;
     lastChange = 0;
     syncHistory();
@@ -549,7 +553,7 @@ registerEditor(['chr'], (host, project, file) => {
             h('span', null, '+'),
             'Frame',
           )
-        : null;
+        : fullNote(MAXFRAME, 'frames', 'a sequence');
 
     clear(
       detail,
@@ -768,9 +772,9 @@ registerEditor(['chr'], (host, project, file) => {
         'aria-controls': `chr-${key}`,
         onclick: () => showTab(key, true),
         onkeydown: (e: KeyboardEvent) => {
-          if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+          if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight' && e.key !== 'Home' && e.key !== 'End') return;
           e.preventDefault();
-          showTab(key === 'start' ? 'seqs' : 'start', true);
+          showTab(e.key === 'Home' ? 'start' : e.key === 'End' ? 'seqs' : key === 'start' ? 'seqs' : 'start', true);
           tabBar.querySelector<HTMLElement>('[aria-selected="true"]')?.focus();
         },
       },

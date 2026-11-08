@@ -6,7 +6,7 @@ import { characterPicture } from './characterPicture';
 
 type Source = Pick<GameFiles, 'get' | 'names'>;
 const key = (name: string) => cdName(normalize(name));
-export interface CharacterSet {
+interface CharacterSet {
   file: string;
   bytes: Uint8Array;
   monsters?: string;

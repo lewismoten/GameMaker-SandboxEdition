@@ -191,6 +191,26 @@ export function swingGate(ground: Pixels): Pixels {
   return p;
 }
 
+/** A way out of a room: two posts and a lintel in `post`'s color round a gap on `ground`, a bright arrow pointing down, out. */
+export function exitDoor(ground: Pixels, post: number): Pixels {
+  const p = new Pixels(20, 20);
+  p.px.set(ground.px);
+  p.rect(0, 0, 3, 20, post).rect(17, 0, 3, 20, post).rect(0, 0, 20, 3, post);
+  p.rect(3, 3, 14, 1, O()).rect(0, 0, 1, 20, O()).rect(19, 0, 1, 20, O());
+  // the arrow, ink-edged so it stands out on any floor
+  const arrow = (g: number, col: number) =>
+    p
+      .rect(8 - g, 6 - g, 4 + 2 * g, 7 + g, col)
+      .rect(5 - g, 11, 10 + 2 * g, 2, col)
+      .rect(6 - g, 13, 8 + 2 * g, 1, col)
+      .rect(7 - g, 14, 6 + 2 * g, 1, col)
+      .rect(8 - g, 15, 4 + 2 * g, 1, col)
+      .rect(9 - g, 16, 2 + 2 * g, 1 + g, col);
+  arrow(1, O());
+  arrow(0, c('paper', 3));
+  return p;
+}
+
 export function hedge(seed: number): Pixels {
   return noise(new Pixels(20, 20, c('green', 1)), seed, 'green', 0, 2, 0.6);
 }

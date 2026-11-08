@@ -7,7 +7,7 @@ import { sprite } from '../art/draw';
 import { P } from '../art/pal';
 import { CRITTERS } from '../sprites/critters';
 import { TOYS } from '../sprites/toys';
-import { CK, propSprite } from '../sprites/klown';
+import { CK, propSprite } from '../sprites/clown';
 import { FLIP } from '../characters/mons';
 import { CTR, POWER } from '../ids';
 import { newBestiary } from './level';

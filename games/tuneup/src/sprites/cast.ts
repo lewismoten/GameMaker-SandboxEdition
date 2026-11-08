@@ -11,6 +11,7 @@ import { chicken } from '../art/chicken';
 import { P, type Pal } from '../art/palette';
 import { CTR } from '../ids';
 import { addBeltCast } from './beltSprites';
+import { addParadeCast } from './paradeSprites';
 import { addRealCast } from './realCast';
 
 const c = P.c;
@@ -103,6 +104,7 @@ export function buildMonsterBlocks() {
   book.add('calm0', squeak(0, true));
   addRealCast(book.add);
   addBeltCast(book.add);
+  addParadeCast(book.add);
   return book;
 }
 export type MonsterBlocks = ReturnType<typeof buildMonsterBlocks>;

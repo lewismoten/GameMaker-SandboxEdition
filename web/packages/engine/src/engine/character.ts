@@ -14,12 +14,10 @@ import {
   BACKBL,
   BLEN,
   CHARBL,
-  GRAVSPEED,
   INF_REPEAT,
   JSTICKKEY,
   LASTMM,
   LASTSND,
-  MAXGRAV,
   MAXINV,
   MAXSEQ,
   MLEN,
@@ -229,7 +227,7 @@ function onGround(w: World, s: number): void {
 }
 
 /**
- * MoveCharGrav: every GRAVSPEED ticks, accelerate by one pixel a tick in each
+ * MoveCharGrav: every GRAVSPEED ticks (w.tune), accelerate by one pixel a tick in each
  * direction the block's grav bits name (1 up, 2 right, 4 down, 8 left), capped at
  * MAXGRAV * 4. Returns true while there is any gravity momentum.
  */
@@ -238,7 +236,7 @@ export function moveCharGrav(w: World, reset = false): boolean {
     w.gclk = w.clock;
     return true;
   }
-  if (w.clock < w.gclk + GRAVSPEED) return false;
+  if (w.clock < w.gclk + w.tune.gravityTicks) return false;
   w.gclk = w.clock;
   const { ci } = w;
   const g = gravityBlock(w);
@@ -247,7 +245,7 @@ export function moveCharGrav(w: World, reset = false): boolean {
   if (g & 2) ci.gravx += 1;
   if (g & 8) ci.gravx -= 1;
   const moved = ci.gravx !== 0 || ci.gravy !== 0;
-  const lim = MAXGRAV * 4;
+  const lim = w.tune.gravityCap;
   ci.gravx = Math.max(-lim, Math.min(lim, ci.gravx));
   ci.gravy = Math.max(-lim, Math.min(lim, ci.gravy));
   return moved;
@@ -446,7 +444,8 @@ export async function moveChars(w: World, pickDrop: DropPicker): Promise<boolean
 
   if (charmoved || gravmoved || w.monsolid || ci.update) {
     const old = { cx: chr.x[1], cy: chr.y[1], x: chr.x[0], y: chr.y[0] };
-    const d = { tx: Math.max(-MAXGRAV, Math.min(MAXGRAV, tx)), ty: Math.max(-MAXGRAV, Math.min(MAXGRAV, ty)) };
+    const top = w.tune.maxSpeed;
+    const d = { tx: Math.max(-top, Math.min(top, tx)), ty: Math.max(-top, Math.min(top, ty)) };
     chkScrnBounds(w, d);
     tx = d.tx;
     ty = d.ty;

@@ -25,6 +25,9 @@ import { INSTRUMENTS, song as composeSong } from '@lewismoten/gamemaker-sandbox-
 import { CmfPlayer, TICK_RATE } from '@lewismoten/gamemaker-sandbox-engine/audio/cmfPlayer';
 import { Opl2 } from '@lewismoten/gamemaker-sandbox-engine/audio/opl';
 
+// Under a second on a fast machine; the 5 s default timed out on a slower one under load.
+const SLOW = 30_000;
+
 /** Root-mean-square level of a song played through the app's PlayIt port for `ticks` ticks. */
 function rms(bytes: Uint8Array, ticks: number): number {
   const opl = new Opl2(22050);
@@ -71,13 +74,17 @@ const small = () =>
   ]);
 
 describe('CMF editing model', () => {
-  it.skipIf(!unique.length)('writes every song on the CD back byte for byte', () => {
-    for (const f of unique) {
-      const bytes = new Uint8Array(readFileSync(f));
-      const out = writeSong(readSong(bytes));
-      expect(out, f).toEqual(bytes);
-    }
-  });
+  it.skipIf(!unique.length)(
+    'writes every song on the CD back byte for byte',
+    () => {
+      for (const f of unique) {
+        const bytes = new Uint8Array(readFileSync(f));
+        const out = writeSong(readSong(bytes));
+        expect(Buffer.compare(out, bytes) === 0, f).toBe(true); // toEqual on big arrays is slow
+      }
+    },
+    SLOW,
+  );
 
   it.skipIf(!unique.length)('plays the same after a round trip through the model', () => {
     for (const f of unique) {

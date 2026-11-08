@@ -10,7 +10,7 @@ const { add, clamp01, cross, dot, hypot2, hypot3, len, mul, norm, sub } = vec;
 // ---------------------------------------------------------------- materials
 
 export interface Material {
-  /** Albedo, or a texture of the hit point (world space) and normal. */
+  /** Albedo, or a texture of the hit point and normal (world space; inside a Moved shape, that shape's own frame). */
   color: V | ((p: V, n: V) => V);
   /** How much the key light and fill light it takes (default 1). */
   diffuse?: number;
@@ -290,14 +290,17 @@ export class Sdf implements Shape {
     }
     return [t0, t1];
   }
-  march(o: V, d: V, tmax: number): number {
+  /** Sphere traces to the surface; a shadow test (`rough`) takes whole distance steps (it only needs whether the ray gets through). */
+  march(o: V, d: V, tmax: number, rough = false): number {
     const r = this.clip(o, d, tmax);
     if (!r) return -1;
     let t = r[0];
+    const eps = this.eps;
+    const k = rough ? 1 : 0.9;
     for (let i = 0; i < 160 && t <= r[1]; i++) {
       const dist = this.sdf(o[0] + d[0] * t, o[1] + d[1] * t, o[2] + d[2] * t);
-      if (dist < this.eps) return t;
-      t += Math.max(dist * 0.9, this.eps * 0.5);
+      if (dist < eps) return t;
+      t += Math.max(dist * k, eps * 0.5);
     }
     return -1;
   }
@@ -320,7 +323,7 @@ export class Sdf implements Shape {
     return true;
   }
   occludes(o: V, d: V, tmax: number): boolean {
-    return this.march(o, d, tmax) >= 0;
+    return this.march(o, d, tmax, true) >= 0;
   }
 }
 
@@ -376,10 +379,21 @@ export class Moved implements Shape {
     const n = tmp.n;
     h.t = tmp.t * s;
     h.n = [r[0] * n[0] + r[1] * n[1] + r[2] * n[2], r[3] * n[0] + r[4] * n[1] + r[5] * n[2], r[6] * n[0] + r[7] * n[1] + r[8] * n[2]];
-    h.mat = tmp.mat;
+    h.mat = typeof tmp.mat.color === 'function' ? this.painted(tmp.mat) : tmp.mat;
     h.part = tmp.part;
     h.shape = this;
     return true;
+  }
+  private readonly paints = new WeakMap<Material, Material>();
+  /** The material with its texture read in the inner shape's own frame, so a turned car keeps its back window on its back. */
+  private painted(m: Material): Material {
+    let w = this.paints.get(m);
+    if (!w) {
+      const color = m.color as (p: V, n: V) => V;
+      w = { ...m, color: (p, n) => color(mul(this.local(sub(p, this.at)), 1 / this.scale), this.local(n)) };
+      this.paints.set(m, w);
+    }
+    return w;
   }
   occludes(o: V, d: V, tmax: number): boolean {
     const s = this.scale;

@@ -5,15 +5,53 @@
 import './booklet.css';
 import { h } from '../editor/core/ui';
 import type { CatalogEntry } from '../project/files';
-import { isSandboxGame, loadCatalog, withDetails } from '../project/files';
+import { isSandboxGame, loadCatalog, loadGameList, withDetails } from '../project/files';
 import { drawBox } from '../desk/boxes/gameBox';
 import { buildBooklet } from './printables/manualPages';
 import { openBox } from './printables/viewer';
+import type { PickerGame } from './printables/gamePicker';
 import { boxItems } from './printables/items';
 import { shotCache, type PrintContext } from './printables/kit';
+import { hasRetailBox } from '../project/starter';
 
-/** Opens the game's manual box (at the piece `start` names, else the manual); `onReady` hears when it has loaded and is about to show. */
-export async function openGameManual(listed: CatalogEntry, coverImage?: string, onReady?: () => void, start?: string): Promise<void> {
+/** The games whose boxes the Game picker lists: the shelf's (desk/boxes/shelf.ts), in its order, with no secret game that isn't listed. */
+async function shelfGames(): Promise<PickerGame[]> {
+  const list = await loadGameList().catch(() => [] as CatalogEntry[]);
+  return list.filter((g) => hasRetailBox(g) && g.original?.manual).map((g) => ({ id: g.id, title: g.title }));
+}
+
+/**
+ * Opens the game's manual box (at the piece `start` names, else the manual); `onReady` hears when it has loaded and is about to show.
+ * The bar's Game picker swaps to another game's box at the same kind of piece (`onGame` hears which, for the address).
+ */
+export async function openGameManual(
+  listed: CatalogEntry,
+  coverImage?: string,
+  onReady?: () => void,
+  start?: string,
+  onGame?: (id: string) => void,
+): Promise<void> {
+  const games = await shelfGames();
+  let next: { id: string; piece: string } | undefined = { id: listed.id, piece: start ?? '' };
+  let first = true;
+  while (next) {
+    const { id, piece } = next;
+    next = undefined;
+    const entry = first ? listed : ((await loadGameList().catch(() => [] as CatalogEntry[])).find((g) => g.id === id) ?? listed);
+    await openOne(entry, first ? coverImage : undefined, first ? onReady : undefined, piece || undefined, games, (to, at) => (next = { id: to, piece: at }));
+    if (next) onGame?.((next as { id: string }).id);
+    first = false;
+  }
+}
+
+async function openOne(
+  listed: CatalogEntry,
+  coverImage: string | undefined,
+  onReady: (() => void) | undefined,
+  start: string | undefined,
+  games: PickerGame[],
+  onGame: (id: string, piece: string) => void,
+): Promise<void> {
   const entry = await withDetails(listed); // a listed entry holds only the manual's title
   const manual = entry.original?.manual;
   if (!manual) return;
@@ -25,10 +63,10 @@ export async function openGameManual(listed: CatalogEntry, coverImage?: string, 
     const pages = await buildBooklet(entry, cover, host);
     const family = (await loadCatalog().catch(() => [] as CatalogEntry[])).filter(isSandboxGame);
     const ctx: PrintContext = { entry, family, printables: entry.original?.printables ?? {}, manual, shot: shotCache(entry) };
-    const items = boxItems(ctx);
+    const items = [...boxItems(ctx), ...(await import('./printables/feelieItems').then((m) => m.feelieItems(entry.id)).catch(() => []))];
     onReady?.();
     const epub = { file: `${entry.id}-manual.epub`, make: () => import('./epub/manualBook').then((m) => m.manualBook(entry)) };
-    await openBox(title, pages, items, { start, epub });
+    await openBox(title, pages, items, { start, epub, games, gameId: entry.id, onGame });
   } finally {
     host.remove();
   }

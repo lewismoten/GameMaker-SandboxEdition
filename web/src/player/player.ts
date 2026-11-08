@@ -1,9 +1,12 @@
 // A self-contained game player: canvas, input and audio around runGame().
 import './player.css';
 import { hardwareSetup } from './hardwareSetup';
+import { dosHardwareSetup } from './dosConfig/dosSetup';
 import { Machine, GameAborted } from '@lewismoten/gamemaker-sandbox-engine/engine/machine';
 import type { AudioEngine } from '@lewismoten/gamemaker-sandbox-engine/audio/engine';
 import { Keyboard } from '@lewismoten/gamemaker-sandbox-engine/input/keyboard';
+import { speedPick } from './speedPick';
+import type { Session, SpeedSetting } from '@lewismoten/gamemaker-sandbox-engine/engine/scene';
 import { runGame, type RunOptions } from '@lewismoten/gamemaker-sandbox-engine/engine/game';
 import type { GameFiles } from '../project/files';
 import { readGamepad } from '../input/gamepad';
@@ -16,6 +19,7 @@ import { icon } from '../editor/shell/homeIcons';
 import { heartHook } from '../tinHearts/tinHearts';
 import { scoreHook } from '../scoreTrophies/hook';
 import { piggyBankHook } from '../fortKnox/hook';
+import { snapshotButton } from './snapshot';
 
 interface PlayerOptions extends RunOptions {
   /** Shown on the start overlay. */
@@ -36,6 +40,8 @@ interface PlayerOptions extends RunOptions {
   autoStart?: boolean;
   /** Leave out the ⌨ Keys button (the 1994 desk's monitor has no such thing). */
   noKeysButton?: boolean;
+  /** Full-window play page: enable PNG snapshots named with this game identity. */
+  snapshotId?: string;
   /** Draw at exactly the device size shown so every pixel is the same size (player/exactScale.ts). */
   exactPixels?: boolean;
   /** Where the sound goes (a demo preview passes a quieter engine; media/demoPreview.ts). */
@@ -51,6 +57,8 @@ interface PlayerOptions extends RunOptions {
   hardwareId?: string;
   /** CONFIG.BAT: open setup even when settings are already saved or bypassed. */
   configure?: boolean;
+  /** The 1994 PC (the desk, dos.html): setup is PLAYGAME's DOS Configure screen on the monitor, not the web dialog. */
+  dosSetup?: boolean;
 }
 
 export interface PlayerHandle {
@@ -69,8 +77,11 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
   canvas.setAttribute('role', 'application');
   container.append(canvas);
   const machine = new Machine(canvas, files, opts.audio);
+  const devGameLog = import.meta.env.DEV ? import('../devLog/gameLog') : (undefined as never);
   machine.audio.setGame(true); // a game's sound follows the Games setting too
   const piggy = piggyBankHook(opts.saveId);
+  // Run like a… (speedPick.ts): the one object the running game reads every tick
+  const speed: SpeedSetting = opts.speed ?? {};
   if (opts.preview) {
     container.classList.add('gm-preview');
     canvas.setAttribute('role', 'img');
@@ -159,7 +170,9 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
     const corner = document.createElement('div');
     corner.className = 'gm-corner';
     corner.append(keys);
+    if (opts.snapshotId) snapshotButton(corner, machine.screen, opts.snapshotId, canvas);
     container.append(corner);
+    speedPick(corner, speed, canvas);
     unkeys = screenKeys(container, corner, canvas);
   }
 
@@ -173,7 +186,9 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
   const setup =
     opts.preview || opts.playback || opts.record
       ? undefined
-      : hardwareSetup(container, opts.hardwareId ?? opts.saveId ?? `${gamFile.toLowerCase()}:${opts.title ?? ''}`, machine.audio);
+      : opts.dosSetup
+        ? dosHardwareSetup(machine, opts.hardwareId ?? opts.saveId ?? `${gamFile.toLowerCase()}:${opts.title ?? ''}`)
+        : hardwareSetup(container, opts.hardwareId ?? opts.saveId ?? `${gamFile.toLowerCase()}:${opts.title ?? ''}`, machine.audio);
   let finish = () => {};
   let unhide: (() => void) | undefined;
   const done = new Promise<void>((resolve) => {
@@ -195,7 +210,7 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
     const begin = async () => {
       if (started || stopped) return;
       started = true;
-      setup?.controls.remove();
+      setup?.controls?.remove();
       start.remove();
       // the way back stays while playing, small, beside Keys (Esc's menu and Quit also lead there)
       if (back && !opts.preview && !opts.noKeysButton) {
@@ -222,9 +237,19 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
           onQuit: () => true,
           onFrame: touch ? (w) => touch.setSequences(w.chr.sequences) : undefined,
           ...opts,
+          speed,
           noSoundCard: opts.noSoundCard || hardware?.sound === 'speaker',
-          ...((hearts || piggy) && {
-            onSession: (s) => (hearts?.onSession(s), piggy?.onSession?.(s), opts.onSession?.(s)),
+          // (dev only) the replay log of games, when the 🐵 switch is on: devLog/gameLog.ts
+          ...((hearts || piggy || import.meta.env.DEV) && {
+            onSession: (s: Session) => {
+              hearts?.onSession(s);
+              piggy?.onSession?.(s);
+              opts.onSession?.(s);
+              if (import.meta.env.DEV)
+                void devGameLog.then((g) =>
+                  g.attachGameLog(s, machine, { gam: gamFile, gamBytes: files.get(gamFile), title: opts.title, saveId: opts.saveId }),
+                );
+            },
             ...(hearts && { onTouched: (...a) => (hearts.onTouched(...a), opts.onTouched?.(...a)) }),
           }),
           ...((scores || piggy) && { onPlayEnd: (...a) => (scores?.(...a), piggy?.onPlayEnd?.(...a), opts.onPlayEnd?.(...a)) }),

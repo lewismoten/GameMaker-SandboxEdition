@@ -8,15 +8,18 @@ import { h } from '../../editor/core/ui';
 import type { CatalogEntry } from '../../project/files';
 import { boxModel, openBoxViewer, type BoxViewerPage } from './boxViewer';
 import { drawBox, releaseFaces, type BoxFaces } from './gameBox';
-import { dressUv, uvGame } from './boxUv';
+import { dressUv, releaseUv, uvGame } from './boxUv';
 import { hideWallPoster, setPosterWall, showWallPoster } from '../room/wallPoster';
 import { shelfLayout } from './shelfLayout';
+import { boxIdFromOpen, boxInAddress, dropBoxFromAddress, restorableBox, turnInAddress, type BoxTurn } from './boxAddress';
 
 interface ShelfHooks {
   /** Put the game's disk in drive A:. */
   insert: (id: string) => void;
   /** Open the game's manual (only for games that have one); settles when it is closed. */
   manual?: (entry: CatalogEntry, front: string) => Promise<void> | void;
+  /** The box the address asked to have open (a reload or shared link); it is only opened if it is on this shelf. */
+  restore?: string;
 }
 
 const FRONT_KEY = 'gm-shelf-front';
@@ -81,13 +84,14 @@ export async function gameShelf(scene: HTMLElement, games: CatalogEntry[], hooks
   const glow = (id: string) => {
     const f = faces.get(id);
     const model = slots.get(id)?.querySelector<HTMLElement>('.box3d');
-    if (uv && f && model) dressUv(model, f, id === front ? ['front', 'left'] : ['left', 'front']);
+    // a box standing spine out shows only its spine; the front's glow is made when it turns out
+    if (uv && f && model) dressUv(model, f, id === front ? ['front', 'left'] : ['left']);
   };
   const tube = () => {
     if (uv || !desk.classList.contains('bl-uv')) return;
     uv = true;
     // the box face out first, then along the shelf
-    for (const id of [front, ...slots.keys()]) glow(id);
+    for (const id of [front, ...slots.keys()]) if (faces.has(id)) glow(id);
   };
   let front = remembered() ?? games[0].id;
   if (!games.some((g) => g.id === front)) front = games[0].id;
@@ -97,22 +101,28 @@ export async function gameShelf(scene: HTMLElement, games: CatalogEntry[], hooks
   // first (quick), then the screenshots.
   const releaseFacesOf = (id: string) => {
     const old = faces.get(id);
-    if (old) releaseFaces(old);
+    if (old) {
+      releaseFaces(old);
+      releaseUv(old);
+    }
   };
   const complete = new Map<string, Promise<BoxFaces | undefined>>();
   const whole = new Set<string>();
+  const covered = new Set<string>();
   const completed = (g: CatalogEntry): Promise<BoxFaces | undefined> => {
     let p = complete.get(g.id);
     if (!p) {
-      void drawBox(g, { shots: false }).then(
-        (f) => {
-          if (!f || whole.has(g.id)) return;
-          releaseFacesOf(g.id);
-          faces.set(g.id, f);
-          slots.get(g.id)?.replaceChildren(boxModel(f));
-        },
-        () => undefined,
-      );
+      // the cover first; not for the box already drawn with it (the one face out as the shelf went up)
+      if (!covered.has(g.id))
+        void drawBox(g, { shots: false }).then(
+          (f) => {
+            if (!f || whole.has(g.id)) return;
+            releaseFacesOf(g.id);
+            faces.set(g.id, f);
+            slots.get(g.id)?.replaceChildren(boxModel(f));
+          },
+          () => undefined,
+        );
       p = drawBox(g)
         .catch(() => undefined)
         .then((f) => {
@@ -137,11 +147,12 @@ export async function gameShelf(scene: HTMLElement, games: CatalogEntry[], hooks
     front = id;
     remember(id);
     for (const [gid, el] of slots) el.classList.toggle('face-out', gid === id);
+    glow(id);
   };
 
-  const onShelf = () => games.filter((g) => faces.has(g.id));
+  const onShelf = () => games.filter((g) => slots.has(g.id));
   const page = (g: CatalogEntry): BoxViewerPage => {
-    const f = faces.get(g.id)!;
+    const f = faces.get(g.id)!; // taken down only after completed(), which sets them
     // the manual or a piece of paper read from the box: put it down and the box is back in hand
     const read =
       g.original?.manual && hooks.manual
@@ -153,6 +164,7 @@ export async function gameShelf(scene: HTMLElement, games: CatalogEntry[], hooks
             })
         : undefined;
     return {
+      id: g.id,
       entry: g,
       faces: f,
       actions: {
@@ -173,42 +185,121 @@ export async function gameShelf(scene: HTMLElement, games: CatalogEntry[], hooks
       },
     };
   };
-  const open = async (g: CatalogEntry) => {
+  const open = async (g: CatalogEntry, restored?: { turn?: BoxTurn }) => {
     face(g.id);
     await completed(g);
     const p = page(g);
-    void openBoxViewer(p.entry, p.faces, p.actions);
+    void openBoxViewer(p.entry, p.faces, p.actions, { id: g.id, restored: !!restored, turn: restored?.turn });
   };
 
-  // draw the boxes one by one, so the first ones appear while the rest are drawn
-  for (const [i, g] of games.entries()) {
-    // let the page paint and answer between boxes: drawing one is most of a frame's worth of work
-    if (i) await new Promise<void>((r) => setTimeout(r));
-    // the box face out gets its cover painting now and its screenshots after the shelf is up
-    const f = await drawBox(g, { shots: false, cover: g.id === front, blobs: true }).catch(() => undefined);
-    if (!f) continue;
+  // The boxes are drawn one by one, each when its slot comes near the screen (the slots stand
+  // empty at their size until then), so a long shelf, or one off screen, costs no more than the
+  // boxes seen. The box face out is drawn first, with its cover painting; its screenshots follow.
+  let gone = false;
+  const drawn = new Set<string>();
+  const waiting: CatalogEntry[] = [];
+  let pumping = false;
+  const drawSpine = async (g: CatalogEntry) => {
+    const withCover = g.id === front;
+    const f = await drawBox(g, { shots: false, cover: withCover, blobs: true }).catch(() => undefined);
+    // gone, or taken down whole in the meantime (completed() has set it)
+    if (gone || faces.has(g.id)) {
+      if (f) {
+        releaseFaces(f);
+        releaseUv(f);
+      }
+      return;
+    }
+    if (!f) {
+      slots.get(g.id)?.remove();
+      slots.delete(g.id);
+      return;
+    }
+    if (withCover) covered.add(g.id);
     faces.set(g.id, f);
     uvGame(f, g);
-    const slot = h(
-      'button',
-      {
-        class: `shelf-box${g.id === front ? ' face-out' : ''}`,
-        title: `${g.title} — take it off the shelf`,
-        'aria-label': `${g.title} box`,
-        onclick: () => void open(g),
-      },
-      boxModel(f),
-    );
+    slots.get(g.id)?.replaceChildren(boxModel(f));
+    glow(g.id);
+  };
+  const pump = async () => {
+    if (pumping) return;
+    pumping = true;
+    while (waiting.length && !gone) {
+      // let the page paint and answer between boxes: drawing one is most of a frame's worth of work
+      await new Promise<void>((r) => setTimeout(r));
+      const g = waiting.shift()!;
+      if (!gone && slots.has(g.id)) await drawSpine(g);
+    }
+    pumping = false;
+  };
+  const want = (g: CatalogEntry) => {
+    if (drawn.has(g.id)) return;
+    drawn.add(g.id);
+    // the one face out first
+    if (g.id === front) waiting.unshift(g);
+    else waiting.push(g);
+    void pump();
+  };
+  const seen =
+    typeof IntersectionObserver === 'undefined'
+      ? undefined
+      : new IntersectionObserver(
+          (entries) => {
+            for (const e of entries) {
+              if (!e.isIntersecting) continue;
+              seen?.unobserve(e.target);
+              const g = games.find((x) => slots.get(x.id) === e.target);
+              if (g) want(g);
+            }
+          },
+          { rootMargin: '200px' },
+        );
+  for (const [i, g] of games.entries()) {
+    const slot = h('button', {
+      class: `shelf-box${g.id === front ? ' face-out' : ''}`,
+      title: `${g.title} — take it off the shelf`,
+      'aria-label': `${g.title} box`,
+      onclick: () => void open(g),
+    });
     slots.set(g.id, slot);
     rowOf(i).append(slot);
-    glow(g.id);
   }
-  if (!slots.has(front) && slots.size) face([...slots.keys()][0]);
-  else face(front);
+  if (!slots.has(front) && slots.size) front = [...slots.keys()][0];
+  // the box face out stands first, with its cover painting, as the shelf goes up
+  const first = games.find((g) => g.id === front);
+  if (first) {
+    drawn.add(first.id);
+    await drawSpine(first);
+  }
+  for (const g of games) {
+    const slot = slots.get(g.id);
+    if (!slot || drawn.has(g.id)) continue;
+    if (seen) seen.observe(slot);
+    else want(g);
+  }
+  face(front);
 
   const tubeWatch = new MutationObserver(tube);
   tubeWatch.observe(desk, { attributes: true, attributeFilter: ['class'] });
   tube();
+
+  // a reload or shared link names a box: open it if it stands on this shelf; any other id
+  // (not on the shelf yet, a secret game not found, a typo) opens nothing and shows nothing
+  if (hooks.restore) {
+    const id = restorableBox(boxIdFromOpen(hooks.restore), slots.keys());
+    const g = games.find((x) => x.id === id);
+    if (g) {
+      slots.get(g.id)?.focus({ preventScroll: true });
+      void open(g, { turn: turnInAddress() });
+    } else dropBoxFromAddress();
+  }
+
+  // Forward onto a box's history entry (after Back closed its viewer) takes it down again
+  const onPop = () => {
+    const g = games.find((x) => x.id === restorableBox(boxInAddress(), slots.keys()));
+    if (g && shelf.isConnected && !document.querySelector('.box-viewer')) void open(g, { turn: turnInAddress() });
+  };
+  window.addEventListener('popstate', onPop);
 
   // follow drive A: — the desk lists "<title> in A:" beside the drive
   let inDrive: string | undefined;
@@ -230,11 +321,17 @@ export async function gameShelf(scene: HTMLElement, games: CatalogEntry[], hooks
     element: shelf,
     face,
     dispose: () => {
+      gone = true;
+      seen?.disconnect();
       observer.disconnect();
+      window.removeEventListener('popstate', onPop);
       tubeWatch.disconnect();
       hideWallPoster();
       // the shelf's page-only picture addresses (gameBox.ts drawBox `blobs`) go with it
-      for (const f of faces.values()) releaseFaces(f);
+      for (const f of faces.values()) {
+        releaseFaces(f);
+        releaseUv(f);
+      }
       faces.clear();
     },
   };

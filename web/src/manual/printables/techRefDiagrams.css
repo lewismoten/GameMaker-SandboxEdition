@@ -1,0 +1,50 @@
+/* The Technical Reference booklet's diagrams (techRefDiagrams.ts): line art on the page's paper, a caption in the booklet's sans. */
+.tr-fig {
+  margin: 0.6em 0 0.8em;
+  break-inside: avoid;
+}
+.tr-fig svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.tr-fig figcaption {
+  margin-top: 0.35em;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 0.78em;
+  font-style: italic;
+  line-height: 1.3;
+}
+.tr-back {
+  height: 100%;
+  background: #14304a;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 0.5em;
+  padding: 12%;
+  box-sizing: border-box;
+  text-align: center;
+  font-family: Georgia, serif;
+}
+.tr-back-name {
+  font-size: 1.15em;
+  letter-spacing: 0.2em;
+}
+.tr-back-line {
+  font-size: 0.95em;
+  opacity: 0.9;
+  margin-bottom: 2em;
+}
+.tr-back-small {
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 0.7em;
+  letter-spacing: 0.08em;
+  opacity: 0.85;
+}
+
+.mpage.mp-back .tr-back {
+  position: absolute;
+  inset: 0;
+}

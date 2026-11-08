@@ -12,6 +12,8 @@ interface FileHistory {
   before(...names: string[]): void;
   /** Like before(), but part of the last step whenever there is one (trying one layout after another). */
   join(...names: string[]): void;
+  /** The next before() starts a new step, however soon it comes. */
+  split(): void;
   undo(): boolean;
   redo(): boolean;
   readonly canUndo: boolean;
@@ -71,6 +73,9 @@ export function fileHistory(
   return {
     before: (...names) => before(names, false),
     join: (...names) => before(names, true),
+    split: () => {
+      last = 0;
+    },
     undo: () => step(past, future, 'undo'),
     redo: () => step(future, past, 'redo'),
     get canUndo() {
@@ -94,6 +99,7 @@ export function fileUndo(files: GameFiles, restored: (dir: 'undo' | 'redo') => v
   return {
     before: (...names) => steps.before(...names),
     join: (...names) => steps.join(...names),
+    split: () => steps.split(),
     undo: () => steps.undo(),
     redo: () => steps.redo(),
     get canUndo() {

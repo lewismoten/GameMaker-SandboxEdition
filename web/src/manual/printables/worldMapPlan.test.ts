@@ -16,7 +16,7 @@ import { themeOf } from './worldMapThemes';
 const root = join(__dirname, '../../../../games');
 
 /** Every game with a .GAM: the player's places (folded as the map folds them) and every scene. */
-function games(): { id: string; player: Game; every: Game }[] {
+function games(): { id: string; player: Game; every: Game; hints?: Parameters<typeof groupScenes>[3] }[] {
   return readdirSync(root).flatMap((id) => {
     let names: string[];
     try {
@@ -35,13 +35,13 @@ function games(): { id: string; player: Game; every: Game }[] {
       hints = undefined;
     }
     const dark = (i: number) => isBlackPalette(files.get(every.scenes[i].files[0]?.toLowerCase() ?? ''));
-    return [{ id, player: placesGame(every, groupScenes(every, graphOf(every), dark, hints)), every }];
+    return [{ id, player: placesGame(every, groupScenes(every, graphOf(every), dark, hints)), every, hints }];
   });
 }
 
 const plans = new Map<Game, ReturnType<typeof planWorld>>();
 /** A game's plan, worked out once for every test that looks at it. */
-const plan = (g: Game) =>
+const plan = (g: Game, hints?: Parameters<typeof groupScenes>[3]) =>
   plans.get(g) ??
   plans
     .set(
@@ -50,6 +50,8 @@ const plan = (g: Game) =>
         g,
         (i) => (g.scenes[i].desc || 'Untitled').slice(0, 24),
         () => 0,
+        undefined,
+        hints,
       ),
     )
     .get(g)!;
@@ -57,8 +59,8 @@ const ALL = games();
 
 describe('World Map plans', () => {
   it('places every place once, none over another', () => {
-    for (const { id, player } of ALL) {
-      const p = plan(player);
+    for (const { id, player, hints } of ALL) {
+      const p = plan(player, hints);
       expect(
         [...p.at.keys()].sort((a, b) => a - b),
         id,
@@ -69,17 +71,17 @@ describe('World Map plans', () => {
   });
 
   it('runs no path under a place it doesn’t join, and crosses paths at most once', () => {
-    for (const { id, player } of ALL) {
-      const p = plan(player);
+    for (const { id, player, hints } of ALL) {
+      const p = plan(player, hints);
       expect(throughPlaces(p.paths, p.boxes).length, id).toBe(0);
       expect(crossings(p.paths), id).toBeLessThanOrEqual(1);
     }
   });
 
   it('keeps every path off the places in the every-scene view too', () => {
-    for (const { id, every } of ALL) {
+    for (const { id, every, hints } of ALL) {
       if (graphOf(every).pairs.length > 120) continue; // a web of interviews: judged by shape alone
-      const p = plan(every);
+      const p = plan(every, hints);
       expect(throughPlaces(p.paths, p.boxes).length, id).toBe(0);
     }
   }, 30000);

@@ -2,24 +2,24 @@
 
 Part of the [source map](../README.md).
 
-- `core/`: what everything in the editor uses: DOM helpers and downloads (`ui.ts`), the open
+- [`core/`](core/README.md): what everything in the editor uses: DOM helpers and downloads (`ui.ts`), the open
   project (`project.ts`) and a finished game kept read-only (`readOnly.ts`), Undo and Redo
   (`history.ts` snapshots; `fileUndo.ts` for editors that rewrite whole files), drawing indexed
   graphics (`draw.ts`), the CD library (`library.ts`), "what uses this?" (`uses.ts`), plain error
   messages (`plainError.ts`), and `fitPane.ts`, which keeps an editor's columns inside the window
   (each scrolls by itself, the pane never does).
-- `shell/`: the pages.
+- [`shell/`](shell/README.md): the pages.
   - Home: `home.ts` with `homeShowcase.ts` (the selected game at the top: its title picture first, its demo after the page is idle and a quiet 2.5 s, or at once when pointed at, touched or focused; reduced motion and data saver keep it still), `homeCategories.ts`
     (the tabs in order, the first one opened, and the random game featured when one is chosen), `homeCards.ts`,
     `homeBlurb.ts`, `homeAuthors.ts` and `homePack.ts` (the tabs' collections), `homeLibrary.ts`
     (each collection's games, no DOM) and `homeLibraryCards.ts` (its tiles and headings), packed by
-    `homeTilePack.ts`, walked with the arrow keys by `homeTileKeys.ts`; the import tile and drops
+    `homeTilePack.ts`, walked with the arrow keys by `homeTileKeys.ts`; the Starters tab's marks and Show picker (`homeDone.ts`: a Done pill, or the letter grade of a course started but not finished), its Graduations section (`homeGraduations.ts`: padlock tiles with the rule and progress, the game's own tile once open; under Show, Done lists the earned ones and Not done yet the open and locked ones) and the Transcript button's dialog (`transcriptDialog.ts`, loaded when first used: the Transcript tab by stage with GPA, the Honors tab with each earned honors drawn as a certificate by `certificateImage.ts`; the optional name on them is `gm-certificate-name`, kept only in this browser); the import tile and drops
     (`homeDrop.ts`), Getting started (`homeGettingStarted.ts`), `homeIcons.ts`,
     `homeTime.ts`, `homeCopies.ts` and `homeOrigin.ts` (copies of a finished game), the game
     the panel's Walkthrough (`walkthrough/button.ts`) loads when first used (`homeWalkOpen.ts`: a
     CD game look-only),
     `homeProjectActions.ts`, `homeImport.ts` (new game and importing, loaded when first used; an import holding several games
-    lists them to tick, with progress and Cancel while looking and importing: `importChooser.ts`,
+    lists them to tick, with progress and Cancel while looking and importing: `importChooser.ts`; the panel from the moment a file is picked, with its steps, files n of m, errors and the one-import-at-a-time guard: `importPanel.ts`,
     each row with a small title screen drawn as it scrolls into view: `importThumbs.ts`; removing all
     the imported games, or one import's, which `importBatch.ts` remembers: `importRemove.ts`) and
     `projectExport.ts`; the health badge (`gameHealth.ts`). Imported games' ratings on the home
@@ -32,18 +32,19 @@ Part of the [source map](../README.md).
     button at its top (`playButtons.ts`; its menu of every way the game's links bring the player
     into a level, the pick it plays and the copy of the game that starts there in `playLevel.ts`,
     the last pick per game in `playPickStore.ts`), the open file's actions
-    (`fileActions.ts`), accessible file-card context menus (`assetMenu.ts` and `assetMenu.css`), native asset categories (`fileKinds.ts`), the selected GAM’s Integrator context (`gameProject.ts`, preserving the owner’s primary game and autosaves), the Overview page every game opens on (`overview.ts`, with tabs Files = the lazy category/file galleries in `assetBrowser.ts` and `assetBrowser.css` plus the search box above them: `assetSearch.ts` (box, debounce, grouped results; its index is built in the background on first focus), `searchIndex.ts` (names, words inside .txt/.lst/.gam/.his/.snd/.bkd, companion strings, DOS player patches), `searchNav.ts` (arrow keys: Up/Down pick the card visually above or below by x center, across groups), `searchMatch.ts` (matching and highlight snippets) and `searchCards.ts` (thumbnail and field cards; player fields open through `editors/integrator/dosPlayer/playerTarget.ts`), Controls = `overviewControls.ts`, DOS player = `integrator/dosPlayer/playerPanel.ts`, and a read-only Player card (also under the file list) for a game imported with its own player .EXE, opening `playerInfo.ts` (its build, settings read, bytes kept and About text), and Tools = `overviewTools.ts` (cards for the game-wide tools, each with a picture or live status read from what is saved and a button that opens it: Level check, Before You Upload, Make a walkthrough, Health check, Disk space, Game version (`overviewVersion.ts`), First steps, Color vision check, Play Game and Download; the tools keep their own entry points; Game version keeps the author's version and a switch, "Show the version on the title menu", in the companion, off by default, with a real preview of the menu picture, and `project/composeFiles.ts` letters it on the copy Play, play tests and downloads hand the engine, never on the saved files); its tab is the address's `?tab=controls|player|tools`, `overviewLink.ts` builds those links, `counterUse.ts` finds where each counter is used),
+    (`fileActions.ts`), accessible file-card context menus (`assetMenu.ts` and `assetMenu.css`), native asset categories (`fileKinds.ts`), the selected GAM’s Integrator context (`gameProject.ts`, preserving the owner’s primary game and autosaves), the Overview page every game opens on (`overview.ts`, with tabs Files = the lazy category/file galleries in `assetBrowser.ts` and `assetBrowser.css` plus an Optimize floppy beside the "Game assets" heading (the Tools card's floppy, opening the same dialog; `disk/diskCard.ts` `openOptimize`) and the search box above them: `assetSearch.ts` (box, debounce, grouped results; its index is built in the background on first focus), `searchIndex.ts` (names, words inside .txt/.lst/.gam/.his/.snd/.bkd, companion strings, DOS player patches; its result groups' titles are in `searchGroups.ts`, so the box doesn't load it up front), `searchNav.ts` (arrow keys: Up/Down pick the card visually above or below by x center, across groups), `searchMatch.ts` (matching and highlight snippets), the home page's deeper search (`homeDeepSearch.ts` starts on the search box's first focus; `deepIndex.ts` reads one listed game at a time when idle and caches in IndexedDB via `deepStore.ts`; `deepSources.ts` says what to read for a catalog game or yours; `deepExtract.ts` reuses `searchIndex.ts` in the Web Worker `deepIndexWorker.ts` / `deepIndexClient.ts`; only games the home page lists are read, so a locked secret game never is) and `searchCards.ts` (thumbnail and field cards; player fields open through `editors/integrator/dosPlayer/playerTarget.ts`), Controls = `overviewControls.ts`, DOS player = `integrator/dosPlayer/playerPanel.ts`, and a read-only Player card (also under the file list) for a game imported with its own player .EXE, opening `playerInfo.ts` (its build, settings read, bytes kept and About text), and Tools = `overviewTools.ts` (cards for the game-wide tools, each with a picture or live status read from what is saved and a button that opens it: Level check, Before You Upload, Make a walkthrough, Health check, Disk space, Game version (`overviewVersion.ts`), First steps, Color vision check, Play Game and Download; the tools keep their own entry points; Game version keeps the author's version and a switch, "Show the version on the title menu", in the companion, off by default, with a real preview of the menu picture, and `project/composeFiles.ts` letters it on the copy Play, play tests and downloads hand the engine, never on the saved files); its tab is the address's `?tab=controls|player|tools`, `overviewLink.ts` builds those links, `counterUse.ts` finds where each counter is used),
     the cross-project native file clipboard (`assetClipboard.ts`, bytes plus file-local companion extras),
     exact file snapshot/replacement helpers (`assetFiles.ts`, including unknown extensions and extensionless DOS files),
-    gallery commands (`assetCommands.ts`: duplicate, copy/paste, matching-type replacement, delete and non-overwriting file drops), "Used by" (`usedBy.ts`), the save note (`saveNote.ts`), the quick switcher
+    gallery commands (`assetCommands.ts`: duplicate, copy/paste, matching-type replacement, delete and non-overwriting file drops), "Used by" (`usedBy.ts`), the breadcrumb above a file (`crumbs.ts`) and Back landing where a page was left (`scrollMemory.ts`), the file list keeping its scroll while it is redrawn (`keepScroll.ts`), the save note (`saveNote.ts`, its wording and timing in `saveState.ts`), the shared 44 px touch rules (`shellTouch.css`), the quick switcher
+    gallery commands (`assetCommands.ts`: duplicate, copy/paste, matching-type replacement, delete and non-overwriting file drops), "Used by" (`usedBy.ts`), the breadcrumb above a file (`crumbs.ts`) and Back landing where a page was left (`scrollMemory.ts`), the save note (`saveNote.ts`, its wording and timing in `saveState.ts`), the shared 44 px touch rules (`shellTouch.css`), the shared phone rules for dialogs and their one scrolling list area (`dialogsPhone.css`, checked by `npm run check:dialogs`), the quick switcher
     (`quickOpen.ts`), folding hints (`hintFold.ts`) and the Download chooser (`download.ts`).
   - New games (`starter.ts`, with the "First steps" checklist, `firstSteps.ts` and
     `firstStepsPanel.ts`), new-file templates (`templates.ts`; + New music's empty song is
     `audio/compose.ts` `blankSong`), Look inside (`released.ts`,
     `lookId.ts`), and the shared stylesheet `editor.css`.
-- `widgets/`: shared pieces: file picker (`filePicker.ts`), block chooser (`blockChooser.ts`), the
+- [`widgets/`](widgets/README.md): shared pieces: file picker (`filePicker.ts`), block chooser (`blockChooser.ts`), the
   Show with palette choice (`paletteChooser.ts`), thumbnails (`thumbs.ts`), previews (`preview.ts`),
-  waveform (`waveform.ts`), roving grid (`rovingGrid.ts`), big-target color choice
+  waveform (`waveform.ts`), roving grid (`rovingGrid.ts`), roving focus for lists that open or add (`rovingFocus.ts`), plain-words notes for a DOS limit (`limitNote.ts`), big-target color choice
   (`colorChoice.ts`), the ? shortcuts list (`shortcuts.ts`), and the game-accurate graphic previews
   used by the media editors (`mediaPictures.ts`, `mediaShared.ts`).
   - The level check's parts outside the map: badges in the block, monster and sound editors
@@ -54,7 +55,7 @@ Part of the [source map](../README.md).
     that adds to the author's heat map and keeps their play for the walkthrough (`playScene.ts`),
     watching the bot's route or the author's play of a scene, and making the bot's route again
     (`watchScene.ts`), and links into the Ultimate guide (`guideLink.ts`).
-- `editors/`: one folder per file kind, each with its `.ts`, `.css` and helpers (a big editor's
+- [`editors/`](editors/README.md): one folder per file kind, each with its `.ts`, `.css` and helpers (a big editor's
   parts, such as the integrator's board camera and input, sit beside it). `registry.ts` maps a file
   kind to its editor and loads each editor the first time a file of its kind opens (`loadEditor`);
   the editor registers itself as it loads. The kinds: `palette/`, `blocks/`, `character/`,
@@ -72,16 +73,16 @@ Part of the [source map](../README.md).
   (what moves and the clamped math, no DOM) and `dragStage.ts` (pointer, Move list, arrow keys)), `sounds/`, `sample/`, `music/` (the piano roll in `music/roll/`, drawn from cached tiles
   (`tiles.ts`, `paint.ts`) that an edit repaints only where it changed (`state.ts`), accompaniment in
   `music/arrange/`), `picture/`, `animation/` (the Scene maker in `animation/scene/`), `backdrop/`,
-  `slideShow/`, `textScreen/`, `recording/` and `highScores/`.
-- `tools/`: ways to make files beyond "new": importing pictures (`importPicture.ts`,
+  `slideShow/`, `textScreen/` (Undo and Redo steps in `textUndo.ts`: a burst of typing is one step, a paste, cut or new line its own) , `recording/` and `highScores/`.
+- [`tools/`](tools/README.md): ways to make files beyond "new": importing pictures (`importPicture.ts`,
   `convert.ts`), composing songs (`songMaker.ts`), recording or synthesizing samples
-  (`vocMaker.ts`, `sfxMaker.ts`; a recording stops itself where the .VOC would reach 64 KB, with the
+  (`widgets/vocRuler.ts` draws a time ruler under the recorder's and the sample editor's waveform: seconds, game ticks, a yellow "may stutter" and a red "likely stutters" zone and a 64 KB line, from estimates in `audio/vocLimit.ts`; `vocMaker.ts`, `sfxMaker.ts`; a recording stops itself where the .VOC would reach 64 KB, with the
   `widgets/recordMeter.ts` meter), speaker effects (`speakerFx.ts`), textures (`textures.ts`), a
   new game's opening (`opening/`) and the integrator's instruction and level cards (`cards/`: the
   words from the game's keys in `cardText.ts`, a plain backdrop in `cardBackdrop.ts`, the files in
   the scene's slot by `cardWire.ts`, and the dialogs in `cardDialog.ts`). `makers.ts` is their registry, offered by the file picker;
   `all.ts` imports them all.
-- `check/`: the level check and the walkthrough bot, with no DOM.
+- [`check/`](check/README.md): the level check and the walkthrough bot, with no DOM.
   - Playing: `sim.ts` plays a scene on the engine's own calls with small snapshots, `explore.ts`
     tries every move (`inputs.ts`, `drive.ts`) from every resting place for the heat map, `stuck.ts`
     finds places with no way out and `escape.ts` whether the hero can get out of harm;
@@ -89,7 +90,7 @@ Part of the [source map](../README.md).
     links into a scene (apart from `playtest.ts`, so the editors' badges don't load the explorer and
     engine).
   - `checks/`: the file checks (hazard art, opposites, waits, look-alike footing, density, contrast, sounds, keys…:
-    `blockChecks.ts`, `monsterChecks.ts`, `gameChecks.ts`, `keyReach.ts`, `facing.ts`,
+    `blockChecks.ts`, `counterLedger.ts` (what each scene supplies to each counter), `monsterChecks.ts`, `gameChecks.ts`, `keyReach.ts`, `facing.ts`,
     `mazeCheck.ts`, `sealed.ts` (a prize the other plane of two reaches counts as reachable);
     `inView.ts` prizes in view but out of reach; `helpKeys.ts` keys the help names that nothing
     uses; `textContrast.ts` text pages and the menu hard to read against their pictures (the pages
@@ -100,7 +101,7 @@ Part of the [source map](../README.md).
     fire key that roots the hero, ammunition for each key and keys whose job changes between
     levels; `screenText.ts` long help or story and placeholder pages; `dosChars.ts` in-game words
     with characters 128-255, which DOS's player draws as scribbles; `levelExits.ts` doors that
-    lead nowhere, a level with no link out and levels with no music (or a song DOS won't play);
+    lead nowhere, `hiddenExit.ts` links out on plain background with no door, sign or arrow near, a level with no link out and levels with no music (or a song DOS won't play);
     `flashing.ts` blocks that flash faster than three times a second; `stakes.ts` many lives and
     an unarmed start among enemies; `playerChecks.ts` a tap that moves twice, scenery that looks like
     a prize and keys never taught at the start; `fliCheck.ts` animations DOS can't play, from
@@ -127,7 +128,9 @@ Part of the [source map](../README.md).
     that turn into a key, with a key's price in another counter owed too), and `fetchKeys.ts`
     fetches those keys first, then goes on; when nothing in the scene adds to a door's counter,
     `otherScenes.ts` names the scenes that do and the bot's message says "another scene adds to it:
-    <scene>" as a suggestion (counters carry across scenes; it can't tell which way leads there);
+    <scene>" as a suggestion (counters carry across scenes; it can't tell whether that scene comes
+    before the door, so the door may never open); `fetchKeys.ts` makes at most `MAX_KEY_TRIPS`
+    trips for keys, and the message says when that limit, not time, stopped it;
     `takes.ts` cuts the author's own play
     of a scene from the player's recorder, `mine.ts` keeps it, and `replayMine.ts` plays it in place
     of the bot's; `botRoutes.ts` keeps the bot's route of one scene with a fingerprint of the scene,
@@ -156,7 +159,7 @@ Part of the [source map](../README.md).
     and legend; `myHeat.ts` and `myHeatControls.ts` keep the author's own heat map and compare it
     with the bot's, and `playSession.ts` is what a Play and record session keeps (heat and a
     take)); the badges, the Before You Upload checklist and Make a walkthrough are in `widgets/`.
-- `keymap/`: working out which keys a game uses (`keyMap.ts`, also behind the desk's key card) and
+- [`keymap/`](keymap/README.md): working out which keys a game uses (`keyMap.ts`, also behind the desk's key card) and
   the ⌨ Keys dialog (`keyMapView.ts`, also shown by the player).
 
 ## How the editors work
@@ -176,6 +179,21 @@ makes Ctrl+S save at once). Files are always written in the original binary form
   `#/p/look:<id>`, see `shell/lookId.ts`) is an in-memory project that `core/readOnly.ts` makes
   read-only: every change through `core/project.ts` is refused before it happens and nothing is
   saved, and the refusal offers Edit a copy's flow (shareware stays look-only, with its notice).
+- **Block roles.** The block editor's Uses tab (`editors/blocks/rolesPanel.ts`, stored by `blockRoles.ts` in
+  the companion file's `roles` section, never in the .bbl) marks what a background block is for: wall, door,
+  locked door and key (with a lock number), chair facing south, and so on, several per block. The no-DOM
+  model and `suggestRoles` are in the tools package (`kit/blockRoles.ts`), so a level generator and the
+  games can read them. Guesses from what the block does and its picture show as dashed chips; nothing is
+  added until you tap one or Accept all.
+- **Generate and the role filter.** The map editor's Blocks panel has a Show filter (`map/roleFilter.ts`:
+  only walls, only trees... from the roles above) and a Generate button (`map/generate/`). The dialog
+  (`generateDialog.ts`) offers four real renders of a dungeon or a forest from a seed, for the whole map or
+  the selection; `missingRoles.ts` is its Missing roles panel (what the kind needs, which roles are set, a
+  link to the Uses tab); `place.ts` writes the chosen layout into cells and gives walls, trees and paths
+  edges and corners from the set's terrain brushes, and `placeMonsters` puts the layout's monsters into the map's own monster list (the ones already in the area go; same undo step); `verifyOffer.ts` gives each preview its Verified or Not proven chip from the generator's proof plus the Level check's quick reach test (`checks/sealed.ts`) on the game's real blocks (it does not play the level). The generators themselves are in the tools package
+  (`kit/levelGen`, no DOM, seeded). A layout is ordinary map cells in one undo step: no new DOS data, and the
+  map is untouched until you pick one. Town and Overworld layouts also list their doors and sites under "Links to make". "Make these scenes" (`makeScenes.ts`, no DOM) asks first, then draws the layout and adds a scene per door or site: a new .map drawn by the matching kind in the same block set (a layout that proves itself within a few seeds), the host scene's files (intro and exit pictures left out), a link in from the door and a link back that arrives beside it. It keeps within a scene's 20 links, leaves out a block that already has a link or a kind whose roles are not marked, and says what it skipped; the new scenes are ordinary, and are not part of the map's Undo. The dialog selects the first layout with the strongest proof (Bot won, then Jump math or Verified, then Not proven).
+  `platformBot.ts` plays a generated side view on the level check's scene sim: it presses the hero's own keys along the route the generator's reach model chose (key first when there is a lock), checks where he really lands after each move and wins when the exit link is taken. The dialog runs it in a Web Worker (`platformBotWorker.ts`, started by `platformBotClient.ts`), one layout at a time, stopped when the offers change or the dialog closes. The Platform kind adds a Difficulty slider and its chip reads Jump math (proven by the model) or Bot won (played on the real engine); `test/levelGenPlatformBot.test.ts` runs a sample of seeds (including ones where the engine's ground check nudges him off a ledge's edge or he slides on down a ladder, which the reach model follows).
 - **Block groups.** The block set editor (`editors/blocks/`) and the character editor share block
   groups (`blockGroups.ts`: a picture drawn across several blocks, kept in the companion file), the
   group shown assembled (`groupView.ts`), and live animation previews at the game's tick rate
@@ -255,6 +273,16 @@ makes Ctrl+S save at once). Files are always written in the original binary form
   (`editors/recording/botDemoDialog.ts`) runs `botDemoWorker.ts` (through `botDemoClient.ts`): the
   walkthrough bot plays to the chosen scene, and `botDemo.ts` plays its walkthrough on the engine
   and writes the keys down at the demo recorder's ticks as a `.REC`.
+- **Make it smaller.** The animation editor's Frames tab has a "Make it smaller…" dialog
+  (`editors/animation/shrink/`): `shrinkPanel.ts` shows the `.FLI` size report and findings from
+  `fliReport`, the options (lossless always; lossy adds max colors, snap near colors, reduce
+  dithering, hold still areas and keep every other frame), and the original beside the real
+  re-encoded result, with KB and % saved and `describeVisibility` words. `shrinkOptions.ts` maps
+  options to `fliShrink` steps (also one palette for the whole animation, and Frame it: solid bands
+  you drag on the original, plus zoom and pan); the preview plays both sides looping with a shared
+  Play/Pause and frame scrubber; `shrinkRun.ts` runs them; `shrinkWorker.ts` and `shrinkClient.ts`
+  do it off the page's thread. Apply writes the bytes as one undo step; a look-only game gets a
+  copy in My Games (`disk/makeOptimizedCopy.ts`).
 - **Scene maker.** The animation editor's Scene maker (`editors/animation/scene/`) draws an `.FLI`
   from a scene kept in the companion file: `sceneModel.ts` (backgrounds and tracks of timed items),
   `sceneText.ts` (the 8x8 font, text motions, and the warnings and fit that keep text inside
@@ -281,6 +309,13 @@ makes Ctrl+S save at once). Files are always written in the original binary form
   designer dismissed as meant to look alike, in the companion file on the `.pal`.
   `visionFallback.ts` supplies block artwork using the selected palette when the map is
   empty, then all 256 palette swatches when no suitable artwork is available.
+- **Color help.** [`colorHelp/`](colorHelp/README.md) holds three local preferences (`colorHelpPrefs.ts`, localStorage
+  `gm-color-help`: show color names, warn about look-alike colors for red-green or blue-yellow,
+  preview as others might see it), their small control (`colorHelpControl.ts`), plain color
+  names (`colorNames.ts`), the look-alike pairing over the engine's `gfx/colorVision` (`alike.ts`),
+  the block painters' panel (`blockColorHelp.ts` with `seenPreview.ts`; the palette editor wires
+  its own) and the optional Quick color check (`quickCheck.ts`, screens and suggestions in
+  `quickCheckLogic.ts`), which only suggests settings and keeps no answers.
 - **Color 0.** The palette editor's Backgrounds tab and its color-0 links show live miniatures;
   choosing one opens `editors/palette/colorZeroDialog.ts`:
   each player screen drawn on color 0 (`colorZeroScreens.ts`: the high-score name prompt and
@@ -400,6 +435,15 @@ are real previews too; a blank idle can fall back to a movement frame.
 - **Small map pictures.** Download map picture includes 1, 5 and 10 pixels per
   block, alongside the original and enlarged sizes. These sizes apply to the
   downloaded PNG; editing and native game files keep their original dimensions.
+
+- **Touch gestures.** `editors/map/mapTouchGestures.ts` gives the map and the block
+  canvas fingers: two fingers pinch to zoom and drag their midpoint to pan, whatever
+  tool is chosen, and the second finger never reaches the tool (a first finger under
+  150 ms old is taken back, so a pinch leaves no dot). On the map, one finger held still
+  for 500 ms opens a menu (`shell/assetMenu.ts`: Erase monster, Pick this block, Use as
+  the exit's place), the touch stand-in for a right click, and the Hand tool scrolls with
+  one finger. The block canvas zooms inside a `.blk-zoom` box. Editor-only: no saved or
+  exported byte changes. Unit tests use fake timers (`mapTouchGestures.test.ts`).
 
 - **Map wheel zoom.** `editors/map/mapZoom.ts` zooms continuously from one screen
   pixel per block (5%) to 400%: the wheel and a trackpad pinch change the zoom by a
@@ -569,3 +613,7 @@ seams; Find, grid, link and Level check overlays keep their native positions.
 Project URLs without a file open the asset overview; `?assets=map` opens a category.
 Direct file links keep their editor and view parameters. Browser Back and Forward,
 the Assets button in a file editor, and stopping a play test return to the appropriate view.
+
+## Two Undo/Redo pairs in the integrator
+
+The integrator keeps two histories: the game file's (`fileUndo.ts`: scenes, files, links, positions in the .gam) and the boards' (companion data: cards moved, boards added). They cannot be one stack, because the boards are editor-only and never part of the .gam. People could not tell the pairs apart, so each says what it takes back: the file pair is "Undo game change" (title and label, small arrows), the board pair "↶ Layout" / "↷ Layout" (label "Undo board layout").

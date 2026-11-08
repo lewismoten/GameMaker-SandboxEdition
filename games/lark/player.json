@@ -4,6 +4,7 @@
     "color.rgb.hsRed": [46, 4, 4],
     "color.rgb.hsBlue": [4, 6, 36],
     "color.rgb.hsGreen": [63, 58, 30],
+    "color.rgb.purple": [28, 4, 28],
     "color.select.status": "hsGreen",
     "color.select.dropFrame": "hsGreen",
     "color.select.aboutFrame": "hsGreen",

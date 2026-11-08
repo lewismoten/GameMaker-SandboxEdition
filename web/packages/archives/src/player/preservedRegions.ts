@@ -18,7 +18,7 @@ export interface PreservedParts {
 }
 
 export const toBase64 = (b: Uint8Array) => btoa(String.fromCharCode(...b));
-export const regionBytes = (r: PreservedRegion) => Uint8Array.from(atob(r.data), (c) => c.charCodeAt(0));
+const regionBytes = (r: PreservedRegion) => Uint8Array.from(atob(r.data), (c) => c.charCodeAt(0));
 
 /**
  * Writes the regions into `exe` (a patched copy of the same build), in place, except the bytes of

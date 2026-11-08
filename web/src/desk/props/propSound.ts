@@ -4,7 +4,9 @@
 // so a knob turned all the way down keeps the room quiet too, and they start only from
 // the click or key press that asked for them.
 import { output } from '@lewismoten/gamemaker-sandbox-engine/audio/output';
-import { audioContext, unlock } from '@lewismoten/gamemaker-sandbox-engine/audio/context';
+import { audioContext, soundUnlocked, unlock } from '@lewismoten/gamemaker-sandbox-engine/audio/context';
+import { BARKS, barkUrl } from '../../tour/steps';
+import { chezPassBy } from '../../audio/chez/chezSound';
 
 let gameAudio: import('@lewismoten/gamemaker-sandbox-engine/audio/engine').AudioEngine | undefined;
 
@@ -94,6 +96,29 @@ function noise(o: Out, at: number, len: number, freq: number, level = 0.12, q = 
   src.connect(f).connect(g).connect(out);
   src.start(t);
 }
+
+// The real dogs' barks (the tour's clips, public/tour/sfx): Teddy's six and Gwinn's two, each kept to its own dog.
+// A bark only plays once the page's sound has already been unlocked by a tap (it never wakes the audio itself),
+// and one call at most every BARK_GAP_MS, so a dog showing up often never nags.
+export const BARK_GAP_MS = 6000;
+const barkClips = new Map<string, Promise<AudioBuffer | undefined>>();
+let lastBark = -Infinity;
+
+/** The decoded clip `name` for `ctx` (fetched once). */
+function clip(ctx: AudioContext, name: string): Promise<AudioBuffer | undefined> {
+  let p = barkClips.get(name);
+  if (!p) {
+    p = fetch(barkUrl(name))
+      .then((r) => (r.ok ? r.arrayBuffer() : Promise.reject(new Error('no clip'))))
+      .then((b) => ctx.decodeAudioData(b))
+      .catch(() => undefined);
+    barkClips.set(name, p);
+  }
+  return p;
+}
+
+/** Which clip names belong to whom. */
+const CLIPS = { teddy: BARKS.teddyBark, gwinn: BARKS.gwinnBark } as const;
 
 export const roomSound = {
   /** One click of a combination dial passing a number. */
@@ -213,31 +238,10 @@ export const roomSound = {
       n.stop(o.t + 1.7);
     }
   },
-  /** THE CHEZ going by: an electric motor's quiet whirr, rising and falling over `seconds`. */
+  /** THE CHEZ going by at cruise, heard through the window: the same motor as on the cast page (audio/chez/). */
   whirr(seconds = 10): void {
     const o = open();
-    if (!o) return;
-    const { ctx, out } = o;
-    const g = ctx.createGain();
-    g.gain.setValueAtTime(0, o.t);
-    g.gain.linearRampToValueAtTime(0.025, o.t + seconds * 0.45);
-    g.gain.linearRampToValueAtTime(0, o.t + seconds);
-    g.connect(out);
-    for (const [f, type, level] of [
-      [330, 'sine', 1],
-      [990, 'triangle', 0.25],
-    ] as const) {
-      const osc = ctx.createOscillator();
-      osc.type = type;
-      osc.frequency.setValueAtTime(f * 0.97, o.t);
-      osc.frequency.linearRampToValueAtTime(f * 1.03, o.t + seconds * 0.45);
-      osc.frequency.linearRampToValueAtTime(f * 0.94, o.t + seconds);
-      const v = ctx.createGain();
-      v.gain.value = level;
-      osc.connect(v).connect(g);
-      osc.start(o.t);
-      osc.stop(o.t + seconds + 0.05);
-    }
+    if (o) chezPassBy(o.ctx, o.out, seconds, { level: 0.04, outside: true, pullAway: true });
   },
   /** A heavy truck's diesel rumble and a blade scraping, fading over `seconds`. */
   rumble(seconds = 4): void {
@@ -252,6 +256,33 @@ export const roomSound = {
     const o = open();
     if (!o) return;
     for (let at = 0; at < seconds; at += 0.42) noise(o, at, 0.09, 1800 + Math.random() * 800, 0.07, 1.5);
+  },
+  /**
+   * Real barks, one per dog named, 0.7 s apart ('teddy' is the corgi, 'gwinn' is the chocolate-brown girl). Nothing
+   * if sound is not unlocked yet or one was heard in the last BARK_GAP_MS (then it returns false). Where a clip can't be
+   * had, a synthesized woof.
+   */
+  bark(...dogs: ('teddy' | 'gwinn')[]): boolean {
+    if (!soundUnlocked()) return false;
+    const now = performance.now();
+    if (now - lastBark < BARK_GAP_MS) return false;
+    const o = open();
+    if (!o) return false;
+    lastBark = now;
+    dogs.forEach((dog, i) => {
+      const names: readonly string[] = CLIPS[dog];
+      const name = names[Math.floor(Math.random() * names.length)];
+      void clip(o.ctx, name).then((buf) => {
+        if (!buf) return roomSound.woof(1);
+        const src = o.ctx.createBufferSource();
+        src.buffer = buf;
+        const g = o.ctx.createGain();
+        g.gain.value = 0.8;
+        src.connect(g).connect(o.out);
+        src.start(o.ctx.currentTime + i * 0.7);
+      });
+    });
+    return true;
   },
   /** Dogs barking: a couple of woofs and a yip. */
   woof(times = 2): void {
@@ -293,7 +324,7 @@ export const roomSound = {
         gameAudio ??= new AudioEngine();
         gameAudio.setGame(true);
         const entry = (await files.loadGameList()).find((g) => g.id === game);
-        const bytes = entry && (await files.fetchGameFile(entry, name));
+        const bytes = entry && (await files.peekGameFile(entry, name));
         await gameAudio.resume();
         gameAudio.playVoc(bytes);
       })

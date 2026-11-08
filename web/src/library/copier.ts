@@ -7,7 +7,7 @@
 import { h } from '../editor/core/ui';
 import type { ShelfItem } from './shelf';
 
-export interface Copier {
+interface Copier {
   el: HTMLElement;
   /** The open drawer's pieces: only those the print shop opens are offered. */
   update(items: readonly ShelfItem[]): void;

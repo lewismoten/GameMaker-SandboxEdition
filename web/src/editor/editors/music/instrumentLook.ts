@@ -5,17 +5,19 @@
 // the track keeps its channel color. The group colors are the preset picker's (one hue per
 // group, in PRESET_GROUPS order), so the picker, the Instruments tab, the track list and the
 // piano roll all agree. Nothing here is saved in the song.
-import { OPL_PRESETS, PRESET_GROUPS } from '../../../audio/oplPresets';
+import { OPL_PRESETS, PRESET_GROUPS, soundGroup } from '../../../audio/oplPresets';
 import type { OplPreset } from '../../../audio/oplPatch';
 import { genericIcon, presetIcon } from './presetIcons';
 
 /** A patch differing from a preset in this many of its 11 bytes or fewer still counts as it. */
 const CLOSE_BYTES = 2;
 
-export interface InstrumentLook {
+interface InstrumentLook {
   preset?: OplPreset;
   /** The patch is exactly the preset (else only close to it). */
   exact: boolean;
+  /** The sound family's id (a Classic preset takes its home family, as the picker does). */
+  family?: string;
   /** The group's name, or undefined with no match. */
   groupName?: string;
   /** The color for the track: the group's. */
@@ -31,9 +33,11 @@ const hueOf = (group: string): number => {
 };
 
 /** The group's strong color (track names, notes on the roll). */
-export const groupColor = (group: string): string => `hsl(${hueOf(group)} 65% 50%)`;
+export const groupColor = (group: string, shade = 0): string => `hsl(${hueOf(group)} 65% ${SHADES[shade % SHADES.length]}%)`;
+/** Lightness steps for tracks that share a family, so they stay apart. */
+const SHADES = [50, 36, 62, 28];
 /** The group's pale tile color (behind a picture). */
-export const groupTile = (group: string): string => `hsl(${hueOf(group)} 70% 84%)`;
+const groupTile = (group: string): string => `hsl(${hueOf(group)} 70% 84%)`;
 const NEUTRAL_TILE = '#e4e4ea';
 
 function closest(inst: Uint8Array): { preset: OplPreset; diff: number } | undefined {
@@ -51,12 +55,14 @@ function closest(inst: Uint8Array): { preset: OplPreset; diff: number } | undefi
 export function instrumentLook(inst: Uint8Array | undefined): InstrumentLook {
   const hit = inst ? closest(inst) : undefined;
   if (!hit) return { exact: false, icon: genericIcon(NEUTRAL_TILE) };
-  const g = hit.preset.group;
+  // Classic is a favorites view: color by the family the sound belongs to, as the picker does.
+  const g = soundGroup(hit.preset);
   return {
     preset: hit.preset,
     exact: hit.diff === 0,
+    family: g,
     groupName: PRESET_GROUPS.find((x) => x.id === g)?.name,
     color: groupColor(g),
-    icon: presetIcon(hit.preset.id, g, groupTile(g)),
+    icon: presetIcon(hit.preset.id, hit.preset.group, groupTile(g)),
   };
 }

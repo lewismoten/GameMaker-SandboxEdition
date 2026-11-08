@@ -1,13 +1,14 @@
 // The DOS player dialog's tabs: one per screen XFERPLAY draws (the main menu, the high scores,
-// F2's status and so on), then the F-keys, the player's shared colors and the Files tab (the DOS
-// download's file extensions, fileFields.ts). Each screen's tab holds every patch of that screen,
+// F2's status and so on), then the F-keys, the player's shared colors, the experimental Gameplay
+// tab (constants every scene plays by) and the Files tab (the DOS download's file extensions,
+// fileFields.ts). Each screen's tab holds every patch of that screen,
 // in sections by kind: words, positions, frames, colors, then times.
 import { PATCHES, type PatchEntry, type PatchGroup, type PatchScreen } from '@lewismoten/gamemaker-sandbox-engine/player/patchTable';
 
 /** A tab: a screen's, or the Files tab. */
 export type PanelTab = PatchScreen | 'files';
 
-export interface ScreenTab {
+interface ScreenTab {
   screen: PanelTab;
   label: string;
 }
@@ -27,6 +28,7 @@ export const SCREEN_TABS: ScreenTab[] = [
   { screen: 'missing', label: 'Missing files' },
   { screen: 'play', label: 'F-keys' },
   { screen: 'all', label: 'Colors' },
+  { screen: 'gameplay', label: 'Gameplay' },
   { screen: 'files', label: 'Files' },
 ];
 
@@ -37,6 +39,7 @@ const SECTIONS: [PatchGroup, string][] = [
   ['colors', 'Colors'],
   ['times', 'Times'],
   ['keys', 'Keys'],
+  ['play', 'Experimental'],
 ];
 
 export interface ScreenSection {

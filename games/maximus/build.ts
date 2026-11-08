@@ -7,10 +7,12 @@ import { README } from './src/screens/text';
 import { about, limitsTxt, manual } from './src/docs';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { licenseText } from '../kit/license';
+import { checkWheelScenes } from './src/wheel/scenes';
 
 const t0 = Date.now();
 const built = buildGame();
 await present(built);
+checkWheelScenes(built.game, new URL('./printables.json', import.meta.url).pathname);
 const disk = new Disk(new URL('./disk', import.meta.url).pathname);
 // the version goes on the same line as the menu's hint, at its right
 disk.menuVersion = { y: 184 };

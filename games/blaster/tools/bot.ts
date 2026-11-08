@@ -5,7 +5,15 @@
 import { SCAN, SEQ } from '../src/ids';
 import type { Sim } from './sim';
 
-const MOVES: (number | undefined)[] = [undefined, SCAN.left, SCAN.right, SCAN.up, SCAN.down, SCAN.kp7, SCAN.kp9, SCAN.kp1, SCAN.kp3];
+// The pilot may only idle or make one cardinal move at a time. Diagonal keypad moves make
+// routes inaccessible to an arrow-only player, and changing axes on decision ticks leaves a
+// few frames for each straight move to settle.
+export const BASIC_MOVES: (number | undefined)[] = [undefined, SCAN.left, SCAN.right, SCAN.up, SCAN.down];
+
+const BASIC_KEYS = new Set<number>([SCAN.left, SCAN.right, SCAN.up, SCAN.down, SCAN.space, SCAN.enter]);
+
+/** Whether a recorded press or release is allowed in the arrow-first walkthrough. */
+export const isBasicKey = (key: number): boolean => BASIC_KEYS.has(key & 0x7f);
 
 const HARMLESS = /^(shot|nova|spark|wreck|boom|bigBoom|turretBoom)/;
 
@@ -71,7 +79,7 @@ export async function fly(
       const goal = o.goal?.(sim);
       let best = -Infinity;
       let choice = current;
-      const tries: (number | undefined)[] = [...MOVES];
+      const tries: (number | undefined)[] = [...BASIC_MOVES];
       if (before.novas > 0) tries.push(SCAN.space);
       for (const a of tries) {
         const f = sim.fork();

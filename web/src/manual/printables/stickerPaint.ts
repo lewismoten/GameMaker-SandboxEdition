@@ -256,8 +256,9 @@ function innerBox(shape: StickerShape): [number, number, number, number] {
       return [0.24, 0.31, 0.52, 0.38];
     case 'burst':
       return [0.26, 0.33, 0.48, 0.34];
+    // below the dip between the lobes, above where the point narrows
     case 'heart':
-      return [0.2, 0.14, 0.6, 0.48];
+      return [0.25, 0.26, 0.5, 0.36];
     case 'bubble':
       return [0.08, 0.08, 0.84, 0.64];
     default:

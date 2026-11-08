@@ -1,0 +1,77 @@
+{
+ "version": 1,
+ "game": "secret-doors",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU1GzQNNAzkCuRLNL01BzStND80DTSPNA00="
+  },
+  {
+   "scene": 3,
+   "keys": "AU1GzQNND80rTUHNA00UzQNNHs0DTQ=="
+  },
+  {
+   "scene": 4,
+   "keys": "AU2CAc0rTR7NA00="
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: Same Look"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: Bump, Then Bump"
+  },
+  {
+   "scene": 4,
+   "title": "Level 3: Coins in the Wall"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 9342,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 913,
+    "time": 15216.666666666471
+   },
+   {
+    "title": "Level 1: Same Look",
+    "frame": 2142,
+    "time": 35700.00000000053
+   },
+   {
+    "title": "Level 2: Bump, Then Bump",
+    "frame": 3572,
+    "time": 59533.333333330396
+   },
+   {
+    "title": "Level 3: Coins in the Wall",
+    "frame": 4831,
+    "time": 80516.66666666721
+   },
+   {
+    "title": "Ending",
+    "frame": 6059,
+    "time": 100983.33333333983
+   },
+   {
+    "title": "Credits",
+    "frame": 8268,
+    "time": 137800.00000001135
+   }
+  ]
+ }
+}

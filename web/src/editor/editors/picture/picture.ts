@@ -1,6 +1,7 @@
 // Pictures (.GIF): view, import, and copy 20x20 areas into blocks (IMAGE.EXE).
 import { registerEditor } from '../registry';
 import { fileField } from '../../widgets/filePicker';
+import { rovingGrid } from '../../widgets/rovingGrid';
 import { h, clear, selectField, pickFiles, toast, download, confirmDialog } from '../../core/ui';
 import { blockCanvas, paintBlock, paintIndexed } from '../../core/draw';
 import './picture.css';
@@ -9,6 +10,7 @@ import { decodeGif, encodeGif, isGif, type IndexedImage } from '@lewismoten/game
 import { matchColor, parsePalette, type Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import { BLEN, BLOCK_COUNTS, BLOCK_SIZE, parseBlocks, serializeBlocks, type Block, type BlockKind } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { gamePreview } from '../../widgets/mediaShared';
+import { resizedText } from '../../widgets/limitNote';
 import { fitToPane } from '../../core/fitPane';
 import { fileUndo } from '../../core/fileUndo';
 
@@ -32,8 +34,12 @@ function quantize(img: ImageData, pal: Palette): Uint8Array {
   return out;
 }
 
+/** The size of the last picture imported, for the note about scaling it. */
+let importedFrom: [number, number] = [320, 200];
+
 async function importImage(file: File, pal: Palette): Promise<IndexedImage> {
   const bmp = await createImageBitmap(file);
+  importedFrom = [bmp.width, bmp.height];
   const c = document.createElement('canvas');
   c.width = 320;
   c.height = 200;
@@ -87,7 +93,8 @@ registerEditor(['gif'], (host, project, file) => {
   let blocks: Block[] = [];
   let destPal: Palette = img.palette;
   let kind: BlockKind = 'bbl';
-  const slots = h('div', { class: 'pic-slots', role: 'listbox', 'aria-label': 'Block to replace' });
+  // one Tab stop for the 48 slots; the arrow keys choose (the same as the block pickers)
+  const slots = rovingGrid(h('div', { class: 'pic-slots' }), 'Block to replace');
   const before = h('canvas', { class: 'pixel checker', width: BLEN, height: BLEN });
   const after = h('canvas', { class: 'pixel checker', width: BLEN, height: BLEN });
   const beforeCap = h('figcaption');
@@ -123,7 +130,7 @@ registerEditor(['gif'], (host, project, file) => {
         h(
           'button',
           {
-            class: `${i === targetBlock ? 'target' : ''} ${isBlankBlock(b.pixels, sprite()) ? 'blank' : ''}`,
+            class: `${i === targetBlock ? 'target selected' : ''} ${isBlankBlock(b.pixels, sprite()) ? 'blank' : ''}`,
             role: 'option',
             'aria-selected': String(i === targetBlock),
             title: `Block ${i}${isBlankBlock(b.pixels, sprite()) ? ' (empty)' : ''}`,
@@ -154,6 +161,7 @@ registerEditor(['gif'], (host, project, file) => {
     copyBtn.textContent = blank ? `Copy into block ${targetBlock}` : `Replace block ${targetBlock}`;
     [...slots.children].forEach((el, i) => {
       el.classList.toggle('target', i === targetBlock);
+      el.classList.toggle('selected', i === targetBlock);
       el.setAttribute('aria-selected', String(i === targetBlock));
     });
     // scroll the block list only, never the page around it
@@ -233,7 +241,7 @@ registerEditor(['gif'], (host, project, file) => {
           undo.before(file);
           project.files.set(file, encodeGif(img));
           draw();
-          toast('Picture replaced (scaled to 320×200).');
+          toast(resizedText(...importedFrom, 320, 200, 'stretched to fill it') || 'Picture replaced.');
         },
       },
       'Replace with an image file…',

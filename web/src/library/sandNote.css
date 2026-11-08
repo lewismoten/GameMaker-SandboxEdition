@@ -1,0 +1,99 @@
+/* The folded note on the Library floor (sandNote.ts) and the Sandscript key it opens. */
+.lib-o-note {
+  left: var(--l);
+  bottom: var(--b);
+  width: var(--w);
+  min-width: 24px;
+  min-height: 24px;
+  z-index: 3;
+}
+
+@media (max-width: 700px) {
+  .lib-o-note {
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.sand-paper {
+  --sand-ink: #23222b;
+  max-width: 560px;
+  padding: 14px 18px 16px;
+  border: 1px solid #b9ad8a;
+  border-radius: 2px;
+  background: repeating-linear-gradient(transparent 0 25px, #a9c3dd 25px 26px), #fbf7e8;
+  color: var(--sand-ink);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+}
+
+.sand-paper p {
+  margin: 0 0 10px;
+}
+
+.sand-title {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  font-weight: 700;
+}
+
+.sand-title .sand-svg {
+  height: 26px;
+  width: auto;
+  max-width: 100%;
+}
+
+.sand-svg {
+  display: block;
+  overflow: visible;
+}
+
+.sand-stroke {
+  stroke: var(--sand-ink);
+  stroke-width: 0.22;
+  stroke-linecap: round;
+}
+
+.sand-dot {
+  fill: var(--sand-ink);
+}
+
+.sand-key {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(46px, 1fr));
+  gap: 8px;
+  margin: 0 0 12px;
+  padding: 0;
+  list-style: none;
+}
+
+.sand-key li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 2px 4px;
+  border: 1px solid #d6cba8;
+  border-radius: 3px;
+  background: #fffdf4;
+  font-weight: 700;
+}
+
+.sand-key .sand-svg {
+  width: 30px;
+  height: 30px;
+}
+
+.sand-try .sand-svg {
+  width: 100%;
+  max-width: 420px;
+  height: auto;
+  margin: 0 0 10px;
+}
+
+.sand-try summary {
+  cursor: pointer;
+  min-height: 24px;
+}

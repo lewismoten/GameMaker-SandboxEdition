@@ -19,7 +19,7 @@
   box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.35);
 }
 
-.box3d .bface img {
+.box3d .bface :is(img, canvas) {
   display: block;
   width: 100%;
   height: 100%;
@@ -211,6 +211,12 @@
 }
 
 @media (max-width: 600px) {
+  /* the hint stays between the ◀ ▶ arrows, not under them */
+  .box-viewer-bar .hint {
+    margin-inline: 52px;
+    text-align: center;
+  }
+
   .box-nav {
     top: auto;
     bottom: 120px;
@@ -225,13 +231,13 @@
 }
 
 /* the box in hand under the desk's black light (boxUv.ts): its glowing print, half by day */
-.box-viewer.uv .bface img.buv {
+.box-viewer.uv .bface .buv {
   position: absolute;
   inset: 0;
   opacity: 0.5;
 }
 
-.box-viewer.uv.night .bface img.buv {
+.box-viewer.uv.night .bface .buv {
   opacity: 1;
 }
 

@@ -1,0 +1,83 @@
+{
+  "title": "To the Horizon",
+  "howDoI": [
+    {
+      "id": "road",
+      "q": "How do I draw a road that runs away to the horizon?",
+      "scene": 2,
+      "x": 18,
+      "y": 15,
+      "level": 1
+    },
+    {
+      "id": "comeover",
+      "q": "How do I make things come over a hill and grow as they come?",
+      "scene": 2,
+      "x": 28,
+      "y": 13,
+      "level": 1
+    },
+    {
+      "id": "hidden",
+      "q": "How do I make a monster appear from a block nobody can see?",
+      "scene": 2,
+      "x": 28,
+      "y": 13,
+      "level": 1
+    },
+    {
+      "id": "still",
+      "q": "How do I make a screen that does not scroll?",
+      "scene": 2,
+      "x": 18,
+      "y": 15,
+      "level": 1
+    },
+    {
+      "id": "grow",
+      "q": "How do I make a picture that grows as time goes by?",
+      "scene": 3,
+      "x": 18,
+      "y": 13,
+      "level": 2
+    },
+    {
+      "id": "shut",
+      "q": "How do I keep a door shut until something happens?",
+      "scene": 3,
+      "x": 23,
+      "y": 18,
+      "level": 2
+    }
+  ],
+  "pages": [
+    {
+      "head": "Welcome",
+      "html": "<h1>Welcome</h1><p><b>To the Horizon</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has two short levels and takes a few minutes to finish. It is in the Showcase Tricks group, because it shows how a big game drives to the horizon.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each thing in the levels is made.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. <kbd>Space</kbd> jumps. <kbd>F2</kbd> shows your lives, hit points and score. Walk into the door to go on.</p><p>Each level is one screen that never scrolls. Nothing in this game hurts you.</p>"
+    },
+    {
+      "head": "Level 1: Over the Hill",
+      "html": "<h1>Level 1: Over the Hill</h1><p>The <b>ONE PICTURE: THE ROAD NARROWS TO A POINT</b> sign stands on the left. The road looks as if it runs a long way off, but it is a flat picture. Its edges slope in to one point on the horizon, and the white lane lines slope the same way.</p><p>The <b>BLOCKS OFF SCREEN MAKE BALLS THAT GROW</b> sign stands on the right. Beach balls come out of the top of the road, one at a time, in all three lanes. Each starts as a dot and gets bigger as it comes, then rolls off the bottom. Lami can walk through them or jump over them; they are soft.</p><p>The door is open from the start, but stay a while and watch the balls first.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 1 is made</h1><ul><li><b>One picture.</b> Open <b>one.map</b> in the map editor. The whole screen, 16 blocks by 10, is one painting cut into blocks. The road narrows toward a point on the horizon, 3 blocks down from the top, and its lane lines slope toward the same point. Cells of the painting that come out alike share one block, so the level uses 114 blocks of the 150 it may have.</li><li><b>It never scrolls.</b> In <b>hz.gam</b> the scene's four scrolling settings are all off, so the picture stays put. Lami starts in the middle of the screen and drops onto the road. Hedges at both sides close the room in.</li><li><b>Hidden blocks make the balls.</b> Look right of the screen in <b>one.map</b>. Two columns past the right edge, on the horizon's row, one block sits for each lane. In <b>hz1.bbl</b> each has a <b>Monster to be born</b> and a time in <b>every ticks</b>, and a <b>Next block</b> that takes over a moment later. So each block gives birth to one ball, then hands over to the next block in the lane, which gives birth later. The list of blocks is the timetable.</li><li><b>The ball leaps first.</b> Open <b>hz.mon</b> and pick a ball. Its path starts with one very fast move, 10 to 12 blocks left onto the horizon's point, depending on its lane, so nobody sees it arrive from the side. Then four short moves slide it down its lane, longer and faster as it comes.</li><li><b>Four sizes.</b> The same ball is drawn four times in <b>hz.mbl</b>, from a dot to full size. The ball's pictures list shows each for a few ticks, and the last for a long time, so it seems to grow as it comes closer.</li><li><b>Friendly.</b> The ball's pictures are not solid and take no hit points, and its power is 110, so touching Lami neither hurts nor pops it.</li><li><b>The signs.</b> Each sign is a few ordinary blocks side by side, with the words drawn in their pictures.</li></ul>"
+    },
+    {
+      "head": "Level 2: Coming Closer",
+      "html": "<h1>Level 2: Coming Closer</h1><p>The <b>AN ARCH GROWS: EACH BLOCK BECOMES THE NEXT</b> sign stands on the left. On the horizon a tiny checkered arch stands across the road. Every few seconds it gets bigger, as if you were driving toward it, until it is across the whole road.</p><p>The <b>THE DOOR OPENS WHEN THE ARCH ARRIVES</b> sign stands on the right. The door on the right is barred with red and white bars. When the arch has grown to full size, about 19 seconds after the level begins, the bars lift and the door is open. Walk up to it and wait.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 2 is made</h1><ul><li><b>The arch is blocks that turn into blocks.</b> Open <b>two.map</b>. The arch fills 5 blocks across and 3 down, just under the horizon. In <b>hz2.bbl</b> each of those blocks has a <b>Next block</b> and a <b>Time</b>. After 110 ticks (about 6 seconds) each turns into the same place's block of a bigger arch. After 120 more it turns again, and 120 after that again, which makes four sizes. There are 18.2 ticks in a second.</li><li><b>Blocks that stay the same share.</b> A block of sky in the arch's place does not change, so it is just an ordinary block. Only the blocks the arch really covers are chains.</li><li><b>The barred door.</b> The door at the right is two blocks. Each is solid with bars drawn over it, and turns into the plain door after the same three waits, about 19 seconds in. A solid block stops Lami; the plain door is not solid and has a link, so the door works when the bars lift.</li><li><b>The timers all start with the level,</b> so the arch and the door stay in step without anything telling them to.</li><li><b>Its own block file.</b> This level's blocks are in <b>hz2.bbl</b>, not level 1's, because a block set holds at most 150 blocks and the arch needs many.</li></ul>"
+    },
+    {
+      "head": "What it cannot do",
+      "html": "<h1>What it cannot do</h1><p>This is a picture of a road, not a road:</p><ul><li>It is not 3-D. The road is painted, and nothing has a distance. A ball seems to come closer because its path and its pictures are made to agree.</li><li>The picture is fixed. Lami cannot walk <i>into</i> the picture toward the horizon, and the road does not move under them. They walk along the bottom.</li><li>A ball only looks right in its own lane, because its path was made for that lane. Another lane needs another monster.</li><li>A block set holds at most 150 blocks, and a level of one big picture uses most of them. A very detailed road has to be drawn with flat bands of color so that many cells come out alike.</li><li>The timers count from when the level starts, and every block of one kind changes together. A block cannot start its clock when something happens, such as Lami arriving.</li></ul>"
+    },
+    {
+      "head": "Make it yours",
+      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>In <b>hz2.bbl</b> change the Time of the arch's blocks. Make the arch arrive in half the time.</li><li>In <b>hz.mon</b> make a ball's last picture last for 5 ticks instead of 200, and see what the ball does when it reaches full size.</li><li>Change a hidden block's <b>every ticks</b> in level 1 to bring the first ball sooner.</li><li>Draw the road in a different color, with new pictures for the blocks along its edges.</li></ul><p>The home page's <b>Starters</b> tab has more small games like this one.</p>"
+    }
+  ]
+}

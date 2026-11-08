@@ -17,13 +17,13 @@ export const FORMAT = 'game-maker-backup';
 export const FORMAT_VERSION = 1;
 export const EXTENSION = '.gmbackup';
 
-export interface ManifestSection {
+interface ManifestSection {
   id: SectionId;
   title: string;
   items: number;
 }
 
-export interface Manifest {
+interface Manifest {
   format: typeof FORMAT;
   version: number;
   /** ISO date and time it was made. */
@@ -33,7 +33,7 @@ export interface Manifest {
 }
 
 /** One section of this browser as a backup would hold it. */
-export interface SectionSnapshot {
+interface SectionSnapshot {
   id: SectionId;
   title: string;
   short: string;
@@ -76,7 +76,7 @@ export async function snapshot(w: World, opts: { withApiKey?: boolean; shallow?:
 }
 
 const pad = (n: number) => String(n).padStart(2, '0');
-export const backupName = (d: Date) => `game-maker-backup-${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}${EXTENSION}`;
+const backupName = (d: Date) => `game-maker-backup-${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}${EXTENSION}`;
 
 /** The backup file of the chosen sections. */
 export async function makeBackup(

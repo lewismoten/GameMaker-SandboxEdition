@@ -3,9 +3,10 @@
 //  - pass-through scenes (the hero arrives on one of their own links out) that lead to the same place.
 // A suggestion is only a guess from names and links; the tool can't see what the scenes are for.
 import { NOSCENE, sceneKind, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { fromCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import { arrival } from './layoutCells';
 
-export interface Suggestion {
+interface Suggestion {
   /** Stable text for "dismissed". */
   key: string;
   name: string;
@@ -16,7 +17,7 @@ export interface Suggestion {
 const MIN = 3;
 
 /** Where a pass-through scene sends the hero at once, or undefined for a scene that is played. */
-export function passesTo(game: Game, i: number): number | undefined {
+function passesTo(game: Game, i: number): number | undefined {
   const s = game.scenes[i];
   if (sceneKind(s) !== 'adventure') return undefined;
   const at = arrival(game, i);
@@ -55,9 +56,9 @@ export function suggestGroups(game: Game, scenes: number[], taken: Set<number>, 
   }
   for (const [t, m] of byDest)
     offer(
-      `Leads to ${game.scenes[t].desc || `scene ${t}`}`,
+      `Leads to ${fromCp437(game.scenes[t].desc) || `scene ${t}`}`,
       m,
-      `${m.length} pass-through scenes that all lead to ${game.scenes[t].desc || `scene ${t}`}`,
+      `${m.length} pass-through scenes that all lead to ${fromCp437(game.scenes[t].desc) || `scene ${t}`}`,
       'pass',
     );
   const byStem = new Map<string, number[]>();

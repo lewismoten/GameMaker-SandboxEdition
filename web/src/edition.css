@@ -256,3 +256,88 @@
     padding-block: 0;
   }
 }
+
+/* a finger: the header's links, ⋯ and settings menus and their items are 44px tall (Lewis's
+   touch rule). A phone held sideways gives up its 28px compact bar for it. */
+@media (hover: none) and (pointer: coarse) {
+  .topbar > a,
+  .topbar .nav-link,
+  .topbar .topbar-more > summary,
+  .topbar .tour-btn,
+  .topbar .topbar-gear,
+  .topbar .topbar-menu > button,
+  .topbar .topbar-menu > a {
+    box-sizing: border-box;
+    min-height: 44px;
+    min-width: 44px;
+  }
+  .topbar > a,
+  .topbar .nav-link {
+    display: inline-flex;
+    align-items: center;
+  }
+  .topbar .topbar-more > summary,
+  .topbar .tour-btn,
+  .topbar .topbar-gear {
+    height: auto;
+    display: grid;
+    place-items: center;
+  }
+}
+
+/* the rule above gives every .nav-link display:inline-flex, which beat the narrow header's
+   .hide-narrow (display:none): on a touch phone or tablet Library, Achievements and Cast stayed
+   in the bar next to the ⋯ menu, and the bar ran 235 px past the screen at 390 px wide (found in
+   WebKit with an iPhone profile; Chromium's mobile emulation widens its viewport and hides it). */
+@media (hover: none) and (pointer: coarse) and (max-width: 1199px) {
+  .topbar .hide-narrow {
+    display: none;
+  }
+}
+
+/* even then 44 px targets leave the bar 31 px too wide on a 390 px phone: the logo already links
+   to the games list, so Games waits in it there. */
+@media (hover: none) and (pointer: coarse) and (max-width: 430px) {
+  .topbar-nav > a.nav-games {
+    display: none;
+  }
+}
+
+/* the ⋯ menu's Games item shows only where the bar hides its Games link (the rule above) */
+.topbar .topbar-menu > .menu-games {
+  display: none;
+}
+@media (hover: none) and (pointer: coarse) and (max-width: 430px) {
+  .topbar .topbar-menu > .menu-games {
+    display: block;
+  }
+}
+
+/* the Settings menu's "New version ready" item exists only while an update waits */
+.topbar .topbar-menu > [hidden] {
+  display: none;
+}
+
+/* 375 px iPhones and 360 px Android phones: the bar (logo, Desk | DOS | Web, ? and ⋯ at 44 px each) was 4 to
+   11 px from the edge, and a real phone's text cut the ⋯ off. Tighter gaps and logo letters give it room,
+   and the title slot, with no room left, gives up its gap. */
+@media (max-width: 430px) {
+  .topbar {
+    gap: 4px;
+    padding: 6px;
+  }
+  .topbar > :nth-child(2) {
+    display: none; /* the open game's name had a few pixels left here: only a cut-off letter or a lone … */
+  }
+  .topbar .brand-title {
+    letter-spacing: 0.04em;
+  }
+  .topbar .topbar-gear,
+  .topbar .tour-wrap,
+  .topbar .topbar-more {
+    flex: none; /* a 44 px target stays 44 px wide */
+  }
+  .topbar .spacer {
+    flex: 0 1 0;
+  }
+}

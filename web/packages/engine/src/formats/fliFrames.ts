@@ -6,6 +6,9 @@
 // itself is described in fli.ts.
 import { applyFliFrame, encodeFli, newFliCanvas, parseFli } from './fli';
 
+/** All frames' pixels together; over this a header's frame count or size is not believed. */
+const FLI_MAX_TOTAL_BYTES = 128 << 20;
+
 export interface FliFrame {
   pixels: Uint8Array;
   /** 6-bit palette, 768 bytes. */
@@ -27,6 +30,7 @@ export function decodeFliFrames(bytes: Uint8Array): FliFrames {
   const frames: FliFrame[] = [];
   // The header's frame count excludes the ring frame that loops back to frame 0.
   const count = Math.min(anim.frameCount, anim.frames.length);
+  if (count * anim.width * anim.height > FLI_MAX_TOTAL_BYTES) throw new Error('FLI animation is too large to take apart');
   for (let i = 0; i < count; i++) {
     applyFliFrame(anim, i, c);
     frames.push({ pixels: c.pixels.slice(), palette: c.palette.slice() });

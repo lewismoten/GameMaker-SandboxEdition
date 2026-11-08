@@ -6,10 +6,15 @@ import './boxViewer.css';
 import { h } from '../../editor/core/ui';
 import type { CatalogEntry } from '../../project/files';
 import { type BoxFaces } from './gameBox';
+import { copyOf, spineOf } from './boxSpine';
+import { boxIsShown, dropBoxFromAddress, showBoxInAddress, stepBoxInAddress, turnBoxInAddress, viewerPushedEntry, type BoxTurn } from './boxAddress';
 
 /** The box as six faces, sized by the --u custom property (pixels per inch). */
 export function boxModel(faces: BoxFaces): HTMLElement {
-  const face = (name: keyof BoxFaces) => h('div', { class: `bface ${name}` }, h('img', { src: faces[name], alt: '', draggable: false }));
+  // a shelf box's spine is a small canvas (gameBox.ts spineOf), copied so each model has its own
+  const spine = spineOf(faces);
+  const picture = (name: keyof BoxFaces) => (name === 'left' && spine ? copyOf(spine) : h('img', { src: faces[name], alt: '', draggable: false }));
+  const face = (name: keyof BoxFaces) => h('div', { class: `bface ${name}` }, picture(name));
   return h('div', { class: 'box3d' }, face('front'), face('back'), face('left'), face('right'), face('top'), face('bottom'));
 }
 
@@ -27,6 +32,8 @@ interface BoxViewerActions {
 }
 
 export interface BoxViewerPage {
+  /** The game's id, which the address keeps (boxAddress.ts); a box without one stays out of the address. */
+  id?: string;
   entry: Pick<CatalogEntry, 'title'>;
   faces: BoxFaces;
   actions: BoxViewerActions;
@@ -36,10 +43,16 @@ export interface BoxViewerPage {
  * Brings a box to the middle of the screen to turn, zoom and read. With actions.step,
  * ◀ ▶ (or PageUp/PageDown, [ and ]) go along the shelf to the other boxes.
  */
-export function openBoxViewer(entry: Pick<CatalogEntry, 'title'>, faces: BoxFaces, actions: BoxViewerActions): Promise<void> {
+export function openBoxViewer(
+  entry: Pick<CatalogEntry, 'title'>,
+  faces: BoxFaces,
+  actions: BoxViewerActions,
+  /** id puts the box in the address; `restored` is a reload or shared link (no new history entry), with `turn` as it was left. */
+  where: { id?: string; restored?: boolean; turn?: BoxTurn } = {},
+): Promise<void> {
   return new Promise((resolve) => {
     let model = boxModel(faces);
-    let current: BoxViewerPage = { entry, faces, actions };
+    let current: BoxViewerPage = { entry, faces, actions, id: where.id };
     // the desk's black light: on (by day only dimly), and the box's glowing print laid over it
     const desk = document.querySelector('.desk.bl-uv');
     const uv = desk ? (desk.classList.contains('bl-night') ? 'uv night' : 'uv') : '';
@@ -53,6 +66,24 @@ export function openBoxViewer(entry: Pick<CatalogEntry, 'title'>, faces: BoxFace
     let auto = true;
     let raf = 0;
     let stepping = false;
+    let pushed = false;
+    if (where.turn) {
+      ({ ry, rx, zoom } = where.turn);
+      auto = false;
+    }
+    if (where.id) {
+      // a reload or Forward onto the box's own entry leaves the address (and its turn) as it is
+      pushed = !where.restored && !boxIsShown();
+      if (!where.restored) showBoxInAddress(where.id, pushed);
+    }
+    // how the box is turned goes to the address a moment after the last change, not on every frame
+    let saveTimer = 0;
+    const saveTurn = () => {
+      clearTimeout(saveTimer);
+      saveTimer = window.setTimeout(() => {
+        if (current.id && overlay.isConnected) turnBoxInAddress(auto ? undefined : { ry, rx, zoom });
+      }, 400);
+    };
     const apply = () => {
       model.style.transform = `translate(${px}px, ${py}px) scale(${zoom}) rotateX(${rx}deg) rotateY(${ry}deg)`;
     };
@@ -65,13 +96,26 @@ export function openBoxViewer(entry: Pick<CatalogEntry, 'title'>, faces: BoxFace
       }
       raf = requestAnimationFrame(spin);
     };
-    const close = () => {
+    /** Closes the viewer; `how` 'back' takes the entry it pushed off the history, 'drop' only clears the address. */
+    const close = (how: 'back' | 'drop' | 'gone' = 'back') => {
+      if (!overlay.isConnected) return;
       cancelAnimationFrame(raf);
+      clearTimeout(saveTimer);
       window.removeEventListener('keydown', onKey, true);
+      window.removeEventListener('popstate', onPop);
       overlay.remove();
       opener?.focus({ preventScroll: true });
+      if (current.id && how !== 'gone') {
+        if (how === 'back' && pushed && viewerPushedEntry() && boxIsShown()) history.back();
+        else dropBoxFromAddress();
+      }
       resolve();
     };
+    // Back (or Forward) off the box's history entry closes the viewer
+    const onPop = () => {
+      if (current.id && !boxIsShown()) close('gone');
+    };
+    window.addEventListener('popstate', onPop);
     /** Puts the shelf's next or previous box in place of this one. */
     const step = async (dir: 1 | -1) => {
       if (stepping || !current.actions.step) return;
@@ -80,6 +124,7 @@ export function openBoxViewer(entry: Pick<CatalogEntry, 'title'>, faces: BoxFace
       stepping = false;
       if (!page || !overlay.isConnected) return;
       current = page;
+      if (page.id) stepBoxInAddress(page.id);
       const next = boxModel(page.faces);
       next.classList.add(dir > 0 ? 'from-right' : 'from-left');
       model.replaceWith(next);
@@ -94,6 +139,15 @@ export function openBoxViewer(entry: Pick<CatalogEntry, 'title'>, faces: BoxFace
       fill();
     };
     const onKey = (e: KeyboardEvent) => {
+      // a trinket in the box turns with the arrow keys itself (trinketShelf.ts)
+      if (e.key !== 'Escape' && (e.target as Element | null)?.closest?.('.bc-trinkets')) return;
+      // Esc with a feelie out (trinketShelf.ts) puts the box back first; the next Esc closes the viewer
+      if (e.key === 'Escape' && overlay.classList.contains('trinket-on')) {
+        e.stopImmediatePropagation();
+        e.preventDefault();
+        overlay.querySelector<HTMLButtonElement>('.feelie[aria-pressed="true"]')?.click();
+        return;
+      }
       e.stopImmediatePropagation();
       if (e.key === 'Escape') close();
       else if (e.key === 'PageDown' || e.key === ']') void step(1);
@@ -109,6 +163,7 @@ export function openBoxViewer(entry: Pick<CatalogEntry, 'title'>, faces: BoxFace
       if (['PageDown', 'PageUp', '[', ']', 'Escape'].includes(e.key)) return;
       auto = false;
       apply();
+      saveTurn();
     };
     window.addEventListener('keydown', onKey, true);
 
@@ -134,7 +189,7 @@ export function openBoxViewer(entry: Pick<CatalogEntry, 'title'>, faces: BoxFace
         pinch = dist;
         px += dx / 2;
         py += dy / 2;
-      } else if (e.shiftKey || e.buttons === 4 || zoom > 1.6) {
+      } else if (e.shiftKey || e.buttons === 4) {
         px += dx;
         py += dy;
       } else {
@@ -146,6 +201,7 @@ export function openBoxViewer(entry: Pick<CatalogEntry, 'title'>, faces: BoxFace
     const up = (e: PointerEvent) => {
       pointers.delete(e.pointerId);
       if (pointers.size < 2) pinch = 0;
+      saveTurn();
     };
     stage.addEventListener('pointerup', up);
     stage.addEventListener('pointercancel', up);
@@ -156,6 +212,7 @@ export function openBoxViewer(entry: Pick<CatalogEntry, 'title'>, faces: BoxFace
         auto = false;
         zoom = Math.max(0.4, Math.min(4, zoom * Math.exp(-e.deltaY / 400)));
         apply();
+        saveTurn();
       },
       { passive: false },
     );
@@ -166,6 +223,7 @@ export function openBoxViewer(entry: Pick<CatalogEntry, 'title'>, faces: BoxFace
       px = py = 0;
       auto = true;
       apply();
+      saveTurn();
     });
 
     const arrow = (dir: 1 | -1) =>
@@ -188,6 +246,7 @@ export function openBoxViewer(entry: Pick<CatalogEntry, 'title'>, faces: BoxFace
     const fill = () => {
       const { entry: e, actions: a } = current;
       overlay.setAttribute('aria-label', `${e.title} box`);
+      overlay.classList.remove('trinket-on'); // another box has its own trinkets (trinketShelf.ts)
       extrasSlot.replaceChildren(...(a.extras ? [a.extras] : []));
       bar.replaceChildren(
         h('strong', null, e.title),
@@ -197,9 +256,9 @@ export function openBoxViewer(entry: Pick<CatalogEntry, 'title'>, faces: BoxFace
           `Drag to turn · scroll to zoom · shift-drag to pan · double-click to reset${a.step ? ' · PageUp/PageDown for other boxes' : ''}`,
         ),
         ...[
-          a.insert ? h('button', { class: 'primary', onclick: () => (close(), a.insert!()) }, a.insertLabel ?? 'Put the disk in drive A:') : null,
-          a.manual ? h('button', { onclick: () => (close(), a.manual!()) }, 'Read the manual') : null,
-          h('button', { onclick: close }, 'Close (Esc)'),
+          a.insert ? h('button', { class: 'primary', onclick: () => (close('drop'), a.insert!()) }, a.insertLabel ?? 'Put the disk in drive A:') : null,
+          a.manual ? h('button', { onclick: () => (close('drop'), a.manual!()) }, 'Read the manual') : null,
+          h('button', { onclick: () => close() }, 'Close (Esc)'),
         ].filter((x): x is HTMLButtonElement => !!x),
       );
       overlay.querySelectorAll('.box-nav').forEach((n) => n.remove());

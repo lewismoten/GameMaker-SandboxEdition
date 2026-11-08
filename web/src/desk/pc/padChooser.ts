@@ -8,7 +8,7 @@ import { DEFAULT_PAD, PAD_PRINTS, isPadPrint, loadPad, padName, savePad } from '
 import { padSvg } from './padPrints';
 import { unlockAchievement } from '../../achievements';
 
-export interface PadChooserOptions {
+interface PadChooserOptions {
   /** Where focus goes back to once it closes (the ad's button). */
   opener?: HTMLElement | null;
   /** The desk's address for the "See it on the desk" link. */

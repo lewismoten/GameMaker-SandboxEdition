@@ -239,12 +239,28 @@
     "hash": "527077262e37",
     "voice": "f969522e51c0"
   },
+  "box-confess": {
+    "chapter": "box",
+    "where": "Box: Inspector Penn points at the list of what else came in the box",
+    "text": "A confession: these boxes hold more than any store box did, even a deluxe edition. They’re packed for your entertainment.",
+    "seconds": 8.2,
+    "hash": "9283636dabe9",
+    "voice": "f969522e51c0"
+  },
   "box-disks": {
     "chapter": "box",
     "where": "Box: Inspector Penn points at the disks in the box",
     "text": "The disks, fanned out as a set. Click them and disk one goes in drive A: to play.",
     "seconds": 5.98,
     "hash": "599a3a59ef4f",
+    "voice": "f969522e51c0"
+  },
+  "box-feelies": {
+    "chapter": "box",
+    "where": "Box: Inspector Penn points at the Feelies under the box",
+    "text": "Feelies are extras packed in a game box. Infocom started that. Some were copy protection, like a code wheel. Click one.",
+    "seconds": 8.2,
+    "hash": "0ef6623cc474",
     "voice": "f969522e51c0"
   },
   "box-hello": {
@@ -365,6 +381,14 @@
     "text": "A sheet of stickers. Cut them out, if you dare.",
     "seconds": 3.65,
     "hash": "d051be1d5a6b",
+    "voice": "f969522e51c0"
+  },
+  "box-why": {
+    "chapter": "box",
+    "where": "Box: Inspector Penn points at the list of what else came in the box",
+    "text": "Why so much? Three motives. A code wheel stopped copying, a map pulled you into the story, and a full box beat a copied disk from a friend or a BBS.",
+    "seconds": 9.82,
+    "hash": "af1ba7f9d2dc",
     "voice": "f969522e51c0"
   },
   "box-worldmap": {
@@ -619,8 +643,8 @@
     "chapter": "desk",
     "where": "Desk: Lewie points at the game pad",
     "text": "The GRAVITAS pad is the PC’s joystick. A real gamepad works too, and a click opens big buttons.",
-    "seconds": 6.48,
-    "hash": "2aeec260977e",
+    "seconds": 7.68,
+    "hash": "1156838b8e11",
     "voice": "9af0a3c00d49"
   },
   "desk-pad-panel": {
@@ -1015,6 +1039,14 @@
     "hash": "e27b0c1d77ed",
     "voice": "131d8cb8ad55"
   },
+  "edit-around-card-used": {
+    "chapter": "edit-around",
+    "where": "Editor: Watt points at a card’s used-by line",
+    "text": "A card also says how many scenes use its files, so you can see what matters before you open it.",
+    "seconds": 5.4,
+    "hash": "7c7256d84a31",
+    "voice": "131d8cb8ad55"
+  },
   "edit-around-files": {
     "chapter": "edit-around",
     "where": "Editor: Watt points at the list of the game’s files",
@@ -1029,6 +1061,14 @@
     "text": "Type part of a name here and the list narrows to match. Handy in a game with a hundred files.",
     "seconds": 5.78,
     "hash": "792b3d4328ab",
+    "voice": "131d8cb8ad55"
+  },
+  "edit-around-groups": {
+    "chapter": "edit-around",
+    "where": "Editor: Watt points at the first group heading",
+    "text": "The cards sit under headings: Levels, Heroes, Monsters, Pictures and movies, Sounds and music, and Words and screens.",
+    "seconds": 8.45,
+    "hash": "b21fbe901422",
     "voice": "131d8cb8ad55"
   },
   "edit-around-guide": {
@@ -1075,16 +1115,16 @@
     "chapter": "edit-around",
     "where": "Editor: Watt points at the Open a file by name button",
     "text": "The magnifier opens any file by its name. Ctrl+P does the same, from anywhere in the editor.",
-    "seconds": 7,
-    "hash": "1de1a8fa5e3b",
+    "seconds": 6.47,
+    "hash": "de3bc3def3c0",
     "voice": "131d8cb8ad55"
   },
   "edit-around-undo": {
     "chapter": "edit-around",
     "where": "Editor: Watt points at the Undo button",
     "text": "Undo and Redo step back and forward through your edits in this file. Ctrl+Z and Ctrl+Y work too. Nothing to undo here.",
-    "seconds": 9.29,
-    "hash": "ffa0f2c57a00",
+    "seconds": 7.61,
+    "hash": "0d31983c8183",
     "voice": "131d8cb8ad55"
   },
   "edit-around-used": {
@@ -1443,8 +1483,8 @@
     "chapter": "edit-export",
     "where": "Editor: Max says goodbye and walks off",
     "text": "Pictures and papers go out too: the map picture saves a PNG, a Level check report a CSV, and a walkthrough an MP4. Happy trails!",
-    "seconds": 11.92,
-    "hash": "2bbc62a0942b",
+    "seconds": 11.99,
+    "hash": "d0091319c181",
     "voice": "3705d98401bd"
   },
   "edit-export-caveat": {
@@ -1627,8 +1667,8 @@
     "chapter": "edit-integrator",
     "where": "Editor: Inspector Penn points at the board’s tools",
     "text": "Add level scene starts a new level beside the last. Auto-arrange tidies the cards. PNG saves a picture of the whole board.",
-    "seconds": 8.8,
-    "hash": "8c5643b2069b",
+    "seconds": 8.93,
+    "hash": "c9864e1b5e84",
     "voice": "f969522e51c0"
   },
   "edit-integrator-zoom": {
@@ -2551,6 +2591,22 @@
     "hash": "d38a3cfe72c1",
     "voice": "a50c8e805452"
   },
+  "home-how-do-i": {
+    "chapter": "home",
+    "where": "Home: Teddy points at the How do I button",
+    "text": "How do I asks the question in your own words, and points to the Starter that answers it.",
+    "seconds": 5.54,
+    "hash": "5f9ef16f0729",
+    "voice": "a50c8e805452"
+  },
+  "home-import-history": {
+    "chapter": "home",
+    "where": "Home: Teddy points at the Import history button",
+    "text": "Import history keeps the last twenty imports: what came in, what was left out, and anything that failed.",
+    "seconds": 7.07,
+    "hash": "b0c132dd6917",
+    "voice": "a50c8e805452"
+  },
   "home-imported-none": {
     "chapter": "home",
     "where": "Home: Teddy points at the import tile",
@@ -2623,6 +2679,14 @@
     "hash": "9e3ebdf94fb8",
     "voice": "a50c8e805452"
   },
+  "home-recently-deleted": {
+    "chapter": "home",
+    "where": "Home: Teddy points at the Recently deleted button",
+    "text": "Delete a game by mistake? It waits in Recently deleted for seven days, and Restore brings it back just as it was.",
+    "seconds": 7.89,
+    "hash": "3e33eef34f8d",
+    "voice": "a50c8e805452"
+  },
   "home-search": {
     "chapter": "home",
     "where": "Home: Teddy points at the Find a game box",
@@ -2689,7 +2753,7 @@
   },
   "home-tab-gameware": {
     "chapter": "home",
-    "where": "Home: Teddy presses the Gameware tab",
+    "where": "Home: Teddy presses the CD tab",
     "text": "Gameware: the free games that came with Game-Maker. Play one, or edit a copy to see how it works.",
     "seconds": 6.82,
     "hash": "6f2709090e15",
@@ -2721,10 +2785,18 @@
   },
   "home-tab-shareware": {
     "chapter": "home",
-    "where": "Home: Teddy presses the Shareware tab",
+    "where": "Home: Teddy presses the CD tab",
     "text": "Shareware: games other people made with Game-Maker, from the CD and the BBSes.",
     "seconds": 5.94,
     "hash": "27d684241cb8",
+    "voice": "a50c8e805452"
+  },
+  "home-tab-starters": {
+    "chapter": "home",
+    "where": "Home: Teddy presses the Starters tab",
+    "text": "Starters: small games that each show one idea, with signs in the levels. Play one, then edit a copy.",
+    "seconds": 6.84,
+    "hash": "599ae270aca8",
     "voice": "a50c8e805452"
   },
   "home-tabs": {

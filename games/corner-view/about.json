@@ -1,0 +1,40 @@
+{
+  "title": "Corner View",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "hero": "LENA",
+  "year": 1994,
+  "price": "Free",
+  "version": "2.1",
+  "blurb": "Three rooms drawn as if seen from one corner: a floor of diamonds, cubes with a top and two sides, a stair of towers and a diamond-shaped floor. It is all pictures cut into square blocks, so in the first two rooms Lena walks on the squares and goes round the diagonal wall in square steps. In the third their arrows each walk one diagonal of the floor, the way the room is laid out. Signs say how. Play it, then open it in Game-Maker and look at the blocks.",
+  "exe": "CORNER.EXE",
+  "dosName": "CORNER",
+  "sound": "sb",
+  "label": {
+    "background": "#fff0d8",
+    "band": "#7a4fd0",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "3 short levels",
+    "hours": 1,
+    "background": "#7a4fd0",
+    "accent": "#ffd23f",
+    "ink": "#ffffff",
+    "tagline": "Looks 3D. Walks flat.",
+    "back": "A small explorer in a red beanie crosses three rooms drawn from a corner: a floor of diamonds, cubes with tops and sides, a stair of towers, a floor shaped like a diamond. It is one painting cut into square blocks, so in the first two rooms they walk the squares, not the diamonds, and in the third each arrow walks a diagonal. Read the signs, then open the game in Game-Maker and look at the blocks.",
+    "features": [
+      "A floor of diamonds and cubes, drawn on the square grid",
+      "Lena walks the four arrow ways round a diagonal wall, then the four diagonals",
+      "Made to be copied and taken apart"
+    ],
+    "shots": [
+      ["one.map", 16, 10],
+      ["two.map", 16, 10],
+      ["three.map", 16, 10]
+    ],
+    "rating": "Everyone"
+  }
+}

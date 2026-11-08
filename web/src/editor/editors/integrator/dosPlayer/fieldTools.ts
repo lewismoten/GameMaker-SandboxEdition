@@ -31,7 +31,7 @@ function icon(name: keyof typeof ICONS): SVGSVGElement {
   return svg;
 }
 
-export interface FieldTools {
+interface FieldTools {
   el: HTMLElement;
   /** Shows the buttons' states again: Reset off at the original, Hide pressed while hidden. */
   update: () => void;

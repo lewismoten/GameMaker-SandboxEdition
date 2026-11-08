@@ -73,6 +73,9 @@ const shown = (id: string, open: number): boolean => {
   return !gate || (open & GATE_BIT[gate]) !== 0;
 };
 
+/** Whether `id` may be shown with the gates `open` (GATE_BIT): a game that isn't secret always may. */
+export const secretVisible = (id: string, open: number): boolean => shown(id, open);
+
 /** One gate's secret games (games/extra-<gate bit>.json), or undefined when there is no such file. */
 async function fetchGate<T>(base: string, bit: number): Promise<T[] | undefined> {
   try {

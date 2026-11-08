@@ -1,0 +1,116 @@
+{
+  "version": 1,
+  "game": "pass-the-pie",
+  "rand": {
+    "seed": 1,
+    "per": "scene"
+  },
+  "segments": [
+    {
+      "scene": 2,
+      "keys": "AU0ZzSdND80DTQ/NJ00tzQNNAzkCuRTNBE0KzQNLBcsDSEXIA00ozQNLI8sDSwPLA1A70ANNLc0nTSE5ArkUzQRNLc0nTRw5ArkUzQRNBc0nTSPNA00KzRdND80DTQ=="
+    },
+    {
+      "scene": 3,
+      "keys": "AU0PzSdNHs0nTRnNAxwDnA5NMs0DTQrNAxwDnA5NKM0LHAOcDk0PzSdNHs0DSwXLA0hFyANNFM0DHAOcDk0UzQNLI8sDSwPLA1A70ANNLc0nTRnNAxwDnA5NFM0DHAOcDk0UzSdNFM0XTQ/NA00="
+    },
+    {
+      "scene": 4,
+      "keys": "AU0ZzSdND80DTRTNJ00PzQM5ArkATRnNA00PzQNNCs0MOQK5AE0jzQNNHs0nTRnNA0sFywNIJ8gDTUnNDksAyydNFM0DTRnNF00PzQNN"
+    },
+    {
+      "scene": 5,
+      "keys": "AU0PzSdNLc0DHAOcDhwDnA5NGc0nTRnNAxwDnA4cA5wOTRTNJ00ZzQNLBcsDSEXIA00PzQMcA5wOHAOcDk0ZzQNLI8sDSwPLA1A70ANNN80nTRTNA00FzQQcA5wOTSjNJ00UzRdNHs0DHAOcDhwDnA5NLc0DTQ=="
+    },
+    {
+      "scene": 6,
+      "keys": "AU0ZzSdND80DTQXNJ00ezQo5ArkATSPNA01VzSdND80hS1XLA0sFywNIRcgDTQrNAzkCuQBNGc0DTQXNA0sKywM5ArkASxnLA0sAywNLA8sDUDvQA01pzStNCs0nTQrNPzkCuQBNKM0DSwDLA00ZzRdND80DTQ=="
+    },
+    {
+      "scene": 7,
+      "keys": "AU0jzRdNN80DHAOcDk0jzQM5ArkATRnNA00ezQMcA5wOTSPNAzkCuQBNGc0DTQXNBBwDnA5NMs0DHAOcDhwDnA4cA5wOHAOcDhwDnA5NMs0DTR7NF00PzQNN"
+    }
+  ],
+  "chapters": [
+    {
+      "scene": 2,
+      "title": "Chapter 1: Pumpkin Yard (Rory)"
+    },
+    {
+      "scene": 3,
+      "title": "Payback, Part 1: Uncle Dale's Lawn (Mr. Plume)"
+    },
+    {
+      "scene": 4,
+      "title": "Chapter 2: Gravy Slide (Rory)"
+    },
+    {
+      "scene": 5,
+      "title": "Payback, Part 2: Windy Park (Mr. Plume)"
+    },
+    {
+      "scene": 6,
+      "title": "Chapter 3: Hungry Dog (Rory)"
+    },
+    {
+      "scene": 7,
+      "title": "Payback, Part 3: Big Gobble (Mr. Plume)"
+    }
+  ],
+  "timeline": {
+    "fps": 60,
+    "frames": 27821,
+    "chapters": [
+      {
+        "title": "Opening",
+        "frame": 0,
+        "time": 0
+      },
+      {
+        "title": "Story",
+        "frame": 1563,
+        "time": 26050.000000000466
+      },
+      {
+        "title": "Chapter 1: Pumpkin Yard (Rory)",
+        "frame": 2793,
+        "time": 46549.99999999895
+      },
+      {
+        "title": "Payback, Part 1: Uncle Dale's Lawn (Mr. Plume)",
+        "frame": 6058,
+        "time": 100966.66666667316
+      },
+      {
+        "title": "Chapter 2: Gravy Slide (Rory)",
+        "frame": 10316,
+        "time": 171933.33333332482
+      },
+      {
+        "title": "Payback, Part 2: Windy Park (Mr. Plume)",
+        "frame": 12796,
+        "time": 213266.6666666341
+      },
+      {
+        "title": "Chapter 3: Hungry Dog (Rory)",
+        "frame": 16479,
+        "time": 274649.99999995355
+      },
+      {
+        "title": "Payback, Part 3: Big Gobble (Mr. Plume)",
+        "frame": 20488,
+        "time": 341466.666666698
+      },
+      {
+        "title": "Ending",
+        "frame": 22876,
+        "time": 381266.66666674434
+      },
+      {
+        "title": "Credits",
+        "frame": 26749,
+        "time": 445816.6666668195
+      }
+    ]
+  }
+}

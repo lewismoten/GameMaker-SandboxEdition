@@ -3,7 +3,7 @@
 // building a new game from a description, and the one for turning check results into a to-do list.
 
 /** The game in a few lines, from game_summary's JSON. */
-export function gameBrief(summary: string): string {
+function gameBrief(summary: string): string {
   try {
     const s = JSON.parse(summary) as {
       title?: string;

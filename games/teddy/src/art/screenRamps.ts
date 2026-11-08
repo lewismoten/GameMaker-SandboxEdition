@@ -4,7 +4,8 @@ export const SCREEN_RAMPS: readonly RampSpec[] = [
   ['dusk', 12, [30, 20, 70], [255, 180, 110], [200, 80, 120]],
   ['tent', 4, [120, 10, 30], [255, 90, 90]],
   ['cream', 4, [200, 180, 140], [255, 248, 230]],
-  ['plum', 1, [170, 24, 140], [170, 24, 140]],
+  // PLAYGAME's text pages ask for RGBPurple (50,10,50): this is it exactly (8-bit >> 2), so they print in true purple
+  ['textPurple', 1, [200, 40, 200], [200, 40, 200]],
   ['menublue', 2, [24, 24, 150], [44, 44, 252]],
   ['menured', 1, [252, 40, 40], [252, 40, 40]],
 ];

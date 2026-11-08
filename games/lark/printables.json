@@ -442,5 +442,6 @@
       "head": "A game that was never for sale",
       "html": "<p>There is no order form for <b>HEART OF TIN</b>, and there never will be. It is a thank-you. If this disk is in your hands, you looked behind a great many things, and found every little tin heart a certain night librarian left behind. Now he would like to walk the Long Road with you. Bring a shovel. Joe will count the steps.</p>"
     }
-  ]
+  ],
+  "worldMap": { "regions": [[40, 42], [50, 51], [53, 54, 55], [57, 58, 59], [61, 62]] }
 }

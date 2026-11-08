@@ -15,6 +15,7 @@
   "files": [
     "dist",
     "README.md",
+    "CHANGELOG.md",
     "LICENSE",
     "NOTICE.md"
   ],
@@ -52,6 +53,21 @@
       "gamemaker-source": "./src/kit/tar.ts",
       "import": "./dist/kit/tar.js"
     },
+    "./kit/fliShrink": {
+      "types": "./dist/types/kit/fliShrink.d.ts",
+      "gamemaker-source": "./src/kit/fliShrink.ts",
+      "import": "./dist/kit/fliShrink.js"
+    },
+    "./kit/blockRoles": {
+      "types": "./dist/types/kit/blockRoles.d.ts",
+      "gamemaker-source": "./src/kit/blockRoles.ts",
+      "import": "./dist/kit/blockRoles.js"
+    },
+    "./kit/levelGen": {
+      "types": "./dist/types/kit/levelGen/index.d.ts",
+      "gamemaker-source": "./src/kit/levelGen/index.ts",
+      "import": "./dist/kit/levelGen.js"
+    },
     "./kit/*": {
       "types": "./dist/types/kit/*.d.ts",
       "browser": null,
@@ -62,6 +78,21 @@
       "types": "./dist/types/music/*.d.ts",
       "gamemaker-source": "./src/music/*.ts",
       "import": "./dist/music/*.js"
+    },
+    "./embroidery/*": {
+      "types": "./dist/types/embroidery/*.d.ts",
+      "gamemaker-source": "./src/embroidery/*.ts",
+      "import": "./dist/embroidery/*.js"
+    },
+    "./mesh/*": {
+      "types": "./dist/types/mesh/*.d.ts",
+      "gamemaker-source": "./src/mesh/*.ts",
+      "import": "./dist/mesh/*.js"
+    },
+    "./pack/*": {
+      "types": "./dist/types/pack/*.d.ts",
+      "gamemaker-source": "./src/pack/*.ts",
+      "import": "./dist/pack/*.js"
     },
     "./image/*": {
       "types": "./dist/types/image/*.d.ts",

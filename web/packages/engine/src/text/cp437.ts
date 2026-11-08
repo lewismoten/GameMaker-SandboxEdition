@@ -37,12 +37,23 @@ export function toCp437(s: string): string {
   return out;
 }
 
-/** Converts CP437 byte codes to the Unicode characters a PC showed for them. */
+// formats/binary's legacy Latin-1 decoder is WHATWG Windows-1252: recover its 0x80–0x9f
+// aliases before looking up the DOS glyph. This is still a byte-string API, not Unicode input.
+const LATIN1_CODES = new Map<string, number>();
+const latin1 = new TextDecoder('latin1');
+for (let c = 128; c < 160; c++) LATIN1_CODES.set(latin1.decode(Uint8Array.of(c)), c);
+
+/** Converts CP437 byte strings (including binary.ts's Latin-1 aliases), never Unicode prose. */
 export function fromCp437(s: string): string {
   let out = '';
   for (let i = 0; i < s.length; i++) {
-    const c = s.charCodeAt(i);
+    const c = LATIN1_CODES.get(s[i]) ?? s.charCodeAt(i);
     out += c < 256 ? CP437[c] : s[i];
   }
   return out;
+}
+
+/** A DOS text file as Unicode, retaining ASCII controls (CR/LF, TAB, NUL, ^Z) for its reader. */
+export function cp437Text(bytes: Uint8Array): string {
+  return latin1.decode(bytes).replace(/[^\x00-\x7f]/g, (ch) => fromCp437(ch));
 }

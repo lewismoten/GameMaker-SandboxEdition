@@ -70,17 +70,18 @@ const shrink = (name: string) => SHRINK[name.split('.').pop()!.toLowerCase()] ??
 /** A ZIP's local header (30 bytes) and central directory entry (46), each with the name; then the 22-byte end record. */
 const zipHeaders = (names: string[]) => 22 + names.reduce((n, f) => n + 76 + 2 * f.length, 0);
 
-export const zipName = (g: Pick<CatalogEntry, 'exe' | 'id'>) =>
-  `${(g.exe ?? g.id)
+export const zipName = (g: Pick<CatalogEntry, 'exe' | 'id' | 'dosName'>) =>
+  `${(g.dosName ?? g.exe ?? g.id)
     .replace(/\.EXE$/i, '')
     .slice(0, 8)
     .toUpperCase()}.ZIP`;
 
 /** The ZIP's size on a BBS: the game's files (their real pack size when the build measured it), the release's extras, FILE_ID.DIZ and the ZIP's own headers. */
 export function zipBytes(g: Pick<CatalogEntry, 'bytes' | 'original' | 'exe' | 'files' | 'sizes' | 'packBytes' | 'id'>): number {
-  const files = g.packBytes ?? (g.sizes?.length === g.files.length ? g.files.reduce((n, f, i) => n + g.sizes![i] * shrink(f), 0) : (g.bytes ?? 0) * 0.4);
+  const listed = g.files ?? [];
+  const files = g.packBytes ?? (g.sizes?.length === listed.length ? listed.reduce((n, f, i) => n + g.sizes![i] * shrink(f), 0) : (g.bytes ?? 0) * 0.4);
   const extra = extraBytes(g) * SHRINK.exe;
-  const names = [...g.files, ...(g.exe || g.original ? [g.exe ?? `${g.id}.exe`] : []), 'FILE_ID.DIZ'];
+  const names = [...listed, ...(g.exe || g.original ? [g.exe ?? `${g.id}.exe`] : []), 'FILE_ID.DIZ'];
   return Math.round(files + extra + 450 + zipHeaders(names));
 }
 

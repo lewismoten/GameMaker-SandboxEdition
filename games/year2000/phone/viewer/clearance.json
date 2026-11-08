@@ -1,0 +1,357 @@
+{
+ "lead": 2.5,
+ "leadRadius": 0.9,
+ "min": 1,
+ "parts": [
+  {
+   "id": "back-tray",
+   "lead": {
+    "gap": 1.1579223154548441,
+    "at": [
+     91.37649917602539,
+     -1.4929999709129333,
+     94.66450119018555
+    ],
+    "other": "SW5"
+   },
+   "body": {
+    "gap": 1.126197862865285,
+    "at": [
+     92.01950073242188,
+     -1.5109999775886536,
+     6.909499883651733
+    ],
+    "other": "C8"
+   },
+   "regions": {
+    "floor": {
+     "gap": 17.777229043789077,
+     "at": [
+      5.26800012588501,
+      -19.371999740600586,
+      4.484000205993652
+     ],
+     "other": "D2"
+    }
+   }
+  },
+  {
+   "id": "dial-plate",
+   "lead": {
+    "gap": null,
+    "at": [
+     0,
+     0,
+     0
+    ],
+    "other": ""
+   },
+   "body": {
+    "gap": null,
+    "at": [
+     0,
+     0,
+     0
+    ],
+    "other": ""
+   },
+   "regions": {}
+  },
+  {
+   "id": "dial-cam",
+   "lead": {
+    "gap": null,
+    "at": [
+     0,
+     0,
+     0
+    ],
+    "other": ""
+   },
+   "body": {
+    "gap": null,
+    "at": [
+     0,
+     0,
+     0
+    ],
+    "other": ""
+   },
+   "regions": {}
+  },
+  {
+   "id": "dial-spring",
+   "lead": {
+    "gap": null,
+    "at": [
+     0,
+     0,
+     0
+    ],
+    "other": ""
+   },
+   "body": {
+    "gap": null,
+    "at": [
+     0,
+     0,
+     0
+    ],
+    "other": ""
+   },
+   "regions": {}
+  },
+  {
+   "id": "dial-base",
+   "lead": {
+    "gap": null,
+    "at": [
+     0,
+     0,
+     0
+    ],
+    "other": ""
+   },
+   "body": {
+    "gap": null,
+    "at": [
+     0,
+     0,
+     0
+    ],
+    "other": ""
+   },
+   "regions": {}
+  },
+  {
+   "id": "dial-stop",
+   "lead": {
+    "gap": null,
+    "at": [
+     0,
+     0,
+     0
+    ],
+    "other": ""
+   },
+   "body": {
+    "gap": null,
+    "at": [
+     0,
+     0,
+     0
+    ],
+    "other": ""
+   },
+   "regions": {}
+  },
+  {
+   "id": "dial-bushing",
+   "lead": {
+    "gap": null,
+    "at": [
+     0,
+     0,
+     0
+    ],
+    "other": ""
+   },
+   "body": {
+    "gap": null,
+    "at": [
+     0,
+     0,
+     0
+    ],
+    "other": ""
+   },
+   "regions": {}
+  },
+  {
+   "id": "cap-talk",
+   "lead": {
+    "gap": 1.3393269949420898,
+    "at": [
+     12.97249984741211,
+     5.702000141143799,
+     94.2490005493164
+    ],
+    "other": "R13"
+   },
+   "body": {
+    "gap": null,
+    "at": [
+     0,
+     0,
+     0
+    ],
+    "other": ""
+   },
+   "regions": {}
+  },
+  {
+   "id": "cap-clear",
+   "lead": {
+    "gap": 1.3963240026756722,
+    "at": [
+     85.75833384195964,
+     5.770666599273682,
+     94.08166758219402
+    ],
+    "other": "R19"
+   },
+   "body": {
+    "gap": null,
+    "at": [
+     0,
+     0,
+     0
+    ],
+    "other": ""
+   },
+   "regions": {}
+  },
+  {
+   "id": "front-cover",
+   "lead": {
+    "gap": 1.0698621726866304,
+    "at": [
+     92.98550033569336,
+     2.1955000162124634,
+     7.4695000648498535
+    ],
+    "other": "C8"
+   },
+   "body": {
+    "gap": 1.0505004882812443,
+    "at": [
+     82.04949951171875,
+     7.090999960899353,
+     -1.5105000138282776
+    ],
+    "other": "D1"
+   },
+   "regions": {}
+  },
+  {
+   "id": "BT1",
+   "lead": {
+    "gap": null,
+    "at": [
+     0,
+     0,
+     0
+    ],
+    "other": ""
+   },
+   "body": {
+    "gap": null,
+    "at": [
+     0,
+     0,
+     0
+    ],
+    "other": ""
+   },
+   "regions": {}
+  },
+  {
+   "id": "battery-door",
+   "lead": {
+    "gap": null,
+    "at": [
+     0,
+     0,
+     0
+    ],
+    "other": ""
+   },
+   "body": {
+    "gap": null,
+    "at": [
+     0,
+     0,
+     0
+    ],
+    "other": ""
+   },
+   "regions": {}
+  }
+ ],
+ "bay": {
+  "min": 0.15,
+  "holder": [
+   19.5,
+   -17.8,
+   105.3,
+   79.5,
+   -0.7999999999999996,
+   157.3
+  ],
+  "capsule": [
+   44.65,
+   3.700000000000001,
+   193.1,
+   54.35,
+   10.200000000000001,
+   202.79999999999998
+  ],
+  "gaps": [
+   {
+    "id": "back-tray",
+    "gap": 0.17749996185302663,
+    "other": "holder"
+   },
+   {
+    "id": "dial-plate",
+    "gap": null,
+    "other": ""
+   },
+   {
+    "id": "dial-cam",
+    "gap": null,
+    "other": ""
+   },
+   {
+    "id": "dial-spring",
+    "gap": 2.5979999780654905,
+    "other": "holder"
+   },
+   {
+    "id": "dial-base",
+    "gap": 0.1999999761581417,
+    "other": "holder"
+   },
+   {
+    "id": "dial-stop",
+    "gap": null,
+    "other": ""
+   },
+   {
+    "id": "dial-bushing",
+    "gap": null,
+    "other": ""
+   },
+   {
+    "id": "cap-talk",
+    "gap": null,
+    "other": ""
+   },
+   {
+    "id": "cap-clear",
+    "gap": null,
+    "other": ""
+   },
+   {
+    "id": "front-cover",
+    "gap": 0.3737704540382077,
+    "other": "capsule"
+   },
+   {
+    "id": "battery-door",
+    "gap": 0.49999923706054616,
+    "other": "holder"
+   }
+  ]
+ }
+}

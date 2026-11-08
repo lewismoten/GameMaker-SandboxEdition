@@ -5,6 +5,7 @@
 import { existsSync, mkdirSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { parseBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { parseMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { parseMonsters } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
@@ -29,17 +30,21 @@ const out = process.argv[2] ?? join(tmpdir(), 'tuneup-preview');
 const only = process.argv.slice(3);
 mkdirSync(out, { recursive: true });
 const wrote = (f: string) => console.log(join(out, f));
-const disk = (n: string) => new Uint8Array(readFileSync(new URL(`../disk/${n}`, import.meta.url)));
+// GAME_DISK_OUT: a scratch build (build.ts's output folder) instead of disk/
+const diskDir = process.env.GAME_DISK_OUT ?? fileURLToPath(new URL('../disk', import.meta.url));
+const disk = (n: string) => new Uint8Array(readFileSync(join(diskDir, n)));
 const mbl = parseBlocks(disk('cast.mbl'), 100);
 // most scenes share cast.mon; the ones with their own timings keep <file>.mon
-const monOf = (f: string) => (existsSync(new URL(`../disk/${f}.mon`, import.meta.url)) ? `${f}.mon` : 'cast.mon');
+const monOf = (f: string) => (existsSync(join(diskDir, `${f}.mon`)) ? `${f}.mon` : 'cast.mon');
 for (const l of LEVELS.filter((l) => !only.length || only.includes(l.file))) {
   const map = parseMap(disk(mapOf(l.file)));
   const bbl = parseBlocks(disk(bblOf(l.file)), 150);
   const level = l.build(l.blocks(buildPalette(l.theme)).book);
   const [w, h] = level.size;
   const pic = renderRegion(map, bbl, mbl, parseMonsters(disk(monOf(l.file))), ORIGIN, ORIGIN + rowOffset(l.file), w, h);
-  writePng(join(out, `${l.file}.png`), pic, parsePalette(disk(`${l.file}.pal`)), 2);
+  // a scene whose .pal was merged into an identical one (kit/palMerge) is drawn with its theme's palette
+  const pal = existsSync(join(diskDir, `${l.file}.pal`)) ? parsePalette(disk(`${l.file}.pal`)) : buildPalette(l.theme).pal;
+  writePng(join(out, `${l.file}.png`), pic, pal, 2);
   wrote(`${l.file}.png`);
 }
 if (only.length) process.exit(0);

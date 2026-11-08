@@ -5,8 +5,9 @@
 // lifts its paper off the stack.
 import './paperStack.css';
 import { h } from '../../editor/core/ui';
+import { deskLifetime } from '../lifetime';
 
-type Pick = 'catalog' | 'magazine';
+type Pick = 'catalog' | 'magazine' | 'backIssue';
 
 /** The catalog's typed cover: plain, stapled, from a copier. */
 const catalogSheet = (): HTMLElement =>
@@ -53,14 +54,15 @@ export function paperStack(open: Record<Pick, () => void>): HTMLElement {
     );
   const items = [
     choice('catalog', 'Shareware catalog', 'Games made with Game-Maker'),
-    choice('magazine', 'TURBO BUTTON magazine', 'Hints, reviews and every game'),
+    choice('magazine', 'TURBO BUTTON · January 1995', 'Collector’s Issue'),
+    choice('backIssue', 'TURBO BUTTON · Spring 1993', 'Back issue'),
   ];
   const menu = h('div', { class: 'ps-menu', id: 'paper-stack-menu', role: 'group', 'aria-label': 'Catalog or magazine', hidden: '' }, ...items);
   const stack = h('div', { class: 'paper-stack' }, toggle, menu);
 
   const isOpen = () => !menu.hidden;
   const hot = (pick?: Pick) => {
-    if (pick) stack.dataset.hot = pick;
+    if (pick) stack.dataset.hot = pick === 'backIssue' ? 'magazine' : pick;
     else delete stack.dataset.hot;
   };
   const show = (first: number) => {
@@ -118,6 +120,6 @@ export function paperStack(open: Record<Pick, () => void>): HTMLElement {
     if (!stack.isConnected) document.removeEventListener('pointerdown', away);
     else if (isOpen() && !stack.contains(e.target as Node)) hide(false);
   };
-  document.addEventListener('pointerdown', away);
+  document.addEventListener('pointerdown', away, { signal: deskLifetime() });
   return stack;
 }

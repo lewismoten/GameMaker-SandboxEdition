@@ -4,10 +4,11 @@
 // "Recreational Software Designs" (at any offset), then "unknown". Each answer carries a
 // confidence and the reasons for it, never more certainty than the bytes give. Nothing is run.
 import { md5Hex } from './md5';
+import { fromCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import { crc32 } from '../project/zip';
 import { BLOCK, BUILD_DATA, type BuildData } from './playerBuildData';
 
-export type Confidence = 'high' | 'medium' | 'low';
+type Confidence = 'high' | 'medium' | 'low';
 
 export interface PlayerIdentity {
   /** '1.0', '1.04', '2.00', '2.02', '2.04', '3.00', '3.00-playgame', or 'unknown'. */
@@ -36,7 +37,7 @@ export function buildLabel(id: string): string {
 }
 
 /** The NUL-ended string at `o`. */
-export function stringAt(exe: Uint8Array, o: number, max = 80): string {
+function stringAt(exe: Uint8Array, o: number, max = 80): string {
   let s = '';
   for (let i = o; i < exe.length && exe[i] && s.length < max; i++) s += String.fromCharCode(exe[i]);
   return s;
@@ -90,7 +91,7 @@ export function aboutChanged(b: BuildData, blocks: number[]): boolean {
 }
 
 /** True for a player squeezed by PKLITE or LZEXE (its strings can't be read). */
-export function isCompressed(exe: Uint8Array): boolean {
+function isCompressed(exe: Uint8Array): boolean {
   const head = String.fromCharCode(...exe.subarray(0, 120));
   return /PKLITE|PKlite|LZ09|LZ91/.test(head);
 }
@@ -120,10 +121,12 @@ export function identifyPlayer(exe: Uint8Array): PlayerIdentity {
       reasons.push(`its About text says “${versionLine}” where that build has it`);
       id.confidence = 'high';
     } else if (said) {
-      reasons.push(`its About text says “${line!.trim()}”${sig === b.version + 26 ? ', an edited version line' : ' at another offset'}`);
+      reasons.push(`its About text says “${fromCp437(line!).trim()}”${sig === b.version + 26 ? ', an edited version line' : ' at another offset'}`);
     } else {
       id.aboutAuthor = authorOf(aboutLines(exe, b));
-      reasons.push(`RSD’s About text is replaced${id.aboutAuthor ? ` (by ${id.aboutAuthor}, as the new text says)` : ''}, so no version line backs the size`);
+      reasons.push(
+        `RSD’s About text is replaced${id.aboutAuthor ? ` (by ${fromCp437(id.aboutAuthor)}, as the new text says)` : ''}, so no version line backs the size`,
+      );
     }
     return id;
   }

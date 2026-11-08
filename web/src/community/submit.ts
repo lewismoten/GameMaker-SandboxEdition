@@ -75,16 +75,21 @@ export async function submitCommunityGame(): Promise<void> {
       status,
       h('details', null, h('summary', null, 'Generated entry'), preview),
       h(
-        'ol',
+        'details',
         null,
-        h('li', null, link(`${REPO}/fork`, 'Fork the repository'), ' if you do not already have a fork.'),
+        h('summary', null, 'How to submit the listing'),
         h(
-          'li',
+          'ol',
           null,
-          link(`${REPO}/edit/master/web/src/community/games.json`, 'Edit the Community list'),
-          ' in your fork. Paste the entry inside the array, with a comma between entries.',
+          h('li', null, link(`${REPO}/fork`, 'Fork the repository'), ' if you do not already have a fork.'),
+          h(
+            'li',
+            null,
+            link(`${REPO}/edit/master/web/src/community/games.json`, 'Edit the Community list'),
+            ' in your fork. Paste the entry inside the array, with a comma between entries.',
+          ),
+          h('li', null, link(`${REPO}/compare`, 'Open a pull request'), ' from your fork for review.'),
         ),
-        h('li', null, link(`${REPO}/compare`, 'Open a pull request'), ' from your fork for review.'),
       ),
       h('div', { class: 'buttons' }, h('button', { type: 'button', onclick: () => close() }, 'Close'), copy),
     );

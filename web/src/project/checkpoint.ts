@@ -84,7 +84,7 @@ export const withTag = (list: StoredCheckpoint[], id: string, tag: string): Stor
     return tag.trim() ? { ...rest, tag: tag.trim() } : rest;
   });
 
-export const newStampId = (): string => crypto.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+const newStampId = (): string => crypto.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2)}`;
 
 export async function getCheckpoints(id: string): Promise<StoredCheckpoint[]> {
   return checkpointList(await loadRecord(id));
@@ -107,11 +107,6 @@ export async function tagCheckpoint(id: string, stamp: string, tag: string): Pro
   const list = withTag(await getCheckpoints(id), stamp, tag);
   await saveCheckpoints(id, list);
   return list;
-}
-
-/** A version as a game directory, for looking at without touching the open game. */
-export function versionFiles(v: Version, make: (entries: [string, Uint8Array][]) => GameFiles): GameFiles {
-  return make([...v.entries()]);
 }
 
 /** What restoring changes: new bytes per file, null where the file did not exist at the checkpoint. Untouched files are left out. */

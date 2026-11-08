@@ -11,7 +11,7 @@ export function fillDriveActions(el: HTMLElement, d: Disk, on: { act(a: DiskActi
     h('span', { class: 'drive-actions-title', title: diskFacts(d) }, d.kind === 'blank' ? 'Blank disk in A:' : `${d.title} in A:`),
     d.gam ? h('button', { class: 'primary', onclick: act('play') }, '▶ Play') : null,
     h('button', { onclick: act('design') }, d.kind === 'blank' ? '✎ New game' : '✎ Design'),
-    d.kind !== 'blank'
+    d.kind !== 'blank' && !d.folders
       ? h(
           'button',
           {

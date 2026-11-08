@@ -1,0 +1,37 @@
+{
+  "title": "Walking Very Far",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "hero": "LIAN",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.0",
+  "blurb": "Three short levels about how to draw someone walking a long way off. Up close Lian is two blocks tall. Far away they are a tiny figure, 8 pixels high, on a pale ridge, and their steps are small and slow so the road looks long. In the last level a big fence and big flowers in front make them look farther still. Signs say how. Play it, then open it in Game-Maker and change how far a step goes.",
+  "exe": "VERYFAR.EXE",
+  "dosName": "VERYFAR",
+  "sound": "sb",
+  "label": {
+    "background": "#f4e6c4",
+    "band": "#4f8f98",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "3 short levels",
+    "hours": 1,
+    "background": "#4f8f98",
+    "accent": "#ffd23f",
+    "ink": "#ffffff",
+    "tagline": "A long way off, in a few pixels.",
+    "back": "A small explorer in a blue beanie walks a road up close, then the same road on a far ridge where they are only a few pixels tall, with small slow steps and pale hills. Read the signs, then open the game in Game-Maker and change how far a step goes.",
+    "features": ["Signs in the levels explain each idea", "The same walk up close and far away", "Made to be copied and taken apart"],
+    "shots": [
+      ["close.map", 0, 0],
+      ["slow.map", 0, 0],
+      ["front.map", 0, 0]
+    ],
+    "rating": "Everyone"
+  },
+  "acceptedFindings": []
+}

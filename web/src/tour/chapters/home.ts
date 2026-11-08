@@ -166,6 +166,43 @@ export const homeChapter: Chapter = {
       optional: true,
     },
     {
+      // shown once an import has been made (imported/importHistory.ts)
+      id: 'home-import-history',
+      action: 'point',
+      target: { label: 'the Import history button', css: '.lib-about .lib-remove-all', text: 'Import history…' },
+      say: 'Import history keeps the last twenty imports: what came in, what was left out, and anything that failed.',
+      optional: true,
+      since: '2026-11-05',
+    },
+    {
+      // shown while a game deleted in the last 7 days is waiting (project/recentlyDeleted.ts)
+      id: 'home-recently-deleted',
+      action: 'point',
+      target: { label: 'the Recently deleted button', css: '.lib-about .lib-remove-all', text: 'Recently deleted…' },
+      say: 'Delete a game by mistake? It waits in Recently deleted for seven days, and Restore brings it back just as it was.',
+      optional: true,
+      since: '2026-11-05',
+    },
+    {
+      // Starters: small teaching games (the tab's lead, homeCategories.ts), and its How do I…? button
+      id: 'home-tab-starters',
+      action: 'press',
+      target: tab('starter', 'Starters'),
+      click: true,
+      say: 'Starters: small games that each show one idea, with signs in the levels. Play one, then edit a copy.',
+      sound: 'boing',
+      optional: true,
+      since: '2026-11-05',
+    },
+    {
+      id: 'home-how-do-i',
+      action: 'point',
+      target: { label: 'the How do I button', css: '.hdi-open' },
+      say: 'How do I asks the question in your own words, and points to the Starter that answers it.',
+      optional: true,
+      since: '2026-11-05',
+    },
+    {
       id: 'home-tab-sandbox',
       action: 'press',
       target: tab('sandbox', 'Sandbox'),
@@ -186,7 +223,7 @@ export const homeChapter: Chapter = {
     {
       id: 'home-tab-gameware',
       action: 'press',
-      target: tab('gameware', 'Gameware'),
+      target: tab('cd', 'CD'),
       click: true,
       say: 'Gameware: the free games that came with Game-Maker. Play one, or edit a copy to see how it works.',
       sound: 'boing',
@@ -194,7 +231,7 @@ export const homeChapter: Chapter = {
     {
       id: 'home-tab-shareware',
       action: 'press',
-      target: tab('shareware', 'Shareware'),
+      target: tab('cd', 'CD'),
       click: true,
       say: 'Shareware: games other people made with Game-Maker, from the CD and the BBSes.',
       sound: 'boing',
@@ -229,7 +266,8 @@ export const homeChapter: Chapter = {
     {
       id: 'home-games',
       action: 'point',
-      target: { label: 'Games in the header', css: '.topbar-nav .nav-games' },
+      // on a touch phone the bar drops Games, and the logo (the same link) stands in
+      target: { label: 'Games in the header', css: ['.topbar-nav .nav-games', '.topbar > a[href="#/"]'] },
       say: 'Games, up in the bar, always brings you back here.',
     },
     { id: 'home-guide', action: 'point', target: headerLink('Guide in the header', '#/help'), say: 'The Guide explains making games, one part at a time.' },

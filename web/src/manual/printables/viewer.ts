@@ -5,7 +5,8 @@ import { h } from '../../editor/core/ui';
 import { centerSpread, spreadAt, stepSpread, bookletSheets } from './imposition';
 import { PAGE_H, PAGE_W, pageElement, type BookPage } from './manualPages';
 import type { Sheet } from './kit';
-import { RedFilm, RedLens } from './redFilm';
+import { RedFilm, RedLens, flushRedCode } from './redFilm';
+import { spyglassElement } from './spyglass';
 import { decorateBbsName } from '../../retro/bbs/bbsName';
 import { crispShots, enlarge, isShot, zoomOpen } from './crisp';
 import { chapterPicker, chapterStops, findStop, linkContents, stopAt, type ChapterStop } from './chapterJump';
@@ -13,6 +14,7 @@ import { readView, viewToggle, type Reader, type ReaderOptions, type ReadView } 
 import { percentOf, pinchZoom, readSize, sizeControl, widthAt, zoomKey, type ReadSize, type Room } from '../readSize';
 import { scrollPages, type ScrollPages } from '../scrollPages';
 import { epubControl, type EpubSource } from '../epub/save';
+import { gamePicker, type PickerGame } from './gamePicker';
 
 /** A thing in the box. */
 export interface BoxItem {
@@ -21,6 +23,8 @@ export interface BoxItem {
   note?: string;
   icon: string;
   promised?: boolean;
+  /** A feelie on paper (a code wheel, the fingerprint card, the spyglass…): the Feelies strip lists it too (trinketShelf.ts). */
+  feelie?: boolean;
   /** Fresh sheets every call (the screen and each print get their own copies). */
   render(): Promise<Sheet[]>;
   /** Just the first sheet, built without the rest (the small picture in the box's list). Falls back to `render`. */
@@ -35,6 +39,8 @@ export interface BoxItem {
   reader?(o: ReaderOptions): Promise<Reader>;
   /** Shows the red film button. */
   redFilm?: boolean;
+  /** Shows the red film button for a sheet read through the box's spyglass (no circle follows the pointer). */
+  glass?: boolean;
   /**
    * A booklet of its own (a second manual): shown, turned and printed page by page like the
    * manual. `render` then gives only its cover, for the box's list of pieces.
@@ -72,6 +78,11 @@ export interface BoxOptions {
   address?: BoxAddress;
   /** The manual as an ePub. */
   epub?: EpubSource;
+  /** The shelf's games, for the bar's Game picker (gamePicker.ts); `gameId` is the one open. */
+  games?: PickerGame[];
+  gameId?: string;
+  /** The reader chose another game: the viewer has closed; open that game's box at `piece`. */
+  onGame?: (id: string, piece: string) => void;
 }
 
 const COMB_HOW = 'two pages a side, printed on both sides (flip on the short edge): fold the stack, or cut it and bind it';
@@ -132,12 +143,18 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
     const stage = h('div', { class: 'gmb-stage', tabindex: 0, role: 'region', 'aria-label': 'The piece shown' });
     const tray = h('ul', { class: 'gmb-tray-list' });
     const counter = h('span', { class: 'gmb-counter' });
+    const hasGlass = items.some((i) => i.glass);
     const filmBtn = h(
       'button',
-      { class: 'gmb-film-btn', onclick: () => film.toggle(), title: 'A whole sheet of red film to drag over the page (or just point at an answer)' },
-      '🟥 Red film',
+      {
+        class: 'gmb-film-btn',
+        onclick: () => film.toggle(),
+        title: hasGlass ? 'The spyglass: its red lens to drag over the page' : 'A whole sheet of red film to drag over the page (or just point at an answer)',
+      },
+      hasGlass ? '🔎 Spyglass' : '🟥 Red film',
     );
-    const film = new RedFilm();
+    // a box with its own spyglass drags that over a page instead of the plain sheet of film
+    const film = new RedFilm(hasGlass ? spyglassElement() : undefined);
     const epub = epubControl();
     // over a page with hidden answers the pointer carries a circle of red film
     const lens = new RedLens();
@@ -369,9 +386,10 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
       toggle.el.hidden = !(id === 'manual' || item?.pages || item?.reader);
       sizeShown();
       if (!item?.pages && id !== 'manual') (picker.use([]), tell(undefined));
-      filmBtn.hidden = !item?.redFilm;
+      filmBtn.hidden = !(item?.redFilm || item?.glass);
       epub.use(id === 'manual' ? options.epub : item?.epub);
-      if (!item?.redFilm) (film.hide(), lens.hide());
+      if (!item?.redFilm && !item?.glass) film.hide();
+      if (!item?.redFilm) lens.hide();
       bookletBtn.firstChild!.textContent = item?.pages ? 'Print booklet: this one' : 'Print booklet: the manual';
       bookletBtn.lastChild!.textContent = !item?.pages && comb ? COMB_HOW : STAPLE_HOW;
       pieceLabel();
@@ -455,6 +473,7 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
           else for (const s of await it.render()) out.push(sheetPage(s));
       }
       printRoot.replaceChildren(...out);
+      flushRedCode(); // the hidden answers are drawn one per task otherwise
       document.documentElement.classList.add('gmb-printing');
       await Promise.all([...printRoot.querySelectorAll('img')].map((i) => i.decode().catch(() => undefined)));
       window.print();
@@ -509,8 +528,19 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
       if ((e as CustomEvent<{ do: string }>).detail.do === 'film-over' && answer) film.over(answer);
     };
     window.addEventListener('gm-tour-act', onTourAct);
+    // another game's box, in the same viewer: this one closes and the next opens at the same kind of piece
+    const gameBar =
+      options.games && options.gameId && options.onGame
+        ? gamePicker(options.games, options.gameId, (id) => {
+            const piece = current;
+            close();
+            options.onGame!(id, piece);
+          })
+        : undefined;
     const onKey = (e: KeyboardEvent) => {
       if (zoomOpen()) return; // an enlarged screen shot takes the keys
+      // a control that turns with these keys (a code wheel's disc, any slider) has them while it has the focus
+      if (/^(Arrow|Home$|End$)/.test(e.key) && (e.target as Element | null)?.closest?.('[role="slider"]')) return;
       e.stopImmediatePropagation(); // not for the PC underneath
       if (!sizes.el.hidden && zoomKey(e, sizes, view === 'pages' ? 'page' : 'width')) return;
       const turn = (dir: 1 | -1) => (reader?.step ? reader.step(dir) : go(dir));
@@ -519,6 +549,7 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
       else if ((e.key === 'PageDown' || e.key === 'PageUp') && column) stage.scrollBy({ top: (e.key === 'PageDown' ? 0.9 : -0.9) * stage.clientHeight });
       else if (e.key === 'PageDown') turn(1);
       else if (e.key === 'PageUp') turn(-1);
+      else if ((e.key === '[' || e.key === ']') && gameBar) gameBar.step(e.key === ']' ? 1 : -1);
       else if (e.key === 'Home') ((at = 0), isBook() && showManual());
       else if (e.key === 'End' && column) ((at = total - 1), showManual());
       else if (e.key === 'Escape') menu.hidden ? close() : (menu.hidden = true);
@@ -543,6 +574,7 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
       h(
         'div',
         { class: 'gmb-bar' },
+        gameBar?.el ?? null,
         h('strong', null, title),
         h('span', { class: 'gmb-spacer' }),
         toggle.el,

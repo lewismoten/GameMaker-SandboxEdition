@@ -1,0 +1,91 @@
+{
+  "title": "Smash It",
+  "howDoI": [
+    {
+      "id": "crate",
+      "q": "How do I make a block my hero can break?",
+      "scene": 2,
+      "x": 16,
+      "y": 9,
+      "level": 1
+    },
+    {
+      "id": "rubble",
+      "q": "How do I leave something behind when a block breaks?",
+      "scene": 2,
+      "x": 16,
+      "y": 9,
+      "level": 1
+    },
+    {
+      "id": "sides",
+      "q": "How do I break a block from any side?",
+      "scene": 2,
+      "x": 27,
+      "y": 9,
+      "level": 1
+    },
+    {
+      "id": "coin",
+      "q": "How do I make a coin that pays only once?",
+      "scene": 3,
+      "x": 36,
+      "y": 19,
+      "level": 2
+    },
+    {
+      "id": "stuck",
+      "q": "How do I stop a coin paying again and again?",
+      "scene": 3,
+      "x": 15,
+      "y": 9,
+      "level": 2
+    },
+    {
+      "id": "gem",
+      "q": "How do I make a block that spins and still goes when touched?",
+      "scene": 4,
+      "x": 13,
+      "y": 9,
+      "level": 3
+    }
+  ],
+  "pages": [
+    {
+      "head": "Welcome",
+      "html": "<h1>Welcome</h1><p><b>Smash It</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has three short levels and takes a few minutes to finish.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each thing in the levels is made.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. <kbd>Space</kbd> jumps. <kbd>F2</kbd> shows your lives, hit points and score. Walk into the door at the end of a level to go on.</p><p>Walk into a crate to break it. Nothing in this game can hurt you.</p>"
+    },
+    {
+      "head": "Level 1: Bump a Crate",
+      "html": "<h1>Level 1: Bump a Crate</h1><p>The first sign, <b>BUMP A CRATE AND IT BECOMES RUBBLE</b>, stands before a wall of four crates. Walk into it: the two crates at Yana's height turn to rubble and you walk through. The two above their head stay where they are, as an arch. <b>RUBBLE IS A BLOCK TOO. WALK ON</b> comes next, then <b>ONLY WHAT YOU TOUCH BREAKS</b>, then a wall two crates wide. One bump breaks the column you touch; the second column takes a second bump.</p><p>There are eight coins, worth ten points each, past the second wall.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 1 is made</h1><ul><li><b>The crate.</b> Open <b>sm.bbl</b> in the blocks editor and pick <b>crate</b>. It is solid on every side, so you cannot walk through it. On its <b>Touch</b> tab, <b>Becomes block</b> is <b>rubble</b>. That one setting is all a breakable wall is: a block that turns into another when touched.</li><li><b>The rubble.</b> Pick <b>rubble</b>. It is not solid and it has no touch of its own, so it stays. It is a small pile drawn on the floor of its square, with the rest of the square open.</li><li><b>A bump is a touch.</b> Game-Maker checks what Yana is touching a moment before they are stopped, so pressing into a solid block counts. It cannot tell which side was hit: a crate breaks the same from the left as from the right.</li><li><b>Only what you touch breaks.</b> Yana is two blocks tall, so they touch two crates of a wall at a time. The crates above them are never touched, so they stay. Open <b>one.map</b> in the map editor and look at the arch.</li><li><b>The two-wide wall.</b> Each crate is its own block, so one bump breaks one column.</li><li><b>The signs and the exit.</b> The signs are ordinary blocks with words in their pictures. A scene link joins the door at the end to the next level in <b>sm.gam</b>.</li></ul>"
+    },
+    {
+      "head": "Level 2: Coins Pay Once",
+      "html": "<h1>Level 2: Coins Pay Once</h1><p>The sign <b>A COIN THAT STAYS A COIN PAYS AGAIN AND AGAIN</b> comes before three gold coins with an orange rim and sparkles. Walk in and the score climbs every moment you stand in one, and the coin is still there when you leave. <b>A COIN THAT BECOMES AIR PAYS ONCE</b> comes next, before seven ordinary coins that pay ten points once and are gone. <b>BREAK THE WALL TO THE EXIT</b> comes last, before a crate wall and the door.</p><p>There are two more ordinary coins past the wall.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 2 is made</h1><ul><li><b>The coin that is paid for again.</b> A coin gives its points whenever Yana touches it, every game tick they are touching it, not once. The ordinary <b>coin</b> turns into <b>sky</b> when touched, so the second touch has nothing to pay. Pick <b>stuckCoin</b> in <b>sm.bbl</b>: its <b>Becomes block</b> is itself, so it stays, and it pays 2 points on every tick.</li><li><b>The fix is the Becomes block.</b> Set <b>stuckCoin</b>'s <b>Becomes block</b> to <b>sky</b> and it pays once. A block with a score and no way out is the most common mistake in a coin.</li><li><b>Air.</b> There is no block called \"nothing\". Air is the <b>sky</b> block, which is not solid and pulls Yana down.</li><li><b>The crate wall.</b> One column of four crates, as in level 1. Open <b>two.map</b> in the map editor.</li><li><b>The signs and the exit.</b> The signs are ordinary blocks with words in their pictures. A scene link joins the door to the next level in <b>sm.gam</b>.</li></ul>"
+    },
+    {
+      "head": "Level 3: Spinning Gems",
+      "html": "<h1>Level 3: Spinning Gems</h1><p><b>A SPINNING GEM IS FOUR BLOCKS IN A LOOP</b> comes first, before five gems that turn as you watch. Walk through them: each is gone whichever way it was facing when you touched it, and pays 25 points. <b>EACH FRAME BECOMES AIR</b> and <b>MORE GEMS BEHIND THE CRATES</b> come after, before a crate wall with four more gems stacked behind it.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 3 is made</h1><ul><li><b>The gem is four blocks.</b> In <b>sm.bbl</b>, <b>gem0</b> to <b>gem3</b> are the same gem turned a little more each time. Each has a <b>Next block</b> (the next gem in the list, and <b>gem3</b> goes back to <b>gem0</b>) and a time in ticks, so the loop never stops. Open <b>three.map</b> in the map editor: the map holds only one frame of each; the others appear by themselves.</li><li><b>Every frame needs the same touch.</b> A touch is read from whichever frame is showing. Give <b>gem0</b> a Becomes block of <b>sky</b> and leave the others blank, and a gem caught in another frame stays, paying again and again like the stuck coin. All four frames here have <b>Becomes block</b> set to <b>sky</b> and the same 25 points.</li><li><b>The hidden gems.</b> A crate wall like level 1's, with a stack of two gems in each of two columns behind it. Yana touches both gems of a column at once.</li><li><b>The signs and the exit.</b> The last door links to the <b>The End</b> scene in <b>sm.gam</b>.</li></ul>"
+    },
+    {
+      "head": "What it cannot do",
+      "html": "<h1>What it cannot do</h1><p>These are the engine's limits, so you can plan around them.</p><ul><li><b>It cannot tell which side was hit.</b> A bump is a touch from any side. A crate that breaks when Yana walks into it from the left breaks the same from the right. There is no block that only breaks from one side.</li><li><b>A block cannot take more than one hit.</b> One touch is enough to start its change. A crate that needs two bumps would have to become a cracked crate first, and Yana would still be touching the cracked one a moment later, so it would likely go to rubble almost at once.</li><li><b>A block cannot change a block next to it.</b> A touched block changes only itself. A crate cannot break the crates around it.</li><li><b>Yana breaks only what they overlap.</b> The crates above their head were never touched.</li><li><b>No score is kept per block.</b> A block with points pays on every tick it is touched, so a block that stays must pay nothing or be a mistake.</li></ul>"
+    },
+    {
+      "head": "Make it yours",
+      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>Set <b>stuckCoin</b>'s <b>Becomes block</b> to <b>sky</b> and walk through it again.</li><li>Set <b>crate</b>'s <b>Becomes block</b> to <b>coin</b> and a broken crate leaves a coin.</li><li>Redraw <b>rubble</b> so it looks like something else.</li><li>Change <b>gem2</b>'s <b>Becomes block</b> back to itself and catch a gem at that angle.</li><li>Stack crates on a ledge and bump them from the ground.</li></ul><p>The home page's <b>Starters</b> tab has more small games like this one.</p>"
+    }
+  ]
+}

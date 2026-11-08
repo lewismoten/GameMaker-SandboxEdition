@@ -5,6 +5,7 @@
 // made it, a few lines about it, and everything that can be done with it.
 import './homeShowcase.css';
 import { h, clear, promptText, toast } from '../core/ui';
+import { withDetails } from '../../project/files';
 import { demoDialogButton, demoInPicture, gameActions, type HomeGame, type GameKind } from './homeCards';
 import { healthBadge, healthNote } from './gameHealth';
 import { icon } from './homeIcons';
@@ -12,7 +13,7 @@ import { isImported } from './homeOrigin';
 import type { HomeNav } from './home';
 import { walkthroughButton } from '../../walkthrough/button';
 import { savesButton } from '../../saves/button';
-import { chooseDownload, downloadButton } from './download';
+import { downloadButton } from './downloadButton';
 import { catalogDownloadable } from '../../export/downloadable';
 import { fictionNote } from '../../export/fiction';
 import { fillRating } from './homeRatings';
@@ -20,9 +21,11 @@ import { fillRating } from './homeRatings';
 const KIND_LABEL: Record<GameKind, string> = {
   mine: 'My game',
   gameware: 'Gameware',
+  starter: 'Starter',
   sandbox: 'Sandbox',
   shareware: 'Shareware',
   bizarre: 'Bizarre',
+  special: 'Special',
   community: 'Community',
 };
 
@@ -91,15 +94,15 @@ function whenIdleAndSeen(el: Element, ready: Promise<unknown>, f: () => void): v
 function catalogDownload(game: HomeGame): HTMLElement | null {
   const e = game.entry;
   if (!e || game.project || !catalogDownloadable(e)) return null;
-  return downloadButton(game.title, () =>
-    chooseDownload({
+  return downloadButton(game.title, async () =>
+    (await import('./download')).chooseDownload({
       title: e.title,
       gam: e.gam!,
       files: () => game.files(),
       id: e.id,
       author: e.author ?? e.company,
       year: e.year,
-      box: e.original?.box,
+      box: (await withDetails(e).catch(() => e)).original?.box, // a Starter's box art is in its details
       fiction: fictionNote(e),
       entry: e,
     }),
@@ -124,10 +127,12 @@ interface Showcase {
   show(game: HomeGame, how: { featured?: boolean; resume?: boolean; onAnother?: () => void }): void;
   /** Opens the game's Saves & scores (at a part named in the address: a slot, 'scores', 'backups'). */
   openSaves(initial?: string): void;
+  /** Moves keyboard focus to the Play button (else the first main action), without scrolling. */
+  focusPlay(): void;
   readonly game: HomeGame | undefined;
 }
 
-export function showcase(nav: HomeNav, refresh: () => Promise<void>): Showcase {
+export function showcase(nav: HomeNav, refresh: () => Promise<void>, life?: AbortSignal): Showcase {
   // the monitor: a bezel around the glass, where the picture and the demo go
   const screen = h('div', { class: 'sc-glass' });
   const label = h('p', { class: 'sc-label' });
@@ -153,7 +158,7 @@ export function showcase(nav: HomeNav, refresh: () => Promise<void>): Showcase {
     if (!el.isConnected) return window.removeEventListener('gm-tour-demo', onTourDemo);
     tourPlay?.((e as CustomEvent<'play' | 'stop'>).detail);
   };
-  window.addEventListener('gm-tour-demo', onTourDemo);
+  window.addEventListener('gm-tour-demo', onTourDemo, { signal: life });
   // leaving the game list stops its demo: the picture is gone, so its sound must go too (the
   // next page may draw a moment after the address changes, so look again shortly after)
   const gone = () => {
@@ -166,7 +171,7 @@ export function showcase(nav: HomeNav, refresh: () => Promise<void>): Showcase {
   const onLeave = () => {
     if (!gone()) for (const ms of [100, 600, 2000]) setTimeout(gone, ms);
   };
-  window.addEventListener('hashchange', onLeave);
+  window.addEventListener('hashchange', onLeave, { signal: life });
   let generation = 0;
   let saves: ReturnType<typeof savesButton> = null;
 
@@ -190,7 +195,8 @@ export function showcase(nav: HomeNav, refresh: () => Promise<void>): Showcase {
     title.textContent = game.title;
     clear(
       byline,
-      game.byline,
+      // an imported game shows its title only, like its card (no edited date or file name)
+      game.project && isImported(game.project.id) ? null : game.byline,
       // a finished game has an address of its own to share (yours live only in this browser)
       game.entry
         ? h(
@@ -299,6 +305,7 @@ export function showcase(nav: HomeNav, refresh: () => Promise<void>): Showcase {
     el,
     show,
     openSaves: (initial) => void saves?.open(initial),
+    focusPlay: () => (actions.querySelector<HTMLElement>('.sc-play') ?? actions.querySelector<HTMLElement>('.primary') ?? title).focus({ preventScroll: true }),
     get game() {
       return current;
     },

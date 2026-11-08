@@ -1,0 +1,54 @@
+/* the breadcrumb above a file's title: one line tall always, so nothing below it moves */
+.crumbs {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 28px;
+  margin: 0 0 4px;
+  font-size: 13px;
+}
+.crumb-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.crumb-list li {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+.crumb {
+  min-height: 24px;
+  padding: 0 6px;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.crumb-back {
+  flex: none;
+}
+.crumb-sep {
+  opacity: 0.6;
+}
+.crumb-here {
+  padding: 0 6px;
+  overflow-wrap: anywhere;
+  font-weight: 600;
+}
+@media (pointer: coarse) {
+  .crumb {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  .crumbs {
+    min-height: 44px;
+  }
+}

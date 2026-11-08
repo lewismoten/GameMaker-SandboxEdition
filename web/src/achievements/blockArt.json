@@ -11,31 +11,36 @@
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAG1BMVEUQCBRdNBx9VTSidU3HlmXrun1NMBxtSSzny5b5yiAgAAAAc0lEQVR42nVPUQ5DMQhi4Dbvf+Kloq/96EhaG4qIeF+AK/m6AJIUYugAXEKs229I1CNr1u1E41QGMj+ZiWVCVZGGtEMP2qRuJFf7H5IrxExnZbHy29iDOruXMEkbVOzo8JWTsZfckThXHZRuXOlfHF0D/gBn4AU2kEMJlQAAAABJRU5ErkJggg==",
       "game": "goat",
       "set": "goat",
-      "block": "window"
+      "block": "window",
+      "generator": "scripts/achievementArt.ts"
     },
     "export-mac": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAG1BMVEU4WYKmICjTODz/VVXfw0H/72E4olVh33nHnlX49J1mAAAATElEQVR42sWNMQ6AMAwD3djB+f+LEaFIXWDpgIf45OECvKWWu5N9wy9/a4FvVWqC3UUCmddKwu6VZEApNdk+AAQjAGlSb6gRj3iMu09iDwEBRxDWdgAAAABJRU5ErkJggg==",
       "game": "teddy",
       "set": "city",
-      "block": "apples"
+      "block": "apples",
+      "generator": "scripts/achievementArt.ts"
     },
     "export-files": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAFVBMVEU4NDRhWVWGfXWqppYsGAxNMByOZTgcIeheAAAAV0lEQVR42pWPMQ7AMAgDHWP6/ydXIUvjkKE3GOmEQAZaIoKWNTn2BCgDBKBnQ3W0kUHlhoIgld+LKRIchxzzpsn1qJFxyNnI5Wrkm/zx6NbIqEZz27PhBQJqBNpND4pdAAAAAElFTkSuQmCC",
       "game": "goat",
       "set": "goat",
-      "block": "crate"
+      "block": "crate",
+      "generator": "scripts/achievementArt.ts"
     },
     "first-steps": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAG1BMVEU4NDRhWVWGfXWqppbTy7YsGAxNMBxtSSyOZTgUYKc0AAAAgklEQVR42n1QWw7DMAwikAXf/8ST7aWppm584JcEwsAjJHHznFOAauJozp2GBJAcm0Vlj98Id4ntwxxyq4iIdkyXCHsolxZFIvVfCaiKyrG0bGyV4xM+t08i25YY9qp05dYTHTavRPZa5LC9eBKt1vL6ExDnbze+/lZZukd/7Jsf8AbcWQNu3/flhAAAAABJRU5ErkJggg==",
       "game": "goat",
       "set": "goat",
-      "block": "sandal"
+      "block": "sandal",
+      "generator": "scripts/achievementArt.ts"
     },
     "make-cards": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAJFBMVEUUDBD///t1LCSWRTS2WUHXbVGqpqLj29P///fTODySVb7LpjxF64ooAAAAdElEQVR42n3OUQ4EIQgDUASEznD/+25E2dXEbP17qSkkFesVI2aOI6oT25YDAeCLZhbLUsPMSFWjzJFNJRFJJADkrYWILHTkO3F8fhyFNTR6XkO993lS9rJZ69vxzIXvyj+cQxv+hjYcJ12+82194pGBdskHqDwIeJHzZiYAAAAASUVORK5CYII=",
       "game": "teddy",
       "set": "city",
-      "block": "poster"
+      "block": "poster",
+      "generator": "scripts/achievementArt.ts"
     },
     "play-first": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAG1BMVEUUDBSKTV2+dYbXmqZdoo4oKDDHx8scZRyaZbrvUHikAAAAdElEQVR42o2RSQ7AIAwDY5Om+f+LqxhRlkNVX5BGgIdgoLItRrIxZgbkASHoEVdPQWgnGHHdlYLQcXCF0J3gBlXkPKG/7UvRlxJelFPJI8LEModSPdPMBEupDaXoLHsR1qLcPZd2/6W0T2nCoaR7Ww22f8gDCZYGKDsqO5MAAAAASUVORK5CYII=",
@@ -47,37 +52,43 @@
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAD1BMVEVZljR5tkXTODz/VVWGjpa+OcJjAAAAOklEQVR42s3Muw4AIAhD0Vb6/9/sYnhEBuPEHU8oYBN+UA0qFOmuRVeUhyooXmiykywwFfPlcQLiETe5KAI88HWTCgAAAABJRU5ErkJggg==",
       "game": "teddy",
       "set": "park",
-      "block": "bucket"
+      "block": "bucket",
+      "generator": "scripts/achievementArt.ts"
     },
     "play-teddy": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAGFBMVEUUDBBxLAi2bTDbjkn7sl3///fjkrYAAAACX8JHAAAACHRSTlP/////////AN6DvVkAAABlSURBVHjarc5LEsAgCANQ0oje/8adgJ/aumyG1RMBa4fYb4ioHVGBig9StSEKFeCNRtIdE8GMu7vtKHp0SpOgmTE6OrNNi6BHoH/ud8K9KOybB5Jz9cKh18QmvSJrZpPmAcPOeANr+QhX2P7D+QAAAABJRU5ErkJggg==",
       "game": "teddy",
       "set": "teddy",
-      "block": "stand"
+      "block": "stand",
+      "generator": "scripts/achievementArt.ts"
     },
     "heart-first": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAHlBMVEUQCBQ0TSRVbTh1jkmWsl3///8wMDBlZWWamprPz8884ojrAAAAnklEQVR42kWQCw4EIQhD26IO3P/Cm4KzQ0wwz/KxoKSQwlnsS0BvcN3cMARHxCRJoIRyAJmV6VJcdqoyM09T0HDXMAdCuMUvykoERNT5mJW0eHQ4GHin932fpt4JITbF3huZWLOSFNXUi9Jftvrt0P3YSvbHmj3jBD3IYnxM6+8SnmZuea0LXhhcK7wnx2fc9+hB4/hrfA/qV9dT90g/IJwFub+ElIIAAAAASUVORK5CYII=",
       "game": "goat",
       "set": "goat",
-      "block": "tinHeart"
+      "block": "tinHeart",
+      "generator": "scripts/achievementArt.ts"
     },
     "egg-first": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAIVBMVEUQCBSafVG6nnHbw44sQYJFZa6WRVHLeYL/srL/73n////MM3ZrAAAAkklEQVR42lWRCxIDIQhDQ1Dj9v4H7vDRbkVn9BEEESQtLWYMJ8EeAH778LsTe2+BpW9vMgn0oLgsoGBGOpp9kkl1/hMWTOWLFW04JcUaLzj3VNkAaQnnLt2UVlSV8NmP2laFG3GzaBW0eOINHgteb8dJorEGbvGnoJV5Aprh3rjwashlzq4zW5yZz6l/wLvzoeQXxekF6lydsa0AAAAASUVORK5CYII=",
       "game": "goat",
       "set": "goat",
-      "block": "easterEgg"
+      "block": "easterEgg",
+      "generator": "scripts/achievementArt.ts"
     },
     "watch-one": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAJ1BMVEUQDBT3z6rX08/r5+P///v/UVlVXW2Cjp48IBBpRSSaaTjLjlFVfcNnGd+RAAAAgUlEQVR42m2OQRLDIAwDTUxJJPH/93Zspkmg6ORZrwWmTUyyJZJdl/UpQcCA5QVJoyxYKRNEmuWW41YYnY+Jn9l7r/5ADFhrre6f2XSv7scwcXf249h0Lg8tCXj+BTsYX2JroEACZGvMTrQGIDjGLFNuSRDkMGVUDkkGJIxUdr4gv6HnDPbVf0ysAAAAAElFTkSuQmCC",
       "game": "tickle",
       "set": "tickle",
-      "block": "tv1"
+      "block": "tv1",
+      "generator": "scripts/achievementArt.ts"
     },
     "desk-bbs": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAJFBMVEWqpqL///dpQSRdXWGWLCjLTUGWjnW6rprb077/9+PXujxZpkXjprS1AAAAaUlEQVR42qWNUQ7AIAhDAZmK3v++S0WdLvswWT8KvJSUyodoPVR1wKst7hOWamZWamN1vuec8xIsJCICiCnaXAgCNBe5mBkwuXDyb9iLUkgB8KCoJw+KtiSK4pPciuL7nYkjjIe5R17hDU0JCBxVl5odAAAAAElFTkSuQmCC",
       "game": "remote",
       "set": "remote",
-      "block": "phone"
+      "block": "phone",
+      "generator": "scripts/achievementArt.ts"
     },
     "desk-copycheck": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAFVBMVEUUDBT///eKTV2+dYbXmqZdoo7LTUF5okYnAAAAcElEQVR42o2QgQoAIQhD1Zn//8mHM6OOOE4h8TV0KAbA4VkAVBG+J5uQjTczwtgiFQktQlUjMyLlkj8R2Rc0zjQckIsGAN0CGLX9hGgoMwjtopyWWknYlnblsvSaCbHb9r8+PyzVGX0dmpZGH3pUeQCJ0QPg5AouVgAAAABJRU5ErkJggg==",
@@ -89,745 +100,943 @@
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAG1BMVEUUDBT///c4dWk8IBBpQSSWYTTbz7L789eqRWUOfOUcAAAAWklEQVR42o3QQQ7AIAgEQNZuaf//YiOkWAmx5bAhcxBEzqKkxKMoUb20pTC8UxiqBaN7kCRILkgAAoAvHGYI7rGt6CuZQVxjJdfB+U1UgzKG8uNHfhv+vtKMDt96Bzigk0UgAAAAAElFTkSuQmCC",
       "game": "remote",
       "set": "remote",
-      "block": "clock"
+      "block": "clock",
+      "generator": "scripts/achievementArt.ts"
     },
     "desk-wastebasket": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAD1BMVEWiaWX77+NlaXmqrrrv8/tfJXNhAAAANElEQVR42mNghAImJiYmBhjAKciCBMgQZEYChASZmMGYiWRBEEAWBCmityAC4BdEDW4cggBgLQK+Lxf68QAAAABJRU5ErkJggg==",
       "game": "remote",
       "set": "remote",
-      "block": "trash"
+      "block": "trash",
+      "generator": "scripts/achievementArt.ts"
     },
     "desk-door": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAGFBMVEVdNBx9VTSidU3HlmXrun1NMBxtSSzfvlHua1veAAAAZElEQVR42m2PUQ7AMAhCC8zt/jdetO3irPy0eRHEcTUaLWzFLWC+IgeRseLjELRPPqlpt3vJ6M6AyNDtnq9sd6hq57TrD7UqHZMBS2aefG6DAB49/ZbYjmZ7yWzs0lle3Jm15wsUIgVdCXRLZwAAAABJRU5ErkJggg==",
       "game": "goat",
       "set": "goat",
-      "block": "door"
+      "block": "door",
+      "generator": "scripts/achievementArt.ts"
     },
     "desk-window": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAIVBMVEUYFCw4dWk8IBCWYTS+hlHbz7L789eWLCiqRWXzx3W2qv+Qhs9mAAAAYUlEQVR42oWQUQ7AIAhDuw1W9P4HXnBq1BHXj2KaFxBwBUIYnoGgpB6qdzeSHlIGkTQPBS6ppZE9zABJrWTekJjIoOcyfUMipfTt2cP8R243GklZ/lRI9auZW7mc4X3O9gCNVwX7biQPxQAAAABJRU5ErkJggg==",
       "game": "remote",
       "set": "remote",
-      "block": "window"
+      "block": "window",
+      "generator": "scripts/achievementArt.ts"
     },
     "desk-chicken": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAJFBMVEUUDBA0KCx1LCSWRTS2WUHXbVGqpqKmICjTODy6liD/72H/522of4m1AAAAgUlEQVR42pWPQQ7DIAwE19isifP//7bZQJMDl45kIw2YBfiCfUG0BWPxj+QGaOs5pA4FP09Q30vbABrJMah1Frr1jip0c/e7iLA4TxTCWmt3SUaMnbzmAfykLkdlVhXeQTTUJQtUmMZpjpJM3btkQjBfMt0P98OmnL/ITJJX+wZ9AMz4BgAJ+1z4AAAAAElFTkSuQmCC",
       "game": "teddy",
       "set": "city",
-      "block": "chicken"
+      "block": "chicken",
+      "generator": "scripts/achievementArt.ts"
     },
     "desk-mail": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAFVBMVEVZljR5tkVpRSTTODwsUaZFedNhov9y562DAAAASklEQVR42sXOMQ7AIAxDUSepff8jVxSU0IqlLHhgePqRAP5OkkggImYSRV6FUmp2YDe2srC2RG7gM/fF98+gjaehfUJzt2ze551uLxsCCa94dJEAAAAASUVORK5CYII=",
       "game": "teddy",
       "set": "street",
-      "block": "mailbox"
+      "block": "mailbox",
+      "generator": "scripts/achievementArt.ts"
     },
     "desk-zine": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAJFBMVEU4LDSSfV26pn3Tw57v375lEBSWLCjLTUHXujz/8200VaJVhs8kWUyUAAAAnElEQVR42k1RCQ7DMAxygazJ+v//TuBEHb0ijC9aFMF+EZRIsnziC5BAUYguEXVKKVHm4zoyGQm2EqFZPn8Ourqc/pJmLqFc6f4ekBA7/SUzshuJ8+DpKaKcY4zp67EEKM+71vA91qMsWi68alSF9KDZSPhTWog0CunHdghKo3XQ5jS54Z6xqRL0rtd2BnLNWEcK2w6bvP/DcdWxH2SmBrEE+mIEAAAAAElFTkSuQmCC",
       "game": "remote",
       "set": "remote",
-      "block": "mags"
+      "block": "mags",
+      "generator": "scripts/achievementArt.ts"
     },
     "desk-light": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAHlBMVEWSfV26pn3Tw57v3748IBBpQSSWYTTjqm3zx3X/98f6Ajo9AAAAkklEQVR42mWRUQ7DMAxCDayku/+FJ2g6TR0fTvRC3OIMSJCklNo9hoCoHJ28DOJANZ6XJIEY5ajsnRKP5va9o9Bcb5vNQnlDBB7HUQgGbmNhrRxqrfXjXIsa0vZPT7vXC79ft6VRoL//aTsxC70TZZue8Na518b0Q+BonrDZ/yCHeD3URBm5cI2Qrc2+nyNT6+g/HrEHcobHKVIAAAAASUVORK5CYII=",
       "game": "remote",
       "set": "remote",
-      "block": "lamp"
+      "block": "lamp",
+      "generator": "scripts/achievementArt.ts"
     },
     "watch-all": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAHlBMVEUUDBQ4LDSSfV26pn3Tw57v374oKDCSkpbHx8uO/46hCg0LAAAAgElEQVR42nVRARLDIAyig2Tl/x/eJeq6nh0XT0UwHiJCWkMvSUEhFOJFFyuMOeZ2nJWSTXEU2XYtF+ea0Bdc9xB6b9AfMjcI/NnBgJ0s5TGRNgC47cfQHa2EUzdl25H3RrZhO567K/M8Zz0+6VJigzASq5AqtxENFMH6AlZwzYY+AZkHMvziVvQAAAAASUVORK5CYII=",
       "game": "remote",
       "set": "remote",
-      "block": "vcr"
+      "block": "vcr",
+      "generator": "scripts/achievementArt.ts"
     },
     "offline-copy": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAD1BMVEWKTV2+dYbXmqZdoo77bVkBi6NJAAAAZklEQVR42n2QUQ7AIAhDW9r7n3kRZcuUTT8aHwVJAeZ5Scf6UqqKaQq6XmwscHs3O0TaJKyhsK2smIZZd9lNRwKvroR4XK5vrGEhzDHX50r8Xim6KFQPFdNPShuLJqWYK60YGZqlC5R5Aeu6o23wAAAAAElFTkSuQmCC",
       "game": "remote",
       "set": "remote",
-      "block": "nope"
+      "block": "nope",
+      "generator": "scripts/achievementArt.ts"
     },
     "mag-features": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAKlBMVEU4LDTX08v///eSfV26pn3Tw57v375lEBSWLCjLTUHXujz/8200VaJVhs8OOLAeAAAAjElEQVR42m2RCw7DIAxDDbPNOsb9rzsFSFtNffwiY1AIkEWtSZQtSYhIF5RIyJw+65sIfic3Uac4EkFHMhCMMQwfMw4xIXg5H48/iTNPR6qI6JM4nkTCcoolAS31RWmtlWjhZJ9Z9Vpb9FYRt2xnRQOWqPP4zfknxsCsXFT05ZpgF10yvVci/2GuXns/cJgKpSXWg10AAAAASUVORK5CYII=",
       "game": "remote",
       "set": "remote",
-      "block": "magsSpread"
+      "block": "magsSpread",
+      "generator": "scripts/achievementArt.ts"
     },
     "desk-backup": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAHlBMVEU8IBBpQSSWYTSWLChFZW15mqKq09fnllX/821Vhs9+k2gLAAAAP0lEQVR42sXOQQ4AEBBD0TIY7n9hQSSDsvWWP10UiUAkPsdAwBPw7tAiDFXFiLnZI10OpQNmFBGzfsWVu/0kKi8sBNqZcqeYAAAAAElFTkSuQmCC",
       "game": "remote",
       "set": "remote",
-      "block": "drawerOpen"
+      "block": "drawerOpen",
+      "generator": "scripts/achievementArt.ts"
     },
     "make-take": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAJFBMVEX///c8IBBpQSSWYTS+hlHjqm2WLCjLTUHXujw0VaJVhs+W523ObH6UAAAAUElEQVR42r2Q0QqAMAgAT11zm///v7FYT1nUSwciHPjgsSUgRc1sjqythly5le69Q2sSUesYDxKnA00IKuPr+W8ye/MoM9uInb0oCWjCe7kDGN4F8SP33q4AAAAASUVORK5CYII=",
       "game": "remote",
       "set": "remote",
-      "block": "tapes"
+      "block": "tapes",
+      "generator": "scripts/achievementArt.ts"
     },
     "desk-gm": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAKlBMVEWqpqLX08v///eSfV26pn3Tw57v376Whmm2qo7789dlEBSWLCjLTUH7bVnhEQgWAAAAgUlEQVR42o2QUQrDMAxD1VVSk6y5/3WHnXQbDYMJg41kf/hBVMqUHI0SdpER2FHKBCOXOE7CJ8wcYn5n0GMRUeoiodRt+1TvvVffzPM8n7lZvipN/tr87/y+2Vpri5na4xyX5iMEj0WGLqByQEwyiS55RZs5JsSRODIZTISefMf4AmW6CRKdFdQ2AAAAAElFTkSuQmCC",
       "game": "remote",
       "set": "remote",
-      "block": "keyboard"
+      "block": "keyboard",
+      "generator": "scripts/achievementArt.ts"
     },
     "bbs-every-speed": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAHlBMVEUUDBQoKDBdXWHHx8sUjiiO/477bVmiaWXPqqL77+N17ZcdAAAAS0lEQVR42qXQSQ6AMAxDUZdi0tz/wghIEzUqg8RfPnllqCcefmNNZdwqLyyzZVlShuiRuEfpSBqqPqDBB1y9wLEDBakTrRZ/BcoL7mSKB2tMJhJzAAAAAElFTkSuQmCC",
       "game": "remote",
       "set": "remote",
-      "block": "modem"
+      "block": "modem",
+      "generator": "scripts/achievementArt.ts"
     },
     "desk-power": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAJ1BMVEUUDBQ4LDSqpqLX08v///eSfV26pn3Tw57v376qrrrv8/vzx3X/98ezrQO8AAAAp0lEQVR42lWQWRLDMAxC5bTlkdj3P29HZJmWD9uDhEEqRGBN3JegPkg04Wkz6UrlNFNrLdKMymLOyb4aMGfLcar7sdY6iIPKtkKyjiZlUXLM9wM3iS2XW/J+gGwqMV83NiF0k1vw2mJ15vwhY+R/eaJUvLcHRqZ69MSvcaXjU9hGmBrXwqzqXBmkBleni3uh3Xk+lUjnvoafevo5/yTeuDJX1j0i7ecXxwMKHQ/7S6UAAAAASUVORK5CYII=",
       "game": "remote",
       "set": "remote",
-      "block": "plug"
+      "block": "plug",
+      "generator": "scripts/achievementArt.ts"
     },
     "desk-gamepad": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAIVBMVEUUDBSSfV26pn3Tw57v375dXWGSkpbHx8vLTUH7bVnXujxh12qrAAAAi0lEQVR42m2QgQrEIAxDY5JNz///4KOt7oZcEFpeWtFAVMqUHIUSmsgw7DhKB+VLrJXghJlN9I8HecFWUzXpfogCfR2ikey+31RgFGCDOefFgEj9oKANe7/GZxT0a32MUXfqL+T5JDXIOGSCmQ3p578ytAOVI8RMJqPL2SjLxwqxHIcngxmhV77VfgHnewXPXGwnbAAAAABJRU5ErkJggg==",
       "game": "remote",
       "set": "remote",
-      "block": "gamepad"
+      "block": "gamepad",
+      "generator": "scripts/achievementArt.ts"
     },
     "desk-mousepad": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAIVBMVEUUDBSSfV26pn3Tw57v3762qo7bz7L789cUKHk0VaJVhs92po1yAAAAi0lEQVR42mWQgQrEMAhDc0mm2/7/gw+tV8YuFJQX20ogqmVKrkIJH5Fl2HXUDpav4LpSnDC7Camb9iDfpbi3atJXKeIanRS44PWAhvWGFvgHxYERkZkDa88FsSE1bz7hnszMI4/9kTgwf1AfyG9ozvJHayYN6XxJ7Og6ryoTOCbE5bg8GewIPfmu9gtSiQj/tF1PYwAAAABJRU5ErkJggg==",
       "game": "remote",
       "set": "remote",
-      "block": "mousepad"
+      "block": "mousepad",
+      "generator": "scripts/achievementArt.ts"
     },
     "record-video": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAIVBMVEUUDBT///eSfV26pn3Tw57v375dXWHHx8v7bVnv8/s0VaJUg5cyAAAAjElEQVR42mVQCw7DIBSiBVz1/gdeeLqkTmKlgfcxQFTBlByihFtkDDtH5SD3BSBOWBJh6uq9d4iT0y6jF/DjVEbE+6PAUzSs/3ar5s5RN9YigvpsUG1XewN5Kqz511p7ntZwDczKJVblKJGHeEPeZ44Bgj4WGRI2VEqJLjkytALHynU6jidXuFxKGkJf07oG6YD9OnwAAAAASUVORK5CYII=",
       "game": "remote",
       "set": "remote",
-      "block": "camcorder"
+      "block": "camcorder",
+      "generator": "scripts/achievementArt.ts"
     },
     "desk-bbs-file": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAALVBMVEUUDBT///eWhmnbz7L789eO/46WLCiiaWXPqqL77+Pbtl3v8/sUKHk0VaJVhs8De0+ZAAAAYUlEQVR42oXQyw6AIAxE0fqA2o71/z/XWKRgguEuD8wCSEoqwhFVVO1RoxnGfK81lC0KlC9eHgBcDc0DCEbeH3JFwN65ENviPSdTzDnnwJQGN4dY5mdrLQnF1xzx4A55gjd8FwtKrBVp9gAAAABJRU5ErkJggg==",
       "game": "remote",
       "set": "remote",
-      "block": "diskDrive"
+      "block": "diskDrive",
+      "generator": "scripts/achievementArt.ts"
     },
     "mag-disc": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAJFBMVEUUDBT///eSfV26pn3Tw57v376Whmm2qo7789eqrrrv8/tVhs+fF1T9AAAAkUlEQVR42m2QUQ6EQAhDi21XwfvfdwPqJqv2h0l5wKQQNTIld6GERWQ3bJWnK+HoS3WofcJsa7yIqOopyMPFHpGZWTWkTVXteaqKAmd4vBOlYanJ9hCZ0bfAuTIeEBmNgoqb5p/bv1YKfpivpAVx29ZLB7lAfpAEfZG/nX7ZKUL63DTXz0Q9j47C6Nh5Oh1wly9TJAkSdqwUsQAAAABJRU5ErkJggg==",
       "game": "remote",
       "set": "remote",
-      "block": "discSleeve"
+      "block": "discSleeve",
+      "generator": "scripts/achievementArt.ts"
     },
     "play-save": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAJFBMVEUUDBT///eSfV26pn3Tw57v376WLCjLTUGyXSwUKHk0VaJ5tvvj8NTKAAAAj0lEQVR42m1QCQ7DMAgzxdCE/f+/E4eqtZ0TBWQbIhlUFkxJy6IkDqqmYJaXpaB1UnskeYVpNdlfGvh5QWERckNsQiPEXaSui7tvS6fLEHUup6RjnLE1yfOGdDLCZ99MbObOB9oZAATo94cUWWstEUny+Oes3587DdwvaEVXeWWZwDEhtmKp0aAVoU2+3X4BokUIVnSJ+jsAAAAASUVORK5CYII=",
       "game": "remote",
       "set": "remote",
-      "block": "saveTape"
+      "block": "saveTape",
+      "generator": "scripts/achievementArt.ts"
     },
     "blaster-big-name": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAADFBMVEUQDBQ8IBBpQSBdYWWEA1bmAAAAQklEQVR42o3PSQ4AIAgDwEL//2cPxAhSlx4nrDARmLdkRENECgJJM1IgyYphU2+Vx5l9u7xTf+Sr8IF65nf7tl1kAMGnAiLM6nEEAAAAAElFTkSuQmCC",
       "game": "carl",
       "set": "carl",
-      "block": "speaker"
+      "block": "speaker",
+      "generator": "scripts/achievementArt.ts"
     },
     "desk-curtains": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAD1BMVEVJBAxpCBCGDBi6HCjTKDDBWu1GAAAAF0lEQVR42mNgYGJmYWZiRKEYRgUHkyAA0f4DcTS3IasAAAAASUVORK5CYII=",
       "game": "sleuth",
       "set": "sleuthParlor",
-      "block": "curtain0"
+      "block": "curtain0",
+      "generator": "scripts/achievementArt.ts"
     },
     "cast-parade": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAG1BMVEWSaTyqeUm+jlUgICS+WRTfjiz/vkX/34b/+8ujfeB7AAAAgElEQVR42o2PQQ7EMAwCSY0d///FK3A2px5KpXY0ICUF3rKApTx+mx8MjDotLI+6rSQW74pqAJBMkkM0ycxjShGG8jpZ6FNZOcaUOOyFXaWWlVWVnLZktezuPVaUXnabeUnL3XtX6XTR3kzd0853OoSI8x9hUhcIhfGPCfGS7/IH3U0Fk42UVKAAAAAASUVORK5CYII=",
       "game": "sleuth",
       "set": "sleuthParlor",
-      "block": "footlights"
+      "block": "footlights",
+      "generator": "scripts/achievementArt.ts"
+    },
+    "play-all-mine": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAG1BMVEWioqZJMBxhQSR5VTCSaTyiEBy6HCj/++sgICSpNRDcAAAAeklEQVR42m2P4RKAIAiD2WbS+z9xB2KZtR/IfSewGX5kFFNmZmD1JChJAeMtyB1qQL+lWGexeIV5SGqSnyk/XLmqxcblZ8Ksb8iC63jTfqiPRGHzYSLCksLnGO9HwZf57iLAbyJwHnquV6Jf8027LBBHj6ycMZVBMNsLl7UGAGVxzBQAAAAASUVORK5CYII=",
+      "game": "sleuth",
+      "set": "sleuthParlor",
+      "block": "checklist",
+      "generator": "scripts/achievementArt.ts"
     },
     "desk-time-reset": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAElBMVEU0LDjrTTxdOByCTSiibTySkpoxLMjcAAAAU0lEQVR42q2OUQ7AIAxCS2H3v/JSxRjN4vaxalqFFzRSolIU5ylSJKtNp8QT6Ua+kr9mXls1MrbSk9hJoN9QCxgkvMuFMweJ5qyk55pp8fD6t3/ealwDMbfDxZ8AAAAASUVORK5CYII=",
       "game": "carl",
       "set": "carl",
-      "block": "alarm"
+      "block": "alarm",
+      "generator": "scripts/achievementArt.ts"
     },
     "bbs-time-travel": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAGFBMVEUQDBQwKDhFUW1tdZKWnrKqlqbLFAj/WTxTaCBwAAAAU0lEQVR42rXPUQ7AIAgD0CqD3v/GCwuijm1/6xc+G4kQz+HpOWGi/I2aqIkqGpjTS7OVOOKWDyTjSIDkaDLguglcmiBaX5sDtzdJTnzcbmYF649OuR8DwSsDgYQAAAAASUVORK5CYII=",
       "game": "reckoning",
       "set": "reckoning",
-      "block": "clock0"
+      "block": "clock0",
+      "generator": "scripts/achievementArt.ts"
     },
     "library-kinds": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAKlBMVEVZebp5ouc8IBC2gk3XommSYbK+gt/LQTT7WUU4aRxZliiOw0XHmiz/73m9njXtAAAAQklEQVR42tXIWQ4AEAwFwKpd2/tfV0JExHMA8zkUAPIATgauFEnpylpjfKaIDUe2pgOzmc0sZaeqzsx5pXMgiT7LDtU/ClBKNAQmAAAAAElFTkSuQmCC",
       "game": "reckoning",
       "set": "reckoning",
-      "block": "books"
+      "block": "books",
+      "generator": "scripts/achievementArt.ts"
     },
     "desk-moon": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAD1BMVEVhjtOCotemut/b18vLqlHKNPMtAAAAR0lEQVR42q3QUQoAIAhEQet1/zNHFGVqUJCfgyyrkoKRPwgeNxtIgBwwXW3CS6bvidHZszuIvgi1vm5XEQ3zcJOZ/euK/WcFnj4CF5I3+s0AAAAASUVORK5CYII=",
       "game": "needle",
       "set": "needle",
-      "block": "moon"
+      "block": "moon",
+      "generator": "scripts/achievementArt.ts"
     },
     "make-save": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAElBMVEUAAACytsf7//8AAKpVVVX/VVVl8DcxAAAAP0lEQVR42pWLQQoAIAzD6qb//7Igm1TdRHMqIQVuaLCCSiZ0kGaY1Lz0tci8ZKlJSbAsg1MCr3K7/+Cvir9/BzDGAUvsMOh0AAAAAElFTkSuQmCC",
       "game": "sandcast",
       "set": "sandcast",
-      "block": "floppy"
+      "block": "floppy",
+      "generator": "scripts/achievementArt.ts"
     },
     "sofa-chat": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAG1BMVEUAAABNTVFxcXWWlpq6ur7f3+MAAKpV/1X///9WL27rAAAATElEQVR42oWPWwoAIAgEzSy7/4mjB5W21HzJMCxI9CKbS5KDm4yOIe1Ok1ki6WZIWJIt9V9eEpalHOmrhB8BGTzcV9gwp1kOlkTlRQV9fALYuiaj7wAAAABJRU5ErkJggg==",
       "game": "sandcast",
       "set": "sandcast",
-      "block": "terminal"
+      "block": "terminal",
+      "generator": "scripts/achievementArt.ts"
     },
     "trophy-top": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAHlBMVEVBhs/nUUWCWQD3yxj/93n7//8oKCxNTVFxcXWWlpphb9nRAAAAkklEQVR42m2R0Q6DMAwDizmc9v9/eEqylj3MEagcRxFm+E+G14k9O8Mzvkvs6Iy8qzw0bb1Ql9DzyLoUbIimQDmvmYA6bTOiSEe0acQNY8CNTJDQZSZM06S50H0iY1wv+gn9mZOcnWNG0rpi5azXDKhVMId3GwROGtXSDJpFmV1dbjrde54+z9PRXsKusP/Dt+QPF84IvybO+gUAAAAASUVORK5CYII=",
       "game": "sandcast",
       "set": "sandcast",
-      "block": "crown"
+      "block": "crown",
+      "generator": "scripts/achievementArt.ts"
     },
     "export-web": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAIVBMVEVVLBR5RSCeYTAYUSAoeSxNokEULH0gTbZBcdt1ou/ry12T/RjtAAAAkklEQVR42n3QSw7DMAgEUCB8hrn/gSviJE5VqSy8eBpjeUT2mJmtQ6/hzDeS3Q0jXzjUaMD4ILsjlsro+QI7wn2sFt7B8AaAmgUnon2SYxu7w/3oiKp8JeEHZm8uFDPa3MSkS4TX51iFQvmRqVTVhTJaWakbZ09Wpi67UEgTmQr0hWZnSz8tytPindSv+YdzbPwATcEFrHqFwroAAAAASUVORK5CYII=",
       "game": "brief",
       "set": "brief",
-      "block": "library/globe"
+      "block": "library/globe",
+      "generator": "scripts/achievementArt.ts"
     },
     "finish-sandbox": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAGFBMVEVVLBR5RSAYUSAoeSxNokFJUWHHz9uucd+moRFtAAAAlElEQVR42k2RAQ4EIQgDoS36/x9fgLo5ErNmbBG7QbAL89HsGWyqXoSWK7gKKFN9DoEhteyKmRLuSFfZNHPOMD0xdsNuBIV8483kJa18g9y8u0Hbd5aqqicIO6rOOQUNjbWo2Tk1Iy8EaWjldsGnbNtTjr+EF4jrXS8i4GTYL8JGGEboQOzRwvjKL5rO//CF7PKf0Q85aAT2Ju87sQAAAABJRU5ErkJggg==",
       "game": "brief",
       "set": "brief",
-      "block": "yard/medal"
+      "block": "yard/medal",
+      "generator": "scripts/achievementArt.ts"
     },
     "export-dos": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAJ1BMVEU0KDTrso7b29////9lRSxlPCjfw0FlZW1FUWVpcYZZgraOrte+3/ewMi6DAAAAcElEQVR42mWQURLAEAxEV1FR7n/eNplg1X5keOON2aCKhw44iIjB4zGqCLa4jkaB62gtJQX37bAaDEGhTtIZut4pU++9FAU5K6zjZQgKdZL+g6o/lKnvjbi7FVzdLwuwrY5gjPHUHQ4yf1mbp2V+txdIIQqTWrPN8wAAAABJRU5ErkJggg==",
       "game": "sweats",
       "set": "sweatsWork",
-      "block": "monitor"
+      "block": "monitor",
+      "generator": "scripts/achievementArt.ts"
     },
     "check-fix": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAD1BMVEWaoqrn7/NlPCCWYTS2gk0MaR72AAAAW0lEQVR42m2RAQoAIQgEx9P/v/k4i1o9F6IYtkGKyHhoiCFEPHGX5V6bZnrdN7NsU4uZ6hTYq20kY1kpbJjT2GeGosDLLhR2nMenTi0uCB/zAgF+77lhc0L9lBduLAVNR+AJRQAAAABJRU5ErkJggg==",
       "game": "sweats",
       "set": "sweatsOutside",
-      "block": "wrench"
+      "block": "wrench",
+      "generator": "scripts/achievementArt.ts"
     },
     "finish-bizarre": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAFVBMVEUwDChlGE2aLHH/////stdlPCAULBzeO3mXAAAAaklEQVR42pWQCQrAIAwEd43u/59ccjSlrRSaGIVxTEAMEgQ5MkgAyN0pmyFPstwy1yuAsfSI5aZkkkWZn2lap99bmgFOO2CbupvRU9XzNLfTp+ecUlRNTxCrIHdw5POGXz03H/LjP9u82AGHTAWDVAaBRQAAAABJRU5ErkJggg==",
       "game": "sweats",
       "set": "sweatsHive",
-      "block": "openMic"
+      "block": "openMic",
+      "generator": "scripts/achievementArt.ts"
     },
     "make-walk": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAHlBMVEVpfaaKnseuutvT2+v/gnXX/2WOXTC6fUW6uqb///dp9kejAAAAV0lEQVR42qXNyw6AIAxE0Q4yoP//w6YPiI115WVDD02QUSRjWs3y+9zYW+svLDbhiIUWovhIH0QWihiUeFigHtKnJ4IIvCzdUvRpIz6QZMYoYe4vnkUl3qbACWFSxqEUAAAAAElFTkSuQmCC",
       "game": "year2000",
       "set": "y2kMoon",
-      "block": "robotproj"
+      "block": "robotproj",
+      "generator": "scripts/achievementArt.ts"
     },
     "link-in": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAIVBMVEUkJCRpfabvTUn/gnUUWRwggixBqkFxz13///c0Ua5hkv8klAyUAAAAoElEQVR42lVQAQ7EIAiDra14/3/wpWC2DI2ptUUgJEp0AAIBEkFqkfRdhO77JoOjRJ/ikOZ+b1x+DLs+ZOcUud+4nCqcfVfV3r1LMinRdxNeRNuB3cJRg1S4kI+SZHSBNlUWS+Xu+ncDZBp0HyG4RZKZB1DROo8h83ja7qIAmVwjjXmG2i5ilD2BiMj0OcplaTyBxw7YJsw3M88DncdY/AO0LQiqkLZUCQAAAABJRU5ErkJggg==",
       "game": "year2000",
       "set": "y2kSuburb",
-      "block": "mailbox"
+      "block": "mailbox",
+      "generator": "scripts/achievementArt.ts"
     },
     "desk-egg": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAARVBMVEUkJCRpfaaKnsfT2+v3+/8ANEEAZW0AmpYcw7ZZ39OW/+//523zcRD7ljCSDBDfGBzvTUn/gnWGhpKmpq7Hx8/n5+vP//+EJL63AAAAtElEQVR42kWQW5LDMAgEtWGH1yaRY1Duf9QtYVuGH6qrC6Fp+6pYU9szMkcmAGTVyLYXSji5IqeRBScjczJCsSg4QO7+MZtuxmHC3N03v2jtRLHezQzXzhJt+3YzFRwwpmhlqjJu0/y99f5WOcyIaZr56++looKIeghqamZPVWVeOx+/d2OcP8IPXb1OSoiSiggR33BgEmFmjFiBBFiZhM+Y2l7JVZwz0LjNtqqUM88TH3P+A+foFKQNOyuIAAAAAElFTkSuQmCC",
       "game": "year2000",
       "set": "y2kSuburb",
-      "block": "egg"
+      "block": "egg",
+      "generator": "scripts/achievementArt.ts"
     },
     "play-finish": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAACVBMVEXn6/f////3STzsrb+tAAAAUElEQVR42qWQ3QpAIQiD9/n+D304/cBMbyLEZWM5mlAqfpQmak1eMoSpKErbsu9bkzsiAsDPnjwJhskbeeHeZKHy75TNsHSdyluadD2nte0DFTwBTNbMpIEAAAAASUVORK5CYII=",
       "game": "snowbound",
       "set": "snowbound",
-      "block": "finish"
+      "block": "finish",
+      "generator": "scripts/achievementArt.ts"
     },
     "egg-all": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAIVBMVEXj19//9/d1ZW2Wgoq2nqI4TaZVddNtmvuGURyufTzXqmFy/DeLAAAAbElEQVR42o2NSQoEMQwDZSmxY///wUOWS9M9EIEuhQqBHwElkpJkZgaTRLCJEeGLzSxIxQzWDgZMuJmfHWxDDw93PzssPcdinptmDoI1qnvvVaNON6xnl5757J+l3lDQW9eXrmudaJfv7fqdP6p6CjcbTfPWAAAAAElFTkSuQmCC",
       "game": "teddy2",
       "set": "teddy2House",
-      "block": "basket"
+      "block": "basket",
+      "generator": "scripts/achievementArt.ts"
     },
     "make-every-kind": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAMFBMVEUQDBT3z6rfjp6yusfj6/M8IBBpRSSaaTjLjlHfx3nrw0X/73llEBSSKCjDQTzzWVG8Io5vAAAAlUlEQVR42m2PUQ7DMAhDWclskjBy/9tOJG2ndn0fVvTkIBB7QFa+rvKdtJ5ZknwIyDFaH2MMVVEdIIXGiNYjIjQJpgQOGVoiAqAYeJVENhnn/6OJu7TVdPfW3d21uDuAnEmydZDQQhCzmSuuRRdTfkRk2+Tgs+QN4JS11rrLXGmXIj/50DQx/s00ofkNQkgjkTGZp3wBV0YOcf4gXb8AAAAASUVORK5CYII=",
       "game": "tickle",
       "set": "tickle",
-      "block": "toolbox"
+      "block": "toolbox",
+      "generator": "scripts/achievementArt.ts"
     },
     "check-upload": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAJ1BMVEVpVVmKdXGynooQDBSyusfj6/M8IBCaaTjLjlE4ZTR5vmW+tpb//++qPHxuAAAAg0lEQVR42m3QURLDIAgEUJZg1S33P28H1Nja7Edk3ohMEIgCAiulFENGJQ+B2XWZRYXxaa21gVFNrLVWy0R1o9+pVfQBIQfS/9vpfEB6P5HsPW7KRDKbu3+jk3R6X4NkYdgxPR70jToGpU2UbH9nJoadv7m3tKNjIa+fyNw0FAqsnUM/dMIJWpW0duQAAAAASUVORK5CYII=",
       "game": "tickle",
       "set": "tickle",
-      "block": "clipboardOk"
+      "block": "clipboardOk",
+      "generator": "scripts/achievementArt.ts"
     },
     "sfx-maker": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAHlBMVEUQDBRVXW15hoKeqqbDz8vr8+/DQTzzWVFVfcP//+8+S1eOAAAAdElEQVR42n3QgQrEIAwD0Kamue7/f/iwunEdcoEqPKKCRpIxFycHK25rj0I2DG6c3TERLR9UE1cL4oT8i3ZsWkP3dfxRuBtj32nHh6zhKwszUSNpTuxm1giAILrFuA3SjfP47hYtDGZmjURKG+sjx+8n+yFfaQ0HWeE2pzQAAAAASUVORK5CYII=",
       "game": "tickle",
       "set": "tickle",
-      "block": "detector0"
+      "block": "detector0",
+      "generator": "scripts/achievementArt.ts"
     },
     "desk-uv": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAJFBMVEV5PJayZdN5hoKeqqbDz8vr8+95qr6m2//z+/8sLDRdXWWSkpoHdl1AAAAAiElEQVR42m2QCw7DIAxDTeIA3e5/3ykOqLSaJUTysMgHJBnkR6JkqDu+0gPGdjpJFwySl+S3U2Hv6IoiErZkABoAz7ScTrQSjkJiY9MbjjHHSBg0WCrhnDOh0qyzWFFvq8/D+f/PgvGqHnshrz6j5l0TPVbnO/SCUcPT6rktKIcvKKcmsnYcsx8zOAWlAfhg+gAAAABJRU5ErkJggg==",
       "game": "tickle",
       "set": "tickle",
-      "block": "uvBulb"
+      "block": "uvBulb",
+      "generator": "scripts/achievementArt.ts"
     },
     "desk-blacklight": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAJ1BMVEX///95PJayZdO+WW3fjp7/x895hoKeqqbDz8vr8+/z+/9dXWWSkppStMqbAAAAi0lEQVR42nWQ2w4DIQhEqdyGsv//vY2o69a084DJcQgMBADRiwGOktF4oyAWvK5pLdi9mZT5OlTwfahgO/S/fc2Ej90ya6XWp9pALWBkQ81MqnZR/TcwTACupkoUvZtNg2cMusMpKXb2AERElVRFBIinU7cz5r3YFBxfp/M13QeM1ST7nhO6P6H90AehxQqPx2WSzgAAAABJRU5ErkJggg==",
       "game": "tickle",
       "set": "tickle",
-      "block": "blacklight"
+      "block": "blacklight",
+      "generator": "scripts/achievementArt.ts"
     },
     "egg-teddy": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAJ1BMVEUQDBQ0KDj///f/x895hoKeqqbDz8vr8++aaTj/96p5qvP//+/LmlkO9aN6AAAAc0lEQVR42n2QgQ7DIAgFD3R2Lf7/9y5Al0Zre4kYL8+I0FprmxcR+bSgkruIVK9/yQ2X34mUNvAqiROT7MSapIMZELJmske6lMKVVNWQ+yBJWY5LoqpgHMP1rj2T+00aJV/fXCqg3ufZ0tM3V1NazLMu+AFYoAidl3cVNAAAAABJRU5ErkJggg==",
       "game": "tickle",
       "set": "tickle",
-      "block": "eggTeddy"
+      "block": "eggTeddy",
+      "generator": "scripts/achievementArt.ts"
     },
     "bbs-cant-wait": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAElBMVEU8IBxhODAcMBTTlhTrw0X/73nsMAM9AAAAZ0lEQVR42nWQQRLAIAwCAe3/v9wxNJpay3iIK4YohCECEEh6Y4iAtWQYIS7Il5OxdJCPatpfD1v0rTIjr3MFXSkpM9inSvCCnO16ceYMY9MKDBVj1zPWBM3OhK323FI80vZiV6evuwF0SAJn+nM7MQAAAABJRU5ErkJggg==",
       "game": "tickle",
       "set": "tickle",
-      "block": "cheese"
+      "block": "cheese",
+      "generator": "scripts/achievementArt.ts"
     },
     "desk-egg-pages": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAKlBMVEUQDBSyZdN5hoKeqqbDz8vr8+9pRSSaaTjLjlFZkk3/96rDQTxVfcP//++ZL7xQAAAAbklEQVR42o3OgQrEIAwD0JjF29bN///dIypjqAcXRNtHFSFJ2RulTTVEO7MRAF7olsJ5ut0qZiGio4eNLhqWgpSQK16XW6CjXnjf3kvp2OolPksEOSKJdY4pAPYpD7ZbI0ZE4J/J4c3PlB/f5CJf7pQHIyEzMEoAAAAASUVORK5CYII=",
       "game": "tickle",
       "set": "tickle",
-      "block": "cardFile"
+      "block": "cardFile",
+      "generator": "scripts/achievementArt.ts"
     },
     "desk-egg-uv": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAALVBMVEUQDBR5PJayZdP/x8+Cjp6yusfj6/N5hoKeqqbDz8vr8+++/46m2//z+///96q5yRxHAAAAjklEQVR42mWPWQ4DMQhDTWkKpsv9jzsCkkmk+iOgJ2MISDLyMdJZMnQNYHYbBjGqS68blsaDa96AV6qgF4ww4JlqZ7T1hCKyFu1Mae2THANJgCywFgATgeoHIujvZJIT+lNVCLiWGgOqN5xOlvPdMG5I6Fcr83CSc3v4AYN16rpzOukN4xwneUD3E9qfRC7PUgmw0rsbTAAAAABJRU5ErkJggg==",
       "game": "tickle",
       "set": "tickle",
-      "block": "uvEgg"
+      "block": "uvEgg",
+      "generator": "scripts/achievementArt.ts"
     },
     "desk-degauss": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAJFBMVEUQDBR5hoKeqqbDz8vr8+++/47/96rDQTx5qvO+tpbf28P//++KrUbXAAAAdUlEQVR42n3Q2w7EIAgEUMYBL93//98GaV22azoPGk4IEoUk1Q+QhTOQuHUiv/h5pDgevxkMlJRj6MIecVydvXcz+0OrtbpmtNqaayBwo7RAQKibzreZu9c3y+eYd2oZj6yvK5xlfKmvFHwhF+aZEwEgT/T6BLPcCGVL9RhOAAAAAElFTkSuQmCC",
       "game": "tickle",
       "set": "tickle",
-      "block": "crtRings"
+      "block": "crtRings",
+      "generator": "scripts/achievementArt.ts"
     },
     "desk-soundcard": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAMFBMVEUQDBT///8ogmlFvpayusd5hoKeqqbDz8vr8+/fx3nDQTwsLDRdXWW+tpbf28P//+/S79KpAAAAi0lEQVR42m2OWw7EIAwDnW7BbcjS+9925aA+WHUi8TEyieFObiRZyMqkgO5m0oUnBaQ7LZPrZyBJ1wrJZSBppvA2STPLFZJjMlmrrCQAKHlcPGS/+Jf5lklGRKD3el+XAxDQ9+w+JNCA6I+eHYHWGgKcvr8kFT133rJD59VzT6aeXHdoloLvxUOWF372DgnyfGPigwAAAABJRU5ErkJggg==",
       "game": "tickle",
       "set": "tickle",
-      "block": "soundCard"
+      "block": "soundCard",
+      "generator": "scripts/achievementArt.ts"
     },
     "desk-hexedit": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAIVBMVEUQDBRVXW2yusfj6/N5hoKeqqbDz8vr8+++/47rw0X/73nnUMeHAAAAYklEQVR42oWPAQrAIAwDU+1i9f8PHi1DNqssEgtHIhUk2fxS8mJIwZKkoGCRTGiAmX2hxVmSnnqCf8kVJil0Bym1Vum9x3QHLKXIGCOm+/QmZy3V3xZF+6/7FqnuWxx/tNENDagDvqxWBi0AAAAASUVORK5CYII=",
       "game": "tickle",
       "set": "tickle",
-      "block": "hexPad"
+      "block": "hexPad",
+      "generator": "scripts/achievementArt.ts"
     },
     "desk-savehack": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAHlBMVEUUDBSKTV2+dYbXmqZdoo4oKDBdXWHHx8v/z47v8/sUbq1/AAAAXklEQVR42o2QgQrAIAhEz8u5+v8fHrpFayXsAqXHQymQpJBTA88lBG1JwGMkYIHMsLWNCSSwQH+Y6fYESmJuX2TVrNYoAcVh3ON0Ux9zgkygz3vPJL6/7oEX7UzvdgFXuwewjkMlXgAAAABJRU5ErkJggg==",
       "game": "remote",
       "set": "remote",
-      "block": "payTv"
+      "block": "payTv",
+      "generator": "scripts/achievementArt.ts"
     },
     "desk-gmcrack": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAIVBMVEVpVVmKdXGynooQDBQ0KDj///++/47fx3m+tpbf28P//+9bl8KxAAAAcklEQVR42m2RAQ7DIAwD7XhJ1/7/wROBlFF6SASdAkYAwkiQxhtDFhCSlKuaSEnuLv1JJa7RPaXnaL3W5OdBDzgWJI2gLEaroGuD4LmBJrVwywjFlLm9i3iTZR+dESUxzyyJLtf013sS/G6MR7b6jf4GP5SVBoQzlr3mAAAAAElFTkSuQmCC",
       "game": "tickle",
       "set": "tickle",
-      "block": "pirateDos"
+      "block": "pirateDos",
+      "generator": "scripts/achievementArt.ts"
     },
     "finish-web": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAJFBMVEX3z6oYFBhtovem2//z+/8oJDBJSVVtaX26lkXfx3mSKCjDQTwfIp3XAAAApUlEQVR42m1PWxIDMQiiKpjd3P++HXUf/SgzcYRECcg/QCpTSUofScoqmK40fFpRCtNQCeB6SJQgkmxxRkcEpfM8peeCatJirU+hSs1ni2yn12iLO9uK4I19HQZxp9hPyYTmT9q9Zh/HuAeliH0U1lrixLzoWivcQ0JILOpR1m7mIRQJSxVRGNM8YB7htWMa1jUU7laTNHfrSAbJSqskZlfON9EPvpEBCPOnw1viAAAAAElFTkSuQmCC",
       "game": "tickle",
       "set": "tickle",
-      "block": "surfer"
+      "block": "surfer",
+      "generator": "scripts/achievementArt.ts"
     },
     "tty-call": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAIVBMVEVpVVmKdXGynooQDBQsMDy+/46SKCjHx8++tpbf28P//++zrYXRAAAAeklEQVR42m2QAQ7DIAwDfenGIP9/8OSyNqWdg5A4nBAiFP0QUyEgDwE+71t+plZ4cbI6DV1N8c8pVKjuxHjoBjfrAd+GMtxWTXh+s19q1rvj5UD0ns3RWmabcxHEDr2yjdm+xM91QjPKyaiBVM0BcRtIgvvZYfWJnB9fXScJIYf5Iu4AAAAASUVORK5CYII=",
       "game": "tickle",
       "set": "tickle",
-      "block": "fax"
+      "block": "fax",
+      "generator": "scripts/achievementArt.ts"
     },
     "tty-sk": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAALVBMVEUQDBSSmqbj4+d5RSzPooL3z6qyusd5hoKeqqbDz8vr8+++/46+tpbf28P//+8frtLBAAAAgUlEQVR42nXQ0QrDIAyF4WwmS05S9/6PWzRaFbb/wsKHWDgEAN4OBQw9pfx6RxzoGGgiMCV8nz4wMPeblWaJIh1jooswM+fNoRXMhcvAoScGRcSOut6sIlKk9B+tOPuHAK6WAhv6g1h4zRa6zW3aMK/WnM7GSu+WUi6Mn2i2ox4l3huICvQOuePyAAAAAElFTkSuQmCC",
       "game": "tickle",
       "set": "tickle",
-      "block": "helloTerm"
+      "block": "helloTerm",
+      "generator": "scripts/achievementArt.ts"
     },
     "bbs-door": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAHlBMVEVpaW26usPX19//63n/++sMDBAIKBgcUTA0eU3fjixTs84lAAAAn0lEQVR42lWQURJDIQgDJRjA+1+4E9B2yrwP2beiZlVlZUaqIrSKWpWvKFLqV0pMYordrpEAM6MByGuGEI2kcMNIYMBQtsnLeoCJDuzuYkBQZ5iReyYYasWDe2/qn8kkLtMnFfxtH9PG/Jup0waKunt72v2u5Hbc+1l9z2jq5xy3+6JQIAW0KW8tvpSAmQmQzFodZ5LfPLPGFA8lP8v8AMRPBtn0FOp4AAAAAElFTkSuQmCC",
       "game": "sleuth",
       "set": "sleuthParlor",
-      "block": "rotaryDial"
+      "block": "rotaryDial",
+      "generator": "scripts/achievementArt.ts"
     },
     "bbs-door-win": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAG1BMVEWiEBy6HCjXy7L/++sMDBAgICQIKBgcUTA0eU29JA1KAAAAbklEQVR42o2RQQ7EIAwDnQ2x8/8Xr1JC2W0v+JSMwEIDMpUSVSFrYiL1Eyprh/SHrxXSeGTCzw6AC3L4DACYWZ/0iAYW7g0XCI8Nzcx3xVCCOuvkcee8fvZOvjvZnS8ht8vlOfHUWULRXusb1qgvtaIG8pYA3WcAAAAASUVORK5CYII=",
       "game": "sleuth",
       "set": "sleuthParlor",
-      "block": "numberCard"
+      "block": "numberCard",
+      "generator": "scripts/achievementArt.ts"
     },
     "cast-visit": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAHlBMVEWSaTyqeUm+jlXXomGiEBzfx2H/63nXy7L/++sMDBDgBLC4AAAAhklEQVR42m2Q2w7DMAxCDXXW8P8/vPnWddWQ8pAjbEjM/opwwAQANKQMcEhakjDI4HiNmsaA1khhI2BmN6jJCZZH0pZE0g7lfekckZdTe6SG6wEjp43XqUqRsTsoYc0/ndn+uzJg0poqkrDUS2ulkeRB8rdnohuV0xqB7EoezxwdJET650PexesH1E9YeWEAAAAASUVORK5CYII=",
       "game": "sleuth",
       "set": "sleuthParlor",
-      "block": "maskPair"
+      "block": "maskPair",
+      "generator": "scripts/achievementArt.ts"
     },
     "brief-chapters": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAIVBMVEVpaW1hQSRpCBCiEBy6HCjr48//++sMDBAIKBgcUTA0eU3KBzN8AAAAaElEQVR42qWQUQrDMAxDtTlbJN//wENJHFoKZWPvSxY2hodMpUQZ0omJ1AEqPUM61WOE+qJFJZfvSYvX5KaEcTnCL5sJfrnJv78/Fi0qCbyWxPBiUS1KktUtZmnPia0z+haKOmE8K+oD3dwJTkPetwYAAAAASUVORK5CYII=",
       "game": "sleuth",
       "set": "sleuthParlor",
-      "block": "ribbonBook"
+      "block": "ribbonBook",
+      "generator": "scripts/achievementArt.ts"
     },
     "help-all": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAG1BMVEVpaW3Xy7Lr48//++sMDBAgKEkIKBgcUTA0eU0C1pmAAAAAcUlEQVR42oVRWw7AIAzCbS29/4kX6iPqlo0fW4SmIiIYpFNwV+WB4ARnqAcl5NXAbNG6U+hXuA6hkSUxSDOzXxIA0m5WVJdlptlDmfZd+Zg5VpJwUuaQbaXd/kUuz3wLpAY5olPOAS4pMwNFPfIbeskb2dsF4NY+pxwAAAAASUVORK5CYII=",
       "game": "sleuth",
       "set": "sleuthParlor",
-      "block": "leaflet"
+      "block": "leaflet",
+      "generator": "scripts/achievementArt.ts"
     },
     "desk-register": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAJFBMVEVpaW2iEBy6HCi+pknfx2H/++sMDBCehlkwPGkIKBgcUTA0eU2BsqI9AAAAf0lEQVR42m2RWxKFIAxD66O9t8n+9+ukiIKar3ImoUMwEgQSUqampBGDEtTZgBgF5QT9VlSg4L/Lgw3mBEGsn/HlDfetOa3LA/sWYTlDseedxXKOFwNeUDVM8dN4OUeGtj3sZAWvRV5L6pnDncU81DMNbEX+ep+gnNWrvqGPOADengpmCIJNAgAAAABJRU5ErkJggg==",
       "game": "sleuth",
       "set": "sleuthParlor",
-      "block": "regForm"
+      "block": "regForm",
+      "generator": "scripts/achievementArt.ts"
     },
     "desk-achieve": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAOVBMVEVpaW2ioqbX1995VTCGDBi6HCi+pkn/63n/++sMDBAIKBgcUTA0eU1Nomlly4KqWaJZtrb/34b/+8t7uJ/PAAAAlElEQVR42nWRgQ7CIAxEmUW89oqA//+xBth0mPkSEvpytAkN7nTS2DHrN/Pgo+RtYPReB9JVVbdtHlUfkioi20BE9EjKiSmNKvhwJLt8JNwjal1kSinGWGs9SyQgAjPpwfi35zOjFLzakLbLnHMppbW29MxAAXrSvvKq54+c08POMujq+fohHujUBfpI9n30NRxXvgHdxg1jJrRs6gAAAABJRU5ErkJggg==",
       "game": "sleuth",
       "set": "sleuthParlor",
-      "block": "badgeClip"
+      "block": "badgeClip",
+      "generator": "scripts/achievementArt.ts"
     },
     "make-new": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAFVBMVEVpaW3Xy7L/++sMDBAIKBgcUTA0eU0pLPVSAAAAaklEQVR42n2RUQ7AIAhD2Wh7/yMvoFtAt/VLX9qgxSSKBENAnCATi0DF3Uh5kxLSzyK/nTsE/TxS1fkan84NdqcMn/EO8TOoQnQ4vrk43cyCsU73ydCd8cg17qNnGcWnytG00pkRjJXkIi5rDgVdcrIJSwAAAABJRU5ErkJggg==",
       "game": "sleuth",
       "set": "sleuthParlor",
-      "block": "blankSheet"
+      "block": "blankSheet",
+      "generator": "scripts/achievementArt.ts"
     },
     "watch-seek": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAIVBMVEVNTVWSaTyqeUm+jlXXomG+pknfx2H/63n/++sMDBAwPGnl8wTuAAAAkklEQVR42m2QgQ7EIAhDabuxw///4AuIZJccMRqfAi2GP2EQSSI3ah+02pE38dmXhgRFuG8q26mgu+fPfKV1bcf9aiRdkuS3hOiwRJSr4CdyhUn98RLCKsLEYpmAsLXWsrC3k4GneOqa9FM8VU+j85qqR9Kp857LwJ/RnfS0IGx706g8oFRrJCmHgO2vbRYSG34BPbAF3oIE60IAAAAASUVORK5CYII=",
       "game": "sleuth",
       "set": "sleuthParlor",
-      "block": "filmJump"
+      "block": "filmJump",
+      "generator": "scripts/achievementArt.ts"
     },
     "make-opening": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAGFBMVEWSaTyqeUm+jlXXomH/63n/++sMDBAgICQumHAIAAAAfElEQVR42nWPiw5CMQhD226D//9jw2vqjTaBwQkMAD5lZpaBSBLhLDUZgUKVEFPwFhXwZOx+Thn79wvCAOnZLmFJolJIzwx+VIrmX7KlGFTJHojc+gFjfQXcpQur8rKE6PZhHmf2oL19KpEXzZiG/5ZfmuO0+tB5EomdvQAv0wabL3FJJwAAAABJRU5ErkJggg==",
       "game": "sleuth",
       "set": "sleuthParlor",
-      "block": "clapper"
+      "block": "clapper",
+      "generator": "scripts/achievementArt.ts"
     },
     "check-run": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAJFBMVEVpaW15VTCSaTzfx2H/++sMDBAIKBgcUTA0eU0gWV08hor7//8djWPJAAAAi0lEQVR42m2QUQ7DIAxD3QbHCb3/fafAWNsJiw94sgkYEQrJVXKvnQdCD7mizhBfUuUgttYwFlvDCPwgSSMZT0gzSzPj904AoFlmzzTj7aTldfXe8x/2BQPOkc4+NejtvJnv4Ga6b965+xHPgmP6FAEePGtQ9RJalaooHl3Ong+e0Kvl6R3Omfa11QdYGQjotQR3zwAAAABJRU5ErkJggg==",
       "game": "sleuth",
       "set": "sleuthParlor",
-      "block": "loupeGrid"
+      "block": "loupeGrid",
+      "generator": "scripts/achievementArt.ts"
     },
     "desk-glance": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAIVBMVEVJBAxpCBCGDBi6HCjTKDC+pkn/++vfup4MDBAgICSSOBj3uGIzAAAAdUlEQVR42mWQAQoDIQwEbS8xo/9/cInVy147IOigZN12Ldzd8UOzRW6NsWlXUfJdMJOUr+Ir5xytOG7KcyASkEHbRTB2JDM7LgK5Gb33tZBIQI+1JBL1XDPdUn/EX6QcxUIiWZ5TP1rKkvhp6S5OW1JZgUp+AIbbCArdhjk8AAAAAElFTkSuQmCC",
       "game": "sleuth",
       "set": "sleuthParlor",
-      "block": "peekCurtain"
+      "block": "peekCurtain",
+      "generator": "scripts/achievementArt.ts"
     },
     "tty-wallphone": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAJFBMVEWGhoqioqaGDBi6HCjfx2H/63nr488MDBA4NDwIKBgcUTA0eU19s/+IAAAAhklEQVR42m1QARLDIAzKNlMW+P9/d8SudV258xIRiBoSRRaNKnelEBcU5X2Q4jjpYV9kt7udfZ7BVMnnDuTQTn5FDvJKZ+ICD0o8foD0IADvA1ZmFBGrOdr+n1lBEq8FmC8ino1ZUAvZTtdViW3bDrImiSbRZN0rbzIV1OWiVCv7d+r8KH4AIcsLn9wAILsAAAAASUVORK5CYII=",
       "game": "sleuth",
       "set": "sleuthParlor",
-      "block": "deskPhone"
+      "block": "deskPhone",
+      "generator": "scripts/achievementArt.ts"
     },
     "sofa-busy": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAJFBMVEVNTVWGhopJBAwMDBA4NDyehlnfx44IKBgcUTA0eU2iutfP2+tHOv9kAAAAjElEQVR42lWQURLDIAgFsZiyyP3v28FCYp5/OwsC4o6DkTEDW2uJc8RwhyVw4ojwhaA7JUIsEs45p/puCEH2LHMTJ3azNNWt+npENPyD57sb6hMXa/jtaJmG69VRk7uu0OfSnnPOw+QwpV5CYDi8zFxlvEcy2WMP+qS15q4f551dar2RvF3pEsPuC/wAqNwKIS7vxW4AAAAASUVORK5CYII=",
       "game": "sleuth",
       "set": "sleuthParlor",
-      "block": "busyLine"
+      "block": "busyLine",
+      "generator": "scripts/achievementArt.ts"
     },
     "make-heat": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAG1BMVEVpaW3r488MDBAIKBgcUTA0eU2+WRT/34b/03khyf3WAAAAgElEQVR42mWRCwrAMAhDbdTo/U88rN3mWCjUPoK/iru5mVpJtSJ1cRtS83qL4aeC6+gOJsQCJxQRIcEkyddJEkBmFn8gEkA0PbAZIiKKim5IZGzW8DjbNiFWV5k5N9ulZ/U61eLsEzhTPRPpgGde/TjHQn5ysc+WS27S1/6GO7QLbToFXUalo5UAAAAASUVORK5CYII=",
       "game": "sleuth",
       "set": "sleuthParlor",
-      "block": "heatMap"
+      "block": "heatMap",
+      "generator": "scripts/achievementArt.ts"
     },
     "desk-speaker": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAG1BMVEVpaW26usO+pkn/63kMDBAgICQIKBgcUTA0eU0eusa/AAAAj0lEQVR42mWRURLEIAhDU00J9z/xTqBqO8uHlczTGIpMpRRyRXgXidSrQukeMshd1aII3k+xWmhkZIlemNKwqGmSBHlTc4kmiQstasCgaO26YKPZYuhFxjzkvrPIZfS4953/Yrv34wnWO2OcRARslJ1IH7Jjxs7OlT1M5nsgeY7v8pwT+kxZdRD9qd+wtvoB6p4IiEtfTVUAAAAASUVORK5CYII=",
       "game": "sleuth",
       "set": "sleuthParlor",
-      "block": "deskSpeaker"
+      "block": "deskSpeaker",
+      "generator": "scripts/achievementArt.ts"
     },
     "trophy-first": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAG1BMVEWSaTyqeUm+jlXXomGiEBy+pkn/63kMDBBFVYpdMf3GAAAAiklEQVR42mWPWQ7EMAxCgSzk/iceeUlbafiw4xckGyDkkw3T1SGS9Imq6WhE1YBiMTRMioYUypzWYKBIXPm8ayANhXymWU8hOpPaSSih/gKti4W2rVLQod4SYCfNOe/6wDpfBLyvjBvTazUrKypP02Lvor1Xwk4kDSeI4rozYz538on5n+hqWOzpB0yFBI99yaQ6AAAAAElFTkSuQmCC",
       "game": "sleuth",
       "set": "sleuthParlor",
-      "block": "meritMedal"
+      "block": "meritMedal",
+      "generator": "scripts/achievementArt.ts"
     },
     "heart-all": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAFVBMVEWioqbX19+CYRwMDBAIKBgcUTA0eU24DLoPAAAAjklEQVR42lWQWQ4DMQxC6eDn+x+58pJmGuUDI2QMyiQhwDiiUKSSeZblIGsWZImsjyQbZ5MjcnOFmjwiHTkiaFE55SKtybjlIPUtheaMskLs8qwfM+ks56G5mrQ2ST6zXrJeNifZHN85orOl/Up0C/hLxE0Uu/wWQGhz3ALYmJhfAeUnXi1vAaMsPvCBfAFktgVoBR4gJAAAAABJRU5ErkJggg==",
       "game": "sleuth",
       "set": "sleuthParlor",
-      "block": "heartWreath"
+      "block": "heartWreath",
+      "generator": "scripts/achievementArt.ts"
     },
     "export-all": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAIVBMVEWez/O23/fT6/sQDBRpQSC6hlH///uSkprHx8/336q6kkHiDlpCAAAAZklEQVR42n3OURKAIAgEUHBrxe5/4EahJqXaH+DJOIg+IkvVt8cZkQ2itppBFDYt91F0VhgdafcX1q1jAenLMDJQQdfLyrgTPkQZm4i0qI7HCJo3gfsImje/SDJjrTXhNgXfJ6WUExI2BHEboqIhAAAAAElFTkSuQmCC",
       "game": "carl",
       "set": "carlYard",
-      "block": "parcelWings"
+      "block": "parcelWings",
+      "generator": "scripts/achievementArt.ts"
     },
     "desk-mailjeep": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAMFBMVEWez/O23/fT6/sQDBQ4VY5dgrqWLCjf39v///uSkprHx8+aoqrn7/dlkraW0//rz4qYP+elAAAAeElEQVR42o2PwRICMQhDqVkRWOz+/986wlQq48Fcmr6ktKWxido6foX/QHxpwcemDGhAtqIUnEnmhOBZkEWEOxRmziaAW58pItlsCnhvuq6EFSDgeR4x7XgrXEAA/rnJ8/EDcPf49XJkZpGblSNVjXOq5Sg3uhTuBYWkByT1Zc1RAAAAAElFTkSuQmCC",
       "game": "carl",
       "set": "carlYard",
-      "block": "mailJeep"
+      "block": "mailJeep",
+      "generator": "scripts/achievementArt.ts"
     },
     "desk-mailtruck": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAALVBMVEWez/O23/cQDBQYLGE4VY5dgrqCqufLSUHf39v///uSkprHx8/n7/eW0//rz4plfuXzAAAAhUlEQVR42m2QWQ7DMAgFCSnFgJP7H7di8ZKo8+PnYZFsODbgdR7/irgz5XexJM0+2qWKo3juUtyquPSBkqLuQ7bWclP0yexEEZdmJlzyukomz86By6oTnQMEZGZGRiK6byI/ozOGPk6m2tnnwl4fgth7zxdUAjOLutlKoKoxp7oS5EUHkX5/xgbXeIOQ8gAAAABJRU5ErkJggg==",
       "game": "carl",
       "set": "carlYard",
-      "block": "mailTruck"
+      "block": "mailTruck",
+      "generator": "scripts/achievementArt.ts"
     },
     "finish-desk": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAALVBMVEUQDBRdOByCTSiibTw4VY5dgrqWLCjLSUG6urrf39v///tdYWXrz4r/+8co53kNsn9tAAAAd0lEQVR42nWPWQ6AIAwFnwUtz4X7H9dQEKjG+SAwGTYs+CBYsL8wSZI2GJlN2iYepDLn7MqDqjrKjlpQZEopPRfb/E+G8HplKFKwTiBILW11XVXWEr6EVOlpZZzoZRxZHCW0gbncTmPrpRTZQOzvdGc+P/LfFLkBiZgFqLfliV4AAAAASUVORK5CYII=",
       "game": "carl",
       "set": "carl",
-      "block": "packPad"
+      "block": "packPad",
+      "generator": "scripts/achievementArt.ts"
     },
     "finish-dos": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAALVBMVEUQDBSy177L59PXqjz/++e6hlHfqm0YLGHLSUG6urrf39v///ssLDTHx8+aoqq9nAk5AAAAcElEQVR42m2OgQ4CIQxDi06ntuz/P9cMOeDkHhCal46AWzmYCS1iskh9EklDWoGYrLIYJEXEIs3ukEJIe24GgPh7c2viTJcku8g05PtgytfKaLqTbMfnuI/FXebeJZ2wn6zutVav7cb28c7zAjwu+AKlOwd38ZNiHQAAAABJRU5ErkJggg==",
       "game": "carl",
       "set": "carl",
-      "block": "dosDisk"
+      "block": "dosDisk",
+      "generator": "scripts/achievementArt.ts"
     },
     "finish-phone-wide": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAIVBMVEUQDBSy177L59PXqjz/++f///tdYWWSkprHx88IFCgo53nBywrnAAAAYElEQVR42n2QCw6AIAxDq67Tcf8DGyfynyUB9lKyUezbp3pDDGWG4quFa52TAKj2Jq9VYWa0vDWQL2SBF4ykpeTHU7uTFbJAt/hz2n+j1Uijgl/20ckhU545rzFkCZO/AcyQBJ3IUM4OAAAAAElFTkSuQmCC",
       "game": "carl",
       "set": "carl",
-      "block": "phoneWide"
+      "block": "phoneWide",
+      "generator": "scripts/achievementArt.ts"
     },
     "finish-phone-tall": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAHlBMVEUQDBSy177L59PXqjz/++f///tdYWWSkprHx88IFCjr2TRGAAAAZ0lEQVR42o2RSQ7AIAwDk9YJ+P8frgCVJVCpvjFyNiOXqsokLe8Kk7vn7O4eYFOHkPQWL04haeSAQIVmxui0Ill7WtPWk6T8gOfyOEg/V+rLY8B+Jk6B3MAMW3QIeeYaHXR3junhOx61AQSbZVnztAAAAABJRU5ErkJggg==",
       "game": "carl",
       "set": "carl",
-      "block": "phoneTall"
+      "block": "phoneTall",
+      "generator": "scripts/achievementArt.ts"
     },
     "saves-panel": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAG1BMVEUQDBT///+WZQi6ljzfx23/96KWy+e62+/f7/ejPuriAAAAaklEQVR42nWQWw4AIQgDWV/l/ifeCFLFxPLlpE5EUZzjEZ6CYEAUKinWBKTvOJzN3punlNVUXHCw+eWmOS/4cpI6c2fQ1XOnupZsNedWtQbbu0947m6zIZ3QBK2VP4nv5C/RKS1ShM77+g9ahgeNPlBfggAAAABJRU5ErkJggg==",
       "game": "reckoning",
       "set": "reckoning",
-      "block": "trophyGold"
+      "block": "trophyGold",
+      "generator": "scripts/achievementArt.ts"
     },
     "bbs-door-three": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAFVBMVEUQDBR5ho6yur7n7/OWy+e62+/f7/cx6QCbAAAAcElEQVR42mWQAQ7AIAgDT5H9/8mLVRA3TEy4lIbC4/WtIrsgPpy/biqdT/lUYrUEHcx6VGswNCsIAaeuh5INOwemUtAPFevwzN9MnpvlnmZCajJR7H1npzV+2Q9U9nWjCxbHdF2eeROKJ3EPiudn/AXhqgSlL5jI2gAAAABJRU5ErkJggg==",
       "game": "reckoning",
       "set": "reckoning",
-      "block": "trophySilver"
+      "block": "trophySilver",
+      "generator": "scripts/achievementArt.ts"
     },
     "mag-back": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAJFBMVEUQDBSWnqrLy9f7+//Hqnnbx57/++eeLE3PUXH/eZZ9x7aq89+OFosmAAAAhUlEQVR42mXQgQ7DIAhF0Vs26FP//38X6Kx1IzExRwSR4yeoZTNyBwG2I+HuwYbgEe4bQni8M3Uhrf1kkqa9JpSpuq/M0cVAeTCfRIMuJAkzrjFaY9DLjtc1Udkope4dZcqCjI59kXbWPQkmcmaoHPtD7tkuS2UNfGc+f2Ei9sSsUC0WfgDO5wUeZQqADAAAAABJRU5ErkJggg==",
       "game": "reckoning",
       "set": "reckoning",
-      "block": "magRoll"
+      "block": "magRoll",
+      "generator": "scripts/achievementArt.ts"
     },
     "desk-lume": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAG1BMVEUQDBRFUW1tdZKWnrKqlqZ5ho5ZliiOw0W+72V68R5jAAAAdUlEQVR42m2QgQ6AIAhEXxnK/39xOzAyF5vufDtA4FQ0xavY5AoBTFfCQxDMLA7lRC9cx5hQrCsXlwwY1caE0o3zInwjWccIZ7RlRFE26AvE0uIJXZ5yzuxv+hMFe6Hq/rHmP9eJek20zm41+76l43+ff5u/AZ2yAxMhzaBjAAAAAElFTkSuQmCC",
       "game": "reckoning",
       "set": "reckoning",
-      "block": "lumeDial"
+      "block": "lumeDial",
+      "generator": "scripts/achievementArt.ts"
     },
     "print-level-maps": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAIVBMVEWCotemut/Hy9cUDAh9WTTDRTRRdbr///vvsij3123/+7aB+UWoAAAAlklEQVR42lWQAQ7EIAgEgVUr/v/Bl0FtrrRS3E5Q1ixOZJKdZRbOI2VKqjqsSGnukFCLRBPBxx0xnM3z8M6pQx6tX9XNPIS2xUdTkJ65wVVoJqdfca21RZ2e7MYa1VRF3p7jv+c9fbx3gvzeM4Ix3T8TRd/kZ/beO2T7c6m1IhsR0ZpIFWi3rr9eIl4HrJHK++s8fr/VDxOeBfhjrL0dAAAAAElFTkSuQmCC",
       "game": "needle",
       "set": "needleTailor",
-      "block": "compass"
+      "block": "compass",
+      "generator": "scripts/achievementArt.ts"
     },
     "print-world-map": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAIVBMVEWCotemut/Hy9cUDAhhijySKCTDRTQwTYppVTy+rpLr27r88p2fAAAAeUlEQVR42m3QCwoEIQwD0FrH2PT+B17ifNDViFCfDgwx8zdjKtpmXp41TeO+KuZDNJnOmZFZ72QKqUQqwcbGCa9LyMYdG5aX9+cEVwRC9ocJHDDG/CJCtiIIHDASK3ZMv/Rg731Hdu6YKihUj7rKrzr/Sq21uB+b/wFJRQlgnGyoWQAAAABJRU5ErkJggg==",
       "game": "needle",
       "set": "needleTailor",
-      "block": "foldMap"
+      "block": "foldMap",
+      "generator": "scripts/achievementArt.ts"
     },
     "print-world-styles": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAFVBMVEWCotemut/Hy9cUDAjLkll9gpLv8/vKu44kAAAAbklEQVR42n2QCw7AIAhDW1Dvf+SlIM65bDVE8vKCH8Aq0VEFmBtjYe40QQ+RsKKCw8skVQmTgg8zKdIzmfSR7m4KihKcsYRd9JjpPWjNnKYy77BmVtbbQN8SbzfAXxFsx/qFba+ER/zroPu/V3cB1PMD1a9/oVAAAAAASUVORK5CYII=",
       "game": "needle",
       "set": "needleTailor",
-      "block": "rulerTriangle"
+      "block": "rulerTriangle",
+      "generator": "scripts/achievementArt.ts"
     },
     "palette-vision": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAG1BMVEWCotemut/Hy9cUDAiq5/PDRTRRdbr///v31229k48UAAAAcklEQVR42o3PUQpDIQxE0WTuPHX/Ky6KjX60tArhEKJMIiSJWUoZCDCgeIsIsLsNlwL3bttcmvQipcD7UHJUl0tfmuzXl+LkzFKkUiiVl2KuQK66tluTPM+DaK01xBijmvmpuSfz78kff54sJ9JMu+7RCy9HBTTpHTaeAAAAAElFTkSuQmCC",
       "game": "needle",
       "set": "needleTailor",
-      "block": "seenGlasses"
+      "block": "seenGlasses",
+      "generator": "scripts/achievementArt.ts"
     },
     "watch-bot": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAJFBMVEWCotemut/Hy9cUDAiq5/PDRTSmpqrT09e2usfv8/vLojz/73ncWKQ+AAAAl0lEQVR42lWQgQ6EMAhDS3vjtuP///dC3YzW2CzPMhCAHGOQJNqiX4AxxggGwdgP+rucAQ8FZDEoKcIGaK21FNScU7aGv7V+Mpu2qTupRjZDK97JM8f7zivp7nR3AsrMVOiW58wxUtR3aycbqqrSknTKq/EFP0+YT2iV8iRd3v8tVtXp3o08nbcU+9TVHntv3rvHY9/36Q/BdQXUPWzvBgAAAABJRU5ErkJggg==",
       "game": "needle",
       "set": "needleTailor",
-      "block": "robotCrank"
+      "block": "robotCrank",
+      "generator": "scripts/achievementArt.ts"
     },
     "hint-phone-bill": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAG1BMVEWCotemut/Hy9cUDAjDRTT3YUn///t5eYL/73mLIBmTAAAAgUlEQVR42m1QAQ4DIQijLXP8/8ULILrLVmNsSgsRMw6KIa8Zg6hjAapgFtsIY0BrrSULItqZbItZr17IeobfGcf0RHCcoyHZdkoiCpJmkL5xnK8LTc+H+DdOubv/iDeeVN2z/y73Kq8k2PtqUS3O3x5OXmep9R7nY3rv3oxnS4d9APDRBOTpudv/AAAAAElFTkSuQmCC",
       "game": "needle",
       "set": "needleTailor",
-      "block": "phoneBill"
+      "block": "phoneBill",
+      "generator": "scripts/achievementArt.ts"
     },
     "desk-aurora": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAJFBMVEUUDAg4JBySrk2202E8bTBdlkWCvlk8GEV5QYa2bcvb08v///cCURfKAAAAcklEQVR42m3MCw7EIAhF0TcoH2X/+50IVNPGS9KSE1roJah6bm7DxsZqLLQ4wYvqFjqsPj2MfcPCwvmLB4OEpTAW4TOmAMt3cJC+SC0msQGgxo1eE0h37KsHe+J6AcU99zTAs9g2zcwd6xHNE+Yl/C79AfowCPO4gl12AAAAAElFTkSuQmCC",
       "game": "loaf",
       "set": "loaf",
-      "block": "aurora"
+      "block": "aurora",
+      "generator": "scripts/achievementArt.ts"
     },
     "bbs-got-time": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAHlBMVEWez/fD3/sUDAhFZSiSrk2CvlnXvpJtRRTHmkH///fDfL+xAAAAcUlEQVR42m3OgQ6AIAgEULqKs///4QaHmtVN3XwD1EzBI3lLOSNXJPBC7BdW5dJuYwNNMhFNGVpGkl07hpBCzQ5oWS10d0CYC1thVubIqkRhW9rhMFDcH8qZADP1/0DXY4RmTQzXuaJ3PPDJYftPfvEGkukF2ktKNaoAAAAASUVORK5CYII=",
       "game": "loaf",
       "set": "loaf",
-      "block": "snail"
+      "block": "snail",
+      "generator": "scripts/achievementArt.ts"
     },
     "download-mp4": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAALVBMVEV9uu+ez/fD3/sUDAjPhjz7145dlkWWWTh5quf///fn8/dBdZ5dXWHLy8/325oT8yfGAAAAbUlEQVR42q2QSQ4CMQwEYyrEWWj+/9xRhjBrDhxoWbJUbi9ysIPCJdus+AN83WQWKOUYHydnGSvMOUNrDdxdkujwvUMJEMNZaoP4FN2pAWutEBErDqSURnuMm3OH7nxnntXX349ndvw/XjdhjwWP8gZ3x4qgsgAAAABJRU5ErkJggg==",
       "game": "loaf",
       "set": "loaf",
-      "block": "filmStrip"
+      "block": "filmStrip",
+      "generator": "scripts/achievementArt.ts"
     },
     "desk-star": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAFVBMVEUQCBQUHFXLmlnny5b/+9Pn377///82lfydAAAAaUlEQVR42n2PAQ7AIAgDCxX+/+QF1ClkWU0MnqUoIH/LTo1y429lx+FozpDlfuW4u5m5+82xYJ2SNNnhRLi6c57vTBLAeN8zf8IxxkmXEBlQtha80YSq+gFJihSoWqElDGTNKb15T296AKGiAh9Rw2+/AAAAAElFTkSuQmCC",
       "game": "goat",
       "set": "goat",
-      "block": "shootingStar"
+      "block": "shootingStar",
+      "generator": "scripts/achievementArt.ts"
     },
     "desk-goat": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAJ1BMVEUQCBQ8KBhhSTCCZUVhYWGSjoq6trLb29f/+/eeimXfy57LeYL///+QS4I8AAAAsElEQVR42j2QQXIEMQgDG4Ex2fX/35uAZ8KBwl3CCJDMDZBk0s1MwQH5xe52FZyDZPZou5a1cggXejfQQrnxGYroOJ2Mz88LzzkNa/MIX0h9qvYwlz/tVVW7dtKufDJEUcXOALfxQMRu3c4kAgkTAfuyBQRXKSfz+811X+/uVbXWDLqW+gB1Y7fWpV5TD5xJs+1Yqnf6/Gp4b7AnMte6ojksmU1iXP5Pj1jN2uTfJX8B5AwFNb7tZdAAAAAASUVORK5CYII=",
       "game": "goat",
       "set": "goat",
-      "block": "surprisedGoat"
+      "block": "surprisedGoat",
+      "generator": "scripts/achievementArt.ts"
     },
     "desk-plow": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAKlBMVEUMDBwoKEHL2/Pn6/f///+61+vj+/+KsuOyiiD/62GCMADXfRj/piiampq3tjVuAAAAf0lEQVR42m3R4Q7DIAgEYNixAbK+/+suoO2w6fnvCxcxkuoYY+gWUslAgNcUgRJBMG0hEr9n6F9P/FQ6RsS7kkjuKnJHMxV0zLjv9YjoeIXIrPbc0R1P6E91S6wwM6/bXWQ+gytzeReceBxcy2v2G9ak5k0LKc8NddlWbx+Rkz8wnQnRQ2VInwAAAABJRU5ErkJggg==",
       "game": "snowbound",
       "set": "snowSprites",
-      "block": "plowFront0"
+      "block": "plowFront0",
+      "generator": "scripts/achievementArt.ts"
     },
     "desk-sleds": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAIVBMVEUMDBzn6/f///+KsuMsGAyWaUEsXThBeUn/z6b/62FJabJBNz1DAAAAS0lEQVR42o3Qyw7AIAhE0aEIPv7/g41Wm1TQeJcnzAZwL7d4hgOmloNIt5cG49s1qqoe8CEzF9CKImNeZgPJRTEx2NoOw9r3kH8uVsvCBvutogHwAAAAAElFTkSuQmCC",
       "game": "snowbound",
       "set": "snowSprites",
-      "block": "sledder0"
+      "block": "sledder0",
+      "generator": "scripts/achievementArt.ts"
     },
     "bbs-download-every-speed": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAElBMVEUQDBAYQRRJdSx5rkmq52XL7/+cS+0bAAAAZElEQVR42s3PUQ7AIAgD0ELx/ldeimWbyQ6w/kieBBHrI/gDonMgUAqHdWwqksSgraJVU7BAQbE701OmsVUF2J10XyR7tlCmgclM3WoJMC2R4Ye2jt0rkQhJwIsanQfX69O7ugBw1gXYZxcq7wAAAABJRU5ErkJggg==",
       "game": "sweats",
       "set": "sweatsHomeSprites",
-      "block": "turtle0"
+      "block": "turtle0",
+      "generator": "scripts/achievementArt.ts"
     },
     "desk-dogs": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAIVBMVEUUDBCW11X///csFAxNKBhpPCSKVTCqaTz/72Hjkrb/gpZAVoA6AAAAcklEQVR42rWQUQ6AMAhD67oyt/sf2DCG08Rf+wUvlBJwfAi/QrpuGBWtNbPAPukFK22KaWdAJN0wR4EV5NRZKXtyRssMIw4IO3vvpySOMTJdsc0c553JTCqFCR9akFJd0vKDqtyviA4Unw+aLcj327y/ALAOA9DIAi73AAAAAElFTkSuQmCC",
       "game": "teddy",
       "set": "gwinnSprites",
-      "block": "gwinnRun1"
+      "block": "gwinnRun1",
+      "generator": "scripts/achievementArt.ts"
     },
     "zine-read": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAElBMVEUUDBC+z+f///emICj/VVX/72Fn/92bAAAAP0lEQVR42mNgxAIYBqsgAxwgBBmYWaCAiQFFkBWMUAVZWVhZWVgxVLKyYqoEA2JUYrWdCQyIUAkDSIJI3gTzAcKRAnZXiIMSAAAAAElFTkSuQmCC",
       "game": "teddy",
       "set": "teddyToys",
-      "block": "book"
+      "block": "book",
+      "generator": "scripts/achievementArt.ts"
     },
     "play-bizarre": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAGFBMVEUQDBTv16L///f/96qKYUGqfVVlOH3LTUFMjPLkAAAAeUlEQVR42m2PUQ7DMAhDnwch97/xBCFt2s0fUfSEbSBSlGJr/cwMv3FDcD8n02hvO2Zm4eCN1JADirbfUGIX9U6EKplmXv3iWAkfCUX8QHFCPK26DlhvxWVAPGCNvaAq4QnFJ+VHkcTwpasoK8ay78k5Z8R/yDI3/AL/DQY3m/1rUwAAAABJRU5ErkJggg==",
       "game": "smirked",
       "set": "smirked",
-      "block": "violin"
+      "block": "violin",
+      "generator": "scripts/achievementArt.ts"
     },
     "library-visit": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAIVBMVEV9kraersMMCAi2tq77+/PTvprv37r7021ZNByCUSz/96L9G4oVAAAAZUlEQVR42n2PgQ6AIAhE4boS+v8PboqpTe3ADY4nG6Iyh7QHyNBHgEQny8xR5AMHejIzSx60iIIMMyUnidhF4v0enWChIL/akAoeOQFDLfMl1bRmaidtSd6/pK534pq0u+ictCYfIPAEYIXuigkAAAAASUVORK5CYII=",
       "game": "risi",
       "set": "risiCampus",
-      "block": "libraryFront"
+      "block": "libraryFront",
+      "generator": "scripts/achievementArt.ts"
+    },
+    "honor-graduation-basics": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAG1BMVEXz+6IUEBz378vPvo55bVVtSQBpEBDDKCj////95vyaAAAAUElEQVR42o3QMQ7AIAwEQRPCnv//4hQIEoORsuXoKLCVJCu2dcbwcuI1++Ldi3herpgu/+NgYFsiFwNrD7lLxG8ivThK0XB31tM1oJ3vmfQAn1UCUYvFP5EAAAAASUVORK5CYII=",
+      "game": "the Starters",
+      "set": "honors",
+      "block": "honors-1",
+      "generator": "scripts/achievementArt.ts"
+    },
+    "honor-graduation-moving": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAG1BMVEUUEBz378vPvo55bVVtSQBpEBDDKCj///+ay/v860huAAAAUElEQVR42pXPQQrAIAxEUa3OxPufuGipxEwo9Lt7xKClpA3pH8q6hdW3se0cfk4eOI9MZtcv34sA5J0wI8KPQPLUB42KRsG50+LO0QH0gEk3w+wGMTXC1lQAAAAASUVORK5CYII=",
+      "game": "the Starters",
+      "set": "honors",
+      "block": "honors-2",
+      "generator": "scripts/achievementArt.ts"
+    },
+    "honor-graduation-heroes": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAG1BMVEUUEBz378vPvo55bVVtSQBpEBDDKCj////zmkEz+Y5GAAAAUElEQVR42rXRQQ6AIAwFUbRMy/1PbNRCrK1Lh93LDwtorWykHONi4nb3QhGRhB/LAsvlH+gHSEvMlIX7FapqSnwQTlvoxeXS552zDvRRf8YBDvQGYD0Tba4AAAAASUVORK5CYII=",
+      "game": "the Starters",
+      "set": "honors",
+      "block": "honors-3",
+      "generator": "scripts/achievementArt.ts"
+    },
+    "honor-graduation-story": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAG1BMVEUUEBz378vPvo55bVVtSQBpEBDDKCj///8oklFnS877AAAAUElEQVR42o3PQQ7AIAwDQVNwkv+/uErFhcQS3eNgIQBk0Ups5x+O3YkzqyiXmBj4t1Sols8Ot8dHkKzfDLo5C9Lc3NjQBVpfprY7Y5FcJ4peJ5MG+EAm+UcAAAAASUVORK5CYII=",
+      "game": "the Starters",
+      "set": "honors",
+      "block": "honors-4",
+      "generator": "scripts/achievementArt.ts"
+    },
+    "honor-graduation-wiring": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAG1BMVEUUEBz378vPvo55bVVtSQBpEBDDKCj///9JOJp2ACC3AAAAVElEQVR42o2QUQ7AIAxC6xTw/ideTIzbWj72Pl8IaYmwzMKR79Aj2+Yr+yJLm4weLf4lW1TpktfmSADleEhCehMUSRQpI0lluTqZO+cAMNyeaWTDDS1VBvf95G1LAAAAAElFTkSuQmCC",
+      "game": "the Starters",
+      "set": "honors",
+      "block": "honors-5",
+      "generator": "scripts/achievementArt.ts"
+    },
+    "honor-graduation-blocks": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAG1BMVEUUEBz378vPvo55bVVtSQBpEBDDKCj///9BEBAoI7WbAAAAU0lEQVR42rXQQQ7AIAhEUSgOw/1P3DRGS5Ctn90L0ahIW6QGgBEF4SQKwunuOJBs0Bf+l4L7TNEdgFgo9o2ZqUocmxnnFOw2n9TG8hfl7bNL2PQCg6EG2mhoZXUAAAAASUVORK5CYII=",
+      "game": "the Starters",
+      "set": "honors",
+      "block": "honors-6",
+      "generator": "scripts/achievementArt.ts"
+    },
+    "honor-graduation-diploma": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAGFBMVEUUEBz378vPvo55bVXzsgBtSQBpEBDDKChzOXmWAAAASklEQVR42q3QSQoAIAwEwXHN/38sMWhcBk82eCmCaABauVLMR4aACzAw+mXRMcw2TL0DP0xeSCcJssezb2oitYosC3mgnYFsyaQG4pgDyQPZz5gAAAAASUVORK5CYII=",
+      "game": "the Starters",
+      "set": "honors",
+      "block": "honors-diploma",
+      "generator": "scripts/achievementArt.ts"
     },
     "every-life-1": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAG1BMVEUUDBB1TSyyeUlxLAi2bTDbjkn7sl3///fjkra7cWECAAAAe0lEQVR42mWRUQ7AIAhDC5V19z/xgopus+HDvADVCtghwLzEXu5uMAcGu8mbB4ysD+QVKfIPERESF2QMSZKVOxfqnbllsE7GzjzsvukuXalB655SxHIpyKKt7XFKam0SQpxGlYhEzE7fAuFwe0XXaT7vD32O+6GM/vyOB9jMBI2tCOcPAAAAAElFTkSuQmCC",
       "game": "teddy",
       "set": "tiers",
-      "block": "every-life-1"
+      "block": "every-life-1",
+      "generator": "scripts/achievementArt.ts"
     },
     "every-life-3": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAG1BMVEUUDBBxLAi2bTDbjkn7sl3///fjkrZdYW2yur6hqyMxAAAAeElEQVR42mWRUQ4FIQgDW30V7n/iFxTWzTLhw0yKGASsAZgX3OXuBnPg1CIXm5xckx85A/Irw0t8JDMpSVbT+aidjFuO2+bcGYeby+nSLzi23inN4kqWHeO2U9IYaQgxB9VGJCKTfgHhcHutblvAm/Rs90asvn/HHzTKCCPLt3sJAAAAAElFTkSuQmCC",
       "game": "teddy",
       "set": "tiers",
-      "block": "every-life-3"
+      "block": "every-life-3",
+      "generator": "scripts/achievementArt.ts"
     },
     "every-life-10": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAG1BMVEUUDBBxLAi2bTDbjkn7sl3///fjkraWZQj/521LcdJTAAAAgUlEQVR42m2RiwrFIAxDE7to/v+LL1U7x+5ChXJIH1Rg/AkYLnGG7ZEQNgB2srMgEhrskfF0GlekyDdEREhc5cg3jSFJo6bzRtOZXRabZPXM5Pj2dOlKLVp7SlE6kEVbO+WU1NomhLgH1UUkYjt9BMLweJxu0rzOGxr+gGulr+/4AYJ/CF9kOabNAAAAAElFTkSuQmCC",
       "game": "teddy",
       "set": "tiers",
-      "block": "every-life-10"
+      "block": "every-life-10",
+      "generator": "scripts/achievementArt.ts"
     },
     "every-loss-1": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAFVBMVEUUDBB1TSyyeUlxLAjbjkn///fjkrbTloYMAAAAY0lEQVR42pWRQQ7AIAgEB9b6/yc3CDVGvXSjB0ZYCYAdAvNDhjnMkHE36ARfoeKQ5RRUl/qeqd5EU3lW8TMk+QZJPmElhrhAnZ5halhYLyz7jEetLOGi/1A3GB9/DaiGfFvHC/xjBCckLqvsAAAAAElFTkSuQmCC",
       "game": "teddy",
       "set": "tiers",
-      "block": "every-loss-1"
+      "block": "every-loss-1",
+      "generator": "scripts/achievementArt.ts"
     },
     "every-loss-3": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAFVBMVEUUDBBxLAjbjkn///fjkrZdYW2yur7Tzv3TAAAAY0lEQVR42pWRQQ4AIQgDW1f6/ydvENwQ8bITvYxNJQpYAzA1DCYglxT7kIL7KilxZQ2GLSc5W3IOYjA7Az4LUodE+E9m0MFFsnd6qcG8uriY0w9ZXcjCf8mb9Iv3AMxHvn3HC+qKBfsiJ3G6AAAAAElFTkSuQmCC",
       "game": "teddy",
       "set": "tiers",
-      "block": "every-loss-3"
+      "block": "every-loss-3",
+      "generator": "scripts/achievementArt.ts"
     },
     "every-loss-10": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAFVBMVEUUDBBxLAjbjkn///fjkraWZQj/5205FAyxAAAAa0lEQVR42pWRUQrAIAxDXzbb+x95RDuR6c8CInktaVGITRC5KQzJBGzpx9Ce7uuenUkqU70WBAXVpDY7nQeoXeJSZQ7p7pLyAxl8wmq0OEDtmQ4NwtELG3u6qJUNuOg/1Al68LuA6pFP3/EALboGLbzeUt4AAAAASUVORK5CYII=",
       "game": "teddy",
       "set": "tiers",
-      "block": "every-loss-10"
+      "block": "every-loss-10",
+      "generator": "scripts/achievementArt.ts"
     },
     "every-win-1": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAHlBMVEUUDBB1TSyyeUlxLAi2bTDbjkn7sl3///fjkrb/gpYJYO7eAAAAdUlEQVR42m3RURLAEAwE0GWbrt7/wp0ElaH7gzcSA6AcAUo9UlAqkAA/CF9kZBiQkY1s+042YwMHjuLbPOSOMDOJH9J6JGlDSWQu7/Q80dNb950KDfQKchaPu0u3p+tCs+/ohVOvhZR0RVLPyjGfY/WnP7/jBTawBJKhKfGZAAAAAElFTkSuQmCC",
       "game": "teddy",
       "set": "tiers",
-      "block": "every-win-1"
+      "block": "every-win-1",
+      "generator": "scripts/achievementArt.ts"
     },
     "every-win-3": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAHlBMVEUUDBBxLAi2bTDbjkn7sl3///fjkrZdYW2yur7/gpaLBKNAAAAAdUlEQVR42m3RgQ7AEAwE0Lt1h/3/Dy9tGZtdJORFKwDqFqC2LRW1AX148IPwaUWGAS8sZNl2FmMBO2Z4mof8IsxM4oO0jCR9UBK5liddV/T01rlToYFeQY7ifnfp9KRONHuOnjj0mEhJR2Tp2djXY27+9Pt33IB0B/A0NSePAAAAAElFTkSuQmCC",
       "game": "teddy",
       "set": "tiers",
-      "block": "every-win-3"
+      "block": "every-win-3",
+      "generator": "scripts/achievementArt.ts"
     },
     "every-win-10": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAHlBMVEUUDBBxLAi2bTDbjkn7sl3///fjkrb/gpaWZQj/5223FE8TAAAAfUlEQVR42mXR2xKAIAgE0N1oTf7/hxsgL5P7op6AJgP6EaD7kR4IdwAF+DDO8MJ8OCsdzjRgRzayzcrYAGAzNnC0Z3hbhPwjzEziRFpFkn4oidzbi54nZ8boqlRqYnSQo/n7dumOlC40m69eOPRaSElXZpvp/PZj9bj683e8kpQI/F1QvvAAAAAASUVORK5CYII=",
       "game": "teddy",
       "set": "tiers",
-      "block": "every-win-10"
+      "block": "every-win-10",
+      "generator": "scripts/achievementArt.ts"
     },
     "games-played-3": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAIVBMVEUQEBhZMBDLgjzTw57v3766pn37bVnLTUFlEBSSfV3///8K6YnEAAAAfklEQVR42m2R2w7DIAxDQ23D1v//4CkXRqTWCg+cOJCA2XjIbFwPDRsXQACqRRSEFIlgBVU7MDIJuX2R3eXCn0qtfE6P7iTWnB6r385V8hMCCtCBraUDuZ3Ep+S9tjGz++92mpk5IzIS3rcl0xkzIFSTS6ecIhXWhC+P/PYdP+5fBNPgYJyHAAAAAElFTkSuQmCC",
       "game": "remote and tickle",
       "set": "levels",
-      "block": "games-played-3"
+      "block": "games-played-3",
+      "generator": "scripts/achievementArt.ts"
     },
     "games-played-10": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAIVBMVEUQEBjTw57v3766pn37bVnLTUFlEBSSfV3///91gorr7/OVqC1KAAAAe0lEQVR42m2RUQ7AIAhDaavb3P0PvIA4SbYGP3wUBTUbH5mN+6Nh4wYIQLmIhJAiESyhcgdGZkIuX2RXufBSqZS35lGdRG/No9fb2VN+QkAB2rC0tCGXkzhS3msZc3Z/LqdNOeVbbtflQUB7zIQ5uVTLSYV1wp9H/vuOB+5wB1iCVA2tAAAAAElFTkSuQmCC",
       "game": "remote and tickle",
       "set": "levels",
-      "block": "games-played-10"
+      "block": "games-played-10",
+      "generator": "scripts/achievementArt.ts"
     },
     "games-played-20": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAIVBMVEUQEBjTw57v3766pn37bVnLTUFlEBSSfV3///9tSQDzsgBfmFBeAAAAeElEQVR42m2RURKAIAhEWVYru/+BGxCUqXbww8eioCLjI5FxfzRk3IACYCxFQJCecBaQsYN6ZkJNn2eznFiULOWtWVSnordm0evt2kN2gkMC3LC0tKGmU3GErNcy5uz+TKcsWSLhdUVwj7mhD8V3uVkn/Hnkv+94APLUB2TBzIwZAAAAAElFTkSuQmCC",
       "game": "remote and tickle",
       "set": "levels",
-      "block": "games-played-20"
+      "block": "games-played-20",
+      "generator": "scripts/achievementArt.ts"
     },
     "games-finished-3": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAKlBMVEUQEBhZMBDLgjz///9JSVV5PJYoJDD///vr5+NtaX3/UVnX08/fjp7fx3lx41ZuAAAAcElEQVR42n3RWQ6AIBAD0ILTWUTvf10jYqIClr+XadiA1AVIuUtCyiJ8RGSOOkczty+aNRWtGEK6nWv110ZWJ72Q0epK0n2rRm31ODfwUo0RV11Hh9fJjfY7NwJAN4lleWD8IQAhlQxSW33wyKPvOAA8oAZMO2eLVQAAAABJRU5ErkJggg==",
       "game": "remote and tickle",
       "set": "levels",
-      "block": "games-finished-3"
+      "block": "games-finished-3",
+      "generator": "scripts/achievementArt.ts"
     },
     "games-finished-10": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAKlBMVEUQEBj///91gorr7/NJSVV5PJYoJDD///vr5+NtaX3/UVnX08/fjp7fx3l1M8CiAAAAb0lEQVR42n2RWQ7AIAgFUXksXe5/3UalSVu1o18TXlAgygNEuQxkyoUZD5jXUtZS1fQrVcOyNOkMmNaz2auRtkrbAY+4ADA7moNE3GsD25uDe4/L7PGy+NF5c0vqvCsppXpD+p/sCOCARHwy5Nk6Lpn2BpkSVvVEAAAAAElFTkSuQmCC",
       "game": "remote and tickle",
       "set": "levels",
-      "block": "games-finished-10"
+      "block": "games-finished-10",
+      "generator": "scripts/achievementArt.ts"
     },
     "games-finished-20": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAKlBMVEUQEBj///9tSQDzsgBJSVV5PJYoJDD///vr5+NtaX3/UVnX08/fjp7fx3lGn8hIAAAAbklEQVR42n2RWQ6AIAxEC3a6uNz/usZaDSr44Oulk2Ehqh+I6vShUp2Y0cA8ljKWqqZvqZqWJaQzYHqs2R5FGpO2AJ5xAWC2hoNk3I8CW8LB/YxL7/AyuNF2cUm6aSaplNxR9CdvHJCMdx659x07h38GYNKslZcAAAAASUVORK5CYII=",
       "game": "remote and tickle",
       "set": "levels",
-      "block": "games-finished-20"
+      "block": "games-finished-20",
+      "generator": "scripts/achievementArt.ts"
     },
     "walks-watched-3": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAJ1BMVEUQEBhZMBDLgjzTw57v3766pn3///+SkpYoKDAUDBSO/444LDTHx8tNspKsAAAAcElEQVR42nWRQQ6AIAwEF1uULfz/vcYWE1NwwmkYSgJAWQDKsVBQDhFRlQcVFVGXWl3VWLW+ZWSxKV/5dD7H5ZX4ly2RJI00C9knzYwkp4yue8lc+nGmmWb2zgSA5XacJ8ZoY2S5lgD4weXmkXffcQPB1geiwBjK+QAAAABJRU5ErkJggg==",
       "game": "remote and tickle",
       "set": "levels",
-      "block": "walks-watched-3"
+      "block": "walks-watched-3",
+      "generator": "scripts/achievementArt.ts"
     },
     "walks-watched-10": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAJ1BMVEUQEBjTw57v3766pn3///91gorr7/OSkpYoKDAUDBSO/444LDTHx8tYVePOAAAAbUlEQVR42nWR4Q7AEAwG22Lzlfd/3kVLspVd/DqnEojKBlG5NgqVi5lFeCAszGJSkqnkK6VVeuab/Jajszkm78C/rIEgoYCqyzapqgAwpXfNSsTSjiPMVNU1k5zv7ZTzWL0fZCgdLEweHvn0HQ/DxAjvbeRDpQAAAABJRU5ErkJggg==",
       "game": "remote and tickle",
       "set": "levels",
-      "block": "walks-watched-10"
+      "block": "walks-watched-10",
+      "generator": "scripts/achievementArt.ts"
     },
     "walks-watched-20": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAJFBMVEUQEBjTw57v3766pn3///9tSQDzsgCSkpYoKDAUDBSO/444LDQ/oQnUAAAAbUlEQVR42oWRWw6AIAwE+xBk6/3va2iBkKpx0q9hWQgQlQdEpT4oVCozi3BHWJjFpagrjVGdyYjFIu+y57zH5Zn4li2RJAwwC3kNmhkADBm5y5PISd+O1Glms5MW2+l0HGN+5QJYV3p55LfvuAGmJAiU/XzZOwAAAABJRU5ErkJggg==",
       "game": "remote and tickle",
       "set": "levels",
-      "block": "walks-watched-20"
+      "block": "walks-watched-20",
+      "generator": "scripts/achievementArt.ts"
+    },
+    "play-starters": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAD1BMVEX06chKKhTogzr3snr////NcrYaAAAARUlEQVR4nJ2NQQoAIAgEXfv/n0NLdEGimuOgsyIGFkJAjStplt4957J0MRJNqUkvdwGoMo5BOgtn2b6H5KFY/1ipkpAnJlW5AZkHbx5sAAAAAElFTkSuQmCC",
+      "game": "drawn for the badge",
+      "set": "badge art",
+      "block": "show-and-tell"
+    },
+    "finish-starters": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAD1BMVEUfLVwNFTDy8vKqtuDywjDxMqkIAAAAQUlEQVR4nGNgoA5gZGJixCKGLgoWQhOGiyFEoUKMEMDCiEU7CzaLEIKMzMwgJwFJVEEIIFMQDlhYkK2HAuIFSQQA2REBFmiljBUAAAAASUVORK5CYII=",
+      "game": "drawn for the badge",
+      "set": "badge art",
+      "block": "honor-roll"
+    },
+    "learn-lesson": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAElBMVEX06cg6Khq/4/KLWiv///8qiopXWm56AAAATElEQVR42q3QUQ6AMAgDUChy/yvbmRkq80ez/u2lyQCzj/ERhUwCgCeTDuBiwWlUKd4mVUflD5bK974WpdqmnxtFZ76p4etdYofam579SQEzGwe5oAAAAABJRU5ErkJggg==",
+      "game": "drawn for the badge",
+      "set": "badge art",
+      "block": "learn-by-looking"
     }
   }
 }

@@ -5,7 +5,7 @@ import { SITE_SAVE_IDS } from '../inventory';
 import { mergeRecords, parseRecord, FILE } from '../../achievements/store';
 import { fileMap, plural, type Section } from './types';
 
-export interface AchievementsPayload {
+interface AchievementsPayload {
   files: Record<string, Uint8Array>;
 }
 

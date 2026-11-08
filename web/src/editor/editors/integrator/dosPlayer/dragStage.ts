@@ -6,7 +6,7 @@ import { h, clear } from '../../../core/ui';
 import type { PatchValue } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
 import { describeItem, dragBy, grab, hitItem, toScreen, type DragItem, type Grip, type Held } from './dragItems';
 
-export interface StageContext {
+interface StageContext {
   canvas: HTMLCanvasElement;
   /** What the screen being shown can drag, as last drawn. */
   items: () => DragItem[];

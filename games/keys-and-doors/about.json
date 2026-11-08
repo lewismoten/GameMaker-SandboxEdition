@@ -1,0 +1,37 @@
+{
+  "title": "Keys and Doors",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "hero": "MIA",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.2",
+  "blurb": "Three short levels about keys and doors. A door can be shut before you find a key, a door can need two of the same key, and different doors can want different keys. Signs in the levels say how. Play it, then open it in Game-Maker and move a key or lock a new door.",
+  "exe": "KEYS.EXE",
+  "dosName": "KEYSDOOR",
+  "sound": "sb",
+  "label": {
+    "background": "#e8f6ff",
+    "band": "#8a56d2",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "3 short levels",
+    "hours": 1,
+    "background": "#8a56d2",
+    "accent": "#ffd23f",
+    "ink": "#ffffff",
+    "tagline": "Some doors do not open just because you ask nicely.",
+    "back": "A small explorer in a purple beanie has locked doors to get through. The first is shut before you find a key. Next comes a door that wants two keys, then a gold door and a silver one with a ledge to climb. Read the signs, then open the game in Game-Maker and change a door.",
+    "features": ["Signs in the levels explain each idea", "Keys add to a counter, doors spend it", "Made to be copied and taken apart"],
+    "shots": [
+      ["one.map", 22, 6],
+      ["two.map", 22, 6],
+      ["three.map", 20, 6]
+    ],
+    "rating": "Everyone"
+  },
+  "acceptedFindings": ["facing s2 The hero climbs side on"]
+}

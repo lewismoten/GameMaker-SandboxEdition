@@ -53,6 +53,12 @@ export const GRIPES: MagSection = {
             '**“My ears!”** A loud beep on every step and every coin wears thin in a minute. Keep the sounds you hear constantly short and soft, and save the big ones for big moments.',
           ),
           p(
+            '**“I’m standing in the door!”** The exit belongs on the doorway itself, so walking into it is leaving. Put it a block past the door and the hero stands in the frame while nothing happens. If a voice line has to finish first, make the walk to the door longer, not the gap behind it.',
+          ),
+          p(
+            '**“Is that all there is?”** Twenty coins and a door is a chore. Make each pickup open something or feed a friend, and give every level one idea of its own: a ride, a puzzle, a joke halfway through.',
+          ),
+          p(
             '**“Did I win?”** A game that drops back to the title with no won screen leaves players guessing. End on a real scene with music and a thank-you, and make the game over screen funny enough to play again.',
           ),
         ]),
@@ -66,6 +72,7 @@ export const GRIPES: MagSection = {
                 'know every key they need',
                 'got through the first screen alive',
                 'saw a sign pointing the way',
+                'heard every voice line to the end',
                 'laughed at least once',
               ],
               true,

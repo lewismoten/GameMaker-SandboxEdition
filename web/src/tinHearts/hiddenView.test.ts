@@ -2,6 +2,8 @@
 // "Out of sight"): off screen at every scene's start (and its first 3 seconds), and in none of
 // the level shots, box shots, poster or title demo. games/kit/hiddenView.ts does the looking
 // (npx vite-node ../games/kit/hiddenView.ts for the full table, disk pictures too).
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
+import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { hiddenView } from '../../../games/kit/hiddenView';
 
@@ -11,8 +13,18 @@ import { hiddenView } from '../../../games/kit/hiddenView';
  */
 const STILL_SHOWN = new Set<string>([]);
 
-describe('tin hearts and Easter eggs out of sight', async () => {
-  const all = await hiddenView(undefined, false);
+// The built disks are git-ignored output (npm ci builds them); with one missing, these are skipped.
+const GAMES = join(__dirname, '../../../games');
+const declared = readdirSync(GAMES).filter((id) => {
+  const about = join(GAMES, id, 'about.json');
+  if (!existsSync(about)) return false;
+  const a = JSON.parse(readFileSync(about, 'utf8')) as { tinHeart?: unknown; easterEgg?: unknown };
+  return Boolean(a.tinHeart || a.easterEgg);
+});
+const hasDisks = declared.every((id) => existsSync(join(GAMES, id, 'disk')));
+
+describe.skipIf(!hasDisks)('tin hearts and Easter eggs out of sight', async () => {
+  const all = hasDisks ? await hiddenView(undefined, false) : [];
   it('finds the declared items', () => expect(all.length).toBeGreaterThanOrEqual(40));
   for (const s of all) {
     const key = `${s.game}:${s.item}`;

@@ -23,6 +23,7 @@ import {
   parkBench,
   path,
   sign,
+  exitDoor,
   swingGate,
   tree,
   water,
@@ -284,6 +285,8 @@ export function townSet(): BlockSet {
   // Doc Leo's corner at seven: the rope lets Joe in once (chapter 1's flag), the swing gate only out
   addRope(s, cb, 1);
   s.add('swing', swingGate(cb), { solid: ONE_WAY_SOUTH });
+  // (last) the way out of the square at seven, where the link leaves: a doorway of brass posts and a bright arrow, open to walk through (this set has free numbers up to the keepsakes)
+  s.add('exitSquare', exitDoor(cb, c('yellow', 2)));
   addKeepsakes(s, cb, 'cobble');
   return s;
 }

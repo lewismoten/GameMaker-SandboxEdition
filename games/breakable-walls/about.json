@@ -1,0 +1,40 @@
+{
+  "title": "Smash It",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "hero": "YANA",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.2",
+  "blurb": "Three short levels about blocks that break. Bump a crate and it turns to rubble, and only the crates you touch break. A coin that turns into itself pays again and again, so a coin must become air to pay once. A spinning gem is four blocks in a loop, and each frame has to turn to air too. Signs say how. Play it, then open it in Game-Maker and change what a block becomes.",
+  "exe": "SMASH.EXE",
+  "dosName": "SMASHIT",
+  "sound": "sb",
+  "label": {
+    "background": "#fff3d6",
+    "band": "#c46a1a",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "3 short levels",
+    "hours": 1,
+    "background": "#c46a1a",
+    "accent": "#ffd23f",
+    "ink": "#ffffff",
+    "tagline": "Bump it. It breaks.",
+    "back": "A small explorer in a pink beanie has three short levels, and crates in the way each time. Walk into a crate and it turns to rubble. A coin that stays a coin keeps paying, a coin that turns to air pays once, and a spinning gem has to turn to air in every frame. Read the signs, then open the game in Game-Maker and change what a block becomes.",
+    "features": [
+      "Signs in the levels explain each idea",
+      "A block can turn into another when touched: a crate into rubble, a coin into air",
+      "Made to be copied and taken apart"
+    ],
+    "shots": [
+      ["one.map", 18, 6],
+      ["three.map", 30, 6]
+    ],
+    "rating": "Everyone"
+  },
+  "acceptedFindings": ["every-tick s3 Block 129 gives 2 points on every tick the hero touches it"]
+}

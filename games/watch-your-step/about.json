@@ -1,0 +1,40 @@
+{
+  "title": "Watch Your Step",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "hero": "RIMA",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.2",
+  "blurb": "Three short levels about things that hurt. Spikes cost a few hit points, and only once. A pool in the ground costs a whole life, and the room starts again where you came in. The third level has a safe way past both. Signs say how. Play it, then open it in Game-Maker and change a hazard.",
+  "exe": "STEP.EXE",
+  "dosName": "HAZARDS",
+  "sound": "sb",
+  "label": {
+    "background": "#e8f6ff",
+    "band": "#2fae9a",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "3 short levels",
+    "hours": 1,
+    "background": "#2fae9a",
+    "accent": "#ffd23f",
+    "ink": "#ffffff",
+    "tagline": "Look down before you leap.",
+    "back": "A small explorer in a teal beanie has three short levels to cross. A patch of spikes stings a little, a pool in the ground is worth a whole life, and the third room has a safe way past both. Read the signs, then open the game in Game-Maker and change a hazard.",
+    "features": [
+      "Signs in the levels explain each idea",
+      "Spikes hurt once; a pool costs a life and the room starts again",
+      "Made to be copied and taken apart"
+    ],
+    "shots": [
+      ["one.map", 16, 6],
+      ["two.map", 12, 6],
+      ["three.map", 16, 6]
+    ],
+    "rating": "Everyone"
+  }
+}

@@ -5,8 +5,8 @@
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, over, sprite } from '../art/draw';
 import { P } from '../art/pal';
-import { CK } from './klown';
-import { KLUB } from './klubfolk';
+import { CK } from './clown';
+import { CLUB } from './clubfolk';
 import { juggler } from './folks';
 
 const c = (n: string, k: number) => P.c(n, k);
@@ -32,7 +32,7 @@ export type Pose = 'ready' | 'up' | 'throw' | 'low' | 'lowThrow';
  * skidding along the floor), and the throws let go with a whoosh.
  */
 export function thrower(who: Who, pose: Pose): Pixels {
-  const p = (who === 'juggles' ? juggler(0) : KLUB[who]).flipX();
+  const p = (who === 'juggles' ? juggler(0) : CLUB[who]).flipX();
   const shoulder: [number, number] = [9, 25];
   if (pose === 'ready') {
     arm(p, ...shoulder, 4, 27);

@@ -1,0 +1,64 @@
+{
+ "version": 1,
+ "game": "countdown",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU0UzRdNGc0STSPNA00czShN"
+  },
+  {
+   "scene": 3,
+   "keys": "AU0UzTVNLc0DSxTL"
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: Nine to Zero"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: Ninety-Nine"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 12707,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 913,
+    "time": 15216.666666666471
+   },
+   {
+    "title": "Level 1: Nine to Zero",
+    "frame": 2142,
+    "time": 35700.00000000053
+   },
+   {
+    "title": "Level 2: Ninety-Nine",
+    "frame": 3127,
+    "time": 52116.66666666481
+   },
+   {
+    "title": "Ending",
+    "frame": 9421,
+    "time": 157016.66666666683
+   },
+   {
+    "title": "Credits",
+    "frame": 11633,
+    "time": 193883.33333331204
+   }
+  ]
+ }
+}

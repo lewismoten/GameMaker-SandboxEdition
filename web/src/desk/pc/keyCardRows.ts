@@ -21,7 +21,7 @@ export interface CardRow {
   pad?: (string | undefined)[];
 }
 
-export interface Card {
+interface Card {
   rows: CardRow[];
   /** How to make the corners with two arrows ("↖ ↗ = two arrows at once"), when there are any. */
   note?: string;

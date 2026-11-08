@@ -186,3 +186,30 @@
 .snd-fit-option small {
   color: var(--muted, inherit);
 }
+
+/* Touch: the effect rows, their play buttons and the buttons beside them are 44 px. */
+@media (hover: none) and (pointer: coarse) {
+  .snd-layout button,
+  .snd-layout select,
+  .snd-layout summary,
+  .snd-layout input:not([type='checkbox'], [type='radio'], [type='range']) {
+    min-height: 44px;
+  }
+  .snd-item .snd-col {
+    min-width: 44px;
+    min-height: 44px;
+  }
+  .snd-top {
+    row-gap: 8px;
+  }
+  .snd-fit-option {
+    min-height: 44px;
+    align-items: center;
+  }
+  .snd-fit-option input {
+    flex: none;
+    width: 28px;
+    height: 28px;
+    margin: 8px;
+  }
+}

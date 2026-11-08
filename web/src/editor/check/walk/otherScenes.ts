@@ -3,6 +3,7 @@
 // in another scene; the bot plays one scene at a time, and lockedWhy (gates.ts) names these
 // scenes instead of saying nothing adds to the counter.
 import { loadScene } from '@lewismoten/gamemaker-sandbox-engine/engine/scene';
+import { fromCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import { LASTMON, type World } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
 import { sceneKind, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import type { FileSource } from '../sim';
@@ -31,7 +32,7 @@ export function otherScenesAdding(game: Game, files: FileSource, scene: number, 
     const found = new Set(sourcesOf(w.map, w.bg, want, [], undefined, w).map((x) => x.counter));
     for (const mm of w.mm) if (mm.monnum < LASTMON) for (const c of monsterAdds(w, mm.monnum)) if (want.has(c)) found.add(c);
     // with its number: many games leave every scene "UnTitled"
-    const name = s.desc.trim() ? `${s.desc.trim()} (scene ${i})` : `Scene ${i}`;
+    const name = fromCp437(s.desc).trim() ? `${fromCp437(s.desc).trim()} (scene ${i})` : `Scene ${i}`;
     for (const c of found) out.set(c, [...(out.get(c) ?? []), name]);
   });
   return out;

@@ -102,6 +102,9 @@ const PAIL_COLORS = ['  777777     9 ', ' 4cccccc4   999', '  4cccc4     1 ', ' 
 /** The board's name the way it was always shown: a different color for each letter, yellow ends (bbsName.ts). */
 export const SANDBOX_ANSI = '|14-= |12S |14A |10N |11D |09B |13O |06X |14=-';
 
+/** The name without the -= =- ends, a color for each letter, for a prompt: Sandbox. */
+export const SANDBOX_WORD_ANSI = [...'Sandbox'].map((c, i) => `|${String(SANDBOX_COLORS[i]).padStart(2, '0')}${c}`).join('');
+
 /** The logon screen of THE -= S A N D B O X =- BBS. Returns the first free row. */
 export function sandboxLogin(s: TextScreen): number {
   s.fill(0, 0, COLS - 1, 23, attr(7, 0));

@@ -1,0 +1,20 @@
+{
+  "title": "Pass the Pie",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "special",
+  "year": 1994,
+  "price": "Free",
+  "version": "2.0",
+  "blurb": "Thanksgiving morning, Grandma's oven goes KA-CLUNK, and in the storybook Rory carries every dish across town. Then Mr. Plume, Grandma's turkey and the parade's leader for twelve years, reads this year's flyer: the new mascot is Big Gobble, a thirty-foot inflatable. On go the pilgrim hat and the black belt. Six streets, two heroes taking turns: Rory hops angry robot vacuums and bribes a stubborn dog; Mr. Plume kicks lawn turkeys, tackling dummies and, before the parade starts, Big Gobble's blower. Then the long table finds out what really happened to the oven.",
+  "exe": "PASSPIE.EXE",
+  "dosName": "PASSPIE",
+  "sound": "sb",
+  "acceptedFindings": ["facing s2 The hero climbs side on", "facing s3 The hero climbs side on"],
+  "label": {
+    "background": "#fff0d0",
+    "band": "#c8581a",
+    "ink": "#2a1408",
+    "logo": "SANDBOX SOFTWARE"
+  }
+}

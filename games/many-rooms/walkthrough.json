@@ -1,0 +1,153 @@
+{
+ "version": 1,
+ "game": "many-rooms",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AUsKywNN"
+  },
+  {
+   "scene": 3,
+   "keys": "BEsZywNN"
+  },
+  {
+   "scene": 4,
+   "keys": "BEs="
+  },
+  {
+   "scene": 3,
+   "keys": "BE0="
+  },
+  {
+   "scene": 4,
+   "keys": "BE0="
+  },
+  {
+   "scene": 5,
+   "keys": "BEsZywNN"
+  },
+  {
+   "scene": 6,
+   "keys": "BEsUywNL"
+  },
+  {
+   "scene": 7,
+   "keys": "BE0="
+  },
+  {
+   "scene": 6,
+   "keys": "BEsUywNN"
+  },
+  {
+   "scene": 8,
+   "keys": "BE0="
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: Four Rooms (the red room)"
+  },
+  {
+   "scene": 3,
+   "title": "Level 1: Four Rooms (the blue room)"
+  },
+  {
+   "scene": 4,
+   "title": "Level 1: Four Rooms (the green room)"
+  },
+  {
+   "scene": 3,
+   "title": "Level 1: Four Rooms (the blue room)"
+  },
+  {
+   "scene": 4,
+   "title": "Level 1: Four Rooms (the green room)"
+  },
+  {
+   "scene": 5,
+   "title": "Level 1: Four Rooms (the gold room)"
+  },
+  {
+   "scene": 6,
+   "title": "Level 2: One Landing Cell (the hub)"
+  },
+  {
+   "scene": 7,
+   "title": "Level 2: One Landing Cell (the west room)"
+  },
+  {
+   "scene": 6,
+   "title": "Level 2: One Landing Cell (the hub)"
+  },
+  {
+   "scene": 8,
+   "title": "Level 2: One Landing Cell (the east room)"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 7929,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 913,
+    "time": 15216.666666666471
+   },
+   {
+    "title": "Level 1: Four Rooms (the red room)",
+    "frame": 1661,
+    "time": 27683.333333333918
+   },
+   {
+    "title": "Level 1: Four Rooms (the blue room)",
+    "frame": 2154,
+    "time": 35900.0000000005
+   },
+   {
+    "title": "Level 1: Four Rooms (the green room)",
+    "frame": 2520,
+    "time": 41999.999999999614
+   },
+   {
+    "title": "Level 1: Four Rooms (the gold room)",
+    "frame": 3112,
+    "time": 51866.666666664845
+   },
+   {
+    "title": "Level 2: One Landing Cell (the hub)",
+    "frame": 3715,
+    "time": 61916.66666666338
+   },
+   {
+    "title": "Level 2: One Landing Cell (the west room)",
+    "frame": 3933,
+    "time": 65549.99999999619
+   },
+   {
+    "title": "Level 2: One Landing Cell (the east room)",
+    "frame": 4458,
+    "time": 74299.99999999873
+   },
+   {
+    "title": "Ending",
+    "frame": 4650,
+    "time": 77499.99999999967
+   },
+   {
+    "title": "Credits",
+    "frame": 6857,
+    "time": 114283.3333333437
+   }
+  ]
+ }
+}

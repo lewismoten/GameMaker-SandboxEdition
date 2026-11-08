@@ -1,4 +1,5 @@
 // Block set editor (BLOCEDIT.EXE): 20x20 pictures plus each block's game behavior.
+import { touchGestures } from '../map/mapTouchGestures';
 import { rovingGrid } from '../../widgets/rovingGrid';
 import { panelTabs } from '../../widgets/panelTabs';
 import { colorChoice } from '../../widgets/colorChoice';
@@ -8,6 +9,9 @@ import { viewState } from '../../../urlState';
 import { TEXTURES, paintTexture } from '../../tools/textures';
 import { h, clear, selectField, debounce, toast } from '../../core/ui';
 import { blockCanvas, paintBlock, lut } from '../../core/draw';
+import { blockColorHelp } from '../../colorHelp/blockColorHelp';
+import { paletteColorName } from '../../colorHelp/colorNames';
+import { getColorHelp, onColorHelp } from '../../colorHelp/colorHelpPrefs';
 import { paletteChooser } from '../../widgets/paletteChooser';
 import { BLEN, BLOCK_COUNTS, BLOCK_SIZE, TRANSPARENT, parseBlocks, serializeBlocks, type BlockKind } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { paletteCss } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
@@ -31,10 +35,13 @@ import { groupsPanel } from './groupsPanel';
 import { walkPathPanel } from './walkPathPanel';
 import { readWalkPaths } from '../../check/walk/walkPaths';
 import { blockProperties } from './blockProperties';
+import { rolesPanel } from './rolesPanel';
 import { blockLabel } from './blockNames';
 import { blockNameField } from './blockNameField';
+import { blockCapacityText } from './blockCapacity';
 
-type Tool = 'draw' | 'shade' | 'fill' | 'pick' | 'line' | 'rect';
+// erase and darken stand in for the right button, which a finger does not have
+type Tool = 'draw' | 'shade' | 'fill' | 'pick' | 'line' | 'rect' | 'erase' | 'darken';
 
 /** The painter's own settings, kept in the companion file (never in the block set). */
 interface PainterExtras {
@@ -77,6 +84,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
     renderBlock();
   });
   const pal = () => chooser.palette;
+  const colorHelp = blockColorHelp(pal, sprites ? TRANSPARENT : undefined);
   const insight = blockInsight({ project, file, blocks, current: () => current, pal, sprites, open: (f) => openInEditor(project, f) });
   // level check notes on this block: hazard art smaller than its cell, a hard-to-see monster picture…
   const groups = groupsPanel({
@@ -294,6 +302,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
     if (!preview) {
       for (const id of s.ids) if (pickerCanvases[id]) paintBlock(pickerCanvases[id], blocks[id].pixels, pal(), { transparent: sprites });
       insight?.refresh();
+      colorHelp.refresh(px, w, h);
       groups?.refresh();
       characterFrames?.redraw();
       mirrorBar?.refresh();
@@ -380,9 +389,10 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
     // A multi-block operation may include pictures outside the visible group.
     for (const [id, px] of snap.pixels) if (pickerCanvases[id]) paintBlock(pickerCanvases[id], px, pal(), { transparent: sprites });
     changed();
+    renderProps();
     markPicker();
   }
-  const undoBtn = h('button', { title: 'Undo the last paint (Ctrl+Z)', disabled: true, onclick: () => step(true) }, '↶ Undo');
+  const undoBtn = h('button', { title: 'Undo the last change (Ctrl+Z)', disabled: true, onclick: () => step(true) }, '↶ Undo');
   const redoBtn = h('button', { title: 'Redo (Ctrl+Shift+Z or Ctrl+Y)', disabled: true, onclick: () => step(false) }, '↷ Redo');
   function refreshUndo(): void {
     const available = history.available(scope());
@@ -401,9 +411,9 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
     canvas.setPointerCapture(e.pointerId);
     before = s.read();
     stroke = before.slice();
-    if (tool === 'shade') {
+    if (tool === 'shade' || tool === 'darken') {
       shaded = new Set();
-      shadeAt(p.x, p.y, e.button === 2 ? -1 : 1);
+      shadeAt(p.x, p.y, e.button === 2 || tool === 'darken' ? -1 : 1);
       renderBlock();
       return;
     }
@@ -416,7 +426,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
       lineStart = p;
       return;
     }
-    plot(stroke, p.x, p.y, e.button === 2 ? (sprites ? TRANSPARENT : 0) : color);
+    plot(stroke, p.x, p.y, e.button === 2 || tool === 'erase' ? (sprites ? TRANSPARENT : 0) : color);
     write(stroke);
     renderBlock();
   });
@@ -427,13 +437,13 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
       renderBlock(shapePixels(lineStart, p, before));
       return;
     }
-    if (tool === 'draw' && !e.altKey) {
-      plot(stroke, p.x, p.y, e.buttons === 2 ? (sprites ? TRANSPARENT : 0) : color);
+    if ((tool === 'draw' || tool === 'erase') && !e.altKey) {
+      plot(stroke, p.x, p.y, e.buttons === 2 || tool === 'erase' ? (sprites ? TRANSPARENT : 0) : color);
       write(stroke);
       renderBlock();
     }
-    if (tool === 'shade') {
-      shadeAt(p.x, p.y, e.buttons === 2 ? -1 : 1);
+    if (tool === 'shade' || tool === 'darken') {
+      shadeAt(p.x, p.y, e.buttons === 2 || tool === 'darken' ? -1 : 1);
       renderBlock();
     }
   });
@@ -512,16 +522,20 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
   const tools = h(
     'div',
     { class: 'toolbar' },
-    ...(['draw', 'shade', 'fill', 'pick', 'line', 'rect'] as Tool[]).map((t) =>
+    ...(['draw', 'shade', 'fill', 'pick', 'line', 'rect', 'erase', 'darken'] as Tool[]).map((t) =>
       h(
         'button',
         {
-          class: t === tool ? 'active primary' : '',
+          class: `${t === tool ? 'active primary' : ''} ${t === 'erase' || t === 'darken' ? 'blk-touch-only' : ''}`.trim(),
           dataset: { tool: t },
-          title: t === 'shade' ? 'Lighten a color one step along its palette ramp; right-drag darkens' : undefined,
+          title: {
+            shade: 'Lighten a color one step along its palette ramp; right-drag darkens',
+            erase: 'Paint transparent (or color 0): what right-drag does with a mouse',
+            darken: 'Darken a color one step along its palette ramp: what right-drag does with Shade',
+          }[t as string],
           onclick: () => setTool(t),
         },
-        { draw: 'Pencil', shade: 'Shade', fill: 'Fill', pick: 'Pick color', line: 'Line', rect: 'Box' }[t],
+        { draw: 'Pencil', shade: 'Shade', fill: 'Fill', pick: 'Pick color', line: 'Line', rect: 'Box', erase: 'Erase', darken: 'Darken' }[t],
       ),
     ),
     mirrorSel,
@@ -630,6 +644,8 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
   const swatchCss = (i: number) =>
     sprites && i === TRANSPARENT ? 'repeating-conic-gradient(var(--checker-a) 0 25%, var(--checker-b) 0 50%) 0 0 / 8px 8px' : paletteCss(pal(), i);
   const colorLabel = h('div', { class: 'meta' });
+  /** ", dark red" when Show color names is on. */
+  const nameOf = (i: number) => (getColorHelp().names ? `: ${paletteColorName(pal(), i)}` : '');
   const colorBox = colorChoice({
     get: () => color,
     set: (i) => {
@@ -637,7 +653,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
       renderSwatches();
     },
     css: swatchCss,
-    name: (i) => (sprites && i === TRANSPARENT ? '255: transparent' : `Color ${i}`),
+    name: (i) => (sprites && i === TRANSPARENT ? '255: transparent' : `Color ${i}${nameOf(i)}`),
   });
   function renderSwatches(): void {
     const ranges = paletteReservations(project);
@@ -650,7 +666,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
           title:
             sprites && i === TRANSPARENT
               ? '255: transparent'
-              : `Color ${i}${foreignRole(kind, ranges, i) ? ` (reserved for ${foreignRole(kind, ranges, i)}s)` : ''}`,
+              : `Color ${i}${nameOf(i)}${foreignRole(kind, ranges, i) ? ` (reserved for ${foreignRole(kind, ranges, i)}s)` : ''}`,
           onclick: () => {
             color = i;
             renderSwatches();
@@ -659,7 +675,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
       ),
     );
     colorBox.refresh();
-    colorLabel.textContent = `Drawing with color ${color}${sprites && color === TRANSPARENT ? ' (transparent)' : ''}. Right-drag erases; Alt-click picks.${colorRoleNote(kind, ranges, color)}`;
+    colorLabel.textContent = `Drawing with color ${color}${getColorHelp().names && !(sprites && color === TRANSPARENT) ? ` (${paletteColorName(pal(), color)})` : ''}${sprites && color === TRANSPARENT ? ' (transparent)' : ''}. Right-drag erases; Alt-click picks.${colorRoleNote(kind, ranges, color)}`;
   }
 
   // ---- properties -----------------------------------------------------------
@@ -668,7 +684,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
     walkingProps,
     touchProps,
     timeProps,
-    render: renderProps,
+    render: renderPropsBase,
   } = blockProperties({
     project,
     file,
@@ -677,11 +693,22 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
     current: () => current,
     pal,
     walkPaths,
-    changed: () => {
+    edit: (change) => {
+      finishStroke(false);
+      history.recordBehavior(scope(), current, group);
+      change();
       save();
       insight.refresh(true);
+      refreshUndo();
     },
   });
+
+  // the Uses tab (block roles, saved in the companion file; native blocks only)
+  const roles = kind === 'bbl' ? rolesPanel({ project, file, blocks, pal, current: () => current }) : undefined;
+  const renderProps = () => {
+    renderPropsBase();
+    roles?.refresh();
+  };
 
   // character blocks: "Apply to the mirror too" for a block with a linked mirror (character/blockMirrorBar.ts)
   const mirrorSlot = h('div', { style: 'display:contents' });
@@ -741,13 +768,32 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
             { id: 'walking', label: 'Walking', panel: walkingProps },
             { id: 'touch', label: 'Touch', panel: touchProps },
             { id: 'time', label: 'Time', panel: timeProps },
+            { id: 'uses', label: 'Uses', panel: roles!.el },
           ]
         : [{ id: 'properties', label: 'Properties', panel: props }]),
     ],
     view.get('tab') ?? undefined,
     (tab) => view.set({ tab }),
   );
-  const pictureArea = characterFrames ? h('div', { class: 'blk-character-workbench' }, canvas) : canvas;
+  // a box the painting area zooms inside (two fingers pinch and pan it; a second finger never paints)
+  const zoomBox = h('div', { class: 'blk-zoom' }, canvas);
+  let canvasZoom = 1;
+  touchGestures({
+    el: zoomBox,
+    scroller: zoomBox,
+    zoom: () => canvasZoom,
+    setZoom: (value, at) => {
+      value = Math.max(1, Math.min(6, value));
+      const oldW = canvas.offsetWidth,
+        oldH = canvas.offsetHeight;
+      canvasZoom = value;
+      canvas.style.width = `${value * 100}%`;
+      zoomBox.scrollLeft = ((zoomBox.scrollLeft + at.x) / oldW) * canvas.offsetWidth - at.x;
+      zoomBox.scrollTop = ((zoomBox.scrollTop + at.y) / oldH) * canvas.offsetHeight - at.y;
+    },
+    abort: () => finishStroke(false),
+  });
+  const pictureArea = characterFrames ? h('div', { class: 'blk-character-workbench' }, zoomBox) : zoomBox;
   const columns = [
     h('div', { class: 'blk-picker' }, picker),
     h(
@@ -760,6 +806,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
       actions,
       mirrorSlot,
       groups.el,
+      colorHelp.el,
       sprites ? null : textures,
       badges.el,
       insight.el,
@@ -780,6 +827,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
       names.el,
       chooser.el,
     ),
+    h('p', { class: 'hint limit-note', role: 'note' }, blockCapacityText(kind, blocks.length)),
     h('div', { class: 'blk' }, columns[0], columns[1], columns[2]),
   );
   // Keep the running preview near the painter on phones, beside it on desktop.
@@ -813,7 +861,10 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
     }
   };
   window.addEventListener('keydown', onKey);
+  const stopNames = onColorHelp(renderSwatches);
   return () => {
+    stopNames();
+    colorHelp.dispose();
     finishStroke(false);
     window.removeEventListener('keydown', onKey);
     insight.dispose();

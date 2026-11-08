@@ -1,0 +1,93 @@
+/* The paper balloon cube (balloonCube.ts): the sheet to cut out and the fold steps */
+
+.pp-ballooncube {
+  padding: 4cqw 6cqw;
+  display: flex;
+  flex-direction: column;
+  gap: 1.4cqw;
+  font-family: Arial, Helvetica, sans-serif;
+  color: #1c1630;
+  background: #fff;
+}
+
+.pp-ballooncube h2 {
+  margin: 0;
+  font-size: 4.4cqw;
+  line-height: 1.1;
+  text-align: center;
+}
+
+.bc-intro,
+.bc-foot {
+  margin: 0;
+  font-size: 2.1cqw;
+  line-height: 1.35;
+}
+
+.bc-foot {
+  font-style: italic;
+}
+
+.bc-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.6cqw 2.4cqw;
+  font-size: 1.8cqw;
+}
+
+.bc-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8cqw;
+}
+
+.bc-legend svg {
+  width: 7cqw;
+  height: 1.4cqw;
+}
+
+.bc-legend span:last-child svg {
+  width: 3cqw;
+}
+
+.bc-sheet {
+  align-self: center;
+  width: 83cqw;
+}
+
+.bc-sheet svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.bc-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2cqw 3cqw;
+}
+
+.bc-step {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6cqw;
+  font-size: 1.9cqw;
+  line-height: 1.3;
+}
+
+.bc-step p {
+  margin: 0;
+}
+
+.bc-pic svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 27cqw;
+  border: 0.2cqw solid #1c1630;
+  background: #fff;
+}

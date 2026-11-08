@@ -13,6 +13,9 @@ import { BLEED, CUT_H, CUT_W, cutSvg, layoutStickers, pngWithDpi, sheetBounds, t
 import { CUT_OFFSET, MIN_SIZE, outline, type Pt } from './stickerGeom';
 import { bbsSticker, dieCut, floppy, gmSticker, polyPath, sandboxSticker, shaped, tvShot, type Sticker, type Words } from './stickerPaint';
 import type { StickerSpec } from './types';
+import { drawnArt } from './stickerDrawn';
+import { chickenNow } from '../../chicken/chickenState';
+import { yieldNow } from './yieldNow';
 
 type Special = 'bbs' | 'gm' | 'sandbox';
 
@@ -94,13 +97,20 @@ function mini(name: string, img: HTMLCanvasElement, color: string): Sticker | un
 }
 
 /** A spec made ready: its picture loaded, its kind and shape chosen. Also its mini, if it has a character. */
-async function resolveSticker(spec: MixedSticker, ctx: PrintContext | undefined, shrink = 0): Promise<{ sticker: Sticker; mini?: Sticker }> {
+async function resolveSticker(given: MixedSticker, ctx: PrintContext | undefined, shrink = 0): Promise<{ sticker: Sticker; mini?: Sticker }> {
+  // the rubber chicken follows the site (chicken/): once she is Lady Regina her sticker says so
+  const spec = given.lady && chickenNow() === 'lady' ? { ...given, ...given.lady } : given;
   if (spec.special === 'bbs') return { sticker: bbsSticker() };
   if (spec.special === 'gm') return { sticker: gmSticker() };
   if (spec.special === 'sandbox') return { sticker: sandboxSticker() };
   const name = nameOf(spec);
   const words = wordsOf(spec);
   const shape = spec.shape ?? 'rect';
+  if (spec.drawn) {
+    const img = drawnArt(spec.drawn);
+    const px = spec.px ?? 13;
+    return { sticker: dieCut(name, img, px, words) };
+  }
   if (ctx && (spec.hero || spec.sprite)) {
     const src = spec.hero ? await portrait(ctx.entry, spec.hero) : await spriteArt(ctx.entry, spec.sprite!);
     const loaded = await loadImage(src);
@@ -212,7 +222,7 @@ function gameSpecs(ctx: PrintContext): MixedSticker[] {
   return [
     ...(ctx.printables.stickers ?? []),
     ...(shot ? [{ text: 'Screenshot', shot: { map: shot[0], x: shot[1] + 3, y: shot[2] + 2, w: 10, h: 7 } }] : []),
-    { text: 'I ♥ SHAREWARE', shape: 'heart', color: '#d81e1e', ink: '#fff' },
+    { text: 'I ♥', sub: 'SHAREWARE', shape: 'heart', color: '#d81e1e', ink: '#fff' },
     { text: '', special: 'sandbox' },
   ];
 }
@@ -240,10 +250,17 @@ export async function stickers(ctx: PrintContext): Promise<Sheet[]> {
  */
 async function fitted(specs: MixedSticker[], id: string, extra: Sticker[] = []): Promise<Sheet[]> {
   for (let shrink = 0; ; shrink++) {
-    const made = await Promise.all(specs.map((spec) => resolveSticker(spec, spec.from, shrink)));
+    // one sticker at a time, the browser handed back between them: a pass is long at a slow CPU
+    const made: Awaited<ReturnType<typeof resolveSticker>>[] = [];
+    for (const spec of specs) {
+      made.push(await resolveSticker(spec, spec.from, shrink));
+      await yieldNow();
+    }
     const list = [...extra, ...made.map((m) => m.sticker)];
     const minis = made.flatMap((m) => (m.mini ? [m.mini] : []));
-    if (shrink >= 3 || layoutStickers(list.map((s) => s.geom)).length === 1) return stickerSheets(list, minis, id);
+    const fits = shrink >= 3 || layoutStickers(list.map((s) => s.geom)).length === 1;
+    await yieldNow();
+    if (fits) return stickerSheets(list, minis, id);
   }
 }
 
@@ -278,12 +295,13 @@ const fileName = (s: string) =>
     .replace(/^-|-$/g, '')
     .toLowerCase();
 
-function stickerSheets(list: Sticker[], minis: Sticker[], id: string): Sheet[] {
+async function stickerSheets(list: Sticker[], minis: Sticker[], id: string): Promise<Sheet[]> {
   const all = [...list, ...minis];
   const pages = layoutStickers(
     list.map((s) => s.geom),
     minis.map((s) => s.geom),
   );
+  await yieldNow(); // the packing above and the drawing below are each a long slice
   const names = all.map((s) => s.name);
   const base = fileName(id);
   return pages.map((page, i) => {

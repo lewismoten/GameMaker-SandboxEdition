@@ -13,7 +13,7 @@ export interface EpubSource {
 
 const HOW = 'Download it as an ePub, to read offline in any e-book reader';
 
-export interface EpubControl {
+interface EpubControl {
   el: HTMLButtonElement;
   /** The piece the button saves; undefined hides it. */
   use(source: EpubSource | undefined): void;

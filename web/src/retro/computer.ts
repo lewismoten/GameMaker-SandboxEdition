@@ -3,8 +3,10 @@
 //
 // This file is the power switch and running programs (DOS commands, Game-Maker's designers,
 // games); the drives and game folders are in computer/drives.ts and computer/folders.ts.
-import { attr } from './text/textScreen';
+import { attr, COLS, ROWS } from './text/textScreen';
+import { biosId } from './biosId';
 import { type ProgramRef } from './dos/vfs';
+import { hasOkMsg, MENU_REFUSAL } from './dos/okMsg';
 import { swapsDisks } from './diskSwap';
 import { ProgramAborted } from './text/textInput';
 import type { OpenDesigner } from './host';
@@ -12,7 +14,7 @@ import { errorBox, askText } from './text/textUi';
 import type { PlayerHandle } from '../player/player';
 import { deskJoystick } from '../input/deskJoystick';
 import { GameFiles } from '../project/files';
-import { loadProject, loadSaveData, writeSaveFile } from '../project/storage';
+import { loadProject, loadSaveData } from '../project/storage';
 import { Project } from '../editor/core/project';
 import { kindOf } from '../editor/core/project';
 import { Vga } from '../vga/shared/vga';
@@ -25,7 +27,8 @@ import { mouseDriverLine } from './computer/mouseDriver';
 import { soundBlaster } from './computer/soundBlaster';
 import { ComputerFolders } from './computer/folders';
 import { clearEnergySnore, drawEnergySnore } from './energySnore';
-import { deskProgram, playAchievements, playWrote, unlockAchievement } from '../achievements';
+import { deskProgram, playAchievements, unlockAchievement } from '../achievements';
+import { playSaves } from '../achievements/playSaves';
 
 /** How long the BIOS screen with its logo stays up, in a quick boot too. */
 const POST_HOLD_MS = 2500;
@@ -41,19 +44,32 @@ export class Computer extends ComputerFolders {
     s.resetPalette();
     s.clear(attr(7, 0));
     s.cursorVisible = false;
-    const turbo = !this.opts.speed.slowPc;
+    const turbo = this.turbo();
     // a quick boot (the DOS page, on its way to Game-Maker) says the same in a quarter of the time
     const pause = (ms: number) => sleep(this.opts.quickBoot ? ms / 4 : ms);
-    s.print(`AwkWard Modular BIOS v4.20  (C) 1993 AwkWard Software\n${turbo ? '486DX2-66 Turbo' : '486DX2-66 (Turbo off)'}\n\n`);
+    // a drive read as the PC starts (its light, and on the desk its sound), as long as a quick boot's pauses
+    const reads = (drive: string, ms: number) => this.opts.onDriveAccess?.(drive, this.opts.quickBoot ? ms / 4 : ms);
+    s.print(`AwkWard Modular BIOS v4.20  (C) 1993 AwkWard Software\n${this.opts.cpuName?.() ?? '486DX2-66'}${turbo ? ' Turbo' : ' (Turbo off)'}\n\n`);
     const postStart = Date.now();
     drawEnergySnore(s);
+    // the BIOS ID string along the bottom, as POST screens had (its board code is the build's commit)
+    s.write(0, ROWS - 1, attr(7, 0), biosId());
     for (let k = 0; k <= 4096; k += 256) {
       s.cursorX = 0;
       s.print(`Memory Test: ${String(k).padStart(5)}K${k === 4096 ? ' OK' : ''}`);
       await pause(30);
       if (!this.powered) return; // switched off while booting
     }
+    // the floppy seek test: drive A:'s light, its motor and its head stepping out and back
+    reads('A', 1100);
+    await pause(1000);
+    if (!this.powered) return;
     this.postBeep(); // one short beep: the power-on self test passed
+    // the boot: A: is tried for a disk first, then the hard disk
+    reads('A', 450);
+    await pause(450);
+    if (!this.powered) return;
+    reads('C', 500);
     s.print('\n\nStarting MS-DOS...\n\n');
     await pause(500);
     if (!this.powered) return;
@@ -61,22 +77,38 @@ export class Computer extends ComputerFolders {
     await sleep(Math.max(0, POST_HOLD_MS - (Date.now() - postStart)));
     if (!this.powered) return;
     clearEnergySnore(s);
+    s.fill(0, ROWS - 1, COLS - 1, ROWS - 1, attr(7, 0));
     // CONFIG.SYS
+    reads('C', 300);
     s.print('HIMEM is testing extended memory...');
     await pause(turbo ? 350 : 1100);
     if (!this.powered) return;
     s.print('done.\n');
     await pause(150);
     if (!this.powered) return;
+    reads('C', 250);
     s.print('EMM386 successfully installed.\n  Available Upper Memory     :  91 KB\n\n');
     await pause(250);
     if (!this.powered) return;
-    s.print('  ATAPI CD-ROM Device Driver  Version 2.14\n  Drive 0: CD-ROM 2X (MSCD001)\n\n');
-    await pause(turbo ? 400 : 900);
+    reads('C', 250);
+    s.print('  ATAPI CD-ROM Device Driver  Version 2.14\n');
+    // the driver tests the drive: its light, the laser sled and the motor spinning up
+    reads('D', 1500);
+    await pause(turbo ? 1200 : 1600);
+    if (!this.powered) return;
+    s.print('  Drive 0: CD-ROM 2X (MSCD001)\n\n');
+    await pause(200);
     if (!this.powered) return;
     // AUTOEXEC.BAT
     for (const l of AUTOEXEC.slice(1)) {
+      if (l.startsWith('LH ')) {
+        // a program loaded from the hard disk (PROMPT, PATH and SET are DOS's own)
+        reads('C', 200);
+        await pause(150);
+        if (!this.powered) return;
+      }
       if (l.includes('MSCDEX')) {
+        reads('D', 600);
         s.print('MSCDEX Version 2.23\n        Drive D: = Driver MSCD001 unit 0\n');
         await pause(300);
         if (!this.powered) return;
@@ -104,6 +136,19 @@ export class Computer extends ComputerFolders {
     this.picture?.destroy();
     this.closeEditor?.();
     this.shell.stop();
+  }
+
+  /**
+   * The reset button: whatever is running stops, as at power-off, but the screen stays lit and
+   * the PC boots again from the BIOS, at C:\ with its disks still in.
+   */
+  async reset(): Promise<void> {
+    if (!this.powered) return;
+    this.powerOff();
+    await sleep(300);
+    this.keys.resume();
+    this.shell.reset();
+    await this.powerOn();
   }
 
   /** The BIOS's single beep through the PC speaker: a short square wave. */
@@ -138,13 +183,13 @@ export class Computer extends ComputerFolders {
   }
 
   turbo(): boolean {
-    return !this.opts.speed.slowPc;
+    return this.opts.turbo?.() ?? !this.opts.speed.slowPc;
   }
 
   /** Types a command at the prompt, as if on the keyboard. */
-  typeCommand(cmd: string): boolean {
+  typeCommand(cmd: string, focus = true): boolean {
     if (!this.powered || this.busy) return false;
-    this.focus();
+    if (focus) this.focus();
     this.keys.type(`${cmd}\n`);
     return true;
   }
@@ -163,14 +208,57 @@ export class Computer extends ComputerFolders {
           // Game-Maker and its designers, the BBS: each loads when first run (see gm.ts)
           await (await import('./gm')).runGameMaker(this, 'main', _args);
           break;
+        case 'menu':
+          // MENU.C:38: without OKMSG and a third word it only says so, in place, and quits
+          if (!hasOkMsg(_args, 3)) {
+            this.screen.write(MENU_REFUSAL.x, MENU_REFUSAL.y, attr(MENU_REFUSAL.color, 0), MENU_REFUSAL.text);
+            break;
+          }
+          this.opts.onDriveAccess?.(this.shell.drive);
+          await (await import('./gm')).runGameMaker(this, 'menu', _args);
+          break;
         case 'playgame':
           this.screen.gameMakerColors();
           await (await import('./gm')).playgame(this);
-          this.screen.resetPalette();
-          this.screen.clear();
+          // PLAYGAME.C:596: RestorePal is set only without OKMSG, and GENC.C:82 then sets text mode
+          // again on exit (which clears the screen); started by GM, it leaves the screen to GM
+          if (!hasOkMsg(_args, 2)) {
+            this.screen.resetPalette();
+            this.screen.clear();
+          }
+          break;
+        case 'image': {
+          // IMAGE.C:99 is the same test as PLAYGAME's
+          const loaded = await import('../vga/image').catch(() => undefined);
+          if (!loaded?.program) {
+            this.screen.print("Can't load IMAGE.EXE (offline?).\n");
+            break;
+          }
+          this.screen.gameMakerColors();
+          this.screen.clear(attr(7, 0));
+          await loaded.program.run(this);
+          if (!hasOkMsg(_args, 2)) {
+            this.screen.resetPalette();
+            this.screen.clear();
+          }
+          break;
+        }
+        case 'designer':
+          // a designer typed at the prompt, on its own: Main/Quit ends back here (gm.ts runDesigner)
+          this.opts.onDriveAccess?.(this.shell.drive);
+          await (await import('./gm')).runDesigner(this, ref.exe, _args);
+          break;
+        case 'utility':
+          await (await import('./gm')).runUtility(this, _args);
+          break;
+        case 'xferplay':
+          await (await import('./gm')).xferplay(this);
           break;
         case 'terminal':
           await (await import('./bbs/bbs')).runTerminal(this, _args);
+          break;
+        case 'scoot':
+          await (await import('../courier/scootExe')).runScootExe(this);
           break;
         case 'vpic':
           await (await import('./view/vpic')).runVpic(this, _args);
@@ -211,6 +299,9 @@ export class Computer extends ComputerFolders {
         case 'fastplay':
           await (await import('./hacks/fastPlay')).runFastPlay(this, _args);
           break;
+        case 'reggie':
+          await (await import('./hacks/reggie')).runReggie(this, _args);
+          break;
         case 'backup':
           await (await import('./hacks/backupExe')).runBackup(this, _args);
           break;
@@ -233,7 +324,7 @@ export class Computer extends ComputerFolders {
           await (await import('./hacks/flags')).runFlags(this, _args);
           break;
         case 'batch':
-          for (const l of ref.lines) await this.shell.execute(l);
+          for (const l of ref.lines ?? []) await this.shell.execute(l);
           break;
       }
     } catch (e) {
@@ -271,7 +362,7 @@ export class Computer extends ComputerFolders {
 
   /** Game-Maker (or one of its designers) is running. */
   get inGameMaker(): boolean {
-    return this.program === 'gm';
+    return this.program === 'gm' || this.program === 'menu' || this.program === 'designer' || this.program === 'utility';
   }
 
   /**
@@ -343,7 +434,7 @@ export class Computer extends ComputerFolders {
     this.setMode('game');
     const host = h('div', { class: 'crt-game' });
     clear(this.layer, host);
-    this.opts.onGame?.({ files, gam, title });
+    this.opts.onGame?.({ files, gam, title, saveId });
     // the game player (the engine) loads with the first game played (the desk fetches it ahead)
     return new Promise<void>((resolve) => {
       // a game of yours plays with its DOS player choices (PLAYHACK, the editor's panel), a catalog
@@ -356,6 +447,16 @@ export class Computer extends ComputerFolders {
           : catalogId
             ? import('../dosPlayer/catalogPatches').then((m) => m.catalogPatchesById(catalogId))
             : Promise.resolve(undefined);
+      // the achievements' hooks, and the scene the game is on passed on to the host
+      const achieve = playAchievements(saveId, this.opts.view ?? 'desk');
+      const onSession: typeof achieve.onSession = (s) => {
+        achieve.onSession?.(s);
+        const previous = s.onScene;
+        s.onScene = (n) => {
+          previous?.(n);
+          this.opts.onScene?.(n, s.rec.playing);
+        };
+      };
       const mount = () =>
         void Promise.all([import('../player/player'), patches, import('@lewismoten/gamemaker-sandbox-engine/audio/engine')]).then(
           ([{ mountPlayer }, player, { AudioEngine }]) => {
@@ -365,6 +466,7 @@ export class Computer extends ComputerFolders {
               title,
               notice,
               configure,
+              dosSetup: true, // PLAYGAME's own Configure screen (player/dosConfig/), not the web dialog
               hardwareId: projectId ? `project:${projectId}` : saveId,
               player,
               autoStart: true,
@@ -377,9 +479,10 @@ export class Computer extends ComputerFolders {
               // The desk opts into live card control; DOS-compatible startup-only detection stays available to other hosts.
               audio,
               onQuit: () => false, // back to DOS
-              onFileWrite: saveId ? (name, bytes) => (playWrote(saveId, name), void writeSaveFile(saveId, name, bytes)) : undefined,
+              ...playSaves(saveId, gam),
               saveId,
-              ...playAchievements(saveId, this.opts.view ?? 'desk'),
+              ...achieve,
+              onSession,
               onExit: () => {
                 this.player = undefined;
                 this.opts.onGame?.(undefined);
@@ -525,6 +628,10 @@ export class Computer extends ComputerFolders {
       await project.saveNow();
       await this.swapInProject(project);
       return project;
+    }
+    if (d.disk.folders) {
+      if (!this.quiet) await errorBox(this, 'Choose a game folder first (such as FIRSTSTP\\).', 'The Sample Disk has one folder for each game.  (C)ontinue');
+      return undefined;
     }
     if (d.disk.writeProtected)
       return this.copyToHardDisk(d.disk.title, d.files, d.disk.gam, d.disk.catalog?.id, `${d.disk.title}: the disk is write-protected.`);

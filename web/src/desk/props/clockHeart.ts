@@ -5,6 +5,7 @@
 // isn't drawn (a narrow or not-so-wide window), clock.ts lets the DOS prompt's TIME stand in for
 // pressing it, and the heart rolls out beside the monitor instead.
 import { h } from '../../editor/core/ui';
+import { chickenWords } from '../../chicken/chickenWords';
 import { chickenPopped, CLOCK_HEART, takeClockHeart } from '../../tinHearts/deskHearts';
 import { deskHeartStates, setOverride } from '../../tinHearts/tinHearts';
 import { say } from './propKit';
@@ -18,12 +19,12 @@ import { tinHeartSvg } from './tinHeartArt';
 const WAITS_MS = { clock: 30_000, pc: 120_000 };
 
 /** What the room says when it is taken. */
-const TAKEN = 'A tin heart, ticking like it means it. Sir Reginald must have been keeping it warm in there. It’s yours now.';
+const taken = () => `A tin heart, ticking like it means it. ${chickenWords().title} must have been keeping it warm in there. It’s yours now.`;
 
 /** Is the clock heart found now (taken in the room, or added in EGG.EXE)? */
 const clockHeartFound = (): boolean => deskHeartStates().find((s) => s.id === CLOCK_HEART)?.found ?? false;
 
-export interface ClockHeart {
+interface ClockHeart {
   /** The chicken popped out: counts the pop, and true when the heart comes out this time. */
   popped(): boolean;
   /** Shows the heart: on the wall clock, or (where it isn't drawn) beside the monitor. */
@@ -63,7 +64,7 @@ export function clockHeart(clock: HTMLElement): ClockHeart {
     takeClockHeart();
     roomSound.watch();
     hide();
-    say(at, TAKEN, tinHeartSvg(48));
+    say(at, taken(), tinHeartSvg(48));
   });
 
   return {

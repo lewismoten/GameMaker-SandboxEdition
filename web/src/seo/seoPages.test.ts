@@ -1,18 +1,22 @@
 // What the build gives search engines (scripts/seoBuild.ts): the sitemap, robots.txt, llms.txt,
 // the home page's and the play pages' tags, JSON-LD and readable text. Every list and count of
-// games leaves out the secret ones, and no page, file or picture name gives one away.
+// games leaves out the secret ones, and no page, file or picture name gives one away; downloads.html
+// is the one exception (Lewis's choice): it lists them, with no play page and inlined pictures.
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import type { IndexHtmlTransformContext } from 'vite';
 import { cdCatalog, cdSecretCatalog } from '../../scripts/cdGames';
-import { gamePageHtml, guidePageHtml, seoPages } from '../../scripts/seoBuild';
+import { gamePageHtml, guidePageHtml, seoPages, staticPageHtml } from '../../scripts/seoBuild';
+import { staticPages } from '../../scripts/seoStaticPages';
 import { GUIDE_SECTIONS } from '../manual/guideSections';
 import { gamePage, SITE_URL } from './site';
+import { isStarterGame } from '../project/starter';
 
 const cdRoot = join(__dirname, '../../../cd');
 const catalog = cdCatalog(cdRoot);
 const secret = cdSecretCatalog(cdRoot);
-const playable = catalog.filter((g) => g.gam);
+// a Special is out only on its days, so the build gives it no page (seoBuild.ts playable)
+const playable = catalog.filter((g) => g.gam && g.series !== 'special');
 const plugin = seoPages(cdRoot);
 
 /** The files the build writes beside the pages (play.html is left out, so no game pages or pictures). */
@@ -68,7 +72,7 @@ describe('seoBuild', () => {
     expect(
       locs
         .slice(3)
-        .filter((l) => !guide.includes(l))
+        .filter((l) => !guide.includes(l) && !/\/(cast|library|magazine)\.html$/.test(l))
         .sort(),
     ).toEqual(playable.map((g) => `${SITE_URL}${gamePage(g.id)}`).sort());
     expect(new Set(locs).size).toBe(locs.length);
@@ -88,14 +92,81 @@ describe('seoBuild', () => {
     }
   });
 
-  it('lists every listed original game’s ZIP on downloads.html, and no secret game', () => {
+  it('describes a Starter as a small teaching game, not a shareware release', () => {
+    const starter = playable.find((g) => isStarterGame(g))!;
+    const html = gamePageHtml(page('play.html'), starter);
+    expect(html).toMatch(/name="description" content="[^"]*Starter game made with Game-Maker/);
+    expect(html).not.toMatch(/name="description" content="[^"]*shareware/);
+  });
+
+  it('gives every play page one accurate VideoGame: no invented dates, ratings or reviews, and no secret game anywhere on it', () => {
+    const shell = page('play.html');
+    for (const g of playable) {
+      const html = gamePageHtml(shell, g);
+      const games = jsonLd(html).filter((n) => n['@type'] === 'VideoGame');
+      expect(games, g.id).toHaveLength(1);
+      const v = games[0];
+      expect(v.name).toBe(g.title);
+      expect(v.url).toBe(`${SITE_URL}${gamePage(g.id)}`);
+      // a game made for this project (a Starter too) has an in-story year, not a publication date
+      if (g.original) expect(v.datePublished, g.id).toBeUndefined();
+      else if (g.year) expect(v.datePublished).toBe(String(g.year));
+      for (const key of ['aggregateRating', 'review', 'offers', 'award']) expect(v[key], `${g.id} ${key}`).toBeUndefined();
+      expect(secretHits(html), g.id).toEqual([]);
+    }
+  });
+
+  it('keeps the generic player and the player to try out of search results, not the download', () => {
+    expect(page('play.html')).toMatch(/<meta name="robots" content="noindex" \/>/);
+    for (const g of playable.slice(0, 5)) expect(gamePageHtml(page('play.html'), g)).not.toContain('noindex');
+  });
+
+  it('gives the cast and the Library pages of their own, in the sitemap, linking only to listed games and naming no secret game', () => {
+    const pages = staticPages(catalog);
+    expect(pages.map((p) => p.file)).toEqual(['cast.html', 'magazine.html', 'library.html']);
+    const index = page('index.html');
+    const ids = new Set(playable.map((g) => g.id));
+    for (const p of pages) {
+      const html = staticPageHtml(index, p);
+      expect(files['sitemap.xml']).toContain(`<loc>${SITE_URL}${p.file}</loc>`);
+      expect(html).toContain(`<link rel="canonical" href="${SITE_URL}${p.file}" />`);
+      expect(html).toMatch(/<meta name="description" content="[^"]{50,}"/);
+      expect(html).toContain(`history.replaceState(null,'',"${p.hash}")`);
+      expect(html.match(/<h1>/g)).toHaveLength(1);
+      const plays = [...html.matchAll(/href="\.\/play-([^"]+)\.html"/g)].map((m) => m[1]);
+      if (p.file !== 'magazine.html') expect(plays.length, p.file).toBeGreaterThan(5);
+      for (const id of plays) expect(ids.has(id), `${p.file} links ${id}`).toBe(true);
+      expect(secretHits(html), p.file).toEqual([]);
+      // and no secret game's name in the plain words either
+      for (const g of secret) expect(html.toLowerCase(), p.file).not.toContain(g.title.toLowerCase());
+    }
+  });
+
+  it('writes the How do I…? questions as readable text, each Starter linked to its play page', () => {
+    const section = GUIDE_SECTIONS.find(([id]) => id === 'how-do-i')!;
+    const html = guidePageHtml(page('index.html'), section, catalog);
+    expect(html).not.toContain('shows here once the page has loaded');
+    const withQuestions = playable.filter((g) => isStarterGame(g) && (g.original?.manual as { howDoI?: unknown[] } | undefined)?.howDoI?.length);
+    expect(withQuestions.length).toBeGreaterThan(0);
+    for (const g of withQuestions) expect(html).toContain(`href="./${gamePage(g.id)}"`);
+    expect(html).toContain('How do I make a wall my hero has to jump over?');
+    expect(html.match(/<h1>/g)).toHaveLength(1);
+  });
+
+  it('lists every original game’s ZIP on downloads.html (not the Starters), the secret ones last with no play page', () => {
     const html = files['downloads.html'];
-    const originals = playable.filter((g) => g.original);
+    const originals = playable.filter((g) => g.original && !isStarterGame(g));
     expect(originals.length).toBeGreaterThan(0);
-    for (const g of originals) expect(html).toContain(`href="./${g.path}${g.pack}"`);
+    for (const g of [...originals, ...secret]) expect(html).toContain(`href="./${g.path}${g.pack}"`);
+    for (const g of playable.filter((p) => isStarterGame(p))) expect(html).not.toContain(`game-${g.id}"`);
+    for (const g of secret) {
+      expect(html).not.toContain(gamePage(g.id));
+      expect(html).not.toContain(`games/shots/${g.id}-`);
+      expect(html.indexOf(`game-${g.id}"`)).toBeGreaterThan(Math.max(...originals.map((o) => html.indexOf(`game-${o.id}"`))));
+    }
     expect(html).not.toMatch(/href="\.\/games\/(gameware|shareware)\//);
     expect(html.match(/<h1>/g)).toHaveLength(1);
-    expect(secretHits(html)).toEqual([]);
+    for (const img of html.match(/<img [^>]*>/g) ?? []) expect(img).toMatch(/ alt="[^"]+"[^>]* width="\d+" height="\d+"| width="\d+" height="\d+" alt="[^"]+"/);
   });
 
   it('points robots.txt at the sitemap', () => {
@@ -103,8 +174,9 @@ describe('seoBuild', () => {
     expect(files['robots.txt']).toMatch(/^User-agent: \*\nAllow: \//);
   });
 
-  it('never names or links a secret game in a generated file or page', () => {
-    for (const [name, text] of Object.entries({ ...files, home, play })) expect(secretHits(text), name).toEqual([]);
+  it('never names or links a secret game in a generated file or page but downloads.html', () => {
+    const { 'downloads.html': _downloads, ...others } = files;
+    for (const [name, text] of Object.entries({ ...others, home, play })) expect(secretHits(text), name).toEqual([]);
     for (const g of playable) expect(secretHits(gamePageHtml(play, g)), g.id).toEqual([]);
   });
 

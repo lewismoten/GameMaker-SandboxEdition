@@ -1,0 +1,54 @@
+{
+  "keys": {
+    "75": {
+      "short": "Walk or steer left",
+      "long": "Walk left on foot; steer the rocket or the canoe left. The vehicle keeps rising while you steer."
+    },
+    "77": {
+      "short": "Walk or steer right",
+      "long": "Walk right on foot; steer the rocket or the canoe right. The vehicle keeps rising while you steer."
+    },
+    "57": {
+      "short": "Jump or paddle",
+      "long": "On foot: jump. In the rocket: nothing, a rocket does not jump. In the canoe: a paddle stroke, a short burst of speed up the river."
+    },
+    "72": {
+      "short": "Climb or go faster",
+      "long": "On foot: climb up a ladder. In the rocket and the canoe: rise faster."
+    },
+    "80": {
+      "short": "Climb down or go slower",
+      "long": "On foot: climb down a ladder. In the rocket and the canoe: rise more slowly, but never stop and never sink."
+    },
+    "30": {
+      "short": "Walk or steer left",
+      "long": "Same as the Left arrow."
+    },
+    "32": {
+      "short": "Walk or steer right",
+      "long": "Same as the Right arrow."
+    },
+    "17": {
+      "short": "Climb or go faster",
+      "long": "Same as the Up arrow."
+    },
+    "31": {
+      "short": "Climb down or go slower",
+      "long": "Same as the Down arrow."
+    }
+  },
+  "joystick": {
+    "1": {
+      "short": "Jump or paddle",
+      "long": "Jump on foot, paddle in the canoe."
+    }
+  },
+  "sounds": {
+    "9": "The jump and the paddle stroke",
+    "10": "Getting hurt (nothing here does)",
+    "11": "Falling over (nothing here does)"
+  },
+  "counters": {
+    "20": "Keys: not used here, but a copy can add them."
+  }
+}

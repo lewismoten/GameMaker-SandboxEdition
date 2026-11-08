@@ -1,0 +1,40 @@
+{
+  "title": "Try Again",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "hero": "MIA",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.2",
+  "blurb": "Two short levels about getting a second chance. A pit is too deep for Mia to climb out of, and a post at the bottom starts the level over: it is a link from the post's square back to the same scene. In the next level three pits each have a way back built in, a ladder, steps of planks and steps of solid blocks, so nobody needs a post. Signs say how. Play it, then open it in Game-Maker and find the link.",
+  "exe": "TRYAGAIN.EXE",
+  "dosName": "TRYAGAIN",
+  "sound": "sb",
+  "label": {
+    "background": "#fff3d6",
+    "band": "#a8642a",
+    "ink": "#2a1a0c",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "2 short levels",
+    "hours": 1,
+    "background": "#a8642a",
+    "accent": "#ffd23f",
+    "ink": "#ffffff",
+    "tagline": "Fell in? Touch the post.",
+    "back": "A small explorer in a purple beanie has two short levels, and pits in the way each time. One pit is too deep to climb out of, so a post at the bottom starts the level over. In the next level every pit has a way back built in: a ladder, steps of planks, steps of solid blocks. A good level never leaves the player stuck. Read the signs, then open the game in Game-Maker and look at the post.",
+    "features": [
+      "Signs in the levels explain each idea",
+      "A post that starts the level over is one scene link back to the same scene",
+      "A ladder, planks and solid blocks as ways back out of a pit",
+      "Made to be copied and taken apart"
+    ],
+    "shots": [
+      ["one.map", 20, 6],
+      ["two.map", 12, 6]
+    ],
+    "rating": "Everyone"
+  }
+}

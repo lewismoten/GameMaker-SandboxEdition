@@ -6,14 +6,12 @@
 import { h, toast, promptText, modal } from '../core/ui';
 import { Project } from '../core/project';
 import { renderShot, renderTitle } from '../../gfx/gameShots';
-import { titlePixels } from '../../gfx/titlePicture';
 import { paintIndexed } from '../core/draw';
 import { GameFiles, creditLine, loadHostedGame, withDetails, type CatalogEntry } from '../../project/files';
 import { demoNeeds, streamHostedGame } from '../../project/streamGame';
 import { listProjects, loadProject } from '../../project/storage';
 import { controlsFromCompanion } from '../core/gameControls';
 import { ADVTYPE, NOSCENE, parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
-import { levelShot } from '../editors/integrator/integratorArt';
 import { catalogTarget, healthBadge, projectTarget, type HealthTarget } from './gameHealth';
 import type { DemoPreview } from '../../media/demoPreview';
 import type { HomeNav } from './home';
@@ -27,6 +25,8 @@ import { projectDownloadButton } from './projectExport';
 import { chooseCopy } from './homeCopies';
 import { plainError } from '../core/plainError';
 import { isBizarreGame } from '../../project/bizarre';
+import { isSpecialGame } from '../../project/special';
+import { keepSpecial } from '../../specials/state';
 import { lookId } from './lookId';
 import { gameVersion } from '../../project/gameVersion';
 import type { CommunityGame } from '../../community/catalog';
@@ -85,7 +85,7 @@ export function playLink(id: string): string {
 /** How much of a game a demo in the panel fetches before it is asked for, in bytes. */
 const PREVIEW_AHEAD = 192 * 1024;
 
-export type GameKind = 'mine' | 'gameware' | 'sandbox' | 'shareware' | 'bizarre' | 'community';
+export type GameKind = 'mine' | 'gameware' | 'sandbox' | 'shareware' | 'bizarre' | 'starter' | 'special' | 'community';
 
 type ProjectSummary = Awaited<ReturnType<typeof listProjects>>[number];
 
@@ -134,7 +134,7 @@ export function catalogGame(g: CatalogEntry, kind: GameKind): HomeGame {
   // the CD's library of parts has no game, nor a title of its own
   const title = g.gam ? g.title : 'Parts library';
   const made =
-    kind === 'sandbox'
+    kind === 'sandbox' || kind === 'starter' || kind === 'special'
       ? [g.company ?? 'Sandbox Software', g.year].filter(Boolean).join(' · ')
       : kind === 'shareware' || kind === 'bizarre'
         ? creditLine(g) || (isBizarreGame(g) ? 'The Bard of Bizarre · free to change' : 'Shareware · play only')
@@ -196,6 +196,7 @@ export function projectGame(p: ProjectSummary, original?: CatalogEntry): HomeGam
       const link = game.scenes[0]?.links.find((l) => l.toScene !== NOSCENE && game.scenes[l.toScene]?.gametype === ADVTYPE);
       const i = link ? link.toScene : game.scenes.findIndex((s) => s.gametype === ADVTYPE);
       if (i < 0) return false;
+      const { levelShot } = await import('../editors/integrator/integratorArt');
       const shot = levelShot(files, game.scenes[i], link?.to ?? { x: 50, y: 50 }, Math.round(c.width / 20), Math.round(c.height / 20));
       if (!shot) return false;
       const ctx = c.getContext('2d')!;
@@ -206,6 +207,8 @@ export function projectGame(p: ProjectSummary, original?: CatalogEntry): HomeGam
     // its title screen, from its own files as they are now
     drawTitle: async (c) => {
       const files = await load();
+      // drawn live only for a game of yours (a listed game's is built ahead: gameShots.ts), so its readers load then
+      const { titlePixels } = await import('../../gfx/titlePicture');
       const pic = titlePixels(files, parseGame(files.get(p.gam)!));
       if (pic) paintIndexed(c, pic.pixels, pic.width, pic.height, pic.palette);
       return !!pic;
@@ -237,7 +240,7 @@ const shotObserver = new IntersectionObserver(
  * blocks) when it has none. Until then it is marked `shot-loading` (a placeholder shimmer),
  * and `shot-none` when there is no picture to draw.
  */
-function gameShot(game: HomeGame, className = 'card-shot pixel'): HTMLCanvasElement {
+export function gameShot(game: HomeGame, className = 'card-shot pixel'): HTMLCanvasElement {
   const c = h('canvas', {
     class: `${className} shot-loading`,
     width: 320,
@@ -418,6 +421,8 @@ export async function copyCatalogGame(
   name = title,
 ): Promise<string | undefined> {
   // already have a copy? offer it first, so a second one is made only on purpose
+  // a Special copied to My games is kept for good (specials/state.ts), as is its copy
+  if (entry && isSpecialGame(entry)) keepSpecial(entry.id, 'copied');
   if (entry) {
     const pick = await chooseCopy(title, entry.id, gam);
     if (!pick) return;
@@ -429,7 +434,7 @@ export async function copyCatalogGame(
   if (!files) return;
   toast(`Copying ${title}…`);
   // the copy keeps the game's DOS player look (an original game's player.json) in its companion
-  let companion = entry && gam ? (await import('../../dosPlayer/catalogPatches')).catalogCompanion(entry, gam) : undefined;
+  let companion = entry && gam ? await (await import('../../dosPlayer/catalogPatches')).catalogCompanionOf(entry, gam) : undefined;
   // …and the walkthrough and plays made while it was look-only (check/walk/keptWalk.ts)
   // …and the boards its author arranged its scenes into (games/<id>/integrator.json)
   if (entry && gam) companion = await (await import('../editors/integrator/shippedBoards')).withShippedBoards(companion, entry.id, gam);
@@ -473,7 +478,7 @@ export function gameActions(game: HomeGame, nav: HomeNav, refresh: () => Promise
     const link = (href: string, label: string, primary = false) =>
       h(
         'a',
-        { class: `button with-ico${primary ? ' primary' : ''}`, href, target: '_blank', rel: 'noopener noreferrer' },
+        { class: `button with-ico${primary ? ' primary sc-play' : ''}`, href, target: '_blank', rel: 'noopener noreferrer' },
         svgIcon(primary ? 'play' : 'link'),
         label,
       );
@@ -487,14 +492,17 @@ export function gameActions(game: HomeGame, nav: HomeNav, refresh: () => Promise
     if (entry.sourceUrl) actions.push(link(entry.sourceUrl, 'Source & credits'));
     return actions;
   }
-  const play = (href: string) => h('a', { class: 'button primary with-ico', href, 'aria-label': `Play ${game.title}` }, svgIcon('play'), 'Play');
+  // a Special played or opened from here sticks around once its window passes (specials/state.ts)
+  const keepIt = (how: 'played' | 'opened') => (game.entry && isSpecialGame(game.entry) ? keepSpecial(game.entry.id, how) : undefined);
+  const play = (href: string) =>
+    h('a', { class: 'button primary with-ico sc-play', href, 'aria-label': `Play ${game.title}`, onclick: () => keepIt('played') }, svgIcon('play'), 'Play');
   const keys = h('button', { class: 'with-ico', title: 'What each key does in this game', onclick: () => openKeys(game) }, svgIcon('keys'), 'Keys');
   const e = game.entry;
   if (game.project) {
     const p = game.project;
     return [
       h('button', { class: 'primary with-ico', onclick: () => nav.openProject(p.id) }, svgIcon('edit'), 'Open'),
-      h('a', { class: 'button with-ico', href: `./play.html?project=${encodeURIComponent(p.id)}` }, svgIcon('play'), 'Play'),
+      h('a', { class: 'button with-ico sc-play', href: `./play.html?project=${encodeURIComponent(p.id)}` }, svgIcon('play'), 'Play'),
       keys,
       projectDownloadButton(p.id, game.title),
       moreMenu(...projectMenuItems(p, refresh)),
@@ -541,7 +549,10 @@ function lookInside(game: HomeGame, id: string, nav: HomeNav): HTMLElement {
       class: 'with-ico',
       title: 'Open its files in the editor as released, without making a copy',
       'aria-label': `Look inside ${game.title}: its files as released, without making a copy`,
-      onclick: () => nav.openProject(lookId(id)),
+      onclick: () => {
+        if (game.entry && isSpecialGame(game.entry)) keepSpecial(game.entry.id, 'opened');
+        nav.openProject(lookId(id));
+      },
     },
     svgIcon('search'),
     'Look inside',

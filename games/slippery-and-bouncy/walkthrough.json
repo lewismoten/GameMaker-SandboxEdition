@@ -1,0 +1,77 @@
+{
+ "version": 1,
+ "game": "slippery-and-bouncy",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU0jzStND80DTQ7NggFND80rTRnNAzkCuSRNF80OTSPNA00="
+  },
+  {
+   "scene": 3,
+   "keys": "AU0ZzStND80DTQbNeE0szQNN"
+  },
+  {
+   "scene": 4,
+   "keys": "AU0UzStNBc0DTR3NF00WzQ1NDM0rTQzNA00JzT1NDTkCuQnNN00hzQNN"
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: Ice"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: The Belt"
+  },
+  {
+   "scene": 4,
+   "title": "Level 3: Wind"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 10327,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 913,
+    "time": 15216.666666666471
+   },
+   {
+    "title": "Level 1: Ice",
+    "frame": 2142,
+    "time": 35700.00000000053
+   },
+   {
+    "title": "Level 2: The Belt",
+    "frame": 3974,
+    "time": 66233.33333332972
+   },
+   {
+    "title": "Level 3: Wind",
+    "frame": 5324,
+    "time": 88733.33333333627
+   },
+   {
+    "title": "Ending",
+    "frame": 7043,
+    "time": 117383.3333333446
+   },
+   {
+    "title": "Credits",
+    "frame": 9253,
+    "time": 154216.66666666846
+   }
+  ]
+ }
+}

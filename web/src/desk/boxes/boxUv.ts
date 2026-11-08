@@ -9,6 +9,7 @@
 import type { CatalogEntry } from '../../project/files';
 import { uvColor } from '../room/posterUv';
 import { drawBoxLetters, type BoxFaces } from './gameBox';
+import { copyOf, spineOf } from './boxSpine';
 
 type Side = keyof BoxFaces;
 
@@ -33,10 +34,18 @@ export function uvLettering(px: Uint8ClampedArray, letters: Uint8ClampedArray, a
 /** Which game a set of faces shows (shelf.ts tells), so its lettering can be drawn again. */
 const games = new WeakMap<BoxFaces, CatalogEntry>();
 /** The glowing sides made so far, as object URLs. */
-const made = new WeakMap<BoxFaces, Map<Side, Promise<string | undefined>>>();
+const made = new WeakMap<BoxFaces, Map<Side, Promise<Glow | undefined>>>();
 
 export function uvGame(faces: BoxFaces, entry: CatalogEntry): void {
   games.set(faces, entry);
+}
+
+/** Lets go of the glowing sides made (or being made) for these faces, once the box is replaced or the shelf is gone. */
+export function releaseUv(faces: BoxFaces): void {
+  games.delete(faces);
+  const sides = made.get(faces);
+  made.delete(faces);
+  for (const url of sides?.values() ?? []) void url.then((u) => typeof u === 'string' && URL.revokeObjectURL(u));
 }
 
 /** Waits for a quiet moment. */
@@ -63,26 +72,50 @@ function loadImage(src: string): Promise<HTMLImageElement> {
   return img.decode().then(() => img);
 }
 
-/** One side of the box under black light, as an object URL. */
-async function makeSide(entry: CatalogEntry, faces: BoxFaces, side: Side): Promise<string | undefined> {
-  const [letters, img] = await Promise.all([lettersOf(entry), loadImage(faces[side])]);
+/** One side of the box under black light: a canvas for a shelf spine (small, and no request), else an object URL. */
+type Glow = string | HTMLCanvasElement;
+
+async function makeSide(entry: CatalogEntry, faces: BoxFaces, side: Side): Promise<Glow | undefined> {
+  // the job waited in the queue: if the box was replaced meanwhile (releaseUv), its picture's
+  // object URL is revoked and asking for it now would be a failed request
+  if (!games.has(faces)) return undefined;
+  const spine = side === 'left' ? spineOf(faces) : undefined;
+  const [letters, img] = await Promise.all([lettersOf(entry), spine ?? loadImage(faces[side])]);
   const mask = letters?.[side];
   if (!mask) return undefined;
+  // at the picture's own size: a shelf spine is small (boxSpine.ts), so is its glow
+  const w = img instanceof HTMLCanvasElement ? img.width : img.naturalWidth;
+  const h = img instanceof HTMLCanvasElement ? img.height : img.naturalHeight;
   const c = document.createElement('canvas');
-  c.width = mask.width;
-  c.height = mask.height;
+  c.width = w || mask.width;
+  c.height = h || mask.height;
+  const small = c.height < mask.height;
   const ctx = c.getContext('2d', { willReadFrequently: true });
   const lctx = mask.getContext('2d');
   if (!ctx || !lctx) return undefined;
   ctx.drawImage(img, 0, 0, c.width, c.height);
   const pic = ctx.getImageData(0, 0, c.width, c.height);
-  uvLettering(pic.data, lctx.getImageData(0, 0, c.width, c.height).data);
+  let maskPx = lctx.getImageData(0, 0, mask.width, mask.height);
+  if (small) {
+    // the lettering shrunk the same way
+    const m = document.createElement('canvas');
+    m.width = c.width;
+    m.height = c.height;
+    const mctx = m.getContext('2d', { willReadFrequently: true });
+    if (!mctx) return undefined;
+    mctx.imageSmoothingQuality = 'high';
+    mctx.drawImage(mask, 0, 0, m.width, m.height);
+    maskPx = mctx.getImageData(0, 0, m.width, m.height);
+  }
+  uvLettering(pic.data, maskPx.data);
   ctx.putImageData(pic, 0, 0);
+  if (small) return c;
+  if (!games.has(faces)) return undefined; // released while it was drawn: no URL to leak
   const blob = await new Promise<Blob | null>((done) => c.toBlob(done, 'image/webp', 0.9));
   return blob ? URL.createObjectURL(blob) : undefined;
 }
 
-function uvSide(faces: BoxFaces, side: Side): Promise<string | undefined> | undefined {
+function uvSide(faces: BoxFaces, side: Side): Promise<Glow | undefined> | undefined {
   const entry = games.get(faces);
   if (!entry) return undefined;
   let sides = made.get(faces);
@@ -104,7 +137,11 @@ export function dressUv(model: HTMLElement, faces: BoxFaces, sides: readonly Sid
     void uvSide(faces, side)?.then((src) => {
       const face = model.querySelector(`.bface.${side}`);
       if (!src || !face || face.querySelector('.buv')) return;
-      face.append(Object.assign(document.createElement('img'), { className: 'buv', src, alt: '', draggable: false }));
+      face.append(
+        typeof src === 'string'
+          ? Object.assign(document.createElement('img'), { className: 'buv', src, alt: '', draggable: false })
+          : Object.assign(copyOf(src), { className: 'buv' }),
+      );
     });
   }
 }

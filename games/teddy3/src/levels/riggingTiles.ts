@@ -12,7 +12,7 @@ import { Tiles } from './level';
 import { c, copy, r } from '../blocks/tiles';
 import { sign, wideSign } from './common';
 import { juggler } from '../sprites/folks';
-import { KLUB } from '../sprites/klubfolk';
+import { CLUB } from '../sprites/clubfolk';
 import { leoOn } from '../sprites/leo';
 import { bulbs, outlet } from '../sprites/rigging';
 import { tent } from './stageTiles';
@@ -117,7 +117,7 @@ export function riggingTiles(): Tiles {
     t.air(`juggles${ph}Bot`, b, { next: `juggles${1 - ph}Bot`, ntime: 7 });
   }
   // Twirly at the other end of the catwalk, catching the pin and tossing it back
-  const [tw0, tw1] = leoOn(KLUB.twirly, bg, bg);
+  const [tw0, tw1] = leoOn(CLUB.twirly, bg, bg);
   t.air('twirlyTop', tw0);
   t.air('twirlyBot', tw1);
   // the plug of the light string (fetch it), and the outlet at the top (it takes the plug)

@@ -1,0 +1,39 @@
+{
+  "title": "Beat the Clock",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "hero": "KIT",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.2",
+  "blurb": "Two short levels about time. A bar of five green pieces goes out one by one, and when it is dark the gate in the brick wall shuts, so run for the exit, or walk into the clock door and start again. In the second level the clock starts over by itself, so you can wait for the gate. A clock here is a block that turns into another block after some ticks. Signs say how. Play it, then open it in Game-Maker and change how long the bar lasts.",
+  "exe": "BEAT.EXE",
+  "dosName": "CLOCK",
+  "sound": "sb",
+  "label": {
+    "background": "#e4eeff",
+    "band": "#2b66c8",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "2 short levels",
+    "hours": 1,
+    "background": "#2b66c8",
+    "accent": "#ffd23f",
+    "ink": "#ffffff",
+    "tagline": "Tick. Tick. Gate!",
+    "back": "A small explorer in a teal beanie has two short levels to cross, and a clock in each. A bar of green light goes out piece by piece, and when it is dark a gate in a brick wall shuts. Run for it, or step through the clock door and start again. Read the signs, then open the game in Game-Maker and change how long the bar lasts.",
+    "features": [
+      "A bar that goes out piece by piece, and a gate that shuts when it is dark",
+      "A clock door to try again, and a clock that starts over by itself",
+      "Made to be copied and taken apart"
+    ],
+    "shots": [
+      ["one.map", 26, 1],
+      ["two.map", 14, 1]
+    ],
+    "rating": "Everyone"
+  }
+}

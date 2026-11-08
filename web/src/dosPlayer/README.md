@@ -6,7 +6,8 @@ Portable `patchTable.ts`, `patchRules.ts` and `fileExtensions.ts` now live in th
 
 The DOS player customizer's core, with no DOM. `patchTable.ts` is
 what it offers of XFERPLAY.EXE (words, colors, frames, positions, times, F-keys: the safe and
-caution entries of the patch map, with offsets and rules); `patchRules.ts` checks and writes
+caution entries of the patch map, with offsets and rules; and the experimental gameplay
+constants of the `play` group, every copy of each, `gameplayPatches.test.ts`); `patchRules.ts` checks and writes
 each value; `applyPatches.ts` patches only the CD's player (MD5 `fcaf47d5…`) and reads a
 hand-edited one back into patches; `fileExtensions.ts` is the Files tab's renamed extensions
 (every copy of each the player asks for, the kinds the .gam names, the rules, Acord Games'

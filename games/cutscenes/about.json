@@ -1,0 +1,45 @@
+{
+  "title": "Cutscenes",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "hero": "MARA",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.0",
+  "blurb": "Two short levels about scenes you watch. The first starts with a picture and some words, then drops Mara through a stage floor onto a mat, so the scene moves on by itself without a key. The second is a menu room: three doors on three ledges, and each door is a link to a scene of its own. Signs say how. Play it, then open it in Game-Maker and send a door somewhere new.",
+  "exe": "CUTS.EXE",
+  "dosName": "CUTSCENE",
+  "sound": "sb",
+  "label": {
+    "background": "#e8f6ff",
+    "band": "#8a3a7c",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "2 short levels",
+    "hours": 1,
+    "background": "#8a3a7c",
+    "accent": "#ffd23f",
+    "ink": "#ffffff",
+    "tagline": "Watch, then walk on.",
+    "back": "A small explorer in a green beanie has two short levels. In the first a picture and some words come up, and then a stage floor drops away and takes them on. In the second a room of three doors lets them pick which short tale to watch. Read the signs, then open the game in Game-Maker and send a door somewhere new.",
+    "features": [
+      "A picture and words, then a stage that ends the scene by itself",
+      "A menu room: each door is a link to a scene",
+      "Made to be copied and taken apart"
+    ],
+    "shots": [
+      ["one.map", 0, 1],
+      ["hall.map", 8, 1]
+    ],
+    "rating": "Everyone"
+  },
+  "acceptedFindings": [
+    "facing s3 The hero climbs side on",
+    "flashing s2 Block 68 flashes light and dark about 0.1 times a second over 126 blocks of one screen, from (9, 19)",
+    "flashing s4 Block 70 flashes light and dark about 0.3 times a second over 126 blocks of one screen, from (9, 19)",
+    "waits s2 Timed block 68 stays shut for 16.8 s at a time"
+  ]
+}

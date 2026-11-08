@@ -102,7 +102,7 @@ export function house(): Level {
   m.set(3, 39, 'teddyBed').set(5, 39, 'gwinnBed');
   m.set(8, 38, 'couch00').set(9, 38, 'couch10').set(10, 38, 'couch20');
   m.set(8, 39, 'couch01').set(9, 39, 'couch11').set(10, 39, 'couch21');
-  m.set(9, 36, 'klubPhoto');
+  m.set(9, 36, 'clubPhoto');
   m.set(12, 38, 'tv00').set(12, 39, 'tv01');
   m.set(6, 37, 'signSniff').set(7, 37, 'signSniffR');
   m.set(2, 37, 'signWoof').set(3, 37, 'signWoofR');

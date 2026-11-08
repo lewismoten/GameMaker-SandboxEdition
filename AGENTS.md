@@ -37,7 +37,7 @@ lives under `web/packages/*/src/`. See `docs/monorepo.md`.
 npm ci                                            # uses the root workspace lockfile
 npm run format                                     # Prettier: web/, games/*.ts, code/README.md
 npm run format:check                               # checking only (part of the root npm run verify)
-npm run lint                                       # ESLint (type-aware) on web/; lint:fix fixes
+npm run lint                                       # ESLint (type-aware) on web/; lint:fix fixes; lint:full skips the cache
 npx tsc --noEmit -p .                              # typecheck
 npx vitest run                                     # tests
 npx vite-node ../games/<id>/build.ts               # rebuild a game's disk/
@@ -47,15 +47,29 @@ npx vite-node ../games/kit/clipCheck.ts <id>       # no voice clip cut off at a 
 npx vite-node ../games/kit/textfitCheck.ts <id>    # text fits its DOS screens
 npx vite-node ../games/kit/hiddenView.ts <id>      # tin hearts and eggs are out of sight
 npx vite-node ../games/kit/levelCheck.ts <id>      # the editor's Level check finds nothing new
+npx vite-node ../games/kit/palCheck.ts [id]        # no byte-identical .pal files on a disk (the build merges them)
 npx vite-node ../games/kit/tinHearts.ts check      # every heart is found when touched
 npx vite-node ../games/kit/playtime.ts             # the only writer of box play hours
 npx vite-node ../games/kit/versionCheck.ts         # a game changed since the last push to master has a higher version
+npm run heavy -- <command...>                  # a heavy job (build, full vitest, verify:perf, check:games, walkthrough recording) in one of 2 shared slots; waits while the load is over 20; log in ~/.cache/gamemaker-heavy/log.tsv
 npm run check:games                                # all of the game checks above, every game, a table
 npm run check:games -- --game <id> --quick         # one game, without the reproducibility rebuild
-npm run walk:auto -- <folder|.zip> [--budget ms] [--game NAME.GAM] [--out w.json]  # the editor's walkthrough bot on any game; a table per scene; exits 1 if it didn't win
+npm run walk:auto -- <folder|.zip> [--budget ms] [--game NAME.GAM] [--out w.json] [--basic-keys]  # the editor's walkthrough bot on any game; a table per scene; exits 1 if it didn't win; --basic-keys: arrows, Space and Enter only
+npm run check:dialogs [-- --only id,id]          # every pop-up dialog fits 375×812, 390×844, 360×740 (and 844×390 as advice) with no scrolling, close and primary buttons in view, light and dark; exits 1 on a failure
+npm run check:offline -- --dist <scratch production build>  # "Play offline" really works: downloads the copy, goes offline, then the web home, a Starter, the desk, the phone's recorded clips and the tour's voice work and no request fails; 3 to 6 minutes; needs a scratch `vite build --outDir` (through npm run heavy --)
+npm run check:keys [-- id ...]                     # keyboard accessibility: each walkthrough's share of arrows/Space/Enter presses, its diagonals and other keys; suggestions
+npm run editor:touch -- <route> [--out dir]       # touch audit of one editor route at iPad and iPhone sizes: controls under 44 px, overflow, axe, screenshots
+npm run check:gestures -- [--route r] [--out dir]  # map editor touch gestures (pinch, pan, paint, stray stroke, long-press) with real touch events at iPad and iPhone sizes; PASS/FAIL per step; exits 1 on a FAIL
+npm run check:audio-unlock -- [--engines webkit,chromium] [--page desk,home]  # desk makes its AudioContext outside input handlers and it runs after the first tap; headless WebKit is not iOS proof
+npm run replay:log -- <log.jsonl> [--session id] [--out dir]  # replay a game the dev interaction log (the 🐵 switch) recorded, headless; checks each snapshot; PNG frames with --out; exits 1 on divergence
+npm run verify:perf                            # performance budgets (bytes, requests, INP at 4x) on a scratch production build, about 70 s; --update rewrites web/scripts/perfBudgets.json on purpose
 npm run badges:similar                             # advisory: achievement badges that look alike in gray or to color-blind eyes; HTML report in .for-lewis/research/badges-similar/
+npm run release:draft -- <pages|engine|archives|tools>  # pending fragments and legacy Unreleased notes, plus commit suggestions (prints; never writes)
+npm run release:cut -- <target> <version>          # Unreleased becomes a dated version; sets a package's version
+npm run verify:changed [-- --base <ref>]           # the pre-merge check: prettier + eslint on changed files, tsc (whole project), vitest --changed, release:check if a package src changed; prints the check:games command for a changed game; the full one is root npm run verify
+npm run release:check                              # a package whose src changed since its tag needs a fragment or Unreleased line (in root npm run verify)
 npm run domains:check                              # every made-up domain is still unregistered (whois + DNS; needs network)
-npm run dosbox                                     # dosbox/ (git-ignored) to mount as C: in DOSBox
+npm run dosbox                                     # dosbox/ (git-ignored) to mount as C: in DOSBox (open DOSBox or any window only when Lewis is away)
 npm run voice                                      # tour voice clips for new or changed lines (local Pocket TTS; -- --only <id> retakes one)
 npm run voice:all                                  # every tour voice clip again
 npm run voice:check                                # Whisper hears every tour clip and lists words said wrong (retake those)
@@ -67,7 +81,8 @@ After changing a game, rebuild it and run its checks (`npm run check:games -- --
 all checks and verifies two independent builds match byte for byte). `disk/`, `walkPaths.json`
 and `games/.build-cache.json` are ignored build output: never commit them. Root `npm ci`
 generates them; development, build and test commands refresh them when inputs change.
-Use `npm run build:games -- --force` from the root for a clean rebuild of all games.
+Use `npm run build:games -- --force` from the root for a clean rebuild of all games (`--force-all` also
+rebuilds the trinkets, nickels and other extras, which is slow; `--timing` prints per-stage seconds).
 Recorded walkthroughs and demos remain source inputs and regression fixtures. A refactor
 must not change the generated disk bytes, walkthroughs or demos.
 If a game's built content changes since the last push to master, bump its `"version"` in
@@ -91,12 +106,31 @@ preserve what was there.
 
 ## Working rules
 
+- **Branches (git flow):** `master` holds releases and `develop` collects finished work.
+  Nobody commits on either directly, and several agents (a remote one included) work at once,
+  so every task gets its own branch from an up-to-date `develop`:
+  - start: `git switch develop && git pull --ff-only && git switch -c feature/<short-name>`;
+    in a worktree (an agent's starts from `master`, and `develop` may be checked out
+    elsewhere): `git fetch origin && git switch -c feature/<short-name> origin/develop`.
+    Check with `git merge-base --is-ancestor origin/develop HEAD` before the first commit.
+  - finish, once its checks pass: bring `develop` in first and settle any conflicts on the
+    feature branch (`git merge develop`), then
+    `git switch develop && git pull --ff-only && git merge --no-ff feature/<short-name> && git push origin develop`,
+    so the other agents can pull it. Then delete the feature branch, locally and on origin
+    (`git branch -d feature/<short-name> && git push origin --delete feature/<short-name>`),
+    unless work on it is still going on.
+  - an agent you start (a subagent, a worktree) gets its own `feature/` branch from `develop`
+    the same way; tell it to in its brief.
+  - a pull request from `develop` into `master` only when the maintainer says it's time.
 - **Commits:** commit small and often: one game or one feature per commit, with no more
   than about 3 uncommitted files at a time. Use `git commit -- <paths>` so you only commit
-  your own files. Never push, and never rewrite history.
+  your own files. Every 5 to 10 minutes, if there are new commits, push your feature branch
+  (`git push -u origin HEAD` the first time, then `git push`), so the maintainer can see on
+  GitHub what everyone is working on, even away from home. No workflow runs on a branch push.
+  Never push `master`, never force-push, and never rewrite history that has been pushed.
 - **Dev server:** the maintainer keeps a dev server open on port 5173. Never restart or stop
-  it, and never make that page reload. Verify with your own headless browser (playwright-core,
-  channel `chrome`) against it. For production checks, use a scratch build
+  it, and never make that page reload. Verify with your own headless browser (Playwright's
+  bundled Chromium, no `channel`, closed in a `finally`) against it. For production checks, use a scratch build
   (`vite build --outDir <tmp>`) previewed on another port, and stop it afterwards. Edits to
   `web/index.html` and `web/vite.config.ts` should be rare and deliberate.
 - **Formatting and lint:** run `npm run format` and `npm run lint` (from `web/`) before
@@ -104,7 +138,7 @@ preserve what was there.
   `.prettierignore` at the root, and `web/eslint.config.js`. Writing
   `web/vite.config.ts` or a file it imports restarts the dev server and reloads every open
   page, so change those only when the maintainer has it stopped.
-- **GitHub Actions:** only builds and publishes (Pages on a `pages-v*` tag; a pull request into master runs the same build without deploying, to show a release's cost), in as few jobs as
+- **GitHub Actions:** only builds and publishes (the packages on their tags, the native downloads by hand), in as few jobs as
   possible: Lewis budgets the total minutes of a run, every job bills at least a minute, and
   CI must not rely on caches from earlier runs. Format, lint, typecheck, tests, game checks and
   `npm run verify:packages` run locally (`npm run verify` from the root runs the checks).
@@ -123,6 +157,7 @@ preserve what was there.
   when first used (`editor/editors/registry.ts` `loadEditor`, `main.ts`). Import their
   modules dynamically from elsewhere, not statically. `dos.html` must load nothing under
   `src/desk` (`dosPage/boundary.test.ts`).
+- **Release notes:** a merge into `develop` that changes something users or package consumers see adds one small fragment at `changes/unreleased/<target>/<branch-or-slug>.md` (`pages`, `engine`, `archives`, or `tools`), with one category heading (`### Added`, `Changed`, `Fixed`, `Removed`, or `Security`) and one bullet. Do not edit the shared changelog during branch work; `release:cut` collects fragments along with existing Unreleased lines. Plain words, US English, one voice, no secret games (`docs/package-releases.md`).
 - **Docs:** when you add an area, a module with a new job, or a command, add it to the area's
   README (indexed from `web/src/README.md`; `web/scripts/README.md` for build-time code,
   `games/kit/README.md` for the kit) in the same commit. A new area gets its own README and a
@@ -137,15 +172,17 @@ preserve what was there.
     which DOS, native and web-page exports never include.
   - Match DOS bugs and all: a fix that changes what PLAYGAME did is only a note.
 - **Accessibility and layout:** keyboard reachable, labeled, 24px targets, and no
-  horizontal scroll at 390px. Editor and home views should fit one screen. Check new UI with
+  horizontal scroll at 390px. Editor and home views should fit one screen. Dialogs fit a phone
+  screen (375×812) without scrolling (`npm run check:dialogs`). Check new UI with
   axe at 1440 and 390, in light and dark.
 - **Permissions:** if a command is blocked, stop and report it. Don't work around it.
 - **Scope:** do what was asked. Don't add games, features or settings nobody asked for, and
   don't turn off a setting you weren't asked to touch. When told to wrap up, finish what you
   have and pick up nothing new.
-- **Pull requests:** open one only when asked. GitHub defaults to the upstream repository
-  (gandrewstone/GameMaker), and a pull request opened there can't be deleted, so always pass
-  `--repo lewismoten/GameMaker-SandboxEdition` and check the base before creating it.
+- **Pull requests:** open one only when asked, from `develop` into `master`. GitHub defaults
+  to the upstream repository (gandrewstone/GameMaker), and a pull request opened there can't
+  be deleted, so always pass `--repo lewismoten/GameMaker-SandboxEdition --base master --head develop`
+  and check the base before creating it.
 - **Claims:** search before saying something exists or doesn't, and point to the file and
   line. Mark an inference as one ("appears to be"); don't state it as fact.
 - **Bots and checks:**
@@ -153,6 +190,9 @@ preserve what was there.
     bosses, never idle on menus, and play with human timing (no frame-perfect key changes).
   - Check findings are suggestions an author can dismiss. Word them that way and say what the
     tool can't see.
+  - Arrows, Space and Enter carry most of a game's play. Extra keys (number-pad diagonals,
+    Q/E, letters) are fine but less often, and the way through never needs one. `check:keys`
+    measures the share.
 - **Previews and labels:** a preview is a real render, never an emoji or a black stand-in.
   Name a thing for what it does, and give every flow a clear start and end.
 - **Imports:** look at a file's contents before trusting its extension.
@@ -161,21 +201,28 @@ preserve what was there.
 
 - **Secret games:**
   - A game whose `about.json` has `"secret": true` must never be named, counted, linked or
-    hinted at outside its own folder. That includes commit messages and screenshots.
+    hinted at in anything a player sees: the site, the desk, other games, manuals, downloads
+    lists, tours and screenshots. Code, commit messages and history may name it; a developer
+    reading the repository is allowed to find it.
   - Test browsers should start with no felt eggs found, so its box never shows.
 - **Privacy:**
   - No real addresses or license plates. The car's plate THE CHEZ is fine.
   - Fictional addresses must be obviously fake, e.g. "P.O. Box 000".
   - Phone numbers are 555-01xx. Three stay on purpose: the two BBSes, 1-412-555-SAND and 1-412-555-SOFA, and Jenny's 867-5309, the song's number everyone tries.
   - No membership or lineage organizations.
-  - No health, grief or money material. The exceptions are the lactose-intolerance game and the
-    tin hearts' nod to the maintainer's pacemaker (on the cast page and in TURBO BUTTON).
+  - No health, grief or money material. The exceptions are the lactose-intolerance game, the
+    tin hearts' nod to the maintainer's pacemaker (on the cast page and in TURBO BUTTON), and the
+    flashing-lights Starter's design guidance on photosensitivity (plain words about design, no
+    medical detail).
 - **Made-up domains** must be listed in `web/src/manual/magazine/mockSites.json` and pass `npm run domains:check`; a test fails on any unlisted domain.
 - **Clowns are always friendly.** Never scary, villains or jump scares. The maintainer, Doc Leo,
   is in a clown club that entertains children.
 - **Trademarks:** use generic words instead of casual trademarks ("building blocks", not a
   brand). Lyrics quoted word for word and historical tech names (Sound Blaster, MS-DOS,
   VGA…) stay; NOTICE.md lists them.
+- **US English:** color, gray, center, everywhere.
+- **One voice:** site text outside the 1990s in-story voice is one person, so no "we", "our" or
+  "us".
 - **Spelling:** these notes are for you, not the player. Don't repeat them in game or site
   text ("two n's", "no clown nose", "never Dr."); just get them right.
   - **Gwinn** (two n's) is the troublemaker dog.
@@ -203,7 +250,15 @@ preserve what was there.
   npm, and a DOS export's credits shouldn't mention the web.
 - **Originality:**
   - Write manuals and text fresh. Don't copy RSD's printed manual.
-  - The maintainer's reference photos are reference only, unless they're asked for.
+  - The maintainer's reference photos are reference only, unless they're asked for. The person
+    in game art is always Doc Leo, never Lewis: green tie, purple shirt, dark blue corduroy
+    jacket, tattered fedora.
+- **Starters** (`"series": "starter"`) live only on the desk's Sample CD: no retail box,
+  manual, Level Maps or goodies, and not on downloads lists. Per-level notes go in the project
+  sidecar.
+- **Game bar:** a Sandbox game aims for a 15+ minute walkthrough and a "wow" (story, wit,
+  sound, animated transitions, palette-swapped variety); collecting alone isn't fun. A level
+  that ends on a timer shows an on-screen countdown or meter.
 - **Voice clips:** a level's ending voice must play to the end (the next scene's intro cuts
   it). Bots wait for clips (`sim.waitForClip()`). Score and pickup sounds must not cut voices.
 
@@ -230,5 +285,6 @@ in your report what credits you added.
 Run format, lint, tsc and vitest. Run the game checks above for any game you touched. Look at
 art, printables and screens, and listen to voices, before calling them done. Then report what
 changed, the commits, how you verified it, and anything left undone, keeping checks that
-passed apart from what still needs a live test. Give times in a timeline with the weekday and
+passed apart from what still needs a live test, and any server, browser or vite-node run you
+started and couldn't stop (never port 5173). Give times in a timeline with the weekday and
 time.

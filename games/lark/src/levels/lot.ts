@@ -52,7 +52,7 @@ export function lotMap(set: BlockSet, charging: boolean): Stamped {
       J: 'rope5',
       V: 'swing5',
       '@': 'lot',
-      S: 'lot',
+      S: charging ? 'exitLot' : 'lot',
     },
     set,
     'lotFence',

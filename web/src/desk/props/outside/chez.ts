@@ -1,22 +1,23 @@
 // THE CHEZ drives by: Lewis's red CitiCar goes past along the street, Doc Leo at the wheel,
-// with an electric motor's quiet whirr (drawn to the kit's side view: ../chezArt.ts). Press
+// with its motor's whine through the window (audio/chez/; drawn to the kit's side view: ../chezArt.ts). Press
 // it for a honk of Doc Leo's bike horn.
 import { drawChez } from '../chezArt';
 import { roomSound } from '../propSound';
+import { chickenWords } from '../../../chicken/chickenWords';
 import { turns } from '../propKit';
 import { across, STREET, type OutsideEvent } from './outside';
 
 const K = 1.5; // the view's pixels to the kit's unit: 60 x 30, on the street in front of the houses
 const HONKS = turns([
-  'Honk honk! Doc Leo waves from THE\u00a0CHEZ, Lewis’s red CitiCar. Not a sound from the motor: it’s electric.',
+  'Honk honk! Doc Leo waves from THE\u00a0CHEZ, Lewis’s red CitiCar. The motor whirrs along: it’s electric, and it gives Mother Nature a break.',
   'Honk honk! THE\u00a0CHEZ hums by at a stately 25 mph, Doc Leo at the wheel, racing stripes and all.',
-  'Honk honk! Doc Leo tips his fedora. Sir Reginald Cluckington III is riding shotgun, buckled in.',
+  '',
 ]);
 
 export const chez: OutsideEvent = {
   kind: 'chez',
   id: 'desk-chez',
-  label: 'THE\u00a0CHEZ driving by, Doc Leo at the wheel: honk',
+  label: 'THE\u00a0CHEZ driving by, Doc Leo at the wheel and Teddy at the window: honk',
   when: 'day',
   ms: 11_000,
   start: () => roomSound.whirr(11),
@@ -27,6 +28,8 @@ export const chez: OutsideEvent = {
   },
   press() {
     roomSound.honk();
-    return HONKS();
+    roomSound.bark('teddy'); // from the passenger window
+    // (the third honk names the chicken as she is now)
+    return HONKS() || `Honk honk! Doc Leo tips his fedora. ${chickenWords().full} is riding shotgun, buckled in.`;
   },
 };

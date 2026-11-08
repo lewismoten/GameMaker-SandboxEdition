@@ -9,6 +9,9 @@
 }
 
 .desk-capture .cap-btn {
+  /* The desktop PC is scaled slightly: leave room above the 24 CSS-pixel minimum. */
+  min-width: 26px;
+  min-height: 26px;
   padding: 1px 6px;
   border: 1px solid var(--plastic-edge, #9a917a);
   border-radius: 3px;

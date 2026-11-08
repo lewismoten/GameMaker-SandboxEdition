@@ -1,7 +1,9 @@
-// The front of the PC case: a two-digit seven-segment MHz display, a 3.5" floppy drive
-// (slot with its spring flap, activity light and eject button) and a CD-ROM drive
-// (tray, headphone jack, volume wheel, busy light and the eject button under the tray).
+// The front of the PC case: a two-digit seven-segment MHz display, the hard disk's light, and two
+// 5.25" bay for the CD-ROM drive (bright white faceplate, tray, headphone jack, volume wheel, busy
+// light, eject button), a smaller 3.5" bay with the floppy drive turned on its side (slot, activity
+// light and eject push-button), the key lock and the brand badge. Sizes are mm from one factor.
 import { h } from '../../editor/core/ui';
+import type { DriveSound } from './driveSounds';
 
 const NS = 'http://www.w3.org/2000/svg';
 
@@ -63,37 +65,99 @@ export function sevenSegment(digits = 2): HTMLElement & { show(text: string): vo
   return el;
 }
 
+/** The hard disk's light beside POWER and TURBO (C: has no bay of its own): it flickers as the disk is read. */
+export function hddLight(): { led: HTMLElement; busy(ms?: number): void; off(): void } {
+  const led = h('span', { class: 'led red' });
+  let until = 0;
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const flicker = () => {
+    const left = until - Date.now();
+    if (left <= 0) return void (led.classList.remove('on'), (timer = undefined));
+    led.classList.toggle('on', !led.classList.contains('on') || Math.random() < 0.4);
+    timer = setTimeout(flicker, Math.min(left, 30 + Math.random() * 70));
+  };
+  return {
+    led,
+    busy(ms = 400) {
+      until = Math.max(until, Date.now() + ms);
+      if (!timer) flicker();
+    },
+    off() {
+      until = 0;
+      clearTimeout(timer);
+      timer = undefined;
+      led.classList.remove('on');
+    },
+  };
+}
+
 interface FloppyDrive {
   el: HTMLElement;
-  /** Shows a disk in (its title and label color) or none. */
+  /** Shows a disk in (its title and label color) or none. Seating or ejecting a disk makes its sound. */
   setDisk(title: string | undefined, color?: string): void;
   /** Blinks the activity light (reading). */
   busy(ms?: number): void;
+  /** True while the activity light is on: the one time a real drive's disk shouldn't be pulled. */
+  isBusy(): boolean;
 }
 
+/** Plays a drive sound (pc/driveSounds.ts, loaded on first use; silent before a gesture or when muted). */
+function sound(kind: DriveSound, ms?: number): void {
+  void import('./driveSounds').then((m) => m.driveSound(kind, ms));
+}
+
+/**
+ * A 3.5" drive in its own 3.5" bay (101.6 x 25.4 mm), laid flat like the drive in the 1990s photo it
+ * follows: the long disk slot across the upper face, a recessed finger pocket under its middle (to pinch
+ * the ejected disk), the green activity light and the maker's name (KELVO, made up) at the lower left and
+ * the rectangular eject push-button at the lower right. Sizes are in mm (desk.css --mm).
+ */
 export function floppyDrive(onEject: () => void): FloppyDrive {
   const led = h('span', { class: 'drive-led' });
-  const flap = h('span', { class: 'flap' });
+  const diskEdge = h('span', { class: 'disk-edge' });
+  const btn = h('button', {
+    class: 'eject-btn flat',
+    'aria-label': 'Eject the disk from drive A:',
+    onclick: () => {
+      btn.classList.add('pushed');
+      setTimeout(() => btn.classList.remove('pushed'), 220);
+      onEject();
+    },
+  });
   const el = h(
     'div',
     { class: 'drive fdd', title: 'Drive A: 3.5" 1.44 MB' },
-    h('span', { class: 'bay-label' }, 'A:'),
+    h('span', { class: 'slot' }),
+    h('span', { class: 'grip' }),
+    diskEdge,
     led,
-    h('span', { class: 'slot' }, flap),
-    h('button', { class: 'eject-btn', 'aria-label': 'Eject the disk from drive A:', onclick: () => onEject() }),
-    h('span', { class: 'capacity' }, '1.44 MB'),
+    h('span', { class: 'brand-print' }, 'KELVO'),
+    btn,
+    h('span', { class: 'bay-label' }, 'A:'),
   );
   let timer: ReturnType<typeof setTimeout> | undefined;
+  let popTimer: ReturnType<typeof setTimeout> | undefined;
   return {
     el,
     setDisk(title, color) {
+      const had = 'disk' in el.dataset;
       if (title) {
         el.dataset.disk = title;
         el.title = `Drive A: ${title}`;
         el.style.setProperty('--disk-color', color ?? '#222');
+        clearTimeout(popTimer);
+        el.classList.remove('popped');
+        if (!had) sound('floppy-insert');
       } else {
         delete el.dataset.disk;
         el.title = 'Drive A: 3.5" 1.44 MB (empty)';
+        if (had) {
+          sound('floppy-eject');
+          // the disk sticks out over the finger pocket for a moment, before it is taken
+          el.classList.add('popped');
+          clearTimeout(popTimer);
+          popTimer = setTimeout(() => el.classList.remove('popped'), 1400);
+        }
       }
     },
     busy(ms = 900) {
@@ -101,6 +165,7 @@ export function floppyDrive(onEject: () => void): FloppyDrive {
       clearTimeout(timer);
       timer = setTimeout(() => led.classList.remove('on'), ms);
     },
+    isBusy: () => led.classList.contains('on'),
   };
 }
 
@@ -110,13 +175,14 @@ interface CdDrive {
   busy(ms?: number): void;
 }
 
+/** A CD-ROM drive filling its 5.25" bay behind a bright white faceplate: the tray across the top (its seam), the controls under it. */
 export function cdDrive(onEject: () => void): CdDrive {
   const led = h('span', { class: 'drive-led amber' });
   const tray = h('div', { class: 'tray' }, h('span', { class: 'cd-logo' }, 'COMPACT', h('b', null, 'disc'), h('small', null, 'DIGITAL DATA')));
   const el = h(
     'div',
     { class: 'drive cdrom', title: 'Drive D: CD-ROM' },
-    tray,
+    h('div', { class: 'tray-slot' }, tray),
     h(
       'div',
       { class: 'cd-controls' },
@@ -144,13 +210,49 @@ export function cdDrive(onEject: () => void): CdDrive {
   };
 }
 
-/** Slides the tray out and back, as pressing eject did. */
-export function openTray(drive: CdDrive): Promise<void> {
+type TrayState = 'closed' | 'opening' | 'open' | 'closing';
+/** How long the tray slides (desk.css .tray transition), and how long it waits open before closing by itself. */
+export const TRAY_SLIDE_MS = 600;
+export const TRAY_WAIT_MS = 10000;
+const trays = new WeakMap<CdDrive, { state: TrayState; timer?: ReturnType<typeof setTimeout>; closed: (() => void)[] }>();
+const trayOf = (drive: CdDrive) => {
+  let t = trays.get(drive);
+  if (!t) trays.set(drive, (t = { state: 'closed', closed: [] }));
+  return t;
+};
+
+/** Where the tray is: out or on its way out (eject then closes it), closing (eject does nothing), or closed. */
+export const trayState = (drive: CdDrive): TrayState => trayOf(drive).state;
+
+/** Slides the tray out: the motor's whirr and a clunk. It closes by itself after `wait` ms (or when closeTray is called); resolves once it has closed. */
+export function openTray(drive: CdDrive, wait = TRAY_WAIT_MS): Promise<void> {
+  const t = trayOf(drive);
+  const done = new Promise<void>((r) => t.closed.push(r));
+  if (t.state !== 'closed') return done; // already out, or closing: a press never sends it back out mid-close
+  t.state = 'opening';
   drive.el.classList.add('open');
-  return new Promise((r) =>
-    setTimeout(() => {
-      drive.el.classList.remove('open');
-      r();
-    }, 1600),
-  );
+  sound('tray-open');
+  t.timer = setTimeout(() => {
+    t.state = 'open';
+    t.timer = setTimeout(() => closeTray(drive), wait);
+  }, TRAY_SLIDE_MS);
+  return done;
+}
+
+/** Slides the tray back in (a second press of eject, or its wait running out); then a disc in it spins up. */
+export function closeTray(drive: CdDrive): void {
+  const t = trayOf(drive);
+  if (t.state === 'closed' || t.state === 'closing') return;
+  clearTimeout(t.timer);
+  t.state = 'closing';
+  drive.el.classList.remove('open');
+  sound('tray-close');
+  t.timer = setTimeout(() => {
+    t.state = 'closed';
+    t.closed.splice(0).forEach((r) => r());
+    if (drive.el.dataset.disk) {
+      drive.busy(1800);
+      sound('cd-spin', 1800);
+    }
+  }, TRAY_SLIDE_MS);
 }

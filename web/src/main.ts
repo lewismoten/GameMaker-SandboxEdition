@@ -4,9 +4,11 @@
 // (desk/, retro/, vga/) or today's web (editor/shell, the editors) is imported when it is
 // first shown. The editors themselves load when a game is opened (or the desk's PC opens one).
 import './editor/shell/editor.css';
+import './editor/shell/dialogsPhone.css';
 import { h, clear } from './editor/core/ui';
 import type { Workspace } from './editor/shell/workspace';
 import { watchForUpdates } from './devReload';
+import { watchErrors } from './errorNotice/watch';
 import { registerServiceWorker } from './offline';
 import { EDITION, FORK_NOTE, PRODUCT, SHORT } from './edition';
 import './edition.css';
@@ -14,8 +16,10 @@ import { settingsItems, settingsMenu } from './settingsMenu';
 import { viewSwitch } from './viewSwitch';
 import { tourButton } from './tour/tourButton';
 import { parseHash } from './urlState';
+import { focusNewView, trackPersonInput } from './routeFocus';
 import { noteLibraryContext } from './libraryStart';
 import { parseLinkRequest, type LinkRequest } from './linkIn/protocol';
+import { beginPage } from './pageLife';
 
 const modernUi = () => import('./modernUi');
 
@@ -30,6 +34,8 @@ let disposeDesk: (() => void) | undefined;
 let ui: Ui = 'desk';
 /** The magazine at #/magazine, put away when the route moves on. */
 let disposeMagazine: (() => void) | undefined;
+/** The Pi remote at #/pi-remote (keys up, port closed), put away when the route moves on. */
+let disposePiRemote: (() => void) | undefined;
 
 function savedUi(): Ui {
   try {
@@ -59,6 +65,7 @@ function webShowing(): string | undefined {
 
 /** The desk; `hash` (#/desk?disk=…) says what to put in its drive. */
 async function startDesk(hash?: string): Promise<void> {
+  beginPage();
   ui = 'desk';
   rememberUi('desk');
   document.documentElement.dataset.ui = 'desk'; // the page background (index.html)
@@ -67,6 +74,8 @@ async function startDesk(hash?: string): Promise<void> {
   workspace = undefined;
   disposeMagazine?.();
   disposeMagazine = undefined;
+  disposePiRemote?.();
+  disposePiRemote = undefined;
   document.title = 'Game-Maker 1994';
   // the desk keeps its own state in the address (#/desk?disk=…&run=…, see desk.ts)
   const deskHash = hash ?? (parseHash(location.hash).path[0] === 'desk' ? location.hash : '#/desk');
@@ -87,6 +96,7 @@ async function startDesk(hash?: string): Promise<void> {
 // ---- today's web ---------------------------------------------------------------------
 
 function startModern(hash?: string): void {
+  beginPage();
   ui = 'modern';
   rememberUi('modern');
   document.documentElement.dataset.ui = 'modern';
@@ -143,6 +153,7 @@ function startModern(hash?: string): void {
         h(
           'div',
           { class: 'topbar-menu' },
+          h('a', { class: 'menu-games', href: '#/' }, '🎮 Games'),
           h('a', { class: 'show-tiny', href: '#/help' }, '📖 Guide'),
           h('a', { class: 'nav-library', href: '#/library' }, '📚 Library'),
           h('a', { href: '#/achievements' }, '🏆 What you’ve done'),
@@ -194,7 +205,9 @@ async function route(): Promise<void> {
     a.href = shown ? `#/library?by=game&only=${encodeURIComponent(shown)}` : '#/library';
   }
   content.removeAttribute('role');
-  // the home page's chunk (modernUi) is fetched only by the routes that use it: a project and the game list
+  disposePiRemote?.();
+  disposePiRemote = undefined;
+  // Opening a project must not also fetch the home page's cards, showcase and styles.
   if (kind === 'p' && id) {
     const { openStored } = await modernUi();
     if (ui !== 'modern') return;
@@ -204,7 +217,12 @@ async function route(): Promise<void> {
     }
     workspace?.dispose();
     workspace = undefined;
-    const opened = await openStored(id, content, file);
+    let storageError = false;
+    const opened = await openStored(id, content, file).catch(() => ((storageError = true), undefined));
+    if (storageError) {
+      storageGone();
+      return;
+    }
     if (!opened) {
       notHere();
       return;
@@ -227,6 +245,14 @@ async function route(): Promise<void> {
     disposeMagazine = renderMagazinePage(content, params.page, issueFor(Number(params.vol), Number(params.num)).which);
     return;
   }
+  if (kind === 'pi-remote') {
+    // unlisted: the Raspberry Pi's USB keyboard (piRemote/README.md)
+    const { renderPiRemote } = await import('./piRemote/piRemotePage');
+    if (ui !== 'modern') return;
+    document.title = `Pi remote · ${PRODUCT}`;
+    disposePiRemote = renderPiRemote(content);
+    return;
+  }
   if (kind === 'library') {
     const { renderLibrary } = await import('./library/libraryPage');
     if (ui !== 'modern') return;
@@ -246,6 +272,13 @@ async function route(): Promise<void> {
     if (ui !== 'modern') return;
     document.title = `Credits · ${PRODUCT}`;
     renderCredits(content);
+    return;
+  }
+  if (kind === 'privacy') {
+    const { renderPrivacy } = await import('./privacy/privacyPage');
+    if (ui !== 'modern') return;
+    document.title = `Privacy · ${PRODUCT}`;
+    renderPrivacy(content);
     return;
   }
   if (kind === 'achievements') {
@@ -276,6 +309,13 @@ async function route(): Promise<void> {
     renderLinuxHelp(content);
     return;
   }
+  if (kind === 'programmers-guide') {
+    const { renderProgrammersGuide } = await import('./programmersGuide/programmersGuidePage');
+    const title = await renderProgrammersGuide(content, id);
+    if (ui !== 'modern') return;
+    document.title = `${title} · ${PRODUCT}`;
+    return;
+  }
   if (kind === 'help') {
     content.setAttribute('role', 'main');
     const { renderWebManual } = await import('./manual/webManual');
@@ -289,7 +329,7 @@ async function route(): Promise<void> {
   document.title = PRODUCT;
   // on the game list, the bar carries the short tagline (the page's own heading is for screen readers)
   clear(titleSlot, h('span', { class: 'topbar-tagline hide-narrow', title: FORK_NOTE }, 'Make 1994 DOS games. No programming.'));
-  const { renderHome } = await modernUi();
+  const { renderHome } = await import('./editor/shell/home');
   if (ui !== 'modern') return;
   await renderHome(content, nav);
 }
@@ -318,7 +358,31 @@ function notHere(): void {
   );
 }
 
+/** This browser would not open its game storage (a private window, or storage turned off): say so instead of a blank page. */
+function storageGone(): void {
+  clear(titleSlot);
+  document.title = `Can’t reach saved games · ${SHORT}`;
+  clear(
+    content,
+    h(
+      'main',
+      { class: 'not-here', style: 'max-width:42rem;margin:48px auto;padding:0 16px' },
+      h('h1', null, 'This browser won’t open its saved games'),
+      h(
+        'p',
+        { role: 'status', 'aria-live': 'polite' },
+        'Saved games live in the browser’s own storage, and it is not available now. A private window or a setting that blocks site data does this. Open the page in a normal window to reach your games; nothing was changed.',
+      ),
+      h('p', null, h('a', { class: 'button primary', href: '#/' }, 'See all games')),
+    ),
+  );
+}
+
+trackPersonInput();
+let lastHash = location.hash;
 window.addEventListener('hashchange', () => {
+  const from = lastHash;
+  const to = (lastHash = location.hash);
   // a link from one interface to the other (the magazine's, say): #/desk from today's web, or a
   // page of today's web from the desk (the desk itself never changes the hash with a hashchange)
   const [kind] = parseHash(location.hash).path;
@@ -327,14 +391,29 @@ window.addEventListener('hashchange', () => {
     disposeDesk?.();
     disposeDesk = undefined;
     startModern();
-  } else void route();
+  } else void route().then(() => focusNewView(content, from, to));
 });
 
 // Links into today's web (a project #/p/…, a game on the home page #/game/…, the guide
 // #/help, the cast #/cast, the credits #/credits, the Mac, Windows and Linux pages #/mac, #/windows and #/linux, the magazine #/magazine, the library #/library, the home page #/) open it, #/desk the desk; otherwise use the last choice.
 // index.html makes the same choice for the page background before the first paint.
 /** The pages of today's web an address can name. */
-const MODERN_PATHS = ['p', 'game', 'help', 'cast', 'credits', 'achievements', 'mac', 'windows', 'linux', 'magazine', 'library'];
+const MODERN_PATHS = [
+  'p',
+  'game',
+  'help',
+  'cast',
+  'credits',
+  'privacy',
+  'achievements',
+  'mac',
+  'windows',
+  'linux',
+  'magazine',
+  'library',
+  'programmers-guide',
+  'pi-remote',
+];
 const startHash = location.hash;
 const startPath = parseHash(startHash).path;
 const modernLink = /^#\/?(\?|$)/.test(startHash) ? !!startHash : MODERN_PATHS.includes(startPath[0] ?? '');
@@ -388,11 +467,20 @@ registerServiceWorker();
 // achievements: the gm-achievement event, other tabs, and the counted ones kept current
 void import('./achievements/start').then((m) => m.startAchievements());
 
-// The first AudioContext costs a long task (about 150 ms in headless Chrome) if it is made inside
-// the first click; made while the page is idle it starts suspended, and that click only resumes it.
+// The first AudioContext costs a long task (about 150 ms in headless Chrome). Made inside the
+// first click it delays that click; made at load it delays every visitor, even one who only
+// reads. So it is made at the first sign of a hand (mouse move, press or touch), while the page
+// is idle: it starts suspended, and the click only resumes it (the same context; the gesture
+// listeners that unlock iOS are added when it is made, before the touch ends).
 const warmSound = () => void import('@lewismoten/gamemaker-sandbox-engine/audio/context').then((m) => m.audioContext());
-setTimeout(() => ('requestIdleCallback' in window ? requestIdleCallback(warmSound, { timeout: 4000 }) : warmSound()), 800);
+const HANDS = ['pointermove', 'pointerdown', 'touchstart'] as const;
+const onHand = () => {
+  for (const t of HANDS) removeEventListener(t, onHand, true);
+  'requestIdleCallback' in window ? requestIdleCallback(warmSound, { timeout: 300 }) : setTimeout(warmSound, 0);
+};
+for (const t of HANDS) addEventListener(t, onHand, { capture: true, passive: true });
 
+watchErrors();
 watchForUpdates();
 // dev server on localhost only: the opt-in interaction log (its switch is in the corner)
 if (import.meta.env.DEV) void import('./devLog/interactionLog').then((m) => m.startInteractionLog());

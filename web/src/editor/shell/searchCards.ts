@@ -8,7 +8,7 @@ import { snippet, type Part } from './searchMatch';
 import type { SearchEntry } from './searchIndex';
 
 /** Text with its matches wrapped in <mark>. */
-export function highlighted(text: string, words: string[], max = 60): HTMLElement {
+function highlighted(text: string, words: string[], max = 60): HTMLElement {
   return h('span', { class: 'sr-text' }, ...snippet(text, words, max).map((p) => (p.hit ? h('mark', null, p.text) : p.text)));
 }
 

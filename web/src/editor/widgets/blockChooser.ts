@@ -29,7 +29,7 @@ export function chooseBlock(
   return modal<number>(title, (close) =>
     h(
       'div',
-      { class: 'block-chooser' },
+      { class: 'block-chooser', dataset: { listArea: '' } },
       ...extras.map((x) =>
         h(
           'button',

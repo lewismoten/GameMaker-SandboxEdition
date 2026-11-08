@@ -141,7 +141,7 @@ async function picture(a: Record<string, unknown>, ctx: GameContext): Promise<In
 }
 
 /** A picture as a tool result: the PNG and a line saying what it is. */
-export async function imageResult(pic: IndexedPicture, scale: number, caption: string): Promise<ToolResult> {
+async function imageResult(pic: IndexedPicture, scale: number, caption: string): Promise<ToolResult> {
   const png = await encodePng(pic, scale);
   return {
     content: [

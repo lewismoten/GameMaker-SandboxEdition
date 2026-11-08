@@ -1,6 +1,7 @@
 // Pure parts of `npm run walk:auto` (walkAuto.ts): its arguments, picking the game's .gam from a
 // folder's file names, and the per-scene table. No file or engine access, so tests can run them.
 import type { SceneOutcome } from '../src/editor/check/walk/autoWalk';
+import type { Walkthrough } from '../src/walkthrough/format';
 
 /** The editor's "Make a walkthrough…" default: 60 s a scene (editor/widgets/walkDialog.ts). */
 export const DEFAULT_BUDGET_S = 60;
@@ -10,6 +11,21 @@ export interface WalkAutoArgs {
   budgetMs: number;
   game?: string;
   out?: string;
+  /** Only the arrows, Space and Enter (editor/check/keyLimit.ts): a keyboard accessibility check. */
+  basicKeys?: boolean;
+}
+
+/** The existing walkthrough file, with optional diagnostic evidence for a stopped keys strategy. */
+export interface WalkAutoOutput extends Walkthrough {
+  diagnostics?: {
+    keys: { scene: number; name: string; cutoff: NonNullable<SceneOutcome['keys']>['cutoff']; rounds: NonNullable<SceneOutcome['keys']>['rounds'] }[];
+  };
+}
+
+/** Keeps --out compatible with a walkthrough reader while preserving any stopped keys diagnostics. */
+export function walkOutput(walk: Walkthrough, scenes: readonly Omit<SceneOutcome, 'heat'>[]): WalkAutoOutput {
+  const keys = scenes.flatMap(({ scene, name, keys }) => (keys ? [{ scene, name, cutoff: keys.cutoff, rounds: keys.rounds }] : []));
+  return keys.length ? { ...walk, diagnostics: { keys } } : walk;
 }
 
 export function parseArgs(argv: string[]): WalkAutoArgs | string {
@@ -17,8 +33,13 @@ export function parseArgs(argv: string[]): WalkAutoArgs | string {
   let budgetMs = DEFAULT_BUDGET_S * 1000;
   let game: string | undefined;
   let out: string | undefined;
+  let basicKeys = false;
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
+    if (a === '--basic-keys') {
+      basicKeys = true;
+      continue;
+    }
     if (a === '--budget' || a === '--game' || a === '--out') {
       const v = argv[++i];
       if (v === undefined) return `${a} needs a value.`;
@@ -33,8 +54,8 @@ export function parseArgs(argv: string[]): WalkAutoArgs | string {
     else if (source === undefined) source = a;
     else return `Unexpected argument ${a}.`;
   }
-  if (source === undefined) return 'Usage: npm run walk:auto -- <game folder | .zip> [--budget ms] [--game NAME.GAM] [--out walkthrough.json]';
-  return { source, budgetMs, game, out };
+  if (source === undefined) return 'Usage: npm run walk:auto -- <game folder | .zip> [--budget ms] [--game NAME.GAM] [--out walkthrough.json] [--basic-keys]';
+  return { source, budgetMs, game, out, ...(basicKeys ? { basicKeys } : {}) };
 }
 
 /** The .gam to use among a folder's file names: the one asked for, the only one, or an error that lists them. */
@@ -53,5 +74,10 @@ export function pickGam(names: string[], want?: string): { gam: string } | { err
 export function sceneLine(s: Omit<SceneOutcome, 'heat'>, styleName: (id: string) => string): string {
   const how = s.strategy ? styleName(s.strategy) : s.tried.map(styleName).join(' > ') || 'none';
   const ticks = s.ticks === undefined ? '-' : `${(s.ticks / 70).toFixed(1)}s`;
-  return `${String(s.scene).padStart(3)}  ${s.name.padEnd(24).slice(0, 24)}  ${how.padEnd(36)}  ${String(s.tried.length).padStart(2)}  ${ticks.padStart(7)}  ${s.strategy ? (s.next === undefined ? 'won' : `-> ${s.next}`) : 'STOPPED'}`;
+  const line = `${String(s.scene).padStart(3)}  ${s.name.padEnd(24).slice(0, 24)}  ${how.padEnd(36)}  ${String(s.tried.length).padStart(2)}  ${ticks.padStart(7)}  ${s.strategy ? (s.next === undefined ? 'won' : `-> ${s.next}`) : 'STOPPED'}`;
+  const diagnostic = s.keys;
+  if (!diagnostic?.cutoff) return line;
+  const round = diagnostic.rounds.at(-1);
+  const context = round ? `${round.kind}${round.source ? ` c${round.source.counter} @ ${round.source.cell}` : ''}; ${round.places} places` : 'no search round';
+  return `${line}\n      keys: ${diagnostic.cutoff} (${context})`;
 }

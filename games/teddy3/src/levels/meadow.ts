@@ -9,13 +9,18 @@
 // another lights the hedge beyond. Twist: the last firefly dozes up in the old oak; climb the
 // branches, and it swoops down across the meadow into the old tunnel through Lookout Hill,
 // where the lantern is. Optional: higher in the oak, a raccoon paces a branch with a balloon
-// dog and treats behind it. Then through the tunnel and out to THE CHEZ by the road.
+// dog and treats behind it. Then through the tunnel and out to the road, where a hedge with three
+// garden gates stands across the way to THE CHEZ: each gate wears seven signs, and a sign says
+// GWINN'S FACE. Only the true gate opens (the Face Dial in the box shows its code); a shut gate costs
+// nothing, its sign says to try the next, and Teddy can walk up and try them all.
 //
 // The blocks are in meadowTiles.ts, the monsters in meadowBeasts.ts; this file lays out the map.
 import { addTinHeart } from '../sprites/hidden';
 import { LevelMap, type Level } from './level';
 import { G, HEDGE, meadowTiles } from './meadowTiles';
 import { meadowBeasts } from './meadowBeasts';
+import { addGateBlocks, layGates, GATE_WALL } from './meadowGates';
+import { GATES } from '../wheel/wheel';
 import { bandAt } from './common';
 import { meadowSong } from '../sound/meadowSong';
 
@@ -45,7 +50,10 @@ export const MEADOW = {
   /** Lookout Hill and the tunnel through it. */
   hill: [50, 57] as [number, number],
   lantern: 54,
-  car: 62,
+  /** The true gate's row (Gwinn's, in the middle), and the hedge's left column. */
+  gateRow: GATE_WALL.rows[GATES.open],
+  gate: GATE_WALL.x0,
+  car: 78,
 };
 
 export function meadow(): Level {
@@ -57,6 +65,7 @@ export function meadow(): Level {
     bs.pic('farTop'),
     (by) => (by ? bs.pic('lawn') : bs.pic('far')),
   );
+  addGateBlocks(bs);
   const M = MEADOW;
   const m = new LevelMap(bs, beasts, 'sky0');
   m.rect(0, 0, 100, G, (_x, y) => `sky${bandAt(y, G)}`);
@@ -84,8 +93,8 @@ export function meadow(): Level {
   // the meadow's hedges close it off at both ends (the map wraps around)
   m.rect(0, 30, 1, 10, 'edge');
   m.set(0, 29, 'edgeTop');
-  m.rect(72, 30, 28, 10, 'edge');
-  m.rect(72, 29, 28, 1, 'edgeTop');
+  m.rect(86, 30, 14, 10, 'edge');
+  m.rect(86, 29, 14, 1, 'edgeTop');
 
   /** A tall hedge two wide, with the dark in its arch. */
   const hedge = (x: number) => {
@@ -146,7 +155,8 @@ export function meadow(): Level {
   m.mon(h0, 39, 'dark').mon(h0 + 1, 39, 'dark');
 
   // The road, THE CHEZ and Doc Leo.
-  for (let x = h1 + 1; x < 72; x++) m.set(x, G, 'road');
+  for (let x = h1 + 1; x < 86; x++) m.set(x, G, 'road');
+  layGates(m);
   const car = M.car;
   m.set(car, 38, 'carRoofL')
     .set(car + 1, 38, 'carRoofR')
@@ -179,8 +189,9 @@ export function meadow(): Level {
     [44, 31],
     [52, 39],
     [56, 39],
-    [59, 39],
-    [61, 39],
+    [57, 39],
+    [74, 39],
+    [76, 39],
   ];
   for (const [x, y] of treats) m.treat(x, y);
   m.mark('start', M.start, 39);

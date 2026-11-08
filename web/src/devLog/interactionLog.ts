@@ -31,10 +31,21 @@ function stored(): boolean {
 function log(kind: string, data: Record<string, unknown> = {}, always = false): void {
   if (!on || (idle && !always)) return;
   queue.push({ t: Date.now(), kind, session, route: location.hash || '#/', ...data });
-  if (queue.length > 2000) queue = queue.slice(-1000);
+  if (queue.length >= 100) flush();
+  else if (queue.length > 2000) queue = queue.slice(-1000);
+}
+
+/** For the game log (gameLog.ts): is the switch on, and add an entry of its own kind. */
+export const devLogOn = (): boolean => on;
+export const devLogEvent = (kind: string, data: Record<string, unknown>): void => log(kind, data, true);
+const beforeFlush: (() => void)[] = [];
+/** Runs just before each send (the interval, a switch-off and page hide), so a game can hand over what it buffered. */
+export function onDevLogFlush(fn: () => void): void {
+  beforeFlush.push(fn);
 }
 
 function flush(beacon = false): void {
+  if (on) for (const f of beforeFlush) f();
   if (!queue.length) return;
   const body = JSON.stringify(queue);
   queue = [];

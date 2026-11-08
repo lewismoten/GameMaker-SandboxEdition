@@ -1,0 +1,42 @@
+{
+  "title": "Roll the Dice",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "hero": "MARA",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.1",
+  "blurb": "One short level about chance. A die sits on the ground, rolling: it is a ring of six blocks that each turn into the next after a few ticks. Mara walks into it and it stops on the face it shows, handing over a gold key for an odd face or a silver key for an even one. A wall ahead has a gold door on the ground and a silver door up a ladder, so the face picks the door. Signs in the level say how. Play it, then open it in Game-Maker and change how long a face shows.",
+  "exe": "ROLLDICE.EXE",
+  "dosName": "ROLLDICE",
+  "sound": "sb",
+  "label": {
+    "background": "#e6f6ea",
+    "band": "#1e9a62",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "1 short level",
+    "hours": 1,
+    "background": "#1e9a62",
+    "accent": "#ffd23f",
+    "ink": "#ffffff",
+    "tagline": "Which door? Ask the die.",
+    "back": "A small explorer in a green beanie finds a die rolling on the ground. Touch it and it stops, and the face it shows hands over a key: gold for odd, silver for even. Two doors wait ahead, one for each key. The game has no random number: the tick decides the roll. Play, then open the game in Game-Maker and change how long a face shows.",
+    "features": [
+      "A ring of six blocks that turn into one another, like a die rolling",
+      "A touch that stops the die on the face it shows",
+      "Made to be copied and taken apart"
+    ],
+    "shots": [
+      [
+        "one.map",
+        12,
+        1
+      ]
+    ],
+    "rating": "Everyone"
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "title": "Scroll or Stay",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "hero": "KIT",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.1",
+  "blurb": "Two short levels about the camera. The first is one room that fits the screen exactly, so the picture never moves. The second is a long walk, and the picture slides along after you. Whether a level scrolls is one switch on its scene, and the size of the level has to agree with it. Signs explain each idea, and every level has a page on how it is made.",
+  "exe": "SCROLL.EXE",
+  "dosName": "SCROLL",
+  "sound": "sb",
+  "label": {
+    "background": "#fff3d6",
+    "band": "#3a6b8c",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "2 short levels",
+    "hours": 1,
+    "background": "#3a6b8c",
+    "accent": "#ffd23f",
+    "ink": "#ffffff",
+    "tagline": "Does the picture move?",
+    "back": "A small explorer in a teal beanie has two short levels. In the first the picture stays still, because the whole room fits one screen. In the second it follows them down a long path. Signs say what each level shows, and the manual says how each is made.",
+    "features": [
+      "Signs in the levels explain each idea",
+      "Scrolling is a switch on each scene, and a level that stays must fit the screen",
+      "Made to be copied and taken apart"
+    ],
+    "shots": [
+      ["one.map", 0, 0],
+      ["two.map", 30, 5]
+    ],
+    "rating": "Everyone"
+  }
+}

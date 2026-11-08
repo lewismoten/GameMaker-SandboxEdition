@@ -8,7 +8,7 @@ import { localOf } from '../inventory';
 import { same } from '../codec';
 import { describeKeys, fillGaps, injectLocal, isRecord, need, plural, stringMap, type Section } from './types';
 
-export interface DeskPayload {
+interface DeskPayload {
   records: Record<string, unknown>;
   local: Record<string, string>;
 }

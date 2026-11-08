@@ -1,0 +1,129 @@
+{
+ "version": 1,
+ "game": "thank-you-parade",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU0UzSdNHs0DTQ/NA00PzSdNLc0DTRnNA0gnyANLFMsDTRLNA0gdyANND80DSwrLA0sDywNQO9AVTTLNA00fOQK5MDkCuRDNLE0IzQlNBc0DOQK5AE0FzQ85ArkATQ/NCDkCuQBND80LTQs5ArkPzQlNCs0nTQ=="
+  },
+  {
+   "scene": 3,
+   "keys": "AU0KzRdNKM0DTRnNA00ezQM5ArkATQ/NBU0IzQdNI80DTR7NAzkCuQBND80FTQjNB00ozQNNN80DTQXNAzkCuQBNCs0KOQK5AE0PzSlLFssHTSPNA00="
+  },
+  {
+   "scene": 4,
+   "keys": "AU0ezSdNI80DSzLLA0gxyANNHs0DTSPNA00SzSxNFM0DOQK5AE0KzQo5ArkATQ/NBU0FzQM5ArkATQrNCk0FzQM5ArkATRTNBE0FzSdNCM0OTRnNAzkCuQBNCs0KTQrNA00QOQK5Ds0KOQK5AE0KzQpNBc0DTSbNJ00UzQNN"
+  },
+  {
+   "scene": 5,
+   "keys": "AU0ZzSdLBcsDOQK5AE1GzQxNGc0DTR7NJ00ozQNLBcsDOQK5AE0ZzQNNDc0HTR7NA00ezQNIMcgDSw/LJ00mzQNNHs0DSzLLA0sDywNQJ9ADTVrNA00ezSdNI80DTQ=="
+  },
+  {
+   "scene": 6,
+   "keys": "AU0ZzSdNI80nTRTNIjkCuQBNFM0WTR7NLjkCuQBNFM0WTR7NLjkCuQBND80JSwDLLjkCuQBND80bTR7NLjkCuQBNFM0ESwDLFjkCuQBND80bTRnNMzkCuQBNFM0ESwDLLjkCuQBND80JTQ/NHzkCuQBNFM0oTQ=="
+  },
+  {
+   "scene": 7,
+   "keys": "AU0ZzSdNPM0VTSjNKU03zSlNKM0XTTk5ArkezQNNGc0DTRnNA00KzSE5ArkATRTNBE0UzQNN"
+  },
+  {
+   "scene": 8,
+   "keys": "AU0ZzSdNKM0DTQ85ArkRzStNLc0DTS3NA00tzSdNI80DTQXNGTkCuQBNFM0ETRTNJ00IOQK5EjkCuQ=="
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: Call Time"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: Gust"
+  },
+  {
+   "scene": 4,
+   "title": "Level 3: Meanwhile"
+  },
+  {
+   "scene": 5,
+   "title": "Level 4: The Float"
+  },
+  {
+   "scene": 6,
+   "title": "Level 5: Drum-Off"
+  },
+  {
+   "scene": 7,
+   "title": "Level 6: The Route"
+  },
+  {
+   "scene": 8,
+   "title": "Level 7: Step Off"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 27398,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 1606,
+    "time": 26766.666666667184
+   },
+   {
+    "title": "Level 1: Call Time",
+    "frame": 2837,
+    "time": 47283.33333333218
+   },
+   {
+    "title": "Level 2: Gust",
+    "frame": 6096,
+    "time": 101600.00000000668
+   },
+   {
+    "title": "Level 3: Meanwhile",
+    "frame": 8303,
+    "time": 138383.33333334434
+   },
+   {
+    "title": "Level 4: The Float",
+    "frame": 11266,
+    "time": 187766.66666664893
+   },
+   {
+    "title": "Level 5: Drum-Off",
+    "frame": 14637,
+    "time": 243949.99999994956
+   },
+   {
+    "title": "Level 6: The Route",
+    "frame": 18394,
+    "time": 306566.6666666574
+   },
+   {
+    "title": "Level 7: Step Off",
+    "frame": 20855,
+    "time": 347583.3333333718
+   },
+   {
+    "title": "Ending",
+    "frame": 23128,
+    "time": 385466.6666667492
+   },
+   {
+    "title": "Credits",
+    "frame": 26326,
+    "time": 438766.6666668113
+   }
+  ]
+ }
+}

@@ -97,7 +97,9 @@ function exitSign(size: number): Pixels {
 export function addBeltCast(add: Add): void {
   for (const k of [0, 1]) {
     const full = rear(k);
-    ROAD_SIZES.forEach((s, i) => add(`belt.car${k}.${i}`, shrinkSprite(full, s.scale, s.bottom, CLEAR)));
+    // the bottom stays on row 19 at every size: the car's cell moves up the lane toward the horizon
+    // (its far end's row 2 ends on the horizon, y 60), so its tires stay on the road and never rise into the sky
+    ROAD_SIZES.forEach((s, i) => add(`belt.car${k}.${i}`, shrinkSprite(full, s.scale, 19, CLEAR)));
     add(`belt.mirror${k}.0`, front(k, false));
     add(`belt.mirror${k}.1`, front(k, true));
   }
