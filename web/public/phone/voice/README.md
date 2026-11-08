@@ -347,7 +347,7 @@ From `web/`: `npm run voice:phone` records new or changed lines (`-- --only <id>
 | [giant-logic-2-2.ogg](giant/giant-logic-2-2.ogg) | Turn the power off again, wait for the last spark to drain away, then walk through. | Hint line: Ohm Sweet Ohm, hint 2 | 7.48 |
 | [giant-logic-3-1.ogg](giant/giant-logic-3-1.ogg) | An arrow is a diode, and you can only go through it the way it points. | Hint line: Ohm Sweet Ohm, hint 3 | 5.61 |
 | [giant-logic-3-2.ogg](giant/giant-logic-3-2.ogg) | Turn the switch on, wait for the gate to open, then turn the switch off again before you roll through. | Hint line: Ohm Sweet Ohm, hint 3 | 8.19 |
-| [giant-realm-intro.ogg](giant/giant-realm-intro.ogg) | Hints for Quest for the Round Tuit. | Hint line: Quest for the Round Tuit, welcome | 3.03 |
+| [giant-realm-intro.ogg](giant/giant-realm-intro.ogg) | Hints for Quest for the Round Tuit. | Hint line: Quest for the Round Tuit, welcome | 3.57 |
 | [giant-realm-1-1.ogg](giant/giant-realm-1-1.ogg) | Go first north up the road from Nowish to Laterburg. | Hint line: Quest for the Round Tuit, hint 1 | 3.75 |
 | [giant-realm-1-2.ogg](giant/giant-realm-1-2.ogg) | Walk into the King on his throne to get the Royal Writ. | Hint line: Quest for the Round Tuit, hint 1 | 4.63 |
 | [giant-realm-2-1.ogg](giant/giant-realm-2-1.ogg) | To talk to people, walk into them. | Hint line: Quest for the Round Tuit, hint 2 | 2.59 |
