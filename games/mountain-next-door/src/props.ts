@@ -57,6 +57,7 @@ import { dent, scree } from './art/high';
 import { drift, potSlates, puff, slates, stack } from './art/roofs';
 import { brace, calm, lamp, landing, leg, railing, shingles } from './art/tower';
 import { desk, floorboard, libWindow, lostBook, shelf, shelfGap } from './art/library';
+import { houseDoor } from './art/exits';
 
 /** Points: a painted blaze, an acorn, a gate taken off the mountain, a gate put back home. */
 export const POINTS = { blaze: 10, acorn: 5, gate: 25, home: 25, lantern: 10, book: 10, shelved: 20, flake: 5 } as const;
@@ -128,6 +129,10 @@ export function addProps(book: Book, pal: Pal, groups: readonly string[], o: Pro
     book.add('roofL', roof(pal, 'L'), air);
     book.add('roofM', roof(pal, 'M'), air);
     book.add('roofR', roof(pal, 'R'), air);
+    book.add('roofF', roof(pal, 'F'), air);
+    const [doorTop, doorBottom] = houseDoor(pal);
+    book.add('houseDoorTop', doorTop, air);
+    book.add('houseDoorBottom', doorBottom, air);
     book.add('fence', fence(pal), air);
     book.add('arborTop', arbor(pal, 'top'), { solid: SOLID });
     book.add('arborBeam', arbor(pal, 'beam'), { solid: SOLID });

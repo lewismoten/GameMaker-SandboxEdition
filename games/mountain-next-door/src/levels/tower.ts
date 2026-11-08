@@ -3,10 +3,10 @@
 // loose and drop away on a clock; on the fifth landing two loose runs are out of step, so the way over is to cross
 // the first, stop on the sound board between, and wait for the second. A fall is only to the landing below. Light
 // the lamp on each landing as the dark comes on; the stars come out while you climb.
-import { ORIGIN, StarterMap } from '../../../kit/starter/map';
+import { ORIGIN } from '../../../kit/starter/map';
 import type { Pal } from '../../../kit/starter/palette';
 import { Grid } from '../../../kit/starter/grid';
-import { addSigns, onGround, startBook, type Level } from '../level';
+import { addSigns, onGround, startBook, MountainMap, type Level } from '../level';
 
 export const G_TOWER = 60;
 /** The landings' rows, bottom to top. */
@@ -30,10 +30,7 @@ export const TOWER_AT = {
 
 const SIGNS = {
   base: ['FIRE LOOKOUT. SEVEN FLIGHTS. NO ELEVATOR.', 4, 3],
-  lamps: ['DARK IS COMING. LIGHT THE LAMPS.', 4, 2],
-  loose: ['LOOSE BOARDS DROP ON A CLOCK.', 4, 2],
   log: ['LOGBOOK, 1961: SAW SMOKE. IT WAS A CLOUD.', 4, 3],
-  two: ['TWO LOOSE RUNS, OUT OF STEP. STOP ON THE SOUND BOARD BETWEEN.', 4, 4],
   view: ['THERE: SNOW ON THE RIDGE, ALL THE WAY TO TOWN.', 4, 4],
 } as const;
 
@@ -49,7 +46,7 @@ export function levelTower(pal: Pal): Level {
   g.row(G_TOWER, 0, W - 1, 'G').fill(0, G_TOWER + 1, W, 3, 'D');
   g.col(0, 0, G_TOWER - 1, 'X').col(W - 1, 0, G_TOWER - 1, 'X');
   g.put(3, G_TOWER - 2, 's').put(3, G_TOWER - 1, 'S');
-  const m = new StarterMap(book, g.rows());
+  const m = new MountainMap(book, g.rows());
   // stars in the open sky round the tower and over the cab
   for (let y = 0; y < G_TOWER - 8; y++)
     for (let x = 1; x < W - 1; x++) {
@@ -74,7 +71,7 @@ export function levelTower(pal: Pal): Level {
   for (const [k, a, b, gone] of T.loose) for (let x = a; x <= b; x++) m.set(x, LANDINGS[k], gone ? 'boardGone' : 'boardUp');
   m.set(T.exit, LANDINGS[6] - 2, 'doorTop').set(T.exit, LANDINGS[6] - 1, 'doorBottom');
   m.exits.push({ from: [T.exit + ORIGIN, LANDINGS[6] - 1 + ORIGIN] });
-  for (const k of Object.keys(T.signs) as (keyof typeof T.signs)[]) {
+  for (const k of Object.keys(s) as (keyof typeof s)[]) {
     const [landing, x] = T.signs[k];
     m.sign(x, onGround(towerFeet(landing) + 1, s[k]), s[k]);
   }

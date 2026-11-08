@@ -3,9 +3,9 @@
 // garden gates caught all over it. Mr. Hale stops on his morning walk and stares; Mrs. Okoro comes out on her
 // step. Then the mountain wakes: it opens its eyes, yawns, and lifts its big foot off the sidewalk so Tess can
 // get by. Nothing to collect and nothing that hurts: walk along, read, watch.
-import { StarterMap } from '../../../kit/starter/map';
+
 import type { Pal } from '../../../kit/starter/palette';
-import { GROUND, addSigns, mountain, onGround, placeFace, room, startBook, type Level } from '../level';
+import { GROUND, addSigns, mountain, onGround, placeFace, room, startBook, MountainMap, type Level } from '../level';
 import { NEXT, PROLOGUE } from '../monsters';
 import { FOOT } from '../art/land';
 
@@ -24,18 +24,14 @@ export const NEXT_AT = {
 } as const;
 
 const SIGNS = {
-  up: ['CREW AT EIGHT. COFFEE FIRST. ALWAYS.', 4, 3],
   fog: ['THAT IS A LOT OF FOG FOR ONE LOT.', 4, 3],
-  not: ['FOG DOES NOT GROW MOSS.', 4, 3],
-  gates: ['IT IS WEARING HALF THE GARDEN GATES.', 4, 3],
-  polite: ['IT SAID EXCUSE ME.', 4, 2],
 } as const;
 
 export function levelNext(pal: Pal): Level {
   const { book, timed } = startBook(pal, ['mountain', 'sleepy', 'town'], { wake: PROLOGUE.wake });
   const s = addSigns(book, pal, SIGNS);
   const g = room(70, NEXT_AT.exit);
-  const m = new StarterMap(book, g.rows());
+  const m = new MountainMap(book, g.rows());
   mountain(m, NEXT_AT.peak, NEXT_AT.top);
   // gates caught high on the rock (out of reach today)
   m.set(32, 2, 'gate.green').set(26, 5, 'gate.white').set(39, 5, 'gate.blue').set(29, 3, 'gate.red');
@@ -43,7 +39,7 @@ export function levelNext(pal: Pal): Level {
   for (let k = 0; k < FOOT.w * FOOT.h; k++) m.set(NEXT_AT.toe + (k % FOOT.w), GROUND - FOOT.h + Math.floor(k / FOOT.w), `foot${k}`);
   // Tess's house (she starts in its doorway) and her fence; Mrs. Okoro's house past the toe
   house(m, 1, 7, 'wall', 'windowLit');
-  m.set(3, GROUND - 2, 'doorwayTop').set(3, GROUND - 1, 'doorwayBottom');
+  m.set(3, GROUND - 2, 'houseDoorTop').set(3, GROUND - 1, 'houseDoorBottom');
   for (const x of [8, 9]) m.set(x, GROUND - 1, 'fence');
   house(m, 55, 62, 'wallB', 'windowB');
   // the sleepy face, then the fog over it, in four waves from the left
@@ -61,7 +57,7 @@ export function levelNext(pal: Pal): Level {
   m.mon(NEXT.okoro, NEXT_AT.okoro, GROUND - 2).mon(NEXT.okoro + 1, NEXT_AT.okoro, GROUND - 1);
   m.mon(NEXT.okoro + 8, NEXT_AT.okoro + PROLOGUE.okoroWalk, GROUND - 3);
   const at = NEXT_AT.signs;
-  for (const k of Object.keys(at) as (keyof typeof at)[]) m.sign(at[k], onGround(GROUND, s[k]), s[k]);
+  for (const k of Object.keys(s) as (keyof typeof s)[]) m.sign(at[k], onGround(GROUND, s[k]), s[k]);
   return {
     file: 'next',
     title: 'Next Door',
@@ -77,10 +73,11 @@ export function levelNext(pal: Pal): Level {
 }
 
 /** A little house from column x0 to x1: two rows of wall with windows under a roof. */
-export function house(m: StarterMap, x0: number, x1: number, wall: string, win: string): void {
+export function house(m: MountainMap, x0: number, x1: number, wall: string, win: string): void {
   for (let x = x0; x <= x1; x++) {
     for (const y of [GROUND - 3, GROUND - 2, GROUND - 1]) m.set(x, y, (x - x0) % 3 === 2 && y === GROUND - 2 ? win : wall);
-    m.set(x, GROUND - 4, x === x0 ? 'roofL' : x === x1 ? 'roofR' : 'roofM');
+    // the eaves' row: under the upper row it is all roof (roofM's open top is only for a single row)
+    m.set(x, GROUND - 4, x === x0 ? 'roofL' : x === x1 ? 'roofR' : 'roofF');
   }
   for (let x = x0 + 1; x < x1; x++) m.set(x, GROUND - 5, x === x0 + 1 ? 'roofL' : x === x1 - 1 ? 'roofR' : 'roofM');
 }

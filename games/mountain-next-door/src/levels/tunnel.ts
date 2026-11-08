@@ -4,9 +4,9 @@
 // a trail of light; and each lantern she touches lights up. Glow-worms twinkle on the ceiling, each at its own
 // pace. Some stretches are so low there is only just room to walk. The low road goes in; a ladder at its end
 // climbs to the old mill race, which runs back. At its far end, a very small cloud is hiding, snowing on itself: Wisp.
-import { StarterMap } from '../../../kit/starter/map';
+
 import type { Pal } from '../../../kit/starter/palette';
-import { addSigns, onGround, startBook, type Level } from '../level';
+import { addSigns, onGround, startBook, MountainMap, type Level } from '../level';
 import { TRAIL } from '../monsters';
 
 /** Two tunnels, one over the other: the low road in (to the right) and the old mill race back (to the left). */
@@ -66,10 +66,7 @@ export const TUNNEL_AT = {
 } as const;
 
 const SIGNS = {
-  dark: ['DARK. LIGHT EVERY LANTERN.', 4, 2],
   low: ['LOW BIT. MIND YOUR HAT.', 4, 3],
-  worms: ['GLOW WORMS. THEY LIKE IT DARK.', 4, 3],
-  race: ['UP THE LADDER TO THE OLD MILL RACE.', 4, 3],
   wisp: ['A SNIFFLE. THERE YOU ARE, WISP.', 4, 3],
 } as const;
 
@@ -94,7 +91,7 @@ export function levelTunnel(pal: Pal): Level {
               : ' ',
     ).join(''),
   );
-  const m = new StarterMap(book, rows);
+  const m = new MountainMap(book, rows);
   for (let y = 0; y < H; y++)
     for (let x = 0; x < W; x++) {
       const t = [LOWER, UPPER].find((k) => y > k.ceil && y < k.floor);
@@ -124,10 +121,7 @@ export function levelTunnel(pal: Pal): Level {
   for (const [x, n, k] of T.worms) m.mon([TRAIL.glowA, TRAIL.glowB, TRAIL.glowC][n], x, tun[k].ceil + 1);
   m.mon(TRAIL.wispHide, T.wisp, UPPER.floor - 2);
   const at = T.signs;
-  m.sign(at.dark, onGround(LOWER.floor, s.dark), s.dark);
   m.sign(at.low, onGround(LOWER.floor, s.low), s.low);
-  m.sign(at.worms, onGround(LOWER.floor, s.worms), s.worms);
-  m.sign(at.race, onGround(LOWER.floor, s.race), s.race);
   m.sign(at.wisp, onGround(UPPER.floor, s.wisp), s.wisp);
   return { file: 'tunnel', title: 'The Low Tunnel', hint: 'Light the lanterns as you go.', look: 'tunnel', map: m, book, timed, mon: 'trail', song: 'dusk' };
 }

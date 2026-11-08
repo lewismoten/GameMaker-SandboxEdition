@@ -10,7 +10,7 @@ import type { Pal } from '../../kit/starter/palette';
 import { birds, dirtVariant, farHill, grassShade, grassVariant, leaf, wisp } from './art/dress';
 import { ladderOnRock } from './art/high';
 import { crown, rock } from './art/land';
-import type { Level } from './level';
+import { OPEN, type Level } from './level';
 
 export interface DressOptions {
   /** Indoors or underground: no wisps of cloud, no birds. */
@@ -57,19 +57,29 @@ export function dress(l: Level, pal: Pal, o: DressOptions = {}): void {
   const W = l.map.width;
   const H = l.map.height;
 
-  // small props standing in front of rock (a cliff above them, or rock both sides) get the rock behind them, not sky;
-  // what they turn into when touched does too (an acorn taken leaves rock)
+  // a prop drawn again with `back` behind it wherever it shows sky (a Game-Maker cell shows one block, so nothing
+  // shows through it), and so is what it turns into, touched or on its clock (an acorn taken leaves the rock)
   const rockish = (n: string) => /^(rock|ledge|scree|slope|gentle|ladderRock)/.test(n);
   const sky = pal.c('sky', 3);
-  const onRock = (name: string): number => {
-    const v = `${name}@rock`;
+  const showsSky = (name: string) => book.pics.get(name)?.px.includes(sky) ?? false;
+  const onBack = (name: string, back: string): number => {
+    const v = `${name}@${back}`;
     if (book.has(v)) return book.n(v);
+    const later: string[] = [];
+    const swap = (t: string) => (t === 'sky' ? back : showsSky(t) ? (later.push(t), `${t}@${back}`) : t);
     const r = book.rulesOf(name);
-    if (r.touch) r.touch = r.touch === 'sky' ? 'rock' : (onRock(r.touch), `${r.touch}@rock`);
-    const back = book.pics.get('rock') as Pixels;
-    const pic = (book.pics.get(name) as Pixels).map((x, y, c) => (c === sky ? back.get(x, y) : c));
-    return book.add(v, pic, r);
+    if (r.touch) r.touch = swap(r.touch);
+    const behind = book.pics.get(back) as Pixels;
+    const pic = (book.pics.get(name) as Pixels).crop(0, 0, 20, 20).map((x, y, c) => (c === sky ? behind.get(x, y) : c));
+    const n = book.add(v, pic, r);
+    const clock = l.timed.find((t) => t.name === name);
+    if (clock) l.timed.push({ ...clock, name: v, next: swap(clock.next) });
+    for (const t of later) onBack(t, back);
+    return n;
   };
+  const onRock = (name: string): number => onBack(name, 'rock');
+
+  // small props standing in front of rock (a cliff above them, or rock both sides) get the rock behind them
   for (let y = 0; y < H; y++)
     for (let x = 1; x < W - 1; x++) {
       const n = nameAt(x, y);
@@ -116,7 +126,7 @@ export function dress(l: Level, pal: Pal, o: DressOptions = {}): void {
           );
       } else if (
         n === 'ladder' &&
-        (rockish(nameAt(x - 1, y)) || rockish(nameAt(x + 1, y))) &&
+        (rockish(nameAt(x - 1, y)) || rockish(nameAt(x + 1, y)) || nameAt(x, y - 1) === 'ladderRock') &&
         ![nameAt(x - 1, y), nameAt(x + 1, y)].some((s) => SKYISH.test(s))
       ) {
         const lad = book.pics.get('ladder');
@@ -126,6 +136,9 @@ export function dress(l: Level, pal: Pal, o: DressOptions = {}): void {
             y,
             add('ladderRock', () => ladderOnRock(pal, lad, 40), 'ladder'),
           );
+      } else if (n === 'ladder' && [nameAt(x - 1, y), nameAt(x + 1, y)].every((s) => /^(grass|dirt)/.test(s))) {
+        // a ladder down a shaft cut through the ground: earth behind it, not sky
+        put(x, y, onBack('ladder', 'dirt'));
       } else if ((n === 'rock' || n === 'rock2') && book.has('rock')) {
         const k = Math.floor(hash(x, y, 1) * 4);
         put(x, y, k < 2 ? book.n(k ? 'rock2' : 'rock') : add(`rock${k + 1}`, () => rock(pal, 10 + k), 'rock'));
@@ -240,5 +253,21 @@ export function dress(l: Level, pal: Pal, o: DressOptions = {}): void {
         add(`${name}b`, () => bottom),
       );
     }
+  }
+
+  // every prop the level set over something solid (MountainMap.under: the mountain's rock, a house's wall, a shelf) gets
+  // that behind it in place of sky; rock picks the same variety the ground pass would have
+  for (const [k, base] of l.map.under) {
+    const x = (k % MLEN) - ORIGIN;
+    const y = Math.floor(k / MLEN) - ORIGIN;
+    const n = nameAt(x, y);
+    if (!n || n.includes('@') || OPEN.test(n) || !showsSky(n) || !book.has(base) || showsSky(base)) continue;
+    let back = base;
+    if ((base === 'rock' || base === 'rock2') && x > 0 && x < W - 1) {
+      const v = Math.floor(hash(x, y, 1) * 4);
+      back = v < 2 ? (v ? 'rock2' : 'rock') : `rock${v + 1}`;
+      if (v >= 2) add(back, () => rock(pal, 10 + v), 'rock');
+    }
+    put(x, y, onBack(n, back));
   }
 }

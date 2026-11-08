@@ -2,10 +2,10 @@
 // next. At every fork somebody keeps turning the signpost (it swaps on a clock): somebody with a bushy tail.
 // The arrows cannot be trusted, but the yellow blazes can: a blazed post stands by the right ladder. The wrong
 // way is a dead end, where Nutmeg keeps her acorn stash. Take a few; she has plenty.
-import { StarterMap } from '../../../kit/starter/map';
+
 import type { Pal } from '../../../kit/starter/palette';
 import { Grid } from '../../../kit/starter/grid';
-import { addSigns, onGround, startBook, type Level } from '../level';
+import { addSigns, onGround, startBook, MountainMap, type Level } from '../level';
 import { TRAIL } from '../monsters';
 
 /** The three paths' floors (Tess walks on the row above each). */
@@ -41,11 +41,8 @@ export const SIGNS_AT = {
 } as const;
 
 const SIGNS = {
-  turned: ['SOMEONE KEEPS TURNING THE SIGNS.', 4, 3],
-  trust: ['ARROWS LIE. PAINT DOES NOT.', 4, 3],
   stash: ['NUTMEG WAS HERE.', 4, 2],
   noon: ['NOON. THE CREW COMES IN 19 HOURS.', 4, 3],
-  top: ['NEARLY TO THE OLD SPOT.', 4, 2],
 } as const;
 
 export function levelSigns(pal: Pal): Level {
@@ -75,7 +72,7 @@ export function levelSigns(pal: Pal): Level {
     [70, 2],
   ])
     g.put(x, y, '(').put(x + 1, y, ')');
-  const m = new StarterMap(book, g.rows());
+  const m = new MountainMap(book, g.rows());
   const feet = (tier: number) => FLOORS[tier] - 1;
   m.set(fork1.arrow, feet(0), 'arrowL').set(fork1.blaze, feet(0), 'postBlazed');
   m.set(fork2.arrow, feet(1), 'arrowR').set(fork2.blaze, feet(1), 'postBlazed');
@@ -89,11 +86,8 @@ export function levelSigns(pal: Pal): Level {
   for (const [x, t] of SIGNS_AT.nuts) m.mon(TRAIL.nutmeg, x, feet(t));
   m.mon(TRAIL.nutShort, fork2.stash[0] + 1, feet(2));
   const at = SIGNS_AT.signs;
-  m.sign(at.turned, onGround(f1, s.turned), s.turned);
-  m.sign(at.trust, onGround(f1, s.trust), s.trust);
   m.sign(at.stash, onGround(f1, s.stash), s.stash);
   m.sign(at.noon, onGround(f2, s.noon), s.noon);
-  m.sign(at.top, onGround(f3, s.top), s.top);
   return {
     file: 'signs',
     title: "Nutmeg's Signposts",

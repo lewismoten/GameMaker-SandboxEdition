@@ -3,10 +3,10 @@
 // behind the far ridge, step by step, and the first stars come out. Nutmeg sits on the rim and watches too. A
 // trail of tiny snowdrifts, snow from a very small cloud, leads out the other side: the mountain's cloud, Wisp, is
 // missing too. That is why it left. Nothing to collect and nothing that hurts.
-import { StarterMap } from '../../../kit/starter/map';
+
 import type { Pal } from '../../../kit/starter/palette';
 import { Grid } from '../../../kit/starter/grid';
-import { addSigns, onGround, startBook, type Level } from '../level';
+import { addSigns, onGround, startBook, MountainMap, type Level } from '../level';
 import { tree } from './prints';
 import { HOLLOW } from '../monsters';
 
@@ -27,9 +27,6 @@ export const HOLLOW_AT = {
 } as const;
 
 const SIGNS = {
-  hole: ['A HOLE AS BIG AS THE TOWN SQUARE.', 4, 3],
-  here: ['IT STOOD HERE LONGER THAN THE TOWN.', 4, 3],
-  puddles: ['SNOW? IN THIS SUN? FROM WHAT?', 4, 3],
   wisp: ['ITS CLOUD, WISP, ALWAYS SAT ON TOP.', 4, 3],
   gone: ['WISP LEFT. THE MOUNTAIN WENT AFTER IT.', 4, 3],
 } as const;
@@ -54,7 +51,7 @@ export function levelHollow(pal: Pal): Level {
   g.col(0, 0, RIM - 1, 'X').col(W - 1, 0, RIM - 1, 'X');
   g.put(3, RIM - 2, 's').put(3, RIM - 1, 'S');
   g.put(HOLLOW_AT.exit, RIM - 2, 'e').put(HOLLOW_AT.exit, RIM - 1, 'E');
-  const m = new StarterMap(book, g.rows());
+  const m = new MountainMap(book, g.rows());
   // two trees on the far rim
   for (const x of [60, 64]) tree(m, x, RIM);
   // stars in the sky, three groups that come out one after another
@@ -63,7 +60,7 @@ export function levelHollow(pal: Pal): Level {
   m.mon(HOLLOW.sun, HOLLOW_AT.sun[0], HOLLOW_AT.sun[1]);
   m.mon(HOLLOW.nutSit, HOLLOW_AT.nut, RIM - 1);
   const at = HOLLOW_AT.signs;
-  for (const k of Object.keys(at) as (keyof typeof at)[]) m.sign(at[k], onGround(ground(at[k]), s[k]), s[k]);
+  for (const k of Object.keys(s) as (keyof typeof s)[]) m.sign(at[k], onGround(ground(at[k]), s[k]), s[k]);
   return {
     file: 'hollow',
     title: 'The Empty Spot',

@@ -3,10 +3,10 @@
 // (hop over). Tess paints a blaze on every trail post and every big tree, so the mountain can find its way home,
 // takes the acorns off the oak's branch where Nutmeg the squirrel runs, and hops a fallen log. Mist drifts by.
 // Then up a ladder to the canopy walk over the treetops, and back along it, where the prints show best.
-import { StarterMap } from '../../../kit/starter/map';
+
 import type { Pal } from '../../../kit/starter/palette';
 import { Grid } from '../../../kit/starter/grid';
-import { addSigns, onGround, startBook, type Level } from '../level';
+import { addSigns, onGround, startBook, MountainMap, type Level } from '../level';
 import { TRAIL } from '../monsters';
 
 export const G3 = 15;
@@ -32,11 +32,7 @@ export const PRINTS_AT = {
 } as const;
 
 const SIGNS = {
-  follow: ['THE BIG PRINTS GO BACK THE WAY IT CAME.', 4, 3],
-  blaze: ['BLAZE EVERY POST. IT WILL NEED THEM.', 4, 3],
   nut: ['NUTMEG. SHE IS NOT HELPING.', 4, 2],
-  mist: ['IN MIST, TRUST PAINT, NOT EYES.', 4, 3],
-  canopy: ['THE CANOPY WALK: THE PRINTS FROM ABOVE.', 4, 3],
 } as const;
 
 export function levelPrints(pal: Pal): Level {
@@ -59,7 +55,7 @@ export function levelPrints(pal: Pal): Level {
   g.col(o.ladder, o.row - 1, G3 - 1, 'H');
   g.row(o.row, o.from, o.to, '=');
   scenery(g);
-  const m = new StarterMap(book, g.rows());
+  const m = new MountainMap(book, g.rows());
   for (const x of PRINTS_AT.holes) m.set(x, G3 + 2, 'printL').set(x + 1, G3 + 2, 'printR');
   for (const x of PRINTS_AT.dents)
     m.set(x, G3, 'printL')
@@ -80,8 +76,7 @@ export function levelPrints(pal: Pal): Level {
   for (const x of c.acorns) m.set(x, c.row - 1, 'acorn');
   for (const x of c.nuts) m.mon(TRAIL.nutmeg, x, c.row - 1);
   const at = PRINTS_AT.signs;
-  for (const k of ['follow', 'blaze', 'nut', 'mist'] as const) m.sign(at[k], onGround(G3, s[k]), s[k]);
-  m.sign(at.canopy, onGround(c.row, s.canopy), s.canopy);
+  m.sign(at.nut, onGround(G3, s.nut), s.nut);
   return {
     file: 'prints',
     title: 'Footprints in the Park',
@@ -96,7 +91,7 @@ export function levelPrints(pal: Pal): Level {
 }
 
 /** A big tree at column x: bark, a trunk to blaze at Tess's height, a crown on top. */
-export function tree(m: StarterMap, x: number, ground = G3): void {
+export function tree(m: MountainMap, x: number, ground = G3): void {
   m.set(x, ground - 1, 'bark')
     .set(x, ground - 2, 'trunk')
     .set(x, ground - 3, 'bark')

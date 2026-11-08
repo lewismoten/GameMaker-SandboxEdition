@@ -6,10 +6,11 @@
 import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import type { Book } from '../../../kit/starter/book';
 import { skyOf, type Pal } from '../../../kit/starter/palette';
+import { exitArt, type ExitKind } from './exits';
 import { inked } from './land';
 
 /** Diagonal hatching: every `gap` pixels along x + y, color `c`, inside the rectangle. */
-function hatch(p: Pixels, x0: number, y0: number, w: number, h: number, c: number, gap = 4, phase = 0): void {
+export function hatch(p: Pixels, x0: number, y0: number, w: number, h: number, c: number, gap = 4, phase = 0): void {
   for (let y = y0; y < y0 + h; y++) for (let x = x0; x < x0 + w; x++) if ((x + y + phase) % gap === 0) p.set(x, y, c);
 }
 
@@ -57,7 +58,7 @@ function turf(pal: Pal): Pixels {
 }
 
 /** A fieldstone: rounded, inked, lit from the upper left. */
-function fieldstone(p: Pixels, pal: Pal, x: number, y: number, w: number, h: number): void {
+export function fieldstone(p: Pixels, pal: Pal, x: number, y: number, w: number, h: number): void {
   const s = pal.r('rock');
   const ink = pal.c('ink', 0);
   p.rect(x, y, w, h, s[2])
@@ -180,21 +181,6 @@ function aster(pal: Pal): Pixels {
   return inked(pal, p);
 }
 
-/** The exit: a trail-crew cabin door with a Z brace and a fresh yellow blaze, 20 x 40. */
-function cabinDoor(pal: Pal): Pixels {
-  const p = new Pixels(20, 40, skyOf(pal));
-  const w = pal.r('wood');
-  const ink = pal.c('ink', 0);
-  p.rect(2, 1, 16, 39, w[2]);
-  for (let x = 2; x < 18; x += 4) p.rect(x, 1, 1, 39, w[1]);
-  p.rect(3, 6, 14, 3, w[3]).rect(3, 31, 14, 3, w[3]);
-  for (let i = 0; i < 22; i++) p.rect(15 - Math.floor((i * 12) / 22), 9 + i, 3, 1, w[3]);
-  p.rect(8, 14, 4, 6, pal.c('gold', 4)).rect(8, 14, 4, 1, pal.c('gold', 5));
-  p.disc(15, 22, 1, pal.c('rock', 4));
-  p.rect(0, 0, 20, 2, w[1]).rect(0, 0, 20, 1, ink);
-  return inked(pal, p);
-}
-
 /** The way in: a trailhead arch of two posts and a crossbeam, a lantern hanging from it, 20 x 40. */
 function trailhead(pal: Pal): Pixels {
   const p = new Pixels(20, 40, skyOf(pal));
@@ -221,8 +207,8 @@ function routed(pal: Pal, pic: Pixels): Pixels {
   return pic.map((_x, _y, c) => to.get(c) ?? c);
 }
 
-/** Gives a block set the game's own look: the shared blocks drawn again, the signs routed. */
-export function restyle(book: Book, pal: Pal): void {
+/** Gives a block set the game's own look: the shared blocks drawn again, the way out drawn for its place (exits.ts), the signs routed. */
+export function restyle(book: Book, pal: Pal, exit: ExitKind = 'cairn'): void {
   book.redraw('grass', turf(pal));
   book.redraw('dirt', earth(pal, 7));
   book.redraw('edge', stoneWall(pal, 1));
@@ -234,9 +220,9 @@ export function restyle(book: Book, pal: Pal): void {
   book.redraw('cloudR', cloud.crop(20, 0, 20, 20));
   book.redraw('bush', juniper(pal));
   book.redraw('flower', aster(pal));
-  const door = cabinDoor(pal);
-  book.redraw('doorTop', door.crop(0, 0, 20, 20));
-  book.redraw('doorBottom', door.crop(0, 20, 20, 20));
+  const [exitTop, exitBottom] = exitArt(pal, exit);
+  book.redraw('doorTop', exitTop);
+  book.redraw('doorBottom', exitBottom);
   const arch = trailhead(pal);
   book.redraw('doorwayTop', arch.crop(0, 0, 20, 20));
   book.redraw('doorwayBottom', arch.crop(0, 20, 20, 20));

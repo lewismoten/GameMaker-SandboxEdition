@@ -3,10 +3,10 @@
 // neighbors plugged each gateway with a wheelbarrow to keep the hens in, and the gate puts the wheelbarrow back
 // (the gateway is a lock; a gate is its key). The tall hedges cannot be hopped, so it is one gate at a time.
 // The mountain watches, blinking, and looks sorry.
-import { StarterMap } from '../../../kit/starter/map';
+
 import type { Pal } from '../../../kit/starter/palette';
 import { Grid } from '../../../kit/starter/grid';
-import { addSigns, mountain, onGround, placeFace, startBook, type Level } from '../level';
+import { addSigns, mountain, onGround, placeFace, startBook, MountainMap, type Level } from '../level';
 import { TRAIL } from '../monsters';
 import type { GateColor } from '../art/land';
 
@@ -31,9 +31,6 @@ export const GATES_AT = {
 } as const;
 
 const SIGNS = {
-  four: ['FOUR GATES UP. FOUR GARDENS DOWN.', 4, 3],
-  carry: ['GATES ARE AWKWARD. ONE AT A TIME.', 4, 3],
-  hens: ['THE BARROWS KEEP THE HENS IN. MOSTLY.', 4, 3],
   pie: ['MR. HALE: PIE. NOT A TRUCE.', 4, 2],
   sorry: ['IT CANNOT MEET YOUR EYE.', 4, 2],
 } as const;
@@ -52,7 +49,7 @@ export function levelGates(pal: Pal): Level {
     g.col(c.ladder, c.row - 1, G2 - 1, 'H');
     if ('upper' in c && c.upper) g.col(c.upper.ladder, c.upper.row - 1, c.row - 1, 'H');
   }
-  const m = new StarterMap(book, g.rows());
+  const m = new MountainMap(book, g.rows());
   mountain(m, 45, 0, 3, G2, 1, W - 2);
   mountain(m, 11, 11, 1, G2, 1, W - 2);
   // put the ladders, hedges, start and exit back over the rock
@@ -77,7 +74,7 @@ export function levelGates(pal: Pal): Level {
   for (const [x] of GATES_AT.hens) m.mon(TRAIL.hens, x, G2 - 1);
   placeFace(m, TRAIL.face, 41, 49, 4, 45, 7);
   const at = GATES_AT.signs;
-  for (const k of Object.keys(at) as (keyof typeof at)[]) m.sign(at[k], onGround(G2, s[k]), s[k]);
+  for (const k of Object.keys(s) as (keyof typeof s)[]) m.sign(at[k], onGround(G2, s[k]), s[k]);
   return {
     file: 'gates',
     title: 'Gate Hunt',
