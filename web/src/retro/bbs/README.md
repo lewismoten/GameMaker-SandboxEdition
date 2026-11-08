@@ -15,6 +15,6 @@ Phone numbers on any board are 555-01xx; the exceptions are listed in `AGENTS.md
 
 Must not: import anything under `src/desk/`. The PC is shared with `dos.html`, and `dosPage/boundary.test.ts` walks every import reachable from `retro/computer.ts` and fails on a path into `desk/`.
 
-Tests: `baudot`, `courierMail`, `downloadGif`, `fileId.picture`, `gifProgress`, `lineSpeed`, `modem`, `pager`, `rsdLine`, `signup`, `signupAccounts`, `term.pacing`, `ticTacToe` and `ttyTalk`, each a `.test.ts` here.
+Tests: `noStarters`, `baudot`, `courierMail`, `downloadGif`, `fileId.picture`, `gifProgress`, `lineSpeed`, `modem`, `pager`, `rsdLine`, `signup`, `signupAccounts`, `term.pacing`, `ticTacToe` and `ttyTalk`, each a `.test.ts` here.
 
 Check: `cd web && npx vitest run src/retro/bbs`; for a look, dial a board on `/dos.html`.
