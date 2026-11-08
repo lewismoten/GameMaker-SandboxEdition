@@ -164,9 +164,9 @@ export interface OfflineProgress {
 
 type OfflineResult = { ok: true } | { ok: false; reason: 'canceled' | 'quota' | 'network' | 'space'; message: string };
 
-/** How many games the copy holds: each is one pack (.zip; .gmpak for older builds) under games/. */
+/** How many games the copy holds: each is one pack (.zip, or a split one's .zpart; .gmpak for older builds) under games/. */
 export function gameCount(status: Pick<OfflineStatus, 'files'>): number {
-  return status.files.filter((f) => /^games\/.*\.(zip|gmpak)$/.test(f.path)).length;
+  return status.files.filter((f) => /^games\/.*\.(zip|zpart|gmpak)$/.test(f.path)).length;
 }
 
 /** Room for this many more bytes, as far as the browser tells (true when it does not say). */
