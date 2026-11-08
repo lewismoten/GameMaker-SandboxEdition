@@ -1,7 +1,8 @@
 // LUCKY CAT (Sandbox Software, 1994): builds every file of the game into games/lucky-cat/disk/.
 //   cd web && npx vite-node ../games/lucky-cat/build.ts
 // A Special: a limited-time game that arrives around Friday the 13th. Midnight, a black cat, is blamed for the
-// town's bad luck and gathers 13 lucky charms to prove she is lucky.
+// town's bad luck and gathers 13 lucky charms to prove she is lucky; halfway through, the player is Rascal, the
+// raccoon who rigged it all. Drawn as a white-line woodcut (src/print.ts).
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { serializeBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
@@ -17,7 +18,6 @@ import { Disk } from '../kit/disk';
 import { licenseText } from '../kit/license';
 import { buildHero } from '../kit/starter/heroChar';
 import { SEQ } from '../kit/starter/ids';
-import { cardPicture, endPicture, gif, menuPicture, paper, scoresPicture, slotsPicture } from '../kit/starter/screens';
 import { buildSounds } from '../kit/starter/sounds';
 import { buildCatBlocks, catPicture } from './src/cat';
 import { CHARMS, charmSprite } from './src/charms';
@@ -26,7 +26,8 @@ import { finishBlocks } from './src/level';
 import { buildLevels } from './src/levels';
 import { finishMonsterPictures, monsterPictures, monsterSet } from './src/monsters';
 import { LOOKS, swapped } from './src/palette';
-import { rascalPicture, revealCard, storyCard, titlePicture } from './src/pictures';
+import { buildRascalBlocks, rascalSprite } from './src/rascal';
+import { cardPicture, endPicture, gif, menuPicture, paper, scoresPicture, slotsPicture, storyCard, titlePicture } from './src/screens';
 import { endingReel, introReel, REEL_SPEED } from './src/reels';
 import { SONGS, song } from './src/song';
 import { CARDS, CREDITS, HOWTO, LOST, REVEAL, STORY, WON } from './src/text';
@@ -45,16 +46,24 @@ const heroBlocks = buildCatBlocks(pal);
 const cat = catPicture(heroBlocks, 'stand.top', 'stand');
 const cheer = catPicture(heroBlocks, 'cheer.top', 'jump');
 const hurt = catPicture(heroBlocks, 'hurt.top', 'hurt');
+const smug = catPicture(heroBlocks, 'look.top', 'stand');
+const rascalBlocks = buildRascalBlocks(pal);
+const rascal = rascalSprite(pal);
 const base = levels[0].book;
 const monsterBlocks = monsterPictures(pal);
 
-// the shared data: the cat, her two characters (the second swaps Left and Right), the crows, the sounds and the songs
+// the shared data: the cat, her two characters (the second swaps Left and Right), Rascal, the crows, the sounds and the songs
 disk.put('hero.cbl', serializeBlocks(heroBlocks.finish()));
 const heroChar = buildHero(heroBlocks);
 heroChar.meter[0] = HERO_HIT_POINTS;
 heroChar.meter[1] = HERO_LIVES;
 disk.put('hero.chr', serializeCharacter(heroChar));
 disk.put('mirror.chr', serializeCharacter(mirrored(heroChar)));
+disk.put('rascal.cbl', serializeBlocks(rascalBlocks.finish()));
+const rascalChar = buildHero(rascalBlocks);
+rascalChar.meter[0] = HERO_HIT_POINTS;
+rascalChar.meter[1] = HERO_LIVES;
+disk.put('rascal.chr', serializeCharacter(rascalChar));
 disk.put('crow.mbl', serializeBlocks(finishMonsterPictures(monsterBlocks)));
 disk.put('crow.mon', serializeMonsters(monsterSet(monsterBlocks)));
 disk.put('lucky.snd', serializeSoundSet(buildSounds()));
@@ -84,9 +93,10 @@ levels.forEach((l, i) => {
   disk.put(`${l.file}.map`, serializeMap(l.map.done()));
   disk.put(`${l.file}.bbl`, serializeBlocks(finishBlocks(l)));
   const slides = [{ name: `${l.file}.gif`, pause: 4 }];
-  disk.put(`${l.file}.gif`, gif(cardPicture(lp, base, cat, i + 1, levels.length, l.title, l.hint), lp));
+  const who = l.chr === 'rascal' ? rascal : cat;
+  disk.put(`${l.file}.gif`, gif(cardPicture(lp, who, i + 1, levels.length, l.title, l.hint, 20 + i), lp));
   (CARDS[l.file] ?? []).forEach((lines, k) => {
-    disk.put(`${l.file}s${k}.gif`, gif(storyCard(lp, base, cat, lines, 40 + i * 3 + k), lp));
+    disk.put(`${l.file}s${k}.gif`, gif(storyCard(lp, who, lines, 40 + i * 3 + k), lp));
     slides.push({ name: `${l.file}s${k}.gif`, pause: 8 });
   });
   disk.put(`${l.file}.lst`, serializeSlideList(slides));
@@ -94,7 +104,7 @@ levels.forEach((l, i) => {
 
 // pictures and words
 const text = (name: string, heading: string, body: string) => {
-  disk.put(`${name}.gif`, gif(paper(pal, base, heading), pal));
+  disk.put(`${name}.gif`, gif(paper(pal, heading), pal));
   disk.put(`${name}.txt`, body);
   disk.put(`${name}.lst`, serializeSlideList([{ name: `${name}.gif`, pause: 0 }, { name: `${name}.txt` }]));
 };
@@ -103,17 +113,16 @@ disk.put(
   gif(
     titlePicture(
       pal,
-      base,
       cat,
       CHARMS.map((n) => charmSprite(pal, n)),
       TITLE,
-      'A FRIDAY THE 13TH SPECIAL',
+      'FRIDAY THE 13TH. NOT HER FAULT.',
     ),
     pal,
   ),
 );
 disk.put(SANDLOGO, sandLogoFli());
-disk.put('intro.fli', introReel(pal, base, cat).fli(REEL_SPEED));
+disk.put('intro.fli', introReel(pal, cat, smug, rascal).fli(REEL_SPEED));
 disk.put(
   'title.lst',
   serializeSlideList([
@@ -122,18 +131,17 @@ disk.put(
     { name: 'title.gif', pause: 14 },
   ]),
 );
-disk.put('menu.gif', gif(menuPicture(pal, base, cat, TITLE), pal));
-disk.put('scores.gif', gif(scoresPicture(pal, base, 'LUCKIEST CATS'), pal));
-disk.put('loadgame.gif', gif(slotsPicture(pal, base, 'LOAD GAME'), pal));
-disk.put('savegame.gif', gif(slotsPicture(pal, base, 'SAVE GAME'), pal));
+disk.put('menu.gif', gif(menuPicture(pal, cat, TITLE), pal));
+disk.put('scores.gif', gif(scoresPicture(pal, 'LUCKIEST CATS'), pal));
+disk.put('loadgame.gif', gif(slotsPicture(pal, 'LOAD GAME'), pal));
+disk.put('savegame.gif', gif(slotsPicture(pal, 'SAVE GAME'), pal));
 text('story', 'LUCKY CAT', STORY);
 text('howto', 'HOW TO PLAY', HOWTO);
 text('credits', 'CREDITS', CREDITS);
-const rascal = rascalPicture(pal, levels[levels.length - 1].book);
-REVEAL.forEach((lines, k) => disk.put(`reveal${k}.gif`, gif(revealCard(pal, base, cat, rascal, lines, 60 + k), pal)));
-disk.put('ending.fli', endingReel(pal, base, cheer, rascal).fli(REEL_SPEED));
-disk.put('wonpic.gif', gif(endPicture(pal, base, cheer, 'LUCKY CAT!', 'THE TOWN CHEERS', 'won'), pal));
-disk.put('won.gif', gif(paper(pal, base, 'LUCKIEST CAT'), pal));
+REVEAL.forEach((lines, k) => disk.put(`reveal${k}.gif`, gif(storyCard(pal, k === 2 ? smug : cat, lines, 60 + k, rascal), pal)));
+disk.put('ending.fli', endingReel(pal, smug, cheer, rascal).fli(REEL_SPEED));
+disk.put('wonpic.gif', gif(endPicture(pal, cheer, 'LUCKY CAT', 'OFFICIALLY GOOD LUCK', 'won'), pal));
+disk.put('won.gif', gif(paper(pal, 'PAYBACK'), pal));
 disk.put('won.txt', WON);
 disk.put(
   'won.lst',
@@ -145,8 +153,8 @@ disk.put(
     { name: 'won.txt' },
   ]),
 );
-disk.put('lostpic.gif', gif(endPicture(pal, base, hurt, 'OH NO!', 'TRY AGAIN', 'lost'), pal));
-disk.put('lost.gif', gif(paper(pal, base, 'TRY AGAIN'), pal));
+disk.put('lostpic.gif', gif(endPicture(pal, hurt, 'BAD LUCK', 'THE TOWN CALLS IT PROOF', 'lost'), pal));
+disk.put('lost.gif', gif(paper(pal, 'TRY AGAIN'), pal));
 disk.put('lost.txt', LOST);
 disk.put('lost.lst', serializeSlideList([{ name: 'lostpic.gif', pause: 5 }, { name: 'lost.gif', pause: 0 }, { name: 'lost.txt' }]));
 
