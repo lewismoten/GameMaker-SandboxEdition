@@ -30,15 +30,16 @@ const AT: Record<string, number> = {
   back: 1500,
   prints: 1500,
   books: 1200,
-  stream: 640,
+  stream: 900,
   signs: 1500,
-  hollow: 900,
+  hollow: 1250,
   tower: 2400,
   roofs: 900,
-  ridge: 420,
+  ridge: 1250,
   tunnel: 1300,
   zigzag: 1700,
   picnic: 1500,
+  ford: 1500,
 };
 /** The first level's frames: one every this many ticks. */
 const EVERY = 8;

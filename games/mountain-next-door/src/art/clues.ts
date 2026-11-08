@@ -11,40 +11,48 @@ export type Clue = (typeof CLUES)[number];
 export function clue(pal: Pal, which: Clue): Pixels {
   const p = clear(pal);
   const m = pal.r('moss');
-  const r = pal.r('rock');
   const f = pal.r('fog');
   const w = pal.r('white');
   const wt = pal.r('water');
   if (which === 'rug') {
-    // a square of moss with its roots hanging off one edge, hatched
-    p.rect(3, 11, 14, 6, m[2]).rect(4, 10, 12, 1, m[3]).rect(6, 9, 8, 1, m[3]);
-    for (let x = 4; x < 16; x += 3) p.rect(x, 13, 1, 3, m[1]);
-    p.rect(3, 17, 3, 1, m[1]).rect(9, 17, 2, 2, m[1]).rect(14, 17, 3, 1, m[1]);
+    // a lumpy mat of moss lying flat, with darker tufts and a few roots trailing off the edge
+    p.rect(2, 13, 16, 4, m[2]).rect(4, 11, 12, 2, m[2]).rect(6, 10, 3, 1, m[3]).rect(11, 10, 3, 1, m[3]).rect(3, 12, 3, 1, m[3]).rect(14, 12, 3, 1, m[3]);
+    for (const x of [5, 9, 13]) p.rect(x, 14, 2, 2, m[1]);
+    p.rect(2, 17, 2, 1, m[1]).rect(8, 17, 1, 2, m[1]).rect(15, 17, 3, 1, m[1]);
   } else if (which === 'chip') {
-    // a chip of mountain: a three-sided rock with a crack, and one bright glint
-    p.rect(4, 12, 13, 5, r[2]).rect(6, 9, 9, 3, r[2]).rect(8, 7, 5, 2, r[3]);
-    p.rect(4, 15, 13, 2, r[1]);
-    for (let y = 9; y < 15; y++) p.set(11 + (y % 2), y, r[0]);
-    p.rect(14, 5, 1, 4, w[3]).rect(13, 6, 3, 1, w[3]);
+    // a chip broken off the mountain: an angular shard of gray stone, a lit face and a shadowed one, a crack, one glint
+    const st = pal.r('stone');
+    for (let y = 4; y < 18; y++) {
+      const left = y < 11 ? 9 - Math.round((y - 4) * 0.7) : 4;
+      const right = y < 11 ? 10 + Math.round((y - 4) * 0.5) : 16;
+      for (let x = left; x <= right; x++) p.set(x, y, x < 10 ? st[3] : st[1]);
+    }
+    for (let y = 8; y < 17; y++) p.set(10 + (y % 3 === 0 ? 1 : 0), y, st[0]);
+    p.rect(5, 16, 11, 1, st[0]).rect(6, 11, 2, 1, w[3]).rect(6, 10, 1, 3, w[3]);
   } else if (which === 'fluff') {
-    // a tuft of cloud, caught on a twig
-    p.line(3, 17, 17, 9, pal.c('wood', 1));
-    p.disc(8, 10, 3, f[2]).disc(12, 8, 4, f[3]).disc(15, 11, 3, f[2]).rect(7, 11, 10, 2, f[2]);
-    p.set(11, 6, w[3]).set(12, 6, w[3]).rect(9, 9, 2, 1, f[0]);
+    // a tuft of cloud puffs lying on a twig that forks
+    const wd = pal.r('wood');
+    p.rect(2, 16, 16, 1, wd[2]).rect(12, 14, 1, 2, wd[2]).rect(15, 13, 1, 3, wd[2]).rect(2, 17, 5, 1, wd[1]);
+    p.disc(6, 12, 3, f[2]).disc(10, 10, 4, f[3]).disc(14, 12, 3, f[2]).rect(5, 12, 11, 3, f[2]);
+    p.rect(8, 8, 2, 1, w[3]).rect(11, 12, 3, 1, f[0]).rect(5, 14, 11, 1, f[1]);
   } else if (which === 'drift') {
     // Wisp's snow: a very small drift, still cold (a blue shadow and one flake in the air)
     p.disc(10, 15, 6, w[3]).rect(3, 15, 15, 4, w[3]);
-    p.rect(11, 15, 6, 4, f[1]).rect(5, 12, 2, 1, w[2]);
+    for (let y = 11; y < 19; y++) p.rect(13 + Math.floor(Math.abs(y - 15) / 2), y, 5 - Math.floor(Math.abs(y - 15) / 2), 1, f[1]);
+    p.rect(5, 12, 2, 1, w[2]);
     p.set(14, 6, wt[4]).set(13, 7, wt[4]).set(15, 7, wt[4]).set(14, 8, wt[4]);
   } else {
-    // five pebbles set in a line, and the last two make an arrowhead pointing right
+    // three pebbles in a line and five more set as a chevron, so the line points right
+    const st = pal.r('stone');
+    for (const x of [1, 5, 9]) p.rect(x, 9, 3, 2, st[3]).rect(x, 10, 3, 1, st[1]);
     for (const [x, y] of [
-      [3, 10],
-      [7, 10],
-      [11, 10],
+      [12, 5],
+      [14, 7],
+      [16, 9],
+      [14, 11],
+      [12, 13],
     ] as const)
-      p.rect(x, y, 3, 2, r[3]).rect(x, y + 1, 3, 1, r[1]);
-    p.rect(14, 6, 3, 2, r[3]).rect(14, 14, 3, 2, r[3]).rect(15, 8, 3, 2, r[2]).rect(15, 12, 3, 2, r[2]).rect(16, 10, 3, 2, r[3]);
+      p.rect(x, y, 2, 2, st[3]).rect(x, y + 1, 2, 1, st[1]);
   }
   return inked(pal, p);
 }

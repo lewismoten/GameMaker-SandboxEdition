@@ -100,5 +100,6 @@ export function levelHollow(pal: Pal): Level {
     mon: 'hollow',
     song: 'dusk',
     watch: true,
+    snd: 'hollow',
   };
 }

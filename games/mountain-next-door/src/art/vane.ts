@@ -23,7 +23,9 @@ export function vane(pal: Pal, flies: 'right' | 'left' | 'still', lamps: 1 | 2):
     }
     // streaks of wind behind the pennant
     const tail = dir > 0 ? [2, 6] : [14, 18];
-    p.rect(tail[0], 3, 4, 1, wh[3]).rect(tail[0] + 1, 12, 5, 1, wh[3]).rect(tail[1] - 1, 8, 3, 1, wh[3]);
+    p.rect(tail[0], 3, 4, 1, wh[3])
+      .rect(tail[0] + 1, 12, 5, 1, wh[3])
+      .rect(tail[1] - 1, 8, 3, 1, wh[3]);
   }
   p.rect(5, 15, 10, 1, w[1]).rect(6, 16, 8, 4, w[2]);
   for (let k = 0; k < 2; k++) {

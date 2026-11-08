@@ -28,7 +28,7 @@ export interface Level {
   mon: MonFile;
   song: SongName;
   /** The sound file this level loads (SND, without the extension); `next` and the rest use mount.snd. */
-  snd?: 'next' | 'mist' | 'town' | 'ford';
+  snd?: 'next' | 'mist' | 'town' | 'ford' | 'wind' | 'hollow' | 'brook';
   /** A scene you mostly watch (the bot stops and looks). */
   watch?: boolean;
 }

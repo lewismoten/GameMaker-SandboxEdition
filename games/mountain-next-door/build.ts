@@ -34,7 +34,7 @@ import { buildTessBlocks, tessPicture } from './src/tess';
 import { CARDS, CREDITS, HOWTO, LOST, STORY, WON } from './src/text';
 import { EXCUSE, EXCUSE_COUNTER, excuseVoc, nextSounds } from './src/voice';
 import { BEAD_COUNTER } from './src/props';
-import { fordSounds, mistSounds, townSounds } from './src/sounds';
+import { brookSounds, fordSounds, hollowSounds, mistSounds, townSounds, windSounds } from './src/sounds';
 
 /** Hit points and lives at the start (a pebble's bump takes five). */
 const HERO_HIT_POINTS = 50;
@@ -72,6 +72,9 @@ disk.put('next.snd', serializeSoundSet(nextSounds()));
 disk.put('mist.snd', serializeSoundSet(mistSounds()));
 disk.put('town.snd', serializeSoundSet(townSounds()));
 disk.put('ford.snd', serializeSoundSet(fordSounds()));
+disk.put('wind.snd', serializeSoundSet(windSounds()));
+disk.put('hollow.snd', serializeSoundSet(hollowSounds()));
+disk.put('brook.snd', serializeSoundSet(brookSounds()));
 disk.put(`${EXCUSE}.voc`, excuseVoc());
 for (const s of SONGS) disk.put(`${s}.cmf`, song(s));
 

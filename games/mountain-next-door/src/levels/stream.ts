@@ -77,5 +77,16 @@ export function levelStream(pal: Pal): Level {
   m.set(STREAM_AT.pie, G4 - 1, 'pie');
   const at = STREAM_AT.signs;
   for (const k of Object.keys(s) as (keyof typeof s)[]) m.sign(at[k], onGround(G4, s[k]), s[k]);
-  return { file: 'stream', title: 'Stepping Stones', hint: 'Cross when the stones are up.', look: 'rain', map: m, book, timed, mon: 'trail', song: 'trail' };
+  return {
+    file: 'stream',
+    title: 'Stepping Stones',
+    hint: 'Cross when the stones are up.',
+    look: 'rain',
+    map: m,
+    book,
+    timed,
+    mon: 'trail',
+    song: 'trail',
+    snd: 'brook',
+  };
 }

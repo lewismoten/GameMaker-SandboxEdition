@@ -131,5 +131,16 @@ export function levelRidge(pal: Pal): Level {
   const at = R.signs;
   m.sign(at.town, onGround(LEDGES.top, s.town), s.town);
   m.sign(at.wind, onGround(C, s.wind), s.wind);
-  return { file: 'ridge', title: 'Windy Ridge', hint: 'Let the wind help you. Wait for it.', look: 'dusk', map: m, book, timed, mon: 'trail', song: 'dusk' };
+  return {
+    file: 'ridge',
+    title: 'Windy Ridge',
+    hint: 'Let the wind help you. Wait for it.',
+    look: 'dusk',
+    map: m,
+    book,
+    timed,
+    mon: 'trail',
+    song: 'dusk',
+    snd: 'wind',
+  };
 }
