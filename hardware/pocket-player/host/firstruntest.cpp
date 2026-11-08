@@ -110,27 +110,40 @@ int main(int argc, char** argv) {
     bool inRange = hs::POINTS > 300 && hs::POINTS < 700;
     for (int i = 0; i < hs::POINTS; i++) inRange = inRange && hs::pts[2 * i] >= 0 && hs::pts[2 * i] < 1024 && hs::pts[2 * i + 1] >= 0 && hs::pts[2 * i + 1] < 1024;
     expect(inRange, "the hand's points are a few hundred, inside the 1024 square");
-    // measured on the render: the board's border line and the curled fingers' outer edge, for the right-handed and left-handed layouts
+    // measured on the render: the palm's vertical outline (where each hand goes behind the device) sits just outside the board's gray
+    // border line, covering none of it, for the right-handed and left-handed layouts
     const fr::Box pic = scr::SMALL ? fr::Box{40, 42, 136, 116} : fr::Box{58, 60, 204, 170};
     for (bool padRight : {false, true}) {
-      Canvas c(scr::W, scr::H);
+      Canvas c(scr::W, scr::H), plain(scr::W, scr::H);
       c.fillScreen(0);
-      hd::onlyFingers = true;  // test hook: only the curled fingers, so the palm and cuff do not hide their edge
+      plain.fillScreen(0);
       fr::board(c, pic, padRight, true, false);
-      hd::onlyFingers = false;
-      auto green = [&](int x, int y) { uint16_t p = c.px[y * scr::W + x]; return (((p >> 5) & 63) << 2) > ((p >> 11) << 3) + 8; };
-      int lineL = -1, lineR = -1, fl = 9999, fr_ = -1, my = (pic.y0 + pic.y1) / 2;
-      for (int x = 0; x < scr::W; x++) if (c.px[my * scr::W + x] != 0) { if (lineL < 0) lineL = x; lineR = x; }
-      for (int y = pic.y1 + 1; y < scr::H; y++)
-        for (int x = 0; x < scr::W; x++)
-          if (green(x, y)) { if (x < pic.x0 + 20 && x < fl) fl = x; if (x > pic.x1 - 20 && x > fr_) fr_ = x; }
-      printf("hands %s layout: border line x %d and %d, curled fingers' outer edge x %d and %d\n", padRight ? "left-handed" : "right-handed", lineL, lineR, fl, fr_);
-      expect(lineL == pic.x0 && lineR == pic.x1 - 1 && fl == lineL && fr_ == lineR, "the curled fingers' outer edges sit exactly on the board's border line");
+      fr::board(plain, pic, padRight, false, false);
+      const int w = pic.x1 - pic.x0, h = pic.y1 - pic.y0, sx0 = pic.x0 + w / 12, sy1 = pic.y1 - h / 10, sy0 = pic.y0 + h / 10;
+      const int sw = (pic.x1 - w / 12) - sx0, shh = sy1 - sy0, pr = shh * 26 / 100;
+      const int pcx = padRight ? pic.x1 - w / 12 - pr - sw / 20 : sx0 + pr + sw / 20, D = padRight ? pic.x1 - pcx : pcx - pic.x0;
+      const float sp = hd::flushScale((float)D);
+      printf("hands %s layout:", padRight ? "left-handed" : "right-handed");
+      for (int side : {-1, 1}) {
+        hd::Place p = hd::fit(side, side < 0 ? pic.x0 + D : pic.x1 - D, pic.y1, sp);
+        const int bx = side < 0 ? pic.x0 : pic.x1 - 1, y0 = (int)hd::segTop(p) + 2, y1 = (int)hd::segBottom(p) - 2;
+        int dark = side < 0 ? -9999 : 9999;  // the segment's dark pixel nearest the border
+        bool intact = true;
+        for (int y = y0; y <= y1; y++) {
+          intact = intact && c.px[y * scr::W + bx] == plain.px[y * scr::W + bx];  // the gray border pixel is untouched
+          for (int x = bx - 15; x <= bx + 15; x++)
+            if (c.px[y * scr::W + x] == hd::LINE && (side < 0 ? x < bx && x > dark : x > bx && x < dark)) dark = x;
+        }
+        printf(" %s border x %d, outline's nearest dark pixel x %d (rows %d-%d);", side < 0 ? "left" : "right", bx, dark, y0, y1);
+        expect(intact, "the hand covers none of the board's border along the palm outline");
+        expect(side < 0 ? dark == bx - 1 : dark == bx + 1, "the palm outline sits just outside the border, no gap and no overlap");
+      }
+      printf("\n");
       // the thumbnails (their nails) rest on the glass, one on each half of the picture
       Canvas d(scr::W, scr::H);
       d.fillScreen(0);
       fr::board(d, pic, padRight, true, false);
-      const int sx0 = pic.x0 + (pic.x1 - pic.x0) / 12, sx1 = pic.x1 - (pic.x1 - pic.x0) / 12, sy0 = pic.y0 + (pic.y1 - pic.y0) / 10, sy1 = pic.y1 - (pic.y1 - pic.y0) / 10, mid = (pic.x0 + pic.x1) / 2;
+      const int sx1 = pic.x1 - (pic.x1 - pic.x0) / 12, mid = (pic.x0 + pic.x1) / 2;
       int nl = 0, nr = 0;
       for (int y = sy0; y < sy1; y++)
         for (int x = sx0; x < sx1; x++)
@@ -144,8 +157,8 @@ int main(int argc, char** argv) {
     auto none = [](int, int) -> uint16_t { return 0; };
     auto all = [](int, int) { return 1.0f; };
     const int cx = scr::W / 2;
-    hd::draw(l, hd::fit(-1, cx, cx - 50, pic.y1, hd::flushScale(50)), none, all);
-    hd::draw(r, hd::fit(1, cx, cx + 50, pic.y1, hd::flushScale(50)), none, all);
+    hd::draw(l, hd::fit(-1, cx, pic.y1, hd::flushScale(50)), none, all);
+    hd::draw(r, hd::fit(1, cx, pic.y1, hd::flushScale(50)), none, all);
     int diff = 0, lit = 0;
     for (int y = 0; y < scr::H; y++)
       for (int x = 0; x < scr::W; x++) {

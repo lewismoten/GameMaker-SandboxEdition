@@ -9,7 +9,7 @@ enum Role : uint8_t { CUFF, SKIN, SKIN_SHADE, NAIL, HIGHLIGHT, CREASE };
 struct Shape { Role role; uint8_t stroke, behind, subs; uint16_t first; float width; };  // width: stroke width in units
 struct Sub { uint16_t start, n; };
 constexpr int SHAPES = 11, SUBS = 18, POINTS = 485;
-constexpr float FINGER_MIN_X = 478.5f;  // the curled fingers' outer edge, outline included
+constexpr float SEG_X = 504.0f, SEG_Y0 = 306.2f, SEG_Y1 = 410.5f, HALF_STROKE = 4.5f;  // the palm's vertical outline (x, y range); stroke half width
 constexpr float TIP_X =739.8f, TIP_Y = 405.4f, EDGE_Y = 553.8f;  // thumbnail center; the board edge the fingers curl under
 constexpr float MIN_X = 85.1f, MAX_X = 805.7f, MIN_Y = 306.2f, MAX_Y = 957.8f;
 static const Shape shapes[SHAPES] = {

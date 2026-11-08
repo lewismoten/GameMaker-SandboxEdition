@@ -87,7 +87,7 @@ template <class G> void hand(G& g, const Box& b, int side, int tx, float scale) 
     return bd > 0 ? C_BLACK : bd > -1 ? C_GRAY : (x >= sx0 && x < sx1 && y >= sy0 && y < sy1) ? C_SCREEN : C_DARK;
   };
   auto behind = [&](int x, int y) { float bd = boardDist(x + 0.5f, y + 0.5f); return bd < 0 ? 0.0f : bd > 1 ? 1.0f : bd; };
-  hd::draw(g, hd::fit(side, tx, side < 0 ? b.x0 : b.x1, b.y1, scale), bg, behind);
+  hd::draw(g, hd::fit(side, tx, b.y1, scale), bg, behind);
 }
 // A small board: the screen with the pad at one side, Jump at the other, MENU top left, and two thumbs on them.
 template <class G> void board(G& g, const Box& b, bool padRight, bool thumbs, bool labels) {
@@ -114,7 +114,7 @@ template <class G> void board(G& g, const Box& b, bool padRight, bool thumbs, bo
   g.fillRoundRect(sx0 + 3, sy0 + 3, mw, mh, 3, C_DARK);
   g.drawRoundRect(sx0 + 3, sy0 + 3, mw, mh, 3, C_WHITE);
   if (thumbs) {  // each hand holds the board's lower corner on its side; its thumb rests on the pad or on Jump
-    // two mirrored hands of one size: each one's curled fingers end on the board's outer border line, the thumbs rest about over
+    // two mirrored hands of one size: each one's palm outline (where it goes behind the device) sits just outside the board's border line, the thumbs rest about over
     // the pad and over Jump (the picture shows where hands usually sit; the thumbs need not hit the targets exactly)
     const int D = padRight ? b.x1 - pcx : pcx - b.x0;
     const float sp = hd::flushScale((float)D);

@@ -106,9 +106,10 @@ def main():
             pts += [(round(x), round(y)) for x, y in s]
         shl.append('  {%s, %d, %d, %d, %d, %.2ff},  // %s' % (NAMES[role], stroke, behind, len(subs), first, swd, sid))
     L.append('constexpr int SHAPES = %d, SUBS = %d, POINTS = %d;' % (len(shl), len(subl), len(pts)))
-    # the curled fingers' outer (left) edge, stroke included: it sits flush with the board's outer edge
-    fmin = min(p[0] for s in shapes if s[4] for sub in s[5] for p in sub) - 4.5
-    L.append('constexpr float FINGER_MIN_X = %.1ff;  // the curled fingers\' outer edge, outline included' % fmin)
+    # the palm's straight vertical outline (where the hand goes behind the device): the anchor that sits just outside the board's border
+    palm = [s for s in shapes if s[0] == 'palm-and-thumb'][0][5][0]
+    seg = [(a, b) for a, b in zip(palm, palm[1:] + palm[:1]) if abs(a[0] - b[0]) < 0.01 and abs(a[1] - b[1]) > 100][0]
+    L.append('constexpr float SEG_X = %.1ff, SEG_Y0 = %.1ff, SEG_Y1 = %.1ff, HALF_STROKE = 4.5f;  // the palm\'s vertical outline (x, y range); stroke half width' % (seg[0][0], min(seg[0][1], seg[1][1]), max(seg[0][1], seg[1][1])))
     L.append('constexpr float TIP_X =%.1ff, TIP_Y = %.1ff, EDGE_Y = %.1ff;  // thumbnail center; the board edge the fingers curl under' % (tip[0], tip[1], edge))
     L.append('constexpr float MIN_X = %.1ff, MAX_X = %.1ff, MIN_Y = %.1ff, MAX_Y = %.1ff;' % (min(p[0] for p in allp), max(p[0] for p in allp), min(p[1] for p in allp), max(p[1] for p in allp)))
     L.append('static const Shape shapes[SHAPES] = {'); L += shl; L.append('};')

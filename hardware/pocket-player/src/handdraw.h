@@ -11,7 +11,6 @@ namespace hd {
 constexpr uint16_t rgb(int r, int g, int b) { return (uint16_t)(((r >> 3) << 11) | ((g >> 2) << 5) | (b >> 3)); }
 constexpr uint16_t FILL = rgb(0x9E, 0xE6, 0xB8), SHADE = rgb(0x5F, 0xBF, 0x86), LIGHT = rgb(0xD4, 0xF7, 0xE1), NAIL = rgb(0xC8, 0xF2, 0xD6),
                    NAIL_LINE = rgb(0x7B, 0xCB, 0x98), LINE = rgb(0x2E, 0x4A, 0x3A), CUFF = rgb(0x07, 0x89, 0xE6);
-inline bool onlyFingers = false;  // a test hook: draw only the curled fingers, to measure where they end
 inline uint16_t mix(uint16_t a, uint16_t b, float t) {  // RGB565 blend, t of b
   if (t <= 0) return a;
   if (t >= 1) return b;
@@ -41,39 +40,19 @@ inline float sy(const Place& p, int i) {
   const float u = hs::pts[2 * i] - hs::TIP_X, v = hs::pts[2 * i + 1] - hs::TIP_Y;
   return p.tipY + (-u * p.sn + v * p.c) * p.s;
 }
-// How far the curled fingers' outer edge (outline included) reaches from the thumbnail's column, for size s and turn (c, sn).
-inline float fingerReach(float s, float c, float sn) {
-  float m = 1e9f;
-  for (int k = 0; k < hs::SHAPES; k++) {
-    if (!hs::shapes[k].behind) continue;
-    for (int j = 0; j < hs::shapes[k].subs; j++) {
-      const hs::Sub& sb = hs::subs[hs::shapes[k].first + j];
-      for (int i = sb.start; i < sb.start + sb.n; i++) {
-        float x = (hs::pts[2 * i] - hs::TIP_X) * c + (hs::pts[2 * i + 1] - hs::TIP_Y) * sn;
-        if (x < m) m = x;
-      }
-    }
-  }
-  return (-m + 4.5f) * s;
-}
-// Size that puts the fingers flush with an edge `d` pixels from the thumbnail's column with no turn.
-inline float flushScale(float d) { return d / (hs::TIP_X - hs::FINGER_MIN_X); }
-// The hand of size s for a board whose bottom edge is at `edgeY`: its thumbnail's center lands on column tipX, the index finger's flat
-// top sits on that edge, and the hand is turned just enough that the curled fingers' outer edge lands on the board's outer edge
-// `edgeX` (its left edge for the left hand, its right edge for the right), as in a photo of the grip.
-inline Place fit(int side, int tipX, int edgeX, int edgeY, float s) {
-  const float d = side < 0 ? (float)(tipX - edgeX) : (float)(edgeX - tipX);
-  float lo = -0.7f, hi = 0.7f;
-  for (int i = 0; i < 14; i++) {  // the reach shrinks as the turn grows
-    float mid = (lo + hi) * 0.5f;
-    if (fingerReach(s, __builtin_cosf(mid), __builtin_sinf(mid)) > d) lo = mid; else hi = mid;
-  }
-  const float a = (lo + hi) * 0.5f, c = __builtin_cosf(a), sn = __builtin_sinf(a);
-  Place p{s, (float)tipX, 0, c, sn, side};
-  const float u = 667.0f - hs::TIP_X, v = hs::EDGE_Y - hs::TIP_Y;  // the middle of the index finger's flat top
-  p.tipY = edgeY - (-u * sn + v * c) * s;
+// Size that puts the palm's vertical outline just outside a border `d` pixels from the thumbnail's column.
+inline float flushScale(float d) { return d / (hs::TIP_X - (hs::SEG_X + hs::HALF_STROKE)); }
+// The hand of size s (a mirror image for side +1): its thumbnail's center on column tipX and the index finger's flat top on the board's
+// bottom edge `edgeY`. With tipX at flushScale's distance from the board's outer edge, the palm's vertical outline (where the hand
+// goes behind the device) ends exactly at that edge, so it sits just outside the border line and never covers it.
+inline Place fit(int side, int tipX, int edgeY, float s) {
+  Place p{s, (float)tipX, 0, 1.0f, 0.0f, side};
+  p.tipY = edgeY - (hs::EDGE_Y - hs::TIP_Y) * s;
   return p;
 }
+// The screen rows the palm's vertical outline covers.
+inline float segTop(const Place& p) { return p.tipY + (hs::SEG_Y0 - hs::TIP_Y) * p.s; }
+inline float segBottom(const Place& p) { return p.tipY + (hs::SEG_Y1 - hs::TIP_Y) * p.s; }
 
 // Draws the hand. `bg(x, y)` is the color under a pixel, `behind(x, y)` how much of a pixel is outside the board (0 to 1).
 template <class G, class BG, class BEHIND> void draw(G& g, const Place& pl, BG bg, BEHIND behind) {
@@ -100,7 +79,6 @@ template <class G, class BG, class BEHIND> void draw(G& g, const Place& pl, BG b
     for (int x = xa; x <= xb; x++) { col[x] = bg(x, y); any[x] = 0; }
     for (int si = 0; si < hs::SHAPES; si++) {
       const hs::Shape& sh = hs::shapes[si];
-      if (onlyFingers && !sh.behind) continue;
       // the fill: 4 sub-scanlines of nonzero winding
       if (sh.role != hs::CREASE) {
         for (int x = xa; x <= xb; x++) cov[x] = 0;
