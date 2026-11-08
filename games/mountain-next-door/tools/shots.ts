@@ -43,6 +43,10 @@ const AT: Record<string, number> = {
   ford: 1800,
   clock: 1500,
   spill: 1500,
+  grove: 1500,
+  lamps: 1500,
+  tarn: 1500,
+  vault: 1500,
 };
 /** The first level's frames: one every this many ticks. */
 const EVERY = 8;

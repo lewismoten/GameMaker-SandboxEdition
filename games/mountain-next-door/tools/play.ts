@@ -9,6 +9,10 @@ import { excuseMe, gatheringMist, theFord } from './routeNew';
 import { theSurveyLine } from './routeGrow';
 import { theSpillway } from './routeSpill';
 import { theClockTower } from './routeClock';
+import { halesOrchard } from './routeHour';
+import { lamplightersStair } from './routeLamps';
+import { frozenTarn } from './routeTarn';
+import { recordsCellar } from './routeVault';
 import { GameSim } from './sim';
 
 export const SEED = 1;
@@ -22,16 +26,20 @@ const ROUTES = [
   gatheringMist,
   signposts,
   theSurveyLine,
+  halesOrchard,
   emptySpot,
   lookout,
   windyRidge,
   theSpillway,
+  lamplightersStair,
   rooftops,
   lowTunnel,
   excuseMe,
   theClockTower,
+  recordsCellar,
   theFord,
   zigzagHome,
+  frozenTarn,
   summitPicnic,
 ];
 

@@ -114,6 +114,26 @@ const PRINT_INK: Record<string, Tint> = {
     [66, 30, 20],
     [160, 90, 60],
   ],
+  // the records cellar: deep archive-green ink
+  cellar: [
+    [10, 36, 36],
+    [70, 120, 112],
+  ],
+  // the cold hour: steel-blue ink
+  frost: [
+    [30, 48, 74],
+    [140, 170, 198],
+  ],
+  // the blue hour: gaslight yellow-brown ink
+  lamplit: [
+    [40, 36, 10],
+    [146, 126, 52],
+  ],
+  // the afternoon in the orchard: bottle-green ink
+  afternoon: [
+    [20, 46, 30],
+    [96, 136, 100],
+  ],
 };
 
 /** Each time of the day. */
@@ -431,6 +451,118 @@ export const LOOKS: Record<string, Record<string, Tint>> = {
       [20, 20, 40],
       [110, 100, 140],
       [56, 50, 80],
+    ],
+  },
+  // the records cellar: the tunnel's dark, with greener, paper-dusty walls
+  cellar: {
+    sky: [
+      [6, 12, 16],
+      [40, 56, 60],
+      [16, 28, 32],
+    ],
+    brick: [
+      [14, 22, 20],
+      [96, 118, 100],
+      [44, 62, 54],
+    ],
+    stone: [
+      [16, 26, 24],
+      [116, 138, 120],
+      [52, 70, 62],
+    ],
+    dirt: [
+      [14, 12, 10],
+      [84, 64, 52],
+      [38, 30, 26],
+    ],
+    grass: [
+      [14, 30, 26],
+      [80, 120, 100],
+      [34, 64, 54],
+    ],
+  },
+  // the cold hour before dawn: pale ice-blue sky, frosted turf, glassy water
+  frost: {
+    sky: [
+      [96, 128, 176],
+      [240, 246, 255],
+      [176, 206, 232],
+    ],
+    grass: [
+      [60, 94, 84],
+      [210, 232, 226],
+      [136, 176, 164],
+    ],
+    dirt: [
+      [60, 46, 56],
+      [190, 164, 170],
+      [118, 92, 100],
+    ],
+    rock: [
+      [50, 58, 80],
+      [226, 234, 244],
+      [140, 150, 176],
+    ],
+    water: [
+      [46, 86, 140],
+      [236, 248, 255],
+      [150, 196, 230],
+    ],
+    stone: [
+      [64, 84, 120],
+      [240, 248, 255],
+      [170, 196, 224],
+    ],
+  },
+  // the blue hour on the hill: a deep blue sky going amber at the rim, the terraces dim
+  lamplit: {
+    sky: [
+      [20, 44, 96],
+      [250, 190, 116],
+      [66, 84, 130],
+    ],
+    grass: [
+      [30, 54, 44],
+      [170, 180, 100],
+      [84, 116, 72],
+    ],
+    dirt: [
+      [56, 28, 36],
+      [196, 124, 96],
+      [116, 66, 60],
+    ],
+    rock: [
+      [46, 42, 66],
+      [214, 192, 190],
+      [106, 98, 122],
+    ],
+  },
+  // the orchard in the afternoon: honey sky, apple-green turf, warm sienna earth
+  afternoon: {
+    sky: [
+      [150, 130, 70],
+      [255, 238, 180],
+      [236, 206, 130],
+    ],
+    grass: [
+      [36, 80, 36],
+      [204, 224, 110],
+      [110, 164, 62],
+    ],
+    moss: [
+      [30, 66, 36],
+      [190, 214, 110],
+      [90, 140, 60],
+    ],
+    dirt: [
+      [84, 40, 22],
+      [226, 160, 96],
+      [160, 90, 48],
+    ],
+    rock: [
+      [60, 50, 50],
+      [234, 218, 190],
+      [150, 128, 112],
     ],
   },
   // the next morning on top: gold and rose

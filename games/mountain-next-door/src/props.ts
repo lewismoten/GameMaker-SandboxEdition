@@ -27,6 +27,7 @@
 //   street     stackTop/stackBot (recycling bins) and sheetTop/sheetBot (a washing line): bump them and they give way; swing0/1
 //              and swingOpen0/1 (a yard gate on a clock); dark0..4 (a window that lights on its own clock); excuse (a trigger)
 //   ford       f0_0.. f2_9 (the river's swell, five rings: calm, one way, the other, calm), bankStep (stairs out of the water)
+//   orchard    apple (take it: a windfall); facade: rock/rock2 alone; lamp: lantern and lanternLit alone (a level that needs no more of those groups)
 //   high       screeUp/screeHalf/screeUnder/screeRise (wobbly rocks in a path, on the stones' clock), dent0..2 (the summit's damp dent: a ledge)
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { KEYS } from '../../kit/starter/blocks';
@@ -71,9 +72,23 @@ import { binStack, sheet, yardGate } from './art/street';
 import { bankStep, swell } from './art/ford';
 import { EXCUSE_COUNTER } from './voice';
 import { deeperProps } from './propsDeeper';
+import { apple } from './art/orchard';
 
 /** Points: a painted blaze, an acorn, a gate taken off the mountain, a gate put back home. */
-export const POINTS = { blaze: 10, acorn: 5, gate: 25, home: 25, lantern: 10, book: 10, shelved: 20, flake: 5, bead: 10, clear: 15, clue: 10 } as const;
+export const POINTS = {
+  blaze: 10,
+  acorn: 5,
+  gate: 25,
+  home: 25,
+  lantern: 10,
+  book: 10,
+  shelved: 20,
+  flake: 5,
+  bead: 10,
+  clear: 15,
+  clue: 10,
+  apple: 10,
+} as const;
 /** The counter a bead of mist adds to (like the mountain's, it starts at 1 so each bead chimes: build.ts). */
 export const BEAD_COUNTER = 24;
 /** Hit points a slice of pie gives back. */
@@ -128,6 +143,8 @@ export interface PropOptions {
   wake?: number;
   /** Ticks after the start each group of stars lights (the empty spot at sunset). */
   stars?: [number, number, number];
+  /** How many mist steps to make (default all six): a level that bridges alleys needs only a few. */
+  mistSteps?: number;
 }
 
 export function addProps(book: Book, pal: Pal, groups: readonly string[], o: PropOptions = {}): Timed[] {
@@ -359,7 +376,7 @@ export function addProps(book: Book, pal: Pal, groups: readonly string[], o: Pro
     book.add('bead', bead(pal), { ...air, score: POINTS.bead, effect: BEAD_COUNTER, eamt: 1, touch: 'sky' });
     book.add('beadDell', bead(pal, true), { ...air, score: POINTS.bead, effect: BEAD_COUNTER, eamt: 1, touch: 'dellAir' });
     const { period, first, gap, count } = MIST_STEPS;
-    for (let k = 0; k < count; k++) {
+    for (let k = 0; k < Math.min(count, o.mistSteps ?? count); k++) {
       const gone = first + gap * k;
       book.add(`mist${k}u`, mistStep(pal, 'up'), { solid: LEDGE, grav: PULL.down });
       book.add(`mist${k}h`, mistStep(pal, 'half'), air);
@@ -402,6 +419,15 @@ export function addProps(book: Book, pal: Pal, groups: readonly string[], o: Pro
       loop(names, [ring.before, fr, fr, fr, fr, ring.after]);
     });
   }
+  if (has('lamp') && !has('tunnel')) {
+    book.add('lantern', lantern(pal, false), { ...air, score: POINTS.lantern, touch: 'lanternLit' });
+    book.add('lanternLit', lantern(pal, true), air);
+  }
+  if (has('facade')) {
+    book.add('rock', rock(pal, 1), air);
+    book.add('rock2', rock(pal, 2), air);
+  }
+  if (has('orchard')) book.add('apple', apple(pal), { ...air, score: POINTS.apple, touch: 'sky' });
   if (has('picnic')) {
     for (const part of ['L', 'M', 'R'] as const) book.add(`blanket${part}`, blanket(pal, part), air);
     for (const part of ['L', 'M', 'R'] as const) book.add(`mat${part}`, doormat(pal, part), air);
