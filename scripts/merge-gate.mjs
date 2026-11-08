@@ -116,7 +116,7 @@ export function runGate(options, settings = {}) {
     if (git(integration, 'status', '--porcelain')) throw new Error('Candidate is dirty before validation');
     result.candidateRevision = git(integration, 'rev-parse', 'HEAD');
     result.candidateTree = git(integration, 'rev-parse', 'HEAD^{tree}');
-    step('declarations', web, ['node', join(repo.root, 'scripts/decl-preflight.mjs')]);
+    step('declarations', web, ['node', join(repo.root, 'scripts/decl-preflight.mjs'), '--web', web]);
     step('tsc', web, ['npx', '--no-install', 'tsc', '--noEmit', '-p', '.']);
     step('lint', web, ['npm', 'run', 'lint']);
     const reportFile = join(output, 'vitest.json');

@@ -2,6 +2,7 @@
 // the bulletins, the CD's shareware games to read about and "download" into C:\DOWNLOAD under the
 // file ratio (ratio.ts), uploads, the door games, the GIF gallery, the warez area and paging the
 // sysop.
+import { isStarterGame } from '../../project/starter';
 import type { RetroHost } from '../host';
 import { attr } from '../text/textScreen';
 import { readLine } from '../text/textInput';
@@ -75,9 +76,7 @@ export async function runSandbox(t: Term, h: RetroHost): Promise<void> {
   const catalog = [
     // a Special whose arrival is this board, first, on its days and the few after (specials/arrivals.ts)
     ...bbsSpecials(),
-    ...(await h.catalog()).filter(
-      (g) => g.kind === 'shareware' && g.gam && !isSofaFile(g) && !isSpecialGame(g), // The Sofa's own uploads are only there; a Special only on its days
-    ),
+    ...sandboxLibrary(await h.catalog()),
   ];
   // the board's user file: started from what this PC already downloaded
   account(() => seedAccount(h, catalog));
@@ -383,6 +382,11 @@ async function bulletins(t: Term, catalog: CatalogEntry[]): Promise<void> {
     t.line(`|14Bulletin #${k}: |15${item[0]}`);
     for (const l of item[1]) t.line(l);
   }
+}
+
+/** The Sandbox BBS's own file area: shareware with a .gam, but not The Sofa's uploads, a Special off its days or a Starter (those live on the Sample CD). */
+export function sandboxLibrary(cat: CatalogEntry[]): CatalogEntry[] {
+  return cat.filter((g) => g.kind === 'shareware' && g.gam && !isSofaFile(g) && !isSpecialGame(g) && !isStarterGame(g));
 }
 
 async function files(t: Term, h: RetroHost, catalog: CatalogEntry[], title: string): Promise<void> {

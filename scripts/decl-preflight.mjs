@@ -43,8 +43,12 @@ export function staleDeclarations(webRoot, packages = PACKAGES) {
 }
 
 function main() {
-  const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-  const stale = staleDeclarations(join(root, 'web'));
+  // The tree to check: --web <dir> (the merge gate passes its integration worktree's web/, which is not
+  // the checkout this script lives in), else the web/ beside this script.
+  const i = process.argv.indexOf('--web');
+  const web = i > 0 && process.argv[i + 1] ? resolve(process.argv[i + 1]) : resolve(dirname(fileURLToPath(import.meta.url)), '../web');
+  const root = dirname(web);
+  const stale = staleDeclarations(web);
   if (!stale.length) return 0;
   if (process.argv.includes('--fix')) {
     for (const { name } of stale) {
