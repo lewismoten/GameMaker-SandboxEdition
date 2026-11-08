@@ -39,7 +39,7 @@ export const CREDITS = withCreditPage(
 |LUCKY CAT  v${about.version}
 |(c) 1994 Sandbox Software
 
-First made by Claude Sonnet 5.5. Redrawn as a woodcut, rewritten and rescored by Claude Opus 5.5. Four more levels by Claude Sonnet 5.5. All three are AI models made by Anthropic.
+First made by Claude Sonnet 5.5. Redrawn as a woodcut, rewritten and rescored by Claude Opus 5.5. Seven more levels by Claude Sonnet 5.5. All three are AI models made by Anthropic.
 
 Made with GAME-MAKER 3.0 from Recreational Software Designs.
 
@@ -92,6 +92,10 @@ export const CARDS: Record<string, string[][]> = {
     ['9:15 PM. THE MIRROR SHOP. "SEVEN', 'YEARS OF LUCK, GUARANTEED."', 'LEFT IS LEFT AGAIN. BE GRATEFUL.'],
     ['TWO HAND MIRRORS, TWO GATES. THE', 'SHOP ASSURES YOU NOBODY HAS EVER', 'BROKEN ANYTHING IN HERE.'],
   ],
+  glass: [
+    ['9:40 PM. THE SHOP HAS A BACK DOOR.', 'THE BACK DOOR IS A MIRROR.', 'MIDNIGHT WALKS THROUGH IT. CATS DO.'],
+    ['THE OTHER SIDE. THE EXIT IS WHERE', 'THE ENTRANCE SHOULD BE, THE LEFT KEY', 'WALKS RIGHT, AND NOBODY IS SORRY.'],
+  ],
   rascal: [
     ['EARLIER THAT MORNING...', '6:15 AM. THE COMMITTEE CHAINS', 'EVERY TRASH CAN SHUT. "FOR LUCK."'],
     ['ONE RESIDENT TAKES IT PERSONALLY.', 'TIE OFF THE ROPES. SET OUT THE', 'CREAM. GET THE KEY TO THE BINS.'],
@@ -100,9 +104,17 @@ export const CARDS: Record<string, string[][]> = {
     ['EARLIER STILL. 12:40 PM. THE TOWN', 'HALL IS CLOSED FOR LUNCH, AND', 'A CLOSED HALL IS AN EMPTY HALL.'],
     ['UP TO THE GALLERY. THEN UP TO THE', 'RAFTERS. SOMEWHERE UP THERE IS A', 'KEY, AND A VERY LONG ROPE.'],
   ],
+  wash: [
+    ['EARLIER STILL. 4:05 PM. THE COMMITTEE', 'HAS HUNG ITS BANNER ON THE WASH LINE:', '"LUCK TO ALL. EXCEPT CATS."'],
+    ['IT IS DRYING. IT WOULD LOOK BETTER', 'TIED TO SOMETHING. TIE FOUR KNOTS,', 'THEN SEE THE BINS ABOUT THEIR KEY.'],
+  ],
   four: [['BACK TO 7:40 PM. THE FAIR GATE', 'SHUTS ON THE 13TH CHIME. EACH', 'BELL STILL LIT IS A CHIME LEFT.', 'RUN.']],
   tower: [['THE CLOCK TOWER. WHOEVER RIGGED', 'THE BELLS LEFT ROPE ON EVERY', 'FLOOR. GOOD ROPE. NEAT KNOTS.', 'MIDNIGHT IS TAKING NOTES.']],
   five: [['THE ROOFTOPS. THE CROWS WORK', 'FOR THE COMMITTEE: THEY REPORT', 'EVERY BLACK CAT THEY SEE.', 'LET THEM GO BY. KNOCK ON WOOD.']],
+  market: [
+    ['11:20 PM. THE NIGHT MARKET. ALL', 'THE STALLS CLOSE AT THE 13TH CHIME,', 'AND THEY CLOSE TOGETHER.'],
+    ['THREE SHUTTERS. TWO WATCHMEN CROWS.', 'ONE CAT WHO WOULD LIKE TO BE ON', 'THE OTHER SIDE OF ALL OF IT.'],
+  ],
   six: [['A ROOF. ROPES, PULLEYS, A CRATE', 'OF SAUCERS, AND A RACCOON WHO', 'HAS NOT SEEN HER.'], ['YET.']],
 };
 
