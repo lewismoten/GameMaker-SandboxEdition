@@ -197,11 +197,34 @@ export async function steppingStones(bot: StarterBot): Promise<void> {
   await take(bot, S.trees[2], POINTS.blaze, 'the third tree');
   await take(bot, S.acorns[1], POINTS.acorn, 'an acorn');
   await cross(bot, c4, G4, 'the fourth crossing');
+  await readAt(bot, at.ripple + 2, 'the ripple sign');
   await take(bot, S.trees[3], POINTS.blaze, 'the fourth tree');
+  await rippleCross(bot);
+  await take(bot, S.trees[4], POINTS.blaze, 'the fifth tree');
   await must(bot, bot.walk(S.bridge[1] + 2, 'over the footbridge'), 'over the footbridge');
-  await must(bot, bot.walk(at.hill + 1, 'the hill spot'), 'to the hill spot');
-  score(bot, from, 4 * POINTS.blaze + 2 * POINTS.acorn, 'level 4');
-  await leave(bot, bot.walk(S.exit + 1, 'the exit'), 'the exit');
+  score(bot, from, 5 * POINTS.blaze + 2 * POINTS.acorn + S.ripple.stones.length * POINTS.acorn, 'level 4');
+  await leave(bot, bot.walk(S.exit, 'the exit'), 'the exit');
+}
+
+/**
+ * The ripple: single stones that come up one after another. Waits on the bank for the first to rise fresh, then hops from
+ * stone to stone as each comes up (a person goes with the wave, and waits on a stone when she gets ahead of it).
+ */
+async function rippleCross(bot: StarterBot): Promise<void> {
+  const { water, stones } = STREAM_AT.ripple;
+  const book = blocks('stream');
+  const up = (x: number) => shownAt(bot, x, G4) === book.n('rUpA') || shownAt(bot, x, G4) === book.n('rUpB');
+  const dry = (what: string) => {
+    if (bot.px.y / 20 > G4 - 1) throw new Error(`fell in at ${what} (x ${bot.px.x / 20})`);
+  };
+  await must(bot, bot.walk(water[0] - 1, 'the ripple bank'), 'to the ripple bank');
+  if (up(stones[0])) await watchFor(bot, () => !up(stones[0]), 'the first ripple stone going down', 400);
+  await watchFor(bot, () => up(stones[0]), 'the first ripple stone coming up', 400);
+  for (const [i, x] of [...stones, water[1] + 1].entries()) {
+    if (i > 0 && i < stones.length) await watchFor(bot, () => up(x), `the ripple stone at ${x} coming up`, 400);
+    await must(bot, bot.jump('right', x), `to the ripple stone at ${x}`);
+    dry(`the ripple stone at ${x}`);
+  }
 }
 
 /** Climbs from where Tess stands on ladder column `col` up or down until her feet are on row `row` + 1's floor. */
