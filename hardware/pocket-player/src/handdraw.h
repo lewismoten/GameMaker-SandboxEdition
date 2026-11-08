@@ -32,9 +32,11 @@ inline uint16_t fillColor(hs::Role r) {
 // Where the hand lands: scale (pixels per unit of the art), the screen position of its thumbnail's center, and the side.
 struct Place { float s, tipX, tipY; int side; };
 // The hand for a board whose bottom edge is at `edgeY`: the index finger's flat top sits on that edge, and the thumbnail's center
-// lands on column tipX. `wid` sets the size (the art's thumbnail is 148 units above the edge).
-inline Place place(int side, int tipX, int edgeY, int wid) {
-  float s = (float)wid / 120.0f;
+// lands on column tipX. The size follows: the curled fingers' outer edge lands on the board's outer edge `edgeX` (its left edge for
+// the left hand, its right edge for the right), as in a photo of the grip.
+inline Place place(int side, int tipX, int edgeX, int edgeY) {
+  float d = side < 0 ? (float)(tipX - edgeX) : (float)(edgeX - tipX);
+  float s = d / (hs::TIP_X - hs::FINGER_MIN_X);
   return {s, (float)tipX, edgeY + (hs::TIP_Y - hs::EDGE_Y) * s, side};
 }
 inline float sx(const Place& p, int i) { return p.tipX + (hs::pts[2 * i] - hs::TIP_X) * p.s * (p.side < 0 ? 1.0f : -1.0f); }

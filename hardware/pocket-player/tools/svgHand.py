@@ -106,7 +106,10 @@ def main():
             pts += [(round(x), round(y)) for x, y in s]
         shl.append('  {%s, %d, %d, %d, %d, %.2ff},  // %s' % (NAMES[role], stroke, behind, len(subs), first, swd, sid))
     L.append('constexpr int SHAPES = %d, SUBS = %d, POINTS = %d;' % (len(shl), len(subl), len(pts)))
-    L.append('constexpr float TIP_X = %.1ff, TIP_Y = %.1ff, EDGE_Y = %.1ff;  // thumbnail center; the board edge the fingers curl under' % (tip[0], tip[1], edge))
+    # the curled fingers' outer (left) edge, stroke included: it sits flush with the board's outer edge
+    fmin = min(p[0] for s in shapes if s[4] for sub in s[5] for p in sub) - 4.5
+    L.append('constexpr float FINGER_MIN_X = %.1ff;  // the curled fingers\' outer edge, outline included' % fmin)
+    L.append('constexpr float TIP_X =%.1ff, TIP_Y = %.1ff, EDGE_Y = %.1ff;  // thumbnail center; the board edge the fingers curl under' % (tip[0], tip[1], edge))
     L.append('constexpr float MIN_X = %.1ff, MAX_X = %.1ff, MIN_Y = %.1ff, MAX_Y = %.1ff;' % (min(p[0] for p in allp), max(p[0] for p in allp), min(p[1] for p in allp), max(p[1] for p in allp)))
     L.append('static const Shape shapes[SHAPES] = {'); L += shl; L.append('};')
     L.append('static const Sub subs[SUBS] = {' + ', '.join('{%d,%d}' % s for s in subl) + '};')
