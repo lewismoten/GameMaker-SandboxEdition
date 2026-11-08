@@ -321,3 +321,27 @@ export function snowfall(pal: Pal, frame: number): P {
     p.set((x + frame) % 20, (y + frame * 7) % 20, pal.c('white', 3));
   return p;
 }
+
+/** A padded pillar to climb over, in the place's own stuff: logs end-on in the yards, flour sacks in the bakery. */
+export function pillarOf(pal: Pal, kind: 'logs' | 'sacks'): P {
+  if (kind === 'logs') {
+    const w = pal.r('wood');
+    const p = new Pixels(20, 20, w[0]);
+    for (const [x, y] of [
+      [5, 5],
+      [15, 5],
+      [10, 14],
+      [0, 14],
+      [20, 14],
+    ]) {
+      p.disc(x, y, 4.6, w[2]).disc(x, y, 3.2, w[3]).ring(x, y, 1.6, w[1]);
+    }
+    p.rect(0, 0, 20, 2, pal.c('white', 3));
+    return p;
+  }
+  const pa = pal.r('parch');
+  const p = new Pixels(20, 20, pa[1]);
+  p.rect(1, 1, 18, 8, pa[3]).rect(1, 11, 18, 8, pa[3]).rect(2, 1, 16, 1, pa[4]).rect(2, 11, 16, 1, pa[4]);
+  p.rect(6, 4, 8, 2, pal.c('blue', 2)).rect(6, 14, 8, 2, pal.c('blue', 2));
+  return p;
+}

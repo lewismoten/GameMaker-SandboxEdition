@@ -36,6 +36,7 @@ import {
   type Place as PlaceName,
 } from './art';
 import { addDress } from './dress';
+import { pillarOf } from './dressArt';
 import type { LookName } from './palette';
 import type { Place, Step } from './place';
 import type { SongName } from './song';
@@ -125,7 +126,7 @@ export function startBook(pal: Pal, place: PlaceName, o: BookOptions = {}): { bo
   book.add('washer', washer(pal, bg), { ...bgRule, score: POINTS.washer, touch: 'bg' });
   book.add('lintel', lintel(pal, bg), air);
   book.add('pit', bg, air);
-  book.add('cushion', cushion(pal, bg, place === 'yard'), { solid: SOLID });
+  book.add('cushion', cushion(pal, bg, place === 'yard' ? 'white' : place === 'roof' || place === 'bakery' ? 'parch' : 'blue'), { solid: SOLID });
   if (!o.lean) {
     for (const q of [0, 1, 2, 3] as const) book.add(`win${q}`, windowTile(pal, bg, q), bgRule);
     book.add('win1moon', windowTile(pal, bg, 1, true), bgRule);
@@ -133,7 +134,7 @@ export function startBook(pal: Pal, place: PlaceName, o: BookOptions = {}): { bo
     const pool = lampPool(pal, bg);
     for (let dy = 0; dy < 3; dy++)
       for (let dx = 0; dx < 3; dx++) book.add(dx === 1 && dy === 1 ? 'lamp' : `glow${dx}${dy}`, pool.crop(dx * 20, dy * 20, 20, 20), bgRule);
-    book.add('pillar', floor(pal, 'mat'), { solid: SOLID });
+    book.add('pillar', place === 'yard' ? pillarOf(pal, 'logs') : place === 'bakery' ? pillarOf(pal, 'sacks') : place === 'roof' ? bricks(pal, true) : floor(pal, 'mat'), { solid: SOLID });
     book.add('planter', planter(pal, bg, true), { solid: SOLID });
     book.add('rail', rail(pal, bg), bgRule);
   }
@@ -175,7 +176,10 @@ function lampPool(pal: Pal, bg: Pixels): Pixels {
 /** Signs by name: [text, width, height] (the words wrap to the board). */
 export type SignDefs = Record<string, readonly [string, number, number]>;
 
-/** Adds the signs, their boards and posts drawn over the backdrop instead of the Starters' sky. */
+/** The sign pictures already turned into cards, per block set (a scene may add signs twice). */
+const carded = new WeakMap<Book, Set<string>>();
+
+/** Adds the signs, their cards and posts drawn over the backdrop instead of the Starters' sky. */
 export function addSigns(book: Book, pal: Pal, defs: SignDefs): Record<string, Sign> {
   const out: Record<string, Sign> = {};
   for (const n of Object.keys(defs)) {
@@ -184,10 +188,18 @@ export function addSigns(book: Book, pal: Pal, defs: SignDefs): Record<string, S
   }
   const bg = book.pics.get('bg')!;
   const sky = skyOf(pal);
+  // this game's signs are white index cards in steel frames, not the Starters' wooden boards
+  const card = new Map<number, number>();
+  const [wood, steel, parch, white] = ['wood', 'steel', 'parch', 'white'].map((n) => pal.r(n));
+  wood.forEach((v, i) => card.set(v, steel[Math.min(steel.length - 1, i)]));
+  parch.forEach((v, i) => card.set(v, white[Math.max(0, Math.min(white.length - 1, i - 1))]));
   const blocks = book.finish();
+  const done = carded.get(book) ?? new Set<string>();
+  carded.set(book, done);
   for (const [name, p] of book.pics)
-    if (name.startsWith('sign.') || name.startsWith('signPost')) {
-      p.map((x, y, c) => (c === sky ? bg.get(x, y) : c));
+    if ((name.startsWith('sign.') || name.startsWith('signPost')) && !done.has(name)) {
+      done.add(name);
+      p.map((x, y, c) => (c === sky ? bg.get(x, y) : (card.get(c) ?? c)));
       blocks[book.n(name)].pixels = Uint8Array.from(p.px);
     }
   return out;

@@ -62,7 +62,7 @@ const plan = (signs: Record<string, number>): Step[] => Object.entries(signs).ma
 export const OTHERSIDE = { blink: 420, open: 900 } as const;
 export const OTHERSIDE_AT: WatchAt & { signs: Record<string, number>; window: [number, number] } = {
   width: 40,
-  window: [17, 2],
+  window: [17, 4],
   signs: { book: 3, log: 8, mine: 26 },
   stops: [
     { x: 4, read: 'the logbook sign' },
@@ -147,8 +147,8 @@ export const MOONRISE = { rise: 380, dark: 700, open: 1100 } as const;
 export const MOONRISE_AT: WatchAt & { signs: Record<string, number>; table: [number, number]; moon: [number, number]; bakery: [number, number] } = {
   width: 46,
   table: [12, 17],
-  moon: [27, 2],
-  bakery: [6, 3],
+  moon: [27, 4],
+  bakery: [6, 4],
   signs: { clouds: 3, real: 20, night: 33 },
   stops: [
     { x: 4, read: 'the clouds sign' },
@@ -215,7 +215,7 @@ export function levelMoonrise(pal: Pal): Level {
   const m = paintRoom(book, A.width, [], {}, true, s);
   for (let x = A.table[0]; x <= A.table[1]; x++) m.set(x, G - 2, 'tbl');
   m.set(A.table[0], G - 1, 'tblLeg').set(A.table[1], G - 1, 'tblLeg');
-  stamp(book, m, low, 'ml', A.moon[0], A.moon[1] + 3);
+  stamp(book, m, low, 'ml', A.moon[0] - 3, A.moon[1] + 2);
   stamp(book, m, sky, 'mh', A.moon[0], A.moon[1]);
   for (let q = 0; q < 4; q++) m.set(A.bakery[0] + (q % 2), A.bakery[1] + (q >> 1), `bw${q}`);
   for (const [k, x] of Object.entries(A.signs)) m.sign(x, G - 1 - s[k].board.length, s[k]);

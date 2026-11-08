@@ -483,9 +483,9 @@ export function lintel(pal: Pal, bg: P): P {
 }
 
 /** A pit's soft bottom: a cushion one row lower than the floor (a missed hop lands softly; hop out). */
-export function cushion(pal: Pal, bg: P, snow = false): P {
+export function cushion(pal: Pal, bg: P, ramp: 'blue' | 'white' | 'parch' = 'blue'): P {
   const p = tile(bg);
-  const b = pal.r(snow ? 'white' : 'blue');
+  const b = pal.r(ramp);
   p.rect(0, 8, 20, 12, b[1]).rect(1, 8, 18, 3, b[3]).rect(1, 8, 18, 1, b[4]);
   for (const x of [5, 10, 15]) p.set(x, 13, b[0]);
   return p;
