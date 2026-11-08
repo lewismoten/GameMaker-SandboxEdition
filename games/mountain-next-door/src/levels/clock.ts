@@ -1,4 +1,4 @@
-// Level 15, THE CLOCK TOWER (after midnight): the town clock strikes three at three, and the mountain, tiptoeing
+// Level 15, THE BELL LOFT (after midnight): the town clock strikes three at three, and the mountain, tiptoeing
 // across the square, would be heard in the next county. So Tess climbs the town hall tower to pack the bell with
 // snow. It is seven floors up and there are no stairs, only chimneys: each floor has a flue at one end that puffs
 // warm smoke on a clock, through a hole in the floor above. Watch a puff, step in at the start of the next, and
@@ -44,7 +44,7 @@ const SIGNS = [
 const PHASE = ['puff0', 'puffOff', 'puff3', 'puff1', 'puffOff', 'puff4'] as const;
 
 export function levelClock(pal: Pal): Level {
-  const { book, timed } = startBook(pal, ['town', 'roofs', 'stars']);
+  const { book, timed } = startBook(pal, ['loft', 'roofs', 'stars']);
   const names = SIGNS.map((_, i) => `sign${i}`);
   const defs = Object.fromEntries(SIGNS.map((d, i) => [names[i], d])) as Record<string, readonly [string, number, number]>;
   const s = addSigns(book, pal, defs);
@@ -64,15 +64,29 @@ export function levelClock(pal: Pal): Level {
   for (let y = FLOORS[6]; y < G_CLOCK; y++)
     for (let x = 1; x < W - 1; x++) {
       const window = x % 4 === 2 && (y - FLOORS[6]) % 6 === 3;
-      m.set(x, y, window ? ((x + y) % 3 ? 'windowLit' : 'window') : 'wall');
+      m.set(x, y, window ? ((x + y) % 3 ? 'archLit' : 'archDark') : (x + y) % 2 ? 'loftA' : 'loftB');
     }
+  // carved beams up the walls between the windows
+  for (const bx of [8, 16, 24, 32]) for (let y = FLOORS[6]; y < G_CLOCK; y++) if ((y - FLOORS[6]) % 6 !== 0) m.set(bx, y, bx % 16 ? 'beamA' : 'beamB');
+  // the works: a big clock face on every other storey, a gear on the ones between, a pendulum and a lamp by each face
+  for (let k = 0; k < 6; k++) {
+    const top = FLOORS[k + 1] + 1; // the storey's first wall row (it has five)
+    if (k % 2 === 0) {
+      for (let i = 0; i < 9; i++) m.set(19 + (i % 3), top + 1 + Math.floor(i / 3), `face${i}`);
+      m.set(23, top + 2, 'pendT0').set(23, top + 3, 'pendB0');
+      m.set(26, top + 2, 'wallLamp');
+    } else {
+      for (let i = 0; i < 4; i++) m.set(19 + (i % 2), top + 1 + Math.floor(i / 2), `gear${i}`);
+      m.set(13, top + 2, 'wallLamp');
+    }
+  }
   FLOORS.slice(1).forEach((row, i) => {
     for (let x = 1; x < W - 1; x++) m.set(x, row, (x + i) % 3 ? 'roof' : 'roof2');
   });
   C.flues.forEach((x, k) => {
     const below = FLOORS[k];
     const above = FLOORS[k + 1];
-    m.set(x, above, 'wall'); // the hole the smoke goes up through
+    m.set(x, above, 'loftA'); // the hole the smoke goes up through
     m.set(x, below, 'pot');
     for (let y = above - 2; y < below; y++) m.set(x, y, PHASE[k]);
   });
@@ -84,7 +98,7 @@ export function levelClock(pal: Pal): Level {
   C.signs.forEach(([k, x], i) => m.sign(x, onGround(FLOORS[k], s[names[i]]), s[names[i]]));
   return {
     file: 'clock',
-    title: 'The Clock Tower',
+    title: 'The Bell Loft',
     hint: 'Pack the bell with snow. Ride the smoke.',
     look: 'town',
     map: m,

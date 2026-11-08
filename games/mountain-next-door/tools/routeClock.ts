@@ -1,4 +1,4 @@
-// The way through The Clock Tower: each floor walked for its drifts of snow and its sign, then up the flue's smoke from
+// The way through The Bell Loft: each floor walked for its drifts of snow and its sign, then up the flue's smoke from
 // the start of a puff (the same human orders as routeGrow.ts).
 import type { StarterBot } from '../../kit/starter/bot';
 import { CLOCK_AT, FLOORS } from '../src/levels/clock';
@@ -7,7 +7,7 @@ import { step, take } from './route';
 import { waitUp } from './routeLate';
 import { leave, must, readAt, score, watchFor } from './routeKit';
 
-/** 15. The Clock Tower. */
+/** 15. The Bell Loft. */
 export async function theClockTower(bot: StarterBot): Promise<void> {
   const from = bot.sim.ci.score;
   const C = CLOCK_AT;
@@ -34,6 +34,6 @@ export async function theClockTower(bot: StarterBot): Promise<void> {
     for (const [, go] of stops) await go();
     if (k < C.flues.length) await ride(k);
   }
-  score(bot, from, C.flakes.flat().length * POINTS.flake, 'the clock tower');
+  score(bot, from, C.flakes.flat().length * POINTS.flake, 'the bell loft');
   await leave(bot, bot.walk(C.exit, 'the exit'), 'the exit');
 }
