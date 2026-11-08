@@ -18,8 +18,8 @@
   },
   "acceptedFindings": [
     "facing s3 The hero climbs side on",
-    "facing s11 Monster 4 paces left and right facing the player",
-    "facing s11 Monster 5 paces back and forth without turning round",
+    "facing s15 Monster 4 paces left and right facing the player",
+    "facing s15 Monster 5 paces back and forth without turning round",
     "flashing s2 Block 39 flashes light and dark about 0.0 times a second over 160 blocks of one screen, from (0, 0)",
     "flashing s2 Block 40 flashes light and dark about 0.0 times a second over 160 blocks of one screen, from (0, 0)",
     "flashing s2 Block 41 flashes light and dark about 0.0 times a second over 160 blocks of one screen, from (0, 0)",

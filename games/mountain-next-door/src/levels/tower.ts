@@ -81,7 +81,7 @@ export function levelTower(pal: Pal): Level {
   return {
     file: 'tower',
     title: 'The Lookout',
-    hint: 'Climb before dark. Mind the loose boards.',
+    hint: 'Climb before dark. Mind the boards.',
     look: 'gloaming',
     map: m,
     book,

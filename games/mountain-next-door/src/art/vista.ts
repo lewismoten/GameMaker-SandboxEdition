@@ -29,7 +29,7 @@ export function vista(pal: Pal, book: Book, ground = 160, seed = 3): Pixels {
   for (let y = ground - 78; y < ground - 62; y += 3) p.rect(sx - 9, y, 18, 1, pal.c('parch', 4));
   // the far range: jagged peaks, snow on the tops, the shadowed sides hatched
   const peaks: [number, number][] = [];
-  for (let x = -20; x < W + 40; x += 38 + Math.floor(rand() * 30)) peaks.push([x, ground - 55 - Math.floor(rand() * 35)]);
+  for (let x = -20; x < W + 40; x += 38 + Math.floor(rand() * 30)) peaks.push([x, ground - 50 - Math.floor(rand() * 28)]);
   const ridge = (x: number) => {
     let best = ground - 18;
     for (const [px, py] of peaks) best = Math.min(best, py + Math.abs(x - px) * 0.9);
