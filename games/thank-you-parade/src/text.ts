@@ -162,6 +162,15 @@ export const CREEK_SIGNS: Defs = {
   exit: EXIT,
 };
 
+export const HALL_SIGNS: Defs = {
+  start: ["RIDGEMONT'S PRACTICE HALL. THE DOOR WAS UNLOCKED. SUSPICIOUS.", 6, 3, 'purple'],
+  shelf: ['A BRASS KEY ON A SHELF. GIGI LABELS EVERYTHING.', 5, 2, 'purple'],
+  lights: ['STEEL KEY: UP WHERE THE LIGHTS ARE. SO IS THE DUST.', 6, 3, 'purple'],
+  geese: ['GOOSE TRAINING, ROOM B. GIGI CALLS THE HOLE THE FILING SYSTEM.', 6, 3, 'purple'],
+  secret: ['PLAYBOOK P.7: NOBODY LOOKS UP IN A BIG ROOM.', 6, 2, 'purple'],
+  exit: EXIT,
+};
+
 /** What each level card says under its title. */
 export const CARD_NOTES = [
   '6:40 AM. The band is scattered.',

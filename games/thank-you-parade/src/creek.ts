@@ -65,8 +65,8 @@ export function creek(pal: Pal): Level {
   m.set(A.brass, A.plankRow - 1, 'key');
   m.set(A.steel, A.bed - 1, 'keySilver');
   for (const x of A.cones) m.set(x, A.bed - 1, 'spikes');
-  for (const x of [29, 31, 38, 46, 53, 56]) m.set(x, A.bed - 1, 'coin');
-  for (const x of [30, 43, 55]) m.set(x, A.plankRow - 1, 'coin');
+  for (const x of [29, 31, 38, 46, 53, 56]) m.set(x, A.bed - 1, 'donut');
+  for (const x of [28, 34, 43, 46, 52, 58]) m.set(x, A.plankRow - 1, 'donut');
   // a runaway balloon over the bridge, geese on both banks
   m.mon(MONS.balloon, 35, A.plankRow - 3);
   m.mon(MONS.goose, 14, G - 1).mon(MONS.goose, 63, G - 1);

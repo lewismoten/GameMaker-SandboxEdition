@@ -8,6 +8,7 @@ import { AT2, CARDS_AT } from '../src/level2';
 import { AT3 } from '../src/level3';
 import { AT_BAKERY } from '../src/bakery';
 import { AT_CREEK } from '../src/creek';
+import { AT_HALL } from '../src/hall';
 import { AT4 } from '../src/level4';
 import { AT5, ZONES } from '../src/level5';
 import { AT6 } from '../src/level6';
@@ -29,6 +30,7 @@ async function must(bot: StarterBot, r: Promise<Result>, what: string): Promise<
 /** The last order of a level: it must take the hero through the door. */
 async function leave(bot: StarterBot, r: Promise<Result>, what: string): Promise<void> {
   const out = await r;
+  bot.say(`leaving ${what} with hit points ${bot.sim.ci.hitpts}, lives ${bot.sim.ci.meter[1]}`);
   if (out !== 'link' && out !== 'end') throw new Error(`${what}: ${out ?? 'still here'}\n${bot.log.slice(-8).join('\n')}`);
 }
 
@@ -360,5 +362,50 @@ export async function millCreek(bot: StarterBot): Promise<void> {
   await must(bot, bot.wait(READ), 'reading the page');
   await must(bot, bot.walk(A.millLadder, 'the ladder'), 'back to the ladder');
   await must(bot, bot.climb('down', G - 1, 'down the mill'), 'down');
+  await leave(bot, bot.walk(A.exit + 1, 'the exit'), 'the exit');
+}
+
+/** 7. Practice Hall: the shelf, the lights, the basement, the rafters. */
+export async function practiceHall(bot: StarterBot): Promise<void> {
+  const A = AT_HALL;
+  const G = A.ground;
+  await must(bot, bot.walk(8, 'the first placard'), 'to the placard');
+  await must(bot, bot.wait(READ), 'reading');
+  // the shelf and the first brass key
+  await climbShaft(bot, A.shelf.ladder, A.shelf.planks[2] - 1, 'shelf');
+  await must(bot, bot.walk(A.shelf.key, 'the brass key'), 'along the shelf');
+  need(bot, 20, 1, 'the first brass key');
+  await must(bot, bot.walk(A.shelf.planks[1] + 2, 'off the shelf'), 'off the shelf');
+  await must(bot, bot.wait(READ / 2), 'reading the shelf placard');
+  await must(bot, bot.walk(A.gates[0] + 1, 'the brass gate'), 'through the brass gate');
+  need(bot, 20, 0, 'the brass gate took the key');
+  // the lights: two ladders and the balcony, and the steel key
+  await climbShaft(bot, A.lights.ladder1, A.lights.mezz[2] - 1, 'mezzanine');
+  await must(bot, bot.walk(A.lights.ladder2, 'the second ladder'), 'along the mezzanine');
+  await must(bot, bot.climb('up', A.lights.balcony[2] - 1, 'up to the balcony'), 'up');
+  await must(bot, bot.walk(A.lights.key, 'the steel key'), 'along the balcony');
+  need(bot, 21, 1, 'the steel key');
+  await must(bot, bot.walk(A.lights.balcony[1] + 1, 'off the balcony'), 'off the balcony');
+  await must(bot, bot.walk(A.gates[1] + 1, 'the steel gate'), 'through the steel gate');
+  need(bot, 21, 0, 'the steel gate took the key');
+  // the basement: down one hole, past a cone and a goose to the second brass key, up the other
+  const b = A.basement;
+  await must(bot, bot.walk(b.holes[0], 'the hole'), 'to the hole');
+  await must(bot, bot.climb('down', b.floor - 1, 'down the hole'), 'down');
+  await must(bot, bot.walk(b.cone - 2, 'the cone'), 'to the cone');
+  await must(bot, bot.wait(READ / 2), 'reading the basement placard');
+  await must(bot, bot.jump('right', b.cone + 2), 'over the cone');
+  await hop(bot, b.key);
+  need(bot, 20, 1, 'the second brass key');
+  await hop(bot, b.holes[1]);
+  await must(bot, bot.climb('up', G - 1, 'up the other hole'), 'up');
+  await must(bot, bot.walk(A.gates[2] + 1, 'the second brass gate'), 'through the gate');
+  need(bot, 20, 0, 'the second brass gate took the key');
+  // the rafters, and the seventh page
+  await climbShaft(bot, A.rafters.ladder, A.rafters.planks[2] - 1, 'rafters');
+  await page(bot, () => must(bot, bot.walk(A.rafters.page, 'the rafters'), 'along the rafters'), 'the seventh page');
+  await must(bot, bot.wait(READ), 'reading the page');
+  await must(bot, bot.walk(A.rafters.ladder, 'the ladder'), 'back to the ladder');
+  await must(bot, bot.climb('down', G - 1, 'down'), 'down');
   await leave(bot, bot.walk(A.exit + 1, 'the exit'), 'the exit');
 }
