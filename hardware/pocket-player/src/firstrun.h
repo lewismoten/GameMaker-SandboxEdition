@@ -10,7 +10,6 @@
 #include <string.h>
 #include "buddy.h"
 #include "controls.h"
-#include "handshape.h"
 #include "overlaydraw.h"
 #include "paddraw.h"
 #include "screen.h"
@@ -72,11 +71,12 @@ inline ctl::Need playNeed() {
 }
 
 // ---- drawing -------------------------------------------------------------------------------------------------------
-// A hand holding the board's side, seen from the front, as a smooth pictogram: the thumb (the hero) curves over the glass to
-// (tx, ty) with a small nail; the palm and the curl of the index finger show at the board's edge; a plain cuff below. `side` -1 is
-// the left hand (beside the board's left edge), +1 the right, a mirror image. Every shape is a distance field (capsules), drawn
-// per pixel: an even dark-brown outline, a flat skin fill with one darker shade on the side away from the light, two small
-// highlights, and edges blended against what is behind them (the table, the bezel or the screen) so they are smooth.
+// A hand holding the board's lower corner, seen from the front, built finger by finger as overlapping shapes, each with its own
+// outline so the separations read: the curled index finger under the bottom edge (its tip tucked behind the board), the middle
+// and ring fingertips peeking from behind the bottom edge, the palm's heel over the corner with the wrist going down and outward
+// to a plain cuff, and the thumb (two segments, a nail) over the glass to (tx, ty). `side` -1 is the left hand, +1 the right, a
+// mirror image. Every shape is a distance field of tapered capsules, drawn per pixel: an even dark-brown outline, a flat skin fill
+// with one darker shade on the side away from the light, a small highlight, and edges blended against what is behind them.
 namespace hands {
 struct Seg { float ax, ay, bx, by, ra, rb; };
 inline float segDist(const Seg& s, float px, float py) {  // distance to a tapered capsule (negative inside)
@@ -86,9 +86,14 @@ inline float segDist(const Seg& s, float px, float py) {  // distance to a taper
   float dx = wx - vx * t, dy = wy - vy * t;
   return __builtin_sqrtf(dx * dx + dy * dy) - (s.ra + (s.rb - s.ra) * t);
 }
-inline float fieldDist(const Seg* s, int n, float px, float py) {
-  float d = 1e9f;
-  for (int i = 0; i < n; i++) { float e = segDist(s[i], px, py); if (e < d) d = e; }
+inline float smin(float a, float b, float k) {  // a smooth union, blending over k
+  float h = 0.5f + 0.5f * (b - a) / k;
+  h = h < 0 ? 0 : h > 1 ? 1 : h;
+  return b + (a - b) * h - k * h * (1 - h);
+}
+inline float shape(const Seg* s, int n, float k, float px, float py) {
+  float d = segDist(s[0], px, py);
+  for (int i = 1; i < n; i++) d = smin(d, segDist(s[i], px, py), k);
   return d;
 }
 inline float cover(float d) { float c = 0.5f - d; return c < 0 ? 0 : c > 1 ? 1 : c; }  // pixel coverage from a signed distance
@@ -98,89 +103,94 @@ inline uint16_t mix(uint16_t a, uint16_t b, float t) {  // RGB565 blend, t of b
       bl = ab + (int)((bb - ab) * t + (bb > ab ? 0.5f : -0.5f));
   return (uint16_t)((r << 11) | (gg << 5) | bl);
 }
-constexpr uint16_t LINE = 0x5163, SKIN = 0xE5B1, SHADE = 0xCCAD, LIGHT = 0xFF18, NAIL = 0xF6D7, CUFF = 0x3A9C, CUFF_D = 0x2A14;
+constexpr uint16_t LINE = 0x5163, SKIN = 0xE5B1, SHADE = 0xCCAD, LIGHT = 0xFF18, NAIL = 0xF6D7, CUFF = 0x3A9C;
 }  // namespace hands
 template <class G> void hand(G& g, const Box& b, int side, int tx, int ty, int wid) {
   using namespace hands;
-  const float S = wid * 1.25f, ow = scr::SMALL ? 1.4f : 2.0f;
-  const float in = (float)-side;  // +1: the left hand as traced (its thumb points right); -1: mirrored for the right hand
-  // The outline is traced from a photo of the board held in the left hand (tools/traceHand.py, src/handshape.h): the thumb tip
-  // lands on (tx, ty), the fingers are curled under, and the wrist runs down and outward. Mirrored for the right hand.
-  float P[handshape::OUTLINE_N][2];
-  float minX = 1e9f, maxX = -1e9f, minY = 1e9f, maxY = -1e9f;
-  for (int i = 0; i < handshape::OUTLINE_N; i++) {
-    P[i][0] = tx + in * handshape::OUTLINE[i][0] * S;
-    P[i][1] = ty + handshape::OUTLINE[i][1] * S;
-    if (P[i][0] < minX) minX = P[i][0];
-    if (P[i][0] > maxX) maxX = P[i][0];
-    if (P[i][1] < minY) minY = P[i][1];
-    if (P[i][1] > maxY) maxY = P[i][1];
-  }
-  auto field = [&](float px, float py) {  // signed distance to the outline polygon (negative inside)
-    float best = 1e9f;
-    bool inside = false;
-    for (int i = 0, j = handshape::OUTLINE_N - 1; i < handshape::OUTLINE_N; j = i++) {
-      float ax = P[j][0], ay = P[j][1], bx = P[i][0], by = P[i][1];
-      if (((ay > py) != (by > py)) && (px < (bx - ax) * (py - ay) / (by - ay) + ax)) inside = !inside;
-      float vx = bx - ax, vy = by - ay, wx = px - ax, wy = py - ay, l2 = vx * vx + vy * vy;
-      float t = l2 > 0 ? (wx * vx + wy * vy) / l2 : 0;
-      t = t < 0 ? 0 : t > 1 ? 1 : t;
-      float dx = wx - vx * t, dy = wy - vy * t, d2 = dx * dx + dy * dy;
-      if (d2 < best) best = d2;
-    }
-    best = __builtin_sqrtf(best);
-    return inside ? -best : best;
+  // Local units of `wid` pixels, from the board's lower corner on this side: x toward the board's middle, y down.
+  const float u = (float)wid, in = (float)-side, ow = scr::SMALL ? 1.4f : 2.0f;
+  const float cx = side < 0 ? (float)b.x0 : (float)b.x1, cy = (float)b.y1;
+  const float Tx = (tx + 0.5f - cx) * in / u, Ty = (ty + 0.5f - cy) / u;  // the thumb's target
+  // the thumb: from the ball of the thumb on the corner, two segments with a slight bend at the joint
+  const float Bx = 0.05f, By = -0.35f, L = __builtin_sqrtf((Tx - Bx) * (Tx - Bx) + (Ty - By) * (Ty - By));
+  const float dx = (Tx - Bx) / L, dy = (Ty - By) / L, nx = dy, ny = -dx;  // along the thumb, and across it toward its top
+  const float Jx = Bx + dx * L * 0.52f + nx * 0.15f, Jy = By + dy * L * 0.52f + ny * 0.15f;
+  const float Ex = Tx - dx * 0.1f, Ey = Ty - dy * 0.1f;
+  const Seg front[] = {
+      {-0.4f, 0.1f, -0.72f, 1.0f, 0.72f, 0.65f},  // the heel of the palm over the corner
+      {-0.72f, 1.0f, -1.2f, 2.05f, 0.62f, 0.54f},  // the wrist, down and outward
+      {Bx, By, Jx, Jy, 0.54f, 0.46f},              // the thumb's first segment
+      {Jx, Jy, Ex, Ey, 0.44f, 0.43f},              // and its tip
   };
-  // the cuff: a plain band across the wrist's end (the outline's flat bottom)
-  const float ccx = tx + in * -2.52f * S, ccy = ty + 2.74f * S, chw = 0.74f * S, chh = 0.26f * S;
-  const float lx = in * -0.45f, ly = -0.89f;  // toward the light (above, and toward the board)
-  const float sd = S * 0.1f;
-  auto segDist = [&](float px, float py, const float a[2], const float c[2]) {
-    float ax = tx + in * a[0] * S, ay = ty + a[1] * S, bx = tx + in * c[0] * S, by = ty + c[1] * S;
-    float vx = bx - ax, vy = by - ay, wx = px - ax, wy = py - ay, l2 = vx * vx + vy * vy;
-    float t = l2 > 0 ? (wx * vx + wy * vy) / l2 : 0;
-    t = t < 0 ? 0 : t > 1 ? 1 : t;
-    float dx = wx - vx * t, dy = wy - vy * t;
-    return __builtin_sqrtf(dx * dx + dy * dy);
-  };
+  const Seg index[] = {{-0.1f, 0.55f, 0.75f, 1.05f, 0.35f, 0.35f}, {0.75f, 1.05f, 1.35f, 0.75f, 0.33f, 0.3f}, {1.35f, 0.75f, 1.5f, 0.05f, 0.3f, 0.27f}};
+  const Seg middle[] = {{1.92f, -0.4f, 1.96f, 0.2f, 0.28f, 0.27f}};
+  const Seg ring[] = {{2.36f, -0.4f, 2.38f, 0.08f, 0.25f, 0.24f}};
+  const float wxd = -0.45f, wyd = 0.89f, Kx = -1.26f, Ky = 2.16f;  // the cuff: across the wrist's end
+  const float lx = 0.45f, ly = -0.89f, sd = 0.13f;                  // toward the light (above, toward the board's middle)
   const int bw = b.x1 - b.x0, bh = b.y1 - b.y0, sx0 = b.x0 + bw / 12, sy0 = b.y0 + bh / 10, sx1 = b.x1 - bw / 12, sy1 = b.y1 - bh / 10;
-  const float pad = ow + 2;
-  for (int y = (int)(minY - pad); y <= (int)(ccy + chh + pad); y++)
-    for (int x = (int)(minX - pad); x <= (int)(maxX + pad); x++) {
+  const float bcx = (b.x0 + b.x1) * 0.5f, bcy = (b.y0 + b.y1) * 0.5f, bhw = bw * 0.5f, bhh = bh * 0.5f, br = 8;
+  auto boardDist = [&](float px, float py) {  // signed distance to the board's rounded edge, in pixels
+    float qx = __builtin_fabsf(px - bcx) - (bhw - br), qy = __builtin_fabsf(py - bcy) - (bhh - br);
+    float ox = qx > 0 ? qx : 0, oy = qy > 0 ? qy : 0, m = qx > qy ? qx : qy;
+    return __builtin_sqrtf(ox * ox + oy * oy) + (m < 0 ? m : 0) - br;
+  };
+  // paints one shape: its outline, then its fill with the shade on the side away from the light; `vis` hides it behind the board
+  auto paint = [&](uint16_t& col, float d, float dsh, float vis) {
+    float dp = d * u;
+    if (dp > ow + 1 || vis <= 0) return false;
+    col = mix(col, LINE, cover(dp - ow) * vis);
+    col = mix(col, mix(SKIN, SHADE, 1 - cover(dsh * u)), cover(dp) * vis);
+    return true;
+  };
+  const float xr = Tx + 0.7f > 3.0f ? Tx + 0.7f : 3.0f, xa = in > 0 ? cx - 2.3f * u : cx - xr * u, xb = in > 0 ? cx + xr * u : cx + 2.3f * u;
+  const int y0 = (int)(cy + (Ty - 0.8f) * u), y1 = (int)(cy + 2.7f * u);
+  for (int y = y0; y <= y1; y++)
+    for (int x = (int)xa; x <= (int)xb; x++) {
       if (x < 0 || x >= scr::W || y < 0 || y >= scr::H) continue;
-      float px = x + 0.5f, py = y + 0.5f;
-      uint16_t col = (x >= sx0 && x < sx1 && y >= sy0 && y < sy1) ? C_SCREEN : (x >= b.x0 && x < b.x1 && y >= b.y0 && y < b.y1) ? C_DARK : C_BLACK;
+      const float px = x + 0.5f, py = y + 0.5f, X = (px - cx) * in / u, Y = (py - cy) / u, sX = X - lx * sd, sY = Y - ly * sd;
+      const float bd = boardDist(px, py), behind = bd < 0 ? 0 : bd > 1 ? 1 : bd;
+      uint16_t col = bd > 0 ? C_BLACK : bd > -1 ? C_GRAY : (x >= sx0 && x < sx1 && y >= sy0 && y < sy1) ? C_SCREEN : C_DARK;
       bool any = false;
-      float ax0 = __builtin_fabsf(px - ccx) - chw, ay0 = __builtin_fabsf(py - ccy) - chh, dc = ax0 > ay0 ? ax0 : ay0;
-      if (dc < ow + 1) {  // the cuff: a plain outlined band
+      // behind the board: the ring and middle fingertips, then the curled index finger
+      any |= paint(col, shape(ring, 1, 0.1f, X, Y), shape(ring, 1, 0.1f, sX, sY), behind);
+      any |= paint(col, shape(middle, 1, 0.1f, X, Y), shape(middle, 1, 0.1f, sX, sY), behind);
+      float di = shape(index, 3, 0.06f, X, Y);
+      if (paint(col, di, shape(index, 3, 0.06f, sX, sY), behind)) {
+        any = true;
+        if (di * u < -ow * 0.5f) {  // the two joint creases on the inside of the curl
+          const float k1x = index[1].ax, k1y = index[1].ay, k2x = index[2].ax, k2y = index[2].ay;
+          float c1 = segDist({k1x, k1y - 0.33f, k1x + 0.04f, k1y - 0.15f, 0, 0}, X, Y), c2 = segDist({k2x - 0.28f, k2y - 0.05f, k2x - 0.1f, k2y - 0.07f, 0, 0}, X, Y);
+          float c = (c1 < c2 ? c1 : c2) * u;
+          col = mix(col, LINE, cover(c - 0.55f) * 0.75f * behind);
+        }
+      }
+      // in front: the palm, the wrist and the thumb as one form
+      float df = shape(front, 4, 0.18f, X, Y);
+      if (paint(col, df, shape(front, 4, 0.18f, sX, sY), 1)) {
+        any = true;
+        if (df * u < -ow * 0.5f) {
+          // the joint: a short crease from the thumb's lower edge; and where the thumb folds from the palm
+          float cj = segDist({Jx - nx * 0.46f, Jy - ny * 0.46f, Jx - nx * 0.16f + dx * 0.04f, Jy - ny * 0.16f + dy * 0.04f, 0, 0}, X, Y);
+          float cb = segDist({Bx - nx * 0.5f + dx * 0.2f, By - ny * 0.5f + dy * 0.2f, Bx - nx * 0.3f - dx * 0.15f, By - ny * 0.3f - dy * 0.15f, 0, 0}, X, Y);
+          col = mix(col, LINE, cover((cj < cb ? cj : cb) * u - 0.55f) * 0.85f);
+          // the nail, near the tip on its top
+          float qx = X - (Ex - dx * 0.14f + nx * 0.03f), qy = Y - (Ey - dy * 0.14f + ny * 0.03f);
+          float a = (qx * dx + qy * dy) / 0.25f, c = (qx * nx + qy * ny) / 0.22f, nd = (__builtin_sqrtf(a * a + c * c) - 1) * 0.22f * u;
+          col = mix(col, LINE, cover(nd - 0.9f) * 0.8f);
+          col = mix(col, NAIL, cover(nd));
+          // the highlight on the thumb's first segment, on its lit top
+          float hx = X - (Bx + (Jx - Bx) * 0.55f + nx * 0.2f), hy = Y - (By + (Jy - By) * 0.55f + ny * 0.2f);
+          float ha = (hx * dx + hy * dy) / 0.17f, hc = (hx * nx + hy * ny) / 0.07f;
+          col = mix(col, LIGHT, cover((__builtin_sqrtf(ha * ha + hc * hc) - 1) * 0.07f * u) * 0.85f);
+        }
+      }
+      // the cuff: a plain band across the wrist's end
+      float qx = X - Kx, qy = Y - Ky, along = __builtin_fabsf(qx * wxd + qy * wyd) - 0.24f, across = __builtin_fabsf(qx * -wyd + qy * wxd) - 0.6f;
+      float ax0 = along > 0 ? along : 0, ay0 = across > 0 ? across : 0, m = along > across ? along : across;
+      float dc = (__builtin_sqrtf(ax0 * ax0 + ay0 * ay0) + (m < 0 ? m : 0)) * u;
+      if (dc < ow + 1) {
         col = mix(col, LINE, cover(dc - ow));
         col = mix(col, CUFF, cover(dc));
-        any = true;
-      }
-      float d = field(px, py);
-      if (d < ow + 1) {
-        col = mix(col, LINE, cover(d - ow));
-        uint16_t fill = SKIN;
-        if (d < 0) {  // one darker shade on the side away from the light
-          float sh = field(px - lx * sd, py - ly * sd);
-          if (sh > -0.5f) fill = mix(SKIN, SHADE, cover(sh));
-        }
-        col = mix(col, fill, cover(d));
-        if (d < -ow * 0.5f) {
-          float nx = (px - tx) * in / S, ny = (py - ty) / S;  // back in the traced frame
-          // the nail
-          float ex = (nx - handshape::NAIL_X) / handshape::NAIL_RX, ey = (ny - handshape::NAIL_Y) / handshape::NAIL_RY;
-          float nd = (__builtin_sqrtf(ex * ex + ey * ey) - 1.0f) * 0.24f * S;
-          col = mix(col, LINE, cover(nd - 0.9f) * 0.85f);
-          col = mix(col, NAIL, cover(nd));
-          // the highlight on the thumb's shoulder and the two knuckle creases
-          float hx = nx + 0.75f, hy = ny + 0.05f;
-          col = mix(col, LIGHT, cover((__builtin_sqrtf(hx * hx * 0.6f + hy * hy) - 0.07f) * S) * 0.9f);
-          float cd = 1e9f;
-          for (int i = 0; i + 1 < handshape::CREASE0_N; i++) { float e = segDist(px, py, handshape::CREASE0[i], handshape::CREASE0[i + 1]); if (e < cd) cd = e; }
-          for (int i = 0; i + 1 < handshape::CREASE1_N; i++) { float e = segDist(px, py, handshape::CREASE1[i], handshape::CREASE1[i + 1]); if (e < cd) cd = e; }
-          col = mix(col, LINE, cover(cd - 0.5f) * 0.7f);
-        }
         any = true;
       }
       if (any) g.drawPixel(x, y, col);
