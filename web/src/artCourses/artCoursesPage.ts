@@ -24,15 +24,23 @@ function contents(el: HTMLElement): void {
       h(
         'p',
         null,
-        'How to draw the art for a Game-Maker game. Every picture here is a real block drawn in code, the same way the games’ own art is, so what you see is what a game spends. Each course points to the Starters on the Sample CD that show the editor side.',
+        'How to draw the art for a Game-Maker game. Every picture here is real: blocks drawn in code the way the games’ own art is, or screens, palettes and blocks read from the games themselves, so what you see is what a game spends. Each course points to the Starters on the Sample CD that show the editor side.',
       ),
       h(
         'ul',
         { class: 'ac-list' },
         ...COURSES.map((c) => h('li', null, h('a', { href: `${ROOT}/${c.id}` }, h('strong', null, c.title), h('span', { class: 'ac-about' }, c.about)))),
       ),
-      h('h2', null, 'Coming'),
-      h('ul', { class: 'ac-list' }, ...COMING.map((c) => h('li', { class: 'ac-soon' }, h('strong', null, c.title), h('span', { class: 'ac-about' }, c.about)))),
+      ...(COMING.length
+        ? [
+            h('h2', null, 'Coming'),
+            h(
+              'ul',
+              { class: 'ac-list' },
+              ...COMING.map((c) => h('li', { class: 'ac-soon' }, h('strong', null, c.title), h('span', { class: 'ac-about' }, c.about))),
+            ),
+          ]
+        : []),
     ),
   );
 }
