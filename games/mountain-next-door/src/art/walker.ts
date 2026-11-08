@@ -17,10 +17,10 @@ export const WALKER_CELLS: readonly (readonly [number, number, Piece])[] = [
   [1, 1, 'mtEyeL'],
   [2, 1, 'mtEyeR'],
   [3, 1, 'mtSlopeR'],
-  [0, 2, 'mtSlopeL'],
+  [0, 2, 'mtRock'],
   [1, 2, 'mtMouth'],
   [2, 2, 'mtRock'],
-  [3, 2, 'mtSlopeR'],
+  [3, 2, 'mtRock'],
 ];
 
 const clearSky = (pal: Pal, p: Pixels): Pixels => {
