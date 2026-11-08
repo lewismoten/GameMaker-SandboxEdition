@@ -287,22 +287,27 @@ const fieldTrinketGames = [
   ['blaster', 'Blaster'],
 ];
 // GM_SKIP_FIELD_TRINKETS=1 leaves them out (the Mac, Windows and Linux download jobs only need the disks).
-const trinkets = joined(
-  (process.env.GM_SKIP_FIELD_TRINKETS ? [] : fieldTrinketGames)
-    .filter(([id]) => ids.includes(id) && (!only.length || only.includes(id)))
-    .map(async ([id, name]) => {
-      const started = Date.now();
-      const made = await runEntry(
-        `${id}-trinkets`,
-        { file: join(root, `games/${id}/tools/trinkets.ts`) },
-        `../games/${id}/tools/trinkets.ts`,
-        ['--workers', String(Math.min(3, jobs)), ...(forceExtras ? ['--force'] : [])],
-        { cwd: join(root, 'web'), maxBuffer: 16 << 20, timeout: 240_000 },
-        `${id}-trinkets`,
-      );
-      if (timing) console.log(`${name} trinkets: ${made.stdout.trim().split('\n').at(-1)} (${((Date.now() - started) / 1000).toFixed(1)} s)`);
-    }),
-);
+// Fifteen jobs started at once shared the CPU: on a cold Mac every one ran past the 240 s limit, was killed and
+// retried into the same crowd (2026-11-07). A small pool runs them a few at a time instead, and each job's limit
+// counts from its own start; the slowest (Goat's) takes about 230 s on a crowded machine, so the limit has room.
+const trinketQueue = (process.env.GM_SKIP_FIELD_TRINKETS ? [] : fieldTrinketGames).filter(([id]) => ids.includes(id) && (!only.length || only.includes(id)));
+const trinketPool = Math.max(1, Math.min(2, jobs));
+const trinketRun = async () => {
+  for (let next = trinketQueue.shift(); next && !stopped; next = trinketQueue.shift()) {
+    const [id, name] = next;
+    const started = Date.now();
+    const made = await runEntry(
+      `${id}-trinkets`,
+      { file: join(root, `games/${id}/tools/trinkets.ts`) },
+      `../games/${id}/tools/trinkets.ts`,
+      ['--workers', String(Math.min(3, jobs)), ...(forceExtras ? ['--force'] : [])],
+      { cwd: join(root, 'web'), maxBuffer: 16 << 20, timeout: 600_000 },
+      `${id}-trinkets`,
+    );
+    if (timing) console.log(`${name} trinkets: ${made.stdout.trim().split('\n').at(-1)} (${((Date.now() - started) / 1000).toFixed(1)} s)`);
+  }
+};
+const trinkets = joined(Array.from({ length: trinketPool }, trinketRun));
 if (pending.some((id) => logoUsers.has(id))) void logo();
 const gamesStarted = Date.now();
 await joined([trinkets, ...Array.from({ length: Math.min(jobs, pending.length) }, worker), ...(logoReady ? [logoReady] : [])]);
