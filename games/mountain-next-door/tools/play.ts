@@ -6,6 +6,7 @@ import { emptySpot, footprints, lowTunnel, gateHunt, nextDoor, signposts, steppi
 import { library, mossbackBack } from './routeMore';
 import { lookout, rooftops } from './routeLate';
 import { excuseMe, gatheringMist, theFord } from './routeNew';
+import { theSurveyLine } from './routeGrow';
 import { GameSim } from './sim';
 
 export const SEED = 1;
@@ -18,6 +19,7 @@ const ROUTES = [
   steppingStones,
   gatheringMist,
   signposts,
+  theSurveyLine,
   emptySpot,
   lookout,
   windyRidge,

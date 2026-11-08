@@ -32,6 +32,7 @@ const AT: Record<string, number> = {
   books: 1200,
   stream: 900,
   signs: 1500,
+  survey: 1500,
   hollow: 1500,
   tower: 2400,
   roofs: 900,
