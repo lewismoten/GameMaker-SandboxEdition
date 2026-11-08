@@ -19,7 +19,7 @@
   "acceptedFindings": [
     "facing s2 The hero climbs side on",
     "facing s4 The hero climbs side on",
-    "facing s8 The hero climbs side on",
-    "hazard-art s10 Block 20 hurts through its whole cell, but its art fills 15% of it"
+    "facing s9 The hero climbs side on",
+    "hazard-art s12 Block 20 hurts through its whole cell, but its art fills 15% of it"
   ]
 }
