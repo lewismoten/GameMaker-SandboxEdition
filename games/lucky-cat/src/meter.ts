@@ -34,21 +34,22 @@ function cap(pal: Pal): Pixels {
 }
 
 /** Adds the meter's and the gate's blocks to `book`; returns each timed block's next block and ticks. */
-export function addMeter(book: Book, pal: Pal): Timed[] {
+export function addMeter(book: Book, pal: Pal, openTicks = OPEN_TICKS): Timed[] {
+  const cycle = openTicks + SHUT_TICKS;
   const timed: Timed[] = [];
   book.add('meterCap', cap(pal), { grav: PULL.down });
   for (let j = 0; j < BELLS; j++) {
-    const lit = (OPEN_TICKS * (j + 1)) / BELLS;
+    const lit = (openTicks * (j + 1)) / BELLS;
     book.add(`bellOn${j}`, pip(pal, true), { grav: PULL.down });
     book.add(`bellOff${j}`, pip(pal, false), { grav: PULL.down });
     timed.push({ name: `bellOn${j}`, next: `bellOff${j}`, ticks: lit });
-    timed.push({ name: `bellOff${j}`, next: `bellOn${j}`, ticks: CYCLE - lit });
+    timed.push({ name: `bellOff${j}`, next: `bellOn${j}`, ticks: cycle - lit });
   }
   // the gate: open (two posts and a ribbon of gold) or shut (planks, solid)
   const open = fairGate(pal, false);
   book.add('gateOpen', open, { grav: PULL.down });
   book.add('gateShut', fairGate(pal, true), { solid: SOLID });
-  timed.push({ name: 'gateOpen', next: 'gateShut', ticks: OPEN_TICKS });
+  timed.push({ name: 'gateOpen', next: 'gateShut', ticks: openTicks });
   timed.push({ name: 'gateShut', next: 'gateOpen', ticks: SHUT_TICKS });
   return timed;
 }

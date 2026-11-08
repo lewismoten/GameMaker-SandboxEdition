@@ -139,6 +139,45 @@ export const LOOKS: Record<string, Record<string, Tint>> = {
       [170, 220, 110],
     ],
   },
+  // wash day: a sunrise rose plate and a bright gold spot
+  dawn: {
+    sky: [
+      [84, 36, 50],
+      [255, 196, 160],
+      [170, 84, 84],
+    ],
+    gold: [
+      [150, 90, 0],
+      [255, 250, 190],
+      [255, 210, 80],
+    ],
+  },
+  // the other side of the mirror: the town in negative, a pale silver plate
+  glass: {
+    sky: [
+      [170, 196, 206],
+      [252, 255, 255],
+      [214, 230, 236],
+    ],
+    gold: [
+      [60, 70, 96],
+      [190, 200, 230],
+      [110, 126, 170],
+    ],
+  },
+  // the night market: an indigo plate and lantern red
+  market: {
+    sky: [
+      [12, 10, 40],
+      [120, 120, 190],
+      [34, 30, 88],
+    ],
+    red: [
+      [120, 16, 24],
+      [255, 170, 100],
+      [240, 70, 36],
+    ],
+  },
   // payback: a red-black plate and the hottest gold
   dusk: {
     sky: [
