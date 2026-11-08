@@ -15,7 +15,7 @@
     "facing s2 Monster 36 paces left and right facing the player",
     "facing s2 The hero climbs side on",
     "facing s3 The hero climbs side on",
-    "hurt-lock s7 Monster 32 holds the hero while it hurts"
+    "hurt-lock s10 Monster 32 holds the hero while it hurts"
   ],
   "label": {
     "background": "#fff0d0",

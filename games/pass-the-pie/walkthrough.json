@@ -24,14 +24,26 @@
   },
   {
    "scene": 6,
-   "keys": "AU0PzQNNCs0wTQHNAhwDnBVNJzkCuSTNA00FzQNIT8gDSxrLA00izQNNDc0STRTNJ00KzRdNCs0ETQHNAhwDnCRNAc0CHAOcGk0IzQM5ArkATQXNDDkCuQBND80MTRfNE00PzTNNAc0CHAOcEE0ROQK5Lc0DTQXNA0hFyANNCs0ETQHNAhwDnBBNLM0DTQjNEE0KzRdND80DTRnNJ00="
+   "keys": "AU0UzSdNI80DOQK5AE0FzQ5LAMsnTRTNAzkCuQBNBc0OTQXNAzkCuQBLBcsOSx7LA00jzQM5ArkATQXNL00BzQIcA5waTQTNAzkCuQBNCs0HOQK5AE0ezQZNI80DTQrNAzkCuQBNLc0MTQ/NJ00jzQNNBc0DSIEByANQgQHQA00yzRdND80DTQ=="
   },
   {
    "scene": 7,
-   "keys": "E00ozQNNAc0CHAOcFk0ezQM5ArkATQXNFTkCuQBNCs0QOQK5AE0PzRBND80DTQHNAhwDnBZNHs0DTQHNAhwDnBZNAc0CHAOcFk0EzQNND80DOQK5AE0PzQZNJs0JTQrNA00BzQIcA5wWTRnNAzkCuQBNBc0VOQK5AE0FzRU5ArkATQXNFTkCuQBNFM0NSwDLA00BzQIcA5wWTQHNAhwDnBZNBM0DTTLNA00BzQIcA5wWTQ=="
+   "keys": "AU0PzSdNFM0DTQHNAhwDnBZNFM0nTRTNGU0BzQIcA5wuTQHNAhwDnC5NAc0CHAOcGk0HzQM5ArkATQrNBzkCuQBND80MTQXNDU0BzQIcA5wuTQHNAhwDnC5NAc0CHAOcGk0HzQM5ArkATQrNBzkCuQBND80MTRM5ArkXzQNLHMsxTQHNAhwDnC5NAc0CHAOcLk0BzQIcA5waTQfNAzkCuQBNCs0HOQK5AE0PzQxNKM0DTQPNA0gAyANQd9ADTQrNJ00PzQNNAc0CHAOcFk0KzQNNAc0CHAOcFk0KzQNNAc0CHAOcFk0KzQNNAc0CHAOcFk0KzSdNCs0rTQHNAhwDnBBNIs0bTQHNAhwDnBBNE80nTSjNA00="
   },
   {
    "scene": 8,
+   "keys": "AU0PzQNNCs0wTQHNAhwDnBVNJzkCuSTNA00FzQNIT8gDSxrLA00izQNNDc0STRTNJ00KzRdNCs0ETQHNAhwDnCRNAc0CHAOcGk0IzQM5ArkATQXNDDkCuQBND80MTRfNE00PzTNNAc0CHAOcEE0ROQK5Lc0DTQXNA0hFyANNCs0ETQHNAhwDnBBNLM0DTQjNEE0KzRdND80DTRnNJ00="
+  },
+  {
+   "scene": 9,
+   "keys": "AU0PzSdNCs0DTQHNAhwDnBZNCs0DTQHNAhwDnBZNCs0DTQHNAhwDnBZNI80DSDHIA00PzQNLDcsDSAnIA1Ax0ANNGc0nTQ/NF00PzQNNBc0lTQHNAhwDnC5NAc0CHAOcLk0BzQIcA5waTQfNAzkCuQBNBc0MOQK5AE0FzRZNFM1QTQHNAhwDnBBNGM0DTRLNDksFyxZNAc0CHAOcEE0TzSdND80XTQ/NA00ezQNIRcgDTQXNOk0BzQIcA5wQTRPNA00PzQNNCM0YSwDLA00BzQIcA5wWTQHNAhwDnBZNBM0DTQrNJ00PzRdND80DSwXLJ00="
+  },
+  {
+   "scene": 10,
+   "keys": "E00ozQNNAc0CHAOcFk0ezQM5ArkATQXNFTkCuQBNCs0QOQK5AE0PzRBND80DTQHNAhwDnBZNHs0DTQHNAhwDnBZNAc0CHAOcFk0EzQNND80DOQK5AE0PzQZNJs0JTQrNA00BzQIcA5wWTRnNAzkCuQBNBc0VOQK5AE0FzRU5ArkATQXNFTkCuQBNFM0NSwDLA00BzQIcA5wWTQHNAhwDnBZNBM0DTTLNA00BzQIcA5wWTQ=="
+  },
+  {
+   "scene": 11,
    "keys": "AU0ezSdNBc0STQHNAhwDnBBNIs0DTQHNAhwDnBZLBcs8TQHNAhwDnIIBTQHNAhwDnIIBTQHNAhwDnBBNIzkCuTbNJ00KzQNNAc0CHAOcFk0ZzQNIMcgDTRTNA00BzQIcA5wWTSjNA00IzQ1NCs0DTQHNAhwDnBZNCs05TQHNAhwDnBBNIs0DTQHNAhwDnBZNAc0CHAOcFk0BzQIcA5wWTQrNPE0BzQIcA5wQTTHNA00ZzSdN"
   }
  ],
@@ -54,20 +66,32 @@
   },
   {
    "scene": 6,
-   "title": "Chapter 3: The Cord (Rory)"
+   "title": "Chapter 3: Rooftop Potluck (Rory)"
   },
   {
    "scene": 7,
-   "title": "Payback, Part 3: Main Street (Mr. Plume)"
+   "title": "Payback, Part 3: Sensei's Dojo (Mr. Plume)"
   },
   {
    "scene": 8,
-   "title": "Payback, Part 4: Big Gobble (Mr. Plume)"
+   "title": "Chapter 4: The Cord (Rory)"
+  },
+  {
+   "scene": 9,
+   "title": "Payback, Part 4: The Dog Park (Mr. Plume)"
+  },
+  {
+   "scene": 10,
+   "title": "Payback, Part 5: Main Street (Mr. Plume)"
+  },
+  {
+   "scene": 11,
+   "title": "Payback, Part 6: Big Gobble (Mr. Plume)"
   }
  ],
  "timeline": {
   "fps": 60,
-  "frames": 37653,
+  "frames": 52653,
   "chapters": [
    {
     "title": "Opening",
@@ -100,29 +124,44 @@
     "time": 273399.9999999521
    },
    {
-    "title": "Chapter 3: The Cord (Rory)",
+    "title": "Chapter 3: Rooftop Potluck (Rory)",
     "frame": 20469,
     "time": 341150.00000003097
    },
    {
-    "title": "Payback, Part 3: Main Street (Mr. Plume)",
-    "frame": 24472,
-    "time": 407866.6666667753
+    "title": "Payback, Part 3: Sensei's Dojo (Mr. Plume)",
+    "frame": 24281,
+    "time": 404683.33333343826
    },
    {
-    "title": "Payback, Part 4: Big Gobble (Mr. Plume)",
-    "frame": 27581,
-    "time": 459683.3333335023
+    "title": "Chapter 4: The Cord (Rory)",
+    "frame": 30000,
+    "time": 500000.0000002159
+   },
+   {
+    "title": "Payback, Part 4: The Dog Park (Mr. Plume)",
+    "frame": 34003,
+    "time": 566716.666666812
+   },
+   {
+    "title": "Payback, Part 5: Main Street (Mr. Plume)",
+    "frame": 39472,
+    "time": 657866.6666665998
+   },
+   {
+    "title": "Payback, Part 6: Big Gobble (Mr. Plume)",
+    "frame": 42581,
+    "time": 709683.3333331458
    },
    {
     "title": "Ending",
-    "frame": 32443,
-    "time": 540716.6666668726
+    "frame": 47443,
+    "time": 790716.6666662905
    },
    {
     "title": "Credits",
-    "frame": 36579,
-    "time": 609650.0000000454
+    "frame": 51579,
+    "time": 859649.9999994633
    }
   ]
  }
