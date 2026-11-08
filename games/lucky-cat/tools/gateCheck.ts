@@ -7,14 +7,15 @@ import { ORIGIN } from '../../kit/starter/map';
 import { FOUR, METER_ROW } from '../src/levels/four';
 import { buildLevels } from '../src/levels';
 import { BELLS, CYCLE, OPEN_TICKS } from '../src/meter';
-import { ladderLane, mirrorMaze, townHall } from './route';
+import { LEVELS } from './play';
 import { GameSim } from './sim';
 
 const { levels } = buildLevels();
-const book = levels[3].book;
+const fair = levels.findIndex((l) => l.file === 'four');
+const book = levels[fair].book;
 const sim = new GameSim(undefined, 1);
 const bot = new StarterBot(sim);
-for (const level of [ladderLane, mirrorMaze, townHall]) await level(bot);
+for (const level of LEVELS.slice(0, fair)) await level(bot);
 if (sim.ticks > 3) await bot.wait(1);
 // the map keeps the block a cell was painted with; the block timers change what each block number shows (blkmap)
 const at = (x: number, y: number): number => sim.w.blkmap[sim.w.map[(y + ORIGIN) * MLEN + x + ORIGIN]];

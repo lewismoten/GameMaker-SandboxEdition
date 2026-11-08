@@ -25,6 +25,19 @@ import { levelTwo } from './two';
 /** The base palette and every level. */
 export function buildLevels(): { pal: ReturnType<typeof buildCatPalette>; levels: Level[] } {
   const pal = buildCatPalette();
-  const levels: Level[] = [levelOne(pal), levelAlley(pal), levelTwo(pal), levelSteps(pal), levelThree(pal), levelShop(pal), levelMorning(pal), levelRigging(pal), levelFour(pal), levelTower(pal), levelFive(pal), levelSix(pal)];
+  const levels: Level[] = [
+    levelOne(pal),
+    levelAlley(pal),
+    levelTwo(pal),
+    levelSteps(pal),
+    levelThree(pal),
+    levelShop(pal),
+    levelMorning(pal),
+    levelRigging(pal),
+    levelFour(pal),
+    levelTower(pal),
+    levelFive(pal),
+    levelSix(pal),
+  ];
   return { pal, levels };
 }

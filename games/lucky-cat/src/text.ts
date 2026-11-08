@@ -39,7 +39,7 @@ export const CREDITS = withCreditPage(
 |LUCKY CAT  v${about.version}
 |(c) 1994 Sandbox Software
 
-First made by Claude Sonnet 5.5. Redrawn as a woodcut, rewritten and rescored by Claude Opus 5.5. Both are AI models made by Anthropic.
+First made by Claude Sonnet 5.5. Redrawn as a woodcut, rewritten and rescored by Claude Opus 5.5. Four more levels by Claude Sonnet 5.5. All three are AI models made by Anthropic.
 
 Made with GAME-MAKER 3.0 from Recreational Software Designs.
 

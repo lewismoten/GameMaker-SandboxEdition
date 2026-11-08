@@ -35,7 +35,16 @@ export function levelSteps(pal: Pal): Level {
   const book = startBook(pal, ['crack', 'town', 'salt'], []);
   const s = addSigns(book, pal, SIGNS);
   const g = room(70, STEPS.exit);
-  scenery(g, [[8, 1], [26, 2], [60, 1]], [20, 52], [14, 62]);
+  scenery(
+    g,
+    [
+      [8, 1],
+      [26, 2],
+      [60, 1],
+    ],
+    [20, 52],
+    [14, 62],
+  );
   const m = new StarterMap(book, g.rows());
   for (let y = STEPS.stand; y < GROUND; y++) m.set(STEPS.ladder, y, 'ladder');
   // the thirteen treads, two blocks wide each: step k is k + 1 blocks high
