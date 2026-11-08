@@ -78,6 +78,7 @@ export function truck(pal: Pal): Level {
     .set(A.fuses[1], h1.planks[2] - 1, 'fuse')
     .set(A.fuses[2], G - 1, 'fuse');
   for (const x of [41, 46, 50]) m.set(x, h2.planks[2] - 1, 'donut');
+  for (const x of [27, 28, 29, 32, 34, 35]) m.set(x, h1.planks[2] - 1, 'donut');
   // two street sweepers
   for (const x of A.sweepers) m.mon(MONS.sweeper, x, G - 1);
   // the truck: a gun on its roof, a rear door that wants all three fuses; Gigi stands beside it
