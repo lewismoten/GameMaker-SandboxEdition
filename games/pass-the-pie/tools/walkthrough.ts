@@ -1,5 +1,5 @@
 // Writes games/pass-the-pie/walkthrough.json: the bot plays the whole game on the built disk (one key segment a
-// level), and games/kit/walkthrough.ts checks the run on the real engine (title, the seven levels, the ending).
+// level), and games/kit/walkthrough.ts checks the run on the real engine (title, the nine levels, the ending).
 //   cd web && npx vite-node ../games/pass-the-pie/tools/walkthrough.ts
 import { writeSimWalkthrough } from '../../kit/walkthrough';
 import { SEED, play } from './play';
@@ -10,8 +10,10 @@ const titles: Record<number, string> = {
   3: "Payback, Part 1: Uncle Dale's Lawn (Mr. Plume)",
   4: 'Chapter 2: Gravy Relay (Rory)',
   5: 'Payback, Part 2: Windy Park (Mr. Plume)',
-  6: 'Chapter 3: The Cord (Rory)',
-  7: 'Payback, Part 3: Main Street (Mr. Plume)',
-  8: 'Payback, Part 4: Big Gobble (Mr. Plume)',
+  6: 'Chapter 3: Rooftop Potluck (Rory)',
+  7: "Payback, Part 3: Sensei's Dojo (Mr. Plume)",
+  8: 'Chapter 4: The Cord (Rory)',
+  9: 'Payback, Part 4: Main Street (Mr. Plume)',
+  10: 'Payback, Part 5: Big Gobble (Mr. Plume)',
 };
 await writeSimWalkthrough('pass-the-pie', sim, SEED, titles);

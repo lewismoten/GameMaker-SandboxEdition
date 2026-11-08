@@ -8,6 +8,7 @@ import * as S from '../src/levels/chase';
 import * as R from '../src/levels/gravy';
 import * as L from '../src/levels/lawn';
 import * as P from '../src/levels/park';
+import * as O from '../src/levels/roof';
 import * as Y from '../src/levels/yard';
 import { BLOWER_HITS, MONS } from '../src/monsters';
 import { climb, cross, door, enter, face, leap, leave, meet, monsters, must, read, smash, stepUp, through } from './routeKit';
@@ -178,6 +179,33 @@ export async function windyPark(bot: StarterBot): Promise<void> {
   await leave(bot, bot.walk(P.AT.exit + 1, 'the exit'), 'the exit');
 }
 
+/** Rooftop Potluck (Rory): the fire escape, the napping vacuum for the last step, the dish, the tailwind across the alley. */
+export async function rooftopPotluck(bot: StarterBot): Promise<void> {
+  const G = O.GROUND - 1;
+  await read(bot, 7, 'elevator');
+  await cross(bot, 14, 'under the first landing');
+  await leap(bot, 'right', 15, 'onto the first landing');
+  await read(bot, 15, 'chili');
+  await cross(bot, 19, 'along the first landing');
+  await leap(bot, 'right', 20, 'onto the second landing');
+  await cross(bot, 21, 'along the second landing');
+  await leap(bot, 'left', 20, 'onto the third landing');
+  await cross(bot, O.AT.gold, 'the gold acorn');
+  await cross(bot, 21, 'along the third landing');
+  await leap(bot, 'right', 22, 'onto the fourth landing');
+  await meet(bot, [MONS.vacQuick], 4, 'the roof vacuum', 100, 300);
+  await must(bot, bot.wait(10), 'watching it stall');
+  await stepUp(bot, [MONS.fedVac], 'right', 31, 'the stalled vacuum');
+  await cross(bot, O.AT.dish + 1, 'the potluck dish');
+  await cross(bot, O.AT.wind[0] - 1, 'the edge of the roof');
+  await leap(bot, 'right', O.AT.roof2[0] + 3, 'across the alley on the tailwind');
+  await read(bot, 55, 'potluck');
+  await cross(bot, O.AT.roof2[1], 'along the second roof');
+  await climb(bot, O.AT.ladder, 3, 'the ladder');
+  await must(bot, bot.climb('down', G, 'down the ladder'), 'down the ladder');
+  await door(bot, O.AT.gate, O.AT.exit, 'the gate');
+}
+
 /** Sensei's Dojo (Mr. Plume): kick a quick vacuum, stand on it, three tiers up; then the boards and the drones. */
 export async function senseisDojo(bot: StarterBot): Promise<void> {
   const G = D.GROUND - 1;
@@ -330,4 +358,4 @@ export async function bigGobble(bot: StarterBot): Promise<void> {
   await leave(bot, bot.walk(B.AT.exit + 1, 'the long table'), 'the long table');
 }
 
-export const LEVELS = [pumpkinYard, payback, gravyRelay, windyPark, senseisDojo, theCord, mainStreet, bigGobble];
+export const LEVELS = [pumpkinYard, payback, gravyRelay, windyPark, rooftopPotluck, senseisDojo, theCord, mainStreet, bigGobble];
