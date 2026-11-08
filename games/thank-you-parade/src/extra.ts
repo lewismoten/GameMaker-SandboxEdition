@@ -106,7 +106,8 @@ export function addMeter(book: PBook, pal: Pal, id: string, labels: [string, str
   };
   labels.forEach((s, i) => {
     const p = panel();
-    text(p, 2, 8, s, c('paper', 3), 1, true);
+    // the first pair hugs its tile's right edge and the second its left, so the four letters read as one word
+    text(p, i === 0 ? 20 - s.length * 8 : 0, 8, s, c('paper', 3), 1, true);
     book.add(`${id}Label${i}`, p, air);
   });
   const cap = panel();

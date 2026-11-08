@@ -31,7 +31,7 @@ const PAPERS: Record<string, Ramp | undefined> = {
   drumoff: [4, [150, 190, 170], [216, 238, 222], [186, 216, 198]], // mint
   route: undefined, // cream
   stands: [4, [150, 170, 206], [222, 232, 248], [186, 202, 228]], // stadium blue
-  truck: [4, [160, 150, 170], [230, 226, 236], [196, 190, 208]], // truck-lot gray
+  truck: [4, [112, 84, 130], [246, 206, 176], [200, 140, 150]], // an evening street, dusk violet into peach
   stepoff: [4, [214, 162, 80], [252, 226, 162], [238, 196, 120]], // ten o'clock gold
 };
 
