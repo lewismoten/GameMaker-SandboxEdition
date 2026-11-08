@@ -14,11 +14,12 @@ import { removedGames } from '../imported/removedGames';
 import { aisle, ICONS, lspaceBox, svgOf, trashIcon } from './roomArt';
 import { pctX, pctY, proj } from './roomGeo';
 import { noteArt, showSandKey } from './sandNote';
+import { avCartArt } from './roomAvCart';
 import { catalogArt, copierArt, deskArt, DESK, place, spineBox, tableArt, stoolsArt, lampArt, cartArt, type Spot } from './roomObjects';
 
 interface RoomActions {
   /** Takes the visitor to the shelves, the card catalog or the copier. */
-  go(where: 'stacks' | 'catalog' | 'copier' | 'toybox' | 'lspace'): void;
+  go(where: 'stacks' | 'catalog' | 'copier' | 'toybox' | 'tv' | 'lspace'): void;
   /** The dialog now open (the address keeps it, so a reload opens it again), or none. */
   mark(name: string | undefined): void;
   /** What is on the shelves right now (the count line). */
@@ -138,6 +139,9 @@ export function makeRoom(actions: RoomActions): { el: HTMLElement; refresh(): vo
     joeHelp(actions.status(), from, mark),
   );
   const toybox = thing('lib-o-toybox', 'Toy box', 'Toy box: 3D-printable trinkets from every game', svgOf(ICONS.toybox), () => actions.go('toybox'));
+  const tvSpot = avCartArt();
+  const tv = thing('lib-o-tv', 'TV', 'TV: videos and walkthroughs', tvSpot.svg, () => actions.go('tv'));
+  box(tv, tvSpot);
   // the note has no name tag: it is something to find
   const note = thing('lib-o-note', '', 'A folded note on the floor, half under the reading table', noteArt(), (from) => {
     mark('note');
@@ -148,6 +152,7 @@ export function makeRoom(actions: RoomActions): { el: HTMLElement; refresh(): vo
   });
   openers.set('note', () => note.click());
   openers.set('toybox', () => toybox.click());
+  openers.set('tv', () => tv.click());
   openers.set('trash', () => trashBtn.click());
   openers.set('notebook', () => notebook.click());
   openers.set('joe', () => joe.click());
@@ -211,6 +216,7 @@ export function makeRoom(actions: RoomActions): { el: HTMLElement; refresh(): vo
     desk,
     notebook,
     toybox,
+    tv,
     trashBtn,
     h('div', { class: 'lib-visitors', 'aria-hidden': 'true' }),
     catalog,
