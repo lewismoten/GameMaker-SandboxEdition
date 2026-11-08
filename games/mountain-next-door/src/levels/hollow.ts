@@ -28,10 +28,10 @@ export const HOLLOW_AT = {
 
 const SIGNS = {
   hole: ['A HOLE AS BIG AS THE TOWN SQUARE.', 4, 3],
-  here: ['OLD MOSSBACK STOOD HERE. ALWAYS.', 4, 3],
-  puddles: ['A LITTLE SNOW? FROM A TINY CLOUD.', 4, 3],
-  wisp: ['ITS CLOUD, WISP, SAT ON TOP.', 4, 3],
-  gone: ['WISP IS GONE! IT WENT TO FIND WISP!', 4, 3],
+  here: ['IT STOOD HERE LONGER THAN THE TOWN.', 4, 3],
+  puddles: ['SNOW? IN THIS SUN? FROM WHAT?', 4, 3],
+  wisp: ['ITS CLOUD, WISP, ALWAYS SAT ON TOP.', 4, 3],
+  gone: ['WISP LEFT. THE MOUNTAIN WENT AFTER IT.', 4, 3],
 } as const;
 
 export function levelHollow(pal: Pal): Level {

@@ -26,7 +26,7 @@ export const PICNIC_AT = {
 const SIGNS = {
   home: ['HOME AGAIN, RIGHT WHERE IT BELONGS.', 4, 3],
   mat: ['PLEASE WIPE YOUR FOOTHILLS', 4, 3],
-  end: ['THE END OF THE TRAIL. THANK YOU, TESS!', 4, 3],
+  end: ['THE END OF THE TRAIL. NICE WORK, TESS.', 4, 3],
 } as const;
 
 export function levelPicnic(pal: Pal): Level {

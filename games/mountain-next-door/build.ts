@@ -26,6 +26,7 @@ import { finishBlocks } from './src/level';
 import { buildLevels } from './src/levels';
 import { finishMonsterPictures, hollowSet, monsterPictures, nextSet, picnicSet, trailSet } from './src/monsters';
 import { lookOf } from './src/palette';
+import { restage } from './src/art/vista';
 import { storyCard, titlePicture } from './src/pictures';
 import { REEL_SPEED, endingReel, introReel } from './src/reels';
 import { SONGS, song } from './src/song';
@@ -68,7 +69,7 @@ levels.forEach((l, i) => {
   disk.put(`${l.file}.map`, serializeMap(l.map.done()));
   disk.put(`${l.file}.bbl`, serializeBlocks(finishBlocks(l)));
   const slides = [{ name: `${l.file}.gif`, pause: 4 }];
-  disk.put(`${l.file}.gif`, gif(cardPicture(lp, base, tess, i + 1, levels.length, l.title, l.hint), lp));
+  disk.put(`${l.file}.gif`, gif(restage(cardPicture(lp, base, tess, i + 1, levels.length, l.title, l.hint), lp, base, 160, 21 + i), lp));
   (CARDS[l.file] ?? []).forEach((lines, k) => {
     const peak =
       l.file === 'next' && k === 1
@@ -82,7 +83,7 @@ levels.forEach((l, i) => {
 
 // pictures and words
 const text = (name: string, heading: string, body: string) => {
-  disk.put(`${name}.gif`, gif(paper(pal, base, heading), pal));
+  disk.put(`${name}.gif`, gif(restage(paper(pal, base, heading), pal, base, 176, 11), pal));
   disk.put(`${name}.txt`, body);
   disk.put(`${name}.lst`, serializeSlideList([{ name: `${name}.gif`, pause: 0 }, { name: `${name}.txt` }]));
 };
@@ -112,24 +113,24 @@ disk.put(
     { name: 'title.gif', pause: 14 },
   ]),
 );
-disk.put('menu.gif', gif(menuPicture(pal, base, tess, TITLE), pal));
-disk.put('scores.gif', gif(scoresPicture(pal, base, 'TRAIL CREW'), pal));
-disk.put('loadgame.gif', gif(slotsPicture(pal, base, 'LOAD GAME'), pal));
-disk.put('savegame.gif', gif(slotsPicture(pal, base, 'SAVE GAME'), pal));
+disk.put('menu.gif', gif(restage(menuPicture(pal, base, tess, TITLE), pal, base, 170, 7), pal));
+disk.put('scores.gif', gif(restage(scoresPicture(pal, base, 'TRAIL CREW'), pal, base, 176, 13), pal));
+disk.put('loadgame.gif', gif(restage(slotsPicture(pal, base, 'LOAD GAME'), pal, base, 176, 11), pal));
+disk.put('savegame.gif', gif(restage(slotsPicture(pal, base, 'SAVE GAME'), pal, base, 176, 11), pal));
 text('story', 'THE MOUNTAIN', STORY);
 text('howto', 'HOW TO PLAY', HOWTO);
 text('credits', 'CREDITS', CREDITS);
 const sunrise = { ...pal, pal: lookOf(pal, 'sunrise') };
 disk.put('ending.fli', endingReel(pal, base, cheer).fli(REEL_SPEED));
-disk.put('wonpic.gif', gif(endPicture(sunrise, base, cheer, 'HOME AGAIN!', 'PLEASE WIPE YOUR FOOTHILLS', 'won'), sunrise));
-disk.put('won.gif', gif(paper(pal, base, 'HOME AGAIN'), pal));
+disk.put('wonpic.gif', gif(restage(endPicture(sunrise, base, cheer, 'HOME AGAIN!', 'PLEASE WIPE YOUR FOOTHILLS', 'won'), sunrise, base, 160, 31), sunrise));
+disk.put('won.gif', gif(restage(paper(pal, base, 'HOME AGAIN'), pal, base, 176, 11), pal));
 disk.put('won.txt', WON);
 disk.put(
   'won.lst',
   serializeSlideList([{ name: 'ending.fli', pause: 0 }, { name: 'wonpic.gif', pause: 6 }, { name: 'won.gif', pause: 0 }, { name: 'won.txt' }]),
 );
-disk.put('lostpic.gif', gif(endPicture(pal, base, hurt, 'OH NO!', 'TRY AGAIN', 'lost'), pal));
-disk.put('lost.gif', gif(paper(pal, base, 'TRY AGAIN'), pal));
+disk.put('lostpic.gif', gif(restage(endPicture(pal, base, hurt, 'OH NO!', 'TRY AGAIN', 'lost'), pal, base, 160, 37), pal));
+disk.put('lost.gif', gif(restage(paper(pal, base, 'TRY AGAIN'), pal, base, 176, 11), pal));
 disk.put('lost.txt', LOST);
 disk.put('lost.lst', serializeSlideList([{ name: 'lostpic.gif', pause: 5 }, { name: 'lost.gif', pause: 0 }, { name: 'lost.txt' }]));
 

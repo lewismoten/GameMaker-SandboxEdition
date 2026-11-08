@@ -24,7 +24,22 @@ t.px.set(title.pixels);
 writePng(join(out, 'title.png'), t, title.palette, 2);
 
 /** Ticks into each level when its screen is taken. */
-const AT = [1040, 700, 1500, 640, 1500, 900, 420, 1300, 1700, 1500];
+const AT: Record<string, number> = {
+  next: 1040,
+  gates: 700,
+  back: 1500,
+  prints: 1500,
+  books: 1200,
+  stream: 640,
+  signs: 1500,
+  hollow: 900,
+  tower: 2400,
+  roofs: 900,
+  ridge: 420,
+  tunnel: 1300,
+  zigzag: 1700,
+  picnic: 1500,
+};
 /** The first level's frames: one every this many ticks. */
 const EVERY = 8;
 
@@ -85,7 +100,7 @@ sim.tick = async () => {
   }
   const since = sim.w.clock - entered;
   if (level === 0 && since % EVERY === 0) writePng(join(out, 'frames', `next-${String(frame++).padStart(4, '0')}.png`), screen(sim), look(0), 1);
-  if (level >= 0 && level < levels.length && since >= AT[level] && !taken.has(level)) {
+  if (level >= 0 && level < levels.length && since >= (AT[levels[level].file] ?? 900) && !taken.has(level)) {
     taken.add(level);
     writePng(join(out, `level-${String(level + 1).padStart(2, '0')}-${levels[level].file}.png`), screen(sim), look(level), 2);
   }

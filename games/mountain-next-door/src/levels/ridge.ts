@@ -40,10 +40,10 @@ export const RIDGE_AT = {
 } as const;
 
 const SIGNS = {
-  puddles: ['THE SNOW TRAIL GOES OVER THE RIDGE.', 4, 3],
-  lift: ['STEP IN. THE WIND WILL LIFT YOU.', 4, 3],
-  gust: ['THE GUST WILL CARRY YOU OVER.', 4, 3],
-  town: ['THE LIGHTS OF TOWN, DOWN THERE.', 4, 3],
+  puddles: ['TINY DRIFTS OF SNOW. WISP CAME THIS WAY.', 4, 3],
+  lift: ['STEP IN. LET THE UPDRAFT DO THE WORK.', 4, 3],
+  gust: ['THE GUST WILL CARRY YOU. COMMIT.', 4, 3],
+  town: ['TOWN LIGHTS. WISP IS DOWN THERE.', 4, 3],
 } as const;
 
 export function levelRidge(pal: Pal): Level {

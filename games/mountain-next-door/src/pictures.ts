@@ -7,7 +7,8 @@ import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { bevel } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
 import type { Book } from '../../kit/starter/book';
 import type { Pal } from '../../kit/starter/palette';
-import { W, scene } from '../../kit/starter/screens';
+import { W } from '../../kit/starter/screens';
+import { vista as scene } from './art/vista';
 import { gate, type GateColor } from './art/land';
 import { wisp } from './art/folk';
 
