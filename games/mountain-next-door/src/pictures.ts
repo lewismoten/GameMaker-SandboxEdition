@@ -11,6 +11,7 @@ import { W } from '../../kit/starter/screens';
 import { vista as scene } from './art/vista';
 import { gate, type GateColor } from './art/land';
 import { wisp } from './art/folk';
+import { carved, printFrame, tornStrip } from './art/print';
 
 export interface Peak {
   /** The peak's middle and the ground under it. */
@@ -32,42 +33,68 @@ export function bigMountain(p: Pixels, pal: Pal, k: Peak): void {
   const w = pal.r('white');
   const ink = pal.c('ink', 0);
   const top = k.ground - k.height;
+  // cut in the woodcut: a lit side, a middle and a hatched shadow side, carved contours that bow down at the
+  // flanks, a heavy inked outline, and a flat cap of snow with an inked hem
+  const halfAt = (y: number) => {
+    const f = (y - top) / k.height;
+    return Math.round(k.half * Math.sqrt(f) * (0.9 + 0.1 * f));
+  };
   for (let y = top; y < k.ground; y++) {
     const f = (y - top) / k.height;
-    const half = Math.round(k.half * Math.sqrt(f) * (0.9 + 0.1 * f));
+    const half = halfAt(y);
     for (let x = k.cx - half; x <= k.cx + half; x++) {
-      const shade = x < k.cx - half * 0.3 ? 4 : x > k.cx + half * 0.4 ? 2 : 3;
-      p.set(x, y, (x * 3 + y * 5) % 23 === 0 ? r[1] : r[shade]);
+      const side = (x - k.cx) / Math.max(half, 1);
+      let c = side < -0.3 ? r[3] : side > 0.4 ? r[1] : r[2];
+      if (side > 0.4 && (x + y) % 3 === 0) c = r[0];
+      const contour = (y - top - Math.round(side * side * 7)) % 9;
+      if (contour === 0 && f > 0.2) c = r[0];
+      else if (contour === 8 && f > 0.2 && side < 0.2 && (x * 3 + y) % 7 < 5) c = r[5];
+      p.set(x, y, c);
     }
-    p.set(k.cx - half, y, ink).set(k.cx + half, y, ink);
-    if (f < 0.22) for (let x = k.cx - half + 1; x < k.cx + half; x++) if (y - top < k.height * 0.16 + Math.sin(x * 0.4) * 3) p.set(x, y, w[x < k.cx ? 3 : 2]);
+    for (const t of [0, 1]) p.set(k.cx - half - t, y, ink).set(k.cx + half + t, y, ink);
+    if (f < 0.24) {
+      for (let x = k.cx - half + 1; x < k.cx + half; x++) {
+        const hem = k.height * 0.17 + Math.sin(x * 0.35) * 3;
+        if (y - top < hem) p.set(x, y, x > k.cx + half * 0.4 && (x + y) % 4 === 0 ? pal.c('blue', 4) : w[3]);
+        else if (y - top < hem + 1.5) p.set(x, y, ink);
+      }
+    }
   }
+  p.rect(k.cx - 1, top - 1, 3, 1, ink);
   // moss tufts low down
   for (let i = 0; i < 14; i++) {
     const x = k.cx - k.half + 12 + ((i * 37) % (k.half * 2 - 24));
     const y = k.ground - 6 - ((i * 13) % 26);
     p.rect(x, y, 6, 2, m[2]).rect(x + 1, y - 1, 4, 1, m[3]);
   }
-  // the face
+  // the face: big, round, friendly eyes (whites, a dark pupil looking at Tess, a glint), heavy mossy brows, blush, a smile
   const ey = top + Math.round(k.height * 0.5);
-  for (const dx of [-22, 22]) {
-    if (k.eyes === 'open')
-      p.disc(k.cx + dx, ey, 7, r[5])
-        .disc(k.cx + dx, ey + 1, 5, ink)
-        .set(k.cx + dx - 2, ey - 2, r[5])
-        .set(k.cx + dx - 1, ey - 3, r[5]);
-    else
-      for (let x = -7; x <= 7; x++) p.set(k.cx + dx + x, ey + Math.round((x / 7) ** 2 * 3), ink).set(k.cx + dx + x, ey + 1 + Math.round((x / 7) ** 2 * 3), ink);
+  const er = Math.max(7, Math.round(k.half * 0.1));
+  const gap = Math.round(k.half * 0.24);
+  for (const dx of [-gap, gap]) {
+    const ex = k.cx + dx;
+    if (k.eyes === 'open') {
+      p.disc(ex, ey, er + 2, ink).disc(ex, ey, er, w[3]);
+      p.disc(ex - Math.round(er * 0.3), ey + Math.round(er * 0.2), Math.round(er * 0.55), ink);
+      p.rect(ex - Math.round(er * 0.5), ey - Math.round(er * 0.2), 2, 2, w[3]);
+    } else for (let x = -er; x <= er; x++) for (const t of [0, 1, 2]) p.set(ex + x, ey + t + Math.round((x / er) ** 2 * -3) + 3, ink);
+    // a mossy brow over each eye
+    for (let x = -er - 2; x <= er + 2; x++) {
+      const by = ey - er - 5 + Math.round((x / (er + 2)) ** 2 * 3) + (dx < 0 ? Math.round(x / 6) : -Math.round(x / 6));
+      p.rect(ex + x, by, 1, 3, m[2])
+        .set(ex + x, by - 1, ink)
+        .set(ex + x, by + 3, ink);
+    }
     // a soft blush: solid in the middle, dithered out to the edge
-    const bx = k.cx + dx + (dx < 0 ? -4 : 4);
+    const bx = ex + (dx < 0 ? -er : er);
     for (let y = -4; y <= 4; y++)
-      for (let x = -4; x <= 4; x++) {
+      for (let x = -5; x <= 5; x++) {
         const d = Math.hypot(x, y);
-        if (d <= 2.3 || (d <= 4.3 && (x + y) % 2 === 0)) p.set(bx + x, ey + 12 + y, pal.c('pink', 1));
+        if (d <= 2.3 || (d <= 4.6 && (x + y) % 2 === 0)) p.set(bx + x, ey + er + 6 + y, pal.c('pink', 1));
       }
   }
-  for (let x = -12; x <= 12; x++)
-    p.set(k.cx + x, ey + 16 + Math.round((1 - (x / 12) ** 2) * 5), ink).set(k.cx + x, ey + 17 + Math.round((1 - (x / 12) ** 2) * 5), ink);
+  const sm = Math.round(gap * 0.6);
+  for (let x = -sm; x <= sm; x++) for (const t of [0, 1]) p.set(k.cx + x, ey + er + 8 + t + Math.round((1 - (x / sm) ** 2) * 6), ink);
   if (k.gates) {
     const spots: [number, number, GateColor][] = [
       [-40, 0.62, 'white'],
@@ -100,22 +127,48 @@ export function street(p: Pixels, pal: Pal, ground: number, x0: number, x1: numb
   }
 }
 
-/** The title: the name, a ribbon, the mountain sitting in the lot next door, Tess beside her house. */
+/** The title, printed as a poster: the name cut by hand, a torn ribbon, Old Mossback filling the lot next door, Tess beside her house. */
 export function titlePicture(pal: Pal, book: Book, tess: Pixels, name: [string, number][], tagline: string): Pixels {
   const { c } = pal;
   const p = scene(pal, book, 170, 21);
-  bigMountain(p, pal, { cx: 222, ground: 170, half: 96, height: 104, eyes: 'open', gates: true, cloud: false });
-  street(p, pal, 170, 2, 120);
-  let y = 6;
-  for (const [line, size] of name) {
-    outlined(p, Math.round((W - textWidth(line, size)) / 2), y, line, c('gold', 4), c('ink', 0), size, c('ink', 1));
-    y += size * 8 + 4;
-  }
+  bigMountain(p, pal, { cx: 214, ground: 170, half: 118, height: 128, eyes: 'open', gates: true, cloud: false });
+  street(p, pal, 170, 2, 100);
+  let y = 12;
+  name.forEach(([line, size], i) => {
+    y += carved(p, pal, W / 2, y, line, size, c('parch', 4), c('brick', 2), 5 + i) + 2;
+  });
   const ribbon = textWidth(tagline) + 20;
   const rx = Math.round((W - ribbon) / 2);
-  bevel(p, rx, y + 2, ribbon, 14, pal.r('parch'), 3, 2);
-  text(p, rx + 10, y + 6, tagline, c('ink', 0));
-  scaleBlit(p, tess, 96, 170 - 80, 2);
+  tornStrip(p, pal, rx, y + 1, rx + ribbon, y + 14, 4);
+  text(p, rx + 10, y + 5, tagline, c('ink', 0));
+  scaleBlit(p, tess, 76, 170 - 80, 2);
+  printFrame(p, pal);
+  return p;
+}
+
+/** A level's card, printed: its number on a torn strip, its name cut by hand, the hint on paper below, Tess ready. */
+export function levelCard(pal: Pal, book: Book, tess: Pixels, n: number, of: number, title: string, hint: string): Pixels {
+  const { c } = pal;
+  const p = scene(pal, book, 160, 20 + n);
+  const head = `LEVEL ${n} OF ${of}`;
+  const hw = textWidth(head) + 16;
+  tornStrip(p, pal, (W - hw) / 2, 14, (W + hw) / 2, 26, n);
+  centered(p, 17, head, c('wood', 0));
+  const name = title.toUpperCase();
+  const size = textWidth(name, 3) <= 280 ? 3 : textWidth(name, 2) <= 290 ? 2 : 1;
+  const h = carved(p, pal, W / 2, 36, name, size, c('parch', 4), c('brick', 2), n);
+  // a hint too long for one line breaks at the space nearest its middle
+  let lines = [hint];
+  if (textWidth(hint) > 270) {
+    const mid = hint.length / 2;
+    const at = [...hint].reduce((best, ch, i) => (ch === ' ' && Math.abs(i - mid) < Math.abs(best - mid) ? i : best), 0);
+    lines = [hint.slice(0, at), hint.slice(at + 1)];
+  }
+  const ww = Math.max(...lines.map((l) => textWidth(l))) + 16;
+  tornStrip(p, pal, (W - ww) / 2, 40 + h, (W + ww) / 2, 45 + h + lines.length * 12, n + 40);
+  lines.forEach((l, i) => centered(p, 44 + h + i * 12, l, c('ink', 0)));
+  scaleBlit(p, tess, 44, 160 - 80, 2);
+  printFrame(p, pal);
   return p;
 }
 
@@ -125,9 +178,9 @@ export function storyCard(pal: Pal, book: Book, tess: Pixels, lines: string[], s
   const p = scene(pal, book, 160, seed);
   if (peak) bigMountain(p, pal, { cx: 220, ground: 160, half: 90, height: 96, eyes: 'open', gates: true, cloud: false, ...peak });
   const h = 16 + lines.length * 13;
-  bevel(p, 14, 10, 292, h, pal.r('parch'), 3, 2);
-  p.rect(18, 14, 284, h - 8, c('parch', 3));
+  tornStrip(p, pal, 14, 12, 305, 10 + h, seed);
   lines.forEach((l, i) => centered(p, 20 + i * 13, l, c('ink', 0)));
   scaleBlit(p, tess, 48, 160 - 80, 2);
+  printFrame(p, pal);
   return p;
 }

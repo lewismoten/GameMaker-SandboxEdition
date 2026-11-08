@@ -18,7 +18,7 @@ import { Disk } from '../kit/disk';
 import { licenseText } from '../kit/license';
 import { SANDLOGO, sandLogoFli } from '../kit/sandlogo';
 import { buildHero } from '../kit/starter/heroChar';
-import { cardPicture, endPicture, gif, menuPicture, paper, scoresPicture, slotsPicture } from '../kit/starter/screens';
+import { endPicture, gif, menuPicture, paper, scoresPicture, slotsPicture } from '../kit/starter/screens';
 import { buildSounds } from '../kit/starter/sounds';
 import { demoRecording } from './src/demo';
 import { TITLE, buildGame } from './src/game';
@@ -27,7 +27,7 @@ import { buildLevels } from './src/levels';
 import { MON_SETS, finishMonsterPictures, hollowSet, monsterPictures, nextSet, picnicSet, trailSet } from './src/monsters';
 import { lookOf } from './src/palette';
 import { restage } from './src/art/vista';
-import { storyCard, titlePicture } from './src/pictures';
+import { levelCard, storyCard, titlePicture } from './src/pictures';
 import { REEL_SPEED, endingReel, introReel } from './src/reels';
 import { SONGS, song } from './src/song';
 import { buildTessBlocks, tessPicture } from './src/tess';
@@ -85,7 +85,7 @@ levels.forEach((l, i) => {
   disk.put(`${l.file}.map`, serializeMap(l.map.done()));
   disk.put(`${l.file}.bbl`, serializeBlocks(finishBlocks(l)));
   const slides = [{ name: `${l.file}.gif`, pause: 4 }];
-  disk.put(`${l.file}.gif`, gif(restage(cardPicture(lp, base, tess, i + 1, levels.length, l.title, l.hint), lp, base, 160, 21 + i), lp));
+  disk.put(`${l.file}.gif`, gif(levelCard(lp, base, tess, i + 1, levels.length, l.title, l.hint), lp));
   (CARDS[l.file] ?? []).forEach((lines, k) => {
     const peak =
       l.file === 'next' && k >= 1 ? undefined : { eyes: l.file === 'picnic' ? ('open' as const) : ('open' as const), gates: i < 2, cloud: l.file === 'picnic' };

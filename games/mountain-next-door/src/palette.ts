@@ -30,7 +30,9 @@ function extraRamps(b: PaletteBuilder): void {
 /** The base palette (the morning), with Tess in the hero's index ranges. */
 export function buildMountainPalette(): Pal {
   const base = buildStarterPalette(extraRamps);
-  return { ...base, pal: recolor(base, TESS) };
+  const tess = { ...base, pal: recolor(base, TESS) };
+  // the printed morning is the base: the title, menus and every screen without a look of its own use it
+  return { ...tess, pal: lookOf(tess, 'morning') };
 }
 
 /** A ramp's new look: [darkest, lightest, middle]. */
@@ -241,15 +243,31 @@ export const LOOKS: Record<string, Record<string, Tint>> = {
   },
   // noon at the crossroads: a high, bright sky and warm wood
   noon: {
+    // high noon, printed in two inks and a gold: an ochre sky, sun-bleached olive turf, sienna earth
     sky: [
-      [60, 140, 230],
-      [214, 244, 255],
-      [120, 196, 250],
+      [200, 150, 70],
+      [255, 244, 204],
+      [240, 206, 128],
     ],
     grass: [
-      [60, 120, 40],
-      [220, 240, 110],
-      [130, 190, 60],
+      [70, 80, 26],
+      [232, 222, 120],
+      [150, 156, 56],
+    ],
+    moss: [
+      [60, 70, 24],
+      [220, 214, 110],
+      [130, 140, 50],
+    ],
+    dirt: [
+      [92, 40, 20],
+      [236, 160, 100],
+      [170, 84, 44],
+    ],
+    rock: [
+      [70, 50, 40],
+      [240, 220, 190],
+      [160, 130, 110],
     ],
   },
   // sunset over the empty spot
