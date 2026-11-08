@@ -107,7 +107,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 51518,
+  "frames": 52190,
   "chapters": [
    {
     "title": "Opening",
@@ -126,68 +126,68 @@
    },
    {
     "title": "Level 2: Gust",
-    "frame": 6577,
-    "time": 109616.66666667568
+    "frame": 6633,
+    "time": 110550.00000000928
    },
    {
     "title": "Level 3: Bakery Row",
-    "frame": 9264,
-    "time": 154400.0000000017
+    "frame": 9376,
+    "time": 156266.66666666727
    },
    {
     "title": "Level 4: Meanwhile",
-    "frame": 13334,
-    "time": 222233.33333329554
+    "frame": 13502,
+    "time": 225033.3333332939
    },
    {
     "title": "Level 5: Mill Creek",
-    "frame": 16778,
-    "time": 279633.3333332927
+    "frame": 17002,
+    "time": 283366.66666663036
    },
    {
     "title": "Level 6: The Float",
-    "frame": 21261,
-    "time": 354350.00000004633
+    "frame": 21541,
+    "time": 359016.66666671843
    },
    {
     "title": "Level 7: Practice Hall",
-    "frame": 25111,
-    "time": 418516.6666667877
+    "frame": 25447,
+    "time": 424116.6666667942
    },
    {
     "title": "Level 8: Drum-Off",
-    "frame": 30401,
-    "time": 506683.333333557
+    "frame": 30793,
+    "time": 513216.66666689795
    },
    {
     "title": "Level 9: The Route",
-    "frame": 34637,
-    "time": 577283.3333334541
+    "frame": 35085,
+    "time": 584750.0000001034
    },
    {
     "title": "Level 10: The Bleachers",
-    "frame": 37580,
-    "time": 626333.3333333399
+    "frame": 38084,
+    "time": 634733.3333333203
    },
    {
     "title": "Level 11: The Cannon Truck",
-    "frame": 41383,
-    "time": 689716.6666665256
+    "frame": 41943,
+    "time": 699049.9999998373
    },
    {
     "title": "Level 12: Step Off",
-    "frame": 44484,
-    "time": 741399.9999997386
+    "frame": 45100,
+    "time": 751666.6666663814
    },
    {
     "title": "Ending",
-    "frame": 47239,
-    "time": 787316.6666662984
+    "frame": 47911,
+    "time": 798516.6666662723
    },
    {
     "title": "Credits",
-    "frame": 50444,
-    "time": 840733.3333328407
+    "frame": 51116,
+    "time": 851933.3333328146
    }
   ]
  }

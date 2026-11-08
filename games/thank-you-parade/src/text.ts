@@ -175,7 +175,7 @@ export const HALL_SIGNS: Defs = {
 
 export const TRUCK_SIGNS: Defs = {
   start: ["9:40. RIDGEMONT'S CONFETTI TRUCK. THREE FUSES KEEP IT PARKED.", 6, 3, 'purple'],
-  sweep: ["THE SWEEPER HAS ONE SETTING.", 5, 2, 'purple'],
+  sweep: ['THE SWEEPER HAS ONE SETTING.', 5, 2, 'purple'],
   high: ['THE LADDERS ARE FOR LOOKING AT CANNONS FROM ABOVE.', 6, 3],
   gigi: ['GIGI: THE TRUCK ONLY STARTS WITH ALL THREE FUSES. WHY DID I SAY THAT OUT LOUD?', 7, 3, 'purple'],
   secret: ['PLAYBOOK P.9: THE TRUCK HAS A SUNROOF.', 6, 2, 'purple'],
@@ -186,7 +186,7 @@ export const BLEACHER_SIGNS: Defs = {
   start: ['9:10. THE BLEACHERS. FOUR JUDGES. FOUR CARDS. FIVE ROWS.', 6, 3],
   judges: ['THE JUDGES SIT HIGHER EACH ROW. THAT IS HOW BLEACHERS WORK.', 6, 3],
   cannon: ['GIGI RENTED THE CANNONS BY THE HOUR.', 5, 3, 'purple'],
-  secret: ['PLAYBOOK P.8: THE SCOREBOARD IS HONEST. THIS ONE ISN\'T.', 6, 3, 'purple'],
+  secret: ["PLAYBOOK P.8: THE SCOREBOARD IS HONEST. THIS ONE ISN'T.", 6, 3, 'purple'],
   exit: EXIT,
 };
 

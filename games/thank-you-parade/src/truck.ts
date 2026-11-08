@@ -74,13 +74,17 @@ export function truck(pal: Pal): Level {
   shaft(m, h2.down, h2.planks[2] - 1, G - 1);
   m.set(A.page[0], A.page[1], 'page');
   // the three fuses (the second on the first road, a donut on the second)
-  m.set(A.fuses[0], G - 1, 'fuse').set(A.fuses[1], h1.planks[2] - 1, 'fuse').set(A.fuses[2], G - 1, 'fuse');
+  m.set(A.fuses[0], G - 1, 'fuse')
+    .set(A.fuses[1], h1.planks[2] - 1, 'fuse')
+    .set(A.fuses[2], G - 1, 'fuse');
   for (const x of [41, 46, 50]) m.set(x, h2.planks[2] - 1, 'donut');
   // two street sweepers
   for (const x of A.sweepers) m.mon(MONS.sweeper, x, G - 1);
   // the truck: a gun on its roof, a rear door that wants all three fuses; Gigi stands beside it
   column(m, 'brick', A.truck, 0, G - 4);
-  m.set(A.truck, G - 3, 'truckGun').set(A.truck, G - 2, 'bandArch').set(A.truck, G - 1, 'truckDoor');
+  m.set(A.truck, G - 3, 'truckGun')
+    .set(A.truck, G - 2, 'bandArch')
+    .set(A.truck, G - 1, 'truckDoor');
   m.wallToSky(A.truck);
   m.set(A.gigi, G - 2, 'rival1Top').set(A.gigi, G - 1, 'rival1');
   // placards

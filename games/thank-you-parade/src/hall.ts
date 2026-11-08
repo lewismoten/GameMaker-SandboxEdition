@@ -50,7 +50,10 @@ export function hall(pal: Pal): Level {
   for (let x = 0; x < A.width; x++) m.set(x, 0, 'brick').set(x, 1, 'brick').set(x, G, 'walk');
   column(m, 'brick', 0, 0, G - 1);
   column(m, 'brick', A.width - 1, 0, G - 1);
-  m.set(3, G - 2, 'doorwayTop').set(3, G - 1, 'doorwayBottom').set(A.exit, G - 2, 'doorTop').set(A.exit, G - 1, 'doorBottom');
+  m.set(3, G - 2, 'doorwayTop')
+    .set(3, G - 1, 'doorwayBottom')
+    .set(A.exit, G - 2, 'doorTop')
+    .set(A.exit, G - 1, 'doorBottom');
   for (let x = 4; x < A.width - 4; x += 4) m.set(x, 3, 'cityWin').set(x + 1, 3, 'cityWin');
   bunting(m, 6, A.width - 6, 2);
   // the shelf, and the first brass key
