@@ -1059,7 +1059,7 @@ static void drawPicker(bool clear = true, bool paging = false) {
   pk::clearTiles(tft,scr::W);
   const char*crumb=searchText[0]?(searchAll?"Search: All games":"Search: This category"):subcategory>=0?subLabel(category,subcategory):category?rootLabel(category):"Pocket Player";
   bool home=browsingCategories&&!category&&!searchText[0],none=home&&!ngames;  // the root page: no back arrow, a card chip; no games at all: a notice instead of tiles
-  pk::libraryFrame(tft,scr::W,scr::H,crumb,page,pages,searchText[0]&&!nmatch?"Clear":browsingCategories?nullptr:"Details",!home);
+  pk::libraryFrame(tft,scr::W,scr::H,crumb,page,pages,searchText[0]&&!nmatch?"Clear":browsingCategories?nullptr:"Details",!home,selected>=0&&selected<ngames);
   if(home)pk::drawCardChip(tft,scr::W,cardState,cardGames());
   bool was=sdUp;if(haveSD&&!browsingCategories)mountSD();
   for(int r=0;r<6&&!none;r++) {

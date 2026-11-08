@@ -85,6 +85,18 @@ prs::drawPressed(fb,g);prs::drawPressed(fb,n);assert(!fb.clipped);save(fb,out+"/
     pk::tileLabel(fb,W,0,"A collection name of four lines",false,18);assert(!fb.clipped);
     for(int i=0;i<pk::ICON_COUNT;i++){pk::tileLabel(fb,W,0,"All games",false,i);assert(!fb.clipped);}
     {static Phys sp;sp.W=W;sp.H=fb.H;pk::drawSplash(sp,W,sp.H);assert(!sp.clipped);save(sp,out+"/splash-"+std::to_string(W)+".ppm");}
+    {  // buttons that would do nothing are gray: the first page's back arrow, the last page's next arrow, Details with no game picked
+      int f=pk::footer(W);
+      auto edge=[&](int x){return fb.px[f*W+x];};  // the top edge of a footer button's outline
+      pk::libraryFrame(fb,W,fb.H,"Starters",0,18,"Details",true,false);
+      assert(edge(24)==pk::C_GRAY&&edge(74)==pk::C_WHITE&&edge(W-50)==pk::C_GRAY);save(fb,out+"/library-unpicked-"+std::to_string(W)+".ppm");
+      pk::libraryFrame(fb,W,fb.H,"Starters",0,18,"Details",true,true);
+      assert(edge(W-50)==pk::C_WHITE);save(fb,out+"/library-picked-"+std::to_string(W)+".ppm");
+      pk::libraryFrame(fb,W,fb.H,"Starters",17,18,"Details",true,true);
+      assert(edge(24)==pk::C_WHITE&&edge(74)==pk::C_GRAY);
+      pk::libraryFrame(fb,W,fb.H,"Pocket Player",0,1,nullptr,false);
+      assert(edge(24)==pk::C_GRAY&&edge(74)==pk::C_GRAY);assert(!fb.clipped);
+    }
     pk::clearTiles(fb,W);pk::libraryFrame(fb,W,fb.H,"Starters / 1** First Steps",0,18,"Details");
     for(int i=0;i<6;i++) {
       auto r=pk::tile(W,i);assert(pk::hitTile(W,r.x,r.y)==i);assert(pk::hitTile(W,r.x+r.w,r.y)==-1);assert(pk::hitTile(W,r.x,r.y+r.h)==-1);
