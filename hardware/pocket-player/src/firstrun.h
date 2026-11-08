@@ -10,6 +10,7 @@
 #include <string.h>
 #include "buddy.h"
 #include "controls.h"
+#include "handshape.h"
 #include "overlaydraw.h"
 #include "paddraw.h"
 #include "screen.h"
@@ -101,73 +102,57 @@ constexpr uint16_t LINE = 0x5163, SKIN = 0xE5B1, SHADE = 0xCCAD, LIGHT = 0xFF18,
 }  // namespace hands
 template <class G> void hand(G& g, const Box& b, int side, int tx, int ty, int wid) {
   using namespace hands;
-  const float u = wid * 0.86f, ow = scr::SMALL ? 1.4f : 2.0f;
-  const float in = (float)-side;  // +1 toward the board's inside
-  const float xe = (float)(side < 0 ? b.x0 : b.x1), y1 = (float)b.y1;
-  auto X = [&](float lx) { return xe + in * lx * u; };  // local (toward the board, down from its bottom edge) in units of u
-  auto Y = [&](float ly) { return y1 + ly * u; };
-  // The grip, as a real hand holds a small board from its lower corner: a big palm mound covers the corner; a thick, fairly short
-  // thumb lies over the glass to the target in one smooth taper with a rounded tip and a nail; the other fingers curl under the
-  // bottom edge (a bent index knuckle and stacked curls, joined to the palm); the wrist runs down and outward.
-  Seg body[5], thumb[9];
-  body[0] = {X(-0.7f), Y(0.1f), X(0.1f), Y(0.95f), u * 1.05f, u * 1.0f};   // the palm mound over the corner
-  body[1] = {X(-0.55f), Y(0.9f), X(-1.1f), Y(2.2f), u * 0.88f, u * 0.8f};  // the wrist, down and outward
-  body[2] = {X(0.0f), Y(1.0f), X(1.9f), Y(1.05f), u * 0.4f, u * 0.38f};     // the index finger's bent knuckle
-  body[3] = {X(0.0f), Y(1.7f), X(1.5f), Y(1.75f), u * 0.38f, u * 0.34f};    // the curled middle finger
-  body[4] = {X(-0.1f), Y(2.3f), X(1.0f), Y(2.35f), u * 0.34f, u * 0.3f};    // and the next
-  float p0x = X(-0.3f), p0y = Y(0.35f), p2x = (float)tx, p2y = (float)ty;
-  float cx = p2x - p0x, cy = p2y - p0y, cl = __builtin_sqrtf(cx * cx + cy * cy);
-  float nx = -cy / cl, ny = cx / cl;
-  if (ny > 0) { nx = -nx; ny = -ny; }  // the thumb arches up, a gentle bend
-  float p1x = (p0x + p2x) / 2 + nx * cl * 0.07f, p1y = (p0y + p2y) / 2 + ny * cl * 0.07f;
-  float prx = p0x, pry = p0y;
-  const int nThumb = 8;
-  for (int i = 1; i <= nThumb; i++) {
-    float t = (float)i / nThumb, a = (1 - t) * (1 - t), bq = 2 * (1 - t) * t, c = t * t;
-    float qx = a * p0x + bq * p1x + c * p2x, qy = a * p0y + bq * p1y + c * p2y;
-    float r0 = 0.98f - 0.36f * (i - 1) / nThumb, r1 = 0.98f - 0.36f * i / nThumb;  // thick at the base, one even taper to a rounded tip
-    thumb[i - 1] = {prx, pry, qx, qy, u * r0, u * r1};
-    prx = qx; pry = qy;
+  const float S = wid * 1.25f, ow = scr::SMALL ? 1.4f : 2.0f;
+  const float in = (float)-side;  // +1: the left hand as traced (its thumb points right); -1: mirrored for the right hand
+  // The outline is traced from a photo of the board held in the left hand (tools/traceHand.py, src/handshape.h): the thumb tip
+  // lands on (tx, ty), the fingers are curled under, and the wrist runs down and outward. Mirrored for the right hand.
+  float P[handshape::OUTLINE_N][2];
+  float minX = 1e9f, maxX = -1e9f, minY = 1e9f, maxY = -1e9f;
+  for (int i = 0; i < handshape::OUTLINE_N; i++) {
+    P[i][0] = tx + in * handshape::OUTLINE[i][0] * S;
+    P[i][1] = ty + handshape::OUTLINE[i][1] * S;
+    if (P[i][0] < minX) minX = P[i][0];
+    if (P[i][0] > maxX) maxX = P[i][0];
+    if (P[i][1] < minY) minY = P[i][1];
+    if (P[i][1] > maxY) maxY = P[i][1];
   }
-  thumb[8] = {p2x, p2y, p2x, p2y, u * 0.6f, u * 0.6f};
-  const int nT = 9, nB = 5;
-  // the cuff: a plain band across the wrist's end, turned to follow it
-  float wcx = X(-1.1f), wcy = Y(2.2f), wvx = X(-1.1f) - X(-0.55f), wvy = Y(2.2f) - Y(0.9f), wl = __builtin_sqrtf(wvx * wvx + wvy * wvy);
-  wvx /= wl; wvy /= wl;
-  const float ccx = wcx + wvx * u * 0.5f, ccy = wcy + wvy * u * 0.5f, chw = u * 0.95f, chh = u * 0.45f;
-  float tdx = p2x - p1x, tdy = p2y - p1y, tdl = __builtin_sqrtf(tdx * tdx + tdy * tdy);
-  const float ux = tdx / tdl, uy = tdy / tdl;
+  auto field = [&](float px, float py) {  // signed distance to the outline polygon (negative inside)
+    float best = 1e9f;
+    bool inside = false;
+    for (int i = 0, j = handshape::OUTLINE_N - 1; i < handshape::OUTLINE_N; j = i++) {
+      float ax = P[j][0], ay = P[j][1], bx = P[i][0], by = P[i][1];
+      if (((ay > py) != (by > py)) && (px < (bx - ax) * (py - ay) / (by - ay) + ax)) inside = !inside;
+      float vx = bx - ax, vy = by - ay, wx = px - ax, wy = py - ay, l2 = vx * vx + vy * vy;
+      float t = l2 > 0 ? (wx * vx + wy * vy) / l2 : 0;
+      t = t < 0 ? 0 : t > 1 ? 1 : t;
+      float dx = wx - vx * t, dy = wy - vy * t, d2 = dx * dx + dy * dy;
+      if (d2 < best) best = d2;
+    }
+    best = __builtin_sqrtf(best);
+    return inside ? -best : best;
+  };
+  // the cuff: a plain band across the wrist's end (the outline's flat bottom)
+  const float ccx = tx + in * -2.52f * S, ccy = ty + 2.74f * S, chw = 0.74f * S, chh = 0.26f * S;
   const float lx = in * -0.45f, ly = -0.89f;  // toward the light (above, and toward the board)
-  const float sd = u * 0.32f;
-  const float nxc = p2x - ux * u * 0.4f, nyc = p2y - uy * u * 0.4f;
-  auto field = [&](float px, float py) {
-    float d = fieldDist(thumb, nT, px, py), e = fieldDist(body, nB, px, py);
-    return d < e ? d : e;
+  const float sd = S * 0.1f;
+  auto segDist = [&](float px, float py, const float a[2], const float c[2]) {
+    float ax = tx + in * a[0] * S, ay = ty + a[1] * S, bx = tx + in * c[0] * S, by = ty + c[1] * S;
+    float vx = bx - ax, vy = by - ay, wx = px - ax, wy = py - ay, l2 = vx * vx + vy * vy;
+    float t = l2 > 0 ? (wx * vx + wy * vy) / l2 : 0;
+    t = t < 0 ? 0 : t > 1 ? 1 : t;
+    float dx = wx - vx * t, dy = wy - vy * t;
+    return __builtin_sqrtf(dx * dx + dy * dy);
   };
-  float x0 = 1e9f, x1 = -1e9f, y0 = 1e9f, y2 = -1e9f;
-  auto grow = [&](const Seg& q) {
-    float r = (q.ra > q.rb ? q.ra : q.rb) + ow + 2;
-    float lo = (q.ax < q.bx ? q.ax : q.bx) - r, hi = (q.ax < q.bx ? q.bx : q.ax) + r, to = (q.ay < q.by ? q.ay : q.by) - r, bo = (q.ay < q.by ? q.by : q.ay) + r;
-    if (lo < x0) x0 = lo;
-    if (hi > x1) x1 = hi;
-    if (to < y0) y0 = to;
-    if (bo > y2) y2 = bo;
-  };
-  for (const Seg& q : body) grow(q);
-  for (const Seg& q : thumb) grow(q);
-  { float r = chw + chh + ow + 2;
-    if (ccx - r < x0) x0 = ccx - r;
-    if (ccx + r > x1) x1 = ccx + r;
-    if (ccy + r > y2) y2 = ccy + r; }
   const int bw = b.x1 - b.x0, bh = b.y1 - b.y0, sx0 = b.x0 + bw / 12, sy0 = b.y0 + bh / 10, sx1 = b.x1 - bw / 12, sy1 = b.y1 - bh / 10;
-  for (int y = (int)y0; y <= (int)y2; y++)
-    for (int x = (int)x0; x <= (int)x1; x++) {
+  const float pad = ow + 2;
+  for (int y = (int)(minY - pad); y <= (int)(ccy + chh + pad); y++)
+    for (int x = (int)(minX - pad); x <= (int)(maxX + pad); x++) {
+      if (x < 0 || x >= scr::W || y < 0 || y >= scr::H) continue;
       float px = x + 0.5f, py = y + 0.5f;
       uint16_t col = (x >= sx0 && x < sx1 && y >= sy0 && y < sy1) ? C_SCREEN : (x >= b.x0 && x < b.x1 && y >= b.y0 && y < b.y1) ? C_DARK : C_BLACK;
       bool any = false;
-      float rx = px - ccx, ry = py - ccy, ca = rx * wvx + ry * wvy, cb = -rx * wvy + ry * wvx;  // the cuff's own axes
-      float ax0 = __builtin_fabsf(cb) - chw, ay0 = __builtin_fabsf(ca) - chh, dc = ax0 > ay0 ? ax0 : ay0;
-      if (dc < ow + 1) {
+      float ax0 = __builtin_fabsf(px - ccx) - chw, ay0 = __builtin_fabsf(py - ccy) - chh, dc = ax0 > ay0 ? ax0 : ay0;
+      if (dc < ow + 1) {  // the cuff: a plain outlined band
         col = mix(col, LINE, cover(dc - ow));
         col = mix(col, CUFF, cover(dc));
         any = true;
@@ -175,27 +160,26 @@ template <class G> void hand(G& g, const Box& b, int side, int tx, int ty, int w
       float d = field(px, py);
       if (d < ow + 1) {
         col = mix(col, LINE, cover(d - ow));
-        float sh = field(px - lx * sd, py - ly * sd);
         uint16_t fill = SKIN;
-        if (d < 0 && sh > -0.5f) fill = mix(SKIN, SHADE, cover(sh));
-        bool onThumb = fieldDist(thumb, nT, px, py) < 0.5f;
+        if (d < 0) {  // one darker shade on the side away from the light
+          float sh = field(px - lx * sd, py - ly * sd);
+          if (sh > -0.5f) fill = mix(SKIN, SHADE, cover(sh));
+        }
         col = mix(col, fill, cover(d));
-        if (d < -ow * 0.5f && onThumb) {
-          float hx = px - (p1x - ux * u * 0.1f + lx * u * 0.3f), hy = py - (p1y - uy * u * 0.1f + ly * u * 0.3f);
-          col = mix(col, LIGHT, cover(__builtin_sqrtf(hx * hx + hy * hy) - u * 0.14f) * 0.9f);
-          // the nail: a small pale oval near the tip, rimmed in the outline color
-          float nx2 = px - nxc, ny2 = py - nyc, na = nx2 * ux + ny2 * uy, nb = -nx2 * uy + ny2 * ux;
-          float nd = (__builtin_sqrtf(na * na / (u * 0.3f * u * 0.3f) + nb * nb / (u * 0.36f * u * 0.36f)) - 1.0f) * u * 0.32f;
+        if (d < -ow * 0.5f) {
+          float nx = (px - tx) * in / S, ny = (py - ty) / S;  // back in the traced frame
+          // the nail
+          float ex = (nx - handshape::NAIL_X) / handshape::NAIL_RX, ey = (ny - handshape::NAIL_Y) / handshape::NAIL_RY;
+          float nd = (__builtin_sqrtf(ex * ex + ey * ey) - 1.0f) * 0.24f * S;
           col = mix(col, LINE, cover(nd - 0.9f) * 0.85f);
           col = mix(col, NAIL, cover(nd));
-        } else if (d < -ow * 0.5f && py > y1 + u * 0.2f) {
-          // the creases between the curled fingers, and a highlight on the index knuckle
-          for (int k = 0; k < 2; k++) {
-            float cyk = Y(1.37f + 0.65f * k), dxk = (px - X(0.0f)) * in, lim = k ? 1.1f : 1.6f;
-            if (dxk > 0 && dxk < u * lim) col = mix(col, LINE, cover(__builtin_fabsf(py - cyk) - 0.5f) * 0.75f);
-          }
-          float kx = px - X(1.2f), ky = py - Y(0.85f);
-          col = mix(col, LIGHT, cover(__builtin_sqrtf(kx * kx * 0.3f + ky * ky) - u * 0.1f) * 0.8f);
+          // the highlight on the thumb's shoulder and the two knuckle creases
+          float hx = nx + 0.75f, hy = ny + 0.05f;
+          col = mix(col, LIGHT, cover((__builtin_sqrtf(hx * hx * 0.6f + hy * hy) - 0.07f) * S) * 0.9f);
+          float cd = 1e9f;
+          for (int i = 0; i + 1 < handshape::CREASE0_N; i++) { float e = segDist(px, py, handshape::CREASE0[i], handshape::CREASE0[i + 1]); if (e < cd) cd = e; }
+          for (int i = 0; i + 1 < handshape::CREASE1_N; i++) { float e = segDist(px, py, handshape::CREASE1[i], handshape::CREASE1[i + 1]); if (e < cd) cd = e; }
+          col = mix(col, LINE, cover(cd - 0.5f) * 0.7f);
         }
         any = true;
       }

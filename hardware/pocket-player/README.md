@@ -382,3 +382,5 @@ cold/warm discovery, page and search timings. Serial `BOOT` / `LIB` lines report
 host tests cannot establish those hardware timings.
 
 The pad drawing is shared by `src/paddraw.h` and `host/paddrawtest.cpp`. `web/scripts/pocketControlsCheck.ts` checks its framebuffer snapshots on both boards, all three sizes, both hands, idle/held states and both software turns. To inspect it, compile the host test with `-DPOCKET_CYD28 -I hardware/pocket-player/src` and pass an output PPM path: rows are small, medium and large; columns are right-handed idle/held, then left-handed idle/held.
+
+**Hand pictures (`src/handshape.h`, `tools/traceHand.py`).** The first-run hands are filled from an outline traced from the maintainer's own reference photo of the board held in his left hand (skin segmentation, contour, simplification; the photo is not shipped, only the numbers). Run `python3 tools/traceHand.py <photo.jpg> --debug overlay.png > src/handshape.h` to redo it (needs opencv-python and numpy).
