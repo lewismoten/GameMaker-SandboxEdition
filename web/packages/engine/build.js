@@ -30,6 +30,7 @@ const sources = {
   'engine/scroll': 'engine/scroll',
   'engine/showGraphic': 'engine/showGraphic',
   'engine/slowPc': 'engine/slowPc',
+  'engine/slowPcMusic': 'engine/slowPcMusic',
   'engine/touch': 'engine/touch',
   'engine/world': 'engine/world',
   'formats/binary': 'formats/binary',

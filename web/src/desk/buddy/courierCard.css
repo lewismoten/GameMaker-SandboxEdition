@@ -1,0 +1,235 @@
+/* Scoot's card's four sections (courierCard.ts) and the envelope beside Scoot when a letter is
+   new (deskBuddy.ts). Paper, the same in light and dark, like the rest of the card. */
+@media (min-width: 961px) {
+  .buddy-card.courier {
+    width: 330px;
+  }
+}
+
+.buddy-facts.courier-facts {
+  margin-bottom: 8px;
+}
+
+.courier-tabs {
+  display: flex;
+  gap: 2px;
+  margin: 0 0 8px;
+  border-bottom: 1px solid #b9b08f;
+}
+
+.courier-tab {
+  flex: 1 1 auto;
+  min-height: 30px;
+  padding: 4px 6px;
+  border: 1px solid transparent;
+  border-bottom: 0;
+  border-radius: 4px 4px 0 0;
+  background: none;
+  color: #4a463c;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.courier-tab[aria-selected='true'] {
+  margin-bottom: -1px;
+  border-color: #b9b08f;
+  background: #fffaf0;
+  color: #1f1e1a;
+  font-weight: 700;
+}
+
+.courier-panel {
+  max-height: 260px;
+  overflow-y: auto;
+  font-size: 13px;
+}
+
+/* the panel takes focus so a long list scrolls from the keyboard */
+.courier-panel:focus {
+  outline: none;
+}
+
+.courier-panel:focus-visible {
+  outline: 3px solid #1d5fd1;
+  outline-offset: 1px;
+}
+
+.courier-empty {
+  margin: 4px 0 6px;
+  color: #4a463c;
+}
+
+.courier-mail,
+.courier-cards {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.courier-item {
+  display: block;
+  width: 100%;
+  min-height: 44px;
+  margin: 0 0 4px;
+  padding: 5px 8px;
+  border: 1px solid #d8cfb0;
+  border-radius: 4px;
+  background: #f7f0dc;
+  color: #1f1e1a;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.courier-subject {
+  display: block;
+}
+
+.courier-new .courier-subject {
+  font-weight: 700;
+}
+
+.courier-badge {
+  margin-right: 6px;
+  padding: 0 5px;
+  border-radius: 3px;
+  background: #8a2b14;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.courier-meta {
+  display: block;
+  color: #4a463c;
+  font-size: 12px;
+}
+
+.courier-letter h3 {
+  margin: 0 0 2px;
+  font-size: 15px;
+}
+
+.courier-letter p {
+  margin: 0 0 6px;
+}
+
+.courier-from {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  color: #4a463c;
+  font-size: 12px;
+}
+
+.courier-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.courier-ask {
+  flex-basis: 100%;
+  font-weight: 700;
+}
+
+.courier-btn {
+  min-height: 30px;
+  padding: 3px 10px;
+  border: 1px solid #b9b08f;
+  border-radius: 4px;
+  background: #f1ead6;
+  color: #1f1e1a;
+  font: inherit;
+  cursor: pointer;
+}
+
+.courier-cards li {
+  margin: 0 0 6px;
+}
+
+/* a postcard: its world's name on its palette's sky, then its stamps */
+.courier-postcard {
+  border: 1px solid #b9b08f;
+  border-radius: 4px;
+  background: #fffaf0;
+  overflow: hidden;
+}
+
+.courier-postcard-name {
+  display: block;
+  padding: 4px 8px;
+}
+
+.courier-stamps {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
+  gap: 8px 6px;
+  margin: 0;
+  padding: 8px;
+  list-style: none;
+}
+
+.courier-stamp {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  color: #4a463c;
+  font-size: 12px;
+  line-height: 1.25;
+  text-align: center;
+}
+
+.courier-cards .courier-stamp {
+  margin: 0;
+}
+
+.courier-stamp-art {
+  display: block;
+  line-height: 0;
+}
+
+.courier-tab:focus-visible,
+.courier-item:focus-visible,
+.courier-btn:focus-visible {
+  outline: 3px solid #1d5fd1;
+  outline-offset: 1px;
+}
+
+/* the envelope at Scoot's shoulder: a letter is new (never a number) */
+.buddy-envelope {
+  position: absolute;
+  top: -6px;
+  right: -10px;
+  width: 22px;
+  height: 16px;
+  pointer-events: none;
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.4));
+}
+
+.buddy-envelope[hidden] {
+  display: none;
+}
+
+/* Setup's trips: where Scoot is, the trip file buttons, and what happened */
+.courier-trips {
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid #b9b08f;
+}
+
+.courier-trips p {
+  margin: 0 0 6px;
+}
+
+.courier-said:empty {
+  display: none;
+}
+
+.courier-said {
+  font-weight: 700;
+}

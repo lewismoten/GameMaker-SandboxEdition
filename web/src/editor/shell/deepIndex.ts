@@ -5,7 +5,6 @@
 // store that fails costs only the speed. The text itself is read by deepExtract.ts in a Web
 // Worker (deepIndexClient.ts). No DOM.
 import { matches } from './searchMatch';
-import type { Part } from './searchMatch';
 import type { DeepJob, DeepPart } from './deepExtract';
 
 /** Where a game's files and words come from; home.ts builds one per HomeGame. */
@@ -49,7 +48,7 @@ export function createDeepIndex(o: Options) {
   let total = 0;
   let epoch = 0;
 
-  const one = async (s: DeepSource) => {
+  const one = async (s: DeepSource, mine: number) => {
     const id = `${s.key}|${s.version}`;
     let got: DeepPart[] | undefined;
     try {
@@ -59,6 +58,8 @@ export function createDeepIndex(o: Options) {
     }
     if (!got) {
       try {
+        await o.idle();
+        if (mine !== epoch) return;
         const [files, more] = await Promise.all([s.readFiles(), s.readExtras()]);
         got = await o.extract({ names: s.names, files, ...more });
       } catch {
@@ -66,6 +67,7 @@ export function createDeepIndex(o: Options) {
       }
       void o.store.put(id, got).catch(() => undefined);
     }
+    if (mine !== epoch) return;
     parts.set(s.key, got);
     o.onMore();
   };
@@ -74,9 +76,7 @@ export function createDeepIndex(o: Options) {
     running = true;
     try {
       for (let s = queue.shift(); s && mine === epoch; s = queue.shift()) {
-        await o.idle();
-        if (mine !== epoch) break;
-        await one(s);
+        await one(s, mine);
       }
     } finally {
       running = false;
@@ -113,4 +113,3 @@ export function createDeepIndex(o: Options) {
 }
 
 export type DeepIndex = ReturnType<typeof createDeepIndex>;
-export type { Part };

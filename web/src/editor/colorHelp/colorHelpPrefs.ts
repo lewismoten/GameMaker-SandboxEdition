@@ -12,7 +12,7 @@ export interface ColorHelp {
 }
 
 export const KEY = 'gm-color-help';
-export const DEFAULTS: ColorHelp = { names: false, warn: 'off', preview: 'normal' };
+const DEFAULTS: ColorHelp = { names: false, warn: 'off', preview: 'normal' };
 
 const WARNS: Warn[] = ['off', 'rg', 'by', 'both'];
 const PREVIEWS: Preview[] = ['normal', 'rg', 'by', 'all'];

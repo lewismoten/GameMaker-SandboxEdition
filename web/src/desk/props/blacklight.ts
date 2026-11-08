@@ -38,6 +38,8 @@ const printSrc = (when: 'day' | 'night', look: '' | '-left' | '-right' = '') => 
 /** Doc Leo's glance: rare, brief. Seconds until the next one, and how long it lasts. */
 const GLANCE_EVERY = [90, 300] as const;
 const GLANCE_MS = 1600;
+/** The glance's two prints start loading this long before it. */
+const PRELOAD_AHEAD_MS = 20_000;
 /** A press this long after a glance ends still counts as catching him. */
 const CAUGHT_AFTER_MS = 20_000;
 
@@ -121,26 +123,37 @@ export function blackLight(desk: HTMLElement): () => void {
   let glancedAt = -Infinity; // when the last glance ended
   const prints = [...poster.querySelectorAll<HTMLImageElement>('.bl-print')];
   const look = (side: '' | '-left' | '-right') => prints.forEach((img) => (img.src = printSrc(img.classList.contains('night') ? 'night' : 'day', side)));
+  // the glance pictures, loaded a little before the glance that shows them so the swap is
+  // instant (not with the desk: a glance is minutes away, and four prints are about 50 kB)
+  const preloaded = new Set<string>();
+  const preload = (side: '-left' | '-right') => {
+    for (const when of ['day', 'night'] as const) {
+      const src = printSrc(when, side);
+      if (preloaded.has(src)) continue;
+      preloaded.add(src);
+      new Image().src = src;
+    }
+  };
+  let preloadTimer = 0;
   const nextGlance = () => {
     const [lo, hi] = GLANCE_EVERY;
-    glanceTimer = window.setTimeout(
-      () => {
-        if (!stillMotion() && document.visibilityState === 'visible') {
-          look(Math.random() < 0.5 ? '-left' : '-right');
-          glancing = true;
-          glanceTimer = window.setTimeout(() => {
-            glancing = false;
-            glancedAt = performance.now();
-            look('');
-            nextGlance();
-          }, GLANCE_MS);
-        } else nextGlance();
-      },
-      (lo + Math.random() * (hi - lo)) * 1000,
-    );
+    const side = Math.random() < 0.5 ? '-left' : '-right';
+    const wait = (lo + Math.random() * (hi - lo)) * 1000;
+    preloadTimer = window.setTimeout(() => preload(side), wait - PRELOAD_AHEAD_MS);
+    glanceTimer = window.setTimeout(() => {
+      if (!stillMotion() && document.visibilityState === 'visible') {
+        preload(side); // (already loaded, unless the timers ran late)
+        look(side);
+        glancing = true;
+        glanceTimer = window.setTimeout(() => {
+          glancing = false;
+          glancedAt = performance.now();
+          look('');
+          nextGlance();
+        }, GLANCE_MS);
+      } else nextGlance();
+    }, wait);
   };
-  // the glance pictures, loaded ahead so the swap is instant
-  for (const when of ['day', 'night'] as const) for (const side of ['-left', '-right'] as const) new Image().src = printSrc(when, side);
   nextGlance();
   const stop = watchDaylight((light) => {
     night = light < 0.5;
@@ -152,6 +165,7 @@ export function blackLight(desk: HTMLElement): () => void {
     stop();
     glow.dispose();
     clearTimeout(glanceTimer);
+    clearTimeout(preloadTimer);
     desk.classList.remove('bl-night', 'bl-uv');
     for (const el of [dim, tube, poster]) el.remove();
   };

@@ -1,0 +1,54 @@
+{
+  "keys": {
+    "75": {
+      "short": "Walk left",
+      "long": "Walk left."
+    },
+    "77": {
+      "short": "Walk right",
+      "long": "Walk right."
+    },
+    "57": {
+      "short": "Jump",
+      "long": "Jump. Steer with Left and Right while you are in the air."
+    },
+    "72": {
+      "short": "Walk up",
+      "long": "Walk up in the open snow."
+    },
+    "80": {
+      "short": "Walk down",
+      "long": "Walk down in the open snow."
+    },
+    "30": {
+      "short": "Walk left",
+      "long": "Same as the Left arrow."
+    },
+    "32": {
+      "short": "Walk right",
+      "long": "Same as the Right arrow."
+    },
+    "17": {
+      "short": "Walk up",
+      "long": "Same as the Up arrow."
+    },
+    "31": {
+      "short": "Walk down",
+      "long": "Same as the Down arrow."
+    }
+  },
+  "joystick": {
+    "1": {
+      "short": "Jump",
+      "long": "Jump."
+    }
+  },
+  "counters": {
+    "20": "Starter kit key counter (unused on these maps)."
+  },
+  "sounds": {
+    "9": "The jump",
+    "10": "Getting hurt",
+    "11": "Falling over"
+  }
+}

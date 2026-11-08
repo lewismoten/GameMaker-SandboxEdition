@@ -10,10 +10,10 @@
 export type Grade = 'A' | 'B' | 'B-' | 'C+' | 'C' | 'C-' | 'D+';
 
 /** Best first. */
-export const GRADES: readonly Grade[] = ['A', 'B', 'B-', 'C+', 'C', 'C-', 'D+'];
+const GRADES: readonly Grade[] = ['A', 'B', 'B-', 'C+', 'C', 'C-', 'D+'];
 
 /** The usual 4.0 scale. */
-export const POINTS: Record<Grade, number> = { A: 4, B: 3, 'B-': 2.7, 'C+': 2.3, C: 2, 'C-': 1.7, 'D+': 1.3 };
+const POINTS: Record<Grade, number> = { A: 4, B: 3, 'B-': 2.7, 'C+': 2.3, C: 2, 'C-': 1.7, 'D+': 1.3 };
 
 /** One play of a Starter, as far as the player has got. */
 export interface Run {

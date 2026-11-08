@@ -5,6 +5,8 @@
 // digits one at a time, so 1994 came out cut short and 286 was heard as 206; initialisms and
 // names in capitals (BBS, DOS, PLAYGAME, THE CHEZ) came out mumbled or misread. Pure, no models.
 
+import { applyLexicon } from './pronounce';
+
 /** Which engine speaks the line: Pocket TTS (Lewis's cloned voices) or Kokoro (stock voices). */
 export type Engine = 'pocket' | 'kokoro';
 
@@ -40,7 +42,7 @@ export function sayNumber(digits: string): string {
 
 /** Words said differently from how they're written, in order; whole words, case as given. */
 const SAY: [RegExp, string][] = [
-  [/\bTHE CHEZ\b/g, 'the Shay'],
+  [/\bTHE CHEZ\b/g, 'the Shae'],
   [/\bPLAYGAME\b/g, 'Play Game'],
   [/\bGame-Maker\b/g, 'Game Maker'],
   [/\bBBSes\b/g, 'bee bee esses'],
@@ -76,5 +78,7 @@ export function spokenText(text: string, engine: Engine = 'pocket'): string {
   s = s.replace(/\b[A-Z]{4,}\b/g, (w) => w[0] + w.slice(1).toLowerCase());
   // the voices run straight through a colon, so it is said as the end of a sentence
   s = s.replace(/(\w):\s+(\S)/g, (_, end: string, next: string) => `${end}. ${next.toUpperCase()}`);
-  return s.replace(/\d+(?:,\d{3})*/g, (d) => sayNumber(d.replace(/,/g, '')));
+  s = s.replace(/\d+(?:,\d{3})*/g, (d) => sayNumber(d.replace(/,/g, '')));
+  // made-up and unusual words, respelled so the voice says them as meant (pronounce.json)
+  return applyLexicon(s, engine);
 }

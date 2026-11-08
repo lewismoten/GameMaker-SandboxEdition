@@ -38,7 +38,13 @@ export interface PcCosts {
   stripMs: number;
   /** Each animated map cell redrawn on screen that tick (up to 170 dirty rectangles, DIRTRECT.C MAXDIRTY). */
   cellMs?: number;
-  /** Disk read of a .voc (PlaySbVocFile reads the whole file on the game's own thread): fixed cost to open it. */
+  /**
+   * Disk read of a .voc (PlaySbVocFile reads the whole file on the game's own thread): fixed cost to open it
+   * (directory lookup, FAT, seek to the data). It is also what each scene file costs to open: loadscene
+   * (PLAYGAME.C 4239) reads a scene's files from this same disk while the screen is black, and F6's LoadGame
+   * reads most of them again (sceneLoadMs). One disk per machine, so a sound and a level never disagree about
+   * how fast it is. Left out (TURBO_OFF), sounds and scenes load in no time.
+   */
   vocOpenMs?: number;
   /** ...and how many bytes a millisecond the disk then delivers. */
   vocBytesPerMs?: number;
@@ -48,6 +54,19 @@ export interface PcCosts {
    * drivers and PLAYGAME's own data. Left out, any size fits.
    */
   vocHeapBytes?: number;
+  /**
+   * Optional custom-PC assumption: a disk BIOS masks the timer for the whole read, so PlayIt cannot
+   * advance and the FM chip holds its notes. The built-in presets leave the timer running: Lewis's
+   * PS/1 Model 2011 observation in 86Box (November 6, 2026) found a gameplay pause without a music hold.
+   * That observation does not establish IRQ behavior for every historical BIOS.
+   */
+  readHoldsMusic?: boolean;
+  /** The timer interrupt itself (entry, EOI, PlayIt's bookkeeping; the BIOS clock every 8th), per interrupt. */
+  isrMs?: number;
+  /** Each CMF event PlayIt hands the FM driver (the driver call, without its register writes). */
+  fmEventMs?: number;
+  /** Each OPL2 register write: about 3.3 µs after the address and 23 µs after the data, waited out on the ISA bus. */
+  fmWriteMs?: number;
 }
 
 /** A 486DX2-66 with turbo off: about a 286-16. */
@@ -105,8 +124,8 @@ export function scrollCost(pc: PcCosts, strips: number): number {
  * "Run like a..." in the player: the same cost model as TURBO_OFF for three machines of the
  * period. Every number is an ESTIMATE from period hardware figures, not a measurement
  * (programmer's guide chapters 10b and 12). A quiet tick is the game's work plus the copy of
- * the changed rectangles to the screen; the timer interrupt and the music cost about 1% of
- * a 286 and are left out. Today (no costs) is a fast modern machine.
+ * the changed rectangles to the screen. The timer interrupt and the music (about 1% of a 286)
+ * are charged per interrupt (songIsrMs). Today (no costs) is a fast modern machine.
  */
 export type SpeedChoice = 'today' | '486' | '386' | '286' | 'ps1';
 
@@ -114,18 +133,45 @@ export const SPEED_CHOICES: readonly SpeedChoice[] = ['today', '486', '386', '28
 
 export const SPEED_PRESETS: Record<Exclude<SpeedChoice, 'today'>, PcCosts> = {
   // 286 at 12 MHz, IDE disk about 400 KB/s, 30 ms to open a file; 20 monsters fill a tick
-  '286': { tickMs: 20, monsterMs: 1.8, scrollPassMs: 3.3, stripMs: 2, cellMs: 0.25, vocOpenMs: 30, vocBytesPerMs: 400 },
+  // (sourced range for a 286-era MFM or early IDE drive: about 220-550 KB/s, 30-75 ms an open)
+  '286': { tickMs: 20, monsterMs: 1.8, scrollPassMs: 3.3, stripMs: 2, cellMs: 0.25, vocOpenMs: 30, vocBytesPerMs: 400, ...music(0.035, 0.033) },
   // 386DX-33, disk about 800 KB/s, 18 ms to open
-  '386': { tickMs: 9, monsterMs: 0.8, scrollPassMs: 1.5, stripMs: 0.8, cellMs: 0.12, vocOpenMs: 18, vocBytesPerMs: 800 },
+  '386': { tickMs: 9, monsterMs: 0.8, scrollPassMs: 1.5, stripMs: 0.8, cellMs: 0.12, vocOpenMs: 18, vocBytesPerMs: 800, ...music(0.016, 0.015) },
   // 486DX2-66, disk about 1.5 MB/s, 12 ms to open
-  '486': { tickMs: 4, monsterMs: 0.35, scrollPassMs: 0.7, stripMs: 0.4, cellMs: 0.05, vocOpenMs: 12, vocBytesPerMs: 1500 },
+  '486': { tickMs: 4, monsterMs: 0.35, scrollPassMs: 0.7, stripMs: 0.4, cellMs: 0.05, vocOpenMs: 12, vocBytesPerMs: 1500, ...music(0.007, 0.006) },
   // IBM PS/1 Model 2011: a 286 at 10 MHz (the 286-12's CPU costs times 1.2), 1 MB, a small slow hard disk
   // (about 80 ms to find a file and about 150 KB/s after that), no disk cache, no EMS. PLAYGAME reads a
   // .voc whole from the disk every time it plays one and keeps nothing between plays, so the cache a
   // roomier PC might have added never helps here; the extra 384 KB above 640 KB is out of PLAYGAME's reach.
-  // About 100 KB of the far heap is left once DOS, drivers and the game's data have their share.
-  ps1: { tickMs: 24, monsterMs: 2.2, scrollPassMs: 4, stripMs: 2.4, cellMs: 0.3, vocOpenMs: 80, vocBytesPerMs: 150, vocHeapBytes: 100_000 },
+  // The disk is the 2011's 30 MB WDL-330P (IBM PS/1 Technical Reference 57F1970, p. 8-26): 19 ms average
+  // access, 3600 rpm, 33 sectors a track at a 4:1 interleave, so at most about 247 KB/s; 80 ms and 150 KB/s
+  // are the slow end of what that gives with an uncached directory and fragmented files (range 30-90 ms,
+  // 145-245 KB/s). Estimates, not timed on a real PS/1 or in an emulator.
+  // DOS 4 lives in the PS/1's ROM, so only its data takes conventional memory (about 45 KB more for the
+  // game than a DOS loaded from disk): about 145 KB of the far heap is left once DOS's data, drivers and
+  // the game's own data have their share.
+  ps1: {
+    tickMs: 24,
+    monsterMs: 2.2,
+    scrollPassMs: 4,
+    stripMs: 2.4,
+    cellMs: 0.3,
+    vocOpenMs: 80,
+    vocBytesPerMs: 150,
+    vocHeapBytes: 145_000,
+    ...music(0.042, 0.04),
+  },
 };
+
+/**
+ * The music's share of a slow PC (all estimates): the interrupt's own cost and the FM driver's per-event
+ * cost. Disk reads block the game loop, not this timer; do not infer a masked IRQ from a slow disk.
+ * A register write costs the same on every machine of the period (the waits are the chip's, timed on
+ * the 8 MHz ISA bus).
+ */
+function music(isrMs: number, fmEventMs: number): Pick<PcCosts, 'readHoldsMusic' | 'isrMs' | 'fmEventMs' | 'fmWriteMs'> {
+  return { readHoldsMusic: false, isrMs, fmEventMs, fmWriteMs: 0.03 };
+}
 
 /** The costs for a choice; undefined for Today (nothing is charged). */
 export function costsFor(choice: SpeedChoice): PcCosts | undefined {
@@ -134,8 +180,9 @@ export function costsFor(choice: SpeedChoice): PcCosts | undefined {
 
 /**
  * How long reading a voice of `bytes` freezes the game: open plus transfer. PLAYGAME reads
- * the whole file before the tick goes on, so game time stops; the music, run from the timer
- * interrupt, does not, and the sound only starts once the read is over (the player waits that long). 0 when the PC has no disk figures (TURBO_OFF) or on Today.
+ * the whole file before the tick goes on, so game time stops, and the sound only starts once the
+ * read is over (the player waits that long). On a PC with readHoldsMusic the music stops for it too
+ * (musicHoldMs). 0 when the PC has no disk figures (TURBO_OFF) or on Today.
  */
 export function vocStallMs(pc: PcCosts | undefined, bytes: number): number {
   if (vocWontFit(pc, bytes)) return pc!.vocOpenMs ?? 0; // the file is opened, then the allocation fails
@@ -143,7 +190,26 @@ export function vocStallMs(pc: PcCosts | undefined, bytes: number): number {
   return pc.vocOpenMs + bytes / pc.vocBytesPerMs;
 }
 
+/** How long the music stands still for a disk read of `readMs` (0 on Today, the desk turbo, or a PC whose timer keeps going). */
+export function musicHoldMs(pc: PcCosts | undefined, readMs: number): number {
+  return pc?.readHoldsMusic ? readMs : 0;
+}
+
 /** True when the far heap cannot hold a .voc of `bytes`: PlaySbVocFile returns FALSE and nothing plays. */
 export function vocWontFit(pc: PcCosts | undefined, bytes: number): boolean {
   return !!pc && pc.vocHeapBytes !== undefined && bytes > pc.vocHeapBytes;
+}
+
+/**
+ * How long a scene load keeps the screen black on this PC: each file opened costs vocOpenMs, then its
+ * bytes at vocBytesPerMs (`reads` is the byte count of each file read, 0 for one that failed to open).
+ * Game time does not move: playscene sets TimerCounter back to its value from before the load (PLAYGAME.C
+ * 1404), and LoadGame puts back the saved clock. Every preset (486, 386, 286, PS/1) has disk figures; 0 on a
+ * PC without them (TURBO_OFF) or on Today.
+ */
+export function sceneLoadMs(pc: PcCosts | undefined, reads: readonly number[]): number {
+  if (!pc || pc.vocOpenMs === undefined || !pc.vocBytesPerMs) return 0;
+  let ms = 0;
+  for (const bytes of reads) ms += pc.vocOpenMs + bytes / pc.vocBytesPerMs;
+  return ms;
 }

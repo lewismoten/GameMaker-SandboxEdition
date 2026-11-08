@@ -5,6 +5,7 @@
 // then started at that scene as the play test starts it. After each scene it gets through it
 // sends the walkthrough so far, which is kept if it is stopped in the next (walkClient.ts).
 import { GameFiles } from '../../../project/files';
+import { fromCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import { parseGame, serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { startingAt } from '../../editors/integrator/startAt';
 import { autoWalk, type AutoWalk, type Reused } from './autoWalk';
@@ -59,7 +60,7 @@ self.onmessage = async (e: MessageEvent<WalkRequest>) => {
           progress: (scene, style, places) => {
             if (performance.now() - last < 250) return;
             last = performance.now();
-            post({ kind: 'progress', what: `${game.scenes[scene]?.desc.trim() || `Scene ${scene}`}: ${style}, ${places} places tried` });
+            post({ kind: 'progress', what: `${fromCp437(game.scenes[scene]?.desc ?? '').trim() || `Scene ${scene}`}: ${style}, ${places} places tried` });
           },
         });
     let verified: Verified | undefined;

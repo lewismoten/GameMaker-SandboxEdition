@@ -10,5 +10,5 @@ const built = buildLevels();
 assertNoInvisibleWalls({ book: built.book, pal: built.pal, levels: [built.hall, built.gallery] });
 const { sim } = await play();
 const trail = sim.trail.join(' ');
-if (trail !== '2 3 2 4 2 5 2 6 2 7 2') throw new Error(`the bot should enter scenes 2 3 2 4 2 5 2 6 2 7 2 (then the ending), not ${trail}`);
+if (trail !== '2 3 8 4 8 5 8 6 8 7 8') throw new Error(`the bot should enter scenes 2 3 8 4 8 5 8 6 8 7 8 (then the ending), not ${trail}`);
 console.log(`color-doors: the bot tried all five doors; ${sim.deaths} lives lost, scenes entered ${trail}`);

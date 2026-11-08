@@ -16,18 +16,20 @@
 // Catalog DOS downloads use the built ZIP; other downloads are built in the browser when the visitor presses Download. Which games
 // have the button is the caller's choice (export/downloadable.ts for the catalog's).
 import './download.css';
+import type { PocketContext } from '../../export/pocketLibrary';
 import { download, h, modal, notice, toast } from '../core/ui';
 import { plainError } from '../core/plainError';
 import { downloaded } from '../../achievements';
-import { icon } from './homeIcons';
 import type { CatalogEntry, GameFiles } from '../../project/files';
 import type { Companion } from '../../project/companion';
 import { aboutOf, isAboutEmpty, type AboutGame } from '../../project/aboutGame';
 import { exportPreviewsOf, getSection } from '../../project/companion';
 import type { PlayerPatches } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
 import { REPO_URL } from '../../seo/site';
-import { fetchArchive } from '../../project/archiveWait';
+import { fetchGameZip } from '../../project/sharedZip';
 import { companionCredits } from '../../assistant/chat/todo';
+
+export { downloadButton } from './downloadButton';
 
 export interface DownloadGame {
   title: string;
@@ -42,6 +44,7 @@ export interface DownloadGame {
   box?: { background?: string };
   /** A game of yours: its files can be downloaded as they are, too. */
   project?: boolean;
+  pocketContext?: () => Promise<PocketContext>;
   /** A game of yours: remembers the one-page export's "animation and sound previews" choice with the project (project/companion.ts). */
   setPreviews?: (on: boolean) => void;
   /** A game of yours: its editor-only extras, which only the "Game files" backup carries (project/companion.ts). */
@@ -127,23 +130,6 @@ const CHOICES: Choice[] = [
 const ENGINE_CAVEAT =
   'All but DOS and the Pocket Player still need a web engine, so a future system or browser update could break them; DOS, in DOSBox, is the most future-proof.';
 
-/** The Download button: `open` opens the chooser (chooseDownload) for the game. */
-export function downloadButton(title: string, open: () => unknown): HTMLElement {
-  return h(
-    'button',
-    {
-      type: 'button',
-      class: 'with-ico',
-      'aria-haspopup': 'dialog',
-      'aria-label': `Download ${title}`,
-      title: 'Download it to play on Windows, a Mac, Linux, the web or DOS',
-      onclick: () => void open(),
-    },
-    icon('inbox'),
-    'Download',
-  );
-}
-
 /** A download is being chosen or built: a second tap (a double tap, a click while it builds) does nothing instead of starting another file. */
 let downloading = false;
 
@@ -159,7 +145,8 @@ export async function chooseDownload(game: DownloadGame): Promise<void> {
 }
 
 async function choose(game: DownloadGame): Promise<void> {
-  const zipUrl = !game.project && game.entry?.pack?.endsWith('.zip') ? `./${game.entry.path}${game.entry.pack}` : undefined;
+  // a ZIP shipped split (project/sharedZip.ts) has no file of its own to link to: Download joins it
+  const zipUrl = !game.project && game.entry?.pack?.endsWith('.zip') && !game.entry.parts ? `./${game.entry.path}${game.entry.pack}` : undefined;
   const choices = CHOICES.filter((c) => c.kind !== 'files' || game.project);
   const picked = await modal<{ kind: DownloadKind; alt: boolean; previews: boolean }>(`Download ${game.title}`, (close) => {
     let current = choices[0];
@@ -368,9 +355,10 @@ const NAMES: Record<DownloadKind, string> = {
 let closeBuilding: (() => void) | undefined;
 
 async function build(game: DownloadGame, kind: DownloadKind, alt: boolean, previews?: boolean): Promise<void> {
+  closeBuilding = notice(`Building the ${kind === 'web' && alt ? 'web app' : NAMES[kind]} of ${game.title}…`, 'info', { persistent: true });
   try {
     if (kind === 'dos' && !game.project && game.entry?.pack?.endsWith('.zip')) {
-      const response = await fetchArchive(`./${game.entry.path}${game.entry.pack}`);
+      const response = await fetchGameZip(game.entry);
       if (!response.ok) throw new Error('Could not download the game archive. Please try again.');
       const stem = game.gam.replace(/\.gam$/i, '');
       save(
@@ -386,7 +374,6 @@ async function build(game: DownloadGame, kind: DownloadKind, alt: boolean, previ
       save('web-player.html', await fetchWebPlayer(), 'text/html', 'Put it beside Game-Maker game folders on a web host.');
       return downloaded('web');
     }
-    closeBuilding = notice(`Building the ${kind === 'web' && alt ? 'web app' : NAMES[kind]} of ${game.title}…`);
     const saved = await game.files();
     // the author's version lettered on the menu picture, when they asked: not in their own backup (project/composeFiles.ts)
     const files =
@@ -454,9 +441,28 @@ async function build(game: DownloadGame, kind: DownloadKind, alt: boolean, previ
       });
       save(name, zip, 'application/zip', `In DOSBox, run ${exe} from the unzipped folder.`);
     } else if (kind === 'pocket') {
+      const { pocketCategory } = await import('../../export/pocketLibrary');
+      const library = game.pocketContext
+        ? await game.pocketContext()
+        : game.entry
+          ? {
+              uid: `catalog:${game.entry.id}`,
+              ...pocketCategory(
+                game.entry.id,
+                game.entry.series ?? ((await import('../../project/files')).isSandboxGame(game.entry) ? 'sandbox' : undefined),
+                game.entry.kind,
+              ),
+            }
+          : undefined;
       const { name, bytes, notes } = await (
         await import('../../export/exportPocket')
-      ).exportPocket(files, { title: game.title, gam: game.gam, id: game.id, controls: pocketControls(game) });
+      ).exportPocket(files, {
+        title: game.title,
+        gam: game.gam,
+        id: game.project ? library?.uid.replace(/^project:/, '') : game.id,
+        controls: pocketControls(game),
+        library,
+      });
       save(name, bytes, 'application/octet-stream', ['Copy it into the pocket folder on the microSD card, then restart the board.', ...notes].join(' '));
       return; // no achievement of its own
     } else {
@@ -468,7 +474,10 @@ async function build(game: DownloadGame, kind: DownloadKind, alt: boolean, previ
     downloaded(kind === 'player' ? 'web' : kind);
   } catch (e) {
     closeBuilding?.();
-    toast(plainError(e), 'error');
+    toast(plainError(e), 'error', { repeat: true });
+  } finally {
+    closeBuilding?.();
+    closeBuilding = undefined;
   }
 }
 
@@ -476,5 +485,5 @@ function save(name: string, data: Uint8Array | string, type: string, next: strin
   download(name, data, type);
   closeBuilding?.();
   closeBuilding = undefined;
-  toast(`Saved ${name}. ${next}`);
+  toast(`Saved ${name}. ${next}`, 'info', { repeat: true });
 }

@@ -7,6 +7,7 @@ import { ENDTYPE, STARTTYPE, type Game } from '@lewismoten/gamemaker-sandbox-eng
 import type { Graph } from '../../editor/editors/integrator/layoutCells';
 import type { WorldMapHints } from './types';
 import { sceneLabel, sceneRefs } from './worldMapGroups';
+import { fromCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 
 interface Region {
   /** Its places, the first one naming it. */
@@ -29,17 +30,17 @@ function linkedGroups(ids: number[], key: (i: number) => string | undefined, g: 
 }
 
 /** The regions of a game's places (`g`, the graph of its places); `hints.regions` names them when the game does. */
-export function regionsOf(game: Game, g: Graph, hints?: WorldMapHints): Region[] {
+export function regionsOf(game: Game, g: Graph, hints?: WorldMapHints, nameOf = (i: number) => fromCp437(game.scenes[i].desc)): Region[] {
   if (hints?.regions) {
     const ids = hints.regions.map((refs) => refs.flatMap((r) => sceneRefs(game, r)).filter((i) => g.nodes.includes(i)));
-    return ids.filter((r) => r.length).map((r) => ({ ids: r, name: sceneLabel(game.scenes[r[0]].desc) }));
+    return ids.filter((r) => r.length).map((r) => ({ ids: r, name: sceneLabel(nameOf(r[0])) }));
   }
   const adventure = (i: number) => game.scenes[i].gametype !== STARTTYPE && game.scenes[i].gametype !== ENDTYPE;
   const near = (i: number) => new Set([...(g.out.get(i) ?? []), ...(g.inn.get(i) ?? [])]);
   const out: Region[] = [];
   const taken = new Set<number>();
   const add = (ids: number[]) => {
-    out.push({ ids, name: sceneLabel(game.scenes[ids[0]].desc) });
+    out.push({ ids, name: sceneLabel(nameOf(ids[0])) });
     ids.forEach((i) => taken.add(i));
   };
   // a hub and its dead ends

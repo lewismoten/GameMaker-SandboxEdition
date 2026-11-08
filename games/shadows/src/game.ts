@@ -56,10 +56,10 @@ export function buildGame(levels: { solid: Level; dither: Level; hop: Level; hov
     return s;
   };
   const start = (l: Level) => l.map.start;
-  game.scenes.push(scene('The Yard: Solid', levels.solid, 'solid.bbl', 'solid.mbl', 'solid.cbl', 'solid.lst', 60, 80, SCENE.dither, start(levels.dither)));
-  game.scenes.push(scene('The Yard: Dithered', levels.dither, 'dither.bbl', 'dither.mbl', 'dither.cbl', 'dither.lst', 100, 80, SCENE.hop, start(levels.hop)));
-  game.scenes.push(scene('The Hop', levels.hop, 'hop.bbl', 'dither.mbl', 'dither.cbl', 'hop.lst', 140, 80, SCENE.hover, start(levels.hover)));
-  game.scenes.push(scene('The Hover', levels.hover, 'hover.bbl', 'dither.mbl', 'dither.cbl', 'hover.lst', 180, 80, SCENE.end, [0, 0]));
+  game.scenes.push(scene('The Yard: Solid', levels.solid, 'solid.bbl', 'solid.mbl', 'hero.cbl', 'solid.lst', 60, 80, SCENE.dither, start(levels.dither)));
+  game.scenes.push(scene('The Yard: Dithered', levels.dither, 'dither.bbl', 'dither.mbl', 'hero.cbl', 'dither.lst', 100, 80, SCENE.hop, start(levels.hop)));
+  game.scenes.push(scene('The Hop', levels.hop, 'hop.bbl', 'dither.mbl', 'hero.cbl', 'hop.lst', 140, 80, SCENE.hover, start(levels.hover)));
+  game.scenes.push(scene('The Hover', levels.hover, 'hover.bbl', 'dither.mbl', 'hero.cbl', 'hover.lst', 180, 80, SCENE.end, [0, 0]));
   title.links[0] = { toScene: SCENE.solid, from: { x: 0, y: 0 }, to: { x: levels.solid.map.start[0], y: levels.solid.map.start[1] } };
   return game;
 }

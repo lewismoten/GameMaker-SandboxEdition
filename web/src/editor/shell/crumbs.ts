@@ -5,7 +5,7 @@ import './crumbs.css';
 import { h } from '../core/ui';
 import { KIND_LABELS, kindOf } from '../core/project';
 
-export interface CrumbActions {
+interface CrumbActions {
   overview: () => void;
   category: () => void;
   /** Where the file was opened from, if the history entry says so. */

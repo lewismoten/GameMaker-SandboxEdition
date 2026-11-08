@@ -8,8 +8,7 @@ import { ADVTYPE, parseGame, type Game, type Scene } from '@lewismoten/gamemaker
 import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { levelsOf, type Level } from './levelMapLayout';
 import { mergeStates, samePlace } from './levelStates';
-import VIEWS from './levelViews.json';
-import SECRETS from './levelSecrets.json';
+import { VIEWS, SECRETS } from './levelMetadata';
 import type { LevelViews } from './levelViews';
 
 const scene = (desc: string, files: string[], links: [number, number, number][] = []): Scene =>

@@ -278,3 +278,43 @@
     inset: 0 -17px;
   }
 }
+
+/* Keep scene fields reachable inside the bounded side panel at every resize width. */
+.grator-side-body {
+  min-height: 0;
+  min-width: 0;
+  overflow: auto;
+  flex: 1;
+  padding: 8px;
+  overscroll-behavior: contain;
+}
+.grator-side-head {
+  flex: none;
+}
+.grator-side-head .grator-tabs {
+  min-width: 0;
+  margin: 0;
+  flex: 1;
+}
+.grator-side-close {
+  flex: none;
+  margin-left: auto;
+  align-self: flex-start;
+  min-width: 24px;
+  min-height: 28px;
+}
+.grator-side-open {
+  min-width: 24px;
+  min-height: 36px;
+}
+@media (min-width: 761px) {
+  .grator-side-open {
+    writing-mode: vertical-rl;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 4px;
+  }
+}

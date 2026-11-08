@@ -33,6 +33,8 @@
     "release:draft": "npm run release:draft -w gamemaker-web --",
     "release:cut": "npm run release:cut -w gamemaker-web --",
     "release:check": "npm run release:check -w gamemaker-web --",
+    "release:sizes": "node scripts/release/sizes.mjs",
+    "release:pages": "node scripts/release/publish-pages.mjs",
     "walk:auto": "npm run walk:auto -w gamemaker-web --",
     "wayback:inventory": "npm run wayback:inventory -w gamemaker-web --",
     "wayback:check": "npm run wayback:check -w gamemaker-web --",
@@ -46,24 +48,28 @@
     "replay:log": "npm run replay:log -w gamemaker-web --",
     "domains:check": "npm run domains:check -w gamemaker-web --",
     "dead:code": "npm run dead:code -w gamemaker-web --",
-    "badges:similar": "npm run badges:similar -w gamemaker-web --"
+    "badges:similar": "npm run badges:similar -w gamemaker-web --",
+    "merge:gate": "node scripts/merge-gate.mjs",
+    "worker:bootstrap": "node scripts/worker-bootstrap.mjs",
+    "branches:triage": "node scripts/branch-triage.mjs",
+    "check:cyd": "npm run check:cyd -w gamemaker-web --"
   },
   "engines": {
     "node": ">=22.12.0"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@modelcontextprotocol/sdk": "1.32.1",
+    "@modelcontextprotocol/sdk": "1.32.2",
     "@types/ws": "8.18.2",
     "axe-core": "^4.14.0",
-    "eslint": "^10.13.0",
+    "eslint": "^10.14.0",
     "eslint-config-prettier": "^10.1.8",
-    "globals": "^17.13.0",
+    "globals": "^17.14.0",
     "playwright-core": "^1.64.1",
     "prettier": "^3.9.10",
     "typescript-eslint": "^8.72.1",
-    "vitest": "5.0.5",
-    "ws": "8.22.0"
+    "vitest": "5.1.0",
+    "ws": "8.22.1"
   },
   "overrides": {
     "minimatch": "^11.0.4"

@@ -6,6 +6,7 @@
 import type { Result, StarterBot } from '../../kit/starter/bot';
 import { ORIGIN } from '../../kit/starter/map';
 import { GALLERY_END, HALL_DOORS, HALL_FINISH, hallLanding } from '../src/levels';
+import { HALL_BACK } from '../src/game';
 import { VIEWS } from '../src/views';
 
 async function through(bot: StarterBot, r: Promise<Result>, what: string): Promise<void> {
@@ -44,7 +45,7 @@ export async function journey(bot: StarterBot): Promise<void> {
     await must(bot, bot.walk(40, 'along the swatches', 2000), 'swatches');
     await must(bot, bot.wait(LOOK / 2), 'a look at the names');
     await through(bot, bot.walk(GALLERY_END, 'the door back', 3000), 'door back');
-    if (bot.sim.scene !== 2) throw new Error(`the way back should lead to the hall (2), not ${bot.sim.scene}`);
+    if (bot.sim.scene !== HALL_BACK) throw new Error(`the way back should lead to the hall's copy (${HALL_BACK}), not ${bot.sim.scene}`);
     landed(bot, hallLanding(i), `back from ${v.name}`);
     await must(bot, bot.wait(LOOK / 2), 'a breath in the hall');
   }

@@ -1,5 +1,6 @@
 // Birth previews follow a background or character file's scene MON/MBL pair before unbound fallbacks.
 import { ADVTYPE } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { fromCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import { BLEN, MONBL, TRANSPARENT, parseBlocks, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { parseMonsters } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { normalize, type GameFiles } from '../../project/files';
@@ -25,7 +26,7 @@ export function monsterBirthSources(project: Pick<Project, 'game' | 'files'>, fi
   for (const [i, scene] of project.game().scenes.entries()) {
     if (scene.gametype !== ADVTYPE || normalize(scene.files[slot]) !== normalize(file)) continue;
     bound = true;
-    add(scene.files[3], scene.files[4], scene.desc.trim() || `Scene ${i}`);
+    add(scene.files[3], scene.files[4], fromCp437(scene.desc).trim() || `Scene ${i}`);
   }
   if (bound) return out;
   const blockSets = project.files.byExtension('mbl');

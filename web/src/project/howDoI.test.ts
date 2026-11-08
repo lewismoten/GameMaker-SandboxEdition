@@ -9,6 +9,7 @@ import { filterQuestions, lessonPage, levelTitle, LESSON_HEAD, questionsOf, type
 
 const GAMES = resolve(__dirname, '../../../games');
 interface ManualFile {
+  title: string;
   pages: { head: string; html: string }[];
   howDoI?: HowDoIEntry[];
 }
@@ -17,6 +18,14 @@ const manualOf = (id: string): ManualFile => JSON.parse(readFileSync(join(GAMES,
 const withList = starters.filter((id) => manualOf(id).howDoI);
 
 describe('howDoI lists', () => {
+  it('answers the Slow Computers Escape question in its linked lesson', () => {
+    const manual = manualOf('slow-computers');
+    const question = manual.howDoI?.find((q) => q.id === 'escape');
+    expect(question?.q).toBe('Why does Escape restart the level?');
+    const lesson = lessonPage({ original: { manual } }, question!.level);
+    expect(lesson?.html).toContain('hold Escape until the screen goes black');
+    expect(lesson?.html).toContain('release it during the fade');
+  });
   it('are on every Starter, 3 to 6 questions each', () => {
     const series = starters.filter((id) => JSON.parse(readFileSync(join(GAMES, id, 'about.json'), 'utf8')).series === 'starter');
     expect(series.length).toBeGreaterThan(0);
@@ -37,7 +46,8 @@ describe('howDoI lists', () => {
       const gam = existsSync(disk) ? readdirSync(disk).find((f) => f.toLowerCase().endsWith('.gam')) : undefined;
       const game = gam ? parseGame(new Uint8Array(readFileSync(join(disk, gam)))) : undefined;
       for (const e of manual.howDoI!) {
-        expect(e.q, e.id).toMatch(/^How do I .+\?$/);
+        if (id === 'slow-computers' && e.id === 'escape') expect(e.q).toBe('Why does Escape restart the level?');
+        else expect(e.q, e.id).toMatch(/^How do I .+\?$/);
         expect(ids.has(e.id), `${id}/${e.id} is listed twice`).toBe(false);
         ids.add(e.id);
         expect(Number.isInteger(e.scene) && e.scene >= 2, `${e.id}: scene ${e.scene}`).toBe(true);

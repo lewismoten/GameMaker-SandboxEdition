@@ -10,7 +10,7 @@ When two monsters meet, the stronger one wins.
 
 A small explorer in a red beanie crosses two short rooms. Two small gumdrops block a tunnel, and a big red one is stronger than they are.
 
-Read the signs. Watch who wins, then throw a star and find out how strong it is.
+Read the signs: they show each monster's power. Watch who wins, then throw a star and find out how strong it is.
 
 Then open this game in Game-Maker and change a power.
 `);
@@ -25,7 +25,7 @@ export const HOWTO = wrap(`
 
 Every monster has a power. When two meet, the one with less power is gone. The same power, and they pass through each other.
 
-A star flies the way you last walked, and only so far.
+A star flies the way you last walked, and only so far. It is used up when it hits something, and fizzles gray.
 
 Nothing here hurts you. Coins add to your score. The door at the end of the level takes you on.
 

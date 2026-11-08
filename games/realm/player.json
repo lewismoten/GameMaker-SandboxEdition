@@ -10,6 +10,7 @@
     "str.load.done": " Quest resumed!",
     "str.save.done": "Quest kept!",
     "color.rgb.hsGreen": [63, 58, 30],
+    "color.rgb.purple": [26, 6, 23],
     "color.select.status": "hsGreen",
     "color.select.dropFrame": "hsGreen",
     "color.select.aboutFrame": "hsGreen",

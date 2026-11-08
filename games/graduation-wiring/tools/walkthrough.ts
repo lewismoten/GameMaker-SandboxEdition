@@ -5,4 +5,4 @@ import { graduationWalkthrough } from '../../kit/starter/graduationTools';
 import { cfg } from '../src/config';
 import { play } from './play';
 
-await graduationWalkthrough(cfg.id, play, { 2: cfg.level.title });
+await graduationWalkthrough(cfg.id, play, { 2: cfg.arrive.title, 3: cfg.level.title });

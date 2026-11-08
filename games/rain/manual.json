@@ -1,0 +1,49 @@
+{
+  "title": "Rain on the Path",
+  "howDoI": [
+    { "id": "rain", "q": "How do I draw falling rain with animated blocks?", "scene": 2, "x": 18, "y": 16, "level": 1 },
+    { "id": "offset", "q": "How do I stop rain falling in matching rows?", "scene": 2, "x": 35, "y": 16, "level": 1 },
+    { "id": "puddles", "q": "How do I draw landing splashes and rippling puddles?", "scene": 3, "x": 20, "y": 20, "level": 2 },
+    { "id": "step", "q": "How do I make a puddle splash when the hero steps in it?", "scene": 3, "x": 31, "y": 19, "level": 2 },
+    { "id": "house", "q": "How do I make rain hit a roof and pour from a spout?", "scene": 3, "x": 28, "y": 16, "level": 2 },
+    { "id": "palette", "q": "How do I give the same rainy map a darker palette?", "scene": 4, "x": 20, "y": 20, "level": 3 }
+  ],
+  "pages": [
+    {
+      "head": "Welcome",
+      "html": "<h1>Rain on the Path</h1><p>A Starter about weather made from pictures. Walk with <kbd>Left</kbd> and <kbd>Right</kbd>; <kbd>Space</kbd> jumps. Nothing hurts. Stop beside the signs to watch, then walk into the door. There are two short maps and three scenes: falling rain, splashes and puddles, then the same puddle map in storm colors.</p><p>Play first, then <b>Edit a copy</b>. For the underlying tricks, see <b>Twinkle, Twinkle</b> (block clocks), <b>Waves on the Shore</b> (moving water), <b>Day and Night</b> (scene palettes), and <b>Under the Surface</b> (water that actually pushes the hero).</p>"
+    },
+    {
+      "head": "Level 1: Falling Rain",
+      "html": "<h1>Falling Rain</h1><p><b>THIS RAIN FALLS IN ROWS</b> names the mistake at the start: every cell begins with the same picture. Farther along, <b>OFFSET THE PICTURES FOR SCATTERED RAIN</b> marks the fix. The same thin blue-white streaks, bright near drops and dim far ones, fall at different places in neighboring cells. The effect is beside Lian, not hidden above the play view.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 1 is made</h1><p>Open <b>one.bbl</b>. Blocks <b>rain.0</b> through <b>rain.3</b> draw three thin streaks at four successive positions: one long, bright near drop and two short, dim far ones, so the rain has depth. Each has <b>Time 1</b> and <b>Next block</b> set to the next picture; the last goes back to the first. A tick is about 1/18.2 second. The streaks move five pixels down at each step, so after four pictures each one is back where it started, one tile lower, and the loop joins up.</p><p>Every copy of one block shares its clock. On the left of <b>one.map</b>, every rain cell starts at <b>rain.0</b>. On the right, neighboring cells start at different frames of the same loop. Equal times keep those offsets apart. No particles move between cells: the pictures suggest continuous falling rain. All four frames have downward gravity and no solid sides, just like air.</p>"
+    },
+    {
+      "head": "Level 2: Splashes and Pools",
+      "html": "<h1>Splashes and Pools</h1><p><b>RAIN SPLASHES. PUDDLES RIPPLE</b> stands beside the landing drops and the first shallow pool. Watch the tiny sprays on the path and rings spreading across the blue water. Next comes a little house: drops splash on its roof, and the gutter's spout pours into a rain barrel. Then walk through a puddle. <b>STEP IN A PUDDLE: A TOUCH SWAPS IN SPLASH BLOCKS</b> explains the splash and its sound. The ground stays solid; your feet only get pretend-wet.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 2 is made</h1><p>In <b>two.bbl</b>, <b>splash.0</b> through <b>splash.3</b> show a falling drop reaching the ground, then two small sprays. Lay these in the last air row, just above the path. They are a repeating drawing, not a collision response.</p><p>Each puddle spans three ground cells. <b>pool0.0</b>, <b>pool1.0</b> and <b>pool2.0</b> are the left, middle and right pieces of one wide oval pool. Each piece has its own four-picture loop at Time 2. Lay all three at the same start frame so the expanding rings line up. Other puddles can start at another frame. Every pool frame has all four solid sides, keeping the walking surface fixed while its picture changes.</p><p>The house is drawn as one picture and cut into blocks. Its walls are plain blocks with no solid sides, so Lian walks in front. The top row of the roof is four-picture loops on the rain's clock (Time 1): rain in the sky behind, and a little spray where each drop meets the shingles. The spout's column is loops too: the falling water's light streaks move down five pixels a picture, into the barrel.</p><p>The splash is <b>touch blocks</b>. When the hero overlaps a block, Game-Maker swaps it for that block's <b>Touch block</b>. The air above each puddle is <b>wet.0</b> to <b>wet.3</b>, rain pictures whose Touch block is <b>step.0</b>. <b>step.0</b> to <b>step.5</b> are the splash, two of each picture, each touching on to the next, so each tick standing there shows the next picture. The last turns into the <b>dry</b> loops, which look like rain again and lead back to <b>wet</b>. A block can't name a sound, but the <b>wet</b> blocks give 1 point, and Game-Maker plays the score sound for points: here that sound is SPLASH.VOC.</p>"
+    },
+    {
+      "head": "Level 3: Rainy Palette",
+      "html": "<h1>Rainy Palette</h1><p>Through the door, the same puddles and signs appear in darker blue-gray surroundings. The hero, signs and pale streaks remain readable. This is the same map, not a second drawing.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 3 is made</h1><p>Open the game scene chart. <b>Splashes and Pools</b> and <b>Rainy Palette</b> both load <b>two.map</b> and <b>two.bbl</b>. Their palette slots differ: <b>rain.pal</b> and <b>storm.pal</b>. Storm darkens only the sky, grass, dirt and stone ranges. The same pixel numbers now choose darker colors; Lian, text and rain highlights keep their colors.</p><p>The door links to a new scene with the same entrance. The engine reloads the scene, fades it in and restarts its block clocks. See <b>Day and Night</b> for a fuller palette lesson.</p>"
+    },
+    {
+      "head": "What it cannot do",
+      "html": "<h1>What it cannot do</h1><ul><li>These drops cannot hit the hero, wet clothes or fill a pool. They are animated scenery.</li><li>The landing sprays and ripples cannot detect a drop. Their pictures repeat even when nobody stands there.</li><li>A step splash moves on only while the hero touches the cell: stand still in a puddle and it splashes again and again, and a quick hop over its edge can leave a splash picture hanging until you step back in.</li><li>The timer belongs to the block number, not each map cell. Identical blocks always animate together. Offsetting starting frames scatters this rain, but it still repeats every four ticks.</li><li>Rain cannot overlay an arbitrary background block. A cell contains one background block: this example draws rain over plain sky and leaves signs and doorways clear.</li><li>The palette changes between scenes, not continuously while playing. Re-entering resets the animation.</li></ul>"
+    },
+    {
+      "head": "Make it yours",
+      "html": "<h1>Make it yours</h1><ul><li>Change all four rain Times from 1 to 2 for slower drops. Keep them equal if you want the offsets to stay apart.</li><li>Paint the same start frame across the sky, play, then scatter the four starts again.</li><li>Redraw the streaks as shorter drops, still thin and blue-white.</li><li>Move a whole three-cell puddle, keeping its pieces on the same frame, and the three <b>wet</b> blocks above it.</li><li>Make the splash longer: add another <b>step</b> block to the chain.</li><li>Edit only the sky range in <b>storm.pal</b>, then compare the two scenes.</li></ul><p>New weather art, code, words and original FM music by Hermes with OpenAI Codex GPT-6.1 Sol. Finer rain, the house, the stepping splash and its sound by Claude Sonnet 5.5 (Anthropic). Shared Starter assets retain their existing project credits.</p>"
+    }
+  ]
+}

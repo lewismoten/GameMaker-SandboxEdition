@@ -75,7 +75,9 @@ function attempt(w: number, h: number, r: Stream, o: PlatformOptions, d: number)
   const notes: string[] = [];
   const R = Math.max(1, Math.floor(cap.maxRise * d));
   const gapFor = (rise: number) => Math.max(1, Math.floor((cap.gapAt[Math.max(0, Math.min(rise, cap.gapAt.length - 1))] ?? cap.maxGap) * d));
-  const rowMin = Math.ceil(o.physics.rise / BLEN) + 3;
+  // A full jump must leave the two-high hero inside the area, even on a ledge.
+  const topMin = Math.ceil((o.physics.rise + BLEN) / BLEN);
+  const rowMin = Math.max(topMin + 1, Math.ceil(o.physics.rise / BLEN) + 3);
   const rowMax = h - 4;
   const set = (x: number, y: number, c: number) => (area.cells[y * w + x] = c);
   const solidCol = (x: number, top: number) => {
@@ -103,7 +105,7 @@ function attempt(w: number, h: number, r: Stream, o: PlatformOptions, d: number)
     if (o.hazard) kinds.push('spikes', 'spikes');
     const high = (rowMax - s) / Math.max(1, rowMax - rowMin);
     if (o.ladder && o.physics.climb && s - (R + 1) >= rowMin && high < 0.6) kinds.push('tower');
-    if (o.ledge && R >= 2) kinds.push('ledge', 'ledge');
+    if (o.ledge && R >= 2 && s - topMin - 1 >= 2) kinds.push('ledge', 'ledge');
     if (w - 1 - x > 24) kinds.push('stones', 'stones');
     const kind = r.pick(kinds);
     if (kind === 'flat') flat(r.int(3, 8));
@@ -145,7 +147,7 @@ function attempt(w: number, h: number, r: Stream, o: PlatformOptions, d: number)
       s = s2;
       flat(r.int(3, 5));
     } else if (kind === 'ledge') {
-      const rise = r.int(2, R);
+      const rise = r.int(2, Math.min(R, s - topMin - 1));
       const n = 9;
       const x0 = x;
       flat(n);

@@ -6,7 +6,7 @@
   "hero": "LIAN",
   "year": 1994,
   "price": "Free",
-  "version": "1.0",
+  "version": "1.1",
   "blurb": "Three short levels about what the player program is made of. Level 1 walks along a row of bytes and picks up the four at offset 2575B that spell Play. Level 2 tries two words in a four-byte slot: START does not fit, GO and two spaces does. Level 3 is about asking first: make a backup copy, change only your own copy, and leave the credits alone. None of the levels changes a real player; the signs only show the ideas. Play it, then read the Programmer's Guide chapter on patching the player.",
   "exe": "UNDRHOOD.EXE",
   "dosName": "UNDRHOOD",

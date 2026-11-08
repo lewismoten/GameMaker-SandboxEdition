@@ -20,8 +20,8 @@ const demo = (g: { demo: boolean }) => g.demo;
 afterEach(() => vi.unstubAllGlobals());
 
 describe('the collections', () => {
-  it('put your own games first, then Sandbox and Bizarre before the CD', () => {
-    expect(CATEGORIES.map((c) => c.id)).toEqual(['mine', 'imported', 'starter', 'sandbox', 'bizarre', 'community', 'cd']);
+  it('put your own games first, then Sandbox, Bizarre and Special before the CD', () => {
+    expect(CATEGORIES.map((c) => c.id)).toEqual(['mine', 'imported', 'starter', 'sandbox', 'bizarre', 'special', 'community', 'cd']);
   });
 
   it('open on Sandbox when nothing was picked, and on the one picked otherwise', () => {

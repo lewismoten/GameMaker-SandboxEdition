@@ -20,7 +20,7 @@ export const SAVE_ID = 'site:achievements';
 export const FILE = 'achievements.json';
 export const ACHIEVEMENTS_CHANGED = 'gm-achievements-changed';
 /** A CustomEvent with detail { id } for each new unlock. */
-const ACHIEVEMENT_UNLOCKED = 'gm-achievement-unlocked';
+export const ACHIEVEMENT_UNLOCKED = 'gm-achievement-unlocked';
 
 export interface AchievementRecord {
   /** id -> Date.now() of the unlock. */

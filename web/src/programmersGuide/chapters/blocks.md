@@ -44,17 +44,16 @@ Consequences:
 
 - Every cell holding number N changes **at the same instant**. A ring has one phase. To get phase-shifted copies, place different **members** of the ring in different cells.
 - The map stores the **base** number (`map[y][x].blk`); drawing and touching go through `blkmap[...]` (`PG:2347, 3789-3799`).
-- Cost: the 150-number scan is 150 compares per tick, trivial; the **redraw** is the cost (below).
+- Cost: a fixed 150-entry scan, followed by a separate scan of the visible interior for redraws (`PG:2330-2354`). Which dominates on a target PC has not been measured; redraw cost is discussed below.
 - Only the 15 x 9 interior of the 16 x 10 screen is repainted when a frame changes (`PG:2344-2345`); chapter 3 explains the stale edge.
-- Time bound: `ntime` is an `int` (16-bit): at most **32,767 ticks = 32,767 / 18.2 = 1,800 s = 30 minutes** per frame [16-bit].
-- Terminal frames: set `nextbl` to the block itself. A frame whose `ntime` is 0 but whose `nextbl` points elsewhere is a hazard: **[inference]** it is skipped by the "never" branch at `PG:2336-2338` only if it was the _old_ block; if you build such a loop test it in DOSBox first. **[not yet checked in DOSBox]**
+- Time bound: `ntime` is an `int` (16-bit): at most **32,767 ticks**, about **30 minutes** at the nominal tick rate per frame [16-bit].
+- Terminal frames: set `nextbl` to the block itself. At scene entry `ntime <= 0` sets the deadline to `0xFFFFFFFF` (`PG:4715-4721`). During animation the next frame is selected first: if the **old** frame has `ntime <= 0`, the deadline becomes **0**, which is due, not "never", despite the comment (`PG:2333-2340`). Entering a zero-time frame from a positive-time frame adds zero to the old deadline; it can leave on the next tick. Each scan advances each number at most once. The port keeps this distinction (`engine/engine/scene.ts:352-355`, `engine/engine/scene.ts:381-391`).
 
-### Redraw budget (this is what actually limits big animations)
+### Redraw budget (a limit on the hardware copy path)
 
 `changeblks` draws one 400-byte block per **visible cell** whose number changed. A screen is at most 15 x 9 = 135 interior cells. Each draw also adds a dirty rectangle, and
 the dirty list holds at most **170** rectangles (`MAXDIRTY 170`, `DIRTRECT.C:12`; `AddDirtyRect` silently ignores the rest, `DIRTRECT.C:34`). Animated cells + monsters (2 rectangles each: erase and draw) +
-hero compete for those 170. 135 animated cells + 20 monsters x 2 + hero 4 = 179 > 170, so a very crowded screen can **drop** redraws and leave stale pictures for a tick. [inference; verify with the
-dirty-box debug define `SHOWDIRTYBOXES`, `DIRTRECT.C:11`] On the software path the whole screen is copied anyway, so the cap does not matter there (chapter 12).
+hero compete for those 170 (`PG:1453-1462`, `PG:1497-1520`, `PG:2265-2277`, `PG:2292-2316`). The illustrative budget 135 animated cells + 20 monsters x 2 + hero 4 = 179 > 170 exceeds capacity: later copy requests are dropped (`DIRTRECT.C:32-74`). Whether this leaves a visible stale picture, and for how long, depends on overlapping copies and later refreshes. **[inference; not yet checked in DOSBox]** The dirty-box debug define `SHOWDIRTYBOXES` (`DIRTRECT.C:11`) can help check it. On the software path `SoftwareScroll` runs instead and the dirty list is cleared (`PG:1513-1520`; chapter 12).
 
 ## 5.3 Births
 
@@ -74,10 +73,10 @@ timers keep running, so on return they are on the absolute grid.
 | `Birthtime`      | Behavior                                                                                                                                           |
 | ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1 .. 16,383      | works as written (16,383 ticks = 15 minutes)                                                                                                       |
-| 16,384 .. 32,767 | **[inference]** the first birth comes at the stored value, and the first `&= 0xBFFF` then strips bit 14, so every later period is `value - 16,384` |
+| 16,384 .. 32,767 | first deadline is `clock + stored value` (`PG:4724-4732`); bit 14 is cleared on every `BlocBirthMon` call, before checking that deadline, so later deadline increments are `value - 16,384` (`PG:3281-3289`) |
 | 32,768 .. 65,535 | negative as an `int`: the block never counts as a spawner                                                                                          |
 
-[16-bit] The web port keeps the flag in a separate array (`birthFlag`, `engine/engine/monsters.ts:272-277`), so it does **not** reproduce this: a `Birthtime` of 16,384 or more behaves the way the editor shows it in the port and the stripped way in DOS. **[not yet checked in DOSBox]** Check it in DOSBox with a block of `Birthtime` 20,000 (expect the second birth after 3,616 ticks, 3,616 = 20,000 - 16,384).
+[16-bit] At exactly 16,384 the later increment is zero: after the first deadline, the spawner remains due every tick. For 20,000 the later increment is 3,616 ticks. These are source scheduling rules, not measured birth observations. The web port reads the same signed field (`engine/formats/blocks.ts:72-76`) but keeps the flag in a separate array and preserves the positive period for 16,384..32,767 (`engine/engine/monsters.ts:268-288`, `engine/engine/scene.ts:356-358`). Values whose signed representation is negative do not become spawners in either implementation.
 
 ## 5.4 Touch swaps (`touchbl`)
 

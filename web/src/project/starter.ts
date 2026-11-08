@@ -39,7 +39,7 @@ export const STARTER_GROUPS: { name: string; tag: string; games: string[] }[] = 
   {
     name: 'Worlds That Push Back',
     tag: 'Ice, water, gravity and wind that act on you.',
-    games: ['slippery-and-bouncy', 'gravity-on-gravity-off', 'swim', 'gusts', 'drop-down'],
+    games: ['slippery-and-bouncy', 'gravity-on-gravity-off', 'swim', 'gusts', 'drop-down', 'quicksand'],
   },
   { name: 'Changing Your Hero', tag: 'New keys, new heroes, new vehicles.', games: ['kit-moves', 'home-keys', 'duck', 'choose-hero', 'take-the-wheel'] },
   {
@@ -93,13 +93,51 @@ export const STARTER_GROUPS: { name: string; tag: string; games: string[] }[] = 
   {
     name: 'Drawing with Blocks',
     tag: 'Roads, water and sky, drawn and animated.',
-    games: ['road-tiles', 'shore', 'twinkle', 'flicker', 'lights-out', 'color-doors', 'shadows', 'beams'],
+    games: ['road-tiles', 'shore', 'twinkle', 'flicker', 'lights-out', 'color-doors', 'shadows', 'beams', 'lightning-bugs', 'fireworks', 'leaves'],
+  },
+  {
+    name: 'Weather',
+    tag: 'Rain, snow, lightning and heat, drawn and animated.',
+    games: ['heat-waves', 'lightning', 'rain', 'snow'],
   },
   {
     name: 'Showcase Tricks',
     tag: 'How the big games do their big moments.',
-    games: ['dialog', 'popups', 'scripted', 'parallax', 'horizon', 'beltway', 'corner-view', 'slow-computers', 'under-the-hood'],
+    games: [
+      'dialog',
+      'popups',
+      'scripted',
+      'parallax',
+      'horizon',
+      'beltway',
+      'corner-view',
+      'slow-computers',
+      'under-the-hood',
+      'around-the-room',
+      'ride-along',
+    ],
   },
+];
+
+/**
+ * Starters filed in a group after the heroes and course numbers were first dealt, in the order they came. Each sits in its
+ * group in learning order, but takes the next hero (starterHeroes.ts) and the next course number of its stage
+ * (ceremonies.ts) only after every other game has its own, so filing one changes no other game's hero or course number.
+ * The first three were filed last in their group, so they would have taken those numbers anyway; listing them keeps
+ * their numbers (617 to 619) if a later Starter is filed after them in Showcase Tricks.
+ */
+export const ADDED_LATER: readonly string[] = [
+  'under-the-hood',
+  'around-the-room',
+  'ride-along',
+  'lightning-bugs',
+  'fireworks',
+  'leaves',
+  'quicksand',
+  'lightning',
+  'heat-waves',
+  'rain',
+  'snow',
 ];
 
 /** The order the Starters are meant to be played in, easiest first: the groups' games in order (games/<id>); a starter not listed goes after these, A to Z. */

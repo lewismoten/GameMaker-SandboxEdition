@@ -41,6 +41,8 @@ Design, pixels, beeps and levels by Claude Sonnet 5.5, an AI model made by Anthr
 Made with GAME-MAKER 3.0 from Recreational Software Designs.
 
 One of the Starters: small games that each show one idea.
+
+Music re-scored with OpenAI Codex from the original tune and B section by Claude.
 `),
 );
 
@@ -49,7 +51,7 @@ export const WON = wrap(`
 
 Two halls, three lights, and nobody was seen.
 
-A light is not one monster but five in a column: a lamp and four pieces of cone, each walking the same path at the same speed. A trench is just a place that path never goes. The light cannot look, turn or chase.
+A light is not one monster but three in a column: a lamp and two pieces of cone, each walking the same path at the same speed. A trench is just a place that path never goes. The light cannot look, turn or chase.
 
 Open the game in Game-Maker and find the monsters on the Monsters tab. Give them a longer path and the trench is not enough.
 `);

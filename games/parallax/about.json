@@ -6,7 +6,7 @@
   "hero": "RIMA",
   "year": 1994,
   "price": "Free",
-  "version": "1.0",
+  "version": "1.2",
   "blurb": "Two short levels about layers that go by at different speeds. The screen never scrolls: the far hills, a town and a fence are rows of blocks that slide, each at its own pace, and in the second level clouds drift over the hills while three suns fill in to open a door. Signs in the levels say how. Play it, then open it in Game-Maker and change how fast a band goes.",
   "exe": "PARALLAX.EXE",
   "dosName": "PARALLAX",

@@ -51,7 +51,7 @@ async function talkTo(bot: StarterBot, x: number, talkScene: number, levelScene:
 export async function sayHello(bot: StarterBot): Promise<void> {
   const score = bot.sim.ci.score;
   await must(bot, bot.walk(17, 'the boards'), 'along the boards');
-  await talkTo(bot, PIP_X, 4, 2, 'Pip');
+  await talkTo(bot, PIP_X, 4, 7, 'Pip');
   await must(bot, bot.walk(38, 'the coins'), 'past Pip');
   coins(bot, score, 9, 'level 1 before the door');
   await leave(bot, bot.walk(43, 'the door'), 'the door');
@@ -61,9 +61,9 @@ export async function sayHello(bot: StarterBot): Promise<void> {
 export async function twoFriends(bot: StarterBot): Promise<void> {
   const score = bot.sim.ci.score;
   await must(bot, bot.walk(19, 'the boards'), 'along the boards');
-  await talkTo(bot, MOSS_X, 5, 3, 'Moss');
+  await talkTo(bot, MOSS_X, 5, 8, 'Moss');
   await must(bot, bot.walk(33, 'the coins'), 'on to Dot');
-  await talkTo(bot, DOT_X, 6, 3, 'Dot');
+  await talkTo(bot, DOT_X, 6, 8, 'Dot');
   await must(bot, bot.walk(40, 'the coins'), 'past Dot');
   coins(bot, score, 9, 'level 2 before the door');
   await leave(bot, bot.walk(45, 'the door'), 'the door');

@@ -3,7 +3,7 @@
 // checks here fail unless the water does what its sign says:
 //   level 1: hold Space (one hop only), hop onto the low wall, tap Up (a short rise, then down), then hold Up
 //            beside the cliff until Kit is above it and walk onto the top
-//   level 2: hold Enter (one dash), then cross three gaps, each with a hop and one more press of Enter than the last
+//   level 2: hold Enter (one dash), then cross three gaps: a dash, a hop with a dash, a hop with two dashes (each shown to fail one move short first)
 import type { Result, StarterBot } from '../../kit/starter/bot';
 import { SCAN } from '../../kit/starter/ids';
 import { ORIGIN } from '../../kit/starter/map';
@@ -119,18 +119,45 @@ export async function tapAndHold(bot: StarterBot): Promise<void> {
   await leave(bot, bot.walk(L1.exit, 'the exit'), 'the exit');
 }
 
-/** Hop at the edge of a gap, press Enter `presses` times in the air (letting go between), then land. */
-async function crossGap(bot: StarterBot, edge: number, presses: number, landing: number, what: string): Promise<void> {
-  await must(bot, bot.walk(edge, `the edge of ${what}`), `to the edge of ${what}`);
-  await must(bot, holdFor(bot, SCAN.space, 2), `hop at ${what}`);
-  for (let n = 0; n < presses; n++) {
-    await must(bot, bot.wait(3), `in the air at ${what}`);
+/** A way over a gap, as a person plays it: Right held all the way (if `right`), a hop (if `hop`), then `presses` presses of Enter. */
+interface Move {
+  right: boolean;
+  hop: boolean;
+  presses: number;
+}
+/** Ticks between lifting a finger and the next press: about a sixth of a second. A dash lasts six ticks, so the press before it is over by then. */
+const BETWEEN = 4;
+
+/** Plays `m` from where Kit stands, then waits until he is standing again. Returns where he ended up. */
+async function play(bot: StarterBot, m: Move, what: string): Promise<{ col: number; row: number }> {
+  if (m.right) bot.sim.press(SCAN.right);
+  if (m.hop) await must(bot, holdFor(bot, SCAN.space, 2), `hop at ${what}`);
+  for (let n = 0; n < m.presses; n++) {
+    if (m.hop || n > 0) await must(bot, bot.wait(BETWEEN), `in the air at ${what}`);
     await must(bot, holdFor(bot, ENTER, 2), `dash ${n + 1} at ${what}`);
   }
+  await must(bot, bot.wait(24), `still in the air at ${what}`);
+  bot.sim.release(SCAN.right);
   await must(bot, bot.land(), `landing after ${what}`);
-  bot.say(`${what}: ${presses} dash(es), landed at column ${col(bot).toFixed(1)}, row ${row(bot).toFixed(1)}`);
-  if (col(bot) < landing || row(bot) > L2.ground - 1 + 0.2)
-    throw new Error(`Kit should have crossed ${what} and stand past column ${landing}; he is at ${col(bot).toFixed(1)}, ${row(bot).toFixed(1)}`);
+  return { col: col(bot), row: row(bot) };
+}
+
+/** Crosses a gap with `move`, after showing from a saved state that `lesser` (the move before it) falls in. */
+async function crossGap(bot: StarterBot, pit: readonly [number, number], lesser: Move, move: Move, what: string): Promise<void> {
+  await must(bot, bot.walk(pit[0] - 1, `the edge of ${what}`), `to the edge of ${what}`);
+  // a nudge closer, as a person edges up to the gap
+  await must(bot, holdFor(bot, SCAN.right, 2), 'a step closer');
+  await must(bot, bot.wait(10), 'a look');
+  const crossed = (r: { col: number; row: number }) => r.col >= pit[1] + 1 && r.row <= L2.ground - 1 + 0.2;
+  const saved = bot.snapshot();
+  const before = await play(bot, lesser, `${what}, the move before`);
+  bot.say(`${what}: ${JSON.stringify(lesser)} ended at column ${before.col.toFixed(1)}, row ${before.row.toFixed(1)}`);
+  if (crossed(before)) throw new Error(`${what} should be too wide for ${JSON.stringify(lesser)}, but Kit crossed it`);
+  bot.restore(saved);
+  const after = await play(bot, move, what);
+  bot.say(`${what}: ${JSON.stringify(move)} ended at column ${after.col.toFixed(1)}, row ${after.row.toFixed(1)}`);
+  if (!crossed(after))
+    throw new Error(`Kit should have crossed ${what} and stand past column ${pit[1] + 1}; he is at ${after.col.toFixed(1)}, ${after.row.toFixed(1)}`);
 }
 
 /** 2. Once Per Press: Enter dashes once however long it is held; each press is another dash. */
@@ -146,13 +173,16 @@ export async function oncePerPress(bot: StarterBot): Promise<void> {
   bot.say(`Enter held 30 ticks: moved ${dx.toFixed(1)} blocks`);
   if (dx < 2.8 || dx > 3.8) throw new Error(`holding Enter should give one dash of about three blocks; Kit moved ${dx.toFixed(1)}`);
   const [p1, p2, p3] = L2.pits;
-  await crossGap(bot, p1[0] - 1, 1, p1[1] + 1, 'the first gap');
+  // one dash clears the first gap; walking into it does not
+  await crossGap(bot, p1, { right: true, hop: false, presses: 0 }, { right: false, hop: false, presses: 1 }, 'the first gap');
   await must(bot, bot.walk(21, 'the second sign'), 'to the sign');
   await must(bot, bot.wait(LOOK), 'reading the sign');
-  await crossGap(bot, p2[0] - 1, 2, p2[1] + 1, 'the second gap');
+  // a hop with Right held falls short of the second gap; a hop and a dash clears it
+  await crossGap(bot, p2, { right: true, hop: true, presses: 0 }, { right: true, hop: true, presses: 1 }, 'the second gap');
   await must(bot, bot.walk(37, 'the third sign'), 'to the sign');
   await must(bot, bot.wait(LOOK), 'reading the sign');
-  await crossGap(bot, p3[0] - 1, 3, p3[1] + 1, 'the third gap');
+  // a hop and one dash falls short of the widest gap; a hop and two dashes clears it
+  await crossGap(bot, p3, { right: true, hop: true, presses: 1 }, { right: true, hop: true, presses: 2 }, 'the widest gap');
   await must(bot, bot.walk(L2.coins[L2.coins.length - 1][0] + 1, 'the far coin'), 'to the far coin');
   score(bot, from, 10 * L2.coins.length, 'level 2');
   await leave(bot, bot.walk(L2.exit, 'the exit'), 'the exit');

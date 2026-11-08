@@ -33,11 +33,15 @@ function cloud(p: Pixels, pal: Pal, x: number, y: number, s = 1): void {
   p.rect(x - 6 * s, y + 9 * s, 38 * s, 3 * s, pal.c('white', 2));
 }
 
-/** A sunny scene: sky, clouds, two rows of hills, then the grass and dirt blocks of the levels from `ground` down. */
-export function scene(pal: Pal, book: Book, ground = 160, seed = 3): Pixels {
+/**
+ * A sunny scene: sky, clouds, two rows of hills, then the grass and dirt blocks of the levels from
+ * `ground` down. The sky blends in whole rows (a much smaller GIF); `rows` false keeps the 4x4
+ * dither, for a Special's title picture and title cartoon.
+ */
+export function scene(pal: Pal, book: Book, ground = 160, seed = 3, rows = true): Pixels {
   const { c, r } = pal;
   const p = new Pixels(W, H);
-  gradient(p, 0, 0, W, ground, r('sky'), 1, 4);
+  gradient(p, 0, 0, W, ground, r('sky'), 1, 4, rows);
   const rand = rng(seed);
   for (let i = 0; i < 5; i++) cloud(p, pal, Math.floor(rand() * 300), 8 + Math.floor(rand() * 60), 1 + (i % 2) * 0.5);
   for (let x = 0; x < W; x++) {
@@ -135,7 +139,13 @@ export function paper(pal: Pal, book: Book, heading: string): Pixels {
   const p = scene(pal, book, 176, 11);
   bevel(p, 22, 0, 276, 200, pal.r('parch'), 3, 2);
   p.rect(26, 4, 268, 194, c('parch', 4));
-  centered(p, 14, heading, c('wood', 1), 2);
+  // drawn at 2x, the paper holds 17 characters a line: a longer heading goes onto two lines, split at the space nearest its middle
+  if (heading.length <= 17) centered(p, 14, heading, c('wood', 1), 2);
+  else {
+    const spaces = [...heading].flatMap((ch, i) => (ch === ' ' ? [i] : []));
+    const at = spaces.reduce((a, b) => (Math.abs(b - heading.length / 2) < Math.abs(a - heading.length / 2) ? b : a));
+    [heading.slice(0, at), heading.slice(at + 1)].forEach((l, i) => centered(p, 5 + i * 15, l, c('wood', 1), 2));
+  }
   return p;
 }
 

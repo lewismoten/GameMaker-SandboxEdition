@@ -4,7 +4,48 @@ import { MLEN, newMap, serializeMap } from '@lewismoten/gamemaker-sandbox-engine
 import type { RoleMap } from '@lewismoten/gamemaker-sandbox-tools/kit/blockRoles';
 import { generate } from '@lewismoten/gamemaker-sandbox-tools/kit/levelGen';
 import { checkLayout } from './verifyOffer';
-import { place, placeMonsters } from './place';
+import { place, placeMonsters, placementText } from './place';
+
+describe('generated monster capacity feedback', () => {
+  it.each([
+    [197, 2, 0],
+    [198, 2, 0],
+    [199, 1, 1],
+    [200, 0, 2],
+  ])('with %i slots occupied outside, reports %i placed and %i omitted', (occupied, placed, dropped) => {
+    const map = newMap();
+    for (const m of map.monsters.slice(0, occupied)) Object.assign(m, { monnum: 1, curx: 90, cury: 90 });
+    const r = gen(8);
+    r.monsters = [
+      { cell: 0, monnum: 3 },
+      { cell: 1, monnum: 4 },
+    ];
+    const result = placeMonsters(map, r);
+    expect(result).toEqual({ placed, dropped });
+    expect(map.monsters.filter((m) => m.monnum < 64)).toHaveLength(occupied + placed);
+    const text = placementText(result);
+    expect(text).toContain(`${placed} monster${placed === 1 ? '' : 's'} placed`);
+    expect(text).toContain('Undo takes it back in one step.');
+    if (dropped) {
+      expect(text).toContain(`${dropped} omitted`);
+      expect(text).toContain('DOS Game-Maker holds 200 monster slots per map, including monsters born during play.');
+    } else expect(text).not.toContain('omitted');
+  });
+  it('reuses slots in the replaced area instead of falsely reporting a full map', () => {
+    const map = newMap();
+    for (const m of map.monsters) Object.assign(m, { monnum: 1, curx: 90, cury: 90 });
+    Object.assign(map.monsters[0], { curx: 10, cury: 10 });
+    Object.assign(map.monsters[1], { curx: 11, cury: 10 });
+    const r = gen(8);
+    r.monsters = [
+      { cell: 0, monnum: 3 },
+      { cell: 1, monnum: 4 },
+    ];
+    const result = placeMonsters(map, r);
+    expect(result).toEqual({ placed: 2, dropped: 0 });
+    expect(placementText(result)).toBe('Layout drawn. 2 monsters placed. Undo takes it back in one step.');
+  });
+});
 
 const roles: RoleMap = {
   1: { roles: ['wall'] },

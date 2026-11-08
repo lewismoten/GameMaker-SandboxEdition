@@ -39,6 +39,7 @@ describe('color reduction proposals', () => {
     const r = reductions(f, 't.gam', ranges);
     expect(r).toHaveLength(1);
     expect(r[0].changedBlocks).toBe(1);
+    expect(r[0].conflicts).toEqual([12]);
     r[0].apply(f, 't.gam');
     const b = parseBlocks(f.get('a.bbl')!, BACKBL);
     expect(b[1].pixels.every((v) => v < 10 || v > 19)).toBe(true);

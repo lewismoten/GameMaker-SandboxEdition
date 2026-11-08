@@ -15,7 +15,7 @@
    "keys": ""
   },
   {
-   "scene": 2,
+   "scene": 6,
    "keys": "BE0ozQNN"
   },
   {
@@ -27,7 +27,7 @@
    "keys": ""
   },
   {
-   "scene": 3,
+   "scene": 7,
    "keys": "BE0jzQNN"
   }
  ],
@@ -40,8 +40,7 @@
    "scene": 4
   },
   {
-   "scene": 2,
-   "title": "Level 1: Two Voices"
+   "scene": 6
   },
   {
    "scene": 3,
@@ -51,13 +50,12 @@
    "scene": 5
   },
   {
-   "scene": 3,
-   "title": "Level 2: A Crowd"
+   "scene": 7
   }
  ],
  "timeline": {
   "fps": 60,
-  "frames": 9823,
+  "frames": 9350,
   "chapters": [
    {
     "title": "Opening",
@@ -76,18 +74,18 @@
    },
    {
     "title": "Level 2: A Crowd",
-    "frame": 4091,
-    "time": 68183.33333333029
+    "frame": 3854,
+    "time": 64233.33333332971
    },
    {
     "title": "Ending",
-    "frame": 6540,
-    "time": 109000.00000000883
+    "frame": 6067,
+    "time": 101116.6666666732
    },
    {
     "title": "Credits",
-    "frame": 8749,
-    "time": 145816.66666667335
+    "frame": 8276,
+    "time": 137933.3333333446
    }
   ]
  }

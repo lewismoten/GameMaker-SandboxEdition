@@ -13,7 +13,7 @@ import { isImported } from './homeOrigin';
 import type { HomeNav } from './home';
 import { walkthroughButton } from '../../walkthrough/button';
 import { savesButton } from '../../saves/button';
-import { chooseDownload, downloadButton } from './download';
+import { downloadButton } from './downloadButton';
 import { catalogDownloadable } from '../../export/downloadable';
 import { fictionNote } from '../../export/fiction';
 import { fillRating } from './homeRatings';
@@ -25,6 +25,7 @@ const KIND_LABEL: Record<GameKind, string> = {
   sandbox: 'Sandbox',
   shareware: 'Shareware',
   bizarre: 'Bizarre',
+  special: 'Special',
   community: 'Community',
 };
 
@@ -94,7 +95,7 @@ function catalogDownload(game: HomeGame): HTMLElement | null {
   const e = game.entry;
   if (!e || game.project || !catalogDownloadable(e)) return null;
   return downloadButton(game.title, async () =>
-    chooseDownload({
+    (await import('./download')).chooseDownload({
       title: e.title,
       gam: e.gam!,
       files: () => game.files(),
@@ -194,7 +195,8 @@ export function showcase(nav: HomeNav, refresh: () => Promise<void>, life?: Abor
     title.textContent = game.title;
     clear(
       byline,
-      game.byline,
+      // an imported game shows its title only, like its card (no edited date or file name)
+      game.project && isImported(game.project.id) ? null : game.byline,
       // a finished game has an address of its own to share (yours live only in this browser)
       game.entry
         ? h(

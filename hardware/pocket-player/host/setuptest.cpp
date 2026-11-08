@@ -1,16 +1,32 @@
-// Mac test for src/setupflow.h, src/softgfx.h's map and src/displaysetup.h: the four steps and what BOOT and OK do in each,
+// Mac test for src/setupflow.h, src/softgfx.h's map and src/displaysetup.h: the three steps and what BOOT and OK do in each,
 // the turn each combination gives, the software quarter turns, and the saved record.
 #include "fwid.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <initializer_list>
 #include "displaysetup.h"
 #include "setupflow.h"
+#include "screen.h"
 #include "softgfx.h"
 
 static int fails = 0;
 #define CHECK(c, ...) do { if (!(c)) { fails++; printf("FAIL: " __VA_ARGS__); printf("\n"); } } while (0)
 
 int main() {
+  CHECK(ds::STEP_CALIBRATE == 4, "old NVS calibration-resume stage stays compatible");
+  for (int w : {320, 480}) for (bool left : {false, true}) for (bool small : {false, true}) for (int padR : {w == 320 ? 42 : 64, w == 320 ? 50 : 76, w == 320 ? 58 : 90}) {
+    int h = w == 320 ? 200 : 300;
+    int padEdge = 2 * padR + (w == 320 ? 6 : 10);
+    scr::Picture p = {w, h, small, left, padEdge + 14};
+    CHECK(p.toX(320) <= w && p.toY(200) <= h, "picture fits %d", w);
+    CHECK(!small || (left ? p.toX(320) <= w - padEdge - 14 : p.x() >= padEdge + 14), "whole picture clears pad and touch slop %d", w);
+    CHECK(!small || (p.height() < h && (left ? p.x() == 0 : p.x() > 0)), "picture clears the pad corner %d", w);
+    for (int y = 0; y < h; y++) for (int x = 0; x < w; x++) if (p.contains(x, y)) {
+      CHECK(p.fromX(x) >= 0 && p.fromX(x) < 320 && p.fromY(y) >= 0 && p.fromY(y) < 200, "source pixel in bounds");
+      if (!small) CHECK(p.fromX(x) == x * 320 / w && p.fromY(y) == y * 200 / h, "normal picture unchanged");
+    }
+  }
+
   {
     char b[48];
     fw::label("C", "1a2b3c4", "2026-11-05", b, sizeof b);
@@ -28,24 +44,27 @@ int main() {
     f.boot(); CHECK(f.u == 1, "step 1 mirrors left to right");
     f.boot(); CHECK(f.u == 0, "step 1 twice is back");
     f.boot();
-    CHECK(f.ok() && f.step == sf::ROTATE, "OK on step 1 goes to step 2");
-    f.boot(); CHECK(f.u == (1 ^ 3), "step 2 turns half a turn (both mirror bits)");
-    f.boot(); CHECK(f.u == 1, "step 2 twice is back");
-    CHECK(f.softMode() == 0, "steps 1 and 2 draw in the portrait turn");
-    CHECK(f.ok() && f.step == sf::ORIENT && f.soft == 1 && f.softMode() == 1, "step 3 starts as the first quarter turn");
-    f.boot(); CHECK(f.soft == 2 && f.softMode() == 2, "step 3 BOOT is the other quarter turn");
+    CHECK(f.ok() && f.step == sf::ORIENT && f.soft == 1, "Mirror goes directly to Landscape");
+    int seen[4][4] = {};
+    int initialU = f.u;
+    for (int i = 0; i < 6; i++) { seen[f.u][f.soft]++; f.boot(); }
+    CHECK(f.u == initialU && f.soft == 1, "six orientation choices cycle back");
+    for (int soft = 1; soft <= 3; soft++) {
+      CHECK(seen[initialU][soft] == 1 && seen[initialU ^ 3][soft] == 1, "both mounting directions for mode %d", soft);
+    }
+    f.boot(); CHECK(f.soft == 2 && f.softMode() == 2, "Landscape BOOT is the other quarter turn");
     CHECK(!f.wide(), "a quarter turn is not the wide glass");
-    f.boot(); CHECK(f.soft == 3 && f.softMode() == 0 && f.wide(), "step 3 BOOT, third: the glass run 320 x 240 with no software turn");
+    f.boot(); CHECK(f.soft == 3 && f.softMode() == 0 && f.wide(), "step 2 BOOT, third: the glass run 320 x 240 with no software turn");
     f.boot(); CHECK(f.soft == 1 && f.softMode() == 1 && !f.wide(), "and round again");
-    f.boot(); f.boot(); CHECK(f.soft == 3, "to the wide glass for the step 4 check");
-    CHECK(f.ok() && f.step == sf::COLORS && f.softMode() == 0 && f.wide() && f.soft == 3, "step 4 keeps the wide glass");
+    f.boot(); f.boot(); CHECK(f.soft == 3, "to the wide glass for the step 3 check");
+    CHECK(f.ok() && f.step == sf::COLORS && f.softMode() == 0 && f.wide() && f.soft == 3, "step 3 keeps the wide glass");
     f.step = sf::ORIENT; f.soft = 1;
-    CHECK(f.ok() && f.step == sf::COLORS && f.softMode() == 1, "step 4 keeps the chosen quarter turn");
-    for (int i = 1; i <= 4; i++) { f.boot(); CHECK(f.color == (i & 3), "step 4 cycles four color modes (%d)", f.color); }
+    CHECK(f.ok() && f.step == sf::COLORS && f.softMode() == 1, "step 3 keeps the chosen quarter turn");
+    for (int i = 1; i <= 4; i++) { f.boot(); CHECK(f.color == (i & 3), "step 3 cycles four color modes (%d)", f.color); }
     CHECK(f.panelBits(1) == 1 && (f.panelBits(0) & 1) == 0, "the driver bit is kept");
     f.color = 3;
     CHECK(f.panelBits(1) == 7 && f.panelBits(0) == 6, "colors 3 = inverted and swapped (panel bits 2 and 4)");
-    CHECK(!f.ok(), "OK on the last step ends the four steps");
+    CHECK(!f.ok(), "OK on the last step ends the three steps");
   }
   // the four mirror states map to four distinct portrait rotations that never use the row/column exchange (odd rotations)
   {
@@ -110,6 +129,17 @@ int main() {
             back.cal.v0 == 280 && back.cal.v1 == 3720 && back.full == 1 && back.cal.valid == 1, "record round trip");
   CHECK(ds::parse("pocket-board 1\npanel=1\nturn=3\nswap=0\nu0=1\nu1=2\nv0=3\nv1=4\nfull=1\n", back) && back.soft == 0 && back.turn == 3, "an old record (no soft line) reads as soft 0");
   CHECK(!ds::parse("pocket-board 1\npanel=1\nturn=0\nswap=0\nu0=1\nu1=2\nv0=3\nv1=4\nsoft=4\n", back), "soft 4 refused");
+  CHECK(back.gamma == 0 && back.tune == 0, "an old record (no gamma or tune line) reads as the driver's own picture");
+  {
+    ds::Record p = r;
+    p.gamma = 2;
+    p.tune = 3;
+    char pb[200];
+    ds::Record pback;
+    ds::format(p, pb, sizeof pb);
+    CHECK(ds::parse(pb, pback) && pback.gamma == 2 && pback.tune == 3 && pback.panel == 5, "the picture tuning survives a save and read");
+  }
+  CHECK(!ds::parse("pocket-board 1\npanel=1\nturn=0\nswap=0\nu0=1\nu1=2\nv0=3\nv1=4\ngamma=4\n", back), "gamma 5 refused");
   CHECK(!ds::parse("hello", back), "foreign file refused");
   CHECK(!ds::parse("pocket-board 1\npanel=9\nturn=0\nswap=0\nu0=1\nu1=2\nv0=3\nv1=4\n", back), "panel 9 refused");
   CHECK(!ds::parse("pocket-board 1\npanel=1\nturn=0\n", back), "a short record refused");

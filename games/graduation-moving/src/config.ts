@@ -3,12 +3,13 @@ import { wrap, creditsPage } from '../../kit/starter/graduationText';
 import type { Graduation } from '../../kit/starter/graduationConfig';
 import { GYM } from '../../kit/starter/graduationThemes';
 import about from '../about.json';
+import { song } from './song';
 
 export const cfg: Graduation = {
   id: 'graduation-moving',
   stage: 'Moving and Pushing',
   groups: ['Moving and Pushing', 'Worlds That Push Back'],
-  cameos: ['gwinn', 'goat', 'carl'],
+  cameos: ['gwinn', 'joe', 'goat', 'teddy', 'carl', 'chicken', 'loaf', 'lewie'],
   theme: GYM,
   upper: 'MOVING & PUSHING',
   honors: 'IN MOVING & PUSHING',
@@ -19,8 +20,14 @@ export const cfg: Graduation = {
     doc: 'DOC LEO HAS A SCROLL FOR YOU',
     banner: 'MOVING & PUSHING',
   },
+  arrive: {
+    title: 'The Green',
+    hint: 'Cross the green to the gym doors.',
+    welcome: 'THE GYM IS AHEAD',
+    nods: ['heart', 'ice', 'wind'],
+  },
   level: { title: 'The Court', hint: 'Walk across the court to the stage.' },
-  song: { bpm: 96, lead: 'brass', transpose: 2 },
+  song,
   text: {
     story: wrap(`
 |GRADUATION

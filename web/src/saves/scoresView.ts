@@ -1,6 +1,7 @@
 // The Saves & scores panel's high-score table: ten scores and names to change, sort or clear, with
 // a warning where the game would show or order them oddly.
 import { h, clear } from '../editor/core/ui';
+import { fromCp437, toCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import { highScoreFileName, HIGH_SCORE_NAME_MAX, highScoreWarnings, SCORE_MAX, SCORE_MIN, sortHighScores, writeHighScores } from '../project/saveData';
 import { tip } from './tip';
 import type { Panel } from './panelState';
@@ -60,13 +61,13 @@ export function renderScores(p: Panel): void {
         null,
         h('input', {
           type: 'text',
-          value: e.name,
+          value: fromCp437(e.name),
           maxlength: 29,
           spellcheck: false,
           'aria-label': `Name, place ${i + 1}`,
           'aria-describedby': `sv-hs-${i}-warn`,
           oninput: (ev: Event) => {
-            e.name = (ev.target as HTMLInputElement).value;
+            e.name = toCp437((ev.target as HTMLInputElement).value);
             showWarn();
             refreshState();
           },

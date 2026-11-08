@@ -96,9 +96,9 @@ export function frameOf(p: Pixels, pal: Pal, style: Exclude<GroupStyle, 'meadow'
 /** A sky going from purple through pink to orange, a low sun, long streaks of cloud and dark hills. */
 function sunset(p: Pixels, pal: Pal): void {
   const c = pal.c;
-  gradient(p, 0, 0, W, 60, pal.r('purple'), 0, 3);
-  gradient(p, 0, 60, W, 50, pal.r('pink'), 0, 3);
-  gradient(p, 0, 110, W, 50, pal.r('orange'), 1, 4);
+  gradient(p, 0, 0, W, 60, pal.r('purple'), 0, 3, true);
+  gradient(p, 0, 60, W, 50, pal.r('pink'), 0, 3, true);
+  gradient(p, 0, 110, W, 50, pal.r('orange'), 1, 4, true);
   const rand = rng(5);
   for (let i = 0; i < 18; i++) p.set(Math.floor(rand() * W), Math.floor(rand() * 40), c('white', 3));
   p.disc(228, 140, 34, c('gold', 3)).disc(228, 140, 28, c('gold', 4));
@@ -123,7 +123,7 @@ function sunset(p: Pixels, pal: Pal): void {
 /** A windy day: a pale teal sky with streaks of wind, leaves drifting across it, and a wavy blue water line along the bottom. */
 function breeze(p: Pixels, pal: Pal): void {
   const c = pal.c;
-  gradient(p, 0, 0, W, GROUND + 4, pal.r('teal'), 2, 4);
+  gradient(p, 0, 0, W, GROUND + 4, pal.r('teal'), 2, 4, true);
   const rand = rng(11);
   // long curved streaks of wind
   for (const [x, y, w] of [
@@ -170,7 +170,7 @@ function breeze(p: Pixels, pal: Pal): void {
 /** A dressing room: a purple wall with faint stripes, a mirror in a gold frame, a short rail of hooks with scarves, and wooden floorboards. */
 function dressing(p: Pixels, pal: Pal): void {
   const c = pal.c;
-  gradient(p, 0, 0, W, GROUND, pal.r('purple'), 1, 3);
+  gradient(p, 0, 0, W, GROUND, pal.r('purple'), 1, 3, true);
   for (let x = 0; x < W; x += 24) p.rect(x, 0, 6, GROUND, c('purple', 2));
   // the mirror: an oval of pale glass in a gold frame, with two glints
   const mx = 56;
@@ -205,7 +205,7 @@ function dressing(p: Pixels, pal: Pal): void {
 /** A ring with banners: a red wall with gold pennants and a string of bunting, and a sandy floor inside a gold oval. Bright and cheerful. */
 function arena(p: Pixels, pal: Pal): void {
   const c = pal.c;
-  gradient(p, 0, 0, W, GROUND, pal.r('red'), 1, 3);
+  gradient(p, 0, 0, W, GROUND, pal.r('red'), 1, 3, true);
   pool(p, 160, 70, 150, 70, pal.r('red'), 3, 4);
   // bunting: a string sagging between the corners, hung with little gold, white and teal flags
   const sag = (x: number) => 10 + Math.round(Math.sin((x / W) * Math.PI) * 14);
@@ -242,7 +242,7 @@ function arena(p: Pixels, pal: Pal): void {
 /** A green circuit board: copper traces with square turns, round solder pads and little black chips with pins, over a darker board floor. */
 function circuit(p: Pixels, pal: Pal): void {
   const c = pal.c;
-  gradient(p, 0, 0, W, GROUND, pal.r('green'), 0, 2);
+  gradient(p, 0, 0, W, GROUND, pal.r('green'), 0, 2, true);
   const copper = c('gold', 3);
   const shine = c('gold', 4);
   const pad = (x: number, y: number) => p.disc(x, y, 3, copper).disc(x, y, 1, c('green', 0));
@@ -292,7 +292,7 @@ function circuit(p: Pixels, pal: Pal): void {
 /** A theater: red curtains and a fringed valance, a spotlit back wall and a wooden stage. */
 function stage(p: Pixels, pal: Pal): void {
   const c = pal.c;
-  gradient(p, 0, 0, W, GROUND, pal.r('purple'), 0, 2);
+  gradient(p, 0, 0, W, GROUND, pal.r('purple'), 0, 2, true);
   pool(p, 160, 150, 130, 70, pal.r('purple'), 2, 3);
   // wooden stage: planks running across, with their joints staggered
   p.rect(0, GROUND, W, H - GROUND, c('wood', 2));
@@ -348,7 +348,7 @@ function workbench(p: Pixels, pal: Pal): void {
 /** An old atlas: a sheet of parchment ruled in a faint grid, little drawn hills and a compass, over a wooden table. */
 function atlas(p: Pixels, pal: Pal): void {
   const c = pal.c;
-  gradient(p, 0, 0, W, GROUND, pal.r('parch'), 3, 5);
+  gradient(p, 0, 0, W, GROUND, pal.r('parch'), 3, 5, true);
   for (let x = 16; x < W; x += 32) p.rect(x, 0, 1, GROUND, c('parch', 3));
   for (let y = 16; y < GROUND; y += 32) p.rect(0, y, W, 1, c('parch', 3));
   // hills sketched in ink-brown lines: a peak with a snowy line and a shadow side
@@ -399,7 +399,7 @@ function atlas(p: Pixels, pal: Pal): void {
 function neon(p: Pixels, pal: Pal): void {
   const c = pal.c;
   p.rect(0, 0, W, H, c('ink', 0));
-  gradient(p, 0, 70, W, 90, pal.r('purple'), 0, 2);
+  gradient(p, 0, 70, W, 90, pal.r('purple'), 0, 2, true);
   const rand = rng(8);
   for (let i = 0; i < 30; i++) p.set(Math.floor(rand() * W), Math.floor(rand() * 60), c('white', 2 + (i % 2)));
   p.disc(284, 50, 11, c('white', 3)).disc(288, 47, 9, c('ink', 0));

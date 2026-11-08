@@ -3,7 +3,7 @@
 // switch and files, and Previous / Next (or PageUp / PageDown) through the rest of that game's trinkets.
 // Loaded when a trinket is first chosen, with the desk's viewer it uses.
 import { h, modal } from '../editor/core/ui';
-import { trinketMesh, type TrinketItem } from '../desk/boxes/trinketData';
+import { trinketDownload, trinketMesh, type TrinketItem } from '../desk/boxes/trinketData';
 import { trinketTurntable } from '../desk/boxes/trinketTurntable';
 
 const mb = (bytes: number) => `${(bytes / 1e6).toFixed(1)} MB`;
@@ -25,9 +25,9 @@ export async function toyCloseUp(game: string, base: string, items: TrinketItem[
   const blurb = h('span', { class: 'toy-big-blurb' });
   const size = h('span', { class: 'toy-size' });
   const count = h('span', { class: 'toy-big-count' });
-  const dl = h('a', { class: 'toy-dl', download: '' }, 'STL');
-  const dlColors = h('a', { class: 'toy-dl', download: '' }, '3MF');
   const swatches = h('span', { class: 'toy-swatches', 'aria-hidden': 'true' });
+  // the file links are made again for each trinket (a packed file is made on its link's first click: trinketData.ts)
+  const links = h('span', { class: 'toy-links' });
   const mode = (label: string, on: boolean) =>
     h('button', { class: 'toy-btn', type: 'button', 'aria-pressed': String(on), onclick: () => setColors(on) }, label);
   const modeColors = mode('3MF: colors', true);
@@ -50,12 +50,20 @@ export async function toyCloseUp(game: string, base: string, items: TrinketItem[
     blurb.textContent = item.blurb;
     size.textContent = `${dims} mm`;
     count.textContent = many ? `${i + 1} of ${items.length} from ${game}` : `From ${game}`;
-    dl.href = `${base}${item.file}`;
-    dl.setAttribute('download', item.file);
-    dl.title = `${item.file}: ${mb(item.bytes)}, one color`;
-    dlColors.href = `${base}${item.colors.file}`;
-    dlColors.setAttribute('download', item.colors.file);
-    dlColors.title = `${item.colors.file}: ${mb(item.colors.bytes)}, one body for each of ${item.colors.palette.length} colors`;
+    links.replaceChildren(
+      trinketDownload(h('a', { class: 'toy-dl', title: `${item.file}: ${mb(item.bytes)}, one color` }, 'STL'), base, item, item.file),
+      trinketDownload(
+        h(
+          'a',
+          { class: 'toy-dl', title: `${item.colors.file}: about ${mb(item.colors.bytes)}, one body for each of ${item.colors.palette.length} colors` },
+          '3MF',
+        ),
+        base,
+        item,
+        item.colors.file,
+      ),
+      swatches,
+    );
     swatches.replaceChildren(...item.colors.palette.map((c) => h('i', { style: `background: rgb(${c.join(',')})` })));
     canvas.setAttribute('aria-label', `${item.title}: ${item.blurb} A plastic trinket, ${dims} millimeters.`);
     void table.show(() => trinketMesh(base, item, colors), { fresh: true, spin: true });
@@ -76,7 +84,7 @@ export async function toyCloseUp(game: string, base: string, items: TrinketItem[
         blurb,
         size,
         h('div', { class: 'toy-mode', role: 'group', 'aria-label': 'Show it as' }, modeColors, modeOne),
-        h('span', { class: 'toy-links' }, dl, dlColors, swatches),
+        links,
         h('div', { class: 'toy-big-steps' }, prev, next),
         h(
           'p',

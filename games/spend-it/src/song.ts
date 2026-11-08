@@ -1,33 +1,20 @@
-// KEYS AND DOORS' one song, "Turn the Key": eight bars of a sneaky, playful tune in A minor for
-// the Sound Blaster (a lead, a bass and a plucked arpeggio, each its own FM channel). It plays
-// on the title, the menu, the levels and the endings. Note strings are the kit's (kit/tune.ts):
-// a note, an octave and a length (w h q e), as in "E5 q".
-import { INSTRUMENTS } from '@lewismoten/gamemaker-sandbox-tools/kit/music';
-import { join, tune, v } from '@lewismoten/gamemaker-sandbox-tools/kit/tune';
-
-const MELODY = join(
-  'A4 e, C5 e, E5 q, E5 e, D5 e, C5 q',
-  'D5 e, F5 e, A5 q, A5 e, G5 e, F5 q',
-  'E5 e, G5 e, B5 q, B5 e, A5 e, G5 q',
-  'A5 q, E5 q, A4 h',
-  'C5 e, E5 e, A5 q, A5 e, G5 e, E5 q',
-  'D5 e, F5 e, A5 q, G5 e, F5 e, D5 q',
-  'E5 q, G5 q, E5 q, D5 q',
-  'C5 q, B4 q, A4 h',
-);
-
-/** One bar of each chord: its three notes for the arpeggio, and its root and fifth for the bass. */
-const CHORDS = {
-  Am: { arp: ['A3', 'C4', 'E4'], bass: ['A2', 'E3'] },
-  Dm: { arp: ['A3', 'D4', 'F4'], bass: ['D3', 'A2'] },
-  E: { arp: ['B3', 'E4', 'G4'], bass: ['E3', 'B2'] },
-} as const;
-const BARS: (keyof typeof CHORDS)[] = ['Am', 'Dm', 'E', 'Am', 'Am', 'Dm', 'E', 'Am'];
-
-const arp = join(...BARS.map((b) => [0, 1, 2, 1, 0, 1, 2, 1].map((i) => `${CHORDS[b].arp[i]} e`).join(', ')));
-const bass = join(...BARS.map((b) => CHORDS[b].bass.map((n) => `${n} h`).join(', ')));
+// KEYS AND DOORS's one song, "Pocket Change": a clockwork tune in G major in its group's band
+// (kit/starter/songStyle.ts: piano with a bell above, a walking bass, a pluck on every off-beat and a ticking hat),
+// an A and a B section played AABA, 32 bars before it loops. It plays on the title, the menu, the levels and the
+// endings.
+import { starterSong } from '../../kit/starter/songStyle';
 
 /** The song as a .CMF file. */
 export function song(): Uint8Array {
-  return tune(120, [v(0, INSTRUMENTS.lead, MELODY, 100), v(1, INSTRUMENTS.bass, bass, 90), v(2, INSTRUMENTS.pluck, arp, 60)]);
+  return starterSong('together', {
+    bpm: 128,
+    A: {
+      chords: 'G | G | Am | D | G | G | C D | G',
+      tune: 'G5 q, B5 e, A5 e, G5 q, D5 q | E5 e, F#5 e, G5 e, A5 e, B5 h | C6 q, A5 e, B5 e, C6 q, E5 q | F#5 e, G5 e, A5 e, F#5 e, D5 h | G5 q, B5 e, D6 e, G6 q, D6 q | E6 e, D6 e, C6 e, B5 e, A5 h | C6 q, E6 q, D6 q, F#6 q | G6 h., r q',
+    },
+    B: {
+      chords: 'C | G | C | D | Em | Bm | C | D7',
+      tune: 'E6 q, E6 e, D6 e, C6 q, G5 q | D6 q, D6 e, C6 e, B5 q, G5 q | C6 e, D6 e, E6 e, G6 e, E6 q, C6 q | A5 h, F#5 h | G5 q, B5 e, E6 e, G6 q, E6 q | F#6 q, D6 e, B5 e, F#5 q, D6 q | E6 e, D6 e, C6 e, B5 e, A5 e, G5 e, E5 e, G5 e | A5 h, C6 h',
+    },
+  });
 }

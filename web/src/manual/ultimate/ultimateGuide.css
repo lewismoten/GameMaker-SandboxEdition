@@ -119,6 +119,13 @@
   image-rendering: pixelated;
 }
 
+/* The captured label includes its type as well as pixel art; keep its border inside the page. */
+.mpage figure.ug-install-label img {
+  box-sizing: border-box;
+  height: auto;
+  image-rendering: auto;
+}
+
 /* the palette figures (paletteFigures.ts): each picture over its whole palette */
 .mpage .ug-palcols {
   display: grid;

@@ -3,6 +3,8 @@
 import { isSandboxGame, loadGameList, loadHostedGame, type CatalogEntry, GameFiles } from '../../project/files';
 import { listProjects, loadProject } from '../../project/storage';
 import { isBizarreGame } from '../../project/bizarre';
+import { isSpecialGame } from '../../project/special';
+import { keptHow } from '../../specials/state';
 import { fnv1a } from '../../seededRandom';
 import { floppyFolders, type SampleFolder } from './sampleDisk';
 
@@ -11,7 +13,7 @@ export const FLOPPY_BYTES = 1_457_664; // 1.44 MB formatted capacity
 const RSD_GAMES = ['sample', 'pipemare', 'nebula', 'houses', 'tutor', 'terrain', 'penguin'];
 /** Up to 720 KB fit on a double density disk; more needs high density (1.44 MB). */
 const DD_BYTES = 737_280;
-export const SAMPLE_DISK_ID = 'sample-disk';
+const SAMPLE_DISK_ID = 'sample-disk';
 export const SAMPLE_DISK_TITLE = 'Game-Maker Sample Disk';
 
 /** original: the games made for this project, on professionally printed labels. */
@@ -102,8 +104,8 @@ export async function loadDisks(): Promise<Disk[]> {
       load: () => loadHostedGame(g),
     });
   });
-  // Our own games, on their printed shareware disks (open to change, unlike other shareware).
-  for (const g of catalog.filter(isSandboxGame)) {
+  // Our own games, on their printed shareware disks (open to change, unlike other shareware); a Special once it has reached the desk (or been played: specials/state.ts)
+  for (const g of catalog.filter((e) => isSandboxGame(e) || (isSpecialGame(e) && !!keptHow(e.id)))) {
     const label = g.original?.label;
     disks.push({
       id: `cd:${g.id}`,

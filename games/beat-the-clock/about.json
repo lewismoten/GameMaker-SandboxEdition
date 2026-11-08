@@ -6,7 +6,7 @@
   "hero": "KIT",
   "year": 1994,
   "price": "Free",
-  "version": "1.0",
+  "version": "1.2",
   "blurb": "Two short levels about time. A bar of five green pieces goes out one by one, and when it is dark the gate in the brick wall shuts, so run for the exit, or walk into the clock door and start again. In the second level the clock starts over by itself, so you can wait for the gate. A clock here is a block that turns into another block after some ticks. Signs say how. Play it, then open it in Game-Maker and change how long the bar lasts.",
   "exe": "BEAT.EXE",
   "dosName": "CLOCK",

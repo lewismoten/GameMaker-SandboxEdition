@@ -33,7 +33,7 @@
     },
     {
       "head": "Level 1: Red and Green",
-      "html": "<h1>Level 1: Red and Green</h1><p>The level card comes first, then two more pictures of the same row of plates: one as you see it, and one as a player who sees red and green alike can see it. In the second, every plate looks the same.</p><p>In the level, six flat plates lie in a row. The <b>RED PLATES STING. GREEN ONES ARE SAFE</b> sign says which is which, and the <b>SOME PLAYERS SEE RED AND GREEN ALIKE</b> sign says why that is a problem. Walk across: each red plate takes 5 hit points, once, and Yana shows their hurt pose. The plates are the same size and shape, with the same three rivets, so color is the only thing that tells them apart. Three coins are worth ten points each.</p>"
+      "html": "<h1>Level 1: Red and Green</h1><p>The level card comes first, then two more pictures of the same row of plates: one as you see it, and one as a player who sees red and green alike can see it. In the second, every plate looks the same.</p><p>During play, the scene uses <b>alike.pal</b>, a simulated palette that makes red and green look alike. Six flat plates lie in a row. The <b>SAME COLORS. SOME PLATES STING</b> sign says which is which, and the <b>LOOK THE SAME TO YOU? THAT IS THE POINT</b> sign says why that is a problem. Walk across: each red plate takes 5 hit points, once, and Yana shows their hurt pose. The plates are the same size and shape, with the same three rivets, so color is the only thing that tells them apart. Three coins are worth ten points each.</p>"
     },
     {
       "head": "How this level is made",
@@ -41,7 +41,7 @@
     },
     {
       "head": "Level 2: Shape and Brightness",
-      "html": "<h1>Level 2: Shape and Brightness</h1><p>The same stretch of ground, made to read in any color. The <b>SPIKES LOOK LIKE SPIKES, IN ANY COLOR</b> sign comes first: the things that sting are pointed spikes, dark at the foot. The <b>LIGHT AND STRIPED MEANS SAFE</b> sign says what the safe plates are: light, with upright stripes, like a crossing. The spikes are still red, and that is fine, because nothing depends on it now. The level card's second picture shows the same row as a player who sees red and green alike: the spikes still look like spikes and the plates still look like plates.</p><p>Jump the spikes and walk the plates, and nothing stings. Three coins are on the way.</p>"
+      "html": "<h1>Level 2: Shape and Brightness</h1><p>The same stretch of ground, still played with <b>alike.pal</b>, but now shape and brightness carry the meaning. The <b>SPIKES LOOK LIKE SPIKES, IN ANY COLOR</b> sign comes first: the things that sting are pointed spikes, dark at the foot. The <b>LIGHT AND STRIPED MEANS SAFE</b> sign says what the safe plates are: light, with upright stripes, like a crossing. The spikes are still red, and that is fine, because nothing depends on it now. The level card's second picture shows the same row as a player who sees red and green alike: the spikes still look like spikes and the plates still look like plates.</p><p>Jump the spikes and walk the plates, and nothing stings. Three coins are on the way.</p>"
     },
     {
       "head": "How this level is made",
@@ -53,7 +53,7 @@
     },
     {
       "head": "Make it yours",
-      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>In <b>colors.bbl</b>, change <b>plateStripe</b>'s stripes to another color, and see if it is still easy to tell from a spike.</li><li>Make <b>plateSafe</b> a very different green, and see how the level card's second picture changes.</li><li>Make <b>spikeRed</b> green. It stings all the same, and it still looks like a spike.</li><li>Give a safe plate the red color, to see how much the stripes carry on their own.</li><li>Make <b>plateHot</b> take 15 hit points, and count how many Yana can cross.</li></ul><p>The home page's <b>Starters</b> tab has more small games like this one.</p>"
+      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>In <b>colors.bbl</b>, change <b>plateStripe</b>'s stripes to another color, and see if it is still easy to tell from a spike.</li><li>Switch scene 1 from <b>alike.pal</b> to <b>colors.pal</b> in the scenes editor, then compare the plates during play.</li><li>Make <b>spikeRed</b> green. It stings all the same, and it still looks like a spike.</li><li>Give a safe plate the red color, to see how much the stripes carry on their own.</li><li>Make <b>plateHot</b> take 15 hit points, and count how many Yana can cross.</li></ul><p>The home page's <b>Starters</b> tab has more small games like this one.</p>"
     }
   ]
 }

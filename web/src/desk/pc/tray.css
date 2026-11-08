@@ -163,7 +163,8 @@
     /* on the lip: the plane's last 16px, seen tilted */
     top: 140px;
     width: 120px;
-    height: 22px;
+    /* Keep the hit area at least 24px after the desktop PC's scale. */
+    height: 26px;
     margin-left: -60px;
     padding: 0;
     border: 0;

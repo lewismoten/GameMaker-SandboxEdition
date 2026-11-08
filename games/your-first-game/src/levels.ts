@@ -10,7 +10,7 @@ import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { addLockBlocks } from '../../kit/starter/locks';
-import { StarterMap } from '../../kit/starter/map';
+import { ORIGIN, StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
 import { addSign, type Sign } from '../../kit/starter/sign';
 import { addHazards } from './hazards';
@@ -78,6 +78,11 @@ function lockedWall(g: Grid, x: number): void {
     .put(x, GROUND - 1, 'L');
 }
 
+/** Carries a locked wall up through the sky rows above the level (map rows -ORIGIN to -1), so no jump clears it. */
+function wallToTop(m: StarterMap, x: number): void {
+  for (let y = -ORIGIN; y < 0; y++) m.set(x, y, 'brick');
+}
+
 /** Where things are, for the bot and the shots. */
 export const AT = {
   one: { wall: 21, hill: 29, hillEnd: 36, gumdrop: 44, exit: 53 },
@@ -138,6 +143,7 @@ function keyAndDoor(book: Book, s: Record<SignName, Sign>): StarterMap {
   m.sign(21, onGround(GROUND, s.locked), s.locked);
   m.sign(37, onGround(GROUND, s.exit), s.exit);
   for (const x of [AT.two.lone, AT.two.spikes, AT.two.spikes + 1]) m.set(x, GROUND - 1, 'spikeUp');
+  wallToTop(m, AT.two.door);
   return m;
 }
 
@@ -165,6 +171,7 @@ function allTogether(book: Book, s: Record<SignName, Sign>): StarterMap {
   m.sign(32, onGround(GROUND, s.key), s.key);
   m.sign(44, onGround(GROUND, s.exit), s.exit);
   for (const x of [AT.three.spikes, AT.three.spikes + 1]) m.set(x, GROUND - 1, 'spikeUp');
+  wallToTop(m, AT.three.door);
   return m;
 }
 

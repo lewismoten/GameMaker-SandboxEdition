@@ -49,9 +49,10 @@ just inside the door; `proj` puts a point of the floor plan, in meters, on the p
 library with it in SVG (the far wall and the two beside it, shelves and books placed by world position, a beamed ceiling, a lamp's glow,
 a high window and the thin gap to L-Space between two shelf ends), `roomObjects.ts` draws the card catalog, copier, circulation desk, a reading table, two stools, a floor lamp and a book cart (plain props, no button, hidden from screen readers) as boxes in that
 perspective (front, top and side faces) and stands the flat pictures (Joe, the trash can, the notebook, visitors) on the floor at their
-depth, and `libraryRoom.css` styles it.
+depth, `roomAvCart.ts` draws the AV cart (black open shelves tapering toward the top, on casters, a deep 1990s CRT TV on top (4:3 tube, wider than tall, rounded corners), a VCR on the middle shelf whose cyan-blue vacuum fluorescent display blinks 12:00, steady under reduced motion; `.av-blink` in `libraryRoom.css`) in front of the stools, and `libraryRoom.css` styles it.
+The cart is the one button among the props: the TV (`open=tv`, "TV: videos and walkthroughs") opens a dialog (`showTv` in `libraryPage.ts`) of the shelf's own video and walkthrough cards (site videos, then each listed game's walkthrough, by length; a secret game's only once revealed, as on the shelves), which play in `videoDialog.ts` and the walkthrough player.
 Each object is a labeled button and opens a dialog from `libraryPage.ts`, which keeps the open one in the address (`open=stacks|catalog|copier|
-toybox|notebook|trash|joe|note`, so a reload reopens it; `by`, `only` and `game` work as before): the stacks (the open drawer's whole list, with
+toybox|tv|notebook|trash|joe|note`, so a reload reopens it; `by`, `only` and `game` work as before): the stacks (the open drawer's whole list, with
 the game picker, and By type's All / Sandbox / Bizarre choice: radio buttons, remembered in prefs.ts and the address as `series`), the card catalog (By game / By type and the drawers; picking one closes it), the copier, Mystery Robot Joe behind
 the desk (help; his art is `../tinHearts/joeArt.ts`, from Keep It Brief!; he steps out while the guided tour runs, with a
 "Back in a moment" sign), the toy box on the floor (`toyBox.ts`, loaded when opened: every game's 3D-printable trinkets together, grouped by game, each with a real picture drawn once by the box viewer's own renderer (`../desk/boxes/trinketSnap.ts`, when its card scrolls near), a labeled 3MF colors / STL one color switch that redraws it, and STL and 3MF download links; pressing a picture opens a closer look (`toyCloseUp.ts`: the trinket large and turning on the box viewer's turntable, `../desk/boxes/trinketTurntable.ts`, with Previous / Next through that game's trinkets); the games and their manifests are read through `../desk/boxes/trinketData.ts`, which the desk's shelf shares, and the desk's code is imported dynamically; `toyBoxList.ts` lists the games: a secret game never appears, revealed or not, and one with no trinket files drops out; the desk's shelf has no other gate, so none is added here), the composition notebook lying on the desk (`../imported/notesShelf.ts('here')`) and the trash can on the floor
@@ -64,7 +65,7 @@ Pratchett's Discworld): it picks a random game's shelf, the magazine or the Guid
 Doc Leo, Teenage Lewie) wandering through now and then (still with reduced motion) and, after the first click or key, makes a very
 quiet cough, page turn or chair creak (Web Audio, silent when the demo sound is None, stopped on leaving). Under 700px the room is a
 row of labeled buttons. `libraryMusic.ts` plays Keep It Brief!'s `library.cmf` (a bell over a pad, 100 BPM, looping) softly
-under the Music setting: it starts on the first click or key press, pauses while the tab is hidden, is silent when the demo
+under the Music setting: it starts on the first click or key press, pauses while a video or walkthrough dialog is open (`libraryMedia.ts`: an open player counts as playing, since YouTube's state can't be read without its API), while the tab is hidden, is silent when the demo
 sound is None, and stops on leaving (the engine loads on that first gesture).
 `callOrder.ts` puts the drawers, and the cards in each, in call-number order (the three-digit class, then the
 author mark with numbers as numbers: 614-MAH TED, 660-GAM TED, 660-GAM TED2, 660-GAM TED10); cards with the same
@@ -76,3 +77,7 @@ NO ORIGINAL.
 `readerAddress.ts` keeps the Game-Maker box's open piece and chapter in the address
 (`&gm=ultimate&ch=12`): a link opens it there, each chapter chosen is a history entry, and Back
 past the opening closes it.
+
+Teddy’s Navigator/player relay sheet (`manual/printables/relay.ts`) appears with Letters
+and papers and on Teddy’s shelf. It reuses the existing box-piece opening and real sheet
+thumbnail, with Level Maps and the hint book nearby.

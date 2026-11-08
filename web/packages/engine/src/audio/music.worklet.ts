@@ -14,6 +14,11 @@ export type MusicMessage =
   | { type: 'load'; music: Uint8Array; instruments: Uint8Array[] }
   | { type: 'stop' }
   | { type: 'pause'; paused: boolean }
+  /**
+   * An emulated slow PC is reading the disk with the timer held (engine/slowPc.ts readHoldsMusic): PlayIt
+   * gets no interrupts for `ms`, so the song stands still while the FM chip keeps sounding its notes.
+   */
+  | { type: 'hold'; ms: number }
   /** The engine is done with this node (the page's context lives on): stop processing. */
   | { type: 'end' };
 
@@ -21,6 +26,8 @@ class MusicProcessor extends AudioWorkletProcessor {
   private opl = new Opl2(sampleRate);
   private player = new CmfPlayer(this.opl);
   private untilTick = 0;
+  /** Samples left of a hold: the chip renders, the sequencer does not move. */
+  private held = 0;
   private paused = false;
   private ended = false;
   private readonly samplesPerTick = sampleRate / TICK_RATE;
@@ -32,7 +39,9 @@ class MusicProcessor extends AudioWorkletProcessor {
       if (m.type === 'load') {
         this.player.load(m.music, m.instruments);
         this.untilTick = 0;
-      } else if (m.type === 'stop') this.player.stop();
+        this.held = 0;
+      } else if (m.type === 'hold') this.held += (m.ms * sampleRate) / 1000;
+      else if (m.type === 'stop') this.player.stop();
       else if (m.type === 'pause') this.paused = m.paused;
       else if (m.type === 'end') this.ended = true;
     };
@@ -46,7 +55,8 @@ class MusicProcessor extends AudioWorkletProcessor {
     let i = 0;
     while (i < out.length) {
       if (this.untilTick <= 0) {
-        this.player.tick();
+        if (this.held > 0) this.held -= this.samplesPerTick;
+        else this.player.tick();
         this.untilTick += this.samplesPerTick;
       }
       const n = Math.min(out.length - i, Math.ceil(this.untilTick));

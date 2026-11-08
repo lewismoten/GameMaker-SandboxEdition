@@ -1,11 +1,10 @@
-// levelViews.json is current: every game that gets Level Maps is in it, scanned from the disk it
+// levelViews/*.json is current: every game that gets Level Maps is in it, scanned from the disk it
 // has now (else rerun scripts/levelViews.ts for that game), never a secret game; and a Level Map
 // cropped to it still holds every mark.
 import { describe, expect, it } from 'vitest';
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import VIEWS from './levelViews.json';
-import SECRETS from './levelSecrets.json';
+import { VIEWS, SECRETS } from './levelMetadata';
 import { levelViewsHash } from '../../../scripts/levelViewsScan';
 import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { levelsOf } from './levelMapLayout';
@@ -17,7 +16,12 @@ const views = VIEWS as unknown as LevelViews;
 describe('Level Maps crop to what the player sees', () => {
   it('lists every game that gets Level Maps, scanned from its disk as it is now', () => {
     expect(Object.keys(views).sort()).toEqual(Object.keys(SECRETS).sort());
-    for (const id of Object.keys(views)) expect(views[id].hash, `${id}: rerun npx vite-node scripts/levelViews.ts ${id}`).toBe(levelViewsHash(games, id));
+    for (const id of Object.keys(views)) {
+      const hash = levelViewsHash(games, id);
+      expect(hash, `${id}: built disk is missing`).toBeDefined();
+      expect(views[id].hash, `${id}: rerun npx vite-node scripts/levelViews.ts ${id}`).toBe(hash);
+      expect(readFileSync(join(__dirname, 'levelViews', `${id}.json`), 'utf8')).toBe(`${JSON.stringify(views[id])}\n`);
+    }
   });
 
   it('keeps every arrival and way out inside the crop, and the crop inside the map in use', () => {

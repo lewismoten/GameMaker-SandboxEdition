@@ -1,0 +1,120 @@
+# Game-Maker player builds the diff tooling knows, and the pairs it compares.
+#
+# A build is recognized by the size of its MZ load image (the bytes DOS loads, without the
+# header or any overlay). Stock file sizes are given beside each entry;
+# the image size also holds for unpacked copies.
+# The "Version" string inside is recorded as a cross-check; hex-edited copies can change it.
+# `lineage` says which program it is: "xfer" is the stand-alone player games ship (XFERPLAY),
+# "play" is the editor package's PLAYGAME.
+
+[[build]]
+id = "1.00-xfer"
+version = "1.0"
+lineage = "xfer"
+image_size = 78194  # file 82,802 bytes
+note = "Shipped with games as an 82,803-byte file (one trailing overlay byte); the 1.00 editor package's XFERPLAY.EXE is 82,802 bytes."
+
+[[build]]
+id = "1.00-play"
+version = "1.0"
+lineage = "play"
+image_size = 78484  # file 83,092 bytes
+note = "PLAYGAME.EXE of the 1.00 editor package."
+
+[[build]]
+id = "1.04"
+version = "1.04"
+lineage = "xfer"
+image_size = 78528  # file 83,136 bytes
+
+[[build]]
+id = "2.00"
+version = "2.00"
+lineage = "xfer"
+image_size = 148836  # file 154,980 bytes
+
+[[build]]
+id = "2.02"
+version = "2.02"
+lineage = "xfer"
+image_size = 149012  # file 155,156 bytes
+
+[[build]]
+id = "2.04"
+version = "2.04"
+lineage = "xfer"
+image_size = 112930  # file 119,074 bytes
+
+[[build]]
+id = "3.00-xfer"
+version = "3.00"
+lineage = "xfer"
+image_size = 152406  # file 160,598 bytes
+prefer = "cd/gm/xferplay.exe"
+
+[[build]]
+id = "3.00-play"
+version = "3.00"
+lineage = "play"
+image_size = 154938  # file 163,130 bytes
+prefer = "cd/gm/playgame.exe"
+map = "code/GM/PLAYGAME.MAP"
+
+[[build]]
+id = "3.00-aj"
+version = "3.00"
+lineage = "xfer"
+image_size = 152592  # file 160,784 bytes
+note = "A second 3.00 player build, found only in A-J's Quest on a 1995 CD."
+
+# Pairs: old -> new. `required` pairs answer the original question (what 1.04, 2.02 and 3.0
+# changed relative to their predecessors); the others complete the chain or act as controls.
+# Order matters: function names flow from the Borland MAP of 3.00-play outward along this list.
+
+[[pair]]
+old = "3.00-xfer"
+new = "3.00-play"
+why = "control: the two 3.00 programs; carries MAP names from PLAYGAME to XFERPLAY"
+
+[[pair]]
+old = "3.00-xfer"
+new = "3.00-aj"
+why = "control: the second 3.00 build"
+
+[[pair]]
+old = "2.04"
+new = "3.00-xfer"
+why = "required: what 3.0 changed (2.04 is the newest earlier player held)"
+required = true
+
+[[pair]]
+old = "2.02"
+new = "2.04"
+why = "chain"
+
+[[pair]]
+old = "2.00"
+new = "2.02"
+why = "required: what 2.02 changed (2.00 is the only earlier 2.x held; no 2.01)"
+required = true
+
+[[pair]]
+old = "2.02"
+new = "3.00-xfer"
+why = "control: 3.0 against the most common 2.x player"
+
+[[pair]]
+old = "1.04"
+new = "2.00"
+why = "chain"
+
+[[pair]]
+old = "1.00-xfer"
+new = "1.04"
+why = "required: what 1.04 changed (no 1.01-1.03 held)"
+required = true
+
+[[pair]]
+old = "1.00-xfer"
+new = "1.00-play"
+why = "control: the two 1.00 programs"

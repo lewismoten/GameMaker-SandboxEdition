@@ -49,3 +49,14 @@ hides it while the game runs) so a game is found by more than its title:
 - **From "About this game"** (`project/aboutGame.ts`, the companion's `about`): visible credits and
   `gameLd.ts`, the site's `gameJsonLd` plus genre, license, version, abstract, contributors and
   screenshots. The DOS download writes a `FILE_ID.DIZ` from the same fields (`project/fileIdDiz.ts`).
+
+Pocket library metadata (`pocketLibrary.ts`) is independently versioned from GMP 1.
+`exportPocket` accepts explicit site category/UID/course/collection context; project download
+callers preserve a UUID in the companion. `pocketThumbnail.ts` shares indexed title/level
+rendering and produces one deflated PTH1 preview without PNG decoding. `pocketFile.ts` adds
+these optional entries while retaining legacy gameplay data. See the Pocket Player README
+for bounds, the JSONL/thumbnail index and firmware compatibility. A `.GMP` may also carry the
+game's DOS files as `dos/<NAME>` entries (deflated), which Game-Maker OS on the Raspberry Pi plays
+and the Pocket Player skips; `writeOsGmp` writes one with only those (no `game.txt`, so the board
+does not list it) for a game the packer leaves out. `scripts/pocketData.ts --gmp <card> --gmos`
+writes a card both players read.

@@ -3,7 +3,7 @@
 //
 //   1. Red and Green: a row of flat plates, six in a row. The red ones sting a little and the green
 //      ones don't, and the two are the same shape, so only the color tells them apart. A player who
-//      sees red and green alike can't tell which is which. (The level card's second view shows that.)
+//      sees red and green alike can't tell which is which. Both levels use the simulated palette during play.
 //   2. Shape and Brightness: the same stretch with spikes (dark, pointed) in place of the red plates
 //      and light striped plates for the safe ones. Nothing depends on color any more.
 import { Book } from '../../kit/starter/book';
@@ -21,7 +21,7 @@ function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
   const signs = {
-    sting: addSign(book, pal, 'sting.sign', 'RED PLATES STING. GREEN ONES ARE SAFE', 4, 4),
+    sting: addSign(book, pal, 'sting.sign', 'SAME COLORS. SOME PLATES STING', 4, 4),
     alike: addSign(book, pal, 'alike.sign', 'LOOK THE SAME TO YOU? THAT IS THE POINT', 4, 5),
     shape: addSign(book, pal, 'shape.sign', 'SPIKES LOOK LIKE SPIKES, IN ANY COLOR', 4, 4),
     stripe: addSign(book, pal, 'stripe.sign', 'LIGHT AND STRIPED MEANS SAFE', 4, 3),
@@ -120,7 +120,7 @@ export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
   const pal = buildStarterPalette(addColorRamps, 'colors');
   const { book, signs } = buildBlocks(pal);
   const levels: Level[] = [
-    { file: 'one', title: 'Red and Green', hint: 'Which plate stings? Only a little.', map: redAndGreen(book, signs) },
+    { file: 'one', title: 'Red and Green', hint: 'RED AND GREEN LOOK ALIKE HERE', map: redAndGreen(book, signs) },
     { file: 'two', title: 'Shape and Brightness', hint: 'Now you can tell.', map: shapeAndBrightness(book, signs) },
   ];
   return { book, pal, levels };

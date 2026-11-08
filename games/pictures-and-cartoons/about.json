@@ -6,7 +6,7 @@
   "hero": "YANA",
   "year": 1994,
   "price": "Free",
-  "version": "1.0",
+  "version": "1.1",
   "blurb": "Three short rooms about pictures and cartoons. A picture is a GIF file; a cartoon is an FLI file. A scene can show one before its level and another after it, and a list shows several in a row. Signs in the levels say which is which. Play it, then open it in Game-Maker and swap in pictures of your own.",
   "exe": "PICS.EXE",
   "dosName": "PICTURES",

@@ -6,7 +6,7 @@
   "hero": "MIA",
   "year": 1994,
   "price": "Free",
-  "version": "1.0",
+  "version": "1.1",
   "blurb": "Three short levels about walls that aren't what they look like. A real wall and a picture of a wall can be drawn exactly alike, and only one stops Mia. A touch can turn a block into a second block, and that one into a third, so a wall cracks and then crumbles. A fair secret gets a hint: coins showing in a wall. Signs say how. Play it, then open it in Game-Maker and change a block's setting.",
   "exe": "SECRET.EXE",
   "dosName": "LOOKWALL",

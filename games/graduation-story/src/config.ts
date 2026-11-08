@@ -3,12 +3,13 @@ import { wrap, creditsPage } from '../../kit/starter/graduationText';
 import type { Graduation } from '../../kit/starter/graduationConfig';
 import { THEATER } from '../../kit/starter/graduationThemes';
 import about from '../about.json';
+import { song } from './song';
 
 export const cfg: Graduation = {
   id: 'graduation-story',
   stage: 'Story and Finish',
   groups: ['Telling a Story', 'Putting It Together'],
-  cameos: ['teddy', 'joe', 'seed'],
+  cameos: ['teddy', 'chicken', 'will', 'gwinn', 'seed', 'joe', 'camel', 'carl'],
   theme: THEATER,
   upper: 'STORY AND FINISH',
   honors: 'IN STORY AND FINISH',
@@ -19,8 +20,14 @@ export const cfg: Graduation = {
     doc: 'DOC LEO HAS A SCROLL FOR YOU',
     banner: 'STORY AND FINISH',
   },
+  arrive: {
+    title: 'The Plaza',
+    hint: 'Cross the plaza to the theater.',
+    welcome: 'THE THEATER IS AHEAD',
+    nods: ['say', 'pads', 'countdown'],
+  },
   level: { title: 'The Theater', hint: 'Walk down the aisle to the stage.' },
-  song: { bpm: 80, lead: 'organ', transpose: -2 },
+  song,
   text: {
     story: wrap(`
 |GRADUATION

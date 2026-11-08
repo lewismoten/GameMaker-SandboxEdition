@@ -1,33 +1,19 @@
-// STRONGER KEYS' one song, "Up the Ladder": eight bars of a bright tune in C major that climbs a
-// step at a time, like the keys and doors. A lead, a bass and a plucked arpeggio, each its own FM
-// channel, for the Sound Blaster. It plays on the title, the menu, the levels and the endings. Note
-// strings are the kit's (kit/tune.ts): a note, an octave and a length (w h q e), as in "E5 q".
-import { INSTRUMENTS } from '@lewismoten/gamemaker-sandbox-tools/kit/music';
-import { join, tune, v } from '@lewismoten/gamemaker-sandbox-tools/kit/tune';
-
-const MELODY = join(
-  'C5 q, C5 e, D5 e, E5 q, E5 q',
-  'E5 q, E5 e, F5 e, G5 q, G5 q',
-  'G5 q, G5 e, A5 e, B5 q, B5 q',
-  'C6 h, G5 h',
-  'C6 q, B5 e, A5 e, G5 q, E5 q',
-  'F5 q, E5 e, D5 e, C5 q, E5 q',
-  'D5 q, F5 q, G5 q, B4 q',
-  'C5 h, C5 h',
-);
-
-/** One bar of each chord: its three notes for the arpeggio, and its root and fifth for the bass. */
-const CHORDS = {
-  C: { arp: ['C4', 'E4', 'G4'], bass: ['C3', 'G3'] },
-  F: { arp: ['C4', 'F4', 'A4'], bass: ['F3', 'C3'] },
-  G: { arp: ['B3', 'D4', 'G4'], bass: ['G2', 'D3'] },
-} as const;
-const BARS: (keyof typeof CHORDS)[] = ['C', 'C', 'G', 'C', 'C', 'F', 'G', 'C'];
-
-const arp = join(...BARS.map((b) => [0, 1, 2, 1, 0, 1, 2, 1].map((i) => `${CHORDS[b].arp[i]} e`).join(', ')));
-const bass = join(...BARS.map((b) => CHORDS[b].bass.map((n) => `${n} h`).join(', ')));
+// STRONGER KEYS's one song, "Up the Ladder" in C major, played by its group's band (kit/starter/songStyle.ts:
+// electric piano over a walking bass, a held organ and a ride cymbal): its first eight bars are section A, with a B
+// section added, played AABA, 32 bars before it loops. It plays on the title, the menu, the levels and the endings.
+import { starterSong } from '../../kit/starter/songStyle';
 
 /** The song as a .CMF file. */
 export function song(): Uint8Array {
-  return tune(120, [v(0, INSTRUMENTS.lead, MELODY, 100), v(1, INSTRUMENTS.bass, bass, 90), v(2, INSTRUMENTS.pluck, arp, 60)]);
+  return starterSong('wiring', {
+    bpm: 120,
+    A: {
+      chords: 'C | C | G | C | C | F | G | C',
+      tune: 'C5 q, C5 e, D5 e, E5 q, E5 q | E5 q, E5 e, F5 e, G5 q, G5 q | G5 q, G5 e, A5 e, B5 q, B5 q | C6 h, G5 h | C6 q, B5 e, A5 e, G5 q, E5 q | F5 q, E5 e, D5 e, C5 q, E5 q | D5 q, F5 q, G5 q, B4 q | C5 h, C5 h',
+    },
+    B: {
+      chords: 'Am | F | G | C | Am | Dm | F | G',
+      tune: 'A5 q, A5 e, B5 e, C6 q, C6 q | C6 q, C6 e, D6 e, E6 q, E6 q | D6 q, B5 e, G5 e, D6 q, F6 q | E6 h, C6 h | A5 q, C6 e, E6 e, A6 q, E6 q | F6 q, D6 e, A5 e, F5 q, A5 q | C6 q, A5 q, F5 q, A5 q | B5 h, G5 h',
+    },
+  });
 }

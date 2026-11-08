@@ -10,7 +10,9 @@ import { createServer as netServer } from 'node:net';
 import { createRequire } from 'node:module';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
-import { chromium, type Page } from 'playwright-core';
+import type { Page } from 'playwright-core';
+import { launch } from './perfLib';
+import { assertTheme, forceTheme } from './forceTheme';
 import { createServer } from 'vite';
 import { CHAPTERS } from '../src/tour/chapters/index';
 
@@ -31,7 +33,7 @@ async function freePort(): Promise<number> {
 
 interface Run {
   size: number;
-  scheme: string;
+  scheme: 'light' | 'dark';
   /** step id -> how it went: ok, skipped (optional, no control) or MISSING. */
   steps: Map<string, string>;
   axe: Set<string>;
@@ -48,6 +50,7 @@ async function play(page: Page, url: string, ids: string[], axeSrc: string, run:
   page.on('pageerror', (e) => run.problems.push(`page error: ${e.message}`));
   await page.goto(`${url}/#/`);
   await page.waitForSelector('.lib-cats [role=tab]', { timeout: 30000 });
+  await assertTheme(page, run.scheme);
   await page.evaluate((w) => (location.hash = `#/?tour=${w}`), ids.join(','));
   await page.waitForSelector('.tour-bar', { timeout: 15000 });
   await page.evaluate(() => document.querySelector<HTMLElement>('.tour-pause')?.click());
@@ -76,6 +79,8 @@ async function play(page: Page, url: string, ids: string[], axeSrc: string, run:
     if (step) run.steps.set(step.id, 'ok');
     if (await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1))
       run.problems.push(`horizontal scroll at ${step?.id ?? '?'}`);
+    // Tour spotlights tint the page and the Theme step deliberately changes its preference.
+    // The unmodified rendered palette is certified above, before the tour starts.
     await page.addScriptTag({ content: axeSrc }).catch(() => undefined);
     const found = await page.evaluate(async () => {
       const axe = (window as unknown as { axe: { run: (c: Document, o: object) => Promise<{ violations: { id: string; nodes: { target: unknown[] }[] }[] }> } })
@@ -118,19 +123,19 @@ async function main(): Promise<number> {
     logLevel: 'error',
   });
   await server.listen();
-  const browser = await chromium.launch({ channel: 'chrome', headless: true });
+  const browser = await launch();
   const runs: Run[] = [];
   try {
     for (const size of SIZES)
       for (const scheme of SCHEMES) {
         const ctx = await browser.newContext({ viewport: { width: size, height: size < 600 ? 844 : 900 }, colorScheme: scheme, reducedMotion: 'reduce' });
-        await ctx.addInitScript((s) => {
+        await forceTheme(ctx, scheme);
+        await ctx.addInitScript(() => {
           if (sessionStorage.getItem('tc')) return;
           sessionStorage.setItem('tc', '1');
           localStorage.setItem('gm-ui', 'web');
-          localStorage.setItem('gm-theme', s);
           localStorage.setItem('gm-tour-sound', 'off');
-        }, scheme);
+        });
         const run: Run = { size, scheme, steps: new Map(), axe: new Set(), problems: [] };
         try {
           await play(await ctx.newPage(), `http://127.0.0.1:${port}`, ids, axeSrc, run);

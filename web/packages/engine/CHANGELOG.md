@@ -5,31 +5,28 @@ Changes to `@lewismoten/gamemaker-sandbox-engine`, released as `engine-v*` tags.
 
 ## [Unreleased]
 
-Live sound control, a hook for life losses, and fixes to scrolling and picture decoding.
+## [3.3.0] - 2026-11-07
+
+Slow-PC presets that play a game at the pace of a 486, 386, 286 or IBM PS/1, experimental gameplay patches, live
+control of the sound mix and sound card, and a hook for life losses. Fixes cover scroll speed, JPEG and FLI decoding,
+short CMF files, and a recorded Enter on key screens.
 
 ### Added
 
-- Experimental gameplay patches (`player/patchTable` group `play`: `play.maxSpeed`, `play.gravityCap`, `play.gravityTicks`, `play.attackX`, `play.attackY`, `play.scrollSpeedX`, `play.scrollSpeedY`, `play.scrollSteps`, `play.fadeSteps`), `ImmField.negate`, and `World.tune` with `STOCK_TUNING` and `playTuning(look)`, so a scene plays by a patched player's constants. With no patches play is unchanged.
-- An IBM PS/1 slow-PC preset (`SPEED_PRESETS.ps1`: 286 at 10 MHz, slow disk, `vocHeapBytes`), `vocWontFit`, and a voice that starts only after its emulated disk read (a sound too big for the heap is read and not played). Estimates; Today charges nothing.
-- Slow-PC presets for 486, 386 and 286 (`SPEED_PRESETS`, `costsFor`) and a voice-read stall (`vocStallMs`): a game freezes while a .voc is read from disk, as PLAYGAME's synchronous read did. Estimates; the default speed charges nothing.
-- Color-vision simulation (`gfx/colorVision`): the Machado, Oliveira and Fernandes matrices, sRGB and linear RGB, CIELAB and CIE76 delta E, one copy for the palette editor, the badge look-alike report and the games' color checks.
+- Slow-PC presets (`SPEED_PRESETS`: 486, 386, 286 and the IBM PS/1) with voice-read stalls, disk-read costs and music holds. They are estimates, and the default speed charges nothing.
+- Experimental gameplay patches (`player/patchTable` group `play`, `World.tune`). With no patches, play is unchanged.
 - Player life-loss events, so a caller can watch for them without counting recorded playback.
-- Play's F10 shows an imported player's own About page and the build it was first made with.
-- Sparse FLI palette changes (only the colors a frame draws), and FLI clip options that leave out the ring frame or cut where a whole frame adds the fewest bytes.
+- Color-vision simulation (`gfx/colorVision`) and sparse FLI palette changes.
 
 ### Changed
 
 - The sound mix (music, voice, effects: on and volume) is followed live, and sound-card output changes without restarting audio or play.
-- Card changes route through the active scene and the packed API.
-- The FLI encoder uses plain loops, about five times faster on long clips with the same bytes.
-- Engine-specific notices ship in the package.
 
 ### Fixed
 
-- A too-short or oversized-header FLI, and a CMF cut short, give a clear error (or play) instead of a RangeError or a huge allocation.
+- Scroll speed wraps like DOS's 16-bit integers. Damaged FLI and CMF files give a clear error, and progressive JPEGs decode only complete data.
 
-- Scroll speed wraps like DOS's 16-bit integers.
-- Progressive JPEG prefixes decode only from complete MCU data.
+Full list: [changes/release/engine/3.3.0.md](https://github.com/lewismoten/GameMaker-SandboxEdition/blob/engine-v3.3.0/changes/release/engine/3.3.0.md)
 
 ## [3.1.0] - 2026-10-29
 
@@ -40,5 +37,6 @@ for every Game-Maker file format, OPL2 and CMF audio, screen, input and fonts.
 
 - The engine, scoped as `@lewismoten/gamemaker-sandbox-engine` and published to GitHub Packages from version tags.
 
-[Unreleased]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/engine-v3.1.0...HEAD
+[Unreleased]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/engine-v3.3.0...HEAD
+[3.3.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/engine-v3.1.0...engine-v3.3.0
 [3.1.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/releases/tag/engine-v3.1.0

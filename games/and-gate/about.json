@@ -6,7 +6,7 @@
   "hero": "LAMI",
   "year": 1994,
   "price": "Free",
-  "version": "1.0",
+  "version": "1.2",
   "blurb": "Two short levels about an AND. A spark runs along a wire in the sky, and two dials hang on it. Lami jumps to bump each dial on. A dial that is off stops the spark, one that is on lets it through, and only a spark that passes every dial lights the lamp. Signs in the levels say how. Play it, then open it in Game-Maker and change a monster's power.",
   "exe": "ANDGATE.EXE",
   "dosName": "ANDGATE",

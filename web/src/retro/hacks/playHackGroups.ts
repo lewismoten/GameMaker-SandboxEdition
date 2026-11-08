@@ -5,6 +5,7 @@
 import { isImported, originId } from '../../editor/shell/homeOrigin';
 import { isBizarreGame } from '../../project/bizarre';
 import { isStarterGame } from '../../project/starter';
+import { isSpecialGame } from '../../project/special';
 import { isSandboxGame, type CatalogEntry } from '../../project/files';
 
 export type HackGroup = 'mine' | 'imported' | 'gameware' | 'shareware' | 'sandbox' | 'bizarre';
@@ -27,6 +28,6 @@ export function hackGroupOf(id: string, catalog: readonly CatalogEntry[]): HackG
   if (!game) return 'mine';
   // as the home page sorts them: Sandbox Software's games ship as shareware too
   if (isBizarreGame(game)) return 'bizarre';
-  if (isSandboxGame(game) || isStarterGame(game)) return 'sandbox';
+  if (isSandboxGame(game) || isStarterGame(game) || isSpecialGame(game)) return 'sandbox';
   return game.kind === 'shareware' ? 'shareware' : 'gameware';
 }

@@ -8,18 +8,26 @@
  "segments": [
   {
    "scene": 2,
-   "keys": "AU0ezQNNKM0DTTzNA00yzQNN"
+   "keys": "AU08zRtNKM0DTQrNA00FzRtNHs0DTRnNG00jzQNNCs0DTQ=="
+  },
+  {
+   "scene": 3,
+   "keys": "AU0ezQNNKM0DTTzNA00yzV1N"
   }
  ],
  "chapters": [
   {
    "scene": 2,
+   "title": "The Sculpture Walk"
+  },
+  {
+   "scene": 3,
    "title": "The Gallery"
   }
  ],
  "timeline": {
   "fps": 60,
-  "frames": 5463,
+  "frames": 7144,
   "chapters": [
    {
     "title": "Opening",
@@ -28,23 +36,28 @@
    },
    {
     "title": "Story",
-    "frame": 913,
-    "time": 15216.666666666471
+    "frame": 922,
+    "time": 15366.666666666466
+   },
+   {
+    "title": "The Sculpture Walk",
+    "frame": 1670,
+    "time": 27833.33333333393
    },
    {
     "title": "The Gallery",
-    "frame": 1661,
-    "time": 27683.333333333918
+    "frame": 3047,
+    "time": 50783.33333333167
    },
    {
     "title": "Ending",
-    "frame": 2662,
-    "time": 44366.66666666594
+    "frame": 4345,
+    "time": 72416.66666666485
    },
    {
     "title": "Credits",
-    "frame": 4391,
-    "time": 73183.33333333174
+    "frame": 6072,
+    "time": 101200.00000000656
    }
   ]
  }

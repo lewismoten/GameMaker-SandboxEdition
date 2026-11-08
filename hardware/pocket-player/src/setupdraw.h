@@ -1,7 +1,7 @@
-// What the four setup steps draw (setupflow.h), for any graphics object with LovyanGFX's calls (fillScreen, fillRect, drawRect,
+// What the three setup steps draw (setupflow.h), for any graphics object with LovyanGFX's calls (fillScreen, fillRect, drawRect,
 // fillTriangle, fillCircle, drawCircle, color565, setTextSize, setTextColor, setCursor, print). The board passes its SoftGfx
 // (softgfx.h); host/setupshots.cpp passes a frame buffer that turns and flips like the glass and saves PNGs to look at.
-// White on black, big. Steps 1, 2 and 4 draw only inside the 240 x 240 square at the origin; step 3 draws the whole 320 x 240.
+// White on black, big. Mirror and Colors use the 240 x 240 square; Landscape uses the whole 320 x 240.
 // Every step ends with the two controls drawn the way they work: the boxed icon = the BOOT button, OK = tap anywhere.
 #pragma once
 #include <string.h>
@@ -32,13 +32,6 @@ template <class G> void iconFlip(G& g, int cx, int cy) {  // two triangles facin
   g.fillTriangle(cx + 22, cy - 13, cx + 22, cy + 13, cx + 5, cy, GRAYC);
   for (int y = -15; y <= 13; y += 6) g.fillRect(cx - 1, cy + y, 2, 3, WHITE);
 }
-template <class G> void iconRotate(G& g, int cx, int cy) {  // a ring with an arrow head: turn
-  g.drawCircle(cx, cy, 14, WHITE);
-  g.drawCircle(cx, cy, 13, WHITE);
-  g.drawCircle(cx, cy, 12, WHITE);
-  g.fillRect(cx, cy - 17, 18, 17, BLACK);
-  g.fillTriangle(cx - 2, cy - 21, cx - 2, cy - 5, cx + 10, cy - 13, WHITE);
-}
 template <class G> void iconOrient(G& g, int cx, int cy) {  // a tall box and a wide one
   g.drawRect(cx - 23, cy - 14, 16, 28, WHITE);
   g.drawRect(cx - 22, cy - 13, 14, 26, WHITE);
@@ -53,7 +46,6 @@ template <class G> void iconColors(G& g, int cx, int cy) {  // red, green, blue 
 }
 template <class G> void iconFor(G& g, int step, int cx, int cy) {
   if (step == FLIP) iconFlip(g, cx, cy);
-  else if (step == ROTATE) iconRotate(g, cx, cy);
   else if (step == ORIENT) iconOrient(g, cx, cy);
   else iconColors(g, cx, cy);
 }
@@ -92,17 +84,7 @@ template <class G> void drawFlip(G& g) {
   counter(g, FLIP, 200);
   controls(g, FLIP);
 }
-// Step 2: an arrow and UP; upside down means turn.
-template <class G> void drawRotate(G& g) {
-  g.fillScreen(BLACK);
-  g.fillTriangle(70, 22, 28, 72, 112, 72, WHITE);
-  g.fillRect(54, 72, 32, 70, WHITE);
-  say(g, 130, 66, 5, WHITE, "UP");
-  say(g, 126, 122, 2, GRAYC, "arrow up?");
-  counter(g, ROTATE, 200);
-  controls(g, ROTATE);
-}
-// Step 3: the wide picture, 320 x 240, with a frame on its edge; it fills the glass when the turn is right.
+// Step 2: the wide picture, 320 x 240, with a frame on its edge; it fills the glass when the turn is right.
 template <class G> void drawOrient(G& g) {
   g.fillScreen(BLACK);
   for (int i = 0; i < 3; i++) g.drawRect(i, i, 320 - 2 * i, 240 - 2 * i, WHITE);
@@ -116,7 +98,7 @@ template <class G> void drawOrient(G& g) {
   counter(g, ORIENT, 276);
   controls(g, ORIENT);
 }
-// Step 4: the words in their own colors on black, then WHITE, and BLACK with a white outline (all plain text).
+// Step 3: the words in their own colors on black, then WHITE, and BLACK with a white outline (all plain text).
 template <class G> void drawColors(G& g) {
   g.fillScreen(BLACK);
   sayCentered(g, 120, 22, 3, REDC, "RED");
@@ -133,7 +115,6 @@ template <class G> void drawColors(G& g) {
 }
 template <class G> void drawStep(G& g, int step, const char* id = "") {
   if (step == FLIP) drawFlip(g);
-  else if (step == ROTATE) drawRotate(g);
   else if (step == ORIENT) drawOrient(g);
   else drawColors(g);
   idLine(g, id);

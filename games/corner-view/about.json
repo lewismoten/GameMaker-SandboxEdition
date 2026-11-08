@@ -6,7 +6,7 @@
   "hero": "LENA",
   "year": 1994,
   "price": "Free",
-  "version": "2.0",
+  "version": "2.1",
   "blurb": "Three rooms drawn as if seen from one corner: a floor of diamonds, cubes with a top and two sides, a stair of towers and a diamond-shaped floor. It is all pictures cut into square blocks, so in the first two rooms Lena walks on the squares and goes round the diagonal wall in square steps. In the third their arrows each walk one diagonal of the floor, the way the room is laid out. Signs say how. Play it, then open it in Game-Maker and look at the blocks.",
   "exe": "CORNER.EXE",
   "dosName": "CORNER",

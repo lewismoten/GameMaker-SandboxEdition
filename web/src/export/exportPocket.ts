@@ -2,11 +2,13 @@
 // (hardware/pocket-player) to read from the pocket folder on its microSD card. Packed by pocketPack.ts
 // (the same packer as web/scripts/pocketData.ts), bundled by pocketFile.ts. What the board can't play
 // comes back as plain advice: `notes` when it still plays, an error when it can't.
+import { gamCrc32, type PocketContext, type PocketLibrary } from './pocketLibrary';
+import { pocketThumbnail } from './pocketThumbnail';
 import type { GameFiles } from '@lewismoten/gamemaker-sandbox-engine/core/gameFiles';
 import { newCards, packPocketGame, POCKET_MAX_LEVELS, POCKET_MAX_LINKS, type PocketSource, type PocketStore } from './pocketPack';
 import { gmpName, pocketId, writeGmp } from './pocketFile';
 
-export interface PocketExport {
+interface PocketExport {
   name: string;
   bytes: Uint8Array;
   /** What the board leaves out or may not manage, in plain words. */
@@ -30,14 +32,14 @@ function advice(why: string): string {
 
 export async function exportPocket(
   files: GameFiles,
-  options: { title: string; gam: string; id?: string; version?: string; controls?: PocketSource['controls'] },
+  options: { title: string; gam: string; id?: string; version?: string; controls?: PocketSource['controls']; library?: PocketContext },
 ): Promise<PocketExport> {
   const id = pocketId(options.id ?? options.gam.replace(/\.gam$/i, ''));
   const store: PocketStore = new Map();
   const cards = newCards();
   let packed;
   try {
-    packed = await packPocketGame({ title: options.title, files, controls: options.controls }, store, cards, deflateRaw, true);
+    packed = await packPocketGame({ title: options.title, gam: options.gam, files, controls: options.controls }, store, cards, deflateRaw, true);
   } catch (e) {
     throw new Error(`The Pocket Player can't read this game's files (${e instanceof Error ? e.message : String(e)}).`, { cause: e });
   }
@@ -49,6 +51,32 @@ export async function exportPocket(
     notes.push('The Pocket Player plays the PC speaker sounds only, so its Sound Blaster sounds and music stay silent.');
   const skipped = Object.keys(packed.leftOut);
   if (skipped.length) notes.push(`Some pictures between levels are left out (${skipped.join(', ')}).`);
-  const bytes = writeGmp({ id, title: options.title, version: options.version, levels: packed.levels, cfg: packed.lines, files: store, cards: cards.parts });
-  return { name: gmpName(id), bytes, notes };
+  const thumbnail = await pocketThumbnail(files, options.gam, deflateRaw);
+  const library: PocketLibrary = {
+    schema: 'gmp-library',
+    version: 1,
+    uid: options.library?.uid ?? `legacy:gam:${gamCrc32(files.get(options.gam)!)}:${id}`,
+    title: options.title,
+    dosName: options.gam.replace(/\.gam$/i, '').toUpperCase(),
+    category: ['imported', 'unsorted'],
+    ...options.library,
+    gamCrc32: gamCrc32(files.get(options.gam)!),
+    ...(thumbnail ? { thumbnail: 'thumb.pth' } : {}),
+  };
+  const bytes = writeGmp({
+    id,
+    title: options.title,
+    version: options.version,
+    levels: packed.levels,
+    cfg: packed.lines,
+    files: store,
+    cards: cards.parts,
+    library,
+    thumbnail,
+  });
+  const name =
+    id.toUpperCase().replace(/[^A-Z0-9]/g, '').length > 8
+      ? gmpName(id).slice(0, 1) + gamCrc32(new TextEncoder().encode(library.uid)).slice(0, 7) + '.GMP'
+      : gmpName(id);
+  return { name, bytes, notes };
 }

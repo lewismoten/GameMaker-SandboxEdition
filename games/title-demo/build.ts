@@ -28,6 +28,10 @@ import { buildHero } from '../kit/starter/heroChar';
 import { buildLevels, finishBlocks } from './src/levels';
 import { menuWithWords, recordsTable, slotsList, titlePicture } from './src/screens';
 import { song } from './src/song';
+import { TEMPLATES } from './src/templateBoxes';
+import { plainTemplate, templatePicture } from './src/templates';
+import { withEngineWords } from './src/engineWords';
+import { decodeGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
 import { CREDITS, HOWTO, LOST, STORY, WON } from './src/text';
 
 /** Hit points and lives at the start (nothing here takes any). */
@@ -95,6 +99,16 @@ disk.put('slots2.gif', gif(slots([11], ['DEMO RECORDING: KEYS AND WHEN', 'IT PLA
 disk.put('busy.gif', gif(menuWithWords(pal, book, hero, TITLE, true), pal));
 disk.put('plain.gif', gif(menuWithWords(pal, book, hero, TITLE, false), pal));
 
+// the templates a maker can take: where the game writes over the menu, high score, load and save
+// pictures, labeled on a grid (T*.GIF) and in plain colors (T*P.GIF); and, for level 1, the menu
+// template with the real engine's words drawn in its boxes
+for (const t of TEMPLATES) {
+  disk.put(`${t.file.toLowerCase()}.gif`, gif(templatePicture(pal, t), pal));
+  disk.put(`${t.file.toLowerCase()}p.gif`, gif(plainTemplate(pal, t), pal));
+}
+const vga = decodeGif(gif(templatePicture(pal, TEMPLATES[0]), pal)).palette;
+disk.put('boxes.gif', gif(withEngineWords(templatePicture(pal, TEMPLATES[0]), vga, { kind: 'menu', title: TITLE, marker: [1] }), pal));
+
 // the first records of this game's own demo, as DEMO.REC stores them
 const KEYNAMES: Record<number, string> = { 77: 'RIGHT', 75: 'LEFT', 57: 'SPACE', 1: 'ESC', 72: 'UP', 80: 'DOWN' };
 const demoKeys = parseRecording(demoRecording());
@@ -113,6 +127,7 @@ intro('one', [
   ['slots1.gif', 8],
   ['busy.gif', 7],
   ['plain.gif', 7],
+  ['boxes.gif', 10],
 ]);
 intro('two', [
   ['slots2.gif', 8],

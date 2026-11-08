@@ -8,7 +8,7 @@ import type { Chapter, TourStep } from './steps';
 /** The most steps one "What's new" tour plays; the CHANGELOG has the rest. */
 export const MAX_NEW_STEPS = 8;
 
-export interface NewStep {
+interface NewStep {
   chapter: string;
   step: TourStep;
 }

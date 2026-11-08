@@ -6,6 +6,7 @@
 import { attr, COLS, ROWS } from './text/textScreen';
 import { biosId } from './biosId';
 import { type ProgramRef } from './dos/vfs';
+import { hasOkMsg, MENU_REFUSAL } from './dos/okMsg';
 import { swapsDisks } from './diskSwap';
 import { ProgramAborted } from './text/textInput';
 import type { OpenDesigner } from './host';
@@ -13,7 +14,7 @@ import { errorBox, askText } from './text/textUi';
 import type { PlayerHandle } from '../player/player';
 import { deskJoystick } from '../input/deskJoystick';
 import { GameFiles } from '../project/files';
-import { loadProject, loadSaveData, writeSaveFile } from '../project/storage';
+import { loadProject, loadSaveData } from '../project/storage';
 import { Project } from '../editor/core/project';
 import { kindOf } from '../editor/core/project';
 import { Vga } from '../vga/shared/vga';
@@ -26,7 +27,8 @@ import { mouseDriverLine } from './computer/mouseDriver';
 import { soundBlaster } from './computer/soundBlaster';
 import { ComputerFolders } from './computer/folders';
 import { clearEnergySnore, drawEnergySnore } from './energySnore';
-import { deskProgram, playAchievements, playWrote, unlockAchievement } from '../achievements';
+import { deskProgram, playAchievements, unlockAchievement } from '../achievements';
+import { playSaves } from '../achievements/playSaves';
 
 /** How long the BIOS screen with its logo stays up, in a quick boot too. */
 const POST_HOLD_MS = 2500;
@@ -42,12 +44,12 @@ export class Computer extends ComputerFolders {
     s.resetPalette();
     s.clear(attr(7, 0));
     s.cursorVisible = false;
-    const turbo = !this.opts.speed.slowPc;
+    const turbo = this.turbo();
     // a quick boot (the DOS page, on its way to Game-Maker) says the same in a quarter of the time
     const pause = (ms: number) => sleep(this.opts.quickBoot ? ms / 4 : ms);
     // a drive read as the PC starts (its light, and on the desk its sound), as long as a quick boot's pauses
     const reads = (drive: string, ms: number) => this.opts.onDriveAccess?.(drive, this.opts.quickBoot ? ms / 4 : ms);
-    s.print(`AwkWard Modular BIOS v4.20  (C) 1993 AwkWard Software\n${turbo ? '486DX2-66 Turbo' : '486DX2-66 (Turbo off)'}\n\n`);
+    s.print(`AwkWard Modular BIOS v4.20  (C) 1993 AwkWard Software\n${this.opts.cpuName?.() ?? '486DX2-66'}${turbo ? ' Turbo' : ' (Turbo off)'}\n\n`);
     const postStart = Date.now();
     drawEnergySnore(s);
     // the BIOS ID string along the bottom, as POST screens had (its board code is the build's commit)
@@ -181,7 +183,7 @@ export class Computer extends ComputerFolders {
   }
 
   turbo(): boolean {
-    return !this.opts.speed.slowPc;
+    return this.opts.turbo?.() ?? !this.opts.speed.slowPc;
   }
 
   /** Types a command at the prompt, as if on the keyboard. */
@@ -206,14 +208,57 @@ export class Computer extends ComputerFolders {
           // Game-Maker and its designers, the BBS: each loads when first run (see gm.ts)
           await (await import('./gm')).runGameMaker(this, 'main', _args);
           break;
+        case 'menu':
+          // MENU.C:38: without OKMSG and a third word it only says so, in place, and quits
+          if (!hasOkMsg(_args, 3)) {
+            this.screen.write(MENU_REFUSAL.x, MENU_REFUSAL.y, attr(MENU_REFUSAL.color, 0), MENU_REFUSAL.text);
+            break;
+          }
+          this.opts.onDriveAccess?.(this.shell.drive);
+          await (await import('./gm')).runGameMaker(this, 'menu', _args);
+          break;
         case 'playgame':
           this.screen.gameMakerColors();
           await (await import('./gm')).playgame(this);
-          this.screen.resetPalette();
-          this.screen.clear();
+          // PLAYGAME.C:596: RestorePal is set only without OKMSG, and GENC.C:82 then sets text mode
+          // again on exit (which clears the screen); started by GM, it leaves the screen to GM
+          if (!hasOkMsg(_args, 2)) {
+            this.screen.resetPalette();
+            this.screen.clear();
+          }
+          break;
+        case 'image': {
+          // IMAGE.C:99 is the same test as PLAYGAME's
+          const loaded = await import('../vga/image').catch(() => undefined);
+          if (!loaded?.program) {
+            this.screen.print("Can't load IMAGE.EXE (offline?).\n");
+            break;
+          }
+          this.screen.gameMakerColors();
+          this.screen.clear(attr(7, 0));
+          await loaded.program.run(this);
+          if (!hasOkMsg(_args, 2)) {
+            this.screen.resetPalette();
+            this.screen.clear();
+          }
+          break;
+        }
+        case 'designer':
+          // a designer typed at the prompt, on its own: Main/Quit ends back here (gm.ts runDesigner)
+          this.opts.onDriveAccess?.(this.shell.drive);
+          await (await import('./gm')).runDesigner(this, ref.exe, _args);
+          break;
+        case 'utility':
+          await (await import('./gm')).runUtility(this, _args);
+          break;
+        case 'xferplay':
+          await (await import('./gm')).xferplay(this);
           break;
         case 'terminal':
           await (await import('./bbs/bbs')).runTerminal(this, _args);
+          break;
+        case 'scoot':
+          await (await import('../courier/scootExe')).runScootExe(this);
           break;
         case 'vpic':
           await (await import('./view/vpic')).runVpic(this, _args);
@@ -279,7 +324,7 @@ export class Computer extends ComputerFolders {
           await (await import('./hacks/flags')).runFlags(this, _args);
           break;
         case 'batch':
-          for (const l of ref.lines) await this.shell.execute(l);
+          for (const l of ref.lines ?? []) await this.shell.execute(l);
           break;
       }
     } catch (e) {
@@ -317,7 +362,7 @@ export class Computer extends ComputerFolders {
 
   /** Game-Maker (or one of its designers) is running. */
   get inGameMaker(): boolean {
-    return this.program === 'gm';
+    return this.program === 'gm' || this.program === 'menu' || this.program === 'designer' || this.program === 'utility';
   }
 
   /**
@@ -409,7 +454,7 @@ export class Computer extends ComputerFolders {
         const previous = s.onScene;
         s.onScene = (n) => {
           previous?.(n);
-          this.opts.onScene?.(n);
+          this.opts.onScene?.(n, s.rec.playing);
         };
       };
       const mount = () =>
@@ -434,7 +479,7 @@ export class Computer extends ComputerFolders {
               // The desk opts into live card control; DOS-compatible startup-only detection stays available to other hosts.
               audio,
               onQuit: () => false, // back to DOS
-              onFileWrite: saveId ? (name, bytes) => (playWrote(saveId, name), void writeSaveFile(saveId, name, bytes)) : undefined,
+              ...playSaves(saveId, gam),
               saveId,
               ...achieve,
               onSession,

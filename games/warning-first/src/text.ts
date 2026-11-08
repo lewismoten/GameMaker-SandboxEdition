@@ -37,6 +37,7 @@ export const CREDITS = withCreditPage(
 |(c) 1994 Sandbox Software
 
 Design, pixels, beeps and levels by Claude Sonnet 5.5, an AI model made by Anthropic.
+Music: OpenAI Codex.
 
 Made with GAME-MAKER 3.0 from Recreational Software Designs.
 
@@ -49,7 +50,7 @@ export const WON = wrap(`
 
 Two rooms, two warnings.
 
-A warning is only a block that changes first. A vent has a rest block, a rumble block and a puff block, each set to turn into the next after a number of ticks (18.2 a second). A plank is solid, then a striped flicker block that is still solid, then a gap.
+A warning is only a block that changes first. A vent has a rest block, a rumble block and a puff block, each set to turn into the next after a number of ticks (18.2 a second). A plank is solid, then cracked flicker blocks that blink gold and are still solid, then a gap.
 
 Every clock starts when the room loads. The game cannot start one when you step on a plank, so a warning is for watching, not for setting off.
 

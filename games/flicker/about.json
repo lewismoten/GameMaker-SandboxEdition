@@ -6,7 +6,7 @@
   "hero": "LAMI",
   "year": 1994,
   "price": "Free",
-  "version": "1.1",
+  "version": "1.3",
   "blurb": "Things that flicker and flow in place, drawn with blocks. A block can turn into another block a few ticks later, so a loop of blocks is an animation, and how it feels is in its times. Level 1 is a castle hall: torches whose flame pulses on even times, then flickers on uneven ones, and flags whose wave steps along two blocks. Level 2 is a cliff with a waterfall four blocks wide, with a lip, a body and a splash that are each a loop. Level 3 is a fire on a hill and the sparks it throws. Play it, then open it in Game-Maker and change a time.",
   "exe": "FLICKER.EXE",
   "dosName": "FLICKER",

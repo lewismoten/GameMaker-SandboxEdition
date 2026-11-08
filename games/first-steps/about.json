@@ -6,7 +6,7 @@
   "hero": "KIT",
   "year": 1994,
   "price": "Free",
-  "version": "1.0",
+  "version": "1.1",
   "blurb": "Two short levels that teach what a platform game is made of: walking, jumping, gravity and ladders. Signs in the levels say what each thing does. It is made to be copied and changed. Play it, then open it in Game-Maker and change a sign.",
   "exe": "STEPS.EXE",
   "dosName": "FIRSTSTP",

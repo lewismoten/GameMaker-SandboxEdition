@@ -7,7 +7,7 @@ import { readRoles } from '../blocks/blockRoles';
 
 export const ALL = 'all';
 export const NONE = 'none';
-export type RoleChoice = typeof ALL | typeof NONE | Role;
+type RoleChoice = typeof ALL | typeof NONE | Role;
 
 /** Whether block `n` shows under a choice. */
 export function showsBlock(roles: RoleMap, choice: RoleChoice, n: number): boolean {

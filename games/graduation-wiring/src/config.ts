@@ -3,12 +3,13 @@ import { wrap, creditsPage } from '../../kit/starter/graduationText';
 import type { Graduation } from '../../kit/starter/graduationConfig';
 import { LAB } from '../../kit/starter/graduationThemes';
 import about from '../about.json';
+import { song } from './song';
 
 export const cfg: Graduation = {
   id: 'graduation-wiring',
   stage: 'Wiring and Worlds',
   groups: ['Wiring and Puzzles', 'Bigger Worlds'],
-  cameos: ['gwinn', 'watt', 'loaf'],
+  cameos: ['gwinn', 'watt', 'loaf', 'chicken', 'teddy', 'joe', 'seed', 'goat'],
   theme: LAB,
   upper: 'WIRING & WORLDS',
   honors: 'IN WIRING & WORLDS',
@@ -19,8 +20,14 @@ export const cfg: Graduation = {
     doc: 'DOC LEO HAS A SCROLL FOR YOU',
     banner: 'WIRING & WORLDS',
   },
+  arrive: {
+    title: 'The Lab Yard',
+    hint: 'Cross the yard to the lab doors.',
+    welcome: 'THE LAB IS AHEAD',
+    nods: ['lever', 'tokens', 'fakeWall'],
+  },
   level: { title: 'The Lab', hint: 'Walk across the lab to the stage.' },
-  song: { bpm: 92, lead: 'bell', transpose: 7 },
+  song,
   text: {
     story: wrap(`
 |GRADUATION

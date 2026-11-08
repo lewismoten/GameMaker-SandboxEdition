@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { resolve } from 'node:path';
 import { dosDir, isDosFileName } from '../src/project/dosDir';
 import { cdCatalog, cdSecretCatalog } from './cdGames';
-import { gameZipName, legacyZipName } from './gameArchive';
+import { gameZipName, legacyAlias, legacyZipName } from './gameArchive';
 
 const cd = resolve(import.meta.dirname, '../../cd');
 const games = [...cdCatalog(cd), ...cdSecretCatalog(cd)];
@@ -25,10 +25,15 @@ describe('download names', () => {
     expect(new Set(names).size).toBe(names.length);
   });
 
-  it('keeps the old ZIP link of a renamed game as an alias beside it', () => {
+  it('keeps the old ZIP link only for the renamed games whose old link was published', () => {
     const renamed = games.filter((g) => legacyZipName(g.id) !== gameZipName(g));
     expect(renamed.length).toBeGreaterThan(0);
     for (const g of renamed) expect(legacyZipName(g.id)).toBe(`${g.id.slice(0, 8)}.zip`);
+    const aliased = games.filter((g) => legacyAlias(g)).map((g) => [g.id, legacyAlias(g)]);
+    expect(aliased).toEqual([
+      ['reckoning', 'reckonin.zip'],
+      ['snowbound', 'snowboun.zip'],
+    ]);
   });
 
   it('names every file inside with 8.3', () => {

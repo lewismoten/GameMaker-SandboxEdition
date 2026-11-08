@@ -1,5 +1,6 @@
 first-steps|First Steps|2
 blocks-budget|150 Blocks|2
+around-the-room|Around the Room|4
 beams|Beams and Fog|3
 beat-the-clock|Beat the Clock|2
 boss-hits|Big Bug|2
@@ -8,35 +9,40 @@ block-brains|Block Brains|2
 jump-boots|Boots and Jet Pack|2
 and-gate|Both Together|2
 coins-and-score|Coins and Score|3
-color-doors|Color Doors|6
+color-doors|Color Doors|7
 colors|Colors That Work|2
 corner-view|Corner View|3
 countdown|Countdown|2
-cutscenes|Cutscenes|4
+cutscenes|Cutscenes|5
 day-night|Day and Night|5
 diagonal-wrap|Diagonal Wrap|2
 walk-the-ground|Dig It|2
 searchlight|Don't Get Seen|2
 drop-down|Drop Down|2
-dialog|Everybody Talks|4
+dialog|Everybody Talks|6
+fireworks|Fireworks Night|2
 flash-safe|Flash Safe|3
 flicker|Flicker and Flow|3
 follower|Follow Me|2
-graduation-blocks|Graduation: Blocks and Showcase|1
-graduation-basics|Graduation: First Steps|1
-graduation-heroes|Graduation: Heroes and Foes|1
-graduation-moving|Graduation: Moving and Pushing|1
-graduation-story|Graduation: Story and Finish|1
-graduation-wiring|Graduation: Wiring and Worlds|1
+graduation-blocks|Graduation: Blocks and Showcase|2
+graduation-basics|Graduation: First Steps|2
+graduation-heroes|Graduation: Heroes and Foes|2
+graduation-moving|Graduation: Moving and Pushing|2
+graduation-story|Graduation: Story and Finish|2
+graduation-wiring|Graduation: Wiring and Worlds|2
 gravity-on-gravity-off|Gravity On, Gravity Off|2
 gusts|Gusts|2
 health-and-hearts|Health and Hearts|3
+heat-waves|Heat Waves|3
 short-lived|Here Today|2
 home-keys|Home Keys|3
 keys-and-doors|Keys and Doors|3
 duck|Kit Ducks|2
 kit-moves|Kit's Moves|2
 kits-shop|Kit's Shop|1
+leaves|Leaves in the Wind|2
+lightning|Lightning|2
+lightning-bugs|Lightning Bugs|2
 lights-out|Lights Out|3
 shadows|Little Shadows|4
 secret-doors|Looks Like a Wall|3
@@ -52,12 +58,15 @@ parallax|Parallax|2
 inventory|Pick It Up|2
 pictures-and-cartoons|Pictures and Cartoons|3
 power-up|Power Up|2
+quicksand|Quicksand|2
+rain|Rain on the Path|3
+ride-along|Ride Along|3
 road-tiles|Road Tiles|3
 dice|Roll the Dice|1
 room-to-room|Room to Room|8
 many-rooms|Rooms on One Map|7
 beltway|Round and Round|2
-say-something|Say Something|5
+say-something|Say Something|7
 word-lock|Say the Word|2
 popups|Score Popups|2
 scroll|Scroll or Stay|2
@@ -67,6 +76,7 @@ momentum|Slide and Drift|2
 slippery-and-bouncy|Slippery and Bouncy|3
 slow-computers|Slow Computers|3
 breakable-walls|Smash It|3
+snow|Snow Trails|2
 sound-board|Sound Board|2
 sounds-and-music|Sounds and Music|3
 spend-it|Spend It|2
@@ -75,8 +85,8 @@ switches|Switches|2
 take-the-wheel|Take the Wheel|2
 teach-test-twist|Teach, Test, Twist|3
 giant|The Giant|2
-same-house|The Same House|8
-graduation-diploma|The Sandbox Diploma|1
+same-house|The Same House|10
+graduation-diploma|The Sandbox Diploma|2
 scripted|The Show|2
 boss-phases|Three Phases|2
 three-tokens|Three Tokens|2

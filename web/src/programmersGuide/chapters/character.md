@@ -9,7 +9,7 @@
 | **character** | 20 sequences (3,700) + `x[3]` 6, `y[3]` 6, `cframe` 1, `cseq` 1, `inv[10]` 10, `meter[30]` 60                                         | **3,784** |
 
 3,700 + 6 + 6 + 1 + 1 + 10 + 60 = 3,784, matching the port's `CHR_RECORD_SIZE` (`engine/formats/character.ts:10`). A `.chr` file holds **two** records (7,568 bytes, `MAXPLAY 2`, `CHAR.H:6`); PLAYGAME reads only the first
-(`PG:4252`, one `sizeof(chrstruct)`). The second is leftover from a two-player plan. [design]
+(`PG:4252`, one `sizeof(chrstruct)`). The header calls `MAXPLAY` the maximum number of players (`CHAR.H:6`) and CHAREDIT loads both records (`code/GM/CHAREDIT.C:198-200`). **[inference]** The unused second runtime record suggests a two-player plan; these reads do not establish the history of that plan.
 
 ## 7.2 Limits
 
@@ -26,8 +26,8 @@
 | Keys held at once    | 20 (`MAXKEYS`, "every finger and toe")                                                                 | `PG:64, 318`                | [design]     |
 | Key code             | `int`: scan code in the high byte, ASCII in the low; the held-key table has 128 entries (`keydn[128]`) | `CHAR.H:31`, `PG:340`       | [file] [DOS] |
 
-**Why 20 x 10.** 20 sequences x 185 = 3,700; one record fits a 4 KB sector's worth and sits comfortably in `DGROUP` (`chr` and the live copy are both near data, `PG:290-291`). [inference] Both numbers are round; the record size is a consequence, not a goal.
-**Why 11 pixels.** A block is 20 pixels. Capping a step at 11 (one pixel over half a block) means the hero can never cross a whole block between two touch tests, so a 1-cell wall always gets tested. [inference; the source says only `MAXGRAV 11`, `PG:65`]
+**Why 20 x 10.** The header fixes both counts (`CHAR.H:7-8`); the fields yield the 3,784-byte packed record above (`CHAR.H:18-51`, `engine/formats/character.ts:5-10`). `chr` and the separate `cinfo` runtime state are near data, not two copies of the same record (`PG:150-172`, `PG:292-293`, `PLAYGAME.MAP:726-727`). **[inference]** The round counts may have been convenient, but the source does not say whether record size was a goal.
+**Why 11 pixels.** A block is 20 pixels (`BLOC.H:3-4`). The code clamps normal movement to 11 per axis, tests touch at the proposed destination, then checks solids separately along x and y (`PG:2484-2500`, `PG:2533-2591`). That step is shorter than a cell; it is not a universal collision guarantee. **[inference]** Avoiding a whole-cell jump may explain a sub-20 cap, but not the choice of exactly 11. The port defaults to 11 too, with a configurable cap (`engine/engine/world.ts:17`, `engine/engine/character.ts:445-459`).
 
 ## 7.3 What a frame does (`movechars`, `PG:2358-2470`)
 

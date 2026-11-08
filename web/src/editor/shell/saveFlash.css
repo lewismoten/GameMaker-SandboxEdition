@@ -27,7 +27,7 @@
     opacity: 1;
   }
   /* Ctrl+S shows a toast with the same news over the pill's spot, so the pill steps aside */
-  body:has(.toasts .toast) .save-flash:not(.failed) {
+  body:has(.toasts .toast) .save-flash:not(.failed):not(.pending) {
     opacity: 0;
   }
   .save-flash.failed {

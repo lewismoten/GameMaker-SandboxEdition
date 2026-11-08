@@ -13,28 +13,30 @@ import { serializeSoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/
 import { clipEveryList } from '@lewismoten/gamemaker-sandbox-tools/kit/fliClips';
 import { Disk } from '../disk';
 import { licenseText } from '../license';
-import { STARTER_STING, starterStingFli } from './sting';
+import { GRADUATION_STING, graduationStingFli } from './graduationSting';
+import { graduationMenu, graduationTitle } from './graduationScreens';
 import { buildHeroBlocks, heroPicture } from './hero';
 import { buildHero } from './heroChar';
-import { buildMonsterBlocks, buildMonsters } from './monsters';
-import { cardPicture, endPicture, gif, menuPicture, paper, scoresPicture, slotsPicture, titlePicture } from './screens';
+import { graduationMonsters } from './graduationConfetti';
+import { cardPicture, endPicture, gif, paper, scoresPicture, slotsPicture } from './screens';
 import { skyOf } from './palette';
+import { SILVER_KEYS } from './locks';
+import { POWER } from './graduationNods';
 import { buildSounds } from './sounds';
 import type { Graduation } from './graduationConfig';
 import { TITLE, buildGame } from './graduationGame';
 import { finishBlocks } from './graduationHall';
 import type { buildLevels } from './graduationLevel';
-import { song } from './graduationSong';
 import { HOWTO, LOST } from './graduationText';
 
 /** Writes the game's disk: `dir` is the game's folder, `built` its levels (buildLevels), `demo` its DEMO.REC bytes. */
 export function buildGraduation(dir: string, cfg: Graduation, built: ReturnType<typeof buildLevels>, demo: Uint8Array): void {
   const disk = new Disk(join(dir, 'disk'));
-  const { book, pal, timed, levels } = built;
+  const { book, pal, levels } = built;
   const { STORY, WON, CREDITS } = { STORY: cfg.text.story, WON: cfg.text.won, CREDITS: cfg.text.credits };
   const title = cfg.title ?? TITLE;
   const heroBlocks = buildHeroBlocks(pal);
-  const monsterBlocks = buildMonsterBlocks(pal);
+  const { monsterBlocks, monsters } = graduationMonsters(pal, book);
   const hero = heroPicture(heroBlocks, 'stand.top', 'stand');
   const cheer = heroPicture(heroBlocks, 'cheer.top', 'jump');
   // the exit door as a picture to stand in the scenes: its sky made clear
@@ -42,18 +44,22 @@ export function buildGraduation(dir: string, cfg: Graduation, built: ReturnType<
 
   // the game's shared data: one block set, one palette, one hero, one set of monsters, one song
   disk.put('grad.pal', serializePalette(pal.pal));
-  disk.put('grad.bbl', serializeBlocks(finishBlocks({ book, timed })));
+  for (const l of levels) disk.put(`${l.bbl}.bbl`, serializeBlocks(finishBlocks({ book: l.book, timed: l.timed })));
   disk.put('grad.mbl', serializeBlocks(monsterBlocks.finish()));
-  disk.put('grad.mon', serializeMonsters(buildMonsters(monsterBlocks)));
+  disk.put('grad.mon', serializeMonsters(monsters));
   disk.put('hero.cbl', serializeBlocks(heroBlocks.finish()));
-  disk.put('hero.chr', serializeCharacter(buildHero(heroBlocks)));
+  const character = buildHero(heroBlocks);
+  // the arrival's counting gates use these counters, which (like the key counter) start at 1: a count of none
+  if (levels.some((l) => l.book.has('tokenGate'))) character.meter[SILVER_KEYS] = 1;
+  if (levels.some((l) => l.book.has('powerGate'))) character.meter[POWER] = 1;
+  disk.put('hero.chr', serializeCharacter(character));
   disk.put('grad.snd', serializeSoundSet(buildSounds()));
-  disk.put('grad.cmf', song(cfg.song));
+  disk.put('grad.cmf', cfg.song());
 
   // each level's map and its card
   levels.forEach((l, i) => {
     disk.put(`${l.file}.map`, serializeMap(l.map.done()));
-    disk.put(`${l.file}.gif`, gif(cardPicture(pal, book, hero, i + 1, levels.length, l.title, l.hint), pal));
+    disk.put(`${l.file}.gif`, gif(cardPicture(pal, l.book, hero, i + 1, levels.length, l.title, l.hint), pal));
     disk.put(`${l.file}.lst`, serializeSlideList([{ name: `${l.file}.gif`, pause: 3 }]));
   });
 
@@ -63,16 +69,16 @@ export function buildGraduation(dir: string, cfg: Graduation, built: ReturnType<
     disk.put(`${base}.txt`, body);
     disk.put(`${base}.lst`, serializeSlideList([{ name: `${base}.gif`, pause: 0 }, { name: `${base}.txt` }]));
   };
-  disk.put('title.gif', gif(titlePicture(pal, book, hero, door, title, cfg.upper), pal));
-  disk.put(STARTER_STING, starterStingFli(cfg.id));
+  disk.put('title.gif', gif(graduationTitle(pal, cfg, title, hero, door), pal));
+  disk.put(GRADUATION_STING, graduationStingFli(cfg));
   disk.put(
     'title.lst',
     serializeSlideList([
-      { name: STARTER_STING, pause: 0 },
+      { name: GRADUATION_STING, pause: 0 },
       { name: 'title.gif', pause: 12 },
     ]),
   );
-  disk.put('menu.gif', gif(menuPicture(pal, book, hero, title), pal));
+  disk.put('menu.gif', gif(graduationMenu(pal, cfg, title, hero), pal));
   disk.put('scores.gif', gif(scoresPicture(pal, book, 'THE GRADUATES'), pal));
   disk.put('loadgame.gif', gif(slotsPicture(pal, book, 'LOAD GAME'), pal));
   disk.put('savegame.gif', gif(slotsPicture(pal, book, 'SAVE GAME'), pal));

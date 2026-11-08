@@ -5,7 +5,7 @@
 // frame read this. Earned = the ceremony's game id is in the achievements finished set (homeDone.ts
 // loadFinished). Design: .for-lewis/research/ceremonies/2026-11-05-design.md.
 import { gpa, isB, withFinished, type Grade, type Grades } from './grades';
-import { STARTER_GROUPS } from './starter';
+import { ADDED_LATER, STARTER_GROUPS } from './starter';
 
 export interface Ceremony {
   /** The game id (games/<id>). */
@@ -47,7 +47,7 @@ export const CEREMONIES: Ceremony[] = [
   {
     id: 'graduation-blocks',
     stage: 'Blocks and Showcase',
-    groups: ['Drawing with Blocks', 'Showcase Tricks'],
+    groups: ['Drawing with Blocks', 'Weather', 'Showcase Tricks'],
     skills: 'drawn and animated blocks, light and dark, the big-game tricks',
   },
 ];
@@ -66,8 +66,11 @@ export const ceremonyTitle = (c: Ceremony): string => (c === DIPLOMA ? DIPLOMA.s
 /** What the award is called: "Honors in First Steps"; the diploma is "The Sandbox Diploma". */
 export const certificateTitle = (c: Ceremony): string => (c === DIPLOMA ? DIPLOMA.stage : `Honors in ${c.stage}`);
 
-/** The Starters (courses) a stage covers, in group order. */
-export const stageGames = (c: Ceremony): string[] => c.groups.flatMap((g) => STARTER_GROUPS.find((x) => x.name === g)?.games ?? []);
+/** The Starters (courses) a stage covers, in group order, then the stage's ADDED_LATER games in the order they came (so their course numbers follow the others'). */
+export const stageGames = (c: Ceremony): string[] => {
+  const all = c.groups.flatMap((g) => STARTER_GROUPS.find((x) => x.name === g)?.games ?? []);
+  return [...all.filter((id) => !ADDED_LATER.includes(id)), ...ADDED_LATER.filter((id) => all.includes(id))];
+};
 
 /**
  * A course number: the stage's number (1 to 6) and the Starter's place in the stage, 101 for the first Starter of
@@ -91,7 +94,7 @@ export const needed = (c: Ceremony): number => Math.ceil((stageGames(c).length *
 export const unlockRule = (c: Ceremony): string =>
   c === DIPLOMA ? 'Earn the honors from all six stages.' : `Get a B or better in ${needed(c)} of the ${stageGames(c).length} courses.`;
 
-export interface TranscriptRow {
+interface TranscriptRow {
   id: string;
   /** 101, 102 ... */
   course: number;
@@ -137,12 +140,61 @@ export function ceremonyState(c: Ceremony, grades: Readonly<Grades>, finished: R
 export const allCeremonyStates = (grades: Readonly<Grades>, finished: ReadonlySet<string>): { ceremony: Ceremony; state: CeremonyState }[] =>
   ALL.map((ceremony) => ({ ceremony, state: ceremonyState(ceremony, grades, finished) }));
 
-export type Level = 'Beginner' | 'Maker' | 'Designer' | 'Master' | 'Graduate';
+export type Level = 'Beginner' | 'Maker' | 'Designer' | 'Master' | 'Graduate' | 'Honor Graduate' | 'Valedictorian';
 
-/** The desk frame's title for the highest level earned, or undefined when no honors are. The diploma is Graduate; 1-2 honors Beginner, 3-4 Maker, 5 Designer, 6 Master. */
-export function highestLevel(finished: ReadonlySet<string>): Level | undefined {
-  if (finished.has(DIPLOMA.id)) return 'Graduate';
+/** The desk frame's title for the highest level earned, or undefined when no honors are. The diploma is Graduate (Honor Graduate with Highest Honors, Valedictorian with a perfect 4.0, when `grades` are given); 1-2 honors Beginner, 3-4 Maker, 5 Designer, 6 Master. */
+export function highestLevel(finished: ReadonlySet<string>, grades: Readonly<Grades> = {}): Level | undefined {
+  if (finished.has(DIPLOMA.id)) {
+    const t = diplomaTier(grades, finished);
+    return t === 'perfect' ? 'Valedictorian' : t === 'highest' ? 'Honor Graduate' : 'Graduate';
+  }
   const n = CEREMONIES.filter((c) => finished.has(c.id)).length;
   if (n === 0) return undefined;
   return n <= 2 ? 'Beginner' : n <= 4 ? 'Maker' : n === 5 ? 'Designer' : 'Master';
+}
+
+/** The courses (every Starter with a course number) whose grade is not yet `atLeast` ('B' or 'A'), given the grades and the finished game ids. */
+export const coursesBelow = (grades: Readonly<Grades>, finished: ReadonlySet<string>, atLeast: 'B' | 'A'): string[] => {
+  const g = withFinished(grades, finished);
+  return CEREMONIES.flatMap(stageGames).filter((id) => (atLeast === 'A' ? g[id] !== 'A' : !isB(g[id])));
+};
+
+/** Highest Honors: the diploma is earned and every course has a B or better. */
+export const highestHonors = (grades: Readonly<Grades>, finished: ReadonlySet<string>): boolean =>
+  finished.has(DIPLOMA.id) && coursesBelow(grades, finished, 'B').length === 0;
+
+/** A perfect 4.0: the diploma is earned and every course is an A. */
+export const perfectFourPointO = (grades: Readonly<Grades>, finished: ReadonlySet<string>): boolean =>
+  finished.has(DIPLOMA.id) && coursesBelow(grades, finished, 'A').length === 0;
+
+/** How the diploma reads: plain, With Highest Honors, or With Highest Honors, Perfect 4.0. Undefined until it is earned. */
+export function diplomaTier(grades: Readonly<Grades>, finished: ReadonlySet<string>): 'diploma' | 'highest' | 'perfect' | undefined {
+  if (!finished.has(DIPLOMA.id)) return undefined;
+  return perfectFourPointO(grades, finished) ? 'perfect' : highestHonors(grades, finished) ? 'highest' : 'diploma';
+}
+
+const WORDS = ['One', 'Two', 'Three'];
+/** The next-certificate line once the diploma is earned without Highest Honors: "One course left for Highest Honors!" (1-3 courses short of a B). Undefined otherwise; nothing ever nudges toward the perfect 4.0, which stays a quiet surprise. */
+export function diplomaNudge(grades: Readonly<Grades>, finished: ReadonlySet<string>): string | undefined {
+  if (diplomaTier(grades, finished) !== 'diploma') return undefined;
+  const n = coursesBelow(grades, finished, 'B').length;
+  return n >= 1 && n <= 3 ? `${WORDS[n - 1]} ${n === 1 ? 'course' : 'courses'} left for Highest Honors!` : undefined;
+}
+
+const COUNT_WORDS = ['', 'One', 'Two', 'Three'];
+
+/** The line at the top of the Starters tab when a stage's honors are only 1 to 3 Bs away: "One more B in a 500 course until you earn your next certificate!". The stage with the fewest missing wins (the lower stage on a tie); undefined when none is that close, or when only the diploma is left. A stage whose Bs are all there is the "Ready to graduate" strip's, not this line's. */
+export function nextCertificateLine(grades: Readonly<Grades>, finished: ReadonlySet<string>): string | undefined {
+  let best: { stage: number; missing: number } | undefined;
+  for (const [i, c] of CEREMONIES.entries()) {
+    const s = ceremonyState(c, grades, finished);
+    if (s.state !== 'locked') continue;
+    const missing = s.needed - s.done;
+    if (missing >= 1 && missing <= 3 && (!best || missing < best.missing)) best = { stage: i + 1, missing };
+  }
+  if (!best) return undefined;
+  const hundreds = best.stage * 100;
+  return best.missing === 1
+    ? `One more B in a ${hundreds} course until you earn your next certificate!`
+    : `${COUNT_WORDS[best.missing]} more Bs in ${hundreds} courses until your next certificate!`;
 }

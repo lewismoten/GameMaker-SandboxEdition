@@ -8,6 +8,8 @@ import { toCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import { deskNow, dosDate, dosTime, parseDosDate, parseDosTime, resetDeskClock, setDeskClock } from './deskClock';
 import { DOS_TIME_EVENT } from './dosTimeEvent';
 import { unlockAchievement } from '../../achievements';
+import { runBatch, type BatchHost } from './batch';
+import { isBreak } from '../text/textInput';
 
 interface ShellHost {
   screen: TextScreen;
@@ -138,14 +140,63 @@ export class Shell {
       this.screen.cursorVisible = true;
       return;
     }
+    // SPECIALS.EXE (the limited-time games' test utility, specials/specialsExe.ts) answers from anywhere too, unlisted like EGG.EXE
+    if (/^(?:[a-z]:)?\\?specials(?:\.exe)?$/i.test(trimmed.split(/\s+/)[0])) {
+      const { specialsCommand } = await import('../../specials/specialsExe');
+      for (const line of specialsCommand(args)) this.out(line);
+      return;
+    }
     const prog = await this.findProgram(trimmed.split(/\s+/)[0]);
     if (!prog) {
       this.out('Bad command or file name');
       return;
     }
+    if (prog.node.run?.kind === 'batch') return this.runBat(prog.node, trimmed.split(/\s+/)[0], args);
     this.screen.cursorVisible = false;
     await this.host.run(prog.node.run!, args, prog.at);
     this.screen.cursorVisible = true;
+  }
+
+  private async batText(node: DosNode): Promise<string> {
+    if (node.read) return Array.from(await node.read(), (b) => String.fromCharCode(b)).join('');
+    return node.run?.kind === 'batch' ? (node.run.lines ?? []).join('\n') : '';
+  }
+
+  /** Runs a .BAT with the batch interpreter; its commands go back through execute. */
+  private async runBat(node: DosNode, word: string, args: string[]): Promise<void> {
+    const host: BatchHost = {
+      out: (t) => this.out(t),
+      print: (t) => this.screen.print(toCp437(t)),
+      prompt: () => this.prompt,
+      clear: () => this.screen.clear(),
+      execute: (l) => this.execute(l),
+      exists: async (p) => {
+        const { drive, parts } = resolvePath(p, this.drive, this.cwdOf);
+        const name = parts.pop() ?? '';
+        const list = await this.host.fs.listDir(drive, parts).catch(() => undefined);
+        return !!(name ? list?.some((n) => dosMatch(name, n.name)) : list);
+      },
+      findBat: async (w) => {
+        const f = await this.findProgram(w);
+        return f?.node.run?.kind === 'batch' && /\.BAT$/i.test(f.node.name) ? this.batText(f.node) : undefined;
+      },
+      waitKey: async () => isBreak(await this.host.keys.next()),
+      breakTyped: () => this.host.keys.takeBreak(),
+      terminate: async () => {
+        this.screen.print('^C\n');
+        for (;;) {
+          this.screen.print('Terminate batch job (Y/N)? ');
+          const k = await this.host.keys.next();
+          const yes = k.key.toLowerCase() === 'y';
+          if (yes || k.key.toLowerCase() === 'n') {
+            this.screen.print(`${yes ? 'Y' : 'N'}\n`);
+            return yes;
+          }
+          this.screen.print('\n');
+        }
+      },
+    };
+    await runBatch(host, await this.batText(node), word, args);
   }
 
   private async changeDrive(d: string): Promise<void> {
@@ -400,6 +451,7 @@ export class Shell {
       'GM          Start Game-Maker SE',
       'PLAYGAME    Play a Game-Maker game',
       'TERMINAL    Dial BBSes to download shareware',
+      "SCOOT       Read your courier's mail (BBS calls bring letters)",
       'VPIC        View a GIF or JPEG picture (VPIC \\IMAGES\\TEDDY.GIF)',
       'BACKUP      Back up and restore saved games (BACKUP /? for help)',
       'HEXEDIT     Look inside a file byte by byte (HEXEDIT \\GM\\SAMPLE\\SAMPLE.GAM)',

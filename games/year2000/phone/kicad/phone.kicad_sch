@@ -512,7 +512,7 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "https://datasheets.maximintegrated.com/en/ds/MAX7219-MAX7221.pdf"
+		(property "Datasheet" "https://www.analog.com/media/en/technical-documentation/data-sheets/MAX7219-MAX7221.pdf"
 			(at 1.27 -3.81 0)
 			(effects
 				(font
@@ -1032,7 +1032,7 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "http://www.ti.com/lit/ds/symlink/lm358.pdf"
+		(property "Datasheet" "https://www.ti.com/lit/ds/symlink/lm358.pdf"
 			(at 0 0 0)
 			(effects
 				(font
@@ -1286,7 +1286,7 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "http://www.ti.com/lit/ds/symlink/lm386.pdf"
+		(property "Datasheet" "https://www.ti.com/lit/ds/symlink/lm386.pdf"
 			(at 5.08 5.08 0)
 			(effects
 				(font
