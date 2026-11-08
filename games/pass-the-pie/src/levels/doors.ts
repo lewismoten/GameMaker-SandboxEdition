@@ -1,6 +1,6 @@
 // 10. Doorbusters (Mr. Plume). The day-after sale, and the shoppers are lawn turkeys: eight packed in the entrance, a
 // ladder up to the mezzanine where the mannequins (kick bags) stand in a row with a drone on patrol and the gold
-// acorn, a ladder down into a crowd of twelve more, two swooping delivery drones, and the stockroom door, which
+// acorn, a ladder down into a crowd of ten more, two swooping delivery drones, and the stockroom door, which
 // shuts with the bar. The level is a test of stamina: it is all one move, kept up against a clock.
 import type { Pal } from '@lewismoten/gamemaker-sandbox-tools/kit/palRamps';
 import { ORIGIN } from '../../../kit/starter/map';
@@ -19,8 +19,8 @@ export const AT = {
   drone: 44,
   gold: 49,
   ladder2: 53,
-  crowd2: [56, 67],
-  swoops: [71, 76],
+  crowd2: [56, 65],
+  swoops: [71, 77],
   door: 82,
   exit: 86,
 } as const;
@@ -60,9 +60,9 @@ export function doors(pal: Pal): Level {
   m.sign(5, board(s.sale), s.sale);
   m.sign(26, 11 - s.mezz.board.length, s.mezz);
   m.sign(46, board(s.crowd), s.crowd);
-  m.sign(68, board(s.delivery), s.delivery);
-  m.sign(AT.door - 6, board(s.door), s.door);
-  for (const x of [7, 30, 60]) placeBar(m, x, 8);
+  m.sign(66, board(s.delivery), s.delivery);
+  m.sign(AT.door - 5, board(s.door), s.door);
+  for (const x of [7, 33, 60]) placeBar(m, x, 8);
   placeDoor(m, AT.door, GROUND);
   placeOven(m, AT.oven, GROUND);
   m.wallToSky(AT.door);
@@ -70,7 +70,7 @@ export function doors(pal: Pal): Level {
     file: 'doors',
     title: 'Doorbusters',
     hero: 'plume',
-    hint: 'Twenty turkeys. One clock.',
+    hint: 'Eighteen turkeys. One clock.',
     mood: 'sale',
     song: 'payback.cmf',
     book,
