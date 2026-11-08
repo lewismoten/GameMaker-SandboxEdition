@@ -7,6 +7,7 @@ import { library, mossbackBack } from './routeMore';
 import { lookout, rooftops } from './routeLate';
 import { excuseMe, gatheringMist, theFord } from './routeNew';
 import { theSurveyLine } from './routeGrow';
+import { theSpillway } from './routeSpill';
 import { theClockTower } from './routeClock';
 import { GameSim } from './sim';
 
@@ -24,6 +25,7 @@ const ROUTES = [
   emptySpot,
   lookout,
   windyRidge,
+  theSpillway,
   rooftops,
   lowTunnel,
   excuseMe,
