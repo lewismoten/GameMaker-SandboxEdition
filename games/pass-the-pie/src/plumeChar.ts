@@ -59,6 +59,6 @@ export function buildPlume(cb: Book): Character {
 export function buildRory(cb: Book): Character {
   const ch = buildHero(cb);
   const f = frame(cb);
-  enterMove(ch, [f('stand.top', 'throw0', 2), f('cheer.top', 'throw1', 1), birth(MONS.roll, 10), f('cheer.top', 'throw1', 2), f('stand.top', 'throw2', 3)], SND.toss);
+  enterMove(ch, [f('stand.top', 'throw0', 2), f('cheer.top', 'throw1', 1), birth(MONS.roll), f('cheer.top', 'throw1', 2), f('stand.top', 'throw2', 3)], SND.toss);
   return ch;
 }

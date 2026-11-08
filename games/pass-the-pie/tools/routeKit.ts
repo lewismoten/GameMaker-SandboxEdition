@@ -80,14 +80,22 @@ export async function meet(bot: StarterBot, nums: readonly number[], row: number
   let last: number | undefined;
   for (let t = 0; t < max; t++) {
     const me = bot.px.x;
-    const all = monsters(bot, nums).filter((m) => m.y === row && Math.abs(m.x - me) < near);
-    if (!all.length) return bot.say(`${what}: done, hit points ${bot.sim.ci.hitpts}, score ${bot.sim.ci.score}`);
+    const around = monsters(bot, nums).filter((m) => Math.abs(m.x - me) < near && Math.abs(m.y - row) <= 4);
+    if (!around.length) return bot.say(`${what}: done, hit points ${bot.sim.ci.hitpts}, score ${bot.sim.ci.score}`);
+    const all = around.filter((m) => m.y === row);
+    if (!all.length) {
+      await must(bot, bot.tick(), `watching ${what}`);
+      last = undefined;
+      continue;
+    }
     const v = all.sort((a, b) => Math.abs(a.x - me) - Math.abs(b.x - me))[0];
     const ahead = v.x > me;
     const dist = Math.abs(v.x - me);
     const coming = last !== undefined && (ahead ? v.x < last : v.x > last);
+    const still = last !== undefined && v.x === last;
     last = v.x;
-    if (dist <= reach && (coming || dist <= 28)) {
+    if (dist <= reach && (coming || still || dist <= 28)) {
+      if (process.env.DEBUG_SMASH) bot.say(`meet: me ${me} it ${v.x} hp ${bot.sim.ci.hitpts} ${JSON.stringify(monsters(bot, [20, 21]))}`);
       await face(bot, ahead ? 'right' : 'left');
       await enter(bot);
       last = undefined;
@@ -136,10 +144,15 @@ export async function climb(bot: StarterBot, x: number, row: number, what: strin
   await must(bot, bot.climb('up', row, what), `up ${what}`);
 }
 
-/** Through a gate (the dish or a key opens it) and out of the street. */
-export async function door(bot: StarterBot, gate: number, exit: number, what: string): Promise<void> {
+/** Through a gate (the dish or a key opens it). */
+export async function through(bot: StarterBot, gate: number, what: string): Promise<void> {
   await cross(bot, gate - 1, what);
   await must(bot, bot.wait(20), `at ${what}`);
   await cross(bot, gate + 2, `through ${what}`);
+}
+
+/** Through a gate and out of the street. */
+export async function door(bot: StarterBot, gate: number, exit: number, what: string): Promise<void> {
+  await through(bot, gate, what);
   await leave(bot, bot.walk(exit + 1, 'the exit'), 'the exit');
 }

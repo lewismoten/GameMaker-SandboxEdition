@@ -61,9 +61,9 @@ export const FEED_POINTS = 40;
 export const KICK_SPEED = 6;
 export const KICK_LIFE = 6;
 export const POW_LIFE = 9;
-/** A roll's flight: pixels a tick and ticks (about four blocks). */
-export const ROLL_SPEED = 5;
-export const ROLL_LIFE = 16;
+/** A roll's flight: pixels a tick and ticks (about six blocks). */
+export const ROLL_SPEED = 6;
+export const ROLL_LIFE = 22;
 /** What a vacuum or drone takes off the hero's hit points each tick he touches it. */
 export const STING = 2;
 /** What the loose Big Gobble takes each tick it rolls over Mr. Plume. */
@@ -133,11 +133,11 @@ export function monsterSet(mb: Book): Monster[] {
   set[MONS.fedMower] = set[MONS.fedVac];
   set[MONS.drone] = mon(anim('drone', 1), { ...hit, newmon: MONS.puff, thru: 0 }, pace(5, 2));
   set[MONS.droneHigh] = mon(anim('drone', 1), { ...hit, newmon: MONS.puff, thru: 0 }, pace(8, 3));
-  // the swoop: across, down three blocks to the ground, back up, and home again; read it and go under on the way up
+  // the swoop: it hovers three blocks up and drops to the ground, quick, then climbs back slowly; kick it while it is down
   set[MONS.droneSwoop] = mon(
     anim('drone', 1),
     { ...hit, newmon: MONS.puff, thru: 0 },
-    [corner(0, 0, 2), corner(3, 0, 2, 0), corner(0, 3, 3, 0), corner(0, -3, 2, 0), corner(-3, 0, 2, 4)],
+    [corner(0, 0, 2), corner(0, 3, 3, 0), corner(0, 0, 1, 0)],
   );
   for (let h = 0; h < BAG_HITS; h++) set[MONS.bag + h] = mon(anim(`bag${h}_`, 10 - h * 3), { ...hit, newmon: h + 1 < BAG_HITS ? MONS.bag + h + 1 : MONS.puff });
   for (let i = 0; i < BLOWER_HITS; i++) {

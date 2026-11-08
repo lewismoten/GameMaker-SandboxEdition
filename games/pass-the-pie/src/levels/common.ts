@@ -3,7 +3,7 @@
 // each street keeps inside its 150 blocks.
 //
 // This game's own letters, on top of the kit's:
-//   P the level's dish     $ a gold acorn (a secret's prize)     N a mug of cider (hit points back)
+//   P, J the level's dishes $ a gold acorn (a secret's prize)     N a mug of cider (hit points back)
 //   h a leaf pile          p a pumpkin           F a picket fence (solid)         Y a hedge you can walk through
 //   T a tree trunk (climb it like a ladder)      % leaves of a branch (stand on top, jump up through)
 //   R a roof's shingles (a ledge)                A a shop awning (a ledge)        C a crate (solid)
@@ -127,6 +127,7 @@ const LETTERS: Record<string, string> = {
   O: 'bone',
   Q: 'dog',
   P: 'dish',
+  J: 'dish2',
 };
 
 const MON_LETTERS: Record<string, number> = {
@@ -153,8 +154,8 @@ export function newBook(pal: Pal): Book {
 }
 
 /** Adds the level's dish (it counts on the gold key counter: a door takes it). */
-export function dish(book: Book, pic: Pixels): void {
-  book.add('dish', pic, { ...AIR, score: 25, effect: KEYS, eamt: 1, touch: 'sky' });
+export function dish(book: Book, pic: Pixels, name = 'dish'): void {
+  book.add(name, pic, { ...AIR, score: 25, effect: KEYS, eamt: 1, touch: 'sky' });
 }
 
 export function signs(book: Book, pal: Pal, list: Record<string, [string, number, number]>): Record<string, Sign> {
