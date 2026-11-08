@@ -11,8 +11,8 @@ export function vane(pal: Pal, flies: 'right' | 'left' | 'still', lamps: 1 | 2):
   const o = pal.r('orange');
   const wh = pal.r('white');
   p.rect(9, 3, 2, 17, w[2]).rect(9, 3, 1, 17, w[3]).rect(8, 2, 4, 2, w[3]);
-  const flag = pal.c('hat', 3);
-  const edge = pal.c('hat', 1);
+  const flag = pal.c('red', 3);
+  const edge = pal.c('red', 1);
   if (flies === 'still') {
     p.rect(11, 5, 4, 7, flag).rect(11, 11, 4, 1, edge).rect(14, 6, 1, 5, edge);
   } else {

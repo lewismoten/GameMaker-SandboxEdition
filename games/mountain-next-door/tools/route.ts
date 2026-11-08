@@ -14,6 +14,7 @@ import { TUNNEL_AT, UPPER } from '../src/levels/tunnel';
 import { ZFLOORS, ZIGZAG_AT } from '../src/levels/zigzag';
 import { PICNIC_AT, TOP } from '../src/levels/picnic';
 import { buildLevels } from '../src/levels';
+import { gustName } from '../src/propsDeeper';
 import { GROUND } from '../src/level';
 import { FOG_WAVES, PICNIC, PICNIC_WALK, PROLOGUE, WISP_HOME } from '../src/monsters';
 import { POINTS } from '../src/props';
@@ -313,10 +314,32 @@ export async function rideUp(bot: StarterBot, x: number, row: number, what: stri
   if (Math.round(bot.px.y / 20) !== row - 1) throw new Error(`${what}: not on the ledge (row ${bot.px.y / 20})`);
 }
 
-/** 7. Windy Ridge: up on the updraft, across on the gust, up again; every post blazed. */
+/** Steps into an updraft at column `x` from the left and rides it up to the crest row, then steps off to its left (feet on row `row` - 1). */
+async function rideUpLeft(bot: StarterBot, x: number, row: number, what: string): Promise<void> {
+  await must(bot, bot.walk(x - 1, what), `to ${what}`);
+  await step(bot, 'right', 5, `into ${what}`);
+  await watchFor(bot, () => bot.px.y / 20 <= row - 1.5, `riding ${what}`, 300);
+  await must(bot, bot.walk(x - 2, `off ${what}`), `off ${what}`);
+  await must(bot, bot.land(), 'landing');
+  if (Math.round(bot.px.y / 20) !== row - 1) throw new Error(`${what}: not on the ledge (row ${bot.px.y / 20})`);
+}
+
+/** Waits at `from` for a ring's wind to start a leftward phase (its first picture shows at `cell`), steps into it and lets it carry Tess to `past`. */
+async function windOver(bot: StarterBot, ring: number, phase: number, cell: [number, number], from: number, past: number, what: string): Promise<void> {
+  const ready = blocks('ridge').n(gustName(ring, phase, 'a'));
+  await must(bot, bot.walk(from, `the edge before ${what}`), `to the edge before ${what}`);
+  await watchFor(bot, () => shownAt(bot, cell[0], cell[1]) === ready, `the wind at ${what} turning left`, 700);
+  await step(bot, 'left', 6, `into the wind at ${what}`);
+  await watchFor(bot, () => bot.px.x / 20 <= past, `the wind carrying Tess over ${what}`, 300);
+  await must(bot, bot.wait(25), `landing after ${what}`);
+  if (bot.px.x / 20 > past || Math.round(bot.px.y / 20) !== LEDGES.crest - 1) throw new Error(`${what} left Tess at ${bot.px.x / 20}, ${bot.px.y / 20}`);
+}
+
+/** 7. Windy Ridge: up on the updraft, across on the gust, up again, then the crest: three gaps crossed when the wind turns left and a corridor walked in a lull; every post blazed. */
 export async function windyRidge(bot: StarterBot): Promise<void> {
   const from = bot.sim.ci.score;
   const R = RIDGE_AT;
+  const C = LEDGES.crest;
   const at = R.signs;
   const posts = R.posts.map(([x]) => x);
   await must(bot, bot.walk(at.puddles + 2, 'the puddles spot'), 'to the puddles spot');
@@ -339,9 +362,31 @@ export async function windyRidge(bot: StarterBot): Promise<void> {
   await take(bot, posts[4], POINTS.blaze, 'a post');
   await readAt(bot, at.town + 1, 'the town sign');
   await take(bot, posts[5], POINTS.blaze, 'a post');
-  score(bot, from, 6 * POINTS.blaze, 'level 7');
+  // the crest
+  await rideUpLeft(bot, R.lift3.x, C, 'the third updraft');
+  await take(bot, R.crestPosts[0], POINTS.blaze, 'a post on the crest');
+  await readAt(bot, at.wind + 1, 'the wind sign');
+  await must(bot, bot.wait(READ / 2), 'watching the flag');
+  const [g1, g2, g3] = R.gaps;
+  // the left-blowing phase is the fourth of ring 0 and the third of ring 1
+  await windOver(bot, g1.ring, 3, [g1.from + 3, C - 1], R.islands.a[0], R.islands.b[1], 'the first gap');
+  // the corridor: wait for the wind to drop (the calm just after it blows right), then walk through before it turns back
+  const book = blocks('ridge');
+  const calm = book.n(gustName(R.corridor.ring, 1));
+  for (let tries = 0; ; tries++) {
+    await watchFor(bot, () => shownAt(bot, R.corridor.from, C - 1) === calm, 'the lull in the corridor', 700);
+    await must(bot, bot.walk(R.crestPosts[1], 'through the corridor'), 'through the corridor');
+    if (bot.px.x / 20 <= R.corridor.from - 1) break;
+    if (tries > 3) throw new Error('could not get through the corridor');
+  }
+  await windOver(bot, g2.ring, 3, [g2.from + 3, C - 1], R.islands.b[0], R.islands.c[1], 'the second gap');
+  await take(bot, R.crestPie, 0, 'the pie');
+  await take(bot, R.crestPosts[2], POINTS.blaze, 'a post on the crest');
+  await windOver(bot, g3.ring, 2, [g3.from + 3, C - 1], R.islands.c[0], R.islands.d[1], 'the third gap');
+  await take(bot, R.crestPosts[3], POINTS.blaze, 'a post on the crest');
+  score(bot, from, 10 * POINTS.blaze, 'level 7');
   void G7;
-  await leave(bot, bot.walk(R.exit + 1, 'the exit'), 'the exit');
+  await leave(bot, bot.walk(R.exit - 1, 'the exit'), 'the exit');
 }
 
 /** 8. The Low Tunnel: in along the low road and back along the mill race, every lantern lit, a look up at the glow-worms, and Wisp found. */
