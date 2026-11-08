@@ -137,7 +137,7 @@ export async function footprints(bot: StarterBot): Promise<void> {
 }
 
 /** Block numbers by name in a level's own set. */
-const blocks = (file: string) => {
+export const blocks = (file: string) => {
   const l = buildLevels().levels.find((x) => x.file === file);
   if (!l) throw new Error(`no level ${file}`);
   return l.book;

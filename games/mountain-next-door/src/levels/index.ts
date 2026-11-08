@@ -21,6 +21,7 @@ import { levelLibrary } from './library';
 import { levelRidge } from './ridge';
 import { levelSigns } from './signs';
 import { levelStream } from './stream';
+import { levelTower } from './tower';
 import { levelTunnel } from './tunnel';
 import { levelZigzag } from './zigzag';
 import { levelNext } from './next';
@@ -37,6 +38,7 @@ const DRESS: Record<string, DressOptions> = {
   stream: { maples: true, far: { row: 9 } },
   signs: { birds: true },
   hollow: { far: { row: 7 } },
+  tower: { far: { row: 59 } },
   ridge: { far: { row: 20 } },
   picnic: { birds: true, far: { row: 7 } },
 };
@@ -53,6 +55,7 @@ export function buildLevels(): { pal: ReturnType<typeof buildMountainPalette>; l
     levelStream(pal),
     levelSigns(pal),
     levelHollow(pal),
+    levelTower(pal),
     levelRidge(pal),
     levelTunnel(pal),
     levelZigzag(pal),

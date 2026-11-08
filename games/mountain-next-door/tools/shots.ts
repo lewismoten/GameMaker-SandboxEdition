@@ -33,6 +33,7 @@ const AT: Record<string, number> = {
   stream: 640,
   signs: 1500,
   hollow: 900,
+  tower: 2400,
   ridge: 420,
   tunnel: 1300,
   zigzag: 1700,

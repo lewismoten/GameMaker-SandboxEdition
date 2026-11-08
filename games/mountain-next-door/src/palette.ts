@@ -184,6 +184,24 @@ export const LOOKS: Record<string, Record<string, Tint>> = {
       [150, 80, 60],
     ],
   },
+  // the lookout at the last of the light: amber low down, violet overhead
+  gloaming: {
+    sky: [
+      [70, 50, 120],
+      [255, 200, 140],
+      [190, 120, 150],
+    ],
+    wood: [
+      [50, 30, 40],
+      [230, 170, 120],
+      [130, 80, 70],
+    ],
+    moss: [
+      [30, 50, 50],
+      [170, 170, 110],
+      [80, 100, 70],
+    ],
+  },
   // dusk on the windy ridge: blue-violet sky, the last light low
   dusk: {
     sky: [

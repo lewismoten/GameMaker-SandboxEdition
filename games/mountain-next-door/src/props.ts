@@ -16,6 +16,8 @@
 //   picnic     blanketL/M/R, matL/M/R
 //   library    shelf0..5 (books, passable), gap (an overdue book goes back: becomes shelved), book (take it), floor/floor2
 //              (solid), win0..5 (a tall window, 2 x 3), deskL/M/R
+//   tower      leg, brace0..3 (an X over 2 x 2), deck/deck2 (a landing: stand on it), rail, lamp (light it: lampLit),
+//              boardUp/boardHalf/boardGone/boardBack (a loose board, on the stones' clock)
 //   high       screeUp/screeHalf/screeUnder/screeRise (wobbly rocks in a path, on the stones' clock), dent0..2 (the summit's damp dent: a ledge)
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { KEYS } from '../../kit/starter/blocks';
@@ -50,6 +52,7 @@ import {
 import { blanket, doormat, lantern, moon, puddle, signpost, star, tunnelAir, tunnelFloor, tunnelStone } from './art/night';
 import { bed, footbridge, gust, rain, stone, updraft, water } from './art/weather';
 import { dent, scree } from './art/high';
+import { brace, calm, lamp, landing, leg, railing, shingles } from './art/tower';
 import { desk, floorboard, libWindow, lostBook, shelf, shelfGap } from './art/library';
 
 /** Points: a painted blaze, an acorn, a gate taken off the mountain, a gate put back home. */
@@ -233,6 +236,29 @@ export function addProps(book: Book, pal: Pal, groups: readonly string[], o: Pro
     book.add('floor2', floorboard(pal, 2), { solid: SOLID });
     for (let k = 0; k < 6; k++) book.add(`win${k}`, libWindow(pal, k), air);
     for (const part of ['L', 'M', 'R'] as const) book.add(`desk${part}`, desk(pal, part), air);
+  }
+  if (has('tower')) {
+    book.add('leg', leg(pal), { solid: SOLID });
+    for (let k = 0; k < 4; k++) book.add(`brace${k}`, brace(pal, k), air);
+    book.add('deck', landing(pal, 1), { solid: LEDGE, grav: PULL.down });
+    book.add('deck2', landing(pal, 2), { solid: LEDGE, grav: PULL.down });
+    book.add('rail', railing(pal), air);
+    for (const part of ['L', 'M', 'R'] as const) book.add(`roof${part}`, shingles(pal, part), air);
+    book.add('lamp', lamp(pal, false), { ...air, score: POINTS.lantern, touch: 'lampLit' });
+    book.add('lampLit', lamp(pal, true), air);
+    book.add('boardUp', landing(pal, 3), { solid: LEDGE, grav: PULL.down });
+    book.add(
+      'boardHalf',
+      landing(pal, 4).map((x, y, c) => (y < 3 ? pal.c('sky', 3) : c)),
+      air,
+    );
+    book.add('boardGone', calm(pal), air);
+    book.add(
+      'boardBack',
+      landing(pal, 4).map((x, y, c) => (y < 3 ? pal.c('sky', 3) : c)),
+      air,
+    );
+    loop(['boardUp', 'boardHalf', 'boardGone', 'boardBack'], [STONE_TICKS.up, STONE_TICKS.half, STONE_TICKS.under, STONE_TICKS.rise]);
   }
   if (has('picnic')) {
     for (const part of ['L', 'M', 'R'] as const) book.add(`blanket${part}`, blanket(pal, part), air);
