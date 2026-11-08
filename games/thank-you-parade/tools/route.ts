@@ -10,6 +10,7 @@ import { AT_BAKERY } from '../src/bakery';
 import { AT_CREEK } from '../src/creek';
 import { AT_HALL } from '../src/hall';
 import { AT_TRUCK } from '../src/truck';
+import { AT_BLEACHERS } from '../src/bleachers';
 import { FUSES } from '../src/extra';
 import { AT4 } from '../src/level4';
 import { AT5, ZONES } from '../src/level5';
@@ -213,19 +214,19 @@ export async function theFloat(bot: StarterBot): Promise<void> {
 }
 
 /** Waits for the cannon at (x, GROUND-1) to fire and then settle, so a zone can be crossed in its quiet. */
-async function afterSplash(bot: StarterBot, file: string, kind: string, x: number): Promise<void> {
+async function afterSplash(bot: StarterBot, file: string, kind: string, x: number, row = 9): Promise<void> {
   const book = levels.find((l) => l.file === file)!.book;
   const fire = book.n(`${kind}!`);
-  const at = () => bot.sim.w.blkmap[bot.sim.blockAt(x + ORIGIN, 9 + ORIGIN)];
+  const at = () => bot.sim.w.blkmap[bot.sim.blockAt(x + ORIGIN, row + ORIGIN)];
   for (let t = 0; t < 120 && at() !== fire; t++) await must(bot, bot.wait(1), 'waiting for a cannon');
   for (let t = 0; t < 40 && at() === fire; t++) await must(bot, bot.wait(1), 'the burst');
 }
 
 /** Crosses a zone of cannons just after they fire: a jump over them (through the notes above), landing just past the zone. */
-async function cross(bot: StarterBot, file: string, kind: string, a: number, b: number, leap = true): Promise<void> {
+async function cross(bot: StarterBot, file: string, kind: string, a: number, b: number, leap = true, row = 9): Promise<void> {
   const hp = bot.sim.ci.hitpts;
   await must(bot, bot.walk(a - 1, 'a cannon zone'), 'to the zone');
-  await afterSplash(bot, file, kind, a);
+  await afterSplash(bot, file, kind, a, row);
   if (leap) await must(bot, bot.jump('right', b + 1), 'over the cannons');
   else await must(bot, bot.walk(b + 2, 'past the cannons'), 'across');
   if (bot.sim.ci.hitpts !== hp) throw new Error(`a cannon hit: hit points ${hp} -> ${bot.sim.ci.hitpts} at ${a}`);
@@ -438,5 +439,34 @@ export async function cannonTruck(bot: StarterBot): Promise<void> {
   await must(bot, bot.wait(READ), "reading Gigi's placard");
   await must(bot, bot.walk(A.truck + 1, 'the truck door'), 'through the truck door');
   need(bot, FUSES, 0, 'the truck took the fuses');
+  await leave(bot, bot.walk(A.exit + 1, 'the exit'), 'the exit');
+}
+
+/** 9. The Bleachers: up the five rows with a judge and a card on each, the scoreboard's page, down, across two cannon zones. */
+export async function bleachers(bot: StarterBot): Promise<void> {
+  const A = AT_BLEACHERS;
+  const G = A.ground;
+  const score = bot.sim.ci.score;
+  await must(bot, bot.walk(8, 'the first placard'), 'to the placard');
+  await must(bot, bot.wait(READ), 'reading');
+  await must(bot, bot.walk(A.tiers[0][0] - 3, 'the bleachers'), 'to the first row');
+  await must(bot, bot.wait(READ / 2), 'reading the judges placard');
+  for (const [i, [a, b, row]] of A.tiers.entries()) {
+    await must(bot, i === 0 ? bot.jump('right', a + 1) : bot.jump('right', a + 1), `up onto row ${i + 1}`);
+    await must(bot, bot.walk(b - 1, 'along the row'), `along row ${i + 1}`);
+    if (i < A.tiers.length - 1) await must(bot, bot.walk(b, 'the end of the row'), 'to the end of the row');
+    void row;
+  }
+  if (bot.sim.ci.score - score < 4 * 50) throw new Error(`score ${bot.sim.ci.score - score}: not every judge got a card`);
+  // the scoreboard's lookout and the eighth page, then down the ladder
+  await must(bot, bot.walk(A.ladder, 'the ladder'), 'to the ladder');
+  await must(bot, bot.climb('up', A.lookout[2] - 1, 'up to the lookout'), 'up');
+  await page(bot, () => must(bot, bot.walk(A.page, 'the scoreboard'), 'along the lookout'), 'the eighth page');
+  await must(bot, bot.wait(READ), 'reading the page');
+  await must(bot, bot.walk(A.ladder, 'the ladder'), 'back to the ladder');
+  await must(bot, bot.climb('down', G - 1, 'down'), 'down');
+  await must(bot, bot.walk(A.ladder + 3, 'the street'), 'to the street');
+  await must(bot, bot.wait(READ), 'reading the cannon placard');
+  for (const [a, b, kind] of A.zones) await cross(bot, 'stands', kind === 'A' ? 'cannonA' : 'cannonB', a, b, true, G - 1);
   await leave(bot, bot.walk(A.exit + 1, 'the exit'), 'the exit');
 }

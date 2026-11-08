@@ -180,6 +180,14 @@ export const TRUCK_SIGNS: Defs = {
   exit: EXIT,
 };
 
+export const BLEACHER_SIGNS: Defs = {
+  start: ['9:10. THE BLEACHERS. FOUR JUDGES. FOUR CARDS. FIVE ROWS.', 6, 3],
+  judges: ['THE JUDGES SIT HIGHER EACH ROW. THAT IS HOW BLEACHERS WORK.', 6, 3],
+  cannon: ['GIGI RENTED THE CANNONS BY THE HOUR.', 5, 3, 'purple'],
+  secret: ['PLAYBOOK P.8: THE SCOREBOARD IS HONEST. THIS ONE ISN\'T.', 6, 3, 'purple'],
+  exit: EXIT,
+};
+
 /** What each level card says under its title. */
 export const CARD_NOTES = [
   '6:40 AM. The band is scattered.',
