@@ -2,7 +2,7 @@
 // paper (`onPaper`); a monster picture is see-through. Everything is 20x20 unless it says otherwise.
 //   dishes      pie, gravy boat, green bean casserole, cranberry sauce (ridges from the can), a basket of rolls
 //   yard        leaf piles (and scuffed flat), pumpkins, a short picket fence, a squirrel, little Mr. Plume (no hat yet)
-//   payback     inflatable lawn turkeys (and their deflating puddle), robot vacuums, tackling dummies, the WHAP of
+//   payback     inflatable lawn turkeys (and their crumpled vinyl), robot vacuums, the WHAP and POW of
 //               a kick, a puff, Big Gobble's blower with its pressure lights, Big Gobble himself (3x3 blocks)
 //   streets     the dog and his bone, kitchen window and pot, parade floats, the dash's bar, the town hall doors,
 //               Grandma's oven (the restart door) and Rory standing (the finale's hand-off)
@@ -174,13 +174,19 @@ export function inflatable(pal: Pal, bob: boolean): Pixels {
   return cut(pal, s);
 }
 
-/** An inflatable going flat: a crumpled puddle of vinyl and a little "pff". */
+/** An inflatable going flat: a crumpled sheet of vinyl with its head and wattle flopped over the top, and a "pff". */
 export function deflated(pal: Pal, more: boolean): Pixels {
   const { ink } = press(pal);
+  const fan = R(pal, 'tFan');
   const s = sheet();
-  const h = more ? 2 : 4;
-  oval(s, 10, 19 - h / 2, 9, h, R(pal, 'tFan')[2]);
-  s.rect(4, 19 - h, 3, 1, R(pal, 'tFan')[1]).rect(12, 19 - h, 4, 1, R(pal, 'tFan')[1]);
+  const h = more ? 3 : 5;
+  // the sheet: a jagged, wrinkled heap (never a smooth oval)
+  for (let x = 2; x < 18; x++) {
+    const top = 19 - h + ((x * 7) % 3) - (x > 6 && x < 12 ? 1 : 0);
+    s.rect(x, top, 1, 20 - top, x % 4 === 0 ? fan[1] : fan[2]);
+  }
+  s.rect(8, 19 - h - 2, 3, 2, fan[3]); // the head, flopped
+  s.set(8, 19 - h - 2, ink[0]).rect(11, 19 - h - 1, 2, 1, R(pal, 'tBeak')[1]).rect(10, 19 - h, 1, 2, R(pal, 'tRed')[1]);
   if (!more) s.line(15, 8, 18, 5, ink[1]).line(16, 11, 19, 10, ink[1]).line(13, 7, 14, 3, ink[1]);
   return cut(pal, s);
 }
@@ -215,17 +221,6 @@ export function canister(pal: Pal): Pixels {
   return onPaper(pal, s);
 }
 
-/** A football tackling dummy on a sled: `hit` is the one already kicked once, leaning over. */
-export function dummy(pal: Pal, hit: boolean, frame: boolean): Pixels {
-  const { acc, acc2, ink } = press(pal);
-  const s = sheet();
-  const lean = hit ? (frame ? 3 : 2) : frame ? 1 : 0;
-  for (let y = 2; y < 17; y++) s.rect(6 + Math.round((lean * (17 - y)) / 15), y, 8, 1, y % 5 === 0 ? acc2[2] : acc[1]);
-  s.rect(2, 17, 16, 3, R(pal, 'steel')[1]).rect(2, 19, 16, 1, ink[0]);
-  if (hit) s.line(7 + lean, 10, 11 + lean, 6, ink[0]).line(8 + lean, 11, 12 + lean, 7, ink[0]); // a strip of tape
-  return cut(pal, s);
-}
-
 /** The WHAP of a kick: a jagged burst. */
 export function whap(pal: Pal, big: boolean): Pixels {
   const { acc, acc2 } = press(pal);
@@ -237,6 +232,20 @@ export function whap(pal: Pal, big: boolean): Pixels {
     s.line(10, 10, Math.round(10 + Math.cos(ang) * len), Math.round(10 + Math.sin(ang) * len), acc2[2]);
   }
   oval(s, 10, 10, r * 0.4, r * 0.4, acc[2]);
+  return cut(pal, s);
+}
+
+/** The POW at the end of a combo: a bigger star burst with a bright core. */
+export function pow(pal: Pal): Pixels {
+  const { acc, acc2, paper } = press(pal);
+  const s = sheet();
+  for (let a = 0; a < 14; a++) {
+    const ang = (a / 14) * Math.PI * 2 + 0.2;
+    const len = a % 2 ? 9.5 : 5;
+    s.line(10, 10, Math.round(10 + Math.cos(ang) * len), Math.round(10 + Math.sin(ang) * len), a % 4 < 2 ? acc2[2] : acc[2]);
+  }
+  oval(s, 10, 10, 4, 4, acc[2]);
+  oval(s, 10, 10, 2, 2, paper[3]);
   return cut(pal, s);
 }
 

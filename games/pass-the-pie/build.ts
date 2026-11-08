@@ -17,7 +17,7 @@ import { Disk } from '../kit/disk';
 import { licenseText } from '../kit/license';
 import { SANDLOGO, sandLogoFli } from '../kit/sandlogo';
 import { heroPicture } from '../kit/starter/hero';
-import { buildHero } from '../kit/starter/heroChar';
+
 import { SILVER_KEYS } from '../kit/starter/locks';
 import * as art from './src/art';
 import { endingFli, introFli, paybackFli } from './src/cartoons';
@@ -26,10 +26,11 @@ import { buildLevels, finishBook } from './src/levels';
 import { finishMonsterPictures, monsterPictures, monsterSet } from './src/monsters';
 import { basePal, buildPalette, moodBytes } from './src/palette';
 import { buildPlumeBlocks } from './src/plume';
-import { buildGameSounds, buildPlume } from './src/plumeChar';
+import { buildPlume, buildRory } from './src/plumeChar';
+import { buildGameSounds } from './src/sounds';
 import { buildRoryBlocks } from './src/rory';
 import { cardFli, endPicture, gif, menuPicture, paper, scoresPicture, slotsPicture, titlePicture } from './src/screens';
-import { longTable, payback, streetWalk } from './src/song';
+import { chase, gobble, longTable, payback, streetWalk } from './src/song';
 import { CREDITS, HOWTO, LOST, STORY, WON } from './src/text';
 
 /** Hit points and lives at the start. */
@@ -51,7 +52,7 @@ const plumeKick = heroPicture(plumeBlocks, 'kick1.top', 'throw1');
 
 // the two heroes: each starts with the hit points, the lives and the steel-key counter at 1 (it shows one less)
 const heroes = [
-  ['rory', roryBlocks, buildHero(roryBlocks)],
+  ['rory', roryBlocks, buildRory(roryBlocks)],
   ['plume', plumeBlocks, buildPlume(plumeBlocks)],
 ] as const;
 for (const [name, blocks, ch] of heroes) {
@@ -63,10 +64,14 @@ for (const [name, blocks, ch] of heroes) {
 }
 disk.put('pass.mbl', serializeBlocks(finishMonsterPictures(mb)));
 disk.put('pass.mon', serializeMonsters(monsterSet(mb)));
-disk.put('pass.snd', serializeSoundSet(buildGameSounds()));
+const sounds = buildGameSounds();
+disk.put('pass.snd', serializeSoundSet(sounds.set));
+for (const [name, voc] of Object.entries(sounds.vocs)) disk.put(`${name}.voc`, voc);
 disk.put('pie.cmf', streetWalk());
 disk.put('payback.cmf', payback());
 disk.put('table.cmf', longTable());
+disk.put('chase.cmf', chase());
+disk.put('gobble.cmf', gobble());
 
 // each level: its inks, map, blocks and its card (Mr. Plume's first is led in by the PAYBACK cartoon)
 let chapter = 0;
@@ -80,7 +85,7 @@ levels.forEach((l) => {
   disk.put(`${l.file}.bbl`, serializeBlocks(finishBook(l)));
   disk.put(`${l.file}.fli`, cardFli(pal, bytes, l.hero, n, l.title, l.hint, pose));
   const slides = [{ name: `${l.file}.fli`, pause: 0 }];
-  if (l.file === 'lawn') slides.unshift({ name: 'payback.fli', pause: 0 });
+  if (l.before) slides.unshift({ name: l.before, pause: 0 });
   disk.put(`${l.file}.lst`, serializeSlideList(slides));
 });
 

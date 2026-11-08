@@ -1,6 +1,6 @@
 // Design previews (never on the disk): the block sheets, each level's whole map in its own inks, every picture on
 // the built disk and twelve frames of each cartoon and street card, as PNGs in the folder given (default: the temp dir).
-//   cd web && npx vite-node ../games/pass-the-pie/tools/preview.ts [outDir]
+//   cd web && [MAPS_ONLY=1] npx vite-node ../games/pass-the-pie/tools/preview.ts [outDir]
 import { existsSync, mkdirSync, readFileSync, readdirSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -28,6 +28,8 @@ for (const l of levels) {
   writePng(join(out, `${l.file}.png`), pic, bytes, 1);
 }
 writePng(join(out, 'monsters.png'), blockSheet(mbl.slice(0, mb.index.size), 12, 0), pal.pal, 4);
+// MAPS_ONLY=1 stops after the block sheets and maps
+if (process.env.MAPS_ONLY) process.exit(0);
 const disk = new URL('../disk/', import.meta.url);
 for (const f of readdirSync(disk)) {
   if (f.endsWith('.gif')) {
