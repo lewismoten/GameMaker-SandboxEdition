@@ -4,6 +4,7 @@ import type { StarterBot } from '../../kit/starter/bot';
 import * as A from '../src/levels/aisle';
 import * as C from '../src/levels/cord';
 import * as W from '../src/levels/doors';
+import * as F from '../src/levels/freezer';
 import * as D from '../src/levels/dojo';
 import * as K from '../src/levels/dogs';
 import * as B from '../src/levels/gobble';
@@ -342,7 +343,7 @@ export async function aisleNine(bot: StarterBot): Promise<void> {
   await door(bot, A.AT.gate, A.AT.exit, 'the express lane');
 }
 
-/** Doorbusters (Mr. Plume): twenty turkeys, a mezzanine of mannequins and a drone, two deliveries, against the bar. */
+/** Doorbusters (Mr. Plume): eighteen turkeys, a mezzanine of mannequins and a drone, two deliveries, against the bar. */
 export async function doorbusters(bot: StarterBot): Promise<void> {
   const G = W.GROUND - 1;
   const bag = [MONS.bag, MONS.bag + 1, MONS.bag + 2];
@@ -361,7 +362,7 @@ export async function doorbusters(bot: StarterBot): Promise<void> {
   await must(bot, bot.climb('down', G, 'down the ladder'), 'down the ladder');
   await read(bot, 47, 'line');
   for (let x = W.AT.crowd2[0]; x <= W.AT.crowd2[1]; x++) await smash(bot, x, [MONS.inflatable], 1, `the shopper at ${x}`, G);
-  await read(bot, 69, 'delivery');
+  await read(bot, 67, 'delivery');
   for (const x of W.AT.swoops) {
     await cross(bot, x - 2, 'before a delivery drone');
     await meet(bot, [MONS.droneSwoop], G, 'the delivery drone', 50, 120, 1200);
@@ -370,6 +371,39 @@ export async function doorbusters(bot: StarterBot): Promise<void> {
   bot.say(`bar left: ${((W.SECONDS * 18.2 - bot.sim.ticks) / 18.2) | 0} s`);
   await cross(bot, W.AT.door + 2, 'through the stockroom door');
   await leave(bot, bot.walk(W.AT.exit + 1, 'the exit'), 'the exit');
+}
+
+/** The Freezer Raid (Rory): fan up, ladder down, a runaway vacuum for a stair, the second fan up to the spare pie, against the bar. */
+export async function freezerRaid(bot: StarterBot): Promise<void> {
+  const G = F.GROUND - 1;
+  await read(bot, 6, 'midnight');
+  await read(bot, F.AT.lift - 4, 'fan');
+  await ride(bot, F.AT.lift, F.AT.ledge[0] + 1, 'the first fan');
+  await cross(bot, 19, 'the cider');
+  await climb(bot, F.AT.ladder, 3, 'the ladder');
+  await must(bot, bot.climb('down', G, 'down the ladder'), 'down the ladder');
+  await cross(bot, F.AT.vac - 3, 'up to the vacuum');
+  await meet(bot, [MONS.vacQuick], G, 'the runaway vacuum', 100, 300);
+  await must(bot, bot.wait(10), 'watching it stall');
+  await stepUp(bot, [MONS.fedVac], 'right', F.AT.shelf[0] + 3, 'the stalled vacuum');
+  await cross(bot, 38, 'the gold acorn');
+  await cross(bot, F.AT.shelf[1] + 1, 'off the shelf');
+  await must(bot, bot.land(), 'down from the shelf');
+  await ride(bot, F.AT.lift2, F.AT.top[0] + 1, 'the second fan');
+  await cross(bot, F.AT.pie + 1, 'the spare pie');
+  await read(bot, F.AT.top[0] + 1, 'spare pie');
+  await climb(bot, F.AT.ladder2, 3, 'the second ladder');
+  await must(bot, bot.climb('down', G, 'down the ladder'), 'down the ladder');
+  await cross(bot, F.AT.short - 3, 'up to the short vacuum');
+  await meet(bot, [MONS.vacShort], G, 'the short vacuum', 100, 300);
+  await must(bot, bot.wait(10), 'watching it stall');
+  await cross(bot, F.AT.gate - 1, 'over the vacuum to the gate');
+  await must(bot, bot.wait(20), 'at the gate');
+  await cross(bot, F.AT.gate + 2, 'through the gate');
+  await read(bot, F.AT.door - 6, 'door');
+  bot.say(`bar left: ${((F.SECONDS * 18.2 - bot.sim.ticks) / 18.2) | 0} s`);
+  await cross(bot, F.AT.door + 2, 'through the freezer door');
+  await leave(bot, bot.walk(F.AT.exit + 1, 'the exit'), 'the exit');
 }
 
 /** How far behind Mr. Plume the loose balloon is, in pixels. */
@@ -469,6 +503,7 @@ export const LEVELS = [
   dogPark,
   aisleNine,
   doorbusters,
+  freezerRaid,
   mainStreet,
   bigGobble,
 ];
