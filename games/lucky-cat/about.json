@@ -5,15 +5,15 @@
   "series": "special",
   "year": 1994,
   "price": "Free",
-  "version": "1.0",
-  "blurb": "It is Friday the 13th, and the whole town blames Midnight, the black cat, for every bit of bad luck. So she sets out to prove she is lucky: thirteen lucky charms, a mirror maze that swaps left and right, umbrellas that pop open indoors, a race to the fair before the clock strikes thirteen, and a crow who keeps knocking on wood. A short special that only stops by for a few days.",
+  "version": "2.0",
+  "blurb": "It is Friday the 13th in Fennel Hollow, and the town has decided the black cat did it. Midnight has until the clock strikes thirteen to gather 13 lucky charms and clear her name: a funhouse that swaps left and right, a town hall full of indoor umbrellas, a race against the 13th chime, a crow on every roof. Halfway through, the story turns over and you play the one who rigged it all. Cut like a woodcut, with six new songs. A special that only stops by for a few days.",
   "exe": "LUCKYCAT.EXE",
   "dosName": "LUCKYCAT",
   "sound": "sb",
   "label": {
-    "background": "#fff2c8",
-    "band": "#3a2f6b",
-    "ink": "#1a1830",
+    "background": "#f8f0d8",
+    "band": "#c02c28",
+    "ink": "#0a0912",
     "logo": "SANDBOX SOFTWARE"
   },
   "acceptedFindings": ["facing s2 The hero climbs side on", "facing s3 The hero climbs side on"]
