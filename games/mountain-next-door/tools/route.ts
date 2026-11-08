@@ -407,24 +407,29 @@ export async function windyRidge(bot: StarterBot): Promise<void> {
   await take(bot, R.crestPosts[0], POINTS.blaze, 'a post on the crest');
   await readAt(bot, at.wind + 1, 'the wind sign');
   await must(bot, bot.wait(READ / 2), 'watching the flag');
-  const [g1, g2, g3] = R.gaps;
-  // the left-blowing phase is the fourth of ring 0 and the third of ring 1
-  await windOver(bot, g1.ring, 3, [g1.from + 3, C - 1], R.islands.a[0], R.islands.b[1], 'the first gap');
-  // the corridor: wait for the wind to drop (the calm just after it blows right), then walk through before it turns back
+  const [g1, g2, g3, g4] = R.gaps;
   const book = blocks('ridge');
-  const calm = book.n(gustName(R.corridor.ring, 1));
-  for (let tries = 0; ; tries++) {
-    await watchFor(bot, () => shownAt(bot, R.corridor.from, C - 1) === calm, 'the lull in the corridor', 700);
-    await must(bot, bot.walk(R.crestPosts[1], 'through the corridor'), 'through the corridor');
-    if (bot.px.x / 20 <= R.corridor.from - 1) break;
-    if (tries > 3) throw new Error('could not get through the corridor');
-  }
+  /** Walks left through a corridor of wind in the lull: waits for the first calm after the wind blows right, then goes to `to`. */
+  const corridor = async (co: (typeof R.corridors)[number], calmPhase: number, to: number) => {
+    const calm = book.n(gustName(co.ring, calmPhase));
+    for (let tries = 0; ; tries++) {
+      await watchFor(bot, () => shownAt(bot, co.from, C - 1) === calm, 'the lull in the corridor', 900);
+      await must(bot, bot.walk(to, 'through the corridor'), 'through the corridor');
+      if (bot.px.x / 20 <= co.from - 1) return;
+      if (tries > 3) throw new Error('could not get through the corridor');
+    }
+  };
+  // the left-blowing phase is the fourth of ring 0 and the third of ring 1; a calm right after the wind blows right is the second of ring 1 and the third of ring 0
+  await windOver(bot, g1.ring, 3, [g1.from + 3, C - 1], R.islands.a[0], R.islands.b[1], 'the first gap');
+  await corridor(R.corridors[0], 1, R.crestPosts[1]);
   await windOver(bot, g2.ring, 3, [g2.from + 3, C - 1], R.islands.b[0], R.islands.c[1], 'the second gap');
-  await take(bot, R.crestPie, 0, 'the pie');
-  await take(bot, R.crestPosts[2], POINTS.blaze, 'a post on the crest');
+  await corridor(R.corridors[1], 2, R.crestPie);
+  await must(bot, bot.walk(R.crestPosts[2], 'the post past the corridor'), 'to the post past the corridor');
   await windOver(bot, g3.ring, 2, [g3.from + 3, C - 1], R.islands.c[0], R.islands.d[1], 'the third gap');
   await take(bot, R.crestPosts[3], POINTS.blaze, 'a post on the crest');
-  score(bot, from, 10 * POINTS.blaze, 'level 7');
+  await windOver(bot, g4.ring, 3, [g4.from + 3, C - 1], R.islands.d[0], R.islands.e[1], 'the fourth gap');
+  await take(bot, R.crestPosts[4], POINTS.blaze, 'a post on the crest');
+  score(bot, from, 11 * POINTS.blaze, 'level 7');
   void G7;
   await leave(bot, bot.walk(R.exit - 1, 'the exit'), 'the exit');
 }

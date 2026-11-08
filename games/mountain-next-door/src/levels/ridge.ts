@@ -2,7 +2,7 @@
 // It is a help, not a hazard: an updraft lifts Tess up the rock to the next ledge, and a gust blows her across a
 // gap too wide to jump. Miss and it is only a walk back round. Blaze the posts, mind the rolling pebble.
 // Then a third updraft lifts her to the crest, where the wind turns: it blows one way, drops, blows the other, and a
-// flag at each gap says which. Three gaps need the wind at her back, and one stretch needs it to drop (a lull) so she
+// flag at each gap says which. Four gaps need the wind at her back, and two stretches need it to drop (a lull) so she
 // can walk into it. The flag's two lamps show how long the wind has left. The door is at the crest's far end.
 
 import type { Pal } from '../../../kit/starter/palette';
@@ -24,21 +24,27 @@ export const RIDGE_AT = {
   /** The third updraft, from the top ledge up to the crest (Tess steps off to its left). */
   lift3: { x: 85, from: LEDGES.crest, to: LEDGES.top - 1 },
   /** The crest's islands, left to right [first column, last column]; the gaps and the corridor are between and on them. */
-  islands: { a: [75, 84], b: [56, 66], c: [38, 47], d: [8, 29] },
+  islands: { a: [75, 84], b: [56, 66], c: [38, 47], d: [21, 29], e: [1, 12] },
   /** Each crossing of the crest, right to left: the gust cells' first and last column and which wind ring blows there. */
   gaps: [
     { from: 67, to: 74, ring: 0 },
     { from: 48, to: 55, ring: 0 },
     { from: 30, to: 37, ring: 1 },
+    { from: 13, to: 20, ring: 0 },
   ],
-  /** The corridor over island B: wind on the crest that blows against Tess and drops for a lull (ring 1). */
-  corridor: { from: 59, to: 65, ring: 1 },
+  /** The corridors over islands B and C: wind on the crest that blows against Tess and drops for a lull (rings 1 and 0). */
+  corridors: [
+    { from: 59, to: 65, ring: 1 },
+    { from: 41, to: 46, ring: 0 },
+  ],
   /** The flag at each crossing: its column and the ring it shows. */
   vanes: [
     [75, 0],
     [66, 1],
     [56, 0],
+    [47, 0],
     [38, 1],
+    [21, 0],
   ],
   hole: 16,
   posts: [
@@ -49,7 +55,7 @@ export const RIDGE_AT = {
     [70, LEDGES.top],
     [80, LEDGES.top],
   ],
-  crestPosts: [82, 57, 41, 20],
+  crestPosts: [82, 57, 39, 24, 9],
   puddles: [
     [7, G7],
     [20, G7],
@@ -59,8 +65,8 @@ export const RIDGE_AT = {
     [76, LEDGES.top],
   ],
   pie: [60, LEDGES.mid],
-  crestPie: 44,
-  exit: 12,
+  crestPie: 40,
+  exit: 4,
   signs: { puddles: 3, lift: 26, gust: 34, town: 72, wind: 77 },
 } as const;
 
@@ -118,7 +124,7 @@ export function levelRidge(pal: Pal): Level {
   // each crest gust's cells show the first picture of the ring's first phase (a calm: sky, or a moving gust's first half)
   const first = (ring: number) => (ring === 0 ? gustName(0, 0) : gustName(1, 0, 'a'));
   for (const gap of R.gaps) for (const y of [C - 2, C - 1]) for (let x = gap.from; x <= gap.to; x++) m.set(x, y, first(gap.ring));
-  for (const y of [C - 2, C - 1]) for (let x = R.corridor.from; x <= R.corridor.to; x++) m.set(x, y, first(R.corridor.ring));
+  for (const co of R.corridors) for (const y of [C - 2, C - 1]) for (let x = co.from; x <= co.to; x++) m.set(x, y, first(co.ring));
   for (const [x, ring] of R.vanes) m.set(x, C - 1, ring === 0 ? vaneName(0, 0, 'a') : vaneName(1, 0));
   m.set(R.hole, G7 + 2, 'printL').set(R.hole + 1, G7 + 2, 'printR');
   m.mon(TRAIL.pebbleShort, R.hole, G7 + 1);
