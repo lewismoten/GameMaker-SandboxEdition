@@ -82,7 +82,7 @@ export async function meet(bot: StarterBot, nums: readonly number[], row: number
     const me = bot.px.x;
     const around = monsters(bot, nums).filter((m) => Math.abs(m.x - me) < near && Math.abs(m.y - row) <= 4);
     if (!around.length) return bot.say(`${what}: done, hit points ${bot.sim.ci.hitpts}, score ${bot.sim.ci.score}`);
-    const all = around.filter((m) => m.y === row);
+    const all = around.filter((m) => m.y === row || m.y === row - 1);
     if (!all.length) {
       await must(bot, bot.tick(), `watching ${what}`);
       last = undefined;

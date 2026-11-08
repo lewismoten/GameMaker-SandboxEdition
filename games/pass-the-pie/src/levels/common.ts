@@ -47,6 +47,8 @@ export interface Level {
   restart?: [number, number];
   /** A cartoon played before the level's card. */
   before?: string;
+  /** Blocks that give birth to a monster every so many ticks while near the screen. */
+  births?: { name: string; mon: number; ticks: number }[];
 }
 
 export interface Timed {
@@ -59,7 +61,7 @@ export const AIR: Rules = { grav: PULL.down };
 
 /** Hit points a gold acorn is worth in points, and what a mug of cider gives back. */
 export const GOLD_POINTS = 250;
-export const CIDER_HP = 30;
+export const CIDER_HP = 15;
 
 /** Props a level adds when its map uses them: picture and rules. */
 const PROPS: Record<string, (pal: Pal) => [Pixels, Rules]> = {
@@ -248,6 +250,11 @@ export function finishBook(level: Level): Block[] {
     const b = blocks[level.book.n(t.name)];
     b.nextBl = level.book.n(t.next);
     b.ntime = t.ticks;
+  }
+  for (const b of level.births ?? []) {
+    const block = blocks[level.book.n(b.name)];
+    block.birthMon = b.mon;
+    block.birthTime = b.ticks;
   }
   return blocks;
 }

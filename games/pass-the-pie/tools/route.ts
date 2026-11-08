@@ -2,12 +2,13 @@
 // press, level by level, with human timing, every acorn a person would see taken and every fight finished.
 import type { StarterBot } from '../../kit/starter/bot';
 import * as C from '../src/levels/cord';
+import * as B from '../src/levels/gobble';
 import * as S from '../src/levels/chase';
 import * as R from '../src/levels/gravy';
 import * as L from '../src/levels/lawn';
 import * as P from '../src/levels/park';
 import * as Y from '../src/levels/yard';
-import { MONS } from '../src/monsters';
+import { BLOWER_HITS, MONS } from '../src/monsters';
 import { climb, cross, door, leap, leave, meet, monsters, must, read, smash, stepUp, through } from './routeKit';
 
 /** Hit points the whole walkthrough may lose (a person is allowed a few bumps). */
@@ -247,4 +248,33 @@ export async function mainStreet(bot: StarterBot): Promise<void> {
   await leave(bot, bot.walk(S.AT.exit + 1, 'the end of Main Street'), 'the end of Main Street');
 }
 
-export const LEVELS = [pumpkinYard, payback, gravyRelay, windyPark, theCord, mainStreet];
+/** 7. Big Gobble (Mr. Plume): the boss, against the bar. */
+export async function bigGobble(bot: StarterBot): Promise<void> {
+  const G = B.GROUND - 1;
+  const stake = [MONS.stake, MONS.stake + 1, MONS.stake + 2];
+  await read(bot, 9, 'hall doors');
+  await cross(bot, B.AT.drone - 2, 'up to the drone');
+  await meet(bot, [MONS.drone], G, 'the street drone', 60, 260);
+  await smash(bot, B.AT.turkey, [MONS.inflatable], 1, 'a lawn turkey', G);
+  // Big Gobble's little balloons: stand and kick them as they drift in, until the next one is a while off
+  await cross(bot, B.AT.gobble - 9, 'facing Big Gobble');
+  for (let n = 0; n < 2; n++) await meet(bot, [MONS.gobblet], G, 'a puffed-out balloon', 60, 220, 500);
+  await read(bot, B.AT.stake1 - 3, 'stakes');
+  await smash(bot, B.AT.stake1, stake, 1, 'the first stake', G);
+  await climb(bot, B.AT.ladder, 11, 'the parade stand');
+  await smash(bot, B.AT.stake2, stake, 1, 'the second stake', 11);
+  await cross(bot, B.AT.ledge[1], 'along the stand');
+  await cross(bot, B.AT.ledge[1] + 2, 'off the stand');
+  await smash(bot, B.AT.stake3, stake, 1, 'the third stake', G);
+  await cross(bot, B.AT.swoop - 2, 'before the dropping drone');
+  await meet(bot, [MONS.droneSwoop], G, 'the dropping drone', 50, 120, 1200);
+  await smash(bot, B.AT.blower, Array.from({ length: BLOWER_HITS }, (_, i) => MONS.blower + i), 3, 'the blower', G);
+  await cross(bot, B.AT.guard - 2, 'up to the guard drone');
+  await meet(bot, [MONS.drone], G, 'the guard drone', 60, 260);
+  bot.say(`bar left: ${((B.SECONDS * 18.2 - bot.sim.ticks) / 18.2) | 0} s`);
+  await cross(bot, B.AT.hall + 2, 'into the town hall');
+  await read(bot, B.AT.exit - 4, 'long table');
+  await leave(bot, bot.walk(B.AT.exit + 1, 'the long table'), 'the long table');
+}
+
+export const LEVELS = [pumpkinYard, payback, gravyRelay, windyPark, theCord, mainStreet, bigGobble];

@@ -1,8 +1,8 @@
 // The heroes' character files. Both walk, jump and climb like any hero (the kit's heroChar.ts); Enter is each one's
 // move. A frame whose second picture is MONBL gives birth to monster number "first picture", the way every
 // Game-Maker hero shoots (code/GM/PLAYGAME.C CharBirthMon), flying off the way the hero last moved.
-//   PLUME.CHR  Enter is a three-hit combo: wind-up, WHAP, WHAP, a turn and the POW that reaches further. One combo a
-//              press (norepeat), on the ground.
+//   PLUME.CHR  Enter is a combo: wind-up and a WHAP, a turn and the POW that reaches further, each striking high and
+//              low, so a thing on the street takes two hits a press. One combo a press (norepeat), on the ground.
 //   RORY.CHR   Enter tosses a dinner roll from the basket: a vacuum that catches it stalls (a step to stand on), a
 //              squirrel catches it and scampers off.
 import { MONBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
@@ -13,6 +13,9 @@ import { SEQ } from '../../kit/starter/ids';
 import { MONS } from './monsters';
 import { SND } from './sounds';
 
+/** Where below the top of Mr. Plume a kick is born: each strike lands high (a balloon at chest height) and low (a lawn turkey). */
+const HIGH = 0;
+const LOW = 20;
 /** Enter, as Game-Maker names a key: scan code 28 in the high byte, ASCII 13 in the low byte. */
 const KEY_ENTER = 0x1c0d;
 /** The PC scan code the bot presses. */
@@ -41,13 +44,13 @@ export function buildPlume(cb: Book): Character {
     [
       f('kick0.top', 'throw0', 2),
       f('kick1.top', 'throw1', 2),
-      birth(MONS.whap),
+      birth(MONS.whap, HIGH),
+      birth(MONS.whap, LOW),
       f('kick0.top', 'throw0', 2),
+      f('stand.top', 'dig0', 1),
       f('kick1.top', 'throw1', 2),
-      birth(MONS.whap),
-      f('stand.top', 'dig0', 2),
-      f('kick1.top', 'throw1', 2),
-      birth(MONS.pow),
+      birth(MONS.pow, LOW),
+      birth(MONS.pow, HIGH),
       f('kick1.top', 'throw1', 4),
     ],
     SND.kick,

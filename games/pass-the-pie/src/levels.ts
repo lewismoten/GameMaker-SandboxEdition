@@ -7,11 +7,13 @@
 //   4. Windy Park    PLUME  a tailwind over the pond, warm air up to the bandstand roof, swooping drones, the crew tent
 //   5. The Cord      RORY   Dale's street at dusk: follow the orange cord past Biscuit and the shop roofs
 //   6. Main Street   PLUME  the chase: Big Gobble loose and rolling after him, everything in the way costs time
+//   7. Big Gobble    PLUME  the boss against the bar: its puffed-out balloons, three tether stakes, the blower, the hall
 // Rory's streets are printed in storybook inks and Mr. Plume's in fight-poster inks (palette.ts).
 import type { Pal } from '@lewismoten/gamemaker-sandbox-tools/kit/palRamps';
 import type { Level } from './levels/common';
 import { chase } from './levels/chase';
 import { cord } from './levels/cord';
+import { gobble } from './levels/gobble';
 import { gravy } from './levels/gravy';
 import { lawn } from './levels/lawn';
 import { park } from './levels/park';
@@ -22,5 +24,5 @@ export { finishBook } from './levels/common';
 
 /** The levels in order. */
 export function buildLevels(pal: Pal): Level[] {
-  return [yard(pal), lawn(pal), gravy(pal), park(pal), cord(pal), chase(pal)];
+  return [yard(pal), lawn(pal), gravy(pal), park(pal), cord(pal), chase(pal), gobble(pal)];
 }

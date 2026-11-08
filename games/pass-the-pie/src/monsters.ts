@@ -50,9 +50,9 @@ export const MONS = {
   droneHigh: 36,
 } as const;
 /** Hits a kick bag, the blower and a stake take. */
-export const BAG_HITS = 3;
-export const BLOWER_HITS = 9;
-export const STAKE_HITS = 3;
+export const BAG_HITS = 2;
+export const BLOWER_HITS = 6;
+export const STAKE_HITS = 2;
 /** Points: a squirrel's catch, each hit that lands, a vacuum fed. */
 export const POP_POINTS = 50;
 export const KICK_POINTS = 25;
