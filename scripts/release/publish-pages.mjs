@@ -6,15 +6,17 @@
 // whose tree is web/dist. It never moves a local branch.
 //   without --push  prints the commit and the push it would make, and pushes nothing
 //   --push          pushes that commit to origin's gh-pages with --force-with-lease, but only when
-//                   .for-lewis/release/SUPERVISED exists in this checkout and names the tag: a release under
+//                   .for-lewis/release/SUPERVISED exists in the MAIN checkout (found through git's common
+//                   directory, so a worktree sees it too) and names the tag: a release under
 //                   direct supervision. Agents never create that file.
 //   --keep          leaves the temporary worktree (and its build) for a look; otherwise it is removed
 // The build takes a long time and every core: run it through `npm run heavy --`.
 import { execFileSync } from 'node:child_process';
-import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { supervisedFor } from './supervised.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const args = process.argv.slice(2);
@@ -37,8 +39,7 @@ if (!tag || !/^pages-v\d+\.\d+\.\d+$/.test(tag)) {
 
 // The guard comes first, so a refused push costs no build.
 if (push) {
-  const guard = join(root, '.for-lewis/release/SUPERVISED');
-  const named = existsSync(guard) && readFileSync(guard, 'utf8').split(/\s+/).includes(tag);
+  const { file: guard, named } = supervisedFor(tag, root);
   if (!named) {
     console.error(`Refusing to push: ${guard} must exist and name ${tag} (a supervised release). Nothing was built.`);
     process.exit(1);
