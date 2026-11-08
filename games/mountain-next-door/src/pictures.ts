@@ -1,10 +1,9 @@
 // THE MOUNTAIN MOVED NEXT DOOR's full-screen pictures: the big friendly mountain drawn whole (its face, its snow,
 // the garden gates caught on it, its little cloud), the street of little houses beside it, the title, and the
 // story pages that open a level (a note on paper over the scene, Tess below it).
-import { centered, outlined, text, textWidth } from '@lewismoten/gamemaker-sandbox-tools/kit/pcText';
+import { centered, text, textWidth } from '@lewismoten/gamemaker-sandbox-tools/kit/pcText';
 import { scaleBlit } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
-import { bevel } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
 import type { Book } from '../../kit/starter/book';
 import type { Pal } from '../../kit/starter/palette';
 import { W } from '../../kit/starter/screens';
