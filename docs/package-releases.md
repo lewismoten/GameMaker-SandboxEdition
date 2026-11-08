@@ -37,10 +37,22 @@ gh release create engine-v3.1.0 --title "engine 3.1.0" --notes-file notes.md eng
 
 For the site use `CHANGELOG.md` and no `-w`. The SBOM then describes the lockfile as it is now, not as it was at the tag; check out the tag first for an exact one.
 
-## Sizes and the build seed
+## Sizes
 
-`npm run release:sizes -- [--dist <site build>] [--packages] [--downloads <folder>]` checks what a release distributes against `scripts/release/size-budgets.json`: the Pages artifact (total, a few large folders, the biggest file and the biggest game ZIP), its offline copy (`offline.json`), each npm tarball, and the native downloads. It prints a table and exits 1 over a budget. The Pages workflow runs it on its build before uploading, the downloads workflow on its files, and `npm run verify:packages` holds each packed tarball to the same limits. Raise a budget only on purpose, with the reason in the commit.
+`npm run release:sizes -- [--dist <site build>] [--packages] [--downloads <folder>]` checks what a release distributes against `scripts/release/size-budgets.json`: the Pages artifact (total, a few large folders, the biggest file and the biggest game ZIP), its offline copy (`offline.json`), each npm tarball, and the native downloads. It prints a table and exits 1 over a budget. `npm run release:pages` runs it on the site build before making the gh-pages commit, the downloads workflow on its files, and `npm run verify:packages` holds each packed tarball to the same limits. Raise a budget only on purpose, with the reason in the commit.
 
-The Pages workflow has five minutes, and a site build from nothing spends far longer making the plastic trinkets (`web/public/trinkets/`), the laser nickels (`web/public/laser/`) and Depth Perception's rendered frames (`games/.render-cache/`). Those are packed from a finished local build as the **build seed**: `npm run release:seed -- upload` (after `npm run build:games`, with `gh` signed in) writes `site-seed.tar.gz` to the `build-seed` prerelease, and the Pages and downloads workflows fetch it (`release:seed -- fetch`) before building the games. Every trinket set, nickel and frame set keeps its own source key, so `build-games.mjs` still remakes anything whose sources changed after the seed was packed; the seed only saves time, and the site is the same without it. A stale seed shows as trinket or frame lines in the Build games step and a slower run, so upload a fresh one before a release tag.
+## Publishing the site (gh-pages)
+
+The site is served from the `gh-pages` branch, which holds one commit: the finished `web/dist` of a release, built on the Mac (no GitHub Actions workflow builds or deploys it). In the repository settings, **Pages → Source** is **Deploy from a branch**, `gh-pages`, `/ (root)`.
+
+`npm run release:pages -- pages-vX.Y.Z` (`scripts/release/publish-pages.mjs`; run it through `npm run heavy --`) takes a tag that is on `master`, checks it out in a clean temporary worktree, runs `npm ci` (which builds the packages), builds every game from nothing (trinkets, laser nickels and Depth's frames included) and the site, runs `release:sizes` on it, adds `.nojekyll`, and writes one orphan commit, "Site pages-vX.Y.Z from <sha>", whose tree is the built site. By default it only prints that commit and the push it would make. With `--push` it pushes the commit to `gh-pages` with `--force-with-lease`, and only when `.for-lewis/release/SUPERVISED` exists in the checkout and names that tag: `gh-pages` changes only during a release under the maintainer's direct supervision, and agents never create that file. `--keep` leaves the temporary worktree for a look. Earlier `gh-pages` commits stay in the repository's history after a force-push; the branch shows anyone exactly what is deployed.
+
+After the push, make the site's GitHub Release from its changelog section:
+
+```sh
+node scripts/release/section.mjs CHANGELOG.md 3.2.0 > notes.md
+npm sbom --sbom-format cyclonedx --package-lock-only --omit=dev > pages-3.2.0.sbom.cdx.json
+gh release create pages-v3.2.0 --title "Site 3.2.0" --notes-file notes.md pages-3.2.0.sbom.cdx.json
+```
 
 Native downloads (Mac, Windows, Linux) are one job, `.github/workflows/downloads.yml`, run by hand with a release tag. `win-exe.yml` and `linux-tar.yml` only try one game on a real Windows or Linux machine, by hand.

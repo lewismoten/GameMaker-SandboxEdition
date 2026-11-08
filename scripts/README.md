@@ -112,11 +112,11 @@ lockfile, so editing a page under `web/src` that no game imports rebuilds nothin
 `game-bundle.mjs` bundles a build entry (each game's `build.ts`, the Depth frame shards, the logo) with esbuild so `build-games.mjs` runs the child under plain `node`, not vite-node (about 16% less CPU, no 1.7 s startup per child); `GM_VITE_NODE=1` or any bundle failure runs vite-node as before.
 `game-build-entry.mjs` runs one `build.ts` and exits at once (vite-node sometimes lingered after a finished
 build until the 240 s timeout killed it). `game-build-inputs.mjs` is the fingerprint shared with
-`render-game-frames.mjs`, which renders one animation shard (by hand; CI starts from the build seed).
+`render-game-frames.mjs`, which renders one animation shard (by hand).
 `release/sizes.mjs` (`npm run release:sizes`) holds the Pages artifact, offline copy, npm tarballs and native
-downloads to `release/size-budgets.json`; `release/seed.mjs` (`npm run release:seed -- pack | upload | fetch`)
-packs the trinkets, laser nickels and Depth frames of a local build for the Pages workflow
-(docs/package-releases.md).
+downloads to `release/size-budgets.json`; `release/publish-pages.mjs` (`npm run release:pages -- <pages-vX.Y.Z> [--push] [--keep]`)
+builds a release tag's site in a clean temporary worktree and makes the one orphan commit the `gh-pages` branch
+serves; it pushes only with `--push` during a supervised release (docs/package-releases.md).
 `child-signal-retry.mjs` retries a signaled child once, logging its stage, signal, `killed` flag and
 elapsed time. Each attempt still has the 240 s deadline. Extra stages may retry a timeout; disks
 retain their existing early-signal-only rule (at most 230 s), and shared logo/frame renders keep their

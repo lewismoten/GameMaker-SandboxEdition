@@ -35,12 +35,6 @@ jobs:
       - run: npm ci --no-audit --no-fund
         env:
           GM_SKIP_GAME_BUILD: '1'
-      # Depth's rendered frames from the build seed (scripts/release/seed.mjs); remade only if out of date
-      - name: Fetch the build seed
-        working-directory: .
-        run: node scripts/release/seed.mjs fetch
-        env:
-          GH_TOKEN: ${{ github.token }}
       # the downloads need the game disks only: no plastic trinkets or laser nickels (the site's files)
       - name: Build games on every core
         run: node ../scripts/build-games.mjs --timing
