@@ -7,6 +7,7 @@ import { AT1 } from '../src/level1';
 import { AT2, CARDS_AT } from '../src/level2';
 import { AT3 } from '../src/level3';
 import { AT_BAKERY } from '../src/bakery';
+import { AT_CREEK } from '../src/creek';
 import { AT4 } from '../src/level4';
 import { AT5, ZONES } from '../src/level5';
 import { AT6 } from '../src/level6';
@@ -317,4 +318,47 @@ export async function bakeryRow(bot: StarterBot): Promise<void> {
   bot.say(`bakery: ${bot.sim.ci.score - score} points at tick ${bot.sim.ticks}`);
   if (bot.sim.ticks > A.segments * A.each * 0.7) throw new Error(`the bot is too slow for the shutter: tick ${bot.sim.ticks}`);
   await leave(bot, bot.walk(A.exit + 1, 'the back counter'), 'the back counter');
+}
+
+/** 5. Mill Creek: the broken bridge (brass key), the creek's bed (steel key), the two tolls, the mill roof's page. */
+export async function millCreek(bot: StarterBot): Promise<void> {
+  const A = AT_CREEK;
+  const G = A.ground;
+  await must(bot, bot.walk(8, 'the first placard'), 'to the placard');
+  await must(bot, bot.wait(READ), 'reading');
+  await must(bot, bot.walk(13, 'the bridge placard'), 'to the bridge placard');
+  await must(bot, bot.wait(READ), 'reading');
+  await must(bot, bot.walk(A.planks[0][0] - 2, 'the broken bridge'), 'to the bank');
+  await must(bot, bot.jump('right', A.planks[0][0] + 1), 'onto the first plank');
+  for (const [a] of A.planks.slice(1)) {
+    await must(bot, bot.walk(a - 3, 'the end of a plank'), 'to the end of a plank');
+    await must(bot, bot.jump('right', a + 1), 'onto the next plank');
+  }
+  need(bot, 20, 1, 'the brass key');
+  await must(bot, bot.walk(A.creek[1], 'the far ladder'), 'to the far ladder');
+  // down the far ladder to the bed, back along it to the steel key, hopping the cones
+  await must(bot, bot.climb('down', A.bed - 1, 'down to the bed'), 'down');
+  await must(bot, bot.walk(A.cones[1] + 2, 'the cone'), 'to the cone');
+  await must(bot, bot.jump('left', A.cones[1] - 2), 'over the cone');
+  await must(bot, bot.walk(A.steel, 'the steel key'), 'to the steel key');
+  need(bot, 21, 1, 'the steel key');
+  await must(bot, bot.walk(A.cones[1] - 2, 'the cone'), 'back to the cone');
+  await must(bot, bot.jump('right', A.cones[1] + 2), 'over the cone');
+  await must(bot, bot.walk(A.creek[1], 'the ladder'), 'to the ladder');
+  await must(bot, bot.climb('up', G - 1, 'up out of the creek'), 'up');
+  await must(bot, bot.walk(A.creek[1] + 2, 'the bank'), 'onto the bank');
+  await hop(bot, A.gates[0] - 6);
+  await must(bot, bot.wait(READ), 'reading the toll placard');
+  await must(bot, bot.walk(A.gates[0] + 1, 'the brass gate'), 'through the brass gate');
+  need(bot, 20, 0, 'the brass gate took the key');
+  await must(bot, bot.walk(A.gates[1] + 1, 'the steel gate'), 'through the steel gate');
+  need(bot, 21, 0, 'the steel gate took the key');
+  // the mill's roof, for the sixth page
+  await must(bot, bot.walk(A.millLadder, 'the mill ladder'), 'to the mill ladder');
+  await must(bot, bot.climb('up', A.mill[2] - 1, 'up the mill'), 'up the mill');
+  await page(bot, () => must(bot, bot.walk(A.page, 'the roof'), 'along the roof'), 'the sixth page');
+  await must(bot, bot.wait(READ), 'reading the page');
+  await must(bot, bot.walk(A.millLadder, 'the ladder'), 'back to the ladder');
+  await must(bot, bot.climb('down', G - 1, 'down the mill'), 'down');
+  await leave(bot, bot.walk(A.exit + 1, 'the exit'), 'the exit');
 }

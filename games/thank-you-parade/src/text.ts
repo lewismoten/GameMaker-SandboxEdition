@@ -152,6 +152,16 @@ export const BAKERY_SIGNS: Defs = {
   exit: EXIT,
 };
 
+export const CREEK_SIGNS: Defs = {
+  start: ['8:05. MILL CREEK. THE BRIDGE IS OUT.', 5, 2],
+  bridge: ['THE SIGN SAYS BRIDGE OUT. THE SIGN IS ON THE BRIDGE.', 6, 3],
+  bed: ['OR WALK THE BED. A KEY IS DOWN THERE. THE WATER IS FINE.', 6, 3],
+  toll: ['TWO TOLLS: BRASS, THEN STEEL. NOBODY COLLECTS. THEY ARE GATES.', 6, 3],
+  mill: ["THE MILL HASN'T MILLED SINCE 1952. THE ROOF HAS A VIEW.", 6, 3],
+  secret: ['PLAYBOOK P.6: GIGI CHECKED THE ROOF TOO.', 6, 2, 'purple'],
+  exit: EXIT,
+};
+
 /** What each level card says under its title. */
 export const CARD_NOTES = [
   '6:40 AM. The band is scattered.',

@@ -5,6 +5,7 @@
 import { printPalette, swap, type Pal, type Ramp } from './print';
 import { type Level } from './lay';
 import { bakery } from './bakery';
+import { creek } from './creek';
 import { level1 } from './level1';
 import { level2 } from './level2';
 import { level3 } from './level3';
@@ -21,6 +22,7 @@ const PAPERS: Record<string, Ramp | undefined> = {
   gust: [4, [150, 160, 170], [226, 230, 228], [196, 202, 204]], // windy gray
   bakery: [4, [214, 150, 150], [252, 218, 210], [238, 184, 176]], // a bakery pink
   airstrip: [4, [214, 182, 96], [252, 240, 186], [238, 214, 140]], // the airstrip
+  creek: [4, [150, 190, 176], [220, 240, 226], [190, 218, 202]], // creek sage
   float: [4, [196, 160, 120], [242, 222, 192], [222, 192, 156]], // the fire hall
   drumoff: [4, [150, 190, 170], [216, 238, 222], [186, 216, 198]], // mint
   route: undefined, // cream
@@ -33,6 +35,7 @@ const MAKERS: [string, (pal: Pal) => Level][] = [
   ['gust', level2],
   ['bakery', bakery],
   ['airstrip', level3],
+  ['creek', creek],
   ['float', level4],
   ['drumoff', level5],
   ['route', level6],

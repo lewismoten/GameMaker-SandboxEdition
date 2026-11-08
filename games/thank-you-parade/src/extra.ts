@@ -65,6 +65,35 @@ export function addRoofs(book: PBook, pal: Pal): void {
   }
 }
 
+/** Mill Creek's water: a rippled surface, the deep body of the creek and its pebbled bed (the only solid one). */
+export function addCreek(book: PBook, pal: Pal): void {
+  const { c } = pal;
+  const ink = c('ink', 0);
+  const top = new Pixels(20, 20, c('teal', 2));
+  top.rect(0, 0, 20, 4, paperOf(pal)).rect(0, 4, 20, 1, ink);
+  for (const x of [2, 11]) top.rect(x, 7, 6, 1, c('teal', 4));
+  halftone(top, 0, 8, 20, 12, c('teal', 1), 2, [c('teal', 2)]);
+  book.add('creekTop', top, air);
+  const body = new Pixels(20, 20, c('teal', 2));
+  halftone(body, 0, 0, 20, 20, c('teal', 1), 2, [c('teal', 2)]);
+  for (const [x, y] of [
+    [4, 5],
+    [14, 13],
+  ])
+    body.rect(x, y, 4, 1, c('teal', 4));
+  book.add('creek', body, air);
+  const bed = new Pixels(20, 20, c('teal', 1));
+  halftone(bed, 0, 0, 20, 20, c('teal', 0), 3);
+  for (const [x, y] of [
+    [3, 3],
+    [11, 8],
+    [6, 14],
+    [15, 15],
+  ])
+    bed.rect(x, y, 3, 2, c('stone', 2));
+  book.add('creekBed', bed, { solid: SOLID });
+}
+
 /** A countdown meter: `labels` on a navy plate, `segments` bars that go dark one after another, and an end cap. */
 export function addMeter(book: PBook, pal: Pal, id: string, labels: [string, string], segments: number, ticksEach: number): void {
   const { c } = pal;
