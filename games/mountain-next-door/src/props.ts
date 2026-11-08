@@ -377,7 +377,7 @@ export function addProps(book: Book, pal: Pal, groups: readonly string[], o: Pro
     for (const part of ['L', 'M', 'R'] as const) book.add(`blanket${part}`, blanket(pal, part), air);
     for (const part of ['L', 'M', 'R'] as const) book.add(`mat${part}`, doormat(pal, part), air);
   }
-  timed.push(...deeperProps(book, pal, groups, { clue: POINTS.clue }, BEAD_COUNTER));
+  timed.push(...deeperProps(book, pal, groups, { clue: POINTS.clue }, BEAD_COUNTER, o.stars?.[2] ?? 700));
   return timed;
 }
 

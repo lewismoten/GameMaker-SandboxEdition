@@ -49,8 +49,10 @@ export const gustName = (k: number, p: number, half?: 'a' | 'b'): string => `w${
 export const vaneName = (k: number, p: number, half?: 'a' | 'b'): string => `v${k}_${p}${half ?? ''}`;
 /** Each clue's block name. */
 export const clueName = (i: number): string => `clue_${CLUES[i]}`;
+/** The sky that stands where clue `i` will show when the last stars come out. */
+export const hidName = (i: number): string => `hid_${CLUES[i]}`;
 
-export function deeperProps(book: Book, pal: Pal, groups: readonly string[], points: { clue: number }, counter: number): Timed[] {
+export function deeperProps(book: Book, pal: Pal, groups: readonly string[], points: { clue: number }, counter: number, late: number): Timed[] {
   const has = (g: string) => groups.includes(g);
   const timed: Timed[] = [];
   const loop = (names: string[], ticks: number[]) => names.forEach((n, i) => timed.push({ name: n, next: names[(i + 1) % names.length], ticks: ticks[i] }));
@@ -101,7 +103,12 @@ export function deeperProps(book: Book, pal: Pal, groups: readonly string[], poi
     });
   }
   if (has('clues')) {
-    CLUES.forEach((c, i) => book.add(clueName(i), clue(pal, c), { ...air, score: points.clue, effect: counter, eamt: 1, touch: 'sky' }));
+    const sky = book.pics.get('sky') as Pixels;
+    CLUES.forEach((c, i) => {
+      book.add(clueName(i), clue(pal, c), { ...air, score: points.clue, effect: counter, eamt: 1, touch: 'sky' });
+      book.add(hidName(i), sky, air);
+      timed.push({ name: hidName(i), next: clueName(i), ticks: late });
+    });
   }
   return timed;
 }

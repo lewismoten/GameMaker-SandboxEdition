@@ -8,7 +8,7 @@ import { NEXT_AT } from '../src/levels/next';
 import { G3, PRINTS_AT } from '../src/levels/prints';
 import { G4, STREAM_AT } from '../src/levels/stream';
 import { FLOORS, SIGNS_AT } from '../src/levels/signs';
-import { HOLLOW_AT, STARS } from '../src/levels/hollow';
+import { FLOOR, HOLLOW_AT, RIM, STARS } from '../src/levels/hollow';
 import { G7, LEDGES, RIDGE_AT } from '../src/levels/ridge';
 import { TUNNEL_AT, UPPER } from '../src/levels/tunnel';
 import { ZFLOORS, ZIGZAG_AT } from '../src/levels/zigzag';
@@ -278,19 +278,59 @@ export async function signposts(bot: StarterBot): Promise<void> {
   await leave(bot, bot.walk(S.exit + 1, 'the exit'), 'the exit');
 }
 
-/** 6. The Empty Spot: down into the hollow, every sign read while the sun goes down, then the stars, then on. */
+/**
+ * 6. The Empty Spot: down into the hollow, every sign read while the sun goes down, then the stars. When the last stars are
+ * out the clues glint: the pit's snowdrift (down the pit and up its ladder), the chipped stone, the rug and the tuft of
+ * cloud on the way back to the rim, then the whole way out again over the logs, the arrow and Wisp's trail.
+ */
 export async function emptySpot(bot: StarterBot): Promise<void> {
+  const from = bot.sim.ci.score;
   const t0 = bot.sim.w.clock;
-  const at = HOLLOW_AT.signs;
+  const H = HOLLOW_AT;
+  const at = H.signs;
   await lookAt(bot, at.hole + 1, 'the hole view');
   await must(bot, bot.wait(READ / 2), 'a look at Nutmeg on the rim');
   await lookAt(bot, at.here + 1, 'the stood-here view');
+  await readAt(bot, at.pit + 1, 'the pit sign');
   await lookAt(bot, at.puddles + 1, 'the puddles view');
   await readAt(bot, at.wisp + 1, 'the Wisp sign');
+  await hop(bot, H.pit.from, H.pit.to - H.pit.from + 1, 'the pit');
   await readAt(bot, at.gone + 1, 'the gone sign');
-  await must(bot, bot.walk(HOLLOW_AT.puddles[5], 'the last puddle in the hollow'), 'along the puddles');
-  await watchFor(bot, () => since(bot, t0) > STARS[2] + 60, 'the last stars coming out', 1400);
-  await leave(bot, bot.walk(HOLLOW_AT.exit + 1, 'the exit'), 'the exit');
+  await must(bot, bot.walk(H.puddles[4], 'the last puddle in the hollow'), 'along the puddles');
+  await watchFor(bot, () => since(bot, t0) > STARS[2] + 40, 'the last stars coming out', 1400);
+  // the pit: walk in off its edge, take the drift, up the ladder
+  await must(bot, bot.walk(H.pit.to + 1, 'the pit edge'), 'to the pit edge');
+  await take(bot, H.clues.drift, POINTS.clue, 'the drift in the pit');
+  await must(bot, bot.walk(H.pit.from, 'the ladder'), 'to the ladder');
+  await must(bot, bot.climb('up', FLOOR - 1, 'up the ladder'), 'up the ladder');
+  await must(bot, bot.walk(H.pit.from - 2, 'off the ladder'), 'off the ladder');
+  await take(bot, H.clues.chip, POINTS.clue, 'the chipped stone');
+  await take(bot, H.clues.rug, POINTS.clue, 'the moss rug');
+  await take(bot, H.clues.fluff, POINTS.clue, 'the tuft of cloud');
+  // and out again, over the pit
+  await hop(bot, H.pit.from, H.pit.to - H.pit.from + 1, 'the pit');
+  await readAt(bot, at.night + 1, 'the starlight sign');
+  await take(bot, H.clues.arrow, POINTS.clue, 'the arrow of pebbles');
+  await hop(bot, H.logs[0], 2, 'the first log');
+  // (a jump may land on a snowdrift, so the trail is checked by the level's total)
+  await must(bot, bot.walk(H.trail[0], 'the first snowdrift'), 'to the first snowdrift');
+  await must(bot, bot.walk(H.trail[1], 'the second snowdrift'), 'to the second snowdrift');
+  await hop(bot, H.logs[1], 2, 'the second log');
+  await must(bot, bot.walk(H.trail[2], 'the third snowdrift'), 'to the third snowdrift');
+  await must(bot, bot.walk(H.trail[3], 'the last snowdrift'), 'to the last snowdrift');
+  // every clue is gone from its spot (the trees' trunks may or may not have been brushed, so the total is not exact)
+  const sky = blocks('hollow').n('sky');
+  const spots: [number, number][] = [
+    [H.clues.fluff, RIM - 1],
+    [H.clues.rug, FLOOR - 1],
+    [H.clues.chip, FLOOR - 1],
+    [H.clues.drift, H.pit.floor - 1],
+    [H.clues.arrow, RIM - 1],
+    ...H.trail.map((x): [number, number] => [x, RIM - 1]),
+  ];
+  for (const [x, y] of spots) if (shownAt(bot, x, y) !== sky) throw new Error(`a clue is still lying at column ${x}`);
+  if (bot.sim.ci.score - from < 9 * POINTS.clue) throw new Error(`level 9: scored ${bot.sim.ci.score - from}`);
+  await leave(bot, bot.walk(H.exit + 1, 'the exit'), 'the exit');
 }
 
 /** Holds an arrow key for `ticks` (a step into the wind, where walking to a spot would never land). */
