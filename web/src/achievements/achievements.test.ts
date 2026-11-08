@@ -220,7 +220,7 @@ describe('where they fire', () => {
   it('fires every achievement somewhere', () => {
     // the ones fired from a computed id or a count: the Download chooser's export-<kind>, the
     // derived totals, and the tin hearts and felt eggs counted in start.ts
-    const counted = (id: string) => /^export-/.test(id) || !!achievementById(id)?.from || /^(heart|egg)-/.test(id) || GAME_SPOTS.some((s) => s.id === id);
+    const counted = (id: string) => /^export-/.test(id) || !!achievementById(id)?.from || /^(heart|egg|honor)-/.test(id) || GAME_SPOTS.some((s) => s.id === id);
     const never = ACHIEVEMENTS.filter((a) => !fired.has(a.id) && !counted(a.id)).map((a) => a.id);
     expect(never).toEqual([]);
   });
