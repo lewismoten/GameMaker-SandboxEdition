@@ -9,7 +9,7 @@ import * as L from '../src/levels/lawn';
 import * as P from '../src/levels/park';
 import * as Y from '../src/levels/yard';
 import { BLOWER_HITS, MONS } from '../src/monsters';
-import { climb, cross, door, leap, leave, meet, monsters, must, read, smash, stepUp, through } from './routeKit';
+import { climb, cross, door, enter, face, leap, leave, meet, monsters, must, read, smash, stepUp, through } from './routeKit';
 
 /** Hit points the whole walkthrough may lose (a person is allowed a few bumps). */
 export const BUMP_BUDGET = 60;
@@ -257,8 +257,20 @@ export async function bigGobble(bot: StarterBot): Promise<void> {
   await meet(bot, [MONS.drone], G, 'the street drone', 60, 260);
   await smash(bot, B.AT.turkey, [MONS.inflatable], 1, 'a lawn turkey', G);
   // Big Gobble's little balloons: stand and kick them as they drift in, until the next one is a while off
-  await cross(bot, B.AT.gobble - 9, 'facing Big Gobble');
-  for (let n = 0; n < 2; n++) await meet(bot, [MONS.gobblet], G, 'a puffed-out balloon', 60, 220, 500);
+  await cross(bot, B.AT.gobble - 6, 'facing Big Gobble');
+  let popped = 0;
+  for (let t = 0; t < 700 && popped < 3; t++) {
+    const me = bot.px.x;
+    if (process.env.DEBUG_SMASH && t % 50 === 0) bot.say(`balloons t${t} me ${me}: ${JSON.stringify(monsters(bot, [MONS.gobblet]))}`);
+    const near = monsters(bot, [MONS.gobblet]).filter((m) => m.x > me && m.x - me <= 56 && m.y >= G - 1);
+    if (near.length) {
+      const score = bot.sim.ci.score;
+      await face(bot, 'right');
+      await enter(bot);
+      if (bot.sim.ci.score > score) popped++;
+    } else await must(bot, bot.tick(), 'waiting for a balloon');
+  }
+  bot.say(`popped ${popped} balloons, hit points ${bot.sim.ci.hitpts}`);
   await read(bot, B.AT.stake1 - 3, 'stakes');
   await smash(bot, B.AT.stake1, stake, 1, 'the first stake', G);
   await climb(bot, B.AT.ladder, 11, 'the parade stand');

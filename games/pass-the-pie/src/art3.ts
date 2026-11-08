@@ -221,6 +221,18 @@ export function rumble(pal: Pal, ground: Pixels, shaken: boolean): Pixels {
   return p;
 }
 
+/** Big Gobble at full size for the boss street: the parade turkey (art.ts, 3x3 blocks) printed five blocks square;
+ *  25 pictures, row by row. `pieces` is art.bigGobble's nine. */
+export function bigGobbleLarge(pieces: Pixels[]): Pixels[] {
+  const small = new Pixels(60, 60, 0);
+  pieces.forEach((g, i) => small.blit(g, (i % 3) * 20, Math.floor(i / 3) * 20));
+  const big = new Pixels(100, 100, 0);
+  for (let y = 0; y < 100; y++) for (let x = 0; x < 100; x++) big.set(x, y, small.get(Math.floor((x * 60) / 100), Math.floor((y * 60) / 100)));
+  const out: Pixels[] = [];
+  for (let by = 0; by < 5; by++) for (let bx = 0; bx < 5; bx++) out.push(big.crop(bx * 20, by * 20, 20, 20));
+  return out;
+}
+
 /** A gold acorn: a secret's prize, shining. */
 export function goldAcorn(pal: Pal): Pixels {
   const g = pal.r('tGold');

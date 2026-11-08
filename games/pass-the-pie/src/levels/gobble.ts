@@ -1,7 +1,7 @@
 // 7. Big Gobble (Mr. Plume). The parade route, against the bar: when it runs out the parade starts and the town
 // hall shuts. Rory holds the hall doors. The fight comes in three parts:
 //   1. Big Gobble itself, bobbing over a street it shakes with every thump, puffs little balloon turkeys out of its
-//      beak that drift at him (kick them as they come)
+//      valve that drift at him (kick them as they come)
 //   2. its three tether stakes: one on the street, one up on the parade stand's ledge (a ladder up, a hedge too tall
 //      to jump below it), one by the floats with a drone that drops at him
 //   3. the blower, nine hits, guarded by a drone; then the hall before its doors shut
@@ -20,13 +20,16 @@ export const GROUND = 17;
 export const SECONDS = 110;
 /** Ticks between the little balloons Big Gobble puffs out. */
 export const PUFF_TICKS = 140;
+/** Big Gobble's pieces that bob (its top three rows) and the valve low on its middle that puffs the balloons out, at chest height. */
+const BOB = 15;
+const BEAK = 17;
 export const AT = {
   oven: 1,
   rory: 6,
   drone: 12,
   turkey: 18,
-  gobble: 24,
-  shake: [21, 33],
+  gobble: 22,
+  shake: [19, 31],
   stake1: 36,
   ladder: 40,
   ledge: [40, 52],
@@ -47,12 +50,15 @@ export function gobble(pal: Pal): Level {
   const [rTop, rBottom] = roryStanding(pal);
   book.add('rory.top', rTop, AIR);
   book.add('rory.bottom', rBottom, AIR);
-  // Big Gobble, bobbing: each of its nine blocks turns into the same piece a pixel lower and back
-  const up = art.bigGobble(pal);
-  up.forEach((p, i) => {
-    const low = p.map((x, y) => (y === 0 ? p.get(x, 0) : p.get(x, y - 1)));
+  // Big Gobble, five blocks square; its top three rows bob (each turns into the same piece a pixel lower and back)
+  art3.bigGobbleLarge(art.bigGobble(pal)).forEach((p, i) => {
     book.add(`gobble${i}`, p, AIR);
-    book.add(`gobble${i}b`, low, AIR);
+    if (i >= BOB) return;
+    book.add(
+      `gobble${i}b`,
+      p.map((x, y) => (y === 0 ? p.get(x, 0) : p.get(x, y - 1))),
+      AIR,
+    );
     timed.push({ name: `gobble${i}`, next: `gobble${i}b`, ticks: 9 }, { name: `gobble${i}b`, next: `gobble${i}`, ticks: 9 });
   });
   // the street it shakes: the grass jumps and dust kicks up on every thump
@@ -90,7 +96,7 @@ export function gobble(pal: Pal): Level {
     st.g.put(x, y, '(').put(x + 1, y, ')');
   const m = st.paint(book, pal, timed);
   m.set(AT.rory, G - 1, 'rory.top').set(AT.rory, G, 'rory.bottom');
-  for (let i = 0; i < 9; i++) m.set(AT.gobble + (i % 3), G - 2 + Math.floor(i / 3), `gobble${i}`);
+  for (let i = 0; i < 25; i++) m.set(AT.gobble + (i % 5), G - 4 + Math.floor(i / 5), `gobble${i}`);
   for (let x = AT.shake[0]; x <= AT.shake[1]; x++) m.set(x, GROUND, 'shake0');
   const board = (sg: (typeof s)['rory']) => GROUND - 1 - sg.board.length;
   m.sign(7, board(s.rory), s.rory);
@@ -111,9 +117,6 @@ export function gobble(pal: Pal): Level {
     map: m,
     timed,
     restart: [AT.oven + ORIGIN, G + ORIGIN],
-    births: [
-      { name: 'gobble4', mon: MONS.gobblet, ticks: PUFF_TICKS },
-      { name: 'gobble4b', mon: MONS.gobblet, ticks: PUFF_TICKS },
-    ],
+    births: [{ name: `gobble${BEAK}`, mon: MONS.gobblet, ticks: PUFF_TICKS }],
   };
 }

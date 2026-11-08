@@ -146,7 +146,7 @@ export function monsterSet(mb: Book): Monster[] {
   }
   for (let h = 0; h < STAKE_HITS; h++)
     set[MONS.stake + h] = mon(anim(`stake${h}_`, 6), { ...hit, newmon: h + 1 < STAKE_HITS ? MONS.stake + h + 1 : MONS.puff });
-  set[MONS.gobblet] = mon(anim('gobblet', 5), { ...hit, newmon: MONS.puff, thru: 0, towards: 1, end: 160 });
+  set[MONS.gobblet] = mon(anim('gobblet', 5), { ...hit, newmon: MONS.puff, thru: 0, towards: 1, end: 300 });
   // the loose balloon: four pieces on one path, so they roll as one face; nothing knocks it over. A corner is counted
   // from where the path began, and the world wraps at 100 blocks, so the run goes in two legs (each the short way round)
   for (let i = 0; i < 4; i++)
