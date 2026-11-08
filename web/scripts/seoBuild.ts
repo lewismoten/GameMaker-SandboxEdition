@@ -59,7 +59,8 @@ const HEAD_END = '<!--/seo:head-->';
 const BODY_START = '<!--seo:body-->';
 const BODY_END = '<!--/seo:body-->';
 
-const playable = (catalog: CdCatalogEntry[]) => catalog.filter((g) => g.gam);
+// a Special (series "special") is out only in its window, so it has no page of its own, no sitemap line and no download card
+const playable = (catalog: CdCatalogEntry[]) => catalog.filter((g) => g.gam && g.series !== 'special');
 const credit = (g: CdCatalogEntry) => [g.author ?? g.company, g.year].filter(Boolean).join(', ');
 const imageUrl = (g: CdCatalogEntry) => `${SITE_URL}${gameImagePath(g.id)}`;
 const pageTitle = (g: CdCatalogEntry) => `${g.title} · play in your browser · ${PRODUCT}`;

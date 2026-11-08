@@ -1,7 +1,7 @@
 // Pictures of the lessons (never on the disk), for the progress shots and a stranger's look at the art, zoomed:
 //   beams-compare.png   the wall block and its four lit twins on a strip of wall, at 5x
 //   fog-compare.png     a column of hills at each layer, solid fog beside dithered fog, at 5x
-//   lamps.png           the three lanterns over the wall, at 6x
+//   lamps.png           the three lanterns (60x60 glows) over the wall, at 3x
 //   cd web && npx vite-node ../games/beams/tools/shots.ts <outDir>
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
@@ -31,10 +31,12 @@ const wall = wallPicture(pal);
   writePng(join(out, 'fog-compare.png'), p, pal.pal, 5);
 }
 {
-  const p = new Pixels(3 * 24, 24, 0);
+  const p = new Pixels(3 * 64, 64, 0);
   (['solid', 'dither', 'soft'] as const).forEach((h, i) => {
-    p.rect(i * 24, 0, 24, 24, 0).blit(new Pixels(20, 20).blit(wall, 0, 0).blit(lampPicture(pal, h), 0, 0, 255), i * 24 + 2, 2);
+    const w = new Pixels(60, 60);
+    for (let y = 0; y < 60; y += 20) for (let x = 0; x < 60; x += 20) w.blit(wall, x, y);
+    p.rect(i * 64, 0, 64, 64, 0).blit(w.blit(lampPicture(pal, h), 0, 0, 255), i * 64 + 2, 2);
   });
-  writePng(join(out, 'lamps.png'), p, pal.pal, 6);
+  writePng(join(out, 'lamps.png'), p, pal.pal, 3);
 }
 console.log(`shots in ${out}`);

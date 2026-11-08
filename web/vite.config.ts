@@ -131,7 +131,7 @@ function offlineFiles(bundle: Bundle, forArchive = false): [string, number, numb
         : /^(og\/|og-image\.|robots\.txt$|sitemap\.xml$|llms\.txt$|sw\.js$|index\.html$|archive\.html$|web-player\.html$|player\/|trinkets\/|laser\/|pocket\/)/
     ).test(f) &&
     !DEV_ONLY.test(f) &&
-    (!/^games\/(gameware|shareware|originals)\//.test(f) || /\.(zip|gmpak)$|\/walkthrough\.json\.gz$/.test(f));
+    (!/^games\/(gameware|shareware|originals)\//.test(f) || /\.(zip|zpart|gmpak)$|\/walkthrough\.json\.gz$/.test(f));
   return [...sources]
     .filter(([f]) => wanted(f))
     .sort(([a], [b]) => (a < b ? -1 : 1))
@@ -267,7 +267,8 @@ function playChunks(): Rollup.GetManualChunk {
   const pages: [name: string, entries: string[]][] = [
     ['main', ['src/main.ts', 'src/seo/route.ts']], // index.html's two scripts
     ['desk', ['src/desk/desk.ts']],
-    ['web', ['src/modernUi.ts']],
+    ['web', ['src/modernUi.ts', 'src/editor/shell/home.ts']], // independent project and home routes
+
     ['play', ['src/play.ts']],
     ['dos', ['src/dosPage/dosPage.ts']], // so the DOS page shares the PC's code, not the whole player chunk
   ];
@@ -293,6 +294,7 @@ function playChunks(): Rollup.GetManualChunk {
     // the tin hearts' list and saves: the player reads them, but so do pages that never play
     // (achievements counting hearts at start-up, the desk's trophy), which shouldn't fetch the engine for them
     if (/\/src\/tinHearts\/(tinHearts\.ts|manifest\.ts|hearts\.json)/.test(id)) return 'tinHearts';
+
     if (pages.some(([, entries]) => entries.some((e) => id === resolve(__dirname, e)))) return undefined; // each page's own chunk
     const users = pages.filter((_, i) => closures![i].has(id)).map(([name]) => name);
     if (!users.includes('play') || users.includes('main')) return undefined;

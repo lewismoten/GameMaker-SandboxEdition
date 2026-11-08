@@ -1,0 +1,95 @@
+/* The art courses (#/art-courses). */
+
+main.ac-page {
+  max-width: 50rem;
+  margin: 0 auto;
+  padding: 24px 16px 64px;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+
+main.ac-page h1 {
+  margin: 0 0 8px;
+  font-size: clamp(26px, 4vw, 34px);
+}
+
+main.ac-page h2 {
+  margin: 36px 0 8px;
+  font-size: 22px;
+}
+
+main.ac-page .ac-kicker {
+  margin: 0;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted, #667);
+}
+
+main.ac-page .ac-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+main.ac-page .ac-list a {
+  display: block;
+  min-height: 44px;
+  padding: 10px 0;
+  text-decoration: none;
+  border-bottom: 1px solid color-mix(in srgb, currentColor 15%, transparent);
+}
+
+main.ac-page .ac-about {
+  display: block;
+  font-size: 14px;
+  color: var(--muted, #667);
+}
+
+main.ac-page .ac-soon {
+  padding: 10px 0;
+  border-bottom: 1px solid color-mix(in srgb, currentColor 15%, transparent);
+}
+
+main.ac-page figure {
+  margin: 20px 0;
+}
+
+main.ac-page figure img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  image-rendering: pixelated;
+  border: 1px solid color-mix(in srgb, currentColor 25%, transparent);
+}
+
+main.ac-page figcaption {
+  margin-top: 6px;
+  font-size: 14px;
+  color: var(--muted, #667);
+}
+
+main.ac-page .ac-pager {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 40px;
+}
+
+main.ac-page .ac-pager a {
+  display: block;
+  min-height: 44px;
+  max-width: 48%;
+}
+
+main.ac-page .ac-next {
+  text-align: right;
+  margin-left: auto;
+}
+
+main.ac-page .ac-note {
+  margin-top: 32px;
+  padding: 12px 14px;
+  border: 1px solid color-mix(in srgb, currentColor 25%, transparent);
+  border-radius: 6px;
+}

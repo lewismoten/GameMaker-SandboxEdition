@@ -20,7 +20,7 @@ export function screenFiles(price: string): AreaFile[] {
   // the intro in clips of about 4 seconds, so Esc can skip it between them
   const intro = fliClips('intro.fli', introFli());
   for (const [name, bytes] of Object.entries(intro)) put(name, bytes);
-  put('title.gif', S.titleScreen().gif());
+  put('title.gif', S.titleScreen().gif({}, 6));
   lst('title.lst', [{ name: SANDLOGO, pause: 0 }, ...clipEntries(intro, 0), { name: 'title.gif', pause: 12 }]);
   // the pages shown from the menu (and the ending) write MORE... in the menu palette's nearest
   // red: reserve it in the menu at the same index (2) as in the pages' backdrops

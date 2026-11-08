@@ -15,506 +15,506 @@ From `web/`: `npm run voice:phone` records new or changed lines (`-- --only <id>
 
 ## dispatcher
 
-| Clip                                                            | Says                                                                  | Where               | Seconds |
-| --------------------------------------------------------------- | --------------------------------------------------------------------- | ------------------- | ------: |
-| [nine-one-one.ogg](dispatcher/nine-one-one.ogg)                 | Nine one one, what is your emergency?                                 | 911: answers        |    3.04 |
-| [nine-one-one-again-1.ogg](dispatcher/nine-one-one-again-1.ogg) | Hello?                                                                | 911: you freeze up  |    1.37 |
-| [nine-one-one-again-2.ogg](dispatcher/nine-one-one-again-2.ogg) | Are you there?                                                        | 911: you freeze up  |    1.72 |
-| [nine-one-one-fire-1.ogg](dispatcher/nine-one-one-fire-1.ogg)   | Hold on.                                                              | 911: the house fire |    1.60 |
-| [nine-one-one-fire-2.ogg](dispatcher/nine-one-one-fire-2.ogg)   | We’re getting calls about a house fire on your street right now.      | 911: the house fire |    3.78 |
-| [nine-one-one-fire-3.ogg](dispatcher/nine-one-one-fire-3.ogg)   | A truck is on the way.                                                | 911: the house fire |    2.32 |
-| [nine-one-one-fire-4.ogg](dispatcher/nine-one-one-fire-4.ogg)   | Stay inside, and please, only call nine one one for a real emergency. | 911: the house fire |    4.70 |
+| Clip | Says | Where | Seconds |
+| --- | --- | --- | ---: |
+| [nine-one-one.ogg](dispatcher/nine-one-one.ogg) | Nine one one, what is your emergency? | 911: answers | 3.04 |
+| [nine-one-one-again-1.ogg](dispatcher/nine-one-one-again-1.ogg) | Hello? | 911: you freeze up | 1.37 |
+| [nine-one-one-again-2.ogg](dispatcher/nine-one-one-again-2.ogg) | Are you there? | 911: you freeze up | 1.72 |
+| [nine-one-one-fire-1.ogg](dispatcher/nine-one-one-fire-1.ogg) | Hold on. | 911: the house fire | 1.60 |
+| [nine-one-one-fire-2.ogg](dispatcher/nine-one-one-fire-2.ogg) | We’re getting calls about a house fire on your street right now. | 911: the house fire | 3.78 |
+| [nine-one-one-fire-3.ogg](dispatcher/nine-one-one-fire-3.ogg) | A truck is on the way. | 911: the house fire | 2.32 |
+| [nine-one-one-fire-4.ogg](dispatcher/nine-one-one-fire-4.ogg) | Stay inside, and please, only call nine one one for a real emergency. | 911: the house fire | 4.70 |
 
 ## receptionist
 
-| Clip                                    | Says                                                   | Where                     | Seconds |
-| --------------------------------------- | ------------------------------------------------------ | ------------------------- | ------: |
-| [linda-1.ogg](receptionist/linda-1.ogg) | Good afternoon, Three Rivers Insurance, this is Linda. | Mom’s work: Linda answers |    4.05 |
-| [linda-2.ogg](receptionist/linda-2.ogg) | How may I direct your call? …                          | Mom’s work: Linda answers |    2.66 |
-| [linda-3.ogg](receptionist/linda-3.ogg) | One moment, please.                                    | Mom’s work: Linda answers |    2.43 |
+| Clip | Says | Where | Seconds |
+| --- | --- | --- | ---: |
+| [linda-1.ogg](receptionist/linda-1.ogg) | Good afternoon, Three Rivers Insurance, this is Linda. | Mom’s work: Linda answers | 4.05 |
+| [linda-2.ogg](receptionist/linda-2.ogg) | How may I direct your call? … | Mom’s work: Linda answers | 2.66 |
+| [linda-3.ogg](receptionist/linda-3.ogg) | One moment, please. | Mom’s work: Linda answers | 2.43 |
 
 ## mom
 
-| Clip                                     | Says                                             | Where                                      | Seconds |
-| ---------------------------------------- | ------------------------------------------------ | ------------------------------------------ | ------: |
-| [mom-work-1.ogg](mom/mom-work-1.ogg)     | Hi honey, is everything okay?                    | Mom’s work: Mom, after the hold music      |    2.69 |
-| [mom-work-2.ogg](mom/mom-work-2.ogg)     | Is anybody hurt?                                 | Mom’s work: Mom, after the hold music      |    2.08 |
-| [mom-work-3.ogg](mom/mom-work-3.ogg)     | No?                                              | Mom’s work: Mom, after the hold music      |    1.58 |
-| [mom-work-4.ogg](mom/mom-work-4.ogg)     | Then why are you calling me at work?             | Mom’s work: Mom, after the hold music      |    2.55 |
-| [mom-work-5.ogg](mom/mom-work-5.ogg)     | Do your homework, and don’t touch the stove.     | Mom’s work: Mom, after the hold music      |    2.96 |
-| [mom-work-6.ogg](mom/mom-work-6.ogg)     | Love you, bye!                                   | Mom’s work: Mom, after the hold music      |    1.88 |
-| [yell-1-mom-1.ogg](mom/yell-1-mom-1.ogg) | Hello?                                           | Picking up the extension during a BBS call |    1.62 |
-| [yell-1-mom-2.ogg](mom/yell-1-mom-2.ogg) | Hello?!                                          | Picking up the extension during a BBS call |    1.69 |
-| [yell-1-mom-3.ogg](mom/yell-1-mom-3.ogg) | What is that screeching?                         | Picking up the extension during a BBS call |    2.05 |
-| [yell-1-mom-4.ogg](mom/yell-1-mom-4.ogg) | Is that the computer again?                      | Picking up the extension during a BBS call |    2.36 |
-| [yell-1-mom-5.ogg](mom/yell-1-mom-5.ogg) | Get off the phone, I need to make a call!        | Picking up the extension during a BBS call |    2.88 |
-| [yell-3-mom-2.ogg](mom/yell-3-mom-2.ogg) | Who is this?                                     | Picking up the extension during a BBS call |    1.84 |
-| [yell-3-mom-3.ogg](mom/yell-3-mom-3.ogg) | Oh, for crying out loud, it is that modem again! | Picking up the extension during a BBS call |    3.79 |
-| [yell-3-mom-4.ogg](mom/yell-3-mom-4.ogg) | I have been trying to call Grandma all evening!  | Picking up the extension during a BBS call |    3.22 |
+| Clip | Says | Where | Seconds |
+| --- | --- | --- | ---: |
+| [mom-work-1.ogg](mom/mom-work-1.ogg) | Hi honey, is everything okay? | Mom’s work: Mom, after the hold music | 2.69 |
+| [mom-work-2.ogg](mom/mom-work-2.ogg) | Is anybody hurt? | Mom’s work: Mom, after the hold music | 2.08 |
+| [mom-work-3.ogg](mom/mom-work-3.ogg) | No? | Mom’s work: Mom, after the hold music | 1.58 |
+| [mom-work-4.ogg](mom/mom-work-4.ogg) | Then why are you calling me at work? | Mom’s work: Mom, after the hold music | 2.55 |
+| [mom-work-5.ogg](mom/mom-work-5.ogg) | Do your homework, and don’t touch the stove. | Mom’s work: Mom, after the hold music | 2.96 |
+| [mom-work-6.ogg](mom/mom-work-6.ogg) | Love you, bye! | Mom’s work: Mom, after the hold music | 1.88 |
+| [yell-1-mom-1.ogg](mom/yell-1-mom-1.ogg) | Hello? | Picking up the extension during a BBS call | 1.62 |
+| [yell-1-mom-2.ogg](mom/yell-1-mom-2.ogg) | Hello?! | Picking up the extension during a BBS call | 1.69 |
+| [yell-1-mom-3.ogg](mom/yell-1-mom-3.ogg) | What is that screeching? | Picking up the extension during a BBS call | 2.05 |
+| [yell-1-mom-4.ogg](mom/yell-1-mom-4.ogg) | Is that the computer again? | Picking up the extension during a BBS call | 2.36 |
+| [yell-1-mom-5.ogg](mom/yell-1-mom-5.ogg) | Get off the phone, I need to make a call! | Picking up the extension during a BBS call | 2.88 |
+| [yell-3-mom-2.ogg](mom/yell-3-mom-2.ogg) | Who is this? | Picking up the extension during a BBS call | 1.84 |
+| [yell-3-mom-3.ogg](mom/yell-3-mom-3.ogg) | Oh, for crying out loud, it is that modem again! | Picking up the extension during a BBS call | 3.79 |
+| [yell-3-mom-4.ogg](mom/yell-3-mom-4.ogg) | I have been trying to call Grandma all evening! | Picking up the extension during a BBS call | 3.22 |
 
 ## shop
 
-| Clip                        | Says                                                          | Where                            | Seconds |
-| --------------------------- | ------------------------------------------------------------- | -------------------------------- | ------: |
-| [gus-1.ogg](shop/gus-1.ogg) | Maintenance, this is Gus.                                     | Dad’s work: the maintenance shop |    2.81 |
-| [gus-2.ogg](shop/gus-2.ogg) | Dave?                                                         | Dad’s work: the maintenance shop |    1.15 |
-| [gus-3.ogg](shop/gus-3.ogg) | Nah, he’s out on a job across town, fixing somebody’s boiler. | Dad’s work: the maintenance shop |    4.72 |
-| [gus-4.ogg](shop/gus-4.ogg) | Try his pager, kiddo.                                         | Dad’s work: the maintenance shop |    2.69 |
+| Clip | Says | Where | Seconds |
+| --- | --- | --- | ---: |
+| [gus-1.ogg](shop/gus-1.ogg) | Maintenance, this is Gus. | Dad’s work: the maintenance shop | 2.81 |
+| [gus-2.ogg](shop/gus-2.ogg) | Dave? | Dad’s work: the maintenance shop | 1.15 |
+| [gus-3.ogg](shop/gus-3.ogg) | Nah, he’s out on a job across town, fixing somebody’s boiler. | Dad’s work: the maintenance shop | 4.72 |
+| [gus-4.ogg](shop/gus-4.ogg) | Try his pager, kiddo. | Dad’s work: the maintenance shop | 2.69 |
 
 ## dad
 
-| Clip                                     | Says                                                                                    | Where                                      | Seconds |
-| ---------------------------------------- | --------------------------------------------------------------------------------------- | ------------------------------------------ | ------: |
-| [dad-1-1.ogg](dad/dad-1-1.ogg)           | Hello?                                                                                  | Dad calls back after the page              |    1.58 |
-| [dad-1-2.ogg](dad/dad-1-2.ogg)           | Did somebody page me?                                                                   | Dad calls back after the page              |    2.51 |
-| [dad-1-3.ogg](dad/dad-1-3.ogg)           | I was up to my elbows in a busted boiler across town, and I had to go find a pay phone! | Dad calls back after the page              |    8.58 |
-| [dad-1-4.ogg](dad/dad-1-4.ogg)           | Is anybody bleeding?                                                                    | Dad calls back after the page              |    2.65 |
-| [dad-1-5.ogg](dad/dad-1-5.ogg)           | Is the house on fire?                                                                   | Dad calls back after the page              |    2.73 |
-| [dad-2-1.ogg](dad/dad-2-1.ogg)           | No?                                                                                     | Dad calls back after the page              |    0.65 |
-| [dad-2-2.ogg](dad/dad-2-2.ogg)           | Then why are you paging me?                                                             | Dad calls back after the page              |    3.65 |
-| [dad-2-3.ogg](dad/dad-2-3.ogg)           | The pager is for EMERGENCIES ONLY.                                                      | Dad calls back after the page              |    4.15 |
-| [dad-2-4.ogg](dad/dad-2-4.ogg)           | We are going to have a long talk when I get home.                                       | Dad calls back after the page              |    4.37 |
-| [dad-2-5.ogg](dad/dad-2-5.ogg)           | Now go do your homework!                                                                | Dad calls back after the page              |    3.51 |
-| [yell-2-dad-2.ogg](dad/yell-2-dad-2.ogg) | HELLO?                                                                                  | Picking up the extension during a BBS call |    2.30 |
-| [yell-2-dad-3.ogg](dad/yell-2-dad-3.ogg) | What in the world is that racket?                                                       | Picking up the extension during a BBS call |    2.79 |
-| [yell-2-dad-4.ogg](dad/yell-2-dad-4.ogg) | Are you on that bulletin board again?                                                   | Picking up the extension during a BBS call |    3.65 |
-| [yell-2-dad-5.ogg](dad/yell-2-dad-5.ogg) | I am expecting a call from work!                                                        | Picking up the extension during a BBS call |    3.58 |
+| Clip | Says | Where | Seconds |
+| --- | --- | --- | ---: |
+| [dad-1-1.ogg](dad/dad-1-1.ogg) | Hello? | Dad calls back after the page | 1.58 |
+| [dad-1-2.ogg](dad/dad-1-2.ogg) | Did somebody page me? | Dad calls back after the page | 2.51 |
+| [dad-1-3.ogg](dad/dad-1-3.ogg) | I was up to my elbows in a busted boiler across town, and I had to go find a pay phone! | Dad calls back after the page | 8.58 |
+| [dad-1-4.ogg](dad/dad-1-4.ogg) | Is anybody bleeding? | Dad calls back after the page | 2.65 |
+| [dad-1-5.ogg](dad/dad-1-5.ogg) | Is the house on fire? | Dad calls back after the page | 2.73 |
+| [dad-2-1.ogg](dad/dad-2-1.ogg) | No? | Dad calls back after the page | 0.65 |
+| [dad-2-2.ogg](dad/dad-2-2.ogg) | Then why are you paging me? | Dad calls back after the page | 3.65 |
+| [dad-2-3.ogg](dad/dad-2-3.ogg) | The pager is for EMERGENCIES ONLY. | Dad calls back after the page | 4.15 |
+| [dad-2-4.ogg](dad/dad-2-4.ogg) | We are going to have a long talk when I get home. | Dad calls back after the page | 4.37 |
+| [dad-2-5.ogg](dad/dad-2-5.ogg) | Now go do your homework! | Dad calls back after the page | 3.51 |
+| [yell-2-dad-2.ogg](dad/yell-2-dad-2.ogg) | HELLO? | Picking up the extension during a BBS call | 2.30 |
+| [yell-2-dad-3.ogg](dad/yell-2-dad-3.ogg) | What in the world is that racket? | Picking up the extension during a BBS call | 2.79 |
+| [yell-2-dad-4.ogg](dad/yell-2-dad-4.ogg) | Are you on that bulletin board again? | Picking up the extension during a BBS call | 3.65 |
+| [yell-2-dad-5.ogg](dad/yell-2-dad-5.ogg) | I am expecting a call from work! | Picking up the extension during a BBS call | 3.58 |
 
 ## grandma
 
-| Clip                                       | Says                                                                   | Where             | Seconds |
-| ------------------------------------------ | ---------------------------------------------------------------------- | ----------------- | ------: |
-| [grandma-1-1.ogg](grandma/grandma-1-1.ogg) | Hello? …                                                               | Grandma: picks up |    2.16 |
-| [grandma-1-2.ogg](grandma/grandma-1-2.ogg) | Hello?                                                                 | Grandma: picks up |    1.92 |
-| [grandma-1-3.ogg](grandma/grandma-1-3.ogg) | Who is this? …                                                         | Grandma: picks up |    2.31 |
-| [grandma-1-4.ogg](grandma/grandma-1-4.ogg) | Oh!                                                                    | Grandma: picks up |    1.76 |
-| [grandma-1-5.ogg](grandma/grandma-1-5.ogg) | Is that you, sweetie?                                                  | Grandma: picks up |    2.65 |
-| [grandma-1-6.ogg](grandma/grandma-1-6.ogg) | Grandma was out filling the bird feeder, I nearly didn’t hear it ring! | Grandma: picks up |    5.70 |
-| [grandma-2-1.ogg](grandma/grandma-2-1.ogg) | Have you eaten anything today?                                         | Grandma: chats    |    3.20 |
-| [grandma-2-2.ogg](grandma/grandma-2-2.ogg) | You sound skinny.                                                      | Grandma: chats    |    2.47 |
-| [grandma-2-3.ogg](grandma/grandma-2-3.ogg) | Mister Whiskers says hello.                                            | Grandma: chats    |    3.08 |
-| [grandma-2-4.ogg](grandma/grandma-2-4.ogg) | He knocked the African violet off the windowsill again.                | Grandma: chats    |    4.79 |
-| [grandma-2-5.ogg](grandma/grandma-2-5.ogg) | Okay, bye-bye now, I love you!                                         | Grandma: chats    |    3.38 |
+| Clip | Says | Where | Seconds |
+| --- | --- | --- | ---: |
+| [grandma-1-1.ogg](grandma/grandma-1-1.ogg) | Hello? … | Grandma: picks up | 2.16 |
+| [grandma-1-2.ogg](grandma/grandma-1-2.ogg) | Hello? | Grandma: picks up | 1.92 |
+| [grandma-1-3.ogg](grandma/grandma-1-3.ogg) | Who is this? … | Grandma: picks up | 2.31 |
+| [grandma-1-4.ogg](grandma/grandma-1-4.ogg) | Oh! | Grandma: picks up | 1.76 |
+| [grandma-1-5.ogg](grandma/grandma-1-5.ogg) | Is that you, sweetie? | Grandma: picks up | 2.65 |
+| [grandma-1-6.ogg](grandma/grandma-1-6.ogg) | Grandma was out filling the bird feeder, I nearly didn’t hear it ring! | Grandma: picks up | 5.70 |
+| [grandma-2-1.ogg](grandma/grandma-2-1.ogg) | Have you eaten anything today? | Grandma: chats | 3.20 |
+| [grandma-2-2.ogg](grandma/grandma-2-2.ogg) | You sound skinny. | Grandma: chats | 2.47 |
+| [grandma-2-3.ogg](grandma/grandma-2-3.ogg) | Mister Whiskers says hello. | Grandma: chats | 3.08 |
+| [grandma-2-4.ogg](grandma/grandma-2-4.ogg) | He knocked the African violet off the windowsill again. | Grandma: chats | 4.79 |
+| [grandma-2-5.ogg](grandma/grandma-2-5.ogg) | Okay, bye-bye now, I love you! | Grandma: chats | 3.38 |
 
 ## jenny
 
-| Clip                             | Says                                 | Where                           | Seconds |
-| -------------------------------- | ------------------------------------ | ------------------------------- | ------: |
-| [jenny-1.ogg](jenny/jenny-1.ogg) | Hello?                               | Jenny (867-5309): when not busy |    1.17 |
-| [jenny-2.ogg](jenny/jenny-2.ogg) | Oh, hey!                             | Jenny (867-5309): when not busy |    1.30 |
-| [jenny-3.ogg](jenny/jenny-3.ogg) | I can’t talk, I’m on the other line. | Jenny (867-5309): when not busy |    2.44 |
-| [jenny-4.ogg](jenny/jenny-4.ogg) | Is your mom paying me Friday?        | Jenny (867-5309): when not busy |    2.34 |
-| [jenny-5.ogg](jenny/jenny-5.ogg) | Okay, call me later.                 | Jenny (867-5309): when not busy |    2.03 |
-| [jenny-6.ogg](jenny/jenny-6.ogg) | Bye!                                 | Jenny (867-5309): when not busy |    1.09 |
+| Clip | Says | Where | Seconds |
+| --- | --- | --- | ---: |
+| [jenny-1.ogg](jenny/jenny-1.ogg) | Hello? | Jenny (867-5309): when not busy | 1.17 |
+| [jenny-2.ogg](jenny/jenny-2.ogg) | Oh, hey! | Jenny (867-5309): when not busy | 1.30 |
+| [jenny-3.ogg](jenny/jenny-3.ogg) | I can’t talk, I’m on the other line. | Jenny (867-5309): when not busy | 2.44 |
+| [jenny-4.ogg](jenny/jenny-4.ogg) | Is your mom paying me Friday? | Jenny (867-5309): when not busy | 2.34 |
+| [jenny-5.ogg](jenny/jenny-5.ogg) | Okay, call me later. | Jenny (867-5309): when not busy | 2.03 |
+| [jenny-6.ogg](jenny/jenny-6.ogg) | Bye! | Jenny (867-5309): when not busy | 1.09 |
 
 ## recording
 
-| Clip                                                   | Says                                                        | Where                 | Seconds |
-| ------------------------------------------------------ | ----------------------------------------------------------- | --------------------- | ------: |
-| [not-in-service-1.ogg](recording/not-in-service-1.ogg) | We’re sorry.                                                | Any unassigned number |    1.82 |
-| [not-in-service-2.ogg](recording/not-in-service-2.ogg) | The number you have reached is not in service.              | Any unassigned number |    3.61 |
-| [not-in-service-3.ogg](recording/not-in-service-3.ogg) | Please check the number and dial again.                     | Any unassigned number |    3.24 |
-| [off-hook.ogg](recording/off-hook.ogg)                 | If you’d like to make a call, please hang up and try again. | Off the hook too long |    4.27 |
+| Clip | Says | Where | Seconds |
+| --- | --- | --- | ---: |
+| [not-in-service-1.ogg](recording/not-in-service-1.ogg) | We’re sorry. | Any unassigned number | 1.82 |
+| [not-in-service-2.ogg](recording/not-in-service-2.ogg) | The number you have reached is not in service. | Any unassigned number | 3.61 |
+| [not-in-service-3.ogg](recording/not-in-service-3.ogg) | Please check the number and dial again. | Any unassigned number | 3.24 |
+| [off-hook.ogg](recording/off-hook.ogg) | If you’d like to make a call, please hang up and try again. | Off the hook too long | 4.27 |
 
 ## robot
 
-| Clip                                           | Says                                                    | Where                            | Seconds |
-| ---------------------------------------------- | ------------------------------------------------------- | -------------------------------- | ------: |
-| [ratings-1-1.ogg](robot/ratings-1-1.ogg)       | Thank you for calling the Home Software Rating Council. | Ratings council: answers         |    3.98 |
-| [ratings-1-2.ogg](robot/ratings-1-2.ogg)       | Your call is important to us.                           | Ratings council: answers         |    2.73 |
-| [ratings-1-3.ogg](robot/ratings-1-3.ogg)       | Please hold for the next available rating specialist.   | Ratings council: answers         |    4.30 |
-| [ratings-hold-2.ogg](robot/ratings-hold-2.ogg) | Please continue to hold.                                | Ratings council: after each hold |    2.51 |
+| Clip | Says | Where | Seconds |
+| --- | --- | --- | ---: |
+| [ratings-1-1.ogg](robot/ratings-1-1.ogg) | Thank you for calling the Home Software Rating Council. | Ratings council: answers | 3.98 |
+| [ratings-1-2.ogg](robot/ratings-1-2.ogg) | Your call is important to us. | Ratings council: answers | 2.73 |
+| [ratings-1-3.ogg](robot/ratings-1-3.ogg) | Please hold for the next available rating specialist. | Ratings council: answers | 4.30 |
+| [ratings-hold-2.ogg](robot/ratings-hold-2.ogg) | Please continue to hold. | Ratings council: after each hold | 2.51 |
 
 ## time-lady
 
-| Clip                                       | Says                                           | Where                              | Seconds |
-| ------------------------------------------ | ---------------------------------------------- | ---------------------------------- | ------: |
-| [time-lead.ogg](time-lady/time-lead.ogg)   | Riverbend Savings & Loan time and temperature. | Time: every other call             |    4.48 |
-| [time-temp.ogg](time-lady/time-temp.ogg)   | The temperature is 28 degrees.                 | Time: after the tone               |    3.79 |
-| [tl-tone.ogg](time-lady/tl-tone.ogg)       | At the tone, the time will be                  | Time: spliced into the time of day |    3.24 |
-| [tl-n1.ogg](time-lady/tl-n1.ogg)           | one                                            | Time: spliced into the time of day |    1.48 |
-| [tl-n2.ogg](time-lady/tl-n2.ogg)           | two                                            | Time: spliced into the time of day |    1.21 |
-| [tl-n3.ogg](time-lady/tl-n3.ogg)           | three                                          | Time: spliced into the time of day |    1.50 |
-| [tl-n4.ogg](time-lady/tl-n4.ogg)           | four                                           | Time: spliced into the time of day |    1.48 |
-| [tl-n5.ogg](time-lady/tl-n5.ogg)           | five                                           | Time: spliced into the time of day |    1.37 |
-| [tl-n6.ogg](time-lady/tl-n6.ogg)           | six                                            | Time: spliced into the time of day |    1.29 |
-| [tl-n7.ogg](time-lady/tl-n7.ogg)           | seven                                          | Time: spliced into the time of day |    1.56 |
-| [tl-n8.ogg](time-lady/tl-n8.ogg)           | eight                                          | Time: spliced into the time of day |    1.24 |
-| [tl-n9.ogg](time-lady/tl-n9.ogg)           | nine                                           | Time: spliced into the time of day |    1.71 |
-| [tl-n10.ogg](time-lady/tl-n10.ogg)         | ten                                            | Time: spliced into the time of day |    1.40 |
-| [tl-n11.ogg](time-lady/tl-n11.ogg)         | eleven                                         | Time: spliced into the time of day |    1.74 |
-| [tl-n12.ogg](time-lady/tl-n12.ogg)         | twelve                                         | Time: spliced into the time of day |    1.42 |
-| [tl-n13.ogg](time-lady/tl-n13.ogg)         | thirteen                                       | Time: spliced into the time of day |    1.79 |
-| [tl-n14.ogg](time-lady/tl-n14.ogg)         | fourteen                                       | Time: spliced into the time of day |    1.85 |
-| [tl-n15.ogg](time-lady/tl-n15.ogg)         | fifteen                                        | Time: spliced into the time of day |    1.90 |
-| [tl-n16.ogg](time-lady/tl-n16.ogg)         | sixteen                                        | Time: spliced into the time of day |    1.74 |
-| [tl-n17.ogg](time-lady/tl-n17.ogg)         | seventeen                                      | Time: spliced into the time of day |    2.11 |
-| [tl-n18.ogg](time-lady/tl-n18.ogg)         | eighteen                                       | Time: spliced into the time of day |    1.69 |
-| [tl-n19.ogg](time-lady/tl-n19.ogg)         | nineteen                                       | Time: spliced into the time of day |    1.90 |
-| [tl-n20.ogg](time-lady/tl-n20.ogg)         | twenty                                         | Time: spliced into the time of day |    1.48 |
-| [tl-n21.ogg](time-lady/tl-n21.ogg)         | twenty-one                                     | Time: spliced into the time of day |    1.87 |
-| [tl-n22.ogg](time-lady/tl-n22.ogg)         | twenty-two                                     | Time: spliced into the time of day |    1.85 |
-| [tl-n23.ogg](time-lady/tl-n23.ogg)         | twenty-three                                   | Time: spliced into the time of day |    2.11 |
-| [tl-n24.ogg](time-lady/tl-n24.ogg)         | twenty-four                                    | Time: spliced into the time of day |    2.03 |
-| [tl-n25.ogg](time-lady/tl-n25.ogg)         | twenty-five                                    | Time: spliced into the time of day |    2.06 |
-| [tl-n26.ogg](time-lady/tl-n26.ogg)         | twenty-six                                     | Time: spliced into the time of day |    1.90 |
-| [tl-n27.ogg](time-lady/tl-n27.ogg)         | twenty-seven                                   | Time: spliced into the time of day |    2.32 |
-| [tl-n28.ogg](time-lady/tl-n28.ogg)         | twenty-eight                                   | Time: spliced into the time of day |    1.77 |
-| [tl-n29.ogg](time-lady/tl-n29.ogg)         | twenty-nine                                    | Time: spliced into the time of day |    2.27 |
-| [tl-n30.ogg](time-lady/tl-n30.ogg)         | thirty                                         | Time: spliced into the time of day |    1.74 |
-| [tl-n31.ogg](time-lady/tl-n31.ogg)         | thirty-one                                     | Time: spliced into the time of day |    2.11 |
-| [tl-n32.ogg](time-lady/tl-n32.ogg)         | thirty-two                                     | Time: spliced into the time of day |    1.90 |
-| [tl-n33.ogg](time-lady/tl-n33.ogg)         | thirty-three                                   | Time: spliced into the time of day |    2.24 |
-| [tl-n34.ogg](time-lady/tl-n34.ogg)         | thirty-four                                    | Time: spliced into the time of day |    2.27 |
-| [tl-n35.ogg](time-lady/tl-n35.ogg)         | thirty-five                                    | Time: spliced into the time of day |    2.14 |
-| [tl-n36.ogg](time-lady/tl-n36.ogg)         | thirty-six                                     | Time: spliced into the time of day |    2.11 |
-| [tl-n37.ogg](time-lady/tl-n37.ogg)         | thirty-seven                                   | Time: spliced into the time of day |    2.24 |
-| [tl-n38.ogg](time-lady/tl-n38.ogg)         | thirty-eight                                   | Time: spliced into the time of day |    1.90 |
-| [tl-n39.ogg](time-lady/tl-n39.ogg)         | thirty-nine                                    | Time: spliced into the time of day |    2.11 |
-| [tl-n40.ogg](time-lady/tl-n40.ogg)         | forty                                          | Time: spliced into the time of day |    1.77 |
-| [tl-n41.ogg](time-lady/tl-n41.ogg)         | forty-one                                      | Time: spliced into the time of day |    2.19 |
-| [tl-n42.ogg](time-lady/tl-n42.ogg)         | forty-two                                      | Time: spliced into the time of day |    1.92 |
-| [tl-n43.ogg](time-lady/tl-n43.ogg)         | forty-three                                    | Time: spliced into the time of day |    2.34 |
-| [tl-n44.ogg](time-lady/tl-n44.ogg)         | forty-four                                     | Time: spliced into the time of day |    2.21 |
-| [tl-n45.ogg](time-lady/tl-n45.ogg)         | forty-five                                     | Time: spliced into the time of day |    2.14 |
-| [tl-n46.ogg](time-lady/tl-n46.ogg)         | forty-six                                      | Time: spliced into the time of day |    2.08 |
-| [tl-n47.ogg](time-lady/tl-n47.ogg)         | forty-seven                                    | Time: spliced into the time of day |    2.27 |
-| [tl-n48.ogg](time-lady/tl-n48.ogg)         | forty-eight                                    | Time: spliced into the time of day |    1.79 |
-| [tl-n49.ogg](time-lady/tl-n49.ogg)         | forty-nine                                     | Time: spliced into the time of day |    2.06 |
-| [tl-n50.ogg](time-lady/tl-n50.ogg)         | fifty                                          | Time: spliced into the time of day |    1.56 |
-| [tl-n51.ogg](time-lady/tl-n51.ogg)         | fifty-one                                      | Time: spliced into the time of day |    2.00 |
-| [tl-n52.ogg](time-lady/tl-n52.ogg)         | fifty-two                                      | Time: spliced into the time of day |    1.95 |
-| [tl-n53.ogg](time-lady/tl-n53.ogg)         | fifty-three                                    | Time: spliced into the time of day |    2.21 |
-| [tl-n54.ogg](time-lady/tl-n54.ogg)         | fifty-four                                     | Time: spliced into the time of day |    2.24 |
-| [tl-n55.ogg](time-lady/tl-n55.ogg)         | fifty-five                                     | Time: spliced into the time of day |    2.19 |
-| [tl-n56.ogg](time-lady/tl-n56.ogg)         | fifty-six                                      | Time: spliced into the time of day |    2.03 |
-| [tl-n57.ogg](time-lady/tl-n57.ogg)         | fifty-seven                                    | Time: spliced into the time of day |    2.29 |
-| [tl-n58.ogg](time-lady/tl-n58.ogg)         | fifty-eight                                    | Time: spliced into the time of day |    1.87 |
-| [tl-n59.ogg](time-lady/tl-n59.ogg)         | fifty-nine                                     | Time: spliced into the time of day |    2.27 |
-| [tl-oh-1.ogg](time-lady/tl-oh-1.ogg)       | oh one                                         | Time: spliced into the time of day |    1.92 |
-| [tl-oh-2.ogg](time-lady/tl-oh-2.ogg)       | oh two                                         | Time: spliced into the time of day |    1.79 |
-| [tl-oh-3.ogg](time-lady/tl-oh-3.ogg)       | oh three                                       | Time: spliced into the time of day |    2.06 |
-| [tl-oh-4.ogg](time-lady/tl-oh-4.ogg)       | oh four                                        | Time: spliced into the time of day |    2.00 |
-| [tl-oh-5.ogg](time-lady/tl-oh-5.ogg)       | oh five                                        | Time: spliced into the time of day |    2.06 |
-| [tl-oh-6.ogg](time-lady/tl-oh-6.ogg)       | oh six                                         | Time: spliced into the time of day |    2.16 |
-| [tl-oh-7.ogg](time-lady/tl-oh-7.ogg)       | oh seven                                       | Time: spliced into the time of day |    2.21 |
-| [tl-oh-8.ogg](time-lady/tl-oh-8.ogg)       | oh eight                                       | Time: spliced into the time of day |    1.92 |
-| [tl-oh-9.ogg](time-lady/tl-oh-9.ogg)       | oh nine                                        | Time: spliced into the time of day |    2.14 |
-| [tl-oclock.ogg](time-lady/tl-oclock.ogg)   | o’clock                                        | Time: spliced into the time of day |    1.45 |
-| [tl-sec-10.ogg](time-lady/tl-sec-10.ogg)   | and ten seconds                                | Time: spliced into the time of day |    2.61 |
-| [tl-sec-20.ogg](time-lady/tl-sec-20.ogg)   | and twenty seconds                             | Time: spliced into the time of day |    2.61 |
-| [tl-sec-30.ogg](time-lady/tl-sec-30.ogg)   | and thirty seconds                             | Time: spliced into the time of day |    2.69 |
-| [tl-sec-40.ogg](time-lady/tl-sec-40.ogg)   | and forty seconds                              | Time: spliced into the time of day |    2.63 |
-| [tl-sec-50.ogg](time-lady/tl-sec-50.ogg)   | and fifty seconds                              | Time: spliced into the time of day |    2.66 |
-| [tl-exactly.ogg](time-lady/tl-exactly.ogg) | exactly                                        | Time: spliced into the time of day |    2.00 |
+| Clip | Says | Where | Seconds |
+| --- | --- | --- | ---: |
+| [time-lead.ogg](time-lady/time-lead.ogg) | Riverbend Savings & Loan time and temperature. | Time: every other call | 4.48 |
+| [time-temp.ogg](time-lady/time-temp.ogg) | The temperature is 28 degrees. | Time: after the tone | 3.79 |
+| [tl-tone.ogg](time-lady/tl-tone.ogg) | At the tone, the time will be | Time: spliced into the time of day | 3.24 |
+| [tl-n1.ogg](time-lady/tl-n1.ogg) | one | Time: spliced into the time of day | 1.48 |
+| [tl-n2.ogg](time-lady/tl-n2.ogg) | two | Time: spliced into the time of day | 1.21 |
+| [tl-n3.ogg](time-lady/tl-n3.ogg) | three | Time: spliced into the time of day | 1.50 |
+| [tl-n4.ogg](time-lady/tl-n4.ogg) | four | Time: spliced into the time of day | 1.48 |
+| [tl-n5.ogg](time-lady/tl-n5.ogg) | five | Time: spliced into the time of day | 1.37 |
+| [tl-n6.ogg](time-lady/tl-n6.ogg) | six | Time: spliced into the time of day | 1.29 |
+| [tl-n7.ogg](time-lady/tl-n7.ogg) | seven | Time: spliced into the time of day | 1.56 |
+| [tl-n8.ogg](time-lady/tl-n8.ogg) | eight | Time: spliced into the time of day | 1.24 |
+| [tl-n9.ogg](time-lady/tl-n9.ogg) | nine | Time: spliced into the time of day | 1.71 |
+| [tl-n10.ogg](time-lady/tl-n10.ogg) | ten | Time: spliced into the time of day | 1.40 |
+| [tl-n11.ogg](time-lady/tl-n11.ogg) | eleven | Time: spliced into the time of day | 1.74 |
+| [tl-n12.ogg](time-lady/tl-n12.ogg) | twelve | Time: spliced into the time of day | 1.42 |
+| [tl-n13.ogg](time-lady/tl-n13.ogg) | thirteen | Time: spliced into the time of day | 1.79 |
+| [tl-n14.ogg](time-lady/tl-n14.ogg) | fourteen | Time: spliced into the time of day | 1.85 |
+| [tl-n15.ogg](time-lady/tl-n15.ogg) | fifteen | Time: spliced into the time of day | 1.90 |
+| [tl-n16.ogg](time-lady/tl-n16.ogg) | sixteen | Time: spliced into the time of day | 1.74 |
+| [tl-n17.ogg](time-lady/tl-n17.ogg) | seventeen | Time: spliced into the time of day | 2.11 |
+| [tl-n18.ogg](time-lady/tl-n18.ogg) | eighteen | Time: spliced into the time of day | 1.69 |
+| [tl-n19.ogg](time-lady/tl-n19.ogg) | nineteen | Time: spliced into the time of day | 1.90 |
+| [tl-n20.ogg](time-lady/tl-n20.ogg) | twenty | Time: spliced into the time of day | 1.48 |
+| [tl-n21.ogg](time-lady/tl-n21.ogg) | twenty-one | Time: spliced into the time of day | 1.87 |
+| [tl-n22.ogg](time-lady/tl-n22.ogg) | twenty-two | Time: spliced into the time of day | 1.85 |
+| [tl-n23.ogg](time-lady/tl-n23.ogg) | twenty-three | Time: spliced into the time of day | 2.11 |
+| [tl-n24.ogg](time-lady/tl-n24.ogg) | twenty-four | Time: spliced into the time of day | 2.03 |
+| [tl-n25.ogg](time-lady/tl-n25.ogg) | twenty-five | Time: spliced into the time of day | 2.06 |
+| [tl-n26.ogg](time-lady/tl-n26.ogg) | twenty-six | Time: spliced into the time of day | 1.90 |
+| [tl-n27.ogg](time-lady/tl-n27.ogg) | twenty-seven | Time: spliced into the time of day | 2.32 |
+| [tl-n28.ogg](time-lady/tl-n28.ogg) | twenty-eight | Time: spliced into the time of day | 1.77 |
+| [tl-n29.ogg](time-lady/tl-n29.ogg) | twenty-nine | Time: spliced into the time of day | 2.27 |
+| [tl-n30.ogg](time-lady/tl-n30.ogg) | thirty | Time: spliced into the time of day | 1.74 |
+| [tl-n31.ogg](time-lady/tl-n31.ogg) | thirty-one | Time: spliced into the time of day | 2.11 |
+| [tl-n32.ogg](time-lady/tl-n32.ogg) | thirty-two | Time: spliced into the time of day | 1.90 |
+| [tl-n33.ogg](time-lady/tl-n33.ogg) | thirty-three | Time: spliced into the time of day | 2.24 |
+| [tl-n34.ogg](time-lady/tl-n34.ogg) | thirty-four | Time: spliced into the time of day | 2.27 |
+| [tl-n35.ogg](time-lady/tl-n35.ogg) | thirty-five | Time: spliced into the time of day | 2.14 |
+| [tl-n36.ogg](time-lady/tl-n36.ogg) | thirty-six | Time: spliced into the time of day | 2.11 |
+| [tl-n37.ogg](time-lady/tl-n37.ogg) | thirty-seven | Time: spliced into the time of day | 2.24 |
+| [tl-n38.ogg](time-lady/tl-n38.ogg) | thirty-eight | Time: spliced into the time of day | 1.90 |
+| [tl-n39.ogg](time-lady/tl-n39.ogg) | thirty-nine | Time: spliced into the time of day | 2.11 |
+| [tl-n40.ogg](time-lady/tl-n40.ogg) | forty | Time: spliced into the time of day | 1.77 |
+| [tl-n41.ogg](time-lady/tl-n41.ogg) | forty-one | Time: spliced into the time of day | 2.19 |
+| [tl-n42.ogg](time-lady/tl-n42.ogg) | forty-two | Time: spliced into the time of day | 1.92 |
+| [tl-n43.ogg](time-lady/tl-n43.ogg) | forty-three | Time: spliced into the time of day | 2.34 |
+| [tl-n44.ogg](time-lady/tl-n44.ogg) | forty-four | Time: spliced into the time of day | 2.21 |
+| [tl-n45.ogg](time-lady/tl-n45.ogg) | forty-five | Time: spliced into the time of day | 2.14 |
+| [tl-n46.ogg](time-lady/tl-n46.ogg) | forty-six | Time: spliced into the time of day | 2.08 |
+| [tl-n47.ogg](time-lady/tl-n47.ogg) | forty-seven | Time: spliced into the time of day | 2.27 |
+| [tl-n48.ogg](time-lady/tl-n48.ogg) | forty-eight | Time: spliced into the time of day | 1.79 |
+| [tl-n49.ogg](time-lady/tl-n49.ogg) | forty-nine | Time: spliced into the time of day | 2.06 |
+| [tl-n50.ogg](time-lady/tl-n50.ogg) | fifty | Time: spliced into the time of day | 1.56 |
+| [tl-n51.ogg](time-lady/tl-n51.ogg) | fifty-one | Time: spliced into the time of day | 2.00 |
+| [tl-n52.ogg](time-lady/tl-n52.ogg) | fifty-two | Time: spliced into the time of day | 1.95 |
+| [tl-n53.ogg](time-lady/tl-n53.ogg) | fifty-three | Time: spliced into the time of day | 2.21 |
+| [tl-n54.ogg](time-lady/tl-n54.ogg) | fifty-four | Time: spliced into the time of day | 2.24 |
+| [tl-n55.ogg](time-lady/tl-n55.ogg) | fifty-five | Time: spliced into the time of day | 2.19 |
+| [tl-n56.ogg](time-lady/tl-n56.ogg) | fifty-six | Time: spliced into the time of day | 2.03 |
+| [tl-n57.ogg](time-lady/tl-n57.ogg) | fifty-seven | Time: spliced into the time of day | 2.29 |
+| [tl-n58.ogg](time-lady/tl-n58.ogg) | fifty-eight | Time: spliced into the time of day | 1.87 |
+| [tl-n59.ogg](time-lady/tl-n59.ogg) | fifty-nine | Time: spliced into the time of day | 2.27 |
+| [tl-oh-1.ogg](time-lady/tl-oh-1.ogg) | oh one | Time: spliced into the time of day | 1.92 |
+| [tl-oh-2.ogg](time-lady/tl-oh-2.ogg) | oh two | Time: spliced into the time of day | 1.79 |
+| [tl-oh-3.ogg](time-lady/tl-oh-3.ogg) | oh three | Time: spliced into the time of day | 2.06 |
+| [tl-oh-4.ogg](time-lady/tl-oh-4.ogg) | oh four | Time: spliced into the time of day | 2.00 |
+| [tl-oh-5.ogg](time-lady/tl-oh-5.ogg) | oh five | Time: spliced into the time of day | 2.06 |
+| [tl-oh-6.ogg](time-lady/tl-oh-6.ogg) | oh six | Time: spliced into the time of day | 2.16 |
+| [tl-oh-7.ogg](time-lady/tl-oh-7.ogg) | oh seven | Time: spliced into the time of day | 2.21 |
+| [tl-oh-8.ogg](time-lady/tl-oh-8.ogg) | oh eight | Time: spliced into the time of day | 1.92 |
+| [tl-oh-9.ogg](time-lady/tl-oh-9.ogg) | oh nine | Time: spliced into the time of day | 2.14 |
+| [tl-oclock.ogg](time-lady/tl-oclock.ogg) | o’clock | Time: spliced into the time of day | 1.45 |
+| [tl-sec-10.ogg](time-lady/tl-sec-10.ogg) | and ten seconds | Time: spliced into the time of day | 2.61 |
+| [tl-sec-20.ogg](time-lady/tl-sec-20.ogg) | and twenty seconds | Time: spliced into the time of day | 2.61 |
+| [tl-sec-30.ogg](time-lady/tl-sec-30.ogg) | and thirty seconds | Time: spliced into the time of day | 2.69 |
+| [tl-sec-40.ogg](time-lady/tl-sec-40.ogg) | and forty seconds | Time: spliced into the time of day | 2.63 |
+| [tl-sec-50.ogg](time-lady/tl-sec-50.ogg) | and fifty seconds | Time: spliced into the time of day | 2.66 |
+| [tl-exactly.ogg](time-lady/tl-exactly.ogg) | exactly | Time: spliced into the time of day | 2.00 |
 
 ## weather
 
-| Clip                                   | Says                                                           | Where        | Seconds |
-| -------------------------------------- | -------------------------------------------------------------- | ------------ | ------: |
-| [weather-1.ogg](weather/weather-1.ogg) | National Weather Service forecast for Pittsburgh and vicinity. | Weather line |    4.50 |
-| [weather-2.ogg](weather/weather-2.ogg) | This afternoon, snow showers.                                  | Weather line |    2.94 |
-| [weather-3.ogg](weather/weather-3.ogg) | Accumulation of two to four inches.                            | Weather line |    3.37 |
-| [weather-4.ogg](weather/weather-4.ogg) | High 29.                                                       | Weather line |    2.17 |
-| [weather-5.ogg](weather/weather-5.ogg) | Tonight, cloudy with flurries.                                 | Weather line |    2.73 |
-| [weather-6.ogg](weather/weather-6.ogg) | Low 18.                                                        | Weather line |    2.05 |
-| [weather-7.ogg](weather/weather-7.ogg) | Tomorrow, partly sunny and cold.                               | Weather line |    3.19 |
-| [weather-8.ogg](weather/weather-8.ogg) | High 31.                                                       | Weather line |    2.17 |
-| [weather-9.ogg](weather/weather-9.ogg) | Currently in Pittsburgh, light snow, and 28 degrees.           | Weather line |    4.39 |
+| Clip | Says | Where | Seconds |
+| --- | --- | --- | ---: |
+| [weather-1.ogg](weather/weather-1.ogg) | National Weather Service forecast for Pittsburgh and vicinity. | Weather line | 4.50 |
+| [weather-2.ogg](weather/weather-2.ogg) | This afternoon, snow showers. | Weather line | 2.94 |
+| [weather-3.ogg](weather/weather-3.ogg) | Accumulation of two to four inches. | Weather line | 3.37 |
+| [weather-4.ogg](weather/weather-4.ogg) | High 29. | Weather line | 2.17 |
+| [weather-5.ogg](weather/weather-5.ogg) | Tonight, cloudy with flurries. | Weather line | 2.73 |
+| [weather-6.ogg](weather/weather-6.ogg) | Low 18. | Weather line | 2.05 |
+| [weather-7.ogg](weather/weather-7.ogg) | Tomorrow, partly sunny and cold. | Weather line | 3.19 |
+| [weather-8.ogg](weather/weather-8.ogg) | High 31. | Weather line | 2.17 |
+| [weather-9.ogg](weather/weather-9.ogg) | Currently in Pittsburgh, light snow, and 28 degrees. | Weather line | 4.39 |
 
 ## movies
 
-| Clip                                            | Says                                                              | Where                      | Seconds |
-| ----------------------------------------------- | ----------------------------------------------------------------- | -------------------------- | ------: |
-| [movies-hello-1.ogg](movies/movies-hello-1.ogg) | Hello!                                                            | Movie line: answers        |    1.00 |
-| [movies-hello-2.ogg](movies/movies-hello-2.ogg) | And welcome to the Movie Line!                                    | Movie line: answers        |    2.75 |
-| [movies-hello-3.ogg](movies/movies-hello-3.ogg) | Now showing at the Starlite Cinema 8.                             | Movie line: answers        |    4.28 |
-| [movies-menu-1.ogg](movies/movies-menu-1.ogg)   | For The Santa Clause, press 1.                                    | Movie line: the menu       |    3.82 |
-| [movies-menu-2.ogg](movies/movies-menu-2.ogg)   | For Star Trek Generations, press 2.                               | Movie line: the menu       |    4.88 |
-| [movies-menu-3.ogg](movies/movies-menu-3.ogg)   | For The Lion King, press 3.                                       | Movie line: the menu       |    3.97 |
-| [movies-menu-4.ogg](movies/movies-menu-4.ogg)   | For Dumb and Dumber, press 4.                                     | Movie line: the menu       |    5.19 |
-| [movies-menu-5.ogg](movies/movies-menu-5.ogg)   | To hear this again, press 0.                                      | Movie line: the menu       |    3.89 |
-| [movies-what.ogg](movies/movies-what.ogg)       | Why don’t you just tell me the name of the movie you’ve selected? | Movie line: no key pressed |    3.06 |
-| [movies-bye.ogg](movies/movies-bye.ogg)         | Thank you for calling the Movie Line!                             | Movie line: hangs up       |    3.59 |
-| [movies-1-1.ogg](movies/movies-1-1.ogg)         | The Santa Clause.                                                 | Movie line: press 1        |    1.99 |
-| [movies-1-2.ogg](movies/movies-1-2.ogg)         | Rated PG.                                                         | Movie line: press 1        |    2.75 |
-| [movies-1-3.ogg](movies/movies-1-3.ogg)         | Today’s showtimes: 1:10, 3:20, 5:30, 7:40, and 9:50.              | Movie line: press 1        |    9.68 |
-| [movies-2-1.ogg](movies/movies-2-1.ogg)         | Star Trek Generations.                                            | Movie line: press 2        |    3.89 |
-| [movies-2-3.ogg](movies/movies-2-3.ogg)         | Today’s showtimes: 1:30, 4:15, 7:00, and 9:35.                    | Movie line: press 2        |    7.86 |
-| [movies-3-1.ogg](movies/movies-3-1.ogg)         | The Lion King.                                                    | Movie line: press 3        |    2.68 |
-| [movies-3-2.ogg](movies/movies-3-2.ogg)         | Rated G.                                                          | Movie line: press 3        |    2.29 |
-| [movies-3-3.ogg](movies/movies-3-3.ogg)         | Today’s showtimes: 12:45, 2:50, 4:55, and 7:00.                   | Movie line: press 3        |    6.41 |
-| [movies-4-1.ogg](movies/movies-4-1.ogg)         | Dumb and Dumber.                                                  | Movie line: press 4        |    2.90 |
-| [movies-4-2.ogg](movies/movies-4-2.ogg)         | Rated PG-13.                                                      | Movie line: press 4        |    3.82 |
-| [movies-4-3.ogg](movies/movies-4-3.ogg)         | Today’s showtimes: 2:00, 4:30, 7:15, and 9:40.                    | Movie line: press 4        |   10.14 |
+| Clip | Says | Where | Seconds |
+| --- | --- | --- | ---: |
+| [movies-hello-1.ogg](movies/movies-hello-1.ogg) | Hello! | Movie line: answers | 1.00 |
+| [movies-hello-2.ogg](movies/movies-hello-2.ogg) | And welcome to the Movie Line! | Movie line: answers | 2.75 |
+| [movies-hello-3.ogg](movies/movies-hello-3.ogg) | Now showing at the Starlite Cinema 8. | Movie line: answers | 4.28 |
+| [movies-menu-1.ogg](movies/movies-menu-1.ogg) | For The Santa Clause, press 1. | Movie line: the menu | 3.82 |
+| [movies-menu-2.ogg](movies/movies-menu-2.ogg) | For Star Trek Generations, press 2. | Movie line: the menu | 4.88 |
+| [movies-menu-3.ogg](movies/movies-menu-3.ogg) | For The Lion King, press 3. | Movie line: the menu | 3.97 |
+| [movies-menu-4.ogg](movies/movies-menu-4.ogg) | For Dumb and Dumber, press 4. | Movie line: the menu | 5.19 |
+| [movies-menu-5.ogg](movies/movies-menu-5.ogg) | To hear this again, press 0. | Movie line: the menu | 3.89 |
+| [movies-what.ogg](movies/movies-what.ogg) | Why don’t you just tell me the name of the movie you’ve selected? | Movie line: no key pressed | 3.06 |
+| [movies-bye.ogg](movies/movies-bye.ogg) | Thank you for calling the Movie Line! | Movie line: hangs up | 3.59 |
+| [movies-1-1.ogg](movies/movies-1-1.ogg) | The Santa Clause. | Movie line: press 1 | 1.99 |
+| [movies-1-2.ogg](movies/movies-1-2.ogg) | Rated PG. | Movie line: press 1 | 2.75 |
+| [movies-1-3.ogg](movies/movies-1-3.ogg) | Today’s showtimes: 1:10, 3:20, 5:30, 7:40, and 9:50. | Movie line: press 1 | 9.68 |
+| [movies-2-1.ogg](movies/movies-2-1.ogg) | Star Trek Generations. | Movie line: press 2 | 3.89 |
+| [movies-2-3.ogg](movies/movies-2-3.ogg) | Today’s showtimes: 1:30, 4:15, 7:00, and 9:35. | Movie line: press 2 | 7.86 |
+| [movies-3-1.ogg](movies/movies-3-1.ogg) | The Lion King. | Movie line: press 3 | 2.68 |
+| [movies-3-2.ogg](movies/movies-3-2.ogg) | Rated G. | Movie line: press 3 | 2.29 |
+| [movies-3-3.ogg](movies/movies-3-3.ogg) | Today’s showtimes: 12:45, 2:50, 4:55, and 7:00. | Movie line: press 3 | 6.41 |
+| [movies-4-1.ogg](movies/movies-4-1.ogg) | Dumb and Dumber. | Movie line: press 4 | 2.90 |
+| [movies-4-2.ogg](movies/movies-4-2.ogg) | Rated PG-13. | Movie line: press 4 | 3.82 |
+| [movies-4-3.ogg](movies/movies-4-3.ogg) | Today’s showtimes: 2:00, 4:30, 7:15, and 9:40. | Movie line: press 4 | 10.14 |
 
 ## kowalski
 
-| Clip                                                      | Says                                                                     | Where                            | Seconds |
-| --------------------------------------------------------- | ------------------------------------------------------------------------ | -------------------------------- | ------: |
-| [machine-kowalski-1.ogg](kowalski/machine-kowalski-1.ogg) | Hi!                                                                      | An answering machine (by number) |    1.46 |
-| [machine-kowalski-2.ogg](kowalski/machine-kowalski-2.ogg) | You’ve reached the Kowalskis.                                            | An answering machine (by number) |    2.50 |
-| [machine-kowalski-3.ogg](kowalski/machine-kowalski-3.ogg) | We can’t come to the phone right now, so leave a message after the beep! | An answering machine (by number) |    4.07 |
+| Clip | Says | Where | Seconds |
+| --- | --- | --- | ---: |
+| [machine-kowalski-1.ogg](kowalski/machine-kowalski-1.ogg) | Hi! | An answering machine (by number) | 1.46 |
+| [machine-kowalski-2.ogg](kowalski/machine-kowalski-2.ogg) | You’ve reached the Kowalskis. | An answering machine (by number) | 2.50 |
+| [machine-kowalski-3.ogg](kowalski/machine-kowalski-3.ogg) | We can’t come to the phone right now, so leave a message after the beep! | An answering machine (by number) | 4.07 |
 
 ## rick
 
-| Clip                                          | Says                                           | Where                            | Seconds |
-| --------------------------------------------- | ---------------------------------------------- | -------------------------------- | ------: |
-| [machine-rick-1.ogg](rick/machine-rick-1.ogg) | Yo, this is Rick.                              | An answering machine (by number) |    1.90 |
-| [machine-rick-2.ogg](rick/machine-rick-2.ogg) | I’m not here, or maybe I am and I’m screening. | An answering machine (by number) |    3.29 |
-| [machine-rick-3.ogg](rick/machine-rick-3.ogg) | Leave a message.                               | An answering machine (by number) |    1.74 |
+| Clip | Says | Where | Seconds |
+| --- | --- | --- | ---: |
+| [machine-rick-1.ogg](rick/machine-rick-1.ogg) | Yo, this is Rick. | An answering machine (by number) | 1.90 |
+| [machine-rick-2.ogg](rick/machine-rick-2.ogg) | I’m not here, or maybe I am and I’m screening. | An answering machine (by number) | 3.29 |
+| [machine-rick-3.ogg](rick/machine-rick-3.ogg) | Leave a message. | An answering machine (by number) | 1.74 |
 
 ## henderson
 
-| Clip                                                         | Says                                                                                  | Where                            | Seconds |
-| ------------------------------------------------------------ | ------------------------------------------------------------------------------------- | -------------------------------- | ------: |
-| [machine-henderson-1.ogg](henderson/machine-henderson-1.ogg) | Hello, you have reached the Hendersons.                                               | An answering machine (by number) |    3.08 |
-| [machine-henderson-2.ogg](henderson/machine-henderson-2.ogg) | Please leave your name, number, and the time you called, and we will get back to you. | An answering machine (by number) |    5.23 |
+| Clip | Says | Where | Seconds |
+| --- | --- | --- | ---: |
+| [machine-henderson-1.ogg](henderson/machine-henderson-1.ogg) | Hello, you have reached the Hendersons. | An answering machine (by number) | 3.08 |
+| [machine-henderson-2.ogg](henderson/machine-henderson-2.ogg) | Please leave your name, number, and the time you called, and we will get back to you. | An answering machine (by number) | 5.23 |
 
 ## giant
 
-| Clip                                                         | Says                                                                                                               | Where                                                | Seconds |
-| ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------- | ------: |
-| [giant-hello-1.ogg](giant/giant-hello-1.ogg)                 | Hello, and thank you for calling Teddy’s Hint Kennel!                                                              | Hint line: answers                                   |    4.46 |
-| [giant-hello-2.ogg](giant/giant-hello-2.ogg)                 | I am the Hint Giant, and I talk nice and slow so nobody misses a thing.                                            | Hint line: answers                                   |    6.32 |
-| [giant-away-1.ogg](giant/giant-away-1.ogg)                   | Our live game counselors are not available at this time.                                                           | Hint line: no live counselors                        |    4.01 |
-| [giant-away-2.ogg](giant/giant-away-2.ogg)                   | Please use our automated hint system, which is open all day and all night.                                         | Hint line: no live counselors                        |    5.17 |
-| [giant-rate-1.ogg](giant/giant-rate-1.ogg)                   | This game charges a fictional $1.99 per minute, never real money.                                                  | Hint line: the rate                                  |    8.63 |
-| [giant-rate-2.ogg](giant/giant-rate-2.ogg)                   | Each minute is billed in full the moment it begins.                                                                | Hint line: the rate                                  |    4.81 |
-| [giant-rate-3.ogg](giant/giant-rate-3.ogg)                   | Press 1 to start the meter, or 0 to leave free.                                                                    | Hint line: the rate                                  |    4.81 |
-| [giant-bill-tail-1.ogg](giant/giant-bill-tail-1.ogg)         | Gwinn has offered to pay in lint.                                                                                  | Hint line: press pound                               |    2.59 |
-| [giant-bill-tail-2.ogg](giant/giant-bill-tail-2.ogg)         | The telephone company is considering it.                                                                           | Hint line: press pound                               |    3.39 |
-| [giant-bad-key-1.ogg](giant/giant-bad-key-1.ogg)             | I do not know that button yet.                                                                                     | Hint line: a wrong key                               |    3.30 |
-| [giant-bad-key-2.ogg](giant/giant-bad-key-2.ogg)             | Please try again.                                                                                                  | Hint line: a wrong key                               |    1.88 |
-| [giant-bye-1.ogg](giant/giant-bye-1.ogg)                     | Thank you for calling.                                                                                             | Hint line: press 0 at the game menu                  |    1.70 |
-| [giant-bye-2.ogg](giant/giant-bye-2.ogg)                     | Come back when you are stuck again.                                                                                | Hint line: press 0 at the game menu                  |    2.15 |
-| [giant-bye-3.ogg](giant/giant-bye-3.ogg)                     | Goodbye!                                                                                                           | Hint line: press 0 at the game menu                  |    0.90 |
-| [giant-long-break-1.ogg](giant/giant-long-break-1.ogg)       | Are you still there?                                                                                               | Hint line: nobody pressed anything                   |    2.41 |
-| [giant-long-break-2.ogg](giant/giant-long-break-2.ogg)       | I will hang up now.                                                                                                | Hint line: nobody pressed anything                   |    1.79 |
-| [giant-next.ogg](giant/giant-next.ogg)                       | Press 1 for the next hint, 2 for the game menu, or 0 to hear it again.                                             | Hint line: after each hint                           |    4.99 |
-| [giant-last-1.ogg](giant/giant-last-1.ogg)                   | That was the last hint.                                                                                            | Hint line: after the last hint                       |    1.61 |
-| [giant-last-2.ogg](giant/giant-last-2.ogg)                   | Press 2 for the game menu, or 0 to hear it again.                                                                  | Hint line: after the last hint                       |    4.55 |
-| [giant-menu-1-1.ogg](giant/giant-menu-1-1.ogg)               | For Depth Perception, press 1.                                                                                     | Hint line: game menu, page 1                         |    2.41 |
-| [giant-menu-1-2.ogg](giant/giant-menu-1-2.ogg)               | For Final Curtain, press 2.                                                                                        | Hint line: game menu, page 1                         |    2.50 |
-| [giant-menu-1-3.ogg](giant/giant-menu-1-3.ogg)               | For Keep It Brief, press 3.                                                                                        | Hint line: game menu, page 1                         |    3.83 |
-| [giant-menu-1-4.ogg](giant/giant-menu-1-4.ogg)               | For Maximus, the Hundred Worlds, press 4.                                                                          | Hint line: game menu, page 1                         |    4.19 |
-| [giant-menu-1-5.ogg](giant/giant-menu-1-5.ogg)               | For Ohm Sweet Ohm, press 5.                                                                                        | Hint line: game menu, page 1                         |    3.21 |
-| [giant-menu-1-6.ogg](giant/giant-menu-1-6.ogg)               | For Quest for the Round Tuit, press 6.                                                                             | Hint line: game menu, page 1                         |    3.66 |
-| [giant-menu-1-7.ogg](giant/giant-menu-1-7.ogg)               | For Sandcastle Knight, press 7.                                                                                    | Hint line: game menu, page 1                         |    2.77 |
-| [giant-menu-1-8.ogg](giant/giant-menu-1-8.ogg)               | For Snowbound, press 8.                                                                                            | Hint line: game menu, page 1                         |    2.77 |
-| [giant-menu-1-9.ogg](giant/giant-menu-1-9.ogg)               | For more games, press 9.                                                                                           | Hint line: game menu, page 1                         |    2.32 |
-| [giant-menu-1-10.ogg](giant/giant-menu-1-10.ogg)             | For my pretend phone bill, press pound.                                                                            | Hint line: game menu, page 1                         |    3.66 |
-| [giant-menu-1-11.ogg](giant/giant-menu-1-11.ogg)             | To hang up, press 0.                                                                                               | Hint line: game menu, page 1                         |    3.12 |
-| [giant-menu-2-1.ogg](giant/giant-menu-2-1.ogg)               | For Teddy’s Little Big Adventure, press 1.                                                                         | Hint line: game menu, page 2                         |    3.57 |
-| [giant-menu-2-2.ogg](giant/giant-menu-2-2.ogg)               | For Teddy’s Little Bigger Adventure, press 2.                                                                      | Hint line: game menu, page 2                         |    3.21 |
-| [giant-menu-2-3.ogg](giant/giant-menu-2-3.ogg)               | For Teddy’s Little Biggest Adventure, press 3.                                                                     | Hint line: game menu, page 2                         |    3.92 |
-| [giant-menu-2-4.ogg](giant/giant-menu-2-4.ogg)               | For Tune-Up, press 4.                                                                                              | Hint line: game menu, page 2                         |    3.30 |
-| [giant-menu-2-5.ogg](giant/giant-menu-2-5.ogg)               | For Virus Blaster, press 5.                                                                                        | Hint line: game menu, page 2                         |    2.59 |
-| [giant-menu-2-6.ogg](giant/giant-menu-2-6.ogg)               | For In the Year 2000, press 6.                                                                                     | Hint line: game menu, page 2                         |    3.12 |
-| [giant-menu-2-7.ogg](giant/giant-menu-2-7.ogg)               | To go back to the first games, press 9.                                                                            | Hint line: game menu, page 2                         |    3.30 |
-| [giant-depth-intro.ogg](giant/giant-depth-intro.ogg)         | Hints for Depth Perception.                                                                                        | Hint line: Depth Perception, welcome                 |    3.03 |
-| [giant-depth-1-1.ogg](giant/giant-depth-1-1.ogg)             | Amber blocks are the near plane.                                                                                   | Hint line: Depth Perception, hint 1                  |    2.77 |
-| [giant-depth-1-2.ogg](giant/giant-depth-1-2.ogg)             | Roll onto a focus ring with a cyan lens, and the far plane comes into focus.                                       | Hint line: Depth Perception, hint 1                  |    9.43 |
-| [giant-depth-2-1.ogg](giant/giant-depth-2-1.ogg)             | Stuck after pulling focus?                                                                                         | Hint line: Depth Perception, hint 2                  |    2.50 |
-| [giant-depth-2-2.ogg](giant/giant-depth-2-2.ogg)             | Every focus ring works both ways.                                                                                  | Hint line: Depth Perception, hint 2                  |    3.48 |
-| [giant-depth-2-3.ogg](giant/giant-depth-2-3.ogg)             | Step off it and back on to pull focus again.                                                                       | Hint line: Depth Perception, hint 2                  |    4.01 |
-| [giant-depth-3-1.ogg](giant/giant-depth-3-1.ogg)             | Pulling focus puts the scene back the way it was.                                                                  | Hint line: Depth Perception, hint 3                  |    3.48 |
-| [giant-depth-3-2.ogg](giant/giant-depth-3-2.ogg)             | Photons and bulbs come back, but your lenses stay in your pocket.                                                  | Hint line: Depth Perception, hint 3                  |    5.79 |
-| [giant-sleuth-intro.ogg](giant/giant-sleuth-intro.ogg)       | Hints for Final Curtain.                                                                                           | Hint line: Final Curtain, welcome                    |    2.86 |
-| [giant-sleuth-1-1.ogg](giant/giant-sleuth-1-1.ogg)           | Start at the box office, off the west side of the lobby.                                                           | Hint line: Final Curtain, hint 1                     |    4.63 |
-| [giant-sleuth-1-2.ogg](giant/giant-sleuth-1-2.ogg)           | There is a key on the floor and a seating chart on the desk.                                                       | Hint line: Final Curtain, hint 1                     |    4.63 |
-| [giant-sleuth-2-1.ogg](giant/giant-sleuth-2-1.ogg)           | Victor’s office is locked.                                                                                         | Hint line: Final Curtain, hint 2                     |    2.95 |
-| [giant-sleuth-2-2.ogg](giant/giant-sleuth-2-2.ogg)           | The key from the box office opens it, so walk into the door.                                                       | Hint line: Final Curtain, hint 2                     |    4.01 |
-| [giant-sleuth-3-1.ogg](giant/giant-sleuth-3-1.ogg)           | To get backstage, take the west aisle to the front.                                                                | Hint line: Final Curtain, hint 3                     |    4.55 |
-| [giant-sleuth-3-2.ogg](giant/giant-sleuth-3-2.ogg)           | Then go up through the pass door at stage left.                                                                    | Hint line: Final Curtain, hint 3                     |    3.57 |
-| [giant-brief-intro.ogg](giant/giant-brief-intro.ogg)         | Hints for Keep It Brief.                                                                                           | Hint line: Keep It Brief, welcome                    |    1.97 |
-| [giant-brief-1-1.ogg](giant/giant-brief-1-1.ogg)             | If THE END will not open, press F2.                                                                                | Hint line: Keep It Brief, hint 1                     |    4.46 |
-| [giant-brief-1-2.ogg](giant/giant-brief-1-2.ogg)             | It counts the words you carry, and every book has exactly one hundred.                                             | Hint line: Keep It Brief, hint 1                     |    5.52 |
-| [giant-brief-2-1.ogg](giant/giant-brief-2-1.ogg)             | THE END opened, but nothing happened?                                                                              | Hint line: Keep It Brief, hint 2                     |    3.66 |
-| [giant-brief-2-2.ogg](giant/giant-brief-2-2.ogg)             | Walk onto the open page, then onto the gold bookmark right behind it.                                              | Hint line: Keep It Brief, hint 2                     |    7.48 |
-| [giant-brief-3-1.ogg](giant/giant-brief-3-1.ogg)             | Brass bars on a door mean that wing belongs to a later chapter.                                                    | Hint line: Keep It Brief, hint 3                     |    5.43 |
-| [giant-brief-3-2.ogg](giant/giant-brief-3-2.ogg)             | Finish your chapter first, then visit the Reserve Stacks.                                                          | Hint line: Keep It Brief, hint 3                     |    4.46 |
-| [giant-maximus-intro.ogg](giant/giant-maximus-intro.ogg)     | Hints for Maximus, the Hundred Worlds.                                                                             | Hint line: Maximus, the Hundred Worlds, welcome      |    2.86 |
-| [giant-maximus-1-1.ogg](giant/giant-maximus-1-1.ogg)         | To leave the training deck, pay the credit door, ride the lift, and get through the clearance gate in the pod bay. | Hint line: Maximus, the Hundred Worlds, hint 1       |    7.83 |
-| [giant-maximus-1-2.ogg](giant/giant-maximus-1-2.ogg)         | Then walk into the airlock.                                                                                        | Hint line: Maximus, the Hundred Worlds, hint 1       |    2.06 |
-| [giant-maximus-2.ogg](giant/giant-maximus-2.ogg)             | To land on a planet, fly the pod into the middle of the planet on the sector chart.                                | Hint line: Maximus, the Hundred Worlds, hint 2       |    8.28 |
-| [giant-maximus-3-1.ogg](giant/giant-maximus-3-1.ogg)         | To get back to space, walk into the uplink beacon behind you where you landed.                                     | Hint line: Maximus, the Hundred Worlds, hint 3       |    6.06 |
-| [giant-maximus-3-2.ogg](giant/giant-maximus-3-2.ogg)         | On sea worlds, surface at the buoy.                                                                                | Hint line: Maximus, the Hundred Worlds, hint 3       |    3.30 |
-| [giant-logic-intro.ogg](giant/giant-logic-intro.ogg)         | Hints for Ohm Sweet Ohm.                                                                                           | Hint line: Ohm Sweet Ohm, welcome                    |    3.48 |
-| [giant-logic-1-1.ogg](giant/giant-logic-1-1.ogg)             | Bump a switch from below to turn it on.                                                                            | Hint line: Ohm Sweet Ohm, hint 1                     |    3.03 |
-| [giant-logic-1-2.ogg](giant/giant-logic-1-2.ogg)             | Current runs along the wire to the gate, so keep off the wire while it glows.                                      | Hint line: Ohm Sweet Ohm, hint 1                     |    5.08 |
-| [giant-logic-2-1.ogg](giant/giant-logic-2-1.ogg)             | A gate stays open once current has reached it.                                                                     | Hint line: Ohm Sweet Ohm, hint 2                     |    3.66 |
-| [giant-logic-2-2.ogg](giant/giant-logic-2-2.ogg)             | Turn the power off again, wait for the last spark to drain away, then walk through.                                | Hint line: Ohm Sweet Ohm, hint 2                     |    7.48 |
-| [giant-logic-3-1.ogg](giant/giant-logic-3-1.ogg)             | An arrow is a diode, and you can only go through it the way it points.                                             | Hint line: Ohm Sweet Ohm, hint 3                     |    5.61 |
-| [giant-logic-3-2.ogg](giant/giant-logic-3-2.ogg)             | Turn the switch on, wait for the gate to open, then turn the switch off again before you roll through.             | Hint line: Ohm Sweet Ohm, hint 3                     |    8.19 |
-| [giant-realm-intro.ogg](giant/giant-realm-intro.ogg)         | Hints for Quest for the Round Tuit.                                                                                | Hint line: Quest for the Round Tuit, welcome         |    2.77 |
-| [giant-realm-1-1.ogg](giant/giant-realm-1-1.ogg)             | Go first north up the road from Nowish to Laterburg.                                                               | Hint line: Quest for the Round Tuit, hint 1          |    3.75 |
-| [giant-realm-1-2.ogg](giant/giant-realm-1-2.ogg)             | Walk into the King on his throne to get the Royal Writ.                                                            | Hint line: Quest for the Round Tuit, hint 1          |    4.63 |
-| [giant-realm-2-1.ogg](giant/giant-realm-2-1.ogg)             | To talk to people, walk into them.                                                                                 | Hint line: Quest for the Round Tuit, hint 2          |    2.59 |
-| [giant-realm-2-2.ogg](giant/giant-realm-2-2.ogg)             | To buy things, walk into the counter once to pay, and again to take it.                                            | Hint line: Quest for the Round Tuit, hint 2          |    6.59 |
-| [giant-realm-3-1.ogg](giant/giant-realm-3-1.ogg)             | Out of gold?                                                                                                       | Hint line: Quest for the Round Tuit, hint 3          |    1.52 |
-| [giant-realm-3-2.ogg](giant/giant-realm-3-2.ogg)             | Foes drop gems, and the dungeons have chests.                                                                      | Hint line: Quest for the Round Tuit, hint 3          |    4.28 |
-| [giant-sandcast-intro.ogg](giant/giant-sandcast-intro.ogg)   | Hints for Sandcastle Knight.                                                                                       | Hint line: Sandcastle Knight, welcome                |    2.59 |
-| [giant-sandcast-1-1.ogg](giant/giant-sandcast-1-1.ogg)       | The shovel is beside Teddy’s toy chest in the southwest corner.                                                    | Hint line: Sandcastle Knight, hint 1                 |    5.35 |
-| [giant-sandcast-1-2.ogg](giant/giant-sandcast-1-2.ogg)       | Press G to pick it up.                                                                                             | Hint line: Sandcastle Knight, hint 1                 |    2.15 |
-| [giant-sandcast-2-1.ogg](giant/giant-sandcast-2-1.ogg)       | To get into Anthill Keep, dig through the ring of dunes with the shovel.                                           | Hint line: Sandcastle Knight, hint 2                 |    5.97 |
-| [giant-sandcast-2-2.ogg](giant/giant-sandcast-2-2.ogg)       | Two bites and a dune is gone.                                                                                      | Hint line: Sandcastle Knight, hint 2                 |    2.59 |
-| [giant-sandcast-3-1.ogg](giant/giant-sandcast-3-1.ogg)       | Gwinn will move for the tennis ball.                                                                               | Hint line: Sandcastle Knight, hint 3                 |    2.41 |
-| [giant-sandcast-3-2.ogg](giant/giant-sandcast-3-2.ogg)       | Walk toward her and press F, and she trots off happy to bury it.                                                   | Hint line: Sandcastle Knight, hint 3                 |    6.50 |
-| [giant-snowbound-intro.ogg](giant/giant-snowbound-intro.ogg) | Hints for Snowbound.                                                                                               | Hint line: Snowbound, welcome                        |    1.88 |
-| [giant-snowbound-1.ogg](giant/giant-snowbound-1.ogg)         | Press F2 to tip out the coffee can and see how much money you have.                                                | Hint line: Snowbound, hint 1                         |    5.79 |
-| [giant-snowbound-2-1.ogg](giant/giant-snowbound-2-1.ogg)     | Short at the register?                                                                                             | Hint line: Snowbound, hint 2                         |    2.95 |
-| [giant-snowbound-2-2.ogg](giant/giant-snowbound-2-2.ogg)     | Go back out to the mall lot.                                                                                       | Hint line: Snowbound, hint 2                         |    2.59 |
-| [giant-snowbound-2-3.ogg](giant/giant-snowbound-2-3.ogg)     | A squall buries it again every twenty seconds or so, and that means more scoops and more dollars.                  | Hint line: Snowbound, hint 2                         |    7.92 |
-| [giant-snowbound-3-1.ogg](giant/giant-snowbound-3-1.ogg)     | There is a five dollar tip in an envelope beside Mrs.                                                              | Hint line: Snowbound, hint 3                         |    4.55 |
-| [giant-snowbound-3-2.ogg](giant/giant-snowbound-3-2.ogg)     | Haines’ porch on Gale Street.                                                                                      | Hint line: Snowbound, hint 3                         |    2.50 |
-| [giant-teddy-intro.ogg](giant/giant-teddy-intro.ogg)         | Hints for Teddy’s Little Big Adventure.                                                                            | Hint line: Teddy’s Little Big Adventure, welcome     |    2.77 |
-| [giant-teddy-1-1.ogg](giant/giant-teddy-1-1.ogg)             | Found the costume piece?                                                                                           | Hint line: Teddy’s Little Big Adventure, hint 1      |    2.15 |
-| [giant-teddy-1-2.ogg](giant/giant-teddy-1-2.ogg)             | Bring it to Pockets at Doc Leo’s little red car at the end of the stop.                                            | Hint line: Teddy’s Little Big Adventure, hint 1      |    4.90 |
-| [giant-teddy-1-3.ogg](giant/giant-teddy-1-3.ogg)             | The door pops open.                                                                                                | Hint line: Teddy’s Little Big Adventure, hint 1      |    1.79 |
-| [giant-teddy-2-1.ogg](giant/giant-teddy-2-1.ogg)             | The floating balloon dogs are up high and never on the way.                                                        | Hint line: Teddy’s Little Big Adventure, hint 2      |    3.21 |
-| [giant-teddy-2-2.ogg](giant/giant-teddy-2-2.ogg)             | There are three in every stop, so take the detour.                                                                 | Hint line: Teddy’s Little Big Adventure, hint 2      |    3.48 |
-| [giant-teddy-3-1.ogg](giant/giant-teddy-3-1.ogg)             | Gwinn running laps with a green ball?                                                                              | Hint line: Teddy’s Little Big Adventure, hint 3      |    2.68 |
-| [giant-teddy-3-2.ogg](giant/giant-teddy-3-2.ogg)             | Face her and press Space as she zooms by.                                                                          | Hint line: Teddy’s Little Big Adventure, hint 3      |    4.46 |
-| [giant-teddy2-intro.ogg](giant/giant-teddy2-intro.ogg)       | Hints for Teddy’s Little Bigger Adventure.                                                                         | Hint line: Teddy’s Little Bigger Adventure, welcome  |    3.75 |
-| [giant-teddy2-1-1.ogg](giant/giant-teddy2-1-1.ogg)           | That faint wispy thing in the air is a scent.                                                                      | Hint line: Teddy’s Little Bigger Adventure, hint 1   |    4.19 |
-| [giant-teddy2-1-2.ogg](giant/giant-teddy2-1-2.ogg)           | Stand next to it and press S to sniff.                                                                             | Hint line: Teddy’s Little Bigger Adventure, hint 1   |    4.10 |
-| [giant-teddy2-2-1.ogg](giant/giant-teddy2-2-1.ogg)           | Found the thing Gwinn dropped?                                                                                     | Hint line: Teddy’s Little Bigger Adventure, hint 2   |    2.23 |
-| [giant-teddy2-2-2.ogg](giant/giant-teddy2-2-2.ogg)           | Bring it to Doc Leo at THE CHEZ at the end of the stop.                                                            | Hint line: Teddy’s Little Bigger Adventure, hint 2   |    4.19 |
-| [giant-teddy2-2-3.ogg](giant/giant-teddy2-2-3.ogg)           | Its door opens for it.                                                                                             | Hint line: Teddy’s Little Bigger Adventure, hint 2   |    2.50 |
-| [giant-teddy2-3-1.ogg](giant/giant-teddy2-3-1.ogg)           | Gwinn’s collar went down the laundry chute.                                                                        | Hint line: Teddy’s Little Bigger Adventure, hint 3   |    2.95 |
-| [giant-teddy2-3-2.ogg](giant/giant-teddy2-3-2.ogg)           | Drop through the hole in the laundry room floor, then sniff in the basement.                                       | Hint line: Teddy’s Little Bigger Adventure, hint 3   |    5.97 |
-| [giant-teddy3-intro.ogg](giant/giant-teddy3-intro.ogg)       | Hints for Teddy’s Little Biggest Adventure.                                                                        | Hint line: Teddy’s Little Biggest Adventure, welcome |    4.28 |
-| [giant-teddy3-1-1.ogg](giant/giant-teddy3-1-1.ogg)           | The card before each stop says who you are playing.                                                                | Hint line: Teddy’s Little Biggest Adventure, hint 1  |    3.48 |
-| [giant-teddy3-1-2.ogg](giant/giant-teddy3-1-2.ogg)           | Teddy runs the errands, and on the road you drive THE CHEZ.                                                        | Hint line: Teddy’s Little Biggest Adventure, hint 1  |    5.17 |
-| [giant-teddy3-2-1.ogg](giant/giant-teddy3-2-1.ogg)           | If a button does nothing, high five it from just beside it, facing it.                                             | Hint line: Teddy’s Little Biggest Adventure, hint 2  |    7.12 |
-| [giant-teddy3-2-2.ogg](giant/giant-teddy3-2-2.ogg)           | Then watch the spark run down the wire.                                                                            | Hint line: Teddy’s Little Biggest Adventure, hint 2  |    2.68 |
-| [giant-teddy3-3-1.ogg](giant/giant-teddy3-3-1.ogg)           | The keys are in the blue cabinet on the workbench.                                                                 | Hint line: Teddy’s Little Biggest Adventure, hint 3  |    3.03 |
-| [giant-teddy3-3-2.ogg](giant/giant-teddy3-3-2.ogg)           | Hop onto the bench and high five the button on the wall above it.                                                  | Hint line: Teddy’s Little Biggest Adventure, hint 3  |    4.90 |
-| [giant-tuneup-intro.ogg](giant/giant-tuneup-intro.ogg)       | Hints for Tune-Up.                                                                                                 | Hint line: Tune-Up, welcome                          |    1.88 |
-| [giant-tuneup-1-1.ogg](giant/giant-tuneup-1-1.ogg)           | Each door waits for something: a clamp, a pluck, enough notes, or every oiled Squeak.                              | Hint line: Tune-Up, hint 1                           |    7.92 |
-| [giant-tuneup-1-2.ogg](giant/giant-tuneup-1-2.ogg)           | Press F2 to see what you have.                                                                                     | Hint line: Tune-Up, hint 1                           |    2.95 |
-| [giant-tuneup-2-1.ogg](giant/giant-tuneup-2-1.ogg)           | To skip a cartoon, press a key.                                                                                    | Hint line: Tune-Up, hint 2                           |    3.83 |
-| [giant-tuneup-2-2.ogg](giant/giant-tuneup-2-2.ogg)           | The next key gets you to the level.                                                                                | Hint line: Tune-Up, hint 2                           |    2.23 |
-| [giant-tuneup-3-1.ogg](giant/giant-tuneup-3-1.ogg)           | If the crank will not turn, stand right under it and hold Space.                                                   | Hint line: Tune-Up, hint 3                           |    6.95 |
-| [giant-tuneup-3-2.ogg](giant/giant-tuneup-3-2.ogg)           | Eight notches fill the gauge.                                                                                      | Hint line: Tune-Up, hint 3                           |    2.23 |
-| [giant-blaster-intro.ogg](giant/giant-blaster-intro.ogg)     | Hints for Virus Blaster.                                                                                           | Hint line: Virus Blaster, welcome                    |    2.32 |
-| [giant-blaster-1-1.ogg](giant/giant-blaster-1-1.ogg)         | You are always shooting.                                                                                           | Hint line: Virus Blaster, hint 1                     |    2.15 |
-| [giant-blaster-1-2.ogg](giant/giant-blaster-1-2.ogg)         | The twin guns fire whenever the Blaster moves, so just steer under the virus.                                      | Hint line: Virus Blaster, hint 1                     |    6.50 |
-| [giant-blaster-2-1.ogg](giant/giant-blaster-2-1.ogg)         | The screen never scrolls backward.                                                                                 | Hint line: Virus Blaster, hint 2                     |    2.68 |
-| [giant-blaster-2-2.ogg](giant/giant-blaster-2-2.ogg)         | The arrow pointing back only brakes, so dodge sideways.                                                            | Hint line: Virus Blaster, hint 2                     |    3.66 |
-| [giant-blaster-3-1.ogg](giant/giant-blaster-3-1.ogg)         | Save the Nova Bombs for bosses, and fire from right under the target.                                              | Hint line: Virus Blaster, hint 3                     |    5.35 |
-| [giant-blaster-3-2.ogg](giant/giant-blaster-3-2.ogg)         | Press F2 to see your energy.                                                                                       | Hint line: Virus Blaster, hint 3                     |    2.77 |
-| [giant-year2000-intro.ogg](giant/giant-year2000-intro.ogg)   | Hints for In the Year 2000.                                                                                        | Hint line: In the Year 2000, welcome                 |    2.23 |
-| [giant-year2000-1-1.ogg](giant/giant-year2000-1-1.ogg)       | The Laser-Tag Zapper is in your own backyard, north of the garage wall.                                            | Hint line: In the Year 2000, hint 1                  |    6.23 |
-| [giant-year2000-1-2.ogg](giant/giant-year2000-1-2.ogg)       | The clicker on Grandpa’s key ring opens the gate first.                                                            | Hint line: In the Year 2000, hint 1                  |    4.10 |
-| [giant-year2000-2-1.ogg](giant/giant-year2000-2-1.ogg)       | Grandpa’s keys are in the hedge garden at the bottom left of the neighborhood.                                     | Hint line: In the Year 2000, hint 2                  |    5.97 |
-| [giant-year2000-2-2.ogg](giant/giant-year2000-2-2.ogg)       | A robo-mower guards them.                                                                                          | Hint line: In the Year 2000, hint 2                  |    2.50 |
-| [giant-year2000-3-1.ogg](giant/giant-year2000-3-1.ogg)       | The hoverboard kids zoom up and down the roads.                                                                    | Hint line: In the Year 2000, hint 3                  |    4.28 |
-| [giant-year2000-3-2.ogg](giant/giant-year2000-3-2.ogg)       | Look both ways, and cross behind them.                                                                             | Hint line: In the Year 2000, hint 3                  |    2.77 |
-| [tb-lead.ogg](giant/tb-lead.ogg)                             | Your parents' pretend phone bill is                                                                                | Hint line: spliced into the pretend bill             |    2.68 |
-| [tb-n0.ogg](giant/tb-n0.ogg)                                 | zero                                                                                                               | Hint line: spliced into the pretend bill             |    0.99 |
-| [tb-n1.ogg](giant/tb-n1.ogg)                                 | one                                                                                                                | Hint line: spliced into the pretend bill             |    0.99 |
-| [tb-n2.ogg](giant/tb-n2.ogg)                                 | two                                                                                                                | Hint line: spliced into the pretend bill             |    0.99 |
-| [tb-n3.ogg](giant/tb-n3.ogg)                                 | three                                                                                                              | Hint line: spliced into the pretend bill             |    0.99 |
-| [tb-n4.ogg](giant/tb-n4.ogg)                                 | four                                                                                                               | Hint line: spliced into the pretend bill             |    0.99 |
-| [tb-n5.ogg](giant/tb-n5.ogg)                                 | five                                                                                                               | Hint line: spliced into the pretend bill             |    1.17 |
-| [tb-n6.ogg](giant/tb-n6.ogg)                                 | six                                                                                                                | Hint line: spliced into the pretend bill             |    0.81 |
-| [tb-n7.ogg](giant/tb-n7.ogg)                                 | seven                                                                                                              | Hint line: spliced into the pretend bill             |    1.26 |
-| [tb-n8.ogg](giant/tb-n8.ogg)                                 | eight                                                                                                              | Hint line: spliced into the pretend bill             |    0.81 |
-| [tb-n9.ogg](giant/tb-n9.ogg)                                 | nine                                                                                                               | Hint line: spliced into the pretend bill             |    1.08 |
-| [tb-n10.ogg](giant/tb-n10.ogg)                               | ten                                                                                                                | Hint line: spliced into the pretend bill             |    0.81 |
-| [tb-n11.ogg](giant/tb-n11.ogg)                               | eleven                                                                                                             | Hint line: spliced into the pretend bill             |    1.17 |
-| [tb-n12.ogg](giant/tb-n12.ogg)                               | twelve                                                                                                             | Hint line: spliced into the pretend bill             |    1.08 |
-| [tb-n13.ogg](giant/tb-n13.ogg)                               | thirteen                                                                                                           | Hint line: spliced into the pretend bill             |    1.26 |
-| [tb-n14.ogg](giant/tb-n14.ogg)                               | fourteen                                                                                                           | Hint line: spliced into the pretend bill             |    1.17 |
-| [tb-n15.ogg](giant/tb-n15.ogg)                               | fifteen                                                                                                            | Hint line: spliced into the pretend bill             |    1.17 |
-| [tb-n16.ogg](giant/tb-n16.ogg)                               | sixteen                                                                                                            | Hint line: spliced into the pretend bill             |    1.43 |
-| [tb-n17.ogg](giant/tb-n17.ogg)                               | seventeen                                                                                                          | Hint line: spliced into the pretend bill             |    1.26 |
-| [tb-n18.ogg](giant/tb-n18.ogg)                               | eighteen                                                                                                           | Hint line: spliced into the pretend bill             |    1.26 |
-| [tb-n19.ogg](giant/tb-n19.ogg)                               | nineteen                                                                                                           | Hint line: spliced into the pretend bill             |    1.35 |
-| [tb-n20.ogg](giant/tb-n20.ogg)                               | twenty                                                                                                             | Hint line: spliced into the pretend bill             |    0.99 |
-| [tb-n21.ogg](giant/tb-n21.ogg)                               | twenty-one                                                                                                         | Hint line: spliced into the pretend bill             |    1.17 |
-| [tb-n22.ogg](giant/tb-n22.ogg)                               | twenty-two                                                                                                         | Hint line: spliced into the pretend bill             |    1.08 |
-| [tb-n23.ogg](giant/tb-n23.ogg)                               | twenty-three                                                                                                       | Hint line: spliced into the pretend bill             |    1.26 |
-| [tb-n24.ogg](giant/tb-n24.ogg)                               | twenty-four                                                                                                        | Hint line: spliced into the pretend bill             |    1.08 |
-| [tb-n25.ogg](giant/tb-n25.ogg)                               | twenty-five                                                                                                        | Hint line: spliced into the pretend bill             |    1.08 |
-| [tb-n26.ogg](giant/tb-n26.ogg)                               | twenty-six                                                                                                         | Hint line: spliced into the pretend bill             |    1.17 |
-| [tb-n27.ogg](giant/tb-n27.ogg)                               | twenty-seven                                                                                                       | Hint line: spliced into the pretend bill             |    1.35 |
-| [tb-n28.ogg](giant/tb-n28.ogg)                               | twenty-eight                                                                                                       | Hint line: spliced into the pretend bill             |    0.99 |
-| [tb-n29.ogg](giant/tb-n29.ogg)                               | twenty-nine                                                                                                        | Hint line: spliced into the pretend bill             |    1.17 |
-| [tb-n30.ogg](giant/tb-n30.ogg)                               | thirty                                                                                                             | Hint line: spliced into the pretend bill             |    0.99 |
-| [tb-n31.ogg](giant/tb-n31.ogg)                               | thirty-one                                                                                                         | Hint line: spliced into the pretend bill             |    1.17 |
-| [tb-n32.ogg](giant/tb-n32.ogg)                               | thirty-two                                                                                                         | Hint line: spliced into the pretend bill             |    1.08 |
-| [tb-n33.ogg](giant/tb-n33.ogg)                               | thirty-three                                                                                                       | Hint line: spliced into the pretend bill             |    1.17 |
-| [tb-n34.ogg](giant/tb-n34.ogg)                               | thirty-four                                                                                                        | Hint line: spliced into the pretend bill             |    1.08 |
-| [tb-n35.ogg](giant/tb-n35.ogg)                               | thirty-five                                                                                                        | Hint line: spliced into the pretend bill             |    1.17 |
-| [tb-n36.ogg](giant/tb-n36.ogg)                               | thirty-six                                                                                                         | Hint line: spliced into the pretend bill             |    1.08 |
-| [tb-n37.ogg](giant/tb-n37.ogg)                               | thirty-seven                                                                                                       | Hint line: spliced into the pretend bill             |    1.26 |
-| [tb-n38.ogg](giant/tb-n38.ogg)                               | thirty-eight                                                                                                       | Hint line: spliced into the pretend bill             |    1.17 |
-| [tb-n39.ogg](giant/tb-n39.ogg)                               | thirty-nine                                                                                                        | Hint line: spliced into the pretend bill             |    1.08 |
-| [tb-n40.ogg](giant/tb-n40.ogg)                               | forty                                                                                                              | Hint line: spliced into the pretend bill             |    0.99 |
-| [tb-n41.ogg](giant/tb-n41.ogg)                               | forty-one                                                                                                          | Hint line: spliced into the pretend bill             |    1.17 |
-| [tb-n42.ogg](giant/tb-n42.ogg)                               | forty-two                                                                                                          | Hint line: spliced into the pretend bill             |    1.08 |
-| [tb-n43.ogg](giant/tb-n43.ogg)                               | forty-three                                                                                                        | Hint line: spliced into the pretend bill             |    1.26 |
-| [tb-n44.ogg](giant/tb-n44.ogg)                               | forty-four                                                                                                         | Hint line: spliced into the pretend bill             |    1.08 |
-| [tb-n45.ogg](giant/tb-n45.ogg)                               | forty-five                                                                                                         | Hint line: spliced into the pretend bill             |    1.08 |
-| [tb-n46.ogg](giant/tb-n46.ogg)                               | forty-six                                                                                                          | Hint line: spliced into the pretend bill             |    1.08 |
-| [tb-n47.ogg](giant/tb-n47.ogg)                               | forty-seven                                                                                                        | Hint line: spliced into the pretend bill             |    1.26 |
-| [tb-n48.ogg](giant/tb-n48.ogg)                               | forty-eight                                                                                                        | Hint line: spliced into the pretend bill             |    1.08 |
-| [tb-n49.ogg](giant/tb-n49.ogg)                               | forty-nine                                                                                                         | Hint line: spliced into the pretend bill             |    1.35 |
-| [tb-n50.ogg](giant/tb-n50.ogg)                               | fifty                                                                                                              | Hint line: spliced into the pretend bill             |    0.99 |
-| [tb-n51.ogg](giant/tb-n51.ogg)                               | fifty-one                                                                                                          | Hint line: spliced into the pretend bill             |    1.17 |
-| [tb-n52.ogg](giant/tb-n52.ogg)                               | fifty-two                                                                                                          | Hint line: spliced into the pretend bill             |    0.90 |
-| [tb-n53.ogg](giant/tb-n53.ogg)                               | fifty-three                                                                                                        | Hint line: spliced into the pretend bill             |    1.26 |
-| [tb-n54.ogg](giant/tb-n54.ogg)                               | fifty-four                                                                                                         | Hint line: spliced into the pretend bill             |    1.08 |
-| [tb-n55.ogg](giant/tb-n55.ogg)                               | fifty-five                                                                                                         | Hint line: spliced into the pretend bill             |    1.08 |
-| [tb-n56.ogg](giant/tb-n56.ogg)                               | fifty-six                                                                                                          | Hint line: spliced into the pretend bill             |    1.26 |
-| [tb-n57.ogg](giant/tb-n57.ogg)                               | fifty-seven                                                                                                        | Hint line: spliced into the pretend bill             |    1.35 |
-| [tb-n58.ogg](giant/tb-n58.ogg)                               | fifty-eight                                                                                                        | Hint line: spliced into the pretend bill             |    1.08 |
-| [tb-n59.ogg](giant/tb-n59.ogg)                               | fifty-nine                                                                                                         | Hint line: spliced into the pretend bill             |    1.17 |
-| [tb-n60.ogg](giant/tb-n60.ogg)                               | sixty                                                                                                              | Hint line: spliced into the pretend bill             |    1.26 |
-| [tb-n61.ogg](giant/tb-n61.ogg)                               | sixty-one                                                                                                          | Hint line: spliced into the pretend bill             |    1.35 |
-| [tb-n62.ogg](giant/tb-n62.ogg)                               | sixty-two                                                                                                          | Hint line: spliced into the pretend bill             |    1.26 |
-| [tb-n63.ogg](giant/tb-n63.ogg)                               | sixty-three                                                                                                        | Hint line: spliced into the pretend bill             |    1.70 |
-| [tb-n64.ogg](giant/tb-n64.ogg)                               | sixty-four                                                                                                         | Hint line: spliced into the pretend bill             |    1.35 |
-| [tb-n65.ogg](giant/tb-n65.ogg)                               | sixty-five                                                                                                         | Hint line: spliced into the pretend bill             |    1.08 |
-| [tb-n66.ogg](giant/tb-n66.ogg)                               | sixty-six                                                                                                          | Hint line: spliced into the pretend bill             |    2.23 |
-| [tb-n67.ogg](giant/tb-n67.ogg)                               | sixty-seven                                                                                                        | Hint line: spliced into the pretend bill             |    1.79 |
-| [tb-n68.ogg](giant/tb-n68.ogg)                               | sixty-eight                                                                                                        | Hint line: spliced into the pretend bill             |    1.43 |
-| [tb-n69.ogg](giant/tb-n69.ogg)                               | sixty-nine                                                                                                         | Hint line: spliced into the pretend bill             |    1.35 |
-| [tb-n70.ogg](giant/tb-n70.ogg)                               | seventy                                                                                                            | Hint line: spliced into the pretend bill             |    0.99 |
-| [tb-n71.ogg](giant/tb-n71.ogg)                               | seventy-one                                                                                                        | Hint line: spliced into the pretend bill             |    1.35 |
-| [tb-n72.ogg](giant/tb-n72.ogg)                               | seventy-two                                                                                                        | Hint line: spliced into the pretend bill             |    1.35 |
-| [tb-n73.ogg](giant/tb-n73.ogg)                               | seventy-three                                                                                                      | Hint line: spliced into the pretend bill             |    1.61 |
-| [tb-n74.ogg](giant/tb-n74.ogg)                               | seventy-four                                                                                                       | Hint line: spliced into the pretend bill             |    1.08 |
-| [tb-n75.ogg](giant/tb-n75.ogg)                               | seventy-five                                                                                                       | Hint line: spliced into the pretend bill             |    1.43 |
-| [tb-n76.ogg](giant/tb-n76.ogg)                               | seventy-six                                                                                                        | Hint line: spliced into the pretend bill             |    1.52 |
-| [tb-n77.ogg](giant/tb-n77.ogg)                               | seventy-seven                                                                                                      | Hint line: spliced into the pretend bill             |    1.26 |
-| [tb-n78.ogg](giant/tb-n78.ogg)                               | seventy-eight                                                                                                      | Hint line: spliced into the pretend bill             |    1.26 |
-| [tb-n79.ogg](giant/tb-n79.ogg)                               | seventy-nine                                                                                                       | Hint line: spliced into the pretend bill             |    1.26 |
-| [tb-n80.ogg](giant/tb-n80.ogg)                               | eighty                                                                                                             | Hint line: spliced into the pretend bill             |    0.99 |
-| [tb-n81.ogg](giant/tb-n81.ogg)                               | eighty-one                                                                                                         | Hint line: spliced into the pretend bill             |    1.17 |
-| [tb-n82.ogg](giant/tb-n82.ogg)                               | eighty-two                                                                                                         | Hint line: spliced into the pretend bill             |    1.17 |
-| [tb-n83.ogg](giant/tb-n83.ogg)                               | eighty-three                                                                                                       | Hint line: spliced into the pretend bill             |    1.35 |
-| [tb-n84.ogg](giant/tb-n84.ogg)                               | eighty-four                                                                                                        | Hint line: spliced into the pretend bill             |    1.17 |
-| [tb-n85.ogg](giant/tb-n85.ogg)                               | eighty-five                                                                                                        | Hint line: spliced into the pretend bill             |    1.08 |
-| [tb-n86.ogg](giant/tb-n86.ogg)                               | eighty-six                                                                                                         | Hint line: spliced into the pretend bill             |    1.35 |
-| [tb-n87.ogg](giant/tb-n87.ogg)                               | eighty-seven                                                                                                       | Hint line: spliced into the pretend bill             |    1.35 |
-| [tb-n88.ogg](giant/tb-n88.ogg)                               | eighty-eight                                                                                                       | Hint line: spliced into the pretend bill             |    1.17 |
-| [tb-n89.ogg](giant/tb-n89.ogg)                               | eighty-nine                                                                                                        | Hint line: spliced into the pretend bill             |    1.17 |
-| [tb-n90.ogg](giant/tb-n90.ogg)                               | ninety                                                                                                             | Hint line: spliced into the pretend bill             |    1.26 |
-| [tb-n91.ogg](giant/tb-n91.ogg)                               | ninety-one                                                                                                         | Hint line: spliced into the pretend bill             |    1.35 |
-| [tb-n92.ogg](giant/tb-n92.ogg)                               | ninety-two                                                                                                         | Hint line: spliced into the pretend bill             |    1.17 |
-| [tb-n93.ogg](giant/tb-n93.ogg)                               | ninety-three                                                                                                       | Hint line: spliced into the pretend bill             |    1.26 |
-| [tb-n94.ogg](giant/tb-n94.ogg)                               | ninety-four                                                                                                        | Hint line: spliced into the pretend bill             |    1.35 |
-| [tb-n95.ogg](giant/tb-n95.ogg)                               | ninety-five                                                                                                        | Hint line: spliced into the pretend bill             |    1.17 |
-| [tb-n96.ogg](giant/tb-n96.ogg)                               | ninety-six                                                                                                         | Hint line: spliced into the pretend bill             |    1.26 |
-| [tb-n97.ogg](giant/tb-n97.ogg)                               | ninety-seven                                                                                                       | Hint line: spliced into the pretend bill             |    1.26 |
-| [tb-n98.ogg](giant/tb-n98.ogg)                               | ninety-eight                                                                                                       | Hint line: spliced into the pretend bill             |    1.17 |
-| [tb-n99.ogg](giant/tb-n99.ogg)                               | ninety-nine                                                                                                        | Hint line: spliced into the pretend bill             |    1.17 |
-| [tb-dollar.ogg](giant/tb-dollar.ogg)                         | dollar                                                                                                             | Hint line: spliced into the pretend bill             |    1.08 |
-| [tb-dollars.ogg](giant/tb-dollars.ogg)                       | dollars                                                                                                            | Hint line: spliced into the pretend bill             |    1.17 |
-| [tb-and.ogg](giant/tb-and.ogg)                               | and                                                                                                                | Hint line: spliced into the pretend bill             |    1.08 |
-| [tb-cent.ogg](giant/tb-cent.ogg)                             | cent                                                                                                               | Hint line: spliced into the pretend bill             |    1.26 |
-| [tb-cents.ogg](giant/tb-cents.ogg)                           | cents                                                                                                              | Hint line: spliced into the pretend bill             |    0.81 |
+| Clip | Says | Where | Seconds |
+| --- | --- | --- | ---: |
+| [giant-hello-1.ogg](giant/giant-hello-1.ogg) | Hello, and thank you for calling Teddy’s Hint Kennel! | Hint line: answers | 4.46 |
+| [giant-hello-2.ogg](giant/giant-hello-2.ogg) | I am the Hint Giant, and I talk nice and slow so nobody misses a thing. | Hint line: answers | 6.32 |
+| [giant-away-1.ogg](giant/giant-away-1.ogg) | Our live game counselors are not available at this time. | Hint line: no live counselors | 4.01 |
+| [giant-away-2.ogg](giant/giant-away-2.ogg) | Please use our automated hint system, which is open all day and all night. | Hint line: no live counselors | 5.17 |
+| [giant-rate-1.ogg](giant/giant-rate-1.ogg) | This game charges a fictional $1.99 per minute, never real money. | Hint line: the rate | 8.63 |
+| [giant-rate-2.ogg](giant/giant-rate-2.ogg) | Each minute is billed in full the moment it begins. | Hint line: the rate | 4.81 |
+| [giant-rate-3.ogg](giant/giant-rate-3.ogg) | Press 1 to start the meter, or 0 to leave free. | Hint line: the rate | 4.81 |
+| [giant-bill-tail-1.ogg](giant/giant-bill-tail-1.ogg) | Gwinn has offered to pay in lint. | Hint line: press pound | 2.41 |
+| [giant-bill-tail-2.ogg](giant/giant-bill-tail-2.ogg) | The telephone company is considering it. | Hint line: press pound | 3.39 |
+| [giant-bad-key-1.ogg](giant/giant-bad-key-1.ogg) | I do not know that button yet. | Hint line: a wrong key | 3.30 |
+| [giant-bad-key-2.ogg](giant/giant-bad-key-2.ogg) | Please try again. | Hint line: a wrong key | 1.88 |
+| [giant-bye-1.ogg](giant/giant-bye-1.ogg) | Thank you for calling. | Hint line: press 0 at the game menu | 1.70 |
+| [giant-bye-2.ogg](giant/giant-bye-2.ogg) | Come back when you are stuck again. | Hint line: press 0 at the game menu | 2.15 |
+| [giant-bye-3.ogg](giant/giant-bye-3.ogg) | Goodbye! | Hint line: press 0 at the game menu | 0.90 |
+| [giant-long-break-1.ogg](giant/giant-long-break-1.ogg) | Are you still there? | Hint line: nobody pressed anything | 2.41 |
+| [giant-long-break-2.ogg](giant/giant-long-break-2.ogg) | I will hang up now. | Hint line: nobody pressed anything | 1.79 |
+| [giant-next.ogg](giant/giant-next.ogg) | Press 1 for the next hint, 2 for the game menu, or 0 to hear it again. | Hint line: after each hint | 4.99 |
+| [giant-last-1.ogg](giant/giant-last-1.ogg) | That was the last hint. | Hint line: after the last hint | 1.61 |
+| [giant-last-2.ogg](giant/giant-last-2.ogg) | Press 2 for the game menu, or 0 to hear it again. | Hint line: after the last hint | 4.55 |
+| [giant-menu-1-1.ogg](giant/giant-menu-1-1.ogg) | For Depth Perception, press 1. | Hint line: game menu, page 1 | 2.41 |
+| [giant-menu-1-2.ogg](giant/giant-menu-1-2.ogg) | For Final Curtain, press 2. | Hint line: game menu, page 1 | 2.50 |
+| [giant-menu-1-3.ogg](giant/giant-menu-1-3.ogg) | For Keep It Brief, press 3. | Hint line: game menu, page 1 | 3.83 |
+| [giant-menu-1-4.ogg](giant/giant-menu-1-4.ogg) | For Maximus, the Hundred Worlds, press 4. | Hint line: game menu, page 1 | 4.19 |
+| [giant-menu-1-5.ogg](giant/giant-menu-1-5.ogg) | For Ohm Sweet Ohm, press 5. | Hint line: game menu, page 1 | 3.21 |
+| [giant-menu-1-6.ogg](giant/giant-menu-1-6.ogg) | For Quest for the Round Tuit, press 6. | Hint line: game menu, page 1 | 3.30 |
+| [giant-menu-1-7.ogg](giant/giant-menu-1-7.ogg) | For Sandcastle Knight, press 7. | Hint line: game menu, page 1 | 2.77 |
+| [giant-menu-1-8.ogg](giant/giant-menu-1-8.ogg) | For Snowbound, press 8. | Hint line: game menu, page 1 | 2.77 |
+| [giant-menu-1-9.ogg](giant/giant-menu-1-9.ogg) | For more games, press 9. | Hint line: game menu, page 1 | 2.32 |
+| [giant-menu-1-10.ogg](giant/giant-menu-1-10.ogg) | For my pretend phone bill, press pound. | Hint line: game menu, page 1 | 3.66 |
+| [giant-menu-1-11.ogg](giant/giant-menu-1-11.ogg) | To hang up, press 0. | Hint line: game menu, page 1 | 3.12 |
+| [giant-menu-2-1.ogg](giant/giant-menu-2-1.ogg) | For Teddy’s Little Big Adventure, press 1. | Hint line: game menu, page 2 | 3.57 |
+| [giant-menu-2-2.ogg](giant/giant-menu-2-2.ogg) | For Teddy’s Little Bigger Adventure, press 2. | Hint line: game menu, page 2 | 3.21 |
+| [giant-menu-2-3.ogg](giant/giant-menu-2-3.ogg) | For Teddy’s Little Biggest Adventure, press 3. | Hint line: game menu, page 2 | 3.92 |
+| [giant-menu-2-4.ogg](giant/giant-menu-2-4.ogg) | For Tune-Up, press 4. | Hint line: game menu, page 2 | 3.30 |
+| [giant-menu-2-5.ogg](giant/giant-menu-2-5.ogg) | For Virus Blaster, press 5. | Hint line: game menu, page 2 | 2.59 |
+| [giant-menu-2-6.ogg](giant/giant-menu-2-6.ogg) | For In the Year 2000, press 6. | Hint line: game menu, page 2 | 3.12 |
+| [giant-menu-2-7.ogg](giant/giant-menu-2-7.ogg) | To go back to the first games, press 9. | Hint line: game menu, page 2 | 3.30 |
+| [giant-depth-intro.ogg](giant/giant-depth-intro.ogg) | Hints for Depth Perception. | Hint line: Depth Perception, welcome | 3.03 |
+| [giant-depth-1-1.ogg](giant/giant-depth-1-1.ogg) | Amber blocks are the near plane. | Hint line: Depth Perception, hint 1 | 2.77 |
+| [giant-depth-1-2.ogg](giant/giant-depth-1-2.ogg) | Roll onto a focus ring with a cyan lens, and the far plane comes into focus. | Hint line: Depth Perception, hint 1 | 9.43 |
+| [giant-depth-2-1.ogg](giant/giant-depth-2-1.ogg) | Stuck after pulling focus? | Hint line: Depth Perception, hint 2 | 2.50 |
+| [giant-depth-2-2.ogg](giant/giant-depth-2-2.ogg) | Every focus ring works both ways. | Hint line: Depth Perception, hint 2 | 3.48 |
+| [giant-depth-2-3.ogg](giant/giant-depth-2-3.ogg) | Step off it and back on to pull focus again. | Hint line: Depth Perception, hint 2 | 4.01 |
+| [giant-depth-3-1.ogg](giant/giant-depth-3-1.ogg) | Pulling focus puts the scene back the way it was. | Hint line: Depth Perception, hint 3 | 3.48 |
+| [giant-depth-3-2.ogg](giant/giant-depth-3-2.ogg) | Photons and bulbs come back, but your lenses stay in your pocket. | Hint line: Depth Perception, hint 3 | 5.79 |
+| [giant-sleuth-intro.ogg](giant/giant-sleuth-intro.ogg) | Hints for Final Curtain. | Hint line: Final Curtain, welcome | 2.86 |
+| [giant-sleuth-1-1.ogg](giant/giant-sleuth-1-1.ogg) | Start at the box office, off the west side of the lobby. | Hint line: Final Curtain, hint 1 | 4.63 |
+| [giant-sleuth-1-2.ogg](giant/giant-sleuth-1-2.ogg) | There is a key on the floor and a seating chart on the desk. | Hint line: Final Curtain, hint 1 | 4.63 |
+| [giant-sleuth-2-1.ogg](giant/giant-sleuth-2-1.ogg) | Victor’s office is locked. | Hint line: Final Curtain, hint 2 | 2.95 |
+| [giant-sleuth-2-2.ogg](giant/giant-sleuth-2-2.ogg) | The key from the box office opens it, so walk into the door. | Hint line: Final Curtain, hint 2 | 4.01 |
+| [giant-sleuth-3-1.ogg](giant/giant-sleuth-3-1.ogg) | To get backstage, take the west aisle to the front. | Hint line: Final Curtain, hint 3 | 4.55 |
+| [giant-sleuth-3-2.ogg](giant/giant-sleuth-3-2.ogg) | Then go up through the pass door at stage left. | Hint line: Final Curtain, hint 3 | 3.57 |
+| [giant-brief-intro.ogg](giant/giant-brief-intro.ogg) | Hints for Keep It Brief. | Hint line: Keep It Brief, welcome | 1.97 |
+| [giant-brief-1-1.ogg](giant/giant-brief-1-1.ogg) | If THE END will not open, press F2. | Hint line: Keep It Brief, hint 1 | 4.46 |
+| [giant-brief-1-2.ogg](giant/giant-brief-1-2.ogg) | It counts the words you carry, and every book has exactly one hundred. | Hint line: Keep It Brief, hint 1 | 5.52 |
+| [giant-brief-2-1.ogg](giant/giant-brief-2-1.ogg) | THE END opened, but nothing happened? | Hint line: Keep It Brief, hint 2 | 3.66 |
+| [giant-brief-2-2.ogg](giant/giant-brief-2-2.ogg) | Walk onto the open page, then onto the gold bookmark right behind it. | Hint line: Keep It Brief, hint 2 | 7.48 |
+| [giant-brief-3-1.ogg](giant/giant-brief-3-1.ogg) | Brass bars on a door mean that wing belongs to a later chapter. | Hint line: Keep It Brief, hint 3 | 5.43 |
+| [giant-brief-3-2.ogg](giant/giant-brief-3-2.ogg) | Finish your chapter first, then visit the Reserve Stacks. | Hint line: Keep It Brief, hint 3 | 4.46 |
+| [giant-maximus-intro.ogg](giant/giant-maximus-intro.ogg) | Hints for Maximus, the Hundred Worlds. | Hint line: Maximus, the Hundred Worlds, welcome | 2.86 |
+| [giant-maximus-1-1.ogg](giant/giant-maximus-1-1.ogg) | To leave the training deck, pay the credit door, ride the lift, and get through the clearance gate in the pod bay. | Hint line: Maximus, the Hundred Worlds, hint 1 | 7.83 |
+| [giant-maximus-1-2.ogg](giant/giant-maximus-1-2.ogg) | Then walk into the airlock. | Hint line: Maximus, the Hundred Worlds, hint 1 | 2.06 |
+| [giant-maximus-2.ogg](giant/giant-maximus-2.ogg) | To land on a planet, fly the pod into the middle of the planet on the sector chart. | Hint line: Maximus, the Hundred Worlds, hint 2 | 8.28 |
+| [giant-maximus-3-1.ogg](giant/giant-maximus-3-1.ogg) | To get back to space, walk into the uplink beacon behind you where you landed. | Hint line: Maximus, the Hundred Worlds, hint 3 | 6.06 |
+| [giant-maximus-3-2.ogg](giant/giant-maximus-3-2.ogg) | On sea worlds, surface at the buoy. | Hint line: Maximus, the Hundred Worlds, hint 3 | 3.30 |
+| [giant-logic-intro.ogg](giant/giant-logic-intro.ogg) | Hints for Ohm Sweet Ohm. | Hint line: Ohm Sweet Ohm, welcome | 3.48 |
+| [giant-logic-1-1.ogg](giant/giant-logic-1-1.ogg) | Bump a switch from below to turn it on. | Hint line: Ohm Sweet Ohm, hint 1 | 3.03 |
+| [giant-logic-1-2.ogg](giant/giant-logic-1-2.ogg) | Current runs along the wire to the gate, so keep off the wire while it glows. | Hint line: Ohm Sweet Ohm, hint 1 | 5.08 |
+| [giant-logic-2-1.ogg](giant/giant-logic-2-1.ogg) | A gate stays open once current has reached it. | Hint line: Ohm Sweet Ohm, hint 2 | 3.66 |
+| [giant-logic-2-2.ogg](giant/giant-logic-2-2.ogg) | Turn the power off again, wait for the last spark to drain away, then walk through. | Hint line: Ohm Sweet Ohm, hint 2 | 7.48 |
+| [giant-logic-3-1.ogg](giant/giant-logic-3-1.ogg) | An arrow is a diode, and you can only go through it the way it points. | Hint line: Ohm Sweet Ohm, hint 3 | 5.61 |
+| [giant-logic-3-2.ogg](giant/giant-logic-3-2.ogg) | Turn the switch on, wait for the gate to open, then turn the switch off again before you roll through. | Hint line: Ohm Sweet Ohm, hint 3 | 8.19 |
+| [giant-realm-intro.ogg](giant/giant-realm-intro.ogg) | Hints for Quest for the Round Tuit. | Hint line: Quest for the Round Tuit, welcome | 3.57 |
+| [giant-realm-1-1.ogg](giant/giant-realm-1-1.ogg) | Go first north up the road from Nowish to Laterburg. | Hint line: Quest for the Round Tuit, hint 1 | 3.75 |
+| [giant-realm-1-2.ogg](giant/giant-realm-1-2.ogg) | Walk into the King on his throne to get the Royal Writ. | Hint line: Quest for the Round Tuit, hint 1 | 4.63 |
+| [giant-realm-2-1.ogg](giant/giant-realm-2-1.ogg) | To talk to people, walk into them. | Hint line: Quest for the Round Tuit, hint 2 | 2.59 |
+| [giant-realm-2-2.ogg](giant/giant-realm-2-2.ogg) | To buy things, walk into the counter once to pay, and again to take it. | Hint line: Quest for the Round Tuit, hint 2 | 6.59 |
+| [giant-realm-3-1.ogg](giant/giant-realm-3-1.ogg) | Out of gold? | Hint line: Quest for the Round Tuit, hint 3 | 1.52 |
+| [giant-realm-3-2.ogg](giant/giant-realm-3-2.ogg) | Foes drop gems, and the dungeons have chests. | Hint line: Quest for the Round Tuit, hint 3 | 4.28 |
+| [giant-sandcast-intro.ogg](giant/giant-sandcast-intro.ogg) | Hints for Sandcastle Knight. | Hint line: Sandcastle Knight, welcome | 2.59 |
+| [giant-sandcast-1-1.ogg](giant/giant-sandcast-1-1.ogg) | The shovel is beside Teddy’s toy chest in the southwest corner. | Hint line: Sandcastle Knight, hint 1 | 5.35 |
+| [giant-sandcast-1-2.ogg](giant/giant-sandcast-1-2.ogg) | Press G to pick it up. | Hint line: Sandcastle Knight, hint 1 | 2.15 |
+| [giant-sandcast-2-1.ogg](giant/giant-sandcast-2-1.ogg) | To get into Anthill Keep, dig through the ring of dunes with the shovel. | Hint line: Sandcastle Knight, hint 2 | 5.79 |
+| [giant-sandcast-2-2.ogg](giant/giant-sandcast-2-2.ogg) | Two bites and a dune is gone. | Hint line: Sandcastle Knight, hint 2 | 2.59 |
+| [giant-sandcast-3-1.ogg](giant/giant-sandcast-3-1.ogg) | Gwinn will move for the tennis ball. | Hint line: Sandcastle Knight, hint 3 | 4.10 |
+| [giant-sandcast-3-2.ogg](giant/giant-sandcast-3-2.ogg) | Walk toward her and press F, and she trots off happy to bury it. | Hint line: Sandcastle Knight, hint 3 | 6.50 |
+| [giant-snowbound-intro.ogg](giant/giant-snowbound-intro.ogg) | Hints for Snowbound. | Hint line: Snowbound, welcome | 1.88 |
+| [giant-snowbound-1.ogg](giant/giant-snowbound-1.ogg) | Press F2 to tip out the coffee can and see how much money you have. | Hint line: Snowbound, hint 1 | 5.79 |
+| [giant-snowbound-2-1.ogg](giant/giant-snowbound-2-1.ogg) | Short at the register? | Hint line: Snowbound, hint 2 | 2.95 |
+| [giant-snowbound-2-2.ogg](giant/giant-snowbound-2-2.ogg) | Go back out to the mall lot. | Hint line: Snowbound, hint 2 | 2.59 |
+| [giant-snowbound-2-3.ogg](giant/giant-snowbound-2-3.ogg) | A squall buries it again every twenty seconds or so, and that means more scoops and more dollars. | Hint line: Snowbound, hint 2 | 7.92 |
+| [giant-snowbound-3-1.ogg](giant/giant-snowbound-3-1.ogg) | There is a five dollar tip in an envelope beside Mrs. | Hint line: Snowbound, hint 3 | 4.55 |
+| [giant-snowbound-3-2.ogg](giant/giant-snowbound-3-2.ogg) | Haines’ porch on Gale Street. | Hint line: Snowbound, hint 3 | 2.50 |
+| [giant-teddy-intro.ogg](giant/giant-teddy-intro.ogg) | Hints for Teddy’s Little Big Adventure. | Hint line: Teddy’s Little Big Adventure, welcome | 2.77 |
+| [giant-teddy-1-1.ogg](giant/giant-teddy-1-1.ogg) | Found the costume piece? | Hint line: Teddy’s Little Big Adventure, hint 1 | 2.15 |
+| [giant-teddy-1-2.ogg](giant/giant-teddy-1-2.ogg) | Bring it to Pockets at Doc Leo’s little red car at the end of the stop. | Hint line: Teddy’s Little Big Adventure, hint 1 | 4.90 |
+| [giant-teddy-1-3.ogg](giant/giant-teddy-1-3.ogg) | The door pops open. | Hint line: Teddy’s Little Big Adventure, hint 1 | 1.79 |
+| [giant-teddy-2-1.ogg](giant/giant-teddy-2-1.ogg) | The floating balloon dogs are up high and never on the way. | Hint line: Teddy’s Little Big Adventure, hint 2 | 3.21 |
+| [giant-teddy-2-2.ogg](giant/giant-teddy-2-2.ogg) | There are three in every stop, so take the detour. | Hint line: Teddy’s Little Big Adventure, hint 2 | 3.48 |
+| [giant-teddy-3-1.ogg](giant/giant-teddy-3-1.ogg) | Gwinn running laps with a green ball? | Hint line: Teddy’s Little Big Adventure, hint 3 | 2.50 |
+| [giant-teddy-3-2.ogg](giant/giant-teddy-3-2.ogg) | Face her and press Space as she zooms by. | Hint line: Teddy’s Little Big Adventure, hint 3 | 4.46 |
+| [giant-teddy2-intro.ogg](giant/giant-teddy2-intro.ogg) | Hints for Teddy’s Little Bigger Adventure. | Hint line: Teddy’s Little Bigger Adventure, welcome | 3.75 |
+| [giant-teddy2-1-1.ogg](giant/giant-teddy2-1-1.ogg) | That faint wispy thing in the air is a scent. | Hint line: Teddy’s Little Bigger Adventure, hint 1 | 4.19 |
+| [giant-teddy2-1-2.ogg](giant/giant-teddy2-1-2.ogg) | Stand next to it and press S to sniff. | Hint line: Teddy’s Little Bigger Adventure, hint 1 | 4.10 |
+| [giant-teddy2-2-1.ogg](giant/giant-teddy2-2-1.ogg) | Found the thing Gwinn dropped? | Hint line: Teddy’s Little Bigger Adventure, hint 2 | 2.15 |
+| [giant-teddy2-2-2.ogg](giant/giant-teddy2-2-2.ogg) | Bring it to Doc Leo at THE CHEZ at the end of the stop. | Hint line: Teddy’s Little Bigger Adventure, hint 2 | 3.92 |
+| [giant-teddy2-2-3.ogg](giant/giant-teddy2-2-3.ogg) | Its door opens for it. | Hint line: Teddy’s Little Bigger Adventure, hint 2 | 2.50 |
+| [giant-teddy2-3-1.ogg](giant/giant-teddy2-3-1.ogg) | Gwinn’s collar went down the laundry chute. | Hint line: Teddy’s Little Bigger Adventure, hint 3 | 2.59 |
+| [giant-teddy2-3-2.ogg](giant/giant-teddy2-3-2.ogg) | Drop through the hole in the laundry room floor, then sniff in the basement. | Hint line: Teddy’s Little Bigger Adventure, hint 3 | 5.97 |
+| [giant-teddy3-intro.ogg](giant/giant-teddy3-intro.ogg) | Hints for Teddy’s Little Biggest Adventure. | Hint line: Teddy’s Little Biggest Adventure, welcome | 4.28 |
+| [giant-teddy3-1-1.ogg](giant/giant-teddy3-1-1.ogg) | The card before each stop says who you are playing. | Hint line: Teddy’s Little Biggest Adventure, hint 1 | 3.48 |
+| [giant-teddy3-1-2.ogg](giant/giant-teddy3-1-2.ogg) | Teddy runs the errands, and on the road you drive THE CHEZ. | Hint line: Teddy’s Little Biggest Adventure, hint 1 | 4.81 |
+| [giant-teddy3-2-1.ogg](giant/giant-teddy3-2-1.ogg) | If a button does nothing, high five it from just beside it, facing it. | Hint line: Teddy’s Little Biggest Adventure, hint 2 | 7.12 |
+| [giant-teddy3-2-2.ogg](giant/giant-teddy3-2-2.ogg) | Then watch the spark run down the wire. | Hint line: Teddy’s Little Biggest Adventure, hint 2 | 2.68 |
+| [giant-teddy3-3-1.ogg](giant/giant-teddy3-3-1.ogg) | The keys are in the blue cabinet on the workbench. | Hint line: Teddy’s Little Biggest Adventure, hint 3 | 3.03 |
+| [giant-teddy3-3-2.ogg](giant/giant-teddy3-3-2.ogg) | Hop onto the bench and high five the button on the wall above it. | Hint line: Teddy’s Little Biggest Adventure, hint 3 | 4.90 |
+| [giant-tuneup-intro.ogg](giant/giant-tuneup-intro.ogg) | Hints for Tune-Up. | Hint line: Tune-Up, welcome | 1.88 |
+| [giant-tuneup-1-1.ogg](giant/giant-tuneup-1-1.ogg) | Each door waits for something: a clamp, a pluck, enough notes, or every oiled Squeak. | Hint line: Tune-Up, hint 1 | 5.97 |
+| [giant-tuneup-1-2.ogg](giant/giant-tuneup-1-2.ogg) | Press F2 to see what you have. | Hint line: Tune-Up, hint 1 | 2.95 |
+| [giant-tuneup-2-1.ogg](giant/giant-tuneup-2-1.ogg) | To skip a cartoon, press a key. | Hint line: Tune-Up, hint 2 | 3.83 |
+| [giant-tuneup-2-2.ogg](giant/giant-tuneup-2-2.ogg) | The next key gets you to the level. | Hint line: Tune-Up, hint 2 | 2.23 |
+| [giant-tuneup-3-1.ogg](giant/giant-tuneup-3-1.ogg) | If the crank will not turn, stand right under it and hold Space. | Hint line: Tune-Up, hint 3 | 6.95 |
+| [giant-tuneup-3-2.ogg](giant/giant-tuneup-3-2.ogg) | Eight notches fill the gauge. | Hint line: Tune-Up, hint 3 | 2.23 |
+| [giant-blaster-intro.ogg](giant/giant-blaster-intro.ogg) | Hints for Virus Blaster. | Hint line: Virus Blaster, welcome | 2.32 |
+| [giant-blaster-1-1.ogg](giant/giant-blaster-1-1.ogg) | You are always shooting. | Hint line: Virus Blaster, hint 1 | 2.15 |
+| [giant-blaster-1-2.ogg](giant/giant-blaster-1-2.ogg) | The twin guns fire whenever the Blaster moves, so just steer under the virus. | Hint line: Virus Blaster, hint 1 | 6.50 |
+| [giant-blaster-2-1.ogg](giant/giant-blaster-2-1.ogg) | The screen never scrolls backward. | Hint line: Virus Blaster, hint 2 | 2.68 |
+| [giant-blaster-2-2.ogg](giant/giant-blaster-2-2.ogg) | The arrow pointing back only brakes, so dodge sideways. | Hint line: Virus Blaster, hint 2 | 3.66 |
+| [giant-blaster-3-1.ogg](giant/giant-blaster-3-1.ogg) | Save the Nova Bombs for bosses, and fire from right under the target. | Hint line: Virus Blaster, hint 3 | 5.35 |
+| [giant-blaster-3-2.ogg](giant/giant-blaster-3-2.ogg) | Press F2 to see your energy. | Hint line: Virus Blaster, hint 3 | 2.77 |
+| [giant-year2000-intro.ogg](giant/giant-year2000-intro.ogg) | Hints for In the Year 2000. | Hint line: In the Year 2000, welcome | 2.23 |
+| [giant-year2000-1-1.ogg](giant/giant-year2000-1-1.ogg) | The Laser-Tag Zapper is in your own backyard, north of the garage wall. | Hint line: In the Year 2000, hint 1 | 6.23 |
+| [giant-year2000-1-2.ogg](giant/giant-year2000-1-2.ogg) | The clicker on Grandpa’s key ring opens the gate first. | Hint line: In the Year 2000, hint 1 | 4.10 |
+| [giant-year2000-2-1.ogg](giant/giant-year2000-2-1.ogg) | Grandpa’s keys are in the hedge garden at the bottom left of the neighborhood. | Hint line: In the Year 2000, hint 2 | 5.97 |
+| [giant-year2000-2-2.ogg](giant/giant-year2000-2-2.ogg) | A robo-mower guards them. | Hint line: In the Year 2000, hint 2 | 2.50 |
+| [giant-year2000-3-1.ogg](giant/giant-year2000-3-1.ogg) | The hoverboard kids zoom up and down the roads. | Hint line: In the Year 2000, hint 3 | 4.28 |
+| [giant-year2000-3-2.ogg](giant/giant-year2000-3-2.ogg) | Look both ways, and cross behind them. | Hint line: In the Year 2000, hint 3 | 2.77 |
+| [tb-lead.ogg](giant/tb-lead.ogg) | Your parents' pretend phone bill is | Hint line: spliced into the pretend bill | 2.68 |
+| [tb-n0.ogg](giant/tb-n0.ogg) | zero | Hint line: spliced into the pretend bill | 0.99 |
+| [tb-n1.ogg](giant/tb-n1.ogg) | one | Hint line: spliced into the pretend bill | 0.99 |
+| [tb-n2.ogg](giant/tb-n2.ogg) | two | Hint line: spliced into the pretend bill | 0.99 |
+| [tb-n3.ogg](giant/tb-n3.ogg) | three | Hint line: spliced into the pretend bill | 0.99 |
+| [tb-n4.ogg](giant/tb-n4.ogg) | four | Hint line: spliced into the pretend bill | 0.99 |
+| [tb-n5.ogg](giant/tb-n5.ogg) | five | Hint line: spliced into the pretend bill | 1.17 |
+| [tb-n6.ogg](giant/tb-n6.ogg) | six | Hint line: spliced into the pretend bill | 0.81 |
+| [tb-n7.ogg](giant/tb-n7.ogg) | seven | Hint line: spliced into the pretend bill | 1.26 |
+| [tb-n8.ogg](giant/tb-n8.ogg) | eight | Hint line: spliced into the pretend bill | 0.81 |
+| [tb-n9.ogg](giant/tb-n9.ogg) | nine | Hint line: spliced into the pretend bill | 1.08 |
+| [tb-n10.ogg](giant/tb-n10.ogg) | ten | Hint line: spliced into the pretend bill | 0.81 |
+| [tb-n11.ogg](giant/tb-n11.ogg) | eleven | Hint line: spliced into the pretend bill | 1.17 |
+| [tb-n12.ogg](giant/tb-n12.ogg) | twelve | Hint line: spliced into the pretend bill | 1.08 |
+| [tb-n13.ogg](giant/tb-n13.ogg) | thirteen | Hint line: spliced into the pretend bill | 1.26 |
+| [tb-n14.ogg](giant/tb-n14.ogg) | fourteen | Hint line: spliced into the pretend bill | 1.17 |
+| [tb-n15.ogg](giant/tb-n15.ogg) | fifteen | Hint line: spliced into the pretend bill | 1.17 |
+| [tb-n16.ogg](giant/tb-n16.ogg) | sixteen | Hint line: spliced into the pretend bill | 1.43 |
+| [tb-n17.ogg](giant/tb-n17.ogg) | seventeen | Hint line: spliced into the pretend bill | 1.26 |
+| [tb-n18.ogg](giant/tb-n18.ogg) | eighteen | Hint line: spliced into the pretend bill | 1.26 |
+| [tb-n19.ogg](giant/tb-n19.ogg) | nineteen | Hint line: spliced into the pretend bill | 1.35 |
+| [tb-n20.ogg](giant/tb-n20.ogg) | twenty | Hint line: spliced into the pretend bill | 0.99 |
+| [tb-n21.ogg](giant/tb-n21.ogg) | twenty-one | Hint line: spliced into the pretend bill | 1.17 |
+| [tb-n22.ogg](giant/tb-n22.ogg) | twenty-two | Hint line: spliced into the pretend bill | 1.08 |
+| [tb-n23.ogg](giant/tb-n23.ogg) | twenty-three | Hint line: spliced into the pretend bill | 1.26 |
+| [tb-n24.ogg](giant/tb-n24.ogg) | twenty-four | Hint line: spliced into the pretend bill | 1.08 |
+| [tb-n25.ogg](giant/tb-n25.ogg) | twenty-five | Hint line: spliced into the pretend bill | 1.08 |
+| [tb-n26.ogg](giant/tb-n26.ogg) | twenty-six | Hint line: spliced into the pretend bill | 1.17 |
+| [tb-n27.ogg](giant/tb-n27.ogg) | twenty-seven | Hint line: spliced into the pretend bill | 1.35 |
+| [tb-n28.ogg](giant/tb-n28.ogg) | twenty-eight | Hint line: spliced into the pretend bill | 0.99 |
+| [tb-n29.ogg](giant/tb-n29.ogg) | twenty-nine | Hint line: spliced into the pretend bill | 1.17 |
+| [tb-n30.ogg](giant/tb-n30.ogg) | thirty | Hint line: spliced into the pretend bill | 0.99 |
+| [tb-n31.ogg](giant/tb-n31.ogg) | thirty-one | Hint line: spliced into the pretend bill | 1.17 |
+| [tb-n32.ogg](giant/tb-n32.ogg) | thirty-two | Hint line: spliced into the pretend bill | 1.08 |
+| [tb-n33.ogg](giant/tb-n33.ogg) | thirty-three | Hint line: spliced into the pretend bill | 1.17 |
+| [tb-n34.ogg](giant/tb-n34.ogg) | thirty-four | Hint line: spliced into the pretend bill | 1.08 |
+| [tb-n35.ogg](giant/tb-n35.ogg) | thirty-five | Hint line: spliced into the pretend bill | 1.17 |
+| [tb-n36.ogg](giant/tb-n36.ogg) | thirty-six | Hint line: spliced into the pretend bill | 1.08 |
+| [tb-n37.ogg](giant/tb-n37.ogg) | thirty-seven | Hint line: spliced into the pretend bill | 1.26 |
+| [tb-n38.ogg](giant/tb-n38.ogg) | thirty-eight | Hint line: spliced into the pretend bill | 1.17 |
+| [tb-n39.ogg](giant/tb-n39.ogg) | thirty-nine | Hint line: spliced into the pretend bill | 1.08 |
+| [tb-n40.ogg](giant/tb-n40.ogg) | forty | Hint line: spliced into the pretend bill | 0.99 |
+| [tb-n41.ogg](giant/tb-n41.ogg) | forty-one | Hint line: spliced into the pretend bill | 1.17 |
+| [tb-n42.ogg](giant/tb-n42.ogg) | forty-two | Hint line: spliced into the pretend bill | 1.08 |
+| [tb-n43.ogg](giant/tb-n43.ogg) | forty-three | Hint line: spliced into the pretend bill | 1.26 |
+| [tb-n44.ogg](giant/tb-n44.ogg) | forty-four | Hint line: spliced into the pretend bill | 1.08 |
+| [tb-n45.ogg](giant/tb-n45.ogg) | forty-five | Hint line: spliced into the pretend bill | 1.08 |
+| [tb-n46.ogg](giant/tb-n46.ogg) | forty-six | Hint line: spliced into the pretend bill | 1.08 |
+| [tb-n47.ogg](giant/tb-n47.ogg) | forty-seven | Hint line: spliced into the pretend bill | 1.26 |
+| [tb-n48.ogg](giant/tb-n48.ogg) | forty-eight | Hint line: spliced into the pretend bill | 1.08 |
+| [tb-n49.ogg](giant/tb-n49.ogg) | forty-nine | Hint line: spliced into the pretend bill | 1.35 |
+| [tb-n50.ogg](giant/tb-n50.ogg) | fifty | Hint line: spliced into the pretend bill | 0.99 |
+| [tb-n51.ogg](giant/tb-n51.ogg) | fifty-one | Hint line: spliced into the pretend bill | 1.17 |
+| [tb-n52.ogg](giant/tb-n52.ogg) | fifty-two | Hint line: spliced into the pretend bill | 0.90 |
+| [tb-n53.ogg](giant/tb-n53.ogg) | fifty-three | Hint line: spliced into the pretend bill | 1.26 |
+| [tb-n54.ogg](giant/tb-n54.ogg) | fifty-four | Hint line: spliced into the pretend bill | 1.08 |
+| [tb-n55.ogg](giant/tb-n55.ogg) | fifty-five | Hint line: spliced into the pretend bill | 1.08 |
+| [tb-n56.ogg](giant/tb-n56.ogg) | fifty-six | Hint line: spliced into the pretend bill | 1.26 |
+| [tb-n57.ogg](giant/tb-n57.ogg) | fifty-seven | Hint line: spliced into the pretend bill | 1.35 |
+| [tb-n58.ogg](giant/tb-n58.ogg) | fifty-eight | Hint line: spliced into the pretend bill | 1.08 |
+| [tb-n59.ogg](giant/tb-n59.ogg) | fifty-nine | Hint line: spliced into the pretend bill | 1.17 |
+| [tb-n60.ogg](giant/tb-n60.ogg) | sixty | Hint line: spliced into the pretend bill | 1.26 |
+| [tb-n61.ogg](giant/tb-n61.ogg) | sixty-one | Hint line: spliced into the pretend bill | 1.35 |
+| [tb-n62.ogg](giant/tb-n62.ogg) | sixty-two | Hint line: spliced into the pretend bill | 1.26 |
+| [tb-n63.ogg](giant/tb-n63.ogg) | sixty-three | Hint line: spliced into the pretend bill | 1.70 |
+| [tb-n64.ogg](giant/tb-n64.ogg) | sixty-four | Hint line: spliced into the pretend bill | 1.35 |
+| [tb-n65.ogg](giant/tb-n65.ogg) | sixty-five | Hint line: spliced into the pretend bill | 1.08 |
+| [tb-n66.ogg](giant/tb-n66.ogg) | sixty-six | Hint line: spliced into the pretend bill | 2.23 |
+| [tb-n67.ogg](giant/tb-n67.ogg) | sixty-seven | Hint line: spliced into the pretend bill | 1.79 |
+| [tb-n68.ogg](giant/tb-n68.ogg) | sixty-eight | Hint line: spliced into the pretend bill | 1.43 |
+| [tb-n69.ogg](giant/tb-n69.ogg) | sixty-nine | Hint line: spliced into the pretend bill | 1.35 |
+| [tb-n70.ogg](giant/tb-n70.ogg) | seventy | Hint line: spliced into the pretend bill | 0.99 |
+| [tb-n71.ogg](giant/tb-n71.ogg) | seventy-one | Hint line: spliced into the pretend bill | 1.35 |
+| [tb-n72.ogg](giant/tb-n72.ogg) | seventy-two | Hint line: spliced into the pretend bill | 1.35 |
+| [tb-n73.ogg](giant/tb-n73.ogg) | seventy-three | Hint line: spliced into the pretend bill | 1.61 |
+| [tb-n74.ogg](giant/tb-n74.ogg) | seventy-four | Hint line: spliced into the pretend bill | 1.08 |
+| [tb-n75.ogg](giant/tb-n75.ogg) | seventy-five | Hint line: spliced into the pretend bill | 1.43 |
+| [tb-n76.ogg](giant/tb-n76.ogg) | seventy-six | Hint line: spliced into the pretend bill | 1.52 |
+| [tb-n77.ogg](giant/tb-n77.ogg) | seventy-seven | Hint line: spliced into the pretend bill | 1.26 |
+| [tb-n78.ogg](giant/tb-n78.ogg) | seventy-eight | Hint line: spliced into the pretend bill | 1.26 |
+| [tb-n79.ogg](giant/tb-n79.ogg) | seventy-nine | Hint line: spliced into the pretend bill | 1.26 |
+| [tb-n80.ogg](giant/tb-n80.ogg) | eighty | Hint line: spliced into the pretend bill | 0.99 |
+| [tb-n81.ogg](giant/tb-n81.ogg) | eighty-one | Hint line: spliced into the pretend bill | 1.17 |
+| [tb-n82.ogg](giant/tb-n82.ogg) | eighty-two | Hint line: spliced into the pretend bill | 1.17 |
+| [tb-n83.ogg](giant/tb-n83.ogg) | eighty-three | Hint line: spliced into the pretend bill | 1.35 |
+| [tb-n84.ogg](giant/tb-n84.ogg) | eighty-four | Hint line: spliced into the pretend bill | 1.17 |
+| [tb-n85.ogg](giant/tb-n85.ogg) | eighty-five | Hint line: spliced into the pretend bill | 1.08 |
+| [tb-n86.ogg](giant/tb-n86.ogg) | eighty-six | Hint line: spliced into the pretend bill | 1.35 |
+| [tb-n87.ogg](giant/tb-n87.ogg) | eighty-seven | Hint line: spliced into the pretend bill | 1.35 |
+| [tb-n88.ogg](giant/tb-n88.ogg) | eighty-eight | Hint line: spliced into the pretend bill | 1.17 |
+| [tb-n89.ogg](giant/tb-n89.ogg) | eighty-nine | Hint line: spliced into the pretend bill | 1.17 |
+| [tb-n90.ogg](giant/tb-n90.ogg) | ninety | Hint line: spliced into the pretend bill | 1.26 |
+| [tb-n91.ogg](giant/tb-n91.ogg) | ninety-one | Hint line: spliced into the pretend bill | 1.35 |
+| [tb-n92.ogg](giant/tb-n92.ogg) | ninety-two | Hint line: spliced into the pretend bill | 1.17 |
+| [tb-n93.ogg](giant/tb-n93.ogg) | ninety-three | Hint line: spliced into the pretend bill | 1.26 |
+| [tb-n94.ogg](giant/tb-n94.ogg) | ninety-four | Hint line: spliced into the pretend bill | 1.35 |
+| [tb-n95.ogg](giant/tb-n95.ogg) | ninety-five | Hint line: spliced into the pretend bill | 1.17 |
+| [tb-n96.ogg](giant/tb-n96.ogg) | ninety-six | Hint line: spliced into the pretend bill | 1.26 |
+| [tb-n97.ogg](giant/tb-n97.ogg) | ninety-seven | Hint line: spliced into the pretend bill | 1.26 |
+| [tb-n98.ogg](giant/tb-n98.ogg) | ninety-eight | Hint line: spliced into the pretend bill | 1.17 |
+| [tb-n99.ogg](giant/tb-n99.ogg) | ninety-nine | Hint line: spliced into the pretend bill | 1.17 |
+| [tb-dollar.ogg](giant/tb-dollar.ogg) | dollar | Hint line: spliced into the pretend bill | 1.08 |
+| [tb-dollars.ogg](giant/tb-dollars.ogg) | dollars | Hint line: spliced into the pretend bill | 1.17 |
+| [tb-and.ogg](giant/tb-and.ogg) | and | Hint line: spliced into the pretend bill | 1.08 |
+| [tb-cent.ogg](giant/tb-cent.ogg) | cent | Hint line: spliced into the pretend bill | 1.26 |
+| [tb-cents.ogg](giant/tb-cents.ogg) | cents | Hint line: spliced into the pretend bill | 0.81 |

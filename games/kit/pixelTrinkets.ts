@@ -82,6 +82,8 @@ for (const game of games) {
   }
   const pics = GAMES[game].map((d) => picture(game, d));
   const source = sourceKey(pics, { colors, block, layers, keys: GAMES[game].map((d) => [d.id, d.title, d.blurb, d.keep]) });
+  // a file is there as itself or as the site's pack of it (games/kit/trinketPacks.ts)
+  const made = (file: string) => existsSync(file) || existsSync(`${file}.pack`);
   try {
     const have = JSON.parse(readFileSync(join(out, 'manifest.json'), 'utf8')) as {
       source?: string;
@@ -91,7 +93,7 @@ for (const game of games) {
       !pngDir &&
       !args.includes('--force') &&
       have.source === source &&
-      have.items.every((i) => existsSync(join(out, i.file)) && existsSync(join(out, i.colors.file)) && !!i.preview && existsSync(join(out, i.preview)))
+      have.items.every((i) => made(join(out, i.file)) && made(join(out, i.colors.file)) && !!i.preview && made(join(out, i.preview)))
     ) {
       console.log(`${game}: up to date`);
       continue;

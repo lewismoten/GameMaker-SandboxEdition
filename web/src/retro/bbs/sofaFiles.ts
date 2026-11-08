@@ -1,6 +1,7 @@
 // The Sofa's file library: only a few files, all the board's own, free to everyone (no
 // ratio here, it's a hangout). Doc Leo uploaded his goat game, THIRD GOAT FROM THE LEFT;
 // a download unzips into C:\DOWNLOAD\<GAME> like the Sandbox BBS's, FILE_ID.DIZ and all.
+import { isStarterGame } from '../../project/starter';
 import type { RetroHost } from '../host';
 import type { CatalogEntry } from '../../project/files';
 import { commas } from '../dos/vfs';
@@ -16,7 +17,7 @@ import { PLAYER_EXE_BYTES, downloadLine, sizeText, installedBytes, zipBytes, zip
 
 /** The board's own files: the games in the catalog that were uploaded to The Sofa. */
 export function sofaLibrary(catalog: CatalogEntry[]): CatalogEntry[] {
-  return catalog.filter((g) => g.gam && isSofaFile(g));
+  return catalog.filter((g) => g.gam && isSofaFile(g) && !isStarterGame(g));
 }
 
 export async function sofaFiles(t: Term, h: RetroHost): Promise<void> {
@@ -87,7 +88,7 @@ async function download(t: Term, h: RetroHost, g: CatalogEntry): Promise<void> {
   t.line('|10Transfer complete.');
   await pkunzip(t, h, zipName(g), dosDir(g), [
     ...(g.exe ? [[g.exe, PLAYER_EXE_BYTES] as const] : []),
-    ...g.files.map((f, i) => [f.toUpperCase(), g.sizes?.[i] ?? Math.round((g.bytes ?? 0) / g.files.length)] as const),
+    ...(g.files ?? []).map((f, i) => [f.toUpperCase(), g.sizes?.[i] ?? Math.round((g.bytes ?? 0) / g.files!.length)] as const),
     ['FILE_ID.DIZ', DIZ_BYTES] as const,
   ]);
   h.downloads.add(g.id);

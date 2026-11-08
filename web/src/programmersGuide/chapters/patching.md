@@ -20,10 +20,10 @@ The patch table is written for **XFERPLAY.EXE**: 160,598 bytes, MD5 `fcaf47d50ec
 
 ## 3. What a patch is
 
-An `.EXE` is a file. A patch is "go to offset X and replace N bytes with these". The menu word "Play" is the smallest example. `str.menu.play` is at `0x2575b`, four bytes, `50 6C 61 79`, and the byte after it (`0x2575f`) is `00`, the NUL that ends the string. The player prints whatever characters lie between the offset and the next NUL.
+An `.EXE` is a file. A patch is "go to offset X and replace N bytes with these". The menu word "Play" is the smallest example. `str.menu.play` is at `0x2575b`, four bytes, `50 6C 61 79`, and the byte after it (`0x2575f`) is `00`, the NULL that ends the string. The player prints whatever characters lie between the offset and the next NULL.
 
 - Write `47 6F 21 21` and the menu says "Go!!". Same length, the string still ends where it did.
-- Write a five-letter word and the fifth letter lands on the NUL and the next byte on the first letter of "Read Instructions" (`0x25760`). The word grows into its neighbor and the neighbor loses a letter. That is why a string never grows (`patchRules.ts:1-5`) and a shorter word is padded with spaces: GWrite draws a space as nothing and the NUL after it is never touched (`patchRules.ts:84-91`).
+- Write a five-letter word and the fifth letter lands on the NULL and the next byte on the first letter of "Read Instructions" (`0x25760`). The word grows into its neighbor and the neighbor loses a letter. That is why a string never grows (`patchRules.ts:1-5`) and a shorter word is padded with spaces: GWrite draws a space as nothing and the NULL after it is never touched (`patchRules.ts:84-91`).
 - Write a byte under 0x20 or over 0x7E and GPutChar draws something that is not in its ROM font; the table's text rule is 0x20-0x7E only (`patchRules.ts:29-40`).
 
 Numbers are patched the same way, but they live in the _code_. A screen position such as `layout.menu.play.x` (80, at `0xb6be`) is the operand of a `push imm8` or `push imm16`: the compiler turned `GWrite(80, 120, ...)` into two pushes of constants. Changing the operand changes the constant. A one-byte operand is sign-extended, so it stops at 127 (`frameLimit`, `patchRules.ts:59-62`); a two-byte one is a little-endian word.
@@ -48,7 +48,7 @@ The kind says how a value becomes bytes (`writePatch`, `patchRules.ts:84-109`). 
 
 | kind     | count | what is written                                                                                                                              | rule (`patchProblem`, `patchRules.ts:29-57`)                                |
 | -------- | ----: | -------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
-| `text`   |    30 | the characters of a NUL-ended string, space-padded to the slot's length                                                                      | no longer than the slot, characters 0x20-0x7E                               |
+| `text`   |    30 | the characters of a NULL-ended string, space-padded to the slot's length                                                                      | no longer than the slot, characters 0x20-0x7E                               |
 | `format` |     8 | a printf string such as `Score:     %ld`                                                                                                     | as text, and the same `%` codes in the same order, and no stray `%`         |
 | `number` |    56 | one immediate, or the same value in each of several immediates patched together (`border.marker.width` writes two)                           | a whole number from the entry's `min` to `max`                              |
 | `rgb`    |    11 | three bytes, red then green then blue (listed red, green, blue; the three bytes are not next to each other and may run backward in the file) | each 0-63: the VGA DAC is six bits                                          |
@@ -166,7 +166,7 @@ The player's own waits (`PauseTimeKey`) are in the `times` group already: the 10
 ## 10. Limits
 
 - 160,598-byte XFERPLAY 3.00 only: size and MD5 are checked before any write (section 5).
-- Strings never grow; shorter ones are space-padded; the NUL after one is never touched (section 3).
+- Strings never grow; shorter ones are space-padded; the NULL after one is never touched (section 3).
 - Numbers keep their operand's range: 0-255 or -128..127 for one byte, 0-65,535 for two (section 3).
 - `keep` and `unsafe` entries of the patch map (credits, copyright, file names, the menu item count, the scan-code table) are not offered (section 1).
 - Not a reason to trust a patched `.EXE` that arrived from somewhere else. Run nothing you did not make.

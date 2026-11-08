@@ -77,6 +77,18 @@ remotes and real merge/push mechanics; costly checks are stubbed. They never pub
 to a network remote or touch the maintainer's refs or servers. Git-backed tests inherit
 the host's signing policy; if sandbox restrictions block its signing agent, report that
 capability failure and run them on an authorized host rather than disabling signing.
+[`task-records/`](task-records/README.md) defines the validated private intake read
+model: client-key and board-ID lookup, distinct run summaries, adapter integration
+and SQLite regression tests. It does not publish the private intake or its data.
+`nightly.py` is the Linux local validation entry point (Python 3.11+ standard library).
+Run `python3 scripts/nightly.py --reports /path/to/shared/.for-lewis/nightly`.
+It fetches and pins `origin/develop`, coalesces requests under a kernel lock, builds every
+DOS game twice in separate clean clones, compares every disk file's actual bytes, runs
+full Vitest, replays every recorded walkthrough, and checks changed games' clips against
+the pinned baseline. Reports and failure evidence stay private and Git-ignored.
+Use `--revision HEAD` for a feature candidate and `--force` for an explicit retry.
+Tests: `python3 -m unittest discover -s scripts -p nightly_test.py -v`.
+Scheduling, timezone, retention, and recovery: [nightly validation](../docs/nightly-validation.md).
 
 `verify-changed.mjs` runs through `npm run verify:changed` (root or `web/`): the quick pre-merge check of only what the branch touched against `origin/develop` (or `--base <ref>`). `npm run verify` is the full check.
 
@@ -100,7 +112,11 @@ lockfile, so editing a page under `web/src` that no game imports rebuilds nothin
 `game-bundle.mjs` bundles a build entry (each game's `build.ts`, the Depth frame shards, the logo) with esbuild so `build-games.mjs` runs the child under plain `node`, not vite-node (about 16% less CPU, no 1.7 s startup per child); `GM_VITE_NODE=1` or any bundle failure runs vite-node as before.
 `game-build-entry.mjs` runs one `build.ts` and exits at once (vite-node sometimes lingered after a finished
 build until the 240 s timeout killed it). `game-build-inputs.mjs` is the fingerprint shared with
-`render-game-frames.mjs`, which renders one animation shard for the game-frames workflow.
+`render-game-frames.mjs`, which renders one animation shard (by hand).
+`release/sizes.mjs` (`npm run release:sizes`) holds the Pages artifact, offline copy, npm tarballs and native
+downloads to `release/size-budgets.json`; `release/publish-pages.mjs` (`npm run release:pages -- <pages-vX.Y.Z> [--push] [--keep]`)
+builds a release tag's site in a clean temporary worktree and makes the one orphan commit the `gh-pages` branch
+serves; it pushes only with `--push` during a supervised release (docs/package-releases.md).
 `child-signal-retry.mjs` retries a signaled child once, logging its stage, signal, `killed` flag and
 elapsed time. Each attempt still has the 240 s deadline. Extra stages may retry a timeout; disks
 retain their existing early-signal-only rule (at most 230 s), and shared logo/frame renders keep their
@@ -110,6 +126,41 @@ After a terminal concurrent failure, no new queued games start; active children 
 games keep their incremental cache entries before the parent fails. Tests: `web/test/buildGames.test.mjs`
 (real readiness-gated external SIGTERM, tiny payloads) and `web/test/childSignalRetry.test.mjs`
 (fake elapsed-time boundaries and a native timeout). `heavy.mjs` gates admission only; it has no build-duration timeout.
+
+## Pocket host allocation audit
+
+`python3 scripts/pocket-heap-audit.py --card <card-root>/pocket --out <private-report-dir> --replay`
+reads the onboard and microSD indexes, records every game (even with missing assets),
+compiles `hardware/pocket-player/host/heaptest.cpp`, and measures every indexed level.
+Generate the card first from `web/` with `npx vite-node -c ../scripts/game-build.config.mjs scripts/pocketData.ts --out <card-root>`;
+build ignored game disks with `npm run build:games` first. Run the audit through
+`npm run heavy --` when replaying walkthroughs. It copies the card into the report
+and adds `<id>.cfg` aliases only there, leaving the real card untouched.
+
+Reports include `inventory.json` (disk/walkthrough/index hashes), per-command logs
+and durations, `heap.json`/`heap.csv`, environment and summary. A duplicate id is an
+error; a mismatch with `--expected-games` (default 121) is reported, not truncated.
+The full original `pocketHostCheck.ts` replays both sources separately with `--replay`.
+The requested `npm run check:cyd` is also attempted and its actual exit is retained;
+this tool does not invent an alias if that command is absent.
+
+Allocation numbers are **scoped host requested bytes**, not ESP32 free heap,
+headroom, fragmentation or RSS. Each level loads in config order through
+`Assets::load`, preserving inherited hero names but releasing buffers between levels
+(as for cards). `live_bytes` is retained core asset storage; `peak_bytes` includes
+those assets, their transient compressed input and zlib's explicitly instrumented
+work allocations. `largest_request_bytes` is one allocation, not a largest free
+block. Counts exclude stdio, C++ containers, allocator overhead, stack/static data,
+firmware display buffers, SD prefetch/mount state and ESP32's ROM inflater. This is a
+load audit, not gameplay-transition or interstitial-card memory coverage. The ten
+largest host peaks are a provisional proxy for the requested "10 tightest"; only
+board readings can establish the actual ten tightest CYD cases. The runner exits
+nonzero for inventory mismatch, failed heap loads, replay differences or check:cyd
+failure, while retaining completed results.
+
+Regressions: `python3 scripts/pocket-heap-test.py` and
+`python3 scripts/pocket-inventory-test.py` (C++17, zlib, Python stdlib).
+Implemented with Hermes Agent using OpenAI Codex GPT-6.1 Sol, directed by Lewis Moten.
 
 Site build-time tools remain in [`web/scripts`](../web/scripts/README.md).
 The [headless PLAYGAME capture harness](../tools/dosbox-286/README.md) records WAV
@@ -144,3 +195,12 @@ appends start, wait, duration, exit code, cwd and command to `log.tsv` there. En
 `hooks.PreToolUse`. `noMainCheckoutMerge.mjs` blocks `git merge`, `git pull` and `git rebase` in the main
 checkout while something listens on 5173. `noSymlinkedDiskBuild.mjs` blocks game builds while any
 `games/*/disk` is a symlink. `commitTrailer.mjs` blocks `git commit -m` with no `Co-Authored-By: Claude` line.
+
+Development refreshes (`dev-games.mjs`) use the shared heavy-job slots too. The console
+shows each public game as it starts, the remaining public queue, completions and the final
+ready message; stdout also stays in `node_modules/.cache/games-dev.log`. Admission waits
+and errors stay visible in the console. `web/test/devGames.test.mjs` checks both
+fresh and existing disks; `web/test/buildGames.test.mjs` checks progress before completion. The development page labels generated disk,
+walk-path and printable updates as rebuilt game files, with source updates labeled separately.
+
+`decl-preflight.mjs` compares each SDK package's newest `src` mtime (plus `package.json` and `tsconfig.json`; test files ignored) with the newest `dist/types/*.d.ts`, in build order (engine, archives, tools; a stale package makes the later ones stale). It exits 1 with "run `npm run build:packages`" when any is stale or missing, or rebuilds only those with `--fix`. It runs as web's `pretypecheck` and `prelint` and as the merge gate's `declarations` step before `tsc`. A checkout or merge touches source mtimes, so it can report stale when nothing changed; rebuilding is harmless. Tests: `web/test/declPreflight.test.mjs`.

@@ -3,12 +3,13 @@
 // site's music worklet like the cast stage (cast/castSound.ts). It starts only after a click or key
 // press on the page (the browser's autoplay rule), sits low under the visitor's Music setting (the
 // sound settings dialog; the engine follows it live) and the demo sound choice ("None" keeps it
-// silent), pauses while the tab is hidden or the guided tour plays (it has its own song; tour/, its
+// silent), pauses while the tab is hidden, a video or walkthrough dialog is open or the guided tour plays (it has its own song; tour/, its
 // 'gm-tour' events), and stops when the room leaves the page (a new address, or the desk taking over: pageLife.ts). The engine is
 // imported when the first gesture comes, so the page loads none of it.
 import { demoAudio } from '../media/demoAudio';
 import { peekGameFile, loadCatalog } from '../project/files';
 import { pageLife } from '../pageLife';
+import { isWatching, LIBRARY_MEDIA_EVENT } from './libraryMedia';
 
 const GAME = 'brief';
 const SONG = 'library.cmf';
@@ -26,14 +27,15 @@ export function startLibraryMusic(room: HTMLElement): void {
     for (const e of ['pointerdown', 'keydown']) removeEventListener(e, onGesture, true);
     removeEventListener('hashchange', check);
     removeEventListener('gm-tour', onVisible);
+    removeEventListener(LIBRARY_MEDIA_EVENT, onVisible);
     document.removeEventListener('visibilitychange', onVisible);
   };
   /** The room left the page (the next page may draw a moment after the address changes). */
   const check = () => {
     for (const ms of [100, 600, 2000]) setTimeout(() => !room.isConnected && stop(), ms);
   };
-  /** Hushed while the tab is hidden or the tour is on (its class is set before 'gm-tour' starts, removed before it ends). */
-  const hushed = () => document.hidden || document.documentElement.classList.contains('tour-on');
+  /** Hushed while the tab is hidden, a video or walkthrough is open (libraryMedia.ts) or the tour is on (its class is set before 'gm-tour' starts, removed before it ends). */
+  const hushed = () => document.hidden || document.documentElement.classList.contains('tour-on') || isWatching();
   const onVisible = () => engine?.pauseMusic(hushed());
   const onGesture = () => {
     if (begun || ended || !room.isConnected || demoAudio() === 'none') return;
@@ -56,5 +58,6 @@ export function startLibraryMusic(room: HTMLElement): void {
   // switching to the desk replaces the page without a hashchange (main.ts startDesk): the page's life ends
   pageLife().addEventListener('abort', stop, { once: true });
   addEventListener('gm-tour', onVisible);
+  addEventListener(LIBRARY_MEDIA_EVENT, onVisible);
   document.addEventListener('visibilitychange', onVisible);
 }

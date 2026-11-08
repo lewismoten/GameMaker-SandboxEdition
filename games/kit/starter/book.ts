@@ -87,6 +87,12 @@ export class Book {
     return (this.blocks[n].solid & mask) === mask;
   }
 
+  /** Draws block `name` again as `pic`, keeping its number and rules (a game giving a shared block its own look). */
+  redraw(name: string, pic: Pixels): void {
+    this.pics.set(name, pic);
+    this.blocks[this.n(name)].pixels = Uint8Array.from(pic.px);
+  }
+
   has(name: string): boolean {
     return this.index.has(name);
   }

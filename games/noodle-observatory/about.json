@@ -1,0 +1,20 @@
+{
+  "title": "The Noodle Observatory",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "special",
+  "year": 1994,
+  "price": "Free",
+  "version": "2.0",
+  "blurb": "Monkey Day. A tin monkey rolls a lens into the kitchen telescope, a giant pasta ring rolls up the wall, and Nell finds a second moon in her window. She has already written to the paper; the letter runs Friday. Now she needs evidence: telescope parts from cupboards that tip, a ride up the pantry in the ring, lenses carried over gaps, nine shutters in the loft, a colander loose on the roof, and supper set where the view is best. Then the moon turns out to have a windowsill, the ring leaves with the tablecloth, and the night is only half over: snowy yards, a bakery with nobody home, a logbook by a round window, and the real moon, late as usual. A kitchen-sky mystery for about an hour, here for three days only.",
+  "exe": "NOODLE.EXE",
+  "dosName": "NOODLE",
+  "sound": "sb",
+  "label": {
+    "background": "#fbf0c8",
+    "band": "#3a3f8a",
+    "ink": "#22201c",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "acceptedFindings": ["facing s3 The hero climbs side on", "facing s7 The hero faces the same way walking left and right", "flashing s49 Block 48 flashes light and dark about 0.0 times a second over 160 blocks of one screen, from (11, 0)", "flashing s49 Block 49 flashes light and dark about 0.0 times a second over 160 blocks of one screen, from (11, 0)", "flashing s49 Block 50 flashes light and dark about 0.0 times a second over 160 blocks of one screen, from (11, 0)", "flashing s49 Block 51 flashes light and dark about 0.0 times a second over 160 blocks of one screen, from (11, 0)", "flashing s49 Block 52 flashes light and dark about 0.0 times a second over 160 blocks of one screen, from (11, 0)", "flashing s49 Block 53 flashes light and dark about 0.0 times a second over 160 blocks of one screen, from (11, 0)", "flashing s49 Block 54 flashes light and dark about 0.0 times a second over 160 blocks of one screen, from (11, 0)", "flashing s49 Block 55 flashes light and dark about 0.0 times a second over 160 blocks of one screen, from (11, 0)", "flashing s49 Block 56 flashes light and dark about 0.0 times a second over 160 blocks of one screen, from (11, 0)", "waits s43 Timed block 45 stays shut for 49.5 s at a time", "waits s49 Timed block 45 stays shut for 60.4 s at a time"]
+}

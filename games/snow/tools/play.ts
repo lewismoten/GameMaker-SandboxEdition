@@ -2,11 +2,11 @@
 // at the second door (check.ts, walkthrough.ts and gendemo.ts run it).
 import { StarterBot } from '../../kit/starter/bot';
 import { playLevels } from '../../kit/levelRun';
-import { snowyWalk, pilesUp } from './route';
+import { snowyWalk, pilesUp, openSnow } from './route';
 import { GameSim } from './sim';
 
 export const SEED = 1;
-const LEVELS = [snowyWalk, pilesUp];
+const LEVELS = [snowyWalk, pilesUp, openSnow];
 
 export async function play(seed = SEED, upTo = LEVELS.length): Promise<{ sim: GameSim; bot: StarterBot }> {
   const sim = new GameSim(undefined, seed);

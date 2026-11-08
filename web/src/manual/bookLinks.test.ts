@@ -5,7 +5,9 @@
 import { describe, expect, it } from 'vitest';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
+import { inflateRawSync } from 'node:zlib';
 import { listZip } from '@lewismoten/gamemaker-sandbox-archives/zip';
+import { unpackFiles } from '@lewismoten/gamemaker-sandbox-tools/pack/meshPack';
 import { GUIDE_SECTIONS } from './guideSections';
 import { CHAPTERS } from './ultimate/plan';
 import { STARTER_ORDER } from '../project/starter';
@@ -18,7 +20,7 @@ import { phoneAttachments } from './printables/feelieItems';
 const here = import.meta.dirname;
 const src = (f: string) => readFileSync(join(here, f), 'utf8');
 const pub = resolve(here, '../../public');
-const SITE_PATHS = ['p', 'game', 'help', 'cast', 'credits', 'achievements', 'mac', 'windows', 'linux', 'magazine', 'library', 'programmers-guide'];
+const SITE_PATHS = ['p', 'game', 'help', 'cast', 'credits', 'achievements', 'mac', 'windows', 'linux', 'magazine', 'library', 'programmers-guide', 'art-courses'];
 
 /** The DOS folder name of every game that has one. */
 function sampleNames(): Set<string> {
@@ -172,20 +174,28 @@ describe.skipIf(!existsSync(join(pub, 'laser')))('the files the Feelies offer (b
     expect(kits).toBeGreaterThan(0);
   });
 
-  it('exist for every trinket: its STL, 3MF and supports', () => {
+  it('exist for every trinket: its STL, 3MF and supports (or the pack the site makes each from)', () => {
     for (const id of readdirSync(join(pub, 'trinkets'))) {
       const manifest = join(pub, 'trinkets', id, 'manifest.json');
       if (!existsSync(manifest)) continue;
-      const items = JSON.parse(readFileSync(manifest, 'utf8')).items as { file: string; colors: { file: string }; supports: { file: string } | null }[];
-      for (const it of items)
-        for (const f of [it.file, it.colors.file, it.supports?.file]) if (f) expect(existsSync(join(pub, 'trinkets', id, f)), `trinkets/${id}/${f}`).toBe(true);
+      const m = JSON.parse(readFileSync(manifest, 'utf8')) as {
+        items: { file: string; preview?: string; colors: { file: string }; supports: { file: string } | null }[];
+        packed?: string[];
+      };
+      for (const it of m.items)
+        for (const f of [it.file, it.preview, it.colors.file, it.supports?.file])
+          if (f) {
+            const served = m.packed?.includes(f) ? `${f}.pack` : f;
+            expect(existsSync(join(pub, 'trinkets', id, served)), `trinkets/${id}/${served}`).toBe(true);
+          }
     }
   });
 
   it('exist for the phone kit, and its ZIPs hold both builds’ printer parts and board projects', () => {
-    for (const a of phoneAttachments()) expect(existsSync(join(pub, a.href.replace(/^\.\//, ''))), a.href).toBe(true);
+    // the printer-parts ZIP is made in the browser from its pack (phoneData.ts phonePrinterZip)
+    for (const a of phoneAttachments()) if (!a.link) expect(existsSync(join(pub, a.href.replace(/^\.\//, ''))), a.href).toBe(true);
     const zip = (f: string) => listZip(new Uint8Array(readFileSync(join(pub, 'trinkets/phone', f)))).map((e) => e.name);
-    const parts = zip('phone-3d-printer-parts.zip');
+    const parts = unpackFiles(new Uint8Array(inflateRawSync(readFileSync(join(pub, 'trinkets/phone/phone-3d-printer-parts.pack'))))).map((e) => e.name);
     const board = zip('phone-circuit-board.zip');
     for (const b of ['junior-lab', 'deluxe']) {
       expect(

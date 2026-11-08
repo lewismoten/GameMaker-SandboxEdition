@@ -5,12 +5,22 @@
 // kept only in this browser (localStorage `gm-certificate-name`); no picture or name is sent anywhere.
 import './transcript.css';
 import { h, modal, download } from '../core/ui';
-import { allCeremonyStates, certificateTitle, transcript, unlockRule, type Ceremony, type TranscriptStage } from '../../project/ceremonies';
+import {
+  DIPLOMA,
+  diplomaTier,
+  allCeremonyStates,
+  certificateTitle,
+  transcript,
+  unlockRule,
+  type Ceremony,
+  type TranscriptStage,
+} from '../../project/ceremonies';
 import { loadGameList } from '../../project/files';
 import { loadFinished } from './homeDone';
 import { loadGrades } from '../../achievements/courseGrades';
 import { loadHonorDates } from '../../achievements/honorDates';
-import { NAME_MAX, certificateAlt, cleanName, drawCertificate } from './certificateImage';
+import { honorsLayout } from './honorsLayout';
+import { NAME_MAX, certificateAlt, cleanName, drawCertificate, type DiplomaTier } from './certificateImage';
 import { gpaText, gradeLabel } from './transcriptText';
 
 const NAME_KEY = 'gm-certificate-name';
@@ -70,9 +80,9 @@ function transcriptPanel(titles: Map<string, string>, finished: ReadonlySet<stri
   );
 }
 
-function certificateCard(c: Ceremony, name: string, date: string | undefined): HTMLElement {
-  const canvas = h('canvas', { class: 'cert-canvas', role: 'img', 'aria-label': certificateAlt(c, name, date) });
-  drawCertificate(canvas, c, name, date);
+function certificateCard(c: Ceremony, name: string, date: string | undefined, tier?: DiplomaTier): HTMLElement {
+  const canvas = h('canvas', { class: 'cert-canvas', role: 'img', 'aria-label': certificateAlt(c, name, date, tier) });
+  drawCertificate(canvas, c, name, date, tier);
   return h(
     'figure',
     { class: 'cert earned' },
@@ -99,26 +109,37 @@ function honorsPanel(finished: ReadonlySet<string>): HTMLElement {
   const grid = h('div', { class: 'cert-grid' });
   const name = h('input', { type: 'text', maxLength: NAME_MAX, value: savedName(), autocomplete: 'off', spellcheck: false });
   const draw = () => {
-    grid.replaceChildren(
-      ...allCeremonyStates(grades, finished).map(({ ceremony, state }) =>
-        state.state === 'earned'
-          ? certificateCard(ceremony, cleanName(name.value), dates[ceremony.id])
-          : h(
-              'figure',
-              { class: 'cert locked' },
-              h('div', { class: 'cert-lock' }, h('span', { 'aria-hidden': 'true' }, '🔒')),
+    const states = allCeremonyStates(grades, finished);
+    const t = diplomaTier(grades, finished);
+    const tierNow: DiplomaTier = t === 'diploma' ? undefined : t;
+    const diplomaEarned = states[states.length - 1]?.state.state === 'earned';
+    grid.classList.toggle('with-diploma', diplomaEarned);
+    const cards = states.map(({ ceremony, state }) =>
+      state.state === 'earned'
+        ? certificateCard(ceremony, cleanName(name.value), dates[ceremony.id], ceremony === DIPLOMA ? tierNow : undefined)
+        : h(
+            'figure',
+            { class: 'cert locked' },
+            h('div', { class: 'cert-lock' }, h('span', { 'aria-hidden': 'true' }, '🔒')),
+            h(
+              'figcaption',
+              {},
+              h('span', {}, certificateTitle(ceremony)),
               h(
-                'figcaption',
+                'small',
                 {},
-                h('span', {}, certificateTitle(ceremony)),
-                h(
-                  'small',
-                  {},
-                  state.state === 'open' ? 'Open: finish its graduation to earn it.' : `${unlockRule(ceremony)} ${state.done} of ${state.needed} so far.`,
-                ),
+                state.state === 'open' ? 'Open: finish its graduation to earn it.' : `${unlockRule(ceremony)} ${state.done} of ${state.needed} so far.`,
               ),
             ),
-      ),
+          ),
+    );
+    grid.replaceChildren(
+      ...honorsLayout(cards.length, diplomaEarned).map((slot) => {
+        const card = cards[slot.index];
+        card.classList.add(`cert-${slot.place}`);
+        if (slot.row) card.style.gridRow = String(slot.row);
+        return card;
+      }),
     );
   };
   name.addEventListener('input', () => {
@@ -129,8 +150,12 @@ function honorsPanel(finished: ReadonlySet<string>): HTMLElement {
   return h(
     'div',
     { class: 'tr-panel', 'data-list-area': '' },
-    h('label', { class: 'cert-name' }, 'Name on your honors (optional) ', name),
-    h('p', { class: 'meta' }, 'Kept only in this browser. It is never sent anywhere.'),
+    h(
+      'div',
+      { class: 'cert-name-row' },
+      h('label', { class: 'cert-name' }, 'Name on your honors (optional) ', name),
+      h('p', { class: 'meta' }, 'Kept only in this browser. It is never sent anywhere.'),
+    ),
     grid,
   );
 }

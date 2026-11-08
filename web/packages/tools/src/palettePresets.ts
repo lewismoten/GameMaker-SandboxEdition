@@ -32,7 +32,12 @@ const spec = (id: string, name: string, stem: string, entries: number, descripti
   colors,
 });
 
-const SPECS: readonly Spec[] = [
+/**
+ * The presets, built when first asked for. Nothing runs at load but the pure-marked
+ * PALETTE_PRESETS call, so a bundle that imports ./palettes only for libraryDefaultPalette
+ * (the web app's new project) leaves the presets and their color tables out.
+ */
+const specs = (): readonly Spec[] => [
   spec('amber', 'Monochrome amber', 'monoamb', 32, '32 shades from black to warm amber.', () => colorRamp(32, [0, 0, 0], [255, 184, 48])),
   spec('green', 'Monochrome green', 'monogrn', 32, '32 shades from black to phosphor green.', () => colorRamp(32, [0, 0, 0], [64, 255, 96])),
   spec('white', 'Monochrome white', 'monowht', 32, '32 shades from black to white.', () => gray(32)),
@@ -77,11 +82,16 @@ const SPECS: readonly Spec[] = [
   ),
 ];
 
-export const PALETTE_PRESETS: readonly PalettePreset[] = Object.freeze(SPECS.map(({ colors: _colors, ...metadata }) => Object.freeze(metadata)));
+let built: readonly Spec[] | undefined;
+const allSpecs = (): readonly Spec[] => (built ??= specs());
+
+const presetList = (): readonly PalettePreset[] => Object.freeze(allSpecs().map(({ colors: _colors, ...metadata }) => Object.freeze(metadata)));
+
+export const PALETTE_PRESETS: readonly PalettePreset[] = /* @__PURE__ */ presetList();
 
 /** A fresh 768-byte VGA palette. Black is moved to index 0; unused entries and 255 are black. */
 export function createPalettePreset(id: string): Palette {
-  const preset = SPECS.find((item) => item.id === id);
+  const preset = allSpecs().find((item) => item.id === id);
   if (!preset) throw new RangeError(`Unknown palette preset: ${id}`);
   const colors = [...preset.colors()];
   const black = colors.findIndex((color) => color.every((component) => component === 0));

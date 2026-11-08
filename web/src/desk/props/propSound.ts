@@ -6,6 +6,7 @@
 import { output } from '@lewismoten/gamemaker-sandbox-engine/audio/output';
 import { audioContext, soundUnlocked, unlock } from '@lewismoten/gamemaker-sandbox-engine/audio/context';
 import { BARKS, barkUrl } from '../../tour/steps';
+import { chezPassBy } from '../../audio/chez/chezSound';
 
 let gameAudio: import('@lewismoten/gamemaker-sandbox-engine/audio/engine').AudioEngine | undefined;
 
@@ -237,31 +238,10 @@ export const roomSound = {
       n.stop(o.t + 1.7);
     }
   },
-  /** THE CHEZ going by: an electric motor's quiet whirr, rising and falling over `seconds`. */
+  /** THE CHEZ going by at cruise, heard through the window: the same motor as on the cast page (audio/chez/). */
   whirr(seconds = 10): void {
     const o = open();
-    if (!o) return;
-    const { ctx, out } = o;
-    const g = ctx.createGain();
-    g.gain.setValueAtTime(0, o.t);
-    g.gain.linearRampToValueAtTime(0.025, o.t + seconds * 0.45);
-    g.gain.linearRampToValueAtTime(0, o.t + seconds);
-    g.connect(out);
-    for (const [f, type, level] of [
-      [330, 'sine', 1],
-      [990, 'triangle', 0.25],
-    ] as const) {
-      const osc = ctx.createOscillator();
-      osc.type = type;
-      osc.frequency.setValueAtTime(f * 0.97, o.t);
-      osc.frequency.linearRampToValueAtTime(f * 1.03, o.t + seconds * 0.45);
-      osc.frequency.linearRampToValueAtTime(f * 0.94, o.t + seconds);
-      const v = ctx.createGain();
-      v.gain.value = level;
-      osc.connect(v).connect(g);
-      osc.start(o.t);
-      osc.stop(o.t + seconds + 0.05);
-    }
+    if (o) chezPassBy(o.ctx, o.out, seconds, { level: 0.04, outside: true, pullAway: true });
   },
   /** A heavy truck's diesel rumble and a blade scraping, fading over `seconds`. */
   rumble(seconds = 4): void {

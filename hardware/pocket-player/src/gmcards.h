@@ -2,9 +2,13 @@
 // code, so the Mac test builds the same pixels. A game's .cfg lists them in the order the engine shows them:
 //   card <where> g <file> <seconds>                       a 320 x 200 picture (768 palette bytes, 6 bit VGA, then 64000 indices)
 //   card <where> t <file> <seconds> <color> <more color>  a text page over the picture before it (lines joined by \n)
+//   card <where> p <patch> <seconds> <offset> <length>   a picture made from another one in the pak (<offset>.<length>, the same
+//                                                         palette) with a rectangle of it replaced (applyPatch); menu pages only
 //   card <where> f <table> <seconds> <speed> <frames>     an FLI animation: <table> lists each frame's pak bytes (offset and length,
 //                                                         two u32 each); <speed> is the wait after a frame in 1/70 s
 // <where> is i<level> (before the level), x<level> (after it), w (the game is won) or l (every life lost).
+// The game's own menu pages, read from Details: t (the title, scene 0 slot 0), s (Read Storyline, slot 4), h (Read Instructions, slot 6).
+// Firmware before these ignores them (it asks only for its own <where>).
 // <seconds> is how long to wait for a key or touch: 0 shows and goes on, 65535 waits for one. Colors are palette
 // indices picked when the game was packed (the engine matches RGB(50,10,50) and RGB(63,10,10) in the picture's palette).
 // <file> is "<offset>.<length>": the packed bytes (like the other files: 4 byte length, raw deflate) inside data/cards.pak,
@@ -25,6 +29,7 @@ constexpr int FADE_MS = FADE_STEPS * 1000 / 70;  // 928 ms
 constexpr int PAUSE_KEY = 65535;     // wait for a key
 
 struct Card { char kind; char file[20]; int pause; int color, more; };
+constexpr int MAX_CARDS = 16;  // one list's cards the board reads (a story can have 11: maximus)
 
 // One `card` line of `where` (null-terminated, one line): adds the card to out[*n].
 inline void cardLine(const char* line, const char* where, Card* out, int* n) {
@@ -69,6 +74,18 @@ inline int cardsOfFile(const Lines& ln, const char* name, const char* where, Car
   while (n < max && ln.next(h, line, sizeof line)) cardLine(line, where, out, &n);
   ln.close(h);
   return n;
+}
+
+// Which of the menu pages (t, s, h) the .cfg has, as bits 0, 1 and 2, in one pass over its lines.
+inline int menuPagesOfFile(const Lines& ln, const char* name) {
+  void* h = ln.open(ln.user, name);
+  if (!h) return 0;
+  int mask = 0;
+  char line[128];
+  while (ln.next(h, line, sizeof line))
+    if (!strncmp(line, "card ", 5) && line[6] == ' ') mask |= line[5] == 't' ? 1 : line[5] == 's' ? 2 : line[5] == 'h' ? 4 : 0;
+  ln.close(h);
+  return mask;
 }
 
 // Reads `len` bytes at `off` of cards.pak (malloc'd; the caller frees): LittleFS on the board, stdio in the Mac test.
@@ -180,6 +197,28 @@ inline uint8_t* loadPicture(const Assets& a, ReadRange rr, const char* file) {
   uint8_t* p = readCard(a, rr, file, &n);
   if (p && n != (size_t)PIC_BYTES) { free(p); p = nullptr; }
   return p;
+}
+// A patch file (see `p` above): x, y, w, h (u16 little endian), then w * h indices, written over a picture's 64000.
+inline bool applyPatch(uint8_t* px, const uint8_t* d, size_t n) {
+  if (!d || n < 8) return false;
+  int x = d[0] | d[1] << 8, y = d[2] | d[3] << 8, w = d[4] | d[5] << 8, h = d[6] | d[7] << 8;
+  if (x + w > PIC_W || y + h > PIC_H || n != 8 + (size_t)w * h) return false;
+  for (int r = 0; r < h; r++) memcpy(px + (y + r) * PIC_W + x, d + 8 + r * w, w);
+  return true;
+}
+// The picture of a `g` card, or of a `p` card (its base picture with the patch on it). Malloc'd PIC_BYTES; null on any error.
+inline uint8_t* loadCardPicture(const Assets& a, ReadRange rr, const Card& c) {
+  if (c.kind == 'g') return loadPicture(a, rr, c.file);
+  if (c.kind != 'p') return nullptr;
+  char base[24];
+  snprintf(base, sizeof base, "%d.%d", c.color, c.more);
+  uint8_t* pic = loadPicture(a, rr, base);
+  size_t n = 0;
+  uint8_t* d = pic ? readCard(a, rr, c.file, &n) : nullptr;
+  bool ok = pic && applyPatch(pic + 768, d, n);
+  free(d);
+  if (!ok) { free(pic); return nullptr; }
+  return pic;
 }
 
 // A text page's lines: the file is lines joined by \n. Returns the number of lines; line i starts at start[i].

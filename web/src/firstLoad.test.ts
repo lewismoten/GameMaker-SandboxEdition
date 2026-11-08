@@ -28,6 +28,7 @@ const RULES: [entry: string, mustNot: [what: string, match: RegExp][]][] = [
       ['the Library', /^library\//],
       ['new game and importing', /^editor\/shell\/homeImport\.ts$/],
       ['the engine', /^engine\//],
+      ['the home page on a direct project route', /^editor\/shell\/home\.ts$/],
     ],
   ],
   [
@@ -40,6 +41,15 @@ const RULES: [entry: string, mustNot: [what: string, match: RegExp][]][] = [
   ['export/exportDos.ts', [['installation support', /^export\/(dosInstall|dosFloppies)\.ts$/]]],
   ['export/exportWebPlayer.ts', [['DOS ZIP export', DOS_EXPORT]]],
   ['assistant/tools/checkTools.ts', [['DOS ZIP export', DOS_EXPORT]]],
+  [
+    'editor/shell/home.ts',
+    [
+      ['the desk, the magazine or the level check', /^(desk|manual\/magazine|editor\/check)\//],
+      ['the Library', /^library\//],
+      ['new game and importing', /^editor\/shell\/homeImport\.ts$/],
+      ['the engine', /^engine\//],
+    ],
+  ],
   // a new game's opening: its fields and preview up front, the cards' renderer when the game is made
   ['editor/shell/homeImport.ts', [['the opening cards’ renderer', /^editor\/tools\/opening\/openingCards\.ts$/]]],
   ['manual/magazine/viewer.ts', [['the Shareware Shelf’s list', /^manual\/magazine\/data\//]]],

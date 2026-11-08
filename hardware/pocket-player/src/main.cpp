@@ -12,6 +12,8 @@
 #include <rom/miniz.h>
 #include "board.h"
 #include "controls.h"
+#include "paddraw.h"
+#include "overlaydraw.h"
 #include "banner.h"
 #include "btnicon.h"
 #include "gmcards.h"
@@ -20,6 +22,16 @@
 #include "gmcfg.h"
 #include "screen.h"
 #include "picker_draw.h"
+#include "splash.h"
+#include "cardmsg.h"
+#include "library.h"
+#include "idle.h"
+#include "statusled.h"
+#include "pressrect.h"
+#include "settingsdraw.h"
+#include "firstrun.h"
+#include "picturetune.h"
+#include <mbedtls/sha256.h>
 #ifdef POCKET_CYD28
 #include "xpt2046.h"
 using Touch = XPT2046;
@@ -112,6 +124,7 @@ static bool packOpen(fs::FS& fsys, const char* path, File& f, gm::SmallPak& pak)
   f = fsys.open(path, "r");
   if (!f) return false;
   pak.user = &f;
+  pak.size = f.size();
   pak.readAt = smallReadAt;
   if (pak.begin()) return true;
   f.close();
@@ -121,7 +134,7 @@ static bool smallOpen(File& f, gm::SmallPak& pak) { return packOpen(LittleFS, "/
 // The entry `name` of an open bundle (malloc'd, with a spare byte), or nullptr.
 static uint8_t* packRead(File& pf, gm::SmallPak& pak, const char* name, size_t* n) {
   uint32_t off, len;
-  if (!pak.find(name, &off, &len)) return nullptr;
+  if (!pak.find(name, &off, &len) || len > 1024 * 1024) return nullptr;
   uint8_t* p = (uint8_t*)malloc(len + 1);
   if (p && !smallReadAt(&pf, off, p, len)) { free(p); p = nullptr; }
   if (p) *n = len;
@@ -269,12 +282,19 @@ static bool inflateRaw(const uint8_t* src, size_t n, uint8_t* dst, size_t cap) {
   return st == TINFL_STATUS_DONE && out == cap;
 }
 
-// file: the 8 character name of an SD game's .cfg and .pak, or (one: true) the name of its .GMP in /pocket
-struct GameEntry { char id[28]; char* title; int levels; bool sd; bool one; char file[16]; };
-constexpr int MAXGAMES = 128;  // the Starters (101 in the current build) and the card's games
-static GameEntry games[MAXGAMES];
-static int ngames = 0;
-static bool haveSD = false;  // a card was found at start (it is mounted only while it is read: a mounted card holds about 33 KB of heap)
+// Menu records live in one bounded allocation, released before loading game buffers.
+using GameEntry = pk::Entry;
+constexpr int MAXGAMES = pk::MAX_GAMES;
+static pk::Catalog* catalog = nullptr;
+static GameEntry* games = nullptr;
+static GameEntry activeGame;
+static int ngames = 0, ncollections = 0;
+static bool restoreSelection = false;
+static bool catalogOverflow = false, uidConflict = false;
+static bool haveSD = false, cardProbePending = true;
+static pk::CardState cardState = pk::CARD_UNKNOWN;  // what the card said at boot or the last Rescan (cardmsg.h)
+static pk::LoadFail failWhy = pk::FAIL_FILE;
+static bool loadBarOn = false;
 static SPIClass sdSpi(VSPI);
 static bool mountSD() {
   if (sdUp) return true;
@@ -283,128 +303,261 @@ static bool mountSD() {
   if (!sdUp) sdSpi.end();
   return sdUp;
 }
-static void unmountSD() {
-  if (!sdUp) return;
-  SD.end();
-  sdSpi.end();
-  sdUp = false;
+static void unmountSD() { if (sdUp) { SD.end(); sdSpi.end(); sdUp = false; } }
+static File scanDir, cacheIn, cacheOut;
+static bool cacheValid = false, cardScanKnown = false;
+static uint32_t cardDirectoryStamp = 0;
+static bool cachedGame(File& f,const char* name,GameEntry&g) {
+  if(!cacheValid||!cacheIn.seek(4))return false;
+  pk::Cached row;
+  while(cacheIn.read((uint8_t*)&row,sizeof row)==sizeof row) {
+    if(pk::cached(row,f.size(),f.getLastWrite(),name)) {
+      // Collection numbers depend on this boot's user labels, so reclassify those from JSON.
+      if(row.game.category==5&&row.game.sub)return false;
+      if(row.game.pos>f.size()||row.game.len>f.size()-row.game.pos)return false;
+      g=row.game;return true;
+    }
+  }return false;
 }
-
-// Fills g from one list line, id|title|levels (and for the card's games.txt also |<file>); false if it is not one.
-static bool parseGameLine(char* p, bool withFile, GameEntry& g) {
-  char* a = strchr(p, '|');
-  char* b = a ? strchr(a + 1, '|') : nullptr;
-  char* c = b ? strchr(b + 1, '|') : nullptr;
-  if (c) *c = 0;
-  if (!a || !b || (withFile && !c)) return false;
-  *a = 0; *b = 0;
-  strncpy(g.id, p, sizeof g.id - 1); g.id[sizeof g.id - 1] = 0;
-  // Keep full searchable titles without reserving 96 bytes for every one of 128 slots in static DRAM.
-  size_t titleLen = strlen(a + 1);
-  if (titleLen > 95) titleLen = 95;
-  char* title = (char*)malloc(titleLen + 1);
-  if (!title) return false;
-  memcpy(title, a + 1, titleLen); title[titleLen] = 0;
-  free(g.title); g.title = title;
-  g.levels = atoi(b + 1);
-  g.sd = withFile;
-  g.one = false;
-  if (withFile) { strncpy(g.file, c + 1, sizeof g.file - 1); g.file[sizeof g.file - 1] = 0; }
-  else g.file[0] = 0;
-  return true;
+static void cacheGame(const GameEntry&g,File& f) {
+  if(!cacheOut||cacheOut.size()>=4+MAXGAMES*sizeof(pk::Cached))return;pk::Cached row={};row.game=g;row.size=f.size();row.modified=f.getLastWrite();row.checksum=pk::crc32(&row,offsetof(pk::Cached,checksum));
+  if(cacheOut.write((const uint8_t*)&row,sizeof row)!=sizeof row){cacheOut.close();SD.remove("/pocket/LIBRARY.NEW");}
 }
-// Adds the games of a list file (lines id|title|levels, and for the card also |<file>) to the picker.
-static void addGames(fs::FS& fsys, const char* base, bool sd) {
-  size_t n = 0;
-  uint8_t* t = readFileIn(fsys, base, "games.txt", &n);
-  if (!t) return;
-  t[n] = 0;
-  char* p = (char*)t;
-  while (*p && ngames < MAXGAMES) {
-    char* e = strchr(p, '\n');
-    if (e) *e = 0;
-    if (parseGameLine(p, sd, games[ngames])) ngames++;
-    if (!e) break;
-    p = e + 1;
-  }
-  free(t);
-}
-// The one-file games in /pocket (card mounted): every NAME.GMP whose game.txt is "GMP 1" then id|title|levels, and whose id the
-// list doesn't hold yet. A later format version is left out (this firmware can't read it).
-static File scanDir;
 static bool scanDone = false;
 static uint32_t scanStart = 0, scanFiles = 0;
-static void stopCardScan() { scanDir.close(); unmountSD(); }
-// Read names without opening every loose asset. At most eight directory entries per UI loop;
-// only GMP candidates need a file open. Leaving the picker releases the card's 33 KB of heap.
-static bool scanCardBatch() {
-  if (scanDone || !haveSD) return false;
-  if (!scanDir) {
-    if (!mountSD()) { scanDone = true; return true; }
-    scanDir = SD.open("/pocket");
-    if (!scanDir) { scanDone = true; stopCardScan(); return true; }
-    scanStart = millis(); scanFiles = 0;
+static void stopCardScan() { scanDir.close(); cacheIn.close(); cacheOut.close(); unmountSD(); }
+static void releaseCatalog() { stopCardScan(); free(catalog); catalog = nullptr; games = nullptr; }
+// ---- Recently played and Favorites (favorites.h): NVS pocket/recent and pocket/pins ----------------------------------
+// Written only when a game launches (recent) and on a star tap (pins), never mid-play. The lists live in the catalog while
+// the library is open; a pause reads and writes NVS directly, through a short-lived heap buffer.
+template <int N> static bool listRead(const char* key, uint32_t magic, pk::UidList<N>& l) {
+  l.n = 0;
+  uint8_t* b = (uint8_t*)malloc(pk::blobSize(N));
+  if (!b) return false;
+  Preferences p;
+  bool ok = false;
+  if (p.begin("pocket", true)) {
+    size_t n = p.isKey(key) ? p.getBytesLength(key) : 0;
+    ok = n && n <= pk::blobSize(N) && p.getBytes(key, b, n) == n && pk::unpackUids(b, n, magic, l);
+    p.end();
   }
-  int before = ngames;
-  for (int batch = 0; batch < 8 && ngames < MAXGAMES; batch++) {
-    bool dir = false;
-    String path = scanDir.getNextFileName(&dir);
-    if (!path.length()) { scanDone = true; break; }
-    scanFiles++;
-    const char* nm = strrchr(path.c_str(), '/');
-    nm = nm ? nm + 1 : path.c_str();
-    size_t len = strlen(nm), tn = 0;
-    if (dir || len <= 4 || len >= sizeof games[0].file || strcasecmp(nm + len - 4, ".gmp")) continue;
-    File f;
-    gm::SmallPak pak;
-    if (!packOpen(SD, path.c_str(), f, pak)) continue;
-    uint8_t* t = packRead(f, pak, "game.txt", &tn);
-    if (t) {
-      t[tn] = 0;
-      char* line2 = strchr((char*)t, '\n');
-      if (line2) *line2++ = 0;
-      char* e = line2 ? strchr(line2, '\n') : nullptr;
-      if (e) *e = 0;
-      GameEntry& g = games[ngames];
-      bool dup = false;
-      if (!strcmp((char*)t, "GMP 1") && line2 && parseGameLine(line2, false, g)) {
-        for (int i = 0; i < ngames && !dup; i++) dup = !strcmp(games[i].id, g.id);
-        if (!dup) { g.sd = g.one = true; strcpy(g.file, nm); ngames++; }
-      }
-      free(t);
+  free(b);
+  return ok;
+}
+template <int N> static bool listWrite(const char* key, uint32_t magic, const pk::UidList<N>& l) {
+  uint8_t* b = (uint8_t*)malloc(pk::blobSize(N));
+  if (!b) return false;
+  size_t n = pk::packUids(l, magic, b);
+  Preferences p;
+  bool ok = p.begin("pocket", false);
+  if (ok) { ok = p.putBytes(key, b, n) == n; p.end(); }
+  free(b);
+  return ok;
+}
+// A launch from the library (not the serial self-test): the game goes first in Recently played.
+static void noteRecent(const uint8_t* uid) {
+  pk::RecentList l;
+  listRead("recent", pk::RECENT_MAGIC, l);
+  if (pk::recentPlayed(l, uid)) listWrite("recent", pk::RECENT_MAGIC, l);
+}
+constexpr int PIN_NOT_SAVED = 3;  // after pk::PIN_ADDED, PIN_REMOVED, PIN_FULL: NVS refused the write, so nothing changed
+// Star or unstar a game: the catalog's list while the library is open, else (paused) the stored one.
+static int toggleFavorite(const uint8_t* uid) {
+  pk::PinList* l = catalog ? &catalog->pins : (pk::PinList*)malloc(sizeof(pk::PinList));
+  if (!l) return PIN_NOT_SAVED;
+  if (!catalog) listRead("pins", pk::PINS_MAGIC, *l);
+  int r = pk::togglePin(*l, uid);
+  if (r != pk::PIN_FULL && !listWrite("pins", pk::PINS_MAGIC, *l)) { pk::togglePin(*l, uid); r = PIN_NOT_SAVED; }
+  if (!catalog) free(l);
+  return r;
+}
+static bool storedFavorite(const uint8_t* uid) {
+  pk::PinList* l = (pk::PinList*)malloc(sizeof(pk::PinList));
+  if (!l) return false;
+  listRead("pins", pk::PINS_MAGIC, *l);
+  bool has = l->has(uid);
+  free(l);
+  return has;
+}
+static const char* pinMessage(int r) {
+  return r == pk::PIN_ADDED ? "Added to Favorites" : r == pk::PIN_REMOVED ? "Removed from Favorites" : r == pk::PIN_FULL ? "Favorites are full (32): unstar one first" : "Changes not saved";
+}
+static bool lineAt(File& f, uint32_t pos, char* out, size_t cap) {
+  if (!f.seek(pos)) return false;
+  size_t n=0; bool overflow=false;
+  while(f.available()) { int c=f.read();if(c=='\n')break;if(n+1<cap)out[n++]=(char)c;else overflow=true; }
+  out[n]=0;return n&&!overflow;
+}
+static bool field(const char* s, const char* name, char* out, size_t cap) {
+  pk::Json j(s,strlen(s)); if(!j.take('{'))return false;
+  do {char key[64];if(!j.str(key,sizeof key)||!j.take(':'))return false;if(!strcmp(key,name))return j.str(out,cap);if(!j.skip())return false;}while(j.take(','));return false;
+}
+static void identify(GameEntry& g,const char* uid) { uint8_t hash[32];mbedtls_sha256_ret((const unsigned char*)uid,strlen(uid),hash,0);memcpy(g.uid,hash,16); }
+static bool gameMeta(const GameEntry&g,pk::Meta&m);
+static bool duplicate(const GameEntry& g) {
+  for(int i=0;i<ngames;i++)if(!memcmp(games[i].uid,g.uid,16)) {
+    if(g.metadata&&games[i].metadata){pk::Meta a,b;if(gameMeta(g,a)&&gameMeta(games[i],b)&&(strcmp(a.uid,b.uid)||strcmp(a.crc,b.crc))){uidConflict=true;Serial.println("LIB conflicting UID: first installed copy retained");}}
+    return true;
+  }
+  return false;
+}
+static void classify(GameEntry& g,const pk::Meta& m) {
+  pk::categorize(g,m);
+  if(g.category==5 && m.sub[0] && strcmp(m.sub,"unsorted")) {
+    int at=0;while(at<ncollections&&strcmp(catalog->collections[at].slug,m.sub))at++;
+    if(at==ncollections) {
+      if(ncollections==pk::MAX_COLLECTIONS){catalogOverflow=true;return;}
+      strcpy(catalog->collections[at].slug,m.sub);strcpy(catalog->collections[at].label,m.label[0]?m.label:m.sub);ncollections++;
+    }
+    g.sub=at+1;
+  }
+}
+// Retrieve only bounded metadata/title; a search never opens cfg, cards or thumbnails.
+static bool gameMeta(const GameEntry& g,pk::Meta& m) {
+  bool was=sdUp;if(g.sd&&!mountSD())return false;
+  File f;char path[48];char b[1025];bool ok=false;
+  if(g.one)snprintf(path,sizeof path,"/pocket/%s",g.file);
+  else snprintf(path,sizeof path,"%s/%s",g.sd?"/pocket":"",g.metadata?"library.jsonl":"games.txt");
+  f=(g.sd?(fs::FS&)SD:(fs::FS&)LittleFS).open(path,"r");
+  if(f) {
+    if(g.metadata){if(g.len<=1024&&f.seek(g.pos)&&f.read((uint8_t*)b,g.len)==g.len){b[g.len]=0;ok=pk::metadata(b,g.len,m,true);}}
+    else {
+      bool got=g.one&&g.len?g.len<sizeof b&&f.seek(g.pos)&&f.read((uint8_t*)b,g.len)==g.len:lineAt(f,g.pos,b,sizeof b);
+      if(g.one&&g.len&&g.len<sizeof b)b[g.len]=0;
+      char*a=got?strchr(b,'|'):nullptr,*e=a?strchr(a+1,'|'):nullptr;
+      if(a&&e){*e=0;strncpy(m.title,a+1,128);m.title[128]=0;ok=true;}
     }
     f.close();
   }
-  if (ngames >= MAXGAMES) scanDone = true;
-  if (scanDone) {
-    Serial.printf("BOOT ms=%lu card-discovery elapsed=%lu entries=%lu games=%d\n", (unsigned long)millis(), (unsigned long)(millis() - scanStart), (unsigned long)scanFiles, ngames);
-    stopCardScan();
-  }
-  return before != ngames || scanDone;
+  if(!ok)strcpy(m.title,g.id);
+  if(g.sd&&!was)unmountSD();return ok;
 }
-// The Starters from LittleFS, then (when a card is in) the games on it. With no card the list is the Starters alone.
-static void loadGameList() {
-  stopCardScan();
-  scanDone = false;
-  for (auto& g : games) { free(g.title); g.title = nullptr; }
-  ngames = 0;
-  addGames(LittleFS, "", false);
-  if (haveSD && mountSD()) {
-    addGames(SD, "/pocket", true);
-    scanDone = false;
-    unmountSD();
+static bool parseGameLine(char* p,bool sd,GameEntry& g) {
+  char*a=strchr(p,'|'),*b=a?strchr(a+1,'|'):nullptr,*c=b?strchr(b+1,'|'):nullptr;
+  if(!a||!b||(sd&&!c)||a-p>27||a==p)return false;
+  *a=0;*b=0;if(c)*c=0;
+  for(char*q=p;*q;q++)if(!(*q>='a'&&*q<='z')&&!pk::digit(*q)&&*q!='-')return false;
+  strcpy(g.id,p);g.sd=sd;g.category=5;g.metadata=false;
+  if(sd){if(strlen(c+1)>8)return false;for(char*q=c+1;*q;q++)if(!pk::alnum(*q))return false;strcpy(g.file,c+1);}
+  char uid[128];snprintf(uid,sizeof uid,"legacy:%s:%s:%s",sd?"sd":"flash",g.file,g.id);identify(g,uid);return true;
+}
+// Indexes are acceleration caches: invalid/missing headers fall back to games.txt/GMP discovery.
+static bool addIndex(fs::FS& fsys,bool sd) {
+  File f=fsys.open(sd?"/pocket/library.jsonl":"/library.jsonl","r");if(!f)return false;
+  char b[1025];bool valid=lineAt(f,0,b,sizeof b)&&pk::indexHeader(b,strlen(b));
+  if(!valid){f.close();return false;}
+  while(f.available()) {
+    uint32_t pos=f.position();if(!lineAt(f,pos,b,sizeof b))continue;
+    pk::Meta m;if(!pk::metadata(b,strlen(b),m,true))continue;
+    GameEntry g={};char storage[12],locator[32];
+    if(!field(b,"id",g.id,sizeof g.id)||!pk::segment(g.id)||!field(b,"storage",storage,sizeof storage)||!field(b,"locator",locator,sizeof locator))continue;
+    if(strcmp(storage,sd?"loose":"flash")||!pk::segment(locator)||(sd&&strlen(locator)>8))continue;
+    g.sd=sd;g.metadata=true;g.pos=pos;g.len=strlen(b);strcpy(g.file,sd?locator:"");identify(g,m.uid);classify(g,m);
+    if(duplicate(g))continue;
+    if(ngames==MAXGAMES){catalogOverflow=true;break;}games[ngames++]=g;
   }
+  f.close();return ngames>0;
+}
+static void addGames(fs::FS& fsys,const char* base,bool sd) {
+  addIndex(fsys,sd);
+  char path[48];snprintf(path,sizeof path,"%s/games.txt",base);File f=fsys.open(path,"r");if(!f)return;
+  char b[256];while(f.available()) {
+    uint32_t pos=f.position();if(!lineAt(f,pos,b,sizeof b))continue;
+    GameEntry g={};if(!parseGameLine(b,sd,g))continue;g.pos=pos;
+    bool indexed=false;for(int i=0;i<ngames;i++)if(games[i].metadata&&games[i].sd==sd&&!games[i].one&&!strcmp(games[i].id,g.id)&&!strcmp(games[i].file,g.file))indexed=true;
+    if(indexed)continue;
+    if(duplicate(g))continue;if(ngames==MAXGAMES){catalogOverflow=true;break;}games[ngames++]=g;
+  }f.close();
+}
+static bool scanCardBatch() {
+  if(scanDone||!haveSD||!catalog)return false;
+  if(!scanDir){if(!mountSD()){scanDone=true;cardState=pk::CARD_NONE;return true;}scanDir=SD.open("/pocket");if(!scanDir){scanDone=true;cardState=pk::CARD_NOFOLDER;stopCardScan();return true;}scanStart=millis();scanFiles=0;
+    cacheIn=SD.open("/pocket/LIBRARY.CCH","r");char magic[4];cacheValid=cacheIn&&cacheIn.size()>=4&&(cacheIn.size()-4)%sizeof(pk::Cached)==0&&cacheIn.size()<=4+MAXGAMES*sizeof(pk::Cached)&&cacheIn.read((uint8_t*)magic,4)==4&&!memcmp(magic,"PLC1",4);
+    cacheOut=SD.open("/pocket/LIBRARY.NEW","w");if(cacheOut)cacheOut.write((const uint8_t*)"PLC1",4);
+  }
+  int before=ngames;
+  for(int batch=0;batch<8;batch++) {
+    bool dir=false;String path=scanDir.getNextFileName(&dir);if(!path.length()){scanDone=true;break;}scanFiles++;
+    const char*nm=strrchr(path.c_str(),'/');nm=nm?nm+1:path.c_str();size_t len=strlen(nm);
+    if(dir||len<=4||len>=16||strcasecmp(nm+len-4,".gmp"))continue;
+    bool safe=true;for(size_t i=0;i<len-4;i++)if(!pk::alnum(nm[i])&&nm[i]!='_'&&nm[i]!='-')safe=false;if(!safe)continue;
+    File f=SD.open(path.c_str(),"r");if(!f)continue;
+    GameEntry hit={};if(cachedGame(f,nm,hit)){cacheGame(hit,f);if(!duplicate(hit)){if(ngames==MAXGAMES){catalogOverflow=true;scanDone=true;}else games[ngames++]=hit;}f.close();if(scanDone)break;continue;}
+    gm::SmallPak pak;pak.user=&f;pak.readAt=smallReadAt;pak.size=f.size();if(!pak.begin()){f.close();continue;}
+    uint32_t off,n;if(!pak.find("game.txt",&off,&n)||n>256){f.close();continue;}
+    char b[1025];if(!smallReadAt(&f,off,b,n)||!pk::gmp1(b,n)){f.close();continue;}b[n]=0;
+    char*line=b+6;char*end=strchr(line,'\n');if(end)*end=0;
+    GameEntry g={};strcpy(g.file,nm);
+    if(parseGameLine(line,false,g)) {
+      g.sd=g.one=true;g.pos=off+6;g.len=end?end-line:n-6;g.category=5;
+      char uid[128];snprintf(uid,sizeof uid,"legacy:gmp:%s:%s",nm,g.id);identify(g,uid);
+      if(pak.find("library.json",&off,&n)&&n<=1024&&smallReadAt(&f,off,b,n)) {
+        b[n]=0;pk::Meta m;if(pk::metadata(b,n,m)){g.metadata=true;g.pos=off;g.len=n;identify(g,m.uid);classify(g,m);}
+      }
+      cacheGame(g,f);
+      if(!duplicate(g)){if(ngames==MAXGAMES){catalogOverflow=true;scanDone=true;}else games[ngames++]=g;}
+    }f.close();if(scanDone)break;
+  }
+  if(scanDone){cacheIn.close();if(cacheOut){cacheOut.close();SD.remove("/pocket/LIBRARY.CCH");SD.rename("/pocket/LIBRARY.NEW","/pocket/LIBRARY.CCH");}File dir=SD.open("/pocket");cardDirectoryStamp=dir?dir.getLastWrite():0;dir.close();cardScanKnown=true;if(cardState==pk::CARD_READING)cardState=pk::CARD_READY;Serial.printf("BOOT card-discovery ms=%lu entries=%lu games=%d\n",(unsigned long)(millis()-scanStart),(unsigned long)scanFiles,ngames);stopCardScan();}
+  return before!=ngames||scanDone;
+}
+// Rebuild released RAM from the disposable cache after play. A directory scan is only
+// needed on boot, explicit Rescan, changed directory stamp or an invalid/missing target.
+static bool restoreCardCatalog() {
+  if(!cardScanKnown)return false;
+  File dir=SD.open("/pocket");if(!dir)return false;uint32_t stamp=dir.getLastWrite();dir.close();
+  if(stamp!=cardDirectoryStamp)return false;
+  File cache=SD.open("/pocket/LIBRARY.CCH","r");char magic[4];
+  if(!cache||cache.size()<4||(cache.size()-4)%sizeof(pk::Cached)||cache.size()>4+MAXGAMES*sizeof(pk::Cached)||cache.read((uint8_t*)magic,4)!=4||memcmp(magic,"PLC1",4)){cache.close();return false;}
+  uint32_t t=millis();
+  while(cache.available()) {
+    pk::Cached row;if(cache.read((uint8_t*)&row,sizeof row)!=sizeof row){cache.close();return false;}
+    if(row.game.file[15]||!row.game.file[0]){cache.close();return false;}
+    const char* name=row.game.file;size_t n=strlen(name);bool safe=n>4&&!strcasecmp(name+n-4,".gmp");
+    for(size_t i=0;i+4<n;i++)if(!pk::alnum(name[i])&&name[i]!='_'&&name[i]!='-')safe=false;
+    if(!safe){cache.close();return false;}
+    char path[40];snprintf(path,sizeof path,"/pocket/%s",name);File f=SD.open(path,"r");
+    bool valid=f&&pk::cached(row,f.size(),f.getLastWrite(),name)&&row.game.pos<=f.size()&&row.game.len<=f.size()-row.game.pos;f.close();
+    if(!valid){cache.close();return false;}
+    GameEntry g=row.game;
+    if(g.category==5&&g.sub){pk::Meta m;if(!gameMeta(g,m)){cache.close();return false;}classify(g,m);}
+    if(!duplicate(g)){if(ngames==MAXGAMES){catalogOverflow=true;break;}games[ngames++]=g;}
+  }
+  cache.close();Serial.printf("LIB card-cache ms=%lu games=%d\n",(unsigned long)(millis()-t),ngames);return true;
+}
+// Mounts the card and says what it found: no card, unreadable, no /pocket folder, or ready to read. Leaves the card mounted.
+static void probeCard() {
+  bool mounted = mountSD(), root = false, pocket = false;
+  if (mounted) {
+    File r = SD.open("/");
+    root = r && r.isDirectory();
+    r.close();
+    File d = SD.open("/pocket");
+    pocket = d && d.isDirectory();
+    d.close();
+  }
+  haveSD = mounted;
+  cardState = pk::cardStateAfterMount(mounted, root, pocket);
+}
+static int cardGames() { int n = 0; for (int i = 0; i < ngames; i++) if (games[i].sd) n++; return n; }
+static void loadGameList() {
+  releaseCatalog();catalog=(pk::Catalog*)calloc(1,sizeof(pk::Catalog));games=catalog?catalog->games:nullptr;
+  ngames=ncollections=0;catalogOverflow=uidConflict=false;scanDone=false;
+  if(!catalog){catalogOverflow=true;scanDone=true;return;}
+  listRead("recent",pk::RECENT_MAGIC,catalog->recent);listRead("pins",pk::PINS_MAGIC,catalog->pins);
+  addGames(LittleFS,"",false);
+  if(haveSD&&mountSD()){addGames(SD,"/pocket",true);scanDone=restoreCardCatalog();if(scanDone)cardState=pk::CARD_READY;unmountSD();}
 }
 static const char* fileOf(const GameEntry& g) { return g.sd && !g.one ? g.file : g.id; }  // the name of its .cfg (and .pak)
 // Points the file readers at game g.
-static bool selectGame(int g) {
+static bool selectGame(const GameEntry& game) {
   stopCardScan();
   curOne[0] = 0;
   curPakBase = 0;
-  if (games[g].one) {  // one file: the cards are its cards.pak entry
+  if (game.one) {  // one file: the cards are its cards.pak entry
     curFs = &SD;
     strcpy(curBase, "/pocket");
-    snprintf(curOne, sizeof curOne, "/pocket/%s", games[g].file);
+    snprintf(curOne, sizeof curOne, "/pocket/%s", game.file);
     strcpy(curPak, curOne);
     bool wasUp = sdUp, ok = false;
     if (!mountSD()) return false;
@@ -412,16 +565,18 @@ static bool selectGame(int g) {
     gm::SmallPak pak;
     uint32_t len = 0;
     if (packOpen(SD, curOne, pf, pak)) {
-      ok = pak.find("cards.pak", &curPakBase, &len);
+      uint32_t at, n;
+      char header[6];
+      ok = pak.find("game.txt", &at, &n) && n >= 6 && n <= 256 && smallReadAt(&pf, at, header, sizeof header) && pk::gmp1(header, sizeof header) && pak.find("cards.pak", &curPakBase, &len);
       pf.close();
     }
     if (!wasUp) unmountSD();
     return ok;
   }
-  if (games[g].sd) {
+  if (game.sd) {
     curFs = &SD;
     strcpy(curBase, "/pocket");
-    snprintf(curPak, sizeof curPak, "/pocket/%s.pak", fileOf(games[g]));
+    snprintf(curPak, sizeof curPak, "/pocket/%s.pak", fileOf(game));
   } else {
     curFs = &LittleFS;
     curBase[0] = 0;
@@ -474,29 +629,75 @@ static void prefetchLevel(int level) {
 // ---- settings ----------------------------------------------------------------------------------
 
 static bool smallerPicture = false;
+static uint8_t brightStep = 3;   // Settings, Brightness: 25 / 50 / 75 / 100 percent (NVS "bright")
+static bool clicksOn = false;    // optional button clicks (NVS "clicks"); never in a game
+static bool ledOn = true;        // the 2.8 inch board's status LED (NVS "led")
+// ---- idle, backlight, status LED, clicks ------------------------------------------------------------
+static idle::Machine idleM;
+static sled::Led statusLed;
+static void applyBacklight() { tftHw.setBrightness(idle::forState(idleM.state, brightStep)); }
+// The 2.8 inch board's LED: red is plain GPIO (active low), green is dim through its own LEDC channel (6; 4 is the speaker, 7 the backlight).
+static void ledWrite(uint32_t now) {
+#ifdef POCKET_CYD28
+  static uint8_t lastR = 255, lastG = 255;
+  uint8_t r, g;
+  statusLed.at(now, r, g);
+  if (idleM.state == idle::OFF) r = g = 0;
+  if (r != lastR) { digitalWrite(PIN_LED_R, r ? LOW : HIGH); lastR = r; }
+  if (g != lastG) { ledcWrite(6, 255 - g); lastG = g; }
+#else
+  (void)now;
+#endif
+}
+// A 2-step tick: 1.2 kHz then 1.8 kHz, 3 steps of 1/145.6 s each (36 steps in a tune).
+static const uint8_t CLICK_TUNE[72] = {0xB0, 0x04, 0xB0, 0x04, 0xB0, 0x04, 0x08, 0x07, 0x08, 0x07, 0x08, 0x07};
+static void clickSound() { if (clicksOn) spk::play(CLICK_TUNE); }  // only the menus call it, never a game in play
 static void saveSettings() {
   Preferences pref;
-  if (pref.begin("pocket", false)) { pref.putBool("smaller", smallerPicture); pref.putBool("sticky", settings.sticky); pref.end(); }
+  if (pref.begin("pocket", false)) {
+    pref.putBool("smaller", smallerPicture); pref.putBool("sticky", settings.sticky);
+    pref.putUChar("bright", brightStep); pref.putBool("clicks", clicksOn); pref.putBool("led", ledOn);
+    pref.putUChar("sound", settings.sound);  // also in NVS, so a reflash of the file system keeps the chosen volume
+    pref.end();
+  }
   File f = LittleFS.open("/settings.txt", "w");
   if (!f) return;
-  f.printf("lefty=%d\nstylus=%d\npad=%d\ndead=%d\npalm=%d\ndebug=%d\nsound=%d\n", settings.lefty, settings.stylus, settings.padSize, settings.dead, settings.palm, settings.debug, settings.sound);
+  // Older firmware reads these lines by their first letters ("pad" ...), so the newer keys share no prefix with the old ones and
+  // come last: it skips them, and its own save drops them (the pad goes back to Low and Space to the corner).
+  f.printf("lefty=%d\nstylus=%d\npad=%d\ndead=%d\npalm=%d\ndebug=%d\nsound=%d\nraised=%d\njumpnear=%d\nfloat=%d\narcs=%d\nwedge=%d\n", settings.lefty, settings.stylus, settings.padSize,
+           settings.dead, settings.palm, settings.debug, settings.sound, settings.raised, settings.jumpNear, settings.floatPad, settings.arcs, settings.wedge);
 }
 static void loadSettings() {
   settings = ctl::Settings();
   Preferences pref;
-  if (pref.begin("pocket", true)) { smallerPicture = pref.getBool("smaller", false); settings.sticky = pref.getBool("sticky", false); pref.end(); }
+  int nvsSound = -1;
+  if (pref.begin("pocket", true)) { smallerPicture = pref.getBool("smaller", false); settings.sticky = pref.getBool("sticky", false);
+    brightStep = pref.getUChar("bright", 3); if (brightStep > 3) brightStep = 3;
+    clicksOn = pref.getBool("clicks", false); ledOn = pref.getBool("led", true);
+    if (pref.isKey("sound")) nvsSound = pref.getUChar("sound", 0);
+    pref.end(); }
+  // Sound: NVS first, then an older firmware's settings.txt line, else Off (the default, ctl::Settings).
+  if (nvsSound >= 0 && nvsSound <= 3) settings.sound = (uint8_t)nvsSound;
   File f = LittleFS.open("/settings.txt", "r");
   if (!f) return;
   while (f.available()) {
     String l = f.readStringUntil('\n');
-    int v = l.substring(l.indexOf('=') + 1).toInt();
-    if (l.startsWith("lefty")) settings.lefty = v ? 1 : 0;
-    else if (l.startsWith("stylus")) settings.stylus = v ? 1 : 0;
-    else if (l.startsWith("pad")) settings.padSize = v < 0 ? 0 : v > 2 ? 2 : v;
-    else if (l.startsWith("dead")) settings.dead = v < 0 ? 0 : v > 2 ? 2 : v;
-    else if (l.startsWith("palm")) settings.palm = v < 0 ? 0 : v > 2 ? 2 : v;
-    else if (l.startsWith("debug")) settings.debug = v ? 1 : 0;
-    else if (l.startsWith("sound")) settings.sound = v < 0 ? 0 : v > 3 ? 3 : v;
+    int eq = l.indexOf('=');
+    if (eq < 0) continue;
+    String k = l.substring(0, eq);  // whole keys: "pad" and a later "padX" must not be mixed up
+    int v = l.substring(eq + 1).toInt();
+    if (k == "lefty") settings.lefty = v ? 1 : 0;
+    else if (k == "stylus") settings.stylus = v ? 1 : 0;
+    else if (k == "pad") settings.padSize = v < 0 ? 0 : v > 2 ? 2 : v;
+    else if (k == "dead") settings.dead = v < 0 ? 0 : v > 2 ? 2 : v;
+    else if (k == "palm") settings.palm = v < 0 ? 0 : v > 2 ? 2 : v;
+    else if (k == "debug") settings.debug = v ? 1 : 0;
+    else if (k == "sound") { if (nvsSound < 0) settings.sound = v < 0 ? 0 : v > 3 ? 3 : v; }
+    else if (k == "raised") settings.raised = v ? 1 : 0;
+    else if (k == "jumpnear") settings.jumpNear = v ? 1 : 0;
+    else if (k == "float") settings.floatPad = v ? 1 : 0;
+    else if (k == "arcs") settings.arcs = v ? 1 : 0;
+    else if (k == "wedge") settings.wedge = v < 0 ? 0 : v > 2 ? 2 : v;
   }
 }
 
@@ -541,20 +742,11 @@ static bool freshTap(int& x, int& y) {
 // ---- drawing -----------------------------------------------------------------------------------
 
 static void button(int x0, int y0, int x1, int y1, const char* label, bool hot = false, uint16_t fill = C_DARK) {
-  tft.fillRoundRect(x0, y0, x1 - x0, y1 - y0, 6, hot ? C_YELLOW : fill);
-  tft.drawRoundRect(x0, y0, x1 - x0, y1 - y0, 6, C_WHITE);
-  tft.setTextColor(hot ? C_BLACK : C_WHITE, hot ? C_YELLOW : fill);
-  tft.setTextSize(2);
-  tft.setTextDatum(textdatum_t::middle_center);
-  tft.drawString(label, (x0 + x1) / 2, (y0 + y1) / 2);
-  tft.setTextDatum(textdatum_t::top_left);
+  ovl::button(tft, x0, y0, x1, y1, label, hot, fill);
 }
 // Where the screens put things (the 480x320 numbers are the 3248S035's; the 320x240 ones are for the 2432S028).
 constexpr int TITLE_H = scr::SMALL ? 28 : 40;
-constexpr int PK_Y0 = scr::SMALL ? 30 : 44, PK_STEP = scr::SMALL ? 42 : 46, PK_H = scr::SMALL ? 38 : 42, PK_BTN_Y = scr::SMALL ? 200 : 276;
-constexpr int ST_Y0 = scr::SMALL ? 30 : 42, ST_STEP = 34, ST_PER_PAGE = scr::SMALL ? 5 : 7, ST_FOOT_Y = scr::SMALL ? 200 : 288;
-constexpr int PA_BOX_X = scr::SMALL ? 50 : 100, PA_BOX_Y = scr::SMALL ? 8 : 40, PA_BOX_W = scr::SMALL ? 220 : 280, PA_BOX_H = scr::SMALL ? 184 : 236;
-constexpr int PA_X0 = PA_BOX_X + 12, PA_X1 = PA_BOX_X + PA_BOX_W - 12, PA_Y0 = scr::SMALL ? 18 : 52, PA_STEP = scr::SMALL ? 42 : 56, PA_H = scr::SMALL ? 36 : 48;
+
 static void title(const char* s) {
   tft.fillRect(0, 0, scr::W, TITLE_H, C_BLUE);
   tft.setTextColor(C_WHITE, C_BLUE);
@@ -579,16 +771,11 @@ static void title(const char* s) {
 // flash). Only the controls that overlap a band are drawn into it.
 static lgfx::LGFX_Sprite spr(&tftHw);
 static bool sprReady = false;
-static int bandX = 0, bandY = 0, bandW = 0, bandH = 0;  // the band's corner and size on the screen
-
-static const char* labelOf(int scan, const char* fallback) {
-  for (int i = 0; i < cfg.nkeys; i++) if (cfg.keys[i].scan == scan) return cfg.keys[i].label;
-  return fallback;
-}
 
 // What each button shows beside its name: the picture of what the key throws or uses (btnicon.h).
 // Index 0 Space, 1 Enter, 2 + i the key tile i. The signature says when the picture changed.
 static gm::BtnIcon icons[2 + ctl::MAXEXTRA];
+static ovl::Overlay<lgfx::LGFX_Sprite> ov(spr, band, pal, cfg, controls, icons);  // the overlay drawing (overlaydraw.h)
 static void refreshIcons() {
   const ctl::Need& nd = controls.need;
   icons[0] = nd.space ? gm::iconForKey(world, ctl::S_SPACE) : gm::BtnIcon();
@@ -596,219 +783,17 @@ static void refreshIcons() {
   for (int i = 0; i < ctl::MAXEXTRA; i++) icons[2 + i] = i < nd.nextra ? gm::iconForKey(world, nd.extra[i]) : gm::BtnIcon();
 }
 
-static int textW(const char* s, float size) {
-  spr.setTextSize(size);
-  return spr.textWidth(s);
-}
-static int textH(float size) { return (int)(8 * size + 0.5f); }
 
-// Where a label may go: a disc (the width left at a height is its chord, less the ring) or a rectangle.
-struct Box { bool round; int cx, cy, r, w; };
-static int availW(const Box& b, int y0, int y1) {
-  if (!b.round) return b.w - 6;
-  int dy = abs(y0 - b.cy) > abs(y1 - b.cy) ? abs(y0 - b.cy) : abs(y1 - b.cy);
-  int rr = b.r - 2;
-  return dy >= rr ? 0 : (int)(2 * sqrtf((float)(rr * rr - dy * dy)));
-}
-
-// Text centered on (x, y) of the screen, with a dark edge when it sits on the game.
-static void putText(const char* s, int x, int y, uint16_t fg, bool edge) {
-  spr.setTextDatum(textdatum_t::middle_center);
-  x -= bandX; y -= bandY;
-  if (edge) {
-    spr.setTextColor(C_BLACK);
-    spr.drawString(s, x - 1, y); spr.drawString(s, x + 1, y); spr.drawString(s, x, y - 1); spr.drawString(s, x, y + 1);
-  }
-  spr.setTextColor(fg);
-  spr.drawString(s, x, y);
-}
-
-// The key's name, as large as fits (2, 1.5, then 1), centered at (cx, yc).
-static void drawName(const Box& b, const char* name, int yc, uint16_t fg, bool edge) {
-  static const float sizes[3] = {2.0f, 1.5f, 1.0f};
-  float sz = 1.0f;
-  for (int i = 0; i < 3; i++) {
-    sz = sizes[i];
-    int h = textH(sz);
-    if (textW(name, sz) <= availW(b, yc - h / 2, yc + h / 2)) break;
-  }
-  spr.setTextSize(sz);
-  putText(name, b.cx, yc, fg, edge);
-}
-
-// The game's label, small, from topY down, at most maxH tall and never outside the box: one line, else two
-// (split at the space nearest the middle), else smaller, else cut with "...".
-static void drawLabel(const Box& b, const char* label, int topY, int maxH, uint16_t fg, bool edge) {
-  static const float sizes[2] = {1.0f, 0.75f};
-  char l1[24], l2[24];
-  int len = (int)strlen(label);
-  if (len > 23) len = 23;
-  for (int pass = 0; pass < 3; pass++) {
-    float sz = pass < 2 ? sizes[pass] : sizes[1];
-    int h = textH(sz);
-    if (h > maxH) continue;
-    bool cut = pass == 2;
-    int nl = 1;
-    memcpy(l1, label, len); l1[len] = 0; l2[0] = 0;
-    if (textW(l1, sz) > availW(b, topY, topY + h) && 2 * h <= maxH) {
-      int best = -1;
-      for (int i = 1; i < len - 1; i++)
-        if (label[i] == ' ' && (best < 0 || abs(i - len / 2) < abs(best - len / 2))) best = i;
-      if (best > 0) {
-        memcpy(l1, label, best); l1[best] = 0;
-        memcpy(l2, label + best + 1, len - best - 1); l2[len - best - 1] = 0;
-        nl = 2;
-      }
-    }
-    bool ok = true;
-    for (int k = 0; k < nl; k++) {
-      char* s = k ? l2 : l1;
-      int y0 = topY + k * h, aw = availW(b, y0, y0 + h);
-      if (textW(s, sz) <= aw) continue;
-      if (!cut) { ok = false; break; }
-      int n = (int)strlen(s);
-      while (n > 0) {
-        s[n - 1] = 0; n--;
-        char t[28];
-        snprintf(t, sizeof t, "%s...", s);
-        if (textW(t, sz) <= aw) { strcpy(s, t); break; }
-      }
-      if (n == 0) s[0] = 0;
-    }
-    if (!ok) continue;
-    spr.setTextSize(sz);
-    for (int k = 0; k < nl; k++) {
-      const char* s = k ? l2 : l1;
-      if (s[0]) putText(s, b.cx, topY + k * h + h / 2, fg, edge);
-    }
-    return;
-  }
-}
-
-// A 20 x 20 picture (palette indices) scaled to S x S at (x0, y0) of the screen, on a dark backing, written
-// straight into the band (it holds panel colors, as `pal` does).
-static void drawIcon(const uint8_t* px, int x0, int y0, int S, bool backing = true, int clipR = 0) {
-  if (backing) spr.fillRect(x0 - 1 - bandX, y0 - 1 - bandY, S + 2, S + 2, C_BLACK);
-  for (int dy = 0; dy < S; dy++) {
-    int Y = y0 + dy - bandY;
-    if (Y < 0 || Y >= bandH) continue;
-    for (int dx = 0; dx < S; dx++) {
-      int X = x0 + dx - bandX;
-      if (X < 0 || X >= bandW) continue;
-      uint8_t v = px[(dy * 20 / S) * 20 + dx * 20 / S];
-      if (clipR) {  // keep to a disc around the picture's middle (the ring of a round button)
-        int ex = 2 * dx - S + 1, ey = 2 * dy - S + 1;
-        if (ex * ex + ey * ey > 4 * clipR * clipR) continue;
-      }
-      if (v != 255) band[Y * bandW + X] = pal[v];
-    }
-  }
-}
-
-// Triangle pointing in direction d (0 left, 1 right, 2 up, 3 down) at (cx, cy), size s.
-static void arrow(int cx, int cy, int d, int s, bool lit) {
-  int x0 = cx, y0 = cy, x1, y1, x2, y2;
-  switch (d) {
-    case 0: x0 = cx - s; y0 = cy; x1 = cx + s / 2; y1 = cy - s; x2 = cx + s / 2; y2 = cy + s; break;
-    case 1: x0 = cx + s; y0 = cy; x1 = cx - s / 2; y1 = cy - s; x2 = cx - s / 2; y2 = cy + s; break;
-    case 2: x0 = cx; y0 = cy - s; x1 = cx - s; y1 = cy + s / 2; x2 = cx + s; y2 = cy + s / 2; break;
-    default: x0 = cx; y0 = cy + s; x1 = cx - s; y1 = cy - s / 2; x2 = cx + s; y2 = cy - s / 2; break;
-  }
-  x0 -= bandX; x1 -= bandX; x2 -= bandX; y0 -= bandY; y1 -= bandY; y2 -= bandY;
-  if (lit) spr.fillTriangle(x0, y0, x1, y1, x2, y2, C_YELLOW);
-  spr.drawTriangle(x0, y0, x1, y1, x2, y2, lit ? C_BLACK : C_WHITE);
-}
-// A round button: the key's name big, and under it the picture of what it throws or uses, else the game's label.
-static void disc(const ctl::Disc& d, bool down, int scan, const char* fallback, const gm::BtnIcon& ic) {
-  int cx = d.cx - bandX, cy = d.cy - bandY;
-  if (down) spr.fillCircle(cx, cy, d.r, C_YELLOW);
-  spr.drawCircle(cx, cy, d.r + 1, C_BLACK);
-  spr.drawCircle(cx, cy, d.r, down ? C_BLACK : C_WHITE);
-  spr.drawCircle(cx, cy, d.r - 1, down ? C_BLACK : C_WHITE);
-  const char* name = ctl::scanName(scan);
-  const char* label = labelOf(scan, fallback);
-  bool sub = ic.px || (label[0] && strcmp(label, name));
-  Box b{true, d.cx, d.cy, d.r, 0};
-  uint16_t fg = down ? C_BLACK : C_WHITE;
-  if (ic.px) {  // the picture fills the button (clipped to the ring), no text
-    if (!down) spr.fillCircle(cx, cy, d.r - 2, C_BLACK);
-    int S = (d.r - 2) * 17 / 10;
-    drawIcon(ic.px, d.cx - S / 2, d.cy - S / 2, S, false, d.r - 2);
-    return;
-  }
-  drawName(b, name, sub ? d.cy - d.r / 3 : d.cy, fg, !down);
-  if (sub) {
-    drawLabel(b, label, d.cy + 3, d.r - 7, fg, !down);
-  }
-}
-static void chip(const ctl::Rect& r, const char* label, bool down) {
-  int x0 = r.x0 - bandX, y0 = r.y0 - bandY, w = r.x1 - r.x0, h = r.y1 - r.y0;
-  spr.fillRect(x0, y0, w, h, C_BLACK);  // square: the game isn't shown in its corners
-  spr.fillRoundRect(x0, y0, w, h, 6, down ? C_YELLOW : C_DARK);
-  spr.drawRoundRect(x0, y0, w, h, 6, C_WHITE);
-  spr.setTextSize(1);
-  putText(label, (r.x0 + r.x1) / 2, (r.y0 + r.y1) / 2, down ? C_BLACK : C_WHITE, false);
-}
-// A key tile: the key's name, then the picture or the game's label.
-static void tile(const ctl::Rect& r, int scan, bool on, const gm::BtnIcon& ic) {
-  int x0 = r.x0 - bandX, y0 = r.y0 - bandY, w = r.x1 - r.x0, h = r.y1 - r.y0;
-  spr.fillRect(x0, y0, w, h, C_BLACK);
-  spr.fillRoundRect(x0, y0, w, h, 6, on ? C_YELLOW : C_DARK);
-  spr.drawRoundRect(x0, y0, w, h, 6, C_WHITE);
-  uint16_t fg = on ? C_BLACK : C_WHITE;
-  Box b{false, (r.x0 + r.x1) / 2, (r.y0 + r.y1) / 2, 0, w};
-  const char* name = ctl::scanName(scan);
-  const char* label = labelOf(scan, "");
-  if (ic.px) {  // the picture fills the tile, no text
-    int S = h - 6;
-    drawIcon(ic.px, b.cx - S / 2, r.y0 + 3, S, false);
-    return;
-  }
-  drawName(b, name, r.y0 + 13, fg, false);
-  if (label[0] && strcmp(label, name)) drawLabel(b, label, r.y0 + 25, h - 28, fg, false);
-}
-
-static bool hitsBand(int x0, int y0, int x1, int y1) { return x0 < bandX + bandW && x1 > bandX && y0 < bandY + bandH && y1 > bandY; }
-static bool hitsDisc(const ctl::Disc& d) { return hitsBand(d.cx - d.r - 2, d.cy - d.r - 2, d.cx + d.r + 3, d.cy + d.r + 3); }
-static bool hitsRect(const ctl::Rect& r) { return hitsBand(r.x0, r.y0, r.x1, r.y1); }
-
-// The controls that overlap the current band, drawn into it.
-static void drawControls() {
-  const ctl::Layout& L = controls.L;
-  const ctl::Need& nd = controls.need;
-  const ctl::Disc& p = L.pad;
-  if (hitsDisc(p)) {
-    int px = p.cx - bandX, py = p.cy - bandY;
-    spr.drawCircle(px, py, p.r + 1, C_BLACK);
-    spr.drawCircle(px, py, p.r, C_WHITE);
-    spr.drawCircle(px, py, L.deadR, C_WHITE);
-    uint8_t d = controls.padDirs;
-    int a = p.r * 2 / 3, s = p.r / 6 + 4;
-    if (nd.left) arrow(p.cx - a, p.cy, 0, s, d & 1);
-    if (nd.right) arrow(p.cx + a, p.cy, 1, s, d & 2);
-    if (nd.up) arrow(p.cx, p.cy - a, 2, s, d & 4);
-    if (nd.down) arrow(p.cx, p.cy + a, 3, s, d & 8);
-#ifdef POCKET_CYD28
-    if (nd.jump) for (int side : {-1, 1}) {
-      int x = p.cx + side * p.r / 2, y = p.cy - p.r / 2;
-      arrow(x, y, 2, s / 2, (d & 4) && (d & (side < 0 ? 1 : 2)));
-    }
-#endif
-  }
-  if (nd.space && hitsDisc(L.space)) disc(L.space, controls.btnDown & 1, ctl::S_SPACE, "Space", icons[0]);
-  if (nd.enter && hitsDisc(L.enter)) disc(L.enter, controls.btnDown & 2, ctl::S_ENTER, "Enter", icons[1]);
-  if (hitsRect(L.menu)) chip(L.menu, "MENU", controls.btnDown & 4);
-  if (nd.nextra && hitsRect(L.keys)) chip(L.keys, "KEYS", (controls.btnDown & 8) || controls.keysOpen);
-  if (controls.keysOpen)
-    for (int i = 0; i < nd.nextra; i++)
-      if (hitsRect(L.tile[i])) tile(L.tile[i], nd.extra[i], controls.tileDown & (1 << i), icons[2 + i]);
-  if (banner::hits(bandX, bandY, bandW, bandH)) banner::paint(spr, bandX, bandY);  // the test banner, on top
-}
-
-// Reduced view anchored at the top, completely past the pad and its 14 px touch slop.
+// Reduced view anchored at the top, completely past the pad (and Space when it sits near the pad) and its 14 px touch slop.
+// The fixed pad's place (L.home): the floating pad moves, the picture does not.
 static scr::Picture picture() {
-  const auto& pad = controls.L.pad;
+  const auto& pad = controls.L.home;
   int edge = settings.lefty ? VIEW_W - pad.cx + pad.r : pad.cx + pad.r;
+  if (settings.jumpNear) {  // Space beside the pad: the picture starts past it too
+    const auto& sp = controls.L.space;
+    int e2 = settings.lefty ? VIEW_W - sp.cx + sp.r : sp.cx + sp.r;
+    if (e2 > edge) edge = e2;
+  }
   return {VIEW_W, VIEW_H, smallerPicture, settings.lefty != 0, edge + 14};
 }
 static int gameX(int x) { return picture().toX(x); }
@@ -838,8 +823,8 @@ static void drawRegion(int X0, int Y0, int X1, int Y1) {
       }
     }
     spr.setBuffer(band, w, rows, 16);
-    bandX = X0; bandY = Ys; bandW = w; bandH = rows;
-    drawControls();
+    ov.bandX = X0; ov.bandY = Ys; ov.bandW = w; ov.bandH = rows;
+    ov.drawControls();
     tft.pushImage(X0, Ys, w, rows, band);
   }
 }
@@ -869,6 +854,13 @@ static R monRect(const gm::MonDraw& d) {
 }
 static uint8_t lastPad = 0, lastBtn = 0;
 static uint16_t lastTile = 0;
+static int lastLook = ctl::LOOK_FULL;   // how the pad showed last frame, and where (the floating pad comes, moves, fades and goes)
+static ctl::Disc lastPadDisc = {0, 0, 0};
+// Has the pad's look or place changed since the last frame (a redraw of the old and new place is due)?
+static bool padShowChanged(uint32_t now) {
+  const ctl::Disc& p = controls.L.pad;
+  return controls.padLook(now) != lastLook || p.cx != lastPadDisc.cx || p.cy != lastPadDisc.cy || p.r != lastPadDisc.r;
+}
 
 static void controlRects(R* out, int& n) {
   const ctl::Layout& L = controls.L;
@@ -882,6 +874,10 @@ static void controlRects(R* out, int& n) {
 
 static void drawFrame(bool forceFull) {
   const auto& s = world.sc;
+  const uint32_t nowMs = millis();
+  bool padMoved = padShowChanged(nowMs);
+  ov.swapped = true;  // the band holds the panel's byte order
+  ov.padLook = controls.padLook(nowMs);
   int oldSig[2 + ctl::MAXEXTRA];
   for (int i = 0; i < 2 + ctl::MAXEXTRA; i++) oldSig[i] = icons[i].sig;
   refreshIcons();
@@ -908,7 +904,7 @@ static void drawFrame(bool forceFull) {
       drawRegion(r.x0, r.y0, r.x1, r.y1);
     }
     // A control whose state changed is drawn again over the game behind it.
-    bool padCh = controls.padDirs != lastPad, btnCh = controls.btnDown != lastBtn, tileCh = controls.tileDown != lastTile;
+    bool padCh = controls.padDirs != lastPad || padMoved, btnCh = controls.btnDown != lastBtn, tileCh = controls.tileDown != lastTile;
     tileCh = tileCh || tileIconCh;
     if (padCh || btnCh || tileCh || iconCh) {
       R rs[5];
@@ -920,12 +916,16 @@ static void drawFrame(bool forceFull) {
         drawRegion(rs[i].x0, rs[i].y0, rs[i].x1, rs[i].y1);
       }
       if (tileCh && controls.keysOpen) drawRegion(0, ctl::CHIP_BOTTOM, VIEW_W, ctl::TILE_Y0 + ctl::TILE_STEP * controls.L.tileRows);
+      const ctl::Disc& o = lastPadDisc;  // the floating pad left this place: the picture comes back there
+      if (padMoved && (o.cx != controls.L.pad.cx || o.cy != controls.L.pad.cy)) drawRegion(o.cx - o.r - 2, o.cy - o.r - 2, o.cx + o.r + 3, o.cy + o.r + 3);
     }
   }
   last = {world.mx, world.my, s.nx, s.ny, s.lsx, s.lsy, world.gen, hero, true};
   for (int i = 0; i < nCurMon; i++) lastMon[i] = curMon[i];
   nLastMon = nCurMon;
   lastPad = controls.padDirs;
+  lastLook = ov.padLook;
+  lastPadDisc = controls.L.pad;
   lastBtn = controls.btnDown;
   lastTile = controls.tileDown;
 }
@@ -961,170 +961,224 @@ static void drawStrip() {
 
 // ---- screens -------------------------------------------------------------------------------------
 
-enum Mode { PICKER, PLAYING, PAUSED, SETTINGS_SCREEN, SEARCH_SCREEN, DISPLAY_SCREEN, DONE };
+enum Mode { PICKER, PLAYING, PAUSED, HELP_SCREEN, SETTINGS_SCREEN, SEARCH_SCREEN, DETAILS_SCREEN, DONE, FIRST_RUN };
 static Mode mode = PICKER;
-static int page = 0;
-static char searchText[25] = "";
-static int matches[MAXGAMES], nmatch = 0;
-static void filterGames() {
-  nmatch = 0;
-  for (int i = 0; i < ngames; i++) if (pk::matches(games[i].title, searchText)) matches[nmatch++] = i;
+static int page = 0, selected = -1, nmatch = 0;
+static char searchText[25] = "", savedSearch[25] = "";
+static bool searchAll = true, savedAll = true, browsingCategories = true, savedBrowsing = true;
+static int category = 0, subcategory = -1;
+constexpr int PK_BTN_Y = scr::SMALL ? 208 : 280;
+static int categorySlots[32], categoryCount = 0;
+static const char* rootLabel(int c) {const char*names[]={"All games","Starters","Sandbox","Bizarre","My games","Imported","CD","Good on touch","Continue","Recently played","Favorites"};return names[c];}
+// ---- Continue: the last level entered, kept in NVS (pocket/resume) ----------------------------------------------
+// Written as each level is entered (a fade is on screen, never mid-tick), cleared on a win or a game over. A board
+// convenience: DOS saves are untouched. `sd`: the game was on the card, so with the card out the home page says to put it back.
+struct ResumeRec { uint32_t magic; uint8_t uid[16]; uint8_t sd, pad[3]; gm::EntryState e; uint32_t crc; };
+constexpr uint32_t RESUME_MAGIC = 0x31534552;  // "RES1"
+constexpr int CONTINUE_SLOT = 8;               // the root page's category number for the Continue tile
+static ResumeRec resumeRec;
+static bool resumeValid = false;
+static void resumeLoad() {
+  Preferences p;
+  resumeValid = false;
+  if (!p.begin("pocket", true)) return;
+  resumeValid = p.getBytes("resume", &resumeRec, sizeof resumeRec) == sizeof resumeRec && resumeRec.magic == RESUME_MAGIC &&
+                resumeRec.e.magic == gm::ENTRY_MAGIC && resumeRec.crc == pk::crc32(&resumeRec, offsetof(ResumeRec, crc));
+  p.end();
 }
-constexpr int ROWS = scr::SMALL ? 4 : 5;
-
+static void resumeSave(const GameEntry& g) {
+  memset(&resumeRec, 0, sizeof resumeRec);
+  resumeRec.magic = RESUME_MAGIC;
+  memcpy(resumeRec.uid, g.uid, 16);
+  resumeRec.sd = g.sd;
+  resumeRec.e = world.entry;
+  resumeRec.crc = pk::crc32(&resumeRec, offsetof(ResumeRec, crc));
+  Preferences p;
+  if (p.begin("pocket", false)) { p.putBytes("resume", &resumeRec, sizeof resumeRec); p.end(); }
+  resumeValid = true;
+}
+static void resumeClear() {
+  if (!resumeValid) return;
+  resumeValid = false;
+  Preferences p;
+  if (p.begin("pocket", false)) { p.remove("resume"); p.end(); }
+}
+// The game of the resume point in the list (-1: not there, such as a card game with the card out).
+static int resumeGame() { return resumeValid && games ? pk::selection(games, ngames, resumeRec.uid) : -1; }
+static const char* subLabel(int c,int s) {
+  static const char*stages[]={"All stages","1** First Steps","2** Moving and Pushing","3** Heroes and Foes","4** Story and Finish","5** Wiring and Worlds","6** Blocks and Showcase","Graduations","Other"};
+  if(c==1)return stages[s>=0&&s<9?s:8];if(c==6)return s==2?"Shareware":"Gameware";
+  if(c==5)return s>0&&s<=ncollections?catalog->collections[s-1].label:"Unsorted";return rootLabel(c);
+}
+/** The icon (icons_data.h order) for a category tile: root slot c of All, or sub slot c of a category. */
+static int tileIcon(int cat,int c){static const int roots[]={0,6,9,10,11,12,13,16,0,19,20};if(!cat)return roots[c>=0&&c<11?c:0];if(cat==1)return c>=1&&c<=8?c:8;if(cat==6)return c==2?15:14;if(cat==5)return c>0?18:8;return -1;}
+static bool inCategory(const GameEntry&g) {return pk::belongs(g,category,subcategory);}
+static void filterGames() {
+  nmatch=0;if(!catalog)return;
+  bool was=sdUp;if(haveSD)mountSD();uint32_t t=millis();
+  bool virt=(category==pk::CAT_RECENT||category==pk::CAT_FAVORITES)&&!(searchText[0]&&searchAll);  // the list's installed games, newest first
+  if(virt){int n=category==pk::CAT_RECENT?pk::listGames(games,ngames,catalog->recent,catalog->matches):pk::listGames(games,ngames,catalog->pins,catalog->matches);
+    for(int k=0;k<n;k++){int i=catalog->matches[k];if(searchText[0]){pk::Meta m;gameMeta(games[i],m);if(!pk::matches(m.title,searchText))continue;}catalog->matches[nmatch++]=i;}}
+  else for(int i=0;i<ngames;i++) {
+    if(!(searchText[0]&&searchAll)&&!inCategory(games[i]))continue;
+    if(searchText[0]){pk::Meta m;gameMeta(games[i],m);if(!pk::matches(m.title,searchText))continue;}
+    catalog->matches[nmatch++]=i;
+  }
+  // Stable insertion order is title order from games.txt; courses and score are explicit ranks.
+  if(category==1||category==7)for(int i=1;i<nmatch;i++){uint16_t g=catalog->matches[i];int j=i;while(j>0){auto&a=games[catalog->matches[j-1]];bool before=pk::before(games[g],a,category);if(!before)break;catalog->matches[j]=catalog->matches[j-1];j--;}catalog->matches[j]=g;}
+  if(!was)unmountSD();Serial.printf("LIB search ms=%lu results=%d\n",(unsigned long)(millis()-t),nmatch);
+}
+static void categories() {
+  categoryCount=0;
+  if(category==0) {
+    if(resumeValid&&(resumeGame()>=0||resumeRec.sd))categorySlots[categoryCount++]=CONTINUE_SLOT;  // first: what was being played
+    if(pk::anyListed(games,ngames,catalog->recent))categorySlots[categoryCount++]=pk::CAT_RECENT;  // once a game here has been played
+    // Only what holds something: Favorites once a game is starred (its page still explains a card that is out), and the
+    // categories with a game in them (a card's games add theirs as the scan finds them).
+    if(ngames&&catalog->pins.n)categorySlots[categoryCount++]=pk::CAT_FAVORITES;
+    for(int c=1;c<=7;c++){bool any=false;for(int i=0;i<ngames&&!any;i++)any=c==7?games[i].scored:games[i].category==c;if(any)categorySlots[categoryCount++]=c;}
+  }else{
+    int last=category==1?8:category==6?2:category==5?ncollections:-1;
+    for(int s=category==5?0:1;s<=last;s++){bool any=false;for(int i=0;i<ngames&&!any;i++)any=pk::belongs(games[i],category,s);if(any)categorySlots[categoryCount++]=s;}
+  }
+}
+static uint8_t* preview(const GameEntry&g) {
+  if(!g.metadata)return nullptr;
+  char path[48],name[32];snprintf(path,sizeof path,g.one?"/pocket/%s":g.sd?"/pocket/thumbs.pak":"/thumbs.pak",g.file);
+  snprintf(name,sizeof name,g.one?"thumb.pth":"%s.pth",g.id);
+  File f;gm::SmallPak pak;uint32_t off,len;uint8_t*raw=nullptr;
+  if(packOpen(g.sd?(fs::FS&)SD:(fs::FS&)LittleFS,path,f,pak)&&pak.find(name,&off,&len)&&len>=5&&len<=sizeof band) {
+    uint8_t*compressed=(uint8_t*)band;
+    if(smallReadAt(&f,off,compressed,len)&&(uint32_t(compressed[0])|uint32_t(compressed[1])<<8|uint32_t(compressed[2])<<16|uint32_t(compressed[3])<<24)==pk::THUMB_RAW){raw=(uint8_t*)malloc(pk::THUMB_RAW);if(raw&&(!inflateRaw(compressed+4,len-4,raw,pk::THUMB_RAW)||!pk::thumb(raw,pk::THUMB_RAW))){free(raw);raw=nullptr;}}
+  }f.close();return raw;
+}
 static void drawPicker(bool clear = true, bool paging = false) {
-  filterGames();
-  int pages = (nmatch + ROWS - 1) / ROWS;
-  if (page >= pages) page = 0;
-  if (clear) tft.fillScreen(C_BLACK);
-  // Include the gaps between buttons: erase text left by older firmware's wrapping.
-  if (!paging) tft.fillRect(0, TITLE_H, scr::W, PK_BTN_Y - TITLE_H, C_BLACK);
-  char t[48];
-  snprintf(t, sizeof t, "%s %d/%d%s", searchText[0] ? "Search" : "Pocket Player", page + 1, pages ? pages : 1, haveSD && !scanDone ? " ..." : "");
-  static size_t previousTitleLength = 0;
-  if (!paging) title(t);
-  else {
-    // The prefix, firmware label and footer stay untouched. Print opaque text over
-    // the previous page count; reserve enough width for a shorter final page.
-    int prefix = searchText[0] ? 7 : 14;
-    tft.setTextSize(2); tft.setTextColor(C_WHITE, C_BLUE);
-    tft.setCursor(8 + prefix * 12, scr::SMALL ? 6 : 12);
-    tft.print(t + prefix);
-    for (size_t i = strlen(t); i < previousTitleLength; i++) tft.print(" ");
+  (void)clear;(void)paging;
+  if(!catalog){assets.release();world.releaseAll();loadGameList();}
+  uint32_t t=millis();if(restoreSelection)selected=pk::selection(games,ngames,activeGame.uid);filterGames();categories();int count=browsingCategories?categoryCount:nmatch,pages=(count+5)/6;page=pk::clampPage(page,count,haveSD&&!scanDone);
+  pk::clearTiles(tft,scr::W);
+  const char*crumb=searchText[0]?(searchAll?"Search: All games":"Search: This category"):subcategory>=0?subLabel(category,subcategory):category?rootLabel(category):"Pocket Player";
+  bool home=browsingCategories&&!category&&!searchText[0],none=home&&!ngames;  // the root page: no back arrow, a card chip; no games at all: a notice instead of tiles
+  pk::libraryFrame(tft,scr::W,scr::H,crumb,page,pages,searchText[0]&&!nmatch?"Clear":browsingCategories?nullptr:"Details",!home,selected>=0&&selected<ngames);
+  if(home)pk::drawCardChip(tft,scr::W,cardState,cardGames());
+  bool was=sdUp;if(haveSD&&!browsingCategories)mountSD();
+  for(int r=0;r<6&&!none;r++) {
+    int at=page*6+r;if(at>=count)continue;
+    if(browsingCategories){int c=categorySlots[at];
+      if(!category&&c==CONTINUE_SLOT){int g=resumeGame();uint8_t*raw=nullptr;if(g>=0){if(games[g].sd&&haveSD)mountSD();raw=preview(games[g]);}pk::continueTile(tft,scr::W,r,raw,resumeRec.e.level,g<0,true);free(raw);}
+      else pk::tileLabel(tft,scr::W,r,category?subLabel(category,c):rootLabel(c),false,tileIcon(category,c),true);}
+    else {int i=catalog->matches[at];pk::Meta m;gameMeta(games[i],m);uint8_t*raw=preview(games[i]);bool starter=games[i].category==1;pk::thumbnail(tft,scr::W,r,raw,m.title[0]?m.title:m.dos,i==selected,true,catalog->pins.has(games[i].uid),starter?m.title:nullptr,starter?m.course:0,games[i].scored&&games[i].score>=85);free(raw);}
   }
-  previousTitleLength = strlen(t);
-  for (int r = 0; r < ROWS; r++) {
-    int at = page * ROWS + r, y = PK_Y0 + r * PK_STEP;
-    int i = at < nmatch ? matches[at] : -1;
-    pk::drawPageRow(tft, i >= 0 ? games[i].title : nullptr, i >= 0 && games[i].sd, scr::W, y, PK_H);
-  }
-  if (!nmatch) {
-    tft.setTextSize(2); tft.setTextColor(C_WHITE, C_BLACK); tft.setCursor(16, PK_Y0 + 12);
-    tft.print(haveSD && !scanDone ? "Reading card..." : searchText[0] ? "No titles match" : "No games found");
-  }
-  if (!paging) {
-    for (int i = 0; i < 4; i++) pk::drawIcon(tft, i, scr::W, scr::H, PK_BTN_Y);
-    banner::paint(tft, 0, 0);
-  }
+  if(!was)unmountSD();
+  if(!count&&searchText[0])pk::drawSmallIcon(tft,17,16,68,true);
+  if(none&&pk::drawEmptyNotice(tft,scr::W,cardState,cardGames())){}
+  else if(!count&&category==pk::CAT_FAVORITES&&!searchText[0])pk::emptyFavorites(tft,scr::W,catalog->pins.n>0);
+  else if(!count){tft.setTextColor(C_WHITE,C_BLACK);tft.setTextSize(1);tft.setCursor(16,90);tft.print(searchText[0]?"No matching titles":"No games found");}
+  if(uidConflict){tft.setTextColor(C_YELLOW,C_BLACK);tft.setTextSize(1);tft.setCursor(4,188);tft.print("UID conflict: first copy kept");}
+  if(catalogOverflow){tft.setTextColor(C_YELLOW,C_BLACK);tft.setTextSize(1);tft.setCursor(4,198);tft.print("Library limit: 512 games / 24 collections");}
+  Serial.printf("LIB page ms=%lu catalog=%u free=%u largest=%u\n",(unsigned long)(millis()-t),(unsigned)sizeof(pk::Catalog),(unsigned)ESP.getFreeHeap(),(unsigned)heap_caps_get_largest_free_block(MALLOC_CAP_8BIT));
 }
 static void drawSearch() {
-  tft.fillScreen(C_BLACK); title("Search titles");
-  pk::drawKeyboard(tft, scr::W, scr::H, TITLE_H, searchText);
-  banner::paint(tft, 0, 0);
+  tft.fillScreen(C_BLACK);pk::drawKeyboard(tft,scr::W,scr::H,32,searchText);
+  pk::drawButton(tft,0,0,40,32,"<");
+  pk::drawButton(tft,42,0,scr::W,32,searchAll?"All games":"This category");
+  pk::drawSmallIcon(tft,searchAll?0:18,50,8,true);
 }
-// Board A has fixed ST7796 geometry and GT911 coordinates; no resistive calibration or driver guessing.
-// Display still exposes the picture size on both boards; the CYD also offers its hardware setup.
-static void drawDisplayOptions() {
-  tft.fillScreen(C_BLACK); title("Display");
-  button(6, TITLE_H + 12, scr::W - 6, TITLE_H + 52, smallerPicture ? "Smaller picture: On" : "Smaller picture: Off");
-#ifdef POCKET_CYD28
-  button(6, TITLE_H + 60, scr::W - 6, TITLE_H + 100, "Panel setup");
-#else
-  tft.setTextSize(1); tft.setTextColor(C_WHITE, C_BLACK);
-  tft.setCursor(12, TITLE_H + 70); tft.print("Touch needs no calibration.");
-#endif
-  button(6, scr::H - 38, 100, scr::H - 2, "Back");
-  banner::paint(tft, 0, 0);
+static int detailsMask = 0;  // the selected game's own pages (picker.h detailsPageSpan), read from its .cfg when Details opens
+static void drawDetails() {
+  tft.fillScreen(C_BLACK);title("Game details");
+  pk::Meta m;gameMeta(games[selected],m);
+  pk::Tile clip={8,40,scr::W-16,pk::detailsPagesTop(scr::H)-44,0,0};
+  size_t at=0,n=strlen(m.title);int y=44,cols=(scr::W-16)/6;
+  while(at<n){char b[81];size_t take=n-at<(size_t)cols?n-at:cols;memcpy(b,m.title+at,take);b[take]=0;pk::clippedText(tft,clip,b,8,y,1,C_WHITE);at+=take;y+=12;}
+  if(games[selected].scored){  // a suggestion in plain words, never a verdict (the score is advisory)
+    const char*t=games[selected].score>=85?"Plays well on touch":games[selected].score<60&&games[selected].quick?"Needs quick, exact jumps":nullptr;
+    if(t&&y+18<=pk::detailsPagesTop(scr::H))pk::detailsTouch(tft,scr::W,y+2,t);
+  }
+  bool pinned=catalog&&catalog->pins.has(games[selected].uid);
+  pk::detailsPages(tft,scr::W,scr::H,detailsMask);
+  pk::detailsFooter(tft,scr::W,scr::H,pinned);if(pinned)pk::detailsNote(tft,scr::W,scr::H,"In Favorites");
 }
-
-static const char* const HAND[] = {"Right", "Left"};
-static const char* const ONOFF[] = {"Off", "On"};
-static const char* const SIZE3[] = {"Small", "Medium", "Large"};
 // A short rising beep to hear the volume with (36 steps of 1/145.6 s, little endian frequencies in Hz).
 static const uint8_t SAMPLE_TUNE[72] = {
     0xB8, 0x01, 0xB8, 0x01, 0xB8, 0x01, 0xB8, 0x01, 0xB8, 0x01, 0xB8, 0x01, 0xB8, 0x01, 0xB8, 0x01, 0xB8, 0x01,
     0x30, 0x02, 0x30, 0x02, 0x30, 0x02, 0x30, 0x02, 0x30, 0x02, 0x30, 0x02, 0x30, 0x02, 0x30, 0x02, 0x30, 0x02,
     0x88, 0x02, 0x88, 0x02, 0x88, 0x02, 0x88, 0x02, 0x88, 0x02, 0x88, 0x02, 0x88, 0x02, 0x88, 0x02, 0x88, 0x02,
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
-static const char* const VOLUME[] = {"Off", "Low", "Medium", "High"};
-static const char* const PALM[] = {"Off", "Size", "Size+near"};
 #ifdef POCKET_CYD28
 static uint8_t panelType = PANEL_ILI9341, turnIdx = 0, softIdx = 0;  // softIdx 0: the glass's own landscape turn, 1 and 2: turned in software
+static uint8_t picGamma = 0, picTune = 0;  // the picture tuning (picturetune.h; saved with the display setup)
+static bool picOpen = false;  // Settings is showing the Picture screen
+// Sends the picture tuning to the glass; at start only when it is not the driver's own (`always` for a choice made live).
+static void applyPicture(bool always) {
+  if (!always && pt::isDefault(picGamma, picTune)) return;
+  uint8_t l[80];
+  pt::commands(panelType & 1, picGamma, picTune, l);
+  tftHw.sendList(l);
+}
+static void drawPicture() { pt::screen(tft, picGamma, picTune, (panelType & 1) ? "ST7789" : "ILI9341"); }
 static const char* panelName(char* b) {  // "ILI", "ST inv", "ILI inv bgr", ...
   snprintf(b, 16, "%s%s%s", (panelType & 1) ? "ST" : "ILI", (panelType & 2) ? " inv" : "", (panelType & 4) ? " bgr" : "");
   return b;
 }
 #endif
-constexpr int ST_ROWS = scr::SMALL ? 10 : 9;  // the 2.8 inch board's Settings also has Calibrate and Display
-static int setPage = 0;
+static void enterPicker();
+// Settings, Card, Rescan: forget the cache, look at the card again, and show the list (its chip counts the games as they are found).
+static void rescanCard() {
+  cardScanKnown = false;
+  stopCardScan();
+  if (mountSD()) { SD.remove("/pocket/LIBRARY.CCH"); SD.remove("/pocket/LIBRARY.NEW"); unmountSD(); }
+  probeCard();
+  unmountSD();
+  loadGameList();
+  if (haveSD && cardState == pk::CARD_READING && !scanDone) { /* the loop's scan reads it */ }
+  else scanDone = true;
+  selected = -1;
+  restoreSelection = false;
+  browsingCategories = true;
+  category = 0;
+  subcategory = -1;
+  page = 0;
+  searchText[0] = 0;
+  enterPicker();
+}
+// ---- the Settings screen: settingsdraw.h draws it and finds what a tap is on -----------------------------------------
+static st::View setView;
+static char cardSpace[40] = "";  // the Card tab's free-space line, measured once a visit
+static uint8_t pvHeld = 0;       // the keys the preview's finger holds (bits as st::heldText)
+static ctl::Need previewNeed() {
+  ctl::Need n;
+  n.left = n.right = n.up = n.down = n.space = n.enter = n.jump = true;
+  return n;
+}
+static st::Values settingsValues() {
+  st::Values v;
+  v.s = settings; v.bright = brightStep; v.clicks = clicksOn; v.led = ledOn; v.smaller = smallerPicture;
+  return v;
+}
+// The whole screen. On Controls the controls model is set up for the preview (a game sets it up again as it starts or resumes).
 static void drawSettings() {
-  tft.fillScreen(C_BLACK);
-  title("Settings");
-  struct Row { const char* name; const char* value; };
 #ifdef POCKET_CYD28
-  char pname[16];
+  if (picOpen) { drawPicture(); return; }
 #endif
-  Row rows[ST_ROWS] = {{"Hand", HAND[settings.lefty]},
-                       {scr::SMALL ? "Stylus latch" : "Stylus (taps latch)", ONOFF[settings.stylus]},
-                       {"Pad size", SIZE3[settings.padSize]},
-                       {scr::SMALL ? "Dead zone" : "Pad dead zone", SIZE3[settings.dead]},
-                       {scr::SMALL ? "Palm reject" : "Palm rejection", PALM[settings.palm]},
-                       {scr::SMALL ? "Status nums" : "Status numbers", ONOFF[settings.debug]},
-                       {"Sound", VOLUME[settings.sound]},
-                       {"Sticky direction", ONOFF[settings.sticky]}
-#ifdef POCKET_CYD28
-                       ,
-                       {"Calibrate", "tap 3"},
-                       {"Display", panelName(pname)}
-#else
-                       , {"Display", "options"}
-#endif
-  };
-  int pages = (ST_ROWS + ST_PER_PAGE - 1) / ST_PER_PAGE;
-  if (setPage >= pages) setPage = 0;
-  for (int k = 0; k < ST_PER_PAGE; k++) {
-    int i = setPage * ST_PER_PAGE + k;
-    if (i >= ST_ROWS) break;
-    int y = ST_Y0 + k * ST_STEP;
-    tft.fillRoundRect(6, y, scr::W - 12, 32, 6, C_DARK);
-    tft.drawRoundRect(6, y, scr::W - 12, 32, 6, C_GRAY);
-    tft.setTextSize(2);
-    tft.setTextColor(C_WHITE, C_DARK);
-    tft.setCursor(14, y + 8);
-    if (scr::SMALL && i == 7) tft.setTextSize(1);
-    tft.print(rows[i].name);
-    tft.setTextSize(2);
-    tft.setTextColor(C_YELLOW, C_DARK);
-    tft.setCursor(scr::SMALL ? 176 : 300, y + 8);
-    tft.print(rows[i].value);
+  st::CardInfo card;
+  if (setView.tab == st::T_CARD) {
+    card.builtIn = ngames - cardGames();
+    pk::cardChipText(cardState, cardGames(), card.state, sizeof card.state);
+    memcpy(card.space, cardSpace, sizeof card.space);
+    st::sizeText(card.flash, sizeof card.flash, "Built-in", LittleFS.totalBytes() - LittleFS.usedBytes(), 0);
+    card.fromPause = setView.fromPause;
+    fwLabel(card.board, sizeof card.board, false);
   }
-  if (scr::SMALL) {
-    button(6, ST_FOOT_Y + 2, 100, scr::H - 2, "Back");
-    button(108, ST_FOOT_Y + 2, 202, scr::H - 2, pages > 1 ? (setPage + 1 < pages ? "More >" : "< First") : "");
-    tft.setTextSize(1);
-    tft.setTextColor(C_GRAY, C_BLACK);
-    tft.setCursor(210, ST_FOOT_Y + 8);
-    tft.print("touch: x,y z");
-  } else {
-    button(6, 288, 150, 318, "Back");
-    tft.setTextSize(1);
-    tft.setTextColor(C_GRAY, C_BLACK);
-    button(160, 288, 280, 318, pages > 1 ? (setPage + 1 < pages ? "More >" : "< First") : "");
-    tft.setTextSize(1); tft.setTextColor(C_GRAY, C_BLACK);
-    tft.setCursor(290, 290); tft.print("Touch: no calibration needed");
-  }
+  if (setView.tab == st::T_CONTROLS) controls.configure(settings, previewNeed());
+  pvHeld = 0;
+  st::screen(tft, setView, settingsValues(), card, controls.L, controls.need, 0, 0, 0);
   banner::paint(tft, 0, 0);
 }
-static void settingsTouchInfo() {
-  int ix = scr::SMALL ? 210 : 290, iy = scr::SMALL ? ST_FOOT_Y + 22 : 308;
-  tft.fillRect(ix, iy - (scr::SMALL ? 2 : 2), scr::W - ix, 12, C_BLACK);
-  tft.setTextSize(1);
-  tft.setTextColor(C_WHITE, C_BLACK);
-  tft.setCursor(ix, iy);
-  char l[64];
-  if (pts.n && scr::SMALL) snprintf(l, sizeof l, "%d,%d z%d", pts.x[0], pts.y[0], pts.size[0]);
-  else if (pts.n) snprintf(l, sizeof l, "%d,%d > %d,%d z%d", gt.rawX[0], gt.rawY[0], pts.x[0], pts.y[0], pts.size[0]);
-  else snprintf(l, sizeof l, "no touch");
-  l[(scr::W - ix) / 6] = 0;
-  tft.print(l);
-}
 
-static const char* const PAUSE_ITEMS[] = {"Resume", "Restart game", "Games", "Settings"};
-static void drawPause() {
-  tft.fillRect(PA_BOX_X, PA_BOX_Y, PA_BOX_W, PA_BOX_H, C_BLACK);
-  tft.drawRect(PA_BOX_X, PA_BOX_Y, PA_BOX_W, PA_BOX_H, C_WHITE);
-  for (int i = 0; i < 4; i++) button(PA_X0, PA_Y0 + i * PA_STEP, PA_X1, PA_Y0 + i * PA_STEP + PA_H, PAUSE_ITEMS[i]);
-}
+static bool pausePinned = false;  // whether the paused game is a favorite (read from NVS as the game pauses)
+static ovl::PauseArm pauseArm;
+static void drawPause() { ovl::pauseMenu(tft, cfg.title, world.level, pausePinned ? 1 : 0, pauseArm.armed); }
 
 static uint32_t t0 = 0, ticksRun = 0;
 static int curGame = -1;
@@ -1144,6 +1198,7 @@ static void applyControls() {
 // .lst files, drawn at 1.5x like the game. Taps move on wherever the engine waits for a key.
 
 static bool cardsDry = false;   // the serial self-test: no waits, one drawing per fade
+static bool readingPages = false;  // Details is showing the game's own pages: every wait is for a touch (paged by touch)
 static int cardsShown = 0, cardsFailed = 0;
 static void setPalette6(const uint8_t* p768) {
   for (int i = 0; i < 256; i++) {
@@ -1173,6 +1228,7 @@ static void fadePalette(const uint8_t* from, const uint8_t* to, const uint8_t* p
 // GetKey / PauseTimeKey: a touch (or the time) moves on. gm::PAUSE_KEY waits for the touch alone.
 static void waitTap(int seconds) {
   if (seconds <= 0 || cardsDry) return;
+  if (readingPages) seconds = gm::PAUSE_KEY;
   uint32_t end = millis() + (uint32_t)seconds * 1000u;
   wasDown = true;  // a finger still down from before is not a tap
   int tx, ty;
@@ -1245,24 +1301,24 @@ static void showCards(const char* where) {
   bool cardWasUp = sdUp, card = curFs == &SD;
   if (card) mountSD();  // held while the cards show (the level's buffers are already freed)
   carddraw::clear(tft, pal[0]);
-  gm::Card cards[10];
-  int n = gm::cardsOfFile(cfgLines, assets.cfgName, where, cards, 10);
+  gm::Card cards[gm::MAX_CARDS];
+  int n = gm::cardsOfFile(cfgLines, assets.cfgName, where, cards, gm::MAX_CARDS);
   uint8_t* pic = nullptr;
-  char picFile[20] = "";
+  gm::Card picCard = {};  // the picture's card, to draw it again clean
   bool dirty = false;  // text is on the picture
   gm::TextRect previousText;
   uint8_t black[768];
   memset(black, 0, sizeof black);
   for (int i = 0; i < n; i++) {
     const gm::Card& c = cards[i];
-    if (c.kind == 'g') {
+    if (c.kind == 'g' || c.kind == 'p') {
       carddraw::clear(tft, pal[0]);
       free(pic);
-      pic = gm::loadPicture(assets, readPak, c.file);
+      pic = gm::loadCardPicture(assets, readPak, c);
       dirty = false;
       previousText = gm::TextRect();
-      if (!pic) { picFile[0] = 0; cardsFailed++; continue; }
-      strcpy(picFile, c.file);
+      if (!pic) { cardsFailed++; continue; }
+      picCard = c;
       cardsShown++;
       fadePalette(black, pic, pic + 768);
       waitTap(c.pause);
@@ -1275,7 +1331,7 @@ static void showCards(const char* where) {
       for (int pg = 0; pg < pages; pg++) {
         if (dirty) {  // the picture again, clean (Display_File restores the screen after each page and file)
           free(pic);
-          pic = gm::loadPicture(assets, readPak, picFile);
+          pic = gm::loadCardPicture(assets, readPak, picCard);
           if (!pic) break;
         }
         setPalette6(pic);
@@ -1311,28 +1367,50 @@ static void fadeLevelIn() {
 }
 static void levelWhere(char* out, char kind, int level) { snprintf(out, 8, "%c%d", kind, level); }
 
-static bool startGame(int g, bool withCards = true) {
+static bool cardPresent() { bool was = sdUp, ok = mountSD(); if (!was) unmountSD(); return ok; }
+// A start that failed: say why (failWhy), and free every buffer the attempt took (the assets, the world's blocks, the prefetched
+// files, the card), so the list can load its catalog again. `missing` says a level buffer did not load.
+static bool startFailed(bool missing) {
+  failWhy = pk::whyFailed(activeGame.sd, !activeGame.sd || cardPresent(), missing, heap_caps_get_largest_free_block(MALLOC_CAP_8BIT));
+  Serial.printf("SG fail %s: why %d free %u largest %u\n", activeGame.id, (int)failWhy, (unsigned)ESP.getFreeHeap(), (unsigned)heap_caps_get_largest_free_block(MALLOC_CAP_8BIT));
+  assets.release();
+  world.releaseAll();
+  clearPrefetched();
+  stopCardScan();
+  loadBarOn = false;
+  return false;
+}
+static void loadStep(int n) { if (loadBarOn) pk::drawLoadingBar(tft, scr::W, scr::H, n, 3); }
+
+static bool startGame(int g, bool withCards = true, const gm::EntryState* from = nullptr) {
   curGame = g;
+  if (games) activeGame = games[g];
   assets.release();  // whatever the last game (or a failed start) left; a card must be mounted with the heap at its emptiest
   assets.heroChr[0] = 0;
   clearPrefetched();
-  if (!selectGame(g)) return false;
-  snprintf(assets.cfgName, sizeof assets.cfgName, "%s.cfg", fileOf(games[g]));
-  if (!gm::parseCfgFile(cfgLines, assets.cfgName, world, cfg)) return false;
+  if (!selectGame(activeGame)) return startFailed(false);
+  if (withCards) noteRecent(activeGame.uid);  // a launch, before the level's memory is taken (the serial self-test leaves it alone)
+  loadStep(1);
+  snprintf(assets.cfgName, sizeof assets.cfgName, "%s.cfg", fileOf(activeGame));
+  releaseCatalog();
+  if (!gm::parseCfgFile(cfgLines, assets.cfgName, world, cfg)) return startFailed(false);
+  loadStep(2);
   assets.attach(world, cfg, readFile, inflateRaw);
   assets.lines = &cfgLines;
   assets.beforeLoad = prefetchLevel;
   assets.palName[0] = 0;
+  loadStep(3);
+  loadBarOn = false;  // the intro card takes the screen
   if (withCards) {  // the intro card shows before the level's files load: a card needs a 64 KB block of its own
     char where[8];
-    levelWhere(where, 'i', 0);
+    levelWhere(where, 'i', from ? from->level : 0);
     tft.fillScreen(C_BLACK);
     showCards(where);
   }
   world.seed = micros() ^ (millis() << 7);  // the monsters that wander pick differently each play
-  if (!world.begin()) {
-    Serial.printf("SG fail %s: nbl %d nmon %d nmbl %d have bbl%d mbl%d cbl%d chr%d mon%d free %u largest %u\n", games[g].id, assets.files.nbl, assets.files.nmon, assets.files.nmbl, !!assets.bbl, !!assets.mbl, !!assets.cbl, !!assets.chr, !!assets.mon, (unsigned)ESP.getFreeHeap(), (unsigned)heap_caps_get_largest_free_block(MALLOC_CAP_8BIT));
-    return false;
+  if (from ? !world.restore(*from) : !world.begin()) {
+    Serial.printf("SG fail %s: nbl %d nmon %d nmbl %d have bbl%d mbl%d cbl%d chr%d mon%d free %u largest %u\n", activeGame.id, assets.files.nbl, assets.files.nmon, assets.files.nmbl, !!assets.bbl, !!assets.mbl, !!assets.cbl, !!assets.chr, !!assets.mon, (unsigned)ESP.getFreeHeap(), (unsigned)heap_caps_get_largest_free_block(MALLOC_CAP_8BIT));
+    return startFailed((assets.files.nbl && !assets.bbl) || !assets.cbl || !assets.chr || (assets.files.nmon && (!assets.mon || !assets.mbl)));
   }
   world.nsnd = 0;
   spk::stop();
@@ -1344,6 +1422,7 @@ static bool startGame(int g, bool withCards = true) {
   applyControls();
   world.hold = withCards;  // a level change waits for the fade and the cards (the serial self-test has none)
   if (withCards) {
+    resumeSave(activeGame);  // the serial self-test leaves the resume point alone
     fadeLevelIn();
   } else {
     tft.fillScreen(C_BLACK);
@@ -1368,9 +1447,98 @@ static void refreshPalette() {
 static void enterPicker() {
   spk::stop();
   stopCardScan();
+  if (!catalog) { assets.release(); world.releaseAll(); loadGameList(); restoreSelection=true; }
   mode = PICKER;
   wasDown = true;
   drawPicker();
+}
+// Details for the selected game: which of its own pages (title, story, instructions) its .cfg has, then the screen.
+static void openDetails() {
+  stopCardScan();
+  char name[24];
+  snprintf(name, sizeof name, "%s.cfg", fileOf(games[selected]));
+  detailsMask = selectGame(games[selected]) ? gm::menuPagesOfFile(cfgLines, name) : 0;
+  mode = DETAILS_SCREEN;
+  drawDetails();
+}
+// Title, Story or Instructions from Details (k: 0, 1, 2): the game's own pictures and text pages, as its DOS menu showed them,
+// each waiting for a touch. The catalog is let go first, as for a launch, so a 64 KB picture has the heap; then Details again.
+static void readMenuPages(int k) {
+  activeGame = games[selected];
+  curGame = selected;
+  if (!selectGame(activeGame)) { drawDetails(); return; }
+  snprintf(assets.cfgName, sizeof assets.cfgName, "%s.cfg", fileOf(activeGame));
+  assets.inflate = inflateRaw;  // before any game has played it is not set yet
+  releaseCatalog();
+  char where[2] = {pk::detailsPageWhere(k), 0};
+  tft.fillScreen(C_BLACK);
+  readingPages = true;
+  showCards(where);
+  readingPages = false;
+  spk::stop();
+  loadGameList();
+  restoreSelection = true;
+  selected = pk::selection(games, ngames, activeGame.uid);
+  wasDown = true;
+  if (selected < 0) { enterPicker(); return; }
+  openDetails();
+}
+
+// A game or level that cannot load: the failure card (instead of a reset) until the button is tapped (or 30 seconds pass).
+// Everything the attempt allocated is already freed (startFailed, levelFailed).
+static void showFailCard(const char* name) {
+  spk::stop();
+  statusLed.load(false);
+  statusLed.error(millis());
+  ledWrite(millis());
+  pk::drawFailCard(tft, scr::W, scr::H, name, failWhy);
+  uint32_t t = millis();
+  wasDown = true;
+  while (millis() - t < 30000) {
+    uint32_t now = millis();
+    pollTouch(now);
+    ledWrite(now);  // the blinks run while the card waits
+    int x, y;
+    if (freshTap(x, y) && pk::inFailButton(scr::W, scr::H, x, y)) break;
+    delay(5);
+  }
+  wasDown = true;
+}
+// The title (or DOS name) of a game, for the loading screen and the failure card.
+static void gameName(const GameEntry& g, char* out, size_t cap) {
+  pk::Meta m;
+  bool was = sdUp;
+  if (haveSD) mountSD();
+  bool ok = gameMeta(g, m);
+  if (!was) unmountSD();
+  snprintf(out, cap, "%s", ok && m.title[0] ? m.title : g.id);
+}
+// A tap on Play: the loading screen with its bar, the game, or the failure card. False: back to the list.
+static bool launchGame(int g, const gm::EntryState* from = nullptr) {
+  char name[96];
+  gameName(games[g], name, sizeof name);
+  pk::drawLoading(tft, scr::W, scr::H, name, 0, 3);
+  loadBarOn = true;
+  statusLed.load(true);
+  ledWrite(millis());
+  bool started = startGame(g, true, from);
+  statusLed.load(false);
+  if (started) return true;
+  loadBarOn = false;
+  showFailCard(name);
+  return false;
+}
+// The level the game is entering did not load (a file, the memory, or the card went away): free it and show the card.
+static void levelFailed() {
+  failWhy = pk::whyFailed(activeGame.sd, !activeGame.sd || cardPresent(), true, heap_caps_get_largest_free_block(MALLOC_CAP_8BIT));
+  Serial.printf("LV fail %s: why %d\n", activeGame.id, (int)failWhy);
+  assets.release();
+  world.releaseAll();
+  clearPrefetched();
+  stopCardScan();
+  char name[96];
+  gameName(activeGame, name, sizeof name);
+  showFailCard(name);
 }
 
 // ---- setup and loop ------------------------------------------------------------------------------
@@ -1386,6 +1554,27 @@ static void message(const char* a, const char* b = nullptr) {
     pk::ellipsize(b, line, sizeof line, (scr::W - 40) / 12);
     tft.setCursor(20, 150); tft.print(line);
   }
+}
+// Restart level (the pause menu): the level as it was entered (gmcore.h EntryState), at no cost of a life, with its
+// intro cards as after a death.
+static void restartLevel() {
+  spk::stop();
+  world.releaseAll();
+  controls.reset();
+  tft.fillScreen(C_BLACK);
+  last.valid = false;
+  drawFrame(true);
+  fadeLevelOut();
+  assets.release();
+  char where[8];
+  levelWhere(where, 'i', world.entry.level);
+  showCards(where);
+  if (!world.restartLevel()) { message("Could not load"); delay(1500); enterPicker(); return; }
+  fadeLevelIn();
+  t0 = millis();
+  ticksRun = 0;
+  mode = PLAYING;
+  wasDown = true;
 }
 
 // ---- serial self-test ----------------------------------------------------------------------------
@@ -1521,7 +1710,7 @@ static void selfTestOne(int g, int ticks, bool cards) {
     drawFrame(false);
     if ((i & 15) == 0) delay(1);  // let the watchdog and idle task breathe
   }
-  Serial.printf("ST id=%s ok=%d free=%u largest=%u min=%u stack=%u\n", games[g].id, ok ? 1 : 0, (unsigned)ESP.getFreeHeap(),
+  Serial.printf("ST id=%s ok=%d free=%u largest=%u min=%u stack=%u\n", activeGame.id, ok ? 1 : 0, (unsigned)ESP.getFreeHeap(),
                 (unsigned)heap_caps_get_largest_free_block(MALLOC_CAP_8BIT), (unsigned)ESP.getMinFreeHeap(),
                 (unsigned)uxTaskGetStackHighWaterMark(nullptr));
   if (ok && cards) {
@@ -1540,12 +1729,15 @@ static void selfTestOne(int g, int ticks, bool cards) {
     showCards("w");
     showCards("l");
     cardsDry = false;
-    Serial.printf("SC id=%s ok=%d shown=%d failed=%d ms=%u free=%u largest=%u min=%u stack=%u\n", games[g].id, cardsFailed == 0 ? 1 : 0, cardsShown,
+    Serial.printf("SC id=%s ok=%d shown=%d failed=%d ms=%u free=%u largest=%u min=%u stack=%u\n", activeGame.id, cardsFailed == 0 ? 1 : 0, cardsShown,
                   cardsFailed, (unsigned)(millis() - t0c), (unsigned)ESP.getFreeHeap(), (unsigned)heap_caps_get_largest_free_block(MALLOC_CAP_8BIT),
                   (unsigned)ESP.getMinFreeHeap(), (unsigned)uxTaskGetStackHighWaterMark(nullptr));
   }
   spk::stop();
   world.releaseAll();
+  assets.release();
+  loadGameList();
+  while(haveSD&&!scanDone) { scanCardBatch(); delay(1); }
 }
 
 static void serialCommand(const char* cmd) {
@@ -1608,21 +1800,128 @@ static void bannerChanged(bool changed) {
     case PICKER: drawPicker(false); break;
     case SETTINGS_SCREEN: drawSettings(); break;
     case SEARCH_SCREEN: drawSearch(); break;
-    case DISPLAY_SCREEN: drawDisplayOptions(); break;
     case PLAYING: last.valid = false; break;
     case PAUSED: tft.fillScreen(C_BLACK); last.valid = false; drawFrame(true); drawStrip(); drawPause(); break;
+    case HELP_SCREEN: ovl::helpPage(tft, cfg); break;
     default: break;
   }
 }
 
 /** "S st", "S tap …" and the other display-setup words go to the setup; any other "S <text>" is the test banner. */
 static bool isSetupCommand(const char* buf) {
-  static const char* const words[] = {"st", "tap", "btn", "boot", "skip", "open", "forget"};
+  static const char* const words[] = {"st", "tap", "btn", "boot", "skip", "open", "forget", "pic", "display"};
   for (const char* w : words) {
     size_t n = strlen(w);
     if (!strncmp(buf + 2, w, n) && (buf[2 + n] == 0 || buf[2 + n] == ' ')) return true;
   }
   return false;
+}
+
+// ---- first run (firstrun.h): How to hold it, Pick your hand, the playground; Settings, Controls, Try the controls opens the playground ----
+// "firstrun" in NVS (namespace pocket) is written once, on Done; serial "FIRST reset" erases only that key, "FIRST" opens the flow.
+static fr::Flow frFlow;
+static bool frPaused = false;      // the playground came from Settings over a paused game: Done goes back there
+static bool frDoneDown = false;    // a touch began on Done (it counts when it lifts there)
+static uint8_t frHeld = 0;         // the keys the playground's thumb holds (st::heldText's bits)
+static int frLook = ctl::LOOK_OFF;
+static ctl::Disc frPad = {0, 0, 0};
+static bd::Buddy frBuddy;          // the small character that moves with the keys (buddy.h)
+static bool firstRunDone() {
+  Preferences p;
+  bool done = false;
+  if (p.begin("pocket", true)) { done = p.getBool("firstrun", false); p.end(); }
+  return done;
+}
+static void drawPlayground(bool full) {
+  fr::playground(tft, controls.L, controls.need, controls.padDirs, controls.btnDown, frHeld, frLook, settings.floatPad, full, frPad, &frBuddy);
+  if (frDoneDown) { fr::Box d = fr::doneBox(); ovl::button(tft, d.x0, d.y0, d.x1, d.y1, "Done", true, C_BLUE, 2); }
+  frPad = controls.L.pad;
+  banner::paint(tft, 0, 0);
+}
+static void drawFirstRun() {
+  switch (frFlow.step) {
+    case fr::HOWTO: fr::howTo(tft); break;
+    case fr::HAND: fr::pickHand(tft); break;
+    case fr::PLAY:
+      controls.configure(settings, fr::playNeed());
+      frHeld = 0; frDoneDown = false; frLook = controls.padLook(millis()); frBuddy = bd::Buddy();
+      drawPlayground(true);
+      return;
+    default: return;
+  }
+  banner::paint(tft, 0, 0);
+}
+static void openFirstRun(bool fromSettings) {
+  frPaused = fromSettings && setView.fromPause;
+  frFlow.start(fromSettings);
+  mode = FIRST_RUN;
+  wasDown = true;  // the touch that opened it is not a tap here
+  drawFirstRun();
+}
+static void openSettings(bool paused);
+// Done: the first run is marked and the hand kept; from Settings, back to its Controls tab.
+static void finishFirstRun() {
+  controls.reset();
+  if (frFlow.marksDone()) {
+    Preferences p;
+    if (p.begin("pocket", false)) { p.putBool("firstrun", true); p.end(); }
+    saveSettings();
+    Serial.println("FIRST done");
+    enterPicker();
+    return;
+  }
+  openSettings(frPaused);
+}
+static void firstRunLoop(uint32_t now) {
+  int tx, ty;
+  if (frFlow.step != fr::PLAY) {
+    if (!freshTap(tx, ty)) return;
+    fr::Tap t = fr::hit(frFlow.step, tx, ty);
+    if (frFlow.step == fr::HAND && (t == fr::T_PAD_LEFT || t == fr::T_PAD_RIGHT)) {
+      fr::pickHand(tft, t == fr::T_PAD_RIGHT ? 1 : 0);  // the picked one lights a moment
+      clickSound();
+      delay(150);
+    } else if (t != fr::T_NONE) clickSound();
+    if (frFlow.apply(t)) {
+      if (frFlow.chose) settings.lefty = frFlow.lefty;
+      drawFirstRun();
+      wasDown = true;
+    }
+    return;
+  }
+  // The playground: every contact goes to the controls model; Done is a button of its own, counted when the touch lifts on it.
+  bool down = pts.n > 0;
+  fr::Box d = fr::doneBox();
+  if (down && !wasDown && d.has(pts.x[0], pts.y[0])) { frDoneDown = true; ovl::button(tft, d.x0, d.y0, d.x1, d.y1, "Done", true, C_BLUE, 2); }
+  if (frDoneDown && down && !d.has(pts.x[0], pts.y[0])) { frDoneDown = false; ovl::button(tft, d.x0, d.y0, d.x1, d.y1, "Done", false, C_BLUE, 2); }
+  if (frDoneDown && !down) {
+    frDoneDown = false;
+    wasDown = false;
+    clickSound();
+    frFlow.apply(fr::T_DONE);
+    finishFirstRun();
+    return;
+  }
+  wasDown = down;
+  uint8_t d0 = controls.padDirs, b0 = controls.btnDown, h0 = frHeld;
+  if (frDoneDown) controls.update(nullptr, nullptr, nullptr, nullptr, 0, now);
+  else controls.update(pts.id, pts.x, pts.y, pts.size, pts.n, now);
+  controls.takeEvent();
+  ctl::Change ch[16];
+  int k = controls.flush(ch, 16);
+  for (int i = 0; i < k; i++) {
+    int s = ch[i].scan;
+    uint8_t bit = s == ctl::S_LEFT ? 1 : s == ctl::S_RIGHT ? 2 : s == ctl::S_UP ? 4 : s == ctl::S_DOWN ? 8 : s == ctl::S_SPACE ? 16 : 0;
+    if (ch[i].down) frHeld |= bit;
+    else frHeld &= ~bit;
+  }
+  int look = controls.padLook(now);
+  const ctl::Disc& p = controls.L.pad;
+  if (controls.padDirs != d0 || controls.btnDown != b0 || frHeld != h0 || look != frLook || p.cx != frPad.cx || p.cy != frPad.cy) {
+    frLook = look;
+    drawPlayground(false);
+  }
+  if (frBuddy.tick(frHeld, now)) bd::paint(tft, frBuddy, fr::C_FIELD);
 }
 
 static void pollSerial() {
@@ -1642,6 +1941,14 @@ static void pollSerial() {
         bannerChanged(banner::set(!strncmp(buf, "S2 off", 6) ? "" : buf + 3, true));
       } else if (buf[0] == 'S') {
         bannerChanged(banner::set(!strncmp(buf, "S off", 5) ? "" : buf + 2));
+      } else if (!strncmp(buf, "FIRST", 5)) {  // "FIRST reset": erase only the first-run key; "FIRST": open the first run (game list only)
+        if (!strncmp(buf, "FIRST reset", 11)) {
+          Preferences p;
+          bool ok = p.begin("pocket", false) && p.remove("firstrun");
+          p.end();
+          Serial.printf("FIRST reset %s\n", ok ? "ok" : "none");
+        } else if (mode == PICKER) openFirstRun(false);
+        Serial.printf("FIRST mode=%d step=%d\n", (int)mode, (int)frFlow.step);
       } else if (fwSerial(buf)) {
       } else if (buf[0] == 'I' && buf[1] == 'D') {
         bannerChanged(banner::setId(!strncmp(buf, "ID off", 6) ? "" : buf + 3));
@@ -1653,7 +1960,32 @@ static void pollSerial() {
       } else if (buf[0] == 'G' && mode == PICKER) {
         int g = atoi(buf + 2);
         if (g >= 0 && g < ngames && startGame(g)) wasDown = true;
-        Serial.printf("G %d %s %s\n", g, g >= 0 && g < ngames ? games[g].id : "?", mode == PLAYING ? "playing" : "failed");
+        Serial.printf("G %d %s %s\n", g, g >= 0 && g < ngames ? activeGame.id : "?", mode == PLAYING ? "playing" : "failed");
+      } else if (buf[0] == 'M' && buf[1] == ' ' && mode == PICKER) {  // "M n": what the list knows of game n and whether its tile can be drawn
+        int g = atoi(buf + 2);
+        if (g >= 0 && g < ngames) {
+          const GameEntry& e = games[g];
+          pk::Meta m;
+          bool was = sdUp;
+          bool ok = gameMeta(e, m);
+          if (e.sd) mountSD();
+          uint8_t* raw = preview(e);
+          if (e.sd && !was) unmountSD();
+          Serial.printf("M %d id=%s file=%s sd=%d one=%d metadata=%d category=%d sub=%d pos=%lu len=%u meta=%d title=%s dos=%s thumb=%s picture=%d\n", g, e.id, e.file,
+                        e.sd, e.one, e.metadata, e.category, e.sub, (unsigned long)e.pos, e.len, ok, m.title, m.dos, m.thumb, raw != nullptr);
+          free(raw);
+          if (e.sd && mountSD()) {  // the card's index files (a card written before the library index has games.txt only)
+            char first[80] = "";
+            File f = SD.open("/pocket/library.jsonl", "r");
+            long li = f ? (long)f.size() : -1;
+            if (f) { lineAt(f, 0, first, sizeof first); f.close(); }
+            f = SD.open("/pocket/thumbs.pak", "r");
+            long th = f ? (long)f.size() : -1;
+            if (f) f.close();
+            if (!was) unmountSD();
+            Serial.printf("M card library.jsonl=%ld thumbs.pak=%ld first=%s\n", li, th, first);
+          }
+        }
       } else if (buf[0] == 'L' && mode == PICKER) {  // the game list: "L <index> <id> <on the card 0|1>" per game, then "L done <count>"
         for (int g = 0; g < ngames; g++) Serial.printf("L %d %s %d\n", g, games[g].id, games[g].sd ? 1 : 0);
         Serial.printf("L done %d\n", ngames);
@@ -1671,6 +2003,9 @@ void setup() {
   banner::configure(scr::W, scr::SMALL ? 28 : 40);  // the 320 px bar must stay clear of the MENU and KEYS chips
 #ifdef POCKET_CYD28
   for (int pin : {PIN_LED_R, PIN_LED_G, PIN_LED_B}) { pinMode(pin, OUTPUT); digitalWrite(pin, HIGH); }  // the RGB LED is active low
+  ledcSetup(6, 5000, 8);  // green is dimmed with LEDC channel 6 (inverted: 255 is off)
+  ledcAttachPin(PIN_LED_G, 6);
+  ledcWrite(6, 255);
   pinMode(0, INPUT_PULLUP);  // BOOT
   dsBoot();  // chip id, the saved display setup (NVS, else this chip's file on the card)
   tftHw.choose(panelType);
@@ -1679,6 +2014,7 @@ void setup() {
 #ifdef POCKET_CYD28
   tft.setBandBuffer(tband);
   applyDisplay();
+  applyPicture(false);  // nothing for the driver's own (gamma 1, Std)
 #else
   tftHw.setRotation(1);
 #endif
@@ -1688,7 +2024,8 @@ void setup() {
   haveGT = gt.probe();
   if (dsState != 3) runDisplaySetup();  // first start (or one left unfinished): the display setup screen
 #endif
-  message("Game-Maker Pocket Player");
+  pk::drawSplash(tft, scr::W, scr::H, true);  // the Sandbox logo first; the picker replaces it once the list is loaded
+  pk::splashLine(tft, scr::W, scr::H, "Starting up");
   spk::begin();
   haveGT = gt.probe();
   char line[64];
@@ -1697,38 +2034,35 @@ void setup() {
   else snprintf(line, sizeof line, "Touch: no XPT2046 found");
   {
     char nb[16];
-    Serial.printf("display mode %s turn %d soft %d\n", panelName(nb), turnIdx + 1, softIdx);
+    Serial.printf("display mode %s turn %d soft %d picture gamma %d tune %d\n", panelName(nb), turnIdx + 1, softIdx, picGamma + 1, picTune);
+    uint32_t dd = 0, d3 = 0;
+    uint8_t id[3];
+    tftHw.readIds(dd, id, d3);
+    Serial.printf("panel id 04=%08lX da=%02X db=%02X dc=%02X d3=%08lX\n", (unsigned long)dd, id[0], id[1], id[2], (unsigned long)d3);
   }
 #else
   if (haveGT) snprintf(line, sizeof line, "Touch: GT911 at 0x%02X", gt.addr);
   else snprintf(line, sizeof line, "Touch: no GT911 found");
 #endif
-  tft.setCursor(20, 150);
-  tft.print(line);
   Serial.println(line);
   if (!LittleFS.begin(false)) {
     message("LittleFS mount failed");
     for (;;) delay(1000);
   }
-  {  // the microSD slot (TF_CS 5, TF_SPI_SCLK 18, TF_SPI_MISO 19, TF_SPI_MOSI 23 in board.h); no card is no error
-    uint32_t sdStart = millis();
-    haveSD = mountSD();
-    unmountSD();
-    Serial.printf("BOOT ms=%lu card-probe elapsed=%lu\n", (unsigned long)millis(), (unsigned long)(millis() - sdStart));
-    Serial.printf("microSD: %s\n", haveSD ? "card found" : "no card");
-  }
   loadSettings();
+  applyBacklight();  // the saved brightness (the first screens above came up at full)
+  statusLed.enabled = ledOn;
+  resumeLoad();
   spk::setVolume(settings.sound);
+  pk::splashLine(tft, scr::W, scr::H, "Looking for games");
   loadGameList();
   Serial.printf("BOOT ms=%lu list-loaded games=%d\n", (unsigned long)millis(), ngames);
-  if (!ngames && !haveSD) {
-    message("No games on the board", "flash the LittleFS image");
-    for (;;) delay(1000);
-  }
+  if (!ngames) Serial.println("BOOT no flash games: card discovery is pending");
 
   Serial.printf("ready: %d games (microSD %s), heap %u, largest %u\n", ngames, haveSD ? "in" : "out", (unsigned)ESP.getFreeHeap(), (unsigned)heap_caps_get_largest_free_block(MALLOC_CAP_8BIT));
   enterPicker();
   Serial.printf("BOOT ms=%lu picker-ready games=%d\n", (unsigned long)millis(), ngames);
+  if (!firstRunDone()) { Serial.println("FIRST open"); openFirstRun(false); }  // after the display setup and the list, never inside them
 }
 
 static void applyKeys(uint32_t now) {
@@ -1738,10 +2072,236 @@ static void applyKeys(uint32_t now) {
   (void)now;
 }
 
+// ---- Settings: what a chip does, the Card tab's free space, the preview's touches -----------------------------------------
+// The card is mounted only here, and never under a paused game (its files may be open): the line says so instead.
+static void measureCard() {
+  if (setView.fromPause) { snprintf(cardSpace, sizeof cardSpace, "Free space: see it from the game list"); drawSettings(); return; }
+  if (cardState == pk::CARD_NONE) { snprintf(cardSpace, sizeof cardSpace, "Card: none in the slot"); drawSettings(); return; }
+  snprintf(cardSpace, sizeof cardSpace, "Card: measuring free space...");
+  drawSettings();
+  if (mountSD()) {
+    uint64_t total = SD.totalBytes(), used = SD.usedBytes();
+    unmountSD();
+    st::sizeText(cardSpace, sizeof cardSpace, "Card", total - used, total);
+  } else snprintf(cardSpace, sizeof cardSpace, "Card: could not be read");
+  drawSettings();
+}
+static void openSettings(bool paused) {
+  setView = st::View();
+#ifdef POCKET_CYD28
+  picOpen = false;
+#endif
+  setView.fromPause = fromPause = paused;
+  cardSpace[0] = 0;
+  mode = SETTINGS_SCREEN;
+  drawSettings();
+}
+// A chip: an action runs, a value is chosen (its effect is heard or seen at once) and the row's hint shows under the preview.
+// Everything is saved once, on Back (or before an action leaves the screen).
+static void chooseSetting(st::Item it, int chip) {
+  switch (it) {
+    case st::I_RESCAN:
+      if (!fromPause) { saveSettings(); rescanCard(); return; }
+      drawSettings();
+      return;
+    case st::I_TRY: saveSettings(); openFirstRun(true); return;
+#ifdef POCKET_CYD28
+    case st::I_CAL: saveSettings(); if (runCalibration()) dsCalDone(); drawSettings(); return;
+    case st::I_PANEL:
+      saveSettings();
+      if (chip == 1) { picOpen = true; drawSettings(); return; }  // Picture
+      runDisplaySetup();
+      applyPicture(false);
+      drawSettings();
+      return;
+#endif
+    default: break;
+  }
+  st::Values v = settingsValues();
+  st::choose(it, chip, v);
+  settings = v.s; brightStep = v.bright; clicksOn = v.clicks; ledOn = v.led;
+  if (v.smaller != smallerPicture) { smallerPicture = v.smaller; last.valid = false; }
+  if (it == st::I_SOUND) { spk::setVolume(settings.sound); spk::play(SAMPLE_TUNE); }
+  if (it == st::I_BRIGHT) applyBacklight();
+  if (it == st::I_LED) statusLed.enabled = ledOn;
+  setView.last = it;
+  drawSettings();
+}
+// The Card tab's bottom line: where the glass says a finger is (raw, then screen, and the contact size), for checking a board.
+static void touchInfo() {
+  const int y = scr::H - 12;
+  tft.fillRect(0, y - 2, scr::W, 12, C_BLACK);
+  tft.setTextSize(1);
+  tft.setTextColor(C_GRAY, C_BLACK);
+  tft.setCursor(6, y);
+  char l[64];
+  if (pts.n) snprintf(l, sizeof l, "Touch: raw %d,%d > screen %d,%d size %d", gt.rawX[0], gt.rawY[0], pts.x[0], pts.y[0], pts.size[0]);
+  else snprintf(l, sizeof l, "Touch: none");
+  l[(scr::W - 12) / 6] = 0;
+  tft.print(l);
+}
+// Touches on the preview go to the real controls model, scaled up to the game view; what it presses lights up.
+static void previewTouch(uint32_t now) {
+  st::Box b = st::previewBox();
+  int ids[5], xs[5], ys[5], sz[5], n = 0;
+  for (int i = 0; i < pts.n && n < 5; i++)
+    if (b.has(pts.x[i], pts.y[i])) {
+      ids[n] = pts.id[i];
+      xs[n] = (pts.x[i] - b.x0) * st::G.pvDen / st::G.pvNum;
+      ys[n] = (pts.y[i] - b.y0) * st::G.pvDen / st::G.pvNum;
+      sz[n] = pts.size[i];
+      n++;
+    }
+  uint8_t d0 = controls.padDirs, b0 = controls.btnDown, h0 = pvHeld;
+  static int look0 = ctl::LOOK_OFF;  // as last drawn: a floating pad also changes as it fades, with no touch
+  static ctl::Disc p0 = {0, 0, 0};
+  controls.update(ids, xs, ys, sz, n, now);
+  controls.takeEvent();  // the little MENU chip does nothing here
+  ctl::Change ch[16];
+  int k = controls.flush(ch, 16);
+  for (int i = 0; i < k; i++) {
+    int s = ch[i].scan;
+    uint8_t bit = s == ctl::S_LEFT ? 1 : s == ctl::S_RIGHT ? 2 : s == ctl::S_UP ? 4 : s == ctl::S_DOWN ? 8 : s == ctl::S_SPACE ? 16 : s == ctl::S_ENTER ? 32 : 0;
+    if (ch[i].down) pvHeld |= bit;
+    else pvHeld &= ~bit;
+  }
+  const int look = controls.padLook(now);
+  if (controls.padDirs != d0 || controls.btnDown != b0 || pvHeld != h0 || look != look0 || controls.L.pad.cx != p0.cx || controls.L.pad.cy != p0.cy) {
+    look0 = look;
+    p0 = controls.L.pad;
+    st::preview(tft, controls.L, controls.need, controls.padDirs, controls.btnDown, look);
+    st::previewNote(tft, setView, pvHeld);
+  }
+}
+
+// ---- buttons that act on release, and the idle timer -----------------------------------------------
+static prs::Press press;
+static pk::CardState lastCardState = pk::CARD_UNKNOWN;
+static prs::Ctx ctxFor(prs::Screen sc) {
+  prs::Ctx c;
+  c.screen = sc;
+  c.W = scr::W;
+  c.H = scr::H;
+  c.titleH = TITLE_H;
+  if (sc == prs::SC_PICKER) {
+    int count = browsingCategories ? categoryCount : nmatch, pages = (count + 5) / 6;
+    c.back = !(browsingCategories && !category && !searchText[0]);
+    c.prev = page > 0;
+    c.next = page + 1 < pages;
+    c.action = (searchText[0] && !nmatch) || (selected >= 0 && selected < ngames && !browsingCategories);
+    c.tiles = count - page * 6 < 0 ? 0 : count - page * 6 > 6 ? 6 : count - page * 6;
+  } else if (sc == prs::SC_DETAILS) {
+    c.pages = detailsMask;
+  } else if (sc == prs::SC_SETTINGS) {
+    c.settings = setView;
+  } else if (sc == prs::SC_DISPLAY) {
+#ifdef POCKET_CYD28
+    c.displayRows = 2;
+#endif
+  }
+  return c;
+}
+static void redrawMenu(prs::Screen sc) {
+  switch (sc) {
+    case prs::SC_PICKER: drawPicker(false); break;
+    case prs::SC_DETAILS: drawDetails(); break;
+    case prs::SC_DISPLAY: break;  // the Display tab is part of Settings now
+    case prs::SC_SETTINGS: drawSettings(); break;
+    case prs::SC_PAUSE: drawPause(); break;
+  }
+}
+// A tap on a library, settings or pause button: the button shows pressed on touch-down and the tap counts when the finger lifts on
+// it; sliding off cancels. Returns true once, with the position the touch began at.
+static bool menuTap(prs::Screen sc, int& tx, int& ty) {
+  prs::Ctx c = ctxFor(sc);
+  uint32_t now = millis();
+  prs::Ev e = press.update(now, pts.n > 0, pts.n ? pts.x[0] : 0, pts.n ? pts.y[0] : 0, [&](int x, int y, prs::Rect& r) { return prs::under(c, x, y, r); });
+  if (e == prs::PRESS) {
+    if (sc == prs::SC_PICKER && press.dy >= PK_BTN_Y && press.dx < 98) press.makeRepeatable();  // the page arrows
+    if (sc == prs::SC_PAUSE) prs::drawPausePressed(tft, ovl::pauseHit(press.dx, press.dy), pauseArm.armed);
+    else prs::drawPressed(tft, press.r);
+  }
+  else if (e == prs::CANCEL) redrawMenu(sc);
+  else if (e == prs::NONE && press.repeatDue(now)) {  // a held page arrow turns pages (no click: it would rattle)
+    tx = press.dx;
+    ty = press.dy;
+    return true;
+  }
+  else if (e == prs::ACT) {
+    uint32_t wait = press.showLeft(now);
+    if (wait) delay(wait);  // a very short tap still shows its pressed look
+    tx = press.dx;
+    ty = press.dy;
+    clickSound();
+    return true;
+  }
+  return false;
+}
+static void pauseGame() {
+  spk::stop();
+  world.releaseAll();
+  applyKeys(millis());
+  controls.reset();
+  mode = PAUSED;
+  pausePinned = storedFavorite(activeGame.uid);
+  drawPause();
+  wasDown = true;
+}
+#ifdef POCKET_LIGHT_SLEEP
+// Optional (build with -DPOCKET_LIGHT_SLEEP): while the screen is off, sleep the CPU in 250 ms naps, woken early by the touch
+// interrupt (XPT2046 IRQ on the 2.8 inch board, GT911 INT on the 3.5 inch) or a serial byte. Not proved on either board.
+#include <esp_sleep.h>
+#include <driver/uart.h>
+#include <driver/gpio.h>
+static void napUntilTouch() {
+#ifdef POCKET_CYD28
+  const gpio_num_t irq = (gpio_num_t)PIN_XIRQ;
+#else
+  const gpio_num_t irq = (gpio_num_t)21;
+#endif
+  Serial.flush();
+  gpio_wakeup_enable(irq, GPIO_INTR_LOW_LEVEL);
+  esp_sleep_enable_gpio_wakeup();
+  uart_set_wakeup_threshold(UART_NUM_0, 3);
+  esp_sleep_enable_uart_wakeup(UART_NUM_0);
+  esp_sleep_enable_timer_wakeup(250000);
+  esp_light_sleep_start();
+}
+#endif
+
 void loop() {
   uint32_t now = millis();
   pollTouch(now);
   int tx, ty;
+  {  // the idle timer: dim, off, wake (the waking touch is swallowed) and, in a game, the auto-pause
+    static Mode seenMode = PICKER;
+    bool serialAct = Serial.available() > 0, bootAct = false;
+#ifdef POCKET_CYD28
+    bootAct = digitalRead(0) == LOW;
+#endif
+    if (mode != seenMode) { seenMode = mode; idleM.bump(now); press.screenChanged(pts.n > 0); }
+    idle::Act a = idleM.update(now, pts.n > 0 && !injOn, serialAct || bootAct || injOn, mode == PLAYING);
+    if (a == idle::DIM_NOW || a == idle::WAKE_NOW) applyBacklight();
+    if (a == idle::OFF_NOW) {
+      applyBacklight();
+#ifdef POCKET_LIGHT_SLEEP
+      tftHw.sleep();
+#endif
+    }
+#ifdef POCKET_LIGHT_SLEEP
+    if (a == idle::WAKE_NOW) tftHw.wakeup();
+    if (idleM.state == idle::OFF && !Serial.available() && pts.n == 0) napUntilTouch();
+#endif
+    if (a == idle::AUTOPAUSE) { pauseGame(); return; }
+    if (idleM.swallow(pts.n > 0)) pts.n = 0;
+    if (idleM.state == idle::OFF) delay(50);  // screen off: touch is polled at about 20 Hz
+    if (mode == PICKER && cardState != lastCardState) {
+      lastCardState = cardState;
+      if (cardState == pk::CARD_UNREADABLE || cardState == pk::CARD_NOFOLDER) statusLed.error(now);
+    }
+    statusLed.load(cardState == pk::CARD_READING && !scanDone && mode == PICKER);
+    ledWrite(now);
+  }
   if (Serial.available()) {
     Mode before = mode;
     pollSerial();
@@ -1750,6 +2310,12 @@ void loop() {
   if (banner::shown() && ((pts.n > 0 && !injOn) || now - banner::st.seen > banner::IDLE_MS)) { bool a = banner::set(""), b = banner::setId(""); bannerChanged(a || b); }  // Lewis takes over, or the agent is gone
 
   if (mode == PICKER) {
+    if(cardProbePending) {
+      uint32_t t=millis();cardProbePending=false;probeCard();
+      Serial.printf("BOOT card-mount ms=%lu present=%d\n",(unsigned long)(millis()-t),haveSD);
+      if(haveSD&&cardState==pk::CARD_READING)addGames(SD,"/pocket",true);
+      unmountSD();scanDone=cardState!=pk::CARD_READING;drawPicker(false);
+    }
     if (scanCardBatch()) drawPicker(false);
 #ifdef POCKET_CYD28
     {  // BOOT: a short press opens the display setup, 2 seconds changes the display mode (for a screen that is unreadable)
@@ -1764,115 +2330,158 @@ void loop() {
         bootActed = false;
       }
       if (dsOpenReq) { dsOpenReq = false; runDisplaySetup(); enterPicker(); return; }
+      if (dsTabReq) {  // "S display" / "S pic open": Settings, Display (and its Picture screen)
+        openSettings(false);
+        setView.tab = st::T_DISPLAY;
+        picOpen = dsTabReq == 2;
+        Serial.printf("SETTINGS display%s\n", picOpen ? " picture" : "");
+        dsTabReq = 0;
+        drawSettings();
+        return;
+      }
     }
 #endif
-    if (freshTap(tx, ty)) {
-      int pages = (nmatch + ROWS - 1) / ROWS;
-#ifdef POCKET_CYD28
-      if (ty < TITLE_H && tx < 208) { runDisplaySetup(); enterPicker(); return; }  // the list's top-left corner: display setup
-#endif
-      if (ty >= PK_BTN_Y) {
-        if (tx < scr::W / 4 && page > 0) { page--; drawPicker(false, true); }
-        else if (tx >= scr::W / 4 && tx < scr::W / 2 && page + 1 < pages) { page++; drawPicker(false, true); }
-        else if (tx >= scr::W / 2 && tx < scr::W * 3 / 4) { stopCardScan(); mode = SEARCH_SCREEN; drawSearch(); }
-        else if (tx >= scr::W * 3 / 4) { stopCardScan(); mode = SETTINGS_SCREEN; fromPause = false; setPage = 0; drawSettings(); }
-      } else if (ty >= PK_Y0) {
-        int r = (ty - PK_Y0) / PK_STEP, at = page * ROWS + r;
-        if (r < ROWS && at < nmatch && (ty - PK_Y0) % PK_STEP < PK_H) {
-          int i = matches[at];
-          message("Loading", games[i].title);
-          if (!startGame(i)) { message("Could not load", games[i].title); delay(1500); enterPicker(); }
-          else wasDown = true;
+    if (menuTap(prs::SC_PICKER, tx, ty)) {
+      int count=browsingCategories?categoryCount:nmatch,pages=(count+5)/6;
+      if(ty<32) {
+        if(tx>=scr::W-32){stopCardScan();openSettings(false);}
+        else if(tx>=scr::W-64){stopCardScan();strcpy(savedSearch,searchText);savedAll=searchAll;savedBrowsing=browsingCategories;mode=SEARCH_SCREEN;drawSearch();}
+        else if(tx<32&&!(browsingCategories&&!category&&!searchText[0])){  // the root page has no back arrow
+          if(searchText[0])searchText[0]=0;
+          else if(!browsingCategories&&(category==1||category==5||category==6)){browsingCategories=true;subcategory=-1;}
+          else {browsingCategories=true;category=0;subcategory=-1;}page=0;selected=-1;drawPicker();
+        }
+      }else if(ty>=PK_BTN_Y) {
+        if(tx<48&&page>0){page--;restoreSelection=false;selected=-1;drawPicker(false,true);}
+        else if(tx>=50&&tx<98&&page+1<pages){page++;restoreSelection=false;selected=-1;drawPicker(false,true);}
+        else if(tx>=scr::W-100){
+          if(searchText[0]&&!nmatch){searchText[0]=0;drawPicker();}
+          else if(selected>=0&&selected<ngames)openDetails();
+        }
+      }else {
+        int slot=pk::hitTile(scr::W,tx,ty),at=page*6+slot;
+        if(slot>=0&&at<count){
+          if(browsingCategories&&!category&&categorySlots[at]==CONTINUE_SLOT){int g=resumeGame();if(g>=0){gm::EntryState e=resumeRec.e;if(!launchGame(g,&e)){resumeClear();enterPicker();}else wasDown=true;}}
+          else if(browsingCategories){if(!category){category=categorySlots[at];subcategory=-1;browsingCategories=category==1||category==5||category==6;}else{subcategory=categorySlots[at];browsingCategories=false;}page=0;selected=-1;drawPicker();}
+          else {int i=catalog->matches[at];if(selected!=i){restoreSelection=false;selected=i;drawPicker();}else{if(!launchGame(i))enterPicker();else wasDown=true;}}
         }
       }
     }
     delay(5);
     return;
   }
+  if(mode==DETAILS_SCREEN){
+    if(menuTap(prs::SC_DETAILS,tx,ty)){int b=pk::detailsButton(scr::W,tx),k=pk::detailsPageAt(scr::W,scr::H,detailsMask,tx,ty);
+      if(k>=0)readMenuPages(k);
+      else if(b==0){mode=PICKER;drawPicker();}
+      else if(b==1){int r=toggleFavorite(games[selected].uid);drawDetails();pk::detailsNote(tft,scr::W,scr::H,pinMessage(r));}
+      else{if(!launchGame(selected))enterPicker();else wasDown=true;}}delay(5);return;
+  }
   if (mode == SEARCH_SCREEN) {
+    static bool bkOn = false;
+    static uint32_t bkNext = 0;
     if (freshTap(tx, ty)) {
-      char previous[sizeof searchText];
-      memcpy(previous, searchText, sizeof previous);
-      int n = strlen(searchText), top = TITLE_H + 26, step = (scr::H - top - 38) / 4;
-      if (ty >= scr::H - 36) {
-        int b = tx * 4 / scr::W;
-        if (b == 0 && n < 24) { searchText[n] = ' '; searchText[n + 1] = 0; }
-        if (b == 1 && n) searchText[n - 1] = 0;
-        if (b == 2) searchText[0] = 0;
-        if (b == 3) { page = 0; mode = PICKER; drawPicker(); return; }
-      } else if (ty >= top && ty < top + 4 * step && n < 24) {
-        searchText[n] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"[(ty - top) / step * 9 + tx * 9 / scr::W];
-        searchText[n + 1] = 0;
-      }
-      pk::drawSearchText(tft, TITLE_H, searchText, previous);
-    }
-    delay(5); return;
+      char previous[sizeof searchText];memcpy(previous,searchText,sizeof previous);
+      int n=strlen(searchText),top=58,step=(scr::H-top-38)/4;
+      if(ty<32){if(tx<40){strcpy(searchText,savedSearch);searchAll=savedAll;browsingCategories=savedBrowsing;mode=PICKER;drawPicker();return;}searchAll=!searchAll;drawSearch();}
+      else if(ty>=scr::H-36){int b=tx*4/scr::W;if(b==0&&n<24){searchText[n]=' ';searchText[n+1]=0;}if(b==1&&n){searchText[n-1]=0;bkOn=true;bkNext=now+prs::REPEAT_DELAY_MS;}if(b==2)searchText[0]=0;if(b==3){page=0;selected=-1;browsingCategories=false;mode=PICKER;drawPicker();return;}}
+      else if(ty>=top&&ty<top+4*step&&n<24){searchText[n]="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"[(ty-top)/step*9+tx*9/scr::W];searchText[n+1]=0;}
+      pk::drawSearchText(tft,32,searchText,previous);
+    }else if(bkOn){  // Backspace held: it repeats (400 ms, then 8 a second) while the finger stays on it
+      int n=strlen(searchText);
+      if(pts.n==0||pts.y[0]<scr::H-36||pts.x[0]*4/scr::W!=1)bkOn=false;
+      else if(now>=bkNext&&n){char previous[sizeof searchText];memcpy(previous,searchText,sizeof previous);searchText[n-1]=0;
+        bkNext=now-bkNext>prs::REPEAT_EVERY_MS?now+prs::REPEAT_EVERY_MS:bkNext+prs::REPEAT_EVERY_MS;pk::drawSearchText(tft,32,searchText,previous);}
+    }delay(5);return;
   }
-  if (mode == DISPLAY_SCREEN) {
-    if (freshTap(tx, ty)) {
-      if (ty >= scr::H - 38) { mode = SETTINGS_SCREEN; drawSettings(); }
-      else if (ty >= TITLE_H + 12 && ty < TITLE_H + 52) { smallerPicture = !smallerPicture; saveSettings(); last.valid = false; drawDisplayOptions(); }
 #ifdef POCKET_CYD28
-      else if (ty >= TITLE_H + 60 && ty < TITLE_H + 100) { runDisplaySetup(); drawDisplayOptions(); }
-#endif
-    }
-    delay(5); return;
-  }
-  if (mode == SETTINGS_SCREEN) {
+  if (mode == SETTINGS_SCREEN && picOpen) {  // Picture: every chip is sent to the glass at once; Back saves it with the setup
     if (freshTap(tx, ty)) {
-      int pagesS = (ST_ROWS + ST_PER_PAGE - 1) / ST_PER_PAGE;
-      if (ty >= ST_FOOT_Y && tx >= (scr::SMALL ? 104 : 160) && tx < (scr::SMALL ? 208 : 280)) {
-        if (pagesS > 1) { setPage = (setPage + 1) % pagesS; drawSettings(); }
-        return;
-      }
-      if (ty >= ST_FOOT_Y && tx < (scr::SMALL ? 104 : 160)) {
-        saveSettings();
-        if (fromPause) { applyControls(); mode = PAUSED; tft.fillScreen(C_BLACK); last.valid = false; drawFrame(true); drawStrip(); drawPause(); }
-        else enterPicker();
-        return;
-      }
-      int row = (ty - ST_Y0) / ST_STEP;
-      if (ty >= ST_Y0 && row >= 0 && row < ST_PER_PAGE && setPage * ST_PER_PAGE + row < ST_ROWS) {
-        switch (setPage * ST_PER_PAGE + row) {
-          case 0: settings.lefty ^= 1; break;
-          case 1: settings.stylus ^= 1; break;
-          case 2: settings.padSize = (settings.padSize + 1) % 3; break;
-          case 3: settings.dead = (settings.dead + 1) % 3; break;
-          case 4: settings.palm = (settings.palm + 1) % 3; break;
-          case 5: settings.debug ^= 1; break;
-          case 6:
-            settings.sound = (settings.sound + 1) % 4;
-            spk::setVolume(settings.sound);
-            spk::play(SAMPLE_TUNE);
-            break;
-          case 7: settings.sticky ^= 1; saveSettings(); break;
-#ifdef POCKET_CYD28
-          case 8: saveSettings(); if (runCalibration()) dsCalDone(); drawSettings(); wasDown = true; return;
-          case 9: saveSettings(); mode = DISPLAY_SCREEN; drawDisplayOptions(); wasDown = true; return;
-#else
-          case 8: saveSettings(); mode = DISPLAY_SCREEN; drawDisplayOptions(); wasDown = true; return;
-#endif
-        }
+      pt::Hit h = pt::hit(tx, ty);
+      if (h.kind == pt::K_BACK) {
+        picOpen = false;
+        dsSave();
+        Serial.printf("picture gamma %d tune %d\n", picGamma + 1, picTune);
         drawSettings();
+      } else if (h.kind == pt::K_GAMMA || h.kind == pt::K_TUNE) {
+        (h.kind == pt::K_GAMMA ? picGamma : picTune) = (uint8_t)h.k;
+        applyPicture(true);
+        pt::rows(tft, picGamma, picTune);
       }
     }
+    delay(5);
+    return;
+  }
+#endif
+  if (mode == SETTINGS_SCREEN) {
+    if (menuTap(prs::SC_SETTINGS, tx, ty)) {
+      st::Hit h = st::hit(setView, tx, ty);
+      switch (h.kind) {
+        case st::K_BACK:
+          saveSettings();
+          if (fromPause) { applyControls(); mode = PAUSED; tft.fillScreen(C_BLACK); last.valid = false; drawFrame(true); drawStrip(); drawPause(); }
+          else enterPicker();
+          return;
+        case st::K_TAB:
+          if (h.tab != setView.tab) { setView.tab = (st::Tab)h.tab; setView.page = 0; setView.last = st::I_NONE; }
+          drawSettings();
+          if (setView.tab == st::T_CARD && !cardSpace[0]) measureCard();
+          return;
+        case st::K_MORE: setView.page = (setView.page + 1) % st::pages(setView.tab); drawSettings(); return;
+        case st::K_CHIP: chooseSetting(h.item, h.chip); return;
+        default: break;
+      }
+    }
+    if (setView.tab == st::T_CONTROLS) previewTouch(now);
     static uint32_t infoT = 0;
-    if (now - infoT > 100) { infoT = now; settingsTouchInfo(); }
+    if (setView.tab == st::T_CARD && now - infoT > 100) { infoT = now; touchInfo(); }
     delay(5);
     return;
   }
   if (mode == PAUSED) {
-    if (freshTap(tx, ty)) {
-      int i = (ty - PA_Y0) / PA_STEP;
-      if (tx >= PA_X0 && tx < PA_X1 && ty >= PA_Y0 && i >= 0 && i < 4 && (ty - PA_Y0) % PA_STEP < PA_H) {
-        if (i == 0) {
+    if (pauseArm.expire(millis())) drawPause();
+    if (menuTap(prs::SC_PAUSE, tx, ty)) {
+      int hit = ovl::pauseHit(tx, ty), was = pauseArm.armed;
+      int act = pauseArm.tap(hit, millis());
+      if (act == ovl::ARM_ARMED) { drawPause(); wasDown = true; return; }
+      if (act == ovl::ARM_NONE) { if (was >= 0) drawPause(); return; }
+      switch (hit) {
+        case ovl::PA_RESUME:
           mode = PLAYING; world.releaseAll(); controls.reset(); last.valid = false; drawFrame(true); drawStrip();
           t0 = millis(); ticksRun = 0; wasDown = true;
-        } else if (i == 1) startGame(curGame);
-        else if (i == 2) enterPicker();
-        else { mode = SETTINGS_SCREEN; fromPause = true; drawSettings(); }
+          break;
+        case ovl::PA_RESTART_LEVEL: restartLevel(); break;
+        case ovl::PA_RESTART_GAME: if (!launchGame(curGame)) enterPicker(); break;
+        case ovl::PA_HELP: mode = HELP_SCREEN; ovl::helpPage(tft, cfg); wasDown = true; break;
+        case ovl::PA_SETTINGS: openSettings(true); break;
+        case ovl::PA_QUIT: enterPicker(); break;  // the resume point stays: Continue on the home page
+        case ovl::PA_STAR: {  // star or unstar this game; the title line says what happened until the next redraw
+          int r = toggleFavorite(activeGame.uid);
+          if (r == pk::PIN_ADDED || r == pk::PIN_REMOVED) pausePinned = r == pk::PIN_ADDED;
+          drawPause();
+          const ovl::PauseGeom& p = ovl::PAUSE;
+          int sx0, sy0, sx1, sy1;
+          ovl::pauseCell(ovl::PA_STAR, sx0, sy0, sx1, sy1);
+          tft.fillRect(p.x0, sy0 + 1, sx0 - 2 - p.x0, sy1 - sy0 - 2, C_BLACK);
+          tft.setTextSize(1);
+          tft.setTextColor(C_YELLOW, C_BLACK);
+          tft.setCursor(p.x0, p.titleY);
+          tft.print(pinMessage(r));
+          break;
+        }
+        default: break;
       }
     }
+    delay(5);
+    return;
+  }
+  if (mode == FIRST_RUN) {
+    firstRunLoop(now);
+    delay(5);
+    return;
+  }
+  if (mode == HELP_SCREEN) {
+    if (freshTap(tx, ty)) { pauseArm.armed = -1; mode = PAUSED; tft.fillScreen(C_BLACK); last.valid = false; drawFrame(true); drawStrip(); drawPause(); wasDown = true; }
     delay(5);
     return;
   }
@@ -1887,13 +2496,7 @@ void loop() {
   controls.update(pts.id, pts.x, pts.y, pts.size, pts.n, now);
   int ev = controls.takeEvent();
   if (ev == ctl::EV_MENU) {
-    spk::stop();
-    world.releaseAll();
-    applyKeys(now);
-    controls.reset();
-    mode = PAUSED;
-    drawPause();
-    wasDown = true;
+    pauseGame();
     return;
   }
   if (ev == ctl::EV_KEYS) {
@@ -1927,6 +2530,7 @@ void loop() {
       fadeLevelOut();
       assets.release();  // the level's big buffers go while a card shows (the next level loads them again); a card needs a 64 KB block
       if (r == 'W') {
+        resumeClear();
         levelWhere(where, 'x', from);
         showCards(where);
         showCards("w");
@@ -1934,6 +2538,7 @@ void loop() {
         return;
       }
       if (lost) {
+        resumeClear();
         showCards("l");
         enterPicker();
         return;
@@ -1944,8 +2549,9 @@ void loop() {
       }
       levelWhere(where, 'i', r == 'D' ? from : world.pendLevel);
       showCards(where);
-      world.finish();
+      if (!world.finish()) { levelFailed(); enterPicker(); return; }
       world.buildDrawList();
+      resumeSave(activeGame);
       fadeLevelIn();
       t0 = millis();
       ticksRun = 0;
@@ -1957,7 +2563,7 @@ void loop() {
   if (ran) tickMsLast = (millis() - ts) / ran;
   if (oneLevelUp || assets.palChanged) { refreshPalette(); last.valid = false; }
 
-  if (ran || !last.valid || controls.padDirs != lastPad || controls.btnDown != lastBtn || controls.tileDown != lastTile) {
+  if (ran || !last.valid || controls.padDirs != lastPad || controls.btnDown != lastBtn || controls.tileDown != lastTile || padShowChanged(now)) {
     uint32_t ds = millis();
     drawFrame(false);
     drawMsLast = millis() - ds;

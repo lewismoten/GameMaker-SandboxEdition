@@ -50,6 +50,7 @@ import { GWINN } from '../../games/teddy/src/sprites/gwinn';
 import { TOYS } from '../../games/teddy/src/sprites/toys';
 import { tierBlocks, tierPalette } from './achievementTiers';
 import { levelSource } from './achievementLevels';
+import { honorSource } from './achievementHonors';
 import { COUNT_LEVELS } from '../src/achievements/levels';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 
@@ -138,6 +139,7 @@ export const sets: Record<string, Source> = {
   teddy: { game: 'teddy', blocks: new Map(Object.entries(POSES)), palette: P.pal },
   tiers: { game: 'teddy', blocks: tierBlocks(), palette: tierPalette },
   levels: { game: 'remote and tickle', ...levelBases() },
+  honors: { game: 'the Starters', ...honorSource() },
   tickle: { game: 'tickle', blocks: tickleBlocks(ticklePalette('plain')).pics, palette: ticklePalette('plain').pal },
   goat: { game: 'goat', blocks: goatBlocks(goat).pics, palette: goat.pal },
   remote: { game: 'remote', blocks: remoteBlocks(remote).pics, palette: remote.pal },
@@ -206,11 +208,11 @@ export const picks: Record<string, [string, string]> = {
   'record-video': ['remote', 'camcorder'],
   'desk-bbs-file': ['remote', 'diskDrive'],
   'mag-disc': ['remote', 'discSleeve'],
-  'play-all-mine': ['sleuthParlor', 'checklist'],
   'play-save': ['remote', 'saveTape'],
   'blaster-big-name': ['carl', 'speaker'],
   'desk-curtains': ['sleuthParlor', 'curtain0'],
   'cast-parade': ['sleuthParlor', 'footlights'],
+  'play-all-mine': ['sleuthParlor', 'checklist'],
   'desk-time-reset': ['carl', 'alarm'],
   'bbs-time-travel': ['reckoning', 'clock0'],
   'library-kinds': ['reckoning', 'books'],
@@ -292,6 +294,13 @@ export const picks: Record<string, [string, string]> = {
   'zine-read': ['teddyToys', 'book'],
   'play-bizarre': ['smirked', 'violin'],
   'library-visit': ['risiCampus', 'libraryFront'],
+  'honor-graduation-basics': ['honors', 'honors-1'],
+  'honor-graduation-moving': ['honors', 'honors-2'],
+  'honor-graduation-heroes': ['honors', 'honors-3'],
+  'honor-graduation-story': ['honors', 'honors-4'],
+  'honor-graduation-wiring': ['honors', 'honors-5'],
+  'honor-graduation-blocks': ['honors', 'honors-6'],
+  'honor-graduation-diploma': ['honors', 'honors-diploma'],
   'every-life-1': ['tiers', 'every-life-1'],
   'every-life-3': ['tiers', 'every-life-3'],
   'every-life-10': ['tiers', 'every-life-10'],

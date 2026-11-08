@@ -10,11 +10,11 @@
 //      fill on the way (one more every 28 ticks) and the lights come on when the sixth does.
 import { MLEN, type GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
-import { Book, SOLID } from '../../kit/starter/book';
+import { Book, PULL, SOLID } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { ORIGIN, StarterMap } from '../../kit/starter/map';
-import { type Pal } from '../../kit/starter/palette';
+import { skyOf, type Pal } from '../../kit/starter/palette';
 import { addSign, type Sign } from '../../kit/starter/sign';
 import { AIR, air, drip, floor, lantern, post, rock } from './cave';
 import { type Timed } from './loops';
@@ -95,6 +95,15 @@ interface Built {
   book: Book;
   pal: Pal;
   signs: Record<string, Sign>;
+  /** The sign pictures by block name (drawn on the sky color, which is the darkest air). */
+  pics: Map<string, Pixels>;
+}
+
+/** A sign picture with its sky background painted as air of brightness `k`. */
+function lightSign(pal: Pal, pic: Pixels, k: number): Pixels {
+  const sky = skyOf(pal);
+  const bg = pal.r('cair')[k];
+  return pic.map((_x, _y, c) => (c === sky ? bg : c));
 }
 
 /** A level's block set: the Starter blocks and its signs; the cave's own blocks are added as the level lays them. */
@@ -103,8 +112,11 @@ function start(names: SignName[]): Built {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
   const signs: Record<string, Sign> = {};
-  for (const k of names) signs[k] = addSign(book, pal, k, WORDS[k], 4, 3);
-  return { book, pal, signs };
+  // the signs' pictures are drawn in a scratch book; each placed block is added to the level's own book (signAt), on the
+  // brightness of the air behind it, so a sign lights with its surroundings
+  const scratch = new Book('bbl');
+  for (const k of names) signs[k] = addSign(scratch, pal, k, WORDS[k], 4, 3);
+  return { book, pal, signs, pics: scratch.pics };
 }
 
 /** The picture of a cave block by name: `air.K`, `rock.K.V`, `floor.K.V`, `drip.K`, `post.K`, `lantern`, `lantern.off`. */
@@ -224,9 +236,40 @@ function lay(
                   : `air.${s}`;
       m.set(x, y, lay1(name, s > 0 || k === 'lantern'));
     }
+  /**
+   * Stamps a sign. Each of its blocks sits on the air of its cell: a tunnel's is dark until touched (and turns lit with the
+   * air around it), a dark hall's lights with the hall, and elsewhere it is drawn at its ring's brightness.
+   */
   const signAt = (name: string, x: number): [number, number] => {
-    const y = onGround(built.signs[name]);
-    m.sign(x, y, built.signs[name]);
+    const sign = built.signs[name];
+    const y = onGround(sign);
+    const w = sign.board[0].length;
+    const stamp = (pic: string, cx: number, cy: number): void => {
+      const src = built.pics.get(pic) as Pixels;
+      const { kind: k, shade } = cells[cy][cx];
+      const add = (id: string, p: Pixels, rules: Parameters<Book['add']>[2]): string => {
+        if (!book.has(id)) book.add(id, p, { grav: PULL.down, ...rules });
+        return id;
+      };
+      let id: string;
+      if (k === 'tunnel') {
+        const lit = cy >= 6 ? 4 : cy >= 4 ? 3 : 2;
+        const on = add(`${pic}.l${lit}`, lightSign(pal, src, lit), {});
+        id = add(`${pic}.t${lit}`, src, { touch: on });
+      } else if (shade === 0) id = add(pic, src, {});
+      else {
+        const on = add(`${pic}.l${shade}`, lightSign(pal, src, shade), {});
+        if (o.dark) {
+          const fresh = !book.has(`${pic}.d`);
+          id = add(`${pic}.d`, src, {});
+          if (fresh) timed.push({ name: id, next: on, ticks: LIGHTS_AT });
+        } else id = on;
+      }
+      m.set(cx, cy, id);
+    };
+    sign.board.forEach((row, dy) => row.forEach((pic, dx) => stamp(pic, x + dx, y + dy)));
+    stamp(sign.legs[0], x, y + sign.board.length);
+    stamp(sign.legs[1], x + w - 1, y + sign.board.length);
     return [x, y];
   };
   return { map: m, timed, cells, signAt };

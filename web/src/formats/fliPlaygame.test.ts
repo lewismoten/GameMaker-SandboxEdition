@@ -306,27 +306,35 @@ describe('PLAYGAME port', () => {
     expect(fliFaults(file)).toEqual([{ kind: 'big', frame: 0, value: size }]);
   });
 
-  it('plays every game .FLI with a small buffer, frame for frame as fli.ts draws it', () => {
-    const files = diskFlis();
-    expect(files.length).toBeGreaterThan(100);
-    for (const { name, bytes } of files) {
-      const dos = playLikeDos(bytes, BUFFER);
-      expect(dos.failure, name).toBeUndefined();
-      expect(fliFaults(bytes), name).toEqual([]);
-      const web = webFrames(bytes);
-      expect(dos.frames.length, name).toBe(web.length);
-      for (let i = 0; i < web.length; i++) {
-        if (!equal(dos.frames[i].pixels, web[i].pixels)) expect.fail(`${name} frame ${i}: the pixels differ`);
-        if (!equal(dos.frames[i].palette, web[i].palette)) expect.fail(`${name} frame ${i}: the palette differs`);
+  // Skipped, like the next one, where the games' disks are not built (the package publish workflows).
+  const noDisks = !existsSync(join(GAMES, 'carl/disk/cover.fli'));
+  it.skipIf(noDisks)(
+    'plays every game .FLI with a small buffer, frame for frame as fli.ts draws it',
+    () => {
+      const files = diskFlis();
+      expect(files.length).toBeGreaterThan(100);
+      for (const { name, bytes } of files) {
+        const dos = playLikeDos(bytes, BUFFER);
+        expect(dos.failure, name).toBeUndefined();
+        expect(fliFaults(bytes), name).toEqual([]);
+        const web = webFrames(bytes);
+        expect(dos.frames.length, name).toBe(web.length);
+        for (let i = 0; i < web.length; i++) {
+          if (!equal(dos.frames[i].pixels, web[i].pixels)) expect.fail(`${name} frame ${i}: the pixels differ`);
+          if (!equal(dos.frames[i].palette, web[i].palette)) expect.fail(`${name} frame ${i}: the palette differs`);
+        }
       }
-    }
-  }, 120_000);
+    },
+    120_000,
+  );
 
-  it("plays the FLIs Lewis saw break in DOSBox: Carl's cover, the goat's Stable card, Blaster's intro", () => {
+  const BROKEN_IN_DOSBOX = ['carl/cover.fli', 'goat/card4.fli', 'blaster/intro.fli'];
+  const haveDisks = BROKEN_IN_DOSBOX.every((n) => existsSync(join(GAMES, n.replace('/', '/disk/'))));
+  it.skipIf(!haveDisks)("plays the FLIs Lewis saw break in DOSBox: Carl's cover, the goat's Stable card, Blaster's intro", () => {
     // carl/cover.fli had a 63,446-byte BRUN chunk; goat/card4.fli a 24,082-byte LC chunk and,
     // on frame 1, a line of 128 packets (a negative count to PLAYGAME at any buffer size);
     // blaster/intro.fli a 64,806-byte chunk.
-    for (const name of ['carl/cover.fli', 'goat/card4.fli', 'blaster/intro.fli']) {
+    for (const name of BROKEN_IN_DOSBOX) {
       const bytes = new Uint8Array(readFileSync(join(GAMES, name.replace('/', '/disk/'))));
       expect(playLikeDos(bytes, BUFFER).failure, name).toBeUndefined();
     }

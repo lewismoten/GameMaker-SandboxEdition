@@ -20,7 +20,7 @@ export const walkPercent = (b: WalkBadge | undefined): number => (!b ? -1 : b.co
 
 /** What a card's icon says. */
 export const walkLabel = (b: WalkBadge): string =>
-  `${b.complete ? 'Walkthrough: complete' : `Walkthrough: ${b.won} of ${b.total} scene${b.total === 1 ? '' : 's'}`}${b.local ? ' (local file)' : ''}`;
+  `${b.complete ? 'Recorded walkthrough finishes the game' : `Recorded walkthrough reaches ${b.won} of ${b.total} scene${b.total === 1 ? '' : 's'}`}${b.local ? ' (local file)' : ''}`;
 
 interface KeptShape {
   won?: boolean;

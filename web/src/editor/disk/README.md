@@ -71,3 +71,5 @@ merge them, and says how many 3.5" disks the game needs.
 `npm run optimize:proof` (web/, `games/kit/optimizeProof.ts`) applies every step to a copy of each built game and checks that each scene draws the same map pixel for pixel and that carried block numbers keep their picture and rules. It prints the steps and bytes saved per game and exits 1 on a difference.
 
 `optimize:proof` also, per game, proposes palette reservations (`reservePlan.ts`), applies the color reductions and range syncs they call for, plans again with the ranges, and prints the extra bytes saved, how far any scene then draws from the original (CIELAB delta E, mean and worst) against the worst the steps themselves reported; it fails if a scene is further than that. `-- --no-reserve` skips it (it is slow). The palette merge also accepts two palettes that differ only in colors no block draws with, and sprite block sets join when their scenes' palettes match over the reserved range.
+
+Color-reduction proposals name each conflicting source color number and explain that applying replaces pixels in that file without changing reservations or removing files.

@@ -12,6 +12,8 @@ Watch the flakes sway. Walk through the fresh powder, then look behind you. Hop 
 
 On the next walk, a low snow drift grows in three steps. The floor stays put: only the picture changes.
 
+Then the snow opens out. Walk any way you like, and your prints face the way you went, then fade.
+
 Read the signs. Then open the blocks and make your own snow.
 `);
 export const HOWTO = wrap(`
@@ -19,12 +21,15 @@ export const HOWTO = wrap(`
 
 |LEFT, RIGHT   walk
 |SPACE         jump
+|UP, DOWN      walk (open snow)
 
-Walk into the door to go on. Nothing here hurts you.
+Walk into the door or the gate to go on. Nothing here hurts you.
 
 Walking in powder stamps a pair of bootprints. Jumping can leave gaps. Walk back to see your trail.
 
 The second drift grows in a few seconds. You need not wait to leave.
+
+In the open snow, all four arrows walk. Each print faces the way you went and fades in a few seconds.
 
 |ESC for the menu.
 `);
@@ -47,9 +52,10 @@ export const WON = wrap(`
 
 Falling flakes: a loop of pictures.
 Growing drifts: timed pictures that stop at the last one.
-Footprints: only the tile you touch changes.
+Boot marks: only the tile you touch changes.
+Open-snow prints: each step gives birth to a little monster that shows four fainter pictures, then goes away.
 
-The snow does not really pile up or remember each foot. The floor stays level and each touched tile gets the same pair of bootprints.
+The snow does not really pile up or remember each foot. The floor stays level, and each print is only a picture on a clock of its own.
 
 Start a new game for fresh snow. Open the game in Game-Maker and change one block at a time.
 `);

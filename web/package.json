@@ -62,12 +62,15 @@
     "voice:phone": "vite-node scripts/narrate.ts -- --lines phone --out public/phone/voice",
     "voice:phone:check": "vite-node scripts/narrate/verify.ts -- --lines phone --out public/phone/voice",
     "voice:check": "vite-node scripts/narrate/verify.ts --",
+    "voice:words": "vite-node scripts/narrate/words.ts --",
     "voice:setup": "npm install --prefix ../.narrate --no-save kokoro-js@1.2.1",
     "dosbox:open": "../dosbox/DOSBOX.command",
     "mcp": "vite-node -c scripts/mcp/vite.config.ts scripts/mcp/main.ts --",
+    "pretypecheck": "node ../scripts/decl-preflight.mjs",
     "typecheck": "tsc --noEmit --incremental --tsBuildInfoFile node_modules/.cache/tsc/web.tsbuildinfo",
     "format": "cd .. && prettier --write . --cache --cache-location node_modules/.cache/prettier/.cache --cache-strategy content",
     "format:check": "cd .. && prettier --check . --cache --cache-location node_modules/.cache/prettier/.cache --cache-strategy content",
+    "prelint": "node ../scripts/decl-preflight.mjs",
     "lint": "eslint . --cache --cache-location node_modules/.cache/eslint/.cache --cache-strategy content",
     "lint:full": "eslint .",
     "lint:fix": "eslint . --fix",
@@ -75,7 +78,8 @@
     "prebuild": "node ../scripts/build-games.mjs",
     "pretest": "node ../scripts/build-games.mjs",
     "pretest:fast": "node ../scripts/build-games.mjs",
-    "precheck:games": "node ../scripts/build-games.mjs"
+    "precheck:games": "node ../scripts/build-games.mjs",
+    "check:cyd": "vite-node scripts/cydFriendly.ts --"
   },
   "dependencies": {
     "@lewismoten/gamemaker-sandbox-archives": "3.2.0",

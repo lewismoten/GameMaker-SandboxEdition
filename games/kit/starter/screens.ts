@@ -33,11 +33,15 @@ function cloud(p: Pixels, pal: Pal, x: number, y: number, s = 1): void {
   p.rect(x - 6 * s, y + 9 * s, 38 * s, 3 * s, pal.c('white', 2));
 }
 
-/** A sunny scene: sky, clouds, two rows of hills, then the grass and dirt blocks of the levels from `ground` down. */
-export function scene(pal: Pal, book: Book, ground = 160, seed = 3): Pixels {
+/**
+ * A sunny scene: sky, clouds, two rows of hills, then the grass and dirt blocks of the levels from
+ * `ground` down. The sky blends in whole rows (a much smaller GIF); `rows` false keeps the 4x4
+ * dither, for a Special's title picture and title cartoon.
+ */
+export function scene(pal: Pal, book: Book, ground = 160, seed = 3, rows = true): Pixels {
   const { c, r } = pal;
   const p = new Pixels(W, H);
-  gradient(p, 0, 0, W, ground, r('sky'), 1, 4);
+  gradient(p, 0, 0, W, ground, r('sky'), 1, 4, rows);
   const rand = rng(seed);
   for (let i = 0; i < 5; i++) cloud(p, pal, Math.floor(rand() * 300), 8 + Math.floor(rand() * 60), 1 + (i % 2) * 0.5);
   for (let x = 0; x < W; x++) {

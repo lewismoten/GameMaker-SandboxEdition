@@ -228,10 +228,10 @@ them straight from `../cd` and `../games` while developing, and only the product
 Every game file but a GIF also gets a gzip copy (`<file>.gz`), which the site fetches and
 unpacks, since GitHub Pages sends unknown file types uncompressed.
 
-The GitHub Actions workflow in [`.github/workflows/pages.yml`](../.github/workflows/pages.yml)
-builds every game and the site (no format, lint or tests: those run locally with `npm run verify`).
-A pull request into `master` stops after the build; a `pages-v*` tag or a manual run deploys `web/dist` to GitHub Pages. Run `npm test` locally for
-everything; after adding a slow test, run `npm run test:slow-list` so CI leaves it out. In the repository settings, set **Pages → Source** to **GitHub Actions**.
+GitHub Pages serves the `gh-pages` branch: the built `web/dist` of a `pages-v*` release tag, made on the
+maintainer's computer by `npm run release:pages` ([package releases](../docs/package-releases.md#publishing-the-site-gh-pages)).
+No workflow builds or deploys the site. Run `npm test` locally for everything; after adding a slow test, run
+`npm run test:slow-list` so the package workflows' `test:fast` leaves it out.
 
 ## Layout
 

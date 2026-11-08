@@ -3,7 +3,7 @@
 //                  checkerboard one (they show) and one in three densities (soft edge). The beam is blocks: twins of the wall and floor.
 //   2  The Fog     valley hills in three layers. The left half is covered in solid fog (flat, paler the farther), the right half in
 //                  dithered fog at 75, 50 and 25 percent, with two banks of fog (monsters) drifting across it.
-//   3  The Glow    the hall again, with three floating lanterns (monsters): a solid halo, a checkerboard halo and halos in rings.
+//   3  The Glow    the hall again, with three floating lanterns, each a 3x3 group of monsters (a halo 60 pixels across): solid, checkerboard, in rings.
 import { MLEN, type GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { ORIGIN, StarterMap } from '../../kit/starter/map';
 import { Book } from '../../kit/starter/book';
@@ -11,7 +11,8 @@ import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
 import { addSign, type Sign } from '../../kit/starter/sign';
-import { CRITTER } from './critters';
+import { addBeams } from './beam';
+import { CRITTER, GROUP, HALOS, lampPiece } from './critters';
 import { addHallBlocks, wallPicture } from './hall';
 import { LAYERS, addHillBlocks, hillBlock, hillName, meadow, onHill, type Zone } from './hills';
 import { SIGNS } from './text';
@@ -33,7 +34,8 @@ export interface Level {
 /** The beams' landmarks (level blocks). */
 export const BEAMS = { width: 46, lamps: [12, 23, 34] as const, exit: 44 };
 export const FOG_ROOM = { width: 54, zoneB: 26, exit: 51, far: { x: 28, row: 4, run: 10 }, near: { x: 30, row: 5, run: 10 } };
-export const GLOW = { width: 44, lamps: [8, 19, 30] as const, row: 6, run: 6, exit: 42 };
+/** The glow's lanterns hang at `row` (the middle of a 3x3 group of monsters) and drift `run` blocks to the right. */
+export const GLOW = { width: 48, lamps: [10, 21, 32] as const, row: 6, run: 6, exit: 46 };
 
 type Words = Record<string, [string, number, number]>;
 
@@ -86,31 +88,18 @@ function hall(book: Book, width: number, exit: number): StarterMap {
 
 const board = (m: StarterMap, s: Sign, x: number, y: number) => s.board.forEach((row, dy) => row.forEach((name, dx) => m.set(x + dx, y + dy, name)));
 
-/** How wide a beam is (blocks either side of its middle) on each row from the row below the lamp: 1, 1, 2, 2, 3, 3, 3 and the floor. */
-const BEAM_HALF = [1, 1, 2, 2, 3, 3, 3, 3];
-export const BEAM_TOP = 2;
-/** Which density of light the block `dx` blocks from a beam's middle gets, for the beam's kind. */
-export function tier(kind: 'solid' | 'checker' | 'soft', half: number, dx: number): 25 | 50 | 75 | 100 {
-  if (kind === 'solid') return 100;
-  if (kind === 'checker') return 50;
-  const edge = half - Math.abs(dx);
-  return edge === 0 ? 25 : edge === 1 ? 50 : 75;
-}
-
 /** The beams: three lamps, each with its beam of lit twins of the wall (rows 2 to 8) and the floor (row 9). */
 export function beams(pal: Pal): Level {
   const { book, signs } = bookFor(pal, SIGNS.beams, wallPicture(pal).get(0, 1), (b) => addHallBlocks(b, pal, true));
   const m = hall(book, BEAMS.width, BEAMS.exit);
   board(m, signs.start, 4, 4);
   const kinds = ['solid', 'checker', 'soft'] as const;
-  BEAMS.lamps.forEach((lx, i) => {
-    m.set(lx, 1, 'lamp');
-    for (let k = 0; k < BEAM_HALF.length; k++) {
-      const y = BEAM_TOP + k;
-      for (let dx = -BEAM_HALF[k]; dx <= BEAM_HALF[k]; dx++) m.set(lx + dx, y, `${y === FLOOR ? 'floor' : 'wall'}Lit${tier(kinds[i], BEAM_HALF[k], dx)}`);
-    }
-    board(m, signs[kinds[i]], lx - 5, 2);
-  });
+  const lit = addBeams(book, pal, BEAMS.lamps, kinds, [1, FLOOR]);
+  for (const [at, name] of lit) {
+    const [x, y] = at.split(',').map(Number);
+    m.set(x, y, name);
+  }
+  BEAMS.lamps.forEach((lx, i) => board(m, signs[kinds[i]], lx - 5, 2));
   board(m, signs.next, BEAMS.exit - 5, 4);
   return { file: 'beams', title: 'The Beams', map: m, book, exit: BEAMS.exit };
 }
@@ -155,8 +144,8 @@ export function fog(pal: Pal): Level {
   m.set(3, BOTTOM - 1, 'doorwayTopH').set(3, BOTTOM, 'doorwayBottomH');
   m.set(exit, BOTTOM - 1, 'doorTopH').set(exit, BOTTOM, 'doorBottomH');
   const sign = (s: Sign, x: number) => m.sign(x, 6, s);
-  sign(signs.start, 5);
-  sign(signs.flat, 11);
+  sign(signs.start, 6);
+  sign(signs.flat, 12);
   sign(signs.dither, zoneB + 3);
   sign(signs.thick, zoneB + 9);
   sign(signs.drift, zoneB + 15);
@@ -174,13 +163,13 @@ export function fog(pal: Pal): Level {
 export function glow(pal: Pal): Level {
   const { book, signs } = bookFor(pal, SIGNS.glow, wallPicture(pal).get(0, 1), (b) => addHallBlocks(b, pal, false));
   const m = hall(book, GLOW.width, GLOW.exit);
-  board(m, signs.start, 4, 4);
+  board(m, signs.start, 4, 3);
   const kinds = ['solid', 'checker', 'soft'] as const;
   GLOW.lamps.forEach((lx, i) => {
     board(m, signs[kinds[i]], lx + 1, 1);
-    m.mon([CRITTER.lampSolid, CRITTER.lampDither, CRITTER.lampSoft][i], lx, GLOW.row);
+    for (let ty = 0; ty < GROUP; ty++) for (let tx = 0; tx < GROUP; tx++) m.mon(lampPiece(HALOS[i], tx, ty), lx + tx - 1, GLOW.row + ty - 1);
   });
-  board(m, signs.next, GLOW.exit - 5, 4);
+  board(m, signs.next, GLOW.exit - 5, 3);
   return { file: 'glow', title: 'The Glow', map: m, book, exit: GLOW.exit };
 }
 

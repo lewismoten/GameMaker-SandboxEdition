@@ -158,7 +158,7 @@ export function pendingOf<T extends { id: string; title: string }>(catalog: T[])
 
 /** The counted games from the live catalog (titles from it). */
 async function countedGames(): Promise<CountedGame[]> {
-  const { loadGameList } = await import('../project/files');
+  const { loadLeanGameList: loadGameList } = await import('../project/files');
   return countedOf(await loadGameList().catch(() => []));
 }
 

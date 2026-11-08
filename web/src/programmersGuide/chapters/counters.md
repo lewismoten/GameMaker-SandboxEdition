@@ -63,7 +63,7 @@ from the character file; **an unused sequence (key 0) gets -20000** (`PG:4663-46
 
 ## 9.7 Tips
 
-- A "key" is a counter 20-29 with a pickup of +1 and a door of -1. The hero shows nothing on screen for it: draw the key in his inventory or make a block that shows it (the on-demand inventory screen lists only money, `PG:1975-1980`).
+- A "key" is a counter 20-29 with a pickup of +1 and a door of -1. The hero shows nothing on screen for it: draw the key in the hero's inventory or make a block that shows it (the on-demand inventory screen lists only money, `PG:1975-1980`).
 - Counters 5-19 are ammunition: set the starting value and add refills with blocks (effect = the sequence number).
 - Money is the only counter that can be shown. Use it when the player must see a number.
 - Start an ordinary key counter at stored 1: raw 0 needs two +1 pickups before a -1 door will open.
@@ -74,3 +74,13 @@ from the character file; **an unused sequence (key 0) gets -20000** (`PG:4663-46
 - Counter 2 does nothing; effect 2 does nothing.
 - Do not confuse raw stored 0 with a displayed 0 from a stored-minus-one field (stored 1).
 - 32,767 means "never changes"; not a big number.
+
+## A paid touch, with actual stored values
+
+There are **30 counters**. The first few are special (hit points to start, lives to start, money). Counters 5 through 19 count the uses of sequences 5 through 19. Counters 20 through 29 are free for your own use:
+keys, coins, fuel, anything you like. A block changes a counter by an amount you choose when the hero touches it. A block that would take a money counter or one of counters 20 to 29 down to nothing is **refused**:
+the touch is refused before its score, hit points, sound or replacement block takes effect. A suitable solid door can therefore act as a lock; refusal alone does not add solidity.
+
+Money is displayed as stored value minus one: stored 1 shows 0, stored 2 shows 1. A cost of -1 succeeds from stored 2 (leaving 1, shown 0), but fails from stored 1 because the result would be 0. The same refusal test applies to counters 20 through 29. Counters 4 through 19 do not refuse a touch on that basis; sequence-use counters have a separate check before starting a sequence. Ordinary accepted counter changes are capped at 32,766; 32,767 means _never changes_.
+
+The refusal guard and its early return are `code/GM/PLAYGAME.C:3440-3443`; the money display subtracts one at `code/GM/PLAYGAME.C:1976`. This is why “nothing is refused” was ambiguous: effects 4–19 do not use that refusal guard, while a rejected touch for 3 or 20–29 stops all its effects. Counter selection and signed amount are bytes 417 and 418–419 of the block (`code/GM/BLOC.H:51-52`, `engine/formats/blocks.ts:89-90`).

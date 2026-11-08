@@ -90,6 +90,7 @@ function takeBoth(book: Book, signs: Record<SignName, Sign>): StarterMap {
   for (const x of [18, 26, 44]) g.put(x, GROUND - 1, 'b');
   for (const x of [7, 21, 43]) g.put(x, GROUND - 1, 'f');
   const m = new StarterMap(book, g.rows());
+  m.wallToSky(24);
   m.sign(5, onGround(GROUND, signs.both), signs.both);
   m.sign(19, onGround(GROUND, signs.one), signs.one);
   m.sign(33, onGround(GROUND, signs.spare), signs.spare);
@@ -111,6 +112,7 @@ function spareFits(book: Book, signs: Record<SignName, Sign>): StarterMap {
   for (const x of [4, 15, 37]) g.put(x, GROUND - 1, 'b');
   for (const x of [10, 26, 44]) g.put(x, GROUND - 1, 'f');
   const m = new StarterMap(book, g.rows());
+  m.wallToSky(16);
   m.sign(5, onGround(GROUND, signs.none), signs.none);
   m.sign(27, onGround(GROUND, signs.again), signs.again);
   m.sign(39, onGround(GROUND, signs.exit), signs.exit);
@@ -139,6 +141,7 @@ function notThat(book: Book, signs: Record<SignName, Sign>): StarterMap {
   m.set(24, GROUND - 2, 'gateTopGreen')
     .set(24, GROUND - 1, 'gateGreen')
     .set(22, 2, 'keyGreen');
+  m.wallToSky(24).wallToSky(34);
   m.sign(5, onGround(GROUND, signs.notThat), signs.notThat);
   m.sign(18, onGround(GROUND, signs.number), signs.number);
   m.sign(28, onGround(GROUND, signs.saved), signs.saved);

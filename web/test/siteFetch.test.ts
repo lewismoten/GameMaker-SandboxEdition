@@ -1,6 +1,6 @@
 // Fetching hosted files: the catalog once, retries, shared requests and the gzip copies.
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { fetchGameFile, loadCatalog, loadCatalogList, loadHostedGame, withDetails } from '../src/project/files';
+import { fetchGameFile, loadCatalog, loadCatalogList, loadHostedGame, loadLeanCatalogList, withDetails } from '../src/project/files';
 
 afterEach(() => vi.unstubAllGlobals());
 
@@ -83,7 +83,7 @@ describe('hosted file fetching', () => {
       if (url === './t6/details/s.json') return json({ notice: 'Register!', original: { manual: { title: 'M', pages: [] } } });
       return new Response('nf', { status: 404 });
     });
-    const [s, g] = await loadCatalogList('./t6/');
+    const [s, g] = await loadLeanCatalogList('./t6/');
     expect(await withDetails(g, './t6/')).toBe(g); // nothing left out
     const full = await withDetails(s, './t6/');
     expect(full.notice).toBe('Register!');
@@ -97,6 +97,6 @@ describe('hosted file fetching', () => {
         ? new Response('[{"id":"x","notice":"N"}]', { headers: { 'content-type': 'application/json' } })
         : new Response('<html>', { headers: { 'content-type': 'text/html' } }),
     );
-    expect(await loadCatalogList('./t7/')).toEqual([{ id: 'x', notice: 'N' }]);
+    expect(await loadCatalogList('./t7/')).toMatchObject([{ id: 'x', notice: 'N' }]); // its entries have no file list to fill in
   });
 });

@@ -16,6 +16,7 @@ import { TTY_PHONE } from './ttyTalk';
 import { sandboxCall } from './ticTacToeDoor';
 import { PHONE, runSandbox, takeOverheard } from './sandbox';
 import { wrap } from './wrapWords';
+import { courierMail } from './courierMail';
 
 // ---- the dialing directory -----------------------------------------------------------
 
@@ -120,6 +121,8 @@ async function terminal(t: Term, h: RetroHost, dialFirst?: string): Promise<void
     // the Sandbox's one line: its door game's other player calls in only while you're off it
     const leave = entry.run === runSandbox ? sandboxCall() : undefined;
     try {
+      // the first call to a board brings a letter home for Scoot (courierMail.ts)
+      await courierMail(t, h, entry.id);
       await entry.run(t, h);
     } catch (e) {
       // someone picked up the phone: the board stopped mid-call

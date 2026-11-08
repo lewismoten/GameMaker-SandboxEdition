@@ -33,6 +33,11 @@ export function reduceView(list: Reduction[], apply: (r: Reduction) => void): HT
         h('summary', null, r.title, big ? ' (a big change)' : ''),
         h(
           'p',
+          null,
+          `${r.file.toUpperCase()} uses ${r.conflicts.length} color number${r.conflicts.length === 1 ? '' : 's'} outside its allowed ranges: ${r.conflicts.join(', ')}. Applying this proposal replaces those pixels with the nearest allowed colors in this file; it does not change the reservations or remove files.`,
+        ),
+        h(
+          'p',
           { role: 'status' },
           `Difference: the pixels that move change by ${r.score.mean.toFixed(1)} on average (CIELAB delta E) and ${r.score.worst.toFixed(1)} at most. ${
             big

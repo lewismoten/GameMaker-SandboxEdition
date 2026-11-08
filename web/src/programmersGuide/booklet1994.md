@@ -81,11 +81,13 @@ members of the same ring. A frame can last from 1 tick to about 30 minutes.
 ### 4. Maps and scenes
 
 A map is **100 x 100 blocks**, and it wraps: walk off one edge and you come back at the opposite one. A map file is 22,000 bytes: 20,000 for the blocks and 2,000 for the 200 monsters you can place.
-A larger map would fit in memory, but each extra 10,000 blocks costs 20K of the memory your monsters, sounds and music need; 100 x 100 was the largest round number that left room on a 640K machine.
+Each additional 10,000 cells would cost another 20,000 bytes. The choice of 100 x 100 appears to balance map size against the memory needed for other resources; that design reason is inferred.
 
 A scene has up to **20 files** (the manual lists the nine that an adventure scene uses) and up to **20 links** to other scenes. A link fires when your hero touches its block, even partly.
-File names are DOS names: 8 letters, a dot and 3 letters. A game can hold well over 20 scenes; the practical limit is 231.
+File names are DOS names: 8 letters, a dot and 3 letters. A game can hold well over 20 scenes; 231 scenes is a conservative planning limit inferred from a single 64K allocation. Each packed scene occupies 283 bytes: 231 × 283 = 65,373 fits one 65,536-byte segment; 232 × 283 = 65,656 does not. This arithmetic does not prove a hard player cutoff: the exact allocation behavior depends on the compiler, and available memory can lower the usable count. The scene header and name pool are separate allocations. The Integrator also keeps spare scene slots while editing.
 A blank file slot skips that resource loader. Supply a complete set of files for each adventure scene rather than relying on the state left by another scene.
+
+[diagram: wrapmap]
 
 ---
 
@@ -99,23 +101,25 @@ A blank file slot skips that resource loader. Supply a complete set of files for
 | Turns in a path           | **10**, and 10 when the hero is near |                                                                                                        |
 | Monsters drawn at once    |                               **50** | each one needs a 20 x 20 patch of memory to remember the picture behind it: 50 patches is 20,000 bytes |
 
-A monster beyond the 50th is still alive and still hurts you; it simply is not drawn. A monster draws only when its block is on the screen. A monster that is not on the screen cannot touch your hero.
+A monster beyond the 50th is still alive and still hurts you; it simply is not drawn. A monster draws only inside the screen's inner block boundary. The cell origin must fall within pixel coordinates (1,1) through (300,180), before its within-cell offset (0 through 19) is added; the final picture origin must pass the same test. Thus the outer frame of visible cells can hide a monster even while part of its cell is visible. This is a whole-cell gate, not a one-pixel clipping margin. A monster rejected by the cell gate cannot touch the hero; a monster hidden only by the final picture test or the 50-draw cap can still touch.
 A path's speed is in pixels per tick; there is no limit, but a fast monster can step across a thin wall.
 
-**Power.** Your hero has power 100. A monster weaker than 100 is destroyed when it touches him. When two monsters meet, the stronger one destroys the weaker; two of the same power pass through each other.
+**Power.** Your hero has power 100. A monster weaker than 100 is destroyed when it touches the hero. When two monsters meet, the stronger one destroys the weaker; two of the same power pass through each other.
 A monster born when another dies (the becomes setting) takes its place, so a short chain of changes can make a creature that grows, flashes, then vanishes.
 
-**Lifetime.** A monster can be set to live a fixed number of ticks, to end after its path, or to end when it is hit. A fixed lifetime is exact to the tick.
+**Lifetime.** A monster can be set to live a fixed number of ticks, to end after its path, or to end when it is hit. A positive lifetime counts across the whole loaded map, starting at birth, including time off screen or outside attack range. Walking away neither stops nor resets it. The player checks the birth clock plus the lifetime against the current clock during movement; on a busy machine death occurs at the first processed check after the deadline. Re-entering a freshly loaded map creates its monsters anew.
 
 ---
 
 ### 6. The hero
 
-A hero has **20 sequences** of up to **10 frames**. Sequences 1 to 5 are the standard ones (standing, dying, hurt, picking up, dropping); the rest you assign to keys. A sequence can be limited to a number of uses,
+A hero has **20 sequences** of up to **10 frames**. Sequences 0 through 4 are the standard ones (standing, dying, hurt, picking up, dropping); the rest you assign to keys. A sequence can be limited to a number of uses,
 and the number 32,767 means unlimited. A frame can fire a monster instead of moving: choose the monster in the top block and the special block in the bottom one. The monster appears in the hero's column, in the row the frame's
 height selects, so ten keys can fire into ten different rows.
 
-The hero moves at most **11 pixels per tick** in each direction, a little over half a block. That keeps him from passing through a one-block wall between two checks. He carries up to **10 things**.
+The hero moves at most **11 pixels per tick** in each direction, a little over half a block. That keeps the hero from passing through a one-block wall between two checks. The hero carries up to **10 things**.
+
+A plank only one block wide is a poor place to land. When just one of the two blocks under the hero is solid, the game nudges him sideways toward it, and a hero coming down near the plank's end can be pulled off and fall. Build such planks two blocks wide.
 
 ---
 
@@ -123,9 +127,9 @@ The hero moves at most **11 pixels per tick** in each direction, a little over h
 
 There are **30 counters**. The first few are special (hit points to start, lives to start, money). Counters 5 through 19 count the uses of sequences 5 through 19. Counters 20 through 29 are free for your own use:
 keys, coins, fuel, anything you like. A block changes a counter by an amount you choose when the hero touches it. A block that would take a money counter or one of counters 20 to 29 down to nothing is **refused**:
-the hero is simply turned away, which makes a lock.
+the touch is refused before its score, hit points, sound or replacement block takes effect. A suitable solid door can therefore act as a lock; refusal alone does not add solidity.
 
-Money is stored one higher than it is shown. That is how "none" can be refused without losing the counter. Counters count from 0 to 32,766; 32,767 means _never changes_.
+Money is displayed as stored value minus one: stored 1 shows 0, stored 2 shows 1. A cost of -1 succeeds from stored 2 (leaving 1, shown 0), but fails from stored 1 because the result would be 0. The same refusal test applies to counters 20 through 29. Counters 4 through 19 do not refuse a touch on that basis; sequence-use counters have a separate check before starting a sequence. Ordinary accepted counter changes are capped at 32,766; 32,767 means _never changes_.
 
 ---
 
@@ -135,29 +139,48 @@ Money is stored one higher than it is shown. That is how "none" can be refused w
 8,192 cycles a second, or silence. The speaker can only be on or off, so there is no volume.
 
 **Digitized sounds.** If a sound has a digitized name and the Sound Blaster is present, PLAYGAME loads that `.VOC` file from the disk at the moment the sound is played and plays it. Keep these files **under 64K**, and the shorter the
-better: a one-second sound at 11 kHz is about 11K and loads in a fraction of a tick on a hard disk. Only one digitized sound plays at a time; a new one replaces the one playing. Use digitized sounds for voices and pickups, and the speaker for
+better: a one-second sound at 11 kHz is about 11K before header overhead; its read time depends on the disk, not just the CPU. Only one digitized sound plays at a time; a new one replaces the one playing. Use digitized sounds for voices and pickups, and the speaker for
 sounds that repeat.
 
-**Music.** A song is a `.CMF` file made for **146 steps a second**, which is exactly eight times the game's own tick. The Sound Blaster's FM chip plays up to nine notes at once.
+**Music.** A song is a `.CMF` file made for **146 steps a second**, with eight music-service calls per game tick (the actual timer rate is about 145.67 calls a second). The Sound Blaster's FM chip plays up to nine melodic notes at once. A file has sixteen logical channels, not sixteen hardware voices or separate track chunks. Use at most 128 instrument definitions. To play a chord with one instrument, assign that instrument to several channels and start one note on each; that avoids depending on the driver's same-channel voice allocation. Rhythm mode divides the chip between six melodic voices and five percussion sounds.
+
+Complex rhythms use event delays at the fixed 146-step file clock; several zero-delay events can sound together. Program changes switch a channel's instrument. Pitch bend and tempo meta-events are not a way to change this player's clock: pitch bend is skipped, and a system/meta event can restart the song. Keep the event block under 65,536 bytes and header offsets within 65,535. Dense bursts of notes and instrument changes take interrupt time, so audition them on the slowest intended machine. A new scene's song replaces the previous song; GAM links do not provide beat-synchronized branching.
+
+[diagram: musicbits]
 
 ---
 
 ### 9. Colors
 
 The VGA offers **256 colors out of 262,144**: each of red, green and blue has 64 levels. A scene has one palette of 256 colors, 768 bytes. **Color 255 is clear.** A hero or monster pixel of color 255 shows what is behind it and never touches anything.
-Background blocks draw every pixel, so there color 255 is just a color. Put a clear blue, a red and a yellow in every scene's palette: PLAYGAME picks the nearest one for the inventory box and its messages. Text pages print in the purple nearest to 50,10,50.
-Screens without a picture (the status screen, saving, loading, high scores and text pages) fill with color 0 of the palette, so pick color 0 with care.
+Background blocks draw every pixel, so there color 255 is just a color. Each channel has six meaningful bits: 64 × 64 × 64 = 262,144 possible colors, or 18 color bits per entry, stored in three bytes. There are 256 entries.
 
-A fade takes **65 screen refreshes**, about a second.
+[diagram: palettebits]
+
+PLAYGAME chooses the nearest palette entry to these six-bit RGB targets. There is **no fixed index** for any of them. Suggested author-assigned indexes below are a convention, not a player requirement; keep them consistent in every scene if convenient.
+
+| Color            | Suggested index | Red | Green | Blue |
+| ---------------- | --------------: | --: | ----: | ---: |
+| Black background |               0 |   0 |     0 |    0 |
+| Blue             |               1 |  10 |    10 |   63 |
+| Red              |               2 |  63 |    10 |   10 |
+| Yellow           |               3 |  63 |    63 |    0 |
+| Purple           |               4 |  50 |    10 |   50 |
+
+Recommend color 0 be black. Without a backdrop, text pages and status, save, load and score screens use color 0 behind their matched colors. Include purple as well as blue, red and yellow so text stays readable.
+
+A normal fade performs **65 palette-update iterations**, each waiting for vertical retrace to be active. A six-bit component needs at most 63 level changes: an accumulator adds the difference each iteration, changes a level whenever it reaches 65, and keeps the remainder. From 0 to 63 the level after step k is floor(63k/65); step 65 reaches 63. The extra two iterations distribute unchanged steps, not extra color levels. Smoothness appears to explain the choice of 65, but that reason is inferred. If each update meets a separate refresh, 65/70 is about 0.93 second; the wait tests retrace's current state, so 65 separate refreshes are not guaranteed.
+
+[diagram: fadetime]
 
 ---
 
 ### 10. Time
 
-The game runs at **18.2 ticks a second**, one tick every 55 milliseconds, the same rate as the PC's own clock. Everything that moves is counted in ticks: a hero's frame pause, a monster's step, a block's change time.
-Keys are looked at once a tick, so a key press is noticed within one tick (about 1/18 of a second).
+The game runs at **18.2 ticks a second**, about one tick every 54.9 milliseconds. This is the PIT timer chip's clock, independent of the CPU: a 10 MHz processor and a 66 MHz processor receive essentially the same timer rate. Everything that moves is counted in ticks: a hero's frame pause, a monster's step, a block's change time.
+Sequence keys are applied on processed ticks; a busy machine or an uninterruptible sequence can delay the response beyond one tick. Escape is checked to leave the scene and again after the fade to choose whether to return to the menu. Hold Escape through the fade until the menu appears: a short tap can end a scene yet be released before the second decision, causing the scene to restart.
 
-Eight of the timer chip's 146 steps make one tick, and PLAYGAME uses all three at once for the clock, the speaker and the music. That is why the music and the game never drift apart.
+Eight of the timer chip's 146 steps make one tick, and PLAYGAME uses that interrupt for the game clock, the speaker and the music. Slow drawing can skip game updates while the interrupt clock keeps advancing.
 
 ---
 
@@ -169,15 +192,16 @@ Eight of the timer chip's 146 steps make one tick, and PLAYGAME uses all three a
 - Do not put a digitized sound on a block that the hero stands on for a long time; the sound would start over each tick.
 - If you still need more speed, use a 386 or 486, or set the video type to match your card instead of Simulate.
 
-**Sizes by machine.** The disk matters more than the processor. PLAYGAME reads a digitized sound from the disk every time it plays it, and the game stands still until the read is done;
-a slow processor only shows when more monsters are on the screen than the table allows. A scene change is slow too, but the screen is black and the clock waits, so it costs no play.
+**Sizes by machine.** Running from a hard drive speeds up VOC reads and scene loads compared with floppy disk. CPU MHz alone cannot predict loading pauses. These are conservative authoring recommendations, not measured hardware limits:
 
-| Measure                                  | 286, slow disk | 286 or 386SX |    386DX |      486 |
-| ---------------------------------------- | -------------: | -----------: | -------: | -------: |
-| Pause to read a one-second sound (11K)   |        3 ticks |       1 tick |   ½ tick |   ⅓ tick |
-| Largest sound for a pause under 2 ticks  |             4K |          30K |      64K |      64K |
-| Monsters on a still screen at full speed |             14 |           19 |       50 |       50 |
-| Changing scenes (nine files, 170K)       |      2 seconds |     ¾ second | ⅓ second | ¼ second |
+| Machine                | Frequent effects on hard drive | Frequent effects on floppy  |
+| ---------------------- | ------------------------------ | --------------------------- |
+| 10–12 MHz 286          | aim for 4K or less             | speaker preferred; try 1–2K |
+| 16–25 MHz 286 or 386SX | aim for 8–12K                  | try 2–4K                    |
+| 33 MHz 386DX           | try 16–24K                     | keep near 4K                |
+| 66 MHz 486             | try 24–32K                     | keep near 4K                |
+
+For every machine, keep the complete VOC below 65,535 bytes, reserve longer clips for scene boundaries, and test the actual drive. A fast CPU does not make a floppy spin faster. These sizes are inferred from the loader, not measured.
 
 ---
 
@@ -198,23 +222,25 @@ These are the full record counts for 3.00 output; older speaker-only sound sets 
 
 Game-Maker is a family of separate DOS programs. Only the small GM launcher stays in memory while another program runs. Files on disk carry the work from one editor to the next; there is no shared in-memory project object between utilities.
 
-| Program   | Job and files                                          |
-| --------- | ------------------------------------------------------ |
-| GM / MENU | Launch programs and choose the next one                |
-| PALCHOS   | Read and write PAL colors                              |
-| BLOCEDIT  | Read and write BBL, MBL and CBL blocks                 |
-| MONEDIT   | Read and write MON behavior; preview MBL pictures      |
-| MAPMAKER  | Read and write MAP placement; read blocks and monsters |
-| CHAREDIT  | Read and write CHR sequences; read CBL pictures        |
-| IMAGE     | Read GIF pictures; extract PAL, BBL and BKD data       |
-| SNDEDIT   | Read and write SND effects; convert CMF timing         |
-| GRATOR    | Read and write GAM scenes and file-name references     |
-| UTILITY   | Copy a game's files and its transfer player            |
-| PLAYGAME  | Read the game; write recordings, scores and saves      |
+| Number | Letter | Program  | Job and files                                            |
+| -----: | :----: | -------- | -------------------------------------------------------- |
+|      — |   —    | GM       | Launch programs and choose the next one                  |
+|      0 |   A    | (quit)   | Leave Game-Maker and return to DOS                       |
+|      1 |   B    | UTILITY  | Copy a game's files and its transfer player              |
+|      2 |   C    | PALCHOS  | Read and write PAL colors                                |
+|      3 |   D    | BLOCEDIT | Read and write BBL, MBL and CBL blocks                   |
+|      4 |   E    | MONEDIT  | Read and write MON behavior; preview MBL pictures        |
+|      5 |   F    | MAPMAKER | Read and write MAP placement; read blocks and monsters   |
+|      6 |   G    | CHAREDIT | Read and write CHR sequences; read CBL pictures          |
+|      7 |   H    | IMAGE    | Read GIF pictures; extract PAL, BBL and BKD data         |
+|      8 |   I    | SNDEDIT  | Read and write SND effects; convert CMF timing           |
+|      9 |   J    | GRATOR   | Read and write GAM scenes and file-name references       |
+|     10 |   K    | PLAYGAME | Read the game; write recordings, scores and saves        |
+|     11 |   L    | MENU     | Show the menus and return the number of the next program |
 
 [diagram: architecture]
 
-The command tail carries the exact, case-sensitive word `cOoL`, then a letter identifying the preceding selection. GM builds a seven-byte tail: the four letters, a space, the selection letter and a carriage return. MENU uses the selection to reopen the appropriate menu. The program table assigns 1 to UTILITY, 2 to PALCHOS, through 9 to GRATOR, 10 to PLAYGAME and 11 to MENU. Zero means quit.
+The command tail carries the exact, case-sensitive word `cOoL`, then a letter identifying the preceding selection. GM builds a seven-byte tail: the four letters, a space, the selection letter and a carriage return. MENU uses the selection to reopen the appropriate menu. The number column is GM's program table; the letter is A plus that number, so PLAYGAME (10) is K.
 
 A utility checks `cOoL` to recognize a launch under Game-Maker. Without it, the utility requests restoration of the DOS text display when it ends. Returning 11 hands control back to GM, which launches MENU; returning zero ends the launcher. The token preserves the managed display transition; the exit code supplies the next destination. A utility started directly at the DOS prompt has no waiting GM launcher to interpret its return code.
 
@@ -226,9 +252,9 @@ A utility checks `cOoL` to recognize a launch under Game-Maker. Without it, the 
 
 The following plates describe the 3.00 disk files. Offsets start at zero and are decimal unless followed by `h`, which means hexadecimal. `u8`, `u16` and `u32` mean unsigned integers of one, two and four bytes; `i8`, `i16` and `i32` are signed integers of those sizes. Multi-byte numbers are little endian: `2C 01` is 300, and `FF FF` is -1 as an i16 or 65,535 as a u16. There is no automatic padding between fields in these game records.
 
-A record-relative offset must be added to the record's base. Indexes start at zero. A NUL is a zero byte ending a string; an LF is byte 10 and a CR byte 13. Reserved bytes still occupy space and should survive an edit, even where the player gives them no meaning. The plates show field boundaries rather than lengths to scale.
+A record-relative offset must be added to the record's base. Indexes start at zero. NULL means a zero byte ending a string. LF means line feed (byte 10); CR means carriage return (byte 13). DOS text normally ends a line with CR LF: on a typewriter, carriage return sends the carriage to the start of the line and line feed advances the paper. The end-of-file marker (1Ah, Ctrl-Z, EOF) has the ASCII name SUB, meaning substitute; DOS uses it to mark the end of text, not as an ordinary printed character. Reserved bytes still occupy space and should survive an edit, even where the player gives them no meaning. The plates show field boundaries rather than lengths to scale.
 
-The worked examples use the installed TUTOR files unless another supplied file is named. They are byte readings, not instructions to replace the examples' artwork. A file's name and extension are external to its contents: most Game-Maker records have no signature, version or count. The scene's file slot tells the reader what to expect.
+The worked examples use Sandbox games: TEDDY's files unless another game is named. File names are shown in capitals; DOS treats their case alike. They are byte readings, not instructions to replace the examples' artwork. A file's name and extension are external to its contents: most Game-Maker records have no signature, version or count. The scene's file slot tells the reader what to expect.
 
 ---
 
@@ -240,7 +266,7 @@ PALCHOS writes palettes. IMAGE also saves a palette extracted from a GIF. The ed
 
 A BBL, MBL or CBL pixel is a one-byte index into this table. The GAM adventure scene names the palette in file slot 0. Sharing pictures across scenes requires compatible color positions, not merely the same collection of colors. Sprite pixel 255 means transparent; background pixel 255 remains an ordinary palette lookup.
 
-**Worked example.** HUES.PAL begins `00 00 00 00 00 07`. Color 0 is black. Color 1 starts at byte 3 and is RGB (0,0,7), a dark blue. A pixel byte 1 selects that triple. Color 255 begins at byte 765, leaving the final three bytes inside the 768-byte file.
+**Worked example.** PARK.PAL is 768 bytes and begins `00 00 00 21 21 21`. Color 0 is black; color 1 starts at byte 3 and is RGB (33,33,33), gray. Color 255 starts at byte 765. These are actual file values, independent of the suggested index assignments above.
 
 ---
 
@@ -248,11 +274,13 @@ A BBL, MBL or CBL pixel is a one-byte index into this table. The GAM adventure s
 
 MAPMAKER writes and reads MAP files; PLAYGAME loads them from adventure slot 1. Each file contains exactly 10,000 two-byte cells followed by 200 ten-byte placement records. There is no header or palette. The world is 100 columns by 100 rows and wraps at its edges.
 
+[diagram: mapcells]
+
 [diagram: map]
 
 The first byte of a cell selects BBL block 0 through 149 from adventure slot 2. The second selects a placement record, not a MON type. That placement's first byte selects type 0 through 63 from slot 3's MON. The type in turn selects pictures in slot 4's MBL. Thus changing the order of MON records changes what an unchanged map places.
 
-**Worked example.** TUTOR.MAP is 22,000 bytes. Cell (5,5) starts at 2 × (500 + 5) = 1,010 and contains `00 C8`: BBL block 0, with no monster placement (C8h = 200). Placement 0 starts at byte 20,000 and begins `40 00 00 00 FF FF FF FF 00 00`: type 64 means unused, and its x and y words are both -1. The coordinate words are map cells, not screen pixels.
+**Worked example.** PARK.MAP is 22,000 bytes. Cell (5,5) starts at 2 × (100 × 5 + 5) = 1,010 and contains `00 C8`: block 0 and no placement (200). Placement 0 at 20,000 is `18 00 00 00 25 00 25 00 00 00`: MON type 24 at cell (37,37), with the reserved bytes zero. Coordinates are whole signed little-endian words, not packed x/y bit fields.
 
 ---
 
@@ -260,11 +288,15 @@ The first byte of a cell selects BBL block 0 through 149 from adventure slot 2. 
 
 BLOCEDIT reads and writes background sets; IMAGE can extract them from GIF pictures. MAPMAKER previews them and PLAYGAME loads them from adventure slot 2. A BBL has 150 consecutive 420-byte records, totaling 63,000 bytes, without a header. Pictures occupy the first 400 bytes of every record, so metadata is interleaved with pictures rather than collected at the end of the file.
 
+[diagram: blockgrid]
+
 [diagram: block]
+
+[diagram: blockbits]
 
 The map selects a record by index. Each pixel selects a color in the scene's PAL. Next and touched block fields select other records in the same BBL; a birth field selects a type in the scene's MON. The counter field selects a hero counter, not a sound effect. The player chooses event sounds from SND separately. Index 150 means no background block where a field accepts that sentinel. Timers count game ticks; all cells with one block number share its animation state.
 
-**Worked example.** In TUTOR.BBL, block 10 starts at 4,200. Its tail has next block 8 at byte 4,611, interval `02 00` at 4,612, and touched block 10 at 4,614. It changes to block 8 after two ticks and keeps its own block number on touch. Block 10's first pixel is at 4,200, its last at 4,599; neither belongs to that tail.
+**Worked example.** In PARK.BBL, block 10 starts at 4,200; its picture ends at 4,599. Byte 4,605 is `0F`: solid on all four sides. Bytes 4,611 through 4,614 are `0A 00 00 0A`: next block 10, zero interval, touched block 10. The twenty property bytes separate adjacent pictures.
 
 ---
 
@@ -272,15 +304,17 @@ The map selects a record by index. Each pixel selects a color in the scene's PAL
 
 BLOCEDIT reads and writes all three block-set kinds. CHAREDIT reads CBL pictures; MONEDIT reads MBL pictures. PLAYGAME reads CBL from adventure slot 6 and MBL from slot 4. The extension determines the count: 50 records for CBL, 100 for MBL. Both use the complete 420-byte record shown for BBL, including its 20-byte behavior tail.
 
+[diagram: spritegrid]
+
 [diagram: sprites]
 
 CHR frames select CBL pictures by index; MON animation pairs select MBL pictures by index. A sprite pixel of 255 is clear. The files embed neither a palette nor their partner CHR or MON file name. Keep the GAM scene's files together as a compatible set. Picture 50 is absent for a character; picture 100 ends a monster's picture list. Those sentinels do not allocate an extra record on disk.
 
 Do not discard the tail as picture padding. In particular, an MBL picture's score, hit-point and counter fields participate in contact with the hero. Background animation, births and pickup behavior should be designed in the BBL.
 
-**CBL example.** PENGUIN.CBL is 21,000 bytes. Its first 32 bytes are FFh, so that part of picture 0 is transparent. Picture 8 starts at 8 × 420 = 3,360; the hero example below selects it as the lower picture.
+**CBL example.** TEDDY.CBL is 21,000 bytes. The first 32 bytes are FFh (transparent). Picture 8 begins at 3,360 and is selected as the lower picture by the character example.
 
-**MBL example.** PENGUIN.MBL is 42,000 bytes. Byte 19 is CFh (207), surrounded by FFh pixels. It is the rightmost pixel of picture 0's first row and selects palette color 207. Picture 1 begins at 420, not at 400.
+**MBL example.** PARK.MBL is 42,000 bytes. Its first pixel is FFh (transparent). Picture indexes are zero-based: picture 0 is the first, starting at byte 0; picture 1 is the second, starting at 420. Saying picture 1 starts at 420 was correct: bytes 400 through 419 are picture 0's properties, not picture 1's pixels.
 
 ---
 
@@ -296,9 +330,11 @@ Inventory entries and sequence ties select BBL blocks. A sequence's sound select
 
 Each sequence has ten 17-byte frames, then fifteen bytes of controls. The top and bottom picture numbers normally address CBL records. The orientation word carries the top orientation in its low nibble and the bottom in its high nibble. Each orientation is 0 through 7. Pause is in 18.2 Hz game ticks; x and y are signed pixel movements, with the hero's final velocity limited to 11 per axis per tick.
 
+[diagram: framebits]
+
 [diagram: frame]
 
-**Worked example.** PENGUIN.CHR frame 0 begins `00 00 00 00 00 00 32 00 08 00 07 00`. It moves (0,0), has orientation 0, omits the top picture (50), shows CBL picture 8 below, and waits seven ticks. Its sequence's byte 172 is 1Eh (30, no sound), and byte 174 is 96h (150, no inventory tie). At byte 3,724 the first counter is `64 00` (100); at 3,726 the next is `02 00` (2). The end marker is bottom picture 51; bottom picture 100 instead fires the MON type stored in the top field.
+**Worked example.** TEDDY.CHR frame 0 begins `00 00 00 00 00 00 32 00 08 00 24 00`: no movement, orientation 0, top absent (50), lower picture 8, pause 36 ticks. Bytes 172 and 174 are 30 (no sound) and 150 (no inventory tie). The first two counters at 3,724 are `64 00 03 00`: 100 hit points and 3 lives.
 
 ---
 
@@ -312,17 +348,17 @@ The file stores 21 picture pairs but the player shows at most 20. Picture 100 me
 
 Power is an unsigned byte; the hero's power is 100. Lifetime -2 means never end, -1 end after the path, 0 end when killed, and positive values specify ticks. Positive chase values below 64 move toward the hero; negative ones move away. Several saved fields are editor preview or reserved state; the record must still retain their bytes.
 
-**Worked example.** PENGUIN.MON type 0 starts with four zero words, then `B4 00`: power 180 and a zero thru byte. Its first picture pair at byte 10 is `64 00 05 00`: picture 100, duration five. The sentinel makes this type pictureless. At offsets 122, 124 and 126 are 0, 10 and -9: no attack path, ten-tick lifetime, and movement away from the hero. A nonzero power does not guarantee a visible picture.
+**Worked example.** PARK.MON type 0 starts `01 00 00 00 00 00 00 00 6A 01`: used 1, fly/jump/stick 0, power 106, thru 1. The first animation pair at byte 10 is `00 00 02 00`: picture 0 for two ticks. Words at 122, 124 and 126 are 0, 9 and 9: no attack path, nine-tick lifetime and chase speed 9.
 
 ---
 
 ### 21. GAM: the scene graph and its dependencies
 
-GRATOR writes the integrator file. PLAYGAME reads it to find the start, ending and adventure scenes. A 3.00 GAM has a 256-byte identification header, a six-byte scene-count header, N 283-byte scenes and a length-prefixed name pool. The signature is GM. Older games use 330-byte scenes with names inline; do not apply the 3.00 offsets to them.
+GRATOR writes the integrator file. PLAYGAME reads it to find the start, ending and adventure scenes. A 3.00 GAM has a 256-byte identification header, a six-byte scene-count header, N 283-byte scenes and a length-prefixed name pool. The signature is GM. The encryption byte at offset 4 is initialized to zero but the loader never branches on it: it does not turn encryption on. The 250 bytes at offset 6 are reserved header space; the original constructor fills them with repeating bytes `52 53 44` (the maker's three initials in ASCII), rather than scene data. Preserve them on an edit. Older games use 330-byte scenes with names inline; do not apply the 3.00 offsets to them.
 
 [diagram: gam]
 
-Each scene contains twenty file pointers and twenty links, even if some are unused. A pointer is a byte offset into the shared pool of NUL-terminated names; it is not a disk address. Zero selects the pool's empty string. Links use scene indexes, so reordering records requires updating the links. The practical scene limit is 231 for the player's single-segment scene array; the reader clamps the name pool to 65,520 bytes. The editor initially allocates 10,000 name bytes, a separate constraint from that reader ceiling.
+Each scene contains twenty file pointers and twenty links, even if some are unused. A pointer is a byte offset into the shared pool of NULL-terminated names; it is not a disk address. Zero selects the pool's empty string. Links use scene indexes, so reordering records requires updating the links. The single-segment planning limit is inferred as 231: 231 × 283 = 65,373, but 232 × 283 = 65,656 exceeds 65,536 bytes in one segment; the reader clamps the name pool to 65,520 bytes. The editor initially allocates 10,000 name bytes, a separate constraint from that reader ceiling.
 
 [diagram: scene]
 
@@ -330,7 +366,7 @@ Each scene contains twenty file pointers and twenty links, even if some are unus
 
 A link stores a destination scene and source and destination map cells. Its source cell triggers the transition and its destination cell places the hero on arrival. Scroll bytes are zero for still, 255 for following the hero, or a constant speed; the style byte selects normal, centered or snap scrolling. Integrator diagram x,y positions only arrange boxes in the editor.
 
-**Worked example.** TUTOR.GAM is 6,263 bytes, begins `47 4D 2C 01 00 08`, and has counts (20,20,20) at byte 256. Its pool length word is at 262 + 20 × 283 = 5,922; the length is 339, giving 5,922 + 2 + 339 = 6,263. Scene 2 begins at 828. Its map pointer at 828 + 45 is 42, selecting `tutor.map` at absolute byte 5,924 + 42 = 5,966. Its first link at 911 goes to scene 3 from cell (96,11), arriving at (90,18).
+**Worked example.** TEDDY.GAM has 3,685 bytes and begins `47 4D 2C 01 00 08`. Its counts are (10,20,20). The pool word is at 262 + 10 × 283 = 3,092; its length is 591, so 3,092 + 2 + 591 = 3,685. Scene 2 starts at 828; its MAP pointer at 873 is 173, selecting BACKYARD.MAP at absolute byte 3,267. Its first link at 911 goes to scene 3 from (77,39), arriving at (6,39).
 
 ---
 
@@ -342,9 +378,9 @@ SNDEDIT writes a set of thirty effects; PLAYGAME loads it from adventure slot 7.
 
 A CHR sequence directly selects an effect number. Block and monster contact uses the player's event assignments: slots 0 through 8 cover hit points up, monster killed, counter additions and subtractions. Every speaker step lasts about 1/146 second; 36 steps make roughly a quarter second. Zero hertz is silence. The speaker produces one tone at a time.
 
-For effect e, the digital name lives at 2,160 + 9e. It holds at most eight characters plus NUL, without an extension. PLAYGAME adds `.VOC` in the game's working directory. An empty name or one beginning with a space selects the speaker. With digital sound enabled and a usable name, the VOC supplies the samples; it does not replace the frequency row on disk. Only one digital effect plays at once.
+For effect e, the digital name lives at 2,160 + 9e. It holds at most eight characters plus NULL, without an extension. PLAYGAME adds `.VOC` in the game's working directory. An empty name or one beginning with a space selects the speaker. With digital sound enabled and a usable name, the VOC supplies the samples; it does not replace the frequency row on disk. Only one digital effect plays at once.
 
-**Worked example.** SOUNDS1.SND begins `62 00` repeatedly: the first steps of effect 0 are 98 Hz. Its digital entry at 2,160 is `exclnt` followed by three zero bytes. Entry 1 at 2,169 is `dead` followed by five zeros. Playing effect 1 selects DEAD.VOC; entry 5 selects BEBEEP.VOC. The same slot number joins the two tables without storing any VOC sample inside SND.
+**Worked example.** TEDDY.SND begins `0B 02`: 523 Hz. At 2,160 effect 0 names `yum` plus six zero bytes, selecting YUM.VOC. Effect 1 at 2,169 names `pop`, and effect 2 at 2,178 names `crunch`. The sample bytes remain in those separate VOC files.
 
 ---
 
@@ -352,11 +388,13 @@ For effect e, the digital name lives at 2,160 + 9e. It holds at most eight chara
 
 VOC is imported sound, recorded or converted with an external audio tool; SNDEDIT assigns its name and can audition it. Game-Maker does not record a VOC. PLAYGAME reads it through the Sound Blaster voice driver. The standard header is 26 bytes, followed by typed blocks. Each nonzero type has a three-byte payload length; type zero is the one-byte terminator.
 
+[diagram: vocbits]
+
 [diagram: voc]
 
 Type 1 gives a time constant, codec and sample bytes. For uncompressed eight-bit mono sound, the rate is 1,000,000 / (256 - time constant). Type 2 continues samples, type 3 adds silence and types 6 and 7 bracket a repeat. Newer VOC variants need corresponding driver support; a decoder's ability to read a block does not establish that every DOS driver can play it. Keep the whole file under 65,535 bytes for the DOS allocation and read path. The DOS player takes its first-block offset from the low byte of the header field, so the usual 26-byte header is the safest choice.
 
-**Worked example.** DEAD.VOC is 9,217 bytes. Byte 20 begins `1A 00`, selecting block offset 26. There the bytes are `01 E2 23 00 D3 00`: type 1, length 23E2h = 9,186, time constant D3h = 211 and codec 0. Samples start at 32. The rate is about 22,222 Hz, and the payload holds 9,184 samples, about 0.413 second. Its next block is at 26 + 4 + 9,186 = 9,216: the final zero terminator.
+**Worked example.** WOOF.VOC has 2,459 bytes. The first-block offset at byte 20 is `1A 00` (26). At 26 are `01 7C 09 00 A5 00`: type 1, payload 097Ch = 2,428 bytes, time constant 165, codec 0. The 2,426 samples start at 32, at approximately 10,989 Hz (1,000,000/91), about 0.221 second. The terminator is at 26 + 4 + 2,428 = 2,458.
 
 ---
 
@@ -370,7 +408,7 @@ Each instrument occupies sixteen bytes: eleven FM register values and five reser
 
 The DOS player requires the clock field to be 146 and uses the FM chip's nine voices. Keep the event block under 65,536 bytes and its file offsets representable by the header's sixteen-bit fields. Keep the instrument table at 128 entries or fewer; the DOS loader does not check that ceiling for you.
 
-**Worked example.** GMSONG1.CMF is 5,952 bytes. The header gives instrument offset 40, music offset 216, eleven instruments, 73 ticks per beat and 146 ticks per second. Eleven × 16 = 176, exactly the distance from 40 to 216. Instrument 3 starts at 88. The event stream occupies 5,736 bytes, from 216 to the end. The GAM slot names the whole song; its program changes index the embedded instruments.
+**Worked example.** PARK.CMF has 2,676 bytes: instrument offset 40, music offset 296, sixteen instruments, 70 ticks per beat and clock 146. Sixteen × 16 = 256 bytes of instruments; the event block is 2,380 bytes. Instrument 3 begins at 40 + 3 × 16 = 88.
 
 ---
 
@@ -380,15 +418,15 @@ IMAGE writes a BKD to select a 320 × 200 window of a GIF. Its normal output is 
 
 [diagram: bkd]
 
-**Worked example.** The supplied PEACH.BKD is thirteen bytes: four zeros, then `peach.gif`. Its words choose window (0,0), and its remaining nine bytes name the external picture. This is a real short file, rather than IMAGE's full 44-byte output. Use a normal terminated name when writing a new file.
+**Worked example.** MAXIMUS's W99.BKD is fourteen bytes: `00 00 B8 0B`, then `cards5.gif`. The words choose window (0,3000). This short name tail has no terminator; IMAGE's normal output reserves forty bytes for the name. The GIF remains external.
 
 An LST is a text-authored sequence of graphic names with optional pause seconds. A TXT is text-authored page content. IMAGE and GRATOR do not write these text formats; write them with any text editor. PLAYGAME reads both from graphic slots, including entrance, exit, title, story and credits. Do not serialize the in-memory FileEntry structure into an LST.
 
 [diagram: scripts]
 
-**LST example.** TUTOR.LST is 48 bytes. Its first line is `gm3a.fli` followed by CR LF at bytes 8 and 9. The third line is `backgrnd.fli 0`: a picture name and a zero pause; the fourth is `tutor.txt`. A final 1Ah marks DOS text EOF. The DOS reader allocates 100 list entries and keeps at most fifteen name characters per entry; stay below that allocation and use DOS 8.3 names.
+**LST example.** PARK.LST has thirteen bytes: `park.gif 30` followed by CR LF (0Dh 0Ah). It asks for the external GIF and a thirty-second pause. It has no end-of-file marker. The DOS reader allocates 100 entries and retains at most fifteen name characters per entry; stay below that allocation and use DOS 8.3 names.
 
-**TXT example.** TUTOR.TXT is a separate 1,607-byte text file named by that list. It begins with CR LF at bytes 0 and 1, followed by byte 54h, the letter T, at offset 2. There is no count or binary header. The display reads at most 31 characters at a time into a 32-byte buffer, so keep authored lines short. TXT holds CP437 text bytes; CR LF ends a physical line and 1Ah can end DOS text. Imported GIF and FLI pictures remain external media, not files generated by Game-Maker's editors.
+**TXT example.** HELP.TXT has 1,103 bytes and begins `4D 4F 56 49 4E 47`, spelling MOVING. There is no binary header. The display reads at most 31 characters into a 32-byte buffer; keep authored lines short. TXT holds CP437 bytes; CR LF ends a line, and an end-of-file marker (1Ah, Ctrl-Z, EOF) can end DOS text.
 
 ---
 
@@ -396,27 +434,31 @@ An LST is a text-authored sequence of graphic names with optional pause seconds.
 
 PLAYGAME writes REC demonstrations and reads them from the start scene's demo slot. No header or event count is stored: file length divided by three gives the number of records. Each record is an elapsed game-tick count and a PC scan code. Bit 7 means release. The recorder holds at most 1,000 events; a delay can span 65,535 ticks.
 
+[diagram: recbits]
+
 [diagram: rec]
 
-**REC example.** TUTOR's DEMO.REC is 1,536 bytes, or 512 events. Its first six bytes are `19 00 4D 0D 00 CD`: wait 25 game ticks, press Right (4Dh), wait thirteen more ticks, release Right (CDh). These are elapsed times, not absolute clock readings. The GAM supplies the game and scene context; REC does not contain either name.
+**REC example.** TEDDY's DEMO.REC is 174 bytes, or 58 events. Its first six bytes are `01 00 4D 1E 00 48`: wait one game tick, press Right (4Dh), wait thirty more ticks, press Up (48h). A release would set bit 7, for example CDh for Right. The times are deltas, not absolute clock readings.
 
-PLAYGAME also writes a ten-rank HIS table under the game's name. Each rank is a signed 32-bit score followed by thirty name bytes, 340 bytes in all, with no signature. The working directory and game stem associate the table with the game; the file itself contains no GAM pointer. A score fits a signed long, and a normal name leaves room for its terminating NUL.
+PLAYGAME also writes a ten-rank HIS table under the game's name. Each rank is a signed 32-bit score followed by thirty name bytes, 340 bytes in all, with no signature. The working directory and game stem associate the table with the game; the file itself contains no GAM pointer. A score fits a signed long, and a normal name leaves room for its terminating NULL.
 
-**HIS example.** SAMPLE.HIS begins `50 00 00 00`: score 80 at rank 0. Its next thirty bytes are zero, an empty name. Rank 1 starts at 34 with `41 00 00 00`, score 65, then the name `GAS` and a NUL at byte 41. Score sorting is separate from the record layout.
+**HIS example (constructed).** A score of 80 would begin `50 00 00 00`; a following empty name is a zero byte plus unused tail. Rank 1 begins at 34. Sandbox games do not supply a player-created HIS table, so this illustrates the record rather than claiming to quote a disk file.
 
 ---
 
 ### 27. Configuration and saved play
 
-The utilities share GM.CFG so they can reopen the working directory. It is a 51-byte NUL-terminated directory field written by the common startup/shutdown code. PLAYGAME setup reads and writes CONFIG.DAT for joystick, display and sound choices. These files configure the installed tools rather than define game content.
+The utilities share GM.CFG so they can reopen the working directory. It is a 51-byte NULL-terminated directory field written by the common startup/shutdown code. PLAYGAME setup reads and writes CONFIG.DAT for joystick, display and sound choices. These files configure the installed tools rather than define game content.
 
 [diagram: config]
 
-**Worked examples.** The installed GM.CFG is 51 bytes and begins `SAMPLE` followed by a backslash and NUL. The supplied CONFIG.DAT is 500 bytes: at offset 20 it has `0D 00` (video enum 13, automatic detection), at 22 `01 00` (Sound Blaster), at 24 `07 00` (IRQ 7), at 26 `20 02` (port 0220h), and at 28 the driver path. Paths have fifty characters plus NUL in GM.CFG and forty plus NUL in CONFIG.DAT. These are local installation settings; they do not use the GAM name pool.
+**Configuration example (constructed).** Video enum 13 is `0D 00` at 20; Sound Blaster enum 1 is `01 00` at 22; IRQ 7 is `07 00` at 24; port 0220h is `20 02` at 26. Sandbox game disks do not supply local installation settings. These are source-derived settings, not readings from a game file. GM.CFG allows fifty path characters plus NULL; CONFIG.DAT allows forty plus NULL.
 
-PLAYGAME's save menu writes ten 21-byte labels to SAVNAMES.DAT, and live state to GAME0.SAV through GAME9.SAV. Slot number, not a stored pointer, joins each label to its save. A label has twenty characters plus NUL. Saves retain the current map after touches, monster state, hero state, animation clocks, scene indexes and recorder state; they still depend on the matching GAM and assets.
+PLAYGAME's save menu writes ten 21-byte labels to SAVNAMES.DAT, and live state to GAME0.SAV through GAME9.SAV. Slot number, not a stored pointer, joins each label to its save. A label has twenty characters plus NULL. Saves retain the current map after touches, monster state, hero state, animation clocks, scene indexes and recorder state; they still depend on the matching GAM and assets.
 
 [diagram: saves]
+
+The saved clock at byte 7 is the fast sound clock, not the 18.2 Hz game clock. Its unsigned 32-bit range is 0 through 4,294,967,295. At 1,193,180/8,191 interrupts per second it wraps after about 29,484,300 seconds, or 341.25 days. It continues across scenes during a play session, with pauses restored and a new game resetting it, so it is not per-map time or a permanent all-sessions total. On overflow unsigned arithmetic returns to zero. Clock comparisons and the derived game clock can then jump backward or miss deadlines; uninterrupted play through overflow is unsafe, not a supported duration guarantee. Those consequences follow from the arithmetic and have not been tested by leaving a PC running that long.
 
 The save's first 761 bytes have explicit scalar and array sizes. What follows includes the compiler's own objects and far pointers. **Estimated layout:** with byte packing and the expected pointer widths, the fixed state is about 37,685 bytes before spawners and recording data. This is not a guaranteed interchange size. Loading re-reads the scene's assets and restores saved live cells; editing the original MAP does not replace those saved cells. No binary DOS save was available for a worked byte example. A same-named file made by another program is not this layout.
 
@@ -424,11 +466,13 @@ The save's first 761 bytes have explicit scalar and array sizes. What follows in
 
 ### 28. Transfer files and imported media
 
+Old player information is obsolete for 3.00 game resources. The old per-extension transfer routine is unused; the active transfer copies files and the supplied executable. Earlier personalized players carried distribution information, not a resource header to prepend to imported media.
+
 UTILITY's transfer command copies XFERPLAY.EXE under the game's stem, copies the selected dependencies and writes CONFIG.BAT. It does not pack all the scene data into the executable. The batch line is the game stem, a space, `configure`, then a DOS newline; running it opens that transferred player's setup.
 
 [diagram: transfer]
 
-**Worked executable example.** The supplied XFERPLAY.EXE begins MZ. It is 160,598 bytes long. The word at offset 8 is 512 paragraphs, so the load image begins at 8,192; the word at offset 24 is 62, the relocation-table offset. The player's private settings belong to its particular build; changing a byte in a different build at the same address is not a format conversion. A batch file has no header or fixed count: read the command as text, not as an integrator record.
+**Transfer example (source-derived).** Transferring TEDDY writes a batch line `teddy configure` followed by CR LF, and copies the supplied player to TEDDY.EXE. The executable is an MZ program with its own header, relocations and machine code, not a packed game. There is no generated transferred executable on this game disk to quote. Build-specific executable patching belongs in a separate reference.
 
 GIF pictures, FLI animation and VOC recordings are imported media. CMF conversion changes an imported song's timing; IMAGE extracts game data from GIF rather than writing a new GIF. HLP help files and the Sound Blaster driver are supplied inputs; transfer copies them unchanged. Build, installation and registration tools can also copy executables or write administrative text, but those outputs are not game-resource layouts. This distinction keeps a list of game formats from implying that the editors author every file they can open.
 
