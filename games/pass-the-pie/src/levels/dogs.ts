@@ -41,20 +41,37 @@ export function dogs(pal: Pal): Level {
   });
   const st = new Stage(90, 20, GROUND, AT.exit);
   const G = GROUND - 1;
-  const dog = (x: number) => st.g.col(x, 0, G - 2, 'X').put(x, G - 1, 'l').put(x, G, 'Q');
+  const dog = (x: number) =>
+    st.g
+      .col(x, 0, G - 2, 'X')
+      .put(x, G - 1, 'l')
+      .put(x, G, 'Q');
   // the first stretch: two lawn turkeys, a kick bag, an oak with the bone out on its low branch
   for (const x of AT.turkeys) st.g.put(x, G, '9');
   st.g.put(AT.bag, G, '8');
-  st.g.row(13, AT.branch[0], AT.branch[1], '%').row(9, AT.branch[0] + 1, AT.branch[1] - 1, '%').col(AT.oak, 9, G, 'T');
-  st.g.row(12, AT.branch[0], AT.branch[0] + 1, 'c').put(AT.bone1, 12, 'O').row(8, AT.branch[0] + 2, AT.branch[1] - 2, 'c');
+  st.g
+    .row(13, AT.branch[0], AT.branch[1], '%')
+    .row(9, AT.branch[0] + 1, AT.branch[1] - 1, '%')
+    .col(AT.oak, 9, G, 'T');
+  st.g
+    .row(12, AT.branch[0], AT.branch[0] + 1, 'c')
+    .put(AT.bone1, 12, 'O')
+    .row(8, AT.branch[0] + 2, AT.branch[1] - 2, 'c');
   dog(AT.dog1);
   // the second: a ledge four blocks up with a quick vacuum under it, a drone on it, the bone at its far end
   st.g.row(13, AT.ledge[0], AT.ledge[1], '=').row(12, 34, 36, 'c').put(AT.ledgeDrone, 12, '6').put(AT.bone2, 12, 'O');
-  st.g.fill(AT.ledge[0] + 1, 14, AT.ledge[1] - AT.ledge[0] - 1, 3, 'Z').put(36, 15, 'W').put(41, 15, 'W');
+  st.g
+    .fill(AT.ledge[0] + 1, 14, AT.ledge[1] - AT.ledge[0] - 1, 3, 'Z')
+    .put(36, 15, 'W')
+    .put(41, 15, 'W');
   st.g.put(AT.vac, G, '4').put(AT.swoop, 13, '7');
   dog(AT.dog2);
   // the third: a ladder up to a shed roof with a drone, the gold acorn and the bone; a wall of turkeys
-  st.g.fill(AT.shed[0], 11, AT.shed[1] - AT.shed[0] + 1, G - 10, 'Z').row(10, AT.shed[0], AT.shed[1], 'R').put(67, 13, 'W').put(70, 13, 'W');
+  st.g
+    .fill(AT.shed[0], 11, AT.shed[1] - AT.shed[0] + 1, G - 10, 'Z')
+    .row(10, AT.shed[0], AT.shed[1], 'R')
+    .put(67, 13, 'W')
+    .put(70, 13, 'W');
   st.g.col(AT.shedLadder, 9, G, 'H').put(AT.shedDrone, 9, '6').put(AT.gold, 9, '$').put(AT.bone3, 9, 'O').row(8, 65, 70, 'c');
   for (const x of AT.wall) st.g.put(x, G, '9');
   dog(AT.dog3);

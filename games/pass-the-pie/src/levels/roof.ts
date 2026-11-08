@@ -55,7 +55,11 @@ export function roof(pal: Pal): Level {
   st.g.put(AT.vac, 4, '4').row(1, AT.roof[0], AT.roof[1], 'R');
   st.g.put(AT.dish, 0, 'P').put(AT.squirrel, 0, '1').put(34, 0, 'N');
   // the second building across the alley, and a ladder down its side
-  st.g.fill(AT.roof2[0], 5, AT.roof2[1] - AT.roof2[0] + 1, G - 4, 'Z').row(4, AT.roof2[0], AT.roof2[1], 'R').put(53, 8, 'W').put(58, 8, 'W');
+  st.g
+    .fill(AT.roof2[0], 5, AT.roof2[1] - AT.roof2[0] + 1, G - 4, 'Z')
+    .row(4, AT.roof2[0], AT.roof2[1], 'R')
+    .put(53, 8, 'W')
+    .put(58, 8, 'W');
   st.g.col(AT.ladder, 3, G, 'H').row(3, 52, 60, 'c');
   // the tailwind over the alley (a jump off the roof without it lands in the street)
   st.g.fill(AT.wind[0], 0, AT.wind[1] - AT.wind[0] + 1, GROUND, 'w');
@@ -72,5 +76,15 @@ export function roof(pal: Pal): Level {
   m.sign(55, 3 - s.party.board.length, s.party);
   m.sign(AT.gate - 4, GROUND - 1 - s.gate.board.length, s.gate);
   m.wallToSky(AT.gate);
-  return { file: 'roof', title: 'Rooftop Potluck', hero: 'rory', hint: 'Up the fire escape. Mind the alley.', mood: 'rooftop', song: 'pie.cmf', book, map: m, timed };
+  return {
+    file: 'roof',
+    title: 'Rooftop Potluck',
+    hero: 'rory',
+    hint: 'Up the fire escape. Mind the alley.',
+    mood: 'rooftop',
+    song: 'pie.cmf',
+    book,
+    map: m,
+    timed,
+  };
 }

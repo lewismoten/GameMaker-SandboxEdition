@@ -45,7 +45,11 @@ export function dojo(pal: Pal): Level {
   st.g.row(13, AT.ledgeA[0], AT.ledgeA[1], '=').row(12, 24, 26, 'c');
   st.g.row(9, AT.ledgeB[0], AT.ledgeB[1], '=').put(AT.gold, 8, '$').put(30, 8, 'c').put(32, 8, 'c');
   st.g.row(5, AT.ledgeC[0], AT.ledgeC[1], 'R').row(4, 41, 46, 'c').put(48, 4, 'N');
-  st.g.put(AT.warmBag, G, '8').put(AT.vacA, G, '4').put(AT.vacB, G - 4, '4').put(AT.vacC, G - 8, '4');
+  st.g
+    .put(AT.warmBag, G, '8')
+    .put(AT.vacA, G, '4')
+    .put(AT.vacB, G - 4, '4')
+    .put(AT.vacC, G - 8, '4');
   st.g.col(AT.ladder, 4, G, 'H');
   for (const x of AT.bags) st.g.put(x, G, '8');
   st.g.row(G - 4, 55, 63, 'c');
