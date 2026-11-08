@@ -114,6 +114,11 @@ const PRINT_INK: Record<string, Tint> = {
     [66, 30, 20],
     [160, 90, 60],
   ],
+  // the afternoon in the orchard: bottle-green ink
+  afternoon: [
+    [20, 46, 30],
+    [96, 136, 100],
+  ],
 };
 
 /** Each time of the day. */
@@ -431,6 +436,34 @@ export const LOOKS: Record<string, Record<string, Tint>> = {
       [20, 20, 40],
       [110, 100, 140],
       [56, 50, 80],
+    ],
+  },
+  // the orchard in the afternoon: honey sky, apple-green turf, warm sienna earth
+  afternoon: {
+    sky: [
+      [150, 130, 70],
+      [255, 238, 180],
+      [236, 206, 130],
+    ],
+    grass: [
+      [36, 80, 36],
+      [204, 224, 110],
+      [110, 164, 62],
+    ],
+    moss: [
+      [30, 66, 36],
+      [190, 214, 110],
+      [90, 140, 60],
+    ],
+    dirt: [
+      [84, 40, 22],
+      [226, 160, 96],
+      [160, 90, 48],
+    ],
+    rock: [
+      [60, 50, 50],
+      [234, 218, 190],
+      [150, 128, 112],
     ],
   },
   // the next morning on top: gold and rose

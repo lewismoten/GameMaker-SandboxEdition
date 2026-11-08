@@ -71,9 +71,10 @@ import { binStack, sheet, yardGate } from './art/street';
 import { bankStep, swell } from './art/ford';
 import { EXCUSE_COUNTER } from './voice';
 import { deeperProps } from './propsDeeper';
+import { apple } from './art/orchard';
 
 /** Points: a painted blaze, an acorn, a gate taken off the mountain, a gate put back home. */
-export const POINTS = { blaze: 10, acorn: 5, gate: 25, home: 25, lantern: 10, book: 10, shelved: 20, flake: 5, bead: 10, clear: 15, clue: 10 } as const;
+export const POINTS = { blaze: 10, acorn: 5, gate: 25, home: 25, lantern: 10, book: 10, shelved: 20, flake: 5, bead: 10, clear: 15, clue: 10, apple: 10 } as const;
 /** The counter a bead of mist adds to (like the mountain's, it starts at 1 so each bead chimes: build.ts). */
 export const BEAD_COUNTER = 24;
 /** Hit points a slice of pie gives back. */
@@ -402,6 +403,7 @@ export function addProps(book: Book, pal: Pal, groups: readonly string[], o: Pro
       loop(names, [ring.before, fr, fr, fr, fr, ring.after]);
     });
   }
+  if (has('orchard')) book.add('apple', apple(pal), { ...air, score: POINTS.apple, touch: 'sky' });
   if (has('picnic')) {
     for (const part of ['L', 'M', 'R'] as const) book.add(`blanket${part}`, blanket(pal, part), air);
     for (const part of ['L', 'M', 'R'] as const) book.add(`mat${part}`, doormat(pal, part), air);

@@ -9,6 +9,7 @@ import { excuseMe, gatheringMist, theFord } from './routeNew';
 import { theSurveyLine } from './routeGrow';
 import { theSpillway } from './routeSpill';
 import { theClockTower } from './routeClock';
+import { halesOrchard } from './routeHour';
 import { GameSim } from './sim';
 
 export const SEED = 1;
@@ -22,6 +23,7 @@ const ROUTES = [
   gatheringMist,
   signposts,
   theSurveyLine,
+  halesOrchard,
   emptySpot,
   lookout,
   windyRidge,
