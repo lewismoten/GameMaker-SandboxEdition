@@ -4,10 +4,10 @@
 // gap on a shelf and it goes back. The top floor has the old almanac, open on stands: three pages on mountains and
 // their clouds, the first hint of what Old Mossback is missing. The book return chute drops Tess back to the ground
 // floor, where the last three gaps wait.
-import { StarterMap } from '../../../kit/starter/map';
+
 import type { Pal } from '../../../kit/starter/palette';
 import { Grid } from '../../../kit/starter/grid';
-import { addSigns, onGround, startBook, type Level } from '../level';
+import { addSigns, onGround, startBook, MountainMap, type Level } from '../level';
 import { TRAIL } from '../monsters';
 
 /** The four floors, bottom to top (the ground floor is solid boards; the others are planks). */
@@ -49,11 +49,8 @@ export const LIBRARY_AT = {
 
 const SIGNS = {
   lin: ['MRS. LIN: IT DOES NOT EVEN HAVE A LIBRARY CARD.', 4, 4],
-  overdue: ['ANY GAP TAKES ANY BOOK. SHE WILL SORT IT.', 4, 3],
   page1: ['ALMANAC: EVERY MOUNTAIN KEEPS A CLOUD ON TOP.', 4, 4],
   page2: ['A CLOUDLESS MOUNTAIN CANNOT SIT STILL.', 4, 3],
-  page3: ['SMALL CLOUDS WANDER. THEY GET LONELY.', 4, 3],
-  chute: ['BOOK RETURN CHUTE. NOT FOR PEOPLE. GO ON.', 4, 3],
 } as const;
 
 /** Columns on each floor kept clear of shelves (wall shows there): for the ladders, the window, the signs, the books. */
@@ -100,7 +97,7 @@ export function levelLibrary(pal: Pal): Level {
   g.put(L.exit, f0 - 2, 'e').put(L.exit, f0 - 1, 'E');
   L.ladders.forEach((x, k) => g.col(x, LFLOORS[k + 1] - 1, LFLOORS[k] - 1, 'H'));
   for (const f of LFLOORS.slice(1)) g.put(L.chute, f, ' ').put(L.chute + 1, f, ' ');
-  const m = new StarterMap(book, g.rows());
+  const m = new MountainMap(book, g.rows());
   // the floorboards, and the ceiling above the top floor
   for (let x = 1; x < W - 1; x++) m.set(x, f0, x % 3 ? 'floor' : 'floor2');
   // the shelves: five rows of books over each floor, but for its open stretches
@@ -118,7 +115,7 @@ export function levelLibrary(pal: Pal): Level {
     .set(L.desk + 2, f0 - 1, 'deskR');
   m.mon(TRAIL.lin, L.lin, f0 - 2).mon(TRAIL.lin + 1, L.lin, f0 - 1);
   m.mon(TRAIL.nutShort, 46, LFLOORS[2] - 1);
-  for (const k of Object.keys(L.signs) as (keyof typeof L.signs)[]) {
+  for (const k of Object.keys(s) as (keyof typeof s)[]) {
     const [floor, x] = L.signs[k];
     m.sign(x, onGround(LFLOORS[floor], s[k]), s[k]);
   }

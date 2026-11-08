@@ -2,10 +2,10 @@
 // turning back on the one below. Wisp follows Tess now, a little behind, and wherever Wisp goes the mountain will
 // follow, so every turn gets a fresh yellow blaze to show the way. Pebbles roll in the ruts; stars twinkle; the moon
 // is up. Big, careful footsteps somewhere below.
-import { StarterMap } from '../../../kit/starter/map';
+
 import type { Pal } from '../../../kit/starter/palette';
 import { Grid } from '../../../kit/starter/grid';
-import { addSigns, onGround, startBook, type Level } from '../level';
+import { addSigns, onGround, startBook, MountainMap, type Level } from '../level';
 import { TRAIL } from '../monsters';
 
 /** The five paths' floors, bottom to top (each two blocks thick; Tess walks on the row above). */
@@ -30,10 +30,6 @@ export const ZIGZAG_AT = {
 
 const SIGNS = {
   follow: ['WISP FOLLOWS YOU NOW. LEAD WELL.', 4, 3],
-  blaze: ['A BLAZE ON EVERY TURN, FOR THE MOUNTAIN.', 4, 3],
-  steps: ['BELOW: BIG STEPS, VERY CAREFUL ONES.', 4, 3],
-  moon: ['WHAT A MOON TONIGHT.', 4, 2],
-  top: ['THE HOLLOW IS OVER THE TOP.', 4, 3],
 } as const;
 
 export function levelZigzag(pal: Pal): Level {
@@ -53,7 +49,7 @@ export function levelZigzag(pal: Pal): Level {
   Z.paths.forEach((p, k) => {
     for (const x of p.ruts) g.put(x, ZFLOORS[k], ' ').put(x + 1, ZFLOORS[k], ' ');
   });
-  const m = new StarterMap(book, g.rows());
+  const m = new MountainMap(book, g.rows());
   // stars all over the night sky, twinkling at two paces, and the moon
   for (let y = 0; y < f0; y++)
     for (let x = 1; x < W - 1; x++)
@@ -76,10 +72,6 @@ export function levelZigzag(pal: Pal): Level {
   m.mon(TRAIL.wispFollow, 1, f0 - 3);
   const at = Z.signs;
   m.sign(at.follow, onGround(ZFLOORS[0], s.follow), s.follow);
-  m.sign(at.blaze, onGround(ZFLOORS[0], s.blaze), s.blaze);
-  m.sign(at.steps, onGround(ZFLOORS[1], s.steps), s.steps);
-  m.sign(at.moon, onGround(ZFLOORS[3], s.moon), s.moon);
-  m.sign(at.top, onGround(ZFLOORS[4], s.top), s.top);
   return {
     file: 'zigzag',
     title: 'The Zigzag Home',

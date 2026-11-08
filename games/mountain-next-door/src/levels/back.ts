@@ -4,10 +4,10 @@
 // (wait till they are up; slip, and it is only the terrace below). The hens that got out while the gates were off
 // have come up to see the view. Blaze a post at both ends of every terrace, for the hikers. At the top: no cloud,
 // only a damp, cloud-shaped dent in the moss, where something soft has sat for a very long time.
-import { ORIGIN, StarterMap } from '../../../kit/starter/map';
+import { ORIGIN } from '../../../kit/starter/map';
 import type { Pal } from '../../../kit/starter/palette';
 import { Grid } from '../../../kit/starter/grid';
-import { addSigns, onGround, startBook, type Level } from '../level';
+import { addSigns, onGround, startBook, MountainMap, type Level } from '../level';
 import { TRAIL } from '../monsters';
 
 export const G_BACK = 44;
@@ -48,8 +48,6 @@ export const BACK_AT = {
 
 const SIGNS = {
   hens: ['THE HENS CAME UP FOR THE VIEW. TRAITORS.', 4, 3],
-  view: ['YOU CAN SEE YOUR HOUSE. AND THE MESS.', 4, 3],
-  up: ['THESE ROCKS SINK ON A CLOCK. COUNT.', 4, 3],
   dent: ['NO CLOUD. JUST A DENT WHERE ONE SAT.', 4, 3],
 } as const;
 
@@ -62,7 +60,7 @@ export function levelBack(pal: Pal): Level {
   g.row(G_BACK, 0, W - 1, 'G').fill(0, G_BACK + 1, W, 3, 'D');
   g.col(0, 0, G_BACK - 1, 'X').col(W - 1, 0, G_BACK - 1, 'X');
   g.put(2, G_BACK - 2, 's').put(2, G_BACK - 1, 'S');
-  const m = new StarterMap(book, g.rows());
+  const m = new MountainMap(book, g.rows());
   // the terraces: rock from each one's ledge down to the ground, then each ledge across its whole width (the
   // paths run on across the face of the cliff above)
   for (const t of TERRACES) for (let x = t.a - 1; x <= t.b + 1; x++) for (let y = t.row + 1; y < G_BACK; y++) m.set(x, y, 'rock');
@@ -86,8 +84,6 @@ export function levelBack(pal: Pal): Level {
   m.set(B.exit, top.row - 2, 'doorTop').set(B.exit, top.row - 1, 'doorBottom');
   const at = B.signs;
   m.sign(at.hens, onGround(TERRACES[1].row, s.hens), s.hens);
-  m.sign(at.view, onGround(TERRACES[0].row, s.view), s.view);
-  m.sign(at.up, onGround(TERRACES[2].row, s.up), s.up);
   m.sign(at.dent, onGround(top.row, s.dent), s.dent);
   m.exits.push({ from: [B.exit + ORIGIN, top.row - 1 + ORIGIN] });
   return {

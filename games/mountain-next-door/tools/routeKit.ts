@@ -1,5 +1,5 @@
 // Small orders every level's route shares: run an order and fail on anything unexpected, leave through a door,
-// read a sign like a person, jump a hazard, watch a scene, and check what a level scored.
+// read a sign like a person, stop and look, jump a hazard, watch a scene, and check what a level scored.
 import type { Result, StarterBot } from '../../kit/starter/bot';
 import { ORIGIN } from '../../kit/starter/map';
 
@@ -24,6 +24,12 @@ export const READ = 100;
 export async function readAt(bot: StarterBot, col: number, what: string): Promise<void> {
   await must(bot, bot.walk(col, what), `to ${what}`);
   await must(bot, bot.wait(READ), `reading ${what}`);
+}
+
+/** Walks to `col` and stops to look around (a scene you watch: the fog, the hollow, the summit) for `ticks`. */
+export async function lookAt(bot: StarterBot, col: number, what: string, ticks = READ): Promise<void> {
+  await must(bot, bot.walk(col, what), `to ${what}`);
+  await must(bot, bot.wait(ticks), `looking at ${what}`);
 }
 
 /** Jumps the hazards at `col` .. `col + n - 1` from two blocks before, landing past them with every hit point. */

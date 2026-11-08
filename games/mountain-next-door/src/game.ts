@@ -40,7 +40,7 @@ export function buildGame(levels: Level[]): Game {
       'mount.mbl',
       'tess.chr',
       'tess.cbl',
-      'mount.snd',
+      l.file === 'next' ? 'next.snd' : 'mount.snd',
       `${l.song}.cmf`,
       `${l.file}.lst`,
       ...new Array(10).fill(''),

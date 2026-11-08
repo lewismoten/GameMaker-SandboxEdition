@@ -57,6 +57,8 @@ import { dent, scree } from './art/high';
 import { drift, potSlates, puff, slates, stack } from './art/roofs';
 import { brace, calm, lamp, landing, leg, railing, shingles } from './art/tower';
 import { desk, floorboard, libWindow, lostBook, shelf, shelfGap } from './art/library';
+import { houseDoor } from './art/exits';
+import { EXCUSE_COUNTER } from './voice';
 
 /** Points: a painted blaze, an acorn, a gate taken off the mountain, a gate put back home. */
 export const POINTS = { blaze: 10, acorn: 5, gate: 25, home: 25, lantern: 10, book: 10, shelved: 20, flake: 5 } as const;
@@ -82,6 +84,8 @@ export const ARROW_TICKS = 70;
 const air = { grav: PULL.down };
 /** Ticks after the mountain wakes that it lifts its toe off the sidewalk. */
 export const TOE_AFTER = 110;
+/** The foot part (bottom row, front column) that leaves the mountain's "excuse me" trigger when the toe lifts. */
+export const EXCUSE_AT = (FOOT.h - 1) * FOOT.w;
 
 export interface PropOptions {
   /** The prologue's clock: when the mountain wakes (ticks), and when the yawn knocks Tess's gate open. */
@@ -116,8 +120,10 @@ export function addProps(book: Book, pal: Pal, groups: readonly string[], o: Pro
       const pic = foot(pal, k);
       // a part with no rock in it is only sky: not solid, so there is no invisible wall
       book.add(`foot${k}`, pic, pic.px.every((c) => c === pic.px[0]) ? air : { solid: SOLID });
-      timed.push({ name: `foot${k}`, next: 'sky', ticks: wake + TOE_AFTER });
+      // where the toe's front stood, an unseen trigger: Tess passing under says the mountain's line (voice.ts)
+      timed.push({ name: `foot${k}`, next: k === EXCUSE_AT ? 'excuse' : 'sky', ticks: wake + TOE_AFTER });
     }
+    book.add('excuse', book.pics.get('sky') as Pixels, { ...air, effect: EXCUSE_COUNTER, eamt: 1, touch: 'sky' });
   }
   if (has('town')) {
     book.add('wall', wall(pal, 'parch'), air);
@@ -128,6 +134,10 @@ export function addProps(book: Book, pal: Pal, groups: readonly string[], o: Pro
     book.add('roofL', roof(pal, 'L'), air);
     book.add('roofM', roof(pal, 'M'), air);
     book.add('roofR', roof(pal, 'R'), air);
+    book.add('roofF', roof(pal, 'F'), air);
+    const [doorTop, doorBottom] = houseDoor(pal);
+    book.add('houseDoorTop', doorTop, air);
+    book.add('houseDoorBottom', doorBottom, air);
     book.add('fence', fence(pal), air);
     book.add('arborTop', arbor(pal, 'top'), { solid: SOLID });
     book.add('arborBeam', arbor(pal, 'beam'), { solid: SOLID });
