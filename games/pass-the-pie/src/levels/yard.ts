@@ -40,7 +40,7 @@ export function yard(pal: Pal): Level {
   st.g.put(33, 9, '1');
   // the porch: a ladder up, the roof a ledge with acorns, windows and pumpkins under it
   st.g.fill(AT.roof[0], 11, AT.roof[1] - AT.roof[0] + 1, GROUND - 12, 'Z');
-  st.g.col(AT.porchLadder, 10, GROUND - 1, 'H').row(10, AT.roof[0], AT.roof[1], 'R');
+  st.g.col(AT.porchLadder, 9, GROUND - 1, 'H').row(10, AT.roof[0], AT.roof[1], 'R');
   for (let x = AT.roof[0] + 1; x < AT.roof[1]; x += 2) st.g.put(x, 9, 'c');
   st.g.put(32, 13, 'W').put(38, 13, 'W').put(30, GROUND - 1, 'p').put(34, GROUND - 1, 'p').put(26, GROUND - 1, 'F');
   st.g.put(36, GROUND - 1, 'h').put(37, GROUND - 1, 'h');

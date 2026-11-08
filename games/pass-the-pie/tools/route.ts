@@ -1,9 +1,10 @@
 // The way through PASS THE PIE, as orders for the bot (kit/starter/bot.ts, routeKit.ts): the keys a person would
 // press, level by level, with human timing, every acorn a person would see taken and every fight finished.
 import type { StarterBot } from '../../kit/starter/bot';
+import * as L from '../src/levels/lawn';
 import * as Y from '../src/levels/yard';
 import { MONS } from '../src/monsters';
-import { climb, cross, door, leap, meet, must, read, stepUp } from './routeKit';
+import { climb, cross, door, leap, meet, must, read, smash, stepUp } from './routeKit';
 
 /** Hit points the whole walkthrough may lose (a person is allowed a few bumps). */
 export const BUMP_BUDGET = 60;
@@ -48,4 +49,42 @@ export async function pumpkinYard(bot: StarterBot): Promise<void> {
   await door(bot, Y.AT.gate, Y.AT.exit, "Mrs. Pettigrew's gate");
 }
 
-export const LEVELS = [pumpkinYard];
+/** 2. Payback (Mr. Plume). */
+export async function payback(bot: StarterBot): Promise<void> {
+  const G = L.GROUND - 1;
+  const turkey = [MONS.inflatable];
+  const bag = [MONS.bag, MONS.bag + 1, MONS.bag + 2];
+  await read(bot, 6, 'flyer');
+  await read(bot, 10, 'combo');
+  for (const x of L.AT.turkeys) await smash(bot, x, turkey, 1, `the lawn turkey at ${x}`, G);
+  await smash(bot, L.AT.bag, bag, 1, 'the kick bag', G);
+  // the shed roof: its drone, the spare key
+  await climb(bot, L.AT.shedLadder, 9, 'the shed ladder');
+  await cross(bot, L.AT.shedLadder + 1, 'onto the shed roof');
+  await meet(bot, [MONS.drone], 9, 'the roof drone', 44);
+  await cross(bot, L.AT.key + 1, 'the spare key');
+  await cross(bot, L.AT.shedRoof[1] + 2, 'off the shed roof');
+  await read(bot, 41, 'chat');
+  // the swoop: wait for it to come down, then kick
+  await cross(bot, L.AT.swoop + 1, 'under the swooping drone');
+  await meet(bot, [MONS.droneSwoop], G, 'the swooping drone', 44, 200, 1200);
+  for (const x of L.AT.wall) await smash(bot, x, turkey, 1, `the turkey wall at ${x}`, G);
+  for (const x of [47, 50, 52]) {
+    await cross(bot, x, 'under the acorns');
+    await must(bot, bot.jump(), 'up for the acorns');
+  }
+  await smash(bot, L.AT.bag2, bag, 1, 'the second kick bag', G);
+  await meet(bot, [MONS.vacLong], G, 'the vacuum', 50, 200);
+  // the crates up to the garage roof, its drone, the gold acorn
+  await cross(bot, L.AT.crates[0] - 1, 'the crates');
+  await leap(bot, 'right', L.AT.crates[0], 'onto the first crate');
+  await leap(bot, 'right', L.AT.crates[1], 'onto the second crate');
+  await leap(bot, 'right', L.AT.garageRoof[0] + 1, 'onto the garage roof');
+  await meet(bot, [MONS.drone], 12, 'the garage drone', 44);
+  await cross(bot, L.AT.gold, 'the gold acorn');
+  await cross(bot, L.AT.garageRoof[1] + 2, 'off the garage roof');
+  await read(bot, 77, 'gate');
+  await door(bot, L.AT.gate, L.AT.exit, 'the garden gate');
+}
+
+export const LEVELS = [pumpkinYard, payback];

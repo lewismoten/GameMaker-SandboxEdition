@@ -133,11 +133,11 @@ export function monsterSet(mb: Book): Monster[] {
   set[MONS.fedMower] = set[MONS.fedVac];
   set[MONS.drone] = mon(anim('drone', 1), { ...hit, newmon: MONS.puff, thru: 0 }, pace(5, 2));
   set[MONS.droneHigh] = mon(anim('drone', 1), { ...hit, newmon: MONS.puff, thru: 0 }, pace(8, 3));
-  // the swoop: across, down two blocks to the ground, back up, and home again; read it and go under on the way up
+  // the swoop: across, down three blocks to the ground, back up, and home again; read it and go under on the way up
   set[MONS.droneSwoop] = mon(
     anim('drone', 1),
     { ...hit, newmon: MONS.puff, thru: 0 },
-    [corner(0, 0, 2), corner(3, 0, 2, 0), corner(0, 2, 3, 0), corner(0, -2, 2, 0), corner(-3, 0, 2, 4)],
+    [corner(0, 0, 2), corner(3, 0, 2, 0), corner(0, 3, 3, 0), corner(0, -3, 2, 0), corner(-3, 0, 2, 4)],
   );
   for (let h = 0; h < BAG_HITS; h++) set[MONS.bag + h] = mon(anim(`bag${h}_`, 10 - h * 3), { ...hit, newmon: h + 1 < BAG_HITS ? MONS.bag + h + 1 : MONS.puff });
   for (let i = 0; i < BLOWER_HITS; i++) {

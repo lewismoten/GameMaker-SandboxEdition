@@ -6,7 +6,7 @@
 //   RORY.CHR   Enter tosses a dinner roll from the basket: a vacuum that catches it stalls (a step to stand on), a
 //              squirrel catches it and scampers off.
 import { MONBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
-import { emptyFrame, type Character, type Frame } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { MAXFRAME, emptyFrame, type Character, type Frame } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import type { Book } from '../../kit/starter/book';
 import { buildHero } from '../../kit/starter/heroChar';
 import { SEQ } from '../../kit/starter/ids';
@@ -24,6 +24,7 @@ const frame =
 const birth = (monster: number, y = 20): Frame => ({ ...emptyFrame(), x: 0, y, pic1: monster, pic2: MONBL, pause: 0 });
 
 function enterMove(ch: Character, frames: Frame[], sound: number): void {
+  if (frames.length > MAXFRAME) throw new Error(`A sequence holds ${MAXFRAME} frames, not ${frames.length}`);
   const s = ch.sequences[SEQ.throw];
   frames.forEach((fr, i) => (s.frames[i] = fr));
   for (let i = frames.length; i < s.frames.length; i++) s.frames[i] = emptyFrame(true);
@@ -39,18 +40,15 @@ export function buildPlume(cb: Book): Character {
     ch,
     [
       f('kick0.top', 'throw0', 2),
-      f('kick1.top', 'throw1', 1),
-      birth(MONS.whap),
       f('kick1.top', 'throw1', 2),
-      f('kick0.top', 'throw0', 1),
-      f('kick1.top', 'throw1', 1),
       birth(MONS.whap),
+      f('kick0.top', 'throw0', 2),
       f('kick1.top', 'throw1', 2),
-      f('stand.top', 'dig0', 1),
-      f('kick1.top', 'throw1', 1),
+      birth(MONS.whap),
+      f('stand.top', 'dig0', 2),
+      f('kick1.top', 'throw1', 2),
       birth(MONS.pow),
-      f('kick1.top', 'throw1', 3),
-      f('stand.top', 'throw2', 2),
+      f('kick1.top', 'throw1', 4),
     ],
     SND.kick,
   );
