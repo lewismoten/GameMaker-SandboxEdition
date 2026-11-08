@@ -90,8 +90,8 @@ export const STONE_TICKS = { up: 80, half: 10, under: 30, rise: 10 } as const;
 export const PUFF_TICKS = { frame: 9, off: 90 } as const;
 /** The mist steps' clock: one cycle's ticks, and step k is gone for `first + gap * k` of it before it comes up (so they stack up in turn). */
 export const MIST_STEPS = { period: 230, first: 10, gap: 20, count: 6 } as const;
-/** The windows that light as the mountain squeezes by: ticks until each of the five goes on. */
-export const STREET_WINDOWS = [320, 470, 850, 1020, 1220] as const;
+/** The windows that light as the mountain squeezes by: ticks until each of the three goes on. */
+export const STREET_WINDOWS = [320, 470, 870] as const;
 /** The yard gate: ticks shut, ticks open. */
 export const GATE_TICKS = { shut: 110, open: 90 } as const;
 /**

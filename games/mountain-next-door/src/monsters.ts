@@ -292,8 +292,7 @@ export const STREET_WALK: { wait: number; legs: Leg[] } = {
   wait: 160,
   legs: [
     [30, 0, 2],
-    [35, 0, 2],
-    [35, 0, 2],
+    [30, 0, 2],
     [24, 0, 2],
   ],
 };
@@ -301,9 +300,9 @@ export const STREET_WALK: { wait: number; legs: Leg[] } = {
 export const FORD_WALK: { wait: number; legs: Leg[] } = {
   wait: 200,
   legs: [
-    [18, 0, 2],
-    [60, 0, 1],
-    [30, 0, 2],
+    [10, 0, 2],
+    [66, 0, 1],
+    [8, 0, 2],
   ],
 };
 

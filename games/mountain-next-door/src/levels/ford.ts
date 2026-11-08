@@ -14,17 +14,17 @@ import { WALKER_CELLS } from '../art/walker';
 export const G9 = 14;
 
 export const FORD_AT = {
-  start: 9,
+  start: 7,
   mountain: 1,
   /** The first column of each reach, and how wide a reach is (the stairs are its first and last columns). */
-  reaches: [21, 39, 57, 75, 93],
+  reaches: [15, 29, 43, 57, 71],
   width: 8,
-  posts: [14, 35, 54, 72, 90, 106, 112, 118],
-  acorns: [33, 52, 70, 88, 109],
-  pie: 115,
+  posts: [13, 25, 55, 68, 85],
+  acorns: [27, 37, 53, 69, 84],
+  pie: 12,
   moon: [6, 1],
-  exit: 124,
-  signs: { ford: 14, wrong: 49, almost: 103 },
+  exit: 87,
+  signs: { ford: 8, wrong: 38, almost: 80 },
 } as const;
 
 const SIGNS = {
@@ -37,7 +37,7 @@ export function levelFord(pal: Pal): Level {
   const { book, timed } = startBook(pal, ['pickups', 'stars', 'ford']);
   const s = addSigns(book, pal, SIGNS);
   const A = FORD_AT;
-  const W = 128;
+  const W = 90;
   const g = new Grid(W, G9 + 6);
   g.row(G9, 0, W - 1, 'G').fill(0, G9 + 1, W, 5, 'D');
   g.col(0, 0, G9 - 1, 'X').col(W - 1, 0, G9 - 1, 'X');

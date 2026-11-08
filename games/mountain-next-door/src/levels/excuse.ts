@@ -16,28 +16,24 @@ export const STREET_AT = {
   /** Where the mountain stands to begin with (its left column; it is four wide and three tall). */
   mountain: 1,
   obstacles: [
-    { x: 27, kind: 'bins' },
-    { x: 45, kind: 'gate', open: false },
-    { x: 50, kind: 'gate', open: true },
-    { x: 70, kind: 'sheets' },
-    { x: 86, kind: 'bins' },
-    { x: 105, kind: 'gate', open: false },
-    { x: 121, kind: 'sheets' },
+    { x: 24, kind: 'bins' },
+    { x: 40, kind: 'gate', open: false },
+    { x: 45, kind: 'gate', open: true },
+    { x: 63, kind: 'sheets' },
+    { x: 77, kind: 'bins' },
   ],
   /** Houses [first column, last column]; the window of every one but the third (Mr. Hale's, lit) goes on as the mountain passes. */
   houses: [
-    [13, 20],
-    [31, 38],
-    [55, 63],
-    [74, 82],
-    [90, 98],
-    [109, 117],
+    [14, 20],
+    [27, 33],
+    [48, 55],
+    [66, 73],
   ],
-  posts: [12, 25, 35, 47, 58, 73, 93, 108, 124],
-  acorns: [16, 53, 62, 84, 96, 112],
-  pie: 78,
-  exit: 132,
-  signs: { quiet: 8, gate: 39, hale: 64, ford: 125 },
+  posts: [13, 22, 30, 43, 52, 61, 70, 84],
+  acorns: [17, 32, 50, 67, 74],
+  pie: 54,
+  exit: 86,
+  signs: { quiet: 9, gate: 34, hale: 56, ford: 79 },
 } as const;
 
 const SIGNS = {
@@ -51,7 +47,7 @@ export function levelExcuse(pal: Pal): Level {
   const { book, timed } = startBook(pal, ['pickups', 'town', 'street']);
   const s = addSigns(book, pal, SIGNS);
   const A = STREET_AT;
-  const W = 136;
+  const W = 90;
   const g = room(W, A.exit);
   // room() puts the way in at x 3; this street starts at its own spot
   g.put(3, GROUND - 2, ' ')
@@ -61,7 +57,7 @@ export function levelExcuse(pal: Pal): Level {
   const m = new MountainMap(book, g.rows());
   // the houses, each with a window that lights when the mountain goes by
   A.houses.forEach(([x0, x1], k) => {
-    const win = k === 2 ? 'windowLit' : `dark${k < 2 ? k : k - 1}`;
+    const win = k === 2 ? 'windowLit' : `dark${k < 2 ? k : 2}`;
     for (let x = x0; x <= x1; x++) {
       for (const y of [GROUND - 3, GROUND - 2, GROUND - 1]) m.set(x, y, (x - x0) % 3 === 2 && y === GROUND - 2 ? win : k % 2 ? 'wallB' : 'wall');
       m.set(x, GROUND - 4, x === x0 ? 'roofL' : x === x1 ? 'roofR' : 'roofF');

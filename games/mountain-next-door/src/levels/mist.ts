@@ -14,9 +14,9 @@ export const G8 = 12;
 
 /** Each dell: its columns, how deep it is (rows below the rim to its floor) and so how many steps climb out of it (depth - 1). */
 export const DELLS = [
-  { a: 26, b: 41, depth: 5 },
-  { a: 51, b: 70, depth: 6 },
-  { a: 80, b: 103, depth: 7 },
+  { a: 18, b: 31, depth: 5 },
+  { a: 35, b: 52, depth: 6 },
+  { a: 60, b: 80, depth: 7 },
 ] as const;
 
 /** A dell's floor row. */
@@ -32,18 +32,18 @@ export function stepOf(d: (typeof DELLS)[number], k: number): { x: [number, numb
 export const MIST_AT = {
   /** Beads on the floors of the dells and on the steps (by the step's number), and on the rim between. */
   floorBeads: [
-    [28, 31],
-    [53, 56, 59],
-    [83, 87, 91],
+    [20, 22],
+    [38, 40, 42],
+    [62, 65, 68],
   ],
   stepBeads: [
     [1, 3],
     [1, 3],
     [1, 3, 5],
   ],
-  rimBeads: [14, 18, 43, 73, 107, 115],
-  exit: 118,
-  signs: { weather: 7, steps: 21, deeper: 75, wisp: 111 },
+  rimBeads: [11, 17, 33, 58, 84],
+  exit: 86,
+  signs: { weather: 7, steps: 12, deeper: 54, wisp: 82 },
 } as const;
 
 const SIGNS = {
@@ -56,7 +56,7 @@ const SIGNS = {
 export function levelMist(pal: Pal): Level {
   const { book, timed } = startBook(pal, ['pickups', 'mist']);
   const s = addSigns(book, pal, SIGNS);
-  const W = 124;
+  const W = 90;
   const g = new Grid(W, G8 + 11);
   g.row(G8, 0, W - 1, 'G').fill(0, G8 + 1, W, 10, 'D');
   g.col(0, 0, G8 - 1, 'X').col(W - 1, 0, G8 - 1, 'X');
