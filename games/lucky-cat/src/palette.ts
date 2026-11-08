@@ -48,6 +48,19 @@ export const LOOKS: Record<string, Record<string, Tint>> = {
       [84, 28, 34],
     ],
   },
+  // saucer alley: a brick-brown plate and a cream-white spot
+  alley: {
+    sky: [
+      [30, 14, 10],
+      [176, 118, 88],
+      [66, 34, 24],
+    ],
+    gold: [
+      [120, 100, 60],
+      [255, 252, 224],
+      [236, 216, 150],
+    ],
+  },
   // earlier that morning: the print turned over, a pale dawn plate and a tangerine spot (Rascal's hour)
   morning: {
     sky: [

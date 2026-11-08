@@ -9,6 +9,7 @@
 //   8. Payback                Rascal's roof
 import { buildCatPalette } from '../palette';
 import type { Level } from '../level';
+import { levelAlley } from './alley';
 import { levelOne } from './one';
 import { levelFive } from './five';
 import { levelFour } from './four';
@@ -21,6 +22,6 @@ import { levelTwo } from './two';
 /** The base palette and every level. */
 export function buildLevels(): { pal: ReturnType<typeof buildCatPalette>; levels: Level[] } {
   const pal = buildCatPalette();
-  const levels: Level[] = [levelOne(pal), levelTwo(pal), levelThree(pal), levelMorning(pal), levelFour(pal), levelTower(pal), levelFive(pal), levelSix(pal)];
+  const levels: Level[] = [levelOne(pal), levelAlley(pal), levelTwo(pal), levelThree(pal), levelMorning(pal), levelFour(pal), levelTower(pal), levelFive(pal), levelSix(pal)];
   return { pal, levels };
 }
