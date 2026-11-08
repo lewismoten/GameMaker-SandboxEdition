@@ -7,6 +7,7 @@ import { type Level } from './lay';
 import { bakery } from './bakery';
 import { creek } from './creek';
 import { hall } from './hall';
+import { truck } from './truck';
 import { level1 } from './level1';
 import { level2 } from './level2';
 import { level3 } from './level3';
@@ -28,6 +29,7 @@ const PAPERS: Record<string, Ramp | undefined> = {
   hall: [4, [170, 150, 190], [232, 222, 244], [204, 190, 222]], // practice-hall lilac
   drumoff: [4, [150, 190, 170], [216, 238, 222], [186, 216, 198]], // mint
   route: undefined, // cream
+  truck: [4, [160, 150, 170], [230, 226, 236], [196, 190, 208]], // truck-lot gray
   stepoff: [4, [214, 162, 80], [252, 226, 162], [238, 196, 120]], // ten o'clock gold
 };
 
@@ -42,6 +44,7 @@ const MAKERS: [string, (pal: Pal) => Level][] = [
   ['hall', hall],
   ['drumoff', level5],
   ['route', level6],
+  ['truck', truck],
   ['stepoff', level7],
 ];
 

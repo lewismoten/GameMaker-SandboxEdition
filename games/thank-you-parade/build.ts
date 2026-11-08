@@ -28,8 +28,8 @@ import { titlePicture } from './src/title';
 /** Hit points and lives at the start (a goose costs 1 a moment, a cannon 10). */
 const HERO_HIT_POINTS = 80;
 const HERO_LIVES = 3;
-/** Counters 20 to 25 (the band's three things and the keys, the cards, the float's parts, the banner letters) start at 1: a counter shows one less than it holds. */
-const COUNTERS = [20, 21, 22, 23, 24, 25];
+/** Counters 20 to 26 (the band's three things and the keys, the cards, the float's parts, the banner letters, the truck's fuses) start at 1: a counter shows one less than it holds. */
+const COUNTERS = [20, 21, 22, 23, 24, 25, 26];
 
 const here = dirname(fileURLToPath(import.meta.url));
 const disk = new Disk(join(here, 'disk'));

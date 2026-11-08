@@ -171,6 +171,15 @@ export const HALL_SIGNS: Defs = {
   exit: EXIT,
 };
 
+export const TRUCK_SIGNS: Defs = {
+  start: ["9:40. RIDGEMONT'S CONFETTI TRUCK. THREE FUSES KEEP IT PARKED.", 6, 3, 'purple'],
+  sweep: ["THE SWEEPER HAS ONE SETTING.", 5, 2, 'purple'],
+  high: ['THE LADDERS ARE FOR LOOKING AT CANNONS FROM ABOVE.', 6, 3],
+  gigi: ['GIGI: THE TRUCK ONLY STARTS WITH ALL THREE FUSES. WHY DID I SAY THAT OUT LOUD?', 7, 3, 'purple'],
+  secret: ['PLAYBOOK P.9: THE TRUCK HAS A SUNROOF.', 6, 2, 'purple'],
+  exit: EXIT,
+};
+
 /** What each level card says under its title. */
 export const CARD_NOTES = [
   '6:40 AM. The band is scattered.',

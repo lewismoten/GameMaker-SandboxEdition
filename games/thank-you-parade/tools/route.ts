@@ -9,6 +9,8 @@ import { AT3 } from '../src/level3';
 import { AT_BAKERY } from '../src/bakery';
 import { AT_CREEK } from '../src/creek';
 import { AT_HALL } from '../src/hall';
+import { AT_TRUCK } from '../src/truck';
+import { FUSES } from '../src/extra';
 import { AT4 } from '../src/level4';
 import { AT5, ZONES } from '../src/level5';
 import { AT6 } from '../src/level6';
@@ -407,5 +409,34 @@ export async function practiceHall(bot: StarterBot): Promise<void> {
   await must(bot, bot.wait(READ), 'reading the page');
   await must(bot, bot.walk(A.rafters.ladder, 'the ladder'), 'back to the ladder');
   await must(bot, bot.climb('down', G - 1, 'down'), 'down');
+  await leave(bot, bot.walk(A.exit + 1, 'the exit'), 'the exit');
+}
+
+/** 10. The Cannon Truck: three fuses (two guarded by sweepers), the high roads over the cannons, the truck's door. */
+export async function cannonTruck(bot: StarterBot): Promise<void> {
+  const A = AT_TRUCK;
+  const G = A.ground;
+  await must(bot, bot.walk(8, 'the first placard'), 'to the placard');
+  await must(bot, bot.wait(READ), 'reading');
+  await hop(bot, A.fuses[0]);
+  need(bot, FUSES, 1, 'the first fuse');
+  await must(bot, bot.wait(READ / 2), 'reading the ladders placard');
+  // the first high road: the second fuse, and the page at its end
+  await climbShaft(bot, A.high1.ladder, A.high1.planks[2] - 1, 'first high road');
+  await must(bot, bot.walk(A.fuses[1], 'the second fuse'), 'along the plank');
+  need(bot, FUSES, 2, 'the second fuse');
+  await page(bot, () => must(bot, bot.walk(A.page[0], 'the end of the plank'), 'to the page'), 'the ninth page');
+  await must(bot, bot.wait(READ), 'reading the page');
+  await must(bot, bot.walk(A.high1.planks[1] + 2, 'off the plank'), 'off the plank');
+  // the second high road, over the last cannons, down its far ladder
+  await climbShaft(bot, A.high2.ladder, A.high2.planks[2] - 1, 'second high road');
+  await must(bot, bot.walk(A.high2.down, 'the far ladder'), 'along the plank');
+  await must(bot, bot.climb('down', G - 1, 'down'), 'down');
+  await must(bot, bot.walk(A.high2.down + 2, 'the street'), 'onto the street');
+  await hop(bot, A.fuses[2]);
+  need(bot, FUSES, 3, 'the third fuse');
+  await must(bot, bot.wait(READ), "reading Gigi's placard");
+  await must(bot, bot.walk(A.truck + 1, 'the truck door'), 'through the truck door');
+  need(bot, FUSES, 0, 'the truck took the fuses');
   await leave(bot, bot.walk(A.exit + 1, 'the exit'), 'the exit');
 }

@@ -1,6 +1,6 @@
 // The blocks of the parade's five added levels, in the poster inks:
 //   roofTile, awning, crate   Bakery Row's tar roofs, a striped shop awning (stand on it) and a wooden crate
-//   donut                     a pink-iced donut worth 15, and 4 hit points
+//   donut                     a pink-iced donut worth 15, and a hit point
 //   addMeter                  a countdown meter like the gust meter, with its own two-letter label
 //   shutter                   a roll-up shutter that stands open until its meter runs out, then shuts
 //   fuse, truck               the Cannon Truck's three fuse boxes and the truck's rear door
@@ -18,7 +18,7 @@ export const FUSES = 26;
 export const FUSES_WANTED = 3;
 export const DONUT_POINTS = 15;
 /** Hit points a donut gives back (the bakery's, eaten on the run). */
-export const DONUT_HEAL = 4;
+export const DONUT_HEAL = 1;
 
 /** A tar roof tile, a stucco crate and a striped awning. */
 export function addRoofs(book: PBook, pal: Pal): void {
