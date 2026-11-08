@@ -11,6 +11,8 @@ import { AT_CREEK } from '../src/creek';
 import { AT_HALL } from '../src/hall';
 import { AT_THAW } from '../src/thaw';
 import { AT_CLOCK } from '../src/clock';
+import { AT_RUSH } from '../src/rush';
+import { phaseAt } from '../src/traffic';
 import { cogOffset, cogSolid } from '../src/cogs';
 import { AT_TRUCK } from '../src/truck';
 import { AT_BLEACHERS } from '../src/bleachers';
@@ -419,6 +421,59 @@ async function crossCogs(bot: StarterBot, t0: number, dir: 1 | -1, to: number): 
   };
   for (let t = 0; t < 300 && !safe(bot.sim.ticks); t++) await must(bot, bot.wait(1), 'waiting for the cogs');
   await must(bot, bot.walk(to, 'across the cogs'), 'across the cogs');
+}
+
+/** 4. Crosswalk Corner: five gates on their own lights, the barber's key up a ladder, the brass gate. */
+export async function crosswalk(bot: StarterBot): Promise<void> {
+  const A = AT_RUSH;
+  const G = A.ground;
+  const book = levels.find((l) => l.file === 'rush')!.book;
+  const stop = book.n('barrStop');
+  const at = () => bot.sim.w.blkmap[bot.sim.blockAt(A.gates[0] + ORIGIN, G - 1 + ORIGIN)];
+  // the first gate's shutting is what tells the bot where the lights are in their cycle (it shuts 120 ticks into the cycle)
+  let t0 = -1;
+  const calibrate = async (): Promise<void> => {
+    let prev = at();
+    for (let t = 0; t < 400 && t0 < 0; t++) {
+      await must(bot, bot.wait(1), 'watching the lights');
+      const now = at();
+      if (now === stop && prev !== stop) t0 = bot.sim.ticks - 120 + A.offsets[0];
+      prev = now;
+    }
+    if (t0 < 0) throw new Error('the first gate never shut');
+  };
+  await must(bot, bot.walk(8, 'the first placard'), 'to the placard');
+  await must(bot, bot.wait(READ), 'reading');
+  const through = async (i: number): Promise<void> => {
+    const x = A.gates[i];
+    await must(bot, bot.walk(x - 3, 'a stop line'), 'to a stop line');
+    if (t0 < 0) await calibrate();
+    for (let t = 0; t < 400; t++) {
+      const { phase, left } = phaseAt(A.offsets[i], bot.sim.ticks - t0);
+      if (phase === 'Go' && left >= 34 && left <= 80) break;
+      await must(bot, bot.wait(1), 'waiting at a light');
+    }
+    bot.say(`gate ${i} at tick ${bot.sim.ticks}, hit points ${bot.sim.ci.hitpts}, ${JSON.stringify(phaseAt(A.offsets[i], bot.sim.ticks - t0))}`);
+    await must(bot, bot.walk(x + 3, 'through a gate'), 'through the gate');
+  };
+  await through(0);
+  await must(bot, bot.wait(READ), 'reading the gates placard');
+  await through(1);
+  await through(2);
+  // the barber's roof and the key
+  await climbShaft(bot, A.ladder, A.roof[2] - 1, 'barber');
+  await must(bot, bot.walk(A.key, 'the brass key'), 'along the roof');
+  need(bot, 20, 1, 'the brass key');
+  await must(bot, bot.walk(A.ladder + 1, 'the ladder'), 'back along the roof');
+  await must(bot, bot.walk(A.ladder, 'the ladder'), 'onto the ladder');
+  await must(bot, bot.climb('down', G - 1, 'down the ladder'), 'down');
+  await must(bot, bot.walk(A.ladder + 2, 'the street'), 'onto the street');
+  await through(3);
+  await through(4);
+  await must(bot, bot.wait(READ), 'reading the brass placard');
+  await must(bot, bot.walk(A.brass + 1, 'the brass gate'), 'through the brass gate');
+  need(bot, 20, 0, 'the brass gate took the key');
+  await leave(bot, bot.walk(A.exit + 1, 'the exit'), 'the exit');
 }
 
 /** 11. The Clock Tower: up four tiers, a bridge of blinking cogs on each, to the door at the top. */

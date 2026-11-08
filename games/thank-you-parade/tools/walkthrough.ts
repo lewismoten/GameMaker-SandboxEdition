@@ -9,6 +9,7 @@ const NAMES = [
   'Call Time',
   'Gust',
   'Bakery Row',
+  'Crosswalk Corner',
   'Meanwhile',
   'Mill Creek',
   'Frost Lot',

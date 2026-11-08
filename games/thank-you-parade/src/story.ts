@@ -32,6 +32,15 @@ The front door is locked.
 
 The roof is not.
 `),
+  rush: wrap(`
+|7:50 AM
+
+Mr. Boyle has crossed children at this corner since 1979.
+
+He has five gates, five traffic lights and one whistle. The lights have never agreed about anything.
+
+Nobody has ever been late because of Mr. Boyle. Today is a tight morning.
+`),
   airstrip: wrap(`
 |MEANWHILE
 

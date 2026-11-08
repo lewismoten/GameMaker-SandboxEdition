@@ -11,6 +11,7 @@ import { hall } from './hall';
 import { thaw } from './thaw';
 import { truck } from './truck';
 import { clock } from './clock';
+import { rush } from './rush';
 import { level1 } from './level1';
 import { level2 } from './level2';
 import { level3 } from './level3';
@@ -26,6 +27,7 @@ const PAPERS: Record<string, Ramp | undefined> = {
   calltime: [4, [206, 150, 132], [252, 222, 204], [236, 188, 168]], // dawn
   gust: [4, [150, 160, 170], [226, 230, 228], [196, 202, 204]], // windy gray
   bakery: [4, [214, 150, 150], [252, 218, 210], [238, 184, 176]], // a bakery pink
+  rush: [4, [150, 186, 110], [226, 240, 196], [190, 214, 150]], // crossing-sign lime
   airstrip: [4, [214, 182, 96], [252, 240, 186], [238, 214, 140]], // the airstrip
   creek: [4, [150, 190, 176], [220, 240, 226], [190, 218, 202]], // creek sage
   thaw: [4, [140, 176, 206], [226, 240, 250], [190, 214, 234]], // frost blue
@@ -44,6 +46,7 @@ const MAKERS: [string, (pal: Pal) => Level][] = [
   ['calltime', level1],
   ['gust', level2],
   ['bakery', bakery],
+  ['rush', rush],
   ['airstrip', level3],
   ['creek', creek],
   ['thaw', thaw],
