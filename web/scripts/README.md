@@ -8,6 +8,14 @@ the other folders named (`manual/`, `gfx/`…) are under `web/src/`.
 This folder holds the build's Vite plugins and the scripts run by hand (from
 `web/`, `npx vite-node scripts/<name>.ts`).
 
+- `dosFloppies.ts game.zip NEW-OUTPUT-DIRECTORY`: optionally lays out a standalone
+  DOS export as `DISK1/`, `DISK2/`, etc. Copy each folder's contents to its own
+  formatted 1.44 MB floppy. Whole files only, FAT12 space/entry accounting,
+  runtime and main game on disk 1, `DISKn.ID` markers and identical swap-safe
+  installers on all disks. Refuses existing output directories and oversized
+  files; never formats disks or treats a ZIP as an image. See
+  [`export/README.md`](../src/export/README.md#installing-the-dos-download).
+
 - Vite plugins, imported by `../vite.config.ts` (which also emits the service worker and
   `player-files.json`):
   - `cdGames.ts` serves the CD's games and `../games` (and writes them into the build, with the

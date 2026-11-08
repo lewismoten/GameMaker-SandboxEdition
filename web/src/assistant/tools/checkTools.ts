@@ -10,7 +10,7 @@ import { autoWalk } from '../../editor/check/walk/autoWalk';
 import { verifyWalk } from '../../editor/check/walk/verify';
 import { startingAt } from '../../editor/editors/integrator/startAt';
 import { WALKTHROUGH_FPS } from '../../walkthrough/format';
-import { dosNameProblems } from '../../export/exportDos';
+import { dosNameProblems } from '../../export/dosNames';
 import { patchEntry, patchProblem } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
 import { SCENE, clampInt, gameOf, int } from './common';
 import { json, text, ToolError, type GameContext, type ToolDef } from './types';

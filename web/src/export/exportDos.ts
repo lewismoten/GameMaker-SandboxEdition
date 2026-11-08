@@ -4,17 +4,16 @@
 // file extensions (dosPlayer/fileExtensions.ts) gets the game's files renamed to match, with
 // the names inside its .gam, slide lists and backdrops rewritten (project/extensionNames.ts).
 import { createZip, type ZipEntry } from '@lewismoten/gamemaker-sandbox-archives/zip';
-import { cdName, normalize, type GameFiles } from '../project/files';
+import { normalize, type GameFiles } from '../project/files';
 import { textBytes } from '@lewismoten/gamemaker-sandbox-engine/formats/binary';
-import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
-import { parseBackdrop, parseSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
-import { parseSoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
+import { DOS_NAME, dosNames, dosNameProblems, gameRefs } from './dosNames';
 import { recordedAudioNotice, recordedClips } from './recordedAudio';
 import { applyPlayerPatches, type PreservedParts } from '@lewismoten/gamemaker-sandbox-archives/player/applyPatches';
 import type { PlayerPatches } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
 import { playerChanges, renamedFiles } from '../dosPlayer/describePatches';
 import { extensionClashes, extensionMap } from '@lewismoten/gamemaker-sandbox-engine/player/fileExtensions';
 import { WEB_ONLY } from './webOnly';
+
 import type { AboutGame } from '../project/aboutGame';
 import { DIZ_NAME, fileIdDiz } from '../project/fileIdDiz';
 import { rewriteNames, swapExtension } from '@lewismoten/gamemaker-sandbox-archives/project/extensionNames';
@@ -37,49 +36,9 @@ interface DosExportOptions {
   date?: Date;
 }
 
-/** DOS 8.3 names that FAT and Game-Maker accept. */
-const DOS_NAME = /^[A-Z0-9_'\-~!@#$%^&()]{1,8}(\.[A-Z0-9_'\-~!@#$%^&()]{1,3})?$/;
+// Compatibility exports; non-DOS callers import the small helpers directly.
+export { dosNames, dosNameProblems } from './dosNames';
 export { WEB_ONLY } from './webOnly';
-
-export function dosNameProblems(names: string[]): string[] {
-  return names.filter((n) => !DOS_NAME.test(n.toUpperCase()));
-}
-
-/**
- * Names to save files under for DOS: a game copied from the CD may hold A-J.BKD as
- * a_j.bkd (the CD's ISO 9660 name) while the game asks for A-J.BKD. Returns stored name ->
- * the name the game uses, for every such file the game refers to.
- */
-export function dosNames(files: GameFiles, gam: string): Map<string, string> {
-  const wanted = gameRefs(files, gam);
-  const names = new Set(files.names());
-  const out = new Map<string, string>();
-  for (const w of wanted) if (!names.has(w) && names.has(cdName(w))) out.set(cdName(w), w);
-  return out;
-}
-
-/** Every file name the game refers to: in its .gam, its backdrops, slide lists and sound sets (normalized). */
-function gameRefs(files: GameFiles, gam: string): Set<string> {
-  const wanted = new Set<string>();
-  const add = (n: string | undefined) => n && wanted.add(normalize(n));
-  try {
-    for (const scene of parseGame(files.get(gam)!).scenes) for (const f of scene.files) add(f);
-  } catch {
-    /* no or bad .gam: nothing to rename */
-  }
-  for (const n of [...wanted]) {
-    const bytes = files.get(n);
-    if (!bytes) continue;
-    try {
-      if (n.endsWith('.bkd')) add(parseBackdrop(bytes).gif);
-      else if (n.endsWith('.lst')) for (const e of parseSlideList(bytes)) add(e.name);
-      else if (n.endsWith('.snd')) for (const v of parseSoundSet(bytes).digital) if (v) add(`${v}.voc`);
-    } catch {
-      /* unreadable: leave its references alone */
-    }
-  }
-  return wanted;
-}
 
 /**
  * Stored name -> its name in the DOS folder, for every file the player's renamed extensions
@@ -111,8 +70,9 @@ export async function exportDos(files: GameFiles, opts: DosExportOptions): Promi
     throw new Error(
       `“${opts.gam}” is not a DOS file name (up to 8 letters or digits), so the game’s .EXE can’t be named after it. Rename the .gam file first.`,
     );
+  const { dosInstallFiles, isGeneratedDosInstall } = await import('./dosInstall');
   const cd = dosNames(files, opts.gam);
-  const stored = files.names().filter((n) => !WEB_ONLY.test(n));
+  const stored = files.names().filter((n) => !WEB_ONLY.test(n) && !isGeneratedDosInstall(n, files.get(n)!, stem));
   const exts = extensionMap(opts.player);
   const clash = [...extensionClashes(opts.player)][0];
   if (clash) throw new Error(`The DOS player’s Files tab gives two kinds of file one extension (${clash[1]}); change one first.`);
@@ -125,8 +85,8 @@ export async function exportDos(files: GameFiles, opts: DosExportOptions): Promi
   if (bad.length) throw new Error(`These file names won’t work in DOS (use up to 8 letters or digits plus a 3 letter extension): ${bad.join(', ')}`);
   const exe = `${stem}.EXE`;
   const gamExt = (exts.get('gam') ?? 'gam').toUpperCase();
-  if (names.some((n) => n.toUpperCase() === exe || n.toUpperCase() === 'SNDBLAST.DRV' || n.toUpperCase() === 'CONFIG.BAT')) {
-    throw new Error(`The game already has a file named ${exe}, SNDBLAST.DRV or CONFIG.BAT; remove it first.`);
+  if (names.some((n) => [exe, 'SNDBLAST.DRV', 'CONFIG.BAT', 'INSTALL.BAT', 'INSTALL.TXT'].includes(n.toUpperCase()))) {
+    throw new Error(`The game already has a file named ${exe}, SNDBLAST.DRV, CONFIG.BAT, INSTALL.BAT or INSTALL.TXT; rename or remove it first.`);
   }
 
   const runtime = opts.runtime ?? (await loadRuntime(opts.appBase));
@@ -141,6 +101,7 @@ export async function exportDos(files: GameFiles, opts: DosExportOptions): Promi
     { name: 'SNDBLAST.DRV', data: driver },
     // Playgame shows its sound/video setup screen when run with "config".
     { name: 'CONFIG.BAT', data: textBytes(`@ECHO OFF\r\n${stem} config\r\n`) },
+    ...dosInstallFiles(stem),
     ...help,
     ...stored.map((n) => ({ name: renamed.get(n)!.toUpperCase(), data: ext.rewrite.has(n) ? rewriteNames(files.get(n)!, exts) : files.get(n)! })),
     // (beside the game's own README.TXT, if it has one, under another name)
@@ -188,6 +149,9 @@ Its files use other extensions than Game-Maker's own (${exts.join(', ')}),
 as some 1990s authors did, so other copies of Game-Maker 3.0 won't open them.`
       : ''
   }
+
+On a DOS PC, read INSTALL.TXT for hard-disk installation, manual copying,
+floppy disks and sound setup. Run INSTALL from the source directory.
 
 Play it in DOSBox (https://www.dosbox.com)
   1. Unzip this folder somewhere, for example C:\\GAMES\\${stem} or ~/games/${stem}.
