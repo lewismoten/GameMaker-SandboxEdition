@@ -178,16 +178,12 @@ export function grate(pal: Pal): Pixels {
   return p;
 }
 
-/** The orange extension cord along the ground, a plug at its end (`plug`). */
+/** The orange extension cord along the ground (in the turkey's fixed orange, so it is orange on every street), a plug at its end (`plug`). */
 export function cord(pal: Pal, plug: boolean): Pixels {
-  const { acc } = press(pal);
-  const { ink } = press(pal);
+  const o = pal.r('tFan');
   const s = sheet();
-  if (plug) {
-    s.rect(0, 16, 10, 2, acc[2]).rect(10, 13, 6, 7, acc[1]).rect(16, 14, 3, 1, pal.r('steel')[2]).rect(16, 17, 3, 1, pal.r('steel')[2]);
-  } else for (let x = 0; x < 20; x++) s.set(x, 16 + (Math.floor(x / 5) % 2), acc[2]).set(x, 17 + (Math.floor(x / 5) % 2), acc[1]);
-  s.set(0, 0, T);
-  void ink;
+  if (plug) s.rect(0, 16, 10, 2, o[2]).rect(10, 13, 6, 7, o[1]).rect(16, 14, 3, 1, pal.r('steel')[2]).rect(16, 17, 3, 1, pal.r('steel')[2]);
+  else for (let x = 0; x < 20; x++) s.set(x, 16 + (Math.floor(x / 5) % 2), o[2]).set(x, 17 + (Math.floor(x / 5) % 2), o[1]);
   return onPaper(pal, s);
 }
 
