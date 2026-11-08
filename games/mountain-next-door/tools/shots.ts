@@ -25,7 +25,7 @@ writePng(join(out, 'title.png'), t, title.palette, 2);
 
 /** Ticks into each level when its screen is taken. */
 const AT: Record<string, number> = {
-  next: 1040,
+  next: 1500,
   gates: 700,
   back: 1500,
   prints: 1500,

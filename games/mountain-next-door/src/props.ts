@@ -1,7 +1,7 @@
 // Every prop a level may use, by group, added to its block set under the names the levels paint with. A level
 // asks only for the groups it needs (a set holds 150 blocks). Blocks on a clock (rain, water, stones, stars,
 // the mountain's eyes) come back as Timed entries: the block, the one it turns into, and after how many ticks.
-//   mountain   rock, rock2, slopeL/R (steep), gentleL1/L2/R1/R2 (two blocks a row), peakL/R, ledge (stand on
+//   mountain   rock, rock2, rockWall (solid rock: a ring that keeps the face's pupils in its eyes), slopeL/R (steep), gentleL1/L2/R1/R2 (two blocks a row), peakL/R, ledge (stand on
 //              it), step (a solid rocky stair), gate.<color> (take it). The face is monsters (monsters.ts), so it can blink and wake.
 //   sleepy     the mountain's big foot across the sidewalk (foot0 .. foot19, 5 x 4): gone when the mountain wakes
 //   town       wall, wallB, window, windowLit, windowB, roofL/M/R, fence, plug.<color> (a wheelbarrow in a
@@ -134,6 +134,7 @@ export function addProps(book: Book, pal: Pal, groups: readonly string[], o: Pro
     names.forEach((n, i) => timed.push({ name: n, next: names[(i + 1) % names.length], ticks: Array.isArray(ticks) ? ticks[i] : ticks }));
   if (has('mountain')) {
     book.add('rock', rock(pal, 1), air);
+    book.add('rockWall', rock(pal, 1), { solid: SOLID });
     book.add('rock2', rock(pal, 2), air);
     book.add('slopeL', slope(pal, true, 3), air);
     book.add('slopeR', slope(pal, false, 5), air);

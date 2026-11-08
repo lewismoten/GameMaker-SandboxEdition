@@ -17,7 +17,25 @@ import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { Book } from '../../kit/starter/book';
 import type { Pal } from '../../kit/starter/palette';
 import { WALKER_PIECES, walkerPiece } from './art/walker';
-import { HALE, LIN, OKORO, bigEye, bigMouth, bubble, fogPuff, mist, glowWorm, hen, neighborBottom, neighborTop, pebble, squirrel, sun, wisp } from './art/folk';
+import {
+  HALE,
+  LIN,
+  OKORO,
+  bigEye,
+  bigMouth,
+  bubble,
+  fogPuff,
+  mist,
+  glowWorm,
+  hen,
+  neighborBottom,
+  neighborTop,
+  pebble,
+  pupil,
+  squirrel,
+  sun,
+  wisp,
+} from './art/folk';
 
 /** Powers of 100 or more cannot be popped by touching Tess (PLAYGAME.C DoCollision). */
 const POWER = 150;
@@ -58,6 +76,8 @@ export function monsterPictures(pal: Pal): Book {
   mb.add('bubHeart', bubble(pal, 'heart'));
   mb.add(NOTHING, new Pixels(20, 20, 255));
   for (const how of ['open', 'blink', 'shut'] as const) bigEye(pal, how).forEach((pic, i) => mb.add(`eye.${how}${i}`, pic));
+  bigEye(pal, 'white').forEach((pic, i) => mb.add(`eye.white${i}`, pic));
+  mb.add('pupil', pupil(pal));
   bigMouth(pal, false).forEach((pic, i) => mb.add(`mouth.smile${i}`, pic));
   bigMouth(pal, true).forEach((pic, i) => mb.add(`mouth.yawn${i}`, pic));
   for (const piece of WALKER_PIECES) mb.add(piece, walkerPiece(pal, piece));
@@ -133,11 +153,12 @@ export const FACE_SLOTS = 14;
  * mouth's two at at+4, at+5. Awake, the eyes blink now and then; with `wake` they sleep (shut) until then, and the
  * mouth yawns 40 ticks later.
  */
-function face(set: Monster[], mb: Book, at: number, wake?: number): void {
+function face(set: Monster[], mb: Book, at: number, wake?: number, pupils?: number): void {
+  const open = pupils === undefined ? 'eye.open' : 'eye.white';
   const blinking = (i: number): Pics => [
-    [mb.n(`eye.open${i}`), 110],
+    [mb.n(`${open}${i}`), 110],
     [mb.n(`eye.blink${i}`), 5],
-    [mb.n(`eye.open${i}`), 60],
+    [mb.n(`${open}${i}`), 60],
     [mb.n(`eye.blink${i}`), 4],
   ];
   for (let i = 0; i < 4; i++) {
@@ -146,6 +167,21 @@ function face(set: Monster[], mb: Book, at: number, wake?: number): void {
       set[at + i] = mon(still(mb, `eye.shut${i}`), { ...actor, end: wake, newmon: at + 6 + i });
       set[at + 6 + i] = mon(blinking(i), { ...actor, end: -2 });
     }
+  }
+  // the pupils (one act placed in each eye) slide toward Tess inside a ring of solid rock round the eye, hidden
+  // while the eyes are shut and for each blink
+  if (pupils !== undefined) {
+    const look = { ...actor, fly: 1, towards: 1 };
+    set[pupils] = mon(still(mb, NOTHING), { ...look, end: wake ?? 1, newmon: pupils + 1 });
+    set[pupils + 1] = mon(
+      [
+        [mb.n('pupil'), 110],
+        [mb.n(NOTHING), 5],
+        [mb.n('pupil'), 60],
+        [mb.n(NOTHING), 4],
+      ],
+      { ...look, end: -2 },
+    );
   }
   for (let i = 0; i < 2; i++) {
     if (wake === undefined) set[at + 4 + i] = mon(still(mb, `mouth.smile${i}`), { ...actor, end: -2 });
@@ -161,7 +197,7 @@ function face(set: Monster[], mb: Book, at: number, wake?: number): void {
 const NOTHING = 'nothing';
 
 /** next.mon's slots. */
-export const NEXT = { fogWait: [0, 1, 2, 3], fogDrift: 4, hale: 5, okoro: 15, face: 25 } as const;
+export const NEXT = { fogWait: [0, 1, 2, 3], fogDrift: 4, hale: 5, okoro: 15, face: 25, pupil: 39 } as const;
 /** Ticks each wave of fog waits before it drifts off; the drift (6 blocks over, 3 up) takes about 140 ticks more. */
 export const FOG_WAVES = [280, 400, 520, 640] as const;
 /** The prologue's clock (ticks): when Mr. Hale and Mrs. Okoro step out, how far they walk, how long they look, and when the mountain wakes. */
@@ -195,11 +231,11 @@ function visit(set: Monster[], mb: Book, at: number, who: 'okoro' | 'hale', wait
 
 export function nextSet(mb: Book): Monster[] {
   const set = newMonsterSet();
-  NEXT.fogWait.forEach((slot, i) => (set[slot] = mon(anim(mb, 'fog0', 'fog1', 12), { ...actor, end: FOG_WAVES[i], newmon: NEXT.fogDrift })));
-  set[NEXT.fogDrift] = mon(anim(mb, 'fog0', 'fog1', 12), { ...actor, end: -1 }, [corner(6, -3, 1), corner(0, 0, 0)]);
+  NEXT.fogWait.forEach((slot, i) => (set[slot] = mon(anim(mb, 'fog0', 'fog1', 12), { ...actor, thru: 0, end: FOG_WAVES[i], newmon: NEXT.fogDrift })));
+  set[NEXT.fogDrift] = mon(anim(mb, 'fog0', 'fog1', 12), { ...actor, thru: 0, end: -1 }, [corner(6, -3, 1), corner(0, 0, 0)]);
   visit(set, mb, NEXT.hale, 'hale', PROLOGUE.hale, PROLOGUE.haleWalk, PROLOGUE.look, 'bubHuh');
   visit(set, mb, NEXT.okoro, 'okoro', PROLOGUE.okoro, PROLOGUE.okoroWalk, PROLOGUE.look, 'bubWow');
-  face(set, mb, NEXT.face, PROLOGUE.wake);
+  face(set, mb, NEXT.face, PROLOGUE.wake, NEXT.pupil);
   return set;
 }
 

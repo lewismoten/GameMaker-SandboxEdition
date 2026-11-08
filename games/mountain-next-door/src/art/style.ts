@@ -207,7 +207,7 @@ function trailhead(pal: Pal): Pixels {
   return inked(pal, p);
 }
 
-/** Recolors a sign block as a routed trail sign: the cream face turns to stained wood and the ink letters to pale cuts. */
+/** Recolors a sign block as a routed trail sign: the cream face turns to stained wood with its grain gouged in, and the ink letters to pale cuts. */
 function routed(pal: Pal, pic: Pixels): Pixels {
   const parch = pal.r('parch');
   const wood = pal.r('wood');
@@ -218,7 +218,18 @@ function routed(pal: Pal, pic: Pixels): Pixels {
     [parch[2], wood[0]],
     [ink, pal.c('parch', 4)],
   ]);
-  return pic.map((_x, _y, c) => to.get(c) ?? c);
+  const out = pic.map((_x, _y, c) => to.get(c) ?? c);
+  // the board's grain, gouged in long dashes wherever the face is clear of the letters by a pixel all round
+  const face = wood[1];
+  const clear = (x: number, y: number) => {
+    for (let dy = -1; dy <= 1; dy++)
+      for (let dx = -1; dx <= 1; dx++) if (out.get(Math.min(19, Math.max(0, x + dx)), Math.min(19, Math.max(0, y + dy))) !== face) return false;
+    return true;
+  };
+  const grain: [number, number][] = [];
+  for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) if (y % 6 === 3 && (x + y * 3) % 11 > 1 && clear(x, y)) grain.push([x, y]);
+  for (const [x, y] of grain) out.set(x, y, wood[0]);
+  return out;
 }
 
 /** Gives a block set the game's own look: the shared blocks drawn again, the way out drawn for its place (exits.ts), the signs routed. */

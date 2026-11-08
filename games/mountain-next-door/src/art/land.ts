@@ -343,7 +343,14 @@ export function foot(pal: Pal, k: number): Pixels {
       [93, 72, 8],
     ].some(([cx, cy, rr]) => (x - cx) ** 2 + (y - cy) ** 2 <= rr * rr) ||
     (x >= 60 && y >= 70);
-  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (inside(x, y)) big.set(x, y, x < 30 ? r[4] : (x + y * 3) % 17 === 0 ? r[1] : r[3]);
+  // the same carved stone as the mountain, its contours bowing round each toe
+  const stone = rock(pal, 4);
+  for (let y = 0; y < H; y++)
+    for (let x = 0; x < W; x++)
+      if (inside(x, y)) {
+        const c = stone.get(x % 20, (y + Math.round(Math.max(0, x - 50) * 0.25)) % 20);
+        big.set(x, y, x < 24 && c === r[2] ? r[3] : c);
+      }
   // shading under the toes, a few cracks, moss on top
   for (let x = 0; x < W; x++) for (let y = H - 4; y < H; y++) if (big.get(x, y) !== sky) big.set(x, y, r[2]);
   const m = pal.r('moss');
