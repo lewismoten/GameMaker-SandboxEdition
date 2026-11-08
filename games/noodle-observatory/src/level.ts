@@ -100,6 +100,8 @@ export interface BookOptions {
   lean?: boolean;
 }
 
+const FLOORS = { cupboard: 'counter', pantry: 'counter', lens: 'mat', loft: 'boards', roof: 'slate', yard: 'snow', bakery: 'tiles' } as const;
+
 /** A new block set for a place: the Starters' blocks (kept for the shared screens), then the place's own. */
 export function startBook(pal: Pal, place: PlaceName, o: BookOptions = {}): { book: Book; timed: Timed[] } {
   const book = new Book('bbl');
@@ -110,10 +112,11 @@ export function startBook(pal: Pal, place: PlaceName, o: BookOptions = {}): { bo
   book.add('bg', bg, bgRule);
   for (const v of [1, 2, 3]) book.add(`bg${v}`, backdrop(pal, place, v), bgRule);
   const roof = place === 'roof';
-  book.add('wall', roof ? bricks(pal, true) : cabinet(pal, 0), { solid: SOLID });
+  const brick = roof || place === 'yard' || place === 'bakery';
+  book.add('wall', brick ? bricks(pal, roof) : cabinet(pal, 0), { solid: SOLID });
   book.add('ceil', cabinet(pal, 1), { solid: SOLID });
-  book.add('floor', floor(pal, place === 'lens' ? 'mat' : place === 'loft' ? 'boards' : roof ? 'slate' : 'counter'), { solid: SOLID });
-  book.add('base', roof ? bricks(pal, true) : cabinet(pal, 1), { solid: SOLID });
+  book.add('floor', floor(pal, FLOORS[place]), { solid: SOLID });
+  book.add('base', brick ? bricks(pal, roof) : cabinet(pal, 1), { solid: SOLID });
   book.add('shelf', shelf(pal, bg, place === 'lens' ? 'pad' : 'wood'), { solid: LEDGE, grav: PULL.down });
   book.add('climb', ladder(pal, bg), { grav: PULL.none });
   book.add('inTop', doorway(pal, bg, 0, false), bgRule);
@@ -123,7 +126,7 @@ export function startBook(pal: Pal, place: PlaceName, o: BookOptions = {}): { bo
   book.add('washer', washer(pal, bg), { ...bgRule, score: POINTS.washer, touch: 'bg' });
   book.add('lintel', lintel(pal, bg), air);
   book.add('pit', bg, air);
-  book.add('cushion', cushion(pal, bg), { solid: SOLID });
+  book.add('cushion', cushion(pal, bg, place === 'yard'), { solid: SOLID });
   if (!o.lean) {
     for (const q of [0, 1, 2, 3] as const) book.add(`win${q}`, windowTile(pal, bg, q), bgRule);
     book.add('win1moon', windowTile(pal, bg, 1, true), bgRule);

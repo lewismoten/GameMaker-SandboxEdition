@@ -193,7 +193,7 @@ export function glassCupboard(pal: Pal): P {
   return p;
 }
 
-export type WallProp = 'clock' | 'calendar' | 'drawing' | 'spoons' | 'pan' | 'chart' | 'diagram';
+export type WallProp = 'clock' | 'calendar' | 'drawing' | 'spoons' | 'pan' | 'chart' | 'diagram' | 'chalk' | 'braid';
 
 /** A thing hung on a wall, over the backdrop. */
 export function wallProp(pal: Pal, bg: P, kind: WallProp): P {
@@ -246,6 +246,28 @@ export function wallProp(pal: Pal, bg: P, kind: WallProp): P {
     });
     for (const [x, y] of pts) p.set(x, y, ink);
     p.set(10, 2, c('red', 2));
+  } else if (kind === 'chalk') {
+    // a little chalkboard of tomorrow's bakes: lines of chalk
+    nail();
+    p.rect(2, 3, 16, 13, c('wood', 1)).rect(3, 4, 14, 11, c('ink', 0));
+    for (const [y, w] of [
+      [6, 10],
+      [9, 7],
+      [12, 11],
+    ])
+      p.rect(5, y, w, 1, c('white', 2));
+  } else if (kind === 'braid') {
+    // a braid of onions hung on a nail
+    nail();
+    p.rect(10, 2, 1, 15, c('parch', 1));
+    for (const [x, y] of [
+      [8, 6],
+      [12, 8],
+      [8, 11],
+      [12, 13],
+      [10, 16],
+    ])
+      p.disc(x, y, 2.2, c('orange', 2)).set(x - 1, y - 1, c('orange', 4));
   } else {
     // a diagram of a lens bending light to a point
     p.rect(2, 4, 16, 12, c('white', 4)).rect(2, 4, 16, 1, c('stone', 2));
@@ -269,5 +291,33 @@ export function skyHigh(pal: Pal, band: 'deep' | 'mid', star: number, bright = f
         .set(x, y - 1, pal.c('white', 1))
         .set(x, y + 1, pal.c('white', 1));
   }
+  return p;
+}
+
+/** The ground under the snowy yards (frozen earth, a stone now and then) or under the bakery (dark cellar boards). */
+export function ground(pal: Pal, kind: 'earth' | 'stone' | 'boards' | 'cellar'): P {
+  const d = pal.r('dirt');
+  const k = pal.r('cab');
+  if (kind === 'earth' || kind === 'stone') {
+    const p = new Pixels(20, 20, d[0]);
+    p.set(4, 6, d[1]).set(13, 14, d[1]).set(16, 3, d[1]);
+    if (kind === 'stone') p.disc(9, 10, 4, pal.c('stone', 1)).disc(8, 9, 2.4, pal.c('stone', 2));
+    return p;
+  }
+  const p = new Pixels(20, 20, k[0]);
+  if (kind === 'boards') p.rect(0, 0, 20, 5, k[1]).rect(0, 0, 20, 1, k[2]).rect(0, 5, 20, 1, pal.c('ink', 0)).rect(12, 0, 1, 5, k[0]);
+  else p.rect(9, 0, 2, 20, k[1]);
+  return p;
+}
+
+/** Snow drifting down over the night: frame 0..2 moves the flakes down a few pixels each time. */
+export function snowfall(pal: Pal, frame: number): P {
+  const p = new Pixels(20, 20, pal.c('sky', 1));
+  for (const [x, y] of [
+    [4, 3],
+    [13, 9],
+    [8, 15],
+  ])
+    p.set((x + frame) % 20, (y + frame * 7) % 20, pal.c('white', 3));
   return p;
 }

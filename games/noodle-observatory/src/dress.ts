@@ -34,13 +34,19 @@ const PROPS: Partial<Record<PlaceName, WallProp[]>> = {
   cupboard: ['clock', 'calendar', 'drawing', 'spoons', 'pan'],
   lens: ['diagram', 'clock'],
   loft: ['chart', 'drawing'],
+  bakery: ['chalk', 'braid', 'clock'],
 };
+
+/** Ticks a frame of falling snow lasts. */
+export const SNOW_TICKS = 14;
 
 /** Adds a place's dressing pictures to its block set (after the backdrop `bg` and the wall). */
 /** `air` is the rule the place's backdrop has (the pantry's still air lets the ring roll up through it). */
 export function addDress(book: Book, pal: Pal, place: PlaceName, timed: Timed[], air: Rules): void {
   const bg = book.pics.get('bg')!;
-  if (place !== 'roof') {
+  if (place === 'yard' || place === 'bakery') {
+    if (place === 'bakery') book.add('shade', underShelf(pal, bg), air);
+  } else if (place !== 'roof') {
     book.add('wall1', cupboardFront(pal, 1), { solid: SOLID });
     book.add('wall2', cupboardFront(pal, 2), { solid: SOLID });
     book.add('shade', underShelf(pal, bg), air);
@@ -65,12 +71,21 @@ export function addDress(book: Book, pal: Pal, place: PlaceName, timed: Timed[],
     book.add('joist', joists(pal, 'beam'), { solid: SOLID });
     book.add('jgap', joists(pal, 'gap'), { solid: SOLID });
     book.add('jdark', joists(pal, 'dark'), { solid: SOLID });
-  } else if (place === 'roof') {
+  } else if (place === 'yard') {
+    for (const k of ['earth', 'stone'] as const) book.add(k, ground(pal, k), { solid: SOLID });
+    for (const f of [0, 1, 2]) book.add(`snow${f}`, snowfall(pal, f), air);
+    timed.push({ name: 'snow0', next: 'snow1', ticks: SNOW_TICKS }, { name: 'snow1', next: 'snow2', ticks: SNOW_TICKS }, { name: 'snow2', next: 'snow0', ticks: SNOW_TICKS });
+  } else if (place === 'bakery') {
+    for (const k of ['boards', 'cellar'] as const) book.add(`cel.${k}`, ground(pal, k), { solid: SOLID });
+    book.add('cel.dark', joists(pal, 'dark'), { solid: SOLID });
+  }
+  if (place === 'roof' || place === 'yard') {
     for (const s of [0, 1, 2, 3]) book.add(`deep${s}`, skyHigh(pal, 'deep', s), air);
     book.add('deep2b', skyHigh(pal, 'deep', 2, true), air);
     book.add('deepMid', skyHigh(pal, 'mid', 0), air);
     timed.push({ name: 'deep2', next: 'deep2b', ticks: TWINKLE.dim }, { name: 'deep2b', next: 'deep2', ticks: TWINKLE.bright });
-    for (const k of ['cornice', 'brick', 'lit', 'dark'] as const) book.add(`fac.${k}`, facade(pal, k), { solid: SOLID });
+  }
+  if (place === 'roof') for (const k of ['cornice', 'brick', 'lit', 'dark'] as const) book.add(`fac.${k}`, facade(pal, k), { solid: SOLID });
   }
 }
 
@@ -177,6 +192,17 @@ export function dressRoom(m: Place, place: PlaceName, w: number): void {
         under(x, y, win ? (spotHash(x, y, 2) % 3 ? 'fac.lit' : 'fac.dark') : 'fac.brick');
       }
     }
+  } else if (place === 'yard') {
+    for (let x = x0; x <= x1; x++) for (let y = G + 1; y <= bottom; y++) under(x, y, spotHash(x, y, 9) % 9 ? 'earth' : 'stone');
+    // snow falling here and there in front of the night
+    for (let y = 2; y < G; y++) for (let x = 1; x < w - 1; x++) if (isPlain(x, y) && spotHash(x, y, 13) % 7 === 0) m.set(x, y, 'snow0');
+  } else if (place === 'bakery') {
+    for (let x = x0; x <= x1; x++) {
+      under(x, G + 1, 'cel.boards');
+      for (let y = G + 2; y <= bottom; y++) under(x, y, (x + ORIGIN) % 5 === 0 ? 'cel.cellar' : 'cel.dark');
+    }
+  }
+  if (place === 'roof' || place === 'yard') {
     // the sky deepens up high, with a scatter of stars (one in four of them twinkles)
     for (let y = -ORIGIN; y <= 1; y++)
       for (let x = x0; x <= x1; x++) {
