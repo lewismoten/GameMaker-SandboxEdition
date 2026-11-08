@@ -96,12 +96,24 @@ template <class G> void drawLoadingBar(G& g, int W, int H, int step, int of) {
   int fill = (x1 - x0 - 4) * (step < 0 ? 0 : step > of ? of : step) / (of ? of : 1);
   g.fillRect(x0 + 2, y + 2, fill, 12, C_YELLOW);
 }
+// The title over at most two lines of `cols` characters: break at the last space that fits, the second line ellipsized.
+inline void wrapTitle(const char* name, int cols, char* l1, char* l2, size_t cap) {
+  l1[0] = l2[0] = 0;
+  if (!cap || cols < 4) return;
+  if ((int)strlen(name) <= cols) { snprintf(l1, cap, "%s", name); return; }
+  int cut = cols;
+  for (int i = cols; i > cols / 2; i--) if (name[i] == ' ') { cut = i; break; }
+  snprintf(l1, cap < (size_t)cut + 1 ? cap : (size_t)cut + 1, "%s", name);
+  const char* rest = name + cut + (name[cut] == ' ' ? 1 : 0);
+  ellipsize(rest, l2, cap, cols);
+}
 template <class G> void drawLoading(G& g, int W, int H, const char* name, int step, int of) {
   g.fillRect(0, 0, W, H, C_BLACK);
-  char t[48];
-  ellipsize(name, t, sizeof t, (W - 32) / 12);
+  char t[64], t2[64];
+  wrapTitle(name, (W - 32) / 12, t, t2, sizeof t);
   Tile all = {0, 0, W, H, 0, 0};
-  clippedText(g, all, t, (W - (int)strlen(t) * 12) / 2, H / 2 - 32, 2, C_WHITE);
+  clippedText(g, all, t, (W - (int)strlen(t) * 12) / 2, t2[0] ? H / 2 - 50 : H / 2 - 32, 2, C_WHITE);
+  if (t2[0]) clippedText(g, all, t2, (W - (int)strlen(t2) * 12) / 2, H / 2 - 32, 2, C_WHITE);
   clippedText(g, all, "Loading", (W - 7 * 12) / 2, H / 2 - 10, 2, C_GRAY);
   drawLoadingBar(g, W, H, step, of);
 }
