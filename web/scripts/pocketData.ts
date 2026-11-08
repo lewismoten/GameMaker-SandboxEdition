@@ -10,6 +10,10 @@
 // With --gmp <dir> it writes each game as one file, <dir>/pocket/NAME.GMP (src/export/pocketFile.ts, the editor's Pocket Player
 // download): the same games as --out, and a Starter too when --only names it. It adds or replaces .GMP files and deletes nothing.
 //   cd web && npx vite-node scripts/pocketData.ts --gmp /Volumes/POCKET --only first-steps,sandcastle
+// Each .GMP also holds the game's DOS files (dos/<NAME>, deflated) so Game-Maker OS on the Raspberry Pi plays the same file;
+// --no-dos leaves them out (a smaller file for the Pocket Player alone). --gmos (with --gmp) writes a card for both players: every
+// public game, Starters too; a game the packer leaves out gets a .GMP of its DOS files alone, which only Game-Maker OS lists.
+//   cd web && npx vite-node scripts/pocketData.ts --gmp /Volumes/CARD --gmos
 // The packing itself is src/export/pocketPack.ts.
 // --list shows each Starter and why it is left out; --force packs a game anyway (for the host check).
 import { deflateRawSync } from 'node:zlib';
@@ -19,7 +23,7 @@ import { GameFiles } from '@lewismoten/gamemaker-sandbox-engine/core/gameFiles';
 import { newCards, packPocketGame, shortHash, type PocketStore } from '../src/export/pocketPack';
 import { pocketThumbnail } from '../src/export/pocketThumbnail';
 import { pocketCategory, gamCrc32, writeLibrary, uniqueGmpName, type PocketLibrary } from '../src/export/pocketLibrary';
-import { gmpName, readBundle, writeBundle, writeGmp } from '../src/export/pocketFile';
+import { gmpName, readBundle, writeBundle, writeGmp, writeOsGmp } from '../src/export/pocketFile';
 
 const args = process.argv.slice(2);
 const opt = (n: string) => (args.includes(n) ? (args[args.indexOf(n) + 1] ?? '').split(',').filter(Boolean) : []);
@@ -28,6 +32,8 @@ const forced = new Set(opt('--force'));
 const listOnly = args.includes('--list');
 const cardRoot = opt('--out')[0];
 const gmpDir = opt('--gmp')[0];
+const withDos = !args.includes('--no-dos');
+const gmos = !!gmpDir && args.includes('--gmos');
 const series = opt('--series')[0] ?? (cardRoot || gmpDir ? 'any' : 'starter');
 const outDir = gmpDir ? `${gmpDir}/pocket/` : cardRoot ? `${cardRoot}/pocket/` : '../hardware/pocket-player/data/';
 /** Games the card leaves out (id: reason): their host check differs from the engine (the same with the old fixed level table, so not the streaming). */
@@ -41,6 +47,12 @@ const CARD_HOLD: Record<string, string> = {
 const SKIP: Record<string, string> = {};
 
 const deflate = (b: Uint8Array) => new Uint8Array(deflateRawSync(b, { level: 9 }));
+/** As the packed files are stored: the length (4 bytes, little endian), then the raw deflate. */
+const stored = (b: Uint8Array) => {
+  const out = new Uint8Array(Buffer.concat([new Uint8Array(4), deflate(b)]));
+  new DataView(out.buffer).setUint32(0, b.length, true);
+  return out;
+};
 /** Every packed file so far (games share them by content); written to outDir at the end, the small ones into small.pak. */
 const store: PocketStore = new Map();
 const pak = newCards();
@@ -68,7 +80,7 @@ const ids = readdirSync('../games')
     const a = JSON.parse(readFileSync(`../games/${i}/about.json`, 'utf8'));
     return (
       (series === 'any' || a.series === series) &&
-      !((cardRoot || gmpDir) && a.series === 'starter' && !only.includes(i)) &&
+      !((cardRoot || gmpDir) && a.series === 'starter' && !only.includes(i) && !gmos) &&
       !a.secret &&
       (!only.length || only.includes(i))
     );
@@ -112,11 +124,38 @@ const quickJumps = new Set<string>(
 const cfgs = new Map<string, Uint8Array>();
 const utf8 = (t: string) => new TextEncoder().encode(t);
 
+/** The game's DOS files as .GMP entries (dos/<NAME>, each stored). */
+const dosEntries = (files: GameFiles) =>
+  new Map(
+    files
+      .names()
+      .filter((n) => !n.startsWith('.'))
+      .map((n) => [n, stored(files.get(n)!)]),
+  );
+/** --gmos: a game the Pocket Player can't play still goes on the card, as a .GMP only Game-Maker OS lists. */
+function writeOsOnly(id: string, about: { title: string; series?: string; company?: string }, files: GameFiles) {
+  const gam = files.names().find((n) => /\.gam$/i.test(n));
+  if (!gam) return;
+  const library: PocketLibrary = {
+    schema: 'gmp-library',
+    version: 1,
+    uid: `catalog:${id}`,
+    title: about.title,
+    dosName: gam.replace(/\.gam$/i, '').toUpperCase(),
+    ...pocketCategory(id, about.series ?? (about.company === undefined || about.company === 'Sandbox Software' ? 'sandbox' : undefined)),
+    gamCrc32: gamCrc32(files.get(gam)!),
+  };
+  const name = uniqueGmpName(gmpName(id), library.uid, usedNames);
+  writeFileSync(outDir + name, writeOsGmp(library, dosEntries(files)));
+  console.log(`${id.padEnd(24)} Game-Maker OS only: ${name}`);
+}
+
 for (const id of ids) {
+  let files: GameFiles | undefined, about: { title: string; series?: string; company?: string; version?: string } | undefined;
   try {
     const disk = `../games/${id}/disk/`;
-    const about = JSON.parse(readFileSync(`../games/${id}/about.json`, 'utf8'));
-    const files = new GameFiles(readdirSync(disk).map((n) => [n, new Uint8Array(readFileSync(disk + n))]));
+    about = JSON.parse(readFileSync(`../games/${id}/about.json`, 'utf8')) as { title: string; series?: string; company?: string; version?: string };
+    files = new GameFiles(readdirSync(disk).map((n) => [n, new Uint8Array(readFileSync(disk + n))]));
     const controls = existsSync(`../games/${id}/controls.json`) ? JSON.parse(readFileSync(`../games/${id}/controls.json`, 'utf8')) : {};
     const own = cardRoot || gmpDir;
     // a card game's files and cards are its own (a Starter's are shared by every Starter on LittleFS)
@@ -130,6 +169,7 @@ for (const id of ids) {
     const short = (await shortHash(utf8(id))).slice(0, 7) + 'g';
     const ok = !why.length || forced.has(id);
     console.log(`${id.padEnd(24)} ${ok ? 'pack' : 'left out: ' + [...new Set(why)].join(', ')}${packed.warn.length ? ' (' + packed.warn.join(' ') + ')' : ''}`);
+    if (!listOnly && !ok && gmos) writeOsOnly(id, about, files);
     if (listOnly || !ok) continue;
     const cfg = utf8(packed.lines.join('\n') + '\n');
     const gam = files.names().find((n) => /\.gam$/i.test(n))!;
@@ -161,6 +201,7 @@ for (const id of ids) {
           cards: gamePak.parts,
           library,
           thumbnail,
+          ...(withDos ? { dos: dosEntries(files) } : {}),
         }),
       );
     else if (cardRoot) {
@@ -178,6 +219,7 @@ for (const id of ids) {
     index.push({ id, title: about.title, levels: packed.levels, short });
   } catch (e) {
     console.log(`${id.padEnd(24)} left out: ${String(e).split('\n')[0].slice(0, 80)}`);
+    if (gmos && files && about && !listOnly) writeOsOnly(id, about, files);
   }
 }
 if (!listOnly) {
