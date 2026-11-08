@@ -47,7 +47,10 @@ export async function theSpillway(bot: StarterBot): Promise<void> {
     });
     for (const runs of A.crossings[k]) {
       const edge = dir === 1 ? runs[0][0] : runs[runs.length - 1][1];
-      stops.push([edge, () => (dir === 1 ? cross(bot, runs, t, `a pool on terrace ${k + 1}`, 'spill') : crossLeft(bot, runs, t, `a pool on terrace ${k + 1}`))]);
+      stops.push([
+        edge,
+        () => (dir === 1 ? cross(bot, runs, t, `a pool on terrace ${k + 1}`, 'spill') : crossLeft(bot, runs, t, `a pool on terrace ${k + 1}`)),
+      ]);
     }
     stops.sort((a, b) => (a[0] - b[0]) * dir);
     for (const [, go] of stops) await go();
