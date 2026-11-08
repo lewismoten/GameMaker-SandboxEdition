@@ -73,7 +73,8 @@ async function wantedFiles(m: OfflineManifest): Promise<OfflineFile[]> {
   const catalog = await loadCatalogList().catch(() => []);
   for (const g of catalog) {
     if (!g.pack) continue;
-    const path = `${g.path}${g.pack}`;
+    // a game shipped split lists its .zpart file and shared data in offline.json already (project/sharedZip.ts)
+    const path = `${g.path}${g.parts ?? g.pack}`;
     if (!listed.has(path)) files.push({ path, wire: g.packBytes ?? g.bytes ?? 0, stored: g.packBytes ?? g.bytes ?? 0 });
     const walk = g.walkthrough && `${g.walkthrough}.gz`;
     if (walk && !listed.has(walk)) files.push({ path: walk, wire: 0, stored: 0 });

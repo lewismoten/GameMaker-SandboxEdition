@@ -56,6 +56,8 @@ export interface CatalogEntry {
   dosName?: string;
   /** Built sites: the size of its pack in bytes. */
   packBytes?: number;
+  /** Built sites: its ZIP is shipped split, as this .zpart file and shared data (project/sharedZip.ts); `pack` names the joined ZIP. */
+  parts?: string;
   /** Built sites: what the quick check (project/health.ts) finds in it, so no file need be fetched to know. */
   health?: Issue[];
   /** Built sites, games with a box: its level count and screenshot captions from the .gam (desk/boxes/boxFacts.ts boxGame). */
@@ -311,7 +313,11 @@ function packUrl(entry: Pick<CatalogEntry, 'path' | 'pack'>, base = './'): strin
   return entry.pack && (/\.zip$/i.test(entry.pack) || typeof DecompressionStream !== 'undefined') ? `${base}${entry.path}${entry.pack}` : undefined;
 }
 
-function startPack(url: string): Pack {
+/** A game's ZIP (or legacy pack) at `url`: a split one is joined (sharedZip.ts, loaded only for those). */
+const fetchPack = async (entry: Pick<CatalogEntry, 'path' | 'pack' | 'parts'>, url: string, base: string, init?: RequestInit): Promise<Response> =>
+  entry.parts ? (await import('./sharedZip')).fetchGameZip(entry, base, init) : fetchArchive(url, init);
+
+function startPack(url: string, entry: Pick<CatalogEntry, 'path' | 'pack' | 'parts'>, base: string): Pack {
   const pack: Pack = {
     files: new Map(),
     listeners: new Set(),
@@ -340,7 +346,7 @@ function startPack(url: string): Pack {
         pack.complete = true;
         return true;
       }
-      const res = await fetchArchive(url, { signal: pack.abort.signal });
+      const res = await fetchPack(entry, url, base, { signal: pack.abort.signal });
       if (!res.ok || !res.body) return false;
       if (/\.zip$/i.test(url)) {
         const { readHostedZip } = await import('./hostedZip');
@@ -393,13 +399,17 @@ export interface PackHandle {
  * then the rest as they arrive, in pack order (play order). Shared:
  * do not modify the files.
  */
-export function openPack(entry: Pick<CatalogEntry, 'path' | 'pack'>, base = './', onFile?: (name: string, bytes: Uint8Array) => void): PackHandle | undefined {
+export function openPack(
+  entry: Pick<CatalogEntry, 'path' | 'pack' | 'parts'>,
+  base = './',
+  onFile?: (name: string, bytes: Uint8Array) => void,
+): PackHandle | undefined {
   const url = packUrl(entry, base);
   if (!url) return undefined;
   let pack = packs.get(url);
   if (pack)
     packs.delete(url); // most recently used last
-  else pack = startPack(url);
+  else pack = startPack(url, entry, base);
   packs.set(url, pack);
   const p = pack;
   p.holders++;
@@ -454,7 +464,7 @@ async function packAtHand(entry: Pick<CatalogEntry, 'path' | 'pack'>, base: stri
 }
 
 /** What fetching a game's file needs of its entry; `id` lets a lean entry (no `files` yet) look its list up. */
-type FiledEntry = Pick<CatalogEntry, 'path' | 'gz' | 'pack'> & { id?: string; gam?: string | null; files?: string[] };
+type FiledEntry = Pick<CatalogEntry, 'path' | 'gz' | 'pack' | 'parts'> & { id?: string; gam?: string | null; files?: string[] };
 
 /** The entry's file names: its own, or (a lean entry) from games/catalog-files.json. */
 async function filesOf(entry: FiledEntry, base: string, asking?: string): Promise<string[]> {
@@ -512,7 +522,7 @@ export async function peekGameFile(entry: FiledEntry, name: string, base = './')
   if (![name.toLowerCase(), cdName(name)].some((x) => files.includes(x))) return undefined; // as fetchGameFile: not one of its files
   let zip = peekedZips.get(url);
   if (!zip) {
-    const got = (zip = fetchArchive(url).then(
+    const got = (zip = fetchPack(entry, url, base).then(
       async (res) => (res.ok ? new Uint8Array(await res.arrayBuffer()) : undefined),
       () => undefined,
     ));
