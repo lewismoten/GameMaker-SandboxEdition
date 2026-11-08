@@ -34,7 +34,7 @@
     "release:cut": "npm run release:cut -w gamemaker-web --",
     "release:check": "npm run release:check -w gamemaker-web --",
     "release:sizes": "node scripts/release/sizes.mjs",
-    "release:seed": "node scripts/release/seed.mjs",
+    "release:pages": "node scripts/release/publish-pages.mjs",
     "walk:auto": "npm run walk:auto -w gamemaker-web --",
     "wayback:inventory": "npm run wayback:inventory -w gamemaker-web --",
     "wayback:check": "npm run wayback:check -w gamemaker-web --",
