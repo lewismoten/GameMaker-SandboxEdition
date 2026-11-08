@@ -2,10 +2,9 @@
 // Excuse Me and The Ford. The same human orders: read every sign, take every treasure, wait for anything on a clock
 // (the mist steps, the yard gates, the river's waves) and listen to the mountain say its line to the end.
 import type { StarterBot } from '../../kit/starter/bot';
-import { STREET_AT } from '../src/levels/excuse';
+import { STREET_AT, STREET_ROWS, type Street } from '../src/levels/excuse';
 import { FORD_AT, G9 } from '../src/levels/ford';
 import { DELLS, G8, MIST_AT, floorOf, stepOf } from '../src/levels/mist';
-import { GROUND } from '../src/level';
 import { FORD_RINGS, POINTS } from '../src/props';
 import { blocks, step, take } from './route';
 import { waitUp } from './routeLate';
@@ -64,52 +63,69 @@ export async function gatheringMist(bot: StarterBot): Promise<void> {
   await leave(bot, bot.walk(A.exit + 1, 'the exit'), 'the exit');
 }
 
-/** 14. Excuse Me: down the street clearing what stands in the mountain's way, waiting for each gate to swing open, and hearing it say its line. */
+/** 14. Excuse Me: along the street and then back along the lane above, clearing what stands in the mountain's way, waiting for each gate to swing open, and hearing it say its line. */
 export async function excuseMe(bot: StarterBot): Promise<void> {
   const from = bot.sim.ci.score;
   const A = STREET_AT;
   const at = A.signs;
   const book = blocks('excuse');
   let cleared = 0;
-  const stops: Stop[] = [
-    [at.quiet, () => readAt(bot, at.quiet + 1, 'the quiet hours sign')],
-    [at.gate, () => readAt(bot, at.gate + 1, 'the gate sign')],
-    [at.hale, () => readAt(bot, at.hale + 1, "Mr. Hale's sign")],
-    [at.ford, () => readAt(bot, at.ford + 1, 'the ford sign')],
-    ...A.posts.map((x): Stop => [x, () => take(bot, x, POINTS.blaze, `a lamp post at ${x}`)]),
-    ...A.acorns.map((x): Stop => [x, () => take(bot, x, POINTS.acorn, `an acorn at ${x}`)]),
-    [A.pie, () => must(bot, bot.walk(A.pie, 'the pie'), 'to the pie')],
-  ];
-  for (const o of A.obstacles) {
-    stops.push([
-      o.x - 2,
-      async () => {
-        if (o.kind === 'gate') {
-          const open = book.n('swingOpen1');
-          const isOpen = () => shownAt(bot, o.x, GROUND - 1) === open;
-          await must(bot, bot.walk(o.x - 1, 'the yard gate'), 'to the yard gate');
-          if (isOpen()) await watchFor(bot, () => !isOpen(), 'the yard gate swinging shut', 400);
-          await watchFor(bot, isOpen, 'the yard gate swinging open', 400);
-          await must(bot, bot.walk(o.x + 2, 'through the yard gate'), 'through the yard gate');
-        } else {
-          const before = bot.sim.ci.score;
-          await must(bot, bot.walk(o.x - 1, 'what is in the way'), 'to what is in the way');
-          await must(bot, bot.wait(READ / 4), 'a look at what is in the way');
-          await must(bot, bot.walk(o.x + 2, 'through what was in the way'), 'through what was in the way');
-          score(bot, before, 2 * POINTS.clear, `clearing the ${o.kind} at ${o.x}`);
-          cleared++;
-          if (o.kind === 'bins') {
-            if (!bot.sim.clipTicksLeft) throw new Error('the mountain said nothing as Tess went through the bins');
-            await must(bot, bot.sim.waitForClip(), 'the mountain saying excuse me');
+  let want = 0;
+  /** One street: `dir` 1 walks it rightward on ground row `g`, -1 leftward; `signs` are [column, what] to read on the way. */
+  const street = async (st: Street, g: number, dir: 1 | -1, signs: [number, string][]) => {
+    const stops: Stop[] = [
+      ...signs.map(([x, what]): Stop => [x, () => readAt(bot, x + 1, what)]),
+      ...st.posts.map((x): Stop => [x, () => take(bot, x, POINTS.blaze, `a lamp post at ${x}`)]),
+      ...st.acorns.map((x): Stop => [x, () => take(bot, x, POINTS.acorn, `an acorn at ${x}`)]),
+    ];
+    want += st.posts.length * POINTS.blaze + st.acorns.length * POINTS.acorn;
+    if (st.pie) {
+      const pie = st.pie;
+      stops.push([pie, () => must(bot, bot.walk(pie, 'the pie'), 'to the pie')]);
+    }
+    for (const o of st.obstacles) {
+      // the stop is two blocks before it, on the side Tess comes from
+      stops.push([
+        o.x - 2 * dir,
+        async () => {
+          if (o.kind === 'gate') {
+            const open = book.n('swingOpen1');
+            const isOpen = () => shownAt(bot, o.x, g - 1) === open;
+            await must(bot, bot.walk(o.x - dir, 'the yard gate'), 'to the yard gate');
+            if (isOpen()) await watchFor(bot, () => !isOpen(), 'the yard gate swinging shut', 400);
+            await watchFor(bot, isOpen, 'the yard gate swinging open', 400);
+            await must(bot, bot.walk(o.x + 2 * dir, 'through the yard gate'), 'through the yard gate');
+          } else {
+            const before = bot.sim.ci.score;
+            await must(bot, bot.walk(o.x - dir, 'what is in the way'), 'to what is in the way');
+            await must(bot, bot.wait(READ / 4), 'a look at what is in the way');
+            await must(bot, bot.walk(o.x + 2 * dir, 'through what was in the way'), 'through what was in the way');
+            score(bot, before, 2 * POINTS.clear, `clearing the ${o.kind} at ${o.x}`);
+            want += 2 * POINTS.clear;
+            cleared++;
+            if (o.kind === 'bins') {
+              if (!bot.sim.clipTicksLeft) throw new Error('the mountain said nothing as Tess went through the bins');
+              await must(bot, bot.sim.waitForClip(), 'the mountain saying excuse me');
+            }
           }
-        }
-      },
-    ]);
-  }
-  await inOrder(stops);
-  if (cleared !== A.obstacles.filter((o) => o.kind !== 'gate').length) throw new Error('missed an obstacle');
-  score(bot, from, A.posts.length * POINTS.blaze + A.acorns.length * POINTS.acorn + cleared * 2 * POINTS.clear, 'excuse me');
-  await leave(bot, bot.walk(A.exit + 1, 'the exit'), 'the exit');
+        },
+      ]);
+    }
+    stops.sort((x, y) => (x[0] - y[0]) * dir);
+    for (const [, go] of stops) await go();
+  };
+  await street(A.low, STREET_ROWS.low, 1, [
+    [at.quiet, 'the quiet hours sign'],
+    [at.gate, 'the gate sign'],
+    [at.hale, "Mr. Hale's sign"],
+  ]);
+  // up the ladder at the end of the street to the lane
+  await must(bot, bot.walk(A.ladder, 'the ladder'), 'onto the ladder');
+  await must(bot, bot.climb('up', STREET_ROWS.up - 1, 'up the ladder'), 'up the ladder');
+  await street(A.up, STREET_ROWS.up, -1, [[at.ford, 'the ford sign']]);
+  if (cleared !== 5) throw new Error(`cleared ${cleared} obstacles, not 5`);
+  score(bot, from, want, 'excuse me');
+  await leave(bot, bot.walk(A.exit - 1, 'the exit'), 'the exit');
 }
 
 /** 15. The Ford: five reaches, each crossed by waiting on the bank for the swell to come up leaning the right way and stepping in; the islands' posts and acorns taken between. */

@@ -287,13 +287,15 @@ function walker(set: Monster[], mb: Book, wait: number, legs: readonly Leg[]): v
 /** The monster slots of the walking mountain: its cells are in art/walker.ts; a cell's slot is `WALKER_SLOT[piece]`. */
 export const WALKER_SLOT: Record<(typeof WALKER_PIECES)[number], number> = Object.fromEntries(WALKER_PIECES.map((p, i) => [p, i])) as never;
 
-/** The mountain's walk along the sleeping town's street: it waits, then goes at the pace of a very large neighbor. */
+/** The mountain's walk along the sleeping town's street, up the hill and back along the lane: it waits, then goes at the pace of a very large neighbor. */
 export const STREET_WALK: { wait: number; legs: Leg[] } = {
   wait: 160,
   legs: [
     [30, 0, 2],
     [30, 0, 2],
     [24, 0, 2],
+    [0, -9, 2],
+    [-82, 0, 2],
   ],
 };
 /** The mountain's walk to the river and across it. */
