@@ -1,22 +1,32 @@
 // THE CHEZ made on the spot (Web Audio, no files), to the numbers in Lewis's recording of the car:
 // the series-wound motor's whine is one harmonic tone, its 2nd harmonic loudest, about 245 Hz at
 // cruise; the contactors clack (a bright 20 ms snap and a thump 50 ms later) at the start and at
-// each of the three speed steps; road rumble, the cabin's road noise and tire hiss grow with speed
+// the step from 24 V to 48 V (the whine jumps up, as the factory tower switches the pack) and each time the foot comes back on after coasting; road rumble, the cabin's road noise and tire hiss grow with speed
 // (matched to the recording's octave bands at cruise: the whine stands about 18 dB over them).
 import { CRUISE_HZ, DOPPLER, bus, noiseBuffer, passCurve, type ChezMotor, type ChezOptions } from './chezTypes';
 
 /** Harmonic amplitudes of the whine (dB against the 2nd), measured at cruise. */
 const HARMONICS_DB = [-8, 0, -10, -22, -18, -26, -21, -23, -34, -32, -31, -36];
-/** The climb from rest: [seconds after the contactor closes, speed 0..1]; a speed step clunks at each corner. */
+/**
+ * The climb from rest: [seconds after the main contactor closes, speed 0..1]. The car has three
+ * speeds: low (through the resistor, for backing up only, so never in a pull-away), 24 V (the two
+ * batteries in parallel) and 48 V (in series). A road start is a ka-chunk into 24 V, the whine
+ * creeping up its plateau, then a ka-chunk into 48 V: the whine jumps and creeps to cruise.
+ */
 const CLIMB: readonly (readonly [number, number])[] = [
-  [0, 0.05],
-  [1.3, 0.4],
-  [2.7, 0.72],
-  [4.6, 1.07],
-  [7, 1],
+  [0, 0.43],
+  [2.3, 0.62],
+  [2.38, 0.86],
+  [5, 1.0],
 ];
-/** The speed steps' clunks (seconds into the climb). */
-const STEPS = [1.3, 2.7];
+/** The 48 V ka-chunk (seconds into the climb): the snap and thump, then a second relay's smaller clack. */
+const STEPS = [2.3];
+/** The second relay of a step clacks this long after the first. */
+const RELAY_LAG = 0.13;
+/** Coasting (foot off): the contactors drop out and the whine fades over this long as the car rolls. */
+const COAST = 3;
+/** The speed the whine jumps back to when the contactor closes again after a coast. */
+const RESUME_SPEED = 0.86;
 /** The switch's click before the contactor pulls in. */
 const SWITCH_LEAD = 0.35;
 const WIND_DOWN = 1.8;
@@ -80,6 +90,8 @@ interface Run {
   t0: number;
   /** Clunks still to come (the speed steps), with when they start: a stop cancels them. */
   pending: [AudioScheduledSourceNode, number][];
+  /** Foot off: the contactors are out and the car is rolling. */
+  coasting?: boolean;
 }
 
 export class SynthMotor implements ChezMotor {
@@ -104,7 +116,7 @@ export class SynthMotor implements ChezMotor {
     this.clunk(t, 0.45);
     this.clunk(t0, 1);
     const r = this.start(t, t0, this.chain[0]);
-    r.pending = STEPS.flatMap((s) => this.clunk(t0 + s, 1.6).map((n): [AudioScheduledSourceNode, number] => [n, t0 + s]));
+    r.pending = this.steps(t0, this.chain[0], 1);
     for (const [s, v] of CLIMB) this.at(r, t0 + s, v, s ? 'ramp' : 'set');
     this.run = r;
   }
@@ -128,13 +140,64 @@ export class SynthMotor implements ChezMotor {
     this.retire(r, t + WIND_DOWN + 0.1);
   }
 
-  passBy(seconds: number): void {
+  coast(): void {
+    const r = this.run;
+    if (!this.moving || !r || r.coasting) return;
+    r.coasting = true;
+    const t = this.ctx.currentTime + 0.01;
+    const v = climbSpeed(t - r.t0);
+    for (const [n, at] of r.pending) if (at > t) n.stop(t);
+    for (const p of [r.whine.frequency, r.whineGain.gain, ...r.beds.map((b) => b.gain)]) p.cancelScheduledValues(t);
+    this.at(r, t, v, 'set');
+    this.coastFrom(r, t, v, this.chain[0]);
+  }
+
+  resume(): void {
+    const r = this.run;
+    if (!this.moving || !r || !r.coasting) return;
+    r.coasting = false;
+    const t = this.ctx.currentTime + 0.01;
+    for (const p of [r.whine.frequency, r.whineGain.gain, ...r.beds.map((b) => b.gain)]) p.cancelScheduledValues(t);
+    this.resumeAt(r, t, this.chain[0]);
+  }
+
+  /** Foot off at `t` from speed `v`: the contactors drop out (a clunk), the whine falls away while the noise eases. */
+  private coastFrom(r: Run, t: number, v: number, dest: AudioNode): void {
+    this.clunk(t, 1.3, dest);
+    r.whineGain.gain.setTargetAtTime(0.0001, t + 0.1, COAST / 4);
+    r.whine.frequency.linearRampToValueAtTime(CRUISE_HZ * v * 0.6, t + COAST);
+    r.beds.forEach((b, i) => b.gain.linearRampToValueAtTime(BEDS[i].gain * v ** BEDS[i].power * 0.55, t + COAST));
+  }
+
+  /** Foot back on at `t`: the contactor closes again (a ka-chunk) and the whine jumps to the 48 V plateau. */
+  private resumeAt(r: Run, t: number, dest: AudioNode): void {
+    this.clunk(t, 1.6, dest);
+    this.clunk(t + RELAY_LAG, 0.7, dest);
+    r.whine.frequency.setValueAtTime(CRUISE_HZ * 0.6, t);
+    this.at(r, t + 0.08, RESUME_SPEED, 'ramp');
+    this.at(r, t + 1.8, 0.95, 'ramp');
+    r.whineGain.gain.setTargetAtTime(this.whineLevel(RESUME_SPEED), t, 0.04);
+  }
+
+  passBy(seconds: number, pullAway = false): void {
     const t = this.ctx.currentTime + 0.01;
     const env = this.ctx.createGain();
-    env.gain.setValueCurveAtTime(passCurve(), t, seconds);
+    // a pull-away starts in front of the window: the ka-chunks, then it drives off and fades
+    env.gain.setValueCurveAtTime(pullAway ? passCurve().slice(16) : passCurve(), t, seconds);
     env.connect(this.chain[0]);
     const r = this.start(t, t, env);
     r.nodes.push(env);
+    if (pullAway) {
+      this.clunk(t, 1, env);
+      r.pending = this.steps(t, env, 1);
+      for (const [s, v] of CLIMB) this.at(r, t + s, v, s ? 'ramp' : 'set');
+      // normal road driving: a lift of the foot to coast, then back on the pedal
+      const lift = CLIMB[CLIMB.length - 1][0] + 0.6;
+      this.coastFrom(r, t + lift, 1, env);
+      this.resumeAt(r, t + Math.min(lift + COAST * 0.9, seconds - 2), env);
+      this.retire(r, t + seconds + 0.05);
+      return;
+    }
     this.at(r, t, 1, 'set');
     const mid = t + seconds / 2;
     const w = seconds * 0.08;
@@ -206,10 +269,17 @@ export class SynthMotor implements ChezMotor {
     return r;
   }
 
+  /** The ka-chunk of each speed step from `t0`: the tower's relay, then a second one's smaller clack. */
+  private steps(t0: number, dest: AudioNode, k: number): [AudioScheduledSourceNode, number][] {
+    return STEPS.flatMap((s) => [
+      ...this.clunk(t0 + s, 1.6 * k, dest).map((n): [AudioScheduledSourceNode, number] => [n, t0 + s]),
+      ...this.clunk(t0 + s + RELAY_LAG, 0.7 * k, dest).map((n): [AudioScheduledSourceNode, number] => [n, t0 + s + RELAY_LAG]),
+    ]);
+  }
+
   /** A contactor at `t`: a snap with a metallic ring (centered near 2 kHz, as recorded), then the armature's thump. */
-  private clunk(t: number, k: number): AudioScheduledSourceNode[] {
+  private clunk(t: number, k: number, input: AudioNode = this.chain[0]): AudioScheduledSourceNode[] {
     const c = this.ctx;
-    const input = this.chain[0];
     const src = c.createBufferSource();
     src.buffer = noiseBuffer(c);
     const snap = c.createBiquadFilter();
