@@ -50,6 +50,15 @@ Penny has a drum major's belief in shortcuts and a drum major's knees.
 
 There are two ways over and she'll need both.
 `),
+  thaw: wrap(`
+|8:15 AM
+
+Behind the arena, Gigi flooded the lot overnight. A skating rink, she says, for morale.
+
+It is fifty-one degrees.
+
+The ice has a deadline and so does Penny, and the ice is more honest about it.
+`),
   float: wrap(`
 |8:30 AM
 
@@ -92,6 +101,15 @@ Mr. Delgado has not met a 10.
 The grandstand has five rows, four judges and a scoreboard that has been wrong since 1987.
 
 Penny has a few cards left. She counts them twice. She counts them a third time out of respect.
+`),
+  clock: wrap(`
+|9:20 AM
+
+The town clock has said 9:10 for as long as anyone can remember, and it has been right for eleven minutes of that.
+
+The door to the face is at the top.
+
+The cogs inside are on a schedule. It is not yours.
 `),
   truck: wrap(`
 |9:40 AM

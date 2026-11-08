@@ -9,6 +9,9 @@ import { AT3 } from '../src/level3';
 import { AT_BAKERY } from '../src/bakery';
 import { AT_CREEK } from '../src/creek';
 import { AT_HALL } from '../src/hall';
+import { AT_THAW } from '../src/thaw';
+import { AT_CLOCK } from '../src/clock';
+import { cogOffset, cogSolid } from '../src/cogs';
 import { AT_TRUCK } from '../src/truck';
 import { AT_BLEACHERS } from '../src/bleachers';
 import { FUSES } from '../src/extra';
@@ -366,6 +369,82 @@ export async function millCreek(bot: StarterBot): Promise<void> {
   await must(bot, bot.walk(A.millLadder, 'the ladder'), 'back to the ladder');
   await must(bot, bot.climb('down', G - 1, 'down the mill'), 'down');
   await leave(bot, bot.walk(A.exit + 1, 'the exit'), 'the exit');
+}
+
+/** Frost Lot: across the ice with the clock, the notes and donuts on it, the tent. */
+export async function frostLot(bot: StarterBot): Promise<void> {
+  const A = AT_THAW;
+  await must(bot, bot.walk(8, 'the first placard'), 'to the placard');
+  await must(bot, bot.wait(READ), 'reading');
+  await must(bot, bot.walk(14, 'the thaw placard'), 'to the thaw placard');
+  await must(bot, bot.wait(READ), 'reading');
+  await hop(bot, A.pond[0] - 2);
+  const t0 = bot.sim.ticks;
+  await must(bot, bot.walk(A.pond[1] + 1, 'across the ice'), 'across the ice');
+  bot.say(`across the ice at tick ${bot.sim.ticks} (the first section cracks at ${A.first})`);
+  if (bot.sim.ticks > A.first + 5 * A.gap) throw new Error(`the bot is too slow for the ice: tick ${bot.sim.ticks} (${t0} at the edge)`);
+  await must(bot, bot.wait(READ / 2), 'reading the pond placard');
+  await must(bot, bot.walk(A.exit - 6, 'the tent'), 'to the tent');
+  await must(bot, bot.wait(READ), 'reading the tent placard');
+  await leave(bot, bot.walk(A.exit + 1, 'the exit'), 'the exit');
+}
+
+/** The tick (mod the 144-tick cycle) at which the clock's cog planks began, found by watching the first one go out. */
+async function cogClock(bot: StarterBot): Promise<number> {
+  const A = AT_CLOCK;
+  const book = levels.find((l) => l.file === 'clock')!.book;
+  const off = book.n('cogOff');
+  const at = () => bot.sim.w.blkmap[bot.sim.blockAt(A.bridge[0] + ORIGIN, A.tiers[0] + ORIGIN)];
+  let prev = at();
+  for (let t = 0; t < 400; t++) {
+    await must(bot, bot.wait(1), 'watching the cogs');
+    const now = at();
+    if (now === off && prev !== off) return bot.sim.ticks - 108;
+    prev = now;
+  }
+  throw new Error('the cogs never blinked');
+}
+
+/** Crosses a bridge of cogs when every plank will hold for the walk (about 5 ticks a block), going right (dir 1) or left (-1). */
+async function crossCogs(bot: StarterBot, t0: number, dir: 1 | -1, to: number): Promise<void> {
+  const A = AT_CLOCK;
+  const n = A.bridge[1] - A.bridge[0] + 1;
+  const safe = (s: number): boolean => {
+    for (let k = 0; k < n; k++) {
+      const i = dir > 0 ? k : n - 1 - k;
+      const ta = s + 5 * (k + 1);
+      if (!cogSolid(cogOffset(i), ta - 8 - t0) || !cogSolid(cogOffset(i), ta + 10 - t0)) return false;
+    }
+    return true;
+  };
+  for (let t = 0; t < 300 && !safe(bot.sim.ticks); t++) await must(bot, bot.wait(1), 'waiting for the cogs');
+  await must(bot, bot.walk(to, 'across the cogs'), 'across the cogs');
+}
+
+/** 11. The Clock Tower: up four tiers, a bridge of blinking cogs on each, to the door at the top. */
+export async function clockTower(bot: StarterBot): Promise<void> {
+  const A = AT_CLOCK;
+  const [t1, t2, t3] = A.tiers;
+  const [lx, rx] = A.ladders;
+  await must(bot, bot.walk(8, 'the first placard'), 'to the placard');
+  await must(bot, bot.wait(READ), 'reading');
+  await climbShaft(bot, lx, t1 - 1, 'first');
+  await must(bot, bot.walk(A.left[1], 'the end of the ledge'), 'along the ledge');
+  const t0 = await cogClock(bot);
+  await crossCogs(bot, t0, 1, A.right[0] + 1);
+  await must(bot, bot.wait(READ / 2), 'reading the cog placard');
+  await climbShaft(bot, rx, t2 - 1, 'second');
+  await must(bot, bot.walk(A.right[0], 'the end of the ledge'), 'along the ledge');
+  await crossCogs(bot, t0, -1, A.left[1] - 1);
+  await climbShaft(bot, lx, t3 - 1, 'third');
+  await must(bot, bot.walk(A.left[1], 'the end of the ledge'), 'along the ledge');
+  await crossCogs(bot, t0, 1, A.right[0] + 1);
+  await must(bot, bot.wait(READ / 2), 'reading the bell placard');
+  await climbShaft(bot, rx, A.tiers[3] - 1, 'fourth');
+  await must(bot, bot.wait(READ / 2), 'reading the door placard');
+  await must(bot, bot.walk(A.right[0], 'the end of the ledge'), 'along the ledge');
+  await crossCogs(bot, t0, -1, A.left[1] - 1);
+  await leave(bot, bot.walk(A.door, 'the clock face'), 'the clock face');
 }
 
 /** 7. Practice Hall: the shelf, the lights, the basement, the rafters. */
