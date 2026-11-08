@@ -48,7 +48,7 @@ function coursePage(el: HTMLElement, c: Course): void {
       'main',
       { class: 'ac-page' },
       h('p', null, h('a', { href: ROOT }, `← ${BOOK_TITLE}`)),
-      h('p', { class: 'ac-kicker' }, `Course ${i + 1}`),
+      h('p', { class: 'ac-kicker' }, `Course ${c.no}`),
       h('h1', null, c.title),
       h('p', null, c.about),
       ...c.lessons.flatMap((l) => [h('h2', { id: l.id }, l.title), ...l.parts.map(part)]),

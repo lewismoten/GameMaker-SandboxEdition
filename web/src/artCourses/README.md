@@ -7,3 +7,7 @@ The art courses (`#/art-courses`, a card on the Library shelf): how to draw the 
 - `figures/*.png`: real indexed blocks drawn in code by `../../scripts/artCourseFigures.ts` (`cd web && npx vite-node scripts/artCourseFigures.ts`). Redraw them after changing that script and commit the PNGs.
 
 Course 1, "Blocks: cut, repeat, reuse", has five lessons: draw big then cut, edges that meet, 2 x 2 groups, reusing blocks (one centered post for a sign), variants against patterns.
+
+Course 2, "Shadows and depth" (`courseShadows.ts`, figures by `../../scripts/artCourseFigures2.ts`), has five lessons: a shadow is the ground one step darker, solid or dithered, one shadow block reused along an edge, light from one side, how few blocks it costs (the figure script counts them).
+
+Course 4, "Characters that move" (`courseCharacters.ts`, figures by `../../scripts/artCourseFigures4.ts`), has five lessons: frames, four facings and a climb view, a four-frame walk cycle, mirroring and what it costs, keeping 20 x 20 readable. The shared palette and helpers for the three figure scripts are in `../../scripts/artCourseKit.ts`.

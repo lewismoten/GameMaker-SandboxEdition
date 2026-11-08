@@ -10,6 +10,8 @@ export interface Lesson {
 
 export interface Course {
   id: string;
+  /** Its place in the planned list of seven courses (the contents page lists only the written ones). */
+  no: number;
   title: string;
   about: string;
   /** Written and shown; the others are planned and listed on the contents page. */
@@ -18,11 +20,15 @@ export interface Course {
   starters: string[];
 }
 
+import { CHARACTERS } from './courseCharacters';
+import { SHADOWS } from './courseShadows';
+
 export const BOOK_TITLE = 'Art courses';
 
 export const COURSES: Course[] = [
   {
     id: 'blocks',
+    no: 1,
     title: 'Blocks: cut, repeat, reuse',
     about: 'Cut a picture into 20 x 20 blocks, make edges that meet, reuse one block many times and keep grass from showing a pattern.',
     starters: ['150 Blocks', 'Little Shadows'],
@@ -157,15 +163,15 @@ export const COURSES: Course[] = [
       },
     ],
   },
+  SHADOWS,
+  CHARACTERS,
 ];
 
 export const courseById = (id: string): Course | undefined => COURSES.find((c) => c.id === id);
 
 /** Courses that are planned and not written yet, for the contents page. */
 export const COMING: { title: string; about: string }[] = [
-  { title: 'Shadows and depth', about: 'A shadow under a bridge or a building, solid or dithered, drawn once and reused along an edge.' },
   { title: 'Palettes', about: 'Colors in a ramp, one palette to a scene, and how a game spends its 256 colors.' },
-  { title: 'Characters that move', about: 'Frames, four facing directions, walk cycles and palette-swapped foes.' },
   { title: 'Block animation', about: 'Water, torches and doors from a few frames, looping without a jump.' },
   { title: 'Words as monsters', about: 'Letters drawn as foes, and what to do when they walk the other way and mirror.' },
   { title: 'Screens with words', about: 'Title pictures, cartoons and talk, with room left for the game’s own words.' },
