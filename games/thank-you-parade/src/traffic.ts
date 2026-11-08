@@ -5,7 +5,7 @@ import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { PULL, SOLID } from '../../kit/starter/book';
 import type { PBook } from './base';
 import { onPaper } from './blocks';
-import { halftone, inkLine, stripes, type Pal } from './print';
+import { inkLine, stripes, type Pal } from './print';
 
 const T = 255;
 export const GO = 90;

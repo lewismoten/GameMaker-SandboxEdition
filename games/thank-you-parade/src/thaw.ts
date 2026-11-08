@@ -8,7 +8,7 @@ import { addPage, baseBook } from './base';
 import { addCreek, addMeter, addRoofs } from './extra';
 import { addIce, CRACKED } from './ice';
 import { THAW_SIGNS } from './text';
-import { Level, addSigns, bunting, onGround, run } from './lay';
+import { Level, addSigns, bunting, onGround } from './lay';
 import { MONS } from './monsters';
 import type { Pal } from './print';
 import { meterAt, shaft, tallRoom } from './tall';

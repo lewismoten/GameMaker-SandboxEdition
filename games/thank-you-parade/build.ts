@@ -15,7 +15,7 @@ import { Disk } from '../kit/disk';
 import { licenseText } from '../kit/license';
 import { SANDLOGO, sandLogoFli } from '../kit/sandlogo';
 import { buildHero } from '../kit/starter/heroChar';
-import { endingFli, introFli } from './src/cartoons';
+import { actTwoFli, endingFli, introFli } from './src/cartoons';
 import { TITLE, buildGame } from './src/game';
 import { buildLevels } from './src/levels';
 import { cardPicture, endPicture, gif, menuPicture, paperPage, scoresPicture, slotsPicture } from './src/screens';
@@ -71,7 +71,15 @@ levels.forEach((l, i) => {
   disk.put(`${l.file}.bbl`, serializeBlocks(l.book.finish()));
   disk.put(`${l.file}.gif`, gif(cardPicture(l.pal, figure(l.pal, l.hero ?? 'penny', 'walk0'), i + 1, levels.length, l.title, l.hint), l.pal));
   disk.put(`${l.file}.txt`, STORY_BEATS[l.file]);
-  disk.put(`${l.file}.lst`, serializeSlideList([{ name: `${l.file}.gif`, pause: 3 }, { name: 'beat.gif', pause: 0 }, { name: `${l.file}.txt` }]));
+  disk.put(
+    `${l.file}.lst`,
+    serializeSlideList([
+      ...(l.file === 'float' ? [{ name: 'act2.fli', pause: 0 }] : []),
+      { name: `${l.file}.gif`, pause: 3 },
+      { name: 'beat.gif', pause: 0 },
+      { name: `${l.file}.txt` },
+    ]),
+  );
 });
 
 disk.put('beat.gif', gif(paperPage(pal, 'THE PARADE'), pal));
@@ -81,6 +89,7 @@ const text = (base: string, heading: string, body: string) => {
   disk.put(`${base}.lst`, serializeSlideList([{ name: `${base}.gif`, pause: 0 }, { name: `${base}.txt` }]));
 };
 disk.put(SANDLOGO, sandLogoFli());
+disk.put('act2.fli', actTwoFli(pal, mb.pics.get('goose0')!));
 disk.put('parade.fli', introFli(pal, mb.pics.get('goose0')!, rivals));
 disk.put('title.gif', gif(titlePicture(pal), pal));
 disk.put(

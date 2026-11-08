@@ -2,6 +2,8 @@
 //   PARADE.FLI  the intro, after the Sandbox Software sting: 6:40 in the morning, Penny marches in, mace up, and checks
 //               the time; then a goose in a purple neckerchief waddles across the other way, and across town Gigi's
 //               band (in purple) is up early too.
+//   ACT2.FLI    an intermission before The Float: Penny comes off Frost Lot's thawing ice and the goose in the purple neckerchief
+//               comes across it on its belly, delighted, then round again.
 //   ENDING.FLI  the ending: ten o'clock, Marge's crop duster passes low towing THANK YOU, comes round again towing a second
 //               banner, NICE TRY, GIGI, and the Ridgemont band marches behind the llama rescue.
 import { outlined, textWidth } from '@lewismoten/gamemaker-sandbox-tools/kit/pcText';
@@ -60,6 +62,38 @@ export function introFli(pal: Pal, goose: Pixels, rivals: Book): Uint8Array {
   };
   reel.fadeIn(bg, 4);
   for (let f = 0; f < 125; f++) reel.frame(bg, draw(f), 1);
+  reel.fadeOut(5);
+  return reel.fli(SPEED);
+}
+
+/** The intermission after Frost Lot (about 8 seconds): Penny walks off the ice and a goose slides past on its belly. */
+export function actTwoFli(pal: Pal, goose: Pixels): Uint8Array {
+  const bg = backdrop(pal, 168, 5);
+  bunting(bg, pal, 4);
+  bg.rect(5, 150, W - 10, 18, pal.c('teal', 4));
+  for (let x = 14; x < W - 14; x += 38) bg.rect(x, 156, 14, 1, pal.c('white', 3));
+  frame(bg, pal);
+  const reel = new Reel(pal.pal);
+  const walk = ['walk0', 'walk1', 'walk2', 'walk3'].map((n) => figure(pal, 'penny', n));
+  const look = figure(pal, 'penny', 'look');
+  const cheer = figure(pal, 'penny', 'cheer');
+  const draw = (f: number) => (p: Pixels) => {
+    lettering(p, pal, 30, 'ACT TWO', 4);
+    if (f < 40) {
+      standing(p, walk[f % 4], -30 + f * 4, 168, 2);
+      caption(p, pal, 'THE ICE WAS A SUGGESTION. PENNY TOOK IT.');
+    } else if (f < 80) {
+      standing(p, look, 130, 168, 2);
+      standing(p, goose, 340 - (f - 40) * 9, 168, 2, true);
+      caption(p, pal, 'A GOOSE ARRIVES THE FAST WAY.');
+    } else {
+      standing(p, f % 12 < 6 ? cheer : look, 130, 168, 2);
+      standing(p, goose, -60 + (f - 80) * 9, 168, 2);
+      caption(p, pal, 'AND THEN, FOR FUN, BACK AGAIN.');
+    }
+  };
+  reel.fadeIn(bg, 4);
+  for (let f = 0; f < 110; f++) reel.frame(bg, draw(f), 1);
   reel.fadeOut(5);
   return reel.fli(SPEED);
 }
