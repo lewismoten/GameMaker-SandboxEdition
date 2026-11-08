@@ -95,6 +95,52 @@ int main(int argc, char** argv) {
       expect(fr::hit(fr::PLAY, L.home.cx, L.home.cy) == fr::T_NONE, "the pad's middle is taken as Done");
     }
   }
+  // The SVG hand (src/handshape.h from art/hand-left.svg): its shapes in draw order, the thumbnail on the pad and on Jump, a mirror.
+  {
+    expect(hs::SHAPES == 11 && hs::shapes[0].role == hs::CUFF && hs::shapes[hs::SHAPES - 1].role == hs::HIGHLIGHT, "the hand's shapes: cuff first, highlight last");
+    bool order = true;
+    int fingers = 0;
+    for (int i = 0; i < hs::SHAPES; i++) {
+      if (hs::shapes[i].behind) fingers++;
+      if (hs::shapes[i].behind && i > 0 && !hs::shapes[i - 1].behind && i != 1) order = false;  // the fingers are one run after the cuff
+      if (hs::shapes[i].role == hs::SKIN && !hs::shapes[i].behind) order = order && i > 4;       // the palm and thumb come after them
+    }
+    expect(order && fingers == 5, "the curled fingers draw first, the palm and thumb over them");
+    expect(hs::shapes[9].role == hs::NAIL && hs::shapes[9].stroke == 2 && hs::shapes[8].role == hs::CREASE, "the creases, then the nail with its own stroke");
+    bool inRange = hs::POINTS > 300 && hs::POINTS < 700;
+    for (int i = 0; i < hs::POINTS; i++) inRange = inRange && hs::pts[2 * i] >= 0 && hs::pts[2 * i] < 1024 && hs::pts[2 * i + 1] >= 0 && hs::pts[2 * i + 1] < 1024;
+    expect(inRange, "the hand's points are a few hundred, inside the 1024 square");
+    // where the thumbnail lands: inside the pad (left hand) and inside Jump (right hand), for the right-handed and the left-handed layout
+    const fr::Box pic = scr::SMALL ? fr::Box{40, 42, 136, 116} : fr::Box{58, 60, 204, 170};
+    for (bool padRight : {false, true}) {
+      int w = pic.x1 - pic.x0, h = pic.y1 - pic.y0, sx0 = pic.x0 + w / 12, sy0 = pic.y0 + h / 10, sx1 = pic.x1 - w / 12, sy1 = pic.y1 - h / 10;
+      int sw = sx1 - sx0, sh = sy1 - sy0, pr = sh * 26 / 100, jr = sh * 13 / 100, wid = sh * 22 / 100;
+      int pcx = padRight ? sx1 - pr - sw / 20 : sx0 + pr + sw / 20, pcy = sy1 - pr - sh / 14;
+      int jcx = padRight ? sx0 + jr + sw / 14 : sx1 - jr - sw / 14, jcy = sy1 - jr - sh / 10;
+      hd::Place a = hd::place(padRight ? 1 : -1, pcx, pic.y1, wid), b = hd::place(padRight ? -1 : 1, jcx, pic.y1, wid);
+      expect((a.tipX - pcx) * (a.tipX - pcx) + (a.tipY - pcy) * (a.tipY - pcy) < pr * pr, "the thumbnail lands on the pad");
+      expect((b.tipX - jcx) * (b.tipX - jcx) + (b.tipY - jcy) * (b.tipY - jcy) < jr * jr, "the thumbnail lands on Jump");
+      expect(a.side == -b.side, "the two hands face opposite ways");
+    }
+    // the mirror: the same hand drawn for the right is the left one flipped about the thumbnail's column
+    Canvas l(scr::W, scr::H), r(scr::W, scr::H);
+    l.fillScreen(0);
+    r.fillScreen(0);
+    auto none = [](int, int) -> uint16_t { return 0; };
+    auto all = [](int, int) { return 1.0f; };
+    const int cx = scr::W / 2;
+    hd::draw(l, hd::place(-1, cx, pic.y1, 30), none, all);
+    hd::draw(r, hd::place(1, cx, pic.y1, 30), none, all);
+    int diff = 0, lit = 0;
+    for (int y = 0; y < scr::H; y++)
+      for (int x = 0; x < scr::W; x++) {
+        int mx = 2 * cx - 1 - x;
+        if (mx < 0 || mx >= scr::W) continue;
+        if (l.px[y * scr::W + x] != 0) lit++;
+        if ((l.px[y * scr::W + x] != 0) != (r.px[y * scr::W + mx] != 0)) diff++;
+      }
+    expect(lit > 2000 && diff < lit / 50, "the right hand is the left one mirrored");
+  }
   // Renders.
   {
     Canvas c(scr::W, scr::H);

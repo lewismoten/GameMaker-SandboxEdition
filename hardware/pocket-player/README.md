@@ -205,6 +205,8 @@ After the display setup (2.8 inch) or at the first start (3.5 inch), once the ga
 2. **Pick your hand:** two big buttons, Pad left (right-handed) and Pad right (left-handed). This sets Hand.
 3. **Try the controls:** the real pad (floating if Pad position is Float) and Jump over a gray field. Each key lights up and its name shows on the bottom line. **Done** sits at the top, between the pad's side and Jump's side.
 
+**The hands** are Lewis Moten's ChatGPT-made vector art, `art/hand-left.svg` (a left hand; the right one is its mirror), colored a friendly mint green with a blue cuff rather than a skin tone. `tools/svgHand.py` flattens its paths (M/L/H/V/Q/C/Z) to polygons and writes `src/handshape.h`; `src/handdraw.h` fills them with anti-aliased edges and strokes their outlines. Change the art, then rerun `python3 hardware/pocket-player/tools/svgHand.py` (stdlib only) and rebuild. `host/firstruntest.cpp` checks the shapes, the thumbnail landing on the pad and Jump, and the mirror.
+
 Done writes `firstrun` in NVS (namespace `pocket`) and saves the settings, so the flow never comes back on its own. Settings, Controls, **Try the controls** opens the playground alone; its Done goes back to Settings. Over serial, `FIRST reset` erases only that key (never the rest of NVS) and `FIRST` opens the flow from the game list.
 
 ## Games, memory and size
