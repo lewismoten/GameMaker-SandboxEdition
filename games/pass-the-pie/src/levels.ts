@@ -5,9 +5,12 @@
 //   2. Payback       PLUME  Dale's lawn: the combo on lawn turkeys, kick bags, drones, the shed key, the garage roof
 //   3. Gravy Relay   RORY   two dishes to two doors and the dining room before the bar runs out (the oven restarts)
 //   4. Windy Park    PLUME  a tailwind over the pond, warm air up to the bandstand roof, swooping drones, the crew tent
-//   5. The Cord      RORY   Dale's street at dusk: follow the orange cord past Biscuit and the shop roofs
-//   6. Main Street   PLUME  the chase: Big Gobble loose and rolling after him, everything in the way costs time
-//   7. Big Gobble    PLUME  the boss against the bar: its puffed-out balloons, three tether stakes, the blower, the hall
+//   5. Rooftop Potluck RORY a fire escape up a building, a napping vacuum for the last step, a tailwind across the alley (3.2)
+//   6. Sensei's Dojo PLUME  a kicked vacuum naps into a stair, three tiers of a pagoda against a bar, boards and drones (3.2)
+//   7. The Cord      RORY   Dale's street at dusk: follow the orange cord past Biscuit and the shop roofs
+//   8. The Dog Park  PLUME  three dogs, three bones, each stretch its own way to the bone (3.2)
+//   9. Main Street   PLUME  the chase: Big Gobble loose and rolling after him, everything in the way costs time
+//  10. Big Gobble    PLUME  the boss against the bar: its puffed-out balloons, three tether stakes, the blower, the hall
 // Rory's streets are printed in storybook inks and Mr. Plume's in fight-poster inks (palette.ts).
 import type { Pal } from '@lewismoten/gamemaker-sandbox-tools/kit/palRamps';
 import { dress } from './dress';
