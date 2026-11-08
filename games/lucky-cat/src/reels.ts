@@ -18,8 +18,8 @@ import { town } from './pictures';
 export const REEL_SPEED = 5;
 
 /** The street the cartoons play on: sky, hills, the town and the grass at y 160. */
-function street(pal: Pal, book: Book, seed: number): Pixels {
-  const p = scene(pal, book, 160, seed);
+function street(pal: Pal, book: Book, seed: number, rows = true): Pixels {
+  const p = scene(pal, book, 160, seed, rows);
   town(p, pal, 152, 262);
   return p;
 }
@@ -49,7 +49,7 @@ function folk(p: Pixels, pal: Pal, x: number, ramp: string, point: boolean, hop 
 export function introReel(pal: Pal, book: Book, cat: Pixels): Reel {
   const { c } = pal;
   const reel = new Reel(pal.pal);
-  const bg = street(pal, book, 14);
+  const bg = street(pal, book, 14, false); // the title cartoon keeps its dithered sky
   const rand = rng(5);
   // 1. the town on Friday the 13th
   const banner = (p: Pixels, s: string) => {

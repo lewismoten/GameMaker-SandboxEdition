@@ -39,7 +39,7 @@ export function bunt(p: Pixels, pal: Pal, x0: number, x1: number, y: number, sag
 /** The street: sky, hills, shop fronts with awnings, the road, and bunting across the top. */
 export function streetBackdrop(pal: Pal, book: Book): Pixels {
   const { c } = pal;
-  const p = scene(pal, book, 164, 11);
+  const p = scene(pal, book, 164, 11, false); // the title and its cartoon keep the dithered sky
   // shop fronts across the back
   const rand = rng(4);
   let x = -6;

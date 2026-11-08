@@ -45,7 +45,7 @@ export function town(p: Pixels, pal: Pal, ground: number, towerX: number): void 
 /** The title picture: the name, a ribbon, Midnight, the clothesline of charms and the town. */
 export function titlePicture(pal: Pal, book: Book, cat: Pixels, charms: Pixels[], name: string, tagline: string): Pixels {
   const { c } = pal;
-  const p = scene(pal, book, 160, 14);
+  const p = scene(pal, book, 160, 14, false); // the title keeps its dithered sky
   town(p, pal, 152, 262);
   outlined(p, Math.round((W - textWidth(name, 4)) / 2), 10, name, c('gold', 4), c('ink', 0), 4, c('ink', 1));
   const ribbon = textWidth(tagline) + 20;
