@@ -36,9 +36,34 @@ inline const char* pauseItem(int i) {
   static const char* const names[PA_COUNT] = {"Resume", "Restart level", "Restart game", "How to play", "Settings", "Quit to library"};
   return names[i];
 }
+// Restart level and Restart game need a second tap: the first arms the button ("Tap again to restart", or "Tap to restart" where the
+// long form does not fit), for 3 seconds or until another button is tapped. Resume and the others act at once.
+constexpr uint32_t PAUSE_ARM_MS = 3000;
+inline bool pauseNeedsConfirm(int i) { return i == PA_RESTART_LEVEL || i == PA_RESTART_GAME; }
+enum { ARM_NONE, ARM_ARMED, ARM_ACT };  // what a tap did: nothing, armed a restart, or should do its action
+struct PauseArm {
+  int armed = -1;
+  uint32_t at = 0;
+  int tap(int item, uint32_t now) {  // item: the button under the tap (-1: none)
+    if (!pauseNeedsConfirm(item)) { armed = -1; return item < 0 ? ARM_NONE : ARM_ACT; }
+    if (armed == item && now - at <= PAUSE_ARM_MS) { armed = -1; return ARM_ACT; }
+    armed = item; at = now;
+    return ARM_ARMED;
+  }
+  bool expire(uint32_t now) {  // true: the armed button just timed out and the menu needs a redraw
+    if (armed < 0 || now - at <= PAUSE_ARM_MS) return false;
+    armed = -1;
+    return true;
+  }
+};
 struct PauseGeom { int boxX, boxY, boxW, boxH, x0, y0, colW, colGap, step, h, titleY, titleSize; float textSize; };
 constexpr PauseGeom PAUSE = scr::SMALL ? PauseGeom{4, 4, 312, 232, 12, 28, 144, 8, 68, 60, 11, 1, 1.5f}
                                        : PauseGeom{16, 16, 448, 288, 28, 54, 206, 12, 80, 70, 26, 2, 2.f};
+inline const char* pauseLabel(int i, bool armed, int colW, float textSize) {
+  if (!armed) return pauseItem(i);
+  const char* full = "Tap again to restart";
+  return (int)(strlen(full) * 6 * textSize) + 8 <= colW ? full : "Tap to restart";
+}
 // Button i's rectangle: the left column is play (Resume, Restart level, Restart game), the right the rest.
 inline void pauseCell(int i, int& x0, int& y0, int& x1, int& y1) {
   if (i == PA_STAR) {  // the title line's right end: 28 x 24 over the box's corner on the 2.8 inch board, 42 x 34 on the 3.5
@@ -73,7 +98,7 @@ template <class G> void pauseStar(G& tft, bool pinned, bool hot = false) {
   pk::drawStar(tft, (x0 + x1) / 2, (y0 + y1) / 2 + 1, r, hot ? C_BLACK : C_YELLOW, !pinned && !hot, C_DARK);
 }
 // star: -1 leaves the Favorite star off (no game list to keep it in), 0 an outlined star, 1 a filled one.
-template <class G> void pauseMenu(G& tft, const char* game, int level, int star = -1) {
+template <class G> void pauseMenu(G& tft, const char* game, int level, int star = -1, int armed = -1) {
   const PauseGeom& p = PAUSE;
   tft.fillRect(p.boxX, p.boxY, p.boxW, p.boxH, C_BLACK);
   tft.drawRect(p.boxX, p.boxY, p.boxW, p.boxH, C_WHITE);
@@ -97,7 +122,7 @@ template <class G> void pauseMenu(G& tft, const char* game, int level, int star 
   for (int i = 0; i < PA_COUNT; i++) {
     int x0, y0, x1, y1;
     pauseCell(i, x0, y0, x1, y1);
-    button(tft, x0, y0, x1, y1, pauseItem(i), false, C_DARK, p.textSize);
+    button(tft, x0, y0, x1, y1, pauseLabel(i, i == armed, p.colW, p.textSize), i == armed, C_DARK, p.textSize);
   }
 }
 

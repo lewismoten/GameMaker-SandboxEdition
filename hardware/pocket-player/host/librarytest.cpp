@@ -85,6 +85,18 @@ prs::drawPressed(fb,g);prs::drawPressed(fb,n);assert(!fb.clipped);save(fb,out+"/
     pk::tileLabel(fb,W,0,"A collection name of four lines",false,18);assert(!fb.clipped);
     for(int i=0;i<pk::ICON_COUNT;i++){pk::tileLabel(fb,W,0,"All games",false,i);assert(!fb.clipped);}
     {static Phys sp;sp.W=W;sp.H=fb.H;pk::drawSplash(sp,W,sp.H);assert(!sp.clipped);save(sp,out+"/splash-"+std::to_string(W)+".ppm");}
+    {  // buttons that would do nothing are gray: the first page's back arrow, the last page's next arrow, Details with no game picked
+      int f=pk::footer(W);
+      auto edge=[&](int x){return fb.px[f*W+x];};  // the top edge of a footer button's outline
+      pk::libraryFrame(fb,W,fb.H,"Starters",0,18,"Details",true,false);
+      assert(edge(24)==pk::C_GRAY&&edge(74)==pk::C_WHITE&&edge(W-50)==pk::C_GRAY);save(fb,out+"/library-unpicked-"+std::to_string(W)+".ppm");
+      pk::libraryFrame(fb,W,fb.H,"Starters",0,18,"Details",true,true);
+      assert(edge(W-50)==pk::C_WHITE);save(fb,out+"/library-picked-"+std::to_string(W)+".ppm");
+      pk::libraryFrame(fb,W,fb.H,"Starters",17,18,"Details",true,true);
+      assert(edge(24)==pk::C_WHITE&&edge(74)==pk::C_GRAY);
+      pk::libraryFrame(fb,W,fb.H,"Pocket Player",0,1,nullptr,false);
+      assert(edge(24)==pk::C_GRAY&&edge(74)==pk::C_GRAY);assert(!fb.clipped);
+    }
     pk::clearTiles(fb,W);pk::libraryFrame(fb,W,fb.H,"Starters / 1** First Steps",0,18,"Details");
     for(int i=0;i<6;i++) {
       auto r=pk::tile(W,i);assert(pk::hitTile(W,r.x,r.y)==i);assert(pk::hitTile(W,r.x+r.w,r.y)==-1);assert(pk::hitTile(W,r.x,r.y+r.h)==-1);
@@ -145,6 +157,17 @@ prs::drawPressed(fb,g);prs::drawPressed(fb,n);assert(!fb.clipped);save(fb,out+"/
       for(CardState s:{CARD_READING,CARD_READY,CARD_NONE,CARD_UNREADABLE,CARD_NOFOLDER}){char t[32];cardChipText(s,512,t,sizeof t);assert(t[0]&&strlen(t)<26);}
       pk::clearTiles(fb,W);libraryFrame(fb,W,fb.H,"Starters",0,2,"Details");for(int y=0;y<32;y++)assert(fb.px[y*W]==C_WHITE);  // deeper pages keep their back arrow
       const char*title="Moving and Pushing, a rather long game title that needs an ellipsis";
+      {  // the loading title wraps to two lines, whole words, nothing cut to "..." unless it is longer than both lines
+        int cols=(W-32)/12;char l1[64],l2[64];
+        wrapTitle("Moving and Pushing",cols,l1,l2,sizeof l1);assert(!l2[0]||strlen(l1)<=(size_t)cols);
+        wrapTitle("Moving and Pushing, a rather long game title that needs an ellipsis",cols,l1,l2,sizeof l1);
+        assert(l1[0]&&l2[0]&&(int)strlen(l1)<=cols&&(int)strlen(l2)<=cols&&l1[strlen(l1)-1]!=' '&&!strncmp(l1,"Moving",6));
+        wrapTitle("Graduation: Blocks and showcase",cols,l1,l2,sizeof l1);  // 31 characters: whole on the 3.5 inch, two lines on the 2.8
+        assert(cols>=31?!l2[0]:(l2[0]&&!strstr(l2,"...")&&strlen(l1)+1+strlen(l2)==31));
+        wrapTitle("",cols,l1,l2,sizeof l1);assert(!l1[0]&&!l2[0]);
+        const char*mid="A Very Long Title For A Game That Is Long";
+        drawLoading(fb,W,fb.H,mid,1,3);assert(!fb.clipped);save(fb,out+"/loading-wrap-"+std::to_string(W)+".ppm");
+      }
       for(int step:{0,1,2,3}){drawLoading(fb,W,fb.H,title,step,3);assert(!fb.clipped);save(fb,out+"/loading"+std::to_string(step)+"-"+std::to_string(W)+".ppm");}
       struct Failure { const char*name;LoadFail want;bool onCard,cardThere,missing;uint32_t largest; } failures[]={
         {"memory",FAIL_MEMORY,false,true,true,30000},{"file",FAIL_FILE,true,true,true,150000},{"card",FAIL_CARD,true,false,false,150000},{"file-flash",FAIL_FILE,false,true,false,40000}};

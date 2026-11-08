@@ -8,7 +8,9 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
+#include "buddy.h"
 #include "controls.h"
+#include "handdraw.h"
 #include "overlaydraw.h"
 #include "paddraw.h"
 #include "screen.h"
@@ -70,35 +72,22 @@ inline ctl::Need playNeed() {
 }
 
 // ---- drawing -------------------------------------------------------------------------------------------------------
-// A hand at the board's edge, seen from above: the heel of the hand (a wide oval at (bx, by), off the board's corner) and the thumb
-// reaching from it to (tx, ty) on the glass, with a flat nail near the tip and a knuckle crease. Drawn as one-pixel rows (fillRect),
-// which every screen here has; outlines first, then the skin, so the thumb and hand join without a seam.
-template <class G> void hand(G& g, int bx, int by, int tx, int ty, int wid) {
-  float dx = (float)(tx - bx), dy = (float)(ty - by), d = __builtin_sqrtf(dx * dx + dy * dy);
-  float ux = d > 0 ? dx / d : 0, uy = d > 0 ? dy / d : -1;  // along the thumb, hand to tip
-  auto ell = [&](float cx, float cy, float a, float b, uint16_t c) {  // a along the thumb, b across it
-    int r = (int)(a > b ? a : b) + 1;
-    for (int y = (int)cy - r; y <= (int)cy + r; y++) {
-      int run0 = 1 << 30, run1 = -1;
-      for (int x = (int)cx - r; x <= (int)cx + r; x++) {
-        float px = x - cx, py = y - cy, p = px * ux + py * uy, q = -px * uy + py * ux;
-        if (p * p / (a * a) + q * q / (b * b) <= 1.0f) { if (x < run0) run0 = x; run1 = x; }
-      }
-      if (run1 >= run0) g.fillRect(run0, y, run1 - run0 + 1, 1, c);
-    }
+// A hand holding the board's lower corner on `side` (-1 left, +1 mirrored right): the maintainer's SVG hand (handdraw.h), its index
+// finger's flat top on the board's bottom edge and its thumbnail on column `tx`, which is the pad's (left) or Jump's (right) column.
+template <class G> void hand(G& g, const Box& b, int side, int tx, float scale) {
+  const int bw = b.x1 - b.x0, bh = b.y1 - b.y0, sx0 = b.x0 + bw / 12, sy0 = b.y0 + bh / 10, sx1 = b.x1 - bw / 12, sy1 = b.y1 - bh / 10;
+  const float bcx = (b.x0 + b.x1) * 0.5f, bcy = (b.y0 + b.y1) * 0.5f, bhw = bw * 0.5f, bhh = bh * 0.5f, br = 8;
+  auto boardDist = [&](float px, float py) {  // signed distance to the board's rounded edge, in pixels
+    float qx = __builtin_fabsf(px - bcx) - (bhw - br), qy = __builtin_fabsf(py - bcy) - (bhh - br);
+    float ox = qx > 0 ? qx : 0, oy = qy > 0 ? qy : 0, m = qx > qy ? qx : qy;
+    return __builtin_sqrtf(ox * ox + oy * oy) + (m < 0 ? m : 0) - br;
   };
-  const float palmA = wid * 1.3f, palmB = wid * 1.6f, w2 = wid / 2.0f;
-  const float th = (d - palmA * 0.3f) / 2;                          // the thumb's half length, from inside the hand to the tip
-  const float tcx = tx - ux * th, tcy = ty - uy * th;
-  ell((float)bx, (float)by, palmA + 1, palmB + 1, C_EDGE);
-  ell(tcx, tcy, th + 1, w2 + 1, C_EDGE);
-  ell((float)bx, (float)by, palmA, palmB, C_SKIN);
-  ell(tcx, tcy, th, w2, C_SKIN);
-  float kx = tx - ux * th * 0.95f, ky = ty - uy * th * 0.95f;      // the knuckle crease, across the thumb
-  for (float q = -w2 * 0.55f; q <= w2 * 0.55f; q += 0.5f) g.fillRect((int)(kx - uy * q), (int)(ky + ux * q), 1, 1, C_EDGE);
-  float nx = tx - ux * w2 * 0.75f, ny = ty - uy * w2 * 0.75f;       // the nail: flat, wider than long, just behind the tip
-  ell(nx, ny, w2 * 0.42f + 1, w2 * 0.62f + 1, C_EDGE);
-  ell(nx, ny, w2 * 0.42f, w2 * 0.62f, C_NAIL);
+  auto bg = [&](int x, int y) -> uint16_t {
+    float bd = boardDist(x + 0.5f, y + 0.5f);
+    return bd > 0 ? C_BLACK : bd > -1 ? C_GRAY : (x >= sx0 && x < sx1 && y >= sy0 && y < sy1) ? C_SCREEN : C_DARK;
+  };
+  auto behind = [&](int x, int y) { float bd = boardDist(x + 0.5f, y + 0.5f); return bd < 0 ? 0.0f : bd > 1 ? 1.0f : bd; };
+  hd::draw(g, hd::fit(side, tx, b.y1, scale), bg, behind);
 }
 // A small board: the screen with the pad at one side, Jump at the other, MENU top left, and two thumbs on them.
 template <class G> void board(G& g, const Box& b, bool padRight, bool thumbs, bool labels) {
@@ -125,9 +114,12 @@ template <class G> void board(G& g, const Box& b, bool padRight, bool thumbs, bo
   g.fillRoundRect(sx0 + 3, sy0 + 3, mw, mh, 3, C_DARK);
   g.drawRoundRect(sx0 + 3, sy0 + 3, mw, mh, 3, C_WHITE);
   if (thumbs) {  // each hand holds the board's lower corner on its side; its thumb rests on the pad or on Jump
-    int wid = sh * 22 / 100;
-    hand(g, padRight ? b.x1 + wid / 3 : b.x0 - wid / 3, b.y1 + wid / 2, pcx, pcy + pr / 8, wid);
-    hand(g, padRight ? b.x0 - wid / 3 : b.x1 + wid / 3, b.y1 + wid / 2, jcx, jcy + jr / 3, wid);
+    // two mirrored hands of one size: each one's palm outline (where it goes behind the device) sits just outside the board's border line, the thumbs rest about over
+    // the pad and over Jump (the picture shows where hands usually sit; the thumbs need not hit the targets exactly)
+    const int D = padRight ? b.x1 - pcx : pcx - b.x0;
+    const float sp = hd::flushScale((float)D);
+    hand(g, b, padRight ? 1 : -1, pcx, sp);
+    hand(g, b, padRight ? -1 : 1, padRight ? b.x0 + D : b.x1 - D, sp);
   }
   if (labels) {
     g.setTextSize(1);
@@ -144,12 +136,24 @@ template <class G> void title(G& g, const char* t) {
   g.print(t);
   g.fillRect(0, scr::SMALL ? 32 : 46, W, 2, C_BLUE);
 }
+// Card 1's geometry: the picture's area, its board (room beside it for the two hands), and the left-handed caption under the hands
+// (clear of the cuffs; host/firstruntest.cpp checks that no hand touches it or Next).
+inline Box howToPic() { return scr::SMALL ? Box{18, 42, 158, 128} : Box{26, 60, 236, 190}; }
+inline Box howToBoard() {
+  Box pic = howToPic();
+  const int hm = scr::SMALL ? 22 : 32;
+  return {pic.x0 + hm, pic.y0, pic.x1 - hm, pic.y1 - (scr::SMALL ? 12 : 20)};
+}
+inline Box captionBox() {
+  const int cols = scr::SMALL ? 32 : 30, y = howToBoard().y1 + (scr::SMALL ? 50 : 76);
+  return {8, y, 8 + (int)(cols * 6 * TEXT), y + 2 * ((int)(8 * TEXT) + 4)};
+}
 // Card 1: How to hold it.
 template <class G> void howTo(G& g) {
   g.fillScreen(C_BLACK);
   title(g, "How to hold it");
-  Box pic = scr::SMALL ? Box{18, 42, 158, 128} : Box{26, 60, 236, 190};
-  board(g, pic, false, true, true);
+  Box pic = howToPic();
+  board(g, howToBoard(), false, true, true);
   int tx = pic.x1 + (scr::SMALL ? 10 : 16), cols = (int)((W - tx - 6) / (6 * TEXT)), y = pic.y0;
   struct L { const char* t; uint16_t c; } lines[] = {
       {"Left thumb on the pad: slide it to walk, climb and duck.", C_WHITE},
@@ -161,7 +165,7 @@ template <class G> void howTo(G& g) {
     int n = (int)strlen(l.t), rows = (n + cols - 1) / cols;
     y += rows * ((int)(8 * TEXT) + 3) + (scr::SMALL ? 8 : 12);
   }
-  st::wrapped(g, 8, pic.y1 + (scr::SMALL ? 34 : 50), "Left-handed? The next page puts the pad on the right.", scr::SMALL ? 32 : 30, 2, TEXT, C_GRAY);
+  st::wrapped(g, captionBox().x0, captionBox().y0, "Left-handed? The next page puts the pad on the right.", scr::SMALL ? 32 : 30, 2, TEXT, C_GRAY);
   Box n = nextBox();
   ovl::button(g, n.x0, n.y0, n.x1, n.y1, "Next", false, C_BLUE, 2);
 }
@@ -191,7 +195,7 @@ template <class G> void pickHand(G& g, int sel = -1) {
 // Card 3: the playground. `L` is the controls model's layout (its pad where the thumb is), `look` its ctl::Look, `held` the keys
 // pressed (st::heldText's bits). `full` paints the whole screen; otherwise only the old pad's square `old` is cleared first.
 template <class G> void playground(G& g, const ctl::Layout& L, const ctl::Need& nd, uint8_t dirs, uint8_t btn, uint8_t held, int look, bool floatPad,
-                                   bool full, const ctl::Disc& old) {
+                                   bool full, const ctl::Disc& old, bd::Buddy* buddy = nullptr) {
   if (full) {
     g.fillScreen(C_BLACK);
     g.fillRect(0, 0, W, scr::VIEW_H, C_FIELD);
@@ -247,6 +251,7 @@ template <class G> void playground(G& g, const ctl::Layout& L, const ctl::Need& 
   g.setTextColor(held ? C_YELLOW : C_GRAY, C_BLACK);
   g.setTextDatum(textdatum_t::middle_center);
   g.drawString(t, W / 2, scr::VIEW_H + (H - scr::VIEW_H) / 2);
+  if (buddy && full) { buddy->drawn = {0, 0, -1, -1}; bd::paint(g, *buddy, C_FIELD); }
   g.setTextDatum(textdatum_t::top_left);
 }
 }  // namespace fr

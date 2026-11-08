@@ -1059,7 +1059,7 @@ static void drawPicker(bool clear = true, bool paging = false) {
   pk::clearTiles(tft,scr::W);
   const char*crumb=searchText[0]?(searchAll?"Search: All games":"Search: This category"):subcategory>=0?subLabel(category,subcategory):category?rootLabel(category):"Pocket Player";
   bool home=browsingCategories&&!category&&!searchText[0],none=home&&!ngames;  // the root page: no back arrow, a card chip; no games at all: a notice instead of tiles
-  pk::libraryFrame(tft,scr::W,scr::H,crumb,page,pages,searchText[0]&&!nmatch?"Clear":browsingCategories?nullptr:"Details",!home);
+  pk::libraryFrame(tft,scr::W,scr::H,crumb,page,pages,searchText[0]&&!nmatch?"Clear":browsingCategories?nullptr:"Details",!home,selected>=0&&selected<ngames);
   if(home)pk::drawCardChip(tft,scr::W,cardState,cardGames());
   bool was=sdUp;if(haveSD&&!browsingCategories)mountSD();
   for(int r=0;r<6&&!none;r++) {
@@ -1177,7 +1177,8 @@ static void drawSettings() {
 }
 
 static bool pausePinned = false;  // whether the paused game is a favorite (read from NVS as the game pauses)
-static void drawPause() { ovl::pauseMenu(tft, cfg.title, world.level, pausePinned ? 1 : 0); }
+static ovl::PauseArm pauseArm;
+static void drawPause() { ovl::pauseMenu(tft, cfg.title, world.level, pausePinned ? 1 : 0, pauseArm.armed); }
 
 static uint32_t t0 = 0, ticksRun = 0;
 static int curGame = -1;
@@ -1824,6 +1825,7 @@ static bool frDoneDown = false;    // a touch began on Done (it counts when it l
 static uint8_t frHeld = 0;         // the keys the playground's thumb holds (st::heldText's bits)
 static int frLook = ctl::LOOK_OFF;
 static ctl::Disc frPad = {0, 0, 0};
+static bd::Buddy frBuddy;          // the small character that moves with the keys (buddy.h)
 static bool firstRunDone() {
   Preferences p;
   bool done = false;
@@ -1831,7 +1833,7 @@ static bool firstRunDone() {
   return done;
 }
 static void drawPlayground(bool full) {
-  fr::playground(tft, controls.L, controls.need, controls.padDirs, controls.btnDown, frHeld, frLook, settings.floatPad, full, frPad);
+  fr::playground(tft, controls.L, controls.need, controls.padDirs, controls.btnDown, frHeld, frLook, settings.floatPad, full, frPad, &frBuddy);
   if (frDoneDown) { fr::Box d = fr::doneBox(); ovl::button(tft, d.x0, d.y0, d.x1, d.y1, "Done", true, C_BLUE, 2); }
   frPad = controls.L.pad;
   banner::paint(tft, 0, 0);
@@ -1842,7 +1844,7 @@ static void drawFirstRun() {
     case fr::HAND: fr::pickHand(tft); break;
     case fr::PLAY:
       controls.configure(settings, fr::playNeed());
-      frHeld = 0; frDoneDown = false; frLook = controls.padLook(millis());
+      frHeld = 0; frDoneDown = false; frLook = controls.padLook(millis()); frBuddy = bd::Buddy();
       drawPlayground(true);
       return;
     default: return;
@@ -1919,6 +1921,7 @@ static void firstRunLoop(uint32_t now) {
     frLook = look;
     drawPlayground(false);
   }
+  if (frBuddy.tick(frHeld, now)) bd::paint(tft, frBuddy, fr::C_FIELD);
 }
 
 static void pollSerial() {
@@ -2215,7 +2218,7 @@ static bool menuTap(prs::Screen sc, int& tx, int& ty) {
   prs::Ev e = press.update(now, pts.n > 0, pts.n ? pts.x[0] : 0, pts.n ? pts.y[0] : 0, [&](int x, int y, prs::Rect& r) { return prs::under(c, x, y, r); });
   if (e == prs::PRESS) {
     if (sc == prs::SC_PICKER && press.dy >= PK_BTN_Y && press.dx < 98) press.makeRepeatable();  // the page arrows
-    if (sc == prs::SC_PAUSE) prs::drawPausePressed(tft, ovl::pauseHit(press.dx, press.dy));
+    if (sc == prs::SC_PAUSE) prs::drawPausePressed(tft, ovl::pauseHit(press.dx, press.dy), pauseArm.armed);
     else prs::drawPressed(tft, press.r);
   }
   else if (e == prs::CANCEL) redrawMenu(sc);
@@ -2436,8 +2439,13 @@ void loop() {
     return;
   }
   if (mode == PAUSED) {
+    if (pauseArm.expire(millis())) drawPause();
     if (menuTap(prs::SC_PAUSE, tx, ty)) {
-      switch (ovl::pauseHit(tx, ty)) {
+      int hit = ovl::pauseHit(tx, ty), was = pauseArm.armed;
+      int act = pauseArm.tap(hit, millis());
+      if (act == ovl::ARM_ARMED) { drawPause(); wasDown = true; return; }
+      if (act == ovl::ARM_NONE) { if (was >= 0) drawPause(); return; }
+      switch (hit) {
         case ovl::PA_RESUME:
           mode = PLAYING; world.releaseAll(); controls.reset(); last.valid = false; drawFrame(true); drawStrip();
           t0 = millis(); ticksRun = 0; wasDown = true;
@@ -2473,7 +2481,7 @@ void loop() {
     return;
   }
   if (mode == HELP_SCREEN) {
-    if (freshTap(tx, ty)) { mode = PAUSED; tft.fillScreen(C_BLACK); last.valid = false; drawFrame(true); drawStrip(); drawPause(); wasDown = true; }
+    if (freshTap(tx, ty)) { pauseArm.armed = -1; mode = PAUSED; tft.fillScreen(C_BLACK); last.valid = false; drawFrame(true); drawStrip(); drawPause(); wasDown = true; }
     delay(5);
     return;
   }

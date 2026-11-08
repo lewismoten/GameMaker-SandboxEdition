@@ -136,11 +136,11 @@ struct Press {
   uint32_t showLeft(uint32_t now) const { uint32_t t = now - at; return t < MIN_SHOW_MS ? MIN_SHOW_MS - t : 0; }
 };
 // The pause menu's pressed look: the whole button yellow with its label in black (the same button, drawn hot).
-template <class G> void drawPausePressed(G& g, int i) {
+template <class G> void drawPausePressed(G& g, int i, int armed = -1) {
   if (i == ovl::PA_STAR) { ovl::pauseStar(g, false, true); return; }
   int x0, y0, x1, y1;
   ovl::pauseCell(i, x0, y0, x1, y1);
-  ovl::button(g, x0, y0, x1, y1, ovl::pauseItem(i), true, ovl::C_DARK, ovl::PAUSE.textSize);
+  ovl::button(g, x0, y0, x1, y1, ovl::pauseLabel(i, i == armed, ovl::PAUSE.colW, ovl::PAUSE.textSize), true, ovl::C_DARK, ovl::PAUSE.textSize);
 }
 // The pressed look of the other buttons: a thick yellow frame inside the button (their labels and pictures stay readable).
 template <class G> void drawPressed(G& g, const Rect& r) {
