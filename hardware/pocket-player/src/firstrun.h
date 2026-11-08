@@ -74,7 +74,7 @@ inline ctl::Need playNeed() {
 // ---- drawing -------------------------------------------------------------------------------------------------------
 // A hand holding the board's lower corner on `side` (-1 left, +1 mirrored right): the maintainer's SVG hand (handdraw.h), its index
 // finger's flat top on the board's bottom edge and its thumbnail on column `tx`, which is the pad's (left) or Jump's (right) column.
-template <class G> void hand(G& g, const Box& b, int side, int tx) {
+template <class G> void hand(G& g, const Box& b, int side, int tx, float scale) {
   const int bw = b.x1 - b.x0, bh = b.y1 - b.y0, sx0 = b.x0 + bw / 12, sy0 = b.y0 + bh / 10, sx1 = b.x1 - bw / 12, sy1 = b.y1 - bh / 10;
   const float bcx = (b.x0 + b.x1) * 0.5f, bcy = (b.y0 + b.y1) * 0.5f, bhw = bw * 0.5f, bhh = bh * 0.5f, br = 8;
   auto boardDist = [&](float px, float py) {  // signed distance to the board's rounded edge, in pixels
@@ -87,7 +87,7 @@ template <class G> void hand(G& g, const Box& b, int side, int tx) {
     return bd > 0 ? C_BLACK : bd > -1 ? C_GRAY : (x >= sx0 && x < sx1 && y >= sy0 && y < sy1) ? C_SCREEN : C_DARK;
   };
   auto behind = [&](int x, int y) { float bd = boardDist(x + 0.5f, y + 0.5f); return bd < 0 ? 0.0f : bd > 1 ? 1.0f : bd; };
-  hd::draw(g, hd::place(side, tx, side < 0 ? b.x0 : b.x1, b.y1), bg, behind);
+  hd::draw(g, hd::fit(side, tx, side < 0 ? b.x0 : b.x1, b.y1, scale), bg, behind);
 }
 // A small board: the screen with the pad at one side, Jump at the other, MENU top left, and two thumbs on them.
 template <class G> void board(G& g, const Box& b, bool padRight, bool thumbs, bool labels) {
@@ -99,7 +99,6 @@ template <class G> void board(G& g, const Box& b, bool padRight, bool thumbs, bo
   int sw = sx1 - sx0, sh = sy1 - sy0, pr = sh * 26 / 100, jr = sh * 13 / 100;
   int pcx = padRight ? sx1 - pr - sw / 20 : sx0 + pr + sw / 20, pcy = sy1 - pr - sh / 14;
   int jcx = padRight ? sx0 + jr + sw / 14 : sx1 - jr - sw / 14, jcy = sy1 - jr - sh / 10;
-  if (thumbs) jcx = padRight ? b.x0 + (b.x1 - pcx) : b.x1 - (pcx - b.x0);  // in the picture Jump sits as far from its edge as the pad, so both hands match
   g.drawCircle(pcx, pcy, pr, C_WHITE);
   g.drawCircle(pcx, pcy, pr / 3, C_WHITE);
   int a = pr * 2 / 3, s = pr / 5 + 2;
@@ -115,8 +114,11 @@ template <class G> void board(G& g, const Box& b, bool padRight, bool thumbs, bo
   g.fillRoundRect(sx0 + 3, sy0 + 3, mw, mh, 3, C_DARK);
   g.drawRoundRect(sx0 + 3, sy0 + 3, mw, mh, 3, C_WHITE);
   if (thumbs) {  // each hand holds the board's lower corner on its side; its thumb rests on the pad or on Jump
-    hand(g, b, padRight ? 1 : -1, pcx);
-    hand(g, b, padRight ? -1 : 1, jcx);
+    // the pad's hand sets the size (its fingers flush with the board's edge); Jump is nearer its edge, so its hand is a tenth smaller and
+    // turned a little, the thumbnail on the inner half of Jump
+    const float sp = hd::flushScale((float)(padRight ? b.x1 - pcx : pcx - b.x0));
+    hand(g, b, padRight ? 1 : -1, pcx, sp);
+    hand(g, b, padRight ? -1 : 1, padRight ? jcx + jr / 2 : jcx - jr / 2, sp * 0.9f);
   }
   if (labels) {
     g.setTextSize(1);

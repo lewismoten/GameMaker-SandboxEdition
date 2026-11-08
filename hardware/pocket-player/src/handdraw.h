@@ -30,17 +30,49 @@ inline uint16_t fillColor(hs::Role r) {
   }
 }
 // Where the hand lands: scale (pixels per unit of the art), the screen position of its thumbnail's center, and the side.
-struct Place { float s, tipX, tipY; int side; };
-// The hand for a board whose bottom edge is at `edgeY`: the index finger's flat top sits on that edge, and the thumbnail's center
-// lands on column tipX. The size follows: the curled fingers' outer edge lands on the board's outer edge `edgeX` (its left edge for
-// the left hand, its right edge for the right), as in a photo of the grip.
-inline Place place(int side, int tipX, int edgeX, int edgeY) {
-  float d = side < 0 ? (float)(tipX - edgeX) : (float)(edgeX - tipX);
-  float s = d / (hs::TIP_X - hs::FINGER_MIN_X);
-  return {s, (float)tipX, edgeY + (hs::TIP_Y - hs::EDGE_Y) * s, side};
+// The hand is turned a little (c, sn: cosine and sine) about its thumbnail's center, so a slightly different size still reaches.
+struct Place { float s, tipX, tipY, c, sn; int side; };
+inline float sx(const Place& p, int i) {
+  const float u = hs::pts[2 * i] - hs::TIP_X, v = hs::pts[2 * i + 1] - hs::TIP_Y;
+  return p.tipX + (u * p.c + v * p.sn) * p.s * (p.side < 0 ? 1.0f : -1.0f);
 }
-inline float sx(const Place& p, int i) { return p.tipX + (hs::pts[2 * i] - hs::TIP_X) * p.s * (p.side < 0 ? 1.0f : -1.0f); }
-inline float sy(const Place& p, int i) { return p.tipY + (hs::pts[2 * i + 1] - hs::TIP_Y) * p.s; }
+inline float sy(const Place& p, int i) {
+  const float u = hs::pts[2 * i] - hs::TIP_X, v = hs::pts[2 * i + 1] - hs::TIP_Y;
+  return p.tipY + (-u * p.sn + v * p.c) * p.s;
+}
+// How far the curled fingers' outer edge (outline included) reaches from the thumbnail's column, for size s and turn (c, sn).
+inline float fingerReach(float s, float c, float sn) {
+  float m = 1e9f;
+  for (int k = 0; k < hs::SHAPES; k++) {
+    if (!hs::shapes[k].behind) continue;
+    for (int j = 0; j < hs::shapes[k].subs; j++) {
+      const hs::Sub& sb = hs::subs[hs::shapes[k].first + j];
+      for (int i = sb.start; i < sb.start + sb.n; i++) {
+        float x = (hs::pts[2 * i] - hs::TIP_X) * c + (hs::pts[2 * i + 1] - hs::TIP_Y) * sn;
+        if (x < m) m = x;
+      }
+    }
+  }
+  return (-m + 4.5f) * s;
+}
+// Size that puts the fingers flush with an edge `d` pixels from the thumbnail's column with no turn.
+inline float flushScale(float d) { return d / (hs::TIP_X - hs::FINGER_MIN_X); }
+// The hand of size s for a board whose bottom edge is at `edgeY`: its thumbnail's center lands on column tipX, the index finger's flat
+// top sits on that edge, and the hand is turned just enough that the curled fingers' outer edge lands on the board's outer edge
+// `edgeX` (its left edge for the left hand, its right edge for the right), as in a photo of the grip.
+inline Place fit(int side, int tipX, int edgeX, int edgeY, float s) {
+  const float d = side < 0 ? (float)(tipX - edgeX) : (float)(edgeX - tipX);
+  float lo = -0.7f, hi = 0.7f;
+  for (int i = 0; i < 14; i++) {  // the reach shrinks as the turn grows
+    float mid = (lo + hi) * 0.5f;
+    if (fingerReach(s, __builtin_cosf(mid), __builtin_sinf(mid)) > d) lo = mid; else hi = mid;
+  }
+  const float a = (lo + hi) * 0.5f, c = __builtin_cosf(a), sn = __builtin_sinf(a);
+  Place p{s, (float)tipX, 0, c, sn, side};
+  const float u = 667.0f - hs::TIP_X, v = hs::EDGE_Y - hs::TIP_Y;  // the middle of the index finger's flat top
+  p.tipY = edgeY - (-u * sn + v * c) * s;
+  return p;
+}
 
 // Draws the hand. `bg(x, y)` is the color under a pixel, `behind(x, y)` how much of a pixel is outside the board (0 to 1).
 template <class G, class BG, class BEHIND> void draw(G& g, const Place& pl, BG bg, BEHIND behind) {
@@ -51,9 +83,14 @@ template <class G, class BG, class BEHIND> void draw(G& g, const Place& pl, BG b
   struct Cross { float x; int d; };
   Cross xs[96];
   for (int i = 0; i < hs::POINTS; i++) { X[i] = sx(pl, i); Y[i] = sy(pl, i); }
-  const float xA = pl.side < 0 ? pl.tipX + (hs::MIN_X - hs::TIP_X) * pl.s : pl.tipX - (hs::MAX_X - hs::TIP_X) * pl.s,
-              xB = pl.side < 0 ? pl.tipX + (hs::MAX_X - hs::TIP_X) * pl.s : pl.tipX - (hs::MIN_X - hs::TIP_X) * pl.s;
-  int xa = (int)xA - 3, xb = (int)xB + 3, ya = (int)(pl.tipY + (hs::MIN_Y - hs::TIP_Y) * pl.s) - 3, yb = (int)(pl.tipY + (hs::MAX_Y - hs::TIP_Y) * pl.s) + 3;
+  float xA = 1e9f, xB = -1e9f, yA = 1e9f, yB = -1e9f;
+  for (int i = 0; i < hs::POINTS; i++) {
+    if (X[i] < xA) xA = X[i];
+    if (X[i] > xB) xB = X[i];
+    if (Y[i] < yA) yA = Y[i];
+    if (Y[i] > yB) yB = Y[i];
+  }
+  int xa = (int)xA - 3, xb = (int)xB + 3, ya = (int)yA - 3, yb = (int)yB + 3;
   if (xa < 0) xa = 0;
   if (xb >= scr::W) xb = scr::W - 1;
   if (ya < 0) ya = 0;

@@ -116,14 +116,16 @@ int main(int argc, char** argv) {
       int w = pic.x1 - pic.x0, h = pic.y1 - pic.y0, sx0 = pic.x0 + w / 12, sy0 = pic.y0 + h / 10, sx1 = pic.x1 - w / 12, sy1 = pic.y1 - h / 10;
       int sw = sx1 - sx0, sh = sy1 - sy0, pr = sh * 26 / 100, jr = sh * 13 / 100, wid = sh * 22 / 100;
       int pcx = padRight ? sx1 - pr - sw / 20 : sx0 + pr + sw / 20, pcy = sy1 - pr - sh / 14;
-      int jcy = sy1 - jr - sh / 10, jcx = padRight ? pic.x0 + (pic.x1 - pcx) : pic.x1 - (pcx - pic.x0);  // as board() places Jump with hands
+      int jcy = sy1 - jr - sh / 10, jcx = padRight ? sx0 + jr + sw / 14 : sx1 - jr - sw / 14;  // where the game puts Jump
       (void)wid;
-      hd::Place a = hd::place(padRight ? 1 : -1, pcx, padRight ? pic.x1 : pic.x0, pic.y1), b = hd::place(padRight ? -1 : 1, jcx, padRight ? pic.x0 : pic.x1, pic.y1);
+      const float sp = hd::flushScale((float)(padRight ? pic.x1 - pcx : pcx - pic.x0));
+      hd::Place a = hd::fit(padRight ? 1 : -1, pcx, padRight ? pic.x1 : pic.x0, pic.y1, sp),
+                b = hd::fit(padRight ? -1 : 1, padRight ? jcx + jr / 2 : jcx - jr / 2, padRight ? pic.x0 : pic.x1, pic.y1, sp * 0.9f);
+      expect(b.s / a.s > 0.85f && b.s / a.s < 1.15f && __builtin_fabsf(b.sn) < 0.3f && __builtin_fabsf(a.sn) < 0.05f, "the hands differ by under 15% in size and a few degrees in turn");
       // the curled fingers' outer edge sits flush with the board's outer edge, on both hands
-      auto fingerX = [](const hd::Place& p) { return p.tipX + (hs::FINGER_MIN_X - hs::TIP_X) * p.s * (p.side < 0 ? 1.0f : -1.0f); };
+      auto fingerX = [](const hd::Place& p) { float r = hd::fingerReach(p.s, p.c, p.sn); return p.side < 0 ? p.tipX - r : p.tipX + r; };
       expect(__builtin_fabsf(fingerX(a) - (padRight ? pic.x1 : pic.x0)) < 1.5f && __builtin_fabsf(fingerX(b) - (padRight ? pic.x0 : pic.x1)) < 1.5f,
              "the curled fingers line up with the board's outer edges");
-      expect(__builtin_fabsf(a.s - b.s) < 0.01f, "both hands are the same size");
       expect((a.tipX - pcx) * (a.tipX - pcx) + (a.tipY - pcy) * (a.tipY - pcy) < pr * pr, "the thumbnail lands on the pad");
       expect((b.tipX - jcx) * (b.tipX - jcx) + (b.tipY - jcy) * (b.tipY - jcy) < jr * jr, "the thumbnail lands on Jump");
       expect(a.side == -b.side, "the two hands face opposite ways");
@@ -135,8 +137,8 @@ int main(int argc, char** argv) {
     auto none = [](int, int) -> uint16_t { return 0; };
     auto all = [](int, int) { return 1.0f; };
     const int cx = scr::W / 2;
-    hd::draw(l, hd::place(-1, cx, cx - 50, pic.y1), none, all);
-    hd::draw(r, hd::place(1, cx, cx + 50, pic.y1), none, all);
+    hd::draw(l, hd::fit(-1, cx, cx - 50, pic.y1, hd::flushScale(50)), none, all);
+    hd::draw(r, hd::fit(1, cx, cx + 50, pic.y1, hd::flushScale(50)), none, all);
     int diff = 0, lit = 0;
     for (int y = 0; y < scr::H; y++)
       for (int x = 0; x < scr::W; x++) {
