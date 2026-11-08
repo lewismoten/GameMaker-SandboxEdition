@@ -18,6 +18,8 @@
 //              (solid), win0..5 (a tall window, 2 x 3), deskL/M/R
 //   tower      leg, braceL0..2/braceR0,1,3 (knee braces, 2 x 2), legFoot (a leg to walk past), deck/deck2 (a landing: stand on it), rail, lamp (light it: lampLit),
 //              boardUp/boardHalf/boardGone/boardBack (a loose board, on the stones' clock)
+//   loft       loftA/B (planks), beamA/B, archDark/archLit, wallLamp, face0..8 (a clock face, 3 x 3), gear0..3 (2 x 2),
+//              pendT0/1 + pendB0/1 (a swinging pendulum, 1 x 2): the inside of the clock tower
 //   roofs      roof/roof2 (slates: stand on them), pot (slates with a chimney pot), stack (a chimney: solid),
 //              puff0..5 then puffOff (warm smoke that lifts you, on a clock), flake (Wisp's snow: take it)
 //   mist       dellAir (the haze inside a dell), bead (a bead of Wisp's mist: take it), mist0..5 steps (u, h, g, r: a step of cloud
@@ -60,6 +62,7 @@ import { blanket, doormat, lantern, moon, puddle, signpost, star, tunnelAir, tun
 import { bed, footbridge, gust, rain, stone, updraft, water } from './art/weather';
 import { dent, scree } from './art/high';
 import { drift, potSlates, puff, slates, stack } from './art/roofs';
+import { arch, beam, clockFace, gear, loftPuff, pendulum, planks, wallLamp } from './art/loft';
 import { brace, calm, lamp, landing, landingOnLeg, leg, legKnee, railing, shingles } from './art/tower';
 import { desk, floorboard, libWindow, lostBook, shelf, shelfGap } from './art/library';
 import { houseDoor } from './art/exits';
@@ -320,14 +323,34 @@ export function addProps(book: Book, pal: Pal, groups: readonly string[], o: Pro
     );
     loop(['boardUp', 'boardHalf', 'boardGone', 'boardBack'], [STONE_TICKS.up, STONE_TICKS.half, STONE_TICKS.under, STONE_TICKS.rise]);
   }
+  if (has('loft')) {
+    book.add('loftA', planks(pal, 0), air);
+    book.add('loftB', planks(pal, 1), air);
+    book.add('beamA', beam(pal, 0), air);
+    book.add('beamB', beam(pal, 1), air);
+    book.add('archDark', arch(pal, false), air);
+    book.add('archLit', arch(pal, true), air);
+    book.add('wallLamp', wallLamp(pal), air);
+    clockFace(pal).forEach((px, i) => book.add(`face${i}`, px, air));
+    gear(pal).forEach((px, i) => book.add(`gear${i}`, px, air));
+    const [lt, lb] = pendulum(pal, -1);
+    const [rt, rb] = pendulum(pal, 1);
+    book.add('pendT0', lt, air);
+    book.add('pendB0', lb, air);
+    book.add('pendT1', rt, air);
+    book.add('pendB1', rb, air);
+    loop(['pendT0', 'pendT1'], 45);
+    loop(['pendB0', 'pendB1'], 45);
+  }
   if (has('roofs')) {
     book.add('roof', slates(pal, 0), { solid: LEDGE, grav: PULL.down });
     book.add('roof2', slates(pal, 3), { solid: LEDGE, grav: PULL.down });
     book.add('pot', potSlates(pal), { solid: LEDGE, grav: PULL.down });
     book.add('stack', stack(pal), { solid: SOLID });
     const puffs = [0, 1, 2, 3, 4, 5].map((f) => `puff${f}`);
-    puffs.forEach((n, f) => book.add(n, puff(pal, f), { grav: PULL.up }));
-    book.add('puffOff', puff(pal, -1), air);
+    const smoke = has('loft') ? loftPuff : puff; // inside the tower the smoke is drawn over its planks
+    puffs.forEach((n, f) => book.add(n, smoke(pal, f), { grav: PULL.up }));
+    book.add('puffOff', smoke(pal, -1), air);
     loop([...puffs, 'puffOff'], [...puffs.map(() => PUFF_TICKS.frame), PUFF_TICKS.off]);
     book.add('flake', drift(pal), { ...air, score: POINTS.flake, touch: 'sky' });
   }
