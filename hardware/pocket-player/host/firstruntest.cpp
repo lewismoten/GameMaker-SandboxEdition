@@ -150,6 +150,20 @@ int main(int argc, char** argv) {
           if (d.px[y * scr::W + x] == hd::NAIL) (x < mid ? nl : nr)++;
       expect(nl > 8 && nr > 8, "a thumbnail rests on the glass on each side of the picture");
     }
+    // the hands keep clear of the caption and of Next (their bounding boxes, measured on the render), in both layouts, and all on screen
+    for (bool padRight : {false, true}) {
+      Canvas c(scr::W, scr::H);
+      c.fillScreen(0);
+      fr::board(c, fr::howToBoard(), padRight, true, false);
+      int x0 = 9999, y0 = 9999, x1 = -1, y1 = -1;
+      for (int y = 0; y < scr::H; y++)
+        for (int x = 0; x < scr::W; x++)
+          if (c.px[y * scr::W + x]) { x0 = x < x0 ? x : x0; x1 = x > x1 ? x : x1; y0 = y < y0 ? y : y0; y1 = y > y1 ? y : y1; }
+      auto hit = [&](const fr::Box& b) { return !(x1 < b.x0 || x0 >= b.x1 || y1 < b.y0 || y0 >= b.y1); };
+      printf("hands bbox (%s layout) y %d..%d; caption y %d..%d\n", padRight ? "left-handed" : "right-handed", y0, y1, fr::captionBox().y0, fr::captionBox().y1);
+      expect(!hit(fr::captionBox()) && !hit(fr::nextBox()), "the hands touch neither the caption nor Next");
+      expect(fr::captionBox().y1 <= scr::H && fr::captionBox().x1 <= fr::nextBox().x0 + 1, "the caption is on screen and clear of Next");
+    }
     // the mirror: the same hand drawn for the right is the left one flipped about the thumbnail's column
     Canvas l(scr::W, scr::H), r(scr::W, scr::H);
     l.fillScreen(0);

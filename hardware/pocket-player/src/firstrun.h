@@ -136,13 +136,24 @@ template <class G> void title(G& g, const char* t) {
   g.print(t);
   g.fillRect(0, scr::SMALL ? 32 : 46, W, 2, C_BLUE);
 }
+// Card 1's geometry: the picture's area, its board (room beside it for the two hands), and the left-handed caption under the hands
+// (clear of the cuffs; host/firstruntest.cpp checks that no hand touches it or Next).
+inline Box howToPic() { return scr::SMALL ? Box{18, 42, 158, 128} : Box{26, 60, 236, 190}; }
+inline Box howToBoard() {
+  Box pic = howToPic();
+  const int hm = scr::SMALL ? 22 : 32;
+  return {pic.x0 + hm, pic.y0, pic.x1 - hm, pic.y1 - (scr::SMALL ? 12 : 20)};
+}
+inline Box captionBox() {
+  const int cols = scr::SMALL ? 32 : 30, y = howToBoard().y1 + (scr::SMALL ? 50 : 76);
+  return {8, y, 8 + (int)(cols * 6 * TEXT), y + 2 * ((int)(8 * TEXT) + 4)};
+}
 // Card 1: How to hold it.
 template <class G> void howTo(G& g) {
   g.fillScreen(C_BLACK);
   title(g, "How to hold it");
-  Box pic = scr::SMALL ? Box{18, 42, 158, 128} : Box{26, 60, 236, 190};
-  const int hm = scr::SMALL ? 22 : 32;  // room beside the board for the two hands
-  board(g, {pic.x0 + hm, pic.y0, pic.x1 - hm, pic.y1 - (scr::SMALL ? 12 : 20)}, false, true, true);
+  Box pic = howToPic();
+  board(g, howToBoard(), false, true, true);
   int tx = pic.x1 + (scr::SMALL ? 10 : 16), cols = (int)((W - tx - 6) / (6 * TEXT)), y = pic.y0;
   struct L { const char* t; uint16_t c; } lines[] = {
       {"Left thumb on the pad: slide it to walk, climb and duck.", C_WHITE},
@@ -154,7 +165,7 @@ template <class G> void howTo(G& g) {
     int n = (int)strlen(l.t), rows = (n + cols - 1) / cols;
     y += rows * ((int)(8 * TEXT) + 3) + (scr::SMALL ? 8 : 12);
   }
-  st::wrapped(g, 8, pic.y1 + (scr::SMALL ? 34 : 50), "Left-handed? The next page puts the pad on the right.", scr::SMALL ? 32 : 30, 2, TEXT, C_GRAY);
+  st::wrapped(g, captionBox().x0, captionBox().y0, "Left-handed? The next page puts the pad on the right.", scr::SMALL ? 32 : 30, 2, TEXT, C_GRAY);
   Box n = nextBox();
   ovl::button(g, n.x0, n.y0, n.x1, n.y1, "Next", false, C_BLUE, 2);
 }
