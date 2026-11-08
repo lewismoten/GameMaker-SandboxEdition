@@ -71,8 +71,6 @@ export function levelLamps(pal: Pal): Level {
   for (let k = 1; k < rows.length; k++)
     for (let y = rows[k] + 2; y < rows[k - 1]; y++)
       for (let x = 1; x < W - 1; x++) {
-        // a sign stands in front of the wall of the terrace above: it hides the gap, and keeps the block set small
-        const behindSign = A.signs.some(([sk, sx]) => sk === k - 1 && x >= sx && x < sx + 4);
         if (x !== A.ladders[k - 1] && x !== A.ladders[k - 2]) m.set(x, y, (x * 7 + y * 3) % 5 === 0 ? 'rock2' : 'rock');
       }
   // the fog bridges: each alley's steps start gone (mist.ts), the one nearest the way in first to come up
