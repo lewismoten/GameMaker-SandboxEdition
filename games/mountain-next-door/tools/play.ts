@@ -5,6 +5,7 @@ import { playLevels } from '../../kit/levelRun';
 import { emptySpot, footprints, lowTunnel, gateHunt, nextDoor, signposts, steppingStones, summitPicnic, windyRidge, zigzagHome } from './route';
 import { library, mossbackBack } from './routeMore';
 import { lookout, rooftops } from './routeLate';
+import { excuseMe, gatheringMist, theFord } from './routeNew';
 import { GameSim } from './sim';
 
 export const SEED = 1;
@@ -15,12 +16,15 @@ const ROUTES = [
   footprints,
   library,
   steppingStones,
+  gatheringMist,
   signposts,
   emptySpot,
   lookout,
   windyRidge,
   rooftops,
   lowTunnel,
+  excuseMe,
+  theFord,
   zigzagHome,
   summitPicnic,
 ];

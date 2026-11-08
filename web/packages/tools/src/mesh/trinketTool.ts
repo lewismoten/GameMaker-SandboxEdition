@@ -7,6 +7,7 @@ import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { Worker, isMainThread, parentPort } from 'node:worker_threads';
+import { setFlagsFromString } from 'node:v8';
 import { deflateRawSync } from 'node:zlib';
 import type { FieldTrinket } from './fieldTrinket';
 import { inspectMesh } from './meshCheck';
@@ -56,6 +57,11 @@ export function sourceKey(entries: string[]): string {
 const flag = (args: string[], name: string) => (args.includes(name) ? args[args.indexOf(name) + 1] : undefined);
 
 export async function runTrinketTool<D extends TrinketToolDef>(tool: TrinketTool<D>): Promise<void> {
+  // Node 26.8's mid-tier compiler (Maglev) sometimes returns another call's number from a hot loop: about half the cold runs
+  // gave a trinket's color bodies one body's volume four times over ("its colors fill 49 mm3, its solid 4770"), the same
+  // mesh measuring differently from one call to the next. The tools run the same code in the interpreter, the baseline
+  // compiler and TurboFan, so turn Maglev off before any of it is warm (a few percent slower, and the bytes are unchanged).
+  setFlagsFromString('--no-maglev');
   const { game, gameTitle, out, defs, args } = tool;
   /** One trinket: its kinds of file written, its manifest entry returned. */
   const build = (def: D): Item => {

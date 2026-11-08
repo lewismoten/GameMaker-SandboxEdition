@@ -25,20 +25,21 @@ writePng(join(out, 'title.png'), t, title.palette, 2);
 
 /** Ticks into each level when its screen is taken. */
 const AT: Record<string, number> = {
-  next: 1040,
+  next: 1500,
   gates: 700,
   back: 1500,
   prints: 1500,
   books: 1200,
-  stream: 640,
+  stream: 900,
   signs: 1500,
-  hollow: 900,
+  hollow: 1500,
   tower: 2400,
   roofs: 900,
-  ridge: 420,
+  ridge: 1600,
   tunnel: 1300,
   zigzag: 1700,
   picnic: 1500,
+  ford: 1800,
 };
 /** The first level's frames: one every this many ticks. */
 const EVERY = 8;

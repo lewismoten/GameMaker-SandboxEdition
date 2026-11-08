@@ -27,11 +27,14 @@ editors are easier on phones, touch screens and keyboards, and pages and the off
 - The Thank-You Parade is rebuilt as version 2.0, with a parade-poster look, a rival band and a level played as Marge the crop duster pilot.
 - Dialogs fit a phone screen without scrolling, and New game keeps its three starts in view on a phone held sideways.
 - Pages open with less to download, and the site and its offline copy are smaller: Starter ZIPs share the DOS player and are put back together in the browser, byte for byte the same.
+- THE CHEZ makes the factory car's ka-chunk into 24 V, then 48 V as it pulls away, and coasts with a clunk and a fading whine, even past the desk window.
+- The 3D-print trinkets and the phone kit download about two thirds less: the site sends small packed files and makes each STL, 3MF and the printer-parts ZIP in the browser when you save it.
 
 ### Fixed
 
 - The home page's games list works by keyboard, focus moves to a new page's heading, and dialogs announce their titles to screen readers.
 - My games no longer fills with "(damaged copy)" games.
+- The mug of pens on the 1994 desk sits on the desk top again instead of hanging over the wall.
 - Undo and Redo keep what they should in the background, monster, character, sample and music editors, and the music editor no longer freezes on a big song.
 
 ### Removed

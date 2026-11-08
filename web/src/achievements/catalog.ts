@@ -11,6 +11,7 @@ import type { AchievementRecord } from './store';
 import { EDIT_KINDS } from './editKinds';
 import { REPEAT_TIERS, type RepeatGoal } from './repeatGoals';
 import { COUNT_LEVELS, type Level } from './levels';
+import { CEREMONIES, DIPLOMA, certificateTitle } from '../project/ceremonies';
 
 export type Category = 'making' | 'playing' | 'watching' | 'desk' | 'fun' | 'found';
 
@@ -138,6 +139,16 @@ export const DESK_PROPS = [
   'desk-lume',
   'desk-egg-uv',
 ] as const;
+
+/** One badge for each honors and one for the diploma: earned when that graduation game is finished (goals.ts). */
+const HONORS: Achievement[] = [...CEREMONIES, DIPLOMA].map((c) => ({
+  id: `honor-${c.id}`,
+  title: certificateTitle(c),
+  desc: c === DIPLOMA ? 'Earned the honors of every stage and graduated.' : `Finished the graduation for ${c.stage} and earned its honors.`,
+  icon: '📜',
+  category: 'playing' as const,
+  hard: true,
+}));
 
 export const ACHIEVEMENTS: readonly Achievement[] = [
   // making
@@ -862,6 +873,7 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
     hidden: true,
     hint: 'The underground press runs more than one page.',
   },
+  ...HONORS,
 ];
 
 const BY_ID = new Map(ACHIEVEMENTS.map((a) => [a.id, a]));

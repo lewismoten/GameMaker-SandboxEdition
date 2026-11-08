@@ -12,7 +12,7 @@ import { addSign, type Sign } from '../../kit/starter/sign';
 import { addProps, type PropOptions, type Timed } from './props';
 import type { SongName } from './song';
 
-export type MonFile = 'trail' | 'next' | 'hollow' | 'picnic';
+export type MonFile = 'trail' | 'next' | 'hollow' | 'picnic' | 'street' | 'ford';
 
 export interface Level {
   /** The files' base name (next.map, next.lst ...). */
@@ -27,6 +27,8 @@ export interface Level {
   timed: Timed[];
   mon: MonFile;
   song: SongName;
+  /** The sound file this level loads (SND, without the extension); `next` and the rest use mount.snd. */
+  snd?: 'next' | 'mist' | 'town' | 'ford' | 'wind' | 'hollow' | 'brook';
   /** A scene you mostly watch (the bot stops and looks). */
   watch?: boolean;
 }
