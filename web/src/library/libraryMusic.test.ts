@@ -2,7 +2,7 @@
 // (There is no DOM here: a bare window, document and room stand in.)
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-const engine = vi.hoisted(() => ({ pauses: [] as boolean[], playing: false }));
+const engine = vi.hoisted(() => ({ pauses: [] as boolean[], playing: false, sound: 'blaster' }));
 
 vi.mock('@lewismoten/gamemaker-sandbox-engine/audio/engine', () => ({
   AudioEngine: class {
@@ -24,9 +24,10 @@ vi.mock('../project/files', () => ({
   loadCatalog: () => Promise.resolve([{ id: 'brief' }]),
   peekGameFile: () => Promise.resolve(new Uint8Array(1)),
 }));
-vi.mock('../media/demoAudio', () => ({ demoAudio: () => 'blaster' }));
+vi.mock('../media/demoAudio', () => ({ demoAudio: () => engine.sound }));
 
 import { startLibraryMusic } from './libraryMusic';
+import { whileWatching } from './libraryMedia';
 
 const win = new EventTarget();
 const classes = new Set<string>();
@@ -38,6 +39,7 @@ const doc = Object.assign(new EventTarget(), {
 beforeEach(() => {
   vi.stubGlobal('addEventListener', win.addEventListener.bind(win));
   vi.stubGlobal('removeEventListener', win.removeEventListener.bind(win));
+  vi.stubGlobal('dispatchEvent', win.dispatchEvent.bind(win));
   vi.stubGlobal('document', doc);
 });
 
@@ -46,6 +48,7 @@ afterEach(() => {
   classes.clear();
   engine.pauses = [];
   engine.playing = false;
+  engine.sound = 'blaster';
 });
 
 describe('library music and the tour', () => {
@@ -72,5 +75,38 @@ describe('library music and the tour', () => {
     vi.useRealTimers();
     win.dispatchEvent(new CustomEvent('gm-tour', { detail: 'start' }));
     expect(engine.pauses).toEqual([true, false]);
+  });
+
+  it('pauses while a video or walkthrough dialog is open and resumes when it closes', async () => {
+    const room = { isConnected: true } as HTMLElement;
+    startLibraryMusic(room);
+    win.dispatchEvent(new Event('keydown'));
+    await vi.waitFor(() => expect(engine.playing).toBe(true));
+
+    let close = () => {};
+    const closed = whileWatching(new Promise<void>((r) => (close = r)));
+    expect(engine.pauses).toEqual([true]);
+    // a second player (the TV opens the same ones) keeps it paused until both are closed
+    let close2 = () => {};
+    const closed2 = whileWatching(new Promise<void>((r) => (close2 = r)));
+    close();
+    await closed;
+    expect(engine.pauses.at(-1)).toBe(true);
+    close2();
+    await closed2;
+    expect(engine.pauses.at(-1)).toBe(false);
+  });
+
+  it('does not start music for someone who turned it off', async () => {
+    engine.sound = 'none';
+    const room = { isConnected: true } as HTMLElement;
+    startLibraryMusic(room);
+    win.dispatchEvent(new Event('keydown'));
+    let close = () => {};
+    const closed = whileWatching(new Promise<void>((r) => (close = r)));
+    close();
+    await closed;
+    await new Promise((r) => setTimeout(r, 20));
+    expect(engine.playing).toBe(false);
   });
 });
