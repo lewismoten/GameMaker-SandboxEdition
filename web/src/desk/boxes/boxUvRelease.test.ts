@@ -29,13 +29,14 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-const faces = (): BoxFaces => ({ front: 'blob:test/front', back: 'x', left: 'x', right: 'x', top: 'x', bottom: 'x' }) as BoxFaces;
+const model = { querySelector: () => null } as unknown as HTMLElement;
+const faces = (): BoxFaces => ({ front: 'blob:test/front', back: 'x', left: 'x', right: 'x', top: 'x', bottom: 'x' });
 
 it('asks for a face picture while the box is on the shelf', async () => {
   const { uvGame, dressUv } = await import('./boxUv');
   const f = faces();
   uvGame(f, {} as CatalogEntry);
-  dressUv({} as HTMLElement, f, ['front']);
+  dressUv(model, f, ['front']);
   await vi.advanceTimersByTimeAsync(200);
   expect(requested).toContain('blob:test/front');
 });
@@ -44,7 +45,7 @@ it('does not ask for a picture whose box was released before the queued job ran'
   const { uvGame, dressUv, releaseUv } = await import('./boxUv');
   const f = faces();
   uvGame(f, {} as CatalogEntry);
-  dressUv({} as HTMLElement, f, ['front']);
+  dressUv(model, f, ['front']);
   releaseUv(f); // the shelf swaps in the whole box and lets go of this one
   await vi.advanceTimersByTimeAsync(200);
   expect(requested).not.toContain('blob:test/front');
