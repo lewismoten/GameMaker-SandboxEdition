@@ -100,6 +100,10 @@ int main(int argc, char** argv) {
     Canvas c(scr::W, scr::H);
     fr::howTo(c);
     save(dir, "1-howto", c);
+    Canvas lh(scr::W, scr::H);  // the left-handed layout of the how-to picture (pad on the right): the hands mirror
+    lh.fillScreen(fr::C_BLACK);
+    fr::board(lh, scr::SMALL ? fr::Box{40, 42, 136, 116} : fr::Box{58, 60, 204, 170}, true, true, true);
+    save(dir, "1-howto-lefty-board", lh);
     Canvas h(scr::W, scr::H);
     fr::pickHand(h);
     save(dir, "2-hand", h);

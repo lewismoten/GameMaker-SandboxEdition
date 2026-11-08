@@ -106,83 +106,92 @@ template <class G> void hand(G& g, const Box& b, int side, int tx, int ty, int w
   const float xe = (float)(side < 0 ? b.x0 : b.x1), y1 = (float)b.y1;
   auto X = [&](float lx) { return xe + in * lx * u; };  // local (toward the board, down from its bottom edge) in units of u
   auto Y = [&](float ly) { return y1 + ly * u; };
-  // the thumb: a curve from inside the palm to the target, bulging down
-  float p0x = X(-0.55f), p0y = Y(-0.2f), p2x = (float)tx, p2y = (float)ty;
-  float mx = (p0x + p2x) / 2, my = (p0y + p2y) / 2, cx = p2x - p0x, cy = p2y - p0y, cl = __builtin_sqrtf(cx * cx + cy * cy);
-  float nx = -cy / (cl > 0 ? cl : 1), ny = cx / (cl > 0 ? cl : 1);
-  if (ny < 0) { nx = -nx; ny = -ny; }  // the bulge points down
-  float p1x = mx + nx * cl * 0.22f, p1y = my + ny * cl * 0.22f;
-  Seg s[10];
-  int n = 0;
-  float prx = p0x, pry = p0y;
-  for (int i = 1; i <= 6; i++) {
-    float t = i / 6.0f, a = (1 - t) * (1 - t), bq = 2 * (1 - t) * t, c = t * t;
-    float qx = a * p0x + bq * p1x + c * p2x, qy = a * p0y + bq * p1y + c * p2y;
-    s[n++] = {prx, pry, qx, qy, u * (0.56f - 0.14f * (i - 1) / 6.0f), u * (0.56f - 0.14f * i / 6.0f)};
-    prx = qx; pry = qy;
-  }
-  s[n++] = {X(-0.9f), Y(0.1f), X(-0.9f), Y(0.9f), u * 0.82f, u * 0.82f};      // the palm, beside the board's edge
-  s[n++] = {X(-0.7f), Y(-0.55f), X(0.45f), Y(-0.55f), u * 0.42f, u * 0.42f};     // the index finger's curl over the bezel
-  const float ccx = X(-0.9f), cyc = Y(1.95f), chw = u * 0.92f, chh = u * 0.5f;  // the cuff: a plain box
-  // the thumb's direction at the tip, for the nail and highlight
-  float dx = p2x - p1x, dy = p2y - p1y, dl = __builtin_sqrtf(dx * dx + dy * dy);
-  float ux = dl > 0 ? dx / dl : 0, uy = dl > 0 ? dy / dl : -1;
-  float lx = in * 0.45f, ly = -0.89f;  // toward the light (above, and to the hand's outer side)
+  // The grip: the palm and fingers wrap behind the board (hidden by it), so what shows is the palm beside the lower corner, three
+  // fingertips peeking out past the side edge, a wrist that runs down and outward, and the thumb coming over the front.
+  Seg body[2], tips[3], thumb[4];
+  body[0] = {X(-0.75f), Y(-0.1f), X(-0.85f), Y(0.9f), u * 0.95f, u * 0.9f};  // the palm
+  body[1] = {X(-0.9f), Y(0.9f), X(-1.45f), Y(1.9f), u * 0.8f, u * 0.75f};     // the wrist, down and outward
+  for (int i = 0; i < 3; i++) tips[i] = {X(0.2f), Y(-2.1f + 0.78f * i), X(-0.62f), Y(-2.1f + 0.78f * i), u * 0.34f, u * 0.34f};
+  // the thumb: two bones with a visible joint, from the palm over the front to the target (a short, thick, slightly arched thumb)
+  float p0x = X(-0.1f), p0y = Y(0.3f), p2x = (float)tx, p2y = (float)ty;
+  float cx = p2x - p0x, cy = p2y - p0y, cl = __builtin_sqrtf(cx * cx + cy * cy), ex = cx / cl, ey = cy / cl;
+  float jx = p0x + cx * 0.55f + ey * u * 0.14f * in, jy = p0y + cy * 0.55f - ex * u * 0.14f * in;  // the joint, arched up a little
+  if (jy > p0y + cy * 0.55f) { jx = p0x + cx * 0.55f - ey * u * 0.14f * in; jy = p0y + cy * 0.55f + ex * u * 0.14f * in; }
+  thumb[0] = {p0x, p0y, jx, jy, u * 0.85f, u * 0.72f};
+  thumb[1] = {jx, jy, p2x, p2y, u * 0.72f, u * 0.56f};
+  thumb[2] = {jx, jy + u * 0.08f, jx, jy + u * 0.08f, u * 0.78f, u * 0.78f};  // the joint's bump
+  const int nThumb = 3;
+  // the cuff: a plain band across the wrist's end, turned to follow it
+  float wcx = X(-1.45f), wcy = Y(1.9f), wvx = X(-1.45f) - X(-0.9f), wvy = Y(1.9f) - Y(0.9f), wl = __builtin_sqrtf(wvx * wvx + wvy * wvy);
+  wvx /= wl; wvy /= wl;
+  const float ccx = wcx + wvx * u * 0.45f, ccy = wcy + wvy * u * 0.45f, chw = u * 0.95f, chh = u * 0.45f;
+  float tdx = p2x - jx, tdy = p2y - jy, tdl = __builtin_sqrtf(tdx * tdx + tdy * tdy);
+  const float ux = tdx / tdl, uy = tdy / tdl;
+  const float lx = in * -0.45f, ly = -0.89f;  // toward the light (above, and toward the board)
   const float sd = u * 0.32f;
-  // the creases on the index curl and the nail
-  float nxc = p2x - ux * u * 0.3f, nyc = p2y - uy * u * 0.3f;
-  float x0 = p0x, x1 = p0x, y0 = p0y, y2 = p0y;
-  for (int i = 0; i < n; i++) {
-    float r = (s[i].ra > s[i].rb ? s[i].ra : s[i].rb) + ow + 2;
-    float lo = s[i].ax < s[i].bx ? s[i].ax : s[i].bx, hi = s[i].ax < s[i].bx ? s[i].bx : s[i].ax;
-    float to = s[i].ay < s[i].by ? s[i].ay : s[i].by, bo = s[i].ay < s[i].by ? s[i].by : s[i].ay;
-    if (i == 0 || lo - r < x0) x0 = lo - r;
-    if (i == 0 || hi + r > x1) x1 = hi + r;
-    if (i == 0 || to - r < y0) y0 = to - r;
-    if (i == 0 || bo + r > y2) y2 = bo + r;
-  }
-  { float r = ow + 2, lo = ccx - chw - r, hi = ccx + chw + r, bo = cyc + chh + r;
+  const float nxc = p2x - ux * u * 0.3f, nyc = p2y - uy * u * 0.3f;
+  auto field = [&](float px, float py) {  // the whole hand: the thumb on top; the rest only where the board does not cover it
+    float d = fieldDist(thumb, nThumb, px, py);
+    if (!(px >= b.x0 && px < b.x1 && py >= b.y0 && py < b.y1)) {
+      float e = fieldDist(body, 2, px, py), f = fieldDist(tips, 3, px, py);
+      d = d < e ? d : e;
+      d = d < f ? d : f;
+    }
+    return d;
+  };
+  float x0 = 1e9f, x1 = -1e9f, y0 = 1e9f, y2 = -1e9f;
+  auto grow = [&](const Seg& q) {
+    float r = (q.ra > q.rb ? q.ra : q.rb) + ow + 2;
+    float lo = (q.ax < q.bx ? q.ax : q.bx) - r, hi = (q.ax < q.bx ? q.bx : q.ax) + r, to = (q.ay < q.by ? q.ay : q.by) - r, bo = (q.ay < q.by ? q.by : q.ay) + r;
     if (lo < x0) x0 = lo;
     if (hi > x1) x1 = hi;
-    if (bo > y2) y2 = bo; }
+    if (to < y0) y0 = to;
+    if (bo > y2) y2 = bo;
+  };
+  for (const Seg& q : body) grow(q);
+  for (const Seg& q : tips) grow(q);
+  for (int i = 0; i < nThumb; i++) grow(thumb[i]);
+  { float r = chw + chh + ow + 2;
+    if (ccx - r < x0) x0 = ccx - r;
+    if (ccx + r > x1) x1 = ccx + r;
+    if (ccy + r > y2) y2 = ccy + r; }
   const int bw = b.x1 - b.x0, bh = b.y1 - b.y0, sx0 = b.x0 + bw / 12, sy0 = b.y0 + bh / 10, sx1 = b.x1 - bw / 12, sy1 = b.y1 - bh / 10;
   for (int y = (int)y0; y <= (int)y2; y++)
     for (int x = (int)x0; x <= (int)x1; x++) {
       float px = x + 0.5f, py = y + 0.5f;
       uint16_t col = (x >= sx0 && x < sx1 && y >= sy0 && y < sy1) ? C_SCREEN : (x >= b.x0 && x < b.x1 && y >= b.y0 && y < b.y1) ? C_DARK : C_BLACK;
       bool any = false;
-      float ax0 = __builtin_fabsf(px - ccx) - chw, ay0 = __builtin_fabsf(py - cyc) - chh;
-      float dc = ax0 > ay0 ? ax0 : ay0;
-      if (dc < ow + 1) {  // the cuff: a plain outlined band
+      float rx = px - ccx, ry = py - ccy, ca = rx * wvx + ry * wvy, cb = -rx * wvy + ry * wvx;  // the cuff's own axes
+      float ax0 = __builtin_fabsf(cb) - chw, ay0 = __builtin_fabsf(ca) - chh, dc = ax0 > ay0 ? ax0 : ay0;
+      if (dc < ow + 1 && !(px >= b.x0 && px < b.x1 && py >= b.y0 && py < b.y1)) {
         col = mix(col, LINE, cover(dc - ow));
         col = mix(col, CUFF, cover(dc));
         any = true;
       }
-      float d = fieldDist(s, n, px, py);
+      float d = field(px, py);
       if (d < ow + 1) {
         col = mix(col, LINE, cover(d - ow));
+        float sh = field(px - lx * sd, py - ly * sd);
         uint16_t fill = SKIN;
-        if (d < 0 && fieldDist(s, n, px - lx * sd, py - ly * sd) > -0.5f) fill = mix(SKIN, SHADE, cover(fieldDist(s, n, px - lx * sd, py - ly * sd) - 0.0f));
+        if (d < 0 && sh > -0.5f) fill = mix(SKIN, SHADE, cover(sh));
+        // the fingertips sit in shadow behind the board's edge
+        bool onThumb = fieldDist(thumb, nThumb, px, py) < 0.5f;
+        if (!onThumb && fieldDist(tips, 3, px, py) < 0.5f) fill = SHADE;
         col = mix(col, fill, cover(d));
-        // the highlights: the thumb's shoulder and the index knuckle
-        float hx = px - (p1x + nx * 0.05f * u), hy = py - p1y;
-        if (d < -ow * 0.5f) {
-          float h1 = __builtin_sqrtf(hx * hx + hy * hy) - u * 0.13f;
-          float kx = px - X(0.25f), ky = py - Y(-0.73f);
-          float h2 = __builtin_sqrtf(kx * kx * 0.5f + ky * ky * 4.0f) - u * 0.1f;
-          float hh = h1 < h2 ? h1 : h2;
-          col = mix(col, LIGHT, cover(hh) * 0.9f);
+        if (d < -ow * 0.5f && onThumb) {
+          float hx = px - (jx - ux * u * 0.2f + lx * u * 0.2f), hy = py - (jy - uy * u * 0.2f + ly * u * 0.2f);
+          float h1 = __builtin_sqrtf(hx * hx + hy * hy) - u * 0.12f;
+          col = mix(col, LIGHT, cover(h1) * 0.9f);
+          // the joint's crease: a short line across the thumb
+          float qx = px - (jx + ux * u * 0.12f), qy = py - (jy + uy * u * 0.12f), along = qx * ux + qy * uy, across = -qx * uy + qy * ux;
+          float cd = __builtin_fabsf(along);
+          if (__builtin_fabsf(across) < u * 0.3f) col = mix(col, LINE, cover(cd - 0.4f) * 0.55f);
+          // the nail: a small pale oval just behind the tip, rimmed in the outline color
+          float nx2 = px - nxc, ny2 = py - nyc, na = nx2 * ux + ny2 * uy, nb = -nx2 * uy + ny2 * ux;
+          float nd = (__builtin_sqrtf(na * na / (u * 0.26f * u * 0.26f) + nb * nb / (u * 0.3f * u * 0.3f)) - 1.0f) * u * 0.27f;
+          col = mix(col, LINE, cover(nd - 0.9f) * 0.85f);
+          col = mix(col, NAIL, cover(nd));
         }
-        // two knuckle creases on the index finger
-        for (int k = 0; k < 2; k++) {
-          float cxk = X(-0.15f + 0.45f * k), t = py - (Y(-0.55f) - u * 0.2f);
-          float cd = __builtin_fabsf(px - cxk);
-          if (t > 0 && t < u * 0.4f && d < -ow * 0.5f) col = mix(col, LINE, cover(cd - 0.4f) * 0.55f);
-        }
-        // the nail: a small pale oval just behind the tip, rimmed in the outline color
-        float ex = px - nxc, ey = py - nyc, ax = ex * ux + ey * uy, ay = -ex * uy + ey * ux;
-        float nd = (__builtin_sqrtf(ax * ax / (u * 0.26f * u * 0.26f) + ay * ay / (u * 0.3f * u * 0.3f)) - 1.0f) * u * 0.27f;
-        if (d < -ow * 0.5f) { col = mix(col, LINE, cover(nd - 0.9f) * 0.85f); col = mix(col, NAIL, cover(nd)); }
         any = true;
       }
       if (any) g.drawPixel(x, y, col);
