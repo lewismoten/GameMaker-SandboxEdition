@@ -9,12 +9,12 @@ changelog: [engine](web/packages/engine/CHANGELOG.md), [archives](web/packages/a
 ## [3.3.0] - 2026-11-09
 
 Four games grow: The Mountain Moved Next Door (3.2, twenty-four levels, about an hour), Pass the Pie (3.3, thirteen levels, inked
-art), Lucky Cat (3.1, fifteen levels) and The Thank-You Parade (3.2, fifteen levels). The Library gets its first art course and
+art), Lucky Cat (3.1, fifteen levels) and The Thank-You Parade (3.2, fifteen levels). The Library gets seven art courses and
 pauses its music while a video plays, Pocket Player is easier to pick up, and two small desk and phone fixes come along.
 
 ### Added
 
-- Art courses (#/art-courses): a first course on drawing blocks, with real blocks drawn in code, on the Library shelf.
+- Art courses (#/art-courses): seven courses on drawing a game's art, from blocks and palettes to moving characters and title screens, on the Library shelf.
 
 ### Changed
 
