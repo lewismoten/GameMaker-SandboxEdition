@@ -55,19 +55,23 @@ describe('generate', () => {
     for (let x = 0; x < 30; x++) expect([r.kinds[x], r.kinds[19 * 30 + x]]).toEqual([0, 0]);
     expect(verifyReach(r).ok).toBe(true);
   });
+  // 200 seeds per kind in four chunks of 50, each with its own generous timeout: the work is bounded
+  // (about 2.6 s for all forest seeds on an idle Mac) but the default 5 s failed once at load 52.
   for (const kind of ['dungeon', 'forest'] as const) {
-    it(`${kind}: every open cell is reachable from the entry on 200 seeds`, () => {
-      const roles = kind === 'dungeon' ? dungeonRoles : forestRoles;
-      for (let seed = 1; seed <= 200; seed++) {
-        const rect = seed % 3 ? whole : { x: 0, y: 0, w: 12 + (seed % 40), h: 12 + (seed % 25) };
-        const r = run(kind, roles, seed, rect);
-        const v = verifyReach(r);
-        expect(v.ok, `seed ${seed}`).toBe(true);
-        expect(r.kinds[r.entry]).toBeLessThan(3);
-        expect(r.kinds[r.exit]).toBeLessThan(3);
-        expect(v.open, `seed ${seed} not empty`).toBeGreaterThan(rect.w * rect.h * 0.08);
-      }
-    });
+    for (const first of [1, 51, 101, 151]) {
+      it(`${kind}: every open cell is reachable from the entry on seeds ${first} to ${first + 49}`, { timeout: 60_000 }, () => {
+        const roles = kind === 'dungeon' ? dungeonRoles : forestRoles;
+        for (let seed = first; seed < first + 50; seed++) {
+          const rect = seed % 3 ? whole : { x: 0, y: 0, w: 12 + (seed % 40), h: 12 + (seed % 25) };
+          const r = run(kind, roles, seed, rect);
+          const v = verifyReach(r);
+          expect(v.ok, `seed ${seed}`).toBe(true);
+          expect(r.kinds[r.entry]).toBeLessThan(3);
+          expect(r.kinds[r.exit]).toBeLessThan(3);
+          expect(v.open, `seed ${seed} not empty`).toBeGreaterThan(rect.w * rect.h * 0.08);
+        }
+      });
+    }
   }
   it('forest trail runs from the entry to the exit', () => {
     const r = run('forest', forestRoles, 21);
