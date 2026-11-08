@@ -129,6 +129,8 @@ export interface PropOptions {
   wake?: number;
   /** Ticks after the start each group of stars lights (the empty spot at sunset). */
   stars?: [number, number, number];
+  /** How many mist steps to make (default all six): a level that bridges alleys needs only a few. */
+  mistSteps?: number;
 }
 
 export function addProps(book: Book, pal: Pal, groups: readonly string[], o: PropOptions = {}): Timed[] {
@@ -360,7 +362,7 @@ export function addProps(book: Book, pal: Pal, groups: readonly string[], o: Pro
     book.add('bead', bead(pal), { ...air, score: POINTS.bead, effect: BEAD_COUNTER, eamt: 1, touch: 'sky' });
     book.add('beadDell', bead(pal, true), { ...air, score: POINTS.bead, effect: BEAD_COUNTER, eamt: 1, touch: 'dellAir' });
     const { period, first, gap, count } = MIST_STEPS;
-    for (let k = 0; k < count; k++) {
+    for (let k = 0; k < Math.min(count, o.mistSteps ?? count); k++) {
       const gone = first + gap * k;
       book.add(`mist${k}u`, mistStep(pal, 'up'), { solid: LEDGE, grav: PULL.down });
       book.add(`mist${k}h`, mistStep(pal, 'half'), air);
@@ -403,7 +405,15 @@ export function addProps(book: Book, pal: Pal, groups: readonly string[], o: Pro
       loop(names, [ring.before, fr, fr, fr, fr, ring.after]);
     });
   }
-  if (has('orchard')) book.add('apple', apple(pal), { ...air, score: POINTS.apple, touch: 'sky' });
+  if (has('lamp') && !has('tunnel')) {
+    book.add('lantern', lantern(pal, false), { ...air, score: POINTS.lantern, touch: 'lanternLit' });
+    book.add('lanternLit', lantern(pal, true), air);
+  }
+  if (has('facade')) {
+    book.add('rock', rock(pal, 1), air);
+    book.add('rock2', rock(pal, 2), air);
+  }
+  if (has('orchard'))book.add('apple', apple(pal), { ...air, score: POINTS.apple, touch: 'sky' });
   if (has('picnic')) {
     for (const part of ['L', 'M', 'R'] as const) book.add(`blanket${part}`, blanket(pal, part), air);
     for (const part of ['L', 'M', 'R'] as const) book.add(`mat${part}`, doormat(pal, part), air);

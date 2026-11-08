@@ -114,6 +114,11 @@ const PRINT_INK: Record<string, Tint> = {
     [66, 30, 20],
     [160, 90, 60],
   ],
+  // the blue hour: gaslight yellow-brown ink
+  lamplit: [
+    [40, 36, 10],
+    [146, 126, 52],
+  ],
   // the afternoon in the orchard: bottle-green ink
   afternoon: [
     [20, 46, 30],
@@ -436,6 +441,29 @@ export const LOOKS: Record<string, Record<string, Tint>> = {
       [20, 20, 40],
       [110, 100, 140],
       [56, 50, 80],
+    ],
+  },
+  // the blue hour on the hill: a deep blue sky going amber at the rim, the terraces dim
+  lamplit: {
+    sky: [
+      [20, 44, 96],
+      [250, 190, 116],
+      [66, 84, 130],
+    ],
+    grass: [
+      [30, 54, 44],
+      [170, 180, 100],
+      [84, 116, 72],
+    ],
+    dirt: [
+      [56, 28, 36],
+      [196, 124, 96],
+      [116, 66, 60],
+    ],
+    rock: [
+      [46, 42, 66],
+      [214, 192, 190],
+      [106, 98, 122],
     ],
   },
   // the orchard in the afternoon: honey sky, apple-green turf, warm sienna earth
