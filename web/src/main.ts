@@ -309,6 +309,13 @@ async function route(): Promise<void> {
     renderLinuxHelp(content);
     return;
   }
+  if (kind === 'art-courses') {
+    const { renderArtCourses } = await import('./artCourses/artCoursesPage');
+    const title = renderArtCourses(content, id);
+    if (ui !== 'modern') return;
+    document.title = `${title} · ${PRODUCT}`;
+    return;
+  }
   if (kind === 'programmers-guide') {
     const { renderProgrammersGuide } = await import('./programmersGuide/programmersGuidePage');
     const title = await renderProgrammersGuide(content, id);
@@ -412,6 +419,7 @@ const MODERN_PATHS = [
   'magazine',
   'library',
   'programmers-guide',
+  'art-courses',
   'pi-remote',
 ];
 const startHash = location.hash;

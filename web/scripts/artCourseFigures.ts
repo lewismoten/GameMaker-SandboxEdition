@@ -79,7 +79,9 @@ function grass(seed: number, detail: 'plain' | 'tuft-a' | 'tuft-b' | 'flower'): 
     return GRASS[v < 0.1 ? 1 : v < 0.82 ? 2 : 3];
   });
   const tuft = (x: number, y: number) => {
-    p.rect(x - 2, y - 3, 1, 3, GRASS[4]).rect(x, y - 4, 1, 4, GRASS[4]).rect(x + 2, y - 3, 1, 3, GRASS[4]);
+    p.rect(x - 2, y - 3, 1, 3, GRASS[4])
+      .rect(x, y - 4, 1, 4, GRASS[4])
+      .rect(x + 2, y - 3, 1, 3, GRASS[4]);
     p.rect(x - 1, y - 1, 3, 2, GRASS[0]);
   };
   if (detail === 'tuft-a') tuft(6, 8);
