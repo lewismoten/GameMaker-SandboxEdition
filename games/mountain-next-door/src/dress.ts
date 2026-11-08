@@ -13,6 +13,8 @@ import { crown, rock } from './art/land';
 import type { Level } from './level';
 
 export interface DressOptions {
+  /** Indoors or underground: no wisps of cloud, no birds. */
+  indoor?: boolean;
   /** Birds in the sky (day looks only). */
   birds?: boolean;
   /** Every other tree a red maple instead of an orange oak (nine more blocks). */
@@ -129,6 +131,7 @@ export function dress(l: Level, pal: Pal, o: DressOptions = {}): void {
   for (let y = 1; y < H - 4; y++)
     for (let x = 2; x < W - 3; x++) {
       const r = hash(x, y, 2);
+      if (o.indoor) continue;
       if (r < 0.012 && clear(x, y, 3, 2)) {
         const [a, b] = wisp(pal);
         put(

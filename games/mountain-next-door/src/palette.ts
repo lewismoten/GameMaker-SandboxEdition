@@ -94,6 +94,24 @@ export const LOOKS: Record<string, Record<string, Tint>> = {
       [70, 150, 80],
     ],
   },
+  // inside the library: warm cream walls, deep red-brown wood, lamplight
+  library: {
+    sky: [
+      [110, 70, 60],
+      [255, 240, 210],
+      [230, 200, 160],
+    ],
+    wood: [
+      [50, 26, 20],
+      [220, 160, 110],
+      [130, 74, 44],
+    ],
+    brick: [
+      [70, 30, 30],
+      [230, 150, 120],
+      [150, 70, 60],
+    ],
+  },
   // a gray, misty park
   mist: {
     sky: [

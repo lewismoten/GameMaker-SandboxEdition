@@ -14,7 +14,7 @@ import { corner, mon, pace } from '@lewismoten/gamemaker-sandbox-tools/kit/actor
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { Book } from '../../kit/starter/book';
 import type { Pal } from '../../kit/starter/palette';
-import { HALE, OKORO, bigEye, bigMouth, bubble, fogPuff, mist, glowWorm, hen, neighborBottom, neighborTop, pebble, squirrel, sun, wisp } from './art/folk';
+import { HALE, LIN, OKORO, bigEye, bigMouth, bubble, fogPuff, mist, glowWorm, hen, neighborBottom, neighborTop, pebble, squirrel, sun, wisp } from './art/folk';
 
 /** Powers of 100 or more cannot be popped by touching Tess (PLAYGAME.C DoCollision). */
 const POWER = 150;
@@ -44,6 +44,7 @@ export function monsterPictures(pal: Pal): Book {
   for (const [name, n] of [
     ['okoro', OKORO],
     ['hale', HALE],
+    ['lin', LIN],
   ] as const) {
     mb.add(`${name}Top`, neighborTop(pal, n));
     mb.add(`${name}Bot0`, neighborBottom(pal, n, 0));
@@ -84,6 +85,8 @@ export const TRAIL = {
   face: 10,
   mist: 16,
   nutBranch: 17,
+  /** Mrs. Lin the librarian behind her desk: her top, then her bottom block. */
+  lin: 18,
 } as const;
 
 /** A glow-worm's blink: [frame, ticks] (dark a while, then a slow swell and fade). */
@@ -112,6 +115,8 @@ export function trailSet(mb: Book, o: { pebbleRun?: number; nutRun?: number } = 
   set[TRAIL.hens] = mon(anim(mb, 'hen0', 'hen1', 7), actor, pace(2, 1));
   set[TRAIL.mist] = mon(anim(mb, 'mist0', 'mist1', 14), { ...actor, end: -2 }, pace(5, 1));
   set[TRAIL.nutBranch] = mon(anim(mb, 'nut0', 'nut1', 3), actor, pace(4, 1));
+  set[TRAIL.lin] = mon(still(mb, 'linTop'), { ...actor, end: -2 });
+  set[TRAIL.lin + 1] = mon(still(mb, 'linBot0'), { ...actor, end: -2 });
   face(set, mb, TRAIL.face);
   return set;
 }

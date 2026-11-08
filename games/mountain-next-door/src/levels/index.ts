@@ -17,6 +17,7 @@ import { levelGates } from './gates';
 import { levelPicnic } from './picnic';
 import { levelPrints } from './prints';
 import { levelHollow } from './hollow';
+import { levelLibrary } from './library';
 import { levelRidge } from './ridge';
 import { levelSigns } from './signs';
 import { levelStream } from './stream';
@@ -29,6 +30,8 @@ import { dress, type DressOptions } from '../dress';
 const DRESS: Record<string, DressOptions> = {
   gates: { birds: true },
   back: { birds: true },
+  books: { indoor: true },
+  tunnel: { indoor: true },
   prints: { birds: true, maples: true, far: { row: 9 } },
   stream: { maples: true, far: { row: 9 } },
   signs: { birds: true },
@@ -45,6 +48,7 @@ export function buildLevels(): { pal: ReturnType<typeof buildMountainPalette>; l
     levelGates(pal),
     levelBack(pal),
     levelPrints(pal),
+    levelLibrary(pal),
     levelStream(pal),
     levelSigns(pal),
     levelHollow(pal),

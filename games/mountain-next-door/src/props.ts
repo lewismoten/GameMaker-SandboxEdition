@@ -14,6 +14,8 @@
 //   stars      starA/B/C (dark sky that lights a star at three times), faint, bright (twinkle), moonTL/TR/BL/BR
 //   tunnel     tStone (solid), tAir (dark; touched, it stays lit: tAirLit), tAirFaint (a lamp's far edge, lit the same), tFloor, lantern (light it), glow2
 //   picnic     blanketL/M/R, matL/M/R
+//   library    shelf0..5 (books, passable), gap (an overdue book goes back: becomes shelved), book (take it), floor/floor2
+//              (solid), win0..5 (a tall window, 2 x 3), deskL/M/R
 //   high       screeUp/screeHalf/screeUnder/screeRise (wobbly rocks in a path, on the stones' clock), dent0..2 (the summit's damp dent: a ledge)
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { KEYS } from '../../kit/starter/blocks';
@@ -48,9 +50,10 @@ import {
 import { blanket, doormat, lantern, moon, puddle, signpost, star, tunnelAir, tunnelFloor, tunnelStone } from './art/night';
 import { bed, footbridge, gust, rain, stone, updraft, water } from './art/weather';
 import { dent, scree } from './art/high';
+import { desk, floorboard, libWindow, lostBook, shelf, shelfGap } from './art/library';
 
 /** Points: a painted blaze, an acorn, a gate taken off the mountain, a gate put back home. */
-export const POINTS = { blaze: 10, acorn: 5, gate: 25, home: 25, lantern: 10 } as const;
+export const POINTS = { blaze: 10, acorn: 5, gate: 25, home: 25, lantern: 10, book: 10, shelved: 20 } as const;
 /** Hit points a slice of pie gives back. */
 export const PIE_HP = 10;
 /** The counter a gate adds to while Tess carries it (the kit's key counter). */
@@ -220,6 +223,16 @@ export function addProps(book: Book, pal: Pal, groups: readonly string[], o: Pro
     book.add('screeRise', scree(pal, 'half'), air);
     loop(['screeUp', 'screeHalf', 'screeUnder', 'screeRise'], [STONE_TICKS.up, STONE_TICKS.half, STONE_TICKS.under, STONE_TICKS.rise]);
     for (const k of [0, 1, 2] as const) book.add(`dent${k}`, dent(pal, k), { solid: LEDGE, grav: PULL.down });
+  }
+  if (has('library')) {
+    for (let v = 0; v < 6; v++) book.add(`shelf${v}`, shelf(pal, v), air);
+    book.add('shelved', shelfGap(pal, true), air);
+    book.add('gap', shelfGap(pal, false), { ...air, effect: GATE_COUNTER, eamt: -1, score: POINTS.shelved, touch: 'shelved' });
+    book.add('book', lostBook(pal), { ...air, effect: GATE_COUNTER, eamt: 1, score: POINTS.book, touch: 'sky' });
+    book.add('floor', floorboard(pal, 1), { solid: SOLID });
+    book.add('floor2', floorboard(pal, 2), { solid: SOLID });
+    for (let k = 0; k < 6; k++) book.add(`win${k}`, libWindow(pal, k), air);
+    for (const part of ['L', 'M', 'R'] as const) book.add(`desk${part}`, desk(pal, part), air);
   }
   if (has('picnic')) {
     for (const part of ['L', 'M', 'R'] as const) book.add(`blanket${part}`, blanket(pal, part), air);
