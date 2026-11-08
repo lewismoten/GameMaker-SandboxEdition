@@ -1,3 +1,3 @@
 ### Added
 
-- Pass the Pie 3.2 has three new levels (ten in all): Rooftop Potluck (a fire escape, a napping vacuum for the last step and a tailwind across the alley), Sensei's Dojo (Mr. Plume kicks a vacuum into a stair and climbs a pagoda before a bar runs out) and The Dog Park (three dogs, three bones).
+- Pass the Pie 3.3 has three more levels (thirteen in all): Aisle Nine (Rory hops the supermarket's shelf tops after a runaway cart), Doorbusters (Mr. Plume against eighteen shopper turkeys and a bar) and The Freezer Raid (Rory rides two fans and a stalled vacuum to the spare pie before the freezer door shuts). Pass the Pie 3.2 had three new levels (ten in all): Rooftop Potluck (a fire escape, a napping vacuum for the last step and a tailwind across the alley), Sensei's Dojo (Mr. Plume kicks a vacuum into a stair and climbs a pagoda before a bar runs out) and The Dog Park (three dogs, three bones).

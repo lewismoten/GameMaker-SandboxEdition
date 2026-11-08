@@ -1,6 +1,6 @@
 // PASS THE PIE (Sandbox Software, 1994, a Special): builds every file of the game into games/pass-the-pie/disk/.
 //   cd web && npx vite-node ../games/pass-the-pie/build.ts
-// Ten levels, two heroes taking turns (Rory's storybook, Mr. Plume's payback), every picture printed in the game's
+// Thirteen levels, two heroes taking turns (Rory's storybook, Mr. Plume's payback), every picture printed in the game's
 // own block-print inks (src/print.ts, src/palette.ts), three cartoons, a card for each level, five songs and sampled sounds.
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';

@@ -9,8 +9,11 @@
 //   6. Sensei's Dojo PLUME  a kicked vacuum naps into a stair, three tiers of a pagoda against a bar, boards and drones (3.2)
 //   7. The Cord      RORY   Dale's street at dusk: follow the orange cord past Biscuit and the shop roofs
 //   8. The Dog Park  PLUME  three dogs, three bones, each stretch its own way to the bone (3.2)
-//   9. Main Street   PLUME  the chase: Big Gobble loose and rolling after him, everything in the way costs time
-//  10. Big Gobble    PLUME  the boss against the bar: its puffed-out balloons, three tether stakes, the blower, the hall
+//   9. Aisle Nine    RORY   the supermarket from the shelf tops: a runaway cart for the first step, then jumps (3.3)
+//  10. Doorbusters   PLUME  eighteen shopper turkeys, a mezzanine of mannequins and a drone, against a bar (3.3)
+//  11. Freezer Raid  RORY   fan up, ladder down, a runaway vacuum for a stair, the spare pie, against a bar (3.3)
+//  12. Main Street   PLUME  the chase: Big Gobble loose and rolling after him, everything in the way costs time
+//  13. Big Gobble    PLUME  the boss against the bar: its puffed-out balloons, three tether stakes, the blower, the hall
 // Rory's streets are printed in storybook inks and Mr. Plume's in fight-poster inks (palette.ts).
 import type { Pal } from '@lewismoten/gamemaker-sandbox-tools/kit/palRamps';
 import { dress } from './dress';
