@@ -1,12 +1,18 @@
 // The way through PASS THE PIE, as orders for the bot (kit/starter/bot.ts, routeKit.ts): the keys a person would
 // press, level by level, with human timing, every acorn a person would see taken and every fight finished.
 import type { StarterBot } from '../../kit/starter/bot';
+import * as A from '../src/levels/aisle';
 import * as C from '../src/levels/cord';
+import * as W from '../src/levels/doors';
+import * as F from '../src/levels/freezer';
+import * as D from '../src/levels/dojo';
+import * as K from '../src/levels/dogs';
 import * as B from '../src/levels/gobble';
 import * as S from '../src/levels/chase';
 import * as R from '../src/levels/gravy';
 import * as L from '../src/levels/lawn';
 import * as P from '../src/levels/park';
+import * as O from '../src/levels/roof';
 import * as Y from '../src/levels/yard';
 import { BLOWER_HITS, MONS } from '../src/monsters';
 import { climb, cross, door, enter, face, leap, leave, meet, monsters, must, read, smash, stepUp, through } from './routeKit';
@@ -177,6 +183,66 @@ export async function windyPark(bot: StarterBot): Promise<void> {
   await leave(bot, bot.walk(P.AT.exit + 1, 'the exit'), 'the exit');
 }
 
+/** Rooftop Potluck (Rory): the fire escape, the napping vacuum for the last step, the dish, the tailwind across the alley. */
+export async function rooftopPotluck(bot: StarterBot): Promise<void> {
+  const G = O.GROUND - 1;
+  await read(bot, 7, 'elevator');
+  await cross(bot, 14, 'under the first landing');
+  await leap(bot, 'right', 15, 'onto the first landing');
+  await read(bot, 15, 'chili');
+  await cross(bot, 19, 'along the first landing');
+  await leap(bot, 'right', 20, 'onto the second landing');
+  await cross(bot, 21, 'along the second landing');
+  await leap(bot, 'left', 20, 'onto the third landing');
+  await cross(bot, O.AT.gold, 'the gold acorn');
+  await cross(bot, 21, 'along the third landing');
+  await leap(bot, 'right', 22, 'onto the fourth landing');
+  await meet(bot, [MONS.vacQuick], 4, 'the roof vacuum', 100, 300);
+  await must(bot, bot.wait(10), 'watching it stall');
+  await stepUp(bot, [MONS.fedVac], 'right', 31, 'the stalled vacuum');
+  await cross(bot, O.AT.dish + 1, 'the potluck dish');
+  await cross(bot, O.AT.wind[0] - 1, 'the edge of the roof');
+  await leap(bot, 'right', O.AT.roof2[0] + 3, 'across the alley on the tailwind');
+  await read(bot, 55, 'potluck');
+  await cross(bot, O.AT.roof2[1], 'along the second roof');
+  await climb(bot, O.AT.ladder, 3, 'the ladder');
+  await must(bot, bot.climb('down', G, 'down the ladder'), 'down the ladder');
+  await door(bot, O.AT.gate, O.AT.exit, 'the gate');
+}
+
+/** Sensei's Dojo (Mr. Plume): kick a quick vacuum, stand on it, three tiers up; then the boards and the drones. */
+export async function senseisDojo(bot: StarterBot): Promise<void> {
+  const G = D.GROUND - 1;
+  const bag = [MONS.bag, MONS.bag + 1, MONS.bag + 2];
+  await read(bot, 6, 'dojo');
+  await smash(bot, D.AT.warmBag, bag, 1, 'the warm-up bag', G);
+  await read(bot, 14, 'nap');
+  const tier = async (row: number, ledge: readonly number[], what: string, at: number) => {
+    await cross(bot, at - 2, `up to ${what}`);
+    await meet(bot, [MONS.vacQuick], row, what, 50, 200);
+    await must(bot, bot.wait(10), `watching ${what} nap`);
+    await stepUp(bot, [MONS.fedVac], 'right', ledge[0] + 6, what);
+  };
+  await tier(G, D.AT.ledgeA, 'the first vacuum', D.AT.vacA);
+  await tier(G - 4, D.AT.ledgeB, 'the second vacuum', D.AT.vacB);
+  await cross(bot, D.AT.gold, 'the gold acorn');
+  await tier(G - 8, D.AT.ledgeC, 'the third vacuum', D.AT.vacC);
+  await cross(bot, D.AT.ledgeC[1], 'along the roof');
+  await climb(bot, D.AT.ladder, 4, 'the pagoda ladder');
+  await must(bot, bot.climb('down', G, 'down the ladder'), 'down the ladder');
+  await read(bot, 52, 'boards');
+  for (const x of D.AT.bags) await smash(bot, x, bag, 1, `the board at ${x}`, G);
+  await read(bot, 63, 'drones');
+  for (const x of D.AT.swoops) {
+    await cross(bot, x - 2, 'before a swooping drone');
+    await meet(bot, [MONS.droneSwoop], G, 'the swooping drone', 50, 120, 1200);
+  }
+  await read(bot, D.AT.door - 6, 'door');
+  bot.say(`bar left: ${((D.SECONDS * 18.2 - bot.sim.ticks) / 18.2) | 0} s`);
+  await cross(bot, D.AT.door + 2, 'through the dojo door');
+  await leave(bot, bot.walk(D.AT.exit + 1, 'the exit'), 'the exit');
+}
+
 /** 5. The Cord (Rory). */
 export async function theCord(bot: StarterBot): Promise<void> {
   const G = C.GROUND - 1;
@@ -208,6 +274,136 @@ export async function theCord(bot: StarterBot): Promise<void> {
   await through(bot, C.AT.gate, 'the town hall kitchen door');
   await read(bot, C.AT.plug + 2, 'plug');
   await leave(bot, bot.walk(C.AT.exit + 1, 'the exit'), 'the exit');
+}
+
+/** The Dog Park (Mr. Plume): three dogs, three bones, each stretch its own way to the bone. */
+export async function dogPark(bot: StarterBot): Promise<void> {
+  const G = K.GROUND - 1;
+  const bag = [MONS.bag, MONS.bag + 1, MONS.bag + 2];
+  await read(bot, 6, 'park');
+  for (const x of K.AT.turkeys) await smash(bot, x, [MONS.inflatable], 1, `the lawn turkey at ${x}`, G);
+  await smash(bot, K.AT.bag, bag, 1, 'the kick bag', G);
+  await climb(bot, K.AT.oak, G - 5, 'the oak');
+  await cross(bot, K.AT.bone1, 'the first bone');
+  await climb(bot, K.AT.oak, G - 5, 'the trunk again');
+  await must(bot, bot.climb('down', G, 'down the oak'), 'down the oak');
+  await read(bot, K.AT.dog1 - 4, 'dog 1');
+  await through(bot, K.AT.dog1, 'dog 1');
+  await cross(bot, K.AT.vac - 2, 'up to the vacuum');
+  await meet(bot, [MONS.vacQuick], G, 'the park vacuum', 50, 200);
+  await must(bot, bot.wait(10), 'watching it nap');
+  await stepUp(bot, [MONS.fedVac], 'right', K.AT.ledge[0] + 3, 'the napping vacuum');
+  await cross(bot, K.AT.ledgeDrone - 2, 'up to the ledge drone');
+  await meet(bot, [MONS.drone], G - 4, 'the ledge drone', 44, 320);
+  await cross(bot, K.AT.bone2, 'the second bone');
+  await cross(bot, K.AT.ledge[1] + 2, 'off the ledge');
+  await must(bot, bot.land(), 'down from the ledge');
+  await cross(bot, K.AT.swoop - 2, 'before the swooping drone');
+  await meet(bot, [MONS.droneSwoop], G, 'the swooping drone', 50, 120, 1200);
+  await read(bot, K.AT.dog2 - 4, 'dog 2');
+  await through(bot, K.AT.dog2, 'dog 2');
+  await climb(bot, K.AT.shedLadder, 9, 'the shed ladder');
+  await cross(bot, K.AT.shedLadder + 1, 'onto the shed roof');
+  await meet(bot, [MONS.drone], 9, 'the shed drone', 44, 320);
+  await cross(bot, K.AT.gold, 'the gold acorn');
+  await cross(bot, K.AT.bone3, 'the third bone');
+  await cross(bot, K.AT.shed[1] + 1, 'off the shed roof');
+  await must(bot, bot.land(), 'down from the shed');
+  for (const x of K.AT.wall) await smash(bot, x, [MONS.inflatable], 1, `the turkey at ${x}`, G);
+  await read(bot, K.AT.dog3 - 4, 'dog 3');
+  await through(bot, K.AT.dog3, 'dog 3');
+  await read(bot, K.AT.exit - 5, 'end');
+  await leave(bot, bot.walk(K.AT.exit + 1, 'the exit'), 'the exit');
+}
+
+/** Aisle Nine (Rory): the runaway cart for the first step, then shelf to shelf, the cranberry sauce, the express lane. */
+export async function aisleNine(bot: StarterBot): Promise<void> {
+  const G = A.GROUND - 1;
+  await read(bot, 6, 'aisle');
+  await read(bot, 12, 'cart');
+  await cross(bot, A.AT.cart - 3, 'up to the cart');
+  await meet(bot, [MONS.vacQuick], G, 'the runaway cart', 100, 300);
+  await must(bot, bot.wait(10), 'watching it stall');
+  await stepUp(bot, [MONS.fedVac], 'right', A.AT.shelves[0][0] + 3, 'the stalled cart');
+  await cross(bot, A.AT.shelves[0][1], 'along the first shelf');
+  await leap(bot, 'right', A.AT.shelves[1][0] + 2, 'to the second shelf');
+  await cross(bot, A.AT.gold, 'the gold acorn');
+  await cross(bot, A.AT.shelves[1][1], 'along the second shelf');
+  await leap(bot, 'right', A.AT.shelves[2][0] + 2, 'to the top shelf');
+  await read(bot, A.AT.shelves[2][0] + 1, 'staff only');
+  await cross(bot, A.AT.dish + 1, 'the cranberry sauce');
+  await cross(bot, A.AT.shelves[2][1], 'along the top shelf');
+  await cross(bot, A.AT.ladder, 'the ladder');
+  await climb(bot, A.AT.ladder, 7, 'the ladder');
+  await must(bot, bot.climb('down', G, 'down the ladder'), 'down the ladder');
+  await meet(bot, [MONS.mower], G, 'the second cart', 110, 300);
+  await must(bot, bot.wait(10), 'watching it stall');
+  await cross(bot, A.AT.gate - 6, 'over the second cart');
+  await read(bot, A.AT.gate - 4, 'express lane');
+  await door(bot, A.AT.gate, A.AT.exit, 'the express lane');
+}
+
+/** Doorbusters (Mr. Plume): eighteen turkeys, a mezzanine of mannequins and a drone, two deliveries, against the bar. */
+export async function doorbusters(bot: StarterBot): Promise<void> {
+  const G = W.GROUND - 1;
+  const bag = [MONS.bag, MONS.bag + 1, MONS.bag + 2];
+  await read(bot, 6, 'sale');
+  for (let x = W.AT.crowd1[0]; x <= W.AT.crowd1[1]; x++) await smash(bot, x, [MONS.inflatable], 1, `the shopper at ${x}`, G);
+  await cross(bot, 22, 'the cider');
+  await climb(bot, W.AT.ladder, 11, 'the mezzanine ladder');
+  await cross(bot, W.AT.ladder + 1, 'onto the mezzanine');
+  await read(bot, 27, 'mezzanine');
+  for (const x of W.AT.bags) await smash(bot, x, bag, 1, `the mannequin at ${x}`, 11);
+  await cross(bot, W.AT.drone - 2, 'up to the drone');
+  await meet(bot, [MONS.drone], 11, 'the mezzanine drone', 44, 320);
+  await cross(bot, W.AT.gold, 'the gold acorn');
+  await cross(bot, W.AT.mezz[1], 'the end of the mezzanine');
+  await climb(bot, W.AT.ladder2, 11, 'the second ladder');
+  await must(bot, bot.climb('down', G, 'down the ladder'), 'down the ladder');
+  await read(bot, 47, 'line');
+  for (let x = W.AT.crowd2[0]; x <= W.AT.crowd2[1]; x++) await smash(bot, x, [MONS.inflatable], 1, `the shopper at ${x}`, G);
+  await read(bot, 67, 'delivery');
+  for (const x of W.AT.swoops) {
+    await cross(bot, x - 2, 'before a delivery drone');
+    await meet(bot, [MONS.droneSwoop], G, 'the delivery drone', 50, 120, 1200);
+  }
+  await read(bot, W.AT.door - 6, 'door');
+  bot.say(`bar left: ${((W.SECONDS * 18.2 - bot.sim.ticks) / 18.2) | 0} s`);
+  await cross(bot, W.AT.door + 2, 'through the stockroom door');
+  await leave(bot, bot.walk(W.AT.exit + 1, 'the exit'), 'the exit');
+}
+
+/** The Freezer Raid (Rory): fan up, ladder down, a runaway vacuum for a stair, the second fan up to the spare pie, against the bar. */
+export async function freezerRaid(bot: StarterBot): Promise<void> {
+  const G = F.GROUND - 1;
+  await read(bot, 6, 'midnight');
+  await read(bot, F.AT.lift - 4, 'fan');
+  await ride(bot, F.AT.lift, F.AT.ledge[0] + 1, 'the first fan');
+  await cross(bot, 19, 'the cider');
+  await climb(bot, F.AT.ladder, 3, 'the ladder');
+  await must(bot, bot.climb('down', G, 'down the ladder'), 'down the ladder');
+  await cross(bot, F.AT.vac - 3, 'up to the vacuum');
+  await meet(bot, [MONS.vacQuick], G, 'the runaway vacuum', 100, 300);
+  await must(bot, bot.wait(10), 'watching it stall');
+  await stepUp(bot, [MONS.fedVac], 'right', F.AT.shelf[0] + 3, 'the stalled vacuum');
+  await cross(bot, 38, 'the gold acorn');
+  await cross(bot, F.AT.shelf[1] + 1, 'off the shelf');
+  await must(bot, bot.land(), 'down from the shelf');
+  await ride(bot, F.AT.lift2, F.AT.top[0] + 1, 'the second fan');
+  await cross(bot, F.AT.pie + 1, 'the spare pie');
+  await read(bot, F.AT.top[0] + 1, 'spare pie');
+  await climb(bot, F.AT.ladder2, 3, 'the second ladder');
+  await must(bot, bot.climb('down', G, 'down the ladder'), 'down the ladder');
+  await cross(bot, F.AT.short - 3, 'up to the short vacuum');
+  await meet(bot, [MONS.vacShort], G, 'the short vacuum', 100, 300);
+  await must(bot, bot.wait(10), 'watching it stall');
+  await cross(bot, F.AT.gate - 1, 'over the vacuum to the gate');
+  await must(bot, bot.wait(20), 'at the gate');
+  await cross(bot, F.AT.gate + 2, 'through the gate');
+  await read(bot, F.AT.door - 6, 'door');
+  bot.say(`bar left: ${((F.SECONDS * 18.2 - bot.sim.ticks) / 18.2) | 0} s`);
+  await cross(bot, F.AT.door + 2, 'through the freezer door');
+  await leave(bot, bot.walk(F.AT.exit + 1, 'the exit'), 'the exit');
 }
 
 /** How far behind Mr. Plume the loose balloon is, in pixels. */
@@ -296,4 +492,18 @@ export async function bigGobble(bot: StarterBot): Promise<void> {
   await leave(bot, bot.walk(B.AT.exit + 1, 'the long table'), 'the long table');
 }
 
-export const LEVELS = [pumpkinYard, payback, gravyRelay, windyPark, theCord, mainStreet, bigGobble];
+export const LEVELS = [
+  pumpkinYard,
+  payback,
+  gravyRelay,
+  windyPark,
+  rooftopPotluck,
+  senseisDojo,
+  theCord,
+  dogPark,
+  aisleNine,
+  doorbusters,
+  freezerRaid,
+  mainStreet,
+  bigGobble,
+];
