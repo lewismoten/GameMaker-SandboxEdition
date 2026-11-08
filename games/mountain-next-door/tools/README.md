@@ -12,3 +12,6 @@ A Special (a limited-time game): fourteen levels, three of them scenes you watch
 - `preview.ts`: PNGs of each level's blocks and whole map in its time of day, Tess and the monster pictures, every
   picture on the disk, and a contact sheet of each cartoon.
 - `shots.ts`: progress pictures: the title and a screen of every level as the player sees it.
+- `seams.ts`: lists cells where sky meets a neighbor's picture on two opposite sides (a prop showing sky where the
+  mountain, a wall or the earth should be behind it). The few it still lists are ladders through thin floors and
+  posts beside a slope's edge, which are right.
