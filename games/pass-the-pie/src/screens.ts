@@ -68,10 +68,10 @@ export function titlePicture(pal: Pal, rory: Pixels, plumeKick: Pixels, pie: Pix
   ground(p, pal, 172, 2);
   // the storybook side: a framed vignette with Rory and the pie
   p.frame(10, 50, 160, 118, ink[1]).frame(13, 53, 154, 112, ink[2]);
-  centered(p, 58, 'ONCE UPON A', ink[1], 1, undefined, 90);
-  centered(p, 68, 'THANKSGIVING...', ink[1], 1, undefined, 90);
-  standing(p, rory, 60, 168, 3);
-  scaleBlit(p, pie, 112, 112, 2);
+  centered(p, 62, 'ONCE UPON A', ink[1], 1, undefined, 90);
+  centered(p, 72, 'THANKSGIVING...', ink[1], 1, undefined, 90);
+  standing(p, rory, 44, 166, 2);
+  scaleBlit(p, pie, 96, 112, 2);
   // the poster side: Mr. Plume mid-kick, big
   standing(p, plumeKick, 226, 178, 3);
   text(p, 232, 50, 'PAYBACK', acc2[3], 1);

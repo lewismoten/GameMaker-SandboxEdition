@@ -6,11 +6,11 @@ import { SEED, play } from './play';
 
 const { sim } = await play(SEED);
 const titles: Record<number, string> = {
-  2: 'Street 1: Pumpkin Yard',
-  3: 'Street 2: Gravy Slide',
-  4: 'Street 3: Windy Park',
-  5: 'Street 4: Cranberry Roll',
-  6: 'Street 5: Hungry Dog',
-  7: 'Street 6: Parade Dash',
+  2: 'Chapter 1: Pumpkin Yard (Rory)',
+  3: 'Payback, Part 1: Uncle Dale\'s Lawn (Mr. Plume)',
+  4: 'Chapter 2: Gravy Slide (Rory)',
+  5: 'Payback, Part 2: Windy Park (Mr. Plume)',
+  6: 'Chapter 3: Hungry Dog (Rory)',
+  7: 'Payback, Part 3: Big Gobble (Mr. Plume)',
 };
 await writeSimWalkthrough('pass-the-pie', sim, SEED, titles);

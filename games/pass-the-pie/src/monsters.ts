@@ -38,7 +38,7 @@ export const POP_POINTS = 50;
 export const KICK_POINTS = 25;
 /** The kick's reach: pixels a tick and ticks (about a block and a half past the beak). */
 export const KICK_SPEED = 6;
-export const KICK_LIFE = 5;
+export const KICK_LIFE = 7;
 /** What a vacuum takes off the hero's hit points each tick he touches it. */
 export const STING = 2;
 
@@ -60,7 +60,7 @@ export function monsterPictures(pal: Pal): Book {
   two('puff', art.puff(pal, false), art.puff(pal, true));
   two('dummy', art.dummy(pal, false, false), art.dummy(pal, false, true), { solid: SOLID_ALL });
   two('dummyHit', art.dummy(pal, true, false), art.dummy(pal, true, true), { solid: SOLID_ALL });
-  for (let lit = BLOWER_HITS; lit >= 1; lit--) two(`blower${lit}_`, art.blower(pal, lit, false), art.blower(pal, lit, true), { solid: SOLID_ALL, hp: -1 });
+  for (let lit = BLOWER_HITS; lit >= 1; lit--) two(`blower${lit}_`, art.blower(pal, lit, false), art.blower(pal, lit, true), { solid: SOLID_ALL });
   return mb;
 }
 
