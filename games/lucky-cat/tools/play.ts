@@ -3,7 +3,7 @@
 import { StarterBot } from '../../kit/starter/bot';
 import { playLevels } from '../../kit/levelRun';
 import { ladderLane, mirrorMaze, townHall, earlierThatMorning, raceToTheFair, clockTower, knockOnWood, rascalsRoof } from './route';
-import { nightMarket, mirrorShop, earlierStill, saucerAlley, thirteenSteps } from './routeMore';
+import { theOtherSide, nightMarket, mirrorShop, earlierStill, saucerAlley, thirteenSteps } from './routeMore';
 import { GameSim } from './sim';
 
 export const SEED = 1;
@@ -14,6 +14,7 @@ export const LEVELS = [
   thirteenSteps,
   townHall,
   mirrorShop,
+  theOtherSide,
   earlierThatMorning,
   earlierStill,
   raceToTheFair,

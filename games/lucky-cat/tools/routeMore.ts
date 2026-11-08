@@ -1,6 +1,7 @@
 // The way through the levels added for the hour-long cut (2.0 -> 3.0), as orders for the bot (see route.ts).
 import type { StarterBot } from '../../kit/starter/bot';
 import { ALLEY } from '../src/levels/alley';
+import { GLASS } from '../src/levels/glass';
 import { MARKET } from '../src/levels/market';
 import { OPEN_TICKS } from '../src/meter';
 import { SHOP } from '../src/levels/shop';
@@ -8,7 +9,7 @@ import { RIGGING } from '../src/levels/rigging';
 import { STEPS } from '../src/levels/steps';
 import { GROUND } from '../src/level';
 import { CHORE_POINTS } from '../src/props';
-import { READ, climbUp, hop, leave, monsterY, must, readAt, score, watchFor } from './routeKit';
+import { READ, climbUp, mirrored, hop, leave, monsterY, must, readAt, score, watchFor } from './routeKit';
 
 /** 2. Saucer Alley: five saucers of cream, the crates, the cracks, the fire escape and its key, the crow, the padlock. */
 export async function saucerAlley(bot: StarterBot): Promise<void> {
@@ -157,4 +158,36 @@ export async function nightMarket(bot: StarterBot): Promise<void> {
   score(bot, from, 0, 30, 'The Night Market');
   if (bot.sim.ci.hitpts !== hp) throw new Error(`The Night Market cost hit points: ${hp} -> ${bot.sim.ci.hitpts}`);
   await leave(bot, bot.walk(MARKET.exit + 1, 'the exit'), 'the exit');
+}
+
+/** The Other Side: every walk on the other key, from the right-hand end to the left: pillars, a ladder, a hand mirror, gate one, the crow, a second ladder and hand mirror, gate two. */
+export async function theOtherSide(bot: StarterBot): Promise<void> {
+  await mirrored(bot, async () => {
+    const from = bot.sim.ci.score;
+    const hp = bot.sim.ci.hitpts;
+    await readAt(bot, GLASS.start - 3, 'the first sign');
+    await must(bot, bot.walk(GLASS.pillars[0] + 3, 'the display'), 'to the display');
+    await must(bot, bot.walk(GLASS.pillars[2] - 2, 'over the display'), 'over the display');
+    await readAt(bot, GLASS.ladder + 3, 'the ladder sign');
+    await must(bot, bot.walk(GLASS.ladder + 1, 'the ladder'), 'beside the ladder');
+    await must(bot, bot.walk(GLASS.ladder, 'the ladder'), 'onto the ladder');
+    await must(bot, bot.climb('up', 4, 'up the ladder'), 'up the ladder');
+    await must(bot, bot.walk(GLASS.key1, 'the first hand mirror'), 'to the first hand mirror');
+    await must(bot, bot.walk(GLASS.mezzanine[0] - 2, 'the end of the mezzanine'), 'off the mezzanine');
+    await readAt(bot, GLASS.gate1 + 3, 'the gate sign');
+    await must(bot, bot.walk(GLASS.gate1 - 2, 'through gate one'), 'through gate one');
+    await must(bot, bot.walk(GLASS.crow + 3, 'before the crow'), 'to the crow');
+    await watchFor(bot, () => monsterY(bot, GLASS.crow) <= GLASS.crowRow * 20 + 4, 'the crow flying up');
+    await must(bot, bot.walk(GLASS.crow - 3, 'past the crow'), 'past the crow');
+    await must(bot, bot.walk(GLASS.ladder2 + 1, 'the second ladder'), 'beside the second ladder');
+    await must(bot, bot.walk(GLASS.ladder2, 'the second ladder'), 'onto the second ladder');
+    await must(bot, bot.climb('up', 4, 'up the second ladder'), 'up the second ladder');
+    await must(bot, bot.walk(GLASS.key2, 'the second hand mirror'), 'to the second hand mirror');
+    await must(bot, bot.walk(GLASS.mezzanine2[0] - 2, 'the end of the mezzanine'), 'off the second mezzanine');
+    await must(bot, bot.walk(GLASS.gate2 - 2, 'through gate two'), 'through gate two');
+    score(bot, from, 0, 50, 'The Other Side');
+    if (bot.sim.ci.hitpts !== hp) throw new Error(`The Other Side cost hit points: ${hp} -> ${bot.sim.ci.hitpts}`);
+    await readAt(bot, GLASS.exit + 2, 'the last sign');
+    await leave(bot, bot.walk(GLASS.exit - 1, 'the exit'), 'the exit');
+  });
 }
