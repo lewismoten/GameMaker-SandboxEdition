@@ -134,7 +134,11 @@ export function startBook(pal: Pal, place: PlaceName, o: BookOptions = {}): { bo
     const pool = lampPool(pal, bg);
     for (let dy = 0; dy < 3; dy++)
       for (let dx = 0; dx < 3; dx++) book.add(dx === 1 && dy === 1 ? 'lamp' : `glow${dx}${dy}`, pool.crop(dx * 20, dy * 20, 20, 20), bgRule);
-    book.add('pillar', place === 'yard' ? pillarOf(pal, 'logs') : place === 'bakery' ? pillarOf(pal, 'sacks') : place === 'roof' ? bricks(pal, true) : floor(pal, 'mat'), { solid: SOLID });
+    book.add(
+      'pillar',
+      place === 'yard' ? pillarOf(pal, 'logs') : place === 'bakery' ? pillarOf(pal, 'sacks') : place === 'roof' ? bricks(pal, true) : floor(pal, 'mat'),
+      { solid: SOLID },
+    );
     book.add('planter', planter(pal, bg, true), { solid: SOLID });
     book.add('rail', rail(pal, bg), bgRule);
   }

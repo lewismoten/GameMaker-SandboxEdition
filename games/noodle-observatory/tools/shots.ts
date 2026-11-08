@@ -26,7 +26,22 @@ t.px.set(title.pixels);
 writePng(join(out, 'title.png'), t, title.palette, 2);
 
 /** Ticks into each level when its screen is taken (500 unless said). */
-const AT: Record<string, number> = { lensroll: 800, scope: 700, roundway: 240, narrow: 240, uphill: 240, chute: 240, softstep: 400, slitone: 400, starview: 600, rattle: 700, seteast: 400, bakery: 1100, farside: 700, moonrise: 900 };
+const AT: Record<string, number> = {
+  lensroll: 800,
+  scope: 700,
+  roundway: 240,
+  narrow: 240,
+  uphill: 240,
+  chute: 240,
+  softstep: 400,
+  slitone: 400,
+  starview: 600,
+  rattle: 700,
+  seteast: 400,
+  bakery: 1100,
+  farside: 700,
+  moonrise: 900,
+};
 /** The watched scenes' frames: one every this many ticks. */
 const EVERY = 8;
 

@@ -70,7 +70,10 @@ export function buildLevels(): { pal: ReturnType<typeof buildNoodlePalette>; lev
     after('racks'),
     more('ovens'),
     extra('flourbin'),
-    buildShaft(pal, SHAFTS.find((x) => x.file === 'chute')!),
+    buildShaft(
+      pal,
+      SHAFTS.find((x) => x.file === 'chute')!,
+    ),
     after('drying'),
     levelOtherside(pal),
     after('homeward'),

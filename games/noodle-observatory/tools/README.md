@@ -16,4 +16,4 @@ plan, so a room's map and its route cannot drift apart.
 - `preview.ts`: PNGs of each scene's blocks and whole map in its look, Nell, the ring and the actors, and every
   picture on the disk.
 - `shots.ts`: progress pictures in PLAYGAME's own view: the title, a screen of every scene, and (`--frames
-  lensroll,bakery`) the frames of a watched scene for a GIF.
+lensroll,bakery`) the frames of a watched scene for a GIF.

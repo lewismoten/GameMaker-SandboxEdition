@@ -80,7 +80,15 @@ export function backdrop(pal: Pal, place: Place, v = 0): P {
     // the night over the yards, with snow falling (the variants carry the flakes)
     const s = r('sky');
     p.rect(0, 0, 20, 20, s[1]);
-    const flakes: [number, number][][] = [[], [[5, 6]], [[14, 2], [3, 15]], [[11, 11]]];
+    const flakes: [number, number][][] = [
+      [],
+      [[5, 6]],
+      [
+        [14, 2],
+        [3, 15],
+      ],
+      [[11, 11]],
+    ];
     for (const [x, y] of flakes[v % 4]) p.set(x, y, c('white', 3)).set(x + 1, y + 1, c('white', 1));
   } else {
     const s = r('sky');
@@ -264,7 +272,7 @@ export function washer(pal: Pal, bg: P): P {
     const a = (k / 10) * Math.PI * 2;
     p.disc(10 + Math.cos(a) * 6.2, 10 + Math.sin(a) * 6.2, 1.2, s[1]);
   }
-  p.disc(10, 10, 5.6, s[2]).disc(10, 10, 4.4, s[3]).disc(10, 10, 2.2, bg.get(10, 10));
+  p.disc(10, 10, 5.6, s[2]).disc(10, 10, 4.4, s[3]).disc(9.5, 9.5, 2.5, bg.get(10, 10));
   p.ring(10, 10, 5.6, s[0]);
   p.set(7, 7, s[4]).set(8, 6, s[4]);
   return p;
@@ -289,7 +297,7 @@ export type Icon =
   | 'mat'
   | 'lantern'
   | 'star'
-  | 'crescent'
+  | 'bell'
   | 'rollpin'
   | 'whisk'
   | 'scoop'
@@ -408,15 +416,24 @@ export function icon(pal: Pal, p: P, kind: Icon, cx: number, cy: number, how: 't
       if (!o) p.disc(cx, cy + 1, 2.6, g[4]).set(cx - 1, cy, g[5]);
       break;
     }
-    case 'crescent':
-      // a paper crescent lantern: a disc with a bite out of it
-      p.disc(cx, cy, 6, o ? ink : c('glass', 3));
-      p.disc(cx + 3, cy - 2, 5, under);
-      if (!o) p.set(cx - 3, cy + 2, c('glass', 1)).set(cx - 4, cy - 1, c('white', 3));
+    case 'bell': {
+      // a paper bell on a loop of string
+      const g = r('gold');
+      p.rect(cx, cy - 7, 1, 2, col(1));
+      for (let y = -5; y <= 4; y++) {
+        const half = Math.round(2 + (y + 5) * 0.45);
+        p.rect(cx - half, cy + y, half * 2 + 1, 1, o ? ink : g[y < -2 ? 3 : 2]);
+      }
+      if (o) for (let y = -3; y <= 3; y++) p.rect(cx - Math.round(2 + (y + 5) * 0.45) + 1, cy + y, Math.round(2 + (y + 5) * 0.45) * 2 - 1, 1, under);
+      else p.rect(cx - 6, cy + 4, 13, 1, g[0]).set(cx - 1, cy - 3, g[5]);
+      p.rect(cx - 1, cy + 5, 3, 2, col(1));
       break;
+    }
     case 'rollpin':
       // a rolling pin lying across, handles at both ends
-      p.rect(cx - 5, cy - 2, 11, 5, col(2, r('wood'))).rect(cx - 8, cy - 1, 3, 3, col(1, r('wood'))).rect(cx + 6, cy - 1, 3, 3, col(1, r('wood')));
+      p.rect(cx - 5, cy - 2, 11, 5, col(2, r('wood')))
+        .rect(cx - 8, cy - 1, 3, 3, col(1, r('wood')))
+        .rect(cx + 6, cy - 1, 3, 3, col(1, r('wood')));
       if (!o) p.rect(cx - 5, cy - 2, 11, 1, c('wood', 4));
       break;
     case 'whisk':

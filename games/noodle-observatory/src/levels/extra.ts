@@ -5,7 +5,7 @@
 //   4 slitmix   (Shutter Constellation) circles, squares and triangles in one loft, three shutters each way
 //   5 gutter    (The Colander)          tags along the gutter, two before the first arch
 //   6 cart      (Supper)                the supper cart's spare plates and cups, in the table's order
-//   7 fences    (The Tablecloth Trail)  lanterns, stars and moons in one yard
+//   7 fences    (The Tablecloth Trail)  lanterns, stars and bells in one yard
 //   8 flourbin  (The Night Bakery)      the scoops and whisks from the flour bins, the racks wobbling
 //   9 eaves     (The Real Sky)          the scope's lens and cap from the eaves, the last climb before moonrise
 import { CHANNELS } from '../nell';
@@ -175,7 +175,7 @@ export const EXTRA: Record<string, RoomSpec> = {
   fences: {
     file: 'fences',
     title: 'Over the Fences',
-    hint: 'Lanterns, stars and moons.',
+    hint: 'Lanterns, stars and bells.',
     look: 'snow',
     place: 'yard',
     song: 'snow',
@@ -188,14 +188,14 @@ export const EXTRA: Record<string, RoomSpec> = {
       { t: 'sign', x: 3, key: 'three' },
       { t: 'pocket', ladder: 9, row: 6, to: 15, tilt: [11, 14], part: at(P('lantern', C0), 15), washer: 12, back: 'drop' },
       { t: 'pit', x: 17, n: 2 },
-      { t: 'pocket', ladder: 22, row: 7, to: 28, up: { ladder: 27, row: 4, to: 33, part: at(P('crescent', C2), 33), washer: 30 }, back: 'drop' },
+      { t: 'pocket', ladder: 22, row: 7, to: 28, up: { ladder: 27, row: 4, to: 33, part: at(P('bell', C2), 33), washer: 30 }, back: 'drop' },
       { t: 'gate', x: 36, part: P('lantern', C0) },
       { t: 'take', x: 39, part: P('star', C1) },
       { t: 'pit', x: 41, n: 2 },
       { t: 'pocket', ladder: 46, row: 5, to: 53, tilt: [48, 52], part: at(P('star', C1), 53), washer: 50, back: 'drop' },
       { t: 'pit', x: 55, n: 2 },
       { t: 'gate', x: 60, part: P('star', C1) },
-      { t: 'gate', x: 62, part: P('crescent', C2) },
+      { t: 'gate', x: 62, part: P('bell', C2) },
       { t: 'gate', x: 64, part: P('star', C1) },
       { t: 'washer', x: 67 },
       { t: 'pocket', ladder: 70, row: 6, to: 74, washer: 72, back: 'drop' },

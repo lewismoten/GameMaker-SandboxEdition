@@ -1,6 +1,6 @@
 // The rooms after the reveal, played on foot from their plans like the first fifteen (rooms.ts):
 //   7 The Tablecloth Trail (the snowy yards, night): porch (paper lanterns back on the arches), drifts (paper stars,
-//     icy shelves that tip, soft drifts to hop), lane (paper moons, planters and a padded pillar)
+//     icy shelves that tip, soft drifts to hop), lane (paper bells, planters and a padded pillar)
 //   8 The Night Bakery (warm, inside): pegboard and racks (each tool back on its own outline; racks that wobble),
 //     then, after the ring's ride up the flour chute (ring.ts), drying (the tablecloth, up on the drying rack)
 //   9 The Real Sky: homeward (back across the yards), loftback (the scope packed up in the loft), roofset (the scope
@@ -13,7 +13,7 @@ import { P, at, type RoomSpec } from './rooms';
 const [C0, C1, C2] = CHANNELS;
 const lantern = P('lantern', C0);
 const star = P('star', C0);
-const crescent = P('crescent', C0);
+const bell = P('bell', C0);
 const rollpin = P('rollpin', C0);
 const whisk = P('whisk', C1);
 const scoop = P('scoop', C2);
@@ -99,19 +99,19 @@ export const AFTER: Record<string, RoomSpec> = {
     },
     plan: [
       { t: 'sign', x: 3, key: 'tracks' },
-      { t: 'take', x: 8, part: crescent },
+      { t: 'take', x: 8, part: bell },
       { t: 'planter', x: 11 },
       { t: 'washer', x: 14 },
-      { t: 'gate', x: 17, part: crescent },
-      { t: 'pocket', ladder: 20, row: 4, to: 27, part: at(crescent, 27), washer: 24, back: 'drop' },
+      { t: 'gate', x: 17, part: bell },
+      { t: 'pocket', ladder: 20, row: 4, to: 27, part: at(bell, 27), washer: 24, back: 'drop' },
       { t: 'pit', x: 30, n: 2 },
       { t: 'planter', x: 34 },
       { t: 'washer', x: 37 },
-      { t: 'gate', x: 39, part: crescent },
-      { t: 'pocket', ladder: 42, row: 6, to: 48, pillar: [44, 46], part: at(crescent, 48), back: 'drop' },
-      { t: 'pocket', ladder: 52, row: 7, to: 58, up: { ladder: 57, row: 3, to: 62, part: at(crescent, 62), washer: 60 }, back: 'drop' },
-      { t: 'gate', x: 64, part: crescent },
-      { t: 'gate', x: 66, part: crescent },
+      { t: 'gate', x: 39, part: bell },
+      { t: 'pocket', ladder: 42, row: 6, to: 48, pillar: [44, 46], part: at(bell, 48), back: 'drop' },
+      { t: 'pocket', ladder: 52, row: 7, to: 58, up: { ladder: 57, row: 3, to: 62, part: at(bell, 62), washer: 60 }, back: 'drop' },
+      { t: 'gate', x: 64, part: bell },
+      { t: 'gate', x: 66, part: bell },
       { t: 'sign', x: 68, key: 'close' },
       { t: 'washer', x: 73 },
     ],

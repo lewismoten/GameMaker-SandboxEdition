@@ -77,7 +77,11 @@ export function addDress(book: Book, pal: Pal, place: PlaceName, timed: Timed[],
   } else if (place === 'yard') {
     for (const k of ['earth', 'stone'] as const) book.add(k, ground(pal, k), { solid: SOLID });
     for (const f of [0, 1, 2]) book.add(`snow${f}`, snowfall(pal, f), air);
-    timed.push({ name: 'snow0', next: 'snow1', ticks: SNOW_TICKS }, { name: 'snow1', next: 'snow2', ticks: SNOW_TICKS }, { name: 'snow2', next: 'snow0', ticks: SNOW_TICKS });
+    timed.push(
+      { name: 'snow0', next: 'snow1', ticks: SNOW_TICKS },
+      { name: 'snow1', next: 'snow2', ticks: SNOW_TICKS },
+      { name: 'snow2', next: 'snow0', ticks: SNOW_TICKS },
+    );
   } else if (place === 'bakery') {
     for (const k of ['boards', 'cellar'] as const) book.add(`cel.${k}`, ground(pal, k), { solid: SOLID });
     book.add('cel.dark', joists(pal, 'dark'), { solid: SOLID });
