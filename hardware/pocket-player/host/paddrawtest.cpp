@@ -50,31 +50,32 @@ int main(int argc, char** argv) {
   std::vector<unsigned char> montage(mw * mh * 3, 0);
   uint32_t hash = 2166136261u;
   for (int size = 0; size < 3; size++) for (int hand = 0; hand < 2; hand++) for (int pressed = 0; pressed < 2; pressed++) {
-    ctl::Settings s; s.padSize = size; s.lefty = hand;
+    ctl::Settings s; s.padSize = size; s.lefty = hand; s.arcs = 1;
     ctl::Need n; n.left = n.right = n.up = n.down = n.jump = true;
     auto l = ctl::makeLayout(s,n);
-    Frame base; paddraw::pad(base,l,n,pressed ? 7 : 0);
+    Frame base; paddraw::pad(base,l,n,pressed ? 5 : 0);
     for (auto p : base.px) { hash = (hash ^ (p & 255)) * 16777619u; hash = (hash ^ (p >> 8)) * 16777619u; }
     // The firmware clips each sprite band; composing offset bands must match a full render.
     Frame bands;
     bands.width = scr::W / 2; bands.height = 10;
     for (int by = 0; by < scr::H; by += bands.height) for (int bx = 0; bx < scr::W; bx += bands.width) {
       bands.originX = bx; bands.originY = by;
-      paddraw::pad(bands,l,n,pressed ? 7 : 0,bx,by);
+      paddraw::pad(bands,l,n,pressed ? 5 : 0,bx,by);
     }
     assert(bands.px == base.px);
 #ifdef POCKET_CYD28
     for (int mode : {1,2}) {
-      Frame rotated; rotated.mode = mode; paddraw::pad(rotated,l,n,pressed ? 7 : 0);
+      Frame rotated; rotated.mode = mode; paddraw::pad(rotated,l,n,pressed ? 5 : 0);
       for (int y = 0; y < scr::H; y++) for (int x = 0; x < scr::W; x++) assert(rotated.at(x,y) == base.at(x,y));
     }
     // Both arcs mirror exactly, retain a raised crest and an outer landing arrow.
     for (int side : {-1,1}) {
       Frame arc; int cx = l.pad.cx + side*l.pad.r/2, cy = l.pad.cy-l.pad.r/2;
       paddraw::jumpArc(arc,cx,cy,side,10,pressed);
-      assert(arc.at(cx,cy-7) == (pressed ? paddraw::C_BLACK : paddraw::C_WHITE));
-      assert(arc.at(cx+side*9,cy+4) == (pressed ? paddraw::C_BLACK : paddraw::C_WHITE));
-      assert(arc.at(cx,cy+2) == 0x2104); // open air below the crest, unlike a straight arrow
+      assert(arc.at(cx+side*1,cy-6) == (pressed ? paddraw::C_BLACK : paddraw::C_WHITE));  // the crest's outline
+      assert(arc.at(cx+side*5,cy+5) == (pressed ? 0xff2a : paddraw::C_FILL) || arc.at(cx+side*5,cy+5) == paddraw::C_WHITE || arc.at(cx+side*5,cy+5) == paddraw::C_BLACK);  // the arrowhead is there
+      assert(arc.at(cx,cy+2) == 0x2104);  // open air under the ring, unlike a straight arrow
+      assert(arc.at(cx,cy-5) == (pressed ? 0xff2a : paddraw::C_FILL));  // a solid body, not an outline
     }
 #endif
     for (int y = 0; y < scr::VIEW_H; y++) for (int x = 0; x < scr::W; x++) {
@@ -82,11 +83,11 @@ int main(int argc, char** argv) {
       montage[o] = (p>>11)*255/31; montage[o+1] = ((p>>5)&63)*255/63; montage[o+2] = (p&31)*255/31;
     }
   }
+  if (argc > 1) { FILE* f = fopen(argv[1],"wb"); assert(f); fprintf(f,"P6\n%d %d\n255\n",mw,mh); fwrite(montage.data(),1,montage.size(),f); fclose(f); }
 #ifdef POCKET_CYD28
-  assert(hash == 0xf7294a9du);
+  assert(hash == 0x5bbdbe5du);
 #else
-  assert(hash == 0x122ccb75u);
+  assert(hash == 0x51007735u);
 #endif
   printf("pad %dx%d snapshot %08x: sizes, hands, states, origins and orientations ok\n",scr::W,scr::H,hash);
-  if (argc > 1) { FILE* f = fopen(argv[1],"wb"); assert(f); fprintf(f,"P6\n%d %d\n255\n",mw,mh); fwrite(montage.data(),1,montage.size(),f); fclose(f); }
 }

@@ -25,6 +25,7 @@ for (const id of readdirSync(join(root, 'games')).sort()) {
   if (about.secret) continue;
   const row = { id, title: about.title, version: about.version, starter: about.series === 'starter' };
   try {
+    if (!existsSync(join(dir, 'controls.json'))) throw new Error('No controls.json for this game, so its Jump keys are unknown');
     const controls = JSON.parse(readFileSync(join(dir, 'controls.json'), 'utf8')) as { keys: Record<string, { short: string; long?: string }> };
     const jumpKeys = new Set(
       Object.entries(controls.keys)

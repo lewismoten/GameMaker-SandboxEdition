@@ -370,7 +370,7 @@ export abstract class ComputerDrives {
     const programs = index
       .filter((e) => !e.dir)
       .map((e) => {
-        const text = /\.(hlp|txt)$/i.test(e.name);
+        const text = /\.(hlp|txt|bat)$/i.test(e.name);
         return file(e.name, e.size, { run: gmProgramRef(e.name), read: text ? async () => (await this.gmFile(e.name)) ?? new Uint8Array() : undefined });
       });
     const games = hardDisk ? await this.hdGames() : (await this.hdGames()).filter((g) => g.source === 'installed');

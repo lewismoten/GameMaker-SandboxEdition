@@ -17,7 +17,7 @@ struct Entry {
   uint32_t pos;
   uint16_t len, course;
   uint8_t category, sub, score;
-  bool sd, one, metadata, scored;
+  bool sd, one, metadata, scored, quick;  // quick: its low touch score comes with narrow jumps (Details says so)
 };
 // Cache is disposable and separate from packages/personal data. Validate every row before reuse.
 inline uint32_t crc32(const void* data,size_t n) {uint32_t c=0xffffffff;const uint8_t*p=(const uint8_t*)data;while(n--){c^=*p++;for(int i=0;i<8;i++)c=(c>>1)^((c&1)?0xedb88320:0);}return c^0xffffffff;}
@@ -36,7 +36,7 @@ static_assert(THUMB_RAW + 144 * 2 < 8192, "preview scratch budget");
 struct Meta {
   char uid[97] = "", title[129] = "", dos[9] = "", root[33] = "", sub[33] = "", label[49] = "", thumb[32] = "", crc[9] = "";
   int course = 0, score = 0;
-  bool scored = false;
+  bool scored = false, quick = false;
 };
 // Own small JSON reader: bounded input/depth, escaped Unicode decoded to UTF-8, unknown values skipped.
 struct Json {
@@ -99,14 +99,14 @@ inline bool metadata(const char* s,size_t n,Meta& m,bool index=false) {
   if(!j.take('{'))return false;
   do {
     char key[64];if(!j.str(key,sizeof key)||!j.take(':'))return false;
-    const char* keys[]={"schema","version","uid","title","dosName","category","course","categoryLabel","thumbnail","gamCrc32","touchScore"};
-    int k=0;while(k<11&&strcmp(key,keys[k]))k++;
-    if(k<11){if(seen&(1u<<k))return false;seen|=1u<<k;}
+    const char* keys[]={"schema","version","uid","title","dosName","category","course","categoryLabel","thumbnail","gamCrc32","touchScore","touchQuick"};
+    int k=0;while(k<12&&strcmp(key,keys[k]))k++;
+    if(k<12){if(seen&(1u<<k))return false;seen|=1u<<k;}
     switch(k){
       case 0:j.str(schema,sizeof schema);break;case 1:j.integer(version);break;
       case 2:j.str(m.uid,sizeof m.uid);break;case 3:j.str(m.title,sizeof m.title);break;case 4:j.str(m.dos,sizeof m.dos);break;
       case 5:if(!j.take('[')||!j.str(m.root,sizeof m.root))return false;if(j.take(','))j.str(m.sub,sizeof m.sub);if(!j.take(']'))return false;break;
-      case 6:j.integer(m.course);break;case 7:j.str(m.label,sizeof m.label);break;case 8:j.str(m.thumb,sizeof m.thumb);break;case 9:j.str(m.crc,sizeof m.crc);break;case 10:j.integer(m.score);m.scored=true;break;
+      case 6:j.integer(m.course);break;case 7:j.str(m.label,sizeof m.label);break;case 8:j.str(m.thumb,sizeof m.thumb);break;case 9:j.str(m.crc,sizeof m.crc);break;case 10:j.integer(m.score);m.scored=true;break;case 11:{int q=0;j.integer(q);m.quick=q==1;break;}
       default:j.skip();break;
     }
     if(!j.ok)return false;
@@ -135,7 +135,7 @@ inline bool before(const Entry&a,const Entry&b,int category) {return category==7
 inline int selection(const Entry*games,int count,const uint8_t*uid) {for(int i=0;i<count;i++)if(!memcmp(games[i].uid,uid,16))return i;return -1;}
 inline int clampPage(int page,int count,bool discovering) {return !discovering&&page>=(count+5)/6?0:page;}
 inline void categorize(Entry&g,const Meta&m) {
-  g.category=root(m.root);g.course=m.course;g.score=m.score;g.scored=m.scored;g.sub=0;
+  g.category=root(m.root);g.course=m.course;g.score=m.score;g.scored=m.scored;g.quick=m.quick;g.sub=0;
   if(g.category==1){int stage=atoi(m.sub);g.sub=stage>=100&&stage<=600&&stage%100==0?stage/100:!strcmp(m.sub,"graduations")?7:8;}
   if(g.category==6)g.sub=!strcmp(m.sub,"shareware")?2:1;
 }

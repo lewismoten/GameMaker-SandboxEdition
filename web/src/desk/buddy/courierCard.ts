@@ -1,14 +1,29 @@
 // Scoot's card's four sections, the easy web face of SCOOT.EXE: Mail (letters a BBS call brought,
 // read and deleted here or on the PC), Postcards, Packages and Setup (the Quiet switch). Tabs
-// along the top (←→ between them); it reads and writes the courier store (courier/courierStore.ts)
-// and redraws when either side changes it.
+// along the top (←→ between them); Setup also sends Scoot on a trip and opens a trip file
+// (courier/trips.ts). It reads and writes the courier store (courier/courierStore.ts) and redraws when either side changes it.
 import './courierCard.css';
 import { h } from '../../editor/core/ui';
 import { COURIER_CHANGED, deleteLetter, loadCourier, markRead, type Stamp } from '../../courier/courierStore';
 import { PALETTES, letterById } from '../../courier/tables';
 import { stampSvg } from '../../courier/stampArt';
 import { catalogTitles } from '../../courier/stamps';
-import { EMPTY, SECTIONS, letterDate, postcardTitle, stampText, type Section } from '../../courier/courierText';
+import { callHome, receiveFile, sendScoot, sendVisitorHome } from '../../courier/trips';
+import { pickCapsuleFile, saveCapsuleFile } from '../../courier/capsuleFile';
+import {
+  CALL_HOME_WORDS,
+  EMPTY,
+  LOAD_WORDS,
+  SECTIONS,
+  SEND_WORDS,
+  VISITOR_HOME_WORDS,
+  arrivalText,
+  letterDate,
+  postcardTitle,
+  stampText,
+  tripStatus,
+  type Section,
+} from '../../courier/courierText';
 
 export interface CourierCard {
   el: HTMLElement;
@@ -153,6 +168,54 @@ export function courierCard(setup: HTMLElement): CourierCard {
     return [h('ul', { class: 'courier-cards' }, ...c.packages.map((p) => h('li', null, p)))];
   };
 
+  // Setup's trips: a trip file saved or opened, and what happened, said aloud
+  let said = '';
+  const trips = () => {
+    const c = loadCourier();
+    const button = (words: string, act: () => void) => {
+      const b = h('button', { class: 'courier-btn', type: 'button' }, words);
+      b.addEventListener('click', act);
+      return b;
+    };
+    const run = async (act: () => Promise<string | undefined> | string | undefined) => {
+      const words = await act();
+      if (words === undefined) return;
+      said = words;
+      draw();
+      panel.querySelector<HTMLElement>('.courier-trips button')?.focus();
+    };
+    const load = () =>
+      void run(async () => {
+        const bytes = await pickCapsuleFile();
+        return bytes ? arrivalText(await receiveFile(bytes)) : undefined;
+      });
+    const save = (make: () => Uint8Array | undefined, words: string) => () =>
+      void run(() => {
+        const bytes = make();
+        if (!bytes) return undefined;
+        saveCapsuleFile(bytes);
+        return words;
+      });
+    const actions = h(
+      'div',
+      { class: 'courier-actions' },
+      !c.out && button(SEND_WORDS, save(sendScoot, 'Scoot packed its satchel. Its trip file, SCOOT.SCT, is saved.')),
+      button(LOAD_WORDS, load),
+      c.visitor && button(VISITOR_HOME_WORDS, save(sendVisitorHome, 'The visitor is on its way home with its trip file, SCOOT.SCT.')),
+      c.out &&
+        button(
+          CALL_HOME_WORDS,
+          () =>
+            void run(() => {
+              callHome();
+              return 'Scoot is home. A trip file from that trip still brings its postcards.';
+            }),
+        ),
+    );
+    // what just happened comes first, so it shows without scrolling the panel
+    return h('div', { class: 'courier-trips' }, h('p', { class: 'courier-said', role: 'status' }, said), ...tripStatus(c).map((t) => h('p', null, t)), actions);
+  };
+
   const draw = () => {
     tabs.forEach((t, i) => {
       const on = SECTIONS[i] === open;
@@ -161,7 +224,7 @@ export function courierCard(setup: HTMLElement): CourierCard {
     });
     panel.setAttribute('aria-labelledby', `courier-tab-${open}`);
     if (open === 'Setup') {
-      panel.replaceChildren(setup);
+      panel.replaceChildren(setup, trips());
       return;
     }
     panel.replaceChildren(...(open === 'Mail' ? mail() : open === 'Postcards' ? postcards() : packages()));
@@ -172,6 +235,7 @@ export function courierCard(setup: HTMLElement): CourierCard {
       open = SECTIONS[i];
       reading = undefined;
       asking = false;
+      said = '';
       draw();
     }),
   );

@@ -1,13 +1,29 @@
 // SCOOT.EXE on the desk PC (C:\COMM): the courier's mail reader, a 1995 text-mode program in
 // Game-Maker's colors, reading and writing the same store as Scoot's card on the desk
 // (courierStore.ts). Four sections along the top, ←→ (or Tab) to change: Mail (↑↓ a letter,
-// Enter reads it, Del deletes it), Postcards, Packages and Setup (Enter switches Quiet).
+// Enter reads it, Del deletes it), Postcards, Packages and Setup (↑↓ and Enter: the Quiet switch,
+// and Scoot's trips by trip file, SCOOT.SCT, saved or opened through the browser; trips.ts).
 import { attr } from '../retro/text/textScreen';
 import { MENUATTR, SHADATTR, TITLEATTR, BARATTR, CURATTR, type Ui } from '../retro/text/textUi';
 import { toCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import { deleteLetter, loadCourier, loadQuiet, markRead, saveQuiet, MAX_PACKAGES } from './courierStore';
 import { letterById } from './tables';
-import { EMPTY, QUIET_WORDS, SECTIONS, letterDate, postcardTitle, stampRows } from './courierText';
+import {
+  CALL_HOME_WORDS,
+  EMPTY,
+  LOAD_WORDS,
+  QUIET_WORDS,
+  SECTIONS,
+  SEND_WORDS,
+  VISITOR_HOME_WORDS,
+  arrivalText,
+  letterDate,
+  postcardTitle,
+  stampRows,
+  tripStatus,
+} from './courierText';
+import { callHome, receiveFile, sendScoot, sendVisitorHome } from './trips';
+import { pickCapsuleFile, saveCapsuleFile } from './capsuleFile';
 import { catalogTitles } from './stamps';
 
 const X = 2;
@@ -34,6 +50,45 @@ function wrap(text: string, n: number): string[] {
   return out;
 }
 
+/** A trip file saved from `make`, with the words to show; nothing when there is no file. */
+const saved = (make: () => Uint8Array | undefined, words: string) => () => {
+  const bytes = make();
+  if (!bytes) return undefined;
+  saveCapsuleFile(bytes);
+  return words;
+};
+
+/** Setup's rows: the Quiet switch, then what Scoot's trips allow now; each acts and may say what happened. */
+function setupItems(c: ReturnType<typeof loadCourier>): [string, () => Promise<string | undefined> | string | undefined][] {
+  const items: [string, () => Promise<string | undefined> | string | undefined][] = [
+    [
+      `[${loadQuiet() ? 'X' : ' '}] ${QUIET_WORDS}`,
+      () => {
+        saveQuiet(!loadQuiet());
+        return undefined;
+      },
+    ],
+  ];
+  if (!c.out) items.push([`${SEND_WORDS} (saves SCOOT.SCT)`, saved(sendScoot, 'Scoot packed its satchel. Its trip file, SCOOT.SCT, is saved.')]);
+  items.push([
+    `${LOAD_WORDS} (opens SCOOT.SCT)`,
+    async () => {
+      const bytes = await pickCapsuleFile();
+      return bytes ? arrivalText(await receiveFile(bytes)) : undefined;
+    },
+  ]);
+  if (c.visitor) items.push([VISITOR_HOME_WORDS, saved(sendVisitorHome, 'The visitor is on its way home with its trip file, SCOOT.SCT.')]);
+  if (c.out)
+    items.push([
+      CALL_HOME_WORDS,
+      () => {
+        callHome();
+        return 'Scoot is home. A trip file from that trip still brings its postcards.';
+      },
+    ]);
+  return items;
+}
+
 export async function runScootExe(ui: Ui): Promise<void> {
   const s = ui.screen;
   s.cursorVisible = false;
@@ -43,6 +98,8 @@ export async function runScootExe(ui: Ui): Promise<void> {
   /** The letter open in Mail, if any. */
   let reading: string | undefined;
   let asking = false;
+  /** What the last trip action did, shown in Setup. */
+  let said = '';
   // catalog games' titles for their stamps, in by the time Postcards is reached (until then a stamp says "A game")
   let title: (id: string) => string | undefined = () => undefined;
   void catalogTitles()
@@ -117,11 +174,15 @@ export async function runScootExe(ui: Ui): Promise<void> {
         frame(' ←→ Section  Esc Quit');
         lines(c.packages.length ? [[`In the satchel (${MAX_PACKAGES} at most):`], ...c.packages.map((p) => [`  ${p}`] as [string])] : [[EMPTY.Packages]]);
       } else {
-        frame(' ←→ Section  Enter or Space Switch  Esc Quit');
-        const quiet = loadQuiet();
-        s.fill(X + 1, TOP + 2, X + W - 2, TOP + 2, CURATTR);
-        s.write(X + 2, TOP + 2, CURATTR, toCp437(`[${quiet ? 'X' : ' '}] ${QUIET_WORDS}`));
-        lines([[''], ['Scoot stands beside the PC on the desk. Quiet keeps its words in; it still waves.', DIM]], 1);
+        const items = setupItems(c);
+        cur = Math.max(0, Math.min(cur, items.length - 1));
+        frame(' ←→ Section  ↑↓ Choose  Enter Do it  Esc Quit');
+        items.forEach(([label], i) => {
+          const row = TOP + 2 + i;
+          s.fill(X + 1, row, X + W - 2, row, i === cur ? CURATTR : MENUATTR);
+          s.write(X + 2, row, i === cur ? CURATTR : TEXT, toCp437(fit(label, IN)));
+        });
+        lines([[''], ...tripStatus(c).map((t) => [t, DIM] as [string, number]), ...(said ? [[''], [said]] : [])] as [string, number?][], items.length);
       }
 
       const k = await ui.keys.next();
@@ -151,7 +212,12 @@ export async function runScootExe(ui: Ui): Promise<void> {
           markRead(reading);
         } else if (key === 'Delete' || key === 'D') asking = true;
       } else if (section === 'Postcards' && (key === 'ArrowDown' || key === 'ArrowUp')) cur += key === 'ArrowDown' ? 1 : -1;
-      else if (section === 'Setup' && (key === 'Enter' || key === ' ')) saveQuiet(!loadQuiet());
+      else if (section === 'Setup') {
+        const items = setupItems(c);
+        if (key === 'ArrowDown') cur = (cur + 1) % items.length;
+        else if (key === 'ArrowUp') cur = (cur + items.length - 1) % items.length;
+        else if (key === 'Enter' || key === ' ') said = (await items[cur][1]()) ?? said;
+      }
     }
   } finally {
     s.resetPalette();

@@ -201,7 +201,7 @@ export interface GmInstallEntry {
 
 // Text files of the installed Game-Maker the retro desk shows (help screens are raw
 // 80x25 text-mode dumps); programs are listed but never served.
-const GM_TEXT = /\.(hlp|txt)$/i;
+const GM_TEXT = /\.(hlp|txt|bat)$/i;
 
 /** First lines of a story/instruction screen, joined. */
 function blurbFor(names: string[], disk: Map<string, string>): string | undefined {

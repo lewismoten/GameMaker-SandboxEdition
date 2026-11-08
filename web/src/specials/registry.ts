@@ -45,6 +45,12 @@ export const SPECIALS: readonly Special[] = [
     theme: 'Thanksgiving: the street cooks the dinner and you carry it',
   },
   {
+    id: 'mountain-next-door',
+    window: { day: { on: 'nth', month: 11, weekday: 4, n: 4 }, offset: 1, days: 3 },
+    arrival: 'floppy',
+    theme: 'The day after Thanksgiving: a mountain moves in next door, and Tess marks its trail home',
+  },
+  {
     id: 'noodle-observatory',
     window: { day: { on: 'date', month: 12, day: 14 }, days: 3 },
     arrival: 'floppy',

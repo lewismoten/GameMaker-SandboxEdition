@@ -87,3 +87,25 @@ describe('stamps in SCOOT.EXE', () => {
     expect(await exeText(['ArrowRight'])).toContain('Scroll');
   });
 });
+
+describe('SCOOT.EXE trips', () => {
+  it('Setup sends Scoot on a trip as SCOOT.SCT and then offers Call Scoot home', async () => {
+    const saved: string[] = [];
+    vi.stubGlobal('URL', { createObjectURL: () => 'blob:x', revokeObjectURL: () => {} });
+    vi.stubGlobal('document', {
+      body: { append: () => {} },
+      createElement: () => {
+        const a = { download: '', href: '', click: () => saved.push(a.download), remove: () => {} };
+        return a;
+      },
+    });
+    const left = ['ArrowLeft'];
+    const before = await exeText(left);
+    expect(before).toContain('Send Scoot on a trip (saves SCOOT.SCT)');
+    expect(before).toContain('Scoot is back / a visitor arrived (opens SCOOT.SCT)');
+    const after = await exeText([...left, 'ArrowDown', 'Enter']);
+    expect(saved).toEqual(['SCOOT.SCT']);
+    expect(after).toContain('Scoot packed its satchel');
+    expect(after).toContain('Call Scoot home');
+  });
+});

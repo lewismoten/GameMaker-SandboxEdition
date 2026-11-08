@@ -29,6 +29,7 @@
 #include "statusled.h"
 #include "pressrect.h"
 #include "settingsdraw.h"
+#include "firstrun.h"
 #include "picturetune.h"
 #include <mbedtls/sha256.h>
 #ifdef POCKET_CYD28
@@ -663,8 +664,8 @@ static void saveSettings() {
   if (!f) return;
   // Older firmware reads these lines by their first letters ("pad" ...), so the newer keys share no prefix with the old ones and
   // come last: it skips them, and its own save drops them (the pad goes back to Low and Space to the corner).
-  f.printf("lefty=%d\nstylus=%d\npad=%d\ndead=%d\npalm=%d\ndebug=%d\nsound=%d\nraised=%d\njumpnear=%d\n", settings.lefty, settings.stylus, settings.padSize,
-           settings.dead, settings.palm, settings.debug, settings.sound, settings.raised, settings.jumpNear);
+  f.printf("lefty=%d\nstylus=%d\npad=%d\ndead=%d\npalm=%d\ndebug=%d\nsound=%d\nraised=%d\njumpnear=%d\nfloat=%d\narcs=%d\nwedge=%d\n", settings.lefty, settings.stylus, settings.padSize,
+           settings.dead, settings.palm, settings.debug, settings.sound, settings.raised, settings.jumpNear, settings.floatPad, settings.arcs, settings.wedge);
 }
 static void loadSettings() {
   settings = ctl::Settings();
@@ -694,6 +695,9 @@ static void loadSettings() {
     else if (k == "sound") { if (nvsSound < 0) settings.sound = v < 0 ? 0 : v > 3 ? 3 : v; }
     else if (k == "raised") settings.raised = v ? 1 : 0;
     else if (k == "jumpnear") settings.jumpNear = v ? 1 : 0;
+    else if (k == "float") settings.floatPad = v ? 1 : 0;
+    else if (k == "arcs") settings.arcs = v ? 1 : 0;
+    else if (k == "wedge") settings.wedge = v < 0 ? 0 : v > 2 ? 2 : v;
   }
 }
 
@@ -781,8 +785,9 @@ static void refreshIcons() {
 
 
 // Reduced view anchored at the top, completely past the pad (and Space when it sits near the pad) and its 14 px touch slop.
+// The fixed pad's place (L.home): the floating pad moves, the picture does not.
 static scr::Picture picture() {
-  const auto& pad = controls.L.pad;
+  const auto& pad = controls.L.home;
   int edge = settings.lefty ? VIEW_W - pad.cx + pad.r : pad.cx + pad.r;
   if (settings.jumpNear) {  // Space beside the pad: the picture starts past it too
     const auto& sp = controls.L.space;
@@ -849,6 +854,13 @@ static R monRect(const gm::MonDraw& d) {
 }
 static uint8_t lastPad = 0, lastBtn = 0;
 static uint16_t lastTile = 0;
+static int lastLook = ctl::LOOK_FULL;   // how the pad showed last frame, and where (the floating pad comes, moves, fades and goes)
+static ctl::Disc lastPadDisc = {0, 0, 0};
+// Has the pad's look or place changed since the last frame (a redraw of the old and new place is due)?
+static bool padShowChanged(uint32_t now) {
+  const ctl::Disc& p = controls.L.pad;
+  return controls.padLook(now) != lastLook || p.cx != lastPadDisc.cx || p.cy != lastPadDisc.cy || p.r != lastPadDisc.r;
+}
 
 static void controlRects(R* out, int& n) {
   const ctl::Layout& L = controls.L;
@@ -862,6 +874,10 @@ static void controlRects(R* out, int& n) {
 
 static void drawFrame(bool forceFull) {
   const auto& s = world.sc;
+  const uint32_t nowMs = millis();
+  bool padMoved = padShowChanged(nowMs);
+  ov.swapped = true;  // the band holds the panel's byte order
+  ov.padLook = controls.padLook(nowMs);
   int oldSig[2 + ctl::MAXEXTRA];
   for (int i = 0; i < 2 + ctl::MAXEXTRA; i++) oldSig[i] = icons[i].sig;
   refreshIcons();
@@ -888,7 +904,7 @@ static void drawFrame(bool forceFull) {
       drawRegion(r.x0, r.y0, r.x1, r.y1);
     }
     // A control whose state changed is drawn again over the game behind it.
-    bool padCh = controls.padDirs != lastPad, btnCh = controls.btnDown != lastBtn, tileCh = controls.tileDown != lastTile;
+    bool padCh = controls.padDirs != lastPad || padMoved, btnCh = controls.btnDown != lastBtn, tileCh = controls.tileDown != lastTile;
     tileCh = tileCh || tileIconCh;
     if (padCh || btnCh || tileCh || iconCh) {
       R rs[5];
@@ -900,12 +916,16 @@ static void drawFrame(bool forceFull) {
         drawRegion(rs[i].x0, rs[i].y0, rs[i].x1, rs[i].y1);
       }
       if (tileCh && controls.keysOpen) drawRegion(0, ctl::CHIP_BOTTOM, VIEW_W, ctl::TILE_Y0 + ctl::TILE_STEP * controls.L.tileRows);
+      const ctl::Disc& o = lastPadDisc;  // the floating pad left this place: the picture comes back there
+      if (padMoved && (o.cx != controls.L.pad.cx || o.cy != controls.L.pad.cy)) drawRegion(o.cx - o.r - 2, o.cy - o.r - 2, o.cx + o.r + 3, o.cy + o.r + 3);
     }
   }
   last = {world.mx, world.my, s.nx, s.ny, s.lsx, s.lsy, world.gen, hero, true};
   for (int i = 0; i < nCurMon; i++) lastMon[i] = curMon[i];
   nLastMon = nCurMon;
   lastPad = controls.padDirs;
+  lastLook = ov.padLook;
+  lastPadDisc = controls.L.pad;
   lastBtn = controls.btnDown;
   lastTile = controls.tileDown;
 }
@@ -941,7 +961,7 @@ static void drawStrip() {
 
 // ---- screens -------------------------------------------------------------------------------------
 
-enum Mode { PICKER, PLAYING, PAUSED, HELP_SCREEN, SETTINGS_SCREEN, SEARCH_SCREEN, DETAILS_SCREEN, DONE };
+enum Mode { PICKER, PLAYING, PAUSED, HELP_SCREEN, SETTINGS_SCREEN, SEARCH_SCREEN, DETAILS_SCREEN, DONE, FIRST_RUN };
 static Mode mode = PICKER;
 static int page = 0, selected = -1, nmatch = 0;
 static char searchText[25] = "", savedSearch[25] = "";
@@ -1047,7 +1067,7 @@ static void drawPicker(bool clear = true, bool paging = false) {
     if(browsingCategories){int c=categorySlots[at];
       if(!category&&c==CONTINUE_SLOT){int g=resumeGame();uint8_t*raw=nullptr;if(g>=0){if(games[g].sd&&haveSD)mountSD();raw=preview(games[g]);}pk::continueTile(tft,scr::W,r,raw,resumeRec.e.level,g<0,true);free(raw);}
       else pk::tileLabel(tft,scr::W,r,category?subLabel(category,c):rootLabel(c),false,tileIcon(category,c),true);}
-    else {int i=catalog->matches[at];pk::Meta m;gameMeta(games[i],m);uint8_t*raw=preview(games[i]);bool starter=games[i].category==1;pk::thumbnail(tft,scr::W,r,raw,m.title[0]?m.title:m.dos,i==selected,true,catalog->pins.has(games[i].uid),starter?m.title:nullptr,starter?m.course:0);free(raw);}
+    else {int i=catalog->matches[at];pk::Meta m;gameMeta(games[i],m);uint8_t*raw=preview(games[i]);bool starter=games[i].category==1;pk::thumbnail(tft,scr::W,r,raw,m.title[0]?m.title:m.dos,i==selected,true,catalog->pins.has(games[i].uid),starter?m.title:nullptr,starter?m.course:0,games[i].scored&&games[i].score>=85);free(raw);}
   }
   if(!was)unmountSD();
   if(!count&&searchText[0])pk::drawSmallIcon(tft,17,16,68,true);
@@ -1071,6 +1091,10 @@ static void drawDetails() {
   pk::Tile clip={8,40,scr::W-16,pk::detailsPagesTop(scr::H)-44,0,0};
   size_t at=0,n=strlen(m.title);int y=44,cols=(scr::W-16)/6;
   while(at<n){char b[81];size_t take=n-at<(size_t)cols?n-at:cols;memcpy(b,m.title+at,take);b[take]=0;pk::clippedText(tft,clip,b,8,y,1,C_WHITE);at+=take;y+=12;}
+  if(games[selected].scored){  // a suggestion in plain words, never a verdict (the score is advisory)
+    const char*t=games[selected].score>=85?"Plays well on touch":games[selected].score<60&&games[selected].quick?"Needs quick, exact jumps":nullptr;
+    if(t&&y+18<=pk::detailsPagesTop(scr::H))pk::detailsTouch(tft,scr::W,y+2,t);
+  }
   bool pinned=catalog&&catalog->pins.has(games[selected].uid);
   pk::detailsPages(tft,scr::W,scr::H,detailsMask);
   pk::detailsFooter(tft,scr::W,scr::H,pinned);if(pinned)pk::detailsNote(tft,scr::W,scr::H,"In Favorites");
@@ -1792,6 +1816,111 @@ static bool isSetupCommand(const char* buf) {
   return false;
 }
 
+// ---- first run (firstrun.h): How to hold it, Pick your hand, the playground; Settings, Controls, Try the controls opens the playground ----
+// "firstrun" in NVS (namespace pocket) is written once, on Done; serial "FIRST reset" erases only that key, "FIRST" opens the flow.
+static fr::Flow frFlow;
+static bool frPaused = false;      // the playground came from Settings over a paused game: Done goes back there
+static bool frDoneDown = false;    // a touch began on Done (it counts when it lifts there)
+static uint8_t frHeld = 0;         // the keys the playground's thumb holds (st::heldText's bits)
+static int frLook = ctl::LOOK_OFF;
+static ctl::Disc frPad = {0, 0, 0};
+static bool firstRunDone() {
+  Preferences p;
+  bool done = false;
+  if (p.begin("pocket", true)) { done = p.getBool("firstrun", false); p.end(); }
+  return done;
+}
+static void drawPlayground(bool full) {
+  fr::playground(tft, controls.L, controls.need, controls.padDirs, controls.btnDown, frHeld, frLook, settings.floatPad, full, frPad);
+  if (frDoneDown) { fr::Box d = fr::doneBox(); ovl::button(tft, d.x0, d.y0, d.x1, d.y1, "Done", true, C_BLUE, 2); }
+  frPad = controls.L.pad;
+  banner::paint(tft, 0, 0);
+}
+static void drawFirstRun() {
+  switch (frFlow.step) {
+    case fr::HOWTO: fr::howTo(tft); break;
+    case fr::HAND: fr::pickHand(tft); break;
+    case fr::PLAY:
+      controls.configure(settings, fr::playNeed());
+      frHeld = 0; frDoneDown = false; frLook = controls.padLook(millis());
+      drawPlayground(true);
+      return;
+    default: return;
+  }
+  banner::paint(tft, 0, 0);
+}
+static void openFirstRun(bool fromSettings) {
+  frPaused = fromSettings && setView.fromPause;
+  frFlow.start(fromSettings);
+  mode = FIRST_RUN;
+  wasDown = true;  // the touch that opened it is not a tap here
+  drawFirstRun();
+}
+static void openSettings(bool paused);
+// Done: the first run is marked and the hand kept; from Settings, back to its Controls tab.
+static void finishFirstRun() {
+  controls.reset();
+  if (frFlow.marksDone()) {
+    Preferences p;
+    if (p.begin("pocket", false)) { p.putBool("firstrun", true); p.end(); }
+    saveSettings();
+    Serial.println("FIRST done");
+    enterPicker();
+    return;
+  }
+  openSettings(frPaused);
+}
+static void firstRunLoop(uint32_t now) {
+  int tx, ty;
+  if (frFlow.step != fr::PLAY) {
+    if (!freshTap(tx, ty)) return;
+    fr::Tap t = fr::hit(frFlow.step, tx, ty);
+    if (frFlow.step == fr::HAND && (t == fr::T_PAD_LEFT || t == fr::T_PAD_RIGHT)) {
+      fr::pickHand(tft, t == fr::T_PAD_RIGHT ? 1 : 0);  // the picked one lights a moment
+      clickSound();
+      delay(150);
+    } else if (t != fr::T_NONE) clickSound();
+    if (frFlow.apply(t)) {
+      if (frFlow.chose) settings.lefty = frFlow.lefty;
+      drawFirstRun();
+      wasDown = true;
+    }
+    return;
+  }
+  // The playground: every contact goes to the controls model; Done is a button of its own, counted when the touch lifts on it.
+  bool down = pts.n > 0;
+  fr::Box d = fr::doneBox();
+  if (down && !wasDown && d.has(pts.x[0], pts.y[0])) { frDoneDown = true; ovl::button(tft, d.x0, d.y0, d.x1, d.y1, "Done", true, C_BLUE, 2); }
+  if (frDoneDown && down && !d.has(pts.x[0], pts.y[0])) { frDoneDown = false; ovl::button(tft, d.x0, d.y0, d.x1, d.y1, "Done", false, C_BLUE, 2); }
+  if (frDoneDown && !down) {
+    frDoneDown = false;
+    wasDown = false;
+    clickSound();
+    frFlow.apply(fr::T_DONE);
+    finishFirstRun();
+    return;
+  }
+  wasDown = down;
+  uint8_t d0 = controls.padDirs, b0 = controls.btnDown, h0 = frHeld;
+  if (frDoneDown) controls.update(nullptr, nullptr, nullptr, nullptr, 0, now);
+  else controls.update(pts.id, pts.x, pts.y, pts.size, pts.n, now);
+  controls.takeEvent();
+  ctl::Change ch[16];
+  int k = controls.flush(ch, 16);
+  for (int i = 0; i < k; i++) {
+    int s = ch[i].scan;
+    uint8_t bit = s == ctl::S_LEFT ? 1 : s == ctl::S_RIGHT ? 2 : s == ctl::S_UP ? 4 : s == ctl::S_DOWN ? 8 : s == ctl::S_SPACE ? 16 : 0;
+    if (ch[i].down) frHeld |= bit;
+    else frHeld &= ~bit;
+  }
+  int look = controls.padLook(now);
+  const ctl::Disc& p = controls.L.pad;
+  if (controls.padDirs != d0 || controls.btnDown != b0 || frHeld != h0 || look != frLook || p.cx != frPad.cx || p.cy != frPad.cy) {
+    frLook = look;
+    drawPlayground(false);
+  }
+}
+
 static void pollSerial() {
   static char buf[48];
   static int n = 0;
@@ -1809,6 +1938,14 @@ static void pollSerial() {
         bannerChanged(banner::set(!strncmp(buf, "S2 off", 6) ? "" : buf + 3, true));
       } else if (buf[0] == 'S') {
         bannerChanged(banner::set(!strncmp(buf, "S off", 5) ? "" : buf + 2));
+      } else if (!strncmp(buf, "FIRST", 5)) {  // "FIRST reset": erase only the first-run key; "FIRST": open the first run (game list only)
+        if (!strncmp(buf, "FIRST reset", 11)) {
+          Preferences p;
+          bool ok = p.begin("pocket", false) && p.remove("firstrun");
+          p.end();
+          Serial.printf("FIRST reset %s\n", ok ? "ok" : "none");
+        } else if (mode == PICKER) openFirstRun(false);
+        Serial.printf("FIRST mode=%d step=%d\n", (int)mode, (int)frFlow.step);
       } else if (fwSerial(buf)) {
       } else if (buf[0] == 'I' && buf[1] == 'D') {
         bannerChanged(banner::setId(!strncmp(buf, "ID off", 6) ? "" : buf + 3));
@@ -1922,6 +2059,7 @@ void setup() {
   Serial.printf("ready: %d games (microSD %s), heap %u, largest %u\n", ngames, haveSD ? "in" : "out", (unsigned)ESP.getFreeHeap(), (unsigned)heap_caps_get_largest_free_block(MALLOC_CAP_8BIT));
   enterPicker();
   Serial.printf("BOOT ms=%lu picker-ready games=%d\n", (unsigned long)millis(), ngames);
+  if (!firstRunDone()) { Serial.println("FIRST open"); openFirstRun(false); }  // after the display setup and the list, never inside them
 }
 
 static void applyKeys(uint32_t now) {
@@ -1963,6 +2101,7 @@ static void chooseSetting(st::Item it, int chip) {
       if (!fromPause) { saveSettings(); rescanCard(); return; }
       drawSettings();
       return;
+    case st::I_TRY: saveSettings(); openFirstRun(true); return;
 #ifdef POCKET_CYD28
     case st::I_CAL: saveSettings(); if (runCalibration()) dsCalDone(); drawSettings(); return;
     case st::I_PANEL:
@@ -2011,6 +2150,8 @@ static void previewTouch(uint32_t now) {
       n++;
     }
   uint8_t d0 = controls.padDirs, b0 = controls.btnDown, h0 = pvHeld;
+  static int look0 = ctl::LOOK_OFF;  // as last drawn: a floating pad also changes as it fades, with no touch
+  static ctl::Disc p0 = {0, 0, 0};
   controls.update(ids, xs, ys, sz, n, now);
   controls.takeEvent();  // the little MENU chip does nothing here
   ctl::Change ch[16];
@@ -2021,8 +2162,11 @@ static void previewTouch(uint32_t now) {
     if (ch[i].down) pvHeld |= bit;
     else pvHeld &= ~bit;
   }
-  if (controls.padDirs != d0 || controls.btnDown != b0 || pvHeld != h0) {
-    st::preview(tft, controls.L, controls.need, controls.padDirs, controls.btnDown);
+  const int look = controls.padLook(now);
+  if (controls.padDirs != d0 || controls.btnDown != b0 || pvHeld != h0 || look != look0 || controls.L.pad.cx != p0.cx || controls.L.pad.cy != p0.cy) {
+    look0 = look;
+    p0 = controls.L.pad;
+    st::preview(tft, controls.L, controls.need, controls.padDirs, controls.btnDown, look);
     st::previewNote(tft, setView, pvHeld);
   }
 }
@@ -2070,10 +2214,16 @@ static bool menuTap(prs::Screen sc, int& tx, int& ty) {
   uint32_t now = millis();
   prs::Ev e = press.update(now, pts.n > 0, pts.n ? pts.x[0] : 0, pts.n ? pts.y[0] : 0, [&](int x, int y, prs::Rect& r) { return prs::under(c, x, y, r); });
   if (e == prs::PRESS) {
+    if (sc == prs::SC_PICKER && press.dy >= PK_BTN_Y && press.dx < 98) press.makeRepeatable();  // the page arrows
     if (sc == prs::SC_PAUSE) prs::drawPausePressed(tft, ovl::pauseHit(press.dx, press.dy));
     else prs::drawPressed(tft, press.r);
   }
   else if (e == prs::CANCEL) redrawMenu(sc);
+  else if (e == prs::NONE && press.repeatDue(now)) {  // a held page arrow turns pages (no click: it would rattle)
+    tx = press.dx;
+    ty = press.dy;
+    return true;
+  }
   else if (e == prs::ACT) {
     uint32_t wait = press.showLeft(now);
     if (wait) delay(wait);  // a very short tap still shows its pressed look
@@ -2225,13 +2375,20 @@ void loop() {
       else{if(!launchGame(selected))enterPicker();else wasDown=true;}}delay(5);return;
   }
   if (mode == SEARCH_SCREEN) {
+    static bool bkOn = false;
+    static uint32_t bkNext = 0;
     if (freshTap(tx, ty)) {
       char previous[sizeof searchText];memcpy(previous,searchText,sizeof previous);
       int n=strlen(searchText),top=58,step=(scr::H-top-38)/4;
       if(ty<32){if(tx<40){strcpy(searchText,savedSearch);searchAll=savedAll;browsingCategories=savedBrowsing;mode=PICKER;drawPicker();return;}searchAll=!searchAll;drawSearch();}
-      else if(ty>=scr::H-36){int b=tx*4/scr::W;if(b==0&&n<24){searchText[n]=' ';searchText[n+1]=0;}if(b==1&&n)searchText[n-1]=0;if(b==2)searchText[0]=0;if(b==3){page=0;selected=-1;browsingCategories=false;mode=PICKER;drawPicker();return;}}
+      else if(ty>=scr::H-36){int b=tx*4/scr::W;if(b==0&&n<24){searchText[n]=' ';searchText[n+1]=0;}if(b==1&&n){searchText[n-1]=0;bkOn=true;bkNext=now+prs::REPEAT_DELAY_MS;}if(b==2)searchText[0]=0;if(b==3){page=0;selected=-1;browsingCategories=false;mode=PICKER;drawPicker();return;}}
       else if(ty>=top&&ty<top+4*step&&n<24){searchText[n]="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"[(ty-top)/step*9+tx*9/scr::W];searchText[n+1]=0;}
       pk::drawSearchText(tft,32,searchText,previous);
+    }else if(bkOn){  // Backspace held: it repeats (400 ms, then 8 a second) while the finger stays on it
+      int n=strlen(searchText);
+      if(pts.n==0||pts.y[0]<scr::H-36||pts.x[0]*4/scr::W!=1)bkOn=false;
+      else if(now>=bkNext&&n){char previous[sizeof searchText];memcpy(previous,searchText,sizeof previous);searchText[n-1]=0;
+        bkNext=now-bkNext>prs::REPEAT_EVERY_MS?now+prs::REPEAT_EVERY_MS:bkNext+prs::REPEAT_EVERY_MS;pk::drawSearchText(tft,32,searchText,previous);}
     }delay(5);return;
   }
 #ifdef POCKET_CYD28
@@ -2307,6 +2464,11 @@ void loop() {
         default: break;
       }
     }
+    delay(5);
+    return;
+  }
+  if (mode == FIRST_RUN) {
+    firstRunLoop(now);
     delay(5);
     return;
   }
@@ -2393,7 +2555,7 @@ void loop() {
   if (ran) tickMsLast = (millis() - ts) / ran;
   if (oneLevelUp || assets.palChanged) { refreshPalette(); last.valid = false; }
 
-  if (ran || !last.valid || controls.padDirs != lastPad || controls.btnDown != lastBtn || controls.tileDown != lastTile) {
+  if (ran || !last.valid || controls.padDirs != lastPad || controls.btnDown != lastBtn || controls.tileDown != lastTile || padShowChanged(now)) {
     uint32_t ds = millis();
     drawFrame(false);
     drawMsLast = millis() - ds;

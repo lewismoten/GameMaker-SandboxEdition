@@ -1,6 +1,6 @@
 // Builds and runs the Pocket Player's touch-controls test (hardware/pocket-player/host/controlstest.cpp):
 // scripted touch events (sliding fingers, two fingers, stylus taps, palm contacts, left-handed layout, the
-// key menu) go into src/controls.h and the keys it presses are checked. No board needed.
+// key menu, the floating pad) go into src/controls.h and the keys it presses are checked. No board needed.
 //   cd web && npx vite-node scripts/pocketControlsCheck.ts
 import { execFileSync, spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
@@ -22,7 +22,7 @@ for (const flags of [[], ['-DPOCKET_CYD28']]) {
 // three pad sizes, Smaller picture on and off, the pause menu and How to play, at 480x320 and 320x240 (host/playshots.cpp). The
 // snapshot is a hash of every cell's picture; PNGs go to GM_PLAYSHOTS_OUT (default: a temp folder). After a deliberate
 // change to the overlay or to those Starters, look at the PNGs, then paste the printed hashes here.
-const playHashes: Record<string, string> = { '480': 'acd452f99933d350', '320': '4de190fa625e0b3b' };
+const playHashes: Record<string, string> = { '480': '181f8d5b7e1c2adb', '320': 'b923b2a0a397e912' };
 const playDir = process.env.GM_PLAYSHOTS_OUT ?? mkdtempSync(join(tmpdir(), 'pocket-playshots-'));
 let playBad = 0;
 for (const [name, flags] of [
@@ -104,8 +104,24 @@ for (const [name, flags] of [
   execFileSync('c++', ['-std=c++17', '-O1', '-Wall', ...flags, '-I', here + 'src', here + 'host/storytest.cpp', '-lz', '-o', storyExe], { stdio: 'inherit' });
   storyBad ||= spawnSync(storyExe, [here + 'data', storyDir, 'first-steps', 'your-first-game'], { stdio: 'inherit' }).status ?? 1;
 }
+// The first run (host/firstruntest.cpp): How to hold it, Pick your hand and the touch playground as a flow, their buttons' sizes
+// and hit table, Done clear of the pad and Jump, and renders of each card and the playground, fixed and floating, idle and
+// touched, both hands (PNGs to GM_FIRSTRUNSHOTS_OUT).
+const firstRunDir = process.env.GM_FIRSTRUNSHOTS_OUT ?? mkdtempSync(join(tmpdir(), 'pocket-firstrun-'));
+let firstRunBad = 0;
+for (const [name, flags] of [
+  ['480', []],
+  ['320', ['-DPOCKET_CYD28']],
+] as const) {
+  const firstRunExe = join(mkdtempSync(join(tmpdir(), 'pocket-firstrun-exe-')), 'firstruntest' + name);
+  execFileSync('c++', ['-std=c++17', '-O1', '-Wall', ...flags, '-I', here + 'src', here + 'host/firstruntest.cpp', '-lz', '-o', firstRunExe], {
+    stdio: 'inherit',
+  });
+  firstRunBad ||= spawnSync(firstRunExe, [firstRunDir], { stdio: 'inherit' }).status ?? 1;
+}
 process.exit(
-  storyBad ||
+  firstRunBad ||
+    storyBad ||
     idleBad ||
     settingsBad ||
     playBad ||

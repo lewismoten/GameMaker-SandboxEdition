@@ -34,7 +34,7 @@ describe('merge gate', () => {
     expect(result.inputs[0].revision).toBe(revision);
     expect(git(f.root, 'ls-remote', 'origin', 'refs/heads/develop').split(/\s/)[0]).toBe(result.testedRevision);
     expect(result.pushedRevision).toBe(result.testedRevision);
-    expect(result.steps.map((s) => s.name)).toEqual(['packages', 'disks', 'levelViews', 'tsc', 'lint', 'vitest', 'game-sample', 'push']);
+    expect(result.steps.map((s) => s.name)).toEqual(['packages', 'disks', 'levelViews', 'declarations', 'tsc', 'lint', 'vitest', 'game-sample', 'push']);
     expect(JSON.parse(readFileSync(join(f.output, 'result.json'))).candidateTree).toBe(git(f.integration, 'rev-parse', 'HEAD^{tree}'));
     expect(existsSync(`${f.integration}.gate-lock`)).toBe(false);
   });

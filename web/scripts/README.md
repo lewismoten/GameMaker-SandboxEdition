@@ -138,8 +138,17 @@ This folder holds the build's Vite plugins and the scripts run by hand (from
   `--lines <file.json>` reads `[{ id, chapter, where, text, voice? }]` instead of the tour, `--out <dir>`
   writes elsewhere, `--wav` also keeps each take as .wav, and `--dry-run` lists what it would
   record. Each line is said in the spoken form `narrate/spoken.ts` gives it (numbers in words,
-  BBS, DOS, PLAYGAME, THE CHEZ and the like spelled for the voice, straight quotes for Pocket TTS),
+  BBS, DOS, PLAYGAME, THE CHEZ and the like spelled for the voice, straight quotes for Pocket TTS,
+  and, last, the made-up and unusual words of the pronunciation lexicon `narrate/pronounce.json`
+  respelled by `narrate/pronounce.ts`: word → `say` (and `kokoro` for Kokoro's voices), with
+  `sounds`, the intended sound such as `GRAV-ih-tass`, whole words in any case),
   or a step's own `spoken` where even that comes out wrong; the bubbles keep their written words,
+  `npm run voice:words` (`narrate/words.ts`; `-- --only <word>[,<word>]`, `-- --compare` adds each
+  word as written, lexicon off) records each lexicon word in a short frame in every voice whose lines say it,
+  into `/.narrate/words/`, and lists what Whisper hears and what `narrate/letters.ts` spells (wav2vec2,
+  no dictionary, so a misread made-up word shows; model outside the repo, `WAV2VEC2_MODEL`), in the
+  terminal and `/.narrate/voice-words.md`; a changed respelling changes the spoken form's hash, so
+  `npm run voice` then retakes the lines that say that word,
   `npm run voice:phone` / `voice:phone:check` do the same for the desk's wall phone (`--lines phone`:
   `narrate/phoneLines.ts` lists a clip per sentence and the spliced number clips, recorded into
   `../public/phone/voice/` and cast by `src/audio/phone/phoneCast.ts`),
@@ -257,6 +266,7 @@ from the slim home-page catalog. Copying a selected file still reads its origina
 - `pocketStatus.py <port> "<text>"|off`: shows what is being tested on a Pocket Player's screen (a bold board letter, a robot and up to 40 characters; firmware `S` and `ID` commands; ports map to letters in its `BOARDS` table: A = usbserial-1140 3.5", B = 1130 and C = 120, both 2.8"; `--id X` overrides); the other `pocket*.py` scripts that open the port call it for you and clear it in a `finally`. `pocketStatus.py <port> flash` shows "Flashing new firmware"; run it before a flash.
 - `pocketShowcase.py [--minutes 4] [--countdown 5] [--dry-run] [--boards A,B,C]`: a choreographed demo on all three Pocket Player boards at once, for filming (takes the three lock folders, one thread per board: A plays games by self-test, B plays with made-up touches on the pad, C loads SD card games and level cards; big `S2` banners, a live three-column status in the terminal, "All tests passed" at the end, banners off and locks released even on Ctrl-C). Needs firmware with `S2` and `L`.
 - `pocketData.ts`: packs every Starter the board can run into `hardware/pocket-player/data/` (deflated files shared by content, one `.cfg` per game, `games.txt`); `--list` says why each one is left out; `--out <card>` writes a microSD card's `pocket/` folder, `--gmp <card>` one `pocket/NAME.GMP` per game (the Download chooser's Pocket file). The packing is `src/export/pocketPack.ts`.
+- `gmosCard.ts`: writes games for Game-Maker OS (the Raspberry Pi player) to a card folder: `GAMES/<DIR>/` with each public game's DOS files, and `GAMES/LIBRARY.JSL`, its library index in `pocketData.ts`'s `library.jsonl` format plus each game's company, year and blurb; `--index-only` writes the index alone.
 - `fidelityWeb.ts` and `fidelity/` (spike, 2026-11-04): the engine against real DOS. `fidelity/dosCapture.sh` runs a CD game in DOSBox with a timed key script (`fidelity/keyseq.swift` posts held keys; `volume-keys.txt` is an example) and records video and sound with DOSBox's own capture; `fidelityWeb.ts` plays the same game headless and writes a frame per game tick; `fidelity/compare.ts` prints the share of identical pixels per tick. `ALL=1` also records every presented screen (palette fades, slides, menus) in `<out>.all.rgb`/`.all.txt` through `runHeadless`'s `onPresent`. `dosCapture.sh` exits 2 when the screen is locked and 3 when no AVI was captured. Run only while Lewis is away (it opens DOSBox; the display must be awake and unlocked). Round 3 (2026-11-05): `fidelityWeb.ts` with `-` now plays from the start in record mode (the idle menu would run `demo.rec` and press keys of its own) and `KEYS` ticks count from the first tick of scene `KEYSCENE` (default 2); `fidelity/score.mjs` aligns a web run with a decoded DOS level AVI (monotone dynamic programming) and prints identical pixels per tick, the first difference and a web | DOS | diff picture; `fidelity/pair.mjs` draws one such picture; `fidelity/fades.mjs` counts how many presented screens (fades) appear exactly in a DOS capture; `CYCLES="fixed 40000"` overrides DOSBox's speed in `dosCapture.sh`. Notes: `.for-lewis/research/fidelity/2026-11-04-spike.md`, `2026-11-05-dos.md`.
 - `deepSearchCheck.ts <port> <out-dir>`: headless check of the home deep search (a word only inside one game's text file, its "found in" hint, the live announcement, axe at 1440 and 390 in light and dark, no horizontal scroll, slowest key event while indexing); starts its own dev server.
 
