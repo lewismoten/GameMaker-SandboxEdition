@@ -1,13 +1,15 @@
 // What every LUCKY CAT level is made of, and the helpers its levels share: a room painted on a Grid (see
-// games/kit/starter/map.ts for what the letters mean), signs, scenery and the level's own block set.
+// games/kit/starter/map.ts for what the letters mean; ground.ts draws them in the game's woodcut), the Committee's
+// handbills, scenery and the level's own block set.
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { Book } from '../../kit/starter/book';
-import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import type { StarterMap } from '../../kit/starter/map';
-import type { Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import type { Sign } from '../../kit/starter/sign';
 import type { Charm } from './charms';
+import { addGround } from './ground';
+import { addBill } from './handbill';
+import type { Pal } from './print';
 import { addProps } from './props';
 
 /** A block that turns into another after some ticks (the fair's chime meter and gate). */
@@ -25,8 +27,8 @@ export interface Level {
   hint: string;
   /** The look: a key of LOOKS in palette.ts ('' keeps the base palette). */
   look: string;
-  /** The character file: Midnight, or Midnight with Left and Right swapped. */
-  chr: 'hero' | 'mirror';
+  /** The character file: Midnight, Midnight with Left and Right swapped, or Rascal. */
+  chr: 'hero' | 'mirror' | 'rascal';
   map: StarterMap;
   book: Book;
   timed: Timed[];
@@ -47,10 +49,10 @@ export function finishBlocks(l: Pick<Level, 'book' | 'timed'>): Block[] {
   return blocks;
 }
 
-/** A new block set: the Starters' blocks, then the named prop groups and this level's charms. */
+/** A new block set: the ground and walls, then the named prop groups and this level's charms. */
 export function startBook(pal: Pal, groups: readonly string[], charms: readonly Charm[]): Book {
   const book = new Book('bbl');
-  addStarterBlocks(book, pal);
+  addGround(book, pal);
   addProps(book, pal, groups, { charms });
   return book;
 }
@@ -62,7 +64,7 @@ export function addSigns<D extends SignDefs>(book: Book, pal: Pal, defs: D): Rec
   const out = {} as Record<keyof D, Sign>;
   for (const n of Object.keys(defs) as (keyof D & string)[]) {
     const [text, w, h] = defs[n];
-    out[n] = addSign(book, pal, `${n}.sign`, text, w, h);
+    out[n] = addBill(book, pal, `${n}.sign`, text, w, h);
   }
   return out;
 }

@@ -5,7 +5,7 @@
 //   - beyond it a second mezzanine with a wishbone, and the exit.
 // Two charms: the ladybug and the wishbone.
 import { StarterMap } from '../../../kit/starter/map';
-import type { Pal } from '../../../kit/starter/palette';
+import type { Pal } from '../print';
 import { GROUND, addSigns, onGround, room, startBook, type Level } from '../level';
 
 export const TWO = {
@@ -21,11 +21,11 @@ export const TWO = {
 } as const;
 
 const SIGNS = {
-  swap: ['THE MIRRORS SWAP LEFT AND RIGHT!', 4, 3],
-  hop: ['MIRROR PILLARS. HOP THEM.', 4, 3],
-  key: ['A HAND MIRROR OPENS THE MIRROR GATE', 4, 3],
-  gate: ['SHINY GATE. MIRROR KEY NEEDED.', 4, 3],
-  wish: ['MAKE A WISH UP HIGH', 3, 3],
+  swap: ['MIRRORS SWAP LEFT AND RIGHT. SO DO YOU.', 4, 3],
+  hop: ['MIRROR PILLARS. HOP THEM. GENTLY.', 4, 3],
+  key: ['A HAND MIRROR OPENS THE GATE. FOUND UP TOP.', 4, 3],
+  gate: ['MIRROR GATE. HAND MIRROR ONLY.', 4, 3],
+  wish: ['WISHES ARE UP THERE.', 3, 3],
 } as const;
 
 export function levelTwo(pal: Pal): Level {

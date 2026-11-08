@@ -10,7 +10,7 @@ import { blockSheet, writePng } from '@lewismoten/gamemaker-sandbox-tools/kit/pn
 import { renderRegion } from '@lewismoten/gamemaker-sandbox-tools/kit/levelPicture';
 import { ORIGIN } from '../../kit/starter/map';
 import { buildCatBlocks, catPicture } from '../src/cat';
-import { rascalPicture } from '../src/pictures';
+import { rascalSprite } from '../src/rascal';
 import { endingReel, introReel, REEL_SPEED } from '../src/reels';
 import { finishBlocks } from '../src/level';
 import { buildLevels } from '../src/levels';
@@ -39,9 +39,10 @@ if (!only) {
     writePng(join(out, `pic-${f.replace('.gif', '')}.png`), p, g.palette, 2);
   }
   const cat = catPicture(buildCatBlocks(pal), 'stand.top', 'stand');
+  const smug = catPicture(buildCatBlocks(pal), 'look.top', 'stand');
   const reels = {
-    intro: introReel(pal, levels[0].book, cat),
-    ending: endingReel(pal, levels[0].book, catPicture(buildCatBlocks(pal), 'cheer.top', 'jump'), rascalPicture(pal, levels[levels.length - 1].book)),
+    intro: introReel(pal, cat, smug, rascalSprite(pal)),
+    ending: endingReel(pal, smug, catPicture(buildCatBlocks(pal), 'cheer.top', 'jump'), rascalSprite(pal)),
   };
   for (const [name, r] of Object.entries(reels)) {
     const cols = 4;

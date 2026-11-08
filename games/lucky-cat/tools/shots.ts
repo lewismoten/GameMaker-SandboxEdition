@@ -13,7 +13,7 @@ import { finishBlocks } from '../src/level';
 import { buildLevels } from '../src/levels';
 import { LOOKS, swapped } from '../src/palette';
 import { finishMonsterPictures, monsterPictures, monsterSet } from '../src/monsters';
-import { rascalPicture } from '../src/pictures';
+import { rascalSprite } from '../src/rascal';
 import { endingReel } from '../src/reels';
 
 const out = process.argv[2];
@@ -27,15 +27,15 @@ t.px.set(title.pixels);
 writePng(join(out, 'lucky-cat-title.png'), t, title.palette, 2);
 
 const { pal, levels } = buildLevels();
-const l = levels[3];
+const l = levels[4];
 const mb = monsterPictures(pal);
 const view = renderRegion(l.map.done(), finishBlocks(l), finishMonsterPictures(mb), monsterSet(mb), ORIGIN + 14, ORIGIN + 5, 16, 10);
 const cat = catPicture(buildCatBlocks(pal), 'stand.top', 'stand');
 view.blit(cat, 4 * 20, 60, 255);
 writePng(join(out, 'lucky-cat-level.png'), view, swapped(pal, LOOKS[l.look]), 2);
 
-const reel = endingReel(pal, levels[0].book, catPicture(buildCatBlocks(pal), 'cheer.top', 'jump'), rascalPicture(pal, levels[levels.length - 1].book));
+const reel = endingReel(pal, catPicture(buildCatBlocks(pal), 'look.top', 'stand'), catPicture(buildCatBlocks(pal), 'cheer.top', 'jump'), rascalSprite(pal));
 const frame = new Pixels(320, 200);
-frame.px.set(reel.frames[24]);
-writePng(join(out, 'lucky-cat-ending.png'), frame, reel.palettes[24], 2);
+frame.px.set(reel.frames[60]);
+writePng(join(out, 'lucky-cat-ending.png'), frame, reel.palettes[60], 2);
 console.log(`pictures in ${out}`);
