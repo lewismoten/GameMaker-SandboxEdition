@@ -2,10 +2,10 @@
 // step up and down; the way up is a chimney's warm smoke, which lifts you, but each chimney puffs on a clock: watch
 // one puff, then step in at the start of the next. Hop the brick stacks, take every drift of snow (Wisp's trail),
 // and read what the chimneys did not say. The trail ends where the snow goes down to the mill road.
-import { ORIGIN, StarterMap } from '../../../kit/starter/map';
+import { ORIGIN } from '../../../kit/starter/map';
 import type { Pal } from '../../../kit/starter/palette';
 import { Grid } from '../../../kit/starter/grid';
-import { addSigns, onGround, startBook, type Level } from '../level';
+import { addSigns, onGround, startBook, MountainMap, type Level } from '../level';
 
 export const G_ROOFS = 38;
 
@@ -39,11 +39,7 @@ export const ROOFS_AT = {
 } as const;
 
 const SIGNS = {
-  over: ['WISP WENT OVER THE ROOFS. SO DO YOU.', 4, 3],
-  smoke: ['WARM SMOKE RISES. SO WILL YOU.', 4, 3],
-  clock: ['IT PUFFS ON A CLOCK. WATCH ONE FIRST.', 4, 3],
   friends: ['WISP TALKED TO EVERY CHIMNEY. NONE OF THEM TALKED BACK.', 4, 4],
-  mill: ['THE SNOW GOES DOWN TO THE MILL ROAD.', 4, 3],
 } as const;
 
 /** The roof row under column `x`. */
@@ -58,7 +54,7 @@ export function levelRoofs(pal: Pal): Level {
   g.row(G_ROOFS, 0, W - 1, 'G').fill(0, G_ROOFS + 1, W, 3, 'D');
   g.col(0, 0, G_ROOFS - 1, 'X').col(W - 1, 0, G_ROOFS - 1, 'X');
   g.put(3, 28, 's').put(3, 29, 'S');
-  const m = new StarterMap(book, g.rows());
+  const m = new MountainMap(book, g.rows());
   // stars over the town, and the moon
   for (let y = 0; y < 14; y++) for (let x = 1; x < W - 1; x++) if ((x * 11 + y * 7) % 17 === 0) m.set(x, y, ['starA', 'starB', 'starC'][(x + y) % 3]);
   const [mx, my] = R.moon;
@@ -86,7 +82,7 @@ export function levelRoofs(pal: Pal): Level {
   for (const x of R.flakes) m.set(x, roofAt(x) - 1, 'flake');
   m.set(R.exit, roofAt(R.exit) - 2, 'doorTop').set(R.exit, roofAt(R.exit) - 1, 'doorBottom');
   m.exits.push({ from: [R.exit + ORIGIN, roofAt(R.exit) - 1 + ORIGIN] });
-  for (const k of Object.keys(R.signs) as (keyof typeof R.signs)[]) m.sign(R.signs[k], onGround(roofAt(R.signs[k]), s[k]), s[k]);
+  for (const k of Object.keys(s) as (keyof typeof s)[]) m.sign(R.signs[k], onGround(roofAt(R.signs[k]), s[k]), s[k]);
   return {
     file: 'roofs',
     title: 'Rooftops',

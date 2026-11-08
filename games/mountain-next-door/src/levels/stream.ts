@@ -2,10 +2,10 @@
 // bends across the meadow. It is raining, and the stepping stones wobble: they sink and rise on a clock, and some
 // rise as others sink. Wait until they are up, then cross. Fall in and it is only wet socks: walk back out and
 // try again. Blaze the trees on the banks; the last crossing has a footbridge.
-import { StarterMap } from '../../../kit/starter/map';
+
 import type { Pal } from '../../../kit/starter/palette';
 import { Grid } from '../../../kit/starter/grid';
-import { addSigns, onGround, startBook, type Level } from '../level';
+import { addSigns, onGround, startBook, MountainMap, type Level } from '../level';
 import { tree } from './prints';
 
 export const G4 = 15;
@@ -37,10 +37,7 @@ export const STREAM_AT = {
 } as const;
 
 const SIGNS = {
-  stones: ['WATCH ONE LOOP BEFORE YOU STEP.', 4, 3],
-  two: ['SOME RISE AS OTHERS SINK.', 4, 3],
   socks: ['FELL IN? WET SOCKS ARE NOT FATAL.', 4, 3],
-  hill: ['THE PRINTS GO ON UP THE HILL.', 4, 3],
 } as const;
 
 export function levelStream(pal: Pal): Level {
@@ -53,7 +50,7 @@ export function levelStream(pal: Pal): Level {
   g.put(3, G4 - 2, 's').put(3, G4 - 1, 'S');
   g.put(STREAM_AT.exit, G4 - 2, 'e').put(STREAM_AT.exit, G4 - 1, 'E');
   for (const x of [9, 24, 44, 60, 85]) g.put(x, G4 - 1, 'b');
-  const m = new StarterMap(book, g.rows());
+  const m = new MountainMap(book, g.rows());
   // rain everywhere in the sky, on four frames so it scatters
   for (let y = 0; y < G4 - 1; y++) for (let x = 1; x < W - 1; x++) if ((x * 3 + y * 5) % 4 === 0) m.set(x, y, `rain${(x + y * 2) % 4}`);
   // each crossing: water a block deep, a bed under it, the stones on top
@@ -71,6 +68,6 @@ export function levelStream(pal: Pal): Level {
   for (const x of STREAM_AT.acorns) m.set(x, G4 - 1, 'acorn');
   m.set(STREAM_AT.pie, G4 - 1, 'pie');
   const at = STREAM_AT.signs;
-  for (const k of Object.keys(at) as (keyof typeof at)[]) m.sign(at[k], onGround(G4, s[k]), s[k]);
+  for (const k of Object.keys(s) as (keyof typeof s)[]) m.sign(at[k], onGround(G4, s[k]), s[k]);
   return { file: 'stream', title: 'Stepping Stones', hint: 'Cross when the stones are up.', look: 'rain', map: m, book, timed, mon: 'trail', song: 'trail' };
 }

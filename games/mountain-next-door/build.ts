@@ -32,6 +32,7 @@ import { REEL_SPEED, endingReel, introReel } from './src/reels';
 import { SONGS, song } from './src/song';
 import { buildTessBlocks, tessPicture } from './src/tess';
 import { CARDS, CREDITS, HOWTO, LOST, STORY, WON } from './src/text';
+import { EXCUSE, EXCUSE_COUNTER, excuseVoc, nextSounds } from './src/voice';
 
 /** Hit points and lives at the start (a pebble's bump takes five). */
 const HERO_HIT_POINTS = 50;
@@ -53,6 +54,7 @@ disk.put('tess.cbl', serializeBlocks(heroBlocks.finish()));
 const heroChar = buildHero(heroBlocks);
 heroChar.meter[0] = HERO_HIT_POINTS;
 heroChar.meter[1] = HERO_LIVES;
+heroChar.meter[EXCUSE_COUNTER] = 1; // a counter (not unlimited), so touching the mountain's trigger plays its voice (voice.ts)
 disk.put('tess.chr', serializeCharacter(heroChar));
 disk.put('mount.mbl', serializeBlocks(finishMonsterPictures(mb)));
 disk.put('trail.mon', serializeMonsters(trailSet(mb)));
@@ -60,6 +62,9 @@ disk.put('next.mon', serializeMonsters(nextSet(mb)));
 disk.put('hollow.mon', serializeMonsters(hollowSet(mb)));
 disk.put('picnic.mon', serializeMonsters(picnicSet(mb)));
 disk.put('mount.snd', serializeSoundSet(buildSounds()));
+// level 1's own sounds: the mountain's "excuse me" (voice.ts)
+disk.put('next.snd', serializeSoundSet(nextSounds()));
+disk.put(`${EXCUSE}.voc`, excuseVoc());
 for (const s of SONGS) disk.put(`${s}.cmf`, song(s));
 
 // each level: its look, map, block set and the pictures it opens with (a card, then its story pages)
@@ -72,9 +77,7 @@ levels.forEach((l, i) => {
   disk.put(`${l.file}.gif`, gif(restage(cardPicture(lp, base, tess, i + 1, levels.length, l.title, l.hint), lp, base, 160, 21 + i), lp));
   (CARDS[l.file] ?? []).forEach((lines, k) => {
     const peak =
-      l.file === 'next' && k === 1
-        ? undefined
-        : { eyes: l.file === 'picnic' ? ('open' as const) : ('open' as const), gates: i < 2, cloud: l.file === 'picnic' };
+      l.file === 'next' && k >= 1 ? undefined : { eyes: l.file === 'picnic' ? ('open' as const) : ('open' as const), gates: i < 2, cloud: l.file === 'picnic' };
     disk.put(`${l.file}s${k}.gif`, gif(storyCard(lp, base, tess, lines, 40 + i * 3 + k, l.file === 'next' && k === 0 ? undefined : peak), lp));
     slides.push({ name: `${l.file}s${k}.gif`, pause: 8 });
   });

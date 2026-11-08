@@ -1,10 +1,10 @@
 // Level 7, WINDY RIDGE (dusk): Wisp's trail of tiny snowdrifts leads back over the ridge toward town, and the wind is up.
 // It is a help, not a hazard: an updraft lifts Tess up the rock to the next ledge, and a gust blows her across a
 // gap too wide to jump. Miss and it is only a walk back round. Blaze the posts, mind the rolling pebble.
-import { StarterMap } from '../../../kit/starter/map';
+
 import type { Pal } from '../../../kit/starter/palette';
 import { Grid } from '../../../kit/starter/grid';
-import { addSigns, onGround, startBook, type Level } from '../level';
+import { addSigns, onGround, startBook, MountainMap, type Level } from '../level';
 import { TRAIL } from '../monsters';
 
 export const G7 = 23;
@@ -40,9 +40,6 @@ export const RIDGE_AT = {
 } as const;
 
 const SIGNS = {
-  puddles: ['TINY DRIFTS OF SNOW. WISP CAME THIS WAY.', 4, 3],
-  lift: ['STEP IN. LET THE UPDRAFT DO THE WORK.', 4, 3],
-  gust: ['THE GUST WILL CARRY YOU. COMMIT.', 4, 3],
   town: ['TOWN LIGHTS. WISP IS DOWN THERE.', 4, 3],
 } as const;
 
@@ -57,7 +54,7 @@ export function levelRidge(pal: Pal): Level {
   g.put(3, G7 - 2, 's').put(3, G7 - 1, 'S');
   g.put(R.exit, LEDGES.top - 2, 'e').put(R.exit, LEDGES.top - 1, 'E');
   g.fill(R.hole, G7, 2, 2, ' ');
-  const m = new StarterMap(book, g.rows());
+  const m = new MountainMap(book, g.rows());
   // the ridge's cliffs: rock under each ledge, down to the ground (Tess passes in front of it)
   for (const [a, b, y] of [
     [R.mid[0], R.mid[1], LEDGES.mid],
@@ -86,9 +83,6 @@ export function levelRidge(pal: Pal): Level {
   m.set(R.pie[0], R.pie[1] - 1, 'pie');
   m.mon(TRAIL.mist, 46, 6).mon(TRAIL.mist, 20, 8);
   const at = R.signs;
-  m.sign(at.puddles + 1, onGround(G7, s.puddles), s.puddles);
-  m.sign(at.lift, onGround(G7, s.lift), s.lift);
-  m.sign(at.gust, onGround(LEDGES.mid, s.gust), s.gust);
   m.sign(at.town, onGround(LEDGES.top, s.town), s.town);
   return { file: 'ridge', title: 'Windy Ridge', hint: 'Let the wind help you.', look: 'dusk', map: m, book, timed, mon: 'trail', song: 'dusk' };
 }

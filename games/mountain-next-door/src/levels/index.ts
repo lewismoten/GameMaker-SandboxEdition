@@ -69,7 +69,7 @@ export function buildLevels(): { pal: ReturnType<typeof buildMountainPalette>; l
     levelPicnic(pal),
   ];
   for (const l of levels) {
-    restyle(l.book, pal);
+    restyle(l.book, pal, l.file === 'books' ? 'library' : l.file === 'tunnel' ? 'mouth' : 'cairn');
     dress(l, pal, DRESS[l.file]);
   }
   return { pal, levels };

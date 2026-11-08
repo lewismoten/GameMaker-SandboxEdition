@@ -132,16 +132,16 @@ export function windowOn(pal: Pal, ramp: string, lit: boolean): Pixels {
   return p;
 }
 
-/** A roof piece: L (the left slope), M (the ridge run) or R. */
-export function roof(pal: Pal, part: 'L' | 'M' | 'R'): Pixels {
+/** A roof piece: L (the left slope), M (the flat ridge run), R, or F (all roof: the eaves' row under another row). */
+export function roof(pal: Pal, part: 'L' | 'M' | 'R' | 'F'): Pixels {
   const p = clear(pal);
   const r = pal.r('brick');
   for (let y = 0; y < 20; y++)
     for (let x = 0; x < 20; x++) {
-      const inside = part === 'M' ? y >= 6 : part === 'L' ? y >= 19 - x : y >= x;
+      const inside = part === 'F' ? true : part === 'M' ? true : part === 'L' ? y >= 19 - x : y >= x;
       if (inside) p.set(x, y, (y + (x >> 2)) % 5 === 0 ? r[1] : r[2]);
     }
-  if (part === 'M') p.rect(0, 6, 20, 2, r[4]);
+  if (part === 'M') p.rect(0, 0, 20, 2, r[4]); // a flat ridge cap, level with the slopes' tops
   return inked(pal, p);
 }
 

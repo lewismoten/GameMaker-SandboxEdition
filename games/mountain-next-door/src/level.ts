@@ -5,7 +5,8 @@ import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks'
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
-import type { StarterMap } from '../../kit/starter/map';
+import { MLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { ORIGIN, StarterMap } from '../../kit/starter/map';
 import type { Pal } from '../../kit/starter/palette';
 import { addSign, type Sign } from '../../kit/starter/sign';
 import { addProps, type PropOptions, type Timed } from './props';
@@ -21,7 +22,7 @@ export interface Level {
   hint: string;
   /** The time of day: a key of LOOKS in palette.ts ('' keeps the morning). */
   look: string;
-  map: StarterMap;
+  map: MountainMap;
   book: Book;
   timed: Timed[];
   mon: MonFile;
@@ -49,6 +50,46 @@ export function startBook(pal: Pal, groups: readonly string[], o: PropOptions = 
   addStarterBlocks(book, pal);
   const timed = addProps(book, pal, groups, o);
   return { book, timed };
+}
+
+/** What a map cell never keeps behind it: the open sky and its weather, the tunnel's air, and the mountain's own sloped edges. */
+export const OPEN = /^(sky|tAir|cloud[LR]|wisp[LR]|birds[AB]|leaf\d|far\.|rain\d|star[ABC]|faint|bright|slope[LR]|peak[LR]|gentle[LR]\d)/;
+
+/**
+ * A level's map that remembers what each prop was set over (`under`): a sign, a doorway or a fence put on top of
+ * the mountain's rock or a house's wall keeps that name, so dress.ts can draw the prop again with it behind
+ * instead of sky (a Game-Maker cell shows one block; nothing shows through it).
+ */
+export class MountainMap extends StarterMap {
+  /** Map index (world blocks) to the name of the block a prop was first set over. */
+  readonly under = new Map<number, string>();
+  private names?: Map<number, string>;
+  private sky = -1;
+
+  constructor(
+    private readonly bk: Book,
+    rows: string[],
+  ) {
+    super(bk, rows);
+    this.sky = bk.pics.get('sky')?.px[0] ?? -1;
+  }
+
+  override set(x: number, y: number, name: string): this {
+    // the constructor's own rows come before the fields exist: one layer, nothing under
+    if (this.under) {
+      const k = (y + ORIGIN) * MLEN + x + ORIGIN;
+      const prev = this.nameOfBlock(this.map.blocks[k]);
+      if (prev === name) return super.set(x, y, name);
+      if (OPEN.test(name) || OPEN.test(prev) || !prev) this.under.delete(k);
+      else if (!this.bk.pics.get(prev)?.px.includes(this.sky) || !this.under.has(k)) this.under.set(k, prev);
+    }
+    return super.set(x, y, name);
+  }
+
+  private nameOfBlock(n: number): string {
+    if (!this.names?.has(n)) this.names = new Map([...this.bk.index].map(([s, i]) => [i, s]));
+    return this.names.get(n) ?? '';
+  }
 }
 
 /** Signs by name: [text, width, height] (the words wrap to the board). */
