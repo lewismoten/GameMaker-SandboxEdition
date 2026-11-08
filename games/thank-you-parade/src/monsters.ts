@@ -1,17 +1,16 @@
-// The parade's three troublemakers (monster blocks, .MBL, and what each does, .MON):
-//   0  goose     waddles back and forth across the street; a goose waddles across the way; run through it and every moment costs a hit point (hop over it, or wait for a gap)
-//   1  balloon   a runaway balloon that bobs up and down; touch it and it pops for 20 points
-//   2  dog       trots along the curb; touch it and it snatches one thank-you card and runs off with it
+// The parade's three troublemakers (monster blocks, .MBL, and what each does, .MON), in the poster inks:
+//   0  goose     a gray-and-paper goose in a little purple neckerchief (Gigi's), waddling back and forth; run through it
+//                and every moment costs a hit point (hop over it, or wait for a gap)
+//   1  balloon   a runaway vermilion balloon that bobs up and down; touch it and it pops for 20 points
+//   2  dog       a spotted beagle that trots along the curb; touch it and it snatches one thank-you card and runs off
 // Power under 100 means a monster is gone when touched (Meet the Monsters explains it), which is how the balloon
 // pops and the dog goes away with its card.
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { newMonsterSet, type Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { corner, mon, pace } from '@lewismoten/gamemaker-sandbox-tools/kit/actors';
-import { outline } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
-import { blob } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
 import { Book } from '../../kit/starter/book';
-import type { Pal } from '../../kit/starter/palette';
+import { halftone, inkLine, type Pal } from './print';
 import { CARDS } from './town';
 
 export const MONS = { goose: 0, balloon: 1, dog: 2 } as const;
@@ -20,56 +19,52 @@ export const PECK = 1;
 const T = 255;
 
 function goose(pal: Pal, step: boolean): Pixels {
-  const { c, r } = pal;
+  const { c } = pal;
   const p = new Pixels(20, 20, T);
   const ink = c('ink', 0);
-  // feet, then the round white body, the neck rising to a small head and an orange bill
-  const o = r('orange');
-  p.rect(6 + (step ? 1 : 0), 17, 3, 2, o[3])
-    .rect(11 - (step ? 1 : 0), 17, 3, 2, o[3])
-    .rect(5 + (step ? 1 : 0), 18, 4, 1, o[2])
-    .rect(11 - (step ? 1 : 0), 18, 4, 1, o[2]);
-  blob(p, 9, 13, 7.4, 4.6, r('white'), 0, 3);
-  p.rect(2, 9, 3, 3, c('white', 2)).set(1, 9, c('white', 1)); // the tail
-  p.rect(13, 5, 3, 8, c('white', 3)).rect(13, 5, 1, 8, c('white', 2));
-  blob(p, 15, 4, 3, 2.6, r('white'), 1, 3);
-  p.rect(17, 4, 3, 2, o[3]).rect(17, 5, 3, 1, o[1]);
-  p.set(15, 3, ink);
-  p.rect(4, 12, 6, 1, c('white', 1)).rect(6, 14, 5, 1, c('white', 1)); // a wing's feathers
-  return outline(p, ink, { transparent: T });
+  // orange feet, a paper body with a gray halftone back, a long neck, an orange bill, Gigi's purple neckerchief
+  const s = step ? 1 : 0;
+  p.rect(6 + s, 17, 4, 2, c('orange', 3)).rect(11 - s, 17, 4, 2, c('orange', 3));
+  p.rect(3, 10, 13, 7, c('white', 3)).rect(1, 9, 4, 3, c('white', 3)).rect(5, 9, 9, 1, c('white', 3));
+  halftone(p, 1, 9, 15, 5, c('stone', 2), 3, [c('white', 3)]);
+  p.rect(13, 3, 3, 8, c('white', 3)).rect(13, 1, 5, 4, c('white', 3));
+  p.rect(18, 2, 2, 2, c('orange', 3)).set(16, 2, ink);
+  p.rect(12, 8, 5, 2, c('purple', 2)).set(12, 10, c('purple', 2)).set(11, 11, c('purple', 1));
+  p.rect(5, 12, 6, 1, c('stone', 3)); // the wing's edge
+  return inkLine(p, ink);
 }
 
 function balloon(pal: Pal, sway: number): Pixels {
-  const { c, r } = pal;
+  const { c } = pal;
   const p = new Pixels(20, 20, T);
-  blob(p, 10 + sway, 8, 6, 7, r('red'), 0, 4);
-  p.set(7 + sway, 5, c('white', 3))
-    .set(7 + sway, 6, c('white', 3))
-    .set(8 + sway, 4, c('white', 3));
-  p.rect(9 + sway, 15, 3, 2, c('red', 1));
-  p.line(10 + sway, 17, 10 - sway, 19, c('stone', 2));
-  return outline(p, c('ink', 0), { transparent: T });
+  p.disc(10 + sway, 8, 6.5, c('red', 2));
+  halftone(p, 0, 0, 20, 16, c('red', 1), (x, y) => (x - sway + y > 22 ? 3 : 0), [c('red', 2)]);
+  p.rect(7 + sway, 4, 2, 2, c('paper', 3)).set(7 + sway, 6, c('paper', 3));
+  p.rect(9 + sway, 15, 3, 1, c('red', 1));
+  p.line(10 + sway, 16, 10 - sway, 19, c('ink', 1));
+  return inkLine(p, c('ink', 0));
 }
 
 function dog(pal: Pal, step: boolean): Pixels {
-  const { c, r } = pal;
+  const { c } = pal;
   const p = new Pixels(20, 20, T);
   const ink = c('ink', 0);
-  const d = r('wood');
-  const leg = (x: number, lift: number) => p.rect(x, 15, 2, 4 - lift, d[2]).rect(x, 18 - lift, 3, 1, d[0]);
-  leg(4, step ? 1 : 0);
-  leg(7, step ? 0 : 1);
-  leg(12, step ? 0 : 1);
-  leg(15, step ? 1 : 0);
-  blob(p, 9, 12, 7.6, 4.2, d, 0, 4);
-  p.line(2, 11, 0, 7, d[3]).line(3, 11, 1, 7, d[3]).set(0, 6, d[4]); // the tail, up
-  blob(p, 15, 8, 3.8, 3.6, d, 1, 4);
-  p.rect(17, 8, 3, 3, c('skin', 2)).rect(19, 8, 1, 2, ink); // the snout and nose
-  p.rect(12, 6, 3, 5, d[0]).rect(12, 6, 1, 5, d[1]); // a floppy ear
-  p.set(16, 7, ink);
-  p.rect(9, 11, 5, 1, d[4]); // a scarf-like patch of light fur
-  p.rect(13, 14, 1, 1, c('red', 3)); // a collar tag
-  return outline(p, ink, { transparent: T });
+  // a beagle: paper body with brown patches, a brown head with a long ear, a white-tipped tail held up
+  const s = step ? 1 : 0;
+  for (const [x, lift] of [
+    [4, s],
+    [7, 1 - s],
+    [12, 1 - s],
+    [15, s],
+  ])
+    p.rect(x, 15, 2, 4 - lift, c('paper', 3));
+  p.rect(3, 9, 14, 7, c('paper', 3)).rect(6, 9, 6, 4, c('leather', 2));
+  halftone(p, 3, 13, 14, 3, c('paper', 1), 2, [c('paper', 3)]);
+  p.rect(1, 5, 2, 5, c('leather', 2)).rect(1, 4, 2, 1, c('white', 3)); // the tail, up, white tip
+  p.rect(14, 4, 5, 6, c('leather', 2)).rect(17, 7, 3, 3, c('paper', 3)).set(19, 7, ink).set(16, 5, ink);
+  p.rect(13, 5, 2, 6, c('leather', 0)); // the long ear
+  p.rect(13, 10, 3, 1, c('red', 2)); // a collar
+  return inkLine(p, ink);
 }
 
 /** The monster pictures (.MBL). */
