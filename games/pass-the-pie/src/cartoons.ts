@@ -2,7 +2,7 @@
 //   INTRO.FLI    the storybook, played straight: Grandma's oven goes KA-CLUNK, Rory volunteers, little Mr. Plume
 //                tags along because he loves a parade
 //   PAYBACK.FLI  the hard cut: "MEANWHILE." Uncle Dale's parade flyer; twelve years; the hat goes on; PAYBACK
-//   ENDING.FLI   Big Gobble goes down, the cord runs back to Grandma's kitchen, the oven goes DING, and the long
+//   ENDING.FLI   Big Gobble goes down, Rory shows where the cord she followed starts, the oven goes DING, and the long
 //                table settles the morning's arguments
 // 320x200, each in its own inks. An FLI is silent; PLAYGAME plays all of it before the next key is read.
 import { encodeFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
@@ -269,11 +269,13 @@ export function endingFli(pal: Pal): Uint8Array {
     scaleBlit(p, rStand, 40, 80, 2);
     scaleBlit(p, pStand, 80, 80, 2);
   };
-  reel.frame(street, (p) => (cord(p), bubble(p, pal, ['THAT CORD RUNS', 'TO MY KITCHEN.'], 260, 20)), 24);
-  reel.frame(street, (p) => (cord(p), centered(p, 30, 'DING!', acc2[2], 4, ink[0])), 16);
-  reel.frame(street, (p) => (cord(p), bubble(p, pal, ['MY OVEN WORKS.'], 260, 20)), 18);
+  reel.frame(street, (p) => (cord(p), bubble(p, pal, ['I FOLLOWED THE CORD.'], 56, 20)), 24);
+  reel.frame(street, (p) => (cord(p), bubble(p, pal, ['IT STARTS IN YOUR', 'KITCHEN, GRANDMA.'], 56, 20)), 26);
   reel.frame(street, (p) => (cord(p), bubble(p, pal, ['DALE.'], 260, 20, true)), 22);
   reel.frame(street, (p) => (cord(p), bubble(p, pal, ['IT WAS THE ONLY OUTLET', 'THAT COULD TAKE IT.'], 190, 20)), 30);
+  reel.frame(street, (p) => (cord(p), bubble(p, pal, ['SO I UNPLUGGED', 'THE TURKEY.'], 56, 20)), 24);
+  reel.frame(street, (p) => (cord(p), centered(p, 30, 'DING!', acc2[2], 4, ink[0])), 16);
+  reel.frame(street, (p) => (cord(p), bubble(p, pal, ['MY OVEN WORKS.'], 260, 20)), 18);
   // 3. the long table
   const bg = hall(pal);
   const table = (p: Pixels, talk: Who | 'rory' | 'plume' | '') => {
