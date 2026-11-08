@@ -37,9 +37,9 @@ export const STREAM_AT = {
 } as const;
 
 const SIGNS = {
-  stones: ['WOBBLY STONES! WAIT TILL THEY ARE UP.', 4, 3],
-  two: ['SOME RISE AS THE OTHERS SINK.', 4, 3],
-  socks: ['FELL IN? ONLY WET SOCKS. TRY AGAIN.', 4, 3],
+  stones: ['WATCH ONE LOOP BEFORE YOU STEP.', 4, 3],
+  two: ['SOME RISE AS OTHERS SINK.', 4, 3],
+  socks: ['FELL IN? WET SOCKS ARE NOT FATAL.', 4, 3],
   hill: ['THE PRINTS GO ON UP THE HILL.', 4, 3],
 } as const;
 

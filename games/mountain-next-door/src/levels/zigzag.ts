@@ -29,9 +29,9 @@ export const ZIGZAG_AT = {
 } as const;
 
 const SIGNS = {
-  follow: ['WISP WILL FOLLOW YOU. LEAD THE WAY.', 4, 3],
+  follow: ['WISP FOLLOWS YOU NOW. LEAD WELL.', 4, 3],
   blaze: ['A BLAZE ON EVERY TURN, FOR THE MOUNTAIN.', 4, 3],
-  steps: ['LISTEN. BIG STEPS, VERY CAREFUL ONES.', 4, 3],
+  steps: ['BELOW: BIG STEPS, VERY CAREFUL ONES.', 4, 3],
   moon: ['WHAT A MOON TONIGHT.', 4, 2],
   top: ['THE HOLLOW IS OVER THE TOP.', 4, 3],
 } as const;

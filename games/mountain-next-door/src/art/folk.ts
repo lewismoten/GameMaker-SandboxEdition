@@ -155,6 +155,7 @@ export interface Neighbor {
 
 export const OKORO: Neighbor = { skin: ['wood', 1], hair: ['ink', 0], coat: 'purple', hat: 'gold' };
 export const HALE: Neighbor = { skin: ['skin', 2], hair: ['white', 2], coat: 'blue' };
+export const LIN: Neighbor = { skin: ['skin', 3], hair: ['ink', 1], coat: 'teal' };
 
 export function neighborTop(pal: Pal, n: Neighbor): Pixels {
   const p = new Pixels(20, 20, T);

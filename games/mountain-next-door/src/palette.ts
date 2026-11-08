@@ -76,6 +76,42 @@ export const LOOKS: Record<string, Record<string, Tint>> = {
       [100, 140, 120],
     ],
   },
+  // high on the mountain's back: a deep, clear blue sky and cool gray rock
+  high: {
+    sky: [
+      [40, 110, 210],
+      [200, 236, 255],
+      [96, 170, 240],
+    ],
+    rock: [
+      [44, 50, 70],
+      [220, 222, 226],
+      [120, 126, 140],
+    ],
+    moss: [
+      [24, 70, 50],
+      [180, 230, 130],
+      [70, 150, 80],
+    ],
+  },
+  // inside the library: warm cream walls, deep red-brown wood, lamplight
+  library: {
+    sky: [
+      [110, 70, 60],
+      [255, 240, 210],
+      [230, 200, 160],
+    ],
+    wood: [
+      [50, 26, 20],
+      [220, 160, 110],
+      [130, 74, 44],
+    ],
+    brick: [
+      [70, 30, 30],
+      [230, 150, 120],
+      [150, 70, 60],
+    ],
+  },
   // a gray, misty park
   mist: {
     sky: [
@@ -146,6 +182,24 @@ export const LOOKS: Record<string, Record<string, Tint>> = {
       [80, 40, 40],
       [230, 150, 100],
       [150, 80, 60],
+    ],
+  },
+  // the lookout at the last of the light: amber low down, violet overhead
+  gloaming: {
+    sky: [
+      [70, 50, 120],
+      [255, 200, 140],
+      [190, 120, 150],
+    ],
+    wood: [
+      [50, 30, 40],
+      [230, 170, 120],
+      [130, 80, 70],
+    ],
+    moss: [
+      [30, 50, 50],
+      [170, 170, 110],
+      [80, 100, 70],
     ],
   },
   // dusk on the windy ridge: blue-violet sky, the last light low
@@ -240,6 +294,34 @@ export const LOOKS: Record<string, Record<string, Tint>> = {
       [40, 30, 40],
       [170, 140, 150],
       [100, 80, 90],
+    ],
+  },
+  // the town after midnight: the same navy sky, the houses' siding gone blue-gray in the dark
+  town: {
+    sky: [
+      [10, 14, 50],
+      [80, 100, 170],
+      [26, 34, 90],
+    ],
+    parch: [
+      [30, 30, 56],
+      [236, 226, 196],
+      [96, 96, 128],
+    ],
+    teal: [
+      [10, 30, 44],
+      [110, 170, 170],
+      [34, 74, 90],
+    ],
+    stone: [
+      [20, 22, 40],
+      [140, 150, 190],
+      [60, 66, 100],
+    ],
+    dirt: [
+      [20, 20, 40],
+      [110, 100, 140],
+      [56, 50, 80],
     ],
   },
   // the next morning on top: gold and rose

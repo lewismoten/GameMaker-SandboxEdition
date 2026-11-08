@@ -41,10 +41,10 @@ export const SIGNS_AT = {
 } as const;
 
 const SIGNS = {
-  turned: ['SOMEBODY KEEPS TURNING THE SIGNS.', 4, 3],
-  trust: ['TRUST THE BLAZES, NOT THE ARROWS.', 4, 3],
+  turned: ['SOMEONE KEEPS TURNING THE SIGNS.', 4, 3],
+  trust: ['ARROWS LIE. PAINT DOES NOT.', 4, 3],
   stash: ['NUTMEG WAS HERE.', 4, 2],
-  noon: ['NOON. HALF WAY UP THE HILL.', 4, 3],
+  noon: ['NOON. THE CREW COMES IN 19 HOURS.', 4, 3],
   top: ['NEARLY TO THE OLD SPOT.', 4, 2],
 } as const;
 

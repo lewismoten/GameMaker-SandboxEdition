@@ -31,11 +31,11 @@ export const GATES_AT = {
 } as const;
 
 const SIGNS = {
-  four: ['FOUR GATES UP THERE, FOUR GARDENS HERE.', 4, 3],
-  carry: ['TAKE ONE GATE HOME AT A TIME.', 4, 3],
-  hens: ['A BARROW IN THE GAP KEEPS HENS IN.', 4, 3],
-  pie: ['MR. HALE LEFT OUT SOME PIE.', 4, 2],
-  sorry: ['THE MOUNTAIN LOOKS SO SORRY.', 4, 2],
+  four: ['FOUR GATES UP. FOUR GARDENS DOWN.', 4, 3],
+  carry: ['GATES ARE AWKWARD. ONE AT A TIME.', 4, 3],
+  hens: ['THE BARROWS KEEP THE HENS IN. MOSTLY.', 4, 3],
+  pie: ['MR. HALE: PIE. NOT A TRUCE.', 4, 2],
+  sorry: ['IT CANNOT MEET YOUR EYE.', 4, 2],
 } as const;
 
 export function levelGates(pal: Pal): Level {
