@@ -74,7 +74,13 @@ export function buildPalette(): Pal {
   return buildStarterPalette((b: PaletteBuilder) => {
     for (const name of PRESS) {
       const s = shades(MOODS.base, name);
-      b.ramp(name === 'ink' ? 'pInk' : name === 'paper' ? 'pPaper' : `p${name[0].toUpperCase()}${name.slice(1)}`, s.length, s[0], s[s.length - 1], s.length > 2 ? s[Math.floor(s.length / 2)] : undefined);
+      b.ramp(
+        name === 'ink' ? 'pInk' : name === 'paper' ? 'pPaper' : `p${name[0].toUpperCase()}${name.slice(1)}`,
+        s.length,
+        s[0],
+        s[s.length - 1],
+        s.length > 2 ? s[Math.floor(s.length / 2)] : undefined,
+      );
     }
     for (const [name, n, from, to, mid] of FIXED) b.ramp(name, n, from, to, mid);
   });
@@ -88,7 +94,12 @@ export function moodBytes(pal: Pal, mood: Mood): Uint8Array {
   const out = new Uint8Array(pal.pal);
   for (const name of PRESS) {
     const s = shades(MOODS[mood], name);
-    pal.r(RAMP[name]).forEach((at, i) => out.set(s[i].map((v) => v >> 2), at * 3)); // VGA keeps 6 bits a component
+    pal.r(RAMP[name]).forEach((at, i) =>
+      out.set(
+        s[i].map((v) => v >> 2),
+        at * 3,
+      ),
+    ); // VGA keeps 6 bits a component
   }
   return out;
 }

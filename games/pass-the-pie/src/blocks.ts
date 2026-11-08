@@ -72,7 +72,10 @@ export function addPrintBlocks(book: Book, pal: Pal): void {
     // the ground's top: an ink line, a band of leaf with V cuts, then carved black earth
     const p = new Pixels(20, 20, ink[0]);
     p.rect(0, 2, 20, 6, leaf[2]);
-    for (let x = 0; x < 20; x += 5) p.set(x + 1, 4, leaf[3]).set(x + 2, 5, leaf[3]).set(x + 3, 4, leaf[3]);
+    for (let x = 0; x < 20; x += 5)
+      p.set(x + 1, 4, leaf[3])
+        .set(x + 2, 5, leaf[3])
+        .set(x + 3, 4, leaf[3]);
     p.rect(0, 7, 20, 1, leaf[0]);
     gouges(p, 0, 10, 20, 10, ink[2], 5, 11, 4);
     book.add('grass', p, { solid: SOLID });
@@ -106,7 +109,7 @@ export function addPrintBlocks(book: Book, pal: Pal): void {
   {
     // a sheaf of wheat, tied
     const s = sheet();
-    for (let i = -3; i <= 3; i++) s.line( 10 + i * 2, 4 + Math.abs(i), 10, 19, acc2[1]);
+    for (let i = -3; i <= 3; i++) s.line(10 + i * 2, 4 + Math.abs(i), 10, 19, acc2[1]);
     for (let i = -3; i <= 3; i++) s.rect(9 + i * 2, 2 + Math.abs(i), 2, 3, acc2[2]);
     s.rect(7, 13, 7, 2, acc[0]);
     const p = bg().blit(stamp(pal, s), 0, 0, T);
@@ -192,7 +195,11 @@ export function addPrintBlocks(book: Book, pal: Pal): void {
     // the garden gate: pickets and a padlock
     const st = pal.r('steel');
     const p = bg();
-    for (let x = 1; x < 20; x += 5) p.rect(x, 1, 4, 19, paper[3]).rect(x, 1, 4, 1, ink[0]).rect(x, 1, 1, 19, ink[0]).rect(x + 3, 1, 1, 19, ink[0]);
+    for (let x = 1; x < 20; x += 5)
+      p.rect(x, 1, 4, 19, paper[3])
+        .rect(x, 1, 4, 1, ink[0])
+        .rect(x, 1, 1, 19, ink[0])
+        .rect(x + 3, 1, 1, 19, ink[0]);
     p.rect(0, 6, 20, 2, ink[0]).rect(0, 14, 20, 2, ink[0]);
     p.ring(10, 8, 2, st[0]).rect(7, 9, 7, 6, st[1]).frame(7, 9, 7, 6, ink[0]).set(10, 11, ink[0]);
     book.add('gateSilver', p, { solid: SOLID, effect: SILVER_KEYS, eamt: -1, touch: 'sky' });

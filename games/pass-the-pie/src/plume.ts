@@ -45,7 +45,9 @@ function turkey(pal: Pal, face: Face, wings: Wings, legs: Legs, lean = 0): Pixel
   // legs
   if (legs === 'chamber') {
     p.line(bx - 1, 31, bx - 1, 38, beak[0]).rect(bx - 3, 38, 5, 1, beak[0]);
-    p.line(bx + 2, 31, bx + 5, 30, beak[0]).line(bx + 5, 30, bx + 4, 34, beak[0]).rect(bx + 4, 34, 3, 1, beak[0]);
+    p.line(bx + 2, 31, bx + 5, 30, beak[0])
+      .line(bx + 5, 30, bx + 4, 34, beak[0])
+      .rect(bx + 4, 34, 3, 1, beak[0]);
   } else if (legs === 'strike') {
     p.line(bx - 1, 31, bx - 2, 38, beak[0]).rect(bx - 4, 38, 5, 1, beak[0]);
     p.rect(bx + 2, 30, 19 - bx - 3, 2, beak[0]);
@@ -73,16 +75,21 @@ function turkey(pal: Pal, face: Face, wings: Wings, legs: Legs, lean = 0): Pixel
     flap: [bx - 2, 21, bx - 6, 16],
   };
   const [w0, w1, w2, w3] = W[wings];
-  p.line(w0, w1, w2, w3, brown[0]).line(w0 + 1, w1, w2 + 1, w3, brown[0]).line(w0 + 1, w1 + 1, w2 + 1, w3 + 1, brown[2]);
+  p.line(w0, w1, w2, w3, brown[0])
+    .line(w0 + 1, w1, w2 + 1, w3, brown[0])
+    .line(w0 + 1, w1 + 1, w2 + 1, w3 + 1, brown[2]);
   // neck and head
-  const hx = bx + 4;
+  const hx = back ? bx + 1 : bx + 4;
   p.rect(hx - 2, 13, 3, 9, brown[2]);
   oval(p, hx, 11, 3, 3, back ? brown[1] : brown[3]);
   if (!back) {
     p.rect(hx + 3, 11, 3, 2, beak[1]).set(hx + 5, 12, beak[0]);
     p.rect(hx + 2, 13, 2, 4, red[1]).set(hx + 2, 17, red[0]);
     if (face === 'blink') p.rect(hx, 10, 2, 1, ink[0]);
-    else if (face === 'ouch') p.set(hx, 9, ink[0]).set(hx + 1, 10, ink[0]).set(hx, 11, ink[0]);
+    else if (face === 'ouch')
+      p.set(hx, 9, ink[0])
+        .set(hx + 1, 10, ink[0])
+        .set(hx, 11, ink[0]);
     else {
       p.rect(hx + (face === 'look' ? -1 : 0), 10, 2, 2, ink[0]);
       if (face === 'glare' || face === 'yell') p.line(hx - 1, 8, hx + 2, 9, ink[0]); // the eyebrow: lowered

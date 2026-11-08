@@ -205,4 +205,3 @@ export function cardFli(pal: Pal, bytes: Uint8Array, hero: Hero, part: number, t
   reel.fadeOut(3);
   return encodeFli(reel.frames, bytes, { speed: 4, palettes: reel.palettes, runs: true, noLoopFrame: true });
 }
-

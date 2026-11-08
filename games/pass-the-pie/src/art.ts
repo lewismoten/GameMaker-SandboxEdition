@@ -110,7 +110,10 @@ export function pumpkin(pal: Pal): Pixels {
 export function fence(pal: Pal): Pixels {
   const { paper, ink } = press(pal);
   const s = sheet();
-  for (let x = 1; x < 20; x += 6) s.rect(x, 7, 4, 13, paper[3]).set(x, 7, T).set(x + 3, 7, T);
+  for (let x = 1; x < 20; x += 6)
+    s.rect(x, 7, 4, 13, paper[3])
+      .set(x, 7, T)
+      .set(x + 3, 7, T);
   s.rect(0, 11, 20, 2, paper[3]).rect(0, 16, 20, 2, paper[3]);
   return onPaper(pal, s).rect(0, 19, 20, 1, ink[0]);
 }
@@ -140,7 +143,9 @@ export function littlePlume(pal: Pal, bob: boolean): Pixels {
   oval(s, 9, 13 + y, 5, 4, b[1]);
   s.rect(12, 6 + y, 2, 6, b[2]);
   oval(s, 13, 6 + y, 2, 2, b[3]);
-  s.set(14, 5 + y, press(pal).ink[0]).rect(15, 6 + y, 2, 1, beak[1]).rect(14, 7 + y, 1, 3, red[1]);
+  s.set(14, 5 + y, press(pal).ink[0])
+    .rect(15, 6 + y, 2, 1, beak[1])
+    .rect(14, 7 + y, 1, 3, red[1]);
   s.rect(8, 17 + y, 1, 3 - y, beak[0]).rect(11, 17 + y, 1, 3 - y, beak[0]);
   return cut(pal, s);
 }
@@ -162,7 +167,9 @@ export function inflatable(pal: Pal, bob: boolean): Pixels {
   s.rect(7, 10 + y, 2, 2, fan[3]);
   s.rect(9, 4 + y, 3, 6, fan[1]); // the neck
   oval(s, 10, 4 + y, 2, 2, fan[3]);
-  s.set(10, 3 + y, ink[0]).rect(12, 4 + y, 2, 1, R(pal, 'tBeak')[1]).rect(11, 5 + y, 1, 3, R(pal, 'tRed')[1]);
+  s.set(10, 3 + y, ink[0])
+    .rect(12, 4 + y, 2, 1, R(pal, 'tBeak')[1])
+    .rect(11, 5 + y, 1, 3, R(pal, 'tRed')[1]);
   s.rect(7, 18, 7, 2, R(pal, 'steel')[0]).rect(4, 19, 13, 1, R(pal, 'steel')[1]); // the base and its stakes
   return cut(pal, s);
 }
@@ -190,6 +197,22 @@ export function vacuum(pal: Pal, frame: boolean, mad = false): Pixels {
   if (mad) s.line(6, 10, 9, 11, ink[0]).line(14, 10, 11, 11, ink[0]);
   s.set(frame ? 3 : 17, 18, ink[1]).set(frame ? 5 : 15, 19, ink[1]); // the brushes spinning
   return cut(pal, s);
+}
+
+/** A canister vacuum standing in the way, glaring, its hose up like a fist: a block that bumps (on paper). */
+export function canister(pal: Pal): Pixels {
+  const st = R(pal, 'steel');
+  const { ink, acc } = press(pal);
+  const s = sheet();
+  oval(s, 10, 12, 7, 7, st[1]);
+  s.rect(3, 12, 15, 6, st[1]).rect(3, 17, 15, 2, st[0]);
+  s.rect(6, 8, 3, 2, acc[2]).rect(12, 8, 3, 2, acc[2]);
+  s.line(5, 6, 9, 7, ink[0]).line(16, 6, 12, 7, ink[0]);
+  s.rect(8, 13, 5, 1, ink[0]);
+  s.line(17, 10, 19, 4, st[0]).line(18, 10, 19, 5, st[0]).rect(17, 2, 3, 3, st[2]);
+  oval(s, 5, 19, 1.5, 1.5, ink[0]);
+  oval(s, 15, 19, 1.5, 1.5, ink[0]);
+  return onPaper(pal, s);
 }
 
 /** A football tackling dummy on a sled: `hit` is the one already kicked once, leaning over. */
@@ -369,4 +392,3 @@ export function ovenDoor(pal: Pal): [Pixels, Pixels] {
   const o = stamp(pal, s, true);
   return [o.crop(0, 0, 20, 20), o.crop(0, 20, 20, 20)];
 }
-

@@ -10,9 +10,7 @@
   "exe": "PASSPIE.EXE",
   "dosName": "PASSPIE",
   "sound": "sb",
-  "acceptedFindings": [
-    "facing s2 The hero climbs side on"
-  ],
+  "acceptedFindings": ["facing s2 The hero climbs side on", "facing s3 The hero climbs side on"],
   "label": {
     "background": "#fff0d0",
     "band": "#c8581a",

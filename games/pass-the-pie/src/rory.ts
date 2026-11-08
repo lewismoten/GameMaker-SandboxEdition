@@ -124,7 +124,10 @@ function figure(pal: Pal, face: Face, arms: Arms, legs: Legs): Pixels {
     const ey = face === 'look' ? 11 : 11;
     const ex = face === 'look' ? 12 : 13;
     if (face === 'blink' || face === 'cheer') p.rect(ex, ey, 2, 1, ink[0]);
-    else if (face === 'ouch') p.set(ex, ey - 1, ink[0]).set(ex + 1, ey, ink[0]).set(ex, ey + 1, ink[0]);
+    else if (face === 'ouch')
+      p.set(ex, ey - 1, ink[0])
+        .set(ex + 1, ey, ink[0])
+        .set(ex, ey + 1, ink[0]);
     else p.rect(ex, ey - 1, 1, 2, ink[0]);
     if (face === 'oh' || face === 'ouch') p.rect(13, 14, 2, 2, ink[0]);
     else if (face === 'cheer') p.rect(12, 14, 3, 2, ink[0]).rect(13, 14, 1, 1, scarf[2]);
@@ -134,7 +137,9 @@ function figure(pal: Pal, face: Face, arms: Arms, legs: Legs): Pixels {
   p.rect(7, 5, 9, 4, cap[1]).rect(6, 8, 11, 2, cap[0]);
   for (let x = 8; x < 16; x += 2) p.set(x, 6, cap[2]);
   oval(p, 11, 4, 2, 1.5, cap[2]);
-  p.rect(back ? 13 : 8, 10, 2, 5, cap[1]).set(back ? 14 : 9, 15, cap[0]).set(back ? 14 : 9, 16, cap[0]);
+  p.rect(back ? 13 : 8, 10, 2, 5, cap[1])
+    .set(back ? 14 : 9, 15, cap[0])
+    .set(back ? 14 : 9, 16, cap[0]);
   if (back) p.rect(6, 10, 2, 5, cap[1]);
   return stamp(pal, p);
 }

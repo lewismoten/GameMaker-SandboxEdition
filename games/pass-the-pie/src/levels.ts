@@ -172,7 +172,18 @@ function yard(pal: Pal): Level {
   m.sign(AT.yard.gate - 11, onGround(s.door), s.door);
   m.sign(AT.yard.exit - 3, onGround(s.exit), s.exit);
   m.wallToSky(AT.yard.gate);
-  return { file: 'yard', title: 'Pumpkin Yard', hero: 'rory', hint: 'A lovely morning. Carry the pie.', mood: 'yard', song: 'pie.cmf', book, map: m, timed: [], width: 88 };
+  return {
+    file: 'yard',
+    title: 'Pumpkin Yard',
+    hero: 'rory',
+    hint: 'A lovely morning. Carry the pie.',
+    mood: 'yard',
+    song: 'pie.cmf',
+    book,
+    map: m,
+    timed: [],
+    width: 88,
+  };
 }
 
 /** 2. Payback (Mr. Plume): Uncle Dale's lawn. */
@@ -211,14 +222,25 @@ function lawn(pal: Pal): Level {
   m.sign(53, onGround(s.chat), s.chat);
   m.sign(AT.lawn.gate - 6, onGround(s.gate), s.gate);
   m.wallToSky(AT.lawn.gate);
-  return { file: 'lawn', title: 'Payback', hero: 'plume', hint: 'He has read the flyer.', mood: 'lawn', song: 'payback.cmf', book, map: m, timed: [], width: 86 };
+  return {
+    file: 'lawn',
+    title: 'Payback',
+    hero: 'plume',
+    hint: 'He has read the flyer.',
+    mood: 'lawn',
+    song: 'payback.cmf',
+    book,
+    map: m,
+    timed: [],
+    width: 86,
+  };
 }
 
 /** 3. Gravy Slide (Rory): Mr. Okafor's kitchen to Aunt Marjorie's. */
 function gravy(pal: Pal): Level {
   const book = newBook(pal);
   dish(book, art.gravy(pal));
-  hazard(book, 'vacuum', art.vacuum(pal, false, true).map((_x, _y, c) => (c === art.T ? press(pal).paper[2] : c)));
+  hazard(book, 'vacuum', art.canister(pal));
   book.add('window', art.window(pal), AIR);
   book.add('pot', art.pot(pal), AIR);
   const s = signs(book, pal, {
@@ -245,7 +267,18 @@ function gravy(pal: Pal): Level {
   m.sign(59, onGround(s.chat), s.chat);
   m.sign(AT.gravy.gate - 5, onGround(s.door), s.door);
   m.wallToSky(AT.gravy.gate);
-  return { file: 'gravy', title: 'Gravy Slide', hero: 'rory', hint: 'Still a lovely morning. Mostly.', mood: 'kitchen', song: 'pie.cmf', book, map: m, timed: [], width: 84 };
+  return {
+    file: 'gravy',
+    title: 'Gravy Slide',
+    hero: 'rory',
+    hint: 'Still a lovely morning. Mostly.',
+    mood: 'kitchen',
+    song: 'pie.cmf',
+    book,
+    map: m,
+    timed: [],
+    width: 84,
+  };
 }
 
 /** 4. Windy Park (Mr. Plume): the parade crew's tent. */
@@ -287,7 +320,18 @@ function park(pal: Pal): Level {
   m.sign(43, onGround(s.chat), s.chat);
   m.sign(AT.park.gate - 6, onGround(s.tent), s.tent);
   m.wallToSky(AT.park.gate);
-  return { file: 'park', title: 'Windy Park', hero: 'plume', hint: 'Get into the parade tent.', mood: 'park', song: 'payback.cmf', book, map: m, timed: [], width: 90 };
+  return {
+    file: 'park',
+    title: 'Windy Park',
+    hero: 'plume',
+    hint: 'Get into the parade tent.',
+    mood: 'park',
+    song: 'payback.cmf',
+    book,
+    map: m,
+    timed: [],
+    width: 90,
+  };
 }
 
 /** 5. Hungry Dog (Rory): Uncle Dale's street, after Mr. Plume. */
@@ -297,8 +341,12 @@ function dog(pal: Pal): Level {
   book.add('bone', art.bone(pal), { ...AIR, score: 25, effect: SILVER_KEYS, eamt: 1, touch: 'sky' });
   book.add('dog', art.dog(pal, false), { solid: SOLID, effect: SILVER_KEYS, eamt: -1, touch: 'dogChew' });
   book.add('dogChew', art.dog(pal, true), AIR);
-  hazard(book, 'vacuum', art.vacuum(pal, false, true).map((_x, _y, c) => (c === art.T ? press(pal).paper[2] : c)));
-  book.add('flat', art.deflated(pal, true).map((_x, _y, c) => (c === art.T ? press(pal).paper[2] : c)), AIR);
+  hazard(book, 'vacuum', art.canister(pal));
+  book.add(
+    'flat',
+    art.deflated(pal, true).map((_x, _y, c) => (c === art.T ? press(pal).paper[2] : c)),
+    AIR,
+  );
   const s = signs(book, pal, {
     hello: ['RORY HAS THE ROLLS. THE LAWN TURKEYS ARE RESTING.', 4, 4],
     bone: ['BISCUIT WILL NOT MOVE FOR ROLLS. HE WILL FOR A BONE.', 4, 4],
@@ -336,7 +384,18 @@ function dog(pal: Pal): Level {
   m.sign(48, onGround(s.tired), s.tired);
   m.sign(AT.dog.gate - 5, onGround(s.toll), s.toll);
   m.wallToSky(AT.dog.dog).wallToSky(AT.dog.gate);
-  return { file: 'dog', title: 'Hungry Dog', hero: 'rory', hint: "Uncle Dale's street. Oh no.", mood: 'dusk', song: 'pie.cmf', book, map: m, timed: [], width: 78 };
+  return {
+    file: 'dog',
+    title: 'Hungry Dog',
+    hero: 'rory',
+    hint: "Uncle Dale's street. Oh no.",
+    mood: 'dusk',
+    song: 'pie.cmf',
+    book,
+    map: m,
+    timed: [],
+    width: 78,
+  };
 }
 
 /** 6. Big Gobble (Mr. Plume): the parade, the blower, the town hall. */

@@ -7,7 +7,7 @@ import { SEED, play } from './play';
 const { sim } = await play(SEED);
 const titles: Record<number, string> = {
   2: 'Chapter 1: Pumpkin Yard (Rory)',
-  3: 'Payback, Part 1: Uncle Dale\'s Lawn (Mr. Plume)',
+  3: "Payback, Part 1: Uncle Dale's Lawn (Mr. Plume)",
   4: 'Chapter 2: Gravy Slide (Rory)',
   5: 'Payback, Part 2: Windy Park (Mr. Plume)',
   6: 'Chapter 3: Hungry Dog (Rory)',

@@ -47,7 +47,10 @@ function person(p: Pixels, pal: Pal, who: Who, x: number, y: number, talking = f
   if (who === 'pettigrew') s.rect(cx - 11, 4, 22, 7, pal.c('steel', 1));
   if (who === 'dale') s.rect(cx - 11, 12, 3, 8, pal.c('rHair', 1)).rect(cx + 8, 12, 3, 8, pal.c('rHair', 1));
   if (who === 'marjorie') for (let a = 0; a < 7; a++) oval(s, cx - 10 + a * 3.5, 7 + (a % 2), 3, 3, ink[0]);
-  if (who === 'lopez') s.rect(cx - 12, 5, 24, 6, ink[0]).rect(cx - 12, 5, 4, 26, ink[0]).rect(cx + 8, 5, 4, 26, ink[0]);
+  if (who === 'lopez')
+    s.rect(cx - 12, 5, 24, 6, ink[0])
+      .rect(cx - 12, 5, 4, 26, ink[0])
+      .rect(cx + 8, 5, 4, 26, ink[0]);
   // face
   const eye = ink[0];
   s.rect(cx - 5, cy - 2, 2, 2, eye).rect(cx + 3, cy - 2, 2, 2, eye);
@@ -78,12 +81,16 @@ function caption(p: Pixels, pal: Pal, words: string): void {
 
 /** Grandma's kitchen in the storybook's inks. */
 function kitchen(pal: Pal): Pixels {
-  const { ink, paper, acc2 } = press(pal);
+  const { ink, acc2 } = press(pal);
   const p = paperBlock(pal, W, H, 2);
   p.rect(0, 130, W, 70, acc2[0]);
   for (let x = 0; x < W; x += 16) p.rect(x, 130, 1, 70, ink[2]);
   p.rect(0, 128, W, 3, ink[0]);
-  for (const x of [30, 120]) p.rect(x, 26, 50, 44, ink[0]).rect(x + 3, 29, 44, 38, acc2[3]).rect(x + 24, 29, 2, 38, ink[0]).rect(x + 3, 47, 44, 2, ink[0]);
+  for (const x of [30, 120])
+    p.rect(x, 26, 50, 44, ink[0])
+      .rect(x + 3, 29, 44, 38, acc2[3])
+      .rect(x + 24, 29, 2, 38, ink[0])
+      .rect(x + 3, 47, 44, 2, ink[0]);
   p.frame(4, 4, W - 8, H - 8, ink[1]);
   return p;
 }
@@ -137,7 +144,7 @@ function flyer(pal: Pal, crumple: number): Pixels {
   s.rect(0, 0, 170, 22, acc[1]);
   centered(s, 7, 'PARADE NEWS', paper[3]);
   centered(s, 32, "THIS YEAR'S MASCOT:", ink[0]);
-  centered(s, 46, 'BIG GOBBLE!', acc[1], 2);
+  centered(s, 46, 'BIG GOBBLE', acc[1], 2);
   centered(s, 70, '30 FT. INFLATABLE.', ink[0]);
   centered(s, 82, 'PLUGS IN.', ink[0]);
   const g = art.bigGobble(pal);
@@ -179,11 +186,15 @@ export function paybackFli(pal: Pal): Uint8Array {
       scaleBlit(p, bare, 100, -40, 6);
       scaleBlit(p, hat, 100, -100 + k * 10, 6);
     });
-  reel.frame(black, (p) => {
-    p.rect(0, 150, W, 50, acc[0]);
-    scaleBlit(p, glare, 100, -40, 6);
-    bubble(p, pal, ['TWELVE. YEARS.'], 56, 30);
-  }, 22);
+  reel.frame(
+    black,
+    (p) => {
+      p.rect(0, 150, W, 50, acc[0]);
+      scaleBlit(p, glare, 100, -40, 6);
+      bubble(p, pal, ['TWELVE. YEARS.'], 56, 30);
+    },
+    22,
+  );
   // PAYBACK, stamped
   for (const [dx, dy, hold] of [
     [6, -4, 1],
@@ -191,13 +202,17 @@ export function paybackFli(pal: Pal): Uint8Array {
     [2, -1, 1],
     [0, 0, 34],
   ] as const)
-    reel.frame(black, (p) => {
-      p.rect(0, 0, W, H, acc[1]);
-      hatch(p, 0, 0, W, H, acc[0], 4);
-      scaleBlit(p, kick, 244, 30, 4);
-      text(p, 18 + dx + 3, 70 + dy + 3, 'PAYBACK', ink[0], 4);
-      text(p, 18 + dx, 70 + dy, 'PAYBACK', acc2[3], 4);
-    }, hold);
+    reel.frame(
+      black,
+      (p) => {
+        p.rect(0, 0, W, H, acc[1]);
+        hatch(p, 0, 0, W, H, acc[0], 4);
+        scaleBlit(p, kick, 244, 30, 4);
+        text(p, 18 + dx + 3, 70 + dy + 3, 'PAYBACK', ink[0], 4);
+        text(p, 18 + dx, 70 + dy, 'PAYBACK', acc2[3], 4);
+      },
+      hold,
+    );
   reel.fadeOut(3);
   return encodeFli(reel.frames, bytes, { speed: SPEED, palettes: reel.palettes, runs: true, noLoopFrame: true });
 }
@@ -235,12 +250,13 @@ export function endingFli(pal: Pal): Uint8Array {
       const big = new Pixels(60, 60, T);
       gobble.forEach((g, i) => big.blit(g, (i % 3) * 20, Math.floor(i / 3) * 20, -1));
       const sq = Math.max(1, Math.round(60 - k * 5));
-      for (let y = 0; y < sq; y++) for (let x = 0; x < 60; x++) {
-        const c = big.get(x, Math.floor((y * 60) / sq));
-        const sx = 100 + x * 2;
-        const sy = 160 - sq * 2 + y * 2;
-        p.rect(sx, sy, 2, 2, c);
-      }
+      for (let y = 0; y < sq; y++)
+        for (let x = 0; x < 60; x++) {
+          const c = big.get(x, Math.floor((y * 60) / sq));
+          const sx = 100 + x * 2;
+          const sy = 160 - sq * 2 + y * 2;
+          p.rect(sx, sy, 2, 2, c);
+        }
       scaleBlit(p, pStand, 40, 80, 2);
       centered(p, 20, 'PFFFFFFFFT', paper[3], 2, ink[0]);
     });
@@ -271,7 +287,7 @@ export function endingFli(pal: Pal): Uint8Array {
   };
   reel.fadeIn(bg, 2);
   reel.frame(bg, (p) => (table(p, 'marjorie'), bubble(p, pal, ['...'], 90, 30)), 16);
-  reel.frame(bg, (p) => (table(p, 'marjorie'), bubble(p, pal, ["THE GRAVY IS FINE."], 90, 30)), 24);
+  reel.frame(bg, (p) => (table(p, 'marjorie'), bubble(p, pal, ['THE GRAVY IS FINE.'], 90, 30)), 24);
   reel.frame(bg, (p) => (table(p, ''), scaleBlit(p, rCheer, 290, 104, 1), bubble(p, pal, ['SHE SAID FINE!', 'SCREENSHOT!'], 280, 30, true)), 24);
   reel.frame(bg, (p) => (table(p, 'lopez'), bubble(p, pal, ['SAME CASSEROLE?'], 144, 30)), 20);
   reel.frame(bg, (p) => (table(p, 'marjorie'), bubble(p, pal, ['SAME CAN.', 'NOBODY SAY IT.'], 90, 30)), 24);

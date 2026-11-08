@@ -17,7 +17,10 @@ function bill(pal: Pal, lines: string[], w: number, h: number, pitch: number): P
   p.rect(3, 3, W - 6, H - 6, paper[3]);
   p.rect(3, 3, W - 6, 2, acc[2]);
   // a torn corner, folded back
-  p.rect(W - 6, H - 6, 3, 3, paper[1]).set(W - 6, H - 4, ink[0]).set(W - 5, H - 5, ink[0]).set(W - 4, H - 6, ink[0]);
+  p.rect(W - 6, H - 6, 3, 3, paper[1])
+    .set(W - 6, H - 4, ink[0])
+    .set(W - 5, H - 5, ink[0])
+    .set(W - 4, H - 6, ink[0]);
   const top = 5 + Math.floor((H - 8 - (lines.length * pitch - 1)) / 2);
   lines.forEach((line, i) => text(p, Math.floor((W - line.length * 8) / 2), top + i * pitch, line, ink[0]));
   return p;
@@ -26,7 +29,10 @@ function bill(pal: Pal, lines: string[], w: number, h: number, pitch: number): P
 function legs(book: Book, pal: Pal): [string, string] {
   if (!book.has('postL')) {
     const { ink, acc2 } = press(pal);
-    const post = (x: number) => paperBlock(pal).rect(x, 0, 4, 20, ink[0]).rect(x + 1, 0, 2, 20, acc2[0]);
+    const post = (x: number) =>
+      paperBlock(pal)
+        .rect(x, 0, 4, 20, ink[0])
+        .rect(x + 1, 0, 2, 20, acc2[0]);
     book.add('postL', post(3), { grav: PULL.down });
     book.add('postR', post(13), { grav: PULL.down });
   }
