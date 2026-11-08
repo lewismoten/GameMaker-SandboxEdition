@@ -1,15 +1,17 @@
 // Packs the trinket files the site serves (web/public/trinkets/<game>/), so the Pages deploy carries a few MB
 // instead of tens: each STL a manifest lists (the print, its colored preview, its supports) becomes <file>.pack, a
-// lossless pack (web/packages/tools/src/mesh/meshPack.ts) raw-deflated, and the STL goes. The manifest's
-// `packed` names them; the site makes the real file back in the browser, byte for byte (desk/boxes/trinketData.ts).
+// lossless pack (web/packages/tools/src/mesh/meshPack.ts) raw-deflated, and the STL goes; each 3MF likewise
+// (mesh/threeMfPack.ts). The manifest's `packed` names them; the site makes the real file back in the browser
+// (desk/boxes/trinketData.ts): an STL byte for byte, a 3MF with the same files inside (its own deflate may differ).
 // Run by scripts/build-games.mjs after the trinkets are made; a folder already packed costs one manifest read.
 // The trinket builders' own up-to-date checks accept a packed file (trinketTool.ts keys on its sources;
 // pixelTrinkets.ts looks for either), and a remade folder is simply packed again.
 //   cd web && npx vite-node ../games/kit/trinketPacks.ts
 import { existsSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
-import { deflateRawSync } from 'node:zlib';
+import { deflateRawSync, inflateRawSync } from 'node:zlib';
 import { packStl } from '@lewismoten/gamemaker-sandbox-tools/mesh/meshPack';
+import { pack3mf } from '@lewismoten/gamemaker-sandbox-tools/mesh/threeMfPack';
 
 const root = resolve(import.meta.dirname, '../..');
 const trinkets = join(root, 'web/public/trinkets');
@@ -19,7 +21,7 @@ interface Manifest {
   packed?: string[];
 }
 
-const PACKERS: Record<string, (data: Uint8Array) => Uint8Array> = { '.stl': packStl };
+const PACKERS: Record<string, (data: Uint8Array) => Uint8Array> = { '.stl': packStl, '.3mf': (data) => pack3mf(data, { inflate: (d) => inflateRawSync(d) }) };
 const packer = (name: string) => PACKERS[name.slice(name.lastIndexOf('.'))];
 
 let packed = 0;
@@ -40,7 +42,14 @@ for (const game of existsSync(trinkets) ? readdirSync(trinkets).sort() : []) {
       throw new Error(`trinkets/${game}: ${name} is in the manifest but neither it nor its pack is there`);
     }
     const data = new Uint8Array(readFileSync(file));
-    const pack = deflateRawSync(packer(name)(data), { level: 9 });
+    let pack: Uint8Array;
+    try {
+      pack = deflateRawSync(packer(name)(data), { level: 9 });
+    } catch (error) {
+      // served as it is; the site reads either
+      console.log(`trinkets/${game}/${name}: kept unpacked (${error instanceof Error ? error.message : String(error)})`);
+      continue;
+    }
     writeFileSync(`${file}.pack`, pack);
     rmSync(file);
     done.add(name);

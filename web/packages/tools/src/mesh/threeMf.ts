@@ -4,7 +4,7 @@
 // base material color, one <build> item each), the content types and the relationships, in
 // millimeters. Parts are meshes plus a color, nothing game specific.
 import type { Mesh } from './mesh';
-import { readZip, writeZip, type ZipCodec } from './zipFile';
+import { readZip, writeZip, type ZipCodec, type ZipEntry } from './zipFile';
 
 export interface Part {
   name: string;
@@ -23,6 +23,11 @@ const num = (v: number) => String(+v.toFixed(3));
 
 /** The parts as a 3MF file. */
 export function write3mf(parts: Part[], title: string, codec: ZipCodec = {}): Uint8Array {
+  return writeZip(threeMfEntries(parts, title), codec);
+}
+
+/** The files inside the 3MF `write3mf` writes, before they are zipped (threeMfPack.ts makes them again from a pack). */
+export function threeMfEntries(parts: Part[], title: string): ZipEntry[] {
   const xml: string[] = [
     '<?xml version="1.0" encoding="UTF-8"?>',
     `<model unit="millimeter" xml:lang="en-US" xmlns="http://schemas.microsoft.com/3dmanufacturing/core/2015/02">`,
@@ -43,24 +48,21 @@ export function write3mf(parts: Part[], title: string, codec: ZipCodec = {}): Ui
   });
   xml.push('</resources><build>', ...parts.map((_, i) => `<item objectid="${i + 2}"/>`), '</build></model>');
   const enc = new TextEncoder();
-  return writeZip(
-    [
-      {
-        name: '[Content_Types].xml',
-        data: enc.encode(
-          '<?xml version="1.0" encoding="UTF-8"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="model" ContentType="application/vnd.ms-package.3dmanufacturing-3dmodel+xml"/></Types>',
-        ),
-      },
-      {
-        name: '_rels/.rels',
-        data: enc.encode(
-          '<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Target="/3D/3dmodel.model" Id="rel0" Type="http://schemas.microsoft.com/3dmanufacturing/2013/01/3dmodel"/></Relationships>',
-        ),
-      },
-      { name: '3D/3dmodel.model', data: enc.encode(xml.join('\n')) },
-    ],
-    codec,
-  );
+  return [
+    {
+      name: '[Content_Types].xml',
+      data: enc.encode(
+        '<?xml version="1.0" encoding="UTF-8"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="model" ContentType="application/vnd.ms-package.3dmanufacturing-3dmodel+xml"/></Types>',
+      ),
+    },
+    {
+      name: '_rels/.rels',
+      data: enc.encode(
+        '<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Target="/3D/3dmodel.model" Id="rel0" Type="http://schemas.microsoft.com/3dmanufacturing/2013/01/3dmodel"/></Relationships>',
+      ),
+    },
+    { name: '3D/3dmodel.model', data: enc.encode(xml.join('\n')) },
+  ];
 }
 
 /** A 3MF written by `write3mf` read back (its parts, meshes and colors). */

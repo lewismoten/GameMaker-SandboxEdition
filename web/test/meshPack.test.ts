@@ -4,6 +4,10 @@ import { describe, expect, it } from 'vitest';
 import { packIndices, packStl, unpackIndices, unpackStl, fromPlanes, toPlanes } from '@lewismoten/gamemaker-sandbox-tools/mesh/meshPack';
 import { writeStl } from '@lewismoten/gamemaker-sandbox-tools/mesh/stl';
 import type { Mesh } from '@lewismoten/gamemaker-sandbox-tools/mesh/mesh';
+import { pack3mf, unpack3mf } from '@lewismoten/gamemaker-sandbox-tools/mesh/threeMfPack';
+import { threeMfEntries, write3mf } from '@lewismoten/gamemaker-sandbox-tools/mesh/threeMf';
+import { readZip, writeZip } from '@lewismoten/gamemaker-sandbox-tools/mesh/zipFile';
+import { deflateRawSync, inflateRawSync } from 'node:zlib';
 
 const tetra: Mesh = {
   positions: Float32Array.from([0, 0, 0, 10.25, 0, 0, 0, 7.5, 0, 0, 0, -3.125]),
@@ -39,5 +43,22 @@ describe('meshPack', () => {
     expect([...unpackIndices(packIndices(ix, starts), ix.length, starts)]).toEqual(ix);
     const bytes = Uint8Array.from({ length: 24 }, (_, i) => i * 7);
     expect(fromPlanes(toPlanes(bytes, 4), 4)).toEqual(bytes);
+  });
+
+  it('makes a 3MF again with the same files inside, and refuses one it would not', () => {
+    const parts = [
+      { name: 'Color 1', color: [200, 30, 30] as [number, number, number], mesh: tetra },
+      { name: 'Tom & "Jerry" <2>', color: [10, 20, 30.4] as [number, number, number], mesh: { ...tetra, positions: tetra.positions.map((v) => -v / 3) } },
+    ];
+    const codec = {
+      deflate: (d: Uint8Array) => new Uint8Array(deflateRawSync(d, { level: 9 })),
+      inflate: (d: Uint8Array) => new Uint8Array(inflateRawSync(d)),
+    };
+    const file = write3mf(parts, 'Test: two bodies', codec);
+    const { title, parts: back } = unpack3mf(pack3mf(file, codec));
+    expect(threeMfEntries(back, title)).toEqual(readZip(file, codec));
+    expect(writeZip(threeMfEntries(back, title), codec)).toEqual(file);
+    const other = writeZip([...readZip(file, codec), { name: 'extra.txt', data: new Uint8Array(3) }]);
+    expect(() => pack3mf(other, codec)).toThrow(/made again/);
   });
 });
