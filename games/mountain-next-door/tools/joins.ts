@@ -34,7 +34,7 @@ for (const l of levels) {
       if (STANDS.test(base) && y + 1 < l.map.height) {
         const q = pic(x, y + 1);
         // the thing itself, not what a variant drew behind it
-        const own = l.book.pics.get(base) ?? p;
+        const own = l.book.pics.get(base.replace(/(Thru|Top)$/, '')) ?? p;
         let hang = 0;
         for (let i = 0; q && i < 20; i++) if (own.get(i, 19) !== sky && q.get(i, 0) === sky) hang++;
         if (hang >= 2) found.push(`hang (${x},${y}) ${n} over ${nameAt(x, y + 1)} ${hang}`);

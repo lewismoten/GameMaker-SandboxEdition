@@ -16,7 +16,7 @@
 //   picnic     blanketL/M/R, matL/M/R
 //   library    shelf0..5 (books, passable), gap (an overdue book goes back: becomes shelved), book (take it), floor/floor2
 //              (solid), win0..5 (a tall window, 2 x 3), deskL/M/R
-//   tower      leg, brace0..3 (an X over 2 x 2), deck/deck2 (a landing: stand on it), rail, lamp (light it: lampLit),
+//   tower      leg, braceL0..2/braceR0,1,3 (knee braces, 2 x 2), legFoot (a leg to walk past), deck/deck2 (a landing: stand on it), rail, lamp (light it: lampLit),
 //              boardUp/boardHalf/boardGone/boardBack (a loose board, on the stones' clock)
 //   roofs      roof/roof2 (slates: stand on them), pot (slates with a chimney pot), stack (a chimney: solid),
 //              puff0..5 then puffOff (warm smoke that lifts you, on a clock), flake (Wisp's snow: take it)
@@ -60,7 +60,7 @@ import { blanket, doormat, lantern, moon, puddle, signpost, star, tunnelAir, tun
 import { bed, footbridge, gust, rain, stone, updraft, water } from './art/weather';
 import { dent, scree } from './art/high';
 import { drift, potSlates, puff, slates, stack } from './art/roofs';
-import { brace, calm, lamp, landing, leg, railing, shingles } from './art/tower';
+import { brace, calm, lamp, landing, landingOnLeg, leg, legKnee, railing, shingles } from './art/tower';
 import { desk, floorboard, libWindow, lostBook, shelf, shelfGap } from './art/library';
 import { houseDoor } from './art/exits';
 import { bead, dellAir, mistStep } from './art/meadow';
@@ -293,9 +293,14 @@ export function addProps(book: Book, pal: Pal, groups: readonly string[], o: Pro
   }
   if (has('tower')) {
     book.add('leg', leg(pal), { solid: SOLID });
-    for (let k = 0; k < 4; k++) book.add(`brace${k}`, brace(pal, k), air);
+    for (const k of [0, 1, 2]) book.add(`braceL${k}`, brace(pal, k, true), air);
+    for (const k of [0, 1, 3]) book.add(`braceR${k}`, brace(pal, k, false), air);
+    book.add('legFoot', leg(pal), air);
+    book.add('legKneeL', legKnee(pal, true), { solid: SOLID });
+    book.add('legKneeR', legKnee(pal, false), { solid: SOLID });
     book.add('deck', landing(pal, 1), { solid: LEDGE, grav: PULL.down });
     book.add('deck2', landing(pal, 2), { solid: LEDGE, grav: PULL.down });
+    book.add('deckLeg', landingOnLeg(pal, 3), { solid: LEDGE, grav: PULL.down });
     book.add('rail', railing(pal), air);
     for (const part of ['L', 'M', 'R'] as const) book.add(`roof${part}`, shingles(pal, part), air);
     book.add('lamp', lamp(pal, false), { ...air, score: POINTS.lantern, touch: 'lampLit' });

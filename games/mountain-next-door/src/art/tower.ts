@@ -1,5 +1,5 @@
-// The old fire lookout on the hollow's rim, in the game's woodcut: a timber leg, cross-bracing (an X over two
-// blocks by two), a landing of heavy planks, a railing, a hurricane lamp (dark, or lit with a hatched glow), and
+// The old fire lookout on the hollow's rim, in the game's woodcut: a timber leg, knee braces (a timber from the leg up
+// under the landing above, 2 x 2), a landing of heavy planks on cleats and a stringer, a railing, a hurricane lamp (dark, or lit with a hatched glow), and
 // the gusts that sweep the open landings on a clock (streaks, then calm air).
 import { Pixels, dither } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { skyOf, type Pal } from '../../../kit/starter/palette';
@@ -17,17 +17,36 @@ export function leg(pal: Pal): Pixels {
   return inked(pal, p);
 }
 
-/** Cross-bracing, block `k` (0 top-left, 1 top-right, 2 bottom-left, 3 bottom-right) of an X over 40 x 40. */
-export function brace(pal: Pal, k: number): Pixels {
+/**
+ * A knee brace beside its leg, 60 x 40: the leg in the first column, then a timber from low on the leg up under the
+ * landing above, with an iron plate where it meets each (`left`: the leg is on the left; otherwise mirrored).
+ */
+function knee(pal: Pal, left: boolean): Pixels {
   const w = pal.r('wood');
-  const big = new Pixels(40, 40, skyOf(pal));
-  for (let i = 0; i < 40; i++)
+  const sky = skyOf(pal);
+  const big = new Pixels(60, 40, sky);
+  for (let x = 14; x <= 48; x++)
     for (let t = -2; t <= 1; t++) {
-      big.set(i, i + t, t === -2 ? w[3] : w[1]);
-      big.set(39 - i, i + t, t === -2 ? w[3] : w[1]);
+      const y = 48 - x + t;
+      if (y >= 0 && y < 40) big.set(x, y, t === -2 ? w[3] : t === 1 ? w[0] : w[1]);
     }
-  big.rect(17, 17, 6, 6, w[2]).set(19, 19, pal.c('rock', 3)).set(20, 20, pal.c('rock', 1));
-  return inked(pal, big).crop((k % 2) * 20, Math.floor(k / 2) * 20, 20, 20);
+  big.rect(14, 28, 3, 9, pal.c('rock', 1)).rect(40, 0, 10, 3, pal.c('rock', 1));
+  const inkedBig = inked(pal, big);
+  const l = leg(pal);
+  inkedBig.blit(l, 0, 0, sky).blit(l, 0, 20, sky);
+  // (map writes in place: mirror from a copy)
+  return left ? inkedBig : inkedBig.crop(0, 0, 60, 40).map((x, y) => inkedBig.get(59 - x, y));
+}
+
+/** Block `k` (0 top-left, 1 top-right, 2 bottom-left, 3 bottom-right) of a knee brace's 2 x 2 beside its leg. */
+export function brace(pal: Pal, k: number, left = true): Pixels {
+  const col = left ? 1 + (k % 2) : k % 2;
+  return knee(pal, left).crop(col * 20, Math.floor(k / 2) * 20, 20, 20);
+}
+
+/** The leg where a knee brace meets it, the brace's foot and plate on its side. */
+export function legKnee(pal: Pal, left: boolean): Pixels {
+  return knee(pal, left).crop(left ? 0 : 40, 20, 20, 20);
 }
 
 /** A landing: three heavy planks across, end grain showing, the underside hatched. */
@@ -36,9 +55,23 @@ export function landing(pal: Pal, seed: number): Pixels {
   const p = clear(pal);
   p.rect(0, 0, 20, 7, w[2]).rect(0, 0, 20, 1, w[4]).rect(0, 6, 20, 1, w[0]);
   p.rect((seed * 7) % 17, 1, 1, 5, w[0]).rect(((seed * 7) % 17) + 1, 1, 1, 5, w[3]);
-  for (let x = 0; x < 20; x++) for (let y = 7; y < 10; y++) if ((x + y) % 3 === 0) p.set(x, y, w[1]);
-  p.rect(0, 7, 20, 1, pal.c('ink', 0));
+  const ink = pal.c('ink', 0);
+  p.rect(0, 7, 20, 1, ink);
+  // under the planks, cleats down to a stringer along the cell's foot, so a knee brace or a leg below meets wood
+  for (const x of [4, 14])
+    p.rect(x, 8, 3, 7, w[1])
+      .rect(x, 8, 1, 7, ink)
+      .rect(x + 3, 8, 1, 7, ink);
+  p.rect(0, 15, 20, 4, w[1]).rect(0, 15, 20, 1, ink).rect(0, 19, 20, 1, ink);
+  for (let x = 0; x < 20; x++) if ((x + seed) % 3 === 0) p.set(x, 17, w[0]);
   return p;
+}
+
+/** A landing where a leg runs up behind it: the leg shows between the cleats. */
+export function landingOnLeg(pal: Pal, seed: number): Pixels {
+  const back = leg(pal);
+  const sky = skyOf(pal);
+  return landing(pal, seed).map((x, y, c) => (c === sky ? back.get(x, y) : c));
 }
 
 /** A railing: a top rail and two balusters. */
