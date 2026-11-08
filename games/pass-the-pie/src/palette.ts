@@ -53,6 +53,9 @@ export const MOODS = {
   dojo: { paper: [172, 210, 194], ink: [12, 30, 28], acc: [212, 56, 44], acc2: [244, 200, 72], leaf: [30, 96, 74] },
   rooftop: { paper: [184, 192, 228], ink: [24, 22, 66], acc: [240, 132, 84], acc2: [250, 224, 124], leaf: [74, 96, 144] },
   orchard: { paper: [244, 214, 160], ink: [62, 30, 18], acc: [178, 50, 40], acc2: [112, 164, 196], leaf: [104, 122, 40] },
+  market: { paper: [226, 238, 228], ink: [18, 40, 70], acc: [220, 44, 52], acc2: [250, 214, 70], leaf: [52, 132, 96] },
+  sale: { paper: [250, 228, 60], ink: [20, 14, 40], acc: [214, 30, 90], acc2: [40, 150, 220], leaf: [110, 60, 140] },
+  frost: { paper: [206, 232, 246], ink: [14, 42, 78], acc: [232, 100, 60], acc2: [168, 210, 240], leaf: [60, 120, 150] },
   parade: { paper: [198, 52, 42], ink: [18, 10, 12], acc: [250, 204, 64], acc2: [252, 240, 220], leaf: [40, 70, 48] },
 } as const satisfies Record<string, Inks>;
 export type Mood = keyof typeof MOODS;

@@ -14,7 +14,9 @@ const titles: Record<number, string> = {
   7: "Payback, Part 3: Sensei's Dojo (Mr. Plume)",
   8: 'Chapter 4: The Cord (Rory)',
   9: 'Payback, Part 4: The Dog Park (Mr. Plume)',
-  10: 'Payback, Part 5: Main Street (Mr. Plume)',
-  11: 'Payback, Part 6: Big Gobble (Mr. Plume)',
+  10: 'Chapter 5: Aisle Nine (Rory)',
+  11: 'Payback, Part 5: Doorbusters (Mr. Plume)',
+  12: 'Payback, Part 6: Main Street (Mr. Plume)',
+  13: 'Payback, Part 7: Big Gobble (Mr. Plume)',
 };
 await writeSimWalkthrough('pass-the-pie', sim, SEED, titles);

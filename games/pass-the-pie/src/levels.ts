@@ -15,8 +15,10 @@
 import type { Pal } from '@lewismoten/gamemaker-sandbox-tools/kit/palRamps';
 import { dress } from './dress';
 import type { Level } from './levels/common';
+import { aisle } from './levels/aisle';
 import { chase } from './levels/chase';
 import { cord } from './levels/cord';
+import { doors } from './levels/doors';
 import { dogs } from './levels/dogs';
 import { dojo } from './levels/dojo';
 import { gobble } from './levels/gobble';
@@ -31,7 +33,7 @@ export { finishBook } from './levels/common';
 
 /** The levels in order. */
 export function buildLevels(pal: Pal): Level[] {
-  const levels = [yard(pal), lawn(pal), gravy(pal), park(pal), roof(pal), dojo(pal), cord(pal), dogs(pal), chase(pal), gobble(pal)];
+  const levels = [yard(pal), lawn(pal), gravy(pal), park(pal), roof(pal), dojo(pal), cord(pal), dogs(pal), aisle(pal), doors(pal), chase(pal), gobble(pal)];
   for (const l of levels) dress(l, pal);
   return levels;
 }

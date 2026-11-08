@@ -1,7 +1,9 @@
 // The way through PASS THE PIE, as orders for the bot (kit/starter/bot.ts, routeKit.ts): the keys a person would
 // press, level by level, with human timing, every acorn a person would see taken and every fight finished.
 import type { StarterBot } from '../../kit/starter/bot';
+import * as A from '../src/levels/aisle';
 import * as C from '../src/levels/cord';
+import * as W from '../src/levels/doors';
 import * as D from '../src/levels/dojo';
 import * as K from '../src/levels/dogs';
 import * as B from '../src/levels/gobble';
@@ -313,6 +315,63 @@ export async function dogPark(bot: StarterBot): Promise<void> {
   await leave(bot, bot.walk(K.AT.exit + 1, 'the exit'), 'the exit');
 }
 
+/** Aisle Nine (Rory): the runaway cart for the first step, then shelf to shelf, the cranberry sauce, the express lane. */
+export async function aisleNine(bot: StarterBot): Promise<void> {
+  const G = A.GROUND - 1;
+  await read(bot, 6, 'aisle');
+  await read(bot, 12, 'cart');
+  await cross(bot, A.AT.cart - 3, 'up to the cart');
+  await meet(bot, [MONS.vacQuick], G, 'the runaway cart', 100, 300);
+  await must(bot, bot.wait(10), 'watching it stall');
+  await stepUp(bot, [MONS.fedVac], 'right', A.AT.shelves[0][0] + 3, 'the stalled cart');
+  await cross(bot, A.AT.shelves[0][1], 'along the first shelf');
+  await leap(bot, 'right', A.AT.shelves[1][0] + 2, 'to the second shelf');
+  await cross(bot, A.AT.gold, 'the gold acorn');
+  await cross(bot, A.AT.shelves[1][1], 'along the second shelf');
+  await leap(bot, 'right', A.AT.shelves[2][0] + 2, 'to the top shelf');
+  await read(bot, A.AT.shelves[2][0] + 1, 'staff only');
+  await cross(bot, A.AT.dish + 1, 'the cranberry sauce');
+  await cross(bot, A.AT.shelves[2][1], 'along the top shelf');
+  await cross(bot, A.AT.ladder, 'the ladder');
+  await climb(bot, A.AT.ladder, 7, 'the ladder');
+  await must(bot, bot.climb('down', G, 'down the ladder'), 'down the ladder');
+  await meet(bot, [MONS.mower], G, 'the second cart', 110, 300);
+  await must(bot, bot.wait(10), 'watching it stall');
+  await cross(bot, A.AT.gate - 6, 'over the second cart');
+  await read(bot, A.AT.gate - 4, 'express lane');
+  await door(bot, A.AT.gate, A.AT.exit, 'the express lane');
+}
+
+/** Doorbusters (Mr. Plume): twenty turkeys, a mezzanine of mannequins and a drone, two deliveries, against the bar. */
+export async function doorbusters(bot: StarterBot): Promise<void> {
+  const G = W.GROUND - 1;
+  const bag = [MONS.bag, MONS.bag + 1, MONS.bag + 2];
+  await read(bot, 6, 'sale');
+  for (let x = W.AT.crowd1[0]; x <= W.AT.crowd1[1]; x++) await smash(bot, x, [MONS.inflatable], 1, `the shopper at ${x}`, G);
+  await cross(bot, 22, 'the cider');
+  await climb(bot, W.AT.ladder, 11, 'the mezzanine ladder');
+  await cross(bot, W.AT.ladder + 1, 'onto the mezzanine');
+  await read(bot, 27, 'mezzanine');
+  for (const x of W.AT.bags) await smash(bot, x, bag, 1, `the mannequin at ${x}`, 11);
+  await cross(bot, W.AT.drone - 2, 'up to the drone');
+  await meet(bot, [MONS.drone], 11, 'the mezzanine drone', 44, 320);
+  await cross(bot, W.AT.gold, 'the gold acorn');
+  await cross(bot, W.AT.mezz[1], 'the end of the mezzanine');
+  await climb(bot, W.AT.ladder2, 11, 'the second ladder');
+  await must(bot, bot.climb('down', G, 'down the ladder'), 'down the ladder');
+  await read(bot, 47, 'line');
+  for (let x = W.AT.crowd2[0]; x <= W.AT.crowd2[1]; x++) await smash(bot, x, [MONS.inflatable], 1, `the shopper at ${x}`, G);
+  await read(bot, 69, 'delivery');
+  for (const x of W.AT.swoops) {
+    await cross(bot, x - 2, 'before a delivery drone');
+    await meet(bot, [MONS.droneSwoop], G, 'the delivery drone', 50, 120, 1200);
+  }
+  await read(bot, W.AT.door - 6, 'door');
+  bot.say(`bar left: ${((W.SECONDS * 18.2 - bot.sim.ticks) / 18.2) | 0} s`);
+  await cross(bot, W.AT.door + 2, 'through the stockroom door');
+  await leave(bot, bot.walk(W.AT.exit + 1, 'the exit'), 'the exit');
+}
+
 /** How far behind Mr. Plume the loose balloon is, in pixels. */
 function lead(bot: StarterBot): number {
   const c = monsters(bot, [MONS.chaser + 1, MONS.chaser + 3]);
@@ -399,4 +458,17 @@ export async function bigGobble(bot: StarterBot): Promise<void> {
   await leave(bot, bot.walk(B.AT.exit + 1, 'the long table'), 'the long table');
 }
 
-export const LEVELS = [pumpkinYard, payback, gravyRelay, windyPark, rooftopPotluck, senseisDojo, theCord, dogPark, mainStreet, bigGobble];
+export const LEVELS = [
+  pumpkinYard,
+  payback,
+  gravyRelay,
+  windyPark,
+  rooftopPotluck,
+  senseisDojo,
+  theCord,
+  dogPark,
+  aisleNine,
+  doorbusters,
+  mainStreet,
+  bigGobble,
+];
