@@ -43,7 +43,9 @@ function skyline(p: Pixels, pal: Pal, top: number, ground: number, seed: number)
     k++;
   }
   // the water tower
-  p.rect(250, ground - 74, 26, 16, navy).rect(254, ground - 58, 2, 30, navy).rect(270, ground - 58, 2, 30, navy);
+  p.rect(250, ground - 74, 26, 16, navy)
+    .rect(254, ground - 58, 2, 30, navy)
+    .rect(270, ground - 58, 2, 30, navy);
   halftone(p, 0, top, W, ground - top, pal.c('paper', 2), 1, [navy]);
 }
 
@@ -52,7 +54,7 @@ export function backdrop(pal: Pal, ground = 160, seed = 3): Pixels {
   const { c } = pal;
   const p = new Pixels(W, H, c('paper', 3));
   rays(p, 160, ground, 22, c('paper', 2), 0, 0, W, ground, seed * 0.013);
-  halftone(p, 0, 0, W, ground, c('orange', 4), (x, y) => (y > ground - 50 ? 1 : 0), [c('paper', 2)]);
+  halftone(p, 0, 0, W, ground, c('orange', 4), (_x, y) => (y > ground - 50 ? 1 : 0), [c('paper', 2)]);
   p.disc(160, ground, 34, c('orange', 4)).disc(160, ground, 28, c('gold', 4));
   skyline(p, pal, ground - 90, ground, seed);
   p.rect(0, ground, W, 6, c('paper', 3));
@@ -73,7 +75,9 @@ export function bunting(p: Pixels, pal: Pal, y: number): void {
 /** The navy frame with a brass rule inside it, round the whole poster. */
 export function frame(p: Pixels, pal: Pal): void {
   const { c } = pal;
-  p.frame(0, 0, W, H, c('blue', 0)).frame(1, 1, W - 2, H - 2, c('blue', 0)).frame(2, 2, W - 4, H - 4, c('blue', 1));
+  p.frame(0, 0, W, H, c('blue', 0))
+    .frame(1, 1, W - 2, H - 2, c('blue', 0))
+    .frame(2, 2, W - 4, H - 4, c('blue', 1));
   p.frame(4, 4, W - 8, H - 8, c('gold', 4));
 }
 
@@ -133,12 +137,11 @@ export function scoresPicture(pal: Pal, heading: string): Pixels {
 export function cardPicture(pal: Pal, hero: Pixels, n: number, of: number, name: string, hint: string): Pixels {
   const { c } = pal;
   const p = backdrop(pal, 160, 20 + n);
-  bunting(p, pal, 6);
-  p.rect(16, 22, 288, 70, c('blue', 1)).rect(18, 24, 284, 66, c('gold', 4)).rect(21, 27, 278, 60, c('paper', 3));
-  line(p, pal, 33, `LEVEL ${n} OF ${of}`, 'red', 1);
+  p.rect(16, 9, 288, 66, c('blue', 1)).rect(18, 11, 284, 62, c('gold', 4)).rect(21, 14, 278, 56, c('paper', 3));
+  line(p, pal, 18, `LEVEL ${n} OF ${of}`, 'red', 1);
   const title = name.toUpperCase();
-  lettering(p, pal, 46, title, title.length * 24 <= 272 ? 3 : 2);
-  line(p, pal, 74, hint);
+  lettering(p, pal, 29, title, title.length * 24 <= 272 ? 3 : 2);
+  line(p, pal, 58, hint);
   standing(p, hero, 40, 160, 2);
   frame(p, pal);
   return p;

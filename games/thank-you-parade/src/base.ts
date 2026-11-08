@@ -50,7 +50,11 @@ export function addPage(book: PBook, pal: Pal): void {
     [7, 6],
     [12, 9],
   ])
-    p.set(x - 1, y - 1, c('purple', 1)).set(x + 1, y + 1, c('purple', 1)).set(x, y, c('purple', 1)).set(x + 1, y - 1, c('purple', 1)).set(x - 1, y + 1, c('purple', 1));
+    p.set(x - 1, y - 1, c('purple', 1))
+      .set(x + 1, y + 1, c('purple', 1))
+      .set(x, y, c('purple', 1))
+      .set(x + 1, y - 1, c('purple', 1))
+      .set(x - 1, y + 1, c('purple', 1));
   p.line(7, 12, 12, 14, c('purple', 1)).set(12, 13, c('purple', 1)).set(11, 15, c('purple', 1));
   p.rect(13, 15, 3, 3, 255).set(13, 14, 255).set(15, 14, 255);
   book.add('page', onPaper(pal, p), { grav: PULL.down, score: PAGE_POINTS, touch: 'sky' });

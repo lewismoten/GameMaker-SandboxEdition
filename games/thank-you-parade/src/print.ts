@@ -86,7 +86,16 @@ export function dot(x: number, y: number, tone: number): boolean {
 }
 
 /** Dots of color `c` over the pixels of `p` in a rectangle whose color is one of `on` (or every pixel, when `on` is empty). */
-export function halftone(p: Pixels, x0: number, y0: number, w: number, h: number, c: number, tone: number | ((x: number, y: number) => number), on: number[] = []): Pixels {
+export function halftone(
+  p: Pixels,
+  x0: number,
+  y0: number,
+  w: number,
+  h: number,
+  c: number,
+  tone: number | ((x: number, y: number) => number),
+  on: number[] = [],
+): Pixels {
   const only = new Set(on);
   for (let y = y0; y < y0 + h; y++)
     for (let x = x0; x < x0 + w; x++) {

@@ -68,7 +68,9 @@ export function level1(pal: Pal): Level {
   run(m, 'crown', AT1.trunk - 2, AT1.branch[1] + 1, 0);
   run(m, 'crown', AT1.trunk - 2, AT1.trunk - 1, 1);
   run(m, 'crown', AT1.branch[0] + 1, AT1.branch[1] + 1, 1);
-  m.set(AT1.trunk - 2, 2, 'crown').set(AT1.trunk - 1, 2, 'crown').set(AT1.branch[1] + 1, 2, 'crown');
+  m.set(AT1.trunk - 2, 2, 'crown')
+    .set(AT1.trunk - 1, 2, 'crown')
+    .set(AT1.branch[1] + 1, 2, 'crown');
   run(m, 'crown', AT1.farBranch[0] - 1, AT1.farBranch[1] - 1, AT1.farBranch[2] - 2);
   m.set(AT1.sticks, 2, 'sticks');
   m.set(AT1.page, AT1.farBranch[2] - 1, 'page');

@@ -50,9 +50,26 @@ const AFTER = 'r e, x e, r e, x e, r e, x e, r e, x e';
 
 export function song(): Uint8Array {
   const w = new Writer(120);
-  const brass = { lead: INSTRUMENTS.brass, second: 'octave' as const, secondPatch: FLUTE, secondVel: 46, bassPatch: INSTRUMENTS.bass, bass: 'pump' as const, bassVel: 104 };
+  const brass = {
+    lead: INSTRUMENTS.brass,
+    second: 'octave' as const,
+    secondPatch: FLUTE,
+    secondVel: 46,
+    bassPatch: INSTRUMENTS.bass,
+    bass: 'pump' as const,
+    bassVel: 104,
+  };
   // the intro: a snare roll under held chords, then a crash
-  w.part({ section: vamp(['F', 'F', 'C7', 'C7'], 'r w'), lead: INSTRUMENTS.brass, bass: 'whole', bassVel: 96, comp: 'x w', compPatch: INSTRUMENTS.brass, compVel: 56, drums: ['none'] });
+  w.part({
+    section: vamp(['F', 'F', 'C7', 'C7'], 'r w'),
+    lead: INSTRUMENTS.brass,
+    bass: 'whole',
+    bassVel: 96,
+    comp: 'x w',
+    compPatch: INSTRUMENTS.brass,
+    compVel: 56,
+    drums: ['none'],
+  });
   [MARCH.roll, MARCH.roll, MARCH.roll, MARCH.fill].forEach((g, i) => w.drums((w.bar - 4 + i) * 4, g, 92));
   const A = {
     chords: 'F | F | C7 | F | Bb | F | G7 C7 | F',
@@ -73,8 +90,36 @@ export function song(): Uint8Array {
   const steps = [MARCH.hit, MARCH.step, MARCH.step, MARCH.cadence, MARCH.step, MARCH.step, MARCH.step, MARCH.fill];
   for (let k = 0; k < 2; k++) play(w, { ...A, ...brass, comp: AFTER, compPatch: INSTRUMENTS.brass, compVel: 50, grooves: steps, drumVel: 94 });
   for (let k = 0; k < 2; k++) play(w, { ...B, ...brass, comp: AFTER, compPatch: INSTRUMENTS.brass, compVel: 54, grooves: steps, drumVel: 98 });
-  play(w, { ...trio, lead: REED, second: 'double', secondPatch: INSTRUMENTS.brass, secondVel: 40, bass: 'half', bassPatch: INSTRUMENTS.bass, bassVel: 90, comp: 'x h, x h', compPatch: INSTRUMENTS.strings, compVel: 40, grooves: [MARCH.step], drumVel: 70 });
-  play(w, { ...dogfight, lead: INSTRUMENTS.brass, second: 'double', secondPatch: INSTRUMENTS.brass, secondVel: 60, bass: 'eighths', bassPatch: INSTRUMENTS.bass, bassVel: 108, comp: 'x q, r q, x q, r q', compPatch: INSTRUMENTS.brass, compVel: 60, grooves: [MARCH.stomp, MARCH.stomp, MARCH.stomp, MARCH.fill, MARCH.stomp, MARCH.stomp, MARCH.roll, MARCH.fill], drumVel: 104 });
+  play(w, {
+    ...trio,
+    lead: REED,
+    second: 'double',
+    secondPatch: INSTRUMENTS.brass,
+    secondVel: 40,
+    bass: 'half',
+    bassPatch: INSTRUMENTS.bass,
+    bassVel: 90,
+    comp: 'x h, x h',
+    compPatch: INSTRUMENTS.strings,
+    compVel: 40,
+    grooves: [MARCH.step],
+    drumVel: 70,
+  });
+  play(w, {
+    ...dogfight,
+    lead: INSTRUMENTS.brass,
+    second: 'double',
+    secondPatch: INSTRUMENTS.brass,
+    secondVel: 60,
+    bass: 'eighths',
+    bassPatch: INSTRUMENTS.bass,
+    bassVel: 108,
+    comp: 'x q, r q, x q, r q',
+    compPatch: INSTRUMENTS.brass,
+    compVel: 60,
+    grooves: [MARCH.stomp, MARCH.stomp, MARCH.stomp, MARCH.fill, MARCH.stomp, MARCH.stomp, MARCH.roll, MARCH.fill],
+    drumVel: 104,
+  });
   play(w, { ...trio, ...brass, secondVel: 56, comp: AFTER, compPatch: INSTRUMENTS.brass, compVel: 58, grooves: [MARCH.grand], drumVel: 104 });
   return w.cmf();
 }
@@ -90,8 +135,27 @@ export function margeSong(): Uint8Array {
   const riffD = 'D5 e, F5 e, F#5 e, A5 e, B5 e, A5 e, F#5 q';
   const chords = 'G | G | G | G | C | C | G | G | D7 | C | G | D7';
   const grooves = [...new Array(11).fill(shuffle), turn];
-  const band = { lead: REED, second: 'double' as const, secondPatch: INSTRUMENTS.piano, secondVel: 44, bass: 'walk' as const, bassPatch: INSTRUMENTS.bass, bassVel: 100, comp: 'x q., x e, r q, x q', compPatch: INSTRUMENTS.piano, compVel: 52 };
-  play(w, { ...band, chords, tune: [riff, riff, riff, 'G5 h, F5 q, D5 q', riffC, riffC, riff, 'B4 h, r h', riffD, riffC, 'G5 q, D5 q, B4 q, G4 q', 'D5 q, C5 e, B4 e, A4 q, F#4 q'].join(' | '), grooves, drumVel: 90 });
+  const band = {
+    lead: REED,
+    second: 'double' as const,
+    secondPatch: INSTRUMENTS.piano,
+    secondVel: 44,
+    bass: 'walk' as const,
+    bassPatch: INSTRUMENTS.bass,
+    bassVel: 100,
+    comp: 'x q., x e, r q, x q',
+    compPatch: INSTRUMENTS.piano,
+    compVel: 52,
+  };
+  play(w, {
+    ...band,
+    chords,
+    tune: [riff, riff, riff, 'G5 h, F5 q, D5 q', riffC, riffC, riff, 'B4 h, r h', riffD, riffC, 'G5 q, D5 q, B4 q, G4 q', 'D5 q, C5 e, B4 e, A4 q, F#4 q'].join(
+      ' | ',
+    ),
+    grooves,
+    drumVel: 90,
+  });
   play(w, {
     ...band,
     chords,
@@ -109,7 +173,18 @@ export function drumOffSong(): Uint8Array {
   const w = new Writer(91);
   const count: Groove = { k: 'x...x...', s: '..X.....', c: '......X.', h: 'xxxxxxxx' };
   const countFill: Groove = { k: 'x...x...', s: '..X..xxx', c: '......X.', t: '.....x..' };
-  const band = { lead: INSTRUMENTS.brass, second: 'double' as const, secondPatch: INSTRUMENTS.brass, secondVel: 58, bass: 'eighths' as const, bassPatch: INSTRUMENTS.bass, bassVel: 108, comp: 'x e, r e, r q, x e, r e, r q', compPatch: INSTRUMENTS.strings, compVel: 46 };
+  const band = {
+    lead: INSTRUMENTS.brass,
+    second: 'double' as const,
+    secondPatch: INSTRUMENTS.brass,
+    secondVel: 58,
+    bass: 'eighths' as const,
+    bassPatch: INSTRUMENTS.bass,
+    bassVel: 108,
+    comp: 'x e, r e, r q, x e, r e, r q',
+    compPatch: INSTRUMENTS.strings,
+    compVel: 46,
+  };
   const A = {
     chords: 'Dm | Dm | Bb | A7 | Dm | Dm | Gm A7 | Dm',
     tune: 'D5 q, r e, D5 e, F5 q, A5 q | G5 e, F5 e, E5 q, D5 h | Bb4 q, r e, Bb4 e, D5 q, F5 q | E5 h, C#5 h | D5 q, r e, D5 e, F5 q, A5 q | D6 q, C6 e, A5 e, F5 h | G5 q, Bb5 q, A5 q, C#5 q | D5 h, r h',

@@ -98,7 +98,7 @@ export function addPark(book: PBook, pal: Pal): void {
   {
     // the crown: a flat green mass with halftone shade and a scalloped edge
     const p = new Pixels(20, 20, c('green', 3));
-    halftone(p, 0, 0, 20, 20, c('green', 1), (x, y) => (y > 12 ? 4 : y > 6 ? 2 : 1));
+    halftone(p, 0, 0, 20, 20, c('green', 1), (_x, y) => (y > 12 ? 4 : y > 6 ? 2 : 1));
     for (const [x, y] of [
       [4, 4],
       [13, 9],

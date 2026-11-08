@@ -133,7 +133,7 @@ export function addAirstrip(book: PBook, pal: Pal): void {
 /** Marge's crop duster, 100x60 on transparent: a vermilion biplane facing right, cream wings, a brass nose and propeller. */
 export function planePicture(pal: Pal): Pixels {
   const { c } = pal;
-    const W = PLANE.w * 20;
+  const W = PLANE.w * 20;
   const H = PLANE.h * 20;
   const p = new Pixels(W, H, T);
   // the lower wing, the fuselage, the tail, the upper wing on struts

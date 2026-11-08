@@ -60,11 +60,15 @@ function face(p: Pixels, pal: Pal, f: Face, ex: number, ey: number, skin: number
       p.rect(ex - 1, ey + 1, 2, 1, ink);
       break;
     case 'ouch':
-      p.set(ex - 1, ey, ink).set(ex, ey + 1, ink).set(ex - 1, ey + 2, ink);
+      p.set(ex - 1, ey, ink)
+        .set(ex, ey + 1, ink)
+        .set(ex - 1, ey + 2, ink);
       p.rect(ex, ey + 3, 2, 2, ink);
       break;
     case 'cheer':
-      p.set(ex - 1, ey + 1, ink).set(ex, ey, ink).set(ex + 1, ey + 1, ink);
+      p.set(ex - 1, ey + 1, ink)
+        .set(ex, ey, ink)
+        .set(ex + 1, ey + 1, ink);
       p.rect(ex - 1, ey + 3, 3, 2, ink).set(ex, ey + 4, pal.c('red', 3));
       break;
     case 'oh':
@@ -77,7 +81,9 @@ function face(p: Pixels, pal: Pal, f: Face, ex: number, ey: number, skin: number
       break;
     default:
       p.rect(ex, ey, 1, 2, ink);
-      p.set(ex - 1, ey + 4, skin[0]).set(ex, ey + 4, skin[0]).set(ex + 1, ey + 3, skin[0]);
+      p.set(ex - 1, ey + 4, skin[0])
+        .set(ex, ey + 4, skin[0])
+        .set(ex + 1, ey + 3, skin[0]);
   }
   // a dash of blush, printed as two dots
   if (f !== 'ouch') p.set(ex - 2, ey + 3, pal.c('pink', 2));
@@ -174,13 +180,17 @@ function pennyOutfit(pal: Pal): Outfit {
       } else {
         p.rect(7, 11 + y, 7, 7, skin[2]).rect(13, 12 + y, 1, 5, skin[3]);
         p.rect(7, 11 + y, 3, 3, r('hair')[1]);
-        p.rect(4, 12 + y, 3, 4, r('hair')[1]).set(6, 12 + y, red[3]).set(4, 15 + y, r('hair')[0]); // the ponytail and its ribbon
+        p.rect(4, 12 + y, 3, 4, r('hair')[1])
+          .set(6, 12 + y, red[3])
+          .set(4, 15 + y, r('hair')[0]); // the ponytail and its ribbon
         p.rect(8, 14 + y, 2, 2, skin[1]); // the ear
         face(p, pal, pose.face, 12, 13 + y, skin);
         p.rect(8, 17 + y, 5, 1, gold[3]); // the chin strap
       }
       // the shako: a navy drum, a brass band and plate, a black visor, and the plume
-      p.rect(6, 3 + y, 9, 8, navy[2]).rect(6, 3 + y, 2, 8, navy[1]).rect(13, 3 + y, 1, 8, navy[3]);
+      p.rect(6, 3 + y, 9, 8, navy[2])
+        .rect(6, 3 + y, 2, 8, navy[1])
+        .rect(13, 3 + y, 1, 8, navy[3]);
       p.rect(6, 3 + y, 9, 1, navy[3]);
       p.rect(6, 9 + y, 9, 1, gold[3]);
       if (!pose.back) {
@@ -189,7 +199,11 @@ function pennyOutfit(pal: Pal): Outfit {
       }
       const px = pose.back ? 10 : 9;
       // the plume: a white base and a tall vermilion feather that curls forward
-      p.rect(px, 1 + y, 3, 2, white[3]).rect(px + 1, 0 + y, 4, 2, red[3]).set(px + 4, 1 + y, red[2]).set(px + 2, 0 + y, red[4]).set(px - 1, 2 + y, white[2]);
+      p.rect(px, 1 + y, 3, 2, white[3])
+        .rect(px + 1, 0 + y, 4, 2, red[3])
+        .set(px + 4, 1 + y, red[2])
+        .set(px + 2, 0 + y, red[4])
+        .set(px - 1, 2 + y, white[2]);
     },
   };
 }
@@ -201,25 +215,213 @@ function pennyPoses(): Record<string, Pose> {
     [12, 0],
   ];
   return {
-    stand: { face: 'smile', hands: [[9, 27], [14, 25]], feet: stand, mace: [16, 14] },
-    blink: { face: 'blink', hands: [[9, 27], [14, 25]], feet: stand, mace: [16, 14] },
-    look: { face: 'look', hands: [[9, 27], [14, 25]], feet: stand, mace: [16, 14] },
-    hurt: { face: 'ouch', hands: [[5, 23], [16, 21]], feet: [[6, 0], [13, 0]] },
-    jump: { face: 'cheer', hands: [[5, 22], [16, 20]], feet: [[8, 4], [13, 5]], mace: [18, 13] },
-    walk0: { face: 'smile', hands: [[7, 26], [15, 24]], feet: [[6, 0], [14, 0]], mace: [16, 14] },
-    walk1: { face: 'smile', hands: [[9, 27], [14, 24]], feet: [[9, 3], [11, 0]], dip: 1, mace: [16, 13] },
-    walk2: { face: 'smile', hands: [[12, 26], [14, 25]], feet: [[14, 0], [6, 0]], mace: [16, 14] },
-    walk3: { face: 'smile', hands: [[9, 27], [14, 24]], feet: [[11, 0], [9, 3]], dip: 1, mace: [16, 13] },
-    jumpup: { face: 'cheer', hands: [[6, 12], [18, 12]], feet: [[8, 3], [12, 5]], mace: [18, 3] },
-    fall: { face: 'oh', hands: [[4, 18], [17, 17]], feet: [[7, 0], [13, 1]] },
-    cheer: { face: 'cheer', hands: [[6, 12], [18, 12]], feet: stand, mace: [17, 3] },
-    dig0: { face: 'smile', hands: [[12, 30], [15, 31]], feet: [[6, 0], [12, 0]] },
-    dig1: { face: 'smile', hands: [[11, 26], [14, 27]], feet: [[6, 0], [12, 0]] },
-    throw0: { face: 'smile', hands: [[8, 26], [5, 16]], feet: stand, mace: [2, 9] },
-    throw1: { face: 'cheer', hands: [[7, 25], [16, 15]], feet: [[7, 0], [12, 0]], mace: [18, 6] },
-    throw2: { face: 'smile', hands: [[8, 26], [16, 22]], feet: stand },
-    climb0: { face: 'smile', back: true, hands: [[5, 12], [15, 16]], feet: [[8, 2], [12, 0]] },
-    climb1: { face: 'smile', back: true, hands: [[5, 16], [15, 12]], feet: [[8, 0], [12, 2]] },
+    stand: {
+      face: 'smile',
+      hands: [
+        [9, 27],
+        [14, 25],
+      ],
+      feet: stand,
+      mace: [16, 14],
+    },
+    blink: {
+      face: 'blink',
+      hands: [
+        [9, 27],
+        [14, 25],
+      ],
+      feet: stand,
+      mace: [16, 14],
+    },
+    look: {
+      face: 'look',
+      hands: [
+        [9, 27],
+        [14, 25],
+      ],
+      feet: stand,
+      mace: [16, 14],
+    },
+    hurt: {
+      face: 'ouch',
+      hands: [
+        [5, 23],
+        [16, 21],
+      ],
+      feet: [
+        [6, 0],
+        [13, 0],
+      ],
+    },
+    jump: {
+      face: 'cheer',
+      hands: [
+        [5, 22],
+        [16, 20],
+      ],
+      feet: [
+        [8, 4],
+        [13, 5],
+      ],
+      mace: [18, 13],
+    },
+    walk0: {
+      face: 'smile',
+      hands: [
+        [7, 26],
+        [15, 24],
+      ],
+      feet: [
+        [6, 0],
+        [14, 0],
+      ],
+      mace: [16, 14],
+    },
+    walk1: {
+      face: 'smile',
+      hands: [
+        [9, 27],
+        [14, 24],
+      ],
+      feet: [
+        [9, 3],
+        [11, 0],
+      ],
+      dip: 1,
+      mace: [16, 13],
+    },
+    walk2: {
+      face: 'smile',
+      hands: [
+        [12, 26],
+        [14, 25],
+      ],
+      feet: [
+        [14, 0],
+        [6, 0],
+      ],
+      mace: [16, 14],
+    },
+    walk3: {
+      face: 'smile',
+      hands: [
+        [9, 27],
+        [14, 24],
+      ],
+      feet: [
+        [11, 0],
+        [9, 3],
+      ],
+      dip: 1,
+      mace: [16, 13],
+    },
+    jumpup: {
+      face: 'cheer',
+      hands: [
+        [6, 12],
+        [18, 12],
+      ],
+      feet: [
+        [8, 3],
+        [12, 5],
+      ],
+      mace: [18, 3],
+    },
+    fall: {
+      face: 'oh',
+      hands: [
+        [4, 18],
+        [17, 17],
+      ],
+      feet: [
+        [7, 0],
+        [13, 1],
+      ],
+    },
+    cheer: {
+      face: 'cheer',
+      hands: [
+        [6, 12],
+        [18, 12],
+      ],
+      feet: stand,
+      mace: [17, 3],
+    },
+    dig0: {
+      face: 'smile',
+      hands: [
+        [12, 30],
+        [15, 31],
+      ],
+      feet: [
+        [6, 0],
+        [12, 0],
+      ],
+    },
+    dig1: {
+      face: 'smile',
+      hands: [
+        [11, 26],
+        [14, 27],
+      ],
+      feet: [
+        [6, 0],
+        [12, 0],
+      ],
+    },
+    throw0: {
+      face: 'smile',
+      hands: [
+        [8, 26],
+        [5, 16],
+      ],
+      feet: stand,
+      mace: [2, 9],
+    },
+    throw1: {
+      face: 'cheer',
+      hands: [
+        [7, 25],
+        [16, 15],
+      ],
+      feet: [
+        [7, 0],
+        [12, 0],
+      ],
+      mace: [18, 6],
+    },
+    throw2: {
+      face: 'smile',
+      hands: [
+        [8, 26],
+        [16, 22],
+      ],
+      feet: stand,
+    },
+    climb0: {
+      face: 'smile',
+      back: true,
+      hands: [
+        [5, 12],
+        [15, 16],
+      ],
+      feet: [
+        [8, 2],
+        [12, 0],
+      ],
+    },
+    climb1: {
+      face: 'smile',
+      back: true,
+      hands: [
+        [5, 16],
+        [15, 12],
+      ],
+      feet: [
+        [8, 0],
+        [12, 2],
+      ],
+    },
   };
 }
 
@@ -252,7 +454,9 @@ function margeOutfit(pal: Pal): Outfit {
       p.rect(6, 27 + dy, 9, 2, leather[1]); // the waistband
       // the white scarf, its tail streaming back over her shoulder
       p.rect(9, 18 + dy, 4, 2, white[3]);
-      p.rect(4, 19 + dy, 5, 2, white[3]).rect(2, 21 + dy, 3, 2, white[2]).set(1, 23 + dy, white[2]);
+      p.rect(4, 19 + dy, 5, 2, white[3])
+        .rect(2, 21 + dy, 3, 2, white[2])
+        .set(1, 23 + dy, white[2]);
     },
     head: (p, pose, dy) => {
       const y = dy;
@@ -263,15 +467,21 @@ function margeOutfit(pal: Pal): Outfit {
         return;
       }
       p.rect(7, 11 + y, 7, 7, skin[2]).rect(13, 12 + y, 1, 5, skin[3]);
-      p.rect(5, 14 + y, 3, 4, silver[2]).set(5, 17 + y, silver[1]).set(6, 14 + y, silver[3]); // curls out the back
+      p.rect(5, 14 + y, 3, 4, silver[2])
+        .set(5, 17 + y, silver[1])
+        .set(6, 14 + y, silver[3]); // curls out the back
       face(p, pal, pose.face, 12, 13 + y, skin);
       p.set(11, 12 + y, silver[1]).set(12, 12 + y, silver[1]); // a gray brow
       // the leather helmet with its ear flap and strap
-      p.rect(6, 8 + y, 8, 4, leather[2]).rect(7, 7 + y, 6, 1, leather[2]).rect(6, 8 + y, 2, 4, leather[1]);
+      p.rect(6, 8 + y, 8, 4, leather[2])
+        .rect(7, 7 + y, 6, 1, leather[2])
+        .rect(6, 8 + y, 2, 4, leather[1]);
       p.rect(7, 12 + y, 3, 4, leather[2]).rect(8, 16 + y, 3, 1, leather[0]);
       p.set(10, 7 + y, leather[3]).set(9, 8 + y, leather[3]);
       // goggles pushed up on the helmet: brass rims, teal lenses
-      p.rect(10, 9 + y, 5, 3, c('gold', 3)).rect(11, 10 + y, 3, 1, c('teal', 3)).set(12, 10 + y, c('teal', 4));
+      p.rect(10, 9 + y, 5, 3, c('gold', 3))
+        .rect(11, 10 + y, 3, 1, c('teal', 3))
+        .set(12, 10 + y, c('teal', 4));
     },
   };
 }
@@ -282,25 +492,201 @@ function margePoses(): Record<string, Pose> {
     [12, 0],
   ];
   return {
-    stand: { face: 'smile', hands: [[8, 27], [13, 27]], feet: stand },
-    blink: { face: 'blink', hands: [[8, 27], [13, 27]], feet: stand },
-    look: { face: 'look', hands: [[8, 27], [13, 27]], feet: stand },
-    hurt: { face: 'ouch', hands: [[5, 23], [16, 21]], feet: [[6, 0], [13, 0]] },
-    jump: { face: 'cheer', hands: [[5, 22], [16, 21]], feet: [[8, 4], [13, 5]] },
-    walk0: { face: 'smile', hands: [[7, 26], [15, 25]], feet: [[6, 0], [14, 0]] },
-    walk1: { face: 'smile', hands: [[9, 27], [13, 27]], feet: [[9, 3], [11, 0]], dip: 1 },
-    walk2: { face: 'smile', hands: [[13, 26], [8, 26]], feet: [[14, 0], [6, 0]] },
-    walk3: { face: 'smile', hands: [[9, 27], [13, 27]], feet: [[11, 0], [9, 3]], dip: 1 },
-    jumpup: { face: 'cheer', hands: [[6, 12], [18, 12]], feet: [[8, 3], [12, 5]] },
-    fall: { face: 'oh', hands: [[4, 18], [17, 17]], feet: [[7, 0], [13, 1]] },
-    cheer: { face: 'cheer', hands: [[6, 12], [18, 12]], feet: stand },
-    dig0: { face: 'smile', hands: [[12, 30], [15, 31]], feet: [[6, 0], [12, 0]] },
-    dig1: { face: 'smile', hands: [[11, 26], [14, 27]], feet: [[6, 0], [12, 0]] },
-    throw0: { face: 'smile', hands: [[8, 26], [5, 16]], feet: stand },
-    throw1: { face: 'cheer', hands: [[7, 25], [16, 15]], feet: [[7, 0], [12, 0]] },
-    throw2: { face: 'smile', hands: [[8, 26], [16, 22]], feet: stand },
-    climb0: { face: 'smile', back: true, hands: [[5, 12], [15, 16]], feet: [[8, 2], [12, 0]] },
-    climb1: { face: 'smile', back: true, hands: [[5, 16], [15, 12]], feet: [[8, 0], [12, 2]] },
+    stand: {
+      face: 'smile',
+      hands: [
+        [8, 27],
+        [13, 27],
+      ],
+      feet: stand,
+    },
+    blink: {
+      face: 'blink',
+      hands: [
+        [8, 27],
+        [13, 27],
+      ],
+      feet: stand,
+    },
+    look: {
+      face: 'look',
+      hands: [
+        [8, 27],
+        [13, 27],
+      ],
+      feet: stand,
+    },
+    hurt: {
+      face: 'ouch',
+      hands: [
+        [5, 23],
+        [16, 21],
+      ],
+      feet: [
+        [6, 0],
+        [13, 0],
+      ],
+    },
+    jump: {
+      face: 'cheer',
+      hands: [
+        [5, 22],
+        [16, 21],
+      ],
+      feet: [
+        [8, 4],
+        [13, 5],
+      ],
+    },
+    walk0: {
+      face: 'smile',
+      hands: [
+        [7, 26],
+        [15, 25],
+      ],
+      feet: [
+        [6, 0],
+        [14, 0],
+      ],
+    },
+    walk1: {
+      face: 'smile',
+      hands: [
+        [9, 27],
+        [13, 27],
+      ],
+      feet: [
+        [9, 3],
+        [11, 0],
+      ],
+      dip: 1,
+    },
+    walk2: {
+      face: 'smile',
+      hands: [
+        [13, 26],
+        [8, 26],
+      ],
+      feet: [
+        [14, 0],
+        [6, 0],
+      ],
+    },
+    walk3: {
+      face: 'smile',
+      hands: [
+        [9, 27],
+        [13, 27],
+      ],
+      feet: [
+        [11, 0],
+        [9, 3],
+      ],
+      dip: 1,
+    },
+    jumpup: {
+      face: 'cheer',
+      hands: [
+        [6, 12],
+        [18, 12],
+      ],
+      feet: [
+        [8, 3],
+        [12, 5],
+      ],
+    },
+    fall: {
+      face: 'oh',
+      hands: [
+        [4, 18],
+        [17, 17],
+      ],
+      feet: [
+        [7, 0],
+        [13, 1],
+      ],
+    },
+    cheer: {
+      face: 'cheer',
+      hands: [
+        [6, 12],
+        [18, 12],
+      ],
+      feet: stand,
+    },
+    dig0: {
+      face: 'smile',
+      hands: [
+        [12, 30],
+        [15, 31],
+      ],
+      feet: [
+        [6, 0],
+        [12, 0],
+      ],
+    },
+    dig1: {
+      face: 'smile',
+      hands: [
+        [11, 26],
+        [14, 27],
+      ],
+      feet: [
+        [6, 0],
+        [12, 0],
+      ],
+    },
+    throw0: {
+      face: 'smile',
+      hands: [
+        [8, 26],
+        [5, 16],
+      ],
+      feet: stand,
+    },
+    throw1: {
+      face: 'cheer',
+      hands: [
+        [7, 25],
+        [16, 15],
+      ],
+      feet: [
+        [7, 0],
+        [12, 0],
+      ],
+    },
+    throw2: {
+      face: 'smile',
+      hands: [
+        [8, 26],
+        [16, 22],
+      ],
+      feet: stand,
+    },
+    climb0: {
+      face: 'smile',
+      back: true,
+      hands: [
+        [5, 12],
+        [15, 16],
+      ],
+      feet: [
+        [8, 2],
+        [12, 0],
+      ],
+    },
+    climb1: {
+      face: 'smile',
+      back: true,
+      hands: [
+        [5, 16],
+        [15, 12],
+      ],
+      feet: [
+        [8, 0],
+        [12, 2],
+      ],
+    },
   };
 }
 

@@ -107,13 +107,12 @@ export async function gust(bot: StarterBot): Promise<void> {
     if (bot.sim.ci.meter[CARDS] - 1 !== before + k + 1) throw new Error(`card ${k} (until tick ${c.until}) was not caught: ${bot.sim.ci.meter[CARDS] - 1}`);
   }
   // up the fire escape for Gigi's second page, then down again
-  const [first, second] = AT2.escape;
+  const [first] = AT2.escape;
   await must(bot, bot.walk(first[0] - 2, 'the fire escape'), 'to the fire escape');
   await must(bot, bot.jump('right', first[0]), 'onto the first landing');
   await page(bot, () => must(bot, bot.jump('right', AT2.page[0]), 'onto the top landing'), 'the second page');
   await must(bot, bot.wait(READ), 'reading the page');
   await must(bot, bot.walk(first[0] - 2, 'down the fire escape'), 'down');
-  void second;
   await must(bot, bot.walk(AT2.box + 1, 'the card box'), 'through the box');
   need(bot, CARDS, before + CARDS_AT.length - CARDS_WANTED, 'cards left after the box');
   await leave(bot, bot.walk(AT2.exit + 1, 'the exit'), 'the exit');

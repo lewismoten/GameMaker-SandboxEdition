@@ -10,9 +10,6 @@ import { level4 } from './level4';
 import { level5 } from './level5';
 import { level6 } from './level6';
 import { level7 } from './level7';
-import { baseBook, type PBook } from './base';
-import { addBandArch, addPark } from './park';
-import { addCard, addFlags, addNeighbors, addStreet } from './town';
 
 export type { Level } from './lay';
 
@@ -35,16 +32,4 @@ export function buildLevels(): { pal: Pal; levels: Level[] } {
     return make(paper ? swap(pal, { sky: paper }) : pal);
   });
   return { pal, levels: built };
-}
-
-/** One block set with every picture the title and the cartoons draw from (never on the disk). */
-export function galleryBook(pal: Pal): PBook {
-  const book = baseBook(pal);
-  addStreet(book, pal);
-  addFlags(book, pal);
-  addCard(book, pal);
-  addNeighbors(book, pal);
-  addPark(book, pal);
-  addBandArch(book, pal);
-  return book;
 }

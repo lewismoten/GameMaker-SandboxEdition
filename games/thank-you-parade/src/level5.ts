@@ -34,7 +34,7 @@ export function level5(pal: Pal): Level {
   const s = addSigns(book, pal, DRUMOFF_SIGNS);
   const g = room(AT5.width, AT5.exit);
   const m = new StarterMap(book, g.rows());
-  for (const x of [17, 48, 71]) flagpole(m, x, GROUND, 5);
+  for (const x of [17, 71]) flagpole(m, x, GROUND, 5);
   bunting(m, 6, 86, 2);
   // the beat meter: four drums, repeated every twelve blocks (so one set is always on screen)
   for (let x = 1; x + 3 < AT5.width - 1; x += 12) {

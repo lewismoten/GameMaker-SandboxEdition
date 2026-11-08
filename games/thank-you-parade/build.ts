@@ -89,7 +89,7 @@ disk.put('menu.gif', gif(menuPicture(pal, hero, TITLE), pal));
 disk.put('scores.gif', gif(scoresPicture(pal, 'FRONT OF THE PARADE'), pal));
 disk.put('loadgame.gif', gif(slotsPicture(pal, 'LOAD GAME'), pal));
 disk.put('savegame.gif', gif(slotsPicture(pal, 'SAVE GAME'), pal));
-text('story', 'THE THANK-YOU PARADE', STORY);
+text('story', 'PLACES, PEOPLE', STORY);
 text('howto', 'HOW TO PLAY', HOWTO);
 text('credits', 'CREDITS', CREDITS);
 disk.put('ending.fli', endingFli(pal, rivals));

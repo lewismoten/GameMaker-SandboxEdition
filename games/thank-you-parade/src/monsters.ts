@@ -67,7 +67,6 @@ function dog(pal: Pal, step: boolean): Pixels {
   return inkLine(p, ink);
 }
 
-
 /** The monster pictures (.MBL). */
 export function monsterPictures(pal: Pal): Book {
   const mb = new Book('mbl');

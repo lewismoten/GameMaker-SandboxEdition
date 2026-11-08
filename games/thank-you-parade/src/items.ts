@@ -95,7 +95,8 @@ export function addHall(book: PBook, pal: Pal): void {
     'partWheel',
     part((p) => {
       p.disc(10, 10, 7.5, c('ink', 1)).disc(10, 10, 5.5, c('red', 2));
-      for (let k = 0; k < 4; k++) p.line(10, 10, Math.round(10 + 5 * Math.cos((k * Math.PI) / 2 + 0.4)), Math.round(10 + 5 * Math.sin((k * Math.PI) / 2 + 0.4)), c('paper', 3));
+      for (let k = 0; k < 4; k++)
+        p.line(10, 10, Math.round(10 + 5 * Math.cos((k * Math.PI) / 2 + 0.4)), Math.round(10 + 5 * Math.sin((k * Math.PI) / 2 + 0.4)), c('paper', 3));
       p.disc(10, 10, 1.6, c('gold', 4));
     }),
     pickup,

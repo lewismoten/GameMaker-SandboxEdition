@@ -8,7 +8,7 @@ import { outlined, textWidth } from '@lewismoten/gamemaker-sandbox-tools/kit/pcT
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { Reel } from '@lewismoten/gamemaker-sandbox-tools/kit/reel';
 import { figure } from './figure';
-import type { Pal } from './print';
+import { paperOf, type Pal } from './print';
 import { backdrop, bunting, frame, lettering, standing, W } from './screens';
 import { banner, plane } from './title';
 import type { Book } from '../../kit/starter/book';
@@ -20,12 +20,12 @@ function caption(p: Pixels, pal: Pal, s: string, y = 182): void {
   outlined(p, Math.round((W - textWidth(s, 1)) / 2), y, s, pal.c('paper', 3), pal.c('ink', 0), 1, pal.c('ink', 0));
 }
 
-/** A block picture (monster or band member) from a block book, top over bottom, 20x40. */
-function tall(book: Book, top: string, bottom: string): Pixels {
+/** A band member or a llama from a level's blocks, top over bottom, 20x40, with the paper around it made clear. */
+function tall(pal: Pal, book: Book, top: string, bottom: string): Pixels {
   const p = new Pixels(20, 40, 255);
   p.px.set(book.pics.get(top)!.px, 0);
   p.px.set(book.pics.get(bottom)!.px, 400);
-  return p;
+  return p.map((_x, _y, c) => (c === paperOf(pal) ? 255 : c));
 }
 
 /** The intro (frames at 14 a second, about 9 seconds). */
@@ -37,8 +37,8 @@ export function introFli(pal: Pal, goose: Pixels, rivals: Book): Uint8Array {
   const walk = ['walk0', 'walk1', 'walk2', 'walk3'].map((n) => figure(pal, 'penny', n));
   const stand = figure(pal, 'penny', 'stand');
   const look = figure(pal, 'penny', 'look');
-  const r0 = tall(rivals, 'rival0Top', 'rival0');
-  const r1 = tall(rivals, 'rival1Top', 'rival1');
+  const r0 = tall(pal, rivals, 'rival0Top', 'rival0');
+  const r1 = tall(pal, rivals, 'rival1Top', 'rival1');
   const draw = (f: number) => (p: Pixels) => {
     if (f < 40) {
       const x = -40 + f * 4;
@@ -72,9 +72,9 @@ export function endingFli(pal: Pal, rivals: Book): Uint8Array {
   const cheer = figure(pal, 'penny', 'cheer');
   const stand = figure(pal, 'penny', 'stand');
   const marchers = ['walk0', 'walk1', 'walk2', 'walk3'].map((n) => figure(pal, 'penny', n));
-  const llama = tall(rivals, 'llamaTop', 'llama');
-  const r0 = tall(rivals, 'rival0Top', 'rival0');
-  const r1 = tall(rivals, 'rival1Top', 'rival1');
+  const llama = tall(pal, rivals, 'llamaTop', 'llama');
+  const r0 = tall(pal, rivals, 'rival0Top', 'rival0');
+  const r1 = tall(pal, rivals, 'rival1Top', 'rival1');
   const pass = (f: number, words: string) => (p: Pixels) => {
     const x = -120 + f * 7;
     banner(p, pal, x + 4, 52 + Math.round(Math.sin(f / 6) * 2), words, f / 3);
@@ -87,7 +87,7 @@ export function endingFli(pal: Pal, rivals: Book): Uint8Array {
       bg,
       (p) => {
         pass(f, 'THANK YOU')(p);
-        caption(p, pal, f < 35 ? "TEN O'CLOCK. THE HORNETS STEP OFF FIRST." : 'MARGE BRINGS THE BANNER IN LOW.');
+        caption(p, pal, f < 35 ? "TEN O'CLOCK. HORNETS STEP OFF FIRST." : 'MARGE BRINGS THE BANNER IN LOW.');
       },
       1,
     );

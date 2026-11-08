@@ -16,7 +16,7 @@ export const CALLTIME_SIGNS: Defs = {
   pond: ['THE FLUTE IS ON A LILY PAD. SOMEBODY PLANNED THIS.', 6, 2],
   note: ['TAPED TO THE GATE: ENJOY THE BACK OF THE PARADE. -G', 6, 2, 'purple'],
   secret: ['PLAYBOOK P.1: BE UP BEFORE PENNY.', 5, 2, 'purple'],
-}
+};
 
 export const GUST_SIGNS: Defs = {
   start: ['SIX LEAF BLOWERS ON MAIN STREET. CATCH CARDS. THE BOX TAKES FOUR.', 6, 3],
@@ -32,7 +32,7 @@ export const AIRSTRIP_SIGNS: Defs = {
   geese: ['NOT MY GEESE, SAYS MARGE.', 5, 2, 'teal'],
   rack: ['THE RACK WANTS ALL EIGHT LETTERS.', 6, 2, 'teal'],
   secret: ['PLAYBOOK P.3: NOBODY CHECKS A BANNER.', 6, 2, 'purple'],
-}
+};
 
 export const FLOAT_SIGNS: Defs = {
   start: ['THE FIRE HALL. THE FLOAT IS HERE. ITS PARTS ARE NOT.', 6, 2],
