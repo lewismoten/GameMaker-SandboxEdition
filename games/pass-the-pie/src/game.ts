@@ -1,6 +1,6 @@
 // pass.gam: scene 0 is the title and menu, scene 1 the endings, then one scene a level. A level's scene lists the
 // files it loads in slots (palette, map, blocks, monsters, monster blocks, character, character blocks, sounds, song,
-// card) and links its door to the next scene; the last level's link leads to the ending, and level 6's oven door
+// card); the character is Rory's or Mr. Plume's, level by level, and links its door to the next scene; the last level's link leads to the ending, and level 6's oven door
 // restarts the level.
 import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, newGame, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import type { Level } from './levels';
@@ -39,8 +39,8 @@ export function buildGame(levels: Level[]): Game {
       `${l.file}.bbl`,
       'pass.mon',
       'pass.mbl',
-      'rory.chr',
-      'rory.cbl',
+      `${l.hero}.chr`,
+      `${l.hero}.cbl`,
       'pass.snd',
       l.song,
       `${l.file}.lst`,
