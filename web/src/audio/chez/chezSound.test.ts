@@ -105,16 +105,16 @@ describe('CHEZ_SOUND', () => {
 describe('the climb', () => {
   it('starts slow, climbs through its steps past cruise, then settles at cruise', () => {
     expect(climbSpeed(0)).toBeLessThan(0.5); // about 110 Hz as the contactor closes
-    expect(climbSpeed(4.6)).toBeGreaterThan(1);
+    expect(climbSpeed(4.6)).toBeGreaterThan(0.95);
     expect(climbSpeed(20)).toBe(1);
-    for (let s = 0; s < 4.3; s += 0.1) expect(climbSpeed(s + 0.1)).toBeGreaterThanOrEqual(climbSpeed(s));
+    for (let s = 0; s < 4.9; s += 0.1) expect(climbSpeed(s + 0.1)).toBeGreaterThanOrEqual(climbSpeed(s));
   });
 
-  it('rises in three contactor steps: a quick jump at each, a slow creep between', () => {
-    for (const at of [1.1, 2.6, 4.3]) {
-      expect(climbSpeed(at + 0.1) - climbSpeed(at - 0.02)).toBeGreaterThan(0.1); // the jump
-      expect(climbSpeed(at - 0.02) - climbSpeed(at - 1)).toBeLessThan(0.1); // the creep before it
-    }
+  it('has two plateaus: 24 V, a quick jump to 48 V, then a creep to cruise', () => {
+    const at = 2.3;
+    expect(climbSpeed(at + 0.1) - climbSpeed(at - 0.02)).toBeGreaterThan(0.15); // the jump
+    expect(climbSpeed(at - 0.02) - climbSpeed(0)).toBeLessThan(0.25); // the 24 V creep
+    expect(climbSpeed(at + 0.1)).toBeGreaterThan(0.8);
   });
 });
 
@@ -170,19 +170,38 @@ describe('the made-up voice', () => {
     expect(f.nodes.filter((n) => n.kind === 'filter' && n.outs.has(f.ctx.destination))).toHaveLength(0);
   });
 
-  it('each of the three speed steps clunks twice (relay, then a second relay), after the pull-in', () => {
+  it('a road start clunks twice: into 24 V, then (relay and a second relay) into 48 V', () => {
     const f = fakeContext();
     chezMotor(f.as, f.out, {}).go();
     const thumps = f.sources().filter((s) => s.kind === 'osc' && s.started! > 0.3 && s.stopped !== undefined && s.stopped - s.started! < 0.2);
     const times = thumps.map((s) => s.started!).sort((a, b) => a - b);
-    expect(times).toHaveLength(7); // the contactor, then 3 steps x 2
-    expect(times[1] - 0.36).toBeCloseTo(1.1, 1);
+    expect(times).toHaveLength(3); // the contactor, then the 48 V step and its second relay
+    expect(times[1] - 0.36).toBeCloseTo(2.3, 1);
+  });
+
+  it('coast() clunks and fades the whine; resume() clunks back in; only while moving', () => {
+    const f = fakeContext();
+    const m = chezMotor(f.as, f.out, {});
+    m.coast(); // not moving: nothing
+    expect(f.sources()).toHaveLength(0);
+    m.go();
+    f.until(3);
+    const n = f.sources().length;
+    m.coast();
+    expect(f.sources().length).toBeGreaterThan(n); // the clunk
+    const n2 = f.sources().length;
+    m.coast();
+    expect(f.sources()).toHaveLength(n2); // already coasting
+    f.until(5);
+    m.resume();
+    expect(f.sources().length).toBeGreaterThan(n2); // ka-chunk back in
+    expect(m.moving).toBe(true);
   });
 
   it('a pull-away pass-by clunks through its steps, then drives off and frees itself', () => {
     const f = fakeContext();
     chezPassBy(f.as, f.out, 10, { outside: true, pullAway: true });
-    expect(f.sources().filter((s) => s.kind === 'osc').length).toBeGreaterThan(8);
+    expect(f.sources().filter((s) => s.kind === 'osc').length).toBeGreaterThan(7);
     f.until(11);
     expect(f.sources().every((n) => n.freed)).toBe(true);
   });

@@ -6,7 +6,7 @@ export interface ChezOptions {
   level?: number;
   /** Heard from outside, through a window: duller and with no road rumble up close. */
   outside?: boolean;
-  /** For chezPassBy: it starts from rest in front of the window (ka-chunk, ka-chunk, ka-chunk) and drives off. */
+  /** For chezPassBy: it starts from rest in front of the window (ka-chunk into 24 V, ka-chunk into 48 V), coasts a while and drives off. */
   pullAway?: boolean;
 }
 
@@ -15,6 +15,10 @@ export interface ChezMotor {
   go(): void;
   /** Lets it stop: the contactor lets go and the motor winds down. Nothing if it isn't going. */
   stop(): void;
+  /** Foot off the accelerator: the contactors drop out (a clunk) and the whine fades as the car rolls. Nothing unless it is moving. */
+  coast(): void;
+  /** Foot back on after coast(): a ka-chunk and the whine returns. */
+  resume(): void;
   /** Already at cruise, driving past for `seconds`, then it frees itself. */
   passBy(seconds: number, pullAway?: boolean): void;
   /** Silences it at once and frees every node. */

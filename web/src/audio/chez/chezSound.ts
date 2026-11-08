@@ -10,8 +10,8 @@ export type { ChezMotor, ChezOptions } from './chezTypes';
 export const CHEZ_SOUND = 'synth' as const;
 
 /**
- * THE CHEZ's motor into `out`: go() closes the contactors (clunks) and the motor climbs through its
- * three speed steps to cruise; stop() lets them go and it winds down. Silent until go().
+ * THE CHEZ's motor into `out`: go() closes the contactor (24 V, a ka-chunk) and the motor climbs, then a second
+ * ka-chunk steps it to 48 V; coast() drops them out and resume() closes them again; stop() lets them go and it winds down. Silent until go().
  */
 export function chezMotor(ctx: BaseAudioContext, out: AudioNode, opts: ChezOptions = {}): ChezMotor {
   return new SynthMotor(ctx, out, opts);
