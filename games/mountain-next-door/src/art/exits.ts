@@ -1,6 +1,6 @@
 // The ways out of each place, in the trail guide's woodcut (each 20 x 40, top block then bottom), so no level ends
 // at a door standing alone in a field:
-//   cairn    outdoors: a trail crew's cairn of fieldstones with a blazed post in it and a tie of orange flagging
+//   cairn    outdoors: a trail crew's cairn of fieldstones with a marker post in it, blazed twice
 //   library  a tall oak door set in the library's stone wall, a brass push plate, a fanlight
 //   mouth    the far end of the old tunnel: an arch of stones open on the moonlit night
 //   house    Tess's own front door, standing open, lamplight inside (drawn on sky: the wall goes behind it)
@@ -15,12 +15,13 @@ export type ExitKind = 'cairn' | 'library' | 'mouth';
 function cairn(pal: Pal): Pixels {
   const p = new Pixels(20, 40, skyOf(pal));
   const w = pal.r('wood');
-  const ink = pal.c('ink', 0);
-  // the post: a peeled pole with a fresh yellow blaze and a tie of flagging tape blowing right
-  p.rect(8, 3, 4, 14, w[2]).rect(9, 3, 1, 14, w[3]);
-  p.rect(8, 6, 4, 6, pal.c('gold', 3)).rect(8, 6, 4, 1, pal.c('gold', 5));
-  const tape = pal.c('orange', 3);
-  p.rect(12, 4, 2, 2, tape).set(14, 5, tape).set(15, 4, tape).set(16, 5, tape).set(15, 6, pal.c('orange', 1));
+  // the post: a squared trail marker, flat cut across the top, with two fresh yellow blazes, one over the other
+  p.rect(7, 3, 6, 17, w[2]).rect(8, 4, 1, 16, w[3]).rect(12, 4, 1, 16, w[1]);
+  p.rect(6, 1, 8, 2, w[3]).rect(6, 3, 8, 1, w[0]);
+  for (const y of [4, 11])
+    p.rect(8, y, 4, 5, pal.c('gold', 3))
+      .rect(8, y, 4, 1, pal.c('gold', 5))
+      .rect(8, y + 4, 4, 1, pal.c('gold', 1));
   // the stones, biggest at the bottom
   for (const [x, y, sw, sh] of [
     [0, 33, 9, 7],
@@ -28,10 +29,8 @@ function cairn(pal: Pal): Pixels {
     [2, 26, 8, 7],
     [10, 25, 8, 7],
     [5, 19, 10, 7],
-    [7, 14, 7, 6],
   ])
     fieldstone(p, pal, x, y, sw, sh);
-  p.rect(8, 2, 4, 1, ink);
   return inked(pal, p);
 }
 

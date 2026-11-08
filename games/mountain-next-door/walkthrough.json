@@ -1,220 +1,220 @@
 {
- "version": 1,
- "game": "mountain-next-door",
- "rand": {
-  "seed": 1,
-  "per": "scene"
- },
- "segments": [
-  {
-   "scene": 2,
-   "keys": "AU0ozWdNGc1nTTLN4ANLD8tnTVrNZ00PzaUCTTLNZ00="
+  "version": 1,
+  "game": "mountain-next-door",
+  "rand": {
+    "seed": 1,
+    "per": "scene"
   },
-  {
-   "scene": 3,
-   "keys": "AU0KzWdNFM0DSwXLA0gnyANNHs0DTQjNE00FzWdNHs0DTQrNA00UzWdLCssDSwXLA0g7yANNI80DTQjNFk0jzQNND80DTRTNZ0sjywNLBcsDSDHIA00ezQNIJ8gDTRnNA00IzRxNI80DTRnNA0sPywNLBcsDSEXIA00jzQNNCM0YTSPNA00ezQNLFMtnTQ=="
-  },
-  {
-   "scene": 4,
-   "keys": "AU0KzQNIO8gDTQrNZ00PzQNNZM1UTRTNA00KzQNNS80DTZYBzQNLHssDSDvIA0sPywNLmwHLJUuMAcsDTQrNZ00UzQNIO8gDTQrNZ00PzQNNPM1CTRTNA00KzQNNeM0DSxnLA0g7yANLD8sDS0HLA0tQywNLCssDTR7NA0g7yANNCs0DTRnNVk0PzQNNCs0DTSjNA0seywNIO8gDSw/LywFL"
-  },
-  {
-   "scene": 5,
-   "keys": "AU0KzWdNFM0DTS3NA00PzQM5ArkATRnNA00FzWdND80DTSPNZ0sPywNLBcsDSDHIA00PzQNNFM0DTRLNC0sKywNND80DTRI5ArkZzQNNBc0DTQrNAzkCuQBNGc0DTQXNA00KzQNNKM0DTQrNAzkCuQBNGc0DTQrNA0sAy2dNHs0DSwXLA0hjyANLHstnSx7LA0syywNLRssDSzLLA0s8ywNLKMsDSyjLA0s="
-  },
-  {
-   "scene": 6,
-   "keys": "AU03zWdNhALNA01GzQNIRcgDS0HLZ0sZywNLjAHLA0syywNLWssDSEXIA01fzQNNVc0DTW7NA01QzQNIRcgDSw/LZ0sZywNLQctnSy3LA0tBy2dLX8tnSxTLA03VAs0yS1XLA0taywNLWssDSw=="
-  },
-  {
-   "scene": 7,
-   "keys": "AU0PzWdNHs1wTRTNA00KzQNND80DTQ/NZ00KzU5ND80ZTQ/NA00KzQNNBc0DTRTNA00PzQNND80jTQ/NA00PzQNNCs0DTQXNZ00PzQNND80DTQrNEU0PzRlND80DTQrNA00KzQNND80DTSQ5ArkFzRJNBc1nTQ=="
-  },
-  {
-   "scene": 8,
-   "keys": "AU0KzWdNGc0DTV/NZ00hOQK5Lc0DTUbNA01VzWdNI81nTQ/NA00KzQNLI8sDSwXLA0g7yANLLctnSxTLA0t7OQK5PMsDS0bLNUs3ywNIO8gDSw/LA00XzQNLCMsDUDvQA00jzQNIO8gDTRnNZ00jzQNNeM01TRTNA0gxyANLCssDSw/LA00XzQNQMdADTRnNA0gxyANNNc0QTR7NA00="
-  },
-  {
-   "scene": 9,
-   "keys": "AU0PzZkBTT7NZ00tzWdNN81nTSjNZ00ozbMBTQM5Ark="
-  },
-  {
-   "scene": 10,
-   "keys": "AU1BzWdLFMsDSEXIA02lAc0DTQrNA0hFyANLKMtnS33LA0sKywNIRcgDTRnNZ00yzXhNGc0DTUHNA00KzQNIRcgDSzLLZ0tzywNLCssDSEXIA00PzWdNFM1pTRnNA00FzQdNGc0DTUvNA00KzQNIRcgDS6UBywNLCssDSEXIA01pzcsBTQ=="
-  },
-  {
-   "scene": 11,
-   "keys": "AU0KzWdNGc0DTRTNAzkCuQBNGc0DTRnNA00UzWdNCs0DTQXNGE0KzSxND81nTQrNA00ezRxNBs0mTQ7NA00KzQNNCs0DTQXNE00IzSFNGc0DTQ/NZ00jzQNN"
-  },
-  {
-   "scene": 12,
-   "keys": "AU0KzWdNGc0DTR7NA0sAywM5ArkATRTNBE0FzWdNCs0DTQrNYksAywNNBc0PTQrNJ00PzQNND80DTRzNZ00FzQNNFM0DTQrNYksAywNNBc0PTQrNJ00PzQNNFM09SwDLA00FzQ9NCs0nTQXNZ00FzQNNBc0DOQK5AE0UzQRNBc0DTRzNBE0UzQNNEs1yTQXNA00="
-  },
-  {
-   "scene": 13,
-   "keys": "AU0PzWdNHs0DTQ/NZ01azQNND83LAU0ezQNNZM0DTTzNA00ZzWdNGc0DSE/IA0soywNLggHLA0tGywNLZMsDSxnLZ0sUy2dL"
-  },
-  {
-   "scene": 14,
-   "keys": "AU0PzWdNHs0DTS3NZ01VzQM5ArkATRnNA01VzQNNWs0DTRnNA0hFyANLI8sDS1rLZ0sZywM5ArkASxnLA0taywNLZMsDSx7LA0hFyANNMs0DTUbNAzkCuQBNGc0DTTzNA01LzQM5ArkATRnNA00FzQNNPM0DTRnNA0hFyANLI8sDSzzLA0syy2dLI8sDOQK5AEsZywNLZMsDSzzLA0seywNIRcgDTTLNA01kzQM5ArkATRnNA01QzQNNS80DTRnNZ00="
-  },
-  {
-   "scene": 15,
-   "keys": "AU0PzWdNMs1nTQrNA00DOQK5FzkCuRc5ArkXOQK5FM2NCE0tzZkBTQ=="
-  }
- ],
- "chapters": [
-  {
-   "scene": 2,
-   "title": "Level 1: Next Door"
-  },
-  {
-   "scene": 3,
-   "title": "Level 2: Gate Hunt"
-  },
-  {
-   "scene": 4,
-   "title": "Level 3: Up Mossback's Back"
-  },
-  {
-   "scene": 5,
-   "title": "Level 4: Footprints in the Park"
-  },
-  {
-   "scene": 6,
-   "title": "Level 5: The Library"
-  },
-  {
-   "scene": 7,
-   "title": "Level 6: Stepping Stones"
-  },
-  {
-   "scene": 8,
-   "title": "Level 7: Nutmeg's Signposts"
-  },
-  {
-   "scene": 9,
-   "title": "Level 8: The Empty Spot"
-  },
-  {
-   "scene": 10,
-   "title": "Level 9: The Lookout"
-  },
-  {
-   "scene": 11,
-   "title": "Level 10: Windy Ridge"
-  },
-  {
-   "scene": 12,
-   "title": "Level 11: Rooftops"
-  },
-  {
-   "scene": 13,
-   "title": "Level 12: The Low Tunnel"
-  },
-  {
-   "scene": 14,
-   "title": "Level 13: The Zigzag Home"
-  },
-  {
-   "scene": 15,
-   "title": "Level 14: Summit Picnic"
-  }
- ],
- "timeline": {
-  "fps": 60,
-  "frames": 113289,
+  "segments": [
+    {
+      "scene": 2,
+      "keys": "AU0ozWdNGc1nTTLN4ANLD8tnTVrNZ00PzaUCTQ/NK00jzTVN"
+    },
+    {
+      "scene": 3,
+      "keys": "AU0KzQNNFM0DSwXLA0gnyANNHs0DTQjNE00FzQNNHs0DTQrNA00UzQNLCssDSwXLA0g7yANNI80DTQjNFk0jzQNND80DTRTNZ0sjywNLBcsDSDHIA00ezQNIJ8gDTRnNA00IzRxNI80DTRnNA0sPywNLBcsDSEXIA00jzQNNCM0YTSPNA00ezQNLFMtnTQ=="
+    },
+    {
+      "scene": 4,
+      "keys": "AU0KzQNIO8gDTQrNA00PzQNNZM02TRTNA00KzQNNS80DTZYBzQNLHssDSDvIA0sPywNLmwHLJUuMAcsDTQrNZ00UzQNIO8gDTQrNA00PzQNNPM0kTRTNA00KzQNNeM0DSxnLA0g7yANLD8sDS0HLA0tQywNLCssDTR7NA0g7yANNCs0DTRnNVk0PzQNNCs0DTSjNA0seywNIO8gDSw/LywFL"
+    },
+    {
+      "scene": 5,
+      "keys": "AU0KzQNNFM0DTS3NA00PzQM5ArkATRnNA00FzQNND80DTSPNZ0sPywNLBcsDSDHIA00PzQNNFM0DTRLNC0sKywNND80DTRI5ArkZzQNNBc0DTQrNAzkCuQBNGc0DTQXNA00KzQNNKM0DTQrNAzkCuQBNGc0DTQrNA0sAywNNHs0DSwXLA0hjyANLHssDSx7LA0syywNLRssDSzLLA0s8ywNLKMsDSyjLA0s="
+    },
+    {
+      "scene": 6,
+      "keys": "AU03zWdNhALNA01GzQNIRcgDS0HLA0sZywNLjAHLA0syywNLWssDSEXIA01fzQNNVc0DTW7NA01QzQNIRcgDSw/LA0sZywNLQctnSy3LA0tBy2dLX8sDSxTLA03VAs0yS1XLA0taywNLWssDSw=="
+    },
+    {
+      "scene": 7,
+      "keys": "AU0PzQNNHs1STRTNA00KzQNND80DTQ/NA00KzTBND80ZTQ/NA00KzQNNBc0DTRTNA00PzQNND80jTQ/NA00PzQNNCs0DTQXNZ00PzQNND80DTQrNEU0PzRlND80DTQrNA00KzQNND80DTSQ5ArkFzRJNBc0DTQ=="
+    },
+    {
+      "scene": 8,
+      "keys": "AU0KzQNNGc0DTV/NA00hOQK5Lc0DTUbNA01VzWdNI81nTQ/NA00KzQNLI8sDSwXLA0g7yANLLctnSxTLA0t7OQK5PMsDS0bLNUs3ywNIO8gDSw/LA00XzQNLCMsDUDvQA00jzQNIO8gDTRnNA00jzQNNeM01TRTNA0gxyANLCssDSw/LA00XzQNQMdADTRnNA0gxyANNNc0QTR7NA00="
+    },
+    {
+      "scene": 9,
+      "keys": "AU0PzZkBTT7NZ00tzWdNN81nTSjNZ00ozbMBTQM5Ark="
+    },
+    {
+      "scene": 10,
+      "keys": "AU1BzWdLFMsDSEXIA02lAc0DTQrNA0hFyANLKMsDS33LA0sKywNIRcgDTRnNA00yzTxNGc0DTUHNA00KzQNIRcgDSzLLZ0tzywNLCssDSEXIA00PzQNNFM1LTRnNA00FzQdNGc0DTUvNA00KzQNIRcgDS6UBywNLCssDSEXIA01pzcsBTQ=="
+    },
+    {
+      "scene": 11,
+      "keys": "AU0KzQNNGc0DTRTNAzkCuQBNGc0DTRnNA00UzQNNCs0DTQXNGE0KzSxND80DTQrNA00ezRxNBs0mTQ7NA00KzQNNCs0DTQXNE00IzSFNGc0DTQ/NZ00jzQNN"
+    },
+    {
+      "scene": 12,
+      "keys": "AU0KzQNNGc0DTR7NA0sAywM5ArkATRTNBE0FzQNNCs0DTQrNCksAywNNBc0PTQrNJ00PzQNND80DTRzNA00FzQNNFM0DTQrNNksAywNNBc0PTQrNJ00PzQNNFM09SwDLA00FzQ9NCs0nTQXNZ00FzQNNBc0DOQK5AE0UzQRNBc0DTRzNBE0UzQNNEs0OTQXNA00="
+    },
+    {
+      "scene": 13,
+      "keys": "AU0PzQNNHs0DTQ/NZ01azQNND81nTR7NA01kzQNNPM0DTRnNA00ZzQNIT8gDSyjLA0uCAcsDS0bLA0tkywNLGctnSxTLZ0s="
+    },
+    {
+      "scene": 14,
+      "keys": "AU0PzWdNHs0DTYIBzQM5ArkATRnNA01VzQNNWs0DTRnNA0hFyANLI8sDS3PLAzkCuQBLGcsDS1rLA0tkywNLHssDSEXIA00yzQNNRs0DOQK5AE0ZzQNNPM0DTUvNAzkCuQBNGc0DTQXNA008zQNNGc0DSEXIA0sjywNLPMsDS1XLAzkCuQBLGcsDS2TLA0s8ywNLHssDSEXIA00yzQNNZM0DOQK5AE0ZzQNNUM0DTUvNA00="
+    },
+    {
+      "scene": 15,
+      "keys": "AU0PzWdNMs1nTQrNA00DOQK5FzkCuRc5ArkXOQK5FM2NCE0tzZkBTQ=="
+    }
+  ],
   "chapters": [
-   {
-    "title": "Opening",
-    "frame": 0,
-    "time": 0
-   },
-   {
-    "title": "Story",
-    "frame": 1546,
-    "time": 25766.66666666711
-   },
-   {
-    "title": "Level 1: Next Door",
-    "frame": 2776,
-    "time": 46266.66666666566
-   },
-   {
-    "title": "Level 2: Gate Hunt",
-    "frame": 9643,
-    "time": 160716.66666666468
-   },
-   {
-    "title": "Level 3: Up Mossback's Back",
-    "frame": 16231,
-    "time": 270516.6666666154
-   },
-   {
-    "title": "Level 4: Footprints in the Park",
-    "frame": 26322,
-    "time": 438700.00000014453
-   },
-   {
-    "title": "Level 5: The Library",
-    "frame": 33289,
-    "time": 554816.6666668397
-   },
-   {
-    "title": "Level 6: Stepping Stones",
-    "frame": 45099,
-    "time": 751649.9999997148
-   },
-   {
-    "title": "Level 7: Nutmeg's Signposts",
-    "frame": 49973,
-    "time": 832883.333332859
-   },
-   {
-    "title": "Level 8: The Empty Spot",
-    "frame": 59289,
-    "time": 988149.9999991641
-   },
-   {
-    "title": "Level 9: The Lookout",
-    "frame": 64272,
-    "time": 1071199.9999991287
-   },
-   {
-    "title": "Level 10: Windy Ridge",
-    "frame": 74956,
-    "time": 1249266.6666666246
-   },
-   {
-    "title": "Level 11: Rooftops",
-    "frame": 79689,
-    "time": 1328150.0000003253
-   },
-   {
-    "title": "Level 12: The Low Tunnel",
-    "frame": 85822,
-    "time": 1430366.666667468
-   },
-   {
-    "title": "Level 13: The Zigzag Home",
-    "frame": 92174,
-    "time": 1536233.3333346276
-   },
-   {
-    "title": "Level 14: Summit Picnic",
-    "frame": 103210,
-    "time": 1720166.6666688174
-   },
-   {
-    "title": "Ending",
-    "frame": 109542,
-    "time": 1825700.0000026422
-   },
-   {
-    "title": "Credits",
-    "frame": 112217,
-    "time": 1870283.333336183
-   }
-  ]
- }
+    {
+      "scene": 2,
+      "title": "Level 1: Next Door"
+    },
+    {
+      "scene": 3,
+      "title": "Level 2: Gate Hunt"
+    },
+    {
+      "scene": 4,
+      "title": "Level 3: Up Mossback's Back"
+    },
+    {
+      "scene": 5,
+      "title": "Level 4: Footprints in the Park"
+    },
+    {
+      "scene": 6,
+      "title": "Level 5: The Library"
+    },
+    {
+      "scene": 7,
+      "title": "Level 6: Stepping Stones"
+    },
+    {
+      "scene": 8,
+      "title": "Level 7: Nutmeg's Signposts"
+    },
+    {
+      "scene": 9,
+      "title": "Level 8: The Empty Spot"
+    },
+    {
+      "scene": 10,
+      "title": "Level 9: The Lookout"
+    },
+    {
+      "scene": 11,
+      "title": "Level 10: Windy Ridge"
+    },
+    {
+      "scene": 12,
+      "title": "Level 11: Rooftops"
+    },
+    {
+      "scene": 13,
+      "title": "Level 12: The Low Tunnel"
+    },
+    {
+      "scene": 14,
+      "title": "Level 13: The Zigzag Home"
+    },
+    {
+      "scene": 15,
+      "title": "Level 14: Summit Picnic"
+    }
+  ],
+  "timeline": {
+    "fps": 60,
+    "frames": 105340,
+    "chapters": [
+      {
+        "title": "Opening",
+        "frame": 0,
+        "time": 0
+      },
+      {
+        "title": "Story",
+        "frame": 1546,
+        "time": 25766.66666666711
+      },
+      {
+        "title": "Level 1: Next Door",
+        "frame": 2776,
+        "time": 46266.66666666566
+      },
+      {
+        "title": "Level 2: Gate Hunt",
+        "frame": 10156,
+        "time": 169266.6666666597
+      },
+      {
+        "title": "Level 3: Up Mossback's Back",
+        "frame": 15755,
+        "time": 262583.33333327284
+      },
+      {
+        "title": "Level 4: Footprints in the Park",
+        "frame": 25525,
+        "time": 425416.66666679573
+      },
+      {
+        "title": "Level 5: The Library",
+        "frame": 31174,
+        "time": 519566.66666690534
+      },
+      {
+        "title": "Level 6: Stepping Stones",
+        "frame": 42532,
+        "time": 708866.6666664811
+      },
+      {
+        "title": "Level 7: Nutmeg's Signposts",
+        "frame": 46757,
+        "time": 779283.3333329838
+      },
+      {
+        "title": "Level 8: The Empty Spot",
+        "frame": 55085,
+        "time": 918083.3333326606
+      },
+      {
+        "title": "Level 9: The Lookout",
+        "frame": 60068,
+        "time": 1001133.3333324672
+      },
+      {
+        "title": "Level 10: Windy Ridge",
+        "frame": 70007,
+        "time": 1166783.3333329072
+      },
+      {
+        "title": "Level 11: Rooftops",
+        "frame": 74287,
+        "time": 1238116.6666665727
+      },
+      {
+        "title": "Level 12: The Low Tunnel",
+        "frame": 79203,
+        "time": 1320050.0000002875
+      },
+      {
+        "title": "Level 13: The Zigzag Home",
+        "frame": 85102,
+        "time": 1418366.666667412
+      },
+      {
+        "title": "Level 14: Summit Picnic",
+        "frame": 94781,
+        "time": 1579683.33333483
+      },
+      {
+        "title": "Ending",
+        "frame": 101113,
+        "time": 1685216.6666686547
+      },
+      {
+        "title": "Credits",
+        "frame": 103788,
+        "time": 1729800.0000021956
+      }
+    ]
+  }
 }
