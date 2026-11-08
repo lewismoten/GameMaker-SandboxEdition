@@ -12,14 +12,16 @@ export function dellAir(pal: Pal): Pixels {
   return p;
 }
 
-/** A bead of mist: a small cool pearl with a bright spot, drawn to catch the eye over the haze. */
+/** A bead of mist: a little cloud-puff of damp (three lumps on a flat base) with two sparkles beside it, so it reads as Wisp's. */
 export function bead(pal: Pal, inDell = false): Pixels {
   const p = clear(pal);
   const f = pal.r('fog');
   const w = pal.r('water');
-  p.disc(10, 11, 6, w[3]).disc(10, 11, 5, f[2]).disc(9, 9, 3, f[3]).set(8, 8, pal.c('white', 3)).set(9, 8, pal.c('white', 3));
-  p.rect(7, 15, 6, 1, w[2]);
-  p.set(16, 4, pal.c('white', 3)).set(15, 5, f[3]).set(17, 5, f[3]).set(16, 6, f[3]);
+  p.disc(6, 13, 3, f[2]).disc(11, 11, 4, f[2]).disc(15, 13, 3, f[2]).rect(4, 13, 13, 4, f[2]);
+  p.disc(10, 10, 2, f[3]).rect(5, 14, 6, 1, f[3]).rect(5, 16, 12, 1, w[3]);
+  const white = pal.c('white', 3);
+  p.set(3, 4, white).set(2, 5, f[3]).set(4, 5, f[3]).set(3, 6, f[3]);
+  p.set(16, 2, white).set(15, 3, f[3]).set(17, 3, f[3]).set(16, 4, f[3]);
   const out = inked(pal, p);
   return inDell ? dellAir(pal).blit(out, 0, 0, skyOf(pal)) : out;
 }

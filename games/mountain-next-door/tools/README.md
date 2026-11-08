@@ -1,11 +1,11 @@
 # The Mountain Moved Next Door: tools
 
-A Special (a limited-time game): fourteen levels, three of them scenes you watch unfold.
+A Special (a limited-time game): seventeen levels, three of them scenes you watch unfold.
 
 - `check.ts`: the bot plays every level without losing a life and prints how long each took it. It also fails on
-  an invisible wall (a solid block drawn as sky). `route.ts` (the first ten), `routeMore.ts` and `routeLate.ts` (the levels added later) hold each level's orders, at human timing: it reads
+  an invisible wall (a solid block drawn as sky). `route.ts` (the first ten), `routeMore.ts`, `routeLate.ts` and `routeNew.ts` (the levels added later: Gathering Mist, Excuse Me and The Ford) hold each level's orders, at human timing: it reads
   every sign, stops to watch each scene (the fog lifting, the mountain waking, the sunset, the neighbors arriving),
-  waits on the bank for the stepping stones to come up, rides the wind, and checks every blaze, acorn, gate and
+  waits on the bank for the stepping stones to come up, waits for each mist step and each yard gate, rides the wind and the river's waves, and checks every blaze, acorn, gate and
   lantern scored. `routeKit.ts` has the shared orders.
 - `play.ts`: the run itself, and how many ticks each level took.
 - `walkthrough.ts`, `gendemo.ts`: re-record the walkthrough and the title demo (level 1).
