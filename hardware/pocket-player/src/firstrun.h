@@ -70,35 +70,47 @@ inline ctl::Need playNeed() {
 }
 
 // ---- drawing -------------------------------------------------------------------------------------------------------
-// A hand at the board's edge, seen from above: the heel of the hand (a wide oval at (bx, by), off the board's corner) and the thumb
-// reaching from it to (tx, ty) on the glass, with a flat nail near the tip and a knuckle crease. Drawn as one-pixel rows (fillRect),
-// which every screen here has; outlines first, then the skin, so the thumb and hand join without a seam.
-template <class G> void hand(G& g, int bx, int by, int tx, int ty, int wid) {
+// A hand holding the board's side, seen from the front: a cuff (the sleeve), a palm, four fingers standing along the board's edge
+// (side by side, with a gap line between them) and a thumb reaching over the glass to (tx, ty), with a flat nail near the tip.
+// `side` -1 is the left hand (its palm beside the board's left edge), +1 the right. Drawn as filled shapes (outline first, then skin),
+// which every screen here has. Silhouette: a mitten with a clear thumb and four fingertips; nothing else.
+template <class G> void hand(G& g, const Box& b, int side, int tx, int ty, int wid) {
+  const int fw = wid * 4 / 10 + 1, fh = wid * 17 / 10, xe = side < 0 ? b.x0 : b.x1;
+  const int fx0 = side < 0 ? xe - 3 * fw : xe - fw;  // the fingers' left edge: one finger's width sits over the board's bezel
+  const int ptop = b.y1 - wid * 3 / 10;               // where the fingers end and the palm begins
+  const int palmH = wid * 12 / 10, cuffY = ptop + palmH - 1;
+  const int pw = 4 * fw, px0 = fx0;
+  const int cuffH = (b.y1 + wid * 2) - cuffY;
+  g.fillRect(px0 - 2, cuffY, pw + 4, cuffH, C_EDGE);  // the sleeve: a cuff in blue, a little wider than the wrist
+  g.fillRect(px0 - 1, cuffY + 1, pw + 2, cuffH - 1, C_BLUE);
+  g.fillRect(px0 - 1, cuffY + 1, pw + 2, 2, C_WHITE);  // the cuff's seam
+  const int tall[4] = {fh - wid * 3 / 10, fh, fh, fh - wid * 3 / 10};  // the two in the middle a little taller
+  g.fillRoundRect(px0 - 1, ptop - 2, pw + 2, palmH + 3, fw / 2 + 1, C_EDGE);
+  for (int i = 0; i < 4; i++) g.fillRoundRect(fx0 + i * fw - 1, ptop - tall[i] - 1, fw + 2, tall[i] + 6, fw / 2 + 1, C_EDGE);
+  g.fillRoundRect(px0, ptop - 1, pw, palmH + 1, fw / 2, C_SKIN);
+  for (int i = 0; i < 4; i++) g.fillRoundRect(fx0 + i * fw, ptop - tall[i], fw, tall[i] + 4, fw / 2, C_SKIN);
+  for (int i = 1; i < 4; i++) g.fillRect(fx0 + i * fw, ptop - tall[i] * 6 / 10, 1, tall[i] * 6 / 10 + 4, C_EDGE);  // the gaps between fingers
+  const int bx = side < 0 ? px0 + pw - fw / 2 : px0 + fw / 2, by = ptop + palmH / 3;  // the thumb: from the palm's inner side to the target
   float dx = (float)(tx - bx), dy = (float)(ty - by), d = __builtin_sqrtf(dx * dx + dy * dy);
-  float ux = d > 0 ? dx / d : 0, uy = d > 0 ? dy / d : -1;  // along the thumb, hand to tip
-  auto ell = [&](float cx, float cy, float a, float b, uint16_t c) {  // a along the thumb, b across it
-    int r = (int)(a > b ? a : b) + 1;
+  float ux = d > 0 ? dx / d : 0, uy = d > 0 ? dy / d : -1;
+  auto ell = [&](float cx, float cy, float a, float bb, uint16_t c) {  // a along the thumb, bb across it
+    int r = (int)(a > bb ? a : bb) + 1;
     for (int y = (int)cy - r; y <= (int)cy + r; y++) {
       int run0 = 1 << 30, run1 = -1;
       for (int x = (int)cx - r; x <= (int)cx + r; x++) {
-        float px = x - cx, py = y - cy, p = px * ux + py * uy, q = -px * uy + py * ux;
-        if (p * p / (a * a) + q * q / (b * b) <= 1.0f) { if (x < run0) run0 = x; run1 = x; }
+        float qx = x - cx, qy = y - cy, p = qx * ux + qy * uy, q = -qx * uy + qy * ux;
+        if (p * p / (a * a) + q * q / (bb * bb) <= 1.0f) { if (x < run0) run0 = x; run1 = x; }
       }
       if (run1 >= run0) g.fillRect(run0, y, run1 - run0 + 1, 1, c);
     }
   };
-  const float palmA = wid * 1.3f, palmB = wid * 1.6f, w2 = wid / 2.0f;
-  const float th = (d - palmA * 0.3f) / 2;                          // the thumb's half length, from inside the hand to the tip
-  const float tcx = tx - ux * th, tcy = ty - uy * th;
-  ell((float)bx, (float)by, palmA + 1, palmB + 1, C_EDGE);
+  const float w2 = wid * 0.5f, th = d / 2 + w2 * 0.3f;
+  const float tcx = (bx + tx) / 2.0f, tcy = (by + ty) / 2.0f;
   ell(tcx, tcy, th + 1, w2 + 1, C_EDGE);
-  ell((float)bx, (float)by, palmA, palmB, C_SKIN);
   ell(tcx, tcy, th, w2, C_SKIN);
-  float kx = tx - ux * th * 0.95f, ky = ty - uy * th * 0.95f;      // the knuckle crease, across the thumb
-  for (float q = -w2 * 0.55f; q <= w2 * 0.55f; q += 0.5f) g.fillRect((int)(kx - uy * q), (int)(ky + ux * q), 1, 1, C_EDGE);
-  float nx = tx - ux * w2 * 0.75f, ny = ty - uy * w2 * 0.75f;       // the nail: flat, wider than long, just behind the tip
-  ell(nx, ny, w2 * 0.42f + 1, w2 * 0.62f + 1, C_EDGE);
-  ell(nx, ny, w2 * 0.42f, w2 * 0.62f, C_NAIL);
+  float nx = tx - ux * w2 * 0.7f, ny = ty - uy * w2 * 0.7f;  // the nail: flat, just behind the tip
+  ell(nx, ny, w2 * 0.4f + 1, w2 * 0.6f + 1, C_EDGE);
+  ell(nx, ny, w2 * 0.4f, w2 * 0.6f, C_NAIL);
 }
 // A small board: the screen with the pad at one side, Jump at the other, MENU top left, and two thumbs on them.
 template <class G> void board(G& g, const Box& b, bool padRight, bool thumbs, bool labels) {
@@ -126,8 +138,8 @@ template <class G> void board(G& g, const Box& b, bool padRight, bool thumbs, bo
   g.drawRoundRect(sx0 + 3, sy0 + 3, mw, mh, 3, C_WHITE);
   if (thumbs) {  // each hand holds the board's lower corner on its side; its thumb rests on the pad or on Jump
     int wid = sh * 22 / 100;
-    hand(g, padRight ? b.x1 + wid / 3 : b.x0 - wid / 3, b.y1 + wid / 2, pcx, pcy + pr / 8, wid);
-    hand(g, padRight ? b.x0 - wid / 3 : b.x1 + wid / 3, b.y1 + wid / 2, jcx, jcy + jr / 3, wid);
+    hand(g, b, padRight ? 1 : -1, pcx, pcy + pr / 8, wid);
+    hand(g, b, padRight ? -1 : 1, jcx, jcy + jr / 3, wid);
   }
   if (labels) {
     g.setTextSize(1);
@@ -149,7 +161,8 @@ template <class G> void howTo(G& g) {
   g.fillScreen(C_BLACK);
   title(g, "How to hold it");
   Box pic = scr::SMALL ? Box{18, 42, 158, 128} : Box{26, 60, 236, 190};
-  board(g, pic, false, true, true);
+  const int hm = scr::SMALL ? 22 : 32;  // room beside the board for the two hands
+  board(g, {pic.x0 + hm, pic.y0, pic.x1 - hm, pic.y1 - (scr::SMALL ? 12 : 20)}, false, true, true);
   int tx = pic.x1 + (scr::SMALL ? 10 : 16), cols = (int)((W - tx - 6) / (6 * TEXT)), y = pic.y0;
   struct L { const char* t; uint16_t c; } lines[] = {
       {"Left thumb on the pad: slide it to walk, climb and duck.", C_WHITE},
