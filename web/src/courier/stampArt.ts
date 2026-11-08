@@ -16,6 +16,8 @@ interface Look {
   /** 12 rows of 12: '.' is the field, other letters index `colors`. */
   rows: readonly string[];
   colors: Readonly<Record<string, string>>;
+  /** A light outline drawn on the field around the pixels of these letters, so a dark picture reads at 1x. */
+  outline?: { of: string; color: string };
 }
 
 const LOOKS: Readonly<Record<StampKind, Look>> = {
@@ -72,6 +74,7 @@ const LOOKS: Readonly<Record<StampKind, Look>> = {
       '............',
     ],
     colors: { k: '#1e1a24', g: '#5a5266', y: '#e8b923' },
+    outline: { of: 'kg', color: '#f7f2fd' },
   },
   mystery: {
     field: '#7d8794',
@@ -117,6 +120,18 @@ export function stampPixels(kind: StampKind): (string | null)[][] {
       row.push(c === '.' ? look.field : look.colors[c]);
     }
     out.push(row);
+  }
+  // the outline: a field pixel beside (not diagonal to) an outlined one
+  if (look.outline) {
+    const { of, color } = look.outline;
+    const letter = (x: number, y: number) => {
+      const px = x - 4;
+      const py = y - 4;
+      return px >= 0 && px < 12 && py >= 0 && py < 12 ? look.rows[py][px] : '.';
+    };
+    for (let y = 2; y < STAMP_H - 2; y++)
+      for (let x = 2; x < STAMP_W - 2; x++)
+        if (letter(x, y) === '.' && [letter(x - 1, y), letter(x + 1, y), letter(x, y - 1), letter(x, y + 1)].some((c) => of.includes(c))) out[y][x] = color;
   }
   // a lighter band under the picture, like a stamp's value line
   for (let x = 4; x < STAMP_W - 4; x++) out[STAMP_H - 5][x] = PAPER;

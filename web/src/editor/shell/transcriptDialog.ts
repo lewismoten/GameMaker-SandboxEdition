@@ -150,8 +150,12 @@ function honorsPanel(finished: ReadonlySet<string>): HTMLElement {
   return h(
     'div',
     { class: 'tr-panel', 'data-list-area': '' },
-    h('label', { class: 'cert-name' }, 'Name on your honors (optional) ', name),
-    h('p', { class: 'meta' }, 'Kept only in this browser. It is never sent anywhere.'),
+    h(
+      'div',
+      { class: 'cert-name-row' },
+      h('label', { class: 'cert-name' }, 'Name on your honors (optional) ', name),
+      h('p', { class: 'meta' }, 'Kept only in this browser. It is never sent anywhere.'),
+    ),
     grid,
   );
 }

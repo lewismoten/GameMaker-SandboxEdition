@@ -6,7 +6,7 @@ export const STORY = wrap(`
 
 Rain falls on a little path. It is only pictures: four blocks turning into one another.
 
-First the rain falls in rows. Different starts of that loop scatter it. Then watch drops splash on the ground and rings spread over puddles.
+First the rain falls in rows. Different starts of that loop scatter it. Then watch drops splash on the ground, on a roof and into a rain barrel, and rings spread over puddles. Step in a puddle and it splashes.
 
 Go through the door and see the same path in darker storm colors.
 
@@ -21,7 +21,7 @@ export const HOWTO = wrap(`
 Nothing here hurts. Walk to the door to go on. You can stop anywhere to watch the rain.
 
 1. Falling rain: rows, then scattered drops.
-2. Splashes and puddles.
+2. Splashes, a house and puddles to step in.
 3. The same puddle map in a darker palette.
 
 |ESC for the menu.
@@ -31,6 +31,8 @@ export const CREDITS = wrap(`
 |(c) 1994 Sandbox Software
 
 New design, rain pixels, text, code and original FM music: Hermes, OpenAI Codex GPT-6.1 Sol, by OpenAI.
+
+Finer rain, the house and its rain barrel, stepping splashes and the splash sound: Claude Sonnet 5.5, by Anthropic.
 
 Shared Starter art and tools by this project's earlier contributors (see NOTICE).
 
@@ -43,7 +45,7 @@ export const WON = wrap(`
 
 Rain is a loop of pictures. Every copy of a block shares its clock. Starting neighboring cells at different pictures scatters the drops.
 
-Splashes and puddles are more loops. They do not detect drops or feet. The storm scene loads the same map and blocks with another palette.
+Splashes, the roof and the spout are more loops. A puddle's splash is touch blocks: each step swaps in the next picture, and its point plays the splash sound. The storm scene loads the same map and blocks with another palette.
 
 For more, see Twinkle, Twinkle, Waves on the Shore, Day and Night, and Under the Surface.
 

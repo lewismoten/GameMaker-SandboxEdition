@@ -31,7 +31,7 @@ export function stampFor(saveId: string | undefined, event: StampEvent, catalog:
 }
 
 /** The public catalog (secret games left out, revealed or not); empty when it cannot load. */
-async function publicCatalog(): Promise<Known[]> {
+export async function publicCatalog(): Promise<Known[]> {
   const { loadGameList } = await import('../project/files');
   const list = await loadGameList().catch(() => [] as Known[]);
   return list.filter((g) => !isOldSecret(g.id));

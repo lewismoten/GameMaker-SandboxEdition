@@ -16,8 +16,10 @@ export interface PocketLibrary {
   gamCrc32: string;
   /** Advisory route score; absent when no score file was supplied. */
   touchScore?: number;
+  /** 1 when a low score comes with narrow jump starts or landings: Details says the game needs quick, exact jumps. */
+  touchQuick?: 1;
 }
-export type PocketContext = Pick<PocketLibrary, 'uid' | 'category'> & Partial<Pick<PocketLibrary, 'course' | 'categoryLabel' | 'touchScore'>>;
+export type PocketContext = Pick<PocketLibrary, 'uid' | 'category'> & Partial<Pick<PocketLibrary, 'course' | 'categoryLabel' | 'touchScore' | 'touchQuick'>>;
 const enc = new TextEncoder();
 const byteLength = (s: string) => enc.encode(s).length;
 
@@ -60,7 +62,8 @@ export function readLibrary(bytes: Uint8Array): PocketLibrary | undefined {
       (v.course !== undefined && !Number.isSafeInteger(v.course)) ||
       (v.categoryLabel !== undefined && (typeof v.categoryLabel !== 'string' || byteLength(v.categoryLabel) > 48 || /[\x00-\x1f]/.test(v.categoryLabel))) ||
       (v.thumbnail !== undefined && v.thumbnail !== 'thumb.pth') ||
-      (v.touchScore !== undefined && (!Number.isInteger(v.touchScore) || v.touchScore < 0 || v.touchScore > 100))
+      (v.touchScore !== undefined && (!Number.isInteger(v.touchScore) || v.touchScore < 0 || v.touchScore > 100)) ||
+      (v.touchQuick !== undefined && v.touchQuick !== 1)
     )
       return;
     return v;

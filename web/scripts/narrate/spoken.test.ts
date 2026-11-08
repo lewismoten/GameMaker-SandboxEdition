@@ -1,6 +1,7 @@
 // The narration's spoken forms (spoken.ts): numbers, initialisms, names and typography, as the
 // text-to-speech is handed them.
 import { describe, expect, it } from 'vitest';
+import { applyLexicon, LEXICON } from './pronounce';
 import { numberWords, sayNumber, spokenText } from './spoken';
 
 describe('numberWords', () => {
@@ -49,8 +50,37 @@ describe('spokenText', () => {
       'the Shay needs charging. Game Maker was eighty-nine dollars on an old two-eighty-six.',
     );
     expect(spokenText('That’s drive A:. Its CD is in drive D:, 3½ inches…')).toBe("That's drive A. Its CD is in drive D, three and a half inches...");
-    expect(spokenText('TURBO BUTTON and the GRAVITAS pad, with an OPL2 chip.')).toBe('Turbo Button and the Gravitas pad, with an O P L two chip.');
+    expect(spokenText('TURBO BUTTON and the GRAVITAS pad, with an OPL2 chip.')).toBe('Turbo Button and the Gravitahss pad, with an O P L two chip.');
   });
   it('leaves typography to Kokoro, which reads it', () => expect(spokenText('I’m Gwinn… in 1994.', 'kokoro')).toBe('I’m Gwinn… in nineteen ninety-four.'));
   it('leaves plain words alone', () => expect(spokenText('Pick any tile and its game moves up top.')).toBe('Pick any tile and its game moves up top.'));
+});
+
+describe('the pronunciation lexicon', () => {
+  const lex = { Gravitas: { say: 'Gravvitass', sounds: 'GRAV-ih-tass' }, 'Ohm Sweet': { say: 'Ome Sweet', kokoro: 'Oam Sweet', sounds: 'OHM sweet' } };
+  it('swaps whole words in any case', () => {
+    expect(applyLexicon('The GRAVITAS pad, gravitas and Gravitas’s cord.', 'pocket', lex)).toBe('The Gravvitass pad, Gravvitass and Gravvitass’s cord.');
+  });
+  it('leaves words that only contain one alone', () => {
+    expect(applyLexicon('Antigravitas and Gravitaser.', 'pocket', lex)).toBe('Antigravitas and Gravitaser.');
+  });
+  it('uses a Kokoro respelling for Kokoro voices', () => {
+    expect(applyLexicon('From Ohm Sweet Ohm.', 'pocket', lex)).toBe('From Ome Sweet Ohm.');
+    expect(applyLexicon('From Ohm Sweet Ohm.', 'kokoro', lex)).toBe('From Oam Sweet Ohm.');
+  });
+  it('is applied last by spokenText, after the names in capitals', () => {
+    expect(spokenText('The GRAVITAS pad is 1994’s.')).toBe("The Gravitahss pad is nineteen ninety-four's.");
+  });
+  it('never changes the written line', () => {
+    const text = 'The GRAVITAS pad.';
+    spokenText(text);
+    expect(text).toBe('The GRAVITAS pad.');
+  });
+  it('has a respelling and a sound for every entry', () => {
+    for (const [word, p] of Object.entries(LEXICON)) {
+      expect(word.trim(), word).toBe(word);
+      expect(p.say.trim(), word).not.toBe('');
+      expect(p.sounds.trim(), word).not.toBe('');
+    }
+  });
 });

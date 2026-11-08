@@ -324,7 +324,7 @@ export class Computer extends ComputerFolders {
           await (await import('./hacks/flags')).runFlags(this, _args);
           break;
         case 'batch':
-          for (const l of ref.lines) await this.shell.execute(l);
+          for (const l of ref.lines ?? []) await this.shell.execute(l);
           break;
       }
     } catch (e) {

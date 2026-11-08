@@ -17,6 +17,14 @@ https or localhost). Nothing on the site links to it.
 - `keymap.ts`: Linux input key codes by `KeyboardEvent.code`, and the on-screen layout.
 - `heldKeys.ts`: which keys are held and by what, so a key goes down once and up once.
 - `serialLink.ts`: the Web Serial port: ordered writes, a read loop of lines.
+- `soundSwitch.ts`: the **Pi sound** switch (off by default; its click starts the browser's
+  audio). While on, the Pi's `SND` log lines (Game-Maker OS's sound events: `SND game`, `music
+  start|stop`, `voc`, `beep`, `stopall`, `end`; its `docs/play.md`) play here; off, a closed port
+  or `SND stopall` stops everything. A game the site does not have says so.
+- `soundLine.ts`: the `SND` line parser. `soundGame.ts`: the site game a Pi folder and `.GAM`
+  name. `piSound.ts`: plays the events with the engine's `AudioEngine` (OPL2/CMF music, `.VOC`
+  clips, the `.SND`'s PC speaker tunes) from the site's files, at the visitor's volume and Games
+  setting. `sound.test.ts` tests all three.
 - `protocol.test.ts`: the encoder against usb_kernel.py's lines and codes, and the held keys.
 
 Next: sending a kernel, a file or a game folder (`PUT2`, `PUTF`) as usb_kernel.py does.

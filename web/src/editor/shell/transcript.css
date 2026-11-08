@@ -1,6 +1,13 @@
 /* The Transcript dialog: tabs, the course tables and the honors grid. */
+/* One width for both tabs (no jumping), and a height cap the Honors tab sizes its pictures by, so every certificate is in view without scrolling. */
+dialog.modal:has(.tr-dialog) {
+  width: min(1320px, 96vw);
+  max-height: 96dvh;
+}
 .tr-dialog {
   min-width: min(560px, 100%);
+  /* The room for pictures: the window's height less the dialog's padding, heading, tabs and the name row. */
+  --cert-room: calc(96dvh - 232px);
 }
 .tr-tabs {
   display: flex;
@@ -28,6 +35,9 @@
 .tr-panel {
   max-height: 60vh;
   overflow-y: auto;
+}
+.tr-panel:has(.cert-grid) {
+  max-height: calc(96dvh - 150px);
 }
 .tr-overall {
   margin: 0 0 8px;
@@ -77,9 +87,20 @@
   text-align: left;
   justify-content: flex-start;
   display: flex;
+  flex-direction: row !important;
   flex-wrap: wrap;
   align-items: center;
   gap: 6px;
+}
+.cert-name-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 16px;
+  margin-bottom: 8px;
+}
+.cert-name-row .meta {
+  margin: 0;
 }
 .cert-name input {
   min-height: 28px;
@@ -134,18 +155,24 @@
 .cert-grid.with-diploma .cert-right {
   grid-column: 3;
 }
-/* Size by the window's height so the whole diploma and the side honors are in view without scrolling (the dialog stops near 73% of the window height and its heading, name box and note take about 235px). */
+/* Size by the window's height so the whole diploma and the side honors are in view without scrolling. The diploma takes the room less its caption; each side honor takes a third of the diploma's height less its caption. */
+.cert-grid.with-diploma {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr) minmax(0, 1fr);
+  container-type: inline-size;
+  /* The diploma's height: the room less its caption, or what its column's width allows at 4:3 (half the grid, less the gaps). */
+  --dip-h: min(calc(var(--cert-room) - 50px), calc(37.5cqw - 8px));
+}
 .cert-grid.with-diploma .cert-diploma .cert-canvas {
   width: auto;
   max-width: 100%;
-  max-height: max(200px, calc(73vh - 280px));
+  max-height: max(150px, var(--dip-h));
   margin-inline: auto;
 }
 .cert-grid.with-diploma .cert-left .cert-canvas,
 .cert-grid.with-diploma .cert-right .cert-canvas {
   width: auto;
   max-width: 100%;
-  max-height: max(60px, calc((73vh - 255px) / 3 - 45px));
+  max-height: max(70px, calc((var(--dip-h) - 80px) / 3));
   margin-inline: auto;
 }
 .cert-grid.with-diploma .cert-diploma figcaption {
@@ -153,7 +180,46 @@
 }
 .cert-grid.with-diploma .cert-left figcaption,
 .cert-grid.with-diploma .cert-right figcaption {
-  font-size: 11px;
+  flex-wrap: nowrap;
+  font-size: 12px;
+  line-height: 1.2;
+}
+.cert-grid.with-diploma .cert-left figcaption button,
+.cert-grid.with-diploma .cert-right figcaption button {
+  flex: none;
+}
+/* Before the diploma: seven in a plain grid, sized so the two rows fit the window too. */
+.cert-grid:not(.with-diploma) {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+.cert-grid:not(.with-diploma) .cert-canvas,
+.cert-grid:not(.with-diploma) .cert-lock {
+  width: auto;
+  max-width: 100%;
+  max-height: max(90px, calc((var(--cert-room) - 140px) / 2));
+  margin-inline: 0;
+}
+.cert-grid:not(.with-diploma) .cert-lock {
+  width: min(100%, calc(max(90px, (var(--cert-room) - 140px) / 2) * 4 / 3));
+  height: auto;
+}
+.cert-grid:not(.with-diploma) figcaption {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+@media (max-width: 760px) {
+  .cert-grid:not(.with-diploma) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .cert-grid:not(.with-diploma) .cert-canvas {
+    width: 100%;
+    max-height: none;
+  }
+  .cert-grid:not(.with-diploma) .cert-lock {
+    width: 100%;
+    height: auto;
+  }
 }
 @media (max-width: 600px) {
   .cert-grid.with-diploma {
@@ -176,8 +242,9 @@
 }
 .cert.locked .cert-lock {
   display: grid;
+  max-width: 100%;
   place-items: center;
-  aspect-ratio: 16 / 7;
+  aspect-ratio: 4 / 3;
   border: 2px dashed var(--border);
   border-radius: 4px;
   background: repeating-linear-gradient(135deg, transparent 0 10px, var(--border) 10px 11px);

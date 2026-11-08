@@ -99,6 +99,16 @@ const scores = new Map<string, number>(
         .map((g: { id: string; score: number }) => [g.id, g.score])
     : [],
 );
+// A low score that comes with narrow jump starts or landings: Details on the board says the game needs quick, exact jumps.
+const quickJumps = new Set<string>(
+  existsSync(scoresFile)
+    ? JSON.parse(readFileSync(scoresFile, 'utf8'))
+        .games.filter(
+          (g: { score?: number; reasons?: string[] }) => (g.score ?? 100) < 60 && (g.reasons ?? []).some((r) => /jump starts|landings on ledges/.test(r)),
+        )
+        .map((g: { id: string }) => g.id)
+    : [],
+);
 const cfgs = new Map<string, Uint8Array>();
 const utf8 = (t: string) => new TextEncoder().encode(t);
 
@@ -134,6 +144,7 @@ for (const id of ids) {
       gamCrc32: gamCrc32(files.get(gam)!),
       ...(thumbnail ? { thumbnail: 'thumb.pth' } : {}),
       ...(scores.has(id) ? { touchScore: scores.get(id) } : {}),
+      ...(quickJumps.has(id) ? { touchQuick: 1 as const } : {}),
     };
     writeLibrary(library); // enforce the same bounds as browser exports
     const downloadName = uniqueGmpName(gmpName(id), library.uid, usedNames);

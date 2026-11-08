@@ -9,21 +9,18 @@
 // openai-whisper's whisper command; --out <dir> (the clips), --lines <file> (as narrate.ts),
 // --fresh (hear every clip again). The report goes to stdout and /.narrate/voice-check.md; the
 // cache is /.narrate/voice-check.json, both git-ignored. Nothing is downloaded; CI never runs it.
-import { execFileSync } from 'node:child_process';
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
-import { homedir, tmpdir } from 'node:os';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { basename, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { readMono } from './audio';
 import { compareSpeech, type Hunk } from './compare';
 import { clipPath, spokenOf, textHash, type Line } from './lineIndex';
+import { DEFAULT_MODEL, transcribe } from './whisper';
 import { innerSilences, MIN_PAUSE, pausesCalledFor, tooFewPauses } from './pauses';
 
 const TOOLS = fileURLToPath(new URL('../../../.narrate', import.meta.url));
 const CACHE = join(TOOLS, 'voice-check.json');
 const REPORT = join(TOOLS, 'voice-check.md');
-const DEFAULT_MODEL = process.env.WHISPER_MODEL ?? join(homedir(), '.cache/whisper-cpp/ggml-large-v3.bin');
-const FFMPEG = process.env.FFMPEG ?? 'ffmpeg';
 
 function args(argv: string[]): Record<string, string | true> {
   const o: Record<string, string | true> = {};
@@ -42,36 +39,6 @@ async function loadLines(file?: string): Promise<(Line & { speaker?: string })[]
   const path = fileURLToPath(new URL('../../src/tour/lines', import.meta.url));
   const { tourLines } = (await import(/* @vite-ignore */ path)) as { tourLines: () => (Line & { speaker: string })[] };
   return tourLines();
-}
-
-/** Whisper's transcript of each clip (path → text), one model load for them all. */
-function transcribe(clips: string[], model: string): Map<string, string> {
-  const dir = mkdtempSync(join(tmpdir(), 'voice-check-'));
-  const out = new Map<string, string>();
-  try {
-    // whisper.cpp reads 16 kHz WAV (not Opus); openai-whisper reads anything, through ffmpeg too
-    const wavs = clips.map((clip, i) => {
-      const wav = join(dir, `${i}.wav`);
-      execFileSync(FFMPEG, ['-v', 'error', '-y', '-i', clip, '-ar', '16000', '-ac', '1', wav]);
-      return wav;
-    });
-    const cpp = model.includes('/');
-    if (cpp) {
-      if (!existsSync(model)) throw new Error(`No Whisper model at ${model} (pass --model <ggml file or name>, or set WHISPER_MODEL).`);
-      execFileSync('whisper-cli', ['-m', model, '-l', 'en', '-nt', '-np', '-otxt', ...wavs], { stdio: ['ignore', 'ignore', 'ignore'] });
-    } else {
-      execFileSync('whisper', [...wavs, '--model', model, '--language', 'en', '--fp16', 'False', '--output_format', 'txt', '--output_dir', dir], {
-        stdio: ['ignore', 'ignore', 'ignore'],
-      });
-    }
-    clips.forEach((clip, i) => {
-      const txt = cpp ? `${wavs[i]}.txt` : join(dir, `${basename(wavs[i], '.wav')}.txt`);
-      out.set(clip, existsSync(txt) ? readFileSync(txt, 'utf8').replace(/\s+/g, ' ').trim() : '');
-    });
-  } finally {
-    rmSync(dir, { recursive: true, force: true });
-  }
-  return out;
 }
 
 const words = (h: Hunk) => `“${h.said.join(' ') || '…'}” → “${h.heard.join(' ') || '(nothing)'}”`;
