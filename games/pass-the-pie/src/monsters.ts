@@ -69,7 +69,7 @@ export const STING = 2;
 /** What the loose Big Gobble takes each tick it rolls over Mr. Plume. */
 export const SQUASH = 6;
 /** The chase: how far Big Gobble rolls (blocks) and how fast (pixels a tick). */
-export const CHASE_RUN = 80;
+export const CHASE_RUN = 96;
 export const CHASE_SPEED = 2;
 
 const SOLID_ALL = SOLBOT | SOLLEF | SOLRIG | SOLTOP;
@@ -150,7 +150,8 @@ export function monsterSet(mb: Book): Monster[] {
   }
   for (let h = 0; h < STAKE_HITS; h++) set[MONS.stake + h] = mon(anim(`stake${h}_`, 6), { ...hit, newmon: h + 1 < STAKE_HITS ? MONS.stake + h + 1 : MONS.puff });
   set[MONS.gobblet] = mon(anim('gobblet', 5), { ...hit, newmon: MONS.puff, thru: 0, towards: 1, end: 160 });
-  // the loose balloon: four pieces on one path, so they roll as one face; nothing knocks it over
-  for (let i = 0; i < 4; i++) set[MONS.chaser + i] = mon(anim(`chaser${i}_`, 3), { power: 250, thru: 0, end: -1 }, [corner(0, 0, CHASE_SPEED), corner(CHASE_RUN, 0, CHASE_SPEED)]);
+  // the loose balloon: four pieces on one path, so they roll as one face; nothing knocks it over. A corner is counted
+  // from where the path began, and the world wraps at 100 blocks, so the run goes in two legs (each the short way round)
+  for (let i = 0; i < 4; i++) set[MONS.chaser + i] = mon(anim(`chaser${i}_`, 3), { power: 250, thru: 0, end: -1 }, [corner(0, 0, CHASE_SPEED), corner(CHASE_RUN / 2, 0, CHASE_SPEED), corner(CHASE_RUN, 0, CHASE_SPEED)]);
   return set;
 }

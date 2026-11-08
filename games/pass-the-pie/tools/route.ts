@@ -2,12 +2,13 @@
 // press, level by level, with human timing, every acorn a person would see taken and every fight finished.
 import type { StarterBot } from '../../kit/starter/bot';
 import * as C from '../src/levels/cord';
+import * as S from '../src/levels/chase';
 import * as R from '../src/levels/gravy';
 import * as L from '../src/levels/lawn';
 import * as P from '../src/levels/park';
 import * as Y from '../src/levels/yard';
 import { MONS } from '../src/monsters';
-import { climb, cross, door, leap, leave, meet, must, read, smash, stepUp, through } from './routeKit';
+import { climb, cross, door, leap, leave, meet, monsters, must, read, smash, stepUp, through } from './routeKit';
 
 /** Hit points the whole walkthrough may lose (a person is allowed a few bumps). */
 export const BUMP_BUDGET = 60;
@@ -208,4 +209,42 @@ export async function theCord(bot: StarterBot): Promise<void> {
   await leave(bot, bot.walk(C.AT.exit + 1, 'the exit'), 'the exit');
 }
 
-export const LEVELS = [pumpkinYard, payback, gravyRelay, windyPark, theCord];
+/** How far behind Mr. Plume the loose balloon is, in pixels. */
+function lead(bot: StarterBot): number {
+  const c = monsters(bot, [MONS.chaser + 1, MONS.chaser + 3]);
+  return c.length ? bot.px.x - Math.max(...c.map((m) => m.x)) : Infinity;
+}
+
+/** 6. Main Street (Mr. Plume): the chase. */
+export async function mainStreet(bot: StarterBot): Promise<void> {
+  const G = S.GROUND - 1;
+  const turkey = [MONS.inflatable];
+  const bag = [MONS.bag, MONS.bag + 1, MONS.bag + 2];
+  const note = (where: string) => bot.say(`${where}: lead ${lead(bot)} px`);
+  await must(bot, bot.wait(18), 'a look back');
+  await smash(bot, S.AT.turkeys[0], turkey, 1, 'the first turkey', G);
+  note('first turkey');
+  await cross(bot, S.AT.crates[0] - 1, 'the crates');
+  await leap(bot, 'right', S.AT.crates[0], 'onto a crate');
+  await leap(bot, 'right', 20, 'up the crates');
+  await leap(bot, 'right', 23, 'off the crates');
+  note('crates');
+  await smash(bot, S.AT.bags[0], bag, 1, 'a kick bag', G);
+  for (const x of [33, 34]) await smash(bot, x, turkey, 1, `the turkey at ${x}`, G);
+  note('turkey wall');
+  await cross(bot, S.AT.awning[0] - 2, 'before the awning');
+  await leap(bot, 'right', S.AT.awning[0] + 1, 'onto the awning');
+  await cross(bot, S.AT.awning[1] + 2, 'over the quick vacuum');
+  note('awning');
+  await smash(bot, S.AT.bags[1], bag, 1, 'a kick bag', G);
+  await cross(bot, S.AT.stairs[0] - 1, 'the crate stairs');
+  for (const x of S.AT.stairs) await leap(bot, 'right', x, 'up a crate');
+  await leap(bot, 'right', 61, 'off the stairs');
+  note('stairs');
+  for (const x of [62, 63]) await smash(bot, x, turkey, 1, `the turkey at ${x}`, G);
+  await smash(bot, S.AT.bags[2], bag, 1, 'the last kick bag', G);
+  note('last bag');
+  await leave(bot, bot.walk(S.AT.exit + 1, 'the end of Main Street'), 'the end of Main Street');
+}
+
+export const LEVELS = [pumpkinYard, payback, gravyRelay, windyPark, theCord, mainStreet];
