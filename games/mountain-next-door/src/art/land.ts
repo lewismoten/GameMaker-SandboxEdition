@@ -13,59 +13,94 @@ import { skyOf, type Pal } from '../../../kit/starter/palette';
 export const clear = (pal: Pal): Pixels => new Pixels(20, 20, skyOf(pal));
 export const inked = (pal: Pal, p: Pixels): Pixels => outline(p, pal.c('ink', 0), { transparent: skyOf(pal) });
 
-/** Rock: the mountain's body, speckled, with a crack or a tuft of moss. */
+/**
+ * Rock in the woodcut: flat stone cut by wavy strata (a dark gouge with a pale chip above it and a hatched shadow
+ * below), with the odd carved crack or tuft of moss. Every line is at the same height at both side edges and the
+ * bands repeat every five pixels, so any two rocks meet without a seam.
+ */
 export function rock(pal: Pal, seed: number): Pixels {
-  const p = clear(pal);
   const r = pal.r('rock');
-  speckle(p, 0, 0, 20, 20, r, 2, 1, seed, 0.3);
-  const rand = rng(seed + 7);
-  const cx = 3 + Math.floor(rand() * 12);
-  if (seed % 2) for (let y = 4; y < 14; y++) p.set(cx + (y % 3 === 0 ? 1 : 0), y, r[0]);
-  else {
-    const m = pal.r('moss');
-    p.rect(cx, 12, 5, 2, m[2])
-      .rect(cx + 1, 11, 3, 1, m[3])
-      .set(cx + 2, 10, m[4]);
+  const p = new Pixels(20, 20, r[2]);
+  const waves = 1 + (seed % 2);
+  const flip = seed % 3 === 0 ? -1 : 1;
+  for (const base of [4, 9, 14, 19]) {
+    const amp = base === 19 ? 0 : 1 + ((seed + base) % 2);
+    for (let x = 0; x < 20; x++) {
+      const y = base + Math.round(flip * amp * Math.sin((2 * Math.PI * waves * x) / 20));
+      p.set(x, y, r[0]);
+      if (y + 1 < 20 && (x + y) % 2 === 0) p.set(x, y + 1, r[1]);
+      if (y - 1 >= 0 && (x * 3 + seed * 5 + base) % 9 < 5) p.set(x, y - 1, r[4]);
+    }
   }
-  p.rect(2 + (seed % 5) * 3, 3, 3, 1, r[4]);
+  const rand = rng(seed + 7);
+  const cx = 4 + Math.floor(rand() * 10);
+  if (seed % 2) {
+    // a carved crack between two strata
+    for (let y = 5; y < 13; y++) p.set(cx + (y % 4 < 2 ? 0 : 1), y, r[0]);
+  } else {
+    // a tuft of moss in a crevice: a flat cushion, inked
+    const m = pal.r('moss');
+    const ink = pal.c('ink', 0);
+    p.rect(cx, 11, 6, 2, m[2])
+      .rect(cx + 1, 10, 4, 1, m[3])
+      .rect(cx + 1, 13, 4, 1, ink);
+    p.set(cx - 1, 12, ink)
+      .set(cx + 6, 12, ink)
+      .rect(cx + 1, 9, 4, 1, ink)
+      .set(cx, 10, ink)
+      .set(cx + 5, 10, ink);
+  }
   return p;
 }
 
-/** A slope: rock below the diagonal, sky above (`left` rises to the right). */
+/** A slope: rock below the diagonal, sky above (`left` rises to the right), edged in a heavy ink line. */
 export function slope(pal: Pal, left: boolean, seed: number): Pixels {
   const p = rock(pal, seed);
   const sky = skyOf(pal);
   const r = pal.r('rock');
+  const ink = pal.c('ink', 0);
   for (let y = 0; y < 20; y++)
     for (let x = 0; x < 20; x++) {
       const edge = left ? 19 - x : x;
       if (y < edge) p.set(x, y, sky);
-      else if (y === edge || y === edge + 1) p.set(x, y, r[4]);
+      else if (y <= edge + 1) p.set(x, y, ink);
+      else if (y === edge + 2) p.set(x, y, r[4]);
     }
   const m = pal.r('moss');
-  for (let k = 3; k < 18; k += 5) p.set(left ? 19 - k : k, k + 2, m[3]);
+  for (let k = 3; k < 18; k += 5) p.set(left ? 19 - k : k, k + 3, m[3]);
   return p;
 }
 
-/** The peak: two blocks, a cap of early snow. */
+/** The peak: two blocks, a cap of early snow cut in flat white with blue gouges and an inked hem. */
 export function peak(pal: Pal, left: boolean): Pixels {
   const p = slope(pal, left, 11);
   const w = pal.r('white');
+  const ink = pal.c('ink', 0);
+  const blue = pal.c('blue', 4);
   for (let y = 0; y < 20; y++)
     for (let x = 0; x < 20; x++) {
       const edge = left ? 19 - x : x;
-      const wave = 8 + Math.round(Math.sin(x * 0.9) * 2);
-      if (y >= edge && y < wave + (left ? 0 : 2)) p.set(x, y, y === edge || y === edge + 1 ? w[3] : w[2]);
+      const wave = 9 + Math.round(Math.sin((x * Math.PI) / 5) * 2) + (left ? 0 : 1);
+      if (y < edge + 2) continue;
+      if (y < wave) p.set(x, y, (x + y) % 6 === 0 && y > edge + 3 ? blue : w[3]);
+      else if (y === wave) p.set(x, y, ink);
     }
   return p;
 }
 
-/** A mossy ledge to stand on, over rock (`end` rounds off the side it is on). */
+/** A mossy ledge to stand on, over rock: an inked top, a flat cushion of moss with gouged tufts, scalloped drips. */
 export function ledge(pal: Pal, seed: number): Pixels {
   const p = rock(pal, seed);
   const m = pal.r('moss');
-  p.rect(0, 0, 20, 6, m[2]).rect(0, 0, 20, 2, m[4]).rect(0, 6, 20, 1, m[0]);
-  for (let x = 1; x < 20; x += 4) p.rect(x, 6, 2, 2, m[1]);
+  const ink = pal.c('ink', 0);
+  p.rect(0, 0, 20, 1, ink).rect(0, 1, 20, 2, m[4]).rect(0, 3, 20, 3, m[3]);
+  for (let x = 0; x < 20; x++) {
+    // scallops, five to a block, so they meet at every edge
+    const d = 6 + (x % 4 === 1 || x % 4 === 2 ? 2 : 1);
+    for (let y = 6; y < d; y++) p.set(x, y, m[2]);
+    p.set(x, d, ink);
+    if (x % 4 === 0) p.set(x, 4, m[1]).set(x, 3, m[1]);
+  }
   return p;
 }
 
@@ -74,15 +109,17 @@ export function gentle(pal: Pal, left: boolean, part: 1 | 2, seed = 12): Pixels 
   const p = rock(pal, seed + part);
   const sky = skyOf(pal);
   const r = pal.r('rock');
+  const ink = pal.c('ink', 0);
   for (let y = 0; y < 20; y++)
     for (let x = 0; x < 20; x++) {
       const along = left ? x : 19 - x;
       const edge = Math.round((part === 1 ? 20 : 10) - along / 2);
       if (y < edge) p.set(x, y, sky);
-      else if (y < edge + 2) p.set(x, y, r[4]);
+      else if (y < edge + 2) p.set(x, y, ink);
+      else if (y === edge + 2) p.set(x, y, r[4]);
     }
   const m = pal.r('moss');
-  p.rect(left ? 8 : 9, (part === 1 ? 16 : 6) + 1, 3, 1, m[3]);
+  p.rect(left ? 8 : 9, (part === 1 ? 16 : 6) + 2, 3, 1, m[3]);
   return p;
 }
 
@@ -183,12 +220,16 @@ export function gateHome(pal: Pal, color: GateColor): Pixels {
 export function post(pal: Pal, blazed: boolean): Pixels {
   const p = clear(pal);
   const w = pal.r('wood');
-  p.rect(7, 2, 7, 18, w[2]).rect(7, 2, 2, 18, w[3]).rect(12, 2, 2, 18, w[1]);
-  p.rect(7, 1, 7, 1, w[4]);
+  // a squared post with a chamfered cap and grain gouged down it, standing on the cell's floor
+  p.rect(6, 3, 8, 17, w[2]).rect(6, 3, 2, 17, w[3]).rect(12, 3, 2, 17, w[1]);
+  p.rect(7, 1, 6, 2, w[4]);
+  for (let y = 5; y < 19; y += 5)
+    p.set(10, y, w[0])
+      .set(10, y + 1, w[0])
+      .set(9, y + 3, w[1]);
   if (blazed) {
     const g = pal.r('gold');
     p.rect(8, 5, 5, 8, g[4]).rect(8, 5, 5, 1, g[5]).rect(12, 6, 1, 7, g[2]);
-    p.set(14, 9, g[4]).set(15, 11, g[3]);
   }
   return inked(pal, p);
 }
@@ -198,7 +239,8 @@ export function trunk(pal: Pal, blazed: boolean, marked = false): Pixels {
   const p = clear(pal);
   const w = pal.r('wood');
   p.rect(6, 0, 8, 20, w[1]).rect(7, 0, 3, 20, w[2]).rect(12, 0, 1, 20, w[0]);
-  p.rect(5, 17, 10, 3, w[1]);
+  // roots gouged into the foot, inside the trunk's width, so a trunk stands on another without a step
+  p.set(8, 17, w[0]).set(8, 18, w[0]).set(11, 18, w[0]).set(11, 19, w[0]);
   if (blazed) p.rect(7, 6, 5, 7, pal.c('gold', 4)).rect(7, 6, 5, 1, pal.c('gold', 5));
   else if (marked) p.rect(6, 5, 7, 9, pal.c('white', 3)).rect(7, 6, 5, 7, pal.c('wood', 4)).set(9, 9, pal.c('white', 3));
   else p.disc(10, 13, 2, w[0]).set(9, 12, pal.c('ink', 0));

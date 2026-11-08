@@ -45,15 +45,14 @@ function turf(pal: Pal): Pixels {
   const p = earth(pal, 3, 7);
   const m = pal.r('moss');
   const ink = pal.c('ink', 0);
+  // a straight inked top (anything standing on the turf meets it), a flat mat, a sawtooth hem cut into the earth
   for (let x = 0; x < 20; x++) {
-    const top = 1 + Math.round(Math.sin(x * 0.9) * 0.8);
-    const foot = 6 + ((x * 5) % 3 === 0 ? 1 : 0);
-    for (let y = top; y < foot; y++) p.set(x, y, y === top ? m[4] : y < 3 ? m[3] : m[2]);
-    p.set(x, top - 1, ink);
-    if (x % 5 === 2) p.set(x, foot, m[1]).set(x, foot + 1, m[0]);
+    const foot = 6 + (x % 4 < 2 ? 1 : 0);
+    for (let y = 1; y < foot; y++) p.set(x, y, y < 3 ? m[4] : m[3]);
+    p.set(x, 0, ink).set(x, foot, ink);
+    if (x % 4 === 3) p.set(x, 4, m[1]).set(x, 3, m[1]);
   }
-  for (let x = 1; x < 20; x += 6) p.set(x, 3, pal.c('orange', 3)).set(x + 1, 3, pal.c('brick', 3));
-  hatch(p, 0, 3, 20, 3, m[1], 5);
+  for (let x = 1; x < 20; x += 10) p.set(x, 2, pal.c('orange', 3)).set(x + 1, 2, pal.c('brick', 3));
   return p;
 }
 
@@ -87,7 +86,7 @@ function stoneWall(pal: Pal, seed: number): Pixels {
 }
 
 /** A trail ladder: two barked log poles with rungs lashed on with rope. */
-function logLadder(pal: Pal): Pixels {
+export function logLadder(pal: Pal): Pixels {
   const p = new Pixels(20, 20, skyOf(pal));
   const w = pal.r('wood');
   const ink = pal.c('ink', 0);
@@ -105,6 +104,21 @@ function logLadder(pal: Pal): Pixels {
     const rope = pal.c('parch', 3);
     for (const x of [5, 14]) p.rect(x, y - 1, 2, 5, rope).set(x, y + 1, pal.c('parch', 1));
   }
+  return p;
+}
+
+/** The top of a trail ladder, standing on the floor it climbs to: the poles rise from the cell's foot and end in rounded, inked caps, one rung lashed between. */
+export function logLadderTop(pal: Pal): Pixels {
+  const p = logLadder(pal);
+  const sky = skyOf(pal);
+  const w = pal.r('wood');
+  const ink = pal.c('ink', 0);
+  p.rect(0, 0, 20, 8, sky);
+  for (const x of [2, 15])
+    p.rect(x + 1, 6, 2, 2, w[3])
+      .rect(x, 7, 1, 1, ink)
+      .rect(x + 3, 7, 1, 1, ink)
+      .rect(x + 1, 5, 2, 1, ink);
   return p;
 }
 
