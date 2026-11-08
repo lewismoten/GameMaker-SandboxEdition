@@ -4,6 +4,7 @@
 // least 32 x 32 and every library, settings and pause button is found). Built twice (add -DPOCKET_CYD28 for the 2.8 inch board).
 #include <assert.h>
 #include <stdio.h>
+#include <string.h>
 #include <initializer_list>
 namespace textdatum_t { constexpr int middle_center = 4, top_left = 0; }
 #include "idle.h"
@@ -166,6 +167,26 @@ int main() {
       assert(x1 - x0 >= 32 && y1 - y0 >= 32);
       assert(prs::under(c, (x0 + x1) / 2, (y0 + y1) / 2, r) && r.x0 == x0 && r.y1 == y1);
       found++;
+    }
+    {  // Restart level and Restart game: the first tap arms (3 s), the second acts; another button, a miss or the time disarms; Resume is one tap
+      ovl::PauseArm a;
+      assert(a.tap(ovl::PA_RESUME, 100) == ovl::ARM_ACT && a.tap(ovl::PA_QUIT, 100) == ovl::ARM_ACT && a.tap(-1, 100) == ovl::ARM_NONE);
+      for (int r : {ovl::PA_RESTART_LEVEL, ovl::PA_RESTART_GAME}) {
+        assert(a.tap(r, 1000) == ovl::ARM_ARMED && a.armed == r);
+        assert(!a.expire(4000) && a.expire(4001) && a.armed == -1);  // 3 seconds, then it is plain again
+        assert(a.tap(r, 5000) == ovl::ARM_ARMED && a.tap(r, 7000) == ovl::ARM_ACT && a.armed == -1);
+        assert(a.tap(r, 8000) == ovl::ARM_ARMED && a.tap(r, 12000) == ovl::ARM_ARMED);  // too late: arms again, no restart
+        assert(a.tap(ovl::PA_HELP, 12100) == ovl::ARM_ACT && a.armed == -1);  // another button disarms
+      }
+      assert(a.tap(ovl::PA_RESTART_LEVEL, 0) == ovl::ARM_ARMED && a.tap(ovl::PA_RESTART_GAME, 10) == ovl::ARM_ARMED && a.armed == ovl::PA_RESTART_GAME);
+      assert(a.tap(ovl::PA_RESTART_LEVEL, 20) == ovl::ARM_ARMED);  // the other restart does not inherit the first tap
+      assert(a.tap(-1, 30) == ovl::ARM_NONE && a.armed == -1);
+      // the armed label always fits its button, and the plain labels are untouched
+      for (int i : {ovl::PA_RESTART_LEVEL, ovl::PA_RESTART_GAME}) {
+        const char* l = ovl::pauseLabel(i, true, ovl::PAUSE.colW, ovl::PAUSE.textSize);
+        assert(!strncmp(l, "Tap", 3) && (int)(strlen(l) * 6 * ovl::PAUSE.textSize) + 8 <= ovl::PAUSE.colW);
+        assert(!strcmp(ovl::pauseLabel(i, false, ovl::PAUSE.colW, ovl::PAUSE.textSize), ovl::pauseItem(i)));
+      }
     }
     {  // the Favorite star on the title line: at least 24 x 24, inside the box, clear of the six buttons
       int x0, y0, x1, y1;
