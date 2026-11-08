@@ -1,6 +1,7 @@
 // The way through the levels added for the hour-long cut (2.0 -> 3.0), as orders for the bot (see route.ts).
 import type { StarterBot } from '../../kit/starter/bot';
 import { ALLEY } from '../src/levels/alley';
+import { SHOP } from '../src/levels/shop';
 import { RIGGING } from '../src/levels/rigging';
 import { STEPS } from '../src/levels/steps';
 import { GROUND } from '../src/level';
@@ -90,4 +91,31 @@ export async function earlierStill(bot: StarterBot): Promise<void> {
   score(bot, from, 0, 6 * CHORE_POINTS + 25, 'Earlier Still');
   if (bot.sim.ci.hitpts !== hp) throw new Error(`Earlier Still cost hit points: ${hp} -> ${bot.sim.ci.hitpts}`);
   await leave(bot, bot.walk(RIGGING.exit + 1, 'the exit'), 'the exit');
+}
+
+/** 6. The Mirror Shop: the display, the ladder and the first hand mirror, gate one, the umbrella lift, the second hand mirror, gate two. */
+export async function mirrorShop(bot: StarterBot): Promise<void> {
+  const from = bot.sim.ci.score;
+  const hp = bot.sim.ci.hitpts;
+  await readAt(bot, 5, 'the window sign');
+  await readAt(bot, 9, 'the display sign');
+  await must(bot, bot.walk(SHOP.pillars[0] - 1, 'the display'), 'to the display');
+  await must(bot, bot.walk(SHOP.pillars[2] + 3, 'over the display'), 'over the display');
+  await climbUp(bot, SHOP.ladder, 5, 'the mezzanine ladder');
+  await must(bot, bot.walk(SHOP.key1, 'the first hand mirror'), 'to the first hand mirror');
+  await must(bot, bot.walk(SHOP.mezzanine[1] + 2, 'the end of the mezzanine'), 'off the mezzanine');
+  await readAt(bot, 36, 'the gate sign');
+  await must(bot, bot.walk(SHOP.gate1 + 2, 'through gate one'), 'through gate one');
+  await must(bot, bot.walk(SHOP.lift - 1, 'the umbrellas'), 'to the umbrellas');
+  await must(bot, bot.walk(SHOP.lift, 'into the umbrellas'), 'into the umbrellas');
+  await must(bot, bot.wait(30), 'rising');
+  await must(bot, bot.walk(SHOP.lift + 3, 'onto the shelf'), 'onto the shelf');
+  await readAt(bot, SHOP.shelf[0] + 2, 'the shelf sign');
+  await must(bot, bot.walk(SHOP.key2, 'the second hand mirror'), 'to the second hand mirror');
+  await must(bot, bot.walk(SHOP.shelf[1] + 2, 'the end of the shelf'), 'off the shelf');
+  await readAt(bot, 56, 'the second gate sign');
+  await must(bot, bot.walk(SHOP.gate2 + 2, 'through gate two'), 'through gate two');
+  score(bot, from, 0, 50, 'The Mirror Shop');
+  if (bot.sim.ci.hitpts !== hp) throw new Error(`The Mirror Shop cost hit points: ${hp} -> ${bot.sim.ci.hitpts}`);
+  await leave(bot, bot.walk(SHOP.exit + 1, 'the exit'), 'the exit');
 }

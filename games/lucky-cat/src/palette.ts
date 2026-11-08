@@ -61,6 +61,19 @@ export const LOOKS: Record<string, Record<string, Tint>> = {
       [236, 216, 150],
     ],
   },
+  // the mirror shop: a plum plate and a silver spot
+  shop: {
+    sky: [
+      [24, 10, 34],
+      [150, 110, 170],
+      [56, 26, 74],
+    ],
+    gold: [
+      [90, 100, 120],
+      [250, 252, 255],
+      [180, 196, 214],
+    ],
+  },
   // the granary stair: a green-gray plate and a lantern-orange spot
   steps: {
     sky: [

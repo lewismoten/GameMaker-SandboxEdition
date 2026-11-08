@@ -3,11 +3,11 @@
 import { StarterBot } from '../../kit/starter/bot';
 import { playLevels } from '../../kit/levelRun';
 import { ladderLane, mirrorMaze, townHall, earlierThatMorning, raceToTheFair, clockTower, knockOnWood, rascalsRoof } from './route';
-import { earlierStill, saucerAlley, thirteenSteps } from './routeMore';
+import { mirrorShop, earlierStill, saucerAlley, thirteenSteps } from './routeMore';
 import { GameSim } from './sim';
 
 export const SEED = 1;
-export const LEVELS = [ladderLane, saucerAlley, mirrorMaze, thirteenSteps, townHall, earlierThatMorning, earlierStill, raceToTheFair, clockTower, knockOnWood, rascalsRoof];
+export const LEVELS = [ladderLane, saucerAlley, mirrorMaze, thirteenSteps, townHall, mirrorShop, earlierThatMorning, earlierStill, raceToTheFair, clockTower, knockOnWood, rascalsRoof];
 
 export async function play(seed = SEED, upTo = LEVELS.length): Promise<{ sim: GameSim; bot: StarterBot }> {
   const sim = new GameSim(undefined, seed);
