@@ -9,6 +9,11 @@ import { AT3 } from '../src/level3';
 import { AT_BAKERY } from '../src/bakery';
 import { AT_CREEK } from '../src/creek';
 import { AT_HALL } from '../src/hall';
+import { AT_THAW } from '../src/thaw';
+import { AT_CLOCK } from '../src/clock';
+import { AT_RUSH } from '../src/rush';
+import { phaseAt } from '../src/traffic';
+import { cogOffset, cogSolid } from '../src/cogs';
 import { AT_TRUCK } from '../src/truck';
 import { AT_BLEACHERS } from '../src/bleachers';
 import { FUSES } from '../src/extra';
@@ -366,6 +371,135 @@ export async function millCreek(bot: StarterBot): Promise<void> {
   await must(bot, bot.walk(A.millLadder, 'the ladder'), 'back to the ladder');
   await must(bot, bot.climb('down', G - 1, 'down the mill'), 'down');
   await leave(bot, bot.walk(A.exit + 1, 'the exit'), 'the exit');
+}
+
+/** Frost Lot: across the ice with the clock, the notes and donuts on it, the tent. */
+export async function frostLot(bot: StarterBot): Promise<void> {
+  const A = AT_THAW;
+  await must(bot, bot.walk(8, 'the first placard'), 'to the placard');
+  await must(bot, bot.wait(READ), 'reading');
+  await must(bot, bot.walk(14, 'the thaw placard'), 'to the thaw placard');
+  await must(bot, bot.wait(READ), 'reading');
+  await hop(bot, A.pond[0] - 2);
+  const t0 = bot.sim.ticks;
+  await must(bot, bot.walk(A.pond[1] + 1, 'across the ice'), 'across the ice');
+  bot.say(`across the ice at tick ${bot.sim.ticks} (the first section cracks at ${A.first})`);
+  if (bot.sim.ticks > A.first + 5 * A.gap) throw new Error(`the bot is too slow for the ice: tick ${bot.sim.ticks} (${t0} at the edge)`);
+  await must(bot, bot.wait(READ / 2), 'reading the pond placard');
+  await must(bot, bot.walk(A.exit - 6, 'the tent'), 'to the tent');
+  await must(bot, bot.wait(READ), 'reading the tent placard');
+  await leave(bot, bot.walk(A.exit + 1, 'the exit'), 'the exit');
+}
+
+/** The tick (mod the 144-tick cycle) at which the clock's cog planks began, found by watching the first one go out. */
+async function cogClock(bot: StarterBot): Promise<number> {
+  const A = AT_CLOCK;
+  const book = levels.find((l) => l.file === 'clock')!.book;
+  const off = book.n('cogOff');
+  const at = () => bot.sim.w.blkmap[bot.sim.blockAt(A.bridge[0] + ORIGIN, A.tiers[0] + ORIGIN)];
+  let prev = at();
+  for (let t = 0; t < 400; t++) {
+    await must(bot, bot.wait(1), 'watching the cogs');
+    const now = at();
+    if (now === off && prev !== off) return bot.sim.ticks - 108;
+    prev = now;
+  }
+  throw new Error('the cogs never blinked');
+}
+
+/** Crosses a bridge of cogs when every plank will hold for the walk (about 5 ticks a block), going right (dir 1) or left (-1). */
+async function crossCogs(bot: StarterBot, t0: number, dir: 1 | -1, to: number): Promise<void> {
+  const A = AT_CLOCK;
+  const n = A.bridge[1] - A.bridge[0] + 1;
+  const safe = (s: number): boolean => {
+    for (let k = 0; k < n; k++) {
+      const i = dir > 0 ? k : n - 1 - k;
+      const ta = s + 5 * (k + 1);
+      if (!cogSolid(cogOffset(i), ta - 8 - t0) || !cogSolid(cogOffset(i), ta + 10 - t0)) return false;
+    }
+    return true;
+  };
+  for (let t = 0; t < 300 && !safe(bot.sim.ticks); t++) await must(bot, bot.wait(1), 'waiting for the cogs');
+  await must(bot, bot.walk(to, 'across the cogs'), 'across the cogs');
+}
+
+/** 4. Crosswalk Corner: five gates on their own lights, the barber's key up a ladder, the brass gate. */
+export async function crosswalk(bot: StarterBot): Promise<void> {
+  const A = AT_RUSH;
+  const G = A.ground;
+  const book = levels.find((l) => l.file === 'rush')!.book;
+  const stop = book.n('barrStop');
+  const at = () => bot.sim.w.blkmap[bot.sim.blockAt(A.gates[0] + ORIGIN, G - 1 + ORIGIN)];
+  // the first gate's shutting is what tells the bot where the lights are in their cycle (it shuts 120 ticks into the cycle)
+  let t0 = -1;
+  const calibrate = async (): Promise<void> => {
+    let prev = at();
+    for (let t = 0; t < 400 && t0 < 0; t++) {
+      await must(bot, bot.wait(1), 'watching the lights');
+      const now = at();
+      if (now === stop && prev !== stop) t0 = bot.sim.ticks - 120 + A.offsets[0];
+      prev = now;
+    }
+    if (t0 < 0) throw new Error('the first gate never shut');
+  };
+  await must(bot, bot.walk(8, 'the first placard'), 'to the placard');
+  await must(bot, bot.wait(READ), 'reading');
+  const through = async (i: number): Promise<void> => {
+    const x = A.gates[i];
+    await must(bot, bot.walk(x - 3, 'a stop line'), 'to a stop line');
+    if (t0 < 0) await calibrate();
+    for (let t = 0; t < 400; t++) {
+      const { phase, left } = phaseAt(A.offsets[i], bot.sim.ticks - t0);
+      if (phase === 'Go' && left >= 34 && left <= 80) break;
+      await must(bot, bot.wait(1), 'waiting at a light');
+    }
+    bot.say(`gate ${i} at tick ${bot.sim.ticks}, hit points ${bot.sim.ci.hitpts}, ${JSON.stringify(phaseAt(A.offsets[i], bot.sim.ticks - t0))}`);
+    await must(bot, bot.walk(x + 3, 'through a gate'), 'through the gate');
+  };
+  await through(0);
+  await must(bot, bot.wait(READ), 'reading the gates placard');
+  await through(1);
+  await through(2);
+  // the barber's roof and the key
+  await climbShaft(bot, A.ladder, A.roof[2] - 1, 'barber');
+  await must(bot, bot.walk(A.key, 'the brass key'), 'along the roof');
+  need(bot, 20, 1, 'the brass key');
+  await must(bot, bot.walk(A.ladder + 1, 'the ladder'), 'back along the roof');
+  await must(bot, bot.walk(A.ladder, 'the ladder'), 'onto the ladder');
+  await must(bot, bot.climb('down', G - 1, 'down the ladder'), 'down');
+  await must(bot, bot.walk(A.ladder + 2, 'the street'), 'onto the street');
+  await through(3);
+  await through(4);
+  await must(bot, bot.wait(READ), 'reading the brass placard');
+  await must(bot, bot.walk(A.brass + 1, 'the brass gate'), 'through the brass gate');
+  need(bot, 20, 0, 'the brass gate took the key');
+  await leave(bot, bot.walk(A.exit + 1, 'the exit'), 'the exit');
+}
+
+/** 11. The Clock Tower: up four tiers, a bridge of blinking cogs on each, to the door at the top. */
+export async function clockTower(bot: StarterBot): Promise<void> {
+  const A = AT_CLOCK;
+  const [t1, t2, t3] = A.tiers;
+  const [lx, rx] = A.ladders;
+  await must(bot, bot.walk(8, 'the first placard'), 'to the placard');
+  await must(bot, bot.wait(READ), 'reading');
+  await climbShaft(bot, lx, t1 - 1, 'first');
+  await must(bot, bot.walk(A.left[1], 'the end of the ledge'), 'along the ledge');
+  const t0 = await cogClock(bot);
+  await crossCogs(bot, t0, 1, A.right[0] + 1);
+  await must(bot, bot.wait(READ / 2), 'reading the cog placard');
+  await climbShaft(bot, rx, t2 - 1, 'second');
+  await must(bot, bot.walk(A.right[0], 'the end of the ledge'), 'along the ledge');
+  await crossCogs(bot, t0, -1, A.left[1] - 1);
+  await climbShaft(bot, lx, t3 - 1, 'third');
+  await must(bot, bot.walk(A.left[1], 'the end of the ledge'), 'along the ledge');
+  await crossCogs(bot, t0, 1, A.right[0] + 1);
+  await must(bot, bot.wait(READ / 2), 'reading the bell placard');
+  await climbShaft(bot, rx, A.tiers[3] - 1, 'fourth');
+  await must(bot, bot.wait(READ / 2), 'reading the door placard');
+  await must(bot, bot.walk(A.right[0], 'the end of the ledge'), 'along the ledge');
+  await crossCogs(bot, t0, -1, A.left[1] - 1);
+  await leave(bot, bot.walk(A.door, 'the clock face'), 'the clock face');
 }
 
 /** 7. Practice Hall: the shelf, the lights, the basement, the rafters. */

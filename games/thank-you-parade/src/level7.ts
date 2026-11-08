@@ -2,6 +2,7 @@
 // (five more lie at the start), the Ridgemont band stands behind the llama rescue holding up Gigi's placard, a goose,
 // a bobbing balloon and a confetti cannon are the last obstacles, and the stage steps lead up to the door that starts
 // the flyover.
+import { addRoofs } from './extra';
 import { StarterMap } from '../../kit/starter/map';
 import type { Pal } from './print';
 import { baseBook } from './base';
@@ -33,6 +34,7 @@ export const AT7 = {
 
 export function level7(pal: Pal): Level {
   const book = baseBook(pal);
+  addRoofs(book, pal);
   addStreet(book, pal);
   addFlags(book, pal);
   addCard(book, pal);
@@ -63,6 +65,7 @@ export function level7(pal: Pal): Level {
   bunting(m, 6, 84, 2);
   run(m, 'card', AT7.cards[0], AT7.cards[1], GROUND - 1);
   for (const [x, k] of AT7.vets) m.set(x, GROUND - 1, `vet${k}`);
+  for (const x of [7, 9, 24, 26, 33, 40]) m.set(x, GROUND - 1, 'donut');
   for (const x of AT7.geese) m.mon(MONS.goose, x, GROUND - 1);
   m.mon(MONS.balloon, AT7.balloon, GROUND - 4);
   for (let x = AT7.cannon[0]; x <= AT7.cannon[1]; x++) m.set(x, GROUND - 1, 'cannonA');
