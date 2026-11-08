@@ -22,7 +22,7 @@ import { cardPicture, endPicture, gif, menuPicture, paperPage, scoresPicture, sl
 import { buildMargeBlocks, buildPennyBlocks, figure } from './src/figure';
 import { finishMonsterPictures, monsterPictures, monsterSet } from './src/monsters';
 import { drumOffSong, margeSong, paradeSounds, song } from './src/sound';
-import { CARD_NOTES, CREDITS, HOWTO, LOST, STORY, WON } from './src/text';
+import { CREDITS, HOWTO, LOST, STORY, WON } from './src/text';
 import { titlePicture } from './src/title';
 
 /** Hit points and lives at the start (a goose costs 1 a moment, a cannon 10). */
@@ -35,7 +35,7 @@ const here = dirname(fileURLToPath(import.meta.url));
 const disk = new Disk(join(here, 'disk'));
 
 const { pal, levels } = buildLevels();
-const rivals = levels[6].book; // the Ridgemont band and the llama, for the cartoons
+const rivals = levels[levels.length - 1].book; // the Ridgemont band and the llama, for the cartoons
 const heroBlocks = buildPennyBlocks(pal);
 const mb = monsterPictures(pal);
 const hero = figure(pal, 'penny', 'stand');
@@ -65,7 +65,7 @@ levels.forEach((l, i) => {
   disk.put(`${l.file}.pal`, serializePalette(l.pal.pal));
   disk.put(`${l.file}.map`, serializeMap(l.map.done()));
   disk.put(`${l.file}.bbl`, serializeBlocks(l.book.finish()));
-  disk.put(`${l.file}.gif`, gif(cardPicture(l.pal, figure(l.pal, l.hero ?? 'penny', 'walk0'), i + 1, levels.length, l.title, CARD_NOTES[i]), l.pal));
+  disk.put(`${l.file}.gif`, gif(cardPicture(l.pal, figure(l.pal, l.hero ?? 'penny', 'walk0'), i + 1, levels.length, l.title, l.hint), l.pal));
   disk.put(`${l.file}.lst`, serializeSlideList([{ name: `${l.file}.gif`, pause: 3 }]));
 });
 

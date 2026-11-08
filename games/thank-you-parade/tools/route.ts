@@ -6,6 +6,7 @@ import { ORIGIN } from '../../kit/starter/map';
 import { AT1 } from '../src/level1';
 import { AT2, CARDS_AT } from '../src/level2';
 import { AT3 } from '../src/level3';
+import { AT_BAKERY } from '../src/bakery';
 import { AT4 } from '../src/level4';
 import { AT5, ZONES } from '../src/level5';
 import { AT6 } from '../src/level6';
@@ -207,8 +208,8 @@ export async function theFloat(bot: StarterBot): Promise<void> {
 }
 
 /** Waits for the cannon at (x, GROUND-1) to fire and then settle, so a zone can be crossed in its quiet. */
-async function afterSplash(bot: StarterBot, levelIdx: number, kind: string, x: number): Promise<void> {
-  const book = levels[levelIdx].book;
+async function afterSplash(bot: StarterBot, file: string, kind: string, x: number): Promise<void> {
+  const book = levels.find((l) => l.file === file)!.book;
   const fire = book.n(`${kind}!`);
   const at = () => bot.sim.w.blkmap[bot.sim.blockAt(x + ORIGIN, 9 + ORIGIN)];
   for (let t = 0; t < 120 && at() !== fire; t++) await must(bot, bot.wait(1), 'waiting for a cannon');
@@ -216,10 +217,10 @@ async function afterSplash(bot: StarterBot, levelIdx: number, kind: string, x: n
 }
 
 /** Crosses a zone of cannons just after they fire: a jump over them (through the notes above), landing just past the zone. */
-async function cross(bot: StarterBot, levelIdx: number, kind: string, a: number, b: number, leap = true): Promise<void> {
+async function cross(bot: StarterBot, file: string, kind: string, a: number, b: number, leap = true): Promise<void> {
   const hp = bot.sim.ci.hitpts;
   await must(bot, bot.walk(a - 1, 'a cannon zone'), 'to the zone');
-  await afterSplash(bot, levelIdx, kind, a);
+  await afterSplash(bot, file, kind, a);
   if (leap) await must(bot, bot.jump('right', b + 1), 'over the cannons');
   else await must(bot, bot.walk(b + 2, 'past the cannons'), 'across');
   if (bot.sim.ci.hitpts !== hp) throw new Error(`a cannon hit: hit points ${hp} -> ${bot.sim.ci.hitpts} at ${a}`);
@@ -234,7 +235,7 @@ export async function drumOff(bot: StarterBot): Promise<void> {
   await must(bot, bot.wait(READ), 'reading');
   for (const [a, b, kind] of ZONES) {
     if (a === 30 || a === 40 || a === 52 || a === 64) await must(bot, bot.wait(READ / 2), 'reading');
-    await cross(bot, 4, kind === 'A' ? 'cannonA' : 'cannonB', a, b);
+    await cross(bot, 'drumoff', kind === 'A' ? 'cannonA' : 'cannonB', a, b);
     bot.say(`crossed ${kind} at ${a}`);
   }
   bot.say(`notes: ${bot.sim.ci.score - score} points`);
@@ -258,7 +259,7 @@ export async function theRoute(bot: StarterBot): Promise<void> {
   await hop(bot, AT6.vets[3][0] + 1);
   await must(bot, bot.walk(AT6.balloon + 2, 'the balloon'), 'through the balloon');
   await must(bot, bot.walk(AT6.vets[4][0] + 1, 'a veteran'), 'to a veteran');
-  await cross(bot, 5, 'cannonA', AT6.cannon[0], AT6.cannon[1]);
+  await cross(bot, 'route', 'cannonA', AT6.cannon[0], AT6.cannon[1]);
   await must(bot, bot.walk(AT6.vets[5][0] + 1, 'a veteran'), 'to the last veteran');
   const gained = bot.sim.ci.score - score;
   if (gained < 6 * 50 + 8 * 10) throw new Error(`score ${gained}: not every veteran got a card (cards ${cardsIn} -> ${bot.sim.ci.meter[CARDS] - 1})`);
@@ -275,8 +276,45 @@ export async function stepOff(bot: StarterBot): Promise<void> {
   for (const [x] of AT7.vets.slice(1)) await must(bot, bot.walk(x + 1, 'a veteran'), 'to a veteran');
   await must(bot, bot.wait(READ), "reading Gigi's placard");
   await must(bot, bot.walk(AT7.balloon + 2, 'the balloon'), 'through the balloon');
-  await cross(bot, 6, 'cannonA', AT7.cannon[0], AT7.cannon[1]);
+  await cross(bot, 'stepoff', 'cannonA', AT7.cannon[0], AT7.cannon[1]);
   await must(bot, bot.walk(AT7.steps[0] - 2, 'the stage'), 'to the stage steps');
   await must(bot, bot.wait(READ), 'reading');
   await leave(bot, bot.walk(AT7.exit + 1, 'the stage door'), 'the stage door');
+}
+
+/** Climbs a shaft: walks to it, goes up until the hero's head is at `top`, then lands. */
+async function climbShaft(bot: StarterBot, x: number, top: number, what: string): Promise<void> {
+  await must(bot, bot.walk(x, `the ${what} ladder`), `to the ${what} ladder`);
+  await must(bot, bot.climb('up', top, `up the ${what} ladder`), `up the ${what} ladder`);
+}
+
+/** 3. Bakery Row: the three roofs, the donuts, the water tower's page, down the awnings, through the shutter. */
+export async function bakeryRow(bot: StarterBot): Promise<void> {
+  const A = AT_BAKERY;
+  const score = bot.sim.ci.score;
+  await must(bot, bot.walk(8, 'the first placard'), 'to the placard');
+  await must(bot, bot.wait(READ), 'reading');
+  const [r1, r2, r3] = A.roofs;
+  await climbShaft(bot, A.shafts[0], r1[2] - 1, 'first');
+  await must(bot, bot.walk(r1[1], 'along the first roof'), 'along the first roof');
+  await must(bot, bot.wait(READ / 2), 'reading the donuts placard');
+  await climbShaft(bot, A.shafts[1], r2[2] - 1, 'second');
+  await must(bot, bot.walk(r2[0] + 4, 'the second roof'), 'onto the second roof');
+  await hop(bot, r2[1]);
+  await climbShaft(bot, A.shafts[2], r3[2] - 1, 'third');
+  await must(bot, bot.walk(r3[1], 'along the third roof'), 'along the third roof');
+  // the water tower's lookout, and the fifth page
+  await climbShaft(bot, A.shafts[3], A.tower.row - 1, 'tower');
+  await page(bot, () => must(bot, bot.walk(A.tower.page, 'the lookout'), 'along the lookout'), 'the fifth page');
+  await must(bot, bot.wait(READ), 'reading the page');
+  await must(bot, bot.walk(A.shafts[3], 'the ladder'), 'back to the ladder');
+  await must(bot, bot.climb('down', r3[2] + 1, 'down to the awnings'), 'down');
+  // down the awnings, donut by donut
+  for (const [a, b] of A.awnings) await must(bot, bot.walk(b - 1, 'an awning'), `along the awning at ${a}`);
+  await must(bot, bot.walk(A.awnings[3][1] + 3, 'the street'), 'to the street');
+  await must(bot, bot.wait(READ / 2), 'reading');
+  await hop(bot, 78);
+  bot.say(`bakery: ${bot.sim.ci.score - score} points at tick ${bot.sim.ticks}`);
+  if (bot.sim.ticks > A.segments * A.each * 0.7) throw new Error(`the bot is too slow for the shutter: tick ${bot.sim.ticks}`);
+  await leave(bot, bot.walk(A.exit + 1, 'the back counter'), 'the back counter');
 }

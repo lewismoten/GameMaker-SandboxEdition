@@ -142,6 +142,16 @@ Out of lives. Gigi takes the front, and the Hornets march behind the street swee
 Try again: wait for the gap, count the beat, and keep a spare card for the dog.
 `);
 
+export const BAKERY_SIGNS: Defs = {
+  start: ['7:20. BAKERY ROW. THE FRONT DOOR IS LOCKED. THE ROOF IS NOT.', 6, 3],
+  clock: ['MR. OKAFOR PULLS THE SHUTTER AT 7:50. HE IS CLEAR ABOUT THIS.', 6, 3],
+  ladder: ['LADDERS GO UP. DOWN IS FASTER.', 5, 2],
+  donuts: ['TAKE DONUTS. THE BAND RUNS ON THEM.', 5, 2],
+  down: ['THE AWNINGS ARE SLOWER AND TASTIER.', 5, 2],
+  secret: ['PLAYBOOK P.5: A WATER TOWER IS A LOOKOUT.', 6, 2, 'purple'],
+  exit: EXIT,
+};
+
 /** What each level card says under its title. */
 export const CARD_NOTES = [
   '6:40 AM. The band is scattered.',
