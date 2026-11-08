@@ -4,7 +4,6 @@ import { ALLEY } from '../src/levels/alley';
 import { GLASS } from '../src/levels/glass';
 import { LAUNDRY, STAIR_W } from '../src/levels/laundry';
 import { MARKET } from '../src/levels/market';
-import { OPEN_TICKS } from '../src/meter';
 import { SHOP } from '../src/levels/shop';
 import { RIGGING } from '../src/levels/rigging';
 import { STEPS } from '../src/levels/steps';
@@ -154,8 +153,8 @@ export async function nightMarket(bot: StarterBot): Promise<void> {
   await must(bot, bot.walk(MARKET.boxes[2] + 2, 'through the last stall'), 'knocking through the last stall');
   await readAt(bot, 70, 'the last shutter sign');
   await must(bot, bot.walk(MARKET.gates[2] + 2, 'through the last shutter'), 'through the last shutter');
-  bot.say(`through the last shutter after ${bot.sim.ticks} ticks of ${OPEN_TICKS}`);
-  if (bot.sim.ticks > OPEN_TICKS * 0.9) throw new Error(`the run is too slow for the market: ${bot.sim.ticks} ticks of ${OPEN_TICKS}`);
+  bot.say(`through the last shutter after ${bot.sim.ticks} ticks of ${MARKET.openTicks}`);
+  if (bot.sim.ticks > MARKET.openTicks * 0.75) throw new Error(`the run is too slow for the market: ${bot.sim.ticks} ticks of ${MARKET.openTicks}`);
   score(bot, from, 0, 30, 'The Night Market');
   if (bot.sim.ci.hitpts !== hp) throw new Error(`The Night Market cost hit points: ${hp} -> ${bot.sim.ci.hitpts}`);
   await leave(bot, bot.walk(MARKET.exit + 1, 'the exit'), 'the exit');

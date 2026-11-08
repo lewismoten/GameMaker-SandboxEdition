@@ -21,6 +21,8 @@ export const MARKET = {
   crates: 61,
   exit: 84,
   width: 88,
+  /** Ticks the shutters stay open: 30% over the fair's, for slower hands (the bot is through the last one in about two thirds). */
+  openTicks: 1260,
 } as const;
 
 const SIGNS = {
@@ -32,7 +34,7 @@ const SIGNS = {
 
 export function levelMarket(pal: Pal): Level {
   const book = startBook(pal, ['crack', 'crate', 'town', 'wood'], []);
-  const timed = addMeter(book, pal);
+  const timed = addMeter(book, pal, MARKET.openTicks);
   const s = addSigns(book, pal, SIGNS);
   const g = room(MARKET.width, MARKET.exit);
   scenery(
