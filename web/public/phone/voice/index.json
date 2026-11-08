@@ -115,8 +115,8 @@
     "chapter": "giant",
     "where": "Hint line: press pound",
     "text": "Gwinn has offered to pay in lint.",
-    "seconds": 2.59,
-    "hash": "b4d45752a2c5",
+    "seconds": 2.41,
+    "hash": "c99a6fa305cb",
     "voice": "aa1b97eeb811"
   },
   "giant-bill-tail-2": {
@@ -539,8 +539,8 @@
     "chapter": "giant",
     "where": "Hint line: game menu, page 1",
     "text": "For Quest for the Round Tuit, press 6.",
-    "seconds": 4.46,
-    "hash": "d0117d1bc392",
+    "seconds": 3.3,
+    "hash": "6f2acd3d16ab",
     "voice": "aa1b97eeb811"
   },
   "giant-menu-1-7": {
@@ -708,7 +708,7 @@
     "where": "Hint line: Quest for the Round Tuit, welcome",
     "text": "Hints for Quest for the Round Tuit.",
     "seconds": 3.03,
-    "hash": "b08b1ab6e318",
+    "hash": "a9a1301d5765",
     "voice": "aa1b97eeb811"
   },
   "giant-sandcast-1-1": {
@@ -747,8 +747,8 @@
     "chapter": "giant",
     "where": "Hint line: Sandcastle Knight, hint 3",
     "text": "Gwinn will move for the tennis ball.",
-    "seconds": 2.41,
-    "hash": "c2f84131d5c4",
+    "seconds": 4.1,
+    "hash": "7b6754872676",
     "voice": "aa1b97eeb811"
   },
   "giant-sandcast-3-2": {
@@ -923,8 +923,8 @@
     "chapter": "giant",
     "where": "Hint line: Teddy’s Little Big Adventure, hint 3",
     "text": "Gwinn running laps with a green ball?",
-    "seconds": 2.68,
-    "hash": "5b0ec269a4da",
+    "seconds": 2.5,
+    "hash": "f2af3bfb73b2",
     "voice": "aa1b97eeb811"
   },
   "giant-teddy-3-2": {
@@ -963,16 +963,16 @@
     "chapter": "giant",
     "where": "Hint line: Teddy’s Little Bigger Adventure, hint 2",
     "text": "Found the thing Gwinn dropped?",
-    "seconds": 2.23,
-    "hash": "b4de77c29fb5",
+    "seconds": 2.15,
+    "hash": "1a02e1934114",
     "voice": "aa1b97eeb811"
   },
   "giant-teddy2-2-2": {
     "chapter": "giant",
     "where": "Hint line: Teddy’s Little Bigger Adventure, hint 2",
     "text": "Bring it to Doc Leo at THE CHEZ at the end of the stop.",
-    "seconds": 4.19,
-    "hash": "1d90c1540d7d",
+    "seconds": 3.92,
+    "hash": "d53d0430a8da",
     "voice": "aa1b97eeb811"
   },
   "giant-teddy2-2-3": {
@@ -987,8 +987,8 @@
     "chapter": "giant",
     "where": "Hint line: Teddy’s Little Bigger Adventure, hint 3",
     "text": "Gwinn’s collar went down the laundry chute.",
-    "seconds": 2.95,
-    "hash": "8e4bccdfd784",
+    "seconds": 2.59,
+    "hash": "86100b02debc",
     "voice": "aa1b97eeb811"
   },
   "giant-teddy2-3-2": {
@@ -1019,8 +1019,8 @@
     "chapter": "giant",
     "where": "Hint line: Teddy’s Little Biggest Adventure, hint 1",
     "text": "Teddy runs the errands, and on the road you drive THE CHEZ.",
-    "seconds": 5.17,
-    "hash": "6b164c2c4642",
+    "seconds": 4.81,
+    "hash": "d94fbce85966",
     "voice": "aa1b97eeb811"
   },
   "giant-teddy3-2-1": {

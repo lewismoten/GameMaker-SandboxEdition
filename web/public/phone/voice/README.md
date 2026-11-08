@@ -282,7 +282,7 @@ From `web/`: `npm run voice:phone` records new or changed lines (`-- --only <id>
 | [giant-rate-1.ogg](giant/giant-rate-1.ogg) | This game charges a fictional $1.99 per minute, never real money. | Hint line: the rate | 8.63 |
 | [giant-rate-2.ogg](giant/giant-rate-2.ogg) | Each minute is billed in full the moment it begins. | Hint line: the rate | 4.81 |
 | [giant-rate-3.ogg](giant/giant-rate-3.ogg) | Press 1 to start the meter, or 0 to leave free. | Hint line: the rate | 4.81 |
-| [giant-bill-tail-1.ogg](giant/giant-bill-tail-1.ogg) | Gwinn has offered to pay in lint. | Hint line: press pound | 2.59 |
+| [giant-bill-tail-1.ogg](giant/giant-bill-tail-1.ogg) | Gwinn has offered to pay in lint. | Hint line: press pound | 2.41 |
 | [giant-bill-tail-2.ogg](giant/giant-bill-tail-2.ogg) | The telephone company is considering it. | Hint line: press pound | 3.39 |
 | [giant-bad-key-1.ogg](giant/giant-bad-key-1.ogg) | I do not know that button yet. | Hint line: a wrong key | 3.30 |
 | [giant-bad-key-2.ogg](giant/giant-bad-key-2.ogg) | Please try again. | Hint line: a wrong key | 1.88 |
@@ -299,7 +299,7 @@ From `web/`: `npm run voice:phone` records new or changed lines (`-- --only <id>
 | [giant-menu-1-3.ogg](giant/giant-menu-1-3.ogg) | For Keep It Brief, press 3. | Hint line: game menu, page 1 | 3.83 |
 | [giant-menu-1-4.ogg](giant/giant-menu-1-4.ogg) | For Maximus, the Hundred Worlds, press 4. | Hint line: game menu, page 1 | 4.19 |
 | [giant-menu-1-5.ogg](giant/giant-menu-1-5.ogg) | For Ohm Sweet Ohm, press 5. | Hint line: game menu, page 1 | 3.21 |
-| [giant-menu-1-6.ogg](giant/giant-menu-1-6.ogg) | For Quest for the Round Tuit, press 6. | Hint line: game menu, page 1 | 4.46 |
+| [giant-menu-1-6.ogg](giant/giant-menu-1-6.ogg) | For Quest for the Round Tuit, press 6. | Hint line: game menu, page 1 | 3.30 |
 | [giant-menu-1-7.ogg](giant/giant-menu-1-7.ogg) | For Sandcastle Knight, press 7. | Hint line: game menu, page 1 | 2.77 |
 | [giant-menu-1-8.ogg](giant/giant-menu-1-8.ogg) | For Snowbound, press 8. | Hint line: game menu, page 1 | 2.77 |
 | [giant-menu-1-9.ogg](giant/giant-menu-1-9.ogg) | For more games, press 9. | Hint line: game menu, page 1 | 2.32 |
@@ -359,7 +359,7 @@ From `web/`: `npm run voice:phone` records new or changed lines (`-- --only <id>
 | [giant-sandcast-1-2.ogg](giant/giant-sandcast-1-2.ogg) | Press G to pick it up. | Hint line: Sandcastle Knight, hint 1 | 2.15 |
 | [giant-sandcast-2-1.ogg](giant/giant-sandcast-2-1.ogg) | To get into Anthill Keep, dig through the ring of dunes with the shovel. | Hint line: Sandcastle Knight, hint 2 | 5.79 |
 | [giant-sandcast-2-2.ogg](giant/giant-sandcast-2-2.ogg) | Two bites and a dune is gone. | Hint line: Sandcastle Knight, hint 2 | 2.59 |
-| [giant-sandcast-3-1.ogg](giant/giant-sandcast-3-1.ogg) | Gwinn will move for the tennis ball. | Hint line: Sandcastle Knight, hint 3 | 2.41 |
+| [giant-sandcast-3-1.ogg](giant/giant-sandcast-3-1.ogg) | Gwinn will move for the tennis ball. | Hint line: Sandcastle Knight, hint 3 | 4.10 |
 | [giant-sandcast-3-2.ogg](giant/giant-sandcast-3-2.ogg) | Walk toward her and press F, and she trots off happy to bury it. | Hint line: Sandcastle Knight, hint 3 | 6.50 |
 | [giant-snowbound-intro.ogg](giant/giant-snowbound-intro.ogg) | Hints for Snowbound. | Hint line: Snowbound, welcome | 1.88 |
 | [giant-snowbound-1.ogg](giant/giant-snowbound-1.ogg) | Press F2 to tip out the coffee can and see how much money you have. | Hint line: Snowbound, hint 1 | 5.79 |
@@ -374,19 +374,19 @@ From `web/`: `npm run voice:phone` records new or changed lines (`-- --only <id>
 | [giant-teddy-1-3.ogg](giant/giant-teddy-1-3.ogg) | The door pops open. | Hint line: Teddy’s Little Big Adventure, hint 1 | 1.79 |
 | [giant-teddy-2-1.ogg](giant/giant-teddy-2-1.ogg) | The floating balloon dogs are up high and never on the way. | Hint line: Teddy’s Little Big Adventure, hint 2 | 3.21 |
 | [giant-teddy-2-2.ogg](giant/giant-teddy-2-2.ogg) | There are three in every stop, so take the detour. | Hint line: Teddy’s Little Big Adventure, hint 2 | 3.48 |
-| [giant-teddy-3-1.ogg](giant/giant-teddy-3-1.ogg) | Gwinn running laps with a green ball? | Hint line: Teddy’s Little Big Adventure, hint 3 | 2.68 |
+| [giant-teddy-3-1.ogg](giant/giant-teddy-3-1.ogg) | Gwinn running laps with a green ball? | Hint line: Teddy’s Little Big Adventure, hint 3 | 2.50 |
 | [giant-teddy-3-2.ogg](giant/giant-teddy-3-2.ogg) | Face her and press Space as she zooms by. | Hint line: Teddy’s Little Big Adventure, hint 3 | 4.46 |
 | [giant-teddy2-intro.ogg](giant/giant-teddy2-intro.ogg) | Hints for Teddy’s Little Bigger Adventure. | Hint line: Teddy’s Little Bigger Adventure, welcome | 3.75 |
 | [giant-teddy2-1-1.ogg](giant/giant-teddy2-1-1.ogg) | That faint wispy thing in the air is a scent. | Hint line: Teddy’s Little Bigger Adventure, hint 1 | 4.19 |
 | [giant-teddy2-1-2.ogg](giant/giant-teddy2-1-2.ogg) | Stand next to it and press S to sniff. | Hint line: Teddy’s Little Bigger Adventure, hint 1 | 4.10 |
-| [giant-teddy2-2-1.ogg](giant/giant-teddy2-2-1.ogg) | Found the thing Gwinn dropped? | Hint line: Teddy’s Little Bigger Adventure, hint 2 | 2.23 |
-| [giant-teddy2-2-2.ogg](giant/giant-teddy2-2-2.ogg) | Bring it to Doc Leo at THE CHEZ at the end of the stop. | Hint line: Teddy’s Little Bigger Adventure, hint 2 | 4.19 |
+| [giant-teddy2-2-1.ogg](giant/giant-teddy2-2-1.ogg) | Found the thing Gwinn dropped? | Hint line: Teddy’s Little Bigger Adventure, hint 2 | 2.15 |
+| [giant-teddy2-2-2.ogg](giant/giant-teddy2-2-2.ogg) | Bring it to Doc Leo at THE CHEZ at the end of the stop. | Hint line: Teddy’s Little Bigger Adventure, hint 2 | 3.92 |
 | [giant-teddy2-2-3.ogg](giant/giant-teddy2-2-3.ogg) | Its door opens for it. | Hint line: Teddy’s Little Bigger Adventure, hint 2 | 2.50 |
-| [giant-teddy2-3-1.ogg](giant/giant-teddy2-3-1.ogg) | Gwinn’s collar went down the laundry chute. | Hint line: Teddy’s Little Bigger Adventure, hint 3 | 2.95 |
+| [giant-teddy2-3-1.ogg](giant/giant-teddy2-3-1.ogg) | Gwinn’s collar went down the laundry chute. | Hint line: Teddy’s Little Bigger Adventure, hint 3 | 2.59 |
 | [giant-teddy2-3-2.ogg](giant/giant-teddy2-3-2.ogg) | Drop through the hole in the laundry room floor, then sniff in the basement. | Hint line: Teddy’s Little Bigger Adventure, hint 3 | 5.97 |
 | [giant-teddy3-intro.ogg](giant/giant-teddy3-intro.ogg) | Hints for Teddy’s Little Biggest Adventure. | Hint line: Teddy’s Little Biggest Adventure, welcome | 4.28 |
 | [giant-teddy3-1-1.ogg](giant/giant-teddy3-1-1.ogg) | The card before each stop says who you are playing. | Hint line: Teddy’s Little Biggest Adventure, hint 1 | 3.48 |
-| [giant-teddy3-1-2.ogg](giant/giant-teddy3-1-2.ogg) | Teddy runs the errands, and on the road you drive THE CHEZ. | Hint line: Teddy’s Little Biggest Adventure, hint 1 | 5.17 |
+| [giant-teddy3-1-2.ogg](giant/giant-teddy3-1-2.ogg) | Teddy runs the errands, and on the road you drive THE CHEZ. | Hint line: Teddy’s Little Biggest Adventure, hint 1 | 4.81 |
 | [giant-teddy3-2-1.ogg](giant/giant-teddy3-2-1.ogg) | If a button does nothing, high five it from just beside it, facing it. | Hint line: Teddy’s Little Biggest Adventure, hint 2 | 7.12 |
 | [giant-teddy3-2-2.ogg](giant/giant-teddy3-2-2.ogg) | Then watch the spark run down the wire. | Hint line: Teddy’s Little Biggest Adventure, hint 2 | 2.68 |
 | [giant-teddy3-3-1.ogg](giant/giant-teddy3-3-1.ogg) | The keys are in the blue cabinet on the workbench. | Hint line: Teddy’s Little Biggest Adventure, hint 3 | 3.03 |
