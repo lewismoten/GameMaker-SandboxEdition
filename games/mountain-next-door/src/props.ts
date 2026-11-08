@@ -67,9 +67,10 @@ import { bead, dellAir, mistStep } from './art/meadow';
 import { binStack, sheet, yardGate } from './art/street';
 import { bankStep, swell } from './art/ford';
 import { EXCUSE_COUNTER } from './voice';
+import { deeperProps } from './propsDeeper';
 
 /** Points: a painted blaze, an acorn, a gate taken off the mountain, a gate put back home. */
-export const POINTS = { blaze: 10, acorn: 5, gate: 25, home: 25, lantern: 10, book: 10, shelved: 20, flake: 5, bead: 10, clear: 15 } as const;
+export const POINTS = { blaze: 10, acorn: 5, gate: 25, home: 25, lantern: 10, book: 10, shelved: 20, flake: 5, bead: 10, clear: 15, clue: 10 } as const;
 /** The counter a bead of mist adds to (like the mountain's, it starts at 1 so each bead chimes: build.ts). */
 export const BEAD_COUNTER = 24;
 /** Hit points a slice of pie gives back. */
@@ -104,6 +105,10 @@ export const FORD_RINGS = [
   { before: 80, after: 40, dirs: [-1, 1] },
   { before: 20, after: 100, dirs: [1, -1] },
   { before: 95, after: 25, dirs: [-1, 1] },
+  // the upper ford's three: quick (the wave leans left only for a moment), leans right first, and one in between
+  { before: 10, after: 40, dirs: [-1, 1], frame: 25 },
+  { before: 40, after: 20, dirs: [1, -1], frame: 40 },
+  { before: 30, after: 50, dirs: [-1, 1], frame: 35 },
 ] as const;
 export const SWELL_FRAME = 40;
 /** Ticks each arrow points one way before the squirrel turns it. */
@@ -364,13 +369,15 @@ export function addProps(book: Book, pal: Pal, groups: readonly string[], o: Pro
         const dir = ring.dirs[i <= 2 ? 0 : 1];
         book.add(n, swell(pal, dir, (i - 1) % 2), { grav: dir > 0 ? PULL.right : PULL.left });
       });
-      loop(names, [ring.before, SWELL_FRAME, SWELL_FRAME, SWELL_FRAME, SWELL_FRAME, ring.after]);
+      const fr = 'frame' in ring ? ring.frame : SWELL_FRAME;
+      loop(names, [ring.before, fr, fr, fr, fr, ring.after]);
     });
   }
   if (has('picnic')) {
     for (const part of ['L', 'M', 'R'] as const) book.add(`blanket${part}`, blanket(pal, part), air);
     for (const part of ['L', 'M', 'R'] as const) book.add(`mat${part}`, doormat(pal, part), air);
   }
+  timed.push(...deeperProps(book, pal, groups, { clue: POINTS.clue }, BEAD_COUNTER));
   return timed;
 }
 
