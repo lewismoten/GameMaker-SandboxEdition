@@ -12,6 +12,7 @@ import { LENS_IN, LENSROLL, RING_UP, CLOTH_GONE, SUPPER } from '../src/monsters'
 import { G, type Step } from '../src/place';
 import { SHAFT, SHAFTS, pathAt, shaftPath } from '../src/levels/ring';
 import { BAKERY, BAKERY_AT, LENSROLL_AT, STARVIEW, STARVIEW_AT } from '../src/levels/watch';
+import { MOONRISE_AT, OTHERSIDE_AT, type WatchAt } from '../src/levels/watch2';
 import { READ, climbUp, hop, leave, must, readAt, score, shownAt, watchFor } from './routeKit';
 
 /** Ticks since the scene began. */
@@ -193,7 +194,30 @@ async function bakery(bot: StarterBot): Promise<void> {
   await leave(bot, bot.walk(A.width - 3 + 0.2, 'the way on'), 'bakery: the way on');
 }
 
-const WATCH: Record<string, (bot: StarterBot) => Promise<void>> = { lensroll, starview, bakery };
+/** A scene to watch from its list of stops: read each sign, wait at each spot for the thing to happen, then go. */
+function stops(file: string, A: WatchAt): (bot: StarterBot) => Promise<void> {
+  return async (bot) => {
+    const t0 = bot.sim.w.clock;
+    for (const s of A.stops) {
+      if ('read' in s) await readAt(bot, s.x + 1, s.read);
+      else {
+        await must(bot, bot.walk(s.x, s.what), `to watch ${s.what}`);
+        if (since(bot, t0) > s.until - 60) throw new Error(`${file}: ${s.what} happened before Nell got there`);
+        await watchFor(bot, () => since(bot, t0) > s.until, s.what, 900);
+      }
+    }
+    await watchFor(bot, () => since(bot, t0) > A.open, 'the way on opening', 1200);
+    await leave(bot, bot.walk(A.width - 3 + 0.2, 'the way on'), `${file}: the way on`);
+  };
+}
+
+const WATCH: Record<string, (bot: StarterBot) => Promise<void>> = {
+  lensroll,
+  starview,
+  bakery,
+  farside: stops('farside', OTHERSIDE_AT),
+  moonrise: stops('moonrise', MOONRISE_AT),
+};
 
 /** The orders for one scene. */
 export function routeFor(l: Level): (bot: StarterBot) => Promise<void> {

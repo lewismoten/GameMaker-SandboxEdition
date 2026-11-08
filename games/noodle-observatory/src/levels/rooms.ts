@@ -17,7 +17,7 @@ import type { LookName } from '../palette';
 import { paintRoom, type Decor, type Part, type Step } from '../place';
 import type { SongName } from '../song';
 
-interface RoomSpec {
+export interface RoomSpec {
   file: string;
   title: string;
   hint: string;
@@ -38,8 +38,8 @@ interface RoomSpec {
 export const COLANDER_FROM = 5;
 
 const [C0, C1, C2, C3, C4, C5] = CHANNELS;
-const P = (icon: Icon, ch: number, pad = false): Part => ({ icon, ch, ...(pad ? { pad } : {}) });
-const at = (p: Part, x: number) => ({ ...p, x });
+export const P = (icon: Icon, ch: number, pad = false): Part => ({ icon, ch, ...(pad ? { pad } : {}) });
+export const at = (p: Part, x: number) => ({ ...p, x });
 
 /** Every icon a plan uses, with its counter (sockets, parts and pads). */
 function iconsOf(plan: Step[]): { parts: [Icon, number][]; pads: [Icon, number][] } {

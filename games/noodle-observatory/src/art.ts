@@ -19,6 +19,9 @@ const tile = (bg?: P): P => (bg ? new Pixels(20, 20).blit(bg, 0, 0) : new Pixels
 
 export type Place = 'cupboard' | 'pantry' | 'lens' | 'loft' | 'roof' | 'yard' | 'bakery';
 
+/** Each place's floor. */
+export const FLOORS = { cupboard: 'counter', pantry: 'counter', lens: 'mat', loft: 'boards', roof: 'slate', yard: 'snow', bakery: 'tiles' } as const;
+
 /** Places open to the night sky (no ceiling; the walls run up out of sight). */
 export const isOpen = (place: Place): boolean => place === 'roof' || place === 'yard';
 

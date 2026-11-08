@@ -14,6 +14,8 @@ import {
   drawer,
   facade,
   glassCupboard,
+  ground,
+  snowfall,
   joists,
   kitchenLow,
   oven,
@@ -40,8 +42,9 @@ const PROPS: Partial<Record<PlaceName, WallProp[]>> = {
 /** Ticks a frame of falling snow lasts. */
 export const SNOW_TICKS = 14;
 
-/** Adds a place's dressing pictures to its block set (after the backdrop `bg` and the wall). */
-/** `air` is the rule the place's backdrop has (the pantry's still air lets the ring roll up through it). */
+/**
+ * Adds a place's dressing pictures to its block set (after the backdrop `bg` and the wall). `air` is the rule the place's backdrop has (the pantry's still air lets the ring roll up through it).
+ */
 export function addDress(book: Book, pal: Pal, place: PlaceName, timed: Timed[], air: Rules): void {
   const bg = book.pics.get('bg')!;
   if (place === 'yard' || place === 'bakery') {
@@ -86,7 +89,6 @@ export function addDress(book: Book, pal: Pal, place: PlaceName, timed: Timed[],
     timed.push({ name: 'deep2', next: 'deep2b', ticks: TWINKLE.dim }, { name: 'deep2b', next: 'deep2', ticks: TWINKLE.bright });
   }
   if (place === 'roof') for (const k of ['cornice', 'brick', 'lit', 'dark'] as const) book.add(`fac.${k}`, facade(pal, k), { solid: SOLID });
-  }
 }
 
 /** A spot's hash: the same spot always picks the same variant. */

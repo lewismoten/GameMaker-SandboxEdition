@@ -23,6 +23,7 @@ import {
   socket,
   thing,
   tiltShelf,
+  FLOORS,
   washer,
   windowTile,
   bricks,
@@ -99,8 +100,6 @@ export interface BookOptions {
   /** Leave out the lamps, windows and the loft's and roof's props (a scene with many blocks of its own). */
   lean?: boolean;
 }
-
-const FLOORS = { cupboard: 'counter', pantry: 'counter', lens: 'mat', loft: 'boards', roof: 'slate', yard: 'snow', bakery: 'tiles' } as const;
 
 /** A new block set for a place: the Starters' blocks (kept for the shared screens), then the place's own. */
 export function startBook(pal: Pal, place: PlaceName, o: BookOptions = {}): { book: Book; timed: Timed[] } {
