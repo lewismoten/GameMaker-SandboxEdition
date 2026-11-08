@@ -10,13 +10,20 @@
 // outline on a locked socket, and fitted in place once the socket takes it.
 import { Pixels, dither } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import type { Pal } from '../../kit/starter/palette';
+import { shaded } from './dressArt';
 
 export const T = 255;
 type P = Pixels;
 
 const tile = (bg?: P): P => (bg ? new Pixels(20, 20).blit(bg, 0, 0) : new Pixels(20, 20, T));
 
-export type Place = 'cupboard' | 'pantry' | 'lens' | 'loft' | 'roof';
+export type Place = 'cupboard' | 'pantry' | 'lens' | 'loft' | 'roof' | 'yard' | 'bakery';
+
+/** Each place's floor. */
+export const FLOORS = { cupboard: 'counter', pantry: 'counter', lens: 'mat', loft: 'boards', roof: 'slate', yard: 'snow', bakery: 'tiles' } as const;
+
+/** Places open to the night sky (no ceiling; the walls run up out of sight). */
+export const isOpen = (place: Place): boolean => place === 'roof' || place === 'yard';
 
 /** A place's backdrop: `v` (0..3) varies it a little so a wall is not one stamp repeated. */
 export function backdrop(pal: Pal, place: Place, v = 0): P {
@@ -56,6 +63,33 @@ export function backdrop(pal: Pal, place: Place, v = 0): P {
     p.set((v * 7 + 3) % 20, 3, k[2])
       .set((v * 5 + 11) % 20, 10, k[2])
       .set((v * 3 + 6) % 20, 17, k[0]);
+  } else if (place === 'bakery') {
+    // warm plaster, a faint trowel texture, now and then a dusting of flour
+    const pa = r('parch');
+    p.rect(0, 0, 20, 20, pa[2]);
+    for (const [x, y] of [
+      [3, 4],
+      [14, 9],
+      [8, 16],
+    ])
+      p.rect((x + v * 5) % 18, y, 3, 1, pa[3]);
+    if (v === 1) p.set(5, 12, pa[1]).set(6, 12, pa[1]);
+    if (v === 2) p.rect(11, 3, 2, 1, pa[4]).set(12, 4, pa[4]);
+    if (v === 3) p.set(16, 15, pa[1]);
+  } else if (place === 'yard') {
+    // the night over the yards, with snow falling (the variants carry the flakes)
+    const s = r('sky');
+    p.rect(0, 0, 20, 20, s[1]);
+    const flakes: [number, number][][] = [
+      [],
+      [[5, 6]],
+      [
+        [14, 2],
+        [3, 15],
+      ],
+      [[11, 11]],
+    ];
+    for (const [x, y] of flakes[v % 4]) p.set(x, y, c('white', 3)).set(x + 1, y + 1, c('white', 1));
   } else {
     const s = r('sky');
     p.rect(0, 0, 20, 20, s[1]);
@@ -102,8 +136,24 @@ export function cabinet(pal: Pal, v = 0): P {
 }
 
 /** A countertop or terrace floor: a light top edge and a speckled face (`kind` picks the stone). */
-export function floor(pal: Pal, kind: 'counter' | 'mat' | 'boards' | 'slate'): P {
+export function floor(pal: Pal, kind: 'counter' | 'mat' | 'boards' | 'slate' | 'snow' | 'tiles'): P {
   const { c } = pal;
+  if (kind === 'snow') {
+    const d = pal.r('dirt');
+    const w = pal.r('white');
+    const p = new Pixels(20, 20, d[1]);
+    p.rect(0, 0, 20, 6, w[3]).rect(0, 6, 20, 2, w[1]).rect(0, 8, 20, 1, w[0]);
+    p.set(4, 2, w[1]).set(13, 3, w[1]).set(15, 12, d[2]).set(6, 15, d[0]);
+    return p;
+  }
+  if (kind === 'tiles') {
+    const t = pal.r('orange');
+    const p = new Pixels(20, 20, t[1]);
+    p.rect(0, 0, 20, 3, t[3]).rect(0, 3, 20, 1, t[0]);
+    for (const y of [4, 12]) p.rect(0, y + 7, 20, 1, t[0]);
+    p.rect(9, 4, 1, 7, t[0]).rect(0, 12, 1, 8, t[0]).rect(1, 5, 7, 1, t[2]);
+    return p;
+  }
   if (kind === 'mat') {
     const p = new Pixels(20, 20, c('blue', 2));
     p.rect(0, 0, 20, 3, c('blue', 4)).rect(0, 3, 20, 1, c('blue', 3));
@@ -138,7 +188,8 @@ export function floor(pal: Pal, kind: 'counter' | 'mat' | 'boards' | 'slate'): P
 
 /** A shelf plank across the top of the tile, its bracket below, over the backdrop. */
 export function shelf(pal: Pal, bg: P, look: 'wood' | 'pad' = 'wood'): P {
-  const p = tile(bg);
+  // its own shadow on the wall below the plank (none in the open night sky)
+  const p = look === 'wood' && bg.get(0, 0) !== pal.c('sky', 1) ? shaded(pal, bg, (_x, y) => (y < 5 ? 0 : 0.85 - (y - 5) / 16)) : tile(bg);
   const k = look === 'pad' ? pal.r('blue') : pal.r('cab');
   p.rect(0, 0, 20, 5, k[2]).rect(0, 0, 20, 1, k[4]).rect(0, 4, 20, 1, k[0]);
   p.rect(4, 5, 2, 4, k[1]).line(5, 8, 9, 5, k[1]);
@@ -221,7 +272,7 @@ export function washer(pal: Pal, bg: P): P {
     const a = (k / 10) * Math.PI * 2;
     p.disc(10 + Math.cos(a) * 6.2, 10 + Math.sin(a) * 6.2, 1.2, s[1]);
   }
-  p.disc(10, 10, 5.6, s[2]).disc(10, 10, 4.4, s[3]).disc(10, 10, 2.2, bg.get(10, 10));
+  p.disc(10, 10, 5.6, s[2]).disc(10, 10, 4.4, s[3]).disc(9.5, 9.5, 2.5, bg.get(10, 10));
   p.ring(10, 10, 5.6, s[0]);
   p.set(7, 7, s[4]).set(8, 6, s[4]);
   return p;
@@ -243,7 +294,14 @@ export type Icon =
   | 'rattle'
   | 'plate'
   | 'cup'
-  | 'mat';
+  | 'mat'
+  | 'lantern'
+  | 'star'
+  | 'bell'
+  | 'rollpin'
+  | 'whisk'
+  | 'scoop'
+  | 'cloth';
 
 /** Draws an icon, about 14x14, centered on (cx, cy): `fill` its main color ramp, or one ink color for an outline. */
 export function icon(pal: Pal, p: P, kind: Icon, cx: number, cy: number, how: 'thing' | 'outline'): void {
@@ -332,6 +390,73 @@ export function icon(pal: Pal, p: P, kind: Icon, cx: number, cy: number, how: 't
       p.rect(cx - 6, cy - 4, 13, 8, col(2, r('green')));
       if (!o) for (let x = cx - 5; x < cx + 7; x += 3) p.rect(x, cy - 4, 1, 8, c('green', 4));
       break;
+    case 'lantern': {
+      // a round paper lantern with ribs and a little cap and tassel
+      const rr = r('red');
+      p.rect(cx - 1, cy - 7, 3, 2, col(1)).disc(cx, cy, 5.5, o ? ink : rr[2]);
+      if (o) p.disc(cx, cy, 4.2, under);
+      else p.disc(cx - 1, cy - 1, 3, rr[3]).set(cx - 2, cy - 2, rr[4]);
+      for (const y of [-3, 0, 3]) p.rect(cx - 4, cy + y, 9, 1, o ? ink : rr[1]);
+      p.rect(cx, cy + 6, 1, 2, col(3, r('gold')));
+      break;
+    }
+    case 'star': {
+      // a folded paper star: five points
+      const g = r('gold');
+      const pts: [number, number][] = [];
+      for (let k = 0; k < 10; k++) {
+        const a = -Math.PI / 2 + (k * Math.PI) / 5;
+        const rad = k % 2 ? 2.6 : 6.4;
+        pts.push([cx + Math.cos(a) * rad, cy + 1 + Math.sin(a) * rad]);
+      }
+      pts.forEach(([x, y], k) => {
+        const [nx, ny] = pts[(k + 1) % 10];
+        p.line(Math.round(x), Math.round(y), Math.round(nx), Math.round(ny), col(1, g));
+      });
+      if (!o) p.disc(cx, cy + 1, 2.6, g[4]).set(cx - 1, cy, g[5]);
+      break;
+    }
+    case 'bell': {
+      // a paper bell on a loop of string
+      const g = r('gold');
+      p.rect(cx, cy - 7, 1, 2, col(1));
+      for (let y = -5; y <= 4; y++) {
+        const half = Math.round(2 + (y + 5) * 0.45);
+        p.rect(cx - half, cy + y, half * 2 + 1, 1, o ? ink : g[y < -2 ? 3 : 2]);
+      }
+      if (o) for (let y = -3; y <= 3; y++) p.rect(cx - Math.round(2 + (y + 5) * 0.45) + 1, cy + y, Math.round(2 + (y + 5) * 0.45) * 2 - 1, 1, under);
+      else p.rect(cx - 6, cy + 4, 13, 1, g[0]).set(cx - 1, cy - 3, g[5]);
+      p.rect(cx - 1, cy + 5, 3, 2, col(1));
+      break;
+    }
+    case 'rollpin':
+      // a rolling pin lying across, handles at both ends
+      p.rect(cx - 5, cy - 2, 11, 5, col(2, r('wood')))
+        .rect(cx - 8, cy - 1, 3, 3, col(1, r('wood')))
+        .rect(cx + 6, cy - 1, 3, 3, col(1, r('wood')));
+      if (!o) p.rect(cx - 5, cy - 2, 11, 1, c('wood', 4));
+      break;
+    case 'whisk':
+      // a balloon whisk: a handle and a bulb of wire loops
+      p.rect(cx - 1, cy + 2, 3, 6, col(2, r('red')));
+      for (const dx of [-4, -2, 0, 2, 4]) p.line(cx, cy + 2, cx + dx, cy - 6, col(3));
+      p.line(cx - 4, cy - 6, cx + 4, cy - 6, col(3));
+      break;
+    case 'scoop':
+      // a flour scoop: a deep cup with a short handle
+      p.rect(cx - 5, cy - 3, 8, 7, col(2)).rect(cx + 3, cy - 1, 5, 2, col(1));
+      if (!o) p.rect(cx - 5, cy - 3, 8, 2, c('white', 3)).rect(cx - 4, cy + 3, 6, 1, st[0]);
+      break;
+    case 'cloth':
+      // the tablecloth, folded into a square: the blue check
+      p.rect(cx - 6, cy - 5, 13, 11, o ? ink : c('white', 3));
+      if (o) p.rect(cx - 5, cy - 4, 11, 9, under);
+      else {
+        for (let x = cx - 6; x <= cx + 6; x += 4) p.rect(x, cy - 5, 2, 11, c('blue', 3));
+        for (let y = cy - 5; y <= cy + 5; y += 4) p.rect(cx - 6, y, 13, 2, c('blue', 2));
+        p.rect(cx - 6, cy + 5, 13, 1, c('blue', 0));
+      }
+      break;
   }
 }
 
@@ -375,9 +500,9 @@ export function lintel(pal: Pal, bg: P): P {
 }
 
 /** A pit's soft bottom: a cushion one row lower than the floor (a missed hop lands softly; hop out). */
-export function cushion(pal: Pal, bg: P): P {
+export function cushion(pal: Pal, bg: P, ramp: 'blue' | 'white' | 'parch' = 'blue'): P {
   const p = tile(bg);
-  const b = pal.r('blue');
+  const b = pal.r(ramp);
   p.rect(0, 8, 20, 12, b[1]).rect(1, 8, 18, 3, b[3]).rect(1, 8, 18, 1, b[4]);
   for (const x of [5, 10, 15]) p.set(x, 13, b[0]);
   return p;

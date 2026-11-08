@@ -3,7 +3,7 @@
 // roof stands the one who has been pulling the ropes: Rascal the raccoon, a friendly prankster (the story cards
 // that follow the door tell the rest). Two charms: the ribbon and the marble.
 import { StarterMap } from '../../../kit/starter/map';
-import type { Pal } from '../../../kit/starter/palette';
+import type { Pal } from '../print';
 import { CROW } from '../monsters';
 import { GROUND, addSigns, onGround, room, startBook, type Level } from '../level';
 
@@ -21,10 +21,10 @@ export const SIX = {
 } as const;
 
 const SIGNS = {
-  roof: ['ROPES AND PULLEYS ALL OVER!', 4, 3],
-  shaker: ['THE SALT SHAKER IS UP HERE', 4, 3],
+  roof: ['ROPES AND PULLEYS. SOMEONE BUILT THIS.', 4, 3],
+  shaker: ['MORE SALT. SHAKER UP THERE.', 4, 3],
   salt: ['MORE SPILLED SALT. TOSS A PINCH.', 4, 3],
-  who: ['WHO BUILT ALL THIS? SOMEONE SMALL, WITH A STRIPED TAIL...', 4, 5],
+  who: ['A CRATE OF SAUCERS. A STRIPED TAIL. THE CREAM WAS BAIT.', 4, 5],
 } as const;
 
 export function levelSix(pal: Pal): Level {
@@ -61,8 +61,8 @@ export function levelSix(pal: Pal): Level {
   m.sign(62, onGround(GROUND, s.who), s.who);
   return {
     file: 'six',
-    title: "Rascal's Roof",
-    hint: 'Who is pulling the ropes?',
+    title: 'Payback',
+    hint: 'Somebody built all this.',
     look: 'dusk',
     chr: 'hero',
     map: m,

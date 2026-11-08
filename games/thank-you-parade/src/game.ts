@@ -1,9 +1,13 @@
 // parade.gam: scene 0 is the title and menu, scene 1 the endings, then one scene a level. A level's scene lists the files it
 // loads in slots (palette, map, blocks, monsters, monster blocks, character, character blocks, sounds, song, card) and
-// links its door to the next scene. Level 2 also has a door that sends the hero back to its own start.
+// links its door to the next scene. The airstrip names Marge's character files and her song, so the hero changes for one
+// level; the drum-off has its own song. Level 2 also has a door that sends the hero back to its own start.
 import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, newGame, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { ORIGIN } from '../../kit/starter/map';
 import type { Level } from './lay';
+
+/** Each song's file. */
+export const SONG_FILE = { march: 'parade.cmf', marge: 'marge.cmf', drumoff: 'drumoff.cmf' } as const;
 
 /** The title of the game, as the .GAM names it (19 characters at most). */
 export const TITLE = 'THANK-YOU PARADE';
@@ -39,10 +43,10 @@ export function buildGame(levels: Level[]): Game {
       `${l.file}.bbl`,
       'parade.mon',
       'parade.mbl',
-      'hero.chr',
-      'hero.cbl',
+      `${l.hero ?? 'penny'}.chr`,
+      `${l.hero ?? 'penny'}.cbl`,
       'parade.snd',
-      'parade.cmf',
+      SONG_FILE[l.song ?? 'march'],
       `${l.file}.lst`,
       '',
       ...new Array(9).fill(''),

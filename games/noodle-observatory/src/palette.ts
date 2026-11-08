@@ -53,7 +53,7 @@ export function swapped(pal: Pal, tints: Record<string, Tint>): Uint8Array {
   return out;
 }
 
-export type LookName = '' | 'dusk' | 'pantry' | 'evening' | 'dark' | 'night' | 'reveal';
+export type LookName = '' | 'dusk' | 'pantry' | 'evening' | 'dark' | 'night' | 'reveal' | 'snow' | 'bakery' | 'moonrise';
 
 /** The palette bytes of a look ('' is the base). */
 export const lookOf = (pal: Pal, look: LookName): Uint8Array => (look ? swapped(pal, LOOKS[look]) : pal.pal);
@@ -112,6 +112,11 @@ const LOOKS: Record<Exclude<LookName, ''>, Record<string, Tint>> = {
   },
   // the roof: clear indigo night, cool stone, warm windows
   night: {
+    brick: [
+      [36, 20, 36],
+      [150, 96, 104],
+      [92, 48, 62],
+    ],
     sky: [
       [8, 10, 40],
       [60, 70, 140],
@@ -130,6 +135,11 @@ const LOOKS: Record<Exclude<LookName, ''>, Record<string, Tint>> = {
   },
   // the reveal: the same night, the bakery window a little warmer
   reveal: {
+    brick: [
+      [36, 20, 36],
+      [150, 96, 104],
+      [92, 48, 62],
+    ],
     sky: [
       [10, 12, 46],
       [70, 80, 150],
@@ -144,6 +154,64 @@ const LOOKS: Record<Exclude<LookName, ''>, Record<string, Tint>> = {
       [190, 100, 30],
       [255, 250, 210],
       [255, 206, 110],
+    ],
+  },
+  // the yards after the reveal: snowing, a blue-white hush, brick garden walls dark
+  snow: {
+    sky: [
+      [12, 16, 52],
+      [86, 104, 168],
+      [34, 44, 104],
+    ],
+    white: [
+      [120, 140, 196],
+      [236, 244, 255],
+    ],
+    brick: [
+      [44, 24, 40],
+      [160, 104, 110],
+      [104, 54, 66],
+    ],
+    dirt: [
+      [26, 20, 30],
+      [110, 90, 96],
+      [62, 48, 56],
+    ],
+  },
+  // the bakery at night: everything warm, flour-pale plaster, the ovens' glow
+  bakery: {
+    parch: [
+      [150, 96, 54],
+      [255, 238, 200],
+      [236, 196, 140],
+    ],
+    orange: [
+      [120, 44, 20],
+      [250, 186, 120],
+      [198, 100, 52],
+    ],
+    brick: [
+      [96, 34, 26],
+      [236, 160, 110],
+      [176, 82, 52],
+    ],
+  },
+  // the last night: the clouds gone, a silver-blue sky over the roof
+  moonrise: {
+    sky: [
+      [14, 20, 60],
+      [110, 130, 190],
+      [42, 56, 120],
+    ],
+    brick: [
+      [36, 20, 36],
+      [150, 96, 104],
+      [92, 48, 62],
+    ],
+    stone: [
+      [40, 46, 76],
+      [196, 204, 230],
+      [98, 106, 146],
     ],
   },
 };

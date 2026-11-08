@@ -1,82 +1,80 @@
-// Midnight, the black cat: LUCKY CAT's hero. She is two blocks tall like every Game-Maker character (a head
-// block over a body block), drawn facing right, with big gold eyes, a red collar and a little gold bell, white
-// paws and a tail that curls up behind her. Her fur is the game's own `fur` ramp: dark purple-black with a
-// blue-violet sheen, so she shows against the ink outline. The pose names match the Starters' hero
+// Midnight, the black cat: LUCKY CAT's hero, cut in the game's white-line woodcut (print.ts). Solid ink with a few
+// carved strokes of sheen, a paper cut line all round, tall ears, narrow gold eyes with slit pupils, and the one
+// thing anyone notices in the dark: a red collar with a gold bell. She is two blocks tall like every Game-Maker
+// character (a head block over a body block), facing right. The pose names match the Starters' hero
 // (kit/starter/hero.ts) so kit/starter/heroChar.ts walks, jumps and climbs her unchanged.
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
-import { blob } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
-import { outline } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 import { Book } from '../../kit/starter/book';
-import type { Pal } from '../../kit/starter/palette';
+import { T, cut, tri, type Pal } from './print';
 
-const T = 255;
-export type Face = 'smile' | 'blink' | 'ouch' | 'cheer' | 'oh' | 'back' | 'look';
+export type Face = 'smile' | 'blink' | 'ouch' | 'cheer' | 'oh' | 'back' | 'look' | 'smug';
 
-/** Fills the triangle a, b, c. */
-function tri(p: Pixels, a: [number, number], b: [number, number], c: [number, number], color: number): void {
-  const sign = (p1: number[], p2: number[], p3: number[]) => (p1[0] - p3[0]) * (p2[1] - p3[1]) - (p2[0] - p3[0]) * (p1[1] - p3[1]);
-  for (let y = 0; y < p.h; y++)
-    for (let x = 0; x < p.w; x++) {
-      const pt = [x + 0.5, y + 0.5];
-      const d1 = sign(pt, a, b);
-      const d2 = sign(pt, b, c);
-      const d3 = sign(pt, c, a);
-      if (!((d1 < 0 || d2 < 0 || d3 < 0) && (d1 > 0 || d2 > 0 || d3 > 0))) p.set(x, y, color);
-    }
+/** A filled ellipse. */
+export function oval(p: Pixels, cx: number, cy: number, rx: number, ry: number, color: number): Pixels {
+  for (let y = 0; y < p.h; y++) for (let x = 0; x < p.w; x++) if (((x + 0.5 - cx) / rx) ** 2 + ((y + 0.5 - cy) / ry) ** 2 <= 1) p.set(x, y, color);
+  return p;
 }
 
-/** Midnight's head: ears, face and whiskers; `back` is the back of her head (climbing). */
+/** Midnight's head: tall ears, a neat face, gold eyes; `back` is the back of her head (climbing). */
 export function head(pal: Pal, face: Face): Pixels {
-  const { c, r } = pal;
+  const { c } = pal;
   const p = new Pixels(20, 20, T);
-  const fur = r('fur');
-  const pink = r('pink');
-  const gold = r('gold');
+  const ink = c('ink', 0);
+  const sheen = c('ink', 2);
   const back = face === 'back';
-  // ears first, so the head covers their roots
-  tri(p, [3, 1], [2, 9], [9, 8], fur[2]);
-  tri(p, [15, 1], [10, 8], [17, 9], fur[2]);
-  if (!back) {
-    tri(p, [4, 3], [4, 8], [7, 8], pink[2]);
-    tri(p, [14, 3], [12, 8], [15, 8], pink[2]);
-  }
-  blob(p, 10, 12, 8.4, 6.8, fur, 0, 4);
+  // facing right in three-quarter view: the far ear set back, the muzzle pushed forward (a face-on head would
+  // slide sideways when she walks)
   if (back) {
-    p.rect(8, 6, 4, 6, fur[2]);
-    return outline(p, c('ink', 0), { transparent: T });
+    tri(p, [4, 1], [3, 11], [10, 9], ink);
+    tri(p, [16, 1], [10, 9], [17, 11], ink);
+  } else {
+    tri(p, [5, 3], [3, 11], [10, 9], ink);
+    tri(p, [16, 1], [10, 9], [17, 11], ink);
+    p.line(6, 6, 6, 9, c('ink', 3)).line(15, 4, 15, 9, c('ink', 3));
   }
-  // eyes: big and gold with a slit pupil (a glad curve when she cheers, a line when she blinks)
+  oval(p, 10, 13, 7.2, 5.8, ink);
+  oval(p, back ? 10 : 13, 16.5, back ? 4.5 : 5.2, 3, ink);
+  // carved sheen: a stroke over the brow
+  p.rect(6, 9, 4, 1, sheen).rect(12, 9, 2, 1, sheen);
+  if (back) {
+    p.rect(7, 11, 6, 1, sheen).rect(8, 14, 4, 1, sheen);
+    return p;
+  }
+  const gold = c('gold', 3);
+  const lid = c('gold', 1);
   const eyeAt = (x: number, dx = 0) => {
     if (face === 'blink' || face === 'cheer') {
-      // a closed, upturned eye
-      p.set(x, 12, gold[3])
-        .set(x + 1, 11, gold[4])
-        .set(x + 2, 11, gold[4])
-        .set(x + 3, 12, gold[3]);
+      p.rect(x, 13, 4, 1, gold)
+        .set(x, 12, gold)
+        .set(x + 3, 12, gold);
+      return;
+    }
+    if (face === 'smug') {
+      // half-lidded: she has seen this before
+      p.rect(x, 13, 4, 1, gold)
+        .rect(x, 12, 4, 1, lid)
+        .set(x + 1 + dx, 13, ink);
       return;
     }
     const big = face === 'oh' || face === 'ouch' ? 1 : 0;
-    p.rect(x, 10 - big, 4, 5 + big, gold[3]).rect(x + 1, 10 - big, 2, 5 + big, gold[4]);
-    p.rect(x, 10 - big, 4, 1, gold[1]);
-    const px = x + 1 + dx;
-    p.rect(px, 11 - big, 1, 3 + big, c('ink', 0)).rect(px + 1, 11 - big, 1, 3 + big, c('ink', 0));
-    p.set(x + 3, 11 - big, c('white', 3));
+    p.rect(x, 11 - big, 4, 3 + big, gold).rect(x, 11 - big, 4, 1, lid);
+    p.rect(x + 1 + dx, 11 - big, 1, 3 + big, ink);
+    p.set(x + 3, 12, c('paper', 4));
   };
   const look = face === 'look' ? -1 : 0;
-  eyeAt(5 + look);
-  eyeAt(12 + look);
-  // nose and mouth
-  p.rect(10, 15, 2, 1, pink[3]).set(10, 16, pink[1]);
-  if (face === 'oh') p.rect(10, 17, 2, 2, c('ink', 0)).set(10, 17, pink[3]);
-  else if (face === 'ouch') p.rect(9, 17, 4, 1, c('ink', 0));
-  else {
-    p.set(8, 17, c('ink', 0)).set(9, 18, c('ink', 0)).set(10, 17, c('ink', 0));
-    p.set(11, 17, c('ink', 0)).set(12, 18, c('ink', 0)).set(13, 17, c('ink', 0));
-  }
-  // whiskers
-  const w = c('white', 3);
-  p.line(1, 14, 3, 15, w).line(1, 17, 3, 16, w).line(17, 15, 18, 14, w).line(17, 16, 18, 17, w);
-  return outline(p, c('ink', 0), { transparent: T });
+  eyeAt(6 + look);
+  eyeAt(13 + look);
+  // nose and mouth, cut in paper, toward the front of the muzzle
+  p.set(15, 16, c('red', 1)).set(16, 16, c('red', 1));
+  const line = c('paper', 1);
+  if (face === 'oh') p.rect(14, 18, 2, 1, c('red', 1));
+  else if (face === 'ouch') p.rect(13, 18, 4, 1, line);
+  else if (face === 'smug') p.set(13, 18, line).set(14, 18, line).set(16, 17, line);
+  else p.set(13, 17, line).set(14, 18, line).set(15, 18, line).set(16, 17, line);
+  // whiskers, cut through to the paper: long on the near side, a stub on the far side
+  const w = c('paper', 3);
+  p.line(2, 15, 4, 16, w).line(17, 16, 19, 15, w).line(17, 17, 19, 18, w);
+  return p;
 }
 
 export interface Legs {
@@ -85,52 +83,48 @@ export interface Legs {
 }
 export type Arms = 'down' | 'out' | 'high' | 'swingA' | 'swingB' | 'flail' | 'upA' | 'upB';
 
-/** Midnight's body: a small torso with a collar and bell, arms, a curling tail and white-toed feet. */
+/** Midnight's body: a slim torso with the collar and bell, thin arms, a long tail that rises behind and narrow feet. */
 export function body(pal: Pal, o: { arms: Arms; legs: Legs | 'tuck' | 'dangle' | 'climbA' | 'climbB'; climbing?: boolean }): Pixels {
-  const { c, r } = pal;
+  const { c } = pal;
   const p = new Pixels(20, 20, T);
-  const fur = r('fur');
-  const red = r('red');
-  const gold = r('gold');
-  const white = r('white');
+  const ink = c('ink', 0);
+  const sheen = c('ink', 2);
   const climbing = !!o.climbing;
-  // the tail: a thick curl that rises behind her
+  // the tail: a long S that rises behind her
   const lift = o.legs === 'tuck' || o.legs === 'dangle' || o.arms === 'flail' ? 2 : 0;
-  const tailX = climbing ? 12 : 1;
-  for (let i = 0; i < 9; i++) {
-    const x = tailX + Math.round(2 - Math.sin(i * 0.5) * 2) - (climbing ? 0 : 0);
-    p.rect(x, 12 - i + lift, 3, 2, fur[i > 6 ? 3 : 2]);
+  const tailX = climbing ? 13 : 0;
+  for (let i = 0; i < 12; i++) {
+    const x = tailX + Math.round(2 + Math.sin(i * 0.55) * 1.6);
+    p.rect(x, 14 - i + lift, 2, 2, ink);
   }
-  p.rect(tailX + 1, 3 + lift, 2, 2, fur[3]);
   // torso
-  blob(p, 10, 8, 6, 7.5, fur, 0, 4);
+  oval(p, 10, 8, 4.6, 7.2, ink);
+  p.rect(7, 4, 1, 6, sheen);
   if (!climbing) {
-    // the red collar and the gold bell at her throat
-    p.rect(5, 1, 10, 2, red[3]).rect(5, 1, 10, 1, red[4]).rect(5, 3, 10, 1, red[1]);
-    p.disc(13, 5, 1.8, gold[3]).set(12, 4, gold[5]).set(13, 6, gold[1]);
+    p.rect(6, 0, 8, 2, c('red', 2)).rect(6, 1, 8, 1, c('red', 1));
+    p.rect(11, 2, 3, 3, c('gold', 3)).set(13, 4, c('gold', 1)).set(11, 2, c('paper', 4));
   } else {
-    p.rect(5, 0, 10, 2, red[3]);
+    p.rect(6, 0, 8, 2, c('red', 2));
   }
-  // arms (paws are white mitts)
   const arm = (x: number, y: number, dx: number, dy: number) => {
-    p.line(x, y, x + dx, y + dy, fur[3]).line(x + 1, y, x + 1 + dx, y + dy, fur[2]);
-    p.rect(x + dx, y + dy, 3, 3, white[3]);
+    p.line(x, y, x + dx, y + dy, ink).line(x + 1, y, x + 1 + dx, y + dy, ink);
+    p.rect(x + dx, y + dy, 2, 2, ink);
   };
   switch (o.arms) {
     case 'down':
-      arm(7, 5, 0, 5);
+      arm(7, 5, -1, 5);
       arm(12, 5, 1, 5);
       break;
     case 'out':
-      arm(4, 4, -3, 2);
-      arm(14, 4, 2, 2);
+      arm(5, 4, -4, 2);
+      arm(13, 4, 4, 2);
       break;
     case 'high':
-      arm(5, 5, -2, -5);
-      arm(14, 5, 1, -5);
+      arm(6, 5, -3, -5);
+      arm(13, 5, 2, -5);
       break;
     case 'swingA':
-      arm(7, 5, -2, 4);
+      arm(7, 5, -3, 4);
       arm(12, 5, 3, 4);
       break;
     case 'swingB':
@@ -138,8 +132,8 @@ export function body(pal: Pal, o: { arms: Arms; legs: Legs | 'tuck' | 'dangle' |
       arm(12, 5, -2, 4);
       break;
     case 'flail':
-      arm(4, 3, -3, -3);
-      arm(14, 3, 2, -4);
+      arm(5, 3, -4, -3);
+      arm(13, 3, 3, -4);
       break;
     case 'upA':
       arm(6, 4, 0, -5);
@@ -150,11 +144,9 @@ export function body(pal: Pal, o: { arms: Arms; legs: Legs | 'tuck' | 'dangle' |
       arm(12, 4, 1, -5);
       break;
   }
-  // legs and feet
   const foot = (x: number, up: number) => {
-    const top = 14;
-    p.rect(x, top, 4, 6 - up, fur[2]);
-    p.rect(x, 17 - up, 5, 3, white[3]).rect(x, 17 - up, 5, 1, white[4]);
+    p.rect(x + 1, 13, 2, 7 - up, ink);
+    p.rect(x, 18 - up, 4, 2, ink);
   };
   const legs = o.legs;
   if (legs === 'tuck') {
@@ -173,14 +165,14 @@ export function body(pal: Pal, o: { arms: Arms; legs: Legs | 'tuck' | 'dangle' |
     foot(legs.back[0], legs.back[1]);
     foot(legs.front[0], legs.front[1]);
   }
-  return outline(p, c('ink', 0), { transparent: T });
+  return p;
 }
 
-/** A head over a body, outlined together so the outline passes across the neck. */
-function pair(pal: Pal, top: Pixels, bottom: Pixels): readonly [Pixels, Pixels] {
+/** A head over a body, cut together so the paper line passes round the neck, not across it. */
+export function pair(pal: Pal, top: Pixels, bottom: Pixels): readonly [Pixels, Pixels] {
   const whole = new Pixels(20, 40, T);
   whole.blit(top, 0, 0, T).blit(bottom, 0, 20, T);
-  const out = outline(whole, pal.c('ink', 0), { transparent: T });
+  const out = cut(pal, whole);
   return [out.crop(0, 0, 20, 20), out.crop(0, 20, 20, 20)] as const;
 }
 
@@ -207,7 +199,7 @@ export function buildCatBlocks(pal: Pal): Book {
   add('up.top', 'jumpup', head(pal, 'smile'), body(pal, { arms: 'high', legs: 'tuck' }));
   add('oh.top', 'fall', head(pal, 'oh'), body(pal, { arms: 'flail', legs: 'dangle' }));
   add('cheer2.top', 'cheer', head(pal, 'cheer'), body(pal, { arms: 'high', legs: { back: [5, 0], front: [11, 0] } }));
-  add('look.top', 'stand', head(pal, 'look'), stand);
+  add('look.top', 'stand', head(pal, 'smug'), stand);
   const dig = { back: [3, 0], front: [10, 0] } as Legs;
   add('stand.top', 'dig0', head(pal, 'smile'), body(pal, { arms: 'swingA', legs: dig }));
   add('stand.top', 'dig1', head(pal, 'smile'), body(pal, { arms: 'swingB', legs: dig }));

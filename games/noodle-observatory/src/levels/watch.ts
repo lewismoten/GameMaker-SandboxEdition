@@ -16,7 +16,7 @@ import { BLOCK_TICKS, CLOTH_GONE, KITCHEN, LENSROLL, LENS_IN, ROOF, SUPPER } fro
 import { G, paintRoom, type Place, type Step } from '../place';
 
 /** A doorway's two blocks that stay shut until `ticks`, then swing open (the scene is done). */
-function shutUntil(pal: Pal, book: Place['book'], timed: Timed[], ticks: number): void {
+export function shutUntil(pal: Pal, book: Place['book'], timed: Timed[], ticks: number): void {
   const bg = book.pics.get('bg')!;
   const open = (top: boolean) => {
     const p = new Pixels(20, 20).blit(bg, 0, 0);

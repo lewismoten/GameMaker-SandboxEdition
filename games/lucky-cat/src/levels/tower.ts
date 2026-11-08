@@ -5,7 +5,7 @@
 //   floor 4  the bell chamber: the lucky bell and the door out.
 // One charm: the bell.
 import { StarterMap } from '../../../kit/starter/map';
-import type { Pal } from '../../../kit/starter/palette';
+import type { Pal } from '../print';
 import { Grid } from '../../../kit/starter/grid';
 import { CROW } from '../monsters';
 import { addSigns, onGround, startBook, type Level } from '../level';
@@ -29,10 +29,10 @@ export const TOWER = {
 } as const;
 
 const SIGNS = {
-  tower: ['THE CLOCK TOWER! CLIMB TO THE 13TH BELL.', 4, 3],
+  tower: ['CLOCK TOWER. 13TH BELL AT THE TOP.', 4, 3],
   boxes: ['KNOCK ON WOOD TO GET THROUGH.', 4, 3],
   crow: ['A CROW ON THE THIRD FLOOR. WAIT FOR IT.', 4, 3],
-  bell: ['RING IT! THEN THE DOOR OUT.', 4, 3],
+  bell: ['RING IT. THEN OUT THE DOOR.', 4, 3],
 } as const;
 
 export function levelTower(pal: Pal): Level {
@@ -78,7 +78,7 @@ export function levelTower(pal: Pal): Level {
   return {
     file: 'tower',
     title: 'The Clock Tower',
-    hint: 'Climb to the 13th bell.',
+    hint: 'Four floors up to the 13th bell.',
     look: 'tower',
     chr: 'hero',
     map: m,

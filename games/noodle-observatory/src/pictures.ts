@@ -6,7 +6,7 @@ import { centered, outlined, text, textWidth } from '@lewismoten/gamemaker-sandb
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { bevel } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
 import type { Pal } from '../../kit/starter/palette';
-import { backdrop, bricks, floor, icon, type Place } from './art';
+import { FLOORS, backdrop, bricks, floor, icon, type Place } from './art';
 import { ringPicture } from './nell';
 
 export const W = 320;
@@ -16,7 +16,7 @@ export const H = 200;
 export function placePicture(pal: Pal, place: Place, ground = 160): Pixels {
   const p = new Pixels(W, H);
   for (let y = 0; y < ground; y += 20) for (let x = 0; x < W; x += 20) p.blit(backdrop(pal, place, (x / 20 + y / 10) % 4), x, y);
-  const f = floor(pal, place === 'lens' ? 'mat' : place === 'loft' ? 'boards' : place === 'roof' ? 'slate' : 'counter');
+  const f = floor(pal, FLOORS[place]);
   for (let y = ground; y < H; y += 20) for (let x = 0; x < W; x += 20) p.blit(f, x, y);
   return p;
 }
@@ -89,7 +89,7 @@ export function titlePicture(pal: Pal, nell: Pixels, toy: Pixels, name: [string,
 export function notePicture(pal: Pal, place: Place, nell: Pixels, lines: string[], heading?: string): Pixels {
   const { c } = pal;
   const p = placePicture(pal, place, 160);
-  if (place === 'roof') moonDisc(p, pal, 262, 120, 12);
+  if (place === 'roof' || place === 'yard') moonDisc(p, pal, 262, 120, 12, place === 'yard');
   const h = 16 + lines.length * 13 + (heading ? 22 : 0);
   bevel(p, 14, 10, 292, h, pal.r('parch'), 3, 2);
   p.rect(18, 14, 284, h - 8, c('parch', 3));
@@ -110,8 +110,13 @@ export function endingPicture(pal: Pal, nell: Pixels, toy: Pixels, colander: Pix
   const br = bricks(pal, true);
   for (let y = 40; y < 166; y += 20) for (let x = 190; x < W; x += 20) p.blit(br, x, y);
   moonDisc(p, pal, 252, 92, 22, true);
-  // the table: a cloth-less top, plates and a cup
-  p.rect(110, 140, 76, 5, c('wood', 3)).rect(110, 140, 76, 1, c('wood', 4)).rect(114, 145, 4, 21, c('wood', 2)).rect(178, 145, 4, 21, c('wood', 2));
+  // the bakery's light is out now; the real moon is up, silver, with no sill
+  for (let y = 70; y < 115; y++) for (let x = 230; x < 275; x++) if (Math.hypot(x - 252, y - 92) < 15) p.set(x, y, c('slate', 0));
+  p.disc(130, 70, 20, c('white', 1)).disc(130, 70, 18, c('white', 3)).disc(124, 64, 4, c('stone', 3)).disc(137, 74, 5, c('stone', 3));
+  // the table, its cloth back on: plates and a cup
+  p.rect(110, 140, 76, 5, c('wood', 3)).rect(114, 145, 4, 21, c('wood', 2)).rect(178, 145, 4, 21, c('wood', 2));
+  for (let x = 108; x < 188; x += 4) p.rect(x, 138, 2, 14, c('blue', 3)).rect(x + 2, 138, 2, 14, c('white', 3));
+  p.rect(108, 138, 80, 1, c('white', 3));
   for (const x of [124, 152]) icon(pal, p, 'plate', x, 134, 'thing');
   icon(pal, p, 'cup', 172, 133, 'thing');
   scaleBlit(p, nell, 60, 166 - 80, 2);

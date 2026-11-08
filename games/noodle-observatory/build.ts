@@ -60,7 +60,19 @@ for (const s of SONGS) disk.put(`${s}.cmf`, song(s));
 
 /** The place a level's cards show. */
 const placeOf = (l: Level): PlaceName =>
-  l.hero === 'ring' ? 'pantry' : l.look === 'evening' ? 'lens' : l.look === 'dark' ? 'loft' : l.look === 'night' || l.look === 'reveal' ? 'roof' : 'cupboard';
+  l.look === 'bakery'
+    ? 'bakery'
+    : l.hero === 'ring'
+      ? 'pantry'
+      : l.look === 'snow'
+        ? 'yard'
+        : l.look === 'evening'
+          ? 'lens'
+          : l.look === 'dark'
+            ? 'loft'
+            : l.look === 'night' || l.look === 'reveal' || l.look === 'moonrise'
+              ? 'roof'
+              : 'cupboard';
 
 // each level: its look, map, block set and the pictures it opens with (a card, then its story pages)
 levels.forEach((l, i) => {
