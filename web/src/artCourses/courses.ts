@@ -21,6 +21,7 @@ export interface Course {
 }
 
 import { CHARACTERS } from './courseCharacters';
+import { ANIMATION } from './courseAnimation';
 import { PALETTES } from './coursePalettes';
 import { SCREENS } from './courseScreens';
 import { SHADOWS } from './courseShadows';
@@ -169,6 +170,7 @@ export const COURSES: Course[] = [
   SHADOWS,
   PALETTES,
   CHARACTERS,
+  ANIMATION,
   WORDS,
   SCREENS,
 ];
@@ -176,6 +178,4 @@ export const COURSES: Course[] = [
 export const courseById = (id: string): Course | undefined => COURSES.find((c) => c.id === id);
 
 /** Courses that are planned and not written yet, for the contents page. */
-export const COMING: { title: string; about: string }[] = [
-  { title: 'Block animation', about: 'Water, torches and doors from a few frames, looping without a jump.' },
-];
+export const COMING: { title: string; about: string }[] = [];
