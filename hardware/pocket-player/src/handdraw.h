@@ -11,6 +11,7 @@ namespace hd {
 constexpr uint16_t rgb(int r, int g, int b) { return (uint16_t)(((r >> 3) << 11) | ((g >> 2) << 5) | (b >> 3)); }
 constexpr uint16_t FILL = rgb(0x9E, 0xE6, 0xB8), SHADE = rgb(0x5F, 0xBF, 0x86), LIGHT = rgb(0xD4, 0xF7, 0xE1), NAIL = rgb(0xC8, 0xF2, 0xD6),
                    NAIL_LINE = rgb(0x7B, 0xCB, 0x98), LINE = rgb(0x2E, 0x4A, 0x3A), CUFF = rgb(0x07, 0x89, 0xE6);
+inline bool onlyFingers = false;  // a test hook: draw only the curled fingers, to measure where they end
 inline uint16_t mix(uint16_t a, uint16_t b, float t) {  // RGB565 blend, t of b
   if (t <= 0) return a;
   if (t >= 1) return b;
@@ -99,6 +100,7 @@ template <class G, class BG, class BEHIND> void draw(G& g, const Place& pl, BG b
     for (int x = xa; x <= xb; x++) { col[x] = bg(x, y); any[x] = 0; }
     for (int si = 0; si < hs::SHAPES; si++) {
       const hs::Shape& sh = hs::shapes[si];
+      if (onlyFingers && !sh.behind) continue;
       // the fill: 4 sub-scanlines of nonzero winding
       if (sh.role != hs::CREASE) {
         for (int x = xa; x <= xb; x++) cov[x] = 0;

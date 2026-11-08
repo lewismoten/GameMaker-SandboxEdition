@@ -114,11 +114,12 @@ template <class G> void board(G& g, const Box& b, bool padRight, bool thumbs, bo
   g.fillRoundRect(sx0 + 3, sy0 + 3, mw, mh, 3, C_DARK);
   g.drawRoundRect(sx0 + 3, sy0 + 3, mw, mh, 3, C_WHITE);
   if (thumbs) {  // each hand holds the board's lower corner on its side; its thumb rests on the pad or on Jump
-    // the pad's hand sets the size (its fingers flush with the board's edge); Jump is nearer its edge, so its hand is a tenth smaller and
-    // turned a little, the thumbnail on the inner half of Jump
-    const float sp = hd::flushScale((float)(padRight ? b.x1 - pcx : pcx - b.x0));
+    // two mirrored hands of one size: each one's curled fingers end on the board's outer border line, the thumbs rest about over
+    // the pad and over Jump (the picture shows where hands usually sit; the thumbs need not hit the targets exactly)
+    const int D = padRight ? b.x1 - pcx : pcx - b.x0;
+    const float sp = hd::flushScale((float)D);
     hand(g, b, padRight ? 1 : -1, pcx, sp);
-    hand(g, b, padRight ? -1 : 1, padRight ? jcx + jr / 2 : jcx - jr / 2, sp * 0.9f);
+    hand(g, b, padRight ? -1 : 1, padRight ? b.x0 + D : b.x1 - D, sp);
   }
   if (labels) {
     g.setTextSize(1);

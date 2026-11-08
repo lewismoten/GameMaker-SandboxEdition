@@ -110,25 +110,32 @@ int main(int argc, char** argv) {
     bool inRange = hs::POINTS > 300 && hs::POINTS < 700;
     for (int i = 0; i < hs::POINTS; i++) inRange = inRange && hs::pts[2 * i] >= 0 && hs::pts[2 * i] < 1024 && hs::pts[2 * i + 1] >= 0 && hs::pts[2 * i + 1] < 1024;
     expect(inRange, "the hand's points are a few hundred, inside the 1024 square");
-    // where the thumbnail lands: inside the pad (left hand) and inside Jump (right hand), for the right-handed and the left-handed layout
+    // measured on the render: the board's border line and the curled fingers' outer edge, for the right-handed and left-handed layouts
     const fr::Box pic = scr::SMALL ? fr::Box{40, 42, 136, 116} : fr::Box{58, 60, 204, 170};
     for (bool padRight : {false, true}) {
-      int w = pic.x1 - pic.x0, h = pic.y1 - pic.y0, sx0 = pic.x0 + w / 12, sy0 = pic.y0 + h / 10, sx1 = pic.x1 - w / 12, sy1 = pic.y1 - h / 10;
-      int sw = sx1 - sx0, sh = sy1 - sy0, pr = sh * 26 / 100, jr = sh * 13 / 100, wid = sh * 22 / 100;
-      int pcx = padRight ? sx1 - pr - sw / 20 : sx0 + pr + sw / 20, pcy = sy1 - pr - sh / 14;
-      int jcy = sy1 - jr - sh / 10, jcx = padRight ? sx0 + jr + sw / 14 : sx1 - jr - sw / 14;  // where the game puts Jump
-      (void)wid;
-      const float sp = hd::flushScale((float)(padRight ? pic.x1 - pcx : pcx - pic.x0));
-      hd::Place a = hd::fit(padRight ? 1 : -1, pcx, padRight ? pic.x1 : pic.x0, pic.y1, sp),
-                b = hd::fit(padRight ? -1 : 1, padRight ? jcx + jr / 2 : jcx - jr / 2, padRight ? pic.x0 : pic.x1, pic.y1, sp * 0.9f);
-      expect(b.s / a.s > 0.85f && b.s / a.s < 1.15f && __builtin_fabsf(b.sn) < 0.3f && __builtin_fabsf(a.sn) < 0.05f, "the hands differ by under 15% in size and a few degrees in turn");
-      // the curled fingers' outer edge sits flush with the board's outer edge, on both hands
-      auto fingerX = [](const hd::Place& p) { float r = hd::fingerReach(p.s, p.c, p.sn); return p.side < 0 ? p.tipX - r : p.tipX + r; };
-      expect(__builtin_fabsf(fingerX(a) - (padRight ? pic.x1 : pic.x0)) < 1.5f && __builtin_fabsf(fingerX(b) - (padRight ? pic.x0 : pic.x1)) < 1.5f,
-             "the curled fingers line up with the board's outer edges");
-      expect((a.tipX - pcx) * (a.tipX - pcx) + (a.tipY - pcy) * (a.tipY - pcy) < pr * pr, "the thumbnail lands on the pad");
-      expect((b.tipX - jcx) * (b.tipX - jcx) + (b.tipY - jcy) * (b.tipY - jcy) < jr * jr, "the thumbnail lands on Jump");
-      expect(a.side == -b.side, "the two hands face opposite ways");
+      Canvas c(scr::W, scr::H);
+      c.fillScreen(0);
+      hd::onlyFingers = true;  // test hook: only the curled fingers, so the palm and cuff do not hide their edge
+      fr::board(c, pic, padRight, true, false);
+      hd::onlyFingers = false;
+      auto green = [&](int x, int y) { uint16_t p = c.px[y * scr::W + x]; return (((p >> 5) & 63) << 2) > ((p >> 11) << 3) + 8; };
+      int lineL = -1, lineR = -1, fl = 9999, fr_ = -1, my = (pic.y0 + pic.y1) / 2;
+      for (int x = 0; x < scr::W; x++) if (c.px[my * scr::W + x] != 0) { if (lineL < 0) lineL = x; lineR = x; }
+      for (int y = pic.y1 + 1; y < scr::H; y++)
+        for (int x = 0; x < scr::W; x++)
+          if (green(x, y)) { if (x < pic.x0 + 20 && x < fl) fl = x; if (x > pic.x1 - 20 && x > fr_) fr_ = x; }
+      printf("hands %s layout: border line x %d and %d, curled fingers' outer edge x %d and %d\n", padRight ? "left-handed" : "right-handed", lineL, lineR, fl, fr_);
+      expect(lineL == pic.x0 && lineR == pic.x1 - 1 && fl == lineL && fr_ == lineR, "the curled fingers' outer edges sit exactly on the board's border line");
+      // the thumbnails (their nails) rest on the glass, one on each half of the picture
+      Canvas d(scr::W, scr::H);
+      d.fillScreen(0);
+      fr::board(d, pic, padRight, true, false);
+      const int sx0 = pic.x0 + (pic.x1 - pic.x0) / 12, sx1 = pic.x1 - (pic.x1 - pic.x0) / 12, sy0 = pic.y0 + (pic.y1 - pic.y0) / 10, sy1 = pic.y1 - (pic.y1 - pic.y0) / 10, mid = (pic.x0 + pic.x1) / 2;
+      int nl = 0, nr = 0;
+      for (int y = sy0; y < sy1; y++)
+        for (int x = sx0; x < sx1; x++)
+          if (d.px[y * scr::W + x] == hd::NAIL) (x < mid ? nl : nr)++;
+      expect(nl > 8 && nr > 8, "a thumbnail rests on the glass on each side of the picture");
     }
     // the mirror: the same hand drawn for the right is the left one flipped about the thumbnail's column
     Canvas l(scr::W, scr::H), r(scr::W, scr::H);
