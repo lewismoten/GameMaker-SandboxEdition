@@ -16,5 +16,10 @@
     "ink": "#0a0912",
     "logo": "SANDBOX SOFTWARE"
   },
-  "acceptedFindings": ["facing s2 The hero climbs side on", "facing s3 The hero climbs side on"]
+  "acceptedFindings": [
+    "facing s2 The hero climbs side on",
+    "facing s3 The hero climbs side on",
+    "facing s5 The hero climbs side on",
+    "hazard-art s6 Block 20 hurts through its whole cell, but its art fills 15% of it"
+  ]
 }

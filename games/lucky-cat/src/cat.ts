@@ -22,13 +22,18 @@ export function head(pal: Pal, face: Face): Pixels {
   const ink = c('ink', 0);
   const sheen = c('ink', 2);
   const back = face === 'back';
-  tri(p, [4, 1], [3, 11], [10, 9], ink);
-  tri(p, [16, 1], [10, 9], [17, 11], ink);
-  if (!back) {
-    p.line(5, 4, 5, 9, c('ink', 3)).line(15, 4, 15, 9, c('ink', 3));
+  // facing right in three-quarter view: the far ear set back, the muzzle pushed forward (a face-on head would
+  // slide sideways when she walks)
+  if (back) {
+    tri(p, [4, 1], [3, 11], [10, 9], ink);
+    tri(p, [16, 1], [10, 9], [17, 11], ink);
+  } else {
+    tri(p, [5, 3], [3, 11], [10, 9], ink);
+    tri(p, [16, 1], [10, 9], [17, 11], ink);
+    p.line(6, 6, 6, 9, c('ink', 3)).line(15, 4, 15, 9, c('ink', 3));
   }
   oval(p, 10, 13, 7.2, 5.8, ink);
-  oval(p, 10, 16.5, 4.5, 3, ink);
+  oval(p, back ? 10 : 13, 16.5, back ? 4.5 : 5.2, 3, ink);
   // carved sheen: a stroke over the brow
   p.rect(6, 9, 4, 1, sheen).rect(12, 9, 2, 1, sheen);
   if (back) {
@@ -57,18 +62,18 @@ export function head(pal: Pal, face: Face): Pixels {
     p.set(x + 3, 12, c('paper', 4));
   };
   const look = face === 'look' ? -1 : 0;
-  eyeAt(4 + look);
-  eyeAt(12 + look);
-  // nose and mouth, cut in paper
-  p.set(10, 16, c('red', 1)).set(11, 16, c('red', 1));
+  eyeAt(6 + look);
+  eyeAt(13 + look);
+  // nose and mouth, cut in paper, toward the front of the muzzle
+  p.set(15, 16, c('red', 1)).set(16, 16, c('red', 1));
   const line = c('paper', 1);
-  if (face === 'oh') p.rect(10, 18, 2, 1, c('red', 1));
-  else if (face === 'ouch') p.rect(9, 18, 4, 1, line);
-  else if (face === 'smug') p.set(9, 18, line).set(10, 18, line).set(12, 17, line);
-  else p.set(9, 17, line).set(10, 18, line).set(11, 18, line).set(12, 17, line);
-  // whiskers, cut through to the paper
+  if (face === 'oh') p.rect(14, 18, 2, 1, c('red', 1));
+  else if (face === 'ouch') p.rect(13, 18, 4, 1, line);
+  else if (face === 'smug') p.set(13, 18, line).set(14, 18, line).set(16, 17, line);
+  else p.set(13, 17, line).set(14, 18, line).set(15, 18, line).set(16, 17, line);
+  // whiskers, cut through to the paper: long on the near side, a stub on the far side
   const w = c('paper', 3);
-  p.line(0, 15, 4, 16, w).line(0, 18, 4, 17, w).line(16, 16, 19, 15, w).line(16, 17, 19, 18, w);
+  p.line(2, 15, 4, 16, w).line(17, 16, 19, 15, w).line(17, 17, 19, 18, w);
   return p;
 }
 

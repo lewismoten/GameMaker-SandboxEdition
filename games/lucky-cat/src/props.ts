@@ -67,9 +67,12 @@ function drip(pal: Pal, gone: boolean): Pixels {
   s.rect(0, 0, 20, 2, pal.c('ink', 0));
   if (!gone) {
     // a teardrop of paint about to let go: a point at the top, round at the bottom, a gap above it
-    s.set(10, 5, pal.c('paper', 4)).rect(10, 6, 2, 2, pal.c('paper', 4)).rect(9, 8, 4, 2, pal.c('paper', 4));
-    s.disc(11, 12, 3, pal.c('paper', 4));
-    s.set(12, 13, pal.c('paper', 2)).set(11, 14, pal.c('paper', 2));
+    for (let y = 3; y < 10; y++) {
+      const half = Math.floor((y - 3) / 1.5);
+      s.rect(10 - half, y, half * 2 + 1, 1, pal.c('paper', 4));
+    }
+    s.disc(10, 13, 6.4, pal.c('paper', 4));
+    s.rect(12, 14, 2, 2, pal.c('paper', 2)).rect(8, 9, 1, 3, pal.c('paper', 2));
   } else {
     s.rect(4, 17, 12, 2, pal.c('paper', 4)).rect(6, 16, 3, 1, pal.c('paper', 4)).rect(12, 16, 2, 1, pal.c('paper', 4));
   }

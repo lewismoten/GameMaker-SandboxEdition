@@ -14,31 +14,33 @@ export function rascalHead(pal: Pal, face: Face): Pixels {
   const p = new Pixels(20, 20, T);
   const fur = c('smoke', 1);
   const ink = c('ink', 0);
-  oval(p, 4.5, 6, 2.8, 3, fur);
+  const back = face === 'back';
+  // three-quarter view facing right (the far ear smaller, the snout forward), except from behind
+  oval(p, back ? 4.5 : 5.5, back ? 6 : 7, back ? 2.8 : 2.2, back ? 3 : 2.4, fur);
   oval(p, 15.5, 6, 2.8, 3, fur);
-  p.set(4, 6, ink).set(15, 6, ink);
+  p.set(back ? 4 : 5, back ? 6 : 7, ink).set(15, 6, ink);
   oval(p, 10, 12, 7.6, 6, fur);
-  if (face === 'back') {
+  if (back) {
     p.rect(6, 9, 8, 1, c('smoke', 2)).rect(7, 13, 6, 1, c('smoke', 0));
     return p;
   }
   // the mask: an ink band across the eyes, paper brows over it
-  p.rect(3, 9, 6, 1, c('paper', 4)).rect(11, 9, 6, 1, c('paper', 4));
-  oval(p, 6, 12, 3.6, 2.2, ink);
-  oval(p, 14, 12, 3.6, 2.2, ink);
-  p.rect(8, 11, 4, 2, ink);
+  p.rect(5, 9, 5, 1, c('paper', 4)).rect(12, 9, 6, 1, c('paper', 4));
+  oval(p, 7.5, 12, 3, 2.2, ink);
+  oval(p, 15, 12, 3.6, 2.2, ink);
+  p.rect(9, 11, 4, 2, ink);
   const eye = (x: number) => {
     if (face === 'blink' || face === 'cheer') p.rect(x, 12, 2, 1, c('paper', 4));
     else if (face === 'shifty') p.rect(x, 12, 2, 1, c('gold', 3)).set(x, 12, c('paper', 4));
     else p.rect(x, 11, 2, 2, c('paper', 4)).set(x + 1, 12, c('gold', 3));
   };
-  eye(5);
-  eye(13);
-  // muzzle and nose
-  oval(p, 10, 16, 4, 2.8, c('paper', 4));
-  p.rect(9, 14, 3, 2, ink);
-  if (face === 'oh' || face === 'ouch') p.rect(9, 17, 3, 2, ink);
-  else p.line(7, 16, 9, 18, ink).line(9, 18, 13, 17, ink);
+  eye(7);
+  eye(14);
+  // muzzle and nose, pushed forward
+  oval(p, 13.5, 16, 4.6, 2.8, c('paper', 4));
+  p.rect(16, 14, 3, 2, ink);
+  if (face === 'oh' || face === 'ouch') p.rect(14, 17, 3, 2, ink);
+  else p.line(11, 16, 13, 18, ink).line(13, 18, 17, 17, ink);
   return p;
 }
 
