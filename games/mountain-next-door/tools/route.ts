@@ -8,12 +8,13 @@ import { NEXT_AT } from '../src/levels/next';
 import { G3, PRINTS_AT } from '../src/levels/prints';
 import { G4, STREAM_AT } from '../src/levels/stream';
 import { FLOORS, SIGNS_AT } from '../src/levels/signs';
-import { HOLLOW_AT, STARS } from '../src/levels/hollow';
+import { FLOOR, HOLLOW_AT, RIM, STARS } from '../src/levels/hollow';
 import { G7, LEDGES, RIDGE_AT } from '../src/levels/ridge';
 import { TUNNEL_AT, UPPER } from '../src/levels/tunnel';
 import { ZFLOORS, ZIGZAG_AT } from '../src/levels/zigzag';
 import { PICNIC_AT, TOP } from '../src/levels/picnic';
 import { buildLevels } from '../src/levels';
+import { gustName } from '../src/propsDeeper';
 import { GROUND } from '../src/level';
 import { FOG_WAVES, PICNIC, PICNIC_WALK, PROLOGUE, WISP_HOME } from '../src/monsters';
 import { POINTS } from '../src/props';
@@ -197,11 +198,34 @@ export async function steppingStones(bot: StarterBot): Promise<void> {
   await take(bot, S.trees[2], POINTS.blaze, 'the third tree');
   await take(bot, S.acorns[1], POINTS.acorn, 'an acorn');
   await cross(bot, c4, G4, 'the fourth crossing');
+  await readAt(bot, at.ripple + 2, 'the ripple sign');
   await take(bot, S.trees[3], POINTS.blaze, 'the fourth tree');
+  await rippleCross(bot);
+  await take(bot, S.trees[4], POINTS.blaze, 'the fifth tree');
   await must(bot, bot.walk(S.bridge[1] + 2, 'over the footbridge'), 'over the footbridge');
-  await must(bot, bot.walk(at.hill + 1, 'the hill spot'), 'to the hill spot');
-  score(bot, from, 4 * POINTS.blaze + 2 * POINTS.acorn, 'level 4');
-  await leave(bot, bot.walk(S.exit + 1, 'the exit'), 'the exit');
+  score(bot, from, 5 * POINTS.blaze + 2 * POINTS.acorn + S.ripple.stones.length * POINTS.acorn, 'level 4');
+  await leave(bot, bot.walk(S.exit, 'the exit'), 'the exit');
+}
+
+/**
+ * The ripple: single stones that come up one after another. Waits on the bank for the first to rise fresh, then hops from
+ * stone to stone as each comes up (a person goes with the wave, and waits on a stone when she gets ahead of it).
+ */
+async function rippleCross(bot: StarterBot): Promise<void> {
+  const { water, stones } = STREAM_AT.ripple;
+  const book = blocks('stream');
+  const up = (x: number) => shownAt(bot, x, G4) === book.n('rUpA') || shownAt(bot, x, G4) === book.n('rUpB');
+  const dry = (what: string) => {
+    if (bot.px.y / 20 > G4 - 1) throw new Error(`fell in at ${what} (x ${bot.px.x / 20})`);
+  };
+  await must(bot, bot.walk(water[0] - 1, 'the ripple bank'), 'to the ripple bank');
+  if (up(stones[0])) await watchFor(bot, () => !up(stones[0]), 'the first ripple stone going down', 400);
+  await watchFor(bot, () => up(stones[0]), 'the first ripple stone coming up', 400);
+  for (const [i, x] of [...stones, water[1] + 1].entries()) {
+    if (i > 0 && i < stones.length) await watchFor(bot, () => up(x), `the ripple stone at ${x} coming up`, 400);
+    await must(bot, bot.jump('right', x), `to the ripple stone at ${x}`);
+    dry(`the ripple stone at ${x}`);
+  }
 }
 
 /** Climbs from where Tess stands on ladder column `col` up or down until her feet are on row `row` + 1's floor. */
@@ -254,19 +278,59 @@ export async function signposts(bot: StarterBot): Promise<void> {
   await leave(bot, bot.walk(S.exit + 1, 'the exit'), 'the exit');
 }
 
-/** 6. The Empty Spot: down into the hollow, every sign read while the sun goes down, then the stars, then on. */
+/**
+ * 6. The Empty Spot: down into the hollow, every sign read while the sun goes down, then the stars. When the last stars are
+ * out the clues glint: the pit's snowdrift (down the pit and up its ladder), the chipped stone, the rug and the tuft of
+ * cloud on the way back to the rim, then the whole way out again over the logs, the arrow and Wisp's trail.
+ */
 export async function emptySpot(bot: StarterBot): Promise<void> {
+  const from = bot.sim.ci.score;
   const t0 = bot.sim.w.clock;
-  const at = HOLLOW_AT.signs;
+  const H = HOLLOW_AT;
+  const at = H.signs;
   await lookAt(bot, at.hole + 1, 'the hole view');
   await must(bot, bot.wait(READ / 2), 'a look at Nutmeg on the rim');
   await lookAt(bot, at.here + 1, 'the stood-here view');
+  await readAt(bot, at.pit + 1, 'the pit sign');
   await lookAt(bot, at.puddles + 1, 'the puddles view');
   await readAt(bot, at.wisp + 1, 'the Wisp sign');
+  await hop(bot, H.pit.from, H.pit.to - H.pit.from + 1, 'the pit');
   await readAt(bot, at.gone + 1, 'the gone sign');
-  await must(bot, bot.walk(HOLLOW_AT.puddles[5], 'the last puddle in the hollow'), 'along the puddles');
-  await watchFor(bot, () => since(bot, t0) > STARS[2] + 60, 'the last stars coming out', 1400);
-  await leave(bot, bot.walk(HOLLOW_AT.exit + 1, 'the exit'), 'the exit');
+  await must(bot, bot.walk(H.puddles[4], 'the last puddle in the hollow'), 'along the puddles');
+  await watchFor(bot, () => since(bot, t0) > STARS[2] + 40, 'the last stars coming out', 1400);
+  // the pit: walk in off its edge, take the drift, up the ladder
+  await must(bot, bot.walk(H.pit.to + 1, 'the pit edge'), 'to the pit edge');
+  await take(bot, H.clues.drift, POINTS.clue, 'the drift in the pit');
+  await must(bot, bot.walk(H.pit.from, 'the ladder'), 'to the ladder');
+  await must(bot, bot.climb('up', FLOOR - 1, 'up the ladder'), 'up the ladder');
+  await must(bot, bot.walk(H.pit.from - 2, 'off the ladder'), 'off the ladder');
+  await take(bot, H.clues.chip, POINTS.clue, 'the chipped stone');
+  await take(bot, H.clues.rug, POINTS.clue, 'the moss rug');
+  await take(bot, H.clues.fluff, POINTS.clue, 'the tuft of cloud');
+  // and out again, over the pit
+  await hop(bot, H.pit.from, H.pit.to - H.pit.from + 1, 'the pit');
+  await readAt(bot, at.night + 1, 'the starlight sign');
+  await take(bot, H.clues.arrow, POINTS.clue, 'the arrow of pebbles');
+  await hop(bot, H.logs[0], 2, 'the first log');
+  // (a jump may land on a snowdrift, so the trail is checked by the level's total)
+  await must(bot, bot.walk(H.trail[0], 'the first snowdrift'), 'to the first snowdrift');
+  await must(bot, bot.walk(H.trail[1], 'the second snowdrift'), 'to the second snowdrift');
+  await hop(bot, H.logs[1], 2, 'the second log');
+  await must(bot, bot.walk(H.trail[2], 'the third snowdrift'), 'to the third snowdrift');
+  await must(bot, bot.walk(H.trail[3], 'the last snowdrift'), 'to the last snowdrift');
+  // every clue is gone from its spot (the trees' trunks may or may not have been brushed, so the total is not exact)
+  const sky = blocks('hollow').n('sky');
+  const spots: [number, number][] = [
+    [H.clues.fluff, RIM - 1],
+    [H.clues.rug, FLOOR - 1],
+    [H.clues.chip, FLOOR - 1],
+    [H.clues.drift, H.pit.floor - 1],
+    [H.clues.arrow, RIM - 1],
+    ...H.trail.map((x): [number, number] => [x, RIM - 1]),
+  ];
+  for (const [x, y] of spots) if (shownAt(bot, x, y) !== sky) throw new Error(`a clue is still lying at column ${x}`);
+  if (bot.sim.ci.score - from < 9 * POINTS.clue) throw new Error(`level 9: scored ${bot.sim.ci.score - from}`);
+  await leave(bot, bot.walk(H.exit + 1, 'the exit'), 'the exit');
 }
 
 /** Holds an arrow key for `ticks` (a step into the wind, where walking to a spot would never land). */
@@ -290,10 +354,32 @@ export async function rideUp(bot: StarterBot, x: number, row: number, what: stri
   if (Math.round(bot.px.y / 20) !== row - 1) throw new Error(`${what}: not on the ledge (row ${bot.px.y / 20})`);
 }
 
-/** 7. Windy Ridge: up on the updraft, across on the gust, up again; every post blazed. */
+/** Steps into an updraft at column `x` from the left and rides it up to the crest row, then steps off to its left (feet on row `row` - 1). */
+async function rideUpLeft(bot: StarterBot, x: number, row: number, what: string): Promise<void> {
+  await must(bot, bot.walk(x - 1, what), `to ${what}`);
+  await step(bot, 'right', 5, `into ${what}`);
+  await watchFor(bot, () => bot.px.y / 20 <= row - 1.5, `riding ${what}`, 300);
+  await must(bot, bot.walk(x - 2, `off ${what}`), `off ${what}`);
+  await must(bot, bot.land(), 'landing');
+  if (Math.round(bot.px.y / 20) !== row - 1) throw new Error(`${what}: not on the ledge (row ${bot.px.y / 20})`);
+}
+
+/** Waits at `from` for a ring's wind to start a leftward phase (its first picture shows at `cell`), steps into it and lets it carry Tess to `past`. */
+async function windOver(bot: StarterBot, ring: number, phase: number, cell: [number, number], from: number, past: number, what: string): Promise<void> {
+  const ready = blocks('ridge').n(gustName(ring, phase, 'a'));
+  await must(bot, bot.walk(from, `the edge before ${what}`), `to the edge before ${what}`);
+  await watchFor(bot, () => shownAt(bot, cell[0], cell[1]) === ready, `the wind at ${what} turning left`, 700);
+  await step(bot, 'left', 6, `into the wind at ${what}`);
+  await watchFor(bot, () => bot.px.x / 20 <= past, `the wind carrying Tess over ${what}`, 300);
+  await must(bot, bot.wait(25), `landing after ${what}`);
+  if (bot.px.x / 20 > past || Math.round(bot.px.y / 20) !== LEDGES.crest - 1) throw new Error(`${what} left Tess at ${bot.px.x / 20}, ${bot.px.y / 20}`);
+}
+
+/** 7. Windy Ridge: up on the updraft, across on the gust, up again, then the crest: three gaps crossed when the wind turns left and a corridor walked in a lull; every post blazed. */
 export async function windyRidge(bot: StarterBot): Promise<void> {
   const from = bot.sim.ci.score;
   const R = RIDGE_AT;
+  const C = LEDGES.crest;
   const at = R.signs;
   const posts = R.posts.map(([x]) => x);
   await must(bot, bot.walk(at.puddles + 2, 'the puddles spot'), 'to the puddles spot');
@@ -316,9 +402,36 @@ export async function windyRidge(bot: StarterBot): Promise<void> {
   await take(bot, posts[4], POINTS.blaze, 'a post');
   await readAt(bot, at.town + 1, 'the town sign');
   await take(bot, posts[5], POINTS.blaze, 'a post');
-  score(bot, from, 6 * POINTS.blaze, 'level 7');
+  // the crest
+  await rideUpLeft(bot, R.lift3.x, C, 'the third updraft');
+  await take(bot, R.crestPosts[0], POINTS.blaze, 'a post on the crest');
+  await readAt(bot, at.wind + 1, 'the wind sign');
+  await must(bot, bot.wait(READ / 2), 'watching the flag');
+  const [g1, g2, g3, g4] = R.gaps;
+  const book = blocks('ridge');
+  /** Walks left through a corridor of wind in the lull: waits for the first calm after the wind blows right, then goes to `to`. */
+  const corridor = async (co: (typeof R.corridors)[number], calmPhase: number, to: number) => {
+    const calm = book.n(gustName(co.ring, calmPhase));
+    for (let tries = 0; ; tries++) {
+      await watchFor(bot, () => shownAt(bot, co.from, C - 1) === calm, 'the lull in the corridor', 900);
+      await must(bot, bot.walk(to, 'through the corridor'), 'through the corridor');
+      if (bot.px.x / 20 <= co.from - 1) return;
+      if (tries > 3) throw new Error('could not get through the corridor');
+    }
+  };
+  // the left-blowing phase is the fourth of ring 0 and the third of ring 1; a calm right after the wind blows right is the second of ring 1 and the third of ring 0
+  await windOver(bot, g1.ring, 3, [g1.from + 3, C - 1], R.islands.a[0], R.islands.b[1], 'the first gap');
+  await corridor(R.corridors[0], 1, R.crestPosts[1]);
+  await windOver(bot, g2.ring, 3, [g2.from + 3, C - 1], R.islands.b[0], R.islands.c[1], 'the second gap');
+  await corridor(R.corridors[1], 2, R.crestPie);
+  await must(bot, bot.walk(R.crestPosts[2], 'the post past the corridor'), 'to the post past the corridor');
+  await windOver(bot, g3.ring, 2, [g3.from + 3, C - 1], R.islands.c[0], R.islands.d[1], 'the third gap');
+  await take(bot, R.crestPosts[3], POINTS.blaze, 'a post on the crest');
+  await windOver(bot, g4.ring, 3, [g4.from + 3, C - 1], R.islands.d[0], R.islands.e[1], 'the fourth gap');
+  await take(bot, R.crestPosts[4], POINTS.blaze, 'a post on the crest');
+  score(bot, from, 11 * POINTS.blaze, 'level 7');
   void G7;
-  await leave(bot, bot.walk(R.exit + 1, 'the exit'), 'the exit');
+  await leave(bot, bot.walk(R.exit - 1, 'the exit'), 'the exit');
 }
 
 /** 8. The Low Tunnel: in along the low road and back along the mill race, every lantern lit, a look up at the glow-worms, and Wisp found. */

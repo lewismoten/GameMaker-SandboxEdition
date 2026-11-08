@@ -5,6 +5,8 @@
 //   next.mon     the prologue: fog that waits, then drifts off in four waves; Mr. Hale and Mrs. Okoro, each
 //                walking out, stopping to look (a bubble) and walking back; nothing hurts
 //   hollow.mon   sunset at the empty spot: the sun sinks in four steps and is gone; Nutmeg; Wisp's raindrops
+//   street.mon   the sleeping town: Old Mossback walking (ten monsters) from the empty lot along the street behind Tess
+//   ford.mon     the same walk to the river, wading across it behind her
 //   picnic.mon   the next morning: the sun rises, the neighbors walk up to the picnic and stay; Wisp floats in
 // An ACT is one monster; the next act is the monster it BECOMES when its path or lifetime runs out
 // (code/GM/PLAYGAME.C: MonEndPath and KillMon; see games/scripted/src/monsters.ts).
@@ -14,7 +16,26 @@ import { corner, mon, pace } from '@lewismoten/gamemaker-sandbox-tools/kit/actor
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { Book } from '../../kit/starter/book';
 import type { Pal } from '../../kit/starter/palette';
-import { HALE, LIN, OKORO, bigEye, bigMouth, bubble, fogPuff, mist, glowWorm, hen, neighborBottom, neighborTop, pebble, squirrel, sun, wisp } from './art/folk';
+import { WALKER_PIECES, walkerPiece } from './art/walker';
+import {
+  HALE,
+  LIN,
+  OKORO,
+  bigEye,
+  bigMouth,
+  bubble,
+  fogPuff,
+  mist,
+  glowWorm,
+  hen,
+  neighborBottom,
+  neighborTop,
+  pebble,
+  pupil,
+  squirrel,
+  sun,
+  wisp,
+} from './art/folk';
 
 /** Powers of 100 or more cannot be popped by touching Tess (PLAYGAME.C DoCollision). */
 const POWER = 150;
@@ -55,8 +76,11 @@ export function monsterPictures(pal: Pal): Book {
   mb.add('bubHeart', bubble(pal, 'heart'));
   mb.add(NOTHING, new Pixels(20, 20, 255));
   for (const how of ['open', 'blink', 'shut'] as const) bigEye(pal, how).forEach((pic, i) => mb.add(`eye.${how}${i}`, pic));
+  bigEye(pal, 'white').forEach((pic, i) => mb.add(`eye.white${i}`, pic));
+  mb.add('pupil', pupil(pal));
   bigMouth(pal, false).forEach((pic, i) => mb.add(`mouth.smile${i}`, pic));
   bigMouth(pal, true).forEach((pic, i) => mb.add(`mouth.yawn${i}`, pic));
+  for (const piece of WALKER_PIECES) mb.add(piece, walkerPiece(pal, piece));
   return mb;
 }
 
@@ -129,11 +153,12 @@ export const FACE_SLOTS = 14;
  * mouth's two at at+4, at+5. Awake, the eyes blink now and then; with `wake` they sleep (shut) until then, and the
  * mouth yawns 40 ticks later.
  */
-function face(set: Monster[], mb: Book, at: number, wake?: number): void {
+function face(set: Monster[], mb: Book, at: number, wake?: number, pupils?: number): void {
+  const open = pupils === undefined ? 'eye.open' : 'eye.white';
   const blinking = (i: number): Pics => [
-    [mb.n(`eye.open${i}`), 110],
+    [mb.n(`${open}${i}`), 110],
     [mb.n(`eye.blink${i}`), 5],
-    [mb.n(`eye.open${i}`), 60],
+    [mb.n(`${open}${i}`), 60],
     [mb.n(`eye.blink${i}`), 4],
   ];
   for (let i = 0; i < 4; i++) {
@@ -142,6 +167,21 @@ function face(set: Monster[], mb: Book, at: number, wake?: number): void {
       set[at + i] = mon(still(mb, `eye.shut${i}`), { ...actor, end: wake, newmon: at + 6 + i });
       set[at + 6 + i] = mon(blinking(i), { ...actor, end: -2 });
     }
+  }
+  // the pupils (one act placed in each eye) slide toward Tess inside a ring of solid rock round the eye, hidden
+  // while the eyes are shut and for each blink
+  if (pupils !== undefined) {
+    const look = { ...actor, fly: 1, towards: 1 };
+    set[pupils] = mon(still(mb, NOTHING), { ...look, end: wake ?? 1, newmon: pupils + 1 });
+    set[pupils + 1] = mon(
+      [
+        [mb.n('pupil'), 110],
+        [mb.n(NOTHING), 5],
+        [mb.n('pupil'), 60],
+        [mb.n(NOTHING), 4],
+      ],
+      { ...look, end: -2 },
+    );
   }
   for (let i = 0; i < 2; i++) {
     if (wake === undefined) set[at + 4 + i] = mon(still(mb, `mouth.smile${i}`), { ...actor, end: -2 });
@@ -157,7 +197,7 @@ function face(set: Monster[], mb: Book, at: number, wake?: number): void {
 const NOTHING = 'nothing';
 
 /** next.mon's slots. */
-export const NEXT = { fogWait: [0, 1, 2, 3], fogDrift: 4, hale: 5, okoro: 15, face: 25 } as const;
+export const NEXT = { fogWait: [0, 1, 2, 3], fogDrift: 4, hale: 5, okoro: 15, face: 25, pupil: 39 } as const;
 /** Ticks each wave of fog waits before it drifts off; the drift (6 blocks over, 3 up) takes about 140 ticks more. */
 export const FOG_WAVES = [280, 400, 520, 640] as const;
 /** The prologue's clock (ticks): when Mr. Hale and Mrs. Okoro step out, how far they walk, how long they look, and when the mountain wakes. */
@@ -191,11 +231,11 @@ function visit(set: Monster[], mb: Book, at: number, who: 'okoro' | 'hale', wait
 
 export function nextSet(mb: Book): Monster[] {
   const set = newMonsterSet();
-  NEXT.fogWait.forEach((slot, i) => (set[slot] = mon(anim(mb, 'fog0', 'fog1', 12), { ...actor, end: FOG_WAVES[i], newmon: NEXT.fogDrift })));
-  set[NEXT.fogDrift] = mon(anim(mb, 'fog0', 'fog1', 12), { ...actor, end: -1 }, [corner(6, -3, 1), corner(0, 0, 0)]);
+  NEXT.fogWait.forEach((slot, i) => (set[slot] = mon(anim(mb, 'fog0', 'fog1', 12), { ...actor, thru: 0, end: FOG_WAVES[i], newmon: NEXT.fogDrift })));
+  set[NEXT.fogDrift] = mon(anim(mb, 'fog0', 'fog1', 12), { ...actor, thru: 0, end: -1 }, [corner(6, -3, 1), corner(0, 0, 0)]);
   visit(set, mb, NEXT.hale, 'hale', PROLOGUE.hale, PROLOGUE.haleWalk, PROLOGUE.look, 'bubHuh');
   visit(set, mb, NEXT.okoro, 'okoro', PROLOGUE.okoro, PROLOGUE.okoroWalk, PROLOGUE.look, 'bubWow');
-  face(set, mb, NEXT.face, PROLOGUE.wake);
+  face(set, mb, NEXT.face, PROLOGUE.wake, NEXT.pupil);
   return set;
 }
 
@@ -265,10 +305,60 @@ export function picnicSet(mb: Book): Monster[] {
 /** Ticks until Wisp has floated in and settled on top. */
 export const WISP_HOME = PICNIC.wisp0 + 8 * BLOCK_TICKS + 20;
 
+/** One leg of a walk: [blocks right, blocks down, speed (pixels a tick)]. */
+export type Leg = readonly [number, number, number];
+
+/**
+ * Old Mossback walking, as ten monsters standing still for `wait` ticks and then taking the same legs: slot `piece`
+ * waits, `8 + piece` walks and `16 + piece` stays where the walk ends (the pieces are in art/walker.ts).
+ */
+function walker(set: Monster[], mb: Book, wait: number, legs: readonly Leg[]): void {
+  WALKER_PIECES.forEach((name, i) => {
+    set[i] = mon(still(mb, name), { ...actor, end: wait, newmon: 8 + i });
+    set[8 + i] = mon(still(mb, name), { ...actor, thru: 0, end: -1, newmon: 16 + i }, [...legs.map(([dx, dy, s]) => corner(dx, dy, s, 0)), corner(0, 0, 0)]);
+    set[16 + i] = mon(still(mb, name), { ...actor, end: -2 });
+  });
+}
+
+/** The monster slots of the walking mountain: its cells are in art/walker.ts; a cell's slot is `WALKER_SLOT[piece]`. */
+export const WALKER_SLOT: Record<(typeof WALKER_PIECES)[number], number> = Object.fromEntries(WALKER_PIECES.map((p, i) => [p, i])) as never;
+
+/** The mountain's walk along the sleeping town's street, up the hill and back along the lane: it waits, then goes at the pace of a very large neighbor. */
+export const STREET_WALK: { wait: number; legs: Leg[] } = {
+  wait: 160,
+  legs: [
+    [30, 0, 2],
+    [30, 0, 2],
+    [24, 0, 2],
+    [0, -9, 2],
+    [-82, 0, 2],
+  ],
+};
+/** The mountain's walk to the river and across it. */
+export const FORD_WALK: { wait: number; legs: Leg[] } = {
+  wait: 200,
+  legs: [
+    [10, 0, 2],
+    [66, 0, 1],
+    [8, 0, 2],
+  ],
+};
+
 /** Each monster file by name (a level's `mon`). */
-export const MON_SETS: Record<'trail' | 'next' | 'hollow' | 'picnic', (mb: Book) => Monster[]> = {
+export const MON_SETS: Record<MonName, (mb: Book) => Monster[]> = {
   trail: (mb) => trailSet(mb),
   next: nextSet,
   hollow: hollowSet,
   picnic: picnicSet,
+  street: (mb) => {
+    const set = newMonsterSet();
+    walker(set, mb, STREET_WALK.wait, STREET_WALK.legs);
+    return set;
+  },
+  ford: (mb) => {
+    const set = newMonsterSet();
+    walker(set, mb, FORD_WALK.wait, FORD_WALK.legs);
+    return set;
+  },
 };
+export type MonName = 'trail' | 'next' | 'hollow' | 'picnic' | 'street' | 'ford';
