@@ -32,21 +32,30 @@ const set = monsterSet(mb);
 const shot = (name: string, level: number, col: number, penny: number, y = GROUND - 2) => {
   const l = levels[level];
   const hero = figure(l.pal, l.hero ?? 'penny', 'stand');
+  const top = y > 10 ? y - 8 : 0;
   const sprites = [
     { pixels: Uint8Array.from(hero.px.subarray(0, 400)), x: ORIGIN + penny, y: ORIGIN + y },
     { pixels: Uint8Array.from(hero.px.subarray(400)), x: ORIGIN + penny, y: ORIGIN + y + 1 },
   ];
-  writePng(join(out, name), renderRegion(l.map.done(), l.book.finish(), mbl, set, ORIGIN + col, ORIGIN, 16, 11, sprites), l.pal.pal, 3);
+  writePng(join(out, name), renderRegion(l.map.done(), l.book.finish(), mbl, set, ORIGIN + col, ORIGIN + top, 16, 11, sprites), l.pal.pal, 3);
 };
 shot('calltime-tree.png', 0, 22, 25);
 shot('calltime-pond.png', 0, 54, 60);
 shot('gust-street.png', 1, 0, 6);
-shot('airstrip-hangar.png', 2, 0, 10, 3);
-shot('airstrip-bales.png', 2, 24, 33, 4);
-shot('float-hall.png', 3, 6, 12);
-shot('drumoff-cannons.png', 4, 36, 42);
-shot('route-judges.png', 5, 18, 24);
-shot('stepoff-llamas.png', 6, 42, 47);
+shot('bakery-roofs.png', 2, 8, 12, 20);
+shot('bakery-tower.png', 2, 40, 47, 8);
+shot('airstrip-hangar.png', 3, 0, 10, 3);
+shot('airstrip-bales.png', 3, 24, 33, 4);
+shot('creek-bridge.png', 4, 22, 28, 14);
+shot('creek-bed.png', 4, 34, 40, 20);
+shot('float-hall.png', 5, 6, 12);
+shot('hall-shelves.png', 6, 18, 26, 22);
+shot('hall-basement.png', 6, 44, 52, 28);
+shot('drumoff-cannons.png', 7, 36, 42);
+shot('route-judges.png', 8, 18, 24);
+shot('stands-rows.png', 9, 24, 30, 14);
+shot('truck-boss.png', 10, 60, 66, 14);
+shot('stepoff-llamas.png', 11, 42, 47);
 
 for (const [file, frames] of [
   ['parade.fli', [20]],

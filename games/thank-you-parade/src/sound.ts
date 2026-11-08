@@ -3,6 +3,8 @@
 //                after-beats over an oom-pah tuba, a lyrical trio in B-flat, a stomping minor "dogfight" break, and the
 //                trio again with cymbals on every bar (the grandioso).
 //   marge.cmf    "Banner Tow Boogie": Marge's level, a shuffling boogie in G on reed and piano, walking bass, 24 bars.
+//   rooftop.cmf  "Rooftop Polka" (more songs in songs.ts): Bakery Row and the Bleachers.
+//   boss.cmf     "Fuse Lit": the Cannon Truck.
 //   drumoff.cmf  "Drum-Off": Elm Street, in D minor at exactly the beat meter's tempo (one beat every twelve ticks, 91 a
 //                minute). The snare cracks on beat two and the cymbal on beat four, the beats the two kinds of confetti
 //                cannon fire on, so the song counts the level for you.
@@ -18,13 +20,15 @@ import { buildSounds } from '../../kit/starter/sounds';
 export function paradeSounds(): SoundSet {
   const set = buildSounds();
   set.freqs[SND.use] = SPEAKER.arpeggio([1319, 1568, 2093, 2637]); // a chime for each hand-over
+  set.freqs[SND.gain] = SPEAKER.arpeggio([523, 659, 784, 1047, 1319]); // a key or a fuse: a bright run up
+  set.freqs[SND.die] = SPEAKER.arpeggio([392, 370, 349, 330, 311, 294]); // a sad trombone, a step at a time
   return set;
 }
 
 const bars = (s: string): string[] => s.split('|').map((b) => b.trim());
 
 /** Plays one section with its own drum grooves, bar by bar (the last groove repeats). */
-function play(w: Writer, part: Omit<Part, 'drums' | 'section'> & { chords: string; tune: string; grooves: Groove[]; drumVel: number }): void {
+export function play(w: Writer, part: Omit<Part, 'drums' | 'section'> & { chords: string; tune: string; grooves: Groove[]; drumVel: number }): void {
   const chords = bars(part.chords);
   const tune = bars(part.tune);
   if (chords.length !== tune.length) throw new Error(`${chords.length} bars of chords, ${tune.length} of tune`);

@@ -25,7 +25,7 @@ export interface Level {
   /** Who plays it (Penny unless it says Marge). */
   hero?: 'penny' | 'marge';
   /** Its song (the parade march unless it names another). */
-  song?: 'march' | 'marge' | 'drumoff';
+  song?: 'march' | 'marge' | 'drumoff' | 'rooftop' | 'boss';
 }
 
 /** A room: ground on `GROUND`, hedges at both ends, the entrance at `startX` and the exit door at `exitX`. */

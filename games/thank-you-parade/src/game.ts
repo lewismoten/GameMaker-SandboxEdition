@@ -7,7 +7,7 @@ import { ORIGIN } from '../../kit/starter/map';
 import type { Level } from './lay';
 
 /** Each song's file. */
-export const SONG_FILE = { march: 'parade.cmf', marge: 'marge.cmf', drumoff: 'drumoff.cmf' } as const;
+export const SONG_FILE = { march: 'parade.cmf', marge: 'marge.cmf', drumoff: 'drumoff.cmf', rooftop: 'rooftop.cmf', boss: 'boss.cmf' } as const;
 
 /** The title of the game, as the .GAM names it (19 characters at most). */
 export const TITLE = 'THANK-YOU PARADE';
