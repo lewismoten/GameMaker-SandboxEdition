@@ -3,6 +3,7 @@
 import type { StarterBot } from '../../kit/starter/bot';
 import * as C from '../src/levels/cord';
 import * as D from '../src/levels/dojo';
+import * as K from '../src/levels/dogs';
 import * as B from '../src/levels/gobble';
 import * as S from '../src/levels/chase';
 import * as R from '../src/levels/gravy';
@@ -272,6 +273,46 @@ export async function theCord(bot: StarterBot): Promise<void> {
   await leave(bot, bot.walk(C.AT.exit + 1, 'the exit'), 'the exit');
 }
 
+/** The Dog Park (Mr. Plume): three dogs, three bones, each stretch its own way to the bone. */
+export async function dogPark(bot: StarterBot): Promise<void> {
+  const G = K.GROUND - 1;
+  const bag = [MONS.bag, MONS.bag + 1, MONS.bag + 2];
+  await read(bot, 6, 'park');
+  for (const x of K.AT.turkeys) await smash(bot, x, [MONS.inflatable], 1, `the lawn turkey at ${x}`, G);
+  await smash(bot, K.AT.bag, bag, 1, 'the kick bag', G);
+  await climb(bot, K.AT.oak, G - 5, 'the oak');
+  await cross(bot, K.AT.bone1, 'the first bone');
+  await climb(bot, K.AT.oak, G - 5, 'the trunk again');
+  await must(bot, bot.climb('down', G, 'down the oak'), 'down the oak');
+  await read(bot, K.AT.dog1 - 4, 'dog 1');
+  await through(bot, K.AT.dog1, 'dog 1');
+  await cross(bot, K.AT.vac - 2, 'up to the vacuum');
+  await meet(bot, [MONS.vacQuick], G, 'the park vacuum', 50, 200);
+  await must(bot, bot.wait(10), 'watching it nap');
+  await stepUp(bot, [MONS.fedVac], 'right', K.AT.ledge[0] + 3, 'the napping vacuum');
+  await cross(bot, K.AT.ledgeDrone - 2, 'up to the ledge drone');
+  await meet(bot, [MONS.drone], G - 4, 'the ledge drone', 44, 320);
+  await cross(bot, K.AT.bone2, 'the second bone');
+  await cross(bot, K.AT.ledge[1] + 2, 'off the ledge');
+  await must(bot, bot.land(), 'down from the ledge');
+  await cross(bot, K.AT.swoop - 2, 'before the swooping drone');
+  await meet(bot, [MONS.droneSwoop], G, 'the swooping drone', 50, 120, 1200);
+  await read(bot, K.AT.dog2 - 4, 'dog 2');
+  await through(bot, K.AT.dog2, 'dog 2');
+  await climb(bot, K.AT.shedLadder, 9, 'the shed ladder');
+  await cross(bot, K.AT.shedLadder + 1, 'onto the shed roof');
+  await meet(bot, [MONS.drone], 9, 'the shed drone', 44, 320);
+  await cross(bot, K.AT.gold, 'the gold acorn');
+  await cross(bot, K.AT.bone3, 'the third bone');
+  await cross(bot, K.AT.shed[1] + 1, 'off the shed roof');
+  await must(bot, bot.land(), 'down from the shed');
+  for (const x of K.AT.wall) await smash(bot, x, [MONS.inflatable], 1, `the turkey at ${x}`, G);
+  await read(bot, K.AT.dog3 - 4, 'dog 3');
+  await through(bot, K.AT.dog3, 'dog 3');
+  await read(bot, K.AT.exit - 5, 'end');
+  await leave(bot, bot.walk(K.AT.exit + 1, 'the exit'), 'the exit');
+}
+
 /** How far behind Mr. Plume the loose balloon is, in pixels. */
 function lead(bot: StarterBot): number {
   const c = monsters(bot, [MONS.chaser + 1, MONS.chaser + 3]);
@@ -358,4 +399,4 @@ export async function bigGobble(bot: StarterBot): Promise<void> {
   await leave(bot, bot.walk(B.AT.exit + 1, 'the long table'), 'the long table');
 }
 
-export const LEVELS = [pumpkinYard, payback, gravyRelay, windyPark, rooftopPotluck, senseisDojo, theCord, mainStreet, bigGobble];
+export const LEVELS = [pumpkinYard, payback, gravyRelay, windyPark, rooftopPotluck, senseisDojo, theCord, dogPark, mainStreet, bigGobble];

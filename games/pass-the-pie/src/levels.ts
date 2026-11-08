@@ -14,6 +14,7 @@ import { dress } from './dress';
 import type { Level } from './levels/common';
 import { chase } from './levels/chase';
 import { cord } from './levels/cord';
+import { dogs } from './levels/dogs';
 import { dojo } from './levels/dojo';
 import { gobble } from './levels/gobble';
 import { gravy } from './levels/gravy';
@@ -27,7 +28,7 @@ export { finishBook } from './levels/common';
 
 /** The levels in order. */
 export function buildLevels(pal: Pal): Level[] {
-  const levels = [yard(pal), lawn(pal), gravy(pal), park(pal), roof(pal), dojo(pal), cord(pal), chase(pal), gobble(pal)];
+  const levels = [yard(pal), lawn(pal), gravy(pal), park(pal), roof(pal), dojo(pal), cord(pal), dogs(pal), chase(pal), gobble(pal)];
   for (const l of levels) dress(l, pal);
   return levels;
 }

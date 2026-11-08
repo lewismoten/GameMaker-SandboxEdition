@@ -52,6 +52,7 @@ export const MOODS = {
   dusk: { paper: [226, 212, 230], ink: [62, 42, 66], acc: [196, 104, 136], acc2: [232, 184, 86], leaf: [112, 132, 112] },
   dojo: { paper: [172, 210, 194], ink: [12, 30, 28], acc: [212, 56, 44], acc2: [244, 200, 72], leaf: [30, 96, 74] },
   rooftop: { paper: [184, 192, 228], ink: [24, 22, 66], acc: [240, 132, 84], acc2: [250, 224, 124], leaf: [74, 96, 144] },
+  orchard: { paper: [244, 214, 160], ink: [62, 30, 18], acc: [178, 50, 40], acc2: [112, 164, 196], leaf: [104, 122, 40] },
   parade: { paper: [198, 52, 42], ink: [18, 10, 12], acc: [250, 204, 64], acc2: [252, 240, 220], leaf: [40, 70, 48] },
 } as const satisfies Record<string, Inks>;
 export type Mood = keyof typeof MOODS;
