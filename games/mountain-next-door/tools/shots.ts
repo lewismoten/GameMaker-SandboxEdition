@@ -32,6 +32,7 @@ const AT: Record<string, number> = {
   books: 1200,
   stream: 900,
   signs: 1500,
+  survey: 1500,
   hollow: 1500,
   tower: 2400,
   roofs: 900,
@@ -40,6 +41,8 @@ const AT: Record<string, number> = {
   zigzag: 1700,
   picnic: 1500,
   ford: 1800,
+  clock: 1500,
+  spill: 1500,
 };
 /** The first level's frames: one every this many ticks. */
 const EVERY = 8;

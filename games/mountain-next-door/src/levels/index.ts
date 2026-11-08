@@ -30,6 +30,9 @@ import { levelExcuse } from './excuse';
 import { levelFord } from './ford';
 import { levelRidge } from './ridge';
 import { levelSigns } from './signs';
+import { levelSurvey } from './survey';
+import { levelClock } from './clock';
+import { levelSpillway } from './spillway';
 import { levelStream } from './stream';
 import { levelRoofs } from './roofs';
 import { levelTower } from './tower';
@@ -50,8 +53,11 @@ const DRESS: Record<string, DressOptions> = {
   stream: { maples: true, far: { row: 9 } },
   mist: { far: { row: 5 } },
   excuse: {},
+  clock: {},
+  spill: {},
   ford: {},
   signs: { birds: true },
+  survey: { birds: true },
   hollow: { far: { row: 7 } },
   tower: { far: { row: 59 } },
   ridge: { far: { row: 20 } },
@@ -70,12 +76,15 @@ export function buildLevels(): { pal: ReturnType<typeof buildMountainPalette>; l
     levelStream(pal),
     levelMist(pal),
     levelSigns(pal),
+    levelSurvey(pal),
     levelHollow(pal),
     levelTower(pal),
     levelRidge(pal),
+    levelSpillway(pal),
     levelRoofs(pal),
     levelTunnel(pal),
     levelExcuse(pal),
+    levelClock(pal),
     levelFord(pal),
     levelZigzag(pal),
     levelPicnic(pal),
