@@ -6,7 +6,7 @@ import { StarterMap } from '../../kit/starter/map';
 import type { Pal } from './print';
 import { baseBook } from './base';
 import { addBeat } from './items';
-import { Level, GROUND, addSigns, bunting, flagpole, onGround, room, shop, street } from './lay';
+import { Level, GROUND, addSigns, bunting, flagpole, onGround, room, skyline, street } from './lay';
 import { MONS } from './monsters';
 import { addBandArch } from './park';
 import { addCard, addFlags, addNeighbors, addStreet } from './town';
@@ -42,17 +42,7 @@ export function level6(pal: Pal): Level {
   const g = room(AT6.width, AT6.exit);
   const m = new StarterMap(book, g.rows());
   street(m, 1, AT6.width - 2);
-  const shops: [number, number, 'wallA' | 'wallB'][] = [
-    [8, 8, 'wallB'],
-    [17, 9, 'wallA'],
-    [27, 8, 'wallB'],
-    [36, 10, 'wallA'],
-    [47, 8, 'wallB'],
-    [56, 9, 'wallA'],
-    [66, 8, 'wallB'],
-    [75, 9, 'wallA'],
-  ];
-  shops.forEach(([x, w, tone], i) => shop(m, x, w, tone, i % 3 === 0 ? 1 : w - 2));
+  skyline(m, 3, 86, [30, 31, 32, 58, 59, 60, 69, 70, 71]);
   bunting(m, 6, 84, 2);
   for (const x of [30, 58, 69]) flagpole(m, x, GROUND, 6);
   for (let x = AT6.cards[0]; x <= AT6.cards[1]; x++) m.set(x, GROUND - 1, 'card');

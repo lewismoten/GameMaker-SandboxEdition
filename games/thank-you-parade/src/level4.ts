@@ -89,7 +89,7 @@ export function level4(pal: Pal): Level {
   m.sign(35, onGround(GROUND, s.silver), s.silver);
   m.sign(42, onGround(GROUND, s.climb), s.climb);
   m.sign(46, 2, s.secret);
-  m.sign(71, onGround(GROUND, s.parts), s.parts);
+  m.sign(72, onGround(GROUND, s.parts), s.parts);
   m.sign(80, onGround(GROUND, s.exit), s.exit);
   return { file: 'float', title: 'The Float', hint: 'The fire hall. A float, no parts.', map: m, book, pal };
 }

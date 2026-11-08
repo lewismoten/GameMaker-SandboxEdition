@@ -8,11 +8,11 @@ import { applyFliFrame, newFliCanvas, parseFli } from '@lewismoten/gamemaker-san
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { renderRegion } from '@lewismoten/gamemaker-sandbox-tools/kit/levelPicture';
 import { writePng } from '@lewismoten/gamemaker-sandbox-tools/kit/png';
-import { heroPicture } from '../../kit/starter/hero';
+
 import { ORIGIN } from '../../kit/starter/map';
 import { GROUND } from '../src/lay';
 import { buildLevels } from '../src/levels';
-import { buildPennyBlocks } from '../src/look';
+import { figure } from '../src/figure';
 import { finishMonsterPictures, monsterPictures, monsterSet } from '../src/monsters';
 
 const out = process.argv[2];
@@ -29,26 +29,32 @@ const { pal, levels } = buildLevels();
 const mb = monsterPictures(pal);
 const mbl = finishMonsterPictures(mb);
 const set = monsterSet(mb);
-const hero = heroPicture(buildPennyBlocks(pal), 'stand.top', 'stand');
-const shot = (name: string, level: number, col: number, penny: number) => {
+const shot = (name: string, level: number, col: number, penny: number, y = GROUND - 2) => {
   const l = levels[level];
+  const hero = figure(l.pal, l.hero ?? 'penny', 'stand');
   const sprites = [
-    { pixels: Uint8Array.from(hero.px.subarray(0, 400)), x: ORIGIN + penny, y: ORIGIN + GROUND - 2 },
-    { pixels: Uint8Array.from(hero.px.subarray(400)), x: ORIGIN + penny, y: ORIGIN + GROUND - 1 },
+    { pixels: Uint8Array.from(hero.px.subarray(0, 400)), x: ORIGIN + penny, y: ORIGIN + y },
+    { pixels: Uint8Array.from(hero.px.subarray(400)), x: ORIGIN + penny, y: ORIGIN + y + 1 },
   ];
   writePng(join(out, name), renderRegion(l.map.done(), l.book.finish(), mbl, set, ORIGIN + col, ORIGIN, 16, 11, sprites), l.pal.pal, 3);
 };
-shot('level2-gust.png', 1, 0, 6);
-shot('level4-beat.png', 3, 14, 20);
-shot('level5-route.png', 4, 12, 24);
-shot('level1-pond.png', 0, 54, 60);
+shot('calltime-tree.png', 0, 22, 25);
+shot('calltime-pond.png', 0, 54, 60);
+shot('gust-street.png', 1, 0, 6);
+shot('airstrip-hangar.png', 2, 0, 10, 3);
+shot('airstrip-bales.png', 2, 24, 33, 4);
+shot('float-hall.png', 3, 6, 12);
+shot('drumoff-cannons.png', 4, 36, 42);
+shot('route-judges.png', 5, 18, 24);
+shot('stepoff-llamas.png', 6, 42, 47);
 
 for (const [file, frames] of [
-  ['parade.fli', [8]],
-  ['parade2.fli', [30]],
-  ['ending.fli', [20, 35]],
-  ['ending2.fli', [10, 30]],
-  ['ending3.fli', [25]],
+  ['parade.fli', [20]],
+  ['parade2.fli', [10]],
+  ['parade3.fli', [10]],
+  ['ending.fli', [30]],
+  ['ending3.fli', [20]],
+  ['ending5.fli', [10]],
 ] as const) {
   const anim = parseFli(readFileSync(new URL(file, disk)));
   const canvas = newFliCanvas(anim);

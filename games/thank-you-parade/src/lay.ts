@@ -54,15 +54,27 @@ export function street(m: StarterMap, x0: number, x1: number): void {
   for (let y = GROUND + 1; y < HEIGHT; y++) run(m, 'road', x0, x1, y);
 }
 
-/** A shop front behind the sidewalk: a wall from row 3 down to the ground, windows, an awning and a door, `w` blocks wide. */
-export function shop(m: StarterMap, x: number, w: number, tone: 'wallA' | 'wallB', doorAt = Math.floor(w / 2)): void {
-  for (let i = 0; i < w; i++) {
-    m.set(x + i, 3, 'cornice');
-    for (let y = 4; y < GROUND; y++) m.set(x + i, y, tone);
-    m.set(x + i, 5, 'awning');
-    if (i !== doorAt) m.set(x + i, 7, `${tone}Win`);
+/**
+ * The town behind the curb, printed far off: navy buildings in halftone from row 3 to row 7 (rows 8 and 9, where people
+ * stand, stay bare paper), built from x0 to x1 in widths that vary, with a gap between buildings and wherever `clear`
+ * asks (a flagpole, a fire escape).
+ */
+export function skyline(m: StarterMap, x0: number, x1: number, clear: number[] = []): void {
+  const widths = [5, 4, 6, 3, 5, 7, 4, 6];
+  const tops = [4, 3, 5, 3, 4, 5, 3, 4];
+  let x = x0;
+  let k = 0;
+  while (x <= x1) {
+    const w = widths[k % widths.length];
+    const top = tops[k % tops.length];
+    for (let i = 0; i < w && x + i <= x1; i++) {
+      if (clear.includes(x + i)) continue;
+      m.set(x + i, top, k % 2 ? 'cityTop' : 'cityTopB');
+      for (let y = top + 1; y < GROUND - 2; y++) m.set(x + i, y, (y + i + k) % 2 ? 'cityWin' : 'cityWall');
+    }
+    x += w + 1;
+    k++;
   }
-  m.set(x + doorAt, GROUND - 2, 'shopDoor').set(x + doorAt, GROUND - 1, 'shopDoor');
 }
 
 /** A flagpole with a waving flag: its foot on `ground` at x, `h` blocks tall. */

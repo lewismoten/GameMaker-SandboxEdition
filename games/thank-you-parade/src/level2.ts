@@ -8,7 +8,7 @@ import type { Pal } from './print';
 import { PULL } from '../../kit/starter/book';
 import { addPage, baseBook, type PBook } from './base';
 import { addCardBox, addGust } from './items';
-import { Level, GROUND, addSigns, bunting, column, flagpole, onGround, room, run, shop, street } from './lay';
+import { Level, GROUND, addSigns, bunting, column, flagpole, onGround, room, run, skyline, street } from './lay';
 import { MONS } from './monsters';
 import { addBandArch } from './park';
 import { addCard, addFlags, addStreet, CARD_POINTS, CARDS } from './town';
@@ -68,15 +68,7 @@ export function level2(pal: Pal): Level {
   street(m, 1, AT2.width - 2);
   m.set(AT2.retry, GROUND - 2, 'doorTop').set(AT2.retry, GROUND - 1, 'doorBottom'); // the door that starts the level over
   // shop fronts along the street, with alleys between
-  const shops: [number, number, 'wallA' | 'wallB'][] = [
-    [10, 7, 'wallA'],
-    [19, 8, 'wallB'],
-    [29, 7, 'wallA'],
-    [38, 9, 'wallB'],
-    [49, 8, 'wallA'],
-    [59, 7, 'wallB'],
-  ];
-  shops.forEach(([x, w, tone], i) => shop(m, x, w, tone, i % 2 ? w - 3 : 2));
+  skyline(m, 9, 65, [34, 35, 36]);
   bunting(m, 8, 84, 2);
   flagpole(m, 34, GROUND, 6);
   // the gust meter, along the top, with a copy every nine blocks

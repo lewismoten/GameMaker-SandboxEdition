@@ -6,7 +6,7 @@ import { StarterMap } from '../../kit/starter/map';
 import type { Pal } from './print';
 import { baseBook } from './base';
 import { addBeat, addFinale, addRivals } from './items';
-import { Level, GROUND, addSigns, bunting, column, flagpole, onGround, room, run, street } from './lay';
+import { Level, GROUND, addSigns, bunting, column, flagpole, onGround, room, run, skyline, street } from './lay';
 import { MONS } from './monsters';
 import { addBandArch } from './park';
 import { addCard, addFlags, addNeighbors, addStreet } from './town';
@@ -59,6 +59,7 @@ export function level7(pal: Pal): Level {
   }
   for (const x of [35, 45]) m.set(x, GROUND - 1, 'balloons0');
   for (const x of [16, 33]) flagpole(m, x, GROUND, 6);
+  skyline(m, 3, 64, [16, 17, 18, 33, 34, 35]);
   bunting(m, 6, 84, 2);
   run(m, 'card', AT7.cards[0], AT7.cards[1], GROUND - 1);
   for (const [x, k] of AT7.vets) m.set(x, GROUND - 1, `vet${k}`);

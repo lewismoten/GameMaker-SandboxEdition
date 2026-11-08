@@ -124,32 +124,38 @@ export function addAirstrip(book: PBook, pal: Pal): void {
     book.add('sockTop', out.crop(0, 0, 20, 20), air);
     book.add('sockPole', out.crop(0, 20, 20, 20), air);
   }
-  // the crop duster: a vermilion biplane facing right, cream wings, a brass nose and propeller
   {
-    const W = PLANE.w * 20;
-    const H = PLANE.h * 20;
-    const p = new Pixels(W, H, T);
-    // the lower wing, the fuselage, the tail, the upper wing on struts
-    p.rect(10, 38, 78, 5, c('paper', 3));
-    p.rect(8, 26, 76, 13, c('red', 2)).rect(8, 26, 76, 2, c('red', 4));
-    halftone(p, 8, 32, 76, 7, c('red', 0), 2, [c('red', 2)]);
-    p.rect(0, 14, 12, 14, c('red', 2)).rect(0, 14, 12, 2, c('red', 4)); // the tail fin
-    p.rect(0, 22, 6, 3, c('white', 3));
-    p.rect(26, 8, 60, 5, c('paper', 3)).rect(26, 8, 60, 1, c('white', 3));
-    halftone(p, 26, 10, 60, 3, c('paper', 1), 2, [c('paper', 3)]);
-    for (const x of [34, 72]) p.rect(x, 13, 2, 25, c('ink', 1));
-    // the cockpit's rim (the open seat, where Marge climbs in) and the stripe along the side
-    p.rect(44, 24, 14, 3, c('ink', 1)).rect(46, 22, 10, 2, c('teal', 3));
-    p.rect(12, 33, 70, 2, c('paper', 3));
-    // the nose and the propeller
-    p.rect(84, 24, 8, 16, c('gold', 3)).rect(84, 24, 8, 2, c('gold', 5));
-    p.rect(93, 14, 3, 36, c('stone', 2)).rect(92, 30, 4, 4, c('gold', 4));
-    // the wheels
-    for (const x of [30, 70]) {
-      p.line(x, 43, x - 4, 52, c('ink', 1));
-      p.disc(x - 4, 53, 5, c('ink', 1)).disc(x - 4, 53, 2, c('stone', 3));
-    }
-    const out = onPaper(pal, p);
+    const out = onPaper(pal, planePicture(pal));
     for (let by = 0; by < PLANE.h; by++) for (let bx = 0; bx < PLANE.w; bx++) book.add(`plane${bx}${by}`, out.crop(bx * 20, by * 20, 20, 20), air);
   }
+}
+
+/** Marge's crop duster, 100x60 on transparent: a vermilion biplane facing right, cream wings, a brass nose and propeller. */
+export function planePicture(pal: Pal): Pixels {
+  const { c } = pal;
+    const W = PLANE.w * 20;
+  const H = PLANE.h * 20;
+  const p = new Pixels(W, H, T);
+  // the lower wing, the fuselage, the tail, the upper wing on struts
+  p.rect(10, 38, 78, 5, c('paper', 3));
+  p.rect(8, 26, 76, 13, c('red', 2)).rect(8, 26, 76, 2, c('red', 4));
+  halftone(p, 8, 32, 76, 7, c('red', 0), 2, [c('red', 2)]);
+  p.rect(0, 14, 12, 14, c('red', 2)).rect(0, 14, 12, 2, c('red', 4)); // the tail fin
+  p.rect(0, 22, 6, 3, c('white', 3));
+  p.rect(26, 8, 60, 5, c('paper', 3)).rect(26, 8, 60, 1, c('white', 3));
+  halftone(p, 26, 10, 60, 3, c('paper', 1), 2, [c('paper', 3)]);
+  for (const x of [34, 72]) p.rect(x, 13, 2, 25, c('ink', 1));
+  // the cockpit's rim (the open seat, where Marge climbs in) and the stripe along the side
+  p.rect(44, 24, 14, 3, c('ink', 1)).rect(46, 22, 10, 2, c('teal', 3));
+  p.rect(12, 33, 70, 2, c('paper', 3));
+  // the nose and the propeller
+  p.rect(84, 24, 8, 16, c('gold', 3)).rect(84, 24, 8, 2, c('gold', 5));
+  p.rect(93, 14, 3, 36, c('stone', 2)).rect(92, 30, 4, 4, c('gold', 4));
+  // the wheels
+  // the landing gear: a sturdy strut down from the lower wing to each wheel, gray tires with paper hubs
+  for (const x of [30, 70]) {
+    p.rect(x - 1, 43, 3, 6, c('stone', 2));
+    p.disc(x, 52, 5, c('stone', 1)).disc(x, 52, 2.5, c('paper', 3)).set(x, 52, c('stone', 2));
+  }
+  return p;
 }

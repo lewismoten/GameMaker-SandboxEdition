@@ -69,16 +69,19 @@ export function swap(pal: Pal, ramps: Record<string, Ramp>): Pal {
 
 /**
  * Halftone: is (x, y) inside a dot of a screen whose dots sit on a diagonal lattice ten pixels across (dots at (0,0) and
- * (5,5) of every 10x10 cell, so it tiles across 20x20 blocks)? `tone` 0 is no dots, 1 a single pixel, up to 5 nearly solid.
+ * (5,5) of every 10x10 cell, so it tiles across 20x20 blocks)? `tone` 0 is no dots, 1 a single pixel, 2 a 2x2 square, 3 a
+ * 3x3 square, up to 5 nearly solid.
  */
 export function dot(x: number, y: number, tone: number): boolean {
   if (tone <= 0) return false;
   const u = ((x % 10) + 10) % 10;
   const v = ((y % 10) + 10) % 10;
+  // tone 2 is a 2x2 square at each lattice point (never a plus sign)
+  if (tone === 2) return (u < 2 && v < 2) || (u >= 5 && u < 7 && v >= 5 && v < 7);
   // the distance to the nearest lattice point: a corner of the cell or its middle
   const a = Math.hypot(Math.min(u, 10 - u), Math.min(v, 10 - v));
   const b = Math.hypot(u - 5, v - 5);
-  const r = [0, 0.5, 1.05, 1.5, 2.3, 3.2][Math.min(5, tone)];
+  const r = [0, 0.5, 0, 1.5, 2.3, 3.2][Math.min(5, tone)];
   return Math.min(a, b) <= r;
 }
 
