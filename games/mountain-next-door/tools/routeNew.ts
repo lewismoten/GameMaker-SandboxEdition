@@ -3,7 +3,7 @@
 // (the mist steps, the yard gates, the river's waves) and listen to the mountain say its line to the end.
 import type { StarterBot } from '../../kit/starter/bot';
 import { STREET_AT, STREET_ROWS, type Street } from '../src/levels/excuse';
-import { FORD_AT, G9 } from '../src/levels/ford';
+import { FORD_AT, G9, GU } from '../src/levels/ford';
 import { DELLS, G8, MIST_AT, floorOf, stepOf } from '../src/levels/mist';
 import { FORD_RINGS, POINTS } from '../src/props';
 import { blocks, step, take } from './route';
@@ -128,35 +128,56 @@ export async function excuseMe(bot: StarterBot): Promise<void> {
   await leave(bot, bot.walk(A.exit - 1, 'the exit'), 'the exit');
 }
 
-/** 15. The Ford: five reaches, each crossed by waiting on the bank for the swell to come up leaning the right way and stepping in; the islands' posts and acorns taken between. */
+/**
+ * 15. The Ford: five reaches, each crossed by waiting on the bank for the swell to come up leaning the right way and
+ * stepping in; the islands' posts and acorns taken between. Then the ladder up to the upper ford, and four more
+ * reaches crossed leftward (a quick wave, one that leans right first, one in between), its posts and acorns taken, to the door.
+ */
 export async function theFord(bot: StarterBot): Promise<void> {
   const from = bot.sim.ci.score;
   const A = FORD_AT;
+  const U = A.upper;
   const at = A.signs;
   const book = blocks('ford');
-  const cross = async (k: number) => {
-    const x0 = A.reaches[k];
+  /** Crosses reach `x0` of ring `ring`: right (`dir` 1) from the bank before it, or left (-1) from the bank after it. */
+  const wave = async (x0: number, ring: number, dir: 1 | -1, row: number, what: string) => {
     const x1 = x0 + A.width - 1;
-    // the swell's first picture in the direction that carries Tess right (states 1 and 2 are the first way, 3 and 4 the other)
-    const first = FORD_RINGS[k].dirs[0] === 1 ? 1 : 3;
-    const ready = book.n(`f${k}_${first}`);
-    await must(bot, bot.walk(x0 - 1, `the bank before reach ${k + 1}`), `to the bank before reach ${k + 1}`);
-    await watchFor(bot, () => shownAt(bot, x0, G9 - 1) === ready, `the wave at reach ${k + 1} leaning right`, 700);
-    await step(bot, 'right', 6, `into the wave at reach ${k + 1}`);
-    await watchFor(bot, () => bot.px.x / 20 >= x1 + 1, `the wave carrying Tess over reach ${k + 1}`, 300);
+    // the swell's first picture in the direction wanted (states 1 and 2 are the ring's first way, 3 and 4 the other)
+    const first = FORD_RINGS[ring].dirs[0] === dir ? 1 : 3;
+    const ready = book.n(`f${ring}_${first}`);
+    const bank = dir > 0 ? x0 - 1 : x1 + 1;
+    await must(bot, bot.walk(bank, `the bank before ${what}`), `to the bank before ${what}`);
+    await watchFor(bot, () => shownAt(bot, x0, row - 1) === ready, `the wave at ${what} leaning ${dir > 0 ? 'right' : 'left'}`, 700);
+    await step(bot, dir > 0 ? 'right' : 'left', 6, `into the wave at ${what}`);
+    const over = () => (dir > 0 ? bot.px.x / 20 >= x1 + 1 : bot.px.x / 20 <= x0 - 1);
+    await watchFor(bot, over, `the wave carrying Tess over ${what}`, 300);
     await must(bot, bot.wait(30), 'landing on the far bank');
-    if (bot.px.x / 20 < x1 + 1 || Math.round(bot.px.y / 20) !== G9 - 1) throw new Error(`reach ${k + 1} left Tess at ${bot.px.x / 20}, ${bot.px.y / 20}`);
+    if (!over() || Math.round(bot.px.y / 20) !== row - 1) throw new Error(`${what} left Tess at ${bot.px.x / 20}, ${bot.px.y / 20}`);
   };
-  const stops: Stop[] = [
+  const walkTo = (x: number): Stop => [x, () => must(bot, bot.walk(x, 'a post or an acorn'), `to ${x}`)];
+  const lower: Stop[] = [
     [at.ford, () => readAt(bot, at.ford + 1, 'the ford sign')],
     [at.wrong, () => readAt(bot, at.wrong + 1, 'the wrong way sign')],
-    [at.almost, () => readAt(bot, at.almost + 1, 'the last sign')],
     // (a wave may carry Tess over one of these as she lands, so they are checked by the level's total)
-    ...[...A.posts, ...A.acorns].map((x): Stop => [x, () => must(bot, bot.walk(x, 'a post or an acorn'), `to ${x}`)]),
+    ...[...A.posts, ...A.acorns].map(walkTo),
     [A.pie, () => must(bot, bot.walk(A.pie, 'the pie'), 'to the pie')],
-    ...A.reaches.map((x0, k): Stop => [x0 - 1.5, () => cross(k)]),
+    ...A.reaches.map((x0, k): Stop => [x0 - 1.5, () => wave(x0, k, 1, G9, `reach ${k + 1}`)]),
   ];
-  await inOrder(stops);
-  score(bot, from, A.posts.length * POINTS.blaze + A.acorns.length * POINTS.acorn, 'the ford');
-  await leave(bot, bot.walk(A.exit + 1, 'the exit'), 'the exit');
+  await inOrder(lower);
+  // up the ladder to the upper ford
+  await must(bot, bot.walk(A.ladder - 1, 'the ladder'), 'to the ladder');
+  await must(bot, bot.walk(A.ladder, 'the ladder'), 'onto the ladder');
+  await must(bot, bot.climb('up', GU - 1, 'up the ladder'), 'up the ladder');
+  await must(bot, bot.walk(U.right, 'off the ladder'), 'off the ladder');
+  const upper: Stop[] = [
+    [at.upper, () => readAt(bot, at.upper + 1, 'the upper ford sign')],
+    [at.almost, () => readAt(bot, at.almost + 1, 'the last sign')],
+    ...[...U.posts, ...U.acorns].map(walkTo),
+    [U.pie, () => must(bot, bot.walk(U.pie, 'the pie'), 'to the pie')],
+    ...U.reaches.map((x0, k): Stop => [x0 + A.width + 0.5, () => wave(x0, U.rings[k], -1, GU, `upper reach ${k + 1}`)]),
+  ];
+  upper.sort((a, b) => b[0] - a[0]);
+  for (const [, go] of upper) await go();
+  score(bot, from, (A.posts.length + U.posts.length) * POINTS.blaze + (A.acorns.length + U.acorns.length) * POINTS.acorn, 'the ford');
+  await leave(bot, bot.walk(A.exit - 1, 'the exit'), 'the exit');
 }
