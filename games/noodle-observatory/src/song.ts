@@ -4,9 +4,11 @@
 //   orbit    "Uphill, Of Course": a rolling tune in G for the pantry and the rooftop chase
 //   glass    "Sharper, Stranger": a quiet, glassy tune in A minor for the lens room and the dark loft
 //   supper   "Next Door's Moon": a cheerful kitchen melody in C for the supper, the reveal and the ending
+//   snow     "Tablecloth Trail": a hushed tune in D minor for the snowy yards after the reveal
+//   oven     "Night Shift": a warm, unhurried tune in B-flat for the bakery while the bread rises
 import { starterSong } from '../../kit/starter/songStyle';
 
-export const SONGS = ['theme', 'orbit', 'glass', 'supper'] as const;
+export const SONGS = ['theme', 'orbit', 'glass', 'supper', 'snow', 'oven'] as const;
 export type SongName = (typeof SONGS)[number];
 
 const theme = () =>
@@ -61,7 +63,33 @@ const supper = () =>
     },
   });
 
+const snow = () =>
+  starterSong('story', {
+    bpm: 92,
+    A: {
+      chords: 'Dm | Bb | F | C | Dm | Bb | Gm A | Dm',
+      tune: 'A5 q, D6 q, F6 q, E6 q | D6 h, Bb5 h | C6 q, A5 q, F5 q, A5 q | G5 h, E5 h | A5 e, D6 e, F6 q, A6 q, F6 q | G6 q, F6 q, D6 h | Bb5 q, D6 q, C#6 q, E6 q | D6 h., r q',
+    },
+    B: {
+      chords: 'Bb | F | Gm | A | Bb | F | Gm A | Dm',
+      tune: 'F6 q, D6 q, Bb5 h | C6 q, F6 q, A6 h | G6 q, D6 q, Bb5 q, D6 q | C#6 h, A5 h | D6 q, F6 q, Bb6 q, F6 q | A6 q, F6 q, C6 h | Bb5 q, D6 q, E6 q, C#6 q | D6 w',
+    },
+  });
+
+const oven = () =>
+  starterSong('together', {
+    bpm: 108,
+    A: {
+      chords: 'Bb | Gm | Eb | F | Bb | Gm | Eb F | Bb',
+      tune: 'F5 e, Bb5 e, D6 q, F6 q, D6 q | G6 q, D6 q, Bb5 h | Eb6 q, G6 q, Bb6 q, G6 q | F6 h, C6 h | Bb5 e, D6 e, F6 q, Bb6 q, F6 q | G6 q, Bb5 q, D6 h | Eb6 q, C6 q, F6 q, A5 q | Bb5 h., r q',
+    },
+    B: {
+      chords: 'Eb | Bb | Cm | F | Eb | Bb | Cm F | Bb',
+      tune: 'G6 q, Eb6 q, Bb5 h | D6 q, F6 q, Bb6 h | C6 q, Eb6 q, G6 q, Eb6 q | F6 h, A5 h | Bb5 q, Eb6 q, G6 q, Bb6 q | F6 q, D6 q, Bb5 h | C6 q, Eb6 q, A5 q, C6 q | Bb5 w',
+    },
+  });
+
 /** A song as a .CMF file. */
 export function song(name: SongName): Uint8Array {
-  return { theme, orbit, glass, supper }[name]();
+  return { theme, orbit, glass, supper, snow, oven }[name]();
 }

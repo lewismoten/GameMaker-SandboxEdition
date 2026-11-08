@@ -32,7 +32,7 @@ export function buildGame(levels: Level[]): Game {
   levels.forEach((l, i) => {
     const scene = emptyScene(ADVTYPE);
     scene.desc = l.title.slice(0, 19);
-    scene.pos = { x: 30 + (i % 7) * 50, y: 80 + Math.floor(i / 7) * 60 };
+    scene.pos = { x: 20 + (i % 8) * 38, y: 60 + Math.floor(i / 8) * 26 };
     const ch = l.hero === 'ring' ? 'ring' : 'nell';
     scene.files = [
       `${l.file}.pal`,
