@@ -15,3 +15,6 @@ A Special (a limited-time game): seventeen levels, three of them scenes you watc
 - `seams.ts`: lists cells where sky meets a neighbor's picture on two opposite sides (a prop showing sky where the
   mountain, a wall or the earth should be behind it). The few it still lists are ladders through thin floors and
   posts beside a slope's edge, which are right.
+- `joins.ts`: lists art that doesn't meet: ladders, posts, legs and braces whose bottom edge stops over sky, a ladder
+  through a floor drawn without the floor behind it, a ladder whose rails end in the air with no cap, and a beam that
+  stops one cell short of a wall. Exits 1 if it finds any.
