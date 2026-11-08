@@ -211,7 +211,7 @@ function lawn(pal: Pal): Level {
   m.sign(53, onGround(s.chat), s.chat);
   m.sign(AT.lawn.gate - 6, onGround(s.gate), s.gate);
   m.wallToSky(AT.lawn.gate);
-  return { file: 'lawn', title: 'Payback', hero: 'plume', hint: 'Mr. Plume has heard about the flyer.', mood: 'lawn', song: 'payback.cmf', book, map: m, timed: [], width: 86 };
+  return { file: 'lawn', title: 'Payback', hero: 'plume', hint: 'He has read the flyer.', mood: 'lawn', song: 'payback.cmf', book, map: m, timed: [], width: 86 };
 }
 
 /** 3. Gravy Slide (Rory): Mr. Okafor's kitchen to Aunt Marjorie's. */
@@ -399,7 +399,7 @@ function dash(pal: Pal): Level {
     file: 'dash',
     title: 'Big Gobble',
     hero: 'plume',
-    hint: 'Five kicks before the parade starts.',
+    hint: 'Five kicks. One parade.',
     mood: 'parade',
     song: 'payback.cmf',
     book,

@@ -42,7 +42,7 @@ export const SPECIALS: readonly Special[] = [
     id: 'pass-the-pie',
     window: { day: { on: 'nth', month: 11, weekday: 4, n: 4 }, days: 4 },
     arrival: 'library',
-    theme: 'Thanksgiving: the street cooks the dinner and you carry it',
+    theme: 'Thanksgiving: a storybook dinner run, and a turkey with a grudge',
   },
   {
     id: 'mountain-next-door',

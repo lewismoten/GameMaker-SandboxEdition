@@ -55,14 +55,14 @@ export function addPrintBlocks(book: Book, pal: Pal): void {
     book.add('edge', p, { ...AIR, solid: SOLID });
   }
   {
-    // a carved cloud: a paper-white shape with a spiral cut in it, two blocks wide
+    // a carved cloud: a paper-white shape with curls cut along it, two blocks wide
     const p = paperBlock(pal, 40, 20, 9);
     const c = new Pixels(40, 20, T);
     oval(c, 12, 12, 9, 6, paper[3]);
     oval(c, 22, 9, 9, 7, paper[3]);
     oval(c, 30, 13, 7, 5, paper[3]);
     const out = stamp(pal, c);
-    out.ring(21, 10, 3, ink[1]).rect(21, 10, 2, 1, ink[1]);
+    out.line(15, 6, 25, 6, ink[1]).line(25, 6, 28, 8, ink[1]); // a carved curl along the top
     out.line(6, 16, 14, 16, ink[1]);
     p.blit(out, 0, 0, T);
     book.add('cloudL', p.crop(0, 0, 20, 20), AIR);
@@ -131,7 +131,7 @@ export function addPrintBlocks(book: Book, pal: Pal): void {
     const d = new Pixels(20, 40, T);
     d.rect(2, 6, 16, 34, acc[1]).rect(4, 8, 12, 30, acc[2]);
     oval(d, 10, 15, 4, 4, paper[3]);
-    d.rect(10, 11, 1, 9, ink[0]).rect(6, 15, 9, 1, ink[0]);
+    d.rect(7, 14, 7, 1, paper[1]); // a glint across the glass
     d.rect(5, 24, 10, 6, acc[1]).rect(5, 31, 10, 6, acc[1]);
     d.disc(14, 28, 1, acc2[2]);
     d.rect(5, 0, 10, 4, ink[0]).rect(10, 1, 3, 2, paper[3]).set(13, 2, paper[3]).set(12, 0, paper[3]).set(12, 3, paper[3]);

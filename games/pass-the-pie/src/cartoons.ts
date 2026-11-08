@@ -170,17 +170,19 @@ export function paybackFli(pal: Pal): Uint8Array {
     });
   for (let c = 1; c <= 4; c++) reel.add(flyer(pal, c), 2);
   // the hat comes down
+  const HAT = 10; // the hat's rows of the head block
+  const bare = glare.crop(0, 0, 20, 40).map((_x, y, c) => (y < HAT ? T : c));
+  const hat = glare.crop(0, 0, 20, HAT);
   for (let k = 0; k <= 6; k++)
     reel.frame(black, (p) => {
       p.rect(0, 150, W, 50, acc[0]);
-      scaleBlit(p, glare.crop(0, 20, 20, 20), 100, 80, 6);
-      const hat = glare.crop(0, 0, 20, 20);
-      scaleBlit(p, hat, 100, -120 + k * 33, 6);
+      scaleBlit(p, bare, 100, -40, 6);
+      scaleBlit(p, hat, 100, -100 + k * 10, 6);
     });
   reel.frame(black, (p) => {
     p.rect(0, 150, W, 50, acc[0]);
     scaleBlit(p, glare, 100, -40, 6);
-    bubble(p, pal, ['TWELVE. YEARS.'], 230, 30);
+    bubble(p, pal, ['TWELVE. YEARS.'], 56, 30);
   }, 22);
   // PAYBACK, stamped
   for (const [dx, dy, hold] of [
@@ -192,7 +194,7 @@ export function paybackFli(pal: Pal): Uint8Array {
     reel.frame(black, (p) => {
       p.rect(0, 0, W, H, acc[1]);
       hatch(p, 0, 0, W, H, acc[0], 4);
-      scaleBlit(p, kick, 196, 20, 4);
+      scaleBlit(p, kick, 244, 30, 4);
       text(p, 18 + dx + 3, 70 + dy + 3, 'PAYBACK', ink[0], 4);
       text(p, 18 + dx, 70 + dy, 'PAYBACK', acc2[3], 4);
     }, hold);

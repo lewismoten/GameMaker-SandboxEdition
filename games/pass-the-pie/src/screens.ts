@@ -168,9 +168,9 @@ export function cardFli(pal: Pal, bytes: Uint8Array, hero: Hero, part: number, t
     for (let k = 0; k <= 8; k++) reel.frame(black, (p) => page(p, Math.round(((8 - k) * (8 - k) * W) / 64)), 1);
     const full = (p: Pixels) => {
       page(p, 0);
-      centered(p, 40, `CHAPTER ${part}`, ink[1]);
-      centered(p, 60, name, ink[0], name.length * 16 <= 240 ? 2 : 1);
-      centered(p, 86, hint, ink[1]);
+      centered(p, 36, `CHAPTER ${part}`, ink[1]);
+      centered(p, 52, name, ink[0], name.length * 16 <= 240 ? 2 : 1);
+      centered(p, 76, hint, ink[1]);
       standing(p, pose, 140, 170, 2);
     };
     reel.frame(black, full, 46);
@@ -178,7 +178,7 @@ export function cardFli(pal: Pal, bytes: Uint8Array, hero: Hero, part: number, t
     const slash = (p: Pixels, k: number) => {
       for (let i = 0; i < Math.min(k, 6); i++) {
         const y0 = 30 + i * 4;
-        p.line(0, y0 + 120, Math.round((W * Math.min(k, 6)) / 6), y0 - 10, acc[1]);
+        for (let t = 0; t < 3; t++) p.line(0, y0 + 120 + t, Math.round((W * Math.min(k, 6)) / 6), y0 - 10 + t, acc[1]);
       }
     };
     for (let k = 1; k <= 6; k++) reel.frame(black, (p) => slash(p, k), 1);
@@ -187,11 +187,11 @@ export function cardFli(pal: Pal, bytes: Uint8Array, hero: Hero, part: number, t
       hatch(p, 0, 0, W, H, acc[0], 4);
       p.rect(0, 112 + dy, W, 88, ink[0]);
       text(p, 16 + dx, 20 + dy, `PAYBACK PART ${part}`, acc2[3], 1);
-      const s = name.length * 24 <= 300 ? 3 : 2;
-      text(p, 16 + dx + 2, 40 + dy + 2, name, ink[0], s);
-      text(p, 16 + dx, 40 + dy, name, pp[3], s);
-      text(p, 16, 124, hint, pp[3]);
-      standing(p, pose, 216, 196, 4);
+      const s = name.length * 24 <= 228 ? 3 : 2;
+      text(p, 12 + dx + 2, 40 + dy + 2, name, ink[0], s);
+      text(p, 12 + dx, 40 + dy, name, pp[3], s);
+      text(p, 12, 124, hint, pp[3]);
+      standing(p, pose, 246, 196, 3);
     };
     for (const [dx, dy] of [
       [4, -3],
