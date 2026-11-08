@@ -5,6 +5,8 @@
 //   next.mon     the prologue: fog that waits, then drifts off in four waves; Mr. Hale and Mrs. Okoro, each
 //                walking out, stopping to look (a bubble) and walking back; nothing hurts
 //   hollow.mon   sunset at the empty spot: the sun sinks in four steps and is gone; Nutmeg; Wisp's raindrops
+//   street.mon   the sleeping town: Old Mossback walking (ten monsters) from the empty lot along the street behind Tess
+//   ford.mon     the same walk to the river, wading across it behind her
 //   picnic.mon   the next morning: the sun rises, the neighbors walk up to the picnic and stay; Wisp floats in
 // An ACT is one monster; the next act is the monster it BECOMES when its path or lifetime runs out
 // (code/GM/PLAYGAME.C: MonEndPath and KillMon; see games/scripted/src/monsters.ts).
@@ -14,6 +16,7 @@ import { corner, mon, pace } from '@lewismoten/gamemaker-sandbox-tools/kit/actor
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { Book } from '../../kit/starter/book';
 import type { Pal } from '../../kit/starter/palette';
+import { WALKER_PIECES, walkerPiece } from './art/walker';
 import { HALE, LIN, OKORO, bigEye, bigMouth, bubble, fogPuff, mist, glowWorm, hen, neighborBottom, neighborTop, pebble, squirrel, sun, wisp } from './art/folk';
 
 /** Powers of 100 or more cannot be popped by touching Tess (PLAYGAME.C DoCollision). */
@@ -57,6 +60,7 @@ export function monsterPictures(pal: Pal): Book {
   for (const how of ['open', 'blink', 'shut'] as const) bigEye(pal, how).forEach((pic, i) => mb.add(`eye.${how}${i}`, pic));
   bigMouth(pal, false).forEach((pic, i) => mb.add(`mouth.smile${i}`, pic));
   bigMouth(pal, true).forEach((pic, i) => mb.add(`mouth.yawn${i}`, pic));
+  for (const piece of WALKER_PIECES) mb.add(piece, walkerPiece(pal, piece));
   return mb;
 }
 
@@ -265,10 +269,59 @@ export function picnicSet(mb: Book): Monster[] {
 /** Ticks until Wisp has floated in and settled on top. */
 export const WISP_HOME = PICNIC.wisp0 + 8 * BLOCK_TICKS + 20;
 
+/** One leg of a walk: [blocks right, blocks down, speed (pixels a tick)]. */
+export type Leg = readonly [number, number, number];
+
+/**
+ * Old Mossback walking, as ten monsters standing still for `wait` ticks and then taking the same legs: slot `piece`
+ * waits, `8 + piece` walks and `16 + piece` stays where the walk ends (the pieces are in art/walker.ts).
+ */
+function walker(set: Monster[], mb: Book, wait: number, legs: readonly Leg[]): void {
+  WALKER_PIECES.forEach((name, i) => {
+    set[i] = mon(still(mb, name), { ...actor, end: wait, newmon: 8 + i });
+    set[8 + i] = mon(still(mb, name), { ...actor, thru: 0, end: -1, newmon: 16 + i }, [...legs.map(([dx, dy, s]) => corner(dx, dy, s, 0)), corner(0, 0, 0)]);
+    set[16 + i] = mon(still(mb, name), { ...actor, end: -2 });
+  });
+}
+
+/** The monster slots of the walking mountain: its cells are in art/walker.ts; a cell's slot is `WALKER_SLOT[piece]`. */
+export const WALKER_SLOT: Record<(typeof WALKER_PIECES)[number], number> = Object.fromEntries(WALKER_PIECES.map((p, i) => [p, i])) as never;
+
+/** The mountain's walk along the sleeping town's street: it waits, then goes at the pace of a very large neighbor. */
+export const STREET_WALK: { wait: number; legs: Leg[] } = {
+  wait: 160,
+  legs: [
+    [30, 0, 2],
+    [35, 0, 2],
+    [35, 0, 2],
+    [24, 0, 2],
+  ],
+};
+/** The mountain's walk to the river and across it. */
+export const FORD_WALK: { wait: number; legs: Leg[] } = {
+  wait: 200,
+  legs: [
+    [18, 0, 2],
+    [60, 0, 1],
+    [30, 0, 2],
+  ],
+};
+
 /** Each monster file by name (a level's `mon`). */
-export const MON_SETS: Record<'trail' | 'next' | 'hollow' | 'picnic', (mb: Book) => Monster[]> = {
+export const MON_SETS: Record<MonName, (mb: Book) => Monster[]> = {
   trail: (mb) => trailSet(mb),
   next: nextSet,
   hollow: hollowSet,
   picnic: picnicSet,
+  street: (mb) => {
+    const set = newMonsterSet();
+    walker(set, mb, STREET_WALK.wait, STREET_WALK.legs);
+    return set;
+  },
+  ford: (mb) => {
+    const set = newMonsterSet();
+    walker(set, mb, FORD_WALK.wait, FORD_WALK.legs);
+    return set;
+  },
 };
+export type MonName = 'trail' | 'next' | 'hollow' | 'picnic' | 'street' | 'ford';

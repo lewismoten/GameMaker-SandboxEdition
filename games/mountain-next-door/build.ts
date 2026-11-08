@@ -24,7 +24,7 @@ import { demoRecording } from './src/demo';
 import { TITLE, buildGame } from './src/game';
 import { finishBlocks } from './src/level';
 import { buildLevels } from './src/levels';
-import { finishMonsterPictures, hollowSet, monsterPictures, nextSet, picnicSet, trailSet } from './src/monsters';
+import { MON_SETS, finishMonsterPictures, hollowSet, monsterPictures, nextSet, picnicSet, trailSet } from './src/monsters';
 import { lookOf } from './src/palette';
 import { restage } from './src/art/vista';
 import { storyCard, titlePicture } from './src/pictures';
@@ -33,6 +33,8 @@ import { SONGS, song } from './src/song';
 import { buildTessBlocks, tessPicture } from './src/tess';
 import { CARDS, CREDITS, HOWTO, LOST, STORY, WON } from './src/text';
 import { EXCUSE, EXCUSE_COUNTER, excuseVoc, nextSounds } from './src/voice';
+import { BEAD_COUNTER } from './src/props';
+import { fordSounds, mistSounds, townSounds } from './src/sounds';
 
 /** Hit points and lives at the start (a pebble's bump takes five). */
 const HERO_HIT_POINTS = 50;
@@ -55,15 +57,21 @@ const heroChar = buildHero(heroBlocks);
 heroChar.meter[0] = HERO_HIT_POINTS;
 heroChar.meter[1] = HERO_LIVES;
 heroChar.meter[EXCUSE_COUNTER] = 1; // a counter (not unlimited), so touching the mountain's trigger plays its voice (voice.ts)
+heroChar.meter[BEAD_COUNTER] = 1; // the same for a bead of mist (props.ts)
 disk.put('tess.chr', serializeCharacter(heroChar));
 disk.put('mount.mbl', serializeBlocks(finishMonsterPictures(mb)));
 disk.put('trail.mon', serializeMonsters(trailSet(mb)));
 disk.put('next.mon', serializeMonsters(nextSet(mb)));
 disk.put('hollow.mon', serializeMonsters(hollowSet(mb)));
 disk.put('picnic.mon', serializeMonsters(picnicSet(mb)));
+disk.put('street.mon', serializeMonsters(MON_SETS.street(mb)));
+disk.put('ford.mon', serializeMonsters(MON_SETS.ford(mb)));
 disk.put('mount.snd', serializeSoundSet(buildSounds()));
 // level 1's own sounds: the mountain's "excuse me" (voice.ts)
 disk.put('next.snd', serializeSoundSet(nextSounds()));
+disk.put('mist.snd', serializeSoundSet(mistSounds()));
+disk.put('town.snd', serializeSoundSet(townSounds()));
+disk.put('ford.snd', serializeSoundSet(fordSounds()));
 disk.put(`${EXCUSE}.voc`, excuseVoc());
 for (const s of SONGS) disk.put(`${s}.cmf`, song(s));
 

@@ -20,6 +20,11 @@
 //              boardUp/boardHalf/boardGone/boardBack (a loose board, on the stones' clock)
 //   roofs      roof/roof2 (slates: stand on them), pot (slates with a chimney pot), stack (a chimney: solid),
 //              puff0..5 then puffOff (warm smoke that lifts you, on a clock), flake (Wisp's snow: take it)
+//   mist       dellAir (the haze inside a dell), bead (a bead of Wisp's mist: take it), mist0..5 steps (u, h, g, r: a step of cloud
+//              to stand on that thins, goes and comes back, each on its own clock so they stack up the dell's wall in turn)
+//   street     stackTop/stackBot (recycling bins) and sheetTop/sheetBot (a washing line): bump them and they give way; swing0/1
+//              and swingOpen0/1 (a yard gate on a clock); dark0..4 (a window that lights on its own clock); excuse (a trigger)
+//   ford       f0_0.. f2_9 (the river's swell, five rings: calm, one way, the other, calm), bankStep (stairs out of the water)
 //   high       screeUp/screeHalf/screeUnder/screeRise (wobbly rocks in a path, on the stones' clock), dent0..2 (the summit's damp dent: a ledge)
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { KEYS } from '../../kit/starter/blocks';
@@ -58,10 +63,15 @@ import { drift, potSlates, puff, slates, stack } from './art/roofs';
 import { brace, calm, lamp, landing, leg, railing, shingles } from './art/tower';
 import { desk, floorboard, libWindow, lostBook, shelf, shelfGap } from './art/library';
 import { houseDoor } from './art/exits';
+import { bead, dellAir, mistStep } from './art/meadow';
+import { binStack, sheet, yardGate } from './art/street';
+import { bankStep, swell } from './art/ford';
 import { EXCUSE_COUNTER } from './voice';
 
 /** Points: a painted blaze, an acorn, a gate taken off the mountain, a gate put back home. */
-export const POINTS = { blaze: 10, acorn: 5, gate: 25, home: 25, lantern: 10, book: 10, shelved: 20, flake: 5 } as const;
+export const POINTS = { blaze: 10, acorn: 5, gate: 25, home: 25, lantern: 10, book: 10, shelved: 20, flake: 5, bead: 10, clear: 15 } as const;
+/** The counter a bead of mist adds to (like the mountain's, it starts at 1 so each bead chimes: build.ts). */
+export const BEAD_COUNTER = 24;
 /** Hit points a slice of pie gives back. */
 export const PIE_HP = 10;
 /** The counter a gate adds to while Tess carries it (the kit's key counter). */
@@ -78,6 +88,24 @@ export interface Timed {
 export const STONE_TICKS = { up: 80, half: 10, under: 30, rise: 10 } as const;
 /** Ticks each picture of a chimney's puff shows, and the still air between puffs. */
 export const PUFF_TICKS = { frame: 9, off: 90 } as const;
+/** The mist steps' clock: one cycle's ticks, and step k is gone for `first + gap * k` of it before it comes up (so they stack up in turn). */
+export const MIST_STEPS = { period: 230, first: 10, gap: 20, count: 6 } as const;
+/** The windows that light as the mountain squeezes by: ticks until each of the five goes on. */
+export const STREET_WINDOWS = [320, 470, 850, 1020, 1220] as const;
+/** The yard gate: ticks shut, ticks open. */
+export const GATE_TICKS = { shut: 110, open: 90 } as const;
+/**
+ * The ford's swells, one ring per reach: ticks of calm before, the two directions it runs in turn (2 frames of
+ * `SWELL_FRAME` ticks each), and the calm after (the two calms add up to 120, so a cycle is 280 ticks).
+ */
+export const FORD_RINGS = [
+  { before: 110, after: 10, dirs: [1, -1] },
+  { before: 50, after: 70, dirs: [1, -1] },
+  { before: 80, after: 40, dirs: [-1, 1] },
+  { before: 20, after: 100, dirs: [1, -1] },
+  { before: 95, after: 25, dirs: [-1, 1] },
+] as const;
+export const SWELL_FRAME = 40;
 /** Ticks each arrow points one way before the squirrel turns it. */
 export const ARROW_TICKS = 70;
 
@@ -165,6 +193,12 @@ export function addProps(book: Book, pal: Pal, groups: readonly string[], o: Pro
     book.add('printL', print(pal, 'L'), { solid: SOLID });
     book.add('printM', print(pal, 'M'), { solid: SOLID });
     book.add('printR', print(pal, 'R'), { solid: SOLID });
+    book.add('acorn', acorn(pal), { ...air, score: POINTS.acorn, touch: 'sky' });
+    book.add('pie', pie(pal), { ...air, hp: PIE_HP, touch: 'sky' });
+  }
+  if (has('pickups')) {
+    book.add('post', post(pal, false), { ...air, score: POINTS.blaze, touch: 'postBlazed' });
+    book.add('postBlazed', post(pal, true), air);
     book.add('acorn', acorn(pal), { ...air, score: POINTS.acorn, touch: 'sky' });
     book.add('pie', pie(pal), { ...air, hp: PIE_HP, touch: 'sky' });
   }
@@ -285,6 +319,53 @@ export function addProps(book: Book, pal: Pal, groups: readonly string[], o: Pro
     book.add('puffOff', puff(pal, -1), air);
     loop([...puffs, 'puffOff'], [...puffs.map(() => PUFF_TICKS.frame), PUFF_TICKS.off]);
     book.add('flake', drift(pal), { ...air, score: POINTS.flake, touch: 'sky' });
+  }
+  if (has('mist')) {
+    book.add('dellAir', dellAir(pal), air);
+    book.add('bead', bead(pal), { ...air, score: POINTS.bead, effect: BEAD_COUNTER, eamt: 1, touch: 'sky' });
+    book.add('beadDell', bead(pal, true), { ...air, score: POINTS.bead, effect: BEAD_COUNTER, eamt: 1, touch: 'dellAir' });
+    const { period, first, gap, count } = MIST_STEPS;
+    for (let k = 0; k < count; k++) {
+      const gone = first + gap * k;
+      book.add(`mist${k}u`, mistStep(pal, 'up'), { solid: LEDGE, grav: PULL.down });
+      book.add(`mist${k}h`, mistStep(pal, 'half'), air);
+      book.add(`mist${k}g`, mistStep(pal, 'gone'), air);
+      book.add(`mist${k}r`, mistStep(pal, 'half'), air);
+      loop([`mist${k}u`, `mist${k}h`, `mist${k}g`, `mist${k}r`], [period - 20 - gone, 10, gone, 10]);
+    }
+  }
+  if (has('street')) {
+    book.add('stackBot', binStack(pal, 0), { solid: SOLID, score: POINTS.clear, touch: 'excuse' });
+    book.add('stackTop', binStack(pal, 2), { solid: SOLID, score: POINTS.clear, touch: 'sky' });
+    book.add('sheetTop', sheet(pal, 0), { solid: SOLID, score: POINTS.clear, touch: 'sky' });
+    book.add('sheetBot', sheet(pal, 2), { solid: SOLID, score: POINTS.clear, touch: 'sky' });
+    for (const k of [0, 1] as const) {
+      book.add(`swing${k}`, yardGate(pal, k === 0 ? 0 : 2, false), { solid: SOLID });
+      book.add(`swingOpen${k}`, yardGate(pal, k === 0 ? 0 : 2, true), air);
+      loop([`swing${k}`, `swingOpen${k}`], [GATE_TICKS.shut, GATE_TICKS.open]);
+    }
+    STREET_WINDOWS.forEach((t, k) => {
+      book.add(`dark${k}`, windowOn(pal, 'parch', false), air);
+      timed.push({ name: `dark${k}`, next: 'windowLit', ticks: t });
+    });
+    book.add('excuse', book.pics.get('sky') as Pixels, { ...air, effect: EXCUSE_COUNTER, eamt: 1, touch: 'sky' });
+  }
+  if (has('ford')) {
+    book.add('bankStep', bankStep(pal), { solid: SOLID });
+    book.add('waterTop', water(pal, true, 0), air);
+    book.add('waterTop2', water(pal, true, 1), air);
+    book.add('water', water(pal, false, 0), air);
+    book.add('bed', bed(pal), { solid: SOLID });
+    loop(['waterTop', 'waterTop2'], 9);
+    FORD_RINGS.forEach((ring, k) => {
+      const names = Array.from({ length: 6 }, (_v, i) => `f${k}_${i}`);
+      names.forEach((n, i) => {
+        if (i === 0 || i === 5) return book.add(n, book.pics.get('sky') as Pixels, air);
+        const dir = ring.dirs[i <= 2 ? 0 : 1];
+        book.add(n, swell(pal, dir, (i - 1) % 2), { grav: dir > 0 ? PULL.right : PULL.left });
+      });
+      loop(names, [ring.before, SWELL_FRAME, SWELL_FRAME, SWELL_FRAME, SWELL_FRAME, ring.after]);
+    });
   }
   if (has('picnic')) {
     for (const part of ['L', 'M', 'R'] as const) book.add(`blanket${part}`, blanket(pal, part), air);
