@@ -96,7 +96,7 @@ export const ROOMS: Record<string, RoomSpec> = {
     width: 52,
     tilt: true,
     signs: {
-      brackets: ['THREE BRACKETS ARE UP ON THE SHELVES.', 4, 3],
+      brackets: ['THREE BRACKETS, SIX WOBBLY SHELVES. FAIR.', 4, 3],
       wobble: ['SHELVES WOBBLE, THEN TIP. WAIT TILL LEVEL.', 4, 3],
     },
     plan: [
@@ -121,7 +121,7 @@ export const ROOMS: Record<string, RoomSpec> = {
     width: 50,
     signs: {
       shapes: ['A KNOB, A FOOT AND A TUBE. MATCH EACH SHAPE.', 4, 3],
-      round: ['A ROUND MOON. AS ROUND AS A WINDOW.', 4, 3],
+      round: ['A ROUND MOON. AS ROUND AS A WINDOW. HM.', 4, 3],
     },
     plan: [
       { t: 'sign', x: 3, key: 'shapes' },
@@ -144,7 +144,7 @@ export const ROOMS: Record<string, RoomSpec> = {
     place: 'cupboard',
     song: 'theme',
     width: 60,
-    signs: { six: ['SIX PARTS. SIX SOCKETS. ONE SCOPE.', 4, 3] },
+    signs: { six: ['SIX PARTS. SIX SOCKETS. NO SPARES.', 4, 3] },
     plan: [
       { t: 'sign', x: 3, key: 'six' },
       { t: 'pocket', ladder: 9, row: 6, to: 15, part: at(sTube, 11), up: { ladder: 14, row: 3, to: 18, part: at(sEye, 18), washer: 16 }, back: 'drop' },
@@ -298,7 +298,7 @@ export const ROOMS: Record<string, RoomSpec> = {
     width: 52,
     signs: {
       squares: ['NOW THE SQUARE PADS.', 4, 2],
-      spoons: ['THOSE SPOTS OF LIGHT LOOK LIKE SPOONS.', 4, 3],
+      spoons: ['THOSE STARS LOOK LIKE SPOONS. FINE.', 4, 3],
     },
     plan: [
       { t: 'sign', x: 3, key: 'squares' },
@@ -361,7 +361,7 @@ export const ROOMS: Record<string, RoomSpec> = {
     mon: 'roof',
     width: 58,
     signs: {
-      rolled: ['THE COLANDER ROLLED OUT ONTO THE ROOF!', 4, 3],
+      rolled: ['THE COLANDER HAS LEFT THE KITCHEN.', 4, 3],
       tags: ['RATTLE TAGS OPEN THE GARDEN ARCHES.', 4, 3],
     },
     plan: [
@@ -454,7 +454,7 @@ export const ROOMS: Record<string, RoomSpec> = {
     width: 52,
     signs: {
       supper: ['SUPPER ON THE ROOF. ONE PLATE AT A TIME.', 4, 3],
-      view: ['WHAT A VIEW OF THE MOON.', 4, 2],
+      view: ['WHAT A MOON. SO TO SPEAK.', 4, 2],
     },
     plan: [
       { t: 'sign', x: 3, key: 'supper' },
