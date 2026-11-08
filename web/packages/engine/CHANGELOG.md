@@ -26,7 +26,7 @@ short CMF files, and a recorded Enter on key screens.
 
 - Scroll speed wraps like DOS's 16-bit integers. Damaged FLI and CMF files give a clear error, and progressive JPEGs decode only complete data.
 
-Full list: [changes/releases/engine-3.3.0.md](https://github.com/lewismoten/GameMaker-SandboxEdition/blob/engine-v3.3.0/changes/releases/engine-3.3.0.md)
+Full list: [changes/release/engine/3.3.0.md](https://github.com/lewismoten/GameMaker-SandboxEdition/blob/engine-v3.3.0/changes/release/engine/3.3.0.md)
 
 ## [3.1.0] - 2026-10-29
 

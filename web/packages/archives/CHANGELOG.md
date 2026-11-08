@@ -16,7 +16,7 @@ code. Imports check what FLI, GIF and VOC files really hold and keep the player'
 - A dedicated entry for the complete import scanner, with documented and verified scan-and-select APIs.
 - Importing checks what FLI, GIF and VOC files really hold, and keeps the player's build and author bytes.
 
-Full list: [changes/releases/archives-3.2.0.md](https://github.com/lewismoten/GameMaker-SandboxEdition/blob/archives-v3.2.0/changes/releases/archives-3.2.0.md)
+Full list: [changes/release/archives/3.2.0.md](https://github.com/lewismoten/GameMaker-SandboxEdition/blob/archives-v3.2.0/changes/release/archives/3.2.0.md)
 
 [Unreleased]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/archives-v3.2.0...HEAD
 [3.2.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/releases/tag/archives-v3.2.0

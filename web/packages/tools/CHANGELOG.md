@@ -27,7 +27,7 @@ and side views, block roles, nonsense-talk voices, and tools for FLI shrinking, 
 
 - `kit/gameSim`: a scene with a blank character or character-blocks slot keeps the last scene's, as PLAYGAME's loadscene does.
 
-Full list: [changes/releases/tools-3.4.0.md](https://github.com/lewismoten/GameMaker-SandboxEdition/blob/tools-v3.4.0/changes/releases/tools-3.4.0.md)
+Full list: [changes/release/tools/3.4.0.md](https://github.com/lewismoten/GameMaker-SandboxEdition/blob/tools-v3.4.0/changes/release/tools/3.4.0.md)
 
 ## [3.1.0] - 2026-10-29
 

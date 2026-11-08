@@ -38,7 +38,7 @@ editors are easier on phones, touch screens and keyboards, and pages and the off
 
 - The desk PC's empty expansion bays, and the Corn Maze postcard's unused address lines.
 
-Full list: [changes/releases/pages-3.2.0.md](https://github.com/lewismoten/GameMaker-SandboxEdition/blob/pages-v3.2.0/changes/releases/pages-3.2.0.md)
+Full list: [changes/release/pages/3.2.0.md](https://github.com/lewismoten/GameMaker-SandboxEdition/blob/pages-v3.2.0/changes/release/pages/3.2.0.md)
 
 ## [3.1.0] - 2026-11-02
 
