@@ -2,14 +2,18 @@
 // sunrise). Scenes marked (watch) mostly play by themselves: walk along, read and look.
 //   1. Next Door           (watch) dawn fog lifts off a mountain in the lot next door; it wakes and lifts its toe
 //   2. Gate Hunt           climb the mountain's ledges for four garden gates; carry each home to its garden
-//   3. Footprints          follow the prints back through the misty park; blaze every post and tree
-//   4. Stepping Stones     rain; cross the stream four times on stones that sink and rise on a clock
-//   5. Nutmeg's Signposts  noon; three switchbacks; a squirrel turns the arrows, the blazes tell the truth
-//   6. The Empty Spot      (watch) sunset in the hollow where the mountain stood; stars come out; Wisp is missing
-//   7. Windy Ridge         dusk; an updraft and a gust carry Tess up and over, following Wisp's trail of snow
-//   8. The Low Tunnel      dark; light the lanterns, leave a trail of light; glow-worms; Wisp is hiding here
-//   9. The Zigzag Home     moonlight; five switchbacks up the hill, a blaze on every turn, Wisp following
-//  10. Summit Picnic      (watch) sunrise; the mountain home and sitting down; the neighbors climb up; the doormat
+//   3. Up Mossback's Back  six terraces, wobbly rocks on a clock; at the top no cloud, only a damp dent
+//   4. Footprints          follow the prints back through the misty park; blaze every post and tree
+//   5. The Library         four floors of shelves, overdue books put back, the almanac on mountains and clouds
+//   6. Stepping Stones     rain; cross the stream four times on stones that sink and rise on a clock
+//   7. Nutmeg's Signposts  noon; three switchbacks; a squirrel turns the arrows, the blazes tell the truth
+//   8. The Empty Spot      (watch) sunset in the hollow where the mountain stood; Wisp is missing
+//   9. The Lookout         the last of the light; seven landings, loose boards out of step, the trail seen from the top
+//  10. Windy Ridge         dusk; an updraft and a gust carry Tess up and over, following Wisp's trail of snow
+//  11. Rooftops            after midnight; the snow runs over the roofs; chimney smoke lifts you on a clock
+//  12. The Low Tunnel      dark; light the lanterns, leave a trail of light; glow-worms; Wisp is hiding here
+//  13. The Zigzag Home     moonlight; five switchbacks up the hill, a blaze on every turn, Wisp following
+//  14. Summit Picnic       (watch) sunrise; the mountain home and sitting down; the neighbors climb up; the doormat
 import { buildMountainPalette } from '../palette';
 import type { Level } from '../level';
 import { levelBack } from './back';
