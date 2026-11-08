@@ -2,13 +2,14 @@
 // the 3D-printer parts (the shell STLs of both builds, pack/meshPack's packFiles, which the site zips on a download), a ZIP of the circuit board files (each build's KiCad project, with
 // its Gerbers, which tools/export.sh writes to the tracked gerbers/, and the PIC firmware: phone.asm and its tracked phone.hex
 // to assemble it, which the book's "Programming the PIC" chapter loads), the two parts lists (CSV) and the
-// kit's README and parts lists as Markdown, which the box reads as its instructions book (manual/printables/phoneBook.ts).
-// Run by scripts/build-games.mjs; `cd web && npx vite-node ../games/kit/phoneDownloads.ts` by hand.
+// kit's README and parts lists as Markdown, which the box reads as its instructions book (manual/printables/phoneBook.ts);
+// and the 3D parts the box's phone viewer draws, packed (packParts). Run by scripts/build-games.mjs; `cd web && npx vite-node ../games/kit/phoneDownloads.ts` by hand.
+import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
 import { deflateRawSync } from 'node:zlib';
 import { createZip, type ZipEntry } from '@lewismoten/gamemaker-sandbox-archives/zip';
-import { packFiles } from '@lewismoten/gamemaker-sandbox-tools/pack/meshPack';
+import { packFiles, packFloatsAndIndices } from '@lewismoten/gamemaker-sandbox-tools/pack/meshPack';
 
 const root = resolve(import.meta.dirname, '../..');
 const phone = join(root, 'games/year2000/phone');
@@ -36,9 +37,35 @@ function firmware(dir: string, folder: string): ZipEntry[] {
 
 const text = (name: string, body: string): ZipEntry => ({ name, data: new TextEncoder().encode(body) });
 
+/** The kit's 3D parts for the box's phone viewer (viewer/, committed; the deluxe build's in deluxe/viewer/; read by
+ * web/src/desk/boxes/phone/phoneData.ts): parts.json, naming parts.bin.pack, and parts.bin packed (float32 corners in
+ * byte planes, each part's uint32 corner numbers as varints; byte for byte when unpacked). Made again when either changes. */
+function packParts(): void {
+  for (const b of BUILDS) {
+    const src = join(b.dir, 'viewer');
+    if (!existsSync(join(src, 'parts.json'))) continue;
+    const json = readFileSync(join(src, 'parts.json'), 'utf8');
+    const bin = new Uint8Array(readFileSync(join(src, 'parts.bin')));
+    const source = createHash('sha1').update(json).update(bin).digest('hex').slice(0, 16);
+    try {
+      if (JSON.parse(readFileSync(join(b.out, 'parts.json'), 'utf8')).packSource === source && existsSync(join(b.out, 'parts.bin.pack'))) continue;
+    } catch {
+      // not made yet
+    }
+    const meta = JSON.parse(json) as { floats?: number; parts: { idx: { offset: number } }[] };
+    const starts = meta.parts.map((p) => p.idx.offset);
+    const pack = deflateRawSync(packFloatsAndIndices(bin, meta.floats ?? bin.length / 4, starts), { level: 9 });
+    writeFileSync(join(b.out, 'parts.bin.pack'), pack);
+    rmSync(join(b.out, 'parts.bin'), { force: true });
+    writeFileSync(join(b.out, 'parts.json'), JSON.stringify({ ...meta, packed: 'parts.bin.pack', packSource: source }));
+    console.log(`Phone parts (${b.folder}): ${(bin.length / 1e6).toFixed(1)} MB packed to ${(pack.length / 1e6).toFixed(1)} MB`);
+  }
+}
+
 async function main() {
   if (!existsSync(join(phone, 'kicad'))) return;
   mkdirSync(join(out, 'deluxe'), { recursive: true });
+  packParts();
   const stl: ZipEntry[] = [
     text(
       'READ-ME.txt',

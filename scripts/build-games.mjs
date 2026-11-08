@@ -236,8 +236,9 @@ async function worker() {
     if (!secret) progress(`Built ${id}${timing ? ` in ${times.at(-1)[1].toFixed(1)} s` : ''}`);
   }
 }
-// The kit's downloads (ZIPs of the printer parts and of the circuit board files, the parts lists, the README the box reads as
-// its instructions book) are made beside them (games/kit/phoneDownloads.ts).
+// The Phone of the Future kit's files for the box (games/kit/phoneDownloads.ts): the viewer's 3D parts (games/year2000/phone/
+// viewer, committed) packed into trinkets/phone/ and phone/deluxe/, the printer parts as a pack the site zips, the circuit
+// board ZIP, the parts lists and the README the box reads as its instructions book.
 if (existsSync(join(root, 'games/year2000/phone/kicad')) && (!only.length || only.includes('year2000'))) {
   const phoneStarted = Date.now();
   await runEntry(
@@ -311,10 +312,9 @@ if (!process.env.GM_SKIP_PIXEL_TRINKETS && (!only.length || only.some((id) => id
   if (timing) console.log(`Pixel trinkets: ${made.stdout.trim().split('\n').length} lines (${((Date.now() - started) / 1000).toFixed(1)} s)`);
 }
 // The site serves the trinkets' STLs and 3MFs packed (games/kit/trinketPacks.ts: <file>.pack, made back into the real
-// file in the browser), which keeps the Pages deploy small; a folder already packed costs one manifest read. The same
-// script packs the phone kit's 3D parts (games/year2000/phone/viewer, committed) into trinkets/phone/ and phone/deluxe/,
-// where the box's phone viewer loads them (web/src/desk/boxes/phone/).
-{
+// file in the browser), which keeps the Pages deploy small; a folder already packed costs one manifest read. Left out
+// when both trinket stages are. (The phone kit's 3D parts are packed with its downloads, phoneDownloads.ts, above.)
+if (!(process.env.GM_SKIP_FIELD_TRINKETS && process.env.GM_SKIP_PIXEL_TRINKETS)) {
   const started = Date.now();
   const made = await runEntry(
     'trinket-packs',
