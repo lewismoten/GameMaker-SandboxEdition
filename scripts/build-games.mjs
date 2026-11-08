@@ -323,6 +323,21 @@ if (!process.env.GM_SKIP_PIXEL_TRINKETS && (!only.length || only.some((id) => id
   stage('pixel trinkets', started);
   if (timing) console.log(`Pixel trinkets: ${made.stdout.trim().split('\n').length} lines (${((Date.now() - started) / 1000).toFixed(1)} s)`);
 }
+// The site serves the trinkets' STLs packed (games/kit/trinketPacks.ts: <file>.pack, made back into the real file in the
+// browser), which keeps the Pages deploy small; a folder already packed costs one manifest read.
+if (existsSync(join(root, 'web/public/trinkets'))) {
+  const started = Date.now();
+  const made = await runEntry(
+    'trinket-packs',
+    { file: join(root, 'games/kit/trinketPacks.ts') },
+    '../games/kit/trinketPacks.ts',
+    [],
+    { cwd: join(root, 'web'), maxBuffer: 16 << 20, timeout: 240_000 },
+    'trinket packs',
+  );
+  stage('trinket packs', started);
+  if (timing) console.log(made.stdout.trim().split('\n').at(-1));
+}
 // The laser wooden nickels (games/kit/laserNickels.ts: SVGs and PNG previews in web/public/laser/<game>/) are drawn from the
 // built disks too; a game whose figures, words and builder code are unchanged (a key in its manifest.json) is skipped. A
 // secret game has none.

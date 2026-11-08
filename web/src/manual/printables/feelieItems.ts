@@ -7,6 +7,7 @@ import { h } from '../../editor/core/ui';
 import { loadFeelies, fileSize, sizeText, PHONE_TITLE, type Feelie } from '../../desk/boxes/feelies';
 import { thumbnail } from '../../desk/boxes/feelieThumbs';
 import { phoneBase, variantBase } from '../../desk/boxes/phone/phoneData';
+import { trinketDownload } from '../../desk/boxes/trinketData';
 import { sheet, type Sheet } from './kit';
 import type { BoxItem } from './viewer';
 
@@ -17,6 +18,8 @@ interface Attachment {
   file: string;
   label: string;
   bytes?: number;
+  /** Sets the link up when the site makes the file on demand (a packed trinket file: trinketData.ts). */
+  link?: (a: HTMLAnchorElement) => HTMLAnchorElement;
 }
 
 const mm = (v: number[]) => v.map((n) => Math.round(n)).join(' × ');
@@ -24,12 +27,17 @@ const mm = (v: number[]) => v.map((n) => Math.round(n)).join(' × ');
 /** A trinket's downloads, from its manifest (which has the sizes). */
 function trinketAttachments(f: Extract<Feelie, { kind: 'trinket' }>): Attachment[] {
   const { item, base } = f;
+  const file = (name: string, label: string, bytes: number): Attachment => ({
+    href: `${base}${name}`,
+    file: name,
+    label,
+    bytes,
+    link: (a) => trinketDownload(a, base, item, name),
+  });
   return [
-    { href: `${base}${item.file}`, file: item.file, label: '3D printer parts, one color (STL)', bytes: item.bytes },
-    { href: `${base}${item.colors.file}`, file: item.colors.file, label: '3D printer parts, up to 4 colors (3MF)', bytes: item.colors.bytes },
-    ...(item.supports
-      ? [{ href: `${base}${item.supports.file}`, file: item.supports.file, label: 'Supports for a second material (STL)', bytes: item.supports.bytes }]
-      : []),
+    file(item.file, '3D printer parts, one color (STL)', item.bytes),
+    file(item.colors.file, '3D printer parts, up to 4 colors (3MF)', item.colors.bytes),
+    ...(item.supports ? [file(item.supports.file, 'Supports for a second material (STL)', item.supports.bytes)] : []),
   ];
 }
 
@@ -60,7 +68,8 @@ function attachmentList(list: Attachment[]): HTMLElement {
     ...list.map((a) => {
       const size = h('span', { class: 'fe-size' }, a.bytes ? sizeText(a.bytes) : '');
       if (!a.bytes) void fileSize(a.href).then((n) => (size.textContent = n ? sizeText(n) : ''));
-      return h('li', null, h('a', { class: 'fe-dl', href: a.href, download: a.file }, a.label), size);
+      const link = h('a', { class: 'fe-dl', href: a.href, download: a.file }, a.label);
+      return h('li', null, a.link ? a.link(link) : link, size);
     }),
   );
 }

@@ -172,13 +172,20 @@ describe.skipIf(!existsSync(join(pub, 'laser')))('the files the Feelies offer (b
     expect(kits).toBeGreaterThan(0);
   });
 
-  it('exist for every trinket: its STL, 3MF and supports', () => {
+  it('exist for every trinket: its STL, 3MF and supports (or the pack the site makes each from)', () => {
     for (const id of readdirSync(join(pub, 'trinkets'))) {
       const manifest = join(pub, 'trinkets', id, 'manifest.json');
       if (!existsSync(manifest)) continue;
-      const items = JSON.parse(readFileSync(manifest, 'utf8')).items as { file: string; colors: { file: string }; supports: { file: string } | null }[];
-      for (const it of items)
-        for (const f of [it.file, it.colors.file, it.supports?.file]) if (f) expect(existsSync(join(pub, 'trinkets', id, f)), `trinkets/${id}/${f}`).toBe(true);
+      const m = JSON.parse(readFileSync(manifest, 'utf8')) as {
+        items: { file: string; preview?: string; colors: { file: string }; supports: { file: string } | null }[];
+        packed?: string[];
+      };
+      for (const it of m.items)
+        for (const f of [it.file, it.preview, it.colors.file, it.supports?.file])
+          if (f) {
+            const served = m.packed?.includes(f) ? `${f}.pack` : f;
+            expect(existsSync(join(pub, 'trinkets', id, served)), `trinkets/${id}/${served}`).toBe(true);
+          }
     }
   });
 
