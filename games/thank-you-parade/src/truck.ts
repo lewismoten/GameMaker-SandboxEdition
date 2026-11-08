@@ -90,5 +90,5 @@ export function truck(pal: Pal): Level {
   m.sign(60, onGround(G, s.gigi), s.gigi);
   m.sign(26, onGround(h1.planks[2], s.secret), s.secret);
   m.sign(75, onGround(G, s.exit), s.exit);
-  return { file: 'truck', title: 'The Cannon Truck', hint: "9:40 AM. Gigi's confetti truck.", map: m, book, pal, song: 'drumoff' };
+  return { file: 'truck', title: 'The Cannon Truck', hint: "9:40 AM. Gigi's confetti truck.", map: m, book, pal, song: 'boss' };
 }

@@ -98,7 +98,9 @@ Hand a card to a veteran by walking up with one in hand.
 
 Geese peck. Cannons fire on the beat. A dog takes cards. Watch the drums and the gust meter.
 
-Gigi lost her playbook pages. Four of them are well hidden.
+Gigi lost her playbook pages. Nine of them are well hidden, and a few need a ladder.
+
+Donuts give back a hit point.
 
 |ESC for the menu.
 `);

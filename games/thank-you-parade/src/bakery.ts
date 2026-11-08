@@ -111,6 +111,7 @@ export function bakery(pal: Pal): Level {
     map: m,
     book,
     pal,
+    song: 'rooftop',
     retry: [A.retry, G - 1],
   };
 }

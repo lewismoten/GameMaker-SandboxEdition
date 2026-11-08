@@ -22,7 +22,9 @@ import { cardPicture, endPicture, gif, menuPicture, paperPage, scoresPicture, sl
 import { buildMargeBlocks, buildPennyBlocks, figure } from './src/figure';
 import { finishMonsterPictures, monsterPictures, monsterSet } from './src/monsters';
 import { drumOffSong, margeSong, paradeSounds, song } from './src/sound';
+import { bossSong, rooftopSong } from './src/songs';
 import { CREDITS, HOWTO, LOST, STORY, WON } from './src/text';
+import { STORY_BEATS } from './src/story';
 import { titlePicture } from './src/title';
 
 /** Hit points and lives at the start (a goose costs 1 a moment, a cannon 10). */
@@ -59,6 +61,8 @@ disk.put('parade.snd', serializeSoundSet(paradeSounds()));
 disk.put('parade.cmf', song());
 disk.put('marge.cmf', margeSong());
 disk.put('drumoff.cmf', drumOffSong());
+disk.put('rooftop.cmf', rooftopSong());
+disk.put('boss.cmf', bossSong());
 
 // each level: its palette, map, blocks and card
 levels.forEach((l, i) => {
@@ -66,7 +70,8 @@ levels.forEach((l, i) => {
   disk.put(`${l.file}.map`, serializeMap(l.map.done()));
   disk.put(`${l.file}.bbl`, serializeBlocks(l.book.finish()));
   disk.put(`${l.file}.gif`, gif(cardPicture(l.pal, figure(l.pal, l.hero ?? 'penny', 'walk0'), i + 1, levels.length, l.title, l.hint), l.pal));
-  disk.put(`${l.file}.lst`, serializeSlideList([{ name: `${l.file}.gif`, pause: 3 }]));
+  disk.put(`${l.file}.txt`, STORY_BEATS[l.file]);
+  disk.put(`${l.file}.lst`, serializeSlideList([{ name: `${l.file}.gif`, pause: 3 }, { name: `${l.file}.txt` }]));
 });
 
 const text = (base: string, heading: string, body: string) => {

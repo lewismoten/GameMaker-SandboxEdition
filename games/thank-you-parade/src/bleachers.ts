@@ -77,5 +77,5 @@ export function bleachers(pal: Pal): Level {
   m.sign(53, onGround(G, s.cannon), s.cannon);
   m.sign(A.lookout[0], onGround(A.lookout[2], s.secret), s.secret);
   m.sign(67, onGround(G, s.exit), s.exit);
-  return { file: 'stands', title: 'The Bleachers', hint: '9:10 AM. Five rows. Four judges.', map: m, book, pal };
+  return { file: 'stands', title: 'The Bleachers', hint: '9:10 AM. Five rows. Four judges.', map: m, book, pal, song: 'rooftop' };
 }
