@@ -12,6 +12,7 @@ import { theClockTower } from './routeClock';
 import { halesOrchard } from './routeHour';
 import { lamplightersStair } from './routeLamps';
 import { frozenTarn } from './routeTarn';
+import { recordsCellar } from './routeVault';
 import { GameSim } from './sim';
 
 export const SEED = 1;
@@ -35,6 +36,7 @@ const ROUTES = [
   lowTunnel,
   excuseMe,
   theClockTower,
+  recordsCellar,
   theFord,
   zigzagHome,
   frozenTarn,

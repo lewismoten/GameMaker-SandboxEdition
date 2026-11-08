@@ -114,6 +114,11 @@ const PRINT_INK: Record<string, Tint> = {
     [66, 30, 20],
     [160, 90, 60],
   ],
+  // the records cellar: deep archive-green ink
+  cellar: [
+    [10, 36, 36],
+    [70, 120, 112],
+  ],
   // the cold hour: steel-blue ink
   frost: [
     [30, 48, 74],
@@ -446,6 +451,34 @@ export const LOOKS: Record<string, Record<string, Tint>> = {
       [20, 20, 40],
       [110, 100, 140],
       [56, 50, 80],
+    ],
+  },
+  // the records cellar: the tunnel's dark, with greener, paper-dusty walls
+  cellar: {
+    sky: [
+      [6, 12, 16],
+      [40, 56, 60],
+      [16, 28, 32],
+    ],
+    brick: [
+      [14, 22, 20],
+      [96, 118, 100],
+      [44, 62, 54],
+    ],
+    stone: [
+      [16, 26, 24],
+      [116, 138, 120],
+      [52, 70, 62],
+    ],
+    dirt: [
+      [14, 12, 10],
+      [84, 64, 52],
+      [38, 30, 26],
+    ],
+    grass: [
+      [14, 30, 26],
+      [80, 120, 100],
+      [34, 64, 54],
     ],
   },
   // the cold hour before dawn: pale ice-blue sky, frosted turf, glassy water

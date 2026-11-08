@@ -35,6 +35,7 @@ import { levelClock } from './clock';
 import { levelOrchard } from './orchard';
 import { levelLamps } from './lamps';
 import { levelTarn } from './tarn';
+import { levelVault } from './vault';
 import { levelSpillway } from './spillway';
 import { levelStream } from './stream';
 import { levelRoofs } from './roofs';
@@ -61,6 +62,7 @@ const DRESS: Record<string, DressOptions> = {
   grove: { birds: true },
   lamps: {},
   tarn: {},
+  vault: { indoor: true },
   ford: {},
   signs: { birds: true },
   survey: { birds: true },
@@ -93,6 +95,7 @@ export function buildLevels(): { pal: ReturnType<typeof buildMountainPalette>; l
     levelTunnel(pal),
     levelExcuse(pal),
     levelClock(pal),
+    levelVault(pal),
     levelFord(pal),
     levelZigzag(pal),
     levelTarn(pal),
