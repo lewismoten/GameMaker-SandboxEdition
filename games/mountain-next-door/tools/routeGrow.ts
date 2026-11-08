@@ -16,7 +16,7 @@ async function inOrder(stops: Stop[], dir: 1 | -1 = 1): Promise<void> {
   for (const [, go] of stops) await go();
 }
 
-/** 9. The Survey Line: along the first deck (stakes, acorns, the loose boards waited for), up the ladder, back along the second. */
+/** 9. The Survey Line: along the first deck (stakes, acorns, the loose boards waited for), up the ladder, back along the second and out along the third to the door. */
 export async function theSurveyLine(bot: StarterBot): Promise<void> {
   const from = bot.sim.ci.score;
   const A = SURVEY_AT;
@@ -49,6 +49,8 @@ export async function theSurveyLine(bot: StarterBot): Promise<void> {
     [...stake(1).filter((s) => !right(s)), ...nut(1).filter((s) => !right(s)), sign('hat'), sign('form'), over(3, -1, true), over(4, -1, true)],
     -1,
   );
+  await ladder(bot, A.ladders[2], 'up', surveyFeet(2), 'the ladder to the third deck');
+  await inOrder([...stake(2), ...nut(2), sign('top'), over(5, 1, true), over(6, 1, true), over(7, 1, false), over(8, 1, true)]);
   score(bot, from, A.stakes.length * POINTS.blaze + A.acorns.length * POINTS.acorn, 'the survey line');
   await leave(bot, bot.walk(A.exit, 'the exit'), 'the exit');
 }
