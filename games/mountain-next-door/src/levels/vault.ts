@@ -78,7 +78,15 @@ export function levelVault(pal: Pal): Level {
   // every block is set below; the grid only marks the way in (top left) and out (bottom right)
   const rows = Array.from({ length: H }, (_, y) =>
     Array.from({ length: W }, (_, x) =>
-      x === x0 && y === F[0].floor - 2 ? 's' : x === x0 && y === F[0].floor - 1 ? 'S' : x === A.exit && y === F[2].floor - 2 ? 'e' : x === A.exit && y === F[2].floor - 1 ? 'E' : ' ',
+      x === x0 && y === F[0].floor - 2
+        ? 's'
+        : x === x0 && y === F[0].floor - 1
+          ? 'S'
+          : x === A.exit && y === F[2].floor - 2
+            ? 'e'
+            : x === A.exit && y === F[2].floor - 1
+              ? 'E'
+              : ' ',
     ).join(''),
   );
   const m = new MountainMap(book, rows);

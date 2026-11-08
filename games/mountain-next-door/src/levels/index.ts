@@ -8,15 +8,22 @@
 //   6. Stepping Stones     rain; cross the stream four times on stones that sink and rise on a clock
 //   7. Gathering Mist      a damp morning; three dells where Wisp's mist has pooled in beads; the mist stacks itself into steps on a clock
 //   8. Nutmeg's Signposts  noon; three switchbacks; a squirrel turns the arrows, the blazes tell the truth
-//   9. The Empty Spot      (watch) sunset in the hollow where the mountain stood; Wisp is missing
-//  10. The Lookout         the last of the light; seven landings, loose boards out of step, the trail seen from the top
-//  11. Windy Ridge         dusk; an updraft and a gust carry Tess up and over, following Wisp's trail of snow
-//  12. Rooftops            after midnight; the snow runs over the roofs; chimney smoke lifts you on a clock
-//  13. The Low Tunnel      dark; light the lanterns, leave a trail of light; glow-worms; Wisp is hiding here
-//  14. Excuse Me           the sleeping town; the mountain walks behind Tess on its own clock; she clears bins, sheets and gates ahead of it
-//  15. The Ford            moonlight; the mountain wading in sends waves down the river, and the waves carry Tess across
-//  16. The Zigzag Home     moonlight; five switchbacks up the hill, a blaze on every turn, Wisp following
-//  17. Summit Picnic       (watch) sunrise; the mountain home and sitting down; the neighbors climb up; the doormat
+//   9. The Survey Line     noon; three plank decks over the gully, loose boards out of step
+//  10. Hale's Orchard      the afternoon; three terraces of windfall apples, the orchard's gates swinging on a clock
+//  11. The Empty Spot      (watch) sunset in the hollow where the mountain stood; Wisp is missing
+//  12. The Lookout         the last of the light; seven landings, loose boards out of step, the trail seen from the top
+//  13. Windy Ridge         dusk; an updraft and a gust carry Tess up and over, following Wisp's trail of snow
+//  14. The Spillway        dusk; five terraces of stepping-stone pools, down by ladders
+//  15. The Lamplighter's Stair  the blue hour; four terraces of lamps to light, the alleys bridged by fog steps on a clock
+//  16. Rooftops            after midnight; the snow runs over the roofs; chimney smoke lifts you on a clock
+//  17. The Low Tunnel      dark; light the lanterns, leave a trail of light; glow-worms; Wisp is hiding here
+//  18. Excuse Me           the sleeping town; the mountain walks behind Tess on its own clock; she clears bins, sheets and gates ahead of it
+//  19. The Bell Loft       three in the morning; seven floors, warm smoke lifts you, snow to pack the bell
+//  20. The Records Cellar  the town hall basement, no windows; the air stays lit behind you; a dead end and the deed
+//  21. The Ford            moonlight; the mountain wading in sends waves down the river, and the waves carry Tess across
+//  22. The Zigzag Home     moonlight; five switchbacks up the hill, a blaze on every turn, Wisp following
+//  23. The Frozen Tarn     the cold hour before dawn; two reaches of tipping ice plates and a wave
+//  24. Summit Picnic       (watch) sunrise; the mountain home and sitting down; the neighbors climb up; the doormat
 import { buildMountainPalette } from '../palette';
 import type { Level } from '../level';
 import { levelBack } from './back';

@@ -28,12 +28,7 @@ export const LAMPS_AT = {
     [22, 32, 50],
     [66, 38, 17],
   ],
-  acorns: [
-    [64, 66],
-    [25, 47],
-    [44],
-    [25, 60],
-  ],
+  acorns: [[64, 66], [25, 47], [44], [25, 60]],
   pie: [2, 60],
   /** Per terrace: the alleys' first columns (each FOG_STEPS * 2 wide). */
   alleys: [[], [50, 28, 10], [14, 36, 54], [52, 30]] as readonly (readonly number[])[],

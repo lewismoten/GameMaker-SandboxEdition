@@ -88,7 +88,10 @@ export function levelOrchard(pal: Pal): Level {
     // a gate in the fence: two blocks tall under a beam, between two posts
     for (const [x, open] of A.gates[k]) {
       for (const bx of [x - 1, x, x + 1]) m.set(bx, t - 3, 'arborBeam');
-      m.set(x - 1, t - 2, 'arch').set(x + 1, t - 2, 'arch').set(x - 1, t - 1, 'arch').set(x + 1, t - 1, 'arch');
+      m.set(x - 1, t - 2, 'arch')
+        .set(x + 1, t - 2, 'arch')
+        .set(x - 1, t - 1, 'arch')
+        .set(x + 1, t - 1, 'arch');
       m.set(x, t - 2, open ? 'swingOpen0' : 'swing0').set(x, t - 1, open ? 'swingOpen1' : 'swing1');
     }
   });
