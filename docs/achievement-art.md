@@ -68,11 +68,11 @@ overrides; `--adopt <id>` is the one deliberate way to replace another unmarked 
 | record-video | remote | remote / camcorder |
 | desk-bbs-file | remote | remote / diskDrive |
 | mag-disc | remote | remote / discSleeve |
-| play-all-mine | sleuth | sleuthParlor / checklist |
 | play-save | remote | remote / saveTape |
 | blaster-big-name | carl | carl / speaker |
 | desk-curtains | sleuth | sleuthParlor / curtain0 |
 | cast-parade | sleuth | sleuthParlor / footlights |
+| play-all-mine | sleuth | sleuthParlor / checklist |
 | desk-time-reset | carl | carl / alarm |
 | bbs-time-travel | reckoning | reckoning / clock0 |
 | library-kinds | reckoning | reckoning / books |
@@ -154,6 +154,13 @@ overrides; `--adopt <id>` is the one deliberate way to replace another unmarked 
 | zine-read | teddy | teddyToys / book |
 | play-bizarre | smirked | smirked / violin |
 | library-visit | risi | risiCampus / libraryFront |
+| honor-graduation-basics | the Starters | honors / honors-1 |
+| honor-graduation-moving | the Starters | honors / honors-2 |
+| honor-graduation-heroes | the Starters | honors / honors-3 |
+| honor-graduation-story | the Starters | honors / honors-4 |
+| honor-graduation-wiring | the Starters | honors / honors-5 |
+| honor-graduation-blocks | the Starters | honors / honors-6 |
+| honor-graduation-diploma | the Starters | honors / honors-diploma |
 | every-life-1 | teddy | tiers / every-life-1 |
 | every-life-3 | teddy | tiers / every-life-3 |
 | every-life-10 | teddy | tiers / every-life-10 |
