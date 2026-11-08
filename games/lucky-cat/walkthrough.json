@@ -1,142 +1,194 @@
 {
-  "version": 1,
-  "game": "lucky-cat",
-  "rand": {
-    "seed": 1,
-    "per": "scene"
+ "version": 1,
+ "game": "lucky-cat",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU0KzWdNFM1nTRTNA0sFywNIJ8gDTRTNA00czQtNBc1nTQrNAzkCuQBNGc0DTQXNZ00UzQNLBcsDSCfIA00UzQNNEs0LTQ/NA00DOQK5F80DTQXNZ00yzQM5ArkATRTNNk0="
   },
-  "segments": [
-    {
-      "scene": 2,
-      "keys": "AU0KzWdNFM1nTRTNA0sFywNIJ8gDTRTNA00czQtNBc1nTQrNAzkCuQBNGc0DTQXNZ00UzQNLBcsDSCfIA00UzQNNEs0LTQ/NA00DOQK5F80DTQXNZ00yzQM5ArkATRTNNk0="
-    },
-    {
-      "scene": 3,
-      "keys": "AUsPy2dLGctnSw/LA0sDOQK5F8sDSwXLZ0sZywNNBc0DSDHIA0sUywNLFMsDSxLLDUsFy2dLHssDSwM5ArkSywdLFMtnTQXNA00FzQNIMcgDSx7LA0sSy0RL"
-    },
-    {
-      "scene": 4,
-      "keys": "AU0PzWdNGc1nTQ/NA00FzS9NCs0DTRnNA00ZzWdNFM0DTUTNE00PzWdNHs0DTQrNNU0="
-    },
-    {
-      "scene": 5,
-      "keys": "AU0KzWdNHs0DTQ/NZ00ZzQNNCs0DTQM5ArkXzQNND80DSwXLA0gnyANNFM0DTRTNA00NzQtLAMsDOQK5AE0ZzQNNCs0DTQrNZ00PzSpNHs0DTQrNA00ezQNND801TQ=="
-    },
-    {
-      "scene": 6,
-      "keys": "AU0PzWdNFM0DOQK5AE0ZzQNNFM0DTQ45ArkTzQNND801TRw5ArkTOQK5Bc0XSwPLA0gAyANNCs0DTQ3NCU0UzQM5ArkATRnNA00ezQNNAzkCuRfNA00ZzQNN"
-    },
-    {
-      "scene": 7,
-      "keys": "AU0PzQNLBcsDSDHIA00PzWdNWs0DSwDLA00DzTpLCMsDSw/LZ0sUywNLGcsDSyPLA0sDywNIMcgDTRnNZ00PzSxNHs0DTSPNA0sAywNNA80/SwjLA0sKy2dLMssDSw=="
-    },
-    {
-      "scene": 8,
-      "keys": "AU0KzWdNPM0NTR7NA0sAy2dNFM0DTQ/NA00FzQNNHs0lTR7NA00FzWdNGc0DSwXLA0gxyANNMs0DTRLNDU0FzQNNHs0DTQ=="
-    },
-    {
-      "scene": 9,
-      "keys": "AU0PzWdNHs0DOQK5AE0ZzQNNFM0DTQXNL00KzQNNHs1nTRTNA00hzRNND81nTR7NA00FzQNNCs0sTR7NA00FzQNND81nTQrNZ00="
-    }
-  ],
-  "chapters": [
-    {
-      "scene": 2,
-      "title": "Level 1: Ladder Lane"
-    },
-    {
-      "scene": 3,
-      "title": "Level 2: Mirror Maze"
-    },
-    {
-      "scene": 4,
-      "title": "Level 3: Town Hall"
-    },
-    {
-      "scene": 5,
-      "title": "Level 4: Earlier That Morning"
-    },
-    {
-      "scene": 6,
-      "title": "Level 5: Race to the Fair"
-    },
-    {
-      "scene": 7,
-      "title": "Level 6: The Clock Tower"
-    },
-    {
-      "scene": 8,
-      "title": "Level 7: Knock on Wood"
-    },
-    {
-      "scene": 9,
-      "title": "Level 8: Payback"
-    }
-  ],
-  "timeline": {
-    "fps": 60,
-    "frames": 42488,
-    "chapters": [
-      {
-        "title": "Opening",
-        "frame": 0,
-        "time": 0
-      },
-      {
-        "title": "Story",
-        "frame": 1581,
-        "time": 26350.000000000487
-      },
-      {
-        "title": "Level 1: Ladder Lane",
-        "frame": 2811,
-        "time": 46849.99999999891
-      },
-      {
-        "title": "Level 2: Mirror Maze",
-        "frame": 7809,
-        "time": 130150.00000001499
-      },
-      {
-        "title": "Level 3: Town Hall",
-        "frame": 12215,
-        "time": 203583.3333333064
-      },
-      {
-        "title": "Level 4: Earlier That Morning",
-        "frame": 16433,
-        "time": 273883.333333286
-      },
-      {
-        "title": "Level 5: Race to the Fair",
-        "frame": 20708,
-        "time": 345133.33333336894
-      },
-      {
-        "title": "Level 6: The Clock Tower",
-        "frame": 23873,
-        "time": 397883.33333343035
-      },
-      {
-        "title": "Level 7: Knock on Wood",
-        "frame": 28637,
-        "time": 477283.3333335228
-      },
-      {
-        "title": "Level 8: Payback",
-        "frame": 32293,
-        "time": 538216.6666668784
-      },
-      {
-        "title": "Ending",
-        "frame": 37114,
-        "time": 618566.6666666913
-      },
-      {
-        "title": "Credits",
-        "frame": 41414,
-        "time": 690233.3333331911
-      }
-    ]
+  {
+   "scene": 3,
+   "keys": "AU0KzWdNHs0DTQ/NZ00KzQNNAzkCuRfNA00UzQNNCs0DOQK5AE0ZzQNLAMtnTRTNA0sFywNIJ8gDTSPNA00SzQtNBc0DTQ/NZ0sAywpNHs0DTQrNA00PzWdNFM0DTQ/NNU0="
+  },
+  {
+   "scene": 4,
+   "keys": "AUsPy2dLGctnSw/LA0sDOQK5F8sDSwXLZ0sZywNNBc0DSDHIA0sUywNLFMsDSxLLDUsFy2dLHssDSwM5ArkSywdLFMtnTQXNA00FzQNIMcgDSx7LA0sSy0RL"
+  },
+  {
+   "scene": 5,
+   "keys": "AU0KzWdNFzkCuRc5ArkXOQK5FzkCuRc5ArkXOQK5FzkCuQ/NCE0FzWdNCs0DOQK5AE0ZzQNLAMsnTQ/NA00DzQNQgQHQA00ZzWdNI80DTQ=="
+  },
+  {
+   "scene": 6,
+   "keys": "AU0PzWdNGc1nTQ/NA00FzS9NCs0DTRnNA00ZzWdNFM0DTUTNE00PzWdNHs0DTQrNNU0="
+  },
+  {
+   "scene": 7,
+   "keys": "AU0KzWdNFM1nTRTNA00DOQK5FDkCuSHNBE0PzQNLBcsDSCfIA00ezQNNF80LSwDLZ00UzQNND80DTQXNL00PzQNLAMtnTRnNA00czQ5LCstnTR7NA00="
+  },
+  {
+   "scene": 8,
+   "keys": "AU0KzWdNHs0DTQ/NZ00ZzQNNCs0DTQM5ArkXzQNND80DSwXLA0gnyANNFM0DTRTNA00NzQtLAMsDOQK5AE0ZzQNNCs0DTQrNZ00PzSpNHs0DTQrNA00ezQNND801TQ=="
+  },
+  {
+   "scene": 9,
+   "keys": "AU0KzWdNFM0DTQXNA00FzQNNAzkCuRfNA00FzQNNBc0vTQrNA00FzWdND80DTSPNA00DzT1NCs0DTQ/NA00PzWdND80DTRzNFk0FzQNNBc0DOQK5AE0ZzQNLAMtnTQXNGE0ozQNNBc0DTQ=="
+  },
+  {
+   "scene": 10,
+   "keys": "AU0PzWdNFM0DOQK5AE0ZzQNNFM0DTQ45ArkTzQNND801TRw5ArkTOQK5Bc0XSwPLA0gAyANNCs0DTQ3NCU0UzQM5ArkATRnNA00ezQNNAzkCuRfNA00ZzQNN"
+  },
+  {
+   "scene": 11,
+   "keys": "AU0PzQNLBcsDSDHIA00PzWdNWs0DSwDLA00DzTpLCMsDSw/LZ0sUywNLGcsDSyPLA0sDywNIMcgDTRnNZ00PzSxNHs0DTSPNA0sAywNNA80/SwjLA0sKy2dLMssDSw=="
+  },
+  {
+   "scene": 12,
+   "keys": "AU0KzWdNPM0NTR7NA0sAy2dNFM0DTQ/NA00FzQNNHs0lTR7NA00FzWdNGc0DSwXLA0gxyANNMs0DTRLNDU0FzQNNHs0DTQ=="
+  },
+  {
+   "scene": 13,
+   "keys": "AU0PzWdNHs0DOQK5AE0ZzQNNFM0DTQXNL00KzQNNHs1nTRTNA00hzRNND81nTR7NA00FzQNNCs0sTR7NA00FzQNND81nTQrNZ00="
   }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: Ladder Lane"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: Saucer Alley"
+  },
+  {
+   "scene": 4,
+   "title": "Level 3: Mirror Maze"
+  },
+  {
+   "scene": 5,
+   "title": "Level 4: Thirteen Steps"
+  },
+  {
+   "scene": 6,
+   "title": "Level 5: Town Hall"
+  },
+  {
+   "scene": 7,
+   "title": "Level 6: The Mirror Shop"
+  },
+  {
+   "scene": 8,
+   "title": "Level 7: Earlier That Morning"
+  },
+  {
+   "scene": 9,
+   "title": "Level 8: Earlier Still"
+  },
+  {
+   "scene": 10,
+   "title": "Level 9: Race to the Fair"
+  },
+  {
+   "scene": 11,
+   "title": "Level 10: The Clock Tower"
+  },
+  {
+   "scene": 12,
+   "title": "Level 11: Knock on Wood"
+  },
+  {
+   "scene": 13,
+   "title": "Level 12: Payback"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 61491,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 1581,
+    "time": 26350.000000000487
+   },
+   {
+    "title": "Level 1: Ladder Lane",
+    "frame": 2811,
+    "time": 46849.99999999891
+   },
+   {
+    "title": "Level 2: Saucer Alley",
+    "frame": 7809,
+    "time": 130150.00000001499
+   },
+   {
+    "title": "Level 3: Mirror Maze",
+    "frame": 12683,
+    "time": 211383.33333330185
+   },
+   {
+    "title": "Level 4: Thirteen Steps",
+    "frame": 17089,
+    "time": 284816.66666663205
+   },
+   {
+    "title": "Level 5: Town Hall",
+    "frame": 21367,
+    "time": 356116.66666671506
+   },
+   {
+    "title": "Level 6: The Mirror Shop",
+    "frame": 25582,
+    "time": 426366.66666679684
+   },
+   {
+    "title": "Level 7: Earlier That Morning",
+    "frame": 30364,
+    "time": 506066.6666668896
+   },
+   {
+    "title": "Level 8: Earlier Still",
+    "frame": 34640,
+    "time": 577333.333333454
+   },
+   {
+    "title": "Level 9: Race to the Fair",
+    "frame": 39224,
+    "time": 653733.3333332761
+   },
+   {
+    "title": "Level 10: The Clock Tower",
+    "frame": 42391,
+    "time": 706516.6666664865
+   },
+   {
+    "title": "Level 11: Knock on Wood",
+    "frame": 47157,
+    "time": 785949.9999996349
+   },
+   {
+    "title": "Level 12: Payback",
+    "frame": 50815,
+    "time": 846916.6666661596
+   },
+   {
+    "title": "Ending",
+    "frame": 55636,
+    "time": 927266.6666659726
+   },
+   {
+    "title": "Credits",
+    "frame": 59936,
+    "time": 998933.3333324724
+   }
+  ]
+ }
 }
