@@ -90,16 +90,16 @@ function card(game: ToyGame, base: string, i: number, data: Data, snap: Snap, ne
     h(
       'span',
       { class: 'toy-links' },
-      h('a', { class: 'toy-dl', href: `${base}${item.file}`, download: item.file, title: `${item.file}: ${mb(item.bytes)}, one color` }, 'STL'),
-      h(
-        'a',
-        {
-          class: 'toy-dl',
-          href: `${base}${item.colors.file}`,
-          download: item.colors.file,
-          title: `${item.colors.file}: ${mb(item.colors.bytes)}, one body for each of ${item.colors.palette.length} colors`,
-        },
-        '3MF',
+      data.trinketDownload(h('a', { class: 'toy-dl', title: `${item.file}: ${mb(item.bytes)}, one color` }, 'STL'), base, item, item.file),
+      data.trinketDownload(
+        h(
+          'a',
+          { class: 'toy-dl', title: `${item.colors.file}: about ${mb(item.colors.bytes)}, one body for each of ${item.colors.palette.length} colors` },
+          '3MF',
+        ),
+        base,
+        item,
+        item.colors.file,
       ),
       h('span', { class: 'toy-swatches', 'aria-hidden': 'true' }, ...swatches),
     ),

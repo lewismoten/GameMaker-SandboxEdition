@@ -89,6 +89,11 @@
       "gamemaker-source": "./src/mesh/*.ts",
       "import": "./dist/mesh/*.js"
     },
+    "./pack/*": {
+      "types": "./dist/types/pack/*.d.ts",
+      "gamemaker-source": "./src/pack/*.ts",
+      "import": "./dist/pack/*.js"
+    },
     "./image/*": {
       "types": "./dist/types/image/*.d.ts",
       "gamemaker-source": "./src/image/*.ts",

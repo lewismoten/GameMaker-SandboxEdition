@@ -8,7 +8,7 @@ Entry points: `desk/deskShelf.ts` and `desk/deskGmBox.ts` use `shelf.ts` and `bo
 - Shelf: `shelf.ts`, `shelfLayout.ts`.
 - Viewer: `boxViewer.ts`, `boxAddress.ts` (the address `#/desk?open=box:<id>`), `texturedGl.ts` (a small WebGL viewer), `stageBoxModel.ts`, `coinModel.ts`, `patchModel.ts`.
 - In the box: `gameBoxContents.ts`, `boxList.ts`, `printContext.ts`, `paperFeelies.ts`.
-- Feelies: `feelies.ts`, `feelieModels.ts`, `feelieThumbs.ts`, `trinketData.ts`, `trinketGl.ts`, `trinketShelf.ts`, `trinketSnap.ts`, `trinketTurntable.ts`, `laserKits.ts`.
+- Feelies: `feelies.ts`, `feelieModels.ts`, `feelieThumbs.ts`, `trinketData.ts` (with `madeDownload.ts`, a link that saves a file the page makes), `trinketGl.ts`, `trinketShelf.ts`, `trinketSnap.ts`, `trinketTurntable.ts`, `laserKits.ts`.
 
 Never name, count or hint at a secret game on a box, shelf or list.
 

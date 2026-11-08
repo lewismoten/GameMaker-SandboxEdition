@@ -44,6 +44,8 @@ const sources = {
   'embroidery/simulate': 'embroidery/simulate',
   'embroidery/svg': 'embroidery/svg',
   'mesh/sampledField': 'mesh/sampledField',
+  'pack/meshPack': 'pack/meshPack',
+  'pack/threeMfPack': 'pack/threeMfPack',
   images: 'images',
   'kit/blit': 'kit/blit',
   'kit/blockRoles': 'kit/blockRoles',
