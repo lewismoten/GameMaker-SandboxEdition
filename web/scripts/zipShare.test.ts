@@ -10,6 +10,8 @@ import { SHARED_DIR } from '../src/project/sharedZip';
 
 const cd = resolve(import.meta.dirname, '../../cd');
 
+const same = (a: Uint8Array, b: Uint8Array) => Buffer.compare(a, b) === 0;
+
 describe('zipShare', () => {
   it('splits every Starter and joins each back into its ZIP', { timeout: 120_000 }, async () => {
     const files = cdFiles(cd);
@@ -21,10 +23,14 @@ describe('zipShare', () => {
     for (const [key, zip] of zips) {
       const part = parts.get(key)!;
       for (const [, , name] of decodePart(part).header.shared) expect(blobs.has(`${SHARED_DIR}${name}.bin`)).toBe(true);
+      // Buffer.compare: toEqual on a 700 KB Uint8Array walks it element by element and took 30 s here
       expect(
-        joinPart(part, (name) => blobs.get(`${SHARED_DIR}${name}.bin`)!),
+        same(
+          joinPart(part, (name) => blobs.get(`${SHARED_DIR}${name}.bin`)!),
+          zip,
+        ),
         key,
-      ).toEqual(zip);
+      ).toBe(true);
     }
     const sum = (m: Map<string, Uint8Array>) => [...m.values()].reduce((n, b) => n + b.length, 0);
     // today the shared copy of the DOS player alone saves over 7 MB
@@ -32,6 +38,7 @@ describe('zipShare', () => {
     // the same input splits the same way (blob names are content hashes)
     const again = shareZips(zips);
     expect([...again.blobs.keys()]).toEqual([...blobs.keys()]);
-    expect([...again.parts.values()]).toEqual([...parts.values()]);
+    const first = [...parts.values()];
+    expect([...again.parts.values()].every((p, i) => same(p, first[i]))).toBe(true);
   });
 });
