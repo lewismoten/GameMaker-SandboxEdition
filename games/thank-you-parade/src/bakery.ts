@@ -107,7 +107,7 @@ export function bakery(pal: Pal): Level {
   return {
     file: 'bakery',
     title: 'Bakery Row',
-    hint: '7:20 AM. The roofs, the donuts, the shutter.',
+    hint: '7:20 AM. Rooftops and donuts.',
     map: m,
     book,
     pal,

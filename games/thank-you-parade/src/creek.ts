@@ -101,5 +101,5 @@ export function creek(pal: Pal): Level {
   m.sign(75, onGround(G, s.mill), s.mill);
   m.sign(m0, onGround(mr, s.secret), s.secret);
   m.sign(82, onGround(G, s.exit), s.exit);
-  return { file: 'creek', title: 'Mill Creek', hint: '8:05 AM. The bridge is out. Sort of.', map: m, book, pal };
+  return { file: 'creek', title: 'Mill Creek', hint: '8:05 AM. The bridge is out.', map: m, book, pal };
 }

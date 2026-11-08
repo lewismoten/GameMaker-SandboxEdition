@@ -71,9 +71,10 @@ levels.forEach((l, i) => {
   disk.put(`${l.file}.bbl`, serializeBlocks(l.book.finish()));
   disk.put(`${l.file}.gif`, gif(cardPicture(l.pal, figure(l.pal, l.hero ?? 'penny', 'walk0'), i + 1, levels.length, l.title, l.hint), l.pal));
   disk.put(`${l.file}.txt`, STORY_BEATS[l.file]);
-  disk.put(`${l.file}.lst`, serializeSlideList([{ name: `${l.file}.gif`, pause: 3 }, { name: `${l.file}.txt` }]));
+  disk.put(`${l.file}.lst`, serializeSlideList([{ name: `${l.file}.gif`, pause: 3 }, { name: 'beat.gif', pause: 0 }, { name: `${l.file}.txt` }]));
 });
 
+disk.put('beat.gif', gif(paperPage(pal, 'THE PARADE'), pal));
 const text = (base: string, heading: string, body: string) => {
   disk.put(`${base}.gif`, gif(paperPage(pal, heading), pal));
   disk.put(`${base}.txt`, body);

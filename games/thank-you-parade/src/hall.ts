@@ -95,5 +95,5 @@ export function hall(pal: Pal): Level {
   m.sign(48, onGround(b.floor, s.geese), s.geese);
   m.sign(r.planks[0], onGround(r.planks[2], s.secret), s.secret);
   m.sign(76, onGround(G, s.exit), s.exit);
-  return { file: 'hall', title: 'Practice Hall', hint: "8:45 AM. Ridgemont's hall. Three floors.", map: m, book, pal };
+  return { file: 'hall', title: 'Practice Hall', hint: "8:45 AM. Ridgemont's hall.", map: m, book, pal };
 }
