@@ -241,7 +241,7 @@ export const roomSound = {
   /** THE CHEZ going by at cruise, heard through the window: the same motor as on the cast page (audio/chez/). */
   whirr(seconds = 10): void {
     const o = open();
-    if (o) chezPassBy(o.ctx, o.out, seconds, { level: 0.04, outside: true });
+    if (o) chezPassBy(o.ctx, o.out, seconds, { level: 0.04, outside: true, pullAway: true });
   },
   /** A heavy truck's diesel rumble and a blade scraping, fading over `seconds`. */
   rumble(seconds = 4): void {

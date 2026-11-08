@@ -23,6 +23,6 @@ export function chezMotor(ctx: BaseAudioContext, out: AudioNode, opts: ChezOptio
  */
 export function chezPassBy(ctx: BaseAudioContext, out: AudioNode, seconds: number, opts: ChezOptions = {}): ChezMotor {
   const m = chezMotor(ctx, out, opts);
-  m.passBy(seconds);
+  m.passBy(seconds, opts.pullAway);
   return m;
 }

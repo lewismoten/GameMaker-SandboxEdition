@@ -1,22 +1,31 @@
 // THE CHEZ made on the spot (Web Audio, no files), to the numbers in Lewis's recording of the car:
 // the series-wound motor's whine is one harmonic tone, its 2nd harmonic loudest, about 245 Hz at
 // cruise; the contactors clack (a bright 20 ms snap and a thump 50 ms later) at the start and at
-// each of the three speed steps; road rumble, the cabin's road noise and tire hiss grow with speed
+// each of the three speed steps (the whine jumps up at each, as the factory tower switches the pack); road rumble, the cabin's road noise and tire hiss grow with speed
 // (matched to the recording's octave bands at cruise: the whine stands about 18 dB over them).
 import { CRUISE_HZ, DOPPLER, bus, noiseBuffer, passCurve, type ChezMotor, type ChezOptions } from './chezTypes';
 
 /** Harmonic amplitudes of the whine (dB against the 2nd), measured at cruise. */
 const HARMONICS_DB = [-8, 0, -10, -22, -18, -26, -21, -23, -34, -32, -31, -36];
-/** The climb from rest: [seconds after the contactor closes, speed 0..1]; a speed step clunks at each corner. */
+/**
+ * The climb from rest: [seconds after the main contactor closes, speed 0..1]. The factory tower
+ * switches the pack in three steps, 1.1 to 1.7 s apart in the recording: at each the whine jumps
+ * up (in about 80 ms) and a ka-chunk lands, then it creeps higher as the car picks up speed.
+ */
 const CLIMB: readonly (readonly [number, number])[] = [
-  [0, 0.05],
-  [1.3, 0.4],
-  [2.7, 0.72],
-  [4.6, 1.07],
+  [0, 0.43],
+  [1.1, 0.5],
+  [1.18, 0.68],
+  [2.6, 0.74],
+  [2.68, 0.9],
+  [4.3, 0.96],
+  [4.38, 1.07],
   [7, 1],
 ];
-/** The speed steps' clunks (seconds into the climb). */
-const STEPS = [1.3, 2.7];
+/** The speed steps' ka-chunks (seconds into the climb): each is the snap and thump, then a second relay's smaller clack. */
+const STEPS = [1.1, 2.6, 4.3];
+/** The second relay of a step clacks this long after the first. */
+const RELAY_LAG = 0.13;
 /** The switch's click before the contactor pulls in. */
 const SWITCH_LEAD = 0.35;
 const WIND_DOWN = 1.8;
@@ -104,7 +113,7 @@ export class SynthMotor implements ChezMotor {
     this.clunk(t, 0.45);
     this.clunk(t0, 1);
     const r = this.start(t, t0, this.chain[0]);
-    r.pending = STEPS.flatMap((s) => this.clunk(t0 + s, 1.6).map((n): [AudioScheduledSourceNode, number] => [n, t0 + s]));
+    r.pending = this.steps(t0, this.chain[0], 1);
     for (const [s, v] of CLIMB) this.at(r, t0 + s, v, s ? 'ramp' : 'set');
     this.run = r;
   }
@@ -128,13 +137,21 @@ export class SynthMotor implements ChezMotor {
     this.retire(r, t + WIND_DOWN + 0.1);
   }
 
-  passBy(seconds: number): void {
+  passBy(seconds: number, pullAway = false): void {
     const t = this.ctx.currentTime + 0.01;
     const env = this.ctx.createGain();
-    env.gain.setValueCurveAtTime(passCurve(), t, seconds);
+    // a pull-away starts in front of the window: the ka-chunks, then it drives off and fades
+    env.gain.setValueCurveAtTime(pullAway ? passCurve().slice(16) : passCurve(), t, seconds);
     env.connect(this.chain[0]);
     const r = this.start(t, t, env);
     r.nodes.push(env);
+    if (pullAway) {
+      this.clunk(t, 1, env);
+      r.pending = this.steps(t, env, 1);
+      for (const [s, v] of CLIMB) this.at(r, t + s, v, s ? 'ramp' : 'set');
+      this.retire(r, t + seconds + 0.05);
+      return;
+    }
     this.at(r, t, 1, 'set');
     const mid = t + seconds / 2;
     const w = seconds * 0.08;
@@ -206,10 +223,17 @@ export class SynthMotor implements ChezMotor {
     return r;
   }
 
+  /** The ka-chunk of each speed step from `t0`: the tower's relay, then a second one's smaller clack. */
+  private steps(t0: number, dest: AudioNode, k: number): [AudioScheduledSourceNode, number][] {
+    return STEPS.flatMap((s) => [
+      ...this.clunk(t0 + s, 1.6 * k, dest).map((n): [AudioScheduledSourceNode, number] => [n, t0 + s]),
+      ...this.clunk(t0 + s + RELAY_LAG, 0.7 * k, dest).map((n): [AudioScheduledSourceNode, number] => [n, t0 + s + RELAY_LAG]),
+    ]);
+  }
+
   /** A contactor at `t`: a snap with a metallic ring (centered near 2 kHz, as recorded), then the armature's thump. */
-  private clunk(t: number, k: number): AudioScheduledSourceNode[] {
+  private clunk(t: number, k: number, input: AudioNode = this.chain[0]): AudioScheduledSourceNode[] {
     const c = this.ctx;
-    const input = this.chain[0];
     const src = c.createBufferSource();
     src.buffer = noiseBuffer(c);
     const snap = c.createBiquadFilter();
