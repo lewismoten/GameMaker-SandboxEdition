@@ -296,6 +296,34 @@ export const LOOKS: Record<string, Record<string, Tint>> = {
       [100, 80, 90],
     ],
   },
+  // the town after midnight: the same navy sky, the houses' siding gone blue-gray in the dark
+  town: {
+    sky: [
+      [10, 14, 50],
+      [80, 100, 170],
+      [26, 34, 90],
+    ],
+    parch: [
+      [30, 30, 56],
+      [236, 226, 196],
+      [96, 96, 128],
+    ],
+    teal: [
+      [10, 30, 44],
+      [110, 170, 170],
+      [34, 74, 90],
+    ],
+    stone: [
+      [20, 22, 40],
+      [140, 150, 190],
+      [60, 66, 100],
+    ],
+    dirt: [
+      [20, 20, 40],
+      [110, 100, 140],
+      [56, 50, 80],
+    ],
+  },
   // the next morning on top: gold and rose
   sunrise: {
     sky: [

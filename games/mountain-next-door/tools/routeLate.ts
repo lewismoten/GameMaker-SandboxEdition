@@ -1,10 +1,11 @@
 // The way through the second half's added levels (routeMore.ts has the morning's): the same human orders, a look
 // at every sign, a wait for anything on a clock, every treasure taken.
 import type { StarterBot } from '../../kit/starter/bot';
+import { ROOFS_AT } from '../src/levels/roofs';
 import { LANDINGS, TOWER_AT, towerFeet } from '../src/levels/tower';
 import { POINTS } from '../src/props';
-import { blocks, ladder, take } from './route';
-import { READ, leave, must, readAt, score, shownAt, watchFor } from './routeKit';
+import { blocks, ladder, rideUp, take } from './route';
+import { READ, hop, leave, must, readAt, score, shownAt, watchFor } from './routeKit';
 
 /** Waits like a person for the block `name` at (`x`, `row`) of level `file` to show; `fresh`: wait for it to go and come back, so there is a whole turn to cross. */
 export async function waitUp(bot: StarterBot, file: string, name: string, x: number, row: number, fresh: boolean, what: string): Promise<void> {
@@ -12,6 +13,45 @@ export async function waitUp(bot: StarterBot, file: string, name: string, x: num
   const isUp = () => shownAt(bot, x, row) === up;
   if (fresh && isUp()) await watchFor(bot, () => !isUp(), `${what} dropping`, 400);
   await watchFor(bot, isUp, `${what} coming up`, 400);
+}
+
+/** 11. Rooftops: every drift of snow, the stacks hopped, each chimney watched and ridden from the start of a puff. */
+export async function rooftops(bot: StarterBot): Promise<void> {
+  const from = bot.sim.ci.score;
+  const R = ROOFS_AT;
+  const at = R.signs;
+  const flake = (x: number) => take(bot, x, POINTS.flake, `the drift of snow at ${x}`);
+  const chimney = async (k: number) => {
+    const [x, roof, to] = R.puffs[k];
+    await must(bot, bot.walk(x - 1, 'the chimney'), 'to the chimney');
+    await waitUp(bot, 'roofs', 'puff0', x, roof - 1, true, `chimney ${k + 1} puffing`);
+    await rideUp(bot, x, to, `chimney ${k + 1}'s smoke`);
+  };
+  await readAt(bot, at.over + 1, 'the over-the-roofs sign');
+  await flake(10);
+  await flake(16);
+  await hop(bot, R.stacks[0][0], 1, 'the chimney stack');
+  await readAt(bot, at.smoke + 2, 'the smoke sign');
+  await flake(23);
+  await chimney(0);
+  await flake(31);
+  await flake(34);
+  await readAt(bot, at.clock + 1, 'the clock sign');
+  await flake(41);
+  await flake(45);
+  await chimney(1);
+  await flake(53);
+  await chimney(2);
+  await readAt(bot, at.friends + 1, 'the chimneys sign');
+  await flake(62);
+  await hop(bot, R.stacks[1][0], 1, 'the chimney stack');
+  await flake(68);
+  await flake(74);
+  await flake(78);
+  await readAt(bot, at.mill + 1, 'the mill road sign');
+  await flake(83);
+  score(bot, from, R.flakes.length * POINTS.flake, 'rooftops');
+  await leave(bot, bot.walk(R.exit + 1, 'the exit'), 'the exit');
 }
 
 /** 9. The Lookout: seven landings, a lamp lit on each, the loose boards timed (the out-of-step pair from the sound board between), the view. */

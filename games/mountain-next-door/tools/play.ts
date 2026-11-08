@@ -4,7 +4,7 @@ import { StarterBot } from '../../kit/starter/bot';
 import { playLevels } from '../../kit/levelRun';
 import { emptySpot, footprints, lowTunnel, gateHunt, nextDoor, signposts, steppingStones, summitPicnic, windyRidge, zigzagHome } from './route';
 import { library, mossbackBack } from './routeMore';
-import { lookout } from './routeLate';
+import { lookout, rooftops } from './routeLate';
 import { GameSim } from './sim';
 
 export const SEED = 1;
@@ -19,6 +19,7 @@ const ROUTES = [
   emptySpot,
   lookout,
   windyRidge,
+  rooftops,
   lowTunnel,
   zigzagHome,
   summitPicnic,

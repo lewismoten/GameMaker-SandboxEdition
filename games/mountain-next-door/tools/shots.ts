@@ -34,6 +34,7 @@ const AT: Record<string, number> = {
   signs: 1500,
   hollow: 900,
   tower: 2400,
+  roofs: 900,
   ridge: 420,
   tunnel: 1300,
   zigzag: 1700,

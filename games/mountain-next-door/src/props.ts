@@ -18,6 +18,8 @@
 //              (solid), win0..5 (a tall window, 2 x 3), deskL/M/R
 //   tower      leg, brace0..3 (an X over 2 x 2), deck/deck2 (a landing: stand on it), rail, lamp (light it: lampLit),
 //              boardUp/boardHalf/boardGone/boardBack (a loose board, on the stones' clock)
+//   roofs      roof/roof2 (slates: stand on them), pot (slates with a chimney pot), stack (a chimney: solid),
+//              puff0..5 then puffOff (warm smoke that lifts you, on a clock), flake (Wisp's snow: take it)
 //   high       screeUp/screeHalf/screeUnder/screeRise (wobbly rocks in a path, on the stones' clock), dent0..2 (the summit's damp dent: a ledge)
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { KEYS } from '../../kit/starter/blocks';
@@ -52,11 +54,12 @@ import {
 import { blanket, doormat, lantern, moon, puddle, signpost, star, tunnelAir, tunnelFloor, tunnelStone } from './art/night';
 import { bed, footbridge, gust, rain, stone, updraft, water } from './art/weather';
 import { dent, scree } from './art/high';
+import { drift, potSlates, puff, slates, stack } from './art/roofs';
 import { brace, calm, lamp, landing, leg, railing, shingles } from './art/tower';
 import { desk, floorboard, libWindow, lostBook, shelf, shelfGap } from './art/library';
 
 /** Points: a painted blaze, an acorn, a gate taken off the mountain, a gate put back home. */
-export const POINTS = { blaze: 10, acorn: 5, gate: 25, home: 25, lantern: 10, book: 10, shelved: 20 } as const;
+export const POINTS = { blaze: 10, acorn: 5, gate: 25, home: 25, lantern: 10, book: 10, shelved: 20, flake: 5 } as const;
 /** Hit points a slice of pie gives back. */
 export const PIE_HP = 10;
 /** The counter a gate adds to while Tess carries it (the kit's key counter). */
@@ -71,6 +74,8 @@ export interface Timed {
 
 /** Ticks a stepping stone stays up, half, under and rising (one loop is their sum). */
 export const STONE_TICKS = { up: 80, half: 10, under: 30, rise: 10 } as const;
+/** Ticks each picture of a chimney's puff shows, and the still air between puffs. */
+export const PUFF_TICKS = { frame: 9, off: 90 } as const;
 /** Ticks each arrow points one way before the squirrel turns it. */
 export const ARROW_TICKS = 70;
 
@@ -259,6 +264,17 @@ export function addProps(book: Book, pal: Pal, groups: readonly string[], o: Pro
       air,
     );
     loop(['boardUp', 'boardHalf', 'boardGone', 'boardBack'], [STONE_TICKS.up, STONE_TICKS.half, STONE_TICKS.under, STONE_TICKS.rise]);
+  }
+  if (has('roofs')) {
+    book.add('roof', slates(pal, 0), { solid: LEDGE, grav: PULL.down });
+    book.add('roof2', slates(pal, 3), { solid: LEDGE, grav: PULL.down });
+    book.add('pot', potSlates(pal), { solid: LEDGE, grav: PULL.down });
+    book.add('stack', stack(pal), { solid: SOLID });
+    const puffs = [0, 1, 2, 3, 4, 5].map((f) => `puff${f}`);
+    puffs.forEach((n, f) => book.add(n, puff(pal, f), { grav: PULL.up }));
+    book.add('puffOff', puff(pal, -1), air);
+    loop([...puffs, 'puffOff'], [...puffs.map(() => PUFF_TICKS.frame), PUFF_TICKS.off]);
+    book.add('flake', drift(pal), { ...air, score: POINTS.flake, touch: 'sky' });
   }
   if (has('picnic')) {
     for (const part of ['L', 'M', 'R'] as const) book.add(`blanket${part}`, blanket(pal, part), air);
