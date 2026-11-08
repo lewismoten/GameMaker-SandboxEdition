@@ -13,6 +13,8 @@
 //                                published as shareware, with box, label and manual data
 //   games/<kind>/<id>/<game>.zip           each game's DOS distribution, what the built site
 //                                fetches to play or open a game (src/project/gamePack.ts)
+//   games/originals/<id>/<game>.zpart, games/shared/<hash>.bin   a Starter's ZIP, split: what only it has,
+//                                and the data several share, joined back in the browser (scripts/zipShare.ts)
 //   dos/xferplay.exe, dos/sndblast.drv   the DOS stand-alone player for "Export for DOS"
 //   dos/config.hlp                       its setup screen's help, which a Transfer put beside it
 //   gm/index.json, gm/<file>     the installed C:\GM folder (runtime/run/GM) for the retro
@@ -22,6 +24,7 @@ import { createReadStream, existsSync, readdirSync, readFileSync, statSync } fro
 import { join } from 'node:path';
 import { gzipSync } from 'node:zlib';
 import { gameArchive, gameZipName, legacyAlias } from './gameArchive';
+import { partName, shareZips } from './zipShare';
 import { createArchiveQueue } from './archiveQueue';
 import { archiveWorker } from './archiveWorker';
 import { libraryFacts, type LibraryFileFact } from './libraryFacts';
@@ -83,6 +86,8 @@ export interface CdCatalogEntry {
   health?: Issue[];
   /** Built sites: the size of its pack in bytes (what downloading it for offline use costs, src/offline). */
   packBytes?: number;
+  /** Built sites: its ZIP ships split, as this .zpart file and games/shared/ data (scripts/zipShare.ts); `pack` names the joined ZIP. */
+  parts?: string;
   /** Built sites, games with a box: what the box reads from the .gam (src/desk/boxes/boxFacts.ts). */
   boxGame?: BoxGame;
 }
@@ -338,6 +343,8 @@ function scan(cdRoot: string): Scan {
 
 /** The gates whose files the build writes: every felt egg, every tin heart. */
 const GATES = [1, 2];
+/** Built sites ship these games' ZIPs split (scripts/zipShare.ts): the Starters, whose ZIPs were never on a downloads list. */
+const isSplit = (e: CdCatalogEntry) => e.series === 'starter' && !legacyAlias(e);
 /** The secret games behind one gate. */
 const behind = (s: Scan, gate: number) => s.secret.filter((e) => (s.gates.get(e.id) ?? 1) === gate);
 
@@ -658,6 +665,15 @@ export function cdGames(cdRoot: string): Plugin {
         const old = legacyAlias(e);
         if (old) packs.set(`${e.path}${old}`, zips[i]);
       });
+      // the Starters' ZIPs share most of their bytes (the DOS player, the kit's pictures): each ships as
+      // a .zpart file plus shared data the browser joins back into the same ZIP (src/project/sharedZip.ts)
+      const split = shareZips(
+        new Map(
+          get()
+            .catalog.filter(isSplit)
+            .map((e) => [`${e.path}${gameZipName(e)}`, packs.get(`${e.path}${gameZipName(e)}`)!]),
+        ),
+      );
       // what the pages would otherwise fetch game files to work out: the quick check, the box's facts, the pack's size
       const known = (e: CdCatalogEntry): CdCatalogEntry => {
         const box = boxGameOf(e, files);
@@ -666,6 +682,7 @@ export function cdGames(cdRoot: string): Plugin {
         return {
           ...e,
           pack,
+          ...(isSplit(e) ? { parts: partName(pack) } : {}),
           fileFacts: libraryFacts(entryFiles(e, files)),
           health: quickHealth(e, files),
           ...(box ? { boxGame: box } : {}),
@@ -693,7 +710,11 @@ export function cdGames(cdRoot: string): Plugin {
       for (const gate of GATES)
         this.emitFile({ type: 'asset', fileName: `games/extra-${gate}.json`, source: JSON.stringify(secret(gate).map((e) => ({ ...e, gz: true }))) });
       this.emitFile({ type: 'asset', fileName: 'gm/index.json', source: JSON.stringify(gm) });
-      for (const [fileName, source] of packs) this.emitFile({ type: 'asset', fileName, source });
+      for (const [fileName, source] of packs) {
+        const part = split.parts.get(fileName);
+        this.emitFile(part ? { type: 'asset', fileName: partName(fileName), source: part } : { type: 'asset', fileName, source });
+      }
+      for (const [fileName, source] of split.blobs) this.emitFile({ type: 'asset', fileName, source });
       for (const [site, disk] of files) {
         // Walkthroughs are browser metadata, not native DOS resources.
         if (site.startsWith('games/') && !site.endsWith('/walkthrough.json')) continue;

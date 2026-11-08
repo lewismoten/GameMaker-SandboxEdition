@@ -131,7 +131,7 @@ function offlineFiles(bundle: Bundle, forArchive = false): [string, number, numb
         : /^(og\/|og-image\.|robots\.txt$|sitemap\.xml$|llms\.txt$|sw\.js$|index\.html$|archive\.html$|web-player\.html$|player\/|trinkets\/|laser\/|pocket\/)/
     ).test(f) &&
     !DEV_ONLY.test(f) &&
-    (!/^games\/(gameware|shareware|originals)\//.test(f) || /\.(zip|gmpak)$|\/walkthrough\.json\.gz$/.test(f));
+    (!/^games\/(gameware|shareware|originals)\//.test(f) || /\.(zip|zpart|gmpak)$|\/walkthrough\.json\.gz$/.test(f));
   return [...sources]
     .filter(([f]) => wanted(f))
     .sort(([a], [b]) => (a < b ? -1 : 1))

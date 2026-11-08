@@ -22,7 +22,7 @@ const FIRST_DATA = /^((desk|frames|opening|dos|gm)\/|games\/(catalog|catalog-fil
 /** The game lists the build writes after offline.json is made: the page asks for them, so they are listed here. */
 const LISTS = ['games/catalog.json', 'games/catalog-files.json', 'games/index.json'];
 /** The big packs: games, the phone's files and the 3D-print and laser kits. */
-const LAST = /^(games\/.*\.(zip|gmpak)$|phone\/|trinkets\/|laser\/)/;
+const LAST = /^(games\/.*\.(zip|zpart|gmpak)$|games\/shared\/|phone\/|trinkets\/|laser\/)/;
 /** Never fetched: the gate lists, which name the secret games. The build leaves them out too; this is the second lock. */
 const NEVER = /^games\/extra-\d+\.json$/;
 
