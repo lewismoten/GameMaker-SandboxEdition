@@ -2,7 +2,7 @@
 // mountain, who will be walking these streets later, would like to see where it is going. So Tess lights the lamps up
 // the hill: four terraces of terraced houses, a ladder at alternate ends. The alleys between the houses cut each
 // terrace, and each is filled by fog that builds itself into a bridge one step after another (and thins away all at
-// once): wait for the last step to come up, and go. A lit lamp counts; the stars come out as she works.
+// once): wait for the last step to come up, and go. A lit lamp counts.
 import { ORIGIN } from '../../../kit/starter/map';
 import type { Pal } from '../../../kit/starter/palette';
 import { Grid } from '../../../kit/starter/grid';
@@ -51,7 +51,7 @@ const SIGNS = [
 ] as const;
 
 export function levelLamps(pal: Pal): Level {
-  const { book, timed } = startBook(pal, ['pickups', 'facade', 'mist', 'lamp', 'stars'], { mistSteps: FOG_STEPS });
+  const { book, timed } = startBook(pal, ['pickups', 'facade', 'mist', 'lamp'], { mistSteps: FOG_STEPS });
   const names = SIGNS.map((_, i) => `sign${i}`);
   const s = addSigns(book, pal, Object.fromEntries(SIGNS.map((d, i) => [names[i], d])) as Record<string, readonly [string, number, number]>);
   const W = 72;
@@ -73,7 +73,7 @@ export function levelLamps(pal: Pal): Level {
       for (let x = 1; x < W - 1; x++) {
         // a sign stands in front of the wall of the terrace above: it hides the gap, and keeps the block set small
         const behindSign = A.signs.some(([sk, sx]) => sk === k - 1 && x >= sx && x < sx + 4);
-        if (x !== A.ladders[k - 1] && x !== A.ladders[k - 2] && !behindSign) m.set(x, y, (x * 7 + y * 3) % 5 === 0 ? 'rock2' : 'rock');
+        if (x !== A.ladders[k - 1] && x !== A.ladders[k - 2]) m.set(x, y, (x * 7 + y * 3) % 5 === 0 ? 'rock2' : 'rock');
       }
   // the fog bridges: each alley's steps start gone (mist.ts), the one nearest the way in first to come up
   A.alleys.forEach((xs, k) =>
@@ -91,9 +91,6 @@ export function levelLamps(pal: Pal): Level {
     for (const x of A.acorns[k]) m.set(x, t - 1, 'acorn');
   });
   m.set(A.pie[1], rows[A.pie[0]] - 1, 'pie');
-  // the sky over the top terrace: stars that come out on a clock, and the moon
-  for (let y = 0; y < rows[3] - 5; y++) for (let x = 1; x < W - 1; x++) if ((x * 11 + y * 7) % 13 === 0) m.set(x, y, ['starA', 'starB', 'starC'][(x + y) % 3]);
-  m.set(58, 1, 'moonTL').set(59, 1, 'moonTR').set(58, 2, 'moonBL').set(59, 2, 'moonBR');
   m.exits.push({ from: [A.exit + ORIGIN, rows[3] - 1 + ORIGIN] });
   A.signs.forEach(([k, x], i) => m.sign(x, onGround(rows[k], s[names[i]]), s[names[i]]));
   return {
