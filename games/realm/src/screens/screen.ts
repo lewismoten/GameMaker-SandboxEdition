@@ -184,7 +184,12 @@ export class Screen {
     return { pixels, palette: pal };
   }
 
-  gif(inks: Inks = {}, dither = 6): Uint8Array {
+  /**
+   * The picture as a GIF. Pages leave out the ordered dither (dither 0, the nearest of the 256
+   * colors): the median-cut palette is close enough that it barely shows, and a page without it
+   * is about a quarter smaller. The title keeps it (titleScreen passes 6) to stand out.
+   */
+  gif(inks: Inks = {}, dither = 0): Uint8Array {
     const { pixels, palette } = this.indexed(inks, dither);
     return encodeGif({ width: this.w, height: this.h, pixels, palette });
   }

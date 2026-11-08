@@ -83,15 +83,17 @@ export const GM_BLUE: Col = [40, 40, 252];
 export const GM_YELLOW: Col = [252, 252, 0];
 
 /**
- * Reduces a picture to a 256-color GIF (error diffusion), with `fixed` colors kept first and
- * `pins` (index, color) kept at their own indices, out of the picture.
+ * Reduces a picture to a 256-color GIF, with `fixed` colors kept first and `pins` (index, color)
+ * kept at their own indices, out of the picture. Each pixel takes the nearest color; with
+ * `diffuse` (the title, to stand out) the error is spread to its neighbors instead, which looks
+ * smoother but makes the GIF much bigger.
  */
-export function toGif(p: Picture, fixed: Col[] = [], exposure = 1, pins: [number, Col][] = []): Uint8Array {
-  const { pixels, pal } = indexed(p, fixed, exposure, false, pins);
+export function toGif(p: Picture, fixed: Col[] = [], exposure = 1, pins: [number, Col][] = [], diffuse = false): Uint8Array {
+  const { pixels, pal } = indexed(p, fixed, exposure, diffuse, pins);
   return encodeGif({ width: p.w, height: p.h, pixels, palette: pal });
 }
 
-function indexed(p: Picture, fixed: Col[] = [], exposure = 1, ordered = false, pins: [number, Col][] = []): { pixels: Uint8Array; pal: Uint8Array } {
+function indexed(p: Picture, fixed: Col[] = [], exposure = 1, diffuse = true, pins: [number, Col][] = []): { pixels: Uint8Array; pal: Uint8Array } {
   const bytes = toBytes(p, exposure);
   const pal = new Uint8Array(768);
   putColors(pal, 0, fixed);
@@ -107,6 +109,6 @@ function indexed(p: Picture, fixed: Col[] = [], exposure = 1, ordered = false, p
     pal,
     Array.from({ length: 256 }, (_, i) => i).filter((i) => i >= fixed.length && !pinned.has(i)),
   );
-  const pixels = ordered ? m.ordered(bytes, p.w, p.h, 8) : m.diffuse(bytes, p.w, p.h);
+  const pixels = diffuse ? m.diffuse(bytes, p.w, p.h) : m.ordered(bytes, p.w, p.h, 0);
   return { pixels, pal };
 }
