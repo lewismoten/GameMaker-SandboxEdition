@@ -21,6 +21,7 @@ export const LEVEL_SONGS: Record<string, SongName> = {
   four: 'fair',
   tower: 'tower',
   five: 'theme',
+  market: 'fair',
   six: 'finale',
 };
 

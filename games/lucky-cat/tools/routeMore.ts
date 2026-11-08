@@ -1,6 +1,8 @@
 // The way through the levels added for the hour-long cut (2.0 -> 3.0), as orders for the bot (see route.ts).
 import type { StarterBot } from '../../kit/starter/bot';
 import { ALLEY } from '../src/levels/alley';
+import { MARKET } from '../src/levels/market';
+import { OPEN_TICKS } from '../src/meter';
 import { SHOP } from '../src/levels/shop';
 import { RIGGING } from '../src/levels/rigging';
 import { STEPS } from '../src/levels/steps';
@@ -118,4 +120,41 @@ export async function mirrorShop(bot: StarterBot): Promise<void> {
   score(bot, from, 0, 50, 'The Mirror Shop');
   if (bot.sim.ci.hitpts !== hp) throw new Error(`The Mirror Shop cost hit points: ${hp} -> ${bot.sim.ci.hitpts}`);
   await leave(bot, bot.walk(SHOP.exit + 1, 'the exit'), 'the exit');
+}
+
+/** A crow of column `x0` is up (above where the cat's head would be). */
+const crowUp = (bot: StarterBot, x0: number) => () => monsterY(bot, x0) <= MARKET.crowRow * 20 + 4;
+
+/** 12. The Night Market: ahead of the 13th chime, through three stalls' boxes, three open shutters, two watchman crows. */
+export async function nightMarket(bot: StarterBot): Promise<void> {
+  const from = bot.sim.ci.score;
+  const hp = bot.sim.ci.hitpts;
+  await readAt(bot, 6, 'the closing sign');
+  await must(bot, bot.walk(MARKET.boxes[0] - 1, 'the first stall'), 'to the first stall');
+  await must(bot, bot.walk(MARKET.boxes[0] + 2, 'through the first stall'), 'knocking through the first stall');
+  await hop(bot, MARKET.cracks, 2, 'the cracks');
+  await must(bot, bot.walk(MARKET.gates[0] + 2, 'through the first shutter'), 'through the first shutter');
+  await must(bot, bot.walk(31, 'the watchman sign'), 'to the watchman sign');
+  await must(bot, bot.wait(READ / 2), 'a quick look');
+  await must(bot, bot.walk(MARKET.crows[0] - 3, 'before the first crow'), 'to the first crow');
+  await watchFor(bot, crowUp(bot, MARKET.crows[0]), 'the first crow flying up');
+  await must(bot, bot.walk(MARKET.crows[0] + 3, 'past the first crow'), 'past the first crow');
+  await must(bot, bot.walk(MARKET.boxes[1] - 1, 'the second stall'), 'to the second stall');
+  await must(bot, bot.walk(MARKET.boxes[1] + 2, 'through the second stall'), 'knocking through the second stall');
+  await hop(bot, MARKET.cracks2, 2, 'the cracks by the shutter');
+  await must(bot, bot.walk(MARKET.gates[1] + 2, 'through the second shutter'), 'through the second shutter');
+  await must(bot, bot.walk(MARKET.crows[1] - 3, 'before the second crow'), 'to the second crow');
+  await watchFor(bot, crowUp(bot, MARKET.crows[1]), 'the second crow flying up');
+  await must(bot, bot.walk(MARKET.crows[1] + 3, 'past the second crow'), 'past the second crow');
+  await must(bot, bot.walk(MARKET.crates - 1, 'the crates'), 'to the crates');
+  await must(bot, bot.walk(MARKET.crates + 3, 'over the crates'), 'over the crates');
+  await must(bot, bot.walk(MARKET.boxes[2] - 1, 'the last stall'), 'to the last stall');
+  await must(bot, bot.walk(MARKET.boxes[2] + 2, 'through the last stall'), 'knocking through the last stall');
+  await readAt(bot, 70, 'the last shutter sign');
+  await must(bot, bot.walk(MARKET.gates[2] + 2, 'through the last shutter'), 'through the last shutter');
+  bot.say(`through the last shutter after ${bot.sim.ticks} ticks of ${OPEN_TICKS}`);
+  if (bot.sim.ticks > OPEN_TICKS * 0.9) throw new Error(`the run is too slow for the market: ${bot.sim.ticks} ticks of ${OPEN_TICKS}`);
+  score(bot, from, 0, 30, 'The Night Market');
+  if (bot.sim.ci.hitpts !== hp) throw new Error(`The Night Market cost hit points: ${hp} -> ${bot.sim.ci.hitpts}`);
+  await leave(bot, bot.walk(MARKET.exit + 1, 'the exit'), 'the exit');
 }

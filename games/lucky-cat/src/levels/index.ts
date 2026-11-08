@@ -13,6 +13,7 @@ import { levelAlley } from './alley';
 import { levelOne } from './one';
 import { levelFive } from './five';
 import { levelFour } from './four';
+import { levelMarket } from './market';
 import { levelMorning } from './morning';
 import { levelRigging } from './rigging';
 import { levelShop } from './shop';
@@ -37,6 +38,7 @@ export function buildLevels(): { pal: ReturnType<typeof buildCatPalette>; levels
     levelFour(pal),
     levelTower(pal),
     levelFive(pal),
+    levelMarket(pal),
     levelSix(pal),
   ];
   return { pal, levels };

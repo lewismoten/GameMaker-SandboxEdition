@@ -139,6 +139,19 @@ export const LOOKS: Record<string, Record<string, Tint>> = {
       [170, 220, 110],
     ],
   },
+  // the night market: an indigo plate and lantern red
+  market: {
+    sky: [
+      [12, 10, 40],
+      [120, 120, 190],
+      [34, 30, 88],
+    ],
+    red: [
+      [120, 16, 24],
+      [255, 170, 100],
+      [240, 70, 36],
+    ],
+  },
   // payback: a red-black plate and the hottest gold
   dusk: {
     sky: [
