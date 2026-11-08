@@ -78,6 +78,10 @@ export const LOCAL_KEYS: Record<SectionId, { keys: string[]; prefixes?: string[]
       'gm-desk-pad',
       'gm-desk-mouse',
       'gm-sound-blaster',
+      'gm-desk-buddy',
+      'gm-desk-machine',
+      'gm-specials',
+      'gm-courier',
     ],
   },
   notes: { keys: ['gm-imported-notes', 'gm-removed-games'] },
@@ -96,7 +100,9 @@ export const LOCAL_KEYS: Record<SectionId, { keys: string[]; prefixes?: string[]
       'gm-ach-progress',
       'gm-ach-hide-unearned',
       'gm-home-category',
+      'gm-disk-box-folded',
       'gm-imported-rating-filter',
+      'gm-imported-tag-filter',
       'gm-starter-done-filter',
       'gm-starter-level',
       'gm-volume',
@@ -139,6 +145,7 @@ export const LOCAL_KEYS: Record<SectionId, { keys: string[]; prefixes?: string[]
 export const KEYS_NOT_BACKED_UP: Record<string, string> = {
   'gm-project-source': 'marks imported games, whose files are never backed up',
   'gm-import-batch': 'groups imported games by the import that brought them',
+  'gm-imported-tags-v2': 'a cache of tags worked out again from each game, so nothing to restore',
   'gm-import-history': 'the last 20 imports and their failures, about files that are never backed up',
   'gm-received': 'games other sites sent, kept as imported games',
   'gm-offline': 'the offline copy, a cache that downloads again',
@@ -159,6 +166,8 @@ export const KEYS_NOT_BACKED_UP: Record<string, string> = {
   'gm-turbo': 'an old setting the desk removes',
   'gm-assistant-archive': 'the Assistant chat’s archive (this tab only)',
   'gm-tour-demo': 'the guided tour’s signal to start or stop a game preview (an event, never stored)',
+  'gm-specials-changed': 'the signal that a Special was kept, locked or reset (an event, never stored)',
+  'gm-specials-today': 'the test date SPECIALS DATE sets, for testing only',
 };
 
 /** Which section owns a localStorage key, or undefined. */

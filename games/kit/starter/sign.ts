@@ -32,8 +32,8 @@ function glyph(ch: string): number[] {
 /** How many letters fit across a board `w` blocks wide. */
 export const lettersAcross = (w: number): number => Math.floor((20 * w - 8) / 8);
 
-/** How many lines fit down a board `h` blocks high. */
-export const linesDown = (h: number): number => Math.floor((20 * h - 4) / 9);
+/** How many lines fit down a board `h` blocks high (`tight`: the lines close together, 8 pixels apart instead of 9, one more line on a two-block board). */
+export const linesDown = (h: number, tight = false): number => Math.floor((20 * h - 4) / (tight ? 8 : 9));
 
 /** The words broken into lines that fit `width` letters, or an error saying they don't. */
 export function wrapWords(text: string, width: number, lines: number): string[] {
@@ -62,7 +62,7 @@ export interface Sign {
 }
 
 /** The board's picture, w*20 by h*20. */
-function boardPicture(pal: Pal, lines: string[], w: number, h: number): Pixels {
+function boardPicture(pal: Pal, lines: string[], w: number, h: number, pitch = 9): Pixels {
   const { c } = pal;
   const p = new Pixels(20 * w, 20 * h, skyOf(pal));
   const W = 20 * w;
@@ -81,10 +81,10 @@ function boardPicture(pal: Pal, lines: string[], w: number, h: number): Pixels {
   ])
     p.set(x, y, c('wood', 0));
   // the words, centered
-  const top = 3 + Math.floor((H - 6 - (lines.length * 9 - 1)) / 2);
+  const top = 3 + Math.floor((H - 6 - (lines.length * pitch - 1)) / 2);
   lines.forEach((line, i) => {
     const x0 = Math.floor((W - line.length * 8) / 2);
-    const y0 = top + i * 9 - 0;
+    const y0 = top + i * pitch;
     [...line].forEach((ch, k) => {
       const g = glyph(ch);
       for (let y = 0; y < 8; y++) for (let x = 0; x < 8; x++) if (g[y] & (1 << x)) p.set(x0 + k * 8 + x, y0 + y, c('ink', 0));
@@ -112,11 +112,12 @@ function addLegs(book: Book, pal: Pal): [string, string] {
 
 /**
  * Adds the blocks of a sign called `name` to `book`: `w` blocks wide and `h` high, saying
- * `text`. Returns the block names for StarterMap.sign().
+ * `text` (`tight`: four lines may squeeze onto a two-block board). Returns the block names for StarterMap.sign().
  */
-export function addSign(book: Book, pal: Pal, name: string, text: string, w: number, h = 1): Sign {
+export function addSign(book: Book, pal: Pal, name: string, text: string, w: number, h = 1, tight = false): Sign {
   if (w < 2 || w > 4) throw new Error(`Sign ${name} should be 2 to 4 blocks wide`);
-  const pic = boardPicture(pal, wrapWords(text, lettersAcross(w), linesDown(h)), w, h);
+  const lines = wrapWords(text, lettersAcross(w), linesDown(h, tight));
+  const pic = boardPicture(pal, lines, w, h, tight && lines.length * 9 - 1 > 20 * h - 6 ? 8 : 9);
   const board: string[][] = [];
   for (let row = 0; row < h; row++) {
     board.push([]);

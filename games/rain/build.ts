@@ -20,12 +20,12 @@ import { buildHero } from '../kit/starter/heroChar';
 import { buildMonsterBlocks, buildMonsters } from '../kit/starter/monsters';
 import { cardPicture, endPicture, gif, menuPicture, paper, scoresPicture, slotsPicture } from '../kit/starter/screens';
 import { titlePicture } from './src/title';
-import { buildSounds } from '../kit/starter/sounds';
 import { demoRecording } from './src/demo';
 import { TITLE, buildGame } from './src/game';
 import { buildLevels } from './src/levels';
 import { finishBlocks } from './src/rain';
 import { song } from './src/song';
+import { buildSoundSet, buildVocs } from './src/sounds';
 import { CREDITS, HOWTO, LOST, STORY, WON } from './src/text';
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -45,7 +45,8 @@ disk.put('rain.mbl', serializeBlocks(monsterBlocks.finish()));
 disk.put('rain.mon', serializeMonsters(buildMonsters(monsterBlocks)));
 disk.put('hero.cbl', serializeBlocks(heroBlocks.finish()));
 disk.put('hero.chr', serializeCharacter(buildHero(heroBlocks)));
-disk.put('rain.snd', serializeSoundSet(buildSounds()));
+disk.put('rain.snd', serializeSoundSet(buildSoundSet()));
+for (const [name, voc] of Object.entries(buildVocs())) disk.put(`${name}.voc`, voc);
 disk.put('rain.cmf', song());
 
 // each level's map and its card

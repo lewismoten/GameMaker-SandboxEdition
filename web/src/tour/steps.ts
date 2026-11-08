@@ -172,6 +172,8 @@ export interface PageAct {
   do: string;
   text?: string;
   wait?: string;
+  /** The step's line waits until the page says the act's `wait` is on its screen (tour/pageAct.ts). */
+  hold?: boolean;
 }
 
 /**

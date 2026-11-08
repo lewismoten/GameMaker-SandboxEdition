@@ -3,6 +3,7 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { type DriveSound, renderDriveSound } from './driveSounds';
+import type { SoundPart } from './driveSwitches';
 
 /** A Web Audio stand-in: any node method or parameter works and counts what starts. */
 function fakeContext() {
@@ -41,6 +42,38 @@ describe('renderDriveSound', () => {
     renderDriveSound(a.ctx, a.ctx.createGain(), 'floppy-insert', 0);
     renderDriveSound(b.ctx, b.ctx.createGain(), 'floppy-eject', 0);
     expect(a.count()).toBeGreaterThan(b.count() * 3);
+  });
+});
+
+describe('the drive sound switches', () => {
+  /** The parts each sound has: switching one off leaves it out, and switching off the rest changes nothing. */
+  const PARTS: Record<DriveSound, SoundPart[]> = {
+    'floppy-insert': ['load', 'spin', 'heads', 'rw'],
+    'floppy-read': ['spin', 'rw'],
+    'floppy-eject': ['load'],
+    'tray-open': ['load'],
+    'tray-close': ['load'],
+    'cd-spin': ['spin', 'heads'],
+    'cd-read': ['spin', 'rw'],
+  };
+  const starts = (kind: DriveSound, allowed: (drive: string, part: SoundPart) => boolean) => {
+    const { ctx, count } = fakeContext();
+    const dur = renderDriveSound(ctx, ctx.createGain(), kind, 0, 900, 3, allowed);
+    return { n: count(), dur };
+  };
+
+  it.each(KINDS)('%s: each of its parts has its own switch, on its own drive', (kind) => {
+    const drive = kind.startsWith('floppy') ? 'floppy' : 'cd';
+    const full = starts(kind, () => true);
+    for (const part of ['load', 'spin', 'heads', 'rw'] as const) {
+      const without = starts(kind, (d, p) => !(d === drive && p === part));
+      expect(without.dur).toBe(full.dur); // the timing stays
+      if (PARTS[kind].includes(part)) expect(without.n, part).toBeLessThan(full.n);
+      else expect(without.n, part).toBe(full.n);
+    }
+    // the other drive's switches never touch it; with all of its own off it is silent
+    expect(starts(kind, (d) => d === drive).n).toBe(full.n);
+    expect(starts(kind, () => false).n).toBe(0);
   });
 });
 

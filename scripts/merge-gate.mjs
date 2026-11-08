@@ -79,7 +79,18 @@ export function runGate(options, settings = {}) {
         throw error;
       }
     }
-    const markers = command(integration, ['git', 'grep', '-n', '-E', '^(<<<<<<< |=======$|>>>>>>> )', '--', ':!package-lock.json']);
+    const markers = command(integration, [
+      'git',
+      'grep',
+      '-n',
+      '-E',
+      '^(<<<<<<< |=======$|>>>>>>> )',
+      '--',
+      ':!package-lock.json',
+      ':!code',
+      ':!cd',
+      ':!runtime',
+    ]);
     if (markers.code !== 1) throw new Error(`Conflict markers or grep failure: ${markers.stdout}${markers.stderr}`);
     result.mergedRevision = git(integration, 'rev-parse', 'HEAD');
     result.mergedTree = git(integration, 'rev-parse', 'HEAD^{tree}');
@@ -105,6 +116,7 @@ export function runGate(options, settings = {}) {
     if (git(integration, 'status', '--porcelain')) throw new Error('Candidate is dirty before validation');
     result.candidateRevision = git(integration, 'rev-parse', 'HEAD');
     result.candidateTree = git(integration, 'rev-parse', 'HEAD^{tree}');
+    step('declarations', web, ['node', join(repo.root, 'scripts/decl-preflight.mjs'), '--web', web]);
     step('tsc', web, ['npx', '--no-install', 'tsc', '--noEmit', '-p', '.']);
     step('lint', web, ['npm', 'run', 'lint']);
     const reportFile = join(output, 'vitest.json');

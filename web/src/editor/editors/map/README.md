@@ -30,3 +30,5 @@ From `web/`:
 ```sh
 npx vitest run src/editor/editors/map
 ```
+
+A Scenes link with `generate=1` opens layout generation once, then removes that request from the address. New-map feedback also points to Generate in the Blocks panel.

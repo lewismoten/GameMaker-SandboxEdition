@@ -5,6 +5,7 @@ import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { ORIGIN, StarterMap } from '../../kit/starter/map';
 import { addSign } from '../../kit/starter/sign';
+import { addHouse, HOUSE } from './house';
 import { addRain, rainPalette, stormPalette, type Timed } from './rain';
 import type { Pal } from '../../kit/starter/palette';
 
@@ -19,9 +20,17 @@ export interface Level {
   map: StarterMap;
 }
 export const GROUND = 10;
+/** Where the puddles start (three tiles each) and their ripples' first picture. */
+export const PUDDLES = [
+  [9, 0],
+  [20, 2],
+  [29, 1],
+] as const;
+/** The house's left column; its spout and rain barrel are the sixth. */
+export const HOUSE_X = 13;
 
 function lesson(pal: Pal, pools: boolean): Level {
-  const width = pools ? 26 : 36;
+  const width = pools ? 40 : 36;
   const book = new Book('bbl');
   const timed: Timed[] = [];
   addStarterBlocks(book, pal);
@@ -35,7 +44,8 @@ function lesson(pal: Pal, pools: boolean): Level {
   const words = pools
     ? ([
         [4, 'RAIN SPLASHES. PUDDLES RIPPLE'],
-        [16, 'SAME MAP, DARKER COLORS: GO THROUGH THE DOOR'],
+        [24, 'STEP IN A PUDDLE: A TOUCH SWAPS IN SPLASH BLOCKS'],
+        [33, 'SAME MAP, DARKER COLORS: GO THROUGH THE DOOR'],
       ] as const)
     : ([
         [4, 'THIS RAIN FALLS IN ROWS'],
@@ -52,13 +62,23 @@ function lesson(pal: Pal, pools: boolean): Level {
       const phase = pools || x >= 19 ? (x + y * 3) % 4 : 0;
       map.set(x, y, `${pools && y === GROUND - 1 ? 'splash' : 'rain'}.${phase}`);
     }
-  if (pools)
-    for (const [x, phase] of [
-      [9, 0],
-      [13, 2],
-      [21, 1],
-    ])
-      for (let p = 0; p < 3; p++) map.set(x + p, GROUND, `pool${p}.${phase}`);
+  if (pools) {
+    // three puddles: the ground ripples; the air above each is armed to splash when stepped in
+    for (const [x, phase] of PUDDLES)
+      for (let p = 0; p < 3; p++) {
+        map.set(x + p, GROUND, `pool${p}.${phase}`);
+        map.set(x + p, GROUND - 1, `wet.${(x + p + (GROUND - 1) * 3) % 4}`);
+      }
+    // the house, its roof and spout on the rain's clock (same phase as the rain around each cell)
+    const cells = addHouse(book, pal, timed);
+    cells.forEach((row, r) =>
+      row.forEach((name, c) => {
+        const x = HOUSE_X + c;
+        const y = GROUND - HOUSE.rows + r;
+        map.set(x, y, book.index.has(name) ? name : `${name}.${(x + y * 3) % 4}`);
+      }),
+    );
+  }
   return {
     file: pools ? 'two' : 'one',
     card: pools ? 'two' : 'one',

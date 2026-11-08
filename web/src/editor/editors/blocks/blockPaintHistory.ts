@@ -4,6 +4,7 @@ import type { BlockGroup } from './blockGroups';
 
 interface Snapshot {
   pixels: Map<number, Uint8Array>;
+  behavior?: Map<number, Omit<Block, 'pixels'>>;
   group?: BlockGroup;
 }
 interface Steps {
@@ -37,6 +38,15 @@ export class BlockPaintHistory {
     const steps = this.scopes.get(key);
     return { undo: !!steps?.past.length, redo: !!steps?.future.length };
   }
+  private behavior(id: number): Omit<Block, 'pixels'> {
+    const { pixels: _pixels, ...fields } = this.blocks[id];
+    return { ...fields, xtra: fields.xtra.slice() };
+  }
+  /** Behavior joins the current paint scope, but ordinary paint never restores behavior. */
+  recordBehavior(key: string, id: number, group?: BlockGroup): void {
+    this.record(key, [id], group);
+    this.scopes.get(key)!.past.at(-1)!.behavior = new Map([[id, this.behavior(id)]]);
+  }
   /** Restore only pictures; group metadata is handed back to the caller for its companion. */
   step(key: string, back: boolean, group?: BlockGroup): Snapshot | undefined {
     const steps = this.scopes.get(key);
@@ -44,8 +54,11 @@ export class BlockPaintHistory {
     const [from, to] = back ? [steps.past, steps.future] : [steps.future, steps.past];
     const snap = from.pop();
     if (!snap) return;
-    to.push(this.capture(snap.pixels.keys(), group));
+    const reverse = this.capture(snap.pixels.keys(), group);
+    if (snap.behavior) reverse.behavior = new Map([...snap.behavior.keys()].map((id) => [id, this.behavior(id)]));
+    to.push(reverse);
     for (const [id, pixels] of snap.pixels) this.blocks[id].pixels.set(pixels);
+    if (snap.behavior) for (const [id, fields] of snap.behavior) Object.assign(this.blocks[id], fields, { xtra: fields.xtra.slice() });
     return snap;
   }
 }

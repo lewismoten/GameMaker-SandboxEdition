@@ -121,6 +121,8 @@ async function choose(): Promise<
     const listed = (await loadCatalogList()).find((g) => g.id === gameId && g.gam);
     const entry = listed?.kind === 'shareware' ? await withDetails(listed) : listed;
     if (entry) {
+      // a Special played here is kept once its window passes (specials/state.ts)
+      if (entry.series === 'special') void import('./specials/state').then((m) => m.keepSpecial(entry.id, 'played'));
       // the game starts once its .gam is in; the rest arrive while it plays, as needed (streamGame.ts)
       const streamed = streamHostedGame(entry);
       await streamed.started;
@@ -188,6 +190,7 @@ async function main(): Promise<void> {
       back: game.back ? { href: game.back, label: '← All games' } : undefined,
       ...playSaves(game.id, game.gam),
       saveId: game.id,
+      snapshotId: game.id,
       ...playAchievements(game.id, 'web'),
       onQuit: () => !game.back, // stand-alone apps go back to their menu
       onExit: () => {

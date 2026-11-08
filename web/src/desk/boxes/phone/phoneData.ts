@@ -1,5 +1,5 @@
-// The Phone of the Future kit's 3D parts (games/year2000/phone/viewer/parts.json + parts.bin, copied to the
-// site's trinkets/phone/ by scripts/build-games.mjs): the file's shape, a parser that gives every part its
+// The Phone of the Future kit's 3D parts (games/year2000/phone/viewer/parts.json + parts.bin, served packed from
+// the site's trinkets/phone/ by games/kit/trinketPacks.ts): the file's shape, a parser that gives every part its
 // group (shell, dial, board, components, battery), and which groups each view shows. Pure, so tests read
 // the real files. A part may carry its own "group" in the JSON; the rest are told apart by kind and id.
 
@@ -34,6 +34,8 @@ export interface VariantMeta {
 export interface PartsFile {
   format: string;
   floats?: number;
+  /** The site serves parts.bin packed under this name (games/kit/trinketPacks.ts). */
+  packed?: string;
   variant?: VariantMeta;
   parts: PartMeta[];
 }
@@ -99,16 +101,27 @@ export function parseParts(file: PartsFile, bin: ArrayBuffer): Part[] {
 
 const loading: Partial<Record<PhoneVariant, Promise<PhoneSet>>> = {};
 
+/** parts.bin from the site's pack of it (games/kit/trinketPacks.ts), byte for byte. */
+async function unpack(res: Response): Promise<ArrayBuffer> {
+  const [{ unpackFloatsAndIndices }, data] = await Promise.all([
+    import('@lewismoten/gamemaker-sandbox-tools/pack/meshPack'),
+    new Response(res.body!.pipeThrough(new DecompressionStream('deflate-raw'))).arrayBuffer(),
+  ]);
+  return unpackFloatsAndIndices(new Uint8Array(data)).buffer as ArrayBuffer;
+}
+
 /** Where a variant's files are served: the cheap build beside the trinkets, the deluxe one in a folder of its own. */
 export const variantBase = (v: PhoneVariant): string => (v === 'deluxe' ? `${phoneBase}deluxe/` : phoneBase);
 
 /** A variant's parts, fetched once (about 2 MB each), or rejected when the site has no files for them. */
 export function loadPhone(v: PhoneVariant = 'cheap'): Promise<PhoneSet> {
   const base = variantBase(v);
-  const p = (loading[v] ??= Promise.all([fetch(`${base}parts.json`), fetch(`${base}parts.bin`)]).then(async ([j, b]) => {
-    if (!j.ok || !b.ok || !j.headers.get('content-type')?.includes('json')) throw new Error('no phone files');
+  const p = (loading[v] ??= fetch(`${base}parts.json`).then(async (j) => {
+    if (!j.ok || !j.headers.get('content-type')?.includes('json')) throw new Error('no phone files');
     const file = (await j.json()) as PartsFile;
-    return { meta: file.variant, parts: parseParts(file, await b.arrayBuffer()) };
+    const b = await fetch(`${base}${file.packed ?? 'parts.bin'}`);
+    if (!b.ok) throw new Error('no phone files');
+    return { meta: file.variant, parts: parseParts(file, file.packed ? await unpack(b) : await b.arrayBuffer()) };
   }));
   p.catch(() => delete loading[v]);
   return p;
@@ -134,4 +147,16 @@ export async function hasPhone(): Promise<boolean> {
   } catch {
     return false;
   }
+}
+
+/** The kit's printer-parts ZIP (both builds' shell STLs), zipped here from the site's pack of them (games/kit/phoneDownloads.ts). */
+export async function phonePrinterZip(): Promise<Uint8Array> {
+  const res = await fetch(`${phoneBase}phone-3d-printer-parts.pack`);
+  if (!res.ok || !res.body) throw new Error(`printer parts: ${res.status}`);
+  const [{ unpackFiles }, { createZip }, data] = await Promise.all([
+    import('@lewismoten/gamemaker-sandbox-tools/pack/meshPack'),
+    import('@lewismoten/gamemaker-sandbox-archives/zip'),
+    new Response(res.body.pipeThrough(new DecompressionStream('deflate-raw'))).arrayBuffer(),
+  ]);
+  return createZip(unpackFiles(new Uint8Array(data)), new Date(2026, 0, 1));
 }

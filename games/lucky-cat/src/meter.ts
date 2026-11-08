@@ -1,0 +1,55 @@
+// The fair's clock: a meter of bells and a gate that run on Game-Maker's own block timers (a block turns into
+// another after a number of ticks, 18.2 a second). Seven bells hang in a row after a little clock face, and they
+// go dark one at a time, the last when the 13th chime sounds: that moment the fair's gate (four blocks tall,
+// too high to jump) shuts for a few seconds, then the gate opens and the bells light up again.
+// Every bell block is its own two-block loop (lit, then dark, then lit again), so all the meters and gates in a
+// level change together and are always in view.
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
+import { PULL, SOLID, type Book } from '../../kit/starter/book';
+import type { Pal } from './print';
+import type { Timed } from './level';
+import { fairGate, pip } from './props';
+
+/** Ticks the gate stays open, and the bells' share of it. */
+export const BELLS = 7;
+export const OPEN_TICKS = BELLS * 130;
+/** Ticks the gate stays shut. */
+export const SHUT_TICKS = 150;
+export const CYCLE = OPEN_TICKS + SHUT_TICKS;
+
+/** The little clock face that starts each row of bells: paper dial on ink, the hands a minute from 13. */
+function cap(pal: Pal): Pixels {
+  const { c } = pal;
+  const p = new Pixels(20, 20, c('ink', 0));
+  p.disc(10, 10, 7.6, c('paper', 3)).disc(10, 10, 6.4, c('paper', 4));
+  p.line(10, 10, 10, 5, c('ink', 0)).line(10, 10, 13, 6, c('red', 1)).disc(10, 10, 1, c('gold', 3));
+  for (const [x, y] of [
+    [10, 4],
+    [16, 10],
+    [10, 16],
+    [4, 10],
+  ])
+    p.set(x, y, c('ink', 1));
+  return p;
+}
+
+/** Adds the meter's and the gate's blocks to `book`; returns each timed block's next block and ticks. */
+export function addMeter(book: Book, pal: Pal, openTicks = OPEN_TICKS): Timed[] {
+  const cycle = openTicks + SHUT_TICKS;
+  const timed: Timed[] = [];
+  book.add('meterCap', cap(pal), { grav: PULL.down });
+  for (let j = 0; j < BELLS; j++) {
+    const lit = (openTicks * (j + 1)) / BELLS;
+    book.add(`bellOn${j}`, pip(pal, true), { grav: PULL.down });
+    book.add(`bellOff${j}`, pip(pal, false), { grav: PULL.down });
+    timed.push({ name: `bellOn${j}`, next: `bellOff${j}`, ticks: lit });
+    timed.push({ name: `bellOff${j}`, next: `bellOn${j}`, ticks: cycle - lit });
+  }
+  // the gate: open (two posts and a ribbon of gold) or shut (planks, solid)
+  const open = fairGate(pal, false);
+  book.add('gateOpen', open, { grav: PULL.down });
+  book.add('gateShut', fairGate(pal, true), { solid: SOLID });
+  timed.push({ name: 'gateOpen', next: 'gateShut', ticks: openTicks });
+  timed.push({ name: 'gateShut', next: 'gateOpen', ticks: SHUT_TICKS });
+  return timed;
+}

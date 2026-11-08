@@ -1371,16 +1371,27 @@ registerEditor(['map'], (host, project, file) => {
             apply: (blocks, _what, withMonsters) => {
               remember();
               map.blocks.set(blocks);
-              if (withMonsters) void import('./generate/place').then((p) => p.placeMonsters(map, withMonsters)).then(() => (draw(), save()));
+              if (withMonsters)
+                void import('./generate/place').then((p) => {
+                  const result = p.placeMonsters(map, withMonsters);
+                  draw();
+                  save();
+                  toast(p.placementText(result));
+                });
               draw();
               save();
-              toast('Layout drawn. Undo takes it back in one step.');
+              if (!withMonsters) toast('Layout drawn. Undo takes it back in one step.');
             },
           }),
         ),
     },
     '✨ Generate…',
   );
+  if (view.get('generate') === '1') {
+    view.set({ generate: undefined });
+    if (!generateBtn.disabled) queueMicrotask(() => generateBtn.click());
+    else toast('Choose background blocks for this map before generating a layout.');
+  }
   const blockPanel = h('div', { class: 'stack' }, filter.el, generateBtn, picker);
   const monsterPanel = h('div', { class: 'stack' }, monPicker, monCount);
   const optionsPanel = h(

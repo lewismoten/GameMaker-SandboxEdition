@@ -40,7 +40,7 @@ interface DeskActions {
   /** Types a command at the DOS prompt. */
   command(cmd: string): void;
   catalog(): void;
-  magazine(): void;
+  magazine(issue?: 1 | 2): void;
   /** The mug's closer look (open=mug). */
   mug(): void;
   /** The disk box: pick a disk for drive A:. */
@@ -65,6 +65,12 @@ export function deskScene(on: DeskActions) {
   const turboLed = h('span', { class: 'led amber' });
   const hdd = hddLight();
   const mhz = sevenSegment(2);
+  const machineBtn = h(
+    'button',
+    { type: 'button', class: 'mhz', 'aria-label': 'Machine settings', title: 'Machine settings' },
+    mhz,
+    h('small', { 'aria-hidden': 'true' }, 'MHz'),
+  );
   const powerBtn = h(
     'button',
     {
@@ -145,7 +151,7 @@ export function deskScene(on: DeskActions) {
       h(
         'div',
         { class: 'desk-left' },
-        paperStack({ catalog: () => on.catalog(), magazine: () => on.magazine() }),
+        paperStack({ catalog: () => on.catalog(), magazine: () => on.magazine(2), backIssue: () => on.magazine(1) }),
         withCover(
           h('div', { class: 'prop disk-box', onclick: () => on.flip() }, box, h('span', { class: 'caption', 'aria-hidden': 'true' }, 'Disk box — pick a game')),
           'Disk box: pick a game to put in drive A',
@@ -191,7 +197,7 @@ export function deskScene(on: DeskActions) {
             'div',
             { class: 'case-strip' },
             // the speed it shows, TURBO beside it and RESET to the right of TURBO
-            h('span', { class: 'mhz' }, mhz, h('small', null, 'MHz')),
+            machineBtn,
             h('label', { class: 'case-label' }, turboBtn, 'TURBO'),
             h('label', { class: 'case-label' }, resetBtn, 'RESET'),
             // POWER with the key lock next to it (the key is long lost: it stays unlocked)
@@ -234,7 +240,27 @@ export function deskScene(on: DeskActions) {
     ),
     h('button', { class: 'zoom-exit primary', onclick: () => on.setZoom(false) }, 'Back to the desk'),
   );
-  return { desk, crt, floppy, driveActions, cd, hdd, powerLed, turboLed, mhz, powerBtn, turboBtn, box, keyCard, wheelSpot, spk, lamp, modem, boxTiles };
+  return {
+    desk,
+    crt,
+    floppy,
+    driveActions,
+    cd,
+    hdd,
+    powerLed,
+    turboLed,
+    mhz,
+    machineBtn,
+    powerBtn,
+    turboBtn,
+    box,
+    keyCard,
+    wheelSpot,
+    spk,
+    lamp,
+    modem,
+    boxTiles,
+  };
 }
 
 /** Homage: the winter of 1992-93, shoveling snow to buy Game-Maker. */

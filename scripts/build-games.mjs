@@ -1,7 +1,7 @@
 // Rebuild ignored game outputs before development, tests, and releases; cache source and output hashes.
 import { createHash } from 'node:crypto';
 import { execFile } from 'node:child_process';
-import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { availableParallelism } from 'node:os';
 import { gameSourceHash, root } from './game-build-inputs.mjs';
@@ -9,6 +9,11 @@ import { gameKeys, logoUsers } from './game-import-keys.mjs';
 import { bundleEntry } from './game-bundle.mjs';
 import { retrySignal } from './child-signal-retry.mjs';
 import { promisify } from 'node:util';
+// Keep progress in the build log and mirror it to npm dev's console when requested.
+function progress(message) {
+  console.log(message);
+  if (process.env.GM_BUILD_PROGRESS === '1') console.error(message);
+}
 const games = join(root, 'games');
 const cacheFile = join(games, '.build-cache.json');
 const run = promisify(execFile);
@@ -96,12 +101,14 @@ const stale = ids.filter(
       !cached?.outputs?.[id] ||
       cached.outputs[id] !== outputs(id)),
 );
+const publicGames = new Set(ids.filter((id) => !JSON.parse(readFileSync(join(games, id, 'about.json'), 'utf8')).secret));
 // slowest first keeps the last workers busy; GM_BUILD_JOBS sets the worker count (CI uses every core, a desk keeps two)
 const slowFirst = ['depth', 'realm', 'blaster', 'maximus'];
 const pending = [
   ...stale.filter((id) => slowFirst.includes(id)).sort((a, b) => slowFirst.indexOf(a) - slowFirst.indexOf(b)),
   ...stale.filter((id) => !slowFirst.includes(id)),
 ];
+progress('Checking game disks and preparing refresh work.');
 // the Sand logo sting is the same in the 17 games that use it and takes about 7 s of ray tracing, so it is
 // rendered once per run (in step with the depth frame shards) and the games read the file
 const logoFile = join(frames, `sandlogo-${gameSourceHash('games/kit/sandlogo.ts').slice(0, 16)}.fli`);
@@ -160,8 +167,9 @@ async function worker() {
     const next = pending.findIndex((id) => !logoUsers.has(id));
     const id = pending.splice(logoReady && next >= 0 && !existsSync(logoFile) ? next : 0, 1)[0];
     if (!id) return;
-    const secret = JSON.parse(readFileSync(join(games, id, 'about.json'), 'utf8')).secret;
+    const secret = !publicGames.has(id);
     const started = Date.now();
+    if (!secret) progress(`Building ${id}; ${pending.filter((next) => publicGames.has(next)).length} public games still queued.`);
     try {
       if (id === 'depth') {
         const shards = Array.from({ length: 8 }, (_, i) => i).filter((i) => !existsSync(join(frames, `shard-${i}.json`)));
@@ -210,6 +218,7 @@ async function worker() {
       );
     } catch (error) {
       stop();
+      // eslint-disable-next-line preserve-caught-error -- A cause could expose a secret game's original paths and stderr.
       throw new Error(
         secret
           ? 'A game build failed.'
@@ -224,24 +233,12 @@ async function worker() {
     built.add(id);
     save();
     times.push([secret ? 'a game' : id, (Date.now() - started) / 1000]);
-    if (!secret) console.log(`Built ${id}${timing ? ` in ${times.at(-1)[1].toFixed(1)} s` : ''}`);
+    if (!secret) progress(`Built ${id}${timing ? ` in ${times.at(-1)[1].toFixed(1)} s` : ''}`);
   }
 }
-// The phone kit's 3D parts (games/year2000/phone/viewer, committed) reach the site beside the trinkets, where the box viewer's
-// phone viewer loads them (web/src/desk/boxes/phone/). Copied on every run (about 1.8 MB).
-// Two builds: the cheap one (Junior Lab Edition) in phone/, the deluxe one in phone/deluxe/.
-for (const [from, to] of [
-  ['viewer', 'phone'],
-  ['deluxe/viewer', 'phone/deluxe'],
-]) {
-  const src = join(root, 'games/year2000/phone', from);
-  if (!existsSync(join(src, 'parts.json'))) continue;
-  const out = join(root, 'web/public/trinkets', to);
-  mkdirSync(out, { recursive: true });
-  for (const f of ['parts.json', 'parts.bin']) copyFileSync(join(src, f), join(out, f));
-}
-// The kit's downloads (ZIPs of the printer parts and of the circuit board files, the parts lists, the README the box reads as
-// its instructions book) are made beside them (games/kit/phoneDownloads.ts).
+// The Phone of the Future kit's files for the box (games/kit/phoneDownloads.ts): the viewer's 3D parts (games/year2000/phone/
+// viewer, committed) packed into trinkets/phone/ and phone/deluxe/, the printer parts as a pack the site zips, the circuit
+// board ZIP, the parts lists and the README the box reads as its instructions book.
 if (existsSync(join(root, 'games/year2000/phone/kicad')) && (!only.length || only.includes('year2000'))) {
   const phoneStarted = Date.now();
   await runEntry(
@@ -278,22 +275,27 @@ const fieldTrinketGames = [
   ['blaster', 'Blaster'],
 ];
 // GM_SKIP_FIELD_TRINKETS=1 leaves them out (the Mac, Windows and Linux download jobs only need the disks).
-const trinkets = joined(
-  (process.env.GM_SKIP_FIELD_TRINKETS ? [] : fieldTrinketGames)
-    .filter(([id]) => ids.includes(id) && (!only.length || only.includes(id)))
-    .map(async ([id, name]) => {
-      const started = Date.now();
-      const made = await runEntry(
-        `${id}-trinkets`,
-        { file: join(root, `games/${id}/tools/trinkets.ts`) },
-        `../games/${id}/tools/trinkets.ts`,
-        ['--workers', String(Math.min(3, jobs)), ...(forceExtras ? ['--force'] : [])],
-        { cwd: join(root, 'web'), maxBuffer: 16 << 20, timeout: 240_000 },
-        `${id}-trinkets`,
-      );
-      if (timing) console.log(`${name} trinkets: ${made.stdout.trim().split('\n').at(-1)} (${((Date.now() - started) / 1000).toFixed(1)} s)`);
-    }),
-);
+// Fifteen jobs started at once shared the CPU: on a cold Mac every one ran past the 240 s limit, was killed and
+// retried into the same crowd (2026-11-07). A small pool runs them a few at a time instead, and each job's limit
+// counts from its own start; the slowest (Goat's) takes about 230 s on a crowded machine, so the limit has room.
+const trinketQueue = (process.env.GM_SKIP_FIELD_TRINKETS ? [] : fieldTrinketGames).filter(([id]) => ids.includes(id) && (!only.length || only.includes(id)));
+const trinketPool = Math.max(1, Math.min(2, jobs));
+const trinketRun = async () => {
+  for (let next = trinketQueue.shift(); next && !stopped; next = trinketQueue.shift()) {
+    const [id, name] = next;
+    const started = Date.now();
+    const made = await runEntry(
+      `${id}-trinkets`,
+      { file: join(root, `games/${id}/tools/trinkets.ts`) },
+      `../games/${id}/tools/trinkets.ts`,
+      ['--workers', String(Math.min(3, jobs)), ...(forceExtras ? ['--force'] : [])],
+      { cwd: join(root, 'web'), maxBuffer: 16 << 20, timeout: 600_000 },
+      `${id}-trinkets`,
+    );
+    if (timing) console.log(`${name} trinkets: ${made.stdout.trim().split('\n').at(-1)} (${((Date.now() - started) / 1000).toFixed(1)} s)`);
+  }
+};
+const trinkets = joined(Array.from({ length: trinketPool }, trinketRun));
 if (pending.some((id) => logoUsers.has(id))) void logo();
 const gamesStarted = Date.now();
 await joined([trinkets, ...Array.from({ length: Math.min(jobs, pending.length) }, worker), ...(logoReady ? [logoReady] : [])]);
@@ -313,6 +315,22 @@ if (!process.env.GM_SKIP_PIXEL_TRINKETS && (!only.length || only.some((id) => id
   );
   stage('pixel trinkets', started);
   if (timing) console.log(`Pixel trinkets: ${made.stdout.trim().split('\n').length} lines (${((Date.now() - started) / 1000).toFixed(1)} s)`);
+}
+// The site serves the trinkets' STLs and 3MFs packed (games/kit/trinketPacks.ts: <file>.pack, made back into the real
+// file in the browser), which keeps the Pages deploy small; a folder already packed costs one manifest read. Left out
+// when both trinket stages are. (The phone kit's 3D parts are packed with its downloads, phoneDownloads.ts, above.)
+if (!(process.env.GM_SKIP_FIELD_TRINKETS && process.env.GM_SKIP_PIXEL_TRINKETS)) {
+  const started = Date.now();
+  const made = await runEntry(
+    'trinket-packs',
+    { file: join(root, 'games/kit/trinketPacks.ts') },
+    '../games/kit/trinketPacks.ts',
+    [],
+    { cwd: join(root, 'web'), maxBuffer: 16 << 20, timeout: 240_000 },
+    'trinket packs',
+  );
+  stage('trinket packs', started);
+  if (timing) console.log(made.stdout.trim().split('\n').at(-1));
 }
 // The laser wooden nickels (games/kit/laserNickels.ts: SVGs and PNG previews in web/public/laser/<game>/) are drawn from the
 // built disks too; a game whose figures, words and builder code are unchanged (a key in its manifest.json) is skipped. A
@@ -360,4 +378,4 @@ if (timing)
   );
 if (fallbacks.length) console.log(`Ran under vite-node (bundle failed): ${fallbacks.join(', ')}`);
 save(true);
-console.log('Game build outputs are ready.');
+progress('Game build outputs are ready.');

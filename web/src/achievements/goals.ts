@@ -2,13 +2,13 @@
 // played and finished, every Teddy game finished, every walkthrough watched. The catalog given out (loadGameList) already leaves out a
 // game that is kept out of sight until it is found, so such a game never counts, and is never
 // named, until the lists show it anyway.
-import { isSandboxGame, loadGameList, type CatalogEntry } from '../project/files';
+import { isSandboxGame, loadLeanGameList as loadGameList, type CatalogEntry } from '../project/files';
 import { isBizarreGame } from '../project/bizarre';
 import { isStarterGame } from '../project/starter';
 import { isCeremony } from '../project/ceremonies';
 import { noteHonor } from './honorDates';
 import type { Goal } from './catalog';
-import { currentAchievements, loadAchievements, progress, remember, countOccurrence } from './store';
+import { currentAchievements, loadAchievements, progress, remember, countOccurrence, unlockAchievement } from './store';
 
 import { REPEAT_TIERS, REPEAT_SETS, repeatProgress, type PlayOutcome, type RepeatGoal } from './repeatGoals';
 
@@ -62,6 +62,8 @@ export async function refreshGoals(catalog?: readonly Listed[]): Promise<void> {
   const list = catalog ?? (await loadGameList().catch(() => []));
   const r = currentAchievements() ?? (await loadAchievements());
   const { ACHIEVEMENTS } = await import('./catalog');
+  // an honors badge for each graduation game in the finished set (also those finished before the badges existed)
+  for (const id of r.sets.finished ?? []) if (isCeremony(id)) unlockAchievement(`honor-${id}`);
   for (const a of ACHIEVEMENTS) {
     const set = a.from && GOAL_SET[a.from];
     if (!set) continue;

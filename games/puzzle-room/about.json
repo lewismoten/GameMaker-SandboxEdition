@@ -6,7 +6,7 @@
   "hero": "LIAN",
   "year": 1994,
   "price": "Free",
-  "version": "1.0",
+  "version": "1.1",
   "blurb": "Two short levels about putting counters together. Lian finds levers, a bridge of dotted planks and a pool that is only soft. Each lever puts planks on a counter, and each plank spends one, so two levers build a bridge neither can alone. In the second room one lever is wired to a hatch in the path instead, and pulling it drops Lian back to the start with nothing hurt. Signs say how. Play it, then open it in Game-Maker and rewire a lever.",
   "exe": "WIREDRM.EXE",
   "dosName": "WIREDRM",

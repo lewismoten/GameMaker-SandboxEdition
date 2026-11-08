@@ -190,9 +190,9 @@ by its bot, its walkthrough replayed, its text, hidden items and levels checked)
 `npm run check:games` from `web/`. It prints a table and fails on any regression; add
 `-- --game teddy` for one game or `-- --quick` to skip the rebuild compare.
 
-Pushing a `pages-v*` version tag (for example, `pages-v3.1.0`) publishes the tagged commit
-to GitHub Pages through [`.github/workflows/pages.yml`](.github/workflows/pages.yml).
-Pull requests to `master` run validation without deploying; branch pushes do not publish the site.
+The site is served by GitHub Pages from the `gh-pages` branch: one commit holding the built site of a
+`pages-v*` release tag, made on the maintainer's computer by `npm run release:pages` (see
+[package releases](docs/package-releases.md#publishing-the-site-gh-pages)). Branch pushes do not publish the site.
 The `mac-dmg`, `win-exe` and
 `linux-tar` workflows build every game for each system and attach them to a GitHub release.
 Engine, tool, and archive releases are described in [Package releases](docs/package-releases.md).
@@ -265,3 +265,7 @@ lyrics were shaped with ChatGPT from Lewis's prompts and their music made with R
 for full credits, the story behind this fork and third-party trademarks.
 
 Released under the [MIT License](LICENSE).
+
+The [native SDL host prototype](hardware/pi-player/README.md) compiles the Pocket Player core for macOS and prepares the Raspberry Pi OS Lite player.
+
+The [courier C99 wire library](hardware/courier/README.md) provides self-checking courier IDs and the capsule v1 codec for hardware integrations.

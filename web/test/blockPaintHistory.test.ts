@@ -4,6 +4,30 @@ import { emptyBlock } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks'
 import { BlockPaintHistory } from '../src/editor/editors/blocks/blockPaintHistory';
 
 describe('block painting history', () => {
+  it.each(['solid', 'grav', 'obj', 'scorePts', 'chHitPt', 'effect', 'eamt', 'touchBl', 'nextBl', 'ntime', 'birthMon', 'birthTime'] as const)(
+    'interleaves %s behavior with paint and restores exact undo/redo order',
+    (field) => {
+      const blocks = [emptyBlock(0)];
+      const history = new BlockPaintHistory(blocks);
+      const initial = blocks[0][field];
+      history.record('block', [0]);
+      blocks[0].pixels.fill(4);
+      history.recordBehavior('block', 0);
+      blocks[0][field] = initial + 1;
+      history.step('block', true);
+      expect(blocks[0][field]).toBe(initial);
+      expect(blocks[0].pixels.every((v) => v === 4)).toBe(true);
+      history.step('block', true);
+      expect(blocks[0].pixels.some(Boolean)).toBe(false);
+      history.step('block', false);
+      history.step('block', false);
+      expect(blocks[0][field]).toBe(initial + 1);
+      history.step('block', true);
+      history.recordBehavior('block', 0);
+      blocks[0][field] = initial + 2;
+      expect(history.available('block').redo).toBe(false);
+    },
+  );
   it('can commit a live stroke using its original pixels after the thumbnails have updated', () => {
     const blocks = [emptyBlock(0)];
     const history = new BlockPaintHistory(blocks);

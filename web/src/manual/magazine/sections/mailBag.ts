@@ -10,6 +10,7 @@
 // and look-alike blocks can differ in their solid sides. The three troubles are classic ones
 // players of Game-Maker games ran into in levelengine's RSD Game Maker Binge (NOTICE.md), retold.
 // Readers are made up: a handle and a town.
+import '../mailBag.css';
 import { a, art, card, cols, grid, head, list, note, p, side } from '../blocks';
 import type { Block, MagSection } from '../types';
 
@@ -157,14 +158,14 @@ export const MAIL_BAG: MagSection = {
           level: 2,
           deck: 'You’re making games, and your friends are getting stuck in them. Here are four from this month’s stack, and what we would change.',
         }),
-        cols(2, DESK_LETTERS.flatMap(letter)),
+        cols(3, DESK_LETTERS.flatMap(letter)),
         grid([
           [
             side(
               'Music, but no sound effects?',
               [
                 p(
-                  'FM music and digitized sound use different parts of a Sound Blaster. A tune can play even when the game’s sound IRQ is wrong. On one PC, CONFIG said **IRQ 5**, but the card used **IRQ 7**. Setting the game to **7** restored the **.VOC effects**.',
+                  'FM music and digitized sound use different parts of a Sound Blaster. Lewis’s PC had **IRQ 7 on both sides**; the culprit was **sound/music set to None**, not an IRQ mismatch. Select your sound hardware in CONFIG. The usual example is **220 / IRQ 7 / DMA 1**.',
                 ),
                 p('Seven is not a magic number! Check your card’s setup utility or jumper settings, then make the game’s IRQ **match the card’s actual IRQ**.'),
               ],
@@ -181,6 +182,30 @@ export const MAIL_BAG: MagSection = {
                   'Floors look like floors; scenery looks like scenery.',
                 ]),
                 p('More of what players gripe about, and how to fix it, is in this issue’s [Design Workshop](go:mag/gripes).'),
+              ],
+              'cyan',
+            ),
+          ],
+        ]),
+        grid([
+          [
+            side(
+              'Why does Escape restart my level?',
+              [
+                p(
+                  'A quick tap ends the scene, but Game-Maker quits only if Escape is **still held after the fade**. Let go too soon and the level can start over. On a slow computer, **hold Escape until the screen goes black**, then release it. Give that pinkie a little patience.',
+                ),
+              ],
+              'yellow',
+            ),
+          ],
+          [
+            side(
+              'Garbage at the bottom of the screen?',
+              [
+                p(
+                  'Stray stripes under the playfield? Check for the **wrong SVGA type** before repainting your level. Run **CONFIG**, then **choose your card or Simulate** in the video settings. Save the choice and start the game again. A card-specific driver is no help when it belongs to somebody else’s card.',
+                ),
               ],
               'cyan',
             ),

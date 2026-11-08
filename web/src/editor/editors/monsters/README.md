@@ -26,3 +26,5 @@ From `web/`:
 ```sh
 npx vitest run src/editor/editors/monsters
 ```
+
+Unused slots have no active portrait in the list or heading. Their retained frames are labeled as template data; editing them still activates the slot as before.

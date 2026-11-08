@@ -1,25 +1,16 @@
 // All Mine is a predicate over one game's persisted DOS table, never a count of play events.
-import { HIGH_SCORES, parseHighScores } from '@lewismoten/gamemaker-sandbox-engine/formats/highscore';
-import { normalize, loadCatalogList } from '../project/files';
+import { normalize, loadLeanCatalogList as loadCatalogList } from '../project/files';
 import { listProjects, loadSaveData } from '../project/storage';
 import { loadAchievements, unlockAchievement } from './store';
-
-/** The parser pads short files; only ten complete, displayed, named records qualify. */
-export function wholeTable(bytes?: Uint8Array): string | undefined {
-  if (!bytes || bytes.length < HIGH_SCORES * 34) return;
-  const rows = parseHighScores(bytes);
-  const name = rows[0].name.trim().toLowerCase();
-  // Zero scores and blank names are the format's placeholders. No name is reserved.
-  if (!name || !rows.every((r) => r.score !== 0 && r.name.trim().toLowerCase() === name)) return;
-  return JSON.stringify(rows);
-}
 
 async function storedTable(saveId: string, gam: string): Promise<[string, string] | undefined> {
   if (!/^(game|project):/.test(saveId) || !gam) return;
   const name = normalize(gam.replace(/\.[^.]*$/, '') + '.his');
   const files = await loadSaveData(saveId);
   const bytes = Object.entries(files).find(([n]) => normalize(n) === name)?.[1];
-  const table = wholeTable(bytes);
+  if (!bytes) return;
+  // the table's reader, only for a game that has one (most visitors have none)
+  const table = (await import('./highScoreTable')).wholeTable(bytes);
   return table ? [JSON.stringify([saveId, name]), table] : undefined;
 }
 

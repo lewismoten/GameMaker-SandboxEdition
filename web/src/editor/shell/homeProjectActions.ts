@@ -5,7 +5,6 @@ import { h, promptText, toast } from '../core/ui';
 import { deleteProject, listProjects, loadProject, newId, saveProject } from '../../project/storage';
 import { projectDownloadItem } from './projectExport';
 import { forgetOrigin, isImported, originId, rememberOrigin, setImported } from './homeOrigin';
-import { noteRemoval, undoRemoval } from '../../imported/noteMoves';
 import { bringBack, shelve } from './deletedShelf';
 import { forgetUsed } from '../../project/projectUse';
 
@@ -41,13 +40,19 @@ async function duplicate(p: ProjectSummary, refresh: () => Promise<void>, onMade
     p.name,
     (await listProjects()).map((x) => x.name),
   );
-  await saveProject(id, name, stored.record.gam, stored.files, stored.record.companion);
+  const companion = stored.record.companion ? structuredClone(stored.record.companion) : undefined;
+  // A deliberate duplicate is a distinct Pocket game; restoring a backup keeps its identity.
+  if (companion) delete companion.pocketUid;
+  await saveProject(id, name, stored.record.gam, stored.files, companion);
   rememberOrigin(id, originId(p.id));
   setImported(id, isImported(p.id));
   toast(`Made “${name}”.`);
   await refresh();
   onMade?.(id);
 }
+
+/** The imported games' records (fingerprints, notes), loaded when a game is deleted or brought back. */
+const noteMoves = () => import('../../imported/noteMoves');
 
 async function remove(p: ProjectSummary, refresh: () => Promise<void>): Promise<void> {
   const stored = await loadProject(p.id);
@@ -60,14 +65,14 @@ async function remove(p: ProjectSummary, refresh: () => Promise<void>): Promise<
   setImported(p.id, false);
   forgetUsed(p.id);
   // an imported game leaves a record: its fingerprint, rating and note (imported/removedGames.ts)
-  if (imported) noteRemoval(p, stored.record.files);
+  if (imported) (await noteMoves()).noteRemoval(p, stored.record.files);
   await refresh();
   undoToast(`Deleted “${p.name}”. It stays under Recently deleted for 7 days.`, async () => {
     if (await bringBack(p.id)) return refresh();
     await saveProject(p.id, stored.record.name, stored.record.gam, stored.files, stored.record.companion);
     rememberOrigin(p.id, origin);
     setImported(p.id, imported);
-    if (imported) undoRemoval(p.id);
+    if (imported) (await noteMoves()).undoRemoval(p.id);
     await refresh();
   });
 }

@@ -2,7 +2,8 @@
 import { describe, expect, it } from 'vitest';
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { ADVTYPE, NOSCENE, emptyScene, newGame, parseGame, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { ADVTYPE, ENDTYPE, NOSCENE, emptyScene, newGame, parseGame, serializeGame, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { addReturnScenes } from '../../games/kit/starter/returnScenes';
 import { CARD_UNITS, POS_MAX, POS_MIN, clampPos, sceneLayers, settle } from '../src/editor/editors/integrator/layoutCells';
 import { SNUG_GAP, arrangements, autoArrange, closeGaps, gapSavings, layoutCost, spreadOut } from '../src/editor/editors/integrator/integratorLayout';
 
@@ -48,6 +49,84 @@ describe('integrator layout', () => {
     checkNoOverlap(g, pos);
     expect(pos.get(0)!.x).toBeLessThan(pos.get(2)!.x);
     expect(pos.get(5)!.x).toBeLessThan(pos.get(1)!.x);
+  });
+
+  it.each(
+    [
+      { name: 'a menu with two returning tales', edges: [[2], [], [3], [1, 4, 5], [3], [3]], levels: [3] },
+      { name: 'two levels with returning talks', edges: [[2], [], [3, 4], [1, 5, 6], [2], [3], [3]], levels: [2, 3] },
+    ].flatMap((motif) => [false, true].map((reorder) => ({ ...motif, reorder }))),
+  )('arranges $name (reordered: $reorder) without crossing or hiding return links', ({ edges, levels, reorder }) => {
+    const g = newGame('Returns');
+    for (let i = 2; i < edges.length; i++) g.scenes.push(emptyScene(ADVTYPE));
+    edges.forEach((targets, i) => {
+      targets.forEach((toScene, k) => {
+        g.scenes[i].links[k] = { toScene, from: { x: i + 1, y: k + 2 }, to: { x: k + 3, y: i + 4 } };
+      });
+    });
+    for (const level of levels) {
+      g.scenes[level].files[1] = `level${level}.map`;
+      g.scenes[level].files[9] = `card${level}.lst`;
+    }
+    const originals = structuredClone(g);
+    const copies = addReturnScenes(g, levels);
+    expect(g.scenes).toHaveLength(edges.length + levels.length);
+    for (const [level, copy] of copies) {
+      expect(g.scenes[level].files[9]).toBe(`card${level}.lst`);
+      expect(g.scenes[copy].files).toEqual(originals.scenes[level].files.map((f, i) => (i === 9 ? '' : f)));
+      expect(g.scenes[copy].links).toEqual(g.scenes[level].links);
+      for (const target of edges[level]) {
+        originals.scenes[target].links.forEach((link, k) => {
+          if (link.toScene === level) expect(g.scenes[target].links[k]).toEqual({ ...link, toScene: copy });
+        });
+      }
+    }
+    if (reorder) {
+      g.scenes.reverse();
+      for (const scene of g.scenes) for (const link of scene.links) if (link.toScene !== NOSCENE) link.toScene = g.scenes.length - 1 - link.toScene;
+    }
+    const before = structuredClone(g);
+    const bytes = serializeGame(g);
+    const pos = autoArrange(g);
+    checkNoOverlap(g, pos);
+    const pairs: [number, number][] = g.scenes.flatMap((s, i) => s.links.filter((l) => l.toScene !== NOSCENE).map((l): [number, number] => [i, l.toScene]));
+    const cost = layoutCost(pairs, pos, { w: 22, h: 18 });
+    expect(cost.cross).toBe(0);
+    expect(cost.under).toBe(0);
+    expect(g).toEqual(before); // arranging changes no files, links, arrivals or runtime return behavior
+    expect(serializeGame(g)).toEqual(bytes);
+  });
+
+  it('clears a returning hub ending without adding arrows under its five side scenes', () => {
+    const g = newGame('Hub');
+    for (let i = 2; i < 8; i++) g.scenes.push(emptyScene(ADVTYPE));
+    g.scenes[0].links[0].toScene = 2;
+    [3, 4, 5, 6, 7, 1].forEach((s, k) => (g.scenes[2].links[k].toScene = s));
+    for (let i = 3; i < 8; i++) g.scenes[i].links[0].toScene = 2;
+    addReturnScenes(g, [2]);
+    const pos = autoArrange(g);
+    checkNoOverlap(g, pos);
+    const pairs = g.scenes.flatMap((s, i) => s.links.filter((l) => l.toScene !== NOSCENE).map((l): [number, number] => [i, l.toScene]));
+    const cost = layoutCost(pairs, pos, { w: 22, h: 18 });
+    expect(cost.cross).toBe(0);
+    expect(cost.under).toBeLessThanOrEqual(4); // the side-to-return links already pass under four cards
+  });
+
+  it('keeps multiple endings and an unreachable scene bounded, separate and deterministic', () => {
+    const g = chain(2);
+    g.scenes.push(emptyScene(ADVTYPE), emptyScene(ADVTYPE), emptyScene(ENDTYPE), emptyScene(ADVTYPE));
+    g.scenes[3].links[1].toScene = 4;
+    g.scenes[3].links[2].toScene = 5;
+    g.scenes[3].links[3].toScene = 6;
+    g.scenes[4].links[0].toScene = 3;
+    g.scenes[5].links[0].toScene = 3;
+    addReturnScenes(g, [3]);
+    const before = structuredClone(g);
+    const list = arrangements(g);
+    for (const option of list) checkNoOverlap(g, option.positions);
+    expect(autoArrange(g)).toEqual(list[0].positions);
+    expect(arrangements(g)).toEqual(list);
+    expect(g).toEqual(before);
   });
 
   it('falls back to a grid for long games without overlaps', () => {

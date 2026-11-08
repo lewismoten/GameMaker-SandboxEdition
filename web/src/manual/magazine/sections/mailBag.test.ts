@@ -18,6 +18,10 @@ describe('the Mail Bag', async () => {
   const pages = await MAIL_BAG.pages(ctx);
   const text = plain(JSON.stringify(pages));
 
+  it('keeps both existing Mail Bag pages rather than shifting later facing spreads', () => {
+    expect(pages).toHaveLength(2);
+  });
+
   it('corrects the April issue with the keys PLAYGAME really uses', () => {
     // F4 toggles the sound effects: PLAYGAME.C's playscene, and the port's scene.ts
     expect(read('code/GM/PLAYGAME.C')).toMatch(new RegExp(`case ${CORRECTION.said}: soundon\\^=TRUE`));
@@ -47,14 +51,33 @@ describe('the Mail Bag', async () => {
     expect(tip).toBeDefined();
     const words = plain(JSON.stringify(tip));
     expect(words).toContain('FM music and digitized sound use different parts of a Sound Blaster');
-    expect(words).toContain('A tune can play even when the game’s sound IRQ is wrong');
-    expect(words).toContain('CONFIG said IRQ 5');
-    expect(words).toContain('card used IRQ 7');
-    expect(words).toContain('Setting the game to 7 restored the .VOC effects');
+    expect(words).toContain('IRQ 7 on both sides');
+    expect(words).toContain('sound/music set to None');
+    expect(words).toContain('220 / IRQ 7 / DMA 1');
+    expect(words).not.toMatch(/IRQ 5|Setting the game to 7 restored/);
     expect(words).toContain('Seven is not a magic number');
     expect(words).toContain('match the card’s actual IRQ');
     expect(words).toContain('setup utility or jumper settings');
     expect(words).not.toMatch(/86Box|DOSBox|emulat|2026|browser/i);
+  });
+
+  it('explains why a quick Escape can restart a scene and how to leave it', () => {
+    expect(text).toContain('Why does Escape restart my level?');
+    expect(text).toContain('hold Escape until the screen goes black');
+    expect(text).toContain('still held after the fade');
+    // The two original key checks bracket the fade; the port deliberately keeps both.
+    expect(read('code/GM/PLAYGAME.C')).toMatch(/if \(keydn\[1\]\) done=TRUE;[\s\S]*FadeAllTo\(Black\);[\s\S]*if \(keydn\[1\]\)\s+newlink=MAXSCENELINKS\+1;/);
+    expect(read('web/packages/engine/src/engine/scene.ts')).toMatch(
+      /if \(w\.keydn\[1\]\) \{\s+done = 1;[\s\S]*await m\.fadeAllTo\(0, 0, 0, w\.tune\.fadeSteps\);[\s\S]*if \(w\.keydn\[1\]\) newlink = MAXSCENELINKS \+ 1;/,
+    );
+  });
+
+  it('sends bottom-of-screen garbage to CONFIG’s SVGA choice, not the game artwork', () => {
+    expect(text).toContain('Garbage at the bottom of the screen?');
+    expect(text).toContain('wrong SVGA type');
+    expect(text).toContain('CONFIG');
+    expect(text).toContain('choose your card or Simulate');
+    expect(read('code/GM/PLAYGAME.C')).toMatch(/VgaTypes\[14\].*"Simulate"/);
   });
 
   it('signs every letter with a handle and a town, and prints no phone number', () => {

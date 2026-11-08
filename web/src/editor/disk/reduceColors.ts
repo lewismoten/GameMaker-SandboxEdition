@@ -24,6 +24,7 @@ export interface Reduction {
   /** The changed blocks, worst first, with the palette to draw them in. */
   shown: { n: number; before: Uint8Array; after: Uint8Array }[];
   changedBlocks: number;
+  conflicts: number[];
   palette: Uint8Array;
   touches: string[];
   apply(files: GameFiles, gam: string): void;
@@ -78,6 +79,9 @@ export function reductions(files: GameFiles, gam: string, ranges: readonly Palet
         score: r.score,
         shown: nums.slice(0, 6).map((n) => ({ n, before: blocks[n].pixels, after: r.changed.get(n)! })),
         changedBlocks: r.changed.size,
+        conflicts: [...new Set(nums.flatMap((n) => [...blocks[n].pixels].filter((color) => color !== 0 && color !== 255 && !allowed.has(color))))].sort(
+          (a, b) => a - b,
+        ),
         palette: palettes[0],
         touches: [file, gam],
         apply: (f, g) => commit(f, g, writes),

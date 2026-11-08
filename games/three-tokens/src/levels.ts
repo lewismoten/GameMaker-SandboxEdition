@@ -69,6 +69,7 @@ function threeForTheGate(book: Book, signs: Record<SignName, Sign>): StarterMap 
   for (const x of [9, 26, 44]) g.put(x, GROUND - 1, 'b');
   for (const x of [6, 17, 43]) g.put(x, GROUND - 1, 'f');
   const m = new StarterMap(book, g.rows());
+  m.wallToSky(28);
   // the tokens: two on the way, the third on the ledge in plain sight of the gate
   m.set(11, GROUND - 1, 'token')
     .set(15, GROUND - 1, 'token')

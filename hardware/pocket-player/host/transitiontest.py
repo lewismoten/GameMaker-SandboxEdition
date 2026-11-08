@@ -26,6 +26,9 @@ uint32_t t0 = 0;
 void fadeLevelIn() { fades++; }
 void enterPicker() { pickers++; }
 void message(const char*, const char*) { errors++; }
+void levelFailed() { errors++; } // develop's bounded failure card (releases, shows the card)
+int activeGame = 0;
+void resumeSave(int) {}
 void delay(int ms) { assert(ms >= 0 && ms <= 1500); }
 uint32_t millis() { return 123; }
 void clearPrefetched() {}

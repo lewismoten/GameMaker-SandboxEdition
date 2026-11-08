@@ -12,6 +12,10 @@ import { CourseRun, MOVE_KEYS } from './courseGrades';
 
 export { unlockAchievement, progress, tally } from './store';
 
+/** Scoot's stamp for a game played here (courier/stamps.ts), loaded only when one is played. */
+const stamp = (saveId: string | undefined, event: 'played' | 'won'): void =>
+  void import('../courier/stamps').then((m) => m.earnStamp(saveId, event)).catch(() => undefined);
+
 /** A walkthrough played to its end. */
 export function watchedWalkthrough(gameId: string): void {
   unlockAchievement('watch-one');
@@ -130,6 +134,7 @@ export function playAchievements(
         run?.stop();
         run = undefined;
         void noteFinished(saveId);
+        stamp(saveId, 'won');
         gameSpot(catalogGame, undefined, true);
         noteChickenScene(catalogGame, undefined, true);
         return;
@@ -139,6 +144,7 @@ export function playAchievements(
         counted = true;
         unlockAchievement('play-first');
         void notePlayed(saveId);
+        stamp(saveId, 'played');
       }
       gameSpot(catalogGame, session.game.scenes[scene]?.desc);
       noteChickenScene(catalogGame, session.game.scenes[scene]?.desc);

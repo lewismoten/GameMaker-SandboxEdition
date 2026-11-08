@@ -26,6 +26,8 @@ into repeat-event counts.
 existing listener. The life-loss callback and end-of-play callback record repeated
 real-play events; demos, walkthrough playback, bundle exports and editor projects
 do not add repeat counts. Quitting does not count as losing.
+It also hands each real play (first scene) and win (Game Won) to Scoot's stamps
+(`courier/stamps.ts` `earnStamp`, loaded only then); demos and walkthroughs earn none.
 
 `badgeArt.ts` / `badgeArt.css` render exact 20×20 game blocks in cards, details and
 unlock notices. `blockArt.json` carries embedded PNGs with provenance; badges drawn by hand are added to it directly (and to
@@ -92,3 +94,5 @@ catalog id and reset baseline automatically. Tests: `highScores.test.ts`, `highS
 `courseGrades.ts` keeps, per Starter, the best letter grade ever earned (`gm-course-grades`, in the backup under Achievements, emptied by Reset). A `CourseRun` is fed by `playAchievements` from the player's scene and life-lost hooks and by a key or touch on the page (the engine is untouched); the rules, course numbers (101 ...), GPA and transcript are in `project/grades.ts` and `project/ceremonies.ts`. A first-level grade (C-, C, D+) is saved when the play ends.
 
 `honorDates.ts` keeps the day each graduation was first finished (`gm-honors-dates`, in the backup and cleared by Reset) for the certificate; `noteFinished` writes it. The Honors tab's name field is `gm-certificate-name` (in the backup, kept by Reset, never sent anywhere).
+
+The seven honors badges (`honor-<graduation id>`: one per stage's honors and one for the diploma) are unlocked in `goals.ts` `refreshGoals` from the finished set and drawn in code by `web/scripts/achievementHonors.ts`.

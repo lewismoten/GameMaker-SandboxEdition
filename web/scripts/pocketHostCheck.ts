@@ -7,9 +7,12 @@
 // exit 1 if any game differs. It also records every PC speaker effect the engine starts (tick, number, hash of
 // its 36 frequencies) and compares that schedule with the one the board code queues (Q lines), and the board's
 // tone player (pcspeaker.h) is timed against 1/145.6 s steps for up to 40 of the effects (the Z line).
-//   cd web && npx vite-node scripts/pocketHostCheck.ts [id ...] [--ticks N] [--keep dir]
+//   cd web && npx vite-node scripts/pocketHostCheck.ts [id ...] [--ticks N] [--keep dir] [--resume]
+// --resume also checks Continue and Restart level (gmcore.h EntryState) on the same keys: at every level change the entry
+// state, through bytes as the board's NVS keeps it, must play on in a fresh world tick for tick with the continuous run to
+// the end, and Restart level after 60 more ticks must give back the entry's state and again match to the end.
 // With no ids it checks every game in data/games.txt.
-import { execFileSync } from 'node:child_process';
+import { execFileSync, spawnSync } from 'node:child_process';
 import { mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -22,6 +25,7 @@ import { decodeKeys, type Walkthrough } from './../src/walkthrough/format';
 const args = process.argv.slice(2);
 const opt = (n: string) => (args.includes(n) ? args[args.indexOf(n) + 1] : undefined);
 const limit = Number(opt('--ticks') ?? 1e9);
+const resume = args.includes('--resume');
 const work = opt('--keep') ?? mkdtempSync(join(tmpdir(), 'pocket-host-'));
 const here = new URL('../../hardware/pocket-player/', import.meta.url).pathname;
 // --data <dir>: a folder with <id>.cfg and the files (a card's /pocket folder, with its .cfg copied to <id>.cfg)
@@ -203,7 +207,14 @@ async function checkGame(id: string): Promise<string> {
   if (timing[2] !== '0') return `FAIL  ${id}: the tone player's steps are off time in ${timing[2]} places`;
   if (sim.ended !== 'won' && limit > 1e8) return `FAIL  ${id}: the walkthrough did not reach the ending on the engine (${sim.ended ?? 'ran out of keys'})`;
   const n = (c: string) => expected.filter((l) => l.split(' ')[2] === c).length;
-  return `ok    ${id}: ${total} ticks match (${n('L')} level changes, ${n('D')} deaths, ${n('W')} win), ${sounds.length} sound events match`;
+  let resumed = '';
+  if (resume) {
+    const r = spawnSync(exe, [dataDir, id, join(dir, 'keys.txt'), 'resume'], { maxBuffer: 1 << 24 });
+    const text = r.stdout.toString().trim();
+    if (r.status !== 0) return `FAIL  ${id}: Continue or Restart level differs: ${text.split('\n').slice(0, 3).join(' | ')}`;
+    resumed = `; ${text.split('\n').pop()}`;
+  }
+  return `ok    ${id}: ${total} ticks match (${n('L')} level changes, ${n('D')} deaths, ${n('W')} win), ${sounds.length} sound events match${resumed}`;
 }
 
 let bad = 0;

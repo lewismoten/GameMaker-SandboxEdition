@@ -38,6 +38,7 @@ import { blockProperties } from './blockProperties';
 import { rolesPanel } from './rolesPanel';
 import { blockLabel } from './blockNames';
 import { blockNameField } from './blockNameField';
+import { blockCapacityText } from './blockCapacity';
 
 // erase and darken stand in for the right button, which a finger does not have
 type Tool = 'draw' | 'shade' | 'fill' | 'pick' | 'line' | 'rect' | 'erase' | 'darken';
@@ -388,9 +389,10 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
     // A multi-block operation may include pictures outside the visible group.
     for (const [id, px] of snap.pixels) if (pickerCanvases[id]) paintBlock(pickerCanvases[id], px, pal(), { transparent: sprites });
     changed();
+    renderProps();
     markPicker();
   }
-  const undoBtn = h('button', { title: 'Undo the last paint (Ctrl+Z)', disabled: true, onclick: () => step(true) }, '↶ Undo');
+  const undoBtn = h('button', { title: 'Undo the last change (Ctrl+Z)', disabled: true, onclick: () => step(true) }, '↶ Undo');
   const redoBtn = h('button', { title: 'Redo (Ctrl+Shift+Z or Ctrl+Y)', disabled: true, onclick: () => step(false) }, '↷ Redo');
   function refreshUndo(): void {
     const available = history.available(scope());
@@ -691,9 +693,13 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
     current: () => current,
     pal,
     walkPaths,
-    changed: () => {
+    edit: (change) => {
+      finishStroke(false);
+      history.recordBehavior(scope(), current, group);
+      change();
       save();
       insight.refresh(true);
+      refreshUndo();
     },
   });
 
@@ -821,6 +827,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
       names.el,
       chooser.el,
     ),
+    h('p', { class: 'hint limit-note', role: 'note' }, blockCapacityText(kind, blocks.length)),
     h('div', { class: 'blk' }, columns[0], columns[1], columns[2]),
   );
   // Keep the running preview near the painter on phones, beside it on desktop.

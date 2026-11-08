@@ -24,7 +24,9 @@ describe('offline copy', () => {
       f('games/catalog.json'),
       f('assets/a.js'),
       f('games/gameware/glub/glub.zip'),
+      f('games/originals/kitjump/kitjump.zpart'),
+      f('games/shared/0123456789abcdef01234567.bin'),
     ];
-    expect(gameCount({ files })).toBe(2);
+    expect(gameCount({ files })).toBe(3);
   });
 });

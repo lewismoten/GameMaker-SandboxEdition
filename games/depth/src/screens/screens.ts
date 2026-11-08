@@ -40,7 +40,7 @@ export function buildScreens(input: ScreenInput, fast = false): { files: Record<
   const intro = introFrames();
   files['intro.fli'] = toFli(intro.frames, intro.speed);
   const title = titlePicture();
-  gif('title.gif', title);
+  files['title.gif'] = toGif(title, fixed, 1, [], true);
   files['title.lst'] = serializeSlideList([
     { name: SANDLOGO, pause: 0 },
     { name: 'intro.fli', pause: 0 },

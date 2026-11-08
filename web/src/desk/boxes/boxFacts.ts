@@ -54,7 +54,7 @@ const count = (files: string[], ext: string) => files.filter((f) => f.toLowerCas
 
 /** Selling points that are true of this game, from its files and sound card. */
 export function boxClaims(entry: Pick<CatalogEntry, 'files' | 'original'>, levels: number): string[] {
-  const files = entry.files;
+  const files = entry.files ?? [];
   const sb = entry.original?.sound === 'sb';
   const songs = count(files, 'cmf');
   const vocs = count(files, 'voc');

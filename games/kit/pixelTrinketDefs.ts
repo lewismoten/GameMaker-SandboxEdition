@@ -72,7 +72,7 @@ GAMES.needle = [
   mon('city', 15, 'things', 'city', 'needle', 'The needle', 'The eye of the needle itself.'),
 ];
 GAMES.risi = [
-  hero('marcus', 'marcus', 'banquet', 'Marcus Iocundus', 'The comic poet of Rome.', 'marcus'),
+  { ...hero('marcus', 'marcus', 'banquet', 'Marcus Iocundus', 'The comic poet of Rome.', 'marcus'), keep: [15, 25, 18, 27] },
   mon('banquet', 6, 'risi', 'banquet', 'rufus', 'Rufus', 'Marcus’s dog.'),
 ];
 GAMES.sweats = [

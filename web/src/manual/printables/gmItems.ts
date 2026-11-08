@@ -21,6 +21,7 @@ import { mixedStickers, stickerScreen } from './stickers';
 import { fitSheet, narrower } from './fitSheet';
 import { gmStickerSpecs } from './gmStickers';
 import { techRefItem } from './techRef';
+import { patchingManualItem } from './patchingManual';
 import { ultimateItem } from '../ultimate/ultimateItem';
 import { currentMail } from '../../retro/gmReg/replyMail';
 import { regConfirmItem } from './regConfirm';
@@ -215,6 +216,7 @@ export function gmBoxItems(family: CatalogEntry[]): BoxItem[] {
     { id: 'disks', title: 'Program disks', note: 'Two 3½" disks in their sleeve', icon: '💾', render: diskSleeve },
     ultimateItem(),
     techRefItem(),
+    patchingManualItem(),
     { id: 'gmkeys', title: 'Quick reference card', note: 'Keys for every design tool', icon: '⌨️', render: keyCard },
     { id: 'template', title: 'Keyboard template', note: 'Sits above the function keys', icon: '🎹', render: keyTemplate },
     { id: 'mapgrid', title: 'Map grid pad', note: 'Graph paper for planning maps', icon: '📐', render: mapGrid },

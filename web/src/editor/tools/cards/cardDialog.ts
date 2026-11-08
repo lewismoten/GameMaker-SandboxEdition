@@ -75,7 +75,7 @@ export async function instructionCardDialog(project: Project, start: Scene): Pro
   const keys = box(
     'Keys',
     keyLines(project.files).join('\n'),
-    'From the game’s characters. Name the keys as the player knows them; leave out any secret.',
+    'From the game’s characters. Select and copy this text to reuse it elsewhere. Name the keys as the player knows them; leave out any secret.',
     5,
     update,
   );
@@ -104,7 +104,7 @@ export async function instructionCardDialog(project: Project, start: Scene): Pro
         'div',
         { class: 'buttons' },
         h('button', { type: 'button', onclick: () => close(undefined) }, 'Cancel'),
-        h('button', { type: 'submit', class: 'primary' }, 'Make the card'),
+        h('button', { type: 'submit', class: 'primary' }, 'Create card files'),
       ),
     ),
   );
@@ -168,7 +168,7 @@ export async function levelCardDialog(project: Project, game: Game, n: number): 
         'div',
         { class: 'buttons' },
         h('button', { type: 'button', onclick: () => close(undefined) }, 'Cancel'),
-        h('button', { type: 'submit', class: 'primary' }, 'Make the card'),
+        h('button', { type: 'submit', class: 'primary' }, 'Create card files'),
       ),
     ),
   );

@@ -1,30 +1,45 @@
+import { writeLibrary, type PocketLibrary } from './pocketLibrary';
 // The Pocket Player's bundle of files, "GMS1" (hardware/pocket-player/src/gmsmall.h): "GMS1", a count, entries
 // sorted by name (name[32], offset, length; little endian), then the data. The Starters' small.pak is one,
 // and so is a game on its own for the microSD card, NAME.GMP in the card's /pocket folder: its `game.txt`
 // ("GMP 1", then id|title|levels, then "version <game version>" when known, for a catalog to match), `<id>.cfg`, `cards.pak` (the card references in the .cfg are offsets
 // into that entry) and its packed files. The firmware finds a .GMP by listing /pocket, so copying the
-// one file is the whole install.
+// one file is the whole install. It may also hold the game's own DOS files, each as `dos/<NAME>` (the upper-case 8.3 name) stored
+// like the packed files (its length, then the raw deflate): Game-Maker OS (the Raspberry Pi player) plays those, and the
+// Pocket Player, which finds entries by name, skips them, so one .GMP serves both.
 
 /** The one-file game's format version (the first line of its game.txt); a firmware lists only the versions it reads. */
 const GMP_VERSION = 1;
 const ENTRY = 40;
 
 /** One bundle of the entries, sorted by name (byte order, as the firmware's strcmp). */
-export function writeBundle(entries: Iterable<[string, Uint8Array]>): Uint8Array {
+export function writeBundle(entries: Iterable<[string, Uint8Array]>, deduplicate = false): Uint8Array {
   const list = [...entries].sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0));
-  const size = 8 + list.length * ENTRY + list.reduce((t, [, b]) => t + b.length, 0);
+  const unique: Uint8Array[] = [];
+  const offsets: number[] = [];
+  let length = 0;
+  for (const [, b] of list) {
+    const same = deduplicate ? unique.findIndex((v) => v.length === b.length && v.every((x, i) => x === b[i])) : -1;
+    if (same >= 0) offsets.push(unique.slice(0, same).reduce((n, v) => n + v.length, 0));
+    else {
+      offsets.push(length);
+      unique.push(b);
+      length += b.length;
+    }
+  }
+  const size = 8 + list.length * ENTRY + length;
   const out = new Uint8Array(size);
   const view = new DataView(out.buffer);
   out.set([0x47, 0x4d, 0x53, 0x31]); // GMS1
   view.setUint32(4, list.length, true);
-  let off = 8 + list.length * ENTRY;
+  const start = 8 + list.length * ENTRY;
   list.forEach(([name, bytes], i) => {
     if (name.length > 31 || /[^\x20-\x7e]/.test(name)) throw new Error(`Pocket bundle: bad name ${name}`);
     for (let k = 0; k < name.length; k++) out[8 + i * ENTRY + k] = name.charCodeAt(k);
+    const off = start + offsets[i];
     view.setUint32(8 + i * ENTRY + 32, off, true);
     view.setUint32(8 + i * ENTRY + 36, bytes.length, true);
     out.set(bytes, off);
-    off += bytes.length;
   });
   return out;
 }
@@ -43,7 +58,7 @@ export function readBundle(bytes: Uint8Array): Map<string, { off: number; bytes:
     const name = String.fromCharCode(...raw.subarray(0, raw.indexOf(0) < 0 ? 31 : raw.indexOf(0)));
     const off = view.getUint32(at + 32, true);
     const len = view.getUint32(at + 36, true);
-    if (off + len > bytes.length) throw new Error(`Pocket bundle: ${name} runs past the end`);
+    if (off < 8 + count * ENTRY || off + len > bytes.length) throw new Error(`Pocket bundle: ${name} runs past the end`);
     if (i && !(last < name)) throw new Error('Pocket bundle: names out of order');
     last = name;
     out.set(name, { off, bytes: bytes.subarray(off, off + len) });
@@ -81,6 +96,10 @@ interface GmpParts {
   cfg: string[];
   files: Map<string, Uint8Array>;
   cards: Uint8Array[];
+  library?: PocketLibrary;
+  thumbnail?: Uint8Array;
+  /** The game's DOS files for Game-Maker OS, by their DOS names, each already stored (length, then raw deflate). */
+  dos?: Map<string, Uint8Array>;
 }
 
 /** The one-file game for the card. */
@@ -99,5 +118,17 @@ export function writeGmp(p: GmpParts): Uint8Array {
     [`${p.id}.cfg`, text(p.cfg.join('\n') + '\n')],
     ['cards.pak', cards],
     ...p.files,
+    ...(p.library ? [['library.json', writeLibrary(p.library)] as [string, Uint8Array]] : []),
+    ...(p.thumbnail ? [['thumb.pth', p.thumbnail] as [string, Uint8Array]] : []),
+    ...[...(p.dos ?? [])].map(([name, bytes]) => [`dos/${name.toUpperCase()}`, bytes] as [string, Uint8Array]),
+  ]);
+}
+
+/** A .GMP for Game-Maker OS alone, for a game the Pocket Player cannot play: no game.txt (so the board skips it), the
+ * library record and the game's DOS files as dos/<NAME> entries, each already stored (length, then raw deflate). */
+export function writeOsGmp(library: PocketLibrary, dos: Map<string, Uint8Array>): Uint8Array {
+  return writeBundle([
+    ['library.json', writeLibrary(library)],
+    ...[...dos].map(([name, bytes]) => [`dos/${name.toUpperCase()}`, bytes] as [string, Uint8Array]),
   ]);
 }

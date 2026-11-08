@@ -11,6 +11,10 @@
 
 A Starter's demo and walkthrough show what each sign teaches, including the mistake once. Here nothing can go wrong. The mistakes the game shows are pictures: a solid beam that hides the bricks, solid fog that hides the trees, and a solid halo, each beside the dithered one. The walkthrough stops at all of them.
 
+## No flashing
+
+A monster's checkerboard laid over a dithered picture blinks between dots and solid when it moves an odd number of pixels, because it falls in and out of step with the pattern under it. So every monster here (the fog banks and the lanterns) moves in even pixel steps (`STEP` in `src/critters.ts`), and the dots keep the same phase. `npm run check:games -- --game beams` runs the whole-screen flash check.
+
 ## How it is checked beyond the bot
 
 The three puffs of a fog bank are three monsters that must stay together. While you change their paths, run a few hundred ticks of scene 3 and compare the monsters' positions; they stayed exactly one block apart at every tick when the game was made.

@@ -1,0 +1,11 @@
+[Unit]
+Description=Daily private GameMaker validation window
+
+[Timer]
+OnCalendar=*-*-* 03:30:00 America/New_York
+RandomizedDelaySec=10min
+Persistent=true
+Unit=gamemaker-nightly.service
+
+[Install]
+WantedBy=timers.target

@@ -43,10 +43,12 @@ describe('deep index', () => {
     const first = createDeepIndex({ store, extract: extractDeep, idle: async () => undefined, onMore: () => undefined });
     first.start([source('cd:a', 'dragon', reads)]);
     await vi.waitFor(() => expect(first.progress.done).toBe(1));
-    const second = createDeepIndex({ store, extract: extractDeep, idle: async () => undefined, onMore: () => undefined });
+    const idle = vi.fn(async () => undefined);
+    const second = createDeepIndex({ store, extract: extractDeep, idle, onMore: () => undefined });
     second.start([source('cd:a', 'dragon', reads)]);
     await vi.waitFor(() => expect(second.progress.done).toBe(1));
     expect(reads.n).toBe(1);
+    expect(idle).not.toHaveBeenCalled();
     expect(second.find(['dragon']).size).toBe(1);
   });
 

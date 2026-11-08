@@ -66,9 +66,9 @@ function scenery(g: Grid, clouds: [number, number][], bushes: number[], flowers:
 /** Where the prizes hang: on the ground row, or at Yana's head (a prize there is touched just by walking). */
 export const HEAD = STAND - 1;
 export const L1_COINS: [number, number][] = [
-  [18, STAND],
+  [18, HEAD],
   [21, HEAD],
-  [24, STAND],
+  [24, HEAD],
 ];
 export const L2_GEM = 11;
 export const L2_BOX = 14;
@@ -118,7 +118,7 @@ function itsOwn(book: Book, signs: Record<SignName, Sign>): StarterMap {
   m.sign(17, onGround(GROUND, signs.stuck), signs.stuck);
   m.sign(28, onGround(GROUND, signs.ends), signs.ends);
   m.sign(38, onGround(GROUND, signs.exit), signs.exit);
-  m.mon(GEM, L2_GEM, STAND).mon(BOX, L2_BOX, HEAD).mon(STUCK, L2_STUCK, STAND).mon(COIN, L2_COIN, STAND);
+  m.mon(GEM, L2_GEM, HEAD).mon(BOX, L2_BOX, HEAD).mon(STUCK, L2_STUCK, HEAD).mon(COIN, L2_COIN, HEAD);
   return m;
 }
 

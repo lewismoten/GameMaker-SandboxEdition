@@ -515,7 +515,7 @@
           },
           {
             "tag": "p",
-            "text": "FM music and digitized sound use different parts of a Sound Blaster. A tune can play even when the game’s sound IRQ is wrong. On one PC, CONFIG said IRQ 5, but the card used IRQ 7. Setting the game to 7 restored the .VOC effects."
+            "text": "FM music and digitized sound use different parts of a Sound Blaster. Lewis’s PC had IRQ 7 on both sides; the culprit was sound/music set to None, not an IRQ mismatch. Select your sound hardware in CONFIG. The usual example is 220 / IRQ 7 / DMA 1."
           },
           {
             "tag": "p",
@@ -540,6 +540,22 @@
           {
             "tag": "p",
             "text": "More of what players gripe about, and how to fix it, is in this issue’s Design Workshop."
+          },
+          {
+            "tag": "h4",
+            "text": "Why does Escape restart my level?"
+          },
+          {
+            "tag": "p",
+            "text": "A quick tap ends the scene, but Game-Maker quits only if Escape is still held after the fade. Let go too soon and the level can start over. On a slow computer, hold Escape until the screen goes black, then release it. Give that pinkie a little patience."
+          },
+          {
+            "tag": "h4",
+            "text": "Garbage at the bottom of the screen?"
+          },
+          {
+            "tag": "p",
+            "text": "Stray stripes under the playfield? Check for the wrong SVGA type before repainting your level. Run CONFIG, then choose your card or Simulate in the video settings. Save the choice and start the game again. A card-specific driver is no help when it belongs to somebody else’s card."
           }
         ]
       },

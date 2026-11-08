@@ -55,3 +55,19 @@ browser's speech (`voices.ts`) only for a line with no clip or a clip that fails
 
 Record with `npm run voice:phone`, check with `npm run voice:phone:check` (`web/scripts/README.md`).
 The test `scripts/narrate/phoneLines.test.ts` fails if a line has no clip.
+
+## THE CHEZ's motor (`chez/`)
+
+One sound for THE CHEZ wherever it drives: the cast page's stage (`cast/castSound.ts`) and the
+desk window it passes (`desk/props/propSound.ts` `whirr`). The synthesized voice is tuned to Lewis's own
+recording of the car: a whine about 245 Hz at cruise with its 2nd harmonic loudest, contactor
+ka-chunks from the factory contactor tower. The car has three speeds (low through a resistor, for
+backing up only; 24 V with the batteries in parallel; 48 V in series), so a road start is two
+ka-chunks: into 24 V, then into 48 V, the whine jumping up and creeping at each. `coast()` (foot
+off) drops the contactors out with a clunk and the whine fades as the car rolls; `resume()` ka-chunks
+back in. Road rumble and tire noise grow with speed. `chezPassBy` with `pullAway` starts from rest in front of the window (the desk's car).
+
+- `chezSound.ts`: `chezMotor` (go, stop, dispose) and `chezPassBy`; `CHEZ_SOUND`
+  names the voice (synthesized; no recorded clips ship).
+- `chezSynth.ts`: the voice made in Web Audio, no files.
+- `chezTypes.ts`: the shared controls, numbers, noise and output chain.

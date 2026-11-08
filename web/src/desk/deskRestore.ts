@@ -45,7 +45,7 @@ export async function restoreDesk(wanted: Wanted, deskView: ReturnType<typeof vi
   if (disk && !d) {
     deskView.set({ disk: undefined });
     // says where that game really is (a Starter is on the Sample Disk or the CD), not just "not in the box"
-    toast(missingDiskNote(disk, await loadGameList().catch(() => [])));
+    if (run) toast(missingDiskNote(disk, await loadGameList().catch(() => [])));
   }
   if (d) await on.insert(d);
   if (run === 'play' && d?.gam) await on.onDisk(d, 'play');
