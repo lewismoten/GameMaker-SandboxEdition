@@ -1,31 +1,33 @@
-// Level 6, Finale: the plaza. Confetti tumbles through the sky, balloons and flags are everywhere, four neighbors by
-// the fountain wait for a card (five more lie at the start), a goose lane and a bobbing balloon and a squirting
-// puddle are the last obstacles, and the stage steps lead up to the door that starts the flyover.
+// Level 6, The Route: the parade route itself. Eight cards wait at the start; veterans sit on lawn chairs all along the
+// curb holding up scorecards, and each one who gets a card tips a cap, smiles and chimes. Geese cross, a dog trots over
+// and takes one card (keep a spare), a runaway balloon bobs over the sidewalk and a confetti cannon fires by the last
+// stretch.
 import { StarterMap } from '../../kit/starter/map';
-import type { Pal } from '../../kit/starter/palette';
+import type { Pal } from './print';
 import { baseBook } from './base';
-import { addBeat, addFinale } from './items';
-import { Level, GROUND, addSigns, bunting, column, flagpole, onGround, room, run, street } from './lay';
+import { addBeat } from './items';
+import { Level, GROUND, addSigns, bunting, flagpole, onGround, room, shop, street } from './lay';
 import { MONS } from './monsters';
 import { addBandArch } from './park';
 import { addCard, addFlags, addNeighbors, addStreet } from './town';
-import { LEVEL6_SIGNS } from './text';
+import { ROUTE_SIGNS } from './text';
 
 export const AT6 = {
-  cards: [6, 10],
+  cards: [12, 19],
   vets: [
-    [20, 0],
-    [29, 3],
-    [38, 2],
-    [47, 1],
+    [27, 0],
+    [38, 1],
+    [46, 2],
+    [62, 3],
+    [72, 0],
+    [82, 1],
   ],
-  geese: [13],
-  balloon: 53,
-  puddle: [57, 59],
-  steps: [66, 67, 68],
-  stage: [69, 79],
-  exit: 76,
-  width: 88,
+  dog: 30,
+  geese: [56],
+  balloon: 66,
+  cannon: [76, 78],
+  exit: 87,
+  width: 90,
 } as const;
 
 export function level6(pal: Pal): Level {
@@ -36,32 +38,35 @@ export function level6(pal: Pal): Level {
   addNeighbors(book, pal);
   addBandArch(book, pal);
   addBeat(book, pal);
-  addFinale(book, pal);
-  const s = addSigns(book, pal, LEVEL6_SIGNS);
+  const s = addSigns(book, pal, ROUTE_SIGNS);
   const g = room(AT6.width, AT6.exit);
-  // the exit door stands on the stage, three blocks up
-  g.put(AT6.exit, 8, ' ').put(AT6.exit, 9, ' ').put(AT6.exit, 5, 'e').put(AT6.exit, 6, 'E');
   const m = new StarterMap(book, g.rows());
   street(m, 1, AT6.width - 2);
-  // the stage: steps one block high, then a platform
-  AT6.steps.forEach((x, i) => column(m, 'brick', x, GROUND - 1 - i, GROUND - 1));
-  for (let x = AT6.stage[0]; x <= AT6.stage[1]; x++) column(m, 'brick', x, GROUND - 3, GROUND - 1);
-  m.set(AT6.exit, 5, 'doorTop').set(AT6.exit, 6, 'doorBottom');
-  // confetti, scattered through the sky rows
-  for (let i = 0; i < 70; i++) {
-    const x = 2 + ((i * 37) % (AT6.width - 4));
-    const y = 1 + ((i * 13) % 8);
-    if (y < GROUND - 1) m.set(x, y, `conf${i % 3}`);
-  }
-  for (const x of [24, 34, 44, 55]) m.set(x, GROUND - 1, 'balloons0');
-  for (const x of [12, 31, 50, 62]) flagpole(m, x, GROUND, 6);
+  const shops: [number, number, 'wallA' | 'wallB'][] = [
+    [8, 8, 'wallB'],
+    [17, 9, 'wallA'],
+    [27, 8, 'wallB'],
+    [36, 10, 'wallA'],
+    [47, 8, 'wallB'],
+    [56, 9, 'wallA'],
+    [66, 8, 'wallB'],
+    [75, 9, 'wallA'],
+  ];
+  shops.forEach(([x, w, tone], i) => shop(m, x, w, tone, i % 3 === 0 ? 1 : w - 2));
   bunting(m, 6, 84, 2);
-  run(m, 'card', AT6.cards[0], AT6.cards[1], GROUND - 1);
+  for (const x of [30, 58, 69]) flagpole(m, x, GROUND, 6);
+  for (let x = AT6.cards[0]; x <= AT6.cards[1]; x++) m.set(x, GROUND - 1, 'card');
   for (const [x, k] of AT6.vets) m.set(x, GROUND - 1, `vet${k}`);
+  m.mon(MONS.dog, AT6.dog, GROUND - 1);
   for (const x of AT6.geese) m.mon(MONS.goose, x, GROUND - 1);
   m.mon(MONS.balloon, AT6.balloon, GROUND - 4);
-  for (let x = AT6.puddle[0]; x <= AT6.puddle[1]; x++) m.set(x, GROUND - 1, 'puddleA');
-  m.sign(14, onGround(GROUND, s.start), s.start);
-  m.sign(61, onGround(GROUND, s.stage), s.stage);
-  return { file: 'six', title: 'Finale', hint: 'Up the steps. The whole town waves.', map: m, book, pal };
+  for (let x = AT6.cannon[0]; x <= AT6.cannon[1]; x++) m.set(x, GROUND - 1, 'cannonA');
+  m.sign(5, onGround(GROUND, s.start), s.start);
+  m.sign(21, onGround(GROUND, s.judges), s.judges);
+  m.sign(32, onGround(GROUND, s.dog), s.dog);
+  m.sign(40, onGround(GROUND, s.delgado), s.delgado);
+  m.sign(49, onGround(GROUND, s.geese), s.geese);
+  m.sign(64, onGround(GROUND, s.pruitt), s.pruitt);
+  m.sign(84, onGround(GROUND, s.exit), s.exit);
+  return { file: 'route', title: 'The Route', hint: 'The route. Veterans judging.', map: m, book, pal };
 }

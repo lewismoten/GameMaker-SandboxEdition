@@ -8,7 +8,7 @@ import { outlined, textWidth } from '@lewismoten/gamemaker-sandbox-tools/kit/pcT
 import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { Reel } from '@lewismoten/gamemaker-sandbox-tools/kit/reel';
 import type { Book } from '../../kit/starter/book';
-import type { Pal } from '../../kit/starter/palette';
+import type { Pal } from './print';
 import { H, W, scene } from '../../kit/starter/screens';
 import { baton, streetBackdrop } from './title';
 

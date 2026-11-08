@@ -5,7 +5,7 @@ import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { outline } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 import { blob, speckle } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
 import { PULL, SOLID } from '../../kit/starter/book';
-import { skyOf, type Pal } from '../../kit/starter/palette';
+import { paperOf as skyOf, type Pal } from './print';
 import type { PBook } from './base';
 
 /** Points for a card caught, and for a neighbor handed one. */

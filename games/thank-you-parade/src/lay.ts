@@ -3,8 +3,10 @@
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import type { Book } from '../../kit/starter/book';
-import { addSign, type Sign } from '../../kit/starter/sign';
-import type { Pal } from '../../kit/starter/palette';
+import type { Sign } from '../../kit/starter/sign';
+import { addPlacard } from './blocks';
+import type { Pal } from './print';
+import type { Tone } from './text';
 
 export const GROUND = 10;
 export const HEIGHT = 15;
@@ -20,6 +22,10 @@ export interface Level {
   pal: Pal;
   /** A door that sends the hero back to the level's start (a gust that ran out), as [x, y] of its bottom block. */
   retry?: [number, number];
+  /** Who plays it (Penny unless it says Marge). */
+  hero?: 'penny' | 'marge';
+  /** Its song (the parade march unless it names another). */
+  song?: 'march' | 'marge' | 'drumoff';
 }
 
 /** A room: ground on `GROUND`, hedges at both ends, the entrance at `startX` and the exit door at `exitX`. */
@@ -78,9 +84,9 @@ export const onGround = (ground: number, s: Sign): number => ground - 1 - s.boar
 
 export type Signs = Record<string, Sign>;
 
-/** Adds each sign of `defs` ([text, blocks wide, blocks high]) to `book`. */
-export function addSigns(book: Book, pal: Pal, defs: Record<string, [string, number, number]>): Signs {
+/** Adds each placard of `defs` ([text, blocks wide, blocks high, ink]) to `book`. */
+export function addSigns(book: Book, pal: Pal, defs: Record<string, [string, number, number, Tone?]>): Signs {
   const out: Signs = {};
-  for (const [n, [text, w, h]] of Object.entries(defs)) out[n] = addSign(book, pal, `${n}.sign`, text, w, h);
+  for (const [n, [text, w, h, tone]] of Object.entries(defs)) out[n] = addPlacard(book, pal, n, text, w, h, tone);
   return out;
 }

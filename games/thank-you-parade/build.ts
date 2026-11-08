@@ -20,17 +20,17 @@ import { cardPicture, endPicture, gif, menuPicture, paper, scoresPicture, slotsP
 import { endingFli, introFli } from './src/cartoons';
 import { TITLE, buildGame } from './src/game';
 import { buildLevels, galleryBook } from './src/levels';
-import { buildPennyBlocks } from './src/look';
+import { buildMargeBlocks, buildPennyBlocks } from './src/figure';
 import { finishMonsterPictures, monsterPictures, monsterSet } from './src/monsters';
-import { paradeSounds, song } from './src/sound';
+import { drumOffSong, margeSong, paradeSounds, song } from './src/sound';
 import { CARD_NOTES, CREDITS, HOWTO, LOST, STORY, WON } from './src/text';
 import { titlePicture } from './src/title';
 
-/** Hit points and lives at the start (a goose costs 1 a moment, a squirt 10). */
+/** Hit points and lives at the start (a goose costs 1 a moment, a cannon 10). */
 const HERO_HIT_POINTS = 80;
 const HERO_LIVES = 3;
-/** Counters 20 to 24 (the band's three things, the cards, the float's parts) start at 1: a counter shows one less than it holds. */
-const COUNTERS = [20, 21, 22, 23, 24];
+/** Counters 20 to 25 (the band's three things and the keys, the cards, the float's parts, the banner letters) start at 1: a counter shows one less than it holds. */
+const COUNTERS = [20, 21, 22, 23, 24, 25];
 
 const here = dirname(fileURLToPath(import.meta.url));
 const disk = new Disk(join(here, 'disk'));
@@ -45,14 +45,22 @@ const cheer = heroPicture(heroBlocks, 'cheer.top', 'jump');
 
 disk.put('parade.mbl', serializeBlocks(finishMonsterPictures(mb)));
 disk.put('parade.mon', serializeMonsters(monsterSet(mb)));
-disk.put('hero.cbl', serializeBlocks(heroBlocks.finish()));
-const heroChar = buildHero(heroBlocks);
-heroChar.meter[0] = HERO_HIT_POINTS;
-heroChar.meter[1] = HERO_LIVES;
-for (const n of COUNTERS) heroChar.meter[n] = 1;
-disk.put('hero.chr', serializeCharacter(heroChar));
+// the heroes: Penny for most levels, Marge for the airstrip (counters carry over from scene to scene)
+for (const [name, blocks] of [
+  ['penny', heroBlocks],
+  ['marge', buildMargeBlocks(pal)],
+] as const) {
+  disk.put(`${name}.cbl`, serializeBlocks(blocks.finish()));
+  const ch = buildHero(blocks);
+  ch.meter[0] = HERO_HIT_POINTS;
+  ch.meter[1] = HERO_LIVES;
+  for (const n of COUNTERS) ch.meter[n] = 1;
+  disk.put(`${name}.chr`, serializeCharacter(ch));
+}
 disk.put('parade.snd', serializeSoundSet(paradeSounds()));
 disk.put('parade.cmf', song());
+disk.put('marge.cmf', margeSong());
+disk.put('drumoff.cmf', drumOffSong());
 
 // each level: its palette, map, blocks and card
 levels.forEach((l, i) => {

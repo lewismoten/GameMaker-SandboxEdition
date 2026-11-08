@@ -11,7 +11,7 @@ import { outline } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
 import { Book } from '../../kit/starter/book';
-import type { Pal } from '../../kit/starter/palette';
+import type { Pal } from './print';
 import { CARDS } from './town';
 
 export const MONS = { goose: 0, balloon: 1, dog: 2 } as const;

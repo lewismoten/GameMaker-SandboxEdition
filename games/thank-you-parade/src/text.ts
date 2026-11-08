@@ -1,86 +1,104 @@
-// Every word THE THANK-YOU PARADE shows: the signs in each level ([text, blocks wide, blocks high]) and the text pages
-// (30 columns, 16 lines a page).
+// Every word THE THANK-YOU PARADE shows: the placards in each level ([text, blocks wide, blocks high, ink]; purple
+// placards are the Ridgemont band's, teal ones are Marge's) and the text pages (30 columns, 16 lines a page).
 import { withCreditPage } from '../../kit/license';
 import { wrap } from '../../kit/starter/text';
 import about from '../about.json';
 
-type Defs = Record<string, [string, number, number]>;
+export type Tone = 'red' | 'purple' | 'teal';
+type Defs = Record<string, [string, number, number, Tone?]>;
 const EXIT: [string, number, number] = ['EXIT →', 3, 1];
 
-export const LEVEL1_SIGNS: Defs = {
-  start: ['THE WIND SCATTERED THE BAND! FIND WHAT EACH ONE LOST.', 4, 3],
-  piles: ['LEAF PILES HIDE THINGS', 3, 2],
-  gates: ['BAND KIDS WAIT. FIND WHAT EACH LOST.', 4, 3],
-  tree: ['CLIMB UP FOR THE DRUM STICKS', 4, 2],
-  pond: ['FLUTE ON A LILY PAD. HOP!', 4, 2],
+export const CALLTIME_SIGNS: Defs = {
+  start: ['STEP OFF AT TEN. THE BAND IS... AROUND.', 6, 2],
+  doug: ['DOUG LOST HIS MOUTHPIECE. HE CAN PLAY WITHOUT IT. NOBODY WANTS THAT.', 6, 3],
+  tree: ["THE DRUMSTICKS ARE UP A TREE. TREES DON'T DO THAT.", 6, 2],
+  geese: ['GEESE. ON PARADE DAY. ODD.', 4, 2],
+  pond: ['THE FLUTE IS ON A LILY PAD. SOMEBODY PLANNED THIS.', 6, 2],
+  note: ['TAPED TO THE GATE: ENJOY THE BACK OF THE PARADE. -G', 6, 2, 'purple'],
+  secret: ['PLAYBOOK P.1: BE UP BEFORE PENNY.', 5, 2, 'purple'],
+}
+
+export const GUST_SIGNS: Defs = {
+  start: ['SIX LEAF BLOWERS ON MAIN STREET. CATCH CARDS. THE BOX TAKES FOUR.', 6, 3],
+  meter: ['THE CARDS GO WHEN THE GUST DOES. MOVE.', 5, 2],
+  retry: ['MISSED SOME? THE DOOR BACK THERE STARTS IT OVER.', 6, 2],
+  secret: ['PLAYBOOK P.2: BORROW SIX LEAF BLOWERS.', 6, 2, 'purple'],
   exit: EXIT,
 };
 
-export const LEVEL2_SIGNS: Defs = {
-  start: ['CARDS ARE BLOWING AWAY! CATCH FOUR.', 4, 3],
-  retry: ['OUT OF TIME? GO BACK TO THE START DOOR.', 4, 3],
-  meter: ['WATCH THE GUST. CARDS BLOW AWAY AS IT FADES.', 4, 3],
+export const AIRSTRIP_SIGNS: Defs = {
+  start: ["MEANWHILE, AT MARGE'S AIRSTRIP. HER BANNER IS IN PIECES.", 6, 3, 'teal'],
+  no: ['MARGE: I AM NOT FLYING NO THANK YOU.', 6, 2, 'teal'],
+  geese: ['NOT MY GEESE, SAYS MARGE.', 5, 2, 'teal'],
+  rack: ['THE RACK WANTS ALL EIGHT LETTERS.', 6, 2, 'teal'],
+  secret: ['PLAYBOOK P.3: NOBODY CHECKS A BANNER.', 6, 2, 'purple'],
+}
+
+export const FLOAT_SIGNS: Defs = {
+  start: ['THE FIRE HALL. THE FLOAT IS HERE. ITS PARTS ARE NOT.', 6, 2],
+  crew: ['CAPTAIN RUIZ: SOMEONE LOCKED THEM UP. NICELY, EVEN.', 6, 2],
+  gold: ['BRASS KEY, BRASS GATE.', 4, 2],
+  silver: ['STEEL KEY, STEEL GATE.', 4, 2],
+  climb: ['THE LAST BRASS KEY IS UP IN THE LOFT.', 5, 2],
+  parts: ['THE FLOAT NEEDS ALL THREE PARTS.', 6, 2],
+  secret: ['PLAYBOOK P.4: NOBODY LOOKS UP IN A FIRE HALL.', 6, 2, 'purple'],
   exit: EXIT,
 };
 
-export const LEVEL3_SIGNS: Defs = {
-  start: ['THE FIRE HALL CREW IS BUILDING THE FLOAT.', 4, 3],
-  gold: ['A GOLD KEY OPENS A GOLD GATE.', 4, 3],
-  silver: ['A SILVER KEY OPENS A SILVER GATE.', 4, 3],
-  climb: ['CLIMB UP FOR MORE.', 3, 2],
-  parts: ['THREE PARTS BUILD THE FLOAT.', 4, 3],
+export const DRUMOFF_SIGNS: Defs = {
+  start: ['ELM STREET. GIGI WANTS A DRUM-OFF. GIGI BROUGHT CANNONS.', 6, 3],
+  gigi: ['GIGI: CONFETTI CANNONS. ON THE BEAT. TRY TO KEEP UP.', 6, 3, 'purple'],
+  beat: ['WATCH THE DRUMS. THE RED ONE IS BEAT FOUR.', 5, 2],
+  second: ['THESE FIRE ON TWO. OF COURSE.', 5, 2],
+  both: ['STEP, STEP, STEP, WAIT. THEN STEP, WAIT.', 5, 2],
+  last: ['PENNY: OUR DRUMLINE PRACTICES IN A PARKING LOT. IN JANUARY.', 6, 3],
   exit: EXIT,
 };
 
-export const LEVEL4_SIGNS: Defs = {
-  start: ['KEEP IN STEP! THE PUDDLES SQUIRT ON BEAT FOUR.', 4, 3],
-  beat: ['WATCH THE RED DRUM. WAIT, THEN GO.', 4, 3],
-  second: ['THESE SQUIRT ON BEAT TWO.', 4, 2],
-  both: ['STEP, STEP, STEP, WAIT.', 4, 3],
+export const ROUTE_SIGNS: Defs = {
+  start: ['THE ROUTE. EVERY VETERAN ON THE CURB GETS A CARD.', 6, 2],
+  judges: ['THEY HOLD UP SCORECARDS. THEY ALWAYS HAVE.', 6, 2],
+  dog: ['THAT DOG TAKES CARDS. KEEP A SPARE.', 6, 2],
+  delgado: ['MR. DELGADO: A 7. THE PLUME IS A LOT.', 6, 2],
+  geese: ['MORE GEESE. GIGI KNOWS A GOOSE GUY.', 5, 2],
+  pruitt: ["MS. PRUITT: A 10. DON'T TELL DELGADO.", 5, 2],
   exit: EXIT,
 };
 
-export const LEVEL5_SIGNS: Defs = {
-  start: ['TAKE THE CARDS. HAND ONE TO EACH NEIGHBOR.', 4, 3],
-  dog: ['A DOG LIKES CARDS. KEEP A FEW SPARE.', 4, 3],
-  geese: ['GEESE CROSSING. WAIT FOR A GAP.', 4, 3],
-  wave: ['WAVE BACK!', 3, 2],
-  exit: EXIT,
-};
-
-export const LEVEL6_SIGNS: Defs = {
-  start: ['THE WHOLE TOWN CAME OUT!', 4, 3],
-  stage: ['UP THE STAGE STEPS!', 4, 2],
-  exit: EXIT,
+export const STEPOFF_SIGNS: Defs = {
+  start: ['9:58. THE REVIEWING STAND. FOUR MORE CARDS, THEN THE FRONT.', 6, 3],
+  llamas: ['THE RIDGEMONT BAND, BEHIND THE LLAMA RESCUE. AT LAST.', 7, 2],
+  gigi: ['GIGI: THE LLAMAS ARE NOT ON THE BEAT.', 5, 2, 'purple'],
+  stage: ['UP THE STEPS. THE CLOCK SAYS TEN.', 5, 2],
 };
 
 export const STORY = wrap(`
 |THE THANK-YOU PARADE
 
-It is the morning of the town's Thank-You Parade, and Penny, the drum major, is up at dawn.
+Every November the town holds a parade for its veterans, and the band that marches first marches first. There's no trophy. There's only the front, and everyone knows who had it.
 
-Then the wind came along.
+The Harlan Falls Hornets have led for eleven years, because Penny runs the band like a railroad.
 
-It scattered the band across town: a mouthpiece in a leaf pile, drumsticks up a tree, a flute in the duck pond. It blew the class's thank-you cards all down Main Street.
+This year Gigi Larkspur and the Ridgemont Precision Brass want the front. Gigi has a clipboard. Gigi has a plan. Gigi, it turns out, has geese.
 
-The parade starts in a few hours. Somebody has to put it all back. Somebody tall, in a hat with a plume.
+Step off is at ten.
 `);
 
 export const HOWTO = wrap(`
 |HOW TO PLAY
 
-|LEFT, RIGHT   walk
+|LEFT, RIGHT   march
 |SPACE         jump
-|UP, DOWN      climb a ladder
+|UP, DOWN      climb
 |F2            lives, score
 
-Band members, gates and boxes ask for something: bring it and walk into them.
+Band members, gates, the card box and the float each want something. Bring it and walk into them.
 
-Cards are for neighbors on lawn chairs. Walk up to one with a card in hand.
+Hand a card to a veteran by walking up with one in hand.
 
-A squirting puddle costs a little. Geese are in the way. A dog may take a card.
+Geese peck. Cannons fire on the beat. A dog takes cards. Watch the drums and the gust meter.
 
-Watch the meters, the lamps and the clocks.
+Gigi lost her playbook pages. Four of them are well hidden.
 
 |ESC for the menu.
 `);
@@ -90,42 +108,47 @@ export const CREDITS = withCreditPage(
 |THE THANK-YOU PARADE  v${about.version}
 |(c) 1994 Sandbox Software
 
-Design, pixels, beeps and levels by Claude Sonnet 5.5, an AI model made by Anthropic.
+Design, pixels, words, marches and levels by Claude Sonnet 5.5, an AI model made by Anthropic.
 
 Made with GAME-MAKER 3.0 from Recreational Software Designs.
 
-A Special: a game that only comes around for a short while. Keep your copy.
+A Special: it only comes around for a short while. Keep your copy.
 
-Thank you to everyone who waves from the curb.
+For everyone on the curb.
 `),
 );
 
 export const WON = wrap(`
-|THE PARADE
+|STEP OFF
 
-The band is back together. The cards are in the neighbors' hands. The float rolls, the puddles squirt only where they should, and a crop duster flies over towing a banner that says THANK YOU.
+At ten o'clock exactly, the Hornets step off first.
 
-The whole town waves.
+Every card is in a veteran's hands. Mr. Delgado gives the plume a 10, under protest.
 
-Penny tips her hat with the plume, and the wave comes right back.
+Overhead, Marge banks low over Main Street and the banner unrolls: THANK YOU, in letters six feet tall.
 
-Thank you for helping.
+Then a second banner unrolls beneath it.
+
+NICE TRY, GIGI.
+
+Ridgemont marches behind the llama rescue. The llamas set the pace. The llamas are not precise.
 `);
 
 export const LOST = wrap(`
-|OH NO!
+|BACK OF THE PARADE
 
-Out of lives. Geese, puddles and the wind add up.
+Out of lives. Gigi takes the front, and the Hornets march behind the street sweeper.
 
-Try again: wait for the gap, watch the beat, and keep a card or two spare.
+Try again: wait for the gap, count the beat, and keep a spare card for the dog.
 `);
 
-/** What each level card says. */
+/** What each level card says under its title. */
 export const CARD_NOTES = [
-  'The wind took the band apart.',
-  'Cards are blowing down Main Street.',
-  'The fire hall crew builds a float.',
-  'Keep in step. Watch the drums.',
-  'Hand a card to every neighbor.',
-  'Up the steps. The whole town waves.',
+  '6:40 AM. The band is scattered.',
+  'Main Street. Leaf blowers.',
+  'Meanwhile, at the airstrip.',
+  'The fire hall. A float, no parts.',
+  'Elm Street. A drum-off.',
+  'The route. Veterans judging.',
+  '9:58. The front of the parade.',
 ];

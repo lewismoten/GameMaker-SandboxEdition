@@ -5,7 +5,7 @@ import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { outline } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 import { blob, speckle } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
 import { LEDGE, PULL, SOLID } from '../../kit/starter/book';
-import { skyOf, type Pal } from '../../kit/starter/palette';
+import { paperOf as skyOf, type Pal } from './print';
 import type { PBook } from './base';
 
 /** The counters the three band things add to (and the band members spend). */

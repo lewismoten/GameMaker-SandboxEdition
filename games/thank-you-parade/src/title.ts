@@ -5,7 +5,7 @@ import { bevel } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
 import { outlined, text, textWidth } from '@lewismoten/gamemaker-sandbox-tools/kit/pcText';
 import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import type { Book } from '../../kit/starter/book';
-import type { Pal } from '../../kit/starter/palette';
+import type { Pal } from './print';
 import { W, scene } from '../../kit/starter/screens';
 
 /** A baton: a thin white rod with a gold ball at each end, from (x0, y0) to (x1, y1). */
