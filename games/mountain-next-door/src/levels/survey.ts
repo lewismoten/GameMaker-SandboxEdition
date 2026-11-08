@@ -115,7 +115,7 @@ export function levelSurvey(pal: Pal): Level {
   m.exits.push({ from: [A.exit + ORIGIN, DECKS[2] - 1 + ORIGIN] });
   for (const k of Object.keys(s) as (keyof typeof s)[]) {
     const [deck, x] = A.signs[k];
-    m.sign(x, onGround(deck < 0 ? G_SURVEY : DECKS[deck], s[k]), s[k]);
+    m.sign(x, onGround(deck < 0 ? G_SURVEY : DECKS[deck as 0 | 1 | 2], s[k]), s[k]);
   }
   return {
     file: 'survey',
