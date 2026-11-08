@@ -68,6 +68,17 @@ export const SHAFTS: Shaft[] = [
     window: [4, 8],
   },
   {
+    file: 'larder',
+    title: 'The Larder Shelf',
+    hint: 'The last shaft. Steer hard.',
+    look: 'pantry',
+    gaps: [3, 16, 6, 15, 4, 12],
+    washers: [51, 42, 33, 24, 15],
+    signs: { last: ['THE LAST SHAFT. NOBODY SAYS THIS IS NORMAL.', 4, 4] },
+    signAt: { last: [3, 61] },
+    window: [17, 20],
+  },
+  {
     file: 'chute',
     title: 'The Flour Chute',
     hint: 'Up to the drying rack.',
