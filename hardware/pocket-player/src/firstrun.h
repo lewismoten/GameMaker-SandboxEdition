@@ -8,6 +8,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
+#include "buddy.h"
 #include "controls.h"
 #include "overlaydraw.h"
 #include "paddraw.h"
@@ -204,7 +205,7 @@ template <class G> void pickHand(G& g, int sel = -1) {
 // Card 3: the playground. `L` is the controls model's layout (its pad where the thumb is), `look` its ctl::Look, `held` the keys
 // pressed (st::heldText's bits). `full` paints the whole screen; otherwise only the old pad's square `old` is cleared first.
 template <class G> void playground(G& g, const ctl::Layout& L, const ctl::Need& nd, uint8_t dirs, uint8_t btn, uint8_t held, int look, bool floatPad,
-                                   bool full, const ctl::Disc& old) {
+                                   bool full, const ctl::Disc& old, bd::Buddy* buddy = nullptr) {
   if (full) {
     g.fillScreen(C_BLACK);
     g.fillRect(0, 0, W, scr::VIEW_H, C_FIELD);
@@ -260,6 +261,7 @@ template <class G> void playground(G& g, const ctl::Layout& L, const ctl::Need& 
   g.setTextColor(held ? C_YELLOW : C_GRAY, C_BLACK);
   g.setTextDatum(textdatum_t::middle_center);
   g.drawString(t, W / 2, scr::VIEW_H + (H - scr::VIEW_H) / 2);
+  if (buddy && full) { buddy->drawn = {0, 0, -1, -1}; bd::paint(g, *buddy, C_FIELD); }
   g.setTextDatum(textdatum_t::top_left);
 }
 }  // namespace fr

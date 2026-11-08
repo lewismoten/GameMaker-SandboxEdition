@@ -1825,6 +1825,7 @@ static bool frDoneDown = false;    // a touch began on Done (it counts when it l
 static uint8_t frHeld = 0;         // the keys the playground's thumb holds (st::heldText's bits)
 static int frLook = ctl::LOOK_OFF;
 static ctl::Disc frPad = {0, 0, 0};
+static bd::Buddy frBuddy;          // the small character that moves with the keys (buddy.h)
 static bool firstRunDone() {
   Preferences p;
   bool done = false;
@@ -1832,7 +1833,7 @@ static bool firstRunDone() {
   return done;
 }
 static void drawPlayground(bool full) {
-  fr::playground(tft, controls.L, controls.need, controls.padDirs, controls.btnDown, frHeld, frLook, settings.floatPad, full, frPad);
+  fr::playground(tft, controls.L, controls.need, controls.padDirs, controls.btnDown, frHeld, frLook, settings.floatPad, full, frPad, &frBuddy);
   if (frDoneDown) { fr::Box d = fr::doneBox(); ovl::button(tft, d.x0, d.y0, d.x1, d.y1, "Done", true, C_BLUE, 2); }
   frPad = controls.L.pad;
   banner::paint(tft, 0, 0);
@@ -1843,7 +1844,7 @@ static void drawFirstRun() {
     case fr::HAND: fr::pickHand(tft); break;
     case fr::PLAY:
       controls.configure(settings, fr::playNeed());
-      frHeld = 0; frDoneDown = false; frLook = controls.padLook(millis());
+      frHeld = 0; frDoneDown = false; frLook = controls.padLook(millis()); frBuddy = bd::Buddy();
       drawPlayground(true);
       return;
     default: return;
@@ -1920,6 +1921,7 @@ static void firstRunLoop(uint32_t now) {
     frLook = look;
     drawPlayground(false);
   }
+  if (frBuddy.tick(frHeld, now)) bd::paint(tft, frBuddy, fr::C_FIELD);
 }
 
 static void pollSerial() {

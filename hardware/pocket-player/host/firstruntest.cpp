@@ -22,13 +22,14 @@ static int cyOf(const fr::Box& b) { return (b.y0 + b.y1) / 2; }
 struct Play {
   ctl::Controls c;
   uint8_t held = 0;
+  bd::Buddy buddy;
   uint32_t now = 1000;
   Play(const ctl::Settings& s) { c.configure(s, fr::playNeed()); }
   void touch(int x, int y, int ms) {
     int id = 1, sz = 30;
-    for (int t = 0; t < ms; t += 8) { now += 8; c.update(&id, &x, &y, &sz, 1, now); flush(); }
+    for (int t = 0; t < ms; t += 8) { now += 8; c.update(&id, &x, &y, &sz, 1, now); flush(); buddy.tick(held, now); }
   }
-  void lift(int ms) { for (int t = 0; t < ms; t += 8) { now += 8; c.update(nullptr, nullptr, nullptr, nullptr, 0, now); flush(); } }
+  void lift(int ms) { for (int t = 0; t < ms; t += 8) { now += 8; c.update(nullptr, nullptr, nullptr, nullptr, 0, now); flush(); buddy.tick(held, now); } }
   void flush() {
     ctl::Change ch[16];
     int n = c.flush(ch, 16);
@@ -40,7 +41,7 @@ struct Play {
   }
   Canvas draw() {
     Canvas g(scr::W, scr::H);
-    fr::playground(g, c.L, c.need, c.padDirs, c.btnDown, held, c.padLook(now), c.set.floatPad, true, c.L.pad);
+    fr::playground(g, c.L, c.need, c.padDirs, c.btnDown, held, c.padLook(now), c.set.floatPad, true, c.L.pad, &buddy);
     return g;
   }
 };
@@ -127,6 +128,72 @@ int main(int argc, char** argv) {
       fp.touch(zx - fp.c.L.pad.r / 2, zy, 200);
       expect((fp.held & 1) && fp.c.L.pad.cx == zx, "the floating pad on the playground did not center on the thumb or press Left");
       save(dir, std::string("4-float-") + nm + "-touch", fp.draw());
+    }
+  }
+  // The small character (src/buddy.h): state, then renders.
+  {
+    auto run = [](bd::Buddy& b, uint8_t held, int ms, uint32_t& now) { for (int t = 0; t < ms; t += 16) { now += 16; b.tick(held, now); } };
+    uint32_t now = 1000;
+    bd::Buddy b;
+    run(b, 0, 2000, now);
+    expect(b.x == 0 && b.y == 0 && b.face == bd::DOWN && b.lift() == 0, "an idle character stands in the center facing you");
+    bool flipped = false;
+    uint8_t f0 = b.frame;
+    for (int t = 0; t < 600; t += 16) { now += 16; b.tick(2, now); if (b.frame != f0) flipped = true; }
+    expect(b.x > 0 && b.face == bd::RIGHT && flipped, "Right walks the character right on two frames");
+    run(b, 2, 3000, now);
+    expect(b.x == bd::RX, "the character stops at the right edge of its play area");
+    run(b, 1, 6000, now);
+    expect(b.x == -bd::RX && b.face == bd::LEFT, "Left walks it to the left edge, facing left");
+    run(b, 4, 2000, now);
+    expect(b.y == -bd::RY && b.face == bd::UP, "Up turns it away and steps it up, within its area");
+    run(b, 8, 2000, now);
+    expect(b.y == bd::RY && b.face == bd::DOWN, "Down turns it toward you and steps it down, within its area");
+    run(b, 0, 300, now);
+    expect(b.x != 0, "the character waits a moment before going home");
+    run(b, 0, 2500, now);
+    expect(b.x == 0 && b.y == 0 && b.face == bd::DOWN && b.frame == 0, "the character returns to the center when idle");
+    run(b, 16, 16, now);
+    expect(b.hopMs >= 0, "Jump starts a hop");
+    run(b, 16, 190, now);
+    int peak = b.lift();
+    expect(peak >= bd::HOP * 9 / 10 && peak <= bd::HOP, "the hop reaches its height mid-way");
+    run(b, 0, 600, now);
+    expect(b.hopMs < 0 && b.lift() == 0, "the hop ends on the ground");
+    // Everything it can draw stays in the field, clear of the hint, the pad, Jump and Done, for both hands.
+    const int lh = (int)(8 * fr::TEXT) + 4, hintBottom = (scr::SMALL ? 50 : 76) + 2 * lh;
+    bd::Box a = bd::area();
+    expect(a.x0 >= 0 && a.x1 < scr::W && a.y0 >= hintBottom && a.y1 < scr::VIEW_H, "the character's play area is off the field or over the hint");
+    for (int lefty : {0, 1}) {
+      ctl::Settings s;
+      s.lefty = (uint8_t)lefty;
+      ctl::Layout L = ctl::makeLayout(s, fr::playNeed());
+      auto clear = [&](const ctl::Disc& d) {
+        int nx = d.cx < a.x0 ? a.x0 : d.cx > a.x1 ? a.x1 : d.cx, ny = d.cy < a.y0 ? a.y0 : d.cy > a.y1 ? a.y1 : d.cy;
+        return (nx - d.cx) * (nx - d.cx) + (ny - d.cy) * (ny - d.cy) > d.r * d.r;
+      };
+      expect(clear(L.pad) && clear(L.home) && clear(L.space), "the character's play area overlaps the pad or Jump");
+      fr::Box dn = fr::doneBox();
+      expect(a.x1 < dn.x0 || a.x0 > dn.x1 || a.y1 < dn.y0 || a.y0 > dn.y1, "the character's play area overlaps Done");
+      // paint at the corners: the drawing stays inside the area
+      for (int cx : {-bd::RX, bd::RX}) for (int cy : {-bd::RY, bd::RY}) {
+        Canvas g(scr::W, scr::H);
+        bd::Buddy c;
+        c.x = cx; c.y = cy; c.hopMs = 210;
+        bd::paint(g, c, fr::C_FIELD);
+        expect(c.drawn.x0 >= a.x0 && c.drawn.x1 <= a.x1 && c.drawn.y0 >= a.y0 && c.drawn.y1 <= a.y1, "a painted character left its play area");
+      }
+    }
+    // Renders: the center, then each key, at both hands' layout (right-handed here).
+    struct Shot { const char* name; uint8_t held; int ms; };
+    for (Shot sh : {Shot{"idle", 0, 0}, Shot{"right", 2, 330}, Shot{"right2", 2, 480}, Shot{"left", 1, 330}, Shot{"up", 4, 330}, Shot{"down", 8, 330}, Shot{"hop", 16, 210}}) {
+      ctl::Settings s;
+      Play p(s);
+      uint32_t t = 1000;
+      p.buddy.tick(0, t);
+      for (int ms = 0; ms < sh.ms; ms += 16) { t += 16; p.buddy.tick(sh.held, t); }
+      p.held = sh.held == 16 ? 16 : sh.held;
+      save(dir, std::string("5-buddy-") + sh.name, p.draw());
     }
   }
   printf("firstruntest (%s): %s; %d checks\n", scr::SMALL ? "320" : "480", failures ? "FAILURES" : "passed", checks);
