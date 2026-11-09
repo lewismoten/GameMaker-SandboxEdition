@@ -7,7 +7,7 @@
 // every 4th from row 2, then every 2nd from row 1. A row from an early pass stands in for
 // the rows below it that haven't arrived yet (8, 4, 2 rows), so the picture fills in blocky
 // and gets finer, the way viewers that drew while downloading showed it.
-import { lzwDecode, lzwEncode, type IndexedImage } from './gif';
+import { GIF_MAX_PIXELS, lzwDecode, lzwEncode, type IndexedImage } from './gif';
 import { PALETTE_SIZE, vga8, type Palette } from './palette';
 
 /** A GIF read from as many of its bytes as there are so far. */
@@ -97,6 +97,7 @@ export function decodePartialGif(bytes: Uint8Array): PartialGif | undefined {
     n += take;
     p += take;
   }
+  if (width * height > GIF_MAX_PIXELS) throw new Error(`GIF picture ${width} x ${height} is too large to open`);
   const done = { count: 0 };
   const stored = lzwDecode(data.subarray(0, n), minCodeSize, width * height, done);
   return {

@@ -12,6 +12,9 @@
 // 0x40 (image flags only) = interlaced.
 import { PALETTE_SIZE, vga8, type Palette } from './palette';
 
+/** Largest picture decodeGif opens: about twice the biggest GIF on the CD (8.45 million pixels). */
+export const GIF_MAX_PIXELS = 4096 * 4096;
+
 export interface IndexedImage {
   width: number;
   height: number;
@@ -73,6 +76,7 @@ export function decodeGif(bytes: Uint8Array): IndexedImage {
     if (!len) break;
     for (let i = 0; i < len && p < bytes.length; i++) chunks.push(bytes[p++]);
   }
+  if (width * height > GIF_MAX_PIXELS) throw new Error(`GIF picture ${width} x ${height} is too large to open`);
   const indices = lzwDecode(Uint8Array.from(chunks), minCodeSize, width * height);
 
   const pixels = new Uint8Array(width * height);
