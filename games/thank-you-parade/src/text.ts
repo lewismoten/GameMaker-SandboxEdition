@@ -110,7 +110,7 @@ export const CREDITS = withCreditPage(
 |THE THANK-YOU PARADE  v${about.version}
 |(c) 1994 Sandbox Software
 
-Design, pixels, words, marches and levels by Claude Sonnet 5.5, an AI model made by Anthropic.
+Design, pixels, words, marches and levels by Claude Sonnet 5.5 and Claude Opus 5.5, AI models made by Anthropic.
 
 Made with GAME-MAKER 3.0 from Recreational Software Designs.
 
